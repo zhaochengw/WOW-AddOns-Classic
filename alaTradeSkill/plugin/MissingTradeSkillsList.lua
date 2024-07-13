@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -15,7 +15,7 @@ local DT = __private.DT;
 	local max = math.max;
 	local format = string.format;
 
-	local C_Map_GetAreaInfo = C_Map.GetAreaInfo;
+	local GetAreaInfo = C_Map.GetAreaInfo;
 	local IsAddOnLoaded = IsAddOnLoaded;
 
 	local _G = _G;
@@ -144,10 +144,10 @@ local LT_MTSL_UnitPrefix = {	--	FactionGroup == "Alliance"
 };
 LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, stack_size)
 	if stack_size < 8 then
+		local got_one_data = false;
 		if MTSL_DATA then
 			local npcs = MTSL_DATA["npcs"];
 			if npcs then
-				local got_one_data = false;
 				for _, nv in next, npcs do
 					if nv.id == uid then
 						got_one_data = true;
@@ -155,9 +155,9 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 						local line = prefix .. (colorTable[nv.reacts] or colorTable["*"]);
 						local name = nv.name[MTSL_LOCALE];
 						if name then
-							line = line .. name;
+							line = line .. "[" .. name .. "]|r";
 						else
-							line = line .. "npcID: " .. uid;
+							line = line .. "[npcID: " .. uid .. "]|r";
 						end
 						local xp_level = nv.xp_level;
 						if xp_level then
@@ -170,7 +170,7 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 								line = line .. l10n["elite"];
 							end
 						end
-						line = line .. " [" .. C_Map_GetAreaInfo(nv.zone_id) or l10n["unknown area"];
+						line = line .. " [" .. GetAreaInfo(nv.zone_id) or l10n["unknown area"];
 						local location = nv.location;
 						if location and location.x ~= "-" and location.y ~= "-" then
 							line = line .. " " .. location.x .. ", " .. location.y .. "]";
@@ -181,6 +181,7 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 						if phase and phase > DataAgent.CURPHASE then
 							line = line .. " " .. l10n["phase"] .. phase;
 						end
+						line = line .. suffix;
 						Tip:AddDoubleLine(label, line);
 						local special_action = nv.special_action;
 						if special_action then
@@ -192,33 +193,32 @@ LF_MTSL_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, sta
 								end
 							end
 						end
-						line = line .. suffix;
 						break;
 					end
 				end
-				if not got_one_data then
-					Tip:AddDoubleLine(" ", l10n["sold_by"] .. ": |cffff0000unknown|r, npcID: " .. uid);
-				end
-				Tip:Show();
 			end
 		end
+		if not got_one_data then
+			Tip:AddDoubleLine(label, prefix .. "|cffffffff[npcID: " .. uid .. "]|r" .. suffix);
+		end
+		Tip:Show();
 	end
 end
 LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 	if stack_size <= 8 then
+		local got_one_data = false;
 		if MTSL_DATA then
 			local quests = MTSL_DATA["quests"];
 			if quests then
-				local got_one_data = false;
 				for _, qv in next, quests do
 					if qv.id == qid then
 						got_one_data = true;
-						local line = "[";
+						local line = "|cffffff00[";
 						local name = qv.name[MTSL_LOCALE];
 						if name then
-							line = line .. qv.name[MTSL_LOCALE] .. "]";
+							line = line .. qv.name[MTSL_LOCALE] .. "]|r(ID: " .. qid .. ")";
 						else
-							line = line .. "|cffffff00" .. l10n["quest"] .. "|r ID: " .. qid .. "]";
+							line = line .. l10n["quest"] .. " ID: " .. qid .. "]|r";
 						end
 						local min_xp_level = qv.min_xp_level;
 						if min_xp_level then
@@ -228,7 +228,7 @@ LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 						if phase and phase > DataAgent.CURPHASE then
 							line = line .. " " .. l10n["phase"] .. phase;
 						end
-						Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": |cffffff00" .. line .. "|r");
+						Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": " .. line);
 						if qv.npcs then
 							for _, uid in next, qv.npcs do
 								LF_MTSL_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "|r", stack_size + 1);
@@ -260,19 +260,19 @@ LF_MTSL_SetQuest = function(Tip, pid, qid, label, stack_size)
 						break;
 					end
 				end
-				if not got_one_data then
-					Tip:AddDoubleLine(label, "|cffffff00" .. l10n["quest"] .. "|r ID: " .. qid);
-				end
 			end
-			Tip:Show();
 		end
+		if not got_one_data then
+			Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": |cffffff00[" .. l10n["quest"] .. " ID: " .. qid .. "]|r");
+		end
+		Tip:Show();
 	end
 end
 LF_MTSL_SetItem = function(Tip, pid, iid, label, stack_size)
 	if stack_size <= 8 then
 		local _, line, _, _, _, _, _, _, bind = DataAgent.item_info(iid);
 		if not line then
-			line = "|cffffffff" .. l10n["item"] .. "|r ID: " .. iid;
+			line = "|cffffffff[" .. l10n["item"] .. "|r ID: " .. iid .. "]";
 		end
 		if bind ~= 1 and bind ~= 4 then
 			line = line .. "(|cff00ff00" .. l10n["tradable"] .. "|r)";
@@ -370,15 +370,15 @@ LF_MTSL_SetItem = function(Tip, pid, iid, label, stack_size)
 end
 LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 	if stack_size <= 8 then
+		local got_one_data = false;
 		if MTSL_DATA then
 			local objects = MTSL_DATA["objects"];
 			if objects then
-				local got_one_data = false;
 				for _, ov in next, objects do
 					if ov.id == oid then
 						got_one_data = true;
-						local line = ov.name[MTSL_LOCALE] or ("|cffffffff" .. l10n["object"] .. "|r ID: " .. oid);
-						line = line .. " [" .. C_Map_GetAreaInfo(ov.zone_id);
+						local line = "|cffffffff[" .. ov.name[MTSL_LOCALE] or (l10n["object"] .. " ID: " .. oid) .. "]|r";
+						line = line .. " [" .. GetAreaInfo(ov.zone_id);
 						local location = ov.location;
 						if location and location.x ~= "-" and location.y ~= "-" then
 							line = line .. " " .. location.x .. ", " .. location.y .. "]";
@@ -389,7 +389,7 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 						if phase and phase > DataAgent.CURPHASE then
 							line = line .. " " .. l10n["phase"] .. phase;
 						end
-						Tip:AddDoubleLine(label, l10n["object"] .. ": |cffffffff" .. line .. "|r");
+						Tip:AddDoubleLine(label, l10n["object"] .. ": " .. line );
 						local special_action = ov.special_action;
 						if special_action then
 							local sav = MTSL_DATA["special_actions"][special_action];
@@ -403,12 +403,12 @@ LF_MTSL_SetObject = function(Tip, pid, oid, label, stack_size)
 						break;
 					end
 				end
-				if not got_one_data then
-					Tip:AddDoubleLine(label, "|cffffffff" .. l10n["object"] .. "|r ID: " .. oid);
-				end
-				Tip:Show();
 			end
 		end
+		if not got_one_data then
+			Tip:AddDoubleLine(label,  l10n["object"] .. ": |cffffffff[" .. l10n["object"] .. " ID: " .. oid .. "]|r");
+		end
+		Tip:Show();
 	end
 end
 local function LF_MTSL_SetSpellTip(Tip, sid)
@@ -427,7 +427,7 @@ local function LF_MTSL_SetSpellTip(Tip, sid)
 			end
 		end
 		local qids = info[index_quest];
-		if qids then			-- quests
+		if qids then				-- quests
 			for index = 1, #qids do
 				local qid = qids[index];
 				LF_MTSL_SetQuest(Tip, pid, qid, l10n["LABEL_GET_FROM"], 1);

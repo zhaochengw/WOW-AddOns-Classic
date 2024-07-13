@@ -1,29 +1,29 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
-local Width = ADDONSELF.Width
-local Height = ADDONSELF.Height
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Width = ns.Width
+local Height = ns.Height
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 local RealmId = GetRealmID()
@@ -168,7 +168,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
     local numb
     local lasttime = 0
-    local time
+    local _time
     local start
 
     local function PrintLootBoss(FB, even, numb, text)
@@ -187,8 +187,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if not FB then return end
         if even == "ENCOUNTER_START" then
             start = true
-            for _bossID, _numb in pairs(BG.Loot.encounterID[FB]) do
-                if bossID and (bossID == tonumber(_bossID)) then
+            for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
+                if bossID and (bossID == _bossID) then
                     numb = _numb
                     lasttime = GetTime()
                     -- local text = BG.STC_g1(L["BOSS战开始"])
@@ -197,13 +197,17 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         elseif even == "ENCOUNTER_END" and success == 1 then
-            for _bossID, _numb in pairs(BG.Loot.encounterID[FB]) do
-                if bossID and (bossID == tonumber(_bossID)) then
+            for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
+                if bossID and (bossID == _bossID) then
                     numb = _numb
                     lasttime = GetTime()
                     start = nil
                     -- local text = BG.STC_g1(L["BOSS击杀成功"])
                     -- PrintLootBoss(FB, even, numb, text)
+                    BiaoGe[FB].raidRoster = { time = time(), realm = GetRealmName(), roster = {} }
+                    for i, v in ipairs(BG.raidRosterInfo) do
+                        tinsert(BiaoGe[FB].raidRoster.roster, v.name)
+                    end
                     break
                 end
             end
@@ -220,9 +224,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         local FB = BG.FB2
         if not FB then return end
         if start then return end
-        time = GetTime()
+        _time = GetTime()
         if numb ~= Maxb[FB] - 1 then
-            if time - lasttime >= 30 then -- 击杀BOSS 30秒后进入下一次战斗，就变回杂项
+            if _time - lasttime >= 30 then -- 击杀BOSS 30秒后进入下一次战斗，就变回杂项
                 numb = Maxb[FB] - 1
                 -- local text = BG.STC_r1(L["非BOSS战"])
                 -- PrintLootBoss(FB, even, numb, text)
@@ -424,7 +428,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     return
                 end
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     if typeID == 9 or typeID == 10 or typeID == 3 then -- 过滤图纸、牌子、宝石
                         return
                     end
@@ -492,8 +496,20 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
         -- 可堆叠物品记录到杂项
         if stackCount ~= 1 then
-            AddLootItem_stackCount(FB, numb, link, Texture, level, Hope, count)
+            AddLootItem_stackCount(FB, nil, link, Texture, level, Hope, count)
             return
+        end
+
+        -- Plus黑上部分boss需要根据物品id直接记录
+        if FB == "UBRS" then
+            for numb, v in pairs(BG.SpecialLoot[FB]) do
+                for _, _itemID in pairs(BG.SpecialLoot[FB][numb]) do
+                    if _itemID == itemID then
+                        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                        return
+                    end
+                end
+            end
         end
 
         -- 特殊物品总是记录到杂项
@@ -507,7 +523,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         -- 经典旧世的图纸、牌子、宝石记录到杂项
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             if typeID == 9 or typeID == 10 or typeID == 3 then
                 local numb = Maxb[FB] - 1
                 AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
@@ -564,7 +580,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
         AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
     end
-    ADDONSELF.LootItem = LootItem
+    ns.LootItem = LootItem
 
     local f = CreateFrame("Frame")
     f:RegisterEvent("CHAT_MSG_LOOT")

@@ -172,6 +172,9 @@ function Activity:GetShortName()
 end
 
 function Activity:GetComment()
+    if self.comment and type(self.comment) == "string" then
+        self.comment = string.gsub(self.comment, "%.", ",")
+    end
     return self.comment
 end
 

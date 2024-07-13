@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -1621,18 +1621,34 @@ MT.BuildEnv('METHOD');
 			GameTooltip:Hide();
 		end
 	end
-	local Points2Level = {  };
-	for level = #DT.LevelAvailablePointsTable, 1, -1 do
-		Points2Level[DT.LevelAvailablePointsTable[level]] = level;
+	local function BuildPoints2Level(Level2Points, Points2Level)
+		Points2Level = Points2Level or {  };
+		for level = #Level2Points, 1, -1 do
+			Points2Level[Level2Points[level]] = level;
+		end
+		for points = Level2Points[DT.MAX_LEVEL], 1, -1 do
+			if Points2Level[points] == nil then
+				Points2Level[points] = Points2Level[points + 1];
+			end
+		end
+		Points2Level[0] = Points2Level[1];
+		return Points2Level;
 	end
-	Points2Level[0] = 10;
-	function MT.GetPointsReqLevel(points)
+	DT.PointsRequiredLevelTable = BuildPoints2Level(DT.LevelAvailablePointsTable);
+	if DT.LevelAvailablePointsTableClass ~= nil then
+		for class, Level2Points in next, DT.LevelAvailablePointsTableClass do
+			DT.PointsRequiredLevelTable[class] = BuildPoints2Level(Level2Points);
+		end
+	end
+	function MT.GetPointsReqLevel(class, points)
 		-- return max(10, 9 + numPoints);
-		return Points2Level[points] or DT.MAX_LEVEL;
+		local ref = DT.PointsRequiredLevelTable[class] or DT.PointsRequiredLevelTable;
+		return ref[points] or DT.MAX_LEVEL;
 	end
-	function MT.GetLevelAvailablePoints(level)
+	function MT.GetLevelAvailablePoints(class, level)
 		-- return max(0, level - 9);
-		return DT.LevelAvailablePointsTable[level] or 0;
+		local ref = DT.LevelAvailablePointsTableClass[class] or DT.LevelAvailablePointsTable;
+		return ref[level] or 0;
 	end
 	function MT.CountTreePoints(data, class)
 		local ClassTDB = DT.TalentDB[class];
@@ -2087,7 +2103,7 @@ MT.BuildEnv('METHOD');
 		local Frame = ApplyingTalents.Frame;
 		local TreeFrames = Frame.TreeFrames;
 		local PrimaryTreeIndex = ApplyingTalents.PrimaryTreeIndex;
-		if PrimaryTreeIndex ~= nil then
+		if PrimaryTreeIndex ~= nil then	--	always nil if non-cata
 			local curPrimary = GetPrimaryTalentTree(false, false);
 			if curPrimary == nil then
 				SetPrimaryTalentTree(PrimaryTreeIndex)
@@ -2141,7 +2157,7 @@ MT.BuildEnv('METHOD');
 			if TalentFrame_Update ~= nil then
 				pcall(TalentFrame_Update);
 			end
-			if MT.GetPointsReqLevel(Frame.TotalUsedPoints) > UnitLevel('player') then
+			if MT.GetPointsReqLevel(Frame.class, Frame.TotalUsedPoints) > UnitLevel('player') then
 				return MT.Notice(l10n["CANNOT APPLY : NEED MORE TALENT POINTS."]);
 			end
 			local Map = VT.__emulib.GetTalentMap(CT.SELFCLASS);

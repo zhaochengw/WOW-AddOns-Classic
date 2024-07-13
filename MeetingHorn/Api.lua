@@ -528,6 +528,7 @@ function ns.DataMake(allowCrossRealm)
 
     local currentRealm
     local currentLevel
+    local currentRoomID
     local function Realm(realm)
         realm = decode(realm)
         if allowCrossRealm or realm == GetRealmName() then
@@ -542,14 +543,18 @@ function ns.DataMake(allowCrossRealm)
         end
 
         name = decode(name)
-        ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel}
+        ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID}
     end
 
     local function Level(level)
         currentLevel = level
     end
 
-    setfenv(2, {R = Realm, N = Name, L = Level})
+    local function RoomID(roomid)
+        currentRoomID = roomid
+    end
+
+    setfenv(2, {R = Realm, N = Name, L = Level, I = RoomID})
 end
 
 function ns.FormatSummary(text, tbl)

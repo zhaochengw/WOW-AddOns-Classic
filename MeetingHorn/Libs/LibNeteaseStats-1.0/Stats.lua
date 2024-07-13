@@ -3,6 +3,8 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 4/29/2021, 2:18:21 PM
 --
+---@type ns
+local ns = select(2, ...)
 local LibClass = LibStub('LibClass-2.0')
 local LibCommSocket = LibStub('LibCommSocket-3.0')
 
@@ -10,6 +12,11 @@ local MAJOR, MINOR = 'LibNeteaseStats-1.0', 1
 local Lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not Lib then
     return
+end
+
+ns.NETEASE_SERVER_PREFIX = 'S1'
+if ns.IS_DEBUG then
+    ns.NETEASE_SERVER_PREFIX = 'T1'
 end
 
 ---@class NeteaseStats: Object, NSSocket
@@ -23,7 +30,7 @@ function Stats:Constructor(addonName)
     self.sended = {}
 
     self:ListenSocket('NeteaseStats')
-    self:ConnectServer('S1' .. UnitFactionGroup('player'))
+    self:ConnectServer(ns.NETEASE_SERVER_PREFIX .. UnitFactionGroup('player'))
     self:RegisterServer('SERVER_CONNECTED')
 end
 

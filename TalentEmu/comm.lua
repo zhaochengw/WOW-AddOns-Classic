@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -172,6 +172,12 @@ MT.BuildEnv('COMM');
 				local TalData = cache.TalData;
 				TalData[1] = data1;
 				TalData[2] = data2;
+				if data1 == nil then
+					MT.Debug("CommTalent Data1 == nil", name);
+				end
+				if data2 == nil and numGroup > 1 then
+					MT.Debug("CommTalent Data2 == nil", name);
+				end
 				TalData.num = numGroup;
 				TalData.active = activeGroup;
 				TalData.code = code;
@@ -306,10 +312,21 @@ MT.BuildEnv('COMM');
 	for i = 1, 10 do
 		_TChatFrames[i] = _G["ChatFrame" .. i];
 	end
+	function MT.ChatFrameHasType(ChatFrame, ctype)
+		local messageTypeList = ChatFrame.messageTypeList;
+		if messageTypeList ~= nil then
+			for i = 1, #messageTypeList do
+				if messageTypeList[i] == ctype then
+					return true;
+				end
+			end
+		end
+		return false;
+	end
 	function MT.SimulateChatMessage(channel, sender, msg, GUID)
 		for i = 1, 10 do
-			if _TChatFrames[i] ~= nil then
-				ChatFrame_MessageEventHandler(_TChatFrames[i], "CHAT_MSG_" .. channel, msg, sender, "", "", sender, "", 0, 0, "", nil, 0, GUID, nil, false, false, false);
+			if i ~= 2 and _TChatFrames[i] ~= nil and MT.ChatFrameHasType(_TChatFrames[i], channel) then
+				ChatFrame_MessageEventHandler(_TChatFrames[i], "CHAT_MSG_" .. channel, msg, sender, "", "", sender, "", 0, 0, "", nil, 1, GUID, nil, false, false, false);
 			end
 		end
 	end

@@ -1,23 +1,23 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local RGB_16 = ADDONSELF.RGB_16
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local RGB_16 = ns.RGB_16
 
 local pt = print
 
@@ -148,7 +148,18 @@ function BG.HistoryUI()
             for i, v in ipairs(BiaoGe[FB].tradeTbl) do
                 BiaoGe.History[FB][DT].tradeTbl[i] = v
             end
-            BiaoGe.History[FB][DT].lockoutID = BiaoGe[FB].lockoutID
+            if BiaoGe[FB].raidRoster then
+                BiaoGe.History[FB][DT].raidRoster = {}
+                for k, v in pairs(BiaoGe[FB].raidRoster) do
+                    BiaoGe.History[FB][DT].raidRoster[k] = v
+                end
+            end
+            if BiaoGe[FB].lockoutIDtbl then
+                BiaoGe.History[FB][DT].lockoutIDtbl = {}
+                for k, v in pairs(BiaoGe[FB].lockoutIDtbl) do
+                    BiaoGe.History[FB][DT].lockoutIDtbl[k] = v
+                end
+            end
 
             local d = { DT, format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
                 BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
@@ -344,12 +355,11 @@ function BG.HistoryUI()
             end
             -- 删掉末尾的两个回车
             local text = BG.frameWenBen.edit:GetText()
-            local len = strlen(text)
-            text = strsub(text, 1, len - 2)
+            text = strsub(text, 1, -2)
             BG.frameWenBen.edit:SetText(text)
             BG.frameWenBen.edit:HighlightText()
             -- 设置滚动条到末尾
-            C_Timer.After(0.01, function()
+            C_Timer.After(0, function()
                 BG.SetScrollBottom(BG.frameWenBen.scroll, BG.frameWenBen.edit)
             end)
         end)
@@ -364,6 +374,7 @@ function BG.HistoryUI()
                     local DT = BiaoGe.HistoryList[FB][num][1]
                     for b = 1, Maxb[FB] + 2 do
                         for i = 1, Maxi[FB] do
+                            -- if b~=Maxb[FB] + 2 and i
                             if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                                 BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i] or "")
                                 BG.Frame[FB]["boss" .. b]["maijia" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] or "")
@@ -414,7 +425,18 @@ function BG.HistoryUI()
                             BiaoGe[FB].tradeTbl[i] = v
                         end
                     end
-                    BiaoGe[FB].lockoutID = BiaoGe.History[FB][DT].lockoutID
+                    if type(BiaoGe.History[FB][DT].raidRoster) == "table" then
+                        BiaoGe[FB].raidRoster = {}
+                        for k, v in pairs(BiaoGe.History[FB][DT].raidRoster) do
+                            BiaoGe[FB].raidRoster[k] = v
+                        end
+                    end
+                    if type(BiaoGe.History[FB][DT].lockoutIDtbl) == "table" then
+                        BiaoGe[FB].lockoutIDtbl = {}
+                        for k, v in pairs(BiaoGe.History[FB][DT].lockoutIDtbl) do
+                            BiaoGe[FB].lockoutIDtbl[k] = v
+                        end
+                    end
                     break
                 end
             end
@@ -446,7 +468,7 @@ function BG.HistoryUI()
         end)
         bt:SetScript("OnClick", function(self)
             local FB = BG.FB1
-            if not BG.BiaoGeIsEmpty(FB) then
+            if BG.BiaoGeIsHavedItem(FB) then
                 StaticPopup_Show("YINGYONGBIAOGE")
                 return
             end

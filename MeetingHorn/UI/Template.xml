@@ -838,32 +838,65 @@
             <Frame parentKey="loading" inherits="LoadindProgressTemplate" setAllPoints="true"/>
         </Frames>
     </Frame>
-    <Frame name="MissionGuidanceTemplate" virtual="true" inherits="InsetFrameTemplate">
+    <Frame name="MissionGuidanceTemplate" virtual="true" setAllPoints="true">
+        <Anchors>
+            <Anchor point="CENTER"/> <!-- 将框架置于屏幕中央，可以根据需要调整 -->
+        </Anchors>
         <Layers>
-            <Layer level="ARTWORK">
-                <FontString parentKey="title2" text="点击对应链接查看当前游戏版本所有任务图文指引" inherits="GameFontHighlightLeft">
+            <Layer level="BACKGROUND">
+                <Texture parentKey="backgroundTexture" file="Interface\AddOns\MeetingHorn\Media\MissionGuidanceTemplate_bg">
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.MissionGuidanceScrollFrame" relativePoint="TOPLEFT" x="60" y="10"/>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="188" y="-112"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="LOW">
+                <Texture parentKey="MissionGuidanceTile1" file="Interface\AddOns\MeetingHorn\Media\uiframenecrolord" setAllPoints="true">
+                    <Size x="314" y="328"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-60"/>
+                    </Anchors>
+                    <TexCoords left="0.250977" right="0.753906" top="0.148438" bottom="0.576172"/>
+                </Texture>
+                <FontString inherits="QuestFont" wordwrap="true" text="|cFF000000暴雪游戏服务中心全新|r|cff00ff00任务查询工具|r|cFF000000已上线|r">
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent.MissionGuidanceTile1" relativePoint="TOP" x="0" y="-25"/>
                     </Anchors>
                 </FontString>
-                <FontString parentKey="title1" text="巫妖王之怒任务链" inherits="PVPInfoTextFont">
+                <FontString inherits="QuestFont" wordwrap="true" text="|cFF000000支持一键同步当前角色任务状态|r">
                     <Anchors>
-                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.title2" relativePoint="TOPLEFT" x="0" y="10"/>
+                        <Anchor point="TOP" relativeKey="$parent.MissionGuidanceTile1" relativePoint="TOP" x="0" y="-45"/>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="QuestFont" wordwrap="true" text="|cFF000000微信扫码立即使用|r">
+                    <Anchors>
+                        <Anchor point="BOTTOM" relativeKey="$parent.MissionGuidanceTile1" relativePoint="BOTTOM" x="0" y="15"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="MissionGuidanceQR" file="Interface\AddOns\MeetingHorn\Media\MissionGuidanceQR">
+                    <Size x="280" y="280"/>
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent.MissionGuidanceTile1" relativePoint="TOP" x="30" y="-70"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="MissionGuidanceTile2" file="Interface\AddOns\MeetingHorn\Media\uiframenecrolord">
+                    <Size x="140" y="42"/>
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-10"/>
+                    </Anchors>
+                    <TexCoords left="0.250977" right="0.525391" top="0.782227" bottom="0.864258"/>
+                </Texture>
+                <FontString text="任务指引" inherits="QuestTitleFont">
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.MissionGuidanceTile2" relativePoint="CENTER"/>
                     </Anchors>
                 </FontString>
             </Layer>
         </Layers>
-        <Frames>
-            <ScrollFrame parentKey="MissionGuidanceScrollFrame" inherits="UIPanelScrollFrameTemplate">
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="0" y="0"/>
-                    <Anchor point="BOTTOMRIGHT" x="-25" y="0"/>
-                </Anchors>
-                <ScrollChild>
-                    <Frame parentKey="container">
-                    </Frame>
-                </ScrollChild>
-            </ScrollFrame>
-        </Frames>
     </Frame>
 </Ui>

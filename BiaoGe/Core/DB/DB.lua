@@ -1,11 +1,11 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local L = ADDONSELF.L
+local L = ns.L
 
 local pt = print
 
 local LibBG = LibStub:GetLibrary("LibUIDropDownMenu-4.0") -- 调用库菜单UI
-ADDONSELF.LibBG = LibBG
+ns.LibBG = LibBG
 
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGe")                                                -- 注册插件通信频道
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeYY")                                              -- 注册插件通信频道（用于YY评价）
@@ -41,162 +41,184 @@ local function RGB(hex)
     return red, green, blue
 end
 
--- 全局变量
-BG.IsVanilla = ADDONSELF.IsVanilla
-BG.IsVanilla_Sod = ADDONSELF.IsVanilla_Sod
-BG.IsVanilla_60 = ADDONSELF.IsVanilla_60
-BG.IsWLK = ADDONSELF.IsWLK
-BG.IsCTM = ADDONSELF.IsCTM
-BG.IsAlliance = ADDONSELF.IsAlliance
-BG.IsHorde = ADDONSELF.IsHorde
-
 local realmID = GetRealmID()
 local player = UnitName("player")
 
+-- 全局变量
 BG.FBtable = {}
 BG.FBtable2 = {}
 BG.FBIDtable = {}
 BG.lootQuality = {}
 BG.difficultyTable = {}
 BG.phaseFBtable = {}
+BG.bossPositionTbl = {}
+BG.FBfromBossPosition = {}
+BG.instanceIDfromBossPosition = {}
 do
-    local function AddDB(FB, FBid, phase, maxplayers, lootQuality, difficultyTable, phaseTable)
-        tinsert(BG.FBtable, FB)
-        tinsert(BG.FBtable2,
-            {
-                FB = FB,
-                ID = FBid,
-                localName = GetRealZoneText(FBid),
-                phase = phase,
-                maxplayers = maxplayers,
-            })
-        BG.FBIDtable[FBid] = FB
-        BG.lootQuality[FB] = lootQuality or 4
-        BG.difficultyTable[FB] = difficultyTable or { "N", "H" }
-        BG.phaseFBtable[FB] = phaseTable or { FB }
-    end
-    if BG.IsVanilla_Sod() then
-        BG.FB1 = "Temple"
-        BG.fullLevel = 25
-        BG.theEndBossID = { 2891, 2940, 2956 }
-        AddDB("BD", 48, "P1", 10, 3)
-        AddDB("Gno", 90, "P2", 10, 3)
-        AddDB("Temple", 109, "P3", 20, 3)
-    elseif BG.IsVanilla_60() then
-        BG.FB1 = "MC"
-        BG.fullLevel = 60
-        BG.theEndBossID = { 617, 1084, 617, 793, 723, 717, 1114 } --MC OL BWL ZUG AQL TAQ NAXX
-        AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("OL", 249, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("AQL", 509, L["全阶段"], 20, 3, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("TAQ", 531, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-        AddDB("NAXX", 533, L["全阶段"], 40, nil, nil, { "MC", "OL", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
-    elseif BG.IsWLK() then
-        BG.FB1 = "NAXX"
-        BG.fullLevel = 80
-        BG.theEndBossID = { 1114, 757, 645, 856, }
-        AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
-        AddDB("OS", 615, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
-        AddDB("EOE", 616, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, { "NAXX", "OS", "EOE" })
-        AddDB("ULD", 603, "P2", nil, nil, { "H25", "H10", "N25", "N10" })
-        AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, { "TOC", "OL" })
-        AddDB("OL", 249, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, { "TOC", "OL" })
-        AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" }, { "ICC", "RS" })
-        AddDB("RS", 724, "P4", nil, nil, { "H25", "H10", "N25", "N10" }, { "ICC", "RS" })
-    elseif BG.IsCTM() then
-        BG.FB1 = "BOT"
-        BG.fullLevel = 85
-        BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }
-        AddDB("BOT", 671, "P1", nil, nil, nil, { "BOT", "BWD", "TOF" }) -- 暮光堡垒
-        AddDB("BWD", 669, "P1", nil, nil, nil, { "BOT", "BWD", "TOF" }) -- 黑翼血环
-        AddDB("TOF", 754, "P1", nil, nil, nil, { "BOT", "BWD", "TOF" }) -- 风神王座
-        -- AddDB("FL", 720, "P2") -- 火焰之地
-        -- AddDB("DS", 967, "P3") -- 巨龙之魂
+    BG.Maxi                                                               = 30
+    local mainFrameWidth                                                  = 1295
+    local Width, Height, Maxt, Maxb, Maxi, BossNumtbl, HopeMaxb, HopeMaxn = {}, {}, {}, {}, {}, {}, {}, {}
+    do
+        local function AddDB(FB, width, height, maxt, maxb, bossNumtbl, hopemaxn)
+            Width[FB] = width
+            Height[FB] = height
+            Maxt[FB] = maxt
+            Maxb[FB] = maxb
+            Maxi[FB] = BG.Maxi
+            BossNumtbl[FB] = bossNumtbl
+            HopeMaxb[FB] = maxb - 1
+            HopeMaxn[FB] = hopemaxn or 1
+        end
+        if BG.IsVanilla_Sod then
+            AddDB("BD", mainFrameWidth, 835, 3, 9, { 0, 5, 9 })
+            AddDB("Gno", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
+            AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
+            AddDB("UBRS", mainFrameWidth, 835, 3, 10, { 0, 5, 9 })
+            AddDB("MCsod", 1715, 900, 4, 16, { 0, 7, 12, 15 })
+        elseif BG.IsVanilla_60 then
+            AddDB("MC", mainFrameWidth, 873, 3, 13, { 0, 8, 12 })
+            AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
+            AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
+            AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 8 })
+            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 })
+            AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 })
+        elseif BG.IsWLK then
+            AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 }, 4)
+            AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 }, 4)
+            AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 }, 2)
+            AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 }, 2)
+        elseif BG.IsCTM then
+            AddDB("BOT", 1715, 930, 4, 15, { 0, 5, 10, 14 }, 2)
+        end
     end
 
+    do
+        local function AddDB(FB, instanceID, phase, maxplayers, lootQuality, difficultyTable, phaseTable, bossPositionTbl)
+            tinsert(BG.FBtable, FB)
+            tinsert(BG.FBtable2,
+                {
+                    FB = FB,
+                    ID = instanceID,
+                    localName = GetRealZoneText(instanceID),
+                    phase = phase,
+                    maxplayers = maxplayers,
+                })
+            BG.FBIDtable[instanceID] = FB
+            BG.lootQuality[FB] = lootQuality or 4
+            BG.difficultyTable[FB] = difficultyTable or { "N", "H" }
+            BG.phaseFBtable[FB] = phaseTable or { FB }
+            BG.bossPositionTbl[instanceID] = bossPositionTbl or { 1, Maxb[FB] - 2 }
 
-    BG.Maxi = 30
-    local mainFrameWidth = 1295
-    local Width, Height, Maxt, Maxb, Maxi, BossNumtbl = {}, {}, {}, {}, {}, {}
-    ADDONSELF.BossNumtbl = BossNumtbl
-    local function AddDB(FB, width, height, maxt, maxb, bossNumtbl)
-        Width[FB] = width
-        Height[FB] = height
-        Maxt[FB] = maxt
-        Maxb[FB] = maxb
-        Maxi[FB] = BG.Maxi
-        -- Maxi[FB] = maxi
-        BossNumtbl[FB] = bossNumtbl
-    end
-    if BG.IsVanilla_Sod() then
-        AddDB("BD", mainFrameWidth, 835, 3, 9, { 0, 5, 9 })
-        AddDB("Gno", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
-        AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
-    elseif BG.IsVanilla_60() then
-        AddDB("MC", mainFrameWidth, 810, 3, 12, { 0, 7, 11 })
-        AddDB("OL", mainFrameWidth, 810, 2, 3, { 0, 4 })
-        AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
-        AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
-        AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 8 })
-        AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 })
-        AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 })
-    elseif BG.IsWLK() then
-        AddDB("RS", mainFrameWidth, 835, 2, 3, { 0, 4 })
-        AddDB("ICC", mainFrameWidth, 875, 3, 14, { 0, 7, 12 })
-        AddDB("OL", mainFrameWidth, 835, 2, 3, { 0, 4 })
-        AddDB("TOC", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
-        AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 })
-        AddDB("EOE", mainFrameWidth, 835, 2, 3, { 0, 4 })
-        AddDB("OS", mainFrameWidth, 835, 2, 3, { 0, 4 })
-        AddDB("NAXX", 1715, 945, 4, 17, { 0, 6, 12, 16 })
-    elseif BG.IsCTM() then
-        AddDB("BOT", mainFrameWidth, 800, 3, 7, { 0, 4, 6 })
-        AddDB("BWD", mainFrameWidth, 800, 3, 8, { 0, 4, 7 })
-        AddDB("TOF", mainFrameWidth, 800, 2, 4, { 0, 3, 6 })
+            BG.FBfromBossPosition[FB] = {}
+            for i = 1, Maxb[FB] do
+                BG.FBfromBossPosition[FB][i] = { name = FB, localName = GetRealZoneText(instanceID) }
+            end
+            BG.instanceIDfromBossPosition[FB] = {}
+            for i = 1, Maxb[FB] - 2 do
+                BG.instanceIDfromBossPosition[FB][i] = instanceID
+            end
+        end
+        if BG.IsVanilla_Sod then
+            BG.FB1 = "Temple"
+            BG.fullLevel = 25
+            BG.theEndBossID = { 2891, 2940, 2956, 672 }
+            AddDB("BD", 48, "P1", 10, 3)
+            AddDB("Gno", 90, "P2", 10, 3)
+            AddDB("Temple", 109, "P3", 20, 3)
+            AddDB("UBRS", 229, "P4", 10, 3, nil, { "UBRS", "MCsod" })
+            AddDB("MCsod", 409, "P4", 20, nil, nil, { "UBRS", "MCsod" }, { 1, 11 })
 
-        AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 })
-        AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 })
-        AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 })
-        AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 })
+            BG.FBIDtable[249] = "MCsod" -- 奥妮克希亚的巢穴
+            BG.bossPositionTbl[249] = { 12, 12 }
+            BG.FBfromBossPosition["MCsod"][12] = { name = "OLsod", localName = GetRealZoneText(249) }
+
+            BG.FBIDtable[2791] = "MCsod" -- 风暴悬崖
+            BG.bossPositionTbl[2791] = { 13, 13 }
+            BG.FBfromBossPosition["MCsod"][13] = { name = "SC", localName = GetRealZoneText(2791) }
+
+            BG.FBIDtable[2789] = "MCsod" -- 腐烂之痕
+            BG.bossPositionTbl[2789] = { 14, 14 }
+            BG.FBfromBossPosition["MCsod"][14] = { name = "TTS", localName = GetRealZoneText(2789) }
+        elseif BG.IsVanilla_60 then
+            BG.FB1 = "MC"
+            BG.fullLevel = 60
+            BG.theEndBossID = { 672, 1084, 617, 793, 723, 717, 1114 } --MC_SodOL BWL ZUG AQL TAQ NAXX
+            AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" }, { 1, 10 })
+            AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+            AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+            AddDB("AQL", 509, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+            AddDB("TAQ", 531, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+            AddDB("NAXX", 533, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
+
+            BG.FBIDtable[249] = "MC" -- 奥妮克希亚的巢穴
+            BG.bossPositionTbl[249] = { 11, 11 }
+            BG.FBfromBossPosition["MC"][11] = { name = "OL", localName = GetRealZoneText(249) }
+        elseif BG.IsWLK then
+            BG.FB1 = "NAXX"
+            BG.fullLevel = 80
+            BG.theEndBossID = { 1114, 757, 645, 856, }
+            AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" })
+            AddDB("ULD", 603, "P2", nil, nil, { "H25", "H10", "N25", "N10" })
+            AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" })
+            AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" })
+
+            BG.FBIDtable[615] = "NAXX" -- 黑曜石圣殿
+            BG.bossPositionTbl[615] = { 16, 16 }
+            BG.FBfromBossPosition["NAXX"][16] = { name = "OS", localName = GetRealZoneText(615) }
+            BG.instanceIDfromBossPosition["NAXX"][16] = 615
+
+            BG.FBIDtable[616] = "NAXX" -- 永恒之眼
+            BG.bossPositionTbl[616] = { 17, 17 }
+            BG.FBfromBossPosition["NAXX"][17] = { name = "EOE", localName = GetRealZoneText(616) }
+            BG.instanceIDfromBossPosition["NAXX"][17] = 616
+
+            BG.FBIDtable[249] = "TOC" -- 奥妮克希亚的巢穴
+            BG.bossPositionTbl[249] = { 7, 7 }
+            BG.FBfromBossPosition["TOC"][7] = { name = "OL", localName = GetRealZoneText(249) }
+            BG.instanceIDfromBossPosition["TOC"][7] = 249
+
+            BG.FBIDtable[724] = "ICC" -- 红玉圣殿
+            BG.bossPositionTbl[724] = { 13, 13 }
+            BG.FBfromBossPosition["ICC"][13] = { name = "RS", localName = GetRealZoneText(724) }
+            BG.instanceIDfromBossPosition["ICC"][13] = 724
+        elseif BG.IsCTM then
+            BG.FB1 = "BOT"
+            BG.fullLevel = 85
+            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }
+            AddDB("BOT", 671, "P1")   -- 暮光堡垒
+
+            BG.FBIDtable[669] = "BOT" -- 黑翼血环
+            BG.bossPositionTbl[669] = { 6, 11 }
+            for i = 6, 11 do
+                BG.FBfromBossPosition["BOT"][i] = { name = "BWD", localName = GetRealZoneText(669) }
+            end
+
+            BG.FBIDtable[754] = "BOT" -- 风神王座
+            BG.bossPositionTbl[754] = { 12, 13 }
+            BG.FBfromBossPosition["BOT"][12] = { name = "TOF", localName = GetRealZoneText(754) }
+            BG.FBfromBossPosition["BOT"][13] = { name = "TOF", localName = GetRealZoneText(754) }
+
+            -- AddDB("FL", 720, "P2") -- 火焰之地
+            -- AddDB("DS", 967, "P3") -- 巨龙之魂
+        end
     end
-    local HopeMaxi, HopeMaxb, HopeMaxn = nil, {}, {}
-    if BG.IsVanilla() then
+
+    local HopeMaxi
+    if BG.IsVanilla then
         HopeMaxi = 5
     else
         HopeMaxi = 3
     end
-    for _, FB in pairs(BG.FBtable) do
-        HopeMaxb[FB] = Maxb[FB] - 1
-    end
-    if BG.IsVanilla() then
-        for _, FB in pairs(BG.FBtable) do
-            HopeMaxn[FB] = 1
-        end
-    else
-        HopeMaxn["BOT"] = 2
-        HopeMaxn["BWD"] = 2
-        HopeMaxn["TOF"] = 2
-
-        HopeMaxn["RS"] = 4
-        HopeMaxn["ICC"] = 4
-        HopeMaxn["OL"] = 2
-        HopeMaxn["TOC"] = 4
-        HopeMaxn["ULD"] = 2
-        HopeMaxn["EOE"] = 2
-        HopeMaxn["OS"] = 2
-        HopeMaxn["NAXX"] = 2
-    end
     do
-        ADDONSELF.Width = Width
-        ADDONSELF.Height = Height
-        ADDONSELF.Maxt = Maxt
-        ADDONSELF.Maxb = Maxb
-        ADDONSELF.Maxi = Maxi
-        ADDONSELF.HopeMaxi = HopeMaxi
-        ADDONSELF.HopeMaxb = HopeMaxb
-        ADDONSELF.HopeMaxn = HopeMaxn
+        ns.Width      = Width
+        ns.Height     = Height
+        ns.Maxt       = Maxt
+        ns.Maxb       = Maxb
+        ns.Maxi       = Maxi
+        ns.HopeMaxi   = HopeMaxi
+        ns.HopeMaxb   = HopeMaxb
+        ns.HopeMaxn   = HopeMaxn
+        ns.BossNumtbl = BossNumtbl
     end
 
 
@@ -209,10 +231,11 @@ do
     BG.highLightAlpha = 0.2
     BG.scrollStep = 80
 
-    BG.ver = ADDONSELF.ver
-    BG.instructionsText = ADDONSELF.instructionsText
-    BG.updateText = ADDONSELF.updateText
+    BG.ver = ns.ver
+    BG.instructionsText = ns.instructionsText
+    BG.updateText = ns.updateText
     BG.BG = "|cff00BFFF<BiaoGe>|r "
+    BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
 
     local function UnitRealm(unit)
         local realm = select(2, UnitName(unit))
@@ -396,6 +419,7 @@ do
                 ExchangeItems = {},
             }
         end
+        BG.SpecialLoot = {}
     end
 
     -- 字体
@@ -588,9 +612,7 @@ local function DataBase()
             if not BiaoGe[FB] then
                 BiaoGe[FB] = {}
             end
-            if not BiaoGe[FB].tradeTbl then
-                BiaoGe[FB].tradeTbl = {}
-            end
+            BiaoGe[FB].tradeTbl = BiaoGe[FB].tradeTbl or {}
             for b = 1, 22 do
                 if not BiaoGe[FB]["boss" .. b] then
                     BiaoGe[FB]["boss" .. b] = {}
@@ -616,7 +638,7 @@ local function DataBase()
             end
         end
 
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             if not BiaoGe.BossFrame then
                 BiaoGe.BossFrame = {}
             end
@@ -688,9 +710,6 @@ local function DataBase()
             end
             BiaoGeA.Hope = nil
         end
-
-        -- 新手盒子
-        BiaoGe.newbee_report = BiaoGe.newbee_report or {}
 
         -- 记录服务器名称
         do

@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -60,6 +60,12 @@ MT.BuildEnv('INSPECT');
 					local TalData = cache.TalData;
 					TalData[1] = data1;
 					TalData[2] = data2;
+					if data1 == nil then
+						MT.Debug("Inspect Data1 == nil", unit);
+					end
+					if data2 == nil and numGroup > 1 then
+						MT.Debug("Inspect Data2 == nil", unit);
+					end
 					TalData.num = numGroup;
 					TalData.active = activeGroup;
 					TalData.code = code;

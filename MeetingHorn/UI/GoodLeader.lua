@@ -116,6 +116,7 @@ end
 function GoodLeader:OnShow()
     self:UpdateLeader()
     self:UpdateButton()
+    ns.LogStatistics:InsertLog({time(), 2})
 end
 
 function GoodLeader:UpdateLeader()

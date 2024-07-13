@@ -1,0 +1,17 @@
+## Interface: 11502
+## Version: 1.5.1
+## Title: MailLogger
+## Author: Aoikaze
+## SavedVariables: MailLoggerDB
+## Notes-zhCN: 邮件、交易自动记录
+## Notes: Automatic Log Mails & Trades.
+## OptionalDeps: TitanClassic
+
+Locale.lua
+Core.lua
+Events.lua
+Config.lua
+GUI.lua
+Calendar.lua
+MinimapIcon.lua
+Command.lua

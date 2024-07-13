@@ -28,7 +28,7 @@
     <Script file="Core\Module\FilterClassItem.lua"/>
 
     <Script file="Core\TongBao\ZhangDan.lua"/>
-    <Script file="Core\TongBao\ZhangDanSum.lua"/>
+    <!-- <Script file="Core\TongBao\ZhangDanSum.lua"/> -->
     <Script file="Core\TongBao\LiuPai.lua"/>
     <Script file="Core\TongBao\XiaoFei.lua"/>
     <Script file="Core\TongBao\QianKuan.lua"/>

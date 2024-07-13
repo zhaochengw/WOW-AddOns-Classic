@@ -5,12 +5,14 @@
     <Script file="Addon.lua"/>
 
     <Script file="Data\DataLoader.lua"/>
-    
-    <Script file="Data\Talents.WLK.lua"/>
-    
-    <Script file="Data\ItemSet.WLK.lua"/>
     <Script file="Data\Glyph.lua"/>
-    <Script file="Data\GlyphData.lua"/>
+
+    
+    
+
+    <Script file="Data\Wrath\Talents.lua"/>
+    <Script file="Data\Wrath\ItemSet.lua"/>
+    <Script file="Data\Wrath\Glyph.lua"/>
 
     <Script file="Core\Encoder.lua"/>
     <Script file="Core\Inspect.lua"/>

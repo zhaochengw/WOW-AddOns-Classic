@@ -1,5 +1,5 @@
 --[[--
-	ALA@163UI
+	by ALA
 --]]--
 --[[
 	ALASCR = ScrollList.CreateScrollFrame
@@ -51,7 +51,7 @@ local __ala_meta__ = _G.__ala_meta__;
 		local scrollFrame = CreateFrame('SCROLLFRAME', nil, parent);
 		local scrollChild = CreateFrame('FRAME', nil, scrollFrame);
 		local scrollBar = CreateFrame('SLIDER', nil, scrollFrame);
-		local buttons = {};
+		local buttons = {  };
 		local nButtonsShown = 0;
 		local ofsIndex = 0;
 		local numValue = -1;

@@ -1,25 +1,25 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local FrameHide = ADDONSELF.FrameHide
-local SetClassCFF = ADDONSELF.SetClassCFF
-local RGB_16 = ADDONSELF.RGB_16
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local FrameHide = ns.FrameHide
+local SetClassCFF = ns.SetClassCFF
+local RGB_16 = ns.RGB_16
 
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 BG.tongBaoSendCD = 0.3
 
-BG.TongBaoButtons={}
+BG.TongBaoButtons = {}
 
 function BG.SendMsgToRaid(tbl, t)
     local t = t or 0
@@ -360,7 +360,7 @@ local function OnEnter(self)
     else
         local text = L["———通报账单———"]
         table.insert(tbl1, text)
-        local text = format(BG.STC_b1(L["副本：%s"]), BG.FB1)
+        local text = format(BG.STC_b1(L["表格：%s"]), BG.FB1)
         table.insert(tbl1, text)
         tbl1 = CreateListTable(nil, tbl1)
     end
@@ -417,7 +417,7 @@ local function OnClick(self)
             local text = L["———通报账单———"]
             SendChatMessage(text, "RAID")
 
-            local text = format(L["副本：%s"], BG.FB1)
+            local text = format(L["表格：%s"], BG.FB1)
             BG.After(BG.tongBaoSendCD, function()
                 SendChatMessage(text, "RAID")
             end)
@@ -441,12 +441,12 @@ function BG.ZhangDanUI(lastbt)
     if lastbt then
         bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
     else
-        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -530, 35)
+        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -430, 35)
     end
     bt:SetText(L["通报账单"])
     bt:Show()
     BG.ButtonZhangDan = bt
-    tinsert(BG.TongBaoButtons,bt)
+    tinsert(BG.TongBaoButtons, bt)
 
     -- 鼠标悬停提示账单
     bt:SetScript("OnEnter", OnEnter)

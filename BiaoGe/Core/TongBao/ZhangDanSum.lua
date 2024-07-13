@@ -1,22 +1,22 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local FrameHide = ADDONSELF.FrameHide
-local SetClassCFF = ADDONSELF.SetClassCFF
-local RGB_16 = ADDONSELF.RGB_16
-local RGB = ADDONSELF.RGB
-local AddTexture = ADDONSELF.AddTexture
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local FrameHide = ns.FrameHide
+local SetClassCFF = ns.SetClassCFF
+local RGB_16 = ns.RGB_16
+local RGB = ns.RGB
+local AddTexture = ns.AddTexture
 
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 
@@ -288,7 +288,7 @@ function BG.ZhangDanSumUI(lastbt)
 
     function BG.UpdateFrameZhangDanSum_CheckButtons()
         for i, bt in ipairs(BG.FrameZhangDanSum.buttons) do
-            if BG.IsVanilla_60() then
+            if BG.IsVanilla_60 then
                 if bt.FB == BG.FB1 then
                     bt:SetChecked(true)
                 end
@@ -304,9 +304,5 @@ function BG.ZhangDanSumUI(lastbt)
 
     return bt
 end
-
---[[
-/run BG.Frame.EOE.boss1.jine1:SetText(1000)
- ]]
 
 -- pt(GetClassColor("PALADIN"))

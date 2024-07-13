@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -113,11 +113,11 @@ local DT = __private.DT;
 		MinorGlyphNodeSize = 36,
 
 		ControlButtonSize = 18,
-		SideButtonSize = 28,
+		SideButtonSize = 26,
 		SideButtonGap = 2,
 		EditBoxXSize = 240,
 		EditBoxYSize = 32,
-		CurClassIndicatorSize = 36,
+		CurClassIndicatorSize = 34,
 
 		TreeButtonXSize = 68,
 		TreeButtonYSize = 18,
@@ -354,14 +354,15 @@ MT.BuildEnv('UI');
 			if level == nil then
 				Frame.level = DT.MAX_LEVEL;
 				Frame.TotalUsedPoints = 0;
-				Frame.TotalAvailablePoints = MT.GetLevelAvailablePoints(DT.MAX_LEVEL);
+				Frame.TotalAvailablePoints = MT.GetLevelAvailablePoints(Frame.class, DT.MAX_LEVEL);
 			else
 				if type(level) == 'string' then
 					level = tonumber(level);
 				end
 				Frame.level = level;
-				Frame.TotalAvailablePoints = MT.GetLevelAvailablePoints(level);
+				Frame.TotalAvailablePoints = MT.GetLevelAvailablePoints(Frame.class, level);
 			end
+			MT.UI.FrameUpdateFooterText(Frame);
 		end
 		function MT.UI.FrameSetClass(Frame, class)				--	CLASS CHANGED HERE ONLY
 			if class == nil then
@@ -509,7 +510,8 @@ MT.BuildEnv('UI');
 					Frame.ApplyTalentsButton:Hide();
 				end
 
-				MT.UI.SpellListFrameUpdate(Frame.SpellListFrame, class, MT.GetPointsReqLevel(Frame.TotalUsedPoints));
+				MT.UI.SpellListFrameUpdate(Frame.SpellListFrame, class, MT.GetPointsReqLevel(class, Frame.TotalUsedPoints));
+				MT.UI.FrameUpdateFooterText(Frame);
 			end
 
 			return true;
@@ -1002,7 +1004,7 @@ MT.BuildEnv('UI');
 					end
 				end
 
-				MT.UI.SpellListFrameUpdate(Frame.SpellListFrame, Frame.class, MT.GetPointsReqLevel(Frame.TotalUsedPoints));
+				MT.UI.SpellListFrameUpdate(Frame.SpellListFrame, Frame.class, MT.GetPointsReqLevel(Frame.class, Frame.TotalUsedPoints));
 
 				local EditBox = Frame.EditBox;
 				if EditBox.type == "save" and not EditBox.charChanged then
@@ -1175,9 +1177,13 @@ MT.BuildEnv('UI');
 					end
 				end
 			end
+			MT.UI.FrameUpdateFooterText(Frame);
+		end
+		function MT.UI.FrameUpdateFooterText(Frame)
+			local objects = Frame.objects;
 			objects.CurPointsUsed:SetText(Frame.TotalUsedPoints);
-			objects.CurPointsReqLevel:SetText(MT.GetPointsReqLevel(Frame.TotalUsedPoints));
-			objects.CurPointsRemaining:SetText(MT.GetLevelAvailablePoints(Frame.level) - Frame.TotalUsedPoints);
+			objects.CurPointsReqLevel:SetText(MT.GetPointsReqLevel(Frame.class, Frame.TotalUsedPoints));
+			objects.CurPointsRemaining:SetText(MT.GetLevelAvailablePoints(Frame.class, Frame.level) - Frame.TotalUsedPoints);
 		end
 		function MT.UI.FrameSetStyle(Frame, style)
 			local TreeFrames = Frame.TreeFrames;
@@ -1806,7 +1812,7 @@ MT.BuildEnv('UI');
 				SideAnchorBottom:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 2, 0);
 			else
 				SpellListFrameContainer:Show();
-				MT.UI.SpellListFrameUpdate(SpellListFrame, Frame.class, MT.GetPointsReqLevel(Frame.TotalUsedPoints));
+				MT.UI.SpellListFrameUpdate(SpellListFrame, Frame.class, MT.GetPointsReqLevel(Frame.class, Frame.TotalUsedPoints));
 				SideAnchorTop:ClearAllPoints();
 				SideAnchorTop:SetPoint("TOPLEFT", SpellListFrameContainer, "TOPRIGHT", 2, 0);
 				SideAnchorTop:SetPoint("BOTTOMLEFT", SpellListFrameContainer, "BOTTOMRIGHT", 2, 0);
@@ -2280,7 +2286,7 @@ MT.BuildEnv('UI');
 			SearchEdit:ClearFocus();
 		end
 		local function SearchEdit_OnTextChanged(SearchEdit, isUserInput)
-			MT.UI.SpellListFrameUpdate(SearchEdit.SpellListFrame, SearchEdit.SpellListFrame.Frame.class, MT.GetPointsReqLevel(SearchEdit.SpellListFrame.Frame.TotalUsedPoints));
+			MT.UI.SpellListFrameUpdate(SearchEdit.SpellListFrame, SearchEdit.SpellListFrame.Frame.class, MT.GetPointsReqLevel(SearchEdit.SpellListFrame.Frame.class, SearchEdit.SpellListFrame.Frame.TotalUsedPoints));
 			if not SearchEdit:HasFocus() and SearchEdit:GetText() == "" then
 				SearchEdit.Note:Show();
 			end
@@ -2299,7 +2305,7 @@ MT.BuildEnv('UI');
 			SearchEdit.OK:Disable();
 		end
 		local function ShowAllSpell_OnClick(ShowAllSpell)
-			MT.UI.SpellListFrameUpdate(ShowAllSpell.SpellListFrame, ShowAllSpell.SpellListFrame.Frame.class, MT.GetPointsReqLevel(ShowAllSpell.SpellListFrame.Frame.TotalUsedPoints));
+			MT.UI.SpellListFrameUpdate(ShowAllSpell.SpellListFrame, ShowAllSpell.SpellListFrame.Frame.class, MT.GetPointsReqLevel(ShowAllSpell.SpellListFrame.Frame.class, ShowAllSpell.SpellListFrame.Frame.TotalUsedPoints));
 		end
 		local function Close_OnClick(Close)
 			MT.UI.SpellListFrameToggle(Close.SpellListFrame.Frame);

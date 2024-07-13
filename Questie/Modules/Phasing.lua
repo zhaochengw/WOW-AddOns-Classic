@@ -107,6 +107,14 @@ local phases = {
     HAR_KOA_AT_ZIM_TORGA = 1035,
     EARTHEN_GUIDE_BFD = 1036,
     EARTHEN_GUIDE_SHORE = 1037,
+    JAROD_NEAR_PORTAL = 1038,
+    JAROD_MIDDLE_ISLAND = 1039,
+    PEBBLE_AT_KOR = 1040,
+    PEBBLE_AT_CRYSTALS = 1041,
+    TERRATH_AT_AEOSERA = 1042,
+    NPCS_AT_THERAZANES_THRONE = 1043,
+    FARGO_AT_CATAPULTS = 1044,
+    FARGO_AT_DOCKS = 1045,
 }
 Phasing.phases = phases
 
@@ -184,11 +192,11 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.VASHJIR_ERANUK_AT_CAVERN then
-        return (not complete[25988])
+        return (not complete[25988]) or complete[26143] or false
     end
 
     if phase == phases.VASHJIR_ERANUK_AT_PROMONTORY_POINT then
-        return complete[25988] or false
+        return (complete[25988] and (not complete[26143])) or false
     end
 
     if phase == phases.SIRA_KESS_AT_GARDEN then
@@ -345,6 +353,38 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.EARTHEN_GUIDE_SHORE then
         return (complete[11891] or questLog[11891] and true) or false
+    end
+
+    if phase == phases.JAROD_NEAR_PORTAL then
+        return (not complete[25608])
+    end
+
+    if phase == phases.JAROD_MIDDLE_ISLAND then
+        return complete[25608] or false
+    end
+
+    if phase == phases.PEBBLE_AT_KOR then
+        return complete[26441] or (not complete[26440]) or false
+    end
+
+    if phase == phases.PEBBLE_AT_CRYSTALS then
+        return (complete[26440] and not complete[26441]) or (questLog[26440] and questLog[26440].isComplete == 1) or false
+    end
+
+    if phase == phases.TERRATH_AT_AEOSERA then
+        return complete[26659] or (questLog[26659] and questLog[26659].isComplete == 1) or false
+    end
+
+    if phase == phases.NPCS_AT_THERAZANES_THRONE then
+        return complete[26659] and complete[26584] and complete[26585] or false
+    end
+
+    if phase == phases.FARGO_AT_CATAPULTS then
+        return (not complete[27106])
+    end
+
+    if phase == phases.FARGO_AT_DOCKS then
+        return complete[27106] or false
     end
 
     return false

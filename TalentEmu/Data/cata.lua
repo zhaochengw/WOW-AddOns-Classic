@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA
 --]]--
 ----------------------------------------------------------------------------------------------------
 local __addon, __private = ...;
@@ -2418,3 +2418,10 @@ DT.LevelAvailablePointsTable = {  };
 for i = 1, 9 do DT.LevelAvailablePointsTable[i] = 0; end
 for i = 10, 80 do DT.LevelAvailablePointsTable[i] = math.floor((i - 7) / 2); end
 for i = 81, 85 do DT.LevelAvailablePointsTable[i] = i - 44; end
+
+DT.LevelAvailablePointsTableClass = {  };
+local DK = {  };
+for i = 1, 54 do DK[i] = 0; end
+for i = 55, 80 do DK[i] = math.floor((i - 7) / 2); end
+for i = 81, 85 do DK[i] = i - 44; end
+DT.LevelAvailablePointsTableClass.DEATHKNIGHT = DK;

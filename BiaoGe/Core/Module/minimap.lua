@@ -1,10 +1,10 @@
-local AddonName, ADDONSELF = ...
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local AddonName, ns = ...
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1", true)
 if not ldb then return end

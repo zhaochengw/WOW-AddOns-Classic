@@ -1,21 +1,21 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local FrameHide = ADDONSELF.FrameHide
-local SetClassCFF = ADDONSELF.SetClassCFF
-local RGB_16 = ADDONSELF.RGB_16
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local FrameHide = ns.FrameHide
+local SetClassCFF = ns.SetClassCFF
+local RGB_16 = ns.RGB_16
 
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 
@@ -88,7 +88,7 @@ function BG.XiaoFeiUI(lastbt)
     bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
     bt:SetText(L["通报消费"])
     BG.ButtonXiaoFei = bt
-    tinsert(BG.TongBaoButtons,bt)
+    tinsert(BG.TongBaoButtons, bt)
     -- 鼠标悬停提示
     bt:SetScript("OnEnter", function(self)
         if BG.Backing then return end

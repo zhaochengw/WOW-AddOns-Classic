@@ -1,15 +1,15 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local L = ADDONSELF.L
+local L = ns.L
 
 local pt = print
 
 local RR = "|r"
-ADDONSELF.RR = RR
+ns.RR = RR
 local NN = "\n"
-ADDONSELF.NN = NN
+ns.NN = NN
 local RN = "|r\n"
-ADDONSELF.RN = RN
+ns.RN = RN
 
 BG = {}
 
@@ -21,7 +21,7 @@ local function Size(t)
     end
     return s
 end
-ADDONSELF.Size = Size
+ns.Size = Size
 
 ----------把16进制颜色转换成0-1RGB----------
 local function RGB(hex, Alpha)
@@ -39,7 +39,7 @@ local function RGB(hex, Alpha)
         return red, green, blue
     end
 end
-ADDONSELF.RGB = RGB
+ns.RGB = RGB
 
 ----------DB_Loot插入职业任务文本----------
 local function ClassQuest(classID)
@@ -47,65 +47,46 @@ local function ClassQuest(classID)
     local color = select(4, GetClassColor(classFile))
     return "|c" .. color .. className .. "|r" .. BG.STC_y1(QUESTS_LABEL)
 end
-ADDONSELF.ClassQuest = ClassQuest
+ns.ClassQuest = ClassQuest
 
 -- 版本号
 local ver = select(4, GetBuildInfo())
-local function IsVanilla()
-    if ver < 20000 then
-        return true
-    end
+if ver < 20000 then
+    BG.IsVanilla = true
 end
-ADDONSELF.IsVanilla = IsVanilla
 
-local function IsVanilla_Sod()
-    if BG.IsVanilla() and (C_Engraving and C_Engraving.IsEngravingEnabled()) then
-        return true
-    end
+if BG.IsVanilla and (C_Engraving and C_Engraving.IsEngravingEnabled()) then
+    BG.IsVanilla_Sod = true
 end
-ADDONSELF.IsVanilla_Sod = IsVanilla_Sod
 
-local function IsVanilla_60()
-    if BG.IsVanilla() and not (C_Engraving and C_Engraving.IsEngravingEnabled()) then
-        return true
-    end
+if BG.IsVanilla and not (C_Engraving and C_Engraving.IsEngravingEnabled()) then
+    BG.IsVanilla_60 = true
 end
-ADDONSELF.IsVanilla_60 = IsVanilla_60
 
-local function IsWLK()
-    if ver >= 30000 and ver < 40000 then
-        return true
-    end
+if ver >= 30000 and ver < 40000 then
+    BG.IsWLK = true
 end
-ADDONSELF.IsWLK = IsWLK
 
-local function IsCTM()
-    if ver >= 40000 and ver < 50000 then
-        return true
-    end
+if ver >= 40000 and ver < 50000 then
+    BG.IsCTM = true
 end
-ADDONSELF.IsCTM = IsCTM
 
-function BG.Is11501()
-    if ver == 11501 then return true end
+if ver == 11503 then
+    BG.Is11503 = true
 end
 
 function BG.IsWLKFB(FB)
     local FB = FB or BG.FB1
-    if (FB == "NAXX" and not BG.IsVanilla()) or FB == "OS" or FB == "EOE" or FB == "ULD" or FB == "TOC" or (FB == "OL" and not BG.IsVanilla()) or FB == "ICC" or FB == "RS" then
+    if (FB == "NAXX" and not BG.IsVanilla) or FB == "ULD" or FB == "TOC" or FB == "ICC" then
         return true
     end
 end
 
 -- 阵营
-local function IsAlliance()
-    return UnitFactionGroup("player") == "Alliance"
-    -- return UnitFactionGroup("player") == "Horde"
+if UnitFactionGroup("player") == "Alliance" then
+    BG.IsAlliance = true
 end
-ADDONSELF.IsAlliance = IsAlliance
 
-local function IsHorde()
-    return UnitFactionGroup("player") == "Horde"
-    -- return UnitFactionGroup("player") == "Alliance"
+if UnitFactionGroup("player") == "Horde" then
+    BG.IsHorde = true
 end
-ADDONSELF.IsHorde = IsHorde

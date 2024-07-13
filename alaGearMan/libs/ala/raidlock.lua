@@ -1,5 +1,5 @@
 --[[--
-	ALA@163UI
+	by ALA
 --]]--
 
 local __version = 221012.0;

@@ -1,5 +1,5 @@
 --[[--
-	ALA@163UI
+	by ALA
 --]]--
 
 local __version = 1;
@@ -49,7 +49,7 @@ local __ala_meta__ = _G.__ala_meta__;
 		dict									\33\38 ~ \33\91
 		\0 ~ \33	!(b+92)		\33\b+92		\33\92 ~ \33\125
 	--]=]
-	local _LT_coreSerializerDict = {
+	local _LT_CoreSerializerDict = {
 		"Create",
 		"FRAME",
 		"Frame",
@@ -114,15 +114,15 @@ local __ala_meta__ = _G.__ala_meta__;
 		--	point texture
 		--	InOverrideUI spacing scale hidden
 	};
-	local _LN_coreSerializerDict = min(#_LT_coreSerializerDict, 52);
-	for _index = 1, _LN_coreSerializerDict do
-		local _s = _LT_coreSerializerDict[_index];
+	local _LN_CoreSerializerDict = min(#_LT_CoreSerializerDict, 52);
+	for _index = 1, _LN_CoreSerializerDict do
+		local _s = _LT_CoreSerializerDict[_index];
 		local _c = "!" .. strchar(_index + 37);
-		_LT_coreSerializerDict[_s] = _c;
-		_LT_coreSerializerDict[_c] = _s;
+		_LT_CoreSerializerDict[_s] = _c;
+		_LT_CoreSerializerDict[_c] = _s;
 	end
 	local _LT_SerializeTemp = { "~a", };
-	local function _LF_coreSerializer_StringReplacer(s)
+	local function _LF_CoreSerializer_StringReplacer(s)
 		local b = strbyte(s);
 		if b <= 33 then
 			return "!" .. strchar(b + 90);	--	\33\90 ~ \33\123
@@ -136,7 +136,7 @@ local __ala_meta__ = _G.__ala_meta__;
 			geterrorhandler()("Error Replace String: " .. c);
 		end
 	end
-	local function _LF_coreDeserializer_StringReplacer(c)
+	local function _LF_CoreDeserializer_StringReplacer(c)
 		if c >= "!Z" then
 			return strchar(strbyte(c, 2, 2) - 90);
 		elseif c == [[!"]] then
@@ -149,7 +149,7 @@ local __ala_meta__ = _G.__ala_meta__;
 			return geterrorhandler()("Invalid Escape: " .. c);
 		end
 	end
-	local function _LF_coreDeserializer_StringReplacerDict(c)
+	local function _LF_CoreDeserializer_StringReplacerDict(c)
 		if c >= "!Z" then
 			return strchar(strbyte(c, 2, 2) - 90);
 		elseif c == [[!"]] then
@@ -159,19 +159,19 @@ local __ala_meta__ = _G.__ala_meta__;
 		elseif c == [[!$]] then
 			return "\127";
 		else--if c > "!!" then
-			return _LT_coreSerializerDict[c] or geterrorhandler()("Invalid Escape: " .. c);
+			return _LT_CoreSerializerDict[c] or geterrorhandler()("Invalid Escape: " .. c);
 		end
 	end
-	local _LF_coreSerializer = nil;
-	_LF_coreSerializer = function(val, tbl, pos, useDict)
+	local _LF_CoreSerializer = nil;
+	_LF_CoreSerializer = function(val, tbl, pos, useDict)
 		local _Type = type(val);
 		if _Type == 'string' then
 			pos = pos + 1; tbl[pos] = "~S";
-			val = gsub(val, "[%c !~|]", _LF_coreSerializer_StringReplacer);
+			val = gsub(val, "[%c !~|]", _LF_CoreSerializer_StringReplacer);
 			if useDict then
-				for _index = 1, _LN_coreSerializerDict do
-					local _s = _LT_coreSerializerDict[_index];
-					val = gsub(val, _s, _LT_coreSerializerDict[_s]);
+				for _index = 1, _LN_CoreSerializerDict do
+					local _s = _LT_CoreSerializerDict[_index];
+					val = gsub(val, _s, _LT_CoreSerializerDict[_s]);
 				end
 			end
 			pos = pos + 1; tbl[pos] = val;
@@ -207,9 +207,9 @@ local __ala_meta__ = _G.__ala_meta__;
 			for k, v in next, val do
 				local start = pos;
 				local _isValid = nil;
-				pos, _isValid = _LF_coreSerializer(k, tbl, pos, useDict);
+				pos, _isValid = _LF_CoreSerializer(k, tbl, pos, useDict);
 				if _isValid then
-					pos, _isValid = _LF_coreSerializer(v, tbl, pos, useDict);
+					pos, _isValid = _LF_CoreSerializer(v, tbl, pos, useDict);
 					if not _isValid then
 						pos = start;
 					end
@@ -225,8 +225,8 @@ local __ala_meta__ = _G.__ala_meta__;
 
 		return pos, false;
 	end
-	local _LF_coreDeserializer = nil;
-	_LF_coreDeserializer = function(iter, noproceed, _Type, _Data, useDict, _Level)
+	local _LF_CoreDeserializer = nil;
+	_LF_CoreDeserializer = function(iter, noproceed, _Type, _Data, useDict, _Level)
 		if _Type == nil then
 			_Type, _Data = iter();
 		end
@@ -235,9 +235,9 @@ local __ala_meta__ = _G.__ala_meta__;
 			geterrorhandler()("Incomplete String!");
 		elseif _Type == "~S" then
 			if useDict then
-				_Val = gsub(_Data, "!.", _LF_coreDeserializer_StringReplacerDict);
+				_Val = gsub(_Data, "!.", _LF_CoreDeserializer_StringReplacerDict);
 			else
-				_Val = gsub(_Data, "!.", _LF_coreDeserializer_StringReplacer);
+				_Val = gsub(_Data, "!.", _LF_CoreDeserializer_StringReplacer);
 			end
 		elseif _Type == "~N" then
 			_Val = tonumber(_Data);
@@ -268,12 +268,12 @@ local __ala_meta__ = _G.__ala_meta__;
 				if _Type == "~t" then
 					break;
 				end
-				key = _LF_coreDeserializer(iter, true, _Type, _Data, useDict, _Level + 1);
+				key = _LF_CoreDeserializer(iter, true, _Type, _Data, useDict, _Level + 1);
 				if key == nil then
 					geterrorhandler()("Invalid Table Key: " .. _Type .. ", " .. _Data);
 				end
 				_Type, _Data = iter();
-				val = _LF_coreDeserializer(iter, true, _Type, _Data, useDict, _Level + 1);
+				val = _LF_CoreDeserializer(iter, true, _Type, _Data, useDict, _Level + 1);
 				if val == nil then
 					geterrorhandler()("Invalid Table Val: " .. _Type .. ", " .. _Data);
 				end
@@ -287,14 +287,14 @@ local __ala_meta__ = _G.__ala_meta__;
 		if noproceed == true then
 			return _Val;
 		else
-			return _Val, _LF_coreDeserializer(iter, nil, nil, nil, useDict, _Level + 1);
+			return _Val, _LF_CoreDeserializer(iter, nil, nil, nil, useDict, _Level + 1);
 		end
 	end
 	--
 	local function _F_SerializerInternal(useDict, ...)
 		local pos = 1;
 		for index = 1, select("#", ...) do
-			pos = _LF_coreSerializer(select(index, ...), _LT_SerializeTemp, pos, useDict);
+			pos = _LF_CoreSerializer(select(index, ...), _LT_SerializeTemp, pos, useDict);
 		end
 		pos = pos + 1;
 		_LT_SerializeTemp[pos] = "~~";
@@ -310,9 +310,9 @@ local __ala_meta__ = _G.__ala_meta__;
 		local iter = gmatch(str, "(~.)([^~]*)");
 		local rev = iter();
 		if rev == "~a" then
-			return xpcall(_LF_coreDeserializer, geterrorhandler(), iter, nil, nil, nil, false, 0);
+			return xpcall(_LF_CoreDeserializer, geterrorhandler(), iter, nil, nil, nil, false, 0);
 		elseif rev == "~d" then
-			return xpcall(_LF_coreDeserializer, geterrorhandler(), iter, nil, nil, nil, true, 0);
+			return xpcall(_LF_CoreDeserializer, geterrorhandler(), iter, nil, nil, nil, true, 0);
 		else
 			return false;
 		end

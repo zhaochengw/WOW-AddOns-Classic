@@ -268,7 +268,7 @@ function Addon:AnnounceTrade()
 			if IsInRaid() then
 				SendChatMessage(msg, "raid")
 			elseif IsInGroup() then
-				SendChatMessage(msg, "party")
+				SendChatMessage(msg, "instance_chat")
 			end
 		end
 	end

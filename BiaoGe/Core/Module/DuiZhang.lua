@@ -1,23 +1,23 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 
@@ -35,7 +35,7 @@ local locales = {
     ["通报金团账单"] = { "—通报账单—", "—通报金团账单—", "—通報賬單—", "—通報金團帳單—", "—Announce Raid Ledger—" },
     ["感谢使用金团表格"] = { "感谢使用BiaoGe插件", "感谢使用金团表格", "感謝使用BiaoGe插件", "感謝使用金團表格", "Thank you for using the Raid Table" },
     ["打包交易"] = { "打包交易", "打包交易", },
-    ["副本：(.+)"] = { "副本：(.+)", },
+    ["表格：(.+)"] = { "表格：(.+)", },
     --大脚金团助手
     ["事件：.-|c.-|Hitem.-|h|r"] = { "事件：.-|c.-|Hitem.-|h|r", },
     ["^收入为："] = { "^收入为：", "^收入為：", },
@@ -124,8 +124,8 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
         tinsert(linshi_duizhang.msgTbl, msg)
     end
 
-    -- 识别副本
-    local FB = BG.MatchTableString(msg, locales["副本：(.+)"])
+    -- 识别表格
+    local FB = BG.MatchTableString(msg, locales["表格：(.+)"])
     if linshi_duizhang.yes and player == linshi_duizhang.player and FB then
         linshi_duizhang.FB = FB
     end
@@ -322,13 +322,13 @@ function BG.DuiZhangUI()
             if itemID then
                 GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
-                BG.HilightBiaoGeSaveItems(link)
+                BG.HighlightBiaoGe(link)
                 BG.HighlightBag(link)
             end
         end)
         child:SetScript("OnHyperlinkLeave", function(self, link, text, button)
             GameTooltip:Hide()
-            BG.Hide_AllHiLight()
+            BG.Hide_AllHighlight()
         end)
         child:SetScript("OnHyperlinkClick", function(self, link, text, button)
             if (strsub(link, 1, 6) == "player") then

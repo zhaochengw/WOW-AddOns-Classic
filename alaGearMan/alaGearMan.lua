@@ -2108,7 +2108,7 @@ function func.equipItem2(item1, item2, slot1, slot2)
 						C_Container.PickupContainerItem(i, j);
 						EquipCursorItem(slot1);
 						equipped1 = true;
-						_G.print("Equip", slot1, id);
+						-- _G.print("Equip", slot1, id);
 						-- return;
 						if equipped2 then
 							return;
@@ -2135,7 +2135,7 @@ function func.equipItem2(item1, item2, slot1, slot2)
 						C_Container.PickupContainerItem(i, j);
 						EquipCursorItem(slot2);
 						equipped2 = true;
-						_G.print("Equip", slot2, id);
+						-- _G.print("Equip", slot2, id);
 						-- return;
 						if equipped1 then
 							return;

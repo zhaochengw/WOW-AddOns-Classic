@@ -49,3 +49,4 @@ MailLogger：
 1.4.8 Remove prevent trade function.
 1.4.9 Update TOC, and Remove 'Prevent Trade' GUI and Checkbox. 
 1.4.9new Update TOC
+1.5.1 new toc system, and fix instance_chat error.

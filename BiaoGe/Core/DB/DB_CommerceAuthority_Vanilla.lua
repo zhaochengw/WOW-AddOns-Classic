@@ -1,9 +1,9 @@
-if not BG.IsVanilla_Sod() then return end
+if not BG.IsVanilla_Sod then return end
 
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
 local pt = print
 

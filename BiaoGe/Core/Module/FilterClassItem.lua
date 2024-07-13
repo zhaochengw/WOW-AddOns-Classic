@@ -1,29 +1,29 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
-local Width = ADDONSELF.Width
-local Height = ADDONSELF.Height
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Width = ns.Width
+local Height = ns.Height
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 
@@ -904,7 +904,7 @@ function BG.FilterClassItemUI()
         local type = "Class"
         local tilte_onenter = L["像套装兑换物这种有职业限定的装备，不适合你的会被过滤"]
         F.buttons[type], F.frames[type] = CreateFilterButton(BG.FilterClassItemDB[type], BG.STC_g1(L["职业限定过滤"]), tilte_onenter, type, "pailie")
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             local type = "Tank"
             local tilte_onenter = format(L["没有%s任一属性的装备会被过滤（武器、饰品、圣物除外）"], STAT_CATEGORY_DEFENSE .. "/" .. STAT_PARRY .. "/" .. STAT_DODGE .. "/" .. STAT_BLOCK)
             F.buttons[type], F.frames[type] = CreateFilterButton(BG.FilterClassItemDB[type], BG.STC_b1(L["坦克专属过滤"]), tilte_onenter, type, "pailie")

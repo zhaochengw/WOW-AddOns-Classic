@@ -1,8 +1,5 @@
 --[[--
-	by ALA @ 163UI
-	Please Keep WOW Addon open-source & Reduce barriers for others.
-	复用代码请在显著位置标注来源【ALA@网易有爱】
-	请勿加密、乱码、删除空格tab换行符、设置加载依赖
+	by ALA 
 --]]--
 ----------------------------------------------------------------------------------------------------
 local ADDON, NS = ...;

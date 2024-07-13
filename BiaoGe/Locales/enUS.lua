@@ -1,4 +1,4 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
 if (GetLocale() ~= "enUS") then return end
 
@@ -336,4 +336,4 @@ do
     -- L[] = true
 end
 
-ADDONSELF.L = L
+ns.L = L

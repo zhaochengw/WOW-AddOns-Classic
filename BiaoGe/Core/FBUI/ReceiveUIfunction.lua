@@ -1,24 +1,26 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local BossNum = ADDONSELF.BossNum
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local BossNum = ns.BossNum
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
 
 local pt = print
 
 local p = {}
+BG.ReceiveFrame.p = p
+
 local preWidget
 local framedown
 local frameright
@@ -37,7 +39,6 @@ function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
     version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["  项目"])
-    version:Show()
     preWidget = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
@@ -45,7 +46,6 @@ function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
     version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["装备"])
-    version:Show()
     preWidget = version
     p.preWidget0 = version
 
@@ -54,7 +54,6 @@ function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
     version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["买家"])
-    version:Show()
     preWidget = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
@@ -62,7 +61,6 @@ function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
     version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["金额"])
-    version:Show()
     preWidget = version
     frameright = version
 end

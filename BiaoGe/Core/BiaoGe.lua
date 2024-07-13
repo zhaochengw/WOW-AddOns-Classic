@@ -1,29 +1,29 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
-local Width = ADDONSELF.Width
-local Height = ADDONSELF.Height
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Width = ns.Width
+local Height = ns.Height
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 local RealmId = GetRealmID()
@@ -181,6 +181,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
         BG.MainFrame:SetHeight(Height[BG.FB1])
         BG.MainFrame:SetWidth(Width[BG.FB1])
+
+        -- 报错
+        BG.MainFrame.ErrorText = BG.MainFrame:CreateFontString()
+        BG.MainFrame.ErrorText:SetFont(BIAOGE_TEXT_FONT, 70, "OUTLINE")
+        BG.MainFrame.ErrorText:SetPoint("CENTER")
+        BG.MainFrame.ErrorText:SetWidth(BG.MainFrame:GetWidth() - 50)
+        BG.MainFrame.ErrorText:SetTextColor(1, 0, 0)
+        BG.MainFrame.ErrorText:SetText(L["插件加载出现错误，请把报错发给作者，谢谢。（邮箱buick_hbj@163.com，Q群322785325）"])
     end
     tinsert(UISpecialFrames, "BG.MainFrame")
     ----------接收表格主界面----------
@@ -334,7 +342,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 for i, bt in ipairs(BG.TongBaoButtons) do
                     bt:Enable()
                 end
-                -- BG.FrameZhangDanSum:Hide()
 
                 BG.UpdateLockoutIDText()
 
@@ -346,7 +353,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 BG.ButtonQingKong:SetParent(self)
                 BG.ButtonQingKong:SetEnabled(true)
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Show()
                     LibBG:UIDropDownMenu_EnableDropDown(BG.NanDuDropDown.DropDown)
                 end
@@ -387,7 +394,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
                 BG["Button" .. BG.FB1]:SetEnabled(false)
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Show()
                     LibBG:UIDropDownMenu_EnableDropDown(BG.NanDuDropDown.DropDown)
                 end
@@ -436,7 +443,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
                 BG["Button" .. BG.FB1]:SetEnabled(false)
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Hide()
                 end
 
@@ -500,7 +507,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
                 BG["Button" .. BG.FB1]:SetEnabled(false)
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Hide()
                 end
 
@@ -530,7 +537,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 BG.TabButtonsFB:Hide()
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Hide()
                 end
             end)
@@ -544,7 +551,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
         -- 团本攻略
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             BG.BossMainFrame = CreateFrame("Frame", "BG.HopeMainFrame", BG.MainFrame)
             do
                 BG.BossMainFrame:Hide()
@@ -571,7 +578,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                     BG["Button" .. BG.FB1]:SetEnabled(false)
 
-                    if not BG.IsVanilla() then
+                    if not BG.IsVanilla then
                         BG.NanDuDropDown.DropDown:Hide()
                     end
                 end)
@@ -601,7 +608,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 BG.TabButtonsFB:Hide()
 
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     BG.NanDuDropDown.DropDown:Hide()
                 end
             end)
@@ -656,7 +663,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 for i, bt in ipairs(BG.TongBaoButtons) do
                     bt:Disable()
                 end
-                BG.FrameZhangDanSum:Hide()
 
                 BG.UpdateLockoutIDText()
 
@@ -666,7 +672,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 BG.ButtonQingKong:SetParent(self)
                 BG.ButtonQingKong:SetEnabled(false)
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     LibBG:UIDropDownMenu_DisableDropDown(BG.NanDuDropDown.DropDown)
                 end
 
@@ -707,6 +713,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end ]]
     end
+
     ----------生成各副本UI----------
     do
         for k, FB in pairs(BG.FBtable) do
@@ -719,7 +726,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         --通报UI
         local lastbt
         lastbt = BG.ZhangDanUI(lastbt)
-        lastbt = BG.ZhangDanSumUI(lastbt)
+        -- lastbt = BG.ZhangDanSumUI(lastbt)
         lastbt = BG.LiuPaiUI(lastbt)
         lastbt = BG.XiaoFeiUI(lastbt)
         lastbt = BG.QianKuanUI(lastbt)
@@ -809,9 +816,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
 
             local itemID
-            if BG.IsVanilla_Sod() then
+            if BG.IsVanilla_Sod then
                 itemID = 209562
-            elseif BG.IsVanilla_60() then
+            elseif BG.IsVanilla_60 then
                 itemID = 19019
             else
                 itemID = 49623
@@ -972,7 +979,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------难度选择菜单----------
     do
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             local fbid, sound
             local function RaidDifficultyID()
                 local nanduID
@@ -1265,7 +1272,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             _G[bt:GetName() .. "Text"]:SetTextColor(RGB(BG.g1))
             PanelTemplates_TabResize(bt, nil, width or 120)
             if num == 1 then
-                if BG.IsWLK() then
+                if BG.IsWLK then
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -370, 0)
                 else
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -290, 0)
@@ -1386,7 +1393,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end)
 
-        if BG.IsWLK() then
+        if BG.IsWLK then
             local bt = Create_TabButton(BG.ReportMainFrameTabNum, L["举报记录"], BG.ReportMainFrame)
             bt:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1483,9 +1490,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:RegisterEvent("CHAT_MSG_RAID_LEADER")
         f:RegisterEvent("CHAT_MSG_RAID_WARNING")
         f:RegisterEvent("CHAT_MSG_RAID")
-        f:RegisterEvent("CHAT_MSG_SAY")
         f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
-            if even == "CHAT_MSG_SAY" and not BG.DeBug then return end
             if even == "CHAT_MSG_RAID" then
                 playerName = strsplit("-", playerName)
                 if playerName ~= BG.MasterLooter then
@@ -1657,7 +1662,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------在线玩家数----------
     do
-        if not BG.IsWLK() then
+        if not BG.IsWLK then
             BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
                 if not (isLogin or isReload) then return end
                 if not IsAddOnLoaded("Blizzard_Communities") then
@@ -1860,8 +1865,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.LastBagItemFrame = {}
 
         local function OnHyperlinkEnter(self, link)
-            BG.Hide_AllHiLight()
-            BG.HilightBiaoGeSaveItems(link)
+            BG.Hide_AllHighlight()
+            BG.HighlightBiaoGe(link)
             BG.HighlightBag(link)
             BG.HighlightItemGuoQi(link)
         end
@@ -1869,18 +1874,18 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local i = 1
         while _G["ChatFrame" .. i] do
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkEnter", OnHyperlinkEnter)
-            _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", BG.Hide_AllHiLight)
+            _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", BG.Hide_AllHighlight)
             i = i + 1
         end
 
         hooksecurefunc("ContainerFrameItemButton_OnEnter", function(self, button)
             local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
-            BG.Hide_AllHiLight()
-            BG.HilightBiaoGeSaveItems(link)
+            BG.Hide_AllHighlight()
+            BG.HighlightBiaoGe(link)
             BG.HighlightItemGuoQi(link)
         end)
         hooksecurefunc("ContainerFrameItemButton_OnLeave", function(self, button)
-            BG.Hide_AllHiLight()
+            BG.Hide_AllHighlight()
         end)
     end
     ----------一键分配装备给自己----------
@@ -1922,7 +1927,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine(L["一键分配"], 1, 1, 1, true)
                 if self.dis then
-                    GameTooltip:AddLine(L["你不是物品分配者，不能使用"], 1, 0, 0, true)
+                    if select(2, IsInInstance()) == "raid" then
+                        GameTooltip:AddLine(L["你不是物品分配者，不能使用"], 1, 0, 0, true)
+                    else
+                        GameTooltip:AddLine(L["不在团本中，不能使用"], 1, 0, 0, true)
+                    end
                 else
                     GameTooltip:AddLine(L["把全部可交易的物品分配给自己"], 1, 0.82, 0, true)
                 end
@@ -1996,9 +2005,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
                 isOnter = false
 
-                if (BG.DeBug or BG.FB2) and GetLootMethod() == "master" then
+                if GetLootMethod() == "master" then
                     bt:Show()
-                    if BG.MasterLooter == UnitName("player") then
+                    if select(2, IsInInstance()) == "raid" and BG.MasterLooter == UnitName("player") then
                         disframe:Hide()
                         bt:Enable()
                         bt:SetBackdropBorderColor(0, 1, 0)
@@ -2035,7 +2044,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------血月活动期间自动释放尸体和对话自动复活----------
     do
-        if BG.IsVanilla_Sod() then
+        if BG.IsVanilla_Sod then
             local tbl = {
                 121411, -- 血月活动
             }
@@ -2508,7 +2517,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, self.qiankuan)
                 end
 
-                local text = format(L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n副本：%s\nBOSS：%s"],
+                local text = format(L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n表格：%s\nBoss：%s"],
                     (AddTexture(Texture) .. self.itemLink),
                     maijiaText,
                     jineText,
@@ -2763,7 +2772,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     self:Hide()
 
                     if BiaoGe.options["fastCountMsg"] == 1 then
-                        local text = format(L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n副本：%s\nBOSS：%s"],
+                        local text = format(L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n表格：%s\nBoss：%s"],
                             (AddTexture(Texture) .. self.itemLink),
                             maijiaText,
                             jineText,
@@ -3012,8 +3021,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.ButtonGuoQi = bt
             bt:SetScript("OnClick", function(self)
                 if BG.itemGuoQiFrame:IsVisible() then
-                BiaoGe.options.showGuoQiFrame = 0
-                BG.itemGuoQiFrame:Hide()
+                    BiaoGe.options.showGuoQiFrame = 0
+                    BG.itemGuoQiFrame:Hide()
                 else
                     BiaoGe.options.showGuoQiFrame = 1
                     BG.itemGuoQiFrame:Show()
@@ -3176,13 +3185,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     GameTooltip:ClearLines()
                     GameTooltip:SetBagItem(b, i)
 
-                    BG.Hide_AllHiLight()
-                    BG.HilightBiaoGeSaveItems(link)
+                    BG.Hide_AllHighlight()
+                    BG.HighlightBiaoGe(link)
                     BG.HighlightBag(link)
                 end)
                 f:SetScript("OnLeave", function()
                     GameTooltip:Hide()
-                    BG.Hide_AllHiLight()
+                    BG.Hide_AllHighlight()
                 end)
 
                 local icon = f:CreateTexture(nil, 'ARTWORK')
@@ -3269,16 +3278,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local itemID = GetItemInfoInstant(link)
             for i, bt in ipairs(BG.itemGuoQiFrame.buttons) do
                 if bt.itemID == itemID then
-                    local f = CreateFrame("Frame", nil, bt, "BackdropTemplate")
-                    f:SetBackdrop({
-                        edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                        edgeSize = 2,
-                    })
-                    f:SetBackdropBorderColor(1, 0, 0, 1)
-                    f:SetPoint("TOPLEFT", bt, "TOPLEFT", 0, 0)
-                    f:SetPoint("BOTTOMRIGHT", bt, "BOTTOMRIGHT", 0, 0)
-                    f:SetFrameLevel(bt:GetFrameLevel() + 3)
-                    tinsert(BG.LastBagItemFrame, f)
+                    BG.CreateHighlightFrame(bt)
                 end
             end
         end
@@ -3313,7 +3313,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 button2 = L["否"],
                 OnAccept = function()
                     local num = BG.QingKong("biaoge", BG.FB1)
-                    if not BG.IsVanilla() and BiaoGe.options["QingKongPeople"] == 1 then
+                    if not BG.IsVanilla and BiaoGe.options["QingKongPeople"] == 1 then
                         BG.SendSystemMessage(BG.STC_b1(format(
                             L["已清空表格< %s >，分钱人数已改为%s人。"], BG.GetFBinfo(BG.FB1, "localName"), num)))
                     else
@@ -3335,6 +3335,31 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         do
             local lastzone = { zoneID = nil, isInInstance = nil }
 
+            local function IsNotSameTeam(FB)
+                if not IsInRaid(1) then return true end
+                -- 没有历史成员名单
+                if not BiaoGe[FB].raidRoster then return true end
+                -- 超过x天了
+                if time() - BiaoGe[FB].raidRoster.time >= 86400 * 1 then return true end
+                -- 服务器不同
+                if GetRealmName() ~= BiaoGe[FB].raidRoster.realm then return true end
+
+                local maxCount = max(#BG.raidRosterInfo, #BiaoGe[FB].raidRoster.roster)
+                local sameCount = 0
+                for ii, vv in ipairs(BG.raidRosterInfo) do
+                    for i, name in ipairs(BiaoGe[FB].raidRoster.roster) do
+                        if vv.name == name then
+                            sameCount = sameCount + 1
+                        end
+                    end
+                end
+                if sameCount / maxCount < 0.6 then
+                    return true
+                end
+                return false
+            end
+            BG.IsNotSameTeam = IsNotSameTeam
+
             local f = CreateFrame("Frame")
             f:RegisterEvent("ZONE_CHANGED")
             f:RegisterEvent("ZONE_CHANGED_INDOORS")
@@ -3352,7 +3377,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         -- 上一个区域和当前区域id相同，且上一个区域不在副本里（比如诺莫瑞根进本时）
                         if (lastzone.zoneID == zoneID and not lastzone.isInInstance)
                             -- 上一个区域与当前区域id不相同，且当前区域在副本里（比如黑暗深渊进本）
-                            or (lastzone.zoneID ~= zoneID) then
+                            or (lastzone.zoneID ~= zoneID)
+                        then
                             local newCD = true
                             for i = 1, GetNumSavedInstances() do
                                 local _, _, _, _, locked, _, _, _, _maxPlayers, _, _, _, _, _instanceID = GetSavedInstanceInfo(i)
@@ -3362,15 +3388,23 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                 end
                             end
 
-                            -- 如果是新CD而且表格不是空的（除了杂项）
-                            if newCD and not BG.BiaoGeIsEmpty(FB, "onlyboss") then
-                                BG.ClickFBbutton(FB)
-                                BG.SaveBiaoGe(FB)
-                                local num = BG.QingKong("biaoge", FB)
-                                local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. time() ..
-                                    "|h[" .. L["撤回清空"] .. "]|h|r"
-                                SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.GetFBinfo(FB, "localName"), num)) .. link)
-                                PlaySoundFile(BG["sound_qingkong" .. BiaoGe.options.Sound], "Master")
+                            -- 如果是新CD
+                            if newCD then
+                                -- 有这些场景：1 打完NAXX，然后进黑龙（不要清空表格）。2 上CD打过黑龙 这CD进NAXX
+
+                                -- 如果当前副本对应的BOSS格子有东西（除了杂项） 就清空整个表格
+                                -- 如果当前副本对应的BOSS格子没东西但其他格子有东西，且当前团队成员跟当前副本的历史成员名单不同 就清空整个表格
+                                if BG.BiaoGeIsHavedItem(FB, "autoQingKong", instanceID) or
+                                    (BG.BiaoGeIsHavedItem(FB, "onlyboss") and IsNotSameTeam(FB))
+                                then
+                                    BG.ClickFBbutton(FB)
+                                    BG.SaveBiaoGe(FB)
+                                    local num = BG.QingKong("biaoge", FB)
+                                    local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. time() ..
+                                        "|h[" .. L["撤回清空"] .. "]|h|r"
+                                    SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.GetFBinfo(FB, "localName"), num)) .. link)
+                                    PlaySoundFile(BG["sound_qingkong" .. BiaoGe.options.Sound], "Master")
+                                end
                             end
                         end
                     end
@@ -3448,7 +3482,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     ----------检查版本过期----------
     do
         -- 把版本号转换为纯数字
-        local function GetVerNum(ver)
+        function BG.GetVerNum(ver)
+            ver = ver:gsub("%s-[Bb]eta%d+", ""):gsub("%s-[Aa]lpha%d+", "")
             local lastString = tonumber(strsub(ver, strlen(ver), strlen(ver)))
             if lastString then
                 ver = ver .. "0"
@@ -3472,10 +3507,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             ver = tonumber(ver)
             return ver
         end
+
         -- 比较版本
         local function VerGuoQi(BGVer, ver)
             if ver:find("[Bb]eta") or ver:find("[Aa]lpha") then return false end
-            if GetVerNum(ver) > GetVerNum(BGVer) then
+            if BG.GetVerNum(ver) > BG.GetVerNum(BGVer) then
                 return true
             end
         end
@@ -3532,6 +3568,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     -- C_Timer.After(1, function()
     --     SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 金团表格载入成功。插件命令：%s或%s，小地图图标：%s"] .. RR, "/BiaoGe", "/GBG", L["星星"]))
     -- end)
+    BG.MainFrame.ErrorText:Hide()
 end)
 
 ----------刷新团队成员信息----------
@@ -3657,12 +3694,12 @@ end
 
 --DEBUG
 do
-    local yes
+    local yes, yes2, yes3
     SlashCmdList["BIAOGETEST"] = function()
         BG.DeBug = true
+        local CDing
         if not yes and AtlasLoot then
             yes = true
-            local CDing
             function AtlasLoot.Button:AddChatLink(link)
                 if CDing then return end
                 if ChatFrameEditBox and ChatFrameEditBox:IsVisible() then
@@ -3687,11 +3724,18 @@ do
                             ChatEdit_InsertLink(self.ItemID .. ",")
                             ChatFrame1EditBox:HighlightText()
                             BG.PlaySound(1)
+                            return
                         end
                         script(self, button)
                     end)
                 end
+            end
+        end
+
+        if not yes2 and AtlasLoot then
+            for i = 1, 40 do
                 if _G["AtlasLoot_SecButton_" .. i] then
+                    yes2 = true
                     local script = _G["AtlasLoot_SecButton_" .. i]:GetScript("OnClick")
                     _G["AtlasLoot_SecButton_" .. i]:SetScript("OnClick", function(self, button)
                         if IsShiftKeyDown() and self.ItemID then
@@ -3704,12 +3748,46 @@ do
                             ChatEdit_InsertLink(self.ItemID .. ",")
                             ChatFrame1EditBox:HighlightText()
                             BG.PlaySound(1)
+                            return
+                        end
+                        -- if not IsShiftKeyDown() then
+                        script(self, button)
+                        -- end
+                    end)
+                end
+            end
+        end
+
+        if not yes3 and AtlasQuestInsideFrame then
+            for i = 1, 6 do
+                if _G["AtlasQuestItemframe" .. i] then
+                    yes3 = true
+                    local script = _G["AtlasQuestItemframe" .. i]:GetScript("OnClick")
+                    _G["AtlasQuestItemframe" .. i]:SetScript("OnClick", function(self, button)
+                        if IsShiftKeyDown() and self:IsVisible() then
+                            CDing = true
+                            BG.After(0, function()
+                                CDing = false
+                            end)
+                            local itemID
+                            if (Allianceorhorde == 1) then
+                                itemID = getglobal("Inst" .. AQINSTANZ .. "Quest" .. AQSHOWNQUEST .. "ID" .. AQTHISISSHOWN)
+                            else
+                                itemID = getglobal("Inst" .. AQINSTANZ .. "Quest" .. AQSHOWNQUEST .. "ID" .. AQTHISISSHOWN .. "_HORDE")
+                            end
+                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                            ChatFrame1EditBox:ClearHighlightText()
+                            ChatEdit_InsertLink(itemID .. ",")
+                            ChatFrame1EditBox:HighlightText()
+                            BG.PlaySound(1)
+                            return
                         end
                         script(self, button)
                     end)
                 end
             end
         end
+
 
         if IsAddOnLoaded("Blizzard_EncounterJournal") then
             BG.After(0, function()
@@ -3739,6 +3817,28 @@ do
                 ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
                 ChatFrame1EditBox:ClearHighlightText()
                 ChatEdit_InsertLink(self.itemID .. ",")
+                ChatFrame1EditBox:HighlightText()
+                BG.PlaySound(1)
+            end)
+        end
+    end)
+    BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
+        if not (isLogin or isReload) then return end
+        if _G["AtlasLoot_GUI-Frame"] then
+            local bt = CreateFrame("Button", nil, _G["AtlasLoot_GUI-Frame"], "UIPanelButtonTemplate")
+            bt:SetSize(60, 20)
+            bt:SetPoint("TOPRIGHT", -100, -4)
+            bt:SetFrameLevel(10)
+            bt:SetText(L["打印"])
+            bt:SetScript("OnClick", function(self)
+                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                ChatFrame1EditBox:SetText("")
+                for i = 1, 40 do
+                    local bt = _G["AtlasLoot_Button_" .. i]
+                    if bt and bt.ItemID then
+                        ChatEdit_InsertLink(bt.ItemID .. ",")
+                    end
+                end
                 ChatFrame1EditBox:HighlightText()
                 BG.PlaySound(1)
             end)

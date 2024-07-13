@@ -1,20 +1,20 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local BossNum = ADDONSELF.BossNum
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local BossNum = ns.BossNum
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
 
 local pt = print
 
@@ -172,7 +172,7 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
         if not tonumber(self:GetText()) then
             local link = bt:GetText()
             local itemID = select(1, GetItemInfoInstant(link))
-            BG.Hide_AllHiLight()
+            BG.Hide_AllHighlight()
             BG.HighlightBag(link)
             BG.HighlightItemGuoQi(link)
             if itemID then

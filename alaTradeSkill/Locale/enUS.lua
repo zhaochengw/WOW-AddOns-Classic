@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 
 local __addon, __private = ...;
@@ -136,8 +136,8 @@ l10n["showRankTip"] = "Show colored difficulty rank";
 --
 l10n["PROFIT_SHOW_COST_ONLY"] = "Show cost only";
 --
-l10n["LABEL_RANK_LEVEL"] = "\124cffff7f00Rank: \124r";
-l10n["LABEL_GET_FROM"] = "\124cffff7f00Get from: \124r";
+l10n["LABEL_RANK_LEVEL"] = "|cffff7f00Rank: |r";
+l10n["LABEL_GET_FROM"] = "|cffff7f00Get from: |r";
 l10n["quest"] = "Quest";
 l10n["item"] = "Item";
 l10n["object"] = "Object";
@@ -155,48 +155,48 @@ l10n["phase"] = "Phase";
 l10n["unknown area"] = "Unknown area";
 l10n["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "Not available for player's faction";
 l10n["AVAILABLE_IN_PHASE_"] = "Available in phase ";
-l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00Status of characters:\124r";
-l10n["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00Used to craft: \124r";
-l10n["RECIPE_LEARNED"] = "\124cff00ff00Learned\124r";
-l10n["RECIPE_NOT_LEARNED"] = "\124cffff0000Not learned\124r";
+l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "|cffff7f00Status of characters:|r";
+l10n["LABEL_USED_AS_MATERIAL_IN"] = "|cffff7f00Used to craft: |r";
+l10n["RECIPE_LEARNED"] = "|cff00ff00Learned|r";
+l10n["RECIPE_NOT_LEARNED"] = "|cffff0000Not learned|r";
 
 l10n["PRINT_MATERIALS: "] = "Needs: ";
 l10n["PRICE_UNK"] = "Unknown";
-l10n["AH_PRICE"] = "\124cff00ff00AH\124r";
-l10n["VENDOR_RPICE"] = "\124cffffaf00Vendor\124r";
-l10n["COST_PRICE"] = "\124cffff7f00Cost\124r";
-l10n["COST_PRICE_KNOWN"] = "\124cffff0000Known Material\124r";
-l10n["UNKOWN_PRICE"] = "\124cffff0000Unkown\124r";
-l10n["BOP"] = "\124cffff7f7fBOP\124r";
-l10n["PRICE_DIFF+"] = "\124cff00ff00Diff\124r";
-l10n["PRICE_DIFF-"] = "\124cffff0000Diff\124r";
+l10n["AH_PRICE"] = "|cff00ff00AH|r";
+l10n["VENDOR_RPICE"] = "|cffffaf00Vendor|r";
+l10n["COST_PRICE"] = "|cffff7f00Cost|r";
+l10n["COST_PRICE_KNOWN"] = "|cffff0000Known Material|r";
+l10n["UNKOWN_PRICE"] = "|cffff0000Unkown|r";
+l10n["BOP"] = "|cffff7f7fBOP|r";
+l10n["PRICE_DIFF+"] = "|cff00ff00Diff|r";
+l10n["PRICE_DIFF-"] = "|cffff0000Diff|r";
 l10n["PRICE_DIFF0"] = "The same";
-l10n["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
-l10n["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+l10n["PRICE_DIFF_AH+"] = "|cff00ff00AH5%|r";
+l10n["PRICE_DIFF_AH-"] = "|cffff0000AH5%|r";
 l10n["PRICE_DIFF_AH0"] = "AH";
-l10n["PRICE_DIFF_INFO+"] = "\124cff00ff00+\124r";
-l10n["PRICE_DIFF_INFO-"] = "\124cffff0000-\124r";
-l10n["CRAFT_INFO"] = "\124cffff7f00Craft info: \124r";
-l10n["CRAFTED_BY"] = "\124cffff7f00Crafted by: \124r";
+l10n["PRICE_DIFF_INFO+"] = "|cff00ff00+|r";
+l10n["PRICE_DIFF_INFO-"] = "|cffff0000-|r";
+l10n["CRAFT_INFO"] = "|cffff7f00Craft info: |r";
+l10n["CRAFTED_BY"] = "|cffff7f00Crafted by: |r";
 l10n["ITEMS_UNK"] = "items unk";
-l10n["NEED_UPDATE"] = "\124cffff0000!!Need refresh!!\124r";
+l10n["NEED_UPDATE"] = "|cffff0000!!Need refresh!!|r";
 --
-l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffSearch name instead of hyperlink\124r";
+l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "|cffffffSearch name instead of hyperlink|r";
 l10n["haveMaterialsTip"] = "Show recipes that u have enough materials";
-l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffffEarn some money! \124r";
+l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "|cffffffffEarn some money! |r";
 --
 l10n["BOARD_LOCK"] = "LOCK";
 l10n["BOARD_CLOSE"] = "CLOSE";
 l10n["BOARD_TIP"] = "Show cooldown of tradeskill among account. Right-click to toggle or lock";
 l10n["COLORED_FORMATTED_TIME_LEN"] = {
-	"\124cff%.2x%.2x00%dd %02dh %02dm %02ds\124r",
-	"\124cff%.2x%.2x00%dh %02dm %02ds\124r",
-	"\124cff%.2x%.2x00%dm %02ds\124r",
-	"\124cff%.2x%.2x00%ds\124r",
+	"|cff%.2x%.2x00%dd %02dh %02dm %02ds|r",
+	"|cff%.2x%.2x00%dh %02dm %02ds|r",
+	"|cff%.2x%.2x00%dm %02ds|r",
+	"|cff%.2x%.2x00%ds|r",
 };
-l10n["COOLDOWN_EXPIRED"] = "\124cff00ff00Available\124r";
+l10n["COOLDOWN_EXPIRED"] = "|cff00ff00Available|r";
 --
-l10n["EXPLORER_TITLE"] = "ALA @ 163UI";
+l10n["EXPLORER_TITLE"] = "ALA ";
 l10n.EXPLORER_SET = {
 	Skill = "Skill",
 	Type = "Type",
@@ -454,7 +454,7 @@ l10n.ITEM_EQUIP_LOC = {
 	[21] = "One-Hand",
 	[22] = "Two-Handed",
 };
-l10n["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00Clear\124r";
+l10n["EXPLORER_CLEAR_FILTER"] = "|cff00ff00Clear|r";
 --
 l10n.SLASH_NOTE = {
 	["expand"] = "Expand frame",
@@ -469,7 +469,7 @@ l10n.SLASH_NOTE = {
 	["show_tradeskill_tip_material_craft_info"] = "List skills using the item as material",
 	["default_skill_button_tip"] = "Show tooltip on blizzard's skill button",
 	["colored_rank_for_unknown"] = "Color name by rank for unknown spell",
-	["regular_exp"] = "Regular Expression Search\124cffff0000!!!Caution!!!\124r",
+	["regular_exp"] = "Regular Expression Search|cffff0000!!!Caution!!!|r",
 	["show_call"] = "Show UI toggle button",
 	["show_tab"] = "Show switch bar",
 	["portrait_button"] = "Dropdown menu on the tradeskill frame portrait",
@@ -483,7 +483,7 @@ l10n.SLASH_NOTE = {
 l10n.ALPHA = "Alpha";
 l10n.CHAR_LIST = "Character list";
 l10n.CHAR_DEL = "Del character";
-l10n["INVALID_COMMANDS"] = "Invalid commonds. Use \124cff00ff00true, 1, on, enable\124r or \124cffff0000false, 0, off, disable\124r instead.";
+l10n["INVALID_COMMANDS"] = "Invalid commonds. Use |cff00ff00true, 1, on, enable|r or |cffff0000false, 0, off, disable|r instead.";
 l10n.TooltipLines = {
 	"Left Click: Open Explorer",
 	"Right Click: Open SettingUI",

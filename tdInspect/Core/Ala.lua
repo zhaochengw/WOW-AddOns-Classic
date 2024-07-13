@@ -190,7 +190,7 @@ function Ala:DecodeGlyph(code)
         local data = {}
         for i = 1, 6 do
             local str = list[i + 1]
-            if str ~= '' then
+            if str and str ~= '' then
                 local val = strsplittable(':', str)
                 -- local v = DecodeNumber(val[1])
                 -- local enabled = v % 8

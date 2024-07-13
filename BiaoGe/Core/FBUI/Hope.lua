@@ -1,21 +1,21 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 local RealmId = GetRealmID()
@@ -614,7 +614,7 @@ function BG.HopeUI(FB)
     do
         local f
         local xinyuan
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             xinyuan = {
                 { name1 = L["分享心愿"], name2 = "" },
             }
@@ -971,7 +971,7 @@ function BG.HopeDaoChuUI()
             HideOtherFrame(bt.bg)
 
             if not self.bg then
-                local sbg, s, child
+                local sbg, scroll, child
                 local bg = CreateFrame("Frame", nil, bt, "BackdropTemplate")
                 do
                     bg:SetBackdrop({
@@ -1011,15 +1011,15 @@ function BG.HopeDaoChuUI()
                     sbg:SetSize(bg:GetWidth() - 16, bg:GetHeight() - 70)
                     sbg:SetFrameLevel(130)
                     self.sbg = sbg
-                    s = CreateFrame("ScrollFrame", nil, sbg, "UIPanelScrollFrameTemplate")
-                    s:SetPoint("TOPLEFT", 5, -4)
-                    s:SetPoint("BOTTOMRIGHT", -27, 4)
-                    s.ScrollBar.scrollStep = BG.scrollStep
+                    scroll = CreateFrame("ScrollFrame", nil, sbg, "UIPanelScrollFrameTemplate")
+                    scroll:SetPoint("TOPLEFT", 5, -4)
+                    scroll:SetPoint("BOTTOMRIGHT", -27, 4)
+                    scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
 
-                    self.s = s
+                    self.s = scroll
 
-                    child = CreateFrame("EditBox", nil, s)
+                    child = CreateFrame("EditBox", nil, scroll)
                     child:SetWidth(sbg:GetWidth())
                     child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     child:SetMultiLine(true)
@@ -1027,7 +1027,7 @@ function BG.HopeDaoChuUI()
                     child:EnableMouse(true)
                     child:SetTextInsets(5, 28, 5, 10)
                     self.child = child
-                    s:SetScrollChild(child)
+                    scroll:SetScrollChild(child)
                     child:SetScript("OnEscapePressed", function(self)
                         bg:Hide()
                     end)
@@ -1083,7 +1083,7 @@ function BG.HopeDaoChuUI()
             HideOtherFrame(bt.bg)
 
             if not self.bg then
-                local sbg, s, child
+                local sbg, scroll, child
                 local bg = CreateFrame("Frame", nil, bt, "BackdropTemplate")
                 do
                     bg:SetBackdrop({
@@ -1123,15 +1123,15 @@ function BG.HopeDaoChuUI()
                     sbg:SetSize(bg:GetWidth() - 16, bg:GetHeight() - 70)
                     sbg:SetFrameLevel(130)
                     self.sbg = sbg
-                    s = CreateFrame("ScrollFrame", nil, sbg, "UIPanelScrollFrameTemplate")
-                    s:SetPoint("TOPLEFT", 5, -4)
-                    s:SetPoint("BOTTOMRIGHT", -27, 4)
-                    s.ScrollBar.scrollStep = BG.scrollStep
+                    scroll = CreateFrame("ScrollFrame", nil, sbg, "UIPanelScrollFrameTemplate")
+                    scroll:SetPoint("TOPLEFT", 5, -4)
+                    scroll:SetPoint("BOTTOMRIGHT", -27, 4)
+                    scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
 
-                    self.s = s
+                    self.s = scroll
 
-                    child = CreateFrame("EditBox", nil, s)
+                    child = CreateFrame("EditBox", nil, scroll)
                     child:SetWidth(sbg:GetWidth())
                     child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     child:SetMultiLine(true)
@@ -1139,7 +1139,7 @@ function BG.HopeDaoChuUI()
                     child:EnableMouse(true)
                     child:SetTextInsets(5, 28, 5, 10)
                     self.child = child
-                    s:SetScrollChild(child)
+                    scroll:SetScrollChild(child)
                     child:SetScript("OnEscapePressed", function(self)
                         bg:Hide()
                     end)

@@ -1,22 +1,22 @@
-if not BG.IsWLK() then return end
+if not BG.IsWLK then return end
 
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local BossNum = ADDONSELF.BossNum
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local BossNum = ns.BossNum
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
 
 local pt = print
 
@@ -92,13 +92,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["P1阶段保持在BOSS模型红圈圈外边缘，并和其他坦克保持重合，时刻注意BOSS正面并背对人群；P2阶段在读白骨风暴时提前跑到沙包位，并做好位其他队员减伤任务。当P2结束，坦克应当嘲讽接怪，以并尽快将BOSS定位合理位置"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["P1治疗这这场战斗中要照顾好被天灾领主之刺点名玩家，安排一名奶骑站近战位是一个不错的选择；P2阶段应留意沙包坦的血量，保持自己与BOSS合适的距离，同时保护好自己"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["P1站BOSS红圈内输出，并躲好因意外触发的冷焰，以及时刻注意BOSS正面位置以免吃到军刀猛刺；骨针点名近战位第一时间转火；P2转阶段前提前跑位，躲好冷焰以及处理好骨针，并做好自保技能的准备；如果被BOSS追，离开其移动路径和方向。并确保自己位置在沙包和BOSS之间。当回到P1时由于P2清空仇恨，DPS注意先让坦克接怪"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["P1根据安排站位，躲好冷焰以及转火骨针，P2站位沙包坦和BOSS之间的区域，躲好冷焰、白骨风暴和转火好骨针，并做好自保技能的准备。如果被BOSS追，离开其移动方向和路径。并确保自己位置在沙包和BOSS之间。当回到P1时由于P2清空仇恨，DPS注意先让坦克先接怪"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -336,13 +336,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
         -- 职责
         local text1 = L["P1阶段坦克注意自己的职责任务，并躲避“畸形的狂热者”和正在释放“黑暗殉道”的小怪；做好其他坦克被心控后的小怪问题；P2建立好仇恨序列以及聚好小怪"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["尽可能的保持8码分散，P1阶段看好几个小怪坦克，团血注意被死亡凋零和小怪技能误伤的玩家；P2阶段注意BOSS非读条施法的状态下坦克吃到的普攻三连。应当监控boss的读条。驱散各类敌对BUFF和友方debuff"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["P1优先处理追随者，并AOEboss；场地出什么躲什么；尽可能打断死寒之箭，不要误伤被心控的玩家；P2看好自己是否有处理小怪的任务，同时注意打断BOSS的寒冰箭，躲好怨毒之影和死亡凋零"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["P1躲避各种环境伤害，保持8码分散，尽快输出小怪，优先击杀“畸形的狂热者”，空闲全力输出BOSS；P2躲好怨毒之影和在危险时确保自己可以自保"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -382,13 +382,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["群啦坦注意躲避剑刃风暴，首领坦如果法师击杀慢了，注意首领NPC的战斗之怒技能叠层，危险的时候减伤技能该交的交"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["看好自己安排什么样任务，如果刷敌对舰首领坦，注意首领的战斗之怒层数；友方舰这边治疗注意看到剑刃风暴误伤的伤害，总体而言，这个BOSS没什么特别注意点"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["飞跃敌对舰的近战DPS注意首领的位置，注意别吃到顺劈，尽快击杀法师；除了被安排上火炮的玩家，优先安排单体高的近战DPS飞跃敌对舰杀法师，群攻高职业留友方舰清理小怪"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["飞跃敌对舰的远程DPS站在船边上尽快击杀法师；除了被安排上火炮的玩家，优先安排单体高的近战DPS飞跃敌对舰杀法师，群攻高职业留友方舰清理小怪"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -425,21 +425,21 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local SpellInfoText = L["萨鲁法尔可以从他的技能和召唤生物造成的伤害中汲取鲜血能量。每2500点技能伤害产生一点鲜血能量"]
             local SpellDoneText = L["不要让血兽攻击到玩家，以减少鲜血能量的回复速度"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
 
             local spellname = "鲜血能量"
             spellnum = spellnum + 1
             local SpellInfoText = L["萨鲁法尔每获得一点鲜血能量，身体就会变大1%，所造成的伤害也会提高1%。最多100点"]
             local SpellDoneText = L["后续由于印记的治疗压力，根据时间轴安排减伤链很有必要。在治疗有压力缺口的时候开始安排减伤链"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
 
             local spellname = "阵亡勇士的印记"
             spellnum = spellnum + 1
             local SpellInfoText = L["当萨鲁法尔鲜血能量叠满到100，会随机对1名玩家释放阵亡勇士的印记，死亡使者萨鲁法尔的近战攻击会波及到该目标，每挥动一次攻击将对印记目标造成6175到6825点物理伤害。如果印记目标死亡将治疗萨鲁法尔其总生命值的20%。印记无法以任何形式驱散，包括死亡。伤害频率受萨鲁法尔攻速影响，物理伤害；不可被抵抗。印记伤害并不产生鲜血能量"]
             local SpellDoneText = L["整场战斗需要合理安排印记治疗策略来保持团队续航，奶骑利用道标可以1拖2；同时随着战斗时间的推移，出现多个玩家被中印记，整场战斗印记最好不要超过6个；法师的冰箱，骑士的无敌和干涉可以抵消伤害但是无法取消印记"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
             BG.CreateBossSpellTisIcon(BG.BossFrameICC["Boss" .. bossnum].spellFrame, npcnum, spellnum, 3)
             BG.CreateBossSpellTisIcon(BG.BossFrameICC["Boss" .. bossnum].spellFrame, npcnum, spellnum, 6)
 
@@ -448,21 +448,21 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local SpellInfoText = L["进入战斗后每16秒使3名随机玩家的鲜血沸腾，每3秒造成5000点物理伤害，持续15秒，共25000点伤害"]
             local SpellDoneText = L["法师冰箱，骑士自己无敌，给其他玩家保护祝福，并在后续没有保护祝福的时候，每个玩家的自身减伤技能都将是非常重要。另外治疗的HOT是个非常不错的弥补。补充：关于骑士的保护祝福在鲜血能量什么阶段丢最优，根据计算，只要沸腾之血一出，就可以上保护了，后面的沸腾之血，玩家可交自己的减伤技能"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
 
             local spellname = "鲜血新星"
             spellnum = spellnum + 1
             local SpellInfoText = L["进入战斗后每20秒随机从一名玩家的身上迸出鲜血，对目标及其12码范围内的盟友造成9500到10500点物理伤害"]
             local SpellDoneText = L["开打前各职业安排好站位，彼此保持12码距离；合理安排好站位，不单单减少伤害，同时减少BOSS鲜血能量的涨幅速度"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
 
             local spellname = "符文之血"
             spellnum = spellnum + 1
             local SpellInfoText = L["进入战斗每21秒对当前目标释放符文之血，持续20秒。当萨鲁法尔对标记有符文之血的目标发动近战攻击时，他会从中吸取5950到8050点生命值，并以10倍的治疗量恢复自身的生命值"]
             local SpellDoneText = L["坦克第一时间嘲讽，并在被攻击期间不要多次使用嘲讽，防止出现嘲讽免疫；全程应当保持BOSS身上减少回血的debuff"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
             BG.CreateBossSpellTisIcon(BG.BossFrameICC["Boss" .. bossnum].spellFrame, npcnum, spellnum, 1)
 
             local spellname = "狂乱"
@@ -470,7 +470,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local SpellInfoText = L["当萨鲁法尔的生命值低于30%时，他会进入狂乱状态。使自身的体型增大20%，攻击速度提高30%"]
             local SpellDoneText = L["软狂暴，前期开荒受装备数值制约，建议团队爆发应当覆盖在此。坦克应当在当前坦时，安排覆盖自身减伤以及治疗和团队的减伤技能。每个团队组合不同，具体不作策略说明"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
         end
 
         -- NPC
@@ -489,27 +489,27 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local SpellInfoText = L["这种生物的皮肤有很强的抵抗力。效果范围攻击的伤害降低95%，疾病攻击的伤害降低70%"]
             local SpellDoneText = L["单点输出，不要AOE"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
 
             local spellname = "血之气息"
             spellnum = spellnum + 1
             local SpellInfoText = L["存活10秒后，萨鲁法尔的血兽捕捉到血的气味，使附近10码范围所有敌人的移动速度降低80%，并使他们的伤害提高300%，持续10秒"]
             local SpellDoneText = L["可安排一名强化正义之怒的奶骑来抢初始仇恨，让血兽出现第一时间追奶骑，同时避免血兽碰到玩家，合理安排比如猎人的冰霜陷阱、萨满天赋强化后的地缚图腾、术士的暗影之怒、鸟德的台风、DK的冰链等一切减速控制手段，并最快速度击杀"]
             BG.CreateBossSpell(BG.BossFrameICC["Boss" .. bossnum].spellFrame,
-                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText, Pnum)
+                npcnum, spellnum, spell[spellname], SpellInfoText, SpellDoneText)
             BG.CreateBossSpellTisIcon(BG.BossFrameICC["Boss" .. bossnum].spellFrame, npcnum, spellnum, 2)
             BG.CreateBossSpellTisIcon(BG.BossFrameICC["Boss" .. bossnum].spellFrame, npcnum, spellnum, 4)
         end
 
         -- 职责
         local text1 = L["2个T保持重叠站位，注意强化自己嘲讽的命中率；在符文之血最短时间内换嘲，多1秒就会给BOSS增加至少4-6点能量；BOSS30%血量以及高能量叠加时一定要做好自保技能。全程保持不灭药水"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["固定站位，全力根据安排看好自己任务目标，BOSS30%软狂暴期间以及BOSS高能量叠加期间做好饰品，技能等爆发。团队治疗注意看到沸腾之血和鲜血新星的玩家"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["固定站位全力输出，辅助血兽控制和输出；仇恨保持1，2坦之后避免倒T后，BOSS瞬间转头秒你；中沸腾之血交物理减伤，减少鲜血能量涨幅速度"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["根据自己站位全力输出boss和血兽，安排减速链职业看好血兽刷新时间提前做好准备；安排击杀血兽玩家优先击杀离自己最远的目标，临近时要躲开并注意血兽存活10秒后的血之气息"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -613,13 +613,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["坦克将BOSS坦在中间，做好相互之间毒肿层数的监控，按约定层数换嘲；遇到三层凋零呼吸既然到来时或BOSS已经三层凋零呼吸时，嘲讽前做好开好减伤再嘲讽；同时坦克注意可延展黏液丢在近战位的时候，要稍微带离BOSS离开伤害范围，方便近战和自己躲避可延展黏液"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["安排刷坦治疗注意凋零毒气和凋零呼吸的层数，做到团刷和坦刷直接的节奏；凋零呼吸高层切好需要换嘲时主要要给准备嘲讽的坦克预读治疗，适时可提交交减伤。三层凋零毒气需要团刷时提高团刷效率；并注意可延展黏液和孢子的分散和集合"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["全力输出BOSS，注意点名孢子的位置以及躲避可延展黏液，危险的时候自己开个减伤技能，尤其出现自己播种疫苗层数不够的时候"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["注意可延展黏液和孢子的分散和集合，其他全力输出BOSS，注意如果出现自己播种疫苗未满三层，记得一定要开个减伤或向机制职业要一个减伤续命"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -761,13 +761,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["1坦拉好腐面在场地中间，注意拉开意外放在中间的粘稠的软泥；大软泥怪风筝坦逆时针风筝大软泥，小软追不上的时候可制裁"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["根据安排奶好自己任务目标；躲避大小软泥10码；不稳定的软泥爆炸注意移动躲开，并适当开启团队减伤和迅速抬血。站外圈治疗逆时针移动躲避软泥洪流"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["腐面背面疯狂输出，躲避偶尔可能的邪恶毒气；当腐面软泥喷流时移动到侧面继续输出，躲避各类会引起伤害的位置。不稳定的软泥爆炸移动躲开"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["安排邪恶毒气沙包的远程，8码分散全力输出BOSS；其他远程站BOSS背面，移动方式和近战一致；并躲避一切范围伤害"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -967,13 +967,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["全程注意BOSS背朝大团，以及软泥滩和窒息毒气弹 的位置。当教授刷新不稳定的软泥怪的时候拉倒脚下，方便近战输出，注意绿软点名近战时自己开个减伤。并确保减伤技能CD可在P3使用。尽量把教授拉倒软泥摊附近，方便憎恶吸水以及输出BOSS,P3阶段延墙壁移动，在畸变瘟疫2层换嘲，按情况自己交好减伤"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["躲好软泥摊和可延展粘液，以及P2,P3阶段不要站近战的移动轨迹位，确保离开炸弹10码，中肆虐毒疫去传染沙包，看坦克治疗确保远离绿软点名玩家，以防止爆炸时产生位移影响治疗。团队治疗可一起分摊伤害。注意看好红软点名玩家的玩家。P3阶段注意坦克换嘲后的目标，别时刻注意血线。确保P3阶段群体减伤技能可用"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["中肆虐毒疫，跑去传染沙包。躲好炸弹和窒息毒气，当场面有软泥怪时，优先处理软泥怪，红软毒肿1层就要跑开，防止自己被点名来不及风筝。在P3阶段留好自保和爆发技能"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["中肆虐毒疫，跑去传染沙包。躲好软泥摊和可延展粘液，以及P2,P3阶段不要站近战的移动轨迹位，确保离开炸弹10码，优先处理软泥怪 ，并确保爆发和保护技能在P3可用"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -1140,13 +1140,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["根据自己任务安排拉好BOSS，并注意躲避震荡涡流；自保技能根据压力自行安排；尽量拉定位置后不要移动"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["坦克治疗注意瓦拉纳王子和塔达拉姆王子的高压普攻伤害；快速驱散闪耀火花，分散站位注意AOE伤害的抬血。注意强能震荡涡流和塑造强能烈焰的团血健康"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["根据站位全力输出，强能震荡涡流时快速分散到指定位置并保持相隔12码；处理凯雷赛德王子时，不要AOE到黑暗之核。中炸弹跑开人群"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["根据站位全力输出，强能震荡涡流时注意自己相邻位置保持12码；处理凯雷赛德王子时，不要AOE到黑暗之核。中炸弹跑开人群。挂好动力炸弹的伤害"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -1292,13 +1292,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["血量高的坦克安排副坦吃疯狂斩杀，主坦和副坦站位要重叠，择时自保，并交出自己的增益技能，如DKT的狂乱，防战的警戒"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["主要看好两个坦，尤其副坦中了疯狂斩杀，其他治疗要保持HOT，其他治疗要看好蜂拥之影玩家，以及每次暮光血箭技能，P2阶段要在血箭飞舞保持团血爆发。并注意自己的站位，在疯狂嗜血最后3-5秒左右去咬他人"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["DPS最高的近战抢到除坦克外的第一仇恨；快速处理好连线和蜂拥之影，在疯狂嗜血最后3-5秒左右去咬他人，确保时间轴P2阶段不出现需要咬人的情况，以及在P2阶段注意自己的站位，每次转阶段先让坦克吃到鲜血镜像。如果近战人多，可尽量分组站位，以避免吃到更多的暮光血箭AOE伤害"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["确保让DPS最高的近战仇恨保持除坦克外的第一仇恨，以确保他被第一个吸血撕咬点名；快速处理好连线和蜂拥之影，在疯狂嗜血最后3-5秒左右去咬他人，确保时间轴P2阶段不出现需要咬人的情况，以及全阶段注意自己的站位"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -1498,13 +1498,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["坦克拉住刷新的小怪，择时聚怪方便DPSAOE，脓疮僵尸爆炸的时候要带离人群，自己也注意远离；注意躲避其他减益技能"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["治疗在进入翡翠梦境时应特别注意受到的DOT伤害，互相保持治疗，最好使用瞬发和HOT技能，进梦境吃梦魇之云的时候注意统一移动，尽量叠好更多的层数；出来继续治疗踏梦者和全团玩家以及注意躲避寒冰气旋 、法力黑洞等其他减益技能，奶骑圣光道标给踏梦者瓦莉瑟瑞娅；叠够层数后开爆发全力治愈踏梦者;如果有神牧给BOSS上守护之魂，并镶嵌守护之魂雕文使其CD缩短为1分钟，法师的魔法增益似乎也有一些效果"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["优先处理灼热骷髅、和镇压者；出现复生的大法师记得打断技能并全力输出。注意躲避其他减益技能"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["全力输出，躲避大法师的寒冰气旋和法力黑洞；优先击杀灼热骷髅并躲避其他减益技能"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -1645,13 +1645,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["开战时，快速跑位，将坦克定在中间位置，确保后续站位不乱；确保自己的减伤技能CD，能覆盖P3阶段；P3阶段的每次吐息要覆盖减伤。寒霜刺骨层输高的时候注意esc 消一下；和副坦商量好秘法打击嘲讽层数，并且在非坦阶段躲在寒冰坟墓后面消层"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["开战时远程和治疗集中站，中狂咒后左右按安排左右两边分散20码站位并消除动荡后方可集合；P2转阶段给坦克消减速debuff，并给冰霜道标点名的玩家刷满血，自己注意躲好炸弹；P3阶段注意自己秘法打击的叠层，和其他治疗商量好相互配合消层时间，防止坦克断治疗，P3按事先安排为主坦每次吐息覆盖减伤。并注意在寒冰坟墓时自己的视野，不要卡视野断治疗"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["站在冰龙的侧面前爪之间，避免吃到吐息和顺劈斩；不要让自己的寒霜刺骨层数太高，6-8层就停手消一下，有减伤技能也可以覆盖；P2阶段注意好自己是否被点名，寒冰坟墓确保4次寒冰炸弹后打破；P3阶段3层秘法打击左右可以利用寒冰坟墓来消层，同时可以清理寒霜刺骨"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["开战时远程和治疗集中站，中狂咒后左右按安排左右两边分散20码站位并消除动荡后方可集合；P2阶段注意好自己是否被点名，寒冰坟墓确保4次寒冰炸弹后打破；P3阶段中狂咒不要有技能动作，3层秘法打击左右可以利用寒冰坟墓来消层"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 
 
@@ -1930,13 +1930,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 职责
         local text1 = L["注意将巫妖王背对大团，并注意近战位的暗影陷阱以及污染，P1监控巫妖王的热病虹吸叠层，在10-15层开始覆盖减伤；小怪坦同样注意背对大团，并且确保小怪不要离大团太远，保持12-15左右即可，方便吃到瘟疫伤害，P2/P3灵魂收割时换嘲注意技能覆盖，以防止秒坦"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L["P1当中了死疽的玩家靠近副坦克时驱散，P2/P3中了污染第一时间跑出人群，P2/P3注意协调好坦克灵魂收割的减伤"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L["P1中了死疽马上靠近副坦克，不要毛P1小怪的伤害，P2/P3中了污染第一时间跑出人群，全程处理小怪时不要站在正面"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L["P1中了死疽马上靠近副坦克，不要毛P1小怪的伤害，转阶段优先打冰球，P2/P3中了污染第一时间跑出人群。P3内场时，优先处理靠近大团的卑劣的灵魂"]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
 end)
 
@@ -1977,13 +1977,13 @@ end)
 
         -- 职责
         local text1 = L[""]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 1, text1)
         local text1 = L[""]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 2, text1)
         local text1 = L[""]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 3, text1)
         local text1 = L[""]
-        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1, text2, text3)
+        BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
 
     end
 

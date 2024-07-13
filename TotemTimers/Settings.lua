@@ -220,8 +220,8 @@ SettingsFunctions = {
             button:SetAttribute("ds", 1)
             -- update rank and set macro from attribute because of ft-1/ft-button
             TotemTimers.UpdateRank(button)
-        else
-            if not GetSpellInfo(value) then
+        elseif value then
+            if not GetSpellInfo(value) or not AvailableSpells[TotemTimers.GetBaseSpellID(value)] then
                 if AvailableSpells[SpellIDs.RockbiterWeapon] then
                     value = SpellIDs.RockbiterWeapon
                 elseif AvailableSpells[SpellIDs.FlametongueWeapon] then
@@ -754,9 +754,9 @@ SettingsFunctions.ReverseBarBindings = SettingsFunctions.BarBindings
 
     SettingsFunctions.EarthShieldTargetName = function(value, Timers)
         if value then
-            Timers[7].nameframe:Show()
+            Timers[7].name:Show()
         else
-            Timers[7].nameframe:Hide()
+            Timers[7].name:Hide()
         end
     end
 

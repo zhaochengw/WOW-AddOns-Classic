@@ -75,16 +75,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20240629082334")
+DBM.Revision = parseCurseDate("20240711100522")
 
-local fakeBWVersion, fakeBWHash = 337, "848363e"--337.4
+local fakeBWVersion, fakeBWHash = 341, "51c5bf8"--341.1
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "10.2.50"--Core version
+DBM.DisplayVersion = "10.2.53"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 6, 29) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-PForceDisable = 12--When this is incremented, trigger force disable regardless of major patch
+DBM.ReleaseRevision = releaseDate(2024, 7, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+PForceDisable = (private.isWrath or private.isClassic) and 13 or 12--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
 -- support for github downloads, which doesn't support curse keyword expansion
@@ -602,6 +602,9 @@ do
 		end,
 	}
 end
+
+-- this is not technically a lib and instead a standalone addon but the api is available via LibStub
+local CustomNames = C_AddOns.IsAddOnLoaded("CustomNames") and LibStub and LibStub("CustomNames")
 
 ---------------------------------
 --  General (local) functions  --
@@ -1961,6 +1964,8 @@ do
 		end
 	end
 
+	---@param event string
+	---@param ... any?
 	function DBM:FireEvent(event, ...)
 		fireEvent(event, ...)
 	end
@@ -2795,14 +2800,18 @@ do
 	---Shortens name but custom so we add * to off realmers instead of stripping it entirely like Ambiguate does
 	---<br>Technically GetUnitName without "true" can be used to shorten name to "name (*)" but "name*" is even shorter which is why we do this
 	function DBM:GetShortServerName(name)
-		if not self.Options.StripServerName then return name end--If strip is disabled, just return name
-		local shortName, serverName = string.split("-", name)
-		if serverName and serverName ~= playerRealm and serverName ~= normalizedPlayerRealm then
-			return shortName .. "*"
-		else
-			return name
-		end
-	end
+        if not self.Options.StripServerName then return name end--If strip is disabled, just return name
+        if CustomNames then
+			---@diagnostic disable-next-line: undefined-field
+            name = CustomNames.Get(name)
+        end
+        local shortName, serverName = string.split("-", name)
+        if serverName and serverName ~= playerRealm and serverName ~= normalizedPlayerRealm then
+            return shortName .. "*"
+        else
+            return name
+        end
+    end
 
 	---@param guid string
 	function DBM:GetFullPlayerNameByGUID(guid)
@@ -6343,9 +6352,10 @@ do
 			if MAX_TALENT_TABS then
 				for i = 1, MAX_TALENT_TABS do
 					if i <= numTabs then
-						local pointsSpent = private.isCata and select(5, GetTalentTabInfo(i)) or select(3, GetTalentTabInfo(i))
-						if pointsSpent > highestPointsSpent then
-							highestPointsSpent = pointsSpent
+						local _, _, wrathPointsSpent, _, pointsSpent = GetTalentTabInfo(i)--specID, specName will be used in next update once era spec table rebuilt
+						local usedPoints = private.isWrath and wrathPointsSpent or pointsSpent
+						if usedPoints > highestPointsSpent then
+							highestPointsSpent = usedPoints
 							currentSpecGroup = i
 							currentSpecID = playerClass .. tostring(i)--Associate specID with class name and tabnumber (class is used because spec name is shared in some spots like "holy")
 							currentSpecName = currentSpecID
@@ -6599,6 +6609,7 @@ do
 	---Wrapper for Blizzard GetSpellCooldown global that converts new table returns to old arg returns
 	---<br>This avoids having to significantly update nearly 20 years of boss mods.
 	---@param spellId string|number --Should be number, but accepts string too since Blizzards api converts strings to number.
+	---@return number, number, number
 	function DBM:GetSpellCooldown(spellId)
 		local start, duration, enable
 		if newPath then
@@ -7739,6 +7750,7 @@ do
 	end
 end
 
+---@param uId string? Used for querying external unit. If nil, queries "player"
 function bossModPrototype:UnitClass(uId)
 	if uId then--Return unit requested
 		local _, class = UnitClass(uId)
@@ -7771,6 +7783,8 @@ do
 	end
 end
 
+---@param uId string? Used for querying external unit. If nil, queries "player"
+---@return boolean
 function bossModPrototype:IsDps(uId)
 	if uId then--External unit call.
 		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
@@ -7787,6 +7801,8 @@ function bossModPrototype:IsDps(uId)
 end
 
 ---@param self DBMModOrDBM
+---@param uId string? Used for querying external unit. If nil, queries "player"
+---@return boolean
 function DBM:IsHealer(uId)
 	if uId then--External unit call.
 		if not private.isRetail then
@@ -7822,6 +7838,7 @@ bossModPrototype.IsHealer = DBM.IsHealer
 ---@param enemyGUID string? guid of tanked unit we're checking. This or enemyUnitID must be provided
 ---@param includeTarget boolean? set to true to allow bosses target to be good enough if threat check fails
 ---@param onlyS3 boolean? true for tight threat check (status 3 securly tanked required). loose threat otherwise
+---@return boolean
 function DBM:IsTanking(playerUnitID, enemyUnitID, isName, onlyRequested, enemyGUID, includeTarget, onlyS3)
 	--Didn't have playerUnitID so combat log name was passed
 	if isName then
@@ -7904,8 +7921,10 @@ end
 do
 	local bossNames, bossIcons = {}, {}
 
-	--This accepts both CID and GUID which makes switching to UnitPercentHealthFromGUID and UnitTokenFromGUID not as cut and dry
+	---This accepts both CID and GUID which makes switching to UnitPercentHealthFromGUID and UnitTokenFromGUID not as cut and dry
 	---@param self DBMModOrDBM
+	---@param cIdOrGUID number|string
+	---@param onlyHighest boolean?
 	function DBM:GetBossHP(cIdOrGUID, onlyHighest)
 		local uId = bossHealthuIdCache[cIdOrGUID] or "target"
 		local guid = UnitGUID(uId)
@@ -8051,8 +8070,16 @@ end
 ---------------
 --  Options  --
 ---------------
+---@param name any Option name must be string, but language server gets confused if it's not set to any
 ---@param default SpecFlags|boolean?
-function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionType, waCustomName)
+---@param cat string? category type: ie "timer", "announce", "misc", "sound", etc
+---@param func any? Custom function to call when option is changed
+---@param extraOption string|number? Used for attached options such as timer color or special warning sound
+---@param extraOptionTwo string|number? Used for attached options such as countdown voice or special warning note
+---@param spellId any? spellId to group with other options for same spell
+---@param optionSubType string? ie "gtfo", "adds", "achievement", "stage", etc
+---@param waCustomName string? used to inject custom weak aura spellId key text
+function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionSubType, waCustomName)
 	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
 		DBM:Debug("|cffff0000Option already exists for: |r" .. name)
 	else
@@ -8076,22 +8103,29 @@ function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, e
 		if waCustomName then--Do custom shit for options using invalid spellIds as weak auras keys
 			self:GroupWASpells(waCustomName, spellId, name)
 		else
-			if optionType and optionType == "achievement" then
+			if optionSubType and optionSubType == "achievement" then
 				spellId = "at" .. spellId--"at" for achievement timer
 			end
-			local optionTypeMatch = optionType or ""
+			local optionTypeMatch = optionSubType or ""
 			if not optionTypeMatch:find("stage") then
 				self:GroupSpells(spellId, name)
 			end
 		end
 	end
-	self:SetOptionCategory(name, cat, optionType, waCustomName)
+	self:SetOptionCategory(name, cat, optionSubType, waCustomName)
 	if func then
 		self.optionFuncs = self.optionFuncs or {}
 		self.optionFuncs[name] = func
 	end
 end
 
+---@param name any
+---@param default SpecFlags|boolean?
+---@param defaultSound number|string? Can be number for built in spec warn sound 1-4 or string for custom sound path
+---@param cat string? category type: ie "timer", "announce", "misc", "sound", etc
+---@param spellId any? spellId to group with other options for same spell
+---@param optionType string?
+---@param waCustomName string? used to inject custom weak aura spellId key text
 function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, cat, spellId, optionType, waCustomName)
 	if checkDuplicateObjects[name] then
 		DBM:Debug("|cffff0000Option already exists for: |r" .. name)
@@ -8479,6 +8513,7 @@ end
 
 ---Custom function for handling group spells where we want to group by ID, but not use that IDs name (basically a fake Id for purpose of a unified WA key)
 ---This lets us group options up that aren't using valid IDs, and show the ID it is using for WA in the gui next to custom name
+---@param customName string? Used to inject custom weak aura spellId key text
 function bossModPrototype:GroupWASpells(customName, ...)
 	local spells = {...}
 	local catSpell = tostring(tremove(spells, 1))
@@ -8545,12 +8580,17 @@ function bossModPrototype:GroupSpells(...)
 	end
 end
 
-function bossModPrototype:SetOptionCategory(name, cat, optionType, waCustomName, hasPrivate)
-	optionType = optionType or ""
+---@param name any
+---@param cat string category type: ie "timer", "announce", "misc", "sound", etc
+---@param optionSubType string? ie "gtfo", "adds", "achievement", "stage", etc
+---@param waCustomName string? used to inject custom weak aura spellId key text
+---@param hasPrivate boolean? used to mark option as private aura option so it displays PA icon in GUI
+function bossModPrototype:SetOptionCategory(name, cat, optionSubType, waCustomName, hasPrivate)
+	optionSubType = optionSubType or ""
 	for _, options in pairs(self.optionCategories) do
 		removeEntry(options, name)
 	end
-	if self.addon and self.groupSpells[name] and not (optionType == "gtfo" or optionType == "adds" or optionType == "addscount" or optionType == "addscustom" or optionType:find("stage") or cat == "icon" and DBM.Options.GroupOptionsExcludeIcon) then
+	if self.addon and self.groupSpells[name] and not (optionSubType == "gtfo" or optionSubType == "adds" or optionSubType == "addscount" or optionSubType == "addscustom" or optionSubType:find("stage") or cat == "icon" and DBM.Options.GroupOptionsExcludeIcon) then
 		local sSpell = self.groupSpells[name]
 		if not self.groupOptions[sSpell] then
 			self.groupOptions[sSpell] = {}
@@ -8574,6 +8614,23 @@ end
 --------------
 --  Combat  --
 --------------
+---@meta
+---@alias combatTypes
+---|"combat": Default Option. Triggers Combat on ENCOUNTER_START, INSTANCE_ENCOUNTER_ENGAGE_UNIT, UNIT_HEALTH, PLAYER_REGEN_DISABLED
+---|"yell": Triggers Combat on CHAT_MSG_MONSTER_YELL
+---|"say": Triggers Combat on CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY
+---|"emote": Triggers Combat on CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE
+---|"yell_regex": Triggers Combat on CHAT_MSG_MONSTER_YELL using regex matching
+---|"say_regex": Triggers Combat on CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY using regex matching
+---|"emote_regex": Triggers Combat on CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE using regex matching
+---|"combat_yell": Same as combat, but also uses CHAT_MSG_MONSTER_YELL exact matching
+---|"combat_say": Same as combat, but also uses CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY exact matching
+---|"combat_emote": Same as combat, but also uses CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE exact matching
+---|"combat_yellfind": Same as combat, but also uses CHAT_MSG_MONSTER_YELL loose matching
+---|"combat_sayfind": Same as combat, but also uses CHAT_MSG_SAY or CHAT_MSG_MONSTER_SAY loose matching
+---|"combat_emotefind": Same as combat, but also uses CHAT_MSG_EMOTE or CHAT_MSG_MONSTER_EMOTE loose matching
+---|"scenario": Tells mod to treat an entire scenario as combat
+---@param cType combatTypes
 function bossModPrototype:RegisterCombat(cType, ...)
 	if cType then
 		cType = cType:lower()
@@ -8671,6 +8728,7 @@ function bossModPrototype:SetDetectCombatInVehicle(flag)
 	combatInfo.noCombatInVehicle = not flag
 end
 
+---Used to set creature IDs this mod will scan for Boss Health and legacy or backup combat detection methods
 function bossModPrototype:SetCreatureID(...)
 	self.creatureId = ...
 	if select("#", ...) > 1 then
@@ -8698,6 +8756,7 @@ function bossModPrototype:SetCreatureID(...)
 	end
 end
 
+---Used to set Encounter IDs this mod will pass to ENCOUNTER_START/ENCOUNTER_END/BOSS_KILL
 function bossModPrototype:SetEncounterID(...)
 	self.encounterId = ...
 	if select("#", ...) > 1 then
@@ -8916,6 +8975,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20240711100522" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then

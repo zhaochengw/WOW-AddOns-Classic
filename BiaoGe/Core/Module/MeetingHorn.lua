@@ -1,21 +1,21 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 local RealmId = GetRealmID()
@@ -210,7 +210,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
         function Browser:Sort()
             sort(self.ActivityList:GetItemList(), function(a, b)
-                if not BG.IsVanilla() then
+                if not BG.IsVanilla then
                     local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
                     if acl or bcl then
                         if acl and bcl then
@@ -265,6 +265,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                         return bid < aid
                     end
                 end
+                return false
             end)
             self.ActivityList:Refresh()
 
@@ -294,7 +295,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
         local bt = CreateFrame("Button", nil, Browser, "UIPanelButtonTemplate")
         bt:SetSize(120, 22)
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             bt:SetPoint("BOTTOMRIGHT", MeetingHorn.MainPanel, "BOTTOMRIGHT", -4, 4)
         else
             bt:SetPoint("RIGHT", Browser.RechargeBtn, "LEFT", -10, 0)
@@ -326,7 +327,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         f:SetBackdropColor(0, 0, 0, 0.8)
         f:SetBackdropBorderColor(0, 0, 0, 0.8)
         f.width = 200
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             f.height = 160
         else
             f.height = 224
@@ -369,7 +370,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(L["密语模板"], 1, 1, 1)
-            if BG.IsVanilla() then
+            if BG.IsVanilla then
                 GameTooltip:AddLine(L["预设装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"], 1, 0.82, 0, true)
             else
                 GameTooltip:AddLine(L["预设成就、装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"], 1, 0.82, 0, true)
@@ -384,7 +385,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
         -- 成就
         local AchievementTitle, AchievementTitleID, AchievementEdit, AchievementCheckButton
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             do
                 local t = f:CreateFontString()
                 t:SetPoint("TOPLEFT", 15, -30)
@@ -513,7 +514,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         local iLevelTitle, iLevelCheckButton
         do
             local t = f:CreateFontString()
-            if BG.IsVanilla() then
+            if BG.IsVanilla then
                 t:SetPoint("TOPLEFT", 15, -30)
             else
                 t:SetPoint("TOPLEFT", AchievementCheckButton, "BOTTOMLEFT", 0, -5)
@@ -725,7 +726,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 end
                 if BiaoGe.options["MeetingHorn_whisper"] == 1 then
                     local iLevel
-                    if BG.IsVanilla() then
+                    if BG.IsVanilla then
                         iLevel = iLevelCheckButton.Text:GetText() .. L["装等"]
                     else
                         iLevel = iLevelCheckButton.Text:GetText()
@@ -909,7 +910,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                     local index, whisperbutton = FindDropdownItem(dropdown, WHISPER)
                     local x, y = select(4, whisperbutton:GetPoint())
                     y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla()) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
+                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
                         y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
                     end
                     mybutton1:ClearAllPoints()
@@ -928,7 +929,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                             end
                         end
                     end
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla()) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
+                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
                         dropdown:SetHeight(dropdown:GetHeight() + UIDROPDOWNMENU_BUTTON_HEIGHT)
                     end
                 end

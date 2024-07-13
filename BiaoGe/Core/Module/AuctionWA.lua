@@ -1,4 +1,4 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
 local pt = print
 
@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.3"
+    aura_env.ver = "v1.4"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -117,6 +117,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     aura_env.WIDTH = 310
     aura_env.REPEAT_TIME = 20
     aura_env.HIDEFRAME_TIME = 3
+    aura_env.edgeSize = 2.5
+    aura_env.backdropColor = { 0, 0, 0, 0.6 }
+    aura_env.backdropBorderColor = { 1, 1, 0, 1 }
+    aura_env.backdropColor_IsMe = { aura_env.RGB("009900", 0.6) }
+    aura_env.backdropBorderColor_IsMe = { 0, 1, 0, 1 }
     aura_env.raidRosterInfo = {}
 
     -- 字体
@@ -515,16 +520,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f.start = false
         if player == UnitName("player") then
             f.topMoney:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. aura_env.L[">> 你 <<"])
-            f:SetBackdropColor(0, 1, 0, 0.2)
-            f:SetBackdropBorderColor(0, 1, 0, 1)
+            f:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
+            f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
         else
             if f.mod == "anonymous" then
                 f.topMoney:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. aura_env.L["匿名"])
             else
                 f.topMoney:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. f.colorplayer)
             end
-            f:SetBackdropColor(0, 0, 0, 0.6)
-            f:SetBackdropBorderColor(0, 0, 0, 1)
+            f:SetBackdropColor(unpack(aura_env.backdropColor))
+            f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
         end
         aura_env.myMoney_OnTextChanged(f.myMoney)
         aura_env.UpdateAllOnEnters()
@@ -590,6 +595,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end)
     end
 
+    function aura_env.anim(parent)
+        local animGroup = parent:CreateAnimationGroup()
+        local scaleAnim = animGroup:CreateAnimation("Scale")
+        scaleAnim:SetOrder(1)
+        scaleAnim:SetDuration(.5)
+        scaleAnim:SetScaleFrom(2, 2)
+        scaleAnim:SetScaleTo(1, 1)
+        animGroup:Play()
+    end
+
     function aura_env.CreateAuction(auctionID, itemID, money, duration, player, mod)
         for i, f in ipairs(_G.BGA.Frames) do
             if f.auctionID == auctionID then
@@ -605,7 +620,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             return
         end
         local AuctionFrame, itemFrame, moneyFrame
-        local edgeSize = 3
 
         -- 主界面
         do
@@ -613,10 +627,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetBackdrop({
                 bgFile = "Interface/ChatFrame/ChatFrameBackground",
                 edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                edgeSize = edgeSize,
+                edgeSize = aura_env.edgeSize,
             })
-            f:SetBackdropColor(0, 0, 0, 0.6)
-            f:SetBackdropBorderColor(0, 0, 0, 1)
+            f:SetBackdropColor(unpack(aura_env.backdropColor))
+            f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
             f:SetSize(aura_env.WIDTH, 108)
             if #_G.BGA.Frames == 0 then
                 f:SetPoint("TOPLEFT", 0, 0)
@@ -647,7 +661,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
             bt:SetHighlightFontObject(_G.BGA.FontWhite15)
-            bt:SetPoint("TOPRIGHT", -edgeSize - 1, -3)
+            bt:SetPoint("TOPRIGHT", -aura_env.edgeSize - 1, -3)
             bt:SetText(aura_env.L["隐藏"])
             bt:SetSize(bt:GetFontString():GetWidth(), 20)
             bt.owner = AuctionFrame
@@ -673,7 +687,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
             bt:SetHighlightFontObject(_G.BGA.FontWhite15)
-            bt:SetPoint("TOPLEFT", edgeSize + 1, -3)
+            bt:SetPoint("TOPLEFT", aura_env.edgeSize + 1, -3)
             bt:SetText(aura_env.L["取消拍卖"])
             bt:SetSize(bt:GetFontString():GetWidth(), 20)
             bt:RegisterForClicks("AnyUp")
@@ -692,8 +706,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 装备显示
         do
             local f = CreateFrame("Frame", nil, AuctionFrame, "BackdropTemplate")
-            f:SetPoint("TOPLEFT", f:GetParent(), "TOPLEFT", edgeSize + 1, -25)
-            f:SetPoint("BOTTOMRIGHT", f:GetParent(), "TOPRIGHT", -edgeSize - 1, -53)
+            f:SetPoint("TOPLEFT", f:GetParent(), "TOPLEFT", aura_env.edgeSize + 1, -25)
+            f:SetPoint("BOTTOMRIGHT", f:GetParent(), "TOPRIGHT", -aura_env.edgeSize - 1, -53)
             f:SetFrameLevel(f:GetParent():GetFrameLevel() + 10)
             f.owner = AuctionFrame
             f.itemID = itemID
@@ -727,12 +741,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             ftex.tex:SetAllPoints()
             ftex.tex:SetTexture(Texture)
             ftex.tex:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+
             -- 装备等级
             local t = ftex:CreateFontString()
             t:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
             t:SetPoint("BOTTOM", ftex, "BOTTOM", 0, 0)
             t:SetText(level)
             t:SetTextColor(r, g, b)
+
             -- 装备名称
             local t = f:CreateFontString()
             t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
@@ -759,6 +775,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             s:SetMinMaxValues(0, 1000)
             s.owner = AuctionFrame
             AuctionFrame.bar = s
+
             -- 剩余时间
             local remainingTime = f:CreateFontString()
             remainingTime:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
@@ -807,16 +824,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if player and player ~= "" then
                 if player == UnitName("player") then
                     t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. aura_env.L[">> 你 <<"])
-                    AuctionFrame:SetBackdropColor(0, 1, 0, 0.2)
-                    AuctionFrame:SetBackdropBorderColor(0, 1, 0, 1)
+                    AuctionFrame:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
+                    AuctionFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
                 else
                     if mod == "anonymous" then
                         t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. aura_env.L["匿名"])
                     else
                         t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. AuctionFrame.colorplayer)
                     end
-                    AuctionFrame:SetBackdropColor(0, 0, 0, 0.6)
-                    AuctionFrame:SetBackdropBorderColor(0, 0, 0, 1)
+                    AuctionFrame:SetBackdropColor(unpack(aura_env.backdropColor))
+                    AuctionFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
                 end
             elseif mod == "anonymous" then
                 t:SetText(aura_env.L["|cffFFD100< 匿名模式 >|r"])
@@ -893,6 +910,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             aura_env.myMoney_OnTextChanged(AuctionFrame.myMoney)
         end
+        aura_env.anim(AuctionFrame)
 
         aura_env.Auctioning(AuctionFrame, duration)
     end

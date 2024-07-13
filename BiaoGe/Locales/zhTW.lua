@@ -1,6 +1,6 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local c1 = ADDONSELF.c1
+local c1 = ns.c1
 
 if (GetLocale() ~= "zhTW") then return end
 
@@ -22,12 +22,39 @@ do --繁体说明书
     text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
     text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "7月12日更新v1.10.1" .. "|r\n"
+    update = update .. c1 .. [[-拍賣WA更新為v1.4：增加一個開始拍賣時的動畫效果]] .. "|r\n"
+    update = update .. [[-高亮背包裝備：現在也支持Bagnon背包]] .. "|r\n"
+    update = update .. [[-<WLK>角色總覽：增加阿爾法日常。更新英雄日常ID]] .. "|r\n"
+    update = update .. c1 .. [[-<賽季服>增加表格：黑石塔上層]] .. "|r\n"
+    update = update .. c1 .. [[-<賽季服>裝備庫：添加部分P4裝備]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月6日更新v1.10.0b" .. "|r\n"
+    update = update .. [[-<WLK/CTM>增加一鍵指定節日副本]] .. "|r\n"
+    update = update .. [[-修復插件錯誤]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月5日更新v1.10.0" .. "|r\n"
+    update = update .. c1 .. [[-<WLK/60服>表格還原之前的合併狀態，不再拆分多本。優化了進本自動清空表格的邏輯，不會再出現剛打完NAXX，然後進黑曜石本就清空的情況]] .. "|r\n"
+    update = update .. [[-<WLK>角色總覽：恢復英雄日常]] .. "|r\n"
+    update = update .. c1 .. [[-<CTM>P1三本合併為一個表格]] .. "|r\n"
+    update = update .. c1 .. [[-<賽季服>增加P4表格（P4裝備庫晚點再更新）]] .. "|r\n"
+    update = update .. [[-<60服>表格：BOSS模型變得小一點]] .. "|r\n"
+    update = update .. [[-刪除多本賬單按鈕、團本鎖定ID]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "7月2日更新v1.9.9" .. "|r\n"
     update = update .. c1 .. [[-拍賣WA更新為v1.3：修復有部分玩家不顯示拍賣界面的問題；當你是出價最高者時的高亮效果更加顯眼]] .. "|r\n"
     update = update .. [[-一鍵分配：背包類型的物品不會再被一鍵分配]] .. "|r\n"
     update = update .. [[-金額自動加零：現在不會對分錢人數生效]] .. "|r\n"
     update = update .. c1 .. [[-<WLK>一鍵舉報：在戰場裡，右鍵點擊世界地圖上的玩家圓點時，增加一鍵全部舉報的按鈕]] .. "|r\n"
     update = update .. [[-<WLK/CTM>裝備庫：修復了牌子裝所需的貨幣數量不顯示的問題]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
+
+    ns.instructionsText = text
+end
+do --繁体更新内容
+    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "6月29日更新v1.9.8" .. "|r\n"
     update = update .. c1 .. [[-新增：通報多本總覽賬單（按鈕在通報賬單旁邊）]] .. "|r\n"
@@ -49,43 +76,7 @@ do --繁体说明书
     update = update .. c1 .. [[-<CTM>角色總覽：增加巴拉丁監獄]] .. "|r\n"
     update = update .. [[-<60服>MC表格佈局優化]] .. "|r\n\n"
 
-    update = update .. "|cff00FF00" .. "6月19日更新v1.9.5" .. "|r\n"
-    update = update .. [[-拍賣WA：更新為v1.2，現在物品分配者也可以開始拍賣裝備了（需全團把該WA更新至v1.2）]] .. "|r\n"
-    update = update .. [[-對賬：增加[賬單聊天記錄] ]] .. "|r\n"
-    update = update .. [[-對賬：對賬單現在顯示該賬單對應是哪個副本（需對方也使用最新版表格插件）]] .. "|r\n"
-    update = update .. [[-交易自動記賬：現在也會記錄"打包交易"詳細，在表格用鼠標指向這些裝備所在的金額框時會高亮。]] .. "|r\n"
-    update = update .. [[且金額的下拉框會有打包交易的詳細顯示。]] .. "|r\n"
-    update = update .. [[-清空表格/心願按鈕：增加二次確定]] .. "|r\n"
-    update = update .. [[-<WLK/60服>修復了拆分出來的新表格的自動記錄裝備功能失效的問題]] .. "|r\n"
-    update = update .. [[-<賽季服>修復了神廟表格里UI重疊的問題]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ADDONSELF.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
-
-    update = update .. "|cff00FF00" .. "6月15日更新v1.9.4" .. "|r\n"
-    update = update .. [[-表格：罰款和支出欄改為滾動框，可容納更多格子]] .. "|r\n"
-    update = update .. [[-在線人數：數據來源從"大腳世界頻道"改為"尋求組隊頻道"。默認選項改為"不會自動獲取數據"]] .. "|r\n"
-    update = update .. [[-<CTM>裝備過濾：現在默認勾選正確的護甲類型（例如聖騎士會默認過濾布甲/皮甲/鎖甲）]] .. "|r\n"
-    update = update .. [[-<WLK/60>由於與自動清空表格有衝突，現在把表格做了拆分，每個團本都會單獨使用一個表格]] .. "|r\n"
-    update = update .. [[-<WLK>恢復[一鍵舉報]相關功能（因為暴雪未禁用WLK端的相關API）]] .. "|r\n"
-    update = update .. [[-<WLK>裝備庫：刪除獲取途徑顯示的5人本選項。修復了獲取途徑顯示的團本難度選項沒有正確生效的問題]] .. "|r\n"
-    update = update .. [[-<WLK>角色總覽：默認選項適配國服當前階段]] .. "|r\n"
-    update = update .. [[-<60服>角色總覽：增加奧妮克希亞的巢穴]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "6月6日更新v1.9.3" .. "|r\n"
-    update = update .. [[-<CTM>角色總覽：增加征服點數（默認不勾選）]] .. "|r\n"
-    update = update .. [[-<60服>表格：奧妮克希亞的格子增加至8個，奈法利安的格子增加至6個]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "6月1日更新v1.9.2" .. "|r\n"
-    update = update .. [[-<CTM>表格/裝備庫：添加團本小怪掉落]] .. "|r\n"
-    update = update .. [[-<CTM>裝備庫：添加征服點數裝備，更新榮譽點數裝備]] .. "|r\n\n"
-
-    ADDONSELF.updateText = update
+    ns.updateText = update
 end
 
 local L = setmetatable({}, {
@@ -95,12 +86,24 @@ local L = setmetatable({}, {
 })
 
 do
+    L["节日副本和"] = "節日副本和"
+    L["节日副本"] = "節日副本"
+    L["插件加载出现错误，请把报错发给作者，谢谢。（邮箱buick_hbj@163.com，Q群322785325）"] = "插件載入出現錯誤，請把報錯發給作者，謝謝。（郵箱buick_hbj@163.com，Q群322785325）"
+    L["东"] = "東"
+    L["西"] = "西"
+    L["北"] = "北"
+    L["下层"] = "下層"
+    L["不在团本中，不能使用"] = "不在團本中，不能使用"
+    L["阿尔法"] = "阿爾法"
+    L["v1.4：增加一个开始拍卖时的动画效果"] = "v1.4：增加一個開始拍賣時的動畫效果"
+
+
     L["一键全部举报挂机"] = "一鍵全部舉報挂機"
     L["一键全部举报脚本"] = "一鍵全部舉報腳本"
 
 
-    L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n副本：%s\nBOSS：%s"] = "|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金額：%s%s\n副本：%s\nBOSS：%s"
-    L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n副本：%s\nBOSS：%s%s|r"] = "< 交易记账成功 >|r\n装备：%s\n买家：%s\n金額：%s%d|rg%s\n副本：%s\nBOSS：%s%s"
+    L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n表格：%s\nBoss：%s"] = "|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金額：%s%s\n表格：%s\nBoss：%s"
+    L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n表格：%s\nBoss：%s%s|r"] = "< 交易记账成功 >|r\n装备：%s\n买家：%s\n金額：%s%d|rg%s\n表格：%s\nBoss：%s%s"
     L["——通报多本总览账单——"] = "——通報多本總覽賬單——"
     L["通报多本总览账单"] = "通報多本總覽賬單"
     L["|cffFFFFFF点击：|r显示选项面板。"] = "|cffFFFFFF點擊：|r顯示選項面板。"
@@ -610,7 +613,7 @@ do
     L["当鼠标悬停在表格装备时，高亮背包里对应的装备。"] = "當鼠標懸停在表格裝備時，高亮背包裡對應的裝備。"
     L["当鼠标悬停在背包装备时，高亮表格里对应的装备。"] = "當鼠標懸停在背包裝備時，高亮表格裡對應的裝備。"
     L["当鼠标悬停在聊天框装备时，高亮表格和背包里对应的装备。"] = "當鼠標懸停在聊天框裝備時，高亮表格和背包裡對應的裝備。"
-    L["（背包系统支持原生背包、NDui背包、ElvUI背包、大脚背包）"] = "（背包系統支持原生背包、NDui背包、ElvUI背包、大腳背包）"
+    L["（背包系统支持原生背包、NDui背包、ElvUI背包、大脚背包、Bagnon）"] = "（背包系統支持原生背包、NDui背包、ElvUI背包、大腳背包、Bagnon）"
     L["退队/入队玩家上色"] = "退隊/入隊玩家上色"
     L["在退队/入队的系统消息里，给该玩家名字加上职业色并设置为链接。"] = "在退隊/入隊的系統消息裡，給該玩家名字加上職業色並設置為鏈接。"
     L["一键指定%s"] = "一鍵指定%s"
@@ -1693,7 +1696,19 @@ do
         L["摩\n弗\n拉\n斯"] = "摩\n弗\n拉\n斯"
         L["哈\n扎\n斯"] = "哈\n扎\n斯"
         L["伊\n兰\n尼\n库\n斯"] = "伊\n蘭\n尼\n庫\n斯"
-        -- L["伊\n兰\n尼\n库\n斯\n的\n阴\n影"] = "伊\n蘭\n尼\n庫\n斯\n的\n陰\n影"
+
+        L["烈\n焰\n卫\n士"] = "烈\n焰\n守\n護\n者"
+        L["索\n拉\n卡\n·\n火\n冠"] = "索\n拉\n卡\n·\n火\n冠"
+        L["杰\n德"] = "杰\n德"
+        L["古\n拉\n鲁\n克"] = "古\n拉\n魯\n克"
+        L["雷\n德\n·\n黑\n手"] = "雷\n德\n·\n黑\n手"
+        L["比\n斯\n巨\n兽"] = "比\n斯\n巨\n獸"
+        L["达\n基\n萨\n斯\n将\n军"] = "達\n基\n薩\n斯\n將\n軍"
+        L["瓦\n塔\n拉\n克\n公\n爵"] = "瓦\n塔\n拉\n克\n公\n爵"
+
+        L["熔\n火\n之\n心"] = "熔\n火\n之\n心"
+        L["艾\n索\n雷\n葛\n斯"] = "艾\n索\n雷\n葛\n斯"
+        L["卡\n扎\n克"] = "卡\n扎\n克"
 
         L["加加恩·火锤"] = "加加恩·火錘"
         L["格瑞姆洛克"] = "格瑞姆洛克"
@@ -1745,4 +1760,4 @@ do
     end
 end
 
-ADDONSELF.L = L
+ns.L = L

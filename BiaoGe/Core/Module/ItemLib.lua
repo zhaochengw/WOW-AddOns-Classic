@@ -1,23 +1,23 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 local RealmId = GetRealmID()
@@ -88,7 +88,7 @@ local function CheckHaved(itemID) -- 是否已经拥有该装备
 end
 local function AddPrice(itemID) -- 添加装备拍卖行价格
     local m
-    if BG.IsVanilla() then
+    if BG.IsVanilla then
         m = BG.GetAuctionPrice(itemID, "notcopper")
     else
         m = BG.GetAuctionPrice(itemID, "notsilver")
@@ -155,7 +155,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         if strfind(hard, "10") then
             color = "|cff" .. "99CCFF"
         end
-        if BG.IsCTM() then
+        if BG.IsCTM then
             if hard == "N" then
                 color = "|cff" .. "99CCFF"
             end
@@ -184,10 +184,10 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
             exText = " " .. AddTexture(tex) .. exItemLink
         end
 
-        if BG.IsVanilla() then
-            get = color .. BG.GetFBinfo(FB, "localName") .. " " .. bossname .. exText .. AddPrice(itemID)
+        if BG.IsVanilla then
+            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. bossname .. exText .. AddPrice(itemID)
         else
-            get = color .. FB .. " " .. hard .. " " .. bossname .. exText .. AddPrice(itemID)
+            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. hard .. " " .. bossname .. exText .. AddPrice(itemID)
         end
 
         -- 团本正常掉落/兑换物（比如套装）
@@ -197,7 +197,7 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         end
 
         local players
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             players = BG.GetFBinfo(FB, "maxplayers") or 10
         else
             players = tonumber(strmatch(hard, "%d+")) -- 副本规模10人/25人
@@ -405,8 +405,17 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         }
         return a
     elseif type == "fb5" then -- 5人本
-        local FB_5, BossName = strsplit(":", otherID)
-        local get = "|cff" .. "9999FF" .. FB_5 .. " " .. BossName .. RR .. AddPrice(itemID)
+        local FB_5, BossName = strsplit("#", otherID)
+
+        -- 兑换物
+        local exText = ""
+        local exItemID, exItemLink = GetkExchangeItemInfo(itemID)
+        if exItemLink then
+            local tex = select(5, GetItemInfoInstant(exItemID))
+            exText = " " .. AddTexture(tex) .. exItemLink
+        end
+
+        local get = "|cff" .. "9999FF" .. FB_5 .. " " .. BossName .. exText .. RR .. AddPrice(itemID)
 
         local a = {
             itemID = itemID,
@@ -540,7 +549,6 @@ local function Mode(FB, count1, tbl, EquipLocs, itemID, type, hard, ii, k)
             item:ContinueOnItemLoad(function()
                 local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(itemID)
                 -- pt(FB, count1, itemID, level)
-                GetItemInfo(itemID)
                 BG.Tooltip_SetItemByID(itemID) -- 提前设置一次物品鼠标提示信息，避免绿字属性获取不了
             end)
         end
@@ -562,11 +570,11 @@ local function CheckItemCache(EquipLocs, checkFB) -- 不传入参数时是检查
         for _, hard in ipairs(BG.difficultyTable[checkFB]) do
             local trueRaidDifficulty = true
             if not onlyCheckCache then
-                if BG.IsVanilla() then
+                if BG.IsVanilla then
                     if BiaoGe.ItemLib.fitlerGet.raid then
                         trueRaidDifficulty = false
                     end
-                elseif BG.IsWLK() or BG.IsCTM() then
+                elseif BG.IsWLK or BG.IsCTM then
                     if BiaoGe.ItemLib.fitlerGet.raidhero and strfind(hard, "H") then
                         trueRaidDifficulty = false
                     end
@@ -587,13 +595,15 @@ local function CheckItemCache(EquipLocs, checkFB) -- 不传入参数时是检查
                 if BG.Loot[FB][hard] then
                     local ii = 1
                     while BG.Loot[FB][hard]["boss" .. ii] do
-                        for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii]) do
-                            count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, k)
-                        end
-                        -- BOSS掉落后兑换的装备
-                        if BG.Loot[FB][hard]["boss" .. ii .. "other"] then
-                            for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii .. "other"]) do
-                                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, "other")
+                        if not (FB == "TOC" and ii == 7 and hard:find("H")) then
+                            for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii]) do
+                                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, k)
+                            end
+                            -- BOSS掉落后兑换的装备
+                            if BG.Loot[FB][hard]["boss" .. ii .. "other"] then
+                                for i, itemID in ipairs(BG.Loot[FB][hard]["boss" .. ii .. "other"]) do
+                                    count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "raid", hard, ii, "other")
+                                end
                             end
                         end
                         ii = ii + 1
@@ -615,7 +625,7 @@ local function CheckItemCache(EquipLocs, checkFB) -- 不传入参数时是检查
             for FB_5 in pairs(BG.Loot[FB].Team) do
                 for BossName, _ in pairs(BG.Loot[FB].Team[FB_5]) do
                     for _, itemID in pairs(BG.Loot[FB].Team[FB_5][BossName]) do
-                        count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "fb5", hard, ii, FB_5 .. ":" .. BossName)
+                        count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "fb5", hard, ii, FB_5 .. "#" .. BossName)
                     end
                 end
             end
@@ -1370,7 +1380,7 @@ do
     function BG.UpdateItemLib_RightHope_All()
         BG.UpdateItemLib_RightHope_HideAll()
         local FBtable = BG.phaseFBtable[BG.FB1]
-        if BG.IsVanilla_60() then
+        if BG.IsVanilla_60 then
             FBtable = { BG.FB1 }
         end
         for _, FB in pairs(FBtable) do
@@ -1701,7 +1711,7 @@ function BG.ItemLibUI()
             bt:SetScript("OnLeave", GameTooltip_Hide)
 
             local tbl
-            if BG.IsVanilla_Sod() then
+            if BG.IsVanilla_Sod then
                 tbl = {
                     { name = L["团本"], name2 = "raid", },
                     { name = L["5人本"], name2 = "fb5", },
@@ -1711,7 +1721,7 @@ function BG.ItemLibUI()
                     { name = L["世界掉落"], name2 = "world", },
                     { name = L["PVP"], name2 = "pvp", },
                 }
-            elseif BG.IsVanilla_60() then
+            elseif BG.IsVanilla_60 then
                 tbl = {
                     { name = L["团本"], name2 = "raid", },
                     { name = L["声望"], name2 = "faction", },
@@ -1720,7 +1730,7 @@ function BG.ItemLibUI()
                     { name = L["世界BOSS"], name2 = "worldboss", },
                     { name = L["PVP"], name2 = "pvp", },
                 }
-            elseif BG.IsWLK() then
+            elseif BG.IsWLK then
                 tbl = {
                     { name = L["团本：25人"], name2 = "raid25", },
                     { name = L["团本：10人"], name2 = "raid10", },
@@ -1731,7 +1741,7 @@ function BG.ItemLibUI()
                     { name = L["声望"], name2 = "faction", },
                     { name = L["专业"], name2 = "profession", },
                 }
-            elseif BG.IsCTM() then
+            elseif BG.IsCTM then
                 tbl = {
                     { name = L["团本：英雄难度"], name2 = "raidhero", },
                     { name = L["团本：普通难度"], name2 = "raidnormal", },

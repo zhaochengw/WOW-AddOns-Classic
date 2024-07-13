@@ -1,23 +1,23 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
 
 local pt = print
 
@@ -122,7 +122,7 @@ local function OptionsUI()
 
         biaoge = CreateTab("Options_biaoge", L["表格"])
         roleOverview = CreateTab("Options_roleOverview", L["角色总览"])
-        if BG.IsWLK() then
+        if BG.IsWLK then
             boss = CreateTab("Options_boss", L["团本攻略"])
         end
         others = CreateTab("Options_others", L["其他功能"])
@@ -810,7 +810,7 @@ local function OptionsUI()
                 " ",
                 L["当鼠标悬停在聊天框装备时，高亮表格和背包里对应的装备。"],
                 " ",
-                L["（背包系统支持原生背包、NDui背包、ElvUI背包、大脚背包）"],
+                L["（背包系统支持原生背包、NDui背包、ElvUI背包、大脚背包、Bagnon）"],
             }
             local f = O.CreateCheckButton(name, L["高亮对应装备"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
@@ -1113,7 +1113,7 @@ local function OptionsUI()
             local f = O.CreateCheckButton(name, L["清空表格时保留支出补贴名称*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
         end
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             h = h + 30
             -- 清空表格时根据副本难度设置分钱人数
             do
@@ -1312,7 +1312,7 @@ local function OptionsUI()
         h = h + 30
 
         -- 自动获取在线人数
-        if not BG.IsWLK() then
+        if not BG.IsWLK then
             do
                 local name = "autoGetOnline"
                 BG.options[name .. "reset"] = 0
@@ -1636,7 +1636,7 @@ local function OptionsUI()
             local height_jiange = 22
             local line_height = 4
 
-            if BG.IsVanilla_Sod() then
+            if BG.IsVanilla_Sod then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -1673,7 +1673,7 @@ local function OptionsUI()
 
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange
-            elseif BG.IsVanilla_60() then
+            elseif BG.IsVanilla_60 then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -1701,7 +1701,7 @@ local function OptionsUI()
 
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange
-            elseif BG.IsWLK() then
+            elseif BG.IsWLK then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -1745,7 +1745,7 @@ local function OptionsUI()
 
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange * 3
-            elseif BG.IsCTM() then
+            elseif BG.IsCTM then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -1791,7 +1791,7 @@ local function OptionsUI()
             end
 
             -- 5人本完成总览
-            if BG.IsWLK() or BG.IsCTM() then
+            if BG.IsWLK or BG.IsCTM then
                 local name = "FB5M"
                 BG.options[name .. "reset"] = 1
                 if not BiaoGe.options[name] then
@@ -1818,7 +1818,7 @@ local function OptionsUI()
 
     -- 团本攻略设置
     do
-        if BG.IsWLK() then
+        if BG.IsWLK then
             local height = 0
 
             -- 团本攻略字体大小
@@ -1871,7 +1871,7 @@ local function OptionsUI()
                 BG.options["button" .. name] = f
             end
             -- 一键指定灵魂烘炉
-            --[[             if BG.IsWLK() then
+            if not BG.IsVanilla then
                 h = h + 30
                 do
                     local fbID = 632
@@ -1881,14 +1881,20 @@ local function OptionsUI()
                     if not BiaoGe.options[name] then
                         BiaoGe.options[name] = BG.options[name .. "reset"]
                     end
+                    local text1
+                    if BG.IsWLK then
+                        text1 = L["节日副本和"] .. GetRealZoneText(fbID)
+                    else
+                        text1 = L["节日副本"]
+                    end
                     local ontext = {
-                        format(L["一键指定%s"], GetRealZoneText(fbID)),
-                        format(L["在地下城和团队副本界面增加一键指定%s按钮。"], GetRealZoneText(fbID)),
+                        format(L["一键指定%s"], text1),
+                        format(L["在地下城和团队副本界面增加一键指定%s按钮。"], text1),
                     }
-                    local f = O.CreateCheckButton(name, format(L["一键指定%s"] .. "*", GetRealZoneText(fbID)), others, 15, height - h, ontext)
+                    local f = O.CreateCheckButton(name, format(L["一键指定%s"], text1) .. "*", others, 15, height - h, ontext)
                     BG.options["button" .. name] = f
                 end
-            end ]]
+            end
             -- 一键自动分配
             h = h + 30
             do
@@ -1898,7 +1904,7 @@ local function OptionsUI()
                     BiaoGe.options[name] = BG.options[name .. "reset"]
                 end
                 local ontext
-                if BG.IsVanilla() then
+                if BG.IsVanilla then
                     ontext = {
                         L["队长模式一键分配"],
                         L["队长分配模式时，在战利品界面增加一键分配按钮。"],
@@ -1950,7 +1956,7 @@ local function OptionsUI()
                 if not BiaoGe.options[name] then
                     BiaoGe.options[name] = BG.options[name .. "reset"]
                 end
-                if BG.IsWLK() then
+                if BG.IsWLK then
                     local ontext = {
                         L["一键举报"],
                         L["在目标玩家/聊天频道玩家的右键菜单里增加一键举报脚本按钮。快捷命令：/BGReport。"],
@@ -1989,7 +1995,7 @@ local function OptionsUI()
                 BG.options["button" .. name] = f
             end
             -- 贸易局
-            if BG.IsVanilla_Sod() then
+            if BG.IsVanilla_Sod then
                 h = h + 30
 
                 local name = "commerceAuthorityTooltip"
@@ -2010,7 +2016,7 @@ local function OptionsUI()
                 BG.options["button" .. name] = f
             end
             -- 血月活动期间自动释放尸体和自动对话复活
-            if BG.IsVanilla_Sod() then
+            if BG.IsVanilla_Sod then
                 h = h + 30
 
                 local name = "xueyueAuto"
@@ -2153,7 +2159,7 @@ local function OptionsUI()
                 if not BiaoGe.options[name5] then
                     BiaoGe.options[name5] = BG.options[name5 .. "reset"]
                 end
-                if BG.IsVanilla() then
+                if BG.IsVanilla then
                     ontext5 = {
                         L["密语模板"],
                         L["预设装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"],

@@ -1,5 +1,5 @@
 --[[--
-	by ALA @ 163UI
+	by ALA 
 --]]--
 
 local __addon, __private = ...;
@@ -136,8 +136,8 @@ l10n["showRankTip"] = "显示难度等级";
 --
 l10n["PROFIT_SHOW_COST_ONLY"] = "只显示成本";
 --
-l10n["LABEL_RANK_LEVEL"] = "\124cffff7f00技能等级: \124r";
-l10n["LABEL_GET_FROM"] = "\124cffff7f00来源: \124r";
+l10n["LABEL_RANK_LEVEL"] = "|cffff7f00技能等级: |r";
+l10n["LABEL_GET_FROM"] = "|cffff7f00来源: |r";
 l10n["quest"] = "任务";
 l10n["item"] = "物品";
 l10n["object"] = "物品";
@@ -155,48 +155,48 @@ l10n["phase"] = "阶段";
 l10n["unknown area"] = "未知区域";
 l10n["NOT_AVAILABLE_FOR_PLAYER'S_FACTION"] = "不适用于当前角色阵营";
 l10n["AVAILABLE_IN_PHASE_"] = "开放于阶段: ";
-l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "\124cffff7f00帐号角色状态: \124r";
-l10n["LABEL_USED_AS_MATERIAL_IN"] = "\124cffff7f00用于制造: \124r";
-l10n["RECIPE_LEARNED"] = "\124cff00ff00已学\124r";
-l10n["RECIPE_NOT_LEARNED"] = "\124cffff0000未学\124r";
+l10n["LABEL_ACCOUT_RECIPE_LEARNED"] = "|cffff7f00帐号角色状态: |r";
+l10n["LABEL_USED_AS_MATERIAL_IN"] = "|cffff7f00用于制造: |r";
+l10n["RECIPE_LEARNED"] = "|cff00ff00已学|r";
+l10n["RECIPE_NOT_LEARNED"] = "|cffff0000未学|r";
 
 l10n["PRINT_MATERIALS: "] = "材料: ";
 l10n["PRICE_UNK"] = "未知";
-l10n["AH_PRICE"] = "\124cff00ff00价格\124r";
-l10n["VENDOR_RPICE"] = "\124cffffaf00商人\124r";
-l10n["COST_PRICE"] = "\124cffff7f00成本\124r";
-l10n["COST_PRICE_KNOWN"] = "\124cffff0000已缓存成本\124r";
-l10n["UNKOWN_PRICE"] = "\124cffff0000未知价格\124r";
-l10n["BOP"] = "\124cffff7f7f拾取绑定\124r";
-l10n["PRICE_DIFF+"] = "\124cff00ff00差价\124r";
-l10n["PRICE_DIFF-"] = "\124cffff0000差价\124r";
+l10n["AH_PRICE"] = "|cff00ff00价格|r";
+l10n["VENDOR_RPICE"] = "|cffffaf00商人|r";
+l10n["COST_PRICE"] = "|cffff7f00成本|r";
+l10n["COST_PRICE_KNOWN"] = "|cffff0000已缓存成本|r";
+l10n["UNKOWN_PRICE"] = "|cffff0000未知价格|r";
+l10n["BOP"] = "|cffff7f7f拾取绑定|r";
+l10n["PRICE_DIFF+"] = "|cff00ff00差价|r";
+l10n["PRICE_DIFF-"] = "|cffff0000差价|r";
 l10n["PRICE_DIFF0"] = "持平";
-l10n["PRICE_DIFF_AH+"] = "\124cff00ff00AH5%\124r";
-l10n["PRICE_DIFF_AH-"] = "\124cffff0000AH5%\124r";
+l10n["PRICE_DIFF_AH+"] = "|cff00ff00AH5%|r";
+l10n["PRICE_DIFF_AH-"] = "|cffff0000AH5%|r";
 l10n["PRICE_DIFF_AH0"] = "AH";
-l10n["PRICE_DIFF_INFO+"] = "\124cff00ff00利润\124r";
-l10n["PRICE_DIFF_INFO-"] = "\124cffff0000亏损\124r";
-l10n["CRAFT_INFO"] = "\124cffff7f00商业技能制造信息: \124r";
-l10n["CRAFTED_BY"] = "\124cffff7f00可由以下角色制作: \124r";
+l10n["PRICE_DIFF_INFO+"] = "|cff00ff00利润|r";
+l10n["PRICE_DIFF_INFO-"] = "|cffff0000亏损|r";
+l10n["CRAFT_INFO"] = "|cffff7f00商业技能制造信息: |r";
+l10n["CRAFTED_BY"] = "|cffff7f00可由以下角色制作: |r";
 l10n["ITEMS_UNK"] = "项未知";
-l10n["NEED_UPDATE"] = "\124cffff0000!!需要刷新!!\124r";
+l10n["NEED_UPDATE"] = "|cffff0000!!需要刷新!!|r";
 --
-l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "\124cffffffff只搜索名字，而不是物品链接\124r";
+l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "|cffffffff只搜索名字，而不是物品链接|r";
 l10n["haveMaterialsTip"] = "只显示有足够材料的配方";
-l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "\124cffffffff我想赚点零花钱! \124r";
+l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "|cffffffff我想赚点零花钱! |r";
 --
 l10n["BOARD_LOCK"] = "锁定";
 l10n["BOARD_CLOSE"] = "关闭";
 l10n["BOARD_TIP"] = "显示帐号下角色的商业技能冷却时间，鼠标右击锁定或关闭";
 l10n["COLORED_FORMATTED_TIME_LEN"] = {
-	"\124cff%.2x%.2x00%d天%02d时%02d分%02d秒\124r",
-	"\124cff%.2x%.2x00%d时%02d分%02d秒\124r",
-	"\124cff%.2x%.2x00%d分%02d秒\124r",
-	"\124cff%.2x%.2x00%d秒\124r",
+	"|cff%.2x%.2x00%d天%02d时%02d分%02d秒|r",
+	"|cff%.2x%.2x00%d时%02d分%02d秒|r",
+	"|cff%.2x%.2x00%d分%02d秒|r",
+	"|cff%.2x%.2x00%d秒|r",
 };
-l10n["COOLDOWN_EXPIRED"] = "\124cff00ff00冷却结束\124r";
+l10n["COOLDOWN_EXPIRED"] = "|cff00ff00冷却结束|r";
 --
-l10n["EXPLORER_TITLE"] = "ALA @ 网易有爱 \124cff00ff00wowui.w.163.com\124r";
+l10n["EXPLORER_TITLE"] = "ALA @ 网易有爱 |cff00ff00wowui.w.163.com|r";
 l10n.EXPLORER_SET = {
 	Skill = "技能",
 	Type = "物品类型",
@@ -454,7 +454,7 @@ l10n.ITEM_EQUIP_LOC = {
 	[21] = "单手武器",
 	[22] = "双手武器",
 };
-l10n["EXPLORER_CLEAR_FILTER"] = "\124cff00ff00清除\124r";
+l10n["EXPLORER_CLEAR_FILTER"] = "|cff00ff00清除|r";
 --
 l10n.SLASH_NOTE = {
 	["expand"] = "加宽窗口",
@@ -469,7 +469,7 @@ l10n.SLASH_NOTE = {
 	["show_tradeskill_tip_material_craft_info"] = "显示物品作为材料的商业技能信息",
 	["default_skill_button_tip"] = "在默认的技能列表上显示鼠标提示",
 	["colored_rank_for_unknown"] = "总是将名称按照难度染色，将未学技能底色显示为红色",
-	["regular_exp"] = "正则表达式搜索\124cffff0000!!!慎用!!!\124r",
+	["regular_exp"] = "正则表达式搜索|cffff0000!!!慎用!!!|r",
 	["show_call"] = "显示界面切换按钮",
 	["show_tab"] = "显示切换栏",
 	["portrait_button"] = "商业技能头像下拉菜单",
@@ -483,7 +483,7 @@ l10n.SLASH_NOTE = {
 l10n.ALPHA = "透明度";
 l10n.CHAR_LIST = "角色列表";
 l10n.CHAR_DEL = "删除角色";
-l10n["INVALID_COMMANDS"] = "无效命令参数，使用\124cff00ff00true、1、on、enable\124r 或者 \124cffff0000false、0、off、disable\124r.";
+l10n["INVALID_COMMANDS"] = "无效命令参数，使用|cff00ff00true、1、on、enable|r 或者 |cffff0000false、0、off、disable|r.";
 l10n.TooltipLines = {
 	"左键打开浏览器",
 	"右键打开设置",

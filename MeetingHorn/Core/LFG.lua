@@ -73,7 +73,7 @@ function LFG:OnEnable()
     self:RegisterMessage('MEETINGHORN_HIDE')
 
     self:ListenSocket('MEETINGHORN')
-    self:ConnectServer(UnitFactionGroup('player') == 'Alliance' and 'Zpqmxown' or 'Nwoxmqpz')
+    self:ConnectServer(ns.NETEASE_SERVER_PREFIX .. UnitFactionGroup('player'))
     self:RegisterSocket('JOIN', 'OnSocketJoin')
     self:RegisterServer('SERVER_CONNECTED')
     self:RegisterServer('SNEWVERSION')
@@ -444,14 +444,13 @@ end
 
 function LFG:SERVER_CONNECTED()
     self:SendServer('SLOGIN', ns.ADDON_VERSION, ns.GetPlayerItemLevel(), UnitGUID('player'), UnitLevel('player'),
-                    ns.GetAddonSource())
+                    ns.GetAddonSource(), (GetGuildInfo('player')))
     self:SendMessage('MEETINGHORN_SERVER_CONNECTED')
 
     --[=[@debug@
     print('Connected', ns.ADDON_VERSION, ns.GetPlayerItemLevel(), UnitGUID('player'), UnitLevel('player'),
           ns.GetAddonSource())
     --@end-debug@]=]
-    SendServerCUGL()
 end
 
 function LFG:SNEWVERSION(_, version, url, changelog)
@@ -911,20 +910,28 @@ function LFG:ANNOUNCEMENT(eventName, ...)
     self:SendMessage('MEETINGHORN_ANNOUNCEMENT', ...)
 end
 
-function SendServerCUGL()
-    local version = '199701010000' -- 这里更新写默认版本号
+function LFG:IsStarRegimentVersion()
+    local isVersion = false
     if ns and ns.Addon and
     ns.Addon.db and ns.Addon.db.realm and
-    ns.Addon.db.realm.starRegiment and ns.Addon.db.realm.starRegiment.regimentData and
-    ns.Addon.db.realm.starRegiment.regimentData.version then
-        version =  ns.Addon.db.realm.starRegiment.regimentData.version
+    ns.Addon.db.realm.starRegiment and
+    ns.Addon.db.realm.starRegiment.version and
+    ns.Addon.db.realm.starRegiment.version ~= '' then
+        isVersion = true
     end
+    return isVersion
+end
 
-    ns.LFG:SendServer('CUGL', version)
+function LFG:SetStarRegimentVersion(version)
+    ns.Addon.db.realm.starRegiment.version = version
+end
+
+function LFG:GetStarRegimentVersion()
+    return ns.Addon.db.realm.starRegiment.version
 end
 
 function LFG:SUGL(_, version, data)
-    ns.Addon.db.realm.starRegiment.regimentData.version = version
+    ns.Addon.db.realm.starRegiment.version = version
     for _, item in ipairs(data) do
         for name, info in pairs(item) do
             local currentLevel = info['l']

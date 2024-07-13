@@ -588,7 +588,7 @@
             </Frame>
             <Frame parentKey="MissionGuidance" hidden="true" inherits="MissionGuidanceTemplate">
                 <Anchors>
-                    <Anchor point="TOPLEFT" x="4" y="-95"/>
+                    <Anchor point="TOPLEFT" x="2" y="-25"/>
                     <Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
                 </Anchors>
             </Frame>

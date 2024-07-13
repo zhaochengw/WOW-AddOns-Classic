@@ -1,6 +1,6 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local L = ADDONSELF.L
+local L = ns.L
 
 local pt = print
 
@@ -35,7 +35,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     end
     if not BiaoGe.FilterClassItemDB[RealmID][player] then
         BiaoGe.FilterClassItemDB[RealmID][player] = {}
-    elseif BG.IsVanilla() then -- 赛季服重置数据
+    elseif BG.IsVanilla then -- 赛季服重置数据
         if not BiaoGe.options.SearchHistory.dt231208 then
             BiaoGe.FilterClassItemDB[RealmID][player] = {}
             BiaoGe.options.SearchHistory.dt231208 = true
@@ -134,7 +134,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     }
 
     ------------------装备词缀------------------
-    if BG.IsVanilla() then
+    if BG.IsVanilla then
         BG.FilterClassItemDB.ShuXing = {
             -- { name = "力量", value = ITEM_MOD_STRENGTH }, --%c%s 力量
             { name = "力量", value = "%+.*" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
@@ -212,7 +212,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
         end
     else
-        if BG.IsWLK() then
+        if BG.IsWLK then
             BG.FilterClassItemDB.ShuXing = {
                 { name = "力量", value = "%+.*" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
                 { name = "敏捷", value = "%+.*" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
@@ -234,7 +234,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 { name = "法术强度", value = ITEM_MOD_SPELL_POWER_SHORT },
                 -- { name = "副手物品", value = INVTYPE_HOLDABLE, onenter = L["这里是指法系的副手，不是物理dps的副手武器"] },
             }
-        elseif BG.IsCTM() then
+        elseif BG.IsCTM then
             BG.FilterClassItemDB.ShuXing = {
                 { name = "力量", value = "%+.*" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
                 { name = "敏捷", value = "%+.*" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
@@ -356,7 +356,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     }
 
 
-    if BG.IsVanilla() then
+    if BG.IsVanilla then
         BG.FilterClassItem_Default.Weapon = {
             ["WARRIOR" .. "1"] = { G["双手斧"], G["双手锤"], G["长柄武器"], G["双手剑"], G["法杖"], G["魔杖"] }, -- FZ
             ["WARRIOR" .. "2"] = { G["魔杖"] }, -- KBZ
@@ -459,7 +459,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         { name = "8", value = L["神像"] },
         { name = "9", value = L["图腾"] },
     }
-    if not BG.IsVanilla() then
+    if not BG.IsVanilla then
         tinsert(BG.FilterClassItemDB.Armor, { name = "10", value = L["魔印"] })
     end
 
@@ -477,7 +477,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         ["魔印"] = "10",
     }
 
-    if BG.IsVanilla() then
+    if BG.IsVanilla then
         BG.FilterClassItem_Default.Armor = {
             ["WARRIOR" .. "1"] = { G["布甲"], G["皮甲"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- FZ
             ["WARRIOR" .. "2"] = { G["布甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- DPS
@@ -498,7 +498,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             ["PRIEST" .. "1"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- MS
             ["PRIEST" .. "2"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- AM
         }
-    elseif BG.IsCTM() then
+    elseif BG.IsCTM then
         BG.FilterClassItem_Default.Armor = {
             ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- 血DK
             ["DEATHKNIGHT" .. "2"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["副手物品"] }, -- DPS
@@ -566,7 +566,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
     end
 
-    if BG.IsCTM() then
+    if BG.IsCTM then
         local _, class = UnitClass("player")
         BG.Once("FilterClassItem_Armor" .. RealmID .. player, 240615, function()
             for i = 1, 5 do

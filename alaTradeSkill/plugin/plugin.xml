@@ -14,6 +14,8 @@
     <script file = "TradeSkillMaster.lua" />
 
     <script file = "MissingTradeSkillsList.lua" />
+    <script file = "CodexLite.lua" />
+
     <script file = "ElvUI.lua" />
     <script file = "CloudyTradeSkill.lua" />
     <script file = "Leatrix_Plus.lua" />

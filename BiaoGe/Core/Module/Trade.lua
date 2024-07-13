@@ -1,29 +1,29 @@
-local AddonName, ADDONSELF = ...
+local AddonName, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameDongHua = ADDONSELF.FrameDongHua
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameDongHua = ns.FrameDongHua
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
-local Width = ADDONSELF.Width
-local Height = ADDONSELF.Height
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Width = ns.Width
+local Height = ns.Height
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 local RealmId = GetRealmID()
@@ -38,11 +38,15 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     do
         BG.tradeQuality = 0
         BG.trade = {}
-        BG.trade.info = {}
+        BG.trade.many = {}
+        BG.trade.playerinfo = {}
+        BG.trade.targetinfo = {}
         BG.trade.targetitems = {}
         BG.trade.playeritems = {}
         function BG.GetTradeInfo()
-            BG.trade.info = {}
+            BG.trade.many = {}
+            BG.trade.playerinfo = {}
+            BG.trade.targetinfo = {}
             wipe(BG.trade.targetitems)
             wipe(BG.trade.playeritems)
             BG.trade.target = UnitName("NPC")
@@ -50,7 +54,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             BG.trade.targetmoney = GetTargetTradeMoney()
             BG.trade.playermoney = GetPlayerTradeMoney()
             for k, v in pairs(BG.playerClass) do
-                BG.trade[k] = select(v.select, v.func("NPC"))
+                BG.trade.playerinfo[k] = select(v.select, v.func("player"))
+                BG.trade.targetinfo[k] = select(v.select, v.func("NPC"))
             end
 
             --只留金币，去除银桐
@@ -199,7 +204,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                             BG.Frame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(GetClassRGB(Player))
                                             BiaoGe[FB]["boss" .. b]["maijia" .. i] = (Player)
                                             for k, v in pairs(BG.playerClass) do
-                                                BiaoGe[FB]["boss" .. b][k .. i] = BG.trade[k]
+                                                if Player == UnitName("player") then
+                                                    BiaoGe[FB]["boss" .. b][k .. i] = BG.trade.playerinfo[k]
+                                                else
+                                                    BiaoGe[FB]["boss" .. b][k .. i] = BG.trade.targetinfo[k]
+                                                end
                                             end
                                             if isFirstItem then
                                                 BG.Frame[FB]["boss" .. b]["jine" .. i]:SetText(Money + qiankuan)
@@ -225,13 +234,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                                     b = b,
                                                     i = i
                                                 }
-                                                tinsert(BG.trade.info, a)
+                                                tinsert(BG.trade.many, a)
                                             end
                                         end
                                         if isFirstItem then
                                             local Texture = select(10, GetItemInfo(Items[items].link))
                                             returntext = (format("|cff00BFFF" ..
-                                                L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n副本：%s\nBOSS：%s%s|r"],
+                                                L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n表格：%s\nBoss：%s%s|r"],
                                                 (AddTexture(Texture) .. Items[items].link),
                                                 SetClassCFF(Player), "|cffFFD700",
                                                 Money + qiankuan,
@@ -283,7 +292,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                     end
 
                                     local Texture = select(10, GetItemInfo(Items[1].link))
-                                    returntext = (format("|cff00BFFF" .. L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n副本：%s\nBOSS：%s%s|r"],
+                                    returntext = (format("|cff00BFFF" .. L["< 交易记账成功 >|r\n装备：%s\n买家：%s\n金额：%s%d|rg%s\n表格：%s\nBoss：%s%s|r"],
                                         (AddTexture(Texture) .. Items[1].link),
                                         SetClassCFF(Player), "|cffFFD700",
                                         (Money + qiankuan),
@@ -598,13 +607,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if text == ERR_TRADE_COMPLETE then
                 if BiaoGe.options["autoTrade"] ~= 1 or not IsInRaid(1) then return end
                 local text = BG.TradeText("saved")
-                if #BG.trade.info > 1 then
+                if #BG.trade.many > 1 then
                     local FBs = {}
-                    for i, v in ipairs(BG.trade.info) do
+                    for i, v in ipairs(BG.trade.many) do
                         FBs[v.FB] = true
                     end
                     for FB in pairs(FBs) do
-                        tinsert(BiaoGe[FB].tradeTbl, BG.trade.info)
+                        tinsert(BiaoGe[FB].tradeTbl, BG.trade.many)
                     end
                 end
                 if BiaoGe.options["tradeNotice"] == 1 then

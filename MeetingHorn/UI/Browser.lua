@@ -243,6 +243,7 @@ function Browser:Constructor()
     ---@param item MeetingHornActivity
     self.ActivityList:SetCallback('OnItemSignupClick', function(_, button, item)
         if item:IsActivity() then
+            ns.LogStatistics:InsertLog({time(), 1, item:GetLeader()})
             -- ns.LFG:SignupActivity(item)
             ChatFrame_SendTell(item:GetLeader())
         end

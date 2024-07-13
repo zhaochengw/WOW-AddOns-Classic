@@ -1,29 +1,29 @@
-local _, ADDONSELF = ...
+local _, ns = ...
 
-local LibBG = ADDONSELF.LibBG
-local L = ADDONSELF.L
+local LibBG = ns.LibBG
+local L = ns.L
 
-local RR = ADDONSELF.RR
-local NN = ADDONSELF.NN
-local RN = ADDONSELF.RN
-local Size = ADDONSELF.Size
-local RGB = ADDONSELF.RGB
-local RGB_16 = ADDONSELF.RGB_16
-local GetClassRGB = ADDONSELF.GetClassRGB
-local SetClassCFF = ADDONSELF.SetClassCFF
-local GetText_T = ADDONSELF.GetText_T
-local FrameHide = ADDONSELF.FrameHide
-local AddTexture = ADDONSELF.AddTexture
-local GetItemID = ADDONSELF.GetItemID
-local BossNum = ADDONSELF.BossNum
+local RR = ns.RR
+local NN = ns.NN
+local RN = ns.RN
+local Size = ns.Size
+local RGB = ns.RGB
+local RGB_16 = ns.RGB_16
+local GetClassRGB = ns.GetClassRGB
+local SetClassCFF = ns.SetClassCFF
+local GetText_T = ns.GetText_T
+local FrameHide = ns.FrameHide
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
+local BossNum = ns.BossNum
 
-local Width = ADDONSELF.Width
-local Height = ADDONSELF.Height
-local Maxb = ADDONSELF.Maxb
-local Maxi = ADDONSELF.Maxi
-local HopeMaxn = ADDONSELF.HopeMaxn
-local HopeMaxb = ADDONSELF.HopeMaxb
-local HopeMaxi = ADDONSELF.HopeMaxi
+local Width = ns.Width
+local Height = ns.Height
+local Maxb = ns.Maxb
+local Maxi = ns.Maxi
+local HopeMaxn = ns.HopeMaxn
+local HopeMaxb = ns.HopeMaxb
+local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 local RealmId = GetRealmID()
@@ -161,7 +161,7 @@ do
         if FilterCLASS(TooltipText) then
             return true
         end
-        if not BG.IsVanilla() then
+        if not BG.IsVanilla then
             if FilterTANK(TooltipText, typeID, EquipLoc) then
                 return true
             end
@@ -352,12 +352,8 @@ do
                     [194] = "H25",
                 },
             }
-            nandutable.OS = nandutable.NAXX
-            nandutable.EOE = nandutable.NAXX
             nandutable.ULD = nandutable.NAXX
-            nandutable.OL = nandutable.NAXX
             nandutable.ICC = nandutable.TOC
-            nandutable.RS = nandutable.TOC
             return nandutable[FB][GetRaidDifficultyID()]
         else
             local nandutable = {
@@ -930,12 +926,12 @@ function BG.SetListjine(jine, FB, b, i)
         if itemID then
             GameTooltip:SetItemByID(itemID)
             GameTooltip:Show()
-            BG.HilightBiaoGeSaveItems(link)
+            BG.HighlightBiaoGe(link)
         end
     end)
     f:SetScript("OnHyperlinkLeave", function(self, link, text, button)
         GameTooltip:Hide()
-        BG.Hide_AllHiLight()
+        BG.Hide_AllHighlight()
     end)
 
     local t = f:CreateFontString()
@@ -1021,23 +1017,17 @@ function BG.SetListjine(jine, FB, b, i)
                     local zb = BG.Frame[v.FB]["boss" .. v.b]["zhuangbei" .. v.i]
                     local jine = BG.Frame[v.FB]["boss" .. v.b]["jine" .. v.i]
                     if zb then
-                        local f = CreateFrame("Frame", nil, zb, "BackdropTemplate")
-                        f:SetBackdrop({
-                            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                            edgeSize = 2,
-                        })
-                        f:SetBackdropBorderColor(0, 1, 0, 0.5)
-                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", -4, -2)
-                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", -2, 0)
-                        f:SetFrameLevel(114)
-                        tinsert(BG.LastBagItemFrame, f)
+                        local f = BG.CreateHighlightFrame(zb, nil, { 0, 1, 0, 0.5 }, 4)
+                        f:ClearAllPoints()
+                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", 0, 0)
+                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
                     end
                 end
             end)
             f:SetScript("OnLeave", function(self)
                 self:SetBackdropColor(0.5, 0.5, 0.5, 0)
                 GameTooltip:Hide()
-                BG.Hide_AllHiLight()
+                BG.Hide_AllHighlight()
             end)
 
             local icon = f:CreateTexture()
@@ -1120,13 +1110,10 @@ local function FrameDongHua(frame, h2, w2)
         end
     end
 end
-ADDONSELF.FrameDongHua = FrameDongHua
+ns.FrameDongHua = FrameDongHua
 
 ------------------函数：清空表格------------------
 function BG.QingKong(_type, FB)
-    if BG.DeBug and not FB then
-        FB = BG.FB1
-    end
     if not FB then return end
     if _type == "biaoge" then
         for b = 1, Maxb[FB] do
@@ -1173,11 +1160,12 @@ function BG.QingKong(_type, FB)
             BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
         end
         BiaoGe[FB].tradeTbl = {}
-        BiaoGe[FB].lockoutID = nil
+        BiaoGe[FB].lockoutIDtbl = nil
+        BiaoGe[FB].raidRoster = nil
         BG.UpdateLockoutIDText()
 
         local num -- 分钱人数
-        if BG.IsVanilla() then
+        if BG.IsVanilla then
             num = BG.GetFBinfo(FB, "maxplayers") or 10
         else
             num = 25
@@ -1480,17 +1468,47 @@ end
 
 ------------------表格/背包高亮对应装备------------------
 do
-    local function SetHighlightBag(bag)
-        local f = CreateFrame("Frame", nil, bag, "BackdropTemplate")
+    function BG.CreateHighlightFrame(parent, flash, color, level, size)
+        local r, g, b, a
+        if color then
+            r, g, b, a = unpack(color)
+        else
+            r, g, b, a = 1, 0, 0, 1
+        end
+
+        local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
         f:SetBackdrop({
             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-            edgeSize = 3,
+            edgeSize = size or (flash and 3 or 2),
         })
-        f:SetBackdropBorderColor(1, 0, 0, 1)
-        f:SetPoint("TOPLEFT", bag, 0, 0)
-        f:SetPoint("BOTTOMRIGHT", bag, 0, 0)
-        f:SetFrameLevel(bag:GetFrameLevel() + 10)
+        f:SetBackdropBorderColor(r, g, b, a)
+        f:SetPoint("TOPLEFT")
+        f:SetPoint("BOTTOMRIGHT")
+        f:SetFrameLevel(parent:GetFrameLevel() + (level or 8))
         tinsert(BG.LastBagItemFrame, f)
+
+        if flash then
+            local flashGroup = f:CreateAnimationGroup()
+            for i = 1, 3 do
+                local fade = flashGroup:CreateAnimation('Alpha')
+                fade:SetChildKey('flash')
+                fade:SetOrder(i * 2)
+                fade:SetDuration(.4)
+                fade:SetFromAlpha(.1)
+                fade:SetToAlpha(1)
+
+                local fade = flashGroup:CreateAnimation('Alpha')
+                fade:SetChildKey('flash')
+                fade:SetOrder(i * 2 + 1)
+                fade:SetDuration(.4)
+                fade:SetFromAlpha(1)
+                fade:SetToAlpha(.1)
+            end
+            flashGroup:Play()
+            flashGroup:SetLooping("REPEAT")
+        end
+
+        return f
     end
 
     function BG.HighlightBag(biaogelink)
@@ -1502,7 +1520,7 @@ do
                 local bag = _G["NDui_BackpackSlot" .. i]
                 local link = C_Container.GetContainerItemLink(bag.bagId, bag.slotId)
                 if link and GetItemID(link) == GetItemID(biaogelink) then
-                    SetHighlightBag(bag)
+                    BG.CreateHighlightFrame(bag, true)
                 end
                 i = i + 1
             end
@@ -1514,7 +1532,7 @@ do
                     local bag = _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i]
                     local link = C_Container.GetContainerItemLink(bag.BagID, bag.SlotID)
                     if link and GetItemID(link) == GetItemID(biaogelink) then
-                        SetHighlightBag(bag)
+                        BG.CreateHighlightFrame(bag, true)
                     end
                     i = i + 1
                 end
@@ -1527,7 +1545,17 @@ do
                 local bag = _G["CombuctorItem" .. i]
                 local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
                 if link and GetItemID(link) == GetItemID(biaogelink) then
-                    SetHighlightBag(bag)
+                    BG.CreateHighlightFrame(bag, true)
+                end
+                i = i + 1
+            end
+        elseif _G["BagnonContainerItem1"] then
+            local i = 1
+            while _G["BagnonContainerItem" .. i] do
+                local bag = _G["BagnonContainerItem" .. i]
+                local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
+                if link and GetItemID(link) == GetItemID(biaogelink) then
+                    BG.CreateHighlightFrame(bag, true)
                 end
                 i = i + 1
             end
@@ -1539,7 +1567,7 @@ do
                     local bag = _G["ContainerFrame" .. b .. "Item" .. i]
                     local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
                     if link and GetItemID(link) == GetItemID(biaogelink) then
-                        SetHighlightBag(bag)
+                        BG.CreateHighlightFrame(bag, true)
                     end
                     i = i + 1
                 end
@@ -1549,7 +1577,7 @@ do
         end
     end
 
-    function BG.HilightBiaoGeSaveItems(link)
+    function BG.HighlightBiaoGe(link, notflash)
         if BiaoGe.options["HighOnterItem"] ~= 1 then return end
         if not GetItemID(link) then return end
         local type
@@ -1572,23 +1600,17 @@ do
                 end
                 if zb then
                     if GetItemID(link) == GetItemID(zb:GetText()) then
-                        local f = CreateFrame("Frame", nil, zb, "BackdropTemplate")
-                        f:SetBackdrop({
-                            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                            edgeSize = 2,
-                        })
-                        f:SetBackdropBorderColor(1, 0, 0, 1)
-                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", -4, -2)
-                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", -2, 0)
-                        f:SetFrameLevel(zb:GetFrameLevel() + 3)
-                        tinsert(BG.LastBagItemFrame, f)
+                        local f = BG.CreateHighlightFrame(zb)
+                        f:ClearAllPoints()
+                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", 0, 0)
+                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
                     end
                 end
             end
         end
     end
 
-    function BG.Hide_AllHiLight()
+    function BG.Hide_AllHighlight()
         for key, value in pairs(BG.LastBagItemFrame) do
             value:Hide()
         end

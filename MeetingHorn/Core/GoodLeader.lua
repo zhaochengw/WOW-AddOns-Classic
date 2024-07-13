@@ -24,12 +24,12 @@ function GoodLeader:OnInitialize()
     self.userCache = {}
 
     self:ListenSocket('GOODLEADER')
-    self:ConnectServer('S1' .. UnitFactionGroup('player'))
-    self:RegisterServer('SERVER_CONNECTED')
+    self:ConnectServer(ns.NETEASE_SERVER_PREFIX .. UnitFactionGroup('player'))
     self:RegisterServer('SGL')
     self:RegisterServer('SGT')
 
     self:RegisterEvent('GROUP_ROSTER_UPDATE')
+    self:RegisterMessage('MEETINGHORN_SERVER_CONNECTED')
     C_Timer.After(5, function()
         self:GROUP_ROSTER_UPDATE()
     end)
@@ -45,9 +45,7 @@ function GoodLeader:OnEnable()
     end)
 end
 
-function GoodLeader:SERVER_CONNECTED()
-    self:SendServer('SLOGIN', ns.ADDON_VERSION, UnitGUID('player'), ns.GetPlayerItemLevel(), UnitLevel('player'),
-                    (GetGuildInfo('player')))
+function GoodLeader:MEETINGHORN_SERVER_CONNECTED()
     self.timeoutTimer:Cancel()
     self.serverTimeout = nil
     self.serverLogon = true

@@ -24,6 +24,7 @@
 ---@field Quest Quest
 ---@field QuestGroup QuestGroup
 ---@field QuestServies QuestServies
+---@field ThreeDimensionsCode ThreeDimensionsCode
 local ns = select(2, ...)
 
 local L = LibStub('AceLocale-3.0'):GetLocale('MeetingHorn', true)
@@ -75,7 +76,7 @@ function Addon:OnInitialize()
         },
         realm = {
             starRegiment = {
-                version = {},
+                version = '',
                 regimentData = {}
             }
         },

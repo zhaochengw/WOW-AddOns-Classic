@@ -1,15 +1,5 @@
 ------------------------------------------------------------------------
-r308 | funkehdude | 2024-06-06 06:03:05 +0000 (Thu, 06 Jun 2024) | 1 line
-Changed paths:
-   M /trunk/!BugGrabber.toc
-   D /trunk/!BugGrabber_Cata.toc
-   D /trunk/!BugGrabber_TBC.toc
-   D /trunk/!BugGrabber_Vanilla.toc
-   D /trunk/!BugGrabber_Wrath.toc
-
-Update toc structure
-------------------------------------------------------------------------
-r307 | funkehdude | 2024-05-08 21:59:40 +0000 (Wed, 08 May 2024) | 1 line
+r310 | funkehdude | 2024-07-09 19:25:09 +0000 (Tue, 09 Jul 2024) | 1 line
 Changed paths:
    M /trunk/!BugGrabber.toc
 

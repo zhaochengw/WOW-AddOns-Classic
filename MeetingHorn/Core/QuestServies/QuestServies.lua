@@ -12,7 +12,7 @@ local QuestType = {Raid = 1, Quest = 3, Battleground = 2}
 
 function QuestServies:OnInitialize()
     self:ListenSocket('MEETINGHORN')
-    self:ConnectServer('S1' .. UnitFactionGroup('player'))
+    self:ConnectServer(ns.NETEASE_SERVER_PREFIX .. UnitFactionGroup('player'))
 end
 
 function QuestServies:OnEnable()

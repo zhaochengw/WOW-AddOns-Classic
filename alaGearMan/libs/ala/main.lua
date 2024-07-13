@@ -343,12 +343,7 @@ local function dev()
 			if version ~= nil and version ~= "" then
 				DisplayPanel:AddDoubleLine(addon, "#|cffffff00" .. version .. "|r");
 			else
-				version = GetAddOnMetadata(addon, "X-163UI-Version");
-				if version ~= nil and version ~= "" then
-					DisplayPanel:AddDoubleLine(addon, "#|cffff7f00" .. version .. "|r");
-				else
-					DisplayPanel:AddLeftLine("|cffff0000" .. addon .. "|r");
-				end
+				DisplayPanel:AddLeftLine("|cffff0000" .. addon .. "|r");
 			end
 		end
 	end
