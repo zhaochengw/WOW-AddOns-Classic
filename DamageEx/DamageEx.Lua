@@ -509,9 +509,10 @@ _SUMMON
 		end
 
 elseif suffixes == "HEAL" then
-    amount, baseAmount, overDamage, critical = select(DEX_PREFIXES[prefixes],...);
+    spellId, spellName, spellSchool = ...
+    amount, overhealing, absorbed, critical = select(DEX_PREFIXES[prefixes],...)
     dexText = amount
-    DEX_OverHeal = overDamage
+    DEX_OverHeal = overhealing
     if critical and prefixes == "SPELL" and spellId ~= 143924 then
         dexCrit = 1
     else
@@ -791,15 +792,15 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
     elseif damagetype == DEX_DAMAGE_TYPE_HEALTH then
         if DEX_Get("DEX_ShowDamageHealth") ~= 1 then return; end
         color = DEX_Get("DEX_ColorHealth");
-        colorSe = DEX_Get("DEX_ColorHealthSe");
-        if DEX_OverHeal ~= 0 then
-            if DEX_Get("DEX_ShowOverHeal") == 1 then
-                damage = (damage - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
-            else
-                damage = damage - DEX_OverHeal;
-                if damage == 0 then return; end
-            end
+    colorSe = DEX_Get("DEX_ColorHealthSe");
+    if DEX_OverHeal ~= 0 then
+        if DEX_Get("DEX_ShowOverHeal") == 1 then
+            damage = (damage - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
+        else
+            damage = damage - DEX_OverHeal;
+            if damage == 0 then return; end
         end
+    end
     elseif damagetype == DEX_DAMAGE_TYPE_PET then
         if DEX_Get("DEX_ShowDamagePet") ~= 1 then return; end
         color = DEX_Get("DEX_ColorPet");
