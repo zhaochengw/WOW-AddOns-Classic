@@ -47,7 +47,7 @@ do
                 y = y + deltaPitch
             end
             func_set(self.owner, z, x, y)
-            pt(self._type2 .. ": " .. z .. " " .. x .. " " .. y)
+            print(self._type2 .. ": " .. z .. " " .. x .. " " .. y)
         else
             if self._type == "+" then
                 deltaPitch = 0.05
@@ -57,7 +57,7 @@ do
             local currentPitch = func_get(self.owner)
             local newPitch = currentPitch + deltaPitch
             func_set(self.owner, newPitch)
-            pt(self._type2 .. ": " .. newPitch)
+            print(self._type2 .. ": " .. newPitch)
         end
     end
     local function OnMouseDown(self)
@@ -208,6 +208,12 @@ function BG.CreateBossModel()
         model:SetPosition(-20, 0, 2)
         model:SetFacing(-0.2)
         model:SetPitch(0.15)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("UBRS", 7, -10, 30, 10363, 0.8)
+        model:SetPosition(-20, 4, 0)
+        model:SetFacing(-0.45)
+        model:SetPitch(0)
         model:SetRoll(0)
         -- CreateAllTestButton(model)
         local model = CreateBossModel("MCsod", 10, 0, 30, 11502, 0.8)

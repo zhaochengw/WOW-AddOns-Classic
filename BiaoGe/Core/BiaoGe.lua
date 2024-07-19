@@ -103,8 +103,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 self.CheckOutSide = true
                 local frameCenterX, frameCenterY = self:GetCenter()
                 local screenLeft = 0
-                local screenRight = UIParent:GetHeight()
-                local screenTop = UIParent:GetWidth()
+                local screenRight = UIParent:GetWidth()
+                local screenTop = UIParent:GetHeight()
                 local screenBottom = 0
                 if frameCenterX < screenLeft or frameCenterX > screenRight or
                     frameCenterY < screenBottom or frameCenterY > screenTop then
@@ -935,7 +935,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BiaoGe.options[self.name] = 0
                 end
                 for i, FB in ipairs(BG.FBtable) do
-                    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.SumGZ())
+                    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetText(BG.GetWages())
                     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine5"]:SetCursorPosition(0)
                 end
                 PlaySound(BG.sound1, "Master")
@@ -1875,6 +1875,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         while _G["ChatFrame" .. i] do
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkEnter", OnHyperlinkEnter)
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", BG.Hide_AllHighlight)
+
+            hooksecurefunc(_G["ChatFrame" .. i], "RefreshDisplay", function(self)
+                BG.Hide_ChatHighlight()
+                if not (self:IsVisible() and BG.highlightChatFrameItemID) then return end
+                BG.HighlightChatFrame("item:" .. BG.highlightChatFrameItemID .. ":")
+            end)
             i = i + 1
         end
 
@@ -1882,248 +1888,270 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
             BG.Hide_AllHighlight()
             BG.HighlightBiaoGe(link)
+            BG.HighlightChatFrame(link)
             BG.HighlightItemGuoQi(link)
         end)
         hooksecurefunc("ContainerFrameItemButton_OnLeave", function(self, button)
             BG.Hide_AllHighlight()
         end)
-    end
-    ----------一键分配装备给自己----------
-    do
         BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
             if not (isLogin or isReload) then return end
-            local isOnter
-
-            local function GiveLoot()
-                if GetLootMethod() ~= "master" then return end
-                for ci = 1, GetNumGroupMembers() do
-                    for li = 1, GetNumLootItems() do
-                        if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == UnitName("player") then
-                            local itemLink = GetLootSlotLink(li)
-                            if itemLink then
-                                local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
-                                _, typeID, _, bindType = GetItemInfo(itemLink)
-                                if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) and typeID ~= 1 then
-                                    GiveMasterLoot(li, ci)
-                                end
-                            end
-                        end
+            if IsAddOnLoaded("Bagnon") then
+                BG.After(1, function()
+                    local i = 1
+                    while _G["BagnonContainerItem" .. i] do
+                        local bag = _G["BagnonContainerItem" .. i]
+                        bag:HookScript("OnLeave", ContainerFrameItemButton_OnLeave)
+                        i = i + 1
                     end
-                end
+                end)
             end
+        end)
+    end
+    ----------一键分配装备给自己----------
+    BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
+        if not (isLogin or isReload) then return end
+        local isOnter
 
-            local function OnClick(self)
-                BG.PlaySound(1)
-                GiveLoot()
-            end
-
-            local function OnEnter(self)
-                isOnter = true
-                local bt = self.bt or self
-                if bt:IsEnabled() then
-                    bt:SetBackdropBorderColor(1, 1, 1)
-                end
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-                GameTooltip:ClearLines()
-                GameTooltip:AddLine(L["一键分配"], 1, 1, 1, true)
-                if self.dis then
-                    if select(2, IsInInstance()) == "raid" then
-                        GameTooltip:AddLine(L["你不是物品分配者，不能使用"], 1, 0, 0, true)
-                    else
-                        GameTooltip:AddLine(L["不在团本中，不能使用"], 1, 0, 0, true)
-                    end
-                else
-                    GameTooltip:AddLine(L["把全部可交易的物品分配给自己"], 1, 0.82, 0, true)
-                end
-                GameTooltip:AddLine(BG.STC_dis(L["你可在插件设置-BiaoGe-其他功能里关闭这个功能"]), 0.5, 0.5, 0.5, true)
-
-                local items = {}
+        local function GiveLoot()
+            if GetLootMethod() ~= "master" then return end
+            local _quality = GetLootThreshold()
+            for ci = 1, GetNumGroupMembers() do
                 for li = 1, GetNumLootItems() do
-                    if LootSlotHasItem(li) then
+                    if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == UnitName("player") then
                         local itemLink = GetLootSlotLink(li)
                         if itemLink then
                             local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
                             _, typeID, _, bindType = GetItemInfo(itemLink)
-                            if bindType ~= 4 and (itemStackCount == 1 or bindType ~= 1) and typeID ~= 1 then
-                                tinsert(items, AddTexture(Texture, -3) .. link .. "|cffFFFFFF(" .. level .. ")|r")
+                            if quality >= _quality and
+                                bindType ~= 4 and
+                                (itemStackCount == 1 or bindType ~= 1) and
+                                typeID ~= 1
+                            then
+                                GiveMasterLoot(li, ci)
                             end
                         end
                     end
                 end
-                GameTooltip:AddLine(" ", 1, 1, 0, true)
-                GameTooltip:AddLine(L["点击后会把这些物品分配给你："], 1, 1, 0, true)
-                if #items ~= 0 then
-                    for i, item in ipairs(items) do
-                        GameTooltip:AddLine(i .. ". " .. item, 1, 1, 0)
-                    end
-                else
-                    GameTooltip:AddLine(BG.STC_dis(L["没有符合条件的物品"]), 1, 1, 0, true)
-                end
-                GameTooltip:Show()
             end
-
-            local function OnLeave(self)
-                isOnter = false
-                local bt = self.bt or self
-                if bt:IsEnabled() then
-                    bt:SetBackdropBorderColor(0, 1, 0)
-                end
-                GameTooltip:Hide()
-            end
-
-            local parent = IsAddOnLoaded("ElvUI") and ElvLootFrame or LootFrame
-            local bt = CreateFrame("Button", nil, parent, "BackdropTemplate")
-            bt:SetBackdrop({
-                edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                edgeSize = 1,
-            })
-            bt:SetBackdropBorderColor(0, 1, 0)
-            bt:SetNormalFontObject(BG.FontGreen15)
-            bt:SetDisabledFontObject(BG.FontDis15)
-            bt:SetHighlightFontObject(BG.FontWhite15)
-            bt:SetPoint("BOTTOM", parent, "TOP", 0, 0)
-            bt:SetText(L["一键分配"])
-            bt:SetSize(bt:GetFontString():GetWidth() + 10, 25)
-            bt:Hide()
-            bt:SetScript("OnClick", OnClick)
-            bt:SetScript("OnEnter", OnEnter)
-            bt:SetScript("OnLeave", OnLeave)
-
-            local f = CreateFrame("Frame", nil, bt)
-            f:SetAllPoints()
-            f.dis = true
-            f.bt = bt
-            f:SetScript("OnEnter", OnEnter)
-            f:SetScript("OnLeave", OnLeave)
-            local disframe = f
-
-            local function OnShow()
-                if BiaoGe.options["allLootToMe"] ~= 1 then
-                    bt:Hide()
-                    disframe:Hide()
-                    return
-                end
-                isOnter = false
-
-                if GetLootMethod() == "master" then
-                    bt:Show()
-                    if select(2, IsInInstance()) == "raid" and BG.MasterLooter == UnitName("player") then
-                        disframe:Hide()
-                        bt:Enable()
-                        bt:SetBackdropBorderColor(0, 1, 0)
-                        if BiaoGe.options["autoAllLootToMe"] == 1 then
-                            BG.After(0.1, function()
-                                GiveLoot()
-                            end)
-                        end
-                    else
-                        disframe:Show()
-                        bt:Disable()
-                        bt:SetBackdropBorderColor(RGB("808080"))
-                    end
-                else
-                    bt:Hide()
-                end
-            end
-            hooksecurefunc("LootFrame_Show", OnShow)
-            if ElvLootFrame then
-                ElvLootFrame:HookScript("OnShow", OnShow)
-            end
-
-            -- 当物品被捡走时，刷新鼠标提示工具
-            BG.RegisterEvent("LOOT_SLOT_CLEARED", function(self, even)
-                if isOnter then
-                    if bt:IsEnabled() then
-                        OnEnter(bt)
-                    else
-                        OnEnter(disframe)
-                    end
-                end
-            end)
-        end)
-    end
-    ----------血月活动期间自动释放尸体和对话自动复活----------
-    do
-        if BG.IsVanilla_Sod then
-            local tbl = {
-                121411, -- 血月活动
-            }
-            BG.RegisterEvent("GOSSIP_SHOW", function(self, even)
-                if BiaoGe.options["xueyueAuto"] ~= 1 then return end
-                local info = C_GossipInfo.GetOptions()
-                for i, v in pairs(info) do
-                    for _, id in pairs(tbl) do
-                        if v.gossipOptionID == id then
-                            C_GossipInfo.SelectOption(v.gossipOptionID)
-                        end
-                    end
-                end
-            end)
-
-            local bt = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
-            bt:SetSize(30, 30)
-            bt.Text:SetText(BG.BG .. L["荆棘谷血月活动期间自动释放尸体和对话自动复活"])
-            bt.Text:SetPoint("TOPLEFT", bt, "TOPRIGHT", 0, -5)
-            bt:SetHitRectInsets(0, 0, 0, 0)
-            bt.name = "xueyueAuto"
-            if BiaoGe.options["xueyueAuto"] == 1 then
-                bt:SetChecked(true)
-            else
-                bt:SetChecked(false)
-            end
-            bt:Hide()
-            bt:SetScript("OnShow", function(self)
-                if BiaoGe.options[self.name] == 1 then
-                    self:SetChecked(true)
-                else
-                    self:SetChecked(false)
-                end
-            end)
-            bt:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    BiaoGe.options[self.name] = 1
-                else
-                    BiaoGe.options[self.name] = 0
-                end
-                PlaySound(BG.sound1, "Master")
-            end)
-
-            local wh = "DEATH"
-            -- local wh = "CONFIRM_DELETE_SELECTED_MACRO"
-            hooksecurefunc("StaticPopup_Show", function(whick)
-                -- pt("show", whick)
-                if whick == wh then
-                    local yes
-                    local i = 1
-                    while UnitAura("player", i) do
-                        local spellID = select(10, UnitAura("player", i))
-                        if spellID == 436097 then
-                            yes = true
-                            break
-                        end
-                        i = i + 1
-                    end
-                    if not yes then return end
-                    local _, dialog = StaticPopup_Visible(wh)
-                    if dialog then
-                        bt:ClearAllPoints()
-                        bt:SetPoint("TOPLEFT", dialog, "BOTTOMLEFT", 0, 0)
-                        bt.Text:SetWidth(StaticPopup1:GetWidth() - 50)
-                        bt:Show()
-                        if BiaoGe.options["xueyueAuto"] == 1 then
-                            dialog.button1:Click()
-                        end
-                    end
-                end
-            end)
-            hooksecurefunc("StaticPopup_Hide", function(whick)
-                if whick == wh then
-                    if bt then
-                        bt:Hide()
-                    end
-                end
-            end)
         end
+
+        local function OnClick(self)
+            BG.PlaySound(1)
+            GiveLoot()
+        end
+
+        local function OnEnter(self)
+            isOnter = true
+            local bt = self.bt or self
+            if bt:IsEnabled() then
+                bt:SetBackdropBorderColor(1, 1, 1)
+            end
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(L["一键分配"], 1, 1, 1, true)
+            if self.dis then
+                if IsInRaid() then
+                    GameTooltip:AddLine(L["你不是物品分配者，不能使用"], 1, 0, 0, true)
+                else
+                    GameTooltip:AddLine(L["不在团队中，不能使用"], 1, 0, 0, true)
+                end
+            else
+                GameTooltip:AddLine(L["把全部可交易的物品分配给自己"], 1, 0.82, 0, true)
+            end
+            GameTooltip:AddLine(BG.STC_dis(L["你可在插件设置-BiaoGe-其他功能里关闭这个功能"]), 0.5, 0.5, 0.5, true)
+
+            local _quality = GetLootThreshold()
+            local items = {}
+            for li = 1, GetNumLootItems() do
+                if LootSlotHasItem(li) then
+                    local itemLink = GetLootSlotLink(li)
+                    if itemLink then
+                        local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
+                        _, typeID, _, bindType = GetItemInfo(itemLink)
+                        if quality >= _quality and
+                            bindType ~= 4 and
+                            (itemStackCount == 1 or bindType ~= 1) and
+                            typeID ~= 1
+                        then
+                            tinsert(items, AddTexture(Texture, -3) .. link .. "|cffFFFFFF(" .. level .. ")|r")
+                        end
+                    end
+                end
+            end
+            GameTooltip:AddLine(" ", 1, 1, 0, true)
+            GameTooltip:AddLine(L["点击后会把这些物品分配给你："], 1, 1, 0, true)
+            if #items ~= 0 then
+                for i, item in ipairs(items) do
+                    GameTooltip:AddLine(i .. ". " .. item, 1, 1, 0)
+                end
+            else
+                GameTooltip:AddLine(BG.STC_dis(L["没有符合条件的物品"]), 1, 1, 0, true)
+            end
+            GameTooltip:Show()
+        end
+
+        local function OnLeave(self)
+            isOnter = false
+            local bt = self.bt or self
+            if bt:IsEnabled() then
+                bt:SetBackdropBorderColor(0, 1, 0)
+            end
+            GameTooltip:Hide()
+        end
+
+        local parent = ElvLootFrame or XLootFrame or LootFrame
+        local bt = CreateFrame("Button", nil, parent, "BackdropTemplate")
+        bt:SetBackdrop({
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 1,
+        })
+        bt:SetBackdropBorderColor(0, 1, 0)
+        bt:SetNormalFontObject(BG.FontGreen15)
+        bt:SetDisabledFontObject(BG.FontDis15)
+        bt:SetHighlightFontObject(BG.FontWhite15)
+        bt:SetPoint("BOTTOM", parent, "TOP", 0, 0)
+        bt:SetText(L["一键分配"])
+        bt:SetSize(bt:GetFontString():GetWidth() + 10, 25)
+        bt:Hide()
+        bt:SetScript("OnClick", OnClick)
+        bt:SetScript("OnEnter", OnEnter)
+        bt:SetScript("OnLeave", OnLeave)
+
+        local f = CreateFrame("Frame", nil, bt)
+        f:SetAllPoints()
+        f.dis = true
+        f.bt = bt
+        f:SetScript("OnEnter", OnEnter)
+        f:SetScript("OnLeave", OnLeave)
+        local disframe = f
+
+        local function OnShow()
+            if BiaoGe.options["allLootToMe"] ~= 1 then
+                bt:Hide()
+                disframe:Hide()
+                return
+            end
+            isOnter = false
+
+            if GetLootMethod() == "master" then
+                bt:Show()
+                if select(2, IsInInstance()) == "raid" and BG.MasterLooter == UnitName("player") then
+                    disframe:Hide()
+                    bt:Enable()
+                    bt:SetBackdropBorderColor(0, 1, 0)
+                    if BiaoGe.options["autoAllLootToMe"] == 1 then
+                        BG.After(0.1, function()
+                            GiveLoot()
+                        end)
+                    end
+                else
+                    disframe:Show()
+                    bt:Disable()
+                    bt:SetBackdropBorderColor(RGB("808080"))
+                end
+            else
+                bt:Hide()
+            end
+        end
+        hooksecurefunc("LootFrame_Show", OnShow)
+        if ElvLootFrame then
+            ElvLootFrame:HookScript("OnShow", OnShow)
+        end
+        if XLootFrame then
+            XLootFrame:HookScript("OnShow", OnShow)
+        end
+
+        -- 当物品被捡走时，刷新鼠标提示工具
+        BG.RegisterEvent("LOOT_SLOT_CLEARED", function(self, even)
+            if isOnter then
+                if bt:IsEnabled() then
+                    OnEnter(bt)
+                else
+                    OnEnter(disframe)
+                end
+            end
+        end)
+    end)
+    ----------血月活动期间自动释放尸体和对话自动复活----------
+    if BG.IsVanilla_Sod then
+        local tbl = {
+            121411, -- 血月活动
+        }
+        BG.RegisterEvent("GOSSIP_SHOW", function(self, even)
+            if BiaoGe.options["xueyueAuto"] ~= 1 then return end
+            local info = C_GossipInfo.GetOptions()
+            for i, v in pairs(info) do
+                for _, id in pairs(tbl) do
+                    if v.gossipOptionID == id then
+                        C_GossipInfo.SelectOption(v.gossipOptionID)
+                    end
+                end
+            end
+        end)
+
+        local bt = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
+        bt:SetSize(30, 30)
+        bt.Text:SetText(BG.BG .. L["荆棘谷血月活动期间自动释放尸体和对话自动复活"])
+        bt.Text:SetPoint("TOPLEFT", bt, "TOPRIGHT", 0, -5)
+        bt:SetHitRectInsets(0, 0, 0, 0)
+        bt.name = "xueyueAuto"
+        if BiaoGe.options["xueyueAuto"] == 1 then
+            bt:SetChecked(true)
+        else
+            bt:SetChecked(false)
+        end
+        bt:Hide()
+        bt:SetScript("OnShow", function(self)
+            if BiaoGe.options[self.name] == 1 then
+                self:SetChecked(true)
+            else
+                self:SetChecked(false)
+            end
+        end)
+        bt:SetScript("OnClick", function(self)
+            if self:GetChecked() then
+                BiaoGe.options[self.name] = 1
+            else
+                BiaoGe.options[self.name] = 0
+            end
+            PlaySound(BG.sound1, "Master")
+        end)
+
+        local wh = "DEATH"
+        -- local wh = "CONFIRM_DELETE_SELECTED_MACRO"
+        hooksecurefunc("StaticPopup_Show", function(whick)
+            if whick == wh then
+                local yes
+                local i = 1
+                while UnitAura("player", i) do
+                    local spellID = select(10, UnitAura("player", i))
+                    if spellID == 436097 then
+                        yes = true
+                        break
+                    end
+                    i = i + 1
+                end
+                if not yes then return end
+                local _, dialog = StaticPopup_Visible(wh)
+                if dialog then
+                    bt:ClearAllPoints()
+                    bt:SetPoint("TOPLEFT", dialog, "BOTTOMLEFT", 0, 0)
+                    bt.Text:SetWidth(StaticPopup1:GetWidth() - 50)
+                    bt:Show()
+                    if BiaoGe.options["xueyueAuto"] == 1 then
+                        dialog.button1:Click()
+                    end
+                end
+            end
+        end)
+        hooksecurefunc("StaticPopup_Hide", function(whick)
+            if whick == wh then
+                if bt then
+                    bt:Hide()
+                end
+            end
+        end)
     end
     ----------查询记录----------
     do
@@ -2446,10 +2474,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         updateFrame.time = 0
         local function JiZhangError(link)
             BG.FrameLootMsg:AddMessage(L["表格里没找到此次交易的装备，或者该装备已记过账"], RED_FONT_COLOR:GetRGB())
-            if not BG.MainFrame:IsVisible() then
-                BG.MainFrame:Show()
-                BG.ClickTabButton(BG.tabButtons, BG.FBMainFrameTabNum)
-            end
             if BG.ChatAccountingFrame:IsVisible() then
                 BG.ChatAccountingFrame:Hide()
             end
@@ -2500,25 +2524,25 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
         -- 记账效果预览
         local function UpdateSeeText()
-            local self = BG.ChatAccountingFrame
-            if self.maijia or self.jine ~= "" then
-                local b, i, zhuangbei, maijia, jine, FB = HasEmptyGeZi(self.itemLink)
-                local Texture = select(10, GetItemInfo(self.itemLink))
-                local maijiaText = SetClassCFF(self.maijia or "")
+            if not BG.ChatAccountingFrame.itemLink then return end
+            if BG.ChatAccountingFrame.maijia or BG.ChatAccountingFrame.jine ~= "" then
+                local b, i, zhuangbei, maijia, jine, FB = HasEmptyGeZi(BG.ChatAccountingFrame.itemLink)
+                local Texture = select(10, GetItemInfo(BG.ChatAccountingFrame.itemLink))
+                local maijiaText = SetClassCFF(BG.ChatAccountingFrame.maijia or "")
                 if maijiaText == "" then
                     maijiaText = BG.STC_y2(L["无"])
                 end
                 local jineText = "|cffFFD700" .. 0 .. "|rg"
-                if self.jine ~= "" then
-                    jineText = "|cffFFD700" .. self.jine .. "|rg"
+                if BG.ChatAccountingFrame.jine ~= "" then
+                    jineText = "|cffFFD700" .. BG.ChatAccountingFrame.jine .. "|rg"
                 end
                 local qiankuantext = ""
-                if self.qiankuan ~= "" then
-                    qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, self.qiankuan)
+                if BG.ChatAccountingFrame.qiankuan ~= "" then
+                    qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, BG.ChatAccountingFrame.qiankuan)
                 end
 
                 local text = format(L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\n表格：%s\nBoss：%s"],
-                    (AddTexture(Texture) .. self.itemLink),
+                    (AddTexture(Texture) .. BG.ChatAccountingFrame.itemLink),
                     maijiaText,
                     jineText,
                     qiankuantext,
@@ -2881,29 +2905,28 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 local raid = BG.raidRosterInfo
                 for i, v in ipairs(raid) do
                     if v.name == name then
-                        num = v
+                        num = i
                         break
                     end
                 end
                 if num then
-                    local parent = BG.ChatAccountingFrame
-                    for i, _bt in ipairs(parent.buttons) do
+                    for i, _bt in ipairs(BG.ChatAccountingFrame.buttons) do
                         _bt.Left:SetVertexColor(1, 1, 1)
                         _bt.Right:SetVertexColor(1, 1, 1)
                         _bt.Middle:SetVertexColor(1, 1, 1)
                         _bt.choose:Hide()
                     end
-                    if parent.maijia == name then
-                        parent.maijia = nil
+                    if BG.ChatAccountingFrame.maijia == name then
+                        BG.ChatAccountingFrame.maijia = nil
                         for k, v in pairs(BG.playerClass) do
-                            parent[k] = nil
+                            BG.ChatAccountingFrame[k] = nil
                         end
                     else
-                        parent.maijia = name
+                        BG.ChatAccountingFrame.maijia = name
                         for k, v in pairs(BG.playerClass) do
-                            parent[k] = raid[num][k]
+                            BG.ChatAccountingFrame[k] = raid[num][k]
                         end
-                        for i, _bt in ipairs(parent.buttons) do
+                        for i, _bt in ipairs(BG.ChatAccountingFrame.buttons) do
                             if GetText_T(_bt) == name then
                                 _bt.Left:SetVertexColor(0, 1, 0)
                                 _bt.Right:SetVertexColor(0, 1, 0)
@@ -3188,6 +3211,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BG.Hide_AllHighlight()
                     BG.HighlightBiaoGe(link)
                     BG.HighlightBag(link)
+                    BG.HighlightChatFrame(link)
                 end)
                 f:SetScript("OnLeave", function()
                     GameTooltip:Hide()
@@ -3283,7 +3307,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
     end
-
     ----------清空表格----------
     do
         -- 清空按钮
@@ -3336,6 +3359,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local lastzone = { zoneID = nil, isInInstance = nil }
 
             local function IsNotSameTeam(FB)
+                if not FB then FB = BG.FB1 end
+                -- pt(FB, BiaoGe[FB].raidRoster)
+                -- if BiaoGe[FB].raidRoster then
+                --     pt(time(), BiaoGe[FB].raidRoster.time, time() - BiaoGe[FB].raidRoster.time >= 86400 * 1)
+                --     pt(GetRealmName(), BiaoGe[FB].raidRoster.realm, GetRealmName() ~= BiaoGe[FB].raidRoster.realm)
+                -- end
+
                 if not IsInRaid(1) then return true end
                 -- 没有历史成员名单
                 if not BiaoGe[FB].raidRoster then return true end
@@ -3353,6 +3383,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
                 end
+                -- pt(sameCount, maxCount, sameCount / maxCount < 0.6)
                 if sameCount / maxCount < 0.6 then
                     return true
                 end
@@ -3374,8 +3405,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     local isInInstance = IsInInstance()
                     local FB = BG.FBIDtable[instanceID]
                     if FB then
+                        -- 如果上一个区域和当前区域id相同且都在副本里（比如在副本里切换子区域）
+                        if lastzone.zoneID == zoneID and lastzone.isInInstance and isInInstance then
+                            return
+                        end
+                        if
                         -- 上一个区域和当前区域id相同，且上一个区域不在副本里（比如诺莫瑞根进本时）
-                        if (lastzone.zoneID == zoneID and not lastzone.isInInstance)
+                            (lastzone.zoneID == zoneID and not lastzone.isInInstance)
                             -- 上一个区域与当前区域id不相同，且当前区域在副本里（比如黑暗深渊进本）
                             or (lastzone.zoneID ~= zoneID)
                         then
@@ -3732,10 +3768,9 @@ do
             end
         end
 
-        if not yes2 and AtlasLoot then
+        if AtlasLoot then
             for i = 1, 40 do
                 if _G["AtlasLoot_SecButton_" .. i] then
-                    yes2 = true
                     local script = _G["AtlasLoot_SecButton_" .. i]:GetScript("OnClick")
                     _G["AtlasLoot_SecButton_" .. i]:SetScript("OnClick", function(self, button)
                         if IsShiftKeyDown() and self.ItemID then
@@ -3750,9 +3785,7 @@ do
                             BG.PlaySound(1)
                             return
                         end
-                        -- if not IsShiftKeyDown() then
                         script(self, button)
-                        -- end
                     end)
                 end
             end
@@ -3791,7 +3824,6 @@ do
 
         if IsAddOnLoaded("Blizzard_EncounterJournal") then
             BG.After(0, function()
-                pt(EJ_GetNumLoot())
                 ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
                 ChatFrame1EditBox:SetText("")
                 for i = 1, EJ_GetNumLoot() do
@@ -3808,7 +3840,6 @@ do
     SlashCmdList["BIAOGETEST2"] = function()
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
-
 
     BG.RegisterEvent("ADDON_LOADED", function(self, even, addonName, ...)
         if addonName == "Blizzard_EncounterJournal" then

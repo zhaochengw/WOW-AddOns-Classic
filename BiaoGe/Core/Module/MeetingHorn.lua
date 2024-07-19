@@ -212,9 +212,18 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             sort(self.ActivityList:GetItemList(), function(a, b)
                 if not BG.IsVanilla then
                     local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
+                    -- if acl or bcl then
+                    --     if acl and bcl then
+                    --         return acl > bcl
+                    --     else
+                    --         return acl
+                    --     end
+                    -- end
                     if acl or bcl then
                         if acl and bcl then
-                            return acl > bcl
+                            if acl ~= bcl then
+                                return acl > bcl
+                            end
                         else
                             return acl
                         end
@@ -226,26 +235,24 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
                 if self.sortId == 3 then -- 按队伍人数排序
                     local aid, bid = a:GetMembers(), b:GetMembers()
-                    if aid and bid then
-                        if aid == bid then
-                            local aid, bid = a:GetActivityId(), b:GetActivityId()
+                    if aid or bid then
+                        if aid and bid then
                             if aid == bid then
-                                return a:GetTick() < b:GetTick()
-                            else
-                                return aid < bid
+                                local aid, bid = a:GetActivityId(), b:GetActivityId()
+                                if aid == bid then
+                                    return a:GetTick() < b:GetTick()
+                                else
+                                    return aid < bid
+                                end
                             end
-                        end
-                        if self.sortOrder == 0 then
-                            return aid > bid
+                            if self.sortOrder == 0 then
+                                return aid > bid
+                            else
+                                return bid > aid
+                            end
                         else
-                            return bid > aid
+                            return aid
                         end
-                    elseif aid and not bid then
-                        return true
-                    elseif bid and not aid then
-                        return false
-                    else
-                        return false
                     end
                 elseif self.sortId == 1 then -- 按副本排序
                     local aid, bid = a:GetActivityId(), b:GetActivityId()

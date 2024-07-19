@@ -127,7 +127,7 @@ MT.BuildEnv('DATA');
 		ProcDB();
 	end);
 	MT.RegisterOnLogin('DATA', function(LoggedIn)
-		PreLoad();
+		-- PreLoad();
 	end);
 
 -->

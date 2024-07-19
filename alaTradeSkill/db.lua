@@ -261,7 +261,7 @@ end
 
 local function LF_RequestSpell()
 	local completed = true;
-	local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 10000);
+	local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 2000);
 	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		if T_TradeSkill_Name[pid] == nil then
 			local sid = T_TradeSkill_ID[pid];
@@ -341,7 +341,7 @@ end
 
 local function LF_RequestItem()
 	local completed = true;
-	local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 10000);
+	local maxonce = IsInRaid() and 500 or (IsInGroup() and 1000 or 2000);
 	for sid, info in next, T_Recipe_Data do
 		local cid = info[index_cid];
 		if cid ~= nil then

@@ -1,13 +1,14 @@
 --[=[
-	LibChatTransmit
+	by ALA
 --]=]
 
-local __version = 240705.0;
+local __version = 240715.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
 local __ala_meta__ = _G.__ala_meta__;
 
+local Private = {  };
 -->			versioncheck
 	local __ctranslib = __ala_meta__.__ctranslib;
 	if __ctranslib ~= nil and __ctranslib.__minor >= __version then
@@ -17,14 +18,12 @@ local __ala_meta__ = _G.__ala_meta__;
 		__ala_meta__.__ctranslib = __ctranslib;
 	else
 		if __ctranslib.Halt ~= nil then
-			__ctranslib:Halt();
+			Private = __ctranslib:Halt() or Private;
 		end
 	end
 	__ctranslib.__minor = __version;
 -->
 
-
-local Private = {  };
 
 local tostring = tostring;
 local next = next;
@@ -49,7 +48,7 @@ local ValidChatEvent = {
 	["CHAT_MSG_PARTY_LEADER"]			= "PARTY",
 	["CHAT_MSG_RAID"]					= "RAID",
 	["CHAT_MSG_RAID_LEADER"]			= "RAID",
-	["CHAT_MSG_RAID_WARNING"]			= "RAID",
+	["CHAT_MSG_RAID_WARNING"]			= "RAID_WARNING",
 	["CHAT_MSG_INSTANCE_CHAT"]			= "INSTANCE_CHAT",
 	["CHAT_MSG_INSTANCE_CHAT_LEADER"]	= "INSTANCE_CHAT",
 	-- ["CHAT_MSG_BN_WHISPER"]				= "BN_WHISPER",
@@ -67,15 +66,16 @@ Private.Print = print;
 function Private.Debug(...)
 	Private.Print(">>", ...);
 end
+Private.GetTime = GetTime;
+Private.After = C_Timer.After;
 
-
-local _NumDistributors = _NumDistributors or 0;
-local _CommDistributor = _CommDistributor or {  };
+Private._NumDistributors = Private._NumDistributors or 0;
+Private._CommDistributor = Private._CommDistributor or {  };
 function __ctranslib.RegisterCommmDistributor(Distributor, Version)
-	if _CommDistributor[Distributor] == nil then
-		_NumDistributors = _NumDistributors + 1;
-		_CommDistributor[_NumDistributors] = Distributor;
-		_CommDistributor[Distributor] = Version or -1;
+	if Private._CommDistributor[Distributor] == nil then
+		Private._NumDistributors = Private._NumDistributors + 1;
+		Private._CommDistributor[Private._NumDistributors] = Distributor;
+		Private._CommDistributor[Distributor] = Version or -1;
 	end
 end
 
@@ -84,6 +84,9 @@ local msgid = 1;
 function Private.SendComm(msg, ctype, target, r1, r2, r3, r4)
 	if ctype == "WHISPER" then
 		_TWhisperCache[tostring(msgid)] = { Private.GetTime(), msg, };
+	end
+	if ctype == "RAID_WARNING" then
+		ctype = "RAID";
 	end
 	local header = DELIMITER .. SELFGUID ..
 					DELIMITER .. msgid ..
@@ -108,8 +111,6 @@ function Private.SendComm(msg, ctype, target, r1, r2, r3, r4)
 		end
 	end
 end
-Private.GetTime = GetTime;
-Private.After = C_Timer.After;
 function Private.OnEvent(Driver, event, ...)
 	if event == "CHAT_MSG_ADDON" and ... == COMM_PREFIX then
 		local prefix, msg, ctype, sender, target, zoneChannelID, localID, name, instanceID = ...;
@@ -123,13 +124,13 @@ function Private.OnEvent(Driver, event, ...)
 		if r1 ~= "" then
 			r1 = strbyte(r1);
 			if bitand(r1, 1) == 1 then
-				local name = _TGUIDCache[SELFGUID];
+				local name = _TGUIDCache[GUID];
 				local cache = _TWhisperCache[part];
 				if cache ~= nil then
-					for index = 1, _NumDistributors do
-						local proc = _CommDistributor[index].OnDelayCheckFailure;
+					for index = 1, Private._NumDistributors do
+						local proc = Private._CommDistributor[index].OnDelayCheckFailure;
 						if proc ~= nil then
-							pcall(proc, "WHISPER_INFORM", SELFGUID, name, cache[2]);
+							pcall(proc, "WHISPER_INFORM", GUID, name, cache[2]);
 						end
 					end
 				end
@@ -144,8 +145,8 @@ function Private.OnEvent(Driver, event, ...)
 		if idx == 254 then	--	single message
 			cache[msgid] = { Private.GetTime(), part, };
 			-- Private.Debug("SAMSG", "\n[1] =", idx, "\n[2] =", GUID, "\n[3] =", msgid, "\n[4] =", part);
-			for index = 1, _NumDistributors do
-				local proc = _CommDistributor[index].OnComm;
+			for index = 1, Private._NumDistributors do
+				local proc = Private._CommDistributor[index].OnComm;
 				if proc ~= nil then
 					pcall(proc, ctype, GUID, _TGUIDCache[GUID], part);
 				end
@@ -173,8 +174,8 @@ function Private.OnEvent(Driver, event, ...)
 				dst[2] = part;
 				dst[3] = nil;
 				-- Private.Debug("MDONE", "\n[1] =", idx, "\n[2] =", GUID, "\n[3] =", msgid, "\n[4] =", part);
-				for index = 1, _NumDistributors do
-					local proc = _CommDistributor[index].OnComm;
+				for index = 1, Private._NumDistributors do
+					local proc = Private._CommDistributor[index].OnComm;
 					if proc ~= nil then
 						pcall(proc, ctype, GUID, _TGUIDCache[GUID], part);
 					end
@@ -215,18 +216,18 @@ function Private.PeriodicProc()
 					if cc == nil or cc[cache[2]] == nil then
 						local name = _TGUIDCache[GUID];
 						if ctype == "WHISPER" then
-							Private.SendComm(msgid, "WHISPER", name, "\001")
+							Private.SendComm(msgid, "WHISPER", name, "\001");
 						end
-						for index = 1, _NumDistributors do
-							local proc = _CommDistributor[index].OnDelayCheckFailure;
+						for index = 1, Private._NumDistributors do
+							local proc = Private._CommDistributor[index].OnDelayCheckFailure;
 							if proc ~= nil then
 								pcall(proc, ctype, GUID, name, cache[2]);
 							end
 						end
 					else
 						local name = _TGUIDCache[GUID];
-						for index = 1, _NumDistributors do
-							local proc = _CommDistributor[index].OnDelayCheckSuccess;
+						for index = 1, Private._NumDistributors do
+							local proc = Private._CommDistributor[index].OnDelayCheckSuccess;
 							if proc ~= nil then
 								pcall(proc, ctype, GUID, name, cache[2]);
 							end
@@ -288,6 +289,7 @@ end);
 function __ctranslib:Halt()
 	_Driver:UnregisterAllEvents();
 	self.Dead = true;
+	return Private;
 end
 
 -- __ala_meta__.__ctranslib.Private = Private;

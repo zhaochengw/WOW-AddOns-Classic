@@ -305,4 +305,3 @@ function BG.ZhangDanSumUI(lastbt)
     return bt
 end
 
--- pt(GetClassColor("PALADIN"))

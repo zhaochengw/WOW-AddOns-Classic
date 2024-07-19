@@ -2171,7 +2171,6 @@ f:SetScript("OnEvent", function(self, even)
 end)
 
 BG.RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", function(self, even, text, playerName, _, _, _, _, _, _, channelBaseName)
-    -- pt(text, channelBaseName)
     if channelBaseName ~= YY then return end
     if text == "YOU_LEFT" then
         BiaoGe.YYdb.share = 0

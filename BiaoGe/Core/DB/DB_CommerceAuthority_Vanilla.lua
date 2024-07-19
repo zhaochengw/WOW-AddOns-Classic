@@ -164,11 +164,6 @@ end
 -- pt("|cffffffff|Hitem:211830::::::::::::::::::|h[测试物品]|h|r")
 -- pt("|cffffffff|Hitem:211831::::::::::::::::::|h[测试物品]|h|r")
 -- pt("|cffffffff|Hitem:2319::::::::::::::::::|h[测试物品]|h|r")
---[[
-/run print(GetItemInfo(211831)) -- 遭劫货物：黑色披风
-/run print(GetItemInfo(6290)) -- 美味小鱼
-/run print(GetItemInfo(6325)) -- 食谱：美味小鱼
- ]]
 
 --[[
 5 - Friendly

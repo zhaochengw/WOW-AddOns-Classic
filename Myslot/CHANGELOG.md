@@ -1,6 +1,7 @@
 # Myslot
 
-## [v5.17.2](https://github.com/tg123/myslot/tree/v5.17.2) (2024-07-02)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.17.2) 
+## [v5.17.4](https://github.com/tg123/myslot/tree/v5.17.4) (2024-07-14)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.17.4) 
 
-- fix missing commits  
+- Merge pull request #56 from tg123/tww  
+    full TWW context menu support  

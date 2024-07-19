@@ -903,7 +903,6 @@ function BG.HopeDaoChuUI()
     local function ImportHope(text)
         -- 划分副本
         for _, fb in ipairs({ strsplit(".", text) }) do
-            -- pt(fb)
             local FB, allboss = strsplit(":", fb)
             for _, _FB in ipairs(BG.FBtable) do
                 if FB == _FB then

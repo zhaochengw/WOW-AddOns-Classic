@@ -3905,6 +3905,13 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				meu_tempo = instancia.showing:GetCombatTime()
 			end
 
+			if (not meu_tempo) then
+				meu_tempo = instancia.showing:GetCombatTime()
+				if (Details.time_type == 3) then --time type 3 is deprecated
+					Details.time_type = 2
+				end
+			end
+
 			--add actor spells
 			for _spellid, _skill in pairs(ActorSkillsContainer) do
 				ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo}
@@ -3918,7 +3925,11 @@ function damageClass:ToolTip_DamageDone (instancia, numero, barra, keydown)
 				local petActor = instancia.showing[class_type]:PegarCombatente (nil, petName)
 				if (petActor) then
 					for _spellid, _skill in pairs(petActor:GetActorSpells()) do
-						ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo, petName:gsub((" <.*"), "")}
+						local formattedPetName = petName:gsub((" <.*"), "")
+						if (instancia.row_info.textL_translit_text) then
+							formattedPetName = Translit:Transliterate(formattedPetName, "!")
+						end
+						ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo, formattedPetName}
 					end
 				end
 			end

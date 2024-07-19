@@ -5,5 +5,5 @@
     <Script file="DuiZhangUIfunction.lua"/>
     <Script file="Hope.lua"/>
     <Script file="CreateFBUI.lua"/>
-    <Script file="model.lua"/>
+    <Script file="Model.lua"/>
 </Ui>

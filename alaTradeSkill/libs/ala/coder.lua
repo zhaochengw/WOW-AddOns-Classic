@@ -1,8 +1,8 @@
 --[[--
-	alex/ALA 
+	by ALA
 --]]--
 
-local __version = 240706.0;
+local __version = 240714.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -229,18 +229,8 @@ local function _InsertInfo(DevHash, GUID)
 	end
 	return false;
 end
-local function _HashMap()
-	local DevHash = {  };
-	for v1, v2 in next, DevHash do
-		if DEVELOPER[v1] == nil and DEVELOPER[v2] == nil then
-			DevHash[v1] = nil;
-		end
-	end
-	local FullyInserted = true;
-	for GUID, _ in next, DEVELOPER do
-		FullyInserted = _InsertInfo(DevHash, GUID) and FullyInserted;
-	end
-	if not FullyInserted then
+local DevHash = {  };
+do
 		local try = 0;
 		local After = C_Timer.After;
 		local proc;
@@ -266,11 +256,19 @@ local function _HashMap()
 			end
 		end
 		if IsLoggedIn() then
-			proc();
+			After(1, proc);
 		else
 			local F = CreateFrame('FRAME');
 			F:RegisterEvent("PLAYER_LOGIN");
-			F:SetScript("OnEvent", proc);
+			F:SetScript("OnEvent", function()
+				After(2, proc);
+			end);
+		end
+end
+local function _HashMap()
+	for v1, v2 in next, DevHash do
+		if DEVELOPER[v1] == nil and DEVELOPER[v2] == nil then
+			DevHash[v1] = nil;
 		end
 	end
 	__ala_meta__["__DEV" .. "GUID"] = DEVELOPER;

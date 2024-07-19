@@ -180,7 +180,7 @@ end
 function Addon:UpdateTradeItemInfo(Side, Slot, ItemTable)
 	local ItemName, Quantity, Enchantment, ItemLink
 	if Side == "target" then
-		ItemName, _, Quantity, _, _, Enchantment = GetTradeTargetItemInfo(Slot)
+		ItemName, _, Quantity, _, Enchantment = GetTradeTargetItemInfo(Slot)
 	else
 		ItemName, _, Quantity, _, Enchantment = GetTradePlayerItemInfo(Slot)
 	end
@@ -376,10 +376,27 @@ function Addon:PrintTradeLog(ListMode, AltName, SelectDate)
 	Output.export:SetText(msg)
 	Output.export:Disable()
 end
+--保存变量
+function Addon:SaveVariables()
+	-- 清理临时变量
+	Current = nil
+	-- 存儲輸出窗口位置
+	Config.OutputFramePos[1], _, Config.OutputFramePos[3], Config.OutputFramePos[4], Config.OutputFramePos[5] = Output.background:GetPoint()
+	-- 将数据存入MailLoggerDB（保存文件）
+	MailLoggerDB = {
+		["Config"] = {},
+		["TradeLog"] = {},
+		["IgnoreItems"] = {},
+	}
+	Addon:UpdateTable(MailLoggerDB.Config, Config)
+	Addon:UpdateTable(MailLoggerDB.TradeLog, TradeLog)
+	Addon:UpdateTable(MailLoggerDB.IgnoreItems, IgnoreItems)
+end
 
 --Register Events 注册事件
 --装载和退出
 Frame:RegisterEvent("ADDON_LOADED")
+Frame:RegisterEvent("PLAYER_LEAVING_WORLD")
 Frame:RegisterEvent("PLAYER_LOGOUT")
 Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 --交易相关
@@ -467,7 +484,10 @@ function Frame:ADDON_LOADED(Name)
 end
 
 -- 进入世界
-function Frame:PLAYER_ENTERING_WORLD()
+function Frame:PLAYER_ENTERING_WORLD(isLogin, isReload)
+	if not isLogin and not isReload then
+		return
+	end
 	if Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan"))) then
 		MinimapIcon:InitBroker()
 	else
@@ -483,20 +503,11 @@ function Frame:PLAYER_ENTERING_WORLD()
 end
 
 -- 退出游戏
+function Frame:PLAYER_LEAVING_WORLD()
+	Addon:SaveVariables()
+end
 function Frame:PLAYER_LOGOUT()
-	-- 清理临时变量
-	Current = nil
-	-- 存儲輸出窗口位置
-	Config.OutputFramePos[1], _, Config.OutputFramePos[3], Config.OutputFramePos[4], Config.OutputFramePos[5] = Output.background:GetPoint()
-	-- 将数据存入MailLoggerDB（保存文件）
-	MailLoggerDB = {
-		["Config"] = {},
-		["TradeLog"] = {},
-		["IgnoreItems"] = {},
-	}
-	Addon:UpdateTable(MailLoggerDB.Config, Config)
-	Addon:UpdateTable(MailLoggerDB.TradeLog, TradeLog)
-	Addon:UpdateTable(MailLoggerDB.IgnoreItems, IgnoreItems)
+	Addon:SaveVariables()
 end
 
 -- 交易相关（记录、拒绝恶意交易）

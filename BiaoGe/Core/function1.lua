@@ -172,11 +172,9 @@ local function SetClassCFF(name, player, type)
     else
         _, class = UnitClass(name)
     end
-    local colorname = ""
     if class then
         local color = select(4, GetClassColor(class))
-        colorname = "|c" .. color .. name .. "|r"
-        return colorname, color
+        return "|c" .. color .. name .. "|r", color
     else
         return name, ""
     end
@@ -291,8 +289,8 @@ function BG.BiaoGeIsHavedItem(FB, _type, instanceID)
     if _type == "onlyboss" then
         endB = Maxb[FB] - 2
     elseif _type == "autoQingKong" then
-        startB = BG.bossPositionTbl[instanceID][1]
-        endB = BG.bossPositionTbl[instanceID][2]
+        startB = BG.bossPositionStartEnd[instanceID][1]
+        endB = BG.bossPositionStartEnd[instanceID][2]
     end
     for b = startB, endB do
         for i = 1, Maxi[FB] do
@@ -426,7 +424,7 @@ end
 
 ------------------是国服或亚服吗------------------
 function BG.IsCN()
-    if GetCurrentRegionName() == "CN" or GetCurrentRegionName() == "KR" then
+    if GetCurrentRegionName() == "CN" or GetCurrentRegionName() == "TW" or GetCurrentRegionName() == "KR" then
         return true
     end
 end
@@ -514,17 +512,13 @@ end
 do
     function BG.CursorIsInRight()
         local uiScale = UIParent:GetEffectiveScale()
-        local w = floor(UIParent:GetRight())
-        local x, y = GetCursorPosition()
-        x, y = floor(x / uiScale), floor(y / uiScale)
-        if w * 0.67 < x then
+        if GetCursorPosition() / uiScale > UIParent:GetWidth() * 0.5 then
             return true
         end
     end
 
-    function BG.ButtonIsInRight(self, percent)
-        if not percent then percent = 0.6 end
-        if self:GetCenter() > UIParent:GetRight() * percent then
+    function BG.ButtonIsInRight(self)
+        if self:GetCenter() > UIParent:GetWidth() * 0.5 then
             return true
         end
     end

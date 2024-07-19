@@ -7274,7 +7274,10 @@
         "Allianceorhorde",
         "AQINSTANZ",
         "AQSHOWNQUEST",
-        "AQTHISISSHOWN"
+        "AQTHISISSHOWN",
+        "LeaveParty",
+        "XLootFrame",
+        "ContainerFrameItemButton_OnLeave"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

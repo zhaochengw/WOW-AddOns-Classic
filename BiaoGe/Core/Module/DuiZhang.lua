@@ -58,7 +58,7 @@ local function Default(player, time)
 end
 
 local function CheckTimeOut(time)
-    BG.After(15, function()
+    BG.After(20, function()
         if linshi_duizhang and linshi_duizhang.t then
             if time == linshi_duizhang.t then
                 linshi_duizhang = nil
@@ -324,6 +324,7 @@ function BG.DuiZhangUI()
                 GameTooltip:Show()
                 BG.HighlightBiaoGe(link)
                 BG.HighlightBag(link)
+                BG.HighlightChatFrame(link)
             end
         end)
         child:SetScript("OnHyperlinkLeave", function(self, link, text, button)

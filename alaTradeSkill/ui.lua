@@ -43,7 +43,6 @@ local DT = __private.DT;
 
 	local GetNumSkillLines = GetNumSkillLines;
 	local GetSkillLineInfo = GetSkillLineInfo;
-	local IsTradeSkillLinked = IsTradeSkillLinked or function() return false; end;
 	-- local IsSpellKnown = IsSpellKnown;
 	local GetSpellInfo = GetSpellInfo;
 	local GetItemInfo = GetItemInfo;
@@ -204,7 +203,8 @@ local T_UIDefinition = {
 };
 
 local LT_SharedMethod = {  };
-local T_ExplorerStat = { Skill = {  }, Type = {  }, SubType = {  }, EquipLoc = {  }, };
+local LT_ExplorerStat = { Skill = {  }, Type = {  }, SubType = {  }, EquipLoc = {  }, };
+local LT_LinkedSkillVar = { {  }, {  }, };
 
 
 function LT_SharedMethod.ButtonInfoOnEnter(self)
@@ -335,14 +335,15 @@ end
 		-- end
 		-- Frame.mute_update = true;
 		if Frame.HookedFrame:IsShown() then
-			local NotInspecting = not IsTradeSkillLinked();
+			local notlinked = not Frame.F_IsLinked();
 			Frame:F_LayoutOnShow();
 			local skillName, cur_rank, max_rank = Frame.F_GetSkillInfo();
 			local pid = DataAgent.get_pid_by_pname(skillName);
 			Frame.flag = pid;
+			Frame.notlinked = notlinked;
 			if pid ~= nil then
 				local set = VT.SET[pid];
-				local var = VT.VAR[pid];
+				local var = notlinked and VT.VAR[pid] or LT_LinkedSkillVar;
 				local update_var = var.update or Frame.prev_pid ~= pid or var.cur_rank ~= cur_rank or Frame.update;
 				if not update_var then
 					local t = GetTime();
@@ -406,7 +407,7 @@ end
 												else
 													sids[#sids + 1] = sid;
 													hash[sid] = index;
-													if NotInspecting then
+													if notlinked then
 														DataAgent.MarkKnown(sid, CT.SELFGUID);
 													end
 												end
@@ -423,7 +424,7 @@ end
 										sids[#sids + 1] = sid;
 										hash[sid] = index;
 										DataAgent.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
-										if NotInspecting then
+										if notlinked then
 											DataAgent.MarkKnown(sid, CT.SELFGUID);
 										end
 									end
@@ -529,7 +530,7 @@ end
 												if hash[sid] == nil then
 													sids[#sids + 1] = sid;
 													hash[sid] = index;
-													if NotInspecting then
+													if notlinked then
 														DataAgent.MarkKnown(sid, CT.SELFGUID);
 													end
 												end
@@ -542,7 +543,7 @@ end
 									else
 										sids[#sids + 1] = sid;
 										hash[sid] = index;
-										if NotInspecting then
+										if notlinked then
 											DataAgent.MarkKnown(sid, CT.SELFGUID);
 										end
 										DataAgent.DynamicCreateInfo(Frame, pid, cur_rank, index, sid, srank);
@@ -554,9 +555,11 @@ end
 						end
 					end
 				end
-				MT.CheckCooldown(pid, var);
-				if update_var then
-					Frame.PortraitButton:F_Update();
+				if notlinked then
+					MT.CheckCooldown(pid, var);
+					if update_var then
+						Frame.PortraitButton:F_Update();
+					end
 				end
 			else
 				Frame:Hide();
@@ -701,7 +704,7 @@ end
 					Frame:F_HideSetFrame();
 				end
 				Frame.SearchEditBoxNameOnly:SetChecked(set.searchNameOnly);
-				LT_SharedMethod.ExplorerFilterList(Frame, T_ExplorerStat, set.filter, set.searchText, set.searchNameOnly,
+				LT_SharedMethod.ExplorerFilterList(Frame, LT_ExplorerStat, set.filter, set.searchText, set.searchNameOnly,
 											list, hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, set.filterClass, set.filterSpec);
 				LT_SharedMethod.UpdateProfitFrame(Frame);
 			else
@@ -2297,7 +2300,7 @@ end
 		local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 		if pid ~= nil then
 			local set = VT.SET[pid];
-			local var = VT.VAR[pid];
+			local var = Frame.notlinked and VT.VAR[pid] or LT_LinkedSkillVar;
 			Frame.RankOffsetSlider:SetMinMaxValues(1, var.max_rank ~= nil and var.max_rank > 1 and var.max_rank or 75);
 			if set.rankoffset ~= nil and set.rankoffset > 0 then
 				Frame.RankOffsetButton:SetText("+" .. set.rankoffset);
@@ -2485,7 +2488,7 @@ end
 			local pid = Frame.flag or DataAgent.get_pid_by_pname(Frame.F_GetSkillName());
 			if pid ~= nil then
 				local set = VT.SET[pid];
-				local var = VT.VAR[pid];
+				local var = Frame.notlinked and VT.VAR[pid] or LT_LinkedSkillVar;
 				value = value + 0.5; value = value - value % 1.0;
 				value = value - var.cur_rank;
 				value = value + 0.1; value = value - value % 5.0 + 5;
@@ -2828,7 +2831,7 @@ end
 			LT_SharedMethod.ExplorerFilterList(Frame, stat_list, temp_filter, set.searchText, set.searchNameOnly,
 										{  }, Frame.hash, set.phase, nil, set.rankReversed, set.showKnown, set.showUnkown, set.showHighRank, false, false);
 		else
-			stat_list = T_ExplorerStat;
+			stat_list = LT_ExplorerStat;
 		end
 		T_ExplorerSetMeta[1] = { text = l10n["EXPLORER_CLEAR_FILTER"], param = { Frame, key, nil, }, };
 		T_ExplorerSetMeta.num = 1;
@@ -3773,14 +3776,14 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		local SetTradeSkillItemNameFilter = _G.SetTradeSkillItemNameFilter;
 		local SetTradeSkillItemLevelFilter = _G.SetTradeSkillItemLevelFilter;
 
+		local IsTradeSkillLinked = _G.IsTradeSkillLinked or function() return false; end;
+		local GetTradeSkillLine = _G.GetTradeSkillLine;
+		local GetNumTradeSkills = _G.GetNumTradeSkills;
+		local DoTradeSkill = _G.DoTradeSkill;
+		local CloseTradeSkill = _G.CloseTradeSkill;
 		local TradeSkillFrame_SetSelection = _G.TradeSkillFrame_SetSelection;
 		local GetTradeSkillSelectionIndex = _G.GetTradeSkillSelectionIndex;
 		--
-		local DoTradeSkill = _G.DoTradeSkill;
-		local CloseTradeSkill = _G.CloseTradeSkill;
-		--
-		local GetTradeSkillLine = _G.GetTradeSkillLine;
-		local GetNumTradeSkills = _G.GetNumTradeSkills;
 		local GetTradeSkillInfo = _G.GetTradeSkillInfo;
 		local GetTradeSkillRecipeLink = _G.GetTradeSkillRecipeLink;
 		local GetTradeSkillItemLink = _G.GetTradeSkillItemLink;
@@ -3910,8 +3913,6 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			CollapseAllButton = TradeSkillCollapseAllButton,
 		},
 
-		F_SetSelection = TradeSkillFrame_SetSelection,		-- SelectTradeSkill
-		F_GetSelection = GetTradeSkillSelectionIndex,
 		-- expand = ExpandTradeSkillSubClass,
 		-- collapse = CollapseTradeSkillSubClass,
 		F_ClearFilter = function()
@@ -3931,15 +3932,19 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 				TradeSkillCollapseAllButton.collapsed = nil;
 			end
 		end,
-		F_DoTradeCraft = DoTradeSkill,
-		F_CloseSkill = CloseTradeSkill,
 
+		F_IsLinked = IsTradeSkillLinked,
 		F_GetSkillName = GetTradeSkillLine,
 		F_GetSkillInfo = GetTradeSkillLine,
 		-- F_GetSkillInfo = function(...) return GetTradeSkillLine(...), DataAgent.MAXRANK, DataAgent.MAXRANK; end,
 			--	skillName, cur_rank, max_rank
 
 		F_GetRecipeNumAvailable = GetNumTradeSkills,
+		F_DoTradeCraft = DoTradeSkill,
+		F_CloseSkill = CloseTradeSkill,
+		F_SetSelection = TradeSkillFrame_SetSelection,		-- SelectTradeSkill
+		F_GetSelection = GetTradeSkillSelectionIndex,
+
 		F_GetRecipeInfo = GetTradeSkillInfo,
 			--	skillName, difficult & header, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex)
 		F_GetRecipeSpellID = CT.VGT3X and function(arg1) local link = GetTradeSkillRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,
@@ -4119,13 +4124,14 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		local SetCraftFilter = _G.SetCraftFilter;
 		local CraftOnlyShowMakeable = _G.CraftOnlyShowMakeable;
 
-		local CraftFrame_SetSelection = _G.CraftFrame_SetSelection;
-		local GetCraftSelectionIndex = _G.GetCraftSelectionIndex;
 		--
-		local CloseCraft = _G.CloseCraft;
 		local GetCraftName = _G.GetCraftName;
 		local GetCraftDisplaySkillLine = _G.GetCraftDisplaySkillLine;
 		local GetNumCrafts = _G.GetNumCrafts;
+		local CloseCraft = _G.CloseCraft;
+		local CraftFrame_SetSelection = _G.CraftFrame_SetSelection;
+		local GetCraftSelectionIndex = _G.GetCraftSelectionIndex;
+		--
 		local GetCraftInfo = _G.GetCraftInfo;
 		local GetCraftRecipeLink = _G.GetCraftRecipeLink;
 		local GetCraftItemLink = _G.GetCraftItemLink;
@@ -4237,8 +4243,6 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 			CraftFramePointsText,
 		},
 
-		F_SetSelection = CraftFrame_SetSelection,		-- SelectCraft
-		F_GetSelection = GetCraftSelectionIndex,
 		-- expand = ExpandCraftSkillLine,
 		-- collapse = CollapseCraftSkillLine,
 		F_ClearFilter = CT.VGT2X and function()
@@ -4247,15 +4251,19 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 			SetCraftFilter(1);
 			UIDropDownMenu_SetSelectedID(CraftFrameFilterDropDown, 1);
 		end or MT.noop,
-		-- F_DoTradeCraft = DoCraft,
-		F_CloseSkill = CloseCraft,
 
+		F_IsLinked = function() return false; end,
 		F_GetSkillName = GetCraftName,
 		F_GetSkillInfo = GetCraftDisplaySkillLine,
 		-- F_GetSkillInfo = function(...) return GetCraftDisplaySkillLine(...), DataAgent.MAXRANK, DataAgent.MAXRANK; end,
 			--	skillName, cur_rank, max_rank
 
 		F_GetRecipeNumAvailable = GetNumCrafts,
+		-- F_DoTradeCraft = DoCraft,
+		F_CloseSkill = CloseCraft,
+		F_SetSelection = CraftFrame_SetSelection,		-- SelectCraft
+		F_GetSelection = GetCraftSelectionIndex,
+
 		F_GetRecipeInfo = function(arg1) local _1, _2, _3, _4, _5, _6, _7 = GetCraftInfo(arg1); return _1, _3, _4, _5, _6, _7; end,
 			--	craftName, craftSubSpellName(""), difficult, numAvailable, isExpanded, trainingPointCost, requiredLevel = GetCraftInfo(index)
 		F_GetRecipeSpellID = CT.VGT3X and function(arg1) local link = GetCraftRecipeLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end or nil,

@@ -1455,3 +1455,5 @@ DT.PresetTalents = {
 DT.LevelAvailablePointsTable = {  };
 for i = 1, 9 do DT.LevelAvailablePointsTable[i] = 0; end
 for i = 10, DT.MAX_LEVEL do DT.LevelAvailablePointsTable[i] = i - 9; end
+
+DT.LevelAvailablePointsTableClass = {  };

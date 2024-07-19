@@ -1,6 +1,6 @@
 local AddonName, ns = ...
 
-if not BG.IsWLK then return end
+-- if not BG.IsWLK then return end
 
 local LibBG = ns.LibBG
 local L = ns.L
@@ -37,15 +37,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     BiaoGe.newbee_report = BiaoGe.newbee_report or {}
     BiaoGe.newbee_report_notuploaded = BiaoGe.newbee_report_notuploaded or {}
 
-    local LEAST_VER = "1.10.0"
-
     local textTbl, buttonTbl
 
-    local function TargetIsTrueVer(ver)
-        if BG.GetVerNum(ver) >= BG.GetVerNum(LEAST_VER) then
-            return true
-        end
-    end
     local function GetEncounterID(bossNum)
         local FB = BG.FB1
         if BG.Loot.encounterID[FB] then
@@ -245,21 +238,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             end
                             tinsert(tbl, a)
 
-                            if buyer and not BiaoGe.newbee_report_notuploaded.allBuyer[buyer] then
-                                local b = {}
-                                for k, v in pairs(a.buyer) do
-                                    b[k] = v
-                                end
-
-                                local ver = BG.raidBiaoGeVersion[buyer]
-                                if ver and TargetIsTrueVer(ver) then
-                                    b.canCheck = true
-                                    BiaoGe.newbee_report_notuploaded.allCanCheckBuyer[buyer] = b
-                                else
-                                    b.canCheck = false
-                                end
-                                BiaoGe.newbee_report_notuploaded.allBuyer[buyer] = b
-                            end
                         end
                     end
                 end
@@ -281,32 +259,18 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
 
-        --[[
-        不能审核的情况：
-        1、玩家自己没权限：不是团长、没A、没物品分配权
-        2、没有团长信息
-        3、没有买家
-        4、只有一个买家、且该买家是自己
-        5、有多个买家，但这些买家有80%人不在团队里
-
-
-        正常审核：
-        发送给团队里有表格插件的人去审核，时间30秒
-
-
-        ]]
         local FB = BiaoGe.newbee_report_notuploaded.biaoge
         local time = BiaoGe.newbee_report_notuploaded.time
         local name = BiaoGe.newbee_report_notuploaded.uploader.name
         local color = BiaoGe.newbee_report_notuploaded.uploader.color
-        local checkText = L["未审核"]
+        local raidleader = L["未审核"]
         if Size(BiaoGe.newbee_report_notuploaded.allCanCheckBuyer) == 0 then
-            checkText = L["无需审核"]
+            raidleader = L["无需审核"]
         elseif Size(BiaoGe.newbee_report_notuploaded.allCanCheckBuyer) == 1 and
             BiaoGe.newbee_report_notuploaded.allCanCheckBuyer[UnitName("Player")] then
-            checkText = L["无需审核"]
+            raidleader = L["无需审核"]
         end
-        UpdateFrameNewBeeText(FB, time, name, color, checkText, L["未上传"])
+        UpdateFrameNewBeeText(FB, time, name, color, raidleader, L["未上传"])
 
         if BG.FrameNewBee.lootFrame:IsVisible() then
             CreateNewBeeLoot()
@@ -385,7 +349,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             { text = BG.STC_y2(L["账单表格："]), name = "biaoge" },
             { text = BG.STC_y2(L["生成时间："]), name = "createTimeText" },
             { text = BG.STC_y2(L["生成人："]), name = "createManText" },
-            { text = BG.STC_y2(L["审核状态："]), name = "checkText" },
+            { text = BG.STC_y2(L["团长："]), name = "checkText" },
             { text = BG.STC_y2(L["上传状态："]), name = "uploadText" },
         }
         BG.FrameNewBee.texts = {}
@@ -442,17 +406,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         BG.FrameNewBee.lootFrame:Show()
                         CreateNewBeeLoot()
                     end
-                end
-            },
-            {
-                name = L["审核账单"],
-                onEnter = { L["把账单发给装有BiaoGe插件的团员审核，只要有80%通过就视为通过。"],
-                    " ",
-                    L["说明"],
-                    L["未审核的账单：只用于团队内部浏览，不参与国服土豪排行榜"],
-                    L["已审核的账单：除了用于团队内部浏览，也会参与国服土豪排行榜"], },
-                onClick = function(self)
-
                 end
             },
             {
@@ -530,6 +483,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 GameTooltip:Show()
                 BG.HighlightBiaoGe(link)
                 BG.HighlightBag(link)
+                BG.HighlightChatFrame(link)
             end
         end)
         child:SetScript("OnHyperlinkLeave", function(self, link, text, button)

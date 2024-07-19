@@ -44,6 +44,9 @@ function CataObjectFixes.Load()
         [181781] = { -- Axxarien Crystal
             [objectKeys.name] = "Axxarien Crystal",
         },
+        [185309] = { -- Altar of Goc
+            [objectKeys.spawns] = {[zoneIDs.BLADES_EDGE_MOUNTAINS] = {{64.15,18.5}}},
+        },
         [187922] = { -- Alliance Bonfire - Burning Steppes
             [objectKeys.spawns] = {[zoneIDs.BURNING_STEPPES] = {{68.57,60.2}}},
         },
@@ -188,6 +191,10 @@ function CataObjectFixes.Load()
         [281339] = { -- Hero's Call Board -- Deepholm
             [objectKeys.spawns] = {[5042] = {{48.82,53.06,169}}},
             [objectKeys.zoneID] = 5042,
+        },
+        [301087] = { -- Fire Portal
+            [objectKeys.spawns] = {[zoneIDs.TWILIGHT_HIGHLANDS] = {{36.4,83.76}}},
+            [objectKeys.zoneID] = zoneIDs.TWILIGHT_HIGHLANDS,
         },
 
         --- fake object IDs

@@ -51,7 +51,7 @@ BG.FBIDtable = {}
 BG.lootQuality = {}
 BG.difficultyTable = {}
 BG.phaseFBtable = {}
-BG.bossPositionTbl = {}
+BG.bossPositionStartEnd = {}
 BG.FBfromBossPosition = {}
 BG.instanceIDfromBossPosition = {}
 do
@@ -107,7 +107,7 @@ do
             BG.lootQuality[FB] = lootQuality or 4
             BG.difficultyTable[FB] = difficultyTable or { "N", "H" }
             BG.phaseFBtable[FB] = phaseTable or { FB }
-            BG.bossPositionTbl[instanceID] = bossPositionTbl or { 1, Maxb[FB] - 2 }
+            BG.bossPositionStartEnd[instanceID] = bossPositionTbl or { 1, Maxb[FB] - 2 }
 
             BG.FBfromBossPosition[FB] = {}
             for i = 1, Maxb[FB] do
@@ -129,16 +129,19 @@ do
             AddDB("MCsod", 409, "P4", 20, nil, nil, { "UBRS", "MCsod" }, { 1, 11 })
 
             BG.FBIDtable[249] = "MCsod" -- 奥妮克希亚的巢穴
-            BG.bossPositionTbl[249] = { 12, 12 }
+            BG.bossPositionStartEnd[249] = { 12, 12 }
             BG.FBfromBossPosition["MCsod"][12] = { name = "OLsod", localName = GetRealZoneText(249) }
+            BG.instanceIDfromBossPosition["MCsod"][12] = 249
 
             BG.FBIDtable[2791] = "MCsod" -- 风暴悬崖
-            BG.bossPositionTbl[2791] = { 13, 13 }
+            BG.bossPositionStartEnd[2791] = { 13, 13 }
             BG.FBfromBossPosition["MCsod"][13] = { name = "SC", localName = GetRealZoneText(2791) }
+            BG.instanceIDfromBossPosition["MCsod"][13] = 2791
 
             BG.FBIDtable[2789] = "MCsod" -- 腐烂之痕
-            BG.bossPositionTbl[2789] = { 14, 14 }
+            BG.bossPositionStartEnd[2789] = { 14, 14 }
             BG.FBfromBossPosition["MCsod"][14] = { name = "TTS", localName = GetRealZoneText(2789) }
+            BG.instanceIDfromBossPosition["MCsod"][14] = 2789
         elseif BG.IsVanilla_60 then
             BG.FB1 = "MC"
             BG.fullLevel = 60
@@ -151,52 +154,56 @@ do
             AddDB("NAXX", 533, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
 
             BG.FBIDtable[249] = "MC" -- 奥妮克希亚的巢穴
-            BG.bossPositionTbl[249] = { 11, 11 }
+            BG.bossPositionStartEnd[249] = { 11, 11 }
             BG.FBfromBossPosition["MC"][11] = { name = "OL", localName = GetRealZoneText(249) }
+            BG.instanceIDfromBossPosition["MC"][11] = 249
         elseif BG.IsWLK then
             BG.FB1 = "NAXX"
             BG.fullLevel = 80
             BG.theEndBossID = { 1114, 757, 645, 856, }
-            AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" })
+            AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, nil, { 1, 15 })
             AddDB("ULD", 603, "P2", nil, nil, { "H25", "H10", "N25", "N10" })
-            AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" })
-            AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" })
+            AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, nil, { 1, 6 })
+            AddDB("ICC", 631, "P4", nil, nil, { "H25", "H10", "N25", "N10" }, nil, { 1, 12 })
 
             BG.FBIDtable[615] = "NAXX" -- 黑曜石圣殿
-            BG.bossPositionTbl[615] = { 16, 16 }
+            BG.bossPositionStartEnd[615] = { 16, 16 }
             BG.FBfromBossPosition["NAXX"][16] = { name = "OS", localName = GetRealZoneText(615) }
             BG.instanceIDfromBossPosition["NAXX"][16] = 615
 
             BG.FBIDtable[616] = "NAXX" -- 永恒之眼
-            BG.bossPositionTbl[616] = { 17, 17 }
+            BG.bossPositionStartEnd[616] = { 17, 17 }
             BG.FBfromBossPosition["NAXX"][17] = { name = "EOE", localName = GetRealZoneText(616) }
             BG.instanceIDfromBossPosition["NAXX"][17] = 616
 
             BG.FBIDtable[249] = "TOC" -- 奥妮克希亚的巢穴
-            BG.bossPositionTbl[249] = { 7, 7 }
+            BG.bossPositionStartEnd[249] = { 7, 7 }
             BG.FBfromBossPosition["TOC"][7] = { name = "OL", localName = GetRealZoneText(249) }
             BG.instanceIDfromBossPosition["TOC"][7] = 249
 
             BG.FBIDtable[724] = "ICC" -- 红玉圣殿
-            BG.bossPositionTbl[724] = { 13, 13 }
+            BG.bossPositionStartEnd[724] = { 13, 13 }
             BG.FBfromBossPosition["ICC"][13] = { name = "RS", localName = GetRealZoneText(724) }
             BG.instanceIDfromBossPosition["ICC"][13] = 724
         elseif BG.IsCTM then
             BG.FB1 = "BOT"
             BG.fullLevel = 85
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }
-            AddDB("BOT", 671, "P1")   -- 暮光堡垒
+            AddDB("BOT", 671, "P1", nil, nil, nil, nil, { 1, 5 }) -- 暮光堡垒
 
-            BG.FBIDtable[669] = "BOT" -- 黑翼血环
-            BG.bossPositionTbl[669] = { 6, 11 }
+            BG.FBIDtable[669] = "BOT"                     -- 黑翼血环
+            BG.bossPositionStartEnd[669] = { 6, 11 }
             for i = 6, 11 do
                 BG.FBfromBossPosition["BOT"][i] = { name = "BWD", localName = GetRealZoneText(669) }
+                BG.instanceIDfromBossPosition["BOT"][i] = 669
             end
 
             BG.FBIDtable[754] = "BOT" -- 风神王座
-            BG.bossPositionTbl[754] = { 12, 13 }
-            BG.FBfromBossPosition["BOT"][12] = { name = "TOF", localName = GetRealZoneText(754) }
-            BG.FBfromBossPosition["BOT"][13] = { name = "TOF", localName = GetRealZoneText(754) }
+            BG.bossPositionStartEnd[754] = { 12, 13 }
+            for i = 12, 13 do
+                BG.FBfromBossPosition["BOT"][i] = { name = "TOF", localName = GetRealZoneText(754) }
+                BG.instanceIDfromBossPosition["BOT"][i] = 754
+            end
 
             -- AddDB("FL", 720, "P2") -- 火焰之地
             -- AddDB("DS", 967, "P3") -- 巨龙之魂

@@ -1,4 +1,4 @@
-## Interface: 11502
+## Interface: 11503
 ## Title: Talent Emu Cata
 ## Title-zhCN: ala天赋模拟器
 ## Title-zhTW: ala天賦模擬器
@@ -12,6 +12,6 @@
 ## Author: |cff00ff00ALA|r
 ## Author-zhCN: |cff00ff00ALA|r
 ## Author-zhTW: |cff00ff00ALA|r
-## Version: 115r.240710
+## Version: 115r.240715
 
 TalentEmu.xml

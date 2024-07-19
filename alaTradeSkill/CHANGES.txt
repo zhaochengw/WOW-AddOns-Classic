@@ -1,28 +1,10 @@
-lightweight tag 5bfeb0d209dc72fda97d4ed4bbf2f7eaaa212735 240710
+lightweight tag 6fefe221e72a84e72c8a6df43f8c971eb54714f1 240715
 Author:	alexqu0822 <alexqu0822@163.com>
-Date:	Thu Jul 11 14:30:27 2024 +0800
+Date:	Wed Jul 17 16:37:31 2024 +0800
 
-commit 5bfeb0d209dc72fda97d4ed4bbf2f7eaaa212735
+commit 6fefe221e72a84e72c8a6df43f8c971eb54714f1
 Author: alexqu0822 <alexqu0822@163.com>
-Date:   Thu Jul 11 14:30:27 2024 +0800
+Date:   Wed Jul 17 16:37:31 2024 +0800
 
-    240710
-
-commit 9ec49208561a8cf87d465be411aee6e56fea8e08
-Author: alexqu0822 <alexqu0822@163.com>
-Date:   Thu Jul 11 07:42:22 2024 +0800
-
-    nothing
-
-commit 52a2e0aff158861b5830c5ddfeab93053a5d5de7
-Author: alexqu0822 <alexqu0822@163.com>
-Date:   Tue Jul 9 18:11:49 2024 +0800
-
-    CodexLite support. Add some minor recipes. Tip format update.
-
-commit d04d96565555f1a382280094d7f7fdc1d4f81869
-Author: alexqu0822 <alexqu0822@163.com>
-Date:   Tue Jul 9 12:27:52 2024 +0800
-
-    -
+    240715
 

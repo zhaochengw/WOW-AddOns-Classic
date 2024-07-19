@@ -182,7 +182,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     f:RegisterEvent("ENCOUNTER_START")
     f:RegisterEvent("ENCOUNTER_END")
     f:SetScript("OnEvent", function(self, even, bossID, _, _, _, success)
-        -- pt(even, bossID, success)
         local FB = BG.FB2
         if not FB then return end
         if even == "ENCOUNTER_START" then

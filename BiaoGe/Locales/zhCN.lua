@@ -1,7 +1,6 @@
 local AddonName, ns = ...
 
-ns.ver = "v1.10.1"
--- ns.ver = "v1.9.6 Alpha3"
+ns.ver = "v1.10.5"
 
 local c1 = "|cff" .. "ffff66"
 ns.c1 = c1
@@ -25,6 +24,43 @@ do --简体说明书
     text = text .. "|cffFFFFFF-交换格子：|rCTRL+ALT+点击格子1，再点格子2，可交换两行全部内容\n"
     text = text .. "|cffFFFFFF-更多功能介绍可在设置里查看|r\n\n"
     text = text .. "-BUG反馈：邮箱buick_hbj@163.com，Q群322785325\n\n"
+
+    -- update = update .. "|cff00FF00" .. "" .. "|r\n"
+    -- update = update .. [[]] .. "|r\n"
+    -- update = update .. [[]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月18日更新v1.10.5" .. "|r\n"
+    update = update .. [[-一键分配：现在也支持XLoot插件]] .. "|r\n"
+    update = update .. [[-集结号增强：同等级的星团长现在也会按队伍人数排列]] .. "|r\n"
+    update = update .. c1 .. [[-修复了多本表格的一个自动清空问题]] .. "|r\n"
+    update = update .. [[-修复了按住Ctrl跳转装备库时，装备库没有正确更新的问题]] .. "|r\n"
+    update = update .. [[-<WLK>NAXX表格：BOSS顺序调整为蜘蛛-构造-军事-瘟疫]] .. "|r\n"
+    update = update .. [[-<WLK>一键举报：如果目标是你的队友，则不会显示一键举报按钮]] .. "|r\n"
+    update = update .. [[-<WLK/CTM>一键指定副本：现在打开随机本界面时，会自动选择上一次的随机本类型，而不是傻傻地在默认类型]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月17日更新v1.10.4" .. "|r\n"
+    update = update .. [[-拍卖聊天框：增加按钮[定位装备]（可以把拍卖聊天记录定位到当前装备所在处，便于你翻查某件装备的拍卖过程）]] .. "|r\n"
+    update = update .. [[-高亮对应装备：鼠标悬停在表格/背包装备时，现在也会在高亮聊天框装备]] .. "|r\n"
+    update = update .. [[-<WLK>角色总览：增加珠宝、烹饪、钓鱼日常（默认不勾选）。修复了周常重置时间错误的问题]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
+
+    update = update .. "|cff00FF00" .. "7月14日更新v1.10.3" .. "|r\n"
+    update = update .. [[-装备过滤：修复了有些词缀不生效的问题]] .. "|r\n"
+    update = update .. [[-<WLK>装备库：增加5人本装备]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "7月13日更新v1.10.2" .. "|r\n"
+    update = update .. c1 .. [[-拍卖WA更新为v1.5：拍卖价格为100~1000的加价幅度现在为100一次]] .. "|r\n"
+    update = update .. [[-修复了工资抹零按钮点击失效的问题]] .. "|r\n"
+    update = update .. [[-<WLK>修复了装备过滤词缀"每5秒回复xx点法力值"对有些装备不生效的问题]] .. "|r\n"
+    update = update .. [[-<赛季服>角色总览：删除梦魇日常]] .. "|r\n"
+    update = update .. [[-<赛季服>装备库：更新声望装备、5人本新货币兑换装备]] .. "|r\n\n"
 
     update = update .. "|cff00FF00" .. "7月12日更新v1.10.1" .. "|r\n"
     update = update .. c1 .. [[-拍卖WA更新为v1.4：增加一个开始拍卖时的动画效果]] .. "|r\n"
@@ -52,34 +88,6 @@ do --简体说明书
     update = update .. c1 .. [[-<WLK>一键举报：在战场里，右键点击世界地图上的玩家圆点时，增加一键全部举报的按钮]] .. "|r\n"
     update = update .. [[-<WLK/CTM>装备库：修复了牌子装所需的货币数量不显示的问题]] .. "|r\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
-    update = update .. "|cff00FF00" .. "6月29日更新v1.9.8" .. "|r\n"
-    update = update .. c1 .. [[-新增：通报多本总览账单（按钮在通报账单旁边）]] .. "|r\n"
-    update = update .. [[-修复了快速记账、高亮打包交易装备在涉及跨副本时出现的一些错误]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "6月28日更新v1.9.7" .. "|r\n"
-    update = update .. [[-拍卖聊天框：现在小退/重载后依然会显示之前的聊天记录]] .. "|r\n"
-    update = update .. c1 .. [[-快速记账：增加记账效果预览框]] .. "|r\n"
-    update = update .. [[-修复了切换表格副本时和清空表格时，团本锁定ID没正确更新的问题]] .. "|r\n"
-    update = update .. [[-修复了金额自动加零的功能没有对快速记账框生效的问题]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "6月27日更新v1.9.6" .. "|r\n"
-    update = update .. [[-通报账单：优化通报次序（在国服发消息的次序是乱的，需要加点延迟）]] .. "|r\n"
-    update = update .. [[-表格：修改支出项的默认名称（因为"坦克"和"tank"在国服发不出来）。不再自动记录"埃霍恩的冰霜之镰"]] .. "|r\n"
-    update = update .. [[-增加显示团本锁定ID]] .. "|r\n"
-    update = update .. [[-删除通报WCL按钮]] .. "|r\n"
-    update = update .. [[-<WLK>删除[查看在线玩家]功能（因为国服把上限值锁为501，导致该功能已经没意义了）]] .. "|r\n"
-    update = update .. [[-<WLK>角色总览：删除伽马日常、英雄日常]] .. "|r\n"
-    update = update .. c1 .. [[-<CTM>角色总览：增加巴拉丁监狱]] .. "|r\n"
-    update = update .. [[-<60服>MC表格布局优化]] .. "|r\n\n"
-
     ns.updateText = update
 end
 
@@ -93,6 +101,26 @@ ns.L = L
 
 local L = {}
 do
+    L["打开随机本界面时，会自动选择上一次的随机本类型，而不是傻傻地在默认类型。"] = true
+
+
+    L["（当前装备为空）"] = true
+    L["定位装备"] = true
+    L["把拍卖聊天记录定位到当前装备%s所在处。%s"] = true
+    L["周常任务已记录，距离重置还剩%s。"] = true
+    L["泰坦"] = true
+    L["珠宝"] = true
+    L["烹饪"] = true
+    L["钓鱼"] = true
+
+
+    L["多个获取途径"] = true
+    L["英雄"] = true
+
+
+    L["v1.5：拍卖价格为100~3000的加价幅度现在为100一次"] = true
+
+
     L["节日副本和"] = true
     L["节日副本"] = true
     L["插件加载出现错误，请把报错发给作者，谢谢。（邮箱buick_hbj@163.com，Q群322785325）"] = true
@@ -100,7 +128,7 @@ do
     L["西"] = true
     L["北"] = true
     L["下层"] = true
-    L["不在团本中，不能使用"] = true
+    L["不在团队中，不能使用"] = true
     L["阿尔法"] = true
     L["v1.4：增加一个开始拍卖时的动画效果"] = true
 
@@ -1564,6 +1592,60 @@ do
         L["克\n尔\n苏\n加\n德"] = true
         L["萨\n塔\n里\n奥"] = true
         L["玛\n里\n苟\n斯"] = true
+
+        L["纳多克斯长老"] = true
+        L["塔达拉姆王子"] = true
+        L["埃曼尼塔"] = true
+        L["耶戈达·觅影者"] = true
+        L["传令官沃拉兹"] = true
+        L["看门者克里克希尔"] = true
+        L["哈多诺克斯"] = true
+        L["阿努巴拉克"] = true
+        L["托尔戈"] = true
+        L["召唤者诺沃斯"] = true
+        L["暴龙之王爵德"] = true
+        L["先知萨隆亚"] = true
+        L["斯拉德兰"] = true
+        L["达卡莱巨像"] = true
+        L["莫拉比"] = true
+        L["凶残的伊克"] = true
+        L["迦尔达拉"] = true
+        L["比亚格里将军"] = true
+        L["沃尔坎"] = true
+        L["艾欧纳尔"] = true
+        L["洛肯"] = true
+        L["克莱斯塔卢斯"] = true
+        L["悲伤圣女"] = true
+        L["远古法庭"] = true
+        L["塑铁者斯约尼尔"] = true
+        L["肉钩"] = true
+        L["塑血者沙尔拉姆"] = true
+        L["时光领主埃博克"] = true
+        L["玛尔加尼斯"] = true
+        L["永恒腐蚀者"] = true
+        L["指挥官斯托比德"] = true
+        L["大魔导师泰蕾丝塔"] = true
+        L["阿诺玛鲁斯"] = true
+        L["塑树者奥莫洛克"] = true
+        L["克莉斯塔萨"] = true
+        L["审讯者达库斯"] = true
+        L["瓦尔洛斯·云击"] = true
+        L["法师领主伊洛姆"] = true
+        L["魔网守护者埃雷苟斯"] = true
+        L["埃雷克姆"] = true
+        L["湮灭者祖拉玛特"] = true
+        L["谢沃兹"] = true
+        L["艾库隆"] = true
+        L["摩拉格"] = true
+        L["拉文索尔"] = true
+        L["塞安妮苟萨"] = true
+        L["凯雷塞斯王子"] = true
+        L["控制者达尔隆"] = true
+        L["劫掠者因格瓦尔"] = true
+        L["席瓦拉·索格蕾"] = true
+        L["戈托克·苍蹄"] = true
+        L["残忍的斯卡迪"] = true
+        L["伊米隆国王"] = true
     end
 
     -- 永久60

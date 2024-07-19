@@ -520,8 +520,8 @@ do
             BG.Loot[FB].N.boss9 = { 228279, 228283, 228280, 228281, 228282, 228284, 228275, 228274, 228277, 228278, 18703, 18646, }
             BG.Loot[FB].N.boss10 = { 17204, 228297, 228291, 228289, 228290, 228292, 228295, 228286, 228287, 228293, 228294, 228296, 228299, 228288, }
             BG.Loot[FB].N.boss11 = {}
-            BG.Loot[FB].N.boss12 = { 228759, 17078, 18813, 228298, 17067, 17068, 17075, 18423, 18705, 15410, 228992, }
-            BG.Loot[FB].N.boss13 = { 228685, 228389, 228383, 228340, 228345, 228384, 228381, 228382, 228349, 228347, 18704, }
+            BG.Loot[FB].N.boss12 = { 228759, 17078, 18813, 228298, 228955, 17068, 17075, 18423, 18705, 15410, 228992, }
+            BG.Loot[FB].N.boss13 = { 228385, 228389, 228383, 228340, 228345, 228384, 228381, 228382, 228349, 228347, 18704, }
             BG.Loot[FB].N.boss14 = { 228353, 228354, 228360, 228357, 228351, 228355, 228352, 228359, 228397, 228356, 18665, }
             BG.Loot[FB].N.boss15 = { 17011, 17010, 11382, 18264, 18292, 18291, 18290, 18259, 18260, 18252, 18265, 21371, 18257, }
             BG.Loot[FB].N.boss4other = { 19019 }
@@ -837,37 +837,61 @@ do
         BG.Loot[FB].Faction[factionID .. ":5"] = { 220621, 221442, 221440, 221443 }
     end
     -- P4
-    local FB = "MCsod"
-    if BG.IsAlliance then
-        BG.Loot[FB].Faction = {
-            -- 战歌
-            ["890:5"] = { 19595, 19587, 19582, 19578, 22752, 22749, 22750, 22748, 22753, 22672, },
+    do
+        local FB = "MCsod"
+        if BG.IsAlliance then
+            BG.Loot[FB].Faction = {
+                -- 战歌
+                ["890:5"] = { 19595, 19587, 19582, 19578,  },
 
+                -- 阿拉希
+                ["509:5"] = { 20061, 20060, 20059, 20055, 20058, 20057, 20073, 20070, 20069, },
+
+                -- 奥山
+                ["730:2"] = {},
+                ["730:3"] = { 19098, 19097, 19086, 19084, 19094, 19093, 19092, 19091, },
+                ["730:4"] = { 19100, 19104, 19102, },
+                ["730:5"] = { 19312, 19315, 19308, 19311, 19309, 19310, 19325, 21563, 19321, 19324, 19323, },
+            }
+        end
+        if BG.IsHorde then
             -- 阿拉希
-            ["509:5"] = { 20061, 20060, 20059, 20055, 20058, 20057, 20073, 20070, 20069, },
+            BG.Loot[FB].Faction = {
+                -- 战歌
+                ["889:5"] = { 19595, 19587, 19582, 19578, 22747, 22740, 22741, 22673, 22676, 22651, },
 
-            -- 奥山
-            ["730:2"] = {},
-            ["730:3"] = { 19098, 19097, 19086, 19084, 19094, 19093, 19092, 19091, },
-            ["730:4"] = { 19100, 19104, 19102, },
-            ["730:5"] = { 19312, 19315, 19308, 19311, 19309, 19310, 19325, 21563, 19321, 19324, 19323, },
-        }
-    end
-    if BG.IsHorde then
-        -- 阿拉希
-        BG.Loot[FB].Faction = {
-            -- 战歌
-            ["889:5"] = { 19595, 19587, 19582, 19578, 22747, 22740, 22741, 22673, 22676, 22651, },
+                -- 阿拉希
+                ["510:5"] = { 20176, 20175, 20194, 20158, 20203, 20212, 20068, 20214, 20220, },
 
-            -- 阿拉希
-            ["510:5"] = { 20176, 20175, 20194, 20158, 20203, 20212, 20068, 20214, 20220, },
-
-            -- 奥山
-            ["729:2"] = {},
-            ["729:3"] = { 19096, 19095, 19085, 19083, 19090, 19089, 19088, 19087, },
-            ["729:4"] = { 19099, 19103, 19101, },
-            ["729:5"] = { 19312, 19315, 19308, 19311, 19309, 19310, 19325, 21563, 19321, 19324, 19323, },
-        }
+                -- 奥山
+                ["729:2"] = {},
+                ["729:3"] = { 19096, 19095, 19085, 19083, 19090, 19089, 19088, 19087, },
+                ["729:4"] = { 19099, 19103, 19101, },
+                ["729:5"] = { 19312, 19315, 19308, 19311, 19309, 19310, 19325, 21563, 19321, 19324, 19323, },
+            }
+        end
+        -- 木喉要塞
+        local factionID = 576
+        BG.Loot[FB].Faction[factionID .. ":2"] = { 227804, 227803, }
+        BG.Loot[FB].Faction[factionID .. ":3"] = { 227807, 227805, 228190, }
+        BG.Loot[FB].Faction[factionID .. ":4"] = { 227808, 227809, 227810, }
+        BG.Loot[FB].Faction[factionID .. ":5"] = { 21326, }
+        -- 银色黎明
+        local factionID = 529
+        BG.Loot[FB].Faction[factionID .. ":3"] = { 227816, 227815, 227814, }
+        BG.Loot[FB].Faction[factionID .. ":4"] = { 227888, 227818, 227817, }
+        -- 银色黎明
+        local factionID = 59
+        BG.Loot[FB].Faction[factionID .. ":2"] = { 227823, 227821, 227822, 227820, }
+        BG.Loot[FB].Faction[factionID .. ":3"] = { 227830, 227831, 227828, 227827, 227829, 227824, 227826, 227825, }
+        BG.Loot[FB].Faction[factionID .. ":4"] = { 227839, 227837, 227834, 227838, 227835, 227836, 227832, 227833, }
+        BG.Loot[FB].Faction[factionID .. ":5"] = { 227842, 227840, 227843, 228929, 228924, 228927, 228926, 228925, 228928, }
+        --                 -- 银色黎明
+        -- local factionID = 529
+        -- BG.Loot[FB].Faction[factionID .. ":2"] = {}
+        -- BG.Loot[FB].Faction[factionID .. ":3"] = {}
+        -- BG.Loot[FB].Faction[factionID .. ":4"] = {}
+        -- BG.Loot[FB].Faction[factionID .. ":5"] = {}
     end
 end
 
@@ -969,9 +993,9 @@ do
     -- P4
     local FB = "MCsod"
     BG.Loot[FB].Profession = {
-        ["锻造"] = { 227832, 227884, 227825, 12798, 19169, 227845, 11607, 12775, 227842, 227886, 22384, 12792, 227881, 227684, 227858, 227880, 227840, 227826, 227850, 227887, 12777, 228125, 227857, 19167, 227872, 12417, 227834, 22191, 227876, 11606, 227810, 12419, 227870, 12418, 12420, 22195, 227827, 227807, 227824, 20551, 12620, 12640, 12612, 12633, 12427, 12410, 19695, 12610, 11605, 227859, 22669, 19693, 20550, 12618, 12613, 12422, 227871, 12628, 227841, 12426, 12409, 22670, 227835, 227817, 20549, 227885, 12631, 19694, 12619, 12614, 12429, 12414, 227836, 22764, 22197, 227814, 22671, 227820, },
-        ["制皮"] = { 18510, 227854, 227869, 15138, 15090, 15068, 15085, 15059, 15066, 15075, 227868, 15056, 18506, 227822, 227809, 21278, 15070, 227848, 227821, 15094, 15086, 227847, 15095, 15087, 15069, 227804, 15060, 15072, 15096, 227866, 15058, 227837, 19163, 227828, 227882, 15088, 227805, 15093, 15047, 227851, 227875, 227829, 227838, 227878, 15080, 227852, 227874, 15079, 15081, 227853, 227873, 15082, 227883, },
-        ["裁缝"] = { 18413, 227863, 14130, 13866, 14111, 227808, 227888, 14112, 227830, 13867, 14139, 227831, 14152, 14154, 14153, 227861, 14106, 14128, 227860, 14136, 20537, 227816, 14108, 227862, 13864, 18409, 18407, 227823, 18408, 14146, 227839, 20538, 227864, 14104, 14144, 13865, 13871, 14045, 20539, 228476, 228190, 18263, },
+        ["锻造"] = { 19210, 19211, 19212, 20040, 16988, 19164, 17013, 19166, 19167, 16989, 19148, 17015, 17016, 17014, 19057, 19051, 19048, 19043, 227884, 12798, 19169, 227845, 11607, 12775, 227886, 22384, 12792, 227881, 227684, 227858, 227880, 227850, 227887, 12777, 228125, 227857,  227872, 12417, 22191, 227876, 11606, 12419, 227870, 12418, 12420, 22195, 20551, 12620, 12640, 12612, 12633, 12427, 12410, 19695, 12610, 11605, 227859, 22669, 19693, 20550, 12618, 12613, 12422, 227871, 12628, 227841, 12426, 12409, 22670, 20549, 227885, 12631, 19694, 12619, 12614, 12429, 12414, 22764, 22197, 22671, },
+        ["制皮"] = { 19163, 19162, 19157, 19149, 16984, 16983, 16982, 19058, 19052, 19049, 15065, 19044, 18510, 227854, 227869, 15138, 15090, 15068, 15085, 15059, 15066, 15075, 227868, 15056, 18506, 21278, 15070, 227848, 15094, 15086, 227847, 15095, 15087, 15069, 15060, 15072, 15096, 227866, 15058,  227882, 15088, 15093, 15047, 227851, 227875, 227878, 15080, 227852, 227874, 15079, 15081, 227853, 227873, 15082, 227883, },
+        ["裁缝"] = { 19165, 16980, 19156, 16979, 19059, 19056, 19050, 19047, 18413, 227863, 14130, 13866, 14111, 14112, 13867, 14139, 14152, 14154, 14153, 227861, 14106, 14128, 227860, 14136, 20537, 14108, 227862, 13864, 18409, 18407, 18408, 14146, 20538, 227864, 14104, 14144, 13865, 13871, 14045, 20539, 228476, 18263, },
         ["工程"] = { 18168, 16009, 16008, 16022, 18639, 18638, 227849, 16007, },
         ["附魔"] = {},
     }
@@ -1124,120 +1148,161 @@ do
     }
 end
 
--- 赛季服货币/牌子
-local function AddDB(FB, get, itemID, count, coin, color, type)
-    if type then
-        GetItemInfo(count)
+-- 货币
+do
+    -- 赛季服货币/牌子
+    local function AddDB(FB, get, itemID, count, coin, color, type)
+        if type then
+            GetItemInfo(count)
+        end
+
+        get = get or ""
+        count = count or ""
+        coin = coin or ""
+        type = type or ""
+
+        tinsert(BG.Loot[FB].Sod_Currency, {
+            [itemID] = get .. "-" .. count .. "-" .. coin .. "-" .. color .. "-" .. type
+        })
     end
+    -- 血月
+    do
+        -- P2
+        local FB = "Gno"
+        local get = L["荆棘谷 血月活动"]
+        local coin = 133786
+        local color = "FF6347"
+        AddDB(FB, get, 216621, 2, coin, color)
+        AddDB(FB, get, 216620, 2, coin, color)
+        AddDB(FB, get, 216623, 2, coin, color)
+        AddDB(FB, get, 216622, 2, coin, color)
+        AddDB(FB, get, 216495, 15, coin, color)
+        AddDB(FB, get, 216496, 10, coin, color)
+        AddDB(FB, get, 216497, 15, coin, color)
+        AddDB(FB, get, 216498, 5, coin, color)
+        AddDB(FB, get, 216499, 15, coin, color)
+        AddDB(FB, get, 216500, 5, coin, color)
+        AddDB(FB, get, 216501, 5, coin, color)
+        AddDB(FB, get, 216502, 15, coin, color)
+        AddDB(FB, get, 216503, 5, coin, color)
+        AddDB(FB, get, 216615, 5, coin, color)
+        AddDB(FB, get, 216504, 15, coin, color)
+        AddDB(FB, get, 216505, 5, coin, color)
+        AddDB(FB, get, 216506, 15, coin, color)
+        AddDB(FB, get, 216607, 5, coin, color)
+        AddDB(FB, get, 216507, 5, coin, color)
+        AddDB(FB, get, 216508, 5, coin, color)
+        AddDB(FB, get, 216509, 5, coin, color)
+        AddDB(FB, get, 216510, 5, coin, color)
+        AddDB(FB, get, 216511, 5, coin, color)
+        AddDB(FB, get, 216512, 5, coin, color)
+        AddDB(FB, get, 216513, 5, coin, color)
+        AddDB(FB, get, 216516, 5, coin, color)
+        AddDB(FB, get, 216517, 5, coin, color)
+        AddDB(FB, get, 216518, 5, coin, color)
+        AddDB(FB, get, 216519, 5, coin, color)
+        AddDB(FB, get, 216520, 10, coin, color)
+        AddDB(FB, get, 216521, 5, coin, color)
+        AddDB(FB, get, 216522, 5, coin, color)
 
-    get = get or ""
-    count = count or ""
-    coin = coin or ""
-    type = type or ""
-
-    tinsert(BG.Loot[FB].Sod_Currency, {
-        [itemID] = get .. "-" .. count .. "-" .. coin .. "-" .. color .. "-" .. type
-    })
-end
--- 血月
-do
-    -- P2
-    local FB = "Gno"
-    local get = L["荆棘谷 血月活动"]
-    local coin = 133786
-    local color = "FF6347"
-    AddDB(FB, get, 216621, 2, coin, color)
-    AddDB(FB, get, 216620, 2, coin, color)
-    AddDB(FB, get, 216623, 2, coin, color)
-    AddDB(FB, get, 216622, 2, coin, color)
-    AddDB(FB, get, 216495, 15, coin, color)
-    AddDB(FB, get, 216496, 10, coin, color)
-    AddDB(FB, get, 216497, 15, coin, color)
-    AddDB(FB, get, 216498, 5, coin, color)
-    AddDB(FB, get, 216499, 15, coin, color)
-    AddDB(FB, get, 216500, 5, coin, color)
-    AddDB(FB, get, 216501, 5, coin, color)
-    AddDB(FB, get, 216502, 15, coin, color)
-    AddDB(FB, get, 216503, 5, coin, color)
-    AddDB(FB, get, 216615, 5, coin, color)
-    AddDB(FB, get, 216504, 15, coin, color)
-    AddDB(FB, get, 216505, 5, coin, color)
-    AddDB(FB, get, 216506, 15, coin, color)
-    AddDB(FB, get, 216607, 5, coin, color)
-    AddDB(FB, get, 216507, 5, coin, color)
-    AddDB(FB, get, 216508, 5, coin, color)
-    AddDB(FB, get, 216509, 5, coin, color)
-    AddDB(FB, get, 216510, 5, coin, color)
-    AddDB(FB, get, 216511, 5, coin, color)
-    AddDB(FB, get, 216512, 5, coin, color)
-    AddDB(FB, get, 216513, 5, coin, color)
-    AddDB(FB, get, 216516, 5, coin, color)
-    AddDB(FB, get, 216517, 5, coin, color)
-    AddDB(FB, get, 216518, 5, coin, color)
-    AddDB(FB, get, 216519, 5, coin, color)
-    AddDB(FB, get, 216520, 10, coin, color)
-    AddDB(FB, get, 216521, 5, coin, color)
-    AddDB(FB, get, 216522, 5, coin, color)
-
-    -- P3
-    local FB = "Temple"
-    local get = L["荆棘谷 血月活动"]
-    local coin = 237282
-    local color = "FF6347"
-    AddDB(FB, get, 221447, 15, coin, color)
-    AddDB(FB, get, 221446, 25, coin, color)
-    AddDB(FB, get, 221448, 15, coin, color)
-    AddDB(FB, get, 221450, 25, coin, color)
-    AddDB(FB, get, 221451, 25, coin, color)
-    AddDB(FB, get, 221452, 15, coin, color)
-    AddDB(FB, get, 221453, 15, coin, color)
-    AddDB(FB, get, 221454, 15, coin, color)
-    AddDB(FB, get, 221457, 15, coin, color)
-    AddDB(FB, get, 221455, 15, coin, color)
-    AddDB(FB, get, 221456, 25, coin, color)
-    AddDB(FB, get, 220173, 25, coin, color)
-    AddDB(FB, get, 221459, 15, coin, color)
-    AddDB(FB, get, 221458, 15, coin, color)
-    AddDB(FB, get, 221460, 25, coin, color)
-    AddDB(FB, get, 221462, 25, coin, color)
-    AddDB(FB, get, 221465, 25, coin, color)
-    AddDB(FB, get, 221464, 15, coin, color)
-    AddDB(FB, get, 221463, 15, coin, color)
-    AddDB(FB, get, 221466, 15, coin, color)
-    AddDB(FB, get, 221467, 15, coin, color)
-    AddDB(FB, get, 221469, 25, coin, color)
-    AddDB(FB, get, 221468, 15, coin, color)
-end
--- 荒野祭品
-do
-    -- P3
-    local FB = "Temple"
-    local get = L["费伍德 影牙使者"]
-    local coin = 132119
-    local color = "98FB98"
-    AddDB(FB, get, 223192, 15, coin, color)
-    AddDB(FB, get, 223193, 15, coin, color)
-    AddDB(FB, get, 223194, 12, coin, color)
-    AddDB(FB, get, 223195, 12, coin, color)
-    AddDB(FB, get, 223196, 15, coin, color)
-    AddDB(FB, get, 223197, 12, coin, color)
-end
--- 马戏团
-do
-    -- P3
-    local FB = "Temple"
-    local get = L["暗月马戏团"]
-    local coin = 132119
-    local color = "7B68EE"
-    AddDB(FB, get, 221309, 221289, nil, color, 1)
-    AddDB(FB, get, 221307, 221280, nil, color, 1)
-    AddDB(FB, get, 221308, 221272, nil, color, 1)
-    AddDB(FB, get, 221310, 221299, nil, color, 1)
+        -- P3
+        local FB = "Temple"
+        local get = L["荆棘谷 血月活动"]
+        local coin = 237282
+        local color = "FF6347"
+        AddDB(FB, get, 221447, 15, coin, color)
+        AddDB(FB, get, 221446, 25, coin, color)
+        AddDB(FB, get, 221448, 15, coin, color)
+        AddDB(FB, get, 221450, 25, coin, color)
+        AddDB(FB, get, 221451, 25, coin, color)
+        AddDB(FB, get, 221452, 15, coin, color)
+        AddDB(FB, get, 221453, 15, coin, color)
+        AddDB(FB, get, 221454, 15, coin, color)
+        AddDB(FB, get, 221457, 15, coin, color)
+        AddDB(FB, get, 221455, 15, coin, color)
+        AddDB(FB, get, 221456, 25, coin, color)
+        AddDB(FB, get, 220173, 25, coin, color)
+        AddDB(FB, get, 221459, 15, coin, color)
+        AddDB(FB, get, 221458, 15, coin, color)
+        AddDB(FB, get, 221460, 25, coin, color)
+        AddDB(FB, get, 221462, 25, coin, color)
+        AddDB(FB, get, 221465, 25, coin, color)
+        AddDB(FB, get, 221464, 15, coin, color)
+        AddDB(FB, get, 221463, 15, coin, color)
+        AddDB(FB, get, 221466, 15, coin, color)
+        AddDB(FB, get, 221467, 15, coin, color)
+        AddDB(FB, get, 221469, 25, coin, color)
+        AddDB(FB, get, 221468, 15, coin, color)
+    end
+    -- 荒野祭品
+    do
+        local FB = "Temple"
+        local get = L["费伍德 影牙使者"]
+        local coin = 132119
+        local color = "98FB98"
+        AddDB(FB, get, 223192, 15, coin, color)
+        AddDB(FB, get, 223193, 15, coin, color)
+        AddDB(FB, get, 223194, 12, coin, color)
+        AddDB(FB, get, 223195, 12, coin, color)
+        AddDB(FB, get, 223196, 15, coin, color)
+        AddDB(FB, get, 223197, 12, coin, color)
+    end
+    -- 马戏团
+    do
+        -- P3
+        local FB = "Temple"
+        local get = L["暗月马戏团"]
+        local coin = 132119
+        local color = "7B68EE"
+        AddDB(FB, get, 221309, 221289, nil, color, 1)
+        AddDB(FB, get, 221307, 221280, nil, color, 1)
+        AddDB(FB, get, 221308, 221272, nil, color, 1)
+        AddDB(FB, get, 221310, 221299, nil, color, 1)
+    end
+    -- 褪色的安德麦雷亚尔
+    do
+        local FB = "MCsod"
+        local get = L["褪色的安德麦雷亚尔"]
+        local coin = 133799
+        local color = "98FB98"
+        AddDB(FB, get, 228432, 50, coin, color)
+        AddDB(FB, get, 228173, 15, coin, color)
+        AddDB(FB, get, 227280, 50, coin, color)
+        AddDB(FB, get, 228174, 15, coin, color)
+        AddDB(FB, get, 228175, 15, coin, color)
+        AddDB(FB, get, 227284, 50, coin, color)
+        AddDB(FB, get, 228176, 15, coin, color)
+        AddDB(FB, get, 228177, 15, coin, color)
+        AddDB(FB, get, 228168, 50, coin, color)
+        AddDB(FB, get, 228178, 15, coin, color)
+        AddDB(FB, get, 228179, 15, coin, color)
+        AddDB(FB, get, 227279, 50, coin, color)
+        AddDB(FB, get, 227282, 50, coin, color)
+        AddDB(FB, get, 228186, 25, coin, color)
+        AddDB(FB, get, 228183, 15, coin, color)
+        AddDB(FB, get, 228171, 25, coin, color)
+        AddDB(FB, get, 228184, 25, coin, color)
+        AddDB(FB, get, 228121, 50, coin, color)
+        AddDB(FB, get, 226405, 5, coin, color)
+        AddDB(FB, get, 228169, 50, coin, color)
+        AddDB(FB, get, 228170, 50, coin, color)
+        AddDB(FB, get, 228180, 15, coin, color)
+        AddDB(FB, get, 228185, 50, coin, color)
+        AddDB(FB, get, 228181, 15, coin, color)
+        AddDB(FB, get, 228187, 50, coin, color)
+        AddDB(FB, get, 228182, 15, coin, color)
+        AddDB(FB, get, 228189, 25, coin, color)
+        AddDB(FB, get, 13522, 50, coin, color)
+        AddDB(FB, get, 13518, 50, coin, color)
+        AddDB(FB, get, 13519, 50, coin, color)
+        AddDB(FB, get, 13520, 50, coin, color)
+        AddDB(FB, get, 13521, 50, coin, color)
+    end
 end
 
 
 function BG.SortLootItem(items)
-    pt("原来：" .. #items)
+    print("原来：" .. #items)
     local sortItems = {}
     local qualityTbl = {
         quality2 = {},
@@ -1278,8 +1343,8 @@ function BG.SortLootItem(items)
     for i, item in ipairs(sortItems) do
         text = text .. item .. ","
     end
-    pt("现在：" .. #sortItems)
-    pt(text)
+    print("现在：" .. #sortItems)
+    print(text)
     BG.After(0.1, function()
         ChatFrame1EditBox:Show()
         ChatFrame1EditBox:SetText(text)

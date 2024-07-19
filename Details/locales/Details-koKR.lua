@@ -412,12 +412,12 @@ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] = "문자 행 정렬"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"] = "자동 정렬"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"] = "각 문자의 길이에 따라 정렬이 자동으로 수행됩니다."
 --[[Translation missing --]]
-L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = "Disable brackets and separators and align bars texts in vertical columns"
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = "Text %d Offset"
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = ""--]] 
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET_DESC"] = "오른쪽 테두리와의 간격"
 --[[Translation missing --]]
-L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_WARNING"] = "is enabled, separators and brackets aren't used"
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_WARNING"] = ""--]] 
 L["STRING_OPTIONS_ALPHAMOD_ANCHOR"] = "자동 숨기기:"
 L["STRING_OPTIONS_ALWAYS_USE"] = "모든 캐릭터에 사용"
 L["STRING_OPTIONS_ALWAYS_USE_DESC"] = "모든 캐릭터에 같은 프로필이 사용됩니다. 저장된 다른 프로필을 선택하면 어떤 캐릭터든 강제 적용됩니다."
@@ -702,7 +702,7 @@ L["STRING_OPTIONS_ED1"] = "수동"
 L["STRING_OPTIONS_ED2"] = "묻기"
 L["STRING_OPTIONS_ED3"] = "자동"
 --[[Translation missing --]]
-L["STRING_OPTIONS_EDIT_CUSTOM_TEXT"] = "Edit Custom Text"
+--[[ L["STRING_OPTIONS_EDIT_CUSTOM_TEXT"] = ""--]] 
 L["STRING_OPTIONS_EDITIMAGE"] = "이미지 편집"
 L["STRING_OPTIONS_EDITINSTANCE"] = "편집 중인 창:"
 L["STRING_OPTIONS_ERASECHARTDATA"] = "차트 삭제"
@@ -740,7 +740,7 @@ L["STRING_OPTIONS_ILVL_TRACKER_DESC"] = [=[활성화 하고 전투 중이 아니
 L["STRING_OPTIONS_ILVL_TRACKER_TEXT"] = "사용"
 L["STRING_OPTIONS_IMPORT_PROFILE"] = "프로필 가져오기"
 --[[Translation missing --]]
-L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = "Insert a Name for the New Profile"
+--[[ L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = ""--]] 
 L["STRING_OPTIONS_IMPORT_PROFILE_PASTE"] = "Details! 프로필 가져오기 (문자열 붙여넣기)"
 L["STRING_OPTIONS_INSTANCE_BACKDROP"] = "배경 무늬"
 L["STRING_OPTIONS_INSTANCE_BACKDROP_DESC"] = [=[이 창에 사용할 배경 무늬를 선택하세요.
@@ -847,29 +847,29 @@ L["STRING_OPTIONS_MINIMAP_DESC"] = "미니맵 아이콘을 표시하거나 숨�
 L["STRING_OPTIONS_MISCTITLE"] = "기타 설정"
 L["STRING_OPTIONS_MISCTITLE2"] = "여러가지 옵션을 설정합니다."
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
+--[[ L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
+--[[ L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
+--[[ L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
+--[[ L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
+--[[ L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
+--[[ L["STRING_OPTIONS_MPLUS_MERGETRASH"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
+--[[ L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
+--[[ L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
+--[[ L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = ""--]] 
 L["STRING_OPTIONS_NICKNAME"] = "별명"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[당신의 별명을 정합니다.
 
@@ -877,7 +877,7 @@ L["STRING_OPTIONS_NICKNAME_DESC"] = [=[당신의 별명을 정합니다.
 L["STRING_OPTIONS_OPEN_ROWTEXT_EDITOR"] = "바 문자 편집기"
 L["STRING_OPTIONS_OPEN_TEXT_EDITOR"] = "문자 편집기 열기"
 --[[Translation missing --]]
-L["STRING_OPTIONS_OPENBROKER"] = "Open Broker Text Editor"
+--[[ L["STRING_OPTIONS_OPENBROKER"] = ""--]] 
 L["STRING_OPTIONS_OVERALL_ALL"] = "모든 세분화"
 L["STRING_OPTIONS_OVERALL_ALL_DESC"] = "모든 세분화를 종합 데이터에 추가합니다."
 L["STRING_OPTIONS_OVERALL_ANCHOR"] = "종합 데이터:"
@@ -1360,9 +1360,9 @@ L["STRING_OPTIONS_WINDOW_ANCHOR_ANCHORS"] = "기준점:"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE"] = "다수 표시 전환 무시하기"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE_DESC"] = "활성화하면 이 창은 모든 창 숨기기나 표시, 표시 전환에 영향을 받지 않습니다."
 --[[Translation missing --]]
-L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = "\"Row's Area Color\""
+--[[ L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = "Set the background color of the area when the rows are shown."
+--[[ L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = ""--]] 
 L["STRING_OPTIONS_WINDOW_SCALE"] = "크기 비율"
 L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[창의 크기 비율을 조절합니다.
 
@@ -1371,11 +1371,7 @@ L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[창의 크기 비율을 조절합니�
 |cFFFFFF00현재|r: %s]=]
 L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = "스킨 색상"
 --[[Translation missing --]]
-L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = [=[Modifies the color of the skin applied into this window.
-
-|cFFFFFF00Important|r: the alpha chosen here is overwritten with |cFFFFFF00Auto Transparency|r values when enabled.
-
-|cFFFFFF00Important|r: selecting the skin color overwrites any color customization applied to statusbar.]=]
+--[[ L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = ""--]] 
 L["STRING_OPTIONS_WINDOW_TITLE"] = "창 일반 설정"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "선택한 창의 모양을 설정하는 옵션입니다."
 L["STRING_OPTIONS_WINDOWSPEED"] = "갱신 주기"
@@ -1495,7 +1491,7 @@ L["STRING_REPORT_SINGLE_COOLDOWN"] = "생존기 사용 :"
 L["STRING_REPORT_SINGLE_DEATH"] = "죽음:"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "약화 효과 유지 시간:"
 --[[Translation missing --]]
-L["STRING_REPORT_TEXT"] = "Report"
+--[[ L["STRING_REPORT_TEXT"] = ""--]] 
 L["STRING_REPORT_TOOLTIP"] = "결과 보고"
 L["STRING_REPORTFRAME_COPY"] = "복사 & 붙여넣기"
 L["STRING_REPORTFRAME_CURRENT"] = "현재"
@@ -1725,3 +1721,4 @@ L["STRING_WIPE_ERROR1"] = "이미 전멸 신호를 보냈습니다."
 L["STRING_WIPE_ERROR2"] = "공격대 우두머리 전투 중이 아닙니다."
 L["STRING_WIPE_ERROR3"] = "우두머리 전투를 끝낼 수 없습니다."
 L["STRING_YES"] = "네"
+

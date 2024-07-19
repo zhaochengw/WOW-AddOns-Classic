@@ -696,7 +696,7 @@ L["STRING_OPTIONS_MINIMAP_DESC"] = "Afficher ou masquer l'icône de la mini-cart
 L["STRING_OPTIONS_MISCTITLE"] = "Réglages divers"
 L["STRING_OPTIONS_MISCTITLE2"] = "Ceux-ci contrôlent plusieurs options."
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
+--[[ L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = ""--]] 
 L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "Si un boss est lancé si on est en combat, cette option ferme le combat en cours et en lance un nouveau spécifiquement pour le boss."
 L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Calcul DPS global du segment"
 L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Créer un segment global"
@@ -706,11 +706,11 @@ L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panneaux"
 L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Affiche le panneau  à la fin de la M+"
 L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Temps en combat"
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = ""--]] 
 L["STRING_OPTIONS_NICKNAME"] = "Surnom"
 L["STRING_OPTIONS_NICKNAME_DESC"] = "Définissez un surnom pour vous. Les surnoms sont envoyés aux membres de la guilde et Details! l'utilise à la place du nom de votre personnage."
 L["STRING_OPTIONS_OPEN_ROWTEXT_EDITOR"] = "Row Text Editor"
@@ -1391,3 +1391,4 @@ L["STRING_WIPE_ERROR1"] = "un wipe a déjà été demandé."
 L["STRING_WIPE_ERROR2"] = "nous ne sommes pas dans une rencontre de raid."
 L["STRING_WIPE_ERROR3"] = "vous ne pouvez pas mettre fin à la rencontre."
 L["STRING_YES"] = "Oui"
+

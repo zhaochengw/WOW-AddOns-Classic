@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.4"
+    aura_env.ver = "v1.5"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -275,6 +275,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         elseif _type == "-" then
             if money - fudu > 0 then
                 return money - fudu
+            elseif (money == fudu) and money ~= 1 then
+                return money - 10
             else
                 return 0
             end
@@ -285,28 +287,28 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local money = tonumber(money) or 0
         local fudu = 0
         if money < 30 then
-            fudu = 1 -- 1-30,1
+            fudu = 1 -- 1-30, 1
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 100 then
-            fudu = 5 -- 30-100,5
+            fudu = 10 -- 30-100, 10
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 300 then
-            fudu = 10 -- 100-300,10
+            fudu = 100 -- 100-300, 100
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 1000 then
-            fudu = 50 -- 300-1000,50
+            fudu = 100 -- 300-1000, 100
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 3000 then
-            fudu = 100 -- 1000-3000,100
+            fudu = 100 -- 1000-3000, 100
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 10000 then
-            fudu = 500 -- 3000-10000,500
+            fudu = 500 -- 3000-10000, 500
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 30000 then
-            fudu = 1000 -- 10000-30000,1000
+            fudu = 1000 -- 10000-30000, 1000
             return aura_env.JiaJian(money, fudu, _type), fudu
         elseif money < 100000 then
-            fudu = 5000 -- 30000-100000,5000
+            fudu = 5000 -- 30000-100000, 5000
             return aura_env.JiaJian(money, fudu, _type), fudu
         else
             fudu = 10000 -- 100000以上,10000

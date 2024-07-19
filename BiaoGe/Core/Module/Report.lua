@@ -1025,7 +1025,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     reportcounttext = format(L["（曾举报%s次）"], reportcount)
                 end
 
-                print(BG.STC_y1(format(L["已举报<%s>为%s。"], color .. rp.targetName .. RR, _type) .. reportcounttext))
+                pt(BG.STC_y1(format(L["已举报<%s>为%s。"], color .. rp.targetName .. RR, _type) .. reportcounttext))
                 HideUIPanel(ReportFrame)
             end)
             ReportFrame:HookScript("OnHide", function(self)
@@ -1176,7 +1176,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                         local color = "|c" .. select(4, GetClassColor(class))
 
-                        print(BG.STC_y1(format(L["已删除<%s>的举报记录。"], color .. fullname .. RR)))
+                        pt(BG.STC_y1(format(L["已删除<%s>的举报记录。"], color .. fullname .. RR)))
                     end
                     UIDropDownMenu_AddButton(info)
                     UpdateAddReportButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
@@ -1207,6 +1207,21 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                         if not (fullname and playerLocation) then
                             return
+                        end
+                    end
+
+                    -- 如果目标是自己队友，则不添加一键举报按钮
+                    if name then
+                        local tbl={}
+                        if IsInRaid(1) then
+                            tbl = BG.raidRosterInfo
+                        elseif IsInGroup(1) then
+                            tbl = BG.groupRosterInfo
+                        end
+                        for i, v in ipairs(tbl) do
+                            if name == v.name then
+                                return
+                            end
                         end
                     end
 

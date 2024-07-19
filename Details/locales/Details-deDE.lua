@@ -835,29 +835,29 @@ L["STRING_OPTIONS_MINIMAP_DESC"] = "Minikartensymbol anzeigen/verstecken"
 L["STRING_OPTIONS_MISCTITLE"] = "Sonstige Einstellungen"
 L["STRING_OPTIONS_MISCTITLE2"] = "Dies kontrolliert etliche Optionen."
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = "New Combat on Boss Pull"
+--[[ L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = "If a boss is pulled while in combat, this option closes the current combat encounter and initiates a new one for the boss."
+--[[ L["STRING_OPTIONS_MPLUS_BOSSNEWCOMBAT_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = "Overall Segment DPS Calculation"
+--[[ L["STRING_OPTIONS_MPLUS_DPS_ANCHOR"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = "Make Overall Segment"
+--[[ L["STRING_OPTIONS_MPLUS_MAKEOVERALL"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = "After the run is completed, this option creates a new segment containing all combat data from the run."
+--[[ L["STRING_OPTIONS_MPLUS_MAKEOVERALL_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_MERGETRASH"] = "Merge Trash"
+--[[ L["STRING_OPTIONS_MPLUS_MERGETRASH"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = "Panels"
+--[[ L["STRING_OPTIONS_MPLUS_PANELS_ANCHOR"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = "Show End of M+ Panel"
+--[[ L["STRING_OPTIONS_MPLUS_SHOWENDPANEL"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = "Time in Combat"
+--[[ L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = "The overall segment for the Mythic+ run will use 'totalDamage / totalCombatTime' to calculate DPS."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_INCOMBAT_DESC"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = "Dungeon Run Time"
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME"] = ""--]] 
 --[[Translation missing --]]
-L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = "The overall segment for the Mythic+ run will calculate DPS using 'totalDamage / runTime'."
+--[[ L["STRING_OPTIONS_MPLUS_TIME_RUNTIME_DESC"] = ""--]] 
 L["STRING_OPTIONS_NICKNAME"] = "Spitzname:"
 L["STRING_OPTIONS_NICKNAME_DESC"] = [=[Lege deinen Spitznamen fest.
 
@@ -1472,7 +1472,7 @@ L["STRING_REPORT_SINGLE_COOLDOWN"] = "Cooldown benutzt von"
 L["STRING_REPORT_SINGLE_DEATH"] = "Tod von"
 L["STRING_REPORT_SINGLE_DEBUFFUPTIME"] = "Schwächungszauberlaufzeit für"
 --[[Translation missing --]]
-L["STRING_REPORT_TEXT"] = "Report"
+--[[ L["STRING_REPORT_TEXT"] = ""--]] 
 L["STRING_REPORT_TOOLTIP"] = "Ergebnisbericht"
 L["STRING_REPORTFRAME_COPY"] = "Kopieren & Einfügen"
 L["STRING_REPORTFRAME_CURRENT"] = "Momentan"
@@ -1704,3 +1704,4 @@ L["STRING_WIPE_ERROR1"] = "ein Wipe wurde bereits ausgerufen."
 L["STRING_WIPE_ERROR2"] = "wir sind in keiner Schlachtzugsbegegnung."
 L["STRING_WIPE_ERROR3"] = "konnten die Begegnung nicht beenden."
 L["STRING_YES"] = "Ja"
+

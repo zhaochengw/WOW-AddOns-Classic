@@ -1643,7 +1643,7 @@ local function OptionsUI()
                 text:SetText(BG.STC_b1(L["团本*"]))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(1, #BG.FBCDall_table - 5, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(1, #BG.FBCDall_table - 4, width, height, 100, height_jiange)
 
                 -- 任务
                 height = height - height_jiange - height_jiange
@@ -1652,7 +1652,7 @@ local function OptionsUI()
                 text:SetText("|cffFF8C00" .. (QUESTS_LABEL .. "*") .. RR)
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 4, #BG.FBCDall_table - 3, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(#BG.FBCDall_table - 3, #BG.FBCDall_table - 3, width, height, 100, height_jiange)
 
                 -- 专业
                 height = height - height_jiange - height_jiange
@@ -1890,6 +1890,8 @@ local function OptionsUI()
                     local ontext = {
                         format(L["一键指定%s"], text1),
                         format(L["在地下城和团队副本界面增加一键指定%s按钮。"], text1),
+                        " ",
+                        L["打开随机本界面时，会自动选择上一次的随机本类型，而不是傻傻地在默认类型。"],
                     }
                     local f = O.CreateCheckButton(name, format(L["一键指定%s"], text1) .. "*", others, 15, height - h, ontext)
                     BG.options["button" .. name] = f

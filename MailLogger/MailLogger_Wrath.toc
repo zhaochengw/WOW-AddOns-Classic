@@ -1,5 +1,5 @@
 ## Interface: 30403
-## Version: 1.5.1
+## Version: 1.5.3
 ## Title: MailLogger
 ## Author: Aoikaze
 ## SavedVariables: MailLoggerDB

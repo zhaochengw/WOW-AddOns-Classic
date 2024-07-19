@@ -1639,6 +1639,8 @@ MT.BuildEnv('METHOD');
 		for class, Level2Points in next, DT.LevelAvailablePointsTableClass do
 			DT.PointsRequiredLevelTable[class] = BuildPoints2Level(Level2Points);
 		end
+	else
+		DT.LevelAvailablePointsTableClass = {  };
 	end
 	function MT.GetPointsReqLevel(class, points)
 		-- return max(10, 9 + numPoints);
@@ -1939,7 +1941,7 @@ MT.BuildEnv('METHOD');
 		VT.ImportTargetFrame[name] = { Frame, };
 		local verkey = strsub(code, 1, 1);
 		if verkey ~= "_" and verkey ~= "!" then
-			return MT._CommDistributor.OnTalent(name, code, "V1", VT.__emulib.DecodeTalentDataV1, false);
+			return MT._CommDistributor.OnTalent("", name, code, "V1", VT.__emulib.DecodeTalentDataV1, false);
 		end
 		return VT.__emulib.CHAT_MSG_ADDON(VT.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
 	end

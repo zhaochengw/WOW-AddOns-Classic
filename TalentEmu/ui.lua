@@ -64,16 +64,16 @@ local DT = __private.DT;
 		FrameFontSizeSmall = 12,
 		FrameFontOutline = "NORMAL",
 
-		TreeFrameXToBorder = 4,
+		TreeFrameXToBorder = 1,
 		TreeFrameYToBorder = 0,
 		TreeFrameHeaderYSize = 0,
 		TreeFrameFooterYSize = 20,
 		TreeFrameSeqWidth = 1,
 		TreeFrameLabelBGTexCoord = { 0.05, 0.95, 0.05, 0.95, },
-		TreeNodeSize = 42,
+		TreeNodeSize = 40,
 		TreeNodeXGap = 12,
 		TreeNodeYGap = 12,
-		TreeNodeXToBorder = 14,
+		TreeNodeXToBorder = 12,
 		TreeNodeYToTop = 12,
 		TreeNodeYToBottom = 10,
 		TreeNodeFont = NumberFont_Shadow_Med:GetFont(),--=[[Fonts\ARHei.ttf]]--[[Fonts\FRIZQT__.TTF]],
@@ -121,7 +121,7 @@ local DT = __private.DT;
 
 		TreeButtonXSize = 68,
 		TreeButtonYSize = 18,
-		TreeButtonGap = 10,
+		TreeButtonGap = 4,
 		TreeButtonTexCoord = { 0.05, 0.95, 0.40, 0.70, },
 
 		IconTextDisabledColor = { 1.0, 1.0, 1.0, 1.0, },

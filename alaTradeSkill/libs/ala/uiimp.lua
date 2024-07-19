@@ -1,5 +1,5 @@
 --[[--
-	alex/ALA 
+	by ALA
 --]]--
 local __version = 5;
 

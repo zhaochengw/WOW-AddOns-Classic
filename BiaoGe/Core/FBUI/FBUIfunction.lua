@@ -436,6 +436,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
             local itemID = GetItemInfoInstant(link)
             BG.Hide_AllHighlight()
             BG.HighlightBag(link)
+            BG.HighlightChatFrame(link)
             BG.HighlightItemGuoQi(link)
             if itemID then
                 if BG.ButtonIsInRight(self) then
@@ -685,10 +686,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
         BG.SetListmaijia(self)
         BG.FrameDs[FB .. 2]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show() -- 底色
         if BG.FrameAuctionMSGbg then
-            BG.FrameAuctionMSGbg:SetParent(BG.FrameMaijiaList)
-            BG.FrameAuctionMSGbg:ClearAllPoints()
-            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 0, 0)
-            BG.FrameAuctionMSGbg:Show()
+            BG.FrameAuctionMSG.item = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:GetText()
             if BiaoGe.options["auctionChatHoldNew"] == 1 then
                 BG.FrameAuctionMSG:ScrollToBottom()
             end
@@ -697,6 +695,9 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
             else
                 BG.FrameAuctionMSGbg:Hide()
             end
+            BG.FrameAuctionMSGbg:SetParent(BG.FrameMaijiaList)
+            BG.FrameAuctionMSGbg:ClearAllPoints()
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 0, 0)
         end
     end)
     -- 失去光标时
@@ -920,9 +921,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             BG.SetListjine(self, FB, BossNum(FB, b, t), i)
         end
         if BG.FrameAuctionMSGbg then
-            BG.FrameAuctionMSGbg:SetParent(BG.FrameJineList)
-            BG.FrameAuctionMSGbg:ClearAllPoints()
-            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 0, 0)
+            BG.FrameAuctionMSG.item = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:GetText()
             if BiaoGe.options["auctionChatHoldNew"] == 1 then
                 BG.FrameAuctionMSG:ScrollToBottom()
             end
@@ -931,6 +930,9 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             else
                 BG.FrameAuctionMSGbg:Hide()
             end
+            BG.FrameAuctionMSGbg:SetParent(BG.FrameJineList)
+            BG.FrameAuctionMSGbg:ClearAllPoints()
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 0, 0)
         end
     end)
     -- 失去光标时

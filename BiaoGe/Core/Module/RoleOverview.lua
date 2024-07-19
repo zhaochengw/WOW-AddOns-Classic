@@ -43,7 +43,6 @@ function BG.RoleOverviewUI()
                 ["Temple"] = 1,
                 -- ["Gno"] = 1,
                 -- ["BD"] = 1,
-                ["mengyan"] = 1,
                 ["huiguweek"] = 1,
                 ["alchemy"] = 1,
                 ["leatherworking"] = 1,
@@ -113,9 +112,6 @@ function BG.RoleOverviewUI()
                 BiaoGe.FBCDchoice["leatherworking"] = 1
                 BiaoGe.FBCDchoice["tailor"] = 1
             end)
-            BG.Once("FBCDchoice", 240412, function()
-                BiaoGe.FBCDchoice["mengyan"] = 1
-            end)
             BG.Once("MONEYchoice", 240408, function()
                 BiaoGe.MONEYchoice[221262] = 1
                 BiaoGe.MONEYchoice[221365] = 1
@@ -184,8 +180,7 @@ function BG.RoleOverviewUI()
             { name = "Gno", color = "00BFFF", fbId = 90, type = "fb" },
             { name = "BD", color = "00BFFF", fbId = 48, type = "fb" },
             -- 任务
-            { name = "mengyan", name2 = L["梦魇日常"], color = "FF8C00",  type = "quest" },
-            { name = "huiguweek", name2 = L["灰谷日常"], color = "FF8C00",  type = "quest" },
+            { name = "huiguweek", name2 = L["灰谷日常"], color = "FF8C00", type = "quest" },
             -- 专业
             { name = "alchemy", name2 = L["炼金转化"], color = "ADFF2F", type = "profession" },
             { name = "leatherworking", name2 = L["制皮筛盐"], color = "ADFF2F", type = "profession" },
@@ -255,8 +250,11 @@ function BG.RoleOverviewUI()
             { name = "ZUG", color = "D3D3D3", fbId = 309, num = 20, type = "fb" },
             -- 日常
             { name = "week1", name2 = L["周常"], color = "FF8C00", type = "quest" },
-            { name = "gamma", name2 = L["阿尔法"], color = "FF8C00", type = "quest" },
+            { name = "gamma", name2 = L["泰坦"], color = "FF8C00", type = "quest" },
             { name = "heroe", name2 = L["英雄"], color = "FF8C00", type = "quest" },
+            { name = "zhubao", name2 = L["珠宝"], color = "FF8C00", type = "quest" },
+            { name = "cooking", name2 = L["烹饪"], color = "FF8C00", type = "quest" },
+            { name = "fish", name2 = L["钓鱼"], color = "FF8C00", type = "quest" },
         }
 
         BG.MONEYall_table = {
@@ -656,6 +654,12 @@ function BG.RoleOverviewUI()
                         BG.m_new[player][v.id] = 0
                     end
                 end
+                if not BG.m_new[player].player then
+                    BG.m_new[player].player = player
+                end
+                if not BG.m_new[player].colorplayer then
+                    BG.m_new[player].colorplayer = BG.STC_dis(player)
+                end
             end
 
             -- 计算合计
@@ -735,7 +739,6 @@ function BG.RoleOverviewUI()
                                     t_paizi:SetPoint("TOPRIGHT", right, "TOPRIGHT", width, 0)
                                 end
                                 t_paizi:SetText(a)
-                                -- pt(a:match("^%d+"))
                                 if a:match("^%d+") == "0" then
                                     t_paizi:SetTextColor(0.5, 0.5, 0.5)
                                 end
@@ -1168,6 +1171,9 @@ function BG.RoleOverviewUI()
     end
     ------------------一键排灵魂烘炉------------------
     if not BG.IsVanilla then
+        BiaoGe.lastChooseLFD = BiaoGe.lastChooseLFD or {}
+        BiaoGe.lastChooseLFD[realmID] = BiaoGe.lastChooseLFD[realmID] or {}
+
         local function OnClick(self)
             if self.type == "zhiding" then
                 for i, id in ipairs(LFDDungeonList) do
@@ -1176,17 +1182,17 @@ function BG.RoleOverviewUI()
                     end
                 end
                 LFGDungeonList_SetDungeonEnabled(self.dungeonID, true)
-                LFDQueueFrameSpecificList_Update()
-                LFDQueueFrame_UpdateRoleButtons()
+                LFDQueueFrame_SetType("specific")
                 LFG_JoinDungeon(LE_LFG_CATEGORY_LFD, "specific", LFDDungeonList, LFDHiddenByCollapseList)
             elseif self.type == "jieri" then
-                ToggleDropDownMenu(nil, nil, LFDQueueFrameTypeDropDown)
-                for i = 1, 20 do
-                    local text = _G["DropDownList1Button" .. i]:GetText()
-                    if text == self.name then
-                        UIDropDownMenuButton_OnClick(_G["DropDownList1Button" .. i])
-                    end
-                end
+                -- ToggleDropDownMenu(nil, nil, LFDQueueFrameTypeDropDown)
+                -- for i = 1, 20 do
+                --     local text = _G["DropDownList1Button" .. i]:GetText()
+                --     if text == self.name then
+                --         UIDropDownMenuButton_OnClick(_G["DropDownList1Button" .. i])
+                --     end
+                -- end
+                LFDQueueFrame_SetType(self.dungeonID)
                 LFG_JoinDungeon(LE_LFG_CATEGORY_LFD, self.dungeonID, LFDDungeonList, LFDHiddenByCollapseList)
             end
             BG.PlaySound(1)
@@ -1212,14 +1218,12 @@ function BG.RoleOverviewUI()
             if i == 1 then
                 bt.type = "jieri"
                 bt.tbl = { 286, 285, 287 } -- 火焰节、万圣节、美酒节
-                -- bt.type = "zhiding"
-                -- bt.tbl = { 136 } -- test
-            else
+                -- bt.tbl = { 259 }           -- 燃烧的远征test
+            elseif i == 2 then
                 bt.type = "zhiding"
                 bt.tbl = { 2463 } -- 伽马灵魂烘炉
-                -- bt.tbl = { 136 } -- test
+                -- bt.tbl = { 136 }  -- 地狱火test
             end
-            BG.ButtonTextSetWordWrap(bt)
             bt:SetScript("OnClick", OnClick)
             bt:SetScript("OnEnter", OnEnter)
             bt:SetScript("OnLeave", GameTooltip_Hide)
@@ -1265,6 +1269,7 @@ function BG.RoleOverviewUI()
                 isShowButton[1]:SetSize(150, 23)
                 isShowButton[1]:ClearAllPoints()
                 isShowButton[1]:SetPoint("BOTTOMLEFT", 35, 5)
+                BG.ButtonTextSetWordWrap(buttons[1])
             elseif #isShowButton == 2 then
                 for i = 1, 2 do
                     buttons[i]:SetSize(90, 23)
@@ -1274,6 +1279,7 @@ function BG.RoleOverviewUI()
                     else
                         buttons[i]:SetPoint("BOTTOMLEFT", 110, 5)
                     end
+                    BG.ButtonTextSetWordWrap(buttons[i])
                 end
             end
         end
@@ -1285,18 +1291,24 @@ function BG.RoleOverviewUI()
                 return
             end
             UpdateButtons()
+            if BiaoGe.lastChooseLFD[realmID][player] then
+                for i = 1, GetNumRandomDungeons() do
+                    local id, name = GetLFGRandomDungeonInfo(i)
+                    local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
+                    if isAvailableForPlayer then
+                        if id == BiaoGe.lastChooseLFD[realmID][player] then
+                            LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
+                            return
+                        end
+                    end
+                end
+            end
         end)
-
-        --DEBUG
-        -- 打印每个按钮的副本ID
-        --[[             hooksecurefunc("LFGDungeonListCheckButton_OnClick", function(button, category, dungeonList, hiddenByCollapseList)
-                local parent = button:GetParent();
-                local dungeonID = parent.id;
-                pt(dungeonID)
-            end)
-            hooksecurefunc("LFG_JoinDungeon", function(button, category, joinType, dungeonList, hiddenByCollapseList)
-                pt(button, category, joinType, dungeonList, hiddenByCollapseList)
-            end) ]]
+        hooksecurefunc("LFDQueueFrame_SetType", function(value)
+            if PVEFrame:IsVisible() then
+                BiaoGe.lastChooseLFD[realmID][player] = value
+            end
+        end)
     end
     ------------------日常任务------------------
     do
@@ -1314,13 +1326,15 @@ function BG.RoleOverviewUI()
         if BG.IsVanilla_Sod then
             BG.dayQuests = {
                 huiguweek = { 79090, 79098 }, -- 灰谷
-                mengyan = { 82068, },        -- 梦魇
-
             }
         elseif BG.IsWLK then
             BG.dayQuests = {
                 gamma = { 83713, 78752 },
                 heroe = { 83714, 84552, 78753 },
+                zhubao = { 12959, 12962, 12961, 12958, 12963, 12960 },
+                cooking = { 13114, 13116, 13113, 13115, 13112,
+                    13102, 13100, 13107, 13101, 13103 },
+                fish = { 13836, 13833, 13834, 13832, 13830 },
             }
         end
 
@@ -1373,20 +1387,20 @@ function BG.RoleOverviewUI()
             }
         end
 
-        local function UpdateWeekQuest(questID, Region)
+        local function UpdateWeekQuest(questID)
             if not BG.weekQuests then return end
             for name in pairs(BG.weekQuests) do
                 for _, _questID in pairs(BG.weekQuests[name]) do
                     if _questID == questID then
                         local resetDay = 2
-                        if Region == "CN" then
+                        if BG.IsCN() then
                             resetDay = 4
                         end
 
                         local currentTimestamp = GetServerTime()
-                        local nextThursdayTimestamp
                         local currentWeekday = date("%w", currentTimestamp)
                         local daysToThursday = resetDay - currentWeekday
+                        local nextThursdayTimestamp
 
                         local today = date("*t", currentTimestamp)
                         -- 如果时间小于当天凌晨7点
@@ -1396,6 +1410,7 @@ function BG.RoleOverviewUI()
                             today.sec = 0
                             nextThursdayTimestamp = time(today)
                         else
+                            -- 如果已经是周四了，则日期+7
                             if daysToThursday <= 0 then
                                 daysToThursday = daysToThursday + 7
                             end
@@ -1408,8 +1423,8 @@ function BG.RoleOverviewUI()
                             nextThursdayTimestamp = time(nextThursdayDateTable)
                         end
                         -- 计算时间差
-                        local secondsToNextThursday = nextThursdayTimestamp - currentTimestamp
-                        local timestamp = currentTimestamp + secondsToNextThursday
+                        local secondsToNextThursday = nextThursdayTimestamp - currentTimestamp -- 距离下周四还有多少秒
+                        local timestamp = currentTimestamp + secondsToNextThursday             -- 到下周四的实际时间戳
 
                         local colorplayer = SetClassCFF(player, "player")
                         BiaoGe.QuestCD[realmID][player][name] = {
@@ -1420,6 +1435,7 @@ function BG.RoleOverviewUI()
                             resettime = secondsToNextThursday,
                             endtime = timestamp
                         }
+                        -- BG.SendSystemMessage(format(L["周常任务已记录，距离重置还剩%s。"], date("%d天%H小时", secondsToNextThursday)))
                         return
                     end
                 end
@@ -1429,11 +1445,7 @@ function BG.RoleOverviewUI()
         -- 交任务时触发
         BG.RegisterEvent("QUEST_TURNED_IN", function(self, even, questID)
             UpdateDayQuest(questID)
-            if BG.IsCN() then
-                UpdateWeekQuest(questID, "CN")
-            else
-                UpdateWeekQuest(questID, "US")
-            end
+            UpdateWeekQuest(questID)
         end)
 
         -- 检查全部角色的任务重置cd是否到期（第二天凌晨7点）
