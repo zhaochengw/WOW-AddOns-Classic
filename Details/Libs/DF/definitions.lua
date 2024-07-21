@@ -177,6 +177,8 @@
 ---@field IsShadowlandsWow fun():boolean
 ---@field IsDragonflightWow fun():boolean
 ---@field IsWarWow fun():boolean
+---@field IsTWWWow fun():boolean
+---@field ExpansionHasAugEvoker fun():boolean
 ---@field LoadSpellCache fun(self:table, hashMap:table, indexTable:table, allSpellsSameName:table) : hashMap:table, indexTable:table, allSpellsSameName:table load all spells in the game and add them into the passed tables
 ---@field UnloadSpellCache fun(self:table) wipe the table contents filled with LoadSpellCache()
 ---@field GetCurrentClassName fun(self:table) : string return the name of the class the player is playing
@@ -299,7 +301,7 @@
 ---@field ParseTexture fun(self:table, texture:texturepath|textureid|atlasname|atlasinfo, width: number?, height: number?, leftTexCoord: number?, rightTexCoord: number?, topTexCoord: number?, bottomTexCoord: number?, vertexRed:number|string?, vertexGreenvertexRed:number?, vertexBluevertexRed:number?, vertexAlphavertexRed:number?) : any, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?, number?
 ---@field IsTexture fun(self:table, texture:any, bCheckTextureObject: boolean?) : boolean
 ---@field CreateAtlasString fun(self:table, atlas:atlasinfo|atlasname, textureHeight:number?, textureWidth:number?) : string
----@field SetMask fun(self:table, texture:texture, maskTexture:atlasname|texturepath|textureid|table) : nil
+---@field SetMask fun(self:table, texture:texture, maskTexture:atlasname|texturepath|textureid|table|string) : nil
 ---@field GetClientRegion fun(self:table) : string
 ---@field GetBestFontPathForLanguage fun(self:table, languageId:string) : string
 ---@field SetTemplate fun(self:table, frame:uiobject, template:string)

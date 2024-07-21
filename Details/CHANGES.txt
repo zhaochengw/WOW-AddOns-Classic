@@ -1,97 +1,10 @@
-tag 1eaaa29445bdc85f3076ca3e41053aac7107ceb2 Details.20240519.12755.156
+lightweight tag 899ac439a17c19a799d30a6a2a0e2faf5cc215e1 DetailsRetail.8.3.0.7348.141
 Author:	Tercio Jose <terciob19@hotmail.com>
-Date:	Sun May 19 15:42:55 2024 -0300
+Date:	Mon Jul 6 11:27:35 2020 -0300
 
-commit 4a3def35562ac49cf51f59686bf65cf6ae879047
+commit 899ac439a17c19a799d30a6a2a0e2faf5cc215e1
 Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 19 15:42:08 2024 -0300
+Date:   Mon Jul 6 11:27:35 2020 -0300
 
-    Change Logs
-
-commit 9d6fb936cbb51ddcbb9c13d963232f507c44b1f5
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 19 15:10:46 2024 -0300
-
-    Added rallied to victory to track when this buff is placed on someone.
-
-commit 36c787e6e516c145062ab2f88a77c61981d10c02
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 19 15:10:11 2024 -0300
-
-    Stop resetting tooltip color each login
-
-commit 759b1b2224f8f2f5f096d15cbeb70d62c3ad829a
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 19 14:09:04 2024 -0300
-
-    Avoid the options panel going out of screen with SetClampedToScreen()
-
-commit b89a550d94a80a718b4409e7993791ca0139c34e
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sun May 19 14:03:33 2024 -0300
-
-    Fix for the old time type '3' being deprecated and causing errors for returning players
-
-commit 50c516aee8ca5e3803f04c145ae79b672f50377b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat May 18 13:13:02 2024 -0300
-
-    backend changes
-
-commit 5de2a04b8c519495d0591f8794b755237d0c482b
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Mon May 13 11:47:13 2024 -0300
-
-    Added season setting to ignore the bookmark
-    
-    /run Details.no_bookmark = true: won't open the bookmark.
-    /run Details.no_bookmark_on_combat = true: won't open the bookmark while in combat.
-
-commit 05a6586085671c1f2d8e341170f53d741346a774
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Mon May 13 01:27:29 2024 -0500
-
-    Update spellcache.lua
-
-commit 05a6586085671c1f2d8e341170f53d741346a774
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Mon May 13 01:27:29 2024 -0500
-
-    Update spellcache.lua
-
-commit 89ae19bd79714b0ef50c9ad79f7f27454f5737b6
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Mon May 13 00:48:07 2024 -0500
-
-    Update spellcache.lua
-
-commit 8a2cf7fee3f72748005ca4999f48b0046711daa7
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Sun May 12 13:35:34 2024 -0500
-
-    Update Details_Classic.toc
-
-commit 8a2cf7fee3f72748005ca4999f48b0046711daa7
-Author: Flamanis <Flamanis@users.noreply.github.com>
-Date:   Sun May 12 13:35:34 2024 -0500
-
-    Update Details_Classic.toc
-
-commit 8edbcf823c82a5f952c331e7d6315099395c8c44
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat May 11 20:32:12 2024 -0300
-
-    Fix for death recap
-
-commit 33a01208812091b0cb406a6d90cfb06f7f07f344
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Sat May 11 14:46:51 2024 -0300
-
-    framework updates
-
-commit c0315581099c421a7a884e415e72f71a798d38c9
-Author: Tercio Jose <terciob19@hotmail.com>
-Date:   Thu May 9 15:13:31 2024 -0300
-
-    Transliterate pet names on damage tooltip
+    Fixed an issue affecting the Auto Hide for some users
 

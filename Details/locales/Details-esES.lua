@@ -1401,4 +1401,3 @@ L["STRING_WIPE_ERROR1"] = "Ya se ha realizado un wipe."
 L["STRING_WIPE_ERROR2"] = "No estamos en una banda."
 L["STRING_WIPE_ERROR3"] = "no pudo terminar el encuentro."
 L["STRING_YES"] = "Sí"
-

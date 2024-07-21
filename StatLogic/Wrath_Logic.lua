@@ -58,15 +58,13 @@ local BaseManaRegenPerSpi = {
 	0.005316, 0.005049, 0.004796, 0.004555, 0.004327, 0.004110, 0.003903, 0.003708, 0.003522, 0.003345,
 }
 
-local NormalManaRegenPerSpi = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerSpi = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	return (0.001 / spi + BaseManaRegenPerSpi[level] * (int ^ 0.5)) * 5
 end
 
-local NormalManaRegenPerInt = function()
-	local level = UnitLevel("player")
+local NormalManaRegenPerInt = function(level)
 	local _, int = UnitStat("player", 4)
 	local _, spi = UnitStat("player", 5)
 	-- Derivative of regen with respect to int
@@ -233,8 +231,7 @@ for _, v in pairs(HealthRegenPerSpi) do
 	})
 end
 
-local function NormalHealthRegenPerSpi()
-	local level = UnitLevel("player")
+local function NormalHealthRegenPerSpi(level)
 	local _, spi = UnitStat("player", 5)
 	local data = HealthRegenPerSpi
 	if spi < 50 then
@@ -424,38 +421,57 @@ addon.SpellCritPerInt = {
 	},
 }
 
-addon.DodgePerAgi = {
-	["WARRIOR"] = {
-		[80] = 0.0118,
-	},
-	["PALADIN"] = {
-		[80] = 0.0167,
-	},
+-- Most classes have a static ratio between crit and dodge per agi per level.
+-- While the concept is inspired by TrinityCore, these values were confirmed by collecting the results of
+-- StatLogic:GetDodgePerAgi() via addon comms for every level for every class.
+-- Hunters and Warlocks are *not* a static ratio in Wrath Classic, which disagrees with TrinityCore.
+local DodgePerCrit = {
+	["WARRIOR"]     = 0.85 / 1.15,
+	["PALADIN"]     = 1.00 / 1.15,
+	["ROGUE"]       = 2.00 / 1.15,
+	["PRIEST"]      = 1.00 / 1.15,
+	["DEATHKNIGHT"] = 0.85 / 1.15,
+	["SHAMAN"]      = 1.60 / 1.15,
+	["MAGE"]        = 1.00 / 1.15,
+	["DRUID"]       = 2.00 / 1.15,
+}
+
+addon.DodgePerAgi = setmetatable({
 	["HUNTER"] = {
+		0.3951, 0.3786, 0.3635, 0.3366, 0.3245, 0.3133, 0.3029, 0.2931, 0.2754, 0.2673,
+		0.2456, 0.2164, 0.1975, 0.1817, 0.1652, 0.1567, 0.1466, 0.1356, 0.1280, 0.1196,
+		0.1150, 0.1082, 0.1033, 0.0977, 0.0937, 0.0900, 0.0857, 0.0826, 0.0790, 0.0757,
+		0.0739, 0.0710, 0.0683, 0.0663, 0.0640, 0.0622, 0.0602, 0.0582, 0.0564, 0.0551,
+		0.0538, 0.0522, 0.0508, 0.0494, 0.0481, 0.0471, 0.0459, 0.0445, 0.0435, nil,
+		[67] = 0.0258,
+		[68] = 0.0253,
+		[69] = 0.0247,
+		[70] = 0.0241,
+		[75] = 0.0167,
+		[76] = 0.0155,
+		[77] = 0.0144,
+		[78] = 0.0134,
 		[80] = 0.0116,
 	},
-	["ROGUE"] = {
-		[80] = 0.0209,
-	},
-	["PRIEST"] = {
-		[80] = 0.0167,
-	},
-	["DEATHKNIGHT"] = {
-		[80] = 0.0118,
-	},
-	["SHAMAN"] = {
-		[80] = 0.0167,
-	},
-	["MAGE"] = {
-		[80] = 0.017,
-	},
 	["WARLOCK"] = {
-		[80] = 0.0167,
+		0.1289, 0.1289, 0.1228, 0.1228, nil,    nil,    nil,    0.1172, 0.1121, 0.1121,
+		0.1074, 0.1074, 0.1074, 0.1031, 0.0992, 0.0955, 0.0955, 0.0955, 0.0921, 0.0889,
+		0.0859, 0.0859, 0.0832, 0.0832, 0.0781, 0.0781, 0.0781, 0.0758, 0.0758, 0.0716,
+		0.0716, 0.0697, 0.0697, 0.0678, 0.0661, 0.0645, 0.0629, 0.0629, 0.0614, 0.0600,
+		0.0586, 0.0586, 0.0573, 0.0573, 0.0549, 0.0537, 0.0537, 0.0526, 0.0516, 0.0506,
+		0.0496, 0.0496, 0.0486, 0.0477, 0.0469, 0.0460, 0.0452, 0.0445, 0.0445, 0.0430,
+		0.0416, 0.0414, 0.0404, 0.0391, 0.0385, 0.0374, 0.0374, 0.0365, 0.0356, 0.0348,
+		0.0323, 0.0300, 0.0279, 0.0260, nil,    nil,    nil,    nil,    nil,    0.0167,
 	},
-	["DRUID"] = {
-		[80] = 0.0209,
-	},
-}
+}, {
+	__index = function (t, class)
+		t[class] = setmetatable({}, {__index = function(classTable, level)
+			classTable[level] = DodgePerCrit[class] * addon.CritPerAgi[class][level]
+			return classTable[level]
+		end })
+		return t[class]
+	end
+})
 
 addon.bonusArmorItemEquipLoc = {
 	["INVTYPE_WEAPON"] = true,
@@ -3344,7 +3360,7 @@ local C_m = setmetatable({}, {
 
 function StatLogic:GetMissedChanceBeforeDR()
 	local baseDefense, additionalDefense = UnitDefense("player")
-	local defenseFromDefenseRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating))
+	local defenseFromDefenseRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL))
 	local modMissed = defenseFromDefenseRating * 0.04
 	local drFreeMissed = 5 + (baseDefense + additionalDefense - defenseFromDefenseRating) * 0.04
 	return modMissed, drFreeMissed
@@ -3392,23 +3408,19 @@ Dodge/Agi=(-b-(b^2-4ac)^0.5)/(2a)
 ---@return number dodge Dodge percentage per agility
 function StatLogic:GetDodgePerAgi()
 	local level = UnitLevel("player")
-	local class = addon.class
-	if addon.DodgePerAgi[class][level] then
-		return addon.DodgePerAgi[class][level]
-	end
 	-- Collect data
 	local D_dr = GetDodgeChance()
 	if D_dr == 0 then
 		return 0
 	end
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, level)
+	local dodgeFromDodgeRating = GetCombatRatingBonus(CR_DODGE)
 	local baseDefense, modDefense = UnitDefense("player")
 	local dodgeFromModDefense = modDefense * 0.04
 	local D_r = dodgeFromDodgeRating + dodgeFromModDefense
 	local D_b = self:GetStatMod("ADD_DODGE") + (baseDefense - level * 5) * 0.04
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
 	local modAgi = 1
-	if ModAgiClasses[class] then
+	if ModAgiClasses[addon.class] then
 		modAgi = self:GetStatMod("MOD_AGI")
 		-- Talents that modify Agi will not add to posBuff, so we need to calculate baseAgi
 		-- But Agi from Kings etc. will add to posBuff, so we subtract those if present
@@ -3423,8 +3435,8 @@ function StatLogic:GetDodgePerAgi()
 	local A = effectiveStat
 	local A_b = ceil((stat - posBuff - negBuff) / modAgi)
 	local A_g = A - A_b
-	local C = C_d[class]
-	local k = K[class]
+	local C = C_d[addon.class]
+	local k = K[addon.class]
 	-- Solve a*x^2+b*x+c
 	local a = -A_g*A_b
 	local b = A_g*(D_dr-D_b)-A_b*(D_r+C*k)-C*A_g
@@ -3461,8 +3473,8 @@ function StatLogic:GetDodgeChanceBeforeDR()
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
 	local baseAgi = stat - posBuff - negBuff
 	local dodgePerAgi = self:GetDodgePerAgi()
-	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), StatLogic.Stats.DodgeRating, UnitLevel("player"))
-	local dodgeFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
+	local dodgeFromDodgeRating = GetCombatRatingBonus(CR_DODGE)
+	local dodgeFromDefenceRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL)) * 0.04
 	local dodgeFromAdditionalAgi = dodgePerAgi * (effectiveStat - baseAgi)
 	local modDodge = dodgeFromDodgeRating + dodgeFromDefenceRating + dodgeFromAdditionalAgi
 
@@ -3490,8 +3502,8 @@ modParry includes
 ---@return number drFreeParry The part that isn't affected by diminishing returns.
 function StatLogic:GetParryChanceBeforeDR()
 	-- Defense is floored
-	local parryFromParryRating = self:GetEffectFromRating(GetCombatRating(CR_PARRY), StatLogic.Stats.ParryRating)
-	local parryFromDefenceRating = floor(self:GetEffectFromRating(GetCombatRating(CR_DEFENSE_SKILL), StatLogic.Stats.DefenseRating)) * 0.04
+	local parryFromParryRating = GetCombatRatingBonus(CR_PARRY)
+	local parryFromDefenceRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL)) * 0.04
 	local modParry = parryFromParryRating + parryFromDefenceRating
 
 	-- drFreeParry

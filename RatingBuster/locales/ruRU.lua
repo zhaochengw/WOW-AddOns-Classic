@@ -97,6 +97,8 @@ L["Ignore stuff when calculating the stat summary"] = "Настройка игн
 -- /rb sum ignore unused
 L["Ignore unused item types"] = "Игнорирование неподходящих предметов"
 L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"] = "Скрыть итоги по статам для неподходящих предметов"
+L["Ignore non-primary stat"] = "Ignore non-primary stat"
+L["Show stat summary only for items with your specialization's primary stat"] = "Show stat summary only for items with your specialization's primary stat"
 -- /rb sum ignore equipped
 L["Ignore equipped items"] = "Не показывать для надетых вещей"
 L["Hide stat summary for equipped items"] = "Не показывать для надетых вещей"
@@ -323,22 +325,16 @@ L["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken"
 -- or you can type /rb debug to enable it in game
 --
 -- Tip2: The strings are passed into string.find, so you should escape the magic characters ^$()%.[]*+-? with a %
+addon.numberPattern = addon.numberPattern .. " ?\208?\186?" -- к
 L["numberPatterns"] = {
-	{pattern = " на (%d+)%f[^%d%%]", addInfo = "AfterNumber"},
-	{pattern = "([%+%-]%d+)%f[^%d%%] к", addInfo = "AfterStat",},
-	{pattern = " увеличена на (%d+)", addInfo = "AfterNumber"},
-	{pattern = "(%d+) к ", addInfo = "AfterNumber"}, -- тест
-	{pattern = "увеличение (%d+)", addInfo = "AfterNumber"}, -- for "grant you xx stat" type pattern, ex: Quel'Serrar, Assassination Armor set
-	{pattern = "дополнительно (%d+)", addInfo = "AfterNumber"}, -- for "add xx stat" type pattern, ex: Adamantite Sharpening Stone
-	-- Added [^%%] so that it doesn't match strings like "Increases healing by up to 10% of your total Intellect." [Whitemend Pants] ID: 24261
-	-- Added [^|] so that it doesn't match enchant strings (JewelTips)
-	{pattern = "(%d+)%f[^%d%%|]", addInfo = "AfterNumber"}, -- [發光的暗影卓奈石] +6法術傷害及5耐力
+	" на " .. addon.numberPattern,
+	addon.numberPattern,
 }
 -- Exclusions are used to ignore instances of separators that should not get separated
 L["exclusions"] = {
 }
 L["separators"] = {
-	"/", " и ", ",", "%. ", " для ", "&", ": %f[^%d]", "\n",
+	"/", " и ", ",%f[^%d]", "%. ", " для ", "&", ": %f[^%d]", "\n",
 	-- Fix for [Mirror of Truth]
 	-- Equip: Chance on melee and ranged critical strike to increase your attack power by 1000 for 10 secs.
 	-- 1000 was falsely detected detected as ranged critical strike

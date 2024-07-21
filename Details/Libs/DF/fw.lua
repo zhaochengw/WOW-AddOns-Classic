@@ -1,6 +1,6 @@
 
 
-local dversion = 537
+local dversion = 539
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -187,6 +187,9 @@ function DF.IsWarWow()
 	return false
 end
 
+function DF.IsTWWWow()
+	return DF.IsWarWow()
+end
 
 ---return true if the player is playing in the WotLK version of wow with the retail api
 ---@return boolean
@@ -198,6 +201,10 @@ function DF.IsNonRetailWowWithRetailAPI()
 	return false
 end
 DF.IsWotLKWowWithRetailAPI = DF.IsNonRetailWowWithRetailAPI -- this is still in use
+
+function DF.ExpansionHasAugEvoker()
+	return DF.IsDragonflightWow() or DF.IsWarWow()
+end
 
 ---for classic wow, get the role using the texture from the talents frame
 local roleBySpecTextureName = {
@@ -2858,6 +2865,7 @@ end
 --DF.font_templates ["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 12, font = "Accidental Presidency"}
 DF.font_templates["ORANGE_FONT_TEMPLATE"] = {color = "orange", size = 10, font = DF:GetBestFontForLanguage()}
 DF.font_templates["OPTIONS_FONT_TEMPLATE"] = {color = "yellow", size = 9.6, font = DF:GetBestFontForLanguage()}
+DF.font_templates["SMALL_SILVER"] = {color = "silver", size = 9, font = DF:GetBestFontForLanguage()}
 
 --dropdowns
 DF.dropdown_templates = DF.dropdown_templates or {}

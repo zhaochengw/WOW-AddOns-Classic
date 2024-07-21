@@ -3669,8 +3669,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		[SPELL_POWER_FURY] = {file = [[Interface\PLAYERFRAME\UI-PlayerFrame-Deathknight-Blood-On]], coords = {0, 1, 0, 1}},
 	}
 
-	local alternatePowerEnableFrame = CreateFrame("frame")
-	local alternatePowerMonitorFrame = CreateFrame("frame")
+	local alternatePowerEnableFrame = CreateFrame("frame", "DetailsAlternatePowerEventHandler")
+	local alternatePowerMonitorFrame = CreateFrame("frame", "DetailsAlternatePowerMonitor")
 	alternatePowerEnableFrame:RegisterEvent("UNIT_POWER_BAR_SHOW")
 	alternatePowerEnableFrame:RegisterEvent("ENCOUNTER_END")
 	alternatePowerEnableFrame.IsRunning = false
@@ -3691,7 +3691,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (powerType == "ALTERNATE") then
 			local actorName = Details:GetFullName(unitID)
 			if (actorName) then
-				local power = _current_combat.alternate_power[actorName]
+				--weird bug on cata as described below
+				if (not _current_combat.alternate_power) then
+					_current_combat.alternate_power = {}
+				end
+
+				local power = _current_combat.alternate_power[actorName] --cata: 120x Details/core/parser.lua:3694: attempt to index field 'alternate_power' (a nil value)
 				if (not power) then
 					power = _current_combat:CreateAlternatePowerTable(actorName)
 				end
@@ -4811,9 +4816,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--["SPELL_CAST_FAILED"] = parser.spell_fail
 	}
 
-	--[===[@debug@
+	--[==[@debug@
 	Details.token_list = token_list
-	--@end-debug@]===]
+	--@end-debug@]==]
 
 	--serach key: ~capture
 
@@ -6200,7 +6205,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		local _, _, _, toc = GetBuildInfo()
 		if (toc >= 100200) then
-			Details.playername = UnitName("player") .. "-" .. (GetRealmName():gsub("%s", ''))
+			Details.playername = UnitName("player") .. "-" .. (GetRealmName():gsub("[%s-]", ''))
 		else
 			Details.playername = UnitName("player")
 		end
@@ -7251,13 +7256,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		for i = 1, players do
 			local name, killingBlows, honorableKills, deaths, honorGained, faction, race, rank, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec
-			if (isWOTLK or isERA) then
+			if (isCATA or isWOTLK or isERA) then
 				name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
 			else
 				name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
 			end
 
-			if (not isWOTLK and not isERA) then --Must be dragonflight
+			if (not isWOTLK and not isERA and not isCATA) then --Must be dragonflight
 				if (not name:match("%-")) then
 					name = name .. "-" .. realmName
 				end

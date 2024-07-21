@@ -22,6 +22,7 @@ W[EMPTY_SOCKET_RED] = {["EMPTY_SOCKET_RED"] = 1}
 W[EMPTY_SOCKET_YELLOW] = {["EMPTY_SOCKET_YELLOW"] = 1}
 W[EMPTY_SOCKET_BLUE] = {["EMPTY_SOCKET_BLUE"] = 1}
 W[EMPTY_SOCKET_META] = {["EMPTY_SOCKET_META"] = 1}
+W[EMPTY_SOCKET_PRISMATIC] = {["EMPTY_SOCKET_PRISMATIC"] = 1}
 
 local exclusions = {
 	"",
@@ -39,7 +40,7 @@ local exclusions = {
 	ITEM_DISENCHANT_NOT_DISENCHANTABLE,
 	ITEM_REQ_HORDE,
 	ITEM_REQ_ALLIANCE,
-	GetItemClassInfo(Enum.ItemClass.Projectile),
+	C_Item.GetItemClassInfo(Enum.ItemClass.Projectile),
 	INVTYPE_AMMO,
 	INVTYPE_HEAD,
 	INVTYPE_NECK,
@@ -84,8 +85,8 @@ local exclusions = {
 	ITEM_QUALITY5_DESC,
 	ITEM_QUALITY6_DESC,
 	ITEM_QUALITY7_DESC,
-	GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown),
-	GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount)
+	C_Item.GetItemSubClassInfo(Enum.ItemClass.Weapon, Enum.ItemWeaponSubclass.Thrown),
+	C_Item.GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount)
 }
 
 for _, exclusion in pairs(exclusions) do
@@ -93,7 +94,7 @@ for _, exclusion in pairs(exclusions) do
 end
 
 for _, subclass in pairs(Enum.ItemArmorSubclass) do
-	local subclassName = GetItemSubClassInfo(Enum.ItemClass.Armor, subclass)
+	local subclassName = C_Item.GetItemSubClassInfo(Enum.ItemClass.Armor, subclass)
 	if subclassName then
 		W[subclassName] = false
 	end
