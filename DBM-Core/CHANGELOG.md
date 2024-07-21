@@ -1,15 +1,13 @@
 # DBM - Core
 
-## [10.2.53](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.53) (2024-07-11)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.52...10.2.53) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [10.2.54](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/10.2.54) (2024-07-13)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/10.2.53...10.2.54) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- Prep new tag for retail testing and fixes for chinese Wrath client  
-- Switch Ovinax to a full warning for dosage now that it's no longer a private aura. Add optional OFF by default icon marking for it as well  
-    Updated Rashanan for normal and mythic  
-    Updated Sikran to remove warnings for phase blades and replaced it with new private aura sound option  
-- Fix regressoin from custom names PR that broke wrath client  
-- Fix wrath classic compat. Damnit blizzard, can we not have 4 live wow clients with 4 different apis?  
-- Drycode changes from todays build:  
-    Changed Assassination to private aura  
-    Added new mechanic to Silken Court  
+- prep new tag  
+- add option clarification  
+- minor typos and cleanup  
+- Disable WBA syncs in SoD (#1138)  
+- Push mythic silken court update (but with stage 2 and 3 stripped out for now, only stage 1 public logs exist)  
+    Push mythic Kyveza mod update  
+    Scope interrupt nameplate timer on Ovinax to non mythic, on mythic it has no cooldown, just spell lockout.  
 - bump alpha  
