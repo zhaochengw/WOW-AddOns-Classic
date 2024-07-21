@@ -1,13 +1,30 @@
 ﻿------Backsupport-------
 do
-	C_Item.GetItemInfo	=	GetItemInfo
-	C_Item.GetItemSpell	=	GetItemSpell
-	C_Item.GetItemInfoInstant	=	GetItemInfoInstant
-	C_Item.GetItemClassInfo	=	GetItemClassInfo
-	C_Item.GetDetailedItemLevelInfo	=	GetDetailedItemLevelInfo
-	C_Item.GetItemInventorySlotInfo	=	GetItemInventorySlotInfo
-	C_Item.GetItemSubClassInfo	=	GetItemSubClassInfo
-	_G.C_AddOns.IsAddOnLoaded	=	_G.IsAddOnLoaded
+	C_Item.GetItemInfo	=	GetItemInfo;
+	C_Item.GetItemSpell	=	GetItemSpell;
+	C_Item.GetItemInfoInstant	=	GetItemInfoInstant;
+	C_Item.GetItemClassInfo	=	GetItemClassInfo;
+	C_Item.GetDetailedItemLevelInfo	=	GetDetailedItemLevelInfo;
+	C_Item.GetItemInventorySlotInfo	=	GetItemInventorySlotInfo;
+	C_Item.GetItemSubClassInfo	=	GetItemSubClassInfo;
+	C_CVar.GetCVarInfo = GetCVarInfo;
+	C_AddOns.EnableAddOn = EnableAddOn;
+	C_AddOns.DisableAddOn = DisableAddOn;
+	C_AddOns.LoadAddOn = LoadAddOn;
+	C_AddOns.IsAddOnLoaded = IsAddOnLoaded;
+	C_AddOns.EnableAllAddOns = EnableAllAddOns;
+	C_AddOns.DisableAllAddOns = DisableAllAddOns;
+	C_AddOns.GetAddOnInfo = GetAddOnInfo;
+	C_AddOns.GetAddOnDependencies = GetAddOnDependencies;
+	C_AddOns.GetAddOnOptionalDependencies = GetAddOnOptionalDependencies;
+	C_AddOns.GetNumAddOns = GetNumAddOns;
+	C_AddOns.SaveAddOns = SaveAddOns;
+	C_AddOns.ResetAddOns = ResetAddOns;
+	C_AddOns.ResetDisabledAddOns = ResetDisabledAddOns;
+	C_AddOns.IsAddonVersionCheckEnabled = IsAddonVersionCheckEnabled;
+	C_AddOns.SetAddonVersionCheck = SetAddonVersionCheck;
+	C_AddOns.IsAddOnLoadOnDemand = IsAddOnLoadOnDemand;
+	C_AddOns.GetAddOnEnableState = function(name, character) return GetAddOnEnableState(character, name); end
 end
 
 ------观察报错-------
