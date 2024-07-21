@@ -1,7 +1,8 @@
 ## Interface: 30403
-## Version: 2.2.11
 ## Title: tdBag2
+## IconTexture: Interface\Buttons\Button-Backpack-Up
 ## Author: Dencer
+## Version: 2.2.16
 ## OptionalDeps: tdPack2
 ## SavedVariables: TDDB_BAG2
 

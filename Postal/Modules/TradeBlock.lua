@@ -31,7 +31,7 @@ end
 
 function Postal_TradeBlock:MAIL_SHOW()
 	PetitionFrame:UnregisterEvent("PETITION_SHOW")
-	if IsAddOnLoaded("Lexan") then return end
+	if C_AddOns.IsAddOnLoaded("Lexan") then return end
 	if GetCVar("BlockTrades") == "0" then
 		if Postal.WOWBCClassic then
 			self:RegisterEvent("MAIL_CLOSED", "Reset")

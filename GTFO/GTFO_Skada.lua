@@ -1,26 +1,28 @@
---------------------------------------------------------------------------
+-------------------------------------------------------------------------
 -- GTFO_Skada.lua 
 --------------------------------------------------------------------------
 --[[
 GTFO & Skada Integration
-
+ 
 Change Log:
-	v4.6
-		- Added Skada Integration
-	v4.8.5
-		- Fixed bug
-	v4.8.6
-		- Fixed bug (better fix!)
-	v4.9.1
-		- Fixed bug
-	v4.9.2
-		- Fixed the root cause bug (which actually fixes all the previous "bugs")
-	v4.12.2
-		- Fixed bug
-	v5.6
-		- Integrated Skada fixes from bKader
+    v4.6
+        - Added Skada Integration
+    v4.8.5
+        - Fixed bug
+    v4.8.6
+        - Fixed bug (better fix!)
+    v4.9.1
+        - Fixed bug
+    v4.9.2
+        - Fixed the root cause bug (which actually fixes all the previous "bugs")
+    v4.12.2
+        - Fixed bug
+    v5.6
+        - Integrated Skada fixes from bKader
+    v5.8
+        - Integrated additional Skada fixes from bKader
 ]]--
-
+ 
 local format = string.format
 local GTFOLocal = _G.GTFOLocal
 local GTFO_GetAlertIcon = _G.GTFO_GetAlertIcon
@@ -268,8 +270,8 @@ local function Setup_Skada(Skada, L)
             end
         end
     end
-
-	GTFO_DebugPrint("Skada Classic integration loaded.");
+ 
+    GTFO_DebugPrint("Skada Classic integration loaded.");
     return true
 end
  
@@ -313,8 +315,8 @@ local function Setup_SkadaRev(Skada, L)
             alert = actor.alert[alertID]
         end
  
-        alert.count = alert.count + 1
-        alert.amount = alert.amount + data.amount
+        alert.alertCount = alert.alertCount + 1
+        alert.alertDamage = alert.alertDamage + data.alertDamage
  
         if not data.spellid then return end
  
@@ -325,8 +327,8 @@ local function Setup_SkadaRev(Skada, L)
             spell = alert.spell[data.spellid]
         end
  
-        spell.count = spell.count + 1
-        spell.amount = spell.amount + data.amount
+        spell.alertCount = spell.alertCount + 1
+        spell.alertDamage = spell.alertDamage + data.alertDamage
  
         if not spell.max or data.damage > spell.max then
             spell.max = data.damage
@@ -497,8 +499,8 @@ local function Setup_SkadaRev(Skada, L)
         Skada:DispatchSets(log_alert, data)
     end
  
-	GTFO_DebugPrint("Skada Revisited integration loaded.");
-    return true
+    GTFO_DebugPrint("Skada Revisited integration loaded.");
+    return true;
 end
  
 local function Setup_Locales()
@@ -524,4 +526,3 @@ function GTFO_Skada()
         return Setup_Skada(Skada, LibStub("AceLocale-3.0"):GetLocale("Skada"))
     end
 end
-

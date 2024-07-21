@@ -2,16 +2,23 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/29/2019, 12:49:28 AM
+--
+---@class ns
 local ns = select(2, ...)
 
----@class UI: AceAddon-3.0, LibClass-2.0
+---@class UI: AceModule, AceAddon, LibClass-2.0
+---@field TreeView UI.TreeView
+---@field TreeStatus UI.TreeStatus
+---@field RuleEditor UI.RuleEditor
+---@field RuleView UI.RuleView
+---@field ScrollFrame UI.ScrollFrame
 local UI = ns.Addon:NewModule('UI', 'LibClass-2.0')
 
 function UI:OnModuleCreated(module)
     self[module:GetName()] = module
 
     module.AfterSetup = setmetatable({}, {
-        __newindex = function(t, k, v)
+        __newindex = function(_, k, v)
             module[k] = function(...)
                 if module.OnSetup then
                     return
@@ -47,7 +54,7 @@ local function CreateShower(module)
     shower.module = module
 end
 
----@class UIPrototype
+---@class UI.Prototype
 ---@field Frame Frame
 local Prototype = {}
 

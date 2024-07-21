@@ -6,15 +6,14 @@
 ---- LUA
 local ipairs, pairs = ipairs, pairs
 local max = math.max
-local select = select
-local tinsert, tremove = table.insert, table.remove
+local tinsert = table.insert
 local wipe = table.wipe or wipe
-local ripairs = ipairs_reverse or ripairs
+local ripairs = ipairs_reverse
 
 ---- WOW
 local CreateFrame = CreateFrame
-local CopyTable = CopyTable
-local GetItemFamily = GetItemFamily
+
+local KEYRING_CONTAINER = Enum.BagIndex.Keyring
 
 ---@type ns
 local ns = select(2, ...)
@@ -22,11 +21,9 @@ local Addon = ns.Addon
 local Cache = ns.Cache
 local TRADE_BAG_ORDER = ns.TRADE_BAG_ORDER
 
-local KEYRING_CONTAINER = KEYRING_CONTAINER
-
 ---@class UI.Container: EventsMixin, Object, Frame
 ---@field ContentParent Frame
-local Container = ns.Addon:NewClass('UI.Container', 'Frame')
+local Container = Addon:NewClass('UI.Container', 'Frame')
 
 Container.GetRealWidth = Container.GetWidth
 Container.GetRealHeight = Container.GetHeight
@@ -55,10 +52,7 @@ function Container:OnShow()
         self:RegisterEvent('BAG_UPDATE_COOLDOWN')
         self:RegisterEvent('BAG_NEW_ITEMS_UPDATED', 'UpdateAllBorders')
         self:RegisterEvent('BAG_CLOSED', 'UpdateBagOrder')
-
-        -- @build>3@
         self:RegisterEvent('QUEST_LOG_UPDATE', 'UpdateAllBorders')
-        -- @end-build>3@
 
         if self.meta:IsBank() then
             self:RegisterEvent('BANK_CLOSED', 'OnShow')
@@ -191,8 +185,8 @@ function Container:UpdateBagOrder()
 end
 
 function Container:FreeAll()
-    for bag, buttons in pairs(self.itemButtons) do
-        for slot, itemButton in pairs(buttons) do
+    for _, buttons in pairs(self.itemButtons) do
+        for _, itemButton in pairs(buttons) do
             itemButton:Free()
         end
         wipe(buttons)
@@ -203,8 +197,8 @@ function Container:ForAll(method, force)
     if not force and self:IsPendingLayout() then
         return
     end
-    for bag, buttons in pairs(self.itemButtons) do
-        for slot, itemButton in pairs(buttons) do
+    for _, buttons in pairs(self.itemButtons) do
+        for _, itemButton in pairs(buttons) do
             if itemButton:IsShown() then
                 method(itemButton)
             end
@@ -237,8 +231,8 @@ function Container:ForItem(itemId, method)
     if self:IsPendingLayout() then
         return
     end
-    for bag, buttons in pairs(self.itemButtons) do
-        for slot, itemButton in pairs(buttons) do
+    for _, buttons in pairs(self.itemButtons) do
+        for _, itemButton in pairs(buttons) do
             if itemButton:IsShown() and itemButton.info.id == itemId then
                 method(itemButton)
             end
@@ -393,9 +387,3 @@ end
 function Container:NumSlots(bag)
     return Cache:GetBagInfo(self.meta.owner, bag).count or 0
 end
-
---[[@debug@
-function Container:Threshold()
-    error('Not implemented')
-end
---@end-debug@]]

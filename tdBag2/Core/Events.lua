@@ -5,31 +5,27 @@
 --
 ---- LUA
 local ipairs = ipairs
-local select = select
-local unpack = table.unpack or unpack
+local unpack = unpack
 
----@type ns
-local ns = select(2, ...)
-
-local C = ns.C
-
----- WOW
-local GetContainerNumSlots = C.Container.GetContainerNumSlots
+local C = LibStub('C_Everywhere')
 
 ---- UI
 local BankFrame = BankFrame
 
 ---- G
 local BANK_CONTAINER = BANK_CONTAINER
-local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local NUM_BAG_SLOTS = NUM_TOTAL_EQUIPPED_BAG_SLOTS or Constants.InventoryConstants.NumBagSlots
 local NUM_BANKGENERIC_SLOTS = NUM_BANKGENERIC_SLOTS
+
+---@type ns
+local ns = select(2, ...)
 
 local Addon = ns.Addon
 local BAG_ID = ns.BAG_ID
 
 local METHODS = {'RegisterEvent', 'UnregisterEvent', 'UnregisterAllEvents', 'RegisterFrameEvent'}
 
----@class Events: AceAddon-3.0, AceEvent-3.0
+---@class Events: AceModule, AceEvent-3.0, AceHook-3.0
 local Events = ns.Addon:NewModule('Events', 'AceEvent-3.0', 'AceHook-3.0')
 Events.handler = {}
 Events.events = LibStub('CallbackHandler-1.0'):New(Events.handler, unpack(METHODS, 1, 3))
@@ -61,10 +57,15 @@ function Events:OnEnable()
     self:RegisterEvent('BAG_UPDATE_COOLDOWN', 'Fire')
     self:RegisterEvent('BAG_UPDATE_DELAYED', 'Fire')
     self:RegisterEvent('CURSOR_CHANGED', 'Fire')
-    -- @build>3@
     self:RegisterEvent('QUEST_LOG_UPDATE', 'Fire')
+    -- @non-retail@
+    -- @build>3@
     self:SecureHook('BackpackTokenFrame_Update')
     -- @end-build>3@
+    -- @end-non-retail@
+    --[[@retail@
+    EventRegistry:RegisterCallback('TokenFrame.OnTokenWatchChanged', self.BackpackTokenFrame_Update, self)
+    --@end-retail@]]
     self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Fire')
     self:RegisterEvent('PLAYER_MONEY', 'Fire')
     self:RegisterEvent('PLAYER_TRADE_MONEY', 'Fire')
@@ -90,7 +91,7 @@ end
 
 function Events:UpdateBagSize(bag)
     local old = self.bagSizes[bag]
-    local new = GetContainerNumSlots(bag) or 0
+    local new = C.Container.GetContainerNumSlots(bag) or 0
 
     if old ~= new then
         self.bagSizes[bag] = new
@@ -140,7 +141,7 @@ function Events:ITEM_LOCK_CHANGED(_, bag, slot)
             self:Fire('ITEM_LOCK_CHANGED', bag, slot)
         end
     else
-        local bag = ns.SlotToBag(bag)
+        bag = ns.SlotToBag(bag)
         if bag then
             self:Fire('BAG_LOCK_CHANGED', bag)
         end

@@ -2,26 +2,22 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/31/2019, 11:10:04 PM
-
----@type ns
-local ns = select(2, ...)
-
+--
 ---- LUA
 local wipe = table.wipe or wipe
 local type, ipairs = type, ipairs
 
+---@type ns
+local ns = select(2, ...)
 ---- NS
 local Search = ns.Search
 
----- WOW
-local GetItemInfo = GetItemInfo
-
 ---- LOCAL
-local LE_ITEM_QUALITY_POOR = LE_ITEM_QUALITY_POOR
 local CONJURED_ITEM_MATCHS = 'tip:' .. ITEM_CONJURED
 
 local LibJunk = LibStub('LibJunk-1.0')
 
+---@class Addon.JunkOrder : Addon.Order
 local JunkOrder = ns.Addon:NewClass('JunkOrder', ns.Order)
 
 function JunkOrder:Constructor()

@@ -3,6 +3,8 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 11/8/2019, 2:20:54 PM
 --
+local pairs = pairs
+
 ---@type ns
 local ns = select(2, ...)
 
@@ -11,11 +13,12 @@ local Cache = ns.Cache
 local BAG_ID = ns.BAG_ID
 
 ---@class Classes
----@field Frame UI.Frame
----@field Container UI.Container
----@field Item UI.ItemBase
+---@field Frame? UI.Frame
+---@field Container? UI.Container
+---@field Item? UI.ItemBase
 
 ---@class FrameMeta: Object
+---@field class Classes
 local FrameMeta = Addon:NewClass('FrameMeta')
 
 function FrameMeta:Constructor(bagId)
@@ -23,7 +26,6 @@ function FrameMeta:Constructor(bagId)
     self.bags = ns.GetBags(bagId)
     self.title = ns.BAG_TITLES[bagId]
     self.icon = ns.BAG_ICONS[bagId]
-    ---@type Classes
     self.class = {}
     for k, v in pairs(ns.BAG_CLASSES[bagId]) do
         self.class[k] = ns.UI[v]

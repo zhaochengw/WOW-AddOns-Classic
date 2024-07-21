@@ -2,7 +2,6 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/2/2019, 7:35:50 PM
-
 local ipairs, format = ipairs, string.format
 
 local IsControlKeyDown = IsControlKeyDown
@@ -13,9 +12,11 @@ local PlaySound = PlaySound
 local GameTooltip = GameTooltip
 local SOUNDKIT = SOUNDKIT
 
----@type ns
+---@class ns
 local ns = select(2, ...)
 local L = ns.L
+
+---@class Addon
 local Addon = ns.Addon
 local BAG_TYPE = ns.BAG_TYPE
 local CLICK_LIST = ns.CLICK_LIST
@@ -26,7 +27,7 @@ local function OnClick(self, click)
 end
 
 local function OnEnter(self)
-    GameTooltip:SetOwner(self, 'BOTTOM_RIGHT')
+    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
     GameTooltip:AddLine('tdPack2')
 
     for _, v in ipairs(CLICK_LIST) do

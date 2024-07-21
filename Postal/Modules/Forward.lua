@@ -51,7 +51,7 @@ local function ContainsStackableItem(messageindex)
 	for itemIndex = 1, ATTACHMENTS_MAX_SEND do
 		itemID = select(2, GetInboxItem(messageindex, itemIndex))
 		if itemID ~= nil then
-			itemStackCount = select(8,GetItemInfo(itemID))
+			itemStackCount = select(8,C_Item.GetItemInfo(itemID))
 			if itemStackCount > 1 then return true end
 		end
 	end

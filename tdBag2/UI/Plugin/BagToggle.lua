@@ -4,12 +4,10 @@
 -- @Date   : 10/20/2019, 2:30:12 AM
 --
 ---- LUA
-local select = select
 local tinsert = table.insert
 local format = string.format
 
 ---- WOW
-local PlaySound = PlaySound
 local IsAltKeyDown = IsAltKeyDown
 local IsControlKeyDown = IsControlKeyDown
 

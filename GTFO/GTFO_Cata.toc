@@ -2,7 +2,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 5.7.1
+## Version: 5.9.2
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 ## X-WoWI-ID: 17996 
@@ -38,6 +38,7 @@ GTFO_Spells_LGN.lua
 GTFO_Spells_BFA.lua
 GTFO_Spells_SL.lua
 GTFO_Spells_DF.lua
+GTFO_Spells_TWW.lua
 GTFO_Spells_Special.lua
 GTFO_Fail_GenericRetail.lua
 GTFO_Fail_GenericClassic.lua
@@ -51,6 +52,7 @@ GTFO_Fail_LGN.lua
 GTFO_Fail_BFA.lua
 GTFO_Fail_SL.lua
 GTFO_Fail_DF.lua
+GTFO_Fail_TWW.lua
 GTFO_FF_BC.lua
 GTFO_FF_LK.lua
 GTFO_FF_CAT.lua
@@ -59,5 +61,6 @@ GTFO_FF_LGN.lua
 GTFO_FF_BFA.lua
 GTFO_FF_SL.lua
 GTFO_FF_DF.lua
+GTFO_FF_TWW.lua
 GTFO_Mobs.lua
 GTFO.xml

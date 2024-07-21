@@ -3,52 +3,48 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/30/2019, 11:46:11 PM
 --
+local tinsert = table.insert
+
 ---@class ns
 ---@field UI UI
----@field Base Base
----@field Item _Item
----@field Bag Bag
----@field Slot Slot
----@field Group Group
----@field Pack Pack
----@field Rule Rule
----@field Order Order
----@field Task Task
----@field CachableOrder CachableOrder
----@field CustomOrder CustomOrder
----@field ItemInfoCache ItemInfoCache
----@field Saving Saving
----@field Stacking Stacking
----@field Sorting Sorting
----@field Search Search
 ---@field Addon Addon
+---@field Base Addon.Base
+---@field Item Addon.Item
+---@field Bag Addon.Bag
+---@field Slot Addon.Slot
+---@field Group Addon.Group
+---@field Pack Addon.Pack
+---@field Rule Addon.Rule
+---@field Order Addon.Order
+---@field Task Addon.Task
+---@field CachableOrder Addon.CachableOrder
+---@field CustomOrder Addon.CustomOrder
+---@field ItemInfoCache Addon.ItemInfoCache
+---@field Saving Addon.Saving
+---@field Stacking Addon.Stacking
+---@field Sorting Addon.Sorting
+---@field Search Addon.Search
+---@field ItemInfo Addon.ItemInfo
+---@field JunkOrder Addon.JunkOrder
 local ns = select(2, ...)
 
 local C = LibStub('C_Everywhere')
+ns.C = C
 
 ---- LUA
-local select, type, assert, ipairs = select, type, assert, ipairs
-local tostring, format, strrep = tostring, string.format, string.rep
-local tonumber, band = tonumber, bit.band
+local select, type, ipairs = select, type, ipairs
+local format = string.format
+local tonumber = tonumber
 
 ---- WOW
-local GetContainerItemInfo = C.Container.GetContainerItemInfo
-local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
-local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots
-local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
-local ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
-local PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
 local GetCursorPosition = GetCursorPosition
-local GetItemFamily = GetItemFamily
-local GetItemIcon = GetItemIcon
-local GetItemInfoInstant = GetItemInfoInstant
-local GetItemQualityColor = GetItemQualityColor
+
+local KEYRING_CONTAINER = Enum.BagIndex.Keyring
 
 ---- UI
 local UIParent = UIParent
 
-ns.VERSION = tonumber((GetAddOnMetadata('tdPack2', 'Version'):gsub('(%d+)%.?', function(x)
+ns.VERSION = tonumber((C.AddOns.GetAddOnMetadata('tdPack2', 'Version'):gsub('(%d+)%.?', function(x)
     return format('%02d', tonumber(x))
 end))) or 0
 
@@ -83,22 +79,6 @@ ns.SORT_TYPE = {
     SAVING = 2, --
 }
 
-local function riter(t, i)
-    i = i - 1
-    if i > 0 then
-        return i, t[i]
-    end
-end
-
----@generic T
----@param t T[]
----@return fun(): number, T
-function ns.ripairs(t)
-    assert(type(t) == 'table')
-
-    return riter, t, #t + 1
-end
-
 function ns.memorize(func)
     local cache = {}
     return function(arg1, ...)
@@ -112,12 +92,15 @@ function ns.memorize(func)
 end
 
 local BAGS = { --
-    [ns.BAG_TYPE.BAG] = {BACKPACK_CONTAINER},
-    [ns.BAG_TYPE.BANK] = {BANK_CONTAINER},
+    [ns.BAG_TYPE.BAG] = {Enum.BagIndex.Backpack}, --
+    [ns.BAG_TYPE.BANK] = {Enum.BagIndex.Bank}, --
 }
 local BAG_SETS = {}
 
 do
+    local NUM_BAG_SLOTS = Constants.InventoryConstants.NumBagSlots
+    local NUM_BANKBAGSLOTS = Constants.InventoryConstants.NumBankBagSlots
+
     for i = 1, NUM_BAG_SLOTS do
         tinsert(BAGS[ns.BAG_TYPE.BAG], i)
     end
@@ -154,10 +137,10 @@ function ns.GetItemFamily(itemId)
     if type(itemId) == 'string' then
         return 0
     end
-    if select(4, GetItemInfoInstant(itemId)) == 'INVTYPE_BAG' then
+    if select(4, C.Item.GetItemInfoInstant(itemId)) == 'INVTYPE_BAG' then
         return 0
     end
-    local itemFamily = GetItemFamily(itemId)
+    local itemFamily = C.Item.GetItemFamily(itemId)
     return itemFamily
 end
 
@@ -175,10 +158,10 @@ function ns.GetBagFamily(bag)
 
     -- 3.4 GetContainerNumFreeSlots 接口有bug，专业包可能取到0
     if bag > 0 then
-        local invId = ContainerIDToInventoryID(bag)
+        local invId = C.Container.ContainerIDToInventoryID(bag)
         local itemId = GetInventoryItemID('player', invId)
         if itemId then
-            local itemFamily = GetItemFamily(itemId)
+            local itemFamily = C.Item.GetItemFamily(itemId)
             if itemFamily then
                 return itemFamily
             end
@@ -188,11 +171,11 @@ function ns.GetBagFamily(bag)
         end
     end
 
-    return select(2, GetContainerNumFreeSlots(bag))
+    return select(2, C.Container.GetContainerNumFreeSlots(bag))
 end
 
 function ns.GetBagNumSlots(bag)
-    return GetContainerNumSlots(bag)
+    return C.Container.GetContainerNumSlots(bag)
 end
 
 function ns.GetItemId(itemLink)
@@ -210,11 +193,11 @@ function ns.GetItemId(itemLink)
 end
 
 function ns.GetBagSlotLink(bag, slot)
-    return GetContainerItemLink(bag, slot)
+    return C.Container.GetContainerItemLink(bag, slot)
 end
 
 function ns.GetBagSlotId(bag, slot)
-    local itemLink = GetContainerItemLink(bag, slot)
+    local itemLink = C.Container.GetContainerItemLink(bag, slot)
     if not itemLink then
         return
     end
@@ -222,11 +205,11 @@ function ns.GetBagSlotId(bag, slot)
 end
 
 function ns.IsBagSlotEmpty(bag, slot)
-    return not GetContainerItemID(bag, slot)
+    return not C.Container.GetContainerItemID(bag, slot)
 end
 
 function ns.IsBagSlotFull(bag, slot)
-    local itemId = GetContainerItemID(bag, slot)
+    local itemId = C.Container.GetContainerItemID(bag, slot)
     if not itemId then
         return false
     end
@@ -237,7 +220,7 @@ function ns.IsBagSlotFull(bag, slot)
 end
 
 function ns.GetBagSlotCount(bag, slot)
-    local info = GetContainerItemInfo(bag, slot)
+    local info = C.Container.GetContainerItemInfo(bag, slot)
     return info and info.stackCount
 end
 
@@ -246,26 +229,25 @@ function ns.GetBagSlotFamily(bag, slot)
 end
 
 function ns.IsBagSlotLocked(bag, slot)
-    local info = GetContainerItemInfo(bag, slot)
+    local info = C.Container.GetContainerItemInfo(bag, slot)
     return info and info.isLocked
 end
 
 function ns.PickupBagSlot(bag, slot)
-    return PickupContainerItem(bag, slot)
+    return C.Container.PickupContainerItem(bag, slot)
 end
 
 --[[@build<2@
 function ns.IsFamilyContains(bagFamily, itemFamily)
     return bagFamily == itemFamily
 end
-
 --@end-build<2@]]
 
 -- @build>2@
+local band = bit.band
 function ns.IsFamilyContains(bagFamily, itemFamily)
     return band(bagFamily, itemFamily) > 0
 end
-
 -- @end-build>2@
 
 function ns.GetClickToken(button, control, shift, alt)
@@ -301,11 +283,11 @@ function ns.GetRuleInfo(item)
     local t = type(item)
     if t == 'number' then
         local name, color
-        local icon = GetItemIcon(item)
+        local icon = C.Item.GetItemIconByID(item)
         local info = ns.ItemInfoCache:Get(item)
         if info:IsReady() then
             name = info.itemName
-            color = select(4, GetItemQualityColor(info.itemQuality))
+            color = select(4, C.Item.GetItemQualityColor(info.itemQuality))
         else
             name = RETRIEVING_ITEM_INFO
             color = RED_FONT_COLOR:GenerateHexColor()
@@ -339,21 +321,29 @@ local function Initialize(_, level, menuList)
     end
 end
 
+local menuFrame
 local function CreateGlobalMenuFrame()
-    local menuFrame = CreateFrame('Frame', 'tdGlobalMenuFrame', UIParent, 'UIDropDownMenuTemplate')
+    menuFrame = CreateFrame('Frame', 'tdGlobalMenuFrame', UIParent, 'UIDropDownMenuTemplate')
     menuFrame.initialize = Initialize
     menuFrame.displayMode = 'MENU'
     return menuFrame
 end
 
 function ns.ToggleMenu(owner, menuList)
-    local menuFrame = tdGlobalMenuFrame or CreateGlobalMenuFrame()
+    local frame = menuFrame or CreateGlobalMenuFrame()
 
-    if DropDownList1:IsShown() and UIDROPDOWNMENU_OPEN_MENU == menuFrame and menuFrame.LastOwner == owner then
+    if DropDownList1:IsShown() and UIDROPDOWNMENU_OPEN_MENU == frame and frame.LastOwner == owner then
         CloseDropDownMenus()
     else
-        menuFrame.LastOwner = owner
+        frame.LastOwner = owner
         CloseDropDownMenus()
-        ToggleDropDownMenu(1, nil, menuFrame, owner, 0, 0, menuList)
+        ToggleDropDownMenu(1, nil, frame, owner, 0, 0, menuList)
+    end
+end
+
+function ns.override(o, m, f)
+    local orig = assert(o[m])
+    o[m] = function(...)
+        return f(orig, ...)
     end
 end

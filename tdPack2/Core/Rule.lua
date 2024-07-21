@@ -3,22 +3,20 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/31/2019, 12:00:28 AM
 --
+---- LUA
+local setmetatable = setmetatable
+local format = string.format
+local tconcat, sort = table.concat, table.sort
+
 ---@type ns
 local ns = select(2, ...)
 
 ---- NS
 local Addon = ns.Addon
 local Item = ns.Item
-
----- LUA
-local pairs, setmetatable = pairs, setmetatable
-local format = string.format
-local tconcat, sort = table.concat, table.sort or sort
-
----- ENUM
 local SORT_TYPE = ns.SORT_TYPE
 
----@class Rule
+---@class Addon.Rule: AceModule, AceEvent-3.0
 local Rule = Addon:NewModule('Rule', 'AceEvent-3.0')
 
 function Rule:OnInitialize()

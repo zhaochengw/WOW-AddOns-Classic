@@ -2,15 +2,13 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/27/2019, 12:15:26 AM
+--
 ---@type ns
 local ns = select(2, ...)
 
----- WOW
-local GetItemInfo = GetItemInfo
-local GetItemSpell = GetItemSpell
-local IsEquippableItem = IsEquippableItem
+local C = ns.C
 
----@class ItemInfo
+---@class Addon.ItemInfo: Object
 local ItemInfo = ns.Addon:NewClass('ItemInfo')
 
 function ItemInfo:Constructor(itemId)
@@ -20,8 +18,7 @@ end
 
 function ItemInfo:Build()
     local itemName, itemLink, itemQuality, itemLevel, _, itemType, itemSubType, itemStackCount, itemEquipLoc,
-          itemTexture, sellPrice, itemTypeId, itemSubTypeId, bindType, expacId, setId, isCraftingReagent = GetItemInfo(
-                                                                                                               self.itemId)
+          itemTexture, _, itemTypeId, itemSubTypeId, _, _, setId = C.Item.GetItemInfo(self.itemId)
 
     if itemName then
         self.notReady = nil
@@ -41,7 +38,7 @@ function ItemInfo:Build()
         self.itemTag = ns.ITEM_TAG_SETS[self.itemId] or 'UNKNOWN'
         --@end-build<2@]]
         self.itemFamily = ns.GetItemFamily(self.itemId) or 0
-        self.itemEquippable = IsEquippableItem(self.itemId) or false
+        self.itemEquippable = C.Item.IsEquippableItem(self.itemId) or false
     else
         self.notReady = true
     end

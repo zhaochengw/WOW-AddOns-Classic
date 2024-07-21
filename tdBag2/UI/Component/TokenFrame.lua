@@ -2,17 +2,22 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 11/29/2019, 11:10:36 AM
-local ipairs, select = ipairs, select
+--
+local ipairs = ipairs
 local tinsert, tremove = table.insert, table.remove
+local format = string.format
+local select = select
 
-local GetItemIcon = GetItemIcon
-local GetItemInfo = GetItemInfo
-local GetItemQualityColor = GetItemQualityColor
+local C = LibStub('C_Everywhere')
+
 local GetCursorInfo = GetCursorInfo
 local ClearCursor = ClearCursor
 local CloseDropDownMenus = CloseDropDownMenus
 
-local GameTooltip = GameTooltip
+local DELETE = DELETE
+-- @build>3@
+local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS or 3
+-- @end-build>3@
 
 ---@type ns
 local ns = select(2, ...)
@@ -105,12 +110,12 @@ function TokenFrame:Update()
     -- @build>3@
     if self.meta:IsSelf() then
         for i = 1, MAX_WATCHED_TOKENS do
-            local name, count, icon, currencyId = GetBackpackCurrencyInfo(i)
-            if name then
+            local info = C.CurrencyInfo.GetBackpackCurrencyInfo(i)
+            if info then
                 index = index + 1
 
                 local button = self:GetButton(index)
-                button:SetCurrency(self.meta.owner, currencyId, icon, count)
+                button:SetCurrency(self.meta.owner, info.currencyTypesID, info.iconFileID, info.quantity)
                 button:Show()
 
                 width = width + button:GetWidth()
@@ -147,13 +152,13 @@ end
 function TokenFrame:CreateMenu()
     local menu = {}
     for i, watch in ipairs(self.meta.character.watches) do
-        local name, _, quality = GetItemInfo(watch.itemId)
-        local icon = GetItemIcon(watch.itemId)
+        local name, _, quality = C.Item.GetItemInfo(watch.itemId)
+        local icon = C.Item.GetItemIconByID(watch.itemId)
 
         menu[i] = {
             text = format('|T%s:14|t', icon) .. (name or ('item:' .. watch.itemId)),
             notCheckable = true,
-            colorCode = quality and '|c' .. select(4, GetItemQualityColor(quality)) or nil,
+            colorCode = quality and '|c' .. select(4, C.Item.GetItemQualityColor(quality)) or nil,
             keepShownOnClick = true,
             hasArrow = true,
             menuList = {

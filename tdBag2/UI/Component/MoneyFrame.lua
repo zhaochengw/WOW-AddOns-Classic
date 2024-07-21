@@ -5,13 +5,14 @@
 --
 ---- LUA
 local _G = _G
-local select = select
 local ipairs = ipairs
 
 ---- WOW
+local CreateFrame = CreateFrame
 local GetMoneyString = GetMoneyString
 local MoneyFrame_Update = MoneyFrame_Update
 local MoneyInputFrame_OpenPopup = MoneyInputFrame_OpenPopup
+local MoneyFrame_UpdateMoney = MoneyFrame_UpdateMoney
 
 ---- L
 local WORLD_QUEST_REWARD_FILTERS_GOLD = WORLD_QUEST_REWARD_FILTERS_GOLD
@@ -80,8 +81,8 @@ function MoneyFrame:OnEnter()
     GameTooltip:AddLine(' ')
 
     local total = 0
-    for _, name in ipairs(Cache:GetOwners()) do
-        local owner = Cache:GetOwnerInfo(name)
+    for _, o in ipairs(Cache:GetOwners()) do
+        local owner = Cache:GetOwnerInfo(o)
         if owner.money then
             local name = ns.GetOwnerColoredName(owner)
             local coins = GetMoneyString(owner.money, true)

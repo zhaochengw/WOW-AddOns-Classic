@@ -2,13 +2,14 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/30/2019, 11:54:09 PM
+--
 ---@type ns
 local ns = select(2, ...)
 
----@class _Item: Base
+---@class Addon.Item: Addon.Base
 local Item = ns.Addon:NewClass('Item', ns.Base)
 
-function Item:Constructor(parent, bag, slot)
+function Item:Constructor(_, bag, slot)
     local itemId = ns.GetBagSlotId(bag, slot)
     self.itemCount = ns.GetBagSlotCount(bag, slot) or 1
     self.itemLink = ns.GetBagSlotLink(bag, slot) or ''

@@ -1,8 +1,9 @@
 ------------------------------------------------------------------------
-r619 | Zimzarina | 2024-05-07 15:17:42 +0000 (Tue, 07 May 2024) | 1 line
+r628 | Zimzarina | 2024-07-12 18:46:56 +0000 (Fri, 12 Jul 2024) | 1 line
 Changed paths:
    M /trunk/Postal.toc
+   M /trunk/Postal_Vanilla.toc
 
-TOC Update Retail.
+Toc update for classic and TWW.
 ------------------------------------------------------------------------
 

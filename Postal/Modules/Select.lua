@@ -374,8 +374,8 @@ function Postal_Select:ProcessNext()
 				local name, itemID, itemTexture, count, quality, canUse = GetInboxItem(mailIndex, attachIndex)
 				local link = GetInboxItemLink(mailIndex, attachIndex)
 				itemID = strmatch(link, "item:(%d+)")
-				local stackSize = select(8, GetItemInfo(link))
-				if itemID and stackSize and GetItemCount(itemID) > 0 then
+				local stackSize = select(8, C_Item.GetItemInfo(link))
+				if itemID and stackSize and C_Item.GetItemCount(itemID) > 0 then
 					for bag = 0, NUM_BAG_SLOTS do
 						local ContainerNumSlots
 						if Postal.WOWBCClassic then

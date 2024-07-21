@@ -6,7 +6,8 @@
 ---@type ns
 local ns = select(2, ...)
 
-local LE_ITEM_QUALITY_COMMON = LE_ITEM_QUALITY_COMMON or Enum.ItemQuality.Common or Enum.ItemQuality.Standard
+local LE_ITEM_QUALITY_COMMON = LE_ITEM_QUALITY_COMMON
+local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
 
 local ItemBase = ns.UI.ItemBase
 

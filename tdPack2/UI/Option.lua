@@ -3,14 +3,19 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/2/2019, 12:35:41 PM
 --
----@type ns
+---@type string, ns
 local ADDON, ns = ...
+
+---@class Addon
 local Addon = ns.Addon
+
+local C = ns.C
 local L = ns.L
 local UI = ns.UI
 
-local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
-local AceConfigDialog = LibStub('AceConfigDialog-3.0')
+local format = string.format
+
+local tdOptions = LibStub('tdOptions')
 
 function Addon:InitOptionFrame()
     local index = 0
@@ -21,10 +26,6 @@ function Addon:InitOptionFrame()
 
     local function inline(name, args)
         return {type = 'group', name = name, inline = true, order = orderGen(), args = args}
-    end
-
-    local function group(name, args)
-        return {type = 'group', name = name, order = orderGen(), args = args}
     end
 
     local function toggle(text, disabled)
@@ -133,6 +134,10 @@ function Addon:InitOptionFrame()
         return node
     end
 
+    --[=[@maybe@
+    maybe {L['SORTING_NAME'], L['SORTING_DESC'], L['SAVING_NAME'], L['SAVING_DESC']}
+    --@end-maybe@]=]
+
     local function ruleView(key)
         local ruleType = ns.SORT_TYPE[key]
         assert(ruleType)
@@ -187,7 +192,7 @@ function Addon:InitOptionFrame()
 
     local options = {
         type = 'group',
-        name = format('%s - |cff00ff00%s|r', ADDON, GetAddOnMetadata(ADDON, 'Version')),
+        name = format('%s - |cff00ff00%s|r', ADDON, C.AddOns.GetAddOnMetadata(ADDON, 'Version')),
 
         get = function(item)
             return self:GetOption(item[#item])
@@ -197,7 +202,6 @@ function Addon:InitOptionFrame()
         end,
 
         args = {
-            title = desc(L['tdPack2 is a bag sorting addon.']),
             titleGeneral = treeTitle(GENERAL),
             general = treeItem(GENERAL, {
                 default = inline(L.SORT, {
@@ -241,20 +245,13 @@ function Addon:InitOptionFrame()
         },
     }
 
-    AceConfigRegistry:RegisterOptionsTable(ADDON, options)
-    AceConfigDialog:AddToBlizOptions(ADDON, ADDON)
-    AceConfigDialog:SetDefaultSize(ADDON, 700, 570)
+    tdOptions:Register(ADDON, options)
 end
 
 function Addon:OpenOption(toRule)
-    AceConfigDialog:Open(ADDON)
     if toRule then
-        AceConfigDialog:SelectGroup(ADDON, 'sorting')
+        tdOptions:Open(ADDON, 'sorting')
     else
-        AceConfigDialog:SelectGroup(ADDON, 'general')
+        tdOptions:Open(ADDON, 'general')
     end
-    pcall(function()
-        AceConfigDialog.OpenFrames[ADDON]:EnableResize(false)
-        AceConfigDialog.OpenFrames[ADDON].frame:SetFrameStrata('DIALOG')
-    end)
 end

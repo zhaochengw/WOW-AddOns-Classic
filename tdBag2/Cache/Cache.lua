@@ -5,6 +5,7 @@
 --
 ---@class ns
 local ns = select(2, ...)
+
 local Forever = ns.Forever
 local Current = ns.Current
 local GlobalSearch = ns.GlobalSearch

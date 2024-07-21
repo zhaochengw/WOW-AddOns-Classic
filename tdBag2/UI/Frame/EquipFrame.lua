@@ -3,6 +3,10 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 1/13/2022, 1:45:58 PM
 --
+local ipairs, assert = ipairs, assert
+
+local CreateFrame = CreateFrame
+
 ---@type ns
 local ns = select(2, ...)
 

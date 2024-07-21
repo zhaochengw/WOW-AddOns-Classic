@@ -2,7 +2,8 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/10/2019, 11:02:51 AM
-
+--
+---- LUA
 local tinsert, wipe = table.insert, table.wipe or wipe
 local ipairs = ipairs
 
@@ -11,8 +12,8 @@ local ns = select(2, ...)
 
 local Pack = ns.Pack
 
----@class Sorting: Task
----@field private bags Bag[]
+---@class Addon.Sorting: Addon.Task
+---@field private bags Addon.Bag[]
 local Sorting = ns.Addon:NewClass('Sorting', ns.Task)
 
 function Sorting:Constructor()

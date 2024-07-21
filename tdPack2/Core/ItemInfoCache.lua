@@ -2,7 +2,8 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/27/2019, 6:24:10 PM
-
+--
+---- LUA
 local rawget, setmetatable = rawget, setmetatable
 
 ---@type ns
@@ -11,8 +12,8 @@ local ns = select(2, ...)
 ---- NS
 local ItemInfo = ns.ItemInfo
 
----@class ItemInfoCache
----@field cache ItemInfo
+---@class Addon.ItemInfoCache: AceModule, AceEvent-3.0
+---@field cache Addon.ItemInfo
 local ItemInfoCache = ns.Addon:NewModule('ItemInfoCache', 'AceEvent-3.0')
 
 function ItemInfoCache:OnInitialize()

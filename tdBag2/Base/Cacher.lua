@@ -6,11 +6,12 @@
 local select = select
 local wipe = table.wipe or wipe
 local setmetatable = setmetatable
+local type = type
 
 ---@type ns
 local ns = select(2, ...)
 
----@class Cacher: Object
+---@class Addon.Cacher: Object
 local Cacher = ns.Addon:NewClass('Cacher')
 
 local null = {}

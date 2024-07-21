@@ -3,30 +3,19 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/31/2019, 1:07:26 PM
 --
----@class ns
-local ns = select(2, ...)
-
-local C = ns.C
+local C = LibStub('C_Everywhere')
 
 ---- LUA
 local select, pairs, ipairs = select, pairs, ipairs
-local tinsert = table.insert
-local sort = table.sort or sort
-local tonumber = tonumber
-local strsplit = strsplit
+local tinsert, sort = table.insert, table.sort or sort
+local tonumber, floor = tonumber, math.floor
+local strsplit, format = strsplit, string.format
 local time = time
-local floor = math.floor
 local tDeleteItem = tDeleteItem
 
 ---- WOW
-local GetContainerItemInfo = C.Container.GetContainerItemInfo
-local GetContainerNumFreeSlots = C.Container.GetContainerNumFreeSlots
-local GetContainerNumSlots = C.Container.GetContainerNumSlots
-local GetInventoryItemCount = C.Container.GetInventoryItemCount
-local GetInventoryItemLink = C.Container.GetInventoryItemLink
-local GetContainerItemLink = C.Container.GetContainerItemLink
-local GetItemIcon = GetItemIcon
-local GetItemInfo = GetItemInfo
+local GetInventoryItemCount = GetInventoryItemCount
+local GetInventoryItemLink = GetInventoryItemLink
 local GetMoney = GetMoney
 local UnitClassBase = UnitClassBase
 local UnitFactionGroup = UnitFactionGroup
@@ -36,11 +25,18 @@ local GetInboxNumItems = GetInboxNumItems
 local GetInboxHeaderInfo = GetInboxHeaderInfo
 local GetInboxItemLink = GetInboxItemLink
 local GetInboxItem = GetInboxItem
+local GetNumGuildBankTabs = GetNumGuildBankTabs
+local GetGuildBankItemLink = GetGuildBankItemLink
+local GetGuildBankItemInfo = GetGuildBankItemInfo
 
 ---- G
-local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local NUM_BAG_SLOTS = NUM_TOTAL_EQUIPPED_BAG_SLOTS or Constants.InventoryConstants.NumBagSlots
+local INVSLOT_TABARD = INVSLOT_TABARD
 local INVSLOT_LAST_EQUIPPED = INVSLOT_LAST_EQUIPPED
 local ATTACHMENTS_MAX_RECEIVE = ATTACHMENTS_MAX_RECEIVE
+
+---@class ns
+local ns = select(2, ...)
 
 local L = ns.L
 
@@ -54,7 +50,7 @@ local KEYRING_FAMILY = ns.KEYRING_FAMILY
 
 local NO_RESULT = {cached = true}
 
----@class Forever: AceAddon-3.0, AceEvent-3.0
+---@class Forever: AceModule, AceEvent-3.0
 local Forever = ns.Addon:NewModule('Forever', 'AceEvent-3.0')
 
 function Forever:OnInitialize()
@@ -161,15 +157,9 @@ function Forever:SetupEvents()
     self:RegisterEvent('BAG_UPDATE')
     self:RegisterEvent('BAG_CLOSED')
     self:RegisterEvent('PLAYER_MONEY')
-    self:RegisterEvent('BANKFRAME_OPENED')
-    self:RegisterEvent('BANKFRAME_CLOSED')
-    self:RegisterEvent('MAIL_SHOW')
-    self:RegisterEvent('MAIL_CLOSED')
+    self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW')
+    self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE')
     self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-    -- @build>2@
-    self:RegisterEvent('GUILDBANKFRAME_CLOSED')
-    self:RegisterEvent('GUILDBANKFRAME_OPENED')
-    -- @end-build>2@
 end
 
 function Forever:UpdateData()
@@ -186,51 +176,49 @@ end
 
 ---- Events
 
-function Forever:BANKFRAME_OPENED()
-    self.atBank = true
-    self.Cacher:RemoveCache(ns.REALM, ns.PLAYER)
-    self:SendMessage('BANK_OPENED')
-end
-
-function Forever:BANKFRAME_CLOSED()
-    if self.atBank then
-        for _, bag in ipairs(BANKS) do
-            self:SaveBag(bag)
-        end
+function Forever:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_, id)
+    if id == 17 then
+        self.atMail = true
+        self:SendMessage('MAIL_OPENED')
+    elseif id == 8 then
+        self.atBank = true
         self.Cacher:RemoveCache(ns.REALM, ns.PLAYER)
-        self.atBank = nil
-    end
-    self:SendMessage('BANK_CLOSED')
-end
-
--- @build>2@
-function Forever:GUILDBANKFRAME_OPENED()
-    self.atGuildBank = true
-    self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
-    self:SendMessage('GUILDBANK_OPENED')
-end
-
-function Forever:GUILDBANKFRAME_CLOSED()
-    if self.atGuildBank then
-        self:SaveGuild()
+        self:SendMessage('BANK_OPENED')
+        -- @build>2@
+    elseif id == 10 then
+        self.atGuildBank = true
         self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
-        self.atGuildBank = nil
+        self:SendMessage('GUILDBANK_OPENED')
+        -- @end-build>2@
     end
-    self:SendMessage('GUILDBANK_CLOSED')
-end
--- @end-build>2@
-
-function Forever:MAIL_SHOW()
-    self.atMail = true
-    self:SendMessage('MAIL_OPENED')
 end
 
-function Forever:MAIL_CLOSED()
-    if self.atMail then
-        self:SaveMail()
-        self.atMail = nil
+function Forever:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(_, id)
+    if id == 17 then
+        if self.atMail then
+            self:SaveMail()
+            self.atMail = nil
+        end
+        self:SendMessage('MAIL_CLOSED')
+    elseif id == 8 then
+        if self.atBank then
+            for _, bag in ipairs(BANKS) do
+                self:SaveBag(bag)
+            end
+            self.Cacher:RemoveCache(ns.REALM, ns.PLAYER)
+            self.atBank = nil
+        end
+        self:SendMessage('BANK_CLOSED')
+        -- @build>2@
+    elseif id == 10 then
+        if self.atGuildBank then
+            self:SaveGuild()
+            self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
+            self.atGuildBank = nil
+        end
+        self:SendMessage('GUILDBANK_CLOSED')
+        -- @end-build>2@
     end
-    self:SendMessage('MAIL_CLOSED')
 end
 
 function Forever:BAG_UPDATE(_, bag)
@@ -258,7 +246,7 @@ function Forever:ParseItem(link, count, timeout)
             link = link:match('|H%l+:([%d:-]+)')
         end
 
-        local count = count and count > 1 and count or nil
+        count = count and count > 1 and count or nil
         if count or timeout then
             link = link .. ';' .. (count or '')
         end
@@ -270,16 +258,16 @@ function Forever:ParseItem(link, count, timeout)
 end
 
 function Forever:SaveBag(bag)
-    local size = GetContainerNumSlots(bag)
+    local size = C.Container.GetContainerNumSlots(bag)
     local items
     if size > 0 then
         items = {}
         items.size = size
-        items.family = not ns.IsBaseBag(bag) and select(2, GetContainerNumFreeSlots(bag)) or nil
+        items.family = not ns.IsBaseBag(bag) and select(2, C.Container.GetContainerNumFreeSlots(bag)) or nil
 
         for slot = 1, size do
-            local link = GetContainerItemLink(bag, slot)
-            local info = GetContainerItemInfo(bag, slot)
+            local link = C.Container.GetContainerItemLink(bag, slot)
+            local info = C.Container.GetContainerItemInfo(bag, slot)
             local count = info and info.stackCount or nil
             items[slot] = self:ParseItem(link, count)
         end
@@ -288,7 +276,9 @@ function Forever:SaveBag(bag)
 
     if not ns.IsBaseBag(bag) then
         local slot = ns.BagToSlot(bag)
-        self:SaveEquip(slot)
+        if slot then
+            self:SaveEquip(slot)
+        end
     end
 end
 
@@ -304,7 +294,7 @@ function Forever:SaveMail()
     local cods = {}
     local now = time()
 
-    local num, total = GetInboxNumItems()
+    local num --[[, total]] = GetInboxNumItems()
     for i = 1, num do
         local codAmount, daysLeft = select(6, GetInboxHeaderInfo(i))
         local timeout = floor(now + daysLeft * SECONDS_OF_DAY)
@@ -391,7 +381,7 @@ function Forever:GetBagInfo(realm, name, bag)
             data.family = KEYRING_FAMILY
             data.owned = true
         elseif ns.IsBaseBag(bag) then
-            data.count = GetContainerNumSlots(bag)
+            data.count = C.Container.GetContainerNumSlots(bag)
             data.owned = true
             data.family = 0
         end
@@ -436,14 +426,14 @@ function Forever:GetItemInfo(realm, name, bag, slot)
 
         data.cached = true
         data.link = 'item:' .. link
-        data.count = tonumber(count)
+        data.count = bag == ns.EQUIP_CONTAINER and slot ~= INVSLOT_TABARD and 1 or tonumber(count)
         data.id = tonumber(link:match('^(%d+)'))
-        data.icon = GetItemIcon(data.id)
+        data.icon = C.Item.GetItemIconByID(data.id)
         data.timeout = tonumber(timeout)
 
-        local name, link, quality = GetItemInfo(data.link)
-        if name then
-            data.link = link
+        local itemName, itemLink, quality = C.Item.GetItemInfo(data.link)
+        if itemName then
+            data.link = itemLink
             data.quality = quality
         else
             data.noCache = true

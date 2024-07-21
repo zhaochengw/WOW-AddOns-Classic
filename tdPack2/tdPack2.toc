@@ -1,7 +1,8 @@
 ## Interface: 30403
-## Version: 2.1.5
 ## Title: tdPack2
+## IconTexture: Interface\AddOns\tdPack2\Resource\INV_Pet_Broom
 ## Author: Dencer
+## Version: 2.1.7
 ## OptionalDeps: Bagnon, Combuctor, tdBag
 ## SavedVariables: TDDB_PACK2
 

@@ -3,16 +3,16 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/28/2019, 1:35:39 AM
 --
+local ipairs = ipairs
+local tinsert, tremove = table.insert, table.remove
+local format = string.format
+local tContains = tContains
+
 ---@type ns
 local ns = select(2, ...)
 local L = ns.L
 
 local GameTooltip = GameTooltip
-
-local ipairs = ipairs
-local tinsert, tremove = table.insert, table.remove
-local format = string.format
-local tContains = tContains
 
 local ADD = ADD
 local DELETE = DELETE

@@ -2,9 +2,7 @@
 -- @Author : DengSir (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/20/2018, 4:28:53 PM
-local ns = select(2, ...)
-local UI = ns.UI
-
+--
 local setmetatable, ipairs, type, select = setmetatable, ipairs, type, select
 local tinsert, tremove = table.insert, table.remove
 local ceil, min, abs = math.ceil, math.min, math.abs
@@ -14,12 +12,18 @@ local tIndexOf = tIndexOf
 local CreateFrame, HybridScrollFrame_Update = CreateFrame, HybridScrollFrame_Update
 
 local UIParent = UIParent
+local GameTooltip = GameTooltip
+
+---@type ns
+local ns = select(2, ...)
+local UI = ns.UI
 
 local WHERE_AFTER = 1
 local WHERE_BEFORE = 2
 local WHERE_IN = 3
 
----@class TreeStatus: Object
+---@class UI.TreeStatus: Object
+---@field itemTree any[]
 local TreeStatus = UI:NewClass('TreeStatus')
 
 function TreeStatus:Constructor()
@@ -59,7 +63,8 @@ function TreeStatus:GetCount()
     return GetCount(self.itemTree, 1)
 end
 
----@class TreeView: Object, ScrollFrame
+---@class UI.TreeView: AceEvent-3.0, AceTimer-3.0, UI.ScrollFrame, Object
+---@field treeStatus UI.TreeStatus
 local TreeView = UI:NewClass('TreeView', UI.ScrollFrame)
 
 LibStub('AceTimer-3.0'):Embed(TreeView)
@@ -118,7 +123,7 @@ function TreeView:OnItemDragStart(button)
 end
 
 local inStop = false
-function TreeView:OnItemDragStop(button)
+function TreeView:OnItemDragStop()
     if inStop then
         return
     end
@@ -213,7 +218,7 @@ function TreeView:OnTimer()
 end
 
 function TreeView:UpdateInsert()
-    local where, target, last
+    local where, target
     if self.mouseHolder:IsMouseOver() then
         local top = self.sortingButton:GetTop()
 
@@ -238,7 +243,6 @@ function TreeView:UpdateInsert()
                 if target then
                     break
                 end
-                last = button
             end
         end
 

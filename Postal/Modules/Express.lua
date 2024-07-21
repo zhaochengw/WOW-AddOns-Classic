@@ -203,7 +203,7 @@ function Postal_Express:ContainerFrameItemButtonOnModifiedClick(bag, slot, butto
 				itemlocked = false
 			end
 		end
-		local itemq, _,_, itemc, itemsc, _, itemes = select(3,GetItemInfo(itemid))
+		local itemq, _,_, itemc, itemsc, _, itemes = select(3,C_Item.GetItemInfo(itemid))
 		itemes = itemes and #itemes > 0
 		if Postal.db.profile.Express.BulkSend and itemq and itemc then
 			local itemsinmail = 0
@@ -246,7 +246,7 @@ function Postal_Express:ContainerFrameItemButtonOnModifiedClick(bag, slot, butto
 						if not tid or itemlocked2 or Postal_Express_IsSoulbound(b, s) then
 							-- item locked, already attached, soulbound
 						else
-							local tq, _,_, tc, tsc, _, tes = select(3,GetItemInfo(tid))
+							local tq, _,_, tc, tsc, _, tes = select(3,C_Item.GetItemInfo(tid))
 							-- tc = (tq or "").."."..(tc or "")
 							tsc = (tc or "").."."..(tsc or "")
 							tes = tes and #tes > 0

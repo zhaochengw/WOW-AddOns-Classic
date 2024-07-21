@@ -3,23 +3,15 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/28/2019, 1:35:42 PM
 --
----@type ns
-local ADDON, ns = ...
-local L = ns.L
-local UI = ns.UI
-local Addon = ns.Addon
-
 ---- LUA
 local format = string.format
 local tremove = table.remove
-local select, type, ipairs = select, type, ipairs
+local type, ipairs = type, ipairs
 
 ---- WOW
 local ClearCursor = ClearCursor
 local CreateFrame = CreateFrame
 local GetCursorInfo = GetCursorInfo
-local GetItemIcon = GetItemIcon
-local GetItemQualityColor = GetItemQualityColor
 
 ---- UI
 local GameTooltip = GameTooltip
@@ -28,6 +20,13 @@ local UIParent = UIParent
 ---- LOCAL
 local DELETE, EDIT, CANCEL = DELETE, EDIT, CANCEL
 
+---@type string, ns
+local ADDON, ns = ...
+local L = ns.L
+local UI = ns.UI
+local Addon = ns.Addon
+
+---@class UI.RuleView: AceEvent-3.0, UI.TreeView
 local RuleView = UI:NewClass('RuleView', UI.TreeView)
 LibStub('AceEvent-3.0'):Embed(RuleView)
 
@@ -76,7 +75,7 @@ function RuleView:TDPACK_RULES_UPDATE(_, ruleType)
 end
 
 function RuleView:CURSOR_CHANGED()
-    local cursorType, itemId, itemLink = GetCursorInfo()
+    local cursorType, itemId = GetCursorInfo()
     if cursorType == 'item' then
         self:StartCursorCatching(itemId)
     else
@@ -84,7 +83,7 @@ function RuleView:CURSOR_CHANGED()
     end
 end
 
-function RuleView:OnCheckItemCanPutIn(from, to)
+function RuleView:OnCheckItemCanPutIn(_, to)
     return ns.IsAdvanceRule(to)
 end
 
@@ -196,7 +195,7 @@ function RuleView:CreateCursorCatcher()
     catcher:SetScript('OnClick', OnClick)
     catcher:SetScript('OnReceiveDrag', OnClick)
     catcher:SetScript('OnEnter', OnEnter)
-    catcher:SetScript('OnLeave', OnLeave)
+    -- catcher:SetScript('OnLeave', OnLeave)
     self:SetCallback('OnSortingOut', function()
         if catcher:IsShown() then
             self:StopSorting()
@@ -208,7 +207,7 @@ function RuleView:CreateCursorCatcher()
 end
 
 function RuleView:ShowRuleMenu(button, item)
-    local name, icon, rule, hasChild = ns.GetRuleInfo(item)
+    local name, icon, _, hasChild = ns.GetRuleInfo(item)
 
     ns.ToggleMenu(button, {
         { --

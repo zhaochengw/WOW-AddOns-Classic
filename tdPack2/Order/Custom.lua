@@ -2,17 +2,17 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/1/2019, 12:50:23 AM
-
----@type ns
-local ns = select(2, ...)
-local Search = ns.Search
-
+--
 ---- LUA
 local ipairs, type = ipairs, type
 local tinsert, wipe = table.insert, table.wipe
 local format, tostring = string.format, tostring
 
----@class CustomOrder: Order
+---@type ns
+local ns = select(2, ...)
+local Search = ns.Search
+
+---@class Addon.CustomOrder: Addon.Order
 local CustomOrder = ns.Addon:NewClass('CustomOrder', ns.Order)
 
 function CustomOrder:Constructor(noDefault)
@@ -21,7 +21,7 @@ function CustomOrder:Constructor(noDefault)
             return self.simpleOrders[item:GetItemId()]
         end, function(item)
             return self:GetAdvanceOrder(item:GetItemLink())
-        end
+        end,
     }
 
     self.noDefault = noDefault

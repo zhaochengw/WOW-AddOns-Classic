@@ -9,6 +9,11 @@ local format = string.format
 local wipe = table.wipe or wipe
 local type = type
 
+local C = LibStub('C_Everywhere')
+
+local RELOADUI = RELOADUI
+local GENERAL = GENERAL
+
 ---@type ns
 local ns = select(2, ...)
 
@@ -16,8 +21,8 @@ local ns = select(2, ...)
 local Addon = ns.Addon
 local L = ns.L
 
+local tdOptions = LibStub('tdOptions')
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
-local AceConfigDialog = LibStub('AceConfigDialog-3.0')
 
 local BAG_ARGS = { --
     [ns.BAG_ID.BAG] = {},
@@ -53,10 +58,6 @@ function Addon:SetupOptionFrame()
 
     local function header(name)
         return {type = 'header', order = orderGen(), name = name}
-    end
-
-    local function line()
-        return header('')
     end
 
     local function desc(name)
@@ -110,16 +111,8 @@ function Addon:SetupOptionFrame()
         return opts
     end
 
-    local function group(name, args)
-        return {type = 'group', name = name, order = orderGen(), args = args}
-    end
-
     local function inline(name, args)
         return {type = 'group', name = name, inline = true, order = orderGen(), args = args}
-    end
-
-    local function tab(name, args)
-        return {type = 'group', name = name, childGroups = 'tab', order = orderGen(), args = args}
     end
 
     local function treeTitle(name)
@@ -210,7 +203,7 @@ function Addon:SetupOptionFrame()
 
     local options = {
         type = 'group',
-        name = format('tdBag2 - |cff00ff00%s|r', GetAddOnMetadata('tdBag2', 'Version')),
+        name = format('tdBag2 - |cff00ff00%s|r', C.AddOns.GetAddOnMetadata('tdBag2', 'Version')),
         get = function(item)
             return self.db.profile[item[#item]]
         end,
@@ -220,29 +213,6 @@ function Addon:SetupOptionFrame()
             fireGlobalKey(key)
         end,
         args = {
-            profile = {
-                type = 'toggle',
-                name = L['Character Specific Settings'],
-                width = 'double',
-                order = orderGen(),
-                set = function(_, checked)
-                    self.db:SetProfile(checked and playerProfileKey or 'Default')
-                end,
-                get = function()
-                    return self.db:GetCurrentProfile() == playerProfileKey
-                end,
-            },
-            reset = {
-                type = 'execute',
-                name = L['Restore default Settings'],
-                order = orderGen(),
-                confirm = true,
-                confirmText = L['Are you sure you want to restore the current Settings?'],
-                func = function()
-                    self.db:ResetProfile()
-                end,
-            },
-            header1 = line(),
             reload = {
                 type = 'group',
                 name = RELOADUI,
@@ -259,7 +229,7 @@ function Addon:SetupOptionFrame()
                         name = RELOADUI,
                         order = orderGen(),
                         func = function()
-                            C_UI.Reload()
+                            C.UI.Reload()
                         end,
                     },
                 },
@@ -314,13 +284,13 @@ function Addon:SetupOptionFrame()
                         return not self.db.profile.colorSlots
                     end,
                     get = function(item)
-                        local color = self.db.profile[item[#item]]
-                        return color.r, color.g, color.b
+                        local c = self.db.profile[item[#item]]
+                        return c.r, c.g, c.b
                     end,
                     set = function(item, ...)
                         local key = item[#item]
-                        local color = self.db.profile[key]
-                        color.r, color.g, color.b = ...
+                        local c = self.db.profile[key]
+                        c.r, c.g, c.b = ...
                         fireGlobalKey(key)
                     end,
                     args = (function()
@@ -381,29 +351,45 @@ function Addon:SetupOptionFrame()
                     scale = range(L['Item Scale'], 0.5, 2),
                 }),
             }),
+            profileTitle = treeTitle(L['Profile']),
+            profile = treeItem(L['Profile'], {
+                profile = {
+                    type = 'toggle',
+                    name = L['Character Specific Settings'],
+                    width = 'double',
+                    order = orderGen(),
+                    set = function(_, checked)
+                        self.db:SetProfile(checked and playerProfileKey or 'Default')
+                    end,
+                    get = function()
+                        return self.db:GetCurrentProfile() == playerProfileKey
+                    end,
+                },
+                reset = {
+                    type = 'execute',
+                    name = L['Restore default Settings'],
+                    order = orderGen(),
+                    confirm = true,
+                    confirmText = L['Are you sure you want to restore the current Settings?'],
+                    func = function()
+                        self.db:ResetProfile()
+                    end,
+                },
+            }),
         },
     }
 
-    AceConfigRegistry:RegisterOptionsTable('tdBag2', options)
-    AceConfigDialog:AddToBlizOptions('tdBag2', 'tdBag2')
-    AceConfigDialog:SetDefaultSize('tdBag2', 700, 570)
+    tdOptions:Register('tdBag2', options)
 
     self:RefreshPluginOptions()
 end
 
 function Addon:OpenFrameOption(bagId)
-    AceConfigDialog:Open('tdBag2')
-    if bagId then
-        AceConfigDialog:SelectGroup('tdBag2', bagId)
-    end
-    pcall(function ()
-        AceConfigDialog.OpenFrames.tdBag2:EnableResize(false)
-        AceConfigDialog.OpenFrames.tdBag2.frame:SetFrameStrata('DIALOG')
-    end)
+    tdOptions:Open('tdBag2', bagId)
 end
 
 function Addon:RefreshPluginOptions()
-    for bagId, args in pairs(BAG_ARGS) do
+    for _, args in pairs(BAG_ARGS) do
         wipe(args)
 
         for i, plugin in Addon:IteratePluginButtons() do

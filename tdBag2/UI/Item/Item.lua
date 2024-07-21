@@ -5,26 +5,24 @@
 --
 ---- LUA
 local _G = _G
-local select = select
 local floor = math.floor
 local format = string.format
 
+local C = LibStub('C_Everywhere')
+
 ---- WOW
 local CreateFrame = CreateFrame
-local IsBattlePayItem = IsBattlePayItem or C_Container.IsBattlePayItem
 
-local IsNewItem = C_NewItems.IsNewItem
-local RemoveNewItem = C_NewItems.RemoveNewItem
-
-local ContainerFrame_UpdateCooldown = ContainerFrame_UpdateCooldown
-local CooldownFrame_Set = CooldownFrame_Set
+--[=[@build^1@
+local C_Engraving = C_Engraving
+--@end-build^1@]=]
 
 ---- UI
 local StackSplitFrame = StackSplitFrame
 local UIParent = UIParent
 
 ---- G
-local MAX_CONTAINER_ITEMS = MAX_CONTAINER_ITEMS
+local MAX_CONTAINER_ITEMS = MAX_CONTAINER_ITEMS or 36
 local MAX_BLIZZARD_ITEMS = NUM_CONTAINER_FRAMES * MAX_CONTAINER_ITEMS
 
 local DEFAULT_SLOT_COLOR = {r = 1, g = 1, b = 1}
@@ -72,7 +70,7 @@ function Item:Create()
             return Item:Bind(item)
         end
     end
-    return Item:Bind(CreateFrame('Button', Item:GenerateName(), UIParent, 'ContainerFrameItemButtonTemplate'))
+    return Item:Bind(CreateFrame(ns.ITEM_BUTTON_CLASS, Item:GenerateName(), UIParent, 'ContainerFrameItemButtonTemplate'))
 end
 
 function Item:OnHide()
@@ -81,7 +79,7 @@ function Item:OnHide()
     end
 
     if self:IsNew() then
-        RemoveNewItem(self.bag, self.slot)
+        C.NewItems.RemoveNewItem(self.bag, self.slot)
     end
 end
 
@@ -93,14 +91,14 @@ function Item:Update()
     self:UpdateFocus()
     self:UpdateBorder()
     self:UpdateSlotColor()
-    --[=[@build<2@
+    --[=[@build^1@
     self:UpdateRune()
-    --@end-build<2@]=]
+    --@end-build^1@]=]
     self:UpdateCooldown()
     self:UpdatePlugin()
 end
 
---[=[@build<2@
+--[=[@build^1@
 function Item:UpdateRune()
     local texture = self:GetRuneTexture()
     if texture then
@@ -110,7 +108,7 @@ function Item:UpdateRune()
         self.subicon:Hide()
     end
 end
---@end-build<2@]=]
+--@end-build^1@]=]
 
 function Item:UpdateBorder()
     local sets = self.meta.sets
@@ -186,14 +184,19 @@ function Item:UpdateSearch()
 end
 
 function Item:IsNew()
-    return self.bag and ns.IsContainerBag(self.bag) and not self:IsCached() and IsNewItem(self.bag, self.slot)
+    return self.bag and ns.IsContainerBag(self.bag) and not self:IsCached() and
+               C.NewItems.IsNewItem(self.bag, self.slot)
 end
 
-function Item:IsPaid()
-    return IsBattlePayItem and IsBattlePayItem(self.bag, self.slot)
+if C.Container.IsBattlePayItem then
+    function Item:IsPaid()
+        return C.Container.IsBattlePayItem(self.bag, self.slot)
+    end
+else
+    Item.IsPaid = nop
 end
 
---[=[@build<2@
+--[=[@build^1@
 function Item:GetRuneTexture()
     if not C_Engraving then
         return
@@ -212,4 +215,4 @@ function Item:GetRuneTexture()
         return info and info.iconTexture
     end
 end
---@end-build<2@]=]
+--@end-build^1@]=]

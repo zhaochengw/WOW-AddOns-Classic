@@ -2,7 +2,8 @@ local L = LibStub('AceLocale-3.0'):NewLocale(..., 'enUS', true)
 if not L then
     return
 end
-
+-- @locale:language=enUS@
+L = L or {}
 L["|cffff2020(Offline)|r"] = true
 L["Always show"] = true
 L["Appearance"] = true
@@ -92,7 +93,6 @@ L["TITLE_BANK"] = "%s's Bank"
 L["TITLE_COD"] = "%s's COD"
 L["TITLE_EQUIP"] = "%s's Equip"
 L["TITLE_MAIL"] = "%s's Mail"
-L["Token Frame"] = true
 L["TOOLTIP_CHANGE_PLAYER"] = "View another character's items."
 L["TOOLTIP_HIDE_BAG"] = "Hide bag"
 L["TOOLTIP_HIDE_BAG_FRAME"] = "Hide bags list"
@@ -108,7 +108,6 @@ L["TOOLTIP_TOGGLE_EQUIP"] = "Open equip"
 L["TOOLTIP_TOGGLE_GLOBAL_SEARCH"] = "Global search"
 L["TOOLTIP_TOGGLE_MAIL"] = "Open mailbox"
 L["TOOLTIP_TOGGLE_OTHER_FRAME"] = "Open other bags"
-L["TOOLTIP_WATCHED_TOKENS"] = "Change watched tokens"
 L["TOOLTIP_WATCHED_TOKENS_LEFTTIP"] = "Drag item to here to add watch"
 L["TOOLTIP_WATCHED_TOKENS_ONLY_IN_BAG"] = "Only count in backpack"
 L["TOOLTIP_WATCHED_TOKENS_RIGHTTIP"] = "Manage item watch"
@@ -122,10 +121,10 @@ L["Visiting the Auction House"] = true
 L["Visiting the Bank"] = true
 L["Visiting the Mail Box"] = true
 L["Watch Frame"] = true
-
+--@end-locale@]=]
 
 --[[@debug@
--- @import@
+-- @import:language=enUS@
 
 L.TITLE_BAG = '%s\'s Inventory'
 L.TITLE_BANK = '%s\'s Bank'
@@ -263,6 +262,7 @@ L['Closing the Character Info'] = true
 L['Closing Trade Skills'] = true
 L['Completed Trade'] = true
 L['Entering Combat'] = true
-
+L.Profile = true
+-- @locale-fill@
 -- @end-import@
 --@end-debug@]]

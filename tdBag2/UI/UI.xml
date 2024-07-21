@@ -33,5 +33,6 @@
 
     <Script file="Plugin\BagToggle.lua"/>
     <Script file="Plugin\SearchToggle.lua"/>
+    
     <Script file="Plugin\PluginFrame.lua"/>
 </Ui>

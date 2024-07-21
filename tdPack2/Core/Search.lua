@@ -2,29 +2,26 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/26/2019, 2:09:42 AM
----@type ns
-local ns = select(2, ...)
-
-local L = ns.L
-
+--
+-- luacheck: ignore 212/search 212/operator
+--
 ---- LUA
 local _G = _G
 local select, pairs, ipairs = select, pairs, ipairs
 local tonumber = tonumber
-local pcall = pcall
 
----- WOW
-local GetItemInfo = GetItemInfo
-local GetItemSpell = GetItemSpell
-local IsEquippableItem = IsEquippableItem
-local GetItemInfoInstant = GetItemInfoInstant
+---@type ns
+local ns = select(2, ...)
+
+local L = ns.L
+local C = ns.C
 
 ---- LIBS
 local CustomSearch = LibStub('CustomSearch-1.0')
 local ItemSearch = LibStub('ItemSearch-1.3')
 local Filters = {}
 
----@class Search: AceEvent-3.0, AceAddon-3.0
+---@class Addon.Search: AceModule, AceEvent-3.0
 local Search = ns.Addon:NewModule('Search', 'AceEvent-3.0')
 
 function Search:OnInitialize()
@@ -64,7 +61,7 @@ Filters.tdpackSpell = {
     end,
 
     match = function(self, item, _, search)
-        return not not GetItemSpell(item.link)
+        return not not C.Item.GetItemSpell(item.link)
     end,
 }
 
@@ -78,7 +75,7 @@ Filters.tdpackSpellName = {
 
     match = function(self, item, _, search)
         local searchId = tonumber(search)
-        local spellName, spellId = GetItemSpell(item.link)
+        local spellName, spellId = C.Item.GetItemSpell(item.link)
         if searchId then
             return searchId == spellId
         else
@@ -97,11 +94,11 @@ Filters.tdPackEquippable = {
         return self.keyword1 == search or self.keyword2 == search:lower()
     end,
 
-    match = function(self, item, ...)
-        if not IsEquippableItem(item.link) then
+    match = function(self, item)
+        if not C.Item.IsEquippableItem(item.link) then
             return false
         end
-        return not self.exclude[select(9, GetItemInfo(item.link))]
+        return not self.exclude[select(9, C.Item.GetItemInfo(item.link))]
     end,
 }
 
@@ -113,7 +110,7 @@ Filters.tdPackBlizzardHasSet = {
     end,
 
     match = function(self, item, _, search)
-        local setId = select(16, GetItemInfo(item.link))
+        local setId = select(16, C.Item.GetItemInfo(item.link))
         return setId
     end,
 }
@@ -127,9 +124,9 @@ Filters.tdPackBlizzardSet = {
     end,
 
     match = function(self, item, _, search)
-        local setId = select(16, GetItemInfo(item.link))
+        local setId = select(16, C.Item.GetItemInfo(item.link))
         if setId and setId ~= 0 then
-            local setName = GetItemSetInfo(setId)
+            local setName = C.Item.GetItemSetInfo(setId)
             return CustomSearch:Find(search, setName)
         end
     end,
@@ -144,7 +141,7 @@ Filters.tdPackInvtype = {
     end,
 
     match = function(self, item, _, search)
-        local equipLoc = select(9, GetItemInfo(item.link))
+        local equipLoc = select(9, C.Item.GetItemInfo(item.link))
         if not equipLoc then
             return
         end
@@ -188,8 +185,11 @@ Filters.tdPackTags = {
                 ids[id] = true
             end
             items[k:lower()] = ids
-            if ids.locale then
-                items[L['ITEM_TAG: ' .. k]] = ids
+            if v.locale then
+                local localeKey = L['ITEM_TAG: ' .. k]
+                if localeKey then
+                    items[localeKey] = ids
+                end
             end
         end
         return items

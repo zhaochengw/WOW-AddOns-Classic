@@ -3,6 +3,8 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 4/24/2020, 4:21:46 PM
 --
+local DressUpTexturePath = DressUpTexturePath
+
 ---@type ns
 local ns = select(2, ...)
 
@@ -82,7 +84,8 @@ function Addon:SetupDefaultStyles()
             EquipItem = {
                 SetBagSlot = function(self, _, _, _, slot)
                     local anchors = ns.INV_ANCHORS[slot]
-                    if anchors.anchor == 'LEFT' then
+                    if not anchors then
+                    elseif anchors.anchor == 'LEFT' then
                         local texture = self:CreateTexture(nil, 'BACKGROUND', 'Char-LeftSlot', -1)
                         texture:ClearAllPoints()
                         texture:SetPoint('TOPLEFT', -4, 0)
@@ -99,7 +102,7 @@ function Addon:SetupDefaultStyles()
                             local texture2 = self:CreateTexture(nil, 'BACKGROUND', 'Char-Slot-Bottom-Left')
                             texture2:ClearAllPoints()
                             texture2:SetPoint('TOPRIGHT', texture, 'TOPLEFT')
-                        elseif slot == 18 then
+                        elseif slot == 18 or (not ns.INV_ANCHORS[18] and slot == 17) then
                             local texture2 = self:CreateTexture(nil, 'BACKGROUND', 'Char-Slot-Bottom-Right')
                             texture2:ClearAllPoints()
                             texture2:SetPoint('TOPLEFT', texture, 'TOPRIGHT')

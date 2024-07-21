@@ -3,10 +3,12 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 7/15/2020, 4:41:36 PM
 --
+local coroutine = coroutine
+local debugprofilestop = debugprofilestop
+
 ---@type ns
 local ns = select(2, ...)
 
-local coroutine = coroutine
 local profilestart, profilestop
 do
     local tick = 0

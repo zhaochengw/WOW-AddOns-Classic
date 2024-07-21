@@ -6,8 +6,13 @@
 local ipairs = ipairs
 local tinsert = table.insert
 
+local CreateFrame = CreateFrame
+local Ambiguate = Ambiguate
+
 ---@type ns
 local ns = select(2, ...)
+
+local C = LibStub('C_Everywhere')
 
 local L = ns.L
 local Search = ns.Search
@@ -23,7 +28,7 @@ local BAGS = {
     {title = L.TITLE_COD, bags = {ns.COD_CONTAINER}}, --
 }
 
----@class GlobalSearch: AceAddon-3.0
+---@class GlobalSearch: AceModule
 local GlobalSearch = ns.Addon:NewModule('GlobalSearch')
 
 function GlobalSearch:OnInitialize()
@@ -72,7 +77,7 @@ function GlobalSearch:Search(text)
             self.timer = nil
         end
 
-        self.timer = C_Timer.NewTimer(0.1, function()
+        self.timer = C.Timer.NewTimer(0.1, function()
             self:CancelSearch()
             self.thread = ns.Thread:New()
             self.thread:Start(self.DoSearch, self)

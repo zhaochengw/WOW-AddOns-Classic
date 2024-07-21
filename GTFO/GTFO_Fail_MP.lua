@@ -5,7 +5,7 @@
 GTFO Fail List - Mists of Pandaria
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
 
 -- ***************
 -- * Scholomance *
@@ -85,6 +85,12 @@ GTFO.SpellID["106938"] = {
 GTFO.SpellID["107053"] = {
 	--desc = "Jade Serpent Wave (Liu Flameheart)";
 	sound = 3;
+};
+
+GTFO.SpellID["106079"] = {
+  --desc = "Water Bubble (Wise Mari)";
+  sound = 3;
+  alwaysAlert = true;
 };
 
 GTFO.SpellID["106334"] = {

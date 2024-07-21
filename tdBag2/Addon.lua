@@ -4,16 +4,22 @@
 -- @Date   : 9/17/2019, 12:04:55 AM
 --
 ---- LUA
-local ipairs, pairs, nop, tinsert, sort = ipairs, pairs, nop, tinsert, sort
-local ripairs = ipairs_reverse or ripairs
+local format = string.format
+local ipairs, pairs, tinsert, sort = ipairs, pairs, tinsert, sort
+local ripairs = ipairs_reverse
+local tInvert = tInvert
+local tremove = table.remove
+local assert = assert
+
+local C = LibStub('C_Everywhere')
 
 ---- WOW
 local CreateFrame = CreateFrame
-local GetItemClassInfo = GetItemClassInfo
-local GetNumAddOns = GetNumAddOns
-local GetAddOnInfo = GetAddOnInfo
-local GetAddOnMetadata = GetAddOnMetadata
-local LoadAddOn = LoadAddOn
+local UnitFullName = UnitFullName
+local GetAutoCompleteRealms = GetAutoCompleteRealms
+local GetRealmName = GetRealmName
+
+local SEARCH = SEARCH
 
 ---- UI
 local BankFrame = BankFrame
@@ -29,19 +35,20 @@ local UIParent = UIParent
 ---@field Cache Cache
 -- classes
 ---@field Thread Thread
----@field Cacher Cacher
+---@field Cacher Addon.Cacher
 ---@field FrameMeta FrameMeta
 local ns = select(2, ...)
+
 local L = ns.L
 local BAG_ID = ns.BAG_ID
 
 local safeipairs = ns.safeipairs
 
-_G.BINDING_HEADER_TDBAG2 = 'tdBag2'
-_G.BINDING_NAME_TDBAG2_TOGGLE_BAG = L.TOOLTIP_TOGGLE_BAG
-_G.BINDING_NAME_TDBAG2_TOGGLE_BANK = L.TOOLTIP_TOGGLE_BANK
-_G.BINDING_NAME_TDBAG2_TOGGLE_MAIL = L.TOOLTIP_TOGGLE_MAIL
-_G.BINDING_NAME_TDBAG2_TOGGLE_GLOBAL_SEARCH = L.TOOLTIP_TOGGLE_GLOBAL_SEARCH
+BINDING_HEADER_TDBAG2 = 'tdBag2'
+BINDING_NAME_TDBAG2_TOGGLE_BAG = L.TOOLTIP_TOGGLE_BAG
+BINDING_NAME_TDBAG2_TOGGLE_BANK = L.TOOLTIP_TOGGLE_BANK
+BINDING_NAME_TDBAG2_TOGGLE_MAIL = L.TOOLTIP_TOGGLE_MAIL
+BINDING_NAME_TDBAG2_TOGGLE_GLOBAL_SEARCH = L.TOOLTIP_TOGGLE_GLOBAL_SEARCH
 
 ---@class UI
 ---@field Container UI.Container
@@ -68,7 +75,7 @@ ns.UI = {}
 ns.Search = LibStub('ItemSearch-1.3')
 ns.Unfit = LibStub('Unfit-1.0')
 
----@class Addon: AceAddon-3.0, LibClass-2.0, AceHook-3.0, AceEvent-3.0
+---@class Addon: AceAddon, LibClass-2.0, AceHook-3.0, AceEvent-3.0
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdBag2', 'LibClass-2.0', 'AceHook-3.0', 'AceEvent-3.0')
 ns.Addon = Addon
 _G.tdBag2 = Addon
@@ -139,10 +146,10 @@ function Addon:OnProfileChanged()
 end
 
 function Addon:ScanPluginAddons()
-    for i = 1, GetNumAddOns() do
-        local name, _, _, _, reason = GetAddOnInfo(i)
+    for i = 1, C.AddOns.GetNumAddOns() do
+        local name, _, _, _, reason = C.AddOns.GetAddOnInfo(i)
         if reason == 'DEMAND_LOADED' then
-            local styleName = GetAddOnMetadata(i, 'X-tdBag2-Style')
+            local styleName = C.AddOns.GetAddOnMetadata(i, 'X-tdBag2-Style')
             if styleName then
                 self.demandStyles[styleName] = name
             end
@@ -155,7 +162,7 @@ function Addon:SetupCurrentStyle()
     for _, styleName in ipairs {self.db.profile.style, ns.DEFAULT_STYLE} do
         local addon = self.demandStyles[styleName]
         if addon then
-            LoadAddOn(addon)
+            C.AddOns.LoadAddOn(addon)
         end
 
         style = self.styles[styleName]
@@ -191,7 +198,7 @@ function Addon:SetupCurrentStyle()
 end
 
 function Addon:SetupDatabase()
-    ---@class Db: Database, AceDB-3.0
+    ---@class Db: Database, AceDBObject-3.0
     self.db = LibStub('AceDB-3.0'):New('TDDB_BAG2', ns.PROFILE, true)
 
     local function OnProfileChanged()
@@ -235,15 +242,15 @@ function Addon:SetupDefaultOptions()
         searches.first = false
 
         local types = { --
-            LE_ITEM_CLASS_WEAPON or Enum.ItemClass.Weapon, --
-            LE_ITEM_CLASS_ARMOR or Enum.ItemClass.Armor, --
-            LE_ITEM_CLASS_CONSUMABLE or Enum.ItemClass.Consumable, --
-            LE_ITEM_CLASS_TRADEGOODS or Enum.ItemClass.Tradegoods, --
-            LE_ITEM_CLASS_REAGENT or Enum.ItemClass.Reagent, --
+            Enum.ItemClass.Weapon, --
+            Enum.ItemClass.Armor, --
+            Enum.ItemClass.Consumable, --
+            Enum.ItemClass.Tradegoods, --
+            Enum.ItemClass.Reagent, --
         }
 
         for _, item in ipairs(types) do
-            tinsert(searches, (GetItemClassInfo(item)))
+            tinsert(searches, (C.Item.GetItemClassInfo(item)))
         end
     end
 end
@@ -269,11 +276,11 @@ function Addon:SetupCharacterOptions(owner)
             end
         end
 
-        --[=[@build<3@
+        --[==[@build<3@
         for _, itemId in ipairs(ns.TOKENS) do
             tinsert(watches, {itemId = itemId})
         end
-        --@end-build<3@]=]
+        --@end-build<3@]==]
     end
 
     if not character.version or character.version < 20200 then
@@ -302,7 +309,7 @@ function Addon:SetupBankHider()
 end
 
 function Addon:SetupPluginButtons()
-    if IsAddOnLoaded('tdPack2') then
+    if C.AddOns.IsAddOnLoaded('tdPack2') then
         ---@type any
         local tdPack2 = LibStub('AceAddon-3.0'):GetAddon('tdPack2', true)
         if tdPack2 then
@@ -338,6 +345,19 @@ function Addon:SetupPluginButtons()
             return ns.UI.SearchToggle:Bind(button, frame.meta)
         end,
     })
+
+    --[=[@retail@
+    self:RegisterPlugin{
+        type = 'Button',
+        key = 'Sort',
+        text = BAG_CLEANUP_BAGS,
+        icon = [[Interface\Icons\INV_Pet_Broom]],
+        order = 10002,
+        init = function(button, frame)
+            return ns.UI.SortButton:Bind(button, frame.meta)
+        end,
+    }
+    --@end-retail@]=]
 end
 
 function Addon:GetFrameProfile(bagId)

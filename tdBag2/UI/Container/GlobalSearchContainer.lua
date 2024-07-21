@@ -3,6 +3,8 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/11/2020, 2:54:54 PM
 --
+local CreateFrame = CreateFrame
+
 ---@type ns
 local ns = select(2, ...)
 

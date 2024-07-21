@@ -1,5 +1,6 @@
 
 local MAJOR, MINOR = 'LibClass-2.0', 10
+---@class LibClass-2.0
 local Class = LibStub:NewLibrary(MAJOR, MINOR)
 if not Class then
     return
@@ -135,7 +136,7 @@ function Object:IsType(class)
     return super and super:IsType(class) or false
 end
 
----@param object Object
+---@param object any
 ---@return boolean
 function Object:IsInstance(object)
     return Class:IsObject(object) and object:IsType(self._Meta.__type)
@@ -346,6 +347,7 @@ local _Classes = setmetatable(Class._Classes, {
     end,
 })
 
+---@return any
 function Class:NewClass(name, ...)
     if _Classes[self][name] then
         return

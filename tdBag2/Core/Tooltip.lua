@@ -4,14 +4,26 @@
 -- @Date   : 10/24/2019, 1:03:40 PM
 --
 ---- LUA
-local ipairs, select = ipairs, select
+local ipairs = ipairs
 local tinsert, tconcat = table.insert, table.concat
 local format = string.format
 local tonumber = tonumber
+local pairs, type = pairs, type
 
 ---- G
 local HEARTHSTONE_ITEM_ID = HEARTHSTONE_ITEM_ID
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local NORMAL_FONT_COLOR = NORMAL_FONT_COLOR
+
+---- WOW
+
+local GetCraftItemLink = GetCraftItemLink
+local GetCraftReagentItemLink = GetCraftReagentItemLink
+local Ambiguate = Ambiguate
+
+---- UI
+local GameTooltip = GameTooltip
+local ItemRefTooltip = ItemRefTooltip
 
 ---@type ns
 local ns = select(2, ...)
@@ -19,7 +31,7 @@ local L = ns.L
 local Cache = ns.Cache
 local Counter = ns.Counter
 
----@class Tooltip: AceAddon-3.0, AceEvent-3.0, AceHook-3.0
+---@class Tooltip: AceModule, AceEvent-3.0, AceHook-3.0
 local Tooltip = ns.Addon:NewModule('Tooltip', 'AceHook-3.0', 'AceEvent-3.0')
 Tooltip.APIS = {
     'SetMerchantItem',
@@ -108,7 +120,9 @@ function Tooltip:HookTip(tip)
 
     if tip.shoppingTooltips then
         for _, shoppingTip in ipairs(tip.shoppingTooltips) do
-            self:SecureHook(shoppingTip, 'SetCompareItem', 'OnCompareItem')
+            if shoppingTip.SetCompareItem then
+                self:SecureHook(shoppingTip, 'SetCompareItem', 'OnCompareItem')
+            end
             self:HookTip(shoppingTip)
         end
     end
@@ -127,7 +141,7 @@ function Tooltip:SetCraftItem(tip, index, slot)
     end
 end
 
-function Tooltip:OnTooltipItem(tip, itemId)
+function Tooltip:OnTooltipItem(tip)
     local _, item = tip:GetItem()
     if not item then
         return

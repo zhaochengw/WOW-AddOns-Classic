@@ -5,7 +5,8 @@
 GTFO Fail List - Battle for Azeroth
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
+
 --- ******************************
 --- * Battle for Azeroth (World) *
 --- ******************************

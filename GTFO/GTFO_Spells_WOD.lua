@@ -5,7 +5,7 @@
 GTFO Spell List - Warlords of Draenor
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
+if (GTFO.RetailMode) then
 
 -- ***********
 -- * Draenor *

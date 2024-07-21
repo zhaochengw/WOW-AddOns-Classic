@@ -6,7 +6,7 @@ local QuestWatchFrame = _G.QuestWatchFrame;
 local WatchFrame = _G.WatchFrame;
 local BlizzMoveAPI = _G.BlizzMoveAPI;
 local print = _G.print;
-local IsAddOnLoaded = _G.IsAddOnLoaded;
+local IsAddOnLoaded = _G.C_AddOns.IsAddOnLoaded;
 
 local name, Plugin = ...;
 

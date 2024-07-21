@@ -11,7 +11,7 @@ local Frame = ns.UI.Frame
 local SimpleFrame = ns.Addon:NewClass('UI.SimpleFrame', Frame)
 
 function SimpleFrame:Constructor()
-    ns.UI.OwnerSelector:Bind(self.OwnerSelector, self.meta)
+    ns.UI.OwnerSelector:Bind(self.OwnerSelector or self.PortraitButton, self.meta)
     ns.UI.SearchBox:Bind(self.SearchBox, self.meta)
 end
 

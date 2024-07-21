@@ -4,7 +4,7 @@ if not L then
     return
 end
 
--- @import@
+-- @import:language=zhCN@
 
 L.TITLE_BAG = '%s的背包'
 L.TITLE_BANK = '%s的银行'
@@ -142,5 +142,8 @@ L['Closing the Character Info'] = '关闭角色面板时'
 L['Closing Trade Skills'] = '关闭专业技能时'
 L['Completed Trade'] = '完成交易时'
 L['Entering Combat'] = '进入战斗时'
+
+L.Profile = '配置文件'
+-- @locale-fill@
 
 -- @end-import@

@@ -4,18 +4,15 @@
 -- @Date   : 10/18/2019, 10:26:06 AM
 --
 ---- LUA
-local select = select
 local tinsert = table.insert
-local unpack = table.unpack or unpack
+local unpack = unpack
 local ipairs = ipairs
 
 ---- WOW
-local CreateFrame = CreateFrame
 local SetPortraitTexture = SetPortraitTexture
 
 ---- UI
 local GameTooltip = GameTooltip
-local UIParent = UIParent
 
 ---- G
 local CHARACTER = CHARACTER
@@ -29,12 +26,12 @@ local Cache = ns.Cache
 
 ---@class UI.OwnerSelector: EventsMixin, UI.MenuButton
 ---@field texture? Texture
-local OwnerSelector = ns.Addon:NewClass('UI.OwnerSelector', ns.UI.MenuButton)
+local OwnerSelector = Addon:NewClass('UI.OwnerSelector', ns.UI.MenuButton)
 
 function OwnerSelector:Constructor(_, meta)
     ---@type FrameMeta
     self.meta = meta
-    self.portrait = self.portrait or self.texture
+    self.portrait = self.portrait or self.texture or (self.PortraitContainer and self.PortraitContainer.portrait)
     self:SetScript('OnClick', self.OnClick)
     self:SetScript('OnEnter', self.OnEnter)
     self:SetScript('OnLeave', self.OnLeave)

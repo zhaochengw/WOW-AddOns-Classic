@@ -2,18 +2,19 @@
 -- @Author : DengSir (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/20/2018, 7:46:03 PM
-
-local ns = select(2, ...)
-local UI = ns.UI
-
+--
 ---- LUA
 local setmetatable, assert, type = setmetatable, assert, type
-local tinsert, tremove, tIndexOf = table.insert, table.remove, tIndexOf
+local tremove = table.remove
 
 ---- WOW
 local CreateFrame = CreateFrame
 
----@class _ScrollFrame: ScrollFrame
+local ns = select(2, ...)
+local UI = ns.UI
+
+---@class UI.ScrollFrame: ScrollFrame
+---@field scrollBar Slider
 local ScrollFrame = UI:NewClass('ScrollFrame', 'ScrollFrame')
 
 ScrollFrame.GetOffset = HybridScrollFrame_GetOffset
@@ -26,7 +27,7 @@ function ScrollFrame:Constructor()
     self.buttonHeight = 10
     self.unused = {}
     self.buttons = setmetatable({}, {
-        __index = function(t, i)
+        __index = function(_, i)
             assert(type(i) == 'number')
             return self:GetButton(i)
         end,

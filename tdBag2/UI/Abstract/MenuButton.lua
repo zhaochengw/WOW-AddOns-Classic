@@ -4,8 +4,8 @@
 -- @Date   : 11/29/2019, 2:59:16 PM
 --
 ---- LUA
-local _G = _G
 local pairs = pairs
+local error = error
 
 ---- WOW
 local CreateFrame = CreateFrame

@@ -2,18 +2,21 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/31/2019, 7:22:32 PM
+--
+----LUA
 local ipairs = ipairs
 local tinsert = table.insert
-
----@type ns
-local ns = select(2, ...)
----@type L
-local L = ns.L
+-- @build>2@
+local format = string.format
+-- @end-build>2@
 
 ---- WOW
 local GetSpellInfo = GetSpellInfo
-local GetItemClassInfo = GetItemClassInfo
-local GetItemSubClassInfo = GetItemSubClassInfo
+
+---@class ns
+local ns = select(2, ...)
+local L = ns.L
+local C = ns.C
 
 local function Rule(name, icon, rule, c)
     local children
@@ -41,35 +44,41 @@ local function Group(name, icon, children)
 end
 
 local function Type(type, icon, children)
-    local name = GetItemClassInfo(type)
+    local name = C.Item.GetItemClassInfo(type)
     return Rule(name, icon, 'class:' .. name, children)
 end
 
 local function SubType(type, subType, icon, children)
-    local name = GetItemSubClassInfo(type, subType)
+    local name = C.Item.GetItemSubClassInfo(type, subType)
     return Rule(name, icon, 'class:' .. name, children)
 end
 
 local function Weapon(subType, icon, children)
-    return SubType(LE_ITEM_CLASS_WEAPON, subType, icon, children)
+    return SubType(Enum.ItemClass.Weapon, subType, icon, children)
 end
 
+-- @build>2@
 local function Misc(subType, icon, children)
-    return SubType(LE_ITEM_CLASS_MISCELLANEOUS, subType, icon, children)
+    return SubType(Enum.ItemClass.Miscellaneous, subType, icon, children)
 end
 
 local function Trade(subType, icon, children)
-    return SubType(LE_ITEM_CLASS_TRADEGOODS, subType, icon, children)
+    return SubType(Enum.ItemClass.Tradegoods, subType, icon, children)
 end
 
 local function Consumable(subType, icon, children)
-    return SubType(LE_ITEM_CLASS_CONSUMABLE, subType, icon, children)
+    return SubType(Enum.ItemClass.Consumable, subType, icon, children)
 end
+-- @end-build>2@
 
 local function Slot(name, icon, children)
     name = _G[name] or name
     return Rule(name, icon, 'inv:' .. name, children)
 end
+
+--[[@maybe@
+maybe {L['COMMENT_CLASS'], L['KEYWORD_CLASS']}
+--@end-maybe@]]
 
 local function TipLocale(key, icon, children)
     return Rule(L['COMMENT_' .. key], icon, 'tip:' .. L['KEYWORD_' .. key], children)
@@ -79,16 +88,19 @@ local function Tip(tip, icon, children)
     return Rule(tip, icon, 'tip:' .. tip, children)
 end
 
+--[=[@build<2@
 local function Tag(key, icon, children)
     local l = L['ITEM_TAG: ' .. key]
     return Rule(l, icon, 'tag:' .. l, children)
 end
+--@end-build<2@]=]
 
 local function Spell(id, icon, children)
     local spellName = GetSpellInfo(id)
     return Rule(spellName, icon, 'spell:' .. spellName, children)
 end
 
+-- @build>2@
 local function SpellId(id, icon, name, ...)
     local children
     if type(name) == 'table' then
@@ -102,40 +114,32 @@ local function SpellId(id, icon, name, ...)
 end
 
 local function TypeOrTag(type, subType, icon, children)
-    local name = GetItemSubClassInfo(type, subType)
+    local name = C.Item.GetItemSubClassInfo(type, subType)
     return Rule(name, icon, format('class:%s | tag:%s', name, name), children)
 end
+-- @end-build>2@
 
-local CONSUMABLE = GetItemClassInfo(LE_ITEM_CLASS_CONSUMABLE) -- 消耗品
-local QUEST = GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM) -- 任务
-local MISC = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS) -- 其它
-local TRADEGOODS = GetItemClassInfo(LE_ITEM_CLASS_TRADEGOODS) -- 商品
-local MOUNT = GetItemSubClassInfo(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_MOUNT)
+local CONSUMABLE = C.Item.GetItemClassInfo(Enum.ItemClass.Consumable) -- 消耗品
+local QUEST = C.Item.GetItemClassInfo(Enum.ItemClass.Questitem) -- 任务
+local MISC = C.Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous) -- 其它
+-- local TRADEGOODS = C.Item.GetItemClassInfo(Enum.ItemClass.Tradegoods) -- 商品
+-- local MOUNT = C.Item.GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount)
 
 ns.DEFAULT_SORTING_RULES = {
-    --[[@build<2@
+    --[=[@build<2@
     HEARTHSTONE_ITEM_ID, -- 炉石
-    --@end-build<2@]]
+    --@end-build<2@]=]
     -- @build>2@
     Group(L['Transporter'], 134414, {
         HEARTHSTONE_ITEM_ID, -- 炉石
-        184871, -- 黑暗之门
         44315, -- 召回卷轴 III
         44314, -- 召回卷轴 II
         37118, -- 召回卷轴 I
-        -- @build>3@
-        48933, -- 虫洞生成器：诺森德
-        -- @end-build>3@
-        30544, -- 超级安全传送器：托什雷的基地
-        30542, -- 空间撕裂器 - 52区
-        18986, -- 安全传送器：加基森
-        18984, -- 空间撕裂器 - 永望镇
         37863, -- 烈酒的遥控器
     }), --
     Group(L['Usuable'], 294476, {
         -- @build>3@
         23821, -- 气阀微粒提取器
-        40768, -- 随身邮箱
         49040, -- 基维斯
         40769, -- 废物贩卖机器人制造器
         -- @end-build>3@
@@ -143,13 +147,13 @@ ns.DEFAULT_SORTING_RULES = {
         18232, -- 修理机器人74A型
     }), --
     -- @end-build>2@
-    --[[@build<2@
+    --[=[@build<2@
     Tag('Mount', 132261), -- 坐骑
     Tag('Pet', 132598), -- 宠物
-    --@end-build<2@]]
+    --@end-build<2@]=]
     -- @build>2@
-    TypeOrTag(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_MOUNT, 132261), -- 坐骑
-    TypeOrTag(LE_ITEM_CLASS_MISCELLANEOUS, LE_ITEM_MISCELLANEOUS_COMPANION_PET, 132598), -- 宠物
+    TypeOrTag(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.Mount, 132261), -- 坐骑
+    TypeOrTag(Enum.ItemClass.Miscellaneous, Enum.ItemMiscellaneousSubclass.CompanionPet, 132598), -- 宠物
     -- @end-build>2@
     Group(L['Tools'], 134065, {
         5060, -- 潜行者工具
@@ -187,10 +191,10 @@ ns.DEFAULT_SORTING_RULES = {
         -- @build>3@
         39505, -- 学者的书写工具
         -- @end-build>3@
-        --[=[@build<3@
+        --[==[@build<3@
         4471, -- 燧石和火绒
-        --@end-build<3@]=]
-        Weapon(LE_ITEM_WEAPON_FISHINGPOLE, 132932), -- 鱼竿
+        --@end-build<3@]==]
+        Weapon(Enum.ItemWeaponSubclass.Fishingpole, 132932), -- 鱼竿
     }), --
     Rule(EQUIPSET_EQUIP, 132722, 'equip', {
         Rule('Set', 132722, 'bset'), --
@@ -227,19 +231,19 @@ ns.DEFAULT_SORTING_RULES = {
             Slot('INVTYPE_TABARD', 135026), -- 战袍
         }),
     }), -- 装备
-    Type(LE_ITEM_CLASS_PROJECTILE, 132382), -- 弹药
-    Type(LE_ITEM_CLASS_CONTAINER, 133652), -- 容器
-    Type(LE_ITEM_CLASS_QUIVER, 134407), -- 箭袋
-    Type(LE_ITEM_CLASS_RECIPE, 134939), -- 配方
+    Type(Enum.ItemClass.Projectile, 132382), -- 弹药
+    Type(Enum.ItemClass.Container, 133652), -- 容器
+    Type(Enum.ItemClass.Quiver, 134407), -- 箭袋
+    Type(Enum.ItemClass.Recipe, 134939), -- 配方
     Rule(CONSUMABLE, 134829, 'class:' .. CONSUMABLE .. ' & tip:!' .. QUEST .. ' & spell', {
-        --[[@build<2@
+        --[=[@build<2@
         TipLocale('CLASS', 132273), -- 职业
         Spell(746, 133685), -- 急救
         Spell(433, 133945), -- 进食
         Spell(430, 132794), -- 喝水
         Spell(439, 134830), -- 治疗药水
         Spell(438, 134851), -- 法力药水
-        --@end-build<2@]]
+        --@end-build<2@]=]
         -- @build>2@
         Consumable(7, 133692), -- 绷带
         Consumable(3, 134742), -- 合剂
@@ -271,9 +275,9 @@ ns.DEFAULT_SORTING_RULES = {
         Group(GetSpellInfo(7620), 136245, {34861, 6533, 6532, 6530, 6529}),
         -- @end-build>2@
     }), -- 消耗品
-    Type(LE_ITEM_CLASS_TRADEGOODS, 132905, {
+    Type(Enum.ItemClass.Tradegoods, 132905, {
         TipLocale('CLASS', 132273), -- 职业
-        --[[@build<2@
+        --[=[@build<2@
         Tag('Cloth', 132903), -- 布
         Tag('Leather', 134256), -- 皮
         Tag('Metal & Stone', 133217), -- 金属和矿石
@@ -281,7 +285,7 @@ ns.DEFAULT_SORTING_RULES = {
         Tag('Herb', 134215), -- 草药
         Tag('Elemental', 135819), -- 元素
         Tag('Enchanting', 132864), -- 附魔
-        --@end-build<2@]]
+        --@end-build<2@]=]
         -- @build>2@
         Trade(2, 133715), -- 爆炸物
         Trade(3, 134441), -- 装置
@@ -298,25 +302,25 @@ ns.DEFAULT_SORTING_RULES = {
         -- @end-build>2@
     }), -- 商品
     -- @build>2@
-    Type(LE_ITEM_CLASS_GEM, 133272, {
-        SubType(LE_ITEM_CLASS_GEM, 0, 134083), -- 红
-        SubType(LE_ITEM_CLASS_GEM, 2, 134114), -- 黄
-        SubType(LE_ITEM_CLASS_GEM, 1, 134080), -- 蓝
-        SubType(LE_ITEM_CLASS_GEM, 5, 134111), -- 橙
-        SubType(LE_ITEM_CLASS_GEM, 4, 134093), -- 绿
-        SubType(LE_ITEM_CLASS_GEM, 3, 134103), -- 紫
-        SubType(LE_ITEM_CLASS_GEM, 8, 132886), -- 棱彩
-        SubType(LE_ITEM_CLASS_GEM, 6, 134098), -- 多彩
-        SubType(LE_ITEM_CLASS_GEM, 7, 134087), -- 简易
+    Type(Enum.ItemClass.Gem, 133272, {
+        SubType(Enum.ItemClass.Gem, 0, 134083), -- 红
+        SubType(Enum.ItemClass.Gem, 2, 134114), -- 黄
+        SubType(Enum.ItemClass.Gem, 1, 134080), -- 蓝
+        SubType(Enum.ItemClass.Gem, 5, 134111), -- 橙
+        SubType(Enum.ItemClass.Gem, 4, 134093), -- 绿
+        SubType(Enum.ItemClass.Gem, 3, 134103), -- 紫
+        SubType(Enum.ItemClass.Gem, 8, 132886), -- 棱彩
+        SubType(Enum.ItemClass.Gem, 6, 134098), -- 多彩
+        SubType(Enum.ItemClass.Gem, 7, 134087), -- 简易
     }), -- 珠宝
     -- @end-build>2@
     Rule(MISC, 134237, 'class:!' .. QUEST .. ' & tip:!' .. QUEST, {
         -- @build>2@
-        Misc(LE_ITEM_MISCELLANEOUS_REAGENT, 133587), -- 材料
+        Misc(Enum.ItemClass.Reagent, 133587), -- 材料
         -- @end-build>2@
-        Type(LE_ITEM_CLASS_CONSUMABLE, 134420), -- 消耗品
-        Type(LE_ITEM_CLASS_MISCELLANEOUS, 134400), -- 其它
-        Type(LE_ITEM_CLASS_KEY, 134237), -- 钥匙
+        Type(Enum.ItemClass.Consumable, 134420), -- 消耗品
+        Type(Enum.ItemClass.Miscellaneous, 134400), -- 其它
+        Type(Enum.ItemClass.Key, 134237), -- 钥匙
     }), --
     Rule(QUEST, 133469, 'class:' .. QUEST .. ' | tip:' .. QUEST, {
         Tip(ITEM_STARTS_QUEST, 132836), -- 接任务
@@ -337,6 +341,6 @@ ns.DEFAULT_SAVING_RULES = { --
     Trade(12, 132864), -- 附魔
     Trade(4, 134379), -- 珠宝加工
     Trade(13, 132850), -- 原料
-    Type(LE_ITEM_CLASS_GEM, 133272),
+    Type(Enum.ItemClass.Gem, 133272),
     -- @end-build>2@
 }

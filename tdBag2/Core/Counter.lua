@@ -3,9 +3,9 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 12/3/2019, 2:52:21 PM
 --
-local pairs, ipairs = pairs, ipairs
+local ipairs = ipairs
 
-local GetItemCount = GetItemCount
+local C = LibStub('C_Everywhere')
 
 ---@type ns
 local ns = select(2, ...)
@@ -17,7 +17,7 @@ local BANKS = ns.GetBags(ns.BAG_ID.BANK)
 local GUILDBANKS = ns.GetBags(ns.BAG_ID.GUILDBANK)
 -- @end-build>2@
 
----@class Counter: AceAddon-3.0, AceEvent-3.0
+---@class Counter: AceModule, AceEvent-3.0
 local Counter = ns.Addon:NewModule('Counter', 'AceEvent-3.0')
 
 function Counter:OnInitialize()
@@ -47,7 +47,7 @@ function Counter:GetBagItemCount(owner, bag, itemId)
 
     local count = 0
     for slot = 1, info.count do
-        local info = Cache:GetItemInfo(owner, bag, slot)
+        info = Cache:GetItemInfo(owner, bag, slot)
         if info.id == itemId then
             count = count + (info.count or 1)
         end
@@ -77,8 +77,8 @@ function Counter:GetOwnerItemCount(owner, itemId)
         end
         -- @end-build>2@
     else
-        local owned = GetItemCount(itemId, true)
-        local carrying = GetItemCount(itemId)
+        local owned = C.Item.GetItemCount(itemId, true)
+        local carrying = C.Item.GetItemCount(itemId)
 
         bags = carrying - equip - equipInBag
         banks = owned - carrying - equipInBank

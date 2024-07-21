@@ -6,7 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
----@class Base: Object
+---@class Addon.Base: Object
 local Base = ns.Addon:NewClass('Base')
 
 function Base:SetParent(parent)

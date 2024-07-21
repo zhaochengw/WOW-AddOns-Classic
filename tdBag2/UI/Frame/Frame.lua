@@ -3,11 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 1/7/2020, 12:31:57 AM
 --
----@type ns
-local ns = select(2, ...)
-
 local _G = _G
-
 local tinsert = table.insert
 local tDeleteItem = tDeleteItem
 
@@ -18,9 +14,12 @@ local UISpecialFrames = UISpecialFrames
 
 local UIParent = UIParent
 
+---@type ns
+local ns = select(2, ...)
+
 local LibWindow = LibStub('LibWindow-1.1')
 
----@class UI.Frame: EventsMixin, Object, Frame, tdBag2BaseFrameTemplate
+---@class UI.Frame: tdBag2BaseFrameTemplate, Object, EventsMixin
 -- UI
 ---@field Container UI.Container
 -- members
@@ -83,7 +82,7 @@ end
 
 function Frame:UpdateManaged()
     local managed = self.meta.profile.managed
-    local changed = not self:GetAttribute('UIPanelLayout-enabled') ~= not managed
+    local changed = (not self:GetAttribute('UIPanelLayout-enabled')) ~= (not managed)
 
     if not changed then
         return

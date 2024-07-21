@@ -2,6 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 2/3/2020, 8:10:05 PM
+--
 ---- LUA
 local pairs, ipairs = pairs, ipairs
 local max = math.max
@@ -11,10 +12,10 @@ local tinsert = table.insert
 local CreateFrame = CreateFrame
 local ScrollFrame_OnScrollRangeChanged = ScrollFrame_OnScrollRangeChanged
 
+local UIParent = UIParent
+
 ---@type ns
 local ns = select(2, ...)
-
-local L = ns.L
 
 local Container = ns.UI.Container
 

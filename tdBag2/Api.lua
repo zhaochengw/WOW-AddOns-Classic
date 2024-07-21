@@ -4,35 +4,42 @@
 -- @Date   : 10/18/2019, 1:11:20 PM
 --
 ---- LUA
+local _G = _G
 local type, next = type, next
-local pairs = pairs
+local pairs, ipairs = pairs, ipairs
 local select = select
 local format = string.format
 local tinsert = table.insert
 local tonumber = tonumber
 local assert = assert
 local unpack = unpack
+local nop = nop
 
+---- C
 local C = LibStub('C_Everywhere')
 
 ---- WOW
-local C_Timer = C_Timer
-local ContainerIDToInventoryID = C.Container.ContainerIDToInventoryID
 local GetScreenHeight = GetScreenHeight
 local GetScreenWidth = GetScreenWidth
 local PlaySound = PlaySound
 local Ambiguate = Ambiguate
+local GetInventorySlotInfo = GetInventorySlotInfo
+local GetGuildInfo = GetGuildInfo
+local GetRealmName = GetRealmName
 
 ---- UI
 local GameTooltip = GameTooltip
 
 ---- G
+-- @build>2@
+local MAX_GUILDBANK_TABS = MAX_GUILDBANK_TABS
+-- @end-build>2@
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
-local BACKPACK_CONTAINER = BACKPACK_CONTAINER
-local BANK_CONTAINER = BANK_CONTAINER
-local KEYRING_CONTAINER = KEYRING_CONTAINER
-local NUM_BAG_SLOTS = NUM_BAG_SLOTS
-local NUM_BANKBAGSLOTS = NUM_BANKBAGSLOTS
+local BACKPACK_CONTAINER = Enum.BagIndex.Backpack
+local BANK_CONTAINER = Enum.BagIndex.Bank
+local KEYRING_CONTAINER = Enum.BagIndex.Keyring
+local NUM_BAG_SLOTS = NUM_TOTAL_EQUIPPED_BAG_SLOTS or Constants.InventoryConstants.NumBagSlots
+local NUM_BANKBAGSLOTS = Constants.InventoryConstants.NumBankBagSlots
 local EQUIP_CONTAINER = 'equip'
 local MAIL_CONTAINER = 'mail'
 local COD_CONTAINER = 'cod'
@@ -42,9 +49,7 @@ local GLOBAL_SEARCH_OWNER = '$search'
 ---@class ns
 local ns = select(2, ...)
 
-ns.C = C
-
-ns.VERSION = tonumber((GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
+ns.VERSION = tonumber((C.AddOns.GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
     return format('%02d', tonumber(x))
 end))) or 0
 
@@ -61,17 +66,24 @@ ns.ITEM_SPACING = 2
 
 ns.SECONDS_OF_DAY = 24 * 60 * 60
 
---[==[@build<2@
+--[====[@build^1@
 ns.KEYRING_FAMILY = 9
---@end-build<2@]==]
+--@end-build^1@]====]
 -- @build>2@
 ns.KEYRING_FAMILY = 256
 -- @end-build>2@
 
+--[=[@retail@
+ns.ITEM_BUTTON_CLASS = 'ItemButton'
+--@end-retail@]=]
+-- @non-retail@
+ns.ITEM_BUTTON_CLASS = 'Button'
+-- @end-non-retail@
+
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
 
---[==[@build<2@
+--[====[@build^1@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.25, 0, 0.25},
     ['DWARF_MALE'] = {0.25, 0.5, 0, 0.25},
@@ -93,7 +105,7 @@ ns.RACE_ICON_TCOORDS = {
     ['TROLL_FEMALE'] = {0.5, 0.75, 0.75, 1.0},
     ['ORC_FEMALE'] = {0.75, 1.0, 0.75, 1.0},
 }
---@end-build<2@]==]
+--@end-build^1@]====]
 -- @build>2@
 ns.RACE_ICON_TCOORDS = {
     ['HUMAN_MALE'] = {0, 0.125, 0, 0.25},
@@ -126,9 +138,9 @@ ns.RACE_ICON_TCOORDS = {
 
 ns.TOKENS = {20560, 20559, 20558}
 
---[=[@debug@
+--[==[@debug@
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2')
---@end-debug@]=]
+--@end-debug@]==]
 --@non-debug@
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2', true)
 --@end-non-debug@
@@ -196,7 +208,7 @@ local BAG_IDS = {}
 local INV_IDS = {}
 do
     local function touch(bag, bagId)
-        local slot = ContainerIDToInventoryID(bag)
+        local slot = C.Container.ContainerIDToInventoryID(bag)
         INV_IDS[slot] = bag
         BAG_IDS[bag] = slot
 
@@ -206,11 +218,18 @@ do
     for i = 1, NUM_BAG_SLOTS do
         touch(i, BAG_ID.BAG)
     end
+
     for i = 1, NUM_BANKBAGSLOTS do
         touch(i + NUM_BAG_SLOTS, BAG_ID.BANK)
     end
 
-    tinsert(BAGS[BAG_ID.BAG], KEYRING_CONTAINER)
+    if HasKey then
+        tinsert(BAGS[BAG_ID.BAG], KEYRING_CONTAINER)
+    end
+
+    if Constants.InventoryConstants.NumReagentBagSlots then
+        tinsert(BAGS[BAG_ID.BANK], Enum.BagIndex.Reagentbank)
+    end
 
     for bagId, v in pairs(BAGS) do
         for _, bag in pairs(v) do
@@ -260,9 +279,16 @@ do
         TRINKET0SLOT = right(6),
         TRINKET1SLOT = right(7),
 
+        -- @non-retail@
         MAINHANDSLOT = bottom(-1),
         SECONDARYHANDSLOT = bottom(0),
         RANGEDSLOT = bottom(1),
+        -- @end-non-retail@
+
+        --[=[@retail@
+        MAINHANDSLOT = bottom(-0.5),
+        SECONDARYHANDSLOT = bottom(0.5),
+        --@end-retail@]=]
     }
 
     for key, pos in pairs(INV_DATA) do
@@ -352,7 +378,7 @@ ns.CHARACTER_PROFILE = { --
     hiddenBags = {[KEYRING_CONTAINER] = true},
 }
 
----@class Database
+---@class Database: AceDB.Schema
 ns.PROFILE = {
     global = { --
         forever = {},
@@ -457,9 +483,10 @@ ns.PROFILE = {
 
         style = 'Blizzard',
 
-        --[=[@debug@
+        --[==[@debug@
         colorNormal = {},
-        --@end-debug@]=]
+        tokens = 1,
+        --@end-debug@]==]
     },
 }
 
@@ -481,12 +508,12 @@ end
 
 familyColor(nil, 'colorNormal', L['Normal Color'], {r = 1, g = 1, b = 1})
 familyColor({1, 2}, 'colorQuiver', L['Quiver Color'], {r = 1, g = 0.87, b = 0.68})
---[==[@build<2@
+--[====[@build^1@
 familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
 familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
 familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
---@end-build<2@]==]
+--@end-build^1@]====]
 -- @build>2@
 familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
 familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
@@ -552,6 +579,14 @@ end
 
 function ns.IsCustomBag(bag)
     return ns.IsContainerBag(bag) and bag > BACKPACK_CONTAINER
+end
+
+function ns.IsReagentBank(bag)
+    return bag == Enum.BagIndex.Reagentbank
+end
+
+function ns.IsReagentBag(bag)
+    return bag == Enum.BagIndex.ReagentBag
 end
 
 function ns.IsContainerBag(bag)
@@ -633,7 +668,7 @@ end
 
 function ns.Spawned(method)
     return function(a1, a2, a3, a4, a5, a6, a7, a8, a9)
-        return C_Timer.After(0, function()
+        return C.Timer.After(0, function()
             return method(a1, a2, a3, a4, a5, a6, a7, a8, a9)
         end)
     end
@@ -690,9 +725,9 @@ function ns.Hook(...)
 
     local orig = tbl[key]
     tbl[key] = function(...)
-        local n, r = pack(orig(...))
+        local l, r = pack(orig(...))
         func(...)
-        return unpack(r, 1, n)
+        return unpack(r, 1, l)
     end
 end
 

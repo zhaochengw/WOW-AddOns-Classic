@@ -4,6 +4,8 @@
 -- @Date   : 12/26/2019, 8:35:03 PM
 
 local MAJOR, MINOR = 'LibJunk-1.0', 1
+
+---@class LibJunk-1.0
 local Lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not Lib then
     return

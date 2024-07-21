@@ -3,18 +3,18 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/28/2019, 10:37:26 PM
 --
+---- LUA
+local pairs, ipairs = pairs, ipairs
+local tinsert = table.insert
+
 ---@type ns
 local ns = select(2, ...)
-
----- LUA
-local select, pairs, ipairs = select, pairs, ipairs
-local tinsert, tremove, wipe = table.insert, table.remove, wipe or table.wipe
 
 ---- NS
 local Group = ns.Group
 
----@class Bag: Object
----@field private groups Group[]
+---@class Addon.Bag: Object
+---@field private groups Addon.Group[]
 local Bag = ns.Addon:NewClass('Bag')
 
 function Bag:Constructor(bagType)
@@ -75,7 +75,7 @@ end
 function Bag:Pack()
     local complete = true
     for _, group in self:IterateGroups() do
-        local success, result = group:Pack()
+        local success = group:Pack()
         if not success then
             complete = false
         end

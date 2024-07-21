@@ -12,14 +12,13 @@ local floor = math.floor
 local format = string.format
 local securecall = securecall
 
+local C = LibStub('C_Everywhere')
+
 ---- WOW
 local BankButtonIDToInvSlotID = BankButtonIDToInvSlotID
 local CreateFrame = CreateFrame
 local CursorUpdate = CursorUpdate
-local GetItemInfo = GetItemInfo
-local GetItemFamily = GetItemFamily
 local ResetCursor = ResetCursor
-local GetContainerItemQuestInfo = C_Container and C_Container.GetContainerItemQuestInfo or GetContainerItemQuestInfo
 
 local ContainerFrameItemButton_OnEnter = ContainerFrameItemButton_OnEnter
 local SetItemButtonCount = SetItemButtonCount
@@ -27,33 +26,31 @@ local SetItemButtonDesaturated = SetItemButtonDesaturated
 local SetItemButtonTexture = SetItemButtonTexture
 
 ---- UI
-local StackSplitFrame = StackSplitFrame
 local GameTooltip = GameTooltip
 local UIParent = UIParent
 
 ---- G
-local ITEM_STARTS_QUEST = ITEM_STARTS_QUEST
-local LE_ITEM_CLASS_QUESTITEM = LE_ITEM_CLASS_QUESTITEM or Enum.ItemClass.Questitem
-local LE_ITEM_QUALITY_COMMON = LE_ITEM_QUALITY_COMMON or Enum.ItemQuality.Common or Enum.ItemQuality.Standard
+local LE_ITEM_CLASS_QUESTITEM = Enum.ItemClass.Questitem
+local LE_ITEM_QUALITY_COMMON = LE_ITEM_QUALITY_COMMON
 local TEXTURE_ITEM_QUEST_BANG = TEXTURE_ITEM_QUEST_BANG
 local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
+local GRAY_FONT_COLOR = GRAY_FONT_COLOR
 
 ---@type ns
 local ns = select(2, ...)
 local Addon = ns.Addon
 local Cache = ns.Cache
 local Search = ns.Search
-local Unfit = ns.Unfit
 local LibJunk = LibStub('LibJunk-1.0')
 
 local EXPIRED = GRAY_FONT_COLOR:WrapTextInColorCode(ns.L['Expired'])
 local MINUTE, HOUR, DAY = 60, 3600, ns.SECONDS_OF_DAY
 local KEYRING_FAMILY = ns.KEYRING_FAMILY
 
----@class UI.ItemBase: EventsMixin, Object, ItemButtonTemplate
+---@class UI.ItemBase: EventsMixin, Object, ItemButton
 ---@field meta FrameMeta
 ---@field EMPTY_SLOT_TEXTURE string
-local ItemBase = ns.Addon:NewClass('UI.ItemBase', 'Button')
+local ItemBase = ns.Addon:NewClass('UI.ItemBase', ns.ITEM_BUTTON_CLASS)
 ItemBase.pool = {}
 ItemBase.GenerateName = ns.NameGenerator('tdBag2ItemBase')
 
@@ -117,7 +114,8 @@ function ItemBase:Alloc()
 end
 
 function ItemBase:Create()
-    return self:Bind(CreateFrame('Button', self:GenerateName(), UIParent, 'ItemButtonTemplate'))
+    return self:Bind(CreateFrame(ns.ITEM_BUTTON_CLASS, self:GenerateName(), UIParent,
+                                 ns.ITEM_BUTTON_CLASS ~= 'ItemButton' and 'ItemButtonTemplate' or nil))
 end
 
 function ItemBase:Free()
@@ -212,7 +210,7 @@ function ItemBase:CreateOverlay()
         end
     end
 
-    local function OverlayOnClick(self, button)
+    local function OverlayOnClick(self)
         local parent = self:GetParent()
         local link = parent:IsCached() and parent.info.link
         HandleModifiedItemClick(link)
@@ -335,7 +333,7 @@ function ItemBase:UpdatePlugin()
         return
     end
 
-    C_Timer.After(0.01, function()
+    C.Timer.After(0.01, function()
         return self:OnUpdatePlugin()
     end)
 end
@@ -344,7 +342,7 @@ function ItemBase:OnUpdatePlugin()
     if not self:IsVisible() then
         return
     end
-    for i, opts in Addon:IterateItemPlugins() do
+    for _, opts in Addon:IterateItemPlugins() do
         securecall(opts.update, self)
     end
 end
@@ -357,7 +355,7 @@ function ItemBase:GetBagFamily()
         return KEYRING_FAMILY
     end
     local info = Cache:GetBagInfo(self.meta.owner, self.bag)
-    return info.link and GetItemFamily(info.link) or 0
+    return info.link and C.Item.GetItemFamily(info.link) or 0
 end
 
 function ItemBase:GetBorderColor()
@@ -382,31 +380,17 @@ function ItemBase:IsCached()
 end
 
 local IsQuestItem = ns.memorize(function(link)
-    return select(12, GetItemInfo(link)) == LE_ITEM_CLASS_QUESTITEM or Search:IsQuestItem(link) or false
+    return select(12, C.Item.GetItemInfo(link)) == LE_ITEM_CLASS_QUESTITEM or Search:IsQuestItem(link) or false
 end)
 
---[==[@build<3@
-function ItemBase:IsQuestItem()
-    return self.hasItem and IsQuestItem(self.info.id)
-end
-
-function ItemBase:IsQuestStarter()
-    if self.hasItem then
-        local q, starter = Search:IsQuestItem(self.info.id)
-        return q and starter
-    end
-end
-
---@end-build<3@]==]
--- @build>3@
 function ItemBase:IsQuestItem()
     if not self.hasItem then
         return
     end
 
     if not self:IsCached() and self.meta:IsContainer() then
-        local _, questId = GetContainerItemQuestInfo(self.bag, self.slot)
-        if questId then
+        local info = C.Container.GetContainerItemQuestInfo(self.bag, self.slot)
+        if info and info.questID then
             return true
         end
     end
@@ -420,11 +404,12 @@ function ItemBase:IsQuestStarter()
     if self:IsCached() or not self.meta:IsContainer() then
         return
     end
-    local _, questId, isActive = GetContainerItemQuestInfo(self.bag, self.slot)
-    return questId and not isActive
+    local info = C.Container.GetContainerItemQuestInfo(self.bag, self.slot)
+    if not info then
+        return
+    end
+    return info.questID and not info.isActive
 end
-
--- @end-build>3@
 
 function ItemBase:IsMatched()
     if self.meta:IsGlobalSearch() then

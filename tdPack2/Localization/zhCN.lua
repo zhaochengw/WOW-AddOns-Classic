@@ -48,12 +48,12 @@ L['Rule'] = '规则'
 L['Put where?'] = '放在哪？'
 L['Name (Optional)'] = '名称（可选）'
 L['Select an icon (Optional)'] = '选择一个图标（可选）'
-L['Sorting rules'] = '排序规则'
-L['Saving rules'] = '保存规则'
+-- [comment by wct] L['Sorting rules'] = '排序规则'
+-- [comment by wct] L['Saving rules'] = '保存规则'
 L['Save to bank when default packing'] = '默认整理同时保存到银行'
 L['Keep bank items stack full'] = '保持银行物品堆满'
 L['Bank and bag stacking together'] = '银行和背包一起堆叠'
-L['Global'] = '全局'
+-- [comment by wct] L['Global'] = '全局'
 L['Add extension filter to ItemSearch-1.3'] = '将扩展的过滤器添加到ItemSearch-1.3'
 
 L['Help'] = '帮助'
@@ -108,4 +108,7 @@ L['ITEM_TAG: Enchanting'] = '附魔'
 L['ITEM_TAG: Jewelry'] = '宝石'
 L['ITEM_TAG: Mount'] = '坐骑'
 L['ITEM_TAG: Pet'] = '宠物'
+
+-- @locale-fill@
+
 -- @end-import@

@@ -3,6 +3,10 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 1/14/2022, 4:35:35 PM
 --
+local CreateFrame = CreateFrame
+
+local GameTooltip = GameTooltip
+
 ---@type ns
 local ns = select(2, ...)
 

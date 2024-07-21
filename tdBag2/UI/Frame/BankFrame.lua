@@ -3,9 +3,6 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/17/2019, 6:42:42 PM
 --
----- LUA
-local select = select
-
 ---- WOW
 local CloseBankFrame = CloseBankFrame
 

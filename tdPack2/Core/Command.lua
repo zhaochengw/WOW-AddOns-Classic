@@ -2,7 +2,7 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 9/27/2019, 10:59:50 PM
-
+--
 ---- LUA
 local unpack, select = unpack, select
 local tInvert = tInvert
@@ -11,6 +11,7 @@ local tInvert = tInvert
 local ns = select(2, ...)
 
 ---- NS
+---@class Addon
 local Addon = ns.Addon
 local Pack = ns.Pack
 local BAG_TYPE = ns.BAG_TYPE
@@ -19,9 +20,9 @@ local EXTRA_COMMAND = ns.EXTRA_COMMAND
 local ORDER = ns.ORDER
 
 ---- LOCAL
-local COMMAND_KEYS = tInvert{COMMAND.ALL, COMMAND.BAG, COMMAND.BANK}
-local ORDER_KEYS = tInvert{ORDER.ASC, ORDER.DESC}
-local EXTRA_COMMANDS_KEYS = tInvert{EXTRA_COMMAND.SAVE}
+local COMMAND_KEYS = tInvert {COMMAND.ALL, COMMAND.BAG, COMMAND.BANK}
+local ORDER_KEYS = tInvert {ORDER.ASC, ORDER.DESC}
+local EXTRA_COMMANDS_KEYS = tInvert {EXTRA_COMMAND.SAVE}
 
 function Addon:InitCommands()
     self:RegisterChatCommand('tdp', 'OnChatSlash')

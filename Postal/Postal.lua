@@ -125,13 +125,15 @@ function Postal:OnInitialize()
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC then Postal.WOWWotLKClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then Postal.WOWCataClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then Postal.WOWRetail = true end
+	if _G.WOW_PROJECT_ID == _G.LE_EXPANSION_11_0 then Postal.WOWRetail = true end
 --	if Postal.WOWClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWBCClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW BC Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWWotLKClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW WotLK Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWCataClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Cataclysm Classic", 0.0, 0.69, 0.94) end
 --	if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Retail", 0.0, 0.69, 0.94) end
+--	if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("LE_EXPANSION_11_0", 0.0, 0.69, 0.94) end
 	-- Version number
-	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end
+	if not self.version then self.version = C_AddOns.GetAddOnMetadata("Postal", "Version") end
 
 	-- Initialize database
 	local EnableDefault = false
@@ -562,9 +564,9 @@ end
 
 function Postal.About()
 	if Postal.CreateAboutFrame then Postal:CreateAboutFrame() end
-	local version = GetAddOnMetadata("Postal", "Version")
+	local version = C_AddOns.GetAddOnMetadata("Postal", "Version")
 	wipe(t)
-	tinsert(t, "|cFFFFCC00"..GetAddOnMetadata("Postal", "Title").." v"..version.."|r")
+	tinsert(t, "|cFFFFCC00"..C_AddOns.GetAddOnMetadata("Postal", "Title").." v"..version.."|r")
 	tinsert(t, "-----")
 	tinsert(t, "")
 	for name, module in Postal:IterateModules() do

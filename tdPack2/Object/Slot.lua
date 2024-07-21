@@ -2,20 +2,19 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 8/31/2019, 3:29:19 AM
+--
+---- WOW
+local InCombatLockdown = InCombatLockdown
 
 ---@type ns
 local ns = select(2, ...)
 
----- WOW
-local InCombatLockdown = InCombatLockdown
-local PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
-
----@class Slot: Base
----@field private bag number
----@field private slot number
+---@class Addon.Slot: Addon.Base
+---@field bag number
+---@field slot number
 local Slot = ns.Addon:NewClass('Slot', ns.Base)
 
-function Slot:Constructor(parent, bag, slot)
+function Slot:Constructor(_, bag, slot)
     self.bag = bag
     self.slot = slot
 end
@@ -56,8 +55,8 @@ function Slot:IsBag()
     return ns.IsBag(self.bag)
 end
 
----@param slot Slot
----@return boolean
+---@param slot Addon.Slot
+---@return boolean, string?
 function Slot:MoveTo(slot)
     if self:IsEmpty() then
         if slot:IsEmpty() then
@@ -81,7 +80,7 @@ function Slot:MoveTo(slot)
     return true
 end
 
----@param item Item
+---@param item Addon.Item
 ---@return boolean
 function Slot:IsItemIn(item)
     return self:GetItemId() == item:GetItemId() and ns.GetBagSlotCount(self.bag, self.slot) == item:GetItemCount()

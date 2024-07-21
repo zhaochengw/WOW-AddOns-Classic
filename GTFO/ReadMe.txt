@@ -2026,3 +2026,46 @@ Change Log:
 * Updated for patch 10.2.7
 * Updated ToC for WoW Classic 1.15.2
 * Updated ToC for WoW Cataclysm 4.4.0
+
+5.8
+* Added support for The War Within (placeholders)
+* Added support for new WoW 11.0 menu system
+* Fixed special ignore list showing Retail spells for Classic versions
+* Fixed Retail spells loading for Classic versions
+* Integrated more Skada fixes from bKader
+* Updated ToC for WoW Classic 1.15.2 (again)
+* Added Dragonflight spells (world)
+* Added Mists of Pandaria spells (world)
+* Added Mists of Pandaria remix spells
+
+5.9
+* Utilized the new Blizzard buff/debuff functions
+* Fixed various bugs with TWW workarounds
+* Added TWW spells for Kriegval's Rest
+* Added TWW spells for Fungal Folly
+* Added TWW spells for Earthcrawl Mines 
+
+5.9.1
+* Fixed Pandaria spells for Throne of Thunder
+
+5.9.2
+* Added TWW spells for Ara-Kara, City of Echoes
+* Added TWW spells for Cinderbrew Meadery
+* Added TWW spells for City of Threads
+* Added TWW spells for Darkflame Cleft
+* Added TWW spells for Priory of the Scared Flame
+* Added TWW spells for Tak-Rethan Abyss
+* Added TWW spells for The Dawnbreaker
+* Added TWW spells for The Dread Pit
+* Added TWW spells for The Rookery
+* Added TWW spells for The Spiral Weave
+* Added TWW spells for The Stonevault
+* Added TWW spells for The Waterworks
+* Added TWW spells for Underkeep
+
+5.9.3
+* Added Dragonflight spells (world)
+* Added TWW spells for TWW Delves 
+* Added TWW spells for Darkflame Cleft
+* Combined all delves into one section
+* Added Pandaria spells for Temple of the Jade Serpent

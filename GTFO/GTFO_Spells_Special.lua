@@ -324,5 +324,10 @@ GTFO.SpellID["414842"] = {
   sound = 3;
 };
 
+GTFO.SpellID["382607"] = {
+  --desc = "Out of Bounds (Beta Testing)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 end

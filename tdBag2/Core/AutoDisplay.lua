@@ -2,18 +2,22 @@
 -- @Author : Dencer (tdaddon@163.com)
 -- @Link   : https://dengsir.github.io
 -- @Date   : 10/24/2019, 10:24:55 AM
+--
+local LibClass = LibStub('LibClass-2.0')
 
 ---@type ns
 local ns = select(2, ...)
+
 local Addon = ns.Addon
 local BAG_ID = ns.BAG_ID
 
----@class AutoDisplay: AceAddon-3.0, AceHook-3.0, AceEvent-3.0
+---@class AutoDisplay: AceModule, AceHook-3.0, AceEvent-3.0
 local AutoDisplay = Addon:NewModule('AutoDisplay', 'AceHook-3.0', 'AceEvent-3.0')
 
 function AutoDisplay:OnInitialize()
     self.frameKeys = {}
-    self.eventKeys = {}
+    self.showKeys = {}
+    self.hideKeys = {}
 
     self:RawHook('OpenBackpack', 'ShowBag', true)
     self:RawHook('CloseBackpack', 'HideBag', true)
@@ -30,16 +34,31 @@ function AutoDisplay:OnInitialize()
     self:RawHook('OpenAllBags', true)
     self:RawHook('CloseAllBags', true)
 
-    self:RegisterDisplayFrame('Mail', MailFrame)
-    self:RegisterDisplayFrame('Merchant', MerchantFrame)
-    self:RegisterDisplayFrame('Character', CharacterFrame)
-    self:RegisterDisplayEvent('Auction', 'AUCTION_HOUSE_SHOW', 'AUCTION_HOUSE_CLOSED')
+    self:RegisterFrame('Trade', 1)
+    self:RegisterFrame('Bank', 8)
+    self:RegisterFrame('Auction', 21)
+
+    self:RegisterFrame('Mail', MailFrame)
+    self:RegisterFrame('Merchant', MerchantFrame)
+    self:RegisterFrame('Character', CharacterFrame)
+
     self:RegisterDisplayEvent('Craft', 'TRADE_SKILL_SHOW', 'TRADE_SKILL_CLOSE')
+    -- @non-retail@
     self:RegisterDisplayEvent('Craft', 'CRAFT_SHOW', 'CRAFT_CLOSE')
-    self:RegisterDisplayEvent('Trade', 'TRADE_SHOW', 'TRADE_CLOSED')
-    self:RegisterDisplayEvent('Bank', 'BANKFRAME_OPENED', 'BANKFRAME_CLOSED')
+    -- @end-non-retail@
+
+    self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW')
+    self:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE')
 
     self:RegisterEvent('PLAYER_REGEN_DISABLED')
+end
+
+function AutoDisplay:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_, id)
+    return self:OptShow(self.showKeys[id])
+end
+
+function AutoDisplay:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(_, id)
+    return self:OptHide(self.hideKeys[id])
 end
 
 function AutoDisplay:PLAYER_REGEN_DISABLED()
@@ -48,20 +67,36 @@ function AutoDisplay:PLAYER_REGEN_DISABLED()
     end
 end
 
-function AutoDisplay:RegisterDisplayFrame(key, frame)
-    self:HookScript(frame, 'OnShow', 'FrameOnShow')
-    self:HookScript(frame, 'OnHide', 'FrameOnHide')
-    self.frameKeys[frame] = key
+function AutoDisplay:OptShow(key)
+    if key and Addon.db.profile[key] then
+        self:ShowBag()
+    end
+end
+
+function AutoDisplay:OptHide(key)
+    if key and Addon.db.profile[key] then
+        self:HideBag()
+    end
+end
+
+function AutoDisplay:RegisterFrame(key, id)
+    self.showKeys[id] = 'display' .. key
+    self.hideKeys[id] = 'close' .. key
+
+    if LibClass:IsWidget(id) then
+        self:HookScript(id, 'OnShow', 'ShowEvent')
+        self:HookScript(id, 'OnHide', 'HideEvent')
+    end
 end
 
 function AutoDisplay:RegisterDisplayEvent(key, showEvent, hideEvent)
     if showEvent then
         self:RegisterEvent(showEvent, 'ShowEvent')
-        self.eventKeys[showEvent] = 'display' .. key
+        self.showKeys[showEvent] = 'display' .. key
     end
     if hideEvent then
         self:RegisterEvent(hideEvent, 'HideEvent')
-        self.eventKeys[hideEvent] = 'close' .. key
+        self.hideKeys[hideEvent] = 'close' .. key
     end
 end
 
@@ -78,42 +113,22 @@ function AutoDisplay:ToggleBag()
 end
 
 function AutoDisplay:ShowEvent(event)
-    local key = event and self.eventKeys[event]
-    if key and Addon.db.profile[key] then
-        self:ShowBag()
-    end
+    return self:OptShow(self.showKeys[event])
 end
 
 function AutoDisplay:HideEvent(event)
-    local key = event and self.eventKeys[event]
-    if key and Addon.db.profile[key] then
-        self:HideBag()
-    end
-end
-
-function AutoDisplay:FrameOnShow(frame)
-    local key = frame and self.frameKeys[frame]
-    if key and Addon.db.profile['display' .. key] then
-        self:ShowBag()
-    end
-end
-
-function AutoDisplay:FrameOnHide(frame)
-    local key = frame and self.frameKeys[frame]
-    if key and Addon.db.profile['close' .. key] then
-        self:HideBag()
-    end
+    return self:OptHide(self.hideKeys[event])
 end
 
 function AutoDisplay:OpenAllBags(frame)
-    if frame and self.frameKeys[frame] then
+    if not frame or self.showKeys[frame] then
         return
     end
     self:ShowBag()
 end
 
 function AutoDisplay:CloseAllBags(frame)
-    if frame and self.frameKeys[frame] then
+    if not frame or self.hideKeys[frame] then
         return
     end
     self:HideBag()
