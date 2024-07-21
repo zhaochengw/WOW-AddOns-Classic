@@ -119,6 +119,7 @@ hooksecurefunc("WorldStateScoreFrame_Update", function()
 
 	for i = 1, 22 do
 		local scoreButton = _G["WorldStateScoreButton"..i]
+		if scoreButton and scoreButton.name and scoreButton.name.text then
 		local name, _, _, _, _, faction, _, _, classToken = GetBattlefieldScore(scrollOffset + i)
 		if name and faction and classToken then
 			local n, s = strsplit("-", name, 2)
@@ -135,5 +136,6 @@ hooksecurefunc("WorldStateScoreFrame_Update", function()
 			end
 			scoreButton.name.text:SetText(n)
 		end
+	end
 	end
 end)
