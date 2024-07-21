@@ -1,0 +1,328 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this file,
+   - You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="HTBLib_localization.lua"/>
+	<Script file="HTBLib.lua"/>
+	<CheckButton name="HunterTrapButtonTemplateA" inherits="ActionButtonTemplate, SecureActionButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="30" y="30"/>
+		</Size>
+		<Scripts>
+			<OnLoad>
+				local cooldown = _G[self:GetName().."Cooldown"];
+				cooldown:SetFrameLevel(cooldown:GetFrameLevel() + 2);
+				cooldown:SetScale(.83);	
+				self:RegisterForDrag("LeftButton", "RightButton");
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+				local normalTexture = _G[self:GetName().."NormalTexture"];
+				normalTexture:SetWidth(54);	
+				normalTexture:SetHeight(54);	
+			</OnLoad>
+			<OnDragStart>
+				if not InCombatLockdown() and (LOCK_ACTIONBAR ~= "1" or IsShiftKeyDown()) then
+					local spell = self:GetParent().spells[self:GetID()];
+					if spell then
+						local _, _, _, _, _, _, maxRankId = GetSpellInfo(GetSpellInfo(spell.id));
+						PickupSpell(maxRankId);
+					end
+				end
+			</OnDragStart>
+			<PreClick>
+				self:SetChecked(not self:GetChecked());
+			</PreClick>
+			<OnMouseUp>
+				if not self:GetAttribute("type2") then
+					HTBLib_BarDropDown_Show(self:GetParent(), button);
+				end
+				HTBLib_ReceiveDrag(self);
+			</OnMouseUp>
+			<OnReceiveDrag>
+				HTBLib_ReceiveDrag(self, true);
+			</OnReceiveDrag>
+			<OnEnter>
+				HTBLib_Button_SetTooltip(self);
+			</OnEnter>
+			<OnUpdate>
+				if GameTooltip:GetOwner() == self then
+					HTBLib_Button_SetTooltip(self);
+				end
+			</OnUpdate>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+	<StatusBar name="HunterTrapCountdownA" drawLayer="BORDER" orientation="VERTICAL" enableMouse="true" virtual="true">
+		<Size>
+			<AbsDimension x="4" y="30"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT">
+				<Offset>
+					<AbsDimension x="7" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true">
+					<Color r="0" g="0" b="0" a="0.7"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<BarColor r="1.0" g="0.7" b="0.0"/>
+		<Scripts>
+			<OnLoad>
+				self:SetMinMaxValues(0,1);
+				self:SetValue(0);
+			</OnLoad>
+			<OnMouseUp>
+				HTBLib_BarDropDown_Show(self:GetParent(), button);
+			</OnMouseUp>
+			<OnEnter>
+				if self:GetValue() ~= 0 then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(string.format(SecondsToTimeAbbrev(self:GetValue())), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+					GameTooltip:AddLine();
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
+			<OnUpdate>
+				if GameTooltip:GetOwner() == self and self:GetValue() ~= 0 then
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(string.format(SecondsToTimeAbbrev(self:GetValue())), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+					GameTooltip:AddLine();
+				end
+			</OnUpdate>
+			<OnDragStart>
+				if self:GetParent().settings.position == "unlock" then
+					self:GetParent():StartMoving();
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if self:GetParent().settings.position == "unlock" then
+					self:GetParent():StopMovingOrSizing();
+				end
+			</OnDragStop>
+		</Scripts>
+	</StatusBar>
+        <Frame name="HunterTrapsBarTemplateA" parent="UIParent" enableMouse="true" movable="true" hidden="true" virtual="true">
+		<Size>
+			<AbsDimension x="44" y="44"/>
+		</Size>
+		<Frames>
+			<StatusBar name="$parentCountdown1" inherits="HunterTrapCountdownA"/>
+			<CheckButton name="$parentButton1" inherits="HunterTrapButtonTemplateA" id="1">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown2" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton2" inherits="HunterTrapButtonTemplateA" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown3" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton3" inherits="HunterTrapButtonTemplateA" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown4" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton4" inherits="HunterTrapButtonTemplateA" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown4" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown5" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton4" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton5" inherits="HunterTrapButtonTemplateA" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown5" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown6" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton5" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton6" inherits="HunterTrapButtonTemplateA" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown6" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown7" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton6" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton7" inherits="HunterTrapButtonTemplateA" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown7" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown8" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton7" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton8" inherits="HunterTrapButtonTemplateA" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown8" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown9" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton8" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton9" inherits="HunterTrapButtonTemplateA" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown9" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<StatusBar name="$parentCountdown10" inherits="HunterTrapCountdownA">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentButton9" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+                        </StatusBar>
+			<CheckButton name="$parentButton10" inherits="HunterTrapButtonTemplateA" id="10">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentCountdown10" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="3" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+			<Frame name="$parentDropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="-80" y="-35"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						HTBLib_BarDropDown_OnLoad(self);
+					</OnLoad>
+					<OnShow>
+						HTBLib_BarDropDown_OnLoad(self);
+					</OnShow>
+				</Scripts>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnMouseUp>
+				HTBLib_BarDropDown_Show(self, button);
+			</OnMouseUp>
+			<OnDragStart>
+				if self.settings.position == "unlock" then
+					self:StartMoving();
+				end
+			</OnDragStart>
+			<OnDragStop>
+				if self.settings.position == "unlock" then
+					self:StopMovingOrSizing();
+				end
+			</OnDragStop>
+			<OnUpdate>
+				HTBLib_OnUpdate(self);
+			</OnUpdate>
+		</Scripts>
+        </Frame>
+</Ui>
