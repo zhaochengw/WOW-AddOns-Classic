@@ -86,7 +86,8 @@ function F:ConfirmGuildInvite(characterName, realmName)
     local _, name, nameForAPI = LRI:GetRealmInfo(realmName)
     local fullName = characterName.."-"..nameForAPI
 
-    StaticPopupDialogs["ENHANCED_MENU_CONFIRM_GUILD_INVITE"].text = CHAT_GUILD_INVITE_SEND .. "\n" .. fullName
-    StaticPopupDialogs["ENHANCED_MENU_CONFIRM_GUILD_INVITE"].OnAccept = function() GuildInvite(fullName) end
-    StaticPopup_Show("ENHANCED_MENU_CONFIRM_GUILD_INVITE")
+    -- StaticPopupDialogs["ENHANCED_MENU_CONFIRM_GUILD_INVITE"].text = CHAT_GUILD_INVITE_SEND .. "\n" .. fullName
+    -- StaticPopupDialogs["ENHANCED_MENU_CONFIRM_GUILD_INVITE"].OnAccept = function() GuildInvite(fullName) end
+    -- StaticPopup_Show("ENHANCED_MENU_CONFIRM_GUILD_INVITE")
+    GuildInvite(fullName)
 end

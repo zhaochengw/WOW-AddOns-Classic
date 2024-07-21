@@ -183,8 +183,6 @@ hooksecurefunc("UnitPopup_ShowMenu", function(self, which)
 
     local menu = UnitPopup_HasVisibleMenu() and UIDropDownMenu_GetCurrentDropDown() or nil
     if not menu then return end
-    -- texplore(menu)
-
     local show = PrepareButtons(menu.which, menu.name, menu.server)
     -- Interface\SharedXML\UIDropDownMenu.lua
     if show then
