@@ -1,4 +1,16 @@
-﻿------观察报错-------
+﻿------Backsupport-------
+do
+	C_Item.GetItemInfo	=	GetItemInfo
+	C_Item.GetItemSpell	=	GetItemSpell
+	C_Item.GetItemInfoInstant	=	GetItemInfoInstant
+	C_Item.GetItemClassInfo	=	GetItemClassInfo
+	C_Item.GetDetailedItemLevelInfo	=	GetDetailedItemLevelInfo
+	C_Item.GetItemInventorySlotInfo	=	GetItemInventorySlotInfo
+	C_Item.GetItemSubClassInfo	=	GetItemSubClassInfo
+	_G.C_AddOns.IsAddOnLoaded	=	_G.IsAddOnLoaded
+end
+
+------观察报错-------
 if not InspectTalentFrameSpentPoints 
 then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
 ------观察报错-------
