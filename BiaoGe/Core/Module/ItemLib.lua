@@ -55,6 +55,7 @@ local typeIDtbl = {
     "world",
     "worldboss",
     "pvp",
+    "pvp_currency"
 }
 local function GetTypeID(type)
     for i, v in ipairs(typeIDtbl) do
@@ -188,9 +189,9 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
         end
 
         if BG.IsVanilla then
-            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. bossname ..  exText .. AddPrice(itemID)
+            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. bossname .. exText .. AddPrice(itemID)
         else
-            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. hard .. " " .. bossname ..  exText .. AddPrice(itemID)
+            get = color .. BG.FBfromBossPosition[FB][ii].localName .. " " .. hard .. " " .. bossname .. exText .. AddPrice(itemID)
         end
 
         -- 团本正常掉落/兑换物（比如套装）
@@ -535,8 +536,54 @@ local function FilterItem(FB, itemID, EquipLocs, type, hard, ii, otherID) -- 重
             haved = CheckHaved(itemID)
         }
         return a
+    elseif type == "pvp_currency" then -- 牌子
+        local v = otherID
+        local count = v.count
+        local currencyID = v.currencyID
+        local phase = v.phase
+        local phaseText = ""
+        if phase then
+            phaseText = " |cff808080<" .. phase .. ">|r"
+        end
+        local otherItemID1 = v.otherItemID1
+        local otherItemID1Count = v.otherItemID1Count
+        local otherText = ""
+        if otherItemID1 then
+            local otherItemID1CountText = ""
+            if otherItemID1Count and otherItemID1Count ~= 1 then
+                otherItemID1CountText = "x" .. otherItemID1Count
+            end
+            local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(otherItemID1)
+            otherText = " + " .. AddTexture(Texture) .. link .. otherItemID1CountText
+        end
+
+        local name = C_CurrencyInfo.GetCurrencyInfo(currencyID).name
+        local tex = C_CurrencyInfo.GetCurrencyInfo(currencyID).iconFileID
+        local quantity = C_CurrencyInfo.GetCurrencyInfo(currencyID).quantity
+        local color = "00FF00"
+        if count then
+            if quantity < count then
+                color = "FF0000"
+            end
+        else
+            count = ""
+        end
+        local get = BG.STC_y1(AddTexture(tex) .. name .. " " .. "|cff" .. color .. count .. RR) .. AddPrice(itemID) .. otherText .. phaseText
+
+        local a = {
+            itemID = itemID,
+            link = link,
+            level = level,
+            quality = quality,
+            texture = Texture,
+            get = get,
+            bindType = bindType,
+            type = GetTypeID(type),
+            haved = CheckHaved(itemID)
+        }
+        return a
     end
-    -- 团本 任务 套装 牌子 声望 专业 5人 世界掉落 世界boss PVP 赛季服货币/牌子
+    -- 团本 任务 套装 牌子 声望 专业 5人 世界掉落 世界boss PVP 赛季服货币/牌子 PVP货币
 end
 local function Mode(FB, count1, tbl, EquipLocs, itemID, type, hard, ii, k)
     if EquipLocs then
@@ -684,10 +731,16 @@ local function CheckItemCache(EquipLocs, checkFB) -- 不传入参数时是检查
         end
         -- PVP
         if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.pvp then
-            for k, v in pairs(BG.Loot[FB].Pvp) do
-                for i, itemID in ipairs(BG.Loot[FB].Pvp[k]) do
+            for k, v in pairs(BG.Loot[FB].PVP) do
+                for i, itemID in ipairs(BG.Loot[FB].PVP[k]) do
                     count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "pvp", hard, ii, k)
                 end
+            end
+        end
+        -- PVP货币
+        if onlyCheckCache or not BiaoGe.ItemLib.fitlerGet.pvp then
+            for itemID, v in pairs(BG.Loot[FB].PVP_currency) do
+                count1, tbl = Mode(FB, count1, tbl, EquipLocs, itemID, "pvp_currency", hard, ii, v)
             end
         end
     end
@@ -964,7 +1017,7 @@ local function SetItemLib(num, itemtbale)
             f.Text:SetWidth(f:GetWidth())
             f.Text:SetWordWrap(false)
             if i == 4 and #vv.getTbl > 1 then
-                f.Text:SetText(i_table[i].."\n\n")
+                f.Text:SetText(i_table[i] .. "\n\n")
             else
                 f.Text:SetText(i_table[i])
             end
@@ -1225,7 +1278,7 @@ local function UpdateItemLib(num, EquipLocs)
 end
 function BG.UpdateAllItemLib(num)
     if not BG.ItemLibMainFrame:IsVisible() then return end
-    BG.itemLibNeedUpdate=false
+    BG.itemLibNeedUpdate = false
     local num = num or 1
     local EquipLocs = BiaoGe["ItemLibInvType"][num]
     wipe(itemTbl)
@@ -1756,6 +1809,7 @@ function BG.ItemLibUI()
                     { name = L["牌子/货币"], name2 = "currency", },
                     { name = L["声望"], name2 = "faction", },
                     { name = L["专业"], name2 = "profession", },
+                    { name = L["PVP"], name2 = "pvp", },
                 }
             elseif BG.IsCTM then
                 tbl = {

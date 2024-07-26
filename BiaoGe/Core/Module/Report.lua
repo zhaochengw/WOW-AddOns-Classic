@@ -1034,7 +1034,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             -- 在右键菜单中插入举报按钮
             do
-                local function FindDropdownItem(dropdown, text)
+                function BG.FindDropdownItem(dropdown, text)
                     local name = dropdown:GetName()
                     for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
                         local dropdownItem = _G[name .. 'Button' .. i]
@@ -1043,13 +1043,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
                 end
+
                 local function UpdateAddReportButtons(mybuttontext, targetbuttontextTbl, isPvPreport)
                     local dropdownName = 'DropDownList' .. 1
                     local dropdown = _G[dropdownName]
-                    local myindex1, mybutton1 = FindDropdownItem(dropdown, mybuttontext)
+                    local myindex1, mybutton1 = BG.FindDropdownItem(dropdown, mybuttontext)
                     local index, targetbutton
                     for i, text in ipairs(targetbuttontextTbl) do
-                        index, targetbutton = FindDropdownItem(dropdown, text)
+                        index, targetbutton = BG.FindDropdownItem(dropdown, text)
                         if index and targetbutton then
                             break
                         end
@@ -1209,10 +1210,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             return
                         end
                     end
-
-                    -- 如果目标是自己队友，则不添加一键举报按钮
+                    -- 如果目标是自己队友或好友，则不添加一键举报按钮
                     if name then
-                        local tbl={}
+                        local tbl = {}
                         if IsInRaid(1) then
                             tbl = BG.raidRosterInfo
                         elseif IsInGroup(1) then
@@ -1220,6 +1220,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                         for i, v in ipairs(tbl) do
                             if name == v.name then
+                                return
+                            end
+                        end
+                        if unit then
+                            if C_FriendList.IsFriend(UnitGUID(unit)) then
+                                return
+                            end
+                        elseif _name and chatPlayerGUIDs[fullname] then
+                            if C_FriendList.IsFriend(chatPlayerGUIDs[fullname]) then
                                 return
                             end
                         end

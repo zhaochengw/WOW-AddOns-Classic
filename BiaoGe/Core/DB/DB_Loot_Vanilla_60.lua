@@ -193,7 +193,7 @@ do
     local FB = "MC"
     if UnitFactionGroup("player") == "Alliance" then
         local faction = "Alliance"
-        BG.Loot[FB].Pvp = {
+        BG.Loot[FB].PVP = {
             [faction .. ":2"] = { 18854, 18856, 18857, 18858, 18862, 18863, 18864, 18859 },
             [faction .. ":3"] = { 16342, },
             [faction .. ":4"] = { 18443, },
@@ -218,7 +218,7 @@ do
 
     if UnitFactionGroup("player") == "Horde" then
         local faction = "Alliance"
-        BG.Loot[FB].Pvp = {
+        BG.Loot[FB].PVP = {
             [faction .. ":2"] = { 18834, 18846, 18849, 18852, 18851, 18853, 18845, 18850 },
             [faction .. ":3"] = { 18461, },
             [faction .. ":4"] = { 16335, },

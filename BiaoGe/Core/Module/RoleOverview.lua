@@ -831,6 +831,7 @@ function BG.RoleOverviewUI()
                         BiaoGe[FB].lockoutIDtbl[instanceID] = {
                             instanceID = instanceID,
                             lockoutID = lockoutID,
+                            realmID=realmID,
                         }
                     end
                 end
@@ -1185,13 +1186,6 @@ function BG.RoleOverviewUI()
                 LFDQueueFrame_SetType("specific")
                 LFG_JoinDungeon(LE_LFG_CATEGORY_LFD, "specific", LFDDungeonList, LFDHiddenByCollapseList)
             elseif self.type == "jieri" then
-                -- ToggleDropDownMenu(nil, nil, LFDQueueFrameTypeDropDown)
-                -- for i = 1, 20 do
-                --     local text = _G["DropDownList1Button" .. i]:GetText()
-                --     if text == self.name then
-                --         UIDropDownMenuButton_OnClick(_G["DropDownList1Button" .. i])
-                --     end
-                -- end
                 LFDQueueFrame_SetType(self.dungeonID)
                 LFG_JoinDungeon(LE_LFG_CATEGORY_LFD, self.dungeonID, LFDDungeonList, LFDHiddenByCollapseList)
             end
@@ -1292,13 +1286,17 @@ function BG.RoleOverviewUI()
             end
             UpdateButtons()
             if BiaoGe.lastChooseLFD[realmID][player] then
-                for i = 1, GetNumRandomDungeons() do
-                    local id, name = GetLFGRandomDungeonInfo(i)
-                    local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
-                    if isAvailableForPlayer then
-                        if id == BiaoGe.lastChooseLFD[realmID][player] then
-                            LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
-                            return
+                if BiaoGe.lastChooseLFD[realmID][player] == "specific" then
+                    LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
+                else
+                    for i = 1, GetNumRandomDungeons() do
+                        local id, name = GetLFGRandomDungeonInfo(i)
+                        local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
+                        if isAvailableForPlayer then
+                            if id == BiaoGe.lastChooseLFD[realmID][player] then
+                                LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
+                                return
+                            end
                         end
                     end
                 end

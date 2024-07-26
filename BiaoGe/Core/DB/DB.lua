@@ -191,7 +191,7 @@ do
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }
             AddDB("BOT", 671, "P1", nil, nil, nil, nil, { 1, 5 }) -- 暮光堡垒
 
-            BG.FBIDtable[669] = "BOT"                     -- 黑翼血环
+            BG.FBIDtable[669] = "BOT"                             -- 黑翼血环
             BG.bossPositionStartEnd[669] = { 6, 11 }
             for i = 6, 11 do
                 BG.FBfromBossPosition["BOT"][i] = { name = "BWD", localName = GetRealZoneText(669) }
@@ -411,16 +411,17 @@ do
                 WARLOCK = {},
                 PRIEST = {},
 
-                Team = {},       -- 5人本
-                World = {},      -- 世界掉落
-                WorldBoss = {},  -- 世界boss
-                Currency = {},   -- 货币贷款（WLK）
-                Faction = {},    -- 声望
-                Pvp = {},        -- PVP
-                Profession = {}, -- 专业制造
-                Quest = {},      -- 任务
+                Team = {},         -- 5人本
+                World = {},        -- 世界掉落
+                WorldBoss = {},    -- 世界boss
+                Currency = {},     -- 货币贷款（WLK）
+                Faction = {},      -- 声望
+                PVP = {},          -- PVP
+                PVP_currency = {}, -- PVP货币
+                Profession = {},   -- 专业制造
+                Quest = {},        -- 任务
 
-                Sod_Pvp = {},    -- 赛季服PVP活动
+                Sod_PVP = {},      -- 赛季服PVP活动
                 Sod_Currency = {},
 
                 ExchangeItems = {},
@@ -592,6 +593,8 @@ do
             BG["sound_pingjia" .. name] = Interface .. name .. "\\给个评价吧.mp3"
             BG["sound_biaogefull" .. name] = Interface .. name .. "\\表格满了.mp3"
             BG["sound_guoqi" .. name] = Interface .. name .. "\\装备快过期了.mp3"
+            BG["sound_uploading" .. name] = Interface .. name .. "\\账单正在上传.mp3"
+            BG["sound_uploaded" .. name] = Interface .. name .. "\\账单上传成功.mp3"
         end
     end
 end

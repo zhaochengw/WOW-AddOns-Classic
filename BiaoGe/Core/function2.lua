@@ -45,13 +45,13 @@ do
         local tab = {}
         local ii = 1
         while _G["BiaoGeTooltipTextLeft" .. ii] do
-            local tx = _G["BiaoGeTooltipTextLeft" .. ii]:GetText()
-            if tx and tx ~= "" then
-                tx = tx:gsub("每5秒恢复%d+点法力值", "每5秒回复%d+点法力值")
-                if (not tx:find(WARDROBE_SETS)) and
-                    (not tx:find(ITEM_MOD_FERAL_ATTACK_POWER:gsub("%%s", "(.+)"))) -- 小德的武器词缀：在猎豹、熊等等攻击强度提高%s点
+            local text = _G["BiaoGeTooltipTextLeft" .. ii]:GetText()
+            if text and text ~= "" then
+                text = text:gsub("每5秒恢复%d+点法力值", "每5秒回复%d+点法力值")
+                if (not text:find(WARDROBE_SETS)) and
+                    (not text:find(ITEM_MOD_FERAL_ATTACK_POWER:gsub("%%s", "(.+)"))) -- 小德的武器词缀：在猎豹、熊等等攻击强度提高%s点
                 then
-                    table.insert(tab, tx)
+                    table.insert(tab, text)
                 end
             end
             ii = ii + 1
@@ -1629,7 +1629,7 @@ do
             if ChatFrame and ChatFrame:IsVisible() then
                 for i, fontString in ipairs(ChatFrame.visibleLines) do
                     local text = fontString:GetText()
-                    if text and text:find("item:" .. itemID .. ":") and fontString:GetAlpha() ~= 0 then
+                    if text and text:find("item:" .. itemID .. ":") and fontString:IsVisible() and fontString:GetAlpha() ~= 0 then
                         local f = CreateFrame("Frame", nil, nil, "BackdropTemplate")
                         f:SetPoint("TOPLEFT", fontString, "TOPLEFT", 0, 0)
                         f:SetPoint("BOTTOMRIGHT", fontString, "BOTTOMRIGHT", 0, 0)

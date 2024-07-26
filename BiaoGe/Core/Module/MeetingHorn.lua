@@ -55,6 +55,8 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     local addonName = "MeetingHorn"
     if not IsAddOnLoaded(addonName) then return end
     local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+    local ver = GetAddOnMetadata(addonName, "Version"):gsub("%-%d+", ""):gsub("%D", "")
+    ver = tonumber(ver)
 
     -- 历史搜索记录
     do
@@ -304,6 +306,8 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         bt:SetSize(120, 22)
         if BG.IsVanilla then
             bt:SetPoint("BOTTOMRIGHT", MeetingHorn.MainPanel, "BOTTOMRIGHT", -4, 4)
+        elseif ver >= 200 then
+            bt:SetPoint("RIGHT", Browser.ApplyLeaderBtn, "LEFT", -0, 0)
         else
             bt:SetPoint("RIGHT", Browser.RechargeBtn, "LEFT", -10, 0)
         end
@@ -1050,5 +1054,103 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             end
             return true
         end
+    end
+
+    -- 星团长聊天标记
+    do
+        if ver < 200 then return end
+
+        local function StarTexture(currentLevel)
+            return "Interface/AddOns/MeetingHorn/Media/certification_icon_" .. currentLevel
+        end
+        local function AddStarRaidLeader(self, text, ...)
+            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return self.oldFunc(self, text, ...) end
+            local isChannel = text:find("|Hchannel:channel:%d+.-|h")
+            local name = text:match("|Hplayer:(.-):.-|h")
+            if not (isChannel and name) then return self.oldFunc(self, text, ...) end
+            name = strsplit("-", name)
+            local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
+            if not currentLevel then return self.oldFunc(self, text, ...) end
+            currentLevel = currentLevel.level
+            text = gsub(text, "(|Hchannel:channel:%d+|h.-|h)%s-(|Hplayer:.+|h.+|h)",
+                "%1"
+                .. "|T" .. StarTexture(currentLevel) .. ":18:18:0:0:100:100:42:60:10:90|t"
+                .. "%2")
+            return self.oldFunc(self, text, ...)
+        end
+        for i = 1, NUM_CHAT_WINDOWS do
+            if i ~= 2 then
+                local chatFrame = _G["ChatFrame" .. i]
+                chatFrame.oldFunc = chatFrame.AddMessage
+                chatFrame.AddMessage = AddStarRaidLeader
+            end
+        end
+
+        -- 右键菜单
+        hooksecurefunc("UnitPopup_ShowMenu", function(dropdown, which, unit, _name, userData)
+            -- pt(which, unit, _name)
+            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return end
+            if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
+            local name, realm
+            if unit then
+                name, realm = UnitName(unit)
+            elseif _name then
+                name, realm = strsplit("-", _name)
+            end
+            if not name then return end
+            -- pt(name,realm)
+            if realm and realm ~= GetRealmName() then return end
+            local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
+            if not currentLevel then return end
+            currentLevel = currentLevel.level
+            -- local currentLevel = 2
+            local bt = _G.DropDownList1Button1
+            bt:SetText(bt:GetText() .. "|T" .. StarTexture(currentLevel) .. ":17:50:0:0:100:100:0:60:10:90|t")
+        end)
+
+        -- 鼠标悬停
+        local CD
+        local function SetTooltip(unit)
+            local name = UnitName(unit)
+            local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
+            if not currentLevel then return end
+            currentLevel = currentLevel.level
+            -- local currentLevel = 2
+            local nameNum
+            local ii = 1
+            while _G["GameTooltipTextLeft" .. ii] do
+                local text = _G["GameTooltipTextLeft" .. ii]:GetText()
+                if text and text:find(name) then
+                    nameNum = ii
+                    break
+                end
+                ii = ii + 1
+            end
+            if not nameNum then return end
+            local nextText = _G["GameTooltipTextLeft" .. nameNum + 1]
+            if nextText and nextText:GetText() then
+                nextText:SetText("|T" .. StarTexture(currentLevel) .. ":17:60:0:0:100:100:0:60:15:85|t" .. "\n" .. nextText:GetText())
+                nextText:SetWidth(nextText:GetWidth() + 2)
+            end
+            GameTooltip:Show()
+        end
+        GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return end
+            local unit = "mouseover"
+            if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
+            if CD then return end
+            CD = true
+            BG.After(0, function() CD = false end)
+            SetTooltip(unit)
+        end)
+
+        hooksecurefunc(GameTooltip, "SetUnit", function(self, unit)
+            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return end
+            if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
+            if CD then return end
+            CD = true
+            BG.After(0, function() CD = false end)
+            SetTooltip(unit)
+        end)
     end
 end)

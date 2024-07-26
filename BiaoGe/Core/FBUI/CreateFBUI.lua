@@ -38,7 +38,7 @@ elseif BG.IsVanilla_60 then
 elseif BG.IsWLK then
     buttonCount.ICC = { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 8, 7, }
     buttonCount.TOC = { 5, 5, 5, 5, 5, 7, 8, 12, 14, }
-    buttonCount.ULD = { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 6, 4, }
+    buttonCount.ULD = { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 9, 4, }
     buttonCount.NAXX = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 14, 5, 7, 5, }
 elseif BG.IsCTM then
     buttonCount.BOT = { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 5, }
@@ -191,9 +191,12 @@ function BG.CreateFBUI(FB)
         end)
     end
 
-
     if not buttonCount[FB] then return end
-    tinsert(buttonCount[FB], 8) -- 设置支出格子为x个
+    if FB == "ULD" then
+        tinsert(buttonCount[FB], 5) -- 设置支出格子为x个
+    else
+        tinsert(buttonCount[FB], 8) -- 设置支出格子为x个
+    end
     tinsert(buttonCount[FB], 5) -- 设置总览工资格子为x个
 
 

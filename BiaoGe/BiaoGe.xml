@@ -44,6 +44,7 @@
     <Script file="Core\Module\YY.lua"/>
     <Script file="Core\Module\Report.lua"/>
     <Script file="Core\Module\MeetingHorn.lua"/>
+    <Script file="Core\Module\AtlasLoot.lua"/>
     <Script file="Core\Module\ad.lua"/>
     <Script file="Core\Module\AuctionWA.lua"/>
     <Script file="Core\Module\Auction.lua"/>

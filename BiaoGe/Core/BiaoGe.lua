@@ -55,6 +55,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if BG.copyButton then
                 BG.copyButton:Hide()
             end
+            if BG.FrameNewBee then
+                BG.FrameNewBee:Hide()
+            end
         end)
         BG.MainFrame:SetScript("OnShow", function(self)
             if not BiaoGe.options.SearchHistory.firstOpenMainFrame then
@@ -680,6 +683,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 BG.FilterClassItemMainFrame.Buttons2:SetParent(self)
                 BG.FilterClassItemMainFrame:Hide()
+
+                if BG.FrameNewBee then
+                    BG.FrameNewBee:Hide()
+                end
+                BG.ButtonNewBee:Hide()
+            end)
+            BG.HistoryMainFrame:SetScript("OnHide", function(self)
+                BG.ButtonNewBee:Show()
             end)
         end
 
@@ -1263,6 +1274,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     _G[v.button:GetName() .. "Text"]:SetTextColor(RGB(BG.g1))
                     v.frame:Hide()
                 end
+            end
+            if BG.FrameNewBee then
+                BG.FrameNewBee:Hide()
             end
         end
 
@@ -1913,9 +1927,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         if not (isLogin or isReload) then return end
         local isOnter
 
+        local function IsTrueLoot(quality, bindType, itemStackCount, typeID)
+            local _quality = GetLootThreshold()
+            if quality < _quality then
+                return
+            end
+            if bindType == 4 then              -- 任务物品
+                return
+            elseif bindType == 1 then          -- 拾取绑定的
+                if itemStackCount > 1 then     -- 堆叠数量大于1
+                    return
+                end
+                -- if typeID == 1 then     -- 背包类型
+                --     return
+                -- end
+            end
+            return true
+        end
+
         local function GiveLoot()
             if GetLootMethod() ~= "master" then return end
-            local _quality = GetLootThreshold()
             for ci = 1, GetNumGroupMembers() do
                 for li = 1, GetNumLootItems() do
                     if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == UnitName("player") then
@@ -1923,11 +1954,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         if itemLink then
                             local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
                             _, typeID, _, bindType = GetItemInfo(itemLink)
-                            if quality >= _quality and
-                                bindType ~= 4 and
-                                (itemStackCount == 1 or bindType ~= 1) and
-                                typeID ~= 1
-                            then
+                            if IsTrueLoot(quality, bindType, itemStackCount, typeID) then
                                 GiveMasterLoot(li, ci)
                             end
                         end
@@ -1961,7 +1988,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             GameTooltip:AddLine(BG.STC_dis(L["你可在插件设置-BiaoGe-其他功能里关闭这个功能"]), 0.5, 0.5, 0.5, true)
 
-            local _quality = GetLootThreshold()
             local items = {}
             for li = 1, GetNumLootItems() do
                 if LootSlotHasItem(li) then
@@ -1969,11 +1995,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     if itemLink then
                         local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
                         _, typeID, _, bindType = GetItemInfo(itemLink)
-                        if quality >= _quality and
-                            bindType ~= 4 and
-                            (itemStackCount == 1 or bindType ~= 1) and
-                            typeID ~= 1
-                        then
+                        if IsTrueLoot(quality, bindType, itemStackCount, typeID) then
                             tinsert(items, AddTexture(Texture, -3) .. link .. "|cffFFFFFF(" .. level .. ")|r")
                         end
                     end
@@ -3600,11 +3622,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end)
     end
-
+    BG.MainFrame.ErrorText:Hide()
     -- C_Timer.After(1, function()
     --     SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 金团表格载入成功。插件命令：%s或%s，小地图图标：%s"] .. RR, "/BiaoGe", "/GBG", L["星星"]))
     -- end)
-    BG.MainFrame.ErrorText:Hide()
 end)
 
 ----------刷新团队成员信息----------
@@ -3838,6 +3859,23 @@ do
     SLASH_BIAOGETEST1 = "/bgdebug"
 
     SlashCmdList["BIAOGETEST2"] = function()
+        local name, link, quality, level, _, _, _, itemStackCount, _, Texture, _, typeID, _, bindType =
+         GetItemInfo(45038)
+        pt(link, bindType, itemStackCount, typeID)
+        if bindType == 4 then              -- 任务物品
+            pt(false)
+            return
+        elseif bindType == 1 then          -- 拾取绑定的
+            if itemStackCount > 1 then     -- 堆叠数量大于1
+                pt(false)
+                return
+            end
+            if typeID == 1 then     -- 背包类型
+                pt(false)
+                return
+            end
+        end
+        pt(true) 
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 

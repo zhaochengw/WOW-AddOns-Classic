@@ -391,8 +391,8 @@ function BG.OnUpdateTime(func)
     local updateFrame = CreateFrame("Frame")
     updateFrame.timeElapsed = 0
     updateFrame:SetScript("OnUpdate", func)
+    return updateFrame
 end
-
 --[[
 BG.OnUpdateTime(function(self,elapsed)
     self.timeElapsed=self.timeElapsed+elapsed
@@ -402,6 +402,7 @@ BG.OnUpdateTime(function(self,elapsed)
     end
 end)
  ]]
+
 ------------------设置按钮文本的宽度------------------
 function BG.SetButtonStringWidth(bt)
     local t = bt:GetFontString()

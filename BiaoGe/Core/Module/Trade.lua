@@ -83,7 +83,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         local function CancelGuanZhuAndHope(itemID)
-            local _, link = GetItemInfo(itemID)
+            local name, link = GetItemInfo(itemID)
             local haveguanzhu, havehope
             for _, FB in pairs(BG.FBtable) do
                 for b = 1, Maxb[FB] do
@@ -121,11 +121,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             BG.UpdateItemLib_RightHope(itemID, 0)
 
             if haveguanzhu and havehope then
-                SendSystemMessage(format(L["|cff00BFFF<BiaoGe>|r 已自动取消%s的|cff00BFFF关注|r和|cff00FF00心愿|r。"], link))
+                BG.SendSystemMessage(format(L["已自动取消%s的关注和心愿。"], name))
             elseif haveguanzhu then
-                SendSystemMessage(format(L["|cff00BFFF<BiaoGe>|r 已自动取消%s的|cff00BFFF关注|r。"], link))
+                BG.SendSystemMessage(format(L["已自动取消%s的关注。"], name))
             elseif havehope then
-                SendSystemMessage(format(L["|cff00BFFF<BiaoGe>|r 已自动取消%s的|cff00FF00心愿|r。"], link))
+                BG.SendSystemMessage(format(L["已自动取消%s的心愿。"], name))
             end
         end
 
@@ -139,6 +139,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             return FBtable
         end
 
+
         function BG.TradeText(saved)
             local FB = BG.FB1
             local target = BG.trade.target
@@ -148,6 +149,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             local targetitems = BG.trade.targetitems
             local playeritems = BG.trade.playeritems
             local returntext = ""
+            BG.tradeFrame.frame:SetNormalColor()
             if not BG.tradeFrame.CheckButton:GetChecked() then
                 BG.tradeDropDown.DropDown:Hide()
                 return returntext
@@ -156,6 +158,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if targetitems[1] and playeritems[1] and targetmoney == 0 and playermoney == 0 then --双方都有装备，但没金额，这种是交易失败
                 returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["双方都给了装备，但没金额"] .. NN .. L["我不知道谁才是买家"] .. NN .. NN .. L["如果有金额我就能识别了"])
                 BG.tradeDropDown.DropDown:Hide()
+                BG.tradeFrame.frame:SetFalseColor()
                 return returntext
             end
             local qiankuan = 0
@@ -269,6 +272,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     if not BG.tradeDropDown.Boss then
                         returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["表格里没找到此次交易的装备，或者该装备已记过账"])
                         BG.tradeDropDown.DropDown:Show()
+                        BG.tradeFrame.frame:SetFalseColor()
                         return returntext
                     else
                         local b = BG.tradeDropDown.Boss
@@ -306,6 +310,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         end
                         returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["该BOSS格子已满"])
                         BG.tradeDropDown.DropDown:Show()
+                        BG.tradeFrame.frame:SetFalseColor()
                         return returntext
                     end
                 end
@@ -397,8 +402,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
             edgeSize = 1,
         })
-        f:SetBackdropColor(0, 0, 0, 0.7)
-        f:SetBackdropBorderColor(0, 0, 0, 1)
         f:SetSize(200, 200)
         f:SetPoint("BOTTOMLEFT", TradeFrame, "BOTTOMRIGHT", 0, 0)
         f:EnableMouse(true)
@@ -406,6 +409,18 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         f:SetFrameLevel(TradeRecipientMoneyBg:GetFrameLevel() + 1)
         f:SetFrameStrata("HIGH")
         BG.tradeFrame.frame = f
+
+        function BG.tradeFrame.frame:SetNormalColor()
+            self:SetBackdropColor(0, 0, 0, 0.7)
+            self:SetBackdropBorderColor(0, 0, 0, 1)
+        end
+
+        function BG.tradeFrame.frame:SetFalseColor()
+            self:SetBackdropColor(1, 0, 0, 0.2)
+            self:SetBackdropBorderColor(1, 0, 0, 1)
+        end
+
+        BG.tradeFrame.frame:SetNormalColor()
 
         local text = f:CreateFontString()
         text:SetPoint("TOP", f, "TOP", 0, -10)
@@ -499,6 +514,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
             if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["tradePreview"] == 1 and IsInRaid(1) then
                 BG.tradeFrame.frame:Show()
+                BG.tradeFrame.frame:SetNormalColor()
                 BG.tradeDropDown.DropDown:Hide()
                 BG.tradeDropDown.Yes = false
                 BG.tradeDropDown.Boss = nil
