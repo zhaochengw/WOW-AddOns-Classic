@@ -1,0 +1,16 @@
+lightweight tag 7efa1b79722d024cbe980821ae1df5b5a3d8e703 v1.8.6
+Author:	dev7355608 <dev7355608@gmail.com>
+Date:	Sat Mar 23 14:24:49 2024 +0100
+
+commit 7efa1b79722d024cbe980821ae1df5b5a3d8e703
+Author: dev7355608 <dev7355608@gmail.com>
+Date:   Sat Mar 23 14:24:31 2024 +0100
+
+    Update dependencies and interface version
+
+commit 3f3064a22a5845600261f34261aed70a1ac1e7a9
+Author: Paul Emmerich <tanadu+gh@gmail.com>
+Date:   Sat Mar 23 14:08:46 2024 +0100
+
+    Work-around for micro-stuttering due to garbage collection (#8)
+
