@@ -51,3 +51,4 @@ MailLogger：
 1.4.9new Update TOC
 1.5.1 new toc system, and fix instance_chat error.
 1.5.2 fix global variables error (maybe).
+1.5.4 Support CATA version.

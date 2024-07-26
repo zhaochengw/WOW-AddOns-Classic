@@ -1,6 +1,8 @@
 # NugRunning
 
-## [10.2.9](https://github.com/rgd87/NugRunning/tree/10.2.9) (2024-05-29)
-[Full Changelog](https://github.com/rgd87/NugRunning/compare/10.2.8...10.2.9) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
+## [11.0.0](https://github.com/rgd87/NugRunning/tree/11.0.0) (2024-07-23)
+[Full Changelog](https://github.com/rgd87/NugRunning/compare/10.2.9...11.0.0) [Previous Releases](https://github.com/rgd87/NugRunning/releases)
 
-- Fixed Hand of Gul'dan/Chaos Bolt bug  
+- TWW API Update  
+- Updated ToC  
+- TWW API Triage  

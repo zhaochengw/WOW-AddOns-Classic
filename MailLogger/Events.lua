@@ -180,7 +180,7 @@ end
 function Addon:UpdateTradeItemInfo(Side, Slot, ItemTable)
 	local ItemName, Quantity, Enchantment, ItemLink
 	if Side == "target" then
-		ItemName, _, Quantity, _, Enchantment = GetTradeTargetItemInfo(Slot)
+		ItemName, _, Quantity, _, _, Enchantment = GetTradeTargetItemInfo(Slot)
 	else
 		ItemName, _, Quantity, _, Enchantment = GetTradePlayerItemInfo(Slot)
 	end

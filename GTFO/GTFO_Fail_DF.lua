@@ -1259,6 +1259,12 @@ GTFO.SpellID["412644"] = {
   sound = 3;
 };
 
+GTFO.SpellID["408134"] = {
+  --desc = "Trample (Forgemaster Kraglin)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************

@@ -139,6 +139,12 @@ GTFO.SpellID["426295"] = {
   test = true;
 };
 
+GTFO.SpellID["421638"] = {
+  --desc = "Wicklighter Barrage (Blazikon)";
+  sound = 1;
+  test = true; -- Verification
+};
+
 GTFO.SpellID["421067"] = {
   --desc = "Molten Wax (The Candle King)";
   sound = 1;

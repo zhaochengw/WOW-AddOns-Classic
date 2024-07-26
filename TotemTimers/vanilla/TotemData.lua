@@ -74,6 +74,8 @@ TotemTimers.SpellIDs = {
     HealingRain = 415236,
     EarthShockTank = 408681,
     Riptide = 408521,
+    FeralSpirit = 440580,
+
 
     --EnamoredWaterSpirit = 24854 -- Water Totem trinket
     --[[ WaterShield = 52127,
@@ -283,6 +285,7 @@ TotemTimers.WeaponEnchants = {
     [3779] = SpellIDs.FlametongueWeapon,
     [3780] = SpellIDs.FlametongueWeapon,
     [3781] = SpellIDs.FlametongueWeapon,
+    [7567] = SpellIDs.FlametongueWeapon,
     [1] = SpellIDs.RockbiterWeapon,
     [6] = SpellIDs.RockbiterWeapon,
     [29] = SpellIDs.RockbiterWeapon,
@@ -294,6 +297,7 @@ TotemTimers.WeaponEnchants = {
     [2632] = SpellIDs.RockbiterWeapon,
     [2633] = SpellIDs.RockbiterWeapon,
     [3018] = SpellIDs.RockbiterWeapon,
+    [7568] = SpellIDs.RockbiterWeapon,
     [283] = SpellIDs.WindfuryWeapon,
     [284] = SpellIDs.WindfuryWeapon,
     [525] = SpellIDs.WindfuryWeapon,
@@ -302,6 +306,7 @@ TotemTimers.WeaponEnchants = {
     [3785] = SpellIDs.WindfuryWeapon,
     [3786] = SpellIDs.WindfuryWeapon,
     [3787] = SpellIDs.WindfuryWeapon,
+    [7569] = SpellIDs.WindfuryWeapon,
     [2] = SpellIDs.FrostbrandWeapon,
     [12] = SpellIDs.FrostbrandWeapon,
     [5244] = SpellIDs.FrostbrandWeapon,
@@ -311,6 +316,7 @@ TotemTimers.WeaponEnchants = {
     [3782] = SpellIDs.FrostbrandWeapon,
     [3783] = SpellIDs.FrostbrandWeapon,
     [3784] = SpellIDs.FrostbrandWeapon,
+    [7566] = SpellIDs.FrostbrandWeapon,
     [563] = SpellIDs.Windfury,
     [564] = SpellIDs.Windfury,
     [1783] = SpellIDs.Windfury,
@@ -414,6 +420,10 @@ TotemTimers.LongCooldownSpells = {
     {
         spell = SpellIDs.NaturesSwiftness,
         buff = SpellIDs.NaturesSwiftness,
+    },
+    {
+        spell = SpellIDs.FeralSpirit,
+        customOnEvent = "FeralSpiritEvent",
     },
 }
 

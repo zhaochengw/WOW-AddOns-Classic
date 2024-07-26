@@ -2065,7 +2065,14 @@ Change Log:
 
 5.9.3
 * Added Dragonflight spells (world)
+* Added Dragonflight spells for Aberrus, the Shadowed Crucible
 * Added TWW spells for TWW Delves 
 * Added TWW spells for Darkflame Cleft
 * Combined all delves into one section
 * Added Pandaria spells for Temple of the Jade Serpent
+
+5.10
+* Updated for patch 11.0
+* Added TWW spells for Darkflame Cleft
+* Added Dragonflight spells (world)
+* Added Shadowlands spells (world)

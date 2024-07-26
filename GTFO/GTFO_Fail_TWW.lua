@@ -234,12 +234,6 @@ GTFO.SpellID["422393"] = {
   sound = 3;
 };
 
-GTFO.SpellID["421638"] = {
-  --desc = "Wicklighter Barrage (Blazikon)";
-  sound = 3;
-  test = true; -- Verification
-};
-
 GTFO.SpellID["427011"] = {
   --desc = "Shadowblast (The Darkness - Application)";
   applicationOnly = true;

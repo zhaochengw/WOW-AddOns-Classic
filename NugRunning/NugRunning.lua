@@ -31,6 +31,8 @@ if apiLevel == 3 then
     UnitSpellHaste = function() return GetCombatRatingBonus(CR_HASTE_SPELL) end
 end
 local GetSpecialization = isClassic and function() return nil end or _G.GetSpecialization
+local LoadAddOn = LoadAddOn or C_AddOns.LoadAddOn
+
 
 local NRunDB = nil
 local config = NugRunningConfig
@@ -120,14 +122,24 @@ local gettimer = function(self,spellID,dstGUID,timerType)
     return foundTimer, spellActiveTimers
 end
 local IsPlayerSpell = IsPlayerSpell
-local GetSpellInfo = GetSpellInfo
+local GetSpellInfo = helpers.GetSpellInfo
 local string_sub = string.sub
-local GetSpellCooldown = GetSpellCooldown
-local GetSpellCharges = GetSpellCharges
+local GetSpellCooldown = GetSpellCooldown or C_Spell.GetSpellCooldown
+local GetSpellCharges = GetSpellCharges or C_Spell.GetSpellCharges
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local bit_band = bit.band
 local strfind = string.find
-local UnitAura = UnitAura
+
+local DeprecatedUnitAura = function(unitToken, index, filter)
+    local auraData = C_UnitAuras.GetAuraDataByIndex(unitToken, index, filter);
+    if not auraData then
+        return nil;
+    end
+
+    return AuraUtil.UnpackAuraData(auraData);
+end
+
+local UnitAura = UnitAura or DeprecatedUnitAura
 local UnitGUID = UnitGUID
 local table_wipe = table.wipe
 local CheckSpec = helpers.CheckSpec
@@ -1752,6 +1764,15 @@ local ParseOpts = function(str)
     end
     str:gsub("(%w+)%s*=%s*%[%[(.-)%]%]", capture):gsub("(%w+)%s*=%s*(%S+)", capture)
     return t
+end
+
+local function InterfaceOptionsFrame_OpenToCategory(categoryIDOrFrame)
+	if type(categoryIDOrFrame) == "table" then
+		local categoryID = categoryIDOrFrame.name;
+		return Settings.OpenToCategory(categoryID);
+	else
+		return Settings.OpenToCategory(categoryIDOrFrame);
+	end
 end
 
 NugRunning.Commands = {

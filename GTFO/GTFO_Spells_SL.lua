@@ -239,6 +239,12 @@ GTFO.SpellID["360677"] = {
   sound = 1;
 };
 
+GTFO.SpellID["324283"] = {
+  --desc = "Fire (Ember Court)";
+  sound = 1;
+};
+
+
 
 --- **********************
 --- * Halls of Atonement *
