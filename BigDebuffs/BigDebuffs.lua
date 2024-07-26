@@ -1345,7 +1345,8 @@ function BigDebuffs:AddBigDebuffs(frame)
 
         big.cooldown:SetHideCountdownNumbers(not self.db.profile.raidFrames.cooldownCount)
         big.cooldown.noCooldownCount = not self.db.profile.raidFrames.cooldownCount
-
+        big.cooldown:GetRegions():SetFont(LibSharedMedia:Fetch("font", BigDebuffs.db.profile.raidFrames.cooldownFont),
+            BigDebuffs.db.profile.raidFrames.cooldownFontSize, BigDebuffs.db.profile.raidFrames.cooldownFontEffect);
         big.cooldown:SetDrawEdge(false)
         frame.BigDebuffs[i] = big
         big:Hide()
@@ -2425,6 +2426,10 @@ end
 SLASH_BigDebuffs1 = "/bd"
 SLASH_BigDebuffs2 = "/bigdebuffs"
 SlashCmdList.BigDebuffs = function(msg)
-    InterfaceOptionsFrame_OpenToCategory(addonName)
-    InterfaceOptionsFrame_OpenToCategory(addonName)
+    if Settings and Settings.OpenToCategory then
+        Settings.OpenToCategory(addonName)
+    else
+        InterfaceOptionsFrame_OpenToCategory(addonName)
+        InterfaceOptionsFrame_OpenToCategory(addonName)
+    end
 end
