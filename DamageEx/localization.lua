@@ -28,7 +28,7 @@ DEXOptionsFrameCheckButtons = {
 	["DEX_ShowNameOnMiss"] = { title = "Missed only", tooltipText = "Display spell names only for missed hits"},
 	["DEX_ShowInterruptCrit"] = { title = "Interrupts as crits", tooltipText = "Display interrupts in the crits way"},
 	["DEX_ShowCurrentOnly"] = { title = "Target only", tooltipText = "Only display damage texts for current target"},
-	["DEX_ShowDamagePeriodic"] = { title = "DOT", tooltipText = "Display DOT"},
+	["DEX_ShowDamagePeriodic"] = { title = "DOT/HOT", tooltipText = "Display DOT/HOT"},
 	["DEX_ShowDamageShield"] = { title = "Reflect", tooltipText = "Display reflected damages"},
 	["DEX_ShowDamageHealth"] = { title = "Healing", tooltipText = "Display healing texts"},
 	["DEX_ShowDamagePet"] = { title = "Pet", tooltipText = "Display damages from your pets"},
@@ -54,7 +54,7 @@ DEXOptionsFrameSliders = {
 DEXOptionsColorPickerEx = {
 	["DEX_ColorNormal"] = { title = "Physical color"},
 	["DEX_ColorSkill"] = { title = "Spell color"},
-	["DEX_ColorPeriodic"] = { title = "DOT color"},
+	["DEX_ColorPeriodic"] = { title = "DOT/HOT color"},
 	["DEX_ColorHealth"] = { title = "Healing color"},
 	["DEX_ColorPet"] = { title = "Pet color"},
 	["DEX_ColorSpec"] = { title = "Interrupt/dispel color"},

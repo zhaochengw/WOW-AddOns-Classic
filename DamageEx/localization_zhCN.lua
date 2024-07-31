@@ -31,7 +31,7 @@ DEXOptionsFrameCheckButtons = {
 	["DEX_ShowNameOnMiss"] = { title = "当未击中时才显示", tooltipText = "只有在技能未击中、被抵抗等才显示技能名"},
 	["DEX_ShowInterruptCrit"] = { title = "暴击方式显示打断", tooltipText = "暴击方式显示打断"},
 	["DEX_ShowCurrentOnly"] = { title = "只显示选中目标伤害", tooltipText = "只显示当前选中目标的伤害和治疗，非当前选中目标则不显示"},
-	["DEX_ShowDamagePeriodic"] = { title = "显示持续伤害", tooltipText = "显示持续攻击的伤害"},
+	["DEX_ShowDamagePeriodic"] = { title = "显示持续伤害/治疗", tooltipText = "显示持续攻击的伤害/治疗"},
 	["DEX_ShowDamageShield"] = { title = "显示反弹伤害", tooltipText = "显示你对敌人伤害的反弹量"},
 	["DEX_ShowDamageHealth"] = { title = "显示治疗量", tooltipText = "显示对目标的实际治疗和过量治疗"},
 	["DEX_ShowDamagePet"] = { title = "显示宠物伤害", tooltipText = "显示宠物对目标的伤害，含图腾"},
@@ -59,7 +59,7 @@ DEXOptionsFrameSliders = {
 DEXOptionsColorPickerEx = {
 	["DEX_ColorNormal"] = { title = "物理伤害颜色"},
 	["DEX_ColorSkill"] = { title = "技能伤害颜色"},
-	["DEX_ColorPeriodic"] = { title = "持续伤害颜色"},
+	["DEX_ColorPeriodic"] = { title = "持续伤害/治疗颜色"},
 	["DEX_ColorHealth"] = { title = "治疗颜色"},
 	["DEX_ColorPet"] = { title = "宠物伤害颜色"},
 	["DEX_ColorSpec"] = { title = "打断、驱散等颜色"},

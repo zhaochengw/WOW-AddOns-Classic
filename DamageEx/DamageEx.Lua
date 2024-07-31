@@ -525,6 +525,11 @@ elseif suffixes == "HEAL" then
         dexSpell = spellName
     end
 
+    -- 检查 DEX_ShowDamagePeriodic 的值
+    if prefixes == "SPELL_PERIODIC" and DEX_Get("DEX_ShowDamagePeriodic") ~= 1 then
+        return
+    end
+
 	elseif suffixes == "INTERRUPT" then 
 		if DEX_Get("DEX_ShowInterrupt") == 1 then			-- Add Show Interupt Switch
 			extraSpellId, extraSpellName, extraSpellSchool = select(DEX_PREFIXES[prefixes],...);
