@@ -10,11 +10,17 @@ local L = ns.L
 
 ---@class MeetingHornUIEncounter
 local Encounter = ns.Addon:NewClass('UI.Encounter', 'Frame')
+LibStub:GetLibrary('AceEvent-3.0'):Embed(Encounter)
 
 function Encounter:Constructor()
     ns.UI.ListView:Bind(self.BossList)
 
+    self:RegisterMessage('MEETINGHORN_SHOW')
+
     self.zoneMenuList = {}
+    self.db = ns.Addon.db
+    self.encounterFlash = nil
+    self.encounterVersion = 1
 
     self.zoneFilter = function(v)
         return not self.zone or v.zone == self.zone
@@ -41,6 +47,7 @@ function Encounter:Constructor()
         end
     end)
     self.BossList:SetCallback('OnItemClick', function(_, button, info)
+        ns.LogStatistics:InsertLog({time(), 4, 2, info.name})
         self:SetCurrentBoss(info.bossId)
     end)
     self.BossList:SetItemList(self.bosses)
@@ -63,6 +70,10 @@ function Encounter:Constructor()
         return r
     end)())
     self.Instance:SetCallback('OnSelectChanged', function()
+        C_Timer.After(1, function()
+            local info =  ns.ENCOUNTER_INSTANCES[self.Instance:GetValue()]
+            ns.LogStatistics:InsertLog({time(), 4, 1, info.title})
+        end)
         return self:SetCurrentInstance(self.Instance:GetValue())
     end)
 
@@ -74,7 +85,7 @@ function Encounter:Constructor()
 
     self.Panel3.Label:SetText('PC查看视频及站位请按<Ctrl+C>复制地址到浏览器打开')
 
-    self:Open(ns.DEFAULT_ENCOUNTER_INSTANCE_ID)
+    self:Open(ns.ULDUAR_BOSSES)
 
     self:SetScript('OnShow', self.OnShow)
 
@@ -88,6 +99,21 @@ end
 
 function Encounter:OnShow()
     ns.Stats:Send('EncounterOpen')
+    ns.LogStatistics:InsertLog({time(), 4})
+    if self.encounterFlash then
+        ns.HideAtFrameFlash(self.encounterFlash)
+    end
+end
+
+function Encounter:MEETINGHORN_SHOW()
+    if not self.db.global.EncounterVersion or (self.encounterVersion > self.db.global.EncounterVersion) then
+        if  not self.encounterFlash then
+            self.encounterFlash = ns:CreateFlashFrame()
+            ns.BindFlashAtFrame(self.encounterFlash, ns.Addon.MainPanel.Tabs[6])
+        end
+        ns.ShowAtFrameFlash(self.encounterFlash)
+        self.db.global.EncounterVersion = self.encounterVersion
+    end
 end
 
 function Encounter:SetZoneFilter(zone)

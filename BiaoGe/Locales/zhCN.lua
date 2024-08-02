@@ -1,6 +1,5 @@
 local AddonName, ns = ...
 
--- ns.ver = "v1.10.6 Alpha1"
 ns.ver = "v" .. GetAddOnMetadata(AddonName, "Version")
 
 local c1 = "|cff" .. "ffff66"
@@ -29,6 +28,12 @@ do --简体说明书
     -- update = update .. "|cff00FF00" .. "" .. "|r\n"
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "8月1日更新v1.11.0" .. "|r\n"
+    update = update .. c1 .. [[-增加功能：最近拍卖（交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的物品，点击一下就能把物品放到交易里）]] .. "|r\n"
+    update = update .. [[-复制对方账单：如果对方是BiaoGe插件的账单，则也会复制其买家到自己的表格里]] .. "|r\n"
+    update = update .. [[-修复了多个可堆叠物品被同时一键分配时，在某些情况可能会出现数量记录错误的问题]] .. "|r\n"
+    update = update .. [[-<WLK>密语模板：增加奥杜尔成就ID列表]] .. "|r\n\n"
 
     update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
     update = update .. [[-<WLK>奥杜尔表格的杂项格子增加至9个]] .. "|r\n\n"
@@ -68,24 +73,6 @@ do --简体更新内容
     update = update .. [[-高亮对应装备：鼠标悬停在表格/背包装备时，现在也会在高亮聊天框装备]] .. "|r\n"
     update = update .. [[-<WLK>角色总览：增加珠宝、烹饪、钓鱼日常（默认不勾选）。修复了周常重置时间错误的问题]] .. "|r\n\n"
 
-    update = update .. "|cff00FF00" .. "7月14日更新v1.10.3" .. "|r\n"
-    update = update .. [[-装备过滤：修复了有些词缀不生效的问题]] .. "|r\n"
-    update = update .. [[-<WLK>装备库：增加5人本装备]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月13日更新v1.10.2" .. "|r\n"
-    update = update .. c1 .. [[-拍卖WA更新为v1.5：拍卖价格为100~1000的加价幅度现在为100一次]] .. "|r\n"
-    update = update .. [[-修复了工资抹零按钮点击失效的问题]] .. "|r\n"
-    update = update .. [[-<WLK>修复了装备过滤词缀"每5秒回复xx点法力值"对有些装备不生效的问题]] .. "|r\n"
-    update = update .. [[-<赛季服>角色总览：删除梦魇日常]] .. "|r\n"
-    update = update .. [[-<赛季服>装备库：更新声望装备、5人本新货币兑换装备]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月12日更新v1.10.1" .. "|r\n"
-    update = update .. c1 .. [[-拍卖WA更新为v1.4：增加一个开始拍卖时的动画效果]] .. "|r\n"
-    update = update .. [[-高亮背包装备：现在也支持Bagnon背包]] .. "|r\n"
-    update = update .. [[-<WLK>角色总览：增加阿尔法日常。更新英雄日常ID]] .. "|r\n"
-    update = update .. c1 .. [[-<赛季服>增加表格：黑石塔上层]] .. "|r\n"
-    update = update .. c1 .. [[-<赛季服>装备库：添加部分P4装备]] .. "|r\n\n"
-
     ns.updateText = update
 end
 
@@ -99,6 +86,14 @@ ns.L = L
 
 local L = {}
 do
+    L["（你当前版本是%s，无需下载）"] = true
+    L["（重载界面后生效）"] = true
+    L["该BOSS攻略提供：@祈福-太乙公会 大树\n点击复制NGA攻略地址"] = true
+    L["最近拍卖"] = true
+    L["交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的装备，点击一下就能把装备放到交易里。"] = true
+    L["把对方账单的金额覆盖我当前表格的金额。如果对方是BiaoGe插件的账单，则也会复制其买家。"] = true
+
+
     L["点击按钮后会把全部可交易的物品分配给自己（橙片、任务物品等不会自动分配）。"] = true
 
 
@@ -724,7 +719,7 @@ do
     L["心愿"] = true
     L["复制对方账单"] = true
     L["把对方账单的金额覆盖我当前表格的金额"] = true
-    L["不会对漏记的装备和金额生效"] = true
+    L["不会对漏记的装备和金额生效。"] = true
     L[" {rt1}拍卖倒数{rt1}"] = true
     L["清空表格"] = true
     L["一键清空全部装备、买家、金额，同时还清空关注和欠款"] = true

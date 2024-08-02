@@ -172,12 +172,10 @@ do
 
     function BG.FilterItem(bt)
         local text = bt:GetText()
-        local itemID = GetItemInfoInstant(text)
+        local itemID, _, _, EquipLoc, _, typeID, subclassID = GetItemInfoInstant(text)
         local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
 
         if itemID and num then
-            local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID = GetItemInfo(itemID)
-            -- if not quality then return 1 end
             if BG.FilterAll(itemID, typeID, EquipLoc, subclassID) then
                 bt:SetAlpha(alpha1)
                 return
@@ -264,10 +262,9 @@ do
         if not num then return "" end
 
         local icon = AddTexture(BiaoGe.FilterClassItemDB[RealmId][player][num].Icon)
-        local itemID = GetItemInfoInstant(link)
+        local itemID, _, _, EquipLoc, _, typeID, subclassID = GetItemInfoInstant(link)
 
         if itemID then
-            local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID = GetItemInfo(link)
             if BG.FilterAll(itemID, typeID, EquipLoc, subclassID) then
                 return ""
             end
@@ -1622,7 +1619,7 @@ do
         if not IsInRaid(1) then return end
         local itemID = GetItemID(link)
         if not itemID then return end
-        BG.highlightChatFrameItemID=itemID
+        BG.highlightChatFrameItemID = itemID
         local i = 1
         while _G["ChatFrame" .. i] do
             local ChatFrame = _G["ChatFrame" .. i]
@@ -1656,7 +1653,7 @@ do
         wipe(BG.LastBagItemFrame)
 
         BG.Hide_ChatHighlight()
-        BG.highlightChatFrameItemID=nil
+        BG.highlightChatFrameItemID = nil
     end
 
     function BG.Hide_ChatHighlight()
@@ -1713,33 +1710,20 @@ end
 
 ------------------跳转装备库相同部位------------------
 local function CheckItemEquipLoc(link)
-    local itemID = GetItemInfoInstant(link)
+    local itemID, _, _, itemEquipLoc = GetItemInfoInstant(link)
     for _, FB in pairs(BG.phaseFBtable[BG.FB1]) do
         if BG.Loot[FB].ExchangeItems[itemID] then
             local firstItem = BG.Loot[FB].ExchangeItems[itemID][1]
             if firstItem then
-                local name, link, quality, level, _, _, _, _, itemEquipLoc = GetItemInfo(firstItem)
+                local _, _, _, itemEquipLoc = GetItemInfoInstant(firstItem)
                 if itemEquipLoc then
-                    for i, _ in ipairs(BG.invtypetable) do
-                        for _, v in ipairs(BG.invtypetable[i].key) do
-                            if itemEquipLoc == v then
-                                return BG.invtypetable[i].name2
-                            end
-                        end
-                    end
+                    return BG.GetEquipLocName(itemEquipLoc)
                 end
             end
         end
     end
-    local name, link, quality, level, _, _, _, _, itemEquipLoc = GetItemInfo(link)
     if itemEquipLoc then
-        for i, _ in ipairs(BG.invtypetable) do
-            for _, v in ipairs(BG.invtypetable[i].key) do
-                if itemEquipLoc == v then
-                    return BG.invtypetable[i].name2
-                end
-            end
-        end
+        return BG.GetEquipLocName(itemEquipLoc)
     end
 end
 function BG.GoToItemLib(button)

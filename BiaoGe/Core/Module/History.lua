@@ -809,7 +809,7 @@ do
         end
 
         local itemStackCount = select(8, GetItemInfo(itemID))
-        if itemStackCount > 1 then return end
+        if not itemStackCount or itemStackCount > 1 then return end
 
         local maxCount
         if dangqian then

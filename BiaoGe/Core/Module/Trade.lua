@@ -139,7 +139,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             return FBtable
         end
 
-
         function BG.TradeText(saved)
             local FB = BG.FB1
             local target = BG.trade.target
@@ -393,6 +392,249 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         BG.tradeGoldTop.num = 999999
     end
 
+    -- 最近拍卖的装备
+    do
+        BG.lastAuctionFrame = {}
+        local f = CreateFrame("Frame", nil, TradeFrame, "BackdropTemplate")
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 1,
+        })
+        f:SetBackdropColor(0, 0, 0, 0.7)
+        f:SetBackdropBorderColor(0, 0, 0, 1)
+        f:SetSize(200, 125)
+        f:SetPoint("TOPLEFT", TradeFrame, "TOPRIGHT", 0, -80)
+        f:EnableMouse(true)
+        f:SetToplevel(true)
+        f:SetFrameLevel(TradeRecipientMoneyBg:GetFrameLevel() + 1)
+        f:SetFrameStrata("HIGH")
+        f:Hide()
+        BG.lastAuctionFrame.frame = f
+
+        --[[         local f = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 2,
+        })
+        f:SetBackdropColor(0, 0, 0, 0.8)
+        f:SetBackdropBorderColor(0, 0, 0, 1)
+        f:SetSize(400, 400)
+        f:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+        f:SetMovable(true)
+        f:EnableMouse(true)
+        f:SetScript("OnDragStart", f.StartMoving)
+        f:SetScript("OnDragStop", f.StopMovingOrSizing)
+        BG.lastAuctionFrame.frame = f ]]
+
+        f:SetScript("OnShow", function(self)
+            BG.lastAuctionFrame.UpdateButtons()
+            self:RegisterEvent("BAG_UPDATE_DELAYED")
+            self:RegisterEvent("ITEM_LOCK_CHANGED")
+        end)
+        f:SetScript("OnHide", function(self)
+            self:UnregisterAllEvents()
+        end)
+        f:SetScript("OnEvent", function(self)
+            BG.After(0.1, function()
+                BG.lastAuctionFrame.UpdateButtons()
+            end)
+        end)
+
+        local text = f:CreateFontString()
+        text:SetPoint("TOP", f, "TOP", 0, -10)
+        text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+        text:SetText(L["最近拍卖"])
+
+        local maxButtons = 10
+        local buttons = {}
+        for i = 1, maxButtons do
+            local bt = CreateFrame("Button", nil, BG.lastAuctionFrame.frame)
+            bt:SetSize(35, 35)
+            if i == 1 then
+                bt:SetPoint("TOPLEFT", BG.lastAuctionFrame.frame, "TOPLEFT", 9, -40)
+            elseif (i - 1) % 5 == 0 then
+                bt:SetPoint("TOPLEFT", buttons[i - 5], "BOTTOMLEFT", 0, -2)
+            else
+                bt:SetPoint("TOPLEFT", buttons[i - 1], "TOPRIGHT", 2, -0)
+            end
+            bt.icon = bt:CreateTexture(nil, "BACKGROUND", nil, 1)
+            bt.icon:SetAllPoints()
+            bt.NormalTexture = bt:CreateTexture(nil, "BACKGROUND", nil, 2)
+            bt.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
+            bt.NormalTexture:SetPoint("CENTER", 0, 0)
+            bt.NormalTexture:SetSize(bt:GetWidth() + 27, bt:GetHeight() + 27)
+            bt:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]])
+            bt:SetPushedTexture([[Interface\Buttons\UI-Quickslot-Depress]])
+            bt:RegisterForClicks("AnyUp")
+            bt:Hide()
+            tinsert(buttons, bt)
+
+            bt.count = bt:CreateFontString()
+            bt.count:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
+            bt.count:SetPoint("BOTTOMRIGHT", -2, 1)
+            bt.count:SetTextColor(1, 1, 1)
+
+            bt.level = bt:CreateFontString()
+            bt.level:SetFont(BIAOGE_TEXT_FONT, 12.5, "OUTLINE")
+            bt.level:SetPoint("BOTTOM", 0, 1)
+
+            bt:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:SetBagItem(self.b, self.i)
+                GameTooltip:Show()
+
+                BG.Hide_AllHighlight()
+                BG.HighlightBiaoGe(self.link)
+                BG.HighlightBag(self.link)
+                BG.HighlightChatFrame(self.link)
+            end)
+            bt:SetScript("OnLeave", function()
+                GameTooltip:Hide()
+                BG.Hide_AllHighlight()
+            end)
+            bt:SetScript("OnClick", function(self)
+                if self.b and self.i and not self.isLocked then
+                    ClearCursor()
+                    for i = 1, 6 do
+                        if not GetTradePlayerItemLink(i) then
+                            C_Container.PickupContainerItem(self.b, self.i)
+                            _G["TradePlayerItem" .. i .. "ItemButton"]:Click()
+                            ClearCursor()
+                            return
+                        end
+                    end
+                end
+            end)
+        end
+
+        local lastItems = {}
+        local lastItemsInfo = {}
+        function BG.lastAuctionFrame.UpdateButtons()
+            wipe(lastItemsInfo)
+            for ii, vv in ipairs(lastItems) do
+                for b = 0, NUM_BAG_SLOTS do
+                    for i = 1, C_Container.GetContainerNumSlots(b) do
+                        local info = C_Container.GetContainerItemInfo(b, i)
+                        if info then
+                            local _itemID = info.itemID
+                            if vv.itemID == _itemID then
+                                local notBound
+                                if not info.isBound then
+                                    notBound = true
+                                else
+                                    BiaoGeTooltip3:SetOwner(UIParent, "ANCHOR_NONE", 0, 0)
+                                    BiaoGeTooltip3:ClearLines()
+                                    BiaoGeTooltip3:SetBagItem(b, i)
+                                    local ii = 1
+                                    while _G["BiaoGeTooltip3TextLeft" .. ii] do
+                                        local tx = _G["BiaoGeTooltip3TextLeft" .. ii]:GetText()
+                                        if tx then
+                                            local time = tx:match(BIND_TRADE_TIME_REMAINING:gsub("%%s", "(.+)"))
+                                            if time then
+                                                notBound = true
+                                                break
+                                            end
+                                        end
+                                        ii = ii + 1
+                                    end
+                                end
+                                if notBound then
+                                    local _, _, _, level, _, _, _, _, _, _, _, typeID = GetItemInfo(vv.itemID)
+
+                                    tinsert(lastItemsInfo, {
+                                        link = info.hyperlink,
+                                        itemID = vv.itemID,
+                                        count = info.stackCount,
+                                        icon = info.iconFileID,
+                                        quality = info.quality,
+                                        isLocked = info.isLocked,
+                                        b = b,
+                                        i = i,
+                                        level = (typeID == 2 or typeID == 4) and level,
+                                    })
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            for i, bt in ipairs(buttons) do
+                bt:Hide()
+            end
+
+            for i, v in ipairs(lastItemsInfo) do
+                if i > maxButtons then break end
+                local bt = buttons[i]
+                bt.link = v.link
+                bt.b = v.b
+                bt.i = v.i
+                bt.isLocked = v.isLocked
+                local r, g, b = GetItemQualityColor(v.quality)
+                bt.NormalTexture:SetVertexColor(r, g, b)
+                bt:GetPushedTexture():SetVertexColor(r, g, b)
+                bt.icon:SetTexture(v.icon)
+                bt.icon:SetTexCoord(.03, .97, .03, .97)
+                bt.icon:SetDesaturated(v.isLocked)
+                bt.count:SetText(v.count == 1 and "" or v.count)
+                bt.level:SetText(v.level or "")
+                bt.level:SetTextColor(r, g, b)
+                bt:Show()
+            end
+        end
+
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("CHAT_MSG_RAID_WARNING")
+        f:RegisterEvent("CHAT_MSG_RAID_LEADER")
+        f:RegisterEvent("CHAT_MSG_RAID")
+        f:SetScript("OnEvent", function(self, even, ...)
+            local msg, playerName = ...
+            playerName = strsplit("-", playerName)
+            local ML
+            if even == "CHAT_MSG_RAID_WARNING" or even == "CHAT_MSG_RAID_LEADER" then
+                ML = true
+            elseif even == "CHAT_MSG_RAID" and playerName == BG.MasterLooter then
+                ML = true
+            end
+            if not ML then return end
+            for itemID in msg:gmatch("|Hitem:(%d+):") do
+                itemID = tonumber(itemID)
+                for i = #lastItems, 1, -1 do
+                    if lastItems[i].itemID == itemID then
+                        tremove(lastItems, i)
+                    end
+                end
+                tinsert(lastItems, 1, {
+                    time = time(),
+                    itemID = itemID,
+                })
+                for i = #lastItems, 1, -1 do
+                    if #lastItems <= maxButtons then
+                        break
+                    end
+                    tremove(lastItems, i)
+                end
+            end
+            if BG.lastAuctionFrame.frame:IsVisible() then
+                BG.lastAuctionFrame.UpdateButtons()
+            end
+        end)
+
+        C_Timer.NewTicker(60, function()
+            local _time = time()
+            for i = #lastItems, 1, -1 do
+                if _time - lastItems[i].time > 60 * 5 then
+                    tremove(lastItems, i)
+                end
+            end
+            if BG.lastAuctionFrame.frame:IsVisible() then
+                BG.lastAuctionFrame.UpdateButtons()
+            end
+        end)
+    end
+
     -- 自动记账效果预览框
     do
         BG.tradeFrame = {}
@@ -526,6 +768,22 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
 
             BG.tradeGoldTop:Hide()
+
+            if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["lastTrade"] == 1 then
+                if GetLootMethod() == "master" then
+                    if BG.MasterLooter == UnitName("player") then
+                        BG.lastAuctionFrame.frame:Show()
+                    else
+                        BG.lastAuctionFrame.frame:Hide()
+                    end
+                else
+                    if BG.IsLeader then
+                        BG.lastAuctionFrame.frame:Show()
+                    else
+                        BG.lastAuctionFrame.frame:Hide()
+                    end
+                end
+            end
         end)
     end
 

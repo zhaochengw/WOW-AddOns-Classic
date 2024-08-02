@@ -717,4 +717,39 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.GameTooltip_Hide(bt)
         BG.ButtonAucitonWA = bt
     end
+
+    -- WA链接版本提醒
+    local function ChangSendLink(self, even, msg, player, l, cs, t, flag, channelId, ...)
+        if not _G.BGA.ver then
+            return false, msg, player, l, cs, t, flag, channelId, ...
+        end
+        msg = msg:gsub("(%[WeakAuras:.+<BiaoGe>拍卖%s-v(%d+%.%d+)%])", function(wa, ver)
+            ver = tonumber(ver)
+            local myver = tonumber(_G.BGA.ver:match("v(%d+%.%d+)"))
+            if ver then
+                if myver and myver >= ver then
+                    return wa .. "  " .. format(BG.STC_g1(L["（你当前版本是%s，无需下载）"]), _G.BGA.ver)
+                else
+                    return wa
+                end
+            end
+        end)
+        return false, msg, player, l, cs, t, flag, channelId, ...
+    end
+
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER_INFORM", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChangSendLink)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChangSendLink)
 end)

@@ -1,5 +1,6 @@
 ---@type ns
 local ns = select(2, ...)
+ns.isOpenVoiceRoom = true
 
 local L = ns.L
 
@@ -39,7 +40,8 @@ function Browser:Constructor()
     self.ActivityLabel:SetText(L['Activity'])
     self.ModeLabel:SetText(L['Activity Mode'])
     self.SearchLabel:SetText(SEARCH .. L['(Include channel message)'])
-    self.ProgressBar:Hide()
+    self.ProgressBar.Loading:SetText(L['Receiving active data, please wait patiently'])
+    self.ProgressBar:SetMinMaxValues(0, 1)
 
     ns.GUI:GetClass('Dropdown'):Bind(self.Activity)
     ns.GUI:GetClass('Dropdown'):Bind(self.Mode)
@@ -222,15 +224,18 @@ function Browser:Constructor()
         button.SameInstanceBgLeft:SetShown(sameInstance)
         button.SameInstanceBgRight:SetShown(sameInstance)
         button.QRIcon:SetShown(item:IsOurAddonCreate())
+        button.QRIcon:SetSize(91, 26)
+        button.QRIcon:ClearAllPoints()
+        button.QRIcon:SetPoint("LEFT", button.Members, "RIGHT", -18, -5)
+        button.QRIcon:SetNormalTexture("Interface/AddOns/MeetingHorn/Media/buttonInRoom")
+        local normalTexture = button.QRIcon:GetNormalTexture()
+        normalTexture:SetTexCoord(0, 1, 0, 1)  -- 根据需要调整
+        button.QRIcon:SetHighlightTexture("Interface/AddOns/MeetingHorn/Media/buttonInRoom", "ADD")
+        local highlightTexture = button.QRIcon:GetHighlightTexture()
+        highlightTexture:SetTexCoord(0, 1, 0, 1)  -- 根据需要调整
         if item:IsOurAddonCreate() then
             button.QRIcon:SetScript('OnClick', function()
-                if not self.QRTooltip then
-                    self.QRTooltip = CreateFrame('Frame', nil, self, 'MeetingHornActivityTooltipTemplate')
-                    self.QRTooltip:SetPoint('TOPLEFT', self.Header5, 'BOTTOMLEFT', 0, 0)
-                    ns.UI.QRCodeWidget:Bind(self.QRTooltip.QRCode)
-                end
-                self.QRTooltip.QRCode:SetValue(ns.MakeQRCode(item:GetLeader()))
-                self.QRTooltip:Show()
+                self:OpenVoiceRoom(item)
             end)
         end
 
@@ -296,6 +301,10 @@ function Browser:Constructor()
     --     ns.Addon.MainPanel:SetTab(2)
     -- end)
 
+    self.progressTimer = ns.Timer:New(function()
+        self:UpdateProgress()
+    end)
+
     self:SetScript('OnShow', self.OnShow)
     self:SetScript('OnHide', self.OnHide)
     -- self:Show()
@@ -314,7 +323,9 @@ function Browser:OnShow()
     self:RegisterMessage('MEETINGHORN_ACTIVITY_UPDATE')
     self:RegisterMessage('MEETINGHORN_ACTIVITY_REMOVED')
     self:RegisterMessage('MEETINGHORN_ACTIVITY_FILTER_UPDATED', 'Search')
+    self:RegisterMessage('MEETINGHORN_CHANNEL_READY')
     self:Search()
+    self:UpdateProgress()
 end
 
 function Browser:OnHide()
@@ -323,6 +334,23 @@ function Browser:OnHide()
     if self.QRTooltip then
         self.QRTooltip:Hide()
     end
+end
+
+function Browser:UpdateProgress()
+    if not self.startTime or GetTime() - self.startTime > 10 then
+        self.ProgressBar:Hide()
+        self.progressTimer:Stop()
+    elseif self.ProgressBar:IsShown() then
+        self.ProgressBar:SetValue((GetTime() - self.startTime) / 10)
+    else
+        self.progressTimer:Start(0.1)
+        self.ProgressBar:Show()
+        self.ProgressBar:SetValue(0)
+    end
+
+    -- @lkc@
+    self.IconTip:SetShown(not self.ProgressBar:IsShown())
+    -- @end-lkc@
 end
 
 function Browser:OnClick(id)
@@ -446,6 +474,11 @@ function Browser:MEETINGHORN_ACTIVITY_REMOVED(_, activity)
     self.ActivityList:Refresh()
 end
 
+function Browser:MEETINGHORN_CHANNEL_READY()
+    self.startTime = GetTime()
+    self:UpdateProgress()
+end
+
 function Browser:OpenActivityMenu(activity, button)
     if not activity:IsSelf() then
         ns.GUI:ToggleMenu(button, self:CreateActivityMenu(activity), 'cursor')
@@ -470,7 +503,8 @@ function Browser:CreateActivityMenu(activity)
                     ns.LFG:RemoveActivity(activity)
                 end
             end,
-        }, {isSeparator = true}, {text = REPORT_PLAYER, isTitle = true}, {
+        }, {isSeparator = true}, {text = REPORT_PLAYER, isTitle = true},
+        {
             text = REPORT_CHAT,
             func = function()
                 local reportInfo = ReportInfo:CreateReportInfoFromType(Enum.ReportType.Chat)
@@ -478,6 +512,49 @@ function Browser:CreateActivityMenu(activity)
                 ReportFrame:InitiateReport(reportInfo, leader, activity:GetLeaderPlayerLocation())
                 ns.GUI:CloseMenu()
             end,
-        }, {isSeparator = true}, {text = CANCEL},
+        },
+        {isSeparator = true},
+        {
+            text = "打开语音房间",
+            func = function()
+                self:OpenVoiceRoom(activity)
+            end,
+        },
+        {isSeparator = true},
+        {text = CANCEL},
     }
+end
+
+-- 进语音房间
+function Browser:OpenVoiceRoom(activity)
+    local regimentData = ns.Addon.db.realm.starRegiment.regimentData[activity:GetLeader()]
+    if regimentData then
+        local currentRoomID = regimentData.roomID
+        local sendData = { roomID = currentRoomID }
+        ns.ThreeDimensionsCode:sendCommand('joinRoom', ns.TableToJson(sendData))
+        ns.isOpenVoiceRoom = false
+
+        if not self.QRTooltip then
+            self.QRTooltip = CreateFrame('Frame', nil, self, 'MeetingHornActivityTooltipTemplate')
+            self.QRTooltip:SetSize(240, 340)
+            self.QRTooltip:SetPoint('TOPLEFT', self, 'TOPRIGHT', 0, 0)
+            self.QRTooltip.Text:SetText('如果您已安装网易DD客户端，将会自动进入该团长的语音频道。请稍等片刻…\n\n您也可以使用网易大神APP扫码下方二维码查看该团长的主页，了解有关TA的更多信息')
+            self.QRTooltip.Text:ClearAllPoints()
+            self.QRTooltip.Text:SetPoint('TOPLEFT', self.QRTooltip, "TOPLEFT", 8, -30)
+            self.QRTooltip.Text:SetPoint('TOPRIGHT', self.QRTooltip, "BOTTOMRIGHT", -8, 8)
+            self.QRTooltip.QRCode:ClearAllPoints()
+            self.QRTooltip.QRCode:SetPoint('BOTTOM', self.QRTooltip, "BOTTOM", 0, 30)
+            ns.UI.QRCodeWidget:Bind(self.QRTooltip.QRCode)
+        end
+        self.QRTooltip.QRCode:SetValue(ns.MakeQRCode(activity:GetLeader()))
+        self.QRTooltip:Show()
+
+        C_Timer.After(3, function(...)
+            if ns.isOpenVoiceRoom then
+                return
+            end
+            ns.ThreeDimensionsCode:sendCommand('joinRoom', '-1')
+            ns.OpenUrlDialog('https://dd.163.com/?utm_source=meetinghorn', '无法成功拉起房间?复制下方链接去浏览器内打开')
+        end)
+    end
 end

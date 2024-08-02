@@ -935,7 +935,8 @@ function LFG:SUGL(_, version, data)
     for _, item in ipairs(data) do
         for name, info in pairs(item) do
             local currentLevel = info['l']
-            ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel}
+            local currentRoomID = info['c']
+            ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID}
         end
     end
 end

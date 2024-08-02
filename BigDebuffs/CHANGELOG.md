@@ -1,8 +1,7 @@
 # BigDebuffs
 
-## [v28](https://github.com/jordonwow/bigdebuffs/tree/v28) (2024-07-25)
-[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v27...v28) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
+## [v29](https://github.com/jordonwow/bigdebuffs/tree/v29) (2024-07-28)
+[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v28...v29) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
 
-- Fix font size slider on raid frames  
-    Fixes #760  
-- Fix `/bd` command not opening options panel  
+- Update BigDebuffs\_Vanilla.toc to interface version 11503  
+- TWW Pre Patch (#761)  

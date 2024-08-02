@@ -9,6 +9,9 @@ function CataItemFixes.Load()
     local itemClasses = QuestieDB.itemClasses
 
     return {
+        [2629] = { -- Intrepid Strongbox Key
+            [itemKeys.npcDrops] = {41429},
+        },
         [2859] = { -- Vile Fin Scale
             [itemKeys.npcDrops] = {1541,1543,1544,1545},
         },
@@ -66,6 +69,9 @@ function CataItemFixes.Load()
         },
         [33009] = { -- Tender Strider Meat
             [itemKeys.npcDrops] = {2956,2957},
+        },
+        [38567] = { -- Maraudine Prisoner Manifest
+            [itemKeys.startQuest] = 14330,
         },
         [39684] = { -- Hair Trigger
             [itemKeys.npcDrops] = {},
@@ -433,10 +439,13 @@ function CataItemFixes.Load()
             [itemKeys.class] = itemClasses.QUEST,
         },
         [58224] = { -- Induction Samophlange
-            [itemKeys.npcDrops] = {42644},
+            [itemKeys.objectDrops] = {204091},
         },
         [58365] = { -- Horn of the Ancients
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [58490] = { -- Opened Mosh'Ogg Bounty
+            [itemKeys.npcDrops] = {43003},
         },
         [58500] = { -- Jade Crystal Cluster
             [itemKeys.npcDrops] = {},
@@ -645,6 +654,9 @@ function CataItemFixes.Load()
         [68890] = { -- Dragon Kite 2-Pack
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [68937] = { -- Direhammer's Boots
+            [itemKeys.objectDrops] = {208376},
+        },
         [69027] = { -- Cone of Cold
             [itemKeys.class] = itemClasses.QUEST,
         },
@@ -710,6 +722,9 @@ function CataItemFixes.Load()
         },
         [71716] = { -- Soothsayer's Runes
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [73269] = { -- Great Sea Herring
+            [itemKeys.npcDrops] = {},
         },
     }
 end

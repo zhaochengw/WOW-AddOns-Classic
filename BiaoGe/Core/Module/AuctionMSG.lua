@@ -134,8 +134,25 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             self.UpdateButtonItem()
         end)
 
-        for i, msg in ipairs(BiaoGe.auctionMSGhistory) do
-            BG.FrameAuctionMSG:AddMessage(msg)
+        local t = time()
+        for i = #BiaoGe.auctionMSGhistory, 1, -1 do
+            if type(BiaoGe.auctionMSGhistory[i]) == "table" then
+                if t - BiaoGe.auctionMSGhistory[i].time > 3600 * 12 then
+                    tremove(BiaoGe.auctionMSGhistory, i)
+                end
+            end
+        end
+
+        for i, v in ipairs(BiaoGe.auctionMSGhistory) do
+            if type(v) == "table" then
+                local info = date("*t", v.time)
+                local hour, min = info.hour, info.min
+                hour = string.format("%02d", hour)
+                min = string.format("%02d", min)
+                local _time = "|cff" .. "808080" .. hour .. ":" .. min .. "|r"
+                local msg = _time .. " |cff" .. v.textColor .. v.nameLink .. L["："] .. v.text .. RN
+                BG.FrameAuctionMSG:AddMessage(msg)
+            end
         end
     end
 
@@ -362,25 +379,30 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if string.find(text, "%d+") or string.find(text, "[pP]") or ML then
                 text = BG.GsubRaidTargetingIcons(text)
                 local msg
-                local h, m = GetGameTime()
-                h = string.format("%02d", h)
-                m = string.format("%02d", m)
-                local time = "|cff" .. "808080" .. "(" .. h .. ":" .. m .. ")|r"
+                local hour, min = GetGameTime()
+                hour = string.format("%02d", hour)
+                min = string.format("%02d", min)
+                local _time = "|cff" .. "808080" .. hour .. ":" .. min .. "|r"
                 local nameLink = "|Hplayer:" .. playerName .. ":" .. lineID .. ":RAID:" .. "|h[" .. SetClassCFF(playerName) .. "]|h"
                 if ML then
-                    msg = time .. " " .. "|cffFF4500" .. nameLink .. L["："] .. text .. RN -- 物品分配者聊天
+                    msg = _time .. " " .. "|cffFF4500" .. nameLink .. L["："] .. text .. RN -- 物品分配者聊天
                 else
-                    msg = time .. " " .. "|cffFF7F50" .. nameLink .. L["："] .. text .. RN -- 团员聊天
+                    msg = _time .. " " .. "|cffFF7F50" .. nameLink .. L["："] .. text .. RN -- 团员聊天
                 end
                 BG.FrameAuctionMSG:AddMessage(msg)
-
+                
+                tinsert(BiaoGe.auctionMSGhistory, {
+                    time = time(),
+                    textColor = ML and "FF4500" or "FF7F50",
+                    nameLink = nameLink,
+                    text = text,
+                })
                 for i, v in ipairs(BiaoGe.auctionMSGhistory) do
                     if #BiaoGe.auctionMSGhistory <= maxLine then
                         break
                     end
                     tremove(BiaoGe.auctionMSGhistory, 1)
                 end
-                tinsert(BiaoGe.auctionMSGhistory, msg)
 
                 if not BG.FrameAuctionMSG:AtBottom() then
                     BG.FrameAuctionMSG.hilighttexture:Show()
@@ -412,7 +434,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end)
     end
 
-
+    -- 定位装备
     do
         local function SetItemButtonUpColor(r, g, b)
             BG.FrameAuctionMSG.buttonItemUp:GetNormalTexture():SetVertexColor(r, g, b)

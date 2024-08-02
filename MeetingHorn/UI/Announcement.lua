@@ -13,6 +13,7 @@ LibStub:GetLibrary('AceEvent-3.0'):Embed(Announcement)
 
 function Announcement:Constructor()
     self.db = ns.Addon.db
+    self.flashFrame = nil
 
     self:SetScript('OnShow', self.OnShow)
     self:RegisterMessage('MEETINGHORN_SERVER_CONNECTED')
@@ -29,6 +30,9 @@ function Announcement:OnShow()
     self:RequestData()
     self:InitBG()
     ns.Stats:Send('AnnouncementClick')
+    if self.flashFrame then
+        ns.HideAtFrameFlash(self.flashFrame)
+    end
 end
 
 function Announcement:RequestData()
@@ -112,7 +116,11 @@ function Announcement:Refresh()
             notice.Text:SetText(v.t or '')
             notice.LookDetail:SetShown(v.u)
             notice.LookDetail:SetScript('OnClick', function()
-                ns.OpenUrlDialog(v.u)
+                if v.a == 2 then
+                    self:OpenAnnouncementUrl(v.u)
+                else
+                   ns.OpenUrlDialog(v.u)
+                end
             end)
         else
             notice:Hide()
@@ -127,11 +135,43 @@ function Announcement:MEETINGHORN_SERVER_CONNECTED()
     end
 end
 
-function Announcement:MEETINGHORN_ANNOUNCEMENT(eventName, data)
+function Announcement:MEETINGHORN_ANNOUNCEMENT(eventName, data, timer)
+    if timer then
+        timer = tonumber(timer)
+    else
+        timer = -1
+    end
+
+    if not self.db.global.AnnTimer or (timer ~= -1 and timer > self.db.global.AnnTimer) then
+        if  not self.flashFrame then
+            self.flashFrame = ns:CreateFlashFrame()
+            ns.BindFlashAtFrame(self.flashFrame, ns.Addon.MainPanel.Tabs[4])
+        end
+        ns.ShowAtFrameFlash(self.flashFrame)
+    end
     self.loading:Hide()
     if data == 'newest' then
         return
     end
     self.db.global.AnnData = data
+    self.db.global.AnnTimer = timer
     self:Refresh()
 end
+
+function Announcement:OpenAnnouncementUrl(url)
+    if not self.QRTooltip then
+        self.QRTooltip = CreateFrame('Frame', nil, self, 'MeetingHornActivityTooltipTemplate')
+        self.QRTooltip:SetSize(240, 260)
+        self.QRTooltip:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 0, 0)
+        self.QRTooltip.Text:SetText('扫描下方二维码\n更多精彩在网易大神等你')
+        self.QRTooltip.Text:ClearAllPoints()
+        self.QRTooltip.Text:SetPoint('TOPLEFT', self.QRTooltip, "TOPLEFT", 8, -30)
+        self.QRTooltip.Text:SetPoint('TOPRIGHT', self.QRTooltip, "BOTTOMRIGHT", -8, 8)
+        self.QRTooltip.QRCode:ClearAllPoints()
+        self.QRTooltip.QRCode:SetPoint('BOTTOM', self.QRTooltip, "BOTTOM", 0, 30)
+        ns.UI.QRCodeWidget:Bind(self.QRTooltip.QRCode)
+    end
+    self.QRTooltip.QRCode:SetValue(url)
+    self.QRTooltip:Show()
+end
+

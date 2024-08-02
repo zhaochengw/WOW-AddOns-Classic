@@ -1,5 +1,5 @@
 ## Interface: 40400
-## Version: v10.2.9
+## Version: v11.0.2
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-zhTW: 小地圖增強插件

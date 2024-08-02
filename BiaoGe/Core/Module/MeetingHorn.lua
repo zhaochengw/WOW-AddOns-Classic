@@ -12,8 +12,6 @@ local RGB_16 = ns.RGB_16
 local GetClassRGB = ns.GetClassRGB
 local SetClassCFF = ns.SetClassCFF
 local GetText_T = ns.GetText_T
-local FrameDongHua = ns.FrameDongHua
-local FrameHide = ns.FrameHide
 local AddTexture = ns.AddTexture
 local GetItemID = ns.GetItemID
 
@@ -55,6 +53,9 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     local addonName = "MeetingHorn"
     if not IsAddOnLoaded(addonName) then return end
     local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+    local LFG = MeetingHorn:GetModule('LFG', 'AceEvent-3.0', 'AceTimer-3.0', 'AceComm-3.0', 'LibCommSocket-3.0')
+    local Activity = MeetingHorn:GetClass('Activity')
+
     local ver = GetAddOnMetadata(addonName, "Version"):gsub("%-%d+", ""):gsub("%D", "")
     ver = tonumber(ver)
 
@@ -189,8 +190,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
     -- 不自动退出集结号频道
     do
-        local LFG = MeetingHorn:GetModule('LFG', 'AceEvent-3.0', 'AceTimer-3.0', 'AceComm-3.0', 'LibCommSocket-3.0')
-
         MeetingHorn.MainPanel:HookScript("OnHide", function(self)
             C_Timer.After(0.5, function()
                 if BiaoGe.options["MeetingHorn_always"] == 1 then
@@ -203,7 +202,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     -- 按人数排序
     do
         local Browser = MeetingHorn.MainPanel.Browser
-
+        local Browser = MeetingHorn:GetClass('UI.Browser', 'Frame')
         local bt = MeetingHorn.MainPanel.Browser.Header3
         local name = "MeetingHorn_members"
         if BiaoGe.options[name] == 1 then
@@ -295,7 +294,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         end
     end
 
-    -- 密语增强
+    -- 密语模板
     do
         local lastfocus
 
@@ -398,6 +397,27 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         local AchievementTitle, AchievementTitleID, AchievementEdit, AchievementCheckButton
         if not BG.IsVanilla then
             do
+                local onEnterTextTbl = {
+                    "ULD(25)",
+                    2958,
+                    2895,
+                    3037,
+                    3164,
+                    3163,
+                    3189, -- 烈火金刚
+                    3184, -- 珍贵的宝箱
+                    2944,
+                    "ULD(10)",
+                    2957,
+                    2890,
+                    3036,
+                    3159,
+                    3158,
+                    3180,
+                    3182,
+                    2941,
+                    -- ,
+                }
                 local t = f:CreateFontString()
                 t:SetPoint("TOPLEFT", 15, -30)
                 t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
@@ -450,30 +470,39 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                     GameTooltip:ClearLines()
                     GameTooltip:AddLine(L["成就ID参考"], 1, 1, 1)
                     GameTooltip:AddLine(" ")
-                    GameTooltip:AddLine("RS", 1, 1, 1)
-                    GameTooltip:AddLine("4816: " .. GetAchievementLink(4816))
-                    GameTooltip:AddLine("4815: " .. GetAchievementLink(4815))
-                    GameTooltip:AddLine("4818: " .. GetAchievementLink(4818))
-                    GameTooltip:AddLine("4817: " .. GetAchievementLink(4817))
-                    GameTooltip:AddLine("ICC25人", 1, 1, 1)
-                    GameTooltip:AddLine("4637: " .. GetAchievementLink(4637))
-                    GameTooltip:AddLine("4608: " .. GetAchievementLink(4608))
-                    GameTooltip:AddLine("4603: " .. GetAchievementLink(4603))
+                    for i, text in ipairs(onEnterTextTbl) do
+                        if tonumber(text) then
+                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text))
+                        else
+                            GameTooltip:AddLine(text, 1, 1, 1)
+                        end
+                    end
 
-                    GameTooltip:AddLine("4635: " .. GetAchievementLink(4635))
-                    GameTooltip:AddLine("4634: " .. GetAchievementLink(4634))
-                    GameTooltip:AddLine("4633: " .. GetAchievementLink(4633))
-                    GameTooltip:AddLine("4632: " .. GetAchievementLink(4632))
+                    -- GameTooltip:AddLine("RS", 1, 1, 1)
+                    -- GameTooltip:AddLine("4816: " .. GetAchievementLink(4816))
+                    -- GameTooltip:AddLine("4815: " .. GetAchievementLink(4815))
+                    -- GameTooltip:AddLine("4818: " .. GetAchievementLink(4818))
+                    -- GameTooltip:AddLine("4817: " .. GetAchievementLink(4817))
+                    -- GameTooltip:AddLine("ICC(25)", 1, 1, 1)
+                    -- GameTooltip:AddLine("4637: " .. GetAchievementLink(4637))
+                    -- GameTooltip:AddLine("4608: " .. GetAchievementLink(4608))
+                    -- GameTooltip:AddLine("4603: " .. GetAchievementLink(4603))
 
-                    GameTooltip:AddLine("ICC10人", 1, 1, 1)
-                    GameTooltip:AddLine("4636: " .. GetAchievementLink(4636))
-                    GameTooltip:AddLine("4532: " .. GetAchievementLink(4532))
-                    GameTooltip:AddLine("4602: " .. GetAchievementLink(4602))
+                    -- GameTooltip:AddLine("4635: " .. GetAchievementLink(4635))
+                    -- GameTooltip:AddLine("4634: " .. GetAchievementLink(4634))
+                    -- GameTooltip:AddLine("4633: " .. GetAchievementLink(4633))
+                    -- GameTooltip:AddLine("4632: " .. GetAchievementLink(4632))
 
-                    GameTooltip:AddLine("4631: " .. GetAchievementLink(4631))
-                    GameTooltip:AddLine("4630: " .. GetAchievementLink(4630))
-                    GameTooltip:AddLine("4629: " .. GetAchievementLink(4629))
-                    GameTooltip:AddLine("4628: " .. GetAchievementLink(4628))
+                    -- GameTooltip:AddLine("ICC(10)", 1, 1, 1)
+                    -- GameTooltip:AddLine("4636: " .. GetAchievementLink(4636))
+                    -- GameTooltip:AddLine("4532: " .. GetAchievementLink(4532))
+                    -- GameTooltip:AddLine("4602: " .. GetAchievementLink(4602))
+
+                    -- GameTooltip:AddLine("4631: " .. GetAchievementLink(4631))
+                    -- GameTooltip:AddLine("4630: " .. GetAchievementLink(4630))
+                    -- GameTooltip:AddLine("4629: " .. GetAchievementLink(4629))
+                    -- GameTooltip:AddLine("4628: " .. GetAchievementLink(4628))
+
                     GameTooltip:Show()
                 end)
                 BG.GameTooltip_Hide(edit)
@@ -778,7 +807,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 end
             end)
 
-            local LFG = MeetingHorn:GetModule('LFG', 'AceEvent-3.0', 'AceTimer-3.0', 'AceComm-3.0', 'LibCommSocket-3.0')
             function Browser:CreateActivityMenu(activity)
                 local text1 = SendWhisper()
                 if text1 ~= " " then
@@ -1004,31 +1032,24 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
     -- 多个关键词搜索
     do
-        local Activity = MeetingHorn:GetClass('Activity')
-        local LFG = MeetingHorn:GetModule('LFG', 'AceEvent-3.0', 'AceTimer-3.0', 'AceComm-3.0', 'LibCommSocket-3.0')
+        local name = "MeetingHorn_members"
+        BG.options[name .. "reset"] = 0
+        BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+        if BiaoGe.options[name] == 1 then
+            function Activity:Match(path, activityId, modeId, search)
+                if path and path ~= self:GetPath() then
+                    return false
+                end
+                if activityId and activityId ~= self.id then
+                    return false
+                end
+                if modeId and modeId ~= self.modeId then
+                    return false
+                end
 
-        local function Search(text, pattern)
-            if not text then
-                return false
-            end
-            return text:find(pattern, nil, true)
-        end
-        function Activity:Match(path, activityId, modeId, search)
-            if path and path ~= self:GetPath() then
-                return false
-            end
-            if activityId and activityId ~= self.id then
-                return false
-            end
-            if modeId and modeId ~= self.modeId then
-                return false
-            end
-            if MeetingHorn.db.profile.options.activityfilter and LFG:IsFilter(self.commentLower) then
-                return false
-            end
+                if not search then return true end
 
-            if BiaoGe.options["MeetingHorn_search"] == 1 then
-                if search then
+                if type(search) == "string" then
                     local yes = 0
                     local num = 0
                     local str = (self.data.nameLower or "") .. (self.data.shortNameLower or "") ..
@@ -1045,14 +1066,23 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                     if yes ~= num then
                         return false
                     end
-                end
-            else
-                if search and (not Search(self.data.nameLower, search) and not Search(self.data.shortNameLower, search) and
-                        not Search(self.commentLower, search) and not Search(self.leaderLower, search)) then
+                elseif type(search) == "table" then
+                    for _, s in ipairs(search) do
+                        local str = (self.data.nameLower or "") .. (self.data.shortNameLower or "") ..
+                            (self.commentLower or "")
+                        if str:find(s, nil, true) then
+                            return true
+                        end
+                    end
                     return false
                 end
+
+                if MeetingHorn.db.profile.options.activityfilter and LFG:IsFilter(self.commentLower) then
+                    return false
+                end
+
+                return true
             end
-            return true
         end
     end
 
@@ -1097,10 +1127,12 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             elseif _name then
                 name, realm = strsplit("-", _name)
             end
+            -- pt(name, realm)
             if not name then return end
-            -- pt(name,realm)
             if realm and realm ~= GetRealmName() then return end
+            -- pt(name, realm)
             local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
+            -- pt(currentLevel)
             if not currentLevel then return end
             currentLevel = currentLevel.level
             -- local currentLevel = 2

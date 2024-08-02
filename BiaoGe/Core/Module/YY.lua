@@ -774,7 +774,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end)
             -- 查询按钮
             function Y.SearchButtonOnClick()
-                if not BG.YYchannelId then
+                if not BG.YYchannelID then
                     local msg = format(L["查询正在初始化，请稍后再试"])
                     UIErrorsFrame:AddMessage(msg, YELLOW_FONT_COLOR:GetRGB())
                     return
@@ -808,7 +808,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 local previous_date = date("%y%m%d", previous_time)            -- 格式化为日期字符串
 
                 local sendtext = "yy" .. yy .. "," .. previous_date
-                SendChatMessage(sendtext, "CHANNEL", nil, BG.YYchannelId)
+                SendChatMessage(sendtext, "CHANNEL", nil, BG.YYchannelID)
                 bt:SetEnabled(false)
                 edit:SetEnabled(false)
                 edit:SetTextColor(RGB(BG.dis))
@@ -2148,25 +2148,21 @@ end)
 local f = CreateFrame("Frame")
 f:RegisterEvent("CHANNEL_UI_UPDATE")
 f:SetScript("OnEvent", function(self, even)
-    if even == "CHANNEL_UI_UPDATE" then
-        local i = 1
-        while _G["ChatFrame" .. i] do
-            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], YY)
-            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], "MeetingHorn")
-            i = i + 1
-        end
+    local i = 1
+    while _G["ChatFrame" .. i] do
+        ChatFrame_RemoveChannel(_G["ChatFrame" .. i], YY)
+        ChatFrame_RemoveChannel(_G["ChatFrame" .. i], "MeetingHorn")
+        i = i + 1
+    end
 
-        local channels = { GetChannelList() }
-        for i = 1, #channels, 3 do
-            if channels[i + 1] == YY then
-                BG.YYchannelId = channels[i]
-                return
-            end
-        end
-        BG.YYchannelId = nil
-        if BiaoGe.YYdb.share ~= 1 then
-            LeaveChannelByName(YY)
-        end
+    local channelID, channelName = GetChannelName(YY)
+    if not channelName then
+        BG.YYchannelID = nil
+    else
+        BG.YYchannelID = channelID
+    end
+    if BiaoGe.YYdb.share ~= 1 then
+        LeaveChannelByName(YY)
     end
 end)
 
@@ -2202,7 +2198,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
                 if value.channelName == YY then
                     BlizzardOptionsPanel_CheckButton_Disable(checkBox)
-                    BG.YYchannelId = i
+                    BG.YYchannelID = i
                 end
             end
         end
@@ -2217,57 +2213,23 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     end)
 
     -- 初始化频道
-    local channels = { GetChannelList() }
-    for i = 1, #channels, 3 do
-        if channels[i + 1] == YY then
-            BG.YYchannelId = channels[i]
-            return
-        end
+    local channelID, channelName = GetChannelName(YY)
+    if not channelName then
+        BG.YYchannelID = nil
+    else
+        BG.YYchannelID = channelID
     end
-    BG.YYchannelId = nil
 
-    local first = true
-    BG.MainFrame:HookScript("OnShow", function(self)
-        if first then
-            first = nil
-            if not BG.YYchannelId and BiaoGe.YYdb.share == 1 then
+    local function JoinYY()
+        if not BG.YYchannelID and BiaoGe.YYdb.share == 1 then
+            local channels = { GetChannelList() }
+            if channels and #channels > 0 then
                 JoinPermanentChannel(YY, nil, 1)
                 SendSystemMessage(BG.BG .. format(L["YY评价模块初始化成功，已自动加入%s频道，用于共享和查询YY大众评价。"], YY))
+            else
+                BG.After(3, JoinYY)
             end
         end
-    end)
+    end
+    JoinYY()
 end)
-
-
--- 废弃代码
---[[             msg = gsub(msg, "[yY][yY][：: ]*(%d+)", "YY%1")
-            msg = gsub(msg, "(%d+)%s*[yY][yY]", "%1YY")
-
-            local yykey = "YY%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d+"
-            local yykey2 = "%d+%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*%s*%d*YY"
-            local last
-            for yy in string.gmatch(msg, yykey) do
-                local cleanedYY = gsub(yy, "%D", "")     -- 把非数字的格式删掉，只保留YY号码数字
-                local s, e = strfind(msg, yy, last or 1) -- 查找yy字符串的开始和结束位置
-                local t1 = strsub(msg, 1, s - 1)
-                local t2 = strsub(msg, e + 1)
-                local link = CreateLink(cleanedYY)
-                local newmsg = t1 .. link .. t2
-                local s, e = strfind(newmsg, link, last or 1, true)
-                msg = newmsg
-                last = e + 1
-            end
-            for yy in string.gmatch(msg, yykey2) do
-                local cleanedYY = gsub(yy, "%D", "")     -- 把非数字的格式删掉，只保留YY号码数字
-                local s, e = strfind(msg, yy, last or 1) -- 查找yy字符串的开始和结束位置
-                local t1 = strsub(msg, 1, s - 1)
-                local t2 = strsub(msg, e + 1)
-                local link = CreateLink(cleanedYY)
-                local newmsg = t1 .. link .. t2
-                local s, e = strfind(newmsg, link, last or 1, true)
-                msg = newmsg
-                last = e + 1
-            end
-            if last then
-                return false, msg, player, l, cs, t, flag, channelId, ...
-            end ]]

@@ -620,7 +620,7 @@
                                 <Anchor point="TOPLEFT"/>
                                 <Anchor point="BOTTOMRIGHT"/>
                             </Anchors>
-                            <TexCoords left="0" right="0.766601562" top="0" bottom="0.830078125"/>
+                            <TexCoords left="0" right="0.766601562" top="0" bottom="0.7500078125"/>
                         </Texture>
                     </Layer>
                     <Layer level="BACKGROUND" textureSubLevel="3">

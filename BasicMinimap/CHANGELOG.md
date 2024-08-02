@@ -1,6 +1,7 @@
 # BasicMinimap
 
-## [v10.2.9](https://github.com/funkydude/BasicMinimap/tree/v10.2.9) (2024-07-10)
-[Full Changelog](https://github.com/funkydude/BasicMinimap/compare/v10.2.8...v10.2.9) [Previous Releases](https://github.com/funkydude/BasicMinimap/releases)
+## [v11.0.2](https://github.com/funkydude/BasicMinimap/tree/v11.0.2) (2024-08-02)
+[Full Changelog](https://github.com/funkydude/BasicMinimap/compare/v11.0.1...v11.0.2) [Previous Releases](https://github.com/funkydude/BasicMinimap/releases)
 
-- Compat code for WoW 11  
+- Update luacheck  
+- Show daily and weekly reset timers when you mouse over the clock, closes #98  

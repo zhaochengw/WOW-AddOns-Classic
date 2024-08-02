@@ -602,7 +602,6 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
     bt:SetSize(90, 20)
     bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0)
     bt:SetFrameLevel(110)
-    -- button:SetMaxBytes(19) --限制字数
     bt:SetAutoFocus(false)
     bt.FB = FB
     bt.bossnum = BossNum(FB, b, t)

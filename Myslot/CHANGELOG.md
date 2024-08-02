@@ -1,7 +1,6 @@
 # Myslot
 
-## [v5.17.4](https://github.com/tg123/myslot/tree/v5.17.4) (2024-07-14)
-[Full Changelog](https://github.com/tg123/myslot/commits/v5.17.4) 
+## [v5.18.0](https://github.com/tg123/myslot/tree/v5.18.0) (2024-07-31)
+[Full Changelog](https://github.com/tg123/myslot/commits/v5.18.0) 
 
-- Merge pull request #56 from tg123/tww  
-    full TWW context menu support  
+- Refactor MySlot.lua to improve talent handling  

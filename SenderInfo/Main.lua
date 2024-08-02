@@ -575,7 +575,19 @@ local function CHAT_MSG_SendSelfInfo(self,event,...)
         end
     end
 
-    if msg ~= sendSelfInfoCondition then
+    if sendSelfInfoCondition == nill or sendSelfInfoCondition == "" then
+        return
+    end
+
+    local pass = 0
+    for part in string.gmatch(sendSelfInfoCondition, "[^,]+") do
+        if msg == part then
+            pass = 1
+            break
+        end
+    end
+
+    if pass == 0 then
         return
     end
 

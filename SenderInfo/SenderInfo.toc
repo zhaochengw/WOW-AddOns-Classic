@@ -2,7 +2,7 @@
 ## Title: |cffFFF000[SenderInfo]|r  聊天者信息显示插件 开组/开团助手
 ## Notes: 组队/开团助手 可以提前知道目标的天赋/WCL/GS/装等... (依赖 TalentEmu 插件) \n 插件加载完毕 宏命令 /sinfo  打开配置界面  /sinfop 快捷开关功能
 ## Author: 大力力-范克瑞斯
-## Version: 30403.1.0
+## Version: 30403.2.0
 ## Dependencies:
 ## SavedVariables: SenderInfoOptions,SenderInfoHelperPos
 

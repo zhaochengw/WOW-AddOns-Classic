@@ -626,18 +626,21 @@ local function OptionsUI()
                 local name3 = "tradeTime"
                 local name4 = "tradeFontSize"
                 local name5 = "tradeMoneyTop"
+                local name6 = "lastTrade"
                 if f:GetChecked() then
                     BG.options["button" .. name1]:Show()
                     BG.options["button" .. name2]:Show()
                     BG.options["button" .. name3]:Show()
                     BG.options["button" .. name4]:Show()
                     BG.options["button" .. name5]:Show()
+                    BG.options["button" .. name6]:Show()
                 else
                     BG.options["button" .. name1]:Hide()
                     BG.options["button" .. name2]:Hide()
                     BG.options["button" .. name3]:Hide()
                     BG.options["button" .. name4]:Hide()
                     BG.options["button" .. name5]:Hide()
+                    BG.options["button" .. name6]:Hide()
                 end
             end)
         end
@@ -745,6 +748,23 @@ local function OptionsUI()
                 format(L["交易时，如果交易金额超过游戏上限（%s万），则会红字提醒。"], "99.9999"),
             }
             local f = O.CreateCheckButton(name, L["交易金额超上限提醒"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            local name = "autoTrade"
+            if BiaoGe.options[name] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 30
+        -- 最近拍卖
+        do
+            local name = "lastTrade"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["最近拍卖"],
+                L["交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的装备，点击一下就能把装备放到交易里。"],
+            }
+            local f = O.CreateCheckButton(name, L["最近拍卖"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             local name = "autoTrade"
             if BiaoGe.options[name] ~= 1 then
@@ -2118,8 +2138,9 @@ local function OptionsUI()
 
             -- 多个关键词搜索
             tinsert(tbl, {
+                notdefault = true,
                 name = "MeetingHorn_search",
-                name2 = L["多个关键词搜索"] .. "*",
+                name2 = L["多个关键词搜索"],
                 reset = 0,
                 ontext = {
                     L["多个关键词搜索"],
@@ -2135,6 +2156,7 @@ local function OptionsUI()
 
             -- 按队伍人数排序
             tinsert(tbl, {
+                -- notdefault = true,
                 name = "MeetingHorn_members",
                 name2 = L["按队伍人数排序"] .. "*",
                 reset = 0,
@@ -2207,9 +2229,9 @@ local function OptionsUI()
             O.CreateLine(others, height - h + line_height)
 
             for i, v in ipairs(tbl) do
-                BG.options[v.name .. "reset"] = v.reset
-                if not BiaoGe.options[v.name] then
-                    BiaoGe.options[v.name] = BG.options[v.name .. "reset"]
+                if not v.notdefault then
+                    BG.options[v.name .. "reset"] = v.reset
+                    BiaoGe.options[v.name] = BiaoGe.options[v.name] or BG.options[v.name .. "reset"]
                 end
                 BG.options["button" .. v.name] = O.CreateCheckButton(v.name, v.name2, others, 15, height - h, v.ontext)
                 Update_OnShow(BG.options["button" .. v.name], v.name)
@@ -2244,10 +2266,13 @@ local function OptionsUI()
                 l:SetEndPoint("TOPLEFT", 380, height - h + line_height)
                 l:SetThickness(1.5)
 
-                -- 不自动退出集结号频道
+                -- 集结号设置
                 do
                     local buttons = {}
                     for i, v in ipairs(tbl) do
+                        if v.notdefault then
+                            v.ontext[1] = v.ontext[1] .. L["（重载界面后生效）"]
+                        end
                         local f = O.CreateCheckButton(v.name, v.name2, others, 15, height - h, v.ontext)
                         Update_OnShow(f, v.name)
                         if v.onClick then

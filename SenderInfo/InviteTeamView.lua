@@ -579,7 +579,9 @@ function InviteTeamView:Add(name,info)
 
     if CombatLessen and IsCombat then
         --print("战斗中 所以自动缩小")
-        panel2:Hide();
+        if panel2 then
+            panel2:Show();
+        end
         lastLessenTime = GetTime() + 9999999; --防止触发倒计时自动又打开 不可能战斗时间超过这个吧
         lessen:SetText("SenderInfo 消息:" .. #allItem);
         panelLessen = true;

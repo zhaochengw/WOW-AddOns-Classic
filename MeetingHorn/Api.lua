@@ -438,10 +438,15 @@ function ns.PlayerIsRole(role)
     return GetCurrentRoles()[role]
 end
 
-function ns.OpenUrlDialog(url)
+function ns.OpenUrlDialog(url, customText)
+    local tempText = '请按<|cff00ff00Ctrl+C|r>复制网址到浏览器打开'
+    if customText ~= nil then
+        tempText = customText
+    end
+
     if not StaticPopupDialogs['MEETINGHORN_COPY_URL'] then
         StaticPopupDialogs['MEETINGHORN_COPY_URL'] = {
-            text = '请按<|cff00ff00Ctrl+C|r>复制网址到浏览器打开',
+            text = tempText,
             button1 = OKAY,
             timeout = 0,
             exclusive = 1,
@@ -462,6 +467,7 @@ function ns.OpenUrlDialog(url)
         }
     end
 
+    StaticPopupDialogs['MEETINGHORN_COPY_URL'].text = tempText
     StaticPopup_Show('MEETINGHORN_COPY_URL', nil, nil, url)
 end
 
@@ -577,4 +583,70 @@ function ns.PrepareSearch(search)
     end
 
     return search:lower()
+end
+
+-- 将表转换为 JSON 样式字符串的函数
+-- Utility function to get the size of a table
+function table_size(tbl)
+    local count = 0
+    for _ in pairs(tbl) do count = count + 1 end
+    return count
+end
+
+function ns.TableToJson(tbl)
+    local function isArray(t)
+        local maxIndex = 0
+        for k, _ in pairs(t) do
+            if type(k) ~= "number" then return false end
+            if k > maxIndex then maxIndex = k end
+        end
+        for i = 1, maxIndex do
+            if t[i] == nil then return false end
+        end
+        return true
+    end
+
+    local function serialize(tbl, level)
+        local result = {}
+        local indent = string.rep("  ", level)
+
+        if isArray(tbl) then
+            table.insert(result, "[\n")
+            for i, v in ipairs(tbl) do
+                local value
+                if type(v) == "table" then
+                    value = serialize(v, level + 1)
+                elseif type(v) == "string" then
+                    value = string.format("%q", v)
+                else
+                    value = tostring(v)
+                end
+                local comma = (i == #tbl) and "\n" or ",\n"
+                table.insert(result, string.format("%s  %s%s", indent, value, comma))
+            end
+            table.insert(result, indent .. "]")
+        else
+            table.insert(result, "{\n")
+            local count = 0
+            for k, v in pairs(tbl) do
+                count = count + 1
+                local key = (type(k) == "string" and string.format("%q", k)) or tostring(k)
+                local value
+                if type(v) == "table" then
+                    value = serialize(v, level + 1)
+                elseif type(v) == "string" then
+                    value = string.format("%q", v)
+                else
+                    value = tostring(v)
+                end
+                local comma = (count == table_size(tbl)) and "\n" or ",\n"
+                table.insert(result, string.format("%s  %s: %s%s", indent, key, value, comma))
+            end
+            table.insert(result, indent .. "}")
+        end
+
+        return table.concat(result)
+    end
+
+    return serialize(tbl, 0)
 end

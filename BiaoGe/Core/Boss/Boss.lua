@@ -158,7 +158,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             t:SetPoint("CENTER")
             t:SetJustifyH("RIGHT")
             t:SetTextColor(RGB(BG.dis))
-            t:SetText(L["该BOSS攻略提供：@大树先生\n点击复制NGA攻略地址"])
+            t:SetText(L["该BOSS攻略提供：@祈福-太乙公会 大树\n点击复制NGA攻略地址"])
             f:SetSize(t:GetStringWidth(), t:GetStringHeight())
 
             local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")

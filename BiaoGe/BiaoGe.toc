@@ -2,7 +2,7 @@
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe 或 /GBG
 ## Author: 苍穹之霜
-## Version: 1.10.6
+## Version: 1.11.0
 ## SavedVariables: BiaoGe
 
 BiaoGe.xml

@@ -1427,6 +1427,60 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end
 
+        ----------更新已拥有----------
+        do
+            function BG.UpdateBiaoGeAllIsHaved()
+                local FB = BG.FB1
+                if BG.FBMainFrame:IsVisible() then
+                    for b = 1, Maxb[FB] do
+                        for i = 1, Maxi[FB] do
+                            local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+                            if bt then
+                                BG.IsHave(bt)
+                            end
+                        end
+                    end
+                elseif BG.HistoryMainFrame:IsVisible() then
+                    for b = 1, Maxb[FB] do
+                        for i = 1, Maxi[FB] do
+                            local bt = BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]
+                            if bt then
+                                BG.IsHave(bt)
+                            end
+                        end
+                    end
+                elseif BG.HopeMainFrame:IsVisible() then
+                    for n = 1, HopeMaxn[FB] do
+                        for b = 1, Maxb[FB] do
+                            for i = 1, Maxi[FB] do
+                                local bt = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+                                if bt then
+                                    BG.IsHave(bt)
+                                end
+                            end
+                        end
+                    end
+                elseif BG.DuiZhangMainFrame:IsVisible() then
+                    for b = 1, Maxb[FB] do
+                        for i = 1, Maxi[FB] do
+                            local bt = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
+                            if bt then
+                                BG.IsHave(bt)
+                            end
+                        end
+                    end
+                end
+            end
+
+            local f = CreateFrame("Frame")
+            f:RegisterEvent("BAG_UPDATE_DELAYED")      -- 删除物品
+            f:RegisterEvent("PLAYERBANKSLOTS_CHANGED") -- 银行物品更新
+            f:SetScript("OnEvent", function(self, even, ...)
+                BG.After(0.1, function()
+                    BG.UpdateBiaoGeAllIsHaved()
+                end)
+            end)
+        end
 
         --[[     if not BiaoGe.options.SearchHistory.tutorial231013 then
             local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
@@ -1613,6 +1667,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end)
         hooksecurefunc("SetItemRef", function(link, text, button)
+            -- pt(link,text)
             local item, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
             if not link then return end
             if IsAltKeyDown() then
@@ -1932,10 +1987,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if quality < _quality then
                 return
             end
-            if bindType == 4 then              -- 任务物品
+            if bindType == 4 then          -- 任务物品
                 return
-            elseif bindType == 1 then          -- 拾取绑定的
-                if itemStackCount > 1 then     -- 堆叠数量大于1
+            elseif bindType == 1 then      -- 拾取绑定的
+                if itemStackCount > 1 then -- 堆叠数量大于1
                     return
                 end
                 -- if typeID == 1 then     -- 背包类型
@@ -2306,60 +2361,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             else
                 f:Hide()
             end
-        end)
-    end
-    ----------更新已拥有----------
-    do
-        function BG.UpdateBiaoGeAllIsHaved()
-            local FB = BG.FB1
-            if BG.FBMainFrame:IsVisible() then
-                for b = 1, Maxb[FB] do
-                    for i = 1, Maxi[FB] do
-                        local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
-                        if bt then
-                            BG.IsHave(bt)
-                        end
-                    end
-                end
-            elseif BG.HistoryMainFrame:IsVisible() then
-                for b = 1, Maxb[FB] do
-                    for i = 1, Maxi[FB] do
-                        local bt = BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]
-                        if bt then
-                            BG.IsHave(bt)
-                        end
-                    end
-                end
-            elseif BG.HopeMainFrame:IsVisible() then
-                for n = 1, HopeMaxn[FB] do
-                    for b = 1, Maxb[FB] do
-                        for i = 1, Maxi[FB] do
-                            local bt = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
-                            if bt then
-                                BG.IsHave(bt)
-                            end
-                        end
-                    end
-                end
-            elseif BG.DuiZhangMainFrame:IsVisible() then
-                for b = 1, Maxb[FB] do
-                    for i = 1, Maxi[FB] do
-                        local bt = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
-                        if bt then
-                            BG.IsHave(bt)
-                        end
-                    end
-                end
-            end
-        end
-
-        local f = CreateFrame("Frame")
-        f:RegisterEvent("BAG_UPDATE_DELAYED")      -- 删除物品
-        f:RegisterEvent("PLAYERBANKSLOTS_CHANGED") -- 银行物品更新
-        f:SetScript("OnEvent", function(self, even, ...)
-            BG.After(0.1, function()
-                BG.UpdateBiaoGeAllIsHaved()
-            end)
         end)
     end
     ----------快速记账----------
@@ -3104,6 +3105,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             f:SetScript("OnShow", function(self)
                 BG.UpdateItemGuoQiFrame()
+                self:RegisterEvent("BAG_UPDATE_DELAYED")
+            end)
+            f:SetScript("OnHide", function(self)
+                self:UnregisterAllEvents()
+            end)
+            f:SetScript("OnEvent", function(self)
+                BG.After(0.2, function()
+                    BG.UpdateItemGuoQiFrame()
+                end)
             end)
 
             f.CloseButton = CreateFrame("Button", nil, f, "UIPanelCloseButton")
@@ -3131,7 +3141,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 notItem:Hide()
             end
 
-            for b = 0, 4 do
+            for b = 0, NUM_BAG_SLOTS do
                 for i = 1, C_Container.GetContainerNumSlots(b) do
                     local link = C_Container.GetContainerItemLink(b, i)
                     if link then
@@ -3167,7 +3177,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                 end
             end
-            --[[             -- test
+            --[[                         -- test
             BG.itemGuoQiFrame.tbl = {
                 { time = 120, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool ClothCloth]|h|r", itemID = 2592, b = 0, i = 1 },
                 { time = 90, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
@@ -3285,14 +3295,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 notItem = t
             end
         end
-
-        BG.RegisterEvent("BAG_UPDATE_DELAYED", function(self, even)
-            BG.After(0.2, function()
-                if BG.itemGuoQiFrame:IsVisible() then
-                    BG.UpdateItemGuoQiFrame()
-                end
-            end)
-        end)
 
         C_Timer.NewTicker(30, function()
             if BG.itemGuoQiFrame:IsVisible() or (BiaoGe.options.guoqiRemind == 1 and BG.IsML) then
@@ -3859,23 +3861,16 @@ do
     SLASH_BIAOGETEST1 = "/bgdebug"
 
     SlashCmdList["BIAOGETEST2"] = function()
-        local name, link, quality, level, _, _, _, itemStackCount, _, Texture, _, typeID, _, bindType =
-         GetItemInfo(45038)
-        pt(link, bindType, itemStackCount, typeID)
-        if bindType == 4 then              -- 任务物品
-            pt(false)
-            return
-        elseif bindType == 1 then          -- 拾取绑定的
-            if itemStackCount > 1 then     -- 堆叠数量大于1
-                pt(false)
-                return
-            end
-            if typeID == 1 then     -- 背包类型
-                pt(false)
-                return
-            end
+        local addonName = "MeetingHorn"
+        if IsAddOnLoaded(addonName) then
+            local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+            pt(UnitName("target"), MeetingHorn.db.realm.starRegiment.regimentData[UnitName("target")])
         end
-        pt(true) 
+        if BG.lastAuctionFrame.frame:IsVisible() then
+            BG.lastAuctionFrame.frame:Hide()
+        else
+            BG.lastAuctionFrame.frame:Show()
+        end
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 

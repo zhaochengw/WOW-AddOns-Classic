@@ -160,7 +160,7 @@ do
         elseif BG.IsWLK then
             BG.FB1 = "NAXX"
             BG.fullLevel = 80
-            BG.theEndBossID = { 1114, 757, 645, 856, }
+            BG.theEndBossID = { 1114, 756, 645, 856, }
             AddDB("NAXX", 533, "P1", nil, nil, { "H25", "H10", "N25", "N10" }, nil, { 1, 15 })
             AddDB("ULD", 603, "P2", nil, nil, { "H25", "H10", "N25", "N10" })
             AddDB("TOC", 649, "P3", nil, nil, { "H25", "H10", "N25", "N10" }, nil, { 1, 6 })

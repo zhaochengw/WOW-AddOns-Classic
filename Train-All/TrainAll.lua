@@ -72,7 +72,7 @@ local function createit()
 			Bt_TrainAll()
 		end
 	end)
-	if IsAddOnLoaded("ElvUI") then
+	if C_AddOns.IsAddOnLoaded("ElvUI") then
 		local E, _, _, _, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 		local S = E:GetModule('Skins')
 		S:HandleButton(TrainAllButton, 1)
@@ -96,7 +96,7 @@ end
 
 local function eventHandler(_,_,name)
 	if name == "TrainAll" then
-		if IsAddOnLoaded("Blizzard_TrainerUI") then
+		if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
 			createit()
 			event:UnregisterEvent("ADDON_LOADED")
 		end

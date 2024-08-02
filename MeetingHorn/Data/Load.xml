@@ -1,5 +1,7 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="AppData1.lua"/>
     <Script file="AppData2.lua"/>
+    <Script file="AppData3.lua"/>
+    <Script file="AppData4.lua"/>
     <Script file="SetRegimentVersion.lua"/>
 </Ui>

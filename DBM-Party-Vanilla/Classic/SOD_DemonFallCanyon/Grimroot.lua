@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Grimroot", "DBM-Party-Vanilla", 21)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240714213136")
+mod:SetRevision("20240716174413")
 mod:SetEncounterID(3023)
 mod:SetCreatureID(226923)
 
@@ -80,7 +80,6 @@ function mod:CorruptedTearsTarget(target)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	-- FIXME: due to lack of boss infos/unit ids in classic the test for this doesn't work -- which is bad
 	self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "CorruptedTearsTarget", 0.1, 4)
 end
 

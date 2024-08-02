@@ -831,7 +831,7 @@ function BG.RoleOverviewUI()
                         BiaoGe[FB].lockoutIDtbl[instanceID] = {
                             instanceID = instanceID,
                             lockoutID = lockoutID,
-                            realmID=realmID,
+                            realmID = realmID,
                         }
                     end
                 end
@@ -1174,6 +1174,16 @@ function BG.RoleOverviewUI()
     if not BG.IsVanilla then
         BiaoGe.lastChooseLFD = BiaoGe.lastChooseLFD or {}
         BiaoGe.lastChooseLFD[realmID] = BiaoGe.lastChooseLFD[realmID] or {}
+        if BiaoGe.lastChooseLFD[realmID][player] and type(BiaoGe.lastChooseLFD[realmID][player]) ~= "table" then
+            local type = BiaoGe.lastChooseLFD[realmID][player]
+            BiaoGe.lastChooseLFD[realmID][player] = {
+                type = type,
+            }
+        end
+        BiaoGe.lastChooseLFD[realmID][player] = BiaoGe.lastChooseLFD[realmID][player] or {}
+        BiaoGe.lastChooseLFD[realmID][player].dungeons = BiaoGe.lastChooseLFD[realmID][player].dungeons or {}
+
+        local isOnClick
 
         local function OnClick(self)
             if self.type == "zhiding" then
@@ -1286,15 +1296,27 @@ function BG.RoleOverviewUI()
             end
             UpdateButtons()
             if BiaoGe.lastChooseLFD[realmID][player] then
-                if BiaoGe.lastChooseLFD[realmID][player] == "specific" then
-                    LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
+                if BiaoGe.lastChooseLFD[realmID][player].type == "specific" then
+                    LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player].type)
+                    BG.After(0, function()
+                        for i, id in ipairs(LFDDungeonList) do
+                            if id < 0 then
+                                LFGDungeonList_SetHeaderEnabled(1, id, false, LFDDungeonList, LFDHiddenByCollapseList)
+                            end
+                        end
+                        for dungeonID, isChecked in pairs(BiaoGe.lastChooseLFD[realmID][player].dungeons) do
+                            LFGDungeonList_SetDungeonEnabled(dungeonID, isChecked)
+                        end
+                        LFDQueueFrameSpecificList_Update()
+                        LFDQueueFrame_UpdateRoleButtons()
+                    end)
                 else
                     for i = 1, GetNumRandomDungeons() do
                         local id, name = GetLFGRandomDungeonInfo(i)
                         local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
                         if isAvailableForPlayer then
-                            if id == BiaoGe.lastChooseLFD[realmID][player] then
-                                LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player])
+                            if id == BiaoGe.lastChooseLFD[realmID][player].type then
+                                LFDQueueFrame_SetType(BiaoGe.lastChooseLFD[realmID][player].type)
                                 return
                             end
                         end
@@ -1304,8 +1326,27 @@ function BG.RoleOverviewUI()
         end)
         hooksecurefunc("LFDQueueFrame_SetType", function(value)
             if PVEFrame:IsVisible() then
-                BiaoGe.lastChooseLFD[realmID][player] = value
+                BiaoGe.lastChooseLFD[realmID][player].type = value
             end
+        end)
+        hooksecurefunc("LFGDungeonList_SetDungeonEnabled", function(dungeonID, isChecked)
+            BG.After(0, function()
+                -- pt("2")
+                if isOnClick then
+                    BiaoGe.lastChooseLFD[realmID][player].dungeons[dungeonID] = isChecked
+                end
+            end)
+        end)
+        hooksecurefunc("LFGDungeonListCheckButton_OnClick", function(button, category, dungeonList, hiddenByCollapseList)
+            -- pt("1")
+            isOnClick = true
+            BG.After(0.01, function()
+                -- pt("3")
+                isOnClick = false
+            end)
+            -- local parent = button:GetParent();
+            -- local dungeonID = parent.id;
+            -- local isChecked = button:GetChecked();
         end)
     end
     ------------------日常任务------------------

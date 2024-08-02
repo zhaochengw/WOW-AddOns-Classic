@@ -10,7 +10,7 @@ L['Leader'] = '队长'
 L['Comment'] = '说明'
 L['Operation'] = '操作'
 
-L['LeaderQrCode'] = '二维码'
+L['LeaderQrCode'] = '进语音'
 L['Certification'] = '星标'
 L['Activity'] = '活动类型'
 L['Activity Mode'] = '活动模式'

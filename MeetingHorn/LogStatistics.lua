@@ -47,7 +47,6 @@ function LogStatistics:SendLogs()
     end
     if #self.logs > 0 then
         ns.LFG:SendServer('STATISTICS', self.logs)
-        print('SendLogs: '..#self.logs)
     end
     self.logs = {}
 end

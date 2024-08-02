@@ -1312,7 +1312,7 @@ BG.CheckItemCache = CheckItemCache
 
 -- 更新心愿装备
 do
-    local function GetEquipLocName(EquipLoc) -- 返回该装备部位对应的invtypetable名称
+     function BG.GetEquipLocName(EquipLoc) -- 返回该装备部位对应的invtypetable名称
         for i, v in ipairs(BG.invtypetable) do
             for ii, _EquipLoc in ipairs(BG.invtypetable[i].key) do
                 if EquipLoc == _EquipLoc then
@@ -1336,7 +1336,7 @@ do
     function BG.UpdateItemLib_RightHope(itemID, ShoworHide) -- 更新心愿汇总，ShoworHide：1为添加装备，0为删除装备
         local FB = BG.FB1
         local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(itemID)
-        local EquipLoc = GetEquipLocName(EquipLoc)
+        local EquipLoc = BG.GetEquipLocName(EquipLoc)
         if not EquipLoc then return end
         -- 只需历遍对应部位的心愿格子
         for i = 1, maxhope do

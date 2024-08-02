@@ -7,8 +7,7 @@ local frame = CreateFrame("Frame", name)
 local bmTooltip = CreateFrame("GameTooltip", "BasicMinimapTooltip", UIParent, "GameTooltipTemplate")
 frame:Hide()
 
--- XXX temp 10.2.6
-local TrackingFrame = MinimapCluster.TrackingFrame or MinimapCluster.Tracking
+local TrackingButton = MinimapCluster.Tracking.Button
 
 local blizzButtonNicknames = {
 	zoomIn = Minimap.ZoomIn,
@@ -309,6 +308,18 @@ local function CreateClock(self) -- Create our own clock
 				whiteR, whiteG, whiteB)
 			bmTooltip:AddLine(" ")
 			bmTooltip:AddLine(dateDisplay, whiteR, whiteG, whiteB)
+			bmTooltip:AddLine(" ")
+			bmTooltip:AddLine(RESET, whiteR, whiteG, whiteB) -- Reset
+			bmTooltip:AddDoubleLine( -- Daily quests
+				STAT_FORMAT:format(DAILY),
+				SecondsToTime(C_DateAndTime.GetSecondsUntilDailyReset()),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
+			bmTooltip:AddDoubleLine( -- Weekly quests
+				STAT_FORMAT:format(WEEKLY),
+				SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset()),
+				normalR, normalG, normalB,
+				whiteR, whiteG, whiteB)
 			bmTooltip:AddLine(" ")
 
 			bmTooltip:AddLine(GAMETIME_TOOLTIP_TOGGLE_CLOCK)
@@ -740,7 +751,14 @@ local function Login(self)
 	if MiniMapTracking then -- XXX Dragonflight compat
 		self.SetParent(MiniMapTracking, self)
 	else
-		self.SetParent(TrackingFrame, self)
+		self.SetParent(MinimapCluster.Tracking, self)
+		self.SetParent(TrackingButton, Minimap)
+		self.ClearAllPoints(TrackingButton)
+		self.SetPoint(TrackingButton, "CENTER")
+		self.SetFixedFrameStrata(TrackingButton, false)
+		self.SetFrameStrata(TrackingButton, "BACKGROUND")
+		self.SetFixedFrameStrata(TrackingButton, true)
+		TrackingButton:SetMenuAnchor(AnchorUtil.CreateAnchor("CENTER", Minimap, "CENTER"))
 	end
 
 	-- Difficulty indicators
@@ -785,8 +803,13 @@ local function Login(self)
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetSize", function()
 			frame.SetSize(ExpansionLandingPageMinimapButton, 36, 36)
 		end)
-		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon()>> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
+		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:UpdateIcon() >> self:UpdateIconForGarrison() >> ApplyGarrisonTypeAnchor() >> anchor:SetPoint()
 		hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
+			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
+			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
+		end)
+		-- Stop Blizz moving the icon || Minimap.lua ExpansionLandingPageMinimapButtonMixin:SetLandingPageIconOffset() >> anchor:SetPoint()
+		hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", function() -- ExpansionLandingPageMinimapButton, "SetPoint" || LDBI would call :SetPoint and cause an infinite loop
 			frame.ClearAllPoints(ExpansionLandingPageMinimapButton)
 			ldbi:SetButtonToPosition(ExpansionLandingPageMinimapButton, self.db.profile.blizzButtonLocation.missions)
 		end)
@@ -844,11 +867,11 @@ local function Login(self)
 		end
 	end)
 
-	self.SetScript(Minimap, "OnMouseUp", function(minimapFrame, btn)
+	self.SetScript(Minimap, "OnMouseUp", function(_, btn)
 		if btn == frame.db.profile.calendarBtn then
 			GameTimeFrame:Click()
 		elseif btn == frame.db.profile.trackingBtn then
-			ToggleDropDownMenu(1, nil, TrackingFrame.DropDown, minimapFrame)
+			TrackingButton:OpenMenu()
 		elseif btn == frame.db.profile.missionsBtn then
 			ExpansionLandingPageMinimapButton:Click()
 		elseif btn == frame.db.profile.mapBtn then

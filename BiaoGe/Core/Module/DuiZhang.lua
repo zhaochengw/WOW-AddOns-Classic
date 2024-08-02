@@ -98,17 +98,20 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
     if IsRaidLedger then -- 金团账本
         linshi_duizhang = Default(player, _time)
         linshi_duizhang.yes = 1
+        linshi_duizhang.addons = "raidledger"
         tinsert(linshi_duizhang.msgTbl, msg)
         CheckTimeOut(_time)
         return
     elseif IsBiaoGe then -- 金团表格
         linshi_duizhang = Default(player, _time)
         linshi_duizhang.yes = 2
+        linshi_duizhang.addons = "biaoge"
         tinsert(linshi_duizhang.msgTbl, msg)
         CheckTimeOut(_time)
         return
     elseif not bigfootyes and IsBigFoot then -- 大脚
         linshi_duizhang = Default(player, _time)
+        linshi_duizhang.addons = "bigfoot"
         bigfoot = {}
         bigfootyes = true
         tinsert(bigfoot, msg)
@@ -145,6 +148,21 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
                 tinsert(linshi_duizhang.zhangdan, aaa)
             end
         elseif linshi_duizhang.yes == 2 then -- 金团表格
+            local playerClass = {}
+            local maijia = strmatch(msg, " (.-) ")
+            if maijia == "" then
+                maijia = nil
+            end
+            if maijia then
+                for k, v in pairs(BG.playerClass) do
+                    local value = select(v.select, v.func(maijia))
+                    if value == 0 then value = nil end
+                    playerClass[k] = value
+                end
+                if not playerClass.guild then
+                    playerClass.realm = nil
+                end
+            end
             jine = strmatch(msg, " (%d+)") or strmatch(msg, "：(%d+)")
             local j
             if jine and tonumber(jine) then
@@ -154,11 +172,15 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
             else
                 j = 0
             end
-            local aaa = {
+            local a = {
                 zhuangbei = item,
+                maijia = maijia,
                 jine = j,
             }
-            tinsert(linshi_duizhang.zhangdan, aaa)
+            for k, v in pairs(playerClass) do
+                a[k] = v
+            end
+            tinsert(linshi_duizhang.zhangdan, a)
         end
         return
     elseif bigfootyes and player == linshi_duizhang.player and (BG.FindTableString(msg, locales["事件：.-|c.-|Hitem.-|h|r"]) or BG.FindTableString(msg, locales["^收入为："])) then -- 大脚
@@ -255,18 +277,32 @@ function BG.DuiZhangUI()
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(L["复制对方账单"], 1, 1, 1, true)
-        GameTooltip:AddLine(L["把对方账单的金额覆盖我当前表格的金额"], 1, 0.82, 0, true)
-        GameTooltip:AddLine(L["不会对漏记的装备和金额生效"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["把对方账单的金额覆盖我当前表格的金额。如果对方是BiaoGe插件的账单，则也会复制其买家。"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(" ", 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["不会对漏记的装备和金额生效。"], 1, 0.82, 0, true)
         GameTooltip:Show()
     end)
     BG.GameTooltip_Hide(bt)
     bt:SetScript("OnClick", function(self)
+        local addons = BiaoGe.duizhang[BG.lastduizhangNum].addons
         local FB = BG.FB1
         for b = 1, Maxb[FB] - 1 do
             for i = 1, Maxi[FB] do
                 local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
                 local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
+                local duizhangmaijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
+                local duizhangcolor = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
+                local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
+                if maijia and addons == "biaoge" then
+                    maijia:SetText("")
+                    maijia:SetTextColor(1, 1, 1)
+                    BiaoGe[FB]["boss" .. b]["maijia" .. i] = nil
+                    BiaoGe[FB]["boss" .. b]["color" .. i] = { 1, 1, 1 }
+                    for k, v in pairs(BG.playerClass) do
+                        BiaoGe[FB]["boss" .. b][k .. i] = nil
+                    end
+                end
                 if otherjine then
                     myjine:SetText(otherjine:GetText())
                     jine:SetText(otherjine:GetText())
@@ -274,6 +310,21 @@ function BG.DuiZhangUI()
                         BiaoGe[FB]["boss" .. b]["jine" .. i] = nil
                     else
                         BiaoGe[FB]["boss" .. b]["jine" .. i] = otherjine:GetText()
+                    end
+
+                    if duizhangmaijia then
+                        maijia:SetText(duizhangmaijia)
+                        BiaoGe[FB]["boss" .. b]["maijia" .. i] = duizhangmaijia
+                        if duizhangcolor then
+                            maijia:SetTextColor(unpack(duizhangcolor))
+                            BiaoGe[FB]["boss" .. b]["color" .. i] = duizhangcolor
+                        else
+                            maijia:SetTextColor(1, 1, 1)
+                            BiaoGe[FB]["boss" .. b]["color" .. i] = { 1, 1, 1 }
+                        end
+                        for k in pairs(BG.playerClass) do
+                            BiaoGe[FB]["boss" .. b][k .. i] = BG.DuiZhangFrame[FB]["boss" .. b][k .. i]
+                        end
                     end
                 end
             end
@@ -293,7 +344,7 @@ function BG.DuiZhangUI()
         })
         f:SetBackdropColor(0, 0, 0, 0.6)
         f:SetPoint("BOTTOMRIGHT", BG.MainFrame, -40, 90)
-        f:SetSize(335, 230)
+        f:SetSize(335, 200)
         f:EnableMouse(true)
 
         local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate") -- 滚动
@@ -391,7 +442,7 @@ local function CreateZhangDanMsg(num)
             classtext = select(4, GetClassColor(zhangdan.class))
         end
         local nameLink = "|Hplayer:" .. zhangdan.player .. "|h[" .. "|c" .. classtext .. zhangdan.player .. RR .. "]|h"
-        local timeText = "|cff" .. "808080" .. "(" .. zhangdan.time .. ")|r"
+        local timeText = "|cff" .. "808080" .. zhangdan.time .. "|r"
 
         BG.DuiZhangMainFrame.msgFrame:SetText("")
         for i, msg in ipairs(zhangdan.msgTbl) do
@@ -450,10 +501,10 @@ function BG.DuiZhangSet(num)
     BG.DuiZhang0()
     CreateZhangDanMsg(num)
 
-    for key, value in pairs(dz) do
-        if value.zhuangbei then
-            local item = value.zhuangbei
-            local jine = value.jine
+    for _, v in ipairs(dz) do
+        if v.zhuangbei then
+            local item = v.zhuangbei
+            local jine = v.jine
             local yes
             for b = 1, Maxb[FB] - 1 do
                 for i = 1, Maxi[FB] do
@@ -464,14 +515,16 @@ function BG.DuiZhangSet(num)
                     if zhuangbei then
                         if GetItemID(zhuangbei:GetText()) == GetItemID(item) and otherjine:GetText() == "" then
                             otherjine:SetText(jine)
+                            BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i] = v.maijia
+                            for k in pairs(BG.playerClass) do
+                                BG.DuiZhangFrame[FB]["boss" .. b][k .. i] = v[k]
+                            end
                             yes = true
                             break
                         end
                     end
                 end
-                if yes then
-                    break
-                end
+                if yes then break end
             end
             -- 漏记
             if not yes then
@@ -535,6 +588,10 @@ function BG.DuiZhang0()
             local ds = BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]
             if zhuangbei then
                 otherjine:SetText("")
+                BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i] = nil
+                for k, v in pairs(BG.playerClass) do
+                    BG.DuiZhangFrame[FB]["boss" .. b][k .. i] = nil
+                end
                 tx:SetTexture(nil)
                 ds:Hide()
             end
