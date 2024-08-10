@@ -3861,16 +3861,18 @@ do
     SLASH_BIAOGETEST1 = "/bgdebug"
 
     SlashCmdList["BIAOGETEST2"] = function()
-        local addonName = "MeetingHorn"
-        if IsAddOnLoaded(addonName) then
-            local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
-            pt(UnitName("target"), MeetingHorn.db.realm.starRegiment.regimentData[UnitName("target")])
-        end
-        if BG.lastAuctionFrame.frame:IsVisible() then
-            BG.lastAuctionFrame.frame:Hide()
-        else
-            BG.lastAuctionFrame.frame:Show()
-        end
+        -- local addonName = "MeetingHorn"
+        -- if IsAddOnLoaded(addonName) then
+        --     local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+        --     pt(UnitName("target"), MeetingHorn.db.realm.starRegiment.regimentData[UnitName("target")])
+        -- end
+        -- if BG.lastAuctionFrame.frame:IsVisible() then
+        --     BG.lastAuctionFrame.frame:Hide()
+        -- else
+        --     BG.lastAuctionFrame.frame:Show()
+        -- end
+
+        BG.qiankuanTradeFrame.Update()
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 

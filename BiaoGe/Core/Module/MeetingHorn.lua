@@ -396,158 +396,161 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         -- 成就
         local AchievementTitle, AchievementTitleID, AchievementEdit, AchievementCheckButton
         if not BG.IsVanilla then
-            do
-                local onEnterTextTbl = {
-                    "ULD(25)",
-                    2958,
-                    2895,
-                    3037,
-                    3164,
-                    3163,
-                    3189, -- 烈火金刚
-                    3184, -- 珍贵的宝箱
-                    2944,
-                    "ULD(10)",
-                    2957,
-                    2890,
-                    3036,
-                    3159,
-                    3158,
-                    3180,
-                    3182,
-                    2941,
-                    -- ,
-                }
-                local t = f:CreateFontString()
-                t:SetPoint("TOPLEFT", 15, -30)
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-                t:SetTextColor(RGB(BG.g1))
-                t:SetText(L["成就"])
-                AchievementTitle = t
+            local onEnterTextTbl = {
+                "ULD(25)",
+                2958,
+                2895,
+                3037,
+                3164,
+                3163,
+                3189, -- 烈火金刚
+                3184, -- 珍贵的宝箱
+                2944,
+                "ULD(10)",
+                2957,
+                2894,
+                3036,
+                3159,
+                3158,
+                3180,
+                3182,
+                2941,
+                -- "RS",
+                -- 4816,
+                -- 4815,
+                -- 4818,
+                -- 4817,
+                -- "ICC(25)",
+                -- 4637,
+                -- 4608,
+                -- 4603,
+                -- 4635,
+                -- 4634,
+                -- 4633,
+                -- 4632,
+                -- "ICC(10)",
+                -- 4636,
+                -- 4532,
+                -- 4602,
+                -- 4631,
+                -- 4630,
+                -- 4629,
+                -- 4628,
+            }
+            local t = f:CreateFontString()
+            t:SetPoint("TOPLEFT", 15, -30)
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetTextColor(RGB(BG.g1))
+            t:SetText(L["成就"])
+            AchievementTitle = t
 
-                local l = f:CreateLine()
-                l:SetColorTexture(RGB("808080", 1))
-                l:SetStartPoint("BOTTOMLEFT", t, -5, -2)
-                l:SetEndPoint("BOTTOMLEFT", t, f.width - 25, -2)
-                l:SetThickness(1)
+            local l = f:CreateLine()
+            l:SetColorTexture(RGB("808080", 1))
+            l:SetStartPoint("BOTTOMLEFT", t, -5, -2)
+            l:SetEndPoint("BOTTOMLEFT", t, f.width - 25, -2)
+            l:SetThickness(1)
 
-                local t = f:CreateFontString()
-                t:SetPoint("TOPLEFT", AchievementTitle, "BOTTOMLEFT", 0, -8)
-                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
-                t:SetTextColor(RGB("FFFFFF"))
-                t:SetText(L["成就ID："])
-                AchievementTitleID = t
+            local t = f:CreateFontString()
+            t:SetPoint("TOPLEFT", AchievementTitle, "BOTTOMLEFT", 0, -8)
+            t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            t:SetTextColor(RGB("FFFFFF"))
+            t:SetText(L["成就ID："])
+            AchievementTitleID = t
 
-                -- 编辑框
-                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
-                edit:SetSize(80, 20)
-                edit:SetPoint("LEFT", t, "RIGHT", 5, 0)
-                edit:SetAutoFocus(false)
-                edit:SetNumeric(true)
-                if BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID then
-                    edit:SetText(BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID)
-                end
-                AchievementEdit = edit
-                edit:HookScript("OnEditFocusGained", function(self, enter)
-                    lastfocus = edit
-                end)
-                edit:SetScript("OnMouseDown", function(self, enter)
-                    if enter == "RightButton" then
-                        edit:SetEnabled(false)
-                        edit:SetText("")
-                    end
-                end)
-                edit:SetScript("OnMouseUp", function(self, enter)
-                    if enter == "RightButton" then
-                        edit:SetEnabled(true)
-                    end
-                end)
-                edit:SetScript("OnEnterPressed", function(self)
-                    self:ClearFocus()
-                end)
-                edit:SetScript("OnEnter", function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-                    GameTooltip:ClearLines()
-                    GameTooltip:AddLine(L["成就ID参考"], 1, 1, 1)
-                    GameTooltip:AddLine(" ")
-                    for i, text in ipairs(onEnterTextTbl) do
-                        if tonumber(text) then
-                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text))
-                        else
-                            GameTooltip:AddLine(text, 1, 1, 1)
-                        end
-                    end
-
-                    -- GameTooltip:AddLine("RS", 1, 1, 1)
-                    -- GameTooltip:AddLine("4816: " .. GetAchievementLink(4816))
-                    -- GameTooltip:AddLine("4815: " .. GetAchievementLink(4815))
-                    -- GameTooltip:AddLine("4818: " .. GetAchievementLink(4818))
-                    -- GameTooltip:AddLine("4817: " .. GetAchievementLink(4817))
-                    -- GameTooltip:AddLine("ICC(25)", 1, 1, 1)
-                    -- GameTooltip:AddLine("4637: " .. GetAchievementLink(4637))
-                    -- GameTooltip:AddLine("4608: " .. GetAchievementLink(4608))
-                    -- GameTooltip:AddLine("4603: " .. GetAchievementLink(4603))
-
-                    -- GameTooltip:AddLine("4635: " .. GetAchievementLink(4635))
-                    -- GameTooltip:AddLine("4634: " .. GetAchievementLink(4634))
-                    -- GameTooltip:AddLine("4633: " .. GetAchievementLink(4633))
-                    -- GameTooltip:AddLine("4632: " .. GetAchievementLink(4632))
-
-                    -- GameTooltip:AddLine("ICC(10)", 1, 1, 1)
-                    -- GameTooltip:AddLine("4636: " .. GetAchievementLink(4636))
-                    -- GameTooltip:AddLine("4532: " .. GetAchievementLink(4532))
-                    -- GameTooltip:AddLine("4602: " .. GetAchievementLink(4602))
-
-                    -- GameTooltip:AddLine("4631: " .. GetAchievementLink(4631))
-                    -- GameTooltip:AddLine("4630: " .. GetAchievementLink(4630))
-                    -- GameTooltip:AddLine("4629: " .. GetAchievementLink(4629))
-                    -- GameTooltip:AddLine("4628: " .. GetAchievementLink(4628))
-
-                    GameTooltip:Show()
-                end)
-                BG.GameTooltip_Hide(edit)
-
-                local bt = CreateFrame("CheckButton", nil, f, "ChatConfigCheckButtonTemplate")
-                bt:SetSize(25, 25)
-                bt:SetPoint("TOPLEFT", AchievementTitleID, "BOTTOMLEFT", 0, -5)
-                bt:SetHitRectInsets(0, -BG.MeetingHorn.WhisperFrame.width + 50, 0, 0)
-                bt:SetChecked(true)
-                if BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose == 1 then
-                    bt:SetChecked(true)
-                elseif BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose == 0 then
-                    bt:SetChecked(false)
-                end
-                bt.Text:SetTextColor(RGB(BG.dis))
-                bt.Text:SetWidth(BG.MeetingHorn.WhisperFrame.width - 50)
-                bt.Text:SetWordWrap(false)
-                AchievementCheckButton = bt
-                bt:SetScript("OnClick", function(self)
-                    if self:GetChecked() then
-                        BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose = 1
-                    else
-                        BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose = 0
-                    end
-                    PlaySound(BG.sound1, "Master")
-                end)
-                bt:SetScript("OnEnter", function(self)
-                    if edit:GetText() ~= "" and GetAchievementLink(edit:GetText()) then
-                        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-                        GameTooltip:ClearLines()
-                        GameTooltip:SetHyperlink(GetAchievementLink(edit:GetText()))
-                    end
-                end)
-                BG.GameTooltip_Hide(bt)
-
-                edit:SetScript("OnTextChanged", function(self)
-                    if self:GetText() ~= "" and GetAchievementLink(self:GetText()) then
-                        bt.Text:SetText(GetAchievementLink(self:GetText()))
-                        BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID = self:GetText()
-                    else
-                        bt.Text:SetText(L["当前没有成就"])
-                        BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID = nil
-                    end
-                end)
+            -- 编辑框
+            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            edit:SetSize(80, 20)
+            edit:SetPoint("LEFT", t, "RIGHT", 5, 0)
+            edit:SetAutoFocus(false)
+            edit:SetNumeric(true)
+            if BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID then
+                edit:SetText(BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID)
             end
+            AchievementEdit = edit
+            edit:HookScript("OnEditFocusGained", function(self, enter)
+                lastfocus = edit
+            end)
+            edit:SetScript("OnMouseDown", function(self, enter)
+                if enter == "RightButton" then
+                    edit:SetEnabled(false)
+                    edit:SetText("")
+                end
+            end)
+            edit:SetScript("OnMouseUp", function(self, enter)
+                if enter == "RightButton" then
+                    edit:SetEnabled(true)
+                end
+            end)
+            edit:SetScript("OnEnterPressed", function(self)
+                self:ClearFocus()
+            end)
+            edit:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(L["成就ID参考"], 1, 1, 1)
+                for i, text in ipairs(onEnterTextTbl) do
+                    if tonumber(text) then
+                        if select(4, GetAchievementInfo(text)) then
+                            local r, g, b = 1, .82, 0
+                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text), r, g, b)
+                        else
+                            local r, g, b = .5, .5, .5
+                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text):gsub("|cff......", ""):gsub("|r", ""), r, g, b)
+                        end
+                    else
+                        GameTooltip:AddLine(" ")
+                        GameTooltip:AddLine(text, 1, 1, 1)
+                    end
+                end
+                GameTooltip:Show()
+            end)
+            BG.GameTooltip_Hide(edit)
+
+            local bt = CreateFrame("CheckButton", nil, f, "ChatConfigCheckButtonTemplate")
+            bt:SetSize(25, 25)
+            bt:SetPoint("TOPLEFT", AchievementTitleID, "BOTTOMLEFT", 0, -5)
+            bt:SetHitRectInsets(0, -BG.MeetingHorn.WhisperFrame.width + 50, 0, 0)
+            bt:SetChecked(true)
+            if BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose == 1 then
+                bt:SetChecked(true)
+            elseif BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose == 0 then
+                bt:SetChecked(false)
+            end
+            bt.Text:SetTextColor(.5,.5,.5)
+            bt.Text:SetWidth(BG.MeetingHorn.WhisperFrame.width - 50)
+            bt.Text:SetWordWrap(false)
+            AchievementCheckButton = bt
+            bt:SetScript("OnClick", function(self)
+                if self:GetChecked() then
+                    BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose = 1
+                else
+                    BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose = 0
+                end
+                PlaySound(BG.sound1, "Master")
+            end)
+            bt:SetScript("OnEnter", function(self)
+                if edit:GetText() ~= "" and GetAchievementLink(edit:GetText()) then
+                    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                    GameTooltip:ClearLines()
+                    GameTooltip:SetHyperlink(GetAchievementLink(edit:GetText()))
+                end
+            end)
+            BG.GameTooltip_Hide(bt)
+
+            edit:SetScript("OnTextChanged", function(self)
+                if self:GetText() ~= "" and GetAchievementLink(self:GetText()) then
+                    local text=GetAchievementLink(self:GetText())
+                    if not select(4, GetAchievementInfo(self:GetText())) then
+                        text=text:gsub("|cff......", "|cff808080")
+                    end
+                    bt.Text:SetText(text)
+                    
+                    BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID = self:GetText()
+                else
+                    bt.Text:SetText(L["当前没有成就"])
+                    BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID = nil
+                end
+            end)
         end
 
         -- 装等

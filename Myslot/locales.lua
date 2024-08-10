@@ -18,8 +18,10 @@ MySlot.L = L
 local locale = GetLocale()
 
 if locale == 'enUs' then
+L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = true
 L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = true
 L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = true
+L["<- share your profile here"] = true
 L["All slots were restored"] = true
 L["Are you SURE to delete '%s'?"] = true
 L["Are you SURE to import ?"] = true
@@ -60,9 +62,13 @@ L["Use random mount instead of an unattained mount"] = true
 
 elseif locale == 'deDE' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -140,9 +146,13 @@ elseif locale == 'deDE' then
 
 elseif locale == 'esES' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 L["All slots were restored"] = "Se han restaurado todos los huecos"
 --[[Translation missing --]]
 --[[ L["Are you SURE to delete '%s'?"] = "Are you SURE to delete '%s'?"--]] 
@@ -193,9 +203,13 @@ L["Use random mount instead of an unattained mount"] = "Usa una montura aleatori
 
 elseif locale == 'esMX' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -273,9 +287,13 @@ elseif locale == 'esMX' then
 
 elseif locale == 'frFR' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -353,9 +371,13 @@ elseif locale == 'frFR' then
 
 elseif locale == 'itIT' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -433,9 +455,13 @@ elseif locale == 'itIT' then
 
 elseif locale == 'koKR' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -513,9 +539,13 @@ elseif locale == 'koKR' then
 
 elseif locale == 'ptBR' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 --[[Translation missing --]]
 --[[ L["All slots were restored"] = "All slots were restored"--]] 
 --[[Translation missing --]]
@@ -593,9 +623,13 @@ elseif locale == 'ptBR' then
 
 elseif locale == 'ruRU' then
 --[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
+--[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 L["All slots were restored"] = "Все слоты восстановлены"
 L["Are you SURE to delete '%s'?"] = "Вы УВЕРЕНЫ, что хотите удалить \"%s\"?"
 L["Are you SURE to import ?"] = "Вы УВЕРЕНЫ, что хотите импортировать?"
@@ -653,8 +687,11 @@ L["Unsaved"] = "Не сохранять"
 --[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 
 elseif locale == 'zhCN' then
+--[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
 L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] 忽略不支持的按键绑定 [ %s ]，请通知作者 %s"
 L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] 忽略不支持的按键类型 [ %s ]，请通知作者 %s"
+L["<- share your profile here"] = "<- 分享你的配置"
 L["All slots were restored"] = "所有按钮及按键邦定位置恢复完毕"
 L["Are you SURE to delete '%s'?"] = "确定要删除 '%s'"
 L["Are you SURE to import ?"] = "你确定要导入吗?"
@@ -694,8 +731,12 @@ L["Unsaved"] = "未保存"
 L["Use random mount instead of an unattained mount"] = "使用随机坐骑代替没有获得的坐骑"
 
 elseif locale == 'zhTW' then
+--[[Translation missing --]]
+--[[ L["[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"] = "[WARN] Ignore slot due to an unknown error DEBUG INFO = [S=%s T=%s I=%s] Please send Importing Text and DEBUG INFO to %s"--]] 
 L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] 忽略不支援的按鍵設置：K = [ %s ] ，請通知作者 %s"
 L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] 忽略不支援的欄位設置：K = [ %s ] ，請通知作者 %s"
+--[[Translation missing --]]
+--[[ L["<- share your profile here"] = "<- share your profile here"--]] 
 L["All slots were restored"] = "所有按鍵設定都已恢復完畢"
 --[[Translation missing --]]
 --[[ L["Are you SURE to delete '%s'?"] = "Are you SURE to delete '%s'?"--]] 

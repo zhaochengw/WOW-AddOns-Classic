@@ -63,8 +63,8 @@ function QuestieJourney:Initialize()
 
     coroutine.yield()
     self.continents = continents
-    self.zoneMap = ZoneDB:GetZonesWithQuests(true)
-    self.zones = ZoneDB:GetRelevantZones()
+    self.zoneMap = ZoneDB.GetZonesWithQuests(true)
+    self.zones = ZoneDB.GetRelevantZones()
     coroutine.yield()
     self:BuildMainFrame()
 end
@@ -220,3 +220,5 @@ function QuestieJourney:CompleteQuest(questId)
 
     tinsert(Questie.db.char.journey, entry)
 end
+
+return QuestieJourney

@@ -2,27 +2,27 @@
 ..\FrameXML\UI.xsd">
 
 <!--
-    <Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
-    <Include file = "template.xml"/>
+	<Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
+	<Include file = "template.xml"/>
 -->
-    <include file = "libs\libs.xml" />
+	<include file = "libs\libs.xml" />
 
-    <script file = "init.lua" />
+	<script file = "init.lua" />
 
-    <include file = "Locale\Locale.xml" />
-    <include file = "Data\Data.xml" />
+	<include file = "Locale\Locale.xml" />
+	<include file = "Data\Data.xml" />
+	<include file = "Source\Source.xml" />
 
-    <script file = "db.lua" />
-    <script file = "ui.lua" />
-    <script file = "tooltip.lua" />
-    <script file = "cooldown.lua" />
-    <script file = "communication.lua" />
-    <script file = "misc.lua" />
-    <script file = "setting.lua" />
+	<script file = "db.lua" />
+	<script file = "ui.lua" />
+	<script file = "tooltip.lua" />
+	<script file = "cooldown.lua" />
+	<script file = "communication.lua" />
+	<script file = "misc.lua" />
+	<script file = "setting.lua" />
 
-    <include file = "plugin\plugin.xml" />
-    <!-- <include file = "Bindings.xml" /> -->
+	<include file = "plugin\plugin.xml" />
+	<!-- <include file = "Bindings.xml" /> -->
 
 
 </Ui>
-

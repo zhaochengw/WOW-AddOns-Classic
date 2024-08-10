@@ -786,6 +786,9 @@ function QuestieQuestFixes:Load()
         [1302] = {
             [questKeys.preQuestSingle] = {}, -- #889
         },
+        [1322] = {
+            [questKeys.objectivesText] = {"Acquire 6 Acidic Venom Sacs for Do'gol in Brackenwall Village."},
+        },
         [1324] = {
             [questKeys.objectives] = {{{4966,"Subdue Private Hendel"}}},
             [questKeys.nextQuestInChain] = 1267, -- wotlkDB is wrong, classicGB is right
@@ -1296,6 +1299,9 @@ function QuestieQuestFixes:Load()
         [2936] = {
             [questKeys.triggerEnd] = {"Find the Spider God's Name", {[zoneIDs.TANARIS]={{38.73,19.88}}}},
         },
+        [2943] = { -- Return to Troyas
+            [questKeys.nextQuestInChain] = 2879,
+        },
         [2945] = {
             [questKeys.startedBy] = {{6212},nil,{9326}},
         },
@@ -1348,6 +1354,9 @@ function QuestieQuestFixes:Load()
         [3181] = {
             [questKeys.startedBy] = {{5833},nil,{10000}},
         },
+        [3182] = { -- Proof of Deed
+            [questKeys.nextQuestInChain] = 3201,
+        },
         [3321] = {
             [questKeys.objectives] = {{{7804,"Watch Trenton Work"}}},
         },
@@ -1377,6 +1386,9 @@ function QuestieQuestFixes:Load()
         },
         [3453] = {
             [questKeys.objectives] = {{{8479,"Torch Creation"}}},
+        },
+        [3454] = { -- The Torch of Retribution
+            [questKeys.nextQuestInChain] = 3462,
         },
         [3483] = {
             [questKeys.parentQuest] = 3449, -- #1008
@@ -1464,12 +1476,13 @@ function QuestieQuestFixes:Load()
             [questKeys.exclusiveTo] = {936,3762,3761},
         },
         [3785] = {
-            [questKeys.requiredSourceItems] = {11018},
+            [questKeys.requiredSourceItems] = {11022,11018},
         },
         [3786] = {
-            [questKeys.requiredSourceItems] = {11018},
+            [questKeys.requiredSourceItems] = {11022,11018},
         },
-        [3791] = {
+        [3791] = { -- The Mystery of Morrowgrain
+            [questKeys.requiredSourceItems] = {11022,11018},
             [questKeys.preQuestSingle] = {3787,3788}, -- #885
         },
         [3903] = {
@@ -1679,6 +1692,9 @@ function QuestieQuestFixes:Load()
         [4641] = {
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE, -- #877
             [questKeys.exclusiveTo] = {788}, -- #1956
+        },
+        [4726] = {
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_INTERACT, l10n("Use the Draco-Incarcinatrix 900 and defeat the dragonkin."), 0, {{"monster",7047},{"monster",7048}},{"monster",7049}}},
         },
         [4729] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Empty Worg Pup Cage to capture it."), 0, {{"monster", 10221}}}},

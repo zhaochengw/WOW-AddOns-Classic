@@ -52,3 +52,7 @@ MailLogger：
 1.5.1 new toc system, and fix instance_chat error.
 1.5.2 fix global variables error (maybe).
 1.5.4 Support CATA version.
+1.5.6 Fix checkbox bugs, and re-build setting interface.
+2.0.1 Fix setting error, Added two-step authentication for "Delete data".
+2.0.4 Optimized the interface, the confirmation buttons 'Y' and 'N' will disappear automatically after 5 seconds.
+2.0.5 Fix the error in the addon that deletes records that include both giving and receiving items.

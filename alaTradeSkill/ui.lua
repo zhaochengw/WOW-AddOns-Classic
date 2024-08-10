@@ -1107,30 +1107,51 @@ end
 				[ [[Interface\Buttons\UI-PlusButton-Hilight]] ] = T_UIDefinition.texture_modern_button_plus,
 			};
 			local SetTextureReplaced = {
-				_SetTexture = function(self, tex)
-					self:_SetTexture(SkillButton_TextureHash[tex] or tex);
+				SetTexture = function(self, tex, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						self:SetTexture(SkillButton_TextureHash[tex] or tex);
+					end
 				end,
-				_SetNormalTexture = function(self, tex)
-					tex = SkillButton_TextureHash[tex] or tex;
-					self:_SetNormalTexture(tex);
-					self:_SetHighlightTexture(tex);
+				SetNormalTexture = function(self, tex, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						tex = SkillButton_TextureHash[tex] or tex;
+						self:SetNormalTexture(tex, true);
+						-- self:SetHighlightTexture(tex);
+					end
 				end,
-				_ClearNormalTexture = function(self)
-					self:_ClearNormalTexture();
-					self:ClearHighlightTexture();
+				ClearNormalTexture = function(self, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						self:ClearNormalTexture(true);
+						self:ClearHighlightTexture(true);
+					end
 				end,
-				_SetPushedTexture = function(self, tex)
-					self:_SetPushedTexture(SkillButton_TextureHash[tex] or tex);
+				SetPushedTexture = function(self, tex, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						self:SetPushedTexture(SkillButton_TextureHash[tex] or tex, true);
+					end
 				end,
-				_SetHighlightTexture = function(self, tex)
-					-- self:_SetHighlightTexture(SkillButton_TextureHash[tex] or tex);
-				end,
-				_SetDisabledTexture = function(self, tex)
-					self:_SetDisabledTexture(SkillButton_TextureHash[tex] or tex);
+				--[[SetHighlightTexture = function(self, tex, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						self:SetHighlightTexture(SkillButton_TextureHash[tex] or tex, true);
+					end
+				end,--]]
+				SetDisabledTexture = function(self, tex, hookcall)
+					if not hookcall and not VT.SET.blz_style then
+						self:SetDisabledTexture(SkillButton_TextureHash[tex] or tex, true);
+					end
 				end,
 			};
+			local THookedButton = {  };
 		function LT_SharedMethod.StyleModernSkillButton(Button)
-			Button._SetNormalTexture = Button._SetNormalTexture or Button.SetNormalTexture;
+			if THookedButton[Button] == nil then
+				THookedButton[Button] = true;
+				hooksecurefunc(Button, "SetNormalTexture", SetTextureReplaced.SetNormalTexture);
+				hooksecurefunc(Button, "ClearNormalTexture", SetTextureReplaced.ClearNormalTexture);
+				hooksecurefunc(Button, "SetPushedTexture", SetTextureReplaced.SetPushedTexture);
+				-- hooksecurefunc(Button, "SetHighlightTexture", SetTextureReplaced.SetHighlightTexture);
+				hooksecurefunc(Button, "SetDisabledTexture", SetTextureReplaced.SetDisabledTexture);
+			end
+			--[[Button._SetNormalTexture = Button._SetNormalTexture or Button.SetNormalTexture;
 			Button.SetNormalTexture = SetTextureReplaced._SetNormalTexture;
 			local NormalTexture = Button:GetNormalTexture();
 			if NormalTexture then
@@ -1162,11 +1183,11 @@ end
 			if DisabledTexture then
 				DisabledTexture._SetTexture = DisabledTexture._SetTexture or DisabledTexture.SetTexture;
 				DisabledTexture.SetTexture = SetTextureReplaced._SetTexture;
-			end
+			end--]]
 			Button:SetPushedTextOffset(0.0, 0.0);
 		end
 		function LT_SharedMethod.StyleBLZSkillButton(Button)
-			if Button._SetNormalTexture then
+			--[[if Button._SetNormalTexture then
 				Button.SetNormalTexture = Button._SetNormalTexture;
 			end
 			local NormalTexture = Button:GetNormalTexture();
@@ -1193,7 +1214,7 @@ end
 			local DisabledTexture = Button:GetDisabledTexture();
 			if DisabledTexture and DisabledTexture._SetTexture then
 				DisabledTexture.SetTexture = DisabledTexture._SetTexture;
-			end
+			end--]]
 			Button:SetPushedTextOffset(1.55, -1.55);
 		end
 		--

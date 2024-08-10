@@ -635,6 +635,360 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end)
     end
 
+    -- 欠款记录
+    do
+        -- local old = TradeFrame
+        -- local TradeFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+        -- TradeFrame:SetBackdrop({
+        --     bgFile = "Interface/ChatFrame/ChatFrameBackground",
+        --     edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+        --     edgeSize = 16,
+        --     insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        -- })
+        -- TradeFrame:SetBackdropColor(0, 0, 0, 0.8)
+        -- TradeFrame:SetSize(old:GetSize())
+        -- TradeFrame:SetPoint("TOPLEFT", 16, -116)
+        -- TradeFrame:SetToplevel(true)
+        -- TradeFrame:EnableMouse(true)
+
+        BG.qiankuanTradeFrame = {}
+        local f = CreateFrame("Frame", nil, TradeFrame, "BackdropTemplate")
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 1,
+        })
+        f:SetBackdropColor(0, 0, 0, 0.7)
+        f:SetBackdropBorderColor(0, 0, 0, 1)
+        f:SetSize(TradeFrame:GetWidth(), 175)
+        f:SetPoint("TOPLEFT", TradeFrame, "BOTTOMLEFT", 0, -0)
+        f:EnableMouse(true)
+        f:Hide()
+        BG.qiankuanTradeFrame.frame = f
+
+        local text = f:CreateFontString()
+        text:SetPoint("TOP", f, "TOP", 0, -5)
+        text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+        text:SetText(L["对方欠款记录"])
+
+        local bt = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+        bt:SetSize(80, 20)
+        bt:SetPoint("TOPLEFT", 5, -2)
+        bt:SetText(L["刷新"])
+        bt:SetScript("OnClick", function(self)
+            BG.PlaySound(1)
+            BG.qiankuanTradeFrame.Update()
+        end)
+
+        -- 总欠款
+        local f = CreateFrame("Frame", nil, BG.qiankuanTradeFrame.frame)
+        f:SetSize(0, 20)
+        f:SetPoint("BOTTOMLEFT", 33, 5)
+        f.text = f:CreateFontString()
+        f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        f.text:SetPoint("LEFT")
+        f.text:SetText(L["合计欠款："])
+        f.text:SetJustifyH("LEFT")
+        f:SetWidth(f.text:GetStringWidth())
+        BG.qiankuanTradeFrame.Text1 = f
+
+        local f = CreateFrame("Frame", nil, BG.qiankuanTradeFrame.Text1)
+        f:SetSize(100, 20)
+        f:SetPoint("LEFT", BG.qiankuanTradeFrame.Text1, "RIGHT", 5, 0)
+        f.text = f:CreateFontString()
+        f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        f.text:SetAllPoints()
+        f.text:SetTextColor(1, 0, 0)
+        f.text:SetJustifyH("LEFT")
+        BG.qiankuanTradeFrame.Text2 = f
+
+        local bt = CreateFrame("Button", nil, BG.qiankuanTradeFrame.Text1, "UIPanelButtonTemplate")
+        bt:SetSize(100, 20)
+        bt:SetPoint("BOTTOMRIGHT", BG.qiankuanTradeFrame.frame, "BOTTOMRIGHT", -10, 5)
+        bt:SetText(L["清除全部欠款"])
+        BG.qiankuanTradeFrame.ButtonClearAll = bt
+        bt:SetScript("OnClick", function(self)
+            local unit = "NPC"
+            if BG.DeBug then unit = "player" end
+            local target = UnitName(unit)
+            local class = select(2, UnitClass(unit))
+            local color = select(4, GetClassColor(class))
+            StaticPopup_Show("BIAOGE_CLEAR_ALL_QIANKUAN", "|c" .. color .. target .. RR, BG.qiankuanTradeFrame.Text2.text:GetText())
+        end)
+
+
+        local frame, child = BG.CreateScrollFrame(BG.qiankuanTradeFrame.frame, BG.qiankuanTradeFrame.frame:GetWidth() - 15, BG.qiankuanTradeFrame.frame:GetHeight() - 55)
+        frame:SetPoint("TOPLEFT", 8, -25)
+        frame:SetBackdrop({
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 1,
+        })
+        frame:SetBackdropBorderColor(.5, .5, .5, .5)
+
+        local buttons = {}
+
+        function BG.qiankuanTradeFrame.Update()
+            BG.qiankuanTradeFrame.frame:Hide()
+            if not (BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["qiankuanTrade"] == 1) then return end
+            local unit = "NPC"
+            if BG.DeBug then unit = "player" end
+            local target = UnitName(unit)
+            for i, v in ipairs(buttons) do
+                v.frame:Hide()
+            end
+            wipe(buttons)
+            local sum = 0
+            local yes
+            local FB = BG.FB1
+            for b = 1, Maxb[FB] do
+                for i = 1, BG.Maxi do
+                    local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+                    local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
+                    if maijia then
+                        if maijia:GetText() == target and BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
+                            yes = true
+                            local bts = {}
+                            sum = sum + tonumber(BiaoGe[FB]["boss" .. b]["qiankuan" .. i])
+
+                            -- 底色
+                            do
+                                local f = CreateFrame("Frame", nil, child)
+                                if #buttons == 0 then
+                                    f:SetPoint("TOPLEFT", 0, 0)
+                                else
+                                    f:SetPoint("TOPLEFT", buttons[#buttons].frame, "BOTTOMLEFT", 0, -2)
+                                end
+                                f:SetSize(0, 20)
+                                bts.frame = f
+                                f:SetScript("OnEnter", function(self)
+                                    bts.ds:Show()
+                                end)
+                                f:SetScript("OnLeave", function(self)
+                                    bts.ds:Hide()
+                                end)
+                                local tex = bts.frame:CreateTexture()
+                                tex:SetPoint("LEFT")
+                                tex:SetSize(0, 20)
+                                tex:SetColorTexture(.5, .5, .5, .3)
+                                bts.ds = tex
+                                tex:Hide()
+                            end
+                            -- 序号
+                            do
+                                local f = CreateFrame("Frame", nil, bts.frame)
+                                f:SetSize(20, 20)
+                                f:SetPoint("LEFT", 0, 0)
+                                f.text = f:CreateFontString()
+                                f.text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                                f.text:SetAllPoints()
+                                f.text:SetTextColor(1, 0.82, 0)
+                                f.text:SetText((#buttons + 1))
+                                bts.num = f
+                                f:SetScript("OnEnter", function(self)
+                                    bts.ds:Show()
+                                end)
+                                f:SetScript("OnLeave", function(self)
+                                    bts.ds:Hide()
+                                end)
+                            end
+
+                            -- 图标
+                            do
+                                local icon = select(5, GetItemInfoInstant(zhuangbei:GetText()))
+                                local f = CreateFrame("Frame", nil, bts.frame)
+                                f:SetPoint("LEFT", bts.num, "RIGHT", 2, 0)
+                                f:SetSize(16, 16)
+                                local tex = f:CreateTexture()
+                                tex:SetAllPoints()
+                                tex:SetTexture(icon)
+                                bts.icon = f
+                                bts.hasicon = tex:GetTexture()
+                                f:SetScript("OnEnter", function(self)
+                                    bts.ds:Show()
+                                end)
+                                f:SetScript("OnLeave", function(self)
+                                    bts.ds:Hide()
+                                end)
+                            end
+                            -- 装备
+                            do
+                                local f = CreateFrame("Frame", nil, bts.frame)
+                                f:SetSize(0, 20)
+                                f:SetPoint("LEFT", bts.icon, "RIGHT", bts.hasicon and 0 or -16, 0)
+                                f.text = f:CreateFontString()
+                                f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                                f.text:SetAllPoints()
+                                f.text:SetText(zhuangbei:GetText())
+                                f.text:SetJustifyH("LEFT")
+                                bts.item = f
+                                f:SetScript("OnEnter", function(self)
+                                    local link = zhuangbei:GetText()
+                                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                                    GameTooltip:ClearLines()
+                                    local itemID = GetItemInfoInstant(link)
+                                    if itemID then
+                                        GameTooltip:SetItemByID(itemID)
+                                        GameTooltip:Show()
+                                        BG.HighlightBiaoGe(link)
+                                        BG.HighlightBag(link)
+                                        BG.HighlightChatFrame(link)
+                                    end
+                                    bts.ds:Show()
+                                end)
+                                f:SetScript("OnLeave", function(self)
+                                    GameTooltip:Hide()
+                                    BG.Hide_AllHighlight()
+                                    bts.ds:Hide()
+                                end)
+                                f:SetScript("OnMouseDown", function(self)
+                                    local link = zhuangbei:GetText()
+                                    local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
+                                    if link then
+                                        if IsShiftKeyDown() then
+                                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                                            ChatEdit_InsertLink(link)
+                                        else
+                                            ShowUIPanel(ItemRefTooltip)
+                                            if (not ItemRefTooltip:IsShown()) then
+                                                ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
+                                            end
+                                            ItemRefTooltip:SetHyperlink(link)
+                                        end
+                                    end
+                                end)
+                            end
+                            -- 欠款
+                            do
+                                local f = CreateFrame("Frame", nil, bts.frame)
+                                f:SetSize(80, 20)
+                                f:SetPoint("LEFT", bts.item, "RIGHT", 2, 0)
+                                f.text = f:CreateFontString()
+                                f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                                f.text:SetAllPoints()
+                                f.text:SetText(BiaoGe[FB]["boss" .. b]["qiankuan" .. i])
+                                f.text:SetTextColor(1, 0, 0)
+                                f.text:SetJustifyH("LEFT")
+                                if f.text:GetStringWidth() > f.text:GetWidth() then
+                                    f.iswordwrap = true
+                                end
+                                bts.qiankuan = f
+                                f:SetScript("OnEnter", function(self)
+                                    if self.iswordwrap then
+                                        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                                        GameTooltip:ClearLines()
+                                        GameTooltip:AddLine(BiaoGe[FB]["boss" .. b]["qiankuan" .. i], 1, 0, 0, true)
+                                        GameTooltip:Show()
+                                    end
+                                    bts.ds:Show()
+                                end)
+                                f:SetScript("OnLeave", function(self)
+                                    GameTooltip:Hide()
+                                    bts.ds:Hide()
+                                end)
+                            end
+                            -- 按钮
+                            do
+                                local bt = CreateFrame("Button", nil, bts.frame, "UIPanelButtonTemplate")
+                                bt:SetSize(50, 18)
+                                bt:SetPoint("LEFT", bts.qiankuan, "RIGHT", 2, 0)
+                                bt:SetText(L["清除"])
+                                bts.button = bt
+                                bt:SetScript("OnClick", function(self)
+                                    BG.PlaySound(1)
+                                    local class = select(2, UnitClass(unit))
+                                    local color = select(4, GetClassColor(class))
+                                    BG.SendSystemMessage(format(L["已清除%s的%s欠款|cff00FF00%s|r。"],
+                                        "|c" .. color .. target .. RR,
+                                        zhuangbei:GetText():gsub("|cff......|Hitem:.-%[(.-)%]|h|r", "%1"),
+                                        BiaoGe[FB]["boss" .. b]["qiankuan" .. i]))
+
+                                    BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
+                                    BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
+
+                                    BG.qiankuanTradeFrame.Update()
+                                end)
+                                bt:SetScript("OnEnter", function(self)
+                                    bts.ds:Show()
+                                end)
+                                bt:SetScript("OnLeave", function(self)
+                                    bts.ds:Hide()
+                                end)
+
+                                local l = bts.frame:CreateLine()
+                                l:SetColorTexture(RGB("808080", 1))
+                                l:SetStartPoint("BOTTOMLEFT", 0, 0)
+                                l:SetThickness(1)
+                                bts.line = l
+                            end
+                            tinsert(buttons, bts)
+                        end
+                    end
+                end
+            end
+
+            BG.qiankuanTradeFrame.Text2.text:SetText(sum)
+
+            if #buttons > 5 then
+                frame.scroll.ScrollBar:Show()
+                frame.scroll:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() - 15 - 31)
+                for i, v in ipairs(buttons) do
+                    v.item:SetWidth(v.hasicon and 125 or (125 + v.icon:GetWidth()))
+                    v.line:SetEndPoint("BOTTOMLEFT", frame.scroll:GetWidth(), 0)
+                    v.frame:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() - 15 - 31)
+                    v.ds:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() - 15 - 31)
+                end
+            else
+                frame.scroll.ScrollBar:Hide()
+                frame.scroll:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() + 5)
+                for i, v in ipairs(buttons) do
+                    v.item:SetWidth(v.hasicon and 145 or (145 + v.icon:GetWidth()))
+                    v.line:SetEndPoint("BOTTOMLEFT", frame.scroll:GetWidth() - 30, 0)
+                    v.frame:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() - 25)
+                    v.ds:SetWidth(BG.qiankuanTradeFrame.frame:GetWidth() - 25)
+                end
+            end
+            if yes then
+                BG.qiankuanTradeFrame.frame:Show()
+            end
+        end
+
+        StaticPopupDialogs["BIAOGE_CLEAR_ALL_QIANKUAN"] = {
+            text = L["确认清除%s的全部欠款吗？\n欠款合计：|cffFF0000%s|r"],
+            button1 = L["是"],
+            button2 = L["否"],
+            OnAccept = function(...)
+                local unit = "NPC"
+                if BG.DeBug then unit = "player" end
+                local target = UnitName(unit)
+                if not target then return end
+                local class = select(2, UnitClass(unit))
+                local color = select(4, GetClassColor(class))
+                local FB = BG.FB1
+                for b = 1, Maxb[FB] do
+                    for i = 1, BG.Maxi do
+                        local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
+                        if maijia then
+                            if maijia:GetText() == target and BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
+                                BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
+                                BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
+                            end
+                        end
+                    end
+                end
+                BG.SendSystemMessage(format(L["已清除%s的全部欠款|cff00FF00%s|r。"],
+                    "|c" .. color .. target .. RR,
+                    BG.qiankuanTradeFrame.Text2.text:GetText()))
+                BG.qiankuanTradeFrame.Update()
+            end,
+            OnCancel = function()
+            end,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            showAlert = true,
+        }
+    end
+
     -- 自动记账效果预览框
     do
         BG.tradeFrame = {}
@@ -676,6 +1030,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         text:SetJustifyH("LEFT") -- 对齐格式
         BG.tradeFrame.text = text
     end
+
     -- 本次交易自动记账
     do
         local bt = CreateFrame("CheckButton", nil, BG.tradeFrame.frame, "ChatConfigCheckButtonTemplate")
@@ -690,6 +1045,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             BG.tradeFrame.text:SetText(BG.TradeText())
         end)
     end
+
     -- 强制记账选择框
     do
         BG.tradeDropDown = {}
@@ -784,6 +1140,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     end
                 end
             end
+
+            BG.qiankuanTradeFrame.Update()
         end)
     end
 

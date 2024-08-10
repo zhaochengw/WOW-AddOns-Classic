@@ -80,9 +80,6 @@ local runeQuestsInSoD = {-- List quests here to have them flagged as Rune quests
     [78150] = 1, -- Mage Icy Veins
     [78229] = 1, -- Druid Wild Growth
     [78261] = 1, -- Rogue Deadly Brew Part 1
-    [78265] = 1, -- Grizzby prequest for multiple runes
-    [78266] = 1, -- Grizzby prequest for multiple runes
-    [78267] = 1, -- Grizzby prequest for multiple runes
     [78270] = 1, -- Rogue Deadly Brew Part 3
     [78277] = 1, -- Mage Horde Living Bomb
     [78287] = 1, -- Let Me Make You An Offer Alliance
@@ -169,6 +166,14 @@ local runeQuestsInSoD = {-- List quests here to have them flagged as Rune quests
     [81955] = 3, -- Mage Book A Mind of Metal
     [81956] = 3, -- Mage Book Conjurer's Codex
     [82208] = 3, -- Mage Deep Freeze
+    [84135] = 4, -- Warrior Shockwave
+    [84137] = 4, -- Warrior Shockwave
+    [84138] = 4, -- Warrior Shockwave
+    [84146] = 4, -- Warrior Shockwave
+    [84211] = 4, -- Warrior Shockwave
+    [84212] = 4, -- Warrior Shockwave
+    [84213] = 4, -- Warrior Shockwave
+    [84317] = 4, -- Warrior Sudden Death
 
     -- fake IDs
     --- Mage runes
@@ -374,7 +379,7 @@ local runeQuestsInSoD = {-- List quests here to have them flagged as Rune quests
     [90199] = 1, -- Rogue Mutilate Teldrassil
     [90200] = 1, -- Rogue Mutilate Dun Morogh
     [90201] = 1, -- Rogue Shiv Duskwood
-    [90202] = 1, -- Shaman Shamanistic Rage Stonetalon Mountains
+    [90202] = 1, -- Shaman Greater Ghost Wolf Stonetalon Mountains
     [90203] = 1, -- Shaman Way of Earth The Barrens
     [90204] = 1, -- Shaman Way of Earth Silverpine Forest
     [90205] = 1, -- Shaman Lava Burst Hillsbrad Foothills
@@ -529,6 +534,15 @@ local runeQuestsInSoD = {-- List quests here to have them flagged as Rune quests
     [90309] = 4, -- Druid Tree of Life
     [90310] = 4, -- Axe Specialization (Hunter, Paladin, Shaman, Warrior)
     [90311] = 4, -- Mage Frozen Orb
+    [90312] = 4, -- Priest Vampiric Touch
+    [90313] = 4, -- Arcane Specialization (Druid, Hunter, Mage)
+    [90314] = 4, -- Defense Specialization (Druid, Paladin, Rogue, Shaman, Warlock, Warrior)
+    [90315] = 4, -- Feral Combat Specialization (Druid)
+    [90316] = 4, -- Frost Specialization (Hunter, Mage, Shaman)
+    [90317] = 4, -- Holy Specialization (Paladin, Priest)
+    [90318] = 4, -- Nature Specialization (Druid, Rogue, Shaman)
+    [90319] = 4, -- Ranged Weapon Specialization (Hunter, Rogue, Warrior)
+    [90320] = 4, -- Shadow Specialization (Priest, Warlock)
 }
 
 --- "automatic" phase detection for the first few phases;
@@ -904,6 +918,7 @@ local questsToBlacklistBySoDPhase = {
         [5284] = true, -- The Way of the Weaponsmith - Replaced by 82662
         [5302] = true, -- The Way of the Weaponsmith - Replaced by 82665
         [8467] = true, -- Feathers for Nafien - Replaced by 84777
+        [8769] = true, -- A Ticking Present - Replaced by 79637
 
         -- Original Blackfathom Deeps quests (instance reworked to raid, new quest IDs)
         [909] = true,
@@ -1077,54 +1092,37 @@ local questsToBlacklistBySoDPhase = {
         [9022] = true, -- Anthion's Parting Words
 
         -- Darkmoon Faire quests
-        [7902] = true,
-        [7903] = true,
-        [8222] = true,
-        [7901] = true,
-        [7899] = true,
-        [7940] = true,
-        [7900] = true,
-        [7907] = true,
-        [7927] = true,
-        [7929] = true,
-        [7928] = true,
-        [7946] = true,
-        [8223] = true,
-        [7934] = true,
-        [7981] = true,
-        [7943] = true,
-        [7894] = true,
-        [7933] = true,
-        [7898] = true,
-        [7885] = true,
-        [7942] = true,
-        [7883] = true,
-        [7892] = true,
-        [7937] = true,
-        [7939] = true,
-        [7893] = true,
-        [7891] = true,
-        [7896] = true,
-        [7884] = true,
-        [7882] = true,
-        [7897] = true,
-        [7895] = true,
-        [7941] = true,
-        [7881] = true,
-        [7890] = true,
-        [7889] = true,
-        [7945] = true,
-        [7935] = true,
-        [7938] = true,
-        [7944] = true,
-        [7932] = true,
-        [7930] = true,
-        [7931] = true,
-        [7936] = true,
-        [9249] = true,
-        [10939] = true,
-        [10940] = true,
-        [10941] = true,
+        [7902] = true, -- Vibrant Plumes
+        [7903] = true, -- Evil Bat Eyes
+        [8222] = true, -- Glowing Scorpid Blood
+        [7901] = true, -- Soft Bushy Tails
+        [7899] = true, -- Small Furry Paws
+        [7900] = true, -- Torn Bear Pelts
+        [7946] = true, -- Spawn of Jubjub
+        [8223] = true, -- More Glowing Scorpid Blood
+        [7943] = true, -- More Bat Eyes
+        [7894] = true, -- Copper Modulator
+        [7898] = true, -- Thorium Widget
+        [7885] = true, -- Armor Kits
+        [7942] = true, -- More Thorium Widgets
+        [7883] = true, -- The World's Largest Gnome!
+        [7892] = true, -- Big Black Mace
+        [7939] = true, -- More Dense Grinding Stones
+        [7893] = true, -- Rituals of Strength
+        [7891] = true, -- Green Iron Bracers
+        [7896] = true, -- Green Fireworks
+        [7884] = true, -- Crocolisk Boy and the Bearded Murloc
+        [7882] = true, -- Carnival Jerkins
+        [7897] = true, -- Mechanical Repair Kits
+        [7895] = true, -- Whirring Bronze Gizmo
+        [7941] = true, -- More Armor Kits
+        [7881] = true, -- Carnival Boots
+        [7890] = true, -- Heavy Grinding Stone
+        [7889] = true, -- Coarse Weightstone
+
+        [78265] = true, -- Fish Oil (replaced by 82850)
+        [78266] = true, -- Dark Iron Ordinance (replaced by 82851)
+        [78267] = true, -- Shredder Turbochargers (replaced by 82852)
     },
 }
 

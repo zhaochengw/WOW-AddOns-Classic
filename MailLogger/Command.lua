@@ -8,8 +8,11 @@ SLASH_MLC2 = "/ml"
 
 SlashCmdList["MLC"] = function(Command)
 	if Command:lower() == "gui" then
-		InterfaceOptionsFrame_OpenToCategory("MailLogger")
-		InterfaceOptionsFrame_OpenToCategory("MailLogger")
+		if Addon.SetWindow.background:IsShown() then
+			Addon.SetWindow.background:Hide()
+		else
+			Addon.SetWindow.background:Show()
+		end
 	elseif Command:lower() == "all" then
 		Addon.Output.dropdowntitle:Show()
 		Addon.Output.dropdownlist:Show()

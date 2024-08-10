@@ -24,6 +24,7 @@ local function CreateListTable(onClick, tbl1)
     local alltable = {}
     local maijiatable = {}
     local sumtable = {}
+    local allsum = 0
     local FB = BG.FB1
     for b = 1, Maxb[FB] do
         for i = 1, Maxi[FB] do
@@ -43,6 +44,9 @@ local function CreateListTable(onClick, tbl1)
                 end
             end
         end
+    end
+    for i, v in ipairs(alltable) do
+        allsum = v.qiankuan + allsum
     end
     for maijia, _ in pairs(maijiatable) do
         local sum = 0
@@ -92,6 +96,14 @@ local function CreateListTable(onClick, tbl1)
             table.insert(tbl1, text)
             table.insert(tbl2, { text })
         end
+
+        if onClick then
+            text = L["总欠款："] .. allsum
+        else
+            text = L["总欠款："] .. " |cffFF0000" .. allsum .. RR
+        end
+        table.insert(tbl1, text)
+        table.insert(tbl2, { text })
     else
         local text = L["没有欠款"]
         table.insert(tbl1, text)

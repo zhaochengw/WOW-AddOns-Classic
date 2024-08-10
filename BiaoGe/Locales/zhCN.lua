@@ -29,11 +29,24 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
+    update = update .. c1 .. [[-增加功能：交易清除欠款（交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款）]] .. "|r\n"
+    update = update .. [[-通报欠款：现在会显示总欠款]] .. "|r\n"
+    update = update .. [[-<WLK>密语模板成就ID参考：你没完成的成就现在是灰色的]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "8月1日更新v1.11.0" .. "|r\n"
     update = update .. c1 .. [[-增加功能：最近拍卖（交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的物品，点击一下就能把物品放到交易里）]] .. "|r\n"
     update = update .. [[-复制对方账单：如果对方是BiaoGe插件的账单，则也会复制其买家到自己的表格里]] .. "|r\n"
     update = update .. [[-修复了多个可堆叠物品被同时一键分配时，在某些情况可能会出现数量记录错误的问题]] .. "|r\n"
     update = update .. [[-<WLK>密语模板：增加奥杜尔成就ID列表]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
     update = update .. [[-<WLK>奥杜尔表格的杂项格子增加至9个]] .. "|r\n\n"
@@ -50,14 +63,6 @@ do --简体说明书
     update = update .. c1 .. [[-<WLK>集结号：增加功能[在聊天频道/鼠标提示工具/目标右键菜单中，显示星团长标记] ]] .. "|r\n"
     update = update .. c1 .. [[-<WLK>AtlasLoot：增加功能[更好的选择]（比如点击专业制造-铭文时，会自动显示你对应的铭文，而不是默认显示第一项）]] .. "|r\n"
     update = update .. [[-<WLK>装备库：增加PVP圣物]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "7月18日更新v1.10.5" .. "|r\n"
     update = update .. [[-一键分配：现在也支持XLoot插件]] .. "|r\n"
@@ -86,6 +91,17 @@ ns.L = L
 
 local L = {}
 do
+    L["对方欠款记录"] = true
+    L["交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款。"] = true
+    L["刷新"] = true
+    L["合计欠款："] = true
+    L["清除全部欠款"] = true
+    L["清除"] = true
+    L["已清除%s的%s欠款|cff00FF00%s|r。"] = true
+    L["确认清除%s的全部欠款吗？\n欠款合计：|cffFF0000%s|r"] = true
+    L["已清除%s的全部欠款|cff00FF00%s|r。"] = true
+
+
     L["（你当前版本是%s，无需下载）"] = true
     L["（重载界面后生效）"] = true
     L["该BOSS攻略提供：@祈福-太乙公会 大树\n点击复制NGA攻略地址"] = true

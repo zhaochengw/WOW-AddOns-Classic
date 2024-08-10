@@ -26,7 +26,7 @@ local DT = __private.DT;
 	local l10n = CT.l10n;
 
 -->
-MT.BuildEnv("CodexLite");
+MT.BuildEnv("Source");
 -->		predef
 	local index_validated = 1;
 	local index_phase = 2;
@@ -71,43 +71,18 @@ MT.BuildEnv("CodexLite");
 	local index_i_string = 12;
 -->
 
-local CodexLite = nil;
-local CodexLiteDataAgent = nil;
-local CodexLiteLocale = nil;
+local SourceDataAgent = nil;
+local SourceLocale = nil;
 
---	mtsl
-local LT_MTSL_LocaleKey = {
-	["enUS"] = "English",
-	["frFR"] = "French",
-	["deDE"] = "German",
-	["ruRU"] = "Russian",
-	["koKR"] = "Korean",
-	["zhCN"] = "Chinese",
-	["zhTW"] = "Chinese",
-	["esES"] = "Spanish",
-	["ptBR"] = "Portuguese",
-};
-local LT_MTSL_SkillName = {
-	[1] = "First Aid",
-	[2] = "Blacksmithing",
-	[3] = "Leatherworking",
-	[4] = "Alchemy",
-	[6] = "Cooking",
-	[7] = "Mining",
-	[8] = "Tailoring",
-	[9] = "Engineering",
-	[10] = "Enchanting",
-	[15] = "Jewelcrafting",
-};
-local MTSL_LOCALE = LT_MTSL_LocaleKey[CT.LOCALE] or LT_MTSL_LocaleKey.enUS;
+--	source
 
-local LF_Codex_SetQuest;
-local LF_Codex_SetItem;
-local LF_Codex_SetObject;
-local LF_Codex_SetUnit;
+local LF_Source_SetQuest;
+local LF_Source_SetItem;
+local LF_Source_SetObject;
+local LF_Source_SetUnit;
 local LT_MapName = {  };
 
-local function LF_MTSL_AddReputation(Tip, rep, val)
+local function LF_Source_AddReputation(Tip, rep, val)
 	local line = nil;
 	local name = GetFactionInfoByID(rep);
 	if name then
@@ -166,18 +141,18 @@ local LT_StandingRank_Text = {
 	FACTION_STANDING_LABEL8,
 };
 
-LF_Codex_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, stack_size)
+LF_Source_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, stack_size)
 	if stack_size < 8 then
-		if CodexLiteDataAgent then
-			local info = CodexLiteDataAgent.unit[uid];
+		if SourceDataAgent then
+			local info = SourceDataAgent.unit[uid];
 			if info then
 				local color = "|cffffffff";
 				if info.facId then
-					local _, _, standing_rank, _, _, val = GetFactionInfoByID(info.facId);
-					color = LT_StandingRank_Color[standing_rank] or color;
+					local name, _, standing_rank, _, _, val = GetFactionInfoByID(info.facId);
+					color = (LT_StandingRank_Color[standing_rank] or color) .. (name and ("(" .. name .. ")") or "");
 				end
 				local line = prefix .. color;
-				local name = CodexLiteLocale.unit[uid];
+				local name = SourceLocale.unit[uid];
 				if name then
 					line = line .. "[" .. name .. "]|r";
 				else
@@ -218,18 +193,18 @@ LF_Codex_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, st
 				if spawn then
 					if spawn.O then
 						for oid, _ in next, spawn.O do
-							LF_Codex_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 					if spawn.U then
 						for uid, _ in next, spawn.U do
-							LF_Codex_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 				end
 			else
 				local line = prefix;
-				local name = CodexLiteLocale.unit[uid];
+				local name = SourceLocale.unit[uid];
 				if name then
 					line = line .. "|cffffffff[" .. name .. "]|r";
 				else
@@ -244,13 +219,13 @@ LF_Codex_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, st
 		Tip:Show();
 	end
 end
-LF_Codex_SetQuest = function(Tip, pid, qid, label, stack_size)
+LF_Source_SetQuest = function(Tip, pid, qid, label, stack_size)
 	if stack_size <= 8 then
-		if CodexLiteDataAgent then
-			local info = CodexLiteDataAgent.quest[qid];
+		if SourceDataAgent then
+			local info = SourceDataAgent.quest[qid];
 			if info then
 				local line = "|cffffff00[";
-				local desc = CodexLiteLocale.quest[qid];
+				local desc = SourceLocale.quest[qid];
 				if desc and desc[1] then
 					line = line .. desc[1] .. "]|r(ID: " .. qid .. ")";
 				else
@@ -263,7 +238,7 @@ LF_Codex_SetQuest = function(Tip, pid, qid, label, stack_size)
 				if info.rep then
 					for i = 1, #info.rep do
 						local rep = info.rep[i];
-						LF_MTSL_AddReputation(Tip, rep[1], rep[2]);
+						LF_Source_AddReputation(Tip, rep[1], rep[2]);
 					end
 				end
 				if info.race then
@@ -276,23 +251,23 @@ LF_Codex_SetQuest = function(Tip, pid, qid, label, stack_size)
 				if start then
 					if start.U then
 						for _, uid in next, start.U do
-							LF_Codex_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
+							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 					if start.O then
 						for _, oid in next, start.O do
-							LF_Codex_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
+							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 					if start.I then
 						for _, iid in next, start.I do
-							LF_Codex_SetItem(Tip, pid, iid, " ", l10n["quest_accepted_from"], "", stack_size + 1);
+							LF_Source_SetItem(Tip, pid, iid, " ", l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 				end
 			else
 				local line = "|cffffff00[";
-				local desc = CodexLiteLocale.quest[qid];
+				local desc = SourceLocale.quest[qid];
 				if desc and desc[1] then
 					line = line .. desc[1] .. "]|r(ID: " .. qid .. ")";
 				else
@@ -305,7 +280,7 @@ LF_Codex_SetQuest = function(Tip, pid, qid, label, stack_size)
 		end
 	end
 end
-LF_Codex_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
+LF_Source_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
 	if stack_size <= 8 then
 		local _, line, _, _, _, _, _, _, bind = DataAgent.item_info(iid);
 		if not line then
@@ -325,25 +300,28 @@ LF_Codex_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
 		end
 		line = line .. suffix;
 		Tip:AddDoubleLine(label, line);
-		if CodexLiteDataAgent then
-			local info = CodexLiteDataAgent.item[iid];
+		if SourceDataAgent then
+			local info = SourceDataAgent.item[iid];
 			if info then
+				if info.W then
+					Tip:AddDoubleLine(" ", l10n["world_drop"] .. "(" .. info.W[1] .. "-" .. info.W[2] .. ")");
+				end
 				if info.V then
 					for uid, _ in next, info.V do
-						LF_Codex_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["sold_by"], "|r", stack_size + 1);
+						LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["sold_by"], "|r", stack_size + 1);
 					end
 				end
 				if info.U then
 					for uid, rate in next, info.U do
 						if rate > 10 then
-							LF_Codex_SetUnit(Tip, pid, uid, " ", not CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
+							LF_Source_SetUnit(Tip, pid, uid, " ", not CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
 						end
 					end
 				end
 				if info.O then
 					for oid, rate in next, info.O do
 						if rate > 10 then
-							LF_Codex_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
+							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
 						end
 					end
 				end
@@ -366,14 +344,14 @@ local LT_ObjectStanding_Prefix = {	--	FactionGroup == "Alliance"
 		["*"] = ": |cffffffff",
 	},
 };
-LF_Codex_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix, stack_size)
+LF_Source_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix, stack_size)
 	if stack_size <= 8 then
-		if CodexLiteDataAgent then
-			local info = CodexLiteDataAgent.object[oid];
+		if SourceDataAgent then
+			local info = SourceDataAgent.object[oid];
 			if info then
 				local colortable = LT_ObjectStanding_Prefix[isAlliance];
 				local line = prefix .. (colortable[info.fac] or colortable["*"]);
-				local name = CodexLiteLocale.object[oid];
+				local name = SourceLocale.object[oid];
 				if name then
 					line = line .. "[" .. name .. "]|r";
 				else
@@ -402,19 +380,21 @@ LF_Codex_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix, 
 					end
 				end
 				local spawn = info.spawn;
-				if spawn.O then
-					for oid, _ in next, spawn.O do
-						LF_Codex_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+				if spawn then
+					if spawn.O then
+						for oid, _ in next, spawn.O do
+							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+						end
 					end
-				end
-				if spawn.U then
-					for uid, _ in next, spawn.U do
-						LF_Codex_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+					if spawn.U then
+						for uid, _ in next, spawn.U do
+							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+						end
 					end
 				end
 			else
 				local line = prefix;
-				local name = CodexLiteLocale.object[oid];
+				local name = SourceLocale.object[oid];
 				if name then
 					line = line .. "|cffffffff[" .. name .. "]|r";
 				else
@@ -429,7 +409,7 @@ LF_Codex_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix, 
 		Tip:Show();
 	end
 end
-local function LF_Codex_SetSpellTip(Tip, sid)
+local function LF_Source_SetSpellTip(Tip, sid)
 	local info = DataAgent.get_info_by_sid(sid);
 	if info ~= nil then
 		local spec = info[index_spec];
@@ -457,40 +437,40 @@ local function LF_Codex_SetSpellTip(Tip, sid)
 		if rids then				-- recipe
 			for index = 1, #rids do
 				local rid = rids[index];
-				LF_Codex_SetItem(Tip, pid, rid, l10n["LABEL_GET_FROM"], "", "", 1);
+				LF_Source_SetItem(Tip, pid, rid, l10n["LABEL_GET_FROM"], "", "", 1);
 			end
 		end
 		local qids = info[index_quest];
 		if qids then			-- quests
 			for index = 1, #qids do
 				local qid = qids[index];
-				LF_Codex_SetQuest(Tip, pid, qid, l10n["LABEL_GET_FROM"], 1);
+				LF_Source_SetQuest(Tip, pid, qid, l10n["LABEL_GET_FROM"], 1);
 			end
 		end
 		local oid = info[index_object];
 		if oid ~= nil then			-- objects
 			if type(oid) == 'table' then
 				for _, oid in next, oid do
-					LF_Codex_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
+					LF_Source_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
 				end
 			else
-				LF_Codex_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
+				LF_Source_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
 			end
 		end
 		Tip:Show();
 	end
 end
 
-
-MT.RegisterOnAddOnLoaded("CodexLite", function()
-	CodexLite = __ala_meta__.quest;
-	CodexLiteLocale = CodexLite.CT.l10n;
-	CodexLiteDataAgent = CodexLite.DT.DB;
-	MT.FireCallback("RECIPESOURCE_MOD_LOADED", {
-		SetSpell = LF_Codex_SetSpellTip,
-		SetItem = LF_Codex_SetItem,
-		SetUnit = LF_Codex_SetUnit,
-		SetObject = LF_Codex_SetObject,
-		SetQuest = LF_Codex_SetQuest,
-	});
+MT.RegisterOnInit('source', function(LoggedIn)
+	SourceDataAgent = DT.DataAgent.T_SkillSource;
+	if SourceDataAgent then
+		SourceLocale = DT.DataAgent.T_SkillSource.l10n;
+		MT.FireCallback("RECIPESOURCE_MOD_LOADED", {
+			SetSpell = LF_Source_SetSpellTip,
+			SetItem = LF_Source_SetItem,
+			SetUnit = LF_Source_SetUnit,
+			SetObject = LF_Source_SetObject,
+			SetQuest = LF_Source_SetQuest,
+		});
+	end
 end);

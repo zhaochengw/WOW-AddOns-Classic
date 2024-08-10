@@ -22,11 +22,24 @@ do --繁体说明书
     text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
     text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
+    update = update .. c1..[[-增加功能：交易清除欠款（交易時，如果對方曾有欠款，則會在交易框下方顯示其欠款記錄，點擊可以清除欠款）]] .. "| r\n"
+    update = update .. [[-通報欠款：現在會顯示總欠款]] .. "|r\n"
+    update = update .. [[-<WLK>密語模板成就ID參考：你沒完成的成就現在是灰色的]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "8月1日更新v1.11.0" .. "|r\n"
     update = update .. c1 .. [[-增加功能：最近拍賣（交易時，如果你是物品分配者，在交易框右邊會顯示最近拍賣且可交易的物品，點擊一下就能把物品放到交易裡）]] .. "|r\n"
     update = update .. [[-複製對方賬單：如果對方是BiaoGe插件的賬單，則也會復制其買家到自己的表格里]] .. "|r\n"
     update = update .. [[-修復了多個可堆疊物品被同時一鍵分配時，在某些情況可能會出現數量記錄錯誤的問題]] .. "|r\n"
     update = update .. [[-<WLK>密語模板：增加奧杜爾成就ID列表]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
+
+    ns.instructionsText = text
+end
+do --繁体更新内容
+    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
     update = update .. [[-<WLK>奧杜爾表格的雜項格子增加至9個]] .. "|r\n\n"
@@ -43,14 +56,6 @@ do --繁体说明书
     update = update .. c1 .. [[-<WLK>集結號：增加功能[在聊天頻道/鼠標提示工具/目標右鍵菜單中，顯示星團長標記] ]] .. "|r\n"
     update = update .. c1 .. [[-<WLK>AtlasLoot：增加功能[更好的選擇]（比如點擊專業製造-銘文時，會自動顯示你對應的銘文，而不是默認顯示第一項）]] .. "|r\n"
     update = update .. [[-<WLK>裝備庫：增加PVP聖物]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ns.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "7月18日更新v1.10.5" .. "|r\n"
     update = update .. [[-一鍵分配：現在也支持XLoot插件]] .. "|r\n"
@@ -76,6 +81,17 @@ local L = setmetatable({}, {
 })
 
 do
+    L["对方欠款记录"] = "對方欠款記錄"
+    L["交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款。"] = "交易時，如果對方曾有欠款，則會在交易框下方顯示其欠款記錄，點擊可以清除欠款。"
+    L["刷新"] = "刷新"
+    L["合计欠款："] = "合計欠款："
+    L["清除全部欠款"] = "清除全部欠款"
+    L["清除"] = "清除"
+    L["已清除%s的%s欠款|cff00FF00%s|r。"] = "已清除%s的%s欠款|cff00FF00%s|r。"
+    L["确认清除%s的全部欠款吗？\n欠款合计：|cffFF0000%s|r"] = "確認清除%s的全部欠款嗎？\n欠款合計：|cffFF0000%s|r"
+    L["已清除%s的全部欠款|cff00FF00%s|r。"] = "已清除%s的全部欠款|cff00FF00%s|r。"
+
+
     L["（重载界面后生效）"] = "（重載界面後生效）"
     L["该BOSS攻略提供：@祈福-太乙公会 大树\n点击复制NGA攻略地址"] = "該BOSS攻略提供：@祈福-太乙公會 大樹\n點擊複製NGA攻略地址"
     L["最近拍卖"] = "最近拍賣"

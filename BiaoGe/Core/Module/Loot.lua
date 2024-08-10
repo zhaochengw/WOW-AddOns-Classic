@@ -101,7 +101,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
         end
     end)
-
     BG.FrameLootMsg:SetScript("OnHyperlinkLeave", function(self, link, text, button)
         GameTooltip:Hide()
     end)

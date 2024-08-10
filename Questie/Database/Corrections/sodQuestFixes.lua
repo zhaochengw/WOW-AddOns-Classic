@@ -819,43 +819,49 @@ function SeasonOfDiscovery:LoadQuests()
         [79588] = { -- Small Furry Paws
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 500},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79589] = { -- Torn Bear Pelts
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1100},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79590] = { -- Heavy Grinding Stone
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1100},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 250}},
         },
         [79591] = { -- Whirring Bronze Gizmo
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1100},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79592] = { -- Carnival Jerkins
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1100},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 250}},
         },
         [79593] = { -- Coarse Weightstone
-            [questKeys.requiredRaces] = raceIDs.NONE,
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 500},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79594] = { -- Copper Modulator
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 500},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79595] = { -- Carnival Boots
-            [questKeys.requiredRaces] = raceIDs.NONE,
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 500},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [79624] = { -- Anyone Can Cook
@@ -865,6 +871,9 @@ function SeasonOfDiscovery:LoadQuests()
         [79626] = { -- The Salvagematic 9000!
             [questKeys.zoneOrSort] = zoneIDs.GNOMEREGAN,
             [questKeys.questFlags] = questFlags.RAID,
+        },
+        [79637] = { -- A Ticking Present
+            [questKeys.zoneOrSort] = sortKeys.SEASONAL,
         },
         [79677] = { -- A Quick Grocery Run
             [questKeys.preQuestSingle] = {79624},
@@ -1197,19 +1206,28 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.preQuestSingle] = {80526},
             [questKeys.nextQuestInChain] = 80453,
         },
+        [80417] = { -- Soft Bushy Tails
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1700},
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+        },
         [80421] = { -- Green Iron Bracers
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1700},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [80422] = { -- Green Fireworks
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1700},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [80423] = { -- The World's Largest Gnome!
             [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 1700},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
             [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
         },
         [80453] = { -- Best Laid Plans
@@ -1757,6 +1775,7 @@ function SeasonOfDiscovery:LoadQuests()
         },
         [81967] = { -- Otherworldly Treasure
             [questKeys.zoneOrSort] = sortKeys.WARLOCK,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [81968] = { -- Answering Air's Call
             [questKeys.zoneOrSort] = sortKeys.SHAMAN,
@@ -2013,22 +2032,77 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.zoneOrSort] = zoneIDs.THE_HINTERLANDS,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
-        [82271] = { -- Glowing Scorpid Blood
-            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
-            [questKeys.specialFlags] = specialFlags.REPEATABLE,
-        },
-        [82272] = { -- More Glowing Scorpid Blood
+        [82271] = { -- More Glowing Scorpid Blood
             [questKeys.preQuestSingle] = {82272},
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
-        [82273] = { -- More Bat Eyes
-            [questKeys.preQuestSingle] = {2880},
+        [82272] = { -- Glowing Scorpid Blood
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+        },
+        [82273] = { -- More Bat Eyes
+            [questKeys.preQuestSingle] = {82274},
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [82274] = { -- Evil Bat Eyes
             [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+        },
+        [82275] = { -- Big Black Mace
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 2500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82276] = { -- Rituals of Strength
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82277] = { -- More Dense Grinding Stones
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82278] = { -- More Thorium Widgets
+            [questKeys.preQuestSingle] = {82279},
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82279] = { -- Thorium Widget
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+        },
+        [82280] = { -- Mechanical Repair Kits
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 2500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82281] = { -- More Armor Kits
+            [questKeys.preQuestSingle] = {82282},
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [82282] = { -- Armor Kits
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 5500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
+        },
+        [82283] = { -- Crocolisk Boy and the Bearded Murloc
+            [questKeys.zoneOrSort] = sortKeys.DARKMOON_FAIRE,
+            [questKeys.requiredMaxRep] = {factionIDs.DARKMOON_FAIRE, 2500},
+            [questKeys.reputationReward] = {{factionIDs.DARKMOON_FAIRE, 100}},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [82301] = { -- Otherworldly Treasure
@@ -2073,6 +2147,15 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.zoneOrSort] = sortKeys.BLACKSMITHING,
             [questKeys.requiredSkill] = {profKeys.BLACKSMITHING,200},
             [questKeys.requiredSpecialization] = specKeys.BLACKSMITHING,
+        },
+        [82850] = { -- Fish Oil
+            [questKeys.zoneOrSort] = zoneIDs.RATCHET,
+        },
+        [82851] = { -- Dark Iron Ordinance
+            [questKeys.zoneOrSort] = zoneIDs.RATCHET,
+        },
+        [82852] = { -- Shredder Turbochargers
+            [questKeys.zoneOrSort] = zoneIDs.RATCHET,
         },
         [83188] = { -- Otherworldly Treasure
             [questKeys.zoneOrSort] = sortKeys.WARLOCK,
@@ -2168,6 +2251,24 @@ function SeasonOfDiscovery:LoadQuests()
         [84126] = { -- Finish the Fight
             [questKeys.preQuestSingle] = {84125},
             [questKeys.zoneOrSort] = sortKeys.PALADIN,
+        },
+        [84135] = { -- Beach Bot
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+        },
+        [84137] = { -- Mechanical Romance
+            [questKeys.objectives] = {},
+            [questKeys.preQuestSingle] = {84135},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+            [questKeys.extraObjectives] = {{{[zoneIDs.TANARIS]={{53.5,96.5}}}, Questie.ICON_TYPE_EVENT, l10n("Swim south till you reach a small island. You need to use your Guided Buoyancy Accelerant or any other swim speed increase.")}},
+        },
+        [84138] = { -- Frosty Favors
+            [questKeys.preQuestSingle] = {84137},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+        },
+        [84146] = { -- Red Bag Blues
+            [questKeys.objectives] = {{{218236}}},
+            [questKeys.preQuestSingle] = {84138},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
         },
         [84147] = { -- An Earnest Proposition
             [questKeys.requiredClasses] = classIDs.DRUID,
@@ -2489,6 +2590,31 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.preQuestSingle] = {8998},
             [questKeys.zoneOrSort] = zoneIDs.ORGRIMMAR,
         },
+        [84211] = { -- Poacher's Den
+            [questKeys.preQuestSingle] = {84146},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+        },
+        [84212] = { -- Bookin' it Back
+            [questKeys.preQuestSingle] = {84211},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+            [questKeys.extraObjectives] = {{{[zoneIDs.TANARIS]={{53.5,96.5}}}, Questie.ICON_TYPE_EVENT, l10n("Swim south till you reach a small island. You need to use your Guided Buoyancy Accelerant or any other swim speed increase.")}},
+        },
+        [84213] = { -- Rift Away
+            [questKeys.preQuestSingle] = {84212},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+            [questKeys.extraObjectives] = {
+                {nil, Questie.ICON_TYPE_OBJECT, l10n("Teleport to either Westfall (Alliance) or Tirisfal Glades (Horde)."),0,{{"object", 461155}}},
+                {nil, Questie.ICON_TYPE_OBJECT, l10n("Form a proper group and click on the Console to summon Harvest Golem V000-A."),0,{{"object", 456918}}},
+                {nil, Questie.ICON_TYPE_SLAY, l10n("Keep up Disarm and Demoralizing Shout to greatly reduce the damage of the golem."),0,{{"monster", 212252}}},
+                {nil, Questie.ICON_TYPE_SLAY, l10n("Phase 1: Interrupt"),0,{{"monster", 212252}}},
+                {nil, Questie.ICON_TYPE_SLAY, l10n("Phase 2: Kite"),0,{{"monster", 212252}}},
+                {nil, Questie.ICON_TYPE_SLAY, l10n("Phase 3: Use Shield Wall and survive"),0,{{"monster", 212252}}},
+            },
+        },
+        [84317] = { -- Infinite Midnight
+            [questKeys.startedBy] = {{228611}},
+            [questKeys.zoneOrSort] = sortKeys.WARRIOR,
+        },
         [84320] = { -- Lost Heirloom
             [questKeys.zoneOrSort] = sortKeys.PRIEST,
         },
@@ -2531,8 +2657,11 @@ function SeasonOfDiscovery:LoadQuests()
         },
         [84356] = { -- Oh, Shiny!
             [questKeys.zoneOrSort] = sortKeys.BLACKROCK_ERUPTION,
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [84359] = { -- Sleepless Nights
+            [questKeys.sourceItemId] = 227768,
             [questKeys.zoneOrSort] = sortKeys.BLACKROCK_ERUPTION,
             [questKeys.questFlags] = questFlags.DAILY,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
@@ -2543,7 +2672,8 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [84369] = { -- Healing the Healer
-            [questKeys.requiredSourceItems] = {227924},
+            [questKeys.triggerEnd] = {"Collect Frostfire Hot Spring water",{[zoneIDs.WINTERSPRING]={{29.3,35.7}}}},
+            [questKeys.objectives] = {nil,nil,{{227924}}},
             [questKeys.zoneOrSort] = sortKeys.MAGE,
         },
         [84372] = { -- Lava Diving
@@ -4988,7 +5118,7 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.zoneOrSort] = sortKeys.ROGUE,
         },
         [90202] = {
-            [questKeys.name] = "Shamanistic Rage",
+            [questKeys.name] = "Greater Ghost Wolf",
             [questKeys.startedBy] = {{212837}},
             [questKeys.finishedBy] = nil,
             [questKeys.requiredLevel] = 1,
@@ -6315,6 +6445,114 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.exclusiveTo] = {84369},
             [questKeys.zoneOrSort] = zoneIDs.MAGE,
         },
+        [90312] = {
+            [questKeys.name] = "Vampiric Touch",
+            [questKeys.startedBy] = {{227028}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 55,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.PRIEST,
+            [questKeys.objectivesText] = {"Kill Hellscream's Phantom, the final boss in the Demon Fall Canyon dungeon and loot him to receive the rune."},
+            [questKeys.requiredSpell] = -402857,
+            [questKeys.zoneOrSort] = classIDs.PRIEST,
+        },
+        [90313] = {
+            [questKeys.name] = "Arcane Specialization",
+            [questKeys.startedBy] = {nil,{457102}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.DRUID + classIDs.HUNTER + classIDs.MAGE,
+            [questKeys.objectivesText] = {"Read the book 'Elements for Dummies Volume III: Arcane' to receive the rune. NOTE: The book is located at the top of Hearthglen tower, near a Scarlet Priest."},
+            [questKeys.requiredSpell] = -453695,
+            [questKeys.zoneOrSort] = zoneIDs.WESTERN_PLAGUELANDS,
+        },
+        [90314] = {
+            [questKeys.name] = "Defense Specialization",
+            [questKeys.startedBy] = {nil,{457099}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.DRUID + classIDs.PALADIN + classIDs.ROGUE + classIDs.SHAMAN + classIDs.WARLOCK + classIDs.WARRIOR,
+            [questKeys.objectivesText] = {"Read the book 'Zirene's Guide to Getting Punched' to receive the rune. NOTE: The book is located near the LBRS entrance, in the hallway behind the meeting stone."},
+            [questKeys.requiredSpell] = -459313,
+            [questKeys.zoneOrSort] = zoneIDs.SEARING_GORGE,
+        },
+        [90315] = {
+            [questKeys.name] = "Feral Combat Specialization",
+            [questKeys.startedBy] = {nil,{457098}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.DRUID,
+            [questKeys.objectivesText] = {"Read the book 'Finding Your Inner Feline: A Guide to Modern Druidism' to receive the rune. NOTE: The book is located in the cat den guarded by two level 55 Frostsabers."},
+            [questKeys.requiredSpell] = -453703,
+            [questKeys.zoneOrSort] = classIDs.DRUID,
+        },
+        [90316] = {
+            [questKeys.name] = "Frost Specialization",
+            [questKeys.startedBy] = {nil,{457095}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.HUNTER + classIDs.MAGE + classIDs.SHAMAN,
+            [questKeys.objectivesText] = {"Read the book 'Elements for Dummies Volume I: Frost' to receive the rune. NOTE: The book is located in the Owlbeast camp."},
+            [questKeys.requiredSpell] = -453697,
+            [questKeys.zoneOrSort] = zoneIDs.WINTERSPRING,
+        },
+        [90317] = {
+            [questKeys.name] = "Holy Specialization",
+            [questKeys.startedBy] = {nil,{457094}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.PALADIN + classIDs.PRIEST,
+            [questKeys.objectivesText] = {"Read the book 'The True Nature of the Light' to receive the rune. NOTE: The book is located on top of a bookshelf in the Library of the northern building."},
+            [questKeys.requiredSpell] = -453702,
+            [questKeys.zoneOrSort] = zoneIDs.EASTERN_PLAGUELANDS,
+        },
+        [90318] = {
+            [questKeys.name] = "Nature Specialization",
+            [questKeys.startedBy] = {nil,{457092}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.DRUID + classIDs.ROGUE + classIDs.SHAMAN,
+            [questKeys.objectivesText] = {"Read the book 'The Fury of Stormrage' to receive the rune. NOTE: The book is located near Chieftan Bloodmaw at Felpaw Village."},
+            [questKeys.requiredSpell] = -453698,
+            [questKeys.zoneOrSort] = zoneIDs.FELWOOD,
+        },
+        [90319] = {
+            [questKeys.name] = "Ranged Weapon Specialization",
+            [questKeys.startedBy] = {nil,{457090}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.HUNTER + classIDs.ROGUE + classIDs.WARRIOR,
+            [questKeys.objectivesText] = {"Read the book 'Famous (and Infamous) Rangers of Azeroth' to receive the rune. NOTE: The book is located in the Marris Stead."},
+            [questKeys.requiredSpell] = -453692,
+            [questKeys.zoneOrSort] = zoneIDs.EASTERN_PLAGUELANDS,
+        },
+        [90320] = {
+            [questKeys.name] = "Shadow Specialization",
+            [questKeys.startedBy] = {nil,{457089}},
+            [questKeys.finishedBy] = nil,
+            [questKeys.requiredLevel] = 1,
+            [questKeys.questLevel] = 55,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.requiredClasses] = classIDs.PRIEST + classIDs.WARLOCK,
+            [questKeys.objectivesText] = {"Read the book 'The Shadow Connection' to receive the rune. NOTE: The book is located on the alter in the Tainted Scar."},
+            [questKeys.requiredSpell] = -453700,
+            [questKeys.zoneOrSort] = zoneIDs.BLASTED_LANDS,
+        },
     }
 end
 
@@ -6476,7 +6714,7 @@ function SeasonOfDiscovery:LoadFactionQuestFixes()
         [81951] = { -- The Liminal and the Arcane
             [questKeys.startedBy] = {nil,{441249}},
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
-            [questKeys.objectivesText] = {"Collect 'The Liminal and the Arcane' and bring it to Owen Thadd in Undercity."},
+            [questKeys.objectivesText] = {"Collect 'The Liminal and the Arcane' and bring it to Owen Thadd in Undercity. NOTE: You need to enter the Emerald Nightmare."},
         },
         [81952] = { -- Everyday Etiquette
             [questKeys.startedBy] = {nil,{441250}},

@@ -1791,9 +1791,10 @@ function BG.CreateScrollFrame(parent, w, h)
     scroll:SetHeight(f:GetHeight() - 9)
     scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
     scroll.ScrollBar.scrollStep = BG.scrollStep
+    f.scroll=scroll
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
 
-    local child = CreateFrame("Frame", nil, f) -- 子框架
+    local child = CreateFrame("Frame", nil, scroll) -- 子框架
     child:SetWidth(scroll:GetWidth())
     child:SetHeight(scroll:GetHeight())
     scroll:SetScrollChild(child)

@@ -2223,9 +2223,9 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     local function JoinYY()
         if not BG.YYchannelID and BiaoGe.YYdb.share == 1 then
             local channels = { GetChannelList() }
-            if channels and #channels > 0 then
+            if channels and #channels > 3 then
                 JoinPermanentChannel(YY, nil, 1)
-                SendSystemMessage(BG.BG .. format(L["YY评价模块初始化成功，已自动加入%s频道，用于共享和查询YY大众评价。"], YY))
+                -- SendSystemMessage(BG.BG .. format(L["YY评价模块初始化成功，已自动加入%s频道，用于共享和查询YY大众评价。"], YY))
             else
                 BG.After(3, JoinYY)
             end

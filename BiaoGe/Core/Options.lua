@@ -627,6 +627,7 @@ local function OptionsUI()
                 local name4 = "tradeFontSize"
                 local name5 = "tradeMoneyTop"
                 local name6 = "lastTrade"
+                local name7 = "qiankuanTrade"
                 if f:GetChecked() then
                     BG.options["button" .. name1]:Show()
                     BG.options["button" .. name2]:Show()
@@ -634,6 +635,7 @@ local function OptionsUI()
                     BG.options["button" .. name4]:Show()
                     BG.options["button" .. name5]:Show()
                     BG.options["button" .. name6]:Show()
+                    BG.options["button" .. name7]:Show()
                 else
                     BG.options["button" .. name1]:Hide()
                     BG.options["button" .. name2]:Hide()
@@ -641,6 +643,7 @@ local function OptionsUI()
                     BG.options["button" .. name4]:Hide()
                     BG.options["button" .. name5]:Hide()
                     BG.options["button" .. name6]:Hide()
+                    BG.options["button" .. name7]:Hide()
                 end
             end)
         end
@@ -765,6 +768,23 @@ local function OptionsUI()
                 L["交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的装备，点击一下就能把装备放到交易里。"],
             }
             local f = O.CreateCheckButton(name, L["最近拍卖"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            local name = "autoTrade"
+            if BiaoGe.options[name] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 30
+        -- 欠款记录
+        do
+            local name = "qiankuanTrade"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["对方欠款记录"],
+                L["交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款。"],
+            }
+            local f = O.CreateCheckButton(name, L["对方欠款记录"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             local name = "autoTrade"
             if BiaoGe.options[name] ~= 1 then

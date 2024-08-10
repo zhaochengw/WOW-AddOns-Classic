@@ -393,6 +393,7 @@ function BG.OnUpdateTime(func)
     updateFrame:SetScript("OnUpdate", func)
     return updateFrame
 end
+
 --[[
 BG.OnUpdateTime(function(self,elapsed)
     self.timeElapsed=self.timeElapsed+elapsed
