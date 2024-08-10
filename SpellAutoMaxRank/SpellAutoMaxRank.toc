@@ -1,4 +1,0 @@
-## Interface: 30400
-## Title: SpellAutoMaxRank
-## Version: 1.0.0.0
-core.lua

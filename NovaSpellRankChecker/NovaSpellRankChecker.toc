@@ -1,0 +1,7 @@
+## Interface: 30401
+## Notes: Checks your hotbars for any low spell ranks and highlights them, just click the button in your spellbook.
+## Title: Nova Spell Rank Checker
+## Author: Novaspark-Arugal OCE
+## Version: 1.2
+
+NovaSpellRankChecker.lua
