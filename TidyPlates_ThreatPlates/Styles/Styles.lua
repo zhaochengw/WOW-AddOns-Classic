@@ -11,6 +11,7 @@ local UnitIsDead, UnitPlayerControlled, UnitIsUnit = UnitIsDead, UnitPlayerContr
 local UnitIsOtherPlayersPet = UnitIsOtherPlayersPet
 local UnitIsBattlePet, UnitCreatureType = UnitIsBattlePet, UnitCreatureType
 local UnitCanAttack = UnitCanAttack
+local GetSpellInfo = Addon.GetSpellInfo
 
 -- ThreatPlates APIs
 local TOTEMS = Addon.TOTEMS
@@ -23,7 +24,7 @@ local UpdateCustomStyleAfterAuraTrigger = Addon.UpdateCustomStyleAfterAuraTrigge
 local _G =_G
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
--- GLOBALS: GetSpellInfo, UnitIsTapDenied
+-- GLOBALS: UnitIsTapDenied
 
 ---------------------------------------------------------------------------------------------------
 -- Wrapper functions for WoW Classic
@@ -300,7 +301,7 @@ function Addon.UnitStyle_AuraTrigger_CheckIfActive(unit, aura_id, aura_name, aur
     unit.CustomStyleAura = (unique_settings.showNameplate and "unique") or (unique_settings.ShowHeadlineView and "NameOnly-Unique") or "etotem"
     unit.CustomPlateSettingsAura = unique_settings
 
-    local _, _, icon = _G.GetSpellInfo(aura_id)
+    icon = GetSpellInfo(aura_id).iconID
     unique_settings.AutomaticIcon = icon
   end
 end
@@ -317,7 +318,7 @@ function Addon.UnitStyle_CastTrigger_CheckIfActive(unit, spell_id, spell_name)
     unit.CustomStyleCast = (unique_settings.showNameplate and "unique") or (unique_settings.ShowHeadlineView and "NameOnly-Unique") or "etotem"
     unit.CustomPlateSettingsCast = unique_settings
 
-    local _, _, icon = _G.GetSpellInfo(spell_id)
+    icon = GetSpellInfo(spell_id).iconID
     unique_settings.AutomaticIcon = icon
   end
 end

@@ -19,7 +19,7 @@ local GetTime, tContains = GetTime, tContains
 local UnitCanAttack = UnitCanAttack
 local UnitPower, UnitPowerMax, GetComboPoints, GetRuneCooldown, GetRuneType = UnitPower, UnitPowerMax, GetComboPoints, GetRuneCooldown, GetRuneType
 local GetUnitChargedPowerPoints, GetPowerRegenForPowerType = GetUnitChargedPowerPoints, GetPowerRegenForPowerType
-local GetSpellInfo = GetSpellInfo
+local GetSpellInfo = Addon.GetSpellInfo
 local GetShapeshiftFormID = GetShapeshiftFormID
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local InCombatLockdown = InCombatLockdown
@@ -968,7 +968,7 @@ function Widget:OnTargetUnitAdded(tp_frame, unit)
   if UnitCanAttack("player", unit.unitid) and self:EnabledForStyle(unit.style, unit) then
     widget_frame:SetParent(tp_frame)
     widget_frame:SetFrameLevel(tp_frame:GetFrameLevel() + 7)
-
+    
     widget_frame:ClearAllPoints()
     -- Updates based on settings / unit style
     local db = self.db
@@ -977,7 +977,7 @@ function Widget:OnTargetUnitAdded(tp_frame, unit)
     else
       widget_frame:SetPoint("CENTER", tp_frame, "CENTER", db.x, db.y)
     end
-
+    
     self:UpdateUnitResource(widget_frame)
 
     widget_frame:Show()
@@ -1198,8 +1198,8 @@ function Widget:UpdateSettings()
     OnUpdateCooldownDuration = OnUpdateWidgetEssence
   elseif PlayerClass == "ROGUE" then
     -- Check for spell Echoing Reprimand: (IDs) 312954, 323547, 323560, 323558, 323559
-    local name = GetSpellInfo(323560) -- Get localized name for Echoing Reprimand
-    if GetSpellInfo(name) then
+    local name = GetSpellInfo(323560).name -- Get localized name for Echoing Reprimand
+    if name and GetSpellInfo(name) then
       self.UpdateUnitResource = self.UpdateComboPointsRogueWithAnimacharge
     else
       self.UpdateUnitResource = self.UpdateComboPoints

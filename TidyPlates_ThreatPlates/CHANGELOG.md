@@ -1,3 +1,3 @@
-# 11.2.13 (2024-06-29)
+# 12.0.3 (2024-07-29)
 
-* Added a delay when updating several CVars for soft targeting as they no longer can be changed in combat [Comment #7346].
+* Fixed a bug caused by incorrectly defined internal variables that affected other addons (e.g. the size of WeakAuras icons) [GH-538, comment #7371].

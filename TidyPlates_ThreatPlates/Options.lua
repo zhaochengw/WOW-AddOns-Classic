@@ -21,6 +21,7 @@ local InCombatLockdown, IsInInstance, GetInstanceInfo = InCombatLockdown, IsInIn
 local GetCVar, GetCVarBool, GetCVarDefault = GetCVar, GetCVarBool, GetCVarDefault
 local UnitsExists, UnitName = UnitsExists, UnitName
 local GameTooltip = GameTooltip
+local GetSpellInfo = Addon.GetSpellInfo
 
 -- ThreatPlates APIs
 local TidyPlatesThreat = TidyPlatesThreat
@@ -32,7 +33,7 @@ local CVars = Addon.CVars
 local _G =_G
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
--- GLOBALS: GetSpellInfo, SetCVar
+-- GLOBALS: SetCVar
 
 -- Import some libraries
 local LibAceGUI = LibStub("AceGUI-3.0")
@@ -533,7 +534,7 @@ local function CVarsManagerSetBool(info, value)
   if type(info) == "table" then
     info = info.arg
   end
-  Addon.CVars:SetBoolProtected(info, value)
+  Addon.CVars:SetBool(info, value)
   --Addon:ForceUpdate()
 end
 
@@ -905,7 +906,7 @@ local function GetEnableEntryTheme(entry_name, description, widget_info)
   return entry
 end
 
-local function GetRangeEntry(name, pos, setting, min, max, set_func)
+local function GetRangeEntry(name, pos, setting, min, max, set_func, hidden_func)
   local entry = {
     name = name,
     order = pos,
@@ -914,7 +915,8 @@ local function GetRangeEntry(name, pos, setting, min, max, set_func)
     softMin = min,
     softMax = max,
     set = set_func,
-    arg = setting,
+    hidden = hidden_func,
+    arg = setting,    
   }
   return entry
 end
@@ -2851,7 +2853,7 @@ local function CreateTargetArtWidgetOptions()
                 order = 10,
                 type = "toggle",
                 set = function(info, val)
-                  Addon.CVars:SetProtected(info.arg, (val and "3") or "0")
+                  Addon.CVars:Set(info.arg, (val and "3") or "0")
                 end,
                 get = function(info)
                   return Addon.CVars:GetAsNumber(info.arg) == Enum.SoftTargetEnableFlags.Any
@@ -2957,7 +2959,7 @@ local function CreateTargetArtWidgetOptions()
                 order = 10,
                 type = "toggle",
                 set = function(info, val)
-                  Addon.CVars:SetProtected(info.arg, (val and "3") or "0")
+                  Addon.CVars:Set(info.arg, (val and "3") or "0")
                 end,
                 get = function(info)
                   return Addon.CVars:GetAsNumber(info.arg) == Enum.SoftTargetEnableFlags.Any
@@ -3015,7 +3017,7 @@ local function CreateTargetArtWidgetOptions()
                     name = L["None"],
                     order = 10,
                     type = "toggle",
-                    set = function(info, val) Addon.CVars:SetProtected(info.arg, 0) end,
+                    set = function(info, val) Addon.CVars:Set(info.arg, 0) end,
                     get = function(info) 
                       local value = Addon.CVars:Get(info.arg)
                       return value ~= "1" and value ~= "2"
@@ -5390,8 +5392,8 @@ local function CreateVisibilitySettings()
             type = "toggle",
             width = "full",
             set = function(info, value)
-              Addon.CVars:OverwriteProtected("nameplateShowFriends", (value and 1) or 0)
-              Addon.CVars:OverwriteProtected("nameplateShowEnemies", (value and 1) or 0)
+              Addon.CVars:Overwrite("nameplateShowFriends", (value and 1) or 0)
+              Addon.CVars:Overwrite("nameplateShowEnemies", (value and 1) or 0)
             end,
             get = function(info)
               return GetCVarBool("nameplateShowFriends") and GetCVarBool("nameplateShowEnemies")
@@ -5805,6 +5807,7 @@ local function CreateBlizzardSettings()
                 name = L["Healthbar Sync"],
                 order = 10,
                 type = "toggle",
+                width = "double",
                 desc = L["The size of the clickable area is always derived from the current size of the healthbar."],
                 set = function(info, val)
                   if InCombatLockdown() then
@@ -5816,8 +5819,18 @@ local function CreateBlizzardSettings()
                 end,
                 arg = { "settings", "frame", "SyncWithHealthbar"},
               },
-              Width = {
-                name = L["Width"],
+              ShowArea = {
+                name = L["Configuration Mode"],
+                type = "execute",
+                order = 15,
+                desc = "Toggle a background showing the area of the clicable area.",
+                func = function()
+                  Addon:ConfigClickableArea(true)
+                end,
+              },
+              Spacer1 = GetSpacerEntry(18),
+              EnemyWidth = {
+                name = (Addon.WOW_USES_CLASSIC_NAMEPLATES and L["Width"]) or L["Enemy Width"],
                 order = 20,
                 type = "range",
                 min = 1,
@@ -5834,9 +5847,9 @@ local function CreateBlizzardSettings()
                 disabled = function() return db.settings.frame.SyncWithHealthbar end,
                 arg = { "settings", "frame", "width" },
               },
-              Height = {
-                name = L["Height"],
-                order = 30,
+              EnemyHeight = {
+                name = (Addon.WOW_USES_CLASSIC_NAMEPLATES and L["Height"]) or L["Enemy Height"],
+                order = 25,
                 type = "range",
                 min = 1,
                 max = 100,
@@ -5852,15 +5865,44 @@ local function CreateBlizzardSettings()
                 disabled = function() return db.settings.frame.SyncWithHealthbar end,
                 arg = { "settings", "frame", "height"},
               },
-              ShowArea = {
-                name = L["Configuration Mode"],
-                type = "execute",
-                order = 40,
-                desc = "Toggle a background showing the area of the clicable area.",
-                func = function()
-                  Addon:ConfigClickableArea(true)
+              FriendWidth = {
+                name = L["Friend Width"],
+                order = 30,
+                type = "range",
+                min = 1,
+                max = 500,
+                step = 1,
+                set = function(info, val)
+                  if InCombatLockdown() then
+                    Addon.Logging.Error(L["We're unable to change this while in combat"])
+                  else
+                    SetValue(info, val)
+                    Addon:SetBaseNamePlateSize()
+                  end
                 end,
-              }
+                disabled = function() return db.settings.frame.SyncWithHealthbar end,
+                arg = { "settings", "frame", "widthFriend" },
+                hidden = function() return Addon.WOW_USES_CLASSIC_NAMEPLATES end,
+              },
+              FriendHeight = {
+                name = L["Friend Height"],
+                order = 35,
+                type = "range",
+                min = 1,
+                max = 100,
+                step = 1,
+                set = function(info, val)
+                  if InCombatLockdown() then
+                    Addon.Logging.Error(L["We're unable to change this while in combat"])
+                  else
+                    SetValue(info, val)
+                    Addon:SetBaseNamePlateSize()
+                  end
+                end,
+                disabled = function() return db.settings.frame.SyncWithHealthbar end,
+                arg = { "settings", "frame", "heightFriend"},
+                hidden = function() return Addon.WOW_USES_CLASSIC_NAMEPLATES end,
+              },              
             },
           },
           Motion = {
@@ -6091,7 +6133,7 @@ local function CreateBlizzardSettings()
             width = "double",
             set = function(info, val)
               SetValuePlain(info, val)
-              Addon.CVars:OverwriteBoolProtected("nameplateResourceOnTarget", val)
+              Addon.CVars:OverwriteBool("nameplateResourceOnTarget", val)
             end,
             get = GetValue,
             arg = { "PersonalNameplate", "ShowResourceOnTarget"},
@@ -6452,16 +6494,9 @@ local function CreateHealthbarOptions()
             inline = true,
             set = SetThemeValue,
             args = {
-              Width = GetRangeEntry(L["Bar Width"], 10, { "settings", "healthbar", "width" }, 5, 500,
-                function(info, val)
-                  if InCombatLockdown() then
-                    Addon.Logging.Error(L["We're unable to change this while in combat"])
-                  else
-                    SetThemeValue(info, val)
-                    Addon:SetBaseNamePlateSize()
-                  end
-                end),
-              Height = GetRangeEntry(L["Bar Height"], 20, {"settings", "healthbar", "height" }, 1, 100,
+              WidthEnemy = GetRangeEntry(
+                (Addon.WOW_USES_CLASSIC_NAMEPLATES and L["Bar Width"]) or L["Enemy Bar Width"], 
+                10, { "settings", "healthbar", "width" }, 5, 500,
                 function(info, val)
                   if InCombatLockdown() then
                     Addon.Logging.Error(L["We're unable to change this while in combat"])
@@ -6472,6 +6507,43 @@ local function CreateHealthbarOptions()
                     Addon.Widgets:UpdateSettings("TargetArt")
                   end
                 end),
+              HeightEnemy = GetRangeEntry(
+                (Addon.WOW_USES_CLASSIC_NAMEPLATES and L["Bar Height"]) or L["Enemy Bar Height"], 
+                11, {"settings", "healthbar", "height" }, 1, 100,
+                function(info, val)
+                  if InCombatLockdown() then
+                    Addon.Logging.Error(L["We're unable to change this while in combat"])
+                  else
+                    SetThemeValue(info, val)
+                    Addon:SetBaseNamePlateSize()
+                    -- Update Target Art widget because of border adjustments for small healthbar heights
+                    Addon.Widgets:UpdateSettings("TargetArt")
+                  end
+                end),
+              WidthFriendly = GetRangeEntry(L["Friend Bar Width"], 12, { "settings", "healthbar", "widthFriend" }, 5, 500,
+                function(info, val)
+                  if InCombatLockdown() then
+                    Addon.Logging.Error(L["We're unable to change this while in combat"])
+                  else
+                    SetThemeValue(info, val)
+                    Addon:SetBaseNamePlateSize()
+                    -- Update Target Art widget because of border adjustments for small healthbar heights
+                    Addon.Widgets:UpdateSettings("TargetArt")
+                  end
+                end,
+                function() return Addon.WOW_USES_CLASSIC_NAMEPLATES end),
+              HeightFriendly = GetRangeEntry(L["Friend Bar Height"], 13, {"settings", "healthbar", "heightFriend" }, 1, 100,
+                function(info, val)
+                  if InCombatLockdown() then
+                    Addon.Logging.Error(L["We're unable to change this while in combat"])
+                  else
+                    SetThemeValue(info, val)
+                    Addon:SetBaseNamePlateSize()
+                    -- Update Target Art widget because of border adjustments for small healthbar heights
+                    Addon.Widgets:UpdateSettings("TargetArt")
+                  end
+                end,                
+                function() return Addon.WOW_USES_CLASSIC_NAMEPLATES end),
               Spacer1 = GetSpacerEntry(25),
               ShowHealAbsorbs = {
                 name = L["Heal Absorbs"],
@@ -7842,12 +7914,12 @@ local function CustomPlateGetIcon(index)
   else
     local spell_id = db.uniqueSettings[index].SpellID
     if spell_id then
-      _, _, icon = GetSpellInfo(spell_id)
+      icon = GetSpellInfo(spell_id).iconID
     else
       icon = db.uniqueSettings[index].icon
       if type(icon) == "string" and not icon:find("\\") and not icon:sub(-4) == ".blp" then
         -- Maybe a spell name
-        _, _, icon = GetSpellInfo(icon)
+        icon = GetSpellInfo(spell_id).iconID
       end
     end
   end
@@ -7864,7 +7936,10 @@ local function CustomPlateSetIcon(index, icon_location)
 
   local custom_plate = db.uniqueSettings[index]
   if custom_plate.UseAutomaticIcon then
-    _, _, icon = GetSpellInfo(custom_plate.Trigger[custom_plate.Trigger.Type].AsArray[1])
+    local spell_info = GetSpellInfo(custom_plate.Trigger[custom_plate.Trigger.Type].AsArray[1])
+    if spell_info then
+      icon = spell_info.iconID
+    end
   elseif not icon_location then
     icon = custom_plate.icon
   else
@@ -7873,8 +7948,9 @@ local function CustomPlateSetIcon(index, icon_location)
 
     local spell_id = tonumber(icon_location)
     if spell_id then -- no string, so val should be a spell ID
-      _, _, icon = GetSpellInfo(spell_id)
-      if icon then
+      local spell_info = GetSpellInfo(spell_id)
+      if spell_info then
+        icon = spell_info.iconID
         custom_plate.SpellID = spell_id
       else
         icon = spell_id -- Set icon to spell_id == icon_location, so that the value gets stored
@@ -7882,8 +7958,9 @@ local function CustomPlateSetIcon(index, icon_location)
       end
     else
       icon_location = tostring(icon_location)
-      _, _, icon = GetSpellInfo(icon_location)
-      if icon then
+      local spell_info = GetSpellInfo(spell_id)
+      if spell_info then
+        icon = spell_info.iconID
         custom_plate.SpellName = icon_location
       end
       icon = icon or icon_location
@@ -9316,7 +9393,7 @@ local function CreateOptionsTable()
 
   if not options then
     options = {
-      name = GetAddOnMetadata("TidyPlates_ThreatPlates", "title"),
+      name = C_AddOns.GetAddOnMetadata("TidyPlates_ThreatPlates", "title"),
       type = "group",
       childGroups = "tab",
       handler = func_handler,
@@ -10845,7 +10922,7 @@ local function CreateOptionsTable()
               type = "description",
               order = 2,
               width = "full",
-              name = L["Clear and easy to use threat-reactive nameplates.\n\nCurrent version: "] .. GetAddOnMetadata("TidyPlates_ThreatPlates", "version") .. L["\n\n--\n\nBackupiseasy\n\n(Original author: Suicidal Katt - |cff00ff00Shamtasticle@gmail.com|r)"],
+              name = L["Clear and easy to use threat-reactive nameplates.\n\nCurrent version: "] .. C_AddOns.GetAddOnMetadata("TidyPlates_ThreatPlates", "version") .. L["\n\n--\n\nBackupiseasy\n\n(Original author: Suicidal Katt - |cff00ff00Shamtasticle@gmail.com|r)"],
             },
             Header1 = {
               order = 3,
@@ -10902,7 +10979,7 @@ local function CreateOptionsTable()
 --               type = "description",
 --               order = 10,
 --               width = "full",
---               name = L["Clear and easy to use threat-reactive nameplates.\n\nCurrent version: "] .. GetAddOnMetadata("TidyPlates_ThreatPlates", "version") .. L["\n\n--\n\nBackupiseasy\n\n(Original author: Suicidal Katt - |cff00ff00Shamtasticle@gmail.com|r)"],
+--               name = L["Clear and easy to use threat-reactive nameplates.\n\nCurrent version: "] .. C_AddOns.GetAddOnMetadata("TidyPlates_ThreatPlates", "version") .. L["\n\n--\n\nBackupiseasy\n\n(Original author: Suicidal Katt - |cff00ff00Shamtasticle@gmail.com|r)"],
 --             },
 --             AuthorHeader = {
 --               type = "description",

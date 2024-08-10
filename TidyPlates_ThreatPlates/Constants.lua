@@ -11,6 +11,7 @@ local ThreatPlates = Addon.ThreatPlates
 
 -- WoW APIs
 local RAID_CLASS_COLORS, CLASS_SORT_ORDER = RAID_CLASS_COLORS, CLASS_SORT_ORDER
+local GetSpellInfo = Addon.GetSpellInfo
 
 local L = ThreatPlates.L
 local RGB, RGB_P, RGB_WITH_HEX = ThreatPlates.RGB, ThreatPlates.RGB_P, ThreatPlates.RGB_WITH_HEX
@@ -272,6 +273,48 @@ ThreatPlates.NAME_ABBREVIATION = {
   -- { SpellID = 204336, ID = "P4", GroupColor = "8a2be2", Icon = "spell_nature_groundingtotem" },	  -- Grounding Totem
   -- { SpellID = 355580, ID = "P5", GroupColor = "8a2be2", Icon = "spell_shaman_stormtotem"},	      -- Static Field Totem
   
+  local TOTEM_DATA_RETAIL_TWW = {
+    -- Baseline Totems
+    { SpellID = 2484,   ID = "B1", GroupColor = "8b4513", Icon = "spell_nature_strengthofearthtotem02" },   -- Earthbind Totem
+
+    -- Totems from talents
+    { SpellID = 8143,    ID = "T1", GroupColor = "b8d1ff", Icon = "spell_nature_tremortotem" },	         -- Tremor Totem
+    { SpellID = 192058,  ID = "T2", GroupColor = "b8d1ff", Icon = "spell_nature_brilliance" },	         -- Capacitor Totem
+    { SpellID = 192077,  ID = "T3", GroupColor = "b8d1ff", Icon = "ability_shaman_windwalktotem" },		   -- Wind Rush Totem
+    { SpellID = 383013,  ID = "T4", GroupColor = "b8d1ff", Icon = "spell_nature_poisoncleansingtotem" }, -- Poison Cleansing Totem
+    { SpellID = 383019,  ID = "T5", GroupColor = "b8d1ff", Icon = "ability_shaman_tranquilmindtotem" },	 -- Tranquil Air Totem
+    { SpellID = 5394,	   ID = "T7", GroupColor = "b8d1ff", Icon = "inv_spear_04" },		                   -- Healing Stream Totem
+    { SpellID = 383017,  ID = "T8", GroupColor = "b8d1ff", Icon = "ability_shaman_stoneskintotem" },	   -- Stoneskin Totem
+    { SpellID = 343226,  ID = "T9", GroupColor = "ff8f8f", Icon ="spell_fire_elemental_totem" }, 	       -- Fire Elemental Totem
+    { SpellID = 392915,  ID = "T10", GroupColor = "b8d1ff", Icon = "inv_spear_04" },		                 -- Healing Stream Totem
+    { SpellID = 392916,  ID = "T11", GroupColor = "b8d1ff", Icon = "inv_spear_04" },		                 -- Healing Stream Totem
+    -- Elemental
+    { SpellID = 192222, ID = "E1", GroupColor = "2b76ff", Icon = "spell_shaman_spewlava" }, 	-- Liquid Magma Totem
+    -- Enhancement
+    { SpellID = 8512,   ID = "H1", GroupColor = "ffb31f", Icon = "spell_nature_windfury" },	  -- Windfury Totem
+    -- Restoration
+    { SpellID = 157153,  ID = "R1", GroupColor = "4c9900", Icon = "ability_shaman_condensationtotem" },		-- Cloudburst Totem
+    { SpellID = 108280,  ID = "R4", GroupColor = "4c9900", Icon = "ability_shaman_healingtide" },		      -- Healing Tide Totem
+    { SpellID = 51485,   ID = "R2", GroupColor = "4c9900", Icon = "spell_nature_stranglevines" },		      -- Earthgrab Totem
+    { SpellID = 198838,  ID = "R3", GroupColor = "4c9900", Icon = "spell_nature_stoneskintotem" },		    -- Earthen Wall Totem
+    { SpellID = 98008,   ID = "R5", GroupColor = "4c9900", Icon = "spell_shaman_spiritlink" },	          -- Spirit Link Totem
+    { SpellID = 207399,  ID = "R6", GroupColor = "4c9900", Icon = "spell_nature_reincarnation" },		      -- Ancestral Protection Totem
+    { SpellID = 16191,   ID = "R7", GroupColor = "4c9900", Icon = "ability_shaman_manatidetotem" },       -- Mana Tide Totem
+    { SpellID = 343182,  ID = "R8", GroupColor = "4c9900", Icon = "ability_shaman_manatidetotem" },       -- Mana Tide Totem
+    -- Hero talent totems
+    { SpellID = 444995,  ID = "W1", GroupColor = "ffff00", Icon = "ability_shaman_totemcooldownrefund" }, -- Surging Totem
+    { SpellID = 445034,  ID = "W2", GroupColor = "ffff00", Icon = "spell_fire_searingtotem" },            -- Lively Totems
+
+    -- Totems from PVP talents
+    { SpellID = 204331, ID = "P1", GroupColor = "8a2be2", Icon = "spell_nature_wrathofair_totem" },	-- Counterstrike Totem
+    { SpellID = 204330, ID = "P2", GroupColor = "8a2be2", Icon = "spell_fire_totemofwrath" },	      -- Skyfury Totem
+    { SpellID = 204336, ID = "P4", GroupColor = "8a2be2", Icon = "spell_nature_groundingtotem" },	  -- Grounding Totem
+    { SpellID = 355580, ID = "P5", GroupColor = "8a2be2", Icon = "spell_shaman_stormtotem"},	      -- Static Field Totem
+  
+    -- Totems from other sources
+    { SpellID = 324386, ID = "O1", GroupColor = "00ffff", Icon = "ability_bastion_shaman" },	  -- Vesper Totem (Kyrian Covenant)
+  }
+
   local TOTEM_DATA_RETAIL = {
     -- Baseline Totems
     { SpellID = 2484,   ID = "B1", GroupColor = "8b4513", Icon = "spell_nature_strengthofearthtotem02" },   -- Earthbind Totem
@@ -317,6 +360,7 @@ ThreatPlates.NAME_ABBREVIATION = {
   
     --{ SpellID = 160161, ID = "S4", GroupColor = "ffb31f"}, 	  -- Earthquake Totem
   }
+
 
   local TOTEM_DATA_CATA_CLASSIC = {
     -- Earth Totems
@@ -459,13 +503,16 @@ Addon.Data.Totems =
   (Addon.IS_TBC_CLASSIC and TOTEM_DATA_BC_CLASSIC) or
   (Addon.IS_WRATH_CLASSIC and TOTEM_DATA_WRATH_CLASSIC) or 
   (Addon.IS_CATA_CLASSIC and TOTEM_DATA_CATA_CLASSIC) or 
+  (Addon.IS_TWW and TOTEM_DATA_RETAIL_TWW) or 
   TOTEM_DATA_RETAIL
 local TOTEM_RANKS_CLASSIC = { " II", " III", " IV", " V", " VI", " VII", " VIII", " IX", " X" }
 
 function Addon:InitializeTotemInformation()
   for _, totem_data in ipairs(Addon.Data.Totems) do
-    local name = GetSpellInfo(totem_data.SpellID)
-    if name then
+    local spell_info = GetSpellInfo(totem_data.SpellID)
+    if spell_info and spell_info.name then
+      local name = spell_info.name
+
       totem_data.Name = name
       totem_data.Color = RGB(HEX2RGB(totem_data.GroupColor))
       totem_data.Style = "normal"
@@ -1751,6 +1798,8 @@ ThreatPlates.DEFAULT_SETTINGS = {
         y = 0,
         width = 110,
         height = 45,
+        widthFriend = 110,
+        heightFriend = 45,        
         SyncWithHealthbar = true,
       },
       highlight = {
@@ -1774,6 +1823,8 @@ ThreatPlates.DEFAULT_SETTINGS = {
       healthbar = {
         width = 120,
         height = 10,
+        widthFriend = 120,
+        heightFriend = 10,
         texture = "Smooth", -- old default: "ThreatPlatesBar",
         backdrop = "Smooth", -- old default: "ThreatPlatesEmpty",
         BackgroundUseForegroundColor = false,

@@ -1,7 +1,7 @@
-## Interface: 30402
+## Interface: 110000
 
 ## Title: Threat Plates
-## Version: 11.2.13
+## Version: 12.0.3
 ## Notes: Threat-reactive nameplates.
 ## Notes-deDE: Bedrohungsreaktive Namensplaketten.
 ## Notes-esES: Placas Identificativas de Amenaza

@@ -1,4 +1,30 @@
 ﻿------------------------------------------------------
+12.0.3 (2024-07-29)
+------------------------------------------------------
+* Fixed a bug caused by incorrectly defined internal variables that affected other addons (e.g. the size of WeakAuras icons) [GH-538, comment #7371].
+
+------------------------------------------------------
+12.0.2 (2024-07-28)
+------------------------------------------------------
+* Removed a fix for hiding Blizzard nameplates that was added as a workaround when nameplate unit frames were protected from combat in TWW Beta.
+* Fixed a Lua bug with the Social widget that occurred when guild roster data was not available locally [GH-536].
+
+------------------------------------------------------
+12.0.1 (2024-07-25)
+------------------------------------------------------
+* Fixed a bug that prevented combo points from being displayed on rogues in WoW Classic [comment #7369, GH-535].
+* Fixed a bug that prevented the size of the healthbar from being changed in WoW Classic [comment #7375].
+* Updated TOC version for Classic Patch 1.15.3.
+
+------------------------------------------------------
+12.0.0 - Release for The War Within Pre-Patch (2024-07-23)
+------------------------------------------------------
+* Updated Threat Plates for The War Within pre-patch [GH-524, GH-525].
+* Added Bad Manner (Hunter, Pet) as a CC aura to the Auras widget [GH-531].
+* Added an option to change friendly and enemy healthbar sizes independently from each other (Retail Wow) [GH-459].
+* Updated integrated libraries (LibSharedMedia-3.0 v10.2.3, LibDualSpec-1.0 v1.24.0).
+
+------------------------------------------------------
 11.2.13 (2024-06-29)
 ------------------------------------------------------
 * Added a delay when updating several CVars for soft targeting as they no longer can be changed in combat [Comment #7346].
