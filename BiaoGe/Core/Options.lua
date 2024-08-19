@@ -100,7 +100,7 @@ local function OptionsUI()
             bt:SetScript("OnClick", function(self)
                 BG.HideTab(Frames, BG["Frame" .. name])
                 BiaoGe.options.lastFrame = "Frame" .. name
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
 
             local f = CreateFrame("Frame", nil, bt)
@@ -114,6 +114,7 @@ local function OptionsUI()
             scroll:SetPoint("BOTTOMRIGHT", SettingsPanel.Container, -35, 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(frame)
             frame.scroll = scroll
 
@@ -153,7 +154,7 @@ local function OptionsUI()
                 self:SetText(text)
                 BiaoGe.options[slider.name] = text
                 self:ClearFocus()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
             local function OnValueChanged(self, value)
                 self.edit:ClearFocus()
@@ -169,7 +170,7 @@ local function OptionsUI()
                         BiaoGe.options[slider.name] = value
                         slider:SetValue(value)
                         slider.edit:SetText(value)
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end
                 end
             end
@@ -251,7 +252,7 @@ local function OptionsUI()
                 else
                     BiaoGe.options[self.name] = 0
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
             local function OnEnter(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -371,7 +372,7 @@ local function OptionsUI()
                         if BG.FBCDFrame then
                             BG.FBCDFrame:SetScale(value)
                         end
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end
                 end
             end)
@@ -419,7 +420,7 @@ local function OptionsUI()
                         f.edit:SetText(value)
                         BG.MainFrame.Bg:SetAlpha(value)
                         BG.MainFrame.TitleBg:SetAlpha(value)
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end
                 end
             end)
@@ -503,7 +504,7 @@ local function OptionsUI()
             t:SetText(L["背景材质*"])
 
             LibBG:UIDropDownMenu_Initialize(dropDown, function(self, level)
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
                 for i, v in ipairs(table) do
                     local info = LibBG:UIDropDownMenu_CreateInfo()
                     info.text = v.name
@@ -511,7 +512,7 @@ local function OptionsUI()
                         BiaoGe.options[name] = v.tex
                         SetTex(v.tex, "alpha")
                         LibBG:UIDropDownMenu_SetText(dropDown, v.name)
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end
                     if v.tex == BiaoGe.options[name] then
                         info.checked = true
@@ -917,7 +918,7 @@ local function OptionsUI()
                 " ",
                 L["使用方法：右键聊天框装备时开始倒数。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. BG.STC_g1(L["拍卖倒数"] .. "*"), biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, BG.STC_g1(L["拍卖倒数"] .. "*"), biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 local name1 = "countDownDuration"
@@ -974,13 +975,13 @@ local function OptionsUI()
             BG.options["button" .. name] = dropDown
 
             LibBG:UIDropDownMenu_Initialize(dropDown, function(self, level)
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
                 local info = LibBG:UIDropDownMenu_CreateInfo()
                 info.text = L["通报至团队通知频道"]
                 info.func = function()
                     BiaoGe.options[name] = "RAID_WARNING"
                     LibBG:UIDropDownMenu_SetText(dropDown, RaidText(BiaoGe.options[name]))
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end
                 if BiaoGe.options[name] == "RAID_WARNING" then
                     info.checked = true
@@ -991,7 +992,7 @@ local function OptionsUI()
                 info.func = function()
                     BiaoGe.options[name] = "RAID"
                     LibBG:UIDropDownMenu_SetText(dropDown, RaidText(BiaoGe.options[name]))
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end
                 if BiaoGe.options[name] == "RAID" then
                     info.checked = true
@@ -1019,7 +1020,7 @@ local function OptionsUI()
                 " ",
                 L["该功能只有你是团长或物品分配者时起作用。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. BG.STC_g1(L["装备过期提醒"] .. "*"), biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, BG.STC_g1(L["装备过期提醒"] .. "*"), biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 local name1 = "guoqiRemindMinTime"
@@ -1128,7 +1129,7 @@ local function OptionsUI()
                 -- " ",
                 -- L[""],
             }
-            local f = O.CreateCheckButton(name, BG.STC_g1(L["进本自动清空表格*"]), biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["进本自动清空表格*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
 
             -- 删除旧设置
@@ -1241,7 +1242,7 @@ local function OptionsUI()
                 -- " ",
                 -- L[""],
             }
-            local f = O.CreateCheckButton(name, BG.STC_g1(L["按键交互声音*"]), biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["按键交互声音*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 if f:GetChecked() then
@@ -1368,7 +1369,7 @@ local function OptionsUI()
                     -- " ",
                     -- L[""],
                 }
-                local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
+                local f = O.CreateCheckButton(name, L["自动获取在线人数"] .. "*", biaoge, 15, height - h, ontext)
                 BG.options["button" .. name] = f
             end
             h = h + 30
@@ -1386,7 +1387,7 @@ local function OptionsUI()
                 " ",
                 L[ [[比如支出项目为：TN10%，则该支出金额会自动更新为：总收入*10%]] ],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["支出百分比计算"] .. "*", biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["支出百分比计算"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 for _, FB in pairs(BG.FBtable) do
@@ -1513,7 +1514,7 @@ local function OptionsUI()
                         BiaoGe.FBCDchoice[name] = nil
                     end
 
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
                 -- 鼠标悬停提示
                 bt:SetScript("OnEnter", function(self)
@@ -1572,7 +1573,7 @@ local function OptionsUI()
                     end
                     BG.MoneyBannerUpdate()
 
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
                 -- 鼠标悬停提示
                 bt:SetScript("OnEnter", function(self)
@@ -1666,7 +1667,7 @@ local function OptionsUI()
                 tinsert(channelTypeMenu, a)
                 LibBG:EasyMenu(channelTypeMenu, dropDown, bt, 0, 0, "MENU", 3)
             end
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
 
         -- 创建多选按钮

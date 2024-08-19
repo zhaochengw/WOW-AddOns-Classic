@@ -16,8 +16,8 @@ do --简体说明书
     text = text .. "|cffFFFFFF-跳转光标：|r按Tab、方向键跳转光标，ALT/CTRL/SHIFT+方向键跳转至下个BOSS\n"
     text = text .. "|cffFFFFFF-添加装备：|r从装备下拉列表里选择；或者从背包把装备拖进表格\n"
     text = text .. "|cffFFFFFF-发送装备：|rSHIFT+点击装备\n"
+    text = text .. "|cffFFFFFF-自动拍卖：|rALT+点击表格/背包/聊天框装备，打开拍卖面板（当你是团长或物品分配者时）\n"
     text = text .. "|cffFFFFFF-关注装备：|rALT+点击装备，团长拍卖此装备时会提醒（当你是团员时）\n"
-    text = text .. "|cffFFFFFF-团长拍卖：|rALT+点击表格/背包/聊天框装备，打开拍卖面板（当你是团长时）\n"
     text = text .. "|cffFFFFFF-拍卖倒数：|r右键聊天框装备开始拍卖自动倒数（当你是团长或物品分配者时）\n"
     text = text .. "|cffFFFFFF-快速记账：|r右键聊天框装备时打开（当你是团员时）\n"
     text = text .. "|cffFFFFFF-查看同部位其他可选装备：|rCTRL+点击装备\n"
@@ -29,6 +29,31 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "8月19日更新v1.11.4" .. "|r\n"
+    update = update .. c1 .. [[-拍卖WA更新为v1.7：增加自动出价功能]] .. "|r\n"
+    update = update .. [[-增加功能：拾取记录（显示在装备下拉列表左边）]] .. "|r\n"
+    update = update .. [[-增加功能：撤销删除（当你右键删除一个格子时会显示这个撤销删除按钮）]] .. "|r\n"
+    update = update .. [[-自动拍卖记录：现在右键一个记录可以打开菜单，用于修改或删除记录]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "8月14日更新v1.11.3" .. "|r\n"
+    update = update .. [[-表格：删除支出、总览、工资的买家格子]] .. "|r\n"
+    update = update .. [[-修复了自动拍卖的生成对账单功能导致插件错误的问题]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "8月12日更新v1.11.2" .. "|r\n"
+    update = update .. c1 .. [[-增加功能：自动拍卖记录（按钮在表格界面左上角）]] .. "|r\n"
+    update = update .. c1 .. [[-自动拍卖：交易时，如果你是物品分配者，则会自动把对方拍到的装备放到交易栏。并且会显示应收/应付金额]] .. "|r\n"
+    update = update .. [[-自动拍卖：正在拍卖的装备现在会显示是否为你的关注和心愿，且装备过滤功能也会对其生效]] .. "|r\n"
+    update = update .. [[-拍卖WA更新为v1.6：增加显示正在拍卖的装备类型]] .. "|r\n"
+    update = update .. [[-<赛季服>MC表格每个BOSS的格子都有所增加]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
+
     update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
     update = update .. c1 .. [[-增加功能：交易清除欠款（交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款）]] .. "|r\n"
     update = update .. [[-通报欠款：现在会显示总欠款]] .. "|r\n"
@@ -39,14 +64,6 @@ do --简体说明书
     update = update .. [[-复制对方账单：如果对方是BiaoGe插件的账单，则也会复制其买家到自己的表格里]] .. "|r\n"
     update = update .. [[-修复了多个可堆叠物品被同时一键分配时，在某些情况可能会出现数量记录错误的问题]] .. "|r\n"
     update = update .. [[-<WLK>密语模板：增加奥杜尔成就ID列表]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
     update = update .. [[-<WLK>奥杜尔表格的杂项格子增加至9个]] .. "|r\n\n"
@@ -64,20 +81,6 @@ do --简体更新内容
     update = update .. c1 .. [[-<WLK>AtlasLoot：增加功能[更好的选择]（比如点击专业制造-铭文时，会自动显示你对应的铭文，而不是默认显示第一项）]] .. "|r\n"
     update = update .. [[-<WLK>装备库：增加PVP圣物]] .. "|r\n\n"
 
-    update = update .. "|cff00FF00" .. "7月18日更新v1.10.5" .. "|r\n"
-    update = update .. [[-一键分配：现在也支持XLoot插件]] .. "|r\n"
-    update = update .. [[-集结号增强：同等级的星团长现在也会按队伍人数排列]] .. "|r\n"
-    update = update .. c1 .. [[-修复了多本表格的一个自动清空问题]] .. "|r\n"
-    update = update .. [[-修复了按住Ctrl跳转装备库时，装备库没有正确更新的问题]] .. "|r\n"
-    update = update .. [[-<WLK>NAXX表格：BOSS顺序调整为蜘蛛-构造-军事-瘟疫]] .. "|r\n"
-    update = update .. [[-<WLK>一键举报：如果目标是你的队友，则不会显示一键举报按钮]] .. "|r\n"
-    update = update .. [[-<WLK/CTM>一键指定副本：现在打开随机本界面时，会自动选择上一次的随机本类型，而不是傻傻地在默认类型]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月17日更新v1.10.4" .. "|r\n"
-    update = update .. [[-拍卖聊天框：增加按钮[定位装备]（可以把拍卖聊天记录定位到当前装备所在处，便于你翻查某件装备的拍卖过程）]] .. "|r\n"
-    update = update .. [[-高亮对应装备：鼠标悬停在表格/背包装备时，现在也会在高亮聊天框装备]] .. "|r\n"
-    update = update .. [[-<WLK>角色总览：增加珠宝、烹饪、钓鱼日常（默认不勾选）。修复了周常重置时间错误的问题]] .. "|r\n\n"
-
     ns.updateText = update
 end
 
@@ -91,6 +94,49 @@ ns.L = L
 
 local L = {}
 do
+    L["当前难度："] = true
+    L["账单"] = true
+    L["用时"] = true
+    L["消费"] = true
+    L["欠款"] = true
+    L["流拍"] = true
+    L["通报："] = true
+    L["撤销删除"] = true
+    L["撤销删除当前绿色高亮格子的内容。"] = true
+    L["v1.7：增加自动出价功能"] = true
+
+
+    L["自动拍卖合计收入：|cff%s%s|r"] = true
+
+
+    L["上传账单"] = true
+    L["把当前表格的数据上传到|cff00ff00新手盒子|r。每件装备的拍卖价格也将有助于新手盒子建立市场平均价，使其他玩家更了解市场行情。"] = true
+    L["如果有自动拍卖记录，则也会被清空。"] = true
+    L["v1.6：增加显示正在拍卖的装备类型"] = true
+    L["拍卖记录"] = true
+    L["自动拍卖装备（拍卖WA）的记录。"] = true
+    L["自动拍卖装备（拍卖WA）的记录。该记录会跟随清空表格一起被清空，也会跟随保存表格一同保存到历史表格。"] = true
+    L["按住ALT+右键：删除某条记录"] = true
+    L["全部"] = true
+    L["成功"] = true
+    L["流拍"] = true
+    L["生成表格账单"] = true
+    L["根据自动拍卖记录，直接覆盖表格里每件装备所对应的买家和金额。"] = true
+    L["生成对账单"] = true
+    L["根据自动拍卖记录，生成一个对账单。"] = true
+    L["自动拍卖记录"] = true
+    L["没有自动拍卖记录。"] = true
+    L["历史自动拍卖记录"] = true
+    L["自动拍卖记录"] = true
+    L["装绑"] = true
+    L["<流拍>"] = true
+    L["合计收入："] = true
+    L["应收："] = true
+    L["合计应收："] = true
+    L["应付："] = true
+    L["合计应付："] = true
+
+
     L["对方欠款记录"] = true
     L["交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款。"] = true
     L["刷新"] = true
@@ -738,7 +784,7 @@ do
     L["不会对漏记的装备和金额生效。"] = true
     L[" {rt1}拍卖倒数{rt1}"] = true
     L["清空表格"] = true
-    L["一键清空全部装备、买家、金额，同时还清空关注和欠款"] = true
+    L["一键清空全部装备、买家、金额，同时还清空关注和欠款。"] = true
     L["清空心愿"] = true
     L["一键清空全部心愿装备"] = true
     L["指定%s"] = true

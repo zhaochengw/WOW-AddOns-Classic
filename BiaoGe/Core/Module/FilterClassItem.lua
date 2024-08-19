@@ -218,7 +218,7 @@ function BG.FilterClassItemUI()
             end
         end
         BG.UpdateAllItemLib()
-        PlaySound(BG.sound1, "Master")
+        BG.PlaySound(1)
     end
 
     function F.CreateClassButtons()
@@ -374,7 +374,7 @@ function BG.FilterClassItemUI()
                     else
                         BiaoGe.FilterClassItemDB[RealmId][player][id][type][v.name] = nil
                     end
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end
                 BG.UpdateAllFilter()
                 BG.UpdateAllItemLib()
@@ -439,7 +439,7 @@ function BG.FilterClassItemUI()
         bt:SetPoint("TOPRIGHT", 0, 0)
 
         local bt = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-        bt:SetSize(100, 25)
+        bt:SetSize(130, 25)
         bt:SetPoint("BOTTOMRIGHT", -10, 15)
         bt:SetText(L["关闭"])
         bt:SetScript("OnClick", function(self)
@@ -601,7 +601,7 @@ function BG.FilterClassItemUI()
         end
 
         local bt = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-        bt:SetSize(80, 30)
+        bt:SetSize(120, 30)
         bt:SetPoint("TOPLEFT", 25, -height - 40)
         bt:SetText(L["确定"])
         bt:SetScript("OnEnter", function(self)
@@ -646,17 +646,17 @@ function BG.FilterClassItemUI()
             f:Hide()
             F.CreateClassButtons()
             BG.UpdateAllFilter()
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
         local lastbt = bt
 
         local bt = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
-        bt:SetSize(80, 30)
+        bt:SetSize(120, 30)
         bt:SetPoint("LEFT", lastbt, "RIGHT", 15, 0)
         bt:SetText(L["返回"])
         bt:SetScript("OnClick", function(self)
             f:Hide()
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
 
         f:SetScript("OnShow", function(self)
@@ -716,7 +716,7 @@ function BG.FilterClassItemUI()
                 BG.FilterClassItemMainFrame.AddFrame:Show()
             end
             LibBG:CloseDropDownMenus()
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
     end
 
@@ -856,7 +856,7 @@ function BG.FilterClassItemUI()
 
                 LibBG:EasyMenu(channelTypeMenu, BG.dropDown, self, 0, 0, "MENU", 3)
             end
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
     end
     -- 设置按钮
@@ -876,7 +876,7 @@ function BG.FilterClassItemUI()
             end
             BG.FilterClassItemMainFrame:ClearAllPoints()
 
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)

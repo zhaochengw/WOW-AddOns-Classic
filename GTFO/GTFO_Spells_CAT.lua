@@ -1357,12 +1357,17 @@ GTFO.SpellID["92468"] = {
 };
 
 GTFO.SpellID["92987"] = {
-	--desc = "Dark Sludge (Maloriak, BWD 10H)";
+	--desc = "Dark Sludge (Maloriak, BWD 10H Old)";
 	sound = 1;
 };
 
 GTFO.SpellID["92988"] = {
-	--desc = "Dark Sludge (Maloriak, BWD 25H)";
+	--desc = "Dark Sludge (Maloriak, BWD 25H Old)";
+	sound = 1;
+};
+
+GTFO.SpellID["92930"] = {
+	--desc = "Dark Sludge (Maloriak, BWD New)";
 	sound = 1;
 };
 

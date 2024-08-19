@@ -1,5 +1,4 @@
 -- FlashAtFrame.lua
--- @Author : wanggaoliang@corp.netease.com
 -- @Date   : 07/09/2024, 3:43:12 PM
 --
 -- @Description :

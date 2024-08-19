@@ -20,9 +20,9 @@ local pt = print
 
 function BG.YongShiUI(lastbt)
     local bt = CreateFrame("Button", nil, BG.ButtonZhangDan, "UIPanelButtonTemplate")
-    bt:SetSize(90, BG.ButtonZhangDan:GetHeight())
-    bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
-    bt:SetText(L["通报用时"])
+    bt:SetSize(BG.ButtonZhangDan:GetWidth(), BG.ButtonZhangDan:GetHeight())
+    bt:SetPoint("LEFT", lastbt, "RIGHT", BG.ButtonZhangDan.jiange, 0)
+    bt:SetText(L["用时"])
     BG.ButtonYongShi = bt
     tinsert(BG.TongBaoButtons, bt)
     bt:SetScript("OnEnter", function(self)
@@ -64,7 +64,7 @@ function BG.YongShiUI(lastbt)
         FrameHide(0)
         if not IsInRaid(1) then
             SendSystemMessage(L["不在团队，无法通报"])
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         else
             self:SetEnabled(false) -- 点击后按钮变灰2秒
             C_Timer.After(2, function()
@@ -88,7 +88,7 @@ function BG.YongShiUI(lastbt)
             if not yes then
                 SendChatMessage(L["没有记录"], "RAID")
             end
-            PlaySoundFile(BG.sound2, "Master")
+            BG.PlaySound(2)
         end
     end)
 

@@ -191,7 +191,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if self:IsEnabled() then
                     self:SetPoint("RIGHT", self:GetParent(), "RIGHT", 0, 0)
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
 
             f:SetScript("OnMouseUp", function(self)
@@ -202,7 +202,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 else
                     edit:Hide()
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
             f:SetScript("OnEnter", function(self)
                 t:SetTextColor(RGB(BG.w1))
@@ -242,6 +242,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetSize(frame.spellFramebg:GetWidth() - 28, frame.spellFramebg:GetHeight() - 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
 
             scroll:SetScrollChild(f)
             frame["Boss" .. i].spellScrollFrame = scroll
@@ -256,6 +257,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetSize(frame.classFramebg:GetWidth() - 28, frame.classFramebg:GetHeight() - 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(f)
             frame["Boss" .. i].classScrollFrame = scroll
 
@@ -270,7 +272,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 self.spellScrollFrame:Show()
                 self.classScrollFrame:Show()
                 BiaoGe.BossFrame[FB].lastFrame = i
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
 
             if not BiaoGe.BossFrame[FB].lastFrame then
@@ -356,7 +358,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     bt.tex:SetTexture(130821)
                     bt.open = true
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
         end
 

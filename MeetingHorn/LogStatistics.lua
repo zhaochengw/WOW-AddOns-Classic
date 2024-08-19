@@ -1,5 +1,4 @@
 -- LogStatistics.lua
--- @Author : wanggaoliang@corp.netease.com
 -- @Date   : 07/09/2024, 3:43:12 PM
 --
 -- @Description :
@@ -30,7 +29,7 @@ function LogStatistics:SendServerExposure()
         version =  ns.LFG:GetStarRegimentVersion()
     end
 
-    ns.LFG:SendServer('EXPOSURE', version)
+    ns.LFG:SendServer('EXPOSURE', version, ns.ADDON_VERSION)
     self.isSendExposure = true
 end
 

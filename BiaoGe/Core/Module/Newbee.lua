@@ -80,7 +80,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             end
         end
-        -- 上传者2
+        -- 上传者
         local unit = "player"
         BiaoGe.newbee_report.uploader = {}
         BiaoGe.newbee_report.uploader.name = UnitName(unit) -- 玩家名字
@@ -160,11 +160,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     local bt = CreateFrame("Button", nil, BG.MainFrame)
     do
-        bt:SetPoint("LEFT", BG.ButtonAucitonWA, "RIGHT", BG.TopLeftButtonJianGe, 0)
+        bt:SetPoint("LEFT", BG.ButtonGuoQi, "RIGHT", BG.TopLeftButtonJianGe, 0)
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
-        bt:SetText(AddTexture("QUEST") .. L["上传到新手盒子"])
+        bt:SetText(L["上传账单"])
         bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.ButtonNewBee = bt
@@ -173,7 +173,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
-            GameTooltip:AddLine(L["把当前表格的数据上传到新手盒子。每件装备的拍卖价格也将有助于新手盒子建立市场平均价，使其他玩家更了解市场行情。"], 1, 0.82, 0, true)
+            GameTooltip:AddLine(L["把当前表格的数据上传到|cff00ff00新手盒子|r。每件装备的拍卖价格也将有助于新手盒子建立市场平均价，使其他玩家更了解市场行情。"], 1, 0.82, 0, true)
             GameTooltip:Show()
         end)
         bt:SetScript("OnLeave", GameTooltip_Hide)

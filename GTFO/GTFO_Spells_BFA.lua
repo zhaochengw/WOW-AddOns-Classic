@@ -974,6 +974,7 @@ GTFO.SpellID["287993"] = {
   applicationOnly = true;
   affirmingDebuffSpellID = 288297; -- Arctic Ground
   sound = 1;
+  trivialLevel = 70;
 };
 
 GTFO.SpellID["287365"] = {
@@ -988,6 +989,7 @@ GTFO.SpellID["288808"] = {
   heroicSound = 1;
   mythicSound = 1;
   sound = 0;
+  trivialLevel = 70;
   test = true;
 };
 

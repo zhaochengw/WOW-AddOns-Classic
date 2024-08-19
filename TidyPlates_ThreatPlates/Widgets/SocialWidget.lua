@@ -139,17 +139,13 @@ function Widget:GUILD_ROSTER_UPDATE()
     if numTotalGuildMembers < ListGuildMembersSize then
       ListGuildMembers = {}
     end
-    
-    local no_guild_members_with_info = 0
+
     for i = 1, numTotalGuildMembers do
       local name, rank, rankIndex, level, classDisplayName, zone, note, officernote, isOnline, _ = GetGuildRosterInfo(i)
-      if name then
-        ListGuildMembers[name] = ICON_GUILDMATE
-        no_guild_members_with_info = no_guild_members_with_info + 1
-      end
+      ListGuildMembers[name] = ICON_GUILDMATE
     end
 
-    ListGuildMembersSize = no_guild_members_with_info
+    ListGuildMembersSize = numTotalGuildMembers
 
     self:UpdateAllFramesAndNameplateColor()
   end

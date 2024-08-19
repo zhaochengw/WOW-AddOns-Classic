@@ -676,28 +676,28 @@ function BG.HopeUI(FB)
                 if BiaoGe.HopeSendChannel == "RAID" then
                     if not IsInRaid(1) then
                         SendSystemMessage(L["不在团队，无法通报"])
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         return
                     end
                 end
                 if BiaoGe.HopeSendChannel == "PARTY" then
                     if not IsInGroup() then
                         SendSystemMessage(L["不在队伍，无法通报"])
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         return
                     end
                 end
                 if BiaoGe.HopeSendChannel == "GUILD" then
                     if not IsInGuild() then
                         SendSystemMessage(L["没有公会，无法通报"])
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         return
                     end
                 end
                 if BiaoGe.HopeSendChannel == "WHISPER" then
                     if not UnitName("target") then
                         SendSystemMessage(L["没有目标，无法通报"])
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         return
                     end
                 end
@@ -729,7 +729,7 @@ function BG.HopeUI(FB)
                         SendChatMessage(text, channel, nil, UnitName("target"))
                     end
                 end
-                PlaySoundFile(BG.sound2)
+                BG.PlaySound(2)
             end)
         end
 
@@ -754,7 +754,7 @@ function BG.HopeUI(FB)
                 BiaoGe.HopeSendChannel = channel
                 LibBG:UIDropDownMenu_SetText(dropDown, BG.HopeSendTable[BiaoGe.HopeSendChannel])
                 FrameHide(0)
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
             if BiaoGe.HopeSendChannel == channel then
                 info.checked = true
@@ -771,7 +771,7 @@ function BG.HopeUI(FB)
         LibBG:UIDropDownMenu_SetText(dropDown, BG.HopeSendTable[BiaoGe.HopeSendChannel])
         LibBG:UIDropDownMenu_Initialize(dropDown, function(self, level, menuList)
             FrameHide(0)
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
 
             AddButton(dropDown, L["团队"], "RAID")
             AddButton(dropDown, L["队伍"], "PARTY")
@@ -966,7 +966,7 @@ function BG.HopeDaoChuUI()
         BG.ButtonImportHope = bt
 
         bt:SetScript("OnClick", function(self)
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
             HideOtherFrame(bt.bg)
 
             if not self.bg then
@@ -1015,6 +1015,7 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                    BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
 
                     self.s = scroll
 
@@ -1031,7 +1032,7 @@ function BG.HopeDaoChuUI()
                         bg:Hide()
                     end)
                     child:SetScript("OnEnterPressed", function(self)
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         ImportHope(child:GetText())
                         bg:Hide()
                     end)
@@ -1043,7 +1044,7 @@ function BG.HopeDaoChuUI()
                     bt:SetPoint("BOTTOMLEFT", 8, 10)
                     bt:SetText(OKAY)
                     bt:SetScript("OnClick", function(self)
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                         ImportHope(child:GetText())
                         bg:Hide()
                     end)
@@ -1078,7 +1079,7 @@ function BG.HopeDaoChuUI()
         BG.ButtonExportHope = bt
 
         bt:SetScript("OnClick", function(self)
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
             HideOtherFrame(bt.bg)
 
             if not self.bg then
@@ -1127,16 +1128,16 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                    BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
 
                     self.s = scroll
 
                     child = CreateFrame("EditBox", nil, scroll)
-                    child:SetWidth(sbg:GetWidth())
+                    child:SetWidth(scroll:GetWidth())
                     child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     child:SetMultiLine(true)
                     child:SetAutoFocus(false)
                     child:EnableMouse(true)
-                    child:SetTextInsets(5, 28, 5, 10)
                     self.child = child
                     scroll:SetScrollChild(child)
                     child:SetScript("OnEscapePressed", function(self)

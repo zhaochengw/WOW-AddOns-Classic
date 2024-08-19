@@ -1,5 +1,5 @@
 ## Interface: 11502, 11503, 20504, 30403, 40400, 100207, 110000, 110002
-## Version: v10.2.7
+## Version: v11.0.0
 ## Title: BugSack
 ## Notes: Toss those bugs inna sack.
 ## Notes-deDE: Werft den Fehler in einen Sack.

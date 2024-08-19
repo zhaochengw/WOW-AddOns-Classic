@@ -69,7 +69,11 @@ end
 function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     local parent = scrollFrame or BG["ReceiveFrame" .. FB]
     local bt = CreateFrame("EditBox", nil, parent, "InputBoxTemplate");
-    bt:SetSize(150, 20)
+    if BossNum(FB, b, t) <= Maxb[FB] then
+        bt:SetSize(150, 20)
+    else
+        bt:SetSize(245, 20)
+    end
     bt:SetFrameLevel(110)
     if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] - 1 and i == BG.zaxiang[FB].i then
         bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 170, -18)
@@ -158,22 +162,26 @@ end
 
 ------------------买家------------------
 function BG.ReceiveMaiJiaUI(FB, t, b, bb, i, ii)
-    local button = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
-    button:SetSize(90, 20)
-    button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
-    button:SetFrameLevel(110)
-    button:SetMaxBytes(19) --限制字数
-    button:SetAutoFocus(false)
-    button:Show()
-    button:SetEnabled(false)
-    preWidget = button
-    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i] = button
+    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
+    bt:SetSize(90, 20)
+    bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
+    bt:SetFrameLevel(110)
+    bt:SetMaxBytes(19) --限制字数
+    bt:SetAutoFocus(false)
+    bt:Show()
+    bt:SetEnabled(false)
+    if BossNum(FB, b, t) <= Maxb[FB] then
+        preWidget = bt
+    else
+        bt:Hide()
+    end
+    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i] = bt
 
     -- 鼠标悬停在装备时
-    button:SetScript("OnEnter", function(self)
+    bt:SetScript("OnEnter", function(self)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
     end)
-    button:SetScript("OnLeave", function(self)
+    bt:SetScript("OnLeave", function(self)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
         GameTooltip:Hide()
     end)

@@ -245,6 +245,10 @@ local function FrameHide(num)
     if BG.frameImportHope then
         BG.frameImportHope:Hide()
     end
+    if BG.auctionLogFrame and BG.auctionLogFrame.changeFrame then
+        BG.auctionLogFrame.changeFrame:Hide()
+    end
+
     -- if BG.FrameNewBee then
     --     BG.FrameNewBee:Hide()
     -- end
@@ -435,9 +439,9 @@ end
 function BG.PlaySound(id)
     if id and BG["sound" .. id] then
         if id == 2 then
-            PlaySoundFile(BG["sound" .. id], "Master")
+            PlaySoundFile(BG["sound" .. id])
         else
-            PlaySound(BG["sound" .. id], "Master")
+            PlaySound(BG["sound" .. id])
         end
     end
 end
@@ -486,6 +490,7 @@ end
 ----------滚动到最末----------
 function BG.SetScrollBottom(scroll, child)
     local offset = child:GetHeight() - scroll:GetHeight()
+    -- pt(child:GetHeight(),scroll:GetHeight())
     if offset > 0 then
         scroll:SetVerticalScroll(offset)
     end
@@ -567,4 +572,20 @@ end
 
 function BG.SendSystemMessage(msg)
     SendSystemMessage(BG.STC_b1("<BiaoGe>") .. " " .. msg)
+end
+
+function BG.Copy(table)
+    if type(table) == "table" then
+        local t = {}
+        for k, v in pairs(table) do
+            if type(v) == "table" then
+                t[k] = BG.Copy(v) -- 递归拷贝子表
+            else
+                t[k] = v
+            end
+        end
+        return t
+    else
+        return table
+    end
 end

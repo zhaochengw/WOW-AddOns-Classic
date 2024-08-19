@@ -1,6 +1,5 @@
 
 -- threeDimensionsCode.lua 客户端通讯
--- @Author : wanggaoliang@corp.netease.com
 -- @Date   : 07/02/2024, 10:01:07 AM
 --
 ---@type ns

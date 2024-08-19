@@ -73,7 +73,11 @@ end
 function BG.HistoryZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     local parent = scrollFrame or BG["HistoryFrame" .. FB]
     local bt = CreateFrame("EditBox", nil, parent, "InputBoxTemplate");
-    bt:SetSize(150, 20)
+    if BossNum(FB, b, t) <= Maxb[FB] then
+        bt:SetSize(150, 20)
+    else
+        bt:SetSize(245, 20)
+    end
     bt:SetFrameLevel(110)
     if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] - 1 and i == BG.zaxiang[FB].i then
         bt:SetPoint("TOPLEFT", frameright, "TOPLEFT", 170, -18)
@@ -186,7 +190,11 @@ function BG.HistoryMaiJiaUI(FB, t, b, bb, i, ii)
     bt:SetAutoFocus(false)
     bt:Show()
     bt:SetEnabled(false)
-    preWidget = bt
+    if BossNum(FB, b, t) <= Maxb[FB] then
+        preWidget = bt
+    else
+        bt:Hide()
+    end
     BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)]["maijia" .. i] = bt
 
     -- 鼠标悬停在装备时

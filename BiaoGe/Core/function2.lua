@@ -208,7 +208,6 @@ do
     end
 
     function BG.UpdateAllFilter()
-        local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
         local FB = BG.FB1
         for b = 1, Maxb[FB] do -- 当前表格
             for i = 1, Maxi[FB] do
@@ -254,6 +253,37 @@ do
         if not BG.ItemLibMainFrame:IsVisible() then
             BG.itemLibNeedUpdate = true
         end
+
+        if BGA.Frames then
+            for _, f in ipairs(BGA.Frames) do
+                f.filter = nil
+                if f.player and f.player == UnitName("player") then
+                    f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_IsMe))
+                    f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_IsMe))
+                else
+                    f:SetBackdropColor(unpack(BGA.aura_env.backdropColor))
+                    f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor))
+                end
+                f.hide:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.cancel:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.autoText:SetNormalFontObject(_G.BGA.FontGreen15)
+
+                local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
+                if num then
+                    local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(f.itemID)
+                    if BG.FilterAll(f.itemID, typeID, EquipLoc, subclassID) then
+                        f.filter = true
+                        if not (f.player and f.player == UnitName("player")) then
+                            f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
+                            f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_filter))
+                            f.hide:SetNormalFontObject(_G.BGA.FontDis15)
+                            f.cancel:SetNormalFontObject(_G.BGA.FontDis15)
+                            f.autoText:SetNormalFontObject(_G.BGA.FontDis15)
+                        end
+                    end
+                end
+            end
+        end
     end
 
     -- 拾取通知
@@ -274,7 +304,7 @@ do
 end
 
 ------------------函数：按职业排序------------------
-function BG.PaiXuRaidRosterInfo(guolv)
+function BG.PaiXuRaidRosterInfo(filter)
     local c = {
         "DEATHKNIGHT", --     "死亡骑士",
         "PALADIN",     --     "圣骑士",
@@ -288,8 +318,8 @@ function BG.PaiXuRaidRosterInfo(guolv)
         "PRIEST",      --     "牧师",
     }
     local c_guolv = {}
-    if guolv and type(guolv) == "table" then
-        for i, v in ipairs(guolv) do
+    if filter and type(filter) == "table" then
+        for i, v in ipairs(filter) do
             for index, value in ipairs(c) do
                 if v == value then
                     table.insert(c_guolv, value)
@@ -329,6 +359,85 @@ end
 
 ------------------函数：装备下拉列表------------------
 do
+    local function CreateLootLog(self)
+        if self.hopenandu then return end
+        local FB = self.FB
+        local b = self.bossnum
+        local i = self.i
+        if not BiaoGe[FB]["boss" .. b]["loot" .. i] then return end
+        local f = CreateFrame("Frame", nil, BG.FrameZhuangbeiList, "BackdropTemplate")
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            edgeSize = 16,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
+        f:SetBackdropColor(0, 0, 0, .8)
+        f:SetPoint("TOPRIGHT", BG.FrameZhuangbeiList, "TOPLEFT", 3, 0)
+        f:SetSize(120, BG.FrameZhuangbeiList:GetHeight())
+        f:EnableMouse(true)
+        BG.FrameLootLog = f
+
+        local text = f:CreateFontString()
+        text:SetPoint("TOP", 0, -10)
+        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetText(L["拾取记录"])
+
+        local w = f:GetWidth() - 15
+        local h = f:GetHeight() - 35
+        local frame, child = BG.CreateScrollFrame(f, w, h, nil, true)
+        frame:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 1,
+        })
+        frame:SetBackdropColor(0, 0, 0, 0)
+        frame:SetBackdropBorderColor(.5, .5, .5, .5)
+        frame:SetPoint("TOPLEFT", f, 8, -30)
+        frame.scroll:SetWidth(frame:GetWidth() - 10)
+        child:SetWidth(frame:GetWidth() - 10)
+        frame.scroll.ScrollBar:Hide()
+
+        local texts = {}
+        for _, v in ipairs(BiaoGe[FB]["boss" .. b]["loot" .. i]) do
+            local t = child:CreateFontString()
+            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            if #texts == 0 then
+                t:SetPoint("TOPLEFT", 0, 0)
+            else
+                t:SetPoint("TOPLEFT", texts[#texts], "BOTTOMLEFT", 0, -3)
+            end
+            t:SetHeight(15)
+            t:SetTextColor(1, 0.82, 0)
+            t:SetText(date("%m-%d %H:%M", v.time))
+            t:SetWidth(child:GetWidth())
+            t:SetJustifyH("LEFT")
+            t:SetWordWrap(false)
+            tinsert(texts, t)
+
+            local t = child:CreateFontString()
+            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetPoint("TOPRIGHT", texts[#texts], "BOTTOMRIGHT", 0, 0)
+            t:SetHeight(15)
+            t:SetText("x" .. v.count)
+
+            local t = child:CreateFontString()
+            t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+            t:SetPoint("TOPLEFT", texts[#texts], "BOTTOMLEFT", 0, 0)
+            t:SetHeight(15)
+            t:SetText("|c" .. select(4, GetClassColor(v.class)) .. v.player .. RR)
+            tinsert(texts, t)
+
+            local l = child:CreateLine()
+            l:SetColorTexture(RGB("808080", 1))
+            l:SetStartPoint("TOPLEFT", 0, -1 - #texts * 15 - (#texts / 2 - 1) * 3)
+            l:SetEndPoint("TOPRIGHT", 0, -1 - #texts * 15 - (#texts / 2 - 1) * 3)
+            l:SetThickness(1)
+        end
+        BG.After(0, function()
+            frame.scroll.ScrollBar:Hide()
+        end)
+    end
     local function GetNanDu(bossnum)
         local FB = BG.FB1
         if BG.IsWLKFB() then
@@ -583,6 +692,8 @@ do
         end
         f:SetSize(btwidth * 2 + 10 + 10, (btheight + 2) * MaxI + 5 + 3)
         text:SetWidth(f:GetWidth())
+
+        CreateLootLog(self)
     end
 end
 
@@ -800,7 +911,7 @@ function BG.CreateQiankuanButton(bt, _type)
 end
 
 ------------------创建：买家下拉列表------------------    -- focus：0就是要清空光标,zhiye："jianshang"就是只显示骑士、德鲁伊、牧师
-function BG.SetListmaijia(maijia, focus, guolv)
+function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
     -- 背景框
     local frame = BG.MainFrame
     BG.FrameMaijiaList = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -821,7 +932,7 @@ function BG.SetListmaijia(maijia, focus, guolv)
     -- 下拉列表
     local framedown
     local frameright = BG.FrameMaijiaList
-    local raid = BG.PaiXuRaidRosterInfo(guolv)
+    local raid = BG.PaiXuRaidRosterInfo(filter)
     for t = 1, 4 do
         for i = 1, 10 do
             local bt = CreateFrame("EditBox", nil, BG.FrameMaijiaList, "InputBoxTemplate")
@@ -839,7 +950,7 @@ function BG.SetListmaijia(maijia, focus, guolv)
             if i > 1 then
                 bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
             end
-            if not guolv and not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
+            if not filter and not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
                 bt:SetText(UnitName("player"))
                 bt:SetCursorPosition(0)
                 bt:SetTextColor(GetClassRGB(UnitName("player")))
@@ -878,12 +989,17 @@ function BG.SetListmaijia(maijia, focus, guolv)
                     maijia:SetCursorPosition(0)
                     if raid[num] or self.class then
                         for k, v in pairs(BG.playerClass) do
-                            BiaoGe[maijia.FB]["boss" .. maijia.bossnum][k .. maijia.i] =
-                                raid[num] and raid[num][k] or self[k]
+                            if isAuctionLogFrame then
+                                BG.auctionLogFrame.changeFrame.info[k]
+                                = raid[num] and raid[num][k] or self[k]
+                            else
+                                BiaoGe[maijia.FB]["boss" .. maijia.bossnum][k .. maijia.i]
+                                = raid[num] and raid[num][k] or self[k]
+                            end
                         end
                     end
                     BG.FrameMaijiaList:Hide()
-                    if focus == 0 then
+                    if clearFocus then
                         if BG.lastfocus then
                             BG.lastfocus:ClearFocus()
                         end
@@ -1133,6 +1249,7 @@ function BG.QingKong(_type, FB)
                 BiaoGe[FB]["boss" .. b]["jine" .. i] = nil
                 BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
                 BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
+                BiaoGe[FB]["boss" .. b]["loot" .. i] = nil
                 for k, v in pairs(BG.playerClass) do
                     BiaoGe[FB]["boss" .. b][k .. i] = nil
                 end
@@ -1164,7 +1281,10 @@ function BG.QingKong(_type, FB)
         BiaoGe[FB].tradeTbl = {}
         BiaoGe[FB].lockoutIDtbl = nil
         BiaoGe[FB].raidRoster = nil
+        BiaoGe[FB].auctionLog = nil
+        BG.UpdateAuctionLogFrame()
         BG.UpdateLockoutIDText()
+        BG.auctionLogFrame.changeFrame:Hide()
 
         local num -- 分钱人数
         if BG.IsVanilla then
@@ -1247,13 +1367,14 @@ function BG.JiaoHuan(button, FB, b, i, t)
             qiankuan = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             guanzhu = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
-            tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i)
+            tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i),
+            loot = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["loot" .. i],
         }
         for k, v in pairs(BG.playerClass) do
             BG.copy1[k] = BiaoGe[FB]["boss" .. BossNum(FB, b, t)][k .. i]
         end
 
-        PlaySound(BG.sound1, "Master")
+        BG.PlaySound(1)
 
         local bt = CreateFrame("Button", nil, BG["Frame" .. FB], "UIPanelButtonTemplate")
         bt:SetSize(80, 20)
@@ -1266,7 +1387,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
                 BG.copy1 = nil
             end
             BG.copyButton:Hide()
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
         bt:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1299,7 +1420,8 @@ function BG.JiaoHuan(button, FB, b, i, t)
             qiankuan = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
             guanzhu = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
 
-            tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i)
+            tradeInfo = BG.GetGeZiTardeInfo(FB, BossNum(FB, b, t), i),
+            loot = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["loot" .. i],
         }
         for k, v in pairs(BG.playerClass) do
             BG.copy2[k] = BiaoGe[FB]["boss" .. BossNum(FB, b, t)][k .. i]
@@ -1344,7 +1466,9 @@ function BG.JiaoHuan(button, FB, b, i, t)
                 BiaoGe[FB]["boss" .. b1][k .. i1] = BG.copy2[k]
                 BiaoGe[FB]["boss" .. b2][k .. i2] = BG.copy1[k]
             end
-
+            -- 拾取记录
+            BiaoGe[FB]["boss" .. b1]["loot" .. i1], BiaoGe[FB]["boss" .. b2]["loot" .. i2] =
+                BiaoGe[FB]["boss" .. b2]["loot" .. i2], BiaoGe[FB]["boss" .. b1]["loot" .. i1]
             -- 关注
             BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1], BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2] =
                 BiaoGe[FB]["boss" .. b2]["guanzhu" .. i2], BiaoGe[FB]["boss" .. b1]["guanzhu" .. i1]
@@ -1405,7 +1529,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
                 qiankuan = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i],
                 guanzhu = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i],
             }
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
 
             local bt = CreateFrame("Button", nil, BG["Frame" .. FB], "UIPanelButtonTemplate")
             bt:SetSize(80, 20)
@@ -1418,7 +1542,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
                     BG.copy1 = nil
                 end
                 BG.copyButton:Hide()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
             bt:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1436,7 +1560,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
             f:SetPoint("BOTTOMRIGHT", BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i], "BOTTOMRIGHT", 90, -5)
         end
 
-        PlaySound(BG.sound1, "Master")
+        BG.PlaySound(1)
     end
 end
 
@@ -1481,7 +1605,7 @@ do
         local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
         f:SetBackdrop({
             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-            edgeSize = size or (flash and 3 or 2),
+            edgeSize = size or (flash and 4 or 2),
         })
         f:SetBackdropBorderColor(r, g, b, a)
         f:SetPoint("TOPLEFT")
@@ -1695,7 +1819,7 @@ end
 ------------------返回表格页面------------------
 function BG.BackBiaoGe(parent)
     local bt = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    bt:SetSize(120, 30)
+    bt:SetSize(150, 30)
     bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -30, 35)
     bt:SetText(L["返回表格"])
     bt:SetScript("OnClick", function(self)
@@ -1773,7 +1897,7 @@ function BG.Once(name, dt, func)
 end
 
 ------------------创建滚动框------------------
-function BG.CreateScrollFrame(parent, w, h)
+function BG.CreateScrollFrame(parent, w, h, edit, notUpdateScrollBar)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     f:SetBackdrop({
         bgFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -1782,7 +1906,9 @@ function BG.CreateScrollFrame(parent, w, h)
         insets = { left = 3, right = 3, top = 3, bottom = 3 }
     })
     f:SetBackdropColor(0, 0, 0, 0.8)
-    f:SetSize(w, h)
+    if w and h then
+        f:SetSize(w, h)
+    end
     f:EnableMouse(true)
     f:Show()
 
@@ -1791,12 +1917,26 @@ function BG.CreateScrollFrame(parent, w, h)
     scroll:SetHeight(f:GetHeight() - 9)
     scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
     scroll.ScrollBar.scrollStep = BG.scrollStep
-    f.scroll=scroll
+    f.scroll = scroll
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+    if not notUpdateScrollBar then
+        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+    end
 
-    local child = CreateFrame("Frame", nil, scroll) -- 子框架
-    child:SetWidth(scroll:GetWidth())
-    child:SetHeight(scroll:GetHeight())
+    local child
+    if edit then
+        child = CreateFrame("EditBox", nil, scroll)
+        child:SetWidth(scroll:GetWidth())
+        child:SetHeight(scroll:GetHeight())
+        child:SetAutoFocus(false)
+        child:EnableMouse(false)
+        child:SetMultiLine(true)
+        child:SetFontObject(GameFontNormal)
+    else
+        child = CreateFrame("Frame", nil, scroll) -- 子框架
+        child:SetWidth(scroll:GetWidth())
+        child:SetHeight(scroll:GetHeight())
+    end
     scroll:SetScrollChild(child)
 
     return f, child
@@ -1807,6 +1947,18 @@ function BG.CreateSrollBarBackdrop(bar)
     tex:SetPoint("TOPLEFT", bar.ScrollUpButton, -0, 0)
     tex:SetPoint("BOTTOMRIGHT", bar.ScrollDownButton, 0, -0)
     tex:SetColorTexture(0, 0, 0, 0.3)
+end
+
+function BG.UpdateScrollBarShowOrHide(scrollBar)
+    scrollBar:Hide()
+    scrollBar:HookScript("OnValueChanged", function(self)
+        local min, max = self:GetMinMaxValues()
+        if max == 0 then
+            self:Hide()
+        else
+            self:Show()
+        end
+    end)
 end
 
 ------------------右键通知框清除关注------------------

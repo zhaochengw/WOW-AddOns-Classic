@@ -232,9 +232,21 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
     end)
 
+    -- 记录拾取信息
+    local function AddLootLog(FB, numb, i, lootplayer, count)
+        BiaoGe[FB]["boss" .. numb]["loot" .. i] = BiaoGe[FB]["boss" .. numb]["loot" .. i] or {}
+        local lootplayer = lootplayer or UnitName("player")
+        tinsert(BiaoGe[FB]["boss" .. numb]["loot" .. i], {
+            time = time(),
+            player = lootplayer,
+            class = select(2, UnitClass(lootplayer)),
+            count = count,
+        })
+    end
+
     -- 记录物品进表格
     local biaogefull
-    local function _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID, lateTime)
+    local function _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
         local icon
         if BG.GetItemCount(itemID) ~= 0 then
             icon = AddTexture("interface/raidframe/readycheck-ready")
@@ -274,6 +286,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                             levelText, count, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
                             BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
                 end
+                AddLootLog(FB, numb, i, lootplayer, count)
                 return
             elseif zb and not zb1 then
                 if Hope then
@@ -295,18 +308,18 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
         end
     end
-    local function AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, notlater)
+    local function AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer, notlater)
         local itemID = GetItemInfoInstant(link)
         BG.Tooltip_SetItemByID(itemID)
         if notlater then
-            _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID)
+            _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
         else
             BG.After(0.1, function()
-                _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID)
+                _AddLootItem(itemID, FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
             end)
         end
     end
-    local function AddLootItem_stackCount(FB, numb, link, Texture, level, Hope, count, typeID)
+    local function AddLootItem_stackCount(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
         local yes
         local levelText = ""
         if typeID == 2 or typeID == 4 then
@@ -324,6 +337,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                             BG.FrameLootMsg:AddMessage(BG.STC_g2(format(L["自动关注心愿装备：%s。团长拍卖此装备时会提醒"],
                                 (AddTexture(Texture) .. link))))
                         end
+                        AddLootLog(FB, b, i, lootplayer, count)
 
                         count = count + (tonumber(strmatch(zb:GetText(), "|h%[.*%]|h|r[*xX%s]-(%d+)")) or 1)
                         zb:SetText(link .. "x" .. count)
@@ -340,6 +354,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                             format(L["已自动记入表格：%s%s%s x%d => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
                                 levelText, count, "|cff" .. BG.Boss[FB]["boss" .. b]["color"],
                                 BG.Boss[FB]["boss" .. b]["name2"], RR) .. icon)
+
                         return
                     end
                 end
@@ -348,10 +363,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         -- 如果表格里没这个物品，则记录到杂项里
         if not yes then
             local numb = Maxb[FB] - 1
-            AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, "notlater")
+            AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer, "notlater")
             return
         end
     end
+    ns.AddLootItem_stackCount = AddLootItem_stackCount
 
     -- 拾取事件监听
     -- local testItemID = 59521
@@ -399,8 +415,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         if BG.DeBug then
-            link = GetItemInfo(testItemID) and select(2, GetItemInfo(testItemID))
-            count = 1
+            -- link = GetItemInfo(testItemID) and select(2, GetItemInfo(testItemID))
+            -- count = 1
             -- numb = 1
         end
 
@@ -497,10 +513,10 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
             if Hope then break end
         end
-
+        
         -- 可堆叠物品记录到杂项
         if stackCount ~= 1 then
-            AddLootItem_stackCount(FB, nil, link, Texture, level, Hope, count)
+            AddLootItem_stackCount(FB, nil, link, Texture, level, Hope, count, typeID, lootplayer)
             return
         end
 
@@ -509,7 +525,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             for numb, v in pairs(BG.SpecialLoot[FB]) do
                 for _, _itemID in pairs(BG.SpecialLoot[FB][numb]) do
                     if _itemID == itemID then
-                        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                         return
                     end
                 end
@@ -521,7 +537,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if _itemID == itemID then
                 local numb = Maxb[FB] - 1
                 -- local numb = Maxb[FB] -- test
-                AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                 return
             end
         end
@@ -530,7 +546,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if BG.IsVanilla then
             if typeID == 9 or typeID == 10 or typeID == 3 then
                 local numb = Maxb[FB] - 1
-                AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                 return
             end
         end
@@ -548,7 +564,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 for index, value in ipairs(BG.Loot.TOC[H].boss6) do
                     if itemID == value then
                         local numb = 6
-                        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                         return
                     end
                 end
@@ -560,7 +576,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             for key, value in pairs(BG.Loot.ICC.H25.boss14) do
                 if itemID == value then
                     local numb = Maxb[FB] - 1
-                    AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                    AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                     return
                 end
             end
@@ -571,7 +587,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             for _, _itemID in pairs(BG.Loot.Temple.N.boss3) do
                 if itemID == _itemID then
                     local numb = 3
-                    AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+                    AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
                     return
                 end
             end
@@ -582,7 +598,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             numb = Maxb[FB] - 1 -- 第一个boss前的小怪设为杂项
         end
 
-        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID)
+        AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
     end
     ns.LootItem = LootItem
 

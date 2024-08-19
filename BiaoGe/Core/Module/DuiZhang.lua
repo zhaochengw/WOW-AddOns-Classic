@@ -51,7 +51,7 @@ local function Default(player, time)
         zhangdan = {},
         msgTbl = {},
         yes = nil,
-        sunjine = 0,
+        sumjine = 0,
         time = date("%H:%M:%S"),
         t = time,
     }
@@ -68,7 +68,7 @@ local function CheckTimeOut(time)
     end)
 end
 
-local function Send(num, sunMoney, FB)
+local function Send(num, sumMoney, FB)
     local FBtext = ""
     if FB then
         for i, v in ipairs(BG.FBtable2) do
@@ -79,7 +79,7 @@ local function Send(num, sunMoney, FB)
         end
     end
     local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGeDuiZhang:" .. num ..
-        "|h[" .. L["点击：对账"] .. "] " .. L["（"] .. "|cff00ff00" .. L["装备总收入"] .. sunMoney .. RR .. FBtext .. L["）"] .. "|h|r"
+        "|h[" .. L["点击：对账"] .. "] " .. L["（"] .. "|cff00ff00" .. L["装备总收入"] .. sumMoney .. RR .. FBtext .. L["）"] .. "|h|r"
     SendSystemMessage(link)
 end
 
@@ -215,18 +215,18 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
     end
     if yes then
         linshi_duizhang.yes = nil
-        local sunMoney = 0
+        local sumMoney = 0
         for key, value in pairs(linshi_duizhang.zhangdan) do
             local jine = tonumber(value.jine) or 0
-            sunMoney = sunMoney + jine
+            sumMoney = sumMoney + jine
         end
-        linshi_duizhang.sunjine = sunMoney
+        linshi_duizhang.sumjine = sumMoney
         local FB = linshi_duizhang.FB
         tinsert(BiaoGe.duizhang, linshi_duizhang)
         linshi_duizhang = nil
         BG.DuiZhangList()
         BG.After(0.1, function()
-            Send(#BiaoGe.duizhang, sunMoney, FB)
+            Send(#BiaoGe.duizhang, sumMoney, FB)
         end)
         return
     end
@@ -290,20 +290,10 @@ function BG.DuiZhangUI()
             for i = 1, Maxi[FB] do
                 local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
                 local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
-                local duizhangmaijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
-                local duizhangcolor = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
+                local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
-                if maijia and addons == "biaoge" then
-                    maijia:SetText("")
-                    maijia:SetTextColor(1, 1, 1)
-                    BiaoGe[FB]["boss" .. b]["maijia" .. i] = nil
-                    BiaoGe[FB]["boss" .. b]["color" .. i] = { 1, 1, 1 }
-                    for k, v in pairs(BG.playerClass) do
-                        BiaoGe[FB]["boss" .. b][k .. i] = nil
-                    end
-                end
-                if otherjine then
+                if zhuangbei then
                     myjine:SetText(otherjine:GetText())
                     jine:SetText(otherjine:GetText())
                     if otherjine:GetText() == "" then
@@ -312,15 +302,15 @@ function BG.DuiZhangUI()
                         BiaoGe[FB]["boss" .. b]["jine" .. i] = otherjine:GetText()
                     end
 
-                    if duizhangmaijia then
-                        maijia:SetText(duizhangmaijia)
+                    if addons == "biaoge" then
+                        local duizhangmaijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
+                        local duizhangcolor = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
+                        maijia:SetText(duizhangmaijia or "")
                         BiaoGe[FB]["boss" .. b]["maijia" .. i] = duizhangmaijia
                         if duizhangcolor then
                             maijia:SetTextColor(unpack(duizhangcolor))
-                            BiaoGe[FB]["boss" .. b]["color" .. i] = duizhangcolor
                         else
                             maijia:SetTextColor(1, 1, 1)
-                            BiaoGe[FB]["boss" .. b]["color" .. i] = { 1, 1, 1 }
                         end
                         for k in pairs(BG.playerClass) do
                             BiaoGe[FB]["boss" .. b][k .. i] = BG.DuiZhangFrame[FB]["boss" .. b][k .. i]
@@ -353,6 +343,7 @@ function BG.DuiZhangUI()
         scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
 
         local child = CreateFrame("EditBox", nil, f) -- 子框架
         child:SetFontObject(GameFontNormalSmall2)
@@ -363,6 +354,7 @@ function BG.DuiZhangUI()
         child:SetMultiLine(true)
         child:SetHyperlinksEnabled(true)
         child:SetTextColor(RGB("FF7F50"))
+        child.scroll=scroll
         scroll:SetScrollChild(child)
         BG.DuiZhangMainFrame.msgFrame = child
 
@@ -431,10 +423,11 @@ local function CreateZhangDanTitle(num)
         classtext = select(4, GetClassColor(zhangdan.class))
     end
     local title = zhangdan.time .. L["，"] .. "|c" .. classtext .. zhangdan.player .. RR
-        .. L["，"] .. L["装备总收入"] .. BG.STC_g1(zhangdan.sunjine) .. FBtext
+        .. L["，"] .. L["装备总收入"] .. BG.STC_g1(zhangdan.sumjine) .. FBtext
     return title
 end
 local function CreateZhangDanMsg(num)
+    BG.DuiZhangMainFrame.msgFrame.scroll.ScrollBar:Hide()
     local zhangdan = BiaoGe.duizhang[num]
     if zhangdan.msgTbl then
         local classtext = "ffFFFFFF"
@@ -452,11 +445,19 @@ local function CreateZhangDanMsg(num)
         end
     end
 end
+
 function BG.DuiZhangList()
+    for i, v in ipairs(BiaoGe.duizhang) do
+        v.sumjine = v.sunjine or v.sumjine or 0
+        v.sunjine = nil
+    end
+    --[[
+/run for i, v in ipairs(BiaoGe.duizhang) do v.sumjine = v.sunjine or v.sumjine or 0 v.sunjine = nil end
+ ]]
     LibBG:UIDropDownMenu_Initialize(BG.DuiZhangDropDown.DropDown, function(self, level)
         FrameHide(0)
         if BG["DuiZhangFrame" .. BG.FB1] and BG["DuiZhangFrame" .. BG.FB1]:IsVisible() then
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end
         for i, v in ipairs(BiaoGe.duizhang) do
             local title = CreateZhangDanTitle(i)
@@ -467,7 +468,7 @@ function BG.DuiZhangList()
                 BG.lastduizhangNum = i
                 BG.DuiZhangSet(i)
                 LibBG:UIDropDownMenu_SetText(BG.DuiZhangDropDown.DropDown, title)
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
             if BG.lastduizhangNum == i then
                 info.checked = true
@@ -482,7 +483,7 @@ function BG.DuiZhangList()
             BG.DuiZhang0()
             LibBG:UIDropDownMenu_SetText(BG.DuiZhangDropDown.DropDown, L["无"])
             BG.DuiZhangMainFrame.ButtonCopy:Disable()
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end
         if not BG.lastduizhangNum then
             info.checked = true

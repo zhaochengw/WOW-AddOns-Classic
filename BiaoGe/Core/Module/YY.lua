@@ -237,8 +237,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             for i = 1, #numOptions do
                 local bt = CreateFrame("CheckButton", nil, PingJiaGroup, "UIRadioButtonTemplate")
                 bt:SetPoint("TOPLEFT", ((i - 1) * 60), -3)
-                bt:SetSize(18, 18)
-                bt:SetHitRectInsets(0, -30, 0, 0)
+                bt:SetSize(15, 15)
                 if i == 2 then
                     bt:SetChecked(true)
                     BG.YYMainFrame.new.pingjia = i
@@ -251,6 +250,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name)
                 bt.Text:SetTextColor(RGB(numOptions[i].color))
+                bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
 
                 bt:SetScript("OnClick", function(self)
                     for _, radioButton in ipairs(BG.YYMainFrame.new.pingjiaButtons) do
@@ -264,7 +264,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     self:SetChecked(true)
                     BG.YYMainFrame.new.pingjia = i
 
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
             end
             n = n + 1
@@ -300,6 +300,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("CENTER")
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(edit)
             BG.YYMainFrame.new.scroll = scroll
 
@@ -378,7 +379,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 Y.SetAll()
                 Y.EscXiuGai()
 
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
 
             local bt = CreateFrame("Button", nil, BG.YYMainFrame.new, "UIPanelButtonTemplate")
@@ -404,7 +405,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             BG.YYMainFrame.new.buttonesc = bt
             bt:SetScript("OnClick", function(self)
                 Y.EscXiuGai()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
             bt:SetScript("OnShow", function(self)
                 BG.YYMainFrame.new.buttonrepeat:Hide()
@@ -424,7 +425,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             bt:SetScript("OnClick", function(self)
                 Y.XiuGai(self, "new")
                 bt:Hide()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
         end
     end
@@ -512,6 +513,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.my, -27, 5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
         scroll:SetScrollChild(f)
 
         function Y.Pingjia(text)
@@ -631,7 +633,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     Y.XiuGai(self)
                 end
             end
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end
         function Y.SetAll()
             -- 先隐藏之前的列表内容
@@ -905,7 +907,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         self:Hide()
                     end
                 end)
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
 
             local bt = CreateFrame("Button", nil, BG.YYMainFrame.search, "UIPanelButtonTemplate")
@@ -973,7 +975,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         Y.DefaultResult()
                         LibBG:UIDropDownMenu_SetText(BG.YYMainFrame.DropDown, L["无"])
                         BG.ClearFocus()
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end
                     LibBG:UIDropDownMenu_AddButton(info)
 
@@ -984,7 +986,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                             Y.SetResult(i)
                             LibBG:UIDropDownMenu_SetText(BG.YYMainFrame.DropDown, Y.DropDownColor(v, "yy"))
                             BG.ClearFocus()
-                            PlaySound(BG.sound1, "Master")
+                            BG.PlaySound(1)
                         end
                         LibBG:UIDropDownMenu_AddButton(info)
                     end
@@ -1042,8 +1044,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             for i = 1, #numOptions do
                 local bt = CreateFrame("CheckButton", nil, PingJiaGroup, "UIRadioButtonTemplate")
                 bt:SetPoint("LEFT", ((i - 1) * 120), 2)
-                bt:SetSize(18, 18)
-                bt:SetHitRectInsets(0, -60, 0, 0)
+                bt:SetSize(15, 15)
                 if i == BiaoGe.YYdb.historyFilter + 1 then
                     bt:SetChecked(true)
                 end
@@ -1055,6 +1056,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name .. L[" (0个)"])
                 bt.Text:SetTextColor(RGB(numOptions[i].color))
+                bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
 
                 bt:SetScript("OnClick", function(self)
                     for _, radioButton in ipairs(BG.YYMainFrame.resultPingjia.pingjiaButtons) do
@@ -1067,7 +1069,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     if LibBG:UIDropDownMenu_GetText(BG.YYMainFrame.DropDown) ~= L["无"] then
                         Y.SetResult(BG.YYMainFrame.historyNum)
                     end
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
             end
         end
@@ -1129,6 +1131,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.result, -27, 5)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(f)
 
             local function OnEnter(self)
@@ -1296,9 +1299,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     return false, link, player, l, cs, t, flag, channelId, ...
                 end
             end
-
-            msg = msg:gsub(Y.yykey, CreateLinkForGsub)
-            msg = msg:gsub(Y.yykey2, CreateLinkForGsub)
+            msg = msg:gsub(Y.yykey, CreateLinkForGsub):gsub(Y.yykey2, CreateLinkForGsub)
             return false, msg, player, l, cs, t, flag, channelId, ...
         end
 
@@ -1453,17 +1454,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         local function OnHyperlinkLeave(self, link)
             GameTooltip:Hide()
         end
-        -- local f = CreateFrame("Frame")
-        -- f:RegisterEvent("PLAYER_ENTERING_WORLD")
-        -- f:SetScript("OnEvent", function(self, even, isLogin, isReload)
-        --     if not (isLogin or isReload) then return end
         local i = 1
         while _G["ChatFrame" .. i] do
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkEnter", OnHyperlinkEnter)
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", OnHyperlinkLeave)
             i = i + 1
         end
-        -- end)
     end
 
     ------------------记录团长发过的YY号------------------
@@ -1725,8 +1721,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 BG.EndPJ.new.yy:SetText(GetLeaderYY())
 
                 BG.ClearFocus()
-                PlaySoundFile(BG.sound2, "Master")
-                BG.After(1.5, function()
+                BG.PlaySound(2)
+                BG.After(2.5, function()
                     PlaySoundFile(BG["sound_pingjia" .. BiaoGe.options.Sound], "Master")
                 end)
             end)
@@ -1775,7 +1771,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 for i, _ in ipairs(text_table) do
                     local f = CreateFrame("Frame", nil, BG.EndPJ.new)
                     f:SetPoint("TOPLEFT", 5, height_start - height * (i - 1))
-                    f:SetSize(90, 20)
+                    f:SetSize(80, 20)
                     f.Text = f:CreateFontString()
                     f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                     f.Text:SetAllPoints()
@@ -1789,8 +1785,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             -- YY号
             do
                 local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "InputBoxTemplate")
-                edit:SetSize(150, 20)
-                edit:SetPoint("TOPLEFT", 110, height_start - height * n)
+                edit:SetSize(190, 20)
+                edit:SetPoint("TOPLEFT", 100, height_start - height * n)
                 edit:SetAutoFocus(false)
                 edit:SetNumeric(true)
                 edit:SetTextColor(RGB("FFFF00"))
@@ -1842,7 +1838,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             -- 评价
             do
                 local PingJiaGroup = CreateFrame("Frame", nil, BG.EndPJ.new)
-                PingJiaGroup:SetPoint("TOPLEFT", 110, height_start - height * n)
+                PingJiaGroup:SetPoint("TOPLEFT", 100, height_start - height * n)
                 PingJiaGroup:SetSize(1, 1)
                 local numOptions = {
                     { name = L["好评"], color = "00FF00" },
@@ -1853,8 +1849,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 for i = 1, #numOptions do
                     local bt = CreateFrame("CheckButton", nil, PingJiaGroup, "UIRadioButtonTemplate")
                     bt:SetPoint("TOPLEFT", -5 + ((i - 1) * 60), -3)
-                    bt:SetSize(20, 20)
-                    bt:SetHitRectInsets(0, -30, 0, 0)
+                    bt:SetSize(15, 15)
                     if i == 2 then
                         bt:SetChecked(true)
                         BG.EndPJ.new.pingjia = i
@@ -1866,6 +1861,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                     bt.Text:SetText(numOptions[i].name)
                     bt.Text:SetTextColor(RGB(numOptions[i].color))
+                    bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
 
                     bt:SetScript("OnClick", function(self)
                         for _, radioButton in ipairs(BG.EndPJ.new.pingjiaButtons) do
@@ -1879,7 +1875,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         self:SetChecked(true)
                         BG.EndPJ.new.pingjia = i
 
-                        PlaySound(BG.sound1, "Master")
+                        BG.PlaySound(1)
                     end)
                 end
                 n = n + 1
@@ -1896,8 +1892,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 })
                 f:SetBackdropColor(0, 0, 0, 0.2)
                 f:SetBackdropBorderColor(1, 1, 1, 0.6)
-                f:SetSize(156, height * 2)
-                f:SetPoint("TOPLEFT", 107, height_start - height * n - 2)
+                f:SetSize(200, height * 2)
+                f:SetPoint("TOPLEFT", 95, height_start - height * n - 2)
                 local edit = CreateFrame("EditBox", nil, f)
                 edit:SetWidth(f:GetWidth())
                 edit:SetAutoFocus(false)
@@ -1915,6 +1911,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 scroll:SetPoint("CENTER")
                 scroll.ScrollBar.scrollStep = BG.scrollStep
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
                 scroll:SetScrollChild(edit)
                 n = n + 2
 
@@ -1997,12 +1994,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     SendSystemMessage(BG.BG .. format(L["|cff%s感谢你的评价：YY%s，>>%s<<%s。|r"],
                         Y.PingjiaColor(a.pingjia), a.yy, Y.Pingjia(a.pingjia), liyou))
 
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end
 
                 local bt = CreateFrame("Button", nil, BG.EndPJ.new, "UIPanelButtonTemplate")
-                bt:SetSize(80, 25)
-                bt:SetPoint("TOPRIGHT", BG.EndPJ.new, "TOP", -30, height_start - 10 - height * n)
+                bt:SetSize(115, 25)
+                bt:SetPoint("TOPRIGHT", BG.EndPJ.new, "TOP", -5, height_start - 10 - height * n)
                 bt:SetText(L["保存"])
                 BG.EndPJ.new.buttonsave = bt
                 bt:SetScript("OnClick", OnClick)
@@ -2027,13 +2024,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             -- 取消
             do
                 local bt = CreateFrame("Button", nil, BG.EndPJ.new, "UIPanelButtonTemplate")
-                bt:SetSize(80, 25)
-                bt:SetPoint("TOPLEFT", BG.EndPJ.new, "TOP", 30, height_start - 10 - height * n)
+                bt:SetSize(115, 25)
+                bt:SetPoint("TOPLEFT", BG.EndPJ.new, "TOP", 15, height_start - 10 - height * n)
                 bt:SetText(L["退出"])
                 BG.EndPJ.new.escsave = bt
                 bt:SetScript("OnClick", function()
                     BG.EndPJ.new:Hide()
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
             end
             -- 底下文字

@@ -98,6 +98,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 scroll:SetPoint("TOPLEFT", 0, -12 - BUTTONHEIGHT)
                 scroll.ScrollBar.scrollStep = 5
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                -- BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
 
                 child = CreateFrame("Frame", nil, f) -- 子框架
                 child:SetWidth(scroll:GetWidth())
@@ -1025,7 +1026,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     reportcounttext = format(L["（曾举报%s次）"], reportcount)
                 end
 
-                pt(BG.STC_y1(format(L["已举报<%s>为%s。"], color .. rp.targetName .. RR, _type) .. reportcounttext))
+                print(BG.STC_y1(format(L["已举报<%s>为%s。"], color .. rp.targetName .. RR, _type) .. reportcounttext))
                 HideUIPanel(ReportFrame)
             end)
             ReportFrame:HookScript("OnHide", function(self)
@@ -1177,7 +1178,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                         local color = "|c" .. select(4, GetClassColor(class))
 
-                        pt(BG.STC_y1(format(L["已删除<%s>的举报记录。"], color .. fullname .. RR)))
+                        BG.SendSystemMessage(format(L["已删除<%s>的举报记录。"], color .. fullname .. RR))
                     end
                     UIDropDownMenu_AddButton(info)
                     UpdateAddReportButtons(mybuttontext, { REPORT_PLAYER, REPORT_FRIEND, IGNORE })
@@ -1210,6 +1211,29 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             return
                         end
                     end
+
+                    -- 显示已举报过几次
+                    local havedReport
+                    for i, v in ipairs(db) do
+                        if name == v.name and realm == v.realm then
+                            local bt = _G.DropDownList1Button1
+                            bt:SetText(bt:GetText() .. BG.STC_r1(format(L["(已举报%s次)"], v.count)))
+                            havedReport = true
+                            break
+                        end
+                    end
+
+                    local type
+                    if which ~= "SELF" and which ~= "FRIEND" and unit and UnitIsPlayer(unit) then           -- 头像右键菜单
+                        type = 1
+                    elseif which == "FRIEND" and not UnitIsUnit('player', Ambiguate(fullname, 'none')) then -- 聊天框玩家右键菜单
+                        type = 2
+                    end
+
+                    if havedReport and type then -- 聊天框玩家右键菜单
+                        AddDeleteButton(fullname, playerLocation)
+                    end
+
                     -- 如果目标是自己队友或好友，则不添加一键举报按钮
                     if name then
                         local tbl = {}
@@ -1234,21 +1258,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     end
 
-                    -- 显示已举报过几次
-                    local havedReport
-                    for i, v in ipairs(db) do
-                        if name == v.name and realm == v.realm then
-                            local bt = _G.DropDownList1Button1
-                            bt:SetText(bt:GetText() .. BG.STC_r1(format(L["(已举报%s次)"], v.count)))
-                            havedReport = true
-                            break
-                        end
-                    end
 
-                    if which ~= "SELF" and which ~= "FRIEND" and unit and UnitIsPlayer(unit) then -- 头像右键菜单
-                        if havedReport then
-                            AddDeleteButton(fullname, playerLocation)
-                        end
+                    if type == 1 then -- 头像右键菜单
                         AddReportButton("jiaoben", fullname, playerLocation)
                         local _, type = IsInInstance()
                         if type == "pvp" then
@@ -1256,10 +1267,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         else
                             AddReportButton("RMT", fullname, playerLocation)
                         end
-                    elseif which == "FRIEND" and not UnitIsUnit('player', Ambiguate(fullname, 'none')) then -- 聊天框玩家右键菜单
-                        if havedReport then
-                            AddDeleteButton(fullname, playerLocation)
-                        end
+                    elseif type == 2 then -- 聊天框玩家右键菜单
                         AddReportButton("jiaoben", fullname, playerLocation)
                         AddReportButton("RMT", fullname, playerLocation)
                     end

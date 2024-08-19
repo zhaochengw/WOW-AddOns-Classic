@@ -74,7 +74,7 @@ do
             AddDB("Gno", mainFrameWidth, 835, 3, 8, { 0, 5, 8 })
             AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
             AddDB("UBRS", mainFrameWidth, 835, 3, 10, { 0, 5, 9 })
-            AddDB("MCsod", 1715, 900, 4, 16, { 0, 7, 12, 15 })
+            AddDB("MCsod", 1715, 940, 4, 16, { 0, 6, 11, 14 })
         elseif BG.IsVanilla_60 then
             AddDB("MC", mainFrameWidth, 873, 3, 13, { 0, 8, 12 })
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
@@ -574,7 +574,9 @@ do
     do
         BG.sound1 = SOUNDKIT.GS_TITLE_OPTION_OK -- 按键音效
         BG.sound2 = 569593                      -- 升级音效
-        BG.sound3 = SOUNDKIT.UI_TRANSMOG_APPLY  -- 确认框弹出音效
+        -- BG.sound3 = SOUNDKIT.UI_TRANSMOG_APPLY  -- 确认框弹出音效（无效）
+        BG.sound3 = SOUNDKIT.IG_MAINMENU_CLOSE  -- 菜单打开音效
+
 
         local Interface = "Interface\\AddOns\\BiaoGe\\Media\\sound\\"
         local tbl = {

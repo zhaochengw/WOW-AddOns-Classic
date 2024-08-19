@@ -61,7 +61,7 @@ end
 local miniButton = LibStub("LibDataBroker-1.1"):NewDataObject("GetInfoLinkButton", {
     type = "data source",
     text = "Get Info Link",
-    icon = "Interface\\Icons\\Inv_scroll_01",
+    icon = "Interface/AddOns/GetInfoLink/Icon/getinfolink",
     OnClick = function(self, btn)
         if GetInfoFrame:IsVisible() then
             GetInfoFrame:Hide();

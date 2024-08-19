@@ -960,29 +960,14 @@ local function GetItemLibTable(num, EquipLocs)
     BG.itemLibItemTbl = newtbl
     return newtbl
 end
-local function ShowHideScrollBar(num)
-    if num == 1 then
-        _G["BG.ItemLibMainFrameScrollBarScrollDownButton"]:Show()
-        _G["BG.ItemLibMainFrameScrollBarScrollUpButton"]:Show()
-        _G["BG.ItemLibMainFrameScrollBar"]:Show()
-    else
-        _G["BG.ItemLibMainFrameScrollBarScrollDownButton"]:Hide()
-        _G["BG.ItemLibMainFrameScrollBarScrollUpButton"]:Hide()
-        _G["BG.ItemLibMainFrameScrollBar"]:Hide()
-    end
-end
 local function SetItemLib(num, itemtbale)
     -- 先隐藏之前的列表内容
-    ShowHideScrollBar(0)
+    BG.ItemLibMainFrame.scroll.ScrollBar:Hide()
     local count = BG.ItemLibMainFrame[num].buttoncount
     if count then
         for i = 1, count do
             BG.ItemLibMainFrame[num]["button" .. i]:Hide()
         end
-    end
-
-    if #itemtbale > MAXBUTTONS then
-        ShowHideScrollBar(1)
     end
 
     for ii, vv in ipairs(itemtbale) do
@@ -1680,6 +1665,8 @@ function BG.ItemLibUI()
         scroll:SetPoint("BOTTOMRIGHT", -30, 5)
         scroll.ScrollBar.scrollStep = BUTTONHEIGHT * 4
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.ItemLibMainFrame.scroll = scroll
 
         local frame = CreateFrame("Frame", nil, scroll)
         frame:SetSize(1, 1)

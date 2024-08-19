@@ -27,7 +27,7 @@ function plugin:OnClick(button) --function plugin.OnClick(self, button)
             InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
             BG.MainFrame:Hide()
         end
-        PlaySound(BG.sound1, "Master")
+        BG.PlaySound(1)
     end
 end
 

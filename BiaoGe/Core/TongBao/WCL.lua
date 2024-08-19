@@ -259,7 +259,7 @@ function BG.WCLUI(lastbt)
         FrameHide(0)
         if not IsInRaid(1) then
             SendSystemMessage(L["不在团队，无法通报"])
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         else
             self:SetEnabled(false) -- 点击后按钮变灰2秒
             C_Timer.After(2, function()
@@ -285,7 +285,7 @@ function BG.WCLUI(lastbt)
             end
             text = updatetime
             SendChatMessage(text, "RAID")
-            PlaySoundFile(BG.sound2, "Master")
+            BG.PlaySound(2)
         end
     end)
 

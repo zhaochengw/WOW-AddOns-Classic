@@ -167,18 +167,14 @@ local function ZhiChu(onClick, tbl1, tbl2)
     local b = Maxb[FB] + 1
     for i = 1, Maxi[FB] do
         local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
-        local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
         local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
         if zhuangbei then
             if tonumber(jine:GetText()) and tonumber(jine:GetText()) ~= 0 then
                 local text
                 if onClick then
-                    text = zhuangbei:GetText() .. " " .. (maijia:GetText()) .. " " ..
-                        jine:GetText()
+                    text = zhuangbei:GetText() .. " " .. jine:GetText()
                 else
-                    text = num .. ". " .. "|cff00FF00" .. zhuangbei:GetText() .. " " ..
-                        RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " ..
-                        jine:GetText() .. "|r"
+                    text = num .. ". " .. "|cff00FF00" .. zhuangbei:GetText() .. " " .. jine:GetText() .. "|r"
                 end
                 table.insert(tbl1, text)
                 table.insert(tbl_boss, text)
@@ -295,17 +291,14 @@ local function CreateListTable(onClick, tbl1)
         local b = Maxb[FB] + 1
         for i = 1, Maxi[FB], 1 do
             local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
-            local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
             local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
             if zhuangbei then
                 if tonumber(jine:GetText()) and tonumber(jine:GetText()) ~= 0 then
                     local text
                     if onClick then
-                        text = zhuangbei:GetText() .. " " .. (maijia:GetText()) .. " " .. jine:GetText()
+                        text = zhuangbei:GetText() .. " " .. jine:GetText()
                     else
-                        text = BG.STC_g1(zhuangbei:GetText()) .. " " ..
-                            RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " ..
-                            BG.STC_g1(jine:GetText())
+                        text = BG.STC_g1(zhuangbei:GetText()) .. " " .. BG.STC_g1(jine:GetText())
                     end
                     table.insert(tbl_boss, text)
                     num = num + 1
@@ -388,7 +381,7 @@ local function OnClick(self)
     FrameHide(0)
     if not IsInRaid(1) then
         SendSystemMessage(L["不在团队，无法通报"])
-        PlaySound(BG.sound1, "Master")
+        BG.PlaySound(1)
     else
         self:SetEnabled(false) -- 点击后按钮变灰2秒
         C_Timer.After(2, function()
@@ -431,19 +424,20 @@ local function OnClick(self)
             end)
         end
 
-        PlaySoundFile(BG.sound2, "Master")
+        BG.PlaySound(2)
     end
 end
 
 function BG.ZhangDanUI(lastbt)
     local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
-    bt:SetSize(90, 30)
+    bt:SetSize(60, 30)
+    bt.jiange = 5
     if lastbt then
-        bt:SetPoint("LEFT", lastbt, "RIGHT", 10, 0)
+        bt:SetPoint("LEFT", lastbt, "RIGHT", bt.jiange, 0)
     else
-        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -430, 35)
+        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -300, 35)
     end
-    bt:SetText(L["通报账单"])
+    bt:SetText(L["账单"])
     bt:Show()
     BG.ButtonZhangDan = bt
     tinsert(BG.TongBaoButtons, bt)
@@ -469,6 +463,12 @@ function BG.ZhangDanUI(lastbt)
             OnEnter(bt)
         end
     end)
+
+    local t = bt:CreateFontString()
+    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    t:SetPoint("RIGHT", bt, "LEFT", -5, 0)
+    t:SetTextColor(1, 0.82, 0)
+    t:SetText(L["通报："])
 
     return bt
 end

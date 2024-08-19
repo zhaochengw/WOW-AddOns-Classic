@@ -17,7 +17,7 @@ GetSpellLinkLabel:SetText(L['spell_label_text']);
 GetSpellLinkBox:SetScript("OnEnterPressed", function(self)
     local spellID = tonumber(self:GetText())
     if spellID ~= nil then
-        local spellLink = GetSpellLink(spellID)
+        local spellLink = C_Spell.GetSpellLink(spellID)
         if spellLink ~= nil and spellLink ~= '' then
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_done'] .. spellLink)
         else

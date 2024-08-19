@@ -640,7 +640,7 @@ function BG.RoleOverviewUI()
 
             -- 复制数据
             for player, value in pairs(BiaoGe.Money[realmID]) do
-                BG.m_new[player] = value
+                BG.m_new[player] = BG.Copy(value)
                 for i, v in pairs(MONEYchoice_table) do                   -- 给空key添加值0，主要是为了填补一些旧角色缺少某些新数据
                     if tonumber(v.id) and not BG.m_new[player][v.id] then -- 排除掉角色名字和金币
                         local tex
@@ -1619,7 +1619,7 @@ function BG.RoleOverviewUI()
             f:SetScript("OnMouseUp", function(self)
                 InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
                 BG.MainFrame:Hide()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
         end
 

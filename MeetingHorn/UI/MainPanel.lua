@@ -22,7 +22,7 @@ function MainPanel:Constructor()
         --[=[@classic@
         {L['Challenge'], self.Challenge}, --
         --@end-classic@]=]
-        {'挑战活动', self.Quest},
+        --{'挑战活动', self.Quest},
         {L['Options'], self.Options}, --
         {L['Help'], self.Help}, --
     })
@@ -55,7 +55,7 @@ function MainPanel:Constructor()
     ns.UI.GoodLeaderFrame:Bind(self.GoodLeader)
     ns.UI.Announcement:Bind(self.Announcement)
     ns.UI.MissionGuidance:Bind(self.MissionGuidance)
-    ns.UI.QuestPanel:Bind(self.Quest)
+    --ns.UI.QuestPanel:Bind(self.Quest) # 挑战活动临时隐藏
     self.Manage.Applicant:Hide()
 
     local FeedBack = ns.GUI:GetClass('BlockDialog'):New(self)

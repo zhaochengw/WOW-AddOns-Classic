@@ -145,7 +145,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                     else
                         edit:SetText(v)
                     end
-                    PlaySound(BG.sound1, "Master")
+                    BG.PlaySound(1)
                 end)
             end
         end
@@ -170,7 +170,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             if text ~= "" then
                 tinsert(BiaoGe.MeetingHorn[RealmId][player], edit:GetText())
                 CreateHistory()
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end
         end)
 
@@ -324,7 +324,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 BG.MeetingHorn.WhisperFrame:Show()
                 BiaoGe.MeetingHornWhisper.WhisperFrame = true
             end
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
 
         -- 背景框
@@ -358,7 +358,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         f.CloseButton:SetPoint("TOPRIGHT", 3, 3)
         f.CloseButton:HookScript("OnClick", function()
             BiaoGe.MeetingHornWhisper.WhisperFrame = nil
-            PlaySound(BG.sound1, "Master")
+            BG.PlaySound(1)
         end)
 
         -- 标题
@@ -516,7 +516,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             elseif BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose == 0 then
                 bt:SetChecked(false)
             end
-            bt.Text:SetTextColor(.5,.5,.5)
+            bt.Text:SetTextColor(.5, .5, .5)
             bt.Text:SetWidth(BG.MeetingHorn.WhisperFrame.width - 50)
             bt.Text:SetWordWrap(false)
             AchievementCheckButton = bt
@@ -526,7 +526,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 else
                     BiaoGe.MeetingHornWhisper[RealmId][player].AchievementChoose = 0
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
             bt:SetScript("OnEnter", function(self)
                 if edit:GetText() ~= "" and GetAchievementLink(edit:GetText()) then
@@ -539,12 +539,12 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
             edit:SetScript("OnTextChanged", function(self)
                 if self:GetText() ~= "" and GetAchievementLink(self:GetText()) then
-                    local text=GetAchievementLink(self:GetText())
+                    local text = GetAchievementLink(self:GetText())
                     if not select(4, GetAchievementInfo(self:GetText())) then
-                        text=text:gsub("|cff......", "|cff808080")
+                        text = text:gsub("|cff......", "|cff808080")
                     end
                     bt.Text:SetText(text)
-                    
+
                     BiaoGe.MeetingHornWhisper[RealmId][player].AchievementID = self:GetText()
                 else
                     bt.Text:SetText(L["当前没有成就"])
@@ -593,7 +593,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 else
                     BiaoGe.MeetingHornWhisper[RealmId][player].iLevelChoose = 0
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
         end
 
@@ -643,7 +643,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 else
                     BiaoGe.MeetingHornWhisper[RealmId][player].otherChoose1 = 0
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
 
             local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
@@ -708,7 +708,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 else
                     BiaoGe.MeetingHornWhisper[RealmId][player].otherChoose2 = 0
                 end
-                PlaySound(BG.sound1, "Master")
+                BG.PlaySound(1)
             end)
 
             local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
@@ -978,58 +978,60 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             end)
 
             local edit = ChatEdit_ChooseBoxForSend()
-            local dropDown = LibBG:Create_UIDropDownMenu(nil, edit)
-            edit:HookScript("OnMouseUp", function(self, button)
-                if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
-                if button == "RightButton" then
-                    local text1 = SendWhisper()
-                    if text1 ~= " " then
-                        text1 = text1:sub(2)
-                    end
-                    local text2 = SendWhisper("onlylevel")
-                    if text2 ~= " " then
-                        text2 = text2:sub(2)
-                    end
-                    local menu = {
-                        {
-                            text = L["密语模板"],
-                            notCheckable = true,
-                            tooltipTitle = L["使用密语模板"],
-                            tooltipText = text1,
-                            tooltipOnButton = true,
-                            func = function()
-                                ChatEdit_ActivateChat(edit)
-                                local text = SendWhisper()
-                                text = text:gsub("^%s", "")
-                                edit:SetCursorPosition(strlen(edit:GetText()))
-                                ChatEdit_InsertLink(text)
-                            end
-                        },
-                        {
-                            text = L["装等+职业"],
-                            notCheckable = true,
-                            tooltipTitle = L["装等+职业"],
-                            tooltipText = text2,
-                            tooltipOnButton = true,
-                            func = function()
-                                ChatEdit_ActivateChat(edit)
-                                local text = SendWhisper("onlylevel")
-                                text = text:gsub("^%s", "")
-                                edit:SetCursorPosition(strlen(edit:GetText()))
-                                ChatEdit_InsertLink(text)
-                            end
-                        },
-                        {
-                            text = CANCEL,
-                            notCheckable = true,
-                            func = function(self)
-                                LibBG:CloseDropDownMenus()
-                            end,
+            if edit then
+                local dropDown = LibBG:Create_UIDropDownMenu(nil, edit)
+                edit:HookScript("OnMouseUp", function(self, button)
+                    if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
+                    if button == "RightButton" then
+                        local text1 = SendWhisper()
+                        if text1 ~= " " then
+                            text1 = text1:sub(2)
+                        end
+                        local text2 = SendWhisper("onlylevel")
+                        if text2 ~= " " then
+                            text2 = text2:sub(2)
+                        end
+                        local menu = {
+                            {
+                                text = L["密语模板"],
+                                notCheckable = true,
+                                tooltipTitle = L["使用密语模板"],
+                                tooltipText = text1,
+                                tooltipOnButton = true,
+                                func = function()
+                                    ChatEdit_ActivateChat(edit)
+                                    local text = SendWhisper()
+                                    text = text:gsub("^%s", "")
+                                    edit:SetCursorPosition(strlen(edit:GetText()))
+                                    ChatEdit_InsertLink(text)
+                                end
+                            },
+                            {
+                                text = L["装等+职业"],
+                                notCheckable = true,
+                                tooltipTitle = L["装等+职业"],
+                                tooltipText = text2,
+                                tooltipOnButton = true,
+                                func = function()
+                                    ChatEdit_ActivateChat(edit)
+                                    local text = SendWhisper("onlylevel")
+                                    text = text:gsub("^%s", "")
+                                    edit:SetCursorPosition(strlen(edit:GetText()))
+                                    ChatEdit_InsertLink(text)
+                                end
+                            },
+                            {
+                                text = CANCEL,
+                                notCheckable = true,
+                                func = function(self)
+                                    LibBG:CloseDropDownMenus()
+                                end,
+                            }
                         }
-                    }
-                    LibBG:EasyMenu(menu, dropDown, "cursor", 0, 20, "MENU", 2)
-                end
-            end)
+                        LibBG:EasyMenu(menu, dropDown, "cursor", 0, 20, "MENU", 2)
+                    end
+                end)
+            end
         end
     end
 
@@ -1097,24 +1099,24 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             return "Interface/AddOns/MeetingHorn/Media/certification_icon_" .. currentLevel
         end
         local function AddStarRaidLeader(self, text, ...)
-            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return self.oldFunc(self, text, ...) end
+            if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return self.oldFunc_BiaoGe(self, text, ...) end
             local isChannel = text:find("|Hchannel:channel:%d+.-|h")
             local name = text:match("|Hplayer:(.-):.-|h")
-            if not (isChannel and name) then return self.oldFunc(self, text, ...) end
+            if not (isChannel and name) then return self.oldFunc_BiaoGe(self, text, ...) end
             name = strsplit("-", name)
             local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
-            if not currentLevel then return self.oldFunc(self, text, ...) end
+            if not currentLevel then return self.oldFunc_BiaoGe(self, text, ...) end
             currentLevel = currentLevel.level
             text = gsub(text, "(|Hchannel:channel:%d+|h.-|h)%s-(|Hplayer:.+|h.+|h)",
                 "%1"
                 .. "|T" .. StarTexture(currentLevel) .. ":18:18:0:0:100:100:42:60:10:90|t"
                 .. "%2")
-            return self.oldFunc(self, text, ...)
+            return self.oldFunc_BiaoGe(self, text, ...)
         end
         for i = 1, NUM_CHAT_WINDOWS do
             if i ~= 2 then
                 local chatFrame = _G["ChatFrame" .. i]
-                chatFrame.oldFunc = chatFrame.AddMessage
+                chatFrame.oldFunc_BiaoGe = chatFrame.AddMessage
                 chatFrame.AddMessage = AddStarRaidLeader
             end
         end

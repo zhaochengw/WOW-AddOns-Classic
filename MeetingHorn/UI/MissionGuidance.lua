@@ -1,5 +1,4 @@
 -- MissionGuidance.lua
--- @Author : wanggaoliang@corp.netease.com
 -- @Date   : 07/01/2024, 10:01:07 AM
 --
 ---@type ns
