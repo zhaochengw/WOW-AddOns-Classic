@@ -735,13 +735,26 @@ function DEX_aniClear(ani)
 	DEX_aniReset(ani);
 end
 
-function DEX_BuildText(damage, spell, color, colorSe)
+function DEX_BuildText(damage, spell, originalSpell, color, colorSe)
     local finalText = ""
+
+    if DEX_Get("DEX_NumberFormat") == 1 and (tonumber(damage) or string.find(damage,"%(")) then
+        if string.find(damage,"%(") then
+            local healstart,_ = string.find(damage,"%(");
+            local _,healend = string.find(damage,"%)");
+            damage = amount_format(string.sub(damage,1,healstart-2)).."("..amount_format(string.sub(damage,healstart+1,healend-1))..")"
+        else
+            damage = amount_format(damage)
+        end
+    end
+
     if DEX_Get("DEX_ShowSpellIcon") == 1 then
         local icons = ""
         local iconsize = DEX_TEXTSIZE;
-        if select(3, GetSpellInfo(spell)) ~= nil then
-            icons = "|T" .. select(3, GetSpellInfo(spell)) .. ":" .. (iconsize / 2.5) .. "|t";
+        if originalSpell ~= "" then
+            if select(3, GetSpellInfo(originalSpell)) ~= nil then
+                icons = "|T" .. select(3, GetSpellInfo(originalSpell)) .. ":" .. (iconsize / 2.5) .. "|t";
+            end
         end
         if DEX_Get("DEX_ColorMode") == 1 then
             finalText = damage .. " " .. icons .. " " .. spell
@@ -763,6 +776,18 @@ function DEX_BuildText(damage, spell, color, colorSe)
 end
 
 function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowSpell, ...)
+	if spell == nil then spell = "";end
+	if damage == nil then damage = 0;end
+
+	if DEX_ExtraAttCount > 0 then
+		if GetTime() - DEX_ExtraTimer > 0.4 then
+			DEX_ExtraAttCount = 0;
+			DEX_ExtraAttCur = 1;
+		end
+	end
+
+	local originalSpell = spell
+
     if DEX_Get("DEX_ShowNameOnCrit") == 1 and crit ~= 1 and isNumber then
         spell = "";
     end
@@ -825,6 +850,8 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
         ani.spellbak = spell
         ani.damagebak = tonumber(damage)
         ani.destbak = select(1, ...)
+		if spell ~= "" then
+			--查找有無可合併的傷害
         local anitmp;
         local t = GetTime()
         for i = 1, DEX_MAXANI do
@@ -847,6 +874,7 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
             end
         end
     end
+	end
 
     if not coerciveShowSpell then
         if DEX_Get("DEX_ShowNameOnCrit") == 1 and crit ~= 1 and isNumber then spell = ""; end
@@ -1038,7 +1066,7 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
         ani.posYbak = ani.posY
     end
 
-    ani.FObject:SetText(DEX_BuildText(damage, spell, color, colorSe))
+    ani.FObject:SetText(DEX_BuildText(damage, spell, originalSpell, color, colorSe))
 
     DEX_RefressBottom(ani);
     ani.FObject:SetTextColor(color[1], color[2], color[3]);
@@ -1186,12 +1214,12 @@ function number_format(num,deperator)
     local str1 =""  
     local str = tostring(num)  
     local strLen = string.len(str)  
-          
+
     if deperator == nil then  
         deperator = ","  
     end  
     deperator = tostring(deperator)  
-          
+
     for i=1,strLen do  
         str1 = string.char(string.byte(str,strLen+1 - i)) .. str1  
         if math.fmod(i,3) == 0 then  

@@ -86,7 +86,7 @@ function DEX_CheckButtonLink(name)
 		else
 			OptionsFrame_DisableCheckBox(getglobal("DEX_ShowNameOnCrit"));
 			OptionsFrame_DisableCheckBox(getglobal("DEX_ShowNameOnMiss"));
-			OptionsFrame_DisableCheckBox(getglobal("DEX_ShowSpellIcon"));			
+			--OptionsFrame_DisableCheckBox(getglobal("DEX_ShowSpellIcon"));			
 		end
 	end
 	if name == "DEX_ShowWithMess" then
