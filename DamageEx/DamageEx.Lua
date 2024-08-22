@@ -467,38 +467,37 @@ _SUMMON
 	spellId, spellName, spellSchool = ...
 
 	if suffixes == "DAMAGE" then
+        amount, overDamage, school, resisted, blocked, absorbed, critical, glancing, crushing = select(DEX_PREFIXES[prefixes],...);
+        dexText = tostring(amount)
+        if critical then dexCrit = 1;end
 
-		amount, overDamage, school, resisted, blocked, absorbed, critical, glancing, crushing = select(DEX_PREFIXES[prefixes],...);
-		dexText = tostring(amount)
-		if critical then dexCrit = 1;end
+        if prefixes == "SWING" then
+            dexType = DEX_DAMAGE_TYPE_HIT
+        elseif prefixes == "RANGE" then
+            dexType = DEX_DAMAGE_TYPE_HIT
+        elseif prefixes == "SPELL"then
+            dexType = DEX_DAMAGE_TYPE_SPELL
+            dexSpell = spellName
+        elseif prefixes == "SPELL_PERIODIC" then
+            dexType = DEX_DAMAGE_TYPE_PERIODIC
+            dexSpell = spellName
+        end
+        DEX_ProcBlock()
 
-		if prefixes == "SWING" then
-			dexType = DEX_DAMAGE_TYPE_HIT
-		elseif prefixes == "RANGE" then
-			dexType = DEX_DAMAGE_TYPE_HIT
-		elseif prefixes == "SPELL"then
-			dexType = DEX_DAMAGE_TYPE_SPELL
-			dexSpell = spellName
-		elseif prefixes == "SPELL_PERIODIC" then
-			dexType = DEX_DAMAGE_TYPE_PERIODIC
-			dexSpell = spellName
-		end
-		DEX_ProcBlock()
-
-	elseif suffixes == "MISSED" then
-		missType = select(DEX_PREFIXES[prefixes],...);
-		dexText = getglobal(missType)
-		if prefixes == "SWING" then
-			dexType = DEX_DAMAGE_TYPE_HIT
-		elseif prefixes == "RANGE" then
-			dexType = DEX_DAMAGE_TYPE_HIT
-		elseif prefixes == "SPELL"then
-			dexType = DEX_DAMAGE_TYPE_SPELL
-			dexSpell = spellName
-		elseif prefixes == "SPELL_PERIODIC" then
-			dexType = DEX_DAMAGE_TYPE_PERIODIC
-			dexSpell = spellName
-		end
+    elseif suffixes == "MISSED" then
+        missType = select(DEX_PREFIXES[prefixes],...);
+        dexText = getglobal(missType)
+        if prefixes == "SWING" then
+            dexType = DEX_DAMAGE_TYPE_HIT
+        elseif prefixes == "RANGE" then
+            dexType = DEX_DAMAGE_TYPE_HIT
+        elseif prefixes == "SPELL"then
+            dexType = DEX_DAMAGE_TYPE_SPELL
+            dexSpell = spellName
+        elseif prefixes == "SPELL_PERIODIC" then
+            dexType = DEX_DAMAGE_TYPE_PERIODIC
+            dexSpell = spellName
+        end
 
 	elseif suffixes == "SHIELD_MISSED" then
 		missType = select(4,...);
@@ -587,20 +586,20 @@ elseif suffixes == "HEAL" then
 	end
 
 	if dexType then
-		if ISPET then
-			if dexType == DEX_DAMAGE_TYPE_HEALTH then
-				return
-			end
+        if ISPET then
+            if dexType == DEX_DAMAGE_TYPE_HEALTH then
+                return
+            end
 
-			dexType = DEX_DAMAGE_TYPE_PET
-		end
+            dexType = DEX_DAMAGE_TYPE_PET
+        end
 
-		if ISTARGET and dexType ~= DEX_DAMAGE_TYPE_PET then
+        if ISTARGET and dexType ~= DEX_DAMAGE_TYPE_PET then
 			DEX_AddText(dexText,dexSpell,dexType,dexCrit,true,false,destGUID,destName)
-		else
+        else
 			DEX_AddText(dexText,dexSpell,dexType,dexCrit,false,false,destGUID,destName)
-		end
-	end
+        end
+    end
 end
 
 function DEX_GameUpdate(self)
@@ -751,10 +750,8 @@ function DEX_BuildText(damage, spell, originalSpell, color, colorSe)
     if DEX_Get("DEX_ShowSpellIcon") == 1 then
         local icons = ""
         local iconsize = DEX_TEXTSIZE;
-        if originalSpell ~= "" then
-            if select(3, GetSpellInfo(originalSpell)) ~= nil then
-                icons = "|T" .. select(3, GetSpellInfo(originalSpell)) .. ":" .. (iconsize / 2.5) .. "|t";
-            end
+        if select(3, GetSpellInfo(originalSpell)) ~= nil then
+            icons = "|T" .. select(3, GetSpellInfo(originalSpell)) .. ":" .. (iconsize / 2.5) .. "|t";
         end
         if DEX_Get("DEX_ColorMode") == 1 then
             finalText = damage .. " " .. icons .. " " .. spell
@@ -776,17 +773,17 @@ function DEX_BuildText(damage, spell, originalSpell, color, colorSe)
 end
 
 function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowSpell, ...)
-	if spell == nil then spell = "";end
-	if damage == nil then damage = 0;end
+    if spell == nil then spell = ""; end
+    if damage == nil then damage = 0; end
 
-	if DEX_ExtraAttCount > 0 then
-		if GetTime() - DEX_ExtraTimer > 0.4 then
-			DEX_ExtraAttCount = 0;
-			DEX_ExtraAttCur = 1;
-		end
-	end
+    if DEX_ExtraAttCount > 0 then
+        if GetTime() - DEX_ExtraTimer > 0.4 then
+            DEX_ExtraAttCount = 0;
+            DEX_ExtraAttCur = 1;
+        end
+    end
 
-	local originalSpell = spell
+    local originalSpell = spell
 
     if DEX_Get("DEX_ShowNameOnCrit") == 1 and crit ~= 1 and isNumber then
         spell = "";
@@ -822,15 +819,15 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
     elseif damagetype == DEX_DAMAGE_TYPE_HEALTH then
         if DEX_Get("DEX_ShowDamageHealth") ~= 1 then return; end
         color = DEX_Get("DEX_ColorHealth");
-    colorSe = DEX_Get("DEX_ColorHealthSe");
-    if DEX_OverHeal ~= 0 then
-        if DEX_Get("DEX_ShowOverHeal") == 1 then
-            damage = (damage - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
-        else
-            damage = damage - DEX_OverHeal;
-            if damage == 0 then return; end
+        colorSe = DEX_Get("DEX_ColorHealthSe");
+        if DEX_OverHeal ~= 0 then
+            if DEX_Get("DEX_ShowOverHeal") == 1 then
+                damage = (damage - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
+            else
+                damage = damage - DEX_OverHeal;
+                if damage == 0 then return; end
+            end
         end
-    end
     elseif damagetype == DEX_DAMAGE_TYPE_PET then
         if DEX_Get("DEX_ShowDamagePet") ~= 1 then return; end
         color = DEX_Get("DEX_ColorPet");
@@ -850,31 +847,28 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
         ani.spellbak = spell
         ani.damagebak = tonumber(damage)
         ani.destbak = select(1, ...)
-		if spell ~= "" then
-			--查找有無可合併的傷害
-        local anitmp;
-        local t = GetTime()
-        for i = 1, DEX_MAXANI do
-            anitmp = dex_AniData["aniText" .. i];
-            if anitmp.Active then
-                if t - anitmp.starttime < 0.2 then
-                    if spell == anitmp.spellbak then
-                        ani.Active = false;
-                        if DEX_Get("DEX_ShowSpellName") ~= 1 or (DEX_Get("DEX_ShowSpellName") == 1 and DEX_Get("DEX_ShowNameOnCrit") == 1 and (crit ~= 1 and anitmp.crit ~= 1)) or isAOE then spell = ""; end
-                        anitmp.damagebak = anitmp.damagebak + tonumber(damage)
-                        anitmp.FObject:SetText(DEX_BuildText(anitmp.damagebak, spell, color, colorSe))
-                        if crit == 1 and anitmp.crit == 0 then
-                            anitmp.zoom = 0.8
-                            anitmp.crit = 1
-                            anitmp.moveTyp = DEX_MOVTYP_NONE
+            local anitmp;
+            local t = GetTime()
+            for i = 1, DEX_MAXANI do
+                anitmp = dex_AniData["aniText" .. i];
+                if anitmp.Active then
+                    if t - anitmp.starttime < 0.2 then
+                        if spell == anitmp.spellbak then
+                            ani.Active = false;
+                            if DEX_Get("DEX_ShowSpellName") ~= 1 or (DEX_Get("DEX_ShowSpellName") == 1 and DEX_Get("DEX_ShowNameOnCrit") == 1 and (crit ~= 1 and anitmp.crit ~= 1)) or isAOE then spell = ""; end
+                            anitmp.damagebak = anitmp.damagebak + tonumber(damage)
+                            anitmp.FObject:SetText(DEX_BuildText(anitmp.damagebak, spell, originalSpell, color, colorSe))
+                            if crit == 1 and anitmp.crit == 0 then
+                                anitmp.zoom = 0.8
+                                anitmp.crit = 1
+                                anitmp.moveTyp = DEX_MOVTYP_NONE
+                            end
+                            return
                         end
-                        return
                     end
                 end
             end
         end
-    end
-	end
 
     if not coerciveShowSpell then
         if DEX_Get("DEX_ShowNameOnCrit") == 1 and crit ~= 1 and isNumber then spell = ""; end
