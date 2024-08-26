@@ -38,6 +38,19 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.MainFrame:SetFrameLevel(100)
         BG.MainFrame:SetMovable(true)
         BG.MainFrame:SetToplevel(true)
+        local borderTbl = {
+            "TopBorder",
+            "TopLeftCorner",
+            "TopRightCorner",
+            "BottomBorder",
+            "BotLeftCorner",
+            "BotRightCorner",
+            "LeftBorder",
+            "RightBorder",
+        }
+        for i, border in ipairs(borderTbl) do
+            BG.MainFrame[border]:SetVertexColor(GetClassRGB(nil, "player"))
+        end
         BG.MainFrame:SetScript("OnMouseUp", function(self)
             self:StopMovingOrSizing()
         end)
@@ -725,7 +738,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end ]]
     end
-
     ----------生成各副本UI----------
     do
         for k, FB in pairs(BG.FBtable) do
@@ -1262,6 +1274,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.ReportMainFrameTabNum = 6
         BG.BossMainFrameTabNum = 7
 
+        local borderTbl = {
+            "Left",
+            "Right",
+            "Middle",
+            "LeftDisabled",
+            "RightDisabled",
+            "MiddleDisabled",
+        }
+
         function BG.ClickTabButton(tabButtons, num)
             for i, v in pairs(tabButtons) do
                 if i == num then
@@ -1284,6 +1305,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local function Create_TabButton(num, text, frame, width) -- 1,L["当前表格 "],BG["Frame" .. BG.FB1],150
             local bt = CreateFrame("Button", "BiaoGeTab" .. num, BG.MainFrame, "CharacterFrameTabButtonTemplate")
+            for _, border in ipairs(borderTbl) do
+                _G["BiaoGeTab" .. num .. border]:SetVertexColor(GetClassRGB(nil, "player"))
+            end
+
             bt:SetText(text)
             _G[bt:GetName() .. "Text"]:SetTextColor(RGB(BG.g1))
             PanelTemplates_TabResize(bt, nil, width or 120)
@@ -1556,6 +1581,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------高亮团长发出的装备----------
     do
+        local notShowGuanZhuTbl = {
+            '{rt7}拍卖取消{rt7}',
+            '{rt6}拍卖成功{rt6}',
+            '{rt7}流拍{rt7}',
+            '{rt1}拍卖倒数{rt1}',
+
+            '{rt7}拍賣取消{rt7}',
+            '{rt6}拍賣成功{rt6}',
+            '{rt1}拍賣倒數{rt1}',
+        }
+
         local f = CreateFrame("Frame")
         f:RegisterEvent("CHAT_MSG_RAID_LEADER")
         f:RegisterEvent("CHAT_MSG_RAID_WARNING")
@@ -1571,6 +1607,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local itemIDs = ""
             for itemID in string.gmatch(msg, "|Hitem:(%d+):") do
                 itemIDs = itemIDs .. itemID .. " "
+            end
+            -- 不提示关注拍卖
+            local ShowGuanZhu=true
+            for i, text in ipairs(notShowGuanZhuTbl) do
+                if msg:find(text) then
+                    ShowGuanZhu = false
+                    break
+                end
             end
             -- 开始
             local name1 = "auctionHigh"
@@ -1598,7 +1642,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                             end
                                         end)
 
-                                        if BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
+                                        if ShowGuanZhu and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
                                             if not string.find(sound_yes, tostring(itemID)) then
                                                 BG.FrameLootMsg:AddMessage(BG.STC_g1(format(L["你关注的装备开始拍卖了：%s（右键取消关注）"],
                                                     AddTexture(Texture) .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText())))
@@ -2969,7 +3013,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     ----------拍卖倒数----------
     do
         local f = CreateFrame("Frame")
-        local PaiMai
+        local paiMai, needStop
 
         local function Channel(leader, assistant, looter, optionchannel)
             if leader then
@@ -3007,10 +3051,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if not leader and not looter then return end
 
             local channel = Channel(leader, assistant, looter, BiaoGe.options["countDownSendChannel"])
-            if PaiMai then
+            if paiMai then
                 local text = L["{rt7}倒数暂停{rt7}"]
                 SendChatMessage(text, channel)
-                PaiMai = nil
+                paiMai = nil
                 f:SetScript("OnUpdate", nil)
                 return
             end
@@ -3018,16 +3062,25 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local Maxtime = BiaoGe.options["countDownDuration"]
             local text = link .. L[" {rt1}拍卖倒数{rt1}"]
             SendChatMessage(text, channel)
-            PaiMai = true
+            paiMai = true
 
             local timeElapsed = 0
             local lasttime = Maxtime + 1
             f:SetScript("OnUpdate", function(self, elapsed)
+                if needStop then
+                    needStop = nil
+                    PlaySoundFile(BG["sound_countDownStop" .. BiaoGe.options.Sound], "Master")
+                    local text = L["{rt7}倒数暂停{rt7}"]
+                    SendChatMessage(text, channel)
+                    paiMai = nil
+                    f:SetScript("OnUpdate", nil)
+                    return
+                end
                 timeElapsed = timeElapsed + elapsed
                 if timeElapsed >= 1 then
                     lasttime = lasttime - format("%d", timeElapsed)
                     if lasttime <= 0 then
-                        PaiMai = nil
+                        paiMai = nil
                         f:SetScript("OnUpdate", nil)
                         return
                     end
@@ -3038,14 +3091,24 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end
 
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("CHAT_MSG_RAID_WARNING")
+        f:RegisterEvent("CHAT_MSG_RAID_LEADER")
+        f:RegisterEvent("CHAT_MSG_RAID")
+        f:SetScript("OnEvent", function(self, even, msg)
+            if not (BiaoGe.options["countDown"] == 1 and BiaoGe.options["countDownStop"] == 1) then return end
+            if not paiMai then return end
+            if msg:match("^%d-%.-%d+$") or msg:match("^%d-%.-%d+[pP]$") or msg:match("^=+$") then
+                needStop = true
+            end
+        end)
+
         hooksecurefunc("SetItemRef", function(link, text, button)
             if not BG.IsML then return end -- 如果是普通团员则退出
             local _type, name, line, chattype = strsplit(":", link)
-            if _type == "item" then
-                if button == "RightButton" then
-                    local item, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
-                    BG.StartCountDown(link)
-                end
+            if _type == "item" and button == "RightButton" then
+                local item, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
+                BG.StartCountDown(link)
             end
         end)
     end

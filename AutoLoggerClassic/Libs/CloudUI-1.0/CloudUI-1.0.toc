@@ -1,0 +1,11 @@
+## Interface: 20504
+## Title: CloudUI-1.0
+## Notes: Provides ready-made widget implementations to ease GUI development.
+## Author: cloudbells
+## Version: 1.0.0
+
+# Libraries.
+Libs/LibStub.lua
+
+# Widgets.
+CloudUI-1.0.xml

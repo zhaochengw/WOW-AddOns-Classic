@@ -1,18 +1,17 @@
 # DBM - Dungeons, Delves, & Events
 
-## [r142](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r142) (2024-08-08)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r141...r142) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r144](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r144) (2024-08-25)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r143...r144) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Pass on SoB bosses to update timers and alerts to modern M+ data  
-    pass on ALL trash mods for entirety of game to allow warnings during combat as standard in dungeons in TWW since profile has deemed it a not a worthwhile performance saving and in most cases only acted as detrimate to players if they pulled trash with boss. (translation, trash warnings are now always permited during boss fights in dungeons)  
-- Full Siege of Boralus trash update with  
-     - all missing spells I could find on resources like Quazzi's spreadsheet  
-     - As many nameplate CDs as I could possibly add for all these spells from the data available  
-     - Scoped trash/boss versions of some spells to avoid duplicate alerts  
-     - Moved some triggers to combat log  
-    TODO, SoB boss updates tomorrow, then begin work on next trash module  
-- fix lua errors in cata VP  
-- Some delve updates  
-- Update koKR (#238)  
-- Don't run rend combat timer in other zones  
-    Don't run rend combat timer in any version of wow cataclysm or above  
+- Delve Updates:  
+     - Added support for Delve end bosses: Bogpiper and Mirror Master Murkna  
+     - Added alerts and nameplate timers for this weeks rare rotation (Reno Jackson and his murloc)  
+     - Updated timers for Webbed Aegiss and Shadows of Strife to live values  
+    Dungeon Updates:  
+     - Fixed a bug where Rashanan alert for Rolling Acid had wrong spellname and option description  
+     - Fixed bad alert text for Tormented Eruption on Dawnbreaker trash. Text and voice more accurately describe ability now  
+     - Updated Forge Speaker timers yet again for 125236th time because this fight is a disaster blizzard code wise.  
+- More minor fixes  
+- Push fixes for some observed bugs in stonevault  
+    Fix bug with interrupt warning on Candle King  
+- preliminary updates for todays hotfixes, but more data is needed, since the changes so new most public logs rendered useless til more new logs appear  

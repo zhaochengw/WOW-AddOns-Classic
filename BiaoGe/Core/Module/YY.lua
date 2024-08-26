@@ -1707,14 +1707,14 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end)
             f:SetScript("OnShow", function()
                 BG.EndPJ.new.yy:SetText("")
-                BG.EndPJ.new.pingjia = 2
-                BG.EndPJ.new.pingjiaButtons[1]:SetChecked(false)
-                BG.EndPJ.new.pingjiaButtons[2]:SetChecked(true)
+                BG.EndPJ.new.pingjia = 1
+                BG.EndPJ.new.pingjiaButtons[1]:SetChecked(true)
+                BG.EndPJ.new.pingjiaButtons[2]:SetChecked(false)
                 BG.EndPJ.new.pingjiaButtons[3]:SetChecked(false)
                 BG.EndPJ.new.buttonsave:SetEnabled(true)
 
                 for _, edit in pairs(BG.EndPJ.textcolor_table) do
-                    edit:SetTextColor(RGB("FFFF00"))
+                    edit:SetTextColor(RGB("00FF00"))
                 end
 
                 -- 历遍团长YY记录

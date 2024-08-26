@@ -2,7 +2,7 @@
 	by ALA
 --]=]
 
-local __version = 240715.0;
+local __version = 240820.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -87,6 +87,7 @@ function Private.SendComm(msg, ctype, target, r1, r2, r3, r4)
 	end
 	if ctype == "RAID_WARNING" then
 		ctype = "RAID";
+		r1 = "\001";
 	end
 	local header = DELIMITER .. SELFGUID ..
 					DELIMITER .. msgid ..
@@ -124,17 +125,21 @@ function Private.OnEvent(Driver, event, ...)
 		if r1 ~= "" then
 			r1 = strbyte(r1);
 			if bitand(r1, 1) == 1 then
-				local name = _TGUIDCache[GUID];
-				local cache = _TWhisperCache[part];
-				if cache ~= nil then
-					for index = 1, Private._NumDistributors do
-						local proc = Private._CommDistributor[index].OnDelayCheckFailure;
-						if proc ~= nil then
-							pcall(proc, "WHISPER_INFORM", GUID, name, cache[2]);
+				if ctype == "WHISPER" then
+					local name = _TGUIDCache[GUID];
+					local cache = _TWhisperCache[part];
+					if cache ~= nil then
+						for index = 1, Private._NumDistributors do
+							local proc = Private._CommDistributor[index].OnDelayCheckFailure;
+							if proc ~= nil then
+								pcall(proc, "WHISPER_INFORM", GUID, name, cache[2]);
+							end
 						end
 					end
+					return;
+				elseif ctype == "RAID" then
+					ctype = "RAID_WARNING";
 				end
-				return;
 			end
 		end
 		--

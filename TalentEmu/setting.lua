@@ -124,8 +124,9 @@ MT.BuildEnv('SETTING');
 						OnTooltipShow = function(tt)
 								tt:AddLine("TalentEmu");
 								tt:AddLine(" ");
-								tt:AddLine(l10n.DBIcon_Text);
-								tt:Show();
+								for _, text in next, l10n.TooltipLines do
+									tt:AddLine(text);
+								end
 							end
 					},
 					{

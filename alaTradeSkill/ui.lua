@@ -204,7 +204,7 @@ local T_UIDefinition = {
 
 local LT_SharedMethod = {  };
 local LT_ExplorerStat = { Skill = {  }, Type = {  }, SubType = {  }, EquipLoc = {  }, };
-local LT_LinkedSkillVar = { {  }, {  }, };
+local LT_LinkedSkillVar = { {  }, {  }, cur_rank = 0, max_rank = 75, };
 
 
 function LT_SharedMethod.ButtonInfoOnEnter(self)
@@ -502,7 +502,6 @@ end
 					end
 				else
 					Frame.prev_pid = pid;
-					var.cur_rank = cur_rank;
 					set.update = nil;
 					var.update = nil;
 					Frame.update = nil;
@@ -550,8 +549,6 @@ end
 									end
 								end
 							end
-							var.update = nil;
-							Frame.update = nil;
 						end
 					end
 				end
@@ -3637,7 +3634,7 @@ local function LF_HookFrame(addon, meta)
 		HaveMaterialsCheck:SetChecked(false);
 		HaveMaterialsCheck:SetPoint("CENTER", Frame, "TOPRIGHT", -54, -14);
 		HaveMaterialsCheck:SetScript("OnClick", LT_WidgetMethod.HaveMaterialsCheck_OnClick);
-		HaveMaterialsCheck.info_lines = { l10n["haveMaterialsTip"], };
+		HaveMaterialsCheck.info_lines = { l10n["TIP_HAVE_MATERIALS_INFO"], };
 		HaveMaterialsCheck:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 		HaveMaterialsCheck:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 		Frame.HaveMaterialsCheck = HaveMaterialsCheck;

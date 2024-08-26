@@ -294,6 +294,14 @@ function timerPrototype:Start(timer, ...)
 				msg = pformat(self.text, ...)
 			end
 		end
+		if test.testRunning and self.type == "target"  then
+			-- Target timers may use the real player's name as arg
+			-- We just update the text, not the timer id because if we would change the id we would need to do this everywhere which is a mess
+			local targetArg = ...
+			if targetArg == UnitName("player") or targetArg and targetArg:match(">.-<") and stringUtils.stripServerName(targetArg) == UnitName("player") then
+				msg = pformat(self.mod:GetLocalizedTimerText(self.type, self.spellId, self.name), "PlayerName", ...)
+			end
+		end
 		msg = msg:gsub(">.-<", stringUtils.stripServerName)
 		bar:SetText(msg, self.inlineIcon)
 		-- FIXME: i would prefer to trace this directly in DBT, but since I want to rewrite DBT... meh.
@@ -435,17 +443,29 @@ function timerPrototype:SetSTKeep(keepOn, ...)
 	end
 end
 
+local function testFixupScheduleMethodName(self, ...)
+	if not test.testRunning or self.type ~= "target" then
+		return ...
+	end
+	local targetArg = ...
+	if targetArg == UnitName("player") or targetArg and targetArg:match(">.-<") and stringUtils.stripServerName(targetArg) == UnitName("player") then
+		return "PlayerName", select(2, ...)
+	else
+		return ...
+	end
+end
+
 function timerPrototype:DelayedStart(delay, ...)
 	DBMScheduler:Unschedule(self.Start, self.mod, self, ...)
 	local id = DBMScheduler:Schedule(delay or 0.5, self.Start, self.mod, self, ...)
 	test:Trace(self.mod, "SchedulerHideFromTraceIfUnscheduled", id)
-	test:Trace(self.mod, "SetScheduleMethodName", id, self, "DelayedStart", ...)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "DelayedStart", testFixupScheduleMethodName(...))
 end
 timerPrototype.DelayedShow = timerPrototype.DelayedStart
 
 function timerPrototype:Schedule(t, ...)
 	local id = DBMScheduler:Schedule(t, self.Start, self.mod, self, ...)
-	test:Trace(self.mod, "SetScheduleMethodName", id, self, "Schedule", ...)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "Schedule", testFixupScheduleMethodName(...))
 end
 
 function timerPrototype:Unschedule(...)
@@ -457,8 +477,8 @@ function timerPrototype:Stop(...)
 	if select("#", ...) == 0 then
 		for i = #self.startedTimers, 1, -1 do
 			DBM:FireEvent("DBM_TimerStop", self.startedTimers[i])
-			DBT:CancelBar(self.startedTimers[i])
 			test:Trace(self.mod, "StopTimer", self, self.startedTimers[i])
+			DBT:CancelBar(self.startedTimers[i])
 			DBM:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
 			tremove(self.startedTimers, i)
 		end
@@ -479,8 +499,8 @@ function timerPrototype:Stop(...)
 					guid = UnitGUID("boss1")
 				end
 				DBM:FireEvent("DBM_TimerStop", id, guid)
-				DBT:CancelBar(id)
 				test:Trace(self.mod, "StopTimer", self, id)
+				DBT:CancelBar(id)
 				DBM:Unschedule(playCountSound, id)--Unschedule countdown by timerId
 				tremove(self.startedTimers, i)
 			end
@@ -510,8 +530,8 @@ function timerPrototype:HardStop(guid)
 	end
 	for i = #self.startedTimers, 1, -1 do
 		DBM:FireEvent("DBM_TimerStop", self.startedTimers[i], guid)
-		DBT:CancelBar(self.startedTimers[i])
 		test:Trace(self.mod, "StopTimer", self, self.startedTimers[i])
+		DBT:CancelBar(self.startedTimers[i])
 		DBM:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
 		tremove(self.startedTimers, i)
 	end
@@ -653,9 +673,8 @@ function timerPrototype:RemoveTime(reduceAmount, ...)
 			else--New remaining less than 0
 				DBM:FireEvent("DBM_TimerStop", id)
 				removeEntry(self.startedTimers, id)
-				local canceled = DBT:CancelBar(id)
 				test:Trace(self.mod, "StopTimer", self, id)
-				return canceled
+				return DBT:CancelBar(id)
 			end
 		end
 	end

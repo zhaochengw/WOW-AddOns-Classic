@@ -260,13 +260,18 @@ do
                 if f.player and f.player == UnitName("player") then
                     f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_IsMe))
                     f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_IsMe))
+                    f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor_IsMe))
+                    f.autoFrame:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_IsMe))
                 else
                     f:SetBackdropColor(unpack(BGA.aura_env.backdropColor))
                     f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor))
+                    f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor))
+                    f.autoFrame:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor))
                 end
                 f.hide:SetNormalFontObject(_G.BGA.FontGreen15)
                 f.cancel:SetNormalFontObject(_G.BGA.FontGreen15)
-                f.autoText:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.autoTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.logTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
 
                 local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
                 if num then
@@ -276,9 +281,12 @@ do
                         if not (f.player and f.player == UnitName("player")) then
                             f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
                             f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_filter))
+                            f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
+                            f.autoFrame:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_filter))
                             f.hide:SetNormalFontObject(_G.BGA.FontDis15)
                             f.cancel:SetNormalFontObject(_G.BGA.FontDis15)
-                            f.autoText:SetNormalFontObject(_G.BGA.FontDis15)
+                            f.autoTextButton:SetNormalFontObject(_G.BGA.FontDis15)
+                            f.logTextButton:SetNormalFontObject(_G.BGA.FontDis15)
                         end
                     end
                 end
@@ -384,7 +392,7 @@ do
         text:SetText(L["拾取记录"])
 
         local w = f:GetWidth() - 15
-        local h = f:GetHeight() - 35
+        local h = f:GetHeight() - 37
         local frame, child = BG.CreateScrollFrame(f, w, h, nil, true)
         frame:SetBackdrop({
             bgFile = "Interface/ChatFrame/ChatFrameBackground",

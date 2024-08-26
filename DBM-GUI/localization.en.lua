@@ -456,7 +456,7 @@ L.SpamBlockNoIconRestore			= "Do not save icon states and restore them on combat
 L.SpamBlockNoRangeRestore			= "Do not restore range frame to previous state when mods call 'hide'"
 
 L.Area_PullTimer					= "Pull, Break, & Custom Timer Filter Options"
-L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you (will never block BigWigs timers that are sent with no zone ID)"
+L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you"
 L.DontShowPT						= "Do not show Pull/Break Timer bar"
 L.DontShowPTText					= "Do not show announce text for Pull/Break Timer"
 L.DontPlayPTCountdown				= "Do not play Pull/Break/Custom Timer countdown audio at all"
@@ -604,3 +604,12 @@ L.FontShadow						= "Font Shadow"
 L.FontType							= "Select font"
 
 L.FontHeight	= 16 -- OPTIONAL
+
+
+
+-- Testing
+
+L.RunTest							= "Run test"
+L.StopTest							= "Stop test"
+L.TestModEntry						= "[Playground] %s"
+L.EnterTestMode						= "Playground mode"

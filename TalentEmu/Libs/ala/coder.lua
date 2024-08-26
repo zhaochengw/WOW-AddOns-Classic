@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 240714.0;
+local __version = 240730.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };

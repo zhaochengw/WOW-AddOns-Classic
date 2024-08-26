@@ -58,12 +58,15 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         BG.FrameAuctionMSGbg:EnableMouse(true)
         BG.FrameAuctionMSGbg:Hide()
 
+        local _f = CreateFrame("Frame", nil, BG.FrameAuctionMSGbg)
+        _f:SetSize(1, 1)
+        _f:SetPoint("TOPRIGHT", 0, 1)
+        BG.FrameAuctionMSGbg.tooltip = _f
+
         local f = CreateFrame("ScrollingMessageFrame", nil, BG.FrameAuctionMSGbg)
         f:SetSpacing(1)       -- 行间隔
         f:SetFading(false)
         f:SetJustifyH("LEFT") -- 对齐格式
-        -- f:SetSize(BG.FrameAuctionMSGbg:GetWidth() - 15, BG.FrameAuctionMSGbg:GetHeight() - 15) -- 大小
-        -- f:SetPoint("CENTER", BG.FrameAuctionMSGbg)                                             --设置显示位置
         f:SetPoint("TOPLEFT", 7, -7)
         f:SetPoint("BOTTOMRIGHT", -7, 7)
         f:SetMaxLines(maxLine)
@@ -72,7 +75,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         f:SetHyperlinksEnabled(true)
         BG.FrameAuctionMSG = f
         f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
-            GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, 0)
+            GameTooltip:SetOwner(BG.FrameAuctionMSGbg.tooltip, "ANCHOR_BOTTOMRIGHT", 0, 0)
             GameTooltip:ClearLines()
             local itemID = GetItemInfoInstant(link)
             if itemID then

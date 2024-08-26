@@ -29,11 +29,25 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
+    update = update .. c1 .. [[-拍卖WA更新为v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度]] .. "|r\n"
+    update = update .. [[-正在自动倒数时，如果有人出价，则会自动暂停倒数（你也可在设置里关闭该功能）]] .. "|r\n"
+    update = update .. [[-装备过期列表：现在可以通过Shift+点击来发送装备了]] .. "|r\n"
+    update = update .. [[-现在拍卖成功、流拍、取消拍卖、拍卖倒数时，不再触发关注装备的文字和语音提醒]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "8月19日更新v1.11.4" .. "|r\n"
     update = update .. c1 .. [[-拍卖WA更新为v1.7：增加自动出价功能]] .. "|r\n"
     update = update .. [[-增加功能：拾取记录（显示在装备下拉列表左边）]] .. "|r\n"
     update = update .. [[-增加功能：撤销删除（当你右键删除一个格子时会显示这个撤销删除按钮）]] .. "|r\n"
     update = update .. [[-自动拍卖记录：现在右键一个记录可以打开菜单，用于修改或删除记录]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "8月14日更新v1.11.3" .. "|r\n"
     update = update .. [[-表格：删除支出、总览、工资的买家格子]] .. "|r\n"
@@ -45,15 +59,7 @@ do --简体说明书
     update = update .. [[-自动拍卖：正在拍卖的装备现在会显示是否为你的关注和心愿，且装备过滤功能也会对其生效]] .. "|r\n"
     update = update .. [[-拍卖WA更新为v1.6：增加显示正在拍卖的装备类型]] .. "|r\n"
     update = update .. [[-<赛季服>MC表格每个BOSS的格子都有所增加]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
+    
     update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
     update = update .. c1 .. [[-增加功能：交易清除欠款（交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款）]] .. "|r\n"
     update = update .. [[-通报欠款：现在会显示总欠款]] .. "|r\n"
@@ -64,22 +70,6 @@ do --简体更新内容
     update = update .. [[-复制对方账单：如果对方是BiaoGe插件的账单，则也会复制其买家到自己的表格里]] .. "|r\n"
     update = update .. [[-修复了多个可堆叠物品被同时一键分配时，在某些情况可能会出现数量记录错误的问题]] .. "|r\n"
     update = update .. [[-<WLK>密语模板：增加奥杜尔成就ID列表]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
-    update = update .. [[-<WLK>奥杜尔表格的杂项格子增加至9个]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月25日更新v1.10.8" .. "|r\n"
-    update = update .. [[-<WLK>显示星团长标记：修复了鼠标提示工具中，跟其他插件的兼容性问题]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月24日更新v1.10.7" .. "|r\n"
-    update = update .. [[-<WLK>上传账单：改为一键上传]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月24日更新v1.10.6" .. "|r\n"
-    update = update .. [[-语音包：重录AI语音包，现在音量比之前大一倍]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>新增功能：上传账单到新手盒子]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>集结号：增加功能[在聊天频道/鼠标提示工具/目标右键菜单中，显示星团长标记] ]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>AtlasLoot：增加功能[更好的选择]（比如点击专业制造-铭文时，会自动显示你对应的铭文，而不是默认显示第一项）]] .. "|r\n"
-    update = update .. [[-<WLK>装备库：增加PVP圣物]] .. "|r\n\n"
 
     ns.updateText = update
 end
@@ -94,6 +84,17 @@ ns.L = L
 
 local L = {}
 do
+    L["拍卖自动倒数"] = true
+    L["倒数自动暂停"] = true
+    L["正在自动倒数时，如果有人出价（在团队频道打出纯数字时），则自动暂停倒数。"] = true
+    L["删除该账单"] = true
+    L["正在接收拍卖WA"] = true
+    L["接收完毕，但未导入"] = true
+    L["%s正在接收拍卖WA。"] = true
+    L["%s已成功导入拍卖WA。"] = true
+    L["v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度"] = true
+
+
     L["当前难度："] = true
     L["账单"] = true
     L["用时"] = true

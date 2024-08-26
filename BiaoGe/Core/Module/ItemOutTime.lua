@@ -162,29 +162,29 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             end
         end
-        --[[                         -- test
-        BG.itemGuoQiFrame.tbl = {
-            { time = 120, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool ClothCloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 90, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            -- { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            -- { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            -- { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
-            -- { time = 28, link = "|cffffffff|Hitem:2592::::::::::::::::::|h[Wool Cloth]|h|r", itemID = 2592, b = 0, i = 1 },
+        -- test
+--[[         BG.itemGuoQiFrame.tbl = {
+            { time = 120, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 90, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
         } ]]
         sort(BG.itemGuoQiFrame.tbl, function(a, b)
             return a.time < b.time
@@ -220,17 +220,31 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f.b = b
             f.i = i
             tinsert(BG.itemGuoQiFrame.buttons, f)
+
+            local tex = f:CreateTexture()
+            tex:SetAllPoints()
+            tex:SetColorTexture(.5,.5,.5,.5)
+            tex:Hide()
+
+            f:SetScript("OnMouseDown", function(self, button)
+                if IsShiftKeyDown() then
+                    BG.PlaySound(1)
+                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                    ChatEdit_InsertLink(link)
+                end
+            end)
             f:SetScript("OnEnter", function(self)
+                tex:Show()
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:SetBagItem(b, i)
-
                 BG.Hide_AllHighlight()
                 BG.HighlightBiaoGe(link)
                 BG.HighlightBag(link)
                 BG.HighlightChatFrame(link)
             end)
             f:SetScript("OnLeave", function()
+                tex:Hide()
                 GameTooltip:Hide()
                 BG.Hide_AllHighlight()
             end)

@@ -95,8 +95,8 @@ function BG.HistoryZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         end
     end
     bt:SetAutoFocus(false)
-    bt:Show()
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     local icon = bt:CreateTexture(nil, 'ARTWORK')
     icon:SetPoint('LEFT', -22, 0)
     icon:SetSize(16, 16)
@@ -188,8 +188,8 @@ function BG.HistoryMaiJiaUI(FB, t, b, bb, i, ii)
     bt:SetFrameLevel(110)
     bt:SetMaxBytes(19) --限制字数
     bt:SetAutoFocus(false)
-    bt:Show()
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     if BossNum(FB, b, t) <= Maxb[FB] then
         preWidget = bt
     else
@@ -213,10 +213,9 @@ function BG.HistoryJinEUI(FB, t, b, bb, i, ii)
     bt:SetSize(80, 20)
     bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
     bt:SetFrameLevel(110)
-    -- bt:SetNumeric(true)
     bt:SetAutoFocus(false)
-    bt:Show()
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     bt.FB = FB
     bt.bossnum = BossNum(FB, b, t)
     bt.t = t

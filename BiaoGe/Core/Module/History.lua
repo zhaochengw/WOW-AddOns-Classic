@@ -255,9 +255,9 @@ function BG.HistoryUI()
             FrameHide(2)
 
             local text = ""
-            local playername, servername = UnitFullName("player")
-            playername = playername .. "-" .. servername
-            text = "[BiaoGe:" .. playername .. "-"
+            local playerFullName, server = UnitFullName("player")
+            playerFullName = playerFullName .. "-" .. server
+            text = "[BiaoGe:" .. playerFullName .. "-"
             if not BG.History.EscButton:IsVisible() then
                 text = text .. L["当前表格-"] .. BG.FB1 .. "]" -- [BiaoGe:风行-阿拉希盆地-当前表格-ULD]
             else

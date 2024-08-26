@@ -90,7 +90,11 @@ l10n.InsepctKey_ALT = "按住ALT鍵顯示觀察按鈕";
 l10n.InsepctKey_CTRLK = "按住CTRL鍵顯示觀察按鈕";
 l10n.InsepctKey_SHIFT = "按住SHIFT鍵顯示觀察按鈕";
 
-l10n.DBIcon_Text = "|cff00ff00左鍵|r新建模擬器\n|cff00ff00右鍵|r打開成員檢查";
+-- l10n.DBIcon_Text = "|cff00ff00左鍵|r新建模擬器\n|cff00ff00右鍵|r打開成員檢查";
+l10n.TooltipLines = {
+	"|cff00ff00左鍵|r新建模擬器",
+	"右鍵|r打開成員檢查",
+};
 l10n.SpellListFrameGTTSpellLevel = "技能等級: ";
 l10n.SpellListFrameGTTReqLevel = "需要等級: ";
 

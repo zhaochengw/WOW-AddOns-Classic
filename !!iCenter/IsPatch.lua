@@ -1,6 +1,7 @@
 ﻿------Backsupport-------
 do
 	C_Item.GetItemInfo	=	GetItemInfo;
+	C_Item.GetItemCount	=	GetItemCount;
 	C_Item.GetItemSpell	=	GetItemSpell;
 	C_Item.GetItemInfoInstant	=	GetItemInfoInstant;
 	C_Item.GetItemClassInfo	=	GetItemClassInfo;

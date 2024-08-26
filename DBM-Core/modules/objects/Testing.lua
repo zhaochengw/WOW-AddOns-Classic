@@ -3,6 +3,7 @@ local private = select(2, ...)
 
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
+local CL = DBM_COMMON_L
 
 ---@class DBMTest
 local test = private:GetPrototype("DBMTest")
@@ -16,9 +17,22 @@ test.testRunning = false
 local traceField = "Trace"
 test[traceField] = function() end
 
+local LoadAddOn = _G.C_AddOns.LoadAddOn or LoadAddOn ---@diagnostic disable-line:deprecated
+
+function test:Load()
+	local loaded, err = LoadAddOn("DBM-Test")
+	if not loaded then
+		DBM:AddMsg("Failed to load DBM-Test: " .. (_G["ADDON_" .. err] or CL.UNKNOWN))
+		return loaded, err
+	end
+	return true
+end
+
 function test:LoadAllTests()
 	local numTestAddOnsFound = 0
-	C_AddOns.LoadAddOn("DBM-Test")
+	if not self:Load() then
+		return nil
+	end
 	for i = 1, C_AddOns.GetNumAddOns() do
 		if C_AddOns.GetAddOnMetadata(i, "X-DBM-Test") then
 			numTestAddOnsFound = numTestAddOnsFound + 1
@@ -35,6 +49,7 @@ end
 function test:HandleCommand(testName, timeWarp)
 	timeWarp = timeWarp and tonumber(timeWarp:match("(%d+)"))
 	local numTestAddOnsFound = self:LoadAllTests()
+	if not numTestAddOnsFound then return end
 	if numTestAddOnsFound == 0 then
 		DBM:AddMsg("No test AddOns installed, install an alpha or dev version of DBM to get DBM-Test-* mods.")
 	end
@@ -71,7 +86,7 @@ function test:HandleCommand(testName, timeWarp)
 			return
 		end
 		local successes = 0
-		self:RunTests(tests, timeWarp, function(event, test, report, count, totalTests)
+		self:RunTests(tests, timeWarp, nil, function(event, test, testOptions, report, count, totalTests)
 			if event ~= "TestFinish" then return end
 			DBM:AddMsg("Test " .. test.name .. " finished, result: " .. report:GetResult())
 			if report:GetResult() == "Success" then

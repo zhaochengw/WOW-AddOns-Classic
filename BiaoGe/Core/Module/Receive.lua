@@ -59,8 +59,7 @@ function BG.ReceiveUI()
         hooksecurefunc("SetItemRef", function(link)
             local _, biaoge, text = strsplit(":", link, 3)
             if not (biaoge == "BiaoGe" and text) then return end
-            local playername, servername, type, FB, historyname = strsplit("-", text)
-            -- if playername == UnitName("player") then return end
+            local player, server, type, FB, historyname = strsplit("-", text)
             local yes
             for key, _FB in pairs(BG.FBtable) do
                 if FB == _FB then
@@ -69,41 +68,52 @@ function BG.ReceiveUI()
                 end
             end
             if not yes then return end
-            BG.ReceiveMainFrame:Hide()
-            for b = 1, Maxb[FB] + 2 do
-                for i = 1, Maxi[FB] do
-                    if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
-                        BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
-                        BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText("")
-                        BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(1, 1, 1)
-                        BG.ReceiveFrame[FB]["boss" .. b]["jine" .. i]:SetText("")
+            if IsShiftKeyDown() then
+                local text = "[" .. biaoge .. ":" .. player .. "-" .. server .. "-" .. type .. "-" .. FB
+                if historyname then
+                    text = text .. "-" .. historyname .. "]"
+                else
+                    text = text .. "]"
+                end
+                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                ChatEdit_InsertLink(text)
+            else
+                BG.ReceiveMainFrame:Hide()
+                for b = 1, Maxb[FB] + 2 do
+                    for i = 1, Maxi[FB] do
+                        if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
+                            BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
+                            BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText("")
+                            BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(1, 1, 1)
+                            BG.ReceiveFrame[FB]["boss" .. b]["jine" .. i]:SetText("")
+                        end
+                    end
+                    if BG.ReceiveFrame[FB]["boss" .. b]["time"] then
+                        BG.ReceiveFrame[FB]["boss" .. b]["time"]:SetText("")
                     end
                 end
-                if BG.ReceiveFrame[FB]["boss" .. b]["time"] then
-                    BG.ReceiveFrame[FB]["boss" .. b]["time"]:SetText("")
-                end
-            end
 
-            BG.ReceiveBiaoGe = {}
-            for b = 1, Maxb[FB] + 2 do
-                BG.ReceiveBiaoGe["boss" .. b] = {}
-                for i = 1, Maxi[FB] do
-                    if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
-                        BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] = ""
-                        BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] = ""
-                        BG.ReceiveBiaoGe["boss" .. b]["color" .. i] = { 1, 1, 1 }
-                        BG.ReceiveBiaoGe["boss" .. b]["jine" .. i] = ""
+                BG.ReceiveBiaoGe = {}
+                for b = 1, Maxb[FB] + 2 do
+                    BG.ReceiveBiaoGe["boss" .. b] = {}
+                    for i = 1, Maxi[FB] do
+                        if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
+                            BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] = ""
+                            BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] = ""
+                            BG.ReceiveBiaoGe["boss" .. b]["color" .. i] = { 1, 1, 1 }
+                            BG.ReceiveBiaoGe["boss" .. b]["jine" .. i] = ""
+                        end
                     end
                 end
-            end
 
-            playername = playername .. "-" .. servername
-            if not historyname then
-                historyname = ""
-            end
-            text = type .. "-" .. FB .. "-" .. historyname
+                player = player .. "-" .. server
+                if not historyname then
+                    historyname = ""
+                end
+                text = type .. "-" .. FB .. "-" .. historyname
 
-            C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", playername)
+                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", player)
+            end
         end)
     end
     ------------------发送表格数据------------------

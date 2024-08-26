@@ -95,12 +95,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetBackdrop({
                 bgFile = "Interface/ChatFrame/ChatFrameBackground",
                 edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                edgeSize = 2,
+                edgeSize = 1,
             })
             f:SetBackdropColor(0, 0, 0, 0.8)
             f:SetBackdropBorderColor(0, 0, 0, 1)
+            -- f:SetBackdropBorderColor(GetClassRGB(nil, "player", .8))
             f:SetSize(220, 700)
-            f:SetPoint("TOPRIGHT", BG.MainFrame, "TOPLEFT", 0, 0)
+            f:SetPoint("TOPRIGHT", BG.MainFrame, "TOPLEFT", -1, 0)
             f:EnableMouse(true)
             BG.auctionLogFrame = f
             if BiaoGe.options.showAuctionLogFrame ~= 1 then
@@ -907,6 +908,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local sumTargetMoney = 0
         local sumPlayerMoney = 0
         local lastTradeItemNum = {}
+        local tradeShowTime
 
         local function UpdateGiveMeMoneyTextColor()
             local targetMoney = GetTargetTradeMoney()
@@ -943,6 +945,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
         BG.RegisterEvent("TRADE_SHOW", function(self, ...)
+            tradeShowTime = GetTime()
             wipe(lastTradeItemNum)
             sumTargetMoney = 0
             sumPlayerMoney = 0
@@ -1085,6 +1088,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end)
         BG.RegisterEvent("TRADE_CLOSED", function(self, ...)
+            if tradeShowTime and GetTime() - tradeShowTime < 1 then return end
             local player = lastTradeItemNum.player
             if not (player and BiaoGe.AuctionLog[player]) then return end
             for i = #BiaoGe.AuctionLog[player], 1, -1 do

@@ -213,7 +213,7 @@ local function UpdateCancelDelete(self, FB, b, i, type)
     end
     BG.ButtonCancelDelete.OnUpdate = BG.OnUpdateTime(function(self, elapsed)
         self.timeElapsed = self.timeElapsed + elapsed
-        if self.timeElapsed >= 10 then
+        if self.timeElapsed >= 5 then
             self:SetScript("OnUpdate", nil)
             BG.ButtonCancelDelete:Hide()
         end

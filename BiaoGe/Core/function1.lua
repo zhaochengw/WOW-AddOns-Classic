@@ -423,7 +423,7 @@ end
 
 ------------------菜单：点文本也能打开菜单------------------
 function BG.dropDownToggle(dropDown)
-    dropDown:SetScript("OnMouseUp", function(self)
+    dropDown:SetScript("OnMouseDown", function(self)
         LibBG:ToggleDropDownMenu(nil, nil, self)
     end)
 end
@@ -437,6 +437,7 @@ end
 
 ------------------按键声音------------------
 function BG.PlaySound(id)
+    if BiaoGe.options['buttonSound'] ~= 1 then return end
     if id and BG["sound" .. id] then
         if id == 2 then
             PlaySoundFile(BG["sound" .. id])
@@ -588,4 +589,10 @@ function BG.Copy(table)
     else
         return table
     end
+end
+
+function BG.SetBorderAlpha(self)
+    self.Left:SetAlpha(BG.otherEditAlpha)
+    self.Right:SetAlpha(BG.otherEditAlpha)
+    self.Middle:SetAlpha(BG.otherEditAlpha)
 end

@@ -1,7 +1,8 @@
 ## Interface: 30403
-## Title:|cffff559a露露语音·Rurutia·团本语音|r
-## Title-zhCN:|cffff559a露露语音·Rurutia·团本语音|r
-## Title-zhTW:|cffff559a露露語音·Rurutia·團本語音|r
+## Title:|cffff559a露露语音·Rurutia|r
+## Title-zhCN:|cffff559a露露语音·Rurutia|r
+## Title-zhTW:|cffff559a露露語音·Rurutia|r
 ## DefaultState: enabled
 ## Author:露露緹婭@Bilibili
-## Notes: 露露的语音包，仅包含团本语音。此项为露露的语音WA正常工作所必须的语音文件。|n语音录制：|cffff559a露露緹婭@Bilibili|r，抖音：|cffff559a露露缇娅|r，斗鱼9593311。
+## Notes: 露露的语音包，此项为露露的语音WA正常工作所必须的语音文件。|n语音录制：|cffff559a露露緹婭@Bilibili|r，抖音：|cffff559a露露缇娅|r，斗鱼9593311。
+## IconTexture: Interface\AddOns\Rurutia\Rurutia_Logo_64R.tga

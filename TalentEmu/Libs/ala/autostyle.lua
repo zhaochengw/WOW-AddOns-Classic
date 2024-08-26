@@ -30,7 +30,7 @@ local uireimp = __ala_meta__.uireimp;
 -->		upvalue
 	local next = next;
 	local strupper = string.upper;
-	local IsAddOnLoaded = IsAddOnLoaded;
+	local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded;
 
 -->		autostyle
 	local __loggedin = IsLoggedIn();

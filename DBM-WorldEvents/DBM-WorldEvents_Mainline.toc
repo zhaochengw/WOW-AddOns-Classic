@@ -1,4 +1,4 @@
-## Interface: 100207, 110000, 110002
+## Interface: 110002
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Events|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10Eventos del mundo|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10월드 이벤트|r
@@ -23,7 +23,7 @@
 ## X-DBM-Mod-SubCategories: Holidays,Quests,DMF,Events
 ## X-DBM-Mod-SubCategories-deDE: Feiertage,Quests,DMF,Events
 ## X-DBM-Mod-SubCategories-ruRU: Праздники,Задания,Ярмарка Новолуния,События
-## X-DBM-Mod-SubCategories-koKR: 축제,퀘스트,DMF,이벤트
+## X-DBM-Mod-SubCategories-koKR: 축제,퀘스트,다크문 축제,이벤트
 ## X-DBM-Mod-SubCategories-zhTW: 節慶,任務,DMF,Events
 ## X-DBM-Mod-SubCategories-zhCN: 节日,任务,DMF,Events
 ## X-DBM-Mod-SubCategories-esES: Fiestas,Misiones,DMF,Events

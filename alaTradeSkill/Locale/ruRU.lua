@@ -182,7 +182,7 @@ l10n["ITEMS_UNK"] = "items unk";
 l10n["NEED_UPDATE"] = "|cffff0000!!Need refresh!!|r";
 --
 l10n["TIP_SEARCH_NAME_ONLY_INFO"] = "|cffffffSearch name instead of hyperlink|r";
-l10n["haveMaterialsTip"] = "Show recipes that u have enough materials";
+l10n["TIP_HAVE_MATERIALS_INFO"] = "|cffffffffShow recipes that u have enough materials|r";
 l10n["TIP_PROFIT_FRAME_CALL_INFO"] = "|cffffffffEarn some money! |r";
 --
 l10n["BOARD_LOCK"] = "LOCK";

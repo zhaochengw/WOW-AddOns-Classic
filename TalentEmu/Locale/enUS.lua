@@ -90,7 +90,11 @@ l10n.InsepctKey_ALT = "Holding alt to show the inspect button";
 l10n.InsepctKey_CTRLK = "Holding ctrl to show the inspect button";
 l10n.InsepctKey_SHIFT = "Holding shift to show the inspect button";
 
-l10n.DBIcon_Text = "|cff00ff00LeftClick|r Create an emulator\n|cff00ff00RightClick|r Explorer group member";
+-- l10n.DBIcon_Text = "|cff00ff00LeftClick|r Create an emulator\n|cff00ff00RightClick|r Explorer group member";
+l10n.TooltipLines = {
+	"|cff00ff00LeftClick|r Create an emulator",
+	"RightClick|r Explorer group member",
+};
 l10n.SpellListFrameGTTSpellLevel = "Spell level: ";
 l10n.SpellListFrameGTTReqLevel = "Level: ";
 

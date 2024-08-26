@@ -40,32 +40,37 @@ MT.BuildEnv('TOOLTIP');
 			local TalData = cache.TalData;
 			local class = cache.class;
 			if TalData ~= nil and TalData.num ~= nil and class ~= nil then
-				for group = 1, TalData.num do
-					local line = group == TalData.active and "|cff00ff00>|r" or "|cff000000>|r";
-					local stats = MT.CountTreePoints(TalData[group], class);
-					local SpecList = DT.ClassSpec[class];
-					local cap = -1;
-					if stats[1] ~= stats[2] or stats[1] ~= stats[3] then
-						cap = max(stats[1], stats[2], stats[3]);
+				if TalData.num > 0 then
+					if VT.SET.talents_in_tip_icon then
+						Tip:AddLine(" ");
 					end
-					for TreeIndex = 1, 3 do
-						local SpecID = SpecList[TreeIndex];
-						if cap == stats[TreeIndex] then
-							if VT.SET.talents_in_tip_icon then
-								line = line .. "  |T" .. (DT.TalentSpecIcon[SpecID] or CT.TEXTUREUNK) .. format(":16|t |cffff7f1f%2d|r", stats[TreeIndex]);
+					for group = 1, TalData.num do
+						local line = group == TalData.active and "|cff00ff00>|r" or "|cff000000>|r";
+						local stats = MT.CountTreePoints(TalData[group], class);
+						local SpecList = DT.ClassSpec[class];
+						local cap = -1;
+						if stats[1] ~= stats[2] or stats[1] ~= stats[3] then
+							cap = max(stats[1], stats[2], stats[3]);
+						end
+						for TreeIndex = 1, 3 do
+							local SpecID = SpecList[TreeIndex];
+							if cap == stats[TreeIndex] then
+								if VT.SET.talents_in_tip_icon then
+									line = line .. "  |T" .. (DT.TalentSpecIcon[SpecID] or CT.TEXTUREUNK) .. format(":16|t |cffff7f1f%2d|r", stats[TreeIndex]);
+								else
+									line = line .. "  |cffff7f1f" .. l10n.DATA[SpecID] .. format(":%2d|r", stats[TreeIndex]);
+								end
 							else
-								line = line .. "  |cffff7f1f" .. l10n.DATA[SpecID] .. format(":%2d|r", stats[TreeIndex]);
-							end
-						else
-							if VT.SET.talents_in_tip_icon then
-								line = line .. "  |T" .. (DT.TalentSpecIcon[SpecID] or CT.TEXTUREUNK) .. format(":16|t |cffffffff%2d|r", stats[TreeIndex]);
-							else
-								line = line .. "  |cffbfbfff" .. l10n.DATA[SpecID] .. format(":%2d|r", stats[TreeIndex]);
+								if VT.SET.talents_in_tip_icon then
+									line = line .. "  |T" .. (DT.TalentSpecIcon[SpecID] or CT.TEXTUREUNK) .. format(":16|t |cffffffff%2d|r", stats[TreeIndex]);
+								else
+									line = line .. "  |cffbfbfff" .. l10n.DATA[SpecID] .. format(":%2d|r", stats[TreeIndex]);
+								end
 							end
 						end
+						line = line .. (group == TalData.active and "  |cff00ff00<|r" or "  |cff000000<|r");
+						Tip:AddLine(line);
 					end
-					line = line .. (group == TalData.active and "  |cff00ff00<|r" or "  |cff000000<|r");
-					Tip:AddLine(line);
 				end
 				if VT.SET.supreme and cache.PakData[1] ~= nil then
 					local _, info = VT.__emulib.DecodeAddOnPackData(cache.PakData[1]);

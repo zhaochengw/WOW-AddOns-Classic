@@ -25799,7 +25799,7 @@ DataAgent.T_SkillSource = {
 		},
 		[33288] = {
 			minLvl = 83,
-			facId = 16,
+			facId = 14,
 			maxLvl = 83,
 		},
 		[33422] = {

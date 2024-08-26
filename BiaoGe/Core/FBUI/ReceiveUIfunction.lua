@@ -91,8 +91,8 @@ function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         end
     end
     bt:SetAutoFocus(false)
-    bt:Show()
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     local icon = bt:CreateTexture(nil, 'ARTWORK')
     icon:SetPoint('LEFT', -22, 0)
     icon:SetSize(16, 16)
@@ -168,8 +168,8 @@ function BG.ReceiveMaiJiaUI(FB, t, b, bb, i, ii)
     bt:SetFrameLevel(110)
     bt:SetMaxBytes(19) --限制字数
     bt:SetAutoFocus(false)
-    bt:Show()
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     if BossNum(FB, b, t) <= Maxb[FB] then
         preWidget = bt
     else
@@ -189,22 +189,21 @@ end
 
 ------------------金额------------------
 function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
-    local button = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
-    button:SetSize(80, 20)
-    button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
-    button:SetFrameLevel(110)
-    -- button:SetNumeric(true)
-    button:SetAutoFocus(false)
-    button:Show()
-    button:SetEnabled(false)
-    preWidget = button
-    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = button
+    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
+    bt:SetSize(80, 20)
+    bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
+    bt:SetFrameLevel(110)
+    bt:SetAutoFocus(false)
+    bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
+    preWidget = bt
+    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = bt
 
     -- 鼠标悬停在装备时
-    button:SetScript("OnEnter", function(self)
+    bt:SetScript("OnEnter", function(self)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
     end)
-    button:SetScript("OnLeave", function(self)
+    bt:SetScript("OnLeave", function(self)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
         GameTooltip:Hide()
     end)

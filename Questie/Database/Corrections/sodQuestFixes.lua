@@ -1885,6 +1885,12 @@ function SeasonOfDiscovery:LoadQuests()
             [questKeys.parentQuest] = 82022,
             [questKeys.objectives] = {nil,{{441848}}},
         },
+        [82043] = { -- The Wild Gods
+            [questKeys.zoneOrSort] = zoneIDs.FELWOOD,
+        },
+        [82044] = { -- The Wild Gods
+            [questKeys.zoneOrSort] = zoneIDs.FELWOOD,
+        },
         [82062] = { -- Ever After
             [questKeys.zoneOrSort] = zoneIDs.BLACKROCK_DEPTHS,
         },
@@ -2154,7 +2160,7 @@ function SeasonOfDiscovery:LoadQuests()
         [82851] = { -- Dark Iron Ordinance
             [questKeys.zoneOrSort] = zoneIDs.RATCHET,
         },
-        [82852] = { -- Shredder Turbochargers
+        [82853] = { -- Shredder Turbochargers
             [questKeys.zoneOrSort] = zoneIDs.RATCHET,
         },
         [83188] = { -- Otherworldly Treasure

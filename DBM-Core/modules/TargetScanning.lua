@@ -2,8 +2,8 @@
 local private = select(2, ...)
 
 local twipe = table.wipe
-local UnitExists, UnitPlayerOrPetInRaid, UnitGUID =
-	UnitExists, UnitPlayerOrPetInRaid, UnitGUID
+local UnitExists, UnitPlayerOrPetInRaid, UnitGUID, Ambiguate =
+	UnitExists, UnitPlayerOrPetInRaid, UnitGUID, Ambiguate
 
 ---@class TargetScanningModule: DBMModule
 local module = private:NewModule("TargetScanningModule")
@@ -49,6 +49,11 @@ do
 		"nameplate31", "nameplate32", "nameplate33", "nameplate34", "nameplate35", "nameplate36", "nameplate37", "nameplate38", "nameplate39", "nameplate40"
 	}
 
+	local function debugLogBossTarget(bossGuid, targetUid)
+		-- Used for more accurate target reconstruction in tests
+		DBM:Debug(("GetBossTarget: %s#%s"):format(tostring(bossGuid), tostring(UnitGUID(targetUid)), 3, false, true))
+	end
+
 	local function getBossTarget(guid, scanOnlyBoss)
 		local name, uid, bossuid
 		local cacheuid = bossuIdCache[guid] or "boss1"
@@ -58,8 +63,11 @@ do
 			name = DBM:GetUnitFullName(cacheuid.."target")
 			uid = cacheuid.."target"
 			bossuIdCache[guid] = bossuid
+			debugLogBossTarget(guid, uid)
 		end
-		if name then return name, uid, bossuid end
+		if name then
+			return name, uid, bossuid
+		end
 		--Else, perform iteration again
 		local unitID = DBM:GetUnitIdFromGUID(guid, scanOnlyBoss)
 		if unitID then
@@ -67,6 +75,7 @@ do
 			name = DBM:GetUnitFullName(unitID.."target")
 			uid = unitID.."target"
 			bossuIdCache[guid] = bossuid
+			debugLogBossTarget(guid, uid)
 		end
 		return name, uid, bossuid
 	end
@@ -147,6 +156,11 @@ do
 		--Cache the filtered target if using a filter target fallback
 		--so when scan ends we can return that instead of tank when scan ends
 		--(because boss might have already swapped back to aggro target by then)
+		if targetFilter then
+			--Chinese Wrath client seems to always have realm name in combat log, even if player is from same realm.
+			--This should do no harm when combat log is correct but fix it when it isn't
+			targetFilter = Ambiguate(targetFilter, "none")
+		end
 		if targetname and targetname ~= CL.UNKNOWN and filterFallback and targetFilter and targetFilter == targetname then
 			filteredTargetCache[cidOrGuid] = {}
 			filteredTargetCache[cidOrGuid].target = targetname

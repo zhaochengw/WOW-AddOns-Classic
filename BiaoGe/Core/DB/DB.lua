@@ -236,6 +236,7 @@ do
 
     BG.onEnterAlpha = 0.1
     BG.highLightAlpha = 0.2
+    BG.otherEditAlpha = 0.3
     BG.scrollStep = 80
 
     BG.ver = ns.ver
@@ -574,7 +575,6 @@ do
     do
         BG.sound1 = SOUNDKIT.GS_TITLE_OPTION_OK -- 按键音效
         BG.sound2 = 569593                      -- 升级音效
-        -- BG.sound3 = SOUNDKIT.UI_TRANSMOG_APPLY  -- 确认框弹出音效（无效）
         BG.sound3 = SOUNDKIT.IG_MAINMENU_CLOSE  -- 菜单打开音效
 
 
@@ -597,6 +597,8 @@ do
             BG["sound_guoqi" .. name] = Interface .. name .. "\\装备快过期了.mp3"
             BG["sound_uploading" .. name] = Interface .. name .. "\\账单正在上传.mp3"
             BG["sound_uploaded" .. name] = Interface .. name .. "\\账单上传成功.mp3"
+            BG["sound_countDownStop" .. name] = Interface .. name .. "\\倒数暂停.mp3"
+            BG["sound_HusbandComeOn" .. name] = Interface .. name .. "\\老公加油.mp3"
         end
     end
 end

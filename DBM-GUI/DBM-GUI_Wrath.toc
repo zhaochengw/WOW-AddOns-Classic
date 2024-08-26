@@ -26,7 +26,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.0.2
+## Version: 11.0.3
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua
@@ -41,6 +41,7 @@ localization.es.lua
 localization.br.lua
 
 DBM-GUI.lua
+DBM-GUI_TestUI.lua
 DBM-GUI_DropDown.xml
 DBM-GUI_DropDown.lua
 

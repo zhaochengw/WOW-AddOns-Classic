@@ -54,6 +54,7 @@ local uireimp = __ala_meta__.uireimp;
 	local h_to_border = 8;
 
 -->
+	local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded;
 	local ElvUILoaded = IsAddOnLoaded("ElvUI");
 	local function SetElvUIButton(button)
 		local ElvUI = _G.ElvUI;

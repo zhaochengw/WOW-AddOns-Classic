@@ -22,12 +22,26 @@ do --繁体说明书
     text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
     text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
 
+    update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
+    update = update .. c1 .. [[-拍賣WA更新為v1.8：增加出價記錄；UI縮小了一點；提高了最小加價幅度]] .. "|r\n"
+    update = update .. [[-正在自動倒數時，如果有人出價，則會自動暫停倒數（你也可在設置里關閉該功能）]] .. "|r\n"
+    update = update .. [[-裝備過期列表：現在可以通過Shift+點擊來發送裝備了]] .. "|r\n"
+    update = update .. [[-現在拍賣成功、流拍、取消拍賣、拍賣倒數時，不再觸發關注裝備的文字和語音提醒]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "8月19日更新v1.11.4" .. "|r\n"
     update = update .. c1 .. [[-拍賣WA更新為v1.7：增加自動出價功能]] .. "|r\n"
     update = update .. [[-增加功能：拾取記錄（顯示在裝備下拉列表左邊）]] .. "|r\n"
     update = update .. [[-增加功能：撤銷刪除（當你右鍵刪除一個格子時會顯示這個撤銷刪除按鈕）]] .. "|r\n"
     update = update .. [[-自動拍賣記錄：現在右鍵一個記錄可以打開菜單，用於修改或刪除記錄]] .. "|r\n\n"
-    
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
+
+    ns.instructionsText = text
+end
+do --繁体更新内容
+    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
+
     update = update .. "|cff00FF00" .. "8月14日更新v1.11.3" .. "|r\n"
     update = update .. [[-表格：刪除支出、總覽、工資的買家格子]] .. "|r\n"
     update = update .. [[-修復了自動拍賣的生成對賬單功能導致插件錯誤的問題]] .. "|r\n\n"
@@ -38,14 +52,6 @@ do --繁体说明书
     update = update .. [[-自動拍賣：正在拍賣的裝備現在會顯示是否為你的關注和心願，且裝備過濾功能也會對其生效]] .. "|r\n"
     update = update .. [[-拍賣WA更新為v1.6：增加顯示正在拍賣的裝備類型]] .. "|r\n"
     update = update .. [[-<賽季服>MC表格每個BOSS的格子都有所增加]] .. "|r\n\n"
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ns.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
     update = update .. c1 .. [[-增加功能：交易清除欠款（交易時，如果對方曾有欠款，則會在交易框下方顯示其欠款記錄，點擊可以清除欠款）]] .. "| r\n"
@@ -58,22 +64,6 @@ do --繁体更新内容
     update = update .. [[-修復了多個可堆疊物品被同時一鍵分配時，在某些情況可能會出現數量記錄錯誤的問題]] .. "|r\n"
     update = update .. [[-<WLK>密語模板：增加奧杜爾成就ID列表]] .. "|r\n\n"
 
-    update = update .. "|cff00FF00" .. "7月26日更新v1.10.9" .. "|r\n"
-    update = update .. [[-<WLK>奧杜爾表格的雜項格子增加至9個]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月25日更新v1.10.8" .. "|r\n"
-    update = update .. [[-<WLK>顯示星團長標記：修復了鼠標提示工具中，跟其他插件的兼容性問題]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月24日更新v1.10.7" .. "|r\n"
-    update = update .. [[-<WLK>上傳賬單：改為一鍵上傳]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "7月24日更新v1.10.6" .. "|r\n"
-    update = update .. [[-語音包：重錄AI語音包，現在音量比之前大一倍]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>新增功能：上傳賬單到新手盒子]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>集結號：增加功能[在聊天頻道/鼠標提示工具/目標右鍵菜單中，顯示星團長標記] ]] .. "|r\n"
-    update = update .. c1 .. [[-<WLK>AtlasLoot：增加功能[更好的選擇]（比如點擊專業製造-銘文時，會自動顯示你對應的銘文，而不是默認顯示第一項）]] .. "|r\n"
-    update = update .. [[-<WLK>裝備庫：增加PVP聖物]] .. "|r\n\n"
-
     ns.updateText = update
 end
 
@@ -84,6 +74,17 @@ local L = setmetatable({}, {
 })
 
 do
+    L["拍卖自动倒数"] = "拍賣自動倒數"
+    L["倒数自动暂停"] = "倒數自動暫停"
+    L["正在自动倒数时，如果有人出价（在团队频道打出纯数字时），则自动暂停倒数。"] = "正在自動倒數時，如果有人出價（在團隊頻道打出純數字時），則自動暫停倒數。"
+    L["删除该账单"] = "刪除該賬單"
+    L["正在接收拍卖WA"] = "正在接收拍賣WA"
+    L["接收完毕，但未导入"] = "接收完畢，但未匯入"
+    L["%s正在接收拍卖WA。"] = "%s正在接收拍賣WA。"
+    L["%s已成功导入拍卖WA。"] = "%s已成功匯入拍賣WA。"
+    L["v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度"] = "v1.8：增加出價記錄；UI縮小了一點；提高了最小加價幅度"
+
+
     L["当前难度："] = "當前難度："
     L["账单"] = "賬單"
     L["用时"] = "用時"

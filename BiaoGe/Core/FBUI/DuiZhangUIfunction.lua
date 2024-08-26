@@ -131,6 +131,7 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
     end
     bt:SetAutoFocus(false)
     bt:SetEnabled(false)
+    BG.SetBorderAlpha(bt)
     local b = BossNum(FB, b, t)
     bt.icon = bt:CreateTexture(nil, 'ARTWORK')
     bt.icon:SetPoint('LEFT', -22, 0)
@@ -202,20 +203,21 @@ end
 ------------------我的金额------------------
 function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
     local b = BossNum(FB, b, t)
-    local button = CreateFrame("EditBox", nil, BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "InputBoxTemplate");
-    button:SetSize(85, 20)
-    button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
-    button:SetFrameLevel(110)
-    button:SetAutoFocus(false)
-    button:SetEnabled(false)
-    button:SetTextColor(RGB("00BFFF"))
+    local bt = CreateFrame("EditBox", nil, BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "InputBoxTemplate");
+    bt:SetSize(85, 20)
+    bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
+    bt:SetFrameLevel(110)
+    bt:SetAutoFocus(false)
+    bt:SetEnabled(false)
+    bt:SetTextColor(RGB("00BFFF"))
+    BG.SetBorderAlpha(bt)
     if BiaoGe[FB]["boss" .. b]["jine" .. i] and b ~= Maxb[FB] and b ~= Maxb[FB] + 1 then
-        button:SetText(BiaoGe[FB]["boss" .. b]["jine" .. i])
+        bt:SetText(BiaoGe[FB]["boss" .. b]["jine" .. i])
     end
-    preWidget = button
-    BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i] = button
+    preWidget = bt
+    BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i] = bt
 
-    button:SetScript("OnTextChanged", function(self)
+    bt:SetScript("OnTextChanged", function(self)
         local sum = 0
         local n = 0
         for b = 1, Maxb[FB] - 1, 1 do
@@ -257,10 +259,10 @@ function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
         end)
     end)
     -- 鼠标悬停在装备时
-    button:SetScript("OnEnter", function(self)
+    bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
     end)
-    button:SetScript("OnLeave", function(self)
+    bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()
         GameTooltip:Hide()
     end)
@@ -269,22 +271,23 @@ end
 ------------------别人的金额------------------
 function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     local b = BossNum(FB, b, t)
-    local button = CreateFrame("EditBox", nil, BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "InputBoxTemplate");
-    button:SetSize(85, 20)
-    button:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
-    button:SetFrameLevel(110)
-    button:SetAutoFocus(false)
-    button:SetEnabled(false)
-    button:SetTextColor(RGB("FF69B4"))
-    preWidget = button
-    BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i] = button
+    local bt = CreateFrame("EditBox", nil, BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "InputBoxTemplate");
+    bt:SetSize(85, 20)
+    bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
+    bt:SetFrameLevel(110)
+    bt:SetAutoFocus(false)
+    bt:SetEnabled(false)
+    bt:SetTextColor(RGB("FF69B4"))
+    BG.SetBorderAlpha(bt)
+    preWidget = bt
+    BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i] = bt
 
-    local texture = button:CreateTexture()
+    local texture = bt:CreateTexture()
     texture:SetSize(16, 16)
     texture:SetPoint("RIGHT", 16, 0)
     BG.DuiZhangFrame[FB]["boss" .. b]["yes" .. i] = texture
 
-    button:SetScript("OnTextChanged", function(self)
+    bt:SetScript("OnTextChanged", function(self)
         local sum = 0
         local n = 0
         for b = 1, Maxb[FB], 1 do
@@ -326,10 +329,10 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
         end)
     end)
     -- 鼠标悬停在装备时
-    button:SetScript("OnEnter", function(self)
+    bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
     end)
-    button:SetScript("OnLeave", function(self)
+    bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()
         GameTooltip:Hide()
     end)
@@ -341,7 +344,7 @@ function BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
     local textrue = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]:CreateTexture()
     textrue:SetPoint("TOPLEFT", BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "TOPLEFT", -4, -2)
     textrue:SetPoint("BOTTOMRIGHT", BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i], "BOTTOMRIGHT", -2, 0)
-    textrue:SetColorTexture(red, greed, blue, touming1)
+    -- textrue:SetColorTexture(red, greed, blue, touming1)
     textrue:Hide()
     BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i] = textrue
 

@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.7"
+    aura_env.ver = "v1.8"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -36,56 +36,63 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     aura_env.AddonChannel = "BiaoGeAuction"
     C_ChatInfo.RegisterAddonMessagePrefix(aura_env.AddonChannel) -- 注册插件通信频道
 
-    aura_env.L = setmetatable({}, {
+    local L = setmetatable({}, {
         __index = function(table, key)
             return tostring(key)
         end
     })
 
     if (GetLocale() == "zhTW") then
-        aura_env.L["Alt+点击才能生效"] = "Alt+點擊才能生效"
-        aura_env.L["只有团长或物品分配者有权限取消拍卖"] = "只有團長或物品分配者有權限取消拍賣"
-        aura_env.L["根据你的出价动态改变增减幅度"] = "根據你的出價動態改變增減幅度"
-        aura_env.L["长按可以快速调整价格"] = "長按可以快速調整價格"
-        aura_env.L["在输入框使用滚轮也可快速调整价格"] = "在輸入框使用滾輪也可快速調整價格"
-        aura_env.L[">> 你 <<"] = ">> 你 <<"
-        aura_env.L["匿名"] = "匿名"
-        aura_env.L["你的出价需高于当前价格"] = "你的出價需高於當前價格"
-        aura_env.L["你的出价需高于或等于起拍价"] = "你的出價需高於或等於起拍價"
-        aura_env.L["取消拍卖"] = "取消拍賣"
-        aura_env.L["装绑"] = "裝綁"
-        aura_env.L["|cffFFD100当前价格：|r"] = "|cffFFD100當前價格：|r"
-        aura_env.L["|cffFFD100起拍价：|r"] = "|cffFFD100起拍價：|r"
-        aura_env.L["|cffFFD100出价最高者：|r"] = "|cffFFD100出價最高者：|r"
-        aura_env.L["|cffFFD100< 匿名模式 >|r"] = "|cffFFD100< 匿名模式 >|r"
-        aura_env.L["出价"] = "出價"
-        aura_env.L["正常模式"] = "正常模式"
-        aura_env.L["匿名模式"] = "匿名模式"
-        aura_env.L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s 拍賣時長：%ss %s"
-        aura_env.L["拍卖结束"] = "拍賣結束"
-        aura_env.L["|cffFF0000流拍：|r"] = "|cffFF0000流拍：|r"
-        aura_env.L["{rt7}流拍{rt7} %s"] = "{rt7}流拍{rt7} %s"
-        aura_env.L["|cff00FF00成交价：|r"] = "|cff00FF00成交價：|r"
-        aura_env.L["|cff00FF00买家：|r"] = "|cff00FF00買家：|r"
-        aura_env.L["{rt6}拍卖成功{rt6} %s %s %s"] = "{rt6}拍賣成功{rt6} %s %s %s"
-        aura_env.L["拍卖取消"] = "拍賣取消"
-        aura_env.L["{rt7}拍卖取消{rt7} %s"] = "{rt7}拍賣取消{rt7} %s"
-        aura_env.L["滚轮：快速调整价格"] = "滾輪：快速調整價格"
-        aura_env.L["长按：快速调整价格"] = "長按：快速調整價格"
-        aura_env.L["点击：复制当前价格并增加"] = "點擊：複製當前價格並增加"
-        aura_env.L["隐藏"] = "隱藏"
-        aura_env.L["显示"] = "顯示"
-        aura_env.L["拍卖成功"] = "拍賣成功"
-        aura_env.L["流拍"] = "流拍"
-        aura_env.L["设置心理价格"] = "設置心理價格"
-        aura_env.L["开启自动出价"] = "開啟自動出價"
-        aura_env.L["取消自动出价"] = "取消自動出價"
-        aura_env.L["自动出价"] = "自動出價"
-        aura_env.L[">>正在自动出价<<"] = ">>正在自動出價<<"
-        aura_env.L["心理价格锁定中"] = "心理價格鎖定中"
-        aura_env.L["取消自动出价后才能修改。"] = "取消自動出價後才能修改。"
-        aura_env.L["如果别人出价比你高时，自动帮你出价，每次加价为最低幅度，出价不会高于你设定的心理价格。"] = "如果別人出價比你高時，自動幫你出價，每次加價為最低幅度，出價不會高於你設定的心理價格。"
-        aura_env.L["心理价格"] = "心理價格"
+        L["Alt+点击才能生效"] = "Alt+點擊才能生效"
+        L["只有团长或物品分配者有权限取消拍卖"] = "只有團長或物品分配者有權限取消拍賣"
+        L["根据你的出价动态改变增减幅度"] = "根據你的出價動態改變增減幅度"
+        L["长按可以快速调整价格"] = "長按可以快速調整價格"
+        L["在输入框使用滚轮也可快速调整价格"] = "在輸入框使用滾輪也可快速調整價格"
+        L[">> 你 <<"] = ">> 你 <<"
+        L["別人(匿名)"] = "別人(匿名)"
+        L["需高于当前价格"] = "需高於當前價格"
+        L["需高于或等于起拍价"] = "需高於或等於起拍價"
+        L["取消拍卖"] = "取消拍賣"
+        L["装绑"] = "裝綁"
+        L["|cffFFD100当前价格：|r"] = "|cffFFD100當前價格：|r"
+        L["|cffFFD100起拍价：|r"] = "|cffFFD100起拍價：|r"
+        L["|cffFFD100出价最高者：|r"] = "|cffFFD100出價最高者：|r"
+        L["|cffFFD100< 匿名模式 >|r"] = "|cffFFD100< 匿名模式 >|r"
+        L["出价"] = "出價"
+        L["正常模式"] = "正常模式"
+        L["匿名模式"] = "匿名模式"
+        L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s 拍賣時長：%ss %s"
+        L["拍卖结束"] = "拍賣結束"
+        L["|cffFF0000流拍：|r"] = "|cffFF0000流拍：|r"
+        L["{rt7}流拍{rt7} %s"] = "{rt7}流拍{rt7} %s"
+        L["|cff00FF00成交价：|r"] = "|cff00FF00成交價：|r"
+        L["|cff00FF00买家：|r"] = "|cff00FF00買家：|r"
+        L["{rt6}拍卖成功{rt6} %s %s %s"] = "{rt6}拍賣成功{rt6} %s %s %s"
+        L["拍卖取消"] = "拍賣取消"
+        L["{rt7}拍卖取消{rt7} %s"] = "{rt7}拍賣取消{rt7} %s"
+        L["滚轮：快速调整价格"] = "滾輪：快速調整價格"
+        L["长按：快速调整价格"] = "長按：快速調整價格"
+        L["点击：复制当前价格并增加"] = "點擊：複製當前價格並增加"
+        L["隐藏"] = "隱藏"
+        L["显示"] = "顯示"
+        L["拍卖成功"] = "拍賣成功"
+        L["流拍"] = "流拍"
+        L["设置心理价格"] = "設置心理價格"
+        L["开启自动出价"] = "開啟自動出價"
+        L["取消自动出价"] = "取消自動出價"
+        L["自动出价"] = "自動出價"
+        L[">>正在自动出价<<"] = ">>正在自動出價<<"
+        L["心理价格锁定中"] = "心理價格鎖定中"
+        L["取消自动出价后才能修改。"] = "取消自動出價後才能修改。"
+        L["如果别人出价比你高时，自动帮你出价，每次加价为最低幅度，出价不会高于你设定的心理价格。"] = "如果別人出價比你高時，自動幫你出價，每次加價為最低幅度，出價不會高於你設定的心理價格。"
+        L["心理价格"] = "心理價格"
+        L["最小加价幅度为%s"] = "最小加價幅度为%s"
+        L["（%s）"] = "（%s）"
+        L["没有人出价"] = "沒有人出價"
+        L["出价记录"] = "出價記錄"
+        L["记录"] = "記錄"
+        L["、"] = "、"
+        L["匿名"] = "匿名"
     end
 
     function aura_env.RGB(hex, Alpha)
@@ -140,6 +147,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         aura_env.backdropColor_IsMe = { aura_env.RGB("009900", .6) }
         aura_env.backdropBorderColor_IsMe = { 0, 1, 0, 1 }
         aura_env.raidRosterInfo = {}
+
+        aura_env.MiniMoneyTbl = {
+            -- 小于该价格时，每次加价幅度，最低加价幅度
+            { 30, 1, 1 },
+            { 100, 10, 1 },
+            { 3000, 100, 100 },
+            { 10000, 500, 100 },
+            { 30000, 1000, 500 },
+            { 100000, 5000, 500 },
+            { nil, 10000, 1000 },
+        }
     end
 
     -- 字体
@@ -240,8 +258,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         for i, f in ipairs(_G.BGA.Frames) do
             if not f.IsEnd and aura_env.IsML() then
                 f.cancel:Show()
+                f.autoTextButton:ClearAllPoints()
+                f.autoTextButton:SetPoint("TOP", 45, -2)
             else
                 f.cancel:Hide()
+                f.autoTextButton:ClearAllPoints()
+                f.autoTextButton:SetPoint("TOP", 0, -2)
             end
         end
     end
@@ -258,13 +280,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     function aura_env.Pass_OnClick(self)
         local f = self.owner
         if f.IsAlpha then
-            self:SetText(aura_env.L["隐藏"])
+            self:SetText(L["隐藏"])
             f:SetAlpha(1)
             f.IsAlpha = false
             f.AlphaFrame:Hide()
             f.AlphaFrame2:Hide()
         else
-            self:SetText(aura_env.L["显示"])
+            self:SetText(L["显示"])
             if aura_env.lastFocus then
                 aura_env.lastFocus:ClearFocus()
             end
@@ -292,9 +314,40 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
-        GameTooltip:AddLine(aura_env.L["Alt+点击才能生效"], 1, 0.82, 0, true)
-        GameTooltip:AddLine(aura_env.L["只有团长或物品分配者有权限取消拍卖"], 0.5, 0.5, 0.5, true)
+        GameTooltip:AddLine(L["Alt+点击才能生效"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["只有团长或物品分配者有权限取消拍卖"], 0.5, 0.5, 0.5, true)
         GameTooltip:Show()
+    end
+
+    function aura_env.LogTextButton_OnEnter(self)
+        self.isOnEnter = true
+        local f = self.owner
+        if aura_env.IsRight(self) then
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
+        else
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+        end
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(L["出价记录"], 1, 1, 1, true)
+
+        if #f.logs == 0 then
+            GameTooltip:AddLine(L["没有人出价"], .5, .5, .5, true)
+        elseif #f.logs > 15 then
+            GameTooltip:AddLine("......", .5, .5, .5, true)
+            for i = #f.logs - 14, #f.logs do
+                GameTooltip:AddLine(i .. L["、"] .. f.logs[i].money .. format(L["（%s）"], f.logs[i].player), 1, .82, 0, true)
+            end
+        else
+            for i = 1, #f.logs do
+                GameTooltip:AddLine(i .. L["、"] .. f.logs[i].money .. format(L["（%s）"], f.logs[i].player), 1, .82, 0, true)
+            end
+        end
+        GameTooltip:Show()
+    end
+
+    function aura_env.LogTextButton_OnLeave(self)
+        self.isOnEnter = false
+        GameTooltip:Hide()
     end
 
     function aura_env.JiaJian(money, fudu, _type)
@@ -313,34 +366,28 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     function aura_env.Addmoney(money, _type)
         local money = tonumber(money) or 0
-        local fudu = 0
-        if money < 30 then
-            fudu = 1 -- 1-30, 1
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 100 then
-            fudu = 10 -- 30-100, 10
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 300 then
-            fudu = 100 -- 100-300, 100
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 1000 then
-            fudu = 100 -- 300-1000, 100
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 3000 then
-            fudu = 100 -- 1000-3000, 100
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 10000 then
-            fudu = 500 -- 3000-10000, 500
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 30000 then
-            fudu = 1000 -- 10000-30000, 1000
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        elseif money < 100000 then
-            fudu = 5000 -- 30000-100000, 5000
-            return aura_env.JiaJian(money, fudu, _type), fudu
-        else
-            fudu = 10000 -- 100000以上,10000
-            return aura_env.JiaJian(money, fudu, _type), fudu
+        local fudu
+        for i, v in ipairs(aura_env.MiniMoneyTbl) do
+            if not v[1] or money < v[1] then
+                fudu = v[2]
+                break
+            end
+        end
+        return aura_env.JiaJian(money, fudu, _type), fudu
+    end
+
+    function aura_env.TooSmall(self)
+        local myMoney = tonumber(self:GetText()) or 0
+        local currentMoney = self.owner.money
+        local money = myMoney - currentMoney
+        for i, v in ipairs(aura_env.MiniMoneyTbl) do
+            if not v[1] or currentMoney < v[1] then
+                if money < v[3] then
+                    return v[3]
+                else
+                    return false
+                end
+            end
         end
     end
 
@@ -414,26 +461,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 t:SetPoint("TOPRIGHT", f.itemFrame, "BOTTOMRIGHT", -10, -5)
 
                 if f.player and f.player ~= "" then
-                    t:SetText(aura_env.L["拍卖成功"])
+                    t:SetText(L["拍卖成功"])
                     t:SetTextColor(0, 1, 0)
-                    f.currentMoneyText:SetText(aura_env.L["|cff00FF00成交价：|r"] .. f.money)
+                    f.currentMoneyText:SetText(L["|cff00FF00成交价：|r"] .. f.money)
                     if f.player == UnitName("player") then
-                        f.topMoneyText:SetText(aura_env.L["|cff00FF00买家：|r"] .. "|cff" .. aura_env.GREEN1 .. aura_env.L[">> 你 <<"])
+                        f.topMoneyText:SetText(L["|cff00FF00买家：|r"] .. "|cff" .. aura_env.GREEN1 .. L[">> 你 <<"])
                     else
-                        f.topMoneyText:SetText(aura_env.L["|cff00FF00买家：|r"] .. f.colorplayer)
+                        f.topMoneyText:SetText(L["|cff00FF00买家：|r"] .. f.colorplayer)
                     end
 
                     if aura_env.IsRaidLeader() then
-                        SendChatMessage(format(aura_env.L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
+                        SendChatMessage(format(L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
                     end
                 else
-                    t:SetText(aura_env.L["流拍"])
+                    t:SetText(L["流拍"])
                     t:SetTextColor(1, 0, 0)
-                    f.currentMoneyText:SetText(aura_env.L["|cffFF0000流拍：|r"] .. f.money)
+                    f.currentMoneyText:SetText(L["|cffFF0000流拍：|r"] .. f.money)
                     f.topMoneyText:SetText("")
 
                     if aura_env.IsRaidLeader() then
-                        SendChatMessage(format(aura_env.L["{rt7}流拍{rt7} %s"], f.link), "RAID")
+                        SendChatMessage(format(L["{rt7}流拍{rt7} %s"], f.link), "RAID")
                     end
                 end
 
@@ -450,9 +497,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:SetOwner(self.owner, "ANCHOR_BOTTOM", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self.owner.currentMoneyText:GetText(), 1, 1, 1)
-            GameTooltip:AddLine(aura_env.L["点击：复制当前价格并增加"] .. fudu, 1, 0.82, 0, true)
+            GameTooltip:AddLine(L["点击：复制当前价格并增加"] .. fudu, 1, 0.82, 0, true)
             GameTooltip:Show()
-            self.IsOnter = true
+            self.isOnEnter = true
         end
     end
 
@@ -470,25 +517,32 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     function aura_env.myMoney_OnTextChanged(self)
+        local f = self.owner
         local money = tonumber(self:GetText()) or 0
-        if self.owner.start then
-            if money < self.owner.money then
-                self.owner.ButtonSendMyMoney:Disable()
-                if self.owner.player ~= UnitName("player") then
-                    self.owner.ButtonSendMyMoney.disf:Show()
+        if f.start then
+            if money < f.money then
+                f.ButtonSendMyMoney:Disable()
+                if f.player ~= UnitName("player") then
+                    f.ButtonSendMyMoney.disf:Show()
+                    f.ButtonSendMyMoney.disf.text = L["需高于或等于起拍价"]
                 end
             else
-                self.owner.ButtonSendMyMoney:Enable()
-                self.owner.ButtonSendMyMoney.disf:Hide()
+                f.ButtonSendMyMoney:Enable()
+                f.ButtonSendMyMoney.disf:Hide()
             end
-        elseif money <= self.owner.money then
-            self.owner.ButtonSendMyMoney:Disable()
-            if self.owner.player ~= UnitName("player") then
-                self.owner.ButtonSendMyMoney.disf:Show()
+        elseif money <= f.money then
+            f.ButtonSendMyMoney:Disable()
+            if f.player ~= UnitName("player") then
+                f.ButtonSendMyMoney.disf:Show()
+                f.ButtonSendMyMoney.disf.text = L["需高于当前价格"]
             end
+        elseif aura_env.TooSmall(self) then
+            f.ButtonSendMyMoney:Disable()
+            f.ButtonSendMyMoney.disf:Show()
+            f.ButtonSendMyMoney.disf.text = format(L["最小加价幅度为%s"], aura_env.TooSmall(self))
         else
-            self.owner.ButtonSendMyMoney:Enable()
-            self.owner.ButtonSendMyMoney.disf:Hide()
+            f.ButtonSendMyMoney:Enable()
+            f.ButtonSendMyMoney.disf:Hide()
         end
         aura_env.UpdateAllOnEnters()
     end
@@ -505,14 +559,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:SetOwner(self.owner, "ANCHOR_BOTTOM", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self:GetText(), 1, 1, 1)
-        GameTooltip:AddLine(aura_env.L["滚轮：快速调整价格"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["滚轮：快速调整价格"], 1, 0.82, 0, true)
         GameTooltip:Show()
-        self.IsOnter = true
+        self.isOnEnter = true
     end
 
     function aura_env.OnLeave(self)
         GameTooltip_Hide()
-        self.IsOnter = false
+        self.isOnEnter = false
     end
 
     function aura_env.JiaJian_OnEnter(self)
@@ -524,10 +578,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:SetOwner(self.owner, "ANCHOR_BOTTOM", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self._type .. " " .. fudu, r, g, b, true)
-        GameTooltip:AddLine(aura_env.L["根据你的出价动态改变增减幅度"], 1, 0.82, 0, true)
-        GameTooltip:AddLine(aura_env.L["长按：快速调整价格"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["根据你的出价动态改变增减幅度"], 1, 0.82, 0, true)
+        GameTooltip:AddLine(L["长按：快速调整价格"], 1, 0.82, 0, true)
         GameTooltip:Show()
-        self.IsOnter = true
+        self.isOnEnter = true
     end
 
     function aura_env.JiaJian_OnClick(self)
@@ -564,26 +618,33 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     function aura_env.SetMoney(f, money, player)
+        f.updateFrame:Show()
+        f.autoFrame.updateFrame:Show()
+
         f.money = money
-        f.currentMoneyText:SetText(aura_env.L["|cffFFD100当前价格：|r"] .. money)
+        f.currentMoneyText:SetText(L["|cffFFD100当前价格：|r"] .. money)
         f.player = player
         f.colorplayer = aura_env.SetClassCFF(player)
         f.myMoneyEdit:Show()
         f.start = false
         if player == UnitName("player") then
-            f.topMoneyText:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. aura_env.L[">> 你 <<"])
+            f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. L[">> 你 <<"])
             f:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
             f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
             f.autoFrame:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
             f.autoFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
             f.hide:SetNormalFontObject(_G.BGA.FontGreen15)
             f.cancel:SetNormalFontObject(_G.BGA.FontGreen15)
-            f.autoText:SetNormalFontObject(_G.BGA.FontGreen15)
+            f.autoTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
+            f.logTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
+            tinsert(f.logs, { money = money, player = "|cff" .. aura_env.GREEN1 .. L["你"] .. "|r" })
         else
             if f.mod == "anonymous" then
-                f.topMoneyText:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. aura_env.L["匿名"])
+                f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. L["別人(匿名)"])
+                tinsert(f.logs, { money = money, player = L["匿名"] })
             else
-                f.topMoneyText:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. f.colorplayer)
+                f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. f.colorplayer)
+                tinsert(f.logs, { money = money, player = f.colorplayer })
             end
             if f.filter then
                 f:SetBackdropColor(unpack(aura_env.backdropColor_filter))
@@ -592,7 +653,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f.autoFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_filter))
                 f.hide:SetNormalFontObject(_G.BGA.FontDis15)
                 f.cancel:SetNormalFontObject(_G.BGA.FontDis15)
-                f.autoText:SetNormalFontObject(_G.BGA.FontDis15)
+                f.autoTextButton:SetNormalFontObject(_G.BGA.FontDis15)
+                f.logTextButton:SetNormalFontObject(_G.BGA.FontDis15)
             else
                 f:SetBackdropColor(unpack(aura_env.backdropColor))
                 f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
@@ -600,7 +662,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f.autoFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
                 f.hide:SetNormalFontObject(_G.BGA.FontGreen15)
                 f.cancel:SetNormalFontObject(_G.BGA.FontGreen15)
-                f.autoText:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.autoTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
+                f.logTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
             end
             C_Timer.After(.5, function()
                 aura_env.AutoSendMyMoney(f)
@@ -610,17 +673,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         aura_env.UpdateAllOnEnters()
 
         if f.isAuto and f.money >= f.autoMoney then
-            f.autoTitleText:SetText(aura_env.L["设置心理价格"])
+            f.autoTitleText:SetText(L["设置心理价格"])
             f.autoTitleText:SetTextColor(1, .82, 0)
             f.isAutoTex:Hide()
-            f.autoButton:SetText(aura_env.L["开启自动出价"])
+            f.autoButton:SetText(L["开启自动出价"])
             f.autoButton:Enable()
             f.autoMoneyEdit.Left:SetAlpha(1)
             f.autoMoneyEdit.Right:SetAlpha(1)
             f.autoMoneyEdit.Middle:SetAlpha(1)
             f.isAuto = false
-            f.autoText:SetText(aura_env.L["自动出价"])
-            f.autoText:SetWidth(f.autoText:GetFontString():GetWidth())
+            f.autoTextButton:SetText(L["自动出价"])
+            f.autoTextButton:SetWidth(f.autoTextButton:GetFontString():GetWidth())
             f.autoMoneyEdit:SetTextColor(1, 1, 1)
             f.autoMoneyEdit:SetEnabled(true)
             f.autoMoneyEdit.isLocked = false
@@ -637,27 +700,31 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local f = self.owner
         GameTooltip:SetOwner(self.owner, "ANCHOR_BOTTOM", 0, 0)
         GameTooltip:ClearLines()
-        if f.start then
-            GameTooltip:AddLine(aura_env.L["你的出价需高于或等于起拍价"], 1, 0, 0, true)
-        else
-            GameTooltip:AddLine(aura_env.L["你的出价需高于当前价格"], 1, 0, 0, true)
-        end
+        GameTooltip:AddLine(self.text, 1, 0, 0, true)
+        -- if f.start then
+        --     GameTooltip:AddLine(L["需高于或等于起拍价"], 1, 0, 0, true)
+        -- else
+        --     GameTooltip:AddLine(L["需高于当前价格"], 1, 0, 0, true)
+        -- end
         GameTooltip:Show()
     end
 
     function aura_env.UpdateAllOnEnters()
         for i, f in ipairs(_G.BGA.Frames) do
-            if f.currentMoneyText.IsOnter then
+            if f.currentMoneyText.isOnEnter then
                 aura_env.currentMoney_OnEnter(f.currentMoneyText)
             end
-            if f.myMoneyEdit.IsOnter then
+            if f.myMoneyEdit.isOnEnter then
                 aura_env.myMoney_OnEnter(f.myMoneyEdit)
             end
-            if f.ButtonJian.IsOnter then
+            if f.ButtonJian.isOnEnter then
                 aura_env.JiaJian_OnEnter(f.ButtonJian)
             end
-            if f.ButtonJia.IsOnter then
+            if f.ButtonJia.isOnEnter then
                 aura_env.JiaJian_OnEnter(f.ButtonJia)
+            end
+            if f.logTextButton.isOnEnter then
+                f.logTextButton:GetScript("OnEnter")(f.logTextButton)
             end
         end
     end
@@ -725,12 +792,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     function aura_env.OnEditFocusGained(self)
         aura_env.lastFocus = self
+        self:HighlightText()
     end
 
     -- 自动出价函数
     do
         function aura_env.AutoText_OnClick(self)
             self.owner.autoFrame:SetShown(not self.owner.autoFrame:IsVisible())
+            self.owner.autoFrame.isClicked = true
             PlaySound(aura_env.sound1)
         end
 
@@ -746,11 +815,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:SetOwner(f.autoFrame, "ANCHOR_BOTTOM", 0, 0)
             GameTooltip:ClearLines()
             if self.isLocked then
-                GameTooltip:AddLine(aura_env.L["心理价格锁定中"], 1, 0, 0, true)
-                GameTooltip:AddLine(aura_env.L["取消自动出价后才能修改。"], 1, 0.82, 0, true)
+                GameTooltip:AddLine(L["心理价格锁定中"], 1, 0, 0, true)
+                GameTooltip:AddLine(L["取消自动出价后才能修改。"], 1, 0.82, 0, true)
             else
-                GameTooltip:AddLine(aura_env.L["自动出价"], 1, 1, 1, true)
-                GameTooltip:AddLine(aura_env.L["如果别人出价比你高时，自动帮你出价，每次加价为最低幅度，出价不会高于你设定的心理价格。"], 1, 0.82, 0, true)
+                GameTooltip:AddLine(L["自动出价"], 1, 1, 1, true)
+                GameTooltip:AddLine(L["如果别人出价比你高时，自动帮你出价，每次加价为最低幅度，出价不会高于你设定的心理价格。"], 1, 0.82, 0, true)
             end
             GameTooltip:Show()
         end
@@ -764,12 +833,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f.autoButton.disf:Hide()
             elseif f.start then
                 if f.autoMoney < f.money then
-                    f.autoButton.onEnterText = aura_env.L["心理价格需高于或等于起拍价"]
+                    f.autoButton.onEnterText = L["心理价格需高于或等于起拍价"]
                     f.autoButton:Disable()
                     f.autoButton.disf:Show()
                 end
             elseif f.autoMoney <= f.money then
-                f.autoButton.onEnterText = aura_env.L["心理价格需高于当前价格"]
+                f.autoButton.onEnterText = L["心理价格需高于当前价格"]
                 f.autoButton:Disable()
                 f.autoButton.disf:Show()
             end
@@ -778,31 +847,31 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         function aura_env.AutoButton_OnClick(self)
             local f = self.owner
             if f.isAuto then
-                f.autoTitleText:SetText(aura_env.L["设置心理价格"])
+                f.autoTitleText:SetText(L["设置心理价格"])
                 f.autoTitleText:SetTextColor(1, .82, 0)
                 f.isAutoTex:Hide()
-                f.autoButton:SetText(aura_env.L["开启自动出价"])
+                f.autoButton:SetText(L["开启自动出价"])
                 f.autoMoneyEdit.Left:SetAlpha(1)
                 f.autoMoneyEdit.Right:SetAlpha(1)
                 f.autoMoneyEdit.Middle:SetAlpha(1)
                 f.isAuto = false
-                f.autoText:SetText(aura_env.L["自动出价"])
-                f.autoText:SetWidth(f.autoText:GetFontString():GetWidth())
+                f.autoTextButton:SetText(L["自动出价"])
+                f.autoTextButton:SetWidth(f.autoTextButton:GetFontString():GetWidth())
                 f.autoMoneyEdit:SetTextColor(1, 1, 1)
                 f.autoMoneyEdit:SetEnabled(true)
                 f.autoMoneyEdit.isLocked = false
             else
-                f.autoTitleText:SetText(aura_env.L["心理价格"])
+                f.autoTitleText:SetText(L["心理价格"])
                 f.autoTitleText:SetTextColor(0, 1, 0)
                 f.isAutoTex:Show()
-                f.autoButton:SetText(aura_env.L["取消自动出价"])
+                f.autoButton:SetText(L["取消自动出价"])
                 f.autoMoneyEdit:ClearFocus()
                 f.autoMoneyEdit.Left:SetAlpha(f.autoMoneyEdit.alpha)
                 f.autoMoneyEdit.Right:SetAlpha(f.autoMoneyEdit.alpha)
                 f.autoMoneyEdit.Middle:SetAlpha(f.autoMoneyEdit.alpha)
                 f.isAuto = true
-                f.autoText:SetText(aura_env.L[">>正在自动出价<<"])
-                f.autoText:SetWidth(f.autoText:GetFontString():GetWidth())
+                f.autoTextButton:SetText(L[">>正在自动出价<<"])
+                f.autoTextButton:SetWidth(f.autoTextButton:GetFontString():GetWidth())
                 f.autoMoneyEdit:SetTextColor(0, 1, 0)
                 f.autoMoneyEdit:SetEnabled(false)
                 f.autoMoneyEdit.isLocked = true
@@ -878,6 +947,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f.link = link
             f.mod = mod
             f.num = #_G.BGA.Frames + 1
+            f.logs = {}
             AuctionFrame = f
             tinsert(_G.BGA.Frames, f)
             f:SetScript("OnMouseUp", function(self)
@@ -907,15 +977,37 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             f.cantClickFrame = CreateFrame("Frame", nil, f, "BackdropTemplate")
-            -- f.cantClickFrame:SetBackdrop({
-            --     bgFile = "Interface/ChatFrame/ChatFrameBackground",
-            -- })
-            -- f.cantClickFrame:SetBackdropColor(1, 1, 1, .5)
             f.cantClickFrame:SetAllPoints()
             f.cantClickFrame:SetFrameLevel(200)
             f.cantClickFrame:EnableMouse(true)
             C_Timer.After(.6, function()
                 f.cantClickFrame:Hide()
+            end)
+
+            f.updateFrame = CreateFrame("Frame", nil, f, "BackdropTemplate")
+            f.updateFrame:SetBackdrop({
+                bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            })
+            f.updateFrame:SetBackdropColor(1, 1, 1, .4)
+            f.updateFrame:SetAllPoints()
+            f.updateFrame:SetFrameLevel(150)
+            f.updateFrame.alpha = .5
+            f.updateFrame.totalTime = .4
+            f.updateFrame:Hide()
+            f.updateFrame:SetScript("OnShow", function(self)
+                self.time = 0
+                self:SetScript("OnUpdate", function(self, time)
+                    self.time = self.time + time
+                    local alpha = self.alpha - self.time / self.totalTime * self.alpha
+                    if alpha < 0 then alpha = 0 end
+                    self:SetAlpha(alpha)
+                    f.autoFrame.updateFrame:SetAlpha(alpha)
+                    if self:GetAlpha() <= 0 then
+                        self:SetScript("OnUpdate", nil)
+                        self:Hide()
+                        f.autoFrame.updateFrame:Hide()
+                    end
+                end)
             end)
         end
         -- 自动出价
@@ -956,6 +1048,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 C_Timer.After(.6, function()
                     AuctionFrame.cantClickFrame.autoFrame:Hide()
                 end)
+
+                f.updateFrame = CreateFrame("Frame", nil, f, "BackdropTemplate")
+                f.updateFrame:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                })
+                f.updateFrame:SetBackdropColor(1, 1, 1, .3)
+                f.updateFrame:SetAllPoints()
+                f.updateFrame:SetFrameLevel(150)
+                f.updateFrame:Hide()
             end
 
             local t = f:CreateFontString()
@@ -963,7 +1064,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("TOP", 0, -8)
                 t:SetTextColor(1, 0.82, 0)
-                t:SetText(aura_env.L["设置心理价格"])
+                t:SetText(L["设置心理价格"])
                 AuctionFrame.autoTitleText = t
             end
 
@@ -998,7 +1099,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             do
                 bt:SetPoint("BOTTOM", 0, 5)
                 bt:SetSize(f:GetWidth() - 20, 22)
-                bt:SetText(aura_env.L["开启自动出价"])
+                bt:SetText(L["开启自动出价"])
                 bt:Disable()
                 bt.owner = AuctionFrame
                 AuctionFrame.autoButton = bt
@@ -1037,7 +1138,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
             bt:SetHighlightFontObject(_G.BGA.FontWhite15)
             bt:SetPoint("TOPRIGHT", -aura_env.edgeSize - 1, -2)
-            bt:SetText(aura_env.L["隐藏"])
+            bt:SetText(L["隐藏"])
             bt:SetSize(bt:GetFontString():GetWidth(), 18)
             bt.owner = AuctionFrame
             bt:SetScript("OnClick", aura_env.Pass_OnClick)
@@ -1062,8 +1163,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
             bt:SetHighlightFontObject(_G.BGA.FontWhite15)
-            bt:SetPoint("TOPLEFT", aura_env.edgeSize + 1, -2)
-            bt:SetText(aura_env.L["取消拍卖"])
+            bt:SetPoint("TOPLEFT", aura_env.edgeSize + 60, -2)
+            bt:SetText(L["取消拍卖"])
             bt:SetSize(bt:GetFontString():GetWidth(), 18)
             bt:RegisterForClicks("AnyUp")
             bt.owner = AuctionFrame
@@ -1081,13 +1182,29 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local bt = CreateFrame("Button", nil, AuctionFrame)
             bt:SetNormalFontObject(_G.BGA.FontGreen15)
             bt:SetHighlightFontObject(_G.BGA.FontWhite15)
-            bt:SetPoint("TOP", 0, -2)
-            bt:SetText(aura_env.L["自动出价"])
+            bt:SetText(L["自动出价"])
             bt:SetSize(bt:GetFontString():GetWidth(), 18)
             bt:RegisterForClicks("AnyUp")
             bt.owner = AuctionFrame
-            AuctionFrame.autoText = bt
+            AuctionFrame.autoTextButton = bt
             bt:SetScript("OnClick", aura_env.AutoText_OnClick)
+            if aura_env.IsML() then
+                bt:SetPoint("TOP", 45, -2)
+            else
+                bt:SetPoint("TOP", 0, -2)
+            end
+
+            -- 记录
+            local bt = CreateFrame("Button", nil, AuctionFrame)
+            bt:SetNormalFontObject(_G.BGA.FontGreen15)
+            bt:SetHighlightFontObject(_G.BGA.FontWhite15)
+            bt:SetPoint("TOPLEFT", aura_env.edgeSize + 1, -2)
+            bt:SetText(L["记录"])
+            bt:SetSize(bt:GetFontString():GetWidth(), 18)
+            bt.owner = AuctionFrame
+            AuctionFrame.logTextButton = bt
+            bt:SetScript("OnEnter", aura_env.LogTextButton_OnEnter)
+            bt:SetScript("OnLeave", aura_env.LogTextButton_OnLeave)
         end
         -- 装备显示
         do
@@ -1137,7 +1254,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 local t = ftex:CreateFontString()
                 t:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
                 t:SetPoint("TOP", ftex, 0, -2)
-                t:SetText(aura_env.L["装绑"])
+                t:SetText(L["装绑"])
                 t:SetTextColor(0, 1, 0)
             end
             -- 装备名称
@@ -1202,10 +1319,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             t:SetAllPoints()
             t:SetJustifyH("LEFT")
             if player and player ~= "" then
-                t:SetText(aura_env.L["|cffFFD100当前价格：|r"] .. money)
+                t:SetText(L["|cffFFD100当前价格：|r"] .. money)
                 AuctionFrame.start = false
             else
-                t:SetText(aura_env.L["|cffFFD100起拍价：|r"] .. money)
+                t:SetText(L["|cffFFD100起拍价：|r"] .. money)
                 AuctionFrame.start = true
             end
             local currentMoneyText = f
@@ -1225,16 +1342,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             if player and player ~= "" then
                 if player == UnitName("player") then
-                    t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. aura_env.L[">> 你 <<"])
+                    t:SetText(L["|cffFFD100出价最高者：|r"] .. "|cff" .. aura_env.GREEN1 .. L[">> 你 <<"])
                     AuctionFrame:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
                     AuctionFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
                     AuctionFrame.autoFrame:SetBackdropColor(unpack(aura_env.backdropColor_IsMe))
                     AuctionFrame.autoFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_IsMe))
                 else
                     if mod == "anonymous" then
-                        t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. aura_env.L["匿名"])
+                        t:SetText(L["|cffFFD100出价最高者：|r"] .. L["別人(匿名)"])
                     else
-                        t:SetText(aura_env.L["|cffFFD100出价最高者：|r"] .. AuctionFrame.colorplayer)
+                        t:SetText(L["|cffFFD100出价最高者：|r"] .. AuctionFrame.colorplayer)
                     end
                     AuctionFrame:SetBackdropColor(unpack(aura_env.backdropColor))
                     AuctionFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
@@ -1242,7 +1359,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     AuctionFrame.autoFrame:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
                 end
             elseif mod == "anonymous" then
-                t:SetText(aura_env.L["|cffFFD100< 匿名模式 >|r"])
+                t:SetText(L["|cffFFD100< 匿名模式 >|r"])
             end
             AuctionFrame.topMoneyText = t
 
@@ -1297,7 +1414,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local bt = CreateFrame("Button", nil, edit, "UIPanelButtonTemplate")
             bt:SetPoint("TOPLEFT", AuctionFrame.ButtonJia, "TOPRIGHT", 0, 0)
             bt:SetPoint("BOTTOMRIGHT", edit, "BOTTOMRIGHT", 0, -height)
-            bt:SetText(aura_env.L["出价"])
+            bt:SetText(L["出价"])
             bt.owner = AuctionFrame
             bt.edit = edit
             bt.itemID = itemID
@@ -1334,6 +1451,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetFrameLevel(100)
         f:SetToplevel(true)
         f:SetMovable(true)
+        f:SetScale(.95)
         _G.BGA.AuctionMainFrame = f
 
         if _G.BiaoGe and _G.BiaoGe.point and _G.BiaoGe.point.Auction then
@@ -1381,18 +1499,18 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
                 if aura_env.IsRaidLeader() then
                     local tbl = {
-                        normal = aura_env.L["正常模式"],
-                        anonymous = aura_env.L["匿名模式"],
+                        normal = L["正常模式"],
+                        anonymous = L["匿名模式"],
                     }
 
                     local _, link = GetItemInfo(itemID)
                     if link then
-                        SendChatMessage(format(aura_env.L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
+                        SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
                             link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
                     else
                         C_Timer.After(0.5, function()
                             local _, link = GetItemInfo(itemID)
-                            SendChatMessage(format(aura_env.L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
+                            SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
                                 link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
                         end)
                     end
@@ -1404,7 +1522,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         local t = f:CreateFontString()
                         t:SetFont(STANDARD_TEXT_FONT, 30, "OUTLINE")
                         t:SetPoint("TOPRIGHT", f.itemFrame, "BOTTOMRIGHT", -10, -5)
-                        t:SetText(aura_env.L["拍卖取消"])
+                        t:SetText(L["拍卖取消"])
                         t:SetTextColor(1, 0, 0)
 
                         f.remainingTime:Hide()
@@ -1414,7 +1532,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         f.cancel:Hide()
 
                         if aura_env.IsRaidLeader() then
-                            SendChatMessage(format(aura_env.L["{rt7}拍卖取消{rt7} %s"], f.link), "RAID")
+                            SendChatMessage(format(L["{rt7}拍卖取消{rt7} %s"], f.link), "RAID")
                         end
 
                         C_Timer.After(aura_env.HIDEFRAME_TIME, function()
@@ -1425,7 +1543,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             elseif arg1 == "GetAuctioning" and distType == "RAID" and sender ~= UnitName("player") then
                 for i, f in ipairs(_G.BGA.Frames) do
-                    if not f.IsEnd and f.remaining >= 2 then
+                    if (not f.IsEnd) and f.remaining and f.remaining >= 2 then
                         local text = "Auctioning" .. "," .. f.auctionID .. "," .. f.itemID .. "," .. f.money ..
                             "," .. (f.remaining) .. "," .. (f.player or "") .. "," .. (f.mod or "")
                         C_ChatInfo.SendAddonMessage(aura_env.AddonChannel, text, "WHISPER", senderFullName)

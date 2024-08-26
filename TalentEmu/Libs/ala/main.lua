@@ -2,6 +2,7 @@
 	by ALA
 --]]--
 local __version = 220824.0;
+local GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };

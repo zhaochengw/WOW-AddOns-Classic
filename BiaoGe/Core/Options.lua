@@ -911,24 +911,25 @@ local function OptionsUI()
             BG.options[name .. "reset"] = 1
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
             local ontext = {
-                L["拍卖倒数"],
-                L["拍卖自动倒数。"],
-                " ",
+                L["拍卖自动倒数"],
                 L["该功能只有团长或物品分配者可用。"],
                 " ",
                 L["使用方法：右键聊天框装备时开始倒数。"],
             }
-            local f = O.CreateCheckButton(name, BG.STC_g1(L["拍卖倒数"] .. "*"), biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, BG.STC_g1(L["拍卖自动倒数"] .. "*"), biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 local name1 = "countDownDuration"
                 local name2 = "countDownSendChannel"
+                local name3 = "countDownStop"
                 if f:GetChecked() then
                     BG.options["button" .. name1]:Show()
                     BG.options["button" .. name2]:Show()
+                    BG.options["button" .. name3]:Show()
                 else
                     BG.options["button" .. name1]:Hide()
                     BG.options["button" .. name2]:Hide()
+                    BG.options["button" .. name3]:Hide()
                 end
             end)
         end
@@ -945,8 +946,23 @@ local function OptionsUI()
             }
             local f = O.CreateSlider(name, "|cffFFFFFF" .. L["拍卖倒数时长(秒)"] .. "*" .. "|r", biaoge, 1, 20, 1, 220, height - h - 25, ontext)
             BG.options["button" .. name] = f
-            local name = "countDown"
-            if BiaoGe.options[name] ~= 1 then
+            if BiaoGe.options["countDown"] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 30
+        -- 倒数自动暂停
+        do
+            local name = "countDownStop"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["倒数自动暂停"],
+                L["正在自动倒数时，如果有人出价（在团队频道打出纯数字时），则自动暂停倒数。"],
+            }
+            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["倒数自动暂停"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            if BiaoGe.options["countDown"] ~= 1 then
                 f:Hide()
             end
         end
@@ -954,7 +970,7 @@ local function OptionsUI()
         -- 拍卖倒数通报频道
         do
             local name = "countDownSendChannel"
-            BG.options[name .. "reset"] = "RAID_WARNING"
+            BG.options[name .. "reset"] = "RAID"
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
 
             local function RaidText(channel)
@@ -1000,55 +1016,11 @@ local function OptionsUI()
                 LibBG:UIDropDownMenu_AddButton(info)
             end)
 
-            local name = "countDown"
-            if BiaoGe.options[name] ~= 1 then
-                dropDown:Hide()
-            end
-        end
-        h = h + 50
-
-        O.CreateLine(biaoge, height - h)
-        h = h + 15
-        -- 装备过期提醒
-        do
-            local name = "guoqiRemind"
-            BG.options[name .. "reset"] = 1
-            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-            local ontext = {
-                L["装备过期提醒"],
-                L["当装备剩余可交易时间低于一定时（默认是低于30分钟），会有语音+文字提醒。每次提醒的最低间隔是5分钟，避免提醒过于频繁。"],
-                " ",
-                L["该功能只有你是团长或物品分配者时起作用。"],
-            }
-            local f = O.CreateCheckButton(name, BG.STC_g1(L["装备过期提醒"] .. "*"), biaoge, 15, height - h, ontext)
-            BG.options["button" .. name] = f
-            f:HookScript("OnClick", function()
-                local name1 = "guoqiRemindMinTime"
-                if f:GetChecked() then
-                    BG.options["button" .. name1]:Show()
-                else
-                    BG.options["button" .. name1]:Hide()
-                end
-            end)
-        end
-        -- 剩余多少分钟时提醒
-        do
-            local name = "guoqiRemindMinTime"
-            BG.options[name .. "reset"] = 30
-            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-            local ontext = {
-                L["剩余时间低于多少时提醒"] .. L["|cff808080（右键还原设置）|r"],
-                L["当装备剩余可交易时间低于该时间时，会提醒，默认是30分钟。"],
-                -- " ",
-                -- L[""],
-            }
-            local f = O.CreateSlider(name, "|cffFFFFFF" .. L["剩余时间低于多少时提醒(分)"] .. "*" .. "|r", biaoge, 1, 120, 1, 220, height - h - 25, ontext)
-            BG.options["button" .. name] = f
-            if BiaoGe.options["guoqiRemind"] ~= 1 then
+            if BiaoGe.options["countDown"] ~= 1 then
                 f:Hide()
             end
         end
-        h = h + 80
+        h = h + 50
 
         O.CreateLine(biaoge, height - h)
         h = h + 15
@@ -1115,6 +1087,48 @@ local function OptionsUI()
         end
         h = h + 40
 
+        O.CreateLine(biaoge, height - h)
+        h = h + 15
+        -- 装备过期提醒
+        do
+            local name = "guoqiRemind"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["装备过期提醒"],
+                L["当装备剩余可交易时间低于一定时（默认是低于30分钟），会有语音+文字提醒。每次提醒的最低间隔是5分钟，避免提醒过于频繁。"],
+                " ",
+                L["该功能只有你是团长或物品分配者时起作用。"],
+            }
+            local f = O.CreateCheckButton(name, BG.STC_g1(L["装备过期提醒"] .. "*"), biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            f:HookScript("OnClick", function()
+                local name1 = "guoqiRemindMinTime"
+                if f:GetChecked() then
+                    BG.options["button" .. name1]:Show()
+                else
+                    BG.options["button" .. name1]:Hide()
+                end
+            end)
+        end
+        -- 剩余多少分钟时提醒
+        do
+            local name = "guoqiRemindMinTime"
+            BG.options[name .. "reset"] = 30
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["剩余时间低于多少时提醒"] .. L["|cff808080（右键还原设置）|r"],
+                L["当装备剩余可交易时间低于该时间时，会提醒，默认是30分钟。"],
+                -- " ",
+                -- L[""],
+            }
+            local f = O.CreateSlider(name, "|cffFFFFFF" .. L["剩余时间低于多少时提醒(分)"] .. "*" .. "|r", biaoge, 1, 120, 1, 220, height - h - 25, ontext)
+            BG.options["button" .. name] = f
+            if BiaoGe.options["guoqiRemind"] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 80
 
         O.CreateLine(biaoge, height - h)
         h = h + 15
@@ -1229,13 +1243,6 @@ local function OptionsUI()
             local name = "buttonSound"
             BG.options[name .. "reset"] = 1
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-            if BiaoGe.options[name] == 1 then
-                BG.sound1 = SOUNDKIT.GS_TITLE_OPTION_OK
-                BG.sound2 = 569593
-            else
-                BG.sound1 = 1
-                BG.sound2 = 1
-            end
             local ontext = {
                 L["按键交互声音"],
                 L["点击按钮时的声音。"],
@@ -1244,15 +1251,6 @@ local function OptionsUI()
             }
             local f = O.CreateCheckButton(name, L["按键交互声音*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
-            f:HookScript("OnClick", function()
-                if f:GetChecked() then
-                    BG.sound1 = SOUNDKIT.GS_TITLE_OPTION_OK
-                    BG.sound2 = 569593
-                else
-                    BG.sound1 = 1
-                    BG.sound2 = 1
-                end
-            end)
         end
         -- 语音提醒
         do
