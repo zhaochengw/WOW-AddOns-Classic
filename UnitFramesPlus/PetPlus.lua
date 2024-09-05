@@ -3,6 +3,8 @@ local IsShiftKeyDown = IsShiftKeyDown;
 local InCombatLockdown = InCombatLockdown;
 local hooksecurefunc = hooksecurefunc;
 
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and true or false
+
 --宠物头像内战斗信息
 function UnitFramesPlus_PetPortraitIndicator()
     local petregistered = PetFrame:IsEventRegistered("UNIT_COMBAT");
@@ -21,43 +23,57 @@ end
 function UnitFramesPlus_PetBarTextMouseShow()
     if UnitFramesPlusDB["pet"]["mouseshow"] == 1 then
         PetFrameHealthBarText:SetAlpha(0);
+        if isClassic then
         PetFrameHealthBarTextLeft:SetAlpha(0);
         PetFrameHealthBarTextRight:SetAlpha(0);
+		end
         PetFrameHealthBar:SetScript("OnEnter",function(self)
             PetFrameHealthBarText:SetAlpha(1);
+            if isClassic then
             PetFrameHealthBarTextLeft:SetAlpha(1);
             PetFrameHealthBarTextRight:SetAlpha(1);
+			end
         end);
         PetFrameHealthBar:SetScript("OnLeave",function()
             PetFrameHealthBarText:SetAlpha(0);
+            if isClassic then
             PetFrameHealthBarTextLeft:SetAlpha(0);
             PetFrameHealthBarTextRight:SetAlpha(0);
+			end
         end);
         PetFrameManaBarText:SetAlpha(0);
+        if isClassic then
         PetFrameManaBarTextLeft:SetAlpha(0);
         PetFrameManaBarTextRight:SetAlpha(0);
+		end
         PetFrameManaBar:SetScript("OnEnter",function(self)
             PetFrameManaBarText:SetAlpha(1);
+            if isClassic then
             PetFrameManaBarTextLeft:SetAlpha(1);
             PetFrameManaBarTextRight:SetAlpha(1);
+			end
         end);
         PetFrameManaBar:SetScript("OnLeave",function()
             PetFrameManaBarText:SetAlpha(0);
+            if isClassic then
             PetFrameManaBarTextLeft:SetAlpha(0);
             PetFrameManaBarTextRight:SetAlpha(0);
+			end
         end);
     else
         PetFrameHealthBarText:SetAlpha(1);
-        PetFrameHealthBarTextLeft:SetAlpha(1);
-        PetFrameHealthBarTextRight:SetAlpha(1);
         PetFrameHealthBar:SetScript("OnEnter",nil);
         PetFrameHealthBar:SetScript("OnLeave",nil);
         PetFrameManaBarText:SetAlpha(1);
-        PetFrameManaBarTextLeft:SetAlpha(1);
-        PetFrameManaBarTextRight:SetAlpha(1);
         PetFrameManaBar:SetScript("OnEnter",nil);
         PetFrameManaBar:SetScript("OnLeave",nil);
+		if isClassic then
+			PetFrameHealthBarTextLeft:SetAlpha(1);
+			PetFrameHealthBarTextRight:SetAlpha(1);
+        PetFrameManaBarTextLeft:SetAlpha(1);
+        PetFrameManaBarTextRight:SetAlpha(1);
     end
+end
 end
 
 --非战斗状态中允许shift+左键拖动宠物头像

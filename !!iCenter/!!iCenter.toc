@@ -21,7 +21,6 @@ Libs\Libs.xml
 # BlizzBugsSuck.lua
 # NoTaint.lua
 
-# InspectFix.lua
 # YouArentInAPartyFix.lua
 
 FeatureFrame\FeatureFrame.xml

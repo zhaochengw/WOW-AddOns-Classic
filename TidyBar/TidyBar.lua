@@ -63,6 +63,9 @@ function TidyBar:HideMainButtonArt()
 	MainMenuBarTexture0:Hide()
 	MainMenuBarTexture1:SetAlpha(0)
 	MainMenuBarTexture1:Hide()
+
+	MainMenuBarTextureExtender:SetAlpha(0)
+	MainMenuBarTextureExtender:Hide()
 end
 function TidyBar:ShowMainButtonArt()
 	MainMenuBarLeftEndCap:Show()
@@ -74,6 +77,9 @@ function TidyBar:ShowMainButtonArt()
 	MainMenuBarTexture0:Show()
 	MainMenuBarTexture1:SetAlpha(1)
 	MainMenuBarTexture1:Show()
+
+	MainMenuBarTextureExtender:SetAlpha(1)
+	MainMenuBarTextureExtender:Show()
 end
 
 function TidyBar:HideExperienceBar()

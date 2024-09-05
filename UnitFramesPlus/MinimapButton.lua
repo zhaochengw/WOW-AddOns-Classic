@@ -68,6 +68,7 @@ function UnitFramesPlus_MinimapButton()
         MinimapButton:SetScript("OnDragStop", function(self)
             self:SetScript("OnUpdate", nil);
         end)
+		MinimapButton:RegisterForClicks("AnyUp", "AnyDown")
         MinimapButton:SetScript("OnClick", function(self, button)
 			if (button == "LeftButton") then
 				UnitFramesPlus_SlashHandler();

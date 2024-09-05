@@ -49,8 +49,8 @@ local PartyMemberFrame_UpdateVoiceStatus = PartyMemberFrame_UpdateVoiceStatus;
 local PartyMemberFrame_UpdateReadyCheck = PartyMemberFrame_UpdateReadyCheck;
 local PartyMemberFrame_UpdateNotPresentIcon = PartyMemberFrame_UpdateNotPresentIcon;
 local PartyMemberFrame_ToPlayerArt = PartyMemberFrame_ToPlayerArt;
---local CompactRaidFrameManager_UpdateShown = CompactRaidFrameManager_UpdateShown;
---local CompactRaidFrameManager_UpdateContainerLockVisibility = CompactRaidFrameManager_UpdateContainerLockVisibility;
+local CompactRaidFrameManager_UpdateShown = CompactRaidFrameManager_UpdateShown;
+local CompactRaidFrameManager_UpdateContainerLockVisibility = CompactRaidFrameManager_UpdateContainerLockVisibility;
 local BlizzardOptionsPanel_CheckButton_Enable = BlizzardOptionsPanel_CheckButton_Enable;
 local BlizzardOptionsPanel_CheckButton_Disable = BlizzardOptionsPanel_CheckButton_Disable;
 local StaticPopup_Show = StaticPopup_Show;
@@ -1141,7 +1141,7 @@ function UnitFramesPlus_OptionsFrame_PartyBuffDisplayUpdate()
                 local _, icon, count, debuffType, duration, expirationTime, caster, _, _, spellId = UnitDebuff("party"..id, j, filter);
                 if icon and (GetDisplayedAllyFrames() == "party" or (GetDisplayedAllyFrames() == "raid" and UnitFramesPlusDB["party"]["hideraid"] == 1 and UnitFramesPlusDB["party"]["always"] == 1)) then
                     _G["UFP_PartyMemberFrame"..id.."Debuff"..j].Icon:SetTexture(icon);
-					
+
 					-- 減益圖示邊框顏色
 					if debuffType then
 						local color = DebuffTypeColor[debuffType];
@@ -1153,7 +1153,7 @@ function UnitFramesPlus_OptionsFrame_PartyBuffDisplayUpdate()
 					else
 						_G["UFP_PartyMemberFrame"..id.."Debuff"..j].Border:SetVertexColor(1, 0, 0, 1);
 					end
-					
+
 					-- 暫時修正，隱藏遊戲內建的減益圖示
 					local debufficon = _G["PartyMemberFrame"..id.."Debuff"..j];
 					if debufficon and debufficon:IsVisible()then
@@ -1660,7 +1660,7 @@ function UnitFramesPlus_PartyMemberFrame_UpdateMember(self)
     PartyMemberFrame_UpdateLeader(self);
     PartyMemberFrame_UpdatePvPStatus(self);
     RefreshDebuffs(self, "party"..id, nil, nil, true);
-    PartyMemberFrame_UpdateVoiceStatus(self);
+    if PartyMemberFrame_UpdateVoiceStatus then PartyMemberFrame_UpdateVoiceStatus(self) end;
     PartyMemberFrame_UpdateReadyCheck(self);
     PartyMemberFrame_UpdateOnlineStatus(self);
     PartyMemberFrame_UpdateNotPresentIcon(self);
@@ -1820,12 +1820,10 @@ function UnitFramesPlus_PartyStyleSet()
     local state = IsAddOnLoaded("Blizzard_CompactRaidFrames");
     if state == true then
         RaidOptionsFrame_UpdatePartyFrames();
-        if CompactRaidFrameManager then
-            --securecall(CompactRaidFrameManager_UpdateContainerLockVisibility, CompactRaidFrameManager);
-            --securecall(CompactRaidFrameManager_UpdateShown, CompactRaidFrameManager);
+        CompactRaidFrameManager_UpdateContainerLockVisibility(CompactRaidFrameManager);
+        CompactRaidFrameManager_UpdateShown(CompactRaidFrameManager);
         end
     end
-end
 
 function UnitFramesPlus_PartyStyle()
     if not InCombatLockdown() then
