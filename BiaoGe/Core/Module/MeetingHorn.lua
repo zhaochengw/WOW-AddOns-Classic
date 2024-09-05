@@ -201,25 +201,15 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
     -- 按人数排序
     do
-        local Browser = MeetingHorn.MainPanel.Browser
         local Browser = MeetingHorn:GetClass('UI.Browser', 'Frame')
         local bt = MeetingHorn.MainPanel.Browser.Header3
         local name = "MeetingHorn_members"
-        if BiaoGe.options[name] == 1 then
-            bt:SetEnabled(true)
-        end
 
-        function Browser:Sort()
+        BG.MeetingHorn.BrowserSort_oldFuc = Browser.Sort
+        BG.MeetingHorn.BrowserSort_newFuc = function(self)
             sort(self.ActivityList:GetItemList(), function(a, b)
                 if not BG.IsVanilla then
                     local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
-                    -- if acl or bcl then
-                    --     if acl and bcl then
-                    --         return acl > bcl
-                    --     else
-                    --         return acl
-                    --     end
-                    -- end
                     if acl or bcl then
                         if acl and bcl then
                             if acl ~= bcl then
@@ -292,6 +282,11 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 self.Sorter:Hide()
             end
         end
+        if BiaoGe.options[name] == 1 then
+            bt:SetEnabled(true)
+            Browser.Sort = BG.MeetingHorn.BrowserSort_newFuc
+        end
+
     end
 
     -- 密语模板
@@ -311,7 +306,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             bt:SetPoint("RIGHT", Browser.RechargeBtn, "LEFT", -10, 0)
         end
         bt:SetText(L["密语模板"])
-        bt:SetFrameLevel(4)
+        bt:SetFrameLevel(10)
         BG.MeetingHorn.WhisperButton = bt
         if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then
             bt:Hide()
@@ -1038,56 +1033,56 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     -- 多个关键词搜索
     do
         local name = "MeetingHorn_members"
-        BG.options[name .. "reset"] = 0
-        BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-        if BiaoGe.options[name] == 1 then
-            function Activity:Match(path, activityId, modeId, search)
-                if path and path ~= self:GetPath() then
-                    return false
-                end
-                if activityId and activityId ~= self.id then
-                    return false
-                end
-                if modeId and modeId ~= self.modeId then
-                    return false
-                end
+        BG.MeetingHorn.ActivityMatch_oldFuc = Activity.Match
+        BG.MeetingHorn.ActivityMatch_newFuc = function(self, path, activityId, modeId, search)
+            if path and path ~= self:GetPath() then
+                return false
+            end
+            if activityId and activityId ~= self.id then
+                return false
+            end
+            if modeId and modeId ~= self.modeId then
+                return false
+            end
 
-                if not search then return true end
+            if not search then return true end
 
-                if type(search) == "string" then
-                    local yes = 0
-                    local num = 0
+            if type(search) == "string" then
+                local yes = 0
+                local num = 0
+                local str = (self.data.nameLower or "") .. (self.data.shortNameLower or "") ..
+                    (self.commentLower or "")
+                for s_and in search:gmatch("%S+") do
+                    num = num + 1
+                    for _, v in pairs({ strsplit("/", s_and) }) do
+                        if str:find(v, nil, true) then
+                            yes = yes + 1
+                            break
+                        end
+                    end
+                end
+                if yes ~= num then
+                    return false
+                end
+            elseif type(search) == "table" then
+                for _, s in ipairs(search) do
                     local str = (self.data.nameLower or "") .. (self.data.shortNameLower or "") ..
                         (self.commentLower or "")
-                    for s_and in search:gmatch("%S+") do
-                        num = num + 1
-                        for _, v in pairs({ strsplit("/", s_and) }) do
-                            if str:find(v, nil, true) then
-                                yes = yes + 1
-                                break
-                            end
-                        end
+                    if str:find(s, nil, true) then
+                        return true
                     end
-                    if yes ~= num then
-                        return false
-                    end
-                elseif type(search) == "table" then
-                    for _, s in ipairs(search) do
-                        local str = (self.data.nameLower or "") .. (self.data.shortNameLower or "") ..
-                            (self.commentLower or "")
-                        if str:find(s, nil, true) then
-                            return true
-                        end
-                    end
-                    return false
                 end
-
-                if MeetingHorn.db.profile.options.activityfilter and LFG:IsFilter(self.commentLower) then
-                    return false
-                end
-
-                return true
+                return false
             end
+
+            if MeetingHorn.db.profile.options.activityfilter and LFG:IsFilter(self.commentLower) then
+                return false
+            end
+
+            return true
+        end
+        if BiaoGe.options[name] == 1 then
+            Activity.Match = BG.MeetingHorn.ActivityMatch_newFuc
         end
     end
 
@@ -1132,12 +1127,9 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             elseif _name then
                 name, realm = strsplit("-", _name)
             end
-            -- pt(name, realm)
             if not name then return end
             if realm and realm ~= GetRealmName() then return end
-            -- pt(name, realm)
             local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
-            -- pt(currentLevel)
             if not currentLevel then return end
             currentLevel = currentLevel.level
             -- local currentLevel = 2

@@ -82,7 +82,7 @@ local LF_Source_SetObject;
 local LF_Source_SetUnit;
 local LT_MapName = {  };
 
-local function LF_Source_AddReputation(Tip, rep, val)
+local function LF_Source_AddReputation(Tip, limitation, rep, val)
 	local line = nil;
 	local name = GetFactionInfoByID(rep);
 	if name then
@@ -103,6 +103,7 @@ local function LF_Source_AddReputation(Tip, rep, val)
 	end
 	Tip:AddDoubleLine(" ", line);
 	Tip:Show();
+	return limitation - 1;
 end
 local LT_StandingRank_Color = {
 	[0] = "|cffff0000",
@@ -141,8 +142,8 @@ local LT_StandingRank_Text = {
 	FACTION_STANDING_LABEL8,
 };
 
-LF_Source_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, stack_size)
-	if stack_size < 8 then
+LF_Source_SetUnit = function(Tip, limitation, pid, uid, label, isAlliance, prefix, suffix, stack_size)
+	if stack_size < 4 then
 		if SourceDataAgent then
 			local info = SourceDataAgent.unit[uid];
 			if info then
@@ -169,9 +170,11 @@ LF_Source_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, s
 				end
 				line = line .. "|r" .. suffix;
 				Tip:AddDoubleLine(label, line);
+				limitation = limitation - 1; if limitation <= 0 then Tip:Show(); return limitation; end
 				local coords = info.coords;
 				if coords then
-					for i = 1, min(#coords, 6) do
+					for i = 1, min(#coords, 4) do
+						if limitation <= 0 then Tip:Show(); return -1; end
 						local coord = coords[i];
 						local map = LT_MapName[coord[3]];
 						if map == nil then
@@ -184,21 +187,26 @@ LF_Source_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, s
 							end
 						end
 						Tip:AddDoubleLine(" ", format("(%.1f, %.1f) %s", coord[1], coord[2], map), 1, 1, 1, 1, 1, 1);
+						limitation = limitation - 1;
 					end
-					if #coords > 6 then
-						Tip:AddDoubleLine(" ", "...(+" .. (#coords - 6) .. ")", 1, 1, 1, 1, 1, 1);
+					if #coords > 4 then
+						Tip:AddDoubleLine(" ", "...(+" .. (#coords - 4) .. ")", 1, 1, 1, 1, 1, 1);
+						limitation = limitation - 1;
+						if limitation <=0 then Tip:Show(); return -1; end
 					end
 				end
 				local spawn = info.spawn;
 				if spawn then
 					if spawn.O then
 						for oid, _ in next, spawn.O do
-							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetObject(Tip, limitation, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 					if spawn.U then
 						for uid, _ in next, spawn.U do
-							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetUnit(Tip, limitation, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 				end
@@ -212,15 +220,18 @@ LF_Source_SetUnit = function(Tip, pid, uid, label, isAlliance, prefix, suffix, s
 				end
 				line = line .. suffix;
 				Tip:AddDoubleLine(label, line);
+				limitation = limitation - 1;
 			end
 		else
 			Tip:AddDoubleLine(label, prefix .. "|cffffffff[npcID: " .. uid .. "]|r" .. suffix);
+			limitation = limitation - 1;
 		end
 		Tip:Show();
 	end
+	return limitation;
 end
-LF_Source_SetQuest = function(Tip, pid, qid, label, stack_size)
-	if stack_size <= 8 then
+LF_Source_SetQuest = function(Tip, limitation, pid, qid, label, stack_size)
+	if stack_size <= 4 then
 		if SourceDataAgent then
 			local info = SourceDataAgent.quest[qid];
 			if info then
@@ -235,10 +246,12 @@ LF_Source_SetQuest = function(Tip, pid, qid, label, stack_size)
 					line = line .. "Lv" .. info.min;
 				end
 				Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": " .. line);
+				limitation = limitation - 1;
 				if info.rep then
 					for i = 1, #info.rep do
+						if limitation <= 0 then Tip:Show(); return -1; end
 						local rep = info.rep[i];
-						LF_Source_AddReputation(Tip, rep[1], rep[2]);
+						LF_Source_AddReputation(Tip, limitation, rep[1], rep[2]);
 					end
 				end
 				if info.race then
@@ -251,17 +264,20 @@ LF_Source_SetQuest = function(Tip, pid, qid, label, stack_size)
 				if start then
 					if start.U then
 						for _, uid in next, start.U do
-							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetUnit(Tip, limitation, pid, uid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 					if start.O then
 						for _, oid in next, start.O do
-							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetObject(Tip, limitation, pid, oid, " ", CT.SELFISALLIANCE, l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 					if start.I then
 						for _, iid in next, start.I do
-							LF_Source_SetItem(Tip, pid, iid, " ", l10n["quest_accepted_from"], "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetItem(Tip, limitation, pid, iid, " ", l10n["quest_accepted_from"], "", stack_size + 1);
 						end
 					end
 				end
@@ -274,14 +290,17 @@ LF_Source_SetQuest = function(Tip, pid, qid, label, stack_size)
 					line = line .. l10n["quest"] .. "|r ID: " .. qid .. "]";
 				end
 				Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": " .. line);
+				limitation = limitation - 1;
 			end
 		else
 			Tip:AddDoubleLine(label, l10n["quest_reward"] .. ": |cffffff00[" .. l10n["quest"] .. " ID: " .. qid .. "]|r");
+			limitation = limitation - 1;
 		end
 	end
+	return limitation;
 end
-LF_Source_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
-	if stack_size <= 8 then
+LF_Source_SetItem = function(Tip, limitation, pid, iid, label, prefix, suffix, stack_size)
+	if stack_size <= 4 then
 		local _, line, _, _, _, _, _, _, bind = DataAgent.item_info(iid);
 		if not line then
 			line = "|cffffffff[" .. l10n["item"] .. "|r ID: " .. iid .. "]";
@@ -300,28 +319,34 @@ LF_Source_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
 		end
 		line = line .. suffix;
 		Tip:AddDoubleLine(label, line);
+		limitation = limitation - 1;
 		if SourceDataAgent then
 			local info = SourceDataAgent.item[iid];
 			if info then
 				if info.W then
+					if limitation <= 0 then Tip:Show(); return -1; end
 					Tip:AddDoubleLine(" ", l10n["world_drop"] .. "(" .. info.W[1] .. "-" .. info.W[2] .. ")");
+					limitation = limitation - 1;
 				end
 				if info.V then
 					for uid, _ in next, info.V do
-						LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, l10n["sold_by"], "|r", stack_size + 1);
+						if limitation <= 0 then Tip:Show(); return -1; end
+						limitation = LF_Source_SetUnit(Tip, limitation, pid, uid, " ", CT.SELFISALLIANCE, l10n["sold_by"], "|r", stack_size + 1);
 					end
 				end
 				if info.U then
 					for uid, rate in next, info.U do
 						if rate > 10 then
-							LF_Source_SetUnit(Tip, pid, uid, " ", not CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetUnit(Tip, limitation, pid, uid, " ", not CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
 						end
 					end
 				end
 				if info.O then
 					for oid, rate in next, info.O do
 						if rate > 10 then
-							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetObject(Tip, limitation, pid, oid, " ", CT.SELFISALLIANCE, l10n["dropped_by"], "", stack_size + 1);
 						end
 					end
 				end
@@ -329,6 +354,7 @@ LF_Source_SetItem = function(Tip, pid, iid, label, prefix, suffix, stack_size)
 		end
 		Tip:Show();
 	end
+	return limitation;
 end
 local LT_ObjectStanding_Prefix = {	--	FactionGroup == "Alliance"
 	[true] = {
@@ -344,8 +370,8 @@ local LT_ObjectStanding_Prefix = {	--	FactionGroup == "Alliance"
 		["*"] = ": |cffffffff",
 	},
 };
-LF_Source_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix, stack_size)
-	if stack_size <= 8 then
+LF_Source_SetObject = function(Tip, limitation, pid, oid, label, isAlliance, prefix, suffix, stack_size)
+	if stack_size <= 4 then
 		if SourceDataAgent then
 			local info = SourceDataAgent.object[oid];
 			if info then
@@ -359,9 +385,11 @@ LF_Source_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix,
 				end
 				line = line .. "|r" .. suffix;
 				Tip:AddDoubleLine(label, line);
+				limitation = limitation - 1;
 				local coords = info.coords;
 				if coords then
-					for i = 1, min(#coords, 6) do
+					for i = 1, min(#coords, 4) do
+						if limitation <= 0 then Tip:Show(); return -1; end
 						local coord = coords[i];
 						local map = LT_MapName[coord[3]];
 						if map == nil then
@@ -374,21 +402,26 @@ LF_Source_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix,
 							end
 						end
 						Tip:AddDoubleLine(" ", format("(%.1f, %.1f) %s", coord[1], coord[2], map), 1, 1, 1, 1, 1, 1);
+						limitation = limitation - 1;
 					end
-					if #coords > 6 then
-						Tip:AddDoubleLine(" ", "...(+" .. (#coords - 6) .. ")", 1, 1, 1, 1, 1, 1);
+					if #coords > 4 then
+						Tip:AddDoubleLine(" ", "...(+" .. (#coords - 4) .. ")", 1, 1, 1, 1, 1, 1);
+						limitation = limitation - 1;
+						if limitation < 0 then Tip:Show(); return -1; end
 					end
 				end
 				local spawn = info.spawn;
 				if spawn then
 					if spawn.O then
 						for oid, _ in next, spawn.O do
-							LF_Source_SetObject(Tip, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetObject(Tip, limitation, pid, oid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 					if spawn.U then
 						for uid, _ in next, spawn.U do
-							LF_Source_SetUnit(Tip, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
+							if limitation <= 0 then Tip:Show(); return -1; end
+							limitation = LF_Source_SetUnit(Tip, limitation, pid, uid, " ", CT.SELFISALLIANCE, "@", "", stack_size + 1);
 						end
 					end
 				end
@@ -402,16 +435,20 @@ LF_Source_SetObject = function(Tip, pid, oid, label, isAlliance, prefix, suffix,
 				end
 				line = line .. suffix;
 				Tip:AddDoubleLine(label, line);
+				limitation = limitation - 1;
 			end
 		else
 			Tip:AddDoubleLine(label, prefix .. "|cffffffff[objectID: " .. oid .. "]|r" .. suffix);
+			limitation = limitation - 1;
 		end
 		Tip:Show();
 	end
+	return limitation;
 end
 local function LF_Source_SetSpellTip(Tip, sid)
 	local info = DataAgent.get_info_by_sid(sid);
 	if info ~= nil then
+		local limitation = 32;
 		local spec = info[index_spec];
 		if spec ~= nil then
 			local name = DataAgent.spell_name(spec);
@@ -421,6 +458,7 @@ local function LF_Source_SetSpellTip(Tip, sid)
 				else
 					Tip:AddDoubleLine(" ", name, 1, 1, 1, 1, 0, 0);
 				end
+				limitation = limitation - 1;
 			end
 		end
 		if info[index_trainer] ~= nil then			-- trainer
@@ -430,32 +468,45 @@ local function LF_Source_SetSpellTip(Tip, sid)
 			else
 				Tip:AddDoubleLine(l10n["LABEL_GET_FROM"], "|cffff00ff" .. l10n["trainer"] .. "|r");
 			end
+			limitation = limitation - 1;
 		end
 		--
 		local pid = info[index_pid];
-		local rids = info[index_recipe];
-		if rids then				-- recipe
-			for index = 1, #rids do
-				local rid = rids[index];
-				LF_Source_SetItem(Tip, pid, rid, l10n["LABEL_GET_FROM"], "", "", 1);
-			end
-		end
-		local qids = info[index_quest];
-		if qids then			-- quests
-			for index = 1, #qids do
-				local qid = qids[index];
-				LF_Source_SetQuest(Tip, pid, qid, l10n["LABEL_GET_FROM"], 1);
-			end
-		end
-		local oid = info[index_object];
-		if oid ~= nil then			-- objects
-			if type(oid) == 'table' then
-				for _, oid in next, oid do
-					LF_Source_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
+		if limitation > 0 then
+			local rids = info[index_recipe];
+			if rids then				-- recipe
+				for index = 1, #rids do
+					local rid = rids[index];
+					limitation = LF_Source_SetItem(Tip, limitation, pid, rid, l10n["LABEL_GET_FROM"], "", "", 1);
+					if limitation <= 0 then break; end
 				end
-			else
-				LF_Source_SetObject(Tip, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
 			end
+		end
+		if limitation > 0 then
+			local qids = info[index_quest];
+			if qids then			-- quests
+				for index = 1, #qids do
+					local qid = qids[index];
+					limitation = LF_Source_SetQuest(Tip, limitation, pid, qid, l10n["LABEL_GET_FROM"], 1);
+					if limitation <= 0 then break; end
+				end
+			end
+		end
+		if limitation > 0 then
+			local oid = info[index_object];
+			if oid ~= nil then			-- objects
+				if type(oid) == 'table' then
+					for _, oid in next, oid do
+						limitation = LF_Source_SetObject(Tip, limitation, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
+						if limitation <= 0 then break; end
+					end
+				else
+					limitation = LF_Source_SetObject(Tip, limitation, pid, oid, l10n["LABEL_GET_FROM"], CT.SELFISALLIANCE, "", "", 1);
+				end
+			end
+		end
+		if limitation < 0 then
+			Tip:AddDoubleLine(" ", "......", 1, 1, 1, 1, 1, 1);
 		end
 		Tip:Show();
 	end

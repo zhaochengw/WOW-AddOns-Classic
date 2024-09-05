@@ -117,7 +117,7 @@ function Announcement:Refresh()
             notice.LookDetail:SetShown(v.u)
             notice.LookDetail:SetScript('OnClick', function()
                 if v.a == 2 then
-                    self:OpenAnnouncementUrl(v.u)
+                    ns.OpenAnnouncementUrl(v.u)
                 else
                    ns.OpenUrlDialog(v.u)
                 end
@@ -156,22 +156,5 @@ function Announcement:MEETINGHORN_ANNOUNCEMENT(eventName, data, timer)
     self.db.global.AnnData = data
     self.db.global.AnnTimer = timer
     self:Refresh()
-end
-
-function Announcement:OpenAnnouncementUrl(url)
-    if not self.QRTooltip then
-        self.QRTooltip = CreateFrame('Frame', nil, self, 'MeetingHornActivityTooltipTemplate')
-        self.QRTooltip:SetSize(240, 260)
-        self.QRTooltip:SetPoint('TOPRIGHT', self, 'TOPRIGHT', 0, 0)
-        self.QRTooltip.Text:SetText('扫描下方二维码\n更多精彩在网易大神等你')
-        self.QRTooltip.Text:ClearAllPoints()
-        self.QRTooltip.Text:SetPoint('TOPLEFT', self.QRTooltip, "TOPLEFT", 8, -30)
-        self.QRTooltip.Text:SetPoint('TOPRIGHT', self.QRTooltip, "BOTTOMRIGHT", -8, 8)
-        self.QRTooltip.QRCode:ClearAllPoints()
-        self.QRTooltip.QRCode:SetPoint('BOTTOM', self.QRTooltip, "BOTTOM", 0, 30)
-        ns.UI.QRCodeWidget:Bind(self.QRTooltip.QRCode)
-    end
-    self.QRTooltip.QRCode:SetValue(url)
-    self.QRTooltip:Show()
 end
 

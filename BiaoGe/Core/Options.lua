@@ -74,7 +74,7 @@ local function OptionsUI()
 
     -- 子选项
     local Frames = {}
-    local biaoge, roleOverview, boss, others, config
+    local biaoge, autoAuction, roleOverview, boss, others, config
     do
         local last
 
@@ -122,6 +122,7 @@ local function OptionsUI()
         end
 
         biaoge = CreateTab("Options_biaoge", L["表格"])
+        autoAuction = CreateTab("Options_autoAuction", L["自动拍卖"])
         roleOverview = CreateTab("Options_roleOverview", L["角色总览"])
         if BG.IsWLK then
             boss = CreateTab("Options_boss", L["团本攻略"])
@@ -1462,6 +1463,46 @@ local function OptionsUI()
         end
     end
 
+    -- 自动拍卖
+    do
+        local height = 0
+        local h = 30
+        -- UI缩放
+        do
+            local name = "autoAuctionScale"
+            BG.options[name .. "reset"] = "0.95"
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["UI缩放"] .. L["|cff808080（右键还原设置）|r"],
+                L["调整自动拍卖UI的大小。"],
+                -- " ",
+                -- L[""],
+            }
+            local f = O.CreateSlider(name, "|cffFFFFFF" .. L["UI缩放*"] .. "|r", autoAuction, 0.5, 1.5, 0.01, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+
+            f:SetScript("OnValueChanged", function(self, value)
+                f.edit:ClearFocus()
+                value = tonumber(string.format("%.2f", value))
+                BiaoGe.options[name] = value
+                f.edit:SetText(value)
+                BGA.AuctionMainFrame:SetScale(value)
+            end)
+            f.button:SetScript("OnClick", function(self, enter)
+                if enter == "RightButton" then
+                    if BG.options[name .. "reset"] then
+                        local value = BG.options[name .. "reset"]
+                        BiaoGe.options[name] = value
+                        f:SetValue(value)
+                        f.edit:SetText(value)
+                        BGA.AuctionMainFrame:SetScale(value)
+                        BG.PlaySound(1)
+                    end
+                end
+            end)
+        end
+    end
+
     -- 角色总览设置
     do
         local function CreateFBCDbutton(n1, n2, width, height, width2, height_jiange)
@@ -2107,163 +2148,173 @@ local function OptionsUI()
 
         -- 集结号
         do
-            local function Update_OnShow(f, name)
-                f:SetScript("OnShow", function(self)
-                    if BiaoGe.options[name] == 1 then
-                        f:SetChecked(true)
-                    else
-                        f:SetChecked(false)
-                    end
-                end)
-            end
-
-            local tbl = {}
-
-            -- 显示综合频道/鼠标提示工具/目标右键菜单显示星团长
-            if BG.IsWLK then
-                tinsert(tbl, {
-                    name = "MeetingHorn_starRaidLeader",
-                    name2 = L["聊天频道显示星团长标记"] .. "*",
-                    reset = 1,
-                    ontext = {
-                        L["聊天频道显示星团长标记"],
-                        L["在聊天频道（综合、组队等）/鼠标提示工具/目标右键菜单中，显示星团长标记。"],
-                        " ",
-                        L["需要集结号v2.0.0或以上版本才能生效。"],
-                    },
-                })
-            end
-            -- 不自动退出集结号频道
-            tinsert(tbl, {
-                name = "MeetingHorn_always",
-                name2 = L["不自动退出集结号频道"] .. "*",
-                reset = 0,
-                ontext = {
-                    L["不自动退出集结号频道"],
-                    L["这样你可以一直同步集结号的组队消息，让你随时打开集结号都能查看全部活动。"],
-                },
-            })
-
-            -- 历史搜索记录
-            tinsert(tbl, {
-                name = "MeetingHorn_history",
-                name2 = L["历史搜索记录"] .. "*",
-                reset = 0,
-                ontext = {
-                    L["历史搜索记录"],
-                    L["给集结号的搜索框增加一个历史搜索记录，提高你搜索的效率。"],
-                },
-            })
-
-            -- 多个关键词搜索
-            tinsert(tbl, {
-                notdefault = true,
-                name = "MeetingHorn_search",
-                name2 = L["多个关键词搜索"],
-                reset = 0,
-                ontext = {
-                    L["多个关键词搜索"],
-                    L[ [[搜索框支持多个关键词搜索。]] ],
-                    " ",
-                    L[ [["空格"表示"且"，需同时满足全部关键词。比如你想搜索哪个诺莫瑞根活动里缺少治疗，可以搜索"诺莫瑞根 治疗"。]] ],
-                    " ",
-                    L[ [["/"表示"或"，满足其中一个关键词即可。比如你是双修牧师，可以搜索"牧师/MS/暗牧/AM"。]] ],
-                    " ",
-                    L[ [[如果把"空格"和"/"结合起来，比如搜索"诺莫瑞根/矮子 牧师/MS/暗牧/AM"，表示我想找诺莫瑞根或者矮子的活动，且该活动缺少任意牧师。]] ],
-                },
-            })
-
-            -- 按队伍人数排序
-            tinsert(tbl, {
-                -- notdefault = true,
-                name = "MeetingHorn_members",
-                name2 = L["按队伍人数排序"] .. "*",
-                reset = 0,
-                ontext = {
-                    L["按队伍人数排序"],
-                    L["集结号活动可以按队伍人数排序。"],
-                },
-                onClick = function(self)
-                    local addonName = "MeetingHorn"
-                    if not IsAddOnLoaded(addonName) then return end
-                    local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
-                    local bt = MeetingHorn.MainPanel.Browser.Header3
-                    if self:GetChecked() then
-                        bt:SetEnabled(true)
-                    else
-                        bt:SetEnabled(false)
-                    end
-                end
-            })
-
-            -- 密语模板
-            tinsert(tbl, {
-                name = "MeetingHorn_whisper",
-                name2 = L["密语模板"] .. "*",
-                reset = 0,
-                ontext = {
-                    L["密语模板"],
-                    L["预设成就、装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"],
-                    " ",
-                    L["按住SHIFT+点击密语时不会添加。"],
-                    " ",
-                    L["聊天频道玩家的右键菜单里增加密语模板按钮。"],
-                    " ",
-                    L["聊天输入框的右键菜单里增加密语模板按钮。"],
-                    " ",
-                    L["集结号活动的右键菜单里增加邀请按钮。"],
-                },
-                onClick = function(self)
-                    local addonName = "MeetingHorn"
-                    if not IsAddOnLoaded(addonName) then return end
-                    if self:GetChecked() then
-                        BG.MeetingHorn.WhisperButton:Show()
-                        BG.MeetingHorn.WhisperFrame:Show()
-                        BiaoGe.MeetingHornWhisper.WhisperFrame = true
-                    else
-                        BG.MeetingHorn.WhisperButton:Hide()
-                    end
-                end
-            })
-            if BG.IsVanilla then
-                tbl[#tbl].ontext = {
-                    L["密语模板"],
-                    L["预设装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"],
-                    " ",
-                    L["按住SHIFT+点击密语时不会添加。"],
-                    " ",
-                    L["聊天频道玩家的右键菜单里增加密语模板按钮。"],
-                    " ",
-                    L["聊天输入框的右键菜单里增加密语模板按钮。"],
-                    " ",
-                    L["集结号活动的右键菜单里增加邀请按钮。"],
-                }
-            end
-
-            local text = others:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-            text:SetPoint("TOPLEFT", width, height - h)
-            text:SetText(BG.STC_g1(L["集结号"]))
-            height = height - height_jiange
-
-            O.CreateLine(others, height - h + line_height)
-
-            for i, v in ipairs(tbl) do
-                if not v.notdefault then
-                    BG.options[v.name .. "reset"] = v.reset
-                    BiaoGe.options[v.name] = BiaoGe.options[v.name] or BG.options[v.name .. "reset"]
-                end
-                BG.options["button" .. v.name] = O.CreateCheckButton(v.name, v.name2, others, 15, height - h, v.ontext)
-                Update_OnShow(BG.options["button" .. v.name], v.name)
-                if v.onClick then
-                    BG.options["button" .. v.name]:HookScript("OnClick", v.onClick)
-                end
-                h = h + 30
-            end
-
-
             BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
                 if not (isLogin or isReload) then return end
 
+                local text = others:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height - h)
+                text:SetText(BG.STC_g1(L["集结号"]))
+                height = height - height_jiange
+
+                O.CreateLine(others, height - h + line_height)
+
+                local function Update_OnShow(f, name)
+                    f:SetScript("OnShow", function(self)
+                        if BiaoGe.options[name] == 1 then
+                            f:SetChecked(true)
+                        else
+                            f:SetChecked(false)
+                        end
+                    end)
+                end
+
+                local tbl = {}
+
+                -- 显示综合频道/鼠标提示工具/目标右键菜单显示星团长
+                if BG.IsWLK then
+                    tinsert(tbl, {
+                        name = "MeetingHorn_starRaidLeader",
+                        name2 = L["聊天频道显示星团长标记"] .. "*",
+                        reset = 1,
+                        ontext = {
+                            L["聊天频道显示星团长标记"],
+                            L["在聊天频道（综合、组队等）/鼠标提示工具/目标右键菜单中，显示星团长标记。"],
+                            " ",
+                            L["需要集结号v2.0.0或以上版本才能生效。"],
+                        },
+                    })
+                end
+                -- 不自动退出集结号频道
+                tinsert(tbl, {
+                    name = "MeetingHorn_always",
+                    name2 = L["不自动退出集结号频道"] .. "*",
+                    reset = 0,
+                    ontext = {
+                        L["不自动退出集结号频道"],
+                        L["这样你可以一直同步集结号的组队消息，让你随时打开集结号都能查看全部活动。"],
+                    },
+                })
+                -- 历史搜索记录
+                tinsert(tbl, {
+                    name = "MeetingHorn_history",
+                    name2 = L["历史搜索记录"] .. "*",
+                    reset = 0,
+                    ontext = {
+                        L["历史搜索记录"],
+                        L["给集结号的搜索框增加一个历史搜索记录，提高你搜索的效率。"],
+                    },
+                })
+                -- 多个关键词搜索
+                tinsert(tbl, {
+                    -- notdefault = true,
+                    name = "MeetingHorn_search",
+                    name2 = L["多个关键词搜索"].. "*",
+                    reset = 0,
+                    ontext = {
+                        L["多个关键词搜索"],
+                        L[ [[搜索框支持多个关键词搜索。]] ],
+                        " ",
+                        L[ [["空格"表示"且"，需同时满足全部关键词。比如你想搜索哪个诺莫瑞根活动里缺少治疗，可以搜索"诺莫瑞根 治疗"。]] ],
+                        " ",
+                        L[ [["/"表示"或"，满足其中一个关键词即可。比如你是双修牧师，可以搜索"牧师/MS/暗牧/AM"。]] ],
+                        " ",
+                        L[ [[如果把"空格"和"/"结合起来，比如搜索"诺莫瑞根/矮子 牧师/MS/暗牧/AM"，表示我想找诺莫瑞根或者矮子的活动，且该活动缺少任意牧师。]] ],
+                    },
+                    onClick = function(self)
+                        local addonName = "MeetingHorn"
+                        if not IsAddOnLoaded(addonName) then return end
+                        local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+                        local Activity = MeetingHorn:GetClass('Activity')
+                        if self:GetChecked() then
+                            Activity.Match = BG.MeetingHorn.ActivityMatch_newFuc
+                        else
+                            Activity.Match = BG.MeetingHorn.ActivityMatch_oldFuc
+                        end
+                    end
+                })
+                -- 按队伍人数排序
+                tinsert(tbl, {
+                    -- notdefault = true,
+                    name = "MeetingHorn_members",
+                    name2 = L["按队伍人数排序"] .. "*",
+                    reset = 0,
+                    ontext = {
+                        L["按队伍人数排序"],
+                        L["集结号活动可以按队伍人数排序。"],
+                    },
+                    onClick = function(self)
+                        local addonName = "MeetingHorn"
+                        if not IsAddOnLoaded(addonName) then return end
+                        local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+                        local Browser = MeetingHorn:GetClass('UI.Browser', 'Frame')
+                        local bt = MeetingHorn.MainPanel.Browser.Header3
+                        if self:GetChecked() then
+                            bt:SetEnabled(true)
+                            Browser.Sort = BG.MeetingHorn.BrowserSort_newFuc
+                        else
+                            bt:SetEnabled(false)
+                            Browser.Sort = BG.MeetingHorn.BrowserSort_oldFuc
+                        end
+                    end
+                })
+                -- 密语模板
+                tinsert(tbl, {
+                    name = "MeetingHorn_whisper",
+                    name2 = L["密语模板"] .. "*",
+                    reset = 0,
+                    ontext = {
+                        L["密语模板"],
+                        L["预设成就、装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"],
+                        " ",
+                        L["按住SHIFT+点击密语时不会添加。"],
+                        " ",
+                        L["聊天频道玩家的右键菜单里增加密语模板按钮。"],
+                        " ",
+                        L["聊天输入框的右键菜单里增加密语模板按钮。"],
+                        " ",
+                        L["集结号活动的右键菜单里增加邀请按钮。"],
+                    },
+                    onClick = function(self)
+                        local addonName = "MeetingHorn"
+                        if not IsAddOnLoaded(addonName) then return end
+                        if self:GetChecked() then
+                            BG.MeetingHorn.WhisperButton:Show()
+                            BG.MeetingHorn.WhisperFrame:Show()
+                            BiaoGe.MeetingHornWhisper.WhisperFrame = true
+                        else
+                            BG.MeetingHorn.WhisperButton:Hide()
+                        end
+                    end
+                })
+                if BG.IsVanilla then
+                    tbl[#tbl].ontext = {
+                        L["密语模板"],
+                        L["预设装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"],
+                        " ",
+                        L["按住SHIFT+点击密语时不会添加。"],
+                        " ",
+                        L["聊天频道玩家的右键菜单里增加密语模板按钮。"],
+                        " ",
+                        L["聊天输入框的右键菜单里增加密语模板按钮。"],
+                        " ",
+                        L["集结号活动的右键菜单里增加邀请按钮。"],
+                    }
+                end
+
+                for i, v in ipairs(tbl) do
+                    if not v.notdefault then
+                        BG.options[v.name .. "reset"] = v.reset
+                        BiaoGe.options[v.name] = BiaoGe.options[v.name] or BG.options[v.name .. "reset"]
+                    end
+                    BG.options["button" .. v.name] = O.CreateCheckButton(v.name, v.name2, others, 15, height - h, v.ontext)
+                    Update_OnShow(BG.options["button" .. v.name], v.name)
+                    if v.onClick then
+                        BG.options["button" .. v.name]:HookScript("OnClick", v.onClick)
+                    end
+                    h = h + 30
+                end
+
+                -- 在集结号增加设置按钮
                 local addonName = "MeetingHorn"
                 if not IsAddOnLoaded(addonName) then return end
                 local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)

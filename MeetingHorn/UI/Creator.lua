@@ -73,12 +73,18 @@ end
 
 function Creator:OnCreateClick()
     self.Comment:ClearFocus()
+    local comment = self.Comment:GetText():gsub('%s+', ' ')
+    local isBlack = ns.IsBlackListData(comment)
+    if isBlack then
+        ns.Message('您本次创建活动过程中所填写的活动说明信息无法通过集结号进行发布，还请修改内容后重新尝试。')
+        return
+    end
 
     local hasActivity = ns.LFG:GetCurrentActivity()
     local activityId = self.Activity:GetValue()
     local modeId = self.Mode:GetValue()
-    local comment = self.Comment:GetText():gsub('%s+', ' ')
     local instanceName = ns.GetActivityData(activityId).instanceName
+
     if instanceName then
         local raidId = ns.GetRaidId(instanceName)
         if raidId ~= -1 then

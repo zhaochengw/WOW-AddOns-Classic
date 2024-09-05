@@ -16,6 +16,7 @@ local FrameDongHua = ns.FrameDongHua
 local FrameHide = ns.FrameHide
 local AddTexture = ns.AddTexture
 local GetItemID = ns.GetItemID
+local Round = ns.Round
 
 local Width = ns.Width
 local Height = ns.Height
@@ -700,10 +701,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if BG.FrameNewBee then
                     BG.FrameNewBee:Hide()
                 end
-                BG.ButtonNewBee:Hide()
             end)
             BG.HistoryMainFrame:SetScript("OnHide", function(self)
-                BG.ButtonNewBee:Show()
+                if BG.ButtonNewBee then
+                    BG.ButtonNewBee:Show()
+                end
                 BG.History.chooseNum = nil
             end)
         end
@@ -754,7 +756,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         lastbt = BG.XiaoFeiUI(lastbt)
         lastbt = BG.QianKuanUI(lastbt)
         lastbt = BG.YongShiUI(lastbt)
-        lastbt = BG.WCLUI(lastbt)
+        if BG.IsWLK then
+            lastbt = BG.WCLUI(lastbt)
+        end
 
         BG.HistoryUI()
         BG.ReceiveUI()
@@ -1609,7 +1613,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 itemIDs = itemIDs .. itemID .. " "
             end
             -- 不提示关注拍卖
-            local ShowGuanZhu=true
+            local ShowGuanZhu = true
             for i, text in ipairs(notShowGuanZhuTbl) do
                 if msg:find(text) then
                     ShowGuanZhu = false
@@ -1687,33 +1691,31 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end)
     end
-    ----------点击聊天添加装备----------
+    ----------点击聊天/背包添加装备----------
     do
-        local cd
-        hooksecurefunc("ChatEdit_InsertLink", function(link)
-            if cd then return end
-            cd = true
-            BG.After(0.05, function()
-                cd = false
-            end)
-            local item, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
-            if not link then return end
-            if BG.MainFrame:IsShown() and BG.lastfocuszhuangbei and BG.lastfocuszhuangbei:HasFocus() then
+        local function Insert(text)
+            if not GetItemID(text) then return end
+            if BG.lastfocuszhuangbei and BG.lastfocuszhuangbei:HasFocus() then
+                BG.PlaySound(1)
                 if BG.FrameZhuangbeiList then
                     BG.FrameZhuangbeiList:Hide()
                 end
-                BG.lastfocuszhuangbei:SetText(link)
-                BG.PlaySound(1)
+                BG.lastfocuszhuangbei:SetText(text)
                 if BG.lastfocuszhuangbei2 then
                     BG.lastfocuszhuangbei2:SetFocus()
                     if BG.FrameZhuangbeiList then
                         BG.FrameZhuangbeiList:Hide()
                     end
                 end
+                return
             end
-        end)
+            if BG.auctionLogFrame_InsertLink(text) then
+                return
+            end
+        end
+        -- 聊天框
         hooksecurefunc("SetItemRef", function(link, text, button)
-            -- pt(link,text)
+            -- pt(link, text)
             local item, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
             if not link then return end
             if IsAltKeyDown() then
@@ -1722,7 +1724,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 else            -- 关注装备
                     BG.AddGuanZhu(link)
                 end
+            elseif IsShiftKeyDown() then
+                Insert(link)
             end
+        end)
+        -- 背包
+        hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", function(self, button)
+            if not IsShiftKeyDown() then return end
+            local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
+            Insert(link)
         end)
     end
     ----------时光徽章价格----------
@@ -2039,9 +2049,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if itemStackCount > 1 then -- 堆叠数量大于1
                     return
                 end
-                -- if typeID == 1 then     -- 背包类型
-                --     return
-                -- end
             end
             return true
         end
@@ -3317,7 +3324,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     do
         local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
         bt:SetSize(80, 30)
-        bt:SetPoint("RIGHT", BG.ButtonZhangDan, "LEFT", -100, 0)
+        bt:SetPoint("RIGHT", BG.ButtonZhangDan, "LEFT", -80, 0)
         bt:SetText(L["撤销删除"])
         bt:Hide()
         BG.ButtonCancelDelete = bt
@@ -3489,9 +3496,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end)
     end
     BG.MainFrame.ErrorText:Hide()
-    -- C_Timer.After(1, function()
-    --     SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 金团表格载入成功。插件命令：%s或%s，小地图图标：%s"] .. RR, "/BiaoGe", "/GBG", L["星星"]))
-    -- end)
 end)
 
 ----------刷新团队成员信息----------
@@ -3587,7 +3591,8 @@ end
 ----------其他----------
 do
     -- 游戏按键设置
-    BINDING_HEADER_BIAOGE = L["BiaoGe金团表格"]
+    BINDING_HEADER_BIAOGE = "BiaoGe"
+    -- BINDING_HEADER_BIAOGE = L["BiaoGe金团表格"]
     BINDING_NAME_BIAOGE = L["显示/关闭表格"]
 
     ----------插件命令----------
@@ -3725,25 +3730,106 @@ do
     SLASH_BIAOGETEST1 = "/bgdebug"
 
     SlashCmdList["BIAOGETEST2"] = function()
-        BiaoGe.AuctionLog["苍骑士仓库"] = BiaoGe.AuctionLog["苍骑士仓库"] or {}
-        tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
-            ["money"] = 50,
-            ["itemID"] = 43013,
-            ["time"] = 1723270112,
-            ["item"] = "|cffffffff|Hitem:43013::::::::1:::::::::|h[冰冷的肉]|h|r",
-        })
-        tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
-            ["money"] = 50,
-            ["itemID"] = 34054,
-            ["time"] = 1723272776,
-            ["item"] = "|cffffffff|Hitem:34054::::::::1:::::::::|h[无限之尘]|h|r",
-        })
-        tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
-            ["money"] = 300,
-            ["item"] = "|cffffffff|Hitem:43013::::::::1:::::::::|h[冰冷的肉]|h|r",
-            ["itemID"] = 43013,
-            ["time"] = 1723284569,
-        })
+        local f, edit = BG.CreateScrollFrame(UIParent, 400, 500, true)
+        f:SetPoint("CENTER")
+        edit:EnableMouse(true)
+        edit:SetScript("OnEscapePressed", function(self)
+            f:Hide()
+        end)
+
+        local colortbl = {
+            ["0.67.0.83.0.45"] = "猎人",
+            ["0.53.0.53.0.93"] = "术士",
+            ["1.1.1"] = "牧师",
+            ["0.96.0.55.0.73"] = "圣骑士",
+            ["0.25.0.78.0.92"] = "法师",
+            ["1.0.96.0.41"] = "盗贼",
+            ["1.0.49.0.04"] = "德鲁伊",
+            ["0.0.44.0.87"] = "萨满",
+            ["0.78.0.61.0.43"] = "战士",
+            ["0.77.0.12.0.23"] = "死亡骑士",
+            ["0.1.0.59"] = "MONK",
+            ["0.64.0.19.0.79"] = "DEMONHUNTER",
+        }
+
+        local db = {}
+        local FB = "ULD"
+        for dt in pairs(BiaoGe.History[FB]) do
+            for boss in pairs(BiaoGe.History[FB][dt]) do
+                for i = 1, 30 do
+                    if BiaoGe.History[FB][dt][boss]["maijia" .. i] then
+                        local maijia = BiaoGe.History[FB][dt][boss]["maijia" .. i]
+                        if not db[maijia] then
+                            local r, g, b = 1, 1, 1
+                            if BiaoGe.History[FB][dt][boss]["color" .. i] then
+                                r = Round(BiaoGe.History[FB][dt][boss]["color" .. i][1], 2)
+                                g = Round(BiaoGe.History[FB][dt][boss]["color" .. i][2], 2)
+                                b = Round(BiaoGe.History[FB][dt][boss]["color" .. i][3], 2)
+                            end
+                            local color = colortbl[r .. "." .. g .. "." .. b]
+                            db[maijia] = {
+                                maijia = maijia,
+                                color = color,
+                                sum = 0,
+                                zhuangbei = {},
+                            }
+                        end
+
+                        local item = ""
+                        if BiaoGe.History[FB][dt][boss]["zhuangbei" .. i] then
+                            item = BiaoGe.History[FB][dt][boss]["zhuangbei" .. i]:match("%[.+%]")
+                        end
+                        local money = BiaoGe.History[FB][dt][boss]["jine" .. i] or ""
+                        if item then
+                            db[maijia].sum = db[maijia].sum + (tonumber(money) or 0)
+                            tinsert(db[maijia].zhuangbei, {
+                                item = item,
+                                money = money,
+                                dt = strsub(dt, 3, 4) .. "月" .. strsub(dt, 5, 6) .. "日",
+                            })
+                        end
+                    end
+                end
+            end
+        end
+
+        local text = ""
+        for maijia in pairs(db) do
+            text = text .. maijia .. "," .. db[maijia].color .. ",,合计消费," .. db[maijia].sum .. ",\n"
+            for i, v in ipairs(db[maijia].zhuangbei) do
+                text = text .. "," .. "," .. v.dt .. "," .. v.item .. "," .. v.money .. ",\n"
+            end
+        end
+        -- pt(Size(db))
+
+        edit:SetText(text)
+        edit:HighlightText()
+        BG.After(0.5, function()
+            edit:SetFocus()
+        end)
+
+
+
+
+        -- BiaoGe.AuctionLog["苍骑士仓库"] = BiaoGe.AuctionLog["苍骑士仓库"] or {}
+        -- tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
+        --     ["money"] = 50,
+        --     ["itemID"] = 43013,
+        --     ["time"] = 1723270112,
+        --     ["item"] = "|cffffffff|Hitem:43013::::::::1:::::::::|h[冰冷的肉]|h|r",
+        -- })
+        -- tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
+        --     ["money"] = 50,
+        --     ["itemID"] = 34054,
+        --     ["time"] = 1723272776,
+        --     ["item"] = "|cffffffff|Hitem:34054::::::::1:::::::::|h[无限之尘]|h|r",
+        -- })
+        -- tinsert(BiaoGe.AuctionLog["苍骑士仓库"], {
+        --     ["money"] = 300,
+        --     ["item"] = "|cffffffff|Hitem:43013::::::::1:::::::::|h[冰冷的肉]|h|r",
+        --     ["itemID"] = 43013,
+        --     ["time"] = 1723284569,
+        -- })
 
         -- local addonName = "MeetingHorn"
         -- if IsAddOnLoaded(addonName) then
@@ -3758,10 +3844,9 @@ do
 
         -- BG.qiankuanTradeFrame.Update()
 
-        local name, link, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(45087)
-        --     pt(stackCount)
-        ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 1, typeID)
-        ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 2, typeID)
+        -- local name, link, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(45087)
+        -- ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 1, typeID)
+        -- ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 2, typeID)
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 end

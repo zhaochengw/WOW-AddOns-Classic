@@ -15,6 +15,7 @@ local Maxi = ns.Maxi
 local BossNum = ns.BossNum
 local FrameHide = ns.FrameHide
 local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 
@@ -24,6 +25,44 @@ local framedown
 local frameright
 local red, greed, blue = 1, 1, 1
 local touming1, touming2, touming3 = 0.1, 0.1, BG.highLightAlpha
+
+local function ShowTardeHighLightItem_MyJine(self)
+    local b = self.bossnum
+    local i = self.i
+    local FB = BG.FB1
+    local tradeInfo = BG.GetGeZiTardeInfo(FB, b, i)
+    if tradeInfo then
+        for _, v in ipairs(tradeInfo) do
+            for b = 1, Maxb[FB] do
+                for i = 1, Maxi[FB] do
+                    local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
+                    if myjine and FB == v.FB and b == v.b and i == v.i then
+                        local f = BG.CreateHighlightFrame(myjine, nil, { 0, 1, 0, 0.5 }, 4)
+                        f:ClearAllPoints()
+                        f:SetPoint("TOPLEFT", myjine, "TOPLEFT", -5, 0)
+                        f:SetPoint("BOTTOMRIGHT", myjine, "BOTTOMRIGHT", 0, 0)
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function ShowTardeHighLightItem_OtherJine(self)
+    local b = self.bossnum
+    local i = self.i
+    local FB = BG.FB1
+    if self.tradeTbl then
+        for i, v in ipairs(self.tradeTbl) do
+            local otherjine = BG.DuiZhangFrame[FB]["boss" .. v.b]["otherjine" .. v.i]
+            local f = BG.CreateHighlightFrame(otherjine, nil, { 0, 1, 0, 0.5 }, 4)
+            f:ClearAllPoints()
+            f:SetPoint("TOPLEFT", otherjine, "TOPLEFT", -5, 0)
+            f:SetPoint("BOTTOMRIGHT", otherjine, "BOTTOMRIGHT", 0, 0)
+        end
+    end
+end
+
 
 ------------------标题------------------
 function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
@@ -159,12 +198,7 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
     -- 发送装备到聊天输入框
     bt:SetScript("OnMouseDown", function(self, enter)
         if IsShiftKeyDown() then
-            local f = GetCurrentKeyBoardFocus()
-            if not f then
-                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-            end
-            local text = self:GetText()
-            ChatEdit_InsertLink(text)
+            BG.InsertLink(self:GetText())
         end
     end)
     -- 鼠标悬停在装备时
@@ -211,6 +245,10 @@ function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
     bt:SetEnabled(false)
     bt:SetTextColor(RGB("00BFFF"))
     BG.SetBorderAlpha(bt)
+    bt.FB = FB
+    bt.bossnum = b
+    bt.t = t
+    bt.i = i
     if BiaoGe[FB]["boss" .. b]["jine" .. i] and b ~= Maxb[FB] and b ~= Maxb[FB] + 1 then
         bt:SetText(BiaoGe[FB]["boss" .. b]["jine" .. i])
     end
@@ -261,10 +299,12 @@ function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
+        ShowTardeHighLightItem_MyJine(self)
     end)
     bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()
         GameTooltip:Hide()
+        BG.Hide_AllHighlight()
     end)
 end
 
@@ -279,6 +319,10 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     bt:SetEnabled(false)
     bt:SetTextColor(RGB("FF69B4"))
     BG.SetBorderAlpha(bt)
+    bt.FB = FB
+    bt.bossnum = b
+    bt.t = t
+    bt.i = i
     preWidget = bt
     BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i] = bt
 
@@ -331,10 +375,12 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
+        ShowTardeHighLightItem_OtherJine(self)
     end)
     bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()
         GameTooltip:Hide()
+        BG.Hide_AllHighlight()
     end)
 end
 

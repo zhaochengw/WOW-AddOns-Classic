@@ -58,8 +58,8 @@ function Output:Initialize()
         t:SetPoint("TOP", f.texture, 0, -14)
         self.title = t
     end
-    do -- 创建关闭按钮
-        local cls = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+    do -- 下部按钮群
+        local cls = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 关闭按钮
         cls:SetWidth(50)
         cls:SetHeight(23)
         cls:SetPoint("BOTTOMLEFT", 290, 10)
@@ -68,36 +68,37 @@ function Output:Initialize()
             f:Hide()
             Addon.Calendar.background:Hide()
         end)
-        local all = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        local all = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 显示全部
         all:SetWidth(70)
         all:SetHeight(23)
         all:SetPoint("BOTTOMLEFT", 220, 10)
         all:SetText(L["All"])
-        all:SetScript("OnClick", function(self) Addon:PrintTradeLog("ALL", nil) end)
-        local tl = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        all:SetScript("OnClick", function(self) Addon.Config.Mode = "ALL" Addon:PrintTradeLog(Config.Mode, (Config.OnlyThisCharacter and Config.SelectName or nil)) end)
+        Addon.Config.OnlyThisCharacter = false
+        local tl = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 显示交易
         tl:SetWidth(50)
         tl:SetHeight(23)
         tl:SetPoint("BOTTOMLEFT", 20, 10)
         tl:SetText(L["Trades"])
-        tl:SetScript("OnClick", function(self) Addon:PrintTradeLog("TRADE", nil) end)
-        local ml = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        tl:SetScript("OnClick", function(self) Addon.Config.Mode = "TRADE" Addon:PrintTradeLog(Config.Mode, (Config.OnlyThisCharacter and Config.SelectName or nil)) end)
+        local ml = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 显示邮件
         ml:SetWidth(50)
         ml:SetHeight(23)
         ml:SetPoint("BOTTOMLEFT", 70, 10)
         ml:SetText(L["Mails"])
-        ml:SetScript("OnClick", function(self) Addon:PrintTradeLog("MAIL", nil) end)
-        local sm = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        ml:SetScript("OnClick", function(self) Addon.Config.Mode = "MAIL" Addon:PrintTradeLog(Config.Mode, (Config.OnlyThisCharacter and Config.SelectName or nil)) end)
+        local sm = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 显示收件
         sm:SetWidth(50)
         sm:SetHeight(23)
         sm:SetPoint("BOTTOMLEFT", 120, 10)
         sm:SetText(L["Sent"])
-        sm:SetScript("OnClick", function(self) Addon:PrintTradeLog("SMAIL", nil) end)
-        local rm = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        sm:SetScript("OnClick", function(self) Addon.Config.Mode = "SMAIL" Addon:PrintTradeLog(Config.Mode, (Config.OnlyThisCharacter and Config.SelectName or nil)) end)
+        local rm = CreateFrame("Button", nil, f, "GameMenuButtonTemplate") -- 显示发件
         rm:SetWidth(50)
         rm:SetHeight(23)
         rm:SetPoint("BOTTOMLEFT", 170, 10)
         rm:SetText(L["Received"])
-        rm:SetScript("OnClick", function(self) Addon:PrintTradeLog("RMAIL", nil) end)
+        rm:SetScript("OnClick", function(self) Addon.Config.Mode = "RMAIL" Addon:PrintTradeLog(Config.Mode, (Config.OnlyThisCharacter and Config.SelectName or nil)) end)
 	end
     do -- 角色筛选下拉菜单
         local d = CreateFrame("Frame", nil, f, "UIDropDownMenuTemplate")
@@ -122,15 +123,17 @@ function Output:Initialize()
                 info.text = text[i]
                 info.value = value[i]
                 info.func = function(v)
-                    Config.SelectName = text[v.value]
+                    Addon.Config.SelectName = text[v.value]
                     UIDropDownMenu_SetText(d, text[v.value])
                     CloseDropDownMenus()
+                    Addon.SetWindow.dropdownlist:Hide()
+                    Addon.SetWindow.dropdownlist:Show()
                 end
                 info.arg1, info.arg2 = d, value[i]
                 UIDropDownMenu_AddButton(info)
             end
         end)
-        d.SetValue = function(v) Config.SelectName = text[v] end
+        d.SetValue = function(v) Addon.Config.SelectName = text[v] end
         d:SetScript("OnShow", function(self)
             UIDropDownMenu_SetText(self, Config.SelectName)
         end)
@@ -143,19 +146,21 @@ function Output:Initialize()
         sift:SetWidth(100)
         sift:SetHeight(23)
         sift:SetPoint("LEFT", d, "LEFT", 160, 3)
-        sift:SetText(L["Sift"])
+        if not Config.OnlyThisCharacter then
+            sift:SetText(L["Sift"])
+        else
+            sift:SetText(L["Cancel Sift"])
+        end
         sift:SetScript("OnClick", function()
-            local DisplayType = "ALL"
-            if Output.title:GetText() == L["Trade Logs"] then
-                DisplayType = "TRADE"
-            elseif Output.title:GetText() == L["Mail Logs"] then
-                DisplayType = "MAIL"
-            elseif Output.title:GetText() == L["Sent Mail"] then
-                DisplayType = "SMAIL"
-            elseif Output.title:GetText() == L["Received Mail"] then
-                DisplayType = "RMAIL"
+            if not Config.OnlyThisCharacter then
+                Addon.Config.OnlyThisCharacter = true
+                sift:SetText(L["Cancel Sift"])
+                Addon:PrintTradeLog(Config.Mode, Config.SelectName)
+            else
+                Addon.Config.OnlyThisCharacter = false
+                sift:SetText(L["Sift"])
+                Addon:PrintTradeLog(Config.Mode, nil)
             end
-            Addon:PrintTradeLog(DisplayType, Config.SelectName)
         end)
 
         self.dropdowntitle = t

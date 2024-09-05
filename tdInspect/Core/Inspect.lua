@@ -132,6 +132,14 @@ function Inspect:SetUnit(unit, name)
     end
 end
 
+function Inspect:GetUnitName()
+    if self.unit then
+        return ns.UnitName(self.unit)
+    else
+        return Ambiguate(self.unitName, 'none')
+    end
+end
+
 function Inspect:Clear()
     ClearInspectPlayer()
     self.unitName = nil
@@ -175,6 +183,73 @@ function Inspect:IsItemEquipped(itemId)
             end
         end
     end
+end
+
+local function GetSlotItemLevel(slot)
+    local itemId = Inspect:GetItemLink(slot)
+    if not itemId then
+        return 0
+    end
+
+    local itemLevel = select(4, GetItemInfo(itemId))
+    if itemLevel then
+        return itemLevel
+    end
+end
+
+local function GetMainhandItemLevel(slot)
+    local itemId = Inspect:GetItemLink(slot)
+    if not itemId then
+        return 0
+    end
+    local itemLevel, _, _, _, _, itemEquipLoc = select(4, GetItemInfo(itemId))
+    if itemEquipLoc == 'INVTYPE_2HWEAPON' then
+        return itemLevel * 2
+    end
+    return itemLevel
+end
+
+local function GetRangedItemLevel(slot)
+    if UnitClassBase('player') ~= 'HUNTER' then
+        return 0, true
+    end
+    return GetSlotItemLevel(slot)
+end
+
+local SLOTS = {
+    [INVSLOT_HEAD] = GetSlotItemLevel,
+    [INVSLOT_NECK] = GetSlotItemLevel,
+    [INVSLOT_SHOULDER] = GetSlotItemLevel,
+    [INVSLOT_CHEST] = GetSlotItemLevel,
+    [INVSLOT_WAIST] = GetSlotItemLevel,
+    [INVSLOT_LEGS] = GetSlotItemLevel,
+    [INVSLOT_FEET] = GetSlotItemLevel,
+    [INVSLOT_WRIST] = GetSlotItemLevel,
+    [INVSLOT_HAND] = GetSlotItemLevel,
+    [INVSLOT_FINGER1] = GetSlotItemLevel,
+    [INVSLOT_FINGER2] = GetSlotItemLevel,
+    [INVSLOT_TRINKET1] = GetSlotItemLevel,
+    [INVSLOT_TRINKET2] = GetSlotItemLevel,
+    [INVSLOT_BACK] = GetSlotItemLevel,
+    [INVSLOT_MAINHAND] = GetMainhandItemLevel,
+    [INVSLOT_OFFHAND] = GetSlotItemLevel,
+    [INVSLOT_RANGED] = GetRangedItemLevel,
+}
+
+function Inspect:GetItemLevel()
+    local total, count = 0, 0
+
+    for slot, f in pairs(SLOTS) do
+        local itemLevel, ignore = f(slot)
+        if not itemLevel then
+            return
+        end
+        if not ignore then
+            count = count + 1
+            total = total + itemLevel
+        end
+    end
+    return total / count
 end
 
 -- @build>2@
@@ -226,40 +301,23 @@ end
 -- @end-build>2@
 
 function Inspect:GetEquippedSetItems(id)
-    local count = 0
     local items = {}
-    local overrideNames = {}
-    local slotItems = ns.ItemSets[id].slots
-
+    local count = 0
     for slot = 1, 18 do
         local link = self:GetItemLink(slot)
         if link then
             local name, _, _, _, _, _, _, _, equipLoc, _, _, _, _, _, _, setId = GetItemInfo(link)
             if name and setId and setId == id then
-                local baseName
                 local itemId = ns.ItemLinkToId(link)
-
                 if equipLoc == 'INVTYPE_ROBE' then
                     equipLoc = 'INVTYPE_CHEST'
                 end
-
-                local isBaseItem = slotItems[equipLoc][itemId]
-                if not isBaseItem then
-                    local baseItemId = next(slotItems[equipLoc])
-                    baseName = GetItemInfo(baseItemId)
-                    if baseName then
-                        overrideNames[baseName] = name
-                    end
-                    items[name] = (items[name] or 0) + 1
-                end
-
+                items[equipLoc] = itemId
                 count = count + 1
-                baseName = baseName or name
-                items[baseName] = (items[baseName] or 0) + 1
             end
         end
     end
-    return count, items, overrideNames
+    return count, items
 end
 
 function Inspect:GetUnitClassFileName()
@@ -300,6 +358,17 @@ function Inspect:GetUnitLevel()
     else
         return self.db.level
     end
+end
+
+function Inspect:GetDataSource()
+    if self.db.proto then
+        if self.db.proto.tdInspect then
+            return 'tdInspect'
+        elseif self.db.proto.TalentEmu then
+            return 'TalentEmu'
+        end
+    end
+    return 'Blizzard'
 end
 
 function Inspect:GetNumTalentGroups()
@@ -399,11 +468,11 @@ function Inspect:Query(unit, name)
     if queryEquip or queryTalent or queryGlyph or queryRune then
 
         local co = coroutine.create(function()
-            local me = self:IsCharacterHasProto('tdInspect')
-            local ala = self:IsCharacterHasProto('TalentEmu')
+            local unitName = self.unitName
+            local me = self:IsCharacterHasProto(unitName, 'tdInspect')
+            local ala = self:IsCharacterHasProto(unitName, 'TalentEmu')
 
-
-            self:ClearCharacterProto(self.unitName, 'tdInspect')
+            self:ClearCharacterProto(unitName, 'tdInspect')
             self:SendCommMessage(PROTO_PREFIX, Serializer:Serialize('Q', queryTalent, queryEquip, PROTO_VERSION,
                                                                     queryGlyph, queryRune), 'WHISPER', self.unitName)
 
@@ -411,11 +480,11 @@ function Inspect:Query(unit, name)
                 sleep(1)
             end
 
-            if self:IsCharacterHasProto('tdInspect') then
+            if self:IsCharacterHasProto(unitName, 'tdInspect') then
                 return
             end
 
-            self:ClearCharacterProto(self.unitName, 'TalentEmu')
+            self:ClearCharacterProto(unitName, 'TalentEmu')
             self:SendCommMessage(ALA_PREFIX, ns.Ala:PackQuery(queryEquip, queryTalent, queryGlyph, queryRune),
                                  'WHISPER', self.unitName)
 
@@ -423,7 +492,7 @@ function Inspect:Query(unit, name)
                 sleep(1)
             end
 
-            if self:IsCharacterHasProto('TalentEmu') then
+            if self:IsCharacterHasProto(unitName, 'TalentEmu') then
                 return
             end
 
@@ -510,6 +579,12 @@ end
 
 function Inspect:UpdateCharacter(sender, data)
     local name = ns.GetFullName(sender)
+
+    if self:IsCharacterHasProto(name, 'tdInspect') and self.userCache[name] and self.userCache[name].timestamp and
+        time() - self.userCache[name].timestamp < 5 then
+        return
+    end
+
     local db = self:BuildCharacterDb(name)
 
     if data.class then

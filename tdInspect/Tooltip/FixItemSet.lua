@@ -29,13 +29,14 @@ function ns.FixItemSets(tip, id)
         return
     end
 
-    local equippedCount, itemNames, overrideNames = ns.Inspect:GetEquippedSetItems(setId)
+    local equippedCount, equippedSetItems = ns.Inspect:GetEquippedSetItems(setId)
     local setNameLinePattern = '^(' .. setName .. '.+)(%d+)/(%d+)(.+)$'
 
     local setLine
     local firstBonusLine
-    local inSetLine = true
     local bonus = ns.ItemSets[setId].bouns
+    local slots = ns.ItemSets[setId].slots
+    local setLineFinished = false
 
     for i = 2, tip:NumLines() do
         local textLeft = tip:GetFontStringLeft(i)
@@ -47,26 +48,31 @@ function ns.FixItemSets(tip, id)
                 setLine = i
                 textLeft:SetText(prefix .. equippedCount .. '/' .. maxCount .. suffix)
             end
-        elseif inSetLine then
+        elseif setLine and not setLineFinished then
             local line = text:trim()
+            local setSlotIndex = i - setLine
+            local slotItem = slots[setSlotIndex]
 
-            if line == '' then
-                inSetLine = false
+            if not slotItem or line == '' then
+                setLineFinished = true
             else
-                local n = itemNames[line]
-                if n and n > 0 then
-                    local overrideName = overrideNames[line]
-                    if overrideName and line ~= overrideName then
-                        textLeft:SetText(text:sub(1, #text - #line) .. overrideName)
-                    end
+                local item = equippedSetItems[slotItem.slot]
+                local hasItem = item
+                if not item then
+                    item = slotItem.itemId
+                end
 
-                    textLeft:SetTextColor(1, 1, 0.6)
-                    itemNames[line] = n > 1 and n - 1 or nil
-                else
-                    textLeft:SetTextColor(0.5, 0.5, 0.5)
+                local name = GetItemInfo(item)
+                if name then
+                    textLeft:SetText('  ' .. name)
+                    if hasItem then
+                        textLeft:SetTextColor(1, 1, 0.6)
+                    else
+                        textLeft:SetTextColor(0.5, 0.5, 0.5)
+                    end
                 end
             end
-        else
+        elseif setLineFinished then
             local summary, count = MatchBonus(text)
             if summary then
                 if not firstBonusLine then

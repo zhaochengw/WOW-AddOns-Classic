@@ -43,7 +43,7 @@ elseif locale == "zhCN" then
 	--补全
 	L["MAILLOGGER_TEXT_UNKNOWN"] = "未知目标"
 	--载入提示文字
-	L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE is Loaded.|r"] = "|cFFBA55D3MailLogger|r v%s已|cFFB0C4DE成功|r加载！"
+	L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE has been loaded.|r"] = "|cFFBA55D3MailLogger|r v%s已|cFFB0C4DE成功|r加载！"
 	--Config界面文字
 	L["|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FFZeroZone|r-|cFFDE2910CN|r"] = "|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FF零界|r-|cFFDE2910CN|r"
 	L["|cFFFF33CCFeedback & Update: |r"] = "|cFFFF33CC反馈与更新：|r"
@@ -70,7 +70,7 @@ elseif locale == "zhCN" then
 	L["Delete All"] = "清空记录"
 	L["Prevent Robot Trades Me"] = "阻止脚本交易"
 	L["Enable |cFFFF0000Preventer|r"] = "启用|cFFFF0000阻止交易|r"
-	L["<|cFFBA55D3MailLogger|r>Not any Logs!"] = "<|cFFBA55D3MailLogger|r>没有任何记录！"
+	L["<|cFFBA55D3MailLogger|r>There are no logs available."] = "<|cFFBA55D3MailLogger|r>没有任何记录！"
 	L["<|cFFBA55D3MailLogger|r>All Logs was deleted!"] = "<|cFFBA55D3MailLogger|r>已清空全部记录！"
 	L["<|cFFBA55D3MailLogger|r>[%s]'s Logs was deleted!"] = "<|cFFBA55D3MailLogger|r>已清理角色[%s]的记录！"
 	L["All Logs"] = "全部记录"
@@ -97,11 +97,15 @@ elseif locale == "zhCN" then
 	L["Remove"] = "删除"
 	L["Alt Name"] = "角色名称"
 	L["Sift"] = "筛选"
+	L["Cancel Sift"] = "取消筛选"
 	L["Maintance"] = "维护"
 	L["Delete All Alts"] = "清理角色数据库"
 	L["Calendar"] = "日历"
 	L["Year"] = " 年份"
 	L["Month"] = "    月份"
+	L["All Dates"] = "全部日期"
+	L["Only This"] = "仅该角色"
+	L["All Chars"] = "所有角色"
 	-- 默认物品本地化
 	L["Conjured Crystal Water"] = "魔法晶水"
 	L["Conjured Cinnamon Roll"] = "魔法肉桂面包"
@@ -120,7 +124,7 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     --補全
     L["MAILLOGGER_TEXT_UNKNOWN"] = "未知目標"
     --載入提示文字
-    L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE is Loaded.|r"] = "|cFFBA55D3MailLogger|r v%s已|cFFB0C4DE成功|r載入！"
+    L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE has been loaded.|r"] = "|cFFBA55D3MailLogger|r v%s已|cFFB0C4DE成功|r載入！"
     --Config介面文字
     L["|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FFZeroZone|r-|cFFDE2910CN|r"] = "|cFFFFC040By:|r |cFF9382C9Aoikaze|r-|cFFFF66FF零界|r-|cFFDE2910CN|r"
     L["|cFFFF33CCFeedback & Update: |r"] = "|cFFFF33CC回饋與更新：|r"
@@ -146,7 +150,7 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["Delete All"] = "清空記錄"
     L["Prevent Robot Trades Me"] = "阻止腳本交易"
     L["Enable |cFFFF0000Preventer|r"] = "啟用|cFFFF0000阻止交易|r"
-	L["<|cFFBA55D3MailLogger|r>Not any Logs!"] = "<|cFFBA55D3MailLogger|r>沒有任何記錄！"
+	L["<|cFFBA55D3MailLogger|r>There are no logs available."] = "<|cFFBA55D3MailLogger|r>沒有任何記錄！"
 	L["<|cFFBA55D3MailLogger|r>All Logs was deleted!"] = "<|cFFBA55D3MailLogger|r>已清空全部記錄！"
 	L["<|cFFBA55D3MailLogger|r>[%s]'s Logs was deleted!"] = "<|cFFBA55D3MailLogger|r>已清理角色[%s]的記錄！"
     L["All Logs"] = "全部記錄"
@@ -173,11 +177,15 @@ elseif locale == "zhTW" then --Taiwan is a part of China forever
     L["Remove"] = "刪除"
 	L["Alt Name"] = "角色名稱"
 	L["Sift"] = "篩選"
+	L["Cancel Sift"] = "取消篩選"
 	L["Maintance"] = "維護"
 	L["Delete All Alts"] = "清理角色數據庫"
 	L["Calendar"] = "日曆"
 	L["Year"] = " 年份"
 	L["Month"] = "    月份"
+	L["All Dates"] = "全部日期"
+	L["Only This"] = "僅此角色"
+	L["All Chars"] = "所有角色"
 	-- 默认物品本地化
 	L["Conjured Crystal Water"] = "魔法晶水"
 	L["Conjured Cinnamon Roll"] = "魔法肉桂麵包"

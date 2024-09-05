@@ -551,10 +551,10 @@ function BG.SecondsToTime(second)
 end
 
 ----------是否已经拥有某物品----------
-function BG.GetItemCount(_itemID)
-    local itemID = _itemID
-    if not tonumber(_itemID) then
-        itemID = tonumber(_itemID:match("item:(%d+)"))
+function BG.GetItemCount(itemIDorLink)
+    local itemID = itemIDorLink
+    if not tonumber(itemIDorLink) then
+        itemID = tonumber(itemIDorLink:match("item:(%d+)"))
     end
     for _, FB in pairs(BG.FBtable) do
         for itemID2, _ in pairs(BG.Loot[FB].ExchangeItems) do

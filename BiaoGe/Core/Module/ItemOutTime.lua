@@ -163,7 +163,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
         -- test
---[[         BG.itemGuoQiFrame.tbl = {
+        --[[         BG.itemGuoQiFrame.tbl = {
             { time = 120, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 90, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
@@ -181,10 +181,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
-            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
-            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
-            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
-            -- { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
+            { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
         } ]]
         sort(BG.itemGuoQiFrame.tbl, function(a, b)
             return a.time < b.time
@@ -202,8 +202,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 return
             end
             local link, itemID, time, b, i = vv.link, vv.itemID, vv.time, vv.b, vv.i
-            local name, _, quality, level, _, _, _, _, _,
-            Texture, _, typeID, _, bindType = GetItemInfo(link)
 
             local f = CreateFrame("Frame", nil, BG.itemGuoQiFrame, "BackdropTemplate")
             f:SetSize(BG.itemGuoQiFrame:GetWidth(), 20)
@@ -220,17 +218,23 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f.b = b
             f.i = i
             tinsert(BG.itemGuoQiFrame.buttons, f)
+            BG.UpdateFilter(f, link)
+
+            if ii % 2 == 0 then
+                local tex = f:CreateTexture(nil, "BACKGROUND")
+                tex:SetAllPoints()
+                tex:SetColorTexture(.5, .5, .5, .15)
+            end
 
             local tex = f:CreateTexture()
             tex:SetAllPoints()
-            tex:SetColorTexture(.5,.5,.5,.5)
+            tex:SetColorTexture(.5, .5, .5, .5)
             tex:Hide()
 
             f:SetScript("OnMouseDown", function(self, button)
                 if IsShiftKeyDown() then
                     BG.PlaySound(1)
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_InsertLink(link)
+                    BG.InsertLink(link)
                 end
             end)
             f:SetScript("OnEnter", function(self)
@@ -252,7 +256,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local icon = f:CreateTexture(nil, 'ARTWORK')
             icon:SetPoint('LEFT', 1, 0)
             icon:SetSize(16, 16)
-            icon:SetTexture(Texture)
+            icon:SetTexture(select(5, GetItemInfoInstant(link)))
 
             local t = f:CreateFontString()
             t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")

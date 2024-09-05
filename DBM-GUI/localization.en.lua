@@ -1,6 +1,7 @@
-DBM_GUI_L = {}
+---@class DBMGUILocalization
+local L = {}
 
-local L = DBM_GUI_L
+DBM_GUI_L = L
 
 L.MainFrame							= "Deadly Boss Mods" -- OPTIONAL
 
@@ -591,6 +592,10 @@ L.NPIconAnchorPoint		 			= "Icon Anchor Point"
 L.NPDemo							= "Test (Be near nameplates)"
 L.FontTypeTimer						= "Select timer font"
 L.FontTypeText						= "Select text font"
+L.NPIcon_GlowBehavior 		    	= "Icon Glow Behavior"
+L.NPIcon_GlowNone			    	= "Never Glow Icons"
+L.NPIcon_GlowImportant			   	= "Glow important expiring CD/Cast Icons"
+L.NPIcon_GlowAll			    	= "Glow all expiring CD/Cast Icons"
 
 -- Misc
 L.Area_General						= "General"
@@ -608,8 +613,56 @@ L.FontHeight	= 16 -- OPTIONAL
 
 
 -- Testing
+L.DevPanel							= "Development & Testing"
+L.DevPanelArea						= "Development and Testing UI"
+L.DevPanelExplanation				= "This is a development and testing UI which validates that DBM is working as expected by playing back combat logs." -- Test UI panel under options
+L.DevModPanelExplanation			= [[Welcome to the development and testing playground for this mod.
+You can play back logs of boss fights here to see how the mod behaves and to test integrations with DBM callbacks. See DBM-Test/README.md for more details on integrations and callbacks. DBM comes with example logs for many raids, but you can also import your own logs from Transcriptor.
+]] -- Playground mode in mods
 
+L.TimewarpSetting					= "Time warp: %dx"
+L.TimewarpDynamic					= "Time warp: dynamic (fastest)"
+L.TestSupportArea					= "Mod loading options"
+L.ModNotLoadedWithTests				= "Warning: This mod is currently not loaded with full test support. If the mod directly calls API functions such as UnitHealth() or UnitName() these will not work correctly. This is often the case for functions related to unit health, power, or targets."
+L.ModLoadedWithTests				= "Mod is currently loaded with test support because at least one mod in the addon has tests enabled."
+L.AlwaysLoadModWithTests			= "Always load this mod with full test support (slows down loading slightly)"
+L.ModLoadRequiresReload				= ", requires UI reload to take effect" -- Appended to L.AlwaysLoadModWithTests
+L.TestSelectArea					= "Test data" -- Title of the UI area
+L.SelectTestLog						= L.TestSelectArea -- Title for the dropdown to select a  specific test
+L.SelectPerspective					= "Log perspective (simulated player)"
+L.ImportTranscriptor				= "Import Transcriptor log"
+L.ImportTranscriptorHeader			= [[
+Import a Transcriptor log by pasting it anywhere in the edit box below. Pasting speed is roughly 2 MiB/s, this means your game will freeze for several seconds when pasting very large log files.
+You can also import the current Transcriptor session from Transcriptor's saved variables with the import button to the right.]]
+L.PasteLogHere						= "Press " .. (IsMacClient() and "Cmd-V" or "Ctrl-V") .. " to paste a log here."
+L.LogPasted							= "Pasted %.2f MiB in %.1f seconds (%.2f MiB/s)."
+L.ImportLocalTranscriptor			= "Import current\nTranscriptor session"
+L.NoLocalTranscriptor				= "Could not find local Transcriptor data."
+L.LocalImportDone					= "Imported %d logs with %d encounters from Transcriptor."
+L.Parsing							= "Parsing..."
+L.SelectLogDropdown					= "Select encounter"
+L.CreateTest						= "Create Test"
+L.CreatedTest						= "Created test with %d events in %.1f seconds."
+L.NoLogsFound						= "Transcriptor import contains no log data."
+L.NoTestDataAvailable				= "No test data available"
+L.NoLogSelected						= "Test creation failed: No log selected."
+L.LogAlreadyImported				= "Test creation failed: Test already imported."
+
+L.RewriteAllToYou					= "All players at the same time"
+L.RealModOptionsBelow				= "Mod options below are synced between playground mode and your real settings."
+L.Test								= "Test"
+L.Tests								= "Tests"
+L.AllTests							= "All tests"
 L.RunTest							= "Run test"
+L.RunTestShort						= "Run" -- Same intend as RunTest, but a smaller button
 L.StopTest							= "Stop test"
+L.StopTests							= "Stop tests"
+L.RunAllTests						= "Run all tests"
+L.Queued							= "Queued"
+L.Running							= "Running"
+L.Failed							= "Failed"
+L.ShowReport						= "Show report"
+L.ShowDiff							= "Show diff"
+L.ShowErrors						= "Show errors"
 L.TestModEntry						= "[Playground] %s"
 L.EnterTestMode						= "Playground mode"

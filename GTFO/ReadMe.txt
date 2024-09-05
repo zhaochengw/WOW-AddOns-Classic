@@ -2089,3 +2089,35 @@ Change Log:
 
 5.11.2
 * Updated for patch 11.0.2
+
+5.11.3
+* Updated for patch 11.0.2
+* Added The War Within spells (world)
+* Added TWW spells for The Rookery
+* Fixed TWW general environment debuff spells for TWW Delves to be less spammy
+
+5.11.4
+* Added The War Within spells (world)
+* Added TWW spells for The Rookery
+* Added TWW spells for TWW Delves 
+
+5.12
+* Improved internal scanner to assist with verifying alerts marked as "test"
+* Added The War Within spells (world)
+* Added TWW spells for The Rookery
+* Added TWW spells for The Stonevault
+* Added TWW spells for Darkflame Cleft
+* Added TWW spells for Priory of the Scared Flame
+* Added special ignore for "Smothering Shadows" (Darkflame Cleft - TWW)
+
+5.12.1
+* Added TWW spells for City of Threads
+* Added TWW spells for The Dawnbreaker
+* Added TWW spells for Cinderbrew Meadery
+
+5.12.2
+* Added The War Within spells (world)
+* Added TWW spells for Darkflame Cleft
+* Added TWW spells for Priory of the Scared Flame
+* Added TWW spells for TWW Delves 
+

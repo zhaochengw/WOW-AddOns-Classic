@@ -29,6 +29,7 @@ if LDB and LDBIcon then
 			OnTooltipShow = MinimapIcon.MinimapOnEnter,
 		})
 		MinimapIcon.minimap = MinimapIcon.minimap or {hide = false}
+		MinimapIcon.minimap.minimapPos = Addon.Config.MinimapIconAngle or 345
 		LDBIcon:Register("MailLogger", MinimapIcon.Broker, MinimapIcon.minimap)
 		MinimapIcon:ShowMinimap()
 	end
@@ -46,6 +47,15 @@ if LDB and LDBIcon then
 			if button == "LeftButton" then
 				Output.background:ClearAllPoints()
 				Output.background:SetPoint("RIGHT", nil, "RIGHT", -20, 0)
+				Addon.Calendar.background:ClearAllPoints()
+				Addon.Calendar.background:SetPoint("TOPRIGHT", Addon.Output.background, "TOPLEFT", 1, 0)
+				Addon.SetWindow.background:ClearAllPoints()
+				Addon.SetWindow.background:SetPoint("CENTER", -210, 0)
+			elseif button == "RightButton" then
+				LDB:Hide("MailLogger")
+				MinimapIcon.minimap.minimapPos = 345
+				Addon.Config.MinimapIconAngle = 345
+				LDB:Show("MailLogger")
 			end
 		else
 			if button == "LeftButton" then

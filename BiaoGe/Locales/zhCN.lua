@@ -29,6 +29,18 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "9月4日更新v1.11.7" .. "|r\n"
+    update = update .. [[-修复了点击复制对方账单时没有正确复制买家的问题]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "9月4日更新v1.11.6" .. "|r\n"
+    update = update .. [[-增加功能：通报全团WCL（需要安装WclPlayerScore-WotLK插件）]] .. "|r\n"
+    update = update .. [[-拍卖WA更新为v1.9：增加一个绿色钩子，用来表示你是否已经拥有该物品]] .. "|r\n"
+    update = update .. [[-自动拍卖记录：增加搜索框。增加手动添加记录的功能。且现在装备过滤功能也会对其生效]] .. "|r\n"
+    update = update .. [[-装备过期列表：现在装备过滤功能也会对其生效]] .. "|r\n"
+    update = update .. [[-对账：现在鼠标悬停在打包交易时会高亮对应的装备]] .. "|r\n"
+    update = update .. [[-设置：增加自动拍卖UI缩放选项]] .. "|r\n\n"
+
+
     update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
     update = update .. c1 .. [[-拍卖WA更新为v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度]] .. "|r\n"
     update = update .. [[-正在自动倒数时，如果有人出价，则会自动暂停倒数（你也可在设置里关闭该功能）]] .. "|r\n"
@@ -59,7 +71,7 @@ do --简体更新内容
     update = update .. [[-自动拍卖：正在拍卖的装备现在会显示是否为你的关注和心愿，且装备过滤功能也会对其生效]] .. "|r\n"
     update = update .. [[-拍卖WA更新为v1.6：增加显示正在拍卖的装备类型]] .. "|r\n"
     update = update .. [[-<赛季服>MC表格每个BOSS的格子都有所增加]] .. "|r\n\n"
-    
+
     update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
     update = update .. c1 .. [[-增加功能：交易清除欠款（交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款）]] .. "|r\n"
     update = update .. [[-通报欠款：现在会显示总欠款]] .. "|r\n"
@@ -84,6 +96,19 @@ ns.L = L
 
 local L = {}
 do
+    L["由于%s多次点击WA链接，不再提示他的相关文本了。"] = true
+    L["手动增加记录"] = true
+    L['添加装备'] = true
+    L["按住Shift+点击表格/背包/聊天框装备；直接把装备拖到格子里"] = true
+    L["自动拍卖"] = true
+    L["调整自动拍卖UI的大小。"] = true
+    L["v1.9：增加一个绿色钩子，用来表示你是否已经拥有该物品"] = true
+    L["没有WCL记录"] = true
+    L["———通报WCL———"] = true
+    L["更新日期"] = true
+    L["读取不到数据，你可能没安装WclPlayerScore-WotLK插件"] = true
+
+
     L["拍卖自动倒数"] = true
     L["倒数自动暂停"] = true
     L["正在自动倒数时，如果有人出价（在团队频道打出纯数字时），则自动暂停倒数。"] = true

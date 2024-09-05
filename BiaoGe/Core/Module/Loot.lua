@@ -120,8 +120,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     BG.CancelGuanZhu(link)
                 end
                 if IsShiftKeyDown() then
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_InsertLink(text)
+                    BG.InsertLink(text)
                 elseif IsAltKeyDown() then
                     if BG.IsML then -- 开始拍卖
                         BG.StartAuction(link)
@@ -224,7 +223,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if start then return end
         _time = GetTime()
         if numb ~= Maxb[FB] - 1 then
-            if _time - lasttime >= 30 then -- 击杀BOSS 30秒后进入下一次战斗，就变回杂项
+            if _time - lasttime >= 45 then -- 击杀BOSS x秒后进入下一次战斗，就变回杂项
                 numb = Maxb[FB] - 1
                 -- local text = BG.STC_r1(L["非BOSS战"])
                 -- PrintLootBoss(FB, even, numb, text)
@@ -513,7 +512,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
             if Hope then break end
         end
-        
+
         -- 可堆叠物品记录到杂项
         if stackCount ~= 1 then
             AddLootItem_stackCount(FB, nil, link, Texture, level, Hope, count, typeID, lootplayer)

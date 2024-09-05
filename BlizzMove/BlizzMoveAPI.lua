@@ -6,7 +6,7 @@ local string_match = _G.string.match;
 
 local name = ... or "BlizzMove";
 ---@type BlizzMove
-local BlizzMove = LibStub("AceAddon-3.0"):GetAddon(name);
+local BlizzMove = LibStub("AceAddon-3.0"):GetAddon(name); ---@diagnostic disable-line: assign-type-mismatch
 if not BlizzMove then return; end
 
 _G.BlizzMoveAPI = _G.BlizzMoveAPI or {};
@@ -28,6 +28,7 @@ function BlizzMoveAPI:ToggleDebugPrints()
     BlizzMove:Print("Debug prints have been:", (BlizzMove.DB.DebugPrints and "Enabled") or "Disabled");
 end
 
+--- @param framesTable BlizzMoveAPI_FrameTable
 function BlizzMoveAPI:RegisterFrames(framesTable)
     for frameName, frameData in pairs(framesTable) do
         if not BlizzMove:ValidateFrame(frameName, frameData) then
@@ -44,6 +45,7 @@ function BlizzMoveAPI:RegisterFrames(framesTable)
     end
 end
 
+--- @param addOnFramesTable BlizzMoveAPI_AddonFrameTable
 function BlizzMoveAPI:RegisterAddOnFrames(addOnFramesTable)
     for addOnName, framesTable in pairs(addOnFramesTable) do
         for frameName, frameData in pairs(framesTable) do

@@ -120,21 +120,11 @@
         <Layers>
             <Layer level="BACKGROUND">
                 <Texture parentKey="NormalBg" setAllPoints="true">
-                    <Color r="0.588" g="0.588" b="0.588" a="0.05"/>
                 </Texture>
                 <Texture parentKey="SameInstanceBgLeft" file="Interface\AddOns\MeetingHorn\Media\ProgressBg">
-                    <Size x="160"/>
-                    <TexCoords left="0" right="0.625" top="0" bottom="0.359375"/>
+                    <Size x="978"/>
                     <Anchors>
                         <Anchor point="TOPLEFT"/>
-                        <Anchor point="BOTTOMLEFT"/>
-                    </Anchors>
-                </Texture>
-                <Texture parentKey="SameInstanceBgRight" file="Interface\AddOns\MeetingHorn\Media\ProgressBg">
-                    <TexCoords left="0.625" right="1" top="0" bottom="0.359375"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT" relativeKey="$parent.SameInstanceBgLeft" relativePoint="TOPRIGHT"/>
-                        <Anchor point="BOTTOMRIGHT"/>
                     </Anchors>
                 </Texture>
             </Layer>
@@ -661,7 +651,7 @@
                 </Texture>
                 <FontString parentKey="Text" inherits="QuestFont" justifyH="LEFT" justifyV="TOP">
                     <Anchors>
-                        <Anchor point="TOP" relativeKey="$parent.ImageTitle" relativePoint="BOTTOM" y="-5"/>
+                        <Anchor point="TOP" relativeKey="$parent.ImageTitle" relativePoint="BOTTOM" y="15"/>
                         <Anchor point="LEFT" x="38"/>
                         <Anchor point="RIGHT" x="-34"/>
                     </Anchors>

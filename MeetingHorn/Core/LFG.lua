@@ -7,6 +7,7 @@ local ADDON_NAME, ns = ...
 
 local L = ns.L
 local AceSerializer = LibStub('AceSerializer-3.0')
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
 
 ---@class MeetingHornLFG
 ---@field private current MeetingHornActivity
@@ -84,6 +85,10 @@ function LFG:OnEnable()
     self:RegisterServer('SNOTICE')
 
     self:RegisterServer('SUGL')
+    self:RegisterServer('SH')
+    self:RegisterServer('STB')
+    self:RegisterServer('SFKWS')
+    self:RegisterServer('SBKWS')
 
     self:RegisterChallenge('SGA', 'SGETACTIVITY')
     self:RegisterChallenge('SGP', 'SACTIVITYGROUPPROGRESS')
@@ -427,14 +432,26 @@ function LFG:Search(path, activityId, modeId, search)
 
     local result = {}
     for _, activity in ipairs(self.activities) do
-        if activity:Match(path, activityId, modeId, search) then
+        local isBlack = ns.IsBlackListData(activity:GetComment())
+        if activity:Match(path, activityId, modeId, search) and not isBlack then
             tinsert(result, activity)
+        end
+    end
+    if ns.Addon.db.global.SortFilteringData then
+        for _, data in ipairs(ns.Addon.db.global.SortFilteringData) do
+            for _, activity in ipairs(self.chats) do
+                local isBlack = ns.IsBlackListData(activity:GetComment())
+                if activity:Match(nil, nil, nil, data) and not isBlack then
+                    tinsert(result, activity)
+                end
+            end
         end
     end
 
     if search then
         for _, activity in ipairs(self.chats) do
-            if activity:Match(nil, nil, nil, search) then
+            local isBlack = ns.IsBlackListData(activity:GetComment())
+            if activity:Match(nil, nil, nil, search) and not isBlack then
                 tinsert(result, activity)
             end
         end
@@ -763,8 +780,9 @@ function LFG:ENCOUNTER_END(_, bossId, bossName, difficultyId, groupSize, success
 
         C_Timer.After(5, function()
             local id = ns.GetRaidId(raidName)
-            self:SendServer('SBK', raidName, id, bossId, timeDiff, leaderName, leaderGUID, looterName, looterGUID,
-                            ns.ADDON_VERSION, lootMethod, difficultyId or -1, groupSize)
+            -- 临时屏蔽SBK 字段
+            --self:SendServer('SBK', raidName, id, bossId, timeDiff, leaderName, leaderGUID, looterName, looterGUID,
+            --                ns.ADDON_VERSION, lootMethod, difficultyId or -1, groupSize)
             self:SaveInstanceMembers(id)
         end)
     elseif self.youDead then
@@ -910,13 +928,14 @@ function LFG:ANNOUNCEMENT(eventName, ...)
     self:SendMessage('MEETINGHORN_ANNOUNCEMENT', ...)
 end
 
-function LFG:IsStarRegimentVersion()
+function LFG:IsStarRegimentVersion(newVersion)
     local isVersion = false
     if ns and ns.Addon and
     ns.Addon.db and ns.Addon.db.realm and
     ns.Addon.db.realm.starRegiment and
     ns.Addon.db.realm.starRegiment.version and
-    ns.Addon.db.realm.starRegiment.version ~= '' then
+    ns.Addon.db.realm.starRegiment.version ~= '' and
+    newVersion < ns.Addon.db.realm.starRegiment.version then
         isVersion = true
     end
     return isVersion
@@ -930,14 +949,42 @@ function LFG:GetStarRegimentVersion()
     return ns.Addon.db.realm.starRegiment.version
 end
 
-function LFG:SUGL(_, version, data)
+function LFG:SUGL(_, version, data, dataLen)
+    if dataLen > 0 then
+        data = ns.NetEaseBase64:DeCode(data)
+        data = LibDeflate:DecompressDeflate(data)
+        local isDeserialize
+        isDeserialize, data = AceSerializer:Deserialize(data)
+        if not isDeserialize then
+            ns.Message('星团长数据更新失败。')
+            return
+        end
+    end
+
     ns.Addon.db.realm.starRegiment.version = version
     for _, item in ipairs(data) do
         for name, info in pairs(item) do
             local currentLevel = info['l']
             local currentRoomID = info['c']
-            ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID}
+            local currentBgID = info['b'] or 0
+            ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID, bgID = currentBgID}
         end
     end
+end
+
+function LFG:SH(eventName, ...)
+    self:SendMessage('MEETINGHORN_SH', ...)
+end
+
+function LFG:STB(eventName, ...)
+    self:SendMessage('MEETINGHORN_STB', ...)
+end
+
+function LFG:SFKWS(eventName, data)
+    ns.Addon.db.global.SortFilteringData = data
+end
+
+function LFG:SBKWS(eventName, data)
+    ns.Addon.db.global.BlackListData = data
 end
 

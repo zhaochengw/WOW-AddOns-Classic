@@ -121,13 +121,8 @@ function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     -- 发送装备到聊天输入框
     bt:SetScript("OnMouseDown", function(self, enter)
         if IsShiftKeyDown() then
-            local f = GetCurrentKeyBoardFocus()
-            if not f then
-                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-            end
-            local text = self:GetText()
-            ChatEdit_InsertLink(text)
-            return
+            BG.PlaySound(1)
+            BG.InsertLink(self:GetText())
         end
     end)
     -- 鼠标悬停在装备时

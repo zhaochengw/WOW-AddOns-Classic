@@ -108,8 +108,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             elseif (strsub(link, 1, 4) == "item") then
                 local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
                 if IsShiftKeyDown() then
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_InsertLink(text)
+                    BG.InsertLink(text)
                 elseif IsAltKeyDown() then
                     if BG.IsML then -- 开始拍卖
                         BG.StartAuction(link)
@@ -393,7 +392,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     msg = _time .. " " .. "|cffFF7F50" .. nameLink .. L["："] .. text .. RN -- 团员聊天
                 end
                 BG.FrameAuctionMSG:AddMessage(msg)
-                
+
                 tinsert(BiaoGe.auctionMSGhistory, {
                     time = time(),
                     textColor = ML and "FF4500" or "FF7F50",

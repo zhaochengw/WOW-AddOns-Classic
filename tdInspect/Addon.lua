@@ -11,6 +11,14 @@ local ns = select(2, ...)
 
 local ShowUIPanel = LibStub('LibShowUIPanel-1.0').ShowUIPanel
 
+---@class UI
+---@field BaseItem UI.BaseItem
+---@field GearItem UI.GearItem
+---@field GearFrame UI.GearFrame
+---@field GemItem UI.GemItem
+---@field EnchantItem UI.EnchantItem
+---@field InspectFrame UI.InspectFrame
+---@field InspectGearFrame UI.InspectGearFrame
 ns.UI = {}
 ns.L = LibStub('AceLocale-3.0'):GetLocale('tdInspect')
 

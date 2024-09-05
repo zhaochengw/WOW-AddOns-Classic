@@ -604,8 +604,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                     local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
                                     if link then
                                         if IsShiftKeyDown() then
-                                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                                            ChatEdit_InsertLink(link)
+                                            BG.InsertLink(link)
                                             -- else
                                             --     ShowUIPanel(ItemRefTooltip)
                                             --     if (not ItemRefTooltip:IsShown()) then
@@ -1240,8 +1239,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 return
             end
             if IsShiftKeyDown() then
-                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                ChatEdit_InsertLink(text)
+                BG.InsertLink(text)
             end
         end)
 

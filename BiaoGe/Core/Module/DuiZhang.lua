@@ -149,7 +149,7 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
             end
         elseif linshi_duizhang.yes == 2 then -- 金团表格
             local playerClass = {}
-            local maijia = strmatch(msg, " (.-) ")
+            local maijia = strmatch(msg, " (%S-) %S+$")
             if maijia == "" then
                 maijia = nil
             end
@@ -232,6 +232,30 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
     end
 end)
 
+BG.RegisterEvent("CHAT_MSG_ADDON", function(self, even, ...)
+    local prefix, msg, distType, sender = ...
+    if not linshi_duizhang then return end
+    if prefix == "BiaoGe" and distType == "RAID" and msg:match("^DuiZhang-") then
+        linshi_duizhang.tradeTbl = linshi_duizhang.tradeTbl or {}
+        local a = {}
+        local _, maijia, text = strsplit("-", msg)
+        -- 24478 10000, 27854 t, 27503 t,
+        for _, t in ipairs({ strsplit(",", text) }) do
+            -- 24478 10000
+            local itemID, jine = strsplit(" ", t)
+            if itemID and tonumber(itemID) then
+                tinsert(a, {
+                    maijia = maijia,
+                    jine = jine,
+                    itemID = tonumber(itemID),
+                })
+            end
+        end
+        tinsert(linshi_duizhang.tradeTbl, a)
+    end
+end)
+
+
 ------------------创建UI------------------
 function BG.DuiZhangUI()
     BG.DuiZhangDropDown = {}
@@ -293,7 +317,7 @@ function BG.DuiZhangUI()
                 end
                 for i = 1, _G['L_DropDownList1'].numButtons do
                     local button = _G["L_DropDownList1Button" .. i]
-                    button.deleteZhangDan.num=i
+                    button.deleteZhangDan.num = i
                     button.deleteZhangDan:SetShown(not (i == _G['L_DropDownList1'].numButtons))
                 end
             else
@@ -438,8 +462,7 @@ function BG.DuiZhangUI()
             elseif (strsub(link, 1, 4) == "item") then
                 local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
                 if IsShiftKeyDown() then
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_InsertLink(text)
+                    BG.InsertLink(text)
                 elseif IsAltKeyDown() then
                     if BG.IsML then -- 开始拍卖
                         BG.StartAuction(link)
@@ -556,7 +579,22 @@ function BG.DuiZhangSet(num)
 
     BG.DuiZhang0()
     CreateZhangDanMsg(num)
-
+    --[[
+        ["tradeTbl"] = {
+            {
+                {
+                    ["maijia"] = "苍刃",
+                    ["itemID"] = 24291,
+                    ["jine"] = "200",
+                }, -- [1]
+                {
+                    ["maijia"] = "苍刃",
+                    ["itemID"] = 27676,
+                    ["jine"] = "t",
+                }, -- [2]
+            }, -- [1]
+        },
+    ]]
     for _, v in ipairs(dz) do
         if v.zhuangbei then
             local item = v.zhuangbei
@@ -600,8 +638,39 @@ function BG.DuiZhangSet(num)
         end
     end
 
+    if BiaoGe.duizhang[num].tradeTbl then
+        for ii in ipairs(BiaoGe.duizhang[num].tradeTbl) do
+            local tbl = {}
+            for _, v in ipairs(BiaoGe.duizhang[num].tradeTbl[ii]) do
+                local yes
+                for b = 1, Maxb[FB] do
+                    for i = 1, Maxi[FB] do
+                        local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
+                        if otherjine and not (otherjine.hasTradeTbl or otherjine.tradeTbl) then
+                            local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
+                            local itemID = GetItemID(BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]:GetText())
+                            local jine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]:GetText()
+                            if jine == L["打包交易"] then jine = "t" end
+                            if maijia == v.maijia and itemID == v.itemID and jine == v.jine then
+                                otherjine.hasTradeTbl = true
+                                tinsert(tbl, { b = b, i = i })
+                                yes = true
+                                break
+                            end
+                        end
+                    end
+                    if yes then break end
+                end
+            end
+            for i, v in ipairs(tbl) do
+                BG.DuiZhangFrame[FB]["boss" .. v.b]["otherjine" .. v.i].hasTradeTbl = nil
+                BG.DuiZhangFrame[FB]["boss" .. v.b]["otherjine" .. v.i].tradeTbl = tbl
+            end
+        end
+    end
+
     -- 设置打钩/叉叉材质
-    C_Timer.After(0.05, function()
+    C_Timer.After(0, function()
         for b = 1, Maxb[FB] + 1 do
             for i = 1, Maxi[FB] do
                 local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
@@ -644,6 +713,7 @@ function BG.DuiZhang0()
             local ds = BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]
             if zhuangbei then
                 otherjine:SetText("")
+                otherjine.tradeTbl = nil
                 BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i] = nil
                 for k, v in pairs(BG.playerClass) do
                     BG.DuiZhangFrame[FB]["boss" .. b][k .. i] = nil

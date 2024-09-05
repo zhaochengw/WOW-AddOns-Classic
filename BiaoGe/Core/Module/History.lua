@@ -381,7 +381,7 @@ function BG.HistoryUI()
     ------------------应用表格按键------------------
     do
         function BG.SetBiaoGeFormHistory(FB, num)
-            local num = num or BG.History.XianShiNum
+            local num = num or BG.History.chooseNum
             local FB = FB or BG.FB1
             for _date, value in pairs(BiaoGe.History[FB]) do
                 if tonumber(_date) == tonumber(BiaoGe.HistoryList[FB][num][1]) then
@@ -659,8 +659,6 @@ end
 ------------------下拉框架的内容------------------
 do
     function BG.CreatHistoryListButton(FB)
-        BG.History.scroll.ScrollBar:Hide()
-
         -- 先隐藏列表内容
         local i = 1
         while BG.History["ListButton" .. i] do
@@ -668,6 +666,7 @@ do
             BG.History["ListButton" .. i] = nil
             i = i + 1
         end
+        BG.History.scroll.ScrollBar:Hide()
 
         -- 再重新创建新的列表内容
         for i = 1, #BiaoGe.HistoryList[FB] do
@@ -794,7 +793,7 @@ do
 
                 BG.History.Title:SetParent(BG["HistoryFrame" .. FB])
                 BG.History.Title:SetText(L["< 历史表格 > "] .. " " .. i)
-                BG.History.XianShiNum = i
+                BG.History.chooseNum = i
 
                 BG.UpdateLockoutIDText(DT)
                 BG.UpdateAuctionLogFrame(BiaoGe.History[FB][DT].auctionLog)

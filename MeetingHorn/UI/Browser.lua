@@ -208,8 +208,8 @@ function Browser:Constructor()
         button.Signup:SetShown(item:IsActivity() and not state)
         -- button.Signup:SetEnabled(canSignup)
 
-        local sameInstance
-        if item:HaveProgress() then
+        local sameInstance = item:GetCertificationBgID() ~= 0 and item:GetCertificationBgID() ~= nil
+        if item:HaveProgress()  then
             button.Instance:SetWidth(16)
             sameInstance = item:IsSameInstance()
             button.Instance.Same:SetShown(sameInstance)
@@ -220,9 +220,9 @@ function Browser:Constructor()
             button.Instance.Diff:Hide()
         end
 
+        button.SameInstanceBgLeft:SetTexture(format("Interface/AddOns/MeetingHorn/Media/ProgressBg%d", item:GetCertificationBgID()))
         button.NormalBg:SetShown(not sameInstance)
         button.SameInstanceBgLeft:SetShown(sameInstance)
-        button.SameInstanceBgRight:SetShown(sameInstance)
         button.QRIcon:SetShown(item:IsOurAddonCreate())
         button.QRIcon:SetSize(91, 26)
         button.QRIcon:ClearAllPoints()
@@ -369,13 +369,23 @@ function Browser:Sort()
             -- @lkc@
             local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
             if acl or bcl then
-                if acl and bcl then
+                if acl == bcl then
+                    local bgIDAcl, bgIDbcl = a:GetCertificationBgID(), b:GetCertificationBgID()
+                    if bgIDAcl or bgIDbcl then
+                        if bgIDAcl and bgIDbcl then
+                            return bgIDAcl > bgIDbcl
+                        else
+                            return bgIDAcl
+                        end
+                    end
+                elseif acl and bcl then
                     return acl > bcl
                 else
                     return acl
                 end
             end
-            if not self.sortId then
+
+            if not self.sortId and not ns.Addon.db.global.SortFilteringData then
                 return false
             end
             -- @end-lkc@
@@ -554,7 +564,8 @@ function Browser:OpenVoiceRoom(activity)
                 return
             end
             ns.ThreeDimensionsCode:sendCommand('joinRoom', '-1')
-            ns.OpenUrlDialog('https://dd.163.com/?utm_source=meetinghorn', '无法成功拉起房间?复制下方链接去浏览器内打开')
+            local  data = ns.NetEaseBase64:EnCode(format('%s+%d', UnitGUID("player"), GetRealmID()))
+            ns.OpenUrlDialog(format('https://dd.163.com/?utm_source=%s', data), '无法成功拉起房间?复制下方链接去浏览器内打开')
         end)
     end
 end

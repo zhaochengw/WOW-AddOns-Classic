@@ -109,12 +109,18 @@ function Activity:Update(proto, leader, guid, channelName, lineId)
     self:SetLineId(lineId)
     self:UpdateTick()
     local currentLevel = ns.Addon.db.realm.starRegiment.regimentData[leaderFullName]
+    local currentBgID = 0
+    local currentRoomID = 0
     if currentLevel then
+        currentRoomID = currentLevel.roomID
+        currentBgID = currentLevel.bgID
         currentLevel = currentLevel.level
     end
     self:SetCertificationLevel(currentLevel)
+    self:SetCertificationBgID(currentBgID)
     local numberValue = tonumber(currentLevel)
-    self:SetOurAddonCreate(numberValue ~= nil and numberValue >= 1 and numberValue <= 6)
+    self:SetOurAddonCreate(numberValue ~= nil and numberValue >= 1
+        and numberValue <= 6 and currentRoomID ~= 0 and currentRoomID ~= nil)
     return true
 end
 
@@ -285,7 +291,7 @@ function Activity:Match(path, activityId, modeId, search)
         return false
     end
 
-    if ns.Addon.db.profile.options.activityfilter and ns.LFG:IsFilter(self.commentLower) then
+    if ns.Addon.db.global.activity.filters and ns.LFG:IsFilter(self.commentLower) then
         return false
     end
     return true
@@ -358,6 +364,14 @@ end
 
 function Activity:SetCertificationLevel(level)
     self.certificationLevel = level
+end
+
+function Activity:GetCertificationBgID()
+    return self.certificationBgID
+end
+
+function Activity:SetCertificationBgID(bgID)
+    self.certificationBgID = bgID
 end
 
 function Activity:SetOurAddonCreate(isOurAddonCreate)

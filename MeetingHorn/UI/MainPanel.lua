@@ -98,6 +98,8 @@ function MainPanel:Constructor()
 end
 
 function MainPanel:OnShow()
+    self:ClearAllPoints()
+    self:SetPoint('CENTER', 0, 0)
     self:SendMessage('MEETINGHORN_SHOW')
     ns.LogStatistics:SendServerExposure()
 end

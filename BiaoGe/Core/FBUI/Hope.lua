@@ -165,10 +165,7 @@ function BG.HopeUI(FB)
                             BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["jingzheng" .. i]:Hide()
                         end
 
-                        local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID -- 隐藏
-                        if num ~= 0 then
-                            BG.UpdateFilter(self)
-                        end
+                        BG.UpdateFilter(self)
 
                         if bt:GetText() ~= "" then
                             BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = bt:GetText() -- 储存文本
@@ -199,15 +196,7 @@ function BG.HopeUI(FB)
                             if self:GetText() ~= "" then
                                 self:SetEnabled(false)
                                 bt:ClearFocus()
-                                if BG.lastfocus then
-                                    BG.lastfocus:ClearFocus()
-                                end
-                                local f = GetCurrentKeyBoardFocus()
-                                if not f then
-                                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                                end
-                                local text = self:GetText()
-                                ChatEdit_InsertLink(text)
+                                BG.InsertLink(self:GetText())
                             end
                             return
                         end

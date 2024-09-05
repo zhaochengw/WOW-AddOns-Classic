@@ -56,3 +56,5 @@ MailLogger：
 2.0.1 Fix setting error, Added two-step authentication for "Delete data".
 2.0.4 Optimized the interface, the confirmation buttons 'Y' and 'N' will disappear automatically after 5 seconds.
 2.0.5 Fix the error in the addon that deletes records that include both giving and receiving items.
+2.0.6 Mails received using Shift are now recorded as expected. Characters with the same name on different servers will no longer be confused with each other.
+2.0.7 Fix the issue where MinimapIcon can't save its position when using the LDBIcon library, and add functionality to sort by both character and date.

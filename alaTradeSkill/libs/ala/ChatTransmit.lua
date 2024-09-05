@@ -2,7 +2,7 @@
 	by ALA
 --]=]
 
-local __version = 240820.0;
+local __version = 240822.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -29,6 +29,7 @@ local tostring = tostring;
 local next = next;
 local strlen, strbyte, strchar, strsplit, strsub = string.len, string.byte, string.char, string.split, string.sub;
 local bitand = bit.band;
+local IsInRaid = IsInRaid;
 local CreateFrame = CreateFrame;
 local Ambiguate  = Ambiguate;
 local RegisterAddonMessagePrefix = C_ChatInfo ~= nil and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix;
@@ -86,6 +87,9 @@ function Private.SendComm(msg, ctype, target, r1, r2, r3, r4)
 		_TWhisperCache[tostring(msgid)] = { Private.GetTime(), msg, };
 	end
 	if ctype == "RAID_WARNING" then
+		if not IsInRaid() then
+			return;
+		end
 		ctype = "RAID";
 		r1 = "\001";
 	end

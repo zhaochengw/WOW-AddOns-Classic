@@ -25,7 +25,7 @@ function LogStatistics:SendServerExposure()
         return
     end
     local version = '199701010000' -- 这里更新写默认版本号
-    if ns.LFG:IsStarRegimentVersion() then
+    if ns.LFG:IsStarRegimentVersion(version) then
         version =  ns.LFG:GetStarRegimentVersion()
     end
 

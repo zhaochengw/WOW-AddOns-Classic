@@ -415,6 +415,38 @@ local function OnClick(self)
                 SendChatMessage(text, "RAID")
             end)
 
+            local FB = BG.FB1
+            BG.After(2, function()
+                for ii in ipairs(BiaoGe[FB].tradeTbl) do
+                    local text = "DuiZhang-"
+                    local yes = true
+                    for i, v in ipairs(BiaoGe[FB].tradeTbl[ii]) do
+                        if i == 1 then
+                            if BiaoGe[v.FB]["boss" .. v.b]["maijia" .. v.i] then
+                                -- DuiZhang-苍牧-
+                                text = text .. BiaoGe[v.FB]["boss" .. v.b]["maijia" .. v.i] .. "-"
+                            else
+                                yes = nil
+                                break
+                            end
+                        end
+                        local jine = BiaoGe[v.FB]["boss" .. v.b]["jine" .. v.i]
+                        if not jine then
+                            yes = nil
+                            break
+                        end
+                        if jine == L["打包交易"] then
+                            jine = "t"
+                        end
+                        -- DuiZhang-苍牧-24478 10000,27854 t,27503 t,
+                        text = text .. v.itemID .. " " .. jine .. ","
+                    end
+                    if yes then
+                        C_ChatInfo.SendAddonMessage("BiaoGe", text, "RAID")
+                    end
+                end
+            end)
+
             local _, tbl = CreateListTable(true)
             local t = BG.SendMsgToRaid(tbl, BG.tongBaoSendCD + BG.tongBaoSendCD)
 
@@ -428,6 +460,93 @@ local function OnClick(self)
     end
 end
 
+--[[
+    ["tradeTbl"] = {
+        {
+            {
+                ["i"] = 3,
+                ["itemID"] = 24478,
+                ["link"] = "|cff1eff00|Hitem:24478::::::::64:::::::::|h[裂纹的珍珠]|h|r",
+                ["FB"] = "ULD",
+                ["b"] = 15,
+            }, -- [1]
+            {
+                ["i"] = 1,
+                ["itemID"] = 27854,
+                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
+                ["FB"] = "ULD",
+                ["b"] = 15,
+            }, -- [2]
+            {
+                ["i"] = 2,
+                ["itemID"] = 27503,
+                ["link"] = "|cffffffff|Hitem:27503::::::::64:::::::::|h[力量卷轴 V]|h|r",
+                ["FB"] = "ULD",
+                ["b"] = 15,
+            }, -- [3]
+        }, -- [1]
+        {
+            {
+                ["i"] = 7,
+                ["itemID"] = 14530,
+                ["link"] = "|cffffffff|Hitem:14530::::::::64:::::::::|h[厚符文布绷带]|h|r",
+                ["FB"] = "ULD",
+                ["b"] = 15,
+            }, -- [1]
+            {
+                ["i"] = 8,
+                ["itemID"] = 27854,
+                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
+                ["FB"] = "ULD",
+                ["b"] = 15,
+            }, -- [2]
+        }, -- [2]
+    },
+
+
+    ["tradeTbl"] = {
+        {
+            {
+                ["i"] = 3,
+                ["itemID"] = 24478,
+                ["b"] = 15,
+                ["FB"] = "ULD",
+                ["link"] = "|cff1eff00|Hitem:24478::::::::64:::::::::|h[裂纹的珍珠]|h|r",
+            }, -- [1]
+            {
+                ["i"] = 1,
+                ["itemID"] = 27854,
+                ["b"] = 15,
+                ["FB"] = "ULD",
+                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
+            }, -- [2]
+            {
+                ["i"] = 2,
+                ["itemID"] = 27503,
+                ["b"] = 15,
+                ["FB"] = "ULD",
+                ["link"] = "|cffffffff|Hitem:27503::::::::64:::::::::|h[力量卷轴 V]|h|r",
+            }, -- [3]
+        }, -- [1]
+        {
+            {
+                ["i"] = 7,
+                ["itemID"] = 14530,
+                ["b"] = 15,
+                ["FB"] = "ULD",
+                ["link"] = "|cffffffff|Hitem:14530::::::::64:::::::::|h[厚符文布绷带]|h|r",
+            }, -- [1]
+            {
+                ["i"] = 8,
+                ["itemID"] = 27854,
+                ["b"] = 15,
+                ["FB"] = "ULD",
+                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
+            }, -- [2]
+        }, -- [2]
+    },
+]]
+
 function BG.ZhangDanUI(lastbt)
     local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
     bt:SetSize(60, 30)
@@ -435,7 +554,11 @@ function BG.ZhangDanUI(lastbt)
     if lastbt then
         bt:SetPoint("LEFT", lastbt, "RIGHT", bt.jiange, 0)
     else
-        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -300, 35)
+        if BG.IsWLK then
+            bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -360, 35)
+        else
+            bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -300, 35)
+        end
     end
     bt:SetText(L["账单"])
     bt:Show()

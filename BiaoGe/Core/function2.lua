@@ -170,8 +170,8 @@ do
         end
     end
 
-    function BG.FilterItem(bt)
-        local text = bt:GetText()
+    function BG.FilterItem(bt, link)
+        local text = link or bt:GetText()
         local itemID, _, _, EquipLoc, _, typeID, subclassID = GetItemInfoInstant(text)
         local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
 
@@ -184,9 +184,9 @@ do
         bt:SetAlpha(alpha2)
     end
 
-    function BG.UpdateFilter(bt)
-        local text = bt:GetText()
-        local itemID = GetItemInfoInstant(text)
+    function BG.UpdateFilter(bt, link)
+        local text = link or bt:GetText()
+        local itemID = GetItemID(text)
         local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID
         if not (text:find("item:") and itemID and num) then
             bt:SetAlpha(alpha2)
@@ -198,11 +198,11 @@ do
             if not BG.itemCaches[itemID] then
                 BG.Tooltip_SetItemByID(itemID)
                 BG.After(0.01, function()
-                    BG.FilterItem(bt)
+                    BG.FilterItem(bt, link)
                     BG.itemCaches[itemID] = true
                 end)
             else
-                BG.FilterItem(bt)
+                BG.FilterItem(bt, link)
             end
         end)
     end
@@ -243,6 +243,19 @@ do
                 i = i + 1
             end
         end
+        -- 装备过期列表
+        if BG.itemGuoQiFrame:IsVisible() then
+            for i, bt in ipairs(BG.itemGuoQiFrame.buttons) do
+                BG.UpdateFilter(bt, bt.link)
+            end
+        end
+        -- 自动拍卖记录
+        if BG.auctionLogFrame:IsVisible() then
+            for i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                BG.UpdateFilter(bt.frame, bt.link)
+            end
+        end
+
         for k, bt in pairs(BG.ItemLibMainFrame.Hope) do
             if type(bt) == "table" and bt.EquipLoc then
                 BG.UpdateFilter(bt)
@@ -673,8 +686,9 @@ do
                 bt:SetScript("OnMouseDown", function(self, enter)
                     if self.link then
                         if IsShiftKeyDown() then
-                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                            ChatEdit_InsertLink(self.link)
+                            -- ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                            -- ChatEdit_InsertLink(self.link)
+                            BG.InsertLink(self.link, true)
                         elseif IsControlKeyDown() then
                             BG.GoToItemLib(self)
                         elseif IsAltKeyDown() then
@@ -1026,174 +1040,193 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
 end
 
 ------------------创建：金额下拉列表------------------
-function BG.SetListjine(jine, FB, b, i)
-    -- 背景框
-    local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
-    f:SetWidth(100)
-    f:SetHeight(230)
-    f:SetFrameLevel(120)
-    f:SetBackdrop({
-        bgFile = "Interface/ChatFrame/ChatFrameBackground",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        edgeSize = 16,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 }
-    })
-    f:SetBackdropColor(0, 0, 0, 0.8)
-    f:SetPoint("TOPLEFT", jine, "BOTTOMLEFT", -9, 2)
-    f:EnableMouse(true)
-    f:SetClampedToScreen(true)
-    f:SetHyperlinksEnabled(true)
-    BG.FrameJineList = f
-    f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
-        -- GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, 0)
-        GameTooltip:SetOwner(button, "ANCHOR_RIGHT", 0, 0)
-        GameTooltip:ClearLines()
-        local itemID = GetItemInfoInstant(link)
-        if itemID then
-            GameTooltip:SetItemByID(itemID)
-            GameTooltip:Show()
-            BG.HighlightBiaoGe(link)
-        end
-    end)
-    f:SetScript("OnHyperlinkLeave", function(self, link, text, button)
-        GameTooltip:Hide()
-        BG.Hide_AllHighlight()
-    end)
-
-    local t = f:CreateFontString()
-    t:SetPoint("TOP", f, "TOP", 0, -10)
-    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-    t:SetText(L["欠款金额"])
-    t:SetTextColor(1, 0, 0)
-    t:SetWidth(f:GetWidth() - 5)
-    t:SetWordWrap(false)
-
-    local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
-    edit:SetSize(f:GetWidth() - 15, 20)
-    edit:SetTextColor(1, 0, 0)
-    edit:SetPoint("TOP", t, "BOTTOM", 2, -5)
-    if BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
-        edit:SetText(BiaoGe[FB]["boss" .. b]["qiankuan" .. i])
-    end
-    edit:SetNumeric(true)
-    edit:SetAutoFocus(false)
-    BG.FrameQianKuanEdit = edit
-    edit:SetScript("OnTextChanged", function(self)
-        BG.UpdateTwo0(self)
-        if self:GetText() ~= "" then
-            BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = self:GetText()
-            BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Show()
+do
+    function BG.GetGeZiTardeInfo(FB, b, i, isHistory)
+        local tbl
+        if isHistory then
+            local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
+            tbl = BiaoGe.History[FB][DT].tradeTbl
         else
-            BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
-            BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
+            tbl = BiaoGe[FB].tradeTbl
         end
-    end)
-    edit:SetScript("OnEscapePressed", function(self)
-        BG.FrameJineList:Hide()
-    end)
-    edit:SetScript("OnEnterPressed", function(self)
-        BG.FrameJineList:Hide()
-    end)
-    -- 点击时
-    edit:SetScript("OnMouseDown", function(self, enter)
-        if enter == "RightButton" then -- 右键清空格子
-            self:SetEnabled(false)
-            self:SetText("")
-        end
-    end)
-    edit:SetScript("OnMouseUp", function(self, enter)
-        if enter == "RightButton" then -- 右键清空格子
-            self:SetEnabled(true)
-        end
-    end)
-
-    local tradeInfo, num = BG.GetGeZiTardeInfo(FB, b, i)
-    if tradeInfo then
-        local t = f:CreateFontString()
-        t:SetPoint("TOP", edit, "BOTTOM", 0, -15)
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-        t:SetText(L["打包交易"])
-        t:SetTextColor(0, 1, 0)
-        t:SetWidth(BG.FrameJineList:GetWidth() - 5)
-        t:SetWordWrap(false)
-        local tradeText = t
-
-        local buttons = {}
-        for i, v in ipairs(tradeInfo) do
-            local f = CreateFrame("Frame", nil, BG.FrameJineList, "BackdropTemplate")
-            f:SetBackdrop({
-                bgFile = "Interface/ChatFrame/ChatFrameBackground",
-            })
-            f:SetBackdropColor(0.5, 0.5, 0.5, 0)
-            if i == 1 then
-                f:SetPoint("TOP", tradeText, "BOTTOM", 0, -5)
-            else
-                f:SetPoint("TOP", buttons[i - 1], "BOTTOM", 0, 0)
+        for ii, _ in ipairs(tbl) do
+            for _, v in ipairs(tbl[ii]) do
+                if FB == v.FB and b == v.b and i == v.i then
+                    return tbl[ii], ii
+                end
             end
-            f:SetSize(BG.FrameJineList:GetWidth() - 10, 18)
-            f:EnableMouse(true)
-            tinsert(buttons, f)
-            f:SetScript("OnEnter", function(self)
-                self:SetBackdropColor(0.5, 0.5, 0.5, 0.5)
-                GameTooltip:SetOwner(f, "ANCHOR_RIGHT", 0, 0)
-                GameTooltip:ClearLines()
-                GameTooltip:SetItemByID(v.itemID)
+        end
+    end
+
+    function BG.SetListjine(jine, FB, b, i)
+        -- 背景框
+        local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+        f:SetWidth(100)
+        f:SetHeight(230)
+        f:SetFrameLevel(120)
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            edgeSize = 16,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
+        f:SetBackdropColor(0, 0, 0, 0.8)
+        f:SetPoint("TOPLEFT", jine, "BOTTOMLEFT", -9, 2)
+        f:EnableMouse(true)
+        f:SetClampedToScreen(true)
+        f:SetHyperlinksEnabled(true)
+        BG.FrameJineList = f
+        f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
+            -- GameTooltip:SetOwner(self, "ANCHOR_CURSOR", 0, 0)
+            GameTooltip:SetOwner(button, "ANCHOR_RIGHT", 0, 0)
+            GameTooltip:ClearLines()
+            local itemID = GetItemInfoInstant(link)
+            if itemID then
+                GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
-                if BG.Frame[v.FB]["boss" .. v.b] then
-                    local zb = BG.Frame[v.FB]["boss" .. v.b]["zhuangbei" .. v.i]
-                    local jine = BG.Frame[v.FB]["boss" .. v.b]["jine" .. v.i]
-                    if zb then
-                        local f = BG.CreateHighlightFrame(zb, nil, { 0, 1, 0, 0.5 }, 4)
-                        f:ClearAllPoints()
-                        f:SetPoint("TOPLEFT", zb, "TOPLEFT", 0, 0)
-                        f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
+                BG.HighlightBiaoGe(link)
+            end
+        end)
+        f:SetScript("OnHyperlinkLeave", function(self, link, text, button)
+            GameTooltip:Hide()
+            BG.Hide_AllHighlight()
+        end)
+
+        local t = f:CreateFontString()
+        t:SetPoint("TOP", f, "TOP", 0, -10)
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetText(L["欠款金额"])
+        t:SetTextColor(1, 0, 0)
+        t:SetWidth(f:GetWidth() - 5)
+        t:SetWordWrap(false)
+
+        local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+        edit:SetSize(f:GetWidth() - 15, 20)
+        edit:SetTextColor(1, 0, 0)
+        edit:SetPoint("TOP", t, "BOTTOM", 2, -5)
+        if BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
+            edit:SetText(BiaoGe[FB]["boss" .. b]["qiankuan" .. i])
+        end
+        edit:SetNumeric(true)
+        edit:SetAutoFocus(false)
+        BG.FrameQianKuanEdit = edit
+        edit:SetScript("OnTextChanged", function(self)
+            BG.UpdateTwo0(self)
+            if self:GetText() ~= "" then
+                BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = self:GetText()
+                BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Show()
+            else
+                BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
+                BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
+            end
+        end)
+        edit:SetScript("OnEscapePressed", function(self)
+            BG.FrameJineList:Hide()
+        end)
+        edit:SetScript("OnEnterPressed", function(self)
+            BG.FrameJineList:Hide()
+        end)
+        -- 点击时
+        edit:SetScript("OnMouseDown", function(self, enter)
+            if enter == "RightButton" then -- 右键清空格子
+                self:SetEnabled(false)
+                self:SetText("")
+            end
+        end)
+        edit:SetScript("OnMouseUp", function(self, enter)
+            if enter == "RightButton" then -- 右键清空格子
+                self:SetEnabled(true)
+            end
+        end)
+
+        local tradeInfo, num = BG.GetGeZiTardeInfo(FB, b, i)
+        if tradeInfo then
+            local t = f:CreateFontString()
+            t:SetPoint("TOP", edit, "BOTTOM", 0, -15)
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetText(L["打包交易"])
+            t:SetTextColor(0, 1, 0)
+            t:SetWidth(BG.FrameJineList:GetWidth() - 5)
+            t:SetWordWrap(false)
+            local tradeText = t
+
+            local buttons = {}
+            for i, v in ipairs(tradeInfo) do
+                local f = CreateFrame("Frame", nil, BG.FrameJineList, "BackdropTemplate")
+                f:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                })
+                f:SetBackdropColor(0.5, 0.5, 0.5, 0)
+                if i == 1 then
+                    f:SetPoint("TOP", tradeText, "BOTTOM", 0, -5)
+                else
+                    f:SetPoint("TOP", buttons[i - 1], "BOTTOM", 0, 0)
+                end
+                f:SetSize(BG.FrameJineList:GetWidth() - 10, 18)
+                f:EnableMouse(true)
+                tinsert(buttons, f)
+                f:SetScript("OnEnter", function(self)
+                    self:SetBackdropColor(0.5, 0.5, 0.5, 0.5)
+                    GameTooltip:SetOwner(f, "ANCHOR_RIGHT", 0, 0)
+                    GameTooltip:ClearLines()
+                    GameTooltip:SetItemByID(v.itemID)
+                    GameTooltip:Show()
+                    if BG.Frame[v.FB]["boss" .. v.b] then
+                        local zb = BG.Frame[v.FB]["boss" .. v.b]["zhuangbei" .. v.i]
+                        local jine = BG.Frame[v.FB]["boss" .. v.b]["jine" .. v.i]
+                        if zb then
+                            local f = BG.CreateHighlightFrame(zb, nil, { 0, 1, 0, 0.5 }, 4)
+                            f:ClearAllPoints()
+                            f:SetPoint("TOPLEFT", zb, "TOPLEFT", 0, 0)
+                            f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
+                        end
+                    end
+                end)
+                f:SetScript("OnLeave", function(self)
+                    self:SetBackdropColor(0.5, 0.5, 0.5, 0)
+                    GameTooltip:Hide()
+                    BG.Hide_AllHighlight()
+                end)
+
+                local icon = f:CreateTexture()
+                icon:SetPoint('LEFT', 0, 0)
+                icon:SetSize(14, 14)
+                icon:SetTexture(select(5, GetItemInfoInstant(v.itemID)))
+
+                local t = f:CreateFontString()
+                t:SetPoint("LEFT", icon, "RIGHT", 0, 0)
+                t:SetWidth(f:GetWidth() - icon:GetWidth())
+                t:SetFontObject(GameFontNormal)
+                t:SetText(v.link)
+                t:SetJustifyH("LEFT")
+                t:SetWordWrap(false)
+            end
+
+            local bt = CreateFrame("Button", nil, BG.FrameJineList, "UIPanelButtonTemplate")
+            bt:SetSize(BG.FrameJineList:GetWidth() - 15, 20)
+            bt:SetPoint("BOTTOM", 0, 5)
+            bt:SetText(L["删除打包交易记录"])
+            BG.ButtonTextSetWordWrap(bt)
+            bt:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+                GameTooltip:AddLine(L["删除后不再高亮绿色框。请放心，该按钮不会删除表格内容。"], 1, 0.82, 0, true)
+                GameTooltip:Show()
+            end)
+            bt:SetScript("OnLeave", GameTooltip_Hide)
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                for _, FB in ipairs(BG.FBtable) do
+                    local tradeInfo, num = BG.GetGeZiTardeInfo(FB, b, i)
+                    if num then
+                        tremove(BiaoGe[FB].tradeTbl, num)
                     end
                 end
+                jine:ClearFocus()
+                jine:SetFocus()
             end)
-            f:SetScript("OnLeave", function(self)
-                self:SetBackdropColor(0.5, 0.5, 0.5, 0)
-                GameTooltip:Hide()
-                BG.Hide_AllHighlight()
-            end)
-
-            local icon = f:CreateTexture()
-            icon:SetPoint('LEFT', 0, 0)
-            icon:SetSize(14, 14)
-            icon:SetTexture(select(5, GetItemInfoInstant(v.itemID)))
-
-            local t = f:CreateFontString()
-            t:SetPoint("LEFT", icon, "RIGHT", 0, 0)
-            t:SetWidth(f:GetWidth() - icon:GetWidth())
-            t:SetFontObject(GameFontNormal)
-            t:SetText(v.link)
-            t:SetJustifyH("LEFT")
-            t:SetWordWrap(false)
         end
-
-        local bt = CreateFrame("Button", nil, BG.FrameJineList, "UIPanelButtonTemplate")
-        bt:SetSize(BG.FrameJineList:GetWidth() - 15, 20)
-        bt:SetPoint("BOTTOM", 0, 5)
-        bt:SetText(L["删除打包交易记录"])
-        BG.ButtonTextSetWordWrap(bt)
-        bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
-            GameTooltip:AddLine(L["删除后不再高亮绿色框。请放心，该按钮不会删除表格内容。"], 1, 0.82, 0, true)
-            GameTooltip:Show()
-        end)
-        bt:SetScript("OnLeave", GameTooltip_Hide)
-        bt:SetScript("OnClick", function(self)
-            BG.PlaySound(1)
-            for _, FB in ipairs(BG.FBtable) do
-                local tradeInfo, num = BG.GetGeZiTardeInfo(FB, b, i)
-                if num then
-                    tremove(BiaoGe[FB].tradeTbl, num)
-                end
-            end
-            jine:ClearFocus()
-            jine:SetFocus()
-        end)
     end
 end
 
@@ -1439,6 +1472,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
             -- 打包交易
             if not (BG.copy1.tradeInfo and BG.copy2.tradeInfo and BG.copy1.tradeInfo == BG.copy2.tradeInfo) then
                 if BG.copy1.tradeInfo then
+                    -- 修改该打包交易中，格子1的b和i改为格子2的b和i
                     for i, v in ipairs(BG.copy1.tradeInfo) do
                         if BG.copy1.b == v.b and BG.copy1.i == v.i then
                             v.b = BG.copy2.b
@@ -1452,6 +1486,20 @@ function BG.JiaoHuan(button, FB, b, i, t)
                             v.b = BG.copy1.b
                             v.i = BG.copy1.i
                         end
+                    end
+                end
+            else
+                local copy1_b = BG.copy1.b
+                local copy1_i = BG.copy1.i
+                local copy2_b = BG.copy2.b
+                local copy2_i = BG.copy2.i
+                for i, v in ipairs(BG.copy1.tradeInfo) do
+                    if copy1_b == v.b and copy1_i == v.i then
+                        v.b = copy2_b
+                        v.i = copy2_i
+                    elseif copy2_b == v.b and copy2_i == v.i then
+                        v.b = copy1_b
+                        v.i = copy1_i
                     end
                 end
             end
@@ -1905,7 +1953,7 @@ function BG.Once(name, dt, func)
 end
 
 ------------------创建滚动框------------------
-function BG.CreateScrollFrame(parent, w, h, edit, notUpdateScrollBar)
+function BG.CreateScrollFrame(parent, w, h, isEdit, notUpdateScrollBar)
     local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
     f:SetBackdrop({
         bgFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -1932,7 +1980,7 @@ function BG.CreateScrollFrame(parent, w, h, edit, notUpdateScrollBar)
     end
 
     local child
-    if edit then
+    if isEdit then
         child = CreateFrame("EditBox", nil, scroll)
         child:SetWidth(scroll:GetWidth())
         child:SetHeight(scroll:GetHeight())
@@ -2040,4 +2088,32 @@ function BG.UpdateTwo0(bt)
             end
         end
     end
+end
+
+function BG.auctionLogFrame_InsertLink(text)
+    if BG.auctionLogFrame.changeFrame.zhuangbei:HasFocus() then
+        BG.auctionLogFrame.changeFrame.zhuangbei:SetText(text:gsub("(|h|r)H", "%1"))
+        BG.auctionLogFrame.changeFrame.zhuangbei:ClearFocus()
+        return true
+    elseif BG.auctionLogFrame.serachEdit:HasFocus() then
+        BG.auctionLogFrame.serachEdit:SetText(text:match("%[(.+)%]"))
+        return true
+    end
+end
+
+function BG.InsertLink(text, isZhuangbeiList)
+    if BG.auctionLogFrame_InsertLink(text) then
+        return
+    end
+    if AuctionatorShoppingFrame and AuctionatorShoppingFrame:IsVisible() then
+        ChatEdit_InsertLink(text)
+        return
+    elseif AuctionFrameBrowse and AuctionFrameBrowse:IsVisible() then
+        ChatEdit_InsertLink(text)
+        return
+    end
+    if not GetCurrentKeyBoardFocus() or isZhuangbeiList then
+        ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+    end
+    ChatEdit_InsertLink(text)
 end

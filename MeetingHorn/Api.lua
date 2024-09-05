@@ -438,6 +438,24 @@ function ns.PlayerIsRole(role)
     return GetCurrentRoles()[role]
 end
 
+local QRTooltip = nil
+function ns.OpenAnnouncementUrl(url)
+    if not QRTooltip then
+        QRTooltip = CreateFrame('Frame', nil, ns.Addon.MainPanel, 'MeetingHornActivityTooltipTemplate')
+        QRTooltip:SetSize(240, 260)
+        QRTooltip:SetPoint('TOPRIGHT', ns.Addon.MainPanel, 'TOPRIGHT', 0, 0)
+        QRTooltip.Text:SetText('扫描下方二维码\n更多精彩在网易大神等你')
+        QRTooltip.Text:ClearAllPoints()
+        QRTooltip.Text:SetPoint('TOPLEFT', QRTooltip, "TOPLEFT", 8, -30)
+        QRTooltip.Text:SetPoint('TOPRIGHT', QRTooltip, "BOTTOMRIGHT", -8, 8)
+        QRTooltip.QRCode:ClearAllPoints()
+        QRTooltip.QRCode:SetPoint('BOTTOM', QRTooltip, "BOTTOM", 0, 30)
+        ns.UI.QRCodeWidget:Bind(QRTooltip.QRCode)
+    end
+    QRTooltip.QRCode:SetValue(url)
+    QRTooltip:Show()
+end
+
 function ns.OpenUrlDialog(url, customText)
     local tempText = '请按<|cff00ff00Ctrl+C|r>复制网址到浏览器打开'
     if customText ~= nil then
@@ -535,6 +553,7 @@ function ns.DataMake(allowCrossRealm)
     local currentRealm
     local currentLevel
     local currentRoomID
+    local currentBgID
     local function Realm(realm)
         realm = decode(realm)
         if allowCrossRealm or realm == GetRealmName() then
@@ -549,7 +568,7 @@ function ns.DataMake(allowCrossRealm)
         end
 
         name = decode(name)
-        ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID}
+        ns.Addon.db.realm.starRegiment.regimentData[name] = {level = currentLevel, roomID = currentRoomID, bgID = currentBgID}
     end
 
     local function Level(level)
@@ -560,7 +579,11 @@ function ns.DataMake(allowCrossRealm)
         currentRoomID = roomid
     end
 
-    setfenv(2, {R = Realm, N = Name, L = Level, I = RoomID})
+    local function BgID(bgid)
+        currentBgID = bgid
+    end
+
+    setfenv(2, {R = Realm, N = Name, L = Level, I = RoomID, B = BgID})
 end
 
 function ns.FormatSummary(text, tbl)
@@ -649,4 +672,18 @@ function ns.TableToJson(tbl)
     end
 
     return serialize(tbl, 0)
+end
+
+function ns.IsBlackListData(text)
+    if not ns.Addon.db.global.BlackListData then
+        return false
+    end
+    local isBlack = false
+    for _, blackData in ipairs(ns.Addon.db.global.BlackListData) do
+        if string.find(text, blackData) then
+            isBlack = true
+            break
+        end
+    end
+    return isBlack
 end

@@ -41,8 +41,6 @@ function BG.RoleOverviewUI()
                 ["SC"] = 1,
                 ["TTS"] = 1,
                 ["Temple"] = 1,
-                -- ["Gno"] = 1,
-                -- ["BD"] = 1,
                 ["huiguweek"] = 1,
                 ["alchemy"] = 1,
                 ["leatherworking"] = 1,
@@ -106,67 +104,8 @@ function BG.RoleOverviewUI()
     -- 更新
     do
         if BG.IsVanilla then
-            BG.Once("FBCDchoice", 240328, function()
-                BiaoGe.FBCDchoice["Temple"] = 1
-                BiaoGe.FBCDchoice["alchemy"] = 1
-                BiaoGe.FBCDchoice["leatherworking"] = 1
-                BiaoGe.FBCDchoice["tailor"] = 1
-            end)
-            BG.Once("MONEYchoice", 240408, function()
-                BiaoGe.MONEYchoice[221262] = 1
-                BiaoGe.MONEYchoice[221365] = 1
-            end)
-            BG.Once("FBCDchoice", 240711, function()
-                BiaoGe.FBCDchoice["OL"] = 1
-
-                BiaoGe.FBCDchoice["MCsod"] = 1
-                BiaoGe.FBCDchoice["OLsod"] = 1
-                BiaoGe.FBCDchoice["SC"] = 1
-                BiaoGe.FBCDchoice["TTS"] = 1
-                BiaoGe.FBCDchoice["Gno"] = nil
-                BiaoGe.FBCDchoice["BD"] = nil
-            end)
         elseif BG.IsWLK then
-            BG.Once("FBCDandMONEYchoice", 240611, function()
-                BiaoGe.FBCDchoice["25ULD"] = 1
-                BiaoGe.FBCDchoice["10ULD"] = 1
-                BiaoGe.FBCDchoice["25NAXX"] = 1
-                BiaoGe.FBCDchoice["10NAXX"] = 1
-                BiaoGe.FBCDchoice["25VOA"] = 1
-                BiaoGe.FBCDchoice["10VOA"] = 1
-                BiaoGe.FBCDchoice["gamma"] = 1
-                BiaoGe.FBCDchoice["heroe"] = 1
-                BiaoGe.FBCDchoice["week1"] = 1
-
-                BiaoGe.MONEYchoice[221] = 1
-                BiaoGe.MONEYchoice[102] = 1
-                BiaoGe.MONEYchoice[101] = 1
-                BiaoGe.MONEYchoice["money"] = 1
-            end)
-            BG.Once("FBCDandMONEYchoice", 240630, function()
-                BiaoGe.FBCDchoice["25EOE"] = 1
-                BiaoGe.FBCDchoice["10EOE"] = 1
-                BiaoGe.FBCDchoice["25OS"] = 1
-                BiaoGe.FBCDchoice["10OS"] = 1
-            end)
-            BG.Once("FBCDandMONEYchoice", 240703, function()
-                BiaoGe.FBCDchoice["heroe"] = 1
-            end)
-            BG.Once("FBCDandMONEYchoice", 240711, function()
-                BiaoGe.FBCDchoice["gamma"] = 1
-            end)
         elseif BG.IsCTM then
-            BG.Once("FBCDchoice", 240519, function()
-                BiaoGe.FBCDchoice["BOT"] = 1
-                BiaoGe.FBCDchoice["BWD"] = 1
-                BiaoGe.FBCDchoice["TOF"] = 1
-                BiaoGe.MONEYchoice[396] = 1
-                BiaoGe.MONEYchoice[395] = 1
-                BiaoGe.MONEYchoice["money"] = 1
-            end)
-            BG.Once("FBCDchoice", 240619, function()
-                BiaoGe.FBCDchoice["BH"] = 1
-            end)
         end
     end
 
@@ -851,7 +790,6 @@ function BG.RoleOverviewUI()
         local colorplayer = SetClassCFF(player, "player")
 
         function BG.UpdateFBCD()
-            -- local time = time()
             local time = GetServerTime()
             local cd = {}
 
@@ -1287,7 +1225,7 @@ function BG.RoleOverviewUI()
                 end
             end
         end
-        hooksecurefunc("PVEFrame_OnShow", function(self)
+        LFDQueueFrame:HookScript("OnShow", function(self)
             if BiaoGe.options["zhidingFB"] ~= 1 then
                 for i, bt in ipairs(buttons) do
                     bt:Hide()
@@ -1666,10 +1604,6 @@ function BG.RoleOverviewUI()
             end
             sort(BG.PlayerItemsLevel, function(a, b)
                 return a.ilevel > b.ilevel
-                -- if a.ilevel > b.ilevel then
-                --     return true
-                -- end
-                -- return false
             end)
         end
 
@@ -1692,17 +1626,17 @@ function BG.RoleOverviewUI()
 
     ------------------专业技能CD------------------
     do
-        if BG.IsVanilla_Sod then
-            if not BiaoGe.tradeSkillCooldown then
-                BiaoGe.tradeSkillCooldown = {}
-            end
-            if not BiaoGe.tradeSkillCooldown[realmID] then
-                BiaoGe.tradeSkillCooldown[realmID] = {}
-            end
-            if not BiaoGe.tradeSkillCooldown[realmID][player] then
-                BiaoGe.tradeSkillCooldown[realmID][player] = {}
-            end
+        if not BiaoGe.tradeSkillCooldown then
+            BiaoGe.tradeSkillCooldown = {}
+        end
+        if not BiaoGe.tradeSkillCooldown[realmID] then
+            BiaoGe.tradeSkillCooldown[realmID] = {}
+        end
+        if not BiaoGe.tradeSkillCooldown[realmID][player] then
+            BiaoGe.tradeSkillCooldown[realmID][player] = {}
+        end
 
+        if BG.IsVanilla_Sod then
             local tbl = {
                 alchemy = {
                     name = L["炼金转化"],

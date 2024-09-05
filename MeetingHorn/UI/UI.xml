@@ -34,4 +34,6 @@
 
     <Script file="QuestItem.lua"/>
     <Script file="QuestPanel.lua"/>
+
+    <Script file="BannerPlugin.lua"/>
 </Ui>

@@ -89,6 +89,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         bt:SetScript("OnLeave", GameTooltip_Hide)
     end
 
+    local frame, child
+
     local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
     do
         do
@@ -195,20 +197,89 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
 
+        -- 滚动框
+        do
+            frame, child = BG.CreateScrollFrame(BG.auctionLogFrame,
+                BG.auctionLogFrame:GetWidth() - 10,
+                BG.auctionLogFrame:GetHeight() - 145)
+            frame:SetBackdrop({
+                edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                edgeSize = 1,
+            })
+            frame:SetBackdropBorderColor(.5, .5, .5, .5)
+            frame:SetPoint("TOP", 0, -55)
+
+            local _f = CreateFrame("Frame", nil, frame)
+            _f:SetSize(1, 1)
+            _f:SetPoint("TOPRIGHT", 0, 1)
+            frame.tooltip = _f
+
+            local t = child:CreateFontString()
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetPoint("TOP", 0, 0)
+            t:SetTextColor(1, 0, 0)
+            t:SetText(L["没有自动拍卖记录。"])
+            t:Hide()
+            BG.auctionLogFrame.notText = t
+        end
+
+        -- 合计收入
         do
             local t = f:CreateFontString()
             t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-            t:SetPoint("BOTTOMLEFT", 6, 40)
+            t:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 2, -5)
             t:SetTextColor(1, 1, 1)
             t:SetJustifyH("LEFT")
             t:SetWordWrap(false)
             BG.auctionLogFrame.sumText = t
         end
 
+        -- 增加
+        do
+            local bt = CreateFrame("Button", nil, BG.auctionLogFrame, "UIPanelButtonTemplate")
+            bt:SetSize(25, 20)
+            bt:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 1, -3)
+            bt:SetText("+")
+            BG.auctionLogFrame.ButtonAdd = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                if BG.auctionLogFrame.changeFrame:IsVisible() and BG.auctionLogFrame.changeFrame.type == "new" then
+                    BG.auctionLogFrame.changeFrame:Hide()
+                else
+                    BG.auctionLogFrame.changeFrame:Hide()
+                    BG.auctionLogFrame.changeFrame.type = "new"
+                    BG.auctionLogFrame.changeFrame.info = {}
+                    BG.auctionLogFrame.changeFrame:Show()
+                    BG.auctionLogFrame.changeFrame:ClearAllPoints()
+                    BG.auctionLogFrame.changeFrame:SetPoint("BOTTOM", frame, "BOTTOM", 0, 0)
+                end
+            end)
+        end
+
+        -- 搜索
+        do
+            local edit = CreateFrame("EditBox", nil, f, "SearchBoxTemplate")
+            edit:SetSize(f:GetWidth() - 20, 22)
+            edit:SetPoint("TOPLEFT", BG.auctionLogFrame.sumText, "BOTTOMLEFT", 7, -5)
+            BG.auctionLogFrame.serachEdit = edit
+            edit:SetScript("OnMouseDown", function(self, button)
+                if button == "RightButton" then
+                    self:SetEnabled(false)
+                    self:SetText("")
+                end
+            end)
+            edit:SetScript("OnMouseUp", function(self, button)
+                self:SetEnabled(true)
+            end)
+            edit:SetScript("OnEditFocusGained", function(self)
+                BG.lastfocus = self
+            end)
+        end
+
         -- 生成账单按钮
         do
             local bt = CreateFrame("Button", nil, BG.auctionLogFrame, "UIPanelButtonTemplate")
-            bt:SetSize(100, 25)
+            bt:SetSize(110, 30)
             bt:SetPoint("BOTTOMLEFT", BG.auctionLogFrame, 5, 5)
             bt:SetText(L["生成表格账单"])
             BG.auctionLogFrame.ButtonCreateLedger = bt
@@ -277,7 +348,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             local bt = CreateFrame("Button", nil, BG.auctionLogFrame, "UIPanelButtonTemplate")
-            bt:SetSize(85, 25)
+            bt:SetSize(95, 30)
             bt:SetPoint("BOTTOMRIGHT", BG.auctionLogFrame, -5, 5)
             bt:SetText(L["生成对账单"])
             BG.auctionLogFrame.ButtonCreateDuiZhang = bt
@@ -320,31 +391,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
-    local frame, child = BG.CreateScrollFrame(BG.auctionLogFrame,
-        BG.auctionLogFrame:GetWidth() - 10,
-        BG.auctionLogFrame:GetHeight() - 115)
-    do
-        frame:SetBackdrop({
-            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-            edgeSize = 1,
-        })
-        frame:SetBackdropBorderColor(.5, .5, .5, .5)
-        frame:SetPoint("TOP", 0, -55)
-
-        local _f = CreateFrame("Frame", nil, frame)
-        _f:SetSize(1, 1)
-        _f:SetPoint("TOPRIGHT", 0, 1)
-        frame.tooltip = _f
-
-        local t = child:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-        t:SetPoint("TOP", 0, 0)
-        t:SetTextColor(1, 0, 0)
-        t:SetText(L["没有自动拍卖记录。"])
-        t:Hide()
-        BG.auctionLogFrame.notText = t
-    end
-
     local dropDown = LibBG:Create_UIDropDownMenu(nil, f)
     do
         local f = CreateFrame("Frame", nil, BG.auctionLogFrame, "BackdropTemplate")
@@ -368,14 +414,27 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.ClearFocus()
             end)
             f:SetScript("OnShow", function(self)
-                self.maijia:SetText("")
-                self.jine:SetText("")
+                if BG.auctionLogFrame.changeFrame.type == "change" then
+                    f.item:Show()
+                    f.zhuangbei:Hide()
+                    f.title:SetText(L["修改记录"])
+                    f.ButtonSure:Enable()
+                else
+                    f.item:Hide()
+                    f.zhuangbei:Show()
+                    f.zhuangbei:SetFocus()
+                    f.title:SetText(L["手动增加记录"])
+                    f.ButtonSure:Disable()
+                end
+                f.zhuangbei:SetText("")
+                f.maijia:SetText("")
+                f.jine:SetText("")
             end)
 
             local t = f:CreateFontString()
             t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", 0, -10)
-            t:SetText(L["修改记录"])
+            f.title = t
         end
         -- 装备
         do
@@ -387,29 +446,97 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             title:SetWidth(60)
             title:SetJustifyH("RIGHT")
             title:SetWordWrap(false)
-            local _f = CreateFrame("Frame", nil, BG.auctionLogFrame.changeFrame, "BackdropTemplate")
-            _f:SetPoint("LEFT", title, "RIGHT", 10, 0)
-            _f:SetSize(120, 15)
-            _f:SetHyperlinksEnabled(true)
 
-            local t = _f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-            t:SetAllPoints()
-            t:SetJustifyH("LEFT")
-            t:SetWordWrap(false)
-            f.item = t
-            t.title = title
+            -- 修改装备
+            do
+                local _f = CreateFrame("Frame", nil, BG.auctionLogFrame.changeFrame, "BackdropTemplate")
+                _f:SetPoint("LEFT", title, "RIGHT", 10, 0)
+                _f:SetSize(120, 15)
+                _f:SetHyperlinksEnabled(true)
+                local t = _f:CreateFontString()
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetAllPoints()
+                t:SetJustifyH("LEFT")
+                t:SetWordWrap(false)
+                f.item = t
+                t.title = title
+                _f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
+                    local itemID = GetItemInfoInstant(link)
+                    if itemID then
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -self:GetWidth() + t:GetWrappedWidth(), 0)
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetItemByID(itemID)
+                        GameTooltip:Show()
+                    end
+                end)
+                _f:SetScript("OnHyperlinkLeave", GameTooltip_Hide)
+            end
 
-            _f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -self:GetWidth() + t:GetWrappedWidth(), 0)
-                GameTooltip:ClearLines()
-                local itemID = GetItemInfoInstant(link)
-                if itemID then
-                    GameTooltip:SetItemByID(itemID)
+            -- 手动添加装备
+            do
+                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                edit:SetSize(110, 20)
+                edit:SetPoint("LEFT", title, "RIGHT", 10, 0)
+                edit:SetAutoFocus(false)
+                f.zhuangbei = edit
+                edit:SetScript("OnEditFocusGained", function(self)
+                    self:HighlightText()
+                    BG.lastfocus = self
+                end)
+                edit:SetScript("OnTextChanged", function(self)
+                    if GetItemID(self:GetText()) and GetItemInfoInstant(self:GetText()) then
+                        f.ButtonSure:Enable()
+                    else
+                        f.ButtonSure:Disable()
+                    end
+                end)
+                edit:SetScript("OnMouseDown", function(self, button)
+                    if button == "RightButton" then
+                        self:SetEnabled(false)
+                        self:SetText("")
+                        return
+                    end
+                end)
+                edit:SetScript("OnMouseUp", function(self, button)
+                    local infoType, itemID, itemLink = GetCursorInfo()
+                    if infoType == "item" then
+                        self:SetText(itemLink)
+                        self:ClearFocus()
+                        ClearCursor()
+                    end
+                    self:SetEnabled(true)
+                end)
+                edit:SetScript("OnEnter", function(self, button)
+                    if not tonumber(self:GetText()) then
+                        local link = self:GetText()
+                        local itemID = GetItemInfoInstant(link)
+                        if itemID then
+                            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetItemByID(itemID)
+                            GameTooltip:Show()
+                        end
+                    end
+                end)
+                edit:SetScript("OnLeave", GameTooltip_Hide)
+
+                -- 提示
+                local bt = CreateFrame("Button", nil, edit)
+                bt:SetSize(28, 28)
+                bt:SetPoint("LEFT", edit, "RIGHT", 0, -1)
+                local tex = bt:CreateTexture()
+                tex:SetAllPoints()
+                tex:SetTexture(616343)
+                bt:SetHighlightTexture(616343)
+                bt:SetScript("OnEnter", function(self)
+                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddLine(L['添加装备'], 1, 1, 1, true)
+                    GameTooltip:AddLine(L["按住Shift+点击表格/背包/聊天框装备；直接把装备拖到格子里"], 1, 0.82, 0, true)
                     GameTooltip:Show()
-                end
-            end)
-            _f:SetScript("OnHyperlinkLeave", GameTooltip_Hide)
+                end)
+                bt:SetScript("OnLeave", GameTooltip_Hide)
+            end
         end
         -- 买家
         do
@@ -486,6 +613,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             edit:SetNumeric(true)
             f.jine = edit
             edit:SetScript("OnTextChanged", function(self)
+                BG.UpdateTwo0(self)
                 if self:GetText() == "" then
                     BG.auctionLogFrame.changeFrame.info.jine = nil
                 else
@@ -522,21 +650,50 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             bt:SetScript("OnClick", function(self)
                 BG.PlaySound(1)
                 local FB = BG.FB1
-                local i = BG.auctionLogFrame.changeFrame.info.num
-                if not (BG.auctionLogFrame.changeFrame.info.maijia or BG.auctionLogFrame.changeFrame.info.jine) then
-                    BiaoGe[FB].auctionLog[i].type = 2
-                    BiaoGe[FB].auctionLog[i].maijia = nil
-                    BiaoGe[FB].auctionLog[i].jine = nil
-                else
-                    BiaoGe[FB].auctionLog[i].type = 1
-                    BiaoGe[FB].auctionLog[i].maijia = BG.auctionLogFrame.changeFrame.info.maijia or ""
-                    BiaoGe[FB].auctionLog[i].jine = BG.auctionLogFrame.changeFrame.info.jine or ""
+                if BG.auctionLogFrame.changeFrame.type == "change" then
+                    local i = BG.auctionLogFrame.changeFrame.info.num
+                    if not (BG.auctionLogFrame.changeFrame.info.maijia or BG.auctionLogFrame.changeFrame.info.jine) then
+                        BiaoGe[FB].auctionLog[i].type = 2
+                        BiaoGe[FB].auctionLog[i].maijia = nil
+                        BiaoGe[FB].auctionLog[i].jine = nil
+                    else
+                        BiaoGe[FB].auctionLog[i].type = 1
+                        BiaoGe[FB].auctionLog[i].maijia = BG.auctionLogFrame.changeFrame.info.maijia or ""
+                        BiaoGe[FB].auctionLog[i].jine = BG.auctionLogFrame.changeFrame.info.jine or ""
+                    end
+                    for k in pairs(BG.playerClass) do
+                        BiaoGe[FB].auctionLog[i][k] = BG.auctionLogFrame.changeFrame.info[k]
+                    end
+                    BG.UpdateAuctionLogFrame()
+                    f:Hide()
+                elseif BG.auctionLogFrame.changeFrame.type == "new" then
+                    local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
+                    _, typeID, subclassID, bindType = GetItemInfo(f.zhuangbei:GetText())
+                    local a = {
+                        time = time(),
+                        zhuangbei = f.zhuangbei:GetText(),
+                        itemlevel = level,
+                        quality = quality,
+                        bindType = bindType,
+                    }
+
+                    if not (BG.auctionLogFrame.changeFrame.info.maijia or BG.auctionLogFrame.changeFrame.info.jine) then
+                        a.type = 2
+                        a.maijia = nil
+                        a.jine = nil
+                    else
+                        a.type = 1
+                        a.maijia = BG.auctionLogFrame.changeFrame.info.maijia or ""
+                        a.jine = BG.auctionLogFrame.changeFrame.info.jine or ""
+                    end
+                    for k in pairs(BG.playerClass) do
+                        a[k] = BG.auctionLogFrame.changeFrame.info[k]
+                    end
+                    BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
+                    tinsert(BiaoGe[FB].auctionLog, a)
+                    f:Hide()
+                    BG.UpdateAuctionLogFrame()
                 end
-                for k in pairs(BG.playerClass) do
-                    BiaoGe[FB].auctionLog[i][k] = BG.auctionLogFrame.changeFrame.info[k]
-                end
-                BG.UpdateAuctionLogFrame()
-                f:Hide()
             end)
 
             local bt = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
@@ -549,26 +706,29 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
-    local buttons = {}
+    BG.auctionLogFrame.buttons = {}
 
-    local function CreateButton(i, v, isHistory)
+    local function CreateButton(i, v, isHistory, num)
         local FB = BG.FB1
         local bts = {}
         local width = child:GetWidth()
         local link = v.zhuangbei
         local icon = select(5, GetItemInfoInstant(link))
         local r, g, b = GetItemQualityColor(v.quality)
+        bts.link = link
+        bts.itemID = GetItemID(link)
 
         -- 主框架
         do
             local f = CreateFrame("Frame", nil, child, "BackdropTemplate")
             f:SetSize(width, 32)
-            if #buttons == 0 then
+            if #BG.auctionLogFrame.buttons == 0 then
                 f:SetPoint("TOPLEFT")
             else
-                f:SetPoint("TOPLEFT", buttons[#buttons].frame, "BOTTOMLEFT", 0, 0)
+                f:SetPoint("TOPLEFT", BG.auctionLogFrame.buttons[#BG.auctionLogFrame.buttons].frame, "BOTTOMLEFT", 0, 0)
             end
             f:Show()
+            f.link = link
             bts.frame = f
             f:SetScript("OnEnter", function(self)
                 GameTooltip:SetOwner(frame.tooltip, "ANCHOR_BOTTOMRIGHT", 0, 0)
@@ -601,6 +761,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             text = L["修改记录"],
                             notCheckable = true,
                             func = function()
+                                BG.auctionLogFrame.changeFrame:Hide()
+                                BG.auctionLogFrame.changeFrame.type = "change"
                                 BG.auctionLogFrame.changeFrame.info = {}
                                 BG.auctionLogFrame.changeFrame.info.num = i
                                 for k in pairs(BG.playerClass) do
@@ -638,15 +800,25 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     LibBG:EasyMenu(menu, dropDown, "cursor", 10, 10, "MENU", 2)
                 elseif IsShiftKeyDown() then
                     BG.PlaySound(1)
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_InsertLink(link)
+                    BG.InsertLink(link)
                 end
             end)
+
+            if num % 2 == 0 then
+                local tex = bts.frame:CreateTexture(nil, "BACKGROUND")
+                tex:SetAllPoints()
+                tex:SetColorTexture(.5, .5, .5, .15)
+            end
+
             local tex = bts.frame:CreateTexture()
             tex:SetAllPoints()
-            tex:SetColorTexture(.5, .5, .5, .3)
+            tex:SetColorTexture(.5, .5, .5, .5)
             tex:Hide()
             bts.ds = tex
+
+            tinsert(BG.auctionLogFrame.buttons, bts)
+
+            BG.UpdateFilter(f, link)
         end
         -- 图标
         do
@@ -704,15 +876,30 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             text:SetWordWrap(false)
             bts.money = text
         end
-        tinsert(buttons, bts)
+    end
+
+    local function SearchText(v)
+        local searchText = BG.auctionLogFrame.serachEdit:GetText()
+        if searchText == "" then
+            return true
+        end
+        if v.zhuangbei and v.zhuangbei:match("%[.+%]"):find(searchText, 1, true) then
+            return true
+        end
+        if v.maijia and v.maijia:find(searchText, 1, true) then
+            return true
+        end
+        if v.jine and v.jine == searchText then
+            return true
+        end
     end
 
     function BG.UpdateAuctionLogFrame(notSetDown)
         if not BG.auctionLogFrame:IsVisible() then return end
-        for i, v in ipairs(buttons) do
+        for i, v in ipairs(BG.auctionLogFrame.buttons) do
             v.frame:Hide()
         end
-        wipe(buttons)
+        wipe(BG.auctionLogFrame.buttons)
 
         local FB = BG.FB1
         local sum = 0
@@ -742,20 +929,25 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         if isHistory then
             BG.auctionLogFrame.ButtonCreateLedger:Disable()
             BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
+            BG.auctionLogFrame.ButtonAdd:Disable()
             BG.auctionLogFrame.title:SetText(L["历史自动拍卖记录"])
             BG.auctionLogFrame.title:SetTextColor(RGB(BG.b1))
         else
+            BG.auctionLogFrame.ButtonAdd:Enable()
             BG.auctionLogFrame.title:SetText(L["自动拍卖记录"])
             BG.auctionLogFrame.title:SetTextColor(1, 1, 1)
         end
 
         if tbl then
+            local num = 0
             for i, v in ipairs(tbl) do
-                if BiaoGe.options.auctionLogChoose == 1 or
-                    (v.type == 1 and BiaoGe.options.auctionLogChoose == 2)
-                    or (v.type == 2 and BiaoGe.options.auctionLogChoose == 3)
+                if (BiaoGe.options.auctionLogChoose == 1 or
+                        (v.type == 1 and BiaoGe.options.auctionLogChoose == 2)
+                        or (v.type == 2 and BiaoGe.options.auctionLogChoose == 3))
+                    and SearchText(v)
                 then
-                    CreateButton(i, v, isHistory)
+                    num = num + 1
+                    CreateButton(i, v, isHistory, num)
                 end
                 sum = sum + (tonumber(v.jine) or 0)
             end
@@ -770,6 +962,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end
     end
+    BG.auctionLogFrame.serachEdit:HookScript("OnTextChanged", BG.UpdateAuctionLogFrame)
 
     local function CheckItemToFB(item)
         for _, FB in ipairs(BG.GetAllFB()) do

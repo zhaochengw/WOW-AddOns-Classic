@@ -151,16 +151,6 @@ local function OnEnterZhiChuPercent(self)
     end
 end
 
-function BG.GetGeZiTardeInfo(FB, b, i)
-    for ii, _ in ipairs(BiaoGe[FB].tradeTbl) do
-        for _, v in ipairs(BiaoGe[FB].tradeTbl[ii]) do
-            if FB == v.FB and b == v.b and i == v.i then
-                return BiaoGe[FB].tradeTbl[ii], ii
-            end
-        end
-    end
-end
-
 local function ShowTardeHighLightItem(self)
     local b = self.bossnum
     local i = self.i
@@ -298,10 +288,7 @@ local function OnTextChanged(self)
         self.icon:SetTexture(nil)
     end
 
-    local num = BiaoGe.FilterClassItemDB[RealmId][player].chooseID -- 隐藏
-    if num ~= 0 then
-        BG.UpdateFilter(self)
-    end
+    BG.UpdateFilter(self)
 
     if bossnum ~= Maxb[FB] and bossnum ~= Maxb[FB] + 1 and bossnum ~= Maxb[FB] + 2 then
         BG.DuiZhangFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:SetText(self:GetText())
@@ -406,15 +393,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
             if self:GetText() ~= "" then
                 self:SetEnabled(false)
                 bt:ClearFocus()
-                if BG.lastfocus then
-                    BG.lastfocus:ClearFocus()
-                end
-                local f = GetCurrentKeyBoardFocus()
-                if not f then
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                end
-                local text = self:GetText()
-                ChatEdit_InsertLink(text)
+                BG.InsertLink(self:GetText())
             end
             return
         end
@@ -470,7 +449,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
             BG.FrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()
         end
         if not tonumber(self:GetText()) then
-            local link = bt:GetText()
+            local link = self:GetText()
             local itemID = GetItemInfoInstant(link)
             BG.Hide_AllHighlight()
             BG.HighlightBag(link)

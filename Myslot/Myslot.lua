@@ -424,11 +424,11 @@ function MySlot:Export(opt)
         s = "# " .. TALENTS .. ": " .. talent .. MYSLOT_LINE_SEP .. s
     end
     if GetSpecialization then
-        s = "# " ..
-        SPECIALIZATION ..
-        ": " ..
-        (GetSpecialization() and select(2, GetSpecializationInfo(GetSpecialization())) or NONE_CAPS) ..
-        MYSLOT_LINE_SEP .. s
+        local spec = GetSpecialization()
+        if spec and GetSpecializationInfo then
+            local _, specName = GetSpecializationInfo(spec)
+            s = "# " .. SPECIALIZATION .. ": " .. specName .. MYSLOT_LINE_SEP .. s
+        end
     end
     s = "# " .. CLASS .. ": " .. UnitClass("player") .. MYSLOT_LINE_SEP .. s
     s = "# " .. PLAYER .. ": " .. UnitName("player") .. MYSLOT_LINE_SEP .. s

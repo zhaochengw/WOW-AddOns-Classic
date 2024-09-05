@@ -49,6 +49,13 @@ if (GTFO.RetailMode) then
 		desc = "Icy Ground (Sennarth - Dragonflight)",
 		tooltip = "Icy Ground (Sennarth - Dragonflight)"
 	}
+	
+	GTFO.IgnoreSpellCategory["SmotheringShadows"] = {
+		-- 11.0 Smothering Shadows (darkness aura) from Darkflame Cleft
+		spellID = 422806,
+		desc = "Smothering Shadows (Darkflame Cleft TWW)",
+		tooltip = "Alert from the darkness aura during Darkflame Cleft (TWW)"
+	}
 end
 
 -- Scanner ignore list

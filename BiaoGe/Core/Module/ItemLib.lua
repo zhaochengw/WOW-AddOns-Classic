@@ -1022,17 +1022,7 @@ local function SetItemLib(num, itemtbale)
 
             f:SetScript("OnMouseDown", function(self)
                 if IsShiftKeyDown() then
-                    if AuctionatorShoppingFrame and AuctionatorShoppingFrame:IsVisible() then
-                        ChatEdit_InsertLink(vv.link)
-                    elseif AuctionFrameBrowse and AuctionFrameBrowse:IsVisible() then
-                        ChatEdit_InsertLink(vv.link)
-                    else
-                        local f = GetCurrentKeyBoardFocus()
-                        if not f then
-                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                        end
-                        ChatEdit_InsertLink(vv.link)
-                    end
+                    BG.InsertLink(vv.link)
                 elseif IsAltKeyDown() then
                     if BG.ItemLibMainFrame[num]["button" .. ii].item.hope:IsVisible() then return end
                     local itemID = GetItemInfoInstant(vv.link)
@@ -1297,7 +1287,7 @@ BG.CheckItemCache = CheckItemCache
 
 -- 更新心愿装备
 do
-     function BG.GetEquipLocName(EquipLoc) -- 返回该装备部位对应的invtypetable名称
+    function BG.GetEquipLocName(EquipLoc) -- 返回该装备部位对应的invtypetable名称
         for i, v in ipairs(BG.invtypetable) do
             for ii, _EquipLoc in ipairs(BG.invtypetable[i].key) do
                 if EquipLoc == _EquipLoc then
@@ -1306,6 +1296,7 @@ do
             end
         end
     end
+
     local function CheckIsSave_ItemLib_RightHope(itemID)
         for i, v in ipairs(BG.invtypetable) do
             local EquipLoc = v.name2
@@ -2170,11 +2161,7 @@ function BG.ItemLibUI()
                             local itemID = GetItemInfoInstant(self:GetText())
                             if itemID then
                                 local _, link = GetItemInfo(itemID)
-                                local f = GetCurrentKeyBoardFocus()
-                                if not f then
-                                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                                end
-                                ChatEdit_InsertLink(link)
+                                BG.InsertLink(link)
                             end
                         elseif IsControlKeyDown() then
                             local itemID = GetItemInfoInstant(self:GetText())

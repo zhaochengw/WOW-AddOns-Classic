@@ -26,9 +26,9 @@ GTFO = {
 		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 		IgnoreSpellList = { };
 	};
-	Version = "5.11.2"; -- Version number (text format)
+	Version = "5.12.2"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 51102; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 51202; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 51101; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Wrath classic)
@@ -2763,9 +2763,29 @@ function GTFO_GetRealmName()
 end
 
 function GTFO_SpellScan(spellId, spellOrigin, spellDamage)
+	local test = false;
 	if (GTFO.Settings.ScanMode) then
 		local damage = tonumber(spellDamage) or 0;
-		if not (GTFO.Scans[spellId] or GTFO.SpellID[spellId] or GTFO.FFSpellID[spellId] or GTFO.IgnoreScan[spellId]) then
+		if (GTFO.Scans[spellId]) then
+			GTFO.Scans[spellId].Times = GTFO.Scans[spellId].Times + 1;
+			GTFO.Scans[spellId].Damage = GTFO.Scans[spellId].Damage + damage;
+			return true;
+		elseif (GTFO.IgnoreScan[spellId]) then
+			-- Ignored spell
+			return false;
+		else
+			if (GTFO.SpellID[spellId]) then 
+				test = GTFO.SpellID[spellId].test or false;
+				if not (test) then
+					return false;
+				end
+			elseif (GTFO.FFSpellID[spellId]) then
+				test = GTFO.FFSpellID[spellId].test or false;
+				if not (test) then
+					return false;
+				end
+			end
+
 			GTFO.Scans[spellId] = {
 				TimeAdded = GetTime();
 				Times = 1;
@@ -2775,17 +2795,15 @@ function GTFO_SpellScan(spellId, spellOrigin, spellDamage)
 				SpellOrigin = tostring(spellOrigin);
 				IsDebuff = (spellDamage == "DEBUFF");
 				Damage = damage;
+				IsTest = test;
 			};
-			return true;
-		elseif (GTFO.Scans[spellId]) then
-			GTFO.Scans[spellId].Times = GTFO.Scans[spellId].Times + 1;
-			GTFO.Scans[spellId].Damage = GTFO.Scans[spellId].Damage + damage;
 			return true;
 		end
 	end
 	return false;
 end
 
+-- For Vanilla Classic because SpellIDs are not available
 function GTFO_SpellScanName(spellName, spellOrigin, spellDamage)
 	if (GTFO.Settings.ScanMode) then
 		local damage = tonumber(spellDamage) or 0;
@@ -2839,6 +2857,9 @@ function GTFO_Command_Data()
 		dataOutput = dataOutput.."  --desc = \""..tostring(data.SpellName).." ("..tostring(data.SpellOrigin)..")\";\n";
 		if (data.IsDebuff) then
 			dataOutput = dataOutput.."  applicationOnly = true;\n";
+		end
+		if (data.IsTest) then
+			dataOutput = dataOutput.."  test = true;\n";
 		end
 		dataOutput = dataOutput.."  sound = 1;\n";
 		dataOutput = dataOutput.."};\n";

@@ -12,6 +12,9 @@ function CataObjectFixes.Load()
     local zoneIDs = ZoneDB.zoneIDs
 
     return {
+        [2712] = { -- Calcified Elven Gem
+            [objectKeys.spawns] = {[zoneIDs.ARATHI_HIGHLANDS] = {{17.9,89.15},{10.7,91.52},{13.84,89.84},{17.68,87.3},{12.79,87.24},{14.29,93.01},{15.8,92.75},{16.21,95.14},{18.65,93.58},{14.25,95.1},{12.55,92.85},{18.32,92.14},{14.29,93.01},{18.32,92.14},{12.79,87.24},{16.21,95.14}}},
+        },
         [7510] = { -- Sprouted Frond
             [objectKeys.spawns] = {[zoneIDs.TELDRASSIL] = {{43.91,43.99},{43.93,44.04},{43.95,44.08},{59.88,59.89},{59.84,59.86},{59.81,59.84}}},
         },
@@ -274,6 +277,11 @@ function CataObjectFixes.Load()
             [objectKeys.name] = "Sack of Spices",
             [objectKeys.spawns] = {[zoneIDs.THE_CAPE_OF_STRANGLETHORN]={{33.66,30.18}}},
             [objectKeys.zoneID] = zoneIDs.THE_CAPE_OF_STRANGLETHORN,
+        },
+        [460013] = {
+            [objectKeys.name] = "Krom'gar Elf Killer",
+            [objectKeys.spawns] = {[zoneIDs.STONETALON_MOUNTAINS]={{73.33,45.12},{73.60,44.81},{73.28,44.77},{73.01,44.96},{72.82,44.35},{73.15,44.49},{73.44,44.34},{72.99,43.75},{73.15,43.53},{73.43,43.39},{73.23,43.15},{73.16,42.86},{73.70,42.65}}},
+            [objectKeys.zoneID] = zoneIDs.STONETALON_MOUNTAINS,
         },
     }
 end

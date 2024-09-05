@@ -198,7 +198,6 @@ function Ala:DecodeGlyph(code)
                 local spellId = DecodeNumber(val[2])
                 -- local icon = DecodeNumber(val[3])
                 local glyphId = ns.GetGlyphIdBySpellId(spellId)
-                assert(not spellId or glyphId)
                 data[i] = glyphId or nil
             end
         end
@@ -350,12 +349,20 @@ function Ala:RecvGlyphV2Step2(code)
     if not activeGroup then
         return
     end
-    local lenGlyph1 = tonumber(__debase64[strsub(code, 3, 3)])
-    if not lenGlyph1 then
-        return
-    end
 
-    local code1 = strsub(code, 4, lenGlyph1 + 3)
+    local ofs = 3
+    local len1
+    local code1
+    local c4_1 = strsub(code, ofs + 1, ofs + 1)
+    if c4_1 == '+' then
+        len1 = __debase64[strsub(code, ofs, ofs)]
+        code1 = strsub(code, ofs + 1, ofs + len1)
+        ofs = ofs + 1 + len1
+    else
+        len1 = __debase64[strsub(code, ofs, ofs)] + __debase64[c4_1] * 64
+        code1 = strsub(code, ofs + 2, ofs + len1 + 1)
+        ofs = ofs + 2 + len1
+    end
 
     if numGroups < 2 then
         return { --
@@ -364,11 +371,10 @@ function Ala:RecvGlyphV2Step2(code)
             glyphs = {self:DecodeGlyph(code1)},
         }
     else
-        local lenGlyph2 = tonumber(__debase64[strsub(code, 4 + lenGlyph1, 4 + lenGlyph1)])
-        if not lenGlyph2 then
-            return
-        end
-        local code2 = strsub(code, lenGlyph1 + 5, lenGlyph1 + lenGlyph2 + 4)
+        local c4_2 = strsub(code, ofs + 1, ofs + 1);
+        local len2 = __debase64[strsub(code, ofs, ofs)] + (c4_2 == '+' and 0 or __debase64[c4_2] * 64)
+        local code2 = c4_2 == '+' and strsub(code, ofs + 1, ofs + len2) or strsub(code, ofs + 2, ofs + len2 + 1)
+
         return {
             numGroups = numGroups,
             activeGroup = activeGroup,
@@ -440,6 +446,9 @@ local function merge(dst, src)
     if not dst then
         return src
     end
+    if not src then
+        return dst
+    end
     for k, v in pairs(src) do
         dst[k] = v
     end
@@ -451,7 +460,7 @@ function Ala:RecvCommV2(msg, sender)
         return
     end
     if strsub(msg, 1, 2) == '!P' then
-        return self:RecvCommV2(self:RecvPacket(msg, sender))
+        return self:RecvCommV2(self:RecvPacket(msg, sender), sender)
     end
 
     local _

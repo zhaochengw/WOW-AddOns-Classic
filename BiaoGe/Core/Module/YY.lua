@@ -1380,6 +1380,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         local function OnHyperlinkEnter(self, link)
+            if not link then return end
             local arg1, arg2, arg3, arg4 = strsplit(":", link)
             local yy = arg4
             if arg2 == "BiaoGeYY" and arg3 == L["详细"] and arg4 then

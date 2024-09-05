@@ -1677,6 +1677,7 @@ function QuestieQuestBlacklist:Load()
         [578] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [579] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [590] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [594] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [595] = QuestieCorrections.CATA_HIDE, -- Replaced by 26609
         [612] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [624] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -1776,6 +1777,7 @@ function QuestieQuestBlacklist:Load()
         [926] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [939] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [946] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [959] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [962] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [969] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [972] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -1828,10 +1830,12 @@ function QuestieQuestBlacklist:Load()
         [1323] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1361] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1389] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [1392] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1396] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1398] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1421] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1422] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [1423] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1424] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1425] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [1426] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -2060,6 +2064,7 @@ function QuestieQuestBlacklist:Load()
         [2058] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2059] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2161] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [2198] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2205] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2206] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2218] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -2130,6 +2135,7 @@ function QuestieQuestBlacklist:Load()
         [3425] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [3505] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [3507] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [3513] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [3515] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [3516] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [3517] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -2228,9 +2234,11 @@ function QuestieQuestBlacklist:Load()
         [5303] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5304] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5385] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [5405] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5441] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5481] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5482] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [5503] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5512] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5516] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [5520] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -2399,6 +2407,8 @@ function QuestieQuestBlacklist:Load()
         [6921] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [6981] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [7069] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [7181] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [7202] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [7321] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [7341] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [7463] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -3039,6 +3049,7 @@ function QuestieQuestBlacklist:Load()
         [11341] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [11342] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [11992] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [12238] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [12765] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [13204] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [13205] = QuestieCorrections.CATA_HIDE, -- Removed with cata

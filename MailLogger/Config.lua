@@ -238,15 +238,17 @@ function SetWindow:Initialize()
 				info.text = text[i]
 				info.value = value[i]
 				info.func = function(v)
-					Config.SelectName = text[v.value]
+					Addon.Config.SelectName = text[v.value]
 					UIDropDownMenu_SetText(d, text[v.value])
 					CloseDropDownMenus()
+                    Addon.Output.dropdownlist:Hide()
+                    Addon.Output.dropdownlist:Show()
 				end
 				info.arg1, info.arg2 = d, value[i]
 				UIDropDownMenu_AddButton(info)
 			end
 		end)
-		d.SetValue = function(v) Config.SelectName = text[v] end
+		d.SetValue = function(v) Addon.Config.SelectName = text[v] end
 		d:SetScript("OnShow", function(self)
 			UIDropDownMenu_SetText(self, Config.SelectName)
 		end)
@@ -292,7 +294,7 @@ function SetWindow:Initialize()
             if Config.AltList[Config.SelectName] then
                 Config.AltList[Config.SelectName] = nil
             end
-			Config.SelectName = (UnitName("player"))
+			Config.SelectName = (UnitName("player")) .. "-" ..GetRealmName()
 			if Addon.Output.background:IsShown() then
 				Addon.Output.background:Hide()
 			end
@@ -366,8 +368,8 @@ function SetWindow:Initialize()
             for i = #TradeLog, 1, -1 do
                 table.remove(TradeLog, i)
             end
-            Config.AltList = {[(UnitName("player"))] = true,}
-            Config.SelectName = (UnitName("player"))
+            Config.AltList = {[(UnitName("player")).."-"..GetRealmName()] = true,}
+            Config.SelectName = (UnitName("player").."-"..GetRealmName())
             if Addon.Output.background:IsShown() then
                 Addon.Output.background:Hide()
             end

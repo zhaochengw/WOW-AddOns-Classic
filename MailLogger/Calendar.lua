@@ -62,7 +62,11 @@ function Addon:RefreshCalendar()
         if AvailableDate[Addon.SetYear] and AvailableDate[Addon.SetYear][Addon.SetMonth] and AvailableDate[Addon.SetYear][Addon.SetMonth][string.format("%02d",i)] then
             Calendar.Days[i+SkipDays]:Enable()
             Calendar.Days[i+SkipDays]:SetScript("OnClick", function(self)
-                Addon:PrintTradeLog("ALL", nil, Addon.SetYear.."-"..Addon.SetMonth.."-"..string.format("%02d",i))
+                if Addon.Config.OnlyThisCharacter then
+                    Addon:PrintTradeLog(Addon.Config.Mode, Addon.Config.SelectName, Addon.SetYear.."-"..Addon.SetMonth.."-"..string.format("%02d",i))
+                else
+                    Addon:PrintTradeLog(Addon.Config.Mode, nil, Addon.SetYear.."-"..Addon.SetMonth.."-"..string.format("%02d",i))
+                end
             end)
         end
     end
@@ -215,6 +219,26 @@ function Calendar:Initialize()
         cls:SetScript("OnClick", function()
             f:Hide()
             Addon.Output.background:Hide()
+        end)
+    end
+    do -- 创建全部按钮
+        local all = CreateFrame("Button", nil, f, "GameMenuButtonTemplate")
+        all:SetWidth(80)
+        all:SetHeight(30)
+        all:SetPoint("BOTTOMLEFT", 20, 15)
+        all:SetText(L["All Dates"])
+        all:SetScript("OnClick", function()
+            Addon.Output.dropdowntitle:Show()
+			Addon.Output.dropdownlist:Show()
+			Addon.Output.dropdownbutton:Show()
+            if Addon.Config.OnlyThisCharacter then
+                Addon:PrintTradeLog(Addon.Config.Mode, Addon.Config.SelectName)
+            else
+                Addon:PrintTradeLog(Addon.Config.Mode, nil)
+            end
+			Addon:GetAvailableDate()
+			Addon.Calendar.background:Show()
+			Addon:RefreshCalendar()
         end)
     end
     do -- 初始化日期按鈕

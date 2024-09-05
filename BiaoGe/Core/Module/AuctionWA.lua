@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.8"
+    aura_env.ver = "v1.9"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -608,12 +608,20 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     function aura_env.SendMyMoney_OnClick(self)
-        if self.owner.ButtonSendMyMoney:IsEnabled() then
-            local money = tonumber(self.owner.myMoneyEdit:GetText()) or 0
+        local f = self.owner
+        if f.ButtonSendMyMoney:IsEnabled() then
+            local money = tonumber(f.myMoneyEdit:GetText()) or 0
             C_ChatInfo.SendAddonMessage(aura_env.AddonChannel, "SendMyMoney" .. "," ..
-                self.owner.auctionID .. "," .. money, "RAID")
-            self.owner.myMoneyEdit:ClearFocus()
+                f.auctionID .. "," .. money, "RAID")
+            f.myMoneyEdit:ClearFocus()
             PlaySound(aura_env.sound1)
+
+            if not f.start and BiaoGe and BiaoGe.options and BiaoGe.options.Sound then
+                local num = random(10)
+                if num <= 1 then
+                    PlaySoundFile(BG["sound_HusbandComeOn" .. BiaoGe.options.Sound], "Master")
+                end
+            end
         end
     end
 
@@ -701,11 +709,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:SetOwner(self.owner, "ANCHOR_BOTTOM", 0, 0)
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self.text, 1, 0, 0, true)
-        -- if f.start then
-        --     GameTooltip:AddLine(L["需高于或等于起拍价"], 1, 0, 0, true)
-        -- else
-        --     GameTooltip:AddLine(L["需高于当前价格"], 1, 0, 0, true)
-        -- end
         GameTooltip:Show()
     end
 
@@ -909,7 +912,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
-    function aura_env.CreateAuction(auctionID, itemID, money, duration, player, mod)
+    function aura_env.CreateAuction(auctionID, itemID, money, duration, player, mod, notAfter)
         for i, f in ipairs(_G.BGA.Frames) do
             if f.auctionID == auctionID then
                 return
@@ -918,9 +921,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture, _, classID, subclassID, bindType = GetItemInfo(itemID)
         if not link then
-            C_Timer.After(0.5, function()
-                aura_env.CreateAuction(auctionID, itemID, money, duration - 0.5, player, mod)
-            end)
+            if not notAfter then
+                C_Timer.After(0.5, function()
+                    aura_env.CreateAuction(auctionID, itemID, money, duration - 0.5, player, mod, true)
+                end)
+            end
             return
         end
         local AuctionFrame
@@ -951,26 +956,33 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             AuctionFrame = f
             tinsert(_G.BGA.Frames, f)
             f:SetScript("OnMouseUp", function(self)
-                _G.BGA.AuctionMainFrame:StopMovingOrSizing()
+                local mainFrame = _G.BGA.AuctionMainFrame
+                mainFrame:StopMovingOrSizing()
                 if _G.BiaoGe and _G.BiaoGe.point then
-                    _G.BiaoGe.point.Auction = { _G.BGA.AuctionMainFrame:GetPoint(1) }
+                    _G.BiaoGe.point.Auction = { mainFrame:GetPoint(1) }
                 end
-                _G.BGA.AuctionMainFrame:SetScript("OnUpdate", nil)
+                mainFrame:SetScript("OnUpdate", nil)
             end)
 
             f:SetScript("OnMouseDown", function(self)
-                _G.BGA.AuctionMainFrame:StartMoving()
+                local mainFrame = _G.BGA.AuctionMainFrame
+                mainFrame:StartMoving()
                 if aura_env.lastFocus then
                     aura_env.lastFocus:ClearFocus()
                 end
-                _G.BGA.AuctionMainFrame:SetScript("OnUpdate", function(self)
-                    for _, f in ipairs(_G.BGA.Frames) do
-                        if f.itemFrame.isOnEnter then
-                            GameTooltip:Hide()
-                            f.itemFrame:GetScript("OnEnter")(f.itemFrame)
-                        end
-                        if f.autoFrame:IsVisible() then
-                            f.autoFrame:GetScript("OnShow")(f.autoFrame)
+                mainFrame.time = 0
+                mainFrame:SetScript("OnUpdate", function(self, time)
+                    mainFrame.time = mainFrame.time + time
+                    if mainFrame.time >= 0.2 then
+                        mainFrame.time = 0
+                        for _, f in ipairs(_G.BGA.Frames) do
+                            if f.itemFrame.isOnEnter then
+                                GameTooltip:Hide()
+                                f.itemFrame:GetScript("OnEnter")(f.itemFrame)
+                            end
+                            if f.autoFrame:IsVisible() then
+                                f.autoFrame:GetScript("OnShow")(f.autoFrame)
+                            end
                         end
                     end
                 end)
@@ -1243,6 +1255,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             ftex.tex:SetAllPoints()
             ftex.tex:SetTexture(Texture)
             ftex.tex:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+            AuctionFrame.itemFrame.iconFrame = ftex
             -- 装备等级
             local t = ftex:CreateFontString()
             t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
@@ -1265,6 +1278,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             t:SetText(link:gsub("%[", ""):gsub("%]", ""))
             t:SetJustifyH("LEFT")
             t:SetWordWrap(false)
+            AuctionFrame.itemFrame.itemNameText = t
+            -- 已有
+            if BG and BG.GetItemCount and BG.GetItemCount(itemID) ~= 0 or GetItemCount(itemID, true) ~= 0 then
+                local tex = f:CreateTexture(nil, 'ARTWORK')
+                tex:SetSize(15, 15)
+                tex:SetPoint('LEFT', t, 'LEFT', t:GetWrappedWidth(), 0)
+                tex:SetTexture("interface/raidframe/readycheck-ready")
+            end
             -- 装备类型
             local t = f:CreateFontString()
             t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
@@ -1435,8 +1456,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
 
         aura_env.anim(AuctionFrame)
-
         aura_env.Auctioning(AuctionFrame, duration)
+
+        if BG and BG.HookCreateAuction then
+            BG.HookCreateAuction(AuctionFrame)
+        end
     end
 
     aura_env.UpdateRaidRosterInfo()
@@ -1446,12 +1470,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     do
         local f = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
         f:SetSize(aura_env.WIDTH, 100)
-        f:SetFrameStrata("HIGH")
+        f:SetFrameStrata('HIGH')
         f:SetClampedToScreen(true)
         f:SetFrameLevel(100)
         f:SetToplevel(true)
         f:SetMovable(true)
-        f:SetScale(.95)
+        f:SetScale(BiaoGe and BiaoGe.options and BiaoGe.options["autoAuctionScale"] or 0.95)
         _G.BGA.AuctionMainFrame = f
 
         if _G.BiaoGe and _G.BiaoGe.point and _G.BiaoGe.point.Auction then
@@ -1510,8 +1534,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     else
                         C_Timer.After(0.5, function()
                             local _, link = GetItemInfo(itemID)
-                            SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
-                                link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
+                            if link then
+                                SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
+                                    link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
+                            end
                         end)
                     end
                 end

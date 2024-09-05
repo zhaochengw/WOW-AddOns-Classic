@@ -75,8 +75,7 @@ function BG.ReceiveUI()
                 else
                     text = text .. "]"
                 end
-                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                ChatEdit_InsertLink(text)
+                BG.InsertLink(text)
             else
                 BG.ReceiveMainFrame:Hide()
                 for b = 1, Maxb[FB] + 2 do
