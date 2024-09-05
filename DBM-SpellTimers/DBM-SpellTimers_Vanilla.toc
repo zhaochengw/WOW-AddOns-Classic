@@ -1,4 +1,4 @@
-## Interface: 30403
+## Interface: 11404
 ## Title:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0冷却助手|r
@@ -20,7 +20,7 @@
 ## SavedVariables: DBM_SpellTimers_Settings
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-Curse-Project-ID: 18712
-## Version: r153
+## Version: r157
 
 localization.en.lua
 localization.de.lua

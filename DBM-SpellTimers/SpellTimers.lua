@@ -1,3 +1,4 @@
+---@diagnostic disable: inject-field
 -- **********************************************************
 -- **             Deadly Boss Mods - SpellTimers           **
 -- **             http://www.deadlybossmods.com            **
@@ -126,7 +127,7 @@ local function rebuildSpellIDIndex()
 	SpellIDIndex = {}
 	for k, v in pairs(settings.spells) do
 		if v.spell then
-			local DBMSpell = DBM:GetSpellInfo(v.spell)
+			local DBMSpell = DBM:GetSpellName(v.spell)
 			if DBMSpell == nil then
 				settings.spells[k] = nil -- Removes any invalid spells on load.
 			else
@@ -205,6 +206,7 @@ do
 			disableEncounter:SetScript("OnClick", function(self) settings.disable_encounter = not not self:GetChecked() end)
 
 			local resetbttn = generalarea:CreateButton(L.Reset, 140, 20)
+			resetbttn.myheight = 0
 			resetbttn:SetPoint("TOPRIGHT", generalarea.frame, "TOPRIGHT", -15, -15)
 			resetbttn:SetScript("OnClick", function()
 				twipe(DBM_SpellTimers_Settings)
@@ -237,7 +239,7 @@ do
 				return function(self)
 					settings.spells[self.guikey] = settings.spells[self.guikey] or {}
 					if field == "bartext" and settings.spells[self.guikey].spell and settings.spells[self.guikey].spell > 0 then
-						local spellinfo = DBM:GetSpellInfo(settings.spells[self.guikey].spell)
+						local spellinfo = DBM:GetSpellName(settings.spells[self.guikey].spell)
 						if spellinfo == nil then
 							DBM:AddMsg("Illegal SpellID found. Please remove the Spell " .. settings.spells[self.guikey].spell .. " from your DBM Options GUI (spelltimers)");
 						else
@@ -328,7 +330,7 @@ do
 end
 
 do
-	local IsInInstance, UnitFactionGroup, GetSpellTexture, CombatLogGetCurrentEventInfo = IsInInstance, UnitFactionGroup, GetSpellTexture, CombatLogGetCurrentEventInfo
+	local IsInInstance, UnitFactionGroup, CombatLogGetCurrentEventInfo = IsInInstance, UnitFactionGroup, CombatLogGetCurrentEventInfo
 
 	local function clearAllSpellBars()
 		for k, _ in pairs(SpellBarIndex) do
@@ -387,7 +389,7 @@ do
 						DBM:AddMsg("DBM-SpellTimers Index mismatch error! " .. guikey .. " " .. spellid)
 					end
 					local bartext = v.bartext:gsub("%%spell", spellinfo or "UNKNOWN SPELL"):gsub("%%player", sourceName or "UNKNOWN SOURCE"):gsub("%%target", destName or "UNKNOWN TARGET")
-					SpellBarIndex[bartext] = DBT:CreateBar(v.cooldown, bartext, GetSpellTexture(isClassic and v.spell or spellid), nil, true)
+					SpellBarIndex[bartext] = DBT:CreateBar(v.cooldown, bartext, DBM:GetSpellTexture(isClassic and v.spell or spellid), nil, true)
 					if settings.showlocal then
 						local msg = L.Local_CastMessage:format(bartext)
 						if not lastmsg or lastmsg ~= msg then
@@ -401,9 +403,9 @@ do
 					return
 				end
 				for _, v in pairs(myportals) do
-					if isClassic and DBM:GetSpellInfo(v.spell) == spellinfo or v.spell == spellid then
+					if isClassic and DBM:GetSpellName(v.spell) == spellinfo or v.spell == spellid then
 						local bartext = v.bartext:gsub("%%spell", spellinfo):gsub("%%player", sourceName):gsub("%%target", destName)
-						SpellBarIndex[bartext] = DBT:CreateBar(v.cooldown, bartext, GetSpellTexture(isClassic and v.spell or spellid), nil, true)
+						SpellBarIndex[bartext] = DBT:CreateBar(v.cooldown, bartext, DBM:GetSpellTexture(isClassic and v.spell or spellid), nil, true)
 						if settings.showlocal then
 							local msg = L.Local_CastMessage:format(bartext)
 							if not lastmsg or lastmsg ~= msg then
