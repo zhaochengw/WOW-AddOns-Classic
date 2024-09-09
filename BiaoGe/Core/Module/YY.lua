@@ -300,7 +300,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("CENTER")
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(edit)
             BG.YYMainFrame.new.scroll = scroll
 
@@ -513,7 +513,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.my, -27, 5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
         scroll:SetScrollChild(f)
 
         function Y.Pingjia(text)
@@ -860,9 +860,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                 yy, BG.YYMainFrame.searchText.sumpingjia[0], BG.YYMainFrame.searchText.sumpingjia[1],
                                 BG.YYMainFrame.searchText.sumpingjia[2], BG.YYMainFrame.searchText.sumpingjia[3], link))
                             BG.FrameTradeMsg:AddMessage(msg)
-                            local cd = 5
+                            local cd = 10
                             if Size(BG.YYMainFrame.searchText.all) == 1 then
-                                cd = 3
+                                cd = 10
                             end
                             BG.OnUpdateTime(function(self, elapsed)
                                 self.timeElapsed = self.timeElapsed + elapsed
@@ -1131,7 +1131,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.result, -27, 5)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(f)
 
             local function OnEnter(self)
@@ -1912,7 +1912,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 scroll:SetPoint("CENTER")
                 scroll.ScrollBar.scrollStep = BG.scrollStep
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+                BG.HookScrollBarShowOrHide(scroll.ScrollBar)
                 scroll:SetScrollChild(edit)
                 n = n + 2
 
@@ -2223,7 +2223,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             local channels = { GetChannelList() }
             if channels and #channels > 3 then
                 JoinPermanentChannel(YY, nil, 1)
-                -- SendSystemMessage(BG.BG .. format(L["YY评价模块初始化成功，已自动加入%s频道，用于共享和查询YY大众评价。"], YY))
             else
                 BG.After(3, JoinYY)
             end

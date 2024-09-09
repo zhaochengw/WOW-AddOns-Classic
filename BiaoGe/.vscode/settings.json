@@ -7279,7 +7279,8 @@
         "XLootFrame",
         "ContainerFrameItemButton_OnLeave",
         "TradePlayerInputMoneyInsetBg",
-        "GetFactionInfoByID"
+        "GetFactionInfoByID",
+        "STOP_Database"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

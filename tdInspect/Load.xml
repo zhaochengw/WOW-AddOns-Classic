@@ -5,7 +5,6 @@
     <Script file="Addon.lua"/>
 
     <Script file="Data\DataLoader.lua"/>
-    <Script file="Data\Glyph.lua"/>
 
     
     
@@ -13,22 +12,25 @@
     <Script file="Data\Wrath\Talents.lua"/>
     <Script file="Data\Wrath\ItemSet.lua"/>
     <Script file="Data\Wrath\Glyph.lua"/>
+    <Script file="Data\Wrath\ItemEnchant.lua"/>
+    <Script file="Data\Wrath\ItemGemOrder.lua"/>
 
+    <Script file="Core\ItemLevelCalculator.lua"/>
     <Script file="Core\Encoder.lua"/>
     <Script file="Core\Inspect.lua"/>
     <Script file="Core\Hook.lua"/>
     <Script file="Core\Talent.lua"/>
     <Script file="Core\Glyph.lua"/>
     <Script file="Core\Ala.lua"/>
+    <Script file="Core\Pool.lua"/>
 
     <Script file="Tooltip\FixItemSet.lua"/>
     <Script file="Tooltip\FixMetaGem.lua"/>
-    <Script file="Tooltip\FixRune.lua"/>
+    
 
+    <Include file="UI\Template.xml"/>
     <Script file="UI\BaseItem.lua"/>
     <Script file="UI\SlotItem.lua"/>
-    <Script file="UI\EquipItem.lua"/>
-    <Script file="UI\EquipFrame.lua"/>
     <Script file="UI\ModelFrame.lua"/>
     <Script file="UI\PaperDoll.lua"/>
     <Script file="UI\InspectFrame.lua"/>
@@ -36,5 +38,12 @@
     <Script file="UI\GlyphItem.lua"/>
     <Script file="UI\GlyphFrame.lua"/>
     <Script file="UI\InspectTalent.lua"/>
+    <Script file="UI\GemItem.lua"/>
+    <Script file="UI\EnchantItem.lua"/>
+    <Script file="UI\GearItem.lua"/>
+    <Script file="UI\GearFrame.lua"/>
+    <Script file="UI\InspectGearFrame.lua"/>
+    <Script file="UI\CharacterGearFrame.lua"/>
+    <Script file="UI\Option.lua"/>
     <Script file="UI\ElvUI.lua"/>
 </Ui>

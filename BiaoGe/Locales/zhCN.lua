@@ -29,6 +29,15 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "9月9日更新v1.11.8" .. "|r\n"
+    update = update .. c1 ..[[-自动拍卖记录：增加未拍列表（团长可以多选该列表里的装备，来批量发起拍卖）]] .. "|r\n"
+    update = update .. [[-集结号按队伍人数排序：现在总是按人数排序，星团长不再固定显示在最前面]] .. "|r\n"
+    update = update .. [[-复制对方账单：现在也会复制打包交易记录]] .. "|r\n"
+    update = update .. [[-表格：罚款格子增加至30个]] .. "|r\n"
+    update = update .. [[-设置：增加一个装备自动记录后不显示通知的选项]] .. "|r\n"
+    update = update .. [[-通报WCL：优化通报文本]] .. "|r\n"
+    update = update .. [[-重做通报心愿]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "9月4日更新v1.11.7" .. "|r\n"
     update = update .. [[-修复了点击复制对方账单时没有正确复制买家的问题]] .. "|r\n\n"
 
@@ -40,6 +49,13 @@ do --简体说明书
     update = update .. [[-对账：现在鼠标悬停在打包交易时会高亮对应的装备]] .. "|r\n"
     update = update .. [[-设置：增加自动拍卖UI缩放选项]] .. "|r\n\n"
 
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
     update = update .. c1 .. [[-拍卖WA更新为v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度]] .. "|r\n"
@@ -53,35 +69,9 @@ do --简体说明书
     update = update .. [[-增加功能：撤销删除（当你右键删除一个格子时会显示这个撤销删除按钮）]] .. "|r\n"
     update = update .. [[-自动拍卖记录：现在右键一个记录可以打开菜单，用于修改或删除记录]] .. "|r\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
     update = update .. "|cff00FF00" .. "8月14日更新v1.11.3" .. "|r\n"
     update = update .. [[-表格：删除支出、总览、工资的买家格子]] .. "|r\n"
     update = update .. [[-修复了自动拍卖的生成对账单功能导致插件错误的问题]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月12日更新v1.11.2" .. "|r\n"
-    update = update .. c1 .. [[-增加功能：自动拍卖记录（按钮在表格界面左上角）]] .. "|r\n"
-    update = update .. c1 .. [[-自动拍卖：交易时，如果你是物品分配者，则会自动把对方拍到的装备放到交易栏。并且会显示应收/应付金额]] .. "|r\n"
-    update = update .. [[-自动拍卖：正在拍卖的装备现在会显示是否为你的关注和心愿，且装备过滤功能也会对其生效]] .. "|r\n"
-    update = update .. [[-拍卖WA更新为v1.6：增加显示正在拍卖的装备类型]] .. "|r\n"
-    update = update .. [[-<赛季服>MC表格每个BOSS的格子都有所增加]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月4日更新v1.11.1" .. "|r\n"
-    update = update .. c1 .. [[-增加功能：交易清除欠款（交易时，如果对方曾有欠款，则会在交易框下方显示其欠款记录，点击可以清除欠款）]] .. "|r\n"
-    update = update .. [[-通报欠款：现在会显示总欠款]] .. "|r\n"
-    update = update .. [[-<WLK>密语模板成就ID参考：你没完成的成就现在是灰色的]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月1日更新v1.11.0" .. "|r\n"
-    update = update .. c1 .. [[-增加功能：最近拍卖（交易时，如果你是物品分配者，在交易框右边会显示最近拍卖且可交易的物品，点击一下就能把物品放到交易里）]] .. "|r\n"
-    update = update .. [[-复制对方账单：如果对方是BiaoGe插件的账单，则也会复制其买家到自己的表格里]] .. "|r\n"
-    update = update .. [[-修复了多个可堆叠物品被同时一键分配时，在某些情况可能会出现数量记录错误的问题]] .. "|r\n"
-    update = update .. [[-<WLK>密语模板：增加奥杜尔成就ID列表]] .. "|r\n\n"
 
     ns.updateText = update
 end
@@ -96,6 +86,27 @@ ns.L = L
 
 local L = {}
 do
+    L["<未拍>"] = true
+    L["未拍"] = true
+    L["开始拍卖"] = true
+    L["设为流拍"] = true
+    L["设为已拍"] = true
+    L["增加记录"] = true
+    L["<正在拍卖>"] = true
+    L["离线"] = true
+    L["操作提示："] = true
+    L["右键点击一个装备可以打开菜单"] = true
+    L["在未拍列表可以按住CTRL、SHIFT来多选装备，便于团长批量发起拍卖"] = true
+    L["拍卖：%s"] = true
+    L["装备记录通知"] = true
+    L["自动记录装备后会在屏幕上方显示记录了什么装备、记录在哪个BOSS槽位。"] = true
+    L["没有wc1记录"] = true
+    L["———通报wc1———"] = true
+    L["通报心愿"] = true
+    L["———我的心愿———"] = true
+    L["没有心愿"] = true
+
+
     L["由于%s多次点击WA链接，不再提示他的相关文本了。"] = true
     L["手动增加记录"] = true
     L['添加装备'] = true
@@ -1135,7 +1146,7 @@ do
     L["该副本没有团本攻略"] = true
 
 
-    L["< BiaoGe > 你的当前版本%s已过期，请更新插件"] = true
+    L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] = true
     L["团长YY（根据聊天记录帮你生成）"] = true
     L["详细评价"] = true
     L["< 快速评价 >"] = true

@@ -15,7 +15,7 @@ local PanelTemplates_SetNumTabs = PanelTemplates_SetNumTabs
 local PanelTemplates_UpdateTabs = PanelTemplates_UpdateTabs
 local PanelTemplates_TabResize = PanelTemplates_TabResize
 
----@class UI.InspectTalent: Object, Frame, AceEvent-3.0
+---@class UI.InspectTalent: AceEvent-3.0, Object, Frame
 local InspectTalent = ns.Addon:NewClass('UI.InspectTalent', 'Frame')
 
 function InspectTalent:Constructor()

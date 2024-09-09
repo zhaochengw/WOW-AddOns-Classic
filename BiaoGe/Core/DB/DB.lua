@@ -601,6 +601,25 @@ do
             BG["sound_HusbandComeOn" .. name] = Interface .. name .. "\\老公加油.mp3"
         end
     end
+
+    hooksecurefunc(LibBG, "ToggleDropDownMenu", function(_, _, _, dropDown)
+        for i = 1, L_UIDROPDOWNMENU_MAXBUTTONS do
+            local button = _G["L_DropDownList1Button" .. i]
+            if button.line then button.line:Hide() end
+            if button.value == "   " then
+                if not button.line then
+                    local line = button:CreateTexture(nil, 'BACKGROUND')
+                    line:SetTexture([[Interface\Common\UI-TooltipDivider-Transparent]])
+                    line:SetHeight(8)
+                    line:SetPoint('LEFT')
+                    line:SetPoint('RIGHT', -5, 0)
+                    line:Hide()
+                    button.line = line
+                end
+                button.line:Show()
+            end
+        end
+    end)
 end
 
 

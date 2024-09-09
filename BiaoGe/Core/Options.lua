@@ -114,7 +114,7 @@ local function OptionsUI()
             scroll:SetPoint("BOTTOMRIGHT", SettingsPanel.Container, -35, 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(frame)
             frame.scroll = scroll
 
@@ -550,12 +550,15 @@ local function OptionsUI()
             f:HookScript("OnClick", function()
                 local name1 = "lootTime"
                 local name2 = "lootFontSize"
+                local name3 = "autolootNotice"
                 if f:GetChecked() then
                     BG.options["button" .. name1]:Show()
                     BG.options["button" .. name2]:Show()
+                    BG.options["button" .. name3]:Show()
                 else
                     BG.options["button" .. name1]:Hide()
                     BG.options["button" .. name2]:Hide()
+                    BG.options["button" .. name3]:Hide()
                 end
             end)
         end
@@ -592,6 +595,25 @@ local function OptionsUI()
             f:HookScript("OnValueChanged", function(self, value)
                 BG.FrameLootMsg:SetFont(BIAOGE_TEXT_FONT, value, "OUTLINE")
             end)
+            local name = "autoLoot"
+            if BiaoGe.options[name] ~= 1 then
+                f:Hide()
+            end
+        end
+        h = h + 30
+        -- 记录装备通知
+        do
+            local name = "autolootNotice"
+            BG.options[name .. "reset"] = 1
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["装备记录通知"],
+                L["自动记录装备后会在屏幕上方显示记录了什么装备、记录在哪个BOSS槽位。"],
+                -- " ",
+                -- L[""],
+            }
+            local f = O.CreateCheckButton(name, L["装备记录通知"] .. "*", biaoge, 15, height - h, ontext)
+            BG.options["button" .. name] = f
             local name = "autoLoot"
             if BiaoGe.options[name] ~= 1 then
                 f:Hide()
@@ -961,7 +983,7 @@ local function OptionsUI()
                 L["倒数自动暂停"],
                 L["正在自动倒数时，如果有人出价（在团队频道打出纯数字时），则自动暂停倒数。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["倒数自动暂停"] .. "*", biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["倒数自动暂停"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             if BiaoGe.options["countDown"] ~= 1 then
                 f:Hide()
@@ -1658,7 +1680,7 @@ local function OptionsUI()
                     },
                     {
                         isTitle = true,
-                        text = "",
+                        text = "   ",
                         notCheckable = true,
                     },
                 }
@@ -1691,7 +1713,7 @@ local function OptionsUI()
 
                 local a = {
                     isTitle = true,
-                    text = "",
+                    text = "   ",
                     notCheckable = true,
                 }
                 tinsert(channelTypeMenu, a)
@@ -2208,7 +2230,7 @@ local function OptionsUI()
                 tinsert(tbl, {
                     -- notdefault = true,
                     name = "MeetingHorn_search",
-                    name2 = L["多个关键词搜索"].. "*",
+                    name2 = L["多个关键词搜索"] .. "*",
                     reset = 0,
                     ontext = {
                         L["多个关键词搜索"],

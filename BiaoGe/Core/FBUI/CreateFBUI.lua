@@ -52,8 +52,10 @@ end
 local function GetMaxScrollGeZi(FB, bossNum)
     if bossNum == Maxb[FB] + 2 then
         return 5
-    else
+    elseif bossNum == Maxb[FB] + 1 then
         return 20
+    elseif bossNum == Maxb[FB]  then
+        return 30
     end
 end
 

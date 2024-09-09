@@ -81,9 +81,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if itemID then
                 GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
-                BG.HighlightBiaoGe(link)
-                BG.HighlightBag(link)
-                BG.HighlightChatFrame(link)
+                BG.Show_AllHighlight(link)
             end
         end)
         f:SetScript("OnHyperlinkLeave", function(self, link, text, button)

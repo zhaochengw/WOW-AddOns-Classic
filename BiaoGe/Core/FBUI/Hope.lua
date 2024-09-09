@@ -532,7 +532,7 @@ function BG.HopeUI(FB)
     ------------------查询团队竞争------------------
     do
         local btjingzheng = CreateFrame("Button", nil, BG["HopeFrame" .. FB], "UIPanelButtonTemplate") -- 查询团队竞争按键
-        btjingzheng:SetSize(130, 30)
+        btjingzheng:SetSize(120, 30)
         btjingzheng:SetPoint("TOPRIGHT", BG.MainFrame, "TOPRIGHT", -30, -80)
         btjingzheng:SetText(L["查询心愿竞争"])
         btjingzheng:Show()
@@ -605,23 +605,59 @@ function BG.HopeUI(FB)
         local xinyuan
         if BG.IsVanilla then
             xinyuan = {
-                { name1 = L["分享心愿"], name2 = "" },
+                { name1 = L["通报心愿"], name2 = "" },
             }
         else
             xinyuan = {
-                { name1 = L["分享心愿10PT"], name2 = "10PT" },
-                { name1 = L["分享心愿25PT"], name2 = "25PT" },
-                { name1 = L["分享心愿10H"], name2 = "10H" },
-                { name1 = L["分享心愿25H"], name2 = "25H" },
+                { name1 = L["|cffFFFFFF10人|r|cff00BFFF普通|r"], name2 = "10PT" },
+                { name1 = L["|cffFFFFFF25人|r|cff00BFFF普通|r"], name2 = "25PT" },
+                { name1 = L["|cffFFFFFF10人|r|cffFF0000英雄|r"], name2 = "10H" },
+                { name1 = L["|cffFFFFFF25人|r|cffFF0000英雄|r"], name2 = "25H" },
             }
         end
+
+        local function CreateList(n, onClick)
+            local tbl = {}
+            local tbl_onClick = {}
+            for b = 1, HopeMaxb[FB] do
+                local text = ""
+                for i = 1, HopeMaxi do
+                    local zb = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+                    if zb then
+                        local _, link = GetItemInfo(zb:GetText())
+                        if link then
+                            text = text .. link
+                        end
+                    end
+                end
+
+                if text ~= "" then
+                    local bosscolorname
+                    if onClick then
+                        bosscolorname = BG.Boss[FB]["boss" .. b]["name2"] .. ": "
+                    else
+                        bosscolorname = "|cff" .. BG.Boss[FB]["boss" .. b]["color"] .. BG.Boss[FB]["boss" .. b]["name2"] .. ": |r"
+                    end
+                    text = bosscolorname .. text
+                    tinsert(tbl, text)
+                end
+            end
+            return tbl
+        end
+
+        local title = BG["HopeFrame" .. FB]:CreateFontString()
+        title:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        title:SetPoint("TOP", BG["HopeJingZheng" .. FB], "BOTTOM", 0, -40)
+        title:SetTextColor(1, 0.82, 0)
+        title:SetText(L["通报心愿"])
+
         for n = 1, HopeMaxn[FB] do
-            local bt = CreateFrame("Button", nil, BG["HopeFrame" .. FB], "UIPanelButtonTemplate") -- 分享心愿按键
-            bt:SetSize(130, 30)
+            local bt = CreateFrame("Button", nil, BG["HopeFrame" .. FB], "UIPanelButtonTemplate")
+            bt:SetSize(BG["HopeJingZheng" .. FB]:GetSize())
             if n == 1 then
-                bt:SetPoint("TOPLEFT", BG["HopeJingZheng" .. FB], "BOTTOMLEFT", 0, -50)
+                bt:SetPoint("TOP", title, "BOTTOM", 0, -0)
             else
-                bt:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -10)
+                bt:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -0)
             end
             bt:SetText(xinyuan[n].name1)
             bt:SetFrameLevel(105)
@@ -629,30 +665,18 @@ function BG.HopeUI(FB)
 
             -- 鼠标悬停提示
             bt:SetScript("OnEnter", function(self)
-                local text = "|cffffffff" .. L["< 我 的 心 愿 >"] .. RN
-                text = text .. L["副本: "] .. (BG.GetFBinfo(FB, "localName") .. " " .. xinyuan[n].name2) .. "\n"
-                for b = 1, HopeMaxb[FB] do
-                    local link = {}
-                    for i = 1, HopeMaxi do
-                        if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
-                            local _, l = GetItemInfo(BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:GetText())
-                            if l then
-                                table.insert(link, l)
-                            end
-                        end
-                    end
-                    local tx
-                    if Size(link) ~= 0 then
-                        tx = "|cff" .. BG.Boss[FB]["boss" .. b]["color"] .. BG.Boss[FB]["boss" .. b]["name2"] .. ": |r"
-                        for index, value in ipairs(link) do
-                            tx = tx .. value
-                        end
-                        text = text .. tx .. "\n"
-                    end
-                end
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
                 GameTooltip:ClearLines()
-                GameTooltip:SetText(text)
+                GameTooltip:AddLine(L["———我的心愿———"])
+                local tbl = CreateList(n)
+                if #tbl == 0 then
+                    GameTooltip:AddLine(L["没有心愿"])
+                else
+                    for i, text in ipairs(tbl) do
+                        GameTooltip:AddLine(text)
+                    end
+                end
+                GameTooltip:Show()
             end)
             bt:SetScript("OnLeave", function(self)
                 GameTooltip:Hide()
@@ -696,26 +720,23 @@ function BG.HopeUI(FB)
                     bt:SetEnabled(true)
                 end)
                 local channel = BiaoGe.HopeSendChannel
-                local text = L["————我的心愿————"]
+
+                local text = L["———我的心愿———"]
                 SendChatMessage(text, channel, nil, UnitName("target"))
-                text = L["副本: "] .. BG.GetFBinfo(FB, "localName") .. " " .. xinyuan[n].name2
-                SendChatMessage(text, channel, nil, UnitName("target"))
-                for b = 1, HopeMaxb[FB] do
-                    local link = {}
-                    for i = 1, HopeMaxi do
-                        if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
-                            local _, l = GetItemInfo(BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:GetText())
-                            if l then
-                                table.insert(link, l)
-                            end
-                        end
-                    end
-                    if Size(link) ~= 0 then
-                        text = BG.Boss[FB]["boss" .. b]["name2"] .. ": "
-                        for index, value in ipairs(link) do
-                            text = text .. value
-                        end
+
+                local tbl = CreateList(n, true)
+                if #tbl == 0 then
+                    BG.After(BG.tongBaoSendCD, function()
+                        text = L["没有心愿"]
                         SendChatMessage(text, channel, nil, UnitName("target"))
+                    end)
+                else
+                    local t = BG.tongBaoSendCD
+                    for _, text in ipairs(tbl) do
+                        BG.After(t, function()
+                            SendChatMessage(text, channel, nil, UnitName("target"))
+                        end)
+                        t = t + BG.tongBaoSendCD
                     end
                 end
                 BG.PlaySound(2)
@@ -754,8 +775,8 @@ function BG.HopeUI(FB)
         local dropDown = LibBG:Create_UIDropDownMenu(nil, BG["HopeFrame" .. FB])
         BG.HopeSenddropDown[FB] = dropDown
         BG.dropDownToggle(dropDown)
-        dropDown:SetPoint("TOP", f, "BOTTOM", 0, -10)
-        LibBG:UIDropDownMenu_SetWidth(dropDown, 120)
+        dropDown:SetPoint("TOP", f, "BOTTOM", 0, -5)
+        LibBG:UIDropDownMenu_SetWidth(dropDown, 100)
         LibBG:UIDropDownMenu_SetAnchor(dropDown, -10, 0, "TOPRIGHT", dropDown, "BOTTOMRIGHT")
         LibBG:UIDropDownMenu_SetText(dropDown, BG.HopeSendTable[BiaoGe.HopeSendChannel])
         LibBG:UIDropDownMenu_Initialize(dropDown, function(self, level, menuList)
@@ -1004,7 +1025,7 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                    BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+                    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
                     self.s = scroll
 
@@ -1029,7 +1050,7 @@ function BG.HopeDaoChuUI()
 
                 local bt = CreateFrame("Button", nil, bg, "UIPanelButtonTemplate")
                 do
-                    bt:SetSize(80, 25)
+                    bt:SetSize(110, 25)
                     bt:SetPoint("BOTTOMLEFT", 8, 10)
                     bt:SetText(OKAY)
                     bt:SetScript("OnClick", function(self)
@@ -1038,7 +1059,7 @@ function BG.HopeDaoChuUI()
                         bg:Hide()
                     end)
                     local bt = CreateFrame("Button", nil, bg, "UIPanelButtonTemplate")
-                    bt:SetSize(80, 25)
+                    bt:SetSize(110, 25)
                     bt:SetPoint("BOTTOMRIGHT", -8, 10)
                     bt:SetText(CANCEL)
                     bt:SetScript("OnClick", function(self)
@@ -1117,7 +1138,7 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                    BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+                    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
                     self.s = scroll
 
@@ -1136,7 +1157,7 @@ function BG.HopeDaoChuUI()
 
                 local bt = CreateFrame("Button", nil, bg, "UIPanelButtonTemplate")
                 do
-                    bt:SetSize(80, 25)
+                    bt:SetSize(110, 25)
                     bt:SetPoint("BOTTOMRIGHT", -8, 10)
                     bt:SetText(CANCEL)
                     bt:SetScript("OnClick", function(self)

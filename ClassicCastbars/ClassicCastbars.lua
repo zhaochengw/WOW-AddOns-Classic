@@ -37,6 +37,7 @@ local castEvents = {
 local GetBuffDataByIndex = _G.C_UnitAuras and _G.C_UnitAuras.GetBuffDataByIndex
 local next = _G.next
 local gsub = _G.string.gsub
+local strfind = _G.string.find
 
 function ClassicCastbars:GetUnitType(unitID)
     return gsub(gsub(unitID or "", "%d", ""), "-testmode", "") -- remove numbers and suffix
@@ -140,7 +141,13 @@ function ClassicCastbars:BindCurrentCastData(castbar, unitID, isChanneled, chann
 
         -- HACK: UnitChannelInfo is bugged for classic era, tmp fallback method
         if channelSpellID and not spellName then
-            spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+            if C_Spell and C_Spell.GetSpellInfo then
+                local info = C_Spell.GetSpellInfo(channelSpellID)
+                spellName = info and info.name
+                iconTexturePath = info and info.iconID
+            else
+                spellName, _, iconTexturePath = GetSpellInfo(channelSpellID)
+            end
             local channelCastTime = spellName and channeledSpells[spellName]
             if not channelCastTime then return end
 
@@ -247,6 +254,16 @@ function ClassicCastbars:PLAYER_FOCUS_CHANGED()
     end
 end
 
+local function BlizzNameplateCastbar_OnShow(frame)
+    if frame:IsProtected() or frame:IsForbidden() then return end
+    if not frame.unit or not strfind(frame.unit, "nameplate") then return end
+
+    if ClassicCastbars.db.nameplate.enabled then
+        -- Force hide
+        frame:Hide()
+    end
+end
+
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     if UnitIsUnit("player", namePlateUnitToken) then return end -- personal resource display nameplate
@@ -254,9 +271,16 @@ function ClassicCastbars:NAME_PLATE_UNIT_ADDED(namePlateUnitToken)
     local plate = GetNamePlateForUnit(namePlateUnitToken)
     local plateCastbar = plate.UnitFrame.CastBar or plate.UnitFrame.castBar -- non-retail vs retail
     if plateCastbar then
-        plateCastbar.showCastbar = not self.db.nameplate.enabled
-        if self.db.nameplate.enabled then
-            -- Hide blizzard's castbar
+        -- This causes taint sadly;
+        -- plateCastbar.showCastbar = not self.db.nameplate.enabled
+
+        -- Hide Blizz castbar
+        if not plateCastbar.ClassicCastbarsHooked then
+            plateCastbar.ClassicCastbarsHooked = true
+            plateCastbar:HookScript("OnShow", BlizzNameplateCastbar_OnShow)
+        end
+        if ClassicCastbars.db.nameplate.enabled then
+            -- hide immediately incase its already shown
             plateCastbar:Hide()
         end
     end

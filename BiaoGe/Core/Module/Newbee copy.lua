@@ -482,7 +482,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             l:SetEndPoint("BOTTOMRIGHT", 0, 3)
             l:SetThickness(1)
         end
-        
+
         BG.FrameNewBee.buttons = {}
         for i, v in ipairs(buttonTbl) do
             local bt = CreateFrame("CheckButton", nil, BG.FrameNewBee, "UIPanelButtonTemplate")
@@ -532,7 +532,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
             scroll.ScrollBar.scrollStep = 150
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
             local child = CreateFrame("EditBox", nil, f) -- 子框架
             child:SetFontObject(GameFontNormal)
@@ -554,9 +554,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if itemID then
                     GameTooltip:SetItemByID(itemID)
                     GameTooltip:Show()
-                    BG.HighlightBiaoGe(link)
-                    BG.HighlightBag(link)
-                    BG.HighlightChatFrame(link)
+                    BG.Show_AllHighlight(link)
                 end
             end)
             child:SetScript("OnHyperlinkLeave", function(self, link, text, button)

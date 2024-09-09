@@ -27,7 +27,7 @@ local GameTooltip = GameTooltip
 
 local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
 
----@class UI.InspectFrame: Object, Frame, AceEvent-3.0
+---@class UI.InspectFrame: AceEvent-3.0, Object, Frame
 local InspectFrame = ns.Addon:NewClass('UI.InspectFrame', 'Frame')
 
 function InspectFrame:Constructor()
@@ -223,7 +223,7 @@ end
 function InspectFrame:CreateTabFrame(bgs)
     ---@type Frame
     local frame = CreateFrame('Frame', nil, self)
-    frame:SetAllPoints(true)
+    frame:SetAllPoints(self)
     frame:Hide()
 
     local tl = frame:CreateTexture(nil, 'BACKGROUND')

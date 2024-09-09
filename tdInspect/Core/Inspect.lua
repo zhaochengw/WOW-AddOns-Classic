@@ -10,6 +10,7 @@ local ipairs, pairs, time = ipairs, pairs, time
 local tostring = tostring
 local tinsert, tconcat = table.insert, table.concat
 local select = select
+local max = math.max
 
 local CanInspect = CanInspect
 local CheckInteractDistance = CheckInteractDistance
@@ -48,7 +49,7 @@ local function sleep(n)
     coroutine.yield()
 end
 
----@class Inspect: AceAddon-3.0, AceEvent-3.0, AceComm-3.0
+---@class Inspect: AceModule, AceEvent-3.0, AceComm-3.0
 local Inspect = ns.Addon:NewModule('Inspect', 'AceEvent-3.0', 'AceComm-3.0')
 
 function Inspect:OnInitialize()
@@ -56,6 +57,9 @@ function Inspect:OnInitialize()
     self.waitingItems = {}
     self.userCache = ns.Addon.db.global.userCache
     self.stepTimer = {}
+    self.itemLevelCalculator = ns.ItemLevelCalculator:New(function(slot)
+        return self:GetItemLink(slot)
+    end)
 
     self.db = setmetatable({}, {
         __index = function(_, k)
@@ -132,6 +136,10 @@ function Inspect:SetUnit(unit, name)
     end
 end
 
+function Inspect:GetUnit()
+    return self.unit, self.unitName
+end
+
 function Inspect:GetUnitName()
     if self.unit then
         return ns.UnitName(self.unit)
@@ -185,71 +193,8 @@ function Inspect:IsItemEquipped(itemId)
     end
 end
 
-local function GetSlotItemLevel(slot)
-    local itemId = Inspect:GetItemLink(slot)
-    if not itemId then
-        return 0
-    end
-
-    local itemLevel = select(4, GetItemInfo(itemId))
-    if itemLevel then
-        return itemLevel
-    end
-end
-
-local function GetMainhandItemLevel(slot)
-    local itemId = Inspect:GetItemLink(slot)
-    if not itemId then
-        return 0
-    end
-    local itemLevel, _, _, _, _, itemEquipLoc = select(4, GetItemInfo(itemId))
-    if itemEquipLoc == 'INVTYPE_2HWEAPON' then
-        return itemLevel * 2
-    end
-    return itemLevel
-end
-
-local function GetRangedItemLevel(slot)
-    if UnitClassBase('player') ~= 'HUNTER' then
-        return 0, true
-    end
-    return GetSlotItemLevel(slot)
-end
-
-local SLOTS = {
-    [INVSLOT_HEAD] = GetSlotItemLevel,
-    [INVSLOT_NECK] = GetSlotItemLevel,
-    [INVSLOT_SHOULDER] = GetSlotItemLevel,
-    [INVSLOT_CHEST] = GetSlotItemLevel,
-    [INVSLOT_WAIST] = GetSlotItemLevel,
-    [INVSLOT_LEGS] = GetSlotItemLevel,
-    [INVSLOT_FEET] = GetSlotItemLevel,
-    [INVSLOT_WRIST] = GetSlotItemLevel,
-    [INVSLOT_HAND] = GetSlotItemLevel,
-    [INVSLOT_FINGER1] = GetSlotItemLevel,
-    [INVSLOT_FINGER2] = GetSlotItemLevel,
-    [INVSLOT_TRINKET1] = GetSlotItemLevel,
-    [INVSLOT_TRINKET2] = GetSlotItemLevel,
-    [INVSLOT_BACK] = GetSlotItemLevel,
-    [INVSLOT_MAINHAND] = GetMainhandItemLevel,
-    [INVSLOT_OFFHAND] = GetSlotItemLevel,
-    [INVSLOT_RANGED] = GetRangedItemLevel,
-}
-
 function Inspect:GetItemLevel()
-    local total, count = 0, 0
-
-    for slot, f in pairs(SLOTS) do
-        local itemLevel, ignore = f(slot)
-        if not itemLevel then
-            return
-        end
-        if not ignore then
-            count = count + 1
-            total = total + itemLevel
-        end
-    end
-    return total / count
+    return self.itemLevelCalculator:GetItemLevel()
 end
 
 -- @build>2@
@@ -788,6 +733,9 @@ function Inspect:GET_ITEM_INFO_RECEIVED(_, id, ok)
     end
 
     local guid = UnitGUID(self.unit)
+    if not guid then
+        return
+    end
     local name = ns.GetFullName(select(6, GetPlayerInfoByGUID(guid)))
     local db = self:BuildCharacterDb(name)
 

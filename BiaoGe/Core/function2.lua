@@ -934,6 +934,7 @@ end
 
 ------------------创建：买家下拉列表------------------    -- focus：0就是要清空光标,zhiye："jianshang"就是只显示骑士、德鲁伊、牧师
 function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
+    if BG.FrameMaijiaList then BG.FrameMaijiaList:Hide() end
     -- 背景框
     local frame = BG.MainFrame
     BG.FrameMaijiaList = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -1693,15 +1694,15 @@ do
         return f
     end
 
-    function BG.HighlightBag(biaogelink)
+    function BG.HighlightBag(link)
         if BiaoGe.options["HighOnterItem"] ~= 1 then return end
-        if not GetItemID(biaogelink) then return end
+        if not GetItemID(link) then return end
         if _G["NDui_BackpackSlot1"] then
             local i = 1
             while _G["NDui_BackpackSlot" .. i] do
                 local bag = _G["NDui_BackpackSlot" .. i]
-                local link = C_Container.GetContainerItemLink(bag.bagId, bag.slotId)
-                if link and GetItemID(link) == GetItemID(biaogelink) then
+                local _link = C_Container.GetContainerItemLink(bag.bagId, bag.slotId)
+                if _link and GetItemID(_link) == GetItemID(link) then
                     BG.CreateHighlightFrame(bag, true)
                 end
                 i = i + 1
@@ -1712,8 +1713,8 @@ do
             while _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i] do
                 while _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i] do
                     local bag = _G["ElvUI_ContainerFrameBag" .. b .. "Slot" .. i]
-                    local link = C_Container.GetContainerItemLink(bag.BagID, bag.SlotID)
-                    if link and GetItemID(link) == GetItemID(biaogelink) then
+                    local _link = C_Container.GetContainerItemLink(bag.BagID, bag.SlotID)
+                    if _link and GetItemID(_link) == GetItemID(link) then
                         BG.CreateHighlightFrame(bag, true)
                     end
                     i = i + 1
@@ -1725,8 +1726,8 @@ do
             local i = 1
             while _G["CombuctorItem" .. i] do
                 local bag = _G["CombuctorItem" .. i]
-                local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
-                if link and GetItemID(link) == GetItemID(biaogelink) then
+                local _link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
+                if _link and GetItemID(_link) == GetItemID(link) then
                     BG.CreateHighlightFrame(bag, true)
                 end
                 i = i + 1
@@ -1735,8 +1736,8 @@ do
             local i = 1
             while _G["BagnonContainerItem" .. i] do
                 local bag = _G["BagnonContainerItem" .. i]
-                local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
-                if link and GetItemID(link) == GetItemID(biaogelink) then
+                local _link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
+                if _link and GetItemID(_link) == GetItemID(link) then
                     BG.CreateHighlightFrame(bag, true)
                 end
                 i = i + 1
@@ -1747,8 +1748,8 @@ do
             while _G["ContainerFrame" .. b .. "Item" .. i] do
                 while _G["ContainerFrame" .. b .. "Item" .. i] do
                     local bag = _G["ContainerFrame" .. b .. "Item" .. i]
-                    local link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
-                    if link and GetItemID(link) == GetItemID(biaogelink) then
+                    local _link = C_Container.GetContainerItemLink(bag:GetParent():GetID(), bag:GetID())
+                    if _link and GetItemID(_link) == GetItemID(link) then
                         BG.CreateHighlightFrame(bag, true)
                     end
                     i = i + 1
@@ -1759,7 +1760,7 @@ do
         end
     end
 
-    function BG.HighlightBiaoGe(link, notflash)
+    function BG.HighlightBiaoGe(link)
         if BiaoGe.options["HighOnterItem"] ~= 1 then return end
         if not GetItemID(link) then return end
         local type
@@ -1788,6 +1789,28 @@ do
                         f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
                     end
                 end
+            end
+        end
+    end
+
+    function BG.HighlightItemOutTime(link)
+        if not BG.itemGuoQiFrame or not BG.itemGuoQiFrame:IsVisible() then return end
+        if not link then return end
+        local itemID = GetItemID(link)
+        for i, bt in ipairs(BG.itemGuoQiFrame.buttons) do
+            if bt.itemID == itemID then
+                BG.CreateHighlightFrame(bt)
+            end
+        end
+    end
+
+    function BG.HighlightItemAuctionLog(link)
+        if not BG.auctionLogFrame or not BG.auctionLogFrame:IsVisible() then return end
+        if not link then return end
+        local itemID = GetItemID(link)
+        for i, bt in ipairs(BG.auctionLogFrame.buttons) do
+            if bt.itemID == itemID then
+                BG.CreateHighlightFrame(bt.frame)
             end
         end
     end
@@ -1823,6 +1846,25 @@ do
                 end
             end
             i = i + 1
+        end
+    end
+
+    function BG.Show_AllHighlight(link, btType)
+        BG.Hide_AllHighlight()
+        if (btType and btType ~= "bag") or not btType then
+            BG.HighlightBag(link)
+        end
+        if (btType and btType ~= "biaoge") or not btType then
+            BG.HighlightBiaoGe(link)
+        end
+        if (btType and btType ~= "chat") or not btType then
+            BG.HighlightChatFrame(link)
+        end
+        if (btType and btType ~= "outtime") or not btType then
+            BG.HighlightItemOutTime(link)
+        end
+        if (btType and btType ~= "auctionlog") or not btType then
+            BG.HighlightItemAuctionLog(link)
         end
     end
 
@@ -1953,68 +1995,70 @@ function BG.Once(name, dt, func)
 end
 
 ------------------创建滚动框------------------
-function BG.CreateScrollFrame(parent, w, h, isEdit, notUpdateScrollBar)
-    local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-    f:SetBackdrop({
-        bgFile = "Interface/ChatFrame/ChatFrameBackground",
-        edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
-        edgeSize = 16,
-        insets = { left = 3, right = 3, top = 3, bottom = 3 }
-    })
-    f:SetBackdropColor(0, 0, 0, 0.8)
-    if w and h then
-        f:SetSize(w, h)
-    end
-    f:EnableMouse(true)
-    f:Show()
-
-    local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate") -- 滚动
-    scroll:SetWidth(f:GetWidth() - 31)
-    scroll:SetHeight(f:GetHeight() - 9)
-    scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
-    scroll.ScrollBar.scrollStep = BG.scrollStep
-    f.scroll = scroll
-    BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-    if not notUpdateScrollBar then
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
-    end
-
-    local child
-    if isEdit then
-        child = CreateFrame("EditBox", nil, scroll)
-        child:SetWidth(scroll:GetWidth())
-        child:SetHeight(scroll:GetHeight())
-        child:SetAutoFocus(false)
-        child:EnableMouse(false)
-        child:SetMultiLine(true)
-        child:SetFontObject(GameFontNormal)
-    else
-        child = CreateFrame("Frame", nil, scroll) -- 子框架
-        child:SetWidth(scroll:GetWidth())
-        child:SetHeight(scroll:GetHeight())
-    end
-    scroll:SetScrollChild(child)
-
-    return f, child
-end
-
-function BG.CreateSrollBarBackdrop(bar)
-    local tex = bar:CreateTexture()
-    tex:SetPoint("TOPLEFT", bar.ScrollUpButton, -0, 0)
-    tex:SetPoint("BOTTOMRIGHT", bar.ScrollDownButton, 0, -0)
-    tex:SetColorTexture(0, 0, 0, 0.3)
-end
-
-function BG.UpdateScrollBarShowOrHide(scrollBar)
-    scrollBar:Hide()
-    scrollBar:HookScript("OnValueChanged", function(self)
-        local min, max = self:GetMinMaxValues()
-        if max == 0 then
-            self:Hide()
-        else
-            self:Show()
+do
+    function BG.CreateScrollFrame(parent, w, h, isEdit, notUpdateScrollBar)
+        local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+        f:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+            edgeSize = 16,
+            insets = { left = 3, right = 3, top = 3, bottom = 3 }
+        })
+        f:SetBackdropColor(0, 0, 0, 0.8)
+        if w and h then
+            f:SetSize(w, h)
         end
-    end)
+        f:EnableMouse(true)
+        f:Show()
+
+        local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate") -- 滚动
+        scroll:SetWidth(f:GetWidth() - 31)
+        scroll:SetHeight(f:GetHeight() - 9)
+        scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
+        scroll.ScrollBar.scrollStep = BG.scrollStep
+        f.scroll = scroll
+        BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+        if not notUpdateScrollBar then
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+        end
+
+        local child
+        if isEdit then
+            child = CreateFrame("EditBox", nil, scroll)
+            child:SetWidth(scroll:GetWidth())
+            child:SetHeight(scroll:GetHeight())
+            child:SetAutoFocus(false)
+            child:EnableMouse(false)
+            child:SetMultiLine(true)
+            child:SetFontObject(GameFontNormal)
+        else
+            child = CreateFrame("Frame", nil, scroll) -- 子框架
+            child:SetWidth(scroll:GetWidth())
+            child:SetHeight(scroll:GetHeight())
+        end
+        scroll:SetScrollChild(child)
+
+        return f, child
+    end
+
+    function BG.CreateSrollBarBackdrop(bar)
+        local tex = bar:CreateTexture()
+        tex:SetPoint("TOPLEFT", bar.ScrollUpButton, -0, 0)
+        tex:SetPoint("BOTTOMRIGHT", bar.ScrollDownButton, 0, -0)
+        tex:SetColorTexture(0, 0, 0, 0.3)
+    end
+
+    function BG.HookScrollBarShowOrHide(scrollBar)
+        local oldFuc = scrollBar.SetMinMaxValues
+        scrollBar.SetMinMaxValues = function(self, min, max)
+            oldFuc(self, min, max)
+            if max == 0 then
+                self:Hide()
+            else
+                self:Show()
+            end
+        end
+    end
 end
 
 ------------------右键通知框清除关注------------------

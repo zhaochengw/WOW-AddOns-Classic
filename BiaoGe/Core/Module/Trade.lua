@@ -588,9 +588,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                     if itemID then
                                         GameTooltip:SetItemByID(itemID)
                                         GameTooltip:Show()
-                                        BG.HighlightBiaoGe(link)
-                                        BG.HighlightBag(link)
-                                        BG.HighlightChatFrame(link)
+                                        BG.Show_AllHighlight(link)
                                     end
                                     bts.ds:Show()
                                 end)
@@ -883,10 +881,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 GameTooltip:SetBagItem(self.b, self.i)
                 GameTooltip:Show()
 
-                BG.Hide_AllHighlight()
-                BG.HighlightBiaoGe(self.link)
-                BG.HighlightBag(self.link)
-                BG.HighlightChatFrame(self.link)
+                BG.Show_AllHighlight(self.link)
             end)
             bt:SetScript("OnLeave", function()
                 GameTooltip:Hide()
@@ -1157,20 +1152,14 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             local ID = self:GetParent():GetID()
             local link = GetTradePlayerItemLink(ID)
             if link then
-                BG.Hide_AllHighlight()
-                BG.HighlightBiaoGe(link)
-                BG.HighlightBag(link)
-                BG.HighlightChatFrame(link)
+                BG.Show_AllHighlight(link)
             end
         end
         local function TargetOnEnter(self)
             local ID = self:GetParent():GetID()
             local link = GetTradeTargetItemLink(ID)
             if link then
-                BG.Hide_AllHighlight()
-                BG.HighlightBiaoGe(link)
-                BG.HighlightBag(link)
-                BG.HighlightChatFrame(link)
+                BG.Show_AllHighlight(link)
             end
         end
         for i = 1, 7 do

@@ -6,9 +6,7 @@
 ---@type ns
 local ns = select(2, ...)
 
-local tonumber = tonumber
-
----@class UI.BaseItem: Object, Button, AceEvent-3.0
+---@class UI.BaseItem: AceEvent-3.0, Object, Button
 local BaseItem = ns.Addon:NewClass('UI.BaseItem', 'Button')
 
 function BaseItem:Constructor()
@@ -33,6 +31,9 @@ end
 function BaseItem:WaitItem(item)
     self.itemId = ns.ItemLinkToId(item)
     self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
+end
+
+function BaseItem:OnClick()
 end
 
 --[[@debug@

@@ -208,18 +208,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         BG.MeetingHorn.BrowserSort_oldFuc = Browser.Sort
         BG.MeetingHorn.BrowserSort_newFuc = function(self)
             sort(self.ActivityList:GetItemList(), function(a, b)
-                if not BG.IsVanilla then
-                    local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
-                    if acl or bcl then
-                        if acl and bcl then
-                            if acl ~= bcl then
-                                return acl > bcl
-                            end
-                        else
-                            return acl
-                        end
-                    end
-                end
                 if not self.sortId then
                     return false
                 end
@@ -246,6 +234,18 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                         end
                     end
                 elseif self.sortId == 1 then -- 按副本排序
+                    if not BG.IsVanilla then
+                        local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
+                        if acl or bcl then
+                            if acl and bcl then
+                                if acl ~= bcl then
+                                    return acl > bcl
+                                end
+                            else
+                                return acl
+                            end
+                        end
+                    end
                     local aid, bid = a:GetActivityId(), b:GetActivityId()
                     if aid == bid then
                         return a:GetTick() < b:GetTick()
@@ -286,7 +286,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             bt:SetEnabled(true)
             Browser.Sort = BG.MeetingHorn.BrowserSort_newFuc
         end
-
     end
 
     -- 密语模板

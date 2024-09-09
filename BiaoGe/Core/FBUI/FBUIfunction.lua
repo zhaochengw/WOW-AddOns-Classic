@@ -250,6 +250,7 @@ function BG.FBBiaoTiUI(FB, t)
 end
 
 ------------------装备------------------
+local updateFrame = CreateFrame("Frame")
 local function OnTextChanged(self)
     local FB = self.FB
     local t = self.t
@@ -314,6 +315,18 @@ local function OnTextChanged(self)
     if bossnum == Maxb[FB] + 1 then
         local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]
         BG.UpdateZhiChuPercent(self, jine)
+    end
+
+    -- 更新未拍
+    if BiaoGe.options.auctionLogChoose == 4 then
+        updateFrame.t = 0
+        updateFrame:SetScript("OnUpdate", function(self, t)
+            self.t = self.t + t
+            if self.t >= 0.1 then
+                BG.UpdateAuctionLogFrame(nil, true)
+                updateFrame:SetScript("OnUpdate", nil)
+            end
+        end)
     end
 end
 function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
@@ -451,10 +464,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         if not tonumber(self:GetText()) then
             local link = self:GetText()
             local itemID = GetItemInfoInstant(link)
-            BG.Hide_AllHighlight()
-            BG.HighlightBag(link)
-            BG.HighlightChatFrame(link)
-            BG.HighlightItemGuoQi(link)
+            BG.Show_AllHighlight(link, "biaoge")
             if itemID then
                 if BG.ButtonIsInRight(self) then
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
@@ -1314,7 +1324,7 @@ function BG.CreateFBScrollFrame(frameName, FB, bossNum)
     scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
     -- scroll.ScrollBar.scrollStep = BG.scrollStep
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-    BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
     local child = CreateFrame("Frame", nil, scroll) -- 子框架
     child:SetSize(1, 1)

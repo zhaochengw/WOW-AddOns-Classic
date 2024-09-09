@@ -49,7 +49,7 @@ local GLYPH_SLOTS = {
     },
 }
 
----@class UI.GlyphItem: Object, Button, AceEvent-3.0
+---@class UI.GlyphItem:  AceEvent-3.0, Object, Button
 local GlyphItem = ns.Addon:NewClass('UI.GlyphItem', 'Button')
 
 function GlyphItem:Constructor(_, id)

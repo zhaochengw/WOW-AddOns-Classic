@@ -1,0 +1,218 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <Frame name="tdInspectPortraitTemplate" scale="0.8" virtual="true">
+        <Size x="52" y="60"/>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="PortraitRing" atlas="GarrMission_PortraitRing" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER" textureSubLevel="-1">
+                <Texture parentKey="Portrait">
+                    <Size x="44" y="44"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.PortraitRing" y="5"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER" textureSubLevel="1">
+                <Texture parentKey="PortraitRingQuality" atlas="GarrMission_PortraitRing_Quality" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER" textureSubLevel="2">
+                <Texture parentKey="LevelBorder" atlas="GarrMission_PortraitRing_LevelBorder" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOM" y="-3"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Level" inherits="GameFontHighlightSmall" justifyH="CENTER" text="95">
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.LevelBorder"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="PortraitRingCover" atlas="GarrMission_PortraitRing_Darkener" useAtlasSize="true" hidden="true" alpha="0.6">
+                    <Anchors>
+                        <Anchor point="TOP" x="0" y="-1"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Button name="tdInspectGearTalentTemplate" virtual="true">
+        <Size x="48" y="48"/>
+        <Layers>
+            <Layer level="ARTWORK" textureSubLevel="-1">
+                <Texture parentKey="Icon">
+                    <Size x="40" y="40"/>
+                    <Anchors>
+                        <Anchor point="TOP"/>
+                    </Anchors>
+                </Texture>
+                <MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                    <Size x="40" y="40"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.Icon"/>
+                    </Anchors>
+                    <MaskedTextures>
+                        <MaskedTexture childKey="Icon"/>
+                    </MaskedTextures>
+                </MaskTexture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Text" inherits="SystemFont_Outline_Small">
+                    <Color r="1.0" g="0.82" b="0"/>
+                    <Anchors>
+                        <Anchor point="CENTER" relativeKey="$parent.Icon" relativePoint="CENTER"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="Point" inherits="Tooltip_Small">
+                    <Anchors>
+                        <Anchor point="BOTTOM"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self.Icon:SetVertexColor(0.5, 0.5, 0.5)
+                self.Icon:SetTexCoord(0.04, 0.96, 0.04, 0.96)
+                self.Text:SetFont(self.Text:GetFont(), 13, "OUTLINE")
+                self.Point:SetFont(self.Point:GetFont(), 11, "OUTLINE")
+            </OnLoad>
+        </Scripts>
+    </Button>
+
+    <Frame name="tdInspectGearFrameTemplate" inherits="BackdropTemplate" enableMouse="true" virtual="true">
+        <Size x="200" y="424"/>
+        <Frames>
+            <Frame parentKey="Portrait" inherits="tdInspectPortraitTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="18" y="-16"/>
+                </Anchors>
+            </Frame>
+            <Button parentKey="Talent1" inherits="tdInspectGearTalentTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-10" y="-10"/>
+                </Anchors>
+            </Button>
+            <Button parentKey="Talent2" scale="0.8" inherits="tdInspectGearTalentTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Talent1" relativePoint="BOTTOMLEFT" x="-10" y="0"/>
+                </Anchors>
+            </Button>
+            <Button parentKey="Option">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-4" y="4"/>
+                </Anchors>
+                <NormalTexture file="Interface\Scenarios\ScenarioIcon-Interact"/>
+                <HighlightTexture file="Interface\Scenarios\ScenarioIcon-Interact" alphaMode="ADD"/>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():OptionOnClick()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Name" inherits="GameFontNormalOutline" justifyH="LEFT">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="66" y="-18"/>
+                    </Anchors>
+                </FontString>
+                <FontString parentKey="ItemLevel" inherits="Tooltip_Small">
+                    <Color r="1.0" g="0.82" b="0"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="66" y="-42"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="TopLeft">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="4" y="-4"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="TopRight">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.6875" top="0" bottom="1"/>
+                </Texture>
+                <Texture parentKey="BottomLeft">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMLEFT"/>
+                    </Anchors>
+                    <TexCoords left="0" right="1" top="0" bottom="0.578125"/>
+                </Texture>
+                <Texture parentKey="BottomRight">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.578125"/>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                self:SetBackdrop{
+                    bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
+                    edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
+                    tile = true,
+                    tileSize = 8,
+                    edgeSize = 16,
+                    insets = {left = 4, right = 4, top = 4, bottom = 4},
+                }
+                self.ItemLevel:SetFont(self.ItemLevel:GetFont(), 12, "OUTLINE")
+                self.Talent2.Text:SetTextColor(0.6, 0.6, 0.6)
+                self.Talent2.Point:SetTextColor(0.6, 0.6, 0.6)
+                self.TopLeft:SetVertexColor(0.2, 0.2, 0.2, 0.95)
+                self.TopRight:SetVertexColor(0.2, 0.2, 0.2, 0.95)
+                self.BottomLeft:SetVertexColor(0.2, 0.2, 0.2, 0.95)
+                self.BottomRight:SetVertexColor(0.2, 0.2, 0.2, 0.95)
+            </OnLoad>
+        </Scripts>
+    </Frame>
+
+    <Button name="tdInspectSocketItemTemplate" virtual="true">
+        <Size x="16" y="16"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Icon">
+                    <Size x="15" y="15"/>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+                <MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Icon" relativePoint="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
+                    </Anchors>
+                    <MaskedTextures>
+                        <MaskedTexture childKey="Icon"/>
+                    </MaskedTextures>
+                </MaskTexture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture parentKey="Border" file="Interface\AddOns\tdInspect\Resources\SocketBroder">
+                    <Size x="19" y="19"/>
+                    <Anchors>
+                        <Anchor point="CENTER" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Button>
+</Ui>

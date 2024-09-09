@@ -1,7 +1,8 @@
 ## Interface: 30403
 ## Title: tdInspect
+## IconTexture: 132092
 ## Author: Dencer
-## Version: 2.1.13
+## Version: 2.2.2
 ## OptionalDeps: LibCompress
 ## SavedVariables: TDDB_INSPECT2
 

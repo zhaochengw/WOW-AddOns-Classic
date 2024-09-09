@@ -1,9 +1,0 @@
-## Interface: 11404
-## Title: MacroIconSearch
-## Author: Permok
-## Dependencies: Blizzard_MacroUI
-## OptionalDeps: MacroSetup
-## X-Curse-Project-ID: 912182
-
-MacroIconSearch.xml
-Core.lua

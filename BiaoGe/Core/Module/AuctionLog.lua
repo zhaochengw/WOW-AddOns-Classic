@@ -90,8 +90,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     local frame, child
+    local CancelAllChoose
 
     local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+    local dropDown = LibBG:Create_UIDropDownMenu(nil, f)
     do
         do
             f:SetBackdrop({
@@ -101,7 +103,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             })
             f:SetBackdropColor(0, 0, 0, 0.8)
             f:SetBackdropBorderColor(0, 0, 0, 1)
-            -- f:SetBackdropBorderColor(GetClassRGB(nil, "player", .8))
             f:SetSize(220, 700)
             f:SetPoint("TOPRIGHT", BG.MainFrame, "TOPLEFT", -1, 0)
             f:EnableMouse(true)
@@ -149,7 +150,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 GameTooltip:AddLine(L["自动拍卖装备（拍卖WA）的记录。该记录会跟随清空表格一起被清空，也会跟随保存表格一同保存到历史表格。"], 1, 0.82, 0, true)
                 if not BG.HistoryMainFrame:IsVisible() then
                     GameTooltip:AddLine(" ", 1, 0.82, 0, true)
-                    GameTooltip:AddLine(L["右键记录打开菜单：修改记录、删除记录。"], 1, 0.82, 0, true)
+                    GameTooltip:AddLine(L["操作提示："], 1, 1, 1, true)
+                    GameTooltip:AddLine(L["右键点击一个装备可以打开菜单"], 1, 0.82, 0, true)
+                    GameTooltip:AddLine(L["在未拍列表可以按住CTRL、SHIFT来多选装备，便于团长批量发起拍卖"], 1, 0.82, 0, true)
                 end
                 GameTooltip:Show()
             end)
@@ -163,17 +166,19 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 { name = L["全部"], },
                 { name = L["成功"], },
                 { name = L["流拍"], },
+                { name = L["未拍"], },
             }
             local buttonGroup = CreateFrame("Frame", nil, f)
-            buttonGroup:SetPoint("TOPLEFT", 10, -40)
+            buttonGroup:SetPoint("TOPLEFT", 7, -40)
             buttonGroup:SetSize(1, 1)
             for i = 1, #numOptions do
                 local bt = CreateFrame("CheckButton", nil, buttonGroup, "UIRadioButtonTemplate")
-                bt:SetPoint("LEFT", ((i - 1) * 60), 0)
-                bt:SetSize(15, 15)
-                if i == BiaoGe.options.auctionLogChoose then
-                    bt:SetChecked(true)
+                if i == 4 then
+                    bt:SetPoint("LEFT", (i - 1) * 50 + 10, 0)
+                else
+                    bt:SetPoint("LEFT", (i - 1) * 50, 0)
                 end
+                bt:SetSize(15, 15)
                 tinsert(buttons, bt)
                 bt.Text = bt:CreateFontString()
                 bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
@@ -182,19 +187,39 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 bt.Text:SetTextColor(1, .82, 0)
                 bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
 
+                if i == BiaoGe.options.auctionLogChoose then
+                    bt:SetChecked(true)
+                    bt.Text:SetTextColor(0, 1, 0)
+                end
+
                 bt:SetScript("OnClick", function(self)
                     BG.PlaySound(1)
                     for _, radioButton in ipairs(buttons) do
                         if radioButton ~= self then
                             radioButton:SetChecked(false)
+                            radioButton.Text:SetTextColor(1, .82, 0)
                         end
                     end
                     self:SetChecked(true)
+                    self.Text:SetTextColor(0, 1, 0)
                     BiaoGe.options.auctionLogChoose = i
                     BG.auctionLogFrame.changeFrame:Hide()
                     BG.UpdateAuctionLogFrame()
+                    LibBG:CloseDropDownMenus()
                 end)
             end
+
+            local l = buttons[1]:CreateLine()
+            l:SetColorTexture(RGB("808080", 1))
+            l:SetStartPoint("BOTTOMLEFT", 0, -2)
+            l:SetEndPoint("BOTTOMLEFT", 145, -2)
+            l:SetThickness(1)
+
+            local l = buttons[4]:CreateLine()
+            l:SetColorTexture(RGB("808080", 1))
+            l:SetStartPoint("BOTTOMLEFT", 0, -2)
+            l:SetEndPoint("BOTTOMLEFT", 45, -2)
+            l:SetThickness(1)
         end
 
         -- 滚动框
@@ -221,6 +246,37 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             t:SetText(L["没有自动拍卖记录。"])
             t:Hide()
             BG.auctionLogFrame.notText = t
+        end
+
+        -- 开始拍卖
+        do
+            local bt = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+            bt:SetPoint("TOPLEFT", frame, "BOTTOM", -10, 30)
+            bt:SetPoint("BOTTOMRIGHT", frame, -22, 2)
+            bt:SetFrameLevel(110)
+            bt:SetText(L["开始拍卖"])
+            bt:Hide()
+            BG.auctionLogFrame.ButtonStartAuction = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                BG.StartAuction(BG.auctionLogFrame.choosed, bt)
+                if BG.StartAucitonFrame and BG.StartAucitonFrame:IsVisible() then
+                    BG.StartAucitonFrame:ClearAllPoints()
+                    BG.StartAucitonFrame:SetPoint("BOTTOM", frame, 0, 0)
+                end
+                CancelAllChoose()
+            end)
+
+            local bt = CreateFrame("Button", nil, BG.auctionLogFrame.ButtonStartAuction, "UIPanelButtonTemplate")
+            bt:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 2, 30)
+            bt:SetPoint("BOTTOMRIGHT", frame, "BOTTOM", -8, 2)
+            bt:SetFrameLevel(110)
+            bt:SetText(L["取消选择"])
+            BG.auctionLogFrame.ButtonCancelChoose = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                CancelAllChoose()
+            end)
         end
 
         -- 合计收入
@@ -391,7 +447,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
-    local dropDown = LibBG:Create_UIDropDownMenu(nil, f)
+    -- 增加记录
     do
         local f = CreateFrame("Frame", nil, BG.auctionLogFrame, "BackdropTemplate")
         do
@@ -417,13 +473,18 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if BG.auctionLogFrame.changeFrame.type == "change" then
                     f.item:Show()
                     f.zhuangbei:Hide()
-                    f.title:SetText(L["修改记录"])
+                    f.title:SetText(BG.auctionLogFrame.changeFrame.typeText)
                     f.ButtonSure:Enable()
-                else
+                elseif BG.auctionLogFrame.changeFrame.type == "new" then
                     f.item:Hide()
                     f.zhuangbei:Show()
                     f.zhuangbei:SetFocus()
-                    f.title:SetText(L["手动增加记录"])
+                    f.title:SetText(L["增加记录"])
+                    f.ButtonSure:Disable()
+                elseif BG.auctionLogFrame.changeFrame.type == "set" then
+                    f.item:Show()
+                    f.zhuangbei:Hide()
+                    f.title:SetText(L["设为已拍"])
                     f.ButtonSure:Disable()
                 end
                 f.zhuangbei:SetText("")
@@ -491,6 +552,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                 end)
                 edit:SetScript("OnMouseDown", function(self, button)
+                    if BG.auctionLogFrame.changeFrame.type == "set" then return end
                     if button == "RightButton" then
                         self:SetEnabled(false)
                         self:SetText("")
@@ -498,6 +560,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                 end)
                 edit:SetScript("OnMouseUp", function(self, button)
+                    if BG.auctionLogFrame.changeFrame.type == "set" then return end
                     local infoType, itemID, itemLink = GetCursorInfo()
                     if infoType == "item" then
                         self:SetText(itemLink)
@@ -524,6 +587,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 local bt = CreateFrame("Button", nil, edit)
                 bt:SetSize(28, 28)
                 bt:SetPoint("LEFT", edit, "RIGHT", 0, -1)
+                f.zhuangbei.tip = bt
                 local tex = bt:CreateTexture()
                 tex:SetAllPoints()
                 tex:SetTexture(616343)
@@ -566,6 +630,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BG.auctionLogFrame.changeFrame.info.maijia = self:GetText()
                     BG.auctionLogFrame.changeFrame.info.color = { self:GetTextColor() }
                 end
+                if BG.auctionLogFrame.changeFrame.type == "set" then
+                    if self:GetText() ~= "" or f.maijia:GetText() ~= "" then
+                        f.ButtonSure:Enable()
+                    else
+                        f.ButtonSure:Disable()
+                    end
+                end
             end)
             edit:SetScript("OnEditFocusGained", function(self)
                 self:HighlightText()
@@ -573,6 +644,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.SetListmaijia(self, true, nil, true)
             end)
             edit:SetScript("OnEditFocusLost", function(self)
+                self:ClearHighlightText()
                 if BG.FrameMaijiaList then
                     BG.FrameMaijiaList:Hide()
                 end
@@ -619,6 +691,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 else
                     BG.auctionLogFrame.changeFrame.info.jine = self:GetText()
                 end
+                if BG.auctionLogFrame.changeFrame.type == "set" then
+                    if self:GetText() ~= "" or f.maijia:GetText() ~= "" then
+                        f.ButtonSure:Enable()
+                    else
+                        f.ButtonSure:Disable()
+                    end
+                end
             end)
             edit:SetScript("OnEditFocusGained", function(self)
                 self:HighlightText()
@@ -664,14 +743,21 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     for k in pairs(BG.playerClass) do
                         BiaoGe[FB].auctionLog[i][k] = BG.auctionLogFrame.changeFrame.info[k]
                     end
-                    BG.UpdateAuctionLogFrame()
                     f:Hide()
-                elseif BG.auctionLogFrame.changeFrame.type == "new" then
+                    BG.UpdateAuctionLogFrame(true)
+                elseif BG.auctionLogFrame.changeFrame.type == "new" or BG.auctionLogFrame.changeFrame.type == "set" then
+                    local zhuangbei
+                    if BG.auctionLogFrame.changeFrame.type == "new" then
+                        zhuangbei = f.zhuangbei:GetText()
+                    elseif BG.auctionLogFrame.changeFrame.type == "set" then
+                        zhuangbei = f.item:GetText():gsub("|T.+|t", ""):gsub(":|h", ":|h["):gsub("|h|r", "]|h|r")
+                    end
+
                     local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
-                    _, typeID, subclassID, bindType = GetItemInfo(f.zhuangbei:GetText())
+                    _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
                     local a = {
                         time = time(),
-                        zhuangbei = f.zhuangbei:GetText(),
+                        zhuangbei = zhuangbei,
                         itemlevel = level,
                         quality = quality,
                         bindType = bindType,
@@ -692,7 +778,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
                     tinsert(BiaoGe[FB].auctionLog, a)
                     f:Hide()
-                    BG.UpdateAuctionLogFrame()
+                    if BG.auctionLogFrame.changeFrame.type == "new" then
+                        BG.UpdateAuctionLogFrame(nil, true)
+                    elseif BG.auctionLogFrame.changeFrame.type == "set" then
+                        BG.UpdateAuctionLogFrame(true, true)
+                    end
                 end
             end)
 
@@ -706,20 +796,208 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
+    BG.auctionLogFrame.auctioning = {}
     BG.auctionLogFrame.buttons = {}
+    BG.auctionLogFrame.choosed = {}
+    local lastChoose
 
+    local function UpdateButtonStartAuction()
+        local bt = BG.auctionLogFrame.ButtonStartAuction
+        if BiaoGe.options.auctionLogChoose ~= 4 then
+            bt:Hide()
+        end
+        if #BG.auctionLogFrame.choosed > 0 then
+            bt:Show()
+            if BG.IsML then
+                bt:Enable()
+            else
+                bt:Disable()
+            end
+        else
+            bt:Hide()
+        end
+    end
+    local function CreateMenu(f, i, v, notAuctioned, link, icon)
+        local FB = BG.FB1
+        local menu
+        if notAuctioned then
+            menu = {
+                {
+                    isTitle = true,
+                    text = link:gsub("%[", ""):gsub("%]", ""),
+                    notCheckable = true,
+                },
+                {
+                    text = L["开始拍卖"],
+                    disabled = not BG.IsML,
+                    notCheckable = true,
+                    func = function()
+                        BG.StartAuction(link, f, true)
+                    end
+                },
+                {
+                    isTitle = true,
+                    text = "   ",
+                    notCheckable = true,
+                },
+                {
+                    text = L["设为已拍"],
+                    notCheckable = true,
+                    func = function()
+                        BG.auctionLogFrame.changeFrame:Hide()
+                        BG.auctionLogFrame.changeFrame.type = "set"
+                        BG.auctionLogFrame.changeFrame.info = {}
+                        BG.auctionLogFrame.changeFrame:Show()
+                        BG.auctionLogFrame.changeFrame:ClearAllPoints()
+                        BG.auctionLogFrame.changeFrame:SetPoint("TOP", f, "BOTTOM", 10, 0)
+                        BG.auctionLogFrame.changeFrame.item:SetText(AddTexture(icon) .. v.zhuangbei:gsub("%[", ""):gsub("%]", ""))
+                    end
+                },
+                {
+                    text = L["设为流拍"],
+                    notCheckable = true,
+                    func = function()
+                        tinsert(BiaoGe[FB].auctionLog, {
+                            type = 2,
+                            time = time(),
+                            zhuangbei = v.zhuangbei,
+                            itemlevel = v.level,
+                            quality = v.quality,
+                            bindType = v.bindType,
+                        })
+                        BG.UpdateAuctionLogFrame(true, true)
+                    end
+                },
+                {
+                    isTitle = true,
+                    text = "   ",
+                    notCheckable = true,
+                },
+                {
+                    text = CANCEL,
+                    notCheckable = true,
+                    func = function(self)
+                        LibBG:CloseDropDownMenus()
+                    end,
+                }
+            }
+        else
+            menu = {
+                {
+                    isTitle = true,
+                    text = link:gsub("%[", ""):gsub("%]", ""),
+                    notCheckable = true,
+                },
+                {
+                    -- 修改记录
+                    notCheckable = true,
+                    func = function(self, arg1)
+                        BG.auctionLogFrame.changeFrame:Hide()
+                        BG.auctionLogFrame.changeFrame.type = "change"
+                        BG.auctionLogFrame.changeFrame.typeText = arg1
+                        BG.auctionLogFrame.changeFrame.info = {}
+                        BG.auctionLogFrame.changeFrame.info.num = i
+                        for k in pairs(BG.playerClass) do
+                            BG.auctionLogFrame.changeFrame.info[k] = v[k]
+                        end
+                        BG.auctionLogFrame.changeFrame:Show()
+                        BG.auctionLogFrame.changeFrame:ClearAllPoints()
+                        BG.auctionLogFrame.changeFrame:SetPoint("TOP", f, "BOTTOM", 10, 0)
+                        BG.auctionLogFrame.changeFrame.item:SetText(AddTexture(icon) .. link:gsub("%[", ""):gsub("%]", ""))
+                        BG.auctionLogFrame.changeFrame.item.itemID = GetItemID(link)
+                        BG.auctionLogFrame.changeFrame.maijia:ClearFocus()
+                        BG.auctionLogFrame.changeFrame.maijia:SetText(v.maijia or "")
+                        BG.auctionLogFrame.changeFrame.maijia:SetTextColor(unpack(v.color or { 1, 1, 1 }))
+                        BG.auctionLogFrame.changeFrame.jine:ClearFocus()
+                        BG.auctionLogFrame.changeFrame.jine:SetText(v.jine or "")
+                    end
+                },
+
+                {
+                    text = L["删除记录"],
+                    notCheckable = true,
+                    func = function()
+                        BG.auctionLogFrame.changeFrame:Hide()
+                        tremove(BiaoGe[FB].auctionLog, i)
+                        BG.UpdateAuctionLogFrame(true, true)
+                    end
+                },
+                {
+                    isTitle = true,
+                    text = "   ",
+                    notCheckable = true,
+                },
+                {
+                    text = CANCEL,
+                    notCheckable = true,
+                    func = function(self)
+                        LibBG:CloseDropDownMenus()
+                    end,
+                }
+            }
+            if v.type == 1 then
+                menu[2].text = L["修改记录"]
+                menu[2].arg1 = menu[2].text
+                tinsert(menu, 2,
+                    {
+                        text = L["设为流拍"],
+                        notCheckable = true,
+                        func = function()
+                            v.type = 2
+                            v.maijia = nil
+                            v.jine = nil
+                            for k in pairs(BG.playerClass) do
+                                v[k] = nil
+                            end
+                            BG.UpdateAuctionLogFrame(true, true)
+                        end
+                    }
+                )
+                tinsert(menu, 3,
+                    {
+                        isTitle = true,
+                        text = "   ",
+                        notCheckable = true,
+                    }
+                )
+            elseif v.type == 2 then
+                menu[2].text = L["设为已拍"]
+                menu[2].arg1 = menu[2].text
+                tinsert(menu, 3,
+                    {
+                        isTitle = true,
+                        text = "   ",
+                        notCheckable = true,
+                    }
+                )
+            end
+        end
+        return menu
+    end
     local function CreateButton(i, v, isHistory, num)
         local FB = BG.FB1
         local bts = {}
         local width = child:GetWidth()
         local link = v.zhuangbei
+        local itemID = GetItemID(link)
         local icon = select(5, GetItemInfoInstant(link))
         local r, g, b = GetItemQualityColor(v.quality)
+        local notAuctioned = v.type == 3
         bts.link = link
-        bts.itemID = GetItemID(link)
+        bts.itemID = itemID
+        bts.num = num
 
         -- 主框架
         do
+            local function CancelChoose(bt)
+                bt.ischoose = nil
+                if bt.num % 2 == 0 then
+                    bt.tex:SetColorTexture(.5, .5, .5, .15)
+                else
+                    bt.tex:SetColorTexture(.5, .5, .5, 0)
+                end
+            end
+
             local f = CreateFrame("Frame", nil, child, "BackdropTemplate")
             f:SetSize(width, 32)
             if #BG.auctionLogFrame.buttons == 0 then
@@ -737,9 +1015,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if itemID then
                     GameTooltip:SetItemByID(itemID)
                     GameTooltip:Show()
-                    BG.HighlightBiaoGe(link)
-                    BG.HighlightBag(link)
-                    BG.HighlightChatFrame(link)
+                    BG.Show_AllHighlight(link, "auctionlog")
                 end
                 bts.ds:Show()
             end)
@@ -751,64 +1027,101 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetScript("OnMouseDown", function(self, button)
                 if button == "RightButton" and not isHistory then
                     BG.PlaySound(3)
-                    local menu = {
-                        {
-                            isTitle = true,
-                            text = link:gsub("%[", ""):gsub("%]", ""),
-                            notCheckable = true,
-                        },
-                        {
-                            text = L["修改记录"],
-                            notCheckable = true,
-                            func = function()
-                                BG.auctionLogFrame.changeFrame:Hide()
-                                BG.auctionLogFrame.changeFrame.type = "change"
-                                BG.auctionLogFrame.changeFrame.info = {}
-                                BG.auctionLogFrame.changeFrame.info.num = i
-                                for k in pairs(BG.playerClass) do
-                                    BG.auctionLogFrame.changeFrame.info[k] = v[k]
-                                end
-                                BG.auctionLogFrame.changeFrame:Show()
-                                BG.auctionLogFrame.changeFrame:ClearAllPoints()
-                                BG.auctionLogFrame.changeFrame:SetPoint("TOPLEFT", f, "BOTTOMLEFT", -10, 0)
-                                BG.auctionLogFrame.changeFrame.item:SetText(AddTexture(icon) .. link:gsub("%[", ""):gsub("%]", ""))
-                                BG.auctionLogFrame.changeFrame.item.itemID = GetItemID(link)
-                                BG.auctionLogFrame.changeFrame.maijia:ClearFocus()
-                                BG.auctionLogFrame.changeFrame.maijia:SetText(v.maijia or "")
-                                BG.auctionLogFrame.changeFrame.maijia:SetTextColor(unpack(v.color or { 1, 1, 1 }))
-                                BG.auctionLogFrame.changeFrame.jine:ClearFocus()
-                                BG.auctionLogFrame.changeFrame.jine:SetText(v.jine or "")
-                            end
-                        },
-                        {
-                            text = L["删除记录"],
-                            notCheckable = true,
-                            func = function()
-                                BG.auctionLogFrame.changeFrame:Hide()
-                                tremove(BiaoGe[FB].auctionLog, i)
-                                BG.UpdateAuctionLogFrame(true)
-                            end
-                        },
-                        {
-                            text = CANCEL,
-                            notCheckable = true,
-                            func = function(self)
-                                LibBG:CloseDropDownMenus()
-                            end,
-                        }
-                    }
+                    wipe(BG.auctionLogFrame.choosed)
+                    lastChoose = num
+                    for _i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                        CancelChoose(bt)
+                    end
+                    local menu = CreateMenu(f, i, v, notAuctioned, link, icon)
                     LibBG:EasyMenu(menu, dropDown, "cursor", 10, 10, "MENU", 2)
-                elseif IsShiftKeyDown() then
-                    BG.PlaySound(1)
-                    BG.InsertLink(link)
+                else
+                    if v.type == 3 then
+                        BG.PlaySound(1)
+                        if IsControlKeyDown() then
+                            bts.ischoose = not bts.ischoose
+                            if bts.ischoose then
+                                if #BG.auctionLogFrame.choosed < 5 then
+                                    tinsert(BG.auctionLogFrame.choosed, itemID)
+                                    bts.tex:SetColorTexture(1, 1, 0, .5)
+                                else
+                                    bts.ischoose = nil
+                                end
+                                lastChoose = num
+                            else
+                                for _i = #BG.auctionLogFrame.choosed, 1, -1 do
+                                    if BG.auctionLogFrame.choosed[_i] == itemID then
+                                        tremove(BG.auctionLogFrame.choosed, _i)
+                                    end
+                                end
+
+                                CancelChoose(bts)
+                            end
+                        elseif IsAltKeyDown() then
+                            BG.StartAuction(link, f, true)
+                            CancelAllChoose()
+                        elseif IsShiftKeyDown() then
+                            if #BG.auctionLogFrame.choosed == 0 then
+                                BG.InsertLink(link)
+                            elseif lastChoose then
+                                for _i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                                    if _i ~= i then
+                                        CancelChoose(bt)
+                                    end
+                                end
+                                wipe(BG.auctionLogFrame.choosed)
+
+                                local count = 0
+                                for _i = lastChoose, num, lastChoose < num and 1 or -1 do
+                                    if count < 5 then
+                                        local bt = BG.auctionLogFrame.buttons[_i]
+                                        tinsert(BG.auctionLogFrame.choosed, bt.itemID)
+                                        bt.tex:SetColorTexture(1, 1, 0, .5)
+                                        count = count + 1
+                                    end
+                                end
+                                lastChoose = nil
+                            end
+                        else
+                            BG.PlaySound(1)
+
+                            for _i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                                if _i ~= i then
+                                    CancelChoose(bt)
+                                end
+                            end
+                            wipe(BG.auctionLogFrame.choosed)
+
+                            bts.ischoose = not bts.ischoose
+                            if bts.ischoose then
+                                tinsert(BG.auctionLogFrame.choosed, itemID)
+                                bts.tex:SetColorTexture(1, 1, 0, .5)
+                                lastChoose = num
+                            else
+                                for _i = #BG.auctionLogFrame.choosed, 1, -1 do
+                                    if BG.auctionLogFrame.choosed[_i] == itemID then
+                                        tremove(BG.auctionLogFrame.choosed, _i)
+                                    end
+                                end
+                                CancelChoose(bts)
+                            end
+                        end
+                        UpdateButtonStartAuction()
+                        LibBG:CloseDropDownMenus()
+                    else
+                        if IsShiftKeyDown() then
+                            BG.PlaySound(1)
+                            BG.InsertLink(link)
+                        end
+                    end
                 end
             end)
 
+            local tex = bts.frame:CreateTexture(nil, "BACKGROUND")
+            tex:SetAllPoints()
             if num % 2 == 0 then
-                local tex = bts.frame:CreateTexture(nil, "BACKGROUND")
-                tex:SetAllPoints()
                 tex:SetColorTexture(.5, .5, .5, .15)
             end
+            bts.tex = tex
 
             local tex = bts.frame:CreateTexture()
             tex:SetAllPoints()
@@ -866,16 +1179,25 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
             text:SetPoint("BOTTOMLEFT", bts.icon, "BOTTOMRIGHT", 1, 0)
             text:SetWidth(width - bts.icon:GetWidth())
+            text.notAuctionedText = BG.STC_dis(L["<未拍>"])
+            text.LiuPaiText = BG.STC_r1(L["<流拍>"])
+            text.auctionText = BG.STC_y1(L["<正在拍卖>"])
             if v.type == 1 then
                 text:SetText(v.jine .. "|c" .. select(4, GetClassColor(v.class)) .. " " .. v.maijia .. "" .. RR)
+            elseif notAuctioned then
+                text:SetText(text.notAuctionedText)
             else
-                text:SetText(L["<流拍>"])
-                text:SetTextColor(1, 0, 0)
+                text:SetText(text.LiuPaiText)
             end
             text:SetJustifyH("LEFT")
             text:SetWordWrap(false)
             bts.money = text
         end
+    end
+
+    function CancelAllChoose()
+        wipe(BG.auctionLogFrame.choosed)
+        BG.UpdateAuctionLogFrame(nil, true)
     end
 
     local function SearchText(v)
@@ -894,17 +1216,24 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
     end
 
-    function BG.UpdateAuctionLogFrame(notSetDown)
+    function BG.UpdateAuctionLogFrame(notSetDown, notSetUp)
         if not BG.auctionLogFrame:IsVisible() then return end
         for i, v in ipairs(BG.auctionLogFrame.buttons) do
             v.frame:Hide()
         end
         wipe(BG.auctionLogFrame.buttons)
+        BG.auctionLogFrame.notText:Hide()
+        if not notSetUp then
+            wipe(BG.auctionLogFrame.choosed)
+            lastChoose = nil
+        end
+        UpdateButtonStartAuction()
 
         local FB = BG.FB1
         local sum = 0
         local tbl
         local isHistory
+        local notCache = 0
         if BG.History.chooseNum then
             isHistory = true
         end
@@ -912,7 +1241,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
             tbl = BiaoGe.History[FB][DT].auctionLog
         elseif BG.HistoryMainFrame:IsVisible() then
-            tbl = nil
             isHistory = true
         else
             tbl = BiaoGe[FB].auctionLog
@@ -920,11 +1248,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         if not tbl or #tbl == 0 then
             BG.auctionLogFrame.ButtonCreateLedger:Disable()
             BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
-            BG.auctionLogFrame.notText:Show()
+            if BiaoGe.options.auctionLogChoose ~= 4 then
+                BG.auctionLogFrame.notText:Show()
+            end
         else
             BG.auctionLogFrame.ButtonCreateLedger:Enable()
             BG.auctionLogFrame.ButtonCreateDuiZhang:Enable()
-            BG.auctionLogFrame.notText:Hide()
         end
         if isHistory then
             BG.auctionLogFrame.ButtonCreateLedger:Disable()
@@ -953,17 +1282,123 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
 
+        if BiaoGe.options.auctionLogChoose == 4 then
+            local newTbl = {}
+            for b = 1, Maxb[FB] do
+                for i = 1, BG.Maxi do
+                    if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
+                        local zb
+                        if isHistory then
+                            local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
+                            zb = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
+                        else
+                            zb = BiaoGe[FB]["boss" .. b]["zhuangbei" .. i]
+                        end
+                        if GetItemID(zb) then
+                            tinsert(newTbl, zb)
+                        end
+                    end
+                end
+            end
+            if tbl then
+                local copyTbl = BG.Copy(tbl)
+                for i = #newTbl, 1, -1 do
+                    for _i = #copyTbl, 1, -1 do
+                        if GetItemID(newTbl[i]) == GetItemID(copyTbl[_i].zhuangbei) then
+                            tremove(newTbl, i)
+                            tremove(copyTbl, _i)
+                            break
+                        end
+                    end
+                end
+            end
+            for i, zhuangbei in ipairs(newTbl) do
+                local item = Item:CreateFromItemID(GetItemID(zhuangbei))
+                if not GetItemInfo(zhuangbei) then
+                    notCache = 0.5
+                end
+                item:ContinueOnItemLoad(function()
+                    local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
+                    _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
+                    newTbl[i] = {
+                        type = 3,
+                        zhuangbei = zhuangbei,
+                        itemlevel = level,
+                        quality = quality,
+                        bindType = bindType,
+                    }
+                end)
+            end
+
+            local function Create()
+                for i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                    bt.frame:Hide()
+                end
+                wipe(BG.auctionLogFrame.buttons)
+
+                for i, v in ipairs(newTbl) do
+                    if SearchText(v) then
+                        CreateButton(i, v, isHistory, i)
+                    end
+                end
+                BG.UpdateAuctioning()
+
+                for i, itemID in ipairs(BG.auctionLogFrame.choosed) do
+                    for i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                        if bt.itemID == itemID then
+                            bt.ischoose = true
+                            bt.tex:Show()
+                            bt.tex:SetColorTexture(1, 1, 0, .5)
+                            break
+                        end
+                    end
+                end
+            end
+            if notCache == 0 then
+                Create()
+            else
+                BG.After(notCache, function()
+                    Create()
+                end)
+            end
+        end
+
         BG.auctionLogFrame.sumText:SetText(L["合计收入："] .. sum)
 
-        if not (BG.auctionLogFrame.changeFrame:IsVisible() or notSetDown) then
+        if BiaoGe.options.auctionLogChoose == 4 then
+            if not notSetUp then
+                BG.After(notCache + 0.05, function()
+                    local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
+                    frame.scroll.ScrollBar:SetValue(min)
+                end)
+            end
+        elseif not notSetDown then
             BG.After(0, function()
                 local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
                 frame.scroll.ScrollBar:SetValue(max)
             end)
         end
     end
+
+    function BG.UpdateAuctioning()
+        if BiaoGe.options.auctionLogChoose == 4 then
+            local auctioning = BG.Copy(BG.auctionLogFrame.auctioning)
+            for _, bt in ipairs(BG.auctionLogFrame.buttons) do
+                bt.money:SetText(bt.money.notAuctionedText)
+                for i = #auctioning, 1, -1 do
+                    if bt.itemID == auctioning[i] then
+                        bt.money:SetText(bt.money.auctionText)
+                        tremove(auctioning, i)
+                        break
+                    end
+                end
+            end
+        end
+    end
+
     BG.auctionLogFrame.serachEdit:HookScript("OnTextChanged", BG.UpdateAuctionLogFrame)
 
+    -- 记录自动拍卖结
     local function CheckItemToFB(item)
         for _, FB in ipairs(BG.GetAllFB()) do
             for b = 1, Maxb[FB] do
@@ -976,6 +1411,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
     end
+    local function DeleteAuctioning(itemID)
+        for i = #BG.auctionLogFrame.auctioning, 1, -1 do
+            if BG.auctionLogFrame.auctioning[i] == itemID then
+                tremove(BG.auctionLogFrame.auctioning, i)
+                break
+            end
+        end
+    end
     BG.RegisterEvent("CHAT_MSG_RAID_LEADER", function(self, even, ...)
         local msg, playerName, languageName, channelName, playerName2, specialFlags, zoneChannelID, channelIndex, channelBaseName, languageID, lineID, guid = ...
         local zhuangbei, maijia, jine
@@ -984,6 +1427,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             zhuangbei, maijia, jine = msg:match("{rt6}拍賣成功{rt6} (.-) (.-) (.+)")
         end
         if (zhuangbei and maijia and jine) then
+            DeleteAuctioning(GetItemID(zhuangbei))
             local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
             local FB = BG.FB2
             if not FB then
@@ -1014,7 +1458,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
             tinsert(BiaoGe[FB].auctionLog, a)
-            BG.UpdateAuctionLogFrame()
+            BG.UpdateAuctionLogFrame(nil, true)
 
             BiaoGe.AuctionLog[maijia] = BiaoGe.AuctionLog[maijia] or {}
             tinsert(BiaoGe.AuctionLog[maijia], {
@@ -1028,7 +1472,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         zhuangbei = msg:match("{rt7}流拍{rt7} (.+)")
         if zhuangbei then
-            local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
+            DeleteAuctioning(GetItemID(zhuangbei))
+            local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
+            _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
             local FB = BG.FB2
             if not FB then
                 FB = CheckItemToFB(zhuangbei) or BG.FB1
@@ -1044,8 +1490,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             }
             BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
             tinsert(BiaoGe[FB].auctionLog, a)
-            BG.UpdateAuctionLogFrame()
+            BG.UpdateAuctionLogFrame(nil, true)
             return
+        end
+
+        zhuangbei = msg:match("{rt7}拍卖取消{rt7} (.+)")
+        if not zhuangbei then
+            zhuangbei = msg:match("{rt7}拍賣取消{rt7} (.+)")
+        end
+        if zhuangbei then
+            DeleteAuctioning(GetItemID(zhuangbei))
+            BG.UpdateAuctioning()
         end
     end)
 

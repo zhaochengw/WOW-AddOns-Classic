@@ -115,7 +115,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:AddLine(" ")
         local raid = BG.PaiXuRaidRosterInfo()
         for i, v in ipairs(raid) do
-            local Ver = L["无"]
+            local Ver
+            if v.online then
+                Ver = L["无"]
+            else
+                Ver = L["未知"]
+            end
             if self.isAuciton then
                 if sending[v.name] then
                     Ver = L["正在接收拍卖WA"]
@@ -144,7 +149,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             local c1, c2, c3 = GetClassRGB(v.name)
             GameTooltip:AddDoubleLine(v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
-            if Ver == L["无"] then
+            if Ver == L["无"] or Ver == L["未知"] then
                 local alpha = 0.3
                 if _G["GameTooltipTextLeft" .. (i + line)] then
                     _G["GameTooltipTextLeft" .. (i + line)]:SetAlpha(alpha)
@@ -196,12 +201,37 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:ClearLines()
             GameTooltip:SetItemByID(self.itemID)
             GameTooltip:Show()
+            self.isOnEnter = true
+            if self.isIcon then
+                self.owner.lastIcon = self
+                if not self.isChooseTex then
+                    self.isChooseTex = self:CreateTexture()
+                    self.isChooseTex:SetAllPoints()
+                    self.isChooseTex:SetColorTexture(1, 1, 1, .2)
+                    self.isChooseTex:Hide()
+                end
+                self.isChooseTex:Show()
+            end
+        end
+        local function item_OnLeave(self)
+            GameTooltip_Hide()
+            self.isOnEnter = nil
+            if self.isIcon then
+                self.owner.lastIcon = nil
+                self.isChooseTex:Hide()
+            end
         end
         local function Start_OnClick(self)
             if not (tonumber(BiaoGe.Auction.money) and tonumber(BiaoGe.Auction.duration) and tonumber(BiaoGe.Auction.duration) > 0) then return end
-            local text = "StartAuction," .. GetTime() .. "," .. self.itemID .. "," ..
-                BiaoGe.Auction.money .. "," .. BiaoGe.Auction.duration .. ",," .. BiaoGe.Auction.mod
-            C_ChatInfo.SendAddonMessage("BiaoGeAuction", text, "RAID")
+            local t = 0
+            for i, itemID in ipairs(self.itemIDs) do
+                BG.After(t, function()
+                    local text = "StartAuction," .. GetTime() .. "," .. itemID .. "," ..
+                        BiaoGe.Auction.money .. "," .. BiaoGe.Auction.duration .. ",," .. BiaoGe.Auction.mod
+                    C_ChatInfo.SendAddonMessage("BiaoGeAuction", text, "RAID")
+                end)
+                t = t + 0.2
+            end
             self:GetParent():Hide()
             BG.PlaySound(1)
         end
@@ -227,13 +257,20 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:Show()
         end
 
-        function BG.StartAuction(link, bt)
+        function BG.StartAuction(link, bt, isNotAuctioned)
             if not link then return end
             if not BG.IsML then return end
+            local link = BG.Copy(link)
+            local itemIDs = {}
+            if type(link) == "table" then
+                itemIDs = link
+            else
+                itemIDs[1] = GetItemID(link)
+            end
             if BG.StartAucitonFrame then BG.StartAucitonFrame:Hide() end
             GameTooltip:Hide()
-            local itemID = GetItemInfoInstant(link)
-            local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture, _, classID, subclassID, bindType = GetItemInfo(itemID)
+            local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture,
+            _, classID, subclassID, bindType = GetItemInfo(itemIDs[1])
 
             local mainFrame
             local mainFrameWidth = 240
@@ -249,7 +286,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f:SetBackdropBorderColor(0, 0, 0, 1)
                 f:SetSize(mainFrameWidth, mainFrameHeight)
                 if bt then
-                    f:SetPoint("BOTTOM", bt, "TOP", 0, 0)
+                    if isNotAuctioned then
+                        f:SetPoint("TOP", bt, "BOTTOM", 10, 0)
+                    else
+                        f:SetPoint("BOTTOM", bt, "TOP", 0, 0)
+                    end
                 else
                     local x, y = GetCursorPosition()
                     x, y = x / UIParent:GetEffectiveScale(), y / UIParent:GetEffectiveScale()
@@ -263,10 +304,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f:SetMovable(true)
                 f:SetScript("OnMouseUp", function(self)
                     f:StopMovingOrSizing()
+                    f:SetScript("OnUpdate", nil)
                 end)
                 f:SetScript("OnMouseDown", function(self)
                     f:StartMoving()
                     ClearAllFocus(f)
+
+                    f.time = 0
+                    f:SetScript("OnUpdate", function(self, time)
+                        f.time = f.time + time
+                        if f.time >= 0.2 then
+                            f.time = 0
+                            if f.itemFrame.isOnEnter then
+                                GameTooltip:Hide()
+                                f.itemFrame:GetScript("OnEnter")(f.itemFrame)
+                            elseif f.lastIcon then
+                                GameTooltip:Hide()
+                                f.lastIcon:GetScript("OnEnter")(f.lastIcon)
+                            end
+                        end
+                    end)
                 end)
                 mainFrame = f
                 BG.StartAucitonFrame = mainFrame
@@ -283,9 +340,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f:SetPoint("TOPLEFT", f:GetParent(), "TOPLEFT", 2, -2)
                 f:SetPoint("BOTTOMRIGHT", f:GetParent(), "TOPRIGHT", -2, -35)
                 f:SetFrameLevel(f:GetParent():GetFrameLevel() + 10)
-                f.itemID = itemID
-                f:SetScript("OnEnter", item_OnEnter)
-                f:SetScript("OnLeave", GameTooltip_Hide)
+                f.itemID = itemIDs[1]
+                if #itemIDs == 1 then
+                    f:SetScript("OnEnter", item_OnEnter)
+                    f:SetScript("OnLeave", item_OnLeave)
+                end
                 f:SetScript("OnMouseUp", function(self)
                     mainFrame:GetScript("OnMouseUp")(mainFrame)
                 end)
@@ -299,57 +358,87 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 s:SetFrameLevel(s:GetParent():GetFrameLevel() - 5)
                 s:SetStatusBarTexture("Interface/ChatFrame/ChatFrameBackground")
                 s:SetStatusBarColor(0, 0, 0, 0.8)
-                -- 图标
-                local r, g, b = GetItemQualityColor(quality)
-                local ftex = CreateFrame("Frame", nil, f, "BackdropTemplate")
-                ftex:SetBackdrop({
-                    edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-                    edgeSize = 1.5,
-                })
-                ftex:SetBackdropBorderColor(r, g, b, 1)
-                ftex:SetPoint("TOPLEFT", 0, 0)
-                ftex:SetSize(f:GetHeight() - 2, f:GetHeight() - 2)
-                ftex.tex = ftex:CreateTexture(nil, "BACKGROUND")
-                ftex.tex:SetAllPoints()
-                ftex.tex:SetTexture(Texture)
-                ftex.tex:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-                -- 装备等级
-                local t = ftex:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
-                t:SetPoint("BOTTOM", ftex, "BOTTOM", 0, 1)
-                t:SetText(level)
-                t:SetTextColor(r, g, b)
-                -- 装绑
-                if bindType == 2 then
-                    local t = ftex:CreateFontString()
-                    t:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
-                    t:SetPoint("TOP", ftex, 0, -1)
-                    t:SetText(L["装绑"])
-                    t:SetTextColor(0, 1, 0)
-                end
-                -- 装备名称
-                local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-                t:SetPoint("TOPLEFT", ftex, "TOPRIGHT", 2, -2)
-                t:SetWidth(f:GetWidth() - f:GetHeight() - 10)
-                t:SetText(link:gsub("%[", ""):gsub("%]", ""))
-                t:SetJustifyH("LEFT")
-                t:SetWordWrap(false)
-                -- 装备类型
-                local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-                t:SetPoint("BOTTOMLEFT", ftex, "BOTTOMRIGHT", 2, 1)
-                t:SetHeight(12)
-                if _G[itemEquipLoc] then
-                    if classID == 2 then
-                        t:SetText(itemSubType)
+
+                local icons = {}
+                for i, itemID in ipairs(itemIDs) do
+                    local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture,
+                    _, classID, subclassID, bindType = GetItemInfo(itemID)
+
+                    -- 图标
+                    local r, g, b = GetItemQualityColor(quality)
+                    local ftex = CreateFrame("Frame", nil, f, "BackdropTemplate")
+                    ftex:SetBackdrop({
+                        edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                        edgeSize = 1.5,
+                    })
+                    ftex:SetBackdropBorderColor(r, g, b, 1)
+                    if i == 1 then
+                        ftex:SetPoint("TOPLEFT", 0, 0)
                     else
-                        t:SetText(_G[itemEquipLoc] .. " " .. itemSubType)
+                        ftex:SetPoint("TOPLEFT", icons[i - 1], "TOPRIGHT", 3, 0)
                     end
-                else
-                    t:SetText("")
+                    ftex:SetSize(f:GetHeight() - 2, f:GetHeight() - 2)
+                    ftex.itemID = itemID
+                    tinsert(icons, ftex)
+                    if #itemIDs > 1 then
+                        ftex.isIcon = true
+                        ftex.owner = mainFrame
+                        ftex:SetScript("OnEnter", item_OnEnter)
+                        ftex:SetScript("OnLeave", item_OnLeave)
+                        ftex:SetScript("OnMouseUp", function(self)
+                            mainFrame:GetScript("OnMouseUp")(mainFrame)
+                        end)
+                        ftex:SetScript("OnMouseDown", function(self)
+                            mainFrame:GetScript("OnMouseDown")(mainFrame)
+                        end)
+                    end
+
+                    ftex.tex = ftex:CreateTexture(nil, "BACKGROUND")
+                    ftex.tex:SetAllPoints()
+                    ftex.tex:SetTexture(Texture)
+                    ftex.tex:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+                    -- 装备等级
+                    local t = ftex:CreateFontString()
+                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                    t:SetPoint("BOTTOM", ftex, "BOTTOM", 0, 1)
+                    t:SetText(level)
+                    t:SetTextColor(r, g, b)
+                    -- 装绑
+                    if bindType == 2 then
+                        local t = ftex:CreateFontString()
+                        t:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
+                        t:SetPoint("TOP", ftex, 0, -1)
+                        t:SetText(L["装绑"])
+                        t:SetTextColor(0, 1, 0)
+                    end
                 end
-                t:SetJustifyH("LEFT")
+
+                if #itemIDs == 1 then
+                    -- 装备名称
+                    local t = f:CreateFontString()
+                    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    t:SetPoint("TOPLEFT", icons[1], "TOPRIGHT", 2, -2)
+                    t:SetWidth(f:GetWidth() - f:GetHeight() - 10)
+                    t:SetText(link:gsub("%[", ""):gsub("%]", ""))
+                    t:SetJustifyH("LEFT")
+                    t:SetWordWrap(false)
+                    -- 装备类型
+                    local t = f:CreateFontString()
+                    t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+                    t:SetPoint("BOTTOMLEFT", icons[1], "BOTTOMRIGHT", 2, 1)
+                    t:SetHeight(12)
+
+                    if _G[itemEquipLoc] then
+                        if classID == 2 then
+                            t:SetText(itemSubType)
+                        else
+                            t:SetText(_G[itemEquipLoc] .. " " .. itemSubType)
+                        end
+                    else
+                        t:SetText("")
+                    end
+                    t:SetJustifyH("LEFT")
+                end
             end
 
             local width = 90
@@ -473,7 +562,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 bt:SetBackdropBorderColor(r, g, b, 0.5)
                 bt:SetPoint("TOPLEFT", mainFrame.dropDown, "BOTTOMLEFT", 18, -5)
                 bt:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", -12, 28)
-                bt.itemID = itemID
+                bt.itemIDs = itemIDs
                 local font = bt:CreateFontString()
                 font:SetTextColor(r, g, b)
                 font:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
@@ -503,7 +592,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 auction:SetSize(1, 20)
                 auction:SetPoint("LEFT", tex, "LEFT", 0, 0)
                 auction.title = L["拍卖WA版本"]
-                auction.title2 = L["已安装拍卖WA：%s"]
+                auction.title2 = L["拍卖：%s"]
                 auction.table = BG.raidAuctionVersion
                 auction.isAuciton = true
                 auction:SetScript("OnEnter", Addon_OnEnter)
@@ -780,6 +869,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             end
         end
+
+        tinsert(BG.auctionLogFrame.auctioning, f.itemID)
+        BG.UpdateAuctioning()
     end
 
     ------------------拍卖WA字符串------------------
@@ -797,9 +889,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         L["v1.7：增加自动出价功能"],
         L["v1.6：增加显示正在拍卖的装备类型"],
         L["v1.5：拍卖价格为100~3000的加价幅度现在为100一次"],
-        L["v1.4：增加一个开始拍卖时的动画效果"],
-        L["v1.3：修复有部分玩家不显示拍卖界面的问题；当你是出价最高者时的高亮效果更加显眼"],
-        L["v1.2：现在物品分配者也可以开始拍卖装备了"],
+        -- L["v1.4：增加一个开始拍卖时的动画效果"],
+        -- L["v1.3：修复有部分玩家不显示拍卖界面的问题；当你是出价最高者时的高亮效果更加显眼"],
+        -- L["v1.2：现在物品分配者也可以开始拍卖装备了"],
     }
     do
         local function OnClick(self)
@@ -837,7 +929,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 scroll:SetPoint("CENTER")
                 scroll.ScrollBar.scrollStep = BG.scrollStep
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+                BG.HookScrollBarShowOrHide(scroll.ScrollBar)
                 scroll:SetScrollChild(edit)
                 edit:SetScript("OnEscapePressed", function()
                     f:Hide()

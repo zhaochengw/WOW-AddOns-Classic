@@ -11,6 +11,8 @@ ns.ItemSets = {}
 ns.Glyphes = {}
 ns.SpellGlyphes = {}
 ns.GlyphSlots = {}
+ns.ItemEnchants = {}
+ns.ItemGemOrder = {}
 
 local strsplittable = strsplittable or function(delimiter, str, pieces)
     return {strsplit(delimiter, str, pieces)}
@@ -131,9 +133,7 @@ function ns.ItemSetMake()
     end
 
     local function SetItemSetSlotItem(slot, itemId)
-        slot = SLOTS[slot]
-        CURRENT.slots[slot] = CURRENT.slots[slot] or {}
-        CURRENT.slots[slot][itemId] = true
+        tinsert(CURRENT.slots, {slot = SLOTS[slot], itemId = itemId})
     end
 
     setfenv(2, { --
@@ -161,4 +161,31 @@ function ns.GlyphMake()
     end
 
     setfenv(2, {D = Data, S = Slot})
+end
+
+function ns.ItemEnchantMake()
+    ns.ItemEnchantMake = nil
+
+    local Data = function(enchantId, spellId, itemId, classId, subClassMask, invTypeMask)
+        tinsert(ns.ItemEnchants, {
+            enchantId = enchantId,
+            spellId = spellId,
+            itemId = itemId,
+            classId = classId,
+            subClassMask = subClassMask,
+            invTypeMask = invTypeMask,
+        })
+    end
+
+    setfenv(2, {D = Data})
+end
+
+function ns.ItemGemOrderMake()
+    ns.ItemGemOrderMake = nil
+
+    local Data = function(itemId, ...)
+        ns.ItemGemOrder[itemId] = {...}
+    end
+
+    setfenv(2, {D = Data})
 end

@@ -4,7 +4,7 @@
 ## IconTexture: Interface\Icons\spell_holy_heal02
 ## SavedVariables: ClassicCastbarsDB
 ## SavedVariablesPerCharacter: ClassicCastbarsCharDB
-## Version: v1.7.10
+## Version: v1.7.12
 ## X-Curse-Project-ID: 322865
 ## X-Wago-ID: vEGPdkG1
 

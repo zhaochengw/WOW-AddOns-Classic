@@ -272,18 +272,22 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     zb:SetText(link)
                     duizhangzb:SetText(link)
                     BiaoGe[FB]["boss" .. numb]["zhuangbei" .. i] = link
-                    BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
-                        format(L["已自动记入表格：%s%s%s => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
-                            levelText, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
-                            BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
+                    if BiaoGe.options["autolootNotice"] == 1 then
+                        BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
+                            format(L["已自动记入表格：%s%s%s => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
+                                levelText, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
+                                BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
+                    end
                 else
                     zb:SetText(link .. "x" .. count)
                     duizhangzb:SetText(link .. "x" .. count)
                     BiaoGe[FB]["boss" .. numb]["zhuangbei" .. i] = link .. "x" .. count
-                    BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
-                        format(L["已自动记入表格：%s%s%s x%d => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
-                            levelText, count, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
-                            BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
+                    if BiaoGe.options["autolootNotice"] == 1 then
+                        BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
+                            format(L["已自动记入表格：%s%s%s x%d => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
+                                levelText, count, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
+                                BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
+                    end
                 end
                 AddLootLog(FB, numb, i, lootplayer, count)
                 return
@@ -349,10 +353,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         else
                             icon = BG.LootFilterClassItem(link)
                         end
-                        BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
-                            format(L["已自动记入表格：%s%s%s x%d => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
-                                levelText, count, "|cff" .. BG.Boss[FB]["boss" .. b]["color"],
-                                BG.Boss[FB]["boss" .. b]["name2"], RR) .. icon)
+                        if BiaoGe.options["autolootNotice"] == 1 then
+                            BG.FrameLootMsg:AddMessage(icon .. "|cff00BFFF" ..
+                                format(L["已自动记入表格：%s%s%s x%d => %s< %s >%s"], RR, (AddTexture(Texture) .. link),
+                                    levelText, count, "|cff" .. BG.Boss[FB]["boss" .. b]["color"],
+                                    BG.Boss[FB]["boss" .. b]["name2"], RR) .. icon)
+                        end
 
                         return
                     end

@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 6/7/2021, 12:16:52 AM
 --
-local MAJOR, MINOR = 'LibTooltipExtra-1.0', 7
+local MAJOR, MINOR = 'LibTooltipExtra-1.0', 8
 
 ---@class LibTooltipExtra-1.0
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
@@ -97,7 +97,7 @@ function Tip:GetFontStrings(n)
     return self.l[n], self.r[n]
 end
 
----@return TooltipMoneyFrameTemplate
+---@return Frame
 function Tip:GetMoneyFrame(n)
     return self.m[n]
 end
@@ -111,8 +111,8 @@ local function AddFront(object, text)
 end
 
 ---@param toLine integer
----@param textLeft string
----@param textRight string
+---@param textLeft string | nil
+---@param textRight string | nil
 function Tip:AppendLineFront(toLine, textLeft, textRight)
     if self:NumLines() >= toLine then
         local fontLeft, fontRight = self:GetFontStrings(toLine)
@@ -135,6 +135,16 @@ end
 ---@param text string
 function Tip:AppendLineFrontRight(toLine, text)
     return self:AppendLineFront(toLine, nil, text)
+end
+
+function Tip:AddEmptyLine()
+    local numLines = self:NumLines()
+    local text = self:GetFontStringLeft(numLines):GetText()
+
+    if text == ' ' or text:match('\n$') or text:match('%|n$') then
+        return
+    end
+    self:AddLine(' ')
 end
 
 ---- Lib

@@ -163,7 +163,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
         -- test
-        --[[         BG.itemGuoQiFrame.tbl = {
+--[[         BG.itemGuoQiFrame.tbl = {
             { time = 120, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 90, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
@@ -242,10 +242,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:SetBagItem(b, i)
-                BG.Hide_AllHighlight()
-                BG.HighlightBiaoGe(link)
-                BG.HighlightBag(link)
-                BG.HighlightChatFrame(link)
+                BG.Show_AllHighlight(link,"outtime")
             end)
             f:SetScript("OnLeave", function()
                 tex:Hide()
@@ -322,15 +319,4 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
     end)
-
-    function BG.HighlightItemGuoQi(link)
-        if not BG.itemGuoQiFrame:IsVisible() then return end
-        if not link then return end
-        local itemID = GetItemInfoInstant(link)
-        for i, bt in ipairs(BG.itemGuoQiFrame.buttons) do
-            if bt.itemID == itemID then
-                BG.CreateHighlightFrame(bt)
-            end
-        end
-    end
 end)

@@ -242,7 +242,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetSize(frame.spellFramebg:GetWidth() - 28, frame.spellFramebg:GetHeight() - 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
             scroll:SetScrollChild(f)
             frame["Boss" .. i].spellScrollFrame = scroll
@@ -257,7 +257,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetSize(frame.classFramebg:GetWidth() - 28, frame.classFramebg:GetHeight() - 10)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
             scroll:SetScrollChild(f)
             frame["Boss" .. i].classScrollFrame = scroll
 

@@ -1656,7 +1656,7 @@ function BG.ItemLibUI()
         scroll:SetPoint("BOTTOMRIGHT", -30, 5)
         scroll.ScrollBar.scrollStep = BUTTONHEIGHT * 4
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
         BG.ItemLibMainFrame.scroll = scroll
 
         local frame = CreateFrame("Frame", nil, scroll)

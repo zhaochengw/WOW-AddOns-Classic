@@ -7,6 +7,7 @@
 ---@field Inspect Inspect
 ---@field Talent Talent
 ---@field Glyph Glyph
+---@field ItemLevelCalculator ItemLevelCalculator
 local ns = select(2, ...)
 
 local ShowUIPanel = LibStub('LibShowUIPanel-1.0').ShowUIPanel
@@ -19,6 +20,14 @@ local ShowUIPanel = LibStub('LibShowUIPanel-1.0').ShowUIPanel
 ---@field EnchantItem UI.EnchantItem
 ---@field InspectFrame UI.InspectFrame
 ---@field InspectGearFrame UI.InspectGearFrame
+---@field GlyphItem UI.GlyphItem
+---@field TalentFrame UI.TalentFrame
+---@field CharacterGearFrame UI.CharacterGearFrame
+---@field GlyphFrame UI.GlyphFrame
+---@field PaperDoll UI.PaperDoll
+---@field InspectTalent UI.InspectTalent
+---@field ModelFrame UI.ModelFrame
+---@field SlotItem UI.SlotItem
 ns.UI = {}
 ns.L = LibStub('AceLocale-3.0'):GetLocale('tdInspect')
 
@@ -30,22 +39,30 @@ _G.BINDING_HEADER_TDINSPECT = 'tdInspect'
 _G.BINDING_NAME_TDINSPECT_VIEW_TARGET = ns.L['Inspect target']
 _G.BINDING_NAME_TDINSPECT_VIEW_MOUSEOVER = ns.L['Inspect mouseover']
 
----@class Addon: AceAddon-3.0, LibClass-2.0, AceEvent-3.0
+---@class Addon: AceAddon, LibClass-2.0, AceEvent-3.0
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdInspect', 'LibClass-2.0', 'AceEvent-3.0')
 ns.Addon = Addon
 
 function Addon:OnInitialize()
-    ---@class tdInspectProfile
+    ---@class tdInspectProfile: table
     local profile = { --
         global = { --
             userCache = {},
         },
         profile = { --
-            showModel = true,
+            characterGear = true,
+            inspectGear = true,
+            inspectCompare = true,
+            showTalentBackground = true,
+            showOptionButtonInCharacter = true,
+            showOptionButtonInInspect = true,
+            showGem = true,
+            showEnchant = true,
+            showLost = true,
         },
     }
 
-    ---@type tdInspectProfile
+    ---@type tdInspectProfile | AceDB.Schema
     self.db = LibStub('AceDB-3.0'):New('TDDB_INSPECT2', profile, true)
 
     if not self.db.global.version or self.db.global.version < 20000 then
@@ -59,12 +76,22 @@ function Addon:OnInitialize()
     end
 
     self.db.global.version = ns.VERSION
+
+    self.CharacterGearParent = CreateFrame('Frame', nil, PaperDollFrame)
+    self.CharacterGearParent:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', -33, -12)
+    self.CharacterGearParent:SetSize(1, 1)
+    self.CharacterGearParent:SetScript('OnShow', function()
+        self:OpenCharacterGearFrame()
+    end)
+
+    self:SetupOptionFrame()
 end
 
 function Addon:OnEnable()
     self:RegisterEvent('ADDON_LOADED')
     self:RegisterMessage('INSPECT_READY')
     self:RegisterMessage('INSPECT_TALENT_READY', 'INSPECT_READY')
+    self:RegisterMessage('TDINSPECT_OPTION_CHANGED')
 end
 
 function Addon:OnModuleCreated(module)
@@ -100,5 +127,84 @@ function Addon:INSPECT_READY(_, unit, name)
     end
     if unit == ns.Inspect.unit or name == ns.Inspect.unitName then
         ShowUIPanel(self.InspectFrame)
+    end
+end
+
+function Addon:TDINSPECT_OPTION_CHANGED(_, key, value)
+    if key == 'characterGear' then
+        if value then
+            if self.CharacterGearParent:IsShown() then
+                self:OpenCharacterGearFrame()
+            end
+        elseif self.CharacterGearFrame then
+            if not self.db.profile.inspectCompare or not self.InspectGearFrame or not self.InspectGearFrame:IsShown() then
+                self.CharacterGearFrame:Hide()
+            end
+        end
+    elseif key == 'inspectGear' and InspectPaperDollFrame then
+        if value then
+            if InspectPaperDollFrame:IsShown() then
+                self:OpenInspectGearFrame()
+            elseif self.InspectGearFrame then
+                self.InspectGearFrame:Hide()
+            end
+        elseif self.InspectGearFrame then
+            self.InspectGearFrame:Hide()
+        end
+    elseif key == 'inspectCompare' and InspectPaperDollFrame then
+        if value then
+            if InspectPaperDollFrame:IsShown() then
+                self:OpenInspectGearFrame()
+            end
+        elseif self.CharacterGearFrame then
+            self.CharacterGearFrame:Hide()
+
+            if self.CharacterGearParent:IsShown() then
+                self:OpenCharacterGearFrame()
+            end
+        end
+    end
+end
+
+---@return UI.CharacterGearFrame
+function Addon:GetCharacterGearFrame()
+    if not self.CharacterGearFrame then
+        self.CharacterGearFrame = ns.UI.CharacterGearFrame:Create(self.CharacterGearParent)
+    end
+    return self.CharacterGearFrame
+end
+
+function Addon:GetInspectGearFrame()
+    if not self.InspectGearFrame then
+        self.InspectGearFrame = ns.UI.InspectGearFrame:Create(InspectPaperDollFrame, true)
+        self.InspectGearFrame:SetPoint('TOPLEFT', InspectPaperDollFrame, 'TOPRIGHT', -33, -12)
+    end
+    return self.InspectGearFrame
+end
+
+function Addon:OpenCharacterGearFrame()
+    if self.db.profile.characterGear then
+        local characterGearFrame = self:GetCharacterGearFrame()
+
+        if characterGearFrame:IsShown() then
+            return
+        end
+
+        characterGearFrame:TapTo(self.CharacterGearParent, 'TOPLEFT')
+        characterGearFrame:Show()
+    end
+end
+
+function Addon:OpenInspectGearFrame()
+    if self.db.profile.inspectGear then
+        local inspectGearFrame = self:GetInspectGearFrame()
+        inspectGearFrame:Show()
+
+        if self.db.profile.inspectCompare then
+            local characterGearFrame = self:GetCharacterGearFrame()
+
+            characterGearFrame:TapTo(inspectGearFrame, 'TOPLEFT', inspectGearFrame, 'TOPRIGHT', 0, 0)
+            characterGearFrame:Show()
+        end
     end
 end

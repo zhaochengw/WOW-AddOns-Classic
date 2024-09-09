@@ -1,5 +1,6 @@
 
 local MAJOR, MINOR = 'LibClass-2.0', 10
+---@class LibClass-2.0
 local Class = LibStub:NewLibrary(MAJOR, MINOR)
 if not Class then
     return
@@ -48,6 +49,8 @@ end
 --                     Object
 -----------------------------
 
+---@class Object
+---@field _Meta table
 local Object = wipe(Class.Object)
 
 local function Constructor(class, object, ...)
@@ -78,6 +81,9 @@ local function Create(_Meta)
     return setmetatable(object, _Meta)
 end
 
+---@generic T
+---@param self T
+---@return T
 function Object:New(...)
     if not Class:IsClass(self) then
         error([[bad argument #self to 'New' (class expected)]], 2)
@@ -85,6 +91,9 @@ function Object:New(...)
     return Constructor(self, Create(self._Meta), ...)
 end
 
+---@generic T
+---@param self T
+---@return T
 function Object:Bind(object, ...)
     if not Class:IsClass(self) then
         error([[bad argument #self to 'Bind' (class expected)]], 2)
@@ -96,18 +105,25 @@ function Object:Bind(object, ...)
     end
 end
 
+---@return Object
 function Object:GetSuper()
     return self._Meta.__super
 end
 
+---@generic T
+---@param self T
+---@return T
 function Object:GetType()
     return self._Meta.__type
 end
 
+---@return string?
 function Object:GetInherit()
     return self._Meta.__inherit
 end
 
+---@param class Object
+---@return boolean
 function Object:IsType(class)
     if not self.GetType then
         return false
@@ -122,10 +138,14 @@ function Object:IsType(class)
     return super and super:IsType(class) or false
 end
 
+---@param object any
+---@return boolean
 function Object:IsInstance(object)
     return Class:IsObject(object) and object:IsType(self._Meta.__type)
 end
 
+---@param name string
+---@param func function
 function Object:SetCallback(name, func)
     if type(func) == 'function' then
         self.events = self.events or {}
@@ -133,12 +153,16 @@ function Object:SetCallback(name, func)
     end
 end
 
+---@param name string
+---@vararg any[]
 function Object:Fire(name, ...)
     if self.events and self.events[name] then
         return safereturn(safecall(self.events[name], self, ...))
     end
 end
 
+---@param method string
+---@vararg any[]
 function Object:SuperCall(method, ...)
     local super = self:GetSuper()
     if not super then
@@ -325,6 +349,7 @@ local _Classes = setmetatable(Class._Classes, {
     end,
 })
 
+---@return any
 function Class:NewClass(name, ...)
     if _Classes[self][name] then
         return

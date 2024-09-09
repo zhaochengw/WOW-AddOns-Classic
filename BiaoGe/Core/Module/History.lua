@@ -60,7 +60,7 @@ function BG.HistoryUI()
         scroll:SetPoint("TOPLEFT", BG.History.List, "TOPLEFT", 0, -5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
         BG.History.scroll = scroll
 
         local child = CreateFrame("Frame", nil, BG.History.List) -- 子框架
@@ -311,7 +311,7 @@ function BG.HistoryUI()
         scroll:SetPoint("BOTTOMLEFT", BG.frameWenBen.frame, "BOTTOMLEFT", 0, 2)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
         scroll:SetScrollChild(edit)
         BG.frameWenBen.scroll = scroll
 
@@ -666,7 +666,7 @@ do
             BG.History["ListButton" .. i] = nil
             i = i + 1
         end
-        BG.History.scroll.ScrollBar:Hide()
+        -- BG.History.scroll.ScrollBar:Hide()
 
         -- 再重新创建新的列表内容
         for i = 1, #BiaoGe.HistoryList[FB] do

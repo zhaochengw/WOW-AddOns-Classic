@@ -698,8 +698,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.FilterClassItemMainFrame.Buttons2:SetParent(self)
                 BG.FilterClassItemMainFrame:Hide()
 
-                if BG.FrameNewBee then
-                    BG.FrameNewBee:Hide()
+                if BG.ButtonNewBee then
+                    BG.ButtonNewBee:Hide()
                 end
             end)
             BG.HistoryMainFrame:SetScript("OnHide", function(self)
@@ -1989,16 +1989,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     do
         BG.LastBagItemFrame = {}
 
-        local function OnHyperlinkEnter(self, link)
-            BG.Hide_AllHighlight()
-            BG.HighlightBiaoGe(link)
-            BG.HighlightBag(link)
-            BG.HighlightItemGuoQi(link)
-        end
-
         local i = 1
         while _G["ChatFrame" .. i] do
-            _G["ChatFrame" .. i]:HookScript("OnHyperlinkEnter", OnHyperlinkEnter)
+            _G["ChatFrame" .. i]:HookScript("OnHyperlinkEnter", function(self, link)
+                BG.Show_AllHighlight(link, "chat")
+            end)
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", BG.Hide_AllHighlight)
 
             hooksecurefunc(_G["ChatFrame" .. i], "RefreshDisplay", function(self)
@@ -2011,14 +2006,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         hooksecurefunc("ContainerFrameItemButton_OnEnter", function(self, button)
             local link = C_Container.GetContainerItemLink(self:GetParent():GetID(), self:GetID())
-            BG.Hide_AllHighlight()
-            BG.HighlightBiaoGe(link)
-            BG.HighlightChatFrame(link)
-            BG.HighlightItemGuoQi(link)
+            BG.Show_AllHighlight(link, "bag")
         end)
-        hooksecurefunc("ContainerFrameItemButton_OnLeave", function(self, button)
-            BG.Hide_AllHighlight()
-        end)
+        hooksecurefunc("ContainerFrameItemButton_OnLeave", BG.Hide_AllHighlight)
         BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload)
             if not (isLogin or isReload) then return end
             if IsAddOnLoaded("Bagnon") then
@@ -3474,7 +3464,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 elseif strfind(msg, "MyVer") and not close then
                     local _, version = strsplit("-", msg)
                     if VerGuoQi(BG.ver, version) then
-                        SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件"] .. RR, BG.STC_r1(BG.ver)))
+                        SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] .. RR, BG.STC_r1(BG.ver)))
                         BG.ShuoMingShuText:SetText(L["<说明书>"] .. " " .. BG.STC_r1(BG.ver))
                         close = true
                     end

@@ -209,7 +209,9 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
             local itemID = select(1, GetItemInfoInstant(link))
             BG.Hide_AllHighlight()
             BG.HighlightBag(link)
-            BG.HighlightItemGuoQi(link)
+            BG.HighlightChatFrame(link)
+            BG.HighlightItemOutTime(link)
+            BG.HighlightItemAuctionLog(link)
             if itemID then
                 if BG.ButtonIsInRight(self) then
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)

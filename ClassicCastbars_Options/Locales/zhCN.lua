@@ -13,11 +13,14 @@ L["AUTO_POS_BAR_TOOLTIP"] = [=[勾选此选项时, 将会根据用户框体显�
 
 注意: 可能不兼容第三方用户框体.]=]
 L["BORDER_COLOR"] = "边框颜色"
+L["BORDER_PADDING_HEIGHT"] = "边框高度"
+L["BORDER_PADDING_WIDTH"] = "边框宽度"
 L["BORDERSHIELD"] = "显示无法打断的盾牌"
 L["BORDERSHIELD_TOOLTIP"] = [=[施法无法被打断时，在施法条周围显示盾牌。停用这个选项时，无法打断的施法会显示灰色背景。
 
 |cffffff00按住组合按键，像是 SHIFT 或 CTRL 键不放，再点一下 "开关测试模式" 按钮可以测试显示盾牌的施法条。|r]=]
 L["CAST_BORDER"] = "边框纹理"
+L["CAST_BORDER_SHIELD_NOTICE"] = "[注意] 当更换边框材质时，你或许也想同时关闭盾牌边框，那么不可打断的施法将变成不带原版盾牌的灰色。"
 L["CAST_BORDER_TOOLTIP"] = "为施法条选择边框纹理."
 L["CAST_FILL_HEADER"] = "施法條填色"
 L["CAST_FONT"] = "施法条字体"
@@ -54,6 +57,8 @@ L["PARTY"] = "小队"
 L["PER_CHARACTER"] = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t角色专用设定"
 L["PER_CHARACTER_TOOLTIP"] = "点一下在通用设定和这个角色的专用设定之间切换。"
 L["PLAYER"] = "玩家"
+L["POS_X"] = "X 坐标 (横坐标)"
+L["POS_Y"] = "Y 坐标 (竖坐标)"
 L["POSXY_TOOLTIP"] = "调整XY坐标偏移量以移动框体"
 L["REQUIRES_RESTART"] = "关闭施法条模组需要重载界面, 点击应用来重载界面"
 L["RESET_ALL"] = "重置所有设置"
@@ -68,6 +73,7 @@ L["STATUS_BG_COLOR"] = "选择背景颜色"
 L["STATUS_CHANNEL_COLOR"] = "引导指示器填充颜色"
 L["STATUS_COLOR"] = "施法指示器填充颜色"
 L["STATUS_FAILED_COLOR"] = "施法失败颜色"
+L["STATUS_SUCCESS_COLOR"] = "施法成功颜色"
 L["STATUS_UNINTERRUPTIBLE_COLOR"] = "选择无法打断颜色"
 L["TARGET"] = "目标"
 L["TEST"] = "切换测试模式"

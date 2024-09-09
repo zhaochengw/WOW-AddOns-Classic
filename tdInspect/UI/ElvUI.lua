@@ -25,7 +25,6 @@ hooksecurefunc(ns.Addon, 'SetupUI', function(self)
     self.InspectFrame.TalentFrame.TalentFrame:StripTextures()
     self.InspectFrame.TalentFrame.TalentFrame:CreateBackdrop('Default')
 
-    self.InspectFrame.PaperDoll.EquipFrame:CreateBackdrop('Default')
     self.InspectFrame.PaperDoll.ModelFrame:CreateBackdrop('Default')
 
     for i, tab in ipairs(self.InspectFrame.TalentFrame.Tabs) do

@@ -6,7 +6,9 @@
 ---@type ns
 local ns = select(2, ...)
 
----@class UI.GlyphFrame: Object, Frame, AceEvent-3.0
+local Inspect = ns.Inspect
+
+---@class UI.GlyphFrame: AceEvent-3.0, Object, Frame
 local GlyphFrame = ns.Addon:NewClass('UI.GlyphFrame', 'Frame')
 
 function GlyphFrame:Constructor()
@@ -38,14 +40,14 @@ function GlyphFrame:UpdateInfo()
         return
     end
 
-    local activeGroup = ns.Inspect:GetActiveTalentGroup()
-    local glyph = ns.Inspect:GetUnitGlyph(self.groupId or activeGroup)
+    local activeGroup = Inspect:GetActiveTalentGroup()
+    local glyph = Inspect:GetUnitGlyph(self.groupId or activeGroup)
 
     for i = 1, 6 do
         self.buttons[i]:UpdateInfo(glyph)
     end
 
-    self.Background:SetDesaturated(self.groupId ~= ns.Inspect:GetActiveTalentGroup())
+    self.Background:SetDesaturated(self.groupId ~= Inspect:GetActiveTalentGroup())
 end
 
 function GlyphFrame:SetTalentGroup(id)

@@ -289,10 +289,10 @@ function TalentFrame:Update()
     local isUnlocked = true
     local name, background, pointsSpent = self.talent:GetTabInfo(self.tabIndex)
     if name then
-        base = 'Interface\\TalentFrame\\' .. background .. '-'
+        base = [[Interface\TalentFrame\]] .. background .. '-'
     else
         -- temporary default for classes without talents poor guys
-        base = 'Interface\\TalentFrame\\MageFire-'
+        base = [[Interface\TalentFrame\MageFire-]]
     end
 
     self.TopLeft:SetTexture(base .. 'TopLeft')

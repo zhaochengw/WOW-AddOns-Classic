@@ -255,7 +255,6 @@ BG.RegisterEvent("CHAT_MSG_ADDON", function(self, even, ...)
     end
 end)
 
-
 ------------------创建UI------------------
 function BG.DuiZhangUI()
     BG.DuiZhangDropDown = {}
@@ -367,6 +366,8 @@ function BG.DuiZhangUI()
     bt:SetScript("OnClick", function(self)
         local addons = BiaoGe.duizhang[BG.lastduizhangNum].addons
         local FB = BG.FB1
+        local tradeInfo = {}
+        BiaoGe[FB].tradeTbl = {}
         for b = 1, Maxb[FB] - 1 do
             for i = 1, Maxi[FB] do
                 local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
@@ -396,6 +397,31 @@ function BG.DuiZhangUI()
                         for k in pairs(BG.playerClass) do
                             BiaoGe[FB]["boss" .. b][k .. i] = BG.DuiZhangFrame[FB]["boss" .. b][k .. i]
                         end
+
+                        -- 打包交易
+                        if otherjine.tradeTbl then
+                            local notYes
+                            for ii, vv in ipairs(tradeInfo) do
+                                for i, v in ipairs(otherjine.tradeTbl) do
+                                    if vv.b == v.b and vv.i == v.i then
+                                        notYes = true
+                                        break
+                                    end
+                                end
+                                if notYes then break end
+                            end
+                            if not notYes then
+                                local tradeTbl = BG.Copy(otherjine.tradeTbl)
+                                for i, v in ipairs(tradeTbl) do
+                                    local zb = BG.Frame[FB]["boss" .. v.b]["zhuangbei" .. v.i]
+                                    tradeTbl[i].FB = FB
+                                    tradeTbl[i].itemID = GetItemID(zb:GetText())
+                                    tradeTbl[i].link = zb:GetText()
+                                    tinsert(tradeInfo, { b = v.b, i = v.i })
+                                end
+                                tinsert(BiaoGe[FB].tradeTbl, tradeTbl)
+                            end
+                        end
                     end
                 end
             end
@@ -424,7 +450,7 @@ function BG.DuiZhangUI()
         scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.UpdateScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
 
         local child = CreateFrame("EditBox", nil, f) -- 子框架
         child:SetFontObject(GameFontNormalSmall2)
@@ -446,9 +472,7 @@ function BG.DuiZhangUI()
             if itemID then
                 GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
-                BG.HighlightBiaoGe(link)
-                BG.HighlightBag(link)
-                BG.HighlightChatFrame(link)
+                BG.Show_AllHighlight(link)
             end
         end)
         child:SetScript("OnHyperlinkLeave", function(self, link, text, button)
@@ -594,6 +618,24 @@ function BG.DuiZhangSet(num)
                 }, -- [2]
             }, -- [1]
         },
+
+        ["tradeTbl"] = {
+            {
+                {
+                    ["i"] = 1,
+                    ["itemID"] = 45087,
+                    ["link"] = "|cff0070dd|Hitem:45087::::::::80:::::::::|h[符文宝珠]|h|r",
+                    ["FB"] = "ULD",
+                    ["b"] = 15,
+                }, -- [1]
+                {
+                    ["i"] = 3,
+                    ["itemID"] = 45291,
+                    ["link"] = "|cffa335ee|Hitem:45291::::::::80:::::::::|h[内燃护腕]|h|r",
+                    ["FB"] = "ULD",
+                    ["b"] = 1,
+                }, -- [2]
+            }, -- [1]
     ]]
     for _, v in ipairs(dz) do
         if v.zhuangbei then

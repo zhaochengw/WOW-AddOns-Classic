@@ -72,10 +72,8 @@ function SlotItem:Update()
             local r, g, b = GetItemQualityColor(quality)
             local level = select(4, GetItemInfo(item))
             self:UpdateBorder(r, g, b)
-            self:UpdateItemLevel(level, r, g, b)
         else
             self:UpdateBorder()
-            self:UpdateItemLevel()
         end
 
         --[=[@build<2@
@@ -91,7 +89,6 @@ function SlotItem:Update()
     else
         SetItemButtonTexture(self, self:GetEmptyIcon())
         self:UpdateBorder()
-        self:UpdateItemLevel()
         --[=[@build<2@
         self.subicon:Hide()
         --@end-build<2@]=]
@@ -106,16 +103,6 @@ function SlotItem:UpdateBorder(r, g, b)
         self.IconBorder:Show()
     else
         self.IconBorder:Hide()
-    end
-end
-
-function SlotItem:UpdateItemLevel(level, r, g, b)
-    if level and level > 0 then
-        self.LevelText:SetText(level)
-        self.LevelText:SetTextColor(r, g, b, 1)
-        self.LevelText:Show()
-    else
-        self.LevelText:Hide()
     end
 end
 
