@@ -34,6 +34,8 @@ local PADDING = 10
 local BG_PADDING = 4
 
 ---@class UI.GearFrame : AceEvent-3.0, Frame, tdInspectGearFrameTemplate
+---@field unit? UnitToken
+---@field name? string
 local GearFrame = ns.Addon:NewClass('UI.GearFrame', 'Frame')
 
 function GearFrame:Create(parent, inspect)
@@ -70,6 +72,17 @@ function GearFrame:Constructor(_, inspect)
     self:SetClass(UnitClassBase('player'))
 end
 
+function GearFrame:Clear()
+    self.unit = nil
+    self.name = nil
+    self.class = nil
+    self:ResetColumnWidths()
+end
+
+function GearFrame:ResetColumnWidths()
+    wipe(self.columnWidths)
+end
+
 function GearFrame:ApplyColumnWidth(key, width)
     self.columnWidths[key] = max(self.columnWidths[key] or 0, width)
     self:RequestUpdateSize()
@@ -91,7 +104,6 @@ end
 function GearFrame:OnUpdate()
     self:SetScript('OnUpdate', nil)
     self:UpdateSize()
-    wipe(self.columnWidths)
 end
 
 function GearFrame:UpdateSize()
@@ -106,13 +118,24 @@ function GearFrame:UpdateSize()
     self:SetWidth(max(width - SPACING_V + PADDING * 2, 165 + self.Name:GetStringWidth()))
 end
 
-function GearFrame:EndLayout()
-    self:RequestUpdateSize()
-end
-
 function GearFrame:SetClass(class)
     self.class = class
-    self:UpdateClass()
+end
+
+function GearFrame:SetUnit(unit, name)
+    if unit and not UnitExists(unit) then
+        unit = nil
+    end
+    self.unit, self.name = unit, name
+
+    if unit then
+        self.class = UnitClassBase(unit)
+    end
+end
+
+function GearFrame:UpdateName()
+    local name = self.name or ns.UnitName('player')
+    self.Name:SetText(name and Ambiguate(name, 'none') or '')
 end
 
 function GearFrame:UpdateClass()
@@ -127,20 +150,9 @@ function GearFrame:UpdateClass()
     self.Portrait.LevelBorder:SetVertexColor(color.r, color.g, color.b)
 end
 
-function GearFrame:SetUnit(unit, name)
-    if unit and not UnitExists(unit) then
-        unit = nil
-    end
-    self.unit, self.name = unit, name
-    self:UpdateUnit()
-
-    if unit then
-        self:SetClass(UnitClassBase(unit))
-    end
-end
-
-function GearFrame:UpdateUnit()
-    self.Name:SetText(Ambiguate(self.name or ns.UnitName(self.unit), 'none'))
+function GearFrame:UpdatePortrait()
+    local name = self.name or ns.UnitName(self.unit)
+    self.Name:SetText(name and Ambiguate(name, 'none') or '')
 
     if self.unit then
         SetPortraitTexture(self.Portrait.Portrait, self.unit)
@@ -148,6 +160,9 @@ function GearFrame:UpdateUnit()
     elseif self.class then
         self.Portrait.Portrait:SetTexture([[Interface\TargetingFrame\UI-Classes-Circles]])
         self.Portrait.Portrait:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.class]))
+    else
+        self.Portrait.Portrait:SetTexture([[Interface\Icons\INV_Misc_QuestionMark]])
+        self.Portrait.Portrait:SetTexCoord(0, 1, 0, 1)
     end
 end
 
@@ -202,10 +217,16 @@ function GearFrame:UpdateTalent(button, group, isActive)
         button.Text:SetText(name)
         button.Point:SetText(points)
         button:Show()
-        self:SetBackground(ns.Addon.db.profile.showTalentBackground and bg or nil)
     else
         button:Hide()
-        self:SetBackground()
+    end
+
+    if isActive then
+        if ns.Addon.db.profile.showTalentBackground then
+            self:SetBackground(bg)
+        else
+            self:SetBackground()
+        end
     end
 end
 

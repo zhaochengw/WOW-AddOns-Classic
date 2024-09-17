@@ -66,30 +66,40 @@ local function IsSingle(itemEquipLoc)
 end
 
 function ItemLevelCalculator:GetWeaponItemLevel()
-    local itemLevelMain, itemEquipLocMain, subClassIdMain = self:GetSlotInfo(INVSLOT_MAINHAND)
-    local itemLevelOff, itemEquipLocOff, subClassIdOff = self:GetSlotInfo(INVSLOT_OFFHAND)
-    local itemLevelRanged, itemEquipLocRanged, subClassIdRanged = self:GetSlotInfo(INVSLOT_RANGED)
+    do
+        local itemLevelMain, itemEquipLocMain, subClassIdMain = self:GetSlotInfo(INVSLOT_MAINHAND)
+        local itemLevelOff, itemEquipLocOff, subClassIdOff = self:GetSlotInfo(INVSLOT_OFFHAND)
+        local itemLevelRanged, itemEquipLocRanged, subClassIdRanged = self:GetSlotInfo(INVSLOT_RANGED)
+        if not itemLevelMain or not itemLevelOff or not itemLevelRanged then
+            return
+        end
 
-    if itemEquipLocOff == 'INVTYPE_HOLDABLE' and subClassIdRanged == Enum.ItemWeaponSubclass.Wand then
-        return itemLevelOff + max(itemLevelMain, itemLevelRanged)
+        if itemEquipLocOff == 'INVTYPE_HOLDABLE' and subClassIdRanged == Enum.ItemWeaponSubclass.Wand then
+            return itemLevelOff + max(itemLevelMain, itemLevelRanged)
+        end
+
+        if subClassIdRanged == Enum.ItemWeaponSubclass.Thrown and IsSingle(itemEquipLocMain) and
+            IsSingle(itemEquipLocOff) then
+            return itemLevelMain + itemLevelOff + itemLevelRanged - min(itemLevelMain, itemLevelOff, itemLevelRanged)
+        end
     end
 
-    if subClassIdRanged == Enum.ItemWeaponSubclass.Thrown and IsSingle(itemEquipLocMain) and IsSingle(itemEquipLocOff) then
-        return itemLevelMain + itemLevelOff + itemLevelRanged - min(itemLevelMain, itemLevelOff, itemLevelRanged)
+    do
+        local itemLevelMainOff = self:GetMainOffItemLevel()
+        local itemLevelRanged = self:GetRangedItemLevel()
+        if not itemLevelMainOff or not itemLevelRanged then
+            return
+        end
+        return max(itemLevelMainOff, itemLevelRanged)
     end
-
-    return self:GetWeaponItemLevel2()
 end
 
-function ItemLevelCalculator:GetWeaponItemLevel2()
-    local itemLevelHand = self:GetHandItemLevel()
-    local itemLevelRanged = self:GetRangedItemLevel()
-    return max(itemLevelHand, itemLevelRanged)
-end
-
-function ItemLevelCalculator:GetHandItemLevel()
+function ItemLevelCalculator:GetMainOffItemLevel()
     local itemLevel, itemEquipLoc = self:GetSlotInfo(INVSLOT_MAINHAND)
     local itemLevelOff, itemEquipLocOff = self:GetSlotInfo(INVSLOT_OFFHAND)
+    if not itemLevel or not itemLevelOff then
+        return
+    end
 
     if itemEquipLoc == 'INVTYPE_2HWEAPON' or itemEquipLocOff == 'INVTYPE_2HWEAPON' then
         if itemEquipLoc == itemEquipLocOff then
@@ -114,6 +124,9 @@ end
 
 function ItemLevelCalculator:GetRangedItemLevel()
     local itemLevel, itemEquipLoc, subClassId = self:GetSlotInfo(INVSLOT_RANGED)
+    if not itemLevel then
+        return
+    end
     if itemEquipLoc == 'INVTYPE_THROWN' then
         return itemLevel
     elseif itemEquipLoc == 'INVTYPE_RANGED' or itemEquipLoc == 'INVTYPE_RANGEDRIGHT' then

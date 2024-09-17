@@ -13,7 +13,7 @@ T('deDE', function(L)
 -- @locale:language=deDE@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -63,7 +63,7 @@ T('esES', function(L)
 -- @locale:language=esES@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -113,7 +113,7 @@ T('frFR', function(L)
 -- @locale:language=frFR@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -163,7 +163,7 @@ T('itIT', function(L)
 -- @locale:language=itIT@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -213,7 +213,7 @@ T('koKR', function(L)
 -- @locale:language=koKR@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -263,7 +263,7 @@ T('ptBR', function(L)
 -- @locale:language=ptBR@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -313,7 +313,7 @@ T('ruRU', function(L)
 -- @locale:language=ruRU@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]
@@ -363,7 +363,7 @@ T('zhTW', function(L)
 -- @locale:language=zhTW@
 L = L or {}
 --[[Translation missing --]]
---[[ L["Belt buckle"] = "Belt buckle"--]] 
+--[[ L["Add socket"] = "Add socket"--]] 
 --[[Translation missing --]]
 --[[ L["Data source:"] = "Data source:"--]] 
 --[[Translation missing --]]

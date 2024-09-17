@@ -24,11 +24,11 @@ L['View target hotkey'] = '观察目标快捷键'
 L['The key is bound to |cffffd100%s|r, are you sure you want to overwrite it?'] =
     '按键已绑定到|cffffd100%s|r，确定要覆盖吗？'
 L['No Enchant'] = '没有附魔'
-L['Belt buckle'] = '腰带扣'
 L['Empty socket'] = '空插槽'
 L['Show enchant'] = '显示附魔'
 L['Show enchant/gem lost'] = '显示附魔/宝石缺失'
 L['Show gem'] = '显示宝石'
+L['Add socket'] = '添加插槽'
 -- @locale-fill@
 
 -- @end-import@

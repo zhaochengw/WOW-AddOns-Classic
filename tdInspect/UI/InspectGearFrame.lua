@@ -16,8 +16,6 @@ function InspectGearFrame:Constructor()
     self:SetScript('OnShow', self.OnShow)
     self:SetScript('OnHide', self.OnHide)
 
-    self:UpdateOptionButton(ns.Addon.db.profile.showOptionButtonInInspect)
-
     local DataSource = self:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
     DataSource:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 10, 0)
     DataSource:SetFont(DataSource:GetFont(), 12, 'OUTLINE')
@@ -25,17 +23,19 @@ function InspectGearFrame:Constructor()
 end
 
 function InspectGearFrame:OnShow()
-    self:RegisterEvent('UNIT_LEVEL', 'Update')
+    self:RegisterEvent('UNIT_LEVEL')
     self:RegisterEvent('UNIT_INVENTORY_CHANGED')
     self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'UpdateItemLevel')
     self:RegisterMessage('INSPECT_READY', 'Update')
     self:RegisterMessage('TDINSPECT_OPTION_CHANGED', 'UpdateOption')
+
+    self:UpdateOptionButton(ns.Addon.db.profile.showOptionButtonInInspect)
+
     self:Update()
 end
 
 function InspectGearFrame:OnHide()
-    self.unit = nil
-    self.class = nil
+    self:Clear()
     self:UnregisterAllEvents()
     self:UnregisterAllMessages()
     self:Hide()
@@ -48,11 +48,23 @@ function InspectGearFrame:UNIT_INVENTORY_CHANGED(_, unit)
     end
 end
 
+function InspectGearFrame:UNIT_LEVEL(_, unit)
+    if self.unit == unit then
+        self:UpdateLevel()
+    end
+end
+
 function InspectGearFrame:UpdateItemLevel()
     self:SetItemLevel(Inspect:GetItemLevel())
 end
 
+function InspectGearFrame:UpdateLevel()
+    self:SetLevel(Inspect:GetUnitLevel())
+end
+
 function InspectGearFrame:UpdateGears()
+    self:ResetColumnWidths()
+
     for id, gear in pairs(self.gears) do
         gear:SetItem(Inspect:GetItemLink(id))
     end
@@ -67,12 +79,17 @@ function InspectGearFrame:UpdateDataSource()
 end
 
 function InspectGearFrame:Update()
-    self:SetClass(Inspect:GetUnitClassFileName())
     self:SetUnit(Inspect:GetUnit())
-    self:SetLevel(Inspect:GetUnitLevel())
+    self:SetClass(Inspect:GetUnitClassFileName())
+
+    self:UpdateName()
+    self:UpdatePortrait()
+    self:UpdateClass()
+    self:UpdateLevel()
     self:UpdateGears()
     self:UpdateItemLevel()
     self:UpdateTalents()
+    self:UpdateDataSource()
 end
 
 function InspectGearFrame:GetNumTalentGroups()
@@ -117,6 +134,6 @@ function InspectGearFrame:UpdateOption(_, key, value)
     elseif key == 'showOptionButtonInInspect' then
         self:UpdateOptionButton(value)
     elseif key == 'showGem' or key == 'showEnchant' or key == 'showLost' then
-        self:Update()
+        self:UpdateGears()
     end
 end

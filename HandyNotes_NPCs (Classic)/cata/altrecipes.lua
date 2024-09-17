@@ -32,6 +32,21 @@ end
 
 function Addon:OnEnable()
 	self.playerName = UnitName("player")
+	
+	self.playerGUID = UnitGUID("player")
+
+	if self.playerName and self.playerGUID then
+		local data = self.db.realm[self.playerName]
+
+		if data then
+			if not data.GUID or data.GUID ~= self.playerGUID then
+				self.db.realm[self.playerName] = { professions = {}, learned = {} }
+        end
+
+        self.db.realm[self.playerName].GUID = self.playerGUID
+		end
+	end
+	
 	self:RegisterEvent("SKILL_LINES_CHANGED", "CheckProfessions")
 	self:RegisterEvent("TRADE_SKILL_SHOW", "ScanTradeSkill") -- GetNumTradeSkills usually returns 0 here
 	self:RegisterEvent("TRADE_SKILL_CLOSE", "ScanTradeSkill") -- Just try on both

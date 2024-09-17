@@ -207,22 +207,34 @@ local CAN_ENCHANT_EQUIP_LOCS = {
     INVTYPE_WEAPONOFFHAND = true,
 }
 
-function ns.IsCanEnchant(item)
+function ns.IsSpellKnown(spellId)
+    return IsSpellKnown(spellId) or IsSpellKnownOrOverridesKnown(spellId) or IsPlayerSpell(spellId) or
+               DoesSpellExist(GetSpellInfo(spellId))
+end
+
+function ns.IsCanEnchant(item, inspect)
     local itemEquipLoc, _, classId, subClassId = select(4, GetItemInfoInstant(item))
     if itemEquipLoc == 'INVTYPE_RANGEDRIGHT' or itemEquipLoc == 'INVTYPE_RANGED' then
         return classId == Enum.ItemClass.Weapon and
                    (subClassId == Enum.ItemWeaponSubclass.Bows or subClassId == Enum.ItemWeaponSubclass.Guns or
                        subClassId == Enum.ItemWeaponSubclass.Crossbow)
+    elseif itemEquipLoc == 'INVTYPE_FINGER' then
+        return not inspect and ns.IsSpellKnown(7411) -- 附魔
     end
     return CAN_ENCHANT_EQUIP_LOCS[itemEquipLoc]
 end
 
-function ns.IsCanSocket(item)
+function ns.IsCanSocket(item, inspect)
     local itemEquipLoc = select(4, GetItemInfoInstant(item))
-    if itemEquipLoc ~= 'INVTYPE_WAIST' then
+    if itemEquipLoc == 'INVTYPE_WAIST' then
+
+    elseif itemEquipLoc == 'INVTYPE_WRIST' or itemEquipLoc == 'INVTYPE_HAND' then
+        if inspect or not ns.IsSpellKnown(2018) then -- 锻造
+            return false
+        end
+    else
         return false
     end
-
     local numSockets = ns.GetNumItemSockets(item)
     return not ns.GetItemGem(item, numSockets + 1)
 end

@@ -38,7 +38,11 @@ function GemItem:OnEnter()
         GameTooltip:Show()
     elseif self.socketType then
         GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-        GameTooltip:SetText(self.socketType == -1 and L['Belt buckle'] or L['Empty socket'])
+        GameTooltip:SetText(L['Empty socket'])
+        GameTooltip:Show()
+    elseif self.emptyText then
+        GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+        GameTooltip:SetText(self.emptyText)
         GameTooltip:Show()
     end
 end
@@ -46,12 +50,19 @@ end
 function GemItem:Clear()
     self.item = nil
     self.socketType = nil
+    self.emptyText = nil
 end
 
 function GemItem:SetSocketItem(socketType, item)
     self:Clear()
     self.socketType = socketType
     self.item = item
+    self:Update()
+end
+
+function GemItem:SetEmptyText(text)
+    self:Clear()
+    self.emptyText = text
     self:Update()
 end
 
@@ -64,7 +75,7 @@ function GemItem:Update()
     if self.socketType then
         self.Border:SetVertexColor(ns.GetSocketColor(self.socketType))
     else
-        self.Border:SetVertexColor(0.5, 0.5, 0.5)
+        self.Border:SetVertexColor(0.7, 0.7, 0.7)
     end
 end
 

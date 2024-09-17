@@ -33,6 +33,9 @@ function CataItemFixes.Load()
         [5169] = { -- Timberling Sprout
             [itemKeys.objectDrops] = {4608},
         },
+        [5382] = { -- Anaya's Pendant
+            [itemKeys.npcDrops] = {33181},
+        },
         [5508] = { -- Fallen Moonstone
             [itemKeys.npcDrops] = {3758,3759,3762,3763},
         },
@@ -43,20 +46,41 @@ function CataItemFixes.Load()
         [5533] = { -- Ilkrud Magthrull's Tome
             [itemKeys.npcDrops] = {},
         },
+        [8170] = { -- Rugged Leather
+            [itemKeys.vendors] = {},
+        },
         [10441] = { -- Glowing Shard
             [itemKeys.startQuest] = 0,
         },
         [10458] = { -- Prayer to Elune
             [itemKeys.npcDrops] = {},
         },
+        [11114] = { -- Dinosaur Bone
+            [itemKeys.npcDrops] = {6501,6502,6503,6504,9162,9163,9164},
+        },
+        [11818] = { -- Grimesilt Outhouse Key
+            [itemKeys.startQuest] = 0,
+        },
+        [11949] = { -- Filled Tainted Ooze Jar
+            [itemKeys.npcDrops] = {7092,14345},
+        },
         [12283] = { -- Broodling Essence
             [itemKeys.npcDrops] = {},
+        },
+        [12842] = { -- Crudely-Written Log
+            [itemKeys.startQuest] = 28471,
         },
         [18597] = { -- Orcish Orphan Whistle
             [itemKeys.class] = itemClasses.QUEST,
         },
         [18598] = { -- Human Orphan Whistle
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [18943] = { -- Dark Iron Pillow
+            [itemKeys.npcDrops] = {},
+        },
+        [18947] = { -- Feral Scar Yeti Hide
+            [itemKeys.npcDrops] = {39896},
         },
         [19424] = { -- Sayge's Fortune #24
             [itemKeys.startQuest] = 0,
@@ -78,6 +102,15 @@ function CataItemFixes.Load()
         },
         [23798] = { -- Diabolical Plans
             [itemKeys.npcDrops] = {6073},
+        },
+        [24025] = { -- Deathclaw's Paw
+            [itemKeys.npcDrops] = {17661},
+        },
+        [24026] = { -- Elder Brown Bear Flank
+            [itemKeys.npcDrops] = {17348},
+        },
+        [24049] = { -- Ysera's Tear
+            [itemKeys.npcDrops] = {},
         },
         [24416] = { -- Corrupted Flower
             [itemKeys.npcDrops] = {},
@@ -196,6 +229,9 @@ function CataItemFixes.Load()
         [48766] = { -- Kaja'mite Chunk
             [itemKeys.npcDrops] = {},
         },
+        [49164] = { -- Cenarion Supply Crate
+            [itemKeys.npcDrops] = {},
+        },
         [49172] = { -- Simmering Water Droplet
             [itemKeys.npcDrops] = {36131},
         },
@@ -244,6 +280,9 @@ function CataItemFixes.Load()
         [49756] = { -- Leftover Boar Meat
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [49875] = { -- Enervated Adder
+            [itemKeys.npcDrops] = {37738},
+        },
         [49881] = { -- Slaver's Key
             [itemKeys.class] = itemClasses.QUEST,
             [itemKeys.npcDrops] = {37701},
@@ -266,8 +305,14 @@ function CataItemFixes.Load()
         [50237] = { -- Un'Goro Coconut
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [50253] = { -- Un'Goro Lasher Seed
+            [itemKeys.npcDrops] = {38202},
+        },
         [50334] = { -- Rapier of the Gilnean Patriots
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [50374] = { -- Unbelievably Sticky Tar
+            [itemKeys.npcDrops] = {38307},
         },
         [50405] = { -- Fossil-Finder 3000
             [itemKeys.class] = itemClasses.QUEST,
@@ -372,6 +417,9 @@ function CataItemFixes.Load()
         [54788] = { -- Twilight Pick
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [54809] = { -- Rocket Car Parts
+            [itemKeys.npcDrops] = {},
+        },
         [54814] = { -- Talisman of Flame Ascendancy
             [itemKeys.class] = itemClasses.QUEST,
         },
@@ -408,6 +456,9 @@ function CataItemFixes.Load()
         [55213] = { -- Huntress Illiona's Cage Key
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [55226] = { -- Creature Carcass
+            [itemKeys.npcDrops] = {41097,41099,41100,41101,41103,41104,41111,41113,48147,48148},
+        },
         [55238] = { -- Concentrated Solvent
             [itemKeys.class] = itemClasses.QUEST,
         },
@@ -421,6 +472,9 @@ function CataItemFixes.Load()
             [itemKeys.npcDrops] = {41199},
         },
         [55809] = { -- Twilight Armor Plate
+            [itemKeys.npcDrops] = {},
+        },
+        [55989] = { -- Charred Granite Chips
             [itemKeys.npcDrops] = {},
         },
         [56012] = { -- Stone Knife of Sealing
@@ -702,6 +756,9 @@ function CataItemFixes.Load()
         },
         [64585] = { -- Cannon Powder
             [itemKeys.npcDrops] = {49143},
+        },
+        [64662] = { -- Pure Glacier Ice
+            [itemKeys.npcDrops] = {49233},
         },
         [65504] = { -- Deep Alabaster Crystal
             [itemKeys.npcDrops] = {},

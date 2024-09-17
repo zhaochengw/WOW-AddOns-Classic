@@ -4,7 +4,7 @@ if not L then
 end
 -- @locale:language=enUS@
 L = L or {}
-L["Belt buckle"] = true
+L["Add socket"] = true
 L["Data source:"] = true
 L["Empty socket"] = true
 L["Help"] = true
@@ -46,11 +46,11 @@ L['View mouseover hotkey'] = true
 L['View target hotkey'] = true
 L['The key is bound to |cffffd100%s|r, are you sure you want to overwrite it?'] = true
 L['No Enchant'] = true
-L['Belt buckle'] = true
 L['Empty socket'] = true
 L['Show enchant'] = true
 L['Show enchant/gem lost'] = true
 L['Show gem'] = true
+L['Add socket'] = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

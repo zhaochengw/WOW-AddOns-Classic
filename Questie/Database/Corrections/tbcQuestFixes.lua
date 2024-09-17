@@ -1042,6 +1042,9 @@ function QuestieTBCQuestFixes:Load()
         [9454] = {
             [questKeys.preQuestSingle] = {},
         },
+        [9455] = {
+            [questKeys.startedBy] = {{17202},nil,{23678}},
+        },
         [9457] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Gift of Naias near the Altar of Naias"), 0, {{"object", 181636}}}},
         },
@@ -1104,6 +1107,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [9514] = {
             [questKeys.preQuestSingle] = {9506},
+            [questKeys.startedBy] = {{17193,17194,17195},nil,{23759}},
         },
         [9523] = {
             [questKeys.preQuestSingle] = {9506,9512},
@@ -3039,12 +3043,8 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.requiredSourceItems] = {33040},
         },
         [11142] = {
-            [questKeys.objectives] = {nil,{{500007},{500007}}},
             [questKeys.triggerEnd] = {"Survey Alcaz Island", {[zoneIDs.DUSTWALLOW_MARSH]={{69.96,19.55}}}},
-            [questKeys.extraObjectives] = {
-                {{[zoneIDs.DUSTWALLOW_MARSH]={{69.96,19.55}}}, Questie.ICON_TYPE_EVENT, l10n("Survey Alcaz Island"),},
-                {nil, Questie.ICON_TYPE_TALK, l10n("Speak to Cassa Crimsonwing to fly on a gryphon"), 0, {{"monster", 23704}}},
-            },
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Speak to Cassa Crimsonwing to fly on a gryphon"), 0, {{"monster", 23704}}}},
         },
         [11146] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{{4351,4352},4351,"Raptors Captured"}}},

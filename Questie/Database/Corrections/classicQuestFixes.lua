@@ -1087,6 +1087,9 @@ function QuestieQuestFixes:Load()
         [1918] = {
             [questKeys.startedBy] = {{12759},nil,{16408}},
         },
+        [1919] = { -- Report to Jennea
+            [questKeys.startedBy] = {{328,7312}},
+        },
         [1920] = {
             [questKeys.preQuestSingle] = {}, -- #1328
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use Cantation of Manifestation to reveal Rift Spawn. Use Chest of Containment Coffers on stunned Rift Spawn"), 0, {{"monster", 6492}}}},
@@ -1194,7 +1197,7 @@ function QuestieQuestFixes:Load()
             [questKeys.triggerEnd] = {"Offer the sacrifice at the fountain", {[zoneIDs.DARNASSUS]={{38.63,85.99}}}},
         },
         [2561] = {
-            [questKeys.objectives] = {{{7318,"Release Oben Rageclaw's spirit"}}},
+            [questKeys.objectives] = {{{7318,"Release Oben Rageclaw's spirit",Questie.ICON_TYPE_INTERACT}}},
         },
         [2608] = {
             [questKeys.triggerEnd] = {"Diagnosis Complete", {[zoneIDs.STORMWIND_CITY]={{78.04,59}}}},
@@ -1622,6 +1625,9 @@ function QuestieQuestFixes:Load()
         [4288] = {
             [questKeys.triggerEnd] = {"Discover and examine the Western Crystal Pylon",{[zoneIDs.UN_GORO_CRATER]={{23,59}}}},
         },
+        [4295] = {
+            [questKeys.requiredLevel] = 42,
+        },
         [4322] = {
             [questKeys.triggerEnd] = {"Jail Break!", {[zoneIDs.BLACKROCK_DEPTHS]={{-1,-1}}}},
         },
@@ -1663,6 +1669,12 @@ function QuestieQuestFixes:Load()
         },
         [4507] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Use the Gorishi Queen Lure."), 0, {{"object", 174792}}}},
+        },
+        [4512] = {
+            [questKeys.requiredSourceItems] = {11914,11948},
+        },
+        [4513] = {
+            [questKeys.requiredSourceItems] = {11953},
         },
         [4542] = {
             [questKeys.exclusiveTo] = {4841},
@@ -3021,6 +3033,12 @@ function QuestieQuestFixes:Load()
         },
         [8447] = {
             [questKeys.triggerEnd] = {"Waking Legends.",{[zoneIDs.MOONGLADE]={{40.0,48.6}}}},
+        },
+        [8470] = {
+            [questKeys.startedBy] = {{7156,7157,7158},nil,{20741}},
+        },
+        [8471] = {
+            [questKeys.startedBy] = {{7438,7439,7440,7441,7442,10738,10916},nil,{20742}},
         },
         [8481] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Plant the Demon Summoning Torch"),0,{{"object", 180673}}}},

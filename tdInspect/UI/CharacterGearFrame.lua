@@ -14,8 +14,8 @@ function CharacterGearFrame:Constructor()
     self:SetScript('OnHide', self.OnHide)
 
     self:SetUnit('player')
-
-    self:UpdateOptionButton(ns.Addon.db.profile.showOptionButtonInCharacter)
+    self:UpdateName()
+    self:UpdateClass()
 
     self.Talent2:SetScript('OnClick', function(button)
         if not InCombatLockdown() then
@@ -26,10 +26,15 @@ end
 
 function CharacterGearFrame:OnShow()
     self:RegisterEvent('UNIT_INVENTORY_CHANGED')
-    self:RegisterEvent('UNIT_LEVEL', 'UNIT_INVENTORY_CHANGED')
+    self:RegisterEvent('UNIT_LEVEL')
     self:RegisterEvent('UNIT_MODEL_CHANGED')
+    self:RegisterEvent('PLAYER_TALENT_UPDATE', 'UpdateTalents')
+    self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED', 'UpdateTalents')
     self:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE', 'UpdateItemLevel')
     self:RegisterMessage('TDINSPECT_OPTION_CHANGED', 'UpdateOption')
+
+    self:UpdateOptionButton(ns.Addon.db.profile.showOptionButtonInCharacter)
+
     self:Update()
 
     if GearManagerDialog then
@@ -38,24 +43,35 @@ function CharacterGearFrame:OnShow()
 end
 
 function CharacterGearFrame:OnHide()
+    self:ResetColumnWidths()
     self:UnregisterAllEvents()
     self:UnregisterAllMessages()
     self:Hide()
+    ns.Addon:OpenCharacterGearFrame()
+end
+
+function CharacterGearFrame:UNIT_LEVEL(_, unit)
+    if unit == 'player' then
+        self:UpdateLevel()
+    end
 end
 
 function CharacterGearFrame:UNIT_INVENTORY_CHANGED(_, unit)
     if unit == 'player' then
-        self:Update()
+        self:UpdateGears()
+        self:UpdateItemLevel()
     end
 end
 
 function CharacterGearFrame:UNIT_MODEL_CHANGED(_, unit)
     if unit == 'player' then
-        self:UpdateUnit()
+        self:UpdatePortrait()
     end
 end
 
 function CharacterGearFrame:UpdateGears()
+    self:ResetColumnWidths()
+
     for id, gear in pairs(self.gears) do
         gear:SetItem(GetInventoryItemLink('player', id))
     end
@@ -65,8 +81,13 @@ function CharacterGearFrame:UpdateItemLevel()
     self:SetItemLevel(select(2, GetAverageItemLevel()))
 end
 
+function CharacterGearFrame:UpdateLevel()
+    self:SetLevel(UnitLevel('player'))
+end
+
 function CharacterGearFrame:Update()
-    self:UpdateUnit()
+    self:UpdatePortrait()
+    self:UpdateLevel()
     self:UpdateGears()
     self:UpdateItemLevel()
     self:UpdateTalents()
@@ -104,7 +125,6 @@ function CharacterGearFrame:TapTo(frame, ...)
     self:SetParent(frame)
     self:ClearAllPoints()
     self:SetPoint(...)
-    self:UpdateOption()
 end
 
 function CharacterGearFrame:UpdateOption(_, key, value)
@@ -117,6 +137,6 @@ function CharacterGearFrame:UpdateOption(_, key, value)
     elseif key == 'showOptionButtonInCharacter' then
         self:UpdateOptionButton(value)
     elseif key == 'showGem' or key == 'showEnchant' or key == 'showLost' then
-        self:Update()
+        self:UpdateGears()
     end
 end

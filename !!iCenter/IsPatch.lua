@@ -41,6 +41,19 @@ if not InspectTalentFrameSpentPoints
 then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
 ------观察报错-------
 
+-- 临时修复暴雪团队框架报错 by BigFoot
+do
+    if not Blizzard_CompactRaidFrameManager_FilterOptions then
+        Blizzard_CompactRaidFrameManager_FilterOptions = {
+            [1] = true,
+            [2] = true,
+            [3] = true,
+            displayRoleDAMAGER = true;
+        }
+    end
+end
+
+
 local prefix = "%%d %%s ";
 if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     prefix = "%%d%%s";

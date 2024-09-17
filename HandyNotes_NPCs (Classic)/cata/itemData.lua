@@ -82138,6 +82138,1334 @@ t[62287] = {
 	sellPrice = 0,
 	reqLevel = 0,
 }
+t[55237] = {
+	name = L["Porcelain Crab"],
+	quality = 3,
+	icon = "inv_jewelcrafting_purplecrab",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 78,
+}
+t[55248] = {
+	name = L["Conch of Thundering Waves"],
+	quality = 3,
+	icon = "inv_misc_shell_04",
+	buyPrice = 330182,
+	sellPrice = 66036,
+	reqLevel = 78,
+}
+t[55251] = {
+	name = L["Might of the Ocean"],
+	quality = 3,
+	icon = "inv_stone_02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 78,
+}
+t[55256] = {
+	name = L["Sea Star"],
+	quality = 3,
+	icon = "inv_datacrystal05",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 78,
+}
+t[55266] = {
+	name = L["Grace of the Herald"],
+	quality = 3,
+	icon = "inv_misc_horn_02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 78,
+}
+t[55783] = {
+	name = L["Sandshift Relic"],
+	quality = 3,
+	icon = "inv_qiraj_skinsandworm",
+	buyPrice = 342511,
+	sellPrice = 68502,
+	reqLevel = 78,
+}
+t[55787] = {
+	name = L["Witching Hourglass"],
+	quality = 3,
+	icon = "inv_gizmo_khoriumpowercore",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 78,
+}
+t[55795] = {
+	name = L["Key to the Endless Chamber"],
+	quality = 3,
+	icon = "inv_misc_key_10",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55800] = {
+	name = L["Stalagmite Dragon"],
+	quality = 3,
+	icon = "inv_misc_head_dragon_bronze",
+	buyPrice = 347295,
+	sellPrice = 69459,
+	reqLevel = 81,
+}
+t[55810] = {
+	name = L["Tendrils of Burrowing Dark"],
+	quality = 3,
+	icon = "inv_misc_volatileshadow",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55814] = {
+	name = L["Magnetite Mirror"],
+	quality = 3,
+	icon = "inv_stone_sharpeningstone_05",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55816] = {
+	name = L["Leaden Despair"],
+	quality = 3,
+	icon = "quest_12252_icon",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55819] = {
+	name = L["Tear of Blood"],
+	quality = 3,
+	icon = "spell_shadow_lifedrain",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55845] = {
+	name = L["Heart of Thunder"],
+	quality = 3,
+	icon = "spell_nature_stormreach",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55850] = {
+	name = L["Shadow of Perfect Bliss"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_healer_c_01",
+	buyPrice = 334623,
+	sellPrice = 66924,
+	reqLevel = 81,
+}
+t[55852] = {
+	name = L["Captured Lightning"],
+	quality = 3,
+	icon = "inv_gizmo_khoriumpowercore",
+	buyPrice = 337116,
+	sellPrice = 67423,
+	reqLevel = 81,
+}
+t[55854] = {
+	name = L["Rainsong"],
+	quality = 3,
+	icon = "inv_elemental_mote_water01",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[55858] = {
+	name = L["Kaleki Cloak"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_melee_c_01",
+	buyPrice = 372038,
+	sellPrice = 74407,
+	reqLevel = 83,
+}
+t[55859] = {
+	name = L["Spirit Creeper Ring"],
+	quality = 3,
+	icon = "inv_misc_vinering",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55863] = {
+	name = L["Ring of the Darkest Day"],
+	quality = 3,
+	icon = "inv_jewelry_ring_54",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55864] = {
+	name = L["Tauntka's Necklace"],
+	quality = 3,
+	icon = "inv_misc_necklacea1",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55868] = {
+	name = L["Heart of Solace"],
+	quality = 3,
+	icon = "spell_holy_persecution",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55869] = {
+	name = L["Veneficial Band"],
+	quality = 3,
+	icon = "inv_misc_kingsring2",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55872] = {
+	name = L["Geordan's Cloak"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_melee_c_01",
+	buyPrice = 364097,
+	sellPrice = 72819,
+	reqLevel = 83,
+}
+t[55873] = {
+	name = L["Ring of Three Lights"],
+	quality = 3,
+	icon = "inv_jewelry_ring_77",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55874] = {
+	name = L["Tia's Grace"],
+	quality = 3,
+	icon = "inv_ammo_arrow_05",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55879] = {
+	name = L["Sorrowsong"],
+	quality = 3,
+	icon = "spell_nature_invisibilitytotem",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55881] = {
+	name = L["Impetuous Query"],
+	quality = 3,
+	icon = "inv_misc_punchcards_yellow",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55884] = {
+	name = L["Mirage Ring"],
+	quality = 3,
+	icon = "inv_misc_stonering2",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55888] = {
+	name = L["Darkhowl Amulet"],
+	quality = 3,
+	icon = "inv_misc_necklacea12",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55889] = {
+	name = L["Anhuur's Hymnal"],
+	quality = 3,
+	icon = "inv_misc_book_17",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55994] = {
+	name = L["Ring of Blinding Stars"],
+	quality = 3,
+	icon = "inv_misc_starring3",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55995] = {
+	name = L["Blood of Isiset"],
+	quality = 3,
+	icon = "inv_potion_55",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[55996] = {
+	name = L["Nova Band"],
+	quality = 3,
+	icon = "inv_jewelry_ring_51naxxramas",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[55999] = {
+	name = L["Seedling Pod"],
+	quality = 3,
+	icon = "inv_misc_herb_08",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56000] = {
+	name = L["Band of Life Energy"],
+	quality = 3,
+	icon = "inv_jewelry_ring_75",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56095] = {
+	name = L["Mouth of the Earth"],
+	quality = 3,
+	icon = "inv_misc_necklacea11",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56100] = {
+	name = L["Right Eye of Rajh"],
+	quality = 3,
+	icon = "inv_jewelcrafting_dragonseye02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56102] = {
+	name = L["Left Eye of Rajh"],
+	quality = 3,
+	icon = "inv_jewelcrafting_dragonseye02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56106] = {
+	name = L["Band of Rays"],
+	quality = 3,
+	icon = "inv_jewelry_ring_57",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56107] = {
+	name = L["Solar Wind Cloak"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_healer_c_01",
+	buyPrice = 375954,
+	sellPrice = 75190,
+	reqLevel = 83,
+}
+t[56110] = {
+	name = L["Charm of the Muse"],
+	quality = 3,
+	icon = "inv_jewelry_necklace_28naxxramas",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56111] = {
+	name = L["Temple Band"],
+	quality = 3,
+	icon = "inv_jewelry_ring_48naxxramas",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56114] = {
+	name = L["Umbriss Band"],
+	quality = 3,
+	icon = "inv_misc_stonering2",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56115] = {
+	name = L["Skardyn's Grace"],
+	quality = 3,
+	icon = "inv_misc_coin_08",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56120] = {
+	name = L["Ring of Dun Algaz"],
+	quality = 3,
+	icon = "inv_misc_kingsring2",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56121] = {
+	name = L["Throngus's Finger"],
+	quality = 3,
+	icon = "inv_gizmo_felironshell",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56126] = {
+	name = L["Azureborne Cloak"],
+	quality = 3,
+	icon = "inv_misc_cape_naxxramas_01",
+	buyPrice = 348145,
+	sellPrice = 69629,
+	reqLevel = 83,
+}
+t[56129] = {
+	name = L["Circle of Bone"],
+	quality = 3,
+	icon = "inv_jewelry_ring_66",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56132] = {
+	name = L["Mark of Khardros"],
+	quality = 3,
+	icon = "inv_hammer_04",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56136] = {
+	name = L["Corrupted Egg Shell"],
+	quality = 3,
+	icon = "inv_misc_cat_trinket09",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56138] = {
+	name = L["Gale of Shadows"],
+	quality = 3,
+	icon = "spell_shadow_gathershadows",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[56219] = {
+	name = L["Shroud of Dark Memories"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_tank_c_01",
+	buyPrice = 374660,
+	sellPrice = 74932,
+	reqLevel = 83,
+}
+t[56220] = {
+	name = L["Abandoned Dark Iron Ring"],
+	quality = 3,
+	icon = "inv_misc_vinering",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56439] = {
+	name = L["Temple Band"],
+	quality = 3,
+	icon = "inv_jewelry_ring_48naxxramas",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56518] = {
+	name = L["Cloak of Beasts"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_melee_c_01",
+	buyPrice = 187366,
+	sellPrice = 37473,
+	reqLevel = 83,
+}
+t[56519] = {
+	name = L["Cloak of War"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_tank_c_01",
+	buyPrice = 188031,
+	sellPrice = 37606,
+	reqLevel = 83,
+}
+t[60403] = {
+	name = L["Elementium Dragonling"],
+	quality = 3,
+	icon = "inv_misc_head_dragon_bronze",
+	buyPrice = 160000,
+	sellPrice = 40000,
+	reqLevel = 80,
+}
+t[61473] = {
+	name = L["Stonebinder's Cloak"],
+	quality = 3,
+	icon = "inv_misc_cape_23",
+	buyPrice = 336941,
+	sellPrice = 67388,
+	reqLevel = 0,
+}
+t[63760] = {
+	name = L["Cloak of the Red Flight"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_tank_c_01",
+	buyPrice = 370996,
+	sellPrice = 74199,
+	reqLevel = 0,
+}
+t[63761] = {
+	name = L["Red Dragonheart Ring"],
+	quality = 3,
+	icon = "inv_misc_kingsring1",
+	buyPrice = 348110,
+	sellPrice = 87027,
+	reqLevel = 0,
+}
+t[63762] = {
+	name = L["Pendant of Victorious Fury"],
+	quality = 3,
+	icon = "inv_misc_necklacea10",
+	buyPrice = 348110,
+	sellPrice = 87027,
+	reqLevel = 0,
+}
+t[65803] = {
+	name = L["Harrison's Insignia of Panache"],
+	quality = 3,
+	icon = "inv_jewelry_necklace_28",
+	buyPrice = 512308,
+	sellPrice = 128077,
+	reqLevel = 0,
+}
+t[65804] = {
+	name = L["Talisman of Sinister Order"],
+	quality = 3,
+	icon = "inv_jewelry_talisman_11",
+	buyPrice = 512308,
+	sellPrice = 128077,
+	reqLevel = 0,
+}
+t[65805] = {
+	name = L["Schnottz's Medallion of Command"],
+	quality = 3,
+	icon = "inv_jewelry_amulet_01",
+	buyPrice = 512308,
+	sellPrice = 128077,
+	reqLevel = 0,
+}
+t[66912] = {
+	name = L["Fetish of the Fiery Sands"],
+	quality = 3,
+	icon = "inv_misc_bone_skull_02",
+	buyPrice = 338213,
+	sellPrice = 67642,
+	reqLevel = 82,
+}
+t[66942] = {
+	name = L["Immaculate Br'etc Signet"],
+	quality = 3,
+	icon = "inv_misc_stonering1",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 85,
+}
+t[66961] = {
+	name = L["Mindbender Bloom"],
+	quality = 3,
+	icon = "inv_misc_flower_02",
+	buyPrice = 324617,
+	sellPrice = 64923,
+	reqLevel = 82,
+}
+t[66969] = {
+	name = L["Heart of the Vile"],
+	quality = 3,
+	icon = "inv_misc_organ_02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 84,
+}
+t[66974] = {
+	name = L["Nightrend Choker"],
+	quality = 3,
+	icon = "inv_misc_necklacea11",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 85,
+}
+t[66988] = {
+	name = L["Ashes of Youth"],
+	quality = 3,
+	icon = "inv_misc_dust_02",
+	buyPrice = 341454,
+	sellPrice = 68290,
+	reqLevel = 83,
+}
+t[66994] = {
+	name = L["Soul's Anguish"],
+	quality = 3,
+	icon = "spell_shadow_coneofsilence",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 85,
+}
+t[67037] = {
+	name = L["Binding Promise"],
+	quality = 3,
+	icon = "spell_holy_greaterblessingoflight",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 81,
+}
+t[67059] = {
+	name = L["Halted Clock"],
+	quality = 3,
+	icon = "spell_nature_timestop",
+	buyPrice = 348379,
+	sellPrice = 69675,
+	reqLevel = 84,
+}
+t[67069] = {
+	name = L["Shade of Death"],
+	quality = 3,
+	icon = "inv_misc_cape_cataclysm_tank_c_01",
+	buyPrice = 369846,
+	sellPrice = 73969,
+	reqLevel = 85,
+}
+t[67110] = {
+	name = L["Goblin Surgeon's Kit"],
+	quality = 3,
+	icon = "inv_misc_book_16",
+	buyPrice = 319619,
+	sellPrice = 63923,
+	reqLevel = 82,
+}
+t[67118] = {
+	name = L["Electrospark Heartstarter"],
+	quality = 3,
+	icon = "inv_misc_enggizmos_02",
+	buyPrice = 322031,
+	sellPrice = 80507,
+	reqLevel = 83,
+}
+t[52493] = {
+	name = L["The Perforator"],
+	quality = 3,
+	icon = "inv_hand_1h_cataclysm_b_01",
+	buyPrice = 1230306,
+	sellPrice = 246061,
+	reqLevel = 83,
+}
+t[55267] = {
+	name = L["Corla's Baton"],
+	quality = 3,
+	icon = "inv_wand_1h_cataclysm_c_01-",
+	buyPrice = 822291,
+	sellPrice = 164458,
+	reqLevel = 78,
+}
+t[55823] = {
+	name = L["Wand of Dark Worship"],
+	quality = 3,
+	icon = "inv_wand_1h_cataclysm_c_02",
+	buyPrice = 814698,
+	sellPrice = 162939,
+	reqLevel = 81,
+}
+t[55846] = {
+	name = L["Lightningflash"],
+	quality = 3,
+	icon = "inv_firearm_2h_rifle_cataclysm_c_01",
+	buyPrice = 824005,
+	sellPrice = 164801,
+	reqLevel = 81,
+}
+t[55853] = {
+	name = L["Thundercall"],
+	quality = 3,
+	icon = "inv_firearm_2h_rifle_cataclysm_c_01",
+	buyPrice = 868579,
+	sellPrice = 173715,
+	reqLevel = 81,
+}
+t[55860] = {
+	name = L["Seliza's Spear"],
+	quality = 3,
+	icon = "inv_polearm_2h_cataclysm_c_01",
+	buyPrice = 1561236,
+	sellPrice = 312247,
+	reqLevel = 83,
+}
+t[55865] = {
+	name = L["Resonant Kris"],
+	quality = 3,
+	icon = "inv_sword_1h_cataclysm_c_06",
+	buyPrice = 1151144,
+	sellPrice = 230228,
+	reqLevel = 83,
+}
+t[55870] = {
+	name = L["Barim's Main Gauche"],
+	quality = 3,
+	icon = "inv_knife_1h_cataclysm_c_06",
+	buyPrice = 1204797,
+	sellPrice = 240959,
+	reqLevel = 83,
+}
+t[55875] = {
+	name = L["Hammer of Sparks"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_04",
+	buyPrice = 1226833,
+	sellPrice = 245366,
+	reqLevel = 83,
+}
+t[55880] = {
+	name = L["Zora's Ward"],
+	quality = 3,
+	icon = "inv_shield_cataclysm_c_01-",
+	buyPrice = 799276,
+	sellPrice = 159855,
+	reqLevel = 83,
+}
+t[56001] = {
+	name = L["Slashing Thorns"],
+	quality = 3,
+	icon = "inv_throwingchakrum_01",
+	buyPrice = 175952,
+	sellPrice = 43988,
+	reqLevel = 83,
+}
+t[56096] = {
+	name = L["Bulwark of the Primordial Mound"],
+	quality = 3,
+	icon = "inv_shield_cataclysm_c_01-",
+	buyPrice = 771070,
+	sellPrice = 154214,
+	reqLevel = 83,
+}
+t[56097] = {
+	name = L["Soul Releaser"],
+	quality = 3,
+	icon = "inv_staff_116",
+	buyPrice = 1511536,
+	sellPrice = 302307,
+	reqLevel = 83,
+}
+t[56101] = {
+	name = L["Sun Strike"],
+	quality = 3,
+	icon = "inv_sword_1h_cataclysm_c_05",
+	buyPrice = 1226833,
+	sellPrice = 245366,
+	reqLevel = 83,
+}
+t[56108] = {
+	name = L["Blade of the Burning Sun"],
+	quality = 3,
+	icon = "inv_sword_1h_cataclysm_c_02",
+	buyPrice = 1137731,
+	sellPrice = 227546,
+	reqLevel = 83,
+}
+t[56109] = {
+	name = L["Book of Origination"],
+	quality = 3,
+	icon = "inv_misc_book_10",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[56116] = {
+	name = L["Modgud's Blade"],
+	quality = 3,
+	icon = "inv_knife_1h_cataclysm_c_01",
+	buyPrice = 1204678,
+	sellPrice = 240935,
+	reqLevel = 83,
+}
+t[56122] = {
+	name = L["Wand of Untainted Power"],
+	quality = 3,
+	icon = "inv_wand_1h_cataclysm_c_03",
+	buyPrice = 923269,
+	sellPrice = 184653,
+	reqLevel = 83,
+}
+t[56127] = {
+	name = L["Windwalker Blade"],
+	quality = 3,
+	icon = "inv_knife_1h_cataclysm_c_05",
+	buyPrice = 1164917,
+	sellPrice = 232983,
+	reqLevel = 83,
+}
+t[56130] = {
+	name = L["Mace of Transformed Bone"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_03",
+	buyPrice = 1178090,
+	sellPrice = 235618,
+	reqLevel = 83,
+}
+t[56131] = {
+	name = L["Wild Hammer"],
+	quality = 3,
+	icon = "inv_mace_127",
+	buyPrice = 1478152,
+	sellPrice = 295630,
+	reqLevel = 83,
+}
+t[56137] = {
+	name = L["Staff of Siphoned Essences"],
+	quality = 3,
+	icon = "inv_stave_2h_cataclysm_c_02",
+	buyPrice = 1511087,
+	sellPrice = 302217,
+	reqLevel = 83,
+}
+t[56438] = {
+	name = L["Book of Origination"],
+	quality = 3,
+	icon = "inv_misc_book_10",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 83,
+}
+t[57865] = {
+	name = L["Scepter of Power"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_01",
+	buyPrice = 1209468,
+	sellPrice = 241893,
+	reqLevel = 83,
+}
+t[59598] = {
+	name = L["Finely-Tuned Throat Needler"],
+	quality = 3,
+	icon = "inv_bow_2h_crossbow_cataclysm_b_02",
+	buyPrice = 924077,
+	sellPrice = 184815,
+	reqLevel = 83,
+}
+t[59599] = {
+	name = L["Volatile Thunderstick"],
+	quality = 3,
+	icon = "inv_weapon_rifle_43",
+	buyPrice = 927400,
+	sellPrice = 185480,
+	reqLevel = 83,
+}
+t[63787] = {
+	name = L["Oversized Oblique Ogre Obliterator"],
+	quality = 3,
+	icon = "inv_sword_2h_cataclysm_c_01",
+	buyPrice = 1473961,
+	sellPrice = 294792,
+	reqLevel = 0,
+}
+t[63788] = {
+	name = L["Calder's Coated Carrion Carver"],
+	quality = 3,
+	icon = "inv_axe_1h_cataclysm_c_01",
+	buyPrice = 1183480,
+	sellPrice = 236696,
+	reqLevel = 0,
+}
+t[63789] = {
+	name = L["Very Manly Staff"],
+	quality = 3,
+	icon = "inv_stave_2h_cataclysm_c_03",
+	buyPrice = 1484889,
+	sellPrice = 296977,
+	reqLevel = 0,
+}
+t[63790] = {
+	name = L["Gurgthock's Garish Gorebat"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_05",
+	buyPrice = 1192342,
+	sellPrice = 238468,
+	reqLevel = 0,
+}
+t[63791] = {
+	name = L["Big Bendy Blasting Bow"],
+	quality = 3,
+	icon = "inv_bow_1h_cataclysm_c_01",
+	buyPrice = 897580,
+	sellPrice = 179516,
+	reqLevel = 0,
+}
+t[63792] = {
+	name = L["Laquered Lung-Leak Longknife"],
+	quality = 3,
+	icon = "inv_knife_1h_cataclysm_c_04",
+	buyPrice = 1201085,
+	sellPrice = 240217,
+	reqLevel = 0,
+}
+t[63799] = {
+	name = L["Mace of the Gullet"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_03",
+	buyPrice = 1143719,
+	sellPrice = 228743,
+	reqLevel = 0,
+}
+t[63803] = {
+	name = L["Torth-Slayer's Staff"],
+	quality = 3,
+	icon = "inv_staff_116",
+	buyPrice = 1451655,
+	sellPrice = 290331,
+	reqLevel = 0,
+}
+t[63804] = {
+	name = L["Dragonscorn Mace"],
+	quality = 3,
+	icon = "inv_mace_1h_cataclysm_c_03",
+	buyPrice = 1165755,
+	sellPrice = 233151,
+	reqLevel = 0,
+}
+t[63808] = {
+	name = L["Staff of Draconic Pacification"],
+	quality = 3,
+	icon = "inv_staff_116",
+	buyPrice = 1479200,
+	sellPrice = 295840,
+	reqLevel = 0,
+}
+t[63830] = {
+	name = L["Air Raid Beacon"],
+	quality = 3,
+	icon = "inv_misc_orb_05",
+	buyPrice = 348110,
+	sellPrice = 87027,
+	reqLevel = 0,
+}
+t[63834] = {
+	name = L["Skyflight Beacon"],
+	quality = 3,
+	icon = "inv_misc_orb_03",
+	buyPrice = 348110,
+	sellPrice = 87027,
+	reqLevel = 0,
+}
+t[63912] = {
+	name = L["Twilight Mirrorshield"],
+	quality = 3,
+	icon = "inv_shield_cataclysm_b_01",
+	buyPrice = 731980,
+	sellPrice = 146396,
+	reqLevel = 0,
+}
+t[63917] = {
+	name = L["Truthbreaker Shield"],
+	quality = 3,
+	icon = "inv_shield_cataclysm_b_01",
+	buyPrice = 746083,
+	sellPrice = 149216,
+	reqLevel = 0,
+}
+t[66920] = {
+	name = L["Cyu's Ornate Wand"],
+	quality = 3,
+	icon = "inv_wand_1h_cataclysm_c_01-",
+	buyPrice = 891805,
+	sellPrice = 178361,
+	reqLevel = 83,
+}
+t[66972] = {
+	name = L["Crystalline Geoknife"],
+	quality = 3,
+	icon = "inv_weapon_hand_35",
+	buyPrice = 1215097,
+	sellPrice = 243019,
+	reqLevel = 85,
+}
+t[66973] = {
+	name = L["Ravenheart Longbow"],
+	quality = 3,
+	icon = "inv_bow_1h_cataclysm_c_01",
+	buyPrice = 914556,
+	sellPrice = 182911,
+	reqLevel = 85,
+}
+t[66993] = {
+	name = L["Sorrow's End"],
+	quality = 3,
+	icon = "inv_mace_127",
+	buyPrice = 1563781,
+	sellPrice = 312756,
+	reqLevel = 85,
+}
+t[67045] = {
+	name = L["Abatement Cannon"],
+	quality = 3,
+	icon = "inv_firearm_2h_rifle_cataclysm_c_01",
+	buyPrice = 845366,
+	sellPrice = 169073,
+	reqLevel = 82,
+}
+t[67071] = {
+	name = L["Staff of Old Woes"],
+	quality = 3,
+	icon = "inv_stave_2h_cataclysm_c_03",
+	buyPrice = 1551955,
+	sellPrice = 310391,
+	reqLevel = 85,
+}
+t[67104] = {
+	name = L["Torchlight Wand"],
+	quality = 3,
+	icon = "inv_wand_1h_cataclysm_c_02",
+	buyPrice = 842476,
+	sellPrice = 168495,
+	reqLevel = 81,
+}
+t[67124] = {
+	name = L["Zulian Swirling Shield"],
+	quality = 3,
+	icon = "inv_shield_42",
+	buyPrice = 794907,
+	sellPrice = 158981,
+	reqLevel = 85,
+}
+t[67125] = {
+	name = L["Bone-Inlaid Sarcophagus Key"],
+	quality = 3,
+	icon = "inv_datacrystal01",
+	buyPrice = 213737,
+	sellPrice = 53434,
+	reqLevel = 85,
+}
+t[65528] = {
+	name = L["Vicious Gladiator's Felweave Amice"],
+	quality = 4,
+	icon = "inv_shoulder_cloth_pvpwarlock_c_01",
+	buyPrice = 540707,
+	sellPrice = 108141,
+	reqLevel = 85,
+}
+t[65529] = {
+	name = L["Vicious Gladiator's Felweave Raiment"],
+	quality = 4,
+	icon = "inv_chest_cloth_pvpwarlock_c_01",
+	buyPrice = 672149,
+	sellPrice = 134429,
+	reqLevel = 85,
+}
+t[65530] = {
+	name = L["Vicious Gladiator's Felweave Trousers"],
+	quality = 4,
+	icon = "inv_pants_cloth_pvpwarlock_c_01",
+	buyPrice = 674732,
+	sellPrice = 134946,
+	reqLevel = 85,
+}
+t[65571] = {
+	name = L["Vicious Gladiator's Felweave Cowl"],
+	quality = 4,
+	icon = "inv_helmet_cloth_pvpwarlock_c_01",
+	buyPrice = 507829,
+	sellPrice = 101565,
+	reqLevel = 85,
+}
+t[65572] = {
+	name = L["Vicious Gladiator's Felweave Handguards"],
+	quality = 4,
+	icon = "inv_gauntlets_cloth_pvpwarlock_c_01",
+	buyPrice = 339844,
+	sellPrice = 67968,
+	reqLevel = 85,
+}
+t[65598] = {
+	name = L["Vicious Gladiator's Treads of Cruelty"],
+	quality = 4,
+	icon = "inv_boots_cloth_pvpmage_c_01",
+	buyPrice = 535105,
+	sellPrice = 107021,
+	reqLevel = 85,
+}
+t[65599] = {
+	name = L["Vicious Gladiator's Treads of Alacrity"],
+	quality = 4,
+	icon = "inv_boots_cloth_pvpwarlock_c_01",
+	buyPrice = 536990,
+	sellPrice = 107398,
+	reqLevel = 85,
+}
+t[65600] = {
+	name = L["Vicious Gladiator's Treads of Meditation"],
+	quality = 4,
+	icon = "inv_boots_robe_pvppriest_c_01",
+	buyPrice = 538927,
+	sellPrice = 107785,
+	reqLevel = 85,
+}
+t[67447] = {
+	name = L["Vicious Gladiator's Greatsword"],
+	quality = 4,
+	icon = "inv_sword_2h_pvp400_c_01",
+	buyPrice = 1692058,
+	sellPrice = 338411,
+	reqLevel = 85,
+}
+t[67449] = {
+	name = L["Vicious Gladiator's Energy Staff"],
+	quality = 4,
+	icon = "inv_stave_2h_pvp400_c_01",
+	buyPrice = 1705035,
+	sellPrice = 341007,
+	reqLevel = 85,
+}
+t[67450] = {
+	name = L["Vicious Gladiator's Battle Staff"],
+	quality = 4,
+	icon = "inv_stave_2h_pvp400_c_01",
+	buyPrice = 1711611,
+	sellPrice = 342322,
+	reqLevel = 85,
+}
+t[67451] = {
+	name = L["Vicious Gladiator's Pike"],
+	quality = 4,
+	icon = "inv_polearm_2h_pvp400_c_01",
+	buyPrice = 1718188,
+	sellPrice = 343637,
+	reqLevel = 85,
+}
+t[67452] = {
+	name = L["Vicious Gladiator's Bonegrinder"],
+	quality = 4,
+	icon = "inv_mace_2h_pvp400_c_01",
+	buyPrice = 1724588,
+	sellPrice = 344917,
+	reqLevel = 85,
+}
+t[67453] = {
+	name = L["Vicious Gladiator's Decapitator"],
+	quality = 4,
+	icon = "inv_axe_2h_pvp400_c_01",
+	buyPrice = 1731165,
+	sellPrice = 346233,
+	reqLevel = 85,
+}
+t[67454] = {
+	name = L["Vicious Gladiator's Gavel"],
+	quality = 4,
+	icon = "inv_mace_1h_pvp400_c_01",
+	buyPrice = 1737742,
+	sellPrice = 347548,
+	reqLevel = 85,
+}
+t[67455] = {
+	name = L["Vicious Gladiator's Right Render"],
+	quality = 4,
+	icon = "inv_hand_1h_pvp400_c_01",
+	buyPrice = 1744141,
+	sellPrice = 348828,
+	reqLevel = 85,
+}
+t[67456] = {
+	name = L["Vicious Gladiator's Right Ripper"],
+	quality = 4,
+	icon = "inv_hand_1h_pvp400_c_01",
+	buyPrice = 1750718,
+	sellPrice = 350143,
+	reqLevel = 85,
+}
+t[67457] = {
+	name = L["Vicious Gladiator's Spellblade"],
+	quality = 4,
+	icon = "inv_knife_1h_pvp400_c_01",
+	buyPrice = 1757295,
+	sellPrice = 351459,
+	reqLevel = 85,
+}
+t[67458] = {
+	name = L["Vicious Gladiator's Left Render"],
+	quality = 4,
+	icon = "inv_hand_1h_pvp400_c_01",
+	buyPrice = 1810977,
+	sellPrice = 362195,
+	reqLevel = 85,
+}
+t[67459] = {
+	name = L["Vicious Gladiator's Left Ripper"],
+	quality = 4,
+	icon = "inv_hand_1h_pvp400_c_01",
+	buyPrice = 1817376,
+	sellPrice = 363475,
+	reqLevel = 85,
+}
+t[67460] = {
+	name = L["Vicious Gladiator's Shiv"],
+	quality = 4,
+	icon = "inv_knife_1h_pvp400_c_01",
+	buyPrice = 1823953,
+	sellPrice = 364790,
+	reqLevel = 85,
+}
+t[67461] = {
+	name = L["Vicious Gladiator's Longbow"],
+	quality = 4,
+	icon = "inv_bow_1h_pvp400_c_01",
+	buyPrice = 2288163,
+	sellPrice = 457632,
+	reqLevel = 85,
+}
+t[67462] = {
+	name = L["Vicious Gladiator's Heavy Crossbow"],
+	quality = 4,
+	icon = "inv_weapon_crossbow_39",
+	buyPrice = 2296384,
+	sellPrice = 459276,
+	reqLevel = 85,
+}
+t[67463] = {
+	name = L["Vicious Gladiator's Rifle"],
+	quality = 4,
+	icon = "firearm_2h_rifle_pvp400_c_01",
+	buyPrice = 2304383,
+	sellPrice = 460876,
+	reqLevel = 85,
+}
+t[67464] = {
+	name = L["Vicious Gladiator's Baton of Light"],
+	quality = 4,
+	icon = "inv_wand_1h_pvp400_c_01",
+	buyPrice = 2312604,
+	sellPrice = 462520,
+	reqLevel = 85,
+}
+t[67465] = {
+	name = L["Vicious Gladiator's Touch of Defeat"],
+	quality = 4,
+	icon = "inv_wand_1h_pvp400_c_01",
+	buyPrice = 2320826,
+	sellPrice = 464165,
+	reqLevel = 85,
+}
+t[67466] = {
+	name = L["Vicious Gladiator's Hatchet"],
+	quality = 4,
+	icon = "inv_throwingaxepvp330_08",
+	buyPrice = 321355,
+	sellPrice = 80338,
+	reqLevel = 85,
+}
+t[67467] = {
+	name = L["Vicious Gladiator's War Edge"],
+	quality = 4,
+	icon = "inv_throwingaxepvp330_08",
+	buyPrice = 321355,
+	sellPrice = 80338,
+	reqLevel = 85,
+}
+t[67468] = {
+	name = L["Vicious Gladiator's Quickblade"],
+	quality = 4,
+	icon = "inv_sword_161",
+	buyPrice = 1698280,
+	sellPrice = 339656,
+	reqLevel = 85,
+}
+t[67469] = {
+	name = L["Vicious Gladiator's Slicer"],
+	quality = 4,
+	icon = "inv_sword_161",
+	buyPrice = 1704857,
+	sellPrice = 340971,
+	reqLevel = 85,
+}
+t[67470] = {
+	name = L["Vicious Gladiator's Bonecracker"],
+	quality = 4,
+	icon = "inv_mace_1h_pvp400_c_01",
+	buyPrice = 1711256,
+	sellPrice = 342251,
+	reqLevel = 85,
+}
+t[67471] = {
+	name = L["Vicious Gladiator's Pummeler"],
+	quality = 4,
+	icon = "inv_mace_1h_pvp400_c_01",
+	buyPrice = 1717833,
+	sellPrice = 343566,
+	reqLevel = 85,
+}
+t[67472] = {
+	name = L["Vicious Gladiator's Shanker"],
+	quality = 4,
+	icon = "inv_knife_1h_pvp400_c_01",
+	buyPrice = 1724410,
+	sellPrice = 344882,
+	reqLevel = 85,
+}
+t[67473] = {
+	name = L["Vicious Gladiator's Hacker"],
+	quality = 4,
+	icon = "inv_axe_1h_pvp400_c_01",
+	buyPrice = 1730987,
+	sellPrice = 346197,
+	reqLevel = 85,
+}
+t[67474] = {
+	name = L["Vicious Gladiator's Cleaver"],
+	quality = 4,
+	icon = "inv_axe_1h_pvp400_c_01",
+	buyPrice = 1784492,
+	sellPrice = 356898,
+	reqLevel = 85,
+}
+t[67475] = {
+	name = L["Vicious Gladiator's Redoubt"],
+	quality = 4,
+	icon = "inv_shield_pvp400_c_01",
+	buyPrice = 1146283,
+	sellPrice = 229256,
+	reqLevel = 85,
+}
+t[67476] = {
+	name = L["Vicious Gladiator's Barrier"],
+	quality = 4,
+	icon = "inv_shield_pvp400_c_01",
+	buyPrice = 1150493,
+	sellPrice = 230098,
+	reqLevel = 85,
+}
+t[67477] = {
+	name = L["Vicious Gladiator's Shield Wall"],
+	quality = 4,
+	icon = "inv_shield_pvp400_c_01",
+	buyPrice = 1154702,
+	sellPrice = 230940,
+	reqLevel = 85,
+}
+t[67478] = {
+	name = L["Vicious Gladiator's Reprieve"],
+	quality = 4,
+	icon = "inv_misc_book_18",
+	buyPrice = 516683,
+	sellPrice = 129170,
+	reqLevel = 85,
+}
+t[67479] = {
+	name = L["Vicious Gladiator's Endgame"],
+	quality = 4,
+	icon = "inv_misc_book_18",
+	buyPrice = 516683,
+	sellPrice = 129170,
+	reqLevel = 85,
+}
 t[67538] = {
 	name = L["true"],
 	profession = L["Alchemy"],

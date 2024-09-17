@@ -135,7 +135,7 @@ function GearItem:Update()
 
                 socketWidth = socketWidth + tex:GetWidth()
             end
-        elseif ns.Addon.db.profile.showLost and ns.IsCanEnchant(self.item) then
+        elseif ns.Addon.db.profile.showLost and ns.IsCanEnchant(self.item, self.inspect) then
             local tex = ns.UI.EnchantItem:Alloc(self)
             tex:SetEmpty(L['No Enchant'])
             tex:SetPoint('LEFT', self.Name, 'RIGHT', socketWidth, 0)
@@ -160,11 +160,11 @@ function GearItem:Update()
             end
         end
 
-        if ns.Addon.db.profile.showLost and ns.IsCanSocket(self.item) then
+        if ns.Addon.db.profile.showLost and ns.IsCanSocket(self.item, self.inspect) then
             socketWidth = socketWidth + SPACING
 
             local tex = ns.UI.GemItem:Alloc(self)
-            tex:SetSocketItem(-1, nil)
+            tex:SetEmptyText(L['Add socket'])
             tex:SetPoint('LEFT', self.Name, 'RIGHT', socketWidth, 0)
 
             socketWidth = socketWidth + tex:GetWidth()
