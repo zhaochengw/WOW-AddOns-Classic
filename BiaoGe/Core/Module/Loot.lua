@@ -109,7 +109,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if arg2 == "BiaoGeGuoQi" and arg3 == L["详细"] then
             BG.MainFrame:Show()
             BG.itemGuoQiFrame:Show()
-            BG.ClickTabButton(BG.tabButtons, BG.FBMainFrameTabNum)
+            BG.ClickTabButton(BG.FBMainFrameTabNum)
         elseif arg2 == "BiaoGeGuoQi" and arg3 == L["设置为1小时内不再提醒"] then
             BiaoGe.lastGuoQiTime = time() + 3300
             BG.FrameLootMsg:AddMessage(BG.STC_b1(L["已设置为1小时内不再提醒。"]))

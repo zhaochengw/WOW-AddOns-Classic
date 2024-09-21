@@ -7280,7 +7280,9 @@
         "ContainerFrameItemButton_OnLeave",
         "TradePlayerInputMoneyInsetBg",
         "GetFactionInfoByID",
-        "STOP_Database"
+        "STOP_Database",
+        "achievementFunctions",
+        "TradeRecipientItem1ItemButton"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

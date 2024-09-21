@@ -347,30 +347,90 @@ do
 		frame:ArrangeIcons()
 		twipe(frame.texture_index)
 	end
-	local function AuraFrame_StartGlow(self, iconFrame)
+	local function AuraFrame_StartGlow(self, iconFrame, glowType)
 		local aura_tbl = iconFrame.aura_tbl
-		local options = {
-			glowType = "pixel",
-			color = aura_tbl.color, -- all plater color types accepted, from lib: {r,g,b,a}, color of lines and opacity, from 0 to 1. Defaul value is {0.95, 0.95, 0.32, 1}
-			N = 8, -- number of lines. Defaul value is 8;
-			frequency = 0.25, -- frequency, set to negative to inverse direction of rotation. Default value is 0.25;
-			length = 3, -- length of lines. Default value depends on region size and number of lines;
-			th = 3, -- thickness of lines. Default value is 2;
-			xOffset = 0,
-			yOffset = 0, -- offset of glow relative to region border;
-			border = false, -- set to true to create border under lines;
-			key = "DBM_ImportantMinDurationGlow", -- key of glow, allows for multiple glows on one frame;
-		}
+		if glowType == 1 then--Pixel
+			local options = {
+				glowType = "pixel",
+				color = aura_tbl.color, -- all plater color types accepted, from lib: {r,g,b,a}, color of lines and opacity, from 0 to 1. Defaul value is {0.95, 0.95, 0.32, 1}
+				N = 8, -- number of lines. Defaul value is 8;
+				frequency = 0.25, -- frequency, set to negative to inverse direction of rotation. Default value is 0.25;
+				length = 3, -- length of lines. Default value depends on region size and number of lines;
+				th = 3, -- thickness of lines. Default value is 2;
+				xOffset = 0,
+				yOffset = 0, -- offset of glow relative to region border;
+				border = false, -- set to true to create border under lines;
+				key = "DBM_ImportantMinDurationGlow", -- key of glow, allows for multiple glows on one frame;
+			}
 
-		if (not iconFrame.__DBM_NPIconGlowFrame) then
-			iconFrame.__DBM_NPIconGlowFrame = CreateFrame("Frame", nil, iconFrame, BackdropTemplateMixin and "BackdropTemplate");
-			iconFrame.__DBM_NPIconGlowFrame:SetAllPoints(iconFrame);
-			iconFrame.__DBM_NPIconGlowFrame:SetSize(iconFrame:GetSize());
+			if (not iconFrame.__DBM_NPIconGlowFrame) then
+				iconFrame.__DBM_NPIconGlowFrame = CreateFrame("Frame", nil, iconFrame, BackdropTemplateMixin and "BackdropTemplate");
+				iconFrame.__DBM_NPIconGlowFrame:SetAllPoints(iconFrame);
+				iconFrame.__DBM_NPIconGlowFrame:SetSize(iconFrame:GetSize());
+			end
+			LCG.PixelGlow_Start(iconFrame.__DBM_NPIconGlowFrame, options.color, options.N, options.frequency, options.length, options.th, options.xOffset, options.yOffset, options.border, options.key or "")
+		elseif glowType == 2 then--Proc
+			local options = {
+				color = aura_tbl.color,
+				--frameLevel = 8,
+				startAnim = true,
+				xOffset = 0,
+				yOffset = 0,
+				duration = 1,
+				key = "DBM_ImportantMinDurationGlow",
+			}
+			if (not iconFrame.__DBM_NPIconGlowFrame) then
+				iconFrame.__DBM_NPIconGlowFrame = CreateFrame("Frame", nil, iconFrame, BackdropTemplateMixin and "BackdropTemplate");
+				iconFrame.__DBM_NPIconGlowFrame:SetAllPoints(iconFrame);
+				iconFrame.__DBM_NPIconGlowFrame:SetSize(iconFrame:GetSize());
+			end
+			LCG.ProcGlow_Start(iconFrame.__DBM_NPIconGlowFrame, options)
+		elseif glowType == 3 then--Auto Cast Glow
+			local options = {
+				color = aura_tbl.color,
+				N = 4, -- number of particle groups. Default value is 4
+				frequency = 0.125, -- frequency, set to negative to inverse direction of rotation. Default value is 0.125
+				scale = 1,-- scale of particles.
+				xOffset = 0,
+				yOffset = 0,
+				duration = 1,
+				key = "DBM_ImportantMinDurationGlow",
+			}
+			if (not iconFrame.__DBM_NPIconGlowFrame) then
+				iconFrame.__DBM_NPIconGlowFrame = CreateFrame("Frame", nil, iconFrame, BackdropTemplateMixin and "BackdropTemplate");
+				iconFrame.__DBM_NPIconGlowFrame:SetAllPoints(iconFrame);
+				iconFrame.__DBM_NPIconGlowFrame:SetSize(iconFrame:GetSize());
+			end
+			LCG.AutoCastGlow_Start(iconFrame.__DBM_NPIconGlowFrame, options.color, options.N, options.frequency, options.scale, options.xOffset, options.yOffset, "DBM_ImportantMinDurationGlow")
+		elseif glowType == 4 then--Button Glow (similar to proc but different enough to give users the option) Proc is basically successor with more options and this is the OG
+			local options = {
+				color = {aura_tbl.color[1], aura_tbl.color[2], aura_tbl.color[3], 1},--This one also expects alpha
+				frequency = 0.125,--Default value is 0.125
+			}
+			if (not iconFrame.__DBM_NPIconGlowFrame) then
+				iconFrame.__DBM_NPIconGlowFrame = CreateFrame("Frame", nil, iconFrame, BackdropTemplateMixin and "BackdropTemplate");
+				iconFrame.__DBM_NPIconGlowFrame:SetAllPoints(iconFrame);
+				iconFrame.__DBM_NPIconGlowFrame:SetSize(iconFrame:GetSize());
+			end
+			LCG.ButtonGlow_Start(iconFrame.__DBM_NPIconGlowFrame, options.color, options.frequency)--This one doesn't use a key
 		end
-		LCG.PixelGlow_Start(iconFrame.__DBM_NPIconGlowFrame, options.color, options.N, options.frequency, options.length, options.th, options.xOffset, options.yOffset, options.border, options.key or "")
 	end
-	local function AuraFrame_StopGlow(self, iconFrame)
-		LCG.PixelGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+	local function AuraFrame_StopGlow(self, iconFrame, glowType)
+		if not iconFrame.__DBM_NPIconGlowFrame then return end
+		if glowType == 1 then
+			LCG.PixelGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+		elseif glowType == 2 then
+			LCG.ProcGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+		elseif glowType == 3 then
+			LCG.AutoCastGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+		elseif glowType == 4 then
+			LCG.ButtonGlow_Stop(iconFrame.__DBM_NPIconGlowFrame)
+		else--In event of failure of glowtype, cleanup all
+			LCG.PixelGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+			LCG.ProcGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+			LCG.AutoCastGlow_Stop(iconFrame.__DBM_NPIconGlowFrame, "DBM_ImportantMinDurationGlow")
+			LCG.ButtonGlow_Stop(iconFrame.__DBM_NPIconGlowFrame)
+		end
 	end
 	local function AuraFrame_UpdateTimerText (self) --has deltaTime as second parameter, not needed here.
 		local now = GetTime()
@@ -387,18 +447,30 @@ do
 				self.cooldown.timer:SetText ("")
 			end
 
-			local canGlow = (DBM.Options.NPIconGlowBehavior == 1 and aura_tbl.isPriority or DBM.Options.NPIconGlowBehavior == 2) and aura_tbl.remaining < 4
+			local canGlow = false
+			--cooldown nameplate icon. 1 = priority only, 2 = always
+			if aura_tbl.barType ~= "castnp" and ((DBM.Options.NPIconGlowBehavior == 1 and aura_tbl.isPriority) or DBM.Options.NPIconGlowBehavior == 2) and aura_tbl.remaining < 4 then
+				canGlow = true
+			--cast nameplate icon. 1 = priority only. There is no "always" for cast timers at this time
+			elseif aura_tbl.barType == "castnp" and DBM.Options.CastNPIconGlowBehavior == 1 and aura_tbl.isPriority and aura_tbl.remaining < 4 then
+				canGlow = true
+			end
+			local glowType = aura_tbl.barType == "castnp" and DBM.Options.CastNPIconGlowType or DBM.Options.CDNPIconGlowType
 			if canGlow and not self.isGlowing then -- glow below 4sec if important
-				self.parent:StartGlow(self)
+				self.parent:StartGlow(self, glowType)
 				self.isGlowing = true
 			elseif not canGlow and self.isGlowing then
-				self.parent:StopGlow(self)
+				self.parent:StopGlow(self, glowType)
 				self.isGlowing = false
 			end
 
 			self.lastUpdateCooldown = now
 
 			if (aura_tbl.duration or 0) > 0 and aura_tbl.remaining < 0 and not aura_tbl.keep then
+				if self.isGlowing then
+					self.isGlowing = false
+					self.parent:StopGlow(self, 0)
+				end
 				self.parent:RemoveAura(aura_tbl.index)
 				if aura_tbl.id then
 					nameplateTimerBars[aura_tbl.id] = nil --ensure CDs cleanup
@@ -655,7 +727,14 @@ do
 		if event ~= "DBM_TimerStart" then return end
 		-- Supported by nameplate mod, passing to their handler
 		if SupportedNPModBars() then return end
-		if DBM.Options.DontShowNameplateIconsCD then return end--Globally disabled
+		--Disable cooldown icons for any timer designated as a nameplate only cooldown timer
+		--NOTE, bosses that send GUID send "cd" and not "cdnp" so if DontSendBossGUIDs isn't enabled, they will still be passed even if DontShowNameplateIconsCD is
+		--This is intended behavior as I want the option to toggle separately.
+		if DBM.Options.DontShowNameplateIconsCD and barType == "cdnp" then return end
+		--Disable cast icons for any timer designated as a nameplate only cast timer
+		if DBM.Options.DontShowNameplateIconsCast and barType == "castnp" then return end--Globally disabled
+		--Disables cooldown icons for hybrid timers (ie timers that are both regular timer and nameplate timer)
+		if DBM.Options.DontSendBossGUIDs and barType ~= "cdnp" and barType ~= "castnp" then return end--Basically all other bar types
 
 		if (id and guid) then
 			local color = {DBT:GetColorForType(colorType)}
@@ -722,6 +801,8 @@ do
 					keep = keep,
 					name = name,
 					guid = curGuid,
+					timerCount = timerCount,
+					isPriority = isPriority,
 					paused = false,
 					auraType = 2, -- 1 = nameplate aura; 2 = nameplate CD timers
 					index = tmpId,

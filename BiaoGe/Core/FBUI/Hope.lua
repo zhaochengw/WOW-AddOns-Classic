@@ -184,7 +184,7 @@ function BG.HopeUI(FB)
                     end)
                     -- 点击
                     bt:SetScript("OnMouseDown", function(self, enter)
-                        if enter == "RightButton" then -- 右键清空格子
+                        if enter == "RightButton" then
                             self:SetEnabled(false)
                             self:SetText("")
                             if BG.lastfocus then
@@ -237,7 +237,7 @@ function BG.HopeUI(FB)
                                 end
                             end
                         end
-                        if enter == "RightButton" then -- 右键清空格子
+                        if enter == "RightButton" then
                             self:SetEnabled(true)
                         end
                     end)
@@ -479,7 +479,7 @@ function BG.HopeUI(FB)
                     end)
                     -- 单击触发
                     f:SetScript("OnMouseDown", function(self, enter)
-                        if enter == "RightButton" then -- 右键清空格子
+                        if enter == "RightButton" then
                             FrameHide(0)
                             self:Hide()
                         end
@@ -1025,7 +1025,7 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+                    BG.HookScrollBarShowOrHide(scroll)
 
                     self.s = scroll
 
@@ -1138,7 +1138,7 @@ function BG.HopeDaoChuUI()
                     scroll:SetPoint("BOTTOMRIGHT", -27, 4)
                     scroll.ScrollBar.scrollStep = BG.scrollStep
                     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+                    BG.HookScrollBarShowOrHide(scroll)
 
                     self.s = scroll
 

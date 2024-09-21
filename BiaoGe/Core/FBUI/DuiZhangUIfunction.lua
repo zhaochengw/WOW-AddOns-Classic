@@ -302,6 +302,18 @@ function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
         ShowTardeHighLightItem_MyJine(self)
+        local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText()
+        if maijia ~= "" and self:GetText() ~= "" then
+            local r, g, b = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetTextColor()
+            if BG.ButtonIsInRight(self) then
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
+            else
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+            end
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(L["|cffFFFFFF买家：|r"] .. maijia, r, g, b, true)
+            GameTooltip:Show()
+        end
     end)
     bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()
@@ -378,6 +390,20 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
         ShowTardeHighLightItem_OtherJine(self)
+
+        local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
+        local color=BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
+        if maijia and color and self:GetText() ~= "" then
+            local r, g, b = unpack(color)
+            if BG.ButtonIsInRight(self) then
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
+            else
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+            end
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(L["|cffFFFFFF买家：|r"] .. maijia, r, g, b, true)
+            GameTooltip:Show()
+        end
     end)
     bt:SetScript("OnLeave", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Hide()

@@ -29,8 +29,28 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "9月21日更新v1.12.0" .. "|r\n"
+    update = update .. [[-<WLK>团员成就：优化读取逻辑，减少读取失败的情况]] .. "|r\n"
+    update = update .. [[-对账：现在鼠标悬停在我的金额/对方金额时，会显示其买家]] .. "|r\n"
+    update = update .. [[-增加男声语音包：匕首岭-<TIMEs>贝西]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "9月17日更新v1.11.9" .. "|r\n"
+    update = update .. c1 .. [[-<WLK>增加模块：团员成就（按键在表格界面底部）]] .. "|r\n"
+    update = update .. [[-增加功能：数字小键盘（自动显示在可以填数字的地方。可在设置里关闭该功能）]] .. "|r\n"
+    update = update .. [[-自动拍卖：交易时现在会自动记录欠款]] .. "|r\n"
+    update = update .. [[-快速评价：增加多个简短评价]] .. "|r\n"
+    update = update .. [[-修复了百分比支出项识别不了小数点的问题]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
+
     update = update .. "|cff00FF00" .. "9月9日更新v1.11.8" .. "|r\n"
-    update = update .. c1 ..[[-自动拍卖记录：增加未拍列表（团长可以多选该列表里的装备，来批量发起拍卖）]] .. "|r\n"
+    update = update .. c1 .. [[-自动拍卖记录：增加未拍列表（团长可以多选该列表里的装备，来批量发起拍卖）]] .. "|r\n"
     update = update .. [[-集结号按队伍人数排序：现在总是按人数排序，星团长不再固定显示在最前面]] .. "|r\n"
     update = update .. [[-复制对方账单：现在也会复制打包交易记录]] .. "|r\n"
     update = update .. [[-表格：罚款格子增加至30个]] .. "|r\n"
@@ -49,29 +69,11 @@ do --简体说明书
     update = update .. [[-对账：现在鼠标悬停在打包交易时会高亮对应的装备]] .. "|r\n"
     update = update .. [[-设置：增加自动拍卖UI缩放选项]] .. "|r\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
     update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
     update = update .. c1 .. [[-拍卖WA更新为v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度]] .. "|r\n"
     update = update .. [[-正在自动倒数时，如果有人出价，则会自动暂停倒数（你也可在设置里关闭该功能）]] .. "|r\n"
     update = update .. [[-装备过期列表：现在可以通过Shift+点击来发送装备了]] .. "|r\n"
     update = update .. [[-现在拍卖成功、流拍、取消拍卖、拍卖倒数时，不再触发关注装备的文字和语音提醒]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月19日更新v1.11.4" .. "|r\n"
-    update = update .. c1 .. [[-拍卖WA更新为v1.7：增加自动出价功能]] .. "|r\n"
-    update = update .. [[-增加功能：拾取记录（显示在装备下拉列表左边）]] .. "|r\n"
-    update = update .. [[-增加功能：撤销删除（当你右键删除一个格子时会显示这个撤销删除按钮）]] .. "|r\n"
-    update = update .. [[-自动拍卖记录：现在右键一个记录可以打开菜单，用于修改或删除记录]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月14日更新v1.11.3" .. "|r\n"
-    update = update .. [[-表格：删除支出、总览、工资的买家格子]] .. "|r\n"
-    update = update .. [[-修复了自动拍卖的生成对账单功能导致插件错误的问题]] .. "|r\n\n"
 
     ns.updateText = update
 end
@@ -86,6 +88,53 @@ ns.L = L
 
 local L = {}
 do
+    L["匕首岭-<TIMEs>贝西"] = true
+    L["|cffFFFFFF买家：|r"] = true
+    L["万"]=true
+    L["拥有传说物品"]=true
+    
+
+    L["团员成就："] = true
+    L["查看团员的团本成就完成情况"] = true
+    L["团员成就"] = true
+    L["< 团员成就 >"] = true
+    L["交易时自动摆放装备"] = true
+    L["交易时，如果你是物品分配者，会自动把对方所拍装备摆放到交易框。"] = true
+    L["交易时显示应收或应付金额"] = true
+    L["交易时，根据对方或你所拍装备显示应收或应付金额。"] = true
+    L["交易时自动记录欠款"] = true
+    L["交易时，会自动记录欠款。"] = true
+    L["最大金币数量"] = true
+    L["获得坐骑数量"] = true
+    L["成\n就"] = true
+    L["统\n计"] = true
+    L["成就："] = true
+    L["没有成就"] = true
+    L["统计："] = true
+    L["距离太远读取失败"] = true
+    L["没有成就"] = true
+    L["刷新数据"] = true
+    L["正在刷新"] = true
+    L["离线"] = true
+    L["关闭"] = true
+    L["数字小键盘"] = true
+    L["在可以输入数字的地方，自动显示一个数字小键盘。用鼠标就能完成数字的输入。"] = true
+    L["指挥很好"] = true
+    L["非常效率"] = true
+    L["没有团双"] = true
+    L["团长很帅"] = true
+    L["团长很有耐心"] = true
+    L["指挥很烂"] = true
+    L["拼多多团"] = true
+    L["强X装备"] = true
+    L["黑金"] = true
+    L["毛装备"] = true
+    L["只罚野人不罚亲友"] = true
+    L["稳如老狗"] = true
+    L["又快又黑=。="] = true
+    L["查看团员的团本成就完成情况（该功能引用于比较成就里的API）"] = true
+
+
     L["<未拍>"] = true
     L["未拍"] = true
     L["开始拍卖"] = true

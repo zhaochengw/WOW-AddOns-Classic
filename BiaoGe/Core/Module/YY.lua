@@ -300,7 +300,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("CENTER")
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll)
             scroll:SetScrollChild(edit)
             BG.YYMainFrame.new.scroll = scroll
 
@@ -513,7 +513,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.my, -27, 5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll)
         scroll:SetScrollChild(f)
 
         function Y.Pingjia(text)
@@ -1131,7 +1131,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             scroll:SetPoint("BOTTOMRIGHT", BG.YYMainFrame.result, -27, 5)
             scroll.ScrollBar.scrollStep = BG.scrollStep
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll)
             scroll:SetScrollChild(f)
 
             local function OnEnter(self)
@@ -1323,7 +1323,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
         function BG.OnClickYYXiangXi(yy)
             BG.MainFrame:Show()
-            BG.ClickTabButton(BG.tabButtons, BG.YYMainFrameTabNum)
+            BG.ClickTabButton(BG.YYMainFrameTabNum)
             for i, v in ipairs(BiaoGe.YYdb.history) do
                 if tonumber(yy) == tonumber(v.yy) then
                     BG.YYMainFrame.historyNum = i
@@ -1648,7 +1648,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end)
     end
 
-    ------------------击杀尾王后弹出评价系统------------------
+    ------------------快速评价------------------
     do
         BG.EndPJ = {}
 
@@ -1683,51 +1683,52 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         -- UI
         do
             local f = CreateFrame("Frame", "BG.EndPJ.new", UIParent, "BackdropTemplate")
-            f:SetBackdrop({
-                bgFile = "Interface/ChatFrame/ChatFrameBackground",
-                edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
-                edgeSize = 32,
-                insets = { left = 3, right = 3, top = 3, bottom = 3 }
-            })
-            f:SetBackdropColor(0, 0, 0, 0.8)
-            f:SetSize(340, 210)
-            f:SetPoint("TOP", 0, -300)
-            f:SetClampedToScreen(true)
-            f:SetFrameStrata("FULLSCREEN_DIALOG")
-            f:SetFrameLevel(190)
-            f:EnableMouse(true)
-            f:SetMovable(true)
-            BG.EndPJ.new = f
-            tinsert(UISpecialFrames, "BG.EndPJ.new") -- 按ESC可关闭插件
-            f:SetScript("OnMouseUp", function(self)
-                self:StopMovingOrSizing()
-            end)
-            f:SetScript("OnMouseDown", function(self)
-                BG.EndPJ.new.yy:ClearFocus()
-                self:StartMoving()
-            end)
-            f:SetScript("OnShow", function()
-                BG.EndPJ.new.yy:SetText("")
-                BG.EndPJ.new.pingjia = 1
-                BG.EndPJ.new.pingjiaButtons[1]:SetChecked(true)
-                BG.EndPJ.new.pingjiaButtons[2]:SetChecked(false)
-                BG.EndPJ.new.pingjiaButtons[3]:SetChecked(false)
-                BG.EndPJ.new.buttonsave:SetEnabled(true)
-
-                for _, edit in pairs(BG.EndPJ.textcolor_table) do
-                    edit:SetTextColor(RGB("00FF00"))
-                end
-
-                -- 历遍团长YY记录
-                BG.EndPJ.new.yy:SetText(GetLeaderYY())
-
-                BG.ClearFocus()
-                BG.PlaySound(2)
-                BG.After(2.5, function()
-                    PlaySoundFile(BG["sound_pingjia" .. BiaoGe.options.Sound], "Master")
+            do
+                f:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeFile = "Interface/DialogFrame/UI-DialogBox-Border",
+                    edgeSize = 32,
+                    insets = { left = 3, right = 3, top = 3, bottom = 3 }
+                })
+                f:SetBackdropColor(0, 0, 0, 0.8)
+                f:SetSize(340, 250)
+                f:SetPoint("TOP", 0, -300)
+                f:SetClampedToScreen(true)
+                f:SetFrameStrata("FULLSCREEN_DIALOG")
+                f:SetFrameLevel(190)
+                f:EnableMouse(true)
+                f:SetMovable(true)
+                BG.EndPJ.new = f
+                tinsert(UISpecialFrames, "BG.EndPJ.new") -- 按ESC可关闭插件
+                f:SetScript("OnMouseUp", function(self)
+                    self:StopMovingOrSizing()
                 end)
-            end)
+                f:SetScript("OnMouseDown", function(self)
+                    BG.EndPJ.new.yy:ClearFocus()
+                    self:StartMoving()
+                end)
+                f:SetScript("OnShow", function()
+                    BG.EndPJ.new.yy:SetText("")
+                    BG.EndPJ.new.pingjia = 1
+                    BG.EndPJ.new.pingjiaButtons[1]:SetChecked(true)
+                    BG.EndPJ.new.pingjiaButtons[2]:SetChecked(false)
+                    BG.EndPJ.new.pingjiaButtons[3]:SetChecked(false)
+                    BG.EndPJ.new.buttonsave:SetEnabled(true)
 
+                    for _, edit in pairs(BG.EndPJ.textcolor_table) do
+                        edit:SetTextColor(RGB("00FF00"))
+                    end
+
+                    -- 历遍团长YY记录
+                    BG.EndPJ.new.yy:SetText(GetLeaderYY())
+
+                    BG.ClearFocus()
+                    BG.PlaySound(2)
+                    BG.After(2.5, function()
+                        PlaySoundFile(BG["sound_pingjia" .. BiaoGe.options.Sound], "Master")
+                    end)
+                end)
+            end
             -- 大标题
             do
                 local t = f:CreateTexture(nil, "ARTWORK")
@@ -1755,7 +1756,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 l:SetEndPoint("BOTTOMRIGHT", t, 5, -2)
                 l:SetThickness(1)
             end
-
 
             BG.EndPJ.textcolor_table = {} -- 用于根据所选评价给输入框设置相应颜色
             local height = 22             -- 每行高度
@@ -1912,7 +1912,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 scroll:SetPoint("CENTER")
                 scroll.ScrollBar.scrollStep = BG.scrollStep
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+                BG.HookScrollBarShowOrHide(scroll)
                 scroll:SetScrollChild(edit)
                 n = n + 2
 
@@ -1960,6 +1960,81 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     end
                 end)
             end
+            -- 短词
+            do
+                local goodTbl = {
+                    L["指挥很好"],
+                    L["非常效率"],
+                    L["没有团双"],
+                    L["稳如老狗"],
+                    L["又快又黑=。="],
+                }
+                local badTbl = {
+                    L["指挥很烂"],
+                    L["拼多多团"],
+                    L["强X装备"],
+                    L["黑金"],
+                    L["毛装备"],
+                    L["只罚野人不罚亲友"],
+                }
+                local f1 = CreateFrame("Frame", nil, BG.EndPJ.new)
+                f1:SetPoint("BOTTOM", BG.EndPJ.new, -5, 73)
+                f1:SetHeight(18)
+                f1.buttons = {}
+                f1.width=0
+                f1.r, f1.g, f1.b = 0, 1, 0
+
+                local f2 = CreateFrame("Frame", nil, BG.EndPJ.new)
+                f2:SetPoint("BOTTOM", BG.EndPJ.new, -5, 50)
+                f2:SetHeight(18)
+                f2.buttons = {}
+                f2.width=0
+                f2.r, f2.g, f2.b = 1, 0, 0
+
+                local function CreateButton(f, text)
+                    local r, g, b = f.r, f.g, f.b
+                    local bt = CreateFrame("Button", nil, f, "BackdropTemplate")
+                    bt:SetBackdrop({
+                        bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                    })
+                    bt:SetBackdropColor(r, g, b, .2)
+                    bt:SetSize(0, 18)
+                    if #f.buttons == 0 then
+                        bt:SetPoint("LEFT")
+                    else
+                        bt:SetPoint("LEFT", f.buttons[#f.buttons], "RIGHT", 3, 0)
+                    end
+                    tinsert(f.buttons, bt)
+                    local t = bt:CreateFontString()
+                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                    t:SetPoint("CENTER")
+                    t:SetTextColor(r, g, b)
+                    t:SetText(text)
+                    bt:SetFontString(t)
+                    bt:SetWidth(t:GetWrappedWidth() + 2)
+                    f.width = f.width + bt:GetWidth()
+                    f:SetWidth(f.width)
+
+                    bt:SetScript("OnClick", function()
+                        BG.PlaySound(1)
+                        BG.EndPJ.new.edit:Insert(text .. " ")
+                    end)
+                    bt:SetScript("OnEnter", function(self)
+                        bt:SetBackdropColor(1, 1, 1, .2)
+                        t:SetTextColor(1, 1, 1)
+                    end)
+                    bt:SetScript("OnLeave", function(self)
+                        bt:SetBackdropColor(r, g, b, .2)
+                        t:SetTextColor(r, g, b)
+                    end)
+                end
+                for i, text in ipairs(goodTbl) do
+                    CreateButton(f1,text)
+                end
+                for i, text in ipairs(badTbl) do
+                    CreateButton(f2,text)
+                end
+            end
             -- 保存
             do
                 function OnClick(self)
@@ -2000,7 +2075,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
 
                 local bt = CreateFrame("Button", nil, BG.EndPJ.new, "UIPanelButtonTemplate")
                 bt:SetSize(115, 25)
-                bt:SetPoint("TOPRIGHT", BG.EndPJ.new, "TOP", -5, height_start - 10 - height * n)
+                bt:SetPoint("BOTTOMRIGHT", BG.EndPJ.new, "BOTTOM", -5, 20)
                 bt:SetText(L["保存"])
                 BG.EndPJ.new.buttonsave = bt
                 bt:SetScript("OnClick", OnClick)
@@ -2026,7 +2101,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             do
                 local bt = CreateFrame("Button", nil, BG.EndPJ.new, "UIPanelButtonTemplate")
                 bt:SetSize(115, 25)
-                bt:SetPoint("TOPLEFT", BG.EndPJ.new, "TOP", 15, height_start - 10 - height * n)
+                bt:SetPoint("BOTTOMLEFT", BG.EndPJ.new, "BOTTOM", 5, 20)
                 bt:SetText(L["退出"])
                 BG.EndPJ.new.escsave = bt
                 bt:SetScript("OnClick", function()

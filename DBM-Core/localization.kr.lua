@@ -511,12 +511,13 @@ L.AUTO_TIMER_OPTIONS.roleplay			= "NPC 대사 지속 시간 타이머 바 보기
 L.AUTO_TIMER_OPTIONS.combat				= "전투 시작 타이머 바 보기"
 
 L.AUTO_ICONS_OPTION_TARGETS				= "$spell:%s 대상에 공격대 징표 설정"--Usually used for player targets with no specific sorting
-L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 이름 순서 우선)"
-L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 공격대 배치 순서 우선)"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 미작동시 이름 순서 우선)"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 미작동시 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "$spell:%s 대상에 공격대 징표 설정 (근접 캐릭터와 이름 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "$spell:%s 대상에 공격대 징표 설정 (근접 캐릭터와 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "$spell:%s 대상에 공격대 징표 설정 (원거리 캐릭터와 이름 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "$spell:%s 대상에 공격대 징표 설정 (원거리 캐릭터와 공격대 배치 순서 우선)"
+L.AUTO_ICONS_OPTION_TARGETS_MRH			= "$spell:%s 대상에 공격대 징표 설정 (근접 원거리 힐러 순서 및 미작동시 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "$spell:%s 대상에 공격대 징표 설정 (이름순)"
 L.AUTO_ICONS_OPTION_TARGETS_ROSTER		= "$spell:%s 대상에 공격대 징표 설정 (공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_NPCS				= "$spell:%s에 공격대 징표 설정"--usually used for npcs/mobs
@@ -539,10 +540,11 @@ L.AUTO_YELL_OPTION_TEXT.repeatplayer	= "$spell:%s에 걸렸을 때 말풍선 알
 L.AUTO_YELL_OPTION_TEXT.repeaticon	= "$spell:%s에 걸렸을 때 말풍선 알림 반복 (공격대 징표 포함)"
 L.AUTO_YELL_OPTION_TEXT.icontarget	= "$spell:%s의 대상일 때 말풍선으로 공격대 징표 알림 반복"
 
-L.AUTO_YELL_ANNOUNCE_TEXT.yell		= UnitName("player") .. "에게 %s"
-L.AUTO_YELL_ANNOUNCE_TEXT.count		= UnitName("player") .. "에게 %s (%%d)"
-L.AUTO_YELL_ANNOUNCE_TEXT.fade		= "%s %%d초 후 사라짐"
-L.AUTO_YELL_ANNOUNCE_TEXT.position	= "{rt%%3$d}" .. UnitName("player") .. "{rt%%3$d}에게 %1$s %%2$s"
+L.AUTO_YELL_ANNOUNCE_TEXT.yell		= "%s: " .. UnitName("player")
+L.AUTO_YELL_ANNOUNCE_TEXT.count		= "%s: " .. UnitName("player") .. " (%%d)"
+L.AUTO_YELL_ANNOUNCE_TEXT.fade		= "%s 종료 %%d"
+L.AUTO_YELL_ANNOUNCE_TEXT.position		= "%s %%s: {rt%%d}" ..UnitName("player").. "{rt%%d}"
+L.AUTO_YELL_ANNOUNCE_TEXT.positionnoicon	= "%s %%s: " ..UnitName("player")
 L.AUTO_YELL_ANNOUNCE_TEXT.combo		= "%s랑 %%s"--Spell name (from option, plus spellname given in arg)
 
 L.AUTO_YELL_CUSTOM_FADE				= "%s 사라짐"

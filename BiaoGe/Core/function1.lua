@@ -425,6 +425,7 @@ end
 function BG.dropDownToggle(dropDown)
     dropDown:SetScript("OnMouseDown", function(self)
         LibBG:ToggleDropDownMenu(nil, nil, self)
+        BG.PlaySound(1)
     end)
 end
 
@@ -595,4 +596,21 @@ function BG.SetBorderAlpha(self)
     self.Left:SetAlpha(BG.otherEditAlpha)
     self.Right:SetAlpha(BG.otherEditAlpha)
     self.Middle:SetAlpha(BG.otherEditAlpha)
+end
+
+function BG.FormatNumber(num)
+    local len = strlen(num)
+    if len <= 3 then
+        return num
+    else
+        local k = num:sub(-4, -4)
+        local w = num:sub(1, -5)
+        if w == "" then
+            w = 0
+        end
+        return w .. "." .. k .. L["万"]
+    end
+    -- local formatted = tostring(num)
+    -- formatted = formatted:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,","")
+    -- return formatted
 end

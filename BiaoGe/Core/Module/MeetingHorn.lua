@@ -209,6 +209,14 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         BG.MeetingHorn.BrowserSort_newFuc = function(self)
             sort(self.ActivityList:GetItemList(), function(a, b)
                 if not self.sortId then
+                    local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
+                    if acl or bcl then
+                        if acl and bcl then
+                            return acl > bcl
+                        else
+                            return acl
+                        end
+                    end
                     return false
                 end
 
@@ -392,7 +400,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         if not BG.IsVanilla then
             local onEnterTextTbl = {
                 "ULD(25)",
-                2958,
                 2895,
                 3037,
                 3164,
@@ -400,8 +407,8 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 3189, -- 烈火金刚
                 3184, -- 珍贵的宝箱
                 2944,
+                3059,
                 "ULD(10)",
-                2957,
                 2894,
                 3036,
                 3159,
@@ -409,6 +416,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 3180,
                 3182,
                 2941,
+                3058,
                 -- "RS",
                 -- 4816,
                 -- 4815,
@@ -482,18 +490,18 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine(L["成就ID参考"], 1, 1, 1)
-                for i, text in ipairs(onEnterTextTbl) do
-                    if tonumber(text) then
-                        if select(4, GetAchievementInfo(text)) then
+                for i, ID in ipairs(onEnterTextTbl) do
+                    if tonumber(ID) then
+                        if select(4, GetAchievementInfo(ID)) then
                             local r, g, b = 1, .82, 0
-                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text), r, g, b)
+                            GameTooltip:AddLine(ID .. ": " .. GetAchievementLink(ID), r, g, b)
                         else
                             local r, g, b = .5, .5, .5
-                            GameTooltip:AddLine(text .. ": " .. GetAchievementLink(text):gsub("|cff......", ""):gsub("|r", ""), r, g, b)
+                            GameTooltip:AddLine(ID .. ": " .. GetAchievementLink(ID):gsub("|cff......", ""):gsub("|r", ""), r, g, b)
                         end
                     else
                         GameTooltip:AddLine(" ")
-                        GameTooltip:AddLine(text, 1, 1, 1)
+                        GameTooltip:AddLine(ID, 1, 1, 1)
                     end
                 end
                 GameTooltip:Show()

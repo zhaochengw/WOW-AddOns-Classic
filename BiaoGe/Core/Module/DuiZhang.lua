@@ -274,61 +274,56 @@ function BG.DuiZhangUI()
     BG.DuiZhangDropDown.BiaoTi = text
 
     -- 删除账单
-    do
-        hooksecurefunc(LibBG, "ToggleDropDownMenu", function(_, _, _, dropDown)
-            if dropDown == BG.DuiZhangDropDown.DropDown then
-                for i = 1, L_UIDROPDOWNMENU_MAXBUTTONS do
-                    local button = _G["L_DropDownList1Button" .. i]
-                    if not button.deleteZhangDan then
-                        local bt = CreateFrame("Button", nil, button)
-                        bt:SetSize(20, 20)
-                        bt:SetPoint("RIGHT", -2, 0)
-                        bt:SetNormalTexture("interface/raidframe/readycheck-notready")
-                        bt:SetHighlightTexture("interface/raidframe/readycheck-notready")
-                        bt:RegisterForClicks("AnyUp")
-                        bt.num = i
-                        bt:Hide()
-                        button.deleteZhangDan = bt
-                        bt:SetScript("OnClick", function(self)
-                            BG.PlaySound(1)
-                            tremove(BiaoGe.duizhang, self.num)
-                            BG.lastduizhangNum = nil
-                            BG.DuiZhang0()
-                            LibBG:UIDropDownMenu_SetText(BG.DuiZhangDropDown.DropDown, L["无"])
-                            BG.DuiZhangMainFrame.ButtonCopy:Disable()
-                            LibBG:CloseDropDownMenus()
-                            LibBG:ToggleDropDownMenu(nil, nil, BG.DuiZhangDropDown.DropDown)
-                        end)
-                        bt:SetScript("OnEnter", function(self)
-                            LibBG:UIDropDownMenu_StopCounting(self:GetParent():GetParent())
-                            button.Highlight:Show()
-                            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-                            GameTooltip:ClearLines()
-                            GameTooltip:AddLine(L["删除该账单"], 1, 1, 1, true)
-                            GameTooltip:Show()
-                        end)
-                        bt:SetScript("OnLeave", function(self)
-                            LibBG:UIDropDownMenu_StartCounting(self:GetParent():GetParent())
-                            button.Highlight:Hide()
-                            GameTooltip:Hide()
-                        end)
-                    end
+    hooksecurefunc(LibBG, "ToggleDropDownMenu", function(_, _, _, dropDown)
+        if dropDown == BG.DuiZhangDropDown.DropDown then
+            for i = 1, _G['L_DropDownList1'].numButtons do
+                local button = _G["L_DropDownList1Button" .. i]
+                if not button.deleteZhangDan then
+                    local bt = CreateFrame("Button", nil, button)
+                    bt:SetSize(20, 20)
+                    bt:SetPoint("RIGHT", -2, 0)
+                    bt:SetNormalTexture("interface/raidframe/readycheck-notready")
+                    bt:SetHighlightTexture("interface/raidframe/readycheck-notready")
+                    bt:RegisterForClicks("AnyUp")
+                    bt.num = i
+                    bt:Hide()
+                    button.deleteZhangDan = bt
+                    bt:SetScript("OnClick", function(self)
+                        BG.PlaySound(1)
+                        tremove(BiaoGe.duizhang, self.num)
+                        BG.lastduizhangNum = nil
+                        BG.DuiZhang0()
+                        LibBG:UIDropDownMenu_SetText(BG.DuiZhangDropDown.DropDown, L["无"])
+                        BG.DuiZhangMainFrame.ButtonCopy:Disable()
+                        LibBG:CloseDropDownMenus()
+                        LibBG:ToggleDropDownMenu(nil, nil, BG.DuiZhangDropDown.DropDown)
+                    end)
+                    bt:SetScript("OnEnter", function(self)
+                        LibBG:UIDropDownMenu_StopCounting(self:GetParent():GetParent())
+                        button.Highlight:Show()
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                        GameTooltip:ClearLines()
+                        GameTooltip:AddLine(L["删除该账单"], 1, 1, 1, true)
+                        GameTooltip:Show()
+                    end)
+                    bt:SetScript("OnLeave", function(self)
+                        LibBG:UIDropDownMenu_StartCounting(self:GetParent():GetParent())
+                        button.Highlight:Hide()
+                        GameTooltip:Hide()
+                    end)
                 end
-                for i = 1, _G['L_DropDownList1'].numButtons do
-                    local button = _G["L_DropDownList1Button" .. i]
-                    button.deleteZhangDan.num = i
-                    button.deleteZhangDan:SetShown(not (i == _G['L_DropDownList1'].numButtons))
-                end
-            else
-                for i = 1, L_UIDROPDOWNMENU_MAXBUTTONS do
-                    local button = _G["L_DropDownList1Button" .. i]
-                    if button.deleteZhangDan then
-                        button.deleteZhangDan:Hide()
-                    end
+                button.deleteZhangDan.num = i
+                button.deleteZhangDan:SetShown(not (i == _G['L_DropDownList1'].numButtons))
+            end
+        else
+            for i = 1, L_UIDROPDOWNMENU_MAXBUTTONS do
+                local button = _G["L_DropDownList1Button" .. i]
+                if button.deleteZhangDan then
+                    button.deleteZhangDan:Hide()
                 end
             end
-        end)
-    end
+        end
+    end)
 
     -- 一天后自动删掉相应账单
     local name = "duiZhangTime"
@@ -450,7 +445,7 @@ function BG.DuiZhangUI()
         scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll)
 
         local child = CreateFrame("EditBox", nil, f) -- 子框架
         child:SetFontObject(GameFontNormalSmall2)
@@ -786,7 +781,7 @@ hooksecurefunc("SetItemRef", function(link)
     num = tonumber(num)
 
     BG.MainFrame:Show()
-    BG.ClickTabButton(BG.tabButtons, BG.DuiZhangMainFrameTabNum)
+    BG.ClickTabButton(BG.DuiZhangMainFrameTabNum)
     BG.DuiZhangSet(num)
     CreateZhangDanMsg(num)
     LibBG:UIDropDownMenu_SetText(BG.DuiZhangDropDown.DropDown, CreateZhangDanTitle(num))

@@ -163,7 +163,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         end
         -- test
---[[         BG.itemGuoQiFrame.tbl = {
+        --[[         BG.itemGuoQiFrame.tbl = {
             { time = 120, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 90, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
             { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
@@ -220,16 +220,18 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             tinsert(BG.itemGuoQiFrame.buttons, f)
             BG.UpdateFilter(f, link)
 
+            local tex = f:CreateTexture(nil, "BACKGROUND")
+            tex:SetAllPoints()
             if ii % 2 == 0 then
-                local tex = f:CreateTexture(nil, "BACKGROUND")
-                tex:SetAllPoints()
                 tex:SetColorTexture(.5, .5, .5, .15)
+            else
+                tex:SetColorTexture(0, 0, 0, .25)
             end
 
-            local tex = f:CreateTexture()
-            tex:SetAllPoints()
-            tex:SetColorTexture(.5, .5, .5, .5)
-            tex:Hide()
+            local ds = f:CreateTexture()
+            ds:SetAllPoints()
+            ds:SetColorTexture(.5, .5, .5, .5)
+            ds:Hide()
 
             f:SetScript("OnMouseDown", function(self, button)
                 if IsShiftKeyDown() then
@@ -238,14 +240,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             end)
             f:SetScript("OnEnter", function(self)
-                tex:Show()
+                ds:Show()
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:SetBagItem(b, i)
-                BG.Show_AllHighlight(link,"outtime")
+                BG.Show_AllHighlight(link, "outtime")
             end)
             f:SetScript("OnLeave", function()
-                tex:Hide()
+                ds:Hide()
                 GameTooltip:Hide()
                 BG.Hide_AllHighlight()
             end)

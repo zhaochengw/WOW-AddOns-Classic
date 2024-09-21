@@ -702,6 +702,16 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             edit:SetScript("OnEditFocusGained", function(self)
                 self:HighlightText()
                 BG.lastfocus = self
+                local f = BG.CreateNumFrame(BG.auctionLogFrame.changeFrame)
+                if f then
+                    f:ClearAllPoints()
+                    f:SetPoint("TOPLEFT", BG.auctionLogFrame.changeFrame, "TOPRIGHT", 0, 0)
+                end
+            end)
+            edit:HookScript("OnEditFocusLost", function(self)
+                if BG.FrameNumFrame then
+                    BG.FrameNumFrame:Hide()
+                end
             end)
             edit:SetScript("OnEnterPressed", function(self)
                 f.ButtonSure:GetScript("OnClick")()
@@ -994,7 +1004,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if bt.num % 2 == 0 then
                     bt.tex:SetColorTexture(.5, .5, .5, .15)
                 else
-                    bt.tex:SetColorTexture(.5, .5, .5, 0)
+                    bt.tex:SetColorTexture(0, 0, 0, .25)
                 end
             end
 
@@ -1120,6 +1130,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             tex:SetAllPoints()
             if num % 2 == 0 then
                 tex:SetColorTexture(.5, .5, .5, .15)
+            else
+                tex:SetColorTexture(0, 0, 0, .25)
             end
             bts.tex = tex
 
@@ -1289,8 +1301,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                         local zb
                         if isHistory then
-                            local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
-                            zb = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
+                            if BG.History.chooseNum then
+                                local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
+                                zb = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
+                            end
                         else
                             zb = BiaoGe[FB]["boss" .. b]["zhuangbei" .. i]
                         end
@@ -1558,6 +1572,33 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local lastTradeItemNum = {}
         local tradeShowTime
 
+        local function UpdateTargetQianKuan()
+            if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionQianKuan"] == 1) then return end
+            local targetMoney = GetTargetTradeMoney()
+            if targetMoney then
+                targetMoney = math.modf(targetMoney / 10000)
+                local m = sumTargetMoney - targetMoney
+                if m <= 0 then
+                    m = ""
+                end
+                BG.QianKuan.edit:ClearFocus()
+                BG.QianKuan.edit:SetText(m)
+            end
+        end
+        local function UpdateMyQianKuan()
+            if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionQianKuan"] == 1) then return end
+            local playerMoney = GetPlayerTradeMoney()
+            if playerMoney then
+                playerMoney = math.modf(playerMoney / 10000)
+                local m = sumPlayerMoney - playerMoney
+                if m <= 0 then
+                    m = ""
+                end
+                BG.QianKuan.edit:ClearFocus()
+                BG.QianKuan.edit:SetText(m)
+            end
+        end
+
         local function UpdateGiveMeMoneyTextColor()
             local targetMoney = GetTargetTradeMoney()
             if targetMoney then
@@ -1603,6 +1644,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             BG.trade.GiveMeMoneyText:Hide()
             BG.trade.GiveYouMoneyText:Hide()
+            if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
             if not BG.ImML() then return end
             if not BiaoGe.AuctionLog[UnitName("NPC")] then return end
             for _, v in ipairs(BiaoGe.AuctionLog[UnitName("NPC")]) do
@@ -1672,21 +1714,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                 tinsert(lastTradeItemNum, num)
                                 have[i] = true
                                 sumTargetMoney = sumTargetMoney + v.money
-                                _G["TradePlayerItem" .. i .. "ItemButton"].money:Show()
-                                _G["TradePlayerItem" .. i .. "ItemButton"].money:SetText(L["应收："] .. GetMoneyString(tonumber(v.money .. "0000")))
+                                if BiaoGe.options["autoAuctionMoney"] == 1 then
+                                    _G["TradePlayerItem" .. i .. "ItemButton"].money:Show()
+                                    _G["TradePlayerItem" .. i .. "ItemButton"].money:SetText(L["应收："] .. GetMoneyString(tonumber(v.money .. "0000")))
+                                end
                                 break
                             end
                         end
                     end
                 end
             end
-            if sumTargetMoney ~= 0 then
-                BG.trade.GiveMeMoneyText:Show()
-                BG.trade.GiveMeMoneyText:SetText(L["合计应收："] .. GetMoneyString(tonumber(sumTargetMoney .. "0000")))
-                UpdateGiveMeMoneyTextColor()
-            else
-                BG.trade.GiveMeMoneyText:Hide()
+            if BiaoGe.options["autoAuctionMoney"] == 1 then
+                if sumTargetMoney ~= 0 then
+                    BG.trade.GiveMeMoneyText:Show()
+                    BG.trade.GiveMeMoneyText:SetText(L["合计应收："] .. GetMoneyString(tonumber(sumTargetMoney .. "0000")))
+                    UpdateGiveMeMoneyTextColor()
+                else
+                    BG.trade.GiveMeMoneyText:Hide()
+                end
             end
+            UpdateTargetQianKuan()
         end)
         BG.RegisterEvent("TRADE_TARGET_ITEM_CHANGED", function(self, ...)
             sumPlayerMoney = 0
@@ -1707,33 +1754,40 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                 tinsert(lastTradeItemNum, num)
                                 have[i] = true
                                 sumPlayerMoney = sumPlayerMoney + v.money
-                                _G["TradeRecipientItem" .. i .. "ItemButton"].money:Show()
-                                _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetText(L["应付："] .. GetMoneyString(tonumber(v.money .. "0000")))
+                                if BiaoGe.options["autoAuctionMoney"] == 1 then
+                                    _G["TradeRecipientItem" .. i .. "ItemButton"].money:Show()
+                                    _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetText(L["应付："] .. GetMoneyString(tonumber(v.money .. "0000")))
+                                end
                                 break
                             end
                         end
                     end
                 end
             end
-            if sumPlayerMoney ~= 0 then
-                BG.trade.GiveYouMoneyText:Show()
-                BG.trade.GiveYouMoneyText:SetText(L["合计应付："] .. GetMoneyString(tonumber(sumPlayerMoney .. "0000")))
-                UpdateGiveYouMoneyTextColor()
-            else
-                BG.trade.GiveYouMoneyText:Hide()
+            if BiaoGe.options["autoAuctionMoney"] == 1 then
+                if sumPlayerMoney ~= 0 then
+                    BG.trade.GiveYouMoneyText:Show()
+                    BG.trade.GiveYouMoneyText:SetText(L["合计应付："] .. GetMoneyString(tonumber(sumPlayerMoney .. "0000")))
+                    UpdateGiveYouMoneyTextColor()
+                else
+                    BG.trade.GiveYouMoneyText:Hide()
+                end
             end
+            UpdateMyQianKuan()
         end)
         BG.RegisterEvent("TRADE_MONEY_CHANGED", function(self, ...)
             if not BG.ImML() then return end
             if BG.trade.GiveMeMoneyText:IsVisible() then
                 UpdateGiveMeMoneyTextColor()
             end
+            UpdateTargetQianKuan()
         end)
         TradePlayerInputMoneyFrameGold:HookScript("OnTextChanged", function()
             if BG.ImML() then return end
             if BG.trade.GiveYouMoneyText:IsVisible() then
                 UpdateGiveYouMoneyTextColor()
             end
+            UpdateMyQianKuan()
         end)
         BG.RegisterEvent("TRADE_CLOSED", function(self, ...)
             if tradeShowTime and GetTime() - tradeShowTime < 1 then return end

@@ -417,7 +417,7 @@ do
         frame:SetPoint("TOPLEFT", f, 8, -30)
         frame.scroll:SetWidth(frame:GetWidth() - 10)
         child:SetWidth(frame:GetWidth() - 10)
-        frame.scroll.ScrollBar:Hide()
+        BG.HookScrollBarShowOrHide(frame.scroll, true)
 
         local texts = {}
         for _, v in ipairs(BiaoGe[FB]["boss" .. b]["loot" .. i]) do
@@ -455,9 +455,6 @@ do
             l:SetEndPoint("TOPRIGHT", 0, -1 - #texts * 15 - (#texts / 2 - 1) * 3)
             l:SetThickness(1)
         end
-        BG.After(0, function()
-            frame.scroll.ScrollBar:Hide()
-        end)
     end
     local function GetNanDu(bossnum)
         local FB = BG.FB1
@@ -1042,6 +1039,160 @@ end
 
 ------------------创建：金额下拉列表------------------
 do
+    function BG.CreateNumFrame(self)
+        if BiaoGe.options["NumFrame"]~=1 then return end
+        if not BG.FrameNumFrame then
+            local f = CreateFrame("Frame", nil, nil, "BackdropTemplate")
+            f:SetSize(130, 230)
+            f:SetBackdrop({
+                bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                edgeSize = 16,
+                insets = { left = 3, right = 3, top = 3, bottom = 3 }
+            })
+            f:SetBackdropColor(0, 0, 0, 0.8)
+            f:Hide()
+            f:EnableMouse(true)
+            BG.FrameNumFrame = f
+            f:SetScript("OnHide", function(self)
+                self:SetParent(nil)
+                self:Hide()
+            end)
+
+            f.buttons = {}
+
+            local function CreateButton(isYellow)
+                local bt = CreateFrame("Button", nil, f, "BackdropTemplate")
+                bt:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeSize = 1.5,
+                })
+                bt:SetBackdropColor(0, 0, 0, 0.5)
+                bt.color = isYellow and { RGB(BG.g2) } or  { RGB(BG.y2) }
+
+                bt:SetBackdropBorderColor(unpack(bt.color))
+                bt:SetNormalFontObject(isYellow and BG.FontGreen215 or BG.FontGold15)
+                bt:SetDisabledFontObject(BG.FontDis15)
+                bt:SetHighlightFontObject(BG.FontWhite15)
+                bt:HookScript("OnEnter", function(self)
+                    bt:SetBackdropBorderColor(1, 1, 1, 1)
+                end)
+                bt:HookScript("OnLeave", function(self)
+                    bt:SetBackdropBorderColor(unpack(bt.color))
+                end)
+                return bt
+            end
+            for i = 1, 9 do
+                local bt = CreateButton()
+                bt:SetSize(35, 35)
+                bt:SetText(i)
+                if i == 1 then
+                    bt:SetPoint("BOTTOMLEFT", 8, 107)
+                elseif (i - 1) % 3 == 0 then
+                    bt:SetPoint("BOTTOMLEFT", f.buttons[i - 3], "TOPLEFT", 0, 5)
+                else
+                    bt:SetPoint("BOTTOMLEFT", f.buttons[i - 1], "BOTTOMRIGHT", 5, 0)
+                end
+                tinsert(f.buttons, bt)
+                bt:SetScript("OnClick", function(self)
+                    BG.PlaySound(1)
+                    local edit = GetCurrentKeyBoardFocus()
+                    if edit then
+                        edit:Insert(self:GetText())
+                    end
+                end)
+            end
+            -- 0
+            local bt = CreateButton()
+            bt:SetSize(75, 30)
+            bt:SetText(0)
+            bt:SetPoint("TOPLEFT", f.buttons[1], "BOTTOMLEFT", 0, -5)
+            f.button0 = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                local edit = GetCurrentKeyBoardFocus()
+                if edit then
+                    edit:Insert(self:GetText())
+                end
+            end)
+            -- .
+            local bt = CreateButton()
+            bt:SetSize(35, f.button0:GetHeight())
+            bt:SetText(".")
+            bt:SetPoint("TOPLEFT", f.button0, "TOPRIGHT", 5, 0)
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                local edit = GetCurrentKeyBoardFocus()
+                if edit then
+                    edit:Insert(self:GetText())
+                end
+            end)
+            -- ←
+            local bt = CreateButton(true)
+            bt:SetSize(35, f.button0:GetHeight())
+            bt:SetText("←")
+            bt:SetPoint("TOPLEFT", f.button0, "BOTTOMLEFT", 0, -8)
+            f.buttonJ = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                local edit = GetCurrentKeyBoardFocus()
+                if edit then
+                    local text = edit:GetText()
+                    local p = edit:GetCursorPosition()
+                    local t1, t2 = text:sub(1, p), text:sub(p + 1)
+                    t1 = string.utf8sub(t1, 1, string.utf8len(t1) - 1)
+                    edit:SetText(t1 .. t2)
+                    edit:SetCursorPosition(#t1)
+                end
+            end)
+            -- Delete
+            local bt = CreateButton(true)
+            bt:SetSize(f.button0:GetWidth(), f.button0:GetHeight())
+            bt:SetText("Delete")
+            bt:SetPoint("TOPLEFT", f.buttonJ, "TOPRIGHT", 5, 0)
+            bt:SetAlpha(f.buttonJ:GetAlpha())
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                local edit = GetCurrentKeyBoardFocus()
+                if edit then
+                    local text = edit:GetText()
+                    local p = edit:GetCursorPosition()
+                    local t1, t2 = text:sub(1, p), text:sub(p + 1)
+                    t2 = string.utf8sub(t2, 2, string.utf8len(t2))
+                    edit:SetText(t1 .. t2)
+                    edit:SetCursorPosition(#t1)
+                end
+            end)
+
+            -- 关闭
+            local bt = CreateButton(true)
+            bt:SetSize(f:GetWidth() - 15, 23)
+            bt:SetText(L["关闭"])
+            bt:SetPoint("BOTTOM", 1, 6)
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                local edit = GetCurrentKeyBoardFocus()
+                if edit then
+                    edit:ClearFocus()
+                end
+            end)
+
+            local h=-4
+            local l = f.button0:CreateLine()
+            l:SetColorTexture(.5, .5, .5)
+            l:SetStartPoint("BOTTOMLEFT", -5, h)
+            l:SetEndPoint("BOTTOMLEFT", f:GetWidth() - 11, h)
+            l:SetThickness(1)
+        end
+        local f = BG.FrameNumFrame
+        f:SetParent(self)
+        f:ClearAllPoints()
+        f:SetPoint("TOPLEFT", self, "TOPRIGHT", -2, 0)
+        f:Show()
+        return f
+    end
+
     function BG.GetGeZiTardeInfo(FB, b, i, isHistory)
         local tbl
         if isHistory then
@@ -1127,15 +1278,22 @@ do
         edit:SetScript("OnEnterPressed", function(self)
             BG.FrameJineList:Hide()
         end)
-        -- 点击时
+        edit:SetScript("OnEditFocusGained", function(self)
+            BG.CreateNumFrame(BG.FrameJineList)
+        end)
+        edit:HookScript("OnEditFocusLost", function(self)
+            if BG.FrameNumFrame then
+                BG.FrameNumFrame:Hide()
+            end
+        end)
         edit:SetScript("OnMouseDown", function(self, enter)
-            if enter == "RightButton" then -- 右键清空格子
+            if enter == "RightButton" then
                 self:SetEnabled(false)
                 self:SetText("")
             end
         end)
         edit:SetScript("OnMouseUp", function(self, enter)
-            if enter == "RightButton" then -- 右键清空格子
+            if enter == "RightButton" then
                 self:SetEnabled(true)
             end
         end)
@@ -1921,7 +2079,7 @@ function BG.BackBiaoGe(parent)
     bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -30, 35)
     bt:SetText(L["返回表格"])
     bt:SetScript("OnClick", function(self)
-        BG.ClickTabButton(BG.tabButtons, BG.FBMainFrameTabNum)
+        BG.ClickTabButton(BG.FBMainFrameTabNum)
         BG.Backing = true
         C_Timer.After(1, function()
             BG.Backing = nil
@@ -1954,7 +2112,7 @@ function BG.GoToItemLib(button)
     if itemEquipLoc then
         for i, bt in ipairs(BG.itemLib_Inv_Buttons) do
             if bt.inv == itemEquipLoc then
-                BG.ClickTabButton(BG.tabButtons, BG.ItemLibMainFrameTabNum)
+                BG.ClickTabButton(BG.ItemLibMainFrameTabNum)
                 BG.InvOnClick(bt)
                 return
             end
@@ -1996,7 +2154,7 @@ end
 
 ------------------创建滚动框------------------
 do
-    function BG.CreateScrollFrame(parent, w, h, isEdit, notUpdateScrollBar)
+    function BG.CreateScrollFrame(parent, w, h, isEdit, alwaysHide)
         local f = CreateFrame("Frame", nil, parent, "BackdropTemplate")
         f:SetBackdrop({
             bgFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -2018,9 +2176,7 @@ do
         scroll.ScrollBar.scrollStep = BG.scrollStep
         f.scroll = scroll
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        if not notUpdateScrollBar then
-            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
-        end
+        BG.HookScrollBarShowOrHide(scroll, alwaysHide)
 
         local child
         if isEdit then
@@ -2048,16 +2204,19 @@ do
         tex:SetColorTexture(0, 0, 0, 0.3)
     end
 
-    function BG.HookScrollBarShowOrHide(scrollBar)
-        local oldFuc = scrollBar.SetMinMaxValues
-        scrollBar.SetMinMaxValues = function(self, min, max)
-            oldFuc(self, min, max)
-            if max == 0 then
-                self:Hide()
+    function BG.HookScrollBarShowOrHide(scroll, alwaysHide)
+        scroll.ScrollBar:Hide()
+        scroll:HookScript("OnScrollRangeChanged", function(self, xrange, yrange)
+            if alwaysHide then
+                scroll.ScrollBar:Hide()
             else
-                self:Show()
+                if yrange == 0 then
+                    self.ScrollBar:Hide()
+                else
+                    self.ScrollBar:Show()
+                end
             end
-        end
+        end)
     end
 end
 
@@ -2113,20 +2272,15 @@ end
 function BG.UpdateTwo0(bt)
     if BiaoGe.options["autoAdd0"] == 1 and bt:HasFocus() and not IsModifierKeyDown() then
         local text = bt:GetText()
-        if tonumber(text) == 0 then
-            bt:SetText("")
-            return
-        end
-
-        if tonumber(text) then
-            local len = strlen(text)
-            local lastStr = text:sub(len, len)
-            local last2Str = text:sub(len - 1, len - 1)
-            local twoLing = text:sub(len - 1, len)
-            if lastStr == "0" and last2Str ~= "0" then
+        local numtext = tonumber(text)
+        local len = strlen(text)
+        if numtext then
+            if numtext == 0 and len == 2 then
+                bt:SetText("")
                 return
             end
-            if twoLing ~= "00" and twoLing ~= "0" then
+
+            if numtext ~= 0 and len == 1 then
                 bt:Insert("00")
                 bt:SetCursorPosition(1)
             end

@@ -439,12 +439,16 @@ do
                 cff = "00BFFF"
             elseif color == "Green" then
                 cff = "00FF00"
+            elseif color == "Green2" then
+                cff = "40c040"
             elseif color == "Red" then
                 cff = "FF0000"
             elseif color == "Fen" then
                 cff = "FF69B4"
             elseif color == "Gold" then
                 cff = "FFD100"
+            elseif color == "Yellow" then
+                cff = "FFFF00"
             elseif color == "White" then
                 cff = "FFFFFF"
             elseif color == "Dis" then
@@ -462,8 +466,12 @@ do
         CreateMyFont("Green", 15)
         CreateMyFont("Green", 25)
 
+        CreateMyFont("Green2", 15)
+
         CreateMyFont("Gold", 13)
         CreateMyFont("Gold", 15)
+
+        CreateMyFont("Yellow", 15)
 
         CreateMyFont("Red", 15)
 
@@ -579,26 +587,32 @@ do
 
 
         local Interface = "Interface\\AddOns\\BiaoGe\\Media\\sound\\"
-        local tbl = {
-            "AI",
-            "YingXue",
+        BG.soundTbl = {
+            { ID = "AI", name = L["AI语音"] },
+            { ID = "YingXue", name = L["樱雪"] },
+            { ID = "BeiXi", name = L["匕首岭-<TIMEs>贝西"] },
         }
-        for i, name in ipairs(tbl) do
-            BG["sound_paimai" .. name] = Interface .. name .. "\\拍卖啦.mp3"
-            BG["sound_hope" .. name] = Interface .. name .. "\\心愿达成.mp3"
-            BG["sound_qingkong" .. name] = Interface .. name .. "\\已清空表格.mp3"
-            BG["sound_cehuiqingkong" .. name] = Interface .. name .. "\\已撤回清空.mp3"
-            BG["sound_alchemyReady" .. name] = Interface .. name .. "\\炼金转化已就绪.mp3"
-            BG["sound_tailorReady" .. name] = Interface .. name .. "\\裁缝洗布已就绪.mp3"
-            BG["sound_leatherworkingReady" .. name] = Interface .. name .. "\\制皮筛盐已就绪.mp3"
-            BG["sound_error" .. name] = Interface .. name .. "\\检测到配置文件错误，现已重置.mp3"
-            BG["sound_pingjia" .. name] = Interface .. name .. "\\给个评价吧.mp3"
-            BG["sound_biaogefull" .. name] = Interface .. name .. "\\表格满了.mp3"
-            BG["sound_guoqi" .. name] = Interface .. name .. "\\装备快过期了.mp3"
-            BG["sound_uploading" .. name] = Interface .. name .. "\\账单正在上传.mp3"
-            BG["sound_uploaded" .. name] = Interface .. name .. "\\账单上传成功.mp3"
-            BG["sound_countDownStop" .. name] = Interface .. name .. "\\倒数暂停.mp3"
-            BG["sound_HusbandComeOn" .. name] = Interface .. name .. "\\老公加油.mp3"
+        BG.soundTbl2 = {
+            { ID = "paimai", name = "拍卖啦.mp3" },
+            { ID = "hope", name = "心愿达成.mp3" },
+            { ID = "qingkong", name = "已清空表格.mp3" },
+            { ID = "cehuiqingkong", name = "已撤回清空.mp3" },
+            { ID = "alchemyReady", name = "炼金转化已就绪.mp3" },
+            { ID = "tailorReady", name = "裁缝洗布已就绪.mp3" },
+            { ID = "leatherworkingReady", name = "制皮筛盐已就绪.mp3" },
+            { ID = "pingjia", name = "给个评价吧.mp3" },
+            { ID = "biaogefull", name = "表格满了.mp3" },
+            { ID = "guoqi", name = "装备快过期了.mp3" },
+            { ID = "uploading", name = "账单正在上传.mp3" },
+            { ID = "uploaded", name = "账单上传成功.mp3" },
+            { ID = "countDownStop", name = "倒数暂停.mp3" },
+            { ID = "HusbandComeOn", name = "老公加油.mp3" },
+        }
+        for _, v in ipairs(BG.soundTbl) do
+            local name = v.ID
+            for _, v in ipairs(BG.soundTbl2) do
+                BG["sound_" .. v.ID .. name] = Interface .. name .. "\\" .. v.name
+            end
         end
     end
 
@@ -625,142 +639,139 @@ end
 
 -- 数据库（保存至本地）
 local function DataBase()
-    -- 开始
-    do
-        if BiaoGe then
-            if type(BiaoGe) ~= "table" then
-                BiaoGe = {}
-            end
-        else
+    if BiaoGe then
+        if type(BiaoGe) ~= "table" then
             BiaoGe = {}
         end
-        if not BiaoGe.point then
-            BiaoGe.point = {}
-        end
-        if not BiaoGe.duizhang then
-            BiaoGe.duizhang = {}
-        end
+    else
+        BiaoGe = {}
+    end
+    if not BiaoGe.point then
+        BiaoGe.point = {}
+    end
+    if not BiaoGe.duizhang then
+        BiaoGe.duizhang = {}
+    end
 
-        for index, FB in ipairs(BG.FBtable) do
-            if not BiaoGe[FB] then
-                BiaoGe[FB] = {}
-            end
-            BiaoGe[FB].tradeTbl = BiaoGe[FB].tradeTbl or {}
-            for b = 1, 22 do
-                if not BiaoGe[FB]["boss" .. b] then
-                    BiaoGe[FB]["boss" .. b] = {}
-                end
-            end
+    for index, FB in ipairs(BG.FBtable) do
+        if not BiaoGe[FB] then
+            BiaoGe[FB] = {}
         end
-
-        if not BiaoGe.HistoryList then
-            BiaoGe.HistoryList = {}
-        end
-        for index, FB in ipairs(BG.FBtable) do
-            if not BiaoGe.HistoryList[FB] then
-                BiaoGe.HistoryList[FB] = {}
+        BiaoGe[FB].tradeTbl = BiaoGe[FB].tradeTbl or {}
+        for b = 1, 22 do
+            if not BiaoGe[FB]["boss" .. b] then
+                BiaoGe[FB]["boss" .. b] = {}
             end
         end
+    end
 
-        if not BiaoGe.History then
-            BiaoGe.History = {}
+    if not BiaoGe.HistoryList then
+        BiaoGe.HistoryList = {}
+    end
+    for index, FB in ipairs(BG.FBtable) do
+        if not BiaoGe.HistoryList[FB] then
+            BiaoGe.HistoryList[FB] = {}
         end
-        for index, FB in ipairs(BG.FBtable) do
-            if not BiaoGe.History[FB] then
-                BiaoGe.History[FB] = {}
-            end
-        end
+    end
 
-        if not BG.IsVanilla then
-            if not BiaoGe.BossFrame then
-                BiaoGe.BossFrame = {}
-            end
-            for index, FB in ipairs(BG.FBtable) do
-                if not BiaoGe.BossFrame[FB] then
-                    BiaoGe.BossFrame[FB] = {}
-                end
-            end
+    if not BiaoGe.History then
+        BiaoGe.History = {}
+    end
+    for index, FB in ipairs(BG.FBtable) do
+        if not BiaoGe.History[FB] then
+            BiaoGe.History[FB] = {}
         end
+    end
 
-        if not BiaoGe.options then
-            BiaoGe.options = {}
-        end
-        if not BiaoGe.options.SearchHistory then
-            BiaoGe.options.SearchHistory = {}
-        end
-        local name = "moLing"
-        BG.options[name .. "reset"] = 1
-        if not BiaoGe.options[name] then
-            BiaoGe.options[name] = BG.options[name .. "reset"]
-        end
-        -- 声音方案
-        BiaoGe.options.Sound = BiaoGe.options.Sound or "YingXue"
-
-        -- 高亮天赋装备
-        if not BiaoGe.filterClassNum then
-            BiaoGe.filterClassNum = {}
-        end
-        if not BiaoGe.filterClassNum[realmID] then
-            BiaoGe.filterClassNum[realmID] = {}
-        end
-        if not BiaoGe.filterClassNum[realmID][player] then
-            BiaoGe.filterClassNum[realmID][player] = 0
-        end
-        if BiaoGeA and BiaoGeA.filterClassNum then
-            BiaoGe.filterClassNum[realmID][player] = BiaoGeA.filterClassNum
-            BiaoGeA.filterClassNum = nil
-        end
-
-        -- 心愿清单
-        if not BiaoGe.Hope then
-            BiaoGe.Hope = {}
-        end
-
-        if not BiaoGe.Hope[realmID] then
-            BiaoGe.Hope[realmID] = {}
-        end
-        if not BiaoGe.Hope[realmID][player] then
-            BiaoGe.Hope[realmID][player] = {}
+    if not BG.IsVanilla then
+        if not BiaoGe.BossFrame then
+            BiaoGe.BossFrame = {}
         end
         for index, FB in ipairs(BG.FBtable) do
-            if not BiaoGe.Hope[realmID][player][FB] then
-                BiaoGe.Hope[realmID][player][FB] = {}
+            if not BiaoGe.BossFrame[FB] then
+                BiaoGe.BossFrame[FB] = {}
             end
-            for n = 1, 4 do
-                if not BiaoGe.Hope[realmID][player][FB]["nandu" .. n] then
-                    BiaoGe.Hope[realmID][player][FB]["nandu" .. n] = {}
-                    for b = 1, 22 do
-                        if not BiaoGe.Hope[realmID][player][FB]["nandu" .. n]["boss" .. b] then
-                            BiaoGe.Hope[realmID][player][FB]["nandu" .. n]["boss" .. b] = {}
-                        end
+        end
+    end
+
+    if not BiaoGe.options then
+        BiaoGe.options = {}
+    end
+    if not BiaoGe.options.SearchHistory then
+        BiaoGe.options.SearchHistory = {}
+    end
+    local name = "moLing"
+    BG.options[name .. "reset"] = 1
+    if not BiaoGe.options[name] then
+        BiaoGe.options[name] = BG.options[name .. "reset"]
+    end
+    -- 声音方案
+    BiaoGe.options.Sound = BiaoGe.options.Sound or BG.soundTbl[random(#BG.soundTbl)]
+
+    -- 高亮天赋装备
+    if not BiaoGe.filterClassNum then
+        BiaoGe.filterClassNum = {}
+    end
+    if not BiaoGe.filterClassNum[realmID] then
+        BiaoGe.filterClassNum[realmID] = {}
+    end
+    if not BiaoGe.filterClassNum[realmID][player] then
+        BiaoGe.filterClassNum[realmID][player] = 0
+    end
+    if BiaoGeA and BiaoGeA.filterClassNum then
+        BiaoGe.filterClassNum[realmID][player] = BiaoGeA.filterClassNum
+        BiaoGeA.filterClassNum = nil
+    end
+
+    -- 心愿清单
+    if not BiaoGe.Hope then
+        BiaoGe.Hope = {}
+    end
+
+    if not BiaoGe.Hope[realmID] then
+        BiaoGe.Hope[realmID] = {}
+    end
+    if not BiaoGe.Hope[realmID][player] then
+        BiaoGe.Hope[realmID][player] = {}
+    end
+    for index, FB in ipairs(BG.FBtable) do
+        if not BiaoGe.Hope[realmID][player][FB] then
+            BiaoGe.Hope[realmID][player][FB] = {}
+        end
+        for n = 1, 4 do
+            if not BiaoGe.Hope[realmID][player][FB]["nandu" .. n] then
+                BiaoGe.Hope[realmID][player][FB]["nandu" .. n] = {}
+                for b = 1, 22 do
+                    if not BiaoGe.Hope[realmID][player][FB]["nandu" .. n]["boss" .. b] then
+                        BiaoGe.Hope[realmID][player][FB]["nandu" .. n]["boss" .. b] = {}
                     end
                 end
             end
         end
-        if BiaoGeA and BiaoGeA.Hope then
-            for k, v in pairs(BiaoGeA.Hope) do
-                BiaoGe.Hope[realmID][player][k] = v
-            end
-            BiaoGeA.Hope = nil
+    end
+    if BiaoGeA and BiaoGeA.Hope then
+        for k, v in pairs(BiaoGeA.Hope) do
+            BiaoGe.Hope[realmID][player][k] = v
         end
+        BiaoGeA.Hope = nil
+    end
 
-        -- 记录服务器名称
-        do
-            BiaoGe.realmName = BiaoGe.realmName or {}
-            BiaoGe.realmName[realmID] = GetRealmName()
-        end
-        -- 记录每个角色的职业和等级
-        do
-            BiaoGe.playerInfo = BiaoGe.playerInfo or {}
-            BiaoGe.playerInfo[realmID] = BiaoGe.playerInfo[realmID] or {}
-            BiaoGe.playerInfo[realmID][player] = BiaoGe.playerInfo[realmID][player] or {}
-            BiaoGe.playerInfo[realmID][player].class = select(2, UnitClass("player"))
-            BiaoGe.playerInfo[realmID][player].level = UnitLevel("player")
+    -- 记录服务器名称
+    do
+        BiaoGe.realmName = BiaoGe.realmName or {}
+        BiaoGe.realmName[realmID] = GetRealmName()
+    end
+    -- 记录每个角色的职业和等级
+    do
+        BiaoGe.playerInfo = BiaoGe.playerInfo or {}
+        BiaoGe.playerInfo[realmID] = BiaoGe.playerInfo[realmID] or {}
+        BiaoGe.playerInfo[realmID][player] = BiaoGe.playerInfo[realmID][player] or {}
+        BiaoGe.playerInfo[realmID][player].class = select(2, UnitClass("player"))
+        BiaoGe.playerInfo[realmID][player].level = UnitLevel("player")
 
-            BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, even, level)
-                BiaoGe.playerInfo[realmID][player].level = level
-            end)
-        end
+        BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, even, level)
+            BiaoGe.playerInfo[realmID][player].level = level
+        end)
     end
 end
 

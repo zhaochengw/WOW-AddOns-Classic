@@ -60,7 +60,7 @@ function BG.HistoryUI()
         scroll:SetPoint("TOPLEFT", BG.History.List, "TOPLEFT", 0, -5)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll)
         BG.History.scroll = scroll
 
         local child = CreateFrame("Frame", nil, BG.History.List) -- 子框架
@@ -311,7 +311,7 @@ function BG.HistoryUI()
         scroll:SetPoint("BOTTOMLEFT", BG.frameWenBen.frame, "BOTTOMLEFT", 0, 2)
         scroll.ScrollBar.scrollStep = BG.scrollStep
         BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-        BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+        BG.HookScrollBarShowOrHide(scroll)
         scroll:SetScrollChild(edit)
         BG.frameWenBen.scroll = scroll
 

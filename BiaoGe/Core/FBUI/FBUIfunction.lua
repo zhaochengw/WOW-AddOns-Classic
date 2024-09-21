@@ -113,7 +113,7 @@ function BG.UpdateZhiChuPercent(zhuangbei, jine)
     jine.hasPercent = false
     if BiaoGe.options["zhichuPercent"] ~= 1 then return end
 
-    local num = tonumber(zhuangbei:GetText():match("(%d+)%%"))
+    local num = tonumber(zhuangbei:GetText():match("(%d+%.-%d-)%%"))
     if num then
         local text = floor(BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"]:GetText() * num * 0.01)
         if text == 0 then text = "" end
@@ -383,7 +383,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     bt:SetScript("OnTextChanged", OnTextChanged)
     -- 鼠标按下时
     bt:SetScript("OnMouseDown", function(self, enter)
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then
             UpdateCancelDelete(self, FB, BossNum(FB, b, t), i, self.type)
             self:SetEnabled(false)
             self:SetText("")
@@ -451,7 +451,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then
             self:SetEnabled(true)
         end
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["zhuangbei" .. i] then
             self:SetEnabled(true)
         end
     end)
@@ -679,9 +679,9 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
             self:SetTextColor(1, 1, 1)
         end
     end)
-    -- 点击时
+
     bt:SetScript("OnMouseDown", function(self, enter)
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["maijia" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["maijia" .. i] then
             UpdateCancelDelete(self, FB, BossNum(FB, b, t), i, self.type)
             self:SetEnabled(false)
             self:SetText("")
@@ -704,7 +704,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
         if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["maijia" .. i] then
             self:SetEnabled(true)
         end
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["maijia" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["maijia" .. i] then
             self:SetEnabled(true)
         end
     end)
@@ -737,7 +737,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
             end
             BG.FrameAuctionMSGbg:SetParent(BG.FrameMaijiaList)
             BG.FrameAuctionMSGbg:ClearAllPoints()
-            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 0, 0)
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameMaijiaList, "TOPLEFT", 2, 0)
         end
     end)
     -- 失去光标时
@@ -847,7 +847,6 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     bt:SetSize(80, 20)
     bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0)
     bt:SetFrameLevel(110)
-    -- button:SetNumeric(true)      -- 只能输入整数
     bt:SetAutoFocus(false)
     bt:Show()
     bt.FB = FB
@@ -910,9 +909,8 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             end
         end
     end)
-    -- 点击时
     bt:SetScript("OnMouseDown", function(self, enter)
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then
             UpdateCancelDelete(self, FB, BossNum(FB, b, t), i, self.type)
             FrameHide(1)
             self:SetEnabled(false)
@@ -933,7 +931,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then
             self:SetEnabled(true)
         end
-        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then -- 右键清空格子
+        if enter == "RightButton" and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then
             self:SetEnabled(true)
         end
     end)
@@ -961,6 +959,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         BG.FrameDs[FB .. 2]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show() -- 底色
         if self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] and self ~= BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. i] then
             BG.SetListjine(self, FB, BossNum(FB, b, t), i)
+            BG.CreateNumFrame(BG.FrameJineList)
         end
         if BG.FrameAuctionMSGbg then
             BG.FrameAuctionMSG.item = BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i]:GetText()
@@ -974,13 +973,16 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             end
             BG.FrameAuctionMSGbg:SetParent(BG.FrameJineList)
             BG.FrameAuctionMSGbg:ClearAllPoints()
-            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 0, 0)
+            BG.FrameAuctionMSGbg:SetPoint("TOPRIGHT", BG.FrameJineList, "TOPLEFT", 2, 0)
         end
     end)
     -- 失去光标时
     bt:SetScript("OnEditFocusLost", function(self)
         self:ClearHighlightText()
         BG.FrameDs[FB .. 2]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
+        if BG.FrameNumFrame then
+            BG.FrameNumFrame:Hide()
+        end
     end)
     -- 按TAB跳转下一行的装备
     bt:SetScript("OnTabPressed", function(self)
@@ -1103,7 +1105,7 @@ function BG.FBBossNameUI(FB, t, b, bb, i, ii, frameName)
         f:SetScript("OnMouseUp", function(self)
             if IsShiftKeyDown() then
                 local b = BossNum(FB, b, t)
-                BG.ClickTabButton(BG.tabButtons, BG.BossMainFrameTabNum)
+                BG.ClickTabButton(BG.BossMainFrameTabNum)
 
                 for i, v in ipairs(BG["BossTabButtons" .. FB]) do
                     v:Enable()
@@ -1324,7 +1326,7 @@ function BG.CreateFBScrollFrame(frameName, FB, bossNum)
     scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
     -- scroll.ScrollBar.scrollStep = BG.scrollStep
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-    BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+    BG.HookScrollBarShowOrHide(scroll)
 
     local child = CreateFrame("Frame", nil, scroll) -- 子框架
     child:SetSize(1, 1)

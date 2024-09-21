@@ -354,16 +354,27 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         edit:SetScript("OnEnterPressed", function(self)
             self:ClearFocus()
         end)
-        -- 点击时
         edit:SetScript("OnMouseDown", function(self, enter)
-            if enter == "RightButton" then -- 右键清空格子
+            if enter == "RightButton" then
                 self:SetEnabled(false)
                 self:SetText("")
             end
         end)
         edit:SetScript("OnMouseUp", function(self, enter)
-            if enter == "RightButton" then -- 右键清空格子
+            if enter == "RightButton" then
                 self:SetEnabled(true)
+            end
+        end)
+        edit:HookScript("OnEditFocusGained", function(self)
+            local f = BG.CreateNumFrame(TradeRecipientItem1ItemButton)
+            if f then
+                f:ClearAllPoints()
+                f:SetPoint("TOP", BG.QianKuan.frame, "BOTTOM", 0, 0)
+            end
+        end)
+        edit:HookScript("OnEditFocusLost", function(self, button)
+            if BG.FrameNumFrame then
+                BG.FrameNumFrame:Hide()
             end
         end)
 

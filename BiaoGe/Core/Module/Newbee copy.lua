@@ -532,7 +532,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -5)
             scroll.ScrollBar.scrollStep = 150
             BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-            BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+            BG.HookScrollBarShowOrHide(scroll)
 
             local child = CreateFrame("EditBox", nil, f) -- 子框架
             child:SetFontObject(GameFontNormal)

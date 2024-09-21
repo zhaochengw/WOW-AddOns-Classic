@@ -150,7 +150,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local c1, c2, c3 = GetClassRGB(v.name)
             GameTooltip:AddDoubleLine(v.name .. role, Ver, c1, c2, c3, 1, 1, 1)
             if Ver == L["无"] or Ver == L["未知"] then
-                local alpha = 0.3
+                local alpha = 0.4
                 if _G["GameTooltipTextLeft" .. (i + line)] then
                     _G["GameTooltipTextLeft" .. (i + line)]:SetAlpha(alpha)
                 end
@@ -407,7 +407,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     if bindType == 2 then
                         local t = ftex:CreateFontString()
                         t:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
-                        t:SetPoint("TOP", ftex, 0, -1)
+                        t:SetPoint("TOP", ftex, 0, -2)
                         t:SetText(L["装绑"])
                         t:SetTextColor(0, 1, 0)
                     end
@@ -746,23 +746,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         BG.guildBiaoGeVersion[sendername] = version
                         UpdateGuildFrame(guild)
                     end
-                elseif prefix == "BiaoGe" and distType == "RAID" then
+                elseif prefix == "BiaoGe" and distType == "RAID" then -- 插件版本
                     if msg == "VersionCheck" then
                         C_ChatInfo.SendAddonMessage("BiaoGe", "MyVer-" .. BG.ver, "RAID")
                     elseif strfind(msg, "MyVer") then
                         local _, version = strsplit("-", msg)
                         BG.raidBiaoGeVersion[sendername] = version
                         UpdateAddonFrame(addon)
-                        if sendDone[sendername] then
-                            sendDone[sendername] = nil
-                            if not notShowSendingText[sendername] and sendingCount[sendername] <= 2 then
-                                BG.SendSystemMessage(format(BG.STC_g1(L["%s已成功导入拍卖WA。"]), SetClassCFF(sendername)))
-                            end
-                            UpdateOnEnter(BG.ButtonRaidAuction)
-                            UpdateOnEnter(BG.StartAucitonFrame)
-                        end
                     end
-                elseif prefix == "BiaoGeAuction" and distType == "RAID" then
+                elseif prefix == "BiaoGeAuction" and distType == "RAID" then -- 拍卖版本
                     local arg1, version = strsplit(",", msg)
                     if arg1 == "MyVer" then
                         BG.raidAuctionVersion[sendername] = version
@@ -929,7 +921,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 scroll:SetPoint("CENTER")
                 scroll.ScrollBar.scrollStep = BG.scrollStep
                 BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-                BG.HookScrollBarShowOrHide(scroll.ScrollBar)
+                BG.HookScrollBarShowOrHide(scroll)
                 scroll:SetScrollChild(edit)
                 edit:SetScript("OnEscapePressed", function()
                     f:Hide()

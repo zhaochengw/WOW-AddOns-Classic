@@ -874,9 +874,7 @@ function BG.RoleOverviewUI()
             if even ~= "ENCOUNTER_END" or (even == "ENCOUNTER_END" and success == 1) then
                 BG.After(1, function()
                     BG.UpdateFBCD()
-                    if not BG.IsVanilla then
-                        BG.UpdateFBCD_5M()
-                    end
+                    BG.UpdateFBCD_5M()
                     BG.GetLockoutID()
                 end)
             end
@@ -934,7 +932,13 @@ function BG.RoleOverviewUI()
             BG.FBCDall_5M_table[i].height = i * height
         end
 
+        local name = "FB5M"
+        BG.options[name .. "reset"] = 0
+        BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+
         function BG.UpdateFBCD_5M()
+            if BG.IsVanilla then return end
+
             if BG.FBCD_5M_Frame then
                 BG.FBCD_5M_Frame:Hide()
             end
@@ -957,8 +961,7 @@ function BG.RoleOverviewUI()
                 f:SetPoint("TOPLEFT", PVEFrame, "TOPRIGHT", 10, 0)
             end
             f:EnableMouse(true)
-            local name = "FB5M"
-            if BiaoGe.options[name] == 0 then
+            if BiaoGe.options["FB5M"] == 0 then
                 f:Hide()
             else
                 f:Show()
@@ -1166,6 +1169,7 @@ function BG.RoleOverviewUI()
                 bt.tbl = { 2463 } -- 伽马灵魂烘炉
                 -- bt.tbl = { 136 }  -- 地狱火test
             end
+            bt:Hide()
             bt:SetScript("OnClick", OnClick)
             bt:SetScript("OnEnter", OnEnter)
             bt:SetScript("OnLeave", GameTooltip_Hide)

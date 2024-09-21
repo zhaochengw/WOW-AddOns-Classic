@@ -138,7 +138,7 @@ local function GetWCLinfo(name)
         tbl.colortext = BG.Expand(wclText):gsub("%).+/", ")")
         tbl.text = tbl.colortext:gsub("|c[fF][fF]......", ""):gsub("|r", "")
         if pmText then
-            tbl.colortext = tbl.colortext .. "\n" .. BG.STC_y1(pmText)
+            tbl.colortext = tbl.colortext .. "\n" .. pmText
             tbl.text = tbl.text .. pmText
         end
     else
