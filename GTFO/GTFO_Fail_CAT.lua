@@ -1865,4 +1865,50 @@ GTFO.SpellID["109563"] = {
 	sound = 3;
 };
 
+--- *******************
+--- * Grim Batol (M+) *
+--- *******************
+
+GTFO.SpellID["456701"] = {
+  --desc = "Obsidian Stomp (Twilight Brute)";
+  sound = 3;
+};
+
+GTFO.SpellID["454216"] = {
+  --desc = "Boiling Lava";
+  sound = 3;
+};
+
+GTFO.SpellID["451389"] = {
+  --desc = "Ascension (Twilight Lavabender)";
+  sound = 3;
+};
+
+GTFO.SpellID["456715"] = {
+  --desc = "Dark Eruption (Twilight Lavabender)";
+  soundFunction = function() -- Warn only if you get hit more than once 
+	if (GTFO_FindEvent("DarkEruption")) then
+		return 4;
+	end
+	GTFO_AddEvent("DarkEruption", 3);
+	return 0;
+  end
+};
+
+GTFO.SpellID["462219"] = {
+  --desc = "Blazing Shadowflame (Twilight Flamerender)";
+  sound = 3;
+};
+
+GTFO.SpellID["451394"] = {
+  --desc = "Mind Piercer (Faceless Corruptor)";
+  sound = 3;
+};
+
+GTFO.SpellID["450087"] = {
+  --desc = "Depth's Grasp (Void Tendril)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 end

@@ -535,11 +535,108 @@ GTFO.SpellID["458836"] = {
   sound = 1;
 };
 
+GTFO.SpellID["445193"] = {
+  --desc = "Flame Patch (Spitfire Charger)";
+  sound = 1;
+};
+
+
 --- *******************
 --- * Nerub-ar Palace *
 --- *******************
 
--- TODO: Stalkers Netting (Ulgrax the Devourer) - Negate for players with Digestive Venom
+GTFO.SpellID["441402"] = {
+  --desc = "Concentrated Cold (Hollow Frostweaver)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["434275"] = {
+  --desc = "Black Blood";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["445518"] = {
+  --desc = "Black Blood";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["448148"] = {
+  --desc = "Black Blood (Blood Collector)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["444172"] = {
+  --desc = "Blightstorm (Xur'khun the Defiled)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["440904"] = {
+  --desc = "Devour (Ulgrax the Devourer)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["450130"] = {
+  --desc = "Slip 'n Slime";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["441116"] = {
+  --desc = "Heaving Retch (Regurgitating Monstrosity)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["459785"] = {
+  --desc = "Cosmic Residue";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["454832"] = {
+  --desc = "Poison Breath (Caustic Skyrazor)";
+  sound = 1;
+};
+
+GTFO.SpellID["439776"] = {
+  --desc = "Acid Pools (Rasha'nan)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["437786"] = {
+  --desc = "Atomized (Nexus-Princess Ky'veza)";
+  sound = 1;
+};
+
+GTFO.SpellID["463071"] = {
+  --desc = "Sanguine Overflow (Brood Infuser)";
+  sound = 1;
+};
+
+GTFO.SpellID["442799"] = {
+  --desc = "Sanguine Overflow (Broodtwister Ovi'nax)";
+  sound = 1;
+};
+
+GTFO.SpellID["451086"] = {
+  --desc = "Entropic Webs (Skeinspinner Takazj)";
+  ignoreApplication = true;
+  sound = 2;
+};
+
+GTFO.SpellID["444956"] = {
+  --desc = "Noxious Discharge (Xur'khun the Defiled)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
 
 end
 

@@ -1178,10 +1178,36 @@ GTFO.SpellID["267105"] = {
 -- * Siege of Boralus *
 -- ********************
 
+GTFO.SpellID["275775"] = {
+  --desc = "Savage Tempest (Irontide Raider)";
+  sound = 3;
+};
+
 GTFO.SpellID["256866"] = {
   --desc = "Iron Ambush (Riptide Shredder)";
   sound = 3;
   applicationOnly = true;
+};
+
+GTFO.SpellID["268443"] = {
+  --desc = "Dread Volley (Dread Cannon)";
+  sound = 3;
+};
+
+GTFO.SpellID["269029"] = {
+  --desc = "Clear the Deck (Dread Captain Lockwood)";
+  sound = 3;
+};
+
+GTFO.SpellID["268260"] = {
+  --desc = "Broadside (Ashvane Cannoneer)";
+  sound = 3;
+};
+
+GTFO.SpellID["257169"] = {
+  --desc = "Terrifying Roar (Bilge Rat Demolisher)";
+  applicationOnly = true;
+  sound = 3;
 };
 
 GTFO.SpellID["272426"] = {
@@ -1207,9 +1233,7 @@ GTFO.SpellID["277535"] = {
 
 -- TODO: Cannon Barrage (Chopper Redhook) -- Avoidable?
 -- TODO: Heavy Slash (Irontide Cleaver) -- Non-Tank only? Avoidable?
--- TODO: Clear the Deck (Dread Captain Lockwood) -- Non-Tank only? Avoidable?
 -- TODO: Crimson Swipe (Ashvane Deckhand) -- Non-Tank only? Avoidable?
--- TODO: Broadside (Ashvane Cannoneer) -- Avoidable?
 
 GTFO.SpellID["261565"] = {
   --desc = "Crashing Tide (Hadal Darkfathom)";
@@ -1217,10 +1241,9 @@ GTFO.SpellID["261565"] = {
   tankSound = 0;
 };
 
-GTFO.SpellID["257883"] = {
-  --desc = "Break Water (Hadal Darkfathom)";
+GTFO.SpellID["257868"] = {
+  --desc = "Crashing Tide (Hadal Darkfathom)";
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["276042"] = {
@@ -1232,7 +1255,7 @@ GTFO.SpellID["276042"] = {
 
 GTFO.SpellID["269266"] = {
   --desc = "Slam (Demolishing Terror)";
-  sound = 3;
+  sound = 0; -- Changed in TWW
 };
 
 -- *********

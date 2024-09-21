@@ -2121,3 +2121,18 @@ Change Log:
 * Added TWW spells for Priory of the Scared Flame
 * Added TWW spells for TWW Delves 
 
+5.12.3
+* Added The War Within spells (world)
+* Added TWW spells for Nerub-ar Palace
+* Added TWW spells for City of Threads
+* Added TWW spells for Priory of the Scared Flame
+* Added Cataclysm spells for Grim Batol (Mythic)
+
+5.12.4
+* Added The War Within spells (world)
+* Added TWW spells for Nerub-ar Palace
+* Added TWW spells for Ara-Kara, City of Echoes
+* Added TWW spells for TWW Delves 
+* Added SL spells for Mists of Tirna Scithe
+* Added BFA spells for Siege of Boralus
+

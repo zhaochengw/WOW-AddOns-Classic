@@ -346,6 +346,29 @@ local function _checkIfKnown(itemLink)
 		return false -- Battlepet is uncollected... or something went wrong
 	end
 
+	if isAnyClassic then -- Wrath Classic doesn't show "Already Known" text for Companion Pets in Vendors etc.
+		if classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
+			local numCompanions = GetNumCompanions("CRITTER")
+			for i = 1, numCompanions do
+				local creatureId, creatureName, creatureSpellId, icon, issummoned, mountType = GetCompanionInfo("CRITTER", i)
+				if db.debug then Print("C: (%d/%d) Id: %d -> %s - CId: %d (%s), SId: %d (%s), TId: %d (%s)", i, numCompanions, itemId, creatureName, creatureId, tostring(itemId == creatureId), creatureSpellId, tostring(itemId == creatureSpellId), icon, tostring(itemIcon == icon)) end
+				--[[
+					Pet's name and the item's name might not match
+						[Yellow Moth Egg] vs [Yellow Moth]
+					Same icon can be used for multiple different pets and items
+						[Blue Moth Egg], [White Moth Egg], [Yellow Moth Egg] and [Yellow Moth] all use textureId 236193
+					Pet's creatureId doesn't have link to itemId or itemLink
+						[Yellow Moth Egg] itemId 29903 vs [Yellow Moth] creatureId 21008
+					Pet's creatureSpellId doesn't have anything useful from GetSpellInfo
+						[Yellow Moth] creatureSpellId 35910
+				]]--
+				--Bandaid solution that is less than ideal:
+				--DevTools_Dump({ strmatch((GetItemInfo(itemId)), creatureName) })
+				return (itemIcon == icon and strmatch((GetItemInfo(itemId)), creatureName))
+			end
+		end
+	end
+
 	local midResult = false
 	if C_TooltipInfo then -- Retail in 10.0.2->, maybe comes to Wrath Classic later?
 		local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
@@ -683,6 +706,24 @@ SlashCmdList.ALREADYKNOWN = function(...)
 		local regionTable = {}
 		local regions = { _G.GameTooltip:GetRegions() }
 
+		-- https://warcraft.wiki.gg/wiki/ItemType
+		local _, _, _, _, _, _, _, _, _, _, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
+		local itemClass, itemSubclass
+		for k, v in pairs(Enum.ItemClass) do
+			if v == classId then
+				itemClass = k
+				break
+			end
+		end
+		if itemClass and Enum["Item" .. itemClass .. "Subclass"] then
+			for k, v in pairs(Enum["Item" .. itemClass .. "Subclass"]) do
+				if v == subclassId then
+					itemSubclass = k
+					break
+				end
+			end
+		end
+
 		for i = 1, #regions do
 			local region = regions[i]
 			if region then
@@ -705,7 +746,12 @@ SlashCmdList.ALREADYKNOWN = function(...)
 		end
 
 		if #regionTable > 0 then -- We have (some) data!
-			local line = format("ItemTest: %s %s / %s\nItem: %s - Regions: %d/%d - Known: %s\nItemLink: %s", ADDON_NAME, C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version"), (GetBuildInfo()), tostring(itemLink), #regionTable, #regions, tostring(_checkIfKnown(itemLink)), tostring(itemLink):gsub("|", "||"))
+			local line = format(
+				"ItemTest: %s %s / %s\nItem: %s (%d %s/%d %s) - Regions: %d/%d - Known: %s\nItemLink: %s",
+				ADDON_NAME, C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version"), (GetBuildInfo()),
+				tostring(itemLink), classId, tostring(itemClass), subclassId, tostring(itemSubclass), #regionTable, #regions, tostring(_checkIfKnown(itemLink)),
+				tostring(itemLink):gsub("|", "||")
+			)
 			for j = 1, #regionTable do
 				line = line .. "\n" .. regionTable[j]
 			end

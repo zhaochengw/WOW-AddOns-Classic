@@ -413,6 +413,11 @@ GTFO.SpellID["326309"] = {
   sound = 1;
 };
 
+GTFO.SpellID["463257"] = {
+  --desc = "Mist Ward (Mistveil Defender)";
+  sound = 1;
+};
+
 --- *******************
 --- * Theater of Pain *
 --- *******************
