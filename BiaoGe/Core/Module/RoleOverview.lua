@@ -36,12 +36,14 @@ function BG.RoleOverviewUI()
                 ["AQL"] = 1,
                 ["ZUG"] = 1,
 
+                ["BWLsod"] = 1,
+                ["ZUGsod"] = 1,
+                ["TCV"] = 1,
                 ["MCsod"] = 1,
                 ["OLsod"] = 1,
                 ["SC"] = 1,
                 ["TTS"] = 1,
-                ["Temple"] = 1,
-                ["huiguweek"] = 1,
+                -- ["huiguweek"] = 1,
                 ["alchemy"] = 1,
                 ["leatherworking"] = 1,
                 ["tailor"] = 1,
@@ -104,6 +106,12 @@ function BG.RoleOverviewUI()
     -- 更新
     do
         if BG.IsVanilla then
+            BG.Once("FBCDchoice",240923,function ()
+                BiaoGe.FBCDchoice["BWLsod"] = 1
+                BiaoGe.FBCDchoice["ZUGsod"] = 1
+                BiaoGe.FBCDchoice["TCV"] = 1
+                BiaoGe.FBCDchoice["Temple"] = nil
+            end)
         elseif BG.IsWLK then
         elseif BG.IsCTM then
         end
@@ -111,6 +119,9 @@ function BG.RoleOverviewUI()
 
     if BG.IsVanilla_Sod then
         BG.FBCDall_table = {
+            { name = "BWLsod", color = "00BFFF", fbId = 469, type = "fb" },
+            { name = "ZUGsod", color = "00BFFF", fbId = 309, type = "fb" },
+            { name = "TCV", color = "00BFFF", fbId = 2804, type = "fb" },
             { name = "MCsod", color = "00BFFF", fbId = 409, type = "fb" },
             { name = "OLsod", color = "00BFFF", fbId = 249, type = "fb" },
             { name = "SC", color = "00BFFF", fbId = 2791, type = "fb" },
@@ -399,9 +410,9 @@ function BG.RoleOverviewUI()
                     t:SetPoint("TOPLEFT", right, "TOPRIGHT", width_jiange, 0)
                 end
                 if v.type and v.type ~= "fb" then
-                    t:SetText("|cff" .. v.color .. v.name2 .. RR)
+                    t:SetText("|cff" .. v.color .. v.name2:gsub("sod","") .. RR)
                 else
-                    t:SetText("|cff" .. v.color .. v.name .. RR)
+                    t:SetText("|cff" .. v.color .. v.name:gsub("sod","") .. RR)
                 end
                 if i == 1 then
                     FBCDchoice_table[i].width = 15
@@ -882,59 +893,57 @@ function BG.RoleOverviewUI()
     end
 
     ------------------5人本CD------------------
-    if not BG.IsVanilla then
-        if BG.IsWLK then
-            BG.FBCDall_5M_table = {
-                { color = "1E90FF", fbId = 574 }, -- 乌下
-                { color = "1E90FF", fbId = 575 },
-
-                { color = "00FFFF", fbId = 576 }, -- 魔枢
-                { color = "00FFFF", fbId = 578 },
-
-                { color = "FF4500", fbId = 601 }, -- 艾卓
-                { color = "FF4500", fbId = 619 },
-
-                { color = "32CD32", fbId = 600 }, -- 要塞
-                { color = "32CD32", fbId = 604 },
-
-                { color = "8B4513", fbId = 599 }, -- 岩石
-                { color = "8B4513", fbId = 602 },
-
-                { color = "FF69B4", fbId = 608 }, -- 紫罗兰
-                { color = "FF69B4", fbId = 595 }, -- 斯坦索姆
-
-                { color = "FFFF00", fbId = 650 }, -- 冠军
-
-                { color = "9370DB", fbId = 632 }, -- 灵魂
-                { color = "9370DB", fbId = 658 }, -- 萨隆
-                { color = "9370DB", fbId = 668 }, -- 映像
-            }
-        elseif BG.IsCTM then
-            BG.FBCDall_5M_table = {
-                { color = "87CEFA", fbId = 755 }, -- 托维尔失落之城
-                { color = "87CEFA", fbId = 657 }, -- 旋云之巅
-                { color = "87CEFA", fbId = 644 }, -- 起源大厅
-
-                { color = "FFFF00", fbId = 36 },  -- 死亡矿井
-                { color = "FFFF00", fbId = 33 },  -- 影牙城堡
-
-                { color = "8B4513", fbId = 725 }, -- 巨石之核
-                { color = "9370DB", fbId = 645 }, -- 黑石岩窟
-                { color = "FF4500", fbId = 670 }, -- 格瑞姆巴托
-                { color = "1E90FF", fbId = 643 }, -- 潮汐王座
-            }
-        end
-
+    do
         local height = 22
         local width_fb = 100
         local width_player = 65
-        for i, v in ipairs(BG.FBCDall_5M_table) do
-            BG.FBCDall_5M_table[i].height = i * height
-        end
 
-        local name = "FB5M"
-        BG.options[name .. "reset"] = 0
-        BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+        if BG.IsWLK then
+            BG.FBCDall_5M_table = {
+                { color = "1E90FF", fbId = 574 },     -- 乌下
+                { color = "1E90FF", fbId = 575 },
+
+                { color = "00FFFF", fbId = 576 },     -- 魔枢
+                { color = "00FFFF", fbId = 578 },
+
+                { color = "FF4500", fbId = 601 },     -- 艾卓
+                { color = "FF4500", fbId = 619 },
+
+                { color = "32CD32", fbId = 600 },     -- 要塞
+                { color = "32CD32", fbId = 604 },
+
+                { color = "8B4513", fbId = 599 },     -- 岩石
+                { color = "8B4513", fbId = 602 },
+
+                { color = "FF69B4", fbId = 608 },     -- 紫罗兰
+                { color = "FF69B4", fbId = 595 },     -- 斯坦索姆
+
+                { color = "FFFF00", fbId = 650 },     -- 冠军
+
+                { color = "9370DB", fbId = 632 },     -- 灵魂
+                { color = "9370DB", fbId = 658 },     -- 萨隆
+                { color = "9370DB", fbId = 668 },     -- 映像
+            }
+        elseif BG.IsCTM then
+            BG.FBCDall_5M_table = {
+                { color = "87CEFA", fbId = 755 },     -- 托维尔失落之城
+                { color = "87CEFA", fbId = 657 },     -- 旋云之巅
+                { color = "87CEFA", fbId = 644 },     -- 起源大厅
+
+                { color = "FFFF00", fbId = 36 },      -- 死亡矿井
+                { color = "FFFF00", fbId = 33 },      -- 影牙城堡
+
+                { color = "8B4513", fbId = 725 },     -- 巨石之核
+                { color = "9370DB", fbId = 645 },     -- 黑石岩窟
+                { color = "FF4500", fbId = 670 },     -- 格瑞姆巴托
+                { color = "1E90FF", fbId = 643 },     -- 潮汐王座
+            }
+        end
+        if BG.FBCDall_5M_table then
+            for i, v in ipairs(BG.FBCDall_5M_table) do
+                BG.FBCDall_5M_table[i].height = i * height
+            end
+        end
 
         function BG.UpdateFBCD_5M()
             if BG.IsVanilla then return end

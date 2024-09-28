@@ -70,7 +70,7 @@ local function CreateListTable(onClick, tbl1)
     -- 开始
     local tbl1 = tbl1 or {}
     local tbl2 = {}
-    local text = L["————通报欠款————"]
+    local text = L["———通报欠款———"]
     table.insert(tbl1, text)
     table.insert(tbl2, { text })
 

@@ -48,7 +48,7 @@ MT.BuildEnv('INSPECT');
 				local name = info[2];
 				local class = info[3];
 				local level = info[4];
-				local code, numGroup, activeGroup, data1, data2 = VT.__emulib.EncodeInspectTalentDataV2(class, level);
+				local code, numGroup, activeGroup, data1, data2 = VT.__dep.__emulib.EncodeInspectTalentDataV2(class, level);
 				if code ~= nil then
 					local cache = VT.TQueryCache[name];
 					if cache == nil then
@@ -70,7 +70,7 @@ MT.BuildEnv('INSPECT');
 					TalData.active = activeGroup;
 					TalData.code = code;
 					TalData.Tick = MT.GetUnifiedTime();
-					VT.__emulib.GetEquipmentData(cache.EquData, unit);
+					VT.__dep.__emulib.GetEquipmentData(cache.EquData, unit);
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_TALENT_DATA_RECV", name, false);
 					MT._TriggerCallback("CALLBACK_INVENTORY_DATA_RECV", name, false);

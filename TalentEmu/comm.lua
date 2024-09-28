@@ -50,7 +50,7 @@ MT.BuildEnv('COMM');
 				VT.PrevQueryRequestSentTime[name] = Tick;
 				local code = VT.VAR[CT.SELFGUID];
 				if code ~= nil then
-					return VT.__emulib.CHAT_MSG_ADDON(VT.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
+					return VT.__dep.__emulib.CHAT_MSG_ADDON(VT.__dep.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
 				end
 			end
 			-- if VT.__is_inbattleground then
@@ -112,7 +112,7 @@ MT.BuildEnv('COMM');
 				);
 				--]]
 				VT.PrevQueryRequestSentTime[name] = Tick;
-				VT.__emulib.SendQueryRequest(shortname, realm, update_tal, update_gly, update_inv);
+				VT.__dep.__emulib.SendQueryRequest(shortname, realm, update_tal, update_gly, update_inv);
 				if not update_tal then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_TALENT_DATA_RECV", name, false);
@@ -290,7 +290,7 @@ MT.BuildEnv('COMM');
 								};
 							end
 							if channel == "WHISPER" then
-								VT.__emulib.PushTalentsInformV1(prefix, code .. "#" .. CT.SELFGUID, "WHISPER", name);
+								VT.__dep.__emulib.PushTalentsInformV1(prefix, code .. "#" .. CT.SELFGUID, "WHISPER", name);
 							end
 						end
 					end
@@ -386,20 +386,20 @@ MT.BuildEnv('COMM');
 	local function SendFilterRep(code)
 		if _CurrentChannel ~= nil then
 			if strsub(code, 1, 1) == "!" then
-				local class, level, numGroup, activeGroup, code1, code2 = VT.__emulib.DecodeTalentDataV2(code, true);
+				local class, level, numGroup, activeGroup, code1, code2 = VT.__dep.__emulib.DecodeTalentDataV2(code, true);
 				if numGroup == 2 then
 					if activeGroup == 1 then
-						VT.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
-						VT.__emulib.PushTalentsV2(class, level, code2, _CurrentChannel, _CurrentTarget);
+						VT.__dep.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
+						VT.__dep.__emulib.PushTalentsV2(class, level, code2, _CurrentChannel, _CurrentTarget);
 					else
-						VT.__emulib.PushTalentsV2(class, level, code2, _CurrentChannel, _CurrentTarget);
-						VT.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
+						VT.__dep.__emulib.PushTalentsV2(class, level, code2, _CurrentChannel, _CurrentTarget);
+						VT.__dep.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
 					end
 				else
-					VT.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
+					VT.__dep.__emulib.PushTalentsV2(class, level, code1, _CurrentChannel, _CurrentTarget);
 				end
 			else
-				VT.__emulib.PushTalentsV1(code, _CurrentChannel, _CurrentTarget);
+				VT.__dep.__emulib.PushTalentsV1(code, _CurrentChannel, _CurrentTarget);
 			end
 		end
 		return "[emu:" .. code .. "]";
@@ -436,7 +436,7 @@ MT.BuildEnv('COMM');
 	end
 
 	MT.RegisterOnInit('COMM', function(LoggedIn)
-		VT.__emulib.RegisterCommmDistributor(MT._CommDistributor);
+		VT.__dep.__emulib.RegisterCommmDistributor(MT._CommDistributor);
 		local Driver = CreateFrame('FRAME', nil, UIParent);
 		Driver:RegisterEvent("CHAT_MSG_ADDON");
 		Driver:RegisterEvent("CHAT_MSG_ADDON_LOGGED");

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d288", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240622210644")
+mod:SetRevision("20240417180519")
 mod:SetZone(33)
 mod:SetCreatureID(36272, 36296, 36565)
 --mod:SetEncounterID(2879)--War Within rework?
@@ -29,10 +29,10 @@ local timerHummel				= mod:NewTimer(10.5, "HummelActive", "132349", nil, false, 
 local timerBaxter				= mod:NewTimer(16, "BaxterActive", "132349", nil, false, "TrioActiveTimer")
 local timerFrye					= mod:NewTimer(25, "FryeActive", "132349", nil, false, "TrioActiveTimer")
 mod:AddBoolOption("TrioActiveTimer", true, "timer", nil, 1)
-mod:AddGossipOption(true, "Encounter")
+mod:AddBoolOption("AGBoss", true)
 
 function mod:GOSSIP_SHOW()
-	if self.Options.AutoGossipEncounter then
+	if self.Options.AGBoss then
 		self:SelectMatchingGossip(true, 37537)
 	end
 end

@@ -93,15 +93,6 @@ local challengeModeIds = {
 	[456] = 643, -- Throne of the Tides
 	[463] = 2579, -- Dawn of the Infinite: Galakrond's Fall
 	[464] = 2579, -- Dawn of the Infinite: Murozond's Rise
-	[499] = 2649, -- Priory of the Sacred Flame
-	[500] = 2648, -- The Rookery
-	[501] = 2652, -- The Stonevault
-	[502] = 2669, -- City of Threads
-	[503] = 2660, -- Ara-Kara, City of Echoes
-	[504] = 2651, -- Darkflame Cleft
-	[505] = 2662, -- The Dawnbreaker
-	[506] = 2661, -- Cinderbrew Meadery
-	[507] = 670, -- Grim Batol
 }
 
 do
@@ -424,13 +415,12 @@ local function addOptions(mod, catpanel, v)
 					value	= val
 				})
 			end
-			--title, values, vartype, var, callfunc, width, height, parent
 			catbutton = catpanel:CreateDropdown(mod.localization.options[v], dropdownOptions, mod, v, function(value)
 				mod.Options[v] = value
 				if mod.optionFuncs and mod.optionFuncs[v] then
 					mod.optionFuncs[v]()
 				end
-			end, nil, 40)
+			end, nil, 32)
 			if not addSpacer then
 				if lastButton then
 					catbutton:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -12)
@@ -446,27 +436,22 @@ local function addOptions(mod, catpanel, v)
 	end
 end
 
-local isFirstModPanel = true
----@param mod DBMMod
-function DBM_GUI:CreateBossModPanel(mod, isTestView)
-	local panel = isTestView and mod.testPanel or mod.panel
-	if not panel then
+function DBM_GUI:CreateBossModPanel(mod)
+	if not mod.panel then
 		DBM:AddMsg("Couldn't create boss mod panel for " .. mod.localization.general.name)
 		return false
 	end
+	local panel = mod.panel
+	local category
 
-	local extraOffset = 0
-	if isTestView then
-		extraOffset = extraOffset + DBM_GUI:AddModTestOptionsAbove(panel, mod)
-	end
 	local iconstat = panel.frame:CreateFontString("DBM_GUI_Mod_Icons" .. mod.localization.general.name, "ARTWORK")
-	iconstat:SetPoint("TOP", panel.frame, 0, -10 - extraOffset)
+	iconstat:SetPoint("TOP", panel.frame, 0, -10)
 	iconstat:SetFontObject(GameFontNormal)
 	iconstat:SetText(L.IconsInUse)
 	for i = 1, 8 do
 		local icon = panel.frame:CreateTexture()
 		icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
-		icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26 - extraOffset)
+		icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26)
 		icon:SetSize(16, 16)
 		if not mod.usedIcons or not mod.usedIcons[i] then
 			icon:SetAlpha(0.25)
@@ -491,25 +476,15 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 		end
 	end
 
-	local reset = panel:CreateButton(L.Mod_Reset, 155, 28, nil, GameFontNormalSmall)
+	local reset = panel:CreateButton(L.Mod_Reset, 155, 30, nil, GameFontNormalSmall)
 	reset.myheight = 40
-	reset:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -24, -2 - extraOffset)
+	reset:SetPoint("TOPRIGHT", panel.frame, "TOPRIGHT", -24, -4)
 	reset:SetScript("OnClick", function()
 		DBM:LoadModDefaultOption(mod)
 	end)
-	if not isTestView then
-		local playground = panel:CreateButton(L.EnterTestMode, 155, 28, nil, GameFontNormalSmall)
-		playground.myheight = 40
-		playground:SetPoint("TOPLEFT", reset, "BOTTOMLEFT", 0, -2)
-		playground:SetScript("OnClick", function()
-			mod.showTestUI = true
-			DBM_GUI:UpdateModList()
-			DBM_GUI_OptionsFrame:LoadAndShowFrame(mod.testPanel.frame)
-		end)
-	end
 	local button = panel:CreateCheckButton(L.Mod_Enabled:format("|n|cFFFFFFFF" .. mod.localization.general.name), true)
 	button:SetChecked(mod.Options.Enabled)
-	button:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 8, -14 - extraOffset)
+	button:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 8, -14)
 	button:SetScript("OnClick", function()
 		mod:Toggle()
 	end)
@@ -533,14 +508,12 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 					title, desc, icon = mod.groupOptions[spellID].title, L.CustomOptions, 136116
 				elseif tonumber(spellID) then
 					spellID = tonumber(spellID)
-					if spellID then--Because LuaLS doesn't understand tonumber(spellID) as a nil check
-						if spellID < 0 then
-							title, desc, _, icon = DBM:EJ_GetSectionInfo(-spellID)
-						else
-							local _title = DBM:GetSpellName(spellID)
-							if _title then
-								title, desc, icon = _title, tonumber(spellID), DBM:GetSpellTexture(spellID or 0)
-							end
+					if spellID < 0 then
+						title, desc, _, icon = DBM:EJ_GetSectionInfo(-spellID)
+					else
+						local _title = DBM:GetSpellName(spellID)
+						if _title then
+							title, desc, icon = _title, tonumber(spellID), DBM:GetSpellTexture(spellID or 0)
 						end
 					end
 				elseif spellID:find("^ej") then
@@ -571,7 +544,7 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 
 	local scannedCategories = {}
 	for _, catident in pairs(mod.categorySort) do
-		local category = mod.optionCategories[catident]
+		category = mod.optionCategories[catident]
 		if not scannedCategories[catident] and category then
 			scannedCategories[catident] = true
 			local catpanel = panel:CreateArea(mod.localization.cats[catident])
@@ -581,12 +554,6 @@ function DBM_GUI:CreateBossModPanel(mod, isTestView)
 			end
 		end
 	end
-	-- For some reason the options aren't loaded in properly if the very first mod view you load is a test view
-	-- But just forcing a call to show fixes this
-	if isFirstModPanel and isTestView then
-		DBM_GUI:ShowHide(true)
-	end
-	isFirstModPanel = true
 end
 
 local function GetSpecializationGroup()
@@ -718,7 +685,6 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 			local profileID = playerLevel > 9 and DBM_UseDualProfile and GetSpecializationGroup() or 0
 			for _, id in ipairs(DBM.ModLists[addon.modId]) do
 				_G[addon.modId:gsub("-", "") .. "_AllSavedVars"][playerName .. "-" .. realmName][id][profileID] = importTable[id]
-				---@diagnostic disable-next-line: inject-field
 				DBM:GetModByName(id).Options = importTable[id]
 			end
 			DBM:AddMsg("Profile imported.")
@@ -779,15 +745,15 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 	end
 
 	local ptext = panel:CreateText(L.BossModLoaded:format(subtab and addon.subTabs[subtab] or addon.name), nil, nil, nil, "CENTER")
-	ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -255 or -10)
+	ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -245 or -10)
 
 	local singleLine, doubleLine, noHeaderLine = 0, 0, 0
 	local area = panel:CreateArea()
 	area.frame.isStats = true
-	area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -270 or -25)
+	area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -260 or -25)
 
 	local statOrder = {
-		"follower", "story", "lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
+		"lfr", "follower", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
 	}
 
 	for _, mod in ipairs(DBM.Mods) do
@@ -855,14 +821,13 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 
 			local statTypes = {
 				follower	= L.FOLLOWER,--no PLAYER_DIFFICULTY entry yet
-				story		= L.STORY,--no PLAYER_DIFFICULTY entry yet
 				lfr25		= PLAYER_DIFFICULTY3,
 				normal		= mod.addon.minExpansion < 5 and RAID_DIFFICULTY1 or PLAYER_DIFFICULTY1,
 				normal25	= RAID_DIFFICULTY2,
 				heroic		= mod.addon.minExpansion < 5 and RAID_DIFFICULTY3 or PLAYER_DIFFICULTY2,
 				heroic25	= RAID_DIFFICULTY4,
 				mythic		= PLAYER_DIFFICULTY6,
-				challenge	= (mod.addon.minExpansion < 6 and not mod.upgradedMPlus) and CHALLENGE_MODE or PLAYER_DIFFICULTY6 .. "+",
+				challenge	= (mod.addon.minExpansion < 6 and not mod.upgradedMPlus) and CHALLENGE_MODE or (PLAYER_DIFFICULTY6 .. "+"),
 				timewalker	= PLAYER_DIFFICULTY_TIMEWALKER
 			}
 			if (mod.addon.type == "PARTY" or mod.addon.type == "SCENARIO") or -- Fixes dungeons being labled incorrectly
@@ -888,7 +853,7 @@ function DBM_GUI:CreateBossModTab(addon, panel, subtab)
 					local kills, pulls, bestRank, bestTime = mod.stats[statType .. "Kills"] or 0, mod.stats[statType .. "Pulls"] or 0, mod.stats[statType .. "BestRank"] or 0, mod.stats[statType .. "BestTime"]
 					section.value1:SetText(kills)
 					section.value2:SetText(pulls - kills)
-					if bestRank > 0 then--Used by "challenge" and "normal" for M+, Delves, and SoD raids
+					if statType == "challenge" and bestRank > 0 then
 						section.value3:SetText(bestTime and ("%d:%02d (%d)"):format(mfloor(bestTime / 60), bestTime % 60, bestRank) or "-")
 					else
 						section.value3:SetText(bestTime and ("%d:%02d"):format(mfloor(bestTime / 60), bestTime % 60) or "-")
@@ -937,14 +902,7 @@ do
 		for _, challengeMap in ipairs(C_ChallengeMode.GetMapTable()) do
 			local challengeMode = challengeModeIds[challengeMap]
 			local id = challengeMode
-			--For handling zones like Warfront: Arathi - Alliance
-			local mapName = GetRealZoneText(id):trim() or id
-			for w in string.gmatch(mapName, " - ") do
-				if w:trim() ~= "" then
-					mapName = w
-					break
-				end
-			end
+			local mapName = strsplit("-", GetRealZoneText(id):trim() or id)
 			if not currentSeasons[mapName] then
 				local modId
 				for _, addon in ipairs(DBM.AddOns) do
@@ -1000,13 +958,6 @@ do
 				end
 
 				if not IsAddOnLoaded(addon.modId) then
-					local autoLoadFrame = CreateFrame("Frame", nil, addon.panel.frame)
-					autoLoadFrame:SetScript("OnShow", function()
-						if not addon.attemptedAutoLoad then
-							addon.attemptedAutoLoad = true
-							DBM:LoadMod(addon, true)
-						end
-					end)
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
 					button.addon = addon
 					button.headline = addon.panel:CreateText(L.BossModLoad_now, 350, nil, nil, "CENTER")
@@ -1017,7 +968,6 @@ do
 						DBM:LoadMod(self.addon, true)
 					end)
 					button:SetPoint("CENTER", 0, -20)
-					---@diagnostic disable-next-line: inject-field
 					addon.panel.loadButton = button
 				else
 					DBM_GUI:CreateBossModTab(addon, addon.panel)
@@ -1038,21 +988,13 @@ do
 				end
 			end
 
-			for _, v in ipairs(DBM.Mods) do
-				---@class DBMMod
-				local mod = v
+			for _, mod in ipairs(DBM.Mods) do
 				if mod.modId == addon.modId then
-					if not addon.subTabs or (addon.subPanels and (addon.subPanels[mod.subTab] or mod.subTab == 0)) then
+					if not mod.panel and (not addon.subTabs or (addon.subPanels and (addon.subPanels[mod.subTab] or mod.subTab == 0))) then
 						if addon.subTabs and addon.subPanels[mod.subTab] then
-							mod.panel = mod.panel or addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, mod.localization.general.name)
-							if mod.showTestUI then
-								mod.testPanel = mod.testPanel or addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, L.TestModEntry:format(mod.localization.general.name), nil, nil, nil, true)
-							end
+							mod.panel = addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, mod.localization.general.name)
 						else
-							mod.panel = mod.panel or currentSeasons[mod.id] or addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, mod.localization.general.name)
-							if mod.showTestUI then
-								mod.testPanel = mod.testPanel or currentSeasons[mod.id] or addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, L.TestModEntry:format(mod.localization.general.name), nil, nil, nil, true)
-							end
+							mod.panel = currentSeasons[mod.id] or addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.type, nil, mod.localization.general.name)
 						end
 					end
 				end

@@ -683,8 +683,6 @@ do
                 bt:SetScript("OnMouseDown", function(self, enter)
                     if self.link then
                         if IsShiftKeyDown() then
-                            -- ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                            -- ChatEdit_InsertLink(self.link)
                             BG.InsertLink(self.link, true)
                         elseif IsControlKeyDown() then
                             BG.GoToItemLib(self)
@@ -1040,7 +1038,7 @@ end
 ------------------创建：金额下拉列表------------------
 do
     function BG.CreateNumFrame(self)
-        if BiaoGe.options["NumFrame"]~=1 then return end
+        if BiaoGe.options["NumFrame"] ~= 1 then return end
         if not BG.FrameNumFrame then
             local f = CreateFrame("Frame", nil, nil, "BackdropTemplate")
             f:SetSize(130, 230)
@@ -1069,7 +1067,7 @@ do
                     edgeSize = 1.5,
                 })
                 bt:SetBackdropColor(0, 0, 0, 0.5)
-                bt.color = isYellow and { RGB(BG.g2) } or  { RGB(BG.y2) }
+                bt.color = isYellow and { RGB(BG.g2) } or { RGB(BG.y2) }
 
                 bt:SetBackdropBorderColor(unpack(bt.color))
                 bt:SetNormalFontObject(isYellow and BG.FontGreen215 or BG.FontGold15)
@@ -1178,7 +1176,7 @@ do
                 end
             end)
 
-            local h=-4
+            local h = -4
             local l = f.button0:CreateLine()
             l:SetColorTexture(.5, .5, .5)
             l:SetStartPoint("BOTTOMLEFT", -5, h)

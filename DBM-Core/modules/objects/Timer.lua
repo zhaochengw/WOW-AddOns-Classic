@@ -13,7 +13,6 @@ local DBM = private:GetPrototype("DBM")
 local announcePrototype = private:GetPrototype("Announce")
 ---@class DBMMod
 local bossModPrototype = private:GetPrototype("DBMMod")
-local test = private:GetPrototype("DBMTest")
 
 local pformat = stringUtils.pformat
 local removeEntry = tableUtils.removeEntry
@@ -114,14 +113,8 @@ local timerTypeSimplification = {
 	["ai"] = "cd",
 	["adds"] = "cd",
 	["addscustom"] = "cd",
-
-	--All nameplate only timers, be they approx or exact or ai cooldowns, or nameplate only cast timers
-	--CDs all map to cdnp but cast maps to castnp
-	["cdnp"] = "cdnp",
-	["cdpnp"] = "cdnp",
-	["nextnp"] = "cdnp",
-	["nextpnp"] = "cdnp",
-	["castpnp"] = "castnp",
+	["cdnp"] = "cd",
+	["nextnp"] = "cd",
 
 	--RPs all map to "warmup"
 	["roleplay"] = "warmup",
@@ -286,7 +279,7 @@ function timerPrototype:Start(timer, ...)
 				playCountdown(id, timer, countVoice, countVoiceMax, self.requiresCombat)--timerId, timer, voice, count
 			end
 		end
-		local bar = DBT:CreateBar(timer, id, self.icon, self.startLarge, nil, nil, nil, colorId, nil, self.keep, self.fade, countVoice, countVoiceMax, self.simpType == "cd" or self.simpType == "cdnp")
+		local bar = DBT:CreateBar(timer, id, self.icon, self.startLarge, nil, nil, nil, colorId, nil, self.keep, self.fade, countVoice, countVoiceMax, self.simpType == "cd")
 		if not bar then
 			return false, "error" -- creating the timer failed somehow, maybe hit the hard-coded timer limit of 15
 		end
@@ -300,23 +293,13 @@ function timerPrototype:Start(timer, ...)
 				msg = pformat(self.text, ...)
 			end
 		end
-		if test.testRunning and self.type == "target"  then
-			-- Target timers may use the real player's name as arg
-			-- We just update the text, not the timer id because if we would change the id we would need to do this everywhere which is a mess
-			local targetArg = ...
-			if targetArg == UnitName("player") or targetArg and targetArg:match(">.-<") and stringUtils.stripServerName(targetArg) == UnitName("player") then
-				msg = pformat(self.mod:GetLocalizedTimerText(self.type, self.spellId, self.name), "PlayerName", ...)
-			end
-		end
 		msg = msg:gsub(">.-<", stringUtils.stripServerName)
 		bar:SetText(msg, self.inlineIcon)
-		-- FIXME: i would prefer to trace this directly in DBT, but since I want to rewrite DBT... meh.
-		test:Trace(self.mod, "StartTimer", self, timer, msg)
 		--ID: Internal DBM timer ID
 		--msg: Timer Text (Do not use msg has an event trigger, it varies language to language or based on user timer options. Use this to DISPLAY only (such as timer replacement UI). use spellId field 99% of time
 		--timer: Raw timer value (number).
 		--Icon: Texture Path for Icon
-		--simpleType: Timer type, which is one of only 7 possible types: "cd" for coolodwns, "target" for target bars such as debuff on a player, "stage" for any kind of stage timer (stage ends, next stage, or even just a warmup timer like "fight begins"), and then "cast" timer which is used for both a regular cast and a channeled cast (ie boss is casting frostbolt, or boss is channeling whirlwind). Lastly, break, pull, and berserk timers are "breaK", "pull", and "berserk" respectively
+		--type: Timer type, which is one of only 7 possible types: "cd" for coolodwns, "target" for target bars such as debuff on a player, "stage" for any kind of stage timer (stage ends, next stage, or even just a warmup timer like "fight begins"), and then "cast" timer which is used for both a regular cast and a channeled cast (ie boss is casting frostbolt, or boss is channeling whirlwind). Lastly, break, pull, and berserk timers are "breaK", "pull", and "berserk" respectively
 		--spellId: Raw spellid if available (most timers will have spellId or EJ ID unless it's a specific timer not tied to ability such as pull or combat start or rez timers. EJ id will be in format ej%d
 		--colorID: Type classification (1-Add, 2-Aoe, 3-targeted ability, 4-Interrupt, 5-Role, 6-Stage, 7-User(custom))
 		--Mod ID: Encounter ID as string, or a generic string for mods that don't have encounter ID (such as trash, dummy/test mods)
@@ -325,8 +308,6 @@ function timerPrototype:Start(timer, ...)
 		--spellName: Sent so users can use a spell name instead of spellId, if they choose. Mostly to be more classic wow friendly, spellID is still preferred method (even for classic)
 		--MobGUID if it could be parsed out of args
 		--timerCount if current timer is a count timer. Returns number (count value) needed to have weak auras that trigger off a specific timer count without using localized message text
-		--isPriority: If true, this ability has been flagged as extra important. Can be used for weak auras or nameplate addons to add extra emphasis onto specific timer like a glow
-		--fullType (the true type of timer, for those who really want to filter timer down by adds or interrupt DBM classifications)
 		local guid, timerCount
 		if select("#", ...) > 0 then--If timer has args
 			for i = 1, select("#", ...) do
@@ -345,10 +326,10 @@ function timerPrototype:Start(timer, ...)
 		if not guid and self.mod.sendMainBossGUID and not DBM.Options.DontSendBossGUIDs and (self.type == "cd" or self.type == "next" or self.type == "cdcount" or self.type == "nextcount" or self.type == "cdspecial" or self.type == "ai") then
 			guid = UnitGUID("boss1")
 		end
-		DBM:FireEvent("DBM_TimerStart", id, msg, timer, self.icon, self.simpType, self.waSpecialKey or self.spellId, colorId, self.mod.id, self.keep, self.fade, self.name, guid, timerCount, self.isPriority, self.type)
+		DBM:FireEvent("DBM_TimerStart", id, msg, timer, self.icon, self.simpType, self.waSpecialKey or self.spellId, colorId, self.mod.id, self.keep, self.fade, self.name, guid, timerCount)
 		--Bssically tops bar from starting if it's being put on a plater nameplate, to give plater users option to have nameplate CDs without actually using the bars
 		--This filter will only apply to trash mods though, boss timers will always be shown due to need to have them exist for Pause, Resume, Update, and GetTime/GetRemaining methods
-		if guid and (self.type == "cdnp" or self.type == "nextnp" or self.type == "cdpnp" or self.type == "nextpnp" or self.type == "castpnp") and not (DBM.Options.DebugMode and DBM.Options.DebugLevel > 1) then
+		if guid and (self.type == "cdnp" or self.type == "nextnp") and not (DBM.Options.DebugMode and DBM.Options.DebugLevel > 1) then
 			DBT:CancelBar(id)--Cancel bar without stop callback
 			return false, "disabled"
 		end
@@ -379,7 +360,6 @@ function timerPrototype:SetFade(fadeOn, ...)
 			DBM:FireEvent("DBM_TimerFadeUpdate", id, self.spellId, self.mod.id, true, self.name)--Timer ID, spellId, modId, true/nil, spellName (new callback only needed if we update an existing timers fade, self.fade is passed in timer start object for new timers)
 			bar.fade = true--Set bar object metatable, which is copied from timer metatable at bar start only
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "Fade", true)
 			DBM:Unschedule(playCountSound, id)--Don't even need to check option, it's faster cpu wise to just unschedule countdown either way
 		end
 	elseif not fadeOn and self.fade then
@@ -391,7 +371,6 @@ function timerPrototype:SetFade(fadeOn, ...)
 			DBM:FireEvent("DBM_TimerFadeUpdate", id, self.spellId, self.mod.id, nil, self.name)--Timer ID, spellId, modId, true/nil, spellName (new callback only needed if we update an existing timers fade, self.fade is passed in timer start object for new timers)
 			bar.fade = nil--Set bar object metatable, which is copied from timer metatable at bar start only
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "Fade", false)
 			if self.option then
 				local countVoice = self.mod.Options[self.option .. "CVoice"] or 0
 				if (type(countVoice) == "string" or countVoice > 0) then--Unfading bar, start countdown
@@ -415,13 +394,11 @@ function timerPrototype:SetSTFade(fadeOn, ...)
 			DBM:FireEvent("DBM_TimerFadeUpdate", id, self.spellId, self.mod.id, true, self.name)--Timer ID, spellId, modId, true/nil, spellName (new callback only needed if we update an existing timers fade, self.fade is passed in timer start object for new timers)
 			bar.fade = true--Set bar object metatable, which is copied from timer metatable at bar start only
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "STFade", true)
 			DBM:Unschedule(playCountSound, id)
 		elseif not fadeOn and bar.fade then
 			DBM:FireEvent("DBM_TimerFadeUpdate", id, self.spellId, self.mod.id, nil, self.name)
 			bar.fade = false
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "STFade", false)
 			if self.option then
 				local countVoice = self.mod.Options[self.option .. "CVoice"] or 0
 				if (type(countVoice) == "string" or countVoice > 0) then--Unfading bar, start countdown
@@ -441,39 +418,22 @@ function timerPrototype:SetSTKeep(keepOn, ...)
 		if keepOn and not bar.keep then
 			bar.keep = true--Set bar object metatable, which is copied from timer metatable at bar start only
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "STKeep", true)
 		elseif not keepOn and bar.keep then
 			DBM:FireEvent("DBM_TimerFadeUpdate", id, self.spellId, self.mod.id, nil)
 			bar.keep = false
 			bar:ApplyStyle()
-			test:Trace(self.mod, "SetTimerProperty", self, id, "STKeep", false)
 		end
-	end
-end
-
-local function testFixupScheduleMethodName(self, ...)
-	if not test.testRunning or self.type ~= "target" then
-		return ...
-	end
-	local targetArg = ...
-	if targetArg == UnitName("player") or targetArg and targetArg:match(">.-<") and stringUtils.stripServerName(targetArg) == UnitName("player") then
-		return "PlayerName", select(2, ...)
-	else
-		return ...
 	end
 end
 
 function timerPrototype:DelayedStart(delay, ...)
 	DBMScheduler:Unschedule(self.Start, self.mod, self, ...)
-	local id = DBMScheduler:Schedule(delay or 0.5, self.Start, self.mod, self, ...)
-	test:Trace(self.mod, "SchedulerHideFromTraceIfUnscheduled", id)
-	test:Trace(self.mod, "SetScheduleMethodName", id, self, "DelayedStart", testFixupScheduleMethodName(...))
+	DBMScheduler:Schedule(delay or 0.5, self.Start, self.mod, self, ...)
 end
 timerPrototype.DelayedShow = timerPrototype.DelayedStart
 
 function timerPrototype:Schedule(t, ...)
-	local id = DBMScheduler:Schedule(t, self.Start, self.mod, self, ...)
-	test:Trace(self.mod, "SetScheduleMethodName", id, self, "Schedule", testFixupScheduleMethodName(...))
+	return DBMScheduler:Schedule(t, self.Start, self.mod, self, ...)
 end
 
 function timerPrototype:Unschedule(...)
@@ -485,7 +445,6 @@ function timerPrototype:Stop(...)
 	if select("#", ...) == 0 then
 		for i = #self.startedTimers, 1, -1 do
 			DBM:FireEvent("DBM_TimerStop", self.startedTimers[i])
-			test:Trace(self.mod, "StopTimer", self, self.startedTimers[i])
 			DBT:CancelBar(self.startedTimers[i])
 			DBM:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
 			tremove(self.startedTimers, i)
@@ -503,11 +462,10 @@ function timerPrototype:Stop(...)
 				end
 				--Mods that have specifically flagged that it's safe to assume all timers from that boss mod belong to boss1
 				--This check is performed secondary to args scan so that no adds guids are overwritten
-				if not guid and self.mod.sendMainBossGUID and DBM.Options.DontSendBossGUIDs and (self.type == "cd" or self.type == "next" or self.type == "cdcount" or self.type == "nextcount" or self.type == "cdspecial" or self.type == "ai") then
+				if not guid and self.mod.sendMainBossGUID and not DBM.Options.DontSendBossGUIDs and (self.type == "cd" or self.type == "next" or self.type == "cdcount" or self.type == "nextcount" or self.type == "cdspecial" or self.type == "ai") then
 					guid = UnitGUID("boss1")
 				end
 				DBM:FireEvent("DBM_TimerStop", id, guid)
-				test:Trace(self.mod, "StopTimer", self, id)
 				DBT:CancelBar(id)
 				DBM:Unschedule(playCountSound, id)--Unschedule countdown by timerId
 				tremove(self.startedTimers, i)
@@ -538,12 +496,24 @@ function timerPrototype:HardStop(guid)
 	end
 	for i = #self.startedTimers, 1, -1 do
 		DBM:FireEvent("DBM_TimerStop", self.startedTimers[i], guid)
-		test:Trace(self.mod, "StopTimer", self, self.startedTimers[i])
 		DBT:CancelBar(self.startedTimers[i])
 		DBM:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
 		tremove(self.startedTimers, i)
 	end
 end
+
+--In past boss mods have always had to manually call Stop just to restart a timer, to avoid triggering false debug messages
+--This function should simplify boss mod creation by allowing you to "Restart" a timer with one call in mod instead of 2
+function timerPrototype:Restart(timer, ...)
+	if self.type and (self.type == "cdcount" or self.type == "nextcount") and not self.allowdouble then
+		self:Stop()--Cleanup any count timers left over on a restart
+	else
+		self:Stop(...)
+	end
+	self:Unschedule(...)--Also unschedules not yet started timers that used timer:Schedule()
+	self:Start(timer, ...)
+end
+timerPrototype.Reboot = timerPrototype.Restart
 
 function timerPrototype:Cancel(...)
 	self:Stop(...)
@@ -603,9 +573,7 @@ function timerPrototype:Update(elapsed, totalTime, ...)
 				end
 			end
 		end
-		local updated = DBT:UpdateBar(id, elapsed, totalTime)
-		test:Trace(self.mod, "UpdateTimer", self, id, elapsed, totalTime)
-		return updated
+		return DBT:UpdateBar(id, elapsed, totalTime)
 	end
 end
 
@@ -636,9 +604,7 @@ function timerPrototype:AddTime(extendAmount, ...)
 				end
 			end
 			DBM:FireEvent("DBM_TimerUpdate", id, elapsed, total + extendAmount)
-			local updated = DBT:UpdateBar(id, elapsed, total + extendAmount)
-			test:Trace(self.mod, "UpdateTimer", self, id, elapsed, total + extendAmount)
-			return updated
+			return DBT:UpdateBar(id, elapsed, total + extendAmount)
 		end
 	end
 end
@@ -675,13 +641,10 @@ function timerPrototype:RemoveTime(reduceAmount, ...)
 					end
 				end
 				DBM:FireEvent("DBM_TimerUpdate", id, elapsed, total - reduceAmount)
-				local updated = DBT:UpdateBar(id, elapsed, total - reduceAmount)
-				test:Trace(self.mod, "UpdateTimer", self, id, elapsed, total - reduceAmount)
-				return updated
+				return DBT:UpdateBar(id, elapsed, total - reduceAmount)
 			else--New remaining less than 0
 				DBM:FireEvent("DBM_TimerStop", id)
 				removeEntry(self.startedTimers, id)
-				test:Trace(self.mod, "StopTimer", self, id)
 				return DBT:CancelBar(id)
 			end
 		end
@@ -697,8 +660,7 @@ function timerPrototype:Pause(...)
 			self.mod:Unschedule(removeEntry, self.startedTimers, id)--Prevent removal from startedTimers table while bar is paused
 		end
 		DBM:FireEvent("DBM_TimerPause", id)
-		bar:Pause()
-		test:Trace(self.mod, "PauseTimer", self, id)
+		return bar:Pause()
 	end
 end
 
@@ -722,8 +684,7 @@ function timerPrototype:Resume(...)
 			end
 		end
 		DBM:FireEvent("DBM_TimerResume", id)
-		bar:Resume()
-		test:Trace(self.mod, "ResumeTimer", self, id)
+		return bar:Resume()
 	end
 end
 
@@ -733,8 +694,7 @@ function timerPrototype:UpdateIcon(icon, ...)
 	if bar then
 		icon = DBM:ParseSpellIcon(icon)
 		DBM:FireEvent("DBM_TimerUpdateIcon", id, icon)
-		bar:SetIcon(icon)
-		test:Trace(self.mod, "SetTimerProperty", self, id, "Icon", icon)
+		return bar:SetIcon(icon)
 	end
 end
 
@@ -763,8 +723,7 @@ function timerPrototype:UpdateInline(newInline, ...)
 	local bar = DBT:GetBar(id)
 	if bar then
 		local ttext = _G[bar.frame:GetName() .. "BarName"]:GetText() or ""
-		bar:SetText(ttext, newInline or self.inlineIcon)
-		test:Trace(self.mod, "SetTimerProperty", self, id, "InlineIcon", newInline or self.inlineIcon)
+		return bar:SetText(ttext, newInline or self.inlineIcon)
 	end
 end
 
@@ -772,8 +731,7 @@ function timerPrototype:UpdateName(name, ...)
 	local id = self.id .. pformat((("\t%s"):rep(select("#", ...))), ...)
 	local bar = DBT:GetBar(id)
 	if bar then
-		bar:SetText(name, self.inlineIcon)
-		test:Trace(self.mod, "SetTimerProperty", self, id, "Name", name)
+		return bar:SetText(name, self.inlineIcon)
 	end
 end
 
@@ -781,8 +739,7 @@ function timerPrototype:SetColor(c, ...)
 	local id = self.id .. pformat((("\t%s"):rep(select("#", ...))), ...)
 	local bar = DBT:GetBar(id)
 	if bar then
-		bar:SetColor(c)
-		test:Trace(self.mod, "SetTimerProperty", self, id, "Color", c.r, c.g, c.b)
+		return bar:SetColor(c)
 	end
 end
 
@@ -802,25 +759,8 @@ function timerPrototype:AddOption(optionDefault, optionName, colorType, countdow
 	end
 end
 
----If a new countdown default is added to a NewTimer object, change optionName of timer to reset a new default
----@param timer number|string
----@param name string
----@param icon number|string? Use number for spellId, -number for journalID, number as string for textureID
----@param optionDefault SpecFlags|boolean?
----@param optionName string|boolean? String for custom option name. Using false hides option completely
----@param colorType number|string? number for colortype. String for supporting checking an entirely different optionkey for color type
----@param keep boolean? Use to keep timer on screen when it expires
----@param countdown number?
----@param countdownMax number?
----@param r number? Override bar red value
----@param g number? Override bar green value
----@param b number? Override bar blue value
----@param spellId string|number? Used to define a spellID used for GroupSpells and WeakAura key
----@param requiresCombat boolean? Disables audio countdowns when not in combat
----@param waCustomName any? Used to show custom name/text for Spell header (usually used when a made up SpellID is used)
----@param customType string? Used to define alternate timer type for WeakAura callbacks via the timerTypeSimplification table
----@param isPriority boolean? Used to flag a timer as extra important. Can be used for weak auras or nameplate addons to add extra emphasis onto specific timer like a glow
-function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, colorType, inlineIcon, keep, countdown, countdownMax, r, g, b, spellId, requiresCombat, waCustomName, customType, isPriority)
+--If a new countdown default is added to a NewTimer object, change optionName of timer to reset a new default
+function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName, colorType, inlineIcon, keep, countdown, countdownMax, r, g, b, spellId, requiresCombat, waCustomName, customType)
 	if r and type(r) == "string" then
 		DBM:Debug("|cffff0000r probably has inline icon in it and needs to be fixed for |r" .. name .. r)
 		r = nil--Fix it for users
@@ -838,7 +778,6 @@ function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName,
 	---@class Timer
 	local obj = setmetatable(
 		{
-			objClass = "Timer",
 			text = self.localization.timers[name],
 			type = customType or "cd",--Auto assign
 			simpType = simpType or "cd",
@@ -859,11 +798,9 @@ function bossModPrototype:NewTimer(timer, name, icon, optionDefault, optionName,
 			startedTimers = {},
 			mod = self,
 			startLarge = nil,
-			isPriority = isPriority,
 		},
 		mt
 	)
-	test:Trace(self, "NewTimer", obj, obj.type)
 	obj:AddOption(optionDefault, optionName, colorType, countdown, spellId, nil, waCustomName)
 	tinsert(self.timers, obj)
 	return obj
@@ -873,7 +810,7 @@ end
 -- note that the function might look unclear because it needs to handle different timer types, especially achievement timers need special treatment
 -- If a new countdown is added to an existing timer that didn't have one before, use optionName (number) to force timer to reset defaults by assigning it a new variable
 ---@param timerType string
-local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat, isPriority)
+local function newTimer(self, timerType, timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat)
 	if type(timer) == "string" and timer:match("OptionVersion") then
 		error("OptionVersion hack deprecated, remove it from: " .. spellId)
 	end
@@ -920,20 +857,9 @@ local function newTimer(self, timerType, timer, spellId, timerText, optionDefaul
 			if type(timerText) == "number" then
 				timerTextValue = timerText
 				spellName = DBM:GetSpellName(timerText or 0)--Override Cached spell Name
-				--Automatically register alternate spellnames when detecting their use here
-				if spellId and spellName and type(spellName) == "string" then
-					DBM:RegisterAltSpellName(spellId, spellName)
-				end
 			--Interpret it literal with no restrictions, first checking mod local table, then just taking timerText directly
 			else
 				timerTextValue = self.localization.timers[timerText]--Check timers table first, otherwise accept it as literal timer text
-				--Automatically register alternate spellnames when detecting their use here
-				if spellId and not rawget(self.localization.timers, timerText) and type(timerText) == "string" then
-					--if timerText exists in self.localization.timers table, it's not custom shorttext spell name
-					--It's also not short text if it's hacky paul stuff, but that should be filtered by the spellID check in RegisterAltSpellName which ignores when he uses spellid of 0
-					local trimmedText = timerText:gsub("%s*%(%%s%)", "")
-					DBM:RegisterAltSpellName(spellId, trimmedText)
-				end
 			end
 		else--Short text is off, we want to be more aggressive in NOT setting short text if we can help it
 			--Short text is off, and spellId does exist, only accept timerText if it's in mods localization tables, cause then it's not short text, it's hard localization
@@ -951,7 +877,6 @@ local function newTimer(self, timerType, timer, spellId, timerText, optionDefaul
 	---@class Timer
 	local obj = setmetatable(
 		{
-			objClass = "Timer",
 			text = timerTextValue,
 			type = timerType,
 			simpType = simpType,
@@ -970,21 +895,19 @@ local function newTimer(self, timerType, timer, spellId, timerText, optionDefaul
 			g = g,
 			b = b,
 			requiresCombat = requiresCombat,
-			isPriority = isPriority or false,
 			allowdouble = allowdouble,
 			startedTimers = {},
 			mod = self,
 		},
 		mt
 	)
-	test:Trace(self, "NewTimer", obj, obj.type)
 	obj:AddOption(optionDefault, optionName, colorType, countdown, spellId, timerType)
 	tinsert(self.timers, obj)
 	-- todo: move the string creation to the GUI with SetFormattedString...
 	if not self.localization.options[id] or self.localization.options[id] == id then
 		if timerType == "achievement" then
 			self.localization.options[id] = L.AUTO_TIMER_OPTIONS[timerType]:format((GetAchievementLink(spellId) or ""):gsub("%[(.+)%]", "%1"))
-		elseif timerType == "cdspecial" or timerType == "cdcombo" or timerType == "nextspecial" or timerType == "nextcombo" or timerType == "stage" or timerType == "stagecount" or timerType == "stagecountcycle" or timerType == "intermission" or timerType == "intermissioncount" or timerType == "adds" or timerType == "addscustom" or timerType == "roleplay" or timerType == "combat" then--Timers without spellid, generic (do not add stagecontext here, it has spellname parsing)
+		elseif timerType == "cdspecial" or timerType == "nextspecial" or timerType == "stage" or timerType == "stagecount" or timerType == "stagecountcycle" or timerType == "intermission" or timerType == "intermissioncount" or timerType == "roleplay" then--Timers without spellid, generic (do not add stagecontext here, it has spellname parsing)
 			self.localization.options[id] = L.AUTO_TIMER_OPTIONS[timerType]--Using more than 1 stage timer or more than 1 special timer will break this, fortunately you should NEVER use more than 1 of either in a mod
 		else
 			self.localization.options[id] = L.AUTO_TIMER_OPTIONS[timerType]:format(unparsedId)
@@ -993,29 +916,29 @@ local function newTimer(self, timerType, timer, spellId, timerText, optionDefaul
 	return obj
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewTargetTimer(...)
 	return newTimer(self, "target", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewTargetCountTimer(...)
 	return newTimer(self, "targetcount", ...)
 end
 
 --Buff/Debuff/event on boss
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewBuffActiveTimer(...)
 	return newTimer(self, "active", ...)
 end
 
 ----Buff/Debuff on players
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewBuffFadesTimer(...)
 	return newTimer(self, "fades", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCastTimer(timer, ...)
 	if tonumber(timer) and timer > 1000 then -- hehe :) best hack in DBM. This makes the first argument optional, so we can omit it to use the cast time from the spell id ;)
 		local spellId = timer
@@ -1027,28 +950,7 @@ function bossModPrototype:NewCastTimer(timer, ...)
 	return newTimer(self, "cast", timer, ...)
 end
 
----Duplicate of NewCastTimer, but sets "high priority" without a million nils needed and is nameplate only
----@param timer number|string
----@param spellId number|string?
----@param timerText number|string?
----@param optionDefault SpecFlags|boolean?
----@param optionName string|number|boolean?
----@param colorType number?
----@param texture number|string?
----@param inlineIcon string?
----@param keep boolean?
----@param countdown number?
----@param countdownMax number?
----@param r number?
----@param g number?
----@param b number?
----@param requiresCombat boolean?
-function bossModPrototype:NewCastNPTimer(timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat)
-	--This verion doesn't auto cast time, because that'd be ugly
-	return newTimer(self, "castpnp", timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat, true)
-end
-
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCastCountTimer(timer, ...)
 	if tonumber(timer) and timer > 1000 then -- hehe :) best hack in DBM. This makes the first argument optional, so we can omit it to use the cast time from the spell id ;)
 		local spellId = timer
@@ -1060,7 +962,7 @@ function bossModPrototype:NewCastCountTimer(timer, ...)
 	return newTimer(self, "castcount", timer, ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCastSourceTimer(timer, ...)
 	if tonumber(timer) and timer > 1000 then -- hehe :) best hack in DBM. This makes the first argument optional, so we can omit it to use the cast time from the spell id ;)
 		local spellId = timer
@@ -1072,102 +974,101 @@ function bossModPrototype:NewCastSourceTimer(timer, ...)
 	return newTimer(self, "castsource", timer, ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDTimer(...)
 	return newTimer(self, "cd", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDCountTimer(...)
 	return newTimer(self, "cdcount", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDSourceTimer(...)
 	return newTimer(self, "cdsource", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextTimer(...)
 	return newTimer(self, "next", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextCountTimer(...)
 	return newTimer(self, "nextcount", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextSourceTimer(...)
 	return newTimer(self, "nextsource", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewAchievementTimer(...)
 	return newTimer(self, "achievement", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDSpecialTimer(...)
 	return newTimer(self, "cdspecial", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextSpecialTimer(...)
 	return newTimer(self, "nextspecial", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDComboTimer(...)
 	return newTimer(self, "cdcombo", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextComboTimer(...)
 	return newTimer(self, "nextcombo", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewStageTimer(...)
 	return newTimer(self, "stage", ...)
 end
+bossModPrototype.NewPhaseTimer = bossModPrototype.NewStageTimer--Deprecated naming, once all mods are converted over, NewPhaseTimer will be wiped out for NewStageTimer
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewStageCountTimer(...)
 	return newTimer(self, "stagecount", ...)
 end
 
----Used mainly for compat with BW/LW timers where they use "stages" but then use the spell/journal descriptor instead of "stage d"
----<br>Basically, it's a generic spellName timer for "stages" callback
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+--Used mainly for compat with BW/LW timers where they use "stages" but then use the spell/journal descriptor instead of "stage d"
+--Basically, it's a generic spellName timer for "stages" callback
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewStageContextTimer(...)
 	return newTimer(self, "stagecontext", ...)
 end
 
----Same as NewStageContextTimer, with count
----<br>Basically, it's a generic spellName timer for "stages" callback
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+--Same as NewStageContextTimer, with count
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewStageContextCountTimer(...)
 	return newTimer(self, "stagecontextcount", ...)
 end
 
----For a fight that alternates stage 1 and stage 2, but also tracks total cycles. Example: Stage 2 (3)
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewStageCountCycleTimer(...)
 	return newTimer(self, "stagecountcycle", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewIntermissionTimer(...)
 	return newTimer(self, "intermission", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewIntermissionCountTimer(...)
 	return newTimer(self, "intermissioncount", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewRPTimer(...)
 	return newTimer(self, "roleplay", ...)
 end
@@ -1176,67 +1077,37 @@ function bossModPrototype:NewCombatTimer(timer)
 	return newTimer(self, "combat", timer, nil, nil, nil, nil, 0, "132349", nil, nil, 1, 5)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewAddsTimer(...)
 	return newTimer(self, "adds", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewAddsCustomTimer(...)
 	return newTimer(self, "addscustom", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewCDNPTimer(...)
 	return newTimer(self, "cdnp", ...)
 end
 
----Duplicate of NewCDNPTimer, but sets "high priority" without a million nils needed
----@param timer number|string
----@param spellId number|string?
----@param timerText number|string?
----@param optionDefault SpecFlags|boolean?
----@param optionName string|number|boolean?
----@param colorType number?
----@param texture number|string?
----@param inlineIcon string?
----@param keep boolean?
----@param countdown number?
----@param countdownMax number?
----@param r number?
----@param g number?
----@param b number?
----@param requiresCombat boolean?
-function bossModPrototype:NewCDPNPTimer(timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat)
-	return newTimer(self, "cdpnp", timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat, true)
-end
-
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewNextNPTimer(...)
 	return newTimer(self, "nextnp", ...)
 end
 
----Duplicate of NewNextNPTimer, but sends "high priority" without a million nils needed
----@param timer number|string
----@param spellId number|string?
----@param timerText number|string?
----@param optionDefault SpecFlags|boolean?
----@param optionName string|number|boolean?
----@param colorType number?
----@param texture number|string?
----@param inlineIcon string?
----@param keep boolean?
----@param countdown number?
----@param countdownMax number?
----@param r number?
----@param g number?
----@param b number?
----@param requiresCombat boolean?
-function bossModPrototype:NewNextPNPTimer(timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat)
-	return newTimer(self, "nextpnp", timer, spellId, timerText, optionDefault, optionName, colorType, texture, inlineIcon, keep, countdown, countdownMax, r, g, b, requiresCombat, true)
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
+function bossModPrototype:NewCDCountNPTimer(...)
+	return newTimer(self, "cdcountnp", ...)
 end
 
----@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?, isPriority: boolean?): Timer
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
+function bossModPrototype:NewNextCountNPTimer(...)
+	return newTimer(self, "nextcountnp", ...)
+end
+
+---@overload fun(self: DBMMod, timer: number|string, spellId: number|string?, timerText: number|string?, optionDefault: SpecFlags|boolean?, optionName: string|number|boolean?, colorType: number?, texture: number|string?, inlineIcon: string?, keep: boolean?, countdown: number?, countdownMax: number?, r: number?, g: number?, b: number?, requiresCombat: boolean?): Timer
 function bossModPrototype:NewAITimer(...)
 	return newTimer(self, "ai", ...)
 end

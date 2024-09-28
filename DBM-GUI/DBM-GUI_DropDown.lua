@@ -187,8 +187,6 @@ function tabFrame1:Refresh()
 	for _, button in pairs(self.buttons) do
 		button:SetWidth(bwidth)
 	end
-	bwidth = math.max(bwidth, tabFrame1.largestWidth or 0)
-	tabFrame1.largestWidth = bwidth
 	self:SetWidth(bwidth + 16)
 	ClickFrame:Show()
 end
@@ -198,10 +196,9 @@ end
 ---@field myheight number
 local dropdownPrototype = CreateFrame("Frame")
 
--- For lazily loaded dropdowns: pass a single dropdown entry, for normal dropdowns pass a single value or name
 function dropdownPrototype:SetSelectedValue(selected)
-	local text = _G[self:GetName() .. "Text"]
 	if selected and self.values and type(self.values) == "table" then
+		local text = _G[self:GetName() .. "Text"]
 		for _, v in next, self.values do
 			if v.value ~= nil and v.value == selected or v.text == selected then
 				text:SetText(v.text)
@@ -209,14 +206,9 @@ function dropdownPrototype:SetSelectedValue(selected)
 				self.text = v.text
 			end
 		end
-	elseif type(self.values) ~= "table" then -- lazily loaded dropdown, set to whatever was given no matter if it exists
-		text:SetText(selected.text)
-		self.value = selected.value
-		self.text = selected.text
 	end
 end
 
--- values can either be a table or a function, if it's a function it gets called every time the dropdown is opened to populate the values
 function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, height, parent)
 	if type(values) == "table" then
 		for _, entry in next, values do
@@ -229,11 +221,7 @@ function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, he
 	local dropdown = CreateFrame("Frame", "DBM_GUI_DropDown" .. self:GetNewID(), parent or self.frame, "UIDropDownMenuTemplate")
 	dropdown.mytype = "dropdown"
 	dropdown.width = width
-	if type(values) == "function" then
-		dropdown.valueGetter = values
-	else
-		dropdown.values = values
-	end
+	dropdown.values = values
 	dropdown.callfunc = callfunc
 	local dropdownText = _G[dropdown:GetName() .. "Text"]
 	if not width then
@@ -252,19 +240,16 @@ function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, he
 	dropdownText:SetPoint("LEFT", dropdown:GetName() .. "Left", 30, 2)
 	_G[dropdown:GetName() .. "Middle"]:SetWidth(width + 30)
 	local dropdownButton = _G[dropdown:GetName() .. "Button"]
-	dropdownButton:SetScript("OnMouseDown", function() DBM:PlaySoundFile(567407) end)
+	dropdownButton:SetScript("OnMouseDown", nil)
 	dropdownButton:SetScript("OnClick", function(self)
+		DBM:PlaySoundFile(567407)
 		if tabFrame1:IsShown() then
 			tabFrame1:Hide()
 			tabFrame1.dropdown = nil
 		else
-			if dropdown.valueGetter then
-				dropdown.values = dropdown.valueGetter(dropdown)
-			end
-			tabFrame1.largestWidth = 0
 			tabFrame1:ClearAllPoints()
 			tabFrame1:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
-			tabFrame1.dropdown = dropdown
+			tabFrame1.dropdown = self:GetParent()
 			tabFrame1:Refresh()
 		end
 	end)
@@ -286,7 +271,7 @@ function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, he
 		dropdown:SetScript("OnShow", function()
 			dropdown:SetSelectedValue(vartype.Options[var])
 		end)
-	elseif type(dropdown.values) == "table" then
+	else -- For external modules like DBM-RaidLeadTools
 		for _, v in next, dropdown.values do
 			if v.value ~= nil and v.value == var or v.text == var then
 				dropdownText:SetText(v.text)

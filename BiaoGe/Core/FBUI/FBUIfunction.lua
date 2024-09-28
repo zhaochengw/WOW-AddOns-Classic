@@ -479,6 +479,16 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
                 BG.HistoryMOD = h
 
                 HighlightBiaoGeSameItems(itemID, self)
+
+                if IsControlKeyDown() then
+                    SetCursor("Interface/Cursor/Inspect")
+                elseif IsAltKeyDown() and BG.IsML then
+                    SetCursor("interface/cursor/repair")
+                end
+                BG.canShowTrunToItemLibCursor = true
+                if BG.IsML then
+                    BG.canShowStartAuctionCursor = true
+                end
             end
         end
         OnEnterZhiChuPercent(self)
@@ -494,6 +504,9 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
             BG.HistoryJineFrame:Hide()
         end
         BG.Hide_AllHighlight()
+        SetCursor(nil)
+        BG.canShowTrunToItemLibCursor = false
+        BG.canShowStartAuctionCursor = false
     end)
     -- 获得光标时
     bt:SetScript("OnEditFocusGained", function(self)

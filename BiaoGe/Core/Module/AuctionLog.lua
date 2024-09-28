@@ -867,6 +867,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     text = L["设为流拍"],
                     notCheckable = true,
                     func = function()
+                        BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
                         tinsert(BiaoGe[FB].auctionLog, {
                             type = 2,
                             time = time(),
@@ -1026,6 +1027,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     GameTooltip:SetItemByID(itemID)
                     GameTooltip:Show()
                     BG.Show_AllHighlight(link, "auctionlog")
+
+                    if IsAltKeyDown() and BG.IsML and v.type == 3 then
+                        SetCursor("interface/cursor/repair")
+                    end
+                    if v.type == 3 and BG.IsML then
+                        BG.canShowStartAuctionCursor = true
+                    end
                 end
                 bts.ds:Show()
             end)
@@ -1033,6 +1041,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 GameTooltip:Hide()
                 BG.Hide_AllHighlight()
                 bts.ds:Hide()
+                SetCursor(nil)
+                BG.canShowStartAuctionCursor = false
             end)
             f:SetScript("OnMouseDown", function(self, button)
                 if button == "RightButton" and not isHistory then
@@ -1084,6 +1094,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                 for _i = lastChoose, num, lastChoose < num and 1 or -1 do
                                     if count < 5 then
                                         local bt = BG.auctionLogFrame.buttons[_i]
+                                        bt.ischoose = true
                                         tinsert(BG.auctionLogFrame.choosed, bt.itemID)
                                         bt.tex:SetColorTexture(1, 1, 0, .5)
                                         count = count + 1
@@ -1524,7 +1535,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local time = time()
         for maijia, v in pairs(BiaoGe.AuctionLog) do
             for i = #v, 1, -1 do
-                if time - v[i].time >= 1800 then
+                if time - v[i].time >= 60 * 60 then
                     tremove(v, i)
                 end
             end

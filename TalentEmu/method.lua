@@ -1718,7 +1718,7 @@ MT.BuildEnv('METHOD');
 		end
 		local ClassTDB = DT.TalentDB[class];
 		local SpecList = DT.ClassSpec[class];
-		local Map = VT.__emulib.GetTalentMap(class) or VT.MAP[class] or (DT.TalentMap ~= nil and DT.TalentMap[class]) or nil;
+		local Map = VT.__dep.__emulib.GetTalentMap(class) or VT.MAP[class] or (DT.TalentMap ~= nil and DT.TalentMap[class]) or nil;
 		if Map == nil then
 			local ofs = 0;
 			for SpecIndex = 1, 3 do
@@ -1759,7 +1759,7 @@ MT.BuildEnv('METHOD');
 	--	arg			code, useCodeLevel
 	--	return		class, level, data
 	function MT.DecodeTalent(code)
-		local version, class, level, numGroup, activeGroup, data1, data2 = VT.__emulib.DecodeTalentData(code);
+		local version, class, level, numGroup, activeGroup, data1, data2 = VT.__dep.__emulib.DecodeTalentData(code);
 		if version == "V1" and CT.TOCVERSION >= 30000 and class ~= nil then
 			return MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2);
 		else
@@ -1792,27 +1792,27 @@ MT.BuildEnv('METHOD');
 							for index = 1, N1 do len = len + 1; T1[len] = D1[index] or 0; end
 							for index = 1, N2 do len = len + 1; T1[len] = D2[index] or 0; end
 							for index = 1, N3 do len = len + 1; T1[len] = D3[index] or 0; end
-							local code1, data1, lenc1, lend1 = VT.__emulib.EncodeTalentBlock(T1, len);
-							local code2, data2, lenc2, lend2 = VT.__emulib.EncodeTalentBlock(T2, #T2);
+							local code1, data1, lenc1, lend1 = VT.__dep.__emulib.EncodeTalentBlock(T1, len);
+							local code2, data2, lenc2, lend2 = VT.__dep.__emulib.EncodeTalentBlock(T2, #T2);
 							if activeGroup == 1 then
-							return VT.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T1, len, T2, #T2);
+							return VT.__dep.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T1, len, T2, #T2);
 							else
-							return VT.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T2, #T2, T1, len);
+							return VT.__dep.__emulib.MergeTalentCodeV2(DT.ClassToIndex[Frame.class], Frame.level, activeGroup, 2, T2, #T2, T1, len);
 							end
 						else
-							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__dep.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
 						end
 					else
-							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__dep.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
 					end
 				else
-							return VT.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
+							return VT.__dep.__emulib.EncodeFrameTalentDataV2(DT.ClassToIndex[Frame.class], Frame.level,
 										TreeFrames[1].TalentSet, TreeFrames[2].TalentSet, TreeFrames[3].TalentSet,
 										#TreeFrames[1].TreeTDB, #TreeFrames[2].TreeTDB, #TreeFrames[3].TreeTDB
 									);
@@ -1845,13 +1845,13 @@ MT.BuildEnv('METHOD');
 			if TypeData == 'string' then
 				local ClassTDB = DT.TalentDB[class];
 				local SpecList = DT.ClassSpec[class];
-				return VT.__emulib.EncodeFrameTalentDataV2(classIndex, (level ~= nil and tonumber(level)) or DT.MAX_LEVEL,
+				return VT.__dep.__emulib.EncodeFrameTalentDataV2(classIndex, (level ~= nil and tonumber(level)) or DT.MAX_LEVEL,
 							data,
 							#ClassTDB[SpecList[1]], #ClassTDB[SpecList[2]], #ClassTDB[SpecList[3]]);
 			elseif TypeData == 'table' and type(data[1]) == 'table' and type(data[2]) == 'table' and type(data[3]) == 'table' then
 				local ClassTDB = DT.TalentDB[class];
 				local SpecList = DT.ClassSpec[class];
-				return VT.__emulib.EncodeFrameTalentDataV2(classIndex, (level ~= nil and tonumber(level)) or DT.MAX_LEVEL,
+				return VT.__dep.__emulib.EncodeFrameTalentDataV2(classIndex, (level ~= nil and tonumber(level)) or DT.MAX_LEVEL,
 							data[1], data[2], data[3],
 							#ClassTDB[SpecList[1]], #ClassTDB[SpecList[2]], #ClassTDB[SpecList[3]]);
 			else
@@ -1871,7 +1871,7 @@ MT.BuildEnv('METHOD');
 					data[index] = { 1, Node.type, Node.SpellID, Node.Glyph:GetTexture(), };
 				end
 			end
-			return VT.__emulib.EncodeGlyphDataV2(1, 1, data);
+			return VT.__dep.__emulib.EncodeGlyphDataV2(1, 1, data);
 		end
 		return nil;
 	end
@@ -1881,7 +1881,7 @@ MT.BuildEnv('METHOD');
 		for slot = 1, 19 do
 			DataTable[slot] = EquipmentNodes[slot].item;
 		end
-		return VT.__emulib.EncodeEquipmentDataV2(DataTable);
+		return VT.__dep.__emulib.EncodeEquipmentDataV2(DataTable);
 	end
 
 	local function SetPackIteratorFunc(Frame, name)
@@ -1941,9 +1941,9 @@ MT.BuildEnv('METHOD');
 		VT.ImportTargetFrame[name] = { Frame, };
 		local verkey = strsub(code, 1, 1);
 		if verkey ~= "_" and verkey ~= "!" then
-			return MT._CommDistributor.OnTalent("", name, code, "V1", VT.__emulib.DecodeTalentDataV1, false);
+			return MT._CommDistributor.OnTalent("", name, code, "V1", VT.__dep.__emulib.DecodeTalentDataV1, false);
 		end
-		return VT.__emulib.CHAT_MSG_ADDON(VT.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
+		return VT.__dep.__emulib.CHAT_MSG_ADDON(VT.__dep.__emulib.CT.COMM_PREFIX, code, "WHISPER", name);
 	end
 	function MT.ExportCode(Frame)
 		if Frame == nil then
@@ -2162,7 +2162,7 @@ MT.BuildEnv('METHOD');
 			if MT.GetPointsReqLevel(Frame.class, Frame.TotalUsedPoints) > UnitLevel('player') then
 				return MT.Notice(l10n["CANNOT APPLY : NEED MORE TALENT POINTS."]);
 			end
-			local Map = VT.__emulib.GetTalentMap(CT.SELFCLASS);
+			local Map = VT.__dep.__emulib.GetTalentMap(CT.SELFCLASS);
 			if Map == nil then
 				return MT.Notice(l10n["CANNOT APPLY : UNABLE TO GENERATE TALENT MAP."]);
 			end
@@ -2301,7 +2301,7 @@ MT.BuildEnv('METHOD');
 					VT.SET.singleFrame = false;
 				end,
 				param = nil,
-				text = l10n.SetSingleFrame_False,
+				text = l10n.SetSingleFrame_FALSE,
 			},
 			[false] = {
 				handler = function(Button, Frame)
@@ -2310,7 +2310,7 @@ MT.BuildEnv('METHOD');
 					MT.UI.ReleaseAllFramesButOne(last and last.id or nil);
 				end,
 				param = nil,
-				text = l10n.SetSingleFrame_True,
+				text = l10n.SetSingleFrame_TRUE,
 			},
 		},
 		{
@@ -2409,7 +2409,7 @@ MT.BuildEnv('METHOD');
 			end
 		end
 		MenuDefinition.num = pos;
-		VT.__menulib.ShowMenu(Parent, "BOTTOMLEFT", MenuDefinition, Frame);
+		VT.__dep.__menulib.ShowMenu(Parent, "BOTTOMLEFT", MenuDefinition, Frame);
 	end
 
 	function MT.CALLBACK.OnTalentDataRecv(name, iscomm)

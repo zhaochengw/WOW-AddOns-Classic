@@ -29,6 +29,35 @@ end
 do
     if BG.IsVanilla_Sod then
         local boss = {
+            { name = L["狂\n野\n的\n拉\n佐\n格\n尔"], color = "DA70D6" },
+            { name = L["堕\n落\n的\n瓦\n拉\n斯\n塔\n兹"], color = "DA70D6" },
+            { name = L["勒\n什\n雷\n尔"], color = "D2B48C" },
+            { name = L["费\n尔\n默"], color = "D2B48C" },
+            { name = L["埃\n博\n诺\n克"], color = "FFFF00" },
+            { name = L["弗\n莱\n格\n尔"], color = "FFFF00" },
+            { name = L["克\n洛\n玛\n古\n斯"], color = "9370DB" },
+            { name = L["奈\n法\n利\n安"], color = "D2691E" },
+            { name = L["桑\n德\n兰\n王\n子"], color = "87CEFA" },
+        }
+        Addother(boss)
+        AddDB("BWLsod", boss)
+    
+        local boss = {
+            { name = L["耶\n克\n里\n克"], color = "98FB98" },
+            { name = L["温\n诺\n希\n斯"], color = "98FB98" },
+            { name = L["玛\n尔\n里"], color = "EE82EE" },
+            { name = L["血\n领\n主\n曼\n多\n基\n尔"], color = "EE82EE" },
+            { name = L["疯\n狂\n之\n缘"], color = "00BFFF" },
+            { name = L["加\n兹\n兰\n卡"], color = "00BFFF" },
+            { name = L["塞\n卡\n尔"], color = "00FF00" },
+            { name = L["娅\n尔\n罗"], color = "00FF00" },
+            { name = L["妖\n术\n师\n金\n度"], color = "FFFF00" },
+            { name = L["哈\n卡"], color = "FF4500" },
+        }
+        Addother(boss)
+        AddDB("ZUGsod", boss)
+
+        local boss = {
             { name = L["鲁\n西\n弗\n隆"], color = "90EE90" },
             { name = L["玛\n格\n曼\n达"], color = "90EE90" },
             { name = L["基\n赫\n纳\n斯"], color = "CC9966" },

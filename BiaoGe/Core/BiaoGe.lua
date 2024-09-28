@@ -586,6 +586,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BG.HistoryMainFrame:Hide()
                     BG.Title:SetParent(self)
 
+                    BG.TabButtonsFB:Show()
+
                     if not BG.IsVanilla then
                         BG.NanDuDropDown.DropDown:Hide()
                     end
@@ -3386,6 +3388,29 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         tex:SetPoint("CENTER")
         tex:SetTexture("Interface/ChatFrame/UI-ChatIcon-BlinkHilight")
     end
+    BG.RegisterEvent("MODIFIER_STATE_CHANGED", function(self, even, mod, type)
+        if mod == "LCTRL" or mod == "RCTRL" then
+            if type == 1 then
+                if BG.canShowInspectCursor then
+                    SetCursor("Interface/Cursor/Inspect")
+                elseif BG.canShowTrunToItemLibCursor then
+                    SetCursor("Interface/Cursor/Inspect")
+                end
+            else
+                SetCursor(nil)
+            end
+        elseif  mod == "LALT" or mod == "RALT" then
+            if type == 1 then
+                if BG.canShowStartAuctionCursor then
+                    SetCursor("interface/cursor/repair")
+                elseif BG.canShowHopeCursor then
+                    SetCursor("Interface/Cursor/quest")
+                end
+            else
+                SetCursor(nil)
+            end
+        end
+    end)
 
     ----------初始显示----------
     do
@@ -3845,3 +3870,8 @@ do
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 end
+
+-- local tex = UIParent:CreateTexture()
+-- tex:SetPoint("CENTER")
+-- tex:SetSize(310,100)
+-- tex:SetAtlas("bags-newitem")

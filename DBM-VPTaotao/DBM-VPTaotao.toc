@@ -1,0 +1,14 @@
+﻿## Interface: 30400
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Voicepack Taotao|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cffFF83FA桃桃语音包|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cffFF83FA桃桃語音包|r
+## DefaultState: enabled
+## RequiredDeps: DBM-Core
+## Author: Taotao
+## Version: 3.4.0
+## X-DBM-Voice: 1
+## X-DBM-Voice-Name: Taotao(桃桃·中文版)
+## X-DBM-Voice-ShortName: Taotao
+## X-DBM-Voice-Version: 12
+## X-DBM-Voice-HasCount: 1
+

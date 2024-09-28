@@ -21,7 +21,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization({
-	TrioActiveTimer		= "Show timers for when Apothecary Trio becomes active"
+	TrioActiveTimer		= "Show timers for when Apothecary Trio becomes active",
+	AGBoss				= "Auto select gossip to summon Apothecary Trio"
 })
 
 L:SetMiscLocalization({
@@ -100,7 +101,9 @@ L:SetWarningLocalization({
 L:SetOptionLocalization({
 	WarnPhase				= "Show a warning for each phase change",
 	warnHorsemanSoldiers	= "Show warning for Pulsing Pumpkin spawn",
-	warnHorsemanHead		= "Show warning for Head of the Horseman spawning"
+	warnHorsemanHead		= "Show warning for Head of the Horseman spawning",
+	AGCurses				= "Auto select gossip to activate curses for Headless Horseman",
+	AGBoss					= "Auto select gossip to summon Headless Horseman"
 })
 
 L:SetMiscLocalization({
@@ -309,20 +312,6 @@ L = DBM:GetModLocalization("DoomwalkerEvent")
 
 L:SetGeneralLocalization{
 	name = "Doomwalker (Event)"
-}
-
--- Archavon (???)
-L = DBM:GetModLocalization("ArchavonEvent")
-
-L:SetGeneralLocalization{
-	name = "Archavon (Event)"
-}
-
--- Sha of Anger (???)
-L = DBM:GetModLocalization("ShaofAngerEvent")
-
-L:SetGeneralLocalization{
-	name = "Sha of Anger (Event)"
 }
 
 --------------------------

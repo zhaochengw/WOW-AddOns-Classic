@@ -29,6 +29,13 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "9月24日更新v1.12.1" .. "|r\n"
+    update = update .. [[-拍卖WA更新为v2.0：重做入场动画；增加一个关注/心愿装备的高亮动画；按组合键时可以发送或观察装备]] .. "|r\n"
+    update = update .. [[-增加语音包：司卡奇]] .. "|r\n"
+    update = update .. [[-<赛季服>添加P5表格]] .. "|r\n"
+    update = update .. [[-修复了未拍列表按Shift多选后，再按Ctrl取消多选失效的问题]] .. "|r\n"
+    update = update .. [[-修复了对账金额在某些情况下会识别错误的问题]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "9月21日更新v1.12.0" .. "|r\n"
     update = update .. [[-<WLK>团员成就：优化读取逻辑，减少读取失败的情况]] .. "|r\n"
     update = update .. [[-对账：现在鼠标悬停在我的金额/对方金额时，会显示其买家]] .. "|r\n"
@@ -88,11 +95,16 @@ ns.L = L
 
 local L = {}
 do
+    L["作者不再更新该版本及后续版本的装备库，实在抱歉。"] = true
+    L["v2.0：重做进入动画；按组合键时可以发送或观察装备"] = true
+    L["司卡奇"] = true
+
+
     L["匕首岭-<TIMEs>贝西"] = true
     L["|cffFFFFFF买家：|r"] = true
-    L["万"]=true
-    L["拥有传说物品"]=true
-    
+    L["万"] = true
+    L["拥有传说物品"] = true
+
 
     L["团员成就："] = true
     L["查看团员的团本成就完成情况"] = true
@@ -1535,7 +1547,7 @@ do
     L["频道：密语"] = true
     L["没有目标，无法通报"] = true
     L["————我的心愿————"] = true
-    L["——感谢使用BiaoGe插件——"] = true
+    L["—感谢使用BiaoGe插件—"] = true
     L["队伍"] = true
     L["公会"] = true
     L["团队"] = true
@@ -1557,7 +1569,7 @@ do
     L["< 合 计 欠 款 >"] = true
     L["没记买家"] = true
     L["合计欠款："] = true
-    L["————通报欠款————"] = true
+    L["———通报欠款———"] = true
     L["{rt7} 合计欠款 {rt7}"] = true
     L[" 合计欠款："] = true
     L["没有WCL记录"] = true
@@ -1992,6 +2004,7 @@ do
         L["艾\n索\n雷\n葛\n斯"] = true
         L["卡\n扎\n克"] = true
 
+        L["桑\n德\n兰\n王\n子"] = true
 
 
         L["加加恩·火锤"] = true

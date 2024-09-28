@@ -22,6 +22,8 @@ BG.zaxiang = {} -- 杂项如果太多，则需要换行
 
 local buttonCount = {}
 if BG.IsVanilla_Sod then
+    buttonCount.BWLsod = { 5, 5, 5, 5, 5, 5, 5, 8, 7, 7, 5, }
+    buttonCount.ZUGsod = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 7, 10, }
     buttonCount.MCsod = { 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 6, 11, 10, 10, 11, 6, }
     buttonCount.UBRS = { 5, 5, 5, 5, 5, 5, 5, 5, 10, 12, }
     buttonCount.Temple = { 5, 5, 5, 4, 4, 4, 4, 6, 25, 9, }
@@ -54,7 +56,7 @@ local function GetMaxScrollGeZi(FB, bossNum)
         return 5
     elseif bossNum == Maxb[FB] + 1 then
         return 20
-    elseif bossNum == Maxb[FB]  then
+    elseif bossNum == Maxb[FB] then
         return 30
     end
 end
@@ -199,7 +201,7 @@ function BG.CreateFBUI(FB)
     else
         tinsert(buttonCount[FB], 8) -- 设置支出格子为x个
     end
-    tinsert(buttonCount[FB], 5) -- 设置总览工资格子为x个
+    tinsert(buttonCount[FB], 5)     -- 设置总览工资格子为x个
 
 
     -- 正常格子

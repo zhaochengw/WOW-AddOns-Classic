@@ -24,6 +24,7 @@
 
 	<script file = "ChatTransmit.lua" />
 
+	<script file = "Setting.lua" />
 	<!-- <include file = "Bindings.xml" /> -->
 
 </Ui>

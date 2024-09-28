@@ -934,8 +934,11 @@ function LFG:IsStarRegimentVersion(newVersion)
     ns.Addon.db and ns.Addon.db.realm and
     ns.Addon.db.realm.starRegiment and
     ns.Addon.db.realm.starRegiment.version and
+    ns.Addon.db.realm.starRegiment.addnVersion and
     ns.Addon.db.realm.starRegiment.version ~= '' and
-    newVersion < ns.Addon.db.realm.starRegiment.version then
+    ns.Addon.db.realm.starRegiment.addnVersion ~= '' and
+    newVersion < ns.Addon.db.realm.starRegiment.version and
+    ns.ADDON_VERSION == ns.Addon.db.realm.starRegiment.addnVersion then
         isVersion = true
     end
     return isVersion
@@ -943,6 +946,7 @@ end
 
 function LFG:SetStarRegimentVersion(version)
     ns.Addon.db.realm.starRegiment.version = version
+    ns.Addon.db.realm.starRegiment.addnVersion = ns.ADDON_VERSION
 end
 
 function LFG:GetStarRegimentVersion()

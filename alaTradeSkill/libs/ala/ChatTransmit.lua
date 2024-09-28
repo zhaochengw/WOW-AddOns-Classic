@@ -25,6 +25,7 @@ local Private = {  };
 -->
 
 
+local pcall = pcall;
 local tostring = tostring;
 local next = next;
 local strlen, strbyte, strchar, strsplit, strsub = string.len, string.byte, string.char, string.split, string.sub;

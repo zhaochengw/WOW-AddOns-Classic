@@ -64,7 +64,6 @@ CL.ADD								= "Add"--A fight Add as in "boss spawned extra adds"
 CL.ADDS								= "Adds"
 CL.ADDCOUNT							= "Add %s"
 CL.BIG_ADD							= "Big Add"
-CL.BIG_ADDS							= "Big Adds"
 CL.BOSS								= "Boss"
 CL.ENEMIES							= "Enemies"
 CL.BREAK_LOS						= "Break LOS"
@@ -73,9 +72,7 @@ CL.BOSSTOGETHER						= "Bosses Together"
 CL.BOSSAPART						= "Bosses Apart"
 CL.MINDCONTROL						= "Mind Control"
 CL.TANKCOMBO						= "Tank Combo"
-CL.TANKDEBUFF						= "Tank Debuff"
 CL.AOEDAMAGE						= "AOE Damage"
-CL.AVOID						    = "Avoid"
 CL.GROUPSOAK						= "Soak"
 CL.GROUPSOAKS						= "Soaks"
 CL.HEALABSORB						= "Heal Absorb"
@@ -87,9 +84,6 @@ CL.DEBUFFS							= "Debuffs"
 CL.DISPELS							= "Dispels"
 CL.PUSHBACK							= "Pushback"
 CL.FRONTAL							= "Frontal"
-CL.RUNAWAY							= "Run Away"
-CL.SPREAD							= "Spread"
-CL.SPREADS							= "Spreads"
 CL.LASER							= "Laser"
 CL.LASERS							= "Lasers"
 CL.RIFT								= "Rift"--Often has auto localized alternatives, but still translated for BW aura matching when needed
@@ -104,7 +98,7 @@ CL.SWIRLS							= "Swirls"--Plural of Swirl
 --NOTE, many common locals are auto localized:
 --Bomb (37859), Bombs (167180), Scream (31295), Breath (17088), Beam (173303), Beams (207544), Charge (100), Knockback (28405), Portal (161722), Portals (109400)
 --Fixate (12021), Trap (181341), Meteor (28884), Shield (151702), Teleport (4801), Fear (5782), Roar (140459), Leap (47482), Orb (265315), Tornados (86189)
---Pull (193997), Push (359132), Swirl (143413), Web (389280), Webs (157317), Tentacle (285205), Tentacles (61618), Grip (56689), Slam (182557)
+--Pull (193997), Push (359132), Swirl (143413)
 
 --Journal Icons should not be copied to non english locals, do not include this section
 local EJIconPath = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) and "EncounterJournal" or "AddOns\\DBM-Core\\textures"

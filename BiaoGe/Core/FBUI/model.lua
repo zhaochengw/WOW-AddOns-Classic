@@ -221,6 +221,16 @@ function BG.CreateBossModel()
         model:SetFacing(-0.3)         -- 左右
         model:SetPitch(0)             -- 上下
         model:SetRoll(0)              -- 倾斜
+        local model = CreateBossModel("BWLsod", 8, 50, 0, 11583, 0.75)
+        model:SetPosition(-50, 0, 60)
+        model:SetFacing(-0.6)
+        model:SetPitch(0.8)
+        model:SetRoll(-0.5)
+        local model = CreateBossModel("ZUGsod", 10, -50, 40, 14834, 1.2)
+        model:SetPosition(15, -2.5, -1)
+        model:SetFacing(-0.5)
+        model:SetPitch(0.1)
+        model:SetRoll(0)
     elseif BG.IsWLK then
         -- local model = CreateBossModel("RS", 1, 0, 50, 39863, 1.2)
         -- model:SetPosition(-50, 0, 100) -- Z,X,Y

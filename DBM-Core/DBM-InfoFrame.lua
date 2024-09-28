@@ -693,10 +693,7 @@ local function updatePlayerBuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitBuff(uId, spellName) and not UnitIsDeadOrGhost(uId) then
-				local unitName = DBM:GetUnitFullName(uId)
-				if unitName then
-					lines[unitName] = ""
-				end
+				lines[DBM:GetUnitFullName(uId)] = ""
 			end
 		end
 	end
@@ -713,10 +710,7 @@ local function updateGoodPlayerDebuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) then
-				local unitName = DBM:GetUnitFullName(uId)
-				if unitName then
-					lines[unitName] = ""
-				end
+				lines[DBM:GetUnitFullName(uId)] = ""
 			end
 		end
 	end
@@ -790,10 +784,7 @@ local function updateReverseBadPlayerDebuffs()
 		if tankIgnored and (UnitGroupRolesAssigned(uId) == "TANK" or GetPartyAssignment("MAINTANK", uId, true)) then
 		else
 			if not DBM:UnitDebuff(uId, spellInput) and not UnitIsDeadOrGhost(uId) and not DBM:UnitBuff(uId, 27827) then--27827 Spirit of Redemption. This particular info frame wants to ignore this
-				local unitName = DBM:GetUnitFullName(uId)
-				if unitName then
-					lines[unitName] = ""
-				end
+				lines[DBM:GetUnitFullName(uId)] = ""
 			end
 		end
 	end
@@ -849,10 +840,7 @@ local function updatePlayerTargets()
 	local cId = value[1]
 	for uId, _ in DBM:GetGroupMembers() do
 		if DBM:GetUnitCreatureId(uId .. "target") ~= cId and (UnitGroupRolesAssigned(uId) == "DAMAGER" or UnitGroupRolesAssigned(uId) == "NONE") then
-			local unitName = DBM:GetUnitFullName(uId)
-			if unitName then
-				lines[unitName] = ""
-			end
+			lines[DBM:GetUnitFullName(uId)] = ""
 		end
 	end
 	updateLines()

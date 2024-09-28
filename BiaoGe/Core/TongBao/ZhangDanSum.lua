@@ -246,7 +246,7 @@ function BG.ZhangDanSumUI(lastbt)
                     local t = BG.SendMsgToRaid(tbl)
 
                     BG.After(t, function()
-                        local text = L["——感谢使用BiaoGe插件——"]
+                        local text = L["—感谢使用BiaoGe插件—"]
                         SendChatMessage(text, "RAID")
                     end)
                     BG.PlaySound(2)

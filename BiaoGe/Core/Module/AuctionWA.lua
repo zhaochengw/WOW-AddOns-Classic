@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v1.9"
+    aura_env.ver = "v2.0"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -34,7 +34,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     _G.BGA.aura_env = aura_env
 
     aura_env.AddonChannel = "BiaoGeAuction"
-    C_ChatInfo.RegisterAddonMessagePrefix(aura_env.AddonChannel) -- 注册插件通信频道
+    C_ChatInfo.RegisterAddonMessagePrefix(aura_env.AddonChannel)
 
     local L = setmetatable({}, {
         __index = function(table, key)
@@ -307,10 +307,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     function aura_env.Cancel_OnEnter(self)
+        local f = self.owner
         if aura_env.IsRight(self) then
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
+            GameTooltip:SetOwner(f, "ANCHOR_LEFT", 0, 0)
         else
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+            GameTooltip:SetOwner(f, "ANCHOR_RIGHT", 0, 0)
         end
         GameTooltip:ClearLines()
         GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
@@ -323,9 +324,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         self.isOnEnter = true
         local f = self.owner
         if aura_env.IsRight(self) then
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
+            GameTooltip:SetOwner(f, "ANCHOR_LEFT", 0, 0)
         else
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+            GameTooltip:SetOwner(f, "ANCHOR_RIGHT", 0, 0)
         end
         GameTooltip:ClearLines()
         GameTooltip:AddLine(L["出价记录"], 1, 1, 1, true)
@@ -406,12 +407,24 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         GameTooltip:ClearLines()
         GameTooltip:SetItemByID(self.itemID)
         GameTooltip:Show()
+        if IsControlKeyDown() then
+            SetCursor("Interface/Cursor/Inspect")
+        end
         self.isOnEnter = true
+        aura_env.itemIsOnEnter = true
+        if BG and BG.Show_AllHighlight then
+            BG.Show_AllHighlight(self.link)
+        end
     end
 
     function aura_env.itemOnLeave(self)
         GameTooltip:Hide()
         self.isOnEnter = false
+        aura_env.itemIsOnEnter = false
+        SetCursor(nil)
+        if BG and BG.Hide_AllHighlight then
+            BG.Hide_AllHighlight()
+        end
     end
 
     function aura_env.Auctioning(f, duration)
@@ -784,13 +797,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
 
     function aura_env.anim(parent)
-        local animGroup = parent:CreateAnimationGroup()
-        local scaleAnim = animGroup:CreateAnimation("Scale")
-        scaleAnim:SetOrder(1)
-        scaleAnim:SetDuration(.5)
-        scaleAnim:SetScaleFrom(2, 2)
-        scaleAnim:SetScaleTo(1, 1)
-        animGroup:Play()
+        parent.alltime = 0.5
+        parent.t = 0.5
+        parent:SetScale(3)
+        parent:SetScript("OnUpdate", function(self, t)
+            self.t = self.t - t
+            if self.t <= 0 then self.t = 0 end
+            self:SetScale(1 + self.t / self.alltime)
+            if self.t <= 0 then
+                self:SetScript("OnUpdate", nil)
+            end
+        end)
     end
 
     function aura_env.OnEditFocusGained(self)
@@ -942,9 +959,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor))
             f:SetSize(aura_env.WIDTH, 105)
             if #_G.BGA.Frames == 0 then
-                f:SetPoint("TOPLEFT", 0, 0)
+                f:SetPoint("TOP", 0, 0)
             else
-                f:SetPoint("TOPLEFT", _G.BGA.Frames[#_G.BGA.Frames], "BOTTOMLEFT", 0, -5)
+                f:SetPoint("TOP", _G.BGA.Frames[#_G.BGA.Frames], "BOTTOM", 0, -5)
             end
             f:EnableMouse(true)
             f.auctionID = auctionID
@@ -1226,13 +1243,23 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetFrameLevel(f:GetParent():GetFrameLevel() + 10)
             f.owner = AuctionFrame
             f.itemID = itemID
+            f.link = link
             f:SetScript("OnEnter", aura_env.itemOnEnter)
             f:SetScript("OnLeave", aura_env.itemOnLeave)
             f:SetScript("OnMouseUp", function(self)
                 AuctionFrame:GetScript("OnMouseUp")(_G.BGA.AuctionMainFrame)
             end)
             f:SetScript("OnMouseDown", function(self)
-                AuctionFrame:GetScript("OnMouseDown")(_G.BGA.AuctionMainFrame)
+                if IsShiftKeyDown() then
+                    if not GetCurrentKeyBoardFocus() then
+                        ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                    end
+                    ChatEdit_InsertLink(link)
+                elseif IsControlKeyDown() then
+                    DressUpItemLink(link)
+                else
+                    AuctionFrame:GetScript("OnMouseDown")(_G.BGA.AuctionMainFrame)
+                end
             end)
             AuctionFrame.itemFrame = f
             -- 黑色背景
@@ -1489,6 +1516,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     _G.BGA.Even:RegisterEvent("CHAT_MSG_ADDON")
     _G.BGA.Even:RegisterEvent("GROUP_ROSTER_UPDATE")
     _G.BGA.Even:RegisterEvent("PLAYER_ENTERING_WORLD")
+    _G.BGA.Even:RegisterEvent("MODIFIER_STATE_CHANGED")
     _G.BGA.Even:SetScript("OnEvent", function(self, even, ...)
         if even == "CHAT_MSG_ADDON" then
             local prefix, msg, distType, senderFullName = ...
@@ -1606,6 +1634,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             C_Timer.After(2, function()
                 aura_env.GetAuctioningFromRaid()
             end)
+        elseif even == "MODIFIER_STATE_CHANGED" then
+            local mod, type = ...
+            if (mod == "LCTRL" or mod == "RCTRL") then
+                if type == 1 then
+                    if aura_env.itemIsOnEnter then
+                        SetCursor("Interface/Cursor/Inspect")
+                    end
+                else
+                    SetCursor(nil)
+                end
+            end
         end
     end)
 end)

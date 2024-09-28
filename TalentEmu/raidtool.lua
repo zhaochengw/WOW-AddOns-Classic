@@ -172,7 +172,7 @@ MT.BuildEnv('RAIDTOOL');
 	local function CreateRaidNode(Parent, index, buttonHeight)
 		local Node = CreateFrame('BUTTON', nil, Parent);
 		Node:SetHeight(buttonHeight);
-		VT.__uireimp._SetSimpleBackdrop(Node, 0, 1, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 1.0);
+		VT.__dep.uireimp._SetSimpleBackdrop(Node, 0, 1, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 1.0);
 		Node:SetHighlightTexture([[Interface\FriendsFrame\UI-FriendsFrame-HighlightBar]]);
 		Node:EnableMouse(true);
 		Node:Show();
@@ -475,7 +475,7 @@ MT.BuildEnv('RAIDTOOL');
 		--	Frame
 			local Frame = CreateFrame('FRAME', "ALA_RAID_TOOL_UI", UIParent);
 			UISpecialFrames[#UISpecialFrames + 1] = "ALA_RAID_TOOL_UI";
-			VT.__uireimp._SetSimpleBackdrop(Frame, 0, 1, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 1.0);
+			VT.__dep.uireimp._SetSimpleBackdrop(Frame, 0, 1, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 1.0);
 			Frame:SetSize(TUISTYLE.RaidToolUIFrameXSize, TUISTYLE.RaidToolUIFrameYSize);
 			Frame:SetFrameStrata("HIGH");
 			Frame:SetPoint("CENTER", 0, 0);

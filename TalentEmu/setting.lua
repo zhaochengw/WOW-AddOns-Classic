@@ -48,6 +48,65 @@ MT.BuildEnv('SETTING');
 	function MT.GetConfig(key)
 		return VT.SET[key];
 	end
+	function MT.OpenSetting()
+		if VT.SettingUI == nil then
+			local GetDefault = function(module, key)
+				return CT.DefaultSetting[key];
+			end
+			local GetConfig = function(module, key)
+				return VT.SET[key];
+			end
+			local SetConfig = function(module, key, val, loading)
+				VT.SET[key] = val;
+				if key == "minimap" then
+					MT.CALLBACK["minimap"](value);
+				elseif key == "singleFrame" then
+					if val then
+						local last = Frame or MT.UI.GetLastFrame();
+						MT.UI.ReleaseAllFramesButOne(last and last.id or nil);
+					end
+				elseif key == "style" then
+					if val == 1 then
+						for i = 1, VT.Frames.used do
+							MT.UI.FrameSetStyle(VT.Frames[i], 1);
+						end
+					else
+						for i = 1, VT.Frames.used do
+							MT.UI.FrameSetStyle(VT.Frames[i], 2);
+						end
+					end
+				end
+			end
+			local LookupText = function(module, key, extra)
+				if key == "style" then
+					if extra == nil then
+						return "Style";
+					elseif extra == 1 then
+						return l10n.SetStyleAllTo1_LaterWin;
+					elseif extra == 2 then
+						return l10n.SetStyleAllTo2_LaterWin;
+					end
+				end
+				return "|cffff0000" .. (key or "@key") .. "-" .. (extra or "@extra") .. "|r";
+			end
+			VT.SettingUI = VT.__dep.__settingfactory:CreateSettingUI(__addon, GetDefault, GetConfig, SetConfig, LookupText);
+			local settings = {
+				-- { "module", "key", 'boolean', nil, nil, nil, nil, "label", },
+				{ "module", "autoShowEquipmentFrame", 'boolean', nil, nil, nil, nil, l10n.AutoShowEquipmentFrame_TRUE, },
+				{ "module", "minimap", 'boolean', nil, nil, nil, nil, l10n.Minimap_TRUE, },
+				{ "module", "resizable_border", 'boolean', nil, nil, nil, nil, l10n.ResizableBorder_TRUE, },
+				{ "module", "singleFrame", 'boolean', nil, nil, nil, nil, l10n.SetSingleFrame_TRUE, },
+				{ "module", "style", 'radio', { 1, 2, }, nil, nil, nil, },
+				{ "module", "talents_in_tip", 'boolean', nil, nil, nil, nil, l10n.TalentsInTip_TRUE, },
+				{ "module", "talents_in_tip_icon", 'boolean', nil, nil, nil, nil, l10n.TalentsInTipIcon_TRUE, },
+			};
+			for _, setting in next, settings do
+				VT.SettingUI:AddSetting("GENERAL", setting);
+			end
+			VT.SettingUI:SetMinSize(320, 0);
+		end
+		VT.SettingUI:Open();
+	end
 
 	_G.SLASH_ALATALENTEMU1 = "/TalentEmu";
 	_G.SLASH_ALATALENTEMU2 = "/emu";

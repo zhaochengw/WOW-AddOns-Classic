@@ -1,6 +1,6 @@
 # Macro Toolkit
 
-## [v2.2.16](https://github.com/NumyAddon/MacroToolkit/tree/v2.2.16) (2024-05-13)
-[Full Changelog](https://github.com/NumyAddon/MacroToolkit/compare/v2.2.15...v2.2.16) [Previous Releases](https://github.com/NumyAddon/MacroToolkit/releases)
+## [v2.3.2](https://github.com/NumyAddon/MacroToolkit/tree/v2.3.2) (2024-08-03)
+[Full Changelog](https://github.com/NumyAddon/MacroToolkit/compare/v2.3.1...v2.3.2) [Previous Releases](https://github.com/NumyAddon/MacroToolkit/releases)
 
-- support leading whitespace for macro conditionals (#50)  
+- Fix an error caused by changes in TWW (fixes #58)  

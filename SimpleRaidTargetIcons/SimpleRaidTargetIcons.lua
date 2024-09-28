@@ -9,9 +9,9 @@
 local addonName, srti = ...
 srti.version = GetAddOnMetadata("simpleraidtargeticons","version")
 local L = srti.L
-local is_classic = WOW_PROJECT_ID and WOW_PROJECT_CLASSIC and (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
-local _,build = GetBuildInfo()
-local is_classic_bc = is_classic and tonumber(build) > 38000
+local is_classic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+local is_classic_bc = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+local is_classic_wrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local SRTI_TITLE = addonName
 
 local SRTI_HEADER = SRTI_TITLE .. " " .. srti.version
@@ -574,7 +574,7 @@ function srti.UpdateSaved()
 end
 
 local thirdPartyUF
-if is_classic then
+if is_classic or is_classic_bc or is_classic_wrath then
 	thirdPartyUF = {
 		["Blizzard_CompactRaidFrames"] = {},
 		["PitBull4"] = {"PitBull4_Frames_Target","PitBull4_Frames_Target's target"}, -- OK
@@ -953,12 +953,7 @@ SlashCmdList["SRTI"] = function(msg)
 	msg = msg:lower()
 	local num = tonumber(msg)
 	if ( msg == "" ) then
-		if is_classic_bc then
-			srti.Options()
-		else
-    	InterfaceOptionsFrame_OpenToCategory(srti.menu) -- BCC Beta bug, test in later build
-    	InterfaceOptionsFrame_OpenToCategory(srti.menu)
-  	end
+		srti.Options()
 	elseif ( num and num < 9 ) then
 		srti.SetRaidTarget(num)
 	elseif ( msg == "debug" ) then
@@ -993,22 +988,29 @@ end
 function srti.Options()
 	srti.menu = CreateFrame("Frame","SRTIMenu",UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	srti.menu.name = addonName
-	if is_classic_bc then
-		srti.menu:SetWidth(460) -- BCC Beta bug, workaround start
-		srti.menu:SetHeight(31)
-		srti.menu:SetPoint("TOP",UIParent,"TOP",0,-100)
-		srti.menu:EnableMouse(true)
-		srti.menu:SetMovable(true)
-		srti.menu:RegisterForDrag("LeftButton")
-		srti.menu:SetScript("OnDragStart", srti.menu.StartMoving)
-		srti.menu:SetScript("OnDragStop", srti.menu.StopMovingOrSizing)
-		srti.menu:SetScript("OnHide", srti.menu.StopMovingOrSizing)
-		srti.menu.closebutton = CreateFrame("Button",nil,srti.menu,"UIPanelCloseButton")
-		srti.menu.closebutton:SetPoint("RIGHT",srti.menu,"RIGHT",0,0)
-		tinsert(UISpecialFrames,"SRTIMenu") -- BCC Beta bug, workaround end
-	else
-		InterfaceOptions_AddCategory(srti.menu) -- BCC Beta bug, check in later builds
-	end
+
+	srti.menu:SetWidth(460)
+	srti.menu:SetHeight(31)
+	srti.menu:SetPoint("TOP",UIParent,"TOP",0,-100)
+	srti.menu:EnableMouse(true)
+	srti.menu:SetMovable(true)
+	srti.menu:RegisterForDrag("LeftButton")
+	srti.menu:SetScript("OnDragStart", srti.menu.StartMoving)
+	srti.menu:SetScript("OnDragStop", srti.menu.StopMovingOrSizing)
+	srti.menu:SetScript("OnHide", srti.menu.StopMovingOrSizing)
+	srti.menu.closebutton = CreateFrame("Button",nil,srti.menu,"UIPanelCloseButton")
+	srti.menu.closebutton:SetPoint("RIGHT",srti.menu,"RIGHT",0,0)
+	srti.menu.closebutton:HookScript("OnShow",function(self)
+		if srti.menu:GetParent():GetName()=="UIParent" then
+			self:Show()
+		else
+			self:Hide()
+		end
+	end)
+	tinsert(UISpecialFrames,"SRTIMenu")
+
+	InterfaceOptions_AddCategory(srti.menu)
+
 	srti.menu:SetBackdrop({
 		bgFile = "Interface/Tooltips/UI-Tooltip-Background",
 		edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
@@ -1468,10 +1470,17 @@ function srti.Options()
 	srti.menu.Update()
 
 	srti.Options = function()
-		if ( srti.menu:IsVisible() ) then
-			srti.menu:Hide()
+		local parentName = srti.menu:GetParent():GetName()
+		if parentName == "UIParent" then
+			if ( srti.menu:IsVisible() ) then
+				srti.menu:Hide()
+			else
+				srti.menu:Show()
+			end
 		else
 			srti.menu:Show()
+			InterfaceOptionsFrame_OpenToCategory(srti.menu)
+			InterfaceOptionsFrame_OpenToCategory(srti.menu)
 		end
 	end
 end

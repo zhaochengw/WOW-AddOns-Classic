@@ -163,7 +163,7 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
                     playerClass.realm = nil
                 end
             end
-            jine = strmatch(msg, " (%d+)") or strmatch(msg, "：(%d+)")
+            jine = strmatch(msg, " (%d+)$") or strmatch(msg, "：(%d+)$")
             local j
             if jine and tonumber(jine) then
                 j = jine

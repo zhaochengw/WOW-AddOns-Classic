@@ -12,45 +12,10 @@ local bossModPrototype = private:GetPrototype("DBMMod")
 
 local scheduler = private:GetModule("DBMScheduler")
 local tableUtils = private:GetPrototype("TableUtils")
-local test = private:GetPrototype("DBMTest")
 
----@type table<string, DBMMod>
 local modsById = setmetatable({}, {__mode = "v"})
 local mt = {__index = bossModPrototype}
 
--- The definition of DBM mods is unfortunately spread out across multiple files and functions.
--- This class definition defines some fields that are either expected to be set by a mod implementation directly
--- or are set by helper functions in DBM.
-
----@class DBMMod
----@field OnCombatStart fun(self: DBMMod, delay: number, startedByCastOrRegenDisabledOrMessage: boolean, startedByEncounter: boolean)
----@field OnCombatEnd fun(self: DBMMod, wipe: boolean, delayedSecondCall: boolean?)
----@field OnLeavingCombat fun()
----@field OnSync fun(self: DBMMod, event: string, ...: string)
----@field OnBWSync fun(self: DBMMod, msg: string, extra: string, sender: string)
----@field OnTranscriptorSync fun(self: DBMMod, msg: string, sender: string)
----@field OnInitialize fun(self: DBMMod, mod: DBMMod)
----@field OnTimerRecovery fun(self: DBMMod)
----@field CustomHealthUpdate fun(self: DBMMod): string
----@field stats ModStats
----@field registeredUnitEvents table<string, boolean>?
----@field bossHealthUpdateTime number?
----@field isTrashModBossFightAllowed boolean?
----@field respawnTime number?
----@field noStatistics boolean?
----@field statTypes string?
----@field upgradedMPlus boolean?
----@field onlyHighest boolean?
----@field soloChallenge boolean?
----@field disableHealthCombat boolean?
----@field isCustomMod boolean?
----@field sendMainBossGUID boolean? Used to force enable nameplate timers for main boss
-
----@param name string|number Name of mod is usually journalID for auto translation or a unique string
----@param modId string? Must match parent module name (ie DBM-Party-Classic) or it won't appear in GUI
----@param modSubTab number? Defines sub tab for mod in GUI
----@param instanceId number? Encounter Journal Instance ID
----@param nameModifier number|function?
 function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 	name = tostring(name) -- the name should never be a number of something as it confuses sync handlers that just receive some string and try to get the mod from it
 	if name == "DBM-ProfilesDummy" then return {} end
@@ -81,7 +46,6 @@ function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 			announces = {},
 			specwarns = {},
 			timers = {},
-			yells = {},
 			vb = {},
 			iconRestore = {},
 			modId = modId,
@@ -95,17 +59,13 @@ function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 			inCombat = false,
 			isTrashMod = false,
 			isDummyMod = false,
+			NoSortAnnounce = false
 		},
 		mt
 	)
-	test:Trace(obj, "NewMod", name, modId)
-	if test.testRunning and test.Mocks and test.Mocks.SetModEnvironment then
-		test.Mocks:SetModEnvironment(2)
-	end
 
-	local encounterId = tonumber(name)
-	if encounterId and EJ_GetEncounterInfo and EJ_GetEncounterInfo(encounterId) then
-		local t = EJ_GetEncounterInfo(encounterId)
+	if tonumber(name) and EJ_GetEncounterInfo then
+		local t = EJ_GetEncounterInfo(tonumber(name))
 		if type(nameModifier) == "number" then--Get name form EJ_GetCreatureInfo
 			t = select(2, EJ_GetCreatureInfo(nameModifier, tonumber(name)))
 		elseif type(nameModifier) == "function" then--custom name modify function
@@ -157,8 +117,6 @@ function DBM:NewMod(name, modId, modSubTab, instanceId, nameModifier)
 	return obj
 end
 
----@param name string|number
----@return DBMMod
 function DBM:GetModByName(name)
 	return modsById[tostring(name)]
 end
@@ -234,10 +192,6 @@ function bossModPrototype:UnregisterOnUpdateHandler()
 	table.wipe(private.updateFunctions)
 end
 
----Set the stage number.
----<br>Use 0 to auto increment by 1
----<br>Use 0.5 to auto increment by 0.5
----@param stage number
 function bossModPrototype:SetStage(stage)
 	if stage == 0 then--Increment request instead of hard value
 		if not self.vb.phase then return end--Person DCed mid fight and somehow managed to perfectly time running SetStage with a value of 0 before getting variable recovery
@@ -256,15 +210,14 @@ function bossModPrototype:SetStage(stage)
 		DBM:FireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, self.vb.stageTotality)--Mod, modId, Stage, Encounter Id (if available), total number of times SetStage has been called since combat start
 		--Note, some encounters have more than one encounter Id, for these encounters, the first ID from mod is always returned regardless of actual engage ID triggered fight
 		DBM:Debug("DBM_SetStage: " .. self.vb.phase .. "/" .. self.vb.stageTotality)
-		test:Trace(self, "SetStage", self.vb.phase, self.vb.stageTotality)
 	end
 end
 
----If args are passed, returns true or false for specific Stage
----<br>If no args given, just returns current stage and stage total
----@param stage number? stage value to checkf or true/false rules
----@param checkType number? 0 or nil for just current stage match, 1 for less than check, 2 for greater than check, 3 not equal check
----@param useTotal boolean? uses stage total instead of current
+--If args are passed, returns true or false
+--If no args given, just returns current stage and stage total
+--stage: stage value to checkf or true/false rules
+--checkType: 0 or nil for just current stage match, 1 for less than check, 2 for greater than check, 3 not equal check
+--useTotal: uses stage total instead of current
 function bossModPrototype:GetStage(stage, checkType, useTotal)
 	local currentStage, currentTotal = self.vb.phase or 0, self.vb.stageTotality or 0
 	if stage then
@@ -284,11 +237,6 @@ function bossModPrototype:GetStage(stage, checkType, useTotal)
 	end
 end
 
----Used to flag an event during a boss fight that affects Raid affixes
----@param eventType number 0 = Stop, 1 = Start, 2 = extend due to spell queue/delay
----@param stage number?
----@param timeAdjust number? Used to define extend amount for eventType 2
----@param spellDebit boolean? The extended timer is debited from next cast
 function bossModPrototype:AffixEvent(eventType, stage, timeAdjust, spellDebit)
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
 		DBM:FireEvent("DBM_AffixEvent", self, self.id, eventType, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, stage or 1, timeAdjust, spellDebit)--Mod, modId, type (0 end, 1, begin, 2, timerExtend), Encounter Id (if available), stage, amount of time to extend to, spellDebit, whether to subtrack the previous extend arg from next timer
@@ -297,7 +245,6 @@ end
 
 ---@param ... DBMEvent|string
 function bossModPrototype:RegisterEventsInCombat(...)
-	test:Trace(self, "RegisterEvents", "InCombat", ...)
 	if self.inCombatOnlyEvents then
 		geterrorhandler()("combat events already set")
 	end
@@ -310,32 +257,21 @@ function bossModPrototype:RegisterEventsInCombat(...)
 	end
 end
 
----Used to filter casts from non combat units
----@param sourceGUID string
----@param customunitID string? if provided, makes check require GUID match this unitID (such as "target")
----@param loose boolean? In a loose check, this just checks if we're in combat and alone. Designed for solo runs like torghast or delves
----@param allowFriendly boolean?
----@param strict boolean? Used for even more strict filtering that makes it also require player themselves are in combat (usually used in outdoor world such as timeless isle)
----@return boolean
-function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose, allowFriendly, strict)
-	if loose and InCombatLockdown() and GetNumGroupMembers() < 2 then return true end
+function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose, allowFriendly)
+	if loose and InCombatLockdown() and GetNumGroupMembers() < 2 then return true end--In a loose check, this basically just checks if we're in combat, important for solo runs of torghast to not gimp mod too much
 	if customunitID then
 		if UnitExists(customunitID) and UnitGUID(customunitID) == sourceGUID and UnitAffectingCombat(customunitID) and (allowFriendly or not UnitIsFriend("player", customunitID)) then return true end
 	else
 		local unitId = DBM:GetUnitIdFromGUID(sourceGUID)
 		if unitId and UnitExists(unitId) and UnitAffectingCombat(unitId) and (allowFriendly or not UnitIsFriend("player", unitId)) then
-			if strict and not InCombatLockdown() then
-				return false
-			else
-				return true
-			end
+			return true
 		end
 	end
 	return false
 end
 
 function bossModPrototype:IsCriteriaCompleted(criteriaIDToCheck)
-	if not private.isRetail then--Fixme if MoP classic becomes a thing
+	if not private.isRetail then
 		print("bossModPrototype:IsCriteriaCompleted should not be called in classic, report this message")
 		return false
 	end
@@ -344,24 +280,15 @@ function bossModPrototype:IsCriteriaCompleted(criteriaIDToCheck)
 		return false
 	end
 	local _, _, numCriteria = C_Scenario.GetStepInfo()
-	local GetCriteriaInfo = C_ScenarioInfo.GetCriteriaInfo or C_Scenario.GetCriteriaInfo
 	for i = 1, numCriteria do
-		local info, _, criteriaCompleted, _, _, _, _, _, criteriaID = GetCriteriaInfo(i)
-		--Quick/lazy fix for War Within. Cleanup later when all clients are updated
-		if type(info) == "table" then
-			criteriaCompleted = info.completed
-			criteriaID = info.criteriaID
-		end
-		if criteriaID and criteriaID == criteriaIDToCheck and criteriaCompleted then
+		local _, _, criteriaCompleted, _, _, _, _, _, criteriaID = C_Scenario.GetCriteriaInfo(i)
+		if criteriaID == criteriaIDToCheck and criteriaCompleted then
 			return true
 		end
 	end
 	return false
 end
 
----Used to restrict enclosed code to only run if player is under a certain latency threshold
----@param custom number? Custom latency threshold to check against, otherwise global threshold is used
----@return boolean
 function bossModPrototype:LatencyCheck(custom)
 	return select(4, GetNetStats()) < (custom or DBM.Options.LatencyThreshold)
 end
@@ -384,8 +311,6 @@ do
 	local bossCache = {}
 	local lastTank
 
-	---Returns current name and unitID of person tanking requested target if possible, false otherwise
-	---@param cidOrGuid number|string
 	function bossModPrototype:GetCurrentTank(cidOrGuid)
 		if lastTank and GetTime() - (bossCache[cidOrGuid] or 0) < 2 then -- return last tank within 2 seconds of call
 			return lastTank
@@ -426,13 +351,6 @@ do
 	local rangeUpdated = {}
 	local IsItemInRange = C_Item and C_Item.IsItemInRange or IsItemInRange
 
-	---Used when we want to alert or filter based on proximity to the casting boss
-	---@param cidOrGuid number|string
-	---@param onlyBoss boolean? Used when you only need to check "boss" unitids
-	---@param itemId number? Used to define which item (range) is used. 32698 (48) is used if empty
-	---@param distance number? Used for tank distance fallback if item api is restricted
-	---@param defaultReturn boolean? Fallback return if all checks fail (whether a failure returns true or false)
-	---@return boolean
 	function bossModPrototype:CheckBossDistance(cidOrGuid, onlyBoss, itemId, distance, defaultReturn)
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
 		cidOrGuid = cidOrGuid or self.creatureId
@@ -462,11 +380,7 @@ do
 		return (defaultReturn == nil) or defaultReturn--When we simply can't figure anything out, return true and allow warnings using this filter to fire
 	end
 
-	---This is still restricted because it uses friendly api, which isn't available to us in combat
-	---@param cidOrGuid number|string
-	---@param onlyBoss boolean? Used when you only need to check "boss" unitids
-	---@param defaultReturn boolean? Fallback return if all checks fail (whether a failure returns true or false)
-	---@return boolean
+	--This is still restricted because it uses friendly api, which isn't available to us in combat
 	function bossModPrototype:CheckTankDistance(cidOrGuid, _, onlyBoss, defaultReturn)--distance
 		if not DBM.Options.DontShowFarWarnings then return true end--Global disable.
 		--distance = distance or 43--Basically unused
@@ -536,17 +450,12 @@ do
 --		[202137] = true,--Demon Hunter Sigil of Silence (Not uncommented because CheckInterruptFilter doesn't properly handle dual interrupts for single class yet)
 		[351338] = true,--Evoker Quell
 	}
-	if private.isClassic then
-		interruptSpells[8042] = true -- Shaman Earth Shock
-	end
-	---@param sourceGUID string source GUID of the caster
-	---@param checkOnlyTandF boolean? is used when CheckInterruptFilter is actually being used for a simpe target/focus check and nothing more.
-	---@param checkCooldown boolean? should always be passed true except for special rotations like count warnings when you should be alerted it's your turn even if you dropped ball and put it on CD at wrong time
-	---@param ignoreTandF boolean? is usually used when interrupt is on a main boss or event that is global to entire raid and should always be alerted regardless of targetting.
-	---@return boolean
+	--checkOnlyTandF param is used when CheckInterruptFilter is actually being used for a simpe target/focus check and nothing more.
+	--checkCooldown should always be passed true except for special rotations like count warnings when you should be alerted it's your turn even if you dropped ball and put it on CD at wrong time
+	--ignoreTandF is passed usually when interrupt is on a main boss or event that is global to entire raid and should always be alerted regardless of targetting.
 	function bossModPrototype:CheckInterruptFilter(sourceGUID, checkOnlyTandF, checkCooldown, ignoreTandF)
 		--Check healer spec filter
-		if not checkOnlyTandF and self:IsHealer() and (self.isTrashMod and DBM.Options.FilterTInterruptHealer or not self.isTrashMod and DBM.Options.FilterBInterruptHealer) then
+		if self:IsHealer() and (self.isTrashMod and DBM.Options.FilterTInterruptHealer or not self.isTrashMod and DBM.Options.FilterBInterruptHealer) then
 			return false
 		end
 
@@ -562,8 +471,7 @@ do
 		end
 
 		local unitID
-		-- Always assume we are currently targeting the unit in question in tests
-		if UnitGUID("target") == sourceGUID or test.testRunning then
+		if UnitGUID("target") == sourceGUID then
 			unitID = "target"
 		elseif not private.isClassic and (UnitGUID("focus") == sourceGUID) then
 			unitID = "focus"
@@ -580,7 +488,7 @@ do
 
 		--Check if it's casting something that's not interruptable at the moment
 		--needed for torghast since many mobs can have interrupt immunity with same spellIds as other mobs that can be interrupted
-		if not checkOnlyTandF and private.isRetail and unitID then
+		if private.isRetail and unitID then
 			if UnitCastingInfo(unitID) then
 				local _, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unitID)
 				if notInterruptible then return false end
@@ -594,7 +502,24 @@ do
 end
 
 do
-	--Only checks spells relevant for the dispel type
+	--lazyCheck mostly for migration, doesn't distinquish dispel types
+	local lazyCheck = {
+		[88423] = true,--Druid: Nature's Cure (Dps: Magic only. Healer: Magic, Curse, Poison)
+		[2782] = true,--Druid: Remove Corruption (Curse and Poison)
+		[115450] = true,--Monk: Detox (Healer) (Magic, Poison, and Disease)
+		[218164] = true,--Monk: Detox (non Healer) (Poison and Disease)
+		[527] = true,--Priest: Purify (Magic and Disease)
+		[213634] = true,--Priest: Purify Disease (Disease)
+		[4987] = true,--Paladin: Cleanse ( Dps/Healer: Magic. Healer Only: Poison, Disease)
+		[51886] = true,--Shaman: Cleanse Spirit (Curse)
+		[77130] = true,--Shaman: Purify Spirit (Magic and Curse)
+		[475] = true,--Mage: Remove Curse (Curse)
+		[89808] = true,--Warlock: Singe Magic (Magic)
+		[360823] = true,--Evoker: Naturalize (Magic and Poison)
+		[374251] = true,--Evoker: Cauterizing Flame (Bleed, Poison, Curse, and Disease)
+		[365585] = true,--Evoker: Expunge (Poison)
+	}
+	--Obviously only checks spells relevant for the dispel type
 	---@enum (key) DispelType
 	local typeCheck = {
 		["magic"] = {
@@ -637,7 +562,6 @@ do
 		},
 	}
 	local lastCheck, lastReturn = 0, true
-	---Smart alert filtering based on cooldown check for dispel type
 	---@param dispelType DispelType
 	function bossModPrototype:CheckDispelFilter(dispelType)
 		if not DBM.Options.FilterDispel then return true end
@@ -671,7 +595,13 @@ do
 				end
 			end
 		else--use lazy check until all mods are migrated to define type
-			error("DBM CheckDispelFilter must provide dispel type")
+			for spellID, _ in pairs(lazyCheck) do
+				if IsSpellKnown(spellID) and (DBM:GetSpellCooldown(spellID)) == 0 then--Spell is known and not on cooldown
+					lastCheck = GetTime()
+					lastReturn = true
+					return true
+				end
+			end
 		end
 		lastCheck = GetTime()
 		lastReturn = false
@@ -740,7 +670,6 @@ do
 		},
 	}
 	local lastCheck, lastReturn = 0, true
-	---Smart alert filtering based on cooldown check for cc type
 	---@param ccType CCType
 	function bossModPrototype:CheckCCFilter(ccType)
 		if not DBM.Options.FilterCrowdControl then return true end
@@ -766,12 +695,7 @@ do
 	end
 end
 
----Automatic parsing of allTimers tables in boss mods
----@param table table the table name that contains all the data
----@param difficultyName string|boolean string for difficulty name, false otherwise
----@param phase number|boolean number for phase number, false otherwise
----@param spellId number
----@param count number|boolean? cast count if count object, false/nil otherwise
+
 function bossModPrototype:GetFromTimersTable(table, difficultyName, phase, spellId, count)
 	local prev = table
 
@@ -806,14 +730,14 @@ end
 
 
 --Function to actually register specific media to specific auras
----@param auraspellId number ID of Private aura we're actually monitoring (if it doesn't match option key, put option key in altOptionId)
----@param voice VPSound|any voice pack media path
----@param voiceVersion number Required voice pack verion (if not met, falls back to default special warning sounds)
----@param altOptionId number? Used if auraspellId doesn't match option key (usually happens when registering multiple ids for a single spell)
+--auraspellId: Private aura spellId
+--voice: voice pack media path
+--voiceVersion: Required voice pack verion (if not met, falls back to airhorn
+---@param voice VPSound
 function bossModPrototype:EnablePrivateAuraSound(auraspellId, voice, voiceVersion, altOptionId)
 	if DBM.Options.DontPlayPrivateAuraSound then return end
 	local optionId = altOptionId or auraspellId
-	if optionId and self.Options["PrivateAuraSound" .. optionId] then
+	if self.Options["PrivateAuraSound" .. optionId] then
 		if not self.paSounds then self.paSounds = {} end
 		local soundId = self.Options["PrivateAuraSound" .. optionId .. "SWSound"] or DBM.Options.SpecialWarningSound--Shouldn't be nil value, but just in case options fail to load, fallback to default SW1 sound
 		local mediaPath
@@ -847,8 +771,6 @@ function bossModPrototype:EnablePrivateAuraSound(auraspellId, voice, voiceVersio
 			self.paSounds[#self.paSounds + 1] = C_UnitAuras.AddPrivateAuraAppliedSound({
 				spellID = auraspellId,
 				unitToken = "player",
-				--Another cause of LuaLS being stupid for some reason
-				---@diagnostic disable-next-line: assign-type-mismatch
 				soundFileName = mediaPath,
 				outputChannel = "master",
 			})
@@ -865,34 +787,22 @@ function bossModPrototype:DisablePrivateAuraSounds()
 	self.paSounds = nil
 end
 
----@param t number
----@param f function
----@param ... any?
 function bossModPrototype:Schedule(t, f, ...)
 	return scheduler:Schedule(t, f, self, ...)
 end
 
----@param f function? If nil, all schedules for this mod are unscheduled
----@param ... any?
 function bossModPrototype:Unschedule(f, ...)
 	return scheduler:Unschedule(f, self, ...)
 end
 
----@param t number
----@param method string
----@param ... any?
 function bossModPrototype:ScheduleMethod(t, method, ...)
 	if not self[method] then
 		error(("Method %s does not exist"):format(tostring(method)), 2)
 	end
-	local id = self:Schedule(t, self[method], self, ...)
-	test:Trace(self, "SetScheduleMethodName", id, self, method, ...)
-	return id
+	return self:Schedule(t, self[method], self, ...)
 end
 bossModPrototype.ScheduleEvent = bossModPrototype.ScheduleMethod
 
----@param method string
----@param ... any?
 function bossModPrototype:UnscheduleMethod(method, ...)
 	if not self[method] then
 		error(("Method %s does not exist"):format(tostring(method)), 2)

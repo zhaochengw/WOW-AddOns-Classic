@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 240730.0;
+local __version = 240911.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -274,18 +274,35 @@ local __serializer = __ala_meta__.__serializer;
 		["Blackwing Lair"] = 469,
 		["Zul'Gurub"] = 309,
 		["Ruins of Ahn'Qiraj"] = 509,
-		["Ahn'Qiraj"] = 531,
-		["Naxxramas"] = 533,
+		["Temple of Ahn'Qiraj"] = 531,
+		-- ["Naxxramas"] = 533,
 		--
 		["Karazhan"] = 532,
-		["Hyjal Summit"] = 534,
 		["Magtheridon's Lair"] = 544,
+		["Gruul's Lair"] = 565,
 		["Serpentshrine Cavern"] = 548,
 		["Tempest Keep"] = 550,
+		["Hyjal Summit"] = 534,
 		["Black Temple"] = 564,
-		["Gruul's Lair"] = 565,
-		["Sunwell Plateau"] = 580,
 		["Zul'Aman"] = 568,
+		["Sunwell Plateau"] = 580,
+		--
+		["Vault of Archavon"] = 624,
+		["Naxxramas"] = 533,
+		["The Eye of Eternity"] = 616,
+		["The Obsidian Sanctum"] = 615,
+		["Ulduar"] = 603,
+		["Trial of the Crusader"] = 649,
+		-- ["Onyxia's Lair"] = 249,
+		["Icecrown Citadel"] = 631,
+		["The Ruby Sanctum"] = 724,
+		--
+		["Baradin Hold"] = 757,
+		["Blackwing Descent"] = 669,
+		["Dragon Soul"] = 967,
+		["Firelands"] = 720,
+		["The Bastion of Twilight"] = 671,
+		["Throne of the Four Winds"] = 754,
 	};
 	local RaidHash = {  }; for key, id in next, RaidList do RaidHash[GetRealZoneText(id) or key] = id; end
 	local function INST_LOCK(channel, target)
@@ -295,9 +312,9 @@ local __serializer = __ala_meta__.__serializer;
 		local len = len0;
 		local instance_name_hash = __ala_meta__.__raidlib.__raid_meta.hash;
 		for index = 1, GetNumSavedInstances() do
-			local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(index);
+			local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress, _, map = GetSavedInstanceInfo(index);
 			if locked and isRaid then
-				local map = RaidHash[name] or name;
+				map = map or RaidHash[name] or name;
 				local val = map .. ":" .. (difficulty or "^") .. ":" .. id .. ":";
 				for index2 = 1, numEncounters do
 					local bossName, fileDataID, isKilled, unknown4 = GetSavedInstanceEncounterInfo(index, index2);

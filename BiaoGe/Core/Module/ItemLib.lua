@@ -1118,11 +1118,22 @@ local function SetItemLib(num, itemtbale)
                 GameTooltip:SetItemByID(itemID)
                 GameTooltip:Show()
                 BG.ItemLibMainFrame[num]["button" .. ii].ds:Show()
+
+                if IsControlKeyDown() then
+                    SetCursor("Interface/Cursor/Inspect")
+                elseif IsAltKeyDown() then
+                    SetCursor("interface/cursor/quest")
+                end
+                BG.canShowInspectCursor = true
+                BG.canShowHopeCursor = true
             end)
             f:SetScript("OnLeave", function(self)
                 GameTooltip:Hide()
                 BiaoGeTooltip2:Hide()
                 BG.ItemLibMainFrame[num]["button" .. ii].ds:Hide()
+                SetCursor(nil)
+                BG.canShowInspectCursor = false
+                BG.canShowHopeCursor = false
             end)
 
             if i == 3 and vv.bindType == 2 then -- 装绑
@@ -1221,6 +1232,20 @@ local function UpdateTiptext(num, itemtbale)
     BG.ItemLibMainFrame[num]["noItem"]:Show()
     if updateCDing or #itemtbale ~= 0 then
         BG.ItemLibMainFrame[num]["noItem"]:Hide()
+    end
+
+    if not BG.ItemLibMainFrame[num].notUpdateDBText then
+        local t = BG.ItemLibMainFrame[num]:CreateFontString()
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetPoint("TOPLEFT", BG.ItemLibMainFrame[num]["title" .. 3], "BOTTOMLEFT", 0, -30)
+        t:SetTextColor(1, 0, 0)
+        t:SetText(L["作者不再更新该版本及后续版本的装备库，实在抱歉。"])
+        t:Hide()
+        BG.ItemLibMainFrame[num].notUpdateDBText = t
+    end
+    BG.ItemLibMainFrame[num].notUpdateDBText:Hide()
+    if FB == "BWLsod" or FB == "ZUGsod" then
+        BG.ItemLibMainFrame[num].notUpdateDBText:Show()
     end
 
     local P = BG.GetFBinfo(FB, "phase")

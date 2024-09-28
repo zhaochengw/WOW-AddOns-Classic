@@ -12,7 +12,7 @@
 ## Author: |cff00ff00ALA|r
 ## Author-zhCN: |cff00ff00ALA|r
 ## Author-zhTW: |cff00ff00ALA|r
-## Version: 114r.240825
+## Version: 114r.240920
 
 load.xml
 

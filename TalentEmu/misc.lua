@@ -59,7 +59,7 @@ MT.BuildEnv('MISC');
 		local Orig_TalentFrameTalent_OnClick = nil;
 		local function _TalentFrameTalent_OnClick(self, mouseButton)
 			if IsShiftKeyDown() then
-				local Map = VT.__emulib.GetTalentMap(CT.SELFCLASS);
+				local Map = VT.__dep.__emulib.GetTalentMap(CT.SELFCLASS);
 				if Map ~= nil then
 					local TreeIndex, TalentIndex = PanelTemplates_GetSelectedTab(_TalentFrame), self:GetID();
 					local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(TreeIndex, TalentIndex);
@@ -126,7 +126,7 @@ MT.BuildEnv('MISC');
 					button:SetScript("OnLeave", MT.GeneralOnLeave);
 					button.information = l10n.TalentFrameCallButton;
 					_TalentFrame.__TalentEmuCall = button;
-					VT.__autostyle:AddReskinObject(button);
+					VT.__dep.autostyle:AddReskinObject(button);
 				end
 			end
 		end
@@ -173,11 +173,11 @@ MT.BuildEnv('MISC');
 	end
 	local function _StorePlayerData()
 		if VT.__support_glyph then
-			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerGlyphDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2();
+			VT.VAR[CT.SELFGUID] = VT.__dep.__emulib.EncodePlayerTalentDataV2() .. VT.__dep.__emulib.EncodePlayerGlyphDataV2() .. VT.__dep.__emulib.EncodePlayerEquipmentDataV2();
 		elseif VT.__support_engraving then
-			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2() .. VT.__emulib.EncodePlayerEngravingDataV2();
+			VT.VAR[CT.SELFGUID] = VT.__dep.__emulib.EncodePlayerTalentDataV2() .. VT.__dep.__emulib.EncodePlayerEquipmentDataV2() .. VT.__dep.__emulib.EncodePlayerEngravingDataV2();
 		else
-			VT.VAR[CT.SELFGUID] = VT.__emulib.EncodePlayerTalentDataV2() .. VT.__emulib.EncodePlayerEquipmentDataV2();
+			VT.VAR[CT.SELFGUID] = VT.__dep.__emulib.EncodePlayerTalentDataV2() .. VT.__dep.__emulib.EncodePlayerEquipmentDataV2();
 		end
 		for index = 1, VT.SaveButtonMenuAltDefinition.num do
 			if VT.SaveButtonMenuAltDefinition[index].param[1] == CT.SELFGUID then
@@ -190,7 +190,7 @@ MT.BuildEnv('MISC');
 	end);
 	MT.RegisterOnLogin('MISC', function(LoggedIn)
 		if CT.TOCVERSION >= 30000 then
-			local Map = VT.__emulib.GetTalentMap(CT.SELFCLASS);
+			local Map = VT.__dep.__emulib.GetTalentMap(CT.SELFCLASS);
 			VT.MAP[CT.SELFCLASS] = { VMap = Map.VMap, RMap = Map.RMap, };
 		end
 		--

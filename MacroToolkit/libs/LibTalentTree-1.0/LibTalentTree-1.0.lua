@@ -1,7 +1,7 @@
 -- the data for LibTalentTree will be loaded (and cached) from blizzard's APIs when the Lib loads
 -- @curseforge-project-slug: libtalenttree@
 
-local MAJOR, MINOR = "LibTalentTree-1.0", 14;
+local MAJOR, MINOR = "LibTalentTree-1.0", 21;
 --- @class LibTalentTree-1.0
 local LibTalentTree = LibStub:NewLibrary(MAJOR, MINOR);
 
@@ -22,7 +22,10 @@ if not C_ClassTalents or not C_ClassTalents.InitializeViewLoadout then
     return;
 end
 
-local MAX_LEVEL = 70;
+local MAX_LEVEL = 100; -- seems to not break if set too high, but can break things when set too low
+local MAX_SUB_TREE_CURRENCY = 10; -- blizzard incorrectly reports 20 when asking for the maxQuantity of the currency
+local HERO_TREE_REQUIRED_LEVEL = 71; -- while `C_ClassTalents.GetHeroTalentSpecsForClassSpec` returns this info, it's not immediately available on initial load
+
 -- taken from ClassTalentUtil.GetVisualsForClassID
 local CLASS_OFFSETS = {
     [1] = { x = 30, y = 31, }, -- Warrior
@@ -42,63 +45,6 @@ local CLASS_OFFSETS = {
 -- taken from ClassTalentTalentsTabTemplate XML
 local BASE_PAN_OFFSET_X = 4;
 local BASE_PAN_OFFSET_Y = -30;
-
----@alias edgeType
----| 0 # VisualOnly
----| 1 # DeprecatedRankConnection
----| 2 # SufficientForAvailability
----| 3 # RequiredForAvailability
----| 4 # MutuallyExclusive
----| 5 # DeprecatedSelectionOption
-
----@alias visualStyle
----| 0 # None
----| 1 # Straight
-
----@alias nodeType
----| 0 # single
----| 1 # Tiered
----| 2 # Selection
-
----@alias nodeFlags
----| 1 # ShowMultipleIcons
----| 2 # NeverPurchasable
----| 4 # TestPositionLocked
----| 8 # TestGridPositioned
-
----@class visibleEdge
----@field type edgeType # see Enum.TraitNodeEdgeType
----@field visualStyle visualStyle # see Enum.TraitEdgeVisualStyle
----@field targetNode number # TraitNodeID
-
----@class libNodeInfo
----@field ID number # TraitNodeID
----@field posX number
----@field posY number
----@field type nodeType # see Enum.TraitNodeType
----@field maxRanks number
----@field flags nodeFlags # see Enum.TraitNodeFlag
----@field groupIDs number[]
----@field visibleEdges visibleEdge[] # The order does not always match C_Traits
----@field conditionIDs number[]
----@field entryIDs number[] # TraitEntryID - generally, choice nodes will have 2, otherwise there's just 1
----@field specInfo table<number, number[]> # specId: conditionType[] Deprecated, will be removed in 10.1.0; see Enum.TraitConditionType
----@field visibleForSpecs table<number, boolean> # specId: true/false, true if a node is visible for a spec; added in 10.1.0
----@field grantedForSpecs table<number, boolean> # specId: true/false, true if a node is granted for free, for a spec; added in 10.1.0
----@field isClassNode boolean
-
----@class entryInfo
----@field definitionID number # TraitDefinitionID
----@field type number # see Enum.TraitNodeEntryType
----@field maxRanks number
----@field isAvailable boolean # LibTalentTree always returns true
----@field conditionIDs number[] # list of TraitConditionID, LibTalentTree always returns an empty table
-
----@class gateInfo
----@field topLeftNodeID number # TraitNodeID - the node that is the top left corner of the gate
----@field conditionID number # TraitConditionID
----@field spentAmountRequired number # the total amount of currency required to unlock the gate
----@field traitCurrencyID number # TraitCurrencyID
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -164,9 +110,14 @@ local function buildCache()
     cache.classTreeMap = {};
     cache.nodeTreeMap = {};
     cache.entryTreeMap = {};
+    cache.entryNodeMap = {};
+    cache.specSubTreeMap = {};
+    cache.subTreeNodesMap = {};
+    cache.treeCurrencyMap = {};
     cache.nodeData = {};
     cache.gateData = {};
     cache.entryData = {};
+    cache.subTreeData = {};
     for classID = 1, GetNumClasses() do
         cache.classFileMap[select(2, GetClassInfo(classID))] = classID;
 
@@ -182,6 +133,7 @@ local function buildCache()
             local specID = GetSpecializationInfoForClassID(classID, specIndex);
             cache.specMap[specID] = classID;
 
+            --- @type number
             treeID = treeID or C_ClassTalents.GetTraitTreeForSpec(specID);
             cache.classTreeMap[classID] = treeID;
 
@@ -191,13 +143,19 @@ local function buildCache()
             nodes = nodes or C_Traits.GetTreeNodes(treeID);
             local treeCurrencyInfo = C_Traits.GetTreeCurrencyInfo(configID, treeID, true);
             local classCurrencyID = treeCurrencyInfo[1].traitCurrencyID;
+            cache.treeCurrencyMap[treeID] = cache.treeCurrencyMap[treeID] or treeCurrencyInfo;
+            cache.treeCurrencyMap[treeID][1].isClassCurrency = true;
+            cache.treeCurrencyMap[treeID][2].isSpecCurrency = true;
+            for _, currencyInfo in ipairs(treeCurrencyInfo) do
+                cache.treeCurrencyMap[treeID][currencyInfo.traitCurrencyID] = cache.treeCurrencyMap[treeID][currencyInfo.traitCurrencyID] or currencyInfo;
+            end
 
             local treeInfo = C_Traits.GetTreeInfo(configID, treeID);
             for _, gateInfo in ipairs(treeInfo.gates) do
                 local conditionID = gateInfo.conditionID;
                 local conditionInfo = C_Traits.GetConditionInfo(configID, conditionID);
                 gateData[conditionID] = {
-                    currencyId = conditionInfo.traitCurrencyID,
+                    currencyID = conditionInfo.traitCurrencyID,
                     spentAmountRequired = conditionInfo.spentAmountRequired,
                 };
             end
@@ -216,6 +174,8 @@ local function buildCache()
                     data.maxRanks = nodeInfo.maxRanks;
                     data.flags = nodeInfo.flags;
                     data.entryIDs = nodeInfo.entryIDs;
+                    data.subTreeID = nodeInfo.subTreeID;
+                    data.isSubTreeSelection = nodeInfo.type == Enum.TraitNodeType.SubTreeSelection;
 
                     data.visibleEdges = data.visibleEdges or {}
                     mergeTables(data.visibleEdges, nodeInfo.visibleEdges, 'targetNode');
@@ -225,15 +185,34 @@ local function buildCache()
 
                     data.groupIDs = data.groupIDs or {}
                     mergeTables(data.groupIDs, nodeInfo.groupIDs);
-                    for _, entryID in ipairs(nodeInfo.entryIDs) do
+                    for entryIndex, entryID in ipairs(nodeInfo.entryIDs) do
                         cache.entryTreeMap[entryID] = treeID;
+                        cache.entryNodeMap[entryID] = nodeID;
                         if not entryData[entryID] then
                             local entryInfo = C_Traits.GetEntryInfo(configID, entryID);
                             entryData[entryID] = {
                                 definitionID = entryInfo.definitionID,
                                 type = entryInfo.type,
                                 maxRanks = entryInfo.maxRanks,
+                                subTreeID = entryInfo.subTreeID,
                             }
+
+                            if entryInfo.subTreeID then
+                                cache.specSubTreeMap[specID] = cache.specSubTreeMap[specID] or {};
+                                cache.specSubTreeMap[specID][entryIndex] = entryInfo.subTreeID;
+                                -- I previously used C_ClassTalents.GetHeroTalentSpecsForClassSpec, but it returns nil on initial load
+                                -- it's not actually required to retrieve the data though
+                                local subTreeInfo = C_Traits.GetSubTreeInfo(configID, entryInfo.subTreeID);
+                                if subTreeInfo then
+                                    subTreeInfo.requiredPlayerLevel = HERO_TREE_REQUIRED_LEVEL;
+                                    subTreeInfo.maxCurrency = MAX_SUB_TREE_CURRENCY;
+                                    subTreeInfo.isActive = false;
+                                    cache.subTreeData[entryInfo.subTreeID] = subTreeInfo;
+                                    cache.treeCurrencyMap[treeID][subTreeInfo.traitCurrencyID].subTreeID = entryInfo.subTreeID;
+                                    cache.treeCurrencyMap[treeID][subTreeInfo.traitCurrencyID].quantity = MAX_SUB_TREE_CURRENCY;
+                                    cache.treeCurrencyMap[treeID][subTreeInfo.traitCurrencyID].maxQuantity = MAX_SUB_TREE_CURRENCY;
+                                end
+                            end
                         end
                     end
 
@@ -261,8 +240,13 @@ local function buildCache()
                 data.visibleForSpecs = data.visibleForSpecs or {};
                 data.visibleForSpecs[specID] = nodeInfo.isVisible;
 
-                if lastSpec and not data.posX then
-                    nodeData[nodeID] = nil;
+                if lastSpec then
+                	if not data.posX then
+                        nodeData[nodeID] = nil;
+                    elseif data.subTreeID then
+                        cache.subTreeNodesMap[data.subTreeID] = cache.subTreeNodesMap[data.subTreeID] or {};
+                        table.insert(cache.subTreeNodesMap[data.subTreeID], nodeID);
+                    end
                 end
             end
         end
@@ -273,99 +257,112 @@ local function buildCache()
     end
 end
 
-buildCache();
+do
+    -- buildCache results in a significant amount of pointless taintlog entries when it's set to log level 11
+    -- so we just disable it temporarily
+    local backup = C_CVar.GetCVar('taintLog');
+    if backup and backup == '11' then C_CVar.SetCVar('taintLog', 0); end
+    buildCache();
+    if backup and backup == '11' then C_CVar.SetCVar('taintLog', backup); end
+end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
 --- @public
---- @param nodeId number # TraitNodeID
+--- @param nodeID number # TraitNodeID
 --- @return ( number | nil ) # TraitTreeID
-function LibTalentTree:GetTreeIdForNode(nodeId)
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+function LibTalentTree:GetTreeIDForNode(nodeID)
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
-    return self.cache.nodeTreeMap[nodeId];
+    return self.cache.nodeTreeMap[nodeID];
+end
+LibTalentTree.GetTreeIdForNode = LibTalentTree.GetTreeIDForNode;
+
+--- @public
+--- @param entryID number # TraitEntryID
+--- @return ( number | nil ) # TraitTreeID
+function LibTalentTree:GetTreeIDForEntry(entryID)
+    assert(type(entryID) == 'number', 'entryID must be a number');
+
+    return self.cache.entryTreeMap[entryID];
+end
+LibTalentTree.GetTreeIdForEntry = LibTalentTree.GetTreeIDForEntry;
+
+--- @public
+--- @param entryID number # TraitEntryID
+--- @return ( number | nil ) # TraitNodeID
+function LibTalentTree:GetNodeIDForEntry(entryID)
+    assert(type(entryID) == 'number', 'entryID must be a number');
+
+    return self.cache.entryNodeMap[entryID];
 end
 
 --- @public
---- @param entryId number # TraitEntryID
---- @return ( number | nil ) # TraitTreeID
-function LibTalentTree:GetTreeIdForEntry(entryId)
-    assert(type(entryId) == 'number', 'entryId must be a number');
-
-    return self.cache.entryTreeMap[entryId];
-end
-
---- @public
---- @param treeId number # TraitTreeID, or TraitNodeID, if leaving the 2nd argument nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitNodeID, if leaving the 2nd argument nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( libNodeInfo | nil )
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): libNodeInfo | nil
-function LibTalentTree:GetLibNodeInfo(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): libNodeInfo | nil
+function LibTalentTree:GetLibNodeInfo(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
     local nodeData = self.cache.nodeData;
 
-    local nodeInfo = nodeData[treeId] and nodeData[treeId][nodeId] and deepCopy(nodeData[treeId][nodeId]) or nil;
-    if (nodeInfo) then nodeInfo.ID = nodeId; end
+    local nodeInfo = nodeData[treeID] and nodeData[treeID][nodeID] and deepCopy(nodeData[treeID][nodeID]) or nil;
+    if (nodeInfo) then nodeInfo.ID = nodeID; end
 
     return nodeInfo;
 end
 
 --- @public
---- @param treeId number # TraitTreeID, or TraitEntryID, if leaving the 2nd argument nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitEntryID, if leaving the 2nd argument nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( libNodeInfo ) # libNodeInfo is enriched and overwritten by C_Traits information if possible
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): libNodeInfo
-function LibTalentTree:GetNodeInfo(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): libNodeInfo
+function LibTalentTree:GetNodeInfo(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
     local cNodeInfo = C_ClassTalents.GetActiveConfigID()
-            and C_Traits.GetNodeInfo(C_ClassTalents.GetActiveConfigID(), nodeId)
-            or C_Traits.GetNodeInfo(Constants.TraitConsts.VIEW_TRAIT_CONFIG_ID or -3, nodeId);
-    local libNodeInfo = treeId and self:GetLibNodeInfo(treeId, nodeId);
+            and C_Traits.GetNodeInfo(C_ClassTalents.GetActiveConfigID(), nodeID)
+            or C_Traits.GetNodeInfo(Constants.TraitConsts.VIEW_TRAIT_CONFIG_ID or -3, nodeID);
+    local libNodeInfo = treeID and self:GetLibNodeInfo(treeID, nodeID);
 
     if (not libNodeInfo) then return cNodeInfo; end
     if (not cNodeInfo) then cNodeInfo = {}; end
 
-    if cNodeInfo.ID == nodeId then
-        cNodeInfo.specInfo = libNodeInfo.specInfo;
-        cNodeInfo.isClassNode = libNodeInfo.isClassNode;
-        cNodeInfo.visibleForSpecs = libNodeInfo.visibleForSpecs;
-        cNodeInfo.grantedForSpecs = libNodeInfo.grantedForSpecs;
-
-        return cNodeInfo;
+    if cNodeInfo.ID == nodeID then
+        return Mixin(libNodeInfo, cNodeInfo);
     end
 
     return Mixin(cNodeInfo, libNodeInfo);
 end
 
 --- @public
---- @param treeId number # TraitTreeID, or TraitEntryID, if leaving the 2nd argument nil
---- @param entryId number # TraitEntryID, can be omitted, by passing the entryId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitEntryID, if leaving the 2nd argument nil
+--- @param entryID number # TraitEntryID, can be omitted, by passing the entryID as the first argument, the treeID is automatically determined
 --- @return ( entryInfo | nil )
---- @overload fun(self: LibTalentTree-1.0, entryId: number): entryInfo | nil
-function LibTalentTree:GetEntryInfo(treeId, entryId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not entryId then
-        entryId = treeId;
-        treeId = self:GetTreeIdForEntry(entryId);
+--- @overload fun(self: LibTalentTree-1.0, entryID: number): entryInfo | nil
+function LibTalentTree:GetEntryInfo(treeID, entryID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not entryID then
+        entryID = treeID;
+        treeID = self:GetTreeIDForEntry(entryID);
     end
-    assert(type(entryId) == 'number', 'entryId must be a number');
+    assert(type(entryID) == 'number', 'entryID must be a number');
 
     local entryData = self.cache.entryData;
 
-    local entryInfo = entryData[treeId] and entryData[treeId][entryId] and deepCopy(entryData[treeId][entryId]) or nil;
+    local entryInfo = entryData[treeID] and entryData[treeID][entryID] and deepCopy(entryData[treeID][entryID]) or nil;
     if (entryInfo) then
         entryInfo.isAvailable = true;
         entryInfo.conditionIDs = {};
@@ -375,68 +372,70 @@ function LibTalentTree:GetEntryInfo(treeId, entryId)
 end
 
 --- @public
---- @param class (string | number) # ClassID or ClassFilename - e.g. "DEATHKNIGHT" or 6 - See https://warcraft.wiki.gg/wiki/ClassId
+--- @param class (string | number) # ClassID or ClassFilename - e.g. "DEATHKNIGHT" or 6 - See https://warcraft.wiki.gg/wiki/ClassID
 --- @return ( number | nil ) # TraitTreeID
-function LibTalentTree:GetClassTreeId(class)
+function LibTalentTree:GetClassTreeID(class)
     assert(type(class) == 'string' or type(class) == 'number', 'class must be a string or number');
 
     local classFileMap = self.cache.classFileMap;
     local classTreeMap = self.cache.classTreeMap;
 
-    local classId = classFileMap[class] or class;
+    local classID = classFileMap[class] or class;
 
-    return classTreeMap[classId] or nil;
+    return classTreeMap[classID] or nil;
 end
+LibTalentTree.GetClassTreeId = LibTalentTree.GetClassTreeID;
 
 --- @public
---- @param treeId (number) # a class' TraitTreeID
---- @return (number | nil) # ClassID or nil - See https://warcraft.wiki.gg/wiki/ClassId
-function LibTalentTree:GetClassIdByTreeId(treeId)
-    treeId = tonumber(treeId);
+--- @param treeID (number) # a class' TraitTreeID
+--- @return (number | nil) # ClassID or nil - See https://warcraft.wiki.gg/wiki/ClassID
+function LibTalentTree:GetClassIDByTreeID(treeID)
+    treeID = tonumber(treeID);
 
     if not self.inverseClassMap then
         local classTreeMap = self.cache.classTreeMap;
         self.inverseClassMap = {};
-        for classId, mappedTreeId in pairs(classTreeMap) do
-            self.inverseClassMap[mappedTreeId] = classId;
+        for classID, mappedTreeID in pairs(classTreeMap) do
+            self.inverseClassMap[mappedTreeID] = classID;
         end
     end
 
-    return self.inverseClassMap[treeId];
+    return self.inverseClassMap[treeID];
 end
+LibTalentTree.GetClassIdByTreeId = LibTalentTree.GetClassIDByTreeID;
 
 --- @public
---- @param specId number # See https://warcraft.wiki.gg/wiki/SpecializationID
---- @param nodeId number # TraitNodeID
+--- @param specID number # See https://warcraft.wiki.gg/wiki/SpecializationID
+--- @param nodeID number # TraitNodeID
 --- @return boolean # whether the node is visible for the given spec
-function LibTalentTree:IsNodeVisibleForSpec(specId, nodeId)
-    assert(type(specId) == 'number', 'specId must be a number');
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+function LibTalentTree:IsNodeVisibleForSpec(specID, nodeID)
+    assert(type(specID) == 'number', 'specID must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
     local specMap = self.cache.specMap;
-    local class = specMap[specId];
-    assert(class, 'Unknown specId: ' .. specId);
+    local class = specMap[specID];
+    assert(class, 'Unknown specID: ' .. specID);
 
-    local treeId = self:GetClassTreeId(class);
-    local nodeInfo = self:GetLibNodeInfo(treeId, nodeId);
+    local treeID = self:GetClassTreeID(class);
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
 
     if not nodeInfo then return false; end
 
     -- >= 10.1.0
     if nodeInfo.visibleForSpecs then
-        return nodeInfo.visibleForSpecs[specId];
+        return nodeInfo.visibleForSpecs[specID];
     end
 
     -- < 10.1.0
-    if (nodeInfo.specInfo[specId]) then
-        for _, conditionType in pairs(nodeInfo.specInfo[specId]) do
+    if (nodeInfo.specInfo[specID]) then
+        for _, conditionType in pairs(nodeInfo.specInfo[specID]) do
             if (conditionType == Enum.TraitConditionType.Visible or conditionType == Enum.TraitConditionType.Granted) then
                 return true;
             end
         end
     end
     for id, conditionTypes in pairs(nodeInfo.specInfo) do
-        if (id ~= specId) then
+        if (id ~= specID) then
             for _, conditionType in pairs(conditionTypes) do
                 if (conditionType == Enum.TraitConditionType.Visible) then
                     return false
@@ -456,28 +455,28 @@ function LibTalentTree:IsNodeVisibleForSpec(specId, nodeId)
 end
 
 --- @public
---- @param specId number # See https://warcraft.wiki.gg/wiki/SpecializationID
---- @param nodeId number # TraitNodeID
+--- @param specID number # See https://warcraft.wiki.gg/wiki/SpecializationID
+--- @param nodeID number # TraitNodeID
 --- @return boolean # whether the node is granted by default for the given spec
-function LibTalentTree:IsNodeGrantedForSpec(specId, nodeId)
-    assert(type(specId) == 'number', 'specId must be a number');
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+function LibTalentTree:IsNodeGrantedForSpec(specID, nodeID)
+    assert(type(specID) == 'number', 'specID must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
     local specMap = self.cache.specMap;
-    local class = specMap[specId];
-    assert(class, 'Unknown specId: ' .. specId);
+    local class = specMap[specID];
+    assert(class, 'Unknown specID: ' .. specID);
 
-    local treeId = self:GetClassTreeId(class);
-    local nodeInfo = self:GetLibNodeInfo(treeId, nodeId);
+    local treeID = self:GetClassTreeID(class);
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
 
     -- >= 10.1.0
     if nodeInfo and nodeInfo.grantedForSpecs then
-        return nodeInfo.grantedForSpecs[specId];
+        return nodeInfo.grantedForSpecs[specID];
     end
 
     -- < 10.1.0
-    if (nodeInfo and nodeInfo.specInfo[specId]) then
-        for _, conditionType in pairs(nodeInfo.specInfo[specId]) do
+    if (nodeInfo and nodeInfo.specInfo[specID]) then
+        for _, conditionType in pairs(nodeInfo.specInfo[specID]) do
             if (conditionType == Enum.TraitConditionType.Granted) then
                 return true;
             end
@@ -496,19 +495,19 @@ function LibTalentTree:IsNodeGrantedForSpec(specId, nodeId)
 end
 
 --- @public
---- @param treeId number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( number|nil, number|nil ) # posX, posY - some trees have a global offset
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): (number|nil, number|nil)
-function LibTalentTree:GetNodePosition(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): (number|nil, number|nil)
+function LibTalentTree:GetNodePosition(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
-    local nodeInfo = self:GetLibNodeInfo(treeId, nodeId);
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
     if (not nodeInfo) then return nil, nil; end
 
     return nodeInfo.posX, nodeInfo.posY;
@@ -520,96 +519,131 @@ local gridPositionCache = {};
 --- Returns an abstraction of the node positions into a grid of columns and rows.
 --- Some specs may have nodes that sit between 2 columns, these columns end in ".5". This happens for example in the Druid and Demon Hunter trees.
 ---
---- The top row is 1, the bottom row is 10
---- The first class column is 1, the last class column is 9
---- The first spec column is 10
+--- The top row is 1, the bottom row is 10.
+--- The first class column is 1, the last class column is 9.
+--- The first spec column is 13. (if the client supports sub trees, otherwise it's 10)
 ---
---- @param treeId number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- Hero talents are placed in between the class and spec trees, in columns 10, 11, 12.
+--- Hero talent subTrees are stacked to overlap, all subTrees on rows 1 - 5. You're responsible for adjusting this yourself.
+---
+--- The Hero talent selection node, is hardcoded to row 5.5 and column 10. Making it sit right underneath the sub trees themselves.
+---
+--- @param treeID number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( number|nil, number|nil ) # column, row
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): (number|nil, number|nil)
-function LibTalentTree:GetNodeGridPosition(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): (number|nil, number|nil)
+function LibTalentTree:GetNodeGridPosition(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
-    local classId = self:GetClassIdByTreeId(treeId);
-    if not classId then return nil, nil end
+    local classID = self:GetClassIDByTreeID(treeID);
+    if not classID then return nil, nil end
 
-    gridPositionCache[treeId] = gridPositionCache[treeId] or {};
-    if gridPositionCache[treeId][nodeId] then
-        return unpack(gridPositionCache[treeId][nodeId]);
+    gridPositionCache[treeID] = gridPositionCache[treeID] or {};
+    if gridPositionCache[treeID][nodeID] then
+        return unpack(gridPositionCache[treeID][nodeID]);
     end
 
-    local posX, posY = self:GetNodePosition(treeId, nodeId);
+    local posX, posY = self:GetNodePosition(treeID, nodeID);
     if (not posX or not posY) then return nil, nil; end
 
-    local offsetX = BASE_PAN_OFFSET_X - (CLASS_OFFSETS[classId] and CLASS_OFFSETS[classId].x or 0);
-    local offsetY = BASE_PAN_OFFSET_Y - (CLASS_OFFSETS[classId] and CLASS_OFFSETS[classId].y or 0);
+    local offsetX = BASE_PAN_OFFSET_X - (CLASS_OFFSETS[classID] and CLASS_OFFSETS[classID].x or 0);
+    local offsetY = BASE_PAN_OFFSET_Y - (CLASS_OFFSETS[classID] and CLASS_OFFSETS[classID].y or 0);
+
+    local rawX, rawY = posX, posY;
 
     posX = (round(posX) / 10) - offsetX;
     posY = (round(posY) / 10) - offsetY;
-
-    local colStart = 176;
     local colSpacing = 60;
-    local halfColEnabled = true;
-    local classColEnd = 656;
-    local specColStart = 956;
-    local classSpecGap = specColStart - classColEnd;
 
-    if (posX > (classColEnd + (classSpecGap / 2))) then
-        -- remove the gap between the class and spec trees
-        posX = posX - classSpecGap + colSpacing;
+    local row, col;
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
+    local subTreeID = nodeInfo and nodeInfo.subTreeID;
+
+    if subTreeID then
+        local subTreeInfo = self:GetSubTreeInfo(subTreeID);
+        if subTreeInfo then
+            local topCenterPosX = subTreeInfo.posX;
+            local topCenterPosY = subTreeInfo.posY;
+            local offsetFromCenterX = rawX - topCenterPosX;
+            if (offsetFromCenterX > colSpacing) then
+                col = 12;
+            elseif (offsetFromCenterX < -colSpacing) then
+                col = 10;
+            else
+                col = 11;
+            end
+
+            local rowStart = topCenterPosY;
+            local rowSpacing = 2400 / 4; -- 2400 is generally the height of a sub tree, 4 is number of "gaps" between 5 rows
+            local halfRowEnabled = false;
+            row = getGridLineFromCoordinate(rowStart, rowSpacing, halfRowEnabled, rawY) or 0;
+        end
+    elseif nodeInfo and nodeInfo.isSubTreeSelection then
+        col = 10;
+        row = 5.5;
     end
-    local col = getGridLineFromCoordinate(colStart, colSpacing, halfColEnabled, posX);
+    if not row or not col then
+        local colStart = 176;
+        local halfColEnabled = true;
+        local classColEnd = 656;
+        local specColStart = 956;
+        local subTreeOffset = 3 * colSpacing;
+        local classSpecGap = (specColStart - classColEnd) - subTreeOffset;
+        if (posX > (classColEnd + (classSpecGap / 2))) then
+            -- remove the gap between the class and spec trees
+            posX = posX - classSpecGap + colSpacing;
+        end
+        col = getGridLineFromCoordinate(colStart, colSpacing, halfColEnabled, posX);
 
-    local rowStart = 151;
-    local rowSpacing = 60;
-    local halfRowEnabled = false;
+        local rowStart = 151;
+        local rowSpacing = 60;
+        local halfRowEnabled = false;
+        row = getGridLineFromCoordinate(rowStart, rowSpacing, halfRowEnabled, posY);
+    end
 
-    local row = getGridLineFromCoordinate(rowStart, rowSpacing, halfRowEnabled, posY);
-
-    gridPositionCache[treeId][nodeId] = {col, row};
+    gridPositionCache[treeID][nodeID] = {col, row};
 
     return col, row;
 end
 
 --- @public
---- @param treeId number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( nil | visibleEdge[] ) # The order might not match C_Traits
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): nil | visibleEdge[]
-function LibTalentTree:GetNodeEdges(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): nil | visibleEdge[]
+function LibTalentTree:GetNodeEdges(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
-    local nodeInfo = self:GetLibNodeInfo(treeId, nodeId);
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
     if (not nodeInfo) then return nil; end
 
     return nodeInfo.visibleEdges;
 end
 
 --- @public
---- @param treeId number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
---- @param nodeId number # TraitNodeID, can be omitted, by passing the nodeId as the first argument, the treeId is automatically determined
+--- @param treeID number # TraitTreeID, or TraitNodeID, if leaving the 2nd parameter nil
+--- @param nodeID number # TraitNodeID, can be omitted, by passing the nodeID as the first argument, the treeID is automatically determined
 --- @return ( boolean | nil ) # true if the node is a class node, false for spec nodes, nil if unknown
---- @overload fun(self: LibTalentTree-1.0, nodeId: number): boolean | nil
-function LibTalentTree:IsClassNode(treeId, nodeId)
-    assert(type(treeId) == 'number', 'treeId must be a number');
-    if not nodeId then
-        nodeId = treeId;
-        treeId = self:GetTreeIdForNode(nodeId);
+--- @overload fun(self: LibTalentTree-1.0, nodeID: number): boolean | nil
+function LibTalentTree:IsClassNode(treeID, nodeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+    if not nodeID then
+        nodeID = treeID;
+        treeID = self:GetTreeIDForNode(nodeID);
     end
-    assert(type(nodeId) == 'number', 'nodeId must be a number');
+    assert(type(nodeID) == 'number', 'nodeID must be a number');
 
-    local nodeInfo = self:GetLibNodeInfo(treeId, nodeId);
+    local nodeInfo = self:GetLibNodeInfo(treeID, nodeID);
     if (not nodeInfo) then return nil; end
 
     return nodeInfo.isClassNode;
@@ -618,59 +652,59 @@ end
 local gateCache = {}
 
 --- @public
---- @param specId number # See https://warcraft.wiki.gg/wiki/SpecializationID
+--- @param specID number # See https://warcraft.wiki.gg/wiki/SpecializationID
 --- @return ( gateInfo[] ) # list of gates for the given spec, sorted by spending required
-function LibTalentTree:GetGates(specId)
+function LibTalentTree:GetGates(specID)
     -- an optimization step is likely trivial in 10.1.0, but well.. effort, and this also works fine still :)
-    assert(type(specId) == 'number', 'specId must be a number');
+    assert(type(specID) == 'number', 'specID must be a number');
 
-    if (gateCache[specId]) then return deepCopy(gateCache[specId]); end
+    if (gateCache[specID]) then return deepCopy(gateCache[specID]); end
     local specMap = self.cache.specMap;
-    local class = specMap[specId];
-    assert(class, 'Unknown specId: ' .. specId);
+    local class = specMap[specID];
+    assert(class, 'Unknown specID: ' .. specID);
 
-    local treeId = self:GetClassTreeId(class);
+    local treeID = self:GetClassTreeID(class);
     local gates = {};
 
     local nodesByConditions = {};
     local gateData = self.cache.gateData;
-    local conditions = gateData[treeId];
+    local conditions = gateData[treeID];
 
     local nodeData = self.cache.nodeData;
 
-    for nodeId, nodeInfo in pairs(nodeData[treeId]) do
-        if (#nodeInfo.conditionIDs > 0 and self:IsNodeVisibleForSpec(specId, nodeId)) then
-            for _, conditionId in pairs(nodeInfo.conditionIDs) do
-                if conditions[conditionId] then
-                    nodesByConditions[conditionId] = nodesByConditions[conditionId] or {};
-                    nodesByConditions[conditionId][nodeId] = nodeInfo;
+    for nodeID, nodeInfo in pairs(nodeData[treeID]) do
+        if (#nodeInfo.conditionIDs > 0 and self:IsNodeVisibleForSpec(specID, nodeID)) then
+            for _, conditionID in pairs(nodeInfo.conditionIDs) do
+                if conditions[conditionID] then
+                    nodesByConditions[conditionID] = nodesByConditions[conditionID] or {};
+                    nodesByConditions[conditionID][nodeID] = nodeInfo;
                 end
             end
         end
     end
 
-    for conditionId, gateInfo in pairs(conditions) do
-        local nodes = nodesByConditions[conditionId];
+    for conditionID, gateInfo in pairs(conditions) do
+        local nodes = nodesByConditions[conditionID];
         if (nodes) then
             local minX, minY, topLeftNode = 9999999, 9999999, nil;
-            for nodeId, nodeInfo in pairs(nodes) do
+            for nodeID, nodeInfo in pairs(nodes) do
                 local roundedX, roundedY = round(nodeInfo.posX), round(nodeInfo.posY);
 
                 if (roundedY < minY) then
                     minY = roundedY;
                     minX = roundedX;
-                    topLeftNode = nodeId
+                    topLeftNode = nodeID
                 elseif (roundedY == minY and roundedX < minX) then
                     minX = roundedX;
-                    topLeftNode = nodeId
+                    topLeftNode = nodeID
                 end
             end
             if (topLeftNode) then
                 table.insert(gates, {
                     topLeftNodeID = topLeftNode,
-                    conditionID = conditionId,
+                    conditionID = conditionID,
                     spentAmountRequired = gateInfo.spentAmountRequired,
-                    traitCurrencyID = gateInfo.currencyId,
+                    traitCurrencyID = gateInfo.currencyID,
                 });
             end
         end
@@ -678,7 +712,70 @@ function LibTalentTree:GetGates(specId)
     table.sort(gates, function(a, b)
         return a.spentAmountRequired < b.spentAmountRequired;
     end);
-    gateCache[specId] = gates;
+    gateCache[specID] = gates;
 
     return deepCopy(gates);
+end
+
+--- @public
+--- @param treeID number # TraitTreeID
+--- @return treeCurrencyInfo[] # list of currencies for the given tree, first entry is class currency, second is spec currency, the rest are sub tree currencies. The list is additionally indexed by the traitCurrencyID.
+function LibTalentTree:GetTreeCurrencies(treeID)
+    assert(type(treeID) == 'number', 'treeID must be a number');
+
+    return deepCopy(self.cache.treeCurrencyMap[treeID]);
+end
+
+--- @public
+--- @param subTreeID number # TraitSubTreeID
+--- @return number[] # list of TraitNodeIDs that belong to the given sub tree
+function LibTalentTree:GetSubTreeNodeIDs(subTreeID)
+    assert(type(subTreeID) == 'number', 'subTreeID must be a number');
+
+    return deepCopy(self.cache.subTreeNodesMap[subTreeID]) or {};
+end
+LibTalentTree.GetSubTreeNodeIds = LibTalentTree.GetSubTreeNodeIDs;
+
+--- @public
+--- @param specID number # See https://warcraft.wiki.gg/wiki/SpecializationID
+--- @return number[] # list of TraitSubTreeIDs that belong to the given spec
+function LibTalentTree:GetSubTreeIDsForSpecID(specID)
+    assert(type(specID) == 'number', 'specID must be a number');
+
+    return deepCopy(self.cache.specSubTreeMap[specID]) or {};
+end
+LibTalentTree.GetSubTreeIdsForSpecId = LibTalentTree.GetSubTreeIDsForSpecID;
+
+--- @public
+--- @param subTreeID number # TraitSubTreeID
+--- @return ( subTreeInfo | nil )
+function LibTalentTree:GetSubTreeInfo(subTreeID)
+    assert(type(subTreeID) == 'number', 'subTreeID must be a number');
+
+    return deepCopy(self.cache.subTreeData[subTreeID]);
+end
+
+--- @public
+--- @param specID number # See https://warcraft.wiki.gg/wiki/SpecializationID
+--- @param subTreeID number # TraitSubTreeID
+--- @return number?, number? # TraitNodeID, TraitEntryID; or nil if not found
+function LibTalentTree:GetSubTreeSelectionNodeIDAndEntryIDBySpecID(specID, subTreeID)
+    assert(type(specID) == 'number', 'specID must be a number');
+    assert(type(subTreeID) == 'number', 'subTreeID must be a number');
+
+    local subTreeInfo = self:GetSubTreeInfo(subTreeID);
+    for _, selectionNodeID in ipairs(subTreeInfo and subTreeInfo.subTreeSelectionNodeIDs or {}) do
+        if self:IsNodeVisibleForSpec(specID, selectionNodeID) then
+            local nodeInfo = self:GetLibNodeInfo(selectionNodeID);
+            for _, entryID in ipairs(nodeInfo and nodeInfo.entryIDs or {}) do
+                local entryInfo = self:GetEntryInfo(entryID);
+                if entryInfo and entryInfo.subTreeID == subTreeID then
+                    return selectionNodeID, entryID;
+                end
+            end
+            break;
+        end
+    end
+
+    return nil;
 end

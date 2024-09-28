@@ -451,7 +451,7 @@ local function OnClick(self)
             local t = BG.SendMsgToRaid(tbl, BG.tongBaoSendCD + BG.tongBaoSendCD)
 
             BG.After(t, function()
-                local text = L["——感谢使用BiaoGe插件——"]
+                local text = L["—感谢使用BiaoGe插件—"]
                 SendChatMessage(text, "RAID")
             end)
         end

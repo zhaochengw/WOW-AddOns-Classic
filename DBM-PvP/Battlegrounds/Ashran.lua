@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("z1191", "DBM-PvP") -- Added in WoD
 
 
-mod:SetRevision("20240903194526")
+mod:SetRevision("20240923205403")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -48,7 +48,7 @@ do
 end
 
 do
-	local UnitGUID, GetCurrencyInfo, GetNumGossipOptions = UnitGUID, C_CurrencyInfo.GetCurrencyInfo, C_GossipInfo.GetNumOptions
+	local UnitGUID, GetCurrencyInfo, GetOptions = UnitGUID, C_CurrencyInfo.GetCurrencyInfo, C_GossipInfo.GetOptions
 
 	function mod:GOSSIP_SHOW()
 		if not self.Options.AutoTurnIn then
@@ -57,7 +57,8 @@ do
 		local cid = self:GetCIDFromGUID(UnitGUID("target") or "")
 		if cid == 81870 or cid == 82204 or cid == 183198 then -- Anenga (Alliance) | Atomik/Narduke (Horde)
 			local currency = GetCurrencyInfo(944) -- Artifact Fragment
-			if currency and currency.quantity > 0 and GetNumGossipOptions() == 3 then -- If boss isn't already summoned
+			local options = GetOptions()
+			if currency and currency.quantity > 0 and #options == 3 then -- If boss isn't already summoned
 				local gossipOptionID = self:GetGossipID()
 				if gossipOptionID then
 					self:SelectGossip(gossipOptionID)

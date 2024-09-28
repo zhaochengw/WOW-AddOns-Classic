@@ -165,7 +165,7 @@ L.WHISPER_COMBAT_END_KILL_STATS		= "%s님이 %s 전투에서 승리했습니다!
 L.WHISPER_COMBAT_END_WIPE_AT			= "%s님이 %s %s에서 전멸했습니다."
 L.WHISPER_COMBAT_END_WIPE_STATS_AT	= "%s님이 %s %s에서 전멸했습니다. 이 난이도에서 총 %d회 전멸했습니다."
 --Scenarios (no percents. words like "fighting" or "wipe" changed to better fit scenarios)
-L.AUTO_RESPOND_WHISPER_SCENARIO		= "%s님은 %s 시나리오를 진행중입니다. (%d/%d 생존)"
+L.AUTO_RESPOND_WHISPER_SCENARIO		= "%s님이 %s 시나리오를 진행중입니다. (%d/%d 생존)"
 L.WHISPER_SCENARIO_END_KILL			= "%s님이 %s 시나리오를 완료했습니다!"
 L.WHISPER_SCENARIO_END_KILL_STATS	= "%s님이 %s 시나리오를 완료했습니다! 이 난이도를 %d회 완료했습니다!"
 L.WHISPER_SCENARIO_END_WIPE			= "%s님이 %s 시나리오를 완료하지 못했습니다."
@@ -184,9 +184,9 @@ L.WEAKAURA_KEY							= " (|cff308530WA 키:|r %s)"
 
 L.UPDATEREMINDER_HEADER			= "사용중인 " .. L.DEADLY_BOSS_MODS .. " 버전의 사용 기한이 지났습니다.\n%s (%s) 버전을 Curse, Wago, WoWI, GitHub 릴리즈 페이지를 통해 다운로드 할 수 있습니다"
 L.UPDATEREMINDER_HEADER_SUBMODULE		= "사용중인 %s 모듈의 사용 기한이 지났습니다.\n%s 버전을 Curse, Wago, WoWI, GitHub 릴리즈 페이지를 통해 다운로드 할 수 있습니다"
-L.UPDATEREMINDER_FOOTER			= (IsMacClient() and "Cmd+C" or "Ctrl+C") .. "를 누르면 다운로드 링크를 클립보드로 복사합니다."
-L.UPDATEREMINDER_FOOTER_GENERIC	= (IsMacClient() and "Cmd+C" or "Ctrl+C") .. "를 누르면 클립보드로 복사합니다."
-L.UPDATEREMINDER_DISABLE			= "경고: 구버전의 " .. L.DEADLY_BOSS_MODS .. "를 사용중입니다. 현재 게임 버전 및 DBM 새 버전과는 호환되지 않아 강제로 비활성화되며 업데이트 전까진 사용할 수 없습니다. 이는 호환되지 않는 보스 모드가 당신 또는 파티/공대원의 플레이에 악영향을 미치지 않게 하기 위함입니다."
+L.UPDATEREMINDER_FOOTER			= (IsMacClient() and "Cmd-C" or "Ctrl-C").. "를 누르면 다운로드 링크를 클립보드로 복사합니다."
+L.UPDATEREMINDER_FOOTER_GENERIC	= (IsMacClient() and "Cmd-C" or "Ctrl-C").. "를 누르면 클립보드로 복사합니다."
+L.UPDATEREMINDER_DISABLE			= "경고: " .. L.DEADLY_BOSS_MODS .. "의 버전이 오래되어 새로운 "..L.DBM.." 버전과 호환되지 않아 강제로 비활성화되며 업데이트 전까진 사용할 수 없습니다. 이는 구버전 모드가 당신과 파티/공대원의 플레이에 악영향을 미치지 않게 하기 위함입니다."
 L.UPDATEREMINDER_DISABLETEST			= "경고: " .. L.DEADLY_BOSS_MODS.. "의 버전이 오래되었고 테스트/베타 서버이기 때문에 강제로 비활성화되며 업데이트 전까진 사용할 수 없습니다. 이는 구버전 모드가 테스트 피드백에 사용되지 않게 하기 위함입니다."
 L.UPDATEREMINDER_HOTFIX			= "지금 사용하는 " .. L.DBM .. " 버전은 이 보스 전투에서 알려진 오류를 가지고 있습니다. 이 오류는 최신 버전으로 업데이트하면 수정됩니다."
 L.UPDATEREMINDER_HOTFIX_ALPHA	= "지금 사용하는 " .. L.DBM .. " 버전은 이 보스 전투에서 알려진 오류를 가지고 있습니다. 이 오류는 향후 출시될 버전 (또는 최신 ALPHA 버전)에서 수정되어있을 것입니다."
@@ -278,8 +278,7 @@ L.TIMER_USAGE	= {
 	"/dbm timer endloop: 반복 작동중인 모든 ltimer를 멈춥니다."
 }
 
-L.ERROR_NO_PERMISSION				= "풀링/휴식 타이머를 전송하기 위해 필요한 권한을 가지고 있지 않습니다."
-L.ERROR_NO_PERMISSION_COMBAT			= "보스 전투가 진행중인 동안에는 풀링/휴식 타이머를 전송할 수 없습니다"
+L.ERROR_NO_PERMISSION				= "이 명령어를 실행하기 위한 권한을 가지고 있지 않습니다."
 L.PULL_TIME_TOO_SHORT					= "풀링 타이머는 3초 이상으로 설정해야 합니다."
 L.PULL_TIME_TOO_LONG							= "풀링 타이머는 60초 이상 설정할 수 없습니다."
 
@@ -378,7 +377,6 @@ L.AUTO_SPEC_WARN_TEXTS.dodgecount	= "%s (%%s) - 피하세요"
 L.AUTO_SPEC_WARN_TEXTS.dodgeloc		= "%s - %%s 자리 피하세요"
 L.AUTO_SPEC_WARN_TEXTS.moveaway		= "%s - 거리 이격"
 L.AUTO_SPEC_WARN_TEXTS.moveawaycount	= "%s (%%s) - 밖으로 나오세요"
-L.AUTO_SPEC_WARN_TEXTS.moveawaytarget	= "%s - %%s에게서 도망치세요"
 L.AUTO_SPEC_WARN_TEXTS.moveto		= "%s - >%%s<|1으로;로; 이동"
 L.AUTO_SPEC_WARN_TEXTS.soak		= "%s - 맞으세요"
 L.AUTO_SPEC_WARN_TEXTS.soakcount	= "%s - 맞으세요 (%%s)"
@@ -391,7 +389,6 @@ L.AUTO_SPEC_WARN_TEXTS.reflect		= "%s: >%%s< - 공격 중지"
 L.AUTO_SPEC_WARN_TEXTS.stack		= "당신에게 %s (%%d중첩)"
 L.AUTO_SPEC_WARN_TEXTS.switch		= "%s - 대상 바꾸세요"
 L.AUTO_SPEC_WARN_TEXTS.switchcount	= "%s - 대상 바꾸세요 (%%s)"
-L.AUTO_SPEC_WARN_TEXTS.switchcustom	= "%s - 대상 바꾸세요 (%%s)"
 L.AUTO_SPEC_WARN_TEXTS.gtfo		= "%%s 깔림 - 피하세요"
 L.AUTO_SPEC_WARN_TEXTS.adds		= "쫄 등장 - 대상 바꾸세요"
 L.AUTO_SPEC_WARN_TEXTS.addscount	= "쫄 등장 - 대상 바꾸세요 (%%s)"
@@ -425,9 +422,8 @@ L.AUTO_SPEC_WARN_OPTIONS.stopmove 		= "$spell:%s에 이동 금지 특수 알림 
 L.AUTO_SPEC_WARN_OPTIONS.dodge			= "$spell:%s 피하기 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.dodgecount		= "$spell:%s 피하기 특수 알림 보기 (횟수 포함)"
 L.AUTO_SPEC_WARN_OPTIONS.dodgeloc		= "$spell:%s 피하기 특수 알림 보기 (피해야하는 장소 포함)"
-L.AUTO_SPEC_WARN_OPTIONS.moveaway		= "$spell:%s에 본진에서 멀리 빠지기 특수 알림 보기"
-L.AUTO_SPEC_WARN_OPTIONS.moveawaycount		= "$spell:%s에 본진에서 멀리 빠지기 특수 알림 보기 (횟수 포함)"
-L.AUTO_SPEC_WARN_OPTIONS.moveawaytarget		= "$spell:%s에 본진에서 멀리 빠지기 특수 알림 보기 (대상 포함)"
+L.AUTO_SPEC_WARN_OPTIONS.moveaway		= "$spell:%s에 거리 이격 특수 알림 보기"
+L.AUTO_SPEC_WARN_OPTIONS.moveawaycount		= "$spell:%s에 밖으로 나오기 특수 알림 보기 (횟수 포함)"
 L.AUTO_SPEC_WARN_OPTIONS.moveto			= "$spell:%s에 특정인 또는 특정 위치로 이동 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.soak			= "$spell:%s 맞기 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.soakcount		= "$spell:%s 맞기 특수 알림 보기 (횟수 포함)"
@@ -441,7 +437,6 @@ L.AUTO_SPEC_WARN_OPTIONS.count			= "$spell:%s 특수 알림 보기 (횟수 포�
 L.AUTO_SPEC_WARN_OPTIONS.stack			= "당신이 $spell:%2$s %1$d중첩 이상이 된 경우 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.switch			= "$spell:%s에 대상 변경 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.switchcount 	= "$spell:%s에 대상 변경 특수 알림 보기 (횟수 포함)"
-L.AUTO_SPEC_WARN_OPTIONS.switchcustom	= "$spell:%s에 대상 변경 특수 알림 보기 (정보 포함)"
 L.AUTO_SPEC_WARN_OPTIONS.gtfo 			= "바닥 피하기 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.adds 			= "쫄 등장시 대상 변경 특수 알림 보기"
 L.AUTO_SPEC_WARN_OPTIONS.addscount		= "쫄 등장시 대상 변경 특수 알림 보기 (횟수 포함)"
@@ -477,7 +472,6 @@ L.AUTO_TIMER_TEXTS.combat				= "전투 시작"
 L.AUTO_TIMER_OPTIONS.target				= "$spell:%s 디버프 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.targetcount		= "$spell:%s 디버프 타이머 바 보기 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.cast				= "$spell:%s 시전 타이머 바 보기"
-L.AUTO_TIMER_OPTIONS.castpnp				= "$spell:%s 시전 타이머를 상위 이름표에만 표시"
 L.AUTO_TIMER_OPTIONS.castcount			= "$spell:%s 시전 타이머 바 보기 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.castsource			= "$spell:%s 시전 타이머 바 보기 (시전자 이름 포함)"
 L.AUTO_TIMER_OPTIONS.active				= "$spell:%s 지속 시간 타이머 바 보기"
@@ -486,14 +480,14 @@ L.AUTO_TIMER_OPTIONS.ai					= "$spell:%s 쿨타임의 인공지능 예상 타이
 L.AUTO_TIMER_OPTIONS.cd					= "$spell:%s 쿨타임 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.cdcount			= "$spell:%s 쿨타임 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.cdnp				= "$spell:%s 쿨타임 타이머를 이름표에만 표시"
-L.AUTO_TIMER_OPTIONS.cdpnp				= "$spell:%s 쿨타임 타이머를 상위 이름표에만 표시"
+L.AUTO_TIMER_OPTIONS.cdnpcount			= "$spell:%s 쿨타임 타이머를 이름표에만 표시 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.cdsource			= "$spell:%s 쿨타임 타이머 바 보기 (시전자 이름 포함)"
 L.AUTO_TIMER_OPTIONS.cdspecial			= "특수 스킬 쿨타임 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.cdcombo				= "연계 스킬 쿨타임 타이머 바 보기"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next				= "다음 $spell:%s 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.nextcount			= "다음 $spell:%s 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.nextnp				= "다음 $spell:%s 타이머를 이름표에만 표시"
-L.AUTO_TIMER_OPTIONS.nextpnp				= "다음 $spell:%s 타이머를 상위 이름표에만 표시"
+L.AUTO_TIMER_OPTIONS.nextnpcount		= "다음 $spell:%s 타이머를 이름표에만 표시 (횟수 포함)"
 L.AUTO_TIMER_OPTIONS.nextsource			= "다음 $spell:%s 타이머 바 보기 (시전자 이름 포함)"
 L.AUTO_TIMER_OPTIONS.nextspecial		= "다음 특수 스킬 타이머 바 보기"
 L.AUTO_TIMER_OPTIONS.nextcombo			= "다음 연계 스킬 타이머 바 보기"--Used for combining 2 abilities into a single timer
@@ -511,13 +505,12 @@ L.AUTO_TIMER_OPTIONS.roleplay			= "NPC 대사 지속 시간 타이머 바 보기
 L.AUTO_TIMER_OPTIONS.combat				= "전투 시작 타이머 바 보기"
 
 L.AUTO_ICONS_OPTION_TARGETS				= "$spell:%s 대상에 공격대 징표 설정"--Usually used for player targets with no specific sorting
-L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 미작동시 이름 순서 우선)"
-L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 미작동시 공격대 배치 순서 우선)"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 이름 순서 우선)"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "$spell:%s 대상에 공격대 징표 설정 (탱커 근접 원거리 순서 및 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "$spell:%s 대상에 공격대 징표 설정 (근접 캐릭터와 이름 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "$spell:%s 대상에 공격대 징표 설정 (근접 캐릭터와 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "$spell:%s 대상에 공격대 징표 설정 (원거리 캐릭터와 이름 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "$spell:%s 대상에 공격대 징표 설정 (원거리 캐릭터와 공격대 배치 순서 우선)"
-L.AUTO_ICONS_OPTION_TARGETS_MRH			= "$spell:%s 대상에 공격대 징표 설정 (근접 원거리 힐러 순서 및 미작동시 공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "$spell:%s 대상에 공격대 징표 설정 (이름순)"
 L.AUTO_ICONS_OPTION_TARGETS_ROSTER		= "$spell:%s 대상에 공격대 징표 설정 (공격대 배치 순서 우선)"
 L.AUTO_ICONS_OPTION_NPCS				= "$spell:%s에 공격대 징표 설정"--usually used for npcs/mobs
@@ -538,13 +531,11 @@ L.AUTO_YELL_OPTION_TEXT.shortposition	= "$spell:%s 대상일 때 말풍선으로
 L.AUTO_YELL_OPTION_TEXT.combo		= "$spell:%s|1과;와; 다른 디버프가 같이 걸렸을 때 말풍선으로 알리기 (사용자 지정 문자 포함)"
 L.AUTO_YELL_OPTION_TEXT.repeatplayer	= "$spell:%s에 걸렸을 때 말풍선 알림 반복 (플레이어 이름 포함)"
 L.AUTO_YELL_OPTION_TEXT.repeaticon	= "$spell:%s에 걸렸을 때 말풍선 알림 반복 (공격대 징표 포함)"
-L.AUTO_YELL_OPTION_TEXT.icontarget	= "$spell:%s의 대상일 때 말풍선으로 공격대 징표 알림 반복"
 
-L.AUTO_YELL_ANNOUNCE_TEXT.yell		= "%s: " .. UnitName("player")
-L.AUTO_YELL_ANNOUNCE_TEXT.count		= "%s: " .. UnitName("player") .. " (%%d)"
-L.AUTO_YELL_ANNOUNCE_TEXT.fade		= "%s 종료 %%d"
-L.AUTO_YELL_ANNOUNCE_TEXT.position		= "%s %%s: {rt%%d}" ..UnitName("player").. "{rt%%d}"
-L.AUTO_YELL_ANNOUNCE_TEXT.positionnoicon	= "%s %%s: " ..UnitName("player")
+L.AUTO_YELL_ANNOUNCE_TEXT.yell		= UnitName("player") .. "에게 %s"
+L.AUTO_YELL_ANNOUNCE_TEXT.count		= UnitName("player") .. "에게 %s (%%d)"
+L.AUTO_YELL_ANNOUNCE_TEXT.fade		= "%s %%d초 후 사라짐"
+L.AUTO_YELL_ANNOUNCE_TEXT.position	= "{rt%%3$d}" .. UnitName("player") .. "{rt%%3$d}에게 %1$s %%2$s"
 L.AUTO_YELL_ANNOUNCE_TEXT.combo		= "%s랑 %%s"--Spell name (from option, plus spellname given in arg)
 
 L.AUTO_YELL_CUSTOM_FADE				= "%s 사라짐"
@@ -562,10 +553,6 @@ L.AUTO_INFO_FRAME_OPTION_TEXT3		= "$spell:%s|1을;를; 정보 창에 표시 (%%s
 L.AUTO_READY_CHECK_OPTION_TEXT		= "보스가 풀링되면 전투 준비 효과음 듣기 (보스를 대상으로 잡지 않아도 재생)"
 L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "%s의 완료 신기록 타이머 표시"
 L.AUTO_PRIVATEAURA_OPTION_TEXT		= "이 전투에서 설정한 $spell:%s 비공개 오라에 DBM 효과음 경고를 재생합니다."
-
-L.AUTO_GOSSIP_BUFFS						= "NPC나 전문기술 버프 오브젝트 대화 자동 선택"
-L.AUTO_GOSSIP_PERFORM_ACTION			= "사물을 작동시키는 (순간이동 사용 같은) 선택지 자동 선택"
-L.AUTO_GOSSIP_START_ENCOUNTER			= "보스 전투 시작 대화 자동 선택"--This will never need to be plural, since it won't be in a trash mod like other two
 
 -- New special warnings
 L.MOVE_WARNING_BAR				= "알림 이동"
@@ -632,18 +619,3 @@ L.WORLD_BUFFS.zgHeartBooty	= "공포의 혈신, 영혼의 약탈자 학카르가
 L.WORLD_BUFFS.zgHeartYojamba	= "나의 종복들이여, 의식을 시작하라! 학카르의 심장을 다시 공허의 차원으로 쫓아내야 한다!"
 L.WORLD_BUFFS.rendHead		= "가짜 대족장 렌드 블랙핸드가 쓰러졌도다!"
 L.WORLD_BUFFS.blackfathomBoon	= "검은심연의 은혜"
-
--- Annoying popup, especially for classic players
-L.DBM_INSTALL_REMINDER_HEADER	= "완료되지 않은 DBM 설치 작업이 감지되었습니다!"
-L.DBM_INSTALL_REMINDER_EXPLAIN	= "%s을 이용해 주셔서 감사합니다. %s에 있는 보스들의 DBM 모듈을 설치하지 않았습니다. %s 설치를 하기 전까지 DBM은 이 지역에서 타이머나 경고를 표시하지 않을 것입니다!"
-L.DBM_INSTALL_REMINDER_DISABLE	= "이 지역의 모든 DBM 경고와 타이머 작동을 중지합니다." -- Used when we believe it's a user error that the mod isn't installed (i.e., current raids)
-L.DBM_INSTALL_REMINDER_DISABLE2 = "이 패키지를 설치하면 이 메시지는 나오지 않습니다." -- Used for unimportant mods, i.e., dungeons
-L.DBM_INSTALL_REMINDER_DL_WAGO	= (IsMacClient() and "Cmd+C" or "Ctrl+C")  ..  "를 누르면 Wago.io 링크를 클립보드로 복사합니다."
-L.DBM_INSTALL_REMINDER_DL_CURSE	= (IsMacClient() and "Cmd+C" or "Ctrl+C")  ..  "를 누르면 Curseforge 링크를 클립보드로 복사합니다."
-L.DBM_INSTALL_PACKAGE_VANILLA	= "오리지널 및 디스커버리 시즌 패키지"
-L.DBM_INSTALL_PACKAGE_WRATH		= "리분 패키지"
-L.DBM_INSTALL_PACKAGE_CATA		= "대격변 패키지"
-L.DBM_INSTALL_PACKAGE_DUNGEON	= "던전, 구렁, 이벤트 패키지"
-
--- Tests
-L.DBM_TAINTED_BY_TESTS			= "DBM이 이번 접속에서 시간을 왜곡한 테스트 모드로 사용되고 있습니다. 보스 전투에서 DBM을 사용하기에 앞서 UI 재시작을 권장합니다. 모든 기능이 여전히 의도대로 작동해야 하나, 장담할 순 없습니다!"

@@ -61,6 +61,28 @@ if BG.IsVanilla_Sod then
         3027, -- 蓝龙
         3026, -- 卡扎克
     }
+    BG.Loot.encounterID.ZUGsod = {
+        785,
+        784,
+        786,
+        787,
+        788,
+        790,
+        789,
+        791,
+        792,
+        793,
+    }
+    BG.Loot.encounterID.BWLsod = {
+        610,
+        611,
+        612,
+        613,
+        614,
+        615,
+        616,
+        617,
+    }
 end
 
 -- 60

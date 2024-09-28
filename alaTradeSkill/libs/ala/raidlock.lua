@@ -269,9 +269,9 @@ __raidlib.__raid_meta = __raid_meta;
 function __raidlib.GetRaidLockedData(data, detailed)
 	data = data or {  };
 	for instanceIndex = 1, GetNumSavedInstances() do
-		local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(instanceIndex);
+		local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress, _, inst = GetSavedInstanceInfo(instanceIndex);
 		if locked and isRaid then
-			local inst = __raid_meta.hash[name];
+			local inst = inst or __raid_meta.hash[name];
 			if inst then
 				local msg = inst .. ":" .. encounterProgress .. ":" .. numEncounters;
 				if detailed then

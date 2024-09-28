@@ -3,7 +3,7 @@
 ## Notes: Library for retrieving class and spec talent tree information
 ## Author: Numy
 ## IconTexture: Interface\Addons\LibTalentTree-1.0\media\icon
-## Version: v1.4.8
+## Version: v1.5.5
 ## X-Licence: Permission is granted to use and redistribute this library in any way you see fit, including but not limited to, embedding it in your own addons.
 ## X-Curse-Project-ID: 676405
 

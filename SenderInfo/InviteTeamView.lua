@@ -583,9 +583,7 @@ function InviteTeamView:Add(name,info)
             panel2:Show();
         end
         lastLessenTime = GetTime() + 9999999; --防止触发倒计时自动又打开 不可能战斗时间超过这个吧
-        if lessen then
-            lessen:SetText("SenderInfo 消息:" .. #allItem);
-        end
+        lessen:SetText("SenderInfo 消息:" .. #allItem);
         panelLessen = true;
         CombatEndViewRecover = true;
     end

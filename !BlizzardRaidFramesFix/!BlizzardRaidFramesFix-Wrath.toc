@@ -1,9 +1,0 @@
-## Interface: 30403
-## Title: Blizzard Raid Frames Fix
-## Version: @project-version@
-## Authors: dev7355608
-## Notes: Prevents the Blizzard raid frames from breaking when players join or leave during combat
-## X-Curse-Project-ID: 357629
-## X-WoWI-ID: 25484
-
-BlizzardRaidFramesFix.lua

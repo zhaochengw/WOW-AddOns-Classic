@@ -194,7 +194,7 @@ do
     L["< 合 计 欠 款 >"] = "< Total Debt >"
     L["没记买家"] = "No Recorded Buyers"
     L["合计欠款："] = "Total Debt:"
-    L["————通报欠款————"] = "————Announce Debt————"
+    L["———通报欠款———"] = "————Announce Debt————"
     L["{rt7} 合计欠款 {rt7}"] = "{rt7} Total Debt {rt7}"
     L[" 合计欠款："] = " Total Debt:"
     L["没有WCL记录"] = "No WCL Records"

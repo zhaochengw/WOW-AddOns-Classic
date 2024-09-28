@@ -10,7 +10,7 @@ local function CreateOurFrame()
 	frame = CreateFrame("Frame", "DBMUpdateReminder", UIParent, "BackdropTemplate")
 	frame:SetFrameStrata("FULLSCREEN_DIALOG") -- yes, this isn't a fullscreen dialog, but I want it to be in front of other DIALOG frames (like DBM GUI which might open this frame...)
 	frame:SetWidth(430)
-	frame:SetHeight(100)
+	frame:SetHeight(140)
 	frame:SetPoint("TOP", 0, -230)
 	frame.backdropInfo = {
 		bgFile		= "Interface\\DialogFrame\\UI-DialogBox-Background-Dark", -- ????
@@ -57,9 +57,6 @@ local function CreateOurFrame()
 		editBox:SetText(urlText)
 		editBox:HighlightText()
 	end)
-	editBox:SetScript("OnEscapePressed", function()
-		frame:Hide()
-	end)
 	fontstringFooter = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 	fontstringFooter:SetWidth(410)
 	fontstringFooter:SetHeight(0)
@@ -77,25 +74,16 @@ local function CreateOurFrame()
 	button:SetScript("OnClick", function()
 		frame:Hide()
 	end)
+
 end
 
-local function setFrameWidth(extraWidth)
-	extraWidth = extraWidth or 0
-	frame:SetWidth(430 + extraWidth)
-	fontstringFooter:SetWidth(410 + extraWidth)
-	editBox:SetWidth(250 + extraWidth)
-	fontstring:SetWidth(400 + extraWidth)
-end
-
-function DBM:ShowUpdateReminder(newVersion, newRevision, text, url, extraWidth, textJustify)
+function DBM:ShowUpdateReminder(newVersion, newRevision, text, url)
 	urlText = url or "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki"
 	if not frame then
 		CreateOurFrame()
 	end
-	setFrameWidth(extraWidth)
 	editBox:SetText(url or "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki")
 	editBox:HighlightText()
-	editBox:SetFocus()
 	frame:Show()
 	if newVersion then
 		fontstring:SetText(L.UPDATEREMINDER_HEADER:format(newVersion, newRevision))
@@ -104,11 +92,4 @@ function DBM:ShowUpdateReminder(newVersion, newRevision, text, url, extraWidth, 
 		fontstring:SetText(text)
 		fontstringFooter:SetText(L.UPDATEREMINDER_FOOTER_GENERIC)
 	end
-	if textJustify == "LEFT" then
-		fontstring:SetPoint("TOP", 10, -16)
-	else
-		fontstring:SetPoint("TOP", 0, -16)
-	end
-	fontstring:SetJustifyH(textJustify or "CENTER")
-	frame:SetHeight(110 + fontstring:GetHeight())
 end

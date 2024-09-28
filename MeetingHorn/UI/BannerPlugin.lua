@@ -114,7 +114,7 @@ end
 
 function BannerPlugin:AutoRotateBanner()
     self:OnNextClick()
-    self.timer = C_Timer.NewTimer(5, function() self:AutoRotateBanner() end)
+    self.timer = C_Timer.NewTimer(15, function() self:AutoRotateBanner() end)
 end
 
 function BannerPlugin:CreateClickableFrame()
@@ -236,7 +236,8 @@ function BannerPlugin:MEETINGHORN_STB(_, data)
 end
 
 function BannerPlugin:MEETINGHORN_SHOW()
-    if not self.db.global.BannerData or #self.db.global.BannerData == 0 then
+    if not self.db.global.BannerData or #self.db.global.BannerData == 0
+    or  not ns.Addon.MainPanel:IsVisible() then
         return
     end
     self.frame:Show()

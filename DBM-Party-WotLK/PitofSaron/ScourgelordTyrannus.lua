@@ -5,7 +5,7 @@ if not mod:IsClassic() then
 	mod.statTypes = "normal,heroic,timewalker"
 end
 
-mod:SetRevision("20240616044034")
+mod:SetRevision("20240428124541")
 mod:SetCreatureID(36658, 36661)
 mod:SetEncounterID(2000)
 mod:DisableESCombatDetection()
@@ -116,7 +116,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 	if msg == L.HoarfrostTarget or msg:find(L.HoarfrostTarget) then--Probably don't need this, verify
 		if not target then return end
 		timerHoarfrostCD:Start()
-		target = DBM:GetUnitFullName(target) or target
+		target = DBM:GetUnitFullName(target)
 		if target == UnitName("player") then
 			specWarnHoarfrost:Show()
 			specWarnHoarfrost:Play("targetyou")
@@ -127,7 +127,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		else
 			warnHoarfrost:Show(target)
 		end
-		if target and self.Options.SetIconOnHoarfrostTarget then
+		if self.Options.SetIconOnHoarfrostTarget then
 			self:SetIcon(target, 8, 5)
 		end
 	end

@@ -1645,9 +1645,9 @@ local function OptionsUI()
                 end
                 right = bt
                 if type ~= "fb" then
-                    bt.Text:SetText("|cff" .. color .. name2 .. RR)
+                    bt.Text:SetText("|cff" .. color .. name2:gsub("sod","") .. RR)
                 else
-                    bt.Text:SetText("|cff" .. color .. name .. RR)
+                    bt.Text:SetText("|cff" .. color .. name:gsub("sod","") .. RR)
                 end
                 bt.Text:SetWidth(width2 - 25)
                 bt.Text:SetWordWrap(false)
@@ -1987,6 +1987,8 @@ local function OptionsUI()
         -- 5人本完成总览
         if not BG.IsVanilla then
             local name = "FB5M"
+            BG.options[name .. "reset"] = 0
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
             local ontext = {
                 L["角色5人本完成总览"],
                 L["在队伍查找器旁边显示角色5人本完成总览。"],

@@ -23,7 +23,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization({
-	TrioActiveTimer		= "Отсчет времени до вступления Троих аптекарей в бой"
+	TrioActiveTimer		= "Отсчет времени до вступления Троих аптекарей в бой",
+	AGBoss				= "Автоматический выбор диалога для вызова Троих аптекарей"
 })
 
 L:SetMiscLocalization({
@@ -102,7 +103,9 @@ L:SetWarningLocalization({
 L:SetOptionLocalization({
 	WarnPhase				= "Предупреждение о смене фаз",
 	warnHorsemanSoldiers	= "Предупреждение о призыве Пульсирующих тыкв",
-	warnHorsemanHead		= "Предупреждение о появлении Всадника без головы"
+	warnHorsemanHead		= "Предупреждение о появлении Всадника без головы",
+	AGCurses				= "Автоматический выбор диалога для активации проклятий для Всадника без головы",
+	AGBoss					= "Автоматический выбор диалога для вызова Всадника без головы"
 })
 
 L:SetMiscLocalization({
@@ -151,11 +154,11 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("EscortQuests")
 
 L:SetGeneralLocalization{
-	name = "Сопровождения NPC",
+	name = "Квест",
 }
 
 L:SetOptionLocalization{
-	Timers = "Показывать таймеры для некоторых заданий, требующих сопровождения NPC"
+	Timers = "Показывать таймеры для некоторых квестов сопровождений"
 }
 
 
@@ -174,7 +177,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("BCEvent")
 
 L:SetGeneralLocalization({
-	name = "Воспоминание об Азерот: BC"
+	name = "MoA: Burning Crusade"
 })
 
 --------------------------
@@ -183,7 +186,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("WrathEvent")
 
 L:SetGeneralLocalization({
-	name = "Воспоминание об Азерот: Король-лич"
+	name = "MoA: WotLK"
 })
 
 L:SetWarningLocalization{
@@ -207,15 +210,15 @@ L:SetMiscLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnEmerge				= "Показывать предупреждение о появлении",
-	WarnEmergeSoon			= "Показывать предварительное предупреждение о появлении",
-	WarnSubmerge			= "Показывать предупреждение о закапывании",
-	WarnSubmergeSoon		= "Показывать предварительное предупреждение о закапывании",
-	TimerEmerge				= "Показывать таймер для появления",
-	TimerSubmerge			= "Показывать таймер для закапывания",
-	WarningTeleportNow		= "Показывать предупреждение для телепортации",
-	WarningTeleportSoon		= "Показывать предварительное предупреждение для телепортации",
-	TimerTeleport			= "Показывать таймер для телепортации"
+	WarnEmerge				= "Показать предупреждение о появлении",
+	WarnEmergeSoon			= "Показать предварительное предупреждение о появлении",
+	WarnSubmerge			= "Показать предупреждение о закапывании",
+	WarnSubmergeSoon		= "Показать предварительное предупреждение о закапывании",
+	TimerEmerge				= "Показать таймер для появления",
+	TimerSubmerge			= "Показать таймер для закапывания",
+	WarningTeleportNow		= "Показать предупреждение для телепортации",
+	WarningTeleportSoon		= "Показать предварительное предупреждение для телепортации",
+	TimerTeleport			= "Показать таймер для телепортации"
 }
 
 --------------------------
@@ -224,7 +227,7 @@ L:SetOptionLocalization{
 L = DBM:GetModLocalization("CataEvent")
 
 L:SetGeneralLocalization({
-	name = "Воспоминание об Азерот: Катаклизм"
+	name = "MoA: Cataclysm"
 })
 
 L:SetWarningLocalization({
@@ -233,8 +236,8 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	warnSplittingBlow			= "Показывать предупреждения о местоположении для $spell:98951",
-	warnEngulfingFlame			= "Показывать предупреждения о местоположении для $spell:99171"
+	warnSplittingBlow			= "Показать предупреждения о местоположении для $spell:98951",
+	warnEngulfingFlame			= "Показать предупреждения о местоположении для $spell:99171"
 })
 
 ----------------------------------
@@ -312,21 +315,6 @@ L = DBM:GetModLocalization("DoomwalkerEvent")
 
 L:SetGeneralLocalization{
 	name = "Предвестник Рока (событие)"
-}
-
-
--- Archavon (???)
-L = DBM:GetModLocalization("ArchavonEvent")
-
-L:SetGeneralLocalization{
-	name = "Аркавон (событие)"
-}
-
--- Sha of Anger (???)
-L = DBM:GetModLocalization("ShaofAngerEvent")
-
-L:SetGeneralLocalization{
-	name = "Ша Злости (событие)"
 }
 
 --------------------------

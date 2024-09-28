@@ -168,7 +168,9 @@ ThreeDimensionsCode_SafePipe_CmdHandles = {
 
 	newsize = function(cmdid,arg)
 		local pos = arg:find("x")
+        --[[@debug@
         print("newsize",arg)
+        --@end-debug@]]
 		if pos then
 			local w = arg:sub(1,pos-1)
 			w = tonumber(w)

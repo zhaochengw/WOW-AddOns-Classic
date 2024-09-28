@@ -259,6 +259,12 @@ function BG.HopeUI(FB)
                                 local h = { FB, itemID }
                                 BG.HistoryJine(unpack(h))
                                 BG.HistoryMOD = h
+
+
+                                if IsControlKeyDown() then
+                                    SetCursor("Interface/Cursor/Inspect")
+                                end
+                                BG.canShowTrunToItemLibCursor = true
                             end
                         end
                     end)
@@ -271,6 +277,8 @@ function BG.HopeUI(FB)
                             end
                             BG.HistoryJineFrame:Hide()
                         end
+                        SetCursor(nil)
+                        BG.canShowTrunToItemLibCursor = nil
                     end)
                     -- 获得光标时
                     bt:SetScript("OnEditFocusGained", function(self)

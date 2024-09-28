@@ -160,6 +160,7 @@ do
 end
 
 Frame:RegisterEvent("ADDON_LOADED")
+Frame:RegisterEvent("PLAYER_LEAVING_WORLD")
 Frame:RegisterEvent("PLAYER_LOGOUT")
 Frame:RegisterEvent("UNIT_AURA")
 Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -212,6 +213,11 @@ function Frame:ADDON_LOADED(Name)
     self:UnregisterEvent("ADDON_LOADED")
 end
 
+function Frame:PLAYER_LEAVING_WORLD()
+    -- Save Config Variables
+    GatherBotDB = {}
+    Addon:UpdateTable(GatherBotDB, Config)
+end
 function Frame:PLAYER_LOGOUT()
     -- Save Config Variables
     GatherBotDB = {}

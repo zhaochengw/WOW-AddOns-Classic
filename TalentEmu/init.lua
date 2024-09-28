@@ -28,11 +28,7 @@ local DT = {  }; __private.DT = DT;		--	data
 -->
 	local __ala_meta__ = _G.__ala_meta__;
 	__ala_meta__.emu = __private;
-	VT.__super = __ala_meta__;
-	VT.__uireimp = __ala_meta__.uireimp;
-	VT.__emulib = __ala_meta__.__emulib;
-	VT.__autostyle = __ala_meta__.autostyle;
-	VT.__menulib = __ala_meta__.__menulib;
+	VT.__dep = __ala_meta__;
 	VT.__scrolllib = _G.alaScrollList;
 	VT.__popuplib = _G.alaPopup;
 
@@ -117,9 +113,9 @@ local DT = {  }; __private.DT = DT;		--	data
 	CT.MEDIAPATH =  [[Interface\AddOns\]] .. __addon .. [[\Media\]];
 	CT.TEXTUREPATH =  CT.MEDIAPATH .. [[Textures\]];
 	CT.NUM_POINTS_NEXT_TIER = 5;
-	CT.THROTTLE_TALENT_QUERY = VT.__emulib.CT.TALENT_REPLY_THROTTLED_INTERVAL + 0.5;
-	CT.THROTTLE_GLYPH_QUERY = VT.__emulib.CT.GLYPH_REPLY_THROTTLED_INTERVAL + 0.5;
-	CT.THROTTLE_EQUIPMENT_QUERY = VT.__emulib.CT.EQUIPMENT_REPLY_THROTTLED_INTERVAL + 0.5;
+	CT.THROTTLE_TALENT_QUERY = VT.__dep.__emulib.CT.TALENT_REPLY_THROTTLED_INTERVAL + 0.5;
+	CT.THROTTLE_GLYPH_QUERY = VT.__dep.__emulib.CT.GLYPH_REPLY_THROTTLED_INTERVAL + 0.5;
+	CT.THROTTLE_EQUIPMENT_QUERY = VT.__dep.__emulib.CT.EQUIPMENT_REPLY_THROTTLED_INTERVAL + 0.5;
 	CT.DATA_VALIDITY = 30;
 	CT.TOOLTIP_UPDATE_DELAY = 0.02;
 	CT.INSPECT_WAIT_TIME = 10;
@@ -148,8 +144,8 @@ local DT = {  }; __private.DT = DT;		--	data
 		}
 	);
 
-	DT.IndexToClass = VT.__emulib.__classList;
-	DT.ClassToIndex = VT.__emulib.__classHash;
+	DT.IndexToClass = VT.__dep.__emulib.__classList;
+	DT.ClassToIndex = VT.__dep.__emulib.__classHash;
 
 -->
 MT.BuildEnv('INIT');
@@ -346,9 +342,9 @@ MT.BuildEnv('INIT');
 	VT.__is_loggedin = IsLoggedIn();
 	VT.__is_inbattleground = UnitInBattleground('player');
 	VT.__player_map = GetBestMapForUnit('player');
-	VT.__support_gem = VT.__emulib.CT.SUPPORT_GEM;
-	VT.__support_glyph = VT.__emulib.CT.SUPPORT_GLYPH;
-	VT.__support_engraving = VT.__emulib.CT.SUPPORT_ENGRAVING;
+	VT.__support_gem = VT.__dep.__emulib.CT.SUPPORT_GEM;
+	VT.__support_glyph = VT.__dep.__emulib.CT.SUPPORT_GLYPH;
+	VT.__support_engraving = VT.__dep.__emulib.CT.SUPPORT_ENGRAVING;
 
 	if CT.BNTAG == "\97\108\101\120\35\53\49\54\55\50\50" or CT.BNTAG == "ALEX#125620" or CT.BNTAG == "Sanjeev#1289" then
 		MT.Debug = MT.DebugDev;

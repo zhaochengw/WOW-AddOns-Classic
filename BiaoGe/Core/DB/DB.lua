@@ -75,6 +75,8 @@ do
             AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
             AddDB("UBRS", mainFrameWidth, 835, 3, 10, { 0, 5, 9 })
             AddDB("MCsod", 1715, 940, 4, 16, { 0, 6, 11, 14 })
+            AddDB("ZUGsod", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
+            AddDB("BWLsod", mainFrameWidth, 810, 3, 11, { 0, 5, 9 })
         elseif BG.IsVanilla_60 then
             AddDB("MC", mainFrameWidth, 873, 3, 13, { 0, 8, 12 })
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
@@ -119,14 +121,16 @@ do
             end
         end
         if BG.IsVanilla_Sod then
-            BG.FB1 = "Temple"
+            BG.FB1 = "MCsod"
             BG.fullLevel = 25
-            BG.theEndBossID = { 2891, 2940, 2956, 672 }
+            BG.theEndBossID = { 2891, 2940, 2956, 3018, 617, 793 }
             AddDB("BD", 48, "P1", 10, 3)
             AddDB("Gno", 90, "P2", 10, 3)
             AddDB("Temple", 109, "P3", 20, 3)
             AddDB("UBRS", 229, "P4", 10, 3, nil, { "UBRS", "MCsod" })
             AddDB("MCsod", 409, "P4", 20, nil, nil, { "UBRS", "MCsod" }, { 1, 11 })
+            AddDB("ZUGsod", 309, "P5", 10, 3, nil, { "BWLsod", "ZUGsod" })
+            AddDB("BWLsod", 469, "P5", 20, nil, nil, { "BWLsod", "ZUGsod" })
 
             BG.FBIDtable[249] = "MCsod" -- 奥妮克希亚的巢穴
             BG.bossPositionStartEnd[249] = { 12, 12 }
@@ -142,10 +146,19 @@ do
             BG.bossPositionStartEnd[2789] = { 14, 14 }
             BG.FBfromBossPosition["MCsod"][14] = { name = "TTS", localName = GetRealZoneText(2789) }
             BG.instanceIDfromBossPosition["MCsod"][14] = 2789
+
+            -- 水晶谷
+            do
+                local FB, instanceID, bossNum = "BWLsod", 2804, 9
+                BG.FBIDtable[instanceID] = FB
+                BG.bossPositionStartEnd[instanceID] = { bossNum, bossNum }
+                BG.FBfromBossPosition[FB][bossNum] = { name = "TCV", localName = GetRealZoneText(instanceID) }
+                BG.instanceIDfromBossPosition[FB][bossNum] = instanceID
+            end
         elseif BG.IsVanilla_60 then
             BG.FB1 = "MC"
             BG.fullLevel = 60
-            BG.theEndBossID = { 672, 1084, 617, 793, 723, 717, 1114 } --MC_SodOL BWL ZUG AQL TAQ NAXX
+            BG.theEndBossID = { 672, 1084, 617, 793, 723, 717, 1114 } --MC OL BWL ZUG AQL TAQ NAXX
             AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" }, { 1, 10 })
             AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
             AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
@@ -591,6 +604,7 @@ do
             { ID = "AI", name = L["AI语音"] },
             { ID = "YingXue", name = L["樱雪"] },
             { ID = "BeiXi", name = L["匕首岭-<TIMEs>贝西"] },
+            { ID = "SiKaQi", name = L["司卡奇"] },
         }
         BG.soundTbl2 = {
             { ID = "paimai", name = "拍卖啦.mp3" },

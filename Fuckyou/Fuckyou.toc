@@ -1,10 +1,10 @@
-## Interface: 30401
+## Interface: 110000, 110002, 30403, 40400, 11503
 ## Title: |cff00ffffFuck☆|ryou
 ## Title-zhCN: |cff00ffffFuck☆|ryou 口吐芬芳
 ## Title-zhTW: |cff00ffffFuck☆|ryou 口吐芬芳
-## Version: R2
+## Version: R4
 ## Author: EK (Linodas@Illidan-US)
 ## Notes: #!*&#@$!*@&#$
-## Credits: Peterdox
+## Credits: Peterdox, Siweia
 
 Fuckyou.lua

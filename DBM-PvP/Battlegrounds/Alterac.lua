@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("z30", "DBM-PvP")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240414045728")
+mod:SetRevision("20240923210554")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -19,10 +19,10 @@ do
 		if not bgzone and (zoneID == 30 or zoneID == 2197) then -- Regular AV (retail and classic), Korrak
 			bgzone = true
 			self:RegisterShortTermEvents(
-				"CHAT_MSG_MONSTER_YELL",
-				"GOSSIP_SHOW",
-				"QUEST_PROGRESS",
-				"QUEST_COMPLETE"
+				"CHAT_MSG_MONSTER_YELL"
+				--"GOSSIP_SHOW",
+				--"QUEST_PROGRESS",
+				--"QUEST_COMPLETE"
 			)
 			local assaultID
 			if zoneID == 30 then
@@ -60,6 +60,7 @@ do
 	mod.OnInitialize			= mod.LOADING_SCREEN_DISABLED
 end
 
+--[[
 do
 	local ipairs, type = ipairs, type
 	local UnitGUID, GetItemCount, GetNumGossipActiveQuests, SelectGossipActiveQuest, SelectGossipAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward = UnitGUID, GetItemCount, C_GossipInfo and C_GossipInfo.GetNumActiveQuests, C_GossipInfo and C_GossipInfo.SelectActiveQuest, C_GossipInfo and C_GossipInfo.SelectAvailableQuest, IsQuestCompletable, CompleteQuest, GetQuestReward
@@ -92,12 +93,14 @@ do
 		local quest = quests[self:GetCIDFromGUID(UnitGUID("target") or "") or 0]
 		if quest and type(quest[1]) == "table" then
 			for _, v in ipairs(quest) do
-				local num = GetItemCount(v[1])
+				local questId = v[1]
+				---@cast questId number
+				local num = GetItemCount(questId)
 				if num > 0 then
 					if GetNumGossipActiveQuests() == 1 then
-						SelectGossipActiveQuest(1)
+						SelectGossipActiveQuest(questId)
 					else
-						SelectGossipAvailableQuest((v[2] == 5 and num >= 5) and 2 or 1)
+						SelectGossipAvailableQuest(questId)
 					end
 					break
 				end
@@ -106,7 +109,7 @@ do
 			local questId = quest[1]
 			---@cast questId number
 			if GetItemCount(questId) > quest[2] then
-				SelectGossipAvailableQuest(1)
+				SelectGossipAvailableQuest(questId)
 			end
 		end
 	end
@@ -122,6 +125,7 @@ do
 		GetQuestReward(0)
 	end
 end
+--]]
 
 do
 	local bossTimer	= mod:NewTimer(600, "TimerBoss")

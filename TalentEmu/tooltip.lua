@@ -73,7 +73,7 @@ MT.BuildEnv('TOOLTIP');
 					end
 				end
 				if VT.SET.supreme and cache.PakData[1] ~= nil then
-					local _, info = VT.__emulib.DecodeAddOnPackData(cache.PakData[1]);
+					local _, info = VT.__dep.__emulib.DecodeAddOnPackData(cache.PakData[1]);
 					if info ~= nil then
 						Tip:AddLine("|cffffffffPack|r: " .. info, 0.75, 1.0, 0.25);
 					end

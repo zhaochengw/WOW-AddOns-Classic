@@ -856,7 +856,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         local maxButtons = 10
         local buttons = {}
         for i = 1, maxButtons do
-            local bt = CreateFrame("Button", nil, BG.lastAuctionFrame.frame)
+            local bt = CreateFrame("Button", nil, BG.lastAuctionFrame.frame, "BackdropTemplate")
+            bt:SetBackdrop({
+                edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                edgeSize = 1.5,
+            })
             bt:SetSize(35, 35)
             if i == 1 then
                 bt:SetPoint("TOPLEFT", BG.lastAuctionFrame.frame, "TOPLEFT", 5, -40)
@@ -867,13 +871,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
             bt.icon = bt:CreateTexture(nil, "BACKGROUND", nil, 1)
             bt.icon:SetAllPoints()
-            bt.NormalTexture = bt:CreateTexture(nil, "BACKGROUND", nil, 2)
-            bt.NormalTexture:SetTexture([[Interface\Buttons\UI-Quickslot2]])
-            bt.NormalTexture:SetPoint("CENTER", 0, 0)
-            bt.NormalTexture:SetSize(bt:GetWidth() + 27, bt:GetHeight() + 27)
             bt:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]])
-            bt:SetPushedTexture([[Interface\Buttons\UI-Quickslot-Depress]])
-            bt:RegisterForClicks("AnyUp")
             bt:Hide()
             tinsert(buttons, bt)
 
@@ -976,8 +974,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 bt.i = v.i
                 bt.isLocked = v.isLocked
                 local r, g, b = GetItemQualityColor(v.quality)
-                bt.NormalTexture:SetVertexColor(r, g, b)
-                bt:GetPushedTexture():SetVertexColor(r, g, b)
+                bt:SetBackdropBorderColor(r, g, b, 1)
+                bt:GetHighlightTexture():SetVertexColor(r, g, b)
                 bt.icon:SetTexture(v.icon)
                 bt.icon:SetTexCoord(.03, .97, .03, .97)
                 bt.icon:SetDesaturated(v.isLocked)
