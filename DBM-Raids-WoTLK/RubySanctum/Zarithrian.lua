@@ -3,9 +3,9 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20230525050147")
+mod:SetRevision("20240512232312")
 mod:SetCreatureID(39746)
-mod:SetEncounterID(mod:IsClassic() and 893 or 1148)
+mod:SetEncounterID(not mod:IsPostCata() and 893 or 1148)
 mod:SetModelID(32179)
 
 mod:RegisterCombat("combat")
@@ -23,7 +23,7 @@ local warnCleaveArmor			= mod:NewStackAnnounce(74367, 2, nil, "Tank|Healer")
 local specWarnFear				= mod:NewSpecialWarningSpell(74384, nil, nil, nil, 2, 2)
 local specWarnCleaveArmor		= mod:NewSpecialWarningStack(74367, nil, 2, nil, nil, 1, 6)--ability lasts 30 seconds, has a 15 second cd, so tanks should trade at 2 stacks.
 
-local timerAddsCD				= mod:NewTimer(45.5, "TimerAdds", 74398, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerAddsCD				= mod:NewTimer(45.5, "TimerAdds", 74398, nil, nil, 1, DBM_COMMON_L.DAMAGE_ICON)
 local timerCleaveArmor			= mod:NewTargetTimer(30, 74367, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFearCD				= mod:NewCDTimer(33, 74384, nil, nil, nil, 2)--anywhere from 33-40 seconds in between fears.
 

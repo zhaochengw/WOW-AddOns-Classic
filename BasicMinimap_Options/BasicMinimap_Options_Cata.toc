@@ -1,4 +1,4 @@
-## Interface: 40400
+## Interface: 40400, 40401
 ## Title: BasicMinimap_Options
 ## Author: Funkydude
 ## Notes: BasicMinimap Configuration Options.
@@ -12,7 +12,7 @@
 ## Notes-koKR: BasicMinimap|1을;를; 설정하는 옵션입니다.
 ## Notes-ptBR: BasicMinimap Opções de Configuração.
 ## Notes-ruRU: BasicMinimap параметры настроек.
-## Version: v11.0.3
+## Version: v11.0.4
 ## LoadOnDemand: 1
 ## Dependencies: BasicMinimap
 

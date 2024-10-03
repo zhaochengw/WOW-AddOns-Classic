@@ -1,14 +1,16 @@
 ---@class DBMCoreNamespace
 local private = select(2, ...)
 
-local twipe, tremove = table.wipe, table.remove
+local twipe, tremove, unpack = table.wipe, table.remove, unpack
 local floor = math.floor
+local test = private:GetPrototype("DBMTest")
 local GetTime = GetTime
 local pairs, next = pairs, next
 local LastInstanceMapID = -1
 
 local schedulerFrame = CreateFrame("Frame", "DBMScheduler")
 schedulerFrame:Hide()
+test:RegisterTimeWarpFrame(schedulerFrame)
 
 ---@class DBMScheduler: DBMModule
 local module = private:NewModule("DBMScheduler")
@@ -20,6 +22,7 @@ local module = private:NewModule("DBMScheduler")
 -- stack that stores a few tables (up to 8) which will be recycled
 local popCachedTable, pushCachedTable
 local numChachedTables = 0
+local scheduleTraceId = 0
 do
 	local tableCache
 
@@ -130,6 +133,9 @@ do
 					tremove(heap, i)
 					firstFree = firstFree - 1
 					foundMatch = true
+					if v.traceId then
+						test:Trace(v.mod, "UnscheduleTask", v.traceId, unpack(v, 1, v.n))
+					end
 				end
 			end
 		end
@@ -142,23 +148,6 @@ do
 	end
 end
 
-local wrappers = {}
-local function range(max, cur, ...)
-	cur = cur or 1
-	if cur > max then
-		return ...
-	end
-	return cur, range(max, cur + 1, select(2, ...))
-end
-local function getWrapper(n)
-	wrappers[n] = wrappers[n] or loadstring(([[
-		return function(func, tbl)
-			return func(]] .. ("tbl[%s], "):rep(n):sub(0, -3) .. [[)
-		end
-	]]):format(range(n)))()
-	return wrappers[n]
-end
-
 local nextModSyncSpamUpdate = 0
 --mainFrame:SetScript("OnUpdate", function(self, elapsed)
 local function onUpdate(self, elapsed)
@@ -168,14 +157,12 @@ local function onUpdate(self, elapsed)
 	local nextTask = getMin()
 	while nextTask and nextTask.func and nextTask.time <= time do
 		deleteMin()
-		local n = nextTask.n
-		if n == #nextTask then
-			nextTask.func(unpack(nextTask))
-		else
-			-- too many nil values (or a trailing nil)
-			-- this is bad because unpack will not work properly
-			-- TODO: is there a better solution?
-			getWrapper(n)(nextTask.func, nextTask)
+		if nextTask.traceId then
+			test:Trace(nextTask.mod, "ExecuteScheduledTaskPre", nextTask.traceId, unpack(nextTask, 1, nextTask.n))
+		end
+		nextTask.func(unpack(nextTask, 1, nextTask.n))
+		if nextTask.traceId then
+			test:Trace(nextTask.mod, "ExecuteScheduledTaskPost", nextTask.traceId, unpack(nextTask, 1, nextTask.n))
 		end
 		pushCachedTable(nextTask)
 		nextTask = getMin()
@@ -246,7 +233,13 @@ local function schedule(t, f, mod, ...)
 	else -- create a new table
 		v = {time = GetTime() + t, func = f, mod = mod, n = select("#", ...), ...}
 	end
+	if test.testRunning then
+		scheduleTraceId = scheduleTraceId + 1
+		v.traceId = scheduleTraceId
+		test:Trace(mod, "ScheduleTask", scheduleTraceId, t, f, ...)
+	end
 	insert(v)
+	return test.testRunning and scheduleTraceId or nil
 end
 
 --Boss mod prototype usage methods (for announces countdowns and yell scheduling
@@ -257,7 +250,8 @@ function module:ScheduleCountdown(time, numAnnounces, func, mod, prototype, ...)
 		--In event time is < numbmer of announces (ie 2 second time, with 3 announces)
 		local validTime = time - i
 		if validTime >= 1 then
-			schedule(validTime, func, mod, prototype, i, ...)
+			local id = schedule(validTime, func, mod, prototype, i, ...)
+			test:Trace(mod, "SetScheduleMethodName", id, prototype, "ScheduleCountdown", i, ...)
 		end
 	end
 end
@@ -280,3 +274,11 @@ end
 function module:Unschedule(f, mod, ...)
 	return unschedule(f, mod, ...)
 end
+
+-- Expose locals for testing.
+
+test:RegisterLocalHook("GetTime", function(val)
+	local old = GetTime
+	GetTime = val
+	return old
+end)

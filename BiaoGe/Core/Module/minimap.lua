@@ -24,7 +24,7 @@ function plugin:OnClick(button) --function plugin.OnClick(self, button)
         if SettingsPanel:IsVisible() then
             HideUIPanel(SettingsPanel)
         else
-            InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
+            ns.InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
             BG.MainFrame:Hide()
         end
         BG.PlaySound(1)
@@ -34,7 +34,11 @@ end
 function plugin:OnEnter(button)
     BG.SetFBCD("minimap")
     BG.FBCDFrame:ClearAllPoints()
-    BG.FBCDFrame:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0)
+    if BG.ButtonIsInRight(self) then
+        BG.FBCDFrame:SetPoint("TOPRIGHT", self, "BOTTOMLEFT", 0, 0)
+    else
+        BG.FBCDFrame:SetPoint("TOPLEFT", self, "BOTTOMRIGHT", 0, 0)
+    end
     BG.FBCDFrame:Show()
 end
 

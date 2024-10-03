@@ -482,12 +482,18 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
 
                 if IsControlKeyDown() then
                     SetCursor("Interface/Cursor/Inspect")
-                elseif IsAltKeyDown() and BG.IsML then
-                    SetCursor("interface/cursor/repair")
+                elseif IsAltKeyDown() then
+                    if BG.IsML then
+                        SetCursor("interface/cursor/repair")
+                    else
+                        SetCursor("interface/cursor/quest")
+                    end
                 end
                 BG.canShowTrunToItemLibCursor = true
                 if BG.IsML then
                     BG.canShowStartAuctionCursor = true
+                else
+                    BG.canShowHopeCursor = true
                 end
             end
         end
@@ -507,6 +513,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         SetCursor(nil)
         BG.canShowTrunToItemLibCursor = false
         BG.canShowStartAuctionCursor = false
+        BG.canShowHopeCursor = false
     end)
     -- 获得光标时
     bt:SetScript("OnEditFocusGained", function(self)

@@ -3,9 +3,9 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20240428104801")
+mod:SetRevision("20240601045028")
 mod:SetCreatureID(39863)--40142 (twilight form)
-mod:SetEncounterID(mod:IsClassic() and 887 or 1150)
+mod:SetEncounterID(not mod:IsPostCata() and 887 or 1150)
 mod:SetModelID(31952)
 mod:SetUsedIcons(7, 3)
 mod:SetHotfixNoticeRev(20240113000000)
@@ -195,7 +195,8 @@ function mod:SPELL_CAST_START(args)
 		self:SetStage(3)
 		warnPhase3:Show()
 		warnPhase3:Play("pthree")
-		timerFieryConbustionCD:Restart(20)--restart is used purely to avoid false debug on retail when boss is instantly phased into phase 3 in one attack (thus clipping P1 timer)
+		timerFieryConbustionCD:Stop()
+		timerFieryConbustionCD:Start(20)--restart is used purely to avoid false debug on retail when boss is instantly phased into phase 3 in one attack (thus clipping P1 timer)
 	end
 end
 

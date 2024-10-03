@@ -1,12 +1,9 @@
 ---@class DBMCoreNamespace
 local private = select(2, ...)
 
-local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
-local wowTOC = select(4, GetBuildInfo())
-local isCata = WOW_PROJECT_ID == (WOW_PROJECT_CATACLYSM_CLASSIC or 14)
-local newShit = (wowTOC >= 100207) or isCata
-
 local L = DBM_CORE_L
+
+local test = private:GetPrototype("DBMTest")
 
 local LibStub = _G["LibStub"]
 local LibLatency, LibDurability
@@ -18,8 +15,11 @@ local function Pull(timer)
 	--Apparently BW wants to accept all pull timers regardless of length, and not support break timers that can be used by all users
 	--Sadly, this means DBM has to also be as limiting because if boss mods are not on same page it creates conflicts within multi mod groups
 	local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.
-	if (DBM:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or IsEncounterInProgress() then
+	if (DBM:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" then
 		return DBM:AddMsg(L.ERROR_NO_PERMISSION)
+	end
+	if IsEncounterInProgress() then
+		return DBM:AddMsg(L.ERROR_NO_PERMISSION_COMBAT)
 	end
 	if timer > 0 and timer < 3 then
 		return DBM:AddMsg(L.PULL_TIME_TOO_SHORT)
@@ -27,7 +27,7 @@ local function Pull(timer)
 	--if timer > 60 then
 	--	return DBM:AddMsg(L.PULL_TIME_TOO_LONG)
 	--end
-	if newShit then
+	if private.newShit then
 		--Send blizzard countdown timer that all users see (including modless)
 		C_PartyInfo.DoCountdown(timer)
 		DBM:Debug("Sending Blizzard Countdown Timer")
@@ -41,8 +41,11 @@ local function Break(timer)
 	--Apparently BW wants to accept all pull timers regardless of length, and not support break timers that can be used by all users
 	--Sadly, this means DBM has to also be as limiting because if boss mods are not on same page it creates conflicts within multi mod groups
 	local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.
-	if (DBM:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or IsEncounterInProgress() then
+	if (DBM:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" then
 		return DBM:AddMsg(L.ERROR_NO_PERMISSION)
+	end
+	if IsEncounterInProgress() then
+		return DBM:AddMsg(L.ERROR_NO_PERMISSION_COMBAT)
 	end
 	if timer > 60 then
 		return DBM:AddMsg(L.BREAK_USAGE)
@@ -52,7 +55,7 @@ local function Break(timer)
 	--if timer == 60 then
 	--	timer = 61
 	--end
-	--if newShit then
+	--if private.newShit then
 	--	--Send blizzard countdown timer that all users see (including modless)
 	--	C_PartyInfo.DoCountdown(timer)
 	--	DBM:Debug("Sending Blizzard Countdown Timer")
@@ -170,7 +173,7 @@ end
 local trackedHudMarkers = {}
 SLASH_DEADLYBOSSMODS1 = "/dbm"
 SlashCmdList["DEADLYBOSSMODS"] = function(msg)
-	if not private.dbmIsEnabled then
+	if not DBM:IsEnabled() then
 		DBM:ForceDisableSpam()
 		return
 	end
@@ -190,7 +193,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 			DBM:AddMsg(v)
 		end
 	elseif cmd:sub(1, 13) == "timer endloop" then
-		DBM:CreatePizzaTimer(time, "", nil, nil, nil, true)
+		DBM:CreatePizzaTimer(0, "", nil, nil, nil, true)
 	elseif cmd:sub(1, 5) == "timer" then
 		local time, text = msg:match("^%w+ ([%d:]+) (.+)$")
 		if not time and not text then
@@ -224,7 +227,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 	elseif cmd:sub(1, 15) == "broadcast timer" then--Standard Timer
 		local difficultyIndex = DBM:GetCurrentDifficulty()
 		local permission = true
-		if DBM:GetRaidRank() == 0 or difficultyIndex == 7 or difficultyIndex == 17 then
+		if DBM:GetRaidRank() == 0 or difficultyIndex == 7 or difficultyIndex == 17 or IsTrialAccount() then
 			DBM:AddMsg(L.ERROR_NO_PERMISSION)
 			permission = false
 		end
@@ -244,7 +247,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 	elseif cmd:sub(1, 16) == "broadcast ltimer" then
 		local difficultyIndex = DBM:GetCurrentDifficulty()
 		local permission = true
-		if DBM:GetRaidRank() == 0 or difficultyIndex == 7 or difficultyIndex == 17 then
+		if DBM:GetRaidRank() == 0 or difficultyIndex == 7 or difficultyIndex == 17 or IsTrialAccount() then
 			DBM:AddMsg(L.ERROR_NO_PERMISSION)
 			permission = false
 		end
@@ -312,7 +315,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 			local uId
 			if target == "target" and UnitExists("target") then
 				uId = "target"
-			elseif isRetail and target == "focus" and UnitExists("focus") then
+			elseif private.isRetail and target == "focus" and UnitExists("focus") then
 				uId = "focus"
 			else -- Try to use it as player name
 				uId = DBM:GetRaidUnitId(targetOG)
@@ -393,7 +396,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 			elseif subCmd == "target" then
 				DBM.Arrow:ShowRunTo("target")
 				return
-			elseif isRetail and subCmd == "focus" then
+			elseif private.isRetail and subCmd == "focus" then
 				DBM.Arrow:ShowRunTo("focus")
 				return
 			elseif subCmd == "map" then
@@ -423,7 +426,12 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		DBM:AddMsg("Debug Message is " .. (DBM.Options.DebugMode and "ON" or "OFF"))
 		private:GetModule("DevToolsModule"):OnDebugToggle()
 	elseif cmd:sub(1, 4) == "test" then
-		DBM:DemoMode()
+		local args = msg:sub(5):trim()
+		if args == "" then
+			DBM:DemoMode()
+		else
+			test:HandleCommand(string.split(" ", args))
+		end
 	elseif cmd:sub(1, 8) == "whereiam" or cmd:sub(1, 8) == "whereami" then
 		local x, y, _, map = UnitPosition("player")
 		local mapID = C_Map.GetBestMapForUnit("player") or -1

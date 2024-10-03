@@ -333,6 +333,16 @@ L = DBM:GetModLocalization("TheBeast")
 L:SetGeneralLocalization{
 	name 		= "괴수"
 }
+
+----------------------
+--  Lord Valthalak  --
+----------------------
+L = DBM:GetModLocalization("LordValthalak")
+
+L:SetGeneralLocalization{
+	name 		= "군주 발타라크"
+}
+
 -----------------------------
 --  General Drakkisath  --
 -----------------------------
@@ -1573,6 +1583,14 @@ L = DBM:GetModLocalization("Zilbagob")
 
 L:SetGeneralLocalization{
 	name 		= "질바고브"
+}
+-----------------------------
+--  Azgaloth  --
+-----------------------------
+L = DBM:GetModLocalization("Azgaloth")
+
+L:SetGeneralLocalization{
+	name 		= "아즈갈로스"
 }
 -----------------------------
 --  Pyranis  --

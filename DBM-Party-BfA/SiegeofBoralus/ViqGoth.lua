@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2140, "DBM-Party-BfA", 5, 1023)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20241002054921")
 mod:SetCreatureID(120553)
 mod:SetEncounterID(2100)
 --mod:SetHotfixNoticeRev(20230516000000)
@@ -32,11 +32,11 @@ local specWarnCalloftheDeep			= mod:NewSpecialWarningDodge(270185, nil, nil, nil
 local yellCrushingEmbrace			= mod:NewYell(270624)
 local specWarnPutridWaters			= mod:NewSpecialWarningMoveAway(275014, nil, nil, nil, 1, 2)
 local yellPutridWaters				= mod:NewYell(275014)
-local specWarnSlam					= mod:NewSpecialWarningDodge(269266, "Tank", nil, 2, 2, 2)
+local specWarnSlam					= mod:NewSpecialWarningSpell(269266, nil, nil, 2, 2, 2)
 
 local timerCalloftheDeepCD			= mod:NewCDTimer(13, 270185, nil, nil, nil, 3)--6.4, 15.1, 19.0, 11.9, 12.1, 12.3, 15.6, 12.1, 12.9, 7.0, 8.6, 7.5, 7.2, 7.4, 7.0, 7.0, 7.3, 7.2
 local timerPutridWatersCD			= mod:NewCDCountTimer(19.9, 275014, nil, nil, nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)
-local timerSlamCD					= mod:NewCDTimer(6, 269266, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerSlamCD					= mod:NewCDTimer(6, 269266, nil, nil, 2, 2)
 --local timerDemolisherTerrorCD		= mod:NewCDCountTimer(20, 270605, nil, nil, nil, 1, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DAMAGE_ICON)
 
 mod:AddRangeFrameOption(5, 275014)
@@ -48,7 +48,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(seenAdds)
 	self:SetStage(1)
 	self.vb.watersCount = 0
-	timerPutridWatersCD:Start(3.4-delay, 1)
+	timerPutridWatersCD:Start(3.2-delay, 1)
 	timerCalloftheDeepCD:Start(6.3-delay)
 	--timerDemolisherTerrorCD:Start(19.9-delay, 1)--Should be started by IEEU event
 	if self.Options.RangeFrame then
@@ -72,7 +72,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 269266 then
 		if self:AntiSpam(2.5, 1) then
 			specWarnSlam:Show()
-			specWarnSlam:Play("carefly")
+			specWarnSlam:Play("aesoon")
 		end
 		local timer = self:GetStage(1) and 18.2 or self:GetStage(2) and 13.3 or 10.1
 		timerSlamCD:Start(timer, args.sourceGUID)

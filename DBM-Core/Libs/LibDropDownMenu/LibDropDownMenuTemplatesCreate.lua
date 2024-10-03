@@ -217,7 +217,7 @@ end
 
 function Update_DropDownMenuButton(name)
 	local button = _G[name];
-	if not (button and button.NewFeature) then return end
+	if (button and button.NewFeature) then return end
 
 	button.NewFeature = Create_NewFeature(button,"FULLSCREEN_DIALOG",100,1,1,0.8,false);
 	button.NewFeature:SetPoint("LEFT", button.NormalText, "RIGHT", 20, 0);

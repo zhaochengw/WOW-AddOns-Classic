@@ -1,5 +1,5 @@
-## Interface: 100206, 110000
-## X-Min-Interface: 100206
+## Interface: 110002, 110005
+## X-Min-Interface: 100207
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Main Core|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0核心|r
@@ -12,14 +12,14 @@
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Noyau|r
 ## Notes: Deadly Boss Mods
 ## Dependencies: DBM-StatusBarTimers
-## OptionalDependencies: LibStub, CallbackHandler-1.0, LibSharedMedia-3.0, LibChatAnims, LibDBIcon-1.0, LibDeflate, LibSerialize, LibSpecialization
-## SavedVariables: DBM_AllSavedOptions, DBM_MinimapIcon
+## OptionalDependencies: LibStub, CallbackHandler-1.0, LibSharedMedia-3.0, LibChatAnims, LibDBIcon-1.0, LibDeflate, LibSerialize, LibSpecialization, CustomNames
+## SavedVariables: DBM_AllSavedOptions, DBM_MinimapIcon, DBM_AnnoyingPopupDisables, DBM_ModsToLoadWithFullTestSupport
 ## SavedVariablesPerCharacter: DBM_UsedProfile, DBM_UseDualProfile, DBM_CharSavedRevision
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 10.2.37
+## Version: 11.0.21
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
@@ -37,6 +37,7 @@ Libs\LibDeflate\LibDeflate.lua
 Libs\LibSerialize\lib.xml
 Libs\LibSpecialization\LibSpecialization.xml
 Libs\LibDropDownMenu\LibDropDownMenu.xml
+Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml
 
 localization.en.lua
 localization.br.lua
@@ -62,6 +63,7 @@ commonlocal.ru.lua
 
 # Pre-core modules
 modules\objects\PrototypeRegistry.lua
+modules\objects\Testing.lua
 modules\objects\GameVersion.lua
 modules\objects\StringUtils.lua
 modules\objects\TableUtils.lua
@@ -90,6 +92,7 @@ modules\MinimapButton.lua
 modules\Notes.lua
 modules\Sounds.lua
 modules\UpdateReminder.lua
+modules\AnnoyingPopup.lua
 
 modules\objects\Difficulties.lua
 modules\objects\BossMod.lua
@@ -100,3 +103,4 @@ modules\objects\EnrageTimer.lua
 modules\objects\Announce.lua
 modules\objects\SpecialWarning.lua
 modules\objects\Yell.lua
+modules\objects\Sorting.lua

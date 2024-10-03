@@ -1,8 +1,6 @@
 # BlizzMove Plugin - QuestTracker
 
-## [v1.1.24](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/tree/v1.1.24) (2024-07-14)
-[Full Changelog](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/compare/v1.1.23...v1.1.24) [Previous Releases](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/releases)
+## [v1.1.25](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/tree/v1.1.25) (2024-09-28)
+[Full Changelog](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/compare/v1.1.24...v1.1.25) [Previous Releases](https://github.com/NumyAddon/BlizzMovePlugin_QuestTracker/releases)
 
 - Classic TOC Bump  
-- Add prettier notifications to Discord on updates  
-- First changes for The War Within  

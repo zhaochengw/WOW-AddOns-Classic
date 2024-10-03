@@ -908,76 +908,103 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                     end
                 end
             end
-            hooksecurefunc("UnitPopup_ShowMenu", function(dropdownMenu, which, unit, name, userData)
+            local function OnShow(...)
                 if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
                 if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
-                if which == "FRIEND" then
-                    local info = UIDropDownMenu_CreateInfo()
-                    info.text = L["密语模板"]
-                    info.notCheckable = true
-                    info.tooltipTitle = L["使用密语模板"]
-                    local text = SendWhisper()
-                    if text ~= " " then
-                        text = text:sub(2)
-                        info.tooltipText = text
-                    end
-                    info.func = function()
-                        ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                        ChatEdit_ChooseBoxForSend():SetText("")
-                        local text = "/W " .. dropdownMenu.name .. SendWhisper()
-                        ChatEdit_InsertLink(text)
-                    end
-                    UIDropDownMenu_AddButton(info)
-
-                    local info = UIDropDownMenu_CreateInfo()
-                    info.text = L["装等+职业"]
-                    info.notCheckable = true
-                    info.tooltipTitle = L["装等+职业"]
-                    local text = SendWhisper("onlylevel")
-                    if text ~= " " then
-                        text = text:sub(2)
-                        info.tooltipText = text
-                    end
-                    info.func = function()
-                        ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                        ChatEdit_ChooseBoxForSend():SetText("")
-                        local text = "/W " .. dropdownMenu.name .. SendWhisper("onlylevel")
-                        ChatEdit_InsertLink(text)
-                    end
-                    UIDropDownMenu_AddButton(info)
-
-                    -- 调整按钮位置，放在密语按钮后
-                    local dropdownName = 'DropDownList' .. 1
-                    local dropdown = _G[dropdownName]
-                    local myindex1, mybutton1 = FindDropdownItem(dropdown, L["密语模板"])
-                    local myindex2, mybutton2 = FindDropdownItem(dropdown, L["装等+职业"])
-                    local index, whisperbutton = FindDropdownItem(dropdown, WHISPER)
-                    local x, y = select(4, whisperbutton:GetPoint())
-                    y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
-                        y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-                    end
-                    mybutton1:ClearAllPoints()
-                    mybutton1:SetPoint("TOPLEFT", x, y)
-                    mybutton2:ClearAllPoints()
-                    mybutton2:SetPoint("TOPLEFT", x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
-
-                    for i = index + 1, UIDROPDOWNMENU_MAXBUTTONS do
-                        if i ~= myindex1 and i ~= myindex2 then
-                            local dropdownItem = _G[dropdownName .. 'Button' .. i]
-                            if dropdownItem:IsShown() then
-                                local p, r, rp, x, y = dropdownItem:GetPoint(1)
-                                dropdownItem:SetPoint(p, r, rp, x, y - UIDROPDOWNMENU_BUTTON_HEIGHT * 2)
-                            else
-                                break
+                local arg1, arg2, arg3, arg4, arg5 = ...
+                local which                        = arg2
+                local name, realm
+                if BG.IsNewUI then
+                    local contextData = arg3
+                    local unit = contextData.unit
+                    if unit then
+                        name = UnitNameUnmodified(unit)
+                        contextData.name = name
+                        contextData.server = realm
+                    else
+                        name = contextData.name
+                        if name then
+                            local name2, server2 = strmatch(name, "^([^-]+)-(.*)")
+                            if name2 then
+                                contextData.name = name2
+                                contextData.server = server2
                             end
                         end
                     end
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
-                        dropdown:SetHeight(dropdown:GetHeight() + UIDROPDOWNMENU_BUTTON_HEIGHT)
+                else
+                    name = arg1.name
+                end
+                if which ~= "FRIEND" then return end
+                local info = UIDropDownMenu_CreateInfo()
+                info.text = L["密语模板"]
+                info.notCheckable = true
+                info.tooltipTitle = L["使用密语模板"]
+                local text = SendWhisper()
+                if text ~= " " then
+                    text = text:sub(2)
+                    info.tooltipText = text
+                end
+                info.func = function()
+                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                    ChatEdit_ChooseBoxForSend():SetText("")
+                    local text = "/W " .. name .. SendWhisper()
+                    ChatEdit_InsertLink(text)
+                end
+                UIDropDownMenu_AddButton(info)
+
+                local info = UIDropDownMenu_CreateInfo()
+                info.text = L["装等+职业"]
+                info.notCheckable = true
+                info.tooltipTitle = L["装等+职业"]
+                local text = SendWhisper("onlylevel")
+                if text ~= " " then
+                    text = text:sub(2)
+                    info.tooltipText = text
+                end
+                info.func = function()
+                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                    ChatEdit_ChooseBoxForSend():SetText("")
+                    local text = "/W " .. name .. SendWhisper("onlylevel")
+                    ChatEdit_InsertLink(text)
+                end
+                UIDropDownMenu_AddButton(info)
+
+                -- 调整按钮位置，放在密语按钮后
+                local dropdownName = 'DropDownList' .. 1
+                local dropdown = _G[dropdownName]
+                local myindex1, mybutton1 = FindDropdownItem(dropdown, L["密语模板"])
+                local myindex2, mybutton2 = FindDropdownItem(dropdown, L["装等+职业"])
+                local index, whisperbutton = FindDropdownItem(dropdown, WHISPER)
+                local x, y = select(4, whisperbutton:GetPoint())
+                y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
+                if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
+                    y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
+                end
+                mybutton1:ClearAllPoints()
+                mybutton1:SetPoint("TOPLEFT", x, y)
+                mybutton2:ClearAllPoints()
+                mybutton2:SetPoint("TOPLEFT", x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
+
+                for i = index + 1, UIDROPDOWNMENU_MAXBUTTONS do
+                    if i ~= myindex1 and i ~= myindex2 then
+                        local dropdownItem = _G[dropdownName .. 'Button' .. i]
+                        if dropdownItem:IsShown() then
+                            local p, r, rp, x, y = dropdownItem:GetPoint(1)
+                            dropdownItem:SetPoint(p, r, rp, x, y - UIDROPDOWNMENU_BUTTON_HEIGHT * 2)
+                        else
+                            break
+                        end
                     end
                 end
-            end)
+                if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
+                    dropdown:SetHeight(dropdown:GetHeight() + UIDROPDOWNMENU_BUTTON_HEIGHT)
+                end
+            end
+            if BG.IsNewUI then
+                hooksecurefunc(UnitPopupManager, "OpenMenu", OnShow)
+            else
+                hooksecurefunc("UnitPopup_ShowMenu", OnShow)
+            end
 
             local edit = ChatEdit_ChooseBoxForSend()
             if edit then
@@ -1124,25 +1151,53 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         end
 
         -- 右键菜单
-        hooksecurefunc("UnitPopup_ShowMenu", function(dropdown, which, unit, _name, userData)
-            -- pt(which, unit, _name)
+        local function OnShow(...)
             if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return end
             if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
+            local arg1, arg2, arg3, arg4, arg5 = ...
+            local which                        = arg2
             local name, realm
-            if unit then
-                name, realm = UnitName(unit)
-            elseif _name then
-                name, realm = strsplit("-", _name)
+            if BG.IsNewUI then
+                local contextData = arg3
+                local unit = contextData.unit
+                if unit then
+                    name = UnitNameUnmodified(unit)
+                    contextData.name = name
+                    contextData.server = realm
+                else
+                    name = contextData.name
+                    if name then
+                        local name2, server2 = strmatch(name, "^([^-]+)-(.*)")
+                        if name2 then
+                            contextData.name = name2
+                            contextData.server = server2
+                        end
+                    end
+                end
+                if not name then return end
+            else
+                local unit=arg3
+                local _name=arg4
+                if unit then
+                    name, realm = UnitName(unit)
+                elseif _name then
+                    name, realm = strsplit("-", _name)
+                end
+                if not name then return end
+                if realm and realm ~= GetRealmName() then return end
             end
-            if not name then return end
-            if realm and realm ~= GetRealmName() then return end
+
             local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
             if not currentLevel then return end
             currentLevel = currentLevel.level
-            -- local currentLevel = 2
             local bt = _G.DropDownList1Button1
             bt:SetText(bt:GetText() .. "|T" .. StarTexture(currentLevel) .. ":17:50:0:0:100:100:0:60:10:90|t")
-        end)
+        end
+        if BG.IsNewUI then
+            hooksecurefunc(UnitPopupManager, "OpenMenu", OnShow)
+        else
+            hooksecurefunc("UnitPopup_ShowMenu", OnShow)
+        end
 
         -- 鼠标悬停
         local CD

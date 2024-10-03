@@ -50,6 +50,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     f.name = L["装备记录通知"]
     f.homepoin = { "TOPLEFT", nil, "TOP", -200, 0 }
     if BiaoGe.point[f:GetName()] then
+        BiaoGe.point[f:GetName()][2]=nil
         f:SetPoint(unpack(BiaoGe.point[f:GetName()]))
     else
         f:SetPoint(unpack(f.homepoin)) --设置显示位置
@@ -175,6 +176,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             "|cff" .. BG.Boss[FB]["boss" .. numb].color .. BG.Boss[FB]["boss" .. numb].name2 .. RR)
     end
 
+    local function IsBWLsod_boss5orboss6(bossID)
+        if BG.IsVanilla_Sod and (bossID == 614 or bossID == 615) then
+            return 5
+        end
+    end
+
     -- 获取BOSS战ID
     local f = CreateFrame("Frame")
     f:RegisterEvent("ENCOUNTER_START")
@@ -184,35 +191,47 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if not FB then return end
         if even == "ENCOUNTER_START" then
             start = true
-            for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
-                if bossID and (bossID == _bossID) then
-                    numb = _numb
-                    lasttime = GetTime()
-                    -- local text = BG.STC_g1(L["BOSS战开始"])
-                    -- PrintLootBoss(FB, even, numb, text)
-                    break
-                end
-            end
-        elseif even == "ENCOUNTER_END" and success == 1 then
-            for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
-                if bossID and (bossID == _bossID) then
-                    numb = _numb
-                    lasttime = GetTime()
-                    start = nil
-                    -- local text = BG.STC_g1(L["BOSS击杀成功"])
-                    -- PrintLootBoss(FB, even, numb, text)
-                    BiaoGe[FB].raidRoster = { time = time(), realm = GetRealmName(), roster = {} }
-                    for i, v in ipairs(BG.raidRosterInfo) do
-                        tinsert(BiaoGe[FB].raidRoster.roster, v.name)
+            if IsBWLsod_boss5orboss6(bossID) then
+                numb = IsBWLsod_boss5orboss6(bossID)
+                lasttime = GetTime()
+            else
+                for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
+                    if bossID and (bossID == _bossID) then
+                        numb = _numb
+                        lasttime = GetTime()
+                        -- local text = BG.STC_g1(L["BOSS战开始"])
+                        -- PrintLootBoss(FB, even, numb, text)
+                        return
                     end
-                    break
                 end
             end
-        elseif even == "ENCOUNTER_END" and success ~= 1 then -- 团灭
-            numb = Maxb[FB] - 1
-            start = nil
-            -- local text = BG.STC_r1(L["BOSS击杀失败"])
-            -- PrintLootBoss(FB, even, numb, text)
+        elseif even == "ENCOUNTER_END" then
+            if success == 1 then
+                if IsBWLsod_boss5orboss6(bossID) then
+                    numb = IsBWLsod_boss5orboss6(bossID)
+                    lasttime = GetTime()
+                else
+                    for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
+                        if bossID and (bossID == _bossID) then
+                            numb = _numb
+                            lasttime = GetTime()
+                            start = nil
+                            -- local text = BG.STC_g1(L["BOSS击杀成功"])
+                            -- PrintLootBoss(FB, even, numb, text)
+                            BiaoGe[FB].raidRoster = { time = time(), realm = GetRealmName(), roster = {} }
+                            for i, v in ipairs(BG.raidRosterInfo) do
+                                tinsert(BiaoGe[FB].raidRoster.roster, v.name)
+                            end
+                            return
+                        end
+                    end
+                end
+            else
+                numb = Maxb[FB] - 1
+                start = nil
+                -- local text = BG.STC_r1(L["BOSS击杀失败"])
+                -- PrintLootBoss(FB, even, numb, text)
+            end
         end
     end)
     local f = CreateFrame("Frame")

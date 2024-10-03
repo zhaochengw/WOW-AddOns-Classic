@@ -3,9 +3,9 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20240110072739")
+mod:SetRevision("20240616044352")
 mod:SetCreatureID(37970, 37972, 37973)
-mod:SetEncounterID(mod:IsClassic() and 852 or 1095)
+mod:SetEncounterID(not mod:IsPostCata() and 852 or 1095)
 mod:DisableEEKillDetection()--IEEU fires for this boss.
 mod:SetModelID(30858)
 mod:SetUsedIcons(7, 8)
@@ -177,14 +177,14 @@ end
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 	if msg:match(L.EmpoweredFlames) and target then
 		if self:IsTrivial() then return end
-		target = DBM:GetUnitFullName(target)
+		target = DBM:GetUnitFullName(target) or target
 		if target == UnitName("player") then
 			specWarnEmpoweredFlames:Show()
 			specWarnEmpoweredFlames:Play("justrun")
 		else
 			warnEmpoweredFlames:Show(target)
 		end
-		if self.Options.EmpoweredFlameIcon then
+		if target and self.Options.EmpoweredFlameIcon then
 			self:SetIcon(target, 7, 10)
 		end
 	end

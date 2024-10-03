@@ -1,6 +1,7 @@
-DBM_GUI_L = {}
+---@class DBMGUILocalization
+local L = {}
 
-local L = DBM_GUI_L
+DBM_GUI_L = L
 
 L.MainFrame							= "Deadly Boss Mods" -- OPTIONAL
 
@@ -19,6 +20,7 @@ L.OTabOptions						= "Core Options"
 L.OTabAbout							= "About"
 
 L.FOLLOWER							= "Follower"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
+L.STORY					    		= "Story"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
 
 L.TabCategory_CURRENT_SEASON		= "Current Season"
 
@@ -92,10 +94,11 @@ L.Editbox_WindowWidth				= "GUI window width"
 L.Editbox_WindowHeight				= "GUI window height"
 
 L.UIGroupingOptions					= "UI Grouping Options (changing these require UI reload for any mod that's already loaded)"
-L.GroupOptionsExcludeIcon			= "Exclude 'Set Icon on' options from getting grouped by spell (they will be grouped together in their own 'Icons' category instead)"
+L.GroupOptionsExcludeIcon			= "Exclude 'Set Icon' options from getting grouped by spell (they will be grouped together in their own 'Icons' category instead)"
+L.GroupOptionsExcludePrivateAura	= "Exclude 'Private Aura' sound options from getting grouped by spell (they will be grouped together in their own 'Private Auras' category instead)"
 L.AutoExpandSpellGroups				= "Auto expand options that are grouped by spell"
 L.ShowWAKeys						= "Show WeakAuras keys next to spell names to assist in writing WeakAuras using Boss Mod triggers."
---L.ShowSpellDescWhenExpanded	= "Continue showing spell description when groups are expanded"--Might not be used
+--L.ShowSpellDescWhenExpanded		= "Continue showing spell description when groups are expanded"--Might not be used
 L.NoDescription						= "This ability has no description"
 L.CustomOptions						= "This category contains custom options for an ability or event that has no spell or journal ID of it's own. These options have been grouped together using a custom manual ID for the ease of creating WeakAuras"
 
@@ -114,13 +117,13 @@ L.RecordOnlyBosses					= "Do not record trash (Only records Bosses. Use '/dbm pu
 L.DoNotLogLFG						= "Do not record LFG or LFR (queued content)"
 --Auto Logging: Recorded Content types
 L.Area_AutoLoggingContent			= "Auto Logging Content"
-L.LogCurrentMythicRaids				= "Current level Mythic raids"--Retail Only
-L.LogCurrentRaids					= "Current level non Mythic raids (Heroic, Normal, and LFR if LFG/LFR filter is disabled)"
-L.LogTWRaids						= "Timewalking or Chromie Time raids"--Retail Only
+L.LogCurrentMythicRaids				= "Current level (or remix) Mythic raids"--Retail Only
+L.LogCurrentRaids					= "Current level (or remix) non Mythic raids (Heroic, Normal, and LFR if LFG/LFR filter is disabled)"
+L.LogTWRaids						= "Timewalking or Chromie Time raids (does NOT include remix)"--Retail Only
 L.LogTrivialRaids					= "Trivial (below character level) raids"
-L.LogCurrentMPlus					= "Current level M+ dungeons"--Retail Only
-L.LogCurrentMythicZero				= "Current level Mythic 0 dungeons"--Retail Only
-L.LogTWDungeons						= "Timewalking or Chromie Time dungeons"--Retail Only
+L.LogCurrentMPlus					= "Current level (or remix) M+ dungeons"--Retail Only
+L.LogCurrentMythicZero				= "Current level (or remix) Mythic 0 dungeons"--Retail Only
+L.LogTWDungeons						= "Timewalking or Chromie Time dungeons (does NOT include remix)"--Retail Only
 L.LogCurrentHeroic					= "Current level Heroic dungeons (Note: if you are doing heroic via queuing and want it logged, turn off LFG filter)"
 
 -- Panel: Extra Features
@@ -257,7 +260,7 @@ L.Area_ChatAlerts					= "Additional Alert Options"
 L.RoleSpecAlert						= "Show alert message on raid join when your loot spec does not match current spec"
 L.CheckGear							= "Show gear alert message during pull (when your equipped ilvl is much lower than bag ilvl (40+) or main weapon is not equipped)"
 L.WorldBossAlert					= "Show alert message when world bosses might have been engaged on your realm by guildies or friends (inaccurate if sender is CRZed)"
-L.WorldBuffAlert					= "Show alert message and timer when world buff RP has been started on your realm"
+L.WorldBuffAlert					= "Show alert message and timer when world buff RP has been started on your realm (Disabled in SOD)"
 
 L.Area_BugAlerts					= "Bug Reporting Alert Options"
 L.BadTimerAlert						= "Show chat message when DBM detects a bad timer with at least 1 second of incorrectness"
@@ -302,6 +305,7 @@ L.EventDungeonMusic					= "Set music played inside dungeons/raids"
 L.EventEngageMusic					= "Set music played during encounters"
 L.Area_EventSoundsExtras			= "Event Sound Options"
 L.EventMusicCombined				= "Allow all music choices in dungeon and encounter selections (changing this option requires UIReload to reflect changes)"
+L.DisableBuiltInMusic				= "Disable built in event sounds music and only load 3rd party music packs"
 L.Area_EventSoundsFilters			= "Event Sound Filter Conditions"
 L.EventFilterDungMythicMusic		= "Do not play dungeon music on Mythic/Mythic+ difficulty"
 L.EventFilterMythicMusic			= "Do not play encounter music on Mythic/Mythic+ difficulty"
@@ -437,9 +441,10 @@ L.SpamBlockNoShowUTimers			= "Do not show user sent timers (Custom/Pull/Break)"
 L.SpamBlockNoCountdowns				= "Do not play countdown sounds"
 
 L.Area_SpamFilter_Nameplates		= "Nameplate Features"
-L.SpamBlockNoNameplate				= "Do not show nameplate icons for special boss mechanics"
-L.SpamBlockNoNameplateCD			= "Do not show nameplate icons for ability cooldown timers"
-L.SpamBlockNoBossGUIDs				= "Do not show nameplate icons for ability cooldowns for one enemy bosses\n(you will still see icons for trash or multi target bosses if this checkbox is enabled)"
+L.SpamBlockNoNameplate				= "Do not show nameplate only icons for special boss mechanics (ie buffs or debuffs on enemies)"
+L.SpamBlockNoNameplateCD			= "Do not show nameplate only cooldown timer icons for abilities"
+L.SpamBlockNoNameplateCasts			= "Do not show nameplate only cast timer icons for abilities"
+L.SpamBlockNoBossGUIDs				= "Do not show nameplate cooldown timer icons for abilities that also have timers\n(Usually applies to dungeon bosses)"
 
 L.Area_SpamFilter_Misc				= "Misc Features"
 L.SpamBlockNoSetIcon				= "Do not automatically set icons on targets"
@@ -455,7 +460,7 @@ L.SpamBlockNoIconRestore			= "Do not save icon states and restore them on combat
 L.SpamBlockNoRangeRestore			= "Do not restore range frame to previous state when mods call 'hide'"
 
 L.Area_PullTimer					= "Pull, Break, & Custom Timer Filter Options"
-L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you (will never block BigWigs timers that are sent with no zone ID)"
+L.DontShowPTNoID					= "Block DBM Pull Timers if not sent from same zone as you"
 L.DontShowPT						= "Do not show Pull/Break Timer bar"
 L.DontShowPTText					= "Do not show announce text for Pull/Break Timer"
 L.DontPlayPTCountdown				= "Do not play Pull/Break/Custom Timer countdown audio at all"
@@ -471,13 +476,13 @@ L.SpamBlockNoTrivialSpecWarnSound	= "Do not play special announce sounds or show
 L.Area_SpamFilter					= "Spam Filter Options"
 L.DontShowFarWarnings				= "Do not show announcements/timers for events that are far away"
 L.StripServerName					= "Strip realm name from announcements, timers, range check, and infoframe"
-L.FilterVoidFormSay					= "Do not send chat icon or countdown chat yells when in Void Form (regular chat yells still sent)"
+L.FilterVoidFormSay2				= "Do not send chat icon or countdown chat yells when in Void Form (regular chat yells still sent)"
 
 L.Area_SpecFilter					= "Role Filter Options"
 L.FilterTankSpec					= "Filter announcements designated for Tank role when not tank spec. (Note: Disabling this is not recommended for most users as 'taunt' announcements are now all on by default.)"
 L.FilterDispels						= "Filter announcements for dispelable spells if your dispel is on cooldown"
 L.FilterCrowdControl				= "Filter announcements for crowd control based interrupts if your CC is on cooldown"
-L.FilterTrashWarnings				= "Filter all trash mob announcements in follower, normal, heroic, and trivial (outleveled) dungeons"
+L.FilterTrashWarnings				= "Filter all trash mob announcements in follower, normal, and trivial (outleveled) dungeons"
 
 L.Area_BInterruptFilter				= "Boss Interrupt Filter Options"
 L.FilterTargetFocus					= "Filter if caster is not current target/focus/softenemy"
@@ -578,7 +583,8 @@ L.Panel_Range						= "Rangeframe"
 
 -- Panel: Nameplate
 L.Panel_Nameplates					= "Nameplates"
-L.Area_NPStyle						= "Style (Note: Only configures style when DBM is handling nameplates.)"
+L.Plater_Config						= "Open Plater Config"
+L.Area_NPStyle						= "Style (Note: Only configures style when not using Plater.)"
 L.NPAuraText						= "Show timer text on nameplate icons"
 L.NPAuraSize						= "Icon Pixel size (squared): %d"
 L.NPIcon_BarOffSetX 				= "Icon Offset X: %d"
@@ -590,6 +596,19 @@ L.NPIconAnchorPoint		 			= "Icon Anchor Point"
 L.NPDemo							= "Test (Be near nameplates)"
 L.FontTypeTimer						= "Select timer font"
 L.FontTypeText						= "Select text font"
+
+L.Area_NPGlow						= "Glow (Note: Only configures glow when not using Plater.)"
+L.NPIcon_GlowBehavior				= "Cooldown Icon Glow Behavior"
+L.NPIcon_CastGlowBehavior			= "Cast Icon Glow Behavior"
+L.NPIcon_GlowNone					= "Never Glow Icons"
+L.NPIcon_GlowImportant				= "Glow important expiring CD/Cast Icons"
+L.NPIcon_GlowAll					= "Glow all expiring CD/Cast Icons"
+L.NPIcon_GlowTypeCD					= "Cooldown Icon Glow Type"
+L.NPIcon_GlowTypeCast				= "Cast Icon Glow Type"
+L.NPIcon_Pixel						= "Pixel"
+L.NPIcon_Proc						= "Proc"
+L.NPIcon_AutoCast					= "Auto Cast"
+L.NPIcon_Button						= "Button"
 
 -- Misc
 L.Area_General						= "General"
@@ -603,3 +622,63 @@ L.FontShadow						= "Font Shadow"
 L.FontType							= "Select font"
 
 L.FontHeight	= 16 -- OPTIONAL
+
+
+
+-- Testing
+L.DevPanel							= "Development & Testing"
+L.DevPanelArea						= "Development and Testing UI"
+L.DevPanelExplanation				= "This is a development and testing UI which validates that DBM is working as expected by playing back combat logs." -- Test UI panel under options
+L.DevModPanelExplanation			= [[Welcome to the development and testing playground for this mod.
+You can play back logs of boss fights here to see how the mod behaves and to test integrations with DBM callbacks. See DBM-Test/README.md for more details on integrations and callbacks. DBM comes with example logs for many raids, but you can also import your own logs from Transcriptor.
+]] -- Playground mode in mods
+
+L.TimewarpSetting					= "Time warp: %dx"
+L.TimewarpDynamic					= "Time warp: dynamic (fastest)"
+L.TestSupportArea					= "Mod loading options"
+L.ModNotLoadedWithTests				= "Warning: This mod is currently not loaded with full test support. If the mod directly calls API functions such as UnitHealth() or UnitName() these will not work correctly. This is often the case for functions related to unit health, power, or targets."
+L.ModLoadedWithTests				= "Mod is currently loaded with test support because at least one mod in the addon has tests enabled."
+L.AlwaysLoadModWithTests			= "Always load this mod with full test support (slows down loading slightly)"
+L.ModLoadRequiresReload				= ", requires UI reload to take effect" -- Appended to L.AlwaysLoadModWithTests
+L.TestSelectArea					= "Test data" -- Title of the UI area
+L.SelectTestLog						= L.TestSelectArea -- Title for the dropdown to select a  specific test
+L.SelectPerspective					= "Log perspective (simulated player)"
+L.ImportTranscriptor				= "Import Transcriptor log"
+L.ImportTranscriptorHeader			= [[
+Import a Transcriptor log by pasting it anywhere in the edit box below. Pasting speed is roughly 2 MiB/s, this means your game will freeze for several seconds when pasting very large log files.
+You can also import the current Transcriptor session from Transcriptor's saved variables with the import button to the right.]]
+L.PasteLogHere						= "Press " .. (IsMacClient() and "Cmd-V" or "Ctrl-V") .. " to paste a log here."
+L.LogPasted							= "Pasted %.2f MiB in %.1f seconds (%.2f MiB/s)."
+L.ImportLocalTranscriptor			= "Import current\nTranscriptor session"
+L.NoLocalTranscriptor				= "Could not find local Transcriptor data."
+L.LocalImportDone					= "Imported %d logs with %d encounters from Transcriptor."
+L.Parsing							= "Parsing..."
+L.SelectLogDropdown					= "Select encounter"
+L.CreateTest						= "Create Test"
+L.CreatedTest						= "Created test with %d events in %.1f seconds."
+L.NoLogsFound						= "Transcriptor import contains no log data."
+L.NoTestDataAvailable				= "No test data available"
+L.NoLogSelected						= "Test creation failed: No log selected."
+L.LogAlreadyImported				= "Test creation failed: Test already imported."
+
+L.RewriteAllToYou					= "All players at the same time"
+L.RealModOptionsBelow				= "Mod options below are synced between playground mode and your real settings."
+L.Test								= "Test"
+L.Tests								= "Tests"
+L.AllTests							= "All tests"
+L.RunTest							= "Run test"
+L.RunTestShort						= "Run" -- Same intend as RunTest, but a smaller button
+L.StopTest							= "Stop test"
+L.StopTests							= "Stop tests"
+L.RunAllTests						= "Run all tests"
+L.Queued							= "Queued"
+L.Running							= "Running"
+L.Failed							= "Failed"
+L.ShowReport						= "Show report"
+L.ShowDiff							= "Show diff"
+L.ShowErrors						= "Show errors"
+L.TestModEntry						= "[Playground] %s"
+L.EnterTestMode						= "Playground mode"
+L.SkipPhase							= "Skip to next phase"
+
+L.AnonymizeTest						= "Anonymize player names and GUIDs"

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2173, "DBM-Party-BfA", 5, 1023)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20241002054921")
 mod:SetCreatureID(129208)
 mod:SetEncounterID(2109)
 mod:SetHotfixNoticeRev(20240807000000)
@@ -31,7 +31,7 @@ local warnUnstableOrdnance			= mod:NewSpellAnnounce(268995, 1)
 local warnFieryRicochet				= mod:NewCountAnnounce(463182, 3)
 
 local specWarnMassBombardment		= mod:NewSpecialWarningDodgeCount(463185, nil, nil, nil, 2, 2)
-local specWarnCleartheDeck			= mod:NewSpecialWarningDodgeCount(269029, "Tank", nil, nil, 3, 2)
+local specWarnCleartheDeck			= mod:NewSpecialWarningDodgeCount(269029, "Tank", nil, nil, 3, 15)
 local specWarnBroadside				= mod:NewSpecialWarningDodgeCount(268260, "Tank", nil, nil, 1, 2)
 
 local timerMassBombardmentCD		= mod:NewCDCountTimer(25, 463185, nil, nil, nil, 3)
@@ -39,7 +39,7 @@ local timerRicochetCD				= mod:NewCDCountTimer(18.2, 463182, nil, nil, nil, 3)
 --local timerWithdrawCD				= mod:NewCDCountTimer(40, 268752, nil, nil, nil, 6)--Health based now
 local timerCleartheDeckCD			= mod:NewCDCountTimer(18.2, 269029, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerCrimsonSwipeCD			= mod:NewCDNPTimer(11.8, 268230, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--11.8-12.2 now
-local timerBroadsideCD				= mod:NewCDCountTimer(11, 268260, nil, nil, nil, 3)--11-14.2
+local timerBroadsideCD				= mod:NewCDCountTimer(12.1, 268260, nil, nil, nil, 3)--12.1-14.2
 
 mod.vb.massBombCount = 0
 mod.vb.ricochetCount = 0
@@ -56,7 +56,7 @@ function mod:OnCombatStart(delay)
 	self.vb.clearDeckCount = 0
 	self.vb.broadCount = 0
 	timerCleartheDeckCD:Start(3.5-delay, 1)
-	timerRicochetCD:Start(9.7-delay, 1)--Could be shorter, but most people trigger gutshot on pull
+	timerRicochetCD:Start(9.3-delay, 1)--Could be shorter, but most people trigger gutshot on pull
 	if self:IsMythic() then
 		timerMassBombardmentCD:Start(10.1-delay, 1)
 	end
@@ -68,7 +68,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 269029 then
 		self.vb.clearDeckCount = self.vb.clearDeckCount + 1
 		specWarnCleartheDeck:Show(self.vb.clearDeckCount)
-		specWarnCleartheDeck:Play("shockwave")
+		specWarnCleartheDeck:Play("frontal")
 		timerCleartheDeckCD:Start(nil, self.vb.clearDeckCount+1)
 	elseif spellId == 268230 then
 		if self:AntiSpam(3, 1) then
@@ -99,7 +99,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerCleartheDeckCD:Stop()
 		timerRicochetCD:Stop()
 		timerMassBombardmentCD:Stop()
-		timerBroadsideCD:Start(13.3, self.vb.broadCount+1)--13-15 in TWW
+		timerBroadsideCD:Start(10.9, self.vb.broadCount+1)--10.9-15 in TWW
 	elseif spellId == 181089 then--Encounter Event (boss returning)
 		self:SetStage(1)
 		timerBroadsideCD:Stop()

@@ -1933,7 +1933,7 @@
 					</OnLeave>
 				</Scripts>
 			</Button>
-			<CheckButton name = "$parentFreeAssign" inherits = "OptionsCheckButtonTemplate">
+			<CheckButton name = "$parentFreeAssign" inherits = "OptionsBaseCheckButtonTemplate">
 				<Anchors>
 					<Anchor point = "BOTTOMLEFT">
 						<Offset>

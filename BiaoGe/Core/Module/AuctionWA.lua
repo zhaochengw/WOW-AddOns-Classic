@@ -6,7 +6,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     local aura_env = aura_env or {}
-    aura_env.ver = "v2.0"
+    aura_env.ver = "v2.1"
 
     function aura_env.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -534,26 +534,33 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local money = tonumber(self:GetText()) or 0
         if f.start then
             if money < f.money then
+                self:SetTextColor(1, 0, 0)
                 f.ButtonSendMyMoney:Disable()
                 if f.player ~= UnitName("player") then
                     f.ButtonSendMyMoney.disf:Show()
                     f.ButtonSendMyMoney.disf.text = L["需高于或等于起拍价"]
                 end
             else
+                self:SetTextColor(1, 1, 1)
                 f.ButtonSendMyMoney:Enable()
                 f.ButtonSendMyMoney.disf:Hide()
             end
         elseif money <= f.money then
             f.ButtonSendMyMoney:Disable()
             if f.player ~= UnitName("player") then
+                self:SetTextColor(1, 0, 0)
                 f.ButtonSendMyMoney.disf:Show()
                 f.ButtonSendMyMoney.disf.text = L["需高于当前价格"]
+            else
+                self:SetTextColor(1, 1, 1)
             end
         elseif aura_env.TooSmall(self) then
+            self:SetTextColor(1, 0, 0)
             f.ButtonSendMyMoney:Disable()
             f.ButtonSendMyMoney.disf:Show()
             f.ButtonSendMyMoney.disf.text = format(L["最小加价幅度为%s"], aura_env.TooSmall(self))
         else
+            self:SetTextColor(1, 1, 1)
             f.ButtonSendMyMoney:Enable()
             f.ButtonSendMyMoney.disf:Hide()
         end
@@ -1506,6 +1513,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         _G.BGA.AuctionMainFrame = f
 
         if _G.BiaoGe and _G.BiaoGe.point and _G.BiaoGe.point.Auction then
+            _G.BiaoGe.point.Auction[2] = nil
             f:SetPoint(unpack(_G.BiaoGe.point.Auction))
         else
             f:SetPoint("TOPRIGHT", -100, -200)

@@ -14,6 +14,8 @@ local CreateFrame, GetCursorPosition, UIParent, GameTooltip, NORMAL_FONT_COLOR, 
 local DBM = DBM
 local CreateTextureMarkup = CreateTextureMarkup
 
+local GetSpellDescription = C_Spell.GetSpellDescription or GetSpellDescription
+
 --TODO, not 100% sure which ones use html and which don't so some might need true added or removed for 2nd arg
 local function parseDescription(name, usesHTML)
 	if not name then
@@ -26,10 +28,12 @@ local function parseDescription(name, usesHTML)
 	if name:find("%$spell:") then
 		name = name:gsub("%$spell:(%-?%d+)", function(id)
 			local spellId = tonumber(id)
-			if spellId < 0 then
-			    return "$journal:" .. -spellId
+			if spellId then
+				if spellId < 0 then
+				    return "$journal:" .. -spellId
+				end
+				spellName = DBM:GetSpellName(spellId)
 			end
-			spellName = DBM:GetSpellName(spellId)
 			if not spellName then
 				spellName = CL.UNKNOWN
 				DBM:Debug("Spell ID does not exist: " .. spellId)
@@ -101,7 +105,7 @@ function PanelPrototype:CreateSpellDesc(text)
 		textblock:SetText("Loading...")
 		spell:ContinueOnSpellLoad(function()
 			text = GetSpellDescription(spell:GetSpellID())
-			if text == "" then
+			if not text or text == "" then
 				text = L.NoDescription
 			else
 				test.hasDesc = true
@@ -150,7 +154,7 @@ function PanelPrototype:CreateText(text, width, autoplaced, style, justify, myhe
 	return textblock
 end
 
-function PanelPrototype:CreateButton(title, width, height, onclick, font)
+function PanelPrototype:CreateButton(title, width, height, onclick, font, highlightFont)
 	---@class DBMPanelButton: Button
 	---@field myheight number
 	---@field addon table
@@ -162,9 +166,9 @@ function PanelPrototype:CreateButton(title, width, height, onclick, font)
 	if onclick then
 		button:SetScript("OnClick", onclick)
 	end
-	if font then
-		button:SetNormalFontObject(font)
-		button:SetHighlightFontObject(font)
+	if font or highlightFont then
+		button:SetNormalFontObject(font or highlightFont)
+		button:SetHighlightFontObject(highlightFont or font)
 	end
 	if _G[button:GetName() .. "Text"]:GetStringWidth() > button:GetWidth() then
 		button:SetWidth(_G[button:GetName() .. "Text"]:GetStringWidth() + 25)
@@ -206,7 +210,7 @@ end
 
 function PanelPrototype:CreateSlider(text, low, high, step, width)
 	---@class DBMPanelSlider: Slider
-	local slider = CreateFrame("Slider", "DBM_GUI_Option_" .. self:GetNewID(), self.frame, "OptionsSliderTemplate")
+	local slider = CreateFrame("Slider", "DBM_GUI_Option_" .. self:GetNewID(), self.frame, "DBMPolyfill_OptionsSliderTemplate")
 	slider.mytype = "slider"
 	slider.myheight = 50
 	slider:SetMinMaxValues(low, high)
@@ -217,6 +221,7 @@ function PanelPrototype:CreateSlider(text, low, high, step, width)
 	slider:SetScript("OnValueChanged", function(_, value)
 		sliderText:SetFormattedText(text, value)
 	end)
+	slider.textFrame = sliderText
 	self:SetLastObj(slider)
 	return slider
 end
@@ -265,7 +270,7 @@ function PanelPrototype:CreateEditBox(text, value, width, height)
 	return textbox
 end
 
-function PanelPrototype:CreateLine(text)
+function PanelPrototype:CreateLine(text, extraWidth)
 	---@class DBMPanelLine: Frame
 	local line = CreateFrame("Frame", "DBM_GUI_Option_" .. self:GetNewID(), self.frame)
 	line:SetSize(self.frame:GetWidth() - 20, 20)
@@ -276,6 +281,7 @@ function PanelPrototype:CreateLine(text)
 	end
 	line.myheight = 20
 	line.mytype = "line"
+	line.extraWidth = extraWidth
 	local linetext = line:CreateFontString("$parentText", "ARTWORK", "GameFontNormal")
 	linetext:SetPoint("TOPLEFT", line, "TOPLEFT")
 	linetext:SetJustifyH("LEFT")
@@ -632,7 +638,8 @@ function PanelPrototype:CreateAbility(titleText, icon, spellID, isPrivate)
 	})
 end
 
-function DBM_GUI:CreateNewPanel(frameName, frameType, showSub, displayName, forceChildren, addonId, isSeason)
+---@return DBMPanel
+function DBM_GUI:CreateNewPanel(frameName, frameType, showSub, displayName, forceChildren, addonId, isSeason, isTest)
 	---@class DBMPanelFrame: Frame
 	local panel = CreateFrame("Frame", "DBM_GUI_Option_" .. self:GetNewID(), _G["DBM_GUI_OptionsFramePanelContainer"])
 	panel.mytype = "panel"
@@ -644,6 +651,7 @@ function DBM_GUI:CreateNewPanel(frameName, frameType, showSub, displayName, forc
 	panel.showSub = showSub or showSub == nil
 	panel.modId = frameName
 	panel.addonId = addonId
+	panel.isTest = isTest
 	panel.isSeason = isSeason
 	panel:Hide()
 	if frameType == "option" then

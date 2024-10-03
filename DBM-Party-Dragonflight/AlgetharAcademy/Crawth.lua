@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2495, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240601044955")
+mod:SetRevision("20240816002807")
 mod:SetCreatureID(191736)
 mod:SetEncounterID(2564)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -73,7 +73,12 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 377004 then
 		self.vb.ScreechCount = self.vb.ScreechCount + 1
 		specWarnDeafeningScreech:Show(self.vb.ScreechCount)
-		specWarnDeafeningScreech:Play("scatter")
+		if self:IsSpellCaster() then
+			specWarnDeafeningScreech:Play("stopcast")
+			specWarnDeafeningScreech:ScheduleVoice(1, "scatter")
+		else
+			specWarnDeafeningScreech:Play("scatter")
+		end
 		timerDeafeningScreechCD:Start(nil, self.vb.ScreechCount+1)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(4)

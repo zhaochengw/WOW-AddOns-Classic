@@ -1,16 +1,10 @@
-lightweight tag 7efa1b79722d024cbe980821ae1df5b5a3d8e703 v1.8.6
+lightweight tag 9367fac301d7ba5fc76798ce763a447e3c179db6 v1.8.8
 Author:	dev7355608 <dev7355608@gmail.com>
-Date:	Sat Mar 23 14:24:49 2024 +0100
+Date:	Sun Sep 29 17:25:40 2024 +0200
 
-commit 7efa1b79722d024cbe980821ae1df5b5a3d8e703
+commit 9367fac301d7ba5fc76798ce763a447e3c179db6
 Author: dev7355608 <dev7355608@gmail.com>
-Date:   Sat Mar 23 14:24:31 2024 +0100
+Date:   Sun Sep 29 17:23:26 2024 +0200
 
-    Update dependencies and interface version
-
-commit 3f3064a22a5845600261f34261aed70a1ac1e7a9
-Author: Paul Emmerich <tanadu+gh@gmail.com>
-Date:   Sat Mar 23 14:08:46 2024 +0100
-
-    Work-around for micro-stuttering due to garbage collection (#8)
+    Fix 1.15.4 compatibility
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Loatheb", "DBM-Raids-WoTLK", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240108054645")
+mod:SetRevision("20240616044352")
 mod:SetCreatureID(16011)
 mod:SetEncounterID(1115)
 mod:SetModelID(16110)
@@ -14,7 +14,7 @@ mod:RegisterEventsInCombat(
 
 local warnSporeNow			= mod:NewCountAnnounce(29234, 2, "134530")
 local warnSporeSoon			= mod:NewSoonAnnounce(29234, 1, "134530")
-local warnDoomNow			= mod:NewSpellAnnounce(29204, 3)
+local warnDoomNow			= mod:NewCountAnnounce(29204, 3)
 local warnRemoveCurse		= mod:NewSpellAnnounce(30281, 3)
 local warnHealSoon			= mod:NewAnnounce("WarningHealSoon", 4, 55593, nil, nil, nil, 55593)
 local warnHealNow			= mod:NewAnnounce("WarningHealNow", 1, 55593, false, nil, nil, 55593)

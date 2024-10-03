@@ -4,7 +4,7 @@
 ## Author: Numy
 ## IconTexture: Interface\Addons\BlizzMovePlugin_QuestTracker\media\icon
 ## RequiredDeps: BlizzMove
-## Version: v1.1.24
+## Version: v1.1.25
 ## X-Curse-Project-ID: 475676
 ## X-Wago-ID: 25NRw163
 

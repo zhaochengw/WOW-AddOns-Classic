@@ -479,10 +479,11 @@ L.AUTO_TIMER_TEXTS.addscustom	= "Nächste Adds (%%s)"
 L.AUTO_TIMER_TEXTS.roleplay		= GUILD_INTEREST_RP or "Rollenspiel"--Used mid fight, pre fight, or even post fight. Boss does NOT auto engage upon completion
 L.AUTO_TIMER_TEXTS.combat		= "Kampfbeginn"
 --This basically clones np only bar option and display text from regular counterparts
-L.AUTO_TIMER_TEXTS.cdnp = L.AUTO_TIMER_TEXTS.cd -- OPTIONAL
-L.AUTO_TIMER_TEXTS.nextnp = L.AUTO_TIMER_TEXTS.next -- OPTIONAL
-L.AUTO_TIMER_TEXTS.cdcountnp = L.AUTO_TIMER_TEXTS.cdcount -- OPTIONAL
-L.AUTO_TIMER_TEXTS.nextcountnp = L.AUTO_TIMER_TEXTS.nextcount -- OPTIONAL
+L.AUTO_TIMER_TEXTS.cdnp					= L.AUTO_TIMER_TEXTS.cd -- OPTIONAL
+L.AUTO_TIMER_TEXTS.nextnp				= L.AUTO_TIMER_TEXTS.next -- OPTIONAL
+L.AUTO_TIMER_TEXTS.cdpnp				= L.AUTO_TIMER_TEXTS.cd -- OPTIONAL
+L.AUTO_TIMER_TEXTS.nextpnp				= L.AUTO_TIMER_TEXTS.next -- OPTIONAL
+L.AUTO_TIMER_TEXTS.castpnp				= L.AUTO_TIMER_TEXTS.cast -- OPTIONAL
 
 L.AUTO_TIMER_OPTIONS.target		= "Dauer des Debuffs für $spell:%s anzeigen"
 L.AUTO_TIMER_OPTIONS.targetcount= "Dauer des Debuffs (mit Zählung) für $spell:%s anzeigen"
@@ -495,14 +496,12 @@ L.AUTO_TIMER_OPTIONS.ai			= "KI-Timer für die Abklingzeit von $spell:%s anzeige
 L.AUTO_TIMER_OPTIONS.cd			= "Abklingzeit von $spell:%s anzeigen"
 L.AUTO_TIMER_OPTIONS.cdcount	= "Abklingzeit von $spell:%s anzeigen"
 --L.AUTO_TIMER_OPTIONS.cdnp		= "Show nameplate only timer for $spell:%s cooldown"
---L.AUTO_TIMER_OPTIONS.cdnpcount= "Show nameplate only timer (with count) for $spell:%s cooldown"
 L.AUTO_TIMER_OPTIONS.cdsource	= "Abklingzeit von $spell:%s anzeigen (mit Quelle)"
 L.AUTO_TIMER_OPTIONS.cdspecial	= "Abklingzeit für Spezialfähigkeit anzeigen"
 --L.AUTO_TIMER_OPTIONS.cdcombo								= "Show timer for ability combo cooldown"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next		= "Zeit bis nächstes $spell:%s anzeigen"
 L.AUTO_TIMER_OPTIONS.nextcount	= "Zeit bis nächstes $spell:%s anzeigen"
 --L.AUTO_TIMER_OPTIONS.nextnp	= "Show nameplate only timer for next $spell:%s"
---L.AUTO_TIMER_OPTIONS.nextnpcount	= "Show nameplate only timer (with count) for next $spell:%s"
 L.AUTO_TIMER_OPTIONS.nextsource	= "Zeit bis nächstes $spell:%s anzeigen (mit Quelle)"
 L.AUTO_TIMER_OPTIONS.nextspecial	= "Zeige Zeit bis nächste Spezialfähigkeit"
 --L.AUTO_TIMER_OPTIONS.nextcombo							= "Show timer for next ability combo"--Used for combining 2 abilities into a single timer
@@ -546,6 +545,7 @@ L.AUTO_YELL_OPTION_TEXT.shortposition	= "Schreie (mit Position), wenn du von $sp
 L.AUTO_YELL_OPTION_TEXT.combo			= "Schreie (mit angepasstem Text), wenn du gleichzeitig von $spell:%s und einem weiteren Zauber betroffen bist"
 L.AUTO_YELL_OPTION_TEXT.repeatplayer	= "Schreie wiederholt (mit Spielername) wenn du von $spell:%s betroffen bist"
 L.AUTO_YELL_OPTION_TEXT.repeaticon		= "Schreie wiederholt (mit Icon) wenn du von $spell:%s betroffen bist"
+L.AUTO_YELL_OPTION_TEXT.icontarget		= "Schreie Icons wenn du das Ziel von $spell:%s bist um andere zu warnen"
 
 L.AUTO_YELL_ANNOUNCE_TEXT.shortyell	= "%s"
 L.AUTO_YELL_ANNOUNCE_TEXT.yell		= "%s auf " .. UnitName("player")
@@ -554,7 +554,7 @@ L.AUTO_YELL_ANNOUNCE_TEXT.fade		= "%s endet in %%d"
 L.AUTO_YELL_ANNOUNCE_TEXT.shortfade	= "%%d"
 L.AUTO_YELL_ANNOUNCE_TEXT.iconfade	= "{rt%%2$d}%%1$d"
 L.AUTO_YELL_ANNOUNCE_TEXT.position	= "%s %%s auf {rt%%d}"..UnitName("player").."{rt%%d}"
---L.AUTO_YELL_ANNOUNCE_TEXT.shortposition 						= "{rt%%1$d}%s %%2$d"--Icon, Spellname, number -- OPTIONAL
+--L.AUTO_YELL_ANNOUNCE_TEXT.shortposition 						= "{rt%%1$d}%s"--Icon, Spellname -- OPTIONAL
 L.AUTO_YELL_ANNOUNCE_TEXT.combo		= "%s und %%s"
 --L.AUTO_YELL_ANNOUNCE_TEXT.repeatplayer						= UnitName("player")--Doesn't need translation, it's just player name spam -- OPTIONAL
 --L.AUTO_YELL_ANNOUNCE_TEXT.repeaticon							= "{rt%%1$d}"--Doesn't need translation. It's just icon spam -- OPTIONAL
@@ -640,3 +640,15 @@ L.WORLD_BUFFS.zgHeartBooty	= "Der Blutgott, der Seelenschinder, wurde besiegt! W
 L.WORLD_BUFFS.zgHeartYojamba= "Beginnt mit dem Ritual, meine Diener. Wir müssen das Herz von Hakkar wieder in das Nichts verbannen!"
 L.WORLD_BUFFS.rendHead		= "Rend Blackhand, der falsche Kriegshäuptling, ist gefallen!"
 --L.WORLD_BUFFS.blackfathomBoon						= "boon of Blackfathom"
+
+-- Annoying popup, especially for classic players
+L.DBM_INSTALL_REMINDER_HEADER	= "Unvollständige DBM-Installation entdeckt!"
+L.DBM_INSTALL_REMINDER_EXPLAIN	= "Willkommen in %s. DBM Mods für Bosse hier sind im %s welches nicht installiert ist. DBM wird keine Timer und Warnungen in dieser Zone anzeigen bis das %s installiert wird!"
+L.DBM_INSTALL_REMINDER_DISABLE	= "Alle Warnungen und Timer in dieser Zone deaktivieren." -- Used when we believe it's a user error that the mod isn't installed (i.e., current raids)
+L.DBM_INSTALL_REMINDER_DISABLE2 = "Diese Nachricht für dieses Paket nicht nochmal anzeigen." -- Used for unimportant mods, i.e., dungeons
+L.DBM_INSTALL_REMINDER_DL_WAGO	= "Kopieren um von Wago.io herunterzuladen"
+L.DBM_INSTALL_REMINDER_DL_CURSE	= "Kopieren um von Curse herunterzuladen"
+L.DBM_INSTALL_PACKAGE_VANILLA	= "Vanilla und Season of Discovery Paket"
+L.DBM_INSTALL_PACKAGE_DUNGEON	= "Dungeons, Delves und Events Paket"
+
+L.DBM_TAINTED_BY_TESTS			= "DBM wurde in der aktuellen Session im Test-Modus mit Time Warping benutzt. Es wird empfohlen das UI neu zu laden bevor DBM in einem echten Boss-Kampf benutzt wird. Normalerweise sollte das keine Probleme machen, aber wir können nichts garantieren!"

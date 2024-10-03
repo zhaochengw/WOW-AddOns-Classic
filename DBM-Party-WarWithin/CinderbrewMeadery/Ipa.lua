@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2587, "DBM-Party-WarWithin", 7, 1272)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240425071539")
+mod:SetRevision("20240830215855")
 mod:SetCreatureID(210267)
 mod:SetEncounterID(2929)
 mod:SetHotfixNoticeRev(20240425000000)
@@ -73,7 +73,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.stoutCount = self.vb.stoutCount + 1
 		specWarnSpoutingStout:Show(self.vb.stoutCount)
 		specWarnSpoutingStout:Play("watchstep")
-		specWarnSpoutingStout:Schedule(2, "killmob")
+		specWarnSpoutingStout:ScheduleVoice(2, "killmob")
 		timerSpoutingStoutCD:Start(nil, self.vb.stoutCount+1)
 	elseif spellId == 439202 then
 		self.vb.fermCount = self.vb.fermCount + 1

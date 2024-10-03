@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2572, "DBM-Party-WarWithin", 4, 1269)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240718015351")
+mod:SetRevision("20240930064751")
 mod:SetCreatureID(210108)
 mod:SetEncounterID(2854)
 mod:SetHotfixNoticeRev(20240717000000)
@@ -55,11 +55,15 @@ function mod:OnCombatStart(delay)
 	self.vb.shatterCount = 0
 	self.vb.smashCount = 0
 	self.vb.spikeCount = 0
-	timerVolatileSpikeCD:Start(6-delay, 1)
-	timerRefractingBeamCD:Start(14-delay, 1)
-	timerSeismicSmashCD:Start(18-delay, 1)
 	if self:IsMythic() then
+		timerVolatileSpikeCD:Start(5.9-delay, 1)
+		timerRefractingBeamCD:Start(13.9-delay, 1)
+		timerSeismicSmashCD:Start(17.9-delay, 1)
 		timerEarthShattererCD:Start(42.9-delay, 1)
+	else
+		timerVolatileSpikeCD:Start(5.9-delay, 1)
+		timerRefractingBeamCD:Start(11.7-delay, 1)
+		timerSeismicSmashCD:Start(15.4-delay, 1)
 	end
 end
 
@@ -89,10 +93,14 @@ function mod:SPELL_CAST_START(args)
 		self.vb.spikeCount = self.vb.spikeCount + 1
 		specWarnVolatileSpike:Show(self.vb.spikeCount)
 		specWarnVolatileSpike:Play("watchstep")
-		if self.vb.spikeCount % 2 == 0 then
-			timerVolatileSpikeCD:Start(28, self.vb.spikeCount+1)
+		if self:IsMythic() then
+			if self.vb.spikeCount % 2 == 0 then
+				timerVolatileSpikeCD:Start(28, self.vb.spikeCount+1)
+			else
+				timerVolatileSpikeCD:Start(20, self.vb.spikeCount+1)
+			end
 		else
-			timerVolatileSpikeCD:Start(20, self.vb.spikeCount+1)
+			timerVolatileSpikeCD:Start(14.6, self.vb.spikeCount+1)
 		end
 	end
 end
@@ -109,16 +117,22 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 424795 then
-		self.vb.laserCount = self.vb.laserCount + 1
-		if self:AntiSpam(3, 1) then
-			if self.vb.laserCount % 2 == 0 then
-				timerRefractingBeamCD:Start(28, self.vb.laserCount+1)
+		if self:AntiSpam(4, 1) then
+			self.vb.laserCount = self.vb.laserCount + 1
+			if self:IsMythic() then
+				--14.0, 20.0, 28.0, 20.0, 28.0, 20.0
+				if self.vb.laserCount % 2 == 0 then
+					timerRefractingBeamCD:Start(28, self.vb.laserCount+1)
+				else
+					timerRefractingBeamCD:Start(20, self.vb.laserCount+1)
+				end
 			else
-				timerRefractingBeamCD:Start(20, self.vb.laserCount+1)
+				timerRefractingBeamCD:Start(10.9, self.vb.laserCount+1)
 			end
 		end
 		if not self:IsMythic() then
-			warnRefractingBeam:CombinedShow(0.5, args.destName)
+			--Mythic goes on everyone, so no need for target warning
+			warnRefractingBeam:CombinedShow(0.7, args.destName)
 		end
 		if args:IsPlayer() then
 			specWarnRefractingBeam:Show()

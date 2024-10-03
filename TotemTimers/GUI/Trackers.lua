@@ -288,7 +288,7 @@ TotemTimers.options.args.trackers = {
                             type = "range",
                             name = L["Warning Glow at x seconds left"],
                             min = 10,
-                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "4.0.8") and 300 or 60,
+                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "4.0.9") and 300 or 60,
                             step = 5,
                             set = function(info, val)
                                 TotemTimers.ActiveProfile.WeaponExpirationWarning = val
@@ -588,14 +588,5 @@ end
 
 
 local ACD = LibStub("AceConfigDialog-3.0")
-local frame = ACD:AddToBlizOptions("TotemTimers", L["Trackers"], "TotemTimers", "trackers")
-frame:SetScript("OnEvent", function(self)
-    InterfaceOptionsFrame:Hide()
-end)
-frame:HookScript("OnShow", function(self)
-    if InCombatLockdown() then
-        InterfaceOptionsFrame:Hide()
-    end
-    TotemTimers.LastGUIPanel = self
-end)
-frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+local frame, categoryID = ACD:AddToBlizOptions("TotemTimers", L["Trackers"], "TotemTimers", "trackers")
+TotemTimers.HookGUIFrame(frame, categoryID)

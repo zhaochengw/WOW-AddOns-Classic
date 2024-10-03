@@ -2,7 +2,7 @@
 local transcriptorParser = DBM.Test.CreateSharedModule("ParseTranscriptor")
 
 local anonymizer			= require "Anonymizer"
-local parser				= require "StupidParser"
+local parser				= require "Parser"
 local filter    			= require "Data.Transcriptor-Filter"
 local instanceInfoGuesser	= require "InstanceInfoGuesser"
 
@@ -29,6 +29,9 @@ function transcriptorParser:New(data)
 	}
 	if type(obj.data) ~= "table" then
 		error("could not find Transcriptor entry, check that the imported log is a valid Transcriptor log including the `TranscriptDB =` statement at the beginning")
+	end
+	if obj.data.TranscriptDB then
+		obj.data = obj.data.TranscriptDB
 	end
 	return setmetatable(obj, mt)
 end
@@ -112,6 +115,13 @@ local function getEncounters(lines)
 		v.endOffset = select(2, findFrameBoundaries(lines, v.endOffset))
 		v.startTime = timeFromLine(lines[v.startOffset])
 		v.endTime = timeFromLine(lines[v.endOffset])
+	end
+	for i = #encounters, 1, -1 do
+		local v = encounters[i]
+		-- Filter out obviously buggy or empty encounters, e.g., SoD Vaelastrasz triggering ENCOUNTER_START for every single raid member
+		if v.endTime - v.startTime < 1 then
+			table.remove(encounters, i)
+		end
 	end
 	return encounters
 end
@@ -521,6 +531,7 @@ function testGenerator:parseMetadata()
 	local instanceInfo = {} ---@type DBMInstanceInfo
 	local encounterInfo = {}
 	local zoneId
+	local startsInCombat = false
 	for i, line in ipairs(self.log.lines) do
 		-- Only grab instance and encounter info from within relevant log area
 		if i >= self.firstLine and i <= self.lastLine then
@@ -532,8 +543,8 @@ function testGenerator:parseMetadata()
 				= guessTypes(line:match(
 					"%[DBM_Debug%] GetInstanceInfo%(%) = ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^,]+), ([^#]+)"
 				))
-			elseif line:match("DBM:GetCurrentInstanceDifficulty%(%) = normal20, 20 Player%(%d%)") then -- SoD/Molten Core heat levels
-				local modifier = line:match("%((%d)%)")
+			elseif line:match("DBM:GetCurrentInstanceDifficulty%(%) = [^,]*,[^,]*,[^,]*,[^,]*, (%d*)") then -- Difficulty modifiers
+				local modifier = line:match(" = [^,]*,[^,]*,[^,]*,[^,]*, (%d*)")
 				instanceInfo.difficultyModifier = tonumber(modifier) or 0
 			elseif line:match("%[ENCOUNTER_[SE][TN][AD]") then
 				local id, name, difficulty, groupSize, success, isStart = parseEncounterEvent(line)
@@ -547,6 +558,12 @@ function testGenerator:parseMetadata()
 					end
 				end
 			end
+		end
+		-- Track current combat state prior to pull to correctly restore it when generating a log from an encounter that starts while you are already in combat
+		if not encounterInfo.id and line:find("[PLAYER_REGEN_DISABLED]", nil, true) then
+			startsInCombat = true
+		elseif not encounterInfo.id and line:find("[PLAYER_REGEN_ENABLED]", nil, true) then
+			startsInCombat = false
 		end
 		-- But we can grab the recording player id from anywhere
 		if not player then
@@ -582,7 +599,8 @@ function testGenerator:parseMetadata()
 		player = player,
 		instanceInfo = instanceInfo,
 		encounterInfo = encounterInfo,
-		gameVersion = gameVersion
+		gameVersion = gameVersion,
+		startsInCombat = startsInCombat
 	}
 end
 
@@ -695,6 +713,10 @@ function testGenerator:GetLogAndPlayers()
 	local timeOffset
 	local totalTime = 0
 	local anon = anonymizer:New(self.log.lines, self.firstLine, self.lastLine, self.metadata.player, not self.anonymize)
+	if self.metadata.startsInCombat then
+		resultLog[#resultLog + 1] = {0, "PLAYER_REGEN_DISABLED", "+Entering combat!"}
+		resultLogStr[#resultLogStr + 1] = '{0.00, "PLAYER_REGEN_DISABLED", "+Entering combat!"}'
+	end
 	for i = self.firstLine, self.lastLine do
 		local line = self.log.lines[i]
 		local time, event, params = line:match("^<([%d.]+) [^>]+> %[([^%]]*)%] (.*)")

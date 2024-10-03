@@ -102,9 +102,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 edgeSize = 1,
             })
             f:SetBackdropColor(0, 0, 0, 0.8)
-            f:SetBackdropBorderColor(0, 0, 0, 1)
+            f:SetBackdropBorderColor(GetClassRGB(nil, "player", BG.borderAlpha))
             f:SetSize(220, 700)
-            f:SetPoint("TOPRIGHT", BG.MainFrame, "TOPLEFT", -1, 0)
+            f:SetPoint("TOPRIGHT", BG.MainFrame, "TOPLEFT", 1, 0)
             f:EnableMouse(true)
             BG.auctionLogFrame = f
             if BiaoGe.options.showAuctionLogFrame ~= 1 then

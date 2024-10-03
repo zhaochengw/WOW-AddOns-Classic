@@ -29,12 +29,34 @@ do --简体说明书
     -- update = update .. [[]] .. "|r\n"
     -- update = update .. [[]] .. "|r\n\n"
 
+    update = update .. "|cff00FF00" .. "10月3日更新v1.12.4" .. "|r\n"
+    update = update .. [[-拍卖WA更新为v2.1：如果你的出价太低时，出价框显示为红色]] .. "|r\n"
+    update = update .. [[-设置：增加选项[清空表格时保留支出金额]（默认不勾选）]] .. "|r\n"
+    update = update .. [[-历史价格：减少最大显示数量，优化在读取其数据时的卡顿问题（如果你的历史表格很多的话）]] .. "|r\n"
+    update = update .. [[-<赛季/60服>修复报错]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "10月1日更新v1.12.3" .. "|r\n"
+    update = update .. [[-<赛季服>ZUG和BWL表格尾王格子增加]] .. "|r\n\n"
+
+    update = update .. "|cff00FF00" .. "9月30日更新v1.12.2" .. "|r\n"
+    update = update .. [[-重做UI美化]] .. "|r\n"
+    update = update .. [[-<赛季服>BWL表格布局调整。且该表格的当前数据和历史数据已被清空]] .. "|r\n"
+    update = update .. [[-<赛季/60服>适配1.15.4，修复了各种问题]] .. "|r\n\n"
+
     update = update .. "|cff00FF00" .. "9月24日更新v1.12.1" .. "|r\n"
     update = update .. [[-拍卖WA更新为v2.0：重做入场动画；增加一个关注/心愿装备的高亮动画；按组合键时可以发送或观察装备]] .. "|r\n"
     update = update .. [[-增加语音包：司卡奇]] .. "|r\n"
     update = update .. [[-<赛季服>添加P5表格]] .. "|r\n"
     update = update .. [[-修复了未拍列表按Shift多选后，再按Ctrl取消多选失效的问题]] .. "|r\n"
     update = update .. [[-修复了对账金额在某些情况下会识别错误的问题]] .. "|r\n\n"
+
+    text = text .. update
+    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
+
+    ns.instructionsText = text
+end
+do --简体更新内容
+    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
 
     update = update .. "|cff00FF00" .. "9月21日更新v1.12.0" .. "|r\n"
     update = update .. [[-<WLK>团员成就：优化读取逻辑，减少读取失败的情况]] .. "|r\n"
@@ -48,14 +70,6 @@ do --简体说明书
     update = update .. [[-快速评价：增加多个简短评价]] .. "|r\n"
     update = update .. [[-修复了百分比支出项识别不了小数点的问题]] .. "|r\n\n"
 
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT显示更多更新记录|r"
-
-    ns.instructionsText = text
-end
-do --简体更新内容
-    local update = "|cff00BFFF< 主要更新记录 >|r\n\n" .. update
-
     update = update .. "|cff00FF00" .. "9月9日更新v1.11.8" .. "|r\n"
     update = update .. c1 .. [[-自动拍卖记录：增加未拍列表（团长可以多选该列表里的装备，来批量发起拍卖）]] .. "|r\n"
     update = update .. [[-集结号按队伍人数排序：现在总是按人数排序，星团长不再固定显示在最前面]] .. "|r\n"
@@ -64,23 +78,6 @@ do --简体更新内容
     update = update .. [[-设置：增加一个装备自动记录后不显示通知的选项]] .. "|r\n"
     update = update .. [[-通报WCL：优化通报文本]] .. "|r\n"
     update = update .. [[-重做通报心愿]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "9月4日更新v1.11.7" .. "|r\n"
-    update = update .. [[-修复了点击复制对方账单时没有正确复制买家的问题]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "9月4日更新v1.11.6" .. "|r\n"
-    update = update .. [[-增加功能：通报全团WCL（需要安装WclPlayerScore-WotLK插件）]] .. "|r\n"
-    update = update .. [[-拍卖WA更新为v1.9：增加一个绿色钩子，用来表示你是否已经拥有该物品]] .. "|r\n"
-    update = update .. [[-自动拍卖记录：增加搜索框。增加手动添加记录的功能。且现在装备过滤功能也会对其生效]] .. "|r\n"
-    update = update .. [[-装备过期列表：现在装备过滤功能也会对其生效]] .. "|r\n"
-    update = update .. [[-对账：现在鼠标悬停在打包交易时会高亮对应的装备]] .. "|r\n"
-    update = update .. [[-设置：增加自动拍卖UI缩放选项]] .. "|r\n\n"
-
-    update = update .. "|cff00FF00" .. "8月26日更新v1.11.5" .. "|r\n"
-    update = update .. c1 .. [[-拍卖WA更新为v1.8：增加出价记录；UI缩小了一点；提高了最小加价幅度]] .. "|r\n"
-    update = update .. [[-正在自动倒数时，如果有人出价，则会自动暂停倒数（你也可在设置里关闭该功能）]] .. "|r\n"
-    update = update .. [[-装备过期列表：现在可以通过Shift+点击来发送装备了]] .. "|r\n"
-    update = update .. [[-现在拍卖成功、流拍、取消拍卖、拍卖倒数时，不再触发关注装备的文字和语音提醒]] .. "|r\n\n"
 
     ns.updateText = update
 end
@@ -95,6 +92,16 @@ ns.L = L
 
 local L = {}
 do
+    L["清空表格时保留支出金额"] = true
+    L["如果你们团每次支出的金额都是固定的，可以勾选此项。"] = true
+    L["v2.1：如果你的出价太低时，出价框显示为红色"] = true
+
+
+    L["备注:"] = true
+    L["备注"] = true
+    L["备注仅自己可见。"] = true
+
+
     L["作者不再更新该版本及后续版本的装备库，实在抱歉。"] = true
     L["v2.0：重做进入动画；按组合键时可以发送或观察装备"] = true
     L["司卡奇"] = true
@@ -826,7 +833,7 @@ do
     L["已安装拍卖WA：%s"] = true
     L["全新的拍卖方式，不再通过传统的聊天栏来拍卖装备，而是使用新的UI来拍卖。"] = true
     L["|cffFFFFFF安装WA：|r此WA是团员端，用于接收团长发出的拍卖消息，没安装的团员显示不了拍卖UI。请团长安装该WA字符串后发给团员安装。如果团员已经安装了BiaoGe插件并且版本在1.7.0或以上，可以不用安装该WA。"] = true
-    L["|cffFFFFFF拍卖教程：|r团长ALT+点击表格/背包/聊天框的装备来打开拍卖面板，填写起拍价、拍卖时长、拍卖模式即可开始拍卖。可同时拍卖多件装备。"] = true
+    L["|cffFFFFFF拍卖教程：|r团长/物品分配者ALT+点击表格/背包/聊天框的装备来打开拍卖面板，填写起拍价、拍卖时长、拍卖模式即可开始拍卖。可同时拍卖多件装备。"] = true
     L["拍卖WA字符串"] = true
 
 
@@ -2004,6 +2011,9 @@ do
         L["艾\n索\n雷\n葛\n斯"] = true
         L["卡\n扎\n克"] = true
 
+        L["拉\n佐\n格\n尔"] = true
+        L["瓦\n拉\n斯\n塔\n兹"] = true
+        L["双\n龙"] = true
         L["桑\n德\n兰\n王\n子"] = true
 
 

@@ -1466,15 +1466,15 @@ function BG.QingKong(_type, FB)
             if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
                 if BiaoGe.options["retainExpenses"] ~= 1 then
                     BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetText("")
+                    BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] = nil
+                end
+                if not (BiaoGe.options["retainExpenses"] == 1 and BiaoGe.options["retainExpensesMoney"] == 1) then
+                    BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetText("")
+                    BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
                 end
                 BG.Frame[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i]:SetText("")
-                BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetText("")
+                BiaoGe[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i] = nil
             end
-            if BiaoGe.options["retainExpenses"] ~= 1 then
-                BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] = nil
-            end
-            BiaoGe[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i] = nil
-            BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
         end
         BiaoGe[FB].tradeTbl = {}
         BiaoGe[FB].lockoutIDtbl = nil

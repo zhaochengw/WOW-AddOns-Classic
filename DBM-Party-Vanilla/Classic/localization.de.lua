@@ -326,6 +326,14 @@ L = DBM:GetModLocalization("TheBeast")
 L:SetGeneralLocalization{
 	name 		= "Die Bestie"
 }
+----------------------
+--  Lord Valthalak  --
+----------------------
+L = DBM:GetModLocalization("LordValthalak")
+
+L:SetGeneralLocalization{
+	name 		= "Lord Valthalak"
+}
 -----------------------------
 --  General Drakkisath  --
 -----------------------------
@@ -1526,4 +1534,64 @@ L = DBM:GetModLocalization(489)
 
 L:SetGeneralLocalization{
 	name 		= "Häuptling Ukorz Sandwüter"
+}
+
+-----------------------------
+--Demon Fall Canyon
+-----------------------------
+--  Grimroot  --
+-----------------------------
+L = DBM:GetModLocalization("Grimroot")
+
+L:SetGeneralLocalization{
+	name 		= "Grimmwurzel"
+}
+
+-----------------------------
+--  Diathorus the Seeker  --
+-----------------------------
+L = DBM:GetModLocalization("Diathorus")
+
+L:SetGeneralLocalization{
+	name 		= "Diathorus der Sucher"
+}
+-----------------------------
+--  Destructor's Wraith  --
+-----------------------------
+L = DBM:GetModLocalization("DestructorsWraith")
+
+L:SetGeneralLocalization{
+	name 		= "Gespenst des Zerstörers"
+}
+-----------------------------
+--  Zilbagob  --
+-----------------------------
+L = DBM:GetModLocalization("Zilbagob")
+
+L:SetGeneralLocalization{
+	name 		= "Zilbagob"
+}
+-----------------------------
+--  Azgaloth  --
+-----------------------------
+L = DBM:GetModLocalization("Azgaloth")
+
+L:SetGeneralLocalization{
+	name 		= "Azgaloth"
+}
+-----------------------------
+--  Pyranis  --
+-----------------------------
+L = DBM:GetModLocalization("Pyranis")
+
+L:SetGeneralLocalization{
+	name 		= "Pyranis"
+}
+-----------------------------
+--  Hellscream's Phantom  --
+-----------------------------
+L = DBM:GetModLocalization("HellscreamsPhantom")
+
+L:SetGeneralLocalization{
+	name 		= "Höllschreis Phantom"
 }

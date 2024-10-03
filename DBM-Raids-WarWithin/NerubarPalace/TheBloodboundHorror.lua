@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2611, "DBM-Raids-WarWithin", 1, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240918054723")
+mod:SetRevision("20240923174107")
 mod:SetCreatureID(214502)
 mod:SetEncounterID(2917)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -46,7 +46,7 @@ local warnBanefulShiftFades						= mod:NewFadesAnnounce(443612, 2)
 local warnCrimsonRain							= mod:NewCountAnnounce(443203, 2)
 local warnGraspFromBeyondFades					= mod:NewFadesAnnounce(443042, 1, nil, nil, 367465, nil, nil, 2)
 
-local specWarnGruesomeDisgorge					= mod:NewSpecialWarningCount(444363, nil, nil, DBM_COMMON_L.FRONTAL, 1, 2)
+local specWarnGruesomeDisgorge					= mod:NewSpecialWarningCount(444363, nil, nil, DBM_COMMON_L.FRONTAL, 1, 15)
 local specWarnBanefulShift						= mod:NewSpecialWarningTaunt(443612, nil, nil, nil, 1, 2)
 local specWarnBloodcurdle						= mod:NewSpecialWarningMoveAway(452237, nil, nil, DBM_COMMON_L.SPREADS, 1, 2, 4)
 local yellBloodcurdle							= mod:NewShortYell(452237)
@@ -120,7 +120,7 @@ function mod:SPELL_CAST_START(args)
 		--14.0, 59.0, 69.1, 59.0, 69.1, 58.9, 69.0 (mythic)
 		self.vb.disgorgeCount = self.vb.disgorgeCount + 1
 		specWarnGruesomeDisgorge:Show(self.vb.disgorgeCount)
-		specWarnGruesomeDisgorge:Play("shockwave")
+		specWarnGruesomeDisgorge:Play("frontal")
 		if self.vb.disgorgeCount % 2 == 0 then
 			timerGruesomeDigorgeCD:Start(self:IsMythic() and 69.1 or 77, self.vb.disgorgeCount+1)
 		else
@@ -143,8 +143,10 @@ function mod:SPELL_CAST_START(args)
 		self.vb.hemorrhageCount = self.vb.hemorrhageCount + 1
 		specWarnSpewingHemorrhage:Show(self.vb.hemorrhageCount)
 		specWarnSpewingHemorrhage:Play("farfromline")
+		--32.3, 49.0, 78.9, 49.1, 79.0, 49.1, 79.0, 49.0
+		--34.7, 46.4, 79.1, 49.0, 79.0, 49.0, 79.0, 49.0", (broken example if no tank in range)
 		if self.vb.hemorrhageCount % 2 == 0 then
-			timerSpewingHemorrhageCD:Start(self:IsMythic() and 69.1 or 79, self.vb.hemorrhageCount+1)
+			timerSpewingHemorrhageCD:Start(self:IsMythic() and 69.1 or 78.9, self.vb.hemorrhageCount+1)
 		else
 			timerSpewingHemorrhageCD:Start(self:IsMythic() and 59 or 49, self.vb.hemorrhageCount+1)
 		end

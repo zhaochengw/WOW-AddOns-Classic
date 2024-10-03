@@ -5,9 +5,9 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20240428104801")
+mod:SetRevision("20240516194211")
 mod:SetCreatureID(33432)
-if not mod:IsClassic() then
+if mod:IsPostCata() then
 	mod:SetEncounterID(1138)
 else
 	mod:SetEncounterID(754)
@@ -15,10 +15,11 @@ end
 mod:DisableESCombatDetection()--fires for RP, and we need yells to identify hard mode anyways
 mod:SetModelID(28578)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20230209000000)
-mod:SetMinSyncRevision(20230113000000)
+mod:SetHotfixNoticeRev(20240516000000)
+mod:SetMinSyncRevision(20240516000000)
 
 mod:RegisterCombat("combat_yell", L.YellPull)
+mod:SetWipeTime(30)--Combat drops during long RPs
 
 mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL"
@@ -93,6 +94,10 @@ local function show_warning_for_spinup(self)
 	end
 end
 
+local function unfuckWipeTimer(self)
+	self:SetWipeTime(5)
+end
+
 function mod:OnCombatStart(delay)
 	self.vb.hardmode = false
 	enrage:Start(-delay)
@@ -105,6 +110,8 @@ function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(6)
 	end
+	self:SetWipeTime(15)
+	self:Schedule(15, unfuckWipeTimer, self)
 end
 
 function mod:OnCombatEnd()
@@ -275,6 +282,8 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			--timerNextFlameSuppressant:Stop()
 			timerPlasmaBlastCD:Stop()
 			timerP1toP2:Start()--41.5
+			self:SetWipeTime(44.5)
+			self:Schedule(44.5, unfuckWipeTimer, self)
 --			if self.vb.hardmode then
 --				timerNextFrostBomb:Start(42.2)--Disabled since i'm not entirely convinced this has a timer but instead is cast when a certain fire threshold is triggrred, i've seen from 42 all the way to never cast (solo raids with far less fire).
 --			end
@@ -289,8 +298,12 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 --			timerNextFrostBomb:Stop()
 			timerRocketStrikeCD:Stop()
 			timerP2toP3:Start()--24
+			self:SetWipeTime(27)
+			self:Schedule(27, unfuckWipeTimer, self)
 		elseif self:GetStage(4) then
 			timerP3toP4:Start()--27.9
+			self:SetWipeTime(30.9)
+			self:Schedule(30.9, unfuckWipeTimer, self)
 			--Need to be reverified on live
 --			if self.vb.hardmode then
 --				timerNextFrostBomb:Start(32)
@@ -322,6 +335,8 @@ function mod:OnSync(event, args)
 		timerPlasmaBlastCD:Stop()
 		--Timers are using retail adjusted to yell, need actual confirmation
 		timerP1toP2:Start(37.2)
+		self:SetWipeTime(40.2)
+		self:Schedule(40.2, unfuckWipeTimer, self)
 --		if self.vb.hardmode then
 --			timerNextFrostBomb:Start(42.2)
 --		end
@@ -337,10 +352,14 @@ function mod:OnSync(event, args)
 --		timerNextFrostBomb:Stop()
 		timerRocketStrikeCD:Stop()
 		timerP2toP3:Start(16.8)--16.8-25, using yells is swell
+		self:SetWipeTime(28)
+		self:Schedule(28, unfuckWipeTimer, self)
 	elseif event == "Phase4" and self:GetStage(3) then
 		self:SetStage(4)
 		--All these timers might be wrong because they are mashed between retail and legacy using math guesses
 		timerP3toP4:Start(24)
+		self:SetWipeTime(27)
+		self:Schedule(27, unfuckWipeTimer, self)
 		--Adjusted to live, but live timers might be wrong, plus need to be classic vetted anyways
 --		if self.vb.hardmode then
 --			timerNextFrostBomb:Start(28.5)

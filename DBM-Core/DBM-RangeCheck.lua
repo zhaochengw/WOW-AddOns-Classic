@@ -913,7 +913,7 @@ function rangeCheck:Show(range, filter, forceshow, redCircleNumPlayers, reverse,
 end
 
 function rangeCheck:Hide(force)
-	if restoreRange and not force and isWrath then -- Restore range frame to way it was when boss mod is done with it
+	if restoreRange and not force and (isWrath or not (mainFrame.restrictions or DBM:HasMapRestrictions())) then -- Restore range frame to way it was when boss mod is done with it
 		rangeCheck:Show(restoreRange, restoreFilter, true, restoreThreshold, restoreReverse)
 	else
 		restoreRange, restoreFilter, restoreThreshold, restoreReverse = nil, nil, nil, nil

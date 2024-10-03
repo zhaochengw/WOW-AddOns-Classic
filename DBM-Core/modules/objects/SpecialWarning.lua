@@ -15,6 +15,8 @@ local announcePrototype = private:GetPrototype("Announce")
 ---@class DBMMod
 local bossModPrototype = private:GetPrototype("DBMMod")
 
+local test = private:GetPrototype("DBMTest")
+
 local playerName = UnitName("player")
 
 ---@diagnostic disable: inject-field
@@ -89,7 +91,7 @@ function DBM:UpdateSpecialWarningOptions()
 	end
 end
 
-function DBM:AddSpecialWarning(text, force)
+function DBM:AddSpecialWarning(text, force, specWarnObject)
 	local added = false
 	if not frame.font1ticker then
 		font1elapsed = 0
@@ -110,7 +112,9 @@ function DBM:AddSpecialWarning(text, force)
 		local prevText1 = font2:GetText()
 		font1:SetText(prevText1)
 		font1elapsed = font2elapsed
-		self:AddSpecialWarning(text, true)
+		self:AddSpecialWarning(text, true, specWarnObject)
+	else
+		test:Trace(specWarnObject and specWarnObject.mod or self, "ShowSpecialWarning", specWarnObject, text)
 	end
 end
 
@@ -211,6 +215,7 @@ local specInstructionalRemapTable = {
 	["soakcount"] = "count",
 	["soakpos"] = "spell",
 	["switch"] = "spell",
+	["switchcustom"] = "spell",
 	["switchcount"] = "count",
 --		["adds"] = "spell",
 --		["addscount"] = "spell",
@@ -228,6 +233,7 @@ local specInstructionalRemapTable = {
 	["dodgeloc"] = "spell",
 	["moveaway"] = "spell",
 	["moveawaycount"] = "count",
+	["moveawaytarget"] = "spell",
 	["moveto"] = "spell",
 	["jump"] = "spell",
 	["run"] = "spell",
@@ -237,12 +243,12 @@ local specInstructionalRemapTable = {
 	["reflect"] = "target",
 }
 
-local function setText(announceType, spellId, stacks, customName)
+local function setText(announceType, spellId, stacks, customName, alternateSpellId)
 	local text, spellName
 	if customName then
 		spellName = customName
 	else
-		spellName = DBM:ParseSpellName(spellId, announceType) or CL.UNKNOWN
+		spellName = DBM:ParseSpellName(alternateSpellId or spellId, announceType) or CL.UNKNOWN
 	end
 	if announceType == "prewarn" then
 		if type(stacks) == "string" then
@@ -263,6 +269,10 @@ local function setText(announceType, spellId, stacks, customName)
 			text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
 		end
 	end
+	--Automatically register alternate spellnames when detecting their use here
+	if spellId and (customName or alternateSpellId) then
+		DBM:RegisterAltSpellName(spellId, customName or spellName)
+	end
 	return text, spellName
 end
 
@@ -272,6 +282,9 @@ function specialWarningPrototype:SetText(customName)
 	self.spellName = spellName
 end
 
+---Not to be confused with SetText, which only sets the text of object.
+---<br>This changes actual ID so announce callback also swaps ID for WAs
+---@param altSpellId string|number
 function specialWarningPrototype:UpdateKey(altSpellId)
 	self.spellId = altSpellId
 	self.icon = DBM:ParseSpellIcon(altSpellId, self.announceType, self.icon)
@@ -285,7 +298,14 @@ function specialWarningPrototype:UpdateKey(altSpellId)
 	end
 end
 
-local function canVoiceReplace(self, soundId)
+---@param self SpecialWarning
+---@param soundId number?
+---@param isNote boolean?
+---@return boolean
+local function canVoiceReplace(self, soundId, isNote)
+	if isNote then--Sound ID 5 is Notes feature, this is always allowed to play
+		return false
+	end
 	if private.voiceSessionDisabled or DBM.Options.ChosenVoicePack2 == "None" then
 		return false
 	end
@@ -313,12 +333,26 @@ local specTypeFilterTable = {
 	["stack"] = "stack",
 	["switch"] = "switch",
 	["switchcount"] = "switch",
+	["switchcustom"] = "switch",
 	["adds"] = "switch",
 	["addscount"] = "switch",
 	["addscustom"] = "switch",
 	["targetchange"] = "switch",
 	["gtfo"] = "gtfo",
 }
+
+---@class SpecAnnounce0: SpecialWarning
+---@field Show fun(self: SpecAnnounce0)
+---@class SpecAnnounce1num: SpecialWarning
+---@field Show fun(self: SpecAnnounce1num, arg1: number)
+---@class SpecAnnounce1str: SpecialWarning
+---@field Show fun(self: SpecAnnounce1str, arg1: string)
+---@class SpecAnnounce1Annoying: SpecialWarning
+---@field Show fun(self: SpecAnnounce1Annoying, arg1: string|unknown|nil)
+---@class SpecAnnounce2strnum: SpecialWarning
+---@field Show fun(self: SpecAnnounce2strnum, arg1: string, arg2: number)
+---@class SpecAnnounce2numstr: SpecialWarning
+---@field Show fun(self: SpecAnnounce2numstr, arg1: number, arg2: string)
 
 function specialWarningPrototype:Show(...)
 	--Check if option for this warning is even enabled
@@ -416,7 +450,7 @@ function specialWarningPrototype:Show(...)
 			if self.announceType and not self.announceType:find("switch") then
 				text = text:gsub(">.-<", classColoringFunction)
 			end
-			DBM:AddSpecialWarning(text)
+			DBM:AddSpecialWarning(text, nil, self)
 			if DBM.Options.ShowSWarningsInChat then
 				local colorCode = ("|cff%.2x%.2x%.2x"):format(DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
 				self.mod:AddMsg(colorCode .. "[" .. L.MOVE_SPECIAL_WARNING_TEXT .. "] " .. text .. "|r", nil)
@@ -462,7 +496,7 @@ function specialWarningPrototype:Show(...)
 		if self.sound and not DBM.Options.DontPlaySpecialWarningSound and (not self.option or self.mod.Options[self.option .. "SWSound"] ~= "None") then
 			local soundId = self.option and self.mod.Options[self.option .. "SWSound"] or self.flash
 			if noteHasName and type(soundId) == "number" then soundId = noteHasName end--Change number to 5 if it's not a custom sound, else, do nothing with it
-			if self.hasVoice and not DBM.Options.VPDontMuteSounds and canVoiceReplace(self, soundId) and self.hasVoice <= private.swFilterDisabled then return end
+			if self.hasVoice and not DBM.Options.VPDontMuteSounds and canVoiceReplace(self, soundId, noteHasName and true) and self.hasVoice <= private.swFilterDisabled then return end
 			DBM:PlaySpecialWarningSound(soundId or 1)
 		end
 	else
@@ -471,7 +505,9 @@ function specialWarningPrototype:Show(...)
 	end
 end
 
---Object that's used when precision isn't possible (number of targets variable or unknown
+---Object that's used when precision isn't possible (number of targets variable or unknown
+---@param delay number
+---@param ... any
 function specialWarningPrototype:CombinedShow(delay, ...)
 	--Check if option for this warning is even enabled
 	if self.option and not self.mod.Options[self.option] then return end
@@ -492,11 +528,16 @@ function specialWarningPrototype:CombinedShow(delay, ...)
 		end
 	end
 	DBMScheduler:Unschedule(self.Show, self.mod, self)
-	DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	local id = DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	test:Trace(self.mod, "SchedulerHideFromTraceIfUnscheduled", id)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "CombinedShow", ...)
 end
 
---New object that allows defining count instead of scheduling for more efficient and immediate warnings when precise count is known
+---New object that allows defining count instead of scheduling for more efficient and immediate warnings when precise count is known
+---@param maxTotal number
+---@param ... any
 function specialWarningPrototype:PreciseShow(maxTotal, ...)
+	test:Trace(self.mod, "CombinedWarningPreciseShow", self, maxTotal)
 	--Check if option for this warning is even enabled
 	if self.option and not self.mod.Options[self.option] then return end
 	--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
@@ -519,20 +560,35 @@ function specialWarningPrototype:PreciseShow(maxTotal, ...)
 	local viableTotal = DBM:NumRealAlivePlayers()
 	if (maxTotal == #self.combinedtext) or (viableTotal == #self.combinedtext) then--All targets gathered, show immediately
 		self:Show(...)--Does this need self or mod? will it have this bug? https://github.com/DeadlyBossMods/DBM-Unified/issues/153
+		test:Trace(self.mod, "CombinedWarningPreciseShowSuccess", self, maxTotal)
 	else--And even still, use scheduling backup in case counts still fail
-		DBMScheduler:Schedule(1.2, self.Show, self.mod, self, ...)
+		local id = DBMScheduler:Schedule(1.2, self.Show, self.mod, self, ...)
+		test:Trace(self.mod, "SchedulerHideFromTraceIfUnscheduled", id)
+		test:Trace(self.mod, "SetScheduleMethodName", id, self, "PreciseShow", maxTotal, ...)
 	end
 end
 
+---Used as a lazy antispam. Does NOT combine. Use CombinedShow for that
+---@param delay number?
+---@param ... any
 function specialWarningPrototype:DelayedShow(delay, ...)
 	DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
-	DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	local id = DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
+	test:Trace(self.mod, "SchedulerHideFromTraceIfUnscheduled", id)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "DelayedShow", ...)
 end
 
+---@param t number
+---@param ... any
 function specialWarningPrototype:Schedule(t, ...)
-	return DBMScheduler:Schedule(t, self.Show, self.mod, self, ...)
+	local id = DBMScheduler:Schedule(t, self.Show, self.mod, self, ...)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "Schedule", ...)
+	return id
 end
 
+---@param time number
+---@param numAnnounces number?
+---@param ... any
 function specialWarningPrototype:Countdown(time, numAnnounces, ...)
 	DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
 end
@@ -609,16 +665,26 @@ function specialWarningPrototype:Play(name, customPath)
 	end
 end
 
-function specialWarningPrototype:ScheduleVoice(t, ...)
+---@param t number
+---@param name VPSound?
+---@param customPath? string|number
+function specialWarningPrototype:ScheduleVoice(t, name, customPath)
 	if not canVoiceReplace(self) then return end
 	DBMScheduler:Unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
-	return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
+	local id = DBMScheduler:Schedule(t, self.Play, self.mod, self, name, customPath)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "ScheduleVoice", name, customPath)
+	return id
 end
 
---Object Permits scheduling voice multiple times for same object
-function specialWarningPrototype:ScheduleVoiceOverLap(t, ...)
+---Object Permits scheduling voice multiple times for same object
+---@param t number
+---@param name VPSound?
+---@param customPath? string|number
+function specialWarningPrototype:ScheduleVoiceOverLap(t, name, customPath)
 	if not canVoiceReplace(self) then return end
-	return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
+	local id = DBMScheduler:Schedule(t, self.Play, self.mod, self, name, customPath)
+	test:Trace(self.mod, "SetScheduleMethodName", id, self, "ScheduleVoiceOverLap", name, customPath)
+	return id
 end
 
 function specialWarningPrototype:CancelVoice(...)
@@ -626,6 +692,17 @@ function specialWarningPrototype:CancelVoice(...)
 	return DBMScheduler:Unschedule(self.Play, self.mod, self, ...)
 end
 
+---old constructor (no auto-localize)
+---@param text string
+---@param optionDefault SpecFlags|boolean?
+---@param optionName string|boolean? String for custom option name. Using false hides option completely
+---@param optionVersion any optional: has to be number, but luaLS has a fit if we tell it that
+---@param runSound number? 1 = Personal, 2 = Everyone, 3 = Very Important, 4 = Run Away
+---@param hasVoice boolean|number? Voice pack version required for used sound file.
+---@param difficulty number? Raid Difficulty index used for displaying difficulty icon next to option
+---@param icon number|string? Use number for spellId, -number for journalID, number as string for textureID
+---@param spellID string|number? Used to define a spellID used for GroupSpells and WeakAura key
+---@param waCustomName any? Used to show custom name/text for Spell header (usually used when a made up SpellID is used)
 function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty, icon, spellID, waCustomName)
 	if not text then
 		error("NewSpecialWarning: you must provide special warning text", 2)
@@ -633,11 +710,7 @@ function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, opt
 	if type(text) == "string" and text:match("OptionVersion") then
 		error("NewSpecialWarning: you must provide remove optionversion hack for " .. optionDefault)
 	end
-	if runSound == true then
-		runSound = 2
-	elseif not runSound then
-		runSound = 1
-	end
+	runSound = runSound or 1
 	if hasVoice == true then--if not a number, set it to 2, old mods that don't use new numbered system
 		hasVoice = 2
 	end
@@ -645,6 +718,7 @@ function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, opt
 	---@class SpecialWarning
 	local obj = setmetatable(
 		{
+			objClass = "SpecialWarning",
 			text = self.localization.warnings[text],
 			combinedtext = {},
 			combinedcount = 0,
@@ -658,16 +732,19 @@ function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, opt
 		},
 		mt
 	)
+	test:Trace(self, "NewSpecialWarning", obj, "untyped")
 	local optionId = optionName or optionName ~= false and text
 	if optionId then
 		obj.voiceOptionId = hasVoice and "Voice" .. optionId or nil
 		obj.option = optionId .. (optionVersion or "")
-		self:AddSpecialWarningOption(obj.option, optionDefault, runSound, self.NoSortAnnounce and "specialannounce" or "announce", spellID, nil, waCustomName)
+		self:AddSpecialWarningOption(obj.option, optionDefault, runSound, "announce", spellID, nil, waCustomName)
 	end
 	tinsert(self.specwarns, obj)
 	return obj
 end
 
+---@param self DBMMod
+---@return SpecialWarning|SpecAnnounce0
 local function newSpecialWarning(self, announceType, spellId, stacks, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty)
 	if not spellId then
 		error("newSpecialWarning: you must provide spellId", 2)
@@ -680,18 +757,27 @@ local function newSpecialWarning(self, announceType, spellId, stacks, optionDefa
 	if hasVoice == true then--if not a number, set it to 2, old mods that don't use new numbered system
 		hasVoice = 2
 	end
-	local alternateSpellId
+	local alternateSpellId, alternateName
+	--Hack to allow using alternat spellids for short names without adding a ton of extra nils
 	if type(optionName) == "number" then
 		if DBM.Options.SpecialWarningShortText then
 			alternateSpellId = optionName
 		end
 		optionName = nil
 	end
-	local text, spellName = setText(announceType, alternateSpellId or spellId, stacks)
+	--Hack to allow using alternat custom text for short names without adding a ton of extra nils
+	if type(optionVersion) == "string" then
+		if DBM.Options.SpecialWarningShortText then
+			alternateName = optionVersion
+		end
+		optionVersion = nil
+	end
+	local text, spellName = setText(announceType, spellId, stacks, alternateName, alternateSpellId)
 	local icon = DBM:ParseSpellIcon(spellId)
 	---@class SpecialWarning
 	local obj = setmetatable( -- todo: fix duplicate code
 		{
+			objClass = "SpecialWarning",
 			text = text,
 			combinedtext = {},
 			combinedcount = 0,
@@ -709,6 +795,7 @@ local function newSpecialWarning(self, announceType, spellId, stacks, optionDefa
 		},
 		mt
 	)
+	test:Trace(self, "NewSpecialWarning", obj, announceType)
 	if optionName then
 		obj.option = optionName
 	elseif optionName ~= false then
@@ -733,258 +820,308 @@ local function newSpecialWarning(self, announceType, spellId, stacks, optionDefa
 		end
 	end
 	if obj.option then
-		local catType = "announce"--Default to General announce
-		if self.NoSortAnnounce then--ALL special announce objects will be assigned "specialannounce", usually for mods that sort by phase instead
-			catType = "specialannounce"
-		else
-			--Directly affects another target (boss or player) that you need to know about
-			if announceType == "target" or announceType == "targetcount" or announceType == "close" or announceType == "reflect" then
-				catType = "announceother"
-			--Directly affects you
-			elseif announceType == "you" or announceType == "youcount" or announceType == "youpos" or announceType == "move" or announceType == "dodge" or announceType == "dodgecount" or announceType == "moveaway" or announceType == "moveawaycount" or announceType == "keepmove" or announceType == "stopmove" or announceType == "run" or announceType == "runcount" or announceType == "stack" or announceType == "moveto" or announceType == "soak" or announceType == "soakcount" or announceType == "soakpos" then
-				catType = "announcepersonal"
-			--Things you have to do to fulfil your role
-			elseif announceType == "taunt" or announceType == "dispel" or announceType == "interrupt" or announceType == "interruptcount" or announceType == "switch" or announceType == "switchcount" then
-				catType = "announcerole"
-			end
-		end
-		self:AddSpecialWarningOption(obj.option, optionDefault, runSound, catType, spellId, announceType)
+		self:AddSpecialWarningOption(obj.option, optionDefault, runSound, "announce", spellId, announceType)
 	end
 	obj.voiceOptionId = hasVoice and "Voice" .. spellId or nil
 	tinsert(self.specwarns, obj)
 	return obj
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningSpell(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "spell", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningEnd(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "ends", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningFades(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "fades", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningSoon(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "soon", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningBait(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "bait", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningDispel(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "dispel", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningInterrupt(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "interrupt", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce2strnum
 function bossModPrototype:NewSpecialWarningInterruptCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce2strnum
 	return newSpecialWarning(self, "interruptcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningYou(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "you", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningYouCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "youcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningYouPos(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "youpos", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce2numstr
 function bossModPrototype:NewSpecialWarningYouPosCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce2numstr
 	return newSpecialWarning(self, "youposcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningSoakPos(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "soakpos", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningTarget(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "target", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce2numstr
 function bossModPrototype:NewSpecialWarningTargetCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce2numstr
 	return newSpecialWarning(self, "targetcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningDefensive(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "defensive", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningTaunt(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "taunt", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningClose(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "close", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningMove(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "move", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningKeepMove(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "keepmove", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningStopMove(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "stopmove", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecialWarning
 function bossModPrototype:NewSpecialWarningGTFO(spellId, optionDefault, ...)
 	return newSpecialWarning(self, "gtfo", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningDodge(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "dodge", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningDodgeCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "dodgecount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningDodgeLoc(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "dodgeloc", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningMoveAway(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "moveaway", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningMoveAwayCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "moveawaycount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
+function bossModPrototype:NewSpecialWarningMoveAwayTarget(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
+	return newSpecialWarning(self, "moveawaytarget", spellId, nil, optionDefault, ...)
+end
+
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1Annoying
 function bossModPrototype:NewSpecialWarningMoveTo(spellId, optionDefault, ...)
+	---@type SpecAnnounce1Annoying
 	return newSpecialWarning(self, "moveto", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningSoak(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "soak", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningSoakCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "soakcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningJump(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "jump", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningRun(spellId, optionDefault, optionName, optionVersion, runSound, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "run", spellId, nil, optionDefault, optionName, optionVersion, runSound or 4, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningRunCount(spellId, optionDefault, optionName, optionVersion, runSound, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "runcount", spellId, nil, optionDefault, optionName, optionVersion, runSound or 4, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningCast(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "cast", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningLookAway(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "lookaway", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningReflect(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "reflect", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "count", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningSoonCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "sooncount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, stacks, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, stacks: number, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningStack(spellId, optionDefault, stacks, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "stack", spellId, stacks, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningSwitch(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "switch", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---Switch object that has string for count
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningSwitchCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "switchcount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---Switch object that has string for extra info (like target)
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
+function bossModPrototype:NewSpecialWarningSwitchCustom(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
+	return newSpecialWarning(self, "switchcustom", spellId, nil, optionDefault, ...)
+end
+
+---Generic alert for incoming adds without context
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningAdds(spellId, optionDefault, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "adds", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---Generic alert for incoming adds without context, but with count
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1num
 function bossModPrototype:NewSpecialWarningAddsCount(spellId, optionDefault, ...)
+	---@type SpecAnnounce1num
 	return newSpecialWarning(self, "addscount", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---Generic alert for incoming adds, but with custom text
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningAddsCustom(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "addscustom", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce1str
 function bossModPrototype:NewSpecialWarningTargetChange(spellId, optionDefault, ...)
+	---@type SpecAnnounce1str
 	return newSpecialWarning(self, "targetchange", spellId, nil, optionDefault, ...)
 end
 
----@overload fun(self: DBMMod, spellId, optionDefault: SpecFlags|boolean?, time, optionName, optionVersion, runSound, hasVoice, difficulty): SpecialWarning
+---@overload fun(self: DBMMod, spellId: number|string, optionDefault: SpecFlags|boolean?, time: number, optionName: number|string|boolean?, optionVersion: number|string?, runSound: number|boolean?, hasVoice: number?, difficulty: number?): SpecAnnounce0
 function bossModPrototype:NewSpecialWarningPreWarn(spellId, optionDefault, time, ...)
+	---@type SpecAnnounce0
 	return newSpecialWarning(self, "prewarn", spellId, time, optionDefault, ...)
 end
 
+---@param number number
+---@param forceVoice string?
+---@param forcePath string?
 function DBM:PlayCountSound(number, forceVoice, forcePath)
 	if number > 10 then return end
 	local voice
@@ -1010,6 +1147,8 @@ function DBM:PlayCountSound(number, forceVoice, forcePath)
 	self:PlaySoundFile(path .. number .. ".ogg")
 end
 
+---@param soundId number|string
+---@param force boolean?
 function DBM:PlaySpecialWarningSound(soundId, force)
 	local sound
 	if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then
@@ -1024,7 +1163,11 @@ local function testWarningEnd()
 	frame:SetFrameStrata("HIGH")
 end
 
-function DBM:ShowTestSpecialWarning(text, number, noSound, force) -- text, number, noSound, force
+---@param text string?
+---@param number number?
+---@param noSound boolean?
+---@param force boolean?
+function DBM:ShowTestSpecialWarning(text, number, noSound, force)
 	if moving then
 		return
 	end

@@ -8,7 +8,7 @@ else
 	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20240621185436")
+mod:SetRevision("20240912104122")
 mod:SetCreatureID(40177)
 mod:SetEncounterID(1050)
 mod:SetHotfixNoticeRev(20240614000000)
@@ -25,6 +25,10 @@ if not mod:IsCata() then
 		"UNIT_SPELLCAST_SUCCEEDED boss1"
 	)
 
+	--[[
+	(ability.id = 451996 or ability.id = 456902 or ability.id = 456900 or ability.id = 447395 or ability.id = 449444 or ability.id = 449687) and type = "begincast"
+	or type = "dungeonencounterstart" or type = "dungeonencounterend"
+	--]]
 	local warnForgeAxe			= mod:NewCountAnnounce(451996, 2)
 	local warnForgeSword		= mod:NewCountAnnounce(456902, 2)
 	local warnForgeMace			= mod:NewCountAnnounce(456900, 2)
@@ -54,13 +58,13 @@ if not mod:IsCata() then
 		if args.spellId == 451996 then
 			self.vb.weaponCount = self.vb.weaponCount + 1
 			warnForgeAxe:Show(self.vb.weaponCount)
-			timerMoltenCleaveCD:Start(11)
+			timerMoltenCleaveCD:Start(10.9)
 			timerForgeSwordCD:Start(19.5, self.vb.weaponCount+1)
 		elseif args.spellId == 456902 then
 			self.vb.weaponCount = self.vb.weaponCount + 1
 			warnForgeSword:Show(self.vb.weaponCount)
 			timerMoltenFlurryCD:Start(10.9)
-			timerForgeMaceCD(20.6, self.vb.weaponCount+1)
+			timerForgeMaceCD:Start(20.6, self.vb.weaponCount+1)
 		elseif args.spellId == 456900 then
 			self.vb.weaponCount = self.vb.weaponCount + 1
 			warnForgeMace:Show(self.vb.weaponCount)

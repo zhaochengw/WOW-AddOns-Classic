@@ -5,10 +5,10 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20240428104801")
+mod:SetRevision("20240512232312")
 mod:SetCreatureID(32867, 32927, 32857)
 mod:SetEncounterID(1140)
-if not mod:IsClassic() then
+if mod:IsPostCata() then
 	mod:SetEncounterID(1140)
 	mod:DisableEEKillDetection()--Fires for first one dying not last
 else

@@ -45,9 +45,15 @@ do
 		end
 	end
 
-	function DBM:Debug(text, level, useSound)
-		--But we still want to generate callbacks for level 1 and 2 events
-		if (DBM.Options and DBM.Options.DebugLevel == 3) or (level or 1) < 3 then--Cap debug level to 2 for trannscriptor unless user specifically specifies 3
+	---Utility function for debugging DBM and blizzard events
+	---@param text string|number
+	---@param level number? Level 1: non spammy events. Level 2: mildly spammy events. Level 3: very spammy events.
+	---@param useSound boolean? Play 'ding' sound when displaying message
+	---@param alwaysFireEvent boolean? Used specifically for transcriptor logging
+	function DBM:Debug(text, level, useSound, alwaysFireEvent)
+		--Still fire debug callbacks for transcriptor even if user level debug is not enabled
+		--Cap debug level to 2 for transcriptor unless user specifically specifies 3
+		if (DBM.Options and DBM.Options.DebugLevel == 3) or (level or 1) < 3 or alwaysFireEvent then
 			DBM:FireEvent("DBM_Debug", text, level)
 		end
 		if not DBM.Options or not DBM.Options.DebugMode then return end
@@ -63,8 +69,12 @@ do
 end
 
 do
-	--To speed up creating new mods.
 	local EJ_SetDifficulty, EJ_GetEncounterInfoByIndex = EJ_SetDifficulty, EJ_GetEncounterInfoByIndex
+	---Used to scan a range of instance IDs to find right one.
+	---<br>Returns GetRealZoneText for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
 	function DBM:FindDungeonMapIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 4000
@@ -79,6 +89,11 @@ do
 		end
 	end
 
+	---Used to scan a range of journal IDs to find right one.
+	---<br>Returns EJ_GetInstanceInfo for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
 	function DBM:FindInstanceIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 3000
@@ -93,6 +108,11 @@ do
 		end
 	end
 
+	---Used to scan a range of instance queue IDs to find right one.
+	---<br>Returns GetDungeonInfo for entire range
+	---@param low number?
+	---@param peak number?
+	---@param contains string?
 	function DBM:FindScenarioIDs(low, peak, contains)
 		local start = low or 1
 		local range = peak or 3000

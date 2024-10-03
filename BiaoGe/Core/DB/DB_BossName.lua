@@ -29,12 +29,11 @@ end
 do
     if BG.IsVanilla_Sod then
         local boss = {
-            { name = L["狂\n野\n的\n拉\n佐\n格\n尔"], color = "DA70D6" },
-            { name = L["堕\n落\n的\n瓦\n拉\n斯\n塔\n兹"], color = "DA70D6" },
+            { name = L["拉\n佐\n格\n尔"], color = "DA70D6" },
+            { name = L["瓦\n拉\n斯\n塔\n兹"], color = "DA70D6" },
             { name = L["勒\n什\n雷\n尔"], color = "D2B48C" },
             { name = L["费\n尔\n默"], color = "D2B48C" },
-            { name = L["埃\n博\n诺\n克"], color = "FFFF00" },
-            { name = L["弗\n莱\n格\n尔"], color = "FFFF00" },
+            { name = L["双\n龙"], color = "FFFF00" },
             { name = L["克\n洛\n玛\n古\n斯"], color = "9370DB" },
             { name = L["奈\n法\n利\n安"], color = "D2691E" },
             { name = L["桑\n德\n兰\n王\n子"], color = "87CEFA" },

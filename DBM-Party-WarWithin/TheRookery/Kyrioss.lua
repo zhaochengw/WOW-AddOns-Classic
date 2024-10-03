@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2566, "DBM-Party-WarWithin", 3, 1268)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240609071744")
+mod:SetRevision("20240824051457")
 mod:SetCreatureID(209230)
 mod:SetEncounterID(2816)
 --mod:SetHotfixNoticeRev(20220322000000)
@@ -116,7 +116,7 @@ function mod:OnCombatStart(delay)
 	self.vb.dashCount = 0
 	self.vb.stormheartCount = 0
 	timerLightningDashCD:Start(2.1, 1)
-	timerChainLightningCD:Start(8.2, 1)
+	timerChainLightningCD:Start(7, 1)
 	timerUnstableChargeCD:Start(15.5, 1)
 	timerLightningTorrentCD:Start(31.3, 1)
 	if self:IsMythic() then

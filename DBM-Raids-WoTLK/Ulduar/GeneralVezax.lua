@@ -5,9 +5,9 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20240428104801")
+mod:SetRevision("20240812081615")
 mod:SetCreatureID(33271)
-if not mod:IsClassic() then
+if mod:IsPostCata() then
 	mod:SetEncounterID(1134)
 else
 	mod:SetEncounterID(755)
@@ -126,7 +126,7 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args.spellId == 62660 then		-- Shadow Crash
-		self:BossTargetScanner(args.sourceGUID, "ShadowCrashTarget", 0.05, 20, nil, nil, nil, self.vb.lastMarkTarget, nil, nil, true)
+		self:BossTargetScanner(args.sourceGUID, "ShadowCrashTarget", 0.05, 12, nil, nil, nil, self.vb.lastMarkTarget, nil, nil, true)
 		local timer = 10--Blizzard confirmed it's a 10-15 second variable timer on final version of fight (ie retail)
 		if self:IsClassic() then
 			timer = self:IsDifficulty("normal25") and 7 or 10
@@ -146,7 +146,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		else
 			warnLeechLife:Show(args.destName)
 		end
-		self:Schedule(10, resetMarkTarget, self)
+		self:Schedule(3, resetMarkTarget, self)
 	elseif args.spellId == 63364 then
 		specWarnAnimus:Show()
 		specWarnAnimus:Play("bigmob")

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CannonClassic", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240427220735")
+mod:SetRevision("20240509160252")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"SPELL_AURA_APPLIED 24742",
@@ -15,7 +15,7 @@ local specWarnCancelNow = mod:NewSpecialWarningSpell(24742)
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpell(24742) and args:IsPlayer() then
 		local timer = C_Map.GetBestMapForUnit("player") == 1456 and 14.8 -- Thunder Bluff
-			or C_Map.GetBestMapForUnit("player") == 1429 and false -- TODO: Alliance
+			or C_Map.GetBestMapForUnit("player") == 1429 and 4.83 -- Elwynn Forest
 		if timer then
 			timerMagicWings:Start(timer)
 			specWarnCancelNow:Schedule(timer)

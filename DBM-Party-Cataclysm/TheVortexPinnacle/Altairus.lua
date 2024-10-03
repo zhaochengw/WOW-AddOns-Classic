@@ -8,7 +8,7 @@ else
 	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20240727190007")
+mod:SetRevision("20240926231220")
 mod:SetCreatureID(43873)
 mod:SetEncounterID(1041)
 mod:SetUsedIcons(8)
@@ -76,6 +76,7 @@ end
 --]]
 
 local function updateAllTimers(self, ICD)
+	if not self:IsRetail() then return end
 	DBM:Debug("updateAllTimers running", 3)
 	if timerBreathCD:GetRemaining(self.vb.breathCount+1) < ICD then
 		local elapsed, total = timerBreathCD:GetTime(self.vb.breathCount+1)

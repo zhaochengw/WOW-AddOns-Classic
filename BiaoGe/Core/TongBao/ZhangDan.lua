@@ -23,9 +23,9 @@ BG.TongBaoButtons = {}
 
 function BG.SendMsgToRaid(tbl, t)
     local t = t or 0
-    for ii, vv in ipairs(tbl) do
+    for i, v in ipairs(tbl) do
         BG.After(t, function()
-            for _, text in ipairs(tbl[ii]) do
+            for _, text in ipairs(tbl[i]) do
                 SendChatMessage(text, "RAID")
             end
         end)

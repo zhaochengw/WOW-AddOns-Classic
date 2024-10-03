@@ -29,9 +29,7 @@ local pt = print
 local RealmId = GetRealmID()
 local player = UnitName("player")
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("ADDON_LOADED")
-frame:SetScript("OnEvent", function(self, event, addonName)
+BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     -- 函数：交易自动记录买家和金额
@@ -798,7 +796,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         BG.tradeFrame.text = text
     end
 
-    -- 最近拍卖的装备
+    -- 最近拍卖
     do
         BG.lastAuctionFrame = {}
         local f = CreateFrame("Frame", nil, TradeFrame, "BackdropTemplate")
@@ -862,6 +860,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 edgeSize = 1.5,
             })
             bt:SetSize(35, 35)
+            bt:RegisterForClicks("AnyUp")
             if i == 1 then
                 bt:SetPoint("TOPLEFT", BG.lastAuctionFrame.frame, "TOPLEFT", 5, -40)
             elseif (i - 1) % 5 == 0 then
@@ -1197,6 +1196,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         f:SetHyperlinksEnabled(true)
         f.homepoin = { "BOTTOM", nil, "CENTER", 50, 100 }
         if BiaoGe.point[f:GetName()] then
+            BiaoGe.point[f:GetName()][2] = nil
             f:SetPoint(unpack(BiaoGe.point[f:GetName()]))
         else
             f:SetPoint(unpack(f.homepoin)) --设置显示位置

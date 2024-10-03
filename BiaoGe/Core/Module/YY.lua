@@ -26,9 +26,7 @@ Y.maxHistory = 40     -- 最多保存多少个历史查询记录
 Y.maxSearchText = 300 -- 最多接受多少个评价详细
 Y.searchLastDay = 360 -- 接收最近多少天内的评价
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("ADDON_LOADED")
-frame:SetScript("OnEvent", function(self, event, addonName)
+BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
 
     -- 初始化数据库
@@ -98,11 +96,12 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         -- 小标题
         do
             local text_table = {
-                { name = "YY:", onenter = L["YY号必填，填写数字"] },
-                { name = L["频道名称:"], onenter = L["频道名称选填，方便自己辨认是哪个YY\n该名称不会共享给别人，仅自己可见"] },
-                { name = L["评价:"], onenter = L["评价必填，默认中评"] },
-                { name = L["理由:"], onenter = L["理由选填"] } }
-            for i, _ in ipairs(text_table) do
+                { name = "YY:" },
+                { name = L["备注:"], onenter = L["备注仅自己可见。"] },
+                { name = L["评价:"] },
+                { name = L["理由:"] }
+            }
+            for i, v in ipairs(text_table) do
                 local f = CreateFrame("Frame", nil, BG.YYMainFrame.new)
                 f:SetPoint("TOPLEFT", 5, -15 - height * (i - 1))
                 f:SetSize(90, 20)
@@ -111,18 +110,22 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 f.Text:SetTextColor(RGB(BG.y2))
                 f.Text:SetAllPoints()
                 f.Text:SetWordWrap(false) -- 截断
-                f.Text:SetText(text_table[i].name)
+                f.Text:SetText(v.name)
                 f.Text:SetTextColor(RGB("FFFF00"))
                 f.Text:SetJustifyH("RIGHT")
                 tinsert(Y.textcolor_table, f.Text)
-                f:SetScript("OnEnter", function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetText(text_table[i].onenter)
-                end)
-                f:SetScript("OnLeave", function(self)
-                    GameTooltip:Hide()
-                end)
+                if v.onenter then
+                    f:SetScript("OnEnter", function(self)
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                        GameTooltip:ClearLines()
+                        GameTooltip:AddLine(v.name, 1, 1, 1, true)
+                        GameTooltip:AddLine(v.onenter, 1, .82, 0, true)
+                        GameTooltip:Show()
+                    end)
+                    f:SetScript("OnLeave", function(self)
+                        GameTooltip:Hide()
+                    end)
+                end
             end
         end
         -- YY号
@@ -475,7 +478,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             { name = L["序号"], width = 30, color = "FFFFFF" },
             { name = L["日期"], width = 80, color = "FFFFFF" },
             { name = L["YY"], width = 110, color = "FFFFFF" },
-            { name = L["频道名称"], width = 90, color = "FFFFFF" },
+            { name = L["备注"], width = 90, color = "FFFFFF" },
             { name = L["评价"], width = 40, color = "FFFFFF" },
             { name = L["理由"], width = 210, color = "FFFFFF" },
         }
@@ -827,7 +830,9 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                         end
                         if sum ~= 0 then
                             BG.YYMainFrame.searchText.sumpingjia[0] = sum
-
+                            sort(BG.YYMainFrame.searchText.all, function(a, b)
+                                return tonumber(a.date) > tonumber(b.date)
+                            end)
                             for i = #BiaoGe.YYdb.history, 1, -1 do
                                 if BiaoGe.YYdb.history[i].yy == BG.YYMainFrame.searchText.yy then
                                     tremove(BiaoGe.YYdb.history, i)
@@ -1981,14 +1986,14 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 f1:SetPoint("BOTTOM", BG.EndPJ.new, -5, 73)
                 f1:SetHeight(18)
                 f1.buttons = {}
-                f1.width=0
+                f1.width = 0
                 f1.r, f1.g, f1.b = 0, 1, 0
 
                 local f2 = CreateFrame("Frame", nil, BG.EndPJ.new)
                 f2:SetPoint("BOTTOM", BG.EndPJ.new, -5, 50)
                 f2:SetHeight(18)
                 f2.buttons = {}
-                f2.width=0
+                f2.width = 0
                 f2.r, f2.g, f2.b = 1, 0, 0
 
                 local function CreateButton(f, text)
@@ -2029,10 +2034,10 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     end)
                 end
                 for i, text in ipairs(goodTbl) do
-                    CreateButton(f1,text)
+                    CreateButton(f1, text)
                 end
                 for i, text in ipairs(badTbl) do
-                    CreateButton(f2,text)
+                    CreateButton(f2, text)
                 end
             end
             -- 保存
@@ -2169,6 +2174,17 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             t:Show()
         end
     end
+
+    -- 修正评价库排序
+    do
+        BG.Once("YY", 240925, function()
+            for i in ipairs(BiaoGe.YYdb.history) do
+                sort(BiaoGe.YYdb.history[i].all, function(a, b)
+                    return tonumber(a.date) > tonumber(b.date)
+                end)
+            end
+        end)
+    end
 end)
 
 local CDing = {}
@@ -2267,10 +2283,14 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         local checkBoxName = frame:GetName() .. 'CheckBox'
         for i, value in ipairs(frame.checkBoxTable) do
             if value.channelName then
-                local checkBox = _G[checkBoxName .. i .. 'Check']
-
+                local checkBox = _G[checkBoxName .. i .. 'Check'] or _G[frame:GetName() .. "Checkbox" .. i .. "Check"]
                 if value.channelName == YY then
-                    BlizzardOptionsPanel_CheckButton_Disable(checkBox)
+                    if BG.IsNewUI then
+                        checkBox:Disable()
+                        checkBox.Text:SetTextColor(.5, .5, .5)
+                    else
+                        BlizzardOptionsPanel_CheckButton_Disable(checkBox)
+                    end
                     BG.YYchannelID = i
                 end
             end

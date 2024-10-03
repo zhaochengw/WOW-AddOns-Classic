@@ -6,19 +6,25 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Traduit par "
 L.TranslationBy 			= "Psyco/Sasmira/Pettigrow/Edoz@EU-Ysondre/Leybola@EU-Sargeras/Noleen@EU-Hyjal" -- your name here, localizers!
-L.Website					= "Visitez notre discord sur |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Suivez-nous sur twitter @deadlybossmods ou @MysticalOS"
+L.Website					= "Visitez notre discord sur |cFF73C2FBhttps://discord.gg/deadlybossmods|r. Suivez-nous sur Twitter @deadlybossmods ou @MysticalOS"
 L.WebsiteButton				= "Site web"
 
-L.OTabBosses	= "Bosses"--Deprecated and will be deleted once tabs no longer use this
-L.OTabRaids		= "Raid"--Raids & PVP
-L.OTabDungeons	= "Groupe/Solo"--1-5 person content (Dungeons, MoP Scenarios, World Events, Brawlers, Proving Grounds, Visions, Torghast, etc)
-L.OTabPlugins	= "Core Plugins"
-L.OTabOptions	= GAMEOPTIONS_MENU
-L.OTabAbout		= "À propos"
+L.OTabBosses						= "Options de Boss"--Deprecated and will be deleted once tabs no longer use this
+L.OTabRaids							= "Raids"--Just pve raids
+L.OTabDungeons						= "Donjons"--Just dungeons
+L.OTabWorld							= "Bosses du monde"--Since there are so many world mods, enough to get their own tab
+L.OTabScenarios						= "Scénarios"--Future use, will be used for scenarios and delves, likely after there are more than 2 mods (so probably 12.x or later)
+L.OTabPlugins						= "Autre"--Scenarios, PVP, Delves (11.x), Solo/Challenge content (torghast, mage tower, etc)
+L.OTabOptions						= "Options de Core"
+L.OTabAbout							= "À propos"
 
-L.FOLLOWER				= "Sujet"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
+L.FOLLOWER							= "Sujet"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
+L.STORY					    		= "Histoire"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
+
+L.TabCategory_CURRENT_SEASON		= "Saison en cours"
 
 L.TabCategory_OTHER			= "Autres modules"
+L.TabCategory_AFFIXES		= "Affixes"
 
 L.BossModLoaded 			= "Statistiques %s"
 L.BossModLoad_now 			= [[Ce boss mod n'est pas chargé.
@@ -57,11 +63,12 @@ L.TabCategory_Options	 	= "Options générales"
 L.Area_BasicSetup			= "Aide à la configuration initiale de DBM"
 L.Area_ModulesForYou		= "Quels modules DBM sont bons pour vous ?"
 L.Area_ProfilesSetup		= "Guide d'utilisation des profiles DBM"
+
 -- Panel: Core & GUI
-L.Core_GUI 					= "Core & Interface"
-L.General 					= "Options générales de DBM core"
+L.Core_GUI 					= "Core et Interface"
+L.General 					= "Options générales de DBM Core"
 L.EnableMiniMapIcon			= "Afficher l'icône de la minicarte"
-L.EnableCompartmentIcon		= "Afficher le bouton de compartiment"
+L.EnableCompartmentIcon		= "Afficher l'icône de compartiment"
 L.UseSoundChannel			= "Configurer le canal audio utilisé par DBM pour jouer les sons d'alerte"
 L.UseMasterChannel			= "Canal audio Principal"
 L.UseDialogChannel			= "Canal audio Discussion"
@@ -87,10 +94,34 @@ L.Editbox_WindowWidth		= "Largeur de la fenêtre"
 L.Editbox_WindowHeight		= "Hauteur de la fenêtre"
 
 L.UIGroupingOptions			= "Options d'interface partagées (requiet de recharger l'interface pour tout module qui serait déjà chargé)"
-L.GroupOptionsExcludeIcon	= "Exclure l'option \"Définir l'icône sur\" du regroupement par capacité (elles seront regroupées dans la catégorie \"Icônes\" comme avant)"
+L.GroupOptionsExcludeIcon	= "Exclure l'option 'Définir l'icône sur' du regroupement par capacité (elles seront regroupées dans la catégorie 'Icônes' comme avant)"
+L.ShowWAKeys				= "Afficher les clés WeakAuras à côté des noms de sorts pour aider à écrire des WeakAuras en utilisant les déclencheurs du Boss Mod."
 L.AutoExpandSpellGroups		= "Déplier automatiquement les options liées à la même capacité"
-L.ShowSpellDescWhenExpanded	= "Continuer à afficher la description du sort lorsque les groupes sont déployés."--Might not be used
+--L.ShowSpellDescWhenExpanded	= "Continuer à afficher la description du sort lorsque les groupes sont déployés."--Might not be used
 L.NoDescription				= "Cette capacité n'a aucune description"
+L.CustomOptions				= "Cette catégorie contient des options personnalisées pour une capacité ou un événement qui n'a pas son propre ID de sort ou de journal. Ces options ont été regroupées ensemble en utilisant un ID manuel personnalisé pour faciliter la création de WeakAuras."
+
+-- Panel: Auto Logging
+L.Panel_AutoLogging					= "Enregistrement automatique"
+
+--Auto Logging: Logging toggles/types
+L.Area_AutoLogging					= "Bascules d'enregistrement automatique"
+L.AutologBosses						= "Enregistrer automatiquement le contenu sélectionné en utilisant le journal de combat de Blizzard"
+L.AdvancedAutologBosses				= "Enregistrer automatiquement le contenu sélectionné avec Transcriptor"
+--Auto Logging: Global filter Options
+L.Area_AutoLoggingFilters			= "Filtres d'enregistrement automatique"
+L.RecordOnlyBosses					= "Ne pas enregistrer les trashs (Enregistre uniquement les Boss. Utilisez '/dbm pull' avant les boss pour capturer les potions pré-combat et ENCOUNTER_START)"
+L.DoNotLogLFG						= "Ne pas enregistrer les contenus en file d'attente (LFG ou LFR)"
+--Auto Logging: Recorded Content types
+L.Area_AutoLoggingContent			= "Contenu de l'enregistrement automatique"
+L.LogCurrentMythicRaids				= "Raids mythiques du niveau actuel (ou remix)" --Retail Only
+L.LogCurrentRaids					= "Raids non mythiques du niveau actuel (ou remix) (Héroïque, Normal, et LFR si le filtre LFG/LFR est désactivé)"
+L.LogTWRaids						= "Raids de Marcheurs du temps ou de Temps de Chromie (n'inclut PAS le remix)" --Retail Only
+L.LogTrivialRaids					= "Raids triviaux (au-dessous du niveau du personnage)"
+L.LogCurrentMPlus					= "Donjons M+ du niveau actuel (ou remix)" --Retail Only
+L.LogCurrentMythicZero				= "Donjons Mythique 0 du niveau actuel (ou remix)" --Retail Only
+L.LogTWDungeons						= "Donjons de Marcheurs du temps ou de Temps de Chromie (n'inclut PAS le remix)" --Retail Only
+L.LogCurrentHeroic					= "Donjons héroïques du niveau actuel (Remarque : si vous faites de l'héroïque via la file d'attente et souhaitez l'enregistrer, désactivez le filtre LFG)"
 
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "Fonctionnalités supplémentaires"
@@ -107,11 +138,10 @@ L.SKT_Enabled				= "Décompte du record pour le combat actuel s'il est disponibl
 L.ShowRespawn				= "Décompte de la réapparition du boss après un wipe"
 L.ShowQueuePop				= "Décompte du temps restant pour accepter une invitation (LFG,BG,etc)"
 --
-L.Area_AutoLogging			= "Options d'enregistrement auto"
+L.Area_AutoLogging			= "Options d'enregistrement automatique"
 L.AutologBosses				= "Enregistrement auto du combat contre un boss en utilisant le journal de combat de Blizzard"
 L.AdvancedAutologBosses		= "Enregistrement auto du combat contre un boss en utilisant Transcriptor"
 L.RecordOnlyBosses			= "N'enregistrer que les boss et exclure tous les trash. Utilisez '/dbm pull' avant les boss pour prendre en compte les potions (pre pot) &amp; ENCOUNTER_START"
-L.LogOnlyNonTrivial			= "N'enregistrer que les combats importants (difficulté normale ou supérieure du contenu actuel de raid &amp; donjons Mythique+)"
 --
 L.Area_3rdParty				= "Options des Addons tiers"
 L.oRA3AnnounceConsumables	= "Annoncer la vérification des consommables oRA3 au début du combat"
@@ -121,7 +151,6 @@ L.AutoAcceptGuildInvite		= "Acceptation auto des invitations venant d'un membre 
 L.Area_Advanced				= "Options Avancées"
 L.FakeBW					= "Prétendre utiliser BigWigs lors des vérifications de versions au lieu de DBM (utile pour les guildes qui forcent l'utilisation de BigWigs)"
 L.AITimer					= "Utiliser un générateur automatique de décomptes pour les nouveaux combats en utilisant l'IA intégrée de DBM (utile pout engager les boss jamais vus sur la béta). Note: ceci ne fonctionnera pas correctement s'il y a plusieurs adds avec la même capacité"
-L.ExtendIcons				= "Étendre l'API des icônes de cible de raid pour utiliser jusqu'à 16 icônes (au lieu de 8). IMPORTANT : Ces icônes ne seront visibles QUE pour ceux ont installé la texture personnalisée 'UI-RaidTargetingIcons.blp' afin de supporter 16 icônes. Requiert de recharger l'interface après avoir modifié ce paramètre"
 
 -- Panel: Profiles
 L.Panel_Profile				= "Profils"
@@ -151,17 +180,18 @@ L.ButtonImportProfile		= "Importer profil"
 L.ButtonExportProfile		= "Exporter profil"
 
 L.ImportErrorOn				= "Son personnalisé manquant pour : %s"
-L.ImportVoiceMissing		= "Pack de voix manquant : %s"
+L.ImportVoiceMissing		= "Paquet de voix manquant : %s"
 
 -- Tab: Alerts
 L.TabCategory_Alerts	 	= "Alertes"
 L.Area_SpecAnnounceConfig	= "Guide des effets visuels et sonores des Alertes spéciales"
-L.Area_SpecAnnounceNotes	= "Guide des Notes des Alertes spéciales"
-L.Area_VoicePackInfo		= "Information sur les Packs de voix DBM"
+L.Area_SpecAnnounceNotes	= "Guide des notes des alertes spéciales"
+L.Area_VoicePackInfo		= "Information sur les paquets de voix DBM"
+
 -- Tab: Raidwarning
-L.Tab_RaidWarning 			= "Alertes"
-L.RaidWarning_Header		= "Options des alertes"
-L.RaidWarnColors 			= "Couleurs des alertes"
+L.Tab_RaidWarning 			= "Announces"
+L.RaidWarning_Header		= "Options des annonces"
+L.RaidWarnColors 			= "Couleurs des annonces"
 L.RaidWarnColor_1 			= "Couleur 1"
 L.RaidWarnColor_2 			= "Couleur 2"
 L.RaidWarnColor_3		 	= "Couleur 3"
@@ -239,25 +269,25 @@ L.Area_VoiceSelection		= "Sélection des voix"
 L.CountdownVoice			= "Voix principale"
 L.CountdownVoice2			= "Voix secondaire"
 L.CountdownVoice3			= "Voix tertiaire"
-L.VoicePackChoice			= "Pack de voix des Alertes vocales"
-L.MissingVoicePack			= "Pack de voix manquant (%s)"
+L.VoicePackChoice			= "Paquet de voix des Alertes vocales"
+L.MissingVoicePack			= "Paquet de voix manquant (%s)"
 L.Area_CountdownOptions		= "Options des décomptes"
-L.Area_VoicePackReplace		= "Options de remplacement par le Pack de voix (quels sons seront remplacés par le Pack de voix)"
-L.VPReplaceNote				= "Note: Les Packs de voix ne modifient ou suppriment jamais vos sons d'alertes.\nIls sont simplement mis en sourdine lorsqu'un Pack de voix les remplace."
-L.ReplacesAnnounce			= "Remplacer les sons d'alerte (Note : Très peu d'utilisation pour les packs de voix, sauf pour les changements de phases et les adds)"
+L.Area_VoicePackReplace		= "Options de remplacement par le paquet de voix (quels sons seront remplacés par le paquet de voix)"
+L.VPReplaceNote				= "Remarque : Les paquets de voix ne modifient ou suppriment jamais vos sons d'alertes.\nIls sont simplement mis en sourdine lorsqu'un paquet de voix les remplace."
+L.ReplacesAnnounce			= "Remplacer les sons d'alerte (Remarque : Très peu d'utilisation pour les paquets de voix, sauf pour les changements de phases et les adds)"
 L.ReplacesSA1				= "Remplacer les sons d'alerte spéciale 1 (personnelle, ou 'pvpflag')"
 L.ReplacesSA2				= "Remplacer les sons d'alerte spéciale 2 (tout le monde, ou 'beware')"
 L.ReplacesSA3				= "Remplacer les sons d'alerte spéciale 3 (priorité haute, ou 'airhorn')"
 L.ReplacesSA4				= "Remplacer les sons d'alerte spéciale 4 (priorité haute, ou 'run away')"
 L.ReplacesCustom			= "Remplacer les sons d'alerte spéciale des réglages utilisateur personnalisés (par évênement) (non recommandé)"
-L.Area_VoicePackAdvOptions	= "Options avancées Packs de voix"
+L.Area_VoicePackAdvOptions	= "Options avancées paquets de voix"
 L.SpecWarn_AlwaysVoice		= "Toujours jouer toutes les alertes vocales même si l'Alerte spéciale est désactivée (peut être putile aux chefs de raid dans certaines situations, non recommandé autrement)"
-L.VPDontMuteSounds			= "Désactiver la mise en sourdine des alertes standards lors de l'utilisation d'un pack de voix (à utilier seulement si vous souhaitez entendre les DEUX types d'alertes sonores simultanément)"
-L.Area_VPLearnMore			= "Apprenez-en plus sur les packs de voix et comment utiliser ces options"
+L.VPDontMuteSounds			= "Désactiver la mise en sourdine des alertes standards lors de l'utilisation d'un paquet de voix (à utilier seulement si vous souhaitez entendre les DEUX types d'alertes sonores simultanément)"
+L.Area_VPLearnMore			= "Apprenez-en plus sur les paquets de voix et comment utiliser ces options"
 L.VPLearnMore				= "|cFF73C2FBhttps://github.com/DeadlyBossMods/DBM-Retail/wiki/%5BGuide%5D-DBM-&-Voicepacks#2022-update|r"
-L.Area_BrowseOtherVP		= "Trouvez d'autres packs de voix sur Curse"
+L.Area_BrowseOtherVP		= "Trouvez d'autres paquets de voix sur Curse"
 L.BrowseOtherVPs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+voice|r"
-L.Area_BrowseOtherCT		= "Trouvez d'autres packs de décompte sur Curse"
+L.Area_BrowseOtherCT		= "Trouvez d'autres paquets de décompte sur Curse"
 L.BrowseOtherCTs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
 
 -- Panel: Event Sounds
@@ -271,6 +301,7 @@ L.EventDungeonMusic			= "Musique jouée dans les donjons/raids"
 L.EventEngageMusic			= "Musique jouée pendant les rencontres"
 L.Area_EventSoundsExtras	= "Options des évênements sonores"
 L.EventMusicCombined		= "Autoriser tous les choix de musiques dans les sélections de donjons et de rencontres (changer cette option requiert de recharger l'interface)"
+L.DisableBuiltInMusic		= "Désactiver les sons d'événements intégrés et chargez uniquement des pacquets de musique tiers."
 L.Area_EventSoundsFilters	= "Conditions des évênements sonores"
 L.EventFilterDungMythicMusic= "Ne pas jouer de musique de donjon en difficulté Mythique/Mythique+"
 L.EventFilterMythicMusic	= "Ne pas jouer de musique de rencontre en difficulté Mythique/Mythique+"
@@ -279,8 +310,9 @@ L.EventFilterMythicMusic	= "Ne pas jouer de musique de rencontre en difficulté 
 L.TabCategory_Timers		= "Décomptes"
 L.Area_ColorBytype			= "Guide de coloration par type des barres"
 -- Panel: Color by Type
-L.Panel_ColorByType	 		= "Couleur par type"
+L.Panel_ColorByType	 		= "Couleurs des barres"
 L.AreaTitle_BarColors		= "Couleurs de barre par type de décompte"
+L.AreaTitle_ImpBarColors	= "Couleurs des barres importantes (Ces barres sont définies comme importantes par l'utilisateur)"
 L.BarTexture				= "Texture des barres"
 L.BarStyle					= "Comportement des barres"
 L.BarDBM					= "Classique (les petites barres existantes glissent vers l'ancrage Enlargi)"
@@ -369,31 +401,30 @@ L.Area_SpamFilter_SpecRoleFilters	= "Filtres des annonces spéciales (contrôle 
 L.SpamSpecRoleDispel				= "Filtrer les alertes 'dissipation'"
 L.SpamSpecRoleInterrupt				= "Filtrer les alertes 'interruption'"
 L.SpamSpecRoleDefensive				= "Filtrer les alertes 'défensive'"
-L.SpamSpecRoleTaunt					= "Filtrer les alertes 'taunt'"
+L.SpamSpecRoleTaunt					= "Filtrer les alertes 'provocation'"
 L.SpamSpecRoleSoak					= "Filtrer les alertes 'soak'"
 L.SpamSpecRoleStack					= "Filtrer les alertes 'high stack'"
 L.SpamSpecRoleSwitch				= "Filtrer les alertes 'changement de cible' &amp; 'adds'"
 L.SpamSpecRoleGTFO					= "Filtrer les alertes 'sauvez-vous'"
 
-L.Area_SpamFilter_SpecFeatures		= "Options des fonctionnalités liées aux alertes spéciales"
+L.Area_SpamFilter_SpecFeatures		= "Options des annonces"
 L.SpamBlockNoSpecWarnText			= "Ne pas afficher de texte pour les alertes spéciales"
 L.SpamBlockNoSpecWarnFlash			= "Ne pas faire clignoter l'écran pour les alertes spéciales"
 L.SpamBlockNoSpecWarnVibrate		= "Ne pas faire vibrer la manette pour les alertes spéciales"
-L.SpamBlockNoSpecWarnSound			= "Ne pas jouer de son d'alerte spéciale (autorise les packs de voix, si l'un d'eux est sélectionné dans les options d'alertes vocales)"
+L.SpamBlockNoSpecWarnSound			= "Ne pas jouer de son d'alerte spéciale (autorise les paquets de voix, si l'un d'eux est sélectionné dans les options d'alertes vocales)"
 
 
-L.Area_SpamFilter_Timers	= "Optionns Désactivation globale & Filtres des décomptes"
-L.SpamBlockNoShowTimers		= "Ne pas afficher les décomptes de module (Boss Mod/CM/LFG/Respawn)"
+L.Area_SpamFilter_Timers	= "Options du chronomètre"
 L.SpamBlockNoShowUTimers	= "Ne pas afficher au joueur les décomptes envoyés (Personnalisés/Pull/Pause)"
 L.SpamBlockNoCountdowns		= "Ne pas jouer le son du compte à rebours"
 
-L.Area_SpamFilter_Misc		= "Options Désactivations globales & Filtres divers"
+L.Area_SpamFilter_Misc		= "Options divers"
 L.SpamBlockNoSetIcon		= "Ne pas placer d'icônes sur les cibles"
 L.SpamBlockNoRangeFrame		= "Ne pas afficher le cadre des portées"
 L.SpamBlockNoInfoFrame		= "Ne pas afficher le cadre d'information"
 L.SpamBlockNoHudMap			= "Ne pas afficher la HudMap"
-L.SpamBlockNoNameplate		= "Ne pas afficher les auras des barres de vie"
-L.SpamBlockNoYells			= "Ne pas envoyer de cris dans le chat"
+L.SpamBlockNoNameplate		= "Ne pas afficher les auras des plaques de nom"
+L.SpamBlockNoYells			= "Ne pas envoyer de cris dans la discussion"
 L.SpamBlockNoNoteSync		= "Ne pas accepter les notes partagées"
 
 L.Area_Restore				= "Options de restauration DBM (Restaure la dernière utilisation de DBM ou non lors de la fin d'un module)"
@@ -403,22 +434,17 @@ L.SpamBlockNoRangeRestore	= "Ne pas restaurer le radar de portée quand les addo
 L.Area_SpamFilter			= "Options des filtres de spam"
 L.DontShowFarWarnings		= "Ne pas afficher les annonces/décomptes pour les événements lointains"
 L.StripServerName			= "Ne pas afficher le royaume sur les alertes et les décomptes"
-L.FilterVoidFormSay			= "Ne pas envoyer de message d'icône ou de décompte sous Forme du Vide (les messages normaux seront toujours envoyés)"
+L.FilterVoidFormSay2		= "Ne pas envoyer de message d'icône ou de décompte sous Forme du Vide (les messages normaux seront toujours envoyés)"
 
 L.Area_SpecFilter			= "Options de filtre par rôle"
-L.FilterTankSpec			= "Filtrer les alertes réservées aux tanks si vous n'êtes pas en spé tank. (Note: Désactivation non recommandée car les alertes de taunt sont activées en permanence par défaut.)"
-L.FilterInterruptsHeader	= "Filtrer les alertes de sorts interruptibles en fonction des préférences paramétrées."
-L.SWFNever					= "Jamais"
-L.FilterInterrupts			= "Si le lanceur n'est pas la cible/focus actuelle (Toujours)."
-L.FilterInterrupts2			= "Si le lanceur n'est pas la cible/focus actuelle (Toujours) ou interruption en recharge (Boss seulement)"
-L.FilterInterrupts3			= "Si le lanceur n'est pas la cible/focus actuelle (Toujours) ou interruption en recharge (Boss &amp; Trash)"
+L.FilterTankSpec			= "Filtrer les alertes réservées aux tanks si vous n'êtes pas en spé tank. (Remarque : Désactivation non recommandée car les alertes de taunt sont activées en permanence par défaut.)"
 L.FilterInterruptNoteName	= "Filtrer les alertes des sorts interruptibles (avec compte) si l'alerte ne contient pas votre nom dans la note personnalisée"
 L.FilterDispels				= "Filtrer les alertes de dissipations si votre sort de dissipation est en recharge"
 L.FilterCrowdControl		= "Filtrer les annonces pour les interruptions basées sur le contrôle de foule si votre CC est en temps de recharge."
 L.FilterTrashWarnings		= "Filtrer toutes les annonces liées aux trash dans les donjons normaux &amp; héroïques"
 
 L.Area_PullTimer			= "Options du filtre des décomptes de pull, pause, & personnalisé"
-L.DontShowPTNoID			= "Bloquer les décomptes de pull envoyés depuis une zone différente de la vôtre (ne bloquera jamais les décomptes BigWigs envoyés sans ID de zone)"
+L.DontShowPTNoID			= "Bloquer les décomptes de pull envoyés depuis une zone différente de la vôtre"
 L.DontShowPT				= "Ne pas afficher la barre de pull/pause"
 L.DontShowPTText			= "Ne pas afficher le texte d'alerte du décompte de pull/pause"
 L.DontPlayPTCountdown		= "Ne jouer aucun son de décompte de pull/pause/perso"
@@ -430,15 +456,15 @@ L.Panel_HideBlizzard				= "Bloquer les fonctionnalités de Blizzard."
 L.Area_HideToast 					= "Désactiver les notifications Blizzard"
 L.HideGarrisonUpdates 				= "Cacher les notifications de suivi pendant les combats de boss"
 L.HideGuildChallengeUpdates 		= "Cacher les notifications de défi de guilde pendant les combats de boss"
-L.HideBossKill 						= "Cacher les notifications de mort de boss" --NYI
-L.HideVaultUnlock					= "Cacher les notifications de déblocage du coffre" --NYI
+--L.HideBossKill 					= "Cacher les notifications de mort de boss" --NYI
+--L.HideVaultUnlock					= "Cacher les notifications de déblocage du coffre" --NYI
 --Cut Scenes
 L.Area_Cinematics 					= "Bloquer les cinématiques en jeu"
 L.DuringFight 						= "Bloquer les cinématiques en combat pendant les rencontres de boss" -- utilise une vérification explicite de IsEncounterInProgress
 L.InstanceAnywhere 					= "Bloquer les cinématiques non liées au combat n'importe où à l'intérieur d'une instance de donjon ou de raid"
 L.NonInstanceAnywhere 				= "DANGER : Bloquer les cinématiques en extérieur dans le monde ouvert (NON recommandé)"
 L.OnlyAfterSeen 					= "Ne bloquer les cinématiques qu'après les avoir vues au moins une fois (Vivement recommandé pour vivre l'histoire telle qu'elle a été conçue au moins une fois)"
--- Son
+-- Sound
 L.Area_Sound 						= "Bloquer les sons en jeu"
 L.DisableSFX 						= "Désactiver le canal des effets sonores pendant les combats de boss"
 L.DisableAmbiance 					= "Désactiver le canal de l'ambiance sonore pendant les combats de boss"
@@ -449,6 +475,36 @@ L.HideBossEmoteFrame 				= "Cacher le cadre des émotes de boss de raid pendant 
 L.HideWatchFrame 					= "Cacher le cadre de suivi (objectifs) pendant les combats de boss s'il n'y a pas d'exploits en cours de suivi et si ce n'est pas dans une Mythique +"
 L.HideQuestTooltips 				= "Cacher les objectifs de quête des info-bulles pendant les combats de boss" --Currently hidden (NYI)
 L.HideTooltips 						= "Cacher complètement les info-bulles pendant les combats de boss"
+
+-- Panel: Raid Leader Controls
+L.Tab_RLControls					= "Contrôles du chef de raid"
+L.Area_FeatureOverrides				= "Options de dérogation des fonctionnalités"
+L.OverrideIcons 					= "Désactiver le marquage des icônes pour tous les utilisateurs du raid, y compris vous-même"-- (Use override instead of disable if you want DBM to do marking under your terms)
+L.OverrideSay						= "Désactiver les messages de bulle de chat/DIRE pour tous les utilisateurs du raid, y compris vous-même"
+L.DisableStatusWhisperShort			= "Désactiver les chuchotements de statut/réponse pour tout le groupe"--Duplicated from privacy but makes sense to include option in both panels
+L.DisableGuildStatusShort			= "Désactiver la synchronisation des messages de progression avec la guilde pour tout le groupe"--Duplicated from privacy but makes sense to include option in both panels
+--L.DisabledForDropdown				= "Choisir le(s) mod(s) de boss désactivé(s) pour"--NYI
+--L.DiabledForBoth					= "Désactiver les fonctionnalités ci-dessus pour DBM et BW"---NYI
+--L.DiabledForDBM					= "Désactiver les fonctionnalités ci-dessus uniquement pour les utilisateurs de DBM"--NYI
+--L.DiabledForBW					= "Désactiver les fonctionnalités ci-dessus uniquement pour les utilisateurs de BW"--NYI
+
+L.Area_ConfigOverrides				= "Options de dérogation de configuration (PAS ENCORE IMPLEMENTÉ, à venir)"--NYI
+L.OverrideBossAnnounceOptions		= "Définir la configuration des annonces des mods de boss de tous les utilisateurs de DBM sur ma configuration"--NYI
+L.OverrideBossTimerOptions			= "Définir la configuration des chronomètres des mods de boss de tous les utilisateurs de DBM sur ma configuration"--NYI
+L.OverrideBossIconOptions			= "Définir la configuration des icônes des mods de boss de tous les utilisateurs de DBM sur ma configuration (si le paramètre d'icône est désactivé dans les options ci-dessus, cette option est ignorée)"--NYI
+L.OverrideBossSayOptions			= "Définir la configuration des bulles de chat des mods de boss de tous les utilisateurs de DBM sur ma configuration (si le paramètre de bulle de chat est désactivé dans les options ci-dessus, cette option est ignorée)"--NYI
+L.ConfigAreaFooter					= "Les options de cette zone ne modifient temporairement la configuration des utilisateurs lors de l'engagement sans altérer leur configuration sauvegardée."
+L.ConfigAreaFooter2					= "Il est recommandé de prendre en compte tous les rôles et de ne pas exclure les chronomètres/alertes qu'un tank, etc. pourrait avoir besoin"
+
+L.Area_receivingOptions				= "Options de réception (PAS ENCORE IMPLEMENTÉ, à venir)"--NYI
+L.NoAnnounceOverride				= "Ne pas accepter les dérogations d'annonces des chefs de raid."--NYI
+L.NoTimerOverridee					= "Ne pas accepter les dérogations de chronomètre des chefs de raid."--NYI
+L.ReplaceMyConfigOnOverride			= "AVERTISSEMENT : Remplacer de manière permanente mes configurations de mod par celles du chef de raid lors de la dérogation"--NYI
+L.ReceivingFooter					= "Les dérogations des options d'icônes et de bulles de chat ne peuvent pas être refusées car ces paramètres affectent les autres joueurs autour de vous"--NYI
+L.ReceivingFooter2					= "Si vous activez ces options, c'est entre vous et le chef de raid si votre configuration entre en conflit avec leur intention"--NYI
+L.ReceivingFooter3					= "Si vous activez l'option 'remplacer ma configuration de mod', vos paramètres d'origine seront perdus lors de la dérogation"--NYI
+
+L.TabFooter							= "Toutes les options de ce panneau ne fonctionnent que si vous êtes chef de groupe dans un groupe hors donjon/LFR"
 
 -- Panel: Privacy
 L.Tab_Privacy 				= "Messages privés"
@@ -461,8 +517,8 @@ L.DisableGuildStatus 		= "Empêcher les messages de progression de se synchronis
 L.EnableWBSharing 			= "Partager quand vous engagez/battez un world boss avec votre guilde et vos amis battle.net qui sont sur le même royaume"
 
 -- Tab: Frames & Integrations
-L.TabCategory_Frames		= "Cadres & Intégrations"
-L.Area_NamelateInfo			= "DBM Nameplate Auras Info"
+L.TabCategory_Frames		= "Cadres et Intégrations"
+L.Area_NamelateInfo			= "Informations sur les auras des plaques de nom de DBM"
 -- Panel: InfoFrame
 L.Panel_InfoFrame			= "Cadre d'infos"
 
@@ -470,10 +526,33 @@ L.Panel_InfoFrame			= "Cadre d'infos"
 L.Panel_Range				= "Cadre de portée"
 
 -- Panel: Nameplate
-L.Panel_Nameplates			= "Barres de vie"
-L.UseNameplateHandoff		= "Hand off nameplate aura requests to supported nameplate addons (KuiNameplates, Threat Plates, Plater) instead of handling internally. This is recommended option as it allows more advanted features and configuration to be done via nameplate addon"
-L.Area_NPStyle				= "Style (Note: Only configures style when DBM is handling nameplates.)"
-L.NPAuraSize				= "Aura Pixel size (squared): %d"
+L.Panel_Nameplates			= "Plaques de nom"
+L.Plater_Config				= "Ouvrir la configuration de Plater"
+L.Area_NPStyle				= "Style (Remarque : Configure uniquement le style lorsque DBM gère les plaques de nom.)"
+L.NPAuraText				= "Afficher le texte du chronomètre sur les icônes des plaques de nom"
+L.NPAuraSize				= "Taille des pixels de l'aura (carré) : %d"
+L.NPIcon_BarOffSetX 		= "Décalage X de l'icône : %d"
+L.NPIcon_BarOffSetY 		= "Décalage Y de l'icône : %d"
+L.NPIcon_GrowthDirection 	= "Direction de croissance de l'icône"
+L.NPIcon_Spacing		 	= "Espacement de l'icône : %d"
+L.NPIcon_MaxTextLen		 	= "Longueur max. du texte : %d"
+L.NPIconAnchorPoint		 	= "Point d'ancrage de l'icône"
+L.NPDemo					= "Test (Soyez près des plaques de nom)"
+L.FontTypeTimer				= "Sélectionner la police du chronomètre"
+L.FontTypeText				= "Sélectionner la police du texte"
+
+L.Area_NPGlow				= "Illumination (Remarque : Configure uniquement l'illumination lorsque DBM gère les barres de nom.)"
+L.NPIcon_GlowBehavior 		= "Comportement de l'illumination de l'icône"
+L.NPIcon_CastGlowBehavior 	= "Comportement de l'illumination de l'icône d'incantation"
+L.NPIcon_GlowNone			= "Ne jamais illuminer les icônes"
+L.NPIcon_GlowImportant		= "Illuminer les icônes importants de recharge/incantation expirant"
+L.NPIcon_GlowAll			= "Illuminer tous les icônes de recharge/incantation expirant"
+L.NPIcon_GlowTypeCD			= "Type d'illumination de l'icône de recharge"
+L.NPIcon_GlowTypeCast		= "Type d'illumination de l'icône d'incantation"
+L.NPIcon_Pixel  			= "Pixel"
+L.NPIcon_Proc  				= "Proc"
+L.NPIcon_AutoCast         	= "Incantation automatique"
+L.NPIcon_Button           	= "Bouton"
 
 -- Misc
 L.Area_General				= "Général"
@@ -487,3 +566,61 @@ L.FontShadow				= "Ombre"
 L.FontType					= "Choisir une police"
 
 L.FontHeight	= 16
+
+-- Testing
+L.DevPanel							= "Développement et Tests"
+L.DevPanelArea						= "Interface de développement et de tests"
+L.DevPanelExplanation				= "Ceci est une interface de développement et de tests qui valide que DBM fonctionne comme prévu en rejouant des journaux de combat." -- Test UI panel under options
+L.DevModPanelExplanation			= [[Bienvenue dans l'aire de développement et de tests pour ce mod.
+Vous pouvez rejouer des journaux de combats de boss ici pour voir comment le mod se comporte et tester les intégrations avec les callbacks de DBM. Voir DBM-Test/README.md pour plus de détails sur les intégrations et callbacks. DBM est fourni avec des journaux d'exemple pour de nombreux raids, mais vous pouvez également importer vos propres journaux depuis Transcriptor.
+]]  -- Playground mode in mods
+
+L.TimewarpSetting					= "Distorsion temporelle : %dx"
+L.TimewarpDynamic					= "Distorsion temporelle : dynamique (la plus rapide)"
+L.TestSupportArea					= "Options de chargement du mod"
+L.ModNotLoadedWithTests				= "Avertissement : Ce mod n'est actuellement pas chargé avec un support complet pour les tests. Si le mod appelle directement des fonctions API telles que UnitHealth() ou UnitName(), celles-ci ne fonctionneront pas correctement. C'est souvent le cas pour les fonctions liées à la santé, au pouvoir ou aux cibles des unités."
+L.ModLoadedWithTests				= "Le mod est actuellement chargé avec un support pour les tests car au moins un mod dans l'addon a des tests activés."
+L.AlwaysLoadModWithTests			= "Charger toujours ce mod avec un support complet pour les tests (ralentit légèrement le chargement)"
+L.ModLoadRequiresReload				= ", nécessite un rechargement de l'interface pour prendre effet" -- Appended to L.AlwaysLoadModWithTests
+L.TestSelectArea					= "Données de test" -- Title of the UI area
+L.SelectTestLog						= L.TestSelectArea  -- Title for the dropdown to select a  specific test
+L.SelectPerspective					= "Perspective du journal (joueur simulé)"
+L.ImportTranscriptor				= "Importer le journal Transcriptor"
+L.ImportTranscriptorHeader			= [[
+Importez un journal Transcriptor en le collant dans n'importe quelle partie du champ d'édition ci-dessous. La vitesse de collage est d'environ 2 MiB/s, ce qui signifie que votre jeu se figera pendant plusieurs secondes lors du collage de fichiers de journal très volumineux.
+Vous pouvez également importer la session actuelle de Transcriptor depuis les variables sauvegardées de Transcriptor avec le bouton d'importation à droite.]]
+L.PasteLogHere						= "Appuyez sur " .. (IsMacClient() and "Cmd-V" or "Ctrl-V") .. " pour coller un journal ici."
+L.LogPasted							= "Collé %.2f MiB en %.1f secondes (%.2f MiB/s)."
+L.ImportLocalTranscriptor			= "Importer la session\nactuelle de Transcriptor"
+L.NoLocalTranscriptor				= "Impossible de trouver les données locales de Transcriptor."
+L.LocalImportDone					= "Importé %d journaux avec %d rencontres depuis Transcriptor."
+L.Parsing							= "Analyse en cours..."
+L.SelectLogDropdown					= "Sélectionner une rencontre"
+L.CreateTest						= "Créer un test"
+L.CreatedTest						= "Test créé avec %d événements en %.1f secondes."
+L.NoLogsFound						= "L'importation de Transcriptor ne contient pas de données de journal."
+L.NoTestDataAvailable				= "Aucune donnée de test disponible"
+L.NoLogSelected						= "Échec de la création du test : Aucun journal sélectionné."
+L.LogAlreadyImported				= "Échec de la création du test : Test déjà importé."
+
+L.RewriteAllToYou					= "Tous les joueurs en même temps"
+L.RealModOptionsBelow				= "Les options du mod ci-dessous sont synchronisées entre le mode de test et vos paramètres réels."
+L.Test								= "Test"
+L.Tests								= "Tests"
+L.AllTests							= "Tous les tests"
+L.RunTest							= "Exécuter le test"
+L.RunTestShort						= "Exécuter" -- Same intend as RunTest, but a smaller button
+L.StopTest							= "Arrêter le test"
+L.StopTests							= "Arrêter les tests"
+L.RunAllTests						= "Exécuter tous les tests"
+L.Queued							= "En attente"
+L.Running							= "En cours"
+L.Failed							= "Échoué"
+L.ShowReport						= "Afficher le rapport"
+L.ShowDiff							= "Afficher les différences"
+L.ShowErrors						= "Afficher les erreurs"
+L.TestModEntry						= "[Aire de tests] %s"
+L.EnterTestMode						= "Mode de test"
+L.SkipPhase							= "Passer à la phase suivante"
+
+L.AnonymizeTest 					= "Anonymiser les noms des joueurs et les GUID"

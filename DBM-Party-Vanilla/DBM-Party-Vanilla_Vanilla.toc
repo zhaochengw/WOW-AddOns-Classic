@@ -1,4 +1,4 @@
-## Interface: 11503
+## Interface: 11504
 ## X-Min-Interface: 11402
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffc030c0Dungeons (Vanilla)|r
@@ -104,14 +104,14 @@ Classic\UpperBlackrockSpire\TheBeast.lua
 Classic\UpperBlackrockSpire\LordValthalak.lua
 Classic\UpperBlackrockSpire\GeneralDrakkisath.lua
 
-Classic\Deadmines\RhahkZor.lua
-Classic\Deadmines\MinerJohnson.lua
-Classic\Deadmines\SneedsShredder.lua
-Classic\Deadmines\Gilnid.lua
-Classic\Deadmines\MrSmite.lua
-Classic\Deadmines\CaptainGreenskin.lua
-Classic\Deadmines\EdwinVanCleef.lua
-Classic\Deadmines\Cookie.lua
+Shared\Deadmines\RhahkZor.lua
+Shared\Deadmines\MinerJohnson.lua
+Shared\Deadmines\SneedsShredder.lua
+Shared\Deadmines\Gilnid.lua
+Shared\Deadmines\MrSmite.lua
+Shared\Deadmines\CaptainGreenskin.lua
+Shared\Deadmines\EdwinVanCleef.lua
+Shared\Deadmines\Cookie.lua
 
 Shared\DireMaul\ZevrimThornhoof.lua
 Shared\DireMaul\Hydrospawn.lua
@@ -257,6 +257,7 @@ Shared\ZulFarrak\ChiefUkorzSandscalp.lua
 Classic\SOD_DemonFallCanyon\Grimroot.lua
 Classic\SOD_DemonFallCanyon\DestructorsWraith.lua
 Classic\SOD_DemonFallCanyon\Zilbagob.lua
+Classic\SOD_DemonFallCanyon\Azgaloth.lua
 Classic\SOD_DemonFallCanyon\Pyranis.lua
 Classic\SOD_DemonFallCanyon\Diathorus.lua
 Classic\SOD_DemonFallCanyon\HellscreamsPhantom.lua

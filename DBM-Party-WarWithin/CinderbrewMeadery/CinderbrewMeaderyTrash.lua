@@ -1,15 +1,16 @@
 local mod	= DBM:NewMod("CinderbrewMeaderyTrash", "DBM-Party-WarWithin", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20240920064505")
 --mod:SetModelID(47785)
 mod:SetZone(2661)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 437956 434761 434706 437721 434756 434998 448619 441434 441627 441214",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START 434761 434706 437721 434756 434998 448619 441627 442589 439467",
+	"SPELL_CAST_SUCCESS 437721 441627 441214 441434 448619 434998 434756 434706 434761 437956 442589 439467",
+	"SPELL_INTERRUPT",
 	"SPELL_AURA_APPLIED 437956 441627 441214",
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
@@ -18,13 +19,17 @@ mod:RegisterEvents(
 )
 
 --TODO, do more with throw chair? can you actually dodge it? is it actually threatening on higher keys?
+--TODO, see if you can target scan downward trend
+--TODO, add Blazing Blelch Frontal, Honey Volley Interrupt, Bee-Zooka Frontal
 --[[
-(ability.id = 437956 or ability.id = 434761 or ability.id = 434706 or ability.id = 437721 or ability.id = 434756 or ability.id = 434998 or ability.id = 448619 or ability.id = 441434 or ability.id = 441627 or ability.id = 441214) and type = "begincast"
+(ability.id = 437956 or ability.id = 434761 or ability.id = 434706 or ability.id = 437721 or ability.id = 434756 or ability.id = 434998 or ability.id = 448619 or ability.id = 441627 or ability.id = 441214) and type = "begincast"
+ or ability.id = 441434 and type1 = "cast"
  or stoppedAbility.id = 437956 or stoppedAbility.id = 434761 or stoppedAbility.id = 434706 or stoppedAbility.id = 437721 or stoppedAbility.id = 434756 or stoppedAbility.id = 434998 or stoppedAbility.id = 448619 or stoppedAbility.id = 441434 or stoppedAbility.id = 441627 or stoppedAbility.id = 441214)
---]]
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+ --]]
 local warnCinderBrewToss					= mod:NewTargetAnnounce(434706, 3)
 local warnThrowChair						= mod:NewTargetNoFilterAnnounce(434756, 2)
-local warnFailedBatch						= mod:NewCastAnnounce(441434, 4, nil, nil, nil, nil, nil, 3)
+local warnFailedBatch						= mod:NewSpellAnnounce(441434, 3)
 local warnRejuvenatingHoney					= mod:NewCastAnnounce(441627, 3)--High Prio Interrupt
 
 local specWarnEruptingInferno				= mod:NewSpecialWarningMoveAway(437956, nil, nil, nil, 1, 2)
@@ -36,20 +41,25 @@ local yellCinderbrewToss					= mod:NewShortYell(434706)
 local specWarnBoilingFlames					= mod:NewSpecialWarningInterrupt(437721, "HasInterrupt", nil, nil, 1, 2)
 local specWarnHighSteaks					= mod:NewSpecialWarningDodge(434998, nil, nil, nil, 2, 2)
 local specWarnRecklessDelivery				= mod:NewSpecialWarningDodge(448619, nil, nil, nil, 2, 2)
+local specWarnBeesWax						= mod:NewSpecialWarningDodge(442589, nil, nil, nil, 2, 2)
+local specWarnDownwardtrend					= mod:NewSpecialWarningDodge(439467, nil, nil, nil, 2, 2)
 local specWarnRejuvenatingHoney				= mod:NewSpecialWarningInterrupt(441627, "HasInterrupt", nil, nil, 1, 2)--High Prio Interrupt
 local specWarnRejuvenatingHoneyDispel		= mod:NewSpecialWarningDispel(441627, "MagicDispeller", nil, nil, 1, 2)
 local specWarnSpillDrink					= mod:NewSpecialWarningDispel(441214, "RemoveEnrage", nil, nil, 1, 2)
 
-local timerEruptingInfernoCD				= mod:NewCDNPTimer(13.3, 437956, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
-local timerMightyStompCD					= mod:NewCDNPTimer(24.2, 434761, nil, nil, nil, 2)
-local timerCinderbrewTossCD					= mod:NewCDNPTimer(12.1, 434706, nil, nil, nil, 3)
-local timerThrowChairCD						= mod:NewCDNPTimer(13.3, 434756, nil, nil, nil, 3)
-local timerHighSteaksCD						= mod:NewCDNPTimer(21.8, 434998, nil, nil, nil, 3)
-local timerRecklessDeliveryCD				= mod:NewCDNPTimer(20.6, 448619, nil, nil, nil, 3)
+--All timers need rechecking, but can't use public WCL to fix this since all logs short
+local timerEruptingInfernoCD				= mod:NewCDNPTimer(12.3, 437956, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
+local timerMightyStompCD					= mod:NewCDNPTimer(22.2, 434761, nil, nil, nil, 2)
+local timerCinderbrewTossCD					= mod:NewCDNPTimer(10.6, 434706, nil, nil, nil, 3)
+local timerThrowChairCD						= mod:NewCDNPTimer(11.8, 434756, nil, nil, nil, 3)
+local timerHighSteaksCD						= mod:NewCDNPTimer(20.3, 434998, nil, nil, nil, 3)
+local timerRecklessDeliveryCD				= mod:NewCDPNPTimer(16.6, 448619, nil, nil, nil, 3)
 local timerFailedBatchCD					= mod:NewCDNPTimer(22.2, 441434, nil, nil, nil, 5)--22.6-25.6
-local timerSpillDrinkCD						= mod:NewCDNPTimer(23, 441214, nil, nil, nil, 5)
-local timerBoilingFlamesCD					= mod:NewCDNPTimer(20.6, 437721, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
-local timerRejuvenatingHoneyCD				= mod:NewCDNPTimer(15.7, 441627, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerSpillDrinkCD						= mod:NewCDNPTimer(20, 441214, nil, nil, nil, 5)
+local timerBeesWaxCD						= mod:NewCDNPTimer(18, 442589, nil, nil, nil, 3)
+local timerDownwardTrendCD					= mod:NewCDNPTimer(12.7, 439467, nil, nil, nil, 3)
+local timerBoilingFlamesCD					= mod:NewCDPNPTimer(20.1, 437721, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerRejuvenatingHoneyCD				= mod:NewCDPNPTimer(12.7, 441627, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 
 mod:AddGossipOption(true, "Buff")
 
@@ -84,30 +94,24 @@ function mod:ThrowChair(targetname)
 end
 
 function mod:SPELL_CAST_START(args)
+	if not self.Options.Enabled then return end
 	local spellId = args.spellId
 	if not self:IsValidWarning(args.sourceGUID) then return end
-	if spellId == 437956 then
-		timerEruptingInfernoCD:Start(nil, args.sourceGUID)
-	elseif spellId == 434761 then
-		timerMightyStompCD:Start(nil, args.sourceGUID)
+	if spellId == 434761 then
 		if self:AntiSpam(3, 6) then
 			specWarnMightyStomp:Show()
 			specWarnMightyStomp:Play("carefly")
 		end
 	elseif spellId == 434706 then
-		timerCinderbrewTossCD:Start(nil, args.sourceGUID)
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "CinderbrewTarget", 0.1, 6)
 	elseif spellId == 434756 then
-		timerThrowChairCD:Start(nil, args.sourceGUID)
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "ThrowChair", 0.1, 6)
 	elseif spellId == 437721 then
-		timerBoilingFlamesCD:Start(nil, args.sourceGUID)
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnBoilingFlames:Show(args.sourceName)
 			specWarnBoilingFlames:Play("kickcast")
 		end
 	elseif spellId == 441627 then
-		timerRejuvenatingHoneyCD:Start(nil, args.sourceGUID)
 		if self.Options.SpecWarn441627interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnRejuvenatingHoney:Show(args.sourceName)
 			specWarnRejuvenatingHoney:Play("kickcast")
@@ -115,37 +119,71 @@ function mod:SPELL_CAST_START(args)
 			warnRejuvenatingHoney:Show()
 		end
 	elseif spellId == 434998 then
-		timerHighSteaksCD:Start(nil, args.sourceGUID)
 		if self:AntiSpam(3, 2) then
 			specWarnHighSteaks:Show()
 			specWarnHighSteaks:Play("watchstep")
 		end
 	elseif spellId == 448619 then
-		timerRecklessDeliveryCD:Start(nil, args.sourceGUID)
 		if self:AntiSpam(3, 2) then
 			specWarnRecklessDelivery:Show()
 			specWarnRecklessDelivery:Play("chargemove")
 		end
-	elseif spellId == 441434 then
-		timerFailedBatchCD:Start(nil, args.sourceGUID)
-		if self:AntiSpam(3, 6) then
-			warnFailedBatch:Show()
-			warnFailedBatch:Play("crowdcontrol")
+	elseif spellId == 434706 then
+		timerCinderbrewTossCD:Start(10.6, args.sourceGUID)
+	elseif spellId == 442589 then
+		if self:AntiSpam(3, 2) then
+			specWarnBeesWax:Show()
+			specWarnBeesWax:Play("watchstep")
 		end
-	elseif spellId == 441214 then
-		timerSpillDrinkCD:Start(nil, args.sourceGUID)
+	elseif spellId == 439467 then
+		if self:AntiSpam(3, 2) then
+			specWarnDownwardtrend:Show()
+			specWarnDownwardtrend:Play("watchstep")
+		end
 	end
 end
 
---[[
 function mod:SPELL_CAST_SUCCESS(args)
+	if not self.Options.Enabled then return end
 	local spellId = args.spellId
 	if not self:IsValidWarning(args.sourceGUID) then return end
-	if spellId == 384476 then
-
+	if spellId == 437721 then
+		timerBoilingFlamesCD:Start(20.1, args.sourceGUID)
+	elseif spellId == 441627 then
+		timerRejuvenatingHoneyCD:Start(12.7, args.sourceGUID)
+	elseif spellId == 441214 then
+		timerSpillDrinkCD:Start(20, args.sourceGUID)
+	elseif spellId == 441434 then
+		timerFailedBatchCD:Start(22.2, args.sourceGUID)
+		if self:AntiSpam(3, 6) then
+			warnFailedBatch:Show()
+		end
+	elseif spellId == 448619 then
+		timerRecklessDeliveryCD:Start(16.6, args.sourceGUID)
+	elseif spellId == 434998 then
+		timerHighSteaksCD:Start(20.3, args.sourceGUID)
+	elseif spellId == 434756 then
+		timerThrowChairCD:Start(11.8, args.sourceGUID)
+	elseif spellId == 434761 then
+		timerMightyStompCD:Start(22.2, args.sourceGUID)
+	elseif spellId == 437956 then
+		timerEruptingInfernoCD:Start(12.3, args.sourceGUID)
+	elseif spellId == 442589 then
+		timerBeesWaxCD:Start(18, args.sourceGUID)
+	elseif spellId == 439467 then
+		timerDownwardTrendCD:Start(12.7, args.sourceGUID)
 	end
 end
---]]
+
+function mod:SPELL_INTERRUPT(args)
+	if not self.Options.Enabled then return end
+	local spellId = args.extraSpellId
+	if spellId == 437721 then
+		timerBoilingFlamesCD:Start(20.1, args.destGUID)
+	elseif spellId == 441627 then
+		timerRejuvenatingHoneyCD:Start(12.7, args.destGUID)
+	end
+end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if not self.Options.Enabled then return end
@@ -175,6 +213,7 @@ end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:UNIT_DIED(args)
+	if not self.Options.Enabled then return end
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 218671 then--Venture Co Pyromaniac
 		timerEruptingInfernoCD:Stop(args.destGUID)
@@ -193,6 +232,10 @@ function mod:UNIT_DIED(args)
 		timerRejuvenatingHoneyCD:Stop(args.destGUID)
 	elseif cid == 220060 then--Taste Tester
 		timerSpillDrinkCD:Stop(args.destGUID)
+	elseif cid == 220946 then--Venture Co Honey Harvester
+		timerBeesWaxCD:Stop(args.destGUID)
+	elseif cid == 219588 then--Yes Man
+		timerDownwardTrendCD:Stop(args.destGUID)
 	end
 end
 

@@ -1,10 +1,9 @@
 # <DBM Extra> Spell Timers
 
-## [r157](https://github.com/DeadlyBossMods/DBM-SpellTimers/tree/r157) (2024-05-07)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-SpellTimers/compare/r156...r157) [Previous Releases](https://github.com/DeadlyBossMods/DBM-SpellTimers/releases)
+## [r158](https://github.com/DeadlyBossMods/DBM-SpellTimers/tree/r158) (2024-09-08)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-SpellTimers/compare/r157...r158) [Previous Releases](https://github.com/DeadlyBossMods/DBM-SpellTimers/releases)
 
-- Bump ToCs for 10.2.7  
-- apparently no one is actually ready for the cataclysm pre patch yet (ie multi interface versions separated by ,). So revert that for now  
-- War within TOC Support  
-- Use GetSpellName where Appropriate  
-- Silence LuaLS errors on this for now  
+- Mark DBM as compatible/up to date on 11.0.5 PTR  
+- remove 10.2.7 and 11.0.0 game versions from tocs  
+- Flag DBM mods as current on 11.0.2 (in addition to 11.0.0)  
+- Make all tocs multi toc and support war within versioning so it's clearer addon IS compatible with war within beta  

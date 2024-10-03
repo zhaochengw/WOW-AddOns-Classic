@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2612, "DBM-Raids-WarWithin", 1, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240920210842")
+mod:SetRevision("20240930165438")
 mod:SetCreatureID(214506)
 mod:SetEncounterID(2919)
 mod:SetUsedIcons(6, 4, 3, 7)
@@ -50,12 +50,12 @@ local specWarnVolatileConcoctionTaunt			= mod:NewSpecialWarningTaunt(441362, nil
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(442799, nil, nil, nil, 1, 8)
 
 local timerExperimentalDosageCD					= mod:NewCDCountTimer(50, 442526, 143340, nil, nil, 3)--Shortname "Injection"
-local timerIngestBlackBloodCD					= mod:NewCDCountTimer(167.7, 442432, 325225, nil, nil, 3)--Shortname "Container Breach"
+local timerIngestBlackBloodCD					= mod:NewCDCountTimer(166.4, 442432, 325225, nil, nil, 3)--Shortname "Container Breach" (167-171 based on delaying boss casts by position)
 local timerUnstableWebCD						= mod:NewCDCountTimer(30, 446349, 157317, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON..DBM_COMMON_L.MAGIC_ICON)--Shortname "Webs"
 local timerVolatileConcoctionCD					= mod:NewCDCountTimer(20, 441362, DBM_COMMON_L.TANKDEBUFF.." (%s)", "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
-mod:AddSetIconOption("SetIconOnEggBreaker", 442526, true, 10, {6, 4, 3, 7})--Egg Breaker auto assign strat (Priority for melee > ranged > healer)
-mod:AddDropdownOption("EggBreakerBehavior", {"MatchBW", "UseAllAscending", "DisableIconsForRaid", "DisableAllForRaid"}, "MatchBW", "icon", nil, 442526)
+mod:AddSetIconOption("SetIconOnEggBreaker", 442526, true, 10, {6, 4, 3, 7, 1, 2})--Egg Breaker auto assign strat (Priority for melee > ranged > healer)
+mod:AddDropdownOption("EggBreakerBehavior", {"MatchBW", "MatchEW", "UseAllAscending", "DisableIconsForRaid", "DisableAllForRaid"}, "MatchBW", "misc", nil, 442526)
 --Colossal Spider
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(28996))
 local specWarnPoisonBurst						= mod:NewSpecialWarningInterrupt(446700, "HasInterrupt", nil, nil, 1, 2)
@@ -85,7 +85,8 @@ mod.vb.eggIcon = 1
 local eggBreak = DBM:GetSpellName(177853)
 local eggIcons = {}
 local markOrder = { 6, 4, 3, 7 } -- blue, green, purple, red (wm 1-4)
-local mythicMarkOrder = { 6, 6, 4, 4, 1, 1, 2, 2 } -- blue, green, star, circle
+local mythicMarkOrder = { 6, 6, 4, 4, 3, 3, 7, 7 } -- blue, green, purple, red (wm 1-4)
+local echoMythicMarkOrder = { 6, 6, 4, 4, 1, 1, 2, 2 } -- blue, green, star, circle
 
 function mod:OnCombatStart(delay)
 	self.vb.dosageCount = 0
@@ -95,7 +96,7 @@ function mod:OnCombatStart(delay)
 	self.vb.EggBreakerBehavior = self.Options.EggBreakerBehavior--Default it to whatever user has it set to, until group leader overrides it
 	self.vb.eggIcon = 1
 	timerVolatileConcoctionCD:Start(1.9, 1)
-	timerIngestBlackBloodCD:Start(15.4, 1)--Time til USCS event, cast event is 19.6
+	timerIngestBlackBloodCD:Start(15.4, 1)--Time til USCS event, cast event is 17.1
 --	timerExperimentalDosageCD:Start(33, 1)--Started by Injest black Blood
 	if self:IsHard() then
 		timerUnstableWebCD:Start(15, 1)
@@ -107,6 +108,8 @@ function mod:OnCombatStart(delay)
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
 		if self.Options.EggBreakerBehavior == "MatchBW" then
 			self:SendSync("MatchBW")
+		elseif self.Options.EggBreakerBehavior == "MatchEW" then
+			self:SendSync("MatchEW")
 		elseif self.Options.EggBreakerBehavior == "UseAllAscending" then
 			self:SendSync("UseAllAscending")
 		elseif self.Options.EggBreakerBehavior == "DisableIconsForRaid" then
@@ -184,6 +187,8 @@ local function sortEggBreaker(self)
 		local icon
 		if self.vb.EggBreakerBehavior == "MatchBW" then
 			icon = (self:IsMythic() and mythicMarkOrder[i] or markOrder[i])
+		elseif self.vb.EggBreakerBehavior == "MatchEW" then
+			icon = (self:IsMythic() and echoMythicMarkOrder[i] or markOrder[i])
 		elseif self.vb.EggBreakerBehavior == "UseAllAscending" then
 			icon = i
 		else--Disable Icons and Disable all for raid
@@ -194,12 +199,13 @@ local function sortEggBreaker(self)
 			self:SetIcon(name, icon)
 		end
 		if name == DBM:GetMyPlayerInfo() then
-			specWarnExperimentalDosage:Show(eggBreak)
-			--if icon > 0 then
-			--	specWarnExperimentalDosage:Play("mm"..icon)
-			--else
+			if icon > 0 then
+				specWarnExperimentalDosage:Show(self:IconNumToTexture(icon))
+				specWarnExperimentalDosage:Play("mm"..icon)
+			else
+				specWarnExperimentalDosage:Show(eggBreak)
 				specWarnExperimentalDosage:Play("movetoegg")
-			--end
+			end
 			if self.vb.EggBreakerBehavior ~= "DisableAllForRaid" then
 				yellxperimentalDosage:Yell(icon)
 				yellxperimentalDosageFades:Countdown(440421, nil, icon)
@@ -250,8 +256,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(sortEggBreaker)
 		if #eggIcons == expectedTotal then
 			sortEggBreaker(self)
+		else
+			self:Schedule(0.5, sortEggBreaker, self)--Fallback in case scaling targets for normal/heroic
 		end
-		self:Schedule(0.5, sortEggBreaker, self)--Fallback in case scaling targets for normal/heroic
 	elseif spellId == 441362 and not args:IsPlayer() then
 		specWarnVolatileConcoctionTaunt:Show(args.destName)
 		specWarnVolatileConcoctionTaunt:Play("tauntboss")
@@ -334,6 +341,8 @@ function mod:OnSync(msg)
 	if self:IsLFR() then return end
 	if msg == "MatchBW" then
 		self.vb.EggBreakerBehavior = "MatchBW"
+	elseif msg == "MatchEW" then
+		self.vb.EggBreakerBehavior = "MatchEW"
 	elseif msg == "UseAllAscending" then
 		self.vb.EggBreakerBehavior = "UseAllAscending"
 	elseif msg == "DisableIconsForRaid" then

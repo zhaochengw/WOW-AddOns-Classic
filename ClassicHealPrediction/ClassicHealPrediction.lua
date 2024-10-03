@@ -1211,15 +1211,15 @@ do
         {
             {{}, "$parentTotalAbsorbBar", "ARTWORK"},
             {{}, "$parentTotalAbsorbBarOverlay", "ARTWORK", 1},
-            {{2, 1}, "$parentMyHealPredictionBar", "BACKGROUND"},
-            {{2, 1}, "$parentOtherHealPredictionBar", "BACKGROUND"},
-            {{2, 1}, "$parentMyHealPredictionBar2", "BACKGROUND"},
-            {{2, 1}, "$parentOtherHealPredictionBar2", "BACKGROUND"},
-            {{2, 1}, "$parentHealAbsorbBar", "BACKGROUND"},
-            {{2, 1}, "$parentHealAbsorbBarLeftShadow", "BACKGROUND"},
-            {{2, 1}, "$parentHealAbsorbBarRightShadow", "BACKGROUND"},
-            {{2, 1}, "$parentOverAbsorbGlow", "ARTWORK"},
-            {{2, 1}, "$parentOverHealAbsorbGlow", "ARTWORK"}
+            {{1, 1}, "$parentMyHealPredictionBar", "OVERLAY"},
+            {{1, 1}, "$parentOtherHealPredictionBar", "BACKGROUND"},
+            {{1, 1}, "$parentMyHealPredictionBar2", "BACKGROUND"},
+            {{1, 1}, "$parentOtherHealPredictionBar2", "BACKGROUND"},
+            {{1, 1}, "$parentHealAbsorbBar", "BACKGROUND"},
+            {{1, 1}, "$parentHealAbsorbBarLeftShadow", "BACKGROUND"},
+            {{1, 1}, "$parentHealAbsorbBarRightShadow", "BACKGROUND"},
+            {{1, 1}, "$parentOverAbsorbGlow", "ARTWORK"},
+            {{1, 1}, "$parentOverHealAbsorbGlow", "ARTWORK"}
         }
     )
 
@@ -1282,15 +1282,15 @@ do
             {
                 {{}, "$parentTotalAbsorbBar", "ARTWORK"},
                 {{}, "$parentTotalAbsorbBarOverlay", "ARTWORK", 1},
-                {{2, 1}, "$parentMyHealPredictionBar", "BACKGROUND"},
-                {{2, 1}, "$parentOtherHealPredictionBar", "BACKGROUND"},
-                {{2, 1}, "$parentMyHealPredictionBar2", "BACKGROUND"},
-                {{2, 1}, "$parentOtherHealPredictionBar2", "BACKGROUND"},
-                {{2, 1}, "$parentHealAbsorbBar", "BACKGROUND"},
-                {{2, 1}, "$parentHealAbsorbBarLeftShadow", "BACKGROUND"},
-                {{2, 1}, "$parentHealAbsorbBarRightShadow", "BACKGROUND"},
-                {{2, 1}, "$parentOverAbsorbGlow", "ARTWORK"},
-                {{2, 1}, "$parentOverHealAbsorbGlow", "ARTWORK"}
+                {{1, 1}, "$parentMyHealPredictionBar", "OVERLAY"},
+                {{1, 1}, "$parentOtherHealPredictionBar", "BACKGROUND"},
+                {{1, 1}, "$parentMyHealPredictionBar2", "BACKGROUND"},
+                {{1, 1}, "$parentOtherHealPredictionBar2", "BACKGROUND"},
+                {{1, 1}, "$parentHealAbsorbBar", "BACKGROUND"},
+                {{1, 1}, "$parentHealAbsorbBarLeftShadow", "BACKGROUND"},
+                {{1, 1}, "$parentHealAbsorbBarRightShadow", "BACKGROUND"},
+                {{1, 1}, "$parentOverAbsorbGlow", "ARTWORK"},
+                {{1, 1}, "$parentOverHealAbsorbGlow", "ARTWORK"}
             }
         )
 
@@ -1518,7 +1518,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     sliderCheckBox = CreateFrame("CheckButton", sliderCheckBoxName, self, "OptionsSmallCheckButtonTemplate")
 
     local sliderName = "ClassicHealPredictionSlider"
-    slider = CreateFrame("Slider", sliderName, self, "OptionsSliderTemplate")
+    slider = CreateFrame("Slider", sliderName, self, "ClassicHealPredictionOptionsSliderTemplate")
 
     for i, x in ipairs(
         {
@@ -1534,7 +1534,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
         local template
 
         if i == 1 then
-            template = "OptionsCheckButtonTemplate"
+            template = "InterfaceOptionsCheckButtonTemplate"
         else
             template = "OptionsSmallCheckButtonTemplate"
         end
@@ -1660,10 +1660,10 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     )
 
     local sliderCheckBoxName2 = "ClassicHealPredictionSliderCheckbox2"
-    sliderCheckBox2 = CreateFrame("CheckButton", sliderCheckBoxName2, self, "OptionsCheckButtonTemplate")
+    sliderCheckBox2 = CreateFrame("CheckButton", sliderCheckBoxName2, self, "InterfaceOptionsCheckButtonTemplate")
 
     local sliderName2 = "ClassicHealPredictionSlider2"
-    slider2 = CreateFrame("Slider", sliderName2, self, "OptionsSliderTemplate")
+    slider2 = CreateFrame("Slider", sliderName2, self, "ClassicHealPredictionOptionsSliderTemplate")
 
     sliderCheckBox2:SetPoint("TOPLEFT", checkBoxes[1], "BOTTOMLEFT", 0, -180)
     sliderCheckBox2.Text = _G[sliderCheckBoxName2 .. "Text"]
@@ -1713,10 +1713,10 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     )
 
     local sliderCheckBoxName3 = "ClassicHealPredictionSliderCheckbox3"
-    sliderCheckBox3 = CreateFrame("CheckButton", sliderCheckBoxName3, self, "OptionsCheckButtonTemplate")
+    sliderCheckBox3 = CreateFrame("CheckButton", sliderCheckBoxName3, self, "InterfaceOptionsCheckButtonTemplate")
 
     local sliderName3 = "ClassicHealPredictionSlider3"
-    slider3 = CreateFrame("Slider", sliderName3, self, "OptionsSliderTemplate")
+    slider3 = CreateFrame("Slider", sliderName3, self, "ClassicHealPredictionOptionsSliderTemplate")
 
     sliderCheckBox3:SetPoint("TOPLEFT", sliderCheckBox2, "BOTTOMLEFT", 0, -50)
     sliderCheckBox3.Text = _G[sliderCheckBoxName3 .. "Text"]
@@ -1766,10 +1766,10 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     )
 
     local sliderCheckBoxName4 = "ClassicHealPredictionSliderCheckbox4"
-    sliderCheckBox4 = CreateFrame("CheckButton", sliderCheckBoxName4, self, "OptionsCheckButtonTemplate")
+    sliderCheckBox4 = CreateFrame("CheckButton", sliderCheckBoxName4, self, "InterfaceOptionsCheckButtonTemplate")
 
     local sliderName4 = "ClassicHealPredictionSlider4"
-    slider4 = CreateFrame("Slider", sliderName4, self, "OptionsSliderTemplate")
+    slider4 = CreateFrame("Slider", sliderName4, self, "ClassicHealPredictionOptionsSliderTemplate")
 
     sliderCheckBox4:SetPoint("TOPLEFT", sliderCheckBox3, "BOTTOMLEFT", 0, -50)
     sliderCheckBox4.Text = _G[sliderCheckBoxName4 .. "Text"]
@@ -1819,7 +1819,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     )
 
     local checkBoxName3 = format("ClassicHealPredictionCheckbox%d", #checkBoxes + 2)
-    checkBox3 = CreateFrame("CheckButton", checkBoxName3, self, "OptionsCheckButtonTemplate")
+    checkBox3 = CreateFrame("CheckButton", checkBoxName3, self, "InterfaceOptionsCheckButtonTemplate")
     checkBox3:SetPoint("TOPLEFT", sliderCheckBox4, "BOTTOMLEFT", 0, -50)
     checkBox3.Text = _G[checkBoxName3 .. "Text"]
     checkBox3.Text:SetText("Overlay the healing of others with my healing")
@@ -1835,7 +1835,7 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     )
 
     local checkBoxName2 = format("ClassicHealPredictionCheckbox%d", #checkBoxes + 1)
-    checkBox2 = CreateFrame("CheckButton", checkBoxName2, self, "OptionsCheckButtonTemplate")
+    checkBox2 = CreateFrame("CheckButton", checkBoxName2, self, "InterfaceOptionsCheckButtonTemplate")
     checkBox2:SetPoint("TOPLEFT", checkBox3, "BOTTOMLEFT", 0, 0)
     checkBox2.Text = _G[checkBoxName2 .. "Text"]
     checkBox2.Text:SetText("Show my mana cost prediction in the player unit frame")
@@ -1931,12 +1931,22 @@ local function ClassicHealPredictionFrame_OnLoad(self)
     end
 
     self.name = ADDON_NAME
-    self.default = ClassicHealPredictionFrame_Default
-    self.refresh = ClassicHealPredictionFrame_Refresh
-    self.okay = ClassicHealPredictionFrame_Okay
-    self.cancel = ClassicHealPredictionFrame_Cancel
 
-    InterfaceOptions_AddCategory(self)
+    if InterfaceOptions_AddCategory then
+        self.default = ClassicHealPredictionFrame_Default
+        self.refresh = ClassicHealPredictionFrame_Refresh
+        self.okay = ClassicHealPredictionFrame_Okay
+        self.cancel = ClassicHealPredictionFrame_Cancel
+
+        InterfaceOptions_AddCategory(self)
+    else
+        self.OnCommit = ClassicHealPredictionFrame_Okay
+        self.OnDefault = ClassicHealPredictionFrame_Default
+        self.OnRefresh = ClassicHealPredictionFrame_Refresh
+
+        local category = Settings.RegisterCanvasLayoutCategory(self, self.name)
+        Settings.RegisterAddOnCategory(category)
+    end
 
     loadedFrame = true
 end

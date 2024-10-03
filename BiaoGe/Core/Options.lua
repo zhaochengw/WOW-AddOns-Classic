@@ -1,33 +1,56 @@
-local AddonName, ns = ...
+local AddonName, ns                     = ...
 
-local LibBG = ns.LibBG
-local L = ns.L
+local LibBG                             = ns.LibBG
+local L                                 = ns.L
 
-local RR = ns.RR
-local NN = ns.NN
-local RN = ns.RN
-local Size = ns.Size
-local RGB = ns.RGB
-local RGB_16 = ns.RGB_16
-local GetClassRGB = ns.GetClassRGB
-local SetClassCFF = ns.SetClassCFF
-local GetText_T = ns.GetText_T
-local FrameDongHua = ns.FrameDongHua
-local FrameHide = ns.FrameHide
-local AddTexture = ns.AddTexture
-local GetItemID = ns.GetItemID
-local Maxb = ns.Maxb
-local Maxi = ns.Maxi
+local RR                                = ns.RR
+local NN                                = ns.NN
+local RN                                = ns.RN
+local Size                              = ns.Size
+local RGB                               = ns.RGB
+local RGB_16                            = ns.RGB_16
+local GetClassRGB                       = ns.GetClassRGB
+local SetClassCFF                       = ns.SetClassCFF
+local GetText_T                         = ns.GetText_T
+local FrameDongHua                      = ns.FrameDongHua
+local FrameHide                         = ns.FrameHide
+local AddTexture                        = ns.AddTexture
+local GetItemID                         = ns.GetItemID
+local Maxb                              = ns.Maxb
+local Maxi                              = ns.Maxi
 
-local pt = print
+local pt                                = print
 
-local O = {}
+local O                                 = {}
+
+ns.InterfaceOptions_AddCategory         = _G.InterfaceOptions_AddCategory or function(frame, addOn, position)
+    if frame.parent then
+        local category            = _G.Settings.GetCategory(frame.parent)
+        local subcategory, layout = _G.Settings.RegisterCanvasLayoutSubcategory(category, frame, frame.name, frame.name)
+        subcategory.ID            = frame.name
+        return subcategory, category
+    else
+        local category, layout = _G.Settings.RegisterCanvasLayoutCategory(frame, frame.name, frame.name)
+        category.ID            = frame.name
+        _G.Settings.RegisterAddOnCategory(category)
+        return category
+    end
+end
+
+ns.InterfaceOptionsFrame_OpenToCategory = _G.InterfaceOptionsFrame_OpenToCategory or function(categoryIDOrFrame)
+    if type(categoryIDOrFrame) == "table" then
+        local categoryID = categoryIDOrFrame.name;
+        return _G.Settings.OpenToCategory(categoryID);
+    else
+        return _G.Settings.OpenToCategory(categoryIDOrFrame);
+    end
+end
 
 local function OptionsUI()
     local main = CreateFrame("Frame", nil, UIParent)
     main:Hide()
     main.name = "|cff00BFFFBiaoGe|r"
-    InterfaceOptions_AddCategory(main)
+    ns.InterfaceOptions_AddCategory(main)
     local t = main:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     t:SetText("|cff" .. "00BFFF" .. L["< BiaoGe > 金 团 表 格"] .. "|r")
     t:SetPoint("TOPLEFT", main, 15, 0)
@@ -202,7 +225,8 @@ local function OptionsUI()
                 value = max(minValue, value)
                 BiaoGe.options[name] = value
 
-                local slider = CreateFrame("Slider", nil, parent, "OptionsSliderTemplate")
+                local template = BG.IsNewUI and "TextToSpeechSliderTemplate" or "OptionsSliderTemplate"
+                local slider = CreateFrame("Slider", nil, parent, template)
                 slider:SetPoint("TOPLEFT", parent, x, y)
                 slider:SetWidth(width or 180)
                 slider:SetMinMaxValues(minValue, maxValue)
@@ -393,7 +417,6 @@ local function OptionsUI()
                 BiaoGe.options[name] = BG.options[name .. "reset"]
             end
             BG.MainFrame.Bg:SetAlpha(BiaoGe.options[name])
-            BG.MainFrame.TitleBg:SetAlpha(BiaoGe.options[name])
 
             local ontext = {
                 L["背景材质透明度"] .. L["|cff808080（右键还原设置）|r"],
@@ -410,7 +433,6 @@ local function OptionsUI()
                 BiaoGe.options[name] = value
                 f.edit:SetText(value)
                 BG.MainFrame.Bg:SetAlpha(value)
-                BG.MainFrame.TitleBg:SetAlpha(value)
             end)
             f.button:SetScript("OnClick", function(self, enter)
                 if enter == "RightButton" then
@@ -420,7 +442,6 @@ local function OptionsUI()
                         f:SetValue(value)
                         f.edit:SetText(value)
                         BG.MainFrame.Bg:SetAlpha(value)
-                        BG.MainFrame.TitleBg:SetAlpha(value)
                         BG.PlaySound(1)
                     end
                 end
@@ -462,9 +483,9 @@ local function OptionsUI()
                         BG.MainFrame.Bg:SetAlpha(BiaoGe.options["alpha"])
                     end
                 else
-                    local r, b, g, a = strsplit(",", v)
+                    local r, g, b, a = strsplit(",", v)
                     if not a then a = 0.8 end
-                    BG.MainFrame.Bg:SetColorTexture(r, b, g)
+                    BG.MainFrame.Bg:SetColorTexture(r, g, b)
 
                     if alpha then
                         BiaoGe.options["alpha"] = a
@@ -483,10 +504,6 @@ local function OptionsUI()
                 return ""
             end
 
-            BG.MainFrame.TitleBg:Hide()
-            BG.MainFrame.Bg:ClearAllPoints()
-            BG.MainFrame.Bg:SetPoint("TOPLEFT", 2, -2)
-            BG.MainFrame.Bg:SetPoint("BOTTOMRIGHT", -2, 2)
             BG.MainFrame.Bg:SetAlpha(BiaoGe.options["alpha"])
             SetTex(BiaoGe.options[name])
 
@@ -1177,15 +1194,41 @@ local function OptionsUI()
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
             local ontext = {
                 L["清空表格时保留支出补贴名称"],
-                L["只保留补贴名称（例如XX补贴），支出玩家和支出金额正常清空。"],
+                L["只保留补贴名称（例如XX补贴）。支出金额正常清空。"],
                 " ",
                 L["这样就不用每次都重复填写补贴名称。"],
                 " ",
                 L["只有补贴名称，但没有补贴金额的，在通报账单时不会被通报。"],
             }
-            local f = O.CreateCheckButton(name, L["清空表格时保留支出补贴名称*"], biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["清空表格时保留支出补贴名称"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
+            f:HookScript("OnClick", function()
+                local name = "retainExpensesMoney"
+                if f:GetChecked() then
+                    BG.options["button" .. name]:Show()
+                else
+                    BG.options["button" .. name]:Hide()
+                end
+            end)
         end
+        h = h + 30
+        -- 清空表格时保留支出金额
+        do
+            local name = "retainExpensesMoney"
+            BG.options[name .. "reset"] = 0
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["清空表格时保留支出金额"],
+                " ",
+                L["如果你们团每次支出的金额都是固定的，可以勾选此项。"],
+            }
+            local f = O.CreateCheckButton(name, AddTexture("QUEST")..L["清空表格时保留支出金额"] .. "*", biaoge, 40, height - h, ontext)
+            BG.options["button" .. name] = f
+            if BiaoGe.options["retainExpenses"] ~= 1 then
+                f:Hide()
+            end
+        end
+        -- 清空表格时根据副本难度设置分钱人数
         if not BG.IsVanilla then
             h = h + 30
             -- 清空表格时根据副本难度设置分钱人数
@@ -1645,9 +1688,9 @@ local function OptionsUI()
                 end
                 right = bt
                 if type ~= "fb" then
-                    bt.Text:SetText("|cff" .. color .. name2:gsub("sod","") .. RR)
+                    bt.Text:SetText("|cff" .. color .. name2:gsub("sod", "") .. RR)
                 else
-                    bt.Text:SetText("|cff" .. color .. name:gsub("sod","") .. RR)
+                    bt.Text:SetText("|cff" .. color .. name:gsub("sod", "") .. RR)
                 end
                 bt.Text:SetWidth(width2 - 25)
                 bt.Text:SetWordWrap(false)

@@ -28,6 +28,36 @@
         </Scripts>
         <NormalTexture name="$parentColor" file="Interface\ChatFrame\ChatFrameColorSwatch" />
     </Button>
+    <Slider name="ClassicHealPredictionOptionsSliderTemplate" inherits="HorizontalSliderTemplate" virtual="true">
+        <Size x="144" y="17"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentText" inherits="OptionsFontHighlight">
+                    <Anchors>
+                        <Anchor point="BOTTOM" relativePoint="TOP"/>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentLow" inherits="OptionsFontSmall" text="LOW">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="-4" y="3"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentHigh" inherits="OptionsFontSmall" text="HIGH">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
+                            <Offset>
+                                <AbsDimension x="4" y="3"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Slider>
     <Frame name="ClassicHealPredictionFrame">
         <Scripts>
             <OnLoad function="ClassicHealPredictionFrame_OnLoad" />

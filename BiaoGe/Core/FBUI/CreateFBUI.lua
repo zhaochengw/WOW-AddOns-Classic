@@ -22,14 +22,15 @@ BG.zaxiang = {} -- 杂项如果太多，则需要换行
 
 local buttonCount = {}
 if BG.IsVanilla_Sod then
-    buttonCount.BWLsod = { 5, 5, 5, 5, 5, 5, 5, 8, 7, 7, 5, }
-    buttonCount.ZUGsod = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 7, 10, }
-    buttonCount.MCsod = { 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 6, 11, 10, 10, 11, 6, }
-    buttonCount.UBRS = { 5, 5, 5, 5, 5, 5, 5, 5, 10, 12, }
+    buttonCount.BD = { 5, 5, 5, 5, 5, 5, 5, 5, 10, }
+    buttonCount.Gno = { 5, 5, 5, 5, 5, 10, 8, 8, }
     buttonCount.Temple = { 5, 5, 5, 4, 4, 4, 4, 6, 25, 9, }
     BG.zaxiang.Temple = { i = 20 }
-    buttonCount.Gno = { 5, 5, 5, 5, 5, 10, 8, 8, }
-    buttonCount.BD = { 5, 5, 5, 5, 5, 5, 5, 5, 10, }
+    buttonCount.UBRS = { 5, 5, 5, 5, 5, 5, 5, 5, 10, 12, }
+    buttonCount.MCsod = { 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 6, 11, 10, 10, 11, 6, }
+    buttonCount.ZUGsod = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 9, 10, 6, }
+    BG.zaxiang.ZUGsod = { i = 5 }
+    buttonCount.BWLsod = { 4, 4, 4, 4, 8, 6, 14, 6, 7, 5, }
 elseif BG.IsVanilla_60 then
     buttonCount.MC = { 3, 3, 3, 4, 3, 3, 3, 4, 4, 5, 8, 11, 15, }
     buttonCount.BWL = { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, }
@@ -38,10 +39,10 @@ elseif BG.IsVanilla_60 then
     buttonCount.TAQ = { 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, }
     buttonCount.NAXX = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, }
 elseif BG.IsWLK then
-    buttonCount.ICC = { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 8, 7, }
-    buttonCount.TOC = { 5, 5, 5, 5, 5, 7, 8, 12, 14, }
-    buttonCount.ULD = { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 8, 5, }
     buttonCount.NAXX = { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 14, 5, 7, 5, }
+    buttonCount.ULD = { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 8, 5, }
+    buttonCount.TOC = { 5, 5, 5, 5, 5, 7, 8, 12, 14, }
+    buttonCount.ICC = { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 8, 7, }
 elseif BG.IsCTM then
     buttonCount.BOT = { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 5, }
     BG.zaxiang.BOT = { i = 12 }
@@ -192,6 +193,18 @@ function BG.CreateFBUI(FB)
                     end
                 end
             end
+        end)
+    end
+    -- 删除plus黑翼表格旧内容
+    if BG.IsVanilla_Sod then
+        BG.Once("BWLsod", 240930, function()
+            local FB = "BWLsod"
+            BiaoGe[FB].tradeTbl = {}
+            for b = 1, 22 do
+                BiaoGe[FB]["boss" .. b] = {}
+            end
+            BiaoGe.HistoryList[FB] = {}
+            BiaoGe.History[FB] = {}
         end)
     end
 

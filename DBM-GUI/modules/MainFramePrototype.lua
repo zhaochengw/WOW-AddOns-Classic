@@ -52,6 +52,7 @@ function frame:DisplayButton(button, element)
 	button:Show()
 	button:SetHeight(18)
 	button.element = element
+	element.selectButton = button
 	button.text:ClearAllPoints()
 	button.text:SetPoint("LEFT", (element.haschilds and 14 or 6) + 8 * element.depth, 2)
 	button.toggle:ClearAllPoints()
@@ -159,7 +160,7 @@ local function resize(targetFrame, first)
 			end
 			frameHeight = frameHeight + child:GetHeight() + 20
 		elseif child.mytype == "line" then
-			local width = targetFrame:GetWidth() - 30
+			local width = targetFrame:GetWidth() - 30 + (child.extraWidth or 0)
 			child:SetWidth(width - 20)
 			_G[child:GetName() .. "BG"]:SetWidth(width - _G[child:GetName() .. "Text"]:GetWidth() - 25)
 			frameHeight = frameHeight + 32

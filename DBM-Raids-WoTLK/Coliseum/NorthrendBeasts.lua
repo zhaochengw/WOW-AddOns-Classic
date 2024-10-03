@@ -3,9 +3,9 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20240426180424")
+mod:SetRevision("20240714050722")
 mod:SetCreatureID(34796, 35144, 34799, 34797)
---mod:SetEncounterID(mod:IsClassic() and 629 or 1088)--Buggy, never enable this
+--mod:SetEncounterID(not mod:IsPostCata() and 629 or 1088)--Buggy, never enable this
 mod:SetMinSyncRevision(104)
 mod:SetModelID(21601)
 mod:SetMinCombatTime(30)
@@ -189,7 +189,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerNextImpale:Start()
 		warnImpaleOn:Show(args.destName, 1)
 	elseif args.spellId == 66759 then
-		specWarnFrothingRage:Show()
+		specWarnFrothingRage:Show(args.destName)
 		specWarnFrothingRage:Play("trannow")
 	elseif args.spellId == 66823 then
 		warnToxin:CombinedShow(0.3, args.destName)

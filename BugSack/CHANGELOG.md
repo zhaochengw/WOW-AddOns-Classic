@@ -1,6 +1,7 @@
 # BugSack
 
-## [v11.0.0](https://github.com/funkydude/BugSack/tree/v11.0.0) (2024-08-13)
-[Full Changelog](https://github.com/funkydude/BugSack/compare/v10.2.7...v11.0.0) [Previous Releases](https://github.com/funkydude/BugSack/releases)
+## [v11.0.1](https://github.com/funkydude/BugSack/tree/v11.0.1) (2024-09-25)
+[Full Changelog](https://github.com/funkydude/BugSack/compare/v11.0.0...v11.0.1) [Previous Releases](https://github.com/funkydude/BugSack/releases)
 
-- Fix another area using the old options system (closes #105)  
+- bump toc  
+- Update zhCN (#109)  

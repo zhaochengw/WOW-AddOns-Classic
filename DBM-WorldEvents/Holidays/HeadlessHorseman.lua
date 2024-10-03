@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d285", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240216003824")
+mod:SetRevision("20240714045506")
 
 if mod:IsRetail() then--10.1.7 fight rework
 	mod:SetZone(1004)
@@ -22,10 +22,10 @@ if mod:IsRetail() then--10.1.7 fight rework
 	)
 
 	--TODO, better detection of curse activation on player and additional warnings for effects
-	local warnVineMarch									= mod:NewSpellAnnounce(415047, 3)
+	local warnVineMarch									= mod:NewCountAnnounce(415047, 3)
 
 	local specWarnHotHead								= mod:NewSpecialWarningYou(423626, nil, nil, nil, 1, 2)
-	local specWarnInsidiousCackle						= mod:NewSpecialWarningMoveAway(415262, nil, nil, nil, 1, 2)
+	local specWarnInsidiousCackle						= mod:NewSpecialWarningMoveAwayCount(415262, nil, nil, nil, 1, 2)
 	local specWarnPumpkinBreath							= mod:NewSpecialWarningDodgeCount(414844, nil, nil, nil, 2, 2)
 	local specWarnGTFO									= mod:NewSpecialWarningGTFO(415329, nil, nil, nil, 1, 8)
 
@@ -34,8 +34,8 @@ if mod:IsRetail() then--10.1.7 fight rework
 	local timerPumpkinBreathCD							= mod:NewCDCountTimer(41.4, 414844, nil, nil, nil, 3)
 	local timerVineMarchCD								= mod:NewCDCountTimer(41.4, 415047, nil, nil, nil, 1)
 
-	mod:AddBoolOption("AGCurses", false)
-	mod:AddBoolOption("AGBoss", false)
+	mod:AddGossipOption(false, "Buff")
+	mod:AddGossipOption(false, "Encounter")
 
 	mod.vb.cackleCount = 0
 	mod.vb.breathCount = 0
@@ -119,11 +119,11 @@ if mod:IsRetail() then--10.1.7 fight rework
 	mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 	function mod:GOSSIP_SHOW()
-		if self.Options.AGCurses then
+		if self.Options.AutoGossipBuff then
 			--Embers, Delusions, Shadows, Thorns, All at once (center one)
 			self:SelectMatchingGossip(true, 110383, 110379, 110372, 110377, 111387)
 		end
-		if self.Options.AGBoss then
+		if self.Options.AutoGossipEncounter then
 			self:SelectMatchingGossip(true, 36316)
 		end
 	end

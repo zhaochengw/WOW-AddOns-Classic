@@ -5,16 +5,19 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20240110072739")
+mod:SetRevision("20240516192144")
 mod:SetCreatureID(33186)
-if not mod:IsClassic() then
+if mod:IsPostCata() then
 	mod:SetEncounterID(1139)
 else
 	mod:SetEncounterID(746)
 end
 mod:SetModelID(28787)
+mod:SetHotfixNoticeRev(20240516000000)
+mod:SetMinSyncRevision(20240516000000)
 
 mod:RegisterCombat("combat_yell", L.YellAir)
+mod:SetWipeTime(30)--Combat drops between adds waves
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 63317 64021 63236",

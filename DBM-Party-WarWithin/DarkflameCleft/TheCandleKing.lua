@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2560, "DBM-Party-WarWithin", 1, 1210)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240504134056")
+mod:SetRevision("20240824045847")
 mod:SetCreatureID(208745)
 mod:SetEncounterID(2787)
 mod:SetUsedIcons(8, 7, 6, 5, 4)
@@ -90,7 +90,7 @@ function mod:SPELL_CAST_START(args)
 		timerEarieMoldsCD:Start(nil, self.vb.statueCount+1)
 	elseif spellId == 426145 then
 		self.vb.mindCount = self.vb.mindCount + 1
-		specWarnParanoidMind:Show(args.sourceGUID, self.vb.mindCount)
+		specWarnParanoidMind:Show(args.sourceName, self.vb.mindCount)
 		specWarnParanoidMind:Play("kickcast")
 		timerParanoidMindCD:Start(nil, self.vb.mindCount+1)
 	end

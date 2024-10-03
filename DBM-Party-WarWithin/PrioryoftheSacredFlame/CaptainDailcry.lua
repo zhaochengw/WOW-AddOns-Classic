@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2571, "DBM-Party-WarWithin", 2, 1267)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20240913074224")
 mod:SetCreatureID(207946)
 mod:SetEncounterID(2847)
 mod:SetHotfixNoticeRev(20240608000000)
@@ -108,8 +108,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 447439 then
 		warnSavageMauling:Show(args.destName)
 	elseif spellId == 424419 then
-		specWarnBattleCryDispel:Show(args.destName)
-		specWarnBattleCryDispel:Play("enrage")
+		specWarnBattleCryDispel:CombinedShow(0.3, args.destName)
+		specWarnBattleCryDispel:ScheduleVoice(0.3, "enrage")
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

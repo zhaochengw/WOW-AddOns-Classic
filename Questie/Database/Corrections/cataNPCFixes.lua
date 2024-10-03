@@ -213,8 +213,21 @@ function CataNpcFixes.Load()
         [7319] = { -- Lady Sathrah
             [npcKeys.spawns] = {[zoneIDs.TELDRASSIL]={{40.66,22.16}}},
         },
+        [7355] = { -- Tuten'kash
+            [npcKeys.spawns] = {[722]={{58.92,31.11}}},
+        },
+        [7357] = { -- Mordresh Fire Eye
+            [npcKeys.spawns] = {[722]={{85.84,46.96}}},
+        },
+        [7358] = { -- Amnennar the Coldbringer
+            [npcKeys.spawns] = {[722]={{44.43,59.62}}},
+        },
         [7363] = { -- Kum'isha the Collector
             [npcKeys.waypoints] = {},
+        },
+        [8567] = { -- Glutton
+            [npcKeys.spawns] = {[722]={{33.93,52.14}}},
+            [npcKeys.waypoints] = {[722]={{{33.93,52.14},{33.13,54.44},{33.40,59.02},{34.06,64.21},{35.39,68.79},{37.65,71.78},{40.38,74.88},{43.70,76.07}}}},
         },
         [8576] = { -- Ag'tor Bloodfist
             [npcKeys.spawns] = {
@@ -2080,11 +2093,19 @@ function CataNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.TWILIGHT_HIGHLANDS]={{54.2,73.16},{57.48,70.39},{55.91,69.84},{53.8,66.6},{58.2,65.2}}},
         },
         [46987] = { -- Vision of Ysera
-            [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL]={{28.41,29.81}}},
+            [npcKeys.spawns] = {
+                [zoneIDs.MOUNT_HYJAL] = {
+                    {28.41,29.81,phases.MOUNT_HYJAL_VISION_YSERA_1},
+                },
+            },
             [npcKeys.zoneID] = zoneIDs.MOUNT_HYJAL,
         },
         [46998] = { -- Vision of Ysera
-            [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL]={{27.03,62.64}}},
+            [npcKeys.spawns] = {
+                [zoneIDs.MOUNT_HYJAL] = {
+                    {27.03,63.11,phases.MOUNT_HYJAL_VISION_YSERA_2},
+                },
+            },
             [npcKeys.zoneID] = zoneIDs.MOUNT_HYJAL,
         },
         [47002] = { -- Vision of Ysera
@@ -2316,6 +2337,13 @@ function CataNpcFixes.Load()
                 },
             },
         },
+        [52844] = { -- Captain Saynna Stormrunner
+            [npcKeys.spawns] = {
+                [zoneIDs.MOUNT_HYJAL] = {
+                    {26.8,62.15},
+                },
+            },
+        },
         [52845] = { -- Malfurion Stormrage
             [npcKeys.spawns] = {
                 [zoneIDs.MOUNT_HYJAL] = {
@@ -2344,6 +2372,12 @@ function CataNpcFixes.Load()
         [52980] = { -- Kil'karil
             [npcKeys.waypoints] = {[zoneIDs.STRANGLETHORN_VALE] = {{{64.64,39.72},{64.72,40.22},{64.75,40.48},{64.69,40.06},{64.58,39.61},{64.24,39.65},{63.90,39.74},{63.57,39.84},{63.24,39.99},{62.93,40.20},{62.79,40.28}}}},
         },
+        [53234] = { -- Anren Shadowseeker
+            [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{42.62,59.91}}},
+        },
+        [53256] = { -- Ember Pool Bunny
+            [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{47.24,53.26},{41.18,60.14},{54.33,61.61},{47.7,54.61},{50.11,57.35},{55.5,69.8},{49.28,68.68},{47.65,61.84},{40.41,55.57},{42.66,65.26}}},
+        },
         [53385] = { -- Malfurion Stormrage
             [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{47.16,90.58}}},
         },
@@ -2352,6 +2386,9 @@ function CataNpcFixes.Load()
         },
         [53540] = { -- Cold Water Crayfish
             [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH] = {{83.97,51.69}}},
+        },
+        [53886] = { -- Igneous Depths Area Credit
+            [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{57.78,49.7}}},
         },
         [54334] = { -- Darkmoon Faire Mystic Mage
             [npcKeys.spawns] = {

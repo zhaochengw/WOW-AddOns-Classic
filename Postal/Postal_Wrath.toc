@@ -1,9 +1,9 @@
 ## Interface: 30403
 ## Title: Postal
-## Version: v4.1.8
-## X-Build: 630
-## X-ReleaseDate: 2024-07-24T20:35:14Z
-## X-Revision: 630
+## Version: v4.1.9
+## X-Build: 632
+## X-ReleaseDate: 2024-09-27T15:25:23Z
+## X-Revision: 632
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -21,6 +21,15 @@
 ## X-LoadOn-Mailbox: true
 ## X-Email: jonny AT jmbg DOT net
 
+#@no-lib-strip@
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceHook-3.0\AceHook-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+#@end-no-lib-strip@
 
 Localization.lua
 Postal.lua

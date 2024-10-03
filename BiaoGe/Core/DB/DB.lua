@@ -76,7 +76,7 @@ do
             AddDB("UBRS", mainFrameWidth, 835, 3, 10, { 0, 5, 9 })
             AddDB("MCsod", 1715, 940, 4, 16, { 0, 6, 11, 14 })
             AddDB("ZUGsod", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
-            AddDB("BWLsod", mainFrameWidth, 810, 3, 11, { 0, 5, 9 })
+            AddDB("BWLsod", mainFrameWidth, 810, 3, 10, { 0, 5, 8 })
         elseif BG.IsVanilla_60 then
             AddDB("MC", mainFrameWidth, 873, 3, 13, { 0, 8, 12 })
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
@@ -123,7 +123,7 @@ do
         if BG.IsVanilla_Sod then
             BG.FB1 = "MCsod"
             BG.fullLevel = 25
-            BG.theEndBossID = { 2891, 2940, 2956, 3018, 617, 793 }
+            BG.theEndBossID = { 2891, 2940, 2956, 3018, 793, 617, }
             AddDB("BD", 48, "P1", 10, 3)
             AddDB("Gno", 90, "P2", 10, 3)
             AddDB("Temple", 109, "P3", 20, 3)
@@ -158,7 +158,7 @@ do
         elseif BG.IsVanilla_60 then
             BG.FB1 = "MC"
             BG.fullLevel = 60
-            BG.theEndBossID = { 672, 1084, 617, 793, 723, 717, 1114 } --MC OL BWL ZUG AQL TAQ NAXX
+            BG.theEndBossID = { 672, 617, 793, 723, 717, 1114 } --MC BWL ZUG AQL TAQ NAXX
             AddDB("MC", 409, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" }, { 1, 10 })
             AddDB("BWL", 469, L["全阶段"], 40, nil, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
             AddDB("ZUG", 309, L["全阶段"], 20, 3, nil, { "MC", "BWL", "ZUG", "AQL", "TAQ", "NAXX" })
@@ -201,7 +201,7 @@ do
         elseif BG.IsCTM then
             BG.FB1 = "BOT"
             BG.fullLevel = 85
-            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }
+            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
             AddDB("BOT", 671, "P1", nil, nil, nil, nil, { 1, 5 }) -- 暮光堡垒
 
             BG.FBIDtable[669] = "BOT"                             -- 黑翼血环
@@ -251,6 +251,7 @@ do
     BG.highLightAlpha = 0.2
     BG.otherEditAlpha = 0.3
     BG.scrollStep = 80
+    BG.borderAlpha = .5
 
     BG.ver = ns.ver
     BG.instructionsText = ns.instructionsText

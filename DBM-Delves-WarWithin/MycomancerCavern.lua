@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("z2679", "DBM-Delves-WarWithin")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240723000632")
+mod:SetRevision("20240920062720")
 mod:SetHotfixNoticeRev(20240422000000)
 mod:SetMinSyncRevision(20240422000000)
 
 mod:RegisterCombat("scenario", 2679)
 
 mod:RegisterEventsInCombat(
---	"SPELL_CAST_START ",
+	"SPELL_CAST_START 454213 449965 453897",
 --	"SPELL_CAST_SUCCESS",
 --	"SPELL_AURA_APPLIED",
 --	"SPELL_AURA_REMOVED",
@@ -18,27 +18,41 @@ mod:RegisterEventsInCombat(
 	"ENCOUNTER_END"
 )
 
---local warnDrones							= mod:NewSpellAnnounce(449072, 2)
+local warnSporesong							= mod:NewCastAnnounce(453897, 2)
+local warnSwampBolt							= mod:NewSpellAnnounce(449965, 2)
 
---local specWarnFearfulShriek				= mod:NewSpecialWarningDodge(433410, nil, nil, nil, 2, 2)
+local specWarnMuckCharge					= mod:NewSpecialWarningDodge(454213, nil, nil, nil, 2, 2)
 
---local timerShadowsofStrifeCD				= mod:NewCDNPTimer(12.4, 449318, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
---local timerBurrowingTremorsCD				= mod:NewCDTimer(31.5, 448644, nil, nil, nil, 5)
+local timerMuckChargeCD						= mod:NewCDTimer(25.5, 454213, nil, nil, nil, 3)
+local timerSporesongCD						= mod:NewCDTimer(25.5, 453897, nil, nil, nil, 3)
+local timerSwampBoltCD						= mod:NewCDTimer(27.9, 449965, nil, nil, nil, 5)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc, 7 off interrupt
 
---[[
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 449318 then
+	if args.spellId == 454213 then
+		--"Muck Charge-454213-npc:220314-0000497D69 = pull:5.8, 25.5, 25.5, 25.5, 27.9, 29.1",
+		specWarnMuckCharge:Show()
+		specWarnMuckCharge:Play("chargemove")
+		timerMuckChargeCD:Start()
 
+	elseif args.spellId == 449965 then
+		--"Swamp Bolt-449965-npc:220314-0000497D69 = pull:10.6, 27.9, 27.9, 27.9, 27.9, 27.9",
+		warnSwampBolt:Show()
+		timerSwampBoltCD:Start()
+	elseif args.spellId == 453897 then
+		--"Sporesong-453897-npc:220314-0000497D69 = pull:15.5, 29.1, 29.1, 29.1, 29.1, 29.1",
+		warnSporesong:Show()
+		timerSporesongCD:Start()
 	end
 end
---]]
 
 --[[
 function mod:SPELL_CAST_SUCCESS(args)
-	if args.spellId == 138680 then
-
+	if args.spellId == 453897 then
+		--"Sporesong-453897-npc:220314-0000497D69 = pull:15.5, 29.1, 29.1, 29.1, 29.1, 29.1",
+		warnSporesong:Show()
+		timerSporesongCD:Start()
 	end
 end
 --]]
@@ -81,6 +95,9 @@ end
 function mod:ENCOUNTER_START(eID)
 	if eID == 2960 then--Bogpiper
 		--Start some timers
+		timerMuckChargeCD:Start(5.8)
+		timerSwampBoltCD:Start(10.6)
+		timerSporesongCD:Start(15.5)
 	end
 end
 
@@ -90,6 +107,9 @@ function mod:ENCOUNTER_END(eID, _, _, _, success)
 			DBM:EndCombat(self)
 		else
 			--Stop Timers manually
+			timerMuckChargeCD:Stop()
+			timerSwampBoltCD:Stop()
+			timerSporesongCD:Stop()
 		end
 	end
 end

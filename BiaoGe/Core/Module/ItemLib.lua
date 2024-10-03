@@ -1276,8 +1276,8 @@ local function UpdateItemLib(num, EquipLocs)
     SetItemLib(num, itemtbale)
     UpdateTiptext(num, itemtbale)
 end
-function BG.UpdateAllItemLib(num)
-    if not BG.ItemLibMainFrame:IsVisible() then return end
+function BG.UpdateAllItemLib(num,first)
+    if not BG.ItemLibMainFrame:IsVisible() and not first then return end
     BG.itemLibNeedUpdate = false
     local num = num or 1
     local EquipLocs = BiaoGe["ItemLibInvType"][num]
@@ -1301,7 +1301,7 @@ function BG.CacheAndUpdateAllItemLib()
 
     BG.After(0.5, function()
         t:Hide()
-        BG.UpdateAllItemLib()
+        BG.UpdateAllItemLib(nil,true)
         BG.UpdateItemLib_RightHope_All()
         BG.UpdateItemLib_RightHope_IsHaved_All()
         BG.UpdateItemLib_RightHope_IsLooted_All()

@@ -73,15 +73,15 @@ function BG.YongShiUI(lastbt)
             local FB = BG.FB1
             SendChatMessage(L["———通报击杀用时———"], "RAID")
             local yes
-            local t = 0
+            local t = BG.tongBaoSendCD
             for b = 1, Maxb[FB] do
                 local time = BiaoGe[FB]["boss" .. b]["time"]
                 if time then
-                    -- BG.After(t, function()
-                    local bossname2 = BG.Boss[FB]["boss" .. b].name2
-                    SendChatMessage(b .. ". " .. bossname2 .. " " .. time, "RAID")
-                    -- end)
-                    -- t = t + BG.tongBaoSendCD
+                    BG.After(t, function()
+                        local bossname2 = BG.Boss[FB]["boss" .. b].name2
+                        SendChatMessage(b .. ". " .. bossname2 .. " " .. time, "RAID")
+                    end)
+                    t = t + BG.tongBaoSendCD
                     yes = true
                 end
             end

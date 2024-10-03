@@ -69,12 +69,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetBackdrop({
             bgFile = "Interface/ChatFrame/ChatFrameBackground",
             edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-            edgeSize = 2,
+            edgeSize = 1,
         })
         f:SetBackdropColor(0, 0, 0, 0.8)
-        f:SetBackdropBorderColor(0, 0, 0, 1)
+        f:SetBackdropBorderColor(GetClassRGB(nil, "player", BG.borderAlpha))
         f:SetSize(200, (maxButton + 1) * 20 + 35)
-        f:SetPoint("TOPLEFT", BG.MainFrame, "TOPRIGHT", 0, 0)
+        f:SetPoint("TOPLEFT", BG.MainFrame, "TOPRIGHT", -1, 0)
         f:EnableMouse(true)
         BG.itemGuoQiFrame = f
         if BiaoGe.options.showGuoQiFrame ~= 1 then

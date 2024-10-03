@@ -11,8 +11,8 @@ end
 
 L.HOW_TO_USE_MOD				= "歡迎使用"..L.DBM.."。在聊天頻道輸入 /dbm 打開設定開始設定。你可以載入特定區域後為任何首領設定你喜歡的特別設置。"..L.DBM.."會在設定你的職業天賦的預設值，但有些選項可能需要調整。"
 L.SILENT_REMINDER				= "提醒："..L.DBM.."正處於無聲模式。"
-L.NEWS_UPDATE					= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別安裝並使用與正式版相同的插件包。 讀取更多訊息在|Hgarrmission:DBM:news|h|cff3588ff[此處]|r|h"
-L.NEWS_UPDATE_REPEAT			= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別安裝並使用與正式版相同的插件包。你目前正在缺少模組的團隊副本中。此訊息將持續顯示 (並且您將沒有此區域的功能警報) 直到你安裝了缺少的團隊副本模組為止。"
+L.NEWS_UPDATE					= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別下載並使用與正式版相同的插件包。 讀取更多訊息在|Hgarrmission:DBM:news|h|cff3588ff[此處]|r|h"
+L.NEWS_UPDATE_REPEAT			= "|h|c11ff1111更新說明|r|h: DBM已更新並對模組結構做了更動，因此經典版和正式版現在使用統一的（相同）模組。這意味著經典版(包含探索賽季)、燃燒的遠征、巫妖王之怒以及浩劫與重生現在分別下載並使用與正式版相同的插件包。你目前正在缺少模組的團隊副本中。此訊息將持續顯示 (並且您將沒有此區域的功能警報) 直到你安裝了缺少的團隊副本模組為止。"
 
 
 L.COPY_URL_DIALOG_NEWS			= "要閱讀最新說明，請拜訪以下連結"
@@ -76,7 +76,7 @@ L.TRANSCRIPTOR_LOG_START		= "Transcriptor開始記錄。"
 L.TRANSCRIPTOR_LOG_END			= "Transcriptor結束紀錄。"
 
 L.MOVIE_SKIPPED					= L.DBM.."已嘗試自動略過一個過場動畫。"
---L.MOVIE_NOTSKIPPED							= L.DBM .. " has detected a skipable cut scene but has NOT skipped it due to a blizzard bug. When this bug is fixed, skipping will be re-enabled"
+L.MOVIE_NOTSKIPPED				= L.DBM .. "已經發現了一個可跳過的過場動畫，但由於暴雪的bug沒有跳過。當bug被修復時，跳過將重新啟用。"
 L.BONUS_SKIPPED					= L.DBM.."已經自動關閉額外戰利品擲骰框架。如果你需要恢復此框架，在三分鐘內輸入/dbmbonusroll"
 
 L.AFK_WARNING					= "你正在暫離並戰鬥中(血量還剩餘%d百分比)所以發出警告。如果你並非暫離，請清除暫離的標籤或是在'額外功能'停用此選項。"
@@ -285,9 +285,10 @@ L.TIMER_USAGE	= {
 	"/dbm timer endloop: 停止任何無限循環ltimer的計時器。",
 }
 
-L.ERROR_NO_PERMISSION		= "無權進行此操作。"
+L.ERROR_NO_PERMISSION			= "您無權發送備戰/休息計時器。"
+L.ERROR_NO_PERMISSION_COMBAT	= "當遭遇戰進行中時無法發送備戰/休息計時器"
 L.PULL_TIME_TOO_SHORT			= "備戰計時器必須超過3秒。 "
-L.PULL_TIME_TOO_LONG							= "Pull timer cannot be longer than 60 seconds"
+L.PULL_TIME_TOO_LONG			= "備戰計時器不能超過60秒。考慮使用/休息計時器取代。"
 
 L.BREAK_USAGE					= "休息時間不可以長過60分鐘。請確定您輸入的時間是分鐘而不是秒。"
 L.BREAK_START					= "現在開始休息-你有%s分鐘! (由 %s 發送)"
@@ -484,10 +485,11 @@ L.AUTO_TIMER_TEXTS.roleplay					= GUILD_INTEREST_RP
 L.AUTO_TIMER_TEXTS.combat					= "戰鬥開始"
 
 --This basically clones np only bar option and display text from regular counterparts
---L.AUTO_TIMER_TEXTS.cdnp = L.AUTO_TIMER_TEXTS.cd
---L.AUTO_TIMER_TEXTS.nextnp = L.AUTO_TIMER_TEXTS.next
---L.AUTO_TIMER_TEXTS.cdcountnp = L.AUTO_TIMER_TEXTS.cdcount
---L.AUTO_TIMER_TEXTS.nextcountnp = L.AUTO_TIMER_TEXTS.nextcount
+--L.AUTO_TIMER_TEXTS.cdnp					= L.AUTO_TIMER_TEXTS.cd -- OPTIONAL
+--L.AUTO_TIMER_TEXTS.nextnp				= L.AUTO_TIMER_TEXTS.next -- OPTIONAL
+--L.AUTO_TIMER_TEXTS.cdpnp				= L.AUTO_TIMER_TEXTS.cd -- OPTIONAL
+--L.AUTO_TIMER_TEXTS.nextpnp				= L.AUTO_TIMER_TEXTS.next -- OPTIONAL
+--L.AUTO_TIMER_TEXTS.castpnp				= L.AUTO_TIMER_TEXTS.cast -- OPTIONAL
 
 L.AUTO_TIMER_OPTIONS.target					= "計時條：$spell:%s減益效果持續時間"
 L.AUTO_TIMER_OPTIONS.targetcount			= "計時條：$spell:%s減益效果持續時間(包含計數)"
@@ -500,14 +502,12 @@ L.AUTO_TIMER_OPTIONS.ai						= "計時條：$spell:%s冷卻的AI計時條"
 L.AUTO_TIMER_OPTIONS.cd						= "計時條：$spell:%s冷卻時間"
 L.AUTO_TIMER_OPTIONS.cdcount				= "計時條：$spell:%s冷卻時間"
 L.AUTO_TIMER_OPTIONS.cdnp					= "計時條：只顯示名條的 $spell:%s 冷卻時間"
-L.AUTO_TIMER_OPTIONS.cdnpcount				= "計時條：只顯示名條的 $spell:%s 冷卻時間(包含計數)"
 L.AUTO_TIMER_OPTIONS.cdsource				= "計時條：$spell:%s冷卻時間以及來源"
 L.AUTO_TIMER_OPTIONS.cdspecial				= "計時條：特殊技能冷卻"
 L.AUTO_TIMER_OPTIONS.cdcombo				= "計時條：技能組合冷卻"--Used for combining 2 abilities into a single timer
 L.AUTO_TIMER_OPTIONS.next					= "計時條：下一次$spell:%s"
 L.AUTO_TIMER_OPTIONS.nextcount				= "計時條：下一次$spell:%s"
 L.AUTO_TIMER_OPTIONS.nextnp					= "計時條：只顯示名條的下一次$spell:%s"
-L.AUTO_TIMER_OPTIONS.nextnpcount			= "計時條：只顯示名條的下一次$spell:%s(包含計數)"
 L.AUTO_TIMER_OPTIONS.nextsource				= "計時條：下一次$spell:%s以及來源"
 L.AUTO_TIMER_OPTIONS.nextspecial			= "計時條：下一次特殊技能"
 L.AUTO_TIMER_OPTIONS.nextcombo				= "計時條：下一次技能組合"--Used for combining 2 abilities into a single timer
@@ -557,7 +557,7 @@ L.AUTO_YELL_ANNOUNCE_TEXT.fade				= "%s %%d秒後消退!"
 L.AUTO_YELL_ANNOUNCE_TEXT.shortfade			= "%%d"
 L.AUTO_YELL_ANNOUNCE_TEXT.iconfade			= "{rt%%2$d}%%1$d"
 L.AUTO_YELL_ANNOUNCE_TEXT.position 			= UnitName("player").." ({rt%%3$d})中了%1$s! (%%1$s - {rt%%2$d})"
-L.AUTO_YELL_ANNOUNCE_TEXT.shortposition 	= "{rt%%1$d}%s %%2$d"--Icon, Spellname, number
+L.AUTO_YELL_ANNOUNCE_TEXT.shortposition 	= "{rt%%1$d}%s"--Icon, Spellname
 L.AUTO_YELL_ANNOUNCE_TEXT.combo				= "%s與%%s"--Spell name (from option, plus spellname given in arg)
 L.AUTO_YELL_ANNOUNCE_TEXT.repeatplayer		= UnitName("player")--Doesn't need translation, it's just player name spam
 L.AUTO_YELL_ANNOUNCE_TEXT.repeaticon		= "{rt%%1$d}"
@@ -579,6 +579,10 @@ L.AUTO_INFO_FRAME_OPTION_TEXT3			= "為$spell:%s顯示訊息框架(當達到%%s�
 L.AUTO_READY_CHECK_OPTION_TEXT			= "當首領開打時撥放準備檢查的音效(即使沒有選定目標)"
 L.AUTO_SPEEDCLEAR_OPTION_TEXT			= "顯示 %s 的最快清除計時器"
 L.AUTO_PRIVATEAURA_OPTION_TEXT			= "為這場戰鬥的私人光環$spell:%s播放DBM音效警告。"
+
+L.AUTO_GOSSIP_BUFFS						= "自動選擇npc的對話選項或專業增益"
+L.AUTO_GOSSIP_PERFORM_ACTION			= "自動選擇對話選項來執行動作 (例如使用傳送功能)"
+L.AUTO_GOSSIP_START_ENCOUNTER			= "自動選擇對話選項來開始遭遇戰"
 
 -- New special warnings
 L.MOVE_WARNING_BAR			= "可移動提示"
@@ -635,13 +639,30 @@ L.LDB_TOOLTIP_HELP1				= "點擊開啟" .. L.DBM
 L.LDB_TOOLTIP_HELP2				= "Alt+右鍵點擊切換到無聲模式"
 L.SILENTMODE_IS                 = "無聲模式是 "
 
---Localizers, do not copy entire table, follow same guidelines as other tables, overwrite each entry with L.WORLD_BUFFS.hordeOny = "stuff" for example.
-L.WORLD_BUFFS.hordeOny						= "部落的人民，奧格瑪的城民，來吧，聚集到一起歡慶部落英雄的誕生。"
-L.WORLD_BUFFS.allianceOny					= "暴風城的城民和盟友們，今天，有人創造了歷史。"
-L.WORLD_BUFFS.hordeNef						= "奈法利安被!@#掉了！奧格瑪的人們" -- this is probably not correct (need to get rid of @#)
-L.WORLD_BUFFS.allianceNef					= "聯盟的人民們，黑石領主已經被幹掉了！"
-L.WORLD_BUFFS.zgHeart						= "只差最後一步，我們就可以擺脫靈魂掠奪者的威脅了……"
-L.WORLD_BUFFS.zgHeartBooty					= "靈魂掠奪者血神已經被打敗了！我們不再有危險了！"
-L.WORLD_BUFFS.zgHeartYojamba				= "開始儀式，我的僕從們。我們必須把哈卡完全打回扭曲虛空中！"
-L.WORLD_BUFFS.rendHead						= "那個假的酋長，雷德·黑手，已經倒下了！"
---L.WORLD_BUFFS.blackfathomBoon				= "boon of Blackfathom"
+L.WORLD_BUFFS = {
+	hordeOny							= "部落的人民，奧格瑪的城民，來吧，聚集到一起歡慶部落英雄的誕生。",
+	allianceOny							= "暴風城的城民和盟友們，今天，有人創造了歷史。",
+	hordeNef							= "奈法利安被!@#掉了！奧格瑪的人們",
+	allianceNef							= "聯盟的人民們，黑石領主已經被幹掉了！",
+	zgHeart								= "只差最後一步，我們就可以擺脫靈魂掠奪者的威脅了……",
+	zgHeartBooty						= "靈魂掠奪者血神已經被打敗了！我們不再有危險了！",
+	zgHeartYojamba						= "開始儀式，我的僕從們。我們必須把哈卡完全打回扭曲虛空中！",
+	rendHead							= "那個假的酋長，雷德·黑手，已經倒下了！",
+	blackfathomBoon						= "黑澗深淵的恩賜"
+}
+
+-- Annoying popup, especially for classic players
+L.DBM_INSTALL_REMINDER_HEADER	= "檢測到不完整的DBM安裝！"
+--L.DBM_INSTALL_REMINDER_EXPLAIN	= "Welcome to %s. DBM mods for bosses here are in the %s which you do not have installed. DBM will not show timers or warnings in this zone unless you install the %s!"
+L.DBM_INSTALL_REMINDER_DISABLE	= "停用此區域的全部 DBM 警告與計時器。" -- Used when we believe it's a user error that the mod isn't installed (i.e., current raids)
+L.DBM_INSTALL_REMINDER_DISABLE2 = "不要再顯示此組件的訊息。" -- Used for unimportant mods, i.e., dungeons
+L.DBM_INSTALL_REMINDER_DL_WAGO	= "按下 " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " 來複製Wago.io的連結到剪貼簿。"
+L.DBM_INSTALL_REMINDER_DL_CURSE	= "按下 " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  " 來複製Curseforge的連結到剪貼簿。"
+--"Press " .. (IsMacClient() and "Cmd-C" or "Ctrl-C")  ..  "
+L.DBM_INSTALL_PACKAGE_VANILLA	= "經典與探索賽季組件"
+L.DBM_INSTALL_PACKAGE_WRATH		= "巫妖王組件"
+L.DBM_INSTALL_PACKAGE_CATA		= "浩劫與重生組件"
+L.DBM_INSTALL_PACKAGE_DUNGEON	= "地下城、探究以及事件組件"
+
+-- Tests
+L.DBM_TAINTED_BY_TESTS			= "DBM在當前階段使用了包含時間扭曲的測試模式，建議使用DBM在真正的首領戰鬥中之前重新載入UI。一切都應該按預期工作但並不保證！"

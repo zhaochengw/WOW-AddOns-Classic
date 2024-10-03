@@ -53,6 +53,7 @@ ns.ClassQuest = ClassQuest
 local ver = select(4, GetBuildInfo())
 if ver < 20000 then
     BG.IsVanilla = true
+    BG.IsNewUI = true
 end
 
 if BG.IsVanilla and (C_Engraving and C_Engraving.IsEngravingEnabled()) then
@@ -71,9 +72,11 @@ if ver >= 40000 and ver < 50000 then
     BG.IsCTM = true
 end
 
-if ver == 11503 then
-    BG.Is11503 = true
+if ver >= 40401 then
+    BG.IsNewUI = true
 end
+
+
 
 function BG.IsWLKFB(FB)
     local FB = FB or BG.FB1

@@ -870,8 +870,7 @@ L["Remove all Macros"] = "删除所有宏"
 L["Remove everything in ActionBar"] = "清空全部按键摆放"
 L["Rename"] = "重命名"
 L["Skip bad CRC32"] = "忽略CRC32错误"
---[[Translation missing --]]
---[[ L["Skyriding Bar"] = "Skyriding Bar"--]] 
+L["Skyriding Bar"] = "驭空术条"
 L["Stance Action Bar"] = "姿态动作条"
 L["Time"] = "时间"
 L["TOC_NOTES"] = "Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com"

@@ -18,6 +18,7 @@ local HopeMaxi = ns.HopeMaxi
 local FrameHide = ns.FrameHide
 local AddTexture = ns.AddTexture
 local RGB_16 = ns.RGB_16
+local GetItemID = ns.GetItemID
 
 local pt = print
 
@@ -629,21 +630,14 @@ function BG.HistoryUI()
         BG.HistoryJineDB = {}
 
         local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
-        -- f:SetBackdrop({
-        -- --     bgFile = "Interface/ChatFrame/ChatFrameBackground",
-        --     edgeFile = "Interface/ChatFrame/ChatFrameBackground",
-        --     edgeSize = 1
-        -- })
-        -- -- f:SetBackdropColor(0,0,0,0.5)
-        -- f:SetBackdropBorderColor(0,0,0,0.8)
-        f:SetSize(300, 330)
+        f:SetSize(300, 210)
         f:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -3, 80)
         f:SetFrameLevel(118)
         f:Hide()
         BG.HistoryJineFrame = f
 
         f.tex = f:CreateTexture()
-        f.tex:SetSize(300, 410)
+        f.tex:SetSize(f:GetWidth(), f:GetHeight() + 50)
         f.tex:SetPoint("TOP")
         f.tex:SetTexture("Interface\\Buttons\\WHITE8x8")
         f.tex:SetGradient("VERTICAL", CreateColor(0, 0, 0, 0), CreateColor(0, 0, 0, 1))
@@ -833,56 +827,51 @@ do
 
         local maxCount
         if dangqian then
-            maxCount = 13
+            maxCount = 7
         else
-            maxCount = 14
+            maxCount = 8
         end
-        local db1 = {}
-        for key, value in pairs(BiaoGe.History[FB]) do
+        local db = {}
+        local num = 1
+        for DT in pairs(BiaoGe.History[FB]) do
+            if num > 15 then break end
             for b = 1, Maxb[FB] do
                 for i = 1, Maxi[FB] do
-                    local zhuangbei = BiaoGe.History[FB][key]["boss" .. b]["zhuangbei" .. i]
+                    local zhuangbei = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
                     if zhuangbei then
-                        local HitemID = GetItemInfoInstant(zhuangbei)
-                        if HitemID then
-                            if HitemID == itemID and tonumber(BiaoGe.History[FB][key]["boss" .. b]["jine" .. i]) then
-                                local m = BiaoGe.History[FB][key]["boss" .. b]["maijia" .. i] or ""
-                                local c = BiaoGe.History[FB][key]["boss" .. b]["color" .. i] or { 1, 1, 1 }
-                                local j = BiaoGe.History[FB][key]["boss" .. b]["jine" .. i]
-                                local a = { tonumber(key), zhuangbei, m, c, tonumber(j) }
-                                table.insert(db1, a)
-                            end
+                        local HitemID = GetItemID(zhuangbei)
+                        if HitemID and (HitemID == itemID) and tonumber(BiaoGe.History[FB][DT]["boss" .. b]["jine" .. i]) then
+                            local m = BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] or ""
+                            local c = BiaoGe.History[FB][DT]["boss" .. b]["color" .. i] or { 1, 1, 1 }
+                            local j = BiaoGe.History[FB][DT]["boss" .. b]["jine" .. i]
+                            table.insert(db, {
+                                tonumber(DT),
+                                zhuangbei,
+                                m,
+                                c,
+                                tonumber(j)
+                            })
                         end
                     end
                 end
             end
+            num = num + 1
         end
-        if Size(db1) == 0 then
+        if #db == 0 then
             BG.HistoryJineDB = {}
             return
         end
 
-        local db = {}      -- 1日期、2装备、3买家、4买家颜色、5金额
+        sort(db, function(a, b)
+            return a[1] > b[1]
+        end)
 
-        for t = 1, #db1 do -- 把表格按日期近远排序
-            local maxDay
-            local num
-            for i = 1, #db1 do
-                if maxDay == nil then
-                    maxDay = db1[i][1]
-                    num = i
-                end
-                if maxDay < db1[i][1] then
-                    maxDay = db1[i][1]
-                    num = i
-                end
-            end
-            table.insert(db, db1[num])
-            table.remove(db1, num)
-            if Size(db) >= maxCount then --限定最大数量
-                break
+        if #db > maxCount then
+            for i = #db, maxCount + 1, -1 do
+                tremove(db, i)
             end
         end
+
         if dangqian then
             if not tonumber(jine) or tonumber(jine) == 0 then
                 jine = 0

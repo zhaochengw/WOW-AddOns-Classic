@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,timewalker"
 
-mod:SetRevision("20240428124541")
+mod:SetRevision("20240831045658")
 mod:SetCreatureID(52155)
 mod:SetEncounterID(1178)
 mod:SetUsedIcons(7, 8)
@@ -69,7 +69,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			specWarnToxicLink:Show()
-			specWarnToxicLink:Play("gather")
+			specWarnToxicLink:Play("targetyou")
 		end
 		if self.Options.SetIconOnToxicLink then
 			self:SetIcon(args.destName, self.vb.toxicLinkIcon, 10)
