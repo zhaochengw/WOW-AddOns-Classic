@@ -16,19 +16,9 @@ BiaoGeTooltip2:SetClampedToScreen(false)
 BiaoGeTooltip3 = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
 BiaoGeTooltip4 = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParent, "GameTooltipTemplate") -- 用于通报多本账单
 
-local l = GetLocale()
-if (l == "koKR") then
-    BIAOGE_TEXT_FONT = "Fonts\\2002.TTF";
-elseif (l == "zhCN") then
-    BIAOGE_TEXT_FONT = "Fonts\\ARKai_T.TTF";
-elseif (l == "zhTW") then
-    -- BIAOGE_TEXT_FONT = "Fonts\\ARKai_T.TTF";
-    BIAOGE_TEXT_FONT = "Fonts\\blei00d.TTF";
-elseif (l == "ruRU") then
-    BIAOGE_TEXT_FONT = "Fonts\\FRIZQT___CYR.TTF";
-else
-    BIAOGE_TEXT_FONT = "Fonts\\FRIZQT__.TTF";
-end
+-- 游戏按键设置
+BINDING_HEADER_BIAOGE = "BiaoGe"
+BINDING_NAME_BIAOGE = L["显示/关闭表格"]
 
 local function RGB(hex)
     local red = string.sub(hex, 1, 2)
@@ -54,6 +44,24 @@ BG.phaseFBtable = {}
 BG.bossPositionStartEnd = {}
 BG.FBfromBossPosition = {}
 BG.instanceIDfromBossPosition = {}
+
+BG.Movetable = {}
+BG.options = {}
+BG.itemCaches = {}
+BG.dropDown = LibBG:Create_UIDropDownMenu(nil, UIParent)
+
+BG.onEnterAlpha = 0.1
+BG.highLightAlpha = 0.2
+BG.otherEditAlpha = 0.3
+BG.scrollStep = 80
+BG.borderAlpha = .5
+
+BG.ver = ns.ver
+BG.instructionsText = ns.instructionsText
+BG.updateText = ns.updateText
+BG.BG = "|cff00BFFF<BiaoGe>|r "
+BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
+
 do
     BG.Maxi                                                               = 30
     local mainFrameWidth                                                  = 1295
@@ -201,7 +209,7 @@ do
         elseif BG.IsCTM then
             BG.FB1 = "BOT"
             BG.fullLevel = 85
-            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
+            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, }   -- BOT BWD TOF FL DS
             AddDB("BOT", 671, "P1", nil, nil, nil, nil, { 1, 5 }) -- 暮光堡垒
 
             BG.FBIDtable[669] = "BOT"                             -- 黑翼血环
@@ -240,24 +248,6 @@ do
         ns.HopeMaxn   = HopeMaxn
         ns.BossNumtbl = BossNumtbl
     end
-
-
-    BG.Movetable = {}
-    BG.options = {}
-    BG.itemCaches = {}
-    BG.dropDown = LibBG:Create_UIDropDownMenu(nil, UIParent)
-
-    BG.onEnterAlpha = 0.1
-    BG.highLightAlpha = 0.2
-    BG.otherEditAlpha = 0.3
-    BG.scrollStep = 80
-    BG.borderAlpha = .5
-
-    BG.ver = ns.ver
-    BG.instructionsText = ns.instructionsText
-    BG.updateText = ns.updateText
-    BG.BG = "|cff00BFFF<BiaoGe>|r "
-    BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
 
     local function UnitRealm(unit)
         local realm = select(2, UnitName(unit))
@@ -470,7 +460,7 @@ do
             end
             BG["Font" .. color .. size] = CreateFont("BG.Font" .. color .. size)
             BG["Font" .. color .. size]:SetTextColor(RGB(cff))
-            BG["Font" .. color .. size]:SetFont(BIAOGE_TEXT_FONT, size, "OUTLINE")
+            BG["Font" .. color .. size]:SetFont(STANDARD_TEXT_FONT, size, "OUTLINE")
         end
 
         CreateMyFont("Blue", 13)
@@ -598,7 +588,6 @@ do
         BG.sound1 = SOUNDKIT.GS_TITLE_OPTION_OK -- 按键音效
         BG.sound2 = 569593                      -- 升级音效
         BG.sound3 = SOUNDKIT.IG_MAINMENU_CLOSE  -- 菜单打开音效
-
 
         local Interface = "Interface\\AddOns\\BiaoGe\\Media\\sound\\"
         BG.soundTbl = {

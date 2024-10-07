@@ -46,7 +46,7 @@ function BG.HopeUI(FB)
             elseif n == 3 then
                 version:SetPoint("TOPRIGHT", framedownH, "TOPLEFT", -titlewidth2, -30)
             end
-            version:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            version:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             version:SetTextColor(RGB(BG.y2))
             version:SetWidth(titlewidth)
             version:SetWordWrap(false)
@@ -79,7 +79,7 @@ function BG.HopeUI(FB)
                     version:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", titlewidth2 + 6, 0)
                     frameright = version
                 end
-                version:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                version:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 version:SetTextColor(RGB(BG.y2))
                 version:SetText(L["心愿"] .. i)
                 version:SetWidth(btwidth)
@@ -471,7 +471,7 @@ function BG.HopeUI(FB)
                     f:Hide()
                     f.text = f:CreateFontString()
                     f.text:SetPoint("CENTER")
-                    f.text:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                    f.text:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                     BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["jingzheng" .. i] = f
 
                     -- 鼠标悬停提示
@@ -525,7 +525,7 @@ function BG.HopeUI(FB)
             do
                 local version = BG["HopeFrame" .. FB]:CreateFontString()
                 version:SetPoint("TOPRIGHT", BG.HopeFrame[FB]["nandu" .. n]["boss" .. b].zhuangbei1, "TOPLEFT", -titlewidth2 - 6, -3)
-                version:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                version:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
                 version:SetTextColor(RGB(BG.Boss[FB]["boss" .. b].color))
                 version:SetText(BG.Boss[FB]["boss" .. b].name2)
                 version:SetWidth(titlewidth)
@@ -654,7 +654,7 @@ function BG.HopeUI(FB)
         end
 
         local title = BG["HopeFrame" .. FB]:CreateFontString()
-        title:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        title:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         title:SetPoint("TOP", BG["HopeJingZheng" .. FB], "BOTTOM", 0, -40)
         title:SetTextColor(1, 0.82, 0)
         title:SetText(L["通报心愿"])
@@ -937,7 +937,7 @@ function BG.HopeDaoChuUI()
                                 local itemID = tonumber(text[ii])
                                 if itemID then
                                     if not qingkong then
-                                        BG.QingKong("hope", FB)
+                                        BG.ClearBiaoGe("hope", FB)
                                         qingkong = true
                                     end
                                     if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
@@ -1008,7 +1008,7 @@ function BG.HopeDaoChuUI()
                     tinsert(hideFrameTbl, bg)
 
                     local t = bg:CreateFontString()
-                    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     t:SetPoint("TOP", 0, -8)
                     t:SetTextColor(1, 1, 1)
                     t:SetText(bt:GetText())
@@ -1039,7 +1039,7 @@ function BG.HopeDaoChuUI()
 
                     child = CreateFrame("EditBox", nil, scroll)
                     child:SetWidth(sbg:GetWidth())
-                    child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                    child:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                     child:SetMultiLine(true)
                     child:SetAutoFocus(false)
                     child:EnableMouse(true)
@@ -1121,7 +1121,7 @@ function BG.HopeDaoChuUI()
                     tinsert(hideFrameTbl, bg)
 
                     local t = bg:CreateFontString()
-                    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     t:SetPoint("TOP", 0, -8)
                     t:SetTextColor(1, 1, 1)
                     t:SetText(bt:GetText())
@@ -1152,7 +1152,7 @@ function BG.HopeDaoChuUI()
 
                     child = CreateFrame("EditBox", nil, scroll)
                     child:SetWidth(scroll:GetWidth())
-                    child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                    child:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                     child:SetMultiLine(true)
                     child:SetAutoFocus(false)
                     child:EnableMouse(true)

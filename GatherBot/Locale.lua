@@ -14,13 +14,13 @@ Addon.L = L
 local locale = GetLocale()
 
 if locale == "zhCN" then
-    L["Enabled"] = "切换"
+    L["Enabled"] = "启用"
     L["MountAuto"] = "骑乘切换"
-    L["Standby"] = "待机切换"
+    L["Always"] = "总是切换"
     L["CombatMount"] = "战斗骑乘切换"
     L["Mini Btn"] = "小地图"
     L["Switch In "] = "切换时间："
-    L[" Seconds"] = "秒"
+    L[" Second(s)"] = "秒"
     L["ADD"] = "添加"
     L["REMOVE"] = "移除"
     L["|cFF00FF00Left Click|r to Enable/Disable Auto Switch"] = "|cFF00FF00左键|r启用/停用自动切换"
@@ -31,13 +31,13 @@ if locale == "zhCN" then
     L["<|cFFBA55D3GB|r>Stop Switch the Tracking when you Dismounted."] = "<|cFFBA55D3GB|r>下马自动关闭追踪技能自动切换功能。"
     L["<|cFFBA55D3GB|r>You do not have this spell."] = "<|cFFBA55D3GB|r>你没有这个技能！"
 elseif locale == "zhTW" then --Taiwan is a part of China forever
-    L["Enabled"] = "切換"
+    L["Enabled"] = "啓用"
     L["MountAuto"] = "騎乘切換"
-    L["Standby"] = "待機切換"
+    L["Always"] = "始終切換"
     L["CombatMount"] = "戰鬥騎乘切換"
     L["Mini Btn"] = "小地圖"
     L["Switch In "] = "切換時間："
-    L[" Seconds"] = "秒"
+    L[" Second(s)"] = "秒"
     L["ADD"] = "添加"
     L["REMOVE"] = "移除"
     L["|cFF00FF00Left Click|r to Enable/Disable Auto Switch"] = "|cFF00FF00左鍵|r啓用/停用自動切換"

@@ -115,13 +115,14 @@ function SetWindow:Initialize()
     end
     do -- 原地自动切换开关
         local t = f:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmallLeft")
-        t:SetText(L["Standby"])
+        t:SetText(L["Always"])
         local c = CreateFrame("CheckButton", nil, f, "InterfaceOptionsCheckButtonTemplate")
         c:SetPoint("TOPLEFT", 235, -40)
         t:SetPoint("LEFT", c, "RIGHT", 5, 0)
         c:SetScript("OnShow", function(self) self:SetChecked(Config.Standby) end)
         c:SetScript("OnClick", function(self) Config.Standby = self:GetChecked() end)
     end
+--[[
     do -- 战斗骑马自动切换开关
         local t = f:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmallLeft")
         t:SetText(L["CombatMount"])
@@ -131,6 +132,7 @@ function SetWindow:Initialize()
         c:SetScript("OnShow", function(self) self:SetChecked(Config.MountedCombat) end)
         c:SetScript("OnClick", function(self) Config.MountedCombat = self:GetChecked() end)
     end
+]]
     do -- 小地图按钮
         local t = f:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmallLeft")
         t:SetText(L["Mini Btn"])
@@ -164,7 +166,7 @@ function SetWindow:Initialize()
         local t1 = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
         t1:SetText(L["Switch In "])
         local t2 = f:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-        t2:SetText(L[" Seconds"])
+        t2:SetText(L[" Second(s)"])
         local e1 = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
         e1:SetWidth(30)
         e1:SetHeight(25)

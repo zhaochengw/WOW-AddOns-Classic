@@ -170,7 +170,15 @@ SenderInfo.options = {
 			set = "SetCombatLessenToggle",
 		},
 
-
+		JoinSystemMessage = {
+			type = "toggle",
+			name = L["加入仅自己可见标题"],
+			desc = L["加入仅自己可见描述"],
+			order = 24,
+			get = "GetJoinSystemMessageToggle",
+			set = "SetJoinSystemMessageToggle",
+		},
+		
 		title0 = {
 			type = "description",
             name = string.format("\n|cfffff000%s|r",L["插件提示0"]),
@@ -535,6 +543,7 @@ SenderInfo.optionDefaults = {
 		TeamHelperViewWidth = 1000,
 		AutoOpenHelperTime = 10,
 		JoinGroupNotify = true,
+		JoinSystemMessage = false,
 		LeaderNotify = false,
 		SeekTeamOpen = true,
 		LeaderOpenHelper = true,
@@ -731,6 +740,21 @@ function SenderInfo:GetCombatLessenToggle(info)
 end
 
 --------- GetCombatLessenToggle ------------
+
+
+--------- JoinSystemMessageToggle ------------
+
+
+function SenderInfo:SetJoinSystemMessageToggle(info, value)
+	self.db.global.JoinSystemMessage = value;
+	__private.InviteTeamView:ChangeJoinSystemMessage(value);
+end
+
+function SenderInfo:GetJoinSystemMessageToggle(info)
+	return self.db.global.JoinSystemMessage;
+end
+
+--------- JoinSystemMessageToggle ------------
 
 
 

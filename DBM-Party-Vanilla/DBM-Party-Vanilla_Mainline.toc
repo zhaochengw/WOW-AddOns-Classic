@@ -33,7 +33,7 @@
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r158
+## Version: r160
 
 Retail\localization.en.lua
 Retail\localization.es.lua

@@ -27,7 +27,7 @@ local HopeMaxb = ns.HopeMaxb
 local HopeMaxi = ns.HopeMaxi
 
 local pt = print
-local RealmId = GetRealmID()
+local realmID = GetRealmID()
 local player = UnitName("player")
 
 BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
@@ -149,22 +149,22 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetFrameLevel(105)
         local TitleText = f:CreateFontString()
         TitleText:SetAllPoints()
-        TitleText:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        TitleText:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         TitleText:SetText("|cff" .. "00BFFF" .. L["< BiaoGe > 金 团 表 格"])
         BG.Title = TitleText
 
         -- 说明书
-        local frame = CreateFrame("Frame", nil, BG.MainFrame)
-        frame:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 5, -1)
-        frame:SetHitRectInsets(0, 0, 0, 0)
-        local t = frame:CreateFontString()
+        local f = CreateFrame("Frame", nil, BG.MainFrame)
+        f:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 5, -1)
+        f:SetHitRectInsets(0, 0, 0, 0)
+        local t = f:CreateFontString()
         t:SetPoint("CENTER")
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetJustifyH("LEFT")
         t:SetText(L["<说明书>"] .. " " .. BG.STC_w1(BG.ver))
         t:SetTextColor(0, 1, 0)
-        frame:SetSize(t:GetStringWidth(), 20)
-        BG.ShuoMingShu = frame
+        f:SetSize(t:GetStringWidth(), 20)
+        BG.ShuoMingShu = f
         BG.ShuoMingShuText = t
 
         local function OnEnter(self)
@@ -179,17 +179,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             t:SetTextColor(1, 1, 1)
         end
-        frame:SetScript("OnEnter", OnEnter)
-        frame:SetScript("OnLeave", function(self)
+        f:SetScript("OnEnter", OnEnter)
+        f:SetScript("OnLeave", function(self)
             self.OnEnter = false
             GameTooltip:Hide()
             t:SetTextColor(0, 1, 0)
         end)
-        local f = CreateFrame("Frame")
-        f:RegisterEvent("MODIFIER_STATE_CHANGED")
-        f:SetScript("OnEvent", function(self, event, enter)
-            if (enter == "LALT" or enter == "RALT") and frame.OnEnter then
-                OnEnter(frame)
+        BG.RegisterEvent("MODIFIER_STATE_CHANGED", function(self, event, enter)
+            if (enter == "LALT" or enter == "RALT") and f.OnEnter then
+                OnEnter(f)
             end
         end)
 
@@ -216,7 +214,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 报错
         BG.MainFrame.ErrorText = BG.MainFrame:CreateFontString()
-        BG.MainFrame.ErrorText:SetFont(BIAOGE_TEXT_FONT, 70, "OUTLINE")
+        BG.MainFrame.ErrorText:SetFont(STANDARD_TEXT_FONT, 70, "OUTLINE")
         BG.MainFrame.ErrorText:SetPoint("CENTER")
         BG.MainFrame.ErrorText:SetWidth(BG.MainFrame:GetWidth() - 50)
         BG.MainFrame.ErrorText:SetTextColor(1, 0, 0)
@@ -255,7 +253,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local TitleText = BG.ReceiveMainFrame:CreateFontString()
         TitleText:SetPoint("TOP", BG.ReceiveMainFrame, "TOP", 0, -10)
-        TitleText:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+        TitleText:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
         BG.ReceiveMainFrameTitle = TitleText
 
         local l = BG.ReceiveMainFrame:CreateLine()
@@ -326,7 +324,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local text = BG.ReceiveMainFrame:CreateFontString()
         text:SetPoint("LEFT", bt, "RIGHT", 10, 0)
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetTextColor(0, 1, 0)
         BG.ReceiveMainFrametext = text
 
@@ -445,13 +443,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             do
                 local t = BG.HopeMainFrame:CreateFontString()
                 t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 75)
-                t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                 t:SetTextColor(RGB(BG.g1))
                 t:SetText(L["心愿清单："])
                 local tt = t
                 local t = BG.HopeMainFrame:CreateFontString()
                 t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
                 t:SetTextColor(RGB(BG.g2))
                 t:SetText(L["你可以设置一些装备，这些装备只要掉落就会提醒，并且自动关注团长拍卖"])
             end
@@ -492,19 +490,19 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             do
                 local t = BG.ItemLibMainFrame:CreateFontString()
                 t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                 t:SetTextColor(RGB(BG.g1))
                 t:SetText(L["装备库："])
                 local tt = t
                 local t = BG.ItemLibMainFrame:CreateFontString()
                 t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
                 t:SetTextColor(RGB(BG.g2))
                 t:SetText(L["查看所有适合你的装备"])
                 local tt = t
                 local t = BG.ItemLibMainFrame:CreateFontString()
                 t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                 -- t:SetTextColor(RGB(BG.dis))
                 t:SetText(L["（SHIFT+左键发送装备，ALT+左键设为心愿装备，CTRL+左键打开试衣间。部位按钮支持使用滚轮切换）"])
             end
@@ -549,7 +547,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             do
                 local t = BG.DuiZhangMainFrame:CreateFontString()
                 t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                 t:SetTextColor(RGB(BG.g1))
                 t:SetText(L["对账"])
             end
@@ -577,7 +575,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             do
                 local t = BG.YYMainFrame:CreateFontString()
                 t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                 t:SetTextColor(RGB(BG.g1))
                 t:SetText(L["YY评价"])
             end
@@ -609,13 +607,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 do
                     local t = BG[name]:CreateFontString()
                     t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                    t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                     t:SetTextColor(RGB(BG.g1))
                     t:SetText(L["团员成就："])
                     local tt = t
                     local t = BG[name]:CreateFontString()
                     t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                    t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
                     t:SetTextColor(RGB(BG.g2))
                     t:SetText(L["查看团员的团本成就完成情况（该功能引用于比较成就里的API）"])
                 end
@@ -646,19 +644,19 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 do
                     local t = BG[name]:CreateFontString()
                     t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                    t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                     t:SetTextColor(RGB(BG.g1))
                     t:SetText(L["举报记录："])
                     local tt = t
                     local t = BG[name]:CreateFontString()
                     t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                    t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
                     t:SetTextColor(RGB(BG.g2))
                     t:SetText(L["查看举报记录和追踪举报结果"])
                     local tt = t
                     local t = BG[name]:CreateFontString()
                     t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
-                    t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                     t:SetText(L["（右键打开菜单，可以复制其名字）"])
                 end
             end
@@ -698,7 +696,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 do
                     local t = BG.BossMainFrame:CreateFontString()
                     t:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 35, 45)
-                    t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                     t:SetTextColor(RGB(BG.g1))
                     t:SetText(L["团本攻略"])
                 end
@@ -841,7 +839,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 bt:SetFrameLevel(200)
                 local font = bt:CreateFontString()
                 font:SetTextColor(RGB("00FF00"))
-                font:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+                font:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
                 bt:SetFontString(font)
                 bt:SetText(L["通知锁定"])
                 bt:SetSize(font:GetWidth() + 30, font:GetHeight() + 10)
@@ -849,7 +847,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.ButtonMoveLock = bt
 
                 local text = bt:CreateFontString()
-                text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
                 text:SetAlpha(0.8)
                 text:SetPoint("BOTTOMLEFT", bt, "BOTTOMRIGHT", 5, 0)
                 text:SetText(L["右键通知框体可还原位置"])
@@ -1088,7 +1086,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.NanDuDropDown.DropDown = dropDown
         local text = dropDown:CreateFontString()
         text:SetPoint("RIGHT", dropDown, "LEFT", 10, 3)
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetTextColor(RGB(BG.y2))
         text:SetText(L["当前难度："])
         BG.NanDuDropDown.BiaoTi = text
@@ -1243,6 +1241,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if BG.UpdateAchievementFrame then
                 BG.UpdateAchievementFrame()
             end
+            BG.UpdateButtonClearBiaoGeMoney()
         end
 
         local function Create_FBButton(FB, fbID)
@@ -1346,17 +1345,17 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if BG.IsWLK then
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -360, 1)
                 else
-                    bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -270, 1)
+                    bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -280, 1)
                 end
             else
-                bt:SetPoint("LEFT", BG.tabButtons[num - 1].button, "RIGHT", 3, 0)
+                bt:SetPoint("LEFT", BG.tabButtons[num - 1].button, "RIGHT", BG.IsWLK and 3 or 20, 0)
             end
             bt.bg = bt:CreateTexture(nil, "BACKGROUND")
             bt.bg:SetAllPoints()
             bt.bg:SetTexture("Interface\\Buttons\\WHITE8x8")
             local t = bt:CreateFontString()
             t:SetAllPoints()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetText(text)
             t:SetWordWrap(false)
             bt:SetFontString(t)
@@ -1752,7 +1751,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetSize(1, 20)
         f:SetPoint("BOTTOMLEFT", 10, 2)
         f.text = f:CreateFontString()
-        f.text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+        f.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         f.text:SetPoint("LEFT")
         f.text:SetTextColor(1, 1, 1)
         f.currentPrice = L["不可用"]
@@ -2301,7 +2300,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:Hide()
         local t = f:CreateFontString()
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB("FFFFFF"))
         t:SetText(L["查询记录"])
 
@@ -2712,7 +2711,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             t:SetPoint("TOP", f, 0, 12)
             f.texture = t
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetText(L["< 快速记账 >"])
             t:SetPoint("TOP", f.texture, 0, -13)
             t:SetTextColor(RGB(BG.b1))
@@ -2721,7 +2720,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 装备
         do
             BG.ChatAccountingFrame.item = BG.ChatAccountingFrame:CreateFontString()
-            BG.ChatAccountingFrame.item:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            BG.ChatAccountingFrame.item:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             BG.ChatAccountingFrame.item:SetPoint("TOP", BG.ChatAccountingFrame, "TOP", 0, -35)
             BG.ChatAccountingFrame.item:SetTextColor(RGB("FFD100"))
 
@@ -2781,7 +2780,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             local t = BG.ChatAccountingFrame.jineFrame:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("RIGHT", BG.ChatAccountingFrame.jineFrame, "LEFT", -10, 0)
             t:SetTextColor(RGB("FFD100"))
             t:SetText(L["金额："])
@@ -2840,7 +2839,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             local t = BG.ChatAccountingFrame.qiankuanFrame:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("RIGHT", BG.ChatAccountingFrame.qiankuanFrame, "LEFT", -10, 0)
             t:SetTextColor(RGB("FFD100"))
             t:SetText(L["欠款："])
@@ -2947,13 +2946,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             local text = f:CreateFontString()
             text:SetPoint("TOP", f, "TOP", 0, -10)
-            text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
             text:SetText(L["记账效果预览"])
 
             local text = f:CreateFontString()
             text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -45)
             text:SetWidth(f:GetWidth() - 10)
-            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             text:SetJustifyH("LEFT") -- 对齐格式
             BG.ChatAccountingFrame.seeText = text
         end
@@ -3036,7 +3035,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     ----------拍卖倒数----------
     do
         local f = CreateFrame("Frame")
-        local paiMai, needStop
+        local auctioning,needStop
 
         local function Channel(leader, assistant, looter, optionchannel)
             if leader then
@@ -3074,10 +3073,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if not leader and not looter then return end
 
             local channel = Channel(leader, assistant, looter, BiaoGe.options["countDownSendChannel"])
-            if paiMai then
+            if auctioning then
                 local text = L["{rt7}倒数暂停{rt7}"]
                 SendChatMessage(text, channel)
-                paiMai = nil
+                auctioning = nil
                 f:SetScript("OnUpdate", nil)
                 return
             end
@@ -3085,7 +3084,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local Maxtime = BiaoGe.options["countDownDuration"]
             local text = link .. L[" {rt1}拍卖倒数{rt1}"]
             SendChatMessage(text, channel)
-            paiMai = true
+            auctioning = true
 
             local timeElapsed = 0
             local lasttime = Maxtime + 1
@@ -3095,7 +3094,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     PlaySoundFile(BG["sound_countDownStop" .. BiaoGe.options.Sound], "Master")
                     local text = L["{rt7}倒数暂停{rt7}"]
                     SendChatMessage(text, channel)
-                    paiMai = nil
+                    auctioning = nil
                     f:SetScript("OnUpdate", nil)
                     return
                 end
@@ -3103,7 +3102,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if timeElapsed >= 1 then
                     lasttime = lasttime - format("%d", timeElapsed)
                     if lasttime <= 0 then
-                        paiMai = nil
+                        auctioning = nil
                         f:SetScript("OnUpdate", nil)
                         return
                     end
@@ -3120,7 +3119,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:RegisterEvent("CHAT_MSG_RAID")
         f:SetScript("OnEvent", function(self, even, msg)
             if not (BiaoGe.options["countDown"] == 1 and BiaoGe.options["countDownStop"] == 1) then return end
-            if not paiMai then return end
+            if not auctioning then return end
+            msg = msg:gsub("%s", "")
             if msg:match("^%d-%.-%d+$") or msg:match("^%d-%.-%d+[pP]$") or msg:match("^=+$") then
                 needStop = true
             end
@@ -3137,6 +3137,109 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------清空表格----------
     do
+        function BG.ClearBiaoGe(_type, FB)
+            if not FB then return end
+            if _type == "biaoge" then
+                for b = 1, Maxb[FB] do
+                    for i = 1, Maxi[FB] + 10 do
+                        -- 表格
+                        if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
+                            BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
+                            BG.Frame[FB]["boss" .. b]["maijia" .. i]:SetText("")
+                            BG.Frame[FB]["boss" .. b]["jine" .. i]:SetText("")
+                            BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
+                            BG.Frame[FB]["boss" .. b]["guanzhu" .. i]:Hide()
+                        end
+                        BiaoGe[FB]["boss" .. b]["zhuangbei" .. i] = nil
+                        BiaoGe[FB]["boss" .. b]["maijia" .. i] = nil
+                        BiaoGe[FB]["boss" .. b]["jine" .. i] = nil
+                        BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
+                        BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
+                        BiaoGe[FB]["boss" .. b]["loot" .. i] = nil
+                        for k, v in pairs(BG.playerClass) do
+                            BiaoGe[FB]["boss" .. b][k .. i] = nil
+                        end
+                        -- 对账
+                        if BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i] then
+                            BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
+                            BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]:SetText("")
+                        end
+                    end
+                    if BG.Frame[FB]["boss" .. b]["time"] then
+                        BG.Frame[FB]["boss" .. b]["time"]:SetText("")
+                        BiaoGe[FB]["boss" .. b]["time"] = nil
+                    end
+                end
+                for i = 1, Maxi[FB] + 10 do -- 清空支出
+                    if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
+                        if BiaoGe.options["retainExpenses"] ~= 1 then
+                            BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetText("")
+                            BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] = nil
+                        end
+                        if not (BiaoGe.options["retainExpenses"] == 1 and BiaoGe.options["retainExpensesMoney"] == 1) then
+                            BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetText("")
+                            BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
+                        end
+                        BG.Frame[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i]:SetText("")
+                        BiaoGe[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i] = nil
+                    end
+                end
+                BiaoGe[FB].tradeTbl = {}
+                BiaoGe[FB].lockoutIDtbl = nil
+                BiaoGe[FB].raidRoster = nil
+                BiaoGe[FB].auctionLog = nil
+                BG.UpdateAuctionLogFrame()
+                BG.UpdateLockoutIDText()
+                BG.auctionLogFrame.changeFrame:Hide()
+
+                local num -- 分钱人数
+                if BG.IsVanilla then
+                    num = BG.GetFBinfo(FB, "maxplayers") or 10
+                else
+                    num = 25
+                    local nanduID = GetRaidDifficultyID()
+                    if nanduID == 3 or nanduID == 175 then
+                        num = BiaoGe.options["10MaxPlayers"] or 10
+                    elseif nanduID == 4 or nanduID == 176 then
+                        num = BiaoGe.options["25MaxPlayers"] or 25
+                    elseif nanduID == 5 or nanduID == 193 then
+                        num = BiaoGe.options["10MaxPlayers"] or 10
+                    elseif nanduID == 6 or nanduID == 194 then
+                        num = BiaoGe.options["25MaxPlayers"] or 25
+                    end
+                end
+                if BiaoGe.options["QingKongPeople"] == 1 then
+                    BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(num)
+                    BiaoGe[FB]["boss" .. Maxb[FB] + 2]["jine4"] = num
+                end
+
+                local money = floor(GetMoney() / 1e4)
+                BiaoGe.clearBiaoGeMoney = BiaoGe.clearBiaoGeMoney or {}
+                BiaoGe.clearBiaoGeMoney[FB] = {
+                    FB = FB,
+                    realmID = realmID,
+                    name = player,
+                    money = money,
+                    time = time()
+                }
+                BG.UpdateButtonClearBiaoGeMoney()
+                return num
+            elseif _type == "hope" then
+                for n = 1, 4 do
+                    for b = 1, Maxb[FB] - 1 do
+                        for i = 1, HopeMaxi do
+                            if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
+                                BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:SetText("")
+                                BiaoGe.Hope[realmID][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = nil
+                            end
+                        end
+                    end
+                end
+                BG.UpdateItemLib_LeftHope_HideAll()
+                BG.UpdateItemLib_RightHope_HideAll()
+            end
+        end
+
         -- 清空按钮
         do
             local bt = CreateFrame("Button", nil, BG.FBMainFrame, "UIPanelButtonTemplate")
@@ -3165,7 +3268,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 button1 = L["是"],
                 button2 = L["否"],
                 OnAccept = function()
-                    local num = BG.QingKong("biaoge", BG.FB1)
+                    local num = BG.ClearBiaoGe("biaoge", BG.FB1)
                     if not BG.IsVanilla and BiaoGe.options["QingKongPeople"] == 1 then
                         BG.SendSystemMessage(BG.STC_b1(format(
                             L["已清空表格< %s >，分钱人数已改为%s人。"], BG.GetFBinfo(BG.FB1, "localName"), num)))
@@ -3229,7 +3332,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if BiaoGe.options["autoQingKong"] ~= 1 then return end
                 RequestRaidInfo()
 
-                BG.After(2, function()
+                BG.After(4, function()
                     local _, _, _, _, maxPlayers, _, _, instanceID = GetInstanceInfo()
                     local zoneID = instanceID
                     local isInInstance = IsInInstance()
@@ -3265,7 +3368,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                 then
                                     BG.ClickFBbutton(FB)
                                     BG.SaveBiaoGe(FB)
-                                    local num = BG.QingKong("biaoge", FB)
+                                    local num = BG.ClearBiaoGe("biaoge", FB)
                                     local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. time() ..
                                         "|h[" .. L["撤回清空"] .. "]|h|r"
                                     SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.GetFBinfo(FB, "localName"), num)) .. link)
@@ -3297,6 +3400,75 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
         end
 
+        -- 清空时记录身上金币
+        do
+            local poit
+
+            local function OnEnter(self)
+                local FB = BG.FB1
+                local p = SetClassCFF(BiaoGe.clearBiaoGeMoney[FB].name)
+                local f = BG.GetFBinfo(BiaoGe.clearBiaoGeMoney[FB].FB, "localName")
+                local t = date("%m/%d %H:%M", BiaoGe.clearBiaoGeMoney[FB].time)
+                local m = GetMoneyString(BiaoGe.clearBiaoGeMoney[FB].money .. "0000")
+                GameTooltip:SetOwner(poit, "ANCHOR_TOPLEFT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(L["清空表格时携带的金币"], 1, 1, 1, true)
+                GameTooltip:AddLine(" ")
+                GameTooltip:AddDoubleLine(L["角色："], p, 1, 0.82, 0, 1, 0.82, 0)
+                GameTooltip:AddDoubleLine(L["表格："], f, 1, 0.82, 0, 1, 0.82, 0)
+                GameTooltip:AddDoubleLine(L["时间："], t, 1, 0.82, 0, 1, 0.82, 0)
+                GameTooltip:AddDoubleLine(L["金币："], m, 1, 0.82, 0, 1, 0.82, 0)
+                GameTooltip:Show()
+            end
+
+            function BG.UpdateButtonClearBiaoGeMoney()
+                local FB = BG.FB1
+                local f = BG.ButtonClearBiaoGeMoney
+                if not (BiaoGe.clearBiaoGeMoney and BiaoGe.clearBiaoGeMoney[FB]) or
+                    not (BiaoGe.clearBiaoGeMoney[FB].realmID == realmID and
+                        BiaoGe.clearBiaoGeMoney[FB].name == player and
+                        time() - BiaoGe.clearBiaoGeMoney[FB].time <= 3600 * 24) then
+                    f:Hide()
+                else
+                    f:Show()
+                    local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 2].jine5
+                    f:ClearAllPoints()
+                    f:SetPoint("TOPLEFT", jine, "BOTTOMLEFT", 0, -2)
+                    f.Text:SetText(BiaoGe.clearBiaoGeMoney[FB].money)
+                end
+            end
+
+            local jine = BG.Frame[BG.FB1]["boss" .. Maxb[BG.FB1] + 2].jine5
+            local f = CreateFrame("Frame", nil, BG.FBMainFrame, "BackdropTemplate")
+            f:SetSize(jine:GetWidth(), 20)
+            BG.ButtonClearBiaoGeMoney = f
+            local t = f:CreateFontString()
+            t:SetFontObject(ChatFontNormal)
+            t:SetAllPoints()
+            t:SetJustifyH("LEFT")
+            t:SetTextColor(1, .82, 0)
+            f.Text = t
+            f:SetScript("OnEnter", OnEnter)
+            f:SetScript("OnLeave", GameTooltip_Hide)
+
+            local f = CreateFrame("Frame", nil, BG.ButtonClearBiaoGeMoney, "BackdropTemplate")
+            f:SetSize(0, 20)
+            f:SetPoint("RIGHT", BG.ButtonClearBiaoGeMoney, "LEFT", 0, 0)
+            poit = f
+            local t = f:CreateFontString()
+            t:SetFontObject(ChatFontNormal)
+            t:SetAllPoints()
+            t:SetJustifyH("RIGHT")
+            t:SetTextColor(1, .82, 0)
+            t:SetText(L["清空表格时的金币： "])
+            f:SetWidth(t:GetUnboundedStringWidth())
+            f.Text = t
+            f:SetScript("OnEnter", OnEnter)
+            f:SetScript("OnLeave", GameTooltip_Hide)
+
+            BG.UpdateButtonClearBiaoGeMoney()
+        end
+
         -- 清空心愿
         do
             local bt = CreateFrame("Button", nil, BG.HopeMainFrame, "UIPanelButtonTemplate")
@@ -3323,7 +3495,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 button1 = L["是"],
                 button2 = L["否"],
                 OnAccept = function()
-                    BG.QingKong("hope", BG.FB1)
+                    BG.ClearBiaoGe("hope", BG.FB1)
                     SendSystemMessage(BG.STC_g1(format(L["已清空心愿< %s >"], BG.GetFBinfo(BG.FB1, "localName"))))
                     FrameHide(0)
                 end,
@@ -3419,6 +3591,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     end
     ----------鼠标材质----------
     BG.RegisterEvent("MODIFIER_STATE_CHANGED", function(self, even, mod, type)
+        if IsAltKeyDown() and IsControlKeyDown() then
+            SetCursor(nil)
+            return
+        end
         if mod == "LCTRL" or mod == "RCTRL" then
             if type == 1 then
                 if BG.canShowInspectCursor then
@@ -3504,7 +3680,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if not (prefix == "BiaoGe" and channel == "GUILD") then return end
                 local sendername = strsplit("-", sender)
                 local playername = UnitName("player")
-                -- if sendername == playername then return end
                 if msg == "VersionCheck" and not CDing[sender] and not IsTestVer() then
                     C_ChatInfo.SendAddonMessage("BiaoGe", "MyVer-" .. BG.ver, channel)
                     CDing[sender] = true
@@ -3640,11 +3815,6 @@ end
 
 ----------其他----------
 do
-    -- 游戏按键设置
-    BINDING_HEADER_BIAOGE = "BiaoGe"
-    -- BINDING_HEADER_BIAOGE = L["BiaoGe金团表格"]
-    BINDING_NAME_BIAOGE = L["显示/关闭表格"]
-
     ----------插件命令----------
     SlashCmdList["BIAOGE"] = function()
         if BG.MainFrame and not BG.MainFrame:IsVisible() then
@@ -3894,9 +4064,9 @@ do
 
         -- BG.qiankuanTradeFrame.Update()
 
-        -- local name, link, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(45087)
-        -- ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 1, typeID)
-        -- ns.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 2, typeID)
+        local name, link, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(45087)
+        BG.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 1, typeID)
+        BG.AddLootItem_stackCount(BG.FB1, 15, link, Texture, level, nil, 2, typeID)
     end
     SLASH_BIAOGETEST21 = "/bgdebug2"
 end

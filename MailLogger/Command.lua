@@ -28,41 +28,33 @@ SlashCmdList["MLC"] = function(Command)
 		Addon.Output.dropdownlist:Show()
 		Addon.Output.dropdownbutton:Show()
 		Addon:PrintTradeLog("TRADE", nil)
-		if Addon.Config.EnableCalendar then
-			Addon:GetAvailableDate()
-			Addon.Calendar.background:Show()
-			Addon:RefreshCalendar()
-		end
+		Addon:GetAvailableDate()
+		Addon.Calendar.background:Show()
+		Addon:RefreshCalendar()
 	elseif Command:lower() == "maillog" or Command:lower() == "ml" then
 		Addon.Output.dropdowntitle:Show()
 		Addon.Output.dropdownlist:Show()
 		Addon.Output.dropdownbutton:Show()
 		Addon:PrintTradeLog("MAIL", nil)
-		if Addon.Config.EnableCalendar then
-			Addon:GetAvailableDate()
-			Addon.Calendar.background:Show()
-			Addon:RefreshCalendar()
-		end
+		Addon:GetAvailableDate()
+		Addon.Calendar.background:Show()
+		Addon:RefreshCalendar()
 	elseif Command:lower() == "sent" or Command:lower() == "sm" then
 		Addon.Output.dropdowntitle:Show()
 		Addon.Output.dropdownlist:Show()
 		Addon.Output.dropdownbutton:Show()
 		Addon:PrintTradeLog("SMAIL", nil)
-		if Addon.Config.EnableCalendar then
-			Addon:GetAvailableDate()
-			Addon.Calendar.background:Show()
-			Addon:RefreshCalendar()
-		end
+		Addon:GetAvailableDate()
+		Addon.Calendar.background:Show()
+		Addon:RefreshCalendar()
 	elseif Command:lower() == "received" or Command:lower() == "rm" then
 		Addon.Output.dropdowntitle:Show()
 		Addon.Output.dropdownlist:Show()
 		Addon.Output.dropdownbutton:Show()
 		Addon:PrintTradeLog("RMAIL", nil)
-		if Addon.Config.EnableCalendar then
-			Addon:GetAvailableDate()
-			Addon.Calendar.background:Show()
-			Addon:RefreshCalendar()
-		end
+		Addon:GetAvailableDate()
+		Addon.Calendar.background:Show()
+		Addon:RefreshCalendar()
 	else
 		print(L["MAILLOGGER TIPS"])
 	end

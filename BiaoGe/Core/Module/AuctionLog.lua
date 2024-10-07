@@ -129,7 +129,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", f, "TOP", 0, -5)
             BG.auctionLogFrame.title = t
 
@@ -181,7 +181,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 bt:SetSize(15, 15)
                 tinsert(buttons, bt)
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name)
                 bt.Text:SetTextColor(1, .82, 0)
@@ -240,7 +240,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             frame.tooltip = _f
 
             local t = child:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", 0, 0)
             t:SetTextColor(1, 0, 0)
             t:SetText(L["没有自动拍卖记录。"])
@@ -282,7 +282,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 合计收入
         do
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 2, -5)
             t:SetTextColor(1, 1, 1)
             t:SetJustifyH("LEFT")
@@ -493,14 +493,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end)
 
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", 0, -10)
             f.title = t
         end
         -- 装备
         do
             local title = f:CreateFontString()
-            title:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            title:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             title:SetPoint("TOPLEFT", 5, -35)
             title:SetText(L["装备："])
             title:SetTextColor(1, 0.82, 0)
@@ -515,7 +515,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 _f:SetSize(120, 15)
                 _f:SetHyperlinksEnabled(true)
                 local t = _f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetAllPoints()
                 t:SetJustifyH("LEFT")
                 t:SetWordWrap(false)
@@ -605,7 +605,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 买家
         do
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOPLEFT", f.item.title, "BOTTOMLEFT", 0, -7)
             t:SetText(L["买家："])
             t:SetTextColor(1, 0.82, 0)
@@ -671,7 +671,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 金额
         do
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOPLEFT", f.maijia.title, "BOTTOMLEFT", 0, -7)
             t:SetText(L["金额："])
             t:SetTextColor(1, 0.82, 0)
@@ -1173,13 +1173,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             tex:SetTexCoord(.04, .96, .04, .96)
             bts.icon = tex
             f.level = f:CreateFontString()
-            f.level:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
+            f.level:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
             f.level:SetPoint("BOTTOM", bts.icon, 0, 1)
             f.level:SetText(v.itemlevel)
             f.level:SetTextColor(r, g, b)
             if v.bindType == 2 then
                 local text = bts.iconFrame:CreateFontString()
-                text:SetFont(BIAOGE_TEXT_FONT, 10, "OUTLINE")
+                text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE")
                 text:SetPoint("TOP", bts.iconFrame, 0, -1)
                 text:SetText(L["装绑"])
                 text:SetTextColor(0, 1, 0)
@@ -1188,7 +1188,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 装备
         do
             local text = bts.frame:CreateFontString()
-            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             text:SetWidth(width - bts.icon:GetWidth())
             text:SetPoint("TOPLEFT", bts.icon, "TOPRIGHT", 1, 0)
             text:SetText(link:gsub("%[", ""):gsub("%]", ""))
@@ -1199,7 +1199,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 买家和金额
         do
             local text = bts.frame:CreateFontString()
-            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             text:SetPoint("BOTTOMLEFT", bts.icon, "BOTTOMRIGHT", 1, 0)
             text:SetWidth(width - bts.icon:GetWidth())
             text.notAuctionedText = BG.STC_dis(L["<未拍>"])
@@ -1551,26 +1551,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetFrameStrata("HIGH")
         local text = f:CreateFontString()
         text:SetPoint("TOPRIGHT", TradeRecipientMoneyBg, "BOTTOMRIGHT", -5, 3)
-        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         BG.trade.GiveMeMoneyText = text
 
         local f = CreateFrame("Frame", nil, TradeFrame)
         f:SetFrameStrata("HIGH")
         local text = f:CreateFontString()
         text:SetPoint("TOPLEFT", TradePlayerInputMoneyInsetBg, "BOTTOMLEFT", 5, 3)
-        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         BG.trade.GiveYouMoneyText = text
 
         for i = 1, 6 do
             local text = _G["TradePlayerItem" .. i .. "ItemButton"]:CreateFontString()
             text:SetPoint("BOTTOMLEFT", _G["TradePlayerItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
-            text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             text:Hide()
             _G["TradePlayerItem" .. i .. "ItemButton"].money = text
 
             local text = _G["TradeRecipientItem" .. i .. "ItemButton"]:CreateFontString()
             text:SetPoint("BOTTOMLEFT", _G["TradeRecipientItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
-            text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             text:Hide()
             _G["TradeRecipientItem" .. i .. "ItemButton"].money = text
         end

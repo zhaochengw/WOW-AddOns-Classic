@@ -29,9 +29,10 @@ local pt = print
 local RealmId = GetRealmID()
 local player = UnitName("player")
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("ADDON_LOADED")
-frame:SetScript("OnEvent", function(self, event, addonName)
+local saveZaXiangNum = 0
+local saveZaXiangTbl={}
+
+BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
     -- 拾取事件通报到屏幕中上
     local name = "lootTime"
@@ -42,7 +43,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     f:SetTimeVisible(BiaoGe.options[name] or BG.options[name .. "reset"]) -- 可见时间
     f:SetJustifyH("LEFT")                                                 -- 对齐格式
     f:SetSize(700, 170)                                                   -- 大小
-    f:SetFont(BIAOGE_TEXT_FONT, BiaoGe.options["lootFontSize"] or 20, "OUTLINE")
+    f:SetFont(STANDARD_TEXT_FONT, BiaoGe.options["lootFontSize"] or 20, "OUTLINE")
     f:SetFrameStrata("FULLSCREEN_DIALOG")
     f:SetFrameLevel(130)
     f:SetClampedToScreen(true)
@@ -50,7 +51,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     f.name = L["装备记录通知"]
     f.homepoin = { "TOPLEFT", nil, "TOP", -200, 0 }
     if BiaoGe.point[f:GetName()] then
-        BiaoGe.point[f:GetName()][2]=nil
+        BiaoGe.point[f:GetName()][2] = nil
         f:SetPoint(unpack(BiaoGe.point[f:GetName()]))
     else
         f:SetPoint(unpack(f.homepoin)) --设置显示位置
@@ -59,7 +60,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     BG.FrameLootMsg = f
 
     f.name = f:CreateFontString()
-    f.name:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    f.name:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     f.name:SetTextColor(1, 1, 1, 1)
     f.name:SetText(L["装备记录通知"])
     f.name:SetPoint("TOP", 0, -5)
@@ -106,7 +107,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         GameTooltip:Hide()
     end)
     BG.FrameLootMsg:SetScript("OnHyperlinkClick", function(self, link, text, button)
-        local arg1, arg2, arg3 = strsplit(":", link)
+        local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 = strsplit(":", link)
         if arg2 == "BiaoGeGuoQi" and arg3 == L["详细"] then
             BG.MainFrame:Show()
             BG.itemGuoQiFrame:Show()
@@ -114,6 +115,22 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         elseif arg2 == "BiaoGeGuoQi" and arg3 == L["设置为1小时内不再提醒"] then
             BiaoGe.lastGuoQiTime = time() + 3300
             BG.FrameLootMsg:AddMessage(BG.STC_b1(L["已设置为1小时内不再提醒。"]))
+        elseif arg2 == "BiaoGeInSertItem" then
+            local _saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer = arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11
+            if Hope == "0" then Hope = nil end
+            _saveZaXiangNum = tonumber(_saveZaXiangNum)
+            itemID = tonumber(itemID)
+            Texture = tonumber(Texture)
+            level = tonumber(level)
+            count = tonumber(count)
+            typeID = tonumber(typeID)
+            -- pt(_saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer)
+            if not saveZaXiangTbl[_saveZaXiangNum] then
+                saveZaXiangTbl[_saveZaXiangNum]=true
+                local numb = Maxb[FB] - 1
+                local link = select(2, GetItemInfo(itemID))
+                BG.AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
+            end
         else
             local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
             if link then
@@ -253,7 +270,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
     -- 记录拾取信息
     local function AddLootLog(FB, numb, i, lootplayer, count)
         BiaoGe[FB]["boss" .. numb]["loot" .. i] = BiaoGe[FB]["boss" .. numb]["loot" .. i] or {}
-        local lootplayer = lootplayer or UnitName("player")
         tinsert(BiaoGe[FB]["boss" .. numb]["loot" .. i], {
             time = time(),
             player = lootplayer,
@@ -275,7 +291,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         if typeID == 2 or typeID == 4 then
             levelText = "(" .. level .. ")"
         end
-
         for i = 1, Maxi[FB] do
             local zb = BG.Frame[FB]["boss" .. numb]["zhuangbei" .. i]
             local zb1 = BG.Frame[FB]["boss" .. numb]["zhuangbei" .. (i + 1)]
@@ -315,10 +330,28 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                     BG.FrameLootMsg:AddMessage(format("|cffDC143C" .. L["自动关注心愿装备失败：%s%s"],
                         RR, ((AddTexture(Texture) .. link))))
                 end
+                local inSertItem = ""
+                if numb ~= Maxb[FB] - 1 then
+                    local has
+                    for i = 1, Maxi[FB] do
+                        local zb = BG.Frame[FB]["boss" .. Maxb[FB] - 1]["zhuangbei" .. i]
+                        if zb and zb:GetText() == "" then
+                            has = true
+                            break
+                        end
+                    end
+                    if has then
+                        local Hope = Hope and 1 or 0
+                        saveZaXiangNum = saveZaXiangNum + 1
+                        inSertItem = " |cffFFFF00|Hgarrmission:" .. format("BiaoGeInSertItem:%s:%s:%s:%s:%s:%s:%s:%s:%s",
+                            saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer) .. "|h[" .. L["点击记入杂项"] .. "]|h|r"
+                    end
+                end
+
                 BG.FrameLootMsg:AddMessage(icon .. format(
-                    "|cffDC143C" .. L["自动记录失败：%s%s%s。因为%s< %s >%s的格子满了。。"], RR,
+                    "|cffDC143C" .. L["自动记录失败：%s%s%s。因为%s< %s >%s的格子满了"], RR,
                     (AddTexture(Texture) .. link), levelText, "|cff" .. BG.Boss[FB]["boss" .. numb]["color"],
-                    BG.Boss[FB]["boss" .. numb]["name2"], RR) .. icon)
+                    BG.Boss[FB]["boss" .. numb]["name2"], RR) .. inSertItem .. icon)
                 if not biaogefull then
                     biaogefull = true
                     BG.After(1, function()
@@ -378,7 +411,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                                     levelText, count, "|cff" .. BG.Boss[FB]["boss" .. b]["color"],
                                     BG.Boss[FB]["boss" .. b]["name2"], RR) .. icon)
                         end
-
                         return
                     end
                 end
@@ -391,7 +423,8 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             return
         end
     end
-    ns.AddLootItem_stackCount = AddLootItem_stackCount
+    BG.AddLootItem_stackCount = AddLootItem_stackCount
+    BG.AddLootItem = AddLootItem
 
     -- 拾取事件监听
     -- local testItemID = 59521
@@ -438,15 +471,10 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
         end
 
-        if BG.DeBug then
-            -- link = GetItemInfo(testItemID) and select(2, GetItemInfo(testItemID))
-            -- count = 1
-            -- numb = 1
-        end
-
         if buy and not lootplayer then return end   -- 你是否刚购买了物品
         if quest and not lootplayer then return end -- 是否获得了任务物品
         if not link then return end
+        if not lootplayer then lootplayer = UnitName("player") end
         if not count then count = 1 end
 
         local name, _, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(link)
@@ -457,6 +485,13 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if itemID == id then
                 return
             end
+        end
+
+        if BG.DeBug then
+            -- link = GetItemInfo(testItemID) and select(2, GetItemInfo(testItemID))
+            stackCount = 1
+            count = 1
+            numb = 1
         end
 
         local Iswhitelist
@@ -516,7 +551,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end
-
         -- 心愿装备
         local Hope
         for n = 1, HopeMaxn[FB] do
@@ -537,13 +571,11 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             end
             if Hope then break end
         end
-
         -- 可堆叠物品记录到杂项
         if stackCount ~= 1 then
             AddLootItem_stackCount(FB, nil, link, Texture, level, Hope, count, typeID, lootplayer)
             return
         end
-
         -- Plus黑上部分boss需要根据物品id直接记录
         if FB == "UBRS" then
             for numb, v in pairs(BG.SpecialLoot[FB]) do
@@ -555,7 +587,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end
-
         -- 特殊物品总是记录到杂项
         for _, _itemID in ipairs(BG.Loot.zaXiangItems) do
             if _itemID == itemID then
@@ -565,7 +596,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 return
             end
         end
-
         -- 经典旧世的图纸、牌子、宝石记录到杂项
         if BG.IsVanilla then
             if typeID == 9 or typeID == 10 or typeID == 3 then
@@ -574,7 +604,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 return
             end
         end
-
         -- TOC嘉奖宝箱通过读取掉落列表来记录装备
         if FB == "TOC" and itemID ~= 47242 then
             local nanduID = GetRaidDifficultyID()
@@ -594,7 +623,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end
-
         -- ICC小怪掉落
         if FB == "ICC" then
             for key, value in pairs(BG.Loot.ICC.H25.boss14) do
@@ -605,7 +633,6 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end
-
         -- plus神庙老3
         if FB == "Temple" then
             for _, _itemID in pairs(BG.Loot.Temple.N.boss3) do
@@ -616,12 +643,10 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 end
             end
         end
-
         -- 正常拾取
         if not numb then
             numb = Maxb[FB] - 1 -- 第一个boss前的小怪设为杂项
         end
-
         AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
     end
     ns.LootItem = LootItem

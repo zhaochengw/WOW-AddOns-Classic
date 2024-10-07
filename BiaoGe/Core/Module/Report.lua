@@ -146,13 +146,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 -- 统计数据
                 do
                     f.reportCountText = f:CreateFontString()
-                    f.reportCountText:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    f.reportCountText:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     f.reportCountText:SetPoint("TOPRIGHT", f, "BOTTOMRIGHT", -50, -10)
                     f.reportCountText:SetTextColor(1, 0.82, 0)
                     f.reportCountText:SetJustifyH("RIGHT")
                     f.reportCountText:SetText(L["举报合计："])
                     f.reportCountTextCount = f:CreateFontString()
-                    f.reportCountTextCount:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    f.reportCountTextCount:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     f.reportCountTextCount:SetPoint("LEFT", f.reportCountText, "RIGHT", 5, 0)
                     f.reportCountTextCount:SetTextColor(1, 1, 0)
                 end
@@ -687,7 +687,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         buttons[ii][i] = f
 
                         f.Text = f:CreateFontString()
-                        f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                        f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                         f.Text:SetPoint("CENTER")
                         f.Text:SetTextColor(RGB(title_table[i].color))
                         f.Text:SetJustifyH(title_table[i].JustifyH)
@@ -784,7 +784,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         bt.checkbuttons = checkbuttons
 
                         bt.Text = bt:CreateFontString()
-                        bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                        bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                         bt.Text:SetAllPoints()
                         bt.Text:SetTextColor(0, 1, 0)
                         bt.Text:SetText(L["查"])
@@ -807,7 +807,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         bt.ID = ii
 
                         bt.Text = bt:CreateFontString()
-                        bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                        bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                         bt.Text:SetAllPoints()
                         bt.Text:SetTextColor(1, 0, 0)
                         bt.Text:SetText(L["删"])

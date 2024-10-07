@@ -1,10 +1,10 @@
-## Interface: 11503
+## Interface: 11504
 ## Title: ClassicCastbars
 ## Notes: Adds customizable castbars to various unitframes.
 ## IconTexture: Interface\Icons\spell_holy_heal02
 ## SavedVariables: ClassicCastbarsDB
 ## SavedVariablesPerCharacter: ClassicCastbarsCharDB
-## Version: v1.8.0
+## Version: v1.8.1
 ## X-Curse-Project-ID: 322865
 ## X-Wago-ID: vEGPdkG1
 

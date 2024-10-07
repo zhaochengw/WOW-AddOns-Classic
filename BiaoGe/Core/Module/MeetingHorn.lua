@@ -77,7 +77,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
         local t = f:CreateFontString()
         t:SetPoint("BOTTOM", f, "TOP", 0, 0)
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB("FFFFFF"))
         t:SetText(L["< 历史搜索记录 >"])
 
@@ -366,7 +366,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         -- 标题
         local t = f:CreateFontString()
         t:SetPoint("TOP", 0, -5)
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB("FFFFFF"))
         t:SetText(L["< 密语模板 >"])
 
@@ -441,7 +441,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             }
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", 15, -30)
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(RGB(BG.g1))
             t:SetText(L["成就"])
             AchievementTitle = t
@@ -454,7 +454,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
 
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", AchievementTitle, "BOTTOMLEFT", 0, -8)
-            t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             t:SetTextColor(RGB("FFFFFF"))
             t:SetText(L["成就ID："])
             AchievementTitleID = t
@@ -564,7 +564,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             else
                 t:SetPoint("TOPLEFT", AchievementCheckButton, "BOTTOMLEFT", 0, -5)
             end
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(RGB(BG.g1))
             t:SetText(L["装等"])
             iLevelTitle = t
@@ -615,7 +615,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
         do
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", iLevelCheckButton, "BOTTOMLEFT", 0, -5)
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(RGB(BG.g1))
             t:SetText(L["自定义文本"])
             otherTitle = t
@@ -1176,8 +1176,8 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 end
                 if not name then return end
             else
-                local unit=arg3
-                local _name=arg4
+                local unit = arg3
+                local _name = arg4
                 if unit then
                     name, realm = UnitName(unit)
                 elseif _name then

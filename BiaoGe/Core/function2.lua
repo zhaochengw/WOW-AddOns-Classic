@@ -326,7 +326,7 @@ end
 
 ------------------函数：按职业排序------------------
 function BG.PaiXuRaidRosterInfo(filter)
-    local c = {
+    local tbl =filter or {
         "DEATHKNIGHT", --     "死亡骑士",
         "PALADIN",     --     "圣骑士",
         "WARRIOR",     --     "战士",
@@ -338,30 +338,18 @@ function BG.PaiXuRaidRosterInfo(filter)
         "WARLOCK",     --     "术士",
         "PRIEST",      --     "牧师",
     }
-    local c_guolv = {}
-    if filter and type(filter) == "table" then
-        for i, v in ipairs(filter) do
-            for index, value in ipairs(c) do
-                if v == value then
-                    table.insert(c_guolv, value)
-                end
-            end
-        end
-    else
-        c_guolv = c
-    end
 
-    local re = {}
-    if BG.raidRosterInfo and type(BG.raidRosterInfo) == "table" then
-        for i, v in ipairs(c_guolv) do
-            for index, value in ipairs(BG.raidRosterInfo) do
-                if value.class == v then
-                    table.insert(re, value)
+    local newTbl = {}
+    if type(BG.raidRosterInfo) == "table" then
+        for _, vv in ipairs(tbl) do
+            for _, v in ipairs(BG.raidRosterInfo) do
+                if v.class == vv then
+                    table.insert(newTbl, v)
                 end
             end
         end
     end
-    return re
+    return newTbl
 end
 
 ------------------函数：装备缓存本地化------------------
@@ -401,7 +389,7 @@ do
 
         local text = f:CreateFontString()
         text:SetPoint("TOP", 0, -10)
-        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         text:SetText(L["拾取记录"])
 
         local w = f:GetWidth() - 15
@@ -422,7 +410,7 @@ do
         local texts = {}
         for _, v in ipairs(BiaoGe[FB]["boss" .. b]["loot" .. i]) do
             local t = child:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             if #texts == 0 then
                 t:SetPoint("TOPLEFT", 0, 0)
             else
@@ -437,13 +425,13 @@ do
             tinsert(texts, t)
 
             local t = child:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             t:SetPoint("TOPRIGHT", texts[#texts], "BOTTOMRIGHT", 0, 0)
             t:SetHeight(15)
             t:SetText("x" .. v.count)
 
             local t = child:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
             t:SetPoint("TOPLEFT", texts[#texts], "BOTTOMLEFT", 0, 0)
             t:SetHeight(15)
             t:SetText("|c" .. select(4, GetClassColor(v.class)) .. v.player .. RR)
@@ -575,7 +563,7 @@ do
             f:SetSize(300, 150)
             local text = f:CreateFontString()
             text:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -10)
-            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             text:SetWidth(f:GetWidth() - 10)
             text:SetJustifyH("LEFT")
             text:SetText(BG.STC_w1(L["|cff00BFFF由于该BOSS未有具体掉落列表，如果你想手动添加装备，可以使用以下方法：|r\n\n第一种：从背包把装备拖进表格\n\n第二种：先点击一个表格格子，然后SHIFT+点击聊天框/背包装备"]))
@@ -592,7 +580,7 @@ do
         -- 提示文字
         local text = f:CreateFontString()
         text:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 3, 0)
-        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         text:SetJustifyH("LEFT")
         if self.hopenandu then
             text:SetText(BG.STC_w1(L["（SHIFT+点击发送装备，CTRL+点击查看该部位的其他可选装备）"]))
@@ -754,7 +742,7 @@ function BG.LevelText(bt, level, typeID)
         local f = CreateFrame("Frame", nil, bt)
         f:SetPoint("RIGHT", 0, 0)
         f.text = f:CreateFontString()
-        f.text:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
+        f.text:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
         f.text:SetTextColor(RGB("A9A9A9", 0.8))
         f:SetSize(f.text:GetWidth(), 20)
         bt.levelText = f
@@ -810,7 +798,7 @@ function BG.LootedText(bt)
     f:Hide()
     f.text = f:CreateFontString()
     f.text:SetPoint("RIGHT")
-    f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     f.text:SetTextColor(RGB(BG.dis))
     f.text:SetText(L["已掉落"])
     f:SetSize(f.text:GetWidth(), 15)
@@ -837,7 +825,7 @@ function BG.CreateGuanZhuButton(bt, _type)
     f:Hide()
     f.text = f:CreateFontString()
     f.text:SetPoint("CENTER")
-    f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     f.text:SetTextColor(RGB(BG.b1))
     f.text:SetText(L["关注"])
     f:SetWidth(f.text:GetWrappedWidth())
@@ -888,7 +876,7 @@ function BG.CreateQiankuanButton(bt, _type)
     f:Hide()
     f.text = f:CreateFontString()
     f.text:SetPoint("CENTER")
-    f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     f.text:SetTextColor(RGB(BG.r1))
     f.text:SetText(L["欠"])
     f:SetWidth(f.text:GetWrappedWidth())
@@ -931,29 +919,29 @@ end
 function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
     if BG.FrameMaijiaList then BG.FrameMaijiaList:Hide() end
     -- 背景框
-    local frame = BG.MainFrame
-    BG.FrameMaijiaList = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    BG.FrameMaijiaList:SetWidth(395)
-    BG.FrameMaijiaList:SetHeight(230)
-    BG.FrameMaijiaList:SetFrameLevel(120)
-    BG.FrameMaijiaList:SetBackdrop({
+    local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+    f:SetWidth(395)
+    f:SetHeight(230)
+    f:SetFrameLevel(120)
+    f:SetBackdrop({
         bgFile = "Interface/ChatFrame/ChatFrameBackground",
         edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
         edgeSize = 16,
         insets = { left = 3, right = 3, top = 3, bottom = 3 }
     })
-    BG.FrameMaijiaList:SetBackdropColor(0, 0, 0, 0.8)
-    BG.FrameMaijiaList:SetPoint("TOPLEFT", maijia, "BOTTOMLEFT", -9, 2)
-    BG.FrameMaijiaList:EnableMouse(true)
-    BG.FrameMaijiaList:SetClampedToScreen(true)
+    f:SetBackdropColor(0, 0, 0, 0.8)
+    f:SetPoint("TOPLEFT", maijia, "BOTTOMLEFT", -9, 2)
+    f:EnableMouse(true)
+    f:SetClampedToScreen(true)
+    BG.FrameMaijiaList = f
 
     -- 下拉列表
     local framedown
-    local frameright = BG.FrameMaijiaList
+    local frameright = f
     local raid = BG.PaiXuRaidRosterInfo(filter)
     for t = 1, 4 do
         for i = 1, 10 do
-            local bt = CreateFrame("EditBox", nil, BG.FrameMaijiaList, "InputBoxTemplate")
+            local bt = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
             bt:SetSize(90, 20)
             bt:SetFrameLevel(125)
             bt:SetAutoFocus(false)
@@ -1016,7 +1004,7 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
                             end
                         end
                     end
-                    BG.FrameMaijiaList:Hide()
+                    f:Hide()
                     if clearFocus then
                         if BG.lastfocus then
                             BG.lastfocus:ClearFocus()
@@ -1244,7 +1232,7 @@ do
 
         local t = f:CreateFontString()
         t:SetPoint("TOP", f, "TOP", 0, -10)
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetText(L["欠款金额"])
         t:SetTextColor(1, 0, 0)
         t:SetWidth(f:GetWidth() - 5)
@@ -1300,7 +1288,7 @@ do
         if tradeInfo then
             local t = f:CreateFontString()
             t:SetPoint("TOP", edit, "BOTTOM", 0, -15)
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetText(L["打包交易"])
             t:SetTextColor(0, 1, 0)
             t:SetWidth(BG.FrameJineList:GetWidth() - 5)
@@ -1427,99 +1415,6 @@ local function FrameDongHua(frame, h2, w2)
     end
 end
 ns.FrameDongHua = FrameDongHua
-
-------------------函数：清空表格------------------
-function BG.QingKong(_type, FB)
-    if not FB then return end
-    if _type == "biaoge" then
-        for b = 1, Maxb[FB] do
-            for i = 1, Maxi[FB] + 10 do
-                -- 表格
-                if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
-                    BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
-                    BG.Frame[FB]["boss" .. b]["maijia" .. i]:SetText("")
-                    BG.Frame[FB]["boss" .. b]["jine" .. i]:SetText("")
-                    BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
-                    BG.Frame[FB]["boss" .. b]["guanzhu" .. i]:Hide()
-                end
-                BiaoGe[FB]["boss" .. b]["zhuangbei" .. i] = nil
-                BiaoGe[FB]["boss" .. b]["maijia" .. i] = nil
-                BiaoGe[FB]["boss" .. b]["jine" .. i] = nil
-                BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
-                BiaoGe[FB]["boss" .. b]["guanzhu" .. i] = nil
-                BiaoGe[FB]["boss" .. b]["loot" .. i] = nil
-                for k, v in pairs(BG.playerClass) do
-                    BiaoGe[FB]["boss" .. b][k .. i] = nil
-                end
-                -- 对账
-                if BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i] then
-                    BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
-                    BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]:SetText("")
-                end
-            end
-            if BG.Frame[FB]["boss" .. b]["time"] then
-                BG.Frame[FB]["boss" .. b]["time"]:SetText("")
-                BiaoGe[FB]["boss" .. b]["time"] = nil
-            end
-        end
-        for i = 1, Maxi[FB] + 10 do -- 清空支出
-            if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
-                if BiaoGe.options["retainExpenses"] ~= 1 then
-                    BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetText("")
-                    BiaoGe[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] = nil
-                end
-                if not (BiaoGe.options["retainExpenses"] == 1 and BiaoGe.options["retainExpensesMoney"] == 1) then
-                    BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetText("")
-                    BiaoGe[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] = nil
-                end
-                BG.Frame[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i]:SetText("")
-                BiaoGe[FB]["boss" .. Maxb[FB] + 1]["maijia" .. i] = nil
-            end
-        end
-        BiaoGe[FB].tradeTbl = {}
-        BiaoGe[FB].lockoutIDtbl = nil
-        BiaoGe[FB].raidRoster = nil
-        BiaoGe[FB].auctionLog = nil
-        BG.UpdateAuctionLogFrame()
-        BG.UpdateLockoutIDText()
-        BG.auctionLogFrame.changeFrame:Hide()
-
-        local num -- 分钱人数
-        if BG.IsVanilla then
-            num = BG.GetFBinfo(FB, "maxplayers") or 10
-        else
-            num = 25
-            local nanduID = GetRaidDifficultyID()
-            if nanduID == 3 or nanduID == 175 then
-                num = BiaoGe.options["10MaxPlayers"] or 10
-            elseif nanduID == 4 or nanduID == 176 then
-                num = BiaoGe.options["25MaxPlayers"] or 25
-            elseif nanduID == 5 or nanduID == 193 then
-                num = BiaoGe.options["10MaxPlayers"] or 10
-            elseif nanduID == 6 or nanduID == 194 then
-                num = BiaoGe.options["25MaxPlayers"] or 25
-            end
-        end
-        if BiaoGe.options["QingKongPeople"] == 1 then
-            BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:SetText(num)
-            BiaoGe[FB]["boss" .. Maxb[FB] + 2]["jine4"] = num
-        end
-        return num
-    elseif _type == "hope" then
-        for n = 1, 4 do
-            for b = 1, Maxb[FB] - 1 do
-                for i = 1, HopeMaxi do
-                    if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
-                        BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:SetText("")
-                        BiaoGe.Hope[RealmId][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = nil
-                    end
-                end
-            end
-        end
-        BG.UpdateItemLib_LeftHope_HideAll()
-        BG.UpdateItemLib_RightHope_HideAll()
-    end
-end
 
 ------------------获取玩家所在的团队框体位置（例如5-2）------------------
 function BG.GetRaidWeiZhi()
@@ -1711,7 +1606,7 @@ function BG.JiaoHuan(button, FB, b, i, t)
 
             local text = BG.copy2.btzhuangbei:CreateFontString()
             text:SetPoint("RIGHT", BG.copy2.btzhuangbei, "LEFT", -5, 0)
-            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             text:SetText(BG.STC_b1(L["交换成功"]))
             C_Timer.After(1, function()
                 BG.DongHuaAlpha(text)

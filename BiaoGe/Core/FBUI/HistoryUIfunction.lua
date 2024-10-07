@@ -45,7 +45,7 @@ local function ShowTardeHighLightItem(self)
                         f:SetPoint("TOPLEFT", zb, "TOPLEFT", 0, 0)
                         f:SetPoint("BOTTOMRIGHT", jine, "BOTTOMRIGHT", 0, 0)
                         local t = f:CreateFontString()
-                        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                         t:SetPoint("LEFT", jine, "RIGHT", 2, 0)
                         t:SetTextColor(0, 1, 0)
                         t:SetText(L["打包交易"])
@@ -65,7 +65,7 @@ function BG.HistoryBiaoTiUI(FB, t)
     else
         version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
     end
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["  项目"])
     version:Show()
@@ -73,7 +73,7 @@ function BG.HistoryBiaoTiUI(FB, t)
 
     local version = BG["HistoryFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0);
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["装备"])
     version:Show()
@@ -82,7 +82,7 @@ function BG.HistoryBiaoTiUI(FB, t)
 
     local version = BG["HistoryFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0);
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["买家"])
     version:Show()
@@ -90,7 +90,7 @@ function BG.HistoryBiaoTiUI(FB, t)
 
     local version = BG["HistoryFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0);
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["金额"])
     version:Show()
@@ -266,14 +266,14 @@ function BG.HistoryBossNameUI(FB, t, b, bb, i, ii, frameName)
     else
         version:SetPoint("TOP", BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
     end
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
     version:SetText(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name)
     BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)]["name"] = version
     if BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)] == BG.HistoryFrame[FB]["boss" .. Maxb[FB] + 2] then
         local version = BG["HistoryFrame" .. FB]:CreateFontString()
         version:SetPoint("BOTTOM", BG.HistoryFrame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB("00BFFF"))
         version:SetText(L["工\n资"])
     end
@@ -291,7 +291,7 @@ function BG.HistoryJiShaUI(FB, t, b, bb, i, ii)
         end
     end
     text:SetPoint("TOPLEFT", BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. num], "BOTTOMLEFT", -0, -3)
-    text:SetFont(BIAOGE_TEXT_FONT, 10, "OUTLINE,THICK")
+    text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE,THICK")
     text:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
     text:SetAlpha(0.8)
     BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)]["time"] = text

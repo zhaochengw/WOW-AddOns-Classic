@@ -114,7 +114,7 @@ local function GetkExchangeItemInfo(itemID) -- 获取兑换物对应物品的ID�
 end
 local function CreateLoadingText()
     local t = BG.ItemLibMainFrame.bg1:CreateFontString()
-    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     t:SetPoint("TOP", BG.ItemLibMainFrame.bg1, 0, -40)
     t:SetText(L["读取中..."])
     return t
@@ -995,7 +995,7 @@ local function SetItemLib(num, itemtbale)
             f.itemLink = vv.link
             BG.ItemLibMainFrame[num].buttoncount = ii
             f.Text = f:CreateFontString()
-            f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             f.Text:SetPoint("CENTER")
             f.Text:SetTextColor(RGB(title_table[i].color))
             f.Text:SetJustifyH(title_table[i].JustifyH)
@@ -1161,7 +1161,7 @@ local function SetItemLib(num, itemtbale)
                 local t = frame:CreateFontString()
                 t:SetPoint("RIGHT")
                 t:SetSize(50, 20)
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetTextColor(RGB(BG.y2))
                 t:SetText(BG.STC_g1(L["心愿"]))
                 t:SetJustifyH("RIGHT")
@@ -1236,7 +1236,7 @@ local function UpdateTiptext(num, itemtbale)
 
     if not BG.ItemLibMainFrame[num].notUpdateDBText then
         local t = BG.ItemLibMainFrame[num]:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("TOPLEFT", BG.ItemLibMainFrame[num]["title" .. 3], "BOTTOMLEFT", 0, -30)
         t:SetTextColor(1, 0, 0)
         t:SetText(L["作者不再更新该版本及后续版本的装备库，实在抱歉。"])
@@ -1276,7 +1276,7 @@ local function UpdateItemLib(num, EquipLocs)
     SetItemLib(num, itemtbale)
     UpdateTiptext(num, itemtbale)
 end
-function BG.UpdateAllItemLib(num,first)
+function BG.UpdateAllItemLib(num, first)
     if not BG.ItemLibMainFrame:IsVisible() and not first then return end
     BG.itemLibNeedUpdate = false
     local num = num or 1
@@ -1301,7 +1301,7 @@ function BG.CacheAndUpdateAllItemLib()
 
     BG.After(0.5, function()
         t:Hide()
-        BG.UpdateAllItemLib(nil,true)
+        BG.UpdateAllItemLib(nil, true)
         BG.UpdateItemLib_RightHope_All()
         BG.UpdateItemLib_RightHope_IsHaved_All()
         BG.UpdateItemLib_RightHope_IsLooted_All()
@@ -1871,7 +1871,7 @@ function BG.ItemLibUI()
             end)
 
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", f, "TOP", 0, -10)
             t:SetTextColor(RGB("FFD100"))
             t:SetText(L["获取途径显示"])
@@ -1917,20 +1917,20 @@ function BG.ItemLibUI()
 
         -- 头顶大标题
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("BOTTOM", BG.ItemLibMainFrame.bg1, "TOP", 0, 0)
         BG.ItemLibMainFrame[num]["toptitle"] = t
 
         -- 没有合适的装备
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("TOPLEFT", BG.ItemLibMainFrame[num]["title" .. 3], "BOTTOMLEFT", 0, -5)
         t:SetTextColor(RGB(BG.dis))
         BG.ItemLibMainFrame[num]["noItem"] = t
 
         -- 过滤方案
         local t = BG.ItemLibMainFrame:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("RIGHT", BG.FilterClassItemMainFrame.Buttons2, "LEFT", -10, 0)
         t:SetText(L["过滤方案："])
         t:SetTextColor(1, 0.82, 0)
@@ -2049,13 +2049,13 @@ function BG.ItemLibUI()
 
         -- 头顶大标题
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("BOTTOM", BG.ItemLibMainFrame.Hope, "TOP", 0, 0)
         t:SetText(L["心愿汇总"])
         t:SetTextColor(RGB(BG.b1))
         -- 底下提示文字
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         t:SetPoint("TOP", BG.ItemLibMainFrame.Hope, "BOTTOM", 0, 0)
         t:SetText(L["（右键删除心愿装备）"])
 
@@ -2080,7 +2080,7 @@ function BG.ItemLibUI()
                 f:SetPoint("LEFT", right, "RIGHT", w_jiange, 0)
             end
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("CENTER")
             t:SetText(title_table[i].name)
             t:SetTextColor(RGB(title_table[i].color))

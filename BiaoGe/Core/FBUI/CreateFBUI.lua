@@ -30,7 +30,7 @@ if BG.IsVanilla_Sod then
     buttonCount.MCsod = { 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 6, 11, 10, 10, 11, 6, }
     buttonCount.ZUGsod = { 4, 4, 4, 4, 4, 4, 4, 4, 4, 9, 10, 6, }
     BG.zaxiang.ZUGsod = { i = 5 }
-    buttonCount.BWLsod = { 4, 4, 4, 4, 8, 6, 14, 6, 7, 5, }
+    buttonCount.BWLsod = { 4, 4, 4, 4, 8, 5, 17, 4, 7, 5, }
 elseif BG.IsVanilla_60 then
     buttonCount.MC = { 3, 3, 3, 4, 3, 3, 3, 4, 4, 5, 8, 11, 15, }
     buttonCount.BWL = { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, }

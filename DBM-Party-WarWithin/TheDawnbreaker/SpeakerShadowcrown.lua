@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2580, "DBM-Party-WarWithin", 5, 1270)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240930055012")
+mod:SetRevision("20241005081330")
 mod:SetCreatureID(211087)
 mod:SetEncounterID(2837)
-mod:SetHotfixNoticeRev(20240818000000)
-mod:SetMinSyncRevision(20240706000000)
+mod:SetHotfixNoticeRev(20241005000000)
+mod:SetMinSyncRevision(20241005000000)
 --mod.respawnTime = 29
 mod.sendMainBossGUID = true
 
@@ -259,6 +259,9 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 453859 then
 		timerDarknessComes:Stop(args.destName)
 		if self.vb.darknessCount == 1 then--First one at 50%
+			self.vb.shadowsCount = 0
+			self.vb.obsidianCount = 0
+			self.vb.collapsingCount = 0
 			self:SetStage(2)
 			--Restart timers
 			if self:IsMythic() then

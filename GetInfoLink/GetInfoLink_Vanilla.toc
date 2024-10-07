@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with GetInfoLink.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 11503
+## Interface: 11502
 ## Author: Char11e
-## Version: v0.0.9
+## Version: v0.1.0
 ## X-Curse-Project-ID: 861768
 ## DefaultState: disabled
 ## IconTexture: Interface/AddOns/GetInfoLink/Icon/getinfolink

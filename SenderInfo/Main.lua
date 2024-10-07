@@ -42,6 +42,7 @@ local sendSelfMSG_GUILD = true;--公会频道 可以发送
 local sendSelfChatType = ""; ---发送的位置
 
 local joinGroupNotify = true; --加入通知
+local JoinSystemMessage = false; --加入通知仅自己可见
 local leaderNotify = true; --只有是队长/团长 助手时才通知
 
 local L = LibStub("AceLocale-3.0"):GetLocale("SenderInfo");
@@ -879,14 +880,16 @@ local function GetNewMsg(msg)
 end
 
 local function SendChatJoinNotify(name,channel,infoStr)
-
     local reportText = format("欢迎加入: %s ", infoStr)
 
-    if __private.View.Cfg.Push then
-        reportText = "[SenderInfo]" .. reportText;
+    if JoinSystemMessage then
+        SendSystemMessage(reportText);
+    else
+        if __private.View.Cfg.Push then
+            reportText = "[SenderInfo]" .. reportText;
+        end
+        SendChatMessage(reportText, channel)
     end
-
-    SendChatMessage(reportText, channel)
 
     allNotify[name] = nil;
 end
@@ -940,7 +943,7 @@ local function OnUpdate()
             --如果是入队通知
             for qName, channel in pairs(allQueryRequest) do
                 if qName == name  then
-                    SendChatJoinNotify(name,channel,allNotify[name]);
+                    SendChatJoinNotify(name,channel,JoinSystemMessage and msg or allNotify[name]);
                     allQueryRequest[name] = nil;
                     ClearData(name);
                     return;
@@ -956,7 +959,9 @@ local function OnUpdate()
                 SendChatMessage(newMsg,sendSelfChatType,nil,selfChat);
             else
 
-                __private.InviteTeamView:Add(name,msg);
+                if __private.InviteTeamView then
+                    __private.InviteTeamView:Add(name,msg);
+                end
 
                 if infoShowToSystem then  --信息显示在系统频道  还是 聊天频道 (私聊对方)
                     SendSystemMessage(msg);
@@ -1110,6 +1115,10 @@ function Main:ChangeJoinGroupNotify(value)
     joinGroupNotify = value;
 end
 
+function Main:ChangeJoinSystemMessage(value)
+    JoinSystemMessage = value;
+end
+
 function Main:ChangeLeaderNotify(value)
     leaderNotify = value;
 end
@@ -1164,8 +1173,9 @@ function Main:Init()
     infoShowToSystem = cfg.InfoShowToSystem;
     showIntervalTime = cfg.ShowIntervalTime;
 
-    joinGroupNotify = cfg.JoinGroupNotify
-    leaderNotify = cfg.LeaderNotify
+    joinGroupNotify = cfg.JoinGroupNotify;
+    JoinSystemMessage = cfg.JoinSystemMessage;
+    leaderNotify = cfg.LeaderNotify;
 
     WhiteEquipColourLevel = cfg.WhiteEquipColourLevel;
     GreenEquipColourLevel = cfg.GreenEquipColourLevel;

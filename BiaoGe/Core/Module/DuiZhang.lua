@@ -268,7 +268,7 @@ function BG.DuiZhangUI()
 
     local text = dropDown:CreateFontString()
     text:SetPoint("RIGHT", dropDown, "LEFT", 10, 3)
-    text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     text:SetTextColor(RGB(BG.y2))
     text:SetText(BG.STC_g1(L["对比的账单："]))
     BG.DuiZhangDropDown.BiaoTi = text
@@ -499,7 +499,7 @@ function BG.DuiZhangUI()
         end)
 
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("BOTTOM", f, "TOP", 0, 0)
         t:SetText(L["账单聊天记录"])
     end

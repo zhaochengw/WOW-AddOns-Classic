@@ -8,7 +8,7 @@ else
 	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20240812045014")
+mod:SetRevision("20241005015633")
 mod:SetCreatureID(39625)
 mod:SetEncounterID(1051)
 mod:SetHotfixNoticeRev(20240812000000)
@@ -54,6 +54,7 @@ if not mod:IsCata() then
 			specWarnCommandingRoar:Play("breathsoon")
 			timerCommandingRoarCD:Start(nil, self.vb.roarCount+1)
 		elseif args.spellId == 448877 then
+			self.vb.spikeCount = self.vb.spikeCount + 1
 			specWarnRockSpike:Show(self.vb.spikeCount)
 			specWarnRockSpike:Play("watchstep")
 			timerRockSpikeCD:Start(nil, self.vb.spikeCount+1)

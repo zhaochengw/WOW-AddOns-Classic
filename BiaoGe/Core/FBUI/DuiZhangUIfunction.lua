@@ -74,14 +74,14 @@ function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
         else
             version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 105, 0)
         end
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.y2))
         version:SetText(L["  项目"])
         preWidget = version
 
         local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
         version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.y2))
         version:SetText(L["装备"])
         preWidget = version
@@ -89,7 +89,7 @@ function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
 
         local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
         version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.y2))
         version:SetText(L["我的金额"])
         version:SetTextColor(RGB("00BFFF"))
@@ -97,7 +97,7 @@ function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
 
         local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
         version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 90, 0);
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.y2))
         version:SetText(L["对方金额"])
         version:SetTextColor(RGB("FF69B4"))
@@ -392,7 +392,7 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
         ShowTardeHighLightItem_OtherJine(self)
 
         local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
-        local color=BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
+        local color = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
         if maijia and color and self:GetText() ~= "" then
             local r, g, b = unpack(color)
             if BG.ButtonIsInRight(self) then
@@ -436,7 +436,7 @@ function BG.DuiZhangBossNameUI(FB, t, b, bb, i, ii)
     local b = BossNum(FB, b, t)
     local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
     version:SetPoint("TOP", BG.DuiZhangFrame[FB]["boss" .. b].zhuangbei1, "TOPLEFT", -45, -2)
-    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     if b == Maxb[FB] then
         version:SetText(BG.STC_r1(L["你\n漏\n记\n的\n装\n备"]))
@@ -449,7 +449,7 @@ function BG.DuiZhangBossNameUI(FB, t, b, bb, i, ii)
     if BG.DuiZhangFrame[FB]["boss" .. b] == BG.DuiZhangFrame[FB]["boss" .. Maxb[FB] + 2] then
         local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
         version:SetPoint("BOTTOM", BG.DuiZhangFrame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
-        version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB("00BFFF"))
         version:SetText(L["工\n资"])
     end

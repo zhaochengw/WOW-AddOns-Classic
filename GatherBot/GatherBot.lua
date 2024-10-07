@@ -13,7 +13,7 @@ Addon.Frame = CreateFrame("Frame", nil, UIParent)
 local Frame = Addon.Frame
 
 -- Version String
-Addon.Version = GetAddOnMetadata(AddonName, "Version")
+Addon.Version = C_AddOns.GetAddOnMetadata(AddonName, "Version")
 
 -- GUI and MinimapButton
 Addon.SetWindow = {}
@@ -27,7 +27,7 @@ local Default = {
     ["Enabled"] = false,
     ["MountSwitch"] = true,
     ["SwitchTime"] = 5,
-    ["Standby"] = false,
+    ["Always"] = false,
     ["MountedCombat"] = true,
     ["MinimapIconAngle"] = 355,
     ["SwitchSpells"] = {
@@ -84,7 +84,7 @@ function Addon:GetCurrentSpells()
             TrackingSpellsInTable[i] = k
             i = i + 1
         end
-        Addon.TrackingSpellsNum = i - 1
+        Addon.TrackingSpellsNum = #TrackingSpellsInTable
     end
 end
 -- Show Spell Table
@@ -117,7 +117,7 @@ do
     local Tracking = 1
 
     local function OnUpdate(self, lastupdate)
-        if Addon.TrackingSpellsNum <= 1 then
+        if not Config.Enabled or Addon.TrackingSpellsNum <= 1 then
             Frame:Hide()
             return
         end
@@ -133,11 +133,12 @@ do
             return
         end
         LastScan = NowScan
-        if not Config.Standby then
+        if not Config.Always then
             if not IsMoving  then
                 return
             end
         end
+--[[        
         if UnitAffectingCombat("player") then
             if not Config.MountedCombat then
                 return
@@ -147,6 +148,7 @@ do
                 end
             end
         end
+]]
         if Tracking > Addon.TrackingSpellsNum then
             Tracking = 1
         end
@@ -217,17 +219,23 @@ function Frame:PLAYER_LEAVING_WORLD()
     -- Save Config Variables
     GatherBotDB = {}
     Addon:UpdateTable(GatherBotDB, Config)
+    if Addon.LDB and Addon.LDBIcon then
+        GatherBotDB.MinimapIconAngle = MinimapIcon.minimap.minimapPos
+    end
 end
 function Frame:PLAYER_LOGOUT()
     -- Save Config Variables
     GatherBotDB = {}
     Addon:UpdateTable(GatherBotDB, Config)
+    if Addon.LDB and Addon.LDBIcon then
+        GatherBotDB.MinimapIconAngle = MinimapIcon.minimap.minimapPos
+    end
 end
 
 function Frame:PLAYER_ENTERING_WORLD(isLogin, isReload)
     -- Initialize MinimapButton
     if isLogin or isReload then
-        if Addon.LDB and Addon.LDBIcon and ((IsAddOnLoaded("TitanClassic")) or (IsAddOnLoaded("Titan"))) then
+        if Addon.LDB and Addon.LDBIcon then
             MinimapIcon:InitBroker()
         else
             -- 初始化小地图按钮

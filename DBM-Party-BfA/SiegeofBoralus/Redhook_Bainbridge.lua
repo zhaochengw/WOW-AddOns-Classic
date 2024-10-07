@@ -7,7 +7,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-Party-BfA", 5, 1023)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241002054921")
+mod:SetRevision("20241003211618")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2098, 2097)--Redhook, Bainbridge
 mod:SetHotfixNoticeRev(20240613000000)
@@ -97,7 +97,7 @@ function mod:OnCombatStart(delay)
 		--timerIronGazeCD:Start(1-delay)
 		--timerSteelTempestCD:Start(1-delay)
 	--end
-	timerCannonBarrageCD:Start(10.9-delay, 1)
+	timerCannonBarrageCD:Start(10.1-delay, 1)
 	self:Schedule(1.5, checkWhichBoss, self)
 end
 

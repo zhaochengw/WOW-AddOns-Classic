@@ -108,7 +108,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end)
 
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("TOP", f, "TOP", 0, -5)
         t:SetText(L["装备过期剩余时间"])
     end
@@ -194,7 +194,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if ii > maxButton then
                 local lastbt = BG.itemGuoQiFrame.buttons[ii - 1]
                 local t = lastbt:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("TOPLEFT", lastbt, "BOTTOMLEFT", 0, 0)
                 t:SetJustifyH("LEFT")
                 t:SetTextColor(1, 0.82, 0)
@@ -258,7 +258,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             icon:SetTexture(select(5, GetItemInfoInstant(link)))
 
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("LEFT", 18, 0)
             t:SetJustifyH("LEFT")
             t:SetText(link)
@@ -278,7 +278,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
 
             local t = sb:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             t:SetPoint("LEFT", sb:GetWidth() * time / 120, 0)
             t:SetText(time .. "m")
             if time >= 30 then
@@ -289,7 +289,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end
         if #BG.itemGuoQiFrame.tbl == 0 then
             local t = BG.itemGuoQiFrame:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", f, "TOP", 0, -30)
             t:SetWidth(BG.itemGuoQiFrame:GetWidth() - 20)
             t:SetText(L["背包里没有可交易的装备。"])

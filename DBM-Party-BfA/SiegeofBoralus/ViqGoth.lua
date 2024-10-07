@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2140, "DBM-Party-BfA", 5, 1023)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241002054921")
+mod:SetRevision("20241005081330")
 mod:SetCreatureID(120553)
 mod:SetEncounterID(2100)
 --mod:SetHotfixNoticeRev(20230516000000)
@@ -48,7 +48,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(seenAdds)
 	self:SetStage(1)
 	self.vb.watersCount = 0
-	timerPutridWatersCD:Start(3.2-delay, 1)
+	timerPutridWatersCD:Start(3-delay, 1)
 	timerCalloftheDeepCD:Start(6.3-delay)
 	--timerDemolisherTerrorCD:Start(19.9-delay, 1)--Should be started by IEEU event
 	if self.Options.RangeFrame then

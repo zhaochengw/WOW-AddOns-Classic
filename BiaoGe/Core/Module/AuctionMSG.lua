@@ -593,7 +593,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
         end
 
         local t = BG.FrameAuctionMSG:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
         t:SetPoint("TOPRIGHT", BG.FrameAuctionMSG, "BOTTOMRIGHT", 5, -7)
         t:SetTextColor(1, 0.82, 0)
         t:SetJustifyH("LEFT")

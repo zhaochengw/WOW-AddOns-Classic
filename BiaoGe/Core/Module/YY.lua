@@ -82,7 +82,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 大标题：新增评价
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 新增评价 >"])
@@ -96,36 +96,24 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 小标题
         do
             local text_table = {
-                { name = "YY:" },
-                { name = L["备注:"], onenter = L["备注仅自己可见。"] },
-                { name = L["评价:"] },
-                { name = L["理由:"] }
+                { name = L["YY："] },
+                { name = L["备注："] },
+                { name = L["评价："] },
+                { name = L["理由："] }
             }
             for i, v in ipairs(text_table) do
                 local f = CreateFrame("Frame", nil, BG.YYMainFrame.new)
-                f:SetPoint("TOPLEFT", 5, -15 - height * (i - 1))
+                f:SetPoint("TOPLEFT", 10, -15 - height * (i - 1))
                 f:SetSize(90, 20)
                 f.Text = f:CreateFontString()
-                f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 f.Text:SetTextColor(RGB(BG.y2))
                 f.Text:SetAllPoints()
                 f.Text:SetWordWrap(false) -- 截断
                 f.Text:SetText(v.name)
-                f.Text:SetTextColor(RGB("FFFF00"))
+                f.Text:SetTextColor(1, 1, 0)
                 f.Text:SetJustifyH("RIGHT")
                 tinsert(Y.textcolor_table, f.Text)
-                if v.onenter then
-                    f:SetScript("OnEnter", function(self)
-                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-                        GameTooltip:ClearLines()
-                        GameTooltip:AddLine(v.name, 1, 1, 1, true)
-                        GameTooltip:AddLine(v.onenter, 1, .82, 0, true)
-                        GameTooltip:Show()
-                    end)
-                    f:SetScript("OnLeave", function(self)
-                        GameTooltip:Hide()
-                    end)
-                end
             end
         end
         -- YY号
@@ -135,7 +123,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             edit:SetPoint("TOPLEFT", 110, -15 - height * n)
             edit:SetAutoFocus(false)
             edit:SetNumeric(true)
-            edit:SetTextColor(RGB("FFFF00"))
+            edit:SetTextColor(1, 1, 0)
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.yy = edit
             n = n + 1
@@ -186,19 +174,22 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
             end)
         end
-        -- 频道名称
+        -- 备注
         do
             local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.new, "InputBoxTemplate")
             edit:SetSize(150, 20)
             edit:SetPoint("TOPLEFT", 110, -15 - height * n)
             edit:SetAutoFocus(false)
-            edit:SetTextColor(RGB("FFFF00"))
+            edit:SetTextColor(1, 1, 0)
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.name = edit
             n = n + 1
             local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
             t:SetPoint("LEFT", 3, 0)
-            t:SetText(L["选填"])
+            t:SetText(L["选填（仅自己可见）"])
+            t:SetJustifyH("LEFT")
+            t:SetWidth(edit:GetWidth() - 5)
+            t:SetWordWrap(false)
             edit:SetScript("OnEditFocusGained", function(self)
                 BG.lastfocus = self
             end)
@@ -248,7 +239,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.YYMainFrame.new.pingjiaButtons[i] = bt
 
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetTextColor(RGB(BG.y2))
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name)
@@ -293,8 +284,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             edit:EnableMouse(true)
             edit:SetTextInsets(0, 10, 0, 5)
             edit:SetMultiLine(true)
-            edit:SetTextColor(RGB("FFFF00"))
-            edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+            edit:SetTextColor(1, 1, 0)
+            edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.edit = edit
             local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
@@ -453,7 +444,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 大标题：我的评价
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 我的评价 >"])
@@ -475,12 +466,12 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.GameTooltip_Hide(bt)
 
         local title_table = {
-            { name = L["序号"], width = 30, color = "FFFFFF" },
+            { name = L["序号"], width = 35, color = "FFFFFF" },
             { name = L["日期"], width = 80, color = "FFFFFF" },
             { name = L["YY"], width = 110, color = "FFFFFF" },
             { name = L["备注"], width = 90, color = "FFFFFF" },
             { name = L["评价"], width = 40, color = "FFFFFF" },
-            { name = L["理由"], width = 210, color = "FFFFFF" },
+            { name = L["理由"], width = 205, color = "FFFFFF" },
         }
 
         -- 标题
@@ -494,7 +485,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f:SetPoint("TOPLEFT", right, "TOPRIGHT", 0, 0)
             end
             right = f
-            f.Text = f:CreateFontString(nil, "ARTWORK", "GameFontWhite")
+            f.Text = f:CreateFontString()
+            f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
             f.Text:SetWidth(f:GetWidth() - 3)
             f.Text:SetPoint("CENTER")
             f.Text:SetText(title_table[i].name)
@@ -566,7 +558,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             -- BG.YYMainFrame.new.yy:SetEnabled(true)
 
             for _, edit in pairs(Y.textcolor_table) do
-                edit:SetTextColor(RGB("FFFF00"))
+                edit:SetTextColor(1, 1, 0)
             end
             BG.ClearFocus()
         end
@@ -659,7 +651,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                     right = f
                     f.num = ii
-                    f.Text = f:CreateFontString(nil, "ARTWORK", "GameFontWhite")
+                    f.Text = f:CreateFontString()
+                    f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                     f.Text:SetWidth(f:GetWidth() - 3)
                     f.Text:SetPoint("CENTER")
 
@@ -670,7 +663,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     f.Text:SetText(i_table[i])
                     -- f.Text:SetTextColor(RGB(PingjiaColor(BiaoGe.YYdb.all[ii].pingjia)))
                     f.Text:SetWordWrap(false) -- 截断
-                    if f.Text:GetStringWidth() + 5 > f:GetWidth() then
+                    if f.Text:GetStringWidth() + 3 > f:GetWidth() then
                         f.onenter = i_table[i]
                     end
                     if i == #title_table then
@@ -711,7 +704,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         -- 下方的提示文字
         local t = BG.YYMainFrame.my:CreateFontString()
         t:SetPoint("TOP", BG.YYMainFrame.my, "BOTTOM", 0, 0)
-        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE") -- 游戏主界面文字
+        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE") -- 游戏主界面文字
         t:SetText(BG.STC_w1(L["（左键修改评价，SHIFT+左键查询大众评价，ALT+右键删除评价）"]))
     end
 
@@ -732,7 +725,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         -- 大标题：查询评价
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 查询大众评价 >"])
@@ -745,7 +738,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f:SetPoint("TOPLEFT", 0, -15)
             f:SetSize(50, 20)
             f.Text = f:CreateFontString()
-            f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             f.Text:SetTextColor(RGB(BG.y2))
             f.Text:SetAllPoints()
             f.Text:SetWordWrap(false) -- 截断
@@ -1007,7 +1000,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             local text = dropDown:CreateFontString()
             text:SetPoint("RIGHT", dropDown, "LEFT", 10, 3)
-            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             text:SetTextColor(RGB(BG.y2))
             text:SetText(L["历史查询："])
             text:SetTextColor(1, 1, 1)
@@ -1031,7 +1024,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.YYMainFrame.resultPingjia = f
 
             f.Text = f:CreateFontString()
-            f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             f.Text:SetTextColor(RGB(BG.y2))
             f.Text:SetPoint("LEFT", 50, 0)
             f.Text:SetText(L["筛选："])
@@ -1056,7 +1049,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 BG.YYMainFrame.resultPingjia.pingjiaButtons[i] = bt
 
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetTextColor(RGB(BG.y2))
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name .. L[" (0个)"])
@@ -1097,11 +1090,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.YYMainFrame.result = f
 
             local title_table = {
-                { name = L["序号"], width = 30, color = "FFFFFF" },
+                { name = L["序号"], width = 35, color = "FFFFFF" },
                 { name = L["日期"], width = 80, color = "FFFFFF" },
                 { name = L["YY"], width = 110, color = "FFFFFF" },
                 { name = L["评价"], width = 40, color = "FFFFFF" },
-                { name = L["理由"], width = 270, color = "FFFFFF" },
+                { name = L["理由"], width = 265, color = "FFFFFF" },
             }
             -- 标题
             local right
@@ -1114,7 +1107,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     f:SetPoint("TOPLEFT", right, "TOPRIGHT", 0, 0)
                 end
                 right = f
-                f.Text = f:CreateFontString(nil, "ARTWORK", "GameFontWhite")
+                f.Text = f:CreateFontString()
+                f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                 f.Text:SetWidth(f:GetWidth() - 3)
                 f.Text:SetPoint("CENTER")
                 f.Text:SetText(title_table[i].name)
@@ -1183,7 +1177,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             end
                             right = f
                             f.num = ii
-                            f.Text = f:CreateFontString(nil, "ARTWORK", "GameFontWhite")
+                            f.Text = f:CreateFontString()
+                            f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                             f.Text:SetWidth(f:GetWidth() - 3)
                             f.Text:SetPoint("CENTER")
 
@@ -1194,7 +1189,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             f.Text:SetText(i_table[i])
                             f.Text:SetTextColor(RGB(Y.PingjiaColor(BiaoGe.YYdb.history[num].all[ii].pingjia)))
                             f.Text:SetWordWrap(false) -- 截断
-                            if f.Text:GetStringWidth() + 5 > f:GetWidth() then
+                            if f.Text:GetStringWidth() + 3 > f:GetWidth() then
                                 f.onenter = i_table[i]
                             end
                             if i == #title_table then
@@ -1242,7 +1237,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local t = f:CreateFontString()
         t:SetPoint("CENTER")
-        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         t:SetText(format(L["你已共享|r |cff00FF00%s|r |cffffffff人次评价"], BiaoGe.YYdb.shareCount))
         f:SetWidth(t:GetStringWidth())
         f:SetHeight(t:GetStringHeight())
@@ -1260,9 +1255,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     ------------------把聊天里的YY转换为链接------------------
     local starttime
     local UpdateFrame = CreateFrame("Frame")
-    Y.yykey = "[yY][yY][：:/%-%s]*([%d%s]*%d+)"
-    Y.yykey2 = "(%d+[%d%s]*)[：:/%-%s]*[yY][yY]"
     do
+        Y.yykey = "[yY][yY][：:/%-%s]*([%d%s]*%d+)"
+        Y.yykey2 = "(%d+[%d%s]*)[：:/%-%s]*[yY][yY]"
+
         local function PingJia(cleanedYY)
             local text = ""
             local yes
@@ -1696,7 +1692,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     insets = { left = 3, right = 3, top = 3, bottom = 3 }
                 })
                 f:SetBackdropColor(0, 0, 0, 0.8)
-                f:SetSize(340, 250)
+                f:SetSize(340, 275)
                 f:SetPoint("TOP", 0, -300)
                 f:SetClampedToScreen(true)
                 f:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -1704,7 +1700,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f:EnableMouse(true)
                 f:SetMovable(true)
                 BG.EndPJ.new = f
-                tinsert(UISpecialFrames, "BG.EndPJ.new") -- 按ESC可关闭插件
                 f:SetScript("OnMouseUp", function(self)
                     self:StopMovingOrSizing()
                 end)
@@ -1714,6 +1709,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end)
                 f:SetScript("OnShow", function()
                     BG.EndPJ.new.yy:SetText("")
+                    BG.EndPJ.new.name:SetText("")
+                    BG.EndPJ.new.edit:SetText("")
                     BG.EndPJ.new.pingjia = 1
                     BG.EndPJ.new.pingjiaButtons[1]:SetChecked(true)
                     BG.EndPJ.new.pingjiaButtons[2]:SetChecked(false)
@@ -1721,7 +1718,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BG.EndPJ.new.buttonsave:SetEnabled(true)
 
                     for _, edit in pairs(BG.EndPJ.textcolor_table) do
-                        edit:SetTextColor(RGB("00FF00"))
+                        edit:SetTextColor(0, 1, 0)
                     end
 
                     -- 历遍团长YY记录
@@ -1734,6 +1731,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end)
                 end)
             end
+            tinsert(UISpecialFrames, "BG.EndPJ.new")
+
             -- 大标题
             do
                 local t = f:CreateTexture(nil, "ARTWORK")
@@ -1744,13 +1743,13 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f.texture = t
 
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetText(L["< 快速评价 >"])
                 t:SetPoint("TOP", f.texture, 0, -12)
                 t:SetTextColor(1, 1, 1)
 
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetText(L["恭喜你们击杀尾王！请给团长个评价吧！"])
                 t:SetPoint("TOP", BG.EndPJ.new, "TOP", 0, -30)
                 t:SetTextColor(1, 1, 1)
@@ -1770,20 +1769,21 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             -- 小标题
             do
                 local text_table = {
-                    { name = "YY:", onenter = L["YY号必填，填写数字"] },
-                    { name = L["评价:"], onenter = L["评价必填，默认中评"] },
-                    { name = L["理由:"], onenter = L["理由选填"] },
+                    { name = L["YY："] },
+                    { name = L["备注："] },
+                    { name = L["评价："] },
+                    { name = L["理由："] },
                 }
                 for i, _ in ipairs(text_table) do
                     local f = CreateFrame("Frame", nil, BG.EndPJ.new)
                     f:SetPoint("TOPLEFT", 5, height_start - height * (i - 1))
-                    f:SetSize(80, 20)
+                    f:SetSize(85, 20)
                     f.Text = f:CreateFontString()
-                    f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     f.Text:SetAllPoints()
                     f.Text:SetWordWrap(false) -- 截断
                     f.Text:SetText(text_table[i].name)
-                    f.Text:SetTextColor(RGB("FFFF00"))
+                    f.Text:SetTextColor(1, 1, 0)
                     f.Text:SetJustifyH("RIGHT")
                     tinsert(BG.EndPJ.textcolor_table, f.Text)
                 end
@@ -1795,7 +1795,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 edit:SetPoint("TOPLEFT", 100, height_start - height * n)
                 edit:SetAutoFocus(false)
                 edit:SetNumeric(true)
-                edit:SetTextColor(RGB("FFFF00"))
+                edit:SetTextColor(1, 1, 0)
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.yy = edit
                 n = n + 1
@@ -1841,6 +1841,49 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                 end)
             end
+            -- 备注
+            do
+                local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "InputBoxTemplate")
+                edit:SetSize(190, 20)
+                edit:SetPoint("TOPLEFT", 100, height_start - height * n)
+                edit:SetAutoFocus(false)
+                edit:SetTextColor(1, 1, 0)
+                tinsert(BG.EndPJ.textcolor_table, edit)
+                BG.EndPJ.new.name = edit
+                n = n + 1
+                local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+                t:SetPoint("LEFT", 3, 0)
+                t:SetText(L["选填（仅自己可见）"])
+                t:SetJustifyH("LEFT")
+                t:SetWidth(edit:GetWidth() - 5)
+                t:SetWordWrap(false)
+                edit:SetScript("OnEditFocusGained", function(self)
+                    BG.lastfocus = self
+                end)
+                edit:SetScript("OnTextChanged", function(self)
+                    if self:GetText() ~= "" then
+                        t:Hide()
+                    else
+                        t:Show()
+                    end
+                end)
+                edit:SetScript("OnKeyDown", function(self, enter)
+                    if enter == "ENTER" or enter == "TAB" then
+                        BG.EndPJ.new.edit:SetFocus()
+                    end
+                end)
+                edit:SetScript("OnMouseDown", function(self, enter)
+                    if enter == "RightButton" then
+                        self:SetEnabled(false)
+                        self:SetText("")
+                    end
+                end)
+                edit:SetScript("OnMouseUp", function(self, enter)
+                    if enter == "RightButton" then
+                        self:SetEnabled(true)
+                    end
+                end)
+            end
             -- 评价
             do
                 local PingJiaGroup = CreateFrame("Frame", nil, BG.EndPJ.new)
@@ -1863,7 +1906,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     BG.EndPJ.new.pingjiaButtons[i] = bt
 
                     bt.Text = bt:CreateFontString()
-                    bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                    bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                     bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                     bt.Text:SetText(numOptions[i].name)
                     bt.Text:SetTextColor(RGB(numOptions[i].color))
@@ -1907,8 +1950,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 edit:EnableMouse(true)
                 edit:SetTextInsets(0, 10, 0, 5)
                 edit:SetMultiLine(true)
-                edit:SetTextColor(RGB("FFFF00"))
-                edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                edit:SetTextColor(1, 1, 0)
+                edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.edit = edit
                 local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
@@ -2011,7 +2054,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                     tinsert(f.buttons, bt)
                     local t = bt:CreateFontString()
-                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                    t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
                     t:SetPoint("CENTER")
                     t:SetTextColor(r, g, b)
                     t:SetText(text)
@@ -2058,7 +2101,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     local a = {
                         date = tonumber(date("%y%m%d")),
                         yy = new.yy:GetText(),
-                        name = "",
+                        name = new.name:GetText(),
                         pingjia = new.pingjia,
                         edit = new.edit:GetText(),
                     }
@@ -2117,7 +2160,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             -- 底下文字
             do
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("TOP", f, "BOTTOM", 0, 0)
                 t:SetTextColor(1, 0, 0)
                 t:SetText(L["你已给该YY写过评价！"])
@@ -2157,7 +2200,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     local t = BG.YYMainFrame:CreateFontString()
     t:SetPoint("TOP", BG.MainFrame, "TOP", 0, -70)
-    t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+    t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
     t:SetTextColor(1, 1, 1)
     t:SetText(L["该模块已关闭。右键底部标签页开启"])
 
@@ -2210,7 +2253,7 @@ f:SetScript("OnEvent", function(self, even, ...)
         if channelBaseName ~= YY then return end
         local sendername = strsplit("-", sender)
         local yy, date = strmatch(text, "yy(%d+),(%d+)")
-        if not yy or CDing[sender] then return end
+        if not yy or CDing[sendername] then return end
         for i, v in pairs(BiaoGe.YYdb.all) do
             if tonumber(yy) == tonumber(v.yy) and tonumber(v.date) >= tonumber(date) then
                 local resendtext = v.date .. "," .. v.pingjia .. "," .. v.edit .. ","
@@ -2223,9 +2266,9 @@ f:SetScript("OnEvent", function(self, even, ...)
                         BG.YYMainFrame.shareCountFrame:SetHeight(BG.YYMainFrame.shareCountFrame.Text:GetStringHeight())
                     end
                     C_ChatInfo.SendAddonMessage(YY, resendtext, "WHISPER", sender)
-                    CDing[sender] = true
+                    CDing[sendername] = true
                     BG.After(2, function() -- 间隔x秒发一次
-                        CDing[sender] = nil
+                        CDing[sendername] = nil
                     end)
                 end)
                 return

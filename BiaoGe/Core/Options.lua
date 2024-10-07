@@ -517,7 +517,7 @@ local function OptionsUI()
 
             local t = dropDown:CreateFontString()
             t:SetPoint("BOTTOM", dropDown, "TOP", 0, 8)
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(1, 1, 1)
             t:SetText(L["背景材质*"])
 
@@ -608,7 +608,7 @@ local function OptionsUI()
             local f = O.CreateSlider(name, "|cffFFFFFF" .. L["装备记录通知字号"] .. "*" .. "|r", biaoge, 10, 30, 1, 425, height - h - 25, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnValueChanged", function(self, value)
-                BG.FrameLootMsg:SetFont(BIAOGE_TEXT_FONT, value, "OUTLINE")
+                BG.FrameLootMsg:SetFont(STANDARD_TEXT_FONT, value, "OUTLINE")
             end)
             local name = "autoLoot"
             if BiaoGe.options[name] ~= 1 then
@@ -715,7 +715,7 @@ local function OptionsUI()
             local f = O.CreateSlider(name, "|cffFFFFFF" .. L["交易通知字号"] .. "*" .. "|r", biaoge, 10, 30, 1, 425, height - h - 25, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnValueChanged", function(self, value)
-                BG.FrameTradeMsg:SetFont(BIAOGE_TEXT_FONT, value, "OUTLINE")
+                BG.FrameTradeMsg:SetFont(STANDARD_TEXT_FONT, value, "OUTLINE")
             end)
             local name = "autoTrade"
             if BiaoGe.options[name] ~= 1 or BiaoGe.options["tradeNotice"] ~= 1 then
@@ -1222,7 +1222,7 @@ local function OptionsUI()
                 " ",
                 L["如果你们团每次支出的金额都是固定的，可以勾选此项。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST")..L["清空表格时保留支出金额"] .. "*", biaoge, 40, height - h, ontext)
+            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["清空表格时保留支出金额"] .. "*", biaoge, 40, height - h, ontext)
             BG.options["button" .. name] = f
             if BiaoGe.options["retainExpenses"] ~= 1 then
                 f:Hide()
@@ -1325,6 +1325,11 @@ local function OptionsUI()
                 end
             end
 
+            BiaoGe.options.Sound = BiaoGe.options.Sound or BG.soundTbl[random(#BG.soundTbl)].ID
+            if not GetName() then
+                BiaoGe.options.Sound = BG.soundTbl[random(#BG.soundTbl)].ID
+            end
+
             local dropDown = LibBG:Create_UIDropDownMenu(nil, biaoge)
             dropDown:SetPoint("TOPLEFT", 220, height - h - 20)
             LibBG:UIDropDownMenu_SetWidth(dropDown, 180)
@@ -1337,7 +1342,7 @@ local function OptionsUI()
             f:SetPoint("BOTTOM", dropDown, "TOP", 0, 8)
             local t = f:CreateFontString()
             t:SetPoint("CENTER")
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(1, 1, 1)
             t:SetText(L["语音提醒"] .. "*")
             f:SetSize(t:GetWidth(), t:GetHeight())
@@ -2532,7 +2537,7 @@ local function OptionsUI()
         local height2 = 350
 
         local text = config:CreateFontString()
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetPoint("TOPLEFT", width, height)
         text:SetText(L["BiaoGe的配置文件中，大部分都是账号互通的，比如当前表格、历史表格、YY评价、设置。但也有一些是按角色来保存的，比如心愿清单、装备过滤方案、集结号的搜索记录和密语模板。\n\n当一个角色改名或者转服时，该角色的心愿清单等数据就会丢失。所以该功能就是为了帮你找回原来的角色数据。"])
         text:SetTextColor(1, 1, 1)
@@ -2542,21 +2547,21 @@ local function OptionsUI()
         height = height - text:GetHeight()
 
         local text = config:CreateFontString()
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetPoint("TOPLEFT", width, height - 15)
         text:SetText(L["选择一个目标角色"])
         text:SetTextColor(0, 1, 0)
         text:SetWidth(width2)
 
         local text = config:CreateFontString()
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetPoint("TOPLEFT", width + width2 + 15, height - 15)
         text:SetText(L["要复制的内容"])
         text:SetTextColor(0, 1, 0)
         text:SetWidth(width2)
 
         local text = config:CreateFontString()
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetPoint("TOPLEFT", width + width2 + 15 + width2 + 15, height - 15)
         text:SetText(L["操作"])
         text:SetTextColor(0, 1, 0)

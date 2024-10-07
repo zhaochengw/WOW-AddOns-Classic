@@ -185,7 +185,7 @@ function BG.ZhangDanSumUI(lastbt)
         end)
 
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("TOPLEFT", f, 10, -10)
         t:SetTextColor(RGB("FFD100"))
         t:SetText(L["请选择需要通报哪些总览账单？"])

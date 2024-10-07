@@ -127,11 +127,15 @@ local function FaKuan(onClick, tbl1, tbl2)
         if zhuangbei then
             if tonumber(jine:GetText()) and tonumber(jine:GetText()) ~= 0 then
                 local text
+                local fakuan = zhuangbei:GetText()
+                if fakuan == "" then
+                    fakuan = L["罚款"]
+                end
                 if onClick then
-                    text = zhuangbei:GetText() .. " " .. (maijia:GetText()) .. " " ..
+                    text = fakuan .. " " .. maijia:GetText() .. " " ..
                         jine:GetText()
                 else
-                    text = num .. ". " .. zhuangbei:GetText() .. " " ..
+                    text = num .. ". " .. fakuan .. " " ..
                         RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " ..
                         jine:GetText()
                 end
@@ -227,12 +231,14 @@ local function CreateListTable(onClick, tbl1)
                         if jineText == "" then
                             jineText = 0
                         end
+                        local zb = zhuangbei:GetText()
+                        if b == Maxb[FB] and zb == "" then
+                            zb = L["罚款"]
+                        end
                         if onClick then
-                            text = zhuangbei:GetText() .. " " ..
-                                (maijia:GetText()) .. " " .. jineText
+                            text = zb .. " " .. (maijia:GetText()) .. " " .. jineText
                         else
-                            text = zhuangbei:GetText() .. " " ..
-                                RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " .. jineText
+                            text = zb .. " " .. RGB_16(maijia:GetText(), unpack({ maijia:GetTextColor() })) .. " " .. jineText
                         end
                         table.insert(tbl_boss, text)
                     end
@@ -588,7 +594,7 @@ function BG.ZhangDanUI(lastbt)
     end)
 
     local t = bt:CreateFontString()
-    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
     t:SetPoint("RIGHT", bt, "LEFT", -5, 0)
     t:SetTextColor(1, 0.82, 0)
     t:SetText(L["通报："])

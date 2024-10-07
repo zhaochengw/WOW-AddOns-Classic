@@ -19,7 +19,7 @@
 
 ## Interface: 30403
 ## Author: Char11e
-## Version: v0.0.9
+## Version: v0.1.0
 ## X-Curse-Project-ID: 861768
 ## DefaultState: disabled
 ## IconTexture: Interface/AddOns/GetInfoLink/Icon/getinfolink

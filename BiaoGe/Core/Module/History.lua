@@ -72,13 +72,13 @@ function BG.HistoryUI()
 
         local TitleText = BG["HistoryFrame" .. BG.FB1]:CreateFontString() -- 标题
         TitleText:SetPoint("TOP", BG.MainFrame, "TOP", 0, -4);
-        TitleText:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        TitleText:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         TitleText:SetTextColor(RGB("00FF00"))
         BG.History.Title = TitleText
 
         local text = BG.History.List:CreateFontString() -- 提示文字
         text:SetPoint("TOP", BG.History.List, "BOTTOM", 0, 0)
-        text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         text:SetText(BG.STC_w1(L["（ALT+左键改名，ALT+右键删除表格）"]))
     end
     ------------------历史表格按键------------------
@@ -559,7 +559,7 @@ function BG.HistoryUI()
 
         local text = f:CreateFontString() -- 标题
         text:SetPoint("TOP", BG.History.GaiMingFrame, "TOP", 0, -20)
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         text:SetTextColor(RGB("00BFFF"))
         BG.History.GaiMingBiaoTi = text
 
@@ -580,7 +580,7 @@ function BG.HistoryUI()
         edit:SetAutoFocus(false)
         edit:EnableMouse(true)
         edit:SetMultiLine(true)
-        edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+        edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         edit.bg = f
         BG.History.GaiMingEdit1 = edit
         edit:SetScript("OnEscapePressed", function(self)
@@ -645,7 +645,7 @@ function BG.HistoryUI()
         --标题（装备）
         local text = BG.HistoryJineFrame:CreateFontString()
         text:SetPoint("TOP", BG.HistoryJineFrame, "TOP", 3, -10)
-        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         BG.HistoryJineFrameBiaoTi = text
     end
 end
@@ -922,7 +922,7 @@ do
 
             local text = f:CreateFontString() -- 日期
             text:SetPoint("LEFT", f, "RIGHT", 3, 0)
-            text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             text:SetTextColor(RGB(color[i]))
             if dangqian and i == 1 then
                 text:SetText(L["当前"])
@@ -935,7 +935,7 @@ do
 
             local text = f:CreateFontString() -- 金额
             text:SetPoint("RIGHT", f, "LEFT", -3, 0)
-            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             text:SetTextColor(RGB(color[i]))
             local t = db[i][5]
             text:SetText(t)
@@ -943,7 +943,7 @@ do
 
             local text = f:CreateFontString() -- 买家
             text:SetPoint("CENTER", f, "CENTER", 0, 1)
-            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             text:SetTextColor(db[i][4][1], db[i][4][2], db[i][4][3])
             local t = db[i][3]
             text:SetText(t)

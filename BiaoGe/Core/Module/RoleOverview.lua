@@ -106,7 +106,7 @@ function BG.RoleOverviewUI()
     -- 更新
     do
         if BG.IsVanilla then
-            BG.Once("FBCDchoice",240923,function ()
+            BG.Once("FBCDchoice", 240923, function()
                 BiaoGe.FBCDchoice["BWLsod"] = 1
                 BiaoGe.FBCDchoice["ZUGsod"] = 1
                 BiaoGe.FBCDchoice["TCV"] = 1
@@ -351,7 +351,7 @@ function BG.RoleOverviewUI()
 
         --------- 角色团本完成总览 ---------
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, fontsize2, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, fontsize2, "OUTLINE")
         t:SetPoint("TOPLEFT", 15, -10 - (n - 1) * height)
         t:SetText(BG.STC_g1(L["< 角色团本完成总览 >"]))
         t:SetJustifyH("LEFT")
@@ -382,7 +382,7 @@ function BG.RoleOverviewUI()
             local resettext = format("|cff808080" .. L["（团本重置时间：%s）"] .. RR, text7 .. douhao .. text3)
             if BG.IsVanilla then
                 local t_end = f:CreateFontString()
-                t_end:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t_end:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t_end:SetPoint("TOPLEFT", t, "BOTTOMLEFT", 0, -3)
                 t_end:SetText(BG.STC_dis(resettext:gsub("（", ""):gsub("）", ""):gsub("%(", ""):gsub("%)", "")))
                 t_end:SetJustifyH("LEFT")
@@ -401,7 +401,7 @@ function BG.RoleOverviewUI()
             local FBCDwidth = 0
             for i, v in ipairs(FBCDchoice_table) do
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 if i == 1 then
                     t:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -10 - height * n)
                 elseif i == 2 then
@@ -410,9 +410,9 @@ function BG.RoleOverviewUI()
                     t:SetPoint("TOPLEFT", right, "TOPRIGHT", width_jiange, 0)
                 end
                 if v.type and v.type ~= "fb" then
-                    t:SetText("|cff" .. v.color .. v.name2:gsub("sod","") .. RR)
+                    t:SetText("|cff" .. v.color .. v.name2:gsub("sod", "") .. RR)
                 else
-                    t:SetText("|cff" .. v.color .. v.name:gsub("sod","") .. RR)
+                    t:SetText("|cff" .. v.color .. v.name:gsub("sod", "") .. RR)
                 end
                 if i == 1 then
                     FBCDchoice_table[i].width = 15
@@ -451,7 +451,7 @@ function BG.RoleOverviewUI()
                         if type(v) == "table" and Size(v) ~= 0 then
                             -- 玩家名字
                             local t = BG.FBCDFrame:CreateFontString()
-                            t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                            t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                             t:SetPoint("TOPLEFT", BG.FBCDFrame, "TOPLEFT",
                                 FBCDchoice_table[1].width, -10 - height * n)
                             for i, cd in pairs(BiaoGe.FBCD[realmID][player]) do
@@ -500,7 +500,7 @@ function BG.RoleOverviewUI()
                                     for ii, vv in ipairs(FBCDchoice_table) do -- 创建cd勾勾
                                         if profession == vv.name then
                                             local t = f:CreateFontString()
-                                            t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                                            t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                                             t:SetPoint("TOP", BG.FBCDFrame, "TOPLEFT",
                                                 (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
                                                 (-8 - height * n))
@@ -537,7 +537,7 @@ function BG.RoleOverviewUI()
             end
             if num == 1 then
                 local t = BG.FBCDFrame:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t:SetPoint("TOPLEFT", BG.FBCDFrame, "TOPLEFT", FBCDchoice_table[1].width, -10 - height * n)
                 t:SetText(BG.STC_dis(L["当前没有满级角色"]))
                 n = n + 1
@@ -551,7 +551,7 @@ function BG.RoleOverviewUI()
             minimapText = L["|cff808080（左键打开表格，右键打开设置）|r"]
         end
         local t = f:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, fontsize2, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, fontsize2, "OUTLINE")
         t:SetPoint("TOPLEFT", 15, -10 - height * n)
         t:SetText(BG.STC_g1(L["< 角色货币总览 >"]))
         t:SetJustifyH("LEFT")
@@ -560,7 +560,7 @@ function BG.RoleOverviewUI()
 
         if BG.IsVanilla_Sod then
             local t_end = f:CreateFontString()
-            t_end:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+            t_end:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
             t_end:SetPoint("TOPLEFT", t, "BOTTOMLEFT", 0, -3)
             t_end:SetText(BG.STC_dis((minimapText:gsub("（", ""):gsub("）", ""):gsub("%(", ""):gsub("%)", ""))))
             t_end:SetJustifyH("LEFT")
@@ -627,7 +627,7 @@ function BG.RoleOverviewUI()
             local right
             for i, v in ipairs(MONEYchoice_table) do
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 if i == 1 then
                     t:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -10 - height * n)
                     t:SetJustifyH("LEFT")
@@ -669,7 +669,7 @@ function BG.RoleOverviewUI()
                         local right
                         local name = v.colorplayer -- 名字
                         local t_name = f:CreateFontString()
-                        t_name:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                        t_name:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                         t_name:SetPoint("TOPLEFT", BG.FBCDFrame, "TOPLEFT", 15, -10 - height * n)
                         t_name:SetText(name .. levelText)
                         right = t_name
@@ -679,7 +679,7 @@ function BG.RoleOverviewUI()
                                 local a = tostring(type(v[vv.id]) == "table" and v[vv.id].count or v[vv.id]):gsub("-", "")
                                     .. " " .. AddTexture(vv.tex) -- 牌子
                                 local t_paizi = f:CreateFontString()
-                                t_paizi:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                                t_paizi:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                                 local width
                                 if ii == 2 then
                                     width = MONEYchoice_table[ii - 1].width + MONEYchoice_table[ii].width
@@ -717,7 +717,7 @@ function BG.RoleOverviewUI()
                 if Size(BG.m_new) ~= 0 then
                     local right
                     local t_name = f:CreateFontString()
-                    t_name:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                    t_name:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                     t_name:SetPoint("TOPLEFT", 15, -10 - height * n)
                     t_name:SetText(L["合计"])
                     right = t_name
@@ -726,7 +726,7 @@ function BG.RoleOverviewUI()
                         if vv.id then
                             local a = (type(sum[vv.id]) == "table" and sum[vv.id].count or sum[vv.id]) .. " " .. AddTexture(vv.tex) -- 牌子
                             local t_paizi = f:CreateFontString()
-                            t_paizi:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                            t_paizi:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                             local width
                             if ii == 2 then
                                 width = MONEYchoice_table[ii - 1].width + MONEYchoice_table[ii].width
@@ -752,7 +752,7 @@ function BG.RoleOverviewUI()
     -- 团本锁定ID
     do
         local t = BG.FBMainFrame:CreateFontString()
-        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         t:SetPoint("TOPLEFT", BG.MainFrame, 5, -30)
         t:SetTextColor(1, 1, 0)
         t:Hide()
@@ -900,43 +900,43 @@ function BG.RoleOverviewUI()
 
         if BG.IsWLK then
             BG.FBCDall_5M_table = {
-                { color = "1E90FF", fbId = 574 },     -- 乌下
+                { color = "1E90FF", fbId = 574 }, -- 乌下
                 { color = "1E90FF", fbId = 575 },
 
-                { color = "00FFFF", fbId = 576 },     -- 魔枢
+                { color = "00FFFF", fbId = 576 }, -- 魔枢
                 { color = "00FFFF", fbId = 578 },
 
-                { color = "FF4500", fbId = 601 },     -- 艾卓
+                { color = "FF4500", fbId = 601 }, -- 艾卓
                 { color = "FF4500", fbId = 619 },
 
-                { color = "32CD32", fbId = 600 },     -- 要塞
+                { color = "32CD32", fbId = 600 }, -- 要塞
                 { color = "32CD32", fbId = 604 },
 
-                { color = "8B4513", fbId = 599 },     -- 岩石
+                { color = "8B4513", fbId = 599 }, -- 岩石
                 { color = "8B4513", fbId = 602 },
 
-                { color = "FF69B4", fbId = 608 },     -- 紫罗兰
-                { color = "FF69B4", fbId = 595 },     -- 斯坦索姆
+                { color = "FF69B4", fbId = 608 }, -- 紫罗兰
+                { color = "FF69B4", fbId = 595 }, -- 斯坦索姆
 
-                { color = "FFFF00", fbId = 650 },     -- 冠军
+                { color = "FFFF00", fbId = 650 }, -- 冠军
 
-                { color = "9370DB", fbId = 632 },     -- 灵魂
-                { color = "9370DB", fbId = 658 },     -- 萨隆
-                { color = "9370DB", fbId = 668 },     -- 映像
+                { color = "9370DB", fbId = 632 }, -- 灵魂
+                { color = "9370DB", fbId = 658 }, -- 萨隆
+                { color = "9370DB", fbId = 668 }, -- 映像
             }
         elseif BG.IsCTM then
             BG.FBCDall_5M_table = {
-                { color = "87CEFA", fbId = 755 },     -- 托维尔失落之城
-                { color = "87CEFA", fbId = 657 },     -- 旋云之巅
-                { color = "87CEFA", fbId = 644 },     -- 起源大厅
+                { color = "87CEFA", fbId = 755 }, -- 托维尔失落之城
+                { color = "87CEFA", fbId = 657 }, -- 旋云之巅
+                { color = "87CEFA", fbId = 644 }, -- 起源大厅
 
-                { color = "FFFF00", fbId = 36 },      -- 死亡矿井
-                { color = "FFFF00", fbId = 33 },      -- 影牙城堡
+                { color = "FFFF00", fbId = 36 },  -- 死亡矿井
+                { color = "FFFF00", fbId = 33 },  -- 影牙城堡
 
-                { color = "8B4513", fbId = 725 },     -- 巨石之核
-                { color = "9370DB", fbId = 645 },     -- 黑石岩窟
-                { color = "FF4500", fbId = 670 },     -- 格瑞姆巴托
-                { color = "1E90FF", fbId = 643 },     -- 潮汐王座
+                { color = "8B4513", fbId = 725 }, -- 巨石之核
+                { color = "9370DB", fbId = 645 }, -- 黑石岩窟
+                { color = "FF4500", fbId = 670 }, -- 格瑞姆巴托
+                { color = "1E90FF", fbId = 643 }, -- 潮汐王座
             }
         end
         if BG.FBCDall_5M_table then
@@ -978,7 +978,7 @@ function BG.RoleOverviewUI()
             BG.FBCD_5M_Frame = f
 
             local t = f:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+            t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
             t:SetPoint("TOPLEFT", 15, -10)
             t:SetText(BG.STC_g1(L["< 角色5人本完成总览 >"]))
             t:SetJustifyH("LEFT")
@@ -1013,7 +1013,7 @@ function BG.RoleOverviewUI()
                 lastframe = f
 
                 local t = f:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t:SetAllPoints()
                 t:SetJustifyH("LEFT")
                 t:SetText("|cff" .. v.color .. GetRealZoneText(v.fbId) .. RR)
@@ -1044,7 +1044,7 @@ function BG.RoleOverviewUI()
                             -- 玩家名字
                             if not last then
                                 local t = BG.FBCD_5M_Frame:CreateFontString()
-                                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                                 t:SetSize(width_fb, height)
                                 t:SetPoint("TOPLEFT", 15, -height * 2)
                                 t:SetJustifyH("LEFT")
@@ -1061,7 +1061,7 @@ function BG.RoleOverviewUI()
                             last = f
 
                             local t = f:CreateFontString()
-                            t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                            t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                             t:SetPoint("CENTER")
                             t:SetJustifyH("LEFT")
                             t:SetWordWrap(true) -- 截断
@@ -1108,7 +1108,7 @@ function BG.RoleOverviewUI()
             end
             if n == 0 then
                 local t = BG.FBCD_5M_Frame:CreateFontString()
-                t:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
+                t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t:SetPoint("TOPLEFT", width_fb + 15, -height * 2)
                 t:SetJustifyH("LEFT")
                 t:SetText(BG.STC_dis(L["当前没有满级角色"]))
