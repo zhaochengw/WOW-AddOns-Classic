@@ -109,7 +109,7 @@ function Encounter:MEETINGHORN_SHOW()
     if not self.db.global.EncounterVersion or (self.encounterVersion > self.db.global.EncounterVersion) then
         if  not self.encounterFlash then
             self.encounterFlash = ns:CreateFlashFrame()
-            ns.BindFlashAtFrame(self.encounterFlash, ns.Addon.MainPanel.Tabs[6])
+            ns.BindFlashAtFrame(self.encounterFlash, ns.Addon.MainPanel.Tabs[7])
         end
         ns.ShowAtFrameFlash(self.encounterFlash)
         self.db.global.EncounterVersion = self.encounterVersion

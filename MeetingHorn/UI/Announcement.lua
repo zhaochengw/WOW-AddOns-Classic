@@ -145,7 +145,7 @@ function Announcement:MEETINGHORN_ANNOUNCEMENT(eventName, data, timer)
     if not self.db.global.AnnTimer or (timer ~= -1 and timer > self.db.global.AnnTimer) then
         if  not self.flashFrame then
             self.flashFrame = ns:CreateFlashFrame()
-            ns.BindFlashAtFrame(self.flashFrame, ns.Addon.MainPanel.Tabs[4])
+            ns.BindFlashAtFrame(self.flashFrame, ns.Addon.MainPanel.Tabs[5])
         end
         ns.ShowAtFrameFlash(self.flashFrame)
     end

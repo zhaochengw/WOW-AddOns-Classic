@@ -253,7 +253,7 @@ l10n["CANNOT APPLY : TALENT MAP ERROR."] = "CANNOT APPLY : TALENT MAP ERROR.";
 l10n["TalentDB Error : DB SIZE IS NOT EQUAL TO TalentFrame SIZE."] = "TalentDB Error : DB SIZE IS NOT EQUAL TO TalentFrame SIZE.";
 
 
-l10n.PopupQuery = "Inspect";
+l10n.PopupQuery = "|cffff7f00Inspect|r";
 
 --	emulib
 l10n["WOW VERSION"] = "The talents does not fit che client";

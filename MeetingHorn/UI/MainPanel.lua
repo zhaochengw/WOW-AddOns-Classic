@@ -14,11 +14,11 @@ function MainPanel:Constructor()
     self:SetupTabs({
         {L['Search Activity'], self.Browser}, --
         {L['Create Activity'], self.Manage}, --
+        {L['Recent members'], self.Recent}, --
         {'星团长', self.GoodLeader}, --
         {L['Announcement'], self.Announcement}, --
         {L['MissionGuidance'], self.MissionGuidance}, --
         {L['Encounter'], self.Encounter}, --
-        {L['Recent members'], self.Recent}, --
         --[=[@classic@
         {L['Challenge'], self.Challenge}, --
         --@end-classic@]=]

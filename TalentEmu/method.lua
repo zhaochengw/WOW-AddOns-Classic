@@ -40,7 +40,9 @@ MT.BuildEnv('METHOD');
 -->		predef
 -->		METHOD
 	--
-	if CT.TOCVERSION < 20000 then
+	if _G.GetSpellLink then
+		_G.ALA_GetSpellLink = _G.GetSpellLink;
+	elseif CT.TOCVERSION < 20000 then
 		local __ala_meta__ = _G.__ala_meta__;
 		_G.ALA_GetSpellLink = _G.ALA_GetSpellLink or function(id, name)
 			--|cff71d5ff|Hspell:id|h[name]|h|r

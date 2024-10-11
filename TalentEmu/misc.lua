@@ -33,25 +33,25 @@ MT.BuildEnv('MISC');
 	--
 	--	popup
 
-		VT.__popuplib.add_meta("EMU_INSPECT", {
-			l10n.PopupQuery,
-			function(which, frame)
-				MT.SendQueryRequest(frame.name, frame.server, true, true);
+		VT.__poplib:AddMethod("QUERY_TALENT", {
+			GetText = function() return l10n.PopupQuery; end,
+			CanShow = function() return true; end,
+			OnClick = function(def, which, context)
+				MT.SendQueryRequest(context.name, context.server, true, true);
 			end,
 		});
-		VT.__popuplib.add_list("SELF", "EMU_INSPECT");
-		VT.__popuplib.add_list("FRIEND", "EMU_INSPECT");
-		--VT.__popuplib.add_list("FRIEND_OFFLINE", "EMU_INSPECT");
-		VT.__popuplib.add_list("PLAYER", "EMU_INSPECT");
-		VT.__popuplib.add_list("PARTY", "EMU_INSPECT");
-		VT.__popuplib.add_list("RAID", "EMU_INSPECT");
-		VT.__popuplib.add_list("RAID_PLAYER", "EMU_INSPECT");
-		VT.__popuplib.add_list("CHAT_ROSTER", "EMU_INSPECT");
-		VT.__popuplib.add_list("GUILD", "EMU_INSPECT");
-		VT.__popuplib.add_list("_BRFF_SELF", "EMU_INSPECT");
-		VT.__popuplib.add_list("_BRFF_PARTY", "EMU_INSPECT");
-		VT.__popuplib.add_list("_BRFF_RAID_PLAYER", "EMU_INSPECT");
-		--	VT.__popuplib.add_list("*", "EMU_INSPECT");
+		VT.__poplib:AddEntry("SELF", "QUERY_TALENT");
+		VT.__poplib:AddEntry("_BRFF_SELF", "QUERY_TALENT");
+		VT.__poplib:AddEntry("PLAYER", "QUERY_TALENT");
+		VT.__poplib:AddEntry("FRIEND", "QUERY_TALENT");
+		VT.__poplib:AddEntry("FRIEND_OFFLINE", "QUERY_TALENT");
+		VT.__poplib:AddEntry("PARTY", "QUERY_TALENT");
+		VT.__poplib:AddEntry("_BRFF_PARTY", "QUERY_TALENT");
+		VT.__poplib:AddEntry("RAID", "QUERY_TALENT");
+		VT.__poplib:AddEntry("RAID_PLAYER", "QUERY_TALENT");
+		VT.__poplib:AddEntry("_BRFF_RAID_PLAYER", "QUERY_TALENT");
+		VT.__poplib:AddEntry("CHAT_ROSTER", "QUERY_TALENT");
+		VT.__poplib:AddEntry("GUILD", "QUERY_TALENT");
 
 	--
 	--	TalentFrameCall

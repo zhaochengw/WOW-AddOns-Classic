@@ -253,7 +253,7 @@ l10n["CANNOT APPLY : TALENT MAP ERROR."] = "無法應用天賦: 讀取天賦映�
 l10n["TalentDB Error : DB SIZE IS NOT EQUAL TO TalentFrame SIZE."] = "數據錯誤: 與天賦面板的天賦數量不一致";
 
 
-l10n.PopupQuery = "查詢天賦";
+l10n.PopupQuery = "|cffff7f00查詢天賦|r";
 
 --	emulib
 l10n["WOW VERSION"] = "不是當前版本客戶端的天賦";

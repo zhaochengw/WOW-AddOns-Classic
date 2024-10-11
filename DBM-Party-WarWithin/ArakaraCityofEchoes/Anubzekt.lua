@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2584, "DBM-Party-WarWithin", 6, 1271)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241004070021")
+mod:SetRevision("20241009083038")
 mod:SetCreatureID(215405)
 mod:SetEncounterID(2906)
 mod:SetHotfixNoticeRev(20240817000000)
@@ -165,7 +165,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.infestationCount = 0
 		--timerInfestationCD:Start(1, 1)--Instantly again
 		timerImpaleCD:Stop()
-		timerImpaleCD:Start(5.3, 1)
+		timerImpaleCD:Start(4.1, 1)
 		timerBurrowChargeCD:Start(15, self.vb.burrowCount+1)
 		timerEyeOfTheStormCD:Start(46.6, self.vb.eyeCount+1)
 	elseif spellId == 433740 then

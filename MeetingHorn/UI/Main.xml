@@ -834,40 +834,37 @@
                 <Frames>
                     <Frame parentKey="Left" inherits="InsetFrameTemplate">
                         <Anchors>
-                            <Anchor point="TOPLEFT"/>
-                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="20" y="0"/>
+                            <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="0" y="-30"/>
+                            <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" x="30" y="0"/>
                         </Anchors>
                         <Frames>
                         </Frames>
                     </Frame>
                     <Frame parentKey="Right" inherits="InsetFrameTemplate">
                         <Anchors>
-                            <Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT" x="0" y="-40"/>
                             <Anchor point="BOTTOMRIGHT"/>
                         </Anchors>
                     </Frame>
-                    <Frame parentKey="Members">
+                    <Frame parentKey="RightTop" inherits="InsetFrameTemplate" virtual="true">
+                        <Size x="380" y="128"/>
                         <Anchors>
-                            <Anchor point="TOPLEFT" relativeKey="$parent.Left" x="5" y="-4"/>
-                            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Left" x="-3" y="1"/>
-                        </Anchors>
-                    </Frame>
-                    <Button parentKey="QRCode" hidden="true">
-                        <Size x="180" y="180"/>
-                        <Anchors>
-                            <Anchor point="TOP" relativeKey="$parent.Right" x="0" y="-20"/>
+                            <Anchor point="BOTTOM" relativeKey="$parent.Right" relativePoint="TOP" x="0" y="5"/>
                         </Anchors>
                         <Layers>
-                            <Layer>
-                                <FontString parentKey="Label" inherits="GameFontNormalSmall">
-                                    <Size x="300"/>
-                                    <Anchors>
-                                        <Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-20"/>
-                                    </Anchors>
-                                </FontString>
+                            <Layer level="BACKGROUND">
+                                <Texture name="$parentBackground" setAllPoints="true" file="Interface\ChatFrame\ChatFrameBackground">
+                                    <Color r="0.125" g="0.149" b="0.188" a="0.5"/> <!-- 设置颜色和透明度 -->
+                                </Texture>
                             </Layer>
                         </Layers>
-                    </Button>
+                    </Frame>
+                    <Frame parentKey="Members">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.Right" x="5" y="-4"/>
+                            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" x="-3" y="1"/>
+                        </Anchors>
+                    </Frame>
                     <Button parentKey="Instance">
                         <Size x="160" y="24"/>
                         <Anchors>
@@ -880,13 +877,82 @@
                                         <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT"/>
                                     </Anchors>
                                 </FontString>
+                                <FontString parentKey="Text" inherits="GameFontHighlightLeft">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" x="-50" y="-10"/>
+                                    </Anchors>
+                                </FontString>
+                                <FontString parentKey="ActivityType" inherits="GameFontHighlightLeft" text="活动类型：">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeKey="$parent.RightTop" relativePoint="TOPRIGHT" x="235" y="25"/>
+                                    </Anchors>
+                                </FontString>
+                                <FontString parentKey="TipsText" inherits="GameFontNormalLarge">
+                                    <Anchors>
+                                        <Anchor point="LEFT" relativeKey="$parent.ActivityType" relativePoint="RIGHT" x="5" y="0"/>
+                                    </Anchors>
+                                </FontString>
+                                <FontString parentKey="ActivityDescribe" inherits="GameFontHighlightLeft" text="活动名称：">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeKey="$parent.ActivityType" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+                                    </Anchors>
+                                </FontString>
+                                <FontString parentKey="ActivityNameText" inherits="GameFontNormalLarge">
+                                    <Anchors>
+                                        <Anchor point="LEFT" relativeKey="$parent.ActivityDescribe" relativePoint="RIGHT" x="5" y="0"/>
+                                    </Anchors>
+                                </FontString>
+                                <FontString parentKey="TeamConfiguration" inherits="GameFontHighlightLeft" text="当前队伍成员配置：">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativeKey="$parent.ActivityDescribe" relativePoint="BOTTOMLEFT" x="0" y="-12"/>
+                                    </Anchors>
+                                </FontString>
                             </Layer>
                         </Layers>
                     </Button>
-                    <Button parentKey="Invite" inherits="MagicButtonTemplate">
-                        <Size x="120" y="22"/>
+                    <Button parentKey="StarHeader" inherits="ColumnDisplayButtonTemplate" id="6">
+                        <Size x="60" y="24"/>
                         <Anchors>
-                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT"/>
+                            <Anchor point="BOTTOMLEFT" relativeKey="$parent.Left" relativePoint="TOPLEFT" x="2" y="0"/>
+                        </Anchors>
+                        <ButtonText>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </ButtonText>
+                    </Button>
+                    <Button parentKey="DescribeHeader" inherits="ColumnDisplayButtonTemplate" id="1">
+                        <Size x="145" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.StarHeader" relativePoint="RIGHT"/>
+                        </Anchors>
+                        <ButtonText>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </ButtonText>
+                    </Button>
+                    <Button parentKey="ActivityEndTimeHeader" inherits="ColumnDisplayButtonTemplate" id="1">
+                        <Size x="110" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.DescribeHeader" relativePoint="RIGHT"/>
+                        </Anchors>
+                    </Button>
+                    <Button parentKey="LeaderHeader" inherits="ColumnDisplayButtonTemplate" id="1">
+                        <Size x="110" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.ActivityEndTimeHeader" relativePoint="RIGHT"/>
+                        </Anchors>
+                        <ButtonText>
+                            <Anchors>
+                                <Anchor point="CENTER"/>
+                            </Anchors>
+                        </ButtonText>
+                    </Button>
+                    <Button parentKey="Invite" inherits="UIPanelButtonTemplate">
+                        <Size x="200" y="32"/>
+                        <Anchors>
+                            <Anchor point="TOP" relativeKey="$parent.Right" relativePoint="BOTTOM" x="0" y="37"/>
                         </Anchors>
                     </Button>
                 </Frames>

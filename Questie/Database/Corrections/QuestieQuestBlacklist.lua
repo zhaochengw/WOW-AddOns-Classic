@@ -2099,6 +2099,8 @@ function QuestieQuestBlacklist:Load()
         [2607] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2608] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2609] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [2766] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [2767] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2770] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2768] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [2781] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -2955,6 +2957,7 @@ function QuestieQuestBlacklist:Load()
         [9764] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [9876] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [10177] = QuestieCorrections.CATA_HIDE, -- Removed with cata
+        [10218] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [10352] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [10354] = QuestieCorrections.CATA_HIDE, -- Removed with cata
         [10356] = QuestieCorrections.CATA_HIDE, -- Removed with cata
@@ -3421,10 +3424,11 @@ function QuestieQuestBlacklist:Load()
         --[29202] = true, -- The Fate of Runetotem
         [29204] = true, -- The Warden's Charge
         [29209] = true, -- Into the Fiery Depths
-        [29263] = true, -- A Bitter Pill
-        [29280] = true, -- Nourishing Waters
-        [29282] = true, -- Well Armed
-        [29284] = true, -- Aid of the Ancients
+        [29244] = true, -- A Lieutenant of Flame
+        --[29263] = true, -- A Bitter Pill
+        --[29280] = true, -- Nourishing Waters
+        --[29282] = true, -- Well Armed
+        --[29284] = true, -- Aid of the Ancients
         [29289] = true, -- Mother's Malice
         [29326] = true, -- The Nordrassil Summit
         --[29387] = true, -- Guardians of Hyjal: Firelands Invasion!

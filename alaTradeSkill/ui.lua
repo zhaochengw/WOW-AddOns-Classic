@@ -34,7 +34,7 @@ local DT = __private.DT;
 	local wipe = table.wipe;
 
 	local CreateFrame = CreateFrame;
-	local GetMouseFocus = GetMouseFocus;
+	local GetMouseFocus = GetMouseFocus or VT._comptb.GetMouseFocus;
 	local IsShiftKeyDown = IsShiftKeyDown;
 	local IsAltKeyDown = IsAltKeyDown;
 	local IsControlKeyDown = IsControlKeyDown;
@@ -64,6 +64,27 @@ local DT = __private.DT;
 	local _G = _G;
 	local SystemFont_Shadow_Med1 = SystemFont_Shadow_Med1;
 
+	local InterfaceOptions_AddCategory = InterfaceOptions_AddCategory;
+	if InterfaceOptions_AddCategory == nil then
+		function InterfaceOptions_AddCategory(frame, addOn, position)
+			-- cancel is no longer a default option. May add menu extension for this.
+			frame.OnCommit = frame.okay;
+			frame.OnDefault = frame.default;
+			frame.OnRefresh = frame.refresh;
+	
+			if frame.parent then
+				local category = Settings.GetCategory(frame.parent);
+				local subcategory, layout = Settings.RegisterCanvasLayoutSubcategory(category, frame, frame.name, frame.name);
+				subcategory.ID = frame.name;
+				return subcategory, category;
+			else
+				local category, layout = Settings.RegisterCanvasLayoutCategory(frame, frame.name, frame.name);
+				category.ID = frame.name;
+				Settings.RegisterAddOnCategory(category);
+				return category;
+			end
+		end
+	end
 -->
 	local DataAgent = DT.DataAgent;
 	local l10n = CT.l10n;
@@ -1002,54 +1023,74 @@ end
 		function LT_SharedMethod.RelayoutDropDownMenu(Dropdown)
 			Dropdown.hooked = true;
 			Dropdown:SetWidth(135);
-			Dropdown.Left:ClearAllPoints();
-			Dropdown.Left:SetPoint("LEFT", -17, -1);
-			local Button = Dropdown.Button;
-			Button:ClearAllPoints();
-			Button:SetPoint("CENTER", Dropdown, "RIGHT", -12, 0);
-			Button:GetNormalTexture():SetAllPoints();
-			Button:GetPushedTexture():SetAllPoints();
-			Button:GetHighlightTexture():SetAllPoints();
-			Button:GetDisabledTexture():SetAllPoints();
-			Dropdown:SetScale(0.9);
-			Dropdown._SetHeight = Dropdown.SetHeight;
-			Dropdown.SetHeight = MT.noop;
-			Dropdown:_SetHeight(22);
+			if Dropdown.Left then
+				Dropdown.Left:ClearAllPoints();
+				Dropdown.Left:SetPoint("LEFT", -17, -1);
+			end
+			if Dropdown.Button then
+				local Button = Dropdown.Button;
+				Button:ClearAllPoints();
+				Button:SetPoint("CENTER", Dropdown, "RIGHT", -12, 0);
+				Button:GetNormalTexture():SetAllPoints();
+				Button:GetPushedTexture():SetAllPoints();
+				Button:GetHighlightTexture():SetAllPoints();
+				Button:GetDisabledTexture():SetAllPoints();
+				Dropdown:SetScale(0.9);
+				Dropdown._SetHeight = Dropdown.SetHeight;
+				Dropdown.SetHeight = MT.noop;
+				Dropdown:_SetHeight(22);
+			end
 		end
 		function LT_SharedMethod.StyleModernDropDownMenu(Dropdown)
 			if not Dropdown.hooked then
 				LT_SharedMethod.RelayoutDropDownMenu(Dropdown);
 			end
-			Dropdown.Left:Hide();
-			Dropdown.Middle:Hide();
-			Dropdown.Right:Hide();
+			if Dropdown.Left then
+				Dropdown.Left:Hide();
+			end
+			if Dropdown.Middle then
+				Dropdown.Middle:Hide();
+			end
+			if Dropdown.Right then
+				Dropdown.Right:Hide();
+			end
 			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
-			local Button = Dropdown.Button;
-			Button:SetSize(17, 16);
-			Button:SetNormalTexture(T_UIDefinition.texture_modern_arrow_down);
-			Button:SetPushedTexture(T_UIDefinition.texture_modern_arrow_down);
-			Button:SetHighlightTexture(T_UIDefinition.texture_modern_arrow_down);
-			Button:SetDisabledTexture(T_UIDefinition.texture_modern_arrow_down);
-			Button:GetNormalTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorNormal));
-			Button:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
-			Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
-			Button:GetDisabledTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorDisabled));
+			if Dropdown.Button then
+				local Button = Dropdown.Button;
+				Button:SetSize(17, 16);
+				Button:SetNormalTexture(T_UIDefinition.texture_modern_arrow_down);
+				Button:SetPushedTexture(T_UIDefinition.texture_modern_arrow_down);
+				Button:SetHighlightTexture(T_UIDefinition.texture_modern_arrow_down);
+				Button:SetDisabledTexture(T_UIDefinition.texture_modern_arrow_down);
+				Button:GetNormalTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorNormal));
+				Button:GetPushedTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorPushed));
+				Button:GetHighlightTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorHighlight));
+				Button:GetDisabledTexture():SetVertexColor(unpack(T_UIDefinition.textureButtonColorDisabled));
+			end
 		end
 		function LT_SharedMethod.StyleBLZDropDownMenu(Dropdown)
-			Dropdown.Left:Show();
-			Dropdown.Middle:Show();
-			Dropdown.Right:Show();
+			if Dropdown.Left then
+				Dropdown.Left:Show();
+			end
+			if Dropdown.Middle then
+				Dropdown.Middle:Show();
+			end
+			if Dropdown.Right then
+				Dropdown.Right:Show();
+			end
 			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-			local Button = Dropdown.Button;
-			Button:SetSize(24, 24);
-			Button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up]]);
-			Button:SetPushedTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down]]);
-			Button:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]]);
-			Button:SetDisabledTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled]]);
-			Button:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			Button:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			Button:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
-			Button:GetDisabledTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
+			if Dropdown.Button then
+				local Button = Dropdown.Button;
+				Button:SetSize(24, 24);
+				Button:SetNormalTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up]]);
+				Button:SetPushedTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down]]);
+				Button:SetHighlightTexture([[Interface\Buttons\UI-Common-MouseHilight]]);
+				Button:SetDisabledTexture([[Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled]]);
+				Button:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
+				Button:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
+				Button:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
+				Button:GetDisabledTexture():SetVertexColor(1.0, 1.0, 1.0, 1.0);
+			end
 		end
 		function LT_SharedMethod.StyleModernEditBox(EditBox)
 			local regions = { EditBox:GetRegions() };
@@ -1059,7 +1100,7 @@ end
 					obj:Hide();
 				end
 			end
-			VT.__uireimp._SetSimpleBackdrop(EditBox, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
+			VT.__uireimp._SetSimpleBackdrop(EditBox, 2, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
 		end
 		function LT_SharedMethod.StyleBLZEditBox(EditBox)
 			local regions = { EditBox:GetRegions() };
@@ -3268,12 +3309,19 @@ local function LF_HookFrame(addon, meta)
 			Frame.F_RefreshRankOffset = LT_FrameMethod.F_RefreshRankOffset;
 		--	objects
 			local T_HookedFrameDropdowns = T_HookedFrameWidgets.T_HookedFrameDropdowns;
+			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
+			local T_HookedFrameEditboxes = T_HookedFrameWidgets.T_HookedFrameEditboxes;
 			if T_HookedFrameDropdowns ~= nil then
 				local InvSlotDropDown = T_HookedFrameDropdowns.InvSlotDropDown;
 				if InvSlotDropDown ~= nil then
 					LT_SharedMethod.RelayoutDropDownMenu(InvSlotDropDown);
 					InvSlotDropDown:ClearAllPoints();
-					InvSlotDropDown:SetPoint("RIGHT", HookedFrame, "TOPLEFT", 342 / 0.9, -81 / 0.9);
+					-- InvSlotDropDown:SetPoint("RIGHT", HookedFrame, "TOPLEFT", 342 / 0.9, -81 / 0.9);
+					if T_HookedFrameEditboxes.SearchInputBox then
+						InvSlotDropDown:SetPoint("RIGHT", HookedFrame, "TOPRIGHT", -35 / 0.9, -81 / 0.9);
+					else
+						InvSlotDropDown:SetPoint("RIGHT", HookedFrame, "TOPRIGHT", -35 / 0.9, -70 / 0.9);
+					end
 				end
 				local SubClassDropDown = T_HookedFrameDropdowns.SubClassDropDown;
 				if SubClassDropDown ~= nil then
@@ -3282,7 +3330,6 @@ local function LF_HookFrame(addon, meta)
 					SubClassDropDown:SetPoint("RIGHT", InvSlotDropDown, "LEFT", -4 / 0.9, 0);
 				end
 			end
-			local T_HookedFrameButtons = T_HookedFrameWidgets.T_HookedFrameButtons;
 			T_HookedFrameButtons.CancelButton:SetSize(72, 18);
 			T_HookedFrameButtons.CancelButton:ClearAllPoints();
 			T_HookedFrameButtons.CancelButton:SetPoint("TOPRIGHT", -42, -415);
@@ -3293,7 +3340,6 @@ local function LF_HookFrame(addon, meta)
 			T_HookedFrameButtons.CloseButton:SetPoint("CENTER", HookedFrame, "TOPRIGHT", -51, -24);
 			T_HookedFrameButtons.ToggleButton = ToggleButton;
 			T_HookedFrameButtons.RankOffsetButton = RankOffsetButton;
-			local T_HookedFrameEditboxes = T_HookedFrameWidgets.T_HookedFrameEditboxes;
 			if T_HookedFrameEditboxes ~= nil and T_HookedFrameEditboxes.InputBox then
 				local Left = _G[T_HookedFrameEditboxes.InputBox:GetName() .. "Left"];
 				Left:ClearAllPoints();
@@ -3600,19 +3646,31 @@ local function LF_HookFrame(addon, meta)
 		end
 		SetFrame.T_CheckButtons = T_CheckButtons;
 
-		local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame, "OptionsSliderTemplate");
-		PhaseSlider:SetPoint("BOTTOM", SetFrame, "TOP", 0, 10);
+		local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame);
+		PhaseSlider:SetOrientation("HORIZONTAL");
+		PhaseSlider:SetPoint("BOTTOM", SetFrame, "TOP", 0, 12);
 		PhaseSlider:SetPoint("LEFT", 4, 0);
 		PhaseSlider:SetPoint("RIGHT", -4, 0);
-		PhaseSlider:SetHeight(16);
+		PhaseSlider:SetHeight(4);
 		PhaseSlider:SetMinMaxValues(1, DataAgent.MAXPHASE);
 		PhaseSlider:SetValueStep(1);
 		PhaseSlider:SetObeyStepOnDrag(true);
-		PhaseSlider.Text:ClearAllPoints();
-		PhaseSlider.Text:SetPoint("TOP", PhaseSlider, "BOTTOM", 0, 4);
-		PhaseSlider.Low:ClearAllPoints();
+		PhaseSlider.BG = PhaseSlider:CreateTexture(nil, "BACKGROUND");
+		PhaseSlider.BG:SetAllPoints();
+		PhaseSlider.BG:SetColorTexture(0.0, 0.0, 0.0, 0.75);
+		PhaseSlider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
+		PhaseSlider.Thumb = PhaseSlider:GetThumbTexture();
+		PhaseSlider.Thumb:Show();
+		PhaseSlider.Thumb:SetColorTexture(1.0, 1.0, 1.0, 1.0);
+		PhaseSlider.Thumb:SetSize(4, 12);
+		PhaseSlider.Text = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.Text:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
+		PhaseSlider.Text:SetPoint("TOP", PhaseSlider, "BOTTOM", 0, 3);
+		PhaseSlider.Low = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.Low:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		PhaseSlider.Low:SetPoint("TOPLEFT", PhaseSlider, "BOTTOMLEFT", 4, 3);
-		PhaseSlider.High:ClearAllPoints();
+		PhaseSlider.High = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.High:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		PhaseSlider.High:SetPoint("TOPRIGHT", PhaseSlider, "BOTTOMRIGHT", -4, 3);
 		PhaseSlider.Low:SetText("|cff00ff001|r");
 		PhaseSlider.High:SetText("|cffff0000" .. DataAgent.MAXPHASE .. "|r");
@@ -3841,8 +3899,8 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 
 		local TradeSkillCollapseAllButton = _G.TradeSkillCollapseAllButton;
 		local TradeSkillExpandButtonFrame = _G.TradeSkillExpandButtonFrame;
-		local TradeSkillSubClassDropDown = _G.TradeSkillSubClassDropDown;
-		local TradeSkillInvSlotDropDown = _G.TradeSkillInvSlotDropDown;
+		local TradeSkillSubClassDropDown = _G.TradeSkillSubClassDropDown or _G.TradeSkillSubClassDropdown;
+		local TradeSkillInvSlotDropDown = _G.TradeSkillInvSlotDropDown or _G.TradeSkillInvSlotDropdown;
 		local TradeSkillDescription = _G.TradeSkillDescription;
 		local TradeSkillReagentLabel = _G.TradeSkillReagentLabel;
 
@@ -3935,13 +3993,21 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		-- collapse = CollapseTradeSkillSubClass,
 		F_ClearFilter = function()
 			SetTradeSkillSubClassFilter(0, 1, 1);
-			UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
+			if TradeSkillSubClassDropDown.OnMenuChanged then
+				TradeSkillSubClassDropDown:OnMenuChanged();
+			else
+				UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
+			end
 			SetTradeSkillInvSlotFilter(0, 1, 1);
 			if CT.VGT2X then
 				SetTradeSkillItemNameFilter(nil);
 				SetTradeSkillItemLevelFilter(0, 0);
 			end
-			UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
+			if TradeSkillInvSlotDropDown.OnMenuChanged then
+				TradeSkillInvSlotDropDown:OnMenuChanged();
+			else
+				UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
+			end
 			ExpandTradeSkillSubClass(0);
 			if CT.VGT2X then
 				TradeSkillFrameAvailableFilterCheckButton:SetChecked(false);
@@ -4163,14 +4229,13 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		local GetCraftReagentInfo = _G.GetCraftReagentInfo;
 		local CraftFrame_Update = _G.CraftFrame_Update;
 
-
 		local CraftFrame = _G.CraftFrame;
 		local CraftFramePortrait = _G.CraftFramePortrait;
 		local CraftFrameCloseButton = _G.CraftFrameCloseButton;
 		local CraftRankFrame = _G.CraftRankFrame;
 		local CraftRankFrameBorder = _G.CraftRankFrameBorder;
 		local CraftFrameAvailableFilterCheckButton = _G.CraftFrameAvailableFilterCheckButton;
-		local CraftFrameFilterDropDown = _G.CraftFrameFilterDropDown;
+		local CraftFrameFilterDropDown = _G.CraftFrameFilterDropDown or _G.CraftFrameFilterDropdown;
 		local CraftListScrollFrame = _G.CraftListScrollFrame;
 		local CraftListScrollFrameScrollBar = _G.CraftListScrollFrameScrollBar;
 		local CraftHighlightFrame = _G.CraftHighlightFrame;
@@ -4858,19 +4923,31 @@ local function LF_CreateExplorerFrame()
 		end
 		SetFrame.T_Dropdowns = T_Dropdowns;
 
-		local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame, "OptionsSliderTemplate");
+		local PhaseSlider = CreateFrame('SLIDER', nil, SetFrame);
+		PhaseSlider:SetOrientation("HORIZONTAL");
 		PhaseSlider:SetPoint("BOTTOM", SetFrame, "TOP", 0, 12);
 		PhaseSlider:SetPoint("LEFT", 4, 0);
 		PhaseSlider:SetPoint("RIGHT", -4, 0);
-		PhaseSlider:SetHeight(20);
+		PhaseSlider:SetHeight(4);
 		PhaseSlider:SetMinMaxValues(1, DataAgent.MAXPHASE);
 		PhaseSlider:SetValueStep(1);
 		PhaseSlider:SetObeyStepOnDrag(true);
-		PhaseSlider.Text:ClearAllPoints();
+		PhaseSlider.BG = PhaseSlider:CreateTexture(nil, "BACKGROUND");
+		PhaseSlider.BG:SetAllPoints();
+		PhaseSlider.BG:SetColorTexture(0.0, 0.0, 0.0, 0.75);
+		PhaseSlider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
+		PhaseSlider.Thumb = PhaseSlider:GetThumbTexture();
+		PhaseSlider.Thumb:Show();
+		PhaseSlider.Thumb:SetColorTexture(1.0, 1.0, 1.0, 1.0);
+		PhaseSlider.Thumb:SetSize(4, 12);
+		PhaseSlider.Text = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.Text:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		PhaseSlider.Text:SetPoint("TOP", PhaseSlider, "BOTTOM", 0, 3);
-		PhaseSlider.Low:ClearAllPoints();
+		PhaseSlider.Low = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.Low:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		PhaseSlider.Low:SetPoint("TOPLEFT", PhaseSlider, "BOTTOMLEFT", 4, 3);
-		PhaseSlider.High:ClearAllPoints();
+		PhaseSlider.High = PhaseSlider:CreateFontString(nil, "ARTWORK");
+		PhaseSlider.High:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		PhaseSlider.High:SetPoint("TOPRIGHT", PhaseSlider, "BOTTOMRIGHT", -4, 3);
 		PhaseSlider.Low:SetText("|cff00ff001|r");
 		PhaseSlider.High:SetText("|cffff0000" .. DataAgent.MAXPHASE .. "|r");
@@ -5437,21 +5514,36 @@ end
 		return Dropdown;
 	end
 	local function LF_ConfigCreateSlider(parent, key, text, minVal, maxVal, step, OnValueChanged)
-		local Slider = CreateFrame('SLIDER', nil, parent, "OptionsSliderTemplate");
+		local Slider = CreateFrame('SLIDER', nil, parent);
 		local Label = Slider:CreateFontString(nil, "ARTWORK");
 		Label:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		Label:SetText(gsub(text, "%%[a-z]", ""));
+
+		Slider:SetOrientation("HORIZONTAL");
+		Slider:SetPoint("LEFT", Label, "LEFT", 60, 0);
 		Slider:SetWidth(200);
 		Slider:SetHeight(20);
 		Slider:SetMinMaxValues(minVal, maxVal)
 		Slider:SetValueStep(step);
 		Slider:SetObeyStepOnDrag(true);
-		Slider:SetPoint("LEFT", Label, "LEFT", 60, 0);
-		Slider.Text:ClearAllPoints();
+		Slider.BG = Slider:CreateTexture(nil, "BACKGROUND");
+		Slider.BG:SetHeight(4);
+		Slider.BG:SetPoint("LEFT", 4);
+		Slider.BG:SetPoint("RIGHT", -4);
+		Slider.BG:SetColorTexture(0.0, 0.0, 0.0, 0.75);
+		Slider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
+		Slider.Thumb = Slider:GetThumbTexture();
+		Slider.Thumb:Show();
+		Slider.Thumb:SetColorTexture(1.0, 1.0, 1.0, 1.0);
+		Slider.Thumb:SetSize(4, 12);
+		Slider.Text = Slider:CreateFontString(nil, "ARTWORK");
+		Slider.Text:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		Slider.Text:SetPoint("TOP", Slider, "BOTTOM", 0, 3);
-		Slider.Low:ClearAllPoints();
+		Slider.Low = Slider:CreateFontString(nil, "ARTWORK");
+		Slider.Low:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		Slider.Low:SetPoint("TOPLEFT", Slider, "BOTTOMLEFT", 4, 3);
-		Slider.High:ClearAllPoints();
+		Slider.High = Slider:CreateFontString(nil, "ARTWORK");
+		Slider.High:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
 		Slider.High:SetPoint("TOPRIGHT", Slider, "BOTTOMRIGHT", -4, 3);
 		Slider.Low:SetText(minVal);
 		Slider.High:SetText(maxVal);

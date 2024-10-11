@@ -2417,7 +2417,12 @@ function CataNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL]={{41.66,56.33}}},
         },
         [52906] = { -- Elderlimb
-            [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL]={{33.94,57.54}}},
+            [npcKeys.spawns] = {
+                [zoneIDs.MOUNT_HYJAL] = {
+                    {33.94,57.54,phases.MOUNT_HYJAL_INVASION_SANCTUARY_ATTACK},
+                    {26,61.3,phases.MOUNT_HYJAL_INVASION_SANCTUARY},
+                },
+            },
         },
         [52907] = { -- Thisalee Crow
             [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL]={{24.47,55.74}}},
@@ -2429,11 +2434,17 @@ function CataNpcFixes.Load()
         [52980] = { -- Kil'karil
             [npcKeys.waypoints] = {[zoneIDs.STRANGLETHORN_VALE] = {{{64.64,39.72},{64.72,40.22},{64.75,40.48},{64.69,40.06},{64.58,39.61},{64.24,39.65},{63.90,39.74},{63.57,39.84},{63.24,39.99},{62.93,40.20},{62.79,40.28}}}},
         },
+        [53131] = { -- Lava Bubbles
+            [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{52.36,52.25},{49.99,46.46},{55.54,55.48},{47.12,48.81}}},
+        },
         [53234] = { -- Anren Shadowseeker
             [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{42.62,59.91}}},
         },
         [53256] = { -- Ember Pool Bunny
             [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{47.24,53.26},{41.18,60.14},{54.33,61.61},{47.7,54.61},{50.11,57.35},{55.5,69.8},{49.28,68.68},{47.65,61.84},{40.41,55.57},{42.66,65.26}}},
+        },
+        [53296] = { -- Locket A Event Controller
+            [npcKeys.spawns] = {[zoneIDs.MOONGLADE] = {{51.67,44.62}}},
         },
         [53385] = { -- Malfurion Stormrage
             [npcKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{47.16,90.58}}},
@@ -2656,6 +2667,30 @@ function CataNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.STRANGLETHORN_VALE] = {{64.11,20.16}}},
             [npcKeys.zoneID] = zoneIDs.STRANGLETHORN_VALE,
             [npcKeys.questStarts] = {29116},
+        },
+        [100024] = { -- Tragedy and Family
+            [npcKeys.name] = "?",
+            [npcKeys.spawns] = {[zoneIDs.ASHENVALE] = {{40.5,53.37}}},
+            [npcKeys.zoneID] = zoneIDs.ASHENVALE,
+            [npcKeys.questEnds] = {29303},
+        },
+        [100025] = { -- Tipping Point
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.ASHENVALE] = {{40.5,53.37}}},
+            [npcKeys.zoneID] = zoneIDs.ASHENVALE,
+            [npcKeys.questStarts] = {29310},
+        },
+        [100026] = { -- Tipping Point
+            [npcKeys.name] = "?",
+            [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL] = {{7.64,34.62}}},
+            [npcKeys.zoneID] = zoneIDs.MOUNT_HYJAL,
+            [npcKeys.questEnds] = {29310},
+        },
+        [100027] = { -- The Rest is History
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.MOUNT_HYJAL] = {{7.64,34.62}}},
+            [npcKeys.zoneID] = zoneIDs.MOUNT_HYJAL,
+            [npcKeys.questStarts] = {29311},
         },
     }
 end

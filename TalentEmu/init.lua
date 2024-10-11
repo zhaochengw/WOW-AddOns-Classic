@@ -30,7 +30,22 @@ local DT = {  }; __private.DT = DT;		--	data
 	__ala_meta__.emu = __private;
 	VT.__dep = __ala_meta__;
 	VT.__scrolllib = _G.alaScrollList;
-	VT.__popuplib = _G.alaPopup;
+	VT.__poplib = __ala_meta__.__poplib;
+
+-->		Compatible
+	local _comptb = {  };
+	VT._comptb = _comptb;
+	if GetMouseFocus then
+		_comptb.GetMouseFocus = GetMouseFocus;
+	elseif GetMouseFoci then
+		local GetMouseFoci = GetMouseFoci;
+		_comptb.GetMouseFocus = function()
+			return GetMouseFoci()[1];
+		end
+	else
+		_comptb.GetMouseFocus = function()
+		end
+	end
 
 -->		Dev
 	local _GlobalRef = {  };

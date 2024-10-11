@@ -687,3 +687,20 @@ function ns.IsBlackListData(text)
     end
     return isBlack
 end
+
+function ns.GetAchievementInfoIsTheSameDay(id)
+    local _, _, _, completed, month, day, year = GetAchievementInfo(id)
+    if completed then
+        -- 获取当前日期
+        local currentMonth = date("%m")
+        local currentDay = date("%d")
+        local currentYear = date("%Y")
+
+        if tonumber(month) == tonumber(currentMonth) and
+            tonumber(day) == tonumber(currentDay) and
+            tonumber(year) == tonumber(currentYear) then
+            return true
+        end
+    end
+    return false
+end

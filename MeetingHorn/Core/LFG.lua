@@ -89,6 +89,7 @@ function LFG:OnEnable()
     self:RegisterServer('STB')
     self:RegisterServer('SFKWS')
     self:RegisterServer('SBKWS')
+    self:RegisterServer('SQG')
 
     self:RegisterChallenge('SGA', 'SGETACTIVITY')
     self:RegisterChallenge('SGP', 'SACTIVITYGROUPPROGRESS')
@@ -437,7 +438,7 @@ function LFG:Search(path, activityId, modeId, search)
             tinsert(result, activity)
         end
     end
-    if ns.Addon.db.global.SortFilteringData then
+    if ns.Addon.db.global.SortFilteringData and not search then
         for _, data in ipairs(ns.Addon.db.global.SortFilteringData) do
             for _, activity in ipairs(self.chats) do
                 local isBlack = ns.IsBlackListData(activity:GetComment())
@@ -464,10 +465,16 @@ function LFG:SERVER_CONNECTED()
                     ns.GetAddonSource(), (GetGuildInfo('player')))
     self:SendMessage('MEETINGHORN_SERVER_CONNECTED')
 
+    self:SendServerCQG()
+
     --[=[@debug@
     print('Connected', ns.ADDON_VERSION, ns.GetPlayerItemLevel(), UnitGUID('player'), UnitLevel('player'),
           ns.GetAddonSource())
     --@end-debug@]=]
+end
+
+function LFG:SendServerCQG()
+     self:SendServer('CQG', UnitGUID('player'))
 end
 
 function LFG:SNEWVERSION(_, version, url, changelog)
@@ -926,6 +933,10 @@ end
 
 function LFG:ANNOUNCEMENT(eventName, ...)
     self:SendMessage('MEETINGHORN_ANNOUNCEMENT', ...)
+end
+
+function LFG:SQG(eventName, ...)
+    self:SendMessage('MEETINGHORN_SQG', ...)
 end
 
 function LFG:IsStarRegimentVersion(newVersion)

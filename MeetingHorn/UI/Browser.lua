@@ -559,12 +559,15 @@ function Browser:OpenVoiceRoom(activity)
         self.QRTooltip.QRCode:SetValue(ns.MakeQRCode(activity:GetLeader()))
         self.QRTooltip:Show()
 
+        local  data = ns.NetEaseBase64:EnCode(format('%s+%d', UnitGUID("player"), GetRealmID()))
+        ns.LogStatistics:InsertLog({time(), 7, 1, data})
+
         C_Timer.After(3, function(...)
             if ns.isOpenVoiceRoom then
                 return
             end
             ns.ThreeDimensionsCode:sendCommand('joinRoom', '-1')
-            local  data = ns.NetEaseBase64:EnCode(format('%s+%d', UnitGUID("player"), GetRealmID()))
+            ns.LogStatistics:InsertLog({time(), 7, 2, data})
             ns.OpenUrlDialog(format('https://dd.163.com/?utm_source=%s', data), '无法成功拉起房间?复制下方链接去浏览器内打开')
         end)
     end

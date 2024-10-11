@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2391, "DBM-Party-Shadowlands", 1, 1182)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240817092309")
+mod:SetRevision("20241009083038")
 mod:SetCreatureID(163157)--162692?
 mod:SetEncounterID(2388)
 mod:SetHotfixNoticeRev(20240817000000)
@@ -69,7 +69,7 @@ function mod:OnCombatStart(delay)
 	--Fortunately mods corrective code should mostly handle it within a ~2.5 second margin of error instead of full 8-9 seconds
 	timerUnholyFrenzyCD:Start(6-delay, 1)--SUCCESS
 	timerLandoftheDeadCD:Start(8.6-delay, 1)--SUCCESS
-	timerNecroticBreathCD:Start(29.3-delay, 1)
+	timerNecroticBreathCD:Start(28.9-delay, 1)
 	timerFinalHarvestCD:Start(38.6-delay, 1)
 end
 
