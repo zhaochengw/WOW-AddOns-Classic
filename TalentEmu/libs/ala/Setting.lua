@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 240911.0;
+local __version = 241010.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -39,7 +39,7 @@ local CreateFrame = CreateFrame;
 local UIParent = UIParent;
 local _G = _G;
 
-local TEXTURE_PATH = strmatch(debugstack(), [[(Interface.+[/\])[^/\]+%.lua]]) .. [[Media\Texture\]];
+local TEXTURE_PATH = strmatch(debugstack(), [[(Interface[^:"|]+[/\])[^/\:"|]+%.lua]]) .. [[Media\Texture\]];
 local SettingUIColWidth = 180;
 local SettingUILineHeight = 24;
 local SettingUIFont = SystemFont_Shadow_Med1:GetFont();

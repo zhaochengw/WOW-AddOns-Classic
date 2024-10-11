@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 241010.0;
+local __version = 241011.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -17,7 +17,7 @@ local __ala_meta__ = _G.__ala_meta__;
 		__ala_meta__.__poplib = __poplib;
 	else
 		if __poplib.Halt ~= nil then
-			__poplib:Halt();
+			__poplib:Halt(__poplib.__minor);
 		end
 	end
 	__poplib.__minor = __version;
@@ -39,8 +39,11 @@ local __ala_meta__ = _G.__ala_meta__;
 -->
 
 local __dead = false;
-local MethodScript = {  };
-local ScriptEntry = {  };
+__poplib.MethodScript = __poplib.MethodScript or {  };
+__poplib.ScriptEntry = __poplib.ScriptEntry or {  };
+
+local MethodScript = __poplib.MethodScript;
+local ScriptEntry = __poplib.ScriptEntry;
 local AllFrames = {  };
 --[[
 	def = {
@@ -242,6 +245,8 @@ if DropDownList1 then
 		local contextData = DropDownList1.dropdown;
 		return def:OnClick(contextData.which, contextData);
 	end);
+	local IsSettingHeight = false;
+	--UnitPopup_ShowMenu
 	DropDownList1:HookScript("OnShow", function(menu)
 		if __dead then
 			return;
@@ -268,14 +273,33 @@ if DropDownList1 then
 				end
 				InsertFrame:AddButton(def, DropDownList1.dropdown);
 			end
+			IsSettingHeight = true;
 			menu:SetHeight(menu:GetHeight() + InsertFrame:GetHeight());
+			IsSettingHeight = false;
 		else
 			InsertFrame:Hide();
 		end
 	end);
+	DropDownList1:HookScript("OnHide", function(menu)
+		if __dead then
+			return;
+		end 
+		InsertFrame:Hide();
+	end);
+	--UIDropDownMenu_AddButton
+	hooksecurefunc(DropDownList1, "SetHeight", function(menu, height)
+		if __dead then
+			return;
+		end 
+		if not IsSettingHeight and InsertFrame:IsVisible() then
+			IsSettingHeight = true;
+			menu:SetHeight(height + InsertFrame:GetHeight());
+			IsSettingHeight = false;
+		end
+	end);
 end
 
-function __poplib:Halt()
+function __poplib:Halt(old)
 	__dead = true;
 	for i = 1, #AllFrames do
 		AllFrames[i]:Clear();
