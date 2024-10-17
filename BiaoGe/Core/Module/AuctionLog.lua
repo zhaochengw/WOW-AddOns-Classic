@@ -29,7 +29,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     BiaoGe.options.showAuctionLogFrame = BiaoGe.options.showAuctionLogFrame or 0
     BiaoGe.options.auctionLogChoose = BiaoGe.options.auctionLogChoose or 1
-    BiaoGe.AuctionLog = BiaoGe.AuctionLog or {}
+    BiaoGe.auctionTrade = BiaoGe.auctionTrade or {}
 
     local bt = CreateFrame("Button", nil, BG.MainFrame)
     do
@@ -259,7 +259,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.auctionLogFrame.ButtonStartAuction = bt
             bt:SetScript("OnClick", function(self)
                 BG.PlaySound(1)
-                BG.StartAuction(BG.auctionLogFrame.choosed, bt)
+                BG.StartAuction(BG.auctionLogFrame.choosed, bt, nil, true)
                 if BG.StartAucitonFrame and BG.StartAucitonFrame:IsVisible() then
                     BG.StartAucitonFrame:ClearAllPoints()
                     BG.StartAucitonFrame:SetPoint("BOTTOM", frame, 0, 0)
@@ -422,8 +422,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 local duizhang = {}
                 duizhang.addons = "biaoge"
                 duizhang.FB = FB
-                duizhang.t = time()
-                duizhang.time = date("%H:%M:%S")
+                duizhang.t = GetServerTime()
+                duizhang.time = date("%H:%M:%S", GetServerTime())
                 duizhang.msgTbl = {}
                 duizhang.player = BG.STC_g1(L["自动拍卖记录"])
                 duizhang.sumjine = 0
@@ -766,7 +766,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
                     _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
                     local a = {
-                        time = time(),
+                        time = GetServerTime(),
                         zhuangbei = zhuangbei,
                         itemlevel = level,
                         quality = quality,
@@ -842,7 +842,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     disabled = not BG.IsML,
                     notCheckable = true,
                     func = function()
-                        BG.StartAuction(link, f, true)
+                        BG.StartAuction(link, f, true, true)
                     end
                 },
                 {
@@ -870,7 +870,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         BiaoGe[FB].auctionLog = BiaoGe[FB].auctionLog or {}
                         tinsert(BiaoGe[FB].auctionLog, {
                             type = 2,
-                            time = time(),
+                            time = GetServerTime(),
                             zhuangbei = v.zhuangbei,
                             itemlevel = v.level,
                             quality = v.quality,
@@ -947,9 +947,35 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 }
             }
             if v.type == 1 then
+                -- 成功
                 menu[2].text = L["修改记录"]
                 menu[2].arg1 = menu[2].text
-                tinsert(menu, 2,
+
+                local num = 2
+                if v.log then
+                    local text = ""
+                    local isMore = true
+                    for i, _v in ipairs(v.log) do
+                        if _v.i == 1 then
+                            isMore = false
+                        end
+                        text = text .. _v.i .. L["、"] .. _v.money .. format(L["（%s）"], _v.player) .. NN
+                    end
+                    if isMore then
+                        text = BG.STC_dis("......\n") .. text
+                    end
+                    tinsert(menu, num,
+                        {
+                            text = L["出价记录"],
+                            notCheckable = true,
+                            tooltipTitle = L["出价记录"],
+                            tooltipText = text,
+                            tooltipOnButton = true,
+                        }
+                    )
+                    num = num + 1
+                end
+                tinsert(menu, num,
                     {
                         text = L["设为流拍"],
                         notCheckable = true,
@@ -964,7 +990,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         end
                     }
                 )
-                tinsert(menu, 3,
+                tinsert(menu, num + 1,
                     {
                         isTitle = true,
                         text = "   ",
@@ -972,8 +998,10 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     }
                 )
             elseif v.type == 2 then
+                -- 流拍
                 menu[2].text = L["设为已拍"]
                 menu[2].arg1 = menu[2].text
+
                 tinsert(menu, 3,
                     {
                         isTitle = true,
@@ -1028,7 +1056,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     GameTooltip:Show()
                     BG.Show_AllHighlight(link, "auctionlog")
 
-                    if IsAltKeyDown() and BG.IsML and v.type == 3 then
+                    if IsAltKeyDown() and BG.IsML and v.type == 3 and BiaoGe.options["autoAuctionStart"] == 1 then
                         SetCursor("interface/cursor/repair")
                     end
                     if v.type == 3 and BG.IsML then
@@ -1452,11 +1480,26 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             zhuangbei, maijia, jine = msg:match("{rt6}拍賣成功{rt6} (.-) (.-) (.+)")
         end
         if (zhuangbei and maijia and jine) then
-            DeleteAuctioning(GetItemID(zhuangbei))
+            local itemID = GetItemID(zhuangbei)
+            DeleteAuctioning(itemID)
             local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
             local FB = BG.FB2
             if not FB then
                 FB = CheckItemToFB(zhuangbei) or BG.FB1
+            end
+
+            local log
+            if BG.sendMoneyLog and BG.sendMoneyLog[itemID] then
+                log = {}
+                local num = 1
+                for i = #BG.sendMoneyLog[itemID], 1, -1 do
+                    if num > 5 then break end
+                    num = num + 1
+                    local a = BG.Copy(BG.sendMoneyLog[itemID][i])
+                    a.i = i
+                    tinsert(log, 1, a)
+                end
+                BG.sendMoneyLog[itemID] = nil
             end
 
             local playerClass = {}
@@ -1470,13 +1513,14 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
             local a = {
                 type = 1,
-                time = time(),
+                time = GetServerTime(),
                 zhuangbei = zhuangbei,
                 maijia = maijia,
                 jine = jine,
                 itemlevel = level,
                 quality = quality,
                 bindType = bindType,
+                log = log,
             }
             for k, v in pairs(playerClass) do
                 a[k] = v
@@ -1485,11 +1529,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             tinsert(BiaoGe[FB].auctionLog, a)
             BG.UpdateAuctionLogFrame(nil, true)
 
-            BiaoGe.AuctionLog[maijia] = BiaoGe.AuctionLog[maijia] or {}
-            tinsert(BiaoGe.AuctionLog[maijia], {
-                time = time(),
+            BiaoGe.auctionTrade[maijia] = BiaoGe.auctionTrade[maijia] or {}
+            tinsert(BiaoGe.auctionTrade[maijia], {
+                time = GetServerTime(),
                 item = zhuangbei,
-                itemID = GetItemID(zhuangbei),
+                itemID = itemID,
                 money = tonumber(jine),
             })
             return
@@ -1507,7 +1551,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             local a = {
                 type = 2,
-                time = time(),
+                time = GetServerTime(),
                 zhuangbei = zhuangbei,
                 itemlevel = level,
                 quality = quality,
@@ -1532,15 +1576,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     -- 自动清理超过半小时的记录
     C_Timer.NewTicker(60, function()
         if TradeFrame:IsVisible() then return end
-        local time = time()
-        for maijia, v in pairs(BiaoGe.AuctionLog) do
+        local time = GetServerTime()
+        for maijia, v in pairs(BiaoGe.auctionTrade) do
             for i = #v, 1, -1 do
                 if time - v[i].time >= 60 * 60 then
                     tremove(v, i)
                 end
             end
             if #v == 0 then
-                BiaoGe.AuctionLog[maijia] = nil
+                BiaoGe.auctionTrade[maijia] = nil
             end
         end
     end)
@@ -1657,8 +1701,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.trade.GiveYouMoneyText:Hide()
             if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
             if not BG.ImML() then return end
-            if not BiaoGe.AuctionLog[UnitName("NPC")] then return end
-            for _, v in ipairs(BiaoGe.AuctionLog[UnitName("NPC")]) do
+            if not BiaoGe.auctionTrade[UnitName("NPC")] then return end
+            for _, v in ipairs(BiaoGe.auctionTrade[UnitName("NPC")]) do
                 local yes
                 for b = 0, NUM_BAG_SLOTS do
                     for i = 1, C_Container.GetContainerNumSlots(b) do
@@ -1712,9 +1756,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 _G["TradePlayerItem" .. i .. "ItemButton"].money:Hide()
             end
             if not BG.ImML() then return end
-            if not BiaoGe.AuctionLog[UnitName("NPC")] then return end
+            if not BiaoGe.auctionTrade[UnitName("NPC")] then return end
             local have = {}
-            for num, v in ipairs(BiaoGe.AuctionLog[UnitName("NPC")]) do
+            for num, v in ipairs(BiaoGe.auctionTrade[UnitName("NPC")]) do
                 for i = 1, 6 do
                     if not have[i] then
                         local link = GetTradePlayerItemLink(i)
@@ -1752,9 +1796,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 _G["TradeRecipientItem" .. i .. "ItemButton"].money:Hide()
             end
             if BG.ImML() then return end
-            if not BiaoGe.AuctionLog[UnitName("player")] then return end
+            if not BiaoGe.auctionTrade[UnitName("player")] then return end
             local have = {}
-            for num, v in ipairs(BiaoGe.AuctionLog[UnitName("player")]) do
+            for num, v in ipairs(BiaoGe.auctionTrade[UnitName("player")]) do
                 for i = 1, 6 do
                     if not have[i] then
                         local link = GetTradeTargetItemLink(i)
@@ -1803,11 +1847,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.RegisterEvent("TRADE_CLOSED", function(self, ...)
             if tradeShowTime and GetTime() - tradeShowTime < 1 then return end
             local player = lastTradeItemNum.player
-            if not (player and BiaoGe.AuctionLog[player]) then return end
-            for i = #BiaoGe.AuctionLog[player], 1, -1 do
+            if not (player and BiaoGe.auctionTrade[player]) then return end
+            for i = #BiaoGe.auctionTrade[player], 1, -1 do
                 for ii = #lastTradeItemNum, 1, -1 do
                     if i == lastTradeItemNum[ii] then
-                        tremove(BiaoGe.AuctionLog[player], i)
+                        tremove(BiaoGe.auctionTrade[player], i)
                         tremove(lastTradeItemNum, ii)
                     end
                 end

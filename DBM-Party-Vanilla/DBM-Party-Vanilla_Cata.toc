@@ -32,7 +32,7 @@
 ## X-DBM-Mod-MinExpansion: 0
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r161
+## Version: r163
 
 Retail\localization.en.lua
 Retail\localization.es.lua

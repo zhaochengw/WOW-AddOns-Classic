@@ -995,7 +995,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             local ML
             if even == "CHAT_MSG_RAID_WARNING" or even == "CHAT_MSG_RAID_LEADER" then
                 ML = true
-            elseif even == "CHAT_MSG_RAID" and playerName == BG.MasterLooter then
+            elseif even == "CHAT_MSG_RAID" and playerName == BG.masterLooter then
                 ML = true
             end
             if not ML then return end
@@ -1007,7 +1007,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
                 end
                 tinsert(lastItems, 1, {
-                    time = time(),
+                    time = GetServerTime(),
                     itemID = itemID,
                 })
                 for i = #lastItems, 1, -1 do
@@ -1023,7 +1023,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         end)
 
         C_Timer.NewTicker(60, function()
-            local _time = time()
+            local _time = GetServerTime()
             for i = #lastItems, 1, -1 do
                 if _time - lastItems[i].time > 60 * 5 then
                     tremove(lastItems, i)
@@ -1107,7 +1107,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     do
         function BG.ImML()
             if GetLootMethod() == "master" then
-                if BG.MasterLooter == UnitName("player") then
+                if BG.masterLooter == UnitName("player") then
                     return true
                 end
             else

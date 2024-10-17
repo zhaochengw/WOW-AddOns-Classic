@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2570, "DBM-Party-WarWithin", 2, 1267)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240830215855")
+mod:SetRevision("20241014005918")
 mod:SetCreatureID(207939)
 mod:SetEncounterID(2835)
 mod:SetHotfixNoticeRev(20240608000000)
@@ -56,10 +56,10 @@ function mod:OnCombatStart(delay)
 	self.vb.burningCount = 0
 	self.vb.hammerCount = 0
 	self.vb.pyreCount = 0
-	timerVindictiveWrathCD:Start(45.9-delay, 1)
-	timerCastigatorsShieldCD:Start(23.0-delay, 1)
+	timerHammerofPurityCD:Start(7.4-delay, 1)
 	timerBurningLightCD:Start(16.7-delay, 1)
-	timerHammerofPurityCD:Start(8.2-delay, 1)
+	timerCastigatorsShieldCD:Start(23.0-delay, 1)
+	timerVindictiveWrathCD:Start(45.9-delay, 1)
 	if self:IsMythic() then
 		timerSacredPyreCD:Start(1-delay)
 	end

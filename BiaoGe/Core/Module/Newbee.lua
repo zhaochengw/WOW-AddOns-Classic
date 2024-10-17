@@ -57,7 +57,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BiaoGe.newbee_report.uploadstate = 0
         BG.ButtonNewBee.uploadstate = true
         -- 时间戳
-        BiaoGe.newbee_report.time = time()
+        BiaoGe.newbee_report.time = GetServerTime()
         -- 表格
         BiaoGe.newbee_report.biaoge = BG.FB1
         -- 团长
@@ -142,7 +142,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     tbl.encounterID = GetEncounterID(b)
 
                     local instanceID = BG.instanceIDfromBossPosition[FB][b]
-                    local lockoutID,realmID
+                    local lockoutID, realmID
                     if instanceID and BiaoGe[FB].lockoutIDtbl and BiaoGe[FB].lockoutIDtbl[instanceID] then
                         lockoutID = BiaoGe[FB].lockoutIDtbl[instanceID].lockoutID
                         realmID = BiaoGe[FB].lockoutIDtbl[instanceID].realmID

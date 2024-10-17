@@ -483,6 +483,11 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                         f.topMoneyText:SetText(L["|cff00FF00买家：|r"] .. f.colorplayer)
                     end
 
+                    if BG then
+                        BG.sendMoneyLog=BG.sendMoneyLog or {}
+                        BG.sendMoneyLog[f.itemID]=f.logs
+                    end
+
                     if aura_env.IsRaidLeader() then
                         SendChatMessage(format(L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
                     end

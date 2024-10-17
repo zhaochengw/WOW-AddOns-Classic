@@ -173,10 +173,15 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             if IsAltKeyDown() then
-                GameTooltip:SetText(BG.updateText)
+                for i, text in ipairs(BG.instructionsText) do
+                    GameTooltip:AddLine(text)
+                end
             else
-                GameTooltip:SetText(BG.instructionsText)
+                for i, text in ipairs(BG.instructionsText) do
+                    GameTooltip:AddLine(text)
+                end
             end
+            GameTooltip:Show()
             t:SetTextColor(1, 1, 1)
         end
         f:SetScript("OnEnter", OnEnter)
@@ -1605,7 +1610,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
             if even == "CHAT_MSG_RAID" then
                 playerName = strsplit("-", playerName)
-                if playerName ~= BG.MasterLooter then
+                if playerName ~= BG.masterLooter then
                     return
                 end
             end
@@ -2162,7 +2167,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             if GetLootMethod() == "master" then
                 bt:Show()
-                if select(2, IsInInstance()) == "raid" and BG.MasterLooter == UnitName("player") then
+                if select(2, IsInInstance()) == "raid" and BG.masterLooter == UnitName("player") then
                     disframe:Hide()
                     bt:Enable()
                     bt:SetBackdropBorderColor(0, 1, 0)
@@ -3035,7 +3040,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     ----------拍卖倒数----------
     do
         local f = CreateFrame("Frame")
-        local auctioning,needStop
+        local auctioning, needStop
 
         local function Channel(leader, assistant, looter, optionchannel)
             if leader then
@@ -3220,7 +3225,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     realmID = realmID,
                     name = player,
                     money = money,
-                    time = time()
+                    time = GetServerTime()
                 }
                 BG.UpdateButtonClearBiaoGeMoney()
                 return num
@@ -3295,7 +3300,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if not FB then FB = BG.FB1 end
                 -- pt(FB, BiaoGe[FB].raidRoster)
                 -- if BiaoGe[FB].raidRoster then
-                --     pt(time(), BiaoGe[FB].raidRoster.time, time() - BiaoGe[FB].raidRoster.time >= 86400 * 1)
+                --     pt(GetServerTime(), BiaoGe[FB].raidRoster.time, GetServerTime() - BiaoGe[FB].raidRoster.time >= 86400 * 1)
                 --     pt(GetRealmName(), BiaoGe[FB].raidRoster.realm, GetRealmName() ~= BiaoGe[FB].raidRoster.realm)
                 -- end
 
@@ -3303,7 +3308,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 -- 没有历史成员名单
                 if not BiaoGe[FB].raidRoster then return true end
                 -- 超过x天了
-                if time() - BiaoGe[FB].raidRoster.time >= 86400 * 1 then return true end
+                if GetServerTime() - BiaoGe[FB].raidRoster.time >= 86400 * 1 then return true end
                 -- 服务器不同
                 if GetRealmName() ~= BiaoGe[FB].raidRoster.realm then return true end
 
@@ -3369,7 +3374,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                     BG.ClickFBbutton(FB)
                                     BG.SaveBiaoGe(FB)
                                     local num = BG.ClearBiaoGe("biaoge", FB)
-                                    local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. time() ..
+                                    local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGe:" .. L["撤回清空"] .. ":" .. FB .. ":" .. GetServerTime() ..
                                         "|h[" .. L["撤回清空"] .. "]|h|r"
                                     SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"], BG.GetFBinfo(FB, "localName"), num)) .. link)
                                     PlaySoundFile(BG["sound_qingkong" .. BiaoGe.options.Sound], "Master")
@@ -3427,7 +3432,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 if not (BiaoGe.clearBiaoGeMoney and BiaoGe.clearBiaoGeMoney[FB]) or
                     not (BiaoGe.clearBiaoGeMoney[FB].realmID == realmID and
                         BiaoGe.clearBiaoGeMoney[FB].name == player and
-                        time() - BiaoGe.clearBiaoGeMoney[FB].time <= 3600 * 24) then
+                        GetServerTime() - BiaoGe.clearBiaoGeMoney[FB].time <= 3600 * 24) then
                     f:Hide()
                 else
                     f:Show()
@@ -3607,7 +3612,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             end
         elseif mod == "LALT" or mod == "RALT" then
             if type == 1 then
-                if BG.canShowStartAuctionCursor then
+                if BG.canShowStartAuctionCursor and BiaoGe.options["autoAuctionStart"] == 1 then
                     SetCursor("interface/cursor/repair")
                 elseif BG.canShowHopeCursor then
                     SetCursor("Interface/Cursor/quest")
@@ -3728,7 +3733,8 @@ do
         wipe(BG.raidRosterName)
         wipe(BG.raidRosterIsOnline)
 
-        BG.MasterLooter = nil
+        BG.raidLeader = nil
+        BG.masterLooter = nil
         BG.IsML = nil
         BG.IsLeader = nil
 
@@ -3756,8 +3762,11 @@ do
                         a[k] = select(v.select, v.func("raid" .. i))
                     end
                     table.insert(BG.raidRosterInfo, a)
+                    if rank == 2 then
+                        BG.raidLeader = name
+                    end
                     if isML then
-                        BG.MasterLooter = name
+                        BG.masterLooter = name
                     end
                     if name == UnitName("player") and (rank == 2 or isML) then
                         BG.IsML = true

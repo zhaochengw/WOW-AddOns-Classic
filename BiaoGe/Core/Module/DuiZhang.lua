@@ -52,7 +52,7 @@ local function Default(player, time)
         msgTbl = {},
         yes = nil,
         sumjine = 0,
-        time = date("%H:%M:%S"),
+        time = date("%H:%M:%S",GetServerTime()),
         t = time,
     }
 end
@@ -93,7 +93,7 @@ f:SetScript("OnEvent", function(self, even, msg, playerName, ...)
     local IsRaidLedger = BG.FindTableString(msg, locales["RaidLedger:.... 收入 ...."])
     local IsBiaoGe = BG.FindTableString(msg, locales["通报金团账单"])
     local IsBigFoot = BG.FindTableString(msg, locales["事件：.-|c.-|Hitem.-|h|r"])
-    local _time = time()
+    local _time = GetServerTime()
     -- 判断是否一个账单
     if IsRaidLedger then -- 金团账本
         linshi_duizhang = Default(player, _time)
@@ -331,7 +331,7 @@ function BG.DuiZhangUI()
     if not BiaoGe.options[name] then
         BiaoGe.options[name] = BG.options[name .. "reset"]
     end
-    local nowtime = time()
+    local nowtime = GetServerTime()
     for i = #BiaoGe.duizhang, 1, -1 do
         if type(BiaoGe.duizhang[i]) == "table" and BiaoGe.duizhang[i].t then
             local zhangdantime = BiaoGe.duizhang[i].t

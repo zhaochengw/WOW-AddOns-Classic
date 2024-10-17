@@ -30,7 +30,7 @@ local RealmId = GetRealmID()
 local player = UnitName("player")
 
 local saveZaXiangNum = 0
-local saveZaXiangTbl={}
+local saveZaXiangTbl = {}
 
 BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     if addonName ~= AddonName then return end
@@ -113,7 +113,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             BG.itemGuoQiFrame:Show()
             BG.ClickTabButton(BG.FBMainFrameTabNum)
         elseif arg2 == "BiaoGeGuoQi" and arg3 == L["设置为1小时内不再提醒"] then
-            BiaoGe.lastGuoQiTime = time() + 3300
+            BiaoGe.lastGuoQiTime = GetServerTime() + 3300
             BG.FrameLootMsg:AddMessage(BG.STC_b1(L["已设置为1小时内不再提醒。"]))
         elseif arg2 == "BiaoGeInSertItem" then
             local _saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer = arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11
@@ -126,7 +126,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             typeID = tonumber(typeID)
             -- pt(_saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer)
             if not saveZaXiangTbl[_saveZaXiangNum] then
-                saveZaXiangTbl[_saveZaXiangNum]=true
+                saveZaXiangTbl[_saveZaXiangNum] = true
                 local numb = Maxb[FB] - 1
                 local link = select(2, GetItemInfo(itemID))
                 BG.AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer)
@@ -235,7 +235,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             start = nil
                             -- local text = BG.STC_g1(L["BOSS击杀成功"])
                             -- PrintLootBoss(FB, even, numb, text)
-                            BiaoGe[FB].raidRoster = { time = time(), realm = GetRealmName(), roster = {} }
+                            BiaoGe[FB].raidRoster = { time = GetServerTime(), realm = GetRealmName(), roster = {} }
                             for i, v in ipairs(BG.raidRosterInfo) do
                                 tinsert(BiaoGe[FB].raidRoster.roster, v.name)
                             end
@@ -271,7 +271,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
     local function AddLootLog(FB, numb, i, lootplayer, count)
         BiaoGe[FB]["boss" .. numb]["loot" .. i] = BiaoGe[FB]["boss" .. numb]["loot" .. i] or {}
         tinsert(BiaoGe[FB]["boss" .. numb]["loot" .. i], {
-            time = time(),
+            time = GetServerTime(),
             player = lootplayer,
             class = select(2, UnitClass(lootplayer)),
             count = count,

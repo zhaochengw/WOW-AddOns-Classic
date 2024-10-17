@@ -969,10 +969,8 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
             if raid[num] and raid[num].name then
                 if raid[num].role then
                     bt:SetText(AddTexture(raid[num].role) .. raid[num].name)
-                elseif raid[num].combatRole == "HEALER" then
-                    bt:SetText(AddTexture(raid[num].combatRole) .. raid[num].name)
                 else
-                    bt:SetText(raid[num].name)
+                    bt:SetText(AddTexture(raid[num].combatRole) .. raid[num].name)
                 end
                 bt:SetCursorPosition(0)
                 bt:SetTextColor(GetClassRGB(GetText_T(raid[num].name)))
@@ -1415,31 +1413,6 @@ local function FrameDongHua(frame, h2, w2)
     end
 end
 ns.FrameDongHua = FrameDongHua
-
-------------------获取玩家所在的团队框体位置（例如5-2）------------------
-function BG.GetRaidWeiZhi()
-    local team = {}
-    local num = GetNumGroupMembers()
-    if not num then return end
-    for i = 1, num do
-        local name, rank, subgroup, level, class, fileName, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
-        name = strsplit("-", name)
-        if not team[subgroup] then
-            team[subgroup] = {}
-        end
-        table.insert(team[subgroup], name)
-    end
-
-    local weizhi = {}
-    for i, v in pairs(team) do
-        if type(team[i]) == "table" then
-            for ii, vv in ipairs(team[i]) do
-                weizhi[vv] = i .. "-" .. ii
-            end
-        end
-    end
-    return weizhi
-end
 
 ------------------单元格内容交换------------------
 function BG.JiaoHuan(button, FB, b, i, t)
@@ -2207,4 +2180,14 @@ function BG.InsertLink(text, isZhuangbeiList)
         ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
     end
     ChatEdit_InsertLink(text)
+end
+
+function BG.FindDropdownItem(dropdown, text)
+    local name = dropdown:GetName()
+    for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
+        local dropdownItem = _G[name .. 'Button' .. i]
+        if dropdownItem:IsShown() and dropdownItem:GetText() == text then
+            return i, dropdownItem
+        end
+    end
 end

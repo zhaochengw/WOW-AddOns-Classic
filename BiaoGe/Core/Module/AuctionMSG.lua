@@ -134,7 +134,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             self.UpdateButtonItem()
         end)
 
-        local t = time()
+        local t = GetServerTime()
         for i = #BiaoGe.auctionMSGhistory, 1, -1 do
             if type(BiaoGe.auctionMSGhistory[i]) == "table" then
                 if t - BiaoGe.auctionMSGhistory[i].time > 3600 * 12 then
@@ -392,7 +392,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
                 BG.FrameAuctionMSG:AddMessage(msg)
 
                 tinsert(BiaoGe.auctionMSGhistory, {
-                    time = time(),
+                    time = GetServerTime(),
                     textColor = ML and "FF4500" or "FF7F50",
                     nameLink = nameLink,
                     text = text,
@@ -421,7 +421,7 @@ frame:SetScript("OnEvent", function(self, event, addonName)
             if even == "CHAT_MSG_RAID_WARNING" or even == "CHAT_MSG_RAID_LEADER" then
                 ML = true
             elseif even == "CHAT_MSG_RAID" then
-                if playerName == BG.MasterLooter then
+                if playerName == BG.masterLooter then
                     ML = true
                 end
             end

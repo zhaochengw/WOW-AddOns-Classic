@@ -140,8 +140,8 @@ function BG.ReceiveUI()
             BG.SendBiaoGe.FB = FB
 
             if BG.FindTableString(type, dangqianTbl) then
-                local DT = tonumber(date("%y%m%d%H%M%S"))
-                local DTcn = date(L["%m月%d日%H:%M:%S\n"])
+                local DT = tonumber(date("%y%m%d%H%M%S",GetServerTime()))
+                local DTcn = date(L["%m月%d日%H:%M:%S\n"],GetServerTime())
                 local biaoti = format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
                     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
                     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText())

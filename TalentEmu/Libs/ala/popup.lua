@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 241011.0;
+local __version = 241014.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -35,6 +35,7 @@ local __ala_meta__ = _G.__ala_meta__;
 
 -->			constant
 	local font, fontsize, fontflag = GameFontNormal:GetFont();
+	local _, _, _, TocVerison = GetBuildInfo();
 
 -->
 
@@ -88,6 +89,11 @@ end
 function __poplib:CreateInsertFrame(DividerHeight, DividerTextureHeight, LabelHeight, ButtonHeight, OnClick)
 	local InsertFrame = CreateFrame('FRAME');
 	InsertFrame:Hide();
+	InsertFrame:SetScript("OnHide", function(InsertFrame)
+		if InsertFrame.menu == nil or not InsertFrame.menu:IsShown() then
+			InsertFrame:Hide();
+		end
+	end);
 	local DivPool = {  };
 	local LblPool = {  };
 	local BtnPool = {  };
@@ -120,6 +126,7 @@ function __poplib:CreateInsertFrame(DividerHeight, DividerTextureHeight, LabelHe
 			Divider:SetHeight(DividerHeight);
 			Divider:SetPoint("LEFT");
 			Divider:SetPoint("RIGHT");
+			Divider:SetMouseClickEnabled(true);
 			Divider.Texture = Divider:CreateTexture(nil, "ARTWORK");
 			Divider.Texture:SetHeight(DividerTextureHeight);
 			Divider.Texture:SetPoint("LEFT");
@@ -142,6 +149,7 @@ function __poplib:CreateInsertFrame(DividerHeight, DividerTextureHeight, LabelHe
 			Label:SetHeight(LabelHeight);
 			Label:SetPoint("LEFT");
 			Label:SetPoint("RIGHT");
+			Label:SetMouseClickEnabled(true);
 			Label.Text = Label:CreateFontString(nil, "ARTWORK");
 			Label.Text:SetFont(font, fontsize, fontflag);
 			Label.Text:SetTextColor(1.0, 0.8196, 0.0);
@@ -191,6 +199,7 @@ end
 
 if Menu and MenuUtil then
 	local M = Menu.GetManager();
+	local Inset = TocVerison >= 100000 and 8 or 14;
 
 	local InsertFrame = __poplib:CreateInsertFrame(13, 13, 20, 20, function(Button, InsertFrame, def)
 		M:CloseMenu(InsertFrame.menu);
@@ -212,8 +221,8 @@ if Menu and MenuUtil then
 			InsertFrame:Show();
 			InsertFrame:SetParent(menu);
 			InsertFrame:SetPoint("BOTTOM", menu, "BOTTOM", 0, 14);
-			InsertFrame:SetPoint("LEFT", menu, "LEFT", 14, 0);
-			InsertFrame:SetPoint("RIGHT", menu, "RIGHT", -14, 0);
+			InsertFrame:SetPoint("LEFT", menu, "LEFT", Inset, 0);
+			InsertFrame:SetPoint("RIGHT", menu, "RIGHT", -Inset, 0);
 			InsertFrame:Clear();
 			local category;
 			local first = true;

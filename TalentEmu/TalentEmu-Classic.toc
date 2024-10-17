@@ -12,6 +12,6 @@
 ## Author: |cff00ff00ALA|r
 ## Author-zhCN: |cff00ff00ALA|r
 ## Author-zhTW: |cff00ff00ALA|r
-## Version: 115r.241011
+## Version: 115r.241015
 
 TalentEmu.xml

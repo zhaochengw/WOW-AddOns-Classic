@@ -295,12 +295,92 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             Browser.Sort = BG.MeetingHorn.BrowserSort_newFuc
         end
     end
+    -- 进入DD语音房间
+    if BG.IsWLK then
+        local Browser = MeetingHorn.MainPanel.Browser
 
+        local function OnShow(...)
+            if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
+            if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
+            local arg1, arg2, arg3, arg4, arg5 = ...
+            local which                        = arg2
+            local name, realm
+            if BG.IsNewUI then
+                local contextData = arg3
+                local unit = contextData.unit
+                if unit then
+                    name = UnitNameUnmodified(unit)
+                    contextData.name = name
+                    contextData.server = realm
+                else
+                    name = contextData.name
+                    if name then
+                        local name2, server2 = strmatch(name, "^([^-]+)-(.*)")
+                        if name2 then
+                            contextData.name = name2
+                            contextData.server = server2
+                        end
+                    end
+                end
+            else
+                name = arg1.name
+            end
+            -- pt(which, name)
+            if which ~= "FRIEND" and which ~= "RAID_PLAYER" and which ~= "PLAYER" then return end
+            if name ~= BG.raidLeader then return end
+            if not MeetingHorn.db.realm.starRegiment.regimentData[name] then return end
+
+            local dropdownName = 'DropDownList' .. 1
+            local dropdown = _G[dropdownName]
+            local targetindex, targetbutton = BG.FindDropdownItem(dropdown, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_OTHER)
+            if not targetindex then return end
+
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = L["进入DD语音"]
+            info.notCheckable = true
+            info.tooltipTitle = L["进入团长的DD语音房间"]
+            info.tooltipText = L["需要你在后台已打开网易DD，否则进入失败。\n\n|cff808080你可在插件设置-BiaoGe-其他功能-密语模板里关闭这个功能。|r"]
+            info.func = function()
+                local activity = {}
+                function activity.GetLeader()
+                    return name
+                end
+
+                Browser:OpenVoiceRoom(activity)
+                if Browser.QRTooltip then
+                    Browser.QRTooltip:Hide()
+                end
+                ThreeDimensionsCode_SafePipe_CmdHandles.joinRoom()
+            end
+            UIDropDownMenu_AddButton(info)
+
+            local myindex, mybutton = BG.FindDropdownItem(dropdown, L["进入DD语音"])
+            local x, y = select(4, targetbutton:GetPoint())
+            y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
+            mybutton:ClearAllPoints()
+            mybutton:SetPoint("TOPLEFT", x, y)
+            for i = targetindex + 1, UIDROPDOWNMENU_MAXBUTTONS do
+                local dropdownItem = _G[dropdownName .. 'Button' .. i]
+                if i ~= myindex then
+                    if dropdownItem:IsShown() then
+                        local p, r, rp, x, y = dropdownItem:GetPoint(1)
+                        dropdownItem:SetPoint(p, r, rp, x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
+                    else
+                        break
+                    end
+                end
+            end
+        end
+        if BG.IsNewUI then
+            hooksecurefunc(UnitPopupManager, "OpenMenu", OnShow)
+        else
+            hooksecurefunc("UnitPopup_ShowMenu", OnShow)
+        end
+    end
     -- 密语模板
     do
         local lastfocus
 
-        local M = {}
         local Browser = MeetingHorn.MainPanel.Browser
 
         local bt = CreateFrame("Button", nil, Browser, "UIPanelButtonTemplate")
@@ -812,32 +892,20 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 end
             end)
 
+            local oldFuc = Browser.CreateActivityMenu
             function Browser:CreateActivityMenu(activity)
-                local text1 = SendWhisper()
-                if text1 ~= " " then
-                    text1 = text1:sub(2)
-                end
-                local text2 = SendWhisper("onlylevel")
-                if text2 ~= " " then
-                    text2 = text2:sub(2)
-                end
-                local tbl = {}
-                do
-                    tinsert(tbl, {
-                        text = format('|c%s%s|r', select(4, GetClassColor(activity:GetLeaderClass())), activity:GetLeader()),
-                        isTitle = true,
-                    })
-                    tinsert(tbl, {
-                        text = WHISPER,
-                        func = function()
-                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                            ChatEdit_ChooseBoxForSend():SetText("")
-                            local text = "/W " .. activity:GetLeader() .. " "
-                            ChatEdit_InsertLink(text)
-                        end,
-                    })
-                    if BiaoGe.options["MeetingHorn_whisper"] == 1 then
-                        tinsert(tbl, {
+                local tbl = oldFuc(Browser, activity)
+                if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+                    local text1 = SendWhisper()
+                    if text1 ~= " " then
+                        text1 = text1:sub(2)
+                    end
+                    local text2 = SendWhisper("onlylevel")
+                    if text2 ~= " " then
+                        text2 = text2:sub(2)
+                    end
+                    tinsert(tbl, 3,
+                        {
                             text = L["密语模板"],
                             tooltipTitle = L["密语模板"],
                             tooltipText = text1,
@@ -848,66 +916,40 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                                 ChatEdit_InsertLink(text)
                             end,
                         })
-                        tinsert(tbl,
-                            {
-                                text = L["装等+职业"],
-                                tooltipTitle = L["装等+职业"],
-                                tooltipText = text2,
-                                func = function()
-                                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                                    ChatEdit_ChooseBoxForSend():SetText("")
-                                    local text = "/W " .. activity:GetLeader() .. SendWhisper("onlylevel")
-                                    ChatEdit_InsertLink(text)
-                                end,
-                            }
-                        )
-                        local InviteUnit = InviteUnit or C_PartyInfo.InviteUnit
-                        tinsert(tbl, {
+                    tinsert(tbl, 4,
+                        {
+                            text = L["装等+职业"],
+                            tooltipTitle = L["装等+职业"],
+                            tooltipText = text2,
+                            func = function()
+                                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                                ChatEdit_ChooseBoxForSend():SetText("")
+                                local text = "/W " .. activity:GetLeader() .. SendWhisper("onlylevel")
+                                ChatEdit_InsertLink(text)
+                            end,
+                        }
+                    )
+                    local InviteUnit = InviteUnit or C_PartyInfo.InviteUnit
+                    tinsert(tbl, 5,
+                        {
                             text = INVITE,
                             func = function()
                                 InviteUnit(activity:GetLeader())
                             end,
                         })
-                    end
-
-                    tinsert(tbl,
+                    tinsert(tbl, 6,
                         {
-                            text = C_FriendList.IsIgnored(activity:GetLeader()) and IGNORE_REMOVE or IGNORE,
+                            text = L["复制活动说明"],
                             func = function()
-                                C_FriendList.AddOrDelIgnore(activity:GetLeader())
-                                if not C_FriendList.IsIgnored(activity:GetLeader()) then
-                                    LFG:RemoveActivity(activity)
-                                end
+                                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                                ChatEdit_ChooseBoxForSend():SetText(activity:GetComment() or "")
+                                ChatEdit_ChooseBoxForSend():HighlightText()
                             end,
                         })
-                    tinsert(tbl, { isSeparator = true })
-                    tinsert(tbl, { text = REPORT_PLAYER, isTitle = true })
-                    tinsert(tbl, {
-                        text = REPORT_CHAT,
-                        func = function()
-                            local reportInfo = ReportInfo:CreateReportInfoFromType(Enum.ReportType.Chat)
-                            local leader = activity:GetLeader()
-                            print(leader)
-                            ReportFrame:InitiateReport(reportInfo, leader, activity:GetLeaderPlayerLocation())
-                            -- ns.GUI:CloseMenu()
-                        end,
-                    })
-
-                    tinsert(tbl, { isSeparator = true })
-                    tinsert(tbl, { text = CANCEL })
                 end
                 return tbl
             end
 
-            local function FindDropdownItem(dropdown, text)
-                local name = dropdown:GetName()
-                for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-                    local dropdownItem = _G[name .. 'Button' .. i]
-                    if dropdownItem:IsShown() and dropdownItem:GetText() == text then
-                        return i, dropdownItem
-                    end
-                end
-            end
             local function OnShow(...)
                 if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
                 if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
@@ -972,10 +1014,10 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 -- 调整按钮位置，放在密语按钮后
                 local dropdownName = 'DropDownList' .. 1
                 local dropdown = _G[dropdownName]
-                local myindex1, mybutton1 = FindDropdownItem(dropdown, L["密语模板"])
-                local myindex2, mybutton2 = FindDropdownItem(dropdown, L["装等+职业"])
-                local index, whisperbutton = FindDropdownItem(dropdown, WHISPER)
-                local x, y = select(4, whisperbutton:GetPoint())
+                local myindex1, mybutton1 = BG.FindDropdownItem(dropdown, L["密语模板"])
+                local myindex2, mybutton2 = BG.FindDropdownItem(dropdown, L["装等+职业"])
+                local targetindex, targetbutton = BG.FindDropdownItem(dropdown, WHISPER)
+                local x, y = select(4, targetbutton:GetPoint())
                 y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
                 if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
                     y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
@@ -985,7 +1027,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
                 mybutton2:ClearAllPoints()
                 mybutton2:SetPoint("TOPLEFT", x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
 
-                for i = index + 1, UIDROPDOWNMENU_MAXBUTTONS do
+                for i = targetindex + 1, UIDROPDOWNMENU_MAXBUTTONS do
                     if i ~= myindex1 and i ~= myindex2 then
                         local dropdownItem = _G[dropdownName .. 'Button' .. i]
                         if dropdownItem:IsShown() then
@@ -1121,9 +1163,7 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
     end
 
     -- 星团长聊天标记
-    do
-        if ver < 200 then return end
-
+    if BG.IsWLK and ver >= 200 then
         local function StarTexture(currentLevel)
             return "Interface/AddOns/MeetingHorn/Media/certification_icon_" .. currentLevel
         end
@@ -1206,7 +1246,6 @@ BG.RegisterEvent("PLAYER_ENTERING_WORLD", function(self, even, isLogin, isReload
             local currentLevel = MeetingHorn.db.realm.starRegiment.regimentData[name]
             if not currentLevel then return end
             currentLevel = currentLevel.level
-            -- local currentLevel = 2
             local nameNum
             local ii = 1
             while _G["GameTooltipTextLeft" .. ii] do

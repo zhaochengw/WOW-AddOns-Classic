@@ -362,7 +362,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     tremove(BiaoGe.YYdb.all, BG.YYMainFrame.my.all.lastNum)
                 end
                 local a = {
-                    date = tonumber(date("%y%m%d")),
+                    date = tonumber(date("%y%m%d", GetServerTime())),
                     yy = new.yy:GetText(),
                     name = new.name:GetText(),
                     pingjia = new.pingjia,
@@ -799,9 +799,9 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     yy = yy,
                     sumpingjia = { [1] = 0, [2] = 0, [3] = 0 },
                     all = {},
-                    date = tonumber(date("%y%m%d"))
+                    date = tonumber(date("%y%m%d", GetServerTime()))
                 }
-                local current_time = time()                                    -- 获取当前时间戳
+                local current_time = GetServerTime()                           -- 获取当前时间戳
                 local previous_time = current_time - (Y.searchLastDay * 86400) -- 计算XX天前的时间戳
                 local previous_date = date("%y%m%d", previous_time)            -- 格式化为日期字符串
 
@@ -1503,7 +1503,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                             return
                         end
                     end
-                    local a = { yy = cleanedYY, time = time(), name = playerName, colorname = SetClassCFF(playerName) }
+                    local a = { yy = cleanedYY, time = GetServerTime(), name = playerName, colorname = SetClassCFF(playerName) }
                     tinsert(BiaoGe.YYdb.LeaderYY, 1, a)
                     return
                 end
@@ -1524,7 +1524,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     return
                 end
             end
-            local a = { yy = cleanedYY, time = time(), name = playerName, colorname = SetClassCFF(playerName) }
+            local a = { yy = cleanedYY, time = GetServerTime(), name = playerName, colorname = SetClassCFF(playerName) }
             tinsert(BiaoGe.YYdb.LeaderYY, 1, a)
         end)
 
@@ -1532,7 +1532,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         BG.RegisterEvent("GROUP_JOINED", function()
             C_Timer.After(0.5, function()
                 if IsInRaid(1) then
-                    starttime = time()
+                    starttime = GetServerTime()
 
                     -- 开始计时：5分钟
                     UpdateFrame.timeElapsed = 0
@@ -1573,7 +1573,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         local deleteTime = 43200
         BG.RegisterEvent("PLAYER_ENTERING_WORLD", function()
             for i = #BiaoGe.YYdb.LeaderYY, 1, -1 do
-                if time() - BiaoGe.YYdb.LeaderYY[i].time >= deleteTime then
+                if GetServerTime() - BiaoGe.YYdb.LeaderYY[i].time >= deleteTime then
                     tremove(BiaoGe.YYdb.LeaderYY, i)
                 end
             end
@@ -2099,7 +2099,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
 
                     local a = {
-                        date = tonumber(date("%y%m%d")),
+                        date = tonumber(date("%y%m%d", GetServerTime())),
                         yy = new.yy:GetText(),
                         name = new.name:GetText(),
                         pingjia = new.pingjia,

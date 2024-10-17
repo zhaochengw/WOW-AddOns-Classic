@@ -306,8 +306,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         if BiaoGe.options.guoqiRemind == 1 and BG.IsML then
             for i, v in ipairs(BG.itemGuoQiFrame.tbl) do
                 if v.time < BiaoGe.options.guoqiRemindMinTime then
-                    if time() - BiaoGe.lastGuoQiTime >= 300 then
-                        BiaoGe.lastGuoQiTime = time()
+                    if GetServerTime() - BiaoGe.lastGuoQiTime >= 300 then
+                        BiaoGe.lastGuoQiTime = GetServerTime()
                         local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGeGuoQi:" .. L["详细"] ..
                             "|h[" .. L["详细"] .. "]|h|r"
                         local link2 = "|cffFFFF00|Hgarrmission:" .. "BiaoGeGuoQi:" .. L["设置为1小时内不再提醒"] ..

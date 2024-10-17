@@ -101,7 +101,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
         local t = BG.FrameNewBee.TextcreateTimeText
         if time then
-            local d = date("*t", date(time))
+            local d = date("*t", time)
             d = strsub(d.year, 3) .. "/" .. d.month .. "/" .. d.day .. " " .. format("%02d", d.hour) .. ":" .. format("%02d", d.min)
             t:SetText(t.text .. d)
         else
@@ -221,7 +221,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
         wipe(BiaoGe.newbee_report_notuploaded)
         wipe(BiaoGe.newbee_report)
         -- 时间戳
-        BiaoGe.newbee_report_notuploaded.time = time()
+        BiaoGe.newbee_report_notuploaded.time = GetServerTime()
         -- 表格
         BiaoGe.newbee_report_notuploaded.biaoge = BG.FB1
         -- 团长

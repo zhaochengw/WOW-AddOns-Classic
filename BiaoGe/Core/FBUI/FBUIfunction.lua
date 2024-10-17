@@ -486,7 +486,9 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
                     SetCursor("Interface/Cursor/Inspect")
                 elseif IsAltKeyDown() then
                     if BG.IsML then
-                        SetCursor("interface/cursor/repair")
+                        if BiaoGe.options["autoAuctionStart"] == 1 then
+                            SetCursor("interface/cursor/repair")
+                        end
                     else
                         SetCursor("interface/cursor/quest")
                     end

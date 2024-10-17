@@ -7282,7 +7282,8 @@
         "GetFactionInfoByID",
         "STOP_Database",
         "achievementFunctions",
-        "TradeRecipientItem1ItemButton"
+        "TradeRecipientItem1ItemButton",
+        "ThreeDimensionsCode_SafePipe_CmdHandles"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

@@ -109,8 +109,8 @@ function BG.HistoryUI()
     do
         function BG.SaveBiaoGe(FB)
             local FB = FB or BG.FB1
-            local DT = tonumber(date("%y%m%d%H%M%S"))
-            local DTcn = date(L["%m月%d日%H:%M:%S\n"])
+            local DT = tonumber(date("%y%m%d%H%M%S", GetServerTime()))
+            local DTcn = date(L["%m月%d日%H:%M:%S\n"], GetServerTime())
             BiaoGe.History[FB][DT] = {}
             BiaoGe.History[FB][DT].tradeTbl = {}
             for b = 1, Maxb[FB] + 2 do

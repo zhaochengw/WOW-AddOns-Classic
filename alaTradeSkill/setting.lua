@@ -105,7 +105,6 @@ MT.BuildEnv("setting");
 		portrait_button = true,
 		show_board = false,
 		lock_board = false,
-		board_pos = { "TOP", "UIParent", "BOTTOM", 260, 190, },
 		hide_mtsl = false,
 		show_DBIcon = true,
 		minimapPos = 0,
@@ -157,12 +156,19 @@ MT.BuildEnv("setting");
 		--
 		-- PROFIT_SHOW_COST_ONLY = false,
 	};
+	local default_board_set = {
+		pos = { 800, 400, },
+		scale = 1.0,
+		show = true,
+		showscale = false,
+	};
 	local function LF_ModifySavedVariable()
 		local alaTradeSkillSV = _G.alaTradeSkillSV;
-		if alaTradeSkillSV == nil or alaTradeSkillSV._version == nil or alaTradeSkillSV._version < 210605.1 then
+		if alaTradeSkillSV == nil or alaTradeSkillSV._version == nil or alaTradeSkillSV._version < 240101.1 then
 			alaTradeSkillSV = {
 				set = {
 					explorer = default_explorer_set,
+					board = default_board_set,
 				},
 				var = {  },
 				fav = alaTradeSkillSV ~= nil and alaTradeSkillSV.fav or {  },
@@ -170,10 +176,11 @@ MT.BuildEnv("setting");
 				cache = {  },
 			};
 			_G.alaTradeSkillSV = alaTradeSkillSV;
-		elseif alaTradeSkillSV._version < 230303.0 then
-			alaTradeSkillSV.cache = alaTradeSkillSV.cache or {  };
+		elseif alaTradeSkillSV._version < 241010.1 then
+			alaTradeSkillSV.set.board = default_board_set;
+			alaTradeSkillSV.set.board.pos = default_board_set.pos;
 		end
-		alaTradeSkillSV._version = 230303.0;
+		alaTradeSkillSV._version = 241010.1;
 		MT.MergeGlobal(alaTradeSkillSV);
 		VT.SET = alaTradeSkillSV.set;
 		for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do

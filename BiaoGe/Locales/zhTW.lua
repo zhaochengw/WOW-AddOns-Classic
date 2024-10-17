@@ -4,62 +4,43 @@ local c1 = ns.c1
 
 if (GetLocale() ~= "zhTW") then return end
 
-local update = ""
 do --繁体说明书
-    local text
-    text = "|cffFFFFFF< 說明書 >（本插件支持CTM、WLK、探索賽季、60服）|r\n\n"
-    text = text .. "|cffFFFFFF-打開命令：|r/BiaoGe或/GBG，或遊戲設置裡綁定按鍵。小地圖圖標： " .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t" .. "|r\n"
-    text = text .. "|cffFFFFFF-快捷操作：|r點空白處取消光標，右鍵輸入框清除內容\n"
-    text = text .. "|cffFFFFFF-跳轉光標：|r按Tab、方向鍵跳轉光標，ALT/CTRL/SHIFT+方向鍵跳轉至下個BOSS\n"
-    text = text .. "|cffFFFFFF-添加裝備：|r從裝備下拉列表裡選擇；或者從背包把裝備拖進表格\n"
-    text = text .. "|cffFFFFFF-發送裝備：|rSHIFT+點擊裝備\n"
-    text = text .. "|cffFFFFFF-自動拍賣：|rALT+點擊表格/背包/聊天框裝備，打開拍賣面板（當你是團長或物品分配者時）\n"
-    text = text .. "|cffFFFFFF-關注裝備：|rALT+點擊裝備，團長拍賣此裝備時會提醒（當你是團員時）\n"
-    text = text .. "|cffFFFFFF-拍賣倒數：|r右鍵聊天框裝備開始拍賣自動倒數（當你是團長或物品分配者時）\n"
-    text = text .. "|cffFFFFFF-快速記賬：|r右鍵聊天框裝備時打開（當你是團員時）\n"
-    text = text .. "|cffFFFFFF-查看同部位其他可选装备：|rCTRL+點擊裝備\n"
-    text = text .. "|cffFFFFFF-交換格子：|rCTRL+ALT+點擊格子1，再點格子2，可交換兩行全部內容\n"
-    text = text .. "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n"
-    text = text .. "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n"
+    ns.instructionsText = {
+        "|cff00BFFF< 說明書 >（本插件支持CTM、WLK、探索賽季、60服）|r\n\n",
+        "|cffFFFFFF-打開命令：|r/BiaoGe或/GBG，或遊戲設置裡綁定按鍵。小地圖圖標： " .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0 |t" .. "|r\n",
+        "|cffFFFFFF-快捷操作：|r點空白處取消光標，右鍵輸入框清除內容\n",
+        "|cffFFFFFF-跳轉光標：|r按Tab、方向鍵跳轉光標，ALT/CTRL/SHIFT+方向鍵跳轉至下個BOSS\n",
+        "|cffFFFFFF-添加裝備：|r從裝備下拉列表裡選擇；或者從背包把裝備拖進表格\n",
+        "|cffFFFFFF-發送裝備：|rSHIFT+點擊裝備\n",
+        "|cffFFFFFF-自動拍賣：|rALT+點擊表格/背包/聊天框裝備，打開拍賣麵板（當你是團長或物品分配者時）\n",
+        "|cffFFFFFF-關注裝備：|rALT+點擊裝備，團長拍賣此裝備時會提醒（當你是團員時）\n",
+        "|cffFFFFFF-拍賣倒數：|r右鍵聊天框裝備開始拍賣自動倒數（當你是團長或物品分配者時）\n",
+        "|cffFFFFFF-快速記賬：|r右鍵聊天框裝備時打開（當你是團員時）\n",
+        "|cffFFFFFF-查看同部位其他可選裝備：|rCTRL+點擊裝備\n",
+        "|cffFFFFFF-交換格子：|rCTRL+ALT+點擊格子1，再點格子2，可交換兩行全部內容\n",
+        "|cffFFFFFF-更多功能介紹可在設置裡查看|r\n\n",
+        "-BUG反饋：郵箱buick_hbj@163.com，Q群322785325\n\n",
 
-    update = update .. "|cff00FF00" .. "10月7日更新v1.12.6" .. "|r\n"
-    update = update .. [[-清空表格時現在會記錄你當前攜帶的金幣數量]] .. "|r\n"
-    update = update .. [[-當提示表格滿時，現在有一個按鈕可以把該裝備直接記入雜項]] .. "|r\n\n"
-    update = update .. "|cff00FF00" .. "10月4日更新v1.12.5" .. "|r\n"
-    update = update .. [[-<賽季服>BWL奈法利安的格子增加至17個]] .. "|r\n\n"
-    update = update .. "|cff00FF00" .. "10月3日更新v1.12.4" .. "|r\n"
-    update = update .. [[-拍賣WA更新為v2.1：如果你的出價太低時，出價框顯示為紅色]] .. "|r\n"
-    update = update .. [[-設置：增加選項[清空表格時保留支出金額]（默認不勾選）]] .. "|r\n"
-    update = update .. [[-歷史價格：減少最大顯示數量，優化在讀取其數據時的卡頓問題（如果你的歷史表格很多的話）]] .. "|r\n"
-    update = update .. [[-<賽季/60服>修復報錯]] .. "|r\n\n"
-
-
-    text = text .. update
-    text = text .. "|cff00FF00按住ALT顯示更多更新記錄|r"
-
-    ns.instructionsText = text
-end
-do --繁体更新内容
-    local update = "|cff00BFFF< 主要更新記錄 >|r\n\n" .. update
-    
-    update = update .. "|cff00FF00" .. "10月1日更新v1.12.3" .. "|r\n"
-    update = update .. [[-<賽季服>ZUG和BWL表格尾王格子增加]] .. "|r\n\n"
-    update = update .. "|cff00FF00" .. "9月30日更新v1.12.2" .. "|r\n"
-    update = update .. [[-重做UI美化]] .. "|r\n"
-    update = update .. [[-<賽季服>BWL表格佈局調整。且該表格的當前數據和歷史數據已被清空]] .. "|r\n"
-    update = update .. [[-<賽季/60服>適配1.15.4，修復了各種問題]] .. "|r\n\n"
-    update = update .. "|cff00FF00" .. "9月24日更新v1.12.1" .. "|r\n"
-    update = update .. [[-拍賣WA更新為v2.0：重做入場動畫；增加一個關注/心願裝備的高亮動畫；按組合鍵時可以發送或觀察裝備]] .. "|r\n"
-    update = update .. [[-增加語音包：司卡奇]] .. "|r\n"
-    update = update .. [[-<賽季服>添加P5表格]] .. "|r\n"
-    update = update .. [[-修復了未拍列表按Shift多選後，再按Ctrl取消多選失效的問題]] .. "|r\n"
-    update = update .. [[-修復了對賬金額在某些情況下會識別錯誤的問題]] .. "|r\n\n"
-    update = update .. "|cff00FF00" .. "9月21日更新v1.12.0" .. "|r\n"
-    update = update .. [[-<WLK>團員成就：優化讀取邏輯，減少讀取失敗的情況]] .. "|r\n"
-    update = update .. [[-對賬：現在鼠標懸停在我的金額/對方金額時，會顯示其買家]] .. "|r\n"
-    update = update .. [[-增加男聲語音包：匕首嶺-<TIMEs>貝西]] .. "|r\n\n"
-
-    ns.updateText = update
+        "|cff00FF00" .. "10月13日更新v1.12.7" .. "|r\n",
+        [[-自動拍賣記錄：拍賣成功的裝備的右鍵菜單現在會顯示其最後5手出價記錄]] .. "|r\n",
+        [[-設置：增加選項[使用組合鍵打開拍賣麵板]（如果ALT+點擊背包跟你其他插件有衝突的話可以關閉）]] .. "|r\n",
+        [[-集結號密語模板：在集結號活動的右鍵菜單裡增加[複製活動說明]按鈕]] .. "|r\n",
+        [[-集結號密語模板：在團長的右鍵菜單裡增加[進入DD語音房間]按鈕]] .. "|r\n\n",
+        "|cff00FF00" .. "10月7日更新v1.12.6" .. "|r\n",
+        [[-清空表格時現在會記錄你當前攜帶的金幣數量]] .. "|r\n",
+        [[-當提示表格滿時，現在有一個按鈕可以把該裝備直接記入雜項]] .. "|r\n\n",
+        "|cff00FF00" .. "10月4日更新v1.12.5" .. "|r\n",
+        [[-<賽季服>BWL奈法利安的格子增加至17個]] .. "|r\n\n",
+        "|cff00FF00" .. "10月3日更新v1.12.4" .. "|r\n",
+        [[-拍賣WA更新為v2.1：如果你的出價太低時，出價框顯示為紅色]] .. "|r\n",
+        [[-設置：增加選項[清空表格時保留支出金額]（默認不勾選）]] .. "|r\n",
+        [[-歷史價格：減少最大顯示數量，優化在讀取其數據時的卡頓問題（如果你的歷史表格很多的話）]] .. "|r\n",
+        [[-<賽季/60服>修復報錯]] .. "|r\n\n",
+        "|cff00FF00" .. "10月1日更新v1.12.3" .. "|r\n",
+        [[-<賽季服>ZUG和BWL表格尾王格子增加]] .. "|r\n\n",
+    }
+    local lastText = ns.instructionsText[#ns.instructionsText]
+    ns.instructionsText[#ns.instructionsText] = lastText:sub(1, -2)
 end
 
 local L = setmetatable({}, {
@@ -69,6 +50,18 @@ local L = setmetatable({}, {
 })
 
 do
+    L["使用组合键打开拍卖面板"] = "使用組合鍵打開拍賣面板"
+    L["团长/物品分配者ALT+点击背包/表格/聊天框装备，来打开拍卖面板。"] = "團長/物品分配者ALT+點擊背包/表格/聊天框裝備，來打開拍賣面板。"
+    L["出价记录"] = "出價記錄"
+    L["、"] = "、"
+    L["复制活动说明"] = "複製活動說明"
+    L["在聊天频道玩家的右键菜单里增加[密语模板]按钮。"] = "在聊天頻道玩家的右鍵菜單裡增加[密語模板]按鈕。"
+    L["在聊天输入框的右键菜单里增加[密语模板]按钮。"] = "在聊天輸入框的右鍵菜單裡增加[密語模板]按鈕。"
+    L["在集结号活动的右键菜单里增加[邀请][复制活动说明]按钮。"] = "在集結號活動的右鍵菜單裡增加[邀請][複製活動說明]按鈕。"
+    L["在团长的右键菜单里增加[进入DD语音房间]按钮。"] = "在團長的右鍵菜單裡增加[進入DD語音房間]按鈕。"
+    L["进入DD语音"] = "進入DD語音"
+    L["进入团长的DD语音房间"] = "進入團長的DD語音房間"
+    L["需要你在后台已打开网易DD，否则进入失败。\n\n|cff808080你可在插件設置-BiaoGe-其他功能-密語模板裡關閉這個功能。|r"] = "需要你在後台已打開網易DD，否則進入失敗。\n\n|cff808080你可在插件設置-BiaoGe-其他功能-密語模板裡關閉這個功能。|r"
     L["罚款"] = "罰款"
     L["点击记入杂项"] = "點擊記入雜項"
     L["YY："] = "YY："

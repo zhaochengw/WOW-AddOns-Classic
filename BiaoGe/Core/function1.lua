@@ -92,16 +92,16 @@ local function AddTexture(Texture, y, coord)
     end
     local tex = ""
     local coord = coord or ""
-    if Texture == "MAINTANK" then       -- 主坦克
+    if Texture == "MAINTANK" then                      -- 主坦克
         tex = "132064"
-    elseif Texture == "MAINASSIST" then -- 主助理
+    elseif Texture == "MAINASSIST" then                -- 主助理
         tex = "132063"
-    elseif Texture == "HEALER" then     -- 治疗职责
-        tex = "interface/lfgframe/ui-lfg-icon-roles"
-        -- TexCoord_re = ":100:100:33:45:6:19"
-        coord = ":100:100:24:50:0:25"
-        x = "-2"
-        y = "0"
+    elseif Texture == "TANK" then                      -- 坦克职责
+        return "|A:ui-lfg-roleicon-tank:0:0|a"
+    elseif Texture == "HEALER" then                    -- 治疗职责
+        return "|A:ui-lfg-roleicon-healer:0:0|a"
+    elseif Texture == "DAMAGER" then                   -- 输出职责
+        return "|A:ui-lfg-roleicon-dps:0:0|a"
     elseif Texture == 137000 or Texture == 136998 then -- 战场荣誉
         coord = ":100:100:10:60:0:55"
         local t = "|T" .. Texture .. ":0:0:0:0" .. coord .. "|t"
@@ -142,7 +142,7 @@ local function GetText_T(bt)
     else
         text = bt
     end
-    local t = string.gsub(text, "|T.-|t", "")
+    local t = text:gsub("|T.-|t", ""):gsub("|A.-|a", "")
     return t
 end
 ns.GetText_T = GetText_T

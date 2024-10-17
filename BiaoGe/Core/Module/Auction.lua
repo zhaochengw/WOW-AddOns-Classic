@@ -263,7 +263,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             GameTooltip:Show()
         end
 
-        function BG.StartAuction(link, bt, isNotAuctioned)
+        function BG.StartAuction(link, bt, isNotAuctioned,notAlt)
+            if BiaoGe.options["autoAuctionStart"] ~= 1 and not notAlt then return end
             if not link then return end
             if not BG.IsML then return end
             local link = BG.Copy(link)

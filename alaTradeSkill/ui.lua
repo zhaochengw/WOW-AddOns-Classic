@@ -1054,6 +1054,9 @@ end
 			if Dropdown.Right then
 				Dropdown.Right:Hide();
 			end
+			if Dropdown.Background then
+				Dropdown.Background:Hide();
+			end
 			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.25, 0.75, 1.0, 1.0, 0.25);
 			if Dropdown.Button then
 				local Button = Dropdown.Button;
@@ -1077,6 +1080,9 @@ end
 			end
 			if Dropdown.Right then
 				Dropdown.Right:Show();
+			end
+			if Dropdown.Background then
+				Dropdown.Background:Show();
 			end
 			VT.__uireimp._SetSimpleBackdrop(Dropdown, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			if Dropdown.Button then
@@ -5181,8 +5187,20 @@ end
 	end
 --
 local function LF_CreateBoard()
+	local Pin = CreateFrame('BUTTON', nil, UIParent);
+	Pin:Show();
+	Pin:SetSize(16, 16);
+	Pin:SetNormalTexture(T_UIDefinition.texture_toggle);
+	Pin:SetHighlightTexture(T_UIDefinition.texture_toggle);
+	Pin:SetPushedTexture(T_UIDefinition.texture_toggle);
+	Pin:SetMovable(true);
+	Pin:RegisterForClicks("AnyUp");
+	Pin:RegisterForDrag("LeftButton");
+
 	local Frame = CreateFrame('FRAME', nil, UIParent);
+	Frame:Show();
 	Frame:SetClampedToScreen(true);
+	Frame:SetPoint("TOPRIGHT", Pin, "BOTTOMRIGHT", 0, 0);
 	if CT.LOCALE == 'zhCN' or CT.LOCALE == 'zhTW' or CT.LOCALE == 'koKR' then
 		Frame:SetWidth(260);
 	else
@@ -5191,6 +5209,36 @@ local function LF_CreateBoard()
 	Frame:SetMovable(true);
 	-- Frame:EnableMouse(true);
 	-- Frame:RegisterForDrag("LeftButton");
+
+	local ScaleSlider = CreateFrame('SLIDER', nil, Pin);
+	ScaleSlider:SetOrientation("HORIZONTAL");
+	ScaleSlider:SetPoint("RIGHT", Pin, "LEFT", -4, 0);
+	ScaleSlider:SetWidth(200);
+	ScaleSlider:SetHeight(4);
+	ScaleSlider:SetMinMaxValues(0.25, 4.0);
+	ScaleSlider:SetValueStep(0.05);
+	ScaleSlider:SetObeyStepOnDrag(true);
+	ScaleSlider.BG = ScaleSlider:CreateTexture(nil, "BACKGROUND");
+	ScaleSlider.BG:SetAllPoints();
+	ScaleSlider.BG:SetColorTexture(0.0, 0.0, 0.0, 0.75);
+	ScaleSlider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
+	ScaleSlider.Thumb = ScaleSlider:GetThumbTexture();
+	ScaleSlider.Thumb:Show();
+	ScaleSlider.Thumb:SetColorTexture(1.0, 1.0, 1.0, 1.0);
+	ScaleSlider.Thumb:SetSize(4, 12);
+	ScaleSlider.Text = ScaleSlider:CreateFontString(nil, "ARTWORK");
+	ScaleSlider.Text:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
+	ScaleSlider.Text:SetPoint("TOP", ScaleSlider, "BOTTOM", 0, 3);
+	ScaleSlider.Low = ScaleSlider:CreateFontString(nil, "ARTWORK");
+	ScaleSlider.Low:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
+	ScaleSlider.Low:SetPoint("TOPLEFT", ScaleSlider, "BOTTOMLEFT", 4, 3);
+	ScaleSlider.High = ScaleSlider:CreateFontString(nil, "ARTWORK");
+	ScaleSlider.High:SetFont(T_UIDefinition.frameNormalFont, T_UIDefinition.frameNormalFontSize, T_UIDefinition.frameNormalFontFlag);
+	ScaleSlider.High:SetPoint("TOPRIGHT", ScaleSlider, "BOTTOMRIGHT", -4, 3);
+	ScaleSlider.Low:SetText("|cff00ff000.25|r");
+	ScaleSlider.High:SetText("|cffff00004.00|r");
+	Pin.ScaleSlider = ScaleSlider;
+
 	function Frame:F_Lock()
 		self:EnableMouse(false);
 		VT.__uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -5199,24 +5247,19 @@ local function LF_CreateBoard()
 		self:EnableMouse(true);
 		VT.__uireimp._SetSimpleBackdrop(self, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5);
 	end
+	function Frame:F_StopMoving()
+		Pin:StopMovingOrSizing();
+		VT.SET.board.pos[1] = Pin:GetLeft();
+		VT.SET.board.pos[2] = Pin:GetBottom();
+	end
 	Frame:SetScript("OnMouseDown", function(self, button)
 		if button == "LeftButton" then
-			self:StartMoving();
+			Pin:StartMoving();
 		else
 			VT.__menulib.ShowMenu(self, "BOTTOMLEFT", T_BoardDropMeta);
 		end
 	end);
-	Frame:SetScript("OnMouseUp", function(self, button)
-		self:StopMovingOrSizing();
-		local pos = { self:GetPoint(), };
-		for index = 1, #pos do
-			local val = pos[index];
-			if type(val) == 'table' then
-				pos[index] = val:GetName();
-			end
-		end
-		VT.SET.board_pos = pos;
-	end);
+	Frame:SetScript("OnMouseUp", Frame.F_StopMoving);
 	Frame:SetScript("OnEnter", LT_SharedMethod.ButtonInfoOnEnter);
 	Frame:SetScript("OnLeave", LT_SharedMethod.ButtonInfoOnLeave);
 	function Frame:F_AddLine(textL, textM, textR)
@@ -5276,20 +5319,77 @@ local function LF_CreateBoard()
 	Frame.T_Lines = {  };
 	Frame.curLine = 0;
 	MT._TimerStart(LF_UpdateBoard, 1.0);
+
+	Pin:SetScript("OnDragStart", Pin.StartMoving);
+	Pin:SetScript("OnDragStop", function(Pin)
+		Frame:F_StopMoving();
+	end);
+	ScaleSlider:HookScript("OnValueChanged", function(self, value, userInput)
+		value = value + 0.005;
+		value = value - value % 0.01;
+		if userInput then
+			VT.SET.board.scale = value;
+			Frame:SetScale(value);
+		end
+		self.Text:SetText(value);
+	end);
+
+	Frame._Show = Frame.Show;
+	Frame._Hide = Frame.Hide;
+	function Frame:Show()
+		Pin:Show();
+		if VT.SET.board.show ~= false then
+			self:_Show();
+		else
+			self:_Hide();
+		end
+	end
+	function Frame:Hide()
+		Pin:Hide();
+		self:_Hide();
+	end
+	Pin:SetScript("OnClick", function(Pin, button)
+		if button == "LeftButton" then
+			if Frame:IsShown() then
+				Frame:_Hide();
+				VT.SET.board.show = false;
+			else
+				Frame:_Show();
+				VT.SET.board.show = true;
+			end
+		elseif button == "RightButton" then
+			if ScaleSlider:IsShown() then
+				ScaleSlider:Hide();
+				VT.SET.board.showscale = false;
+			else
+				ScaleSlider:Show();
+				VT.SET.board.showscale = true;
+			end
+		end
+	end);
 	if VT.SET.show_board then
-		Frame:Show();
+		Pin:Show();
+		if VT.SET.board.show ~= false then
+			Frame:_Show();
+		else
+			Frame:_Hide();
+		end
 	else
-		Frame:Hide();
+		Pin:Hide();
+		Frame:_Hide();
 	end
 	if VT.SET.lock_board then
 		Frame:F_Lock();
 	else
 		Frame:F_Unlock();
 	end
-	if VT.SET.board_pos then
-		Frame:SetPoint(unpack(VT.SET.board_pos));
+	Pin:SetPoint("TOPRIGHT", nil, "BOTTOMLEFT", VT.SET.board.pos[1], VT.SET.board.pos[2]);
+	ScaleSlider:SetValue(VT.SET.board.scale);
+	Frame:SetScale(VT.SET.board.scale);
+	if VT.SET.board.showscale ~= false then
+		ScaleSlider:Show();
 	else
-		Frame:SetPoint("TOP", 0, -20);
+		ScaleSlider:Hide();
 	end
 	return Frame;
 end
@@ -5699,6 +5799,7 @@ local function LF_CreateConfigFrame()
 	Frame._Hide = Frame.Hide;
 	Frame._IsShown = Frame.IsShown;
 	function Frame:Show()
+		local InterfaceOptionsFrame = SettingsPanel or InterfaceOptionsFrame;
 		if InterfaceOptionsFrame:IsShown() then
 			InterfaceOptionsFrame_OpenToCategory(__addon);
 		else
@@ -5706,6 +5807,7 @@ local function LF_CreateConfigFrame()
 		end
 	end
 	function Frame:Hide()
+		local InterfaceOptionsFrame = SettingsPanel or InterfaceOptionsFrame;
 		if InterfaceOptionsFrame:IsShown() then
 			InterfaceOptionsFrame:Hide();
 		else

@@ -501,7 +501,7 @@ MT.BuildEnv('RAIDTOOL');
 			Frame.RosterInfo = RosterInfo;
 			--[[
 				RosterList = { group, guild, };
-				RosterInfo = { class, level, online, rank }
+				RosterInfo = { class, level, online, unit }
 			]]
 
 			local ScrollList = VT.__scrolllib.CreateScrollFrame(Frame, nil, nil, TUISTYLE.RaidToolUIFrameButtonHeight, CreateRaidNode, SetRaidNode);

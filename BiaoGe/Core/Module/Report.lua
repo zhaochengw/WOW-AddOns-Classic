@@ -340,7 +340,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
                 function R.GetButtonTbl(ii)
                     if not BG.ReportTbl[ii] then return end
-                    local date = date("*t", date(BG.ReportTbl[ii].time))
+                    local date = date("*t", BG.ReportTbl[ii].time)
                     local _, _, _, cff = GetClassColor(BG.ReportTbl[ii].class)
                     local minorCategory = ""
                     for i, v in ipairs(BG.ReportTbl[ii].minorCategoryFlags) do
@@ -884,7 +884,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 end
 
                 local a = {
-                    time = time(),
+                    time = GetServerTime(),
                     name = name,
                     realm = realm,
                     class = class,
@@ -1035,16 +1035,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
             -- 在右键菜单中插入举报按钮
             do
-                function BG.FindDropdownItem(dropdown, text)
-                    local name = dropdown:GetName()
-                    for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-                        local dropdownItem = _G[name .. 'Button' .. i]
-                        if dropdownItem:IsShown() and dropdownItem:GetText() == text then
-                            return i, dropdownItem
-                        end
-                    end
-                end
-
                 local function UpdateAddReportButtons(mybuttontext, targetbuttontextTbl, isPvPreport)
                     local dropdownName = 'DropDownList' .. 1
                     local dropdown = _G[dropdownName]
@@ -1338,21 +1328,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     UIDropDownMenu_AddButton(info)
                     UpdateAddReportButtons(mybuttontext, { CANCEL }, true)
                 end)
-
-                -- 集结号的举报按钮
-                function BG.AddReportButton(ReportType, _chattype, leader, playerLocation, mybuttontext, tooltipText)
-                    local info = {}
-                    info.text = mybuttontext
-                    info.notCheckable = true
-                    info.tooltipTitle = L["自动帮你选择并填写举报内容"]
-                    info.tooltipText = tooltipText
-                    info.func = function()
-                        rp.yes = true
-                        rp.chattype = _chattype
-                        SetReport(ReportType, leader, playerLocation)
-                    end
-                    return info
-                end
             end
             -- 全部举报
             do
