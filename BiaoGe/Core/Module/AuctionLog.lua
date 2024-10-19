@@ -1451,7 +1451,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
 
     BG.auctionLogFrame.serachEdit:HookScript("OnTextChanged", BG.UpdateAuctionLogFrame)
 
-    -- 记录自动拍卖结
+    -- 记录自动拍卖结果
     local function CheckItemToFB(item)
         for _, FB in ipairs(BG.GetAllFB()) do
             for b = 1, Maxb[FB] do
@@ -1702,6 +1702,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
             if not BG.ImML() then return end
             if not BiaoGe.auctionTrade[UnitName("NPC")] then return end
+            if not TradeFrame:IsVisible() then return end
+            ClearCursor()
             for _, v in ipairs(BiaoGe.auctionTrade[UnitName("NPC")]) do
                 local yes
                 for b = 0, NUM_BAG_SLOTS do
@@ -1731,7 +1733,6 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                                     end
                                 end
                                 if notBound and not info.isLocked then
-                                    ClearCursor()
                                     for ii = 1, 6 do
                                         if not GetTradePlayerItemLink(ii) then
                                             C_Container.PickupContainerItem(b, i)

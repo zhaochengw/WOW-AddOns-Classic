@@ -484,8 +484,8 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                     end
 
                     if BG then
-                        BG.sendMoneyLog=BG.sendMoneyLog or {}
-                        BG.sendMoneyLog[f.itemID]=f.logs
+                        BG.sendMoneyLog = BG.sendMoneyLog or {}
+                        BG.sendMoneyLog[f.itemID] = f.logs2
                     end
 
                     if aura_env.IsRaidLeader() then
@@ -671,6 +671,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f.autoTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
             f.logTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
             tinsert(f.logs, { money = money, player = "|cff" .. aura_env.GREEN1 .. L["你"] .. "|r" })
+            tinsert(f.logs2, { money = money, player = "|cff" .. aura_env.GREEN1 .. L["你"] .. "|r" })
         else
             if f.mod == "anonymous" then
                 f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. L["別人(匿名)"])
@@ -679,6 +680,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
                 f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. f.colorplayer)
                 tinsert(f.logs, { money = money, player = f.colorplayer })
             end
+            tinsert(f.logs2, { money = money, player = f.colorplayer })
             if f.filter then
                 f:SetBackdropColor(unpack(aura_env.backdropColor_filter))
                 f:SetBackdropBorderColor(unpack(aura_env.backdropBorderColor_filter))
@@ -982,6 +984,7 @@ BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
             f.mod = mod
             f.num = #_G.BGA.Frames + 1
             f.logs = {}
+            f.logs2 = {}
             AuctionFrame = f
             tinsert(_G.BGA.Frames, f)
             f:SetScript("OnMouseUp", function(self)
