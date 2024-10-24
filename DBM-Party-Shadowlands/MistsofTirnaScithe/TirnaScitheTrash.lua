@@ -1,11 +1,12 @@
 local mod	= DBM:NewMod("TirnaScitheTrash", "DBM-Party-Shadowlands", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241014043722")
+mod:SetRevision("20241020100524")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
+mod:SetZone(2290)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 321968 324909 324923 324914 324776 340305 340304 340300 340160 340189 326046 331718 331743 460092 463256 463248 340208 340289 326021",--325418
@@ -175,10 +176,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnPoisonousSecretions:Play("watchstep")
 	elseif spellId == 340300 and self:AntiSpam(3, 2) then
 		specWarnTongueLashing:Show()
-		specWarnTongueLashing:Play("watchstep")
+		specWarnTongueLashing:Play("frontal")
 	elseif spellId == 340160 and self:AntiSpam(3, 2) then
 		specWarnRadiantBreath:Show()
-		specWarnRadiantBreath:Play("watchstep")
+		specWarnRadiantBreath:Play("breathsoon")
+
 	elseif spellId == 340189 then--No Antispam, not to be throttled against other types
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
 			specWarnPoolOfRadiance:Show()
@@ -218,6 +220,7 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if not self.Options.Enabled then return end
+	if not self:IsValidWarning(args.sourceGUID) then return end--Filter all casts done by mobs in combat with npcs/other mobs.
 	local spellId = args.spellId
 	if spellId == 325418 then
 		timerVolatileAcidCD:Start(nil, args.sourceGUID)
@@ -258,7 +261,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerBewilderingPollenCD:Start(nil, args.sourceGUID)
 	elseif spellId == 324923 then
 		timerBrambleBurstCD:Start(nil, args.sourceGUID)
-	elseif spellId == 331718 and self:IsValidWarning(args.sourceGUID) then
+	elseif spellId == 331718 then
 		timerSpearFlurryCD:Start(nil, args.sourceGUID)
 	elseif spellId == 322486 then
 		timerOvergrowthCD:Start(nil, args.sourceGUID)

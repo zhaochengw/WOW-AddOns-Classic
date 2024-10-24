@@ -1,11 +1,12 @@
 local mod	= DBM:NewMod("CinderbrewMeaderyTrash", "DBM-Party-WarWithin", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240920064505")
+mod:SetRevision("20241020100524")
 --mod:SetModelID(47785)
 mod:SetZone(2661)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
+mod:SetZone(2661)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 434761 434706 437721 434756 434998 448619 441627 442589 439467",

@@ -19,7 +19,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.0.21
+## Version: 11.0.23
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
@@ -93,6 +93,7 @@ modules\Notes.lua
 modules\Sounds.lua
 modules\UpdateReminder.lua
 modules\AnnoyingPopup.lua
+modules\ZoneCombatScanner.lua
 
 modules\objects\Difficulties.lua
 modules\objects\BossMod.lua

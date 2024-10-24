@@ -75,16 +75,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20241002234757")
+DBM.Revision = parseCurseDate("20241022110915")
 DBM.TaintedByTests = false -- Tests may mess with some internal state, you probably don't want to rely on DBM for an important boss fight after running it in test mode
 
 local fakeBWVersion, fakeBWHash = 359, "3aa6ef3"--359.0
 local bwVersionResponseString = "V^%d^%s"
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "11.0.21"--Core version
+DBM.DisplayVersion = "11.0.23"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2024, 10, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+DBM.ReleaseRevision = releaseDate(2024, 10, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 PForceDisable = private.isRetail and 15 or 14--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -342,8 +342,8 @@ DBM.DefaultOptions = {
 	DontSendBossGUIDs = false,
 	NPAuraText = true,
 	NPIconSize = 30,
-	NPIconXOffset = 0,
-	NPIconYOffset = 0,
+	NPIconOffsetX = 0,
+	NPIconOffsetY = 20,--20 used to default offset is no longer covering buff/debuff icons on blizzard nameplates
 	NPIconSpacing = 0,
 	NPIconGrowthDirection = "CENTER",
 	NPIconAnchorPoint = "TOP",
@@ -400,6 +400,7 @@ DBM.DefaultOptions = {
 	ChatFrame = "DEFAULT_CHAT_FRAME",
 	CoreSavedRevision = 1,
 	SilentMode = false,
+	NoCombatScanningFeatures = false,
 }
 
 ---@type DBMMod[]
@@ -439,6 +440,7 @@ local dbmIsEnabled = true
 local newerVersionPerson, newersubVersionPerson, forceDisablePerson, cSyncSender, eeSyncSender, iconSetRevision, iconSetPerson, loadcIds, oocBWComms, bossIds, raid, autoRespondSpam, queuedBattlefield, bossHealth, bossHealthuIdCache, lastBossEngage, lastBossDefeat = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
 local inCombat = {} ---@type DBMMod[]
 local combatInfo = {} ---@type table<integer, CombatInfo[]>
+local inCombatTrash = {}
 -- False variables
 local targetEventsRegistered, combatInitialized, healthCombatInitialized, watchFrameRestore, questieWatchRestore, bossuIdFound, timerRequestInProgress = false, false, false, false, false, false, false
 -- Nil variables
@@ -2008,6 +2010,11 @@ do
 	--- |"DBM_TimerPause"
 	--- |"DBM_TimerResume"
 	--- |"DBM_TimerUpdateIcon"
+	--- |"DBM_NameplateStart"
+	--- |"DBM_NameplateStop"
+	--- |"DBM_NameplatePause"
+	--- |"DBM_NameplateResume"
+	--- |"DBM_NameplateUpdate"
 	--- |"DBM_Announce"
 	--- |"DBM_raidJoin"
 	--- |"DBM_raidLeave"
@@ -3830,7 +3837,7 @@ do
 	local pvpShown = false
 	local dungeonShown = false
 	local sodRaids = {[48] = true, [90] = true, [109] = true}
-	local classicZones = {[509] = true, [531] = true, [469] = true, [409] = true}
+	local classicZones = {[509] = true, [531] = true, [469] = true, [409] = true, [2792] = true,}
 	local bcZones = {[564] = true, [534] = true, [532] = true, [565] = true, [544] = true, [548] = true, [580] = true, [550] = true}
 	local wrathZones = {[615] = true, [724] = true, [649] = true, [616] = true, [631] = true, [533] = true, [249] = true, [603] = true, [624] = true}
 	local cataZones = {[757] = true, [671] = true, [669] = true, [967] = true, [720] = true, [951] = true, [754] = true}
@@ -3842,12 +3849,11 @@ do
 	--local dragonflightZones = {[2522] = true, [2569] = true, [2549] = true}
 	local challengeScenarios = {[1148] = true, [1698] = true, [1710] = true, [1703] = true, [1702] = true, [1684] = true, [1673] = true, [1616] = true, [2215] = true}
 	local pvpZones = {[30] = true, [489] = true, [529] = true, [559] = true, [562] = true, [566] = true, [572] = true, [617] = true, [618] = true, [628] = true, [726] = true, [727] = true, [761] = true, [968] = true, [980] = true, [998] = true, [1105] = true, [1134] = true, [1170] = true, [1504] = true, [1505] = true, [1552] = true, [1681] = true, [1672] = true, [1803] = true, [1825] = true, [1911] = true, [2106] = true, [2107] = true, [2118] = true, [2167] = true, [2177] = true, [2197] = true, [2245] = true, [2373] = true, [2509] = true, [2511] = true, [2547] = true, [2563] = true}
-	local seasonalZones = {[2516] = true, [2526] = true, [2515] = true, [2521] = true, [2527] = true, [2519] = true, [2451] = true, [2520] = true, [2652]=true, [2662]=true, [2660]=true, [2669]=true, [670]=true, [1822]=true, [2286]=true, [2290]=true}--DF Season 4 / TWW Season 1
 	--This never wants to spam you to use mods for trivial content you don't need mods for.
 	--It's intended to suggest mods for content that's relevant to your level (TW, leveling up in dungeons, or even older raids you can't just roll over)
 	function DBM:CheckAvailableMods()
 		if _G["BigWigs"] then return end--If they are running two boss mods at once, lets assume they are only using DBM for a specific feature (such as brawlers) and not nag
-		if not self:IsTrivial() or seasonalZones[LastInstanceMapID] then
+		if not self:IsTrivial() or difficulties:IsSeasonalDungeon(LastInstanceMapID) then
 			--TODO, bump checkedDungeon to WarWithin dungeon mods on retail in prepatch
 			local checkedDungeon = private.isRetail and "DBM-Party-Dragonflight" or private.isCata and "DBM-Party-Cataclysm" or private.isWrath and "DBM-Party-WotLK" or private.isBCC and "DBM-Party-BC" or "DBM-Party-Vanilla"
 			if (difficulties:InstanceType(LastInstanceMapID) == 2) then
@@ -3857,7 +3863,7 @@ do
 				end
 				if self:IsSeasonal("SeasonOfDiscovery") then
 					self:AnnoyingPopupCheckZone(LastInstanceMapID, "Vanilla")
-				elseif seasonalZones[LastInstanceMapID] and private.isRetail then--M+ Dungeons Only
+				elseif private.isRetail and difficulties:IsSeasonalDungeon(LastInstanceMapID) then--M+ Dungeons Only
 					self:AnnoyingPopupCheckZone(LastInstanceMapID, "Retail")
 				end
 			elseif (self:IsSeasonal("SeasonOfDiscovery") and sodRaids[LastInstanceMapID] or classicZones[LastInstanceMapID] or (LastInstanceMapID == 249 and private.isClassic)) then
@@ -5213,14 +5219,26 @@ end
 --  Pull Detection  --
 ----------------------
 do
+	--TODO maybe move these frequently used tables to their own module
+	local fullEnemyUids = {
+		"boss1", "boss2", "boss3", "boss4", "boss5", "boss6", "boss7", "boss8", "boss9", "boss10",
+		"mouseover", "target", "focus", "focustarget", "targettarget", "mouseovertarget",
+		"party1target", "party2target", "party3target", "party4target",
+		"raid1target", "raid2target", "raid3target", "raid4target", "raid5target", "raid6target", "raid7target", "raid8target", "raid9target", "raid10target",
+		"raid11target", "raid12target", "raid13target", "raid14target", "raid15target", "raid16target", "raid17target", "raid18target", "raid19target", "raid20target",
+		"raid21target", "raid22target", "raid23target", "raid24target", "raid25target", "raid26target", "raid27target", "raid28target", "raid29target", "raid30target",
+		"raid31target", "raid32target", "raid33target", "raid34target", "raid35target", "raid36target", "raid37target", "raid38target", "raid39target", "raid40target",
+		"nameplate1", "nameplate2", "nameplate3", "nameplate4", "nameplate5", "nameplate6", "nameplate7", "nameplate8", "nameplate9", "nameplate10",
+		"nameplate11", "nameplate12", "nameplate13", "nameplate14", "nameplate15", "nameplate16", "nameplate17", "nameplate18", "nameplate19", "nameplate20",
+		"nameplate21", "nameplate22", "nameplate23", "nameplate24", "nameplate25", "nameplate26", "nameplate27", "nameplate28", "nameplate29", "nameplate30",
+		"nameplate31", "nameplate32", "nameplate33", "nameplate34", "nameplate35", "nameplate36", "nameplate37", "nameplate38", "nameplate39", "nameplate40"
+	}
 	local targetList = {}
 	local function buildTargetList()
-		local uId = (IsInRaid() and "raid") or "party"
-		for i = 0, GetNumGroupMembers() do
-			local id = (i == 0 and "target") or uId .. i .. "target"
-			local guid = UnitGUID(id)
+		for _, unitId in ipairs(fullEnemyUids) do
+			local guid = UnitGUID(unitId)
 			if guid and DBM:IsCreatureGUID(guid) then
-				targetList[DBM:GetCIDFromGUID(guid)] = id
+				targetList[DBM:GetCIDFromGUID(guid)] = unitId
 			end
 		end
 	end
@@ -5230,7 +5248,9 @@ do
 	end
 
 	---@param mod DBMMod
-	local function scanForCombat(mod, mob, delay)
+	---@param mob number Mob CreatureId
+	---@param delay number
+	local function scanForCombat(mod, mob, delay, combatType)
 		if not checkEntry(inCombat, mob) then
 			buildTargetList()
 			if targetList[mob] then
@@ -5245,16 +5265,17 @@ do
 		end
 	end
 
+	---@param mob number Mob CreatureId
 	---@param combatInfo CombatInfo
-	local function checkForPull(mob, combatInfo)
+	local function checkForPull(mob, combatInfo, combatType)
 		healthCombatInitialized = false
-		--This just can't be avoided, tryig to save cpu by using C_TimerAfter broke this
+		--This just can't be avoided, trying to save cpu by using C_TimerAfter broke this
 		--This needs the redundancy and ability to pass args.
-		DBM:Schedule(0.5, scanForCombat, combatInfo.mod, mob, 0.5)
+		DBM:Schedule(0.5, scanForCombat, combatInfo.mod, mob, 0.5, combatType)
 		if not private.isRetail then
-			DBM:Schedule(1.25, scanForCombat, combatInfo.mod, mob, 1.25)
+			DBM:Schedule(1.25, scanForCombat, combatInfo.mod, mob, 1.25, combatType)
 		end
-		DBM:Schedule(2, scanForCombat, combatInfo.mod, mob, 2)
+		DBM:Schedule(2, scanForCombat, combatInfo.mod, mob, 2, combatType)
 		C_TimerAfter(2.1, function()
 			healthCombatInitialized = true
 		end)
@@ -5271,7 +5292,7 @@ do
 				if v.type:find("combat") and not v.noRegenDetection and not (#inCombat > 0 and v.noMultiBoss) then
 					if v.multiMobPullDetection then
 						for _, mob in ipairs(v.multiMobPullDetection) do
-							if checkForPull(mob, v) then
+							if checkForPull(mob, v, v.type) then
 								break
 							end
 						end
@@ -6029,6 +6050,7 @@ do
 		end
 		if not health or health < 2 then return end -- no worthy of combat start if health is below 2%
 		if dbmIsEnabled and InCombatLockdown() then
+
 			if cId ~= 0 and not bossHealth[cId] and bossIds[cId] and UnitAffectingCombat(uId) and not (UnitPlayerOrPetInRaid(uId) or UnitPlayerOrPetInParty(uId)) and healthCombatInitialized then -- StartCombat by UNIT_HEALTH.
 				if combatInfo[LastInstanceMapID] then
 					for _, v in ipairs(combatInfo[LastInstanceMapID]) do
@@ -6915,6 +6937,9 @@ function DBM:UNIT_DIED(args)
 	local GUID = args.destGUID
 	if self:IsCreatureGUID(GUID) then
 		self:OnMobKill(self:GetCIDFromGUID(GUID))
+	end
+	if inCombatTrash[GUID] then
+		inCombatTrash[GUID] = nil
 	end
 	----GUIDIsPlayer
 	--no point in playing alert on death itself on hardcore. if you're dead it's over, no reason to salt the wound
@@ -9116,7 +9141,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
----@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20241002234757" to be auto set by packager
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20241022105954" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then

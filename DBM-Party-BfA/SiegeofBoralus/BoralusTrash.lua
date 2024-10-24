@@ -1,11 +1,12 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241009083038")
+mod:SetRevision("20241020100524")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
+mod:SetZone(1822)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 275826 256627 256957 256709 257170 272546 257169 272713 274569 272571 272888 272711 268260 257288 454440 272662 257732",
@@ -255,6 +256,7 @@ function mod:UNIT_DIED(args)
 	elseif cid == 129369 then--Irontide Raider
 		timerSavageTempestCD:Stop(args.destGUID)
 		timerSavageTempest:Stop(args.destGUID)
+		timerIronHookCD:Stop(args.destGUID)
 	elseif cid == 129371 then--Riptide Shredder
 		timerSingSteelCD:Stop(args.destGUID)
 	elseif cid == 129879 then--Irontide Cleaver (Trash version)
@@ -278,8 +280,6 @@ function mod:UNIT_DIED(args)
 		timerTerrifyingRoarCD:Stop(args.destGUID)
 	elseif cid == 129367 then--Bilge Rat Tempest
 		timerChoakingWatersCD:Stop(args.destGUID)
-	elseif cid == 129369 then--Iron Raider
-		timerIronHookCD:Stop(args.destGUID)
 	elseif cid == 129370 or cid == 144071 then--Ironhull WaveShaper
 		timerWatertightShellCD:Stop(args.destGUID)
 	end

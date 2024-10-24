@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240818091803")
+mod:SetRevision("20241020061638")
 --mod:SetModelID(47785)
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)--Stays active in all zones for zone change handlers, but registers events based on dungeon ids
 
@@ -40,12 +40,13 @@ local timerEntangledCD						= mod:NewCDTimer(30, 408556, nil, nil, nil, 3, 39634
 --local timerAfflictedCD						= mod:NewCDTimer(30, 409492, nil, nil, nil, 5, 2, DBM_COMMON_L.HEALER_ICON, nil, mod:IsHealer() and 3 or nil, 3)--Timer is still on for all, cause knowing when they spawn still informs decisions like running ahead or pulling
 local timerIncorporealCD					= mod:NewCDTimer(45, 408801, nil, nil, nil, 5, nil, nil, nil, 3, 3)--Not active ingame
 local timerXalatathsBargainUnstablePowerCD	= mod:NewCDTimer(59.9, 461895, nil, nil, nil, 1)
-local timerXalatathsBargainDevourCD			= mod:NewCDTimer(59.9, 465051, nil, nil, nil, 2)
+local timerXalatathsBargainDevourCD			= mod:NewCDTimer(59.9, 465051, nil, nil, nil, 2)--60-67 even incombat
 
 mod:AddNamePlateOption("NPSanguine", 226510, "Tank")
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc, 7 gtfo, 8 personal aggregated alert
 
+local combatCheckerRunning = false
 local incorporealCounting = false
 local incorpDetected = false
 --local afflictedCounting = false
@@ -85,14 +86,9 @@ local function checkIncorp(self)
 	self:Schedule(45, checkIncorp, self)
 end
 
---UGLY function to detect this because there isn't a good API for this.
---player regen was very unreliable due to fact it only fires for self
---This wastes cpu time being an infinite loop though but probably no more so than any WA doing this
----@param self DBMMod
-local function checkForCombat(self)
-	local combatFound = self:GroupInCombat()
+function mod:EnteringZoneCombat()
 	if incorpDetected then
-		if combatFound and not incorporealCounting then
+		if not incorporealCounting then
 			incorporealCounting = true
 			timerIncorporealCD:Resume()
 			local incorpRemaining = timerIncorporealCD:GetRemaining()
@@ -101,10 +97,18 @@ local function checkForCombat(self)
 				self:Schedule(incorpRemaining+10, checkIncorp, self)
 				DBM:Debug("Experimental reschedule of checkIncorp running")
 			end
-		elseif not combatFound and incorporealCounting then
-			incorporealCounting = false
-			timerIncorporealCD:Pause()
-			self:Unschedule(checkIncorp)--Soon as a pause happens this can no longer be trusted
+		end
+	end
+	if unstableDetected then
+		if not unstableCounting then
+			unstableCounting = true
+			timerXalatathsBargainUnstablePowerCD:Resume()
+		end
+	end
+	if devourDetected then
+		if not devourCounting then
+			devourCounting = true
+			timerXalatathsBargainDevourCD:Resume()
 		end
 	end
 	--if afflictedDetected then
@@ -117,50 +121,48 @@ local function checkForCombat(self)
 	--			self:Schedule(afflictRemaining+10, checkAfflicted, self)
 	--			DBM:Debug("Experimental reschedule of checkAfflicted running")
 	--		end
-	--	elseif not combatFound and afflictedCounting then
-	--		afflictedCounting = false
-	--		timerAfflictedCD:Pause()
-	--		self:Unschedule(checkAfflicted)--Soon as a pause happens this can no longer be trusted
 	--	end
-	--end
-	--Without transcriptor don't know if it works same as afflicted and incorp do, or same as thundering, so coding like thundering for now
-	--ie pauses out of combat, doesn't skip casts and reloop
+end
+
+function mod:LeavingZoneCombat()
+	if incorpDetected then
+		if incorporealCounting then
+			incorporealCounting = false
+			timerIncorporealCD:Pause()
+			self:Unschedule(checkIncorp)--Soon as a pause happens this can no longer be trusted
+		end
+	end
 	if unstableDetected then
-		if combatFound and not unstableCounting then
-			unstableCounting = true
-			timerXalatathsBargainUnstablePowerCD:Resume()
-		elseif not combatFound and unstableCounting then
+		if unstableCounting then
 			unstableCounting = false
 			timerXalatathsBargainUnstablePowerCD:Pause()
 		end
 	end
-	--Without transcriptor don't know if it works same as afflicted and incorp do, or same as thundering, so coding like thundering for now
-	--ie pauses out of combat, doesn't skip casts and reloop
 	if devourDetected then
-		if combatFound and not devourCounting then
-			devourCounting = true
-			timerXalatathsBargainDevourCD:Resume()
-		elseif not combatFound and devourCounting then
+		if devourCounting then
 			devourCounting = false
 			timerXalatathsBargainDevourCD:Pause()
 		end
 	end
-	self:Schedule(0.25, checkForCombat, self)
+	--if afflictedDetected then
+	--	if afflictedCounting then
+	--		afflictedCounting = false
+	--		timerAfflictedCD:Pause()
+	--		self:Unschedule(checkAfflicted)--Soon as a pause happens this can no longer be trusted
+	--	end
 end
 
 do
 	local validZones
-	--Upcoming Seasons
-	if (C_MythicPlus.GetCurrentSeason() or 0) == 13 then--War Within Season 1
-		--2652, 2662, 2660, 2669, 670, 1822, 2286, 2290
-		validZones = {[2652]=true, [2662]=true, [2660]=true, [2669]=true, [670]=true, [1822]=true, [2286]=true, [2290]=true}
-	elseif (C_MythicPlus.GetCurrentSeason() or 0) == 14 then--War Within Season 2
+	--Upcoming Season
+	if (C_MythicPlus.GetCurrentSeason() or 0) == 14 then--War Within Season 2
 		--2651, 2649, 2648, 2661, ?, ?, ?, ?
+		--Darkflame Cleft, Priory of the Sacred Flame, The Rookery, Cinderbrew Meadery
 		validZones = {[2651]=true, [2649]=true, [2648]=true, [2661]=true}
 	--Current Season (latest LIVE season put in else so if api fails, it just always returns latest)
-	else--DF Season 4 (12)
-		--2516, 2526, 2515, 2521, 2527, 2519, 2451, 2520
-		validZones = {[2516]=true, [2526]=true, [2515]=true, [2521]=true, [2527]=true, [2519]=true, [2451]=true, [2520]=true}
+	else--War Within Season 1 (13)
+		--Stonevault, The Dawnbreaker, Ara-Kara City of Echos, City of Threads, Grim Batol, Siege of Boralus, The Necrotic Wake, Mists of Tirna Scithe
+		validZones = {[2652]=true, [2662]=true, [2660]=true, [2669]=true, [670]=true, [1822]=true, [2286]=true, [2290]=true}
 	end
 	local eventsRegistered = false
 	function mod:DelayedZoneCheck(force)
@@ -183,6 +185,8 @@ do
 			DBM:Debug("Registering M+ events")
 		elseif force or (not validZones[currentZone] and eventsRegistered) then
 			eventsRegistered = false
+			combatCheckerRunning = false
+			self:UnregisterZoneCombat(currentZone, "MPlusAffixes")
 			--afflictedDetected = false
 			--afflictedCounting = false
 			incorporealCounting = false
@@ -192,7 +196,6 @@ do
 			devourDetected = false
 			devourCounting = false
 			self:UnregisterShortTermEvents()
-			self:Unschedule(checkForCombat)
 			self:Unschedule(checkEntangled)
 			--self:Unschedule(checkAfflicted)
 			self:Stop()
@@ -231,23 +234,19 @@ function mod:SPELL_CAST_START(args)
 	--	--This one is interesting cause it runs every 30 seconds, sometimes skips a cast and goes 60, but also pauses out of combat
 	--	afflictedCounting = true
 	--	timerAfflictedCD:Start()
-	--	self:Unschedule(checkForCombat)
 	--	self:Unschedule(checkAfflicted)
-	--	checkForCombat(self)
 	--	self:Schedule(40, checkAfflicted, self)
 	elseif spellId == 408805 and self:AntiSpam(3, "aff3") then
 		warnDestabalize:Show()
 	elseif spellId == 465051 then
 		warnXalatathsBargainDevour:Show()
-		--Timer function limited to debugging for now until we know more about it
-		if DBM.Options.DebugMode then
-			if not devourDetected then
-				devourDetected = true
-			end
-			devourCounting = true
-			timerXalatathsBargainDevourCD:Start()
-			self:Unschedule(checkForCombat)
-			checkForCombat(self)
+		if not devourDetected then
+			devourDetected = true
+		end
+		devourCounting = true
+		timerXalatathsBargainDevourCD:Start()
+		if not combatCheckerRunning then
+			self:RegisterZoneCombat(DBM:GetCurrentArea(), "MPlusAffixes")--This mod will dynamically only register the current zone it needs
 		end
 	end
 end
@@ -258,15 +257,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 461895 and self:AntiSpam(5, "aff8") then--Takes a good 3-4 seconds for them all to spawn, so 5 second antispam is safe
 		warnXalatathsBargainUnstablePower:Show()
 		warnXalatathsBargainUnstablePower:Play("targetchange")--If this affix actually lasts til live, i'll give it a unique voice
-		--Timer function limited to debugging for now until we know more about it
-		if DBM.Options.DebugMode then
-			if not unstableDetected then
-				unstableDetected = true
-			end
-			unstableCounting = true
-			timerXalatathsBargainUnstablePowerCD:Start()
-			self:Unschedule(checkForCombat)
-			checkForCombat(self)
+		if not unstableDetected then
+			unstableDetected = true
+		end
+		unstableCounting = true
+		timerXalatathsBargainUnstablePowerCD:Start()
+		if not combatCheckerRunning then
+			self:RegisterZoneCombat(DBM:GetCurrentArea(), "MPlusAffixes")--This mod will dynamically only register the current zone it needs
 		end
 	end
 end
@@ -316,10 +313,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		--This one is interesting cause it runs every 45 seconds, sometimes skips a cast and goes 90, but also pauses out of combat
 		incorporealCounting = true
 		timerIncorporealCD:Start()
-		self:Unschedule(checkForCombat)
 		self:Unschedule(checkIncorp)
-		checkForCombat(self)
-		self:Schedule(50, checkIncorp, self)
+		if not combatCheckerRunning then
+			self:RegisterZoneCombat(DBM:GetCurrentArea(), "MPlusAffixes")--This mod will dynamically only register the current zone it needs
+		end
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

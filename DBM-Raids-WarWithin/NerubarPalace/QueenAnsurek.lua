@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "story,lfr,normal,heroic,mythic"
 
-mod:SetRevision("20241002060427")
+mod:SetRevision("20241018024117")
 mod:SetCreatureID(218370)
 mod:SetEncounterID(2922)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -14,8 +14,8 @@ mod.respawnTime = 29
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 437592 456623 437417 439814 440899 440883 437093 447076 447411 450191 449940 449986 447950 448458 448147 451600 455374 443888 445422 444829 445021 438976 443325 443336 447456",
-	"SPELL_CAST_SUCCESS 439299 449986",
+	"SPELL_CAST_START 437592 456623 437417 439814 440899 440883 437093 447076 447411 450191 449940 449986 447950 448458 448147 451600 455374 443888 445422 444829 445021 438976 443325 443336",
+	"SPELL_CAST_SUCCESS 439299 449986 447456",
 	"SPELL_AURA_APPLIED 437586 441958 436800 440885 447207 453990 464056 447967 462558 451278 443903 455387 445880 445152 438974 443656 443726 443342 451832 464638 441556 445013 462693",--455404
 	"SPELL_AURA_APPLIED_DOSE 449236 445880 443726 443342 464638 441556",
 	"SPELL_AURA_REMOVED 437586 447207 453990 462558 451278 443903 455387 445152 443656 445013 445021 464056 447967",
@@ -254,7 +254,7 @@ local allTimers = {
 			--Venom Nova
 			[437417] = {29.3, 56, 56},--56 repeating? (Same as normal)
 			--Silken Tomb
-			[439814] = {57.4, 54, 15.9},--(different from normal)
+			[439814] = {57.4, 48, 15.9},--(different from normal)
 			--Liquefy
 			[440899] = {8.3, 39.7, 51},--(different from normal)
 			--Web Blades
@@ -555,7 +555,7 @@ function mod:SPELL_CAST_START(args)
 				specWarnNullDetonation:Play("kickcast")
 			end
 		end
-		timerNullDetonationCD:Start(nil, args.sourceGUID)
+		timerNullDetonationCD:Start(4.3, args.sourceGUID)
 	elseif spellId == 448458 and self:AntiSpam(5, 1) then
 		warnCosmicApocalypse:Show()
 		timerCosmicApocalypse:Start()
@@ -615,14 +615,6 @@ function mod:SPELL_CAST_START(args)
 		if timer then
 			timerGorgeCD:Start(timer, self.vb.gorgeCount+1)
 		end
-	elseif spellId == 447456 then
-		self.vb.reactiveCount = self.vb.reactiveCount + 1
-		warnParalyzingVenom:Show(self.vb.reactiveCount)
-		if self.vb.reactiveCount % 3 == 0 then
-			timerParalyzingVenomCD:Start(11, self.vb.reactiveCount+1)
-		else
-			timerParalyzingVenomCD:Start(4, self.vb.reactiveCount+1)
-		end
 	elseif spellId == 447076 then--Predation
 		self:SetStage(1.5)
 		self.vb.wrestCount = 0
@@ -637,7 +629,7 @@ function mod:SPELL_CAST_START(args)
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(1.5))
 		warnPhase:Play("phasechange")
 		timerWrestCD:Start(6, 1)
-		timerParalyzingVenomCD:Start(13, 1)
+		timerParalyzingVenomCD:Start(15.5, 1)
 	elseif spellId == 449986 then--Aphotic Communion Starting
 		self:SetStage(3)
 		timerAcidicApocalypse:Stop()
@@ -665,6 +657,14 @@ function mod:SPELL_CAST_SUCCESS(args)
 		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.phase, 439299, self.vb.webBladesCount+1)
 		if timer then
 			timerWebBladesCD:Start(timer, self.vb.webBladesCount+1)
+		end
+	elseif spellId == 447456 then
+		self.vb.reactiveCount = self.vb.reactiveCount + 1
+		warnParalyzingVenom:Show(self.vb.reactiveCount)
+		if self.vb.reactiveCount % 3 == 0 then
+			timerParalyzingVenomCD:Start(11, self.vb.reactiveCount+1)
+		else
+			timerParalyzingVenomCD:Start(4, self.vb.reactiveCount+1)
 		end
 	--elseif spellId == 449986 then--Aphotic Communion Finishing
 	--	timerAbyssalInfusionCD:Start(3)
@@ -936,7 +936,7 @@ function mod:UNIT_DIED(args)
 			--Better place to start Stage 2 wrest timer
 			if self.vb.wrestCount == 0 then
 				timerWrestCD:Stop()
-				timerWrestCD:Start(self:IsEasy() and 12.9 or 11.9, 1)
+				timerWrestCD:Start(self:IsEasy() and 12.9 or 11.7, 1)
 				timerExpulsionBeamCD:Start(12.5, 1)
 			end
 		end
@@ -979,7 +979,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		warnPlatform:Show(self.vb.platformCount)
 		if self.vb.platformCount == 1 then
 			timerWrestCD:Stop()
-			timerWrestCD:Start(6, self.vb.wrestCount+1)--6-6.6
+			timerWrestCD:Start(5.4, self.vb.wrestCount+1)--6-6.6
 			timerGloomTouchCD:Start(6)
 		elseif self.vb.platformCount == 2 then
 			timerWrestCD:Stop()

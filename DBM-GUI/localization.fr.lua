@@ -126,7 +126,7 @@ L.LogCurrentHeroic					= "Donjons héroïques du niveau actuel (Remarque : si vo
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "Fonctionnalités supplémentaires"
 
-L.Area_SoundAlerts			= "Options des alertes sonores/flash"
+L.Area_SoundAlerts			= "Options des alertes sonores/clignotement"
 L.LFDEnhance				= "Faire clignoter le bouton de l'application et jouer le son d'Appel lors des vérif. de rôle &amp; des invitations (LFG,BG,etc) dans les canaux audio Principal ou Discussion (canaux généralement plus forts, fonctionnent même si le SFX est désactivé)"
 L.WorldBossNearAlert		= "Faire clignoter le bouton de l'application et jouer le son d'Appel quand un World Boss proche de vous est engagé"
 L.RLReadyCheckSound			= "Quand le chef de raid lance un Appel, jouer le son via les canaux audio Principal ou Discussion et faire clignoter le bouton de l'application"
@@ -291,7 +291,7 @@ L.Area_BrowseOtherCT		= "Trouvez d'autres paquets de décompte sur Curse"
 L.BrowseOtherCTs			= "|cFF73C2FBhttps://www.curseforge.com/wow/addons/search?search=dbm+count+pack|r"
 
 -- Panel: Event Sounds
-L.Panel_EventSounds			= "Évênements sonores"
+L.Panel_EventSounds			= "Événements sonores"
 L.Area_SoundSelection		= "Sélection du son (parcourez le menu de sélection avec la molette souris)"
 L.EventVictorySound			= "Son pour les victoires"
 L.EventWipeSound			= "Son pour les défaites"
@@ -299,10 +299,10 @@ L.EventEngagePT				= "Son pour le début du décompte avant pull"
 L.EventEngageSound			= "Son pour le pull"
 L.EventDungeonMusic			= "Musique jouée dans les donjons/raids"
 L.EventEngageMusic			= "Musique jouée pendant les rencontres"
-L.Area_EventSoundsExtras	= "Options des évênements sonores"
+L.Area_EventSoundsExtras	= "Options des événements sonores"
 L.EventMusicCombined		= "Autoriser tous les choix de musiques dans les sélections de donjons et de rencontres (changer cette option requiert de recharger l'interface)"
 L.DisableBuiltInMusic		= "Désactiver les sons d'événements intégrés et chargez uniquement des pacquets de musique tiers."
-L.Area_EventSoundsFilters	= "Conditions des évênements sonores"
+L.Area_EventSoundsFilters	= "Conditions des événements sonores"
 L.EventFilterDungMythicMusic= "Ne pas jouer de musique de donjon en difficulté Mythique/Mythique+"
 L.EventFilterMythicMusic	= "Ne pas jouer de musique de rencontre en difficulté Mythique/Mythique+"
 

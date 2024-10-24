@@ -75,6 +75,7 @@ CL.BOSSTOGETHER				= "Боссы вместе"
 CL.BOSSAPART				= "Боссы раздельно"
 CL.MINDCONTROL				= "Контроль над разумом"
 CL.TANKCOMBO				= "Танковое комбо"
+CL.TANKDEBUFF				= "Дебафф на танке"
 CL.AOEDAMAGE				= "AoE урон"
 CL.AVOID					= "Избежание"
 CL.GROUPSOAK				= "Поглощение"
@@ -87,7 +88,7 @@ CL.POOLS					= "Лужи"
 CL.DEBUFFS					= "Дебаффы"
 CL.DISPELS					= "Рассеивания"
 CL.PUSHBACK					= "Отталкивание"
-CL.FRONTAL					= "Фронталка"
+CL.FRONTAL					= "Фронтальный удар"
 CL.RUNAWAY					= "Убегать"
 CL.SPREAD					= "Разойтись"--По идее так правильно
 CL.SPREADS					= "Разойтись"--По идее так правильно
@@ -102,3 +103,16 @@ CL.MARKS					= "Метки"
 CL.CURSE					= "Проклятие"
 CL.CURSES					= "Проклятия"
 CL.SWIRLS					= "Вихри"
+CL.CHARGES					= "Атака босса"--По идее так правильно
+CL.CIRCLES					= "Круги"
+
+-- Colors
+CL.BLACK	= "Черный"
+CL.BLUE		= "Синий"
+CL.GREEN	= "Зеленый"
+CL.RED		= "Красный"
+CL.BRONZE	= "Бронзовый"
+
+-- Conjunctions, used to join words, e.g., "Spell1 *and* Spell2 on you!"
+CL.AND		= "и"
+CL.OR		= "или"

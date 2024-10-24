@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod("TheStonevaultTrash", "DBM-Party-WarWithin", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241005075847")
+mod:SetRevision("20241020100524")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
+mod:SetZone(2652)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 425027 426283 447141 449455 429109 449130 449154 429545 426345 448852 426771 445207 448640 429427 428879 428703",

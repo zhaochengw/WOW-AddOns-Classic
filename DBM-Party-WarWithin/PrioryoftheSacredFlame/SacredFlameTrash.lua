@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod("SacredFlameTrash", "DBM-Party-WarWithin", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240920064505")
+mod:SetRevision("20241020100524")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
+mod:SetZone(2649)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 424621 424423 424431 448515 427583 424462 424420 427484 427356 427601",

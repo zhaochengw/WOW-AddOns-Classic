@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2608, "DBM-Raids-WarWithin", 1, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241002074443")
+mod:SetRevision("20241022110419")
 mod:SetCreatureID(217489, 217491)--Anub'arash, Skeinspinner Takazj
 mod:SetEncounterID(2921)
 mod:SetUsedIcons(6, 7, 8)
@@ -242,7 +242,7 @@ local allTimers = {
 			-- Strands of Reality
 			[441782] = {22.2, 65.7},
 			-- Void Step
-			[450483] = {38.5, 32.9, 25},
+			[450483] = {37.5, 32.9, 25},
 			-- Cataclysmic Entropy
 			[438355] = {41.2, 58.2},
 		},
