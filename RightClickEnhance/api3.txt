@@ -1,0 +1,639 @@
+Fires for Combat Log events such as a player casting a spell or an NPC taking damage.
+
+COMBAT_LOG_EVENT only reflects the filtered events in the combat log window
+COMBAT_LOG_EVENT_UNFILTERED (CLEU) is unfiltered, making it preferred for use by addons.
+Both events have identical parameters. The event payload is returned from CombatLogGetCurrentEventInfo(), or from CombatLogGetCurrentEntry() if selected using CombatLogSetCurrentEntry().
+
+Base Parameters
+1st Param	2nd Param	3rd Param	4th Param	5th Param	6th Param	7th Param	8th Param	9th Param	10th Param	11th Param
+timestamp	subevent	hideCaster	sourceGUID	sourceName	sourceFlags	sourceRaidFlags	destGUID	destName	destFlags	destRaidFlags
+timestamp
+number - Unix Time in seconds with milliseconds precision, for example 1555749627.861. Similar to time() and can be passed as the second argument of date().
+subevent
+string - The combat log event, for example SPELL_DAMAGE.
+hideCaster
+boolean - Returns true if the source unit is hidden (an empty string).[1]
+guid
+string - Globally unique identifier for units (NPCs, players, pets, etc), for example "Creature-0-3113-0-47-94-00003AD5D7".
+name
+string - Name of the unit.
+flags
+number - Contains the flag bits for a unit's type, controller, reaction and affiliation. For example 68168 (0x10A48): Unit is the current target, is an NPC, the controller is an NPC, reaction is hostile and affiliation is outsider.
+raidFlags
+number - Contains the raid flag bits for a unit's raid target icon. For example 64 (0x40): Unit is marked with cross.
+Events
+Combat log events consist of a prefix and suffix part, with their related parameters. For a full example see #Payload.
+
+Prefixes
+Prefix	1st Param (12th)	2nd Param (13th)	3rd Param (14th)
+SWING
+RANGE	spellId	spellName	spellSchool
+SPELL	spellId	spellName	spellSchool
+SPELL_PERIODIC	spellId	spellName	spellSchool
+SPELL_BUILDING	spellId	spellName	spellSchool
+ENVIRONMENTAL	environmentalType
+Suffixes
+The parameters for critical, glancing, crushing, and isOffHand are true/false flags.
+
+Suffix	1st Param (15th)	2nd Param (16th)	3rd Param (17th)	4th Param (18th)	5th Param (19th)	6th Param (20th)	7th Param (21st)	8th Param (22nd)	9th Param (23rd)	10th Param (24th)
+_DAMAGE	amount	overkill	school	resisted	blocked	absorbed	critical	glancing	crushing	isOffHand
+_MISSED	missType	isOffHand	amountMissed	critical
+_HEAL	amount	overhealing	absorbed	critical
+_HEAL_ABSORBED	extraGUID	extraName	extraFlags	extraRaidFlags	extraSpellID	extraSpellName	extraSchool	absorbedAmount	#totalAmount
+_ABSORBED
+_ENERGIZE	amount	overEnergize	powerType	#maxPower
+_DRAIN	amount	powerType	extraAmount	#maxPower
+_LEECH	amount	powerType	extraAmount
+_INTERRUPT	extraSpellId	extraSpellName	extraSchool
+_DISPEL	extraSpellId	extraSpellName	extraSchool	auraType
+_DISPEL_FAILED	extraSpellId	extraSpellName	extraSchool
+_STOLEN	extraSpellId	extraSpellName	extraSchool	auraType
+_EXTRA_ATTACKS	amount
+_AURA_APPLIED	auraType	amount
+_AURA_REMOVED	auraType	amount
+_AURA_APPLIED_DOSE	auraType	amount
+_AURA_REMOVED_DOSE	auraType	amount
+_AURA_REFRESH	auraType	#amount
+_AURA_BROKEN	auraType
+_AURA_BROKEN_SPELL	extraSpellId	extraSpellName	extraSchool	auraType
+_CAST_START
+_CAST_SUCCESS
+_CAST_FAILED	failedType
+_INSTAKILL	#unconsciousOnDeath
+_DURABILITY_DAMAGE
+_DURABILITY_DAMAGE_ALL
+_CREATE
+_SUMMON
+_RESURRECT
+_EMPOWER_START
+_EMPOWER_END	empoweredRank
+_EMPOWER_INTERRUPT	empoweredRank
+Special events
+Subevent	Prefix to use	Suffix to use
+DAMAGE_SPLIT	SPELL	_DAMAGE
+DAMAGE_SHIELD	SPELL	_DAMAGE
+DAMAGE_SHIELD_MISSED	SPELL	_MISSED
+Subevent	1st Param (12th)	2nd Param (13th)	3rd Param (14th)
+ENCHANT_APPLIED	spellName	itemID	itemName
+ENCHANT_REMOVED	spellName	itemID	itemName
+PARTY_KILL
+UNIT_DIED	recapID	#unconsciousOnDeath
+UNIT_DESTROYED	recapID	#unconsciousOnDeath
+UNIT_DISSIPATES	recapID	#unconsciousOnDeath
+Parameter Values
+Spell School
+Type
+(bitmask)	Type
+(decimal)	Name	Combination
+00000001	1	Physical	#FFFF00   255, 255, 0
+00000010	2	Holy	#FFE680   255, 230, 128
+00000100	4	Fire	#FF8000   255, 128, 0
+00001000	8	Nature	#4DFF4D   77, 255, 77
+00010000	16	Frost	#80FFFF   128, 255, 255
+00100000	32	Shadow	#8080FF   128, 128, 255
+01000000	64	Arcane	#FF80FF   255, 128, 255
+Double schools
+00000011	3	Holystrike	Holy, Physical
+00000101	5	Flamestrike	Fire, Physical
+00000110	6	Radiant (Holyfire)	Fire, Holy
+00001001	9	Stormstrike	Nature, Physical
+00001010	10	Holystorm	Nature, Holy
+00001100	12	Volcanic	Nature, Fire
+00010001	17	Froststrike	Frost, Physical
+00010010	18	Holyfrost	Frost, Holy
+00010100	20	Frostfire	Frost, Fire
+00011000	24	Froststorm	Frost, Nature
+00100001	33	Shadowstrike	Shadow, Physical
+00100010	34	Twilight (Shadowlight)	Shadow, Holy
+00100100	36	Shadowflame	Shadow, Fire
+00101000	40	Plague (Shadowstorm)	Shadow, Nature
+00110000	48	Shadowfrost	Shadow, Frost
+01000001	65	Spellstrike	Arcane, Physical
+01000010	66	Divine	Arcane, Holy
+01000100	68	Spellfire	Arcane, Fire
+01001000	72	Astral (Spellstorm)	Arcane, Nature
+01010000	80	Spellfrost	Arcane, Frost
+01100000	96	Spellshadow	Arcane, Shadow
+Multi schools
+00011100	28	Elemental	Frost, Nature, Fire
+00111110	62	Chromatic	Shadow, Frost, Nature, Fire, Holy
+01101010	106	Cosmic	Arcane, Shadow, Nature, Holy
+01111100	124	Chaos	Arcane, Shadow, Frost, Nature, Fire
+01111110	126	Magic	Arcane, Shadow, Frost, Nature, Fire, Holy
+01111111	127	Chaos	Arcane, Shadow, Frost, Nature, Fire, Holy, Physical
+Power Type
+Enum.PowerType
+Value	Field	Description
+0	Mana	Mana will range from 0 to the maximum mana a unit has. Player mana pools are of a fixed size for all specializations except Arcane Mages, whose mastery increases their maximum mana. Players naturally regenerate mana at a constant rate dependent on their specialization, both in and out of combat, and some abilities and effects (ex  [Life Tap],  [Power Word: Solace],  [Resurgence]) can directly generate mana. This is the default power type for most non-player units, although there are exceptions.
+1	Rage	Rage is used by Warriors and Druids in bear form. Rage ranges from 0 to 100, but may be increased via player talents. Rage is generated by abilities and, for some specializations, taking damage or dealing damage with auto-attacks. Rage will decay to 0 while out of combat.
+2	Focus	Wrath-Logo-Small.png Focus is used by Hunters and their pets. Focus ranges from 0 to 100, though this can be increased by spec passives. It has a relatively slow passive regeneration rate, but certain abilities will generate focus directly.
+3	Energy	Energy is used by Rogues, Monks, and Druids in cat form. Energy ranges from 0 to 100, but may be increased via player talents and spec passives. Energy regenerates rapidly.
+4	ComboPoints	WoD-Logo-Small.png Combo Points are used by Rogues and Druids in cat form. Combo Points range from 0 to 5, but can be increased up to 6 by the  [Deeper Stratagem] Rogue talent or to 10 by the  [Anticipation] Rogue talent. Combo Points are generated by abilities, talents, and passives, and are consumed by Finishing Moves to increase their potency. Combo Points will decay to 0 while out of combat. This value was previously used for hunter pets' happiness, which was deprecated in Cataclysm.
+5	Runes	Wrath-Logo-Small.png Runes are used as a power type for Death Knights. Deathknights have 6 runes available. As of Legion-Logo-Small.png, Deathknights no longer have different types of runes, and instead all 6 runes can be used for any ability which consumes them. Up to 3 runes can be regenerating at a time, with the other 3, if depleted, effectively having a recharge time of up to twice the normal rune recharge time. Rune recharge rate can be accelerated through  [Runic Corruption], or runes can be instantly activated by  [Blood Tap] or  [Runic Empowerment], as well as a number of talents and set bonuses.
+6	RunicPower	Wrath-Logo-Small.png Runic Power is used by Death Knights. Runic Power ranges from 0 to 100, though it can be increased by talents and set bonuses. It is gained by spending runes on abilities, or directly by certain abilities, talents, and passive effects. Runic Power is spent on a limited set of damaging abilities, many of which help regenerate additional runes. Runic Power will decay to 0 while out of combat.
+7	SoulShards	Wrath-Logo-Small.png  [Soul Shards] are collected by Warlocks, and range from 0 to 5, represented the number of filled Soul Shards. As of Legion-Logo-Small.png, this resources is now used by all 3 Warlock specializations. Soul Shards will naturally regenerate or decay as needed while out of combat until they reach 3 out of 5 filled. As of Patch 7.2.5, if the "unmodified" boolean argument to UnitPower is provided, the values returned for Soul Shards will range instead from 0 to 50, with each 10 representing a filled Soul Shard. This is to account for the ability of Warlock_talents#Destruction warlocks to generate fractional Soul Shards in increments of 1/10th, similar to how Burning Embers functioned in prior expansions.
+8	LunarPower	Legion-Logo-Small.png Astral Power is used by Druids in moonkin form. Astral power goes from 0 to 100. Astral power will decay to 0 while out of combat.
+9	HolyPower	Wrath-Logo-Small.png Holy Power is used by Retribution Paladins. Holy Power ranges from 0 to 5, and will decay to 0 while out of combat.
+10	Alternate	Cata-Logo-Small.png New power type since Cataclysm. Known uses: sound level on Atramedes, corruption level on Cho'gall, consumption level while in Iso'rath.
+11	Maelstrom	Legion-Logo-Small.png The new Shaman resource in Legion, used by both Enhancement and Elemental shamans. Maelstrom ranges from 0 to 100 for Elemental and 0 to 150 for Enhancement, though it can be increased by talents and artifact traits. Maelstrom will decay to 0 while out of combat.
+12	Chi	Mists-Logo-Small.png Chi is used by Windwalker Monks. Chi ranges from 0 to 5, and will decay to 0 while out of combat.
+13	Insanity	Legion-Logo-Small.png Insanity is used by Shadow Priests. Insanity is generated by most Shadow Priest abilities, and will be consumed at an ever-increasing rate while the priest is in  [Voidform], until it reaches 0 and the priest leaves Voidform (or dies horribly if  [Surrender to Madness] is active). Insanity will decay to 0 while out of combat even if the priests is not in  [Voidform].
+14	BurningEmbers	Mists-Logo-Small.png Burning Embers were used by Destruction Warlocks prior to Legion-Logo-Small.png, which consolidated all warlock specs to use  [Soul Shards]. Value returned would range from 1 to 3 (4 with  [Glyph of Burning Embers], representing number of completely filled Burning Embers. If a third argument "true" is included with UnitPower or UnitPowerMax, the value would instead range from 0 to 30 (40 with  [Glyph of Burning Embers]), representing the individual segments in each Ember. Each Ember had 10 segments, and most effects that generate Embers generate 1 segment per effect (for example, a cast of Incinerate generates one segment, so 10 casts generates a full Ember). As of Legion-Logo-Small.png, this power type is now obsolete.
+15	DemonicFury	Mists-Logo-Small.png  [Demonic Fury] was used by Demonology Warlocks prior to Legion-Logo-Small.png, which consolidated all warlock specs to use  [Soul Shards]. Value returned would range from 0 to 1000. As of Legion-Logo-Small.png, this power type is now obsolete.
+16	ArcaneCharges	Legion-Logo-Small.png Arcane Mage resource. Arcane Charges range from 0 to 5. They are generated by casting  [Arcane Blast] and  [Arcane Explosion], and consumed by  [Arcane Barrage], though a number of abilities benefit from having charges without consuming them. Arcane Charges will decay to 0 while out of combat.
+17	Fury	Legion-Logo-Small.png Havoc Demon Hunter. Fury is generated by  [Demon's Bite], as well as a number of talents, and consumed by most Havoc abilities. Fury ranges from 0 to 100, though artifact traits can increase this to up to 170. Fury will decay to 0 while out of combat.
+18	Pain	Legion-Logo-Small.png Vengeance Demon Hunter. Pain is generated by several Vengeance abilities (ex.  [Shear],  [Felblade]), and consumed by several others (ex.  [Soul Cleave],  [Demon Spikes]), predominantly for defensive purposes. A small amount of Pain is also generated when the Demon Hunter takes damage. Pain ranges from 0 to 100, and will decay to 0 while out of combat.
+19	Essence	Dragonflight-Icon-Inline.png Essence is used by Evokers. It ranges from 0 to 6, and will regenerate passively over time.
+20	RuneBlood	10.0.0
+21	RuneFrost	10.0.0
+22	RuneUnholy	10.0.0
+23	AlternateQuest	10.1.0
+24	AlternateEncounter	10.1.0
+25	AlternateMount	Dragonflight-Icon-Inline.png  [Vigor] is used for Dragonriding. It ranges from 0 to a variable maximum of 3-6, depending on dragon traits, and regenerates slowly while grounded, or from effects while flying.
+26	Balance	10.2.7
+27	Happiness	11.1.5
+28	ShadowOrbs	11.1.5
+29	RuneChromatic	11.1.5
+Failed Type
+See the SPELL_FAILED GlobalStrings for a full list of failed types.
+
+"A more powerful spell is already active"
+"Another action is in progress"
+"Can't do that while asleep"
+"Can't do that while charmed"
+"Can't do that while confused"
+"Can't do that while fleeing"
+"Can't do that while horrified"
+"Can't do that while incapacitated"
+"Can't do that while moving"
+"Can't do that while silenced"
+"Can't do that while stunned"
+"Interrupted"
+"Invalid target"
+"No target"
+"Not enough energy"
+"Not enough mana"
+"Not enough rage"
+"Out of range"
+"Target needs to be in front of you."
+"Target not in line of sight"
+"Target too close"
+"You are dead"
+"You are in combat"
+"You are in shapeshift form"
+"You are unable to move"
+"You can't do that yet"
+"You must be behind your target."
+Miss Type
+"ABSORB"
+"BLOCK"
+"DEFLECT"
+"DODGE"
+"EVADE"
+"IMMUNE"
+"MISS"
+"PARRY"
+"REFLECT"
+"RESIST"
+Aura Type
+"BUFF"
+"DEBUFF"
+Environmental Type
+"Drowning"
+"Falling"
+"Fatigue"
+"Fire"
+"Lava"
+"Slime"
+Example
+Script
+Prints all CLEU parameters.
+local function OnEvent(self, event)
+	print(CombatLogGetCurrentEventInfo())
+end
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+f:SetScript("OnEvent", OnEvent)
+Displays your spell or melee critical hits.
+local playerGUID = UnitGUID("player")
+local MSG_CRITICAL_HIT = "Your %s critically hit %s for %d damage!"
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+f:SetScript("OnEvent", function(self, event)
+	local _, subevent, _, sourceGUID, _, _, _, _, destName = CombatLogGetCurrentEventInfo()
+	local spellId, amount, critical
+
+	if subevent == "SWING_DAMAGE" then
+		amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
+	elseif subevent == "SPELL_DAMAGE" then
+		spellId, _, _, amount, _, _, _, _, _, critical = select(12, CombatLogGetCurrentEventInfo())
+	end
+
+	if critical and sourceGUID == playerGUID then
+		-- get the link of the spell or the MELEE globalstring
+		local action = spellId and GetSpellLink(spellId) or MELEE
+		print(MSG_CRITICAL_HIT:format(action, destName, amount))
+	end
+end)
+Payload
+This comparison illustrates the difference between swing and spell events, e.g. the amount suffix parameter is on arg12 for SWING_DAMAGE and arg15 for SPELL_DAMAGE.
+
+1617986084.18, "SWING_DAMAGE", false, "Player-1096-06DF65C1", "Xiaohuli", 1297, 0, "Creature-0-4253-0-160-94-000070569B", "Cutpurse", 68168, 0, 3, -1, 1, nil, nil, nil, true, false, false, false
+
+1617986113.264, "SPELL_DAMAGE", false, "Player-1096-06DF65C1", "Xiaohuli", 1297, 0, "Creature-0-4253-0-160-94-000070569B", "Cutpurse", 68168, 0, 585, "Smite", 2, 47, 19, 2, nil, nil, nil, false, false, false, false
+SWING_DAMAGE
+Idx	Param	Value
+self	<Frame>
+event	"COMBAT_LOG_EVENT_UNFILTERED"
+1	timestamp	1617986084.18
+2	subevent	"SWING_DAMAGE"
+3	hideCaster	false
+4	sourceGUID	"Player-1096-06DF65C1"
+5	sourceName	"Xiaohuli"
+6	sourceFlags	1297
+7	sourceRaidFlags	0
+8	destGUID	"Creature-0-4253-0-160-94-000070569B"
+9	destName	"Cutpurse"
+10	destFlags	68168
+11	destRaidFlags	0
+12	amount	3
+13	overkill	-1
+14	school	1
+15	resisted	nil
+16	blocked	nil
+17	absorbed	nil
+18	critical	true
+19	glancing	false
+20	crushing	false
+21	isOffHand	false
+SPELL_DAMAGE
+Idx	Param	Value
+self	<Frame>
+event	"COMBAT_LOG_EVENT_UNFILTERED"
+1	timestamp	1617986113.264
+2	subevent	"SPELL_DAMAGE"
+3	hideCaster	false
+4	sourceGUID	"Player-1096-06DF65C1"
+5	sourceName	"Xiaohuli"
+6	sourceFlags	1297
+7	sourceRaidFlags	0
+8	destGUID	"Creature-0-4253-0-160-94-000070569B"
+9	destName	"Cutpurse"
+10	destFlags	68168
+11	destRaidFlags	0
+12	spellId	585
+13	spellName	"Smite"
+14	spellSchool	2
+15	amount	47
+16	overkill	19
+17	school	2
+18	resisted	nil
+19	blocked	nil
+20	absorbed	nil
+21	critical	false
+22	glancing	false
+23	crushing	false
+24	isOffHand	false
+Details
+Event Trace
+
+/etrace with CLEU params.
+For the new event trace tool added in Patch 9.1.0 the following script can be loaded.
+
+local function LogEvent(self, event, ...)
+	if event == "COMBAT_LOG_EVENT_UNFILTERED" or event == "COMBAT_LOG_EVENT" then
+		self:LogEvent_Original(event, CombatLogGetCurrentEventInfo())
+	elseif event == "COMBAT_TEXT_UPDATE" then
+		self:LogEvent_Original(event, (...), GetCurrentCombatTextEventInfo())
+	else
+		self:LogEvent_Original(event, ...)
+	end
+end
+
+local function OnEventTraceLoaded()
+	EventTrace.LogEvent_Original = EventTrace.LogEvent
+	EventTrace.LogEvent = LogEvent
+end
+
+if EventTrace then
+	OnEventTraceLoaded()
+else
+	local frame = CreateFrame("Frame")
+	frame:RegisterEvent("ADDON_LOADED")
+	frame:SetScript("OnEvent", function(self, event, ...)
+		if event == "ADDON_LOADED" and (...) == "Blizzard_EventTrace" then
+			OnEventTraceLoaded()
+			self:UnregisterAllEvents()
+		end
+	end)
+end
+SPELL_ABSORBED
+This relatively new subevent fires in addition to SWING_MISSED / SPELL_MISSED which already have the "ABSORB" missType and same amount. It optionally includes the spell payload if triggered from what would be SPELL_DAMAGE.
+
+timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
+CLEU SPELL ABSORBED.png CLEU SPELL ABSORBED spell.png
+
+-- swing
+1620562047.156, "SWING_MISSED", false, "Creature-0-4234-0-138-44176-000016DAE1", "Bluegill Wanderer", 2632, 0, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, "ABSORB", false, 13, false
+1620562047.156, "SPELL_ABSORBED", false, "Creature-0-4234-0-138-44176-000016DAE1", "Bluegill Wanderer", 2632, 0, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, 17, "Power Word: Shield", 2, 13, false
+
+-- spell
+1620561974.121, "SPELL_MISSED", false, "Creature-0-4234-0-138-44176-000016DAE1", "Bluegill Wanderer", 2632, 0, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, 83669, "Water Bolt", 16, "ABSORB", false, 15, false
+1620561974.121, "SPELL_ABSORBED", false, "Creature-0-4234-0-138-44176-000016DAE1", "Bluegill Wanderer", 2632, 0, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, 83669, "Water Bolt", 16, "Player-1096-06DF65C1", "Xiaohuli", 66833, 0, 17, "Power Word: Shield", 2, 15, false
+Advanced Combat Log
+Combat log messages may be written to the World of Warcraft\_retail_\Logs\WoWCombatLog.txt file for external parsing purposes. This feature can be enabled with LoggingCombat(true) or toggled with the /combatlog slash command. Combat logging was added on patch 1.7.0[2]
+
+COMBAT_LOG_VERSION
+This log line is added when combat logging starts.
+
+11/21 12:01:34.071  COMBAT_LOG_VERSION,19,ADVANCED_LOG_ENABLED,1,BUILD_VERSION,9.1.5,PROJECT_ID,1
+Advanced parameters
+There can be up to 39 parameters, in order:
+
+9 base params (subevent, source and dest unit)
+0 to 3 prefix params (spell/environmental)
+17 advanced params
+0 to 10 suffix params
+Advanced parameters require CVar advancedCombatLogging (added in 5.4.2)[3] to be enabled for meaningful values.
+
+COMBAT LOG EVENT advancedCombatLogging.png
+Idx	Param	Example	Description
+1	infoGUID	Player-1096-06DF65C1	GUID of the advanced params unit
+2	ownerGUID	0000000000000000	GUID of the owner in case of pets/minions
+3	currentHP	584	Unit current HP
+4	maxHp	584	Unit max HP
+5	attackPower	3	Unit attack power
+6	spellPower	75	Unit spell power
+7	armor	19	Unit armor
+8	absorb	0	Unit applied absorb amount
+9	powerType	0	Enum.PowerType
+10	currentPower	430	Unit current power
+11	maxPower	430	Unit max power
+12	powerCost	1	Required power amount for the ability
+13	positionX	-9250.90	Unit X position on the map instance
+14	positionY	158.82	Unit Y position on the map instance
+15	uiMapID	37	UiMapID
+16	facing	5.5502	Unit facing direction in the [0, 2π] range
+17	level	13	Level for NPCs, item level for players
+Example for a low level priest in Elwynn Forest successfully casting a spell.
+
+4/9 05:05:01.824  SPELL_CAST_SUCCESS,Player-1096-06DF65C1,"Xiaohuli-DefiasBrotherhood",0x511,0x0,Creature-0-4253-0-160-94-00006FB363,"Cutpurse",0x10a48,0x0,585,"Smite",0x2,Player-1096-06DF65C1,0000000000000000,584,584,3,75,19,0,0,430,430,1,-9250.90,158.82,37,5.5502,13
+
+4/9 05:05:01.824  SPELL_DAMAGE,Player-1096-06DF65C1,"Xiaohuli-DefiasBrotherhood",0x511,0x0,Creature-0-4253-0-160-94-00006FB363,"Cutpurse",0x10a48,0x0,585,"Smite",0x2,Creature-0-4253-0-160-94-00006FB363,0000000000000000,105,152,0,0,189,0,1,0,0,0,-9213.11,144.31,37,1.7189,30,46,45,-1,2,0,0,0,nil,nil,nil
+These coords are also returned from C_Map.GetWorldPosFromMapPos() and UnitPosition() (provided the player is not in an instanced area).
+
+local uiMap = C_Map.GetBestMapForUnit("player")
+local pos = C_Map.GetPlayerMapPosition(uiMap, "player")
+local continentID, worldPos = C_Map.GetWorldPosFromMapPos(uiMap, pos)
+
+print(continentID, worldPos:GetXY()) -- 0, -9250.8974609375, 158.81927490234 
+print(UnitPosition("player")) -- -9250.900390625, 158.80000305176, 0, 0
+Multiple Values
+Some events can have multiple values for a param, delimited by a | vertical bar, for example 3|4,120|5,120|5,25|5 for powerType, currentPower, maxPower, powerCost respectively. This is the case when spells use more than one powertype to cast.
+
+12/27 20:40:53.015  SPELL_CAST_SUCCESS,Player-3686-09B3C091,"Katara-Antonidas",0x514,0x0,Vehicle-0-4252-2450-10829-175732-00004A11DB,"Sylvanas Windrunner",0x10a48,0x0,1943,"Rupture",0x1,Player-3686-09B3C091,0000000000000000,55660,55660,2018,321,689,8046,3|4,120|5,120|5,25|5,230.09,-841.17,2002,3.8727,249
+Death Events
+For the following events, recapID is changed with (possibly) unconsciousOnDeath
+
+11/18 21:07:31.950  PARTY_KILL,Player-3686-070D56DD,"Môrclen-Antonidas",0x10512,0x0,Creature-0-1465-2450-15939-178008-000016B283,"Decrepit Orb",0xa48,0x0,0
+10/26 21:06:20.604  SPELL_INSTAKILL,Creature-0-1469-2450-16377-99773-000078519D,"Bloodworm",0x2114,0x0,Creature-0-1469-2450-16377-99773-000078519D,"Bloodworm",0x2114,0x0,197509,"Bloodworm",0x20,0
+10/26 21:18:26.917  UNIT_DIED,0000000000000000,nil,0x80000000,0x80000000,Creature-0-1469-2450-16377-99773-0000785473,"Bloodworm",0x2114,0x0,0
+10/26 21:18:22.056  UNIT_DESTROYED,0000000000000000,nil,0x80000000,0x80000000,Creature-0-1469-2450-16377-26125-0000785441,"Risen Ghoul",0x2114,0x0,0
+SPELL_AURA_REFRESH
+This is missing the amount param.
+
+10/26 20:45:44.932  SPELL_AURA_REFRESH,Player-3686-0672A7D3,"Slivered-Antonidas",0x511,0x0,Player-3686-0672A7D3,"Slivered-Antonidas",0x511,0x0,21562,"Power Word: Fortitude",0x2,BUFF
+SPELL_HEAL_ABSORBED
+This has an additional 9th suffix param totalAmount
+
+10/26 21:06:21.326  SPELL_HEAL_ABSORBED,Vehicle-0-1469-2450-16377-175732-0000784ACE,"Sylvanas Windrunner",0x10a48,0x0,Player-3686-0672A7D3,"Slivered-Antonidas",0x511,0x0,347704,"Veil of Darkness",0x20,Player-3686-0672A7D3,"Slivered-Antonidas",0x511,0x0,77489,"Echo of Light",0x2,104,667
+_DAMAGE and _HEAL
+SWING_DAMAGE, SPELL_DAMAGE, SPELL_HEAL, SPELL_PERIODIC_DAMAGE, and SPELL_PERIODIC HEAL: These have an additional 2nd suffix parameter, baseAmount. This is the amount before critical strike bonus, and before percent modifiers on the target, including effects like damage reduction from armor,  [Chaos Brand],  [Mortal Strike], etc.
+SWING_DAMAGE
+SWING_DAMAGE: infoGUID is the source unit. This event is not guaranteed to fire, in that case SWING_MISSED would fire or nothing at all.
+SWING_DAMAGE_LANDED: infoGUID is the dest unit. This event is exclusive to the advanced combat log and always fires.
+4/9 05:05:07.807  SWING_DAMAGE,Player-1096-06DF65C1,"Xiaohuli-DefiasBrotherhood",0x511,0x0,Creature-0-4253-0-160-94-00006FB363,"Cutpurse",0x10a48,0x0,Player-1096-06DF65C1,0000000000000000,584,584,3,75,19,0,0,430,430,0,-9250.90,158.82,37,5.5502,13,1,0,-1,1,0,0,0,nil,nil,nil
+
+4/9 05:05:07.807  SWING_DAMAGE_LANDED,Player-1096-06DF65C1,"Xiaohuli-DefiasBrotherhood",0x511,0x0,Creature-0-4253-0-160-94-00006FB363,"Cutpurse",0x10a48,0x0,Creature-0-4253-0-160-94-00006FB363,0000000000000000,104,152,0,0,189,0,1,0,0,0,-9245.84,156.92,37,2.8016,30,1,0,-1,1,0,0,0,nil,nil,nil
+SPELL_ENERGIZE
+SPELL_ENERGIZE: This has an additional 4th suffix param, possibly maxPower
+11/18 20:44:41.889  SPELL_ENERGIZE,Player-3686-065B1FFB,"Withered-Antonidas",0x511,0x0,Player-3686-065B1FFB,"Withered-Antonidas",0x511,0x0,336637,"Grounding Breath",0x1,Player-3686-065B1FFB,0000000000000000,58296,58296,2246,2160,687,243,0,43673,50000,0,243.55,-868.29,2002,2.3365,248,1900.0000,0.0000,0,50000
+SPELL_DRAIN: This has an additional 4th suffix param, possibly maxPower
+11/18 22:59:04.817  SPELL_DRAIN,Vehicle-0-1465-2450-15939-178072-000016CA7A,"Anduin Wrynn",0xa48,0x0,Vehicle-0-1465-2450-15939-178072-000016CA7A,"Anduin Wrynn",0xa48,0x0,357730,"Blasphemy",0x2,Vehicle-0-1465-2450-15939-178072-000016CA7A,0000000000000000,36198842,36339500,0,0,1071,0,0,0,2568,0,-246.06,-1280.08,2004,4.3350,62,5000,0,0,2568
+ARENA_MATCH_START / END
+ARENA_MATCH_START: instanceID, unk, matchType, teamId
+ARENA_MATCH_START,1505,0,Skirmish,0
+ARENA_MATCH_END: winningTeam, matchDuration, newRatingTeam1, newRatingTeam2
+ARENA_MATCH_END,0,58,0,0
+CHALLENGE_MODE_START / END
+CHALLENGE_MODE_START: zoneName, instanceID, challengeModeID, keystoneLevel, [affixID, ...]
+CHALLENGE_MODE_START,"Mists of Tirna Scithe",2290,375,11,[9,122,4,121]
+CHALLENGE_MODE_END: instanceID, success, keystoneLevel, totalTime
+totalTime: time in milliseconds, and including the time penalties for deaths
+EMOTE
+Emotes don't include a dest unit, compared to in-game events like CHAT_MSG_RAID_BOSS_EMOTE.
+
+EMOTE: sourceGUID, sourcename, sourceflags, sourceraidflags, text
+EMOTE,Vehicle-0-1465-2450-15939-175732-000016A7D7,"Sylvanas Windrunner",0000000000000000,nil,|TInterface\ICONS\Achievement_Leader_Sylvanas.blp:20|t Sylvanas Windrunner gains |cFFFF0000|Hspell:347504|h[Windrunner]|h|r!
+ENCOUNTER_START / END
+ENCOUNTER_START: encounterID, encounterName, difficultyID, groupSize, instanceID
+ENCOUNTER_START,1146,"Randolph Moloch",1,5,34
+ENCOUNTER_END: encounterID, encounterName, difficultyID, groupSize, success, fightTime
+ENCOUNTER_END,2435,"Sylvanas Windrunner",15,16,1,671425
+success is 1 for a kill, 0 for a wipe
+fightTime is in milliseconds.
+MAP_CHANGE
+The coords are the boundary box for the world map.
+
+MAP_CHANGE: uiMapID, uiMapName, x0, x1, y0, y1
+MAP_CHANGE,37,"Elwynn Forest",-7939.580078,-10254.200195,1535.420044,-1935.420044
+/dump C_Map.GetWorldPosFromMapPos(37, {x=0, y=0}) -- x = -7939.580078125, y = 1535.4200439453
+/dump C_Map.GetWorldPosFromMapPos(37, {x=1, y=1}) -- x = -10254.200195312, y = -1935.4200439453
+/dump C_Map.GetMapWorldSize(37) -- 3470.8400878906, 2314.6201171875
+WORLD_MARKER_PLACED / REMOVED
+WORLD_MARKER_PLACED: instanceID, marker, x, y
+WORLD_MARKER_PLACED,2450,2,269.82,-828.35
+WORLD_MARKER_REMOVED: marker
+WORLD_MARKER_REMOVED,2
+ZONE_CHANGE
+ZONE_CHANGE: instanceID, zoneName, difficultyID
+ZONE_CHANGE,34,"Stormwind Stockade",1
+COMBATANT_INFO
+This logging feature was added on patch 7.0.3
+
+New Logging Feature: COMBATANT_INFO | 2016-01-13 00:00 | Blizzard Entertainment Celestalon
+
+Whenever an ENCOUNTER_START event occurs, a new “COMBATANT_INFO” log line will also be printed for each player in the instance. The current data structure for COMBATANT_INFO is as follows, but is subject to change based on feedback and technical needs:
+
+COMBATANT_INFO,playerGUID,Strength,Agility,Stamina,Intelligence,Dodge,Parry,Block,CritMelee,CritRanged,CritSpell,Speed,Lifesteal,HasteMelee,HasteRanged,HasteSpell,Avoidance,Mastery,VersatilityDamageDone,VersatilityHealingDone,VersatilityDamageTaken,Armor,CurrentSpecID,(Class Talent 1, ...),(PvP Talent 1, ...),[Artifact Trait ID 1, Trait Effective Level 1, ...],[(Equipped Item ID 1,Equipped Item iLvL 1,(Permanent Enchant ID, Temp Enchant ID, On Use Spell Enchant ID),(Bonus List ID 1, ...),(Gem ID 1, Gem iLvL 1, ...)) ...],[Interesting Aura Caster GUID 1, Interesting Aura Spell ID 1, ...]
+Some clarifications about a few of those elements:
+
+Stats – Those are the current stat values at the time of the log line. Secondary stats are in terms of the Rating amount, not a %.
+Armor – This is the Armor amount before multipliers (such as Bear Form).
+Talents – A list of the selected talents. Today’s build will print this ID as a TalentID, a record type that is not dataminable. This will be fixed in a future build to be the SpellID of the talent.
+Artifact Traits – This will be a list of the selected traits for the character’s current specialization’s artifact (even if it’s not equipped). The Artifact Trait ID is an ID to a new record type to 7.0, which should be dataminable already. Trait Effective Level is the number of points placed in that talent. Note that some Relics will allow this to go beyond the max.
+Equipment – This is a list of all equipped gear on the character. The first ID is the standard Item ID of the item, followed by its ilvl. After that is a list of enchants on the item, one of each of the 3 possible enchantment types (using the ItemEnchantment ID).
+Interesting Auras – This is a list of interesting auras (buffs/debuffs) that we have manually flagged to be included in this log line. We’ll welcome feedback about what should be included here but currently plan for set bonuses, well fed, flasks, combat potions, Vantus runes, and player buffs. Nothing has been flagged for this yet, so you won’t see anything here in the current build.
+View original post
+
+On a character without any Shadowlands-specific powers.
+
+4/22 05:27:15.478  COMBATANT_INFO,Player-3299-004E8630,1,132,184,906,653,0,0,0,257,257,257,11,0,188,188,188,0,118,90,90,90,120,257,(193155,64129,238136,200199,321377,193157,265202),(0,235587,215982,328530),[0,0,[],[],[]],[(173845,90,(),(1479,4786,6502),()),(158075,140,(),(4932,4933,6316),()),(157971,105,(),(1514,4786,6506),()),(3427,1,(),(),()),(157994,105,(),(1514,4786,6504),()),(173341,90,(0,0,4223),(6707),()),(174237,100,(),(4822,6516,6513,1487,4786),()),(173322,90,(),(6707),()),(158037,99,(),(4803,4802,42,6516,6515,1513,4786),()),(183675,110,(),(1482,4786),()),(173344,98,(),(6706),()),(174469,100,(),(4822,6516,6513,1487,4786),()),(173349,98,(),(6706),()),(175719,104,(),(6707,6901),()),(169223,133,(),(6276,1472),()),(165628,115,(),(5844,1527,4786),()),(0,0,(),(),()),(0,0,(),(),())],[Player-3299-004E8630,295365,Player-3299-004E8630,298268,Player-3299-004E8630,296320],1,0,0,0
+Param	Example	Description
+Event	COMBATANT_INFO	Version 18
+PlayerGUID	Player-3299-004E8630	
+Faction	1	0: Horde, 1: Alliance
+Character Stats
+Strength	132	
+Agility	184	
+Stamina	906	
+Intelligence	653	
+Dodge	0	
+Parry	0	
+Block	0	
+CritMelee	257	
+CritRanged	257	
+CritSpell	257	
+Speed	11	
+Lifesteal	0	
+HasteMelee	188	
+HasteRanged	188	
+HasteSpell	188	
+Avoidance	0	
+Mastery	118	
+VersatilityDamageDone	90	
+VersatilityHealingDone	90	
+VersatilityDamageTaken	90	
+Armor	120	
+Class Talents
+CurrentSpecID	257	Holy
+Class Talent 1	(193155	Enlightenment
+Class Talent 2	64129	Body and Soul
+Class Talent 3	238136	Cosmic Ripple
+Class Talent 4	200199	Censure
+Class Talent 5	321377	Prayer Circle
+Class Talent 6	193157	Benediction
+Class Talent 7	265202)	Holy Word: Salvation
+PvP Talents
+PvP Talent 1	(0	
+PvP Talent 2	235587	Miracle Worker
+PvP Talent 3	215982	Spirit of the Redeemer
+PvP Talent 4	328530)	Divine Ascension
+Artifact Traits
+Artifact Trait ID 1	[0	
+Trait Effective Level 1	0	
+Artifact Trait ID 2	[]	
+Artifact Trait ID 3	[]	
+Artifact Trait ID 4	[]]	
+Equipped Items
+Equipped Item ID 1	[(173845	Vile Manipulator's Hood
+Equipped Item iLvL 1	90	
+Permanent Enchant ID
+Temp Enchant ID
+On Use Spell Enchant ID	()	
+Bonus List ID 1	(1479	
+Bonus List ID 2	4786	
+Bonus List ID 3	6502)	
+Gem ID 1	())	
+Equipped Item 2	(158075,140,(),(4932,4933,6316),())	Heart of Azeroth
+Equipped Item 3	(157971,105,(),(1514,4786,6506),())	Sirensong Amice
+Equipped Item 4	(3427,1,(),(),())	Stylish Black Shirt
+Equipped Item 5	(157994,105,(),(1514,4786,6504),())	Sirensong Garments
+Equipped Item 6	(173341,90,(0,0,4223),(6707),())	Cord of Uncertain Devotion
+Equipped Item 7	(174237,100,(),(4822,6516,6513,1487,4786)	Breeches of Faithful Execution
+Equipped Item 8	(173322,90,(),(6707),())	Sandals of Soul's Clarity
+Equipped Item 9	(158037,99,(),(4803,4802,42,6516,6515,1513,4786),())	Squallshaper Cuffs
+Equipped Item 10	(183675,110,(),(1482,4786),())	Cold Sweat Mitts
+Equipped Item 11	(173344,98,(),(6706),())	Band of Chronicled Deeds
+Equipped Item 12	(174469,100,(),(4822,6516,6513,1487,4786),())	Band of Insidious Ruminations
+Equipped Item 13	(173349,98,(),(6706),())	Misfiring Centurion Controller
+Equipped Item 14	(175719,104,(),(6707,6901),())	Agthia's Void-Tinged Speartip
+Equipped Item 15	(169223,133,(),(6276,1472),())	Ashjra'kamas, Shroud of Resolve
+Equipped Item 16	(165628,115,(),(5844,1527,4786),())	Sentinel's Branch
+Equipped Item 17	(0,0,(),(),())	
+Equipped Item 18	(0,0,(),(),())]	
+Interesting Auras
+Aura Caster GUID 1	[Player-3299-004E8630	
+Aura Spell ID 1	295365	Ancient Flame
+Aura 2	Player-3299-004E8630,298268	Lucid Dreams
+Aura 3	Player-3299-004E8630,296320]	Strive for Perfection
+PvP Stats
+Honor Level	1	UnitHonorLevel()
+Season	0	Possibly only applicable in Arena
+Rating	0	
+Tier	0	
+On a character with Shadowlands-specific powers, the Artifact Trait part is replaced with:
+
+[18,1,[(343203,335,1),(348511,1432,1),(333759,995,1),(295965,56,1),(315288,357,1),(313833,264,1),(333505,1002,1),(295068,49,1)],[(1379),(1380),(1381),(1408),(1410),(1414),(1416),(1418)],[(233,200),(231,213),(244,213),(230,213)]]
+Param	Example	Description
+Soulbind ID	[18	Forgelite Prime Mikanikos
+Covenant ID	1	Kyrian
+Anima Powers
+Anima Spell ID 1	[(343203	Ringing Doom
+Maw Power ID 1	335	GetMawPowerLinkBySpellID()
+Count 1	1)	
+Anima Power 2	(348511,1432,1)	Bloodgorged Leech
+Anima Power 3	(333759,995,1)	Leather Apron
+Anima Power 4	(295965,56,1)	Curious Miasma
+Anima Power 5	(315288,357,1)	Frostbite Wand
+Anima Power 6	(313833,264,1)	Shadowblade's Gift
+Anima Power 7	(333505,1002,1)	Rupturing Spike
+Anima Power 8	(295068,49,1)]	Abundance of Phantasma
+Soulbind Traits
+Soulbind Trait 1	[(1379)	Finesse Conduit
+Soulbind Trait 2	(1380)	Endurance Conduit
+Soulbind Trait 3	(1381)	Potency Conduit
+Soulbind Trait 4	(1408)	Forgelite Filter
+Soulbind Trait 5	(1410)	Hammer of Genesis
+Soulbind Trait 6	(1414)	Endurance Conduit
+Soulbind Trait 7	(1416)	Regenerating Materials
+Soulbind Trait 8	(1418)]	Forgelite Prime's Expertise
+Conduit Spells
+Conduit ID 1	[(233	Quick Decisions
+Conduit Level 1	200)	
+Conduit 2	(231,213)	Recuperator
+Conduit 3	(244,213)	Count the Odds
+Conduit 4	(230,213)]]	Nimble Fingers
+Event Descriptions
+Prefixes
+Event Prefix	Description
+SPELL_	Spell is the prefix for most effects even if the spell is a DoT or channeled. IE when the spell begins to be cast, SPELL_CAST_START is fired and not SPELL_PERIODIC_CAST_START. This is the same with _MISS, _FAILED, etc.
+SPELL_PERIODIC	Only the effects that are periodic start with this PREFIX. IE: Successfully casting a DoT only happens once therefore even though the spell is periodic use the SPELL_ prefix. However, the damage is periodic so it will start with SPELL_PERIODIC_. 90% of the time you will only care about _DAMAGE or _HEAL.
+SPELL_BUILDING	Wrath-Logo-Small.png damage or healing that can affect destructable buildings.
+ENVIRONMENTAL	
+Suffixes
+Event Suffix	Description
+_DAMAGE	Triggered on damage to health. Nothing Special. (overkill returns a number greater than or equal to zero)
+_MISSED	Triggered When Effect isn't applied but mana/energy is used IE: ABSORB BLOCK DEFLECT DODGE EVADE IMMUNE MISS PARRY REFLECT RESIST
+_HEAL	Triggered when a unit is healed
+_HEAL_ABSORBED	Triggered when a spell absorbs the healing done by another spell. Extra info is provided for the healer and the heal spell, as well as the amount absorbed.
+_ENERGIZE	Any effect that restores power. Spell/trinket/item set bonuses can trigger this event. IE: Vampiric Touch, or Mark of Defiance (Trinket)
+_DRAIN	Same as _ENERGIZE but this time you are losing power. Caused by enemies.
+_LEECH	Same as _DRAIN, but the source unit will simultaneously receive the same kind of power (specified in extraAmount)
+_INTERRUPT	Spellcasting being interrupted by an ability such as Kick or Pummel.
+_DISPEL	A buff or debuff being actively dispelled by a spell like Remove Curse or Dispel Magic. The source is the caster of the aura that was dispelled, and the destination is the target which was dispelled (needs verifying).
+_DISPEL_FAILED	A failed attempt to dispel a buff or debuff, most likely due to immunity.
+_STOLEN	A buff being transferred from the destination unit to the source unit (i.e. mages' Spellsteal).
+_EXTRA_ATTACKS	Unit gains extra melee attacks due to an ability (like Sword Sepcialization or Windfury). These attacks usually happen in brief succession 100-200ms following this event.
+_AURA_APPLIED	Triggered When Buffs/Debuffs are Applied. Note: This event doesn't fire if a debuff is applied twice without being removed. IE: casting Vampiric Embrace twice in a row only triggers this event once. This can make it difficult to track whether a debuff was successfully reapplied to the target. However, for instant cast spells, SPELL_CAST_SUCCESS can be used.
+_AURA_REMOVED	Triggered When Buffs/Debuffs expire. The souce is the caster of the aura which faded, and the destination is the target from which the aura faded (needs verifying).
+_AURA_APPLIED_DOSE	Triggered by stacking Debuffs if the debuff is already applied to a target. IE: If you cast Mind Flay twice it causes 2 doses of shadow vunerability, the first time it will trigger, SPELL_AURA_APPLIED (arg10 = shadow vulnerability), and SPELL_AURA_APPLIED_DOSE (arg10 = shadow vunerability) the second. The last argument reflects the new number of doses on the unit.
+_AURA_REMOVED_DOSE	The opposite of _AURA_APPLIED_DOSE, reducing the amount of doses on a buff/debuff on the unit.
+_AURA_REFRESH	Resets the expiration timer of a buff/debuff on the unit.
+_AURA_BROKEN	A buff or debuff is being removed by melee damage. The source is the name of the caster of the aura that was broken, and the destination is the target which the aura broke off of (needs verifying).
+_AURA_BROKEN_SPELL	A buff or debuff is being removed by spell damage (specified in extraSpell...). Source and destination is the same as the above.
+_CAST_START	Triggered when a spell begins casting. Instant spells don't invoke this event. They trigger _CAST_SUCCESS, _FAILED instead.
+_CAST_SUCCESS	Triggered when an instant spell is cast or when a spellcast finishes and doesn't fail. This isn't triggered when the spell misses. On a miss SPELL_MISS will be triggered instead.
+_CAST_FAILED	If the cast fails before it starts (IE invalid target), then _CAST_START never triggers. However it is possible for a cast to fail after beginning. (IE you jump, move, hit escape etc.)
+_INSTAKILL	Immediately kills the destination unit (usually happens when warlocks sacrifice their minions).
+_DURABILITY_DAMAGE	
+_DURABILITY_DAMAGE_ALL	
+_CREATE	Creates an object (as opposed to an NPC who are 'summoned') like a hunter's trap or a mage's portal.
+_SUMMON	Summmons an NPC such as a pet or totem.
+_DISSIPATES	Fires when Gas Clouds are being extracted with Zapthrottle Mote Extractor
+Special Events
+Event	Description
+UNIT_DIED	destGUID and destName refer to the unit that died.
+PARTY_KILL	includes both sourceGUID and destGUID, but only reports for you (not in a party) or your other 4 party members (not raid members)

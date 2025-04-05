@@ -1,0 +1,12 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="classic.lua"/>
+  <Script file="legendary.lua"/>
+  <Script file="silverdragon.lua"/>
+  <Script file="lessawesome.lua"/>
+  <Script file="transmog.lua"/>
+  <Script file="store.lua"/>
+  <Script file="storesilver.lua"/>
+  <Script file="loot.lua"/>
+  <Script file="minimal.lua"/>
+</Ui>

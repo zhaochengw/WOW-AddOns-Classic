@@ -1,0 +1,42 @@
+## Interface: 30403
+## Title: WclPS-WotLK|cFF3782D1[五区数据包]|r
+## Author: 插件作者：zwj@oldgun ，TBC数据提取：SaberNio，WotLK数据提取：caca，鸣谢：deepapa@NGA
+## LoadOnDemand: 1
+## Dependencies: WclPlayerScore-WotLK
+
+5045.lua
+5046.lua
+5048.lua
+5049.lua
+5083.lua
+5085.lua
+5104.lua
+5105.lua
+5106.lua
+5112.lua
+5115.lua
+5118.lua
+5120.lua
+5123.lua
+5124.lua
+5127.lua
+5128.lua
+5129.lua
+5131.lua
+5132.lua
+5133.lua
+5138.lua
+5139.lua
+5140.lua
+5142.lua
+5144.lua
+5146.lua
+5150.lua
+5154.lua
+5160.lua
+5164.lua
+5170.lua
+5189.lua
+5199.lua
+5208.lua
+5209.lua

@@ -1,0 +1,20 @@
+## Interface: 30403, 40400, 11506
+## Title: |cff047ffdS|r|cff1e7af0h|r|cff3077e7a|r|cff4e71dcr|r|cff626cd5e|r|cff7b66d8d|r|cff8a63eaM|r|cff9966cbe|r|cffbf66b5d|r|cffd061a2i|r|cffe45a8ea|r|cffee5885_|r |cffee5885R|r|cffee5885u|r|cffee5885r|r|cffee5885u|r|cffd25d94t|r|cffcb5e97i|r|cffbc619ea|r
+## Notes: |cff047ffd露露自用材质补充版SharedMedia|n|r|cff8365dc彩虹材质&纯色材质补充：|r|cffee5885露露緹婭@Bilibili|r|nInserts some media into LibSharedMedia's storage.
+## Version: 1.0.2
+## Author: Elkano
+## X-Category: Miscellaneous
+## X-Revision: 191
+## X-Date: 2018-07-17T19:41:06Z
+
+## OptionalDeps: LibStub, LibSharedMedia-3.0
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\LibSharedMedia-3.0\lib.xml
+#@end-no-lib-strip@
+
+SharedMedia.lua
+
+## 自制彩虹材质补充by 露露緹婭@Bilibili

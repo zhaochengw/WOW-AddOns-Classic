@@ -1,0 +1,17 @@
+## Interface: 30404
+## Title: TrinketMenu 11.0.0
+## Version: 11.0.0
+## Author: Gello, Resike
+## Notes: Addon to manage trinkets.
+## SavedVariables: TrinketMenuOptions
+## SavedVariablesPerCharacter: TrinketMenuPerOptions, TrinketMenuQueue
+
+Libs\LibStub\LibStub.lua
+
+TrinketMenuGlobals.lua
+TrinketMenu.lua
+TrinketMenu.xml
+TrinketMenuOpt.lua
+TrinketMenuOpt.xml
+TrinketMenuQueue.lua
+TrinketMenuQueue.xml

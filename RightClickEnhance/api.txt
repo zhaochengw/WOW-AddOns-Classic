@@ -1,0 +1,219 @@
+PlayerChoice
+C_PlayerChoice.GetCurrentPlayerChoiceInfo() : choiceInfo
+C_PlayerChoice.GetNumRerolls() : numRerolls
+C_PlayerChoice.GetRemainingTime() : remainingTime
+C_PlayerChoice.IsWaitingForPlayerChoiceResponse() : isWaitingForResponse
+C_PlayerChoice.OnUIClosed()
+C_PlayerChoice.RequestRerollPlayerChoice()
+C_PlayerChoice.SendPlayerChoiceResponse(responseID)
+PlayerInfo
+C_PlayerInfo.CanPlayerEnterChromieTime() : canEnter
+C_PlayerInfo.CanPlayerUseAreaLoot() : canUseAreaLoot
+C_PlayerInfo.CanPlayerUseEventScheduler() : canUseEventScheduler
+C_PlayerInfo.CanPlayerUseMountEquipment() : canUseMountEquipment, failureReason - Returns true if the player can use mount equipment.
+C_PlayerInfo.CanUseItem(itemID) : isUseable
+C_PlayerInfo.GetAlternateFormInfo() : hasAlternateForm, inAlternateForm
+C_PlayerInfo.GetContentDifficultyCreatureForPlayer(unitToken) : difficulty
+C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID) : difficulty
+C_PlayerInfo.GetDisplayID() : displayID
+C_PlayerInfo.GetGlidingInfo() : isGliding, canGlide, forwardSpeed - Returns the Dragonriding gliding speed.
+C_PlayerInfo.GetInstancesUnlockedAtLevel(level, isRaid) : dungeonID
+C_PlayerInfo.GetNativeDisplayID() : nativeDisplayID
+C_PlayerInfo.GetPetStableCreatureDisplayInfoID(index) : creatureDisplayInfoID
+C_PlayerInfo.GetPlayerCharacterData() : characterData
+C_PlayerInfo.GetPlayerMythicPlusRatingSummary(playerToken) : ratingSummary
+C_PlayerInfo.HasAccountInventoryLock() : hasAccountInventoryLock
+C_PlayerInfo.HasVisibleInvSlot(slot) : isVisible
+C_PlayerInfo.IsDisplayRaceNative() : isDisplayRaceNative
+C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(expansionID) : isUnlocked
+C_PlayerInfo.IsMirrorImage() : isMirrorImage
+C_PlayerInfo.IsPlayerEligibleForNPE() : isEligible, failureReason
+C_PlayerInfo.IsPlayerEligibleForNPEv2() : isEligible, failureReason
+C_PlayerInfo.IsPlayerInChromieTime() : inChromieTime
+C_PlayerInfo.IsPlayerNPERestricted() : isRestricted
+C_PlayerInfo.IsSelfFoundActive() : active
+C_PlayerInfo.IsTradingPostAvailable() : isAvailable
+C_PlayerInfo.IsTravelersLogAvailable() : isAvailable
+PlayerInteractionManager
+C_PlayerInteractionManager.ClearInteraction([type])
+C_PlayerInteractionManager.ConfirmationInteraction([type])
+C_PlayerInteractionManager.InteractUnit(unit [, exactMatch [, looseTargeting]]) : success
+C_PlayerInteractionManager.IsInteractingWithNpcOfType(type) : interacting
+C_PlayerInteractionManager.IsReplacingUnit() : replacing
+C_PlayerInteractionManager.IsValidNPCInteraction(type) : isValidInteraction
+C_PlayerInteractionManager.ReopenInteraction()
+PlayerLocationInfo
+C_PlayerInfo.GUIDIsPlayer(guid) : isPlayer - Returns true if the GUID belongs to a player.
+C_PlayerInfo.GetClass(playerLocation) : className, classFilename, classID - Returns the class of a player.
+C_PlayerInfo.GetName(playerLocation) : name - Returns the name of a player.
+C_PlayerInfo.GetRace(playerLocation) : raceID - Returns the race of a player.
+C_PlayerInfo.GetSex(playerLocation) : sex - Returns the sex of a player.
+C_PlayerInfo.IsConnected([playerLocation]) : isConnected - Returns true if the player is connected.
+C_PlayerInfo.UnitIsSameServer(playerLocation) : unitIsSameServer - Returns true if a player is from the same or connected realm.
+PlayerMentorship
+Newcomer Guides were added in Patch 9.0.1
+
+C_PlayerMentorship.GetMentorLevelRequirement() : level
+C_PlayerMentorship.GetMentorRequirements() : achievementIDs, optionalAchievementIDs, optionalCompleteAtLeastCount
+C_PlayerMentorship.GetMentorshipStatus(playerLocation) : status
+C_PlayerMentorship.IsActivePlayerConsideredNewcomer() : isConsideredNewcomer
+C_PlayerMentorship.IsMentorRestricted() : isRestricted
+PlayerScript
+AcceptAreaSpiritHeal() - Signs up for the Spirit Healer's resurrection timer in battlegrounds when in range.
+AcceptGuild() - Accepts a guild invite.
+AcceptResurrect() - Accepts a resurrection offer.
+Ambiguate(fullName, context) : result - Returns a version of a character-realm string suitable for use in a given context.
+AutoEquipCursorItem() - Equips the item currently held by the cursor.
+BeginTrade()
+CanDualWield() : result
+CanInspect(targetGUID) : result - Returns true if the player can inspect the unit.
+CanLootUnit(targetUnit) : hasLoot, canLoot
+CancelAreaSpiritHeal() - Cancels the Spirit Healer's resurrection in battlegrounds.
+CancelPendingEquip(index) - Cancels a pending equip confirmation.
+CancelTrade() - Declines the current trade offer.
+CheckInteractDistance(unitGUID, distIndex) : result #nocombat - Returns true if the player is in range to perform a specific interaction with the unit.
+CheckTalentMasterDist() : result
+ClearPendingBindConversionItem()
+ConfirmTalentWipe() - Confirms freeing all talent points.
+ConvertItemToBindToAccount()
+DeclineGuild() - Declines a guild invite.
+DeclineResurrect() - Declines a resurrection offer.
+Dismount() - Dismounts the character.
+EquipPendingItem(index) - Equips the currently pending Bind-on-Equip or Bind-on-Pickup item from the specified inventory slot.
+FollowUnit([name [, exactMatch]]) #hwevent - Follows a friendly player unit.
+GetAllowLowLevelRaid() : result - Returns whether joining low-level raids is enabled for the current character.
+GetAreaSpiritHealerTime() : result - Returns the time left in seconds until the next Spirit Healer resurrection in battlegrounds.
+GetAttackPowerForStat(stat, value) : result - Returns the amount of attack power contributed by a specific amount of a stat.
+GetAutoDeclineGuildInvites() : result - Returns true if guild invites are being automatically declined.
+GetAvoidance() : result
+GetBindLocation() : result - Returns the subzone the character's Hearthstone is set to.
+GetBlockChance() : result - Returns the block chance percentage.
+GetCemeteryPreference() : result
+GetCombatRating(ratingIndex) : result - Returns a specific combat rating.
+GetCombatRatingBonus(ratingIndex) : result - Returns the bonus percentage for a specific combat rating.
+GetCombatRatingBonusForCombatRatingValue(ratingIndex, value) : result
+GetCorpseRecoveryDelay() : result - Time left before a player can accept a resurrection.
+GetCorruption() : result
+GetCorruptionResistance() : result
+GetCritChance() : result - Returns the melee critical hit chance percentage.
+GetCritChanceProvidesParryEffect() : result
+GetDodgeChance() : result - Returns the dodge chance percentage.
+GetDodgeChanceFromAttribute() : result
+GetExpertise() : mainhandExpertise, offhandExpertise, rangedExpertise - Returns the player's expertise percentage for main hand, offhand and ranged attacks.
+GetHaste() : result - Returns the player's haste percentage.
+GetHitModifier() : result
+GetJailersTowerLevel() : result
+GetLifesteal() : result
+GetLootSpecialization() : specializationID
+GetManaRegen() : baseManaRegen, castingManaRegen - Returns the mana regeneration per second.
+GetMastery() : result - Returns the base mastery percentage.
+GetMasteryEffect() : masteryEffect, bonusCoefficient - Returns the effective mastery percentage.
+GetMaxCombatRatingBonus(ratingIndex) : result
+GetMaxPlayerLevel() : maxPlayerLevel
+GetMeleeHaste() : result - Returns the player's melee haste percentage.
+GetModResilienceDamageReduction() : result
+GetMoney() : result - Returns the amount of money the player character owns.
+GetNormalizedRealmName() : result - Returns the name of the server, but omitting spaces and hyphens.
+GetOverrideAPBySpellPower() : result
+GetOverrideSpellPowerByAP() : result
+GetPVPDesired() : result - Returns true if the player has enabled their PvP flag.
+GetPVPGearStatRules() : result
+GetPVPLifetimeStats() : lifetimeHonorableKills, lifetimeMaxPVPRank - Returns the character's lifetime PvP statistics.
+GetPVPSessionStats() : honorableKills, dishonorableKills - Returns the character's Honor statistics for this session.
+GetPVPTimer() : result - Returns the time left in milliseconds until the player is unflagged for PvP.
+GetPVPYesterdayStats() : honorableKills, dishonorableKills - Returns the character's Honor statistics for yesterday.
+GetParryChance() : result - Returns the parry chance percentage.
+GetParryChanceFromAttribute() : result
+GetPetMeleeHaste() : result
+GetPetSpellBonusDamage() : result
+GetPlayerFacing() : result #noinstance - Returns the direction the character is facing in radians.
+GetPlayerInfoByGUID(guid) : localizedClass, englishClass, localizedRace, englishRace, sex, name, realmName - Returns character info for another player from their GUID.
+GetPowerRegen() : basePowerRegen, castingPowerRegen - Returns normal and combat power regeneration rates.
+GetPowerRegenForPowerType(powerType) : basePowerRegen, castingPowerRegen
+GetPvpPowerDamage() : result
+GetPvpPowerHealing() : result
+GetRangedCritChance() : result - Returns the ranged critical hit chance.
+GetRangedHaste() : result
+GetReleaseTimeRemaining() : result - Returns the amount of time left before your ghost is pulled from your body.
+GetResSicknessDuration() : result
+GetRestState() : exhaustionID, name, factor - Returns if the character is in a rested or normal state.
+GetRestrictedAccountData() : maxLevel, maxMoney, professionCap - Returns the cap on trial character level, money and profession skill.
+GetRuneCooldown(runeIndex) : startTime, duration, isRuneReady - Returns the Death Knight's cooldown info for the specified rune.
+GetRuneCount(runeIndex) : result - Returns the Death Knight's number of runes for a slot.
+GetSheathState() : result - Returns which type of weapon the player currently has unsheathed.
+GetShieldBlock() : result
+GetSpeed() : result
+GetSpellBonusDamage(school) : result - Returns the raw spell damage bonus for the specified spell tree.
+GetSpellBonusHealing() : result - Returns the raw spell healing bonus.
+GetSpellCritChance() : result - Returns the critical hit chance for the specified spell school.
+GetSpellHitModifier() : result
+GetSpellPenetration() : result
+GetSturdiness() : result
+GetTaxiBenchmarkMode() : result
+GetVersatilityBonus(combatRating) : result
+GetXPExhaustion() : result - Returns the amount of current rested XP for the character.
+HasAPEffectsSpellPower() : result
+HasDualWieldPenalty() : result
+HasFullControl() : result
+HasIgnoreDualWieldWeapon() : result
+HasKey() : hasKey
+HasNoReleaseAura() : hasCannotReleaseEffect, longestDuration, hasUntilCancelledDuration
+HasSPEffectsAttackPower() : result
+InitiateTrade(guid) - Opens a trade with the specified unit.
+IsAccountSecured() : result - Returns if the account has been secured with Blizzard Mobile Authenticator.
+IsAdvancedFlyableArea() : result
+IsCemeterySelectionAvailable() : result
+IsCharacterNewlyBoosted() : newlyBoosted
+IsDrivableArea() : result
+IsDualWielding() : result
+IsFlyableArea() : result - Returns true if the current zone is a flyable area.
+IsGuildLeader() : result - Returns true if the player is the guild master.
+IsInGuild() : result - Lets you know whether you are in a guild.
+IsInJailersTower() : result
+IsIndoors() : result - Returns true if the character is currently indoors.
+IsInsane() : result - Used for the Insanity bar
+IsItemPreferredArmorType(itemLocation) : isItemPreferredArmorType
+IsJailersTowerLayerTimeLocked(layerLevel) : result
+IsLoggedIn() : result - Returns nil before the PLAYER_LOGIN event has fired, 1 afterwards.
+IsMounted() : result - Returns true if the character is currently mounted.
+IsOnGroundFloorInJailersTower() : result
+IsOutOfBounds() : result - Returns true if the player is currently outside of map boundaries.
+IsOutdoors() : result - Returns true if the character is currently outdoors.
+IsPVPTimerRunning() : result
+IsPlayerInWorld() : result
+IsPlayerMoving() : result
+IsRangedWeapon() : result
+IsResting() : result - Returns true if the character is currently resting.
+IsRestrictedAccount() : result - Returns if the acount has trial account restrictions.
+IsStealthed() : result - Returns true if the character is currently stealthed.
+IsXPUserDisabled() : result - Returns 1 if the character has disabled experience gain.
+NoPlayTime() : result - Returns true if the account is considered "unhealthy" for players on Chinese realms.
+NotifyInspect(targetGUID) - Requests another player's inventory and talent info before inspecting.
+PartialPlayTime() : result - Returns true if the account is considered "tired" for players on Chinese realms.
+PlayerCanTeleport() : result
+PlayerEffectiveAttackPower() : mainHandAttackPower, offHandAttackPower, rangedAttackPower, baseAttackPower, baseRangedAttackPower
+PlayerGetTimerunningSeasonID() : timerunningSeasonID - Returns the timerunning season.
+PortGraveyard() #protected
+RandomRoll(min, max) - Performs a random roll between two values.
+RepopMe() - Releases your ghost to the graveyard when dead.
+RequestTimePlayed() - Requests a summary of time played.
+RespondInstanceLock(acceptLock)
+ResurrectGetOfferer() : name - Returns the name of the person offering to resurrect you.
+ResurrectHasSickness() : result - Appears to be used when accepting a resurrection will give you resurrection sickessness.
+ResurrectHasTimer() : result - Does the player have to wait before accepting a resurrection.
+RetrieveCorpse() - Resurrects when the player is standing near its corpse.
+SetAllowLowLevelRaid([allow]) - Controls whether the current character can join low-level raids.
+SetAutoDeclineGuildInvites([allow]) - Sets whether guild invites should be automatically declined.
+SetCemeteryPreference(cemetaryID)
+SetLootSpecialization(specializationID)
+SetTaxiBenchmarkMode([enable])
+ShouldShowIslandsWeeklyPOI() : result
+ShouldShowSpecialSplashScreen() : result
+SitStandOrDescendStart() #protected - Makes the player sit, stand, or descend (while swimming or flying).
+SplashFrameCanBeShown() : result
+StartAttack([name [, exactMatch]]) #protected
+StopAttack() - Turns off auto-attack, if currently active.
+Stuck() #protected - Notifies the game engine that the player is stuck.
+TimeoutResurrect()
+ToggleSelfHighlight() : enabled
+ToggleSheath() - Toggles sheathed or unsheathed weapons.

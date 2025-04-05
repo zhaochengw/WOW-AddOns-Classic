@@ -1,0 +1,9 @@
+## Title: SimpleDruidMana
+## Interface: 30404
+## Version: 0.7.0
+## Notes: Shows mana in bear/cat form
+## Notes-zhCN: 在熊/猫形态时显示魔法值
+## Title-zhCN: 简易德鲁伊变形蓝条
+## Author: lwm0735
+
+SimpleDruidMana.lua

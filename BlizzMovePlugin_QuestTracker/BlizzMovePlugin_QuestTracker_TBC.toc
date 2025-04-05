@@ -1,0 +1,22 @@
+## Interface: 30404
+## Title: BlizzMove Plugin - QuestTracker
+## Notes: Allows you to move the QuestTracker with BlizzMove
+## Author: Numy
+## IconTexture: Interface\Addons\BlizzMovePlugin_QuestTracker\media\icon
+## RequiredDeps: BlizzMove
+## Version: v1.1.35
+## X-Curse-Project-ID: 475676
+## X-Wago-ID: 25NRw163
+## Category-enUS: User Interface
+## Category-deDE: Benutzerinterface
+## Category-esES: Interfaz de usuario
+## Category-esMX: Interfaz de usuario
+## Category-frFR: Interface utilisateur
+## Category-itIT: Interfaccia utente
+## Category-koKR: 사용자 인터페이스
+## Category-ptBR: Interface do usuário
+## Category-ruRU: Интерфейс пользователя
+## Category-zhCN: 用户界面
+## Category-zhTW: 使用者介面
+
+BlizzMovePlugin_QuestTracker.lua

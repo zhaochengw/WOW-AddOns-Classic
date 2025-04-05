@@ -1,0 +1,11 @@
+## Interface: 30404
+## Interface-Classic: 11404
+## Interface-BCC: 20504
+## Interface-Wrath: 30402
+## Title: LibCopyPaste-1.0
+## Notes: Library for copying and pasting multi-line text
+## Author: Oppzippy
+## Version: 63ad219
+## X-Curse-Project-ID: 310719
+
+lib.xml

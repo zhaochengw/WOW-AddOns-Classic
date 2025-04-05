@@ -1,0 +1,41 @@
+TooltipItemIcon provides two functions for use by other AddOns:
+
+
+*** TooltipItemIcon_DisplayIcon
+
+* TooltipItemIcon_DisplayIcon (frame [,link [,location [,compare]]])
+frame = reference to your tooltip frame
+link = string containing the link code for the item, or nil
+location = string containing one of TooltipItemIcon's location codes (see below), or nil
+compare = true if you consider your frame to be a 'compare' tooltip, nil otherwise
+
+This attaches the relevant icon to your frame.
+It needs to be called each time the link changes.
+If TooltipItemIcon cannot find an icon for your link (or the link is nil), the icon will be hidden.
+Whenever your frame becomes hidden, the attached icon will also be hidden.
+
+The location and compare codes will be remembered for your frame - you need only include them the first time you call this function for each frame (they are ignored after the first time).
+
+
+*** TooltipItemIcon_HookFrame
+
+* TooltipItemIcon_HookFrame (frame [,location [,compare]])
+frame = reference to your tooltip frame
+location = string containing one of TooltipItemIcon's location codes (see below), or nil
+compare = true if you consider your frame to be a 'compare' tooltip, nil otherwise
+
+This function sets up hooks which will attempt to display an icon for whatever link your tooltip is currently displaying
+
+
+*** location codes
+Normally TooltipItemIcon attaches a small extra frame to the side of the tooltip. The location code tells TooltipItemIcon the default location to attach this frame. (Note that the user can override the default).
+lefttop: on the left, near the top
+righttop: on the right, near the top
+topleft: on top, at the left hand side
+topright: on top, at the right hand side
+topcenter: on top, in the middle (note the spelling of 'center')
+bottomleft: at the bottom, on the left hand side
+bottomright: at the bottom, on the right hand side
+bottomcenter: at the bottom, in the middle
+if no location is provided, TooltipItemIcon defaults to "lefttop"
+

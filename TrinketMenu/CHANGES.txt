@@ -1,0 +1,10 @@
+lightweight tag 79874a6a3911892218ed21711e88946d2ad2d829 11.0.0
+Author:	Resike <resike@gmail.com>
+Date:	Thu Sep 26 23:17:40 2024 +0200
+
+commit 79874a6a3911892218ed21711e88946d2ad2d829
+Author: Resike <resike@gmail.com>
+Date:   Thu Sep 26 23:17:40 2024 +0200
+
+    11.0.0
+

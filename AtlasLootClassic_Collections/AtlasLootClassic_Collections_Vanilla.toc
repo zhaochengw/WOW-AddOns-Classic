@@ -1,0 +1,22 @@
+## Interface: 30404
+## Author: Lag
+## Version: v3.2.1
+## Dependencies: AtlasLootClassic
+## LoadOnDemand: 1
+
+## Title-zhCN: AtlasLoot经典版 |cFF0099FF[收藏品]|r
+## Title-zhTW: |cffB973FF[裝備]|r 副本戰利品查詢-收藏
+## Notes-zhCN: 收藏物品资料库。
+## Notes: AtlasLoot loot tables from Collections
+## Notes-zhTW: AtlasLootClassic - Collections |n 收藏 物品資料庫。
+## DefaultState: Enabled
+
+## X-Category: Map
+## X-License: GPL v2
+
+## X-AtlasLootClassic-LootModule: 1
+
+Locales\Locales.xml
+
+private.lua
+data.lua

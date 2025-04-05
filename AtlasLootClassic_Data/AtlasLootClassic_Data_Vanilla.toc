@@ -1,0 +1,22 @@
+## Interface: 30404
+## Author: Lag
+## Version: v3.2.1
+## Dependencies: AtlasLootClassic
+## LoadOnDemand: 1
+
+## Title: AtlasLootClassic |cFFFF0000[Data]|r
+## Title-zhCN: AtlasLoot经典版 |cFFFF0000[数据]|r
+## Title-zhTW: |cffB973FF[裝備]|r 副本戰利品查詢-資料
+## Notes: AtlasLoot data module
+## Notes-zhCN: AtlasLoot 数据模块
+## Notes-zhTW: AtlasLootClassic - Data |n資料模組。
+## DefaultState: Enabled	
+					 
+## X-Category: Map
+## X-License: GPL v2
+
+core.lua
+
+locales.lua
+items.lua
+source.lua

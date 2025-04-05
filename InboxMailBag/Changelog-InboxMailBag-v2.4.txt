@@ -1,0 +1,14 @@
+------------------------------------------------------------------------
+r58 | brefin | 2016-08-07 11:07:31 +0000 (Sun, 07 Aug 2016) | 1 line
+Changed paths:
+   A /tags/v2.4 (from /trunk:57)
+
+Tagging as v2.4
+------------------------------------------------------------------------
+r57 | brefin | 2016-08-07 11:04:17 +0000 (Sun, 07 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/InboxMailBag.lua
+   M /trunk/InboxMailBag.toc
+
+Legion support, courtesy of @bloerwald
+------------------------------------------------------------------------

@@ -1,0 +1,12 @@
+tag 83f5d1251166a2bf44a782acbc10ed0a01420131 v1.24.0
+Author:	Kyle Buller <bullerk@gmail.com>
+Date:	Wed Jul 10 02:16:07 2024 -0500
+
+Tagging as v1.24.0
+
+commit e0da0f71030bc52fd07cdaf56543c139fdc09276
+Author: Kyle Buller <bullerk@gmail.com>
+Date:   Wed Jul 10 01:46:35 2024 -0500
+
+    Add support for Wrath Classic (China)
+

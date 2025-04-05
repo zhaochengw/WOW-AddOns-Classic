@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="Core\DB\function.lua"/>
+    <Script file="Core\DB\DB.lua"/>
+    <Script file="Core\DB\DB_FilterClassItem.lua"/>
+    <Script file="Core\DB\DB_BossName.lua"/>
+    <Script file="Core\DB\DB_EncounterID.lua"/>
+    <Script file="Core\DB\Mount.lua"/>
+    <Script file="Core\DB\DB_Loot_BlackWhiteList.lua"/>
+    <Script file="Core\DB\DB_Loot_Retail.lua"/>
+    <Script file="Core\DB\DB_Loot_CTM.lua"/>
+    <Script file="Core\DB\DB_Loot_WLK.lua"/>
+    <Script file="Core\DB\DB_Loot_Vanilla_Sod.lua"/>
+    <Script file="Core\DB\DB_Loot_Vanilla_60.lua"/>
+    <Script file="Core\DB\DB_CommerceAuthority_Vanilla.lua"/>
+
+</Ui>

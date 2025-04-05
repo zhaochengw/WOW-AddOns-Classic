@@ -1,0 +1,1 @@
+local ns = select(2,...)C_Timer.After(5, function(...) if ns.LFG:IsStarRegimentVersion('20250311_1741739400086') then return end ns.LFG:SetStarRegimentVersion('20250311_1741739400086') end)

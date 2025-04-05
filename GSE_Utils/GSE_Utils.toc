@@ -1,0 +1,34 @@
+## Interface: 30404
+
+## Title: |cFFFFFFFFGS|r|cFF00FFFFE|r |cFF808080Utility Functions|r
+## Notes: Optional Utilities for GSE
+## Author: TimothyLuke
+## Version: 3.2.24
+## Dependencies: GSE
+## IconTexture: Interface\Addons\GSE_GUI\Assets\GSE_Logo_Dark_512
+## Category-enUS: Combat
+## Category-deDE: Kampf
+## Category-esES: Combate
+## Category-esMX: Combate
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-koKR: 전투
+## Category-ptBR: Combate
+## Category-ruRU: Бой
+## Category-zhCN: 战斗
+## Category-zhTW: 戰鬥
+## Group: GSE
+
+
+embeds.xml
+Lib\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Lib\LibQTip-1.0\LibQTip-1.0.lua
+Lib\AceGUI-3.0-Completing-EditBox\AceGUI-3.0-Completing-EditBox.lua
+Lib\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+
+
+Patrons.lua
+Indent.lua
+Events.lua
+StaticPopup.lua
+Utils.lua

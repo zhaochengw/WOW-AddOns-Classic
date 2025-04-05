@@ -1,0 +1,17 @@
+## Interface: 30404
+## Title: HandyNotes: Wrath of the Lich King
+## Notes: Where are the interesting things in Northrend?
+## Author: Kemayo
+## Version: v17
+## IconTexture: Interface\Icons\Ability_Spy
+## DefaultState: enabled
+## X-Category: Map
+## X-eMail: kemayo @ gmail DOT com
+## X-Curse-Project-ID: 678106
+## X-Wago-ID: xZKxlvKk
+## SavedVariables: HandyNotes_WrathOfTheLichKingDB
+## RequiredDeps: HandyNotes
+
+handler\handler.xml
+
+wrath.lua

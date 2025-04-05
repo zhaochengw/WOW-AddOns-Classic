@@ -1,0 +1,576 @@
+commit be4f87f98f927010430e3f971e81c2590333a9fd
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sun Oct 25 22:45:20 2020 -0500
+
+    Add BackdropTemplate to dialog_prototype, and hope that's all I need to do for WoW 9...
+
+commit 12b19778ae83412688c94e2bbc330c6e3c0dae1a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sun Oct 25 22:44:20 2020 -0500
+
+    Update ToC Interface for the WoW 9.0.1 version.
+
+commit cd2ca5c5fd431bcdaee85f96e928513ec41e1b5c
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Jul 21 00:53:20 2018 -0500
+
+    Added tag 8.0.1.1 for changeset 26b63062db62
+
+commit 1295bb7ddff43a814e1a750e071721740caccccd
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Jul 21 00:52:52 2018 -0500
+
+    Hard-embed LibStub, to stop the WoW 8.x client from complaining about being unable to load it under a dev environment.
+
+commit 3a4ecfb008746f898257a585eee67322db17ca15
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Jul 21 00:51:15 2018 -0500
+
+    Remove dead code.
+
+commit 80562b6061086d90e805e8420541de8f61d1d760
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Jul 21 00:50:33 2018 -0500
+
+    Update ToC Interface to 80000.
+
+commit c305acb3d2278beedfd855b07e7fe6dadf0d2e68
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 19 01:10:09 2017 -0500
+
+    Added tag 7.3.0.1 for changeset 13783d2eaeb1
+
+commit 959fe43060b5b466e7694716f2a54521628f1f6d
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 19 01:09:37 2017 -0500
+
+    Update SlaySound usage for 7.3.x API change. Bump MINOR from 7 to 8. Remove upvalued _G.
+
+commit 6c0c7c2e71b161b6af956cbba8388f51676f0a2a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 19 01:05:42 2017 -0500
+
+    Bump ToC Interface from 70000 to 70300
+
+commit 9fe6e2c281d0d179dceee81c845c5088dce985eb
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Jul 19 02:04:21 2016 -0500
+
+    Added tag 7.0.3.1 for changeset 222d06b3cb4f
+
+commit 2969ee9ee329017b8cab06c11bf01684046e4cc4
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Jul 19 02:04:06 2016 -0500
+
+    Bump ToC Interface version to 70000
+
+commit 1a21936497163310f4225a62f9ed67d3e4a9a847
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Jun 23 20:59:26 2015 -0500
+
+    Added tag 6.2.0.1 for changeset 4804cf526bbd
+
+commit 5142836819f0216daa13127727a0cb2a39944c3a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Jun 23 20:59:03 2015 -0500
+
+    Update ToC Interface to 60200.
+
+commit 9dbd42434b62734dc375e06cc8fa1e04fa922d57
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Feb 25 22:13:52 2015 -0600
+
+    Added tag 6.1.0.2 for changeset c412b20f9e2b
+
+commit 9247d4ca3f115f20393246c4809840f5f3856169
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Feb 25 22:13:41 2015 -0600
+
+    Added checks for nil delegates in _Dialog_OnShow(), in which case we bail, and in _Dialog_OnUpdate(), in which case the dialog's timer still occurs but no delegate actions (such as on_cancel or on_update) will fire.
+
+commit a231400a8d46d74293ac6bbe694e132c2952f7d5
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Feb 24 19:33:43 2015 -0600
+
+    Added tag 6.1.0.1 for changeset f9b76a6c0052
+
+commit 1167aef2427f8832b50b87626a3d83ac6add055b
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Feb 24 19:32:39 2015 -0600
+
+    Updated ToC Interface to 60100
+
+commit 4a6d879d068a70a9efbfd6830d2acc17cdd270a4
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Jan 23 11:49:36 2015 -0600
+
+    Added tag r78-release for changeset 3afa555bdd55
+
+commit 82f3a41456d99bd2776a42b670eed1bb569fc1f5
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Jan 23 11:48:19 2015 -0600
+
+    Clear the checkbox container's anchors in _ReleaseCheckBox
+
+commit 2b6c20ee79b99e167982cf18b871f3f43293c468
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Oct 27 01:48:33 2014 -0500
+
+    Added tag r76-release for changeset fac8254c08cb
+
+commit 8465704d50a41877d8848e30d0beda0d43b97e83
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Oct 27 01:48:13 2014 -0500
+
+    Fixed LibStub entry in .pkgmeta
+
+commit a4e7c2df6ff2d75ce486bd21563c68dd028f25da
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Oct 14 21:29:07 2014 -0500
+
+    Added tag r74-release for changeset a041cb1c17ec
+
+commit c93eae626fc2b693ab6f4223c97940daf41eb2f8
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Oct 14 21:28:32 2014 -0500
+
+    Updated ToC Interface to 60000.
+
+commit b4d8069f7eaf3f0a11958cb0d0bae9a8d428f04d
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sun Sep 21 03:47:43 2014 -0500
+
+    Added tag r72-release for changeset daec673f548a
+
+commit 11dc1e311a8778dea3c67fa6e6fbb00679f75899
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sun Sep 21 03:47:00 2014 -0500
+
+    Added EditBox on_show support. Increased minor version to 6.
+
+commit a90c149d66a20ebad43d4c610c42dbe279fc676a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat May 3 05:38:07 2014 -0500
+
+    Check to see if delegate is nil before attempting to resize it.
+
+commit 6d661c441964330b117597cf819f7051242d0b23
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat May 3 04:42:42 2014 -0500
+
+    Added tag r69-release for changeset 806e333f586d
+
+commit e217402fb064a79e2fef3f22717bc485949c0e08
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat May 3 04:42:05 2014 -0500
+
+    Added support for icon_size, text_justify_h, and text_justify_v fields. Layout improvements for EditBoxes and the dialog text in relation to the icon (if present).
+
+commit 4a4386a478a76a16d0ed0aae4b2344a521244c18
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Nov 2 02:46:26 2013 -0500
+
+    Added tag r67-release for changeset a7903e9a1e98
+
+commit b9690ee864178f5f33c6764f31c651387c8eddeb
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Nov 2 02:45:55 2013 -0500
+
+    Fixed incorrect name for on_cancel call (oncancel - yikes).
+
+commit 243f27a4774707dc97de200d71a41ad7b3613da3
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Nov 2 00:25:31 2013 -0500
+
+    Added tag r65-release for changeset b256c29ed245
+
+commit dae0618bd25b5b600479111ba411a807519c805a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Nov 2 00:25:06 2013 -0500
+
+    Bump the minor version.
+
+commit e14664ae543d38e0ad6e3baf33d0ca847cb1578f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Sat Nov 2 00:20:39 2013 -0500
+
+    Hide the dialog close button if the delegate has a boolean true value for its no_close_button field.
+
+commit 61b0c28f7c65b383342781196adb7af7663d22e4
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 23:40:11 2013 -0500
+
+    Last test.
+
+commit 434b9de58c03e51ba8cf344233fd3978b200ff07
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 23:36:29 2013 -0500
+
+    Another test.
+
+commit 292e24dca9fce28ee4ef93d7c32b1ce4cfe9abb4
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 23:29:48 2013 -0500
+
+    Documenter test.
+
+commit 0c7f8f9bfd4f17b406db41c389f421af39cdda18
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 22:55:21 2013 -0500
+
+    Added tag r59-release for changeset 040ab49193a5
+
+commit 5a352a9e32e5738f58d0fae827ee06c758cb511f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 22:53:45 2013 -0500
+
+    Ticket #6: Process the delegate queue in Dialog_OnHide.
+
+commit c580f660161c476197ec9bf4b654937892c39fca
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Nov 1 22:52:01 2013 -0500
+
+    Update ToC Interface version to 50400.
+
+commit b14f650fd5d0ac20a87365ea3a93c7a623a1eb31
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Jun 12 22:28:14 2013 -0500
+
+    Added tag r56-release for changeset b21d169c6180
+
+commit 3cc05e4223896b0d8ca3a3ab0973ac259f849330
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Jun 12 22:27:53 2013 -0500
+
+    Bump ToC version to 50300.
+
+commit bc43845f3e80910d5c5a42ed89638f5dc80e45d8
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Mar 18 15:07:31 2013 -0500
+
+    Added tag r54-release for changeset 9330716b2440
+
+commit 74eb431e6186d53438b94f51118401447c653e11
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Mar 18 15:06:39 2013 -0500
+
+    Fix bug when hiding a dialog.
+
+commit c0f5d599f3a78afc0f9978d8f6e374aec18f3ae8
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Mar 5 05:14:56 2013 -0600
+
+    Added tag r52-release for changeset 4151f323fd84
+
+commit aee5b5739cd2fe8ba5fe5600a4c833df112828d5
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Mar 5 05:13:51 2013 -0600
+
+    Update ToC Interface version to 50200.
+
+commit 6711da1074a0c7c401c1b31a78b54bd04ba0f5b4
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Dec 4 09:07:28 2012 -0600
+
+    Added tag r50-release for changeset e05a5ddec0fa
+
+commit d6fbed7e6f96d0cd0dd74af1b010ad824d2bb8d9
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Dec 4 09:07:04 2012 -0600
+
+    Bumped ToC Interface version to 50100.
+
+commit e0b78d1412057a8985f1cab803055e15569ec5fd
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Sep 19 06:22:36 2012 -0500
+
+    Dumped ToC version to 50001
+
+commit f99d5d9b503b9ab6228af8f8c8273a0d1eb18def
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Oct 3 19:21:19 2011 -0500
+
+    Updated .docmeta information.
+
+commit 6af3f79710b5e8457e0053ab00ed5c2db58abe08
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Oct 3 16:23:29 2011 -0500
+
+    Added tag r46-release for changeset 31887cda4fea
+
+commit 364d214504676675b583e758f7af90505b8c2e99
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Oct 3 12:47:24 2011 -0500
+
+    Added support for dialog durations.
+
+commit 45a09fabea446781f98fd47b92e6aa5ba3578981
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 30 13:02:44 2011 -0500
+
+    Initial LuaDoc API documentation.
+
+commit a7e99dc13d2248073d5c47b4f50a407d56d9b932
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 30 12:14:24 2011 -0500
+
+    Changed .docmeta
+
+commit 48899224d95dea1e43b58d8481461d881d70a4da
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 30 11:56:08 2011 -0500
+
+    Use unvalued references instead of table lookups.
+
+commit f0671da983a134783112dd710e6049befd4d0b95
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 30 10:42:08 2011 -0500
+
+    Added .docmeta file
+
+commit 3f7ff3e264ce337349d22531a01f55e3c5c2dd5d
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 19:16:00 2011 -0500
+
+    Replaced remaining occurrences of IsActive with ActiveDialog.
+
+commit d774089d927d0cbf8c0459190b05d1404efe33bc
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 19:13:55 2011 -0500
+
+    Renamed lib:IsActive() to lib:ActiveDialog() and made its return value be the dialog which is found rather than true. Within lib:Spawn(), check to see if there is already an active dialog with the same delegate and data; if so, cancel it.
+
+commit 40ba15f78d83ea951d2c348e9aa0cdefdf157a5a
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 16:36:41 2011 -0500
+
+    Look for dialog member "no_cancel_on_escape" instead of "cancel_ignores_escape"
+
+commit e447c1206aa522ee946bca6040c94053f7573f87
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 16:03:31 2011 -0500
+
+    When a dialog is spawned whose delegate has delegate names listed in a cancels_on_spawn table, cancel all active dialogs which match the named delegates.
+
+commit bdce4d4212b5b3a56ccb550dcc1b42981f123d39
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 15:32:42 2011 -0500
+
+    When spawning a dialog with a delegate which is marked as exclusive, cancel any active dialogs which are also exclusive.
+
+commit 64ade3e3d784055c59c1e2fab312e75e9df39160
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 07:40:13 2011 -0500
+
+    Call _RecycleWidget() on the dialog within it's OnHide script so lib:IsActive() will return false if called from code called from the delegate's on_hide
+
+commit a75f4f9b62f2bc74616a5bd1bc5be2b113a6f28f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 07:36:10 2011 -0500
+
+    If the proposed widget-to-be-recycled isn't in the active list, do not add it to the heap.
+
+commit 50a3dc72abe3740cdbab6f7d6585d0bf1c922f3e
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 05:17:01 2011 -0500
+
+    Unified common delegate-finding code into _FindDelegate()
+
+commit 3bb9ccf7db7df0f4bbd4142377a9ecef44b4fb21
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 05:05:51 2011 -0500
+
+    Added library Dismiss method to dismiss the specified dialog, optionally also by data.
+
+commit 5aae5cc7690dcd6637edd14252492a4d4d49cc6d
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 04:23:15 2011 -0500
+
+    Added IsActive() library method: Determines whether or not the specified dialog is active, optionally taking its data into account.
+
+commit b379bdb538e778addff0524d42836c028cb2746f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 04:02:46 2011 -0500
+
+    Reset edit box letters and bytes limits to unlimited upon release. Changed button on_click behavior: Only hide the dialog if the handler returns nil or false, and pass the dialog as "self" instead of the button - also pass an optional reason for firing the handler (default is "clicked").
+
+commit a7f624ee98e98639a28fba031daf17e23b9ac6e1
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 01:22:03 2011 -0500
+
+    Dialogs register for the DISPLAY_SIZE_CHANGED event and resize when it's fired. Removed some debug prints.
+
+commit fa15e85823cf7adf7e7a903d52ba26b0e135f87e
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 01:19:01 2011 -0500
+
+    Added dialog support for OnEvent handler: If the dialog_prototype has a method which matches the name of the event which fired, that method will be called.
+
+commit 09b0e7dcb6271007a9c9d8aee18b8479b20d4862
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 29 01:12:06 2011 -0500
+
+    Added delegate OnUpdate support.
+
+commit 519502c2fbdfc826c2501f21f373362e291729a8
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 23:08:04 2011 -0500
+
+    Do not require a button click handler to create a button from the delegate - text will suffice; the button will merely hide the dialog when clicked.
+
+commit c553a42800c8ecf0e541270c38a58b28337cd3c1
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 22:29:54 2011 -0500
+
+    Proper value awareness for CheckButtons. Hide dialog on button press.
+
+commit 177273de34838978aba01426a8dcf15f6b9ec379
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 21:31:08 2011 -0500
+
+    Ensure that dialogs always have an appropriate minimum width. Do not force the library user to input a text field on the delegate: instead, set it to an empty string and assume the user will fill it in later, perhaps in the delegate's on_show handler.
+
+commit fb7fd53044e68764e68cabd77aaabc28b9310f77
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 21:07:35 2011 -0500
+
+    Mark newly-created dialogs as new - if the is_new field is present on a dialog, manually run its on_show and remove the is_new field; newly-created frames never fire their OnShow script handler.
+
+commit 0810e3c322c12b7ca67107ca363aa113b50aa3a1
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 19:25:33 2011 -0500
+
+    Account for EditBox widths when resizing the dialog.
+
+commit e565b4f853fc782bb3cfc76a0908b169f241d42c
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 13:20:24 2011 -0500
+
+    When recycling a CheckButton, set the parent for its container to nil - not that of the CheckButton.
+
+commit d20f821235610ab43382db5b305d84bdd6c6d212
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 13:13:13 2011 -0500
+
+    Ensure proper cleanup of widgets on release. Added support for a dialog icon.
+
+commit 083313ac06763453aa19bd1efe16c6d97285ebd0
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 27 12:22:16 2011 -0500
+
+    Multitude of layout tweaks - dialogs look much cleaner now.
+
+commit e236df7f6385c5ee5533c2690ad364a3f5931bf3
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 23 13:25:16 2011 -0500
+
+    Added support for multiple CheckButtons.
+
+commit fc0a9d263ffe93d1764d6736d779b7f61ff47e47
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 23 12:59:17 2011 -0500
+
+    Added support for multiple EditBoxes.
+
+commit fb7680818118d68f01fa8044d7ea807bc3073fab
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 18:08:24 2011 -0500
+
+    Layout tweaks and proper button anchoring.
+
+commit 10085ddd3be081c0d4673fb45b1a11ef91803e16
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 15:41:24 2011 -0500
+
+    Don't directly set the width when the dialog has three buttons - use the bigger value between the current width and the required width.
+
+commit f1581c38beaa7362104f55fd801acb9186f6a287
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 15:28:48 2011 -0500
+
+    Do not build a dialog if a cinematic scene is in progress and the delegate doesn't have a show_during_cinematic field.
+
+commit 97a664cdb87bcdc31151829308819028f970026f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 14:57:59 2011 -0500
+
+    Do not build a dialog if the player is dead and the delegate doesn't have a show_while_dead field. Use a delegate's on_cancel member instead of OnCancel.
+
+commit 11461d43d4e4a519d12a27901ba385cc17fd9dbe
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 13:19:22 2011 -0500
+
+    The dialog delegate now controls the width and max letters/bytes of the edit box, and resizes based on edit box width.
+
+commit 1c70a89c75fe4f9b6c5e82c490c601808b2d9ab3
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 12:41:58 2011 -0500
+
+    When acquiring an EditBox, set auto-focus based on the dialog delegate.
+
+commit 30fe8e55f6ad8ec4536a5d8b4b35834ad4b35721
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 12:41:07 2011 -0500
+
+    Only hide a dialog on escape if its delegate specifies such.
+
+commit a685cd739e10e33bae84164f07a9cd924dacde2d
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 22 11:26:13 2011 -0500
+
+    Dynamic button acquisition. Re-designed delegate's EditBox and CheckButton implementations.
+
+commit 64d890e1a1a5fa36844dc12b4d66773b04fcfa86
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 20 15:20:58 2011 -0500
+
+    Added dialog Resize() method.
+
+commit 1368dcd8d63b7a2ef05fa0769c4100516421b2a9
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Tue Sep 20 14:30:58 2011 -0500
+
+    Added CheckBoxes and EditBoxes. Miscellaneous changes, fixes, and cleanup.
+
+commit 83cbb7c8d1bcb5b58b6e896ebfc173efa0a65063
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Sep 19 12:17:53 2011 -0500
+
+    Added queue for dialogs after the number shown reaches maximum. Minor cleanup, and the Spawn() method now returns a handle to the spawned dialog.
+
+commit cd2a471cb41b4e95c529fff416e8143755e8b107
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Mon Sep 19 11:02:38 2011 -0500
+
+    Limit the number of active dialogs to four.
+
+commit 95bbc8ba86af1324f1b756f5b489c9de78bf225e
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 16 11:26:50 2011 -0500
+
+    If the delegate has a sound name specified, play it on spawn.
+
+commit 22bb02a0f05851bee61a2b4ef217609bd2629d7f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Fri Sep 16 10:56:17 2011 -0500
+
+    Set the dialog's data field to nil on release.
+
+commit 8eae83ef232e7a8169d83f79b6495fe903dc7f3f
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Thu Sep 15 15:43:47 2011 -0500
+
+    Re-arranged some code, and removed dialog-hiding from within _ReleaseDialog() since it's called when a dialog hides.
+
+commit 1e8d862081f11bd5f606b7e4ed801fa217333ec6
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Sep 14 11:51:26 2011 -0500
+
+    Hooked StaticPopup_OnHide() so the dialogs can be re-anchored.
+
+commit 946927ac14b636208f170626b53bc635bb625558
+Author: James D. Callahan III <darkenelf@gmail.com>
+Date:   Wed Sep 14 11:27:43 2011 -0500
+
+    Initial commit.
+

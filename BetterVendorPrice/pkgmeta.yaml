@@ -1,0 +1,23 @@
+package-as: BetterVendorPrice
+
+ignore:
+    - installbvp.bat
+    - luaformat.cfg
+    - BetterVendorPrice.png
+    - sample.png
+    - MoLib/installmolib.bat
+    - MoLib/MoLib.toc
+    - MoLib/luaformat.cfg
+    - MoLib/README.md
+    - MoLib/tests
+    - MoLib/Realms.lua
+    - MoLib/MoLibAH.lua
+
+externals:
+    MoLib:
+        url: https://github.com/mooreatv/MoLib
+
+move-folders:
+  BetterVendorPrice/BetterVendorPrice: BetterVendorPrice
+
+enable-nolib-creation: no

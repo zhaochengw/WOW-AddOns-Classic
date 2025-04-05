@@ -1,0 +1,24 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+    <Script file="ClearCache.lua"/>
+    <Script file="AppData1.lua"/>
+    <Script file="AppData2.lua"/>
+    <Script file="AppData3.lua"/>
+    <Script file="AppData4.lua"/>
+    <Script file="AppData5.lua"/>
+    <Script file="AppData6.lua"/>
+    <Script file="AppData7.lua"/>
+    <Script file="AppData8.lua"/>
+    <Script file="AppData9.lua"/>
+    <Script file="AppData10.lua"/>
+    <Script file="AppData11.lua"/>
+    <Script file="AppData12.lua"/>
+    <Script file="AppData13.lua"/>
+    <Script file="AppData14.lua"/>
+    <Script file="AppData15.lua"/>
+    <Script file="AppData16.lua"/>
+    <Script file="AppData17.lua"/>
+    <Script file="AppData18.lua"/>
+    <Script file="AppData19.lua"/>
+    <Script file="AppData20.lua"/>
+    <Script file="SetRegimentVersion.lua"/>
+</Ui>

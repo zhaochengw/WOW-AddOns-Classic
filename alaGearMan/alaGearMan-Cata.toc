@@ -1,0 +1,18 @@
+## Interface: 40402
+## Title: alaGearMan
+## Title-zhCN: ala一键换装
+## Title-zhTW: ala一鍵換裝
+## SavedVariablesPerCharacter: 
+## SavedVariables: alaGearManSV
+## Notes: alaGearMan
+## Dependencies: 
+## OptionalDependencies: 
+## LoadOnDemand: 0
+## DefaultState: enabled
+## Author: |cff00ff00ALA|r
+## Author-zhCN: |cff00ff00ALA|r
+## Author-zhTW: |cff00ff00ALA|r
+## Version: 404r.250402
+
+alaGearMan.xml
+

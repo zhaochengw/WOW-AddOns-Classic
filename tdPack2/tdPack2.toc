@@ -1,0 +1,12 @@
+## Interface: 30404
+## Title: |cff00fffftdPack2|r - Sort bags
+## Title-zhCN: |cff00fffftdPack2|r - 整理背包
+## Notes: Sort bags, allow custom sorting, support multiple bag plugins
+## Notes-zhCN: 整理背包，允许自定义背包的排序方式，支持多种背包插件
+## IconTexture: Interface\AddOns\tdPack2\Resource\INV_Pet_Broom
+## Author: Dencer
+## Version: 2.1.9
+## OptionalDeps: Bagnon, Combuctor, tdBag
+## SavedVariables: TDDB_PACK2
+
+Load.xml

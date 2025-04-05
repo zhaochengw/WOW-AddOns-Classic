@@ -1,0 +1,72 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Frame name="SilverDragonOverlayMapPinTemplate" hidden="true" enableMouse="true" frameLevel="5" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="texture" texelSnappingBias="0.0" snapToPixelGrid="false"></Texture>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="emphasis" hidden="true" atlas="worldquest-questmarker-abilityhighlight" alphaMode="ADD">
+                    <Size x="25" y="25"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                    <Color r="1.0" g="1.0" b="1.0" a="0.4"/>
+                </Texture>
+                <Texture parentKey="Expand" file="Interface/minimap/UI-Minimap-Ping-Expand" alpha="0">
+                    <Size x="30" y="30"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Animations>
+            <AnimationGroup parentKey="DriverAnimation" mixin="SilverDragonOverlayMapPinPingDriverAnimationMixin" looping="REPEAT">
+                <Alpha childKey="Expand" fromAlpha="0" toAlpha="1"                      duration="0.2" order="1"/>
+                <Alpha childKey="Expand" fromAlpha="1" toAlpha="0" startDelay=".45"     duration="0.2" order="1"/>
+                <Alpha childKey="Expand" fromAlpha="0" toAlpha="1" startDelay=".575"    duration="0.2" order="1"/>
+                <Alpha childKey="Expand" fromAlpha="1" toAlpha="0" startDelay=".95"     duration="0.2" order="1"/>
+
+                <Scripts>
+                    <OnPlay method="OnPlay"/>
+                    <OnLoop method="OnLoop"/>
+                    <OnFinished method="OnFinished"/>
+                </Scripts>
+            </AnimationGroup>
+            <AnimationGroup parentKey="ScaleAnimation" looping="REPEAT">
+                <Scale childKey="Expand" fromScaleX=".5" fromScaleY=".5" toScaleX="1.2" toScaleY="1.2" duration=".575" order="1"/>
+            </AnimationGroup>
+        </Animations>
+    </Frame>
+    <Frame name="SilverDragonOverlayWorldMapPinTemplate" inherits="SilverDragonOverlayMapPinTemplate" hidden="true" enableMouse="true" frameLevel="5" mixin="SilverDragonOverlayWorldMapPinMixin" virtual="true">
+    </Frame>
+    <Frame name="SilverDragonOverlayMinimapPinTemplate" inherits="SilverDragonOverlayMapPinTemplate" hidden="true" enableMouse="true" frameLevel="5" mixin="SilverDragonOverlayMinimapPinMixin" virtual="true">
+    </Frame>
+
+    <Frame name="SilverDragonOverlayRoutePinTemplate" mixin="SilverDragonOverlayRoutePinMixin" enableMouse="true" virtual="true">
+        <Size x="20" y="20"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Icon" hidden="true"/>
+            </Layer>
+        </Layers>
+    </Frame>
+    <Frame name="SilverDragonOverlayRoutePinConnectionTemplate" mixin="SilverDragonOverlayRoutePinConnectionMixin" ignoreParentScale="true" virtual="true">
+        <Size x="64" y="64"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Line parentKey="Line" />
+            </Layer>
+        </Layers>
+    </Frame>
+
+    <Frame name="SilverDragonOverlayMinimapRoutePinTemplate" mixin="SilverDragonOverlayMinimapRoutePinMixin" enableMouse="false" virtual="true">
+        <Size x="12" y="12"/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="texture" setAllPoints="true" texelSnappingBias="0.0" snapToPixelGrid="false"/>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

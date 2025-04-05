@@ -1,0 +1,24 @@
+## Interface: 30404
+## Title: WhisperPop
+## Author: Abin
+## Version: 4.45 Rurutia fix
+## IconTexture: 133461
+## X-Category: Chat/Communication
+## SavedVariables: WhisperPopDB
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Includes\LibAddonManager.lua
+Includes\InterfaceOptionPage-1.0.lua
+Includes\VirtualScrollList-1.0.lua
+
+Core.lua
+Frames\Templates.lua
+Frames\MainFrame.lua
+Frames\MessageFrame.lua
+Frames\NotifyButton.lua
+Frames\OptionFrame.lua
+
+Broker\Embeds.xml

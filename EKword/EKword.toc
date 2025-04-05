@@ -1,0 +1,10 @@
+## Interface: 30404
+## Title: |cff00ffffFuck☆|ryou
+## Title-zhCN: |r|cFF00FF00[EK]|r FK |r|cFF0099FF[语言反和谐]|r
+## Title-zhTW: |r|cFF00FF00[EK]|r FK |r|cFF0099FF[语言反和谐]|r
+## Version: R2
+## Author: EK (Linodas@Illidan-US)
+## Notes: 语言反和谐插件。原|cff00ffffFuck☆|ryou 口吐芬芳。|n简介：|cffee5885露露緹婭@Bilibili|r
+## Credits: Peterdox
+
+EKword.lua

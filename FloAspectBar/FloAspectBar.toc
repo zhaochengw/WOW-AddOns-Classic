@@ -1,0 +1,7 @@
+## Interface: 30404
+## Title: FloAspectBar
+## Author: Floraline, TBCC updates by Sansaan
+## Notes: Add an aspect bar similar to the paladin's aura bar
+## Version: 2.1.0
+
+FloAspectBar-Unsupported.lua

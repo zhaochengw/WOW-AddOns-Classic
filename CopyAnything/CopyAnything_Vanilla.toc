@@ -1,0 +1,19 @@
+## Interface: 30404
+## Title: Copy Anything
+## Notes: Copy text from any frame.
+## Author: Oppzippy
+## Version: v1.1.35
+## OptionalDeps: LibCopyPaste-1.0, Ace3
+## SavedVariables: CopyAnythingDB
+## X-Curse-Project-ID: 341960
+## X-WoWI-ID: 25626
+## X-Wago-ID: 9rN40xND
+
+Libs.xml
+Locales\locales.xml
+Bindings.lua
+Core.lua
+TableUtils.lua
+Options.lua
+FontStringFinder.lua
+Global.lua

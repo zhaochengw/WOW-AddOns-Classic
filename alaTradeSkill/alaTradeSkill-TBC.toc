@@ -1,0 +1,18 @@
+## Interface: 20504
+## Title: ala's Trade Skill
+## Title-zhCN: ala商业技能助手
+## Title-zhTW: ala商業技能助手
+## SavedVariablesPerCharacter: 
+## SavedVariables: alaTradeSkillSV
+## Notes: ala's Trade Skill
+## Dependencies: 
+## OptionalDependencies: 
+## LoadOnDemand: 0
+## DefaultState: enabled
+## Author: |cff00ff00ALA|r
+## Author-zhCN: |cff00ff00ALA|r
+## Author-zhTW: |cff00ff00ALA|r
+## Version: 205r.250402
+
+load.xml
+

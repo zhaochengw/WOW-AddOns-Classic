@@ -1,0 +1,14 @@
+## Interface: 30404
+## Title: Lib: AceGUI-3.0-Completing-EditBox
+## Author: Farmbuyer of US-Kilrogg
+## Notes: Creates parameterized AceGUI-3.0 editboxes with autocompletion
+## OptionalDeps: Ace3
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+#@end-no-lib-strip@
+
+AceGUI-3.0-Completing-EditBox.lua
+

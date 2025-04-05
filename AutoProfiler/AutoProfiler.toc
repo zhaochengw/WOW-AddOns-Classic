@@ -1,0 +1,19 @@
+## Interface: 30404
+## Title: 自动关闭系统CPU监控★AutoProfiler
+## Notes: 小海特供插件版，用于关闭11.1魔兽世界新功能CPU监控。
+## IconTexture: Interface\AddOns\AutoProfiler\Icons\uu.tga
+## Author:satouyumei
+
+## Category-enUS: Other
+## Category-deDE: Anderes
+## Category-esES: Otros
+## Category-esMX: Otros
+## Category-frFR: Autre
+## Category-itIT: Altro
+## Category-koKR: 기타
+## Category-ptBR: Outro
+## Category-ruRU: Другое
+## Category-zhCN: 其它
+## Category-zhTW: 其他
+
+AutoProfiler.lua

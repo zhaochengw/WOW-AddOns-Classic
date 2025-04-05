@@ -1,0 +1,8 @@
+## Interface: 30404
+## Title: RightClickEnhance
+## Notes: Enhanced right-click menu for player names
+## Version: 1.4
+## Author: zhaochengw
+## SavedVariables: RightClickEnhanceDB
+
+RightClickEnhance.lua

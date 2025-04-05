@@ -1,0 +1,72 @@
+## Interface: 30404
+## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cffdb550d2.3.4|r
+## Notes: Mimic Spell Activation Overlays from Modern World of Warcraft
+## Author: Vinny/Ennvina
+## Version: 2.3.4
+## SavedVariables: SpellActivationOverlayDB
+
+# SpellActivationOverlay.lua, SpellActivationOverlay.xml and all textures were created by Blizzard Entertainment, Inc.
+#
+# World of Warcraft®: Mists of Pandaria®
+# ©2012 Blizzard Entertainment, Inc. All rights reserved. Mists of Pandaria, World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+#
+# World of Warcraft®: Warlords of Draenor™
+# ©2014 Blizzard Entertainment, Inc. All rights reserved. Warlords of Draenor is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+
+#@no-lib-strip@
+libs\LibStub\LibStub.lua
+libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
+#@end-no-lib-strip@
+
+components\aura.lua
+components\bucket.lua
+components\counter.lua
+components\display.lua
+components\effect.lua
+components\events.lua
+components\glow.lua
+components\hash.lua
+components\item.lua
+components\overlay.lua
+components\project.lua
+components\rune.lua
+components\shutdown.lua
+components\sound.lua
+components\spell.lua
+components\trigger.lua
+components\util.lua
+components\variable.lua
+
+variables\actionusable.lua
+variables\aurastacks.lua
+variables\execute.lua
+variables\holypower.lua
+variables\nativesao.lua
+variables\talent.lua
+
+textures\texname.lua
+
+classes\common.lua
+classes\deathknight.lua
+classes\druid.lua
+classes\hunter.lua
+classes\mage.lua
+classes\paladin.lua
+classes\priest.lua
+classes\rogue.lua
+classes\shaman.lua
+classes\warlock.lua
+classes\warrior.lua
+
+options\defaults.lua
+options\db.lua
+options\variables.lua
+options\InterfaceOptionsPanels.lua
+options\InterfaceOptionsPanels.xml
+options\classoptions.lua
+options\glowoptions.lua
+options\overlayoptions.lua
+options\variants.lua
+
+SpellActivationOverlay.lua
+SpellActivationOverlay.xml

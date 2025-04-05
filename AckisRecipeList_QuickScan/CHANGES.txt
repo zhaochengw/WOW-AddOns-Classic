@@ -1,0 +1,10 @@
+tag 76fd500c6b2abf9bbeafdbc74fe63fecc2a6ff0c 7.3.0.1
+Author:	James D. Callahan III <jcallahan@curse.com>
+Date:	Fri Sep 22 21:20:12 2017 -0500
+
+commit f4126a64c415c3387d7a940d50c3fd63f2e7dcfe
+Author: James D. Callahan III <jcallahan@curse.com>
+Date:   Fri Sep 22 21:19:56 2017 -0500
+
+    Update ToC Interface to 70300.
+

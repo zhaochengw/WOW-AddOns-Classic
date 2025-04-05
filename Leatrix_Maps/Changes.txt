@@ -1,0 +1,5 @@
+﻿Change Logs:
+
+[War Within](https://github.com/leatrix/leatrix-maps/raw/retail/Changelog.txt),
+[Cataclysm Classic](https://github.com/leatrix/leatrix-maps/raw/cataclysm/Changelog.txt),
+[Classic](https://github.com/leatrix/leatrix-maps/raw/classic/Changelog.txt).

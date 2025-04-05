@@ -1,0 +1,19 @@
+## Interface: 30404
+## Title: OmniCC
+## Notes: Cooldown count for everything
+## Notes-esMX: Contador de tiempo de reutilización
+## Notes-esES: Contador de tiempo de reutilización
+## Notes-ptBR: Contagem de tempo de recarga
+## Notes-frFR: Compte à rebours du temps de recharge
+## Notes-ruRU: Время восстановления способностей и т.п.
+## Author: Tuller
+## Category: Combat
+## Version: 11.0.7
+## SavedVariables: OmniCCDB, OmniCC4Config
+## IconTexture: Interface/Icons/spell_nature_timestop
+embeds.xml
+localization\localization.xml
+main.lua
+core\core.xml
+settings\settings.xml
+effects\effects.xml

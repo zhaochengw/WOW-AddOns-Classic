@@ -1,0 +1,277 @@
+------------------------------------------------------------------------
+r191 | nevcairiel | 2018-07-17 19:41:06 +0000 (Tue, 17 Jul 2018) | 1 line
+Changed paths:
+   M /trunk/SharedMedia.toc
+
+Update TOC and version
+------------------------------------------------------------------------
+r190 | nevcairiel | 2018-07-14 07:11:12 +0000 (Sat, 14 Jul 2018) | 1 line
+Changed paths:
+   M /trunk/MyMedia.bat.txt
+
+Create the TOC in the same step that re-generates the MyMedia.lua, instead of on folder generation
+------------------------------------------------------------------------
+r189 | nevcairiel | 2018-06-21 22:56:47 +0000 (Thu, 21 Jun 2018) | 1 line
+Changed paths:
+   M /trunk/MyMedia.bat.txt
+   M /trunk/SharedMedia.toc
+
+Create a separate TOC for MyMedia, since in 8.0 mising files cause errors to popup in-game
+------------------------------------------------------------------------
+r188 | elkano | 2016-07-24 08:48:33 +0000 (Sun, 24 Jul 2016) | 3 lines
+Changed paths:
+   M /trunk/SharedMedia.toc
+   M /trunk/fonts/deja_vu/DejaVuLGCSans.ttf
+   M /trunk/fonts/deja_vu/DejaVuLGCSerif.ttf
+   M /trunk/fonts/deja_vu/LICENSE
+   M /trunk/fonts/font info.txt
+   M /trunk/fonts/hack/Hack-Regular.ttf
+
+[TOC] for WoW 7.0.3
+[FONT] DejaVu -> v2.36
+[FONT] Hack -> v2.020
+------------------------------------------------------------------------
+r187 | elkano | 2015-11-18 15:33:53 +0000 (Wed, 18 Nov 2015) | 18 lines
+Changed paths:
+   M /trunk/SharedMedia.lua
+   M /trunk/SharedMedia.toc
+   D /trunk/fonts/Adventure.ttf
+   D /trunk/fonts/Bazooka.ttf
+   D /trunk/fonts/BlackChancery.TTF
+   D /trunk/fonts/CelestiaMediumRedux1.55.ttf
+   D /trunk/fonts/DORISPP.TTF
+   D /trunk/fonts/Enigma__2.TTF
+   D /trunk/fonts/Fitzgerald.ttf
+   D /trunk/fonts/Gentium.TTF
+   D /trunk/fonts/HookedUp.ttf
+   D /trunk/fonts/LiberationSans.ttf
+   D /trunk/fonts/SFAtarianSystem.ttf
+   D /trunk/fonts/SFCovington.ttf
+   D /trunk/fonts/SFMoviePoster-Bold.ttf
+   D /trunk/fonts/SFWonderComic.ttf
+   D /trunk/fonts/VeraSe.ttf
+   D /trunk/fonts/YELLOWJACKET.TTF
+   A /trunk/fonts/adventure
+   A /trunk/fonts/adventure/Adventure.ttf
+   A /trunk/fonts/adventure/license.txt
+   A /trunk/fonts/all_hooked_up
+   A /trunk/fonts/all_hooked_up/HookedUp.ttf
+   A /trunk/fonts/all_hooked_up/legal_ah.txt
+   A /trunk/fonts/bazooka
+   A /trunk/fonts/bazooka/Bazooka.ttf
+   A /trunk/fonts/black_chancery
+   A /trunk/fonts/black_chancery/BlackChancery.ttf
+   A /trunk/fonts/celestia_medium_redux
+   A /trunk/fonts/celestia_medium_redux/CelestiaMediumRedux1.55.ttf
+   A /trunk/fonts/deja_vu
+   A /trunk/fonts/deja_vu/DejaVuLGCSans.ttf
+   A /trunk/fonts/deja_vu/DejaVuLGCSerif.ttf
+   A /trunk/fonts/deja_vu/LICENSE
+   A /trunk/fonts/doris_pp
+   A /trunk/fonts/doris_pp/DorisPP.ttf
+   A /trunk/fonts/enigmatic
+   A /trunk/fonts/enigmatic/EnigmaU_2.TTF
+   A /trunk/fonts/enigmatic/legal_eu.txt
+   A /trunk/fonts/fitzgerald
+   A /trunk/fonts/fitzgerald/Fitzgerald.ttf
+   A /trunk/fonts/fitzgerald/legal_fz.txt
+   D /trunk/fonts/font info and licenses
+   A /trunk/fonts/font info.txt
+   A /trunk/fonts/gentium_plus
+   A /trunk/fonts/gentium_plus/GentiumPlus-R.ttf
+   A /trunk/fonts/gentium_plus/OFL.txt
+   A /trunk/fonts/hack
+   A /trunk/fonts/hack/Hack-Regular.ttf
+   A /trunk/fonts/liberation
+   A /trunk/fonts/liberation/LICENSE
+   A /trunk/fonts/liberation/LiberationSans-Regular.ttf
+   A /trunk/fonts/liberation/LiberationSerif-Regular.ttf
+   A /trunk/fonts/sf_atarian_system
+   A /trunk/fonts/sf_atarian_system/SFAtarianSystem.ttf
+   A /trunk/fonts/sf_atarian_system/ShyFoundry Freeware EULA.pdf
+   A /trunk/fonts/sf_covington
+   A /trunk/fonts/sf_covington/SFCovington.ttf
+   A /trunk/fonts/sf_covington/ShyFoundry Freeware EULA.pdf
+   A /trunk/fonts/sf_movie_poster
+   A /trunk/fonts/sf_movie_poster/SFMoviePoster-Bold.ttf
+   A /trunk/fonts/sf_movie_poster/ShyFoundry Freeware EULA.pdf
+   A /trunk/fonts/sf_wonder_comic
+   A /trunk/fonts/sf_wonder_comic/SFWonderComic.ttf
+   A /trunk/fonts/sf_wonder_comic/ShyFoundry Freeware EULA.pdf
+   A /trunk/fonts/swf!t
+   A /trunk/fonts/swf!t/SWF!T___.TTF
+   A /trunk/fonts/swf!t/license.txt
+   D /trunk/fonts/swfit.ttf
+   A /trunk/fonts/wen_quan_yi_zen_hei
+   A /trunk/fonts/wen_quan_yi_zen_hei/COPYING
+   A /trunk/fonts/wen_quan_yi_zen_hei/README
+   A /trunk/fonts/wen_quan_yi_zen_hei/wqy-zenhei.ttf
+   D /trunk/fonts/wqy-zenhei.ttf
+   A /trunk/fonts/yellowjacket
+   A /trunk/fonts/yellowjacket/yellow.ttf
+   A /trunk/fonts/yellowjacket/yellow.txt
+
+- updated TOC for 6.2.x
+- large cleanup regarding fonts: added source URLs to most, updated files, adjusted names, ...
+
+[renamed] Atarian System -> SF Atarian System
+[renamed] Celestia Redux -> Celestia Medium Redux
+[renamed] Covington -> SF Covington
+[NEW] DejaVu Sans
+[NEW] DejaVu Serif
+[updated] Enigmatic
+[renamed/updated] Gentium -> Gentium Plus
+[NEW] Hack
+[renamed] Hooked Up -> All Hooked Up
+[updated] Liberation Sans
+[NEW] Liberation Serif
+[renamed] Movie Poster -> SF Movie Poster
+[REMOVED] Vera Serif (replaced by DejaVu Sans)
+[renamed] Wonder Comic -> SF Wonder Comic
+
+------------------------------------------------------------------------
+r186 | elkano | 2014-11-01 18:48:34 +0000 (Sat, 01 Nov 2014) | 2 lines
+Changed paths:
+   M /trunk/SharedMedia.lua
+   M /trunk/SharedMedia.toc
+
+- reverted last commit
+- some small changes
+------------------------------------------------------------------------
+r185 | ukoterpuh | 2014-11-01 10:53:21 +0000 (Sat, 01 Nov 2014) | 1 line
+Changed paths:
+   M /trunk/SharedMedia.lua
+   M /trunk/SharedMedia.toc
+
+Updated for WoD
+------------------------------------------------------------------------
+r184 | elkano | 2012-09-07 08:45:26 +0000 (Fri, 07 Sep 2012) | 3 lines
+Changed paths:
+   M /trunk/SharedMedia.lua
+   A /trunk/fonts/CelestiaMediumRedux1.55.ttf
+   A /trunk/fonts/font info and licenses/WenQuanYi Zen Hei - COPYING.txt
+   A /trunk/fonts/font info and licenses/WenQuanYi Zen Hei - README.txt
+   A /trunk/fonts/font info and licenses/other info.txt
+   A /trunk/fonts/wqy-zenhei.ttf
+
+two new fonts added:
+- Celestia (Medium) Redux
+- WenQuanYi Zen Hei (supports koKR, ruRU, zhCN, zhTW and western)
+------------------------------------------------------------------------
+r183 | elkano | 2012-09-02 18:46:13 +0000 (Sun, 02 Sep 2012) | 1 line
+Changed paths:
+   M /trunk/SharedMedia.toc
+
+pushed TOC to 50001
+------------------------------------------------------------------------
+r182 | pb_ee1 | 2012-02-05 04:08:20 +0000 (Sun, 05 Feb 2012) | 1 line
+Changed paths:
+   M /trunk/SharedMedia.toc
+
+ - updated TOC
+------------------------------------------------------------------------
+r181 | gnarfoz | 2010-12-10 20:42:38 +0000 (Fri, 10 Dec 2010) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/SharedMedia.toc
+
+Clean up externals that resulted in superfluous library copies being present on disk and adjust TOC accordingly.
+------------------------------------------------------------------------
+r180 | gnarfoz | 2010-12-10 20:26:33 +0000 (Fri, 10 Dec 2010) | 1 line
+Changed paths:
+   M /trunk/SharedMedia.toc
+
+Fix FrameXML.log error, include path for CBH was wrong. This is merely a band-aid, the externals setup for this addon needs to be cleaned up.
+------------------------------------------------------------------------
+r179 | elkano | 2010-11-05 10:28:48 +0000 (Fri, 05 Nov 2010) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/SharedMedia.toc
+
+updated TOC and externals
+------------------------------------------------------------------------
+r178 | seerah | 2009-12-16 17:39:12 +0000 (Wed, 16 Dec 2009) | 4 lines
+Changed paths:
+   M /trunk/INSTRUCTIONS for MyMedia.txt
+   M /trunk/SharedMedia.lua
+   M /trunk/SharedMedia.toc
+   A /trunk/background/bricks.tga
+   A /trunk/background/brushedmetal.tga
+   A /trunk/background/copper.tga
+   A /trunk/background/smoke.tga
+   M /trunk/border
+   A /trunk/border/SeerahScalloped.blp
+   A /trunk/fonts/Adventure.ttf
+   A /trunk/fonts/Bazooka.ttf
+   A /trunk/fonts/BlackChancery.TTF
+   A /trunk/fonts/DORISPP.TTF
+   A /trunk/fonts/Enigma__2.TTF
+   A /trunk/fonts/Fitzgerald.ttf
+   A /trunk/fonts/Gentium.TTF
+   A /trunk/fonts/HookedUp.ttf
+   A /trunk/fonts/LiberationSans.ttf
+   A /trunk/fonts/SFAtarianSystem.ttf
+   A /trunk/fonts/SFCovington.ttf
+   A /trunk/fonts/SFMoviePoster-Bold.ttf
+   A /trunk/fonts/SFWonderComic.ttf
+   A /trunk/fonts/VeraSe.ttf
+   A /trunk/fonts/YELLOWJACKET.TTF
+   A /trunk/fonts/font info and licenses
+   A /trunk/fonts/font info and licenses/Adventure font by Pixel Sagas.URL
+   A /trunk/fonts/font info and licenses/Enigmatic - legal_en.txt
+   A /trunk/fonts/font info and licenses/Fitzgerald - legal_fz.txt
+   A /trunk/fonts/font info and licenses/Gentium - OFL.txt
+   A /trunk/fonts/font info and licenses/HookedUp - legal_ah.txt
+   A /trunk/fonts/font info and licenses/Liberation - COPYING.txt
+   A /trunk/fonts/font info and licenses/Liberation - License.txt
+   A /trunk/fonts/font info and licenses/ShyFoundry Freeware EULA (for SF... fonts).pdf
+   A /trunk/fonts/font info and licenses/Vera Serif - COPYRIGHT.TXT
+   A /trunk/fonts/font info and licenses/yellowjacket - readme.txt
+   A /trunk/fonts/swfit.ttf
+
+- readded some fonts.  All fonts included allow for redistribution.  Any licenses required to be included with their redistribution are found in the "fonts\font info and licenses" folder.
+- I created 4 backgrounds and 1 border for SharedMedia, and give permission for their redistribution with SharedMedia
+- updated INSTRUCTIONS for MyMedia.txt (fixed typos, clarified some things, added a short & sweet FAQ ) - be sure to read!
+- uppded TOC and version numbers for 3.3
+------------------------------------------------------------------------
+r177 | elkano | 2009-06-09 06:46:50 +0000 (Tue, 09 Jun 2009) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/SharedMedia.toc
+
+added CallbackHandler-1.0 external
+------------------------------------------------------------------------
+r176 | elkano | 2009-06-05 09:54:53 +0000 (Fri, 05 Jun 2009) | 4 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   D /trunk/Core.lua
+   M /trunk/INSTRUCTIONS for MyMedia.txt
+   D /trunk/Libs
+   D /trunk/MyMedia files
+   A /trunk/MyMedia.bat.txt
+   M /trunk/SharedMedia.lua
+   M /trunk/SharedMedia.toc
+   D /trunk/fonts/ABF.ttf
+   D /trunk/fonts/Adventure.ttf
+   D /trunk/fonts/Avqest.ttf
+   D /trunk/fonts/Bazooka.ttf
+   D /trunk/fonts/BigNoodleTitling-Oblique.ttf
+   D /trunk/fonts/BigNoodleTitling.ttf
+   D /trunk/fonts/BlackChancery.ttf
+   D /trunk/fonts/Emblem.ttf
+   D /trunk/fonts/Enigma__2.ttf
+   D /trunk/fonts/Movie_Poster-Bold.ttf
+   D /trunk/fonts/Porky.ttf
+   D /trunk/fonts/Tangerin.ttf
+   D /trunk/fonts/Tw_Cen_MT_Bold.ttf
+   D /trunk/fonts/Ultima_Campagnoli.ttf
+   D /trunk/fonts/VeraSe.ttf
+   D /trunk/fonts/Yellowjacket.ttf
+   D /trunk/fonts/rm_midse.ttf
+
+WARNING: If you used MyMedia, make sure to backup your files before updating!
+- from now on SharedMedia will only register with LibSharedMedia-3.0
+- removed all fonts because of license issues; some of them may be readded later
+- changed the way MyMedia works to prevent eg CC from deleting your stuff in future read the instructions
+------------------------------------------------------------------------
+

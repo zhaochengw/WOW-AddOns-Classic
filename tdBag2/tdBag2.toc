@@ -1,0 +1,12 @@
+## Interface: 30404
+## Title: |cff00fffftdBag2|r - One bag
+## Title-zhCN: |cff00fffftdBag2|r - 整合背包
+## Notes: One bag, view other characters' bags, banks, mailboxes, equipment, etc.
+## Notes-zhCN: 整合背包，查看其它角色背包、银行、邮箱、装备等
+## IconTexture: Interface\Buttons\Button-Backpack-Up
+## Author: Dencer
+## Version: 2.3.5
+## OptionalDeps: tdPack2, tdSync
+## SavedVariables: TDDB_BAG2
+
+Load.xml

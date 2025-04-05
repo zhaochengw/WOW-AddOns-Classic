@@ -1,0 +1,9 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="FBUIfunction.lua"/>
+    <Script file="HistoryUIfunction.lua"/>
+    <Script file="ReceiveUIfunction.lua"/>
+    <Script file="DuiZhangUIfunction.lua"/>
+    <Script file="Hope.lua"/>
+    <Script file="CreateFBUI.lua"/>
+    <Script file="Model.lua"/>
+</Ui>

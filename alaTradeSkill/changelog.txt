@@ -1,0 +1,8 @@
+
+2025-04-02
+Fix errors of QueueFrame.
+Delete duplicated rank info.
+Update scroll lib.
+Try to fix leatherwork ui in Korean client.
+Correct some translations.
+Add changelog file

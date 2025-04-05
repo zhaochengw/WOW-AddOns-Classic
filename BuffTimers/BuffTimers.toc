@@ -1,0 +1,26 @@
+## Interface: 30404
+## IconTexture: Interface\AddOns\BuffTimers\Media\icon
+## Title: BuffTimers
+## Author: mdhippie
+## Notes: v2.0.3 -- Buff time options
+## Version: v2.0.3
+## DefaultState: enabled
+## SavedVariables: BuffTimersDB
+## OptionalDeps: Ace3, LibSharedMedia-3.0
+## Category: Buffs & Debuffs
+## Category-ruRU: Баффы & Дебаффы
+
+## X-Category: Buffs & Debuffs
+## X-Credits: mdhippie
+## X-License: All Rights Reserved: You are free to fork and modify on GitHub, please ask us about anything else.
+## X-Website: https://github.com/sandervspl/BuffTimers
+## X-Curse-Project-ID: 352620
+## X-Wago-ID: XrNkde6a
+
+#@no-lib-strip@
+embeds.xml
+#@end-no-lib-strip@
+
+Locales.lua
+BuffTimers.lua
+Options.lua

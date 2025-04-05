@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="TDINSPECT_VIEW_TARGET" category="BINDING_CATEGORY_TDINSPECT">
+        LibStub('AceAddon-3.0'):GetAddon('tdInspect'):InspectTarget()
+    </Binding>
+    <Binding name="TDINSPECT_VIEW_MOUSEOVER" category="BINDING_CATEGORY_TDINSPECT">
+        LibStub('AceAddon-3.0'):GetAddon('tdInspect'):InspectMouseover()
+    </Binding>
+</Bindings>

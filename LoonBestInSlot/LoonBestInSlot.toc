@@ -1,0 +1,41 @@
+## Interface: 30404
+## Title: Loon Best In Slot
+## Notes: 
+## OptionalDeps: LinkWrangler
+## SavedVariables: LBISServerSettings
+## SavedVariablesPerCharacter: LBISSettings
+## Version: 4.8.0
+
+libs\LibStub.lua
+libs\CallbackHandler-1.0.lua
+libs\LibDataBroker-1.1.lua
+libs\LibDBIcon-1.0.lua
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+
+Localization\Localization.xml
+
+Settings.lua
+
+DB\ItemSources.lua
+DB\GemSources.lua
+DB\EnchantSources.lua
+DB\TierSources.lua
+
+LoonBestInSlot.lua
+Common.lua
+Guides\Guides.xml
+UpdateTooltips.lua
+UserItemCache.lua
+MinimapButton.lua
+
+UI\LootBrowser.lua
+UI\ItemList.lua
+UI\GemList.lua
+UI\EnchantList.lua
+UI\CustomEditList.lua
+UI\CustomItemList.lua
+UI\AutoComplete.lua
+UI\SearchFrame.lua
+UI\NewFeaturesWindow.lua

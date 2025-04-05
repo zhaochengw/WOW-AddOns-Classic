@@ -1,0 +1,8 @@
+<!--
+$Id: Bindings.xml 208 2017-02-07 15:41:51Z arith $
+-->
+<Bindings>
+	<Binding name="ACCOUNTANT_CLASSIC_TOGGLE" header="ACCOUNTANT_CLASSIC_TITLE" category="ADDONS">
+		AccountantClassic_ButtonOnClick();
+	</Binding>
+</Bindings>

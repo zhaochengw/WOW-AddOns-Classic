@@ -1,0 +1,7 @@
+## Interface: 30404
+## Title: AttackTimer
+## Title-zhCN: 攻击计时
+## Title-zhTW: 攻擊計時
+## Notes-zhCN: 攻击计时
+
+AttackTimer.xml

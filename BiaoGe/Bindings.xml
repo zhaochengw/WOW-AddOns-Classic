@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="BIAOGE" Category="BINDING_HEADER_BIAOGE">
+        BG.MainFrame:SetShown(not BG.MainFrame:IsVisible())
+    </Binding>
+    <Binding name="RoleOverview" Category="BINDING_HEADER_BIAOGE">
+        BG.SetFBCD(nil, nil, true)
+    </Binding>
+</Bindings>
