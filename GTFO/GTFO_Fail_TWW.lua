@@ -1722,6 +1722,11 @@ GTFO.SpellID["472850"] = {
   sound = 3;
 };
 
+GTFO.SpellID["474314"] = {
+  --desc = "Abyssal Grasp (Abyssal Tentacle)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- *******************
 --- * Nerub-ar Palace *
@@ -2284,6 +2289,11 @@ GTFO.SpellID["468872"] = {
   sound = 3;
 };
 
+GTFO.SpellID["460625"] = {
+  --desc = "Burning Shrapnel (The Geargrinder)";
+  sound = 3;
+};
+
 GTFO.SpellID["1217939"] = {
   --desc = "Hot Wheels (Geargrinder Biker)";
   sound = 3;
@@ -2401,6 +2411,7 @@ GTFO.SpellID["467615"] = {
   --desc = "Sound Cannon (Rik Reverb) - Actual blast";
   sound = 3;
   ignoreEvent = "SoundCannon";
+  soundMythic = 0;
 };
 
 GTFO.SpellID["467991"] = {
@@ -2563,6 +2574,7 @@ GTFO.SpellID["469326"] = {
 GTFO.SpellID["1214226"] = {
   --desc = "Cratering (Chrome King Gallywix)";
   sound = 3;
+  test = true; -- Distance check
 };
 
 GTFO.SpellID["465938"] = {
@@ -2592,6 +2604,28 @@ GTFO.SpellID["1214611"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["1215643"] = {
+  --desc = "Door!";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["474180"] = {
+  --desc = "Acid Rain (Darkfuse Wretch)";
+  sound = 3;
+};
+
+GTFO.SpellID["1219528"] = {
+  --desc = "Seek and Destroy (Crawler Mine)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["1214998"] = {
+  --desc = "Vermincide (Bomb Tail)";
+  sound = 3;
+  applicationOnly = true;
+};
 
 end
 

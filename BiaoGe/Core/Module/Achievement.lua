@@ -767,10 +767,3 @@ BG.Init(function()
         BG.UpdateAchievementFrame()
     end)
 end)
-
--- BG.RegisterEvent("ADDON_LOADED", function(self, event, addonName)
---     if addonName ~= "Blizzard_AchievementUI" then return end
---     hooksecurefunc("AchievementFrameComparison_UpdateStatusBars", function(...)
---         pt(...)
---     end)
--- end)

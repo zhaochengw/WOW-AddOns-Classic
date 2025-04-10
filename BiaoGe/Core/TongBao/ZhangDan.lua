@@ -118,7 +118,7 @@ local function FaKuan(onClick, tbl1, tbl2)
     local yes
     local tbl_boss = {}
     local b = Maxb[FB]
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, b) do
         local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
         local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
         local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -167,7 +167,7 @@ local function ZhiChu(onClick, tbl1, tbl2)
     local yes
     local tbl_boss = {}
     local b = Maxb[FB] + 1
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, b) do
         local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
         local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
         if zhuangbei then
@@ -202,8 +202,8 @@ end
 
 local function HasQianKuan()
     local FB = BG.FB1
-    for b = 1, Maxb[FB] do
-        for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
             local bt = BG.Frame[FB]["boss" .. b]["qiankuan" .. i]
             if BG.Frame[FB]["boss" .. b]["qiankuan" .. i] and BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
                 return true
@@ -229,7 +229,7 @@ local function CreateListTable(onClick, tbl1)
         local yes
         for b = 1, Maxb[FB] do
             local tbl_boss = {}
-            for i = 1, BG.Maxi do
+            for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -315,7 +315,7 @@ local function CreateListTable(onClick, tbl1)
         local num = 1
 
         local b = Maxb[FB] + 1
-        for i = 1, BG.Maxi, 1 do
+        for i = 1, BG.GetMaxi(FB, b), 1 do
             local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
             local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
             if zhuangbei then

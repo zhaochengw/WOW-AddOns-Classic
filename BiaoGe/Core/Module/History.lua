@@ -114,7 +114,7 @@ function BG.HistoryUI()
             BiaoGe.History[FB][DT].tradeTbl = {}
             for b = 1, Maxb[FB] + 2 do
                 BiaoGe.History[FB][DT]["boss" .. b] = {}
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     if zhuangbei then
                         if zhuangbei:GetText() ~= "" then
@@ -355,7 +355,7 @@ function BG.HistoryUI()
                 local bosscolor = BG.Boss[FB]["boss" .. b].color
                 text = "|cff" .. bosscolor .. bossname2 .. RN
                 BG.frameWenBen.edit:Insert(text) -- BOSS名字
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     if Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                         if Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() ~= "" or Frame[FB]["boss" .. b]["maijia" .. i]:GetText() ~= "" or Frame[FB]["boss" .. b]["jine" .. i]:GetText() ~= "" then
                             text = Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. " " .. RGB_16(Frame[FB]["boss" .. b]["maijia" .. i]) .. " " .. Frame[FB]["boss" .. b]["jine" .. i]:GetText() .. "\n"
@@ -385,7 +385,7 @@ function BG.HistoryUI()
                 if tonumber(_date) == tonumber(BiaoGe.HistoryList[FB][num][1]) then
                     local DT = BiaoGe.HistoryList[FB][num][1]
                     for b = 1, Maxb[FB] + 2 do
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                                 BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i] or "")
                                 BG.Frame[FB]["boss" .. b]["maijia" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] or "")
@@ -622,21 +622,19 @@ function BG.HistoryUI()
     end
 
     -- 删除历史表格里的loot记录
-    do
-        BG.Once("history", 250312, function()
-            for _, FB in ipairs(BG.FBtable) do
-                for DT, v in pairs(BiaoGe.History[FB]) do
-                    local b = 1
-                    while BiaoGe.History[FB][DT]["boss" .. b] do
-                        for i = 1, BG.Maxi do
-                            BiaoGe.History[FB][DT]["boss" .. b]["loot" .. i] = nil
-                        end
-                        b = b + 1
+    BG.Once("history", 250312, function()
+        for _, FB in ipairs(BG.FBtable) do
+            for DT, v in pairs(BiaoGe.History[FB]) do
+                local b = 1
+                while BiaoGe.History[FB][DT]["boss" .. b] do
+                    for i = 1, BG.GetMaxi(FB, b) do
+                        BiaoGe.History[FB][DT]["boss" .. b]["loot" .. i] = nil
                     end
+                    b = b + 1
                 end
             end
-        end)
-    end
+        end
+    end)
 end
 
 ------------------下拉框架的内容------------------
@@ -649,7 +647,6 @@ do
             BG.History["ListButton" .. i] = nil
             i = i + 1
         end
-        -- BG.History.scroll.ScrollBar:Hide()
 
         -- 再重新创建新的列表内容
         for i = 1, #BiaoGe.HistoryList[FB] do
@@ -687,6 +684,7 @@ do
 
             -- 单击触发
             bt:SetScript("OnMouseUp", function(self, button)
+                BG.CreateFBUI(FB, "History")
                 BG.FrameHide(2)
 
                 if IsAltKeyDown() then
@@ -695,7 +693,7 @@ do
                         BG.DeleteHistory(FB, i)
                         BG.History.GaiMingFrame:Hide()
                         for b = 1, Maxb[FB] + 2 do
-                            for i = 1, BG.Maxi do
+                            for i = 1, BG.GetMaxi(FB, b) do
                                 if BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i] then
                                     BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
                                     BG.HistoryFrame[FB]["boss" .. b]["maijia" .. i]:SetText("")
@@ -741,7 +739,7 @@ do
                 local DT = BiaoGe.HistoryList[FB][i][1]
                 for b = 1, Maxb[FB] + 2 do
                     if BiaoGe.History[FB][DT]["boss" .. b] then
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             if BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i] then
                                 BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i] or "")
                                 BG.HistoryFrame[FB]["boss" .. b]["maijia" .. i]:SetText(BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] or "")
@@ -872,7 +870,7 @@ do
             if db.History[FB][DT] then
                 local b = 1
                 while db.History[FB][DT]["boss" .. b] do
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if #tbl >= maxCount then break end
                         local zhuangbei = db.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
                         local _itemID = GetItemID(zhuangbei)

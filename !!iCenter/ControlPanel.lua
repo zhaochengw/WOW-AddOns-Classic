@@ -2178,8 +2178,7 @@ if title ~= nil then
 					if not IsAddOnLoaded("SimpleRaidTargetIcons") then
 						LoadAddOn("SimpleRaidTargetIcons");
 					end
-					 Settings.OpenToCategory(SRTI.menu);
-					 Settings.OpenToCategory(SRTI.menu);
+					SlashCmdList["SRTI"]("");
 				end;
 				test = function()
 					if not IsAddOnLoaded("SimpleRaidTargetIcons") and not IsAddOnLoadOnDemand("SimpleRaidTargetIcons") then

@@ -287,9 +287,9 @@ BG.Init(function()
         if typeID == 2 or typeID == 4 then
             levelText = "(" .. level .. ")"
         end
-        local startI, endI, addI = 1, BG.Maxi, 1
+        local startI, endI, addI = 1, BG.GetMaxi(FB, numb), 1
         if fromLast then
-            startI, endI, addI = BG.Maxi, 1, -1
+            startI, endI, addI = BG.GetMaxi(FB, numb), 1, -1
         end
         for i = startI, endI, addI do
             local zb = BG.Frame[FB]["boss" .. numb]["zhuangbei" .. i]
@@ -333,7 +333,7 @@ BG.Init(function()
                 local inSertItem = ""
                 if numb ~= Maxb[FB] - 1 then
                     local has
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, numb) do
                         local zb = BG.Frame[FB]["boss" .. Maxb[FB] - 1]["zhuangbei" .. i]
                         if zb and zb:GetText() == "" then
                             has = true
@@ -380,8 +380,8 @@ BG.Init(function()
         if typeID == 2 or typeID == 4 then
             levelText = "(" .. level .. ")"
         end
-        for b = 1, Maxb[FB] do
-            for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                 local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local duizhangzb = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
                 if zb then

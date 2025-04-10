@@ -76,16 +76,17 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20250330173039")
+DBM.Revision = parseCurseDate("20250404120352")
 DBM.TaintedByTests = false -- Tests may mess with some internal state, you probably don't want to rely on DBM for an important boss fight after running it in test mode
 
 local fakeBWVersion, fakeBWHash = 378, "fc82835"--378.7
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "11.1.13"--Core version
+DBM.DisplayVersion = "11.1.14"--Core version
 DBM.classicSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2025, 3, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-PForceDisable = 16--When this is incremented, trigger force disable regardless of major patch
+DBM.dungeonSubVersion = 0
+DBM.ReleaseRevision = releaseDate(2025, 4, 4) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+PForceDisable = 17--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
 -- support for github downloads, which doesn't support curse keyword expansion
@@ -1545,7 +1546,7 @@ do
 			local elapsed = time() - tonumber(startTime)
 			local remaining = timer - elapsed
 			if remaining > 0 then
-				breakTimerStart(self, remaining, playerName, nil, true)
+				breakTimerStart(self, remaining, playerName, true)
 			else--It must have ended while we were offline, kill variable.
 				self.Options.RestoreSettingBreakTimer = nil
 			end
@@ -1569,11 +1570,16 @@ do
 		if modname == "DBM-Core" and not isLoaded then
 			--Establish a classic sub mod version for version checks and out of date notification/checking
 			if not private.isRetail then
-				local checkedSubmodule = private.isCata and "DBM-Raids-Cata" or private.isWrath and "DBM-Raids-WoTLK" or private.isBCC and "DBM-Raids-BC" or private.isClassic and "DBM-Raids-Vanilla"
-				if checkedSubmodule and C_AddOns.DoesAddOnExist(checkedSubmodule) then
-					local version = C_AddOns.GetAddOnMetadata(checkedSubmodule, "Version") or "r0"
+				local checkedRaidmodule = private.isCata and "DBM-Raids-Cata" or private.isWrath and "DBM-Raids-WoTLK" or private.isBCC and "DBM-Raids-BC" or private.isClassic and "DBM-Raids-Vanilla"
+				if checkedRaidmodule and C_AddOns.DoesAddOnExist(checkedRaidmodule) then
+					local version = C_AddOns.GetAddOnMetadata(checkedRaidmodule, "Version") or "r0"
 					DBM.classicSubVersion = tonumber(string.sub(version, 2, 4)) or 0
 				end
+			end
+			local checkedDungeonmodule = private.isRetail and "DBM-Party-WarWithin" or private.isCata and "DBM-Party-Cataclysm" or private.isWrath and "DBM-Party-WotLK" or private.isBCC and "DBM-Party-BC" or "DBM-Party-Vanilla"
+			if checkedDungeonmodule and C_AddOns.DoesAddOnExist(checkedDungeonmodule) then
+				local version = C_AddOns.GetAddOnMetadata(checkedDungeonmodule, "Version") or "r0"
+				DBM.dungeonSubVersion = tonumber(string.sub(version, 2, 4)) or 0
 			end
 			isLoaded = true
 			for _, v in ipairs(onLoadCallbacks) do
@@ -2193,9 +2199,9 @@ do
 			if v.displayVersion and not v.bwversion then--DBM, no BigWigs
 				if self.Options.ShowAllVersions then
 					if v.classicSubVers then
-						self:AddMsg(L.VERSIONCHECK_ENTRY:format(name, L.DBM .. " " .. v.displayVersion .. " / " .. v.classicSubVers, showRealDate(v.revision), v.VPVersion or ""), false)--Only display VP version if not running two mods
+						self:AddMsg(L.VERSIONCHECK_ENTRY:format(name, L.DBM .. " " .. v.displayVersion .. " / " .. v.classicSubVers, showRealDate(v.revision), L.DUNGEONS .. v.dungeonSubVers), false)--Only display Dungeon version if not running two mods
 					else
-						self:AddMsg(L.VERSIONCHECK_ENTRY:format(name, L.DBM .. " " .. v.displayVersion, showRealDate(v.revision), v.VPVersion or ""), false)--Only display VP version if not running two mods
+						self:AddMsg(L.VERSIONCHECK_ENTRY:format(name, L.DBM .. " " .. v.displayVersion, showRealDate(v.revision), L.DUNGEONS .. v.dungeonSubVers), false)--Only display Dungeon version if not running two mods
 					end
 				end
 				if notify and v.revision < self.ReleaseRevision then
@@ -2409,6 +2415,7 @@ do
 				if not private.isRetail then
 					raid[playerName].classicSubVers = DBM.classicSubVersion
 				end
+				raid[playerName].dungeonSubVers = DBM.dungeonSubVersion
 				raid[playerName].locale = GetLocale()
 				raid[playerName].enabledIcons = tostring(not DBM.Options.DontSetIcons)
 				raidGuids[UnitGUID("player") or ""] = playerName
@@ -2610,6 +2617,7 @@ do
 			if not private.isRetail then
 				raid[playerName].classicSubVers = DBM.classicSubVersion
 			end
+			raid[playerName].dungeonSubVers = DBM.dungeonSubVersion
 			raid[playerName].locale = GetLocale()
 			raidGuids[UnitGUID("player")] = playerName
 			lastGroupLeader = nil
@@ -4564,18 +4572,15 @@ do
 
 	do
 		local dummyMod2 -- dummy mod for the break timer
-		function breakTimerStart(self, timer, sender)--, blizzardTimer, isRecovery
-	--		if not private.isWrath and not blizzardTimer and not isRecovery then return end
-			--if sender then--Blizzard cancel events triggered by system (such as encounter start) have no sender
-			--	if blizzardTimer then
-			--		local unitId = self:GetUnitIdFromGUID(sender)
-			--		sender = self:GetUnitFullName(unitId) or sender
-			--	end
-				local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned(sender) == "TANK"
-				if (self:GetRaidRank(sender) == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or private.IsEncounterInProgress() then
-					return
-				end
-			--end
+		---@param self DBM
+		---@param timer number
+		---@param sender string
+		---@param isRecovery boolean?
+		function breakTimerStart(self, timer, sender, isRecovery)
+			local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned(sender) == "TANK"
+			if not isRecovery and ((self:GetRaidRank(sender) == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" or private.IsEncounterInProgress()) then
+				return
+			end
 			if not dummyMod2 then
 				local threshold = self.Options.PTCountThreshold2
 				threshold = floor(threshold)
@@ -4629,6 +4634,9 @@ do
 			return
 		end
 		if timer == 0 or DBM:AntiSpam(1, "BT" .. sender) then
+			--For some reawson LuaLS is really stupid here. despite fact for it to be IMPOSSIBLE for timer to be anything but a valid number
+			--It expects an extra number check for no reason at all
+			---@diagnostic disable-next-line: param-type-mismatch
 			breakTimerStart(DBM, timer, sender)
 		end
 	end
@@ -4640,7 +4648,10 @@ do
 		DBM:Unschedule(DBM.RequestTimers)--IF we got BTR3 sync, then we know immediately RequestTimers was successful, so abort others
 		if #inCombat >= 1 then return end
 		if DBT:GetBar(L.TIMER_BREAK) then return end--Already recovered. Prevent duplicate recovery
-		breakTimerStart(DBM, timer, sender)--, nil, true
+		--For some reawson LuaLS is really stupid here. despite fact for it to be IMPOSSIBLE for timer to be anything but a valid number
+		--It expects an extra number check for no reason at all
+		---@diagnostic disable-next-line: param-type-mismatch
+		breakTimerStart(DBM, timer, sender, true)--, nil, true
 	end
 
 	local function SendVersion(guild)
@@ -4661,16 +4672,7 @@ do
 			return
 		end
 		--(Note, faker isn't to screw with bigwigs nor is theirs to screw with dbm, but rathor raid leaders who don't let people run WTF they want to run)
-		local VPVersion
-		local VoicePack = DBM.Options.ChosenVoicePack2
-		if not private.voiceSessionDisabled and VoicePack ~= "None" and DBM.VoiceVersions[VoicePack] then
-			VPVersion = "/ VP" .. VoicePack .. ": v" .. DBM.VoiceVersions[VoicePack]
-		end
-		if VPVersion then
-			sendSync(3, "V", ("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(PForceDisable), tostring(DBM.classicSubVersion or 0), VPVersion), "NORMAL")
-		else
-			sendSync(3, "V", ("%s\t%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(PForceDisable), tostring(DBM.classicSubVersion or 0)), "NORMAL")
-		end
+		sendSync(3, "V", ("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s"):format(tostring(DBM.Revision), tostring(DBM.ReleaseRevision), DBM.DisplayVersion, GetLocale(), tostring(not DBM.Options.DontSetIcons), tostring(PForceDisable), tostring(DBM.classicSubVersion or 0), tostring(DBM.dungeonSubVersion or 0)), "NORMAL")
 	end
 
 	local function HandleVersion(revision, version, displayVersion, forceDisable, sender, classicSubVers)
@@ -4789,32 +4791,26 @@ do
 		end
 	end
 
-	syncHandlers["V"] = function(sender, protocol, revision, version, displayVersion, locale, iconEnabled, forceDisable, classicSubVers, VPVersion)
-		revision, version, classicSubVers = tonumber(revision), tonumber(version), tonumber(classicSubVers)
-		if protocol >= 3 then
-			--Nil it out on retail, replace with string on classic versions
-			if classicSubVers and classicSubVers == 0 then
-				if private.isRetail then
-					classicSubVers = nil
-				else
-					classicSubVers = L.MOD_MISSING
-				end
+	syncHandlers["V"] = function(sender, protocol, revision, version, displayVersion, locale, iconEnabled, forceDisable, classicSubVers, dungeonSubVers)
+		revision, version, classicSubVers, dungeonSubVers = tonumber(revision), tonumber(version), tonumber(classicSubVers), tonumber(dungeonSubVers) or 0
+		if protocol < 3 then return end
+		--Nil it out on retail, replace with string on classic versions
+		if classicSubVers and classicSubVers == 0 then
+			if private.isRetail then
+				classicSubVers = nil
+			else
+				classicSubVers = L.MOD_MISSING
 			end
-			forceDisable = tonumber(forceDisable) or 0
-		elseif protocol >= 2 then
-			--Protocol 2 did not send classicSubVers
-			VPVersion = classicSubVers
-			forceDisable = tonumber(forceDisable) or 0
-		else
-			-- Protocol 1 did not send forceDisable, VPVersion was in that position
-			VPVersion = forceDisable
-			forceDisable = 0
 		end
+		if dungeonSubVers and dungeonSubVers == 0 then
+			dungeonSubVers = L.NOT_INSTALLED
+		end
+		forceDisable = tonumber(forceDisable) or 0
 		if revision and version and displayVersion and raid[sender] then
 			raid[sender].revision = revision
 			raid[sender].version = version
 			raid[sender].displayVersion = displayVersion
-			raid[sender].VPVersion = VPVersion
+			raid[sender].dungeonSubVers = dungeonSubVers
 			if not private.isRetail then
 				raid[sender].classicSubVers = classicSubVers
 			end
@@ -6747,22 +6743,18 @@ end
 do
 	--Handle new spell name requesting with wrapper, to make api changes easier to handle
 	local GetSpellInfo, GetSpellTexture, GetSpellCooldown, GetSpellName
-	local newPath, halfAssedClassicPath
+	local halfAssedClassicPath
 	if C_Spell and C_Spell.GetSpellInfo then
-		newPath = true
 		GetSpellInfo, GetSpellTexture, GetSpellName = C_Spell.GetSpellInfo, C_Spell.GetSpellTexture, C_Spell.GetSpellName
-		--Blizzard forgot to sync GetSpellCooldown to C Space with other spells in 1.15.4
+		--Blizzard forgot to sync GetSpellCooldown to C Space with other spells in all classic versions (cata and vanilla and wrath alike)
 		--This is what happens when you do half assed syncs that can't even maintain parity properly during rebases
 		if not C_Spell.GetSpellCooldown then
+			---@diagnostic disable-next-line: undefined-field
 			GetSpellCooldown = _G.GetSpellCooldown
 			halfAssedClassicPath = true--Need to set variable so the wrapper knows it's arg return and not table return
 		else
 			GetSpellCooldown = C_Spell.GetSpellCooldown
 		end
-	else
-		newPath = false
-		---@diagnostic disable-next-line: undefined-field
-		GetSpellInfo, GetSpellTexture, GetSpellCooldown = _G.GetSpellInfo, _G.GetSpellTexture, _G.GetSpellCooldown
 	end
 	---Wrapper for Blizzard GetSpellInfo global that converts new table returns to old arg returns
 	---<br>This avoids having to significantly update nearly 20 years of boss mods.
@@ -6773,25 +6765,9 @@ do
 			error("|cffff0000Invalid call to GetSpellInfo for spellId. spellId is missing! |r")
 		end
 		local name, rank, icon, castingTime, minRange, maxRange, returnedSpellId
-		if newPath then
-			local spellTable = GetSpellInfo(spellId)
-			if spellTable then
-				---@diagnostic disable-next-line: undefined-field
-				name, rank, icon, castingTime, minRange, maxRange, returnedSpellId = spellTable.name, nil, spellTable.iconID, spellTable.castTime, spellTable.minRange, spellTable.maxRange, spellTable.spellID
-			end
-		else
-			name, rank, icon, castingTime, minRange, maxRange, returnedSpellId = GetSpellInfo(spellId)
-			--I want this for debug purposes to catch spellids that are removed from game/changed, but quietly to end user
-			if not returnedSpellId then--Bad request all together
-				if type(spellId) == "string" then
-					self:Debug("|cffff0000Invalid call to GetSpellInfo for spellId: |r" .. spellId .. " as a string!")
-				else
-					if spellId > 4 then
-						self:Debug("|cffff0000Invalid call to GetSpellInfo for spellId: |r" .. spellId)
-					end
-				end
-				return
-			end--Good request, return now
+		local spellTable = GetSpellInfo(spellId)
+		if spellTable then
+			name, rank, icon, castingTime, minRange, maxRange, returnedSpellId = spellTable.name, nil, spellTable.iconID, spellTable.castTime, spellTable.minRange, spellTable.maxRange, spellTable.spellID
 		end
 		return name, rank, icon, castingTime, minRange, maxRange, returnedSpellId
 	end
@@ -6816,12 +6792,7 @@ do
 	---@param spellId string|number --Should be number, but accepts string too since Blizzards api converts strings to number.
 	function DBM:GetSpellName(spellId)
 		if not spellId then return end--Unlike 10.x and older, 11.x now errors if called without a spellId
-		local spellName
-		if newPath then--Use spellname only function, avoid pulling entire spellinfo table if not needed
-			spellName = GetSpellName(spellId)
-		else
-			spellName = self:GetSpellInfo(spellId)
-		end
+		local spellName = GetSpellName(spellId)
 		return spellName
 	end
 
@@ -6830,7 +6801,7 @@ do
 	---@param spellId string|number --Should be number, but accepts string too since Blizzards api converts strings to number.
 	function DBM:GetSpellCooldown(spellId)
 		local start, duration, enable
-		if newPath and not halfAssedClassicPath then
+		if not halfAssedClassicPath then
 			local spellTable = GetSpellCooldown(spellId)
 			if spellTable then
 				---@diagnostic disable-next-line: undefined-field
@@ -9222,7 +9193,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
----@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250330171347" to be auto set by packager
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250404120352" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then

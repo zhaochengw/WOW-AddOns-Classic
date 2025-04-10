@@ -136,8 +136,8 @@ BG.Init(function()
     -- 找到合适的格子
     local function HasEmptyGeZi(link)
         local FB = BG.FB1
-        for b = 1, Maxb[FB] do
-            for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -167,8 +167,8 @@ BG.Init(function()
 
         updateFrame.time = 0
         local FB = BG.FB1
-        for b = 1, Maxb[FB] do
-            for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]

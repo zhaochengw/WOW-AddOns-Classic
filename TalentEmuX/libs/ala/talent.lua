@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 250320;
+local __version = 250404;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -30,7 +30,7 @@ end
 
 -->			upvalue
 	--
-	local pcall = pcall;
+	local pcall, xpcall, geterrorhandler = pcall, xpcall, geterrorhandler;
 	local GetTime = GetTime;
 	local print, date = print, date;
 	local type, tostring, tonumber = type, tostring, tonumber;
@@ -40,7 +40,7 @@ end
 	local floor, ceil = floor, ceil;
 	local RegisterAddonMessagePrefix = C_ChatInfo ~= nil and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix;
 	local IsAddonMessagePrefixRegistered = C_ChatInfo ~= nil and C_ChatInfo.IsAddonMessagePrefixRegistered or IsAddonMessagePrefixRegistered;
-	local GetRegisteredAddonMessagePrefixes = C_ChatInfo ~= nil and C_ChatInfo.GetRegisteredAddonMessagePrefixes or GetRegisteredAddonMessagePrefixes;
+	-- local GetRegisteredAddonMessagePrefixes = C_ChatInfo ~= nil and C_ChatInfo.GetRegisteredAddonMessagePrefixes or GetRegisteredAddonMessagePrefixes;
 	local SendAddonMessage = C_ChatInfo ~= nil and C_ChatInfo.SendAddonMessage or SendAddonMessage;
 	local After = C_Timer.After;
 	local GetPlayerInfoByGUID = GetPlayerInfoByGUID;
@@ -309,14 +309,18 @@ end
 	--
 -->		SharedMethod
 	--
+	__emulib.SafeCallRelease = pcall;
+	__emulib.SafeCallDebug = function(func, ...) return xpcall(func, geterrorhandler(), ...); end
 	function __emulib.Print(...)
 		print(date('\124cff00ff00%H:%M:%S\124r'), ...);
 		--	tinsert(logfile, { date('\124cff00ff00%H:%M:%S\124r'), ... });
 	end
 	local _, BNTAG = BNGetInfo();
 	if BNTAG == "\97\108\101\120\35\53\49\54\55\50\50" or BNTAG == "ALEX#125620" then
+		__emulib.SafeCall = __emulib.SafeCallDebug;
 		__emulib.Debug = __emulib.Print;
 	else
+		__emulib.SafeCall = __emulib.SafeCallRelease;
 		__emulib.Debug = function()
 		end
 	end
@@ -689,6 +693,14 @@ end
 			data.sub = __table_sub;
 		end
 		len = len or #data;
+		for index = len, 1, -1 do
+			local d = tonumber(data:sub(index, index));
+			if d == 0 or d == "0" then
+				len = len - 1;
+			else
+				break;
+			end
+		end
 		local num = 0;
 		local raw = 0;
 		local magic = 1;
@@ -737,7 +749,6 @@ end
 	--	arg			classIndex, level, {t1}, {t2}, {t3}, n1, n2, n3
 	--	return		code
 	function __emulib.EncodeFrameTalentDataV1(classIndex, level, D1, D2, D3, N1, N2, N3)
-		local data, len = nil, nil;
 		local TypeClassIndex = type(classIndex);
 		if TypeClassIndex == 'string' then
 			classIndex = __classHash[classIndex];
@@ -746,6 +757,7 @@ end
 			__emulib.Debug("EncodeFrameTalentDataV1", "type(classIndex)", TypeClassIndex, classIndex);
 			return nil;
 		end
+		local data, len = nil, nil;
 		if type(D1) == 'string' then
 			data, len = D1, D2 + D3 + N1;
 		elseif type(D1) == 'table' then
@@ -941,6 +953,14 @@ end
 		end
 	end
 	function __emulib.MergeTalentCodeV2(classIndex, level, activeGroup, numGroup, data1, len1, data2, len2)
+		local TypeClassIndex = type(classIndex);
+		if TypeClassIndex == 'string' then
+			classIndex = __classHash[classIndex];
+		elseif TypeClassIndex == 'number' and __classList[classIndex] then
+		else
+			__emulib.Debug("EncodeFrameTalentDataV1", "type(classIndex)", TypeClassIndex, classIndex);
+			return nil;
+		end
 		local LvLow = level % 64;
 		local LvHigh = (level - LvLow) / 64;
 
@@ -1454,6 +1474,27 @@ end
 		end
 		return true, DataTable;
 	end
+	function __emulib.EncodeEngravingDataV2(DataTable)
+		if next(DataTable) ~= nil then
+			local msg = nil;
+			for slot = 0, 19 do
+				local rune = DataTable[slot];
+				if rune ~= nil then
+					if msg == nil then
+						msg = __base64[slot] .. ":" .. EncodeNumber(info[1]) .. ":" .. EncodeNumber(info[2]);
+					else
+						msg = msg .. "+" .. __base64[slot] .. ":" .. EncodeNumber(info[1]) .. ":" .. EncodeNumber(info[2]);
+					end
+				end
+			end
+			if msg ~= nil then
+				return COMM_ENGRAVING_PREFIX .. msg;
+			else
+				return COMM_ENGRAVING_PREFIX;
+			end
+		end
+		return COMM_ENGRAVING_PREFIX;
+	end
 	function __emulib.EncodePlayerEngravingDataV2()
 		if SUPPORT_ENGRAVING then
 			local msg = nil;
@@ -1686,7 +1727,7 @@ function __emulib.ProcV1Message(prefix, msg, channel, sender)
 				for index = 1, __emulib._NumDistributors do
 					local proc = __emulib._CommDistributor[index].OnTalent;
 					if proc ~= nil then
-						pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeTalentDataV1, overheard);
+						__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeTalentDataV1, overheard);
 					end
 				end
 			end
@@ -1703,7 +1744,7 @@ function __emulib.ProcV1Message(prefix, msg, channel, sender)
 				for index = 1, __emulib._NumDistributors do
 					local proc = __emulib._CommDistributor[index].OnEquipment;
 					if proc ~= nil then
-						pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeEquipmentDataV1, overheard);
+						__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", __emulib.DecodeEquipmentDataV1, overheard);
 					end
 				end
 			end
@@ -1718,7 +1759,7 @@ function __emulib.ProcV1Message(prefix, msg, channel, sender)
 				for index = 1, __emulib._NumDistributors do
 					local proc = __emulib._CommDistributor[index].OnAddOn;
 					if proc ~= nil then
-						pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", nil, overheard);
+						__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", nil, overheard);
 					end
 				end
 			end
@@ -1728,7 +1769,7 @@ function __emulib.ProcV1Message(prefix, msg, channel, sender)
 				for index = 1, __emulib._NumDistributors do
 					local proc = __emulib._CommDistributor[index].OnPush;
 					if proc ~= nil then
-						pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", channel, control_code == COMM_PUSH_RECV_V1);
+						__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V1", channel, control_code == COMM_PUSH_RECV_V1);
 					end
 				end
 			end
@@ -1817,35 +1858,35 @@ function __emulib.ProcV2Message(prefix, msg, channel, sender)
 			for index = 1, __emulib._NumDistributors do
 				local proc = __emulib._CommDistributor[index].OnTalent;
 				if proc ~= nil then
-					pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeTalentDataV2, overheard);
+					__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeTalentDataV2, overheard);
 				end
 			end
 		elseif v2_ctrl_code == "!G" then
 			for index = 1, __emulib._NumDistributors do
 				local proc = __emulib._CommDistributor[index].OnGlyph;
 				if proc ~= nil then
-					pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeGlyphDataV2, overheard);
+					__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeGlyphDataV2, overheard);
 				end
 			end
 		elseif v2_ctrl_code == "!E" then
 			for index = 1, __emulib._NumDistributors do
 				local proc = __emulib._CommDistributor[index].OnEquipment;
 				if proc ~= nil then
-					pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
+					__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
 				end
 			end
 		elseif v2_ctrl_code == "!N" then
 			for index = 1, __emulib._NumDistributors do
 				local proc = __emulib._CommDistributor[index].OnEngraving;
 				if proc ~= nil then
-					pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEngravingDataV2, overheard);
+					__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEngravingDataV2, overheard);
 				end
 			end
 		elseif v2_ctrl_code == "!A" then
 			for index = 1, __emulib._NumDistributors do
 				local proc = __emulib._CommDistributor[index].OnAddOn;
 				if proc ~= nil then
-					pcall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", nil, overheard);
+					__emulib.SafeCall(proc, prefix, Ambiguate(sender, 'none'), code, "V2", nil, overheard);
 				end
 			end
 		end

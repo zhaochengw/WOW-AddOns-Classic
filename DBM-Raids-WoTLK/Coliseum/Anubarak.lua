@@ -208,7 +208,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
--- 250325修改部分（Anubarak.lua）
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg and msg:find(L.Burrow) then
 		self:SetStage(2)
@@ -217,7 +216,7 @@ function mod:RAID_BOSS_EMOTE(msg)
 		warnAdds:Cancel()
 		warnSubmerge:Show()
 		warnEmergeSoon:Schedule(55)
-		timerEmerge:Start(65)
+		timerEmerge:Start()
 		timerFreezingSlash:Stop()
 	elseif msg and msg:find(L.Emerge) then
 		self:SetStage(1)
@@ -226,11 +225,8 @@ function mod:RAID_BOSS_EMOTE(msg)
 		warnAdds:Schedule(5)
 		self:Schedule(5, Adds, self)
 		warnEmerge:Show()
-		warnSubmergeSoon:Schedule(70)
-		timerSubmerge:Start(80)
--- 其他代码不变 修改by 欺世@审判
-		
-		
+		warnSubmergeSoon:Schedule(65)
+		timerSubmerge:Start()
 		if self:IsDifficulty("heroic10", "heroic25") then
 			timerShadowStrike:Stop()
 			preWarnShadowStrike:Cancel()

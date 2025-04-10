@@ -19,8 +19,11 @@ local AddTexture = ns.AddTexture
 
 local pt = print
 
+function BG.RoadBossUI()
+    if BG.BOSSIsRoadUI then return end
+    BG.BOSSIsRoadUI = true
 
-BG.Init(function()
+
     for i, FB in ipairs(BG.FBtable) do
         if FB ~= "ICC" then
             local t = BG["BossFrame" .. FB]:CreateFontString()
@@ -1935,7 +1938,7 @@ BG.Init(function()
         local text1 = L["P1中了死疽马上靠近副坦克，不要毛P1小怪的伤害，转阶段优先打冰球，P2/P3中了污染第一时间跑出人群。P3内场时，优先处理靠近大团的卑劣的灵魂"]
         BG.CreateBossClassFrame(BG.BossFrameICC["Boss" .. bossnum].classFrame, 4, text1)
     end
-end)
+end
 
 --[[
     local bossnum = 4

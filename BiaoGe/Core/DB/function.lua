@@ -25,9 +25,9 @@ ns.Size = Size
 
 ----------把16进制颜色转换成0-1RGB----------
 local function RGB(hex, Alpha)
-    local red = string.sub(hex, 1, 2)
-    local green = string.sub(hex, 3, 4)
-    local blue = string.sub(hex, 5, 6)
+    local red = hex:sub(1, 2)
+    local green = hex:sub(3, 4)
+    local blue = hex:sub(5, 6)
 
     red = tonumber(red, 16) / 255
     green = tonumber(green, 16) / 255
@@ -63,8 +63,7 @@ end
 function BG.Init2(func)
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:SetScript("OnEvent", function(self, event, isLogin, isReload)
-        if not (isLogin or isReload) then return end
+    f:SetScript("OnEvent", function(self, event)
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
         self:Hide()
         func()
@@ -141,7 +140,7 @@ function BG.GFN(name)
     if not name then return end
     local name, realm = strsplit("-", name)
     realm = realm or GetRealmName()
-    return name.."-"..realm
+    return name .. "-" .. realm
 end
 
 function BG.GSN(name)
@@ -158,5 +157,3 @@ function BG.SPN(name)
     if not name then return end
     return strsplit("-", name)
 end
-
-

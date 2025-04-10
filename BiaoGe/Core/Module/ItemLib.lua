@@ -323,6 +323,12 @@ do
         end
         if not isSameEquipLoc then return false end
 
+        if BiaoGe.ItemLib.iLevel[FB] then
+            if info[FB][itemID].level < BiaoGe.ItemLib.iLevel[FB] then
+                return false
+            end
+        end
+
         local subclassID = info[FB][itemID].subclassID
         local tooltipText = info[FB][itemID].tooltipText
         return not BG.FilterAll(itemID, typeID, EquipLoc, subclassID, tooltipText)
@@ -1331,6 +1337,7 @@ function BG.UpdateAllItemLib()
     BG.UpdateItemLib_RightHope_All()
     BG.UpdateItemLib_RightHope_IsHaved_All()
     BG.UpdateItemLib_RightHope_IsLooted_All()
+    BG.ItemLibMainFrame.iLevelEdit:SetText(BiaoGe.ItemLib.iLevel[BG.FB1] or "")
 end
 
 -- 更新心愿装备
@@ -1536,7 +1543,7 @@ do
         local itemID = itemID or GetItemID(bt:GetText())
         if itemID then
             for b = 1, Maxb[FB] do
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     if zb then
                         local _itemID = GetItemID(zb:GetText())
@@ -1725,6 +1732,7 @@ function BG.ItemLibUI()
     BiaoGe.ItemLib.itemLibOrderButtonID = BiaoGe.ItemLib.itemLibOrderButtonID or 3
     BiaoGe.ItemLib.itemLibOrder = BiaoGe.ItemLib.itemLibOrder or 1
     BiaoGe.ItemLib.fitlerGet = BiaoGe.ItemLib.fitlerGet or {}
+    BiaoGe.ItemLib.iLevel = BiaoGe.ItemLib.iLevel or {}
 
     mainFrame = BG.ItemLibMainFrame
     mainFrame.buttons = {}
@@ -1857,12 +1865,6 @@ function BG.ItemLibUI()
             t:SetPoint("TOP", 0, -38)
             t:SetTextColor(.5, .5, .5)
             mainFrame.noItem = t
-            -- 过滤方案
-            local t = mainFrame:CreateFontString()
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-            t:SetPoint("RIGHT", BG.FilterClassItemMainFrame.Buttons2, "LEFT", -10, 0)
-            t:SetText(L["过滤方案："])
-            t:SetTextColor(1, 0.82, 0)
         end
 
         -- 标题
@@ -2170,6 +2172,52 @@ function BG.ItemLibUI()
         bt:SetPoint("RIGHT", nextbt, "LEFT", 0, 0)
         bt._type = "prev"
         bt:SetScript("OnClick", Next_OnClick)
+    end
+
+    -- 装等过滤
+    do
+        local t = mainFrame:CreateFontString()
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetPoint("TOPLEFT", BG.ItemLibMainFrame.invtypeFrame, "BOTTOMLEFT", 10, -10)
+        t:SetTextColor(1, 0.82, 0)
+        t:SetText(L["仅显示高于该装等的装备："])
+        t:SetJustifyH("LEFT")
+        BG.ItemLibMainFrame.iLevelText=t
+
+        local edit = CreateFrame("EditBox", nil, mainFrame, "InputBoxTemplate")
+        edit:SetSize(100, 20)
+        edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
+        edit:SetAutoFocus(false)
+        edit:SetNumeric(true)
+        edit:SetText(BiaoGe.ItemLib.iLevel[BG.FB1] or "")
+        BG.ItemLibMainFrame.iLevelEdit = edit
+        BG.SetEditBaseClass(edit)
+        edit:HookScript("OnTextChanged", function(self)
+            if self:HasFocus() then
+                local FB = BG.FB1
+                BiaoGe.ItemLib.iLevel[FB] = tonumber(self:GetText())
+                BG.UpdateItemLib()
+            end
+        end)
+        edit:SetScript("OnMouseDown", function(self, button)
+            if button == "RightButton" then
+                self:SetEnabled(false)
+                self:SetText("")
+                local FB = BG.FB1
+                BiaoGe.ItemLib.iLevel[FB] = nil
+                BG.UpdateItemLib()
+            end
+        end)
+    end
+
+    -- 过滤方案
+    do
+        local t = mainFrame:CreateFontString()
+        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetPoint("TOPLEFT", BG.ItemLibMainFrame.iLevelText, "BOTTOMLEFT", 0, -25)
+        t:SetText(L["过滤方案："])
+        t:SetTextColor(1, 0.82, 0)
+        BG.ItemLibMainFrame.filtleText = t
     end
 
     -- 心愿汇总

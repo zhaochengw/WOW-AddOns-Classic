@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Gothik", "DBM-Raids-WoTLK", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250307060227")
 mod:SetCreatureID(16060)
 mod:SetEncounterID(1109)
 mod:SetModelID(16279)
@@ -86,7 +86,7 @@ local function NextWave(self)
 	self.vb.wave = self.vb.wave + 1
 	warnWaveNow:Show(self.vb.wave, getWaveString(self.vb.wave))
 	local timer = waves[self.vb.wave].timer
-	if timer then
+	if timer and timer > 0 then
 		timerWave:Start(timer, self.vb.wave + 1)
 		warnWaveSoon:Schedule(timer - 3, self.vb.wave + 1, getWaveString(self.vb.wave + 1))
 		self:Schedule(timer, NextWave, self)

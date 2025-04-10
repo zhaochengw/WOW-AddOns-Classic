@@ -365,7 +365,7 @@ BG.Init(function()
                 BG.PlaySound(2)
                 local FB = BG.FB1
                 for b = 1, Maxb[FB] - 1 do
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                         local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                         local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -388,7 +388,7 @@ BG.Init(function()
                         local itemID = GetItemID(v.zhuangbei)
                         for b = 1, Maxb[FB] - 1 do
                             local yes
-                            for i = 1, BG.Maxi do
+                            for i = 1, BG.GetMaxi(FB, b) do
                                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -1441,7 +1441,7 @@ BG.Init(function()
         if BiaoGe.options.auctionLogChoose == 4 then
             local newTbl = {}
             for b = 1, Maxb[FB] do
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                         local zb
                         if isHistory then
@@ -1723,6 +1723,7 @@ BG.Init(function()
             _G["ChatFrame" .. i]:HookScript("OnHyperlinkLeave", GameTooltip_Hide)
             i = i + 1
         end
+        local lastNum
         hooksecurefunc("SetItemRef", function(link, text, button)
             if not link then return end
             local _, arg2, arg3, itemID, num = strsplit(":", link)
@@ -1731,7 +1732,12 @@ BG.Init(function()
                 num = tonumber(num)
                 local _, link = GetItemInfo(itemID)
                 if not link then return end
-                ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
+                if ItemRefTooltip:IsVisible() and num == lastNum then
+                    lastNum=nil
+                    ItemRefTooltip:Hide()
+                    return
+                end
+                ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
                 ItemRefTooltip:ClearLines()
                 ItemRefTooltip:AddLine(link:gsub("%[", ""):gsub("%]", ""), 1, 1, 1, true)
                 if BG.chatAuctionLog[num][1] and BG.chatAuctionLog[num][1].i ~= 1 then
@@ -1741,46 +1747,47 @@ BG.Init(function()
                     ItemRefTooltip:AddLine(v.i .. L["、"] .. v.money .. format(L["（%s）"], v.player), 1, .82, 0)
                 end
                 ItemRefTooltip:Show()
+                lastNum = num
+            else
+                lastNum = nil
             end
         end)
     end
 
     -- 提示已拍未交易
-    do
-        hooksecurefunc(GameTooltip, "SetBagItem", function(self, b, i)
-            if not BG.ImML() then return end
-            local info = C_Container.GetContainerItemInfo(b, i)
-            if not info then return end
-            local FB = BG.FB1
-            if type(BiaoGe[FB].auctionLog) ~= "table" then return end
-            local notBound
-            if not info.isBound then
-                notBound = true
-            else
-                for i = 1, GameTooltip:NumLines() do
-                    local tx = _G["GameTooltipTextLeft" .. i]:GetText()
-                    if tx then
-                        local time = tx:match(BIND_TRADE_TIME_REMAINING:gsub("%%s", "(.+)"))
-                        if time then
-                            notBound = true
-                            break
-                        end
-                    end
-                    i = i + 1
-                end
-            end
-            if notBound then
-                for k, v in pairs(BiaoGe[FB].auctionLog) do
-                    if v.type == 1 and not v.trade and BG.IsSameItem(info.hyperlink, v.zhuangbei) then
-                        local text = v.jine .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
-                        -- local text = "|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r(" .. v.jine .. ")"
-                        GameTooltip:AddDoubleLine(L["已拍未交易"], text)
-                        GameTooltip:Show()
+    hooksecurefunc(GameTooltip, "SetBagItem", function(self, b, i)
+        if not BG.ImML() then return end
+        local info = C_Container.GetContainerItemInfo(b, i)
+        if not info then return end
+        local FB = BG.FB1
+        if type(BiaoGe[FB].auctionLog) ~= "table" then return end
+        local notBound
+        if not info.isBound then
+            notBound = true
+        else
+            for i = 1, GameTooltip:NumLines() do
+                local tx = _G["GameTooltipTextLeft" .. i]:GetText()
+                if tx then
+                    local time = tx:match(BIND_TRADE_TIME_REMAINING:gsub("%%s", "(.+)"))
+                    if time then
+                        notBound = true
+                        break
                     end
                 end
+                i = i + 1
             end
-        end)
-    end
+        end
+        if notBound then
+            for k, v in pairs(BiaoGe[FB].auctionLog) do
+                if v.type == 1 and not v.trade and BG.IsSameItem(info.hyperlink, v.zhuangbei) then
+                    local text = v.jine .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
+                    -- local text = "|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r(" .. v.jine .. ")"
+                    GameTooltip:AddDoubleLine(L["已拍未交易"], text)
+                    GameTooltip:Show()
+                end
+            end
+        end
+    end)
 
     -- 创建应收/应付对象
     do
@@ -1803,13 +1810,13 @@ BG.Init(function()
             text:SetPoint("BOTTOMLEFT", _G["TradePlayerItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
             text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             text:Hide()
-            _G["TradePlayerItem" .. i .. "ItemButton"].money = text
+            _G["TradePlayerItem" .. i .. "ItemButton"].moneyText = text
 
             local text = _G["TradeRecipientItem" .. i .. "ItemButton"]:CreateFontString()
             text:SetPoint("BOTTOMLEFT", _G["TradeRecipientItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
             text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
             text:Hide()
-            _G["TradeRecipientItem" .. i .. "ItemButton"].money = text
+            _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText = text
         end
     end
 
@@ -1817,6 +1824,118 @@ BG.Init(function()
     do
         local sumTargetMoney = 0
         local sumPlayerMoney = 0
+
+        BG.trade.autoAuction = {}
+        function BG.TradeIsAutoAuction()
+            local FB = BG.FB1
+            wipe(BG.trade.autoAuction)
+            local player
+            if BG.ImML() then
+                player = BG.GN("NPC")
+                local targetMoney = math.modf(GetTargetTradeMoney() / 10000)
+                local sumqiankuan = tonumber(BG.QianKuan.edit:GetText()) or 0
+                if sumTargetMoney ~= 0 and sumTargetMoney == targetMoney + sumqiankuan then
+                    for i = 1, 6 do
+                        local link = GetTradePlayerItemLink(i)
+                        if link then
+                            local bt = _G["TradePlayerItem" .. i .. "ItemButton"].moneyText
+                            if not bt:IsVisible() then
+                                wipe(BG.trade.autoAuction)
+                                return
+                            end
+                            local money = bt.money
+                            local qiankuan = 0
+                            if sumqiankuan ~= 0 then
+                                if sumqiankuan > money then
+                                    qiankuan = money
+                                    sumqiankuan = sumqiankuan - qiankuan
+                                else
+                                    qiankuan = sumqiankuan
+                                    sumqiankuan = 0
+                                end
+                            end
+                            tinsert(BG.trade.autoAuction, {
+                                link = link,
+                                player = player,
+                                money = money,
+                                qiankuan = qiankuan,
+                            })
+                        end
+                    end
+                    -- 如果还有剩余欠款
+                    if sumqiankuan > 0 then
+                        local last = BG.trade.autoAuction[#BG.trade.autoAuction]
+                        last.qiankuan = last.qiankuan + sumqiankuan
+                    end
+                end
+            else
+                player = BG.GN()
+                local playerMoney = math.modf(GetPlayerTradeMoney() / 10000)
+                local sumqiankuan = tonumber(BG.QianKuan.edit:GetText()) or 0
+                if sumPlayerMoney ~= 0 and sumPlayerMoney == playerMoney + sumqiankuan then
+                    for i = 1, 6 do
+                        local link = GetTradeTargetItemLink(i)
+                        if link then
+                            local bt = _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText
+                            if not bt:IsVisible() then
+                                wipe(BG.trade.autoAuction)
+                                return
+                            end
+                            local money = bt.money
+                            local qiankuan = 0
+                            if sumqiankuan ~= 0 then
+                                if sumqiankuan > money then
+                                    qiankuan = money
+                                    sumqiankuan = sumqiankuan - qiankuan
+                                else
+                                    qiankuan = sumqiankuan
+                                    sumqiankuan = 0
+                                end
+                            end
+                            tinsert(BG.trade.autoAuction, {
+                                link = link,
+                                player = player,
+                                money = money,
+                                qiankuan = qiankuan,
+                            })
+                        end
+                    end
+                    -- 如果还有剩余欠款
+                    if sumqiankuan > 0 then
+                        local last = BG.trade.autoAuction[#BG.trade.autoAuction]
+                        last.qiankuan = last.qiankuan + sumqiankuan
+                    end
+                end
+            end
+            -- 确认表格里是否能全部匹配到合适的格子
+            local same = {}
+            for _, v in ipairs(BG.trade.autoAuction) do
+                local done
+                for b = 1, Maxb[FB] do
+                    for i = 1, BG.GetMaxi(FB, b) do
+                        if not same[b .. "-" .. i] then
+                            local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
+                            if bt and BG.IsSameItem(bt:GetText(), v.link) and
+                                BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText() == "" and
+                                BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText() == "" and
+                                not BiaoGe[FB]["boss" .. b]["qiankuan" .. i]
+                            then
+                                v.b = b
+                                v.i = i
+                                done = true
+                                same[b .. "-" .. i] = true
+                                break
+                            end
+                        end
+                    end
+                    if done then break end
+                end
+                if not done then
+                    wipe(BG.trade.autoAuction)
+                    return
+                end
+            end
+        end
 
         local function UpdateTargetQianKuan()
             if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionQianKuan"] == 1) then return end
@@ -1914,17 +2033,17 @@ BG.Init(function()
                 if targetMoney == sumTargetMoney then
                     BG.trade.GiveMeMoneyText:SetTextColor(0, 1, 0)
                     for i = 1, 6 do
-                        _G["TradePlayerItem" .. i .. "ItemButton"].money:SetTextColor(0, 1, 0)
+                        _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:SetTextColor(0, 1, 0)
                     end
                 elseif targetMoney > sumTargetMoney then
                     BG.trade.GiveMeMoneyText:SetTextColor(1, 0, 0)
                     for i = 1, 6 do
-                        _G["TradePlayerItem" .. i .. "ItemButton"].money:SetTextColor(1, 0, 0)
+                        _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:SetTextColor(1, 0, 0)
                     end
                 else
                     BG.trade.GiveMeMoneyText:SetTextColor(1, 0, 0)
                     for i = 1, 6 do
-                        _G["TradePlayerItem" .. i .. "ItemButton"].money:SetTextColor(1, 0, 0)
+                        _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:SetTextColor(1, 0, 0)
                     end
                 end
             end
@@ -1936,28 +2055,31 @@ BG.Init(function()
                 if playerMoney == sumPlayerMoney then
                     BG.trade.GiveYouMoneyText:SetTextColor(0, 1, 0)
                     for i = 1, 6 do
-                        _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetTextColor(0, 1, 0)
+                        _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:SetTextColor(0, 1, 0)
                     end
                 elseif playerMoney > sumPlayerMoney then
                     BG.trade.GiveYouMoneyText:SetTextColor(1, 0, 0)
                     for i = 1, 6 do
-                        _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetTextColor(1, 0, 0)
+                        _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:SetTextColor(1, 0, 0)
                     end
                 else
                     BG.trade.GiveYouMoneyText:SetTextColor(RGB(BG.b1))
                     for i = 1, 6 do
-                        _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetTextColor(RGB(BG.b1))
+                        _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:SetTextColor(RGB(BG.b1))
                     end
                 end
             end
         end
         -- 团长自动摆放装备
         BG.RegisterEvent("TRADE_SHOW", function(self, ...)
+            BG.auctionLogFrame.GetTargetTradeTbl(BG.ImML() and BG.GN("NPC") or player)
             sumTargetMoney = 0
             sumPlayerMoney = 0
             for i = 1, 6 do
-                _G["TradePlayerItem" .. i .. "ItemButton"].money:Hide()
-                _G["TradeRecipientItem" .. i .. "ItemButton"].money:Hide()
+                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:Hide()
+                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText.money = 0
+                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:Hide()
+                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText.money = 0
             end
             BG.trade.GiveMeMoneyText:Hide()
             BG.trade.GiveYouMoneyText:Hide()
@@ -2028,7 +2150,8 @@ BG.Init(function()
         BG.RegisterEvent("TRADE_PLAYER_ITEM_CHANGED", function(self, ...)
             sumTargetMoney = 0
             for i = 1, 6 do
-                _G["TradePlayerItem" .. i .. "ItemButton"].money:Hide()
+                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:Hide()
+                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText.money = 0
             end
             if not BG.ImML() then return end
             local tradeName = BG.GN("NPC")
@@ -2044,8 +2167,9 @@ BG.Init(function()
                                 haveItem[i] = true
                                 sumTargetMoney = sumTargetMoney + money
                                 if BiaoGe.options["autoAuctionMoney"] == 1 then
-                                    _G["TradePlayerItem" .. i .. "ItemButton"].money:Show()
-                                    _G["TradePlayerItem" .. i .. "ItemButton"].money:SetText(L["应收："] .. GetMoneyString(tonumber(money .. "0000")))
+                                    _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:Show()
+                                    _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:SetText(L["应收："] .. GetMoneyString(tonumber(money .. "0000")))
+                                    _G["TradePlayerItem" .. i .. "ItemButton"].moneyText.money = money
                                 end
                                 break
                             end
@@ -2068,7 +2192,8 @@ BG.Init(function()
         BG.RegisterEvent("TRADE_TARGET_ITEM_CHANGED", function(self, ...)
             sumPlayerMoney = 0
             for i = 1, 6 do
-                _G["TradeRecipientItem" .. i .. "ItemButton"].money:Hide()
+                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:Hide()
+                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText.money = 0
             end
             if BG.ImML() then return end
             local tradeName = player
@@ -2084,8 +2209,9 @@ BG.Init(function()
                                 haveItem[i] = true
                                 sumPlayerMoney = sumPlayerMoney + money
                                 if BiaoGe.options["autoAuctionMoney"] == 1 then
-                                    _G["TradeRecipientItem" .. i .. "ItemButton"].money:Show()
-                                    _G["TradeRecipientItem" .. i .. "ItemButton"].money:SetText(L["应付："] .. GetMoneyString(tonumber(money .. "0000")))
+                                    _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:Show()
+                                    _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:SetText(L["应付："] .. GetMoneyString(tonumber(money .. "0000")))
+                                    _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText.money = money
                                 end
                                 break
                             end

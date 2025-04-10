@@ -5,7 +5,7 @@ local pt = print
 
 BG.Init(function()
     local aura = aura_env or {}
-    aura.ver = "v2.7"
+    aura.ver = "v2.8"
 
     function aura.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -41,9 +41,7 @@ BG.Init(function()
         end
     })
     local After = C_Timer.After
-    local _auctionID_ = "_auction_ID"
-
-    aura.framePoint = {}
+    local _auctionID_ = "_auctionID"
 
     if (GetLocale() == "zhTW") then
         L["Alt+点击才能生效"] = "Alt+點擊才能生效"
@@ -179,8 +177,9 @@ BG.Init(function()
         aura.maxNumFrame = 20
         aura.WIDTH = 310
         aura.HEIGHT = 105
+        aura.SMALL_HEIGHT = 23
         aura.REPEAT_TIME = 20
-        aura.HIDEFRAME_TIME = 3
+        aura.HIDEFRAME_TIME = 1
         aura.edgeSize = 2.5
         aura.backdropColor = { 0, 0, 0, .6 }
         aura.backdropBorderColor = { 1, 1, 0, 1 }
@@ -194,7 +193,7 @@ BG.Init(function()
         aura.MiniMoneyTbl = {
             -- 小于该价格时，每次加价幅度，最低加价幅度
             { 50, 1, 1 },
-            { 100, 10, 10 },
+            { 100, 10, 1 },
             { 5000, 100, 100 },
             { 10000, 500, 100 },
             { 50000, 1000, 500 },
@@ -306,7 +305,7 @@ BG.Init(function()
             C_ChatInfo.SendAddonMessage(aura.AddonChannel, "MyVer" .. "," .. aura.ver, "RAID")
         end
         for _, f in pairs(_G.BGA.Frames) do
-            if not f.IsEnd and not f.IsSmallWindow and aura.IsML() then
+            if not f.IsEnd and aura.IsML() then
                 f.cancel:Show()
                 f.autoTextButton:ClearAllPoints()
                 f.autoTextButton:SetPoint("TOP", 45, -2)
@@ -331,7 +330,6 @@ BG.Init(function()
         local f = self.owner
         if f.IsSmallWindow then
             local function SetBigWindos(f)
-                -- if f.isAuto then return end
                 f.IsSmallWindow = false
                 f.hide:SetText(L["折叠"])
 
@@ -357,13 +355,13 @@ BG.Init(function()
                 f.itemFrame.iconFrame:SetPoint("TOPLEFT", f.itemFrame, "TOPLEFT", 0, 0)
                 f.itemFrame.iconFrame:SetPoint("BOTTOMRIGHT", f.itemFrame, "TOPLEFT", f.itemFrame:GetHeight(), -f.itemFrame:GetHeight())
                 f.itemFrame.iconFrame:SetBackdropBorderColor(unpack(f.itemFrame.iconFrame.color))
+                f.itemFrame.itemNameText:ClearAllPoints()
+                f.itemFrame.itemNameText:SetPoint("TOPLEFT", f.itemFrame.iconFrame, "TOPRIGHT", 2, -2)
                 f.itemFrame.bg:ClearAllPoints()
                 f.itemFrame.bg:SetAllPoints()
                 f.bar:ClearAllPoints()
                 f.bar:SetPoint("TOPLEFT", f.itemFrame.iconFrame, "TOPRIGHT", 0, 0)
                 f.bar:SetPoint("BOTTOMRIGHT", f.itemFrame, "BOTTOMRIGHT", 0, 0)
-                f.remainingTime:ClearAllPoints()
-                f.remainingTime:SetPoint("RIGHT", -5, 0)
             end
             if IsAltKeyDown() then
                 for _, f in pairs(_G.BGA.Frames) do
@@ -387,18 +385,21 @@ BG.Init(function()
                 f.myMoneyEdit:Hide()
                 f.itemFrame2:Hide()
 
-                f:SetSize(f.hide:GetWidth() + 7, aura.HEIGHT)
+                f:SetSize(aura.WIDTH, aura.SMALL_HEIGHT)
                 f.itemFrame:ClearAllPoints()
-                f.itemFrame:SetPoint("TOPLEFT", aura.edgeSize, -f.hide:GetHeight() - 3)
-                f.itemFrame:SetPoint("BOTTOMRIGHT", -aura.edgeSize, aura.edgeSize)
+                f.itemFrame:SetAllPoints()
                 f.itemFrame.iconFrame:ClearAllPoints()
-                f.itemFrame.iconFrame:SetPoint("TOPLEFT")
-                f.itemFrame.iconFrame:SetPoint("BOTTOMRIGHT", f.itemFrame, "TOPRIGHT", 0, -f.itemFrame:GetWidth() + 5)
+                f.itemFrame.iconFrame:SetPoint("TOPLEFT", aura.edgeSize, -aura.edgeSize)
+                f.itemFrame.iconFrame:SetPoint("BOTTOMRIGHT", f.itemFrame, "TOPLEFT", f.itemFrame:GetHeight() - aura.edgeSize, -f.itemFrame:GetHeight() + aura.edgeSize)
                 f.itemFrame.iconFrame:SetBackdropBorderColor(1, 1, 1, 0)
+                f.itemFrame.itemNameText:ClearAllPoints()
+                f.itemFrame.itemNameText:SetPoint("LEFT", f.itemFrame.iconFrame, "RIGHT", 2, 0)
+                f.itemFrame.bg:ClearAllPoints()
+                f.itemFrame.bg:SetPoint("TOPLEFT", aura.edgeSize, -aura.edgeSize)
+                f.itemFrame.bg:SetPoint("BOTTOMRIGHT", -aura.edgeSize, aura.edgeSize)
                 f.bar:ClearAllPoints()
-                f.bar:SetAllPoints()
-                f.remainingTime:ClearAllPoints()
-                f.remainingTime:SetPoint("TOP", f.itemFrame.iconFrame, "BOTTOM", 0, -2)
+                f.bar:SetPoint("TOPLEFT", f.itemFrame.iconFrame, "TOPRIGHT", 0, 0)
+                f.bar:SetPoint("BOTTOMRIGHT", f.itemFrame, "BOTTOMRIGHT", -aura.edgeSize, aura.edgeSize)
             end
             if IsAltKeyDown() then
                 for _, f in pairs(_G.BGA.Frames) do
@@ -409,6 +410,7 @@ BG.Init(function()
             end
         end
         aura.UpdateAllOnEnters()
+        aura.UpdateAllFrames()
         PlaySound(aura.sound1)
     end
 
@@ -592,11 +594,7 @@ BG.Init(function()
                     f.bar:SetStatusBarColor(1, 0, 0, 0.6)
                 end
                 f.remainingTime:SetTextColor(1, 0, 0)
-                if f.IsSmallWindow then
-                    f.remainingTime:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-                else
-                    f.remainingTime:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
-                end
+                f.remainingTime:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
             else
                 if f.filter and not (f.player and f.player == aura.GN()) then
                     f.bar:SetStatusBarColor(unpack(BGA.aura_env.barColor_filter))
@@ -604,11 +602,7 @@ BG.Init(function()
                     f.bar:SetStatusBarColor(1, 1, 0, 0.6)
                 end
                 f.remainingTime:SetTextColor(1, 1, 1)
-                if f.IsSmallWindow then
-                    f.remainingTime:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
-                else
-                    f.remainingTime:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-                end
+                f.remainingTime:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             end
             f.remainingTime:SetText((format("%d", remaining) + 1) .. "s")
             f.remaining = remaining
@@ -932,6 +926,54 @@ BG.Init(function()
         end
     end
 
+    local function GetHeight(num)
+        local height = 0
+        for i = 1, num - 1 do
+            local f = _G.BGA.Frames[i]
+            if f then
+                if f.IsSmallWindow then
+                    height = height + aura.SMALL_HEIGHT + 5
+                else
+                    height = height + aura.HEIGHT + 5
+                end
+            end
+        end
+        return height
+    end
+
+    local function UpdateAllFrameNum()
+        local num = 0
+        local tbl = {}
+        for i = 1, aura.maxNumFrame do
+            local f = _G.BGA.Frames[i]
+            if f then
+                num = num + 1
+                f.num = num
+                tbl[num] = f
+            end
+        end
+        _G.BGA.Frames = tbl
+    end
+
+    function aura.UpdateAllFrames()
+        UpdateAllFrameNum()
+        for _, f in pairs(_G.BGA.Frames) do
+            if f.showCantClickFrame and not f.IsSmallWindow then
+                f.cantClickFrame:Show()
+                f.cantClickFrame.t = 0
+                f.cantClickFrame:SetScript("OnUpdate", function(self, elapsed)
+                    self.t = self.t + elapsed
+                    if self.t >= .8 then
+                        self:SetScript("OnUpdate", nil)
+                        self:Hide()
+                    end
+                end)
+            end
+            f:ClearAllPoints()
+            f:SetPoint("TOP", 0, -GetHeight(f.num))
+        end
+    end
+
     function aura.UpdateFrame(f)
         local t = 1
         f:SetScript("OnUpdate", function(self, elapsed)
@@ -940,10 +982,19 @@ BG.Init(function()
                 f:SetAlpha(t)
             else
                 f:SetScript("OnUpdate", nil)
-                aura.framePoint[f.num] = nil
                 _G.BGA.Frames[f.num] = nil
                 f:Hide()
                 _G.BGA.AuctionMainFrame:StopMovingOrSizing()
+                if BG and BG.options and BiaoGe.options.autoAuctionUp == 1 then
+                    for _, _f in pairs(_G.BGA.Frames) do
+                        if _f.num < f.num then
+                            _f.showCantClickFrame = false
+                        else
+                            _f.showCantClickFrame = true
+                        end
+                    end
+                    aura.UpdateAllFrames()
+                end
             end
         end)
     end
@@ -1128,15 +1179,14 @@ BG.Init(function()
             f:SetBackdropBorderColor(unpack(aura.backdropBorderColor))
             f:SetSize(aura.WIDTH, aura.HEIGHT)
             if #_G.BGA.Frames == 0 then
-                f:SetPoint("TOPRIGHT")
-                aura.framePoint[1] = 1
+                f:SetPoint("TOP")
                 f.num = 1
             else
                 for i = 1, aura.maxNumFrame do
-                    if not aura.framePoint[i] then
-                        f:SetPoint("TOPRIGHT", 0, -(aura.HEIGHT + 5) * (i - 1))
-                        aura.framePoint[i] = 1
+                    if not _G.BGA.Frames[i] then
+                        -- f:SetPoint("TOP", 0, -(aura.HEIGHT + 5) * (i - 1))
                         f.num = i
+                        f:SetPoint("TOP", 0, -GetHeight(f.num))
                         break
                     end
                 end
@@ -1456,7 +1506,7 @@ BG.Init(function()
                 AuctionFrame.itemFrame.bindTypeText = t
             end
             -- 装备名称
-            local t = f2:CreateFontString()
+            local t = f:CreateFontString()
             t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOPLEFT", ftex, "TOPRIGHT", 2, -2)
             t:SetWidth(f:GetWidth() - f:GetHeight() - 50)
@@ -1501,9 +1551,9 @@ BG.Init(function()
             AuctionFrame.bar = s
 
             -- 剩余时间
-            local remainingTime = f:CreateFontString()
+            local remainingTime = f2:CreateFontString()
             remainingTime:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-            remainingTime:SetPoint("RIGHT", -5, 0)
+            remainingTime:SetPoint("RIGHT", f, "RIGHT", -5, 0)
             remainingTime:SetTextColor(1, 1, 1)
             AuctionFrame.remainingTime = remainingTime
         end

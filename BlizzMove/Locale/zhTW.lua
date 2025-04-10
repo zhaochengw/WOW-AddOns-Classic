@@ -6,112 +6,58 @@ local L = LibStub("AceLocale-3.0"):NewLocale(name, "zhTW")
 if not L then return end
 
 -- BlizzMove
---[[Translation missing --]]
-L["Addon authors can enable support for their own custom frames by utilizing the BlizzMoveAPI functions"] = "Addon authors can enable support for their own custom frames by utilizing the BlizzMoveAPI functions"
---[[Translation missing --]]
-L["All frames"] = "All frames"
---[[Translation missing --]]
-L["ALT + %s to re-attach a child window."] = "ALT + %s to re-attach a child window."
---[[Translation missing --]]
-L["ALT + %s while dragging a detachable child window will detach it from the parent"] = "ALT + %s while dragging a detachable child window will detach it from the parent"
---[[Translation missing --]]
-L["Are you sure you want to reset permanently stored positions? This will reload the UI."] = "Are you sure you want to reset permanently stored positions? This will reload the UI."
---[[Translation missing --]]
-L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "Are you sure you want to reset permanently stored scales? This will reload the UI."
---[[Translation missing --]]
-L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."
---[[Translation missing --]]
-L["Clear"] = "Clear"
---[[Translation missing --]]
-L["Clear the search filter."] = "Clear the search filter."
---[[Translation missing --]]
-L["Copy the text from the popup window, and report it to the addon author."] = "Copy the text from the popup window, and report it to the addon author."
---[[Translation missing --]]
-L["Copy the text from this popup window, and report it to the addon author."] = "Copy the text from this popup window, and report it to the addon author."
---[[Translation missing --]]
-L["Could not find frame"] = "Could not find frame"
---[[Translation missing --]]
-L["CTRL + %s to reset the scale of a window."] = "CTRL + %s to reset the scale of a window."
---[[Translation missing --]]
-L["CTRL + SCROLL over a window to adjust the scale of the window."] = "CTRL + SCROLL over a window to adjust the scale of the window."
---[[Translation missing --]]
-L["CTRL-C to copy"] = "CTRL-C to copy"
---[[Translation missing --]]
-L["Default disabled frames"] = "Default disabled frames"
---[[Translation missing --]]
-L["DeModal is loaded, this addon is known to cause issues, consider replacing it with %s instead."] = "DeModal is loaded, this addon is known to cause issues, consider replacing it with %s instead."
---[[Translation missing --]]
-L["Detached windows can be moved and resized independently from the parent."] = "Detached windows can be moved and resized independently from the parent."
---[[Translation missing --]]
-L["Do not remember"] = "Do not remember"
---[[Translation missing --]]
-L["Enable the Blizzmove_Debug plugin, to find more debugging information."] = "Enable the Blizzmove_Debug plugin, to find more debugging information."
---[[Translation missing --]]
-L["Filter"] = "Filter"
---[[Translation missing --]]
-L["Found bad anchor connections, copy the popup window contents to analyze them."] = "Found bad anchor connections, copy the popup window contents to analyze them."
---[[Translation missing --]]
-L["frame positions are remembered until you switch to another option, click the reset button, or disable BlizzMove"] = "frame positions are remembered until you switch to another option, click the reset button, or disable BlizzMove"
---[[Translation missing --]]
-L["frame positions are reset when you close and reopen them"] = "frame positions are reset when you close and reopen them"
---[[Translation missing --]]
-L["frame positions are saved until you reload your UI"] = "frame positions are saved until you reload your UI"
---[[Translation missing --]]
-L["frame scales are remembered until you switch to another option, click the reset button, or disable BlizzMove"] = "frame scales are remembered until you switch to another option, click the reset button, or disable BlizzMove"
---[[Translation missing --]]
-L["frame scales are saved until you reload your UI"] = "frame scales are saved until you reload your UI"
---[[Translation missing --]]
-L["Frame was marked as incompatible, but does exist"] = "Frame was marked as incompatible, but does exist"
---[[Translation missing --]]
-L["Global Config"] = "Global Config"
---[[Translation missing --]]
-L["How should frame positions be remembered?"] = "How should frame positions be remembered?"
---[[Translation missing --]]
-L["How should frame scales be remembered?"] = "How should frame scales be remembered?"
---[[Translation missing --]]
-L["If enabled BlizzMove requires to hold SHIFT to move frames."] = "If enabled BlizzMove requires to hold SHIFT to move frames."
---[[Translation missing --]]
-L["In Session"] = "In Session"
---[[Translation missing --]]
-L["In Session, until you reload"] = "In Session, until you reload"
---[[Translation missing --]]
-L["Info"] = "Info"
---[[Translation missing --]]
-L["List of frames"] = "List of frames"
---[[Translation missing --]]
-L["Movable frames for %s"] = "Movable frames for %s"
---[[Translation missing --]]
-L["MoveAny is loaded, some users reported this breaks moving frames. If you encounter this issue yourself, try disabling MoveAny."] = "MoveAny is loaded, some users reported this breaks moving frames. If you encounter this issue yourself, try disabling MoveAny."
---[[Translation missing --]]
-L["Mute this warning"] = "Mute this warning"
---[[Translation missing --]]
-L["Muted warning for %s"] = "Muted warning for %s"
---[[Translation missing --]]
-L["No bad anchor connections found"] = "No bad anchor connections found"
---[[Translation missing --]]
-L["Remember Permanently"] = "Remember Permanently"
---[[Translation missing --]]
-L["Require move modifier"] = "Require move modifier"
---[[Translation missing --]]
-L["Reset Permanent Positions"] = "Reset Permanent Positions"
---[[Translation missing --]]
-L["Reset Permanent Scales"] = "Reset Permanent Scales"
---[[Translation missing --]]
-L["Reset permanently stored positions"] = "Reset permanently stored positions"
---[[Translation missing --]]
-L["Reset permanently stored scales"] = "Reset permanently stored scales"
---[[Translation missing --]]
-L["Resetting a frame:"] = "Resetting a frame:"
---[[Translation missing --]]
-L["Search by frame name, or '-' for disabled frames, or '+' for enabled frames."] = "Search by frame name, or '-' for disabled frames, or '+' for enabled frames."
---[[Translation missing --]]
-L["Search for plugins here"] = "Search for plugins here"
---[[Translation missing --]]
-L["SHIFT + %s to reset the position."] = "SHIFT + %s to reset the position."
---[[Translation missing --]]
-L["This addon makes the Blizzard windows movable."] = "This addon makes the Blizzard windows movable."
---[[Translation missing --]]
-L["To temporarily move a window just %s the window and drag it to where you want it for the current game session."] = "To temporarily move a window just %s the window and drag it to where you want it for the current game session."
---[[Translation missing --]]
-L["Version:"] = "Version:"
+L["Addon authors can enable support for their own custom frames by utilizing the BlizzMoveAPI functions"] = "插件作者可以透過 BlizzMoveAPI 函數來啟用支援自己的自訂框架"
+L["All frames"] = "所有框架"
+L["ALT + %s to re-attach a child window."] = "ALT + %s 重新附加子視窗。"
+L["ALT + %s while dragging a detachable child window will detach it from the parent"] = "拖曳可分離的子視窗時按住 ALT + %s 可將其與父視窗分離"
+L["Are you sure you want to reset permanently stored positions? This will reload the UI."] = "是否確定要重置永久儲存的位置? 將會重新載入介面。"
+L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "是否確定要重置永久儲存的縮放大小? 將會重新載入介面。"
+L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "移動暴雪視窗 BlizzMove: 您剛剛移動的框架 (％s) 可能處於損壞狀態，可能是由於其他插件造成的。"
+L["Clear"] = "清空"
+L["Clear the search filter."] = "清空搜尋過濾方式。"
+L["Copy the text from the popup window, and report it to the addon author."] = "複製彈出視窗中的文字，然後回報給插件作者。"
+L["Copy the text from this popup window, and report it to the addon author."] = "複製這個彈出視窗中的文字，然後回報給插件作者。"
+L["Could not find frame"] = "無法找到框架"
+L["CTRL + %s to reset the scale of a window."] = "CTRL + %s 重置視窗縮放大小。"
+L["CTRL + SCROLL over a window to adjust the scale of the window."] = "在視窗上面按住 CTRL + 滾動滑鼠滾輪來調整視窗的縮放大小。"
+L["CTRL-C to copy"] = "CTRL+C 複製"
+L["Default disabled frames"] = "預設停用的視窗"
+L["DeModal is loaded, this addon is known to cause issues, consider replacing it with %s instead."] = "DeModal 已載入，已知此插件會導致問題，請考慮用改用 %s。"
+L["Detached windows can be moved and resized independently from the parent."] = "分離的視窗可以獨立移動和調整大小，不受父視窗影響。"
+L["Do not remember"] = "不要記住"
+L["Enable the Blizzmove_Debug plugin, to find more debugging information."] = "啟用 Blizzmove_Debug 外掛套件，取得更多除錯資訊。"
+L["Filter"] = "過濾方式"
+L["Found bad anchor connections, copy the popup window contents to analyze them."] = "發現錯誤的對齊點連結，請複製彈出視窗的內容進行分析。"
+L["frame positions are remembered until you switch to another option, click the reset button, or disable BlizzMove"] = "會記住框架位置，直到您切換成另一個選項、點擊重置按鈕或停用移動暴雪視窗 BlizzMove"
+L["frame positions are reset when you close and reopen them"] = "關閉並重新打開框架時，將會重置框架位置"
+L["frame positions are saved until you reload your UI"] = "會保存框架位置，直到您重新載入介面"
+L["frame scales are remembered until you switch to another option, click the reset button, or disable BlizzMove"] = "會記住框架縮放大小，直到您切換成另一個選項、點擊重置按鈕或停用移動暴雪視窗 BlizzMove"
+L["frame scales are saved until you reload your UI"] = "會保存框架縮放大小，直到您重新載入介面"
+L["Frame was marked as incompatible, but does exist"] = "框架被標記為不相容，但確實存在"
+L["Global Config"] = "整體設定"
+L["How should frame positions be remembered?"] = "要如何記憶框架位置?"
+L["How should frame scales be remembered?"] = "要如何記憶框架縮放大小?"
+L["If enabled BlizzMove requires to hold SHIFT to move frames."] = "啟用時，需要按住 SHIFT 才能移動框架。"
+L["In Session"] = "本次登入期間"
+L["In Session, until you reload"] = "本次登入期間，直到重新載入介面"
+L["Info"] = "資訊"
+L["List of frames"] = "框架清單"
+L["Movable frames for %s"] = "%s 可移動的框架"
+L["MoveAny is loaded, some users reported this breaks moving frames. If you encounter this issue yourself, try disabling MoveAny."] = "MoveAny 已載入，有些使用者回報它會讓移動框架發生問題。如果您遇到此問題，請嘗試停用 MoveAny。"
+L["Mute this warning"] = "不要顯示此警告"
+L["Muted warning for %s"] = "不要顯示 %s 的警告"
+L["No bad anchor connections found"] = "未發現不良的對齊點連結"
+L["Remember Permanently"] = "永遠記住"
+L["Require move modifier"] = "按住輔助鍵才能移動"
+L["Reset Permanent Positions"] = "重置永久位置"
+L["Reset Permanent Scales"] = "重置永久縮放大小"
+L["Reset permanently stored positions"] = "重置永久儲存的位置"
+L["Reset permanently stored scales"] = "重置永久儲存的縮放大小"
+L["Resetting a frame:"] = "重置框架:"
+L["Search by frame name, or '-' for disabled frames, or '+' for enabled frames."] = "搜尋框架名稱，或 '-' 搜尋已停用的框架，或 '+' 搜尋啟用的框架。"
+L["Search for plugins here"] = "在這裡搜尋外掛套件"
+L["SHIFT + %s to reset the position."] = "SHIFT + %s 重置位置。"
+L["This addon makes the Blizzard windows movable."] = "此插件讓遊戲內建視窗可以移動。"
+L["To temporarily move a window just %s the window and drag it to where you want it for the current game session."] = "要暫時移動視窗，只需 %s 該視窗並拖曳到想要的位置，只對此次遊戲登入期間有效。"
+L["Version:"] = "版本:"
 

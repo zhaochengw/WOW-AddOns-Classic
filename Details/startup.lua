@@ -493,10 +493,12 @@ function Details222.StartUp.StartMeUp()
         end
     end
 
-	--store the names of all crowd control spells
+	---used to know if the spell is a crowd control during the parser debuff event.
 	---@type table<string, boolean>
 	Details.CrowdControlSpellNamesCache = {}
-	---@type table<unitname, table<string, boolean>>
+
+	---not in use atm, waiting the unzip of talents string.
+	---@type table<unitname, table<spellname, boolean>>
 	Details.CrowdControlSpellsByUnitCache = {}
 
 	for spellId, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
@@ -509,7 +511,7 @@ function Details222.StartUp.StartMeUp()
 	end
 	for spellId, spellData in pairs(LIB_OPEN_RAID_CROWDCONTROL) do
 		local spellInfo = C_Spell.GetSpellInfo(spellId)
-		if (spellInfo) then
+		if (spellInfo and not Details.CrowdControlSpellNamesCache[spellInfo.name]) then
 			Details.CrowdControlSpellNamesCache[spellInfo.name] = true
 		end
 	end
@@ -518,6 +520,7 @@ function Details222.StartUp.StartMeUp()
 	if (openRaidLib) then
 		local t = {}
 		function t.OnUnitUpdate(unitId, unitInfo)
+			--print("open raid update...")
 			local specId = unitInfo.specId
 			local specName = unitInfo.specName
 			local role = unitInfo.role
@@ -538,7 +541,12 @@ function Details222.StartUp.StartMeUp()
 						if (not spellData.ignoredIfTalent) then
 							Details.CrowdControlSpellNamesCache[spellInfo.name] = true
 						else
-							
+							--check if the player the talent from spellData.ignoredIfTalent
+							--local unitTalents = openRaidLib.GetSpellIdsFromTalentString(talents)
+							--dumpt(unitTalents)
+							--print("talentId", spellData.ignoredIfTalent)
+							--print("has the talent?", unitTalents[spellData.ignoredIfTalent])
+							break
 						end
 					end
 				end
@@ -546,7 +554,18 @@ function Details222.StartUp.StartMeUp()
 		end
 
 		--registering the callback:
-		openRaidLib.RegisterCallback(ToggleBackpack, "UnitInfoUpdate", "OnUnitUpdate")
+		openRaidLib.RegisterCallback(t, "UnitInfoUpdate", "OnUnitUpdate")
+
+		--test
+		--[=[
+		C_Timer.After(5, function()
+			local unitName = UnitName("player")
+			local unitInfo = openRaidLib.GetUnitInfo("player")
+			if (unitInfo) then
+				t.OnUnitUpdate("player", unitInfo)
+			end
+		end)
+		--]=]
 	end
 
 	function Details:OpenOptionsWindowAtStart()

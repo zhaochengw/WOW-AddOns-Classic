@@ -1201,7 +1201,7 @@ L:SetOptionLocalization{
 
 -----------------
 --  Anub'arak  --
------------------ 补充修改by 欺世@审判
+-----------------
 L = DBM:GetModLocalization("Anub'arak_Coliseum")
 
 L:SetGeneralLocalization{
@@ -1209,8 +1209,8 @@ L:SetGeneralLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerEmerge			= "即将出现", -- 修改
-	TimerSubmerge			= "即将钻地", -- 修改
+	TimerEmerge			= "钻地结束",
+	TimerSubmerge			= "钻地",
 	timerAdds			= "下一次 掘地者出现"
 }
 
@@ -1224,9 +1224,8 @@ L:SetWarningLocalization{
 }
 
 L:SetMiscLocalization{
-	Emerge				= "从地面上升起来了！",
-	Burrow				= "钻入了地下！",
-	PcoldIconSet			= "刺骨之寒",
+	Emerge				= "钻入了地下！",
+	Burrow				= "从地面上升起来了！",
 	PcoldIconSet			= "刺骨之寒{rt%d} -> %s",
 	PcoldIconRemoved		= "移除标记 -> %s"
 }

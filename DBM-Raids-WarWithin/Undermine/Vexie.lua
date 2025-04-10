@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2639, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250323211035")
+mod:SetRevision("20250404054827")
 mod:SetCreatureID(225821, 225822)--Gear Grinder, 225822 Vexie
 mod:SetEncounterID(3009)
 mod:SetHotfixNoticeRev(20250323000000)
@@ -282,7 +282,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 225804 then--Geargrinder Biker
-		if self:IsMythic() then
+		if self:IsMythic() and self:AntiSpam(4, 1) and not self:IsTank() then
 			self.vb.soakCount = self.vb.soakCount + 1
 			if not DBM:UnitDebuff("player", 473507) then
 				specWarnOilCanisterSoak:Show(self.vb.soakCount)

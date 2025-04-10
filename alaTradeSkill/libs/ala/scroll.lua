@@ -10,7 +10,7 @@
 	Scroll:CallButtonFuncByDataIndex(index, FuncName, ...)		Button:func(...)
 	Button:GetDataIndex()
 ]]
-local __version = 250401;
+local __version = 250405;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -45,7 +45,10 @@ local uireimp = __ala_meta__.uireimp;
 	end
 
 -->			constant
+	local TEXTURE_PATH = strmatch(debugstack(), [[(Interface[^:"|]+[/\])[^/\:"|]+%.lua]]) .. [[Media\Texture\]];
 	local def_inner_size = 64;
+	local TEXTURE_UP = TEXTURE_PATH .. "ArrowUp";
+	local TEXTURE_DOWN = TEXTURE_PATH .. "ArrowDown";
 
 -->
 	function __scrolllib.CreateScrollFrame(Parent, FrameWidth, FrameHeight, ButtonHeight, Creator, Settor)
@@ -61,7 +64,7 @@ local uireimp = __ala_meta__.uireimp;
 		local IndexOffset = 0;
 		local NumValues = -1;
 
-		local BarWidth = 12;
+		local BarWidth = 8;
 		local MaxValue = 0;
 
 		ScrollFrame:Show();
@@ -73,8 +76,8 @@ local uireimp = __ala_meta__.uireimp;
 		ScrollChild:SetPoint("LEFT", ScrollFrame);
 
 		ScrollBar:SetWidth(BarWidth);
-		ScrollBar:SetPoint("TOPRIGHT", ScrollFrame, "TOPRIGHT", 0, -2);
-		ScrollBar:SetPoint("BOTTOMRIGHT", ScrollFrame, "BOTTOMRIGHT", 0, 2);
+		ScrollBar:SetPoint("TOPRIGHT", ScrollFrame, "TOPRIGHT", 0, -16);
+		ScrollBar:SetPoint("BOTTOMRIGHT", ScrollFrame, "BOTTOMRIGHT", 0, 16);
 		ScrollBar:Show();
 		ScrollBar:EnableMouse(true);
 		uireimp._SetSimpleBackdrop(ScrollBar, -1, 1, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 1.0);
@@ -83,6 +86,49 @@ local uireimp = __ala_meta__.uireimp;
 		Thumb:SetSize(BarWidth, 24);
 		-- Thumb:SetTexCoord(0.20, 0.80, 0.125, 0.875);
 		Thumb:SetColorTexture(0.25, 0.25, 0.25, 1.0);
+
+		local ScrollUpButton = CreateFrame('BUTTON', nil, ScrollBar);
+		ScrollUpButton:SetSize(12, 16);
+		ScrollUpButton:SetPoint("BOTTOMLEFT", ScrollBar, "TOPLEFT", -1, 0);
+		ScrollUpButton:SetPoint("BOTTOMRIGHT", ScrollBar, "TOPRIGHT", 1, 0);
+		ScrollUpButton:SetScript("OnClick", function(self)
+			ScrollBar:SetValue(ScrollBar:GetValue() - ScrollBar:GetValueStep());
+		end);
+		ScrollUpButton:Disable();
+		ScrollUpButton:SetNormalTexture(TEXTURE_UP);
+		ScrollUpButton:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollUpButton:GetNormalTexture():SetVertexColor(0.75, 0.75, 0.75, 0.75);
+		ScrollUpButton:SetPushedTexture(TEXTURE_UP);
+		ScrollUpButton:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollUpButton:GetPushedTexture():SetVertexColor(0.25, 0.25, 0.25, 1.0);
+		ScrollUpButton:SetHighlightTexture(TEXTURE_UP);
+		ScrollUpButton:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollUpButton:GetHighlightTexture():SetVertexColor(0.25, 0.25, 0.75, 1.0);
+		ScrollUpButton:SetDisabledTexture(TEXTURE_UP);
+		ScrollUpButton:GetDisabledTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollUpButton:GetDisabledTexture():SetVertexColor(0.5, 0.5, 0.5, 0.25);
+		ScrollBar.ScrollUpButton = ScrollUpButton;
+		local ScrollDownButton = CreateFrame('BUTTON', nil, ScrollBar);
+		ScrollDownButton:SetSize(12, 16);
+		ScrollDownButton:SetPoint("TOPLEFT", ScrollBar, "BOTTOMLEFT", -1, 0);
+		ScrollDownButton:SetPoint("TOPRIGHT", ScrollBar, "BOTTOMRIGHT", 1, 0);
+		ScrollDownButton:SetScript("OnClick", function(self)
+			ScrollBar:SetValue(ScrollBar:GetValue() + ScrollBar:GetValueStep());
+		end);
+		ScrollDownButton:SetNormalTexture(TEXTURE_DOWN);
+		ScrollDownButton:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollDownButton:GetNormalTexture():SetVertexColor(0.75, 0.75, 0.75, 0.75);
+		ScrollDownButton:SetPushedTexture(TEXTURE_DOWN);
+		ScrollDownButton:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollDownButton:GetPushedTexture():SetVertexColor(0.25, 0.25, 0.25, 1.0);
+		ScrollDownButton:SetHighlightTexture(TEXTURE_DOWN);
+		ScrollDownButton:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollDownButton:GetHighlightTexture():SetVertexColor(0.25, 0.25, 0.75, 1.0);
+		ScrollDownButton:SetDisabledTexture(TEXTURE_DOWN);
+		ScrollDownButton:GetDisabledTexture():SetTexCoord(0.0, 1.0, 0.0, 1.0);
+		ScrollDownButton:GetDisabledTexture():SetVertexColor(0.5, 0.5, 0.5, 0.25);
+		ScrollDownButton:Disable();
+		ScrollBar.ScrollDownButton = ScrollDownButton;
 
 		ScrollFrame:SetVerticalScroll(0);
 		ScrollFrame:SetScrollChild(ScrollChild);
@@ -98,12 +144,12 @@ local uireimp = __ala_meta__.uireimp;
 			ScrollBar:SetValue(val);
 		end);
 		function ScrollFrame:OnSizeChanged(width, height)
-			width = width or ScrollFrame:GetWidth();
-			height = height or ScrollFrame:GetHeight();
+			width = width or self:GetWidth();
+			height = height or self:GetHeight();
 			ScrollChild:SetHeight(height);
 			--ScrollBar:SetValue(mscrollBar:GetValue());
 			ScrollChild:CreateScrollChildButtons();
-			ScrollFrame:Update();
+			self:Update();
 			FrameWidth = width;
 			FrameHeight = height;
 			if ScrollBar:IsShown() then
@@ -115,7 +161,7 @@ local uireimp = __ala_meta__.uireimp;
 				return;
 			end
 			ButtonHeight = height;
-			ScrollFrame:OnSizeChanged();
+			self:OnSizeChanged();
 		end
 		--[=[ScrollFrame._SetSize = ScrollFrame.SetSize;
 		function ScrollFrame:SetSize(...)
@@ -142,10 +188,11 @@ local uireimp = __ala_meta__.uireimp;
 			Parent:StopMovingOrSizing();
 		end);
 		ScrollFrame:SetScript("OnShow", function(self)
-			ScrollFrame:Update();
+			self:Update();
+			ScrollBar:UpdateButtonState();
 		end);
 		function ScrollFrame:UpdateButtons()
-			if ScrollFrame:IsVisible() then
+			if self:IsVisible() then
 				for i = 1, NumShown do
 					-- Settor(TblButtons[i], i + IndexOffset);
 					After(0.0, TblButtons[i].ScopedUpdate);
@@ -153,7 +200,7 @@ local uireimp = __ala_meta__.uireimp;
 			end
 		end
 		function ScrollFrame:Update()
-			if ScrollFrame:IsVisible() then
+			if self:IsVisible() then
 				MaxValue = NumValues * ButtonHeight - FrameHeight;
 				if MaxValue < 0 then
 					MaxValue = 0;
@@ -166,23 +213,25 @@ local uireimp = __ala_meta__.uireimp;
 				ScrollBar:SetValue(val);
 				if NumShown - 1 > NumValues then
 					ScrollBar:Hide();
-					ScrollChild:SetWidth(ScrollFrame:GetWidth());
+					ScrollChild:SetWidth(self:GetWidth());
 				else
 					ScrollBar:Show();
-					ScrollChild:SetWidth(ScrollFrame:GetWidth() - BarWidth - 2);
+					ScrollChild:SetWidth(self:GetWidth() - BarWidth - 2);
 					ScrollBar:UpdateThumbHeight();
 				end
-				ScrollFrame:UpdateButtons();
+				self:UpdateButtons();
 			end
 		end
 		function ScrollFrame:SetNumValue(num)
 			if num >= 0 and NumValues ~= num then
 				NumValues = num;
-				ScrollFrame:Update();
+				self:Update();
+				ScrollBar:UpdateButtonState();
+				return true;
 			end
 		end
 		function ScrollFrame:HandleButtonByDataIndex(index, func, ...)
-			return ScrollFrame:HandleButtonByRawIndex(index - IndexOffset, func, ...);
+			return self:HandleButtonByRawIndex(index - IndexOffset, func, ...);
 		end
 		function ScrollFrame:HandleButtonByRawIndex(index, func, ...)
 			if index >= 1 and index <= #TblButtons then
@@ -208,20 +257,20 @@ local uireimp = __ala_meta__.uireimp;
 			return nil;
 		end
 		function ScrollFrame:CallButtonFuncByDataIndex(index, func, ...)
-			return ScrollFrame:CallButtonFuncByRawIndex(index - IndexOffset, func, ...);
+			return self:CallButtonFuncByRawIndex(index - IndexOffset, func, ...);
 		end
 		function ScrollFrame:SetBarWidth(width)
 			BarWidth = width;
 			ScrollBar:SetWidth(BarWidth);
 			Thumb:SetSize(BarWidth, 24);
-			ScrollFrame:Update();
+			self:Update();
 		end
 
 		local function GetDataIndex(self)
 			return self.id + IndexOffset;
 		end
 		function ScrollChild:CreateScrollChildButtons()
-			local num = ceil(ScrollChild:GetHeight() / ButtonHeight) + 1;
+			local num = ceil(self:GetHeight() / ButtonHeight) + 1;
 			if num == NumShown then
 				return;
 			end
@@ -232,7 +281,7 @@ local uireimp = __ala_meta__.uireimp;
 			else
 				if num > NumButtons then
 					for i = NumButtons + 1, num do
-						local Button = Creator(ScrollChild, i, ButtonHeight);
+						local Button = Creator(self, i, ButtonHeight);
 						Button.id = i;
 						TblButtons[i] = Button;
 						if i == 1 then
@@ -262,16 +311,17 @@ local uireimp = __ala_meta__.uireimp;
 		ScrollBar:SetMinMaxValues(0, 0);
 		ScrollBar:SetValue(0);
 		ScrollBar:SetScript("OnValueChanged", function(self, value)
-			value = value or ScrollBar:GetValue();
+			value = value or self:GetValue();
 			local index = value / ButtonHeight;
 			local ofs = (index % 1.0) * ButtonHeight;
 			ScrollFrame:SetVerticalScroll(ofs);
 			IndexOffset = index - index % 1.0;
 			ScrollFrame:UpdateButtons();
+			ScrollBar:UpdateButtonState();
 		end);
 		function ScrollBar:UpdateThumbHeight()
 			local Total = NumValues * ButtonHeight;
-			local Height = ScrollBar:GetHeight();
+			local Height = self:GetHeight();
 			local ThumbHeight = Height * FrameHeight / Total;
 			if ThumbHeight < BarWidth then
 				ThumbHeight = BarWidth;
@@ -280,6 +330,20 @@ local uireimp = __ala_meta__.uireimp;
 				ThumbHeight = ThumbHeight - ThumbHeight % 1.0;
 			end
 			Thumb:SetHeight(ThumbHeight);
+		end
+		function ScrollBar:UpdateButtonState()
+			local value = self:GetValue();
+			local minVal, maxVal = self:GetMinMaxValues();
+			if minVal >= value then
+				self.ScrollUpButton:Disable();
+			else
+				self.ScrollUpButton:Enable();
+			end
+			if maxVal <= value then
+				self.ScrollDownButton:Disable();
+			else
+				self.ScrollDownButton:Enable();
+			end
 		end
 
 		if FrameWidth == nil or FrameWidth < def_inner_size then

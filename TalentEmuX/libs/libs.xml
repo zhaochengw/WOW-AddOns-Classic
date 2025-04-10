@@ -2,9 +2,10 @@
 ..\FrameXML\UI.xsd">
 
     <script file = "LibStub\LibStub.lua" />
-    <include file = "CallbackHandler-1.0\CallbackHandler-1.0.xml" />
+    <script file = "CallbackHandler-1.0\CallbackHandler-1.0.lua" />
     <script file = "LibDataBroker-1.1\LibDataBroker-1.1.lua" />
     <script file = "LibDBIcon-1.0\LibDBIcon-1.0.lua" />
+    <script file = "AceSerializer-3.0\AceSerializer-3.0.lua" />
     <include file = "ala\main.xml" />
 
 </Ui>

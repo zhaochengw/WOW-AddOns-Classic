@@ -76,7 +76,7 @@ function BG.ReceiveUI()
             else
                 BG.ReceiveMainFrame:Hide()
                 for b = 1, Maxb[FB] + 2 do
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
                             BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText("")
                             BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText("")
@@ -92,7 +92,7 @@ function BG.ReceiveUI()
                 BG.ReceiveBiaoGe = {}
                 for b = 1, Maxb[FB] + 2 do
                     BG.ReceiveBiaoGe["boss" .. b] = {}
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                             BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] = ""
                             BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] = ""
@@ -144,7 +144,7 @@ function BG.ReceiveUI()
 
                 for b = 1, Maxb[FB] + 2 do
                     BG.SendBiaoGe["boss" .. b] = {}
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                             BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText()
                             BG.SendBiaoGe["boss" .. b]["maijia" .. i] = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText()
@@ -175,7 +175,7 @@ function BG.ReceiveUI()
 
                 for b = 1, Maxb[FB] + 2 do
                     BG.SendBiaoGe["boss" .. b] = {}
-                    for i = 1, BG.Maxi do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                             BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
                             BG.SendBiaoGe["boss" .. b]["maijia" .. i] = BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i]
@@ -201,7 +201,7 @@ function BG.ReceiveUI()
 
             local text = "BG"
             for b = 1, Maxb[FB] + 2 do
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     if BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] then
                         if BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] ~= "" then
                             local t = { text, "-", "b", b, "zb", i, ":", BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] }
@@ -320,9 +320,10 @@ function BG.ReceiveUI()
                     local FB = BG.ReceiveBiaoGe.FB
                     local DT = BG.ReceiveBiaoGe.DT
                     local BiaoTi = BG.ReceiveBiaoGe.BiaoTi
+                    BG.CreateFBUI(FB, "Receive")
 
                     for b = 1, Maxb[FB] + 2 do
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
                                 BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] or "")
                                 BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] or "")

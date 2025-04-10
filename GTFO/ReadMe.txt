@@ -2240,3 +2240,9 @@ Change Log:
 
 5.16.2
 * Added TWW spells for Liberation of Undermine
+
+5.16.3
+* Fixed TWW spells for Liberation of Undermine (Thanks Aparratchic)
+* Fixed The War Within spells (world)
+* Added TWW spells for Liberation of Undermine
+* Added TWW spells for TWW Delves

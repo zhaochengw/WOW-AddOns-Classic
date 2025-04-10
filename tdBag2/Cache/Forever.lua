@@ -382,6 +382,9 @@ end
 
 function Forever:SaveGuild()
     local guild = self:GetGuildCache()
+    if not guild then
+        return
+    end
     for i = 1, GetNumGuildBankTabs() do
         local items = {}
         items.size = 98

@@ -1,16 +1,29 @@
-lightweight tag 420fd40e291f7fe5e474ef878cca42b12969e3bc 250402
+lightweight tag c3e4550b538eebe011769aab392bbbd1f4f1d5bf 250408
 Author:	alexqu0822 <alexqu0822@163.com>
-Date:	Thu Apr 3 01:21:18 2025 +0800
+Date:	Tue Apr 8 17:48:01 2025 +0800
 
-commit 420fd40e291f7fe5e474ef878cca42b12969e3bc
+commit c3e4550b538eebe011769aab392bbbd1f4f1d5bf
 Author: alexqu0822 <alexqu0822@163.com>
-Date:   Thu Apr 3 01:21:18 2025 +0800
+Date:   Tue Apr 8 17:48:01 2025 +0800
 
-    20250402 fix
+    20250408 update libs
 
-commit 660de82f6f857f2ec32c0ee97db78d0bdebdf4b0
+commit 9ce297d56ac667c475cc0e710468ea77dc74b9f8
 Author: alexqu0822 <alexqu0822@163.com>
-Date:   Wed Apr 2 22:06:04 2025 +0800
+Date:   Tue Apr 8 16:38:48 2025 +0800
 
-    20250402 scorll lib update
+    20250408 update libs. read message via tdInspect channel.
+
+commit 3e67cd329b415fcee0609b55d9f2fe2fdcb519cb
+Author: alexqu0822 <alexqu0822@163.com>
+Date:   Tue Apr 8 09:49:29 2025 +0800
+
+    20250408 write changelog
+
+commit 2f58a8a9b8c71f265e07a80ee8c137f9e6a7189a
+Author: alexqu0822 <alexqu0822@163.com>
+Date:   Tue Apr 8 09:46:54 2025 +0800
+
+    20250408 scroll lib update
+    20250408 get data from tdInspect communication
 

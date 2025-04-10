@@ -34,8 +34,8 @@ local function ShowTardeHighLightItem(self)
     local tradeInfo = BG.GetGeZiTardeInfo(FB, b, i, true)
     if tradeInfo then
         for _, v in ipairs(tradeInfo) do
-            for b = 1, Maxb[FB] do
-                for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]
                     local jine = BG.HistoryFrame[FB]["boss" .. b]["jine" .. i]
                     if zb and FB == v.FB and b == v.b and i == v.i then
@@ -56,7 +56,7 @@ local function ShowTardeHighLightItem(self)
 end
 
 ------------------标题------------------
-function BG.HistoryBiaoTiUI(FB, t)
+function BG.HistoryTitleUI(FB, t)
     local fontsize = 15
     local version = BG["HistoryFrame" .. FB]:CreateFontString()
     if t == 1 then
@@ -271,8 +271,7 @@ end
 function BG.HistoryJiShaUI(FB, t, b, bb, i, ii)
     local text = BG["HistoryFrame" .. FB]:CreateFontString();
     local num
-    local color
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, BossNum(FB, b, t)) do
         if not BG.HistoryFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i + 1] then
             num = i
             break
@@ -298,7 +297,7 @@ end
 ------------------支出、总览、工资------------------
 function BG.HistoryZhiChuZongLanGongZiUI(FB)
     -- 设置支出颜色：绿
-    for i = 1, BG.Maxi, 1 do
+    for i = 1, BG.GetMaxi(FB, Maxb[FB] + 1), 1 do
         if BG.HistoryFrame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
             BG.HistoryFrame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetTextColor(RGB("00FF00"))
             BG.HistoryFrame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetTextColor(RGB("00FF00"))

@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2644, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250330173039")
+mod:SetRevision("20250404120009")
 mod:SetCreatureID(228458)
 mod:SetEncounterID(3014)
 mod:SetHotfixNoticeRev(20250209000000)
@@ -151,10 +151,11 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd()
+function mod:OnCombatEnd(_, _, secondRun)
 	if self.Options.NPAuraOnGaze or self.Options.NPAuraOnDLC then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
+	if secondRun then self:Stop() end--Stop all timers in a second run of combat end to try and fix bugged timers
 end
 
 function mod:SPELL_CAST_START(args)
@@ -170,10 +171,6 @@ function mod:SPELL_CAST_START(args)
 		else
 			timerSpintoWinCD:Start("v78.6-86.7", self.vb.spinCount+1)
 		end
-		--Stop other timers?
-		--timerPaylineCD:Stop()
-		--timerFoulExhaustCD:Stop()
-		--timerTheBigHitCD:Stop()
 	elseif spellId == 464806 or spellId == 464801 or spellId == 464804 or spellId == 464772 or spellId == 464809 or spellId == 464810 then
 		if spellId == 464806 then
 			warnFlameandCoin:Show(self.vb.spinCount)
@@ -214,7 +211,7 @@ function mod:SPELL_CAST_START(args)
 				timerFoulExhaustCD:Start("v9.5-9.9", self.vb.foulExhaustCount+1)
 				timerTheBigHitCD:Start("v16.0-16.7", self.vb.bigHitCount+1)
 			elseif self:IsHeroic() or self:IsLFR() then
-				timerPaylineCD:Start("v5.9-7", self.vb.paylineCount+1)
+				timerPaylineCD:Start("v4.6-7", self.vb.paylineCount+1)
 				timerFoulExhaustCD:Start("v10.4-11.8", self.vb.foulExhaustCount+1)
 				timerTheBigHitCD:Start("v16.4-18", self.vb.bigHitCount+1)
 			else
@@ -225,14 +222,10 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 464776 then--Fraud Detected
 		warnFraudDetected:Show()
-		--Timers reset
+		--Timers reset, it's a wipe anyways so we don't bother to restart them
 		timerPaylineCD:Stop()
 		timerFoulExhaustCD:Stop()
 		timerTheBigHitCD:Stop()
-		--TODO, FIX ME. these are old PTR values
-		timerPaylineCD:Start(5.7, self.vb.paylineCount+1)
-		timerFoulExhaustCD:Start(10.6, self.vb.foulExhaustCount+1)
-		timerTheBigHitCD:Start(16.6, self.vb.bigHitCount+1)
 	elseif spellId == 472178 then
 		if self:AntiSpam(8, 1) then
 			specWarnBurningBlast:Show()

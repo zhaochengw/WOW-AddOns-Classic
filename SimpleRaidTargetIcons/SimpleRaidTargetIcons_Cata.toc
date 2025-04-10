@@ -1,4 +1,4 @@
-## Interface: 30404
+﻿## Interface: 40401
 ## Title: SimpleRaidTargetIcons
 ## Author: MrFIXlT, Zimzarina
 ## X-Credits: ghostduke, Brodrick (aka Kirov), Qzot

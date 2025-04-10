@@ -27,7 +27,7 @@ local red, greed, blue = 1, 1, 1
 local touming1, touming2 = 0.1, 0.1
 
 ------------------标题------------------
-function BG.ReceiveBiaoTiUI(FB, t, b, bb, i, ii)
+function BG.ReceiveTitleUI(FB, t, b, bb, i, ii)
     local fontsize = 15
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
     if t == 1 then
@@ -223,10 +223,9 @@ end
 
 ------------------击杀用时------------------
 function BG.ReceiveJiShaUI(FB, t, b, bb, i, ii)
-    local text = BG["ReceiveFrame" .. FB]:CreateFontString();
+    local text = BG["ReceiveFrame" .. FB]:CreateFontString()
     local num
-    local color
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, BossNum(FB, b, t)) do
         if not BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i + 1] then
             num = i
             break
@@ -253,7 +252,7 @@ end
 ------------------支出、总览、工资------------------
 function BG.ReceiveZhiChuZongLanGongZiUI(FB)
     -- 设置支出颜色：绿
-    for i = 1, BG.Maxi, 1 do
+    for i = 1, BG.GetMaxi(FB, Maxb[FB] + 1), 1 do
         if BG.ReceiveFrame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
             BG.ReceiveFrame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetTextColor(RGB("00FF00"))
             BG.ReceiveFrame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetTextColor(RGB("00FF00"))

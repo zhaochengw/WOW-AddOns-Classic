@@ -30,7 +30,7 @@ local function CreateListTable(onClick, tbl1)
     local yes
     for b = 1, Maxb[FB] - 1 do
         local tbl_boss = {}
-        for i = 1, BG.Maxi do
+        for i = 1, BG.GetMaxi(FB, b) do
             if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                 if BG.Frame[BG.FB1]["boss" .. b]["zhuangbei" .. i]:GetText() ~= ""
                     and GetItemID(BG.Frame[BG.FB1]["boss" .. b]["zhuangbei" .. i]:GetText())

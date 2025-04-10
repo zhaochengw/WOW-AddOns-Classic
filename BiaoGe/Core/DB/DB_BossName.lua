@@ -373,27 +373,27 @@ do
     AddDB(FB, boss)
 
     local boss = {
-        { name = L["贝\n丝\n缇\n拉\n克"], color = "87CEFA" },
-        { name = L["雷\n奥\n利\n斯\n领\n主"], color = "FFFF00" },
-        { name = L["奥\n利\n瑟\n拉\n佐\n尔"], color = "FFFF00" },
-        { name = L["沙\n恩\n诺\n克\n斯"], color = "FFFF00" },
-        { name = L["护\n门\n人\n贝\n尔\n洛\n克"], color = "FFFF00" },
-        { name = L["管\n理\n者\n鹿\n盔"], color = "FFFF00" },
-        { name = L["拉\n格\n纳\n罗\n斯"], color = "FFFF00" },
+        { name = L["贝\n丝\n缇\n拉\n克"], color = "DEB887" },
+        { name = L["雷\n奥\n利\n斯\n领\n主"], color = "FF7220" },
+        { name = L["奥\n利\n瑟\n拉\n佐\n尔"], color = "FF7220" },
+        { name = L["沙\n恩\n诺\n克\n斯"], color = "FFC400" },
+        { name = L["贝\n尔\n洛\n克"], color = "FFC400" },
+        { name = L["管\n理\n者\n鹿\n盔"], color = "FF4500" },
+        { name = L["拉\n格\n纳\n罗\n斯"], color = "FF1493" },
     }
     local FB = "FL"
     Addother(boss)
     AddDB(FB, boss)
 
     local boss = {
-        { name = L["莫\n卓\n克"], color = "87CEFA" },
-        { name = L["督\n军\n佐\n诺\n兹"], color = "FFFF00" },
-        { name = L["不\n眠\n的\n约\n萨\n希"], color = "FFFF00" },
-        { name = L["缚\n风\n者\n哈\n格\n拉"], color = "FFFF00" },
-        { name = L["奥\n卓\n克\n希\n昂"], color = "FFFF00" },
-        { name = L["战\n争\n大\n师\n黑\n角"], color = "FFFF00" },
-        { name = L["死\n亡\n之\n翼\n的\n背\n脊"], color = "FFFF00" },
-        { name = L["疯\n狂\n的\n死\n亡\n之\n翼"], color = "FFFF00" },
+        { name = L["莫\n卓\n克"], color = "7B68EE" },
+        { name = L["督\n军\n佐\n诺\n兹"], color = "FF4500" },
+        { name = L["不\n眠\n的\n约\n萨\n希"], color = "FF4500" },
+        { name = L["缚\n风\n者\n哈\n格\n拉"], color = "FF69B4" },
+        { name = L["奥\n卓\n克\n希\n昂"], color = "318AFF" },
+        { name = L["战\n争\n大\n师\n黑\n角"], color = "318AFF" },
+        { name = L["死\n亡\n之\n翼\n的\n背\n脊"], color = "D3D3D3" },
+        { name = L["疯\n狂\n的\n死\n亡\n之\n翼"], color = "FF1493" },
     }
     local FB = "DS"
     Addother(boss)

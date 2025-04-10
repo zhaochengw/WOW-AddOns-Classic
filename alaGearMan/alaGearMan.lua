@@ -966,7 +966,9 @@ function func.initUI()
 			end
 			ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 75, 0);
 			ui.gearWin:SetScript("OnShow", function()
-				ui.scroll:SetNumValue(#saved_sets + 1);
+				if not ui.scroll:SetNumValue(#saved_sets + 1) then
+					ui.scroll:Update();
+				end
 				-- if var.gm_cur_set and saved_sets[var.gm_cur_set] then
 				-- 	func.pdf_show_mask(saved_sets[var.gm_cur_set]);
 				-- end
@@ -1005,7 +1007,9 @@ function func.initUI()
 		else
 			ui.gearWin:SetPoint("TOPLEFT", ui.open, "TOPLEFT", 45, 0);
 			ui.gearWin:SetScript("OnShow", function()
-				ui.scroll:SetNumValue(#saved_sets + 1);
+				if not ui.scroll:SetNumValue(#saved_sets + 1) then
+					ui.scroll:Update();
+				end
 				-- if var.gm_cur_set and saved_sets[var.gm_cur_set] then
 				-- 	func.pdf_show_mask(saved_sets[var.gm_cur_set]);
 				-- end
@@ -1946,7 +1950,9 @@ function func.delete(set)
 		if var.gm_cur_set and var.gm_cur_set > set then
 			var.gm_cur_set = var.gm_cur_set - 1;
 		end
-		ui.scroll:SetNumValue(#saved_sets + 1);
+		if not ui.scroll:SetNumValue(#saved_sets + 1) then
+			ui.scroll:Update();
+		end
 		-- ui.quick:Update();
 		ui.secure:Update();
 		NS.F_ScheduleDelayCall(func.refreshAppearance);
@@ -2302,8 +2308,9 @@ function func.customOK()
 			index = #saved_sets + 1;
 			saved_sets[index] = { name = title, icon = var.gm_custom_icon_selected, };
 		end
-		ui.scroll:SetNumValue(#saved_sets + 1);
-		ui.scroll:Update();
+		if not ui.scroll:SetNumValue(#saved_sets + 1) then
+			ui.scroll:Update();
+		end
 		func.save(index);
 		-- ui.quick:Update();
 		-- ui.secure:Update();	--func.save will always update securequick

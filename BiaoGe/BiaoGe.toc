@@ -1,8 +1,8 @@
-## Interface: 11506, 30404, 40400
+## Interface: 11506, 30404, 40402
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe或/GBG。角色总览命令：/BGR
 ## Author: 苍穹之霜
 ## SavedVariables: BiaoGe
-## Version: 1.16.7
+## Version: 1.17.0
 
 BiaoGe.xml

@@ -101,7 +101,7 @@ BG.Init(function()
             end
             if name then
                 local tbl = {}
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     local mj = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                     local je = BG.Frame[FB]["boss" .. b]["jine" .. i]

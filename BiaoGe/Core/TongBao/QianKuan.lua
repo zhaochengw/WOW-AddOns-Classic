@@ -24,8 +24,8 @@ local function CreateListTable(onClick, tbl1)
     local sumtable = {}
     local allsum = 0
     local FB = BG.FB1
-    for b = 1, Maxb[FB] do
-        for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
             if BG.Frame[FB]["boss" .. b]["qiankuan" .. i] then
                 if BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
                     local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText() == "" and L["没记买家"]

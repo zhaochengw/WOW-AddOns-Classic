@@ -641,8 +641,9 @@ MT.BuildEnv('RAIDTOOL');
 			end
 			function Frame.UpdateScrollList()
 				if Frame:IsVisible() then
-					ScrollList:SetNumValue(#RosterList);
-					ScrollList:Update();
+					if not ScrollList:SetNumValue(#RosterList) then
+						ScrollList:Update();
+					end
 				end
 			end
 			function Frame.UpdateGroupRosterList(force_update)

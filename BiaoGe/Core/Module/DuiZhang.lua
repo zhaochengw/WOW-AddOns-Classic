@@ -42,10 +42,10 @@ local locales = {
     ["-感谢使用大脚金团辅助工具-"] = { "-感谢使用大脚金团辅助工具-", "-感謝使用大脚金團輔助工具-", },
 }
 local function Default(player, time)
-    local _, class = UnitClass(player)
+    BG.IsSavingLedger=true
     return {
         player = player,
-        class = class,
+        class = select(2, UnitClass(player)),
         FB = nil,
         zhangdan = {},
         msgTbl = {},
@@ -60,6 +60,7 @@ local function CheckTimeOut(time)
     BG.After(20, function()
         if linshi_duizhang and linshi_duizhang.t then
             if time == linshi_duizhang.t then
+                BG.IsSavingLedger=nil
                 linshi_duizhang = nil
                 BG.SendSystemMessage(L["账单识别错误或超时！"])
             end
@@ -243,6 +244,7 @@ f:SetScript("OnEvent", function(self, event, msg, playerName, ...)
         local FB = linshi_duizhang.FB
         tinsert(BiaoGe.duizhang, linshi_duizhang)
         linshi_duizhang = nil
+        BG.IsSavingLedger = nil
         BG.DuiZhangList()
         BG.After(0.1, function()
             Send(#BiaoGe.duizhang, sumMoney, FB)
@@ -387,7 +389,7 @@ function BG.DuiZhangUI()
             local tradeInfo = {}
             BiaoGe[FB].tradeTbl = {}
             for b = 1, Maxb[FB] - 1 do
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
                     local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
                     local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
@@ -786,7 +788,7 @@ function BG.DuiZhangSet(num)
             local jine = v.jine
             local yes
             for b = 1, Maxb[FB] - 1 do
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
                     local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
                     local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
@@ -808,7 +810,7 @@ function BG.DuiZhangSet(num)
             -- 漏记
             if not yes then
                 local b = Maxb[FB]
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
                     local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
                     if zhuangbei then
@@ -828,8 +830,8 @@ function BG.DuiZhangSet(num)
             local tbl = {}
             for _, v in ipairs(BiaoGe.duizhang[num].tradeTbl[ii]) do
                 local yes
-                for b = 1, Maxb[FB] do
-                    for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                         local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
                         if otherjine and not (otherjine.hasTradeTbl or otherjine.tradeTbl) then
                             local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
@@ -857,7 +859,7 @@ function BG.DuiZhangSet(num)
     -- 设置打钩/叉叉材质
     C_Timer.After(0, function()
         for b = 1, Maxb[FB] + 1 do
-            for i = 1, BG.Maxi do
+            for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
                 local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
                 local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
@@ -891,7 +893,7 @@ end
 function BG.DuiZhang0()
     local FB = BG.FB1
     for b = 1, Maxb[FB] + 1 do
-        for i = 1, BG.Maxi do
+        for i = 1, BG.GetMaxi(FB, b) do
             local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
             local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
             local tx = BG.DuiZhangFrame[FB]["boss" .. b]["yes" .. i]
@@ -911,7 +913,7 @@ function BG.DuiZhang0()
 
     -- 漏记装备
     local b = Maxb[FB]
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, b) do
         local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
         local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
         if zhuangbei then

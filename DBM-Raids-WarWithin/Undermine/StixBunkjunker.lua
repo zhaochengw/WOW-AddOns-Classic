@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2642, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250329042249")
+mod:SetRevision("20250402155312")
 mod:SetCreatureID(230322)
 mod:SetEncounterID(3012)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -137,10 +137,11 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd()
+function mod:OnCombatEnd(_, _, secondRun)
 	if self.Options.NPAuraOnMessedUp or self.Options.NPAuraOnTerritorial then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
+	if secondRun then self:Stop() end--Stop all timers in a second run of combat end to try and fix bugged timers
 end
 
 function mod:SPELL_CAST_START(args)
@@ -362,12 +363,12 @@ function mod:UNIT_POWER_UPDATE(_, powerType)
 		local power = UnitPower("player", 10)
 		if power >= 200 and bigballs < 200 then
 			---@diagnostic disable-next-line: param-type-mismatch
-			warnRollingRubbish:Show("2/3")
-			warnRollingRubbish:Play("mediumball")
-		elseif power >= 100 and bigballs < 100 then
-			---@diagnostic disable-next-line: param-type-mismatch
 			warnRollingRubbish:Show("3/3")
 			warnRollingRubbish:Play("bigball")
+		elseif power >= 100 and bigballs < 100 then
+			---@diagnostic disable-next-line: param-type-mismatch
+			warnRollingRubbish:Show("2/3")
+			warnRollingRubbish:Play("mediumball")
 		end
 		bigballs = power
 	end

@@ -9,6 +9,7 @@ local VT = __private.VT;
 local DT = __private.DT;
 
 -->		upvalue
+	local next = next;
 	local strsub, strsplit, strmatch, gsub = string.sub, string.split, string.match, string.gsub;
 	local Ambiguate = Ambiguate;
 	local CreateFrame = CreateFrame;
@@ -123,6 +124,16 @@ MT.BuildEnv('COMM');
 				--]]
 				VT.PrevQueryRequestSentTime[name] = Tick;
 				VT.__dep.__emulib._SendQueryRequest(shortname, realm, update_tal, update_gly, update_inv);
+				local Sent = VT.QueryRequestNotResponsed[name];
+				if Sent == nil then
+					VT.QueryRequestNotResponsed[name] = { Tick, update_tal, update_gly, update_inv, };
+				else
+					Sent[1] = Tick;
+					Sent[2] = update_tal or Sent[2];
+					Sent[3] = update_gly or Sent[3];
+					Sent[4] = update_inv or Sent[4];
+				end
+				MT._TimerStart(VT.CheckQueryState, 0.1);
 				if not update_tal then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_TALENT_DATA_RECV", name, false);
@@ -141,6 +152,18 @@ MT.BuildEnv('COMM');
 				MT._TriggerCallback("CALLBACK_GLYPH_DATA_RECV", name, false);
 				MT._TriggerCallback("CALLBACK_INVENTORY_DATA_RECV", name, false);
 			end
+		end
+	end
+	function VT.CheckQueryState()
+		local Tick = MT.GetUnifiedTime();
+		for name, Sent in next, VT.QueryRequestNotResponsed do
+			if Tick - Sent[1] >= 0.5 then
+				VT.ExternalAddOn["tdInspect"]:Query(name, Sent[2], Sent[3], Sent[4]);
+				VT.QueryRequestNotResponsed[name] = nil;
+			end
+		end
+		if next(VT.QueryRequestNotResponsed) == nil then
+			MT._TimerHalt(VT.CheckQueryState);
 		end
 	end
 
@@ -165,13 +188,22 @@ MT.BuildEnv('COMM');
 	end
 	MT._CommDistributor = {
 		OnTalent = function(prefix, name, code, version, Decoder, overheard)
+			local Tick = MT.GetUnifiedTime();
+			local cache = VT.TQueryCache[name];
+			local addon = VT.ExternalAddOn[prefix];
+			if cache ~= nil and addon ~= nil then
+				local TalData = cache.TalData;
+				if TalData.Tick and Tick - TalData.Tick < 1.0 then
+					MT.Debug("Ignore Talent", name, prefix);
+					return;
+				end
+			end
 			local class, level, numGroup, activeGroup, data1, data2 = Decoder(code);
 			if class ~= nil then
+				VT.QueryRequestNotResponsed[name] = nil;
 				if version == "V1" and CT.TOCVERSION >= 30000 then
 					class, level, numGroup, activeGroup, data1, data2 = MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2);
 				end
-				local Tick = MT.GetUnifiedTime();
-				local cache = VT.TQueryCache[name];
 				if cache == nil then
 					cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 					VT.TQueryCache[name] = cache;
@@ -191,6 +223,11 @@ MT.BuildEnv('COMM');
 				TalData.active = activeGroup;
 				TalData.code = code;
 				TalData.Tick = Tick;
+				if addon ~= nil then
+					TalData.source = addon.addon or "External";
+				else
+					TalData.source = "TalentEmu";
+				end
 				if not overheard then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_TALENT_DATA_RECV", name, true);
@@ -207,14 +244,23 @@ MT.BuildEnv('COMM');
 			if CT.TOCVERSION < 30000 then
 				return;
 			end
+			local Tick = MT.GetUnifiedTime();
+			local cache = VT.TQueryCache[name];
+			local addon = VT.ExternalAddOn[prefix];
+			if cache ~= nil and addon ~= nil then
+				local GlyData = cache.GlyData;
+				if GlyData.Tick and Tick - GlyData.Tick < 1.0 then
+					MT.Debug("Ignore Glyph", name, prefix);
+					return;
+				end
+			end
 			local data1, data2 = Decoder(code);
 			if data1 == nil and data2 == nil then
 				-- MT.Debug("No GlyphSet 1");
 				-- MT.Debug("No GlyphSet 2");
 				return;
 			end
-			local Tick = MT.GetUnifiedTime();
-			local cache = VT.TQueryCache[name];
+			VT.QueryRequestNotResponsed[name] = nil;
 			if cache == nil then
 				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
@@ -223,6 +269,11 @@ MT.BuildEnv('COMM');
 			GlyData[1] = data1;
 			GlyData[2] = data2;
 			GlyData.Tick = Tick;
+			if addon ~= nil then
+				GlyData.source = addon.addon or "External";
+			else
+				GlyData.source = "TalentEmu";
+			end
 			if not overheard then
 				MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 				MT._TriggerCallback("CALLBACK_GLYPH_DATA_RECV", name, true);
@@ -231,15 +282,32 @@ MT.BuildEnv('COMM');
 		OnEquipment = function(prefix, name, code, version, Decoder, overheard)
 			-- #0#item:-1#1#item:123:::::#2#item:444:::::#3#item:-1
 			-- #(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)#(%d)#(item:[%-0-9:]+)
+			local Tick = MT.GetUnifiedTime();
 			local cache = VT.TQueryCache[name];
+			local addon = VT.ExternalAddOn[prefix];
+			local EquData;
 			if cache == nil then
 				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
+				EquData = cache.EquData;
+			elseif addon ~= nil then
+				EquData = cache.EquData;
+				if EquData.Tick and Tick - EquData.Tick < 1.0 then
+					MT.Debug("Ignore Equipment", name, prefix);
+					return;
+				end
+			else
+				EquData = cache.EquData;
 			end
-			local EquData = cache.EquData;
 			local valid, _, changed = Decoder(EquData, code);
 			if valid then
-				EquData.Tick = MT.GetUnifiedTime();
+				VT.QueryRequestNotResponsed[name] = nil;
+				EquData.Tick = Tick;
+				if addon ~= nil then
+					EquData.source = addon.addon or "External";
+				else
+					EquData.source = "TalentEmu";
+				end
 				if changed then
 					MT._TriggerCallback("CALLBACK_INVENTORY_DATA_CHANGED", name);
 				end
@@ -251,6 +319,7 @@ MT.BuildEnv('COMM');
 		end,
 		OnEngraving = function(prefix, name, code, version, Decoder, overheard)
 			local cache = VT.TQueryCache[name];
+			local addon = VT.ExternalAddOn[prefix];
 			if cache == nil then
 				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
 				VT.TQueryCache[name] = cache;
@@ -259,6 +328,11 @@ MT.BuildEnv('COMM');
 			end
 			local EngData = cache.EngData;
 			if Decoder(EngData, code) then
+				if addon ~= nil then
+					EngData.source = addon.addon or "External";
+				else
+					EngData.source = "TalentEmu";
+				end
 				if not overheard then
 					MT._TriggerCallback("CALLBACK_DATA_RECV", name);
 					MT._TriggerCallback("CALLBACK_ENGRAVING_DATA_RECV", name, true);
@@ -266,6 +340,7 @@ MT.BuildEnv('COMM');
 			end
 		end,
 		OnAddOn = function(prefix, name, code, version, Decoder, overheard)
+			VT.QueryRequestNotResponsed[name] = nil;
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
 				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };

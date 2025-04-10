@@ -9,7 +9,7 @@
 ## SavedVariablesPerCharacter: SRTISaved, SRTIExternalUF
 
 
-locales/localization-enUS.lua
+locales/localization-base.lua
 locales/localization-zhTW.lua
 locales/localization-zhCN.lua
 SimpleRaidTargetIcons.lua

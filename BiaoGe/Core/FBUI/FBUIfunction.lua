@@ -32,8 +32,8 @@ local red, greed, blue = 1, 1, 1
 function BG.GetTotalIncome(FB)
     local FB = FB or BG.FB1
     local sum = 0
-    for b = 1, Maxb[FB] do
-        for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
             if BG.Frame[FB]["boss" .. b]["jine" .. i] then
                 sum = sum + (tonumber(BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()) or 0)
             end
@@ -45,9 +45,10 @@ end
 function BG.GetTotalExpenditure(FB)
     local FB = FB or BG.FB1
     local sum = 0
-    for i = 1, BG.Maxi do
-        if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i] then
-            sum = sum + (tonumber(BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:GetText()) or 0)
+    local b = Maxb[FB] + 1
+    for i = 1, BG.GetMaxi(FB, b) do
+        if BG.Frame[FB]["boss" .. b]["jine" .. i] then
+            sum = sum + (tonumber(BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()) or 0)
         end
     end
     return sum
@@ -76,8 +77,8 @@ end
 local function HighlightBiaoGeSameItems(itemID, self)
     local tbl = {}
     local FB = BG.FB1
-    for b = 1, Maxb[FB], 1 do
-        for i = 1, BG.Maxi, 1 do
+    for b = 1, Maxb[FB] do
+        for i = 1, BG.GetMaxi(FB, b) do
             local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
             local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
             if zb then
@@ -157,8 +158,8 @@ local function ShowTardeHighLightItem(self)
     local tradeInfo = BG.GetGeZiTardeInfo(FB, b, i)
     if tradeInfo then
         for _, v in ipairs(tradeInfo) do
-            for b = 1, Maxb[FB] do
-                for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
                     if zb and FB == v.FB and b == v.b and i == v.i then
@@ -210,7 +211,7 @@ local function UpdateCancelDelete(self, FB, b, i, type)
 end
 
 ------------------标题------------------
-function BG.FBBiaoTiUI(FB, t)
+function BG.FBTitleUI(FB, t)
     local fontsize = 15
     local parent = BG["Frame" .. FB]
     local version = parent:CreateFontString()
@@ -584,7 +585,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
                         b = Maxb[FB] + 2
                     end
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["zhuangbei" .. ii] then
                             i = ii
                             break
@@ -621,7 +622,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
                     BG.Frame[FB]["boss" .. b - 1]["zhuangbei" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["zhuangbei" .. ii] then
                             i = ii
                             break
@@ -638,7 +639,7 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
                     BG.Frame[FB]["boss" .. b + 1]["zhuangbei" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b + 1]["zhuangbei" .. ii] then
                             i = ii
                             break
@@ -804,7 +805,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
                         b = Maxb[FB] + 1
                     end
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["maijia" .. ii] then
                             i = ii
                             break
@@ -837,7 +838,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
                     BG.Frame[FB]["boss" .. b - 1]["maijia" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["maijia" .. ii] then
                             i = ii
                             break
@@ -854,7 +855,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
                     BG.Frame[FB]["boss" .. b + 1]["maijia" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b + 1]["maijia" .. ii] then
                             i = ii
                             break
@@ -934,7 +935,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             BG.UpdateZhiChuPercent(zhuangbei, self)
         end
         if self == BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"] then
-            for i = 1, BG.Maxi do
+            for i = 1, BG.GetMaxi(FB, bossnum) do
                 local zhuangbei = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]
                 local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]
                 if zhuangbei then
@@ -1055,7 +1056,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
                         b = Maxb[FB] + 2
                     end
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["jine" .. ii] then
                             i = ii
                             break
@@ -1092,7 +1093,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
                     BG.Frame[FB]["boss" .. b - 1]["jine" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b - 1]["jine" .. ii] then
                             i = ii
                             break
@@ -1109,7 +1110,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
                     BG.Frame[FB]["boss" .. b + 1]["jine" .. i]:SetFocus()
                 else
                     local i
-                    for ii = BG.Maxi, 1, -1 do
+                    for ii = BG.GetMaxi(FB, b), 1, -1 do
                         if BG.Frame[FB]["boss" .. b + 1]["jine" .. ii] then
                             i = ii
                             break
@@ -1189,7 +1190,7 @@ function BG.FBJiShaUI(FB, t, b, bb, i, ii)
     if BossNum(FB, b, t) > Maxb[FB] - 2 then return end
     local text = BG["Frame" .. FB]:CreateFontString()
     local num
-    for i = 1, BG.Maxi do
+    for i = 1, BG.GetMaxi(FB, BossNum(FB, b, t)) do
         if not BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i + 1] then
             num = i
             break
@@ -1251,7 +1252,7 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
         end
     end
     -- 设置支出颜色：绿
-    for i = 1, BG.Maxi, 1 do
+    for i = 1, BG.GetMaxi(FB, Maxb[FB] + 1), 1 do
         if BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i] then
             BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]:SetTextColor(RGB("00FF00"))
             BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]:SetTextColor(RGB("00FF00"))
@@ -1313,8 +1314,9 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine4"]:HookScript("OnEnter", OnEnter)
 
     -- 修复默认支出名称
-    for i = 1, BG.Maxi do
-        local zb = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]
+    local b = Maxb[FB] + 1
+    for i = 1, BG.GetMaxi(FB, b) do
+        local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
         if zb then
             zb:SetText(zb:GetText():gsub(L["坦克补贴"], L["T补贴"]))
             zb:SetText(zb:GetText():gsub(L["治疗补贴"], L["N补贴"]))
@@ -1323,40 +1325,4 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
     end
 end
 
--- 滚动框
-function BG.CreateFBScrollFrame(frameName, FB, bossNum)
-    local t, b = BG.GetBossNumInfo(FB, bossNum)
-    local pointFrame, pointX, pointY
-    if b == 1 then
-        if BG.zaxiang[FB] and bossNum == Maxb[FB] then
-            pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetBossButtonCount(FB, bossNum - 1)]
-            pointX, pointY = -5, -20
-        else
-            pointFrame = BG[frameName].p["preWidget" .. 0]
-            pointX, pointY = -5, -3
-        end
-    elseif BG[frameName .. FB]["scrollFrame" .. bossNum - 1] then
-        pointFrame = BG[frameName .. FB]["scrollFrame" .. bossNum - 1].owner
-        pointX, pointY = 0, -18
-    else
-        pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetBossButtonCount(FB, bossNum - 1)]
-        pointX, pointY = -5, -20
-    end
 
-    local parent = BG[frameName .. FB]
-    local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate") -- 滚动
-    scroll:SetWidth(350)
-    scroll:SetHeight(BG.GetBossButtonCount(FB, bossNum) * 23)
-    scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
-    BG.CreateSrollBarBackdrop(scroll.ScrollBar)
-    BG.HookScrollBarShowOrHide(scroll)
-
-    local child = CreateFrame("Frame", nil, scroll) -- 子框架
-    child:SetSize(1, 1)
-    child.owner = scroll
-    scroll:SetScrollChild(child)
-    BG[frameName .. FB]["scrollFrame" .. bossNum] = child
-    if bossNum == Maxb[FB] + 2 then
-        scroll.ScrollBar:Hide()
-    end
-end

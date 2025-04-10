@@ -22,8 +22,8 @@ local function CreateListTable(onClick, tbl1)
     local alltable = {}
     local newtable = {}
     local FB = BG.FB1
-    for b = 1, Maxb[FB] do
-        for i = 1, BG.Maxi do
+for b = 1, Maxb[FB] do
+ for i = 1, BG.GetMaxi(FB, b) do
             local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
             local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
             if maijia then

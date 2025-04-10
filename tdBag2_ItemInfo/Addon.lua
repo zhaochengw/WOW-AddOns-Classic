@@ -38,6 +38,8 @@ local LE_ITEM_BIND_ON_EQUIP = LE_ITEM_BIND_ON_EQUIP or Enum.ItemBind.OnEquip
 local ITEM_LEVEL_IGNORES = { --
     INVTYPE_BAG = true,
     INVTYPE_AMMO = true,
+    INVTYPE_BODY = true,
+    INVTYPE_TABARD = true,
 }
 
 local profile = Addon:RegisterProfile(PLUGIN, {

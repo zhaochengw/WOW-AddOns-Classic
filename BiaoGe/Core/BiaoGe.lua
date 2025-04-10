@@ -278,13 +278,13 @@ BG.Init(function()
         -- 更新日记窗口
         -- BiaoGe.options.SearchHistory[ns.updateText_now[1]]=nil
         if next(ns.updateText_now) and not BiaoGe.options.SearchHistory[ns.updateText_now[1]] then
-            BiaoGe.options.SearchHistory[ns.updateText_now[1]]=true
+            BiaoGe.options.SearchHistory[ns.updateText_now[1]] = true
             local f = BG.CreateMainFrame()
             f:SetSize(450, 1)
             f:SetFrameStrata("HIGH")
             f.titleText:SetText(L["<BiaoGe> 金团表格"])
             f.texts = {}
-            BG.updateFrame=f
+            BG.updateFrame = f
             local w = 15
             for i, text in ipairs(ns.updateText_now) do
                 local t = f:CreateFontString()
@@ -382,7 +382,7 @@ BG.Init(function()
             BiaoGe.History[FB][DT] = {}
             for b = 1, Maxb[FB] + 2 do
                 BiaoGe.History[FB][DT]["boss" .. b] = {}
-                for i = 1, BG.Maxi do
+                for i = 1, BG.GetMaxi(FB, b) do
                     if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                         BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i] = BG.ReceiveBiaoGe["boss" .. b]
                             ["zhuangbei" .. i]
@@ -421,7 +421,7 @@ BG.Init(function()
     ----------二级Frame----------
     do
         -- 当前表格
-        BG.FBMainFrame = CreateFrame("Frame", "BG.FBMainFrame", BG.MainFrame)
+        BG.FBMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
         do
             BG.FBMainFrame:Hide()
             for i, FB in ipairs(BG.FBtable) do
@@ -480,7 +480,7 @@ BG.Init(function()
             end)
         end
         -- 心愿清单
-        BG.HopeMainFrame = CreateFrame("Frame", "BG.HopeMainFrame", BG.MainFrame)
+        BG.HopeMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
         do
             BG.HopeMainFrame:Hide()
             for i, FB in ipairs(BG.FBtable) do
@@ -537,7 +537,7 @@ BG.Init(function()
             end
         end
         -- 装备库
-        BG.ItemLibMainFrame = CreateFrame("Frame", "BG.ItemLibMainFrame", BG.MainFrame)
+        BG.ItemLibMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
         do
             BG.ItemLibMainFrame:Hide()
             BG.BackBiaoGe(BG.ItemLibMainFrame)
@@ -561,7 +561,8 @@ BG.Init(function()
                 BG.FilterClassItemMainFrame.Buttons2:SetParent(self)
                 BG.FilterClassItemMainFrame:Hide()
                 BG.FilterClassItemMainFrame.Buttons2:ClearAllPoints()
-                BG.FilterClassItemMainFrame.Buttons2:SetPoint("TOP", BG.ItemLibMainFrame.invtypeFrame, "BOTTOM", 0, -10)
+                BG.FilterClassItemMainFrame.Buttons2:SetPoint("LEFT", BG.ItemLibMainFrame.filtleText, "RIGHT", 10, 0)
+                -- BG.FilterClassItemMainFrame.Buttons2:SetPoint("TOP", BG.ItemLibMainFrame.invtypeFrame, "BOTTOM", 0, -45)
 
                 BG.ButtonImportHope:SetParent(self)
                 BG.ButtonExportHope:SetParent(self)
@@ -589,7 +590,7 @@ BG.Init(function()
             end
         end
         -- 对账
-        BG.DuiZhangMainFrame = CreateFrame("Frame", "BG.DuiZhangMainFrame", BG.MainFrame)
+        BG.DuiZhangMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
         do
             BG.DuiZhangMainFrame:Hide()
             for i, FB in ipairs(BG.FBtable) do
@@ -633,7 +634,7 @@ BG.Init(function()
             end
         end
         -- YY评价
-        BG.YYMainFrame = CreateFrame("Frame", "BG.YYMainFrame", BG.MainFrame)
+        BG.YYMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
         do
             BG.YYMainFrame:Hide()
             BG.BackBiaoGe(BG.YYMainFrame)
@@ -698,7 +699,7 @@ BG.Init(function()
             end
 
             -- 团本攻略
-            BG.BossMainFrame = CreateFrame("Frame", "BG.HopeMainFrame", BG.MainFrame)
+            BG.BossMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
             do
                 BG.BossMainFrame:Hide()
                 for i, FB in ipairs(BG.FBtable) do
@@ -810,7 +811,7 @@ BG.Init(function()
     ----------生成各副本UI----------
     do
         for k, FB in pairs(BG.FBtable) do
-            BG.CreateFBUI(FB)
+            BG.CreateFBUI(FB, "FB")
             BG.HopeUI(FB)
         end
         BG.CreateBossModel()
@@ -1387,6 +1388,9 @@ BG.Init(function()
             if BG.UpdateAuctionLogFrame then
                 BG.UpdateAuctionLogFrame()
             end
+            if num == BG.BossMainFrameTabNum then
+                BG.RoadBossUI()
+            end
         end
 
         function BG.Create_TabButton(num, text, frame, width) -- 1,L["当前表格 "],BG["Frame" .. BG.FB1],150
@@ -1544,15 +1548,6 @@ BG.Init(function()
                 GameTooltip:Show()
             end)
 
-            -- local bt = BG.Create_TabButton(BG.ReportMainFrameTabNum, L["举报记录"], BG.ReportMainFrame)
-            -- bt:HookScript("OnEnter", function(self)
-            --     GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-            --     GameTooltip:ClearLines()
-            --     GameTooltip:AddLine(L["< 举报记录 >"], 1, 1, 1, true)
-            --     GameTooltip:AddLine(L["查看举报记录和追踪举报结果"], 1, 0.82, 0, true)
-            --     GameTooltip:Show()
-            -- end)
-
             local bt = BG.Create_TabButton(BG.BossMainFrameTabNum, L["团本攻略"], BG.BossMainFrame)
             bt:HookScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1569,7 +1564,7 @@ BG.Init(function()
                 local FB = BG.FB1
                 if BG.FBMainFrame:IsVisible() then
                     for b = 1, Maxb[FB] do
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             local bt = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                             if bt then
                                 BG.IsHave(bt)
@@ -1578,7 +1573,7 @@ BG.Init(function()
                     end
                 elseif BG.HistoryMainFrame:IsVisible() then
                     for b = 1, Maxb[FB] do
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             local bt = BG.HistoryFrame[FB]["boss" .. b]["zhuangbei" .. i]
                             if bt then
                                 BG.IsHave(bt)
@@ -1588,7 +1583,7 @@ BG.Init(function()
                 elseif BG.HopeMainFrame:IsVisible() then
                     for n = 1, HopeMaxn[FB] do
                         for b = 1, Maxb[FB] do
-                            for i = 1, BG.Maxi do
+                            for i = 1, BG.GetMaxi(FB, b) do
                                 local bt = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
                                 if bt then
                                     BG.IsHave(bt)
@@ -1598,7 +1593,7 @@ BG.Init(function()
                     end
                 elseif BG.DuiZhangMainFrame:IsVisible() then
                     for b = 1, Maxb[FB] do
-                        for i = 1, BG.Maxi do
+                        for i = 1, BG.GetMaxi(FB, b) do
                             local bt = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
                             if bt then
                                 BG.IsHave(bt)
@@ -1687,7 +1682,7 @@ BG.Init(function()
             local sound_yes = ""
             for _, FB in pairs(BG.FBtable) do
                 for b = 1, Maxb[FB], 1 do
-                    for i = 1, BG.Maxi, 1 do
+                    for i = 1, BG.GetMaxi(FB, b) do
                         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
                             if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() ~= "" then
                                 local itemID = GetItemID(BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText())
@@ -1705,7 +1700,7 @@ BG.Init(function()
                                             end
                                         end)
 
-                                        if ShowGuanZhu and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
+                                        if not BG.IsSavingLedger and ShowGuanZhu and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
                                             if not string.find(sound_yes, tostring(itemID)) then
                                                 BG.FrameLootMsg:AddMessage(BG.STC_g1(format(L["你关注的装备开始拍卖了：%s（右键取消关注）"],
                                                     AddTexture(Texture) .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText())))
@@ -1721,26 +1716,28 @@ BG.Init(function()
                 end
             end
 
-            local yes
-            for _, FB in pairs(BG.FBtable) do
-                for n = 1, HopeMaxn[FB] do
-                    for b = 1, HopeMaxb[FB] do
-                        for i = 1, HopeMaxi do
-                            if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
-                                local itemID = GetItemID(BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:GetText())
-                                if itemID then
-                                    local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(itemID)
-                                    yes = string.find(itemIDs, tostring(itemID))
-                                    if yes then
-                                        BG.HopeFrameDs[FB .. 3]["nandu" .. n]["boss" .. b]["ds" .. i]:Show()
-                                        BG.OnUpdateTime(function(self, elapsed)
-                                            self.timeElapsed = self.timeElapsed + elapsed
-                                            if BiaoGe.options[name1] ~= 1 or self.timeElapsed >= BiaoGe.options[name2] then
-                                                BG.HopeFrameDs[FB .. 3]["nandu" .. n]["boss" .. b]["ds" .. i]:Hide()
-                                                self:SetScript("OnUpdate", nil)
-                                                self:Hide()
-                                            end
-                                        end)
+            if BG.HopeMainFrame:IsVisible() then
+                local yes
+                for _, FB in pairs(BG.FBtable) do
+                    for n = 1, HopeMaxn[FB] do
+                        for b = 1, HopeMaxb[FB] do
+                            for i = 1, HopeMaxi do
+                                if BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] then
+                                    local itemID = GetItemID(BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]:GetText())
+                                    if itemID then
+                                        local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(itemID)
+                                        yes = string.find(itemIDs, tostring(itemID))
+                                        if yes then
+                                            BG.HopeFrameDs[FB .. 3]["nandu" .. n]["boss" .. b]["ds" .. i]:Show()
+                                            BG.OnUpdateTime(function(self, elapsed)
+                                                self.timeElapsed = self.timeElapsed + elapsed
+                                                if BiaoGe.options[name1] ~= 1 or self.timeElapsed >= BiaoGe.options[name2] then
+                                                    BG.HopeFrameDs[FB .. 3]["nandu" .. n]["boss" .. b]["ds" .. i]:Hide()
+                                                    self:SetScript("OnUpdate", nil)
+                                                    self:Hide()
+                                                end
+                                            end)
+                                        end
                                     end
                                 end
                             end
@@ -1935,17 +1932,19 @@ BG.Init(function()
 
         local function IsTrueLoot(quality, bindType, itemStackCount, typeID)
             local _quality = GetLootThreshold()
-            if quality < _quality then
-                return
-            end
-            if bindType == 4 then          -- 任务物品
-                return
-            elseif bindType == 1 then      -- 拾取绑定的
-                if itemStackCount > 1 then -- 堆叠数量大于1
+            if _quality then
+                if quality < _quality then
                     return
                 end
+                if bindType == 4 then          -- 任务物品
+                    return
+                elseif bindType == 1 then      -- 拾取绑定的
+                    if itemStackCount > 1 then -- 堆叠数量大于1
+                        return
+                    end
+                end
+                return true
             end
-            return true
         end
 
         local function GiveLoot()
@@ -2929,6 +2928,18 @@ do
             end
         else
             if BG.IsLeader then
+                return true
+            end
+        end
+    end
+
+    function BG.IsMLByName(name)
+        if GetLootMethod() == "master" then
+            if BG.masterLooter and BG.masterLooter == name then
+                return true
+            end
+        else
+            if BG.raidLeader == name then
                 return true
             end
         end

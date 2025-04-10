@@ -54,6 +54,7 @@ do
     BG.BG = "|cff00BFFF<BiaoGe>|r "
     BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
     BG.iconTexCoord = { .03, .97, .03, .97 }
+    BG.zaxiang = {} -- 杂项如果太多，则需要换列
     if BG.IsRetail then
         BG.CloseButtonOffset = 0
     else
@@ -91,14 +92,14 @@ do
 end
 -- 初始化
 do
-    BG.Maxi                              = 30
-    BG.FBWidth                           = {}
-    BG.FBHeight                          = {}
-    BG.BossNumtbl                        = {}
-    local mainFrameWidth                 = 1295
-    local Maxt, Maxb, HopeMaxb, HopeMaxn = {}, {}, {}, {}
+    BG.Maxi                                    = 30
+    BG.FBWidth                                 = {}
+    BG.FBHeight                                = {}
+    BG.BossNumtbl                              = {}
+    local mainFrameWidth                       = 1295
+    local Maxt, Maxb, Maxi, HopeMaxb, HopeMaxn = {}, {}, {}, {}, {}
     do
-        local function AddDB(FB, width, height, maxt, maxb, bossNumTbl, diffTbl, diffIDTbl)
+        local function AddDB(FB, width, height, maxt, maxb, bossNumTbl, diffTbl, diffIDTbl, maxiTbl, zaxiangI)
             BG.FBWidth[FB] = width
             BG.FBHeight[FB] = height
             Maxt[FB] = maxt
@@ -120,23 +121,50 @@ do
                 [15] = "H",
                 [16] = "M",
             }
+            Maxi[FB] = maxiTbl
+            -- 设置支出格子为x个
+            if FB == "ULD" then
+                tinsert(Maxi[FB], 5)
+            elseif FB == "MC" then
+                tinsert(Maxi[FB], 6)
+            else
+                tinsert(Maxi[FB], 8)
+            end
+            -- 设置总览工资格子为x个
+            tinsert(Maxi[FB], 5)
+            if zaxiangI then
+                BG.zaxiang[FB] = { i = zaxiangI }
+            end
         end
 
         if BG.IsVanilla_Sod then
-            AddDB("BD", mainFrameWidth, 810, 3, 9, { 0, 5, 9 })
-            AddDB("Gno", mainFrameWidth, 810, 3, 8, { 0, 5, 8 })
-            AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, })
-            AddDB("MCsod", mainFrameWidth, 940, 3, 13, { 0, 6, 11 })
-            AddDB("ZUGsod", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
-            AddDB("BWLsod", mainFrameWidth, 810, 3, 9, { 0, 5, 7 })
-            AddDB("Worldsod", mainFrameWidth, 810, 3, 10, { 0, 4, 9 })
+            AddDB("BD", mainFrameWidth, 810, 3, 9, { 0, 5, 9 }, nil, nil,
+                { 5, 5, 5, 5, 5, 5, 5, 5, 10, })
+            AddDB("Gno", mainFrameWidth, 810, 3, 8, { 0, 5, 8 }, nil, nil,
+                { 5, 5, 5, 5, 5, 10, 8, 8, })
+            AddDB("Temple", mainFrameWidth, 885, 3, 10, { 0, 6, 9, }, nil, nil,
+                { 5, 5, 5, 4, 4, 4, 4, 6, 25, 9, }, 20)
+            AddDB("MCsod", mainFrameWidth, 940, 3, 13, { 0, 6, 11 }, nil, nil,
+                { 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 6, 11, 6, })
+            AddDB("ZUGsod", mainFrameWidth, 810, 3, 12, { 0, 6, 11 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 9, 10, 6, }, 5)
+            AddDB("BWLsod", mainFrameWidth, 810, 3, 9, { 0, 5, 7 }, nil, nil,
+                { 4, 4, 4, 4, 8, 5, 21, 7, 5, })
+            AddDB("Worldsod", mainFrameWidth, 810, 3, 10, { 0, 4, 9 }, nil, nil,
+                { 10, 5, 5, 5, 5, 5, 5, 5, 4, 5 })
         elseif BG.IsVanilla_60 then
-            AddDB("MC", mainFrameWidth, 810, 3, 13, { 0, 7, 12 })
-            AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 })
-            AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 })
-            AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 7 })
-            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 })
-            AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 })
+            AddDB("MC", mainFrameWidth, 810, 3, 13, { 0, 7, 12 }, nil, nil,
+                { 3, 3, 3, 4, 3, 3, 4, 3, 4, 5, 8, 15, 4, }, 6)
+            AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, nil,
+                { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
+            AddDB("ZUG", mainFrameWidth, 810, 3, 12, { 0, 6, 11 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 9, 10, })
+            AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 7 }, nil, nil,
+                { 5, 5, 5, 5, 5, 5, 28, 5, }, 23)
+            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 5, 20, 5, }, 14)
+            AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
         elseif BG.IsWLK then
             local difTbl1 = {
                 [3] = "N10",
@@ -168,20 +196,36 @@ do
                 [6] = "N",
                 [194] = "N",
             }
-            AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 }, { "N10", "N25", "H10", "H25", }, difTbl2)
-            AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 }, { "N10", "N25", "H10", "H25", }, difTbl2)
-            AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 }, { "N10", "N25" }, difTbl1)
-            AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 }, { "N10", "N25" }, difTbl1)
+            AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 }, { "N10", "N25", "H10", "H25", }, difTbl2,
+                { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 8, 7, })
+            AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 }, { "N10", "N25", "H10", "H25", }, difTbl2,
+                { 5, 5, 5, 5, 5, 3, 8, 22, 5, }, 16)
+            AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 }, { "N10", "N25" }, difTbl1,
+                { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 8, 5, })
+            AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 }, { "N10", "N25" }, difTbl1,
+                { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 14, 6, 6, 5, })
             -- TBC
-            AddDB("SW", mainFrameWidth, 835, 3, 8, { 0, 5, 8 }, nil, difTbl3)
-            AddDB("BT", mainFrameWidth, 835, 3, 11, { 0, 5, 9 }, nil, difTbl3)
-            AddDB("HS", mainFrameWidth, 835, 2, 7, { 0, 5, }, nil, difTbl3)
-            AddDB("SSC", mainFrameWidth, 835, 3, 12, { 0, 6, 10 }, nil, difTbl3)
-            AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3)
+            AddDB("SW", mainFrameWidth, 835, 3, 8, { 0, 5, 8 }, nil, difTbl3,
+                { 5, 5, 5, 6, 5, 6, 10, 11, })
+            AddDB("BT", mainFrameWidth, 835, 3, 11, { 0, 5, 9 }, nil, difTbl3,
+                { 5, 5, 5, 5, 5, 5, 5, 5, 10, 8, 5, })
+            AddDB("HS", mainFrameWidth, 835, 2, 7, { 0, 5, }, nil, difTbl3,
+                { 5, 5, 5, 5, 5, 7, 5 })
+            AddDB("SSC", mainFrameWidth, 835, 3, 12, { 0, 6, 10 }, nil, difTbl3,
+                { 4, 4, 4, 4, 4, 5, 5, 5, 5, 10, 8, 5, })
+            AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
+                { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
         elseif BG.IsCTM then
-            AddDB("BOT", 1715, 930, 4, 15, { 0, 5, 10, 14 }, { "N", "H" })
+            AddDB("BOT", 1715, 930, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
+            AddDB("FL", mainFrameWidth, 770, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 10, })
+            AddDB("DS", mainFrameWidth, 770, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, })
         elseif BG.IsRetail then
-            AddDB("NP", mainFrameWidth, 950, 3, 10, { 0, 4, 8 }, { "R", "N", "H", "M" })
+            local n = 8
+            AddDB("NP", mainFrameWidth, 950, 3, 10, { 0, 4, 8 }, { "R", "N", "H", "M" }, nil,
+                { n, n, n, n, n, n, n, n, 5, 5, }, 12)
         end
     end
 
@@ -302,14 +346,12 @@ do
             BG.fullLevel = 85
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
             AddDB("BOT", 671, "P1", nil, nil, nil, { 1, 5 })    -- 暮光堡垒
-
             BG.FBIDtable[669] = "BOT"                           -- 黑翼血环
             BG.bossPositionStartEnd[669] = { 6, 11 }
             for i = 6, 11 do
                 BG.FBfromBossPosition["BOT"][i] = { name = "BWD", localName = GetRealZoneText(669) }
                 BG.instanceIDfromBossPosition["BOT"][i] = 669
             end
-
             BG.FBIDtable[754] = "BOT" -- 风神王座
             BG.bossPositionStartEnd[754] = { 12, 13 }
             for i = 12, 13 do
@@ -317,8 +359,8 @@ do
                 BG.instanceIDfromBossPosition["BOT"][i] = 754
             end
 
-            -- AddDB("FL", 720, "P2") -- 火焰之地
-            -- AddDB("DS", 967, "P3") -- 巨龙之魂
+            AddDB("FL", 720, "P2") -- 火焰之地
+            AddDB("DS", 967, "P3") -- 巨龙之魂
         elseif BG.IsRetail then
             BG.FB1 = "NP"
             BG.fullLevel = 80
@@ -336,10 +378,26 @@ do
     do
         ns.Maxt     = Maxt
         ns.Maxb     = Maxb
+        ns.Maxi     = Maxi
         ns.HopeMaxi = HopeMaxi
         ns.HopeMaxb = HopeMaxb
         ns.HopeMaxn = HopeMaxn
         BG.Maxb     = Maxb
+
+        function BG.GetMaxi(FB, b, isScrollFrame)
+            if not b then return BG.Maxi end
+            FB = FB or BG.FB1
+            if not isScrollFrame then
+                if b == Maxb[FB] then
+                    return 30
+                elseif b == Maxb[FB] + 1 then
+                    return 20
+                elseif b == Maxb[FB] + 2 then
+                    return 5
+                end
+            end
+            return Maxi[FB][b] or 0
+        end
     end
 
     local function UnitRealm(unit)
@@ -501,9 +559,9 @@ do
                 MAGE = {},
                 WARLOCK = {},
                 PRIEST = {},
-                EVOKER={},
-                DEMONHUNTER={},
-                MONK={},
+                EVOKER = {},
+                DEMONHUNTER = {},
+                MONK = {},
 
                 Team = {},         -- 5人本
                 World = {},        -- 世界掉落
