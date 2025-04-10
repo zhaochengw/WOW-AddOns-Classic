@@ -937,12 +937,17 @@ function private.InitializeListFrame()
 		self:ClearLines()
 
 		local button_index = 1
-		local string_index = button_index + offset
+		local string_index = math.floor(button_index + offset)
 
 		-- Populate the buttons with new values
 		while button_index <= NUM_RECIPE_LINES and string_index <= num_entries do
 			local cur_state = self.state_buttons[button_index]
 			local cur_entry = self.entries[string_index]
+			
+			-- 添加空值检查
+			if not cur_entry then
+				break
+			end
 
 			if cur_entry.type == "header" or cur_entry.type == "subheader" then
 				cur_state:Show()
@@ -985,7 +990,7 @@ function private.InitializeListFrame()
 			string_index = string_index + 1
 		end
 		button_index = 1
-		string_index = button_index + offset
+		string_index = math.floor(button_index + offset)
 
 		-- This function could possibly have been called from a mouse click or by scrolling. Since, in those cases, the list entries have
 		-- changed, the mouse is likely over a different entry - a tooltip should be generated for it.
