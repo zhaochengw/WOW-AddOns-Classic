@@ -1733,7 +1733,7 @@ BG.Init(function()
                 local _, link = GetItemInfo(itemID)
                 if not link then return end
                 if ItemRefTooltip:IsVisible() and num == lastNum then
-                    lastNum=nil
+                    lastNum = nil
                     ItemRefTooltip:Hide()
                     return
                 end
@@ -2072,6 +2072,7 @@ BG.Init(function()
         end
         -- 团长自动摆放装备
         BG.RegisterEvent("TRADE_SHOW", function(self, ...)
+            BG.QianKuan.edit:SetText("")
             BG.auctionLogFrame.GetTargetTradeTbl(BG.ImML() and BG.GN("NPC") or player)
             sumTargetMoney = 0
             sumPlayerMoney = 0
@@ -2239,14 +2240,16 @@ BG.Init(function()
             UpdateTargetQianKuan()
             MLAcceptTrade()
         end)
-        TradePlayerInputMoneyFrameGold:HookScript("OnTextChanged", function()
-            if BG.ImML() then return end
-            if BG.trade.GiveYouMoneyText:IsVisible() then
-                UpdateGiveYouMoneyTextColor()
-            end
-            UpdateMyQianKuan()
-            PlayerAcceptTrade()
-        end)
+        if not BG.IsRetail then -- todo
+            TradePlayerInputMoneyFrameGold:HookScript("OnTextChanged", function()
+                if BG.ImML() then return end
+                if BG.trade.GiveYouMoneyText:IsVisible() then
+                    UpdateGiveYouMoneyTextColor()
+                end
+                UpdateMyQianKuan()
+                PlayerAcceptTrade()
+            end)
+        end
 
         -- 交易成功后，把拍卖记录设为已交易
         BG.RegisterEvent("UI_INFO_MESSAGE", function(self, event, _, text)

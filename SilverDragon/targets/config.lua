@@ -15,25 +15,25 @@ function module:RegisterConfig()
 	config.options.plugins.clicktarget = {
 		clicktarget = {
 			type = "group",
-			name = "ClickTarget",
+			name = "点击目标",
 			get = function(info) return self.db.profile[info[#info]] end,
 			set = function(info, v)
 				self.db.profile[info[#info]] = v
 			end,
 			order = 25,
 			args = {
-				about = config.desc("Once you've found a rare, it can be nice to actually target it. So this pops up a frame that targets the rare when you click on it.", 0),
-				show = config.toggle("Show for mobs", "Show the click-target frame for mobs", 10),
-				loot = config.toggle("Show for treasure", "Show the click-target frame for treasures", 11),
+				about = config.desc("一旦你找到了一个稀有怪，实际锁定它会很不错。因此，这个功能会在你点击它时弹出一个锁定稀有怪的框架。", 0),
+				show = config.toggle("显示生物", "显示生物的点击目标框架", 10),
+				loot = config.toggle("显示宝藏", "显示宝藏的点击目标框架", 11),
 				appearanceHeader = {
 					type = "header",
-					name = "Appearance",
+					name = "外观",
 					order = 20,
 				},
 				style = {
 					type = "select",
-					name = "Style",
-					desc = "Appearance of the frame",
+					name = "类型",
+					desc = "框架的外观",
 					values = function(info)
 						local values = {}
 						for key in pairs(self.Looks) do
@@ -51,8 +51,8 @@ function module:RegisterConfig()
 				},
 				model = {
 					type = "toggle",
-					name = "Show 3d model",
-					desc = "Whether to show the fully 3d model of the mob. In some styles this will fall back to a 2d icon, in others it'll go away entirely.",
+					name = "显示3D模型",
+					desc = "是否显示怪物的完整3D模型。在某些风格中，这将回退到2D图标，而在其他风格中，它可能会完全消失。",
 					set = function(info, v)
 						self.db.profile[info[#info]] = v
 						module:Redraw()
@@ -61,9 +61,9 @@ function module:RegisterConfig()
 				},
 				anchor = {
 					type = "execute",
-					name = function() return self.anchor:IsShown() and "Hide Anchor" or "Show Anchor" end,
+					name = function() return self.anchor:IsShown() and "隐藏锚点" or "显示锚点" end,
 					descStyle = "inline",
-					desc = "Show the anchor frame that the popup will attach to",
+					desc = "显示弹出窗口将附加到的锚点框架",
 					func = function()
 						self.anchor[self.anchor:IsShown() and "Hide" or "Show"](self.anchor)
 						AceConfigRegistry:NotifyChange(myname)
@@ -72,8 +72,8 @@ function module:RegisterConfig()
 				},
 				stacksize = {
 					type = "range",
-					name = "Stack size",
-					desc = "How many popups to show at once",
+					name = "堆栈数量",
+					desc = "一次显示多少个弹出框",
 					min = 1,
 					max = 6,
 					step = 1,
@@ -98,33 +98,33 @@ function module:RegisterConfig()
 				},
 				closeAfter = {
 					type = "range",
-					name = "Close after",
-					desc = "How long to leave the target frame up without you interacting with it before it'll go away, in seconds. Every time you mouse over the frame this timer resets.",
+					name = "关闭",
+					desc = "在没有交互的情况下，目标框体保持显示的时间长度，以秒为单位。每次鼠标悬停在该框体上时，计时器会重置.",
 					width = "full",
 					min = 5,
 					max = 600,
 					step = 1,
 					order = 40,
 				},
-				closeDead = config.toggle("Close when dead", "Try to close the click-target frame when the mob dies. We'll only be able to *tell* if it dies if we're nearby and in combat. Might have to wait until you're out of combat to do the hiding.", 30),
+				closeDead = config.toggle("死亡时关闭", "尝试在怪物死亡时关闭点击目标框体。只有在附近并处于战斗状态时，我们才能确定它是否死亡。可能需要等到脱离战斗状态后才能进行隐藏操作", 30),
 				announceHeader = {
 					type = "header",
-					name = "Chat announcements",
+					name = "聊天通报",
 					order = 50,
 				},
-				announceDesc = config.desc("Shift-clicking the target popup will try to send a message about the rare. If you've got it targeted or are near enough to see its nameplate, health will be included.\nIf you have an editbox open, it'll paste the message into that for you to send. If you don't, it'll do whatever these settings say:", 41),
+				announceDesc = config.desc("按住Shift键点击目标弹出框将尝试发送关于稀有怪物的消息。如果你已经选中了它或者足够近能看到它的姓名板，消息中将包含它的生命值。如果你已经打开了编辑框，消息将被粘贴到编辑框中以便你发送。如果没有打开编辑框，它将按照这些设置进行操作:", 41),
 				announce = {
 					type = "select",
-					name = "Announce to chat",
+					name = "在聊天中通知",
 					values = {
-						OPENLAST = "Open last editbox",
-						IMMEDIATELY = "Send immediately",
+						OPENLAST = "打开编辑框",
+						IMMEDIATELY = "立即发送",
 					},
 					order = 55,
 				},
 				announceChannel = {
 					type = "select",
-					name = "Immediate announce to...",
+					name = "立即通报到...",
 					values = {
 						["CHANNEL"] = COMMUNITIES_DEFAULT_CHANNEL_NAME, -- strictly this isn't correct, but...
 						["SAY"] = CHAT_MSG_SAY,
@@ -138,25 +138,25 @@ function module:RegisterConfig()
 				},
 				sources = {
 					type = "group",
-					name = "Rare Sources",
+					name = "稀有来源",
 					args = {
-						desc = config.desc("Which ways of finding a rare should cause this frame to appear?", 0),
+						desc = config.desc("哪些寻找稀有生物的方法会导致此框架出现？", 0),
 						sources = {
 							type="multiselect",
-							name = "Sources",
+							name = "来源",
 							get = function(info, key) return self.db.profile.sources[key] end,
 							set = function(info, key, v) self.db.profile.sources[key] = v end,
 							values = {
-								target = "Targets",
-								grouptarget = "Group targets",
-								mouseover = "Mouseover",
-								nameplate = "Nameplates",
-								vignette = "Vignettes",
-								['point-of-interest'] = "Map Points of Interest",
-								chat = "Chat yells",
-								groupsync = "Group Sync",
-								guildsync = "Guild Sync",
-								darkmagic = "Dark Magic",
+								target = "目标",
+								grouptarget = "团队目标",
+								mouseover = "鼠标悬停",
+								nameplate = "姓名板",
+								vignette = "小插图",
+								['point-of-interest'] = "兴趣点",
+								chat = "聊天喊话",
+								groupsync = "团队同步",
+								guildsync = "公会同步",
+								darkmagic = "黑科技",
 							},
 							order = 10,
 						},
@@ -164,7 +164,7 @@ function module:RegisterConfig()
 				},
 				style_options = {
 					type = "group",
-					name = "Style options",
+					name = "样式选项",
 					get = function(info)
 						local value = self.db.profile.style_options[info[#info - 1]][info[#info]]
 						if info.type == "color" then
@@ -189,7 +189,7 @@ function module:RegisterConfig()
 			},
 		},
 	}
-	module.LookConfig.about = config.desc("Some styles have options. Change those here.", 0)
+	module.LookConfig.about = config.desc("某些样式具有选项. 在这里进行更改.", 0)
 end
 
 function module:RegisterLookConfig(look, config, defaults, reset)

@@ -6,7 +6,7 @@ local core = LibStub("AceAddon-3.0"):GetAddon("SilverDragon")
 -- local ANNIVERSARY = core.conditions.CalendarEvent(1500) -- this needs to be updated each year...
 local ANNIVERSARY = core.conditions.CalendarEventStartTexture(6238552)
 
-core:RegisterMobData("Vanilla", {
+core:RegisterMobData("经典旧世", {
 	[61] = {name="Thuros Lightfingers",locations={[37]={50408320},},loot={6202,6203},},
 	[62] = {name="Gug Fatcandle",locations={[37]={47603180},[425]={31401740},},},
 	[79] = {name="Narg the Taskmaster",locations={[37]={38008140},},loot={1913,6147},},
@@ -15,7 +15,7 @@ core:RegisterMobData("Vanilla", {
 	[462] = {name="Vultros",locations={[52]={48403260,53402420,56203580,58001800},},loot={115348,115349},tameable=132200,},
 	[471] = {name="Mother Fang",locations={[37]={60804700},[40]={31204420,36401880,39804780,41802160,45004200,46403180,47002420,52202700,53603260},},loot={3000,6148},tameable=132196,},
 	[472] = {name="Fedfennel",locations={[37]={66204100},},loot={3233,5744},},
-	[503] = {name="Lord Malathrom",locations={[47]={20402700,24203440},},loot={1187,4462},notes="Underground",},
+	[503] = {name="Lord Malathrom",locations={[47]={20402700,24203440},},loot={1187,4462},notes="在地下",},
 	[506] = {name="Sergeant Brashclaw",locations={[52]={60407420},},loot={2204,2203},},
 	[507] = {name="Fenros",locations={[47]={57802900,60604060,61204680,61403440},},loot={4474,6204},},
 	[519] = {name="Slark",locations={[52]={49201140,55800860},},loot={6180,3188,120952},},
@@ -80,7 +80,7 @@ core:RegisterMobData("Vanilla", {
 	[2283] = {name="Ravenclaw Regent",locations={[21]={57403020},},loot={5969,6628},},
 	[2452] = {name="Skhowl",locations={[25]={43403780},},loot={3011,6331},},
 	[2453] = {name="Lo'Grosh",locations={[25]={49401820},},loot={1678,4810,6327},},
-	[2476] = {name="Gosh-Haldir",locations={[48]={53205580},},loot={3563,6197},notes="Formerly the Large Loch Crocolisk",tameable=132187,},
+	[2476] = {name="Gosh-Haldir",locations={[48]={53205580},},loot={3563,6197},notes="以前是格什哈尔迪",tameable=132187,},
 	[2541] = {name="Lord Sakrasis",locations={[210]={43604920},},loot={5028,5029},},
 	[2598] = {name="Darbel Montrose",art=15,locations={[14]={19206460},},},
 	[2600] = {name="Singer",art=15,locations={[14]={27402780},},loot={5180,5181},},
@@ -564,7 +564,7 @@ core:RegisterMobData("Vanilla", {
 	[107595] = {name="Grimrot",locations={[77]={38404480},},loot={137643},tameable=132183,},
 	[107596] = {name="Grimrot",locations={[77]={38204540},},loot={137644},tameable=132183,},
 	[107617] = {name="Ol' Muddle",locations={[26]={43805700,45606240,49205720,53004820,60205240,63404220,69606100,71205140},},tameable=132183,},
-	[111122] = {name="Large Vile Slime",locations={[22]={69004580},},loot={139623},notes="Paladin Corrupted Ashbringer",},
+	[111122] = {name="Large Vile Slime",locations={[22]={69004580},},loot={139623},notes="圣骑士的堕落灰烬使者",},
 	[118244] = {name="Lightning Paw",locations={[47]={16405400,16406040,23207660,24203960,30004140},},tameable=236165,},
 	[121818] = {name="Lord Kazzak",locations={[17]={33804860},},loot={150379,150380,150381,150382,150383,150384,150385,150386,150426,150427},quest=47461,vignette=6661,requires=ANNIVERSARY,},
 	[121820] = {name="Azuregos",locations={[76]={49608260},},loot={150417,150419,150421,150422,150423,150424,150425,150428,150543,150544,150545},quest=47462,vignette=6660,requires=ANNIVERSARY,},

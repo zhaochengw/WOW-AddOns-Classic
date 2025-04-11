@@ -5,7 +5,7 @@
 		</Size>
 		<Layers>
 			<Layer level = "BACKGROUND">
-				<FontString name = "$parentName" font = "GameFontHighlight" text = "Profile name">
+				<FontString name = "$parentName" font = "GameFontHighlight" text = "配置名">
 					<Anchors>
 						<Anchor point = "LEFT">
 							<Offset>
@@ -147,7 +147,7 @@
 		</HighlightTexture>
 	</Button>
 
-	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Bottom" id = "2">
+	<Button name = "TrinketMenu_Tab2" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "下栏位" id = "2">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab1" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -161,7 +161,7 @@
 			</Anchor>
 		</Anchors>
 	</CheckButton>
-	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "Top" id = "3">
+	<Button name = "TrinketMenu_Tab3" inherits = "TrinketMenu_TabTemplate" parent = "TrinketMenu_OptFrame" text = "上栏位" id = "3">
 		<Anchors>
 			<Anchor point = "TOPRIGHT" relativeTo = "TrinketMenu_Tab2" relativePoint = "TOPLEFT"/>
 		</Anchors>
@@ -367,7 +367,7 @@
 							</Anchors>
 							<TexCoords left = "0.09375" right = "0.90625" top = "0" bottom = "1.0"/>
 						</Texture>
-						<FontString font = "GameFontHighlightSmall" justifyH = "RIGHT" text = "Delay">
+						<FontString font = "GameFontHighlightSmall" justifyH = "RIGHT" text = "延迟">
 							<Anchors>
 								<Anchor point = "RIGHT" relativePoint = "LEFT">
 									<Offset>
@@ -376,7 +376,7 @@
 								</Anchor>
 							</Anchors>
 						</FontString>
-						<FontString font = "GameFontHighlightSmall" justifyH = "LEFT" text = "sec">
+						<FontString font = "GameFontHighlightSmall" justifyH = "LEFT" text = "秒">
 							<Anchors>
 								<Anchor point = "LEFT" relativePoint = "RIGHT">
 									<Offset>
@@ -655,7 +655,7 @@
 									</Anchors>
 									<TexCoords left = "0.09375" right = "0.90625" top = "0" bottom = "1.0"/>
 								</Texture>
-								<FontString font = "GameFontHighlightSmall" text = "Profile">
+								<FontString font = "GameFontHighlightSmall" text = "配置">
 									<Anchors>
 										<Anchor point = "RIGHT" relativeTo = "$parentLeft" relativePoint = "LEFT">
 											<Offset>
@@ -685,7 +685,7 @@
 						</Scripts>
 						<FontString inherits = "GameFontHighlight"/>
 					</EditBox>
-					<Button name = "TrinketMenu_ProfilesDelete" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "Delete">
+					<Button name = "TrinketMenu_ProfilesDelete" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "删除">
 						<Anchors>
 							<Anchor point = "BOTTOMLEFT">
 								<Offset>
@@ -694,7 +694,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					<Button name = "TrinketMenu_ProfilesLoad" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "Load">
+					<Button name = "TrinketMenu_ProfilesLoad" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "载入">
 						<Anchors>
 							<Anchor point = "LEFT" relativeTo = "TrinketMenu_ProfilesDelete" relativePoint = "RIGHT">
 								<Offset>
@@ -703,7 +703,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					<Button name = "TrinketMenu_ProfilesSave" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "Save">
+					<Button name = "TrinketMenu_ProfilesSave" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "保存">
 						<Anchors>
 							<Anchor point = "LEFT" relativeTo = "TrinketMenu_ProfilesLoad" relativePoint = "RIGHT">
 								<Offset>
@@ -712,7 +712,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-					<Button name = "TrinketMenu_ProfilesCancel" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "Cancel">
+					<Button name = "TrinketMenu_ProfilesCancel" inherits = "TrinketMenu_ProfilesButtonTemplate" text = "取消">
 						<Anchors>
 							<Anchor point = "LEFT" relativeTo = "TrinketMenu_ProfilesSave" relativePoint = "RIGHT">
 								<Offset>

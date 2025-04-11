@@ -11,13 +11,13 @@ s/(?<= ){ -- (.+)$/{\n\t\tlabel="$1",/g",
 -- Stub time!
 local ns = {
 	RegisterPoints = function(...)
-		core:RegisterHandyNotesData("WarWithin", ...)
+		core:RegisterHandyNotesData("地心之战", ...)
 	end,
 	rewards = core.rewards,
 	conditions = core.conditions,
 	MAXLEVEL = core.conditions.Level(80),
 	SUPERRARE = function(point)
-		local note = "This is a \"super rare\" which can drop higher level loot"
+		local note = "这是一个\"超级稀有\"，它有可能掉落等级更高的战利品。"
 		if point.note then
 			point.note = point.note .. "\n" .. note
 		else
@@ -100,35 +100,35 @@ end
 
 -- Treasures
 
-core:RegisterTreasureData("WarWithin", {
+core:RegisterTreasureData("地心之战", {
 	-- Isle of Dorn
 	[6210] = {
 		name="Tree's Treasure",
 		achievement=40434, criteria=68197,
 		quest=83242, -- 82160 when treasure appears
 		loot={{224585, toy=true}}, -- Hanna's Locket
-		notes="In cave; talk to {npc:222940:Freysworn Letitia} for a {item:224185:Crab-Guiding Branch}, then go find {npc:222941:Pearlescent Shellcrab} around the zone",
+		notes="在洞穴内；与 {npc:222940:Freysworn Letitia} 交谈以获得 {item:224185:Crab-Guiding Branch}, 然后在该区域附近寻找 {npc:222941:Pearlescent Shellcrab} ",
 	},
 	[6224] = {
 		name="Magical Treasure Chest",
 		achievement=40434, criteria=68199,
 		quest=83243, -- 82212 for giving Lionel crabs
 		loot={{224579, pet=3362}}, -- Sapphire Crab
-		notes="Push {npc:223104:Lionel} into the water, talk to it, then go gather 5x {item:223159:Plump Snapcrab} nearby",
+		notes="将{npc:223104:Lionel}推入水中，与它交谈，然后在附近收集5个{item:223159:Plump Snapcrab}",
 	},
 	[6208] = {
 		name="Mysterious Orb",
 		achievement=40434, criteria=68201,
 		quest=83244, -- 82047 after talking, 82134 after giving, also 82252 when looted
 		loot={224373}, -- Waterlord's Iridescent Gem
-		notes="Talk to {npc:222847:Weary Water Elemental}, then go fetch its {item:221504:Elemental Pearl}",
+		notes="与{npc:222847:Weary Water Elemental}交谈，然后去取回它的{item:221504:Elemental Pearl}",
 	},
 	[6209] = {
 		name="Mushroom Cap",
 		achievement=40434, criteria=68202,
 		quest=83245, -- 82142 after giving cap, 82253 as well on loot
 		loot={210796}, -- Mycobloom
-		notes="Talk to {npc:222894:U'llort the Self-Exiled} then fetch a {item:221550:Boskroot Cap} from the nearby woods",
+		notes="与{npc:222894:U'llort the Self-Exiled}交谈，然后从附近的树林中采集一个{item:221550:Boskroot Cap}",
 	},
 	[6236] = {
 		name="Thak's Treasure",
@@ -138,14 +138,14 @@ core:RegisterTreasureData("WarWithin", {
 			212498, -- Ambivalent Amber
 			212511, -- Ostentatious Onyx
 		},
-		notes="Talk to {npc:223227:One-Eyed Thak} and follow him to the treasure",
+		notes="与{npc:223227:One-Eyed Thak}交谈，并跟随他前往宝藏所在地",
 	},
 	[6212] = {
 		name="Lost Mosswool (Mosswool Flower)",
 		achievement=40434, criteria=68204,
 		quest=82145, -- when flower spawns
 		loot={{224450, pet=4527}}, -- Lil' Moss Rosy
-		notes="Chase {npc:222956:Lost Mosswool} to the flower",
+		notes="追逐 {npc:222956:Lost Mosswool} 至花朵处",
 	},
 	[6238] = {
 		name="Mosswool Flower",
@@ -153,21 +153,21 @@ core:RegisterTreasureData("WarWithin", {
 		quest=83246, -- 82251 also when looted
 		loot={{224450, pet=4527}}, -- Lil' Moss Rosy
 		requires=ns.conditions.QuestComplete(82145),
-		notes="Chase {npc:222956:Lost Mosswool} to the flower; if another player has recently looted if you may have to wait for it to appear",
+		notes="追逐 {npc:222956:Lost Mosswool} 前往花朵处；如果其他玩家最近已经拾取了它，你可能需要等待它重新出现",
 	},
 	[6273] = {
 		name="Kobold Pickaxe",
 		achievement=40434, criteria=68205,
 		quest=82325,
 		loot={223484}, -- Kobold Mastermind's "Pivel"
-		notes="Despawns for a while after someone loots it, so you might need to wait around",
+		notes="在有人拾取后会消失一段时间，因此你可能需要在附近等待",
 	},
 	[6262] = {
 		name="Jade Pearl",
 		achievement=40434, criteria=68206,
 		quest=82287,
 		loot={223280}, -- Jade Pearl
-		note="Despawns for a while after someone loots it, so you might need to wait around",
+		note="在有人拾取后会消失一段时间，因此你可能需要在附近等待",
 	},
 	[6274] = {
 		name="Shimmering Opal Lily",
@@ -178,21 +178,21 @@ core:RegisterTreasureData("WarWithin", {
 			210800, -- Luredrop
 		},
 		path=47316149,
-		notes="At the bottom of the cave; despawns for a while after someone loots it, so you might need to wait around",
+		notes="在洞穴底部；在有人拾取后会消失一段时间，因此你可能需要在附近等待",
 	},
 	[6292] = {
 		name="Infused Cinderbrew",
 		achievement=40434, criteria=68208,
 		quest=82714,
 		loot={224263}, -- Infused Fire-Honey Milk
-		notes="On the desk; despawns for a while after someone loots it, so you might need to wait around"
+		notes="在桌子上；在有人拾取后会消失一段时间，因此你可能需要在附近等待"
 	},
 	[6293] = {
 		name="Web-Wrapped Axe",
 		achievement=40434, criteria=68209,
 		quest=82715,
 		loot={224290}, -- Storm Defender's Axe
-		notes="Inside the building; despawns for a while after someone loots it, so you might need to wait around",
+		notes="在建筑物内部；在有人拾取后会消失一段时间，因此你可能需要在附近等待",
 	},
 
 	-- Turtle's Thanks
@@ -201,7 +201,7 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=40434, criteria=68198,
 		quest=79585, -- pike
 		loot={{224549,pet=4594}}, -- Sewer Turtle Whistle
-		notes="Give {npc:223338:Dalaran Sewer Turtle} 5x {item:220143:Dornish Pike}, then leave the area and return to give it 1x {item:222533:Goldengill Trout}. Then go find it again in Dornegal.",
+		notes="给 {npc:223338:Dalaran Sewer Turtle} 5个 {item:220143:Dornish Pike}, 然后离开该区域并返回给它1个 {item:222533:Goldengill Trout}. 之后，前往多恩加尔再次找到它.",
 		active=ns.conditions.Item(220143, 5),
 	},
 	[6245] = {
@@ -209,7 +209,7 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=40434, criteria=68198,
 		quest=79586, -- trout
 		loot={{224549,pet=4594}}, -- Sewer Turtle Whistle
-		note="Give {npc:223338:Dalaran Sewer Turtle} 1x {item:222533:Goldengill Trout}. Then go find it again in Dornegal.",
+		note="给 {npc:223338:Dalaran Sewer Turtle} 1x {item:222533:Goldengill Trout}. 之后，前往多恩加尔再次找到它.",
 		active=ns.conditions.Item(222533),
 	},
 	[6246] = {
@@ -218,7 +218,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82255,
 		loot={{224549,pet=4594}}, -- Sewer Turtle Whistle
 		requires=ns.conditions.QuestComplete(79586), -- moves here
-		notes="Talk to the turtle to spawn the treasure",
+		notes="与乌龟交谈以生成宝藏",
 	},
 	[6579] = {
 		name="Turtle's Thanks",
@@ -226,7 +226,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82716, -- final!, also  when treasure spawns
 		loot={{224549,pet=4594}}, -- Sewer Turtle Whistle
 		requires=ns.conditions.QuestComplete(79586), -- moves here
-		notes="Talk to the turtle to spawn the treasure",
+		notes="与乌龟交谈以生成宝藏",
 	},
 
 	-- Ringing Deeps
@@ -236,7 +236,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82464,
 		loot={212495, 212505, 212508}, -- some gems
 		requires={ns.conditions.Level(71), ns.conditions.Item(223878), ns.conditions.Item(223879), ns.conditions.Item(223880), ns.conditions.Item(223881), ns.conditions.Item(223882)},
-		notes="At the back of the inn; gather the five shards first",
+		notes="在旅馆的后方；首先收集五个碎片",
 	},
 	[5994] = {
 		name="Webbed Knapsack",
@@ -252,7 +252,7 @@ core:RegisterTreasureData("WarWithin", {
 			213257, -- Wax Shovel
 		},
 		level=71,
-		notes="In cave",
+		notes="在洞里",
 	},
 	[6232] = {
 		name="Cursed Pickaxe",
@@ -294,14 +294,14 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=40724, criteria=69308,
 		quest=82819,
 		loot={220774}, -- Goblin Mini Fridge
-		notes="Order four drinks in the right order: Bluesberry, Orange, Oyster, Mangoro (BOOM!)",
+		notes="按照以下顺序点四杯饮料：蓝莓、橙汁、牡蛎汁、芒果汁(BOOM!)",
 	},
 	[6284] = {
 		name="Dislodged Blockage",
 		achievement=40724, criteria=69311,
 		quest=82820,
 		loot={{221548, pet=4536}}, -- Blightbud
-		notes="Solve a sliding-tiles puzzle",
+		notes="解决一个滑动拼图问题",
 		level=71, -- can solve the puzzle, but not loot the chest
 	},
 	[6074] = {
@@ -309,7 +309,7 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=40724, criteria=69313,
 		quest=80485, -- chests: 80488, 80489, 80490, 80487
 		loot={{224783, toy=true}},
-		notes="Cave behind the waterfall; open chests until you find the key",
+		notes="瀑布后面的洞穴；打开箱子需要被遗忘者的钥匙",
 		level=71,
 	},
 
@@ -323,7 +323,7 @@ core:RegisterTreasureData("WarWithin", {
 			225592, -- Exquisitely Eviscerated Muscle
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="Bring {item:225238:Meaty Haunch} from {npc:217645:Torran Dellain}, give to {npc:225948:Caesper}, follow to the treasure",
+		notes="从 {npc:217645:Torran Dellain} 处获得 {item:225238:Meaty Haunch}，然后交给 {npc:225948:Caesper}，跟随他前往宝藏地点。",
 		level=73,
 	},
 	[6366] = {hidden=true}, -- Disturbed Lynx Treasure
@@ -336,7 +336,7 @@ core:RegisterTreasureData("WarWithin", {
 			226021, -- Jar of Pickles
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="Get the key from the {npc:226025:Dead Arathi} below",
+		notes="从 {npc:226025:Dead Arathi} 处取得钥匙",
 		level=73,
 	},
 	[6372] = {
@@ -347,7 +347,7 @@ core:RegisterTreasureData("WarWithin", {
 			225693, -- Shadowed Essence
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="In cave; use the book, defeat the summoned monsters",
+		notes="在洞里。使用书籍，击败召唤出来的怪物",
 		level=73,
 	},
 	[6371] = {hidden=true}, -- post-defeat
@@ -359,7 +359,7 @@ core:RegisterTreasureData("WarWithin", {
 			{225659, toy=true}, -- Arathi Book Collection
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="Answer riddles from {npc:221630:Ryfus Sacredpyr}; you need to find the books for {achievement:40622:Biblo Archivist} for the correct answers to appear",
+		notes="你需要回答 {npc:221630:Ryfus Sacredpyr} 提出的谜题。为了显示正确的答案，你需要找到成就 {achievement:40622:Biblo Archivist} 所需的书籍。",
 		level=73, -- not to talk to him, but to get any of the books for answers...
 	},
 	[6174] = {
@@ -370,7 +370,7 @@ core:RegisterTreasureData("WarWithin", {
 			224580, -- Massive Sapphire Chunk
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="High up on the rocks",
+		notes="在高处的岩石上",
 		level=75,
 	},
 	[6175] = {
@@ -382,7 +382,7 @@ core:RegisterTreasureData("WarWithin", {
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
 		level=75,
-		notes="Hanging from the cathedral",
+		notes="悬挂在大教堂上",
 	},
 	[6177] = {
 		name="Lost Necklace", -- Lost Memento
@@ -402,7 +402,7 @@ core:RegisterTreasureData("WarWithin", {
 			{224552, toy=true}, -- Cave Spelunker's Torch
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="In cave. Catch falling glimmers from {npc:220703:Starblessed Glimmerfly} until you get {spell:442529:Glimmering Illumination}",
+		notes="在洞里。捕捉从 {npc:220703:Starblessed Glimmerfly} 落下的光点，直到你获得 {spell:442529:Glimmering Illumination}",
 		level=73,
 	},
 	[5989] = {
@@ -413,7 +413,7 @@ core:RegisterTreasureData("WarWithin", {
 			-- alchemy mats
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
-		notes="In cave",
+		notes="在洞里",
 		level=73,
 	},
 	[6181] = {
@@ -425,7 +425,7 @@ core:RegisterTreasureData("WarWithin", {
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
 		active={ns.conditions.QuestComplete(82012), ns.conditions.QuestComplete(82026), ns.conditions.QuestComplete(82024), ns.conditions.QuestComplete(82025)},
-		notes="Talk to four skyship captains flying around the zone to make this appear",
+		notes="在区域周围与四艘飞船的船长交谈，使这个任务出现。",
 	},
 
 	-- Hallowfall (non-achievement)
@@ -468,7 +468,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82527,
 		loot=addThreadsRep(50, false, {{225347, toy=true}}, true), -- Web-Vandal's Spinning Wheel
 		level=74,
-		notes="Collect {item:223901:Violet Silk Scrap}, {item:223902:Crimson Silk Scrap}, {item:223903:Gold Silk Scrap} from the edges of the nearby platform to unlock",
+		notes="收集附近的平台上的  {item:223901:Violet Silk Scrap}、 {item:223902:Crimson Silk Scrap}、 {item:223903:Gold Silk Scrap} 解锁",
 		nearby={
 			74794282, -- Violet Silk Scrap
 			72683967, -- Crimson Silk Scrap
@@ -481,7 +481,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82529,
 		loot=addThreadsRep(50, false, {{221760, pet=4513}}, true), -- Bonedrinker
 		level=74,
-		notes="Webbed to the ceiling",
+		notes="被蛛网缠绕在天花板上",
 	},
 	[6280] = {
 		name="Disturbed Soil",
@@ -510,7 +510,7 @@ core:RegisterTreasureData("WarWithin", {
 			204842, -- Red Sparklepretty
 			213261, -- Niffen Smell Pouch
 		}, true),
-		notes="Hanging under the bridge",
+		notes="悬挂在桥下",
 	},
 	[6285] = {
 		name="Silk-spun Supplies",
@@ -530,7 +530,7 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=40828, criteria=69615,
 		quest=82520,
 		loot=addThreadsRep(50, false, {{225544, pet=4599}}, true), -- Mind Slurp
-		notes="Get {spell:420847:Unseeming Shift} from a nearby Extractor Storage, then kill {npc:223908:Corrupted Memory} here for a {item:223870:Cache Key}",
+		notes="从附近的提取器存储设备中获得 {spell:420847:Unseeming Shift}，然后在这里击败 {npc:223908:Corrupted Memory} 获得 {item:223870:Cache Key}",
 	},
 
 	-- City of Threads
@@ -540,7 +540,7 @@ core:RegisterTreasureData("WarWithin", {
 		quest=82727,
 		loot=addThreadsRep(50, false, {{222966, pet=4473}}, true), -- Spinner
 		level=74,
-		notes="In the hanging building; navigate through the web traps",
+		notes="在悬挂的建筑物中；穿过蛛网陷阱",
 	},
 	[6281] = {
 		name="Nerubian Offerings",
@@ -551,14 +551,14 @@ core:RegisterTreasureData("WarWithin", {
 			220236, -- Sanguineous Sac
 			223899, -- Shadowed Appendage
 		}, true),
-		notes="In a nook beneath the platform",
+		notes="在一个位于平台下方的角落",
 	},
 
 	-- Siren Isle
 	[6683] = {
 		name="Bilge Rat Supply Chest",
 		quest=84529, -- 84873
-		notes="Get the {item:228621:Bilge Rat Supply Key} from {npc:228582:First Mate Shellshock}",
+		notes="从{npc:228582:First Mate Shellshock}处获得{item:228621:Bilge Rat Supply Key}",
 	},
 
 	-- Undermine
@@ -567,21 +567,21 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=41217, criteria=71613,
 		quest=85683,
 		loot={235042}, -- Imminently Exploding Fireworks
-		note="On the roof; there's a door you can click to open",
+		note="在屋顶上；有一个可以点击打开的门",
 	},
 	[6679] = {
 		name="Suspicious Book",
 		achievement=41217, criteria=71624,
 		quest=85868,
 		loot={235283}, -- Bashful Book
-		note="Pick it up three times",
+		note="拾取三次",
 	},
 	[6677] = {
 		name="Fireworks Hat",
 		achievement=41217, criteria=71614,
 		quest=85856, -- first attempt 85838 @ 57845269, second attempt 85839 @ 56015172
 		loot={{235220, toy=true}}, -- Fireworks Hat
-		note="Pick it up twice",
+		note="拾取两次",
 	},
 	[6658] = {
 		name="Inert Plunger?",
@@ -600,14 +600,14 @@ core:RegisterTreasureData("WarWithin", {
 		achievement=41217, criteria=71625,
 		quest=85814, -- 84813 for the valve
 		loot={235255}, -- Durable Dice
-		note="Use the Pipe Valve",
+		note="使用管道阀门",
 	},
 	[6678] = {
 		name="Lonely Tub",
 		achievement=41217, criteria=71626,
 		quest=85858, -- 85860 extinguished
 		loot={235279}, -- Scorched Shorts
-		note="Use the {spell:471345:Fire Extinguisher}",
+		note="使用{spell:471345:Fire Extinguisher}",
 	},
 	[6646] = {
 		name="Potent Potable",
@@ -676,14 +676,14 @@ do
 			206350, -- Radiant Remnant
 			ns.rewards.Currency(ns.CURRENCY_RESONANCE, 3),
 		},
-		notes="Only visible with a light source ({item:211872:Patrol Torch}, {item:220756:Flickering Torch}, {item:217344:Sentry Flare Launcher}, etc)",
+		notes="只有在光源照射下才能看见 (例如使用 {item:211872:Patrol Torch}、 {item:220756:Flickering Torch}、 {item:217344:Sentry Flare Launcher} 等等)",
 		hide_before=ns.WORLDQUESTS,
 	}
 	local function point(data)
 		MergeTable(data, standard)
 		return data
 	end
-	core:RegisterTreasureData("WarWithin", {
+	core:RegisterTreasureData("地心之战", {
 		[6352] = point{
 			label="Hillhelm Lunchbox",
 			quest=82996,
@@ -713,14 +713,14 @@ do
 			206350, -- Radiant Remnant
 			ns.rewards.Currency(ns.CURRENCY_RESONANCE, 3),
 		},
-		note="Only visible with a light source ({item:211872:Patrol Torch}, {item:220756:Flickering Torch}, {item:217344:Sentry Flare Launcher}, etc)",
+		note="只有在光源照射下才能看见 (例如使用 {item:211872:Patrol Torch}、 {item:220756:Flickering Torch}、 {item:217344:Sentry Flare Launcher} 等等)",
 		hide_before=ns.WORLDQUESTS,
 	}
 	local function point(data)
 		MergeTable(data, standard)
 		return data
 	end
-	core:RegisterTreasureData("WarWithin", {
+	core:RegisterTreasureData("地心之战", {
 		[6108] = point{
 			label="Captain Lancekat's Discretionary Funds",
 			quest=81612,
@@ -744,7 +744,7 @@ end
 
 local LOC_allkhazalgar = {[ns.KHAZALGAR]={},[ns.DORNOGAL]={},[ns.ISLEOFDORN]={},[ns.RINGINGDEEPS]={},[ns.HALLOWFALL]={},[ns.AZJKAHET]={},}
 
-core:RegisterMobData("WarWithin", {
+core:RegisterMobData("地心之战", {
 	-- World Bosses
 	[229334] = {
 		name="Kordac",
@@ -852,7 +852,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 		npc=219281,
 		loot={{223270, mount=2176}},
 		active={ns.conditions.Item(224025, 10), ns.conditions.Item(224026)},
-		note="Get 10x {item:224025:Crackling Shard} from zone mobs, combine into {item:224026:Storm Vessel}, use to break the shield",
+		note="从区域怪物中获取 10x {item:224025:Crackling Shard} ，合并成 {item:224026:Storm Vessel}, 用来打破护盾",
 		vignette=6055,
 		--route={16606120,23205840},
 	},
@@ -975,7 +975,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 			ns.rewards.Currency(ns.CURRENCY_DORNOGAL, 150),
 		},
 		vignette=6046,
-		note="At the bottom of the cave",
+		note="在洞穴底部",
 	},
 	[25784503] = {
 		label="Escaped Cutthroat",
@@ -1058,7 +1058,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 			ns.rewards.Currency(ns.CURRENCY_DORNOGAL, 150),
 		},
 		vignette=5959,
-		note="Wanders the quarry",
+		note="在采石场四处游荡",
 	},
 	[63994055] = {
 		label="Flamekeeper Graz",
@@ -1115,7 +1115,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 			226114, -- Windslicer's Lance
 		},
 		vignette=6215,
-		note="Violet Hold Prisoner",
+		note="紫罗兰监狱囚犯",
 	},
 	[30915238] = {
 		label="Zovex",
@@ -1129,7 +1129,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 			226119, -- Arcane Sharpshooter's Crossbow
 		},
 		vignette=6058,
-		note="Violet Hold Prisoner",
+		note="紫罗兰监狱囚犯",
 	},
 	[31915238] = {
 		label="Rotfist",
@@ -1143,7 +1143,7 @@ ns.RegisterPoints(ns.ISLEOFDORN, {
 			226116, -- Coagulating Phlegm Churner
 		},
 		vignette=6216,
-		note="Violet Hold Prisoner",
+		note="紫罗兰监狱囚犯",
 	},
 }, {
 	achievement=40435, -- Adventurer
@@ -1232,7 +1232,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			223363, -- Flying Kobold's Seatbelt (leather)
 			ns.rewards.Currency(ns.CURRENCY_ASSEMBLY, 150),
 		},
-		note="Patrols the area",
+		note="在该区域巡逻",
 		vignette=6080,
 	},
 	[47624651] = {
@@ -1259,7 +1259,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			221507, -- Earth Golem's Wrap
 			225999, -- Earthen Adventurer's Tabard
 		},
-		note="Flys around anticlockwise",
+		note="逆时针飞行",
 		route={
 			51560843, 49630880, 46410836, 45991007, 42410955, 41000822, 39940871, 41410973, 41511083, 42281312,
 			40421750, 45581919, 49652244, 50331761, 52521023,
@@ -1322,7 +1322,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			221255, -- Sharpened Scalepiercer
 		},
 		vignette=6081,
-		note="Walking in the lava",
+		note="在熔岩中行走",
 	},
 	[44214696] = {
 		label="Kelpmire",
@@ -1366,7 +1366,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			221264, -- Fungarian Mystic's Cluster
 			223005, -- String of Fungal Fruits
 		},
-		note="Kill the {npc:220615:Root of Trungal} to spawn",
+		note="击杀 {npc:220615:Root of Trungal} 生成",
 		path={67914569, 68204444},
 		vignette=6126,
 	},
@@ -1382,7 +1382,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			223942, -- Spore-Encrusted Ribbon
 		},
 		vignette=6121,
-		note="Flies around clockwise",
+		note="顺时针飞行",
 		route={
 			64234852, 64365012, 64305047, 63875137, 63725156, 63435171, 63235176, 62945176, 62805174, 62345120, 62024896,
 			62044870, 62174840, 62014817, 61544779, 61394760, 61304737, 61364711, 61544669, 61644655, 61844644, 62684640,
@@ -1416,7 +1416,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			223926, -- Earthgorger's Chain Bib
 			223943, -- Cord of the Earthbreaker
 		},
-		note="Stand in the dust cloud and use {spell:437003:Stomp} several times",
+		note="在迷雾中并多次使用{spell:437003:Stomp}",
 		vignette=6031,
 	},
 	[62466881] = {
@@ -1429,7 +1429,7 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			ns.rewards.Currency(ns.CURRENCY_ASSEMBLY, 150),
 		},
 		vignette=6106,
-		note="In cave",
+		note="在洞穴中",
 		path=62786796,
 	},
 	[57017682] = {
@@ -1446,13 +1446,13 @@ ns.RegisterPoints(ns.RINGINGDEEPS, {
 			221255, -- Sharpened Scalepiercer
 		},
 		vignette=6110,
-		note="Pull 5 levers across the zone at the same time to summon; they stay activated for ~10 seconds, so you'll need a group",
+		note="同时拉动该区域内的5个杠杆以召唤；它们保持激活状态约10秒，因此你需要一个团队",
 		related={
-			[46320882] = {label="Inconspicuous Lever", note="Pull all 5 levers simultaneously to summon {npc:220285:Lurker of the Deeps}"},
-			[50482530] = {label="Inconspicuous Lever", note="Pull all 5 levers simultaneously to summon {npc:220285:Lurker of the Deeps}"},
-			[53942358] = {label="Inconspicuous Lever", note="Pull all 5 levers simultaneously to summon {npc:220285:Lurker of the Deeps}"},
-			[55319239] = {label="Inconspicuous Lever", note="Pull all 5 levers simultaneously to summon {npc:220285:Lurker of the Deeps}"},
-			[58854464] = {label="Inconspicuous Lever", note="Pull all 5 levers simultaneously to summon {npc:220285:Lurker of the Deeps}"},
+			[46320882] = {label="Inconspicuous Lever", note="同时拉动所有5个杠杆以召唤  {npc:220285:Lurker of the Deeps}"},
+			[50482530] = {label="Inconspicuous Lever", note="同时拉动所有5个杠杆以召唤  {npc:220285:Lurker of the Deeps}"},
+			[53942358] = {label="Inconspicuous Lever", note="同时拉动所有5个杠杆以召唤  {npc:220285:Lurker of the Deeps}"},
+			[55319239] = {label="Inconspicuous Lever", note="同时拉动所有5个杠杆以召唤  {npc:220285:Lurker of the Deeps}"},
+			[58854464] = {label="Inconspicuous Lever", note="同时拉动所有5个杠杆以召唤  {npc:220285:Lurker of the Deeps}"},
 		},
 	},
 }, {
@@ -1529,7 +1529,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223924, -- Chitin-Inscribed Vest
 		},
 		vignette=5958,
-		note="Objective of {questname:76588}",
+		note="目标 {questname:76588}",
 	},
 	[44011639] = {
 		label="The Perchfather",
@@ -1579,7 +1579,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			loop=true,
 		},
 		vignette=6146,
-		note="Patrols clockwise",
+		note="顺时针巡逻",
 	},
 	[43622993] = {
 		label="Strength of Beledar",
@@ -1626,7 +1626,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223934, -- Makrura's Foreboding Legplates
 		},
 		vignette=6123,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[64663172] = {
 		label="Deathpetal",
@@ -1642,7 +1642,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223927, -- Vinewrapped Leather Tunic
 		},
 		vignette=6078,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[72136436] = {
 		label="Deepfiend Azellix",
@@ -1670,7 +1670,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223936, -- Shadow Bog Trousers
 		},
 		vignette=6122,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[36807210] = {
 		label="Funglour",
@@ -1709,7 +1709,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			221255, -- Sharpened Scalepiercer
 		},
 		vignette=6152,
-		note="Very long patrol",
+		note="非常长的巡逻",
 		route={
 			43410990, 43870879, 44520774, 45250767, 45970726, 45540662, 44870677, 44270749, 43710858, 41631452,
 			41391580, 41051714, 40501821, 39731909, 36652173, 33992545, 33422650, 32912763, 31783130, 30933154,
@@ -1747,7 +1747,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			ns.rewards.Currency(ns.CURRENCY_ARATHI, 150),
 		},
 		vignette=6034,
-		note="Underwater",
+		note="水下",
 	},
 	[67562316] = {
 		label="Croakit",
@@ -1764,7 +1764,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 		},
 		vignette=6125,
 		--tameable=true, -- hopper
-		note="Fish up 10x{item:211474:Shadowblind Grouper} and throw them to fill the {spell:437124:Craving} bar. Objective of {questname:76588}.",
+		note="捕获10条{item:211474:Shadowblind Grouper} 并将它们丢进{spell:437124:Craving}中。任务{questname:76588}目标。",
 	},
 	[57304858] = {
 		label="Pride of Beledar",
@@ -1795,7 +1795,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223933, -- Slime Goliath's Cap
 		},
 		vignette=6084,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[64802920] = {
 		label="Crazed Cabbage Smacker",
@@ -1810,7 +1810,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223935, -- Cabbage Harvester's Pantaloons
 		},
 		vignette=6120,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[60201860] = {
 		label="Finclaw Bloodtide",
@@ -1825,7 +1825,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223925, -- Blood Hungerer's Chestplate
 		},
 		vignette=6085,
-		note="Objective of {questname:76588}",
+		note="{questname:76588}的目标",
 	},
 	[62033212] = {
 		label="Ravageant",
@@ -1840,7 +1840,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223932, -- Scarab's Carapace Cap
 		},
 		vignette=6124,
-		note="Objective of {questname:76588}",
+		note="任务{questname:76588}目标",
 	},
 	[61623277] = {
 		label="Parasidious",
@@ -1855,13 +1855,13 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 			223940, -- Deranged Fungarian's Epaulets
 		},
 		vignette=6361,
-		note="Objective of {questname:76588}. Buy {item:206670:Darkroot Grippers} from {npc:206533:Chef Dinaire}, and use them to pull {npc:206870:Shadowrooted Vine} until this spawns.",
+		note="任务{questname:76588}目标。在{npc:206533:Chef Dinaire}购买{item:206670:Darkroot Grippers}，并使用它们拉动{npc:206870:Shadowrooted Vine}直到出现。",
 		related={
 			[64403100] = {
 				label="{npc:206533:Chef Dinaire}",
 				loot={206670}, -- Darkroot Grippers
 				atlas="banker", minimap=true,
-				note="Feed the keyflame if he's not there",
+				note="如果他不在那里，就给火盆添加燃料",
 			},
 		},
 	},
@@ -1910,7 +1910,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 		223006, -- Signet of Dark Horizons
 	},
 	active={SHADOWPHASE},
-	note="Spawns during the shadow event, which happens every 3 hours.\nBuy and use {item:224553:Beledar's Attunement} from {majorfaction:2570:Hallowfall Arathi} to see which spawn is active.",
+	note="在暗影事件期间出现，该事件每3小时刷新一次。\n从{majorfaction:2570:Hallowfall Arathi}处购买并使用{item:224553:Beledar's Attunement}，查看它在刷新在何处。",
 	atlas="worldquest-icon-boss-zhCN",
 	group="beledarspawn",
 	vignette=6359, -- also 6118? That was the close-up one...
@@ -1931,7 +1931,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 		},
 		vignette=6156,
 		active=ns.conditions.Item(220123), -- Ominous Offering
-		note="Create an {item:220123:Ominous Offering} from {item:220124:Jar of Mucus} (|A:playerpartyblip:::::0:255:127|a) + {item:220122} (|A:playerpartyblip:::::0:0:255|a) to summon",
+		note="创建来自 {item:220123:Ominous Offering} 的 {item:220124:Jar of Mucus} (|A:playerpartyblip:::::0:255:127|a) + {item:220122} (|A:playerpartyblip:::::0:0:255|a) 进行召唤",
 	},
 })
 
@@ -1941,7 +1941,7 @@ ns.RegisterPoints(ns.HALLOWFALL, {
 --         quest=nil, -- confirmed, this has a vignette and is rare-flagged, but no quest or rep rewards
 --         npc=214905,
 --         vignette=5984,
---         note="Objective of {questname:76588}",
+--         note="{questname:76588}的目标",
 --         additional={61953305},
 --     },
 -- })
@@ -1962,7 +1962,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 		}),
 		vignette=6134,
 		route={65201896, 65142033, 63122532, 62492877, 61712962},
-		note="Slowly wanders back and forth",
+		note="缓慢地来回走动",
 	},
 	[76585780] = {
 		label="XT-Minecrusher 8700",
@@ -2007,7 +2007,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 			69006550, 69096626, 69076707, 68876785, 68436846, 67866891,
 			loop=true,
 		},
-		note="Patrols around the area, fighting other mobs",
+		note="在区域内巡逻，与其他敌对生物战斗",
 	},
 	[34574106] = {
 		label="Vilewing",
@@ -2043,7 +2043,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 			221237, -- Lamentable Vagrant's Lantern
 		}),
 		vignette=6136,
-		note="Cave behind the waterfall",
+		note="瀑布后的洞穴",
 	},
 	[58056233] = {
 		label="Enduring Gutterface",
@@ -2085,7 +2085,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 			223408, -- Treads of the Nerubian Twins
 		}, true),
 		vignette=6130,
-		note="Patrols with {npc:221032:Rhak'ik}",
+		note="与 {npc:221032:Rhak'ik}一起巡逻",
 	},
 	--[[ -- with Khak'ik:
 	[43763953] = {
@@ -2133,7 +2133,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 			223939, -- Esteemed Nerubian's Mantle
 		}),
 		vignette=6204,
-		note="Spawns at the top, teleports to the bottom of the path, walks back to the top, then repeats",
+		note="在顶部生成，传送到路径底部，然后走回顶部，之后重复这个过程",
 		route={62940509, 62430707, 62270757, 61930840, 61740856, 61520848, 61330831, 61210803, 61210771},
 	},
 	[64590667] = {
@@ -2265,7 +2265,7 @@ ns.RegisterPoints(ns.AZJKAHET, {
 			221263, -- Nerubian Venom-Tipped Dart
 		}),
 		vignette=6265,
-		note="Begins a quest chain leading to the mount {item:224150:Siesbarg}, item won't drop until you're level 80. Seems to spawn shortly after the daily quest reset.",
+		note="这个任务链将开始引导你获得坐骑 {item:224150:Siesbarg}，需要注意的是，该物品在你达到80级之前是不会掉落的。这个任务相关的目标似乎在每日任务重置后不久会生成。",
 	},
 	[39804100] = {
 		label="Elusive Razormouth Steelhide",
@@ -2621,7 +2621,7 @@ ns.RegisterPoints(ns.UNDERMINE, {
 		npc=230947,
 		loot={},
 		vignette=6601, -- V.V.
-		note="Accompanies {npc:230946:V.V. Goosworth}",
+		note="跟随 {npc:230946:V.V. Goosworth}",
 	},
 	[26516830] = {
 		label="Ephemeral Agent Lathyd",
@@ -2711,7 +2711,7 @@ ns.RegisterPoints(ns.UNDERMINE, {
 			{232984, quest=85784}, -- Handcrank
 		},
 		vignette=6667, -- 6752
-		note="Talk to {npc:236035:Scrapminer Krazzik} to summon",
+		note="与 {npc:236035:Scrapminer Krazzik} 对话进行召唤",
 	},
 	[63354975] = {
 		label="The Junk-Wall",
@@ -2830,7 +2830,7 @@ ns.RegisterPoints(ns.UNDERMINE, {
 			{232984, quest=85784}, -- Handcrank
 		},
 		vignette=6694, -- Noggenfogger Nuisance + 6710
-		note="Talk to {npc:234751:Noggenfogger Recall Technician} to summon",
+		note="与 {npc:234751:Noggenfogger Recall Technician} 对话进行召唤",
 	},
 	[61472520] = {
 		label="Voltstrike the Charged",
@@ -2847,7 +2847,7 @@ ns.RegisterPoints(ns.UNDERMINE, {
 			{232984, quest=85784}, -- Handcrank
 		},
 		vignette=6668, -- 6753
-		note="Talk to {npc:234834:Boatwright Frankle} to summon",
+		note="与 {npc:234834:Boatwright Frankle} 对话进行召唤",
 	},
 	[40209190] = {
 		label="Darkfuse Precipitant",
@@ -2863,7 +2863,7 @@ ns.RegisterPoints(ns.UNDERMINE, {
 			{232984, quest=85784}, -- Handcrank
 		},
 		vignette=6613, -- 6614
-		note="Talk to {npc:231329:De-Pollution Station X1119} with a {item:229823:Canister of Darkfuse Solution} to summon",
+		note="携带1个 {item:229823:Canister of Darkfuse Solution} 与 {npc:231329:De-Pollution Station X1119} 对话进行召唤",
 	},
 }, {
 	achievement=41216,
@@ -2887,6 +2887,6 @@ ns.RegisterPoints(ns.UNDERMINE, {
 			{232983, quest=85783}, -- Steamboil
 			{232984, quest=85784}, -- Handcrank
 		},
-		notes="Appears during S.C.R.A.P. jobs",
+		notes="在 S.C.R.A.P. 工作期间出现",
 	},
 })

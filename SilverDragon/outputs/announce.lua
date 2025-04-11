@@ -128,7 +128,7 @@ function module:OnInitialize()
 		local faker = function(id, name, zone, x, y)
 			return {
 				type = "execute", name = name,
-				desc = "Fake seeing " .. name,
+				desc = "虚假的发现……" .. name,
 				func = function()
 					-- id, zone, x, y, is_dead, source, unit
 					core.events:Fire("Seen", id, zone, x, y, false, "fake", false)
@@ -138,7 +138,7 @@ function module:OnInitialize()
 		local soundfile = function(enabled_key, order)
 			return {
 				type = "select", dialogControl = "LSM30_Sound",
-				name = "Sound to Play", desc = "Choose a sound file to play",
+				name = "播放声音", desc = "选择一个声音文件播放",
 				values = LSM:HashTable("sound"),
 				disabled = function() return not self.db.profile[enabled_key] end,
 				order = order,
@@ -147,8 +147,8 @@ function module:OnInitialize()
 		local soundrange = function(order)
 			return {
 				type = "range",
-				name = "Repeat...",
-				desc = "How many times to repeat the sound",
+				name = "重复播放...",
+				desc = "重复播放声音的次数",
 				min = 1, max = 10, step = 1,
 				order = order,
 			}
@@ -207,40 +207,40 @@ function module:OnInitialize()
 
 		local options = {
 			general = {
-				type = "group", name = "Announcements", inline = true,
+				type = "group", name = "通报", inline = true,
 				order = 10,
 				get = get, set = set,
 				args = {
-					already = toggle("Already found", "Announce when we see rares we've already killed / achieved (if known)", 0),
-					already_drop = toggle("Got the loot", "Still announce when we see rares which drop a mount / toy / pet you already have", 10),
-					already_transmog = toggle("...include transmog as loot", "Count transmog appearances as knowable loot", 11),
-					already_alt = toggle("Completed by an alt", "Announce when we see rares for an achievement that the current character doesn't have, but an alt has completed already", 20),
-					known_mounts = toggle("Known mounts are boring", "Treat mount-dropping rares whose mount you already know as if they're regular rares (unless the mount is BoE)", 25),
-					dead = toggle("Dead rares", "Announce when we see dead rares, if known. Not all scanning methods know whether a rare is dead or not", 30),
-					instances = toggle("Instances", "Show announcements while in an instance", 50),
-					loot = toggle("Treasures", "Show announcements when treasure appears on the minimap", 60),
+					already = toggle("已发现", "当我们看到我们已经击杀/达成的稀有怪物时（如果已知），进行公告.", 0),
+					already_drop = toggle("已获得战利品","当我们看到掉落我们已经拥有的坐骑/玩具/宠物时，仍然进行公告", 10),
+					already_transmog = toggle("...将幻化物品作为战利品包括在内", "将幻化外观计为可知的战利品", 11),
+					already_alt = toggle("由小号完成", "当我们看到当前角色尚未达成但小号已经完成的成就相关的稀有怪物时，进行公告", 20),
+					known_mounts = toggle("无聊的已知坐骑", "将已知掉落坐骑的稀有怪物视为普通稀有怪物（除非坐骑是账号绑定）", 25),
+					dead = toggle("死亡的稀有", "当我们看到已知的死亡稀有怪物时，进行公告。并非所有扫描方法都能确定稀有怪物是否已死亡", 30),
+					instances = toggle("副本", "在副本中显示公告", 50),
+					loot = toggle("宝藏", "当宝藏出现在小地图上时显示公告", 60),
 				},
 			},
 			message = {
-				type = "group", name = "Messages",
+				type = "group", name = "消息",
 				order = 20,
 				get = get, set = set,
 				args = {
-					sink = toggle("Enabled", "Send a message to whatever scrolling text addon you're using.", 10),
+					sink = toggle("启用", "向您使用的任何滚动文本插件发送消息.", 10),
 					output = sink_config,
 				},
 			},
 			test = {
-				type = "group", name = "Test it!",
+				type = "group", name = "测试消息!",
 				inline =  true,
 				args = fake_args,
 			},
 			sound = {
-				type = "group", name = "Sounds",
+				type = "group", name = "声音",
 				get = get, set = set,
 				order = 10,
 				args = {
-					about = config.desc("Play sounds to announce rare mobs? Can do special things for special mobs. You *really* don't want to miss, say, the Time-Lost Proto Drake, after all...", 0),
+					about = config.desc("播放声音以宣布稀有怪物。可以为特殊怪物做特殊处理。毕竟，您真的不想错过，比如说，迷失的时光元龙...", 0),
 					channel = {
 						type = "select",
 						name = _G.SOUND_CHANNELS or _G.AUDIO_CHANNELS, -- dragonflight
@@ -256,7 +256,7 @@ function module:OnInitialize()
 					},
 					test = {
 						type = "execute",
-						name = "Test it!",
+						name = "测试它！",
 						image = "interface/common/voicechat-speaker",
 						func = function()
 							module:PlaySound{
@@ -266,36 +266,36 @@ function module:OnInitialize()
 						end,
 						order = 11,
 					},
-					unmute = toggle("Ignore mute", "Play sounds even when muted", 12),
+					unmute = toggle("忽略静音", "即使静音也播放声音", 12),
 					background = toggle(_G.ENABLE_BGSOUND, _G.OPTION_TOOLTIP_ENABLE_BGSOUND, 13),
-					drums = toggle("The Sound of Drums", "Underneath it all, the constant drumming", 14),
-					soundgroup = toggle("Group Sync Sounds", "Play sounds from synced mobs from party/raid members", 15),
-					soundguild = toggle("Guild Sync Sounds", "Play sounds from synced mobs from guild members not in group", 16),
+					drums = toggle("鼓声", "在这一切之下，持续的鼓声", 14),
+					soundgroup = toggle("同步声音组", "播放来自队伍/团队成员同步的怪物声音", 15),
+					soundguild = toggle("公会同步声音", "播放来自不在队伍中的公会成员同步的怪物声音", 16),
 					regular = {type="header", name="", order=20,},
-					sound = toggle("Sounds", "Play sounds for regular mobs", 21),
+					sound = toggle("声音", "播放普通怪物的声音", 21),
 					soundfile = soundfile("sound", 22),
 					sound_loop = soundrange(23),
 					mount = {type="header", name="", order=25,},
-					sound_mount = toggle("Mount sounds", "Play a sound for mobs that drop a mount", 26),
+					sound_mount = toggle("坐骑声音", "播放发现掉落坐骑怪物的声音", 26),
 					soundfile_mount = soundfile("sound_mount", 27),
 					sound_mount_loop = soundrange(28),
 					boss = {type="header", name="", order=30,},
-					sound_boss = toggle("Boss sounds", "Play a sound for mobs that require a group", 31),
+					sound_boss = toggle("首领声音", "播放发现大型怪物的声音", 31),
 					soundfile_boss = soundfile("sound_boss", 35),
 					sound_boss_loop = soundrange(37),
 					loot = {type="header", name="", order=40,},
-					sound_loot = toggle("Loot sounds", "Play a sound for treasures", 41),
+					sound_loot = toggle("宝箱声音", "播放发现宝箱的声音", 41),
 					soundfile_loot = soundfile("sound_loot", 45),
 					sound_loot_loop = soundrange(47),
 				},
 			},
 			flash = {
-				type = "group", name = "Flash",
+				type = "group", name = "闪光",
 				get = get, set = set,
 				order = 15,
 				args = {
-					about = config.desc("Flash the screen when a rare is seen.", 0),
-					flash = toggle("Enabled", "Flash the screen?", 1),
+					about = config.desc("当发现稀有时屏幕闪烁.", 0),
+					flash = toggle("启用", "屏幕闪烁?", 1),
 					flash_color = {
 						name = COLOR,
 						type = "color",
@@ -322,7 +322,7 @@ function module:OnInitialize()
 						order = 4,
 					},
 					mount = {type="header", name="", order=10,},
-					flash_mount = toggle("Mount flash", "Flash the screen differently when we see a mob with a mount?", 11),
+					flash_mount = toggle("坐骑闪光", "当看到带有坐骑的怪物时，屏幕以不同方式闪烁", 11),
 					flash_color_mount = {
 						name = COLOR,
 						type = "color",
@@ -349,7 +349,7 @@ function module:OnInitialize()
 						order = 14,
 					},
 					boss = {type="header", name="", order=20,},
-					flash_boss = toggle("Boss flash", "Flash the screen differently when we see a boss rare?", 21),
+					flash_boss = toggle("首领闪光", "当看到稀有首领时，屏幕以不同方式闪烁", 21),
 					flash_color_boss = {
 						name = COLOR,
 						type = "color",
@@ -378,12 +378,12 @@ function module:OnInitialize()
 				},
 			},
 			controller = {
-				type = "group", name = "Controller",
+				type = "group", name = "控制器(手柄)",
 				get = get, set = set,
 				disabled = function(info) return info[#info] ~= "controller" and not C_GamePad.IsEnabled() end,
 				order = 15,
 				args = {
-					about = config.desc("Vibrate a connected controller when a rare is seen. Only works if controller support is enabled. You can turn it on by typing `/console GamePadEnable 1` in the chat box.", 0),
+					about = config.desc("当发现稀有时，连接的控制器会震动。仅在启用控制器支持时有效。您可以通过在聊天框中输入\“/console GamePadEnable 1\”来开启此功能.", 0),
 				},
 			},
 		}
@@ -393,21 +393,21 @@ function module:OnInitialize()
 			if heading then
 				t["vibrate_heading" .. key] = {type="header", name="", order=order,}
 			end
-			t["vibrate" .. key] = toggle(heading or "Vibrate", "Vibrate the controller?", order + 1)
+			t["vibrate" .. key] = toggle(heading or "震动", "让控制器震动吗？", order + 1)
 			t["vibrate_type" .. key] = {
-				type = "select", name = "Type",
-				desc = "What type of vibration to use",
+				type = "select", name = "模式",
+				desc = "使用哪种模式的震动",
 				values = {
-					Low = "Low",
-					High = "High",
-					LTrigger = "LTrigger (PS5 only)",
-					RTrigger = "RTrigger (PS5 only)",
+					Low = "轻微",
+					High = "猛烈",
+					LTrigger = "LTrigger (仅限PS5)",
+					RTrigger = "RTrigger (仅限PS5)",
 				},
 				order = order + 2,
 			}
 			t["vibrate_intensity" .. key] = {
-				type = "range", name = "Intensity",
-				desc = "How strong the vibration should be",
+				type = "range", name = "烈度",
+				desc = "想要多强的震动",
 				min = 0, max = 1, step = 0.1,
 				order = order + 3,
 			}
@@ -422,9 +422,9 @@ function module:OnInitialize()
 		end
 		local order = 1
 		order = vibrate_section(options.controller.args, nil, 1)
-		order = vibrate_section(options.controller.args, "mount", order, "Vibrate for mounts")
-		order = vibrate_section(options.controller.args, "boss", order, "Vibrate for bosses")
-		order = vibrate_section(options.controller.args, "loot", order, "Vibrate for loot")
+		order = vibrate_section(options.controller.args, "mount", order, "发现坐骑时震动")
+		order = vibrate_section(options.controller.args, "boss", order, "发现首领时震动")
+		order = vibrate_section(options.controller.args, "loot", order, "发现宝箱时震动")
 
 		config.options.args.general.plugins.announce = options
 	end
@@ -545,7 +545,7 @@ core.RegisterCallback("SD Announce Sink", "Announce", function(callback, id, zon
 			end
 		end
 	end
-	module:Pour(("Rare seen: %s%s (%s)%s"):format(core:GetMobLabel(id), dead and "... but it's dead" or '', source or '', pin))
+	module:Pour(("发现精英： %s%s (%s)%s"):format(core:GetMobLabel(id), dead and "……但是它已经死了" or '', source or '', pin))
 end)
 core.RegisterCallback("SD AnnounceLoot Sink", "AnnounceLoot", function(callback, name, id, zone, x, y, instanceid)
 	if not module.db.profile.sink then
@@ -563,7 +563,7 @@ core.RegisterCallback("SD AnnounceLoot Sink", "AnnounceLoot", function(callback,
 			)
 		end
 	end
-	module:Pour(("Treasure seen: %s (%s)%s"):format(name, location, pin))
+	module:Pour(("发现宝藏： %s (%s)%s"):format(name, location, pin))
 end)
 
 local cvar_overrides

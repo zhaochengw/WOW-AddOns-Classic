@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2646, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250404115556")
+mod:SetRevision("20250410193935")
 mod:SetCreatureID(231075)
 mod:SetEncounterID(3016)
 mod:SetUsedIcons(8, 7, 6)
@@ -116,7 +116,7 @@ local specWarnEgoCheck								= mod:NewSpecialWarningDefensive(466958, nil, nil,
 local timerBBBBlastCD								= mod:NewCDCountTimer(97.3, 1214607, nil, nil, nil, 3)
 local timerOverloadedRocketsCD						= mod:NewCDCountTimer(11.5, 1214755, nil, nil, nil, 5)
 local timerTickTockCanistersCD						= mod:NewCDCountTimer(97.3, 466342, nil, nil, nil, 3)
-local timerEgoCheckCD								= mod:NewCDCountTimer(97.3, 466958, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerEgoCheckCD								= mod:NewCDTimer(97.3, 466958, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 mod:AddPrivateAuraSoundOption(1226489, true, 1226489, 2)--Overloaded Rockets (sub mechanic to BBBBlast)
 --Mythic
@@ -153,7 +153,6 @@ mod.vb.meltdownCount = 0
 local castsPerGUID = {}
 local addUsedMarks = {}
 --S3
-mod.vb.egoCheckCount = 0
 mod.vb.egocheckSubCount = 0
 --Mythic
 mod.vb.mayhemRocketsCount = 0
@@ -220,7 +219,7 @@ local allTimers = {
 				[1] = {24},
 				[2] = {8.8},
 				[3] = {0},
-				[4] = {0},
+				[4] = {7.6, 35.0},
 				[5] = {0},
 			},
 			[466751] = {--Venting Heat
@@ -251,7 +250,7 @@ local allTimers = {
 				[5] = {0},
 			},
 			[1214607] = {--BBB Blast
-				[0] = {8, 36},
+				[0] = {"v5-8", 36},
 				[1] = {30.7},
 				[2] = {18.5, "v26-35"},--26-35
 				[3] = {"v19.7-23.1"},--(Collision with Venting Heat)
@@ -427,7 +426,6 @@ function mod:OnCombatStart(delay)
 	self.vb.coilsCount = 0
 	self.vb.gigaBlastCount = 0
 	self.vb.meltdownCount = 0
-	self.vb.egoCheckCount = 0
 	--Reset all Subcounts
 	self.vb.canistersSubCount = 0
 	self.vb.bombsSubCount = 0
@@ -694,7 +692,6 @@ function mod:SPELL_CAST_START(args)
 			DBM:AddMsg("Tick Tock Canister timer not found for coil count "..self.vb.coilsCount.." "..self.vb.canistersSubCount .. " Please report to DBM authors with a lot of this pull")
 		end
 	elseif spellId == 466958 then
-		self.vb.egoCheckCount = self.vb.egoCheckCount + 1
 		self.vb.egocheckSubCount = self.vb.egocheckSubCount + 1
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
 			specWarnEgoCheck:Show()
@@ -711,7 +708,7 @@ function mod:SPELL_CAST_START(args)
 			timer = allTimers[savedDifficulty][self.vb.phase][spellId][self.vb.coilsCount][self.vb.egocheckSubCount+1]
 		end
 		if timer and timer ~= 0 then
-			timerEgoCheckCD:Start(timer, self.vb.egoCheckCount+1)
+			timerEgoCheckCD:Start(timer)
 		elseif not self:IsMythic() and self.vb.coilsCount > 0 and not allTimers[savedDifficulty][self.vb.phase][spellId][self.vb.coilsCount][self.vb.egocheckSubCount] then
 			DBM:AddMsg("Ego Check timer not found for coil count "..self.vb.coilsCount.." "..self.vb.egocheckSubCount .. " Please report to DBM authors with a lot of this pull")
 		end
@@ -895,7 +892,9 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerGigaCoilsCD:Start(allTimers[savedDifficulty][3][469286][1], 1)
 			timerSuppressionCD:Start(allTimers[savedDifficulty][3][467182][0][1], 1)
 			timerBBBBlastCD:Start(allTimers[savedDifficulty][3][1214607][0][1], 1)
-			timerTickTockCanistersCD:Start(allTimers[savedDifficulty][3][466342][0][1], 1)
+			if not self:IsLFR() then
+				timerTickTockCanistersCD:Start(allTimers[savedDifficulty][3][466342][0][1], 1)
+			end
 			timerVentingHeatCD:Start(allTimers[savedDifficulty][3][466751][0][1], 1)
 			if self:IsHard() then
 				timerEgoCheckCD:Start(allTimers[savedDifficulty][3][466958][0][1], 1)
@@ -959,7 +958,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			end
 			timerVentingHeatCD:Start(allTimers[savedDifficulty][3][466751][self.vb.coilsCount][1], self.vb.heatCount+1)
 			if self:IsHard() then
-				timerEgoCheckCD:Start(allTimers[savedDifficulty][3][466958][self.vb.coilsCount][1], self.vb.egocheckCount+1)
+				timerEgoCheckCD:Start(allTimers[savedDifficulty][3][466958][self.vb.coilsCount][1])
 			end
 		end
 	elseif spellId == 1226891 and self:IsInCombat() and self:AntiSpam(2.5, 2) then--Circuit Reboot Removed
@@ -971,7 +970,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.heatCount = 0
 		self.vb.coilsCount = 0
 		self.vb.gigaBlastCount = 0
-		self.vb.egoCheckCount = 0
 		--Reset all Subcounts
 		self.vb.canistersSubCount = 0
 		self.vb.bombsSubCount = 0

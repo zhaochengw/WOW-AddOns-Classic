@@ -95,13 +95,13 @@ function module:OptionsRequested(callback, options)
 	options.plugins.mobs = {
 		mobs = {
 			type = "group",
-			name = "Mobs",
+			name = "怪物",
 			childGroups = "tab",
 			order = 15,
 			args = {
 				custom = {
 					type = "group",
-					name = CUSTOM,
+					name = "自定义",
 					order = 1,
 					args = {
 						add = {
@@ -137,10 +137,10 @@ function module:OptionsRequested(callback, options)
 				},
 				ignore = {
 					type = "group",
-					name = IGNORE,
-					desc = "Mobs you just want to ignore, already",
+					name = "忽略",
+					desc = "你此前已经选择想要忽略的怪物",
 					args = {
-						add = mob_input(ADD, "Add a mob by entering its id, name, 'target', or 'mouseover'.", 1, function(info, id)
+						add = mob_input(ADD, "通过输入怪物的ID、名称、“目标”或“鼠标悬停”来添加怪物", 1, function(info, id)
 							core:SetIgnore(id, true)
 						end),
 						mobs = {
@@ -152,7 +152,7 @@ function module:OptionsRequested(callback, options)
 								core:SetIgnore(info.arg, not core.db.global.ignore[info.arg])
 							end,
 							args = {
-								desc = core:GetModule("Config").desc("This will fill in as rare mobs are seen in the current session.", 0),
+								desc = core:GetModule("Config").desc("这将在后续发现稀有怪物时自动忽略。", 0),
 							},
 						}
 					},
@@ -227,7 +227,7 @@ function module:BuildMobList(options)
 				enabled = {
 					type = "toggle",
 					name = ENABLE,
-					desc = "If you disable this, SilverDragon will just not know about these mobs. They'll still be announced when you mouse over them, like any unknown rare.",
+					desc = "如果你禁用这个功能，SilverDragon将不会知道这些怪物。当你鼠标悬停在这些怪物上时，它们仍然会被宣布，就像任何未知的稀有怪物一样",
 					arg = source,
 					get = function(info) return core.db.global.datasources[info.arg] end,
 					set = function(info, value)
@@ -239,7 +239,7 @@ function module:BuildMobList(options)
 				ignore = {
 					type = "toggle",
 					name = IGNORE,
-					desc = "Ignore every mob provided by this module. This will make them all not be announced, regardless of any other settings.",
+					desc = "忽略此模块提供的所有怪物。这将使它们都不会被宣布，无论其他设置如何",
 					arg = source,
 					get = function(info) return core.db.global.ignore_datasource[info.arg] end,
 					set = function(info, value)
@@ -284,7 +284,7 @@ function module:BuildMobList(options)
 							all = {
 								type = "execute",
 								name = ALL,
-								desc = "Select every mob in the list",
+								desc = "选择列表中的所有怪物",
 								func = function(info)
 									if not ns.achievements[achievement] then return end
 									for mobid, criteria in pairs(ns.achievements[achievement]) do
@@ -298,7 +298,7 @@ function module:BuildMobList(options)
 							none = {
 								type = "execute",
 								name = NONE,
-								desc = "Deselect every mob in the list",
+								desc = "取消选择列表中的所有怪物",
 								func = function(info)
 									if not ns.achievements[achievement] then return end
 									for mobid, criteria in pairs(ns.achievements[achievement]) do
@@ -328,7 +328,7 @@ function module:BuildMobList(options)
 								all = {
 									type = "execute",
 									name = ALL,
-									desc = "Select every mob in the list",
+									desc = "选择列表中的所有怪物",
 									func = function(info)
 										if not ns.mobsByZone[zone] then return end
 										for mobid, locations in pairs(ns.mobsByZone[zone]) do
@@ -342,7 +342,7 @@ function module:BuildMobList(options)
 								none = {
 									type = "execute",
 									name = NONE,
-									desc = "Deselect every mob in the list",
+									desc = "取消选择列表中的所有怪物",
 									func = function(info)
 										if not ns.mobsByZone[zone] then return end
 										for mobid, locations in pairs(ns.mobsByZone[zone]) do

@@ -548,15 +548,15 @@ function TrinketMenu.SlashHandler(msg)
 		TrinketMenu.ResetSettings()
 	elseif msg == "clear" then
 		wipe(TrinketMenuPerOptions.Hidden)
-		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu: Cleared all ignored/hidden trinkets.")
+		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu: 已清除所有被忽略/隐藏的饰品。")
 	elseif string.find(msg, "alpha") then
 		local _, _, alpha = string.find(msg, "alpha (.+)")
 		alpha = tonumber(alpha)
 		if alpha and alpha > 0 and alpha <= 1.0 then
 			TrinketMenuPerOptions.Alpha = alpha
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu alpha:")
-			DEFAULT_CHAT_FRAME:AddMessage("trinket alpha (number) : set alpha from 0.1 to 1.0")
+			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu alpha （透明度）:")
+			DEFAULT_CHAT_FRAME:AddMessage("/trinket alpha (数值) : 设置透明度从 0.1 到 1.0")
 		end
 		TrinketMenu.ReflectAlpha()
 	elseif string.find(msg, "scale") then
@@ -571,34 +571,34 @@ function TrinketMenu.SlashHandler(msg)
 			TrinketMenu.ScaleFrame(mainscale)
 		end
 		if not tonumber(menuscale) and not tonumber(mainscale) then
-			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu scale:")
-			DEFAULT_CHAT_FRAME:AddMessage("/trinket scale main (number) : set exact main scale")
-			DEFAULT_CHAT_FRAME:AddMessage("/trinket scale menu (number) : set exact menu scale")
-			DEFAULT_CHAT_FRAME:AddMessage("ie, /trinket scale menu 0.85")
-			DEFAULT_CHAT_FRAME:AddMessage("Note: You can drag the lower-right corner of either window to scale.  This slash command is for those who want to set an exact scale.")
+			DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu scale （缩放比例）:")
+			DEFAULT_CHAT_FRAME:AddMessage("/trinket scale main (数值) : 设置精确的插件缩放比例")
+			DEFAULT_CHAT_FRAME:AddMessage("/trinket scale menu (数值) : 设置精确的饰品列表缩放比例")
+			DEFAULT_CHAT_FRAME:AddMessage("例如, /trinket scale menu 0.85")
+			DEFAULT_CHAT_FRAME:AddMessage("注： 您可以拖动任一窗口的右下角进行缩放。 此斜杠命令适用于想要设置精确缩放比例的用户。")
 		end
 		TrinketMenu.FrameToScale = nil
 		TrinketMenuPerOptions.MainScale = TrinketMenu_MainFrame:GetScale()
 		TrinketMenuPerOptions.MenuScale = TrinketMenu_MenuFrame:GetScale()
 	elseif string.find(msg, "load") then
-		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu load:")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket load (top|bottom) profilename\nie: /trinket load bottom PvP")
+		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu load （配置加载）:")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket load (top|bottom) 配置名\n例如: /trinket load bottom PvP")
 	else
-		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu useage:")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket or /trinketmenu : toggle the window")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket reset : reset all settings")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket clear : clear all ignored/hidden trinkets")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket opt : summon options window")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket lock|unlock : toggles window lock")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket scale main|menu (number) : sets an exact scale")
-		DEFAULT_CHAT_FRAME:AddMessage("/trinket load top|bottom profilename : loads a profile to top or bottom trinket")
+		DEFAULT_CHAT_FRAME:AddMessage("|cFFFFFF00TrinketMenu usage （宏命令说明）:")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket or /trinketmenu : 显示/隐藏插件")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket reset : 重置所有设置")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket clear : 清除所有被忽略/隐藏的饰品")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket opt : 召唤选项窗口")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket lock|unlock : 开关插件锁定")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket scale main|menu (数值) : 设置精确缩放比例")
+		DEFAULT_CHAT_FRAME:AddMessage("/trinket load top|bottom 配置名 : 将配置文件加载到上栏位饰品或下栏位饰品")
 	end
 end
 
 function TrinketMenu.ResetSettings()
 	StaticPopupDialogs["TRINKETMENURESET"] = {
-		text = "Are you sure you want to reset TrinketMenu to default state and reload the UI?",
-		button1 = "Yes", button2 = "No", showAlert = 1, timeout = 0, whileDead = 1,
+		text = "您确定要将TrinketMenu插件重置为默认状态并重新加载 UI 吗？",
+		button1 = "是", button2 = "否", showAlert = 1, timeout = 0, whileDead = 1,
 		OnAccept = function()
 			TrinketMenuOptions = nil
 			TrinketMenuPerOptions = nil
@@ -691,11 +691,11 @@ function TrinketMenu.TimersFrame_OnUpdate(elapsed)
 end
 
 function TrinketMenu.TimerDebug()
-	local on = "|cFF00FF00On"
-	local off = "|cFFFF0000Off"
-	DEFAULT_CHAT_FRAME:AddMessage("|cFF44AAFFTrinketMenu_TimersFrame is "..(TrinketMenu_TimersFrame:IsVisible() and on or off))
+	local on = "|cFF00FF00开"
+	local off = "|cFFFF0000关"
+	DEFAULT_CHAT_FRAME:AddMessage("|cFF44AAFFTrinketMenu_计时器 是 "..(TrinketMenu_TimersFrame:IsVisible() and on or off))
 	for i in pairs(TrinketMenu.TimerPool) do
-		DEFAULT_CHAT_FRAME:AddMessage(i.." is "..(TrinketMenu.IsTimerActive(i) and on or off))
+		DEFAULT_CHAT_FRAME:AddMessage(i.." 是 "..(TrinketMenu.IsTimerActive(i) and on or off))
 	end
 end
 

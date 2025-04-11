@@ -24,7 +24,7 @@ local FACTION_LOAMM = 2564
 
 local LOC_alldragonisles = {[WAKINGSHORES]={},[OHNAHRANPLAINS]={},[AZURESPAN]={},[THALDRASZUS]={},}
 
-core:RegisterMobData("Dragonflight", {
+core:RegisterMobData("巨龙时代", {
 	[193217] = {
 		name="Drakewing",
 		achievement=16676, -- Adventurer
@@ -32,7 +32,7 @@ core:RegisterMobData("Dragonflight", {
 		loot={
 			200219, -- Dangerous Drapery
 		},
-		note="Flying",
+		note="飞行中",
 		locations={[WAKINGSHORES]={49806960,52205060,69205480,72824701}},
 		routes={[WAKINGSHORES]={
 			{49806960, 49807220, 48007680, 47207700, r=1, g=1, b=0},
@@ -42,27 +42,27 @@ core:RegisterMobData("Dragonflight", {
 	},
 	-- Stormed off
 	-- Storm
-	[193653] = {name="Gaelzion", locations=LOC_alldragonisles,notes="Storm Invasions"},
-	[193647] = {name="Karantun", locations=LOC_alldragonisles,notes="Storm Invasions", loot={200170}, vignette=5227, quest=74004,},
-	[193684] = {name="Pipspark Thundersnap", locations=LOC_alldragonisles,notes="Storm Invasions"},
-	[193674] = {name="Voraazka", locations=LOC_alldragonisles,notes="Storm Invasions"},
+	[193653] = {name="Gaelzion", locations=LOC_alldragonisles,notes="风暴入侵"},
+	[193647] = {name="Karantun", locations=LOC_alldragonisles,notes="风暴入侵", loot={200170}, vignette=5227, quest=74004,},
+	[193684] = {name="Pipspark Thundersnap", locations=LOC_alldragonisles,notes="风暴入侵"},
+	[193674] = {name="Voraazka", locations=LOC_alldragonisles,notes="风暴入侵"},
 	-- Earth
-	[193644] = {name="Bouldron", locations=LOC_alldragonisles,notes="Earth Invasions"},
-	[193680] = {name="Zurgaz Corebreaker", locations=LOC_alldragonisles,notes="Earth Invasions"},
-	[193652] = {name="Grizzlerock", locations=LOC_alldragonisles,notes="Earth Invasions"},
-	[193654] = {name="Gravlion", locations=LOC_alldragonisles,notes="Earth Invasions"},
+	[193644] = {name="Bouldron", locations=LOC_alldragonisles,notes="大地入侵"},
+	[193680] = {name="Zurgaz Corebreaker", locations=LOC_alldragonisles,notes="大地入侵"},
+	[193652] = {name="Grizzlerock", locations=LOC_alldragonisles,notes="大地入侵"},
+	[193654] = {name="Gravlion", locations=LOC_alldragonisles,notes="大地入侵"},
 	-- Fire
-	[193648] = {name="Infernum", locations=LOC_alldragonisles,notes="Fire Invasions"},
-	[193686] = {name="Neela Firebane", locations=LOC_alldragonisles,notes="Fire Invasions"},
-	[193675] = {name="Kain Firebrand", locations=LOC_alldragonisles,notes="Fire Invasions"},
-	[193650] = {name="Emblazion", locations=LOC_alldragonisles,notes="Fire Invasions"},
+	[193648] = {name="Infernum", locations=LOC_alldragonisles,notes="火焰入侵"},
+	[193686] = {name="Neela Firebane", locations=LOC_alldragonisles,notes="火焰入侵"},
+	[193675] = {name="Kain Firebrand", locations=LOC_alldragonisles,notes="火焰入侵"},
+	[193650] = {name="Emblazion", locations=LOC_alldragonisles,notes="火焰入侵"},
 	-- Water
-	[193645] = {name="Crystalus", locations=LOC_alldragonisles,notes="Water Invasions",},
-	[193682] = {name="Rouen Icewind", locations=LOC_alldragonisles,notes="Water Invasions",},
-	[193655] = {name="Frozion", locations=LOC_alldragonisles,notes="Water Invasions",},
-	[193677] = {name="Maeleera", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
-	[193678] = {name="Fieraan", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
-	[193679] = {name="Leerain", locations=LOC_alldragonisles,notes="Water Invasions",vignette=5243,},
+	[193645] = {name="Crystalus", locations=LOC_alldragonisles,notes="空气入侵",},
+	[193682] = {name="Rouen Icewind", locations=LOC_alldragonisles,notes="空气入侵",},
+	[193655] = {name="Frozion", locations=LOC_alldragonisles,notes="空气入侵",},
+	[193677] = {name="Maeleera", locations=LOC_alldragonisles,notes="空气入侵",vignette=5243,},
+	[193678] = {name="Fieraan", locations=LOC_alldragonisles,notes="空气入侵",vignette=5243,},
+	[193679] = {name="Leerain", locations=LOC_alldragonisles,notes="空气入侵",vignette=5243,},
 	-- Assorted hidden things
 	[190971] = {name="Shas'ith", hidden=true}, -- the locked-up variant which is always there
 	[201563] = {name="Rugren", hidden=true}, -- Accompanies Huntmaster Yrgena
@@ -98,12 +98,12 @@ core:RegisterMobData("Dragonflight", {
 	[201747] = {name="Bogg",locations={[ZARALEKCAVERN]={54405220}},hidden=true,},
 	[204426] = {name="Jalgon Stoutburn",locations={[ZARALEKCAVERN]={58005660}},hidden=true,},
 	[205540] = {name="Pahi'rys",locations={[ZARALEKCAVERN]={60005620}},hidden=true},
-	[203606] = {name="Calibrating Scent Matrix",locations={[ZARALEKCAVERN]={58005600}},notes="Making Scents",hidden=true},
+	[203606] = {name="Calibrating Scent Matrix",locations={[ZARALEKCAVERN]={58005600}},notes="制造气味",hidden=true},
 }, true)
 
 -- Treasures
 
-core:RegisterTreasureData("Dragonflight", {
+core:RegisterTreasureData("巨龙时代", {
 	[5407] = {name="Water-Bound Chest", loot={
 		197948, -- Stone Sentinel's Greatsword
 		197955, -- Sword of the Eternal Guard
@@ -112,7 +112,7 @@ core:RegisterTreasureData("Dragonflight", {
 	[5468] = {
 		label="Expedition Scout's Pack",
 		loot={
-			{192764, mount=1617, note="Renown 25", requires=core.conditions.MajorFaction(FACTION_DRAGONSCALE, 25)}, -- Verdant Skitterfly
+			{192764, mount=1617, note="名望 25", requires=core.conditions.MajorFaction(FACTION_DRAGONSCALE, 25)}, -- Verdant Skitterfly
 			-- all the treasure-prerequisite items
 			{199061, quest=70527}, -- A Guide To Rare Fish
 			{194540, quest=67046}, -- Nokhud Armorer's Notes
@@ -205,7 +205,7 @@ s/(?<= ){ -- (.+)$/{\n\t\tlabel="$1",/g",
 -- Stub time!
 local ns = {
 	RegisterPoints = function(...)
-		core:RegisterHandyNotesData("Dragonflight", ...)
+		core:RegisterHandyNotesData("巨龙时代", ...)
 	end,
 	conditions = core.conditions,
 	WAKINGSHORES = WAKINGSHORES,
@@ -226,7 +226,7 @@ local ns = {
 	MAXLEVEL = {core.conditions.QuestComplete(67030), core.conditions.Level(70)},
 	DRAGONRIDING = core.conditions.SpellKnown(376777),
 	SUPERRARE = function(point)
-		local note = "This is a \"super rare\" which can drop higher level loot"
+		local note = "这是一个‘超级稀有’，它有可能掉落更高等级的战利品"
 		if point.note then
 			point.note = point.note .. "\n" .. note
 		else
@@ -236,7 +236,7 @@ local ns = {
 	end
 }
 
-core:RegisterHandyNotesData("Dragonflight", ns.FORBIDDENREACHINTRO, {
+core:RegisterHandyNotesData("巨龙时代", ns.FORBIDDENREACHINTRO, {
 	[32884100] = {
 		label="Deathrip",
 		quest=66966,
@@ -330,7 +330,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200236, -- Memory of Nulltheria
 			200310, -- Stole of the Iron Phantom
 		},
-		note="Top of the tower",
+		note="塔顶",
 	},
 	[58774034] = {
 		label="Anhydros the Tidetaker",
@@ -410,7 +410,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			48007100, 46907360, 45407400, 42607250, 41706940, 40306820, 39306830, 37906960,
 			37607070, 36507160, 34607110,
 		},
-		note="Patrols with {npc:192737:Qalashi War Mammoth}",
+		note="与{npc:192737:Qalashi War Mammoth}一起巡逻",
 		minimap=true,
 		vignette=5386, -- Qalashi War Party
 	},
@@ -580,7 +580,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200563, -- Primal Ritual Shell
 			200217, -- Blazing Essence
 		},
-		note="Kill nearby mobs for {item:201092:Lava Spices}, then fish here to summon",
+		note="击杀附近的怪物来获取 {item:201092:Lava Spices}，然后在这里钓鱼进行召唤",
 		vignette=5382,
 	},
 	[27017601] = ns.SUPERRARE{
@@ -597,7 +597,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200757, -- Qalashi War-Helm
 		},
 		vignette=5385,
-		note="Spawns after Dragonbane Keep event",
+		note="在灭龙要塞事件后出现",
 	},
 	[64456922] = {
 		label="Possessive Hornswog",
@@ -609,7 +609,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 		},
 		vignette=5139, -- Hidden Hornswog Hoard
 		atlas="VignetteLootElite", scale=1.2,
-		note="Bring {item:200064}, {item:200065}, and {item:200066} here to enter",
+		note="将{item:200064}，{item:200065}和{item:200066}带到这里后进入",
 		related={
 			[47738363] = {quest=70864,label="{item:200064}",inbag=200064,atlas="Islands-AzeriteChest",}, -- Marmoni's Prize
 			[39648469] = {quest=70864,label="{item:200065}",inbag=200065,atlas="Islands-AzeriteChest",}, -- Adventurer's Lost Soap Bar
@@ -632,7 +632,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200563, -- Primal Ritual Shell
 		},
 		nearby={30005520, label="{npc:197395:Wurmling Bones}"},
-		note="Gather 3x {item:191211:Wurmling Bones} from {npc:187366:Worldcarver Wurmling} then click on the {npc:197395:Wurmling Bones}",
+		note="从{npc:187366:Worldcarver Wurmling}身上收集 3个{item:191211:Wurmling Bones}，然后点击{npc:197395:Wurmling Bones}",
 		vignette=5110,
 	},
 	[31825440] = {
@@ -643,7 +643,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 		loot={
 			200159, -- Blaze Ring
 		},
-		note="Give 20x{item:191264:Restored Obsidian Key} to {npc:191640:Sabellian} to trigger {quest:67027}",
+		note="将 20个{item:191264:Restored Obsidian Key}交给{npc:191640:Sabellian}触发任务{quest:67027}",
 		vignette=5113,
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
@@ -668,7 +668,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Under the Obsidian Citadel. Give 20x{item:191264:Restored Obsidian Key} to {npc:186681:Wrathion} to trigger {quest:66903}",
+		note="在黑曜石城堡下方。将 20个{item:191264:Restored Obsidian Key}交给{npc:186681:Wrathion}触发任务{quest:66903}",
 		vignette=5108,
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
@@ -692,7 +692,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="In the Fluttering Cavern",
+		note="在洞穴中",
 		vignette=5209, -- Resplendent Shimmerwing
 		path=35808453,
 	},
@@ -708,7 +708,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200169, -- Protector's Molten Cudgel
 			200757, -- Qalashi War-Helm
 		},
-		note="Patrols",
+		note="巡逻",
 		vignette=5480,
 	},
 	[25286032] = ns.SUPERRARE{
@@ -817,7 +817,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200246, -- Lost Delving Lamp
 			200683, -- Legguards of the Deep Strata
 		},
-		note="Give 20x{item:191264:Restored Obsidian Key} to {npc:187275:Igys the Believer} to trigger {quest:66901}",
+		note="将 20个{item:191264:Restored Obsidian Key}交给{npc:187275:Igys the Believer}触发任务{quest:66901}",
 		vignette=5388, -- 5119 for "Morchock Reformed"?
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
@@ -833,7 +833,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200297, -- Hastily Cobbled Maul
 			200689, -- Rimetalon Band
 		},
-		note="Use the three Pilfered objects inside the cave to summon",
+		note="使用洞穴内的三件被盗物品来进行召唤",
 		path=48457426,
 		nearby={47727445, 46857355, }, -- TODO: last one
 		vignette=5381,
@@ -854,7 +854,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200563, -- Primal Ritual Shell
 		},
 		vignette=5384,
-		note="Bring {item:201033:Magical Salt Crystal} from Azure Span @ 11.6 41.0 and {spell:392947:Toss Salt} to spawn; this only works when the pool is full of {npc:198216:Unsalted Water Snail}",
+		note="从碧蓝林海坐标 11.6 41.0 获得{item:201033:Magical Salt Crystal}，并使用{spell:392947:Toss Salt}合成，仅在水池中填满{npc:198216:Unsalted Water Snail}是才有效。",
 		path=36048985,
 		minimap=true,
 	},
@@ -942,7 +942,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			200682, -- Hardened Scale Shoulderguards
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="In cave",
+		note="在洞里",
 		vignette=5057,
 	},
 	[46715715] = {
@@ -954,7 +954,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 			198964, -- Elementious Splinter
 		},
 		vignette=nil,
-		note="Kill {npc:190719:Primalist Arlin} to trigger",
+		note="击杀{npc:190719:Primalist Arlin}触发",
 	},
 	[54512137] = {
 		label="Firava the Rekindler",
@@ -1011,7 +1011,7 @@ ns.RegisterPoints(ns.WAKINGSHORES, {
 		note="Under the Obsidian Citadel",
 	},
 	[78405000] = {
-		label="Gorjo the Crab Shackler",
+		label="在黑曜石城堡下方",
 		-- [78405000, 78405060, 78604920, 78604980]
 		quest=nil,
 		npc=193226,
@@ -1128,7 +1128,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 		quest=73901,
 		npc=193209,
 		loot={
-			{200879, note="Hatches into..."}, -- Zenet Egg
+			{200879, note="孵化为……"}, -- Zenet Egg
 			{198825, mount=1672}, -- Zenet Hatchling
 			{196976,quest=69176,}, -- Cliffside Wylderdrake: Head Mane
 			{197111,quest=69312,}, -- Highland Drake: Maned Head
@@ -1148,7 +1148,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Flying",
+		note="飞行中",
 	},
 	[87406140] = {
 		label="Liskheszaera",
@@ -1279,7 +1279,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 			200203, -- Repurposed Giant's Thimble
 			200684, -- Emerald Tailbone
 		},
-		note="Patrols",
+		note="巡逻",
 		vignette=5199,
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
@@ -1362,7 +1362,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 		},
 		vignette=5190,
 		related={
-			[16605120] = {label="{npc:193224:Dawnbell}",note="Bring {item:194681:Sugarwing Cupcakes} from an innkeeper, then follow her to {npc:193215:Scaleseeker Mezeri}"},
+			[16605120] = {label="{npc:193224:Dawnbell}",note="从旅店老板处获取{item:194681:Sugarwing Cupcakes}，然后随她去见{npc:193215:Scaleseeker Mezeri}"},
 		}
 	},
 	[29554146] = {
@@ -1493,7 +1493,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 		npc=195409,
 		loot={},
 		vignette=5365,
-		note="Only when the Aylaag Camp is in the Western position",
+		note="只有当艾拉格营地处于西边位置时。",
 	},
 	--[[
 	[] = {
@@ -1544,7 +1544,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 			200552, -- Torrent Caller's Shell
 			200563, -- Primal Ritual Shell
 		},
-		note="Throw 5x {item:194701:Ominous Conch} into a Lurker Sighting to summon",
+		note="向区域投掷 5个{item:194701:Ominous Conch}进行召唤",
 	},
 	[81207780] = {
 		label="Astray Splasher",
@@ -1597,7 +1597,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="In cave",
+		note="在洞里",
 		vignette=5389,
 	},
 	[26356534] = {
@@ -1673,7 +1673,7 @@ ns.RegisterPoints(ns.OHNAHRANPLAINS, {
 			{198409,toy=true,}, -- Personal Shell
 			{200249,toy=true,}, -- Mage's Chewed Wand
 		},
-		note="Behind the waterfall",
+		note="在瀑布后面",
 	},
 	[43205060] = {
 		label="Web-Queen Ashkaz",
@@ -1834,7 +1834,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 		npc=191356,
 		loot={},
 		vignette=5153,
-		note="Use the hammer nearby to smash the toys",
+		note="使用附近的锤子砸毁这些玩具",
 		nearby={58664340, label="Wooden Hammer"},
 	},
 	[57685441] = {
@@ -1857,7 +1857,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="You may need to kill a stuck {npc:193219:Muckling} nearby to stop this from evading",
+		note="你可能需要击杀附近一只被困住的{npc:193219:Muckling}，以防止它逃开",
 	},
 	[08804860] = {
 		label="Brackle",
@@ -1900,7 +1900,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 		quest=73867,
 		npc=194210,
 		loot={},
-		note="Patrols the icy area",
+		note="在结冰地域巡逻",
 		route={61213127, 59163080, 57562986, 54223190, 52023452, 49283837},
 		minimap=true,
 	},
@@ -1924,7 +1924,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 		quest=73887,
 		npc=193225,
 		loot={},
-		note="In cave",
+		note="在洞里",
 	},
 	[16622799] = {
 		label="Blue Terror",
@@ -1947,7 +1947,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Spawns at the top of a tree",
+		note="在树顶出现",
 	},
 	[36323583] = {
 		label="Mahg the Trampler",
@@ -2040,7 +2040,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200549, -- Restored Titan Artifact
 		},
 		vignette=5186,
-		note="Use crystals in the tower to the North and bring the energies to {npc:193782}",
+		note="使用位于北面塔楼中的水晶，并将能量带给{npc:193782}",
 		nearby={70402370, label="{spell:382076}"},
 	},
 	[49343819] = {
@@ -2067,9 +2067,9 @@ ns.RegisterPoints(ns.AZURESPAN, {
 		minimap=true,
 		vignette=5475,
 		related={
-			[50523672] = {label="{item:381654:Broken Fishing Pole}", note="Click this first!", minimap=true,},
-			[49973821] = {label="{item:385046:Torn Fishing Net}", note="Click this second!", minimap=true,},
-			[49223842] = {label="{item:385047:Old Harpoon}", note="Click this third! {npc:193691: Fisherman Tinnak's Ghost} spawns closely nearby", minimap=true,},
+			[50523672] = {label="{item:381654:Broken Fishing Pole}", note="首先点击这个！", minimap=true,},
+			[49973821] = {label="{item:385046:Torn Fishing Net}", note="然后点击这个！", minimap=true,},
+			[49223842] = {label="{item:385047:Old Harpoon}", note="最后点击这个！{npc:193691: Fisherman Tinnak's Ghost}就在附近生成", minimap=true,},
 		},
 	},
 	[13604860] = {
@@ -2082,7 +2082,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200882, -- Big Kinook's Spare Ladle
 			200247, -- Inextinguishable Gavel
 		},
-		note="Complete {spell:388961:Community Feasts}",
+		note="完成任务{spell:388961:Community Feasts}",
 	},
 	[13602200] = {
 		label="Blightfur",
@@ -2123,14 +2123,14 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200552, -- Torrent Caller's Shell
 		},
 		vignette=5200,
-		note="Collect 10x {npc:193424:Arcane Energy} for {npc:193255: Archmage Cleary} nearby",
+		note="为附近的{npc:193255: Archmage Cleary}收集 10个{npc:193424:Arcane Energy}",
 		related={
-			[53913570] = {label="{npc:193255: Archmage Cleary}", atlas="mechagon-projects", note="Gather {npc:193424:Arcane Energy}",},
+			[53913570] = {label="{npc:193255: Archmage Cleary}", atlas="mechagon-projects", note="采集{npc:193424:Arcane Energy}",},
 		},
 		nearby={
 			54013628, 54083719, 54163467, 53493476, 53393655, 52923710, 52203733, 51683682, 51953565,
 			label="{npc:193424:Arcane Energy}",
-			note="Bring to {npc:193242:Arcane Pedestal}",
+			note="带去给{npc:193242:Arcane Pedestal}",
 		},
 	},
 	[11093217] = ns.SUPERRARE{
@@ -2145,7 +2145,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200283, -- Gnoll-Gnawed Breeches
 		},
 		vignette=5413,
-		note="On ~10 minute rotation with the other Brackenhide Hollow rares ({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})",
+		note="与蕨皮山谷的其他稀有生物({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})，每10分钟轮流出现",
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
 	[14483105] = ns.SUPERRARE{
@@ -2168,7 +2168,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="On ~10 minute rotation with the other Brackenhide Hollow rares ({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})",
+		note="与蕨皮山谷的其他稀有生物({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})，每10分钟轮流出现",
 		vignette=5414,
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
@@ -2184,7 +2184,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200267, -- Reinforced Garden Tenders
 		},
 		vignette=5415,
-		note="On ~10 minute rotation with the other Brackenhide Hollow rares ({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})",
+		note="与蕨皮山谷的其他稀有生物({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})，每10分钟轮流出现",
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
 	[16213364] = ns.SUPERRARE{
@@ -2204,7 +2204,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200432, -- Rotguard Cowl
 		},
 		vignette=5416,
-		note="On ~10 minute rotation with the other Brackenhide Hollow rares ({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})",
+		note="与蕨皮山谷的其他稀有生物({npc:197344}, {npc:197353}, {npc:197354}, {npc:197356})，每10分钟轮流出现",
 		-- hide_before=ns.MAXLEVEL, -- TODO
 	},
 	-- Lunker rares
@@ -2235,7 +2235,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 			200245, -- Leviathan Lure
 			200563, -- Primal Ritual Shell
 		},
-		note="Summon with {item:194701:Ominous Conch}",
+		note="使用{item:194701:Ominous Conch}召唤",
 	},
 	--[[
 	[] = {
@@ -2365,7 +2365,7 @@ ns.RegisterPoints(ns.AZURESPAN, {
 		loot={
 			{201440, mount=1553},
 		},
-		note="Spawns in this cave, then flies around the area in a big circle",
+		note="在这个洞穴中出现，然后围绕这片区域绕大圈飞行",
 	},
 	[36793249] = {
 		label="Sharpfang",
@@ -2418,7 +2418,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200682, -- Hardened Scale Shoulderguards
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Runs around, you can jump on it",
+		note="四处奔跑，你可以跳到它身上",
 		route={53104363, 53124230, 51624534, 50304953, 51534871, 52714652, loop=true},
 		minimap=true,
 		vignette=5180,
@@ -2455,7 +2455,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200283, -- Gnoll-Gnawed Breeches
 			200432, -- Rotguard Cowl
 		},
-		note="Talk to {npc:193222:Archaeologist Koranir} to engage, along with {npc:193231:Ancient Tundrafur}",
+		note="与{npc:193231:Ancient Tundrafur}一起，同{npc:193222:Archaeologist Koranir}对话触发。",
 	},
 	[38107820] = {
 		label="Pleasant Alpha",
@@ -2688,7 +2688,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Pet {npc:193156:Wooly Lamb}",
+		note="宠物{npc:193156:Wooly Lamb}",
 		vignette=5177,
 	},
 	[46287298] = {
@@ -2705,7 +2705,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200445, -- Lucky Hunting Charm
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="In cave, talk to {npc:193206:Boomhooch the Lost} to summon",
+		note="在洞里，对话{npc:193206:Boomhooch the Lost}进行召唤",
 		path={47537168, note="Upper level"},
 		vignette=4958,
 		minimap=true,
@@ -2722,7 +2722,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200298, -- Stoneshaped Greatbelt
 			200563, -- Primal Ritual Shell
 		},
-		note="Break down the rock wall; *doesn't* require mining",
+		note="打破石墙。*不需要*采矿技能",
 		vignette=5237,
 	},
 	[38436824] = {
@@ -2745,7 +2745,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200563, -- Primal Ritual Shell
 			200859, -- Seasoned Hunter's Trophy
 		},
-		note="Bring a {item:200949:Case of Fresh Gleamfish} from 45.6, 54.8 in Azure Span and give it to {npc:191416:Patient Vaargo}; other quests in the area might interfere with this",
+		note="从碧蓝林海坐标 45.6 54.8处获得{item:200949:Case of Fresh Gleamfish}，交给{npc:191416:Patient Vaargo}。该区域其他任务可能会干扰此任务",
 		vignette=5439,
 		route={38436824, 32009999, highlightOnly=true},
 	},
@@ -2765,7 +2765,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200293, -- Primal Scion's Twinblade
 		},
 		vignette=5235,
-		note="Interact with the egg inside the cave",
+		note="与洞穴内的蛋进行互动",
 	},
 	[62288178] = {
 		label="Lord Epochbrgl",
@@ -2779,7 +2779,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200185, -- Grips of the Everflowing Ocean
 			200552, -- Torrent Caller's Shell
 		},
-		note="In building; if {npc:193257:Unstable Time Rift} is up, click to summon",
+		note="在建筑物内。如果{npc:193257:Unstable Time Rift}出现了，点击进行召唤",
 		vignette=5203,
 	},
 	[59105874] = ns.SUPERRARE{
@@ -2797,7 +2797,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			200758, -- Breastplate of Storied Antiquity
 		},
 		nearby={61005510,59405680,59506070,60906240, label="Pillar"},
-		note="Collect 20x {item:197708:Unstable Matrix Core} from {npc:193244:Titan Defense Matrix} to make 4x {item:197733:Unsustainable Containment Core}, then use one at all four pillars. You'll probably need a group to get this in time.",
+		note="从{npc:193244:Titan Defense Matrix}处收集 20个{item:197708:Unstable Matrix Core}，制作 4个{item:197733:Unsustainable Containment Core}，然后在四个柱子分别使用。你可能需要一支队伍才能及时完成这件事。",
 		vignette=5236,
 	},
 }, {
@@ -2810,7 +2810,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 		npc=193127,
 		loot={},
 		vignette=5406,
-		note = "Ask him what's wrong",
+		note = "问问他出什么事",
 	},
 	[36808557] = {
 		label="Lookout Mordren",
@@ -2932,7 +2932,7 @@ ns.RegisterPoints(ns.THALDRASZUS, {
 			{206993,toy=true,}, -- Investi-gator's Pocketwatch
 			200126, -- Mantle of Copious Chronologies
 		},
-		note="Finish {quest:75935:Time Signature} questline, then:\n*Get a {item:208449:Melly's Metronographer+++} from {npc:204990:Melly Teletone}\n*Use it by {npc:203769:Bartender Bob}\nBuy {item:208448:Infinitea}\n*Drink it here then (quickly!) use the clock",
+		note="完成 {quest:75935:Time Signature} 任务线，然后:\n*在 {npc:204990:Melly Teletone} 处获取 {item:208449:Melly's Metronographer+++}。\n*使用它在 {npc:203769:Bartender Bob}\n处购买 {item:208448:Infinitea}\n*在这里喝下它（快点！），然后使用时钟。",
 	},
 	[59807040] = { -- Zal'kir the Chosen
 		quest=nil,
@@ -3006,7 +3006,7 @@ ns.RegisterPoints(ns.FORBIDDENREACH, {
 			{197590,quest=69794,}, -- Windborne Velocidrake: Small Head Fin
 		},
 		vignette=5521,
-		note="Jump down using the whirlwind for a slow fall",
+		note="利用旋风跳下，以实现缓慢降落",
 		path=51935939,
 	},
 	[32852931] = {
@@ -3015,7 +3015,7 @@ ns.RegisterPoints(ns.FORBIDDENREACH, {
 		quest=73118, -- 74340
 		npc=200610, -- also 203674
 		vignette=5492,
-		note="Inside; grab a {spell:371045:Toxin Antidote} first",
+		note="在里边。先拿取一个{spell:371045:Toxin Antidote}",
 		path=36803250,
 	},
 	[78205066] = {
@@ -3064,7 +3064,7 @@ ns.RegisterPoints(ns.FORBIDDENREACH, {
 			{193235, pet=3285}, -- Luvvy
 		},
 		vignette=5507,
-		note="Summon with Cooking",
+		note="通过烹饪（技能或相关操作）来召唤",
 	},
 	[80005900] = {
 		label="Tidesmith Zarviss",
@@ -3081,7 +3081,7 @@ ns.RegisterPoints(ns.FORBIDDENREACH, {
 		criteria=58459,
 		quest=73095, -- 74337
 		npc=200537,
-		note="In underwater cave",
+		note="在水下洞穴里",
 		path=26744144,
 	},
 	[56003940] = {
@@ -3578,7 +3578,7 @@ ns.RegisterPoints(ns.EMERALDDREAM, {
 			208340, -- Stag's Flourishing Mantle
 			208365, -- Winter's Stand
 		},
-		note="Loot nearby {item:208881:Shiversnap Blossom} and throw into the well",
+		note="拾取附近的{item:208881:Shiversnap Blossom}然后扔进泉水",
 		vignette=5816,
 	},
 	[40457263] = { -- Moragh the Slothful
@@ -3773,7 +3773,7 @@ ns.RegisterPoints(ns.EMERALDDREAM, {
 			208388, -- Leafster's Magic Wand
 			-- 210493, -- Technique: Grotto Netherwing Drake: Spiked Jaw
 		},
-		note="Inside the Barrows of Reverie",
+		note="在 遐思之冢 内部",
 		vignette=5805,
 	},
 	[26002660] = { -- The Apostle
@@ -3803,7 +3803,7 @@ ns.RegisterPoints(2254, { -- Barrows of Reverie
 		related={
 			[60226882] = {label="{npc:209950:Mylune}", minimap=true},
 		},
-		note="Talk to {npc:209950:Mylune} for {spell:421446:Mylune's Blessing}. Pick up {item:208837:Missing Fruit} until {npc:209980:Thieving Podling} appears. Chase it here.",
+		note="与{npc:209950:Mylune}交谈获得{spell:421446:Mylune's Blessing}。拾取{item:208837:Missing Fruit}直到{npc:209980:Thieving Podling}出现，然后追赶它。",
 		vignette=5805,
 	},
 }, {
@@ -3845,7 +3845,7 @@ ns.RegisterPoints(ns.EMERALDDREAM, {
 	[22903240] = { -- Balboan
 		quest=78039,
 		npc=210559,
-		note="In cave",
+		note="在洞里",
 		loot={
 			208356, -- Earthbound Furbolg's Shroud
 		},

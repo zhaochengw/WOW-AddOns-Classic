@@ -1,9 +1,8 @@
-## Interface: 30404
+## Interface: 110100, 30404, 11506
 ## Title: SilverDragon
+## Title-zhCN: SilverDragon-银龙稀有探测
 ## Notes: Remember where rares were
-## Title-zhTW: SilverDragon
-## Notes-zhTW: 協助記錄稀有怪位置,以及MouseOver時提示你.
-## Notes-zhCN: 记录稀有怪物位置。
+## Notes-zhCN: 记录稀有怪物位置，鼠标指向查看获取方式。
 ## Version: v2025.5
 ## Author: Kemayo
 ## eMail: kemayo at gmail dot com

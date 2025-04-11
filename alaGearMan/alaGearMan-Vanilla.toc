@@ -1,4 +1,4 @@
-## Interface: 11506
+## Interface: 11507
 ## Title: alaGearMan
 ## Title-zhCN: ala一键换装
 ## Title-zhTW: ala一鍵換裝
@@ -12,7 +12,7 @@
 ## Author: |cff00ff00ALA|r
 ## Author-zhCN: |cff00ff00ALA|r
 ## Author-zhTW: |cff00ff00ALA|r
-## Version: 115r.250408
+## Version: 115r.250410
 
 alaGearMan.xml
 

@@ -22,17 +22,17 @@ function module:OnInitialize()
 		config.options.plugins.sync = {
 			sync = {
 				type = "group",
-				name = "Sync",
+				name = "同步",
 				order = 92,
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v) self.db.profile[info[#info]] = v end,
 				args = {
-					about = config.desc("SilverDragon will tell other SilverDragon users about rare mobs you see. If you don't like this, tell it to be quiet.", 0),
-					quiet = config.toggle("Be quiet", "Don't send rare information to others", 10),
-					party = config.toggle("Party", "Accept syncs from party members", 20),
-					raid = config.toggle("Raid", "Accept syncs from raid members", 30),
-					guild = config.toggle("Guild Sync", "Accept syncs from guild members", 40),
-					nearby = config.toggle("Nearby only", "Only accept syncs from people who are nearby. Information about guild members isn't available, so they'll only count as nearby if they're in your group.", 50),
+					about = config.desc("银龙插件会通知其他银龙用户你发现的稀有怪物。如果你不喜欢这样，可以告诉它保持安静。", 0),
+					quiet = config.toggle("保持安静", "不向其他人发送稀有信息", 10),
+					party = config.toggle("队伍", "接受来自队伍成员的同步信息", 20),
+					raid = config.toggle("团队", "接受来自团队成员的同步信息", 30),
+					guild = config.toggle("公会同步", "接受来自公会成员的同步信息", 40),
+					nearby = config.toggle("仅限附近", "仅接受来自附近人员的同步信息。由于无法获取公会成员的信息，因此只有当他们在你的队伍中时，才会被视为附近人员。", 50),
 				},
 			},
 		}

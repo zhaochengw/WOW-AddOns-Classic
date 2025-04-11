@@ -29,28 +29,28 @@ function module:OnInitialize()
 		config.options.args.scanning.plugins.darkmagic = {
 			darkmagic = {
 				type = "group",
-				name = "Dark Magic",
+				name = "黑科技",
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v)
 					self.db.profile[info[#info]] = v
 					self:Update(true)
 				end,
 				args = {
-					about = config.desc("Scan for rares by trying to target them with a protected function and watching out for whether Blizzard blocks us. This might cause taint issues for your UI, so it's disabled by default.",
+					about = config.desc("尝试使用受保护的功能来瞄准稀有怪物，并观察暴雪是否阻止我们，以此来扫描稀有怪物。这可能会导致你的用户界面（UI）出现污染问题，因此默认情况下是禁用的.",
 							0),
-					enabled = config.toggle("Enabled",
-						"Scan through semi-forbidden means",
+					enabled = config.toggle("启用",
+						"通过半禁用的手段进行扫描",
 						10),
-					vignette = config.toggle("Include mobs with vignettes",
-						"Include mobs with known vignettes in the scan. Filtering them out will reduce the odds of seeing errors when in modern zones. (But the data about which mobs have vignettes is imperfect.)",
+					vignette = config.toggle("包括带有小插图的怪物",
+						"在扫描中包括已知带有小插图的怪物。过滤掉它们会减少在现代区域中看到错误的几率。（但是关于哪些怪物有小插图的数据并不完美)",
 						15),
-					suppress = config.toggle("Suppress error",
-						"Stop the Blizzard action-forbidden error from appearing, probably tainting your UI in the process. Also hide BugSack if you have it installed.",
+					suppress = config.toggle("抑制错误",
+						"阻止暴雪的“action-forbidden”错误出现，这可能会在此过程中污染你的用户界面（UI）。如果你安装了BugSack，请将其禁用.",
 						20),
 					interval = {
 						type = "range",
-						name = "Scan interval",
-						desc = "How long to wait between trying to target each rare. Some zones can have a lot of rares, so higher values can make it possible to miss a rare entirely. Setting this to 0 will mean you're trying to target one rare every game-tick.",
+						name = "扫描间隔",
+						desc = "尝试扫描每个稀有怪物之间等待的时间。某些区域可能有很多稀有怪物，因此设置较高的值可能会导致错过一个稀有怪物。将其设置为0意味着随时都在尝试瞄准一个稀有怪物。",
 						min = 0, max = 10, step = 0.1,
 						order = 30,
 					},

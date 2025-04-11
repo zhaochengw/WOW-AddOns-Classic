@@ -264,7 +264,7 @@ function module:CreateWindow()
 
 	function frame:RefreshForContents()
 		local size = self.dataProvider:GetSize()
-		self.title:SetFormattedText("%d seen", size)
+		self.title:SetFormattedText("%d 次发现", size)
 
 		if db.collapsed then
 			self.container:Hide()
@@ -305,7 +305,7 @@ function module:CreateWindow()
 	title:SetJustifyV("MIDDLE")
 	title:SetPoint("TOPLEFT", 0, -8)
 	title:SetPoint("TOPRIGHT", 0, -8)
-	title:SetText("None seen")
+	title:SetText("尚未发现")
 
 	local icon = frame:CreateTexture()
 	icon:SetSize(24, 24)
@@ -449,16 +449,16 @@ function module:ShowConfigMenu(frame)
 	MenuUtil.CreateContextMenu(frame, function(owner, rootDescription)
 		rootDescription:SetTag("MENU_SILVERDRAGON_HISTORY_CONTEXT")
 		rootDescription:CreateTitle(myfullname .. " " .. HISTORY)
-		rootDescription:CreateCheckbox("Enabled", isChecked, function()
+		rootDescription:CreateCheckbox("启用", isChecked, function()
 			db.enabled = false
 			module:Disable()
 			return MenuResponse.CloseAll
 		end, "enabled")
-		rootDescription:CreateCheckbox("Show during combat", isChecked, toggleChecked, "combat")
-		rootDescription:CreateCheckbox("Show when empty", isChecked, toggleChecked, "empty")
-		rootDescription:CreateCheckbox("Grow to max height", isChecked, toggleChecked, "grow")
-		rootDescription:CreateCheckbox("Use relative time", isChecked, toggleChecked, "relative")
-		rootDescription:CreateCheckbox("Include treasure vignettes", isChecked, toggleChecked, "loot")
+		rootDescription:CreateCheckbox("在战斗中显示", isChecked, toggleChecked, "combat")
+		rootDescription:CreateCheckbox("空的时候显示", isChecked, toggleChecked, "empty")
+		rootDescription:CreateCheckbox("增长到最大高度", isChecked, toggleChecked, "grow")
+		rootDescription:CreateCheckbox("使用相对时间", isChecked, toggleChecked, "relative")
+		rootDescription:CreateCheckbox("包含宝藏小插图", isChecked, toggleChecked, "loot")
 
 		local shardIsSelected = function(val) return db.othershard == val end
 		local shardSelect = function(val)
@@ -467,17 +467,17 @@ function module:ShowConfigMenu(frame)
 			AceConfigRegistry:NotifyChange(myname)
 			return MenuResponse.Close
 		end
-		local othershard = rootDescription:CreateButton("Mobs from other shards...")
-		othershard:CreateRadio("Show", shardIsSelected, shardSelect, "show")
-		othershard:CreateRadio("Dim", shardIsSelected, shardSelect, "dim")
-		othershard:CreateRadio("Hide", shardIsSelected, shardSelect, "hide")
+		local othershard = rootDescription:CreateButton("来自其他碎片的生物...")
+		othershard:CreateRadio("显示", shardIsSelected, shardSelect, "show")
+		othershard:CreateRadio("暗淡", shardIsSelected, shardSelect, "dim")
+		othershard:CreateRadio("隐藏", shardIsSelected, shardSelect, "hide")
 
 		rootDescription:CreateDivider()
 		rootDescription:CreateButton(CLEAR_ALL, function()
 			module.dataProvider:Flush()
 			return MenuResponse.CloseAll
 		end)
-		rootDescription:CreateButton("Open options...", openConfig)
+		rootDescription:CreateButton("打开设置选项...", openConfig)
 	end)
 end
 
@@ -506,7 +506,7 @@ function module:FormatRelativeTime(t)
 	local currentTime = time()
 	local hours = math.max(math.floor((currentTime - t) / 3600), 0)
 	local minutes = math.max(math.floor(math.fmod(currentTime - t, 3600) / 60), 0)
-	return ("%dh %02dm"):format(hours, minutes)
+	return ("%d时 %02d分"):format(hours, minutes)
 end
 
 --
@@ -625,19 +625,19 @@ LineMixin = {
 				GameTooltip:AddDoubleLine("Vignette ID",  vignetteID, 0, 1, 1, 0, 1, 1)
 			end
 			local uiMapID, x, y = module:GetPositionFromData(data, false)
-			if uiMapID and x and y and x ~= 0 and y ~= 0 then
+			if uiMapID and x and y then
 				GameTooltip:AddDoubleLine(core.zone_names[uiMapID] or UNKNOWN, ("%.1f, %.1f"):format(x * 100, y * 100))
 			else
 				GameTooltip:AddDoubleLine(core.zone_names[uiMapID] or UNKNOWN, UNKNOWN)
 			end
-			GameTooltip:AddDoubleLine("Seen", core:FormatLastSeen(data.when))
-			GameTooltip:AddDoubleLine("Shard", core:ColorTextByCompleteness(data.shard == module.currentShard, data.shard or UNKNOWN))
+			GameTooltip:AddDoubleLine("发现", core:FormatLastSeen(data.when))
+			GameTooltip:AddDoubleLine("实例", core:ColorTextByCompleteness(data.shard == module.currentShard, data.shard or UNKNOWN))
 			if data.mob and not InCombatLockdown() then
-				GameTooltip:AddLine("Click to target if nearby", 0, 1, 1)
+				GameTooltip:AddLine("点击以在附近定位", 0, 1, 1)
 			end
-			GameTooltip:AddLine("Control-click to set a waypoint", 0, 1, 1)
-			GameTooltip:AddLine("Shift-click to link location in chat", 0, 1, 1)
-			GameTooltip:AddLine("Right-click to remove this entry", 1, 0, 1)
+			GameTooltip:AddLine("按住Ctrl键点击以设置路径点", 0, 1, 1)
+			GameTooltip:AddLine("按住Shift键点击以在聊天中链接位置", 0, 1, 1)
+			GameTooltip:AddLine("右键点击以移除此条目", 1, 0, 1)
 			GameTooltip:Show()
 		end,
 

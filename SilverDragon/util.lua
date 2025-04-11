@@ -234,12 +234,12 @@ function addon:FormatLastSeen(t)
 	if minutes > 119 then
 		local hours = math.floor(((currentTime - t) / 3600) + 0.5)
 		if hours > 23 then
-			return math.floor(((currentTime - t) / 86400) + 0.5).." day(s)"
+			return math.floor(((currentTime - t) / 86400) + 0.5).." 天前"
 		else
-			return hours.." hour(s)"
+			return hours.." 小时前"
 		end
 	else
-		return minutes.." minute(s)"
+		return minutes.." 分钟前"
 	end
 end
 

@@ -32,8 +32,8 @@ local red, greed, blue = 1, 1, 1
 function BG.GetTotalIncome(FB)
     local FB = FB or BG.FB1
     local sum = 0
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+    for b = 1, Maxb[FB] do
+        for i = 1, BG.GetMaxi(FB, b) do
             if BG.Frame[FB]["boss" .. b]["jine" .. i] then
                 sum = sum + (tonumber(BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()) or 0)
             end
@@ -158,8 +158,8 @@ local function ShowTardeHighLightItem(self)
     local tradeInfo = BG.GetGeZiTardeInfo(FB, b, i)
     if tradeInfo then
         for _, v in ipairs(tradeInfo) do
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+            for b = 1, Maxb[FB] do
+                for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                     local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
                     if zb and FB == v.FB and b == v.b and i == v.i then
@@ -935,7 +935,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
             BG.UpdateZhiChuPercent(zhuangbei, self)
         end
         if self == BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"] then
-            for i = 1, BG.GetMaxi(FB, bossnum) do
+            for i = 1, BG.GetMaxi(FB, Maxb[FB] + 1) do
                 local zhuangbei = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]
                 local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]
                 if zhuangbei then
@@ -1324,5 +1324,3 @@ function BG.FBZhiChuZongLanGongZiUI(FB)
         end
     end
 end
-
-

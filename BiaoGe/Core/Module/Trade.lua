@@ -60,17 +60,20 @@ BG.Init(function()
                 BG.trade.targetmoney = math.modf(BG.trade.targetmoney / 10000)
             end
 
+            BG.qiankuanTradeFrame.hasItem = nil
             for i = 1, 6 do
                 local targetitem = GetTradeTargetItemLink(i)
                 local name, texture, quantity, quality, isUsable, enchant = GetTradeTargetItemInfo(i)
-                if quality >= BG.tradeQuality and targetitem then
+                if targetitem and quality >= BG.tradeQuality then
                     table.insert(BG.trade.targetitems, { link = targetitem, count = quantity })
+                    BG.qiankuanTradeFrame.hasItem = true
                 end
 
                 local playeritem = GetTradePlayerItemLink(i)
                 local name, texture, quantity, quality, isUsable, enchant = GetTradePlayerItemInfo(i)
-                if quality >= BG.tradeQuality and playeritem then
+                if playeritem and quality >= BG.tradeQuality then
                     table.insert(BG.trade.playeritems, { link = playeritem, count = quantity })
+                    BG.qiankuanTradeFrame.hasItem = true
                 end
             end
 
@@ -453,7 +456,9 @@ BG.Init(function()
         local f = CreateFrame("Frame", nil, TradeFrame)
         f:SetFrameStrata("HIGH")
         local t = f:CreateFontString()
-        t:SetPoint("BOTTOMLEFT", TradePlayerInputMoneyFrame, "TOPLEFT", 0, 0)
+        if not BG.IsRetail then -- todo
+            t:SetPoint("BOTTOMLEFT", TradePlayerInputMoneyFrame, "TOPLEFT", 0, 0)
+        end
         t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.r1))
         t:SetText(L["重复交易！"])
@@ -604,12 +609,27 @@ BG.Init(function()
         bt:SetText(L["清除全部欠款"])
         BG.qiankuanTradeFrame.ButtonClearAll = bt
         bt:SetScript("OnClick", function(self)
+            if BG.qiankuanTradeFrame.hasItem then
+                return
+            end
             local unit = "NPC"
             if BG.DeBug then unit = "player" end
             local target = BG.GN(unit)
             local class = select(2, UnitClass(unit))
             local color = select(4, GetClassColor(class))
             StaticPopup_Show("BIAOGE_CLEAR_ALL_QIANKUAN", "|c" .. color .. target .. RR, BG.qiankuanTradeFrame.Text2.text:GetText())
+        end)
+        bt:SetScript("OnEnter", function(self)
+            if BG.qiankuanTradeFrame.hasItem then
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(L["错误"], 1, 0, 0, true)
+                GameTooltip:AddLine(L["欠款需要单独收取，不要和装备混在一起交易！否则账单错误！"], 1, 0.82, 0, true)
+                GameTooltip:Show()
+            end
+        end)
+        bt:SetScript("OnLeave", function(self)
+            GameTooltip:Hide()
         end)
 
         local frame, child = BG.CreateScrollFrame(BG.qiankuanTradeFrame.frame, BG.qiankuanTradeFrame.frame:GetWidth() - 15, BG.qiankuanTradeFrame.frame:GetHeight() - 55)
@@ -785,6 +805,9 @@ BG.Init(function()
                                 bt:SetText(L["清除"])
                                 bts.button = bt
                                 bt:SetScript("OnClick", function(self)
+                                    if BG.qiankuanTradeFrame.hasItem then
+                                        return
+                                    end
                                     BG.PlaySound(1)
                                     local class = select(2, UnitClass(unit))
                                     local color = select(4, GetClassColor(class))
@@ -800,9 +823,17 @@ BG.Init(function()
                                 end)
                                 bt:SetScript("OnEnter", function(self)
                                     bts.ds:Show()
+                                    if BG.qiankuanTradeFrame.hasItem then
+                                        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                                        GameTooltip:ClearLines()
+                                        GameTooltip:AddLine(L["错误"], 1, 0, 0, true)
+                                        GameTooltip:AddLine(L["欠款需要单独收取，不要和装备混在一起交易！否则账单错误！"], 1, 0.82, 0, true)
+                                        GameTooltip:Show()
+                                    end
                                 end)
                                 bt:SetScript("OnLeave", function(self)
                                     bts.ds:Hide()
+                                    GameTooltip:Hide()
                                 end)
 
                                 local l = bts.frame:CreateLine()
@@ -2004,7 +2035,6 @@ BG.Init(function()
 
     -- 交易打开时
     BG.RegisterEvent("TRADE_SHOW", function(self, ...)
-        BG.QianKuan.edit:SetText("")
         if BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) then
             BG.QianKuan.frame:Show()
         else
@@ -2126,11 +2156,13 @@ BG.Init(function()
         end)
 
         -- 我输入金币时
-        TradePlayerInputMoneyFrameGold:HookScript("OnTextChanged", function()
-            BG.GetTradeInfo()
-            BG.tradeSaveMoney:UpdateFrame()
-            BG.tradeSeeFrame.text:SetText(BG.TradeText())
-        end)
+        if not BG.IsRetail then -- todo
+            TradePlayerInputMoneyFrameGold:HookScript("OnTextChanged", function()
+                BG.GetTradeInfo()
+                BG.tradeSaveMoney:UpdateFrame()
+                BG.tradeSeeFrame.text:SetText(BG.TradeText())
+            end)
+        end
 
         --每次点交易确定时记录双方交易的金币和物品
         local f = CreateFrame("Frame")

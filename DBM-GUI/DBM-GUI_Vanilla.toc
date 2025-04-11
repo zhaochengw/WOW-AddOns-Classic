@@ -1,4 +1,4 @@
-## Interface: 11505, 11506
+## Interface: 11507
 ## Category: DBM
 ## Group: DBM-Core
 ## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Options GUI|r
@@ -28,7 +28,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.1.14
+## Version: 11.1.15
 ## X-Website: https://deadlybossmods.com
 
 Polyfills.xml

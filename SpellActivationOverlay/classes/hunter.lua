@@ -8,7 +8,7 @@ local counterattack = 19306;
 local explosiveShot = 53301;
 local flankingStrike = 415320;
 local killCommand = 34026;
-local killShot = 53351;
+local killShot = 61006;
 local mongooseBite = 1495;
 
 local function useKillShot()

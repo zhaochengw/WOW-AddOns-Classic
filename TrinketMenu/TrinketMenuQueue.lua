@@ -17,9 +17,9 @@ function TrinketMenu.QueueInit()
 	TrinketMenu_SubQueueFrame:SetBackdropBorderColor(.3, .3, .3,1)
 	TrinketMenu_ProfilesFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu_ProfilesListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
-	TrinketMenu_SortPriorityText:SetText("Priority")
+	TrinketMenu_SortPriorityText:SetText("优先级")
 	TrinketMenu_SortPriorityText:SetTextColor(.95, .95, .95)
-	TrinketMenu_SortKeepEquippedText:SetText("Pause Queue")
+	TrinketMenu_SortKeepEquippedText:SetText("暂停队列")
 	TrinketMenu_SortKeepEquippedText:SetTextColor(.95, .95, .95)
 	TrinketMenu_SortListFrame:SetBackdropBorderColor(.3, .3, .3, 1)
 	TrinketMenu.ReflectQueueEnabled()
@@ -56,7 +56,7 @@ end
 
 function TrinketMenu.GetNameByID(id)
 	if id == 0 then
-		return "-- stop queue here --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
+		return "-- 在此停止队列 --", "Interface\\Buttons\\UI-GroupLoot-Pass-Up", 1
 	else
 		local name, _, quality, _, _, _, _, _, _, texture = GetItemInfo(id or "")
 		return name, texture, quality
@@ -163,7 +163,7 @@ function TrinketMenu.SortTooltip(self)
 		GameTooltip:SetHyperlink(itemLink)
 		GameTooltip:Show()
 	else
-		TrinketMenu.OnTooltip(self,"Stop Queue Here", "Move this to mark the lowest trinket to auto queue. Sometimes you may want a passive trinket with a click effect to be the end (Burst of Knowledge, Second Wind, etc).")
+		TrinketMenu.OnTooltip(self,"在此停止队列", "移动这个来标记让下面的饰品不自动排队。当你想让一个主动饰品只允许手动换上时, 就把它移动到这条线的下面。")
 	end
 end
 
@@ -428,11 +428,11 @@ end
 function TrinketMenu.SetQueue(which, ...)
 	local errorstub = "|cFFBBBBBBTrinketMenu:|cFFFFFFFF "
 	if not which or not tonumber(which) or which < 0 or which > 1 then
-		DEFAULT_CHAT_FRAME:AddMessage(errorstub.."First parameter must be 0 for top trinket or 1 for bottom.")
+		DEFAULT_CHAT_FRAME:AddMessage(errorstub.."第一个参数0表示饰品上栏位或1表示饰品下栏位。")
 		return
 	end
 	if (select("#", ...)) < 1 then
-		DEFAULT_CHAT_FRAME:AddMessage(errorstub.."Second parameter is either ON, OFF, PAUSE, RESUME or the beginning of a list of trinkets in a sort order.")
+		DEFAULT_CHAT_FRAME:AddMessage(errorstub.."第二个参数是开、关、暂停、恢复或按顺序排列的饰品列表的开头。")
 		return
 	end
 	if TrinketMenu_OptFrame:IsVisible() then
@@ -468,13 +468,13 @@ function TrinketMenu.SetQueue(which, ...)
 				elseif bag then
 					table.insert(TrinketMenuQueue.Sort[which], TrinketMenu.GetID(bag, slot))
 				else
-					DEFAULT_CHAT_FRAME:AddMessage(errorstub.."Trinket or profile \""..(select(i, ...)).."\" not found.")
+					DEFAULT_CHAT_FRAME:AddMessage(errorstub.."饰品或配置 \""..(select(i, ...)).."\" 未找到。")
 				end
 			end
 			table.insert(TrinketMenuQueue.Sort[which], 0)
 		end
 	else
-		DEFAULT_CHAT_FRAME:AddMessage(errorstub.." Expected ON, OFF, PAUSE, RESUME or SORT+list")
+		DEFAULT_CHAT_FRAME:AddMessage(errorstub.." 期望开、关、暂停、恢复或增加列表中的饰品。")
 	end
 	TrinketMenu.ReflectQueueEnabled()
 	TrinketMenu.UpdateCombatQueue()
@@ -483,7 +483,7 @@ end
 -- returns 1 or nil if queue is enabled, and a table containing an ordered list of the trinkets
 function TrinketMenu.GetQueue(which)
 	if not which or not tonumber(which) or which < 0 or which > 1 then
-		DEFAULT_CHAT_FRAME:AddMessage("|cFFBBBBBBTrinketMenu.GetQueue:|cFFFFFFFF Parameter must be 0 for top trinket or 1 for bottom.")
+		DEFAULT_CHAT_FRAME:AddMessage("|cFFBBBBBBTrinketMenu.GetQueue:|cFFFFFFFF 参数必须为 0 表示上栏位饰品，参数必须为 1 表示下栏位饰品。")
 		return
 	end
 	local trinketList, name = { }
@@ -564,7 +564,7 @@ function TrinketMenu.ProfileScrollFrameUpdate()
 		end
 	end
 	if #list == 0 then
-		TrinketMenu_Profile1Name:SetText("No profiles saved yet.")
+		TrinketMenu_Profile1Name:SetText("尚未保存任何配置文件")
 		TrinketMenu_Profile1:Show()
 		TrinketMenu_Profile1:UnlockHighlight()
 	end

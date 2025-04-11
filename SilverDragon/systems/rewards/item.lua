@@ -234,7 +234,7 @@ function ns.rewards.Mount:SetTooltip(tooltip, ...)
 	end
 	local name, spellid, texture, _, _, _, _, _, _, _, isCollected = C_MountJournal.GetMountInfoByID(self:MountID())
 	if not name then
-		tooltip:AddLine("mount:" .. self:MountID())
+		tooltip:AddLine("坐骑：" .. self:MountID())
 		tooltip:AddLine(SEARCH_LOADING_TEXT, 0, 1, 1)
 		return
 	end
@@ -287,7 +287,7 @@ function ns.rewards.Pet:SetTooltip(tooltip, ...)
 	end
 	local name, texture, _, mobid, source, description = C_PetJournal.GetPetInfoBySpeciesID(self:PetID())
 	if not name then
-		tooltip:AddLine("pet:" .. self:PetID())
+		tooltip:AddLine("宠物：" .. self:PetID())
 		tooltip:AddLine(SEARCH_LOADING_TEXT, 0, 1, 1)
 		return
 	end

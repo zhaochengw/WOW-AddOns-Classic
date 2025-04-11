@@ -22,4 +22,5 @@ local function HookSetupMenu(_, root)
 end
 
 Menu.ModifyMenu('MENU_UNIT_FRIEND', HookSetupMenu)
+Menu.ModifyMenu('MENU_UNIT_RAID', HookSetupMenu)
 Menu.ModifyMenu('MENU_UNIT_COMMUNITIES_GUILD_MEMBER', HookSetupMenu)

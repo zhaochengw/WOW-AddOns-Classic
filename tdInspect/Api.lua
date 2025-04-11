@@ -276,6 +276,7 @@ function ns.IsCanEnchant(item, inspect)
     return CAN_ENCHANT_EQUIP_LOCS[itemEquipLoc]
 end
 
+-- @build>2@
 function ns.IsCanSocket(item, inspect)
     local itemEquipLoc = select(4, GetItemInfoInstant(item))
     if itemEquipLoc == 'INVTYPE_WAIST' then
@@ -290,6 +291,13 @@ function ns.IsCanSocket(item, inspect)
     local numSockets = ns.GetNumItemSockets(item)
     return not ns.GetItemGem(item, numSockets + 1)
 end
+-- @end-build>2@
+
+--[=[@build<2@
+function ns.IsCanSocket()
+    return false
+end
+--@end-build<2@]=]
 
 function ns.GetNumItemSockets(item)
     local itemId = ns.ItemLinkToId(item)

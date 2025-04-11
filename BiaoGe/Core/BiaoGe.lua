@@ -3008,3 +3008,9 @@ end
 -- tex:SetSize(100,100)
 -- tex:SetAtlas("bags-newitem")
 -- tex:SetTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\AFD")
+-- print(GetTimePreciseSec())
+--[[ 
+
+/run print(GetTimePreciseSec()) LoadAddOn("BiaoGe") print(GetTimePreciseSec())
+/run print(GetTimePreciseSec()) LoadAddOn("Scorpio") print(GetTimePreciseSec())
+]]

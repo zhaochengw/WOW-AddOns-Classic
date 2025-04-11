@@ -20,16 +20,16 @@ function module:OnInitialize()
 		config.options.args.general.plugins.tooltip = {
 			tooltip = {
 				type = "group",
-				name = "Tooltips",
+				name = "工具提示",
 				order = 93,
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v) self.db.profile[info[#info]] = v end,
 				args = {
-					about = config.desc("SilverDragon can put some information about mobs into their tooltips. For rares, that can include whether you actually need to kill them for an achievement.", 0),
-					achievement = config.toggle("Achievements", "Show if you need a rare mob for an achievement", 1),
-					drop = config.toggle("Drops", "Show if you need a drop from a mob", 2),
-					combatdrop = config.toggle("...in combat", "Show the drops while you're in combat", 3),
-					id = config.toggle("Unit IDs", "Show mob ids in tooltips", 4),
+					about = config.desc("SilverDragon可以在怪物的工具提示中添加一些信息。对于稀有怪物，这可以包括你是否需要击杀它们以完成成就", 0),
+					achievement = config.toggle("成就", "显示是否需要稀有怪物以完成成就", 1),
+					drop = config.toggle("掉落物", "显示是否需要从怪物那里获取掉落物", 2),
+					combatdrop = config.toggle("...在战斗中", "在战斗中显示掉落物", 3),
+					id = config.toggle("单位ID", "在工具提示中显示怪物ID", 4),
 				},
 			},
 		}

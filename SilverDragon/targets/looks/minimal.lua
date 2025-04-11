@@ -59,15 +59,15 @@ function module.Looks:Minimal(popup, config)
     end
 end
 
-module:RegisterLookConfig("Minimal", {
+module:RegisterLookConfig("简约", {
     classcolor = {
         type = "toggle",
-        name = "Class colored border",
-        desc = "Color the border of the popup by your class color",
+        name = "职业颜色边框",
+        desc = "根据你的职业颜色为弹出框的边框着色",
     },
     background = {
         type = "color",
-        name = "Background color",
+        name = "背景颜色",
         hasAlpha = true,
     },
 }, {

@@ -49,40 +49,40 @@ function module:OnInitialize()
 		config.options.args.scanning.plugins.vignettes = {
 			vignettes = {
 				type = "group",
-				name = "Vignettes",
+				name = "小插图",
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v) self.db.profile[info[#info]] = v end,
 				args = {
-					enabled = config.toggle("Enabled", "Scan minimap vignettes (it's what Blizzard calls them, okay?)", 10),
-					pointsofinterest = config.toggle("World points-of-interest", "Show alerts for point of interest vignettes added to world map itself", 20),
-					zoneInfinite = config.toggle("Infinite distance vignettes", "Show alerts for vignettes that can be seen from across the entire zone (this can get really spammy in some zones)", 25),
-					visibleOnly = config.toggle("Wait until visible", "Don't notify until the vignette is actually visible on the minimap", 30),
+					enabled = config.toggle("启用", "扫描小地图上的小插图(这是暴雪公司的称呼，确定？)", 10),
+					pointsofinterest = config.toggle("兴趣点", "在世界地图上添加兴趣点小插图时显示警报", 20),
+					zoneInfinite = config.toggle("无限距离的小插图", "显示在整个区域内可见的小插图警报（在某些区域可能会非常频繁）", 25),
+					visibleOnly = config.toggle("等待直到可见", "直到小插图实际出现在小地图上才进行通知", 30),
 					ignore = {
 						type="group",
 						name=IGNORE,
 						args={
-							desc = config.desc("These lists will fill in as vignettes are announced. Check a box, and we'll remember to never announce that specific vignette again.", 0),
+							desc = config.desc("这些列表将随着小插图的通告而填充。勾选一个框，我们将记住不再通告那个特定的小插图。", 0),
 							type = {
 								type = "multiselect",
-								name = "Types",
+								name = "类型",
 								get = function(info, key) return self.db.profile.ignore_type[key] end,
 								set = function(info, key, value)
 									self.db.profile.ignore_type[key] = value
 								end,
 								values = {
-									vignettekill = CreateAtlasMarkup("vignettekill", 20, 20) .. " Kill",
-									vignettekillelite = CreateAtlasMarkup("vignettekillelite", 24, 24) .. " Kill elite",
-									vignetteloot = CreateAtlasMarkup("vignetteloot", 20, 20) .. " Loot",
-									vignettelootelite = CreateAtlasMarkup("vignettelootelite", 24, 24) .. " Loot elite",
-									vignetteevent = CreateAtlasMarkup("vignetteevent", 20, 20) .. " Event",
-									vignetteeventelite = CreateAtlasMarkup("vignetteeventelite", 24, 24) .. " Event elite",
-									["warfront-neutralhero"] = CreateAtlasMarkup("warfront-neutralhero", 20, 20) .. " Bonus boss",
+									vignettekill = CreateAtlasMarkup("vignettekill", 20, 20) .. " 击杀",
+									vignettekillelite = CreateAtlasMarkup("vignettekillelite", 24, 24) .. " 精英击杀",
+									vignetteloot = CreateAtlasMarkup("vignetteloot", 20, 20) .. " 宝箱",
+									vignettelootelite = CreateAtlasMarkup("vignettelootelite", 24, 24) .. " 精英宝箱",
+									vignetteevent = CreateAtlasMarkup("vignetteevent", 20, 20) .. " 事件",
+									vignetteeventelite = CreateAtlasMarkup("vignetteeventelite", 24, 24) .. " 精英事件",
+									["warfront-neutralhero"] = CreateAtlasMarkup("warfront-neutralhero", 20, 20) .. " 额外首领",
 								},
 								order=10,
 							},
 							specific = {
 								type="group",
-								name="Specific",
+								name="特殊",
 								inline=true,
 								get=function(info) return self.db.profile.ignore[info.arg] end,
 								set=function(info, v) self.db.profile.ignore[info.arg] = v and info.option.name or nil end,

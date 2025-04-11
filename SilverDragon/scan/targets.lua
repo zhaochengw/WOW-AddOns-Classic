@@ -23,15 +23,15 @@ function module:OnInitialize()
 		config.options.args.scanning.plugins.targets = {
 			targets = {
 				type = "group",
-				name = "Targets",
+				name = "目标",
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v) self.db.profile[info[#info]] = v end,
 				args = {
-					mouseover = config.toggle("Mouseover", "Check mobs that you mouse over.", 10),
-					targets = config.toggle("Targets", "Check the targets of people in your group.", 20),
-					nameplate = config.toggle("Nameplates", "Check units whose nameplates appear.", 30),
-					rare_only = config.toggle("Rare only", "Only look for mobs that are still flagged as rare", 40),
-					dead = config.toggle("Dead rares", "Targetted dead rares still count", 50),
+					mouseover = config.toggle("鼠标悬停", "检查你鼠标悬停的怪物.", 10),
+					targets = config.toggle("目标", "检查你队伍中其他人的目标.", 20),
+					nameplate = config.toggle("姓名板", "检查显示姓名板的单位", 30),
+					rare_only = config.toggle("仅限稀有", "仅寻找被标记为稀有的怪物", 40),
+					dead = config.toggle("死亡的稀有", "死亡的稀有怪物仍然统计", 50),
 				},
 			},
 		}

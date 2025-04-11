@@ -2,10 +2,27 @@
 Tidy Bar
 --]]
 
--- Tidy Bar
-local TidyBarScale = 1
-local TidyBarHideBagAndMenu = true
--- local 
+-- Localization
+local L = GetLocale() == "zhCN" and {
+    ["Hide main button art?"] = "隐藏主按钮装饰?",
+    ["Hide experience & reputation bar?"] = "隐藏经验和声望条?",
+    ["Always show bags?"] = "总是显示背包?",
+    ["TidyBar Scale:"] = "TidyBar缩放:",
+	["Hide bags and menu?"] = "隐藏背包和菜单?",
+} or GetLocale() == "zhTW" and {
+    ["Hide main button art?"] = "隐藏主按鈕裝飾?",
+    ["Hide experience & reputation bar?"] = "隐藏經驗和聲望條?",
+    ["Always show bags?"] = "總是顯示背包?", 
+    ["TidyBar Scale:"] = "TidyBar縮放:",
+	["Hide bags and menu?"] = "隱藏背包和選單?",
+} or {
+    ["Hide main button art?"] = "Hide main button art?",
+    ["Hide experience & reputation bar?"] = "Hide experience & reputation bar?",
+    ["Always show bags?"] = "Always show bags?",
+    ["TidyBar Scale:"] = "TidyBar Scale:",
+	["Hide bags and menu?"] = "Hide bags and menu?",
+}
+
 
 local MenuButtonFrames = {
 	CharacterMicroButton,
@@ -43,14 +60,28 @@ local CornerMenuFrame = CreateFrame("Frame", "TidyBar_CornerMenuFrame", UIParent
 local SideMouseoverFrame = CreateFrame("Frame", "TidyBar_SideBarMouseoverFrame", UIParent)
 local CornerMouseoverFrame = CreateFrame("Frame", "TidyBar_CornerBarMouseoverFrame", UIParent)
 
+-- 设置 CornerMouseoverFrame 的基础属性
+CornerMouseoverFrame:SetFrameStrata("BACKGROUND")
+CornerMouseoverFrame:SetPoint("TOP", MainMenuBarBackpackButton, "TOP", 0, 10)
+CornerMouseoverFrame:SetPoint("RIGHT", UIParent, "RIGHT")
+CornerMouseoverFrame:SetPoint("BOTTOM", UIParent, "BOTTOM")
+CornerMouseoverFrame:SetWidth(200)
 
 
 TidyBar.defaults = {
 	HideMainButtonArt = false,
 	HideExperienceBar = false,
 	AlwaysShowBagFrame = false,
+	HideBagAndMenu = true,
+	Scale = 1
 }
 
+TidyBar.opts = {}
+for k, v in pairs(TidyBar.defaults) do
+    TidyBar.opts[k] = v
+end
+
+local TidyBarScale = TidyBar.opts.Scale or 1
 
 function TidyBar:HideMainButtonArt()
 	MainMenuBarLeftEndCap:Hide()
@@ -103,29 +134,62 @@ function TidyBar:ShowExperienceBar()
 	end
 end
 
-hookRunCounter = 0
-function TidyBar:HideBagFrame()
-	CornerMenuFrame:SetAlpha(0);
-	CornerMouseoverFrame:EnableMouse(true);
-	CornerMouseoverFrame:Show();
-	if (hookRunCounter < 1) then
-		HookCornerFrame(CornerMouseoverFrame)
-		for i, name in pairs(BagButtonFrameList) do HookCornerFrame(name) end
-		for i, name in pairs(MenuButtonFrames) do HookCornerFrame(name) end
-	end
-	hookRunCounter = hookRunCounter + 1
+local function ConfigureCornerBars()
+    CharacterMicroButton:ClearAllPoints()
+    local microButtonOffset = #MenuButtonFrames * 23 * -1
+    CharacterMicroButton:SetPoint("BOTTOMRIGHT", microButtonOffset, 0)
+
+    for i, name in pairs(MenuButtonFrames) do 
+        name:SetParent(CornerMenuFrame.MicroButtons) 
+    end
+
+    -- 重新设置基础布局
+    CornerMenuFrame.MicroButtons:SetPoint("BOTTOMRIGHT", 0, 1)
+    CornerMenuFrame.MicroButtons:SetHeight(45)
+    CornerMenuFrame.MicroButtons:SetWidth(256)
+    CornerMenuFrame.BagButtonFrame:SetPoint("BOTTOMRIGHT", -5, 40)
+    CornerMenuFrame.BagButtonFrame:SetHeight(45)
+    CornerMenuFrame.BagButtonFrame:SetWidth(256)
+
+    -- 根据选项控制显示
+    if TidyBar.opts.HideBagAndMenu then
+        -- 完全隐藏
+        CornerMenuFrame:Hide()
+        CornerMouseoverFrame:Hide()
+        CornerMouseoverFrame:EnableMouse(false)
+    else
+        CornerMenuFrame:Show()
+        if TidyBar.opts.AlwaysShowBagFrame then
+            -- 始终显示
+            CornerMenuFrame:SetAlpha(1)
+            CornerMouseoverFrame:Hide()
+            CornerMouseoverFrame:EnableMouse(false)
+        else
+            -- 鼠标悬停模式
+            CornerMenuFrame:SetAlpha(0)
+            CornerMouseoverFrame:Show()
+            CornerMouseoverFrame:EnableMouse(true)
+        end
+    end
+
+    -- 重新注册鼠标事件
+    if not TidyBar.opts.HideBagAndMenu and not TidyBar.opts.AlwaysShowBagFrame then
+        HookCornerFrame(CornerMouseoverFrame)
+        for i, name in pairs(BagButtonFrameList) do HookCornerFrame(name) end
+        for i, name in pairs(MenuButtonFrames) do HookCornerFrame(name) end
+    end
 end
-function TidyBar:ShowBagFrame()
-	CornerMenuFrame:SetAlpha(1)
-	-- Setup the Corner Menu Mouseover frame
-	CornerMouseoverFrame:EnableMouse(false);
-	CornerMouseoverFrame:Hide();
-	if (hookRunCounter < 1) then
-		UnhookCornerFrame(CornerMouseoverFrame)
-		for i, name in pairs(BagButtonFrameList) do UnhookCornerFrame(name) end
-		for i, name in pairs(MenuButtonFrames) do UnhookCornerFrame(name) end
-	end
-	hookRunCounter = hookRunCounter + 1
+
+hookRunCounter = 0
+function TidyBar:UpdateCornerFrameVisibility()
+    -- 移除现有的鼠标事件
+    for i, name in pairs(BagButtonFrameList) do UnhookCornerFrame(name) end
+    for i, name in pairs(MenuButtonFrames) do UnhookCornerFrame(name) end
+    UnhookCornerFrame(CornerMouseoverFrame)
+    
+    -- 重新配置
+    ConfigureCornerBars()
+    RefreshPositions()
 end
 
 CornerMenuFrame:SetFrameStrata("LOW")
@@ -253,20 +317,21 @@ local function RefreshMainActionBars()
 end
 
 function ShowCornerMenuFrame()
-	MouseInCorner = true
-	if (CornerMenuFrame:GetAlpha() ~= 1) then
-		CornerMenuFrame:SetAlpha(1)
-	end
+    MouseInCorner = true
+    if not TidyBar.opts.HideBagAndMenu then
+        CornerMenuFrame:SetAlpha(1)
+    end
 end
 
 function HideCornerMenuFrame()
-	DelayEvent(function() 
-		if (MouseInCorner == true) then return end
-		if (CornerMenuFrame:GetAlpha() ~= 0) then
-			CornerMenuFrame:SetAlpha(0)
-		end
-	end, GetTime()+5)
-	MouseInCorner = false
+    MouseInCorner = false
+    if not TidyBar.opts.HideBagAndMenu and not TidyBar.opts.AlwaysShowBagFrame then
+        DelayEvent(function()
+            if not MouseInCorner then
+                CornerMenuFrame:SetAlpha(0)
+            end
+        end, GetTime() + 0.5)
+    end
 end
 
 function HookCornerFrame(frameTarget)
@@ -274,30 +339,8 @@ function HookCornerFrame(frameTarget)
 	frameTarget:HookScript("OnLeave", HideCornerMenuFrame)
 end
 function UnhookCornerFrame(frameTarget)
-	frameTarget:HookScript("OnEnter", ShowCornerMenuFrame)
-	frameTarget:HookScript("OnLeave", ShowCornerMenuFrame)
-end
-
-local function ConfigureCornerBars()
-	--if not UnitHasVehicleUI("player") then
-		CharacterMicroButton:ClearAllPoints();
-		local microButtonOffset = #MenuButtonFrames * 23 * -1;
-		CharacterMicroButton:SetPoint("BOTTOMRIGHT", microButtonOffset, 0);
-
-		-- MainMenuBarPerformanceBarFrame:SetScale(TidyBarScale);
-		-- MainMenuBarPerformanceBarFrame:ClearAllPoints();
-		-- MainMenuBarPerformanceBarFrame:SetPoint("BOTTOMRIGHT", 0, -10);
-
-		for i, name in pairs(MenuButtonFrames) do 
-			name:SetParent(CornerMenuFrame.MicroButtons) 
-		end
-
-		if TidyBar.opts.AlwaysShowBagFrame == true then
-			TidyBar:ShowBagFrame()
-		else
-			TidyBar:HideBagFrame()
-		end
-	--end
+    frameTarget:SetScript("OnEnter", nil)
+    frameTarget:SetScript("OnLeave", nil)
 end
 
 local function ConfigureSideBars()
@@ -365,7 +408,10 @@ local function RefreshExperienceBars()
 end
 
 function RefreshPositions()
-	if InCombatLockdown() then return end
+    if InCombatLockdown() then 
+        TidyBar.pendingUpdate = true
+        return 
+    end
 	-- Change the size of the central button and status bars
     MainMenuBar:SetWidth(512);
 	MainMenuExpBar:SetWidth(512);
@@ -394,29 +440,41 @@ end
 
 optionRunCount = 0
 function ConfigureOptions()
-    TidyBarOptions = TidyBarOptions or {}
-    TidyBar.opts = TidyBarOptions or {}
-    TidyBar.opts.HideMainButtonArt = TidyBarOptions.HideMainButtonArt or TidyBar.defaults.HideMainButtonArt
-    TidyBar.opts.HideExperienceBar = TidyBarOptions.HideExperienceBar or TidyBar.defaults.HideExperienceBar
-    TidyBar.opts.AlwaysShowBagFrame = TidyBarOptions.AlwaysShowBagFrame or TidyBar.defaults.AlwaysShowBagFrame
+    if not TidyBarOptions then
+        TidyBarOptions = {}
+        -- 初始化默认值
+        for k, v in pairs(TidyBar.defaults) do
+            TidyBarOptions[k] = v
+        end
+    end
+    
+    -- 更新 TidyBar.opts
+    for k, v in pairs(TidyBarOptions) do
+        TidyBar.opts[k] = v
+    end
+    
+    -- 更新缩放值
+    TidyBarScale = TidyBar.opts.Scale or 1
 
     if (optionRunCount < 1) then
         -- Create options interface
         TidyBar.panel = CreateFrame("Frame")
         TidyBar.panel.name = "TidyBar"
 
-        local cb_art = CreateCheckbox("HideMainButtonArt", "Hide main button art?", TidyBar.panel, RefreshPositions)
+        local cb_art = CreateCheckbox("HideMainButtonArt", L["Hide main button art?"], TidyBar.panel, RefreshPositions)
         cb_art:SetPoint("TOPLEFT", 20, -20)
-        local cb_xpbar = CreateCheckbox("HideExperienceBar", "Hide experience & reputation bar?", TidyBar.panel, RefreshPositions)
+        local cb_xpbar = CreateCheckbox("HideExperienceBar", L["Hide experience & reputation bar?"], TidyBar.panel, RefreshPositions)
         cb_xpbar:SetPoint("TOPLEFT", cb_art, 0, -30)
-        local cb_mo_bags = CreateCheckbox("AlwaysShowBagFrame", "Always show bags?", TidyBar.panel, RefreshPositions)
+        local cb_mo_bags = CreateCheckbox("AlwaysShowBagFrame", L["Always show bags?"], TidyBar.panel, RefreshPositions)
         cb_mo_bags:SetPoint("TOPLEFT", cb_xpbar, 0, -30)
+		local cb_hide_menu = CreateCheckbox("HideBagAndMenu", L["Hide bags and menu?"], TidyBar.panel, RefreshPositions)
+        cb_hide_menu:SetPoint("TOPLEFT", cb_mo_bags, 0, -30)
 
         -- Add Slider for TidyBar Scale
         local Slider = CreateFrame("Slider", "TidyBarScaleSlider", TidyBar.panel, "OptionsSliderTemplate")
         Slider:SetWidth(150)
         Slider:SetHeight(20)
-        Slider:SetPoint("TOPLEFT", cb_mo_bags, "BOTTOMLEFT", 0, -30) -- Adjust position according to your layout
+        Slider:SetPoint("TOPLEFT", cb_hide_menu, "BOTTOMLEFT", 0, -30) 
         Slider:SetMinMaxValues(0.2, 2.0)
         Slider:SetValueStep(0.1)
         Slider:SetObeyStepOnDrag(true)
@@ -426,15 +484,17 @@ function ConfigureOptions()
         -- Slider value text display
         local SliderText = TidyBar.panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
         SliderText:SetPoint("BOTTOM", Slider, "TOP", 0, 5)
-        SliderText:SetText(string.format("TidyBar Scale: %.1f", TidyBarScale))
+        SliderText:SetText(string.format(L["TidyBar Scale:"] .. " %.1f", TidyBarScale))
 
         Slider:SetScript("OnValueChanged", function(self, value)
             TidyBarScale = value
+			TidyBarOptions.Scale = value
+            TidyBar.opts.Scale = value 
 	   MainMenuBar:SetScale(TidyBarScale)
 	   MultiBarRight:SetScale(TidyBarScale)
 	   MultiBarLeft:SetScale(TidyBarScale)
             CornerMenuFrame:SetScale(TidyBarScale)  -- Update the scale of CornerMenuFrame
-            SliderText:SetText(string.format("TidyBar Scale: %.1f", TidyBarScale))  -- Update the text display
+            SliderText:SetText(string.format(L["TidyBar Scale:"] .. " %.1f", TidyBarScale))  -- Update the text display
         end)
 
         -- Fix for setting slider values
@@ -455,23 +515,36 @@ function ConfigureOptions()
     optionRunCount = optionRunCount + 1
 end
 
-
 function CreateCheckbox(savedvar, label, parent, update)
-	local cb = CreateFrame("CheckButton", "cb" .. savedvar, parent, "ChatConfigCheckButtonTemplate")
-	getglobal("cb" .. savedvar .. "Text"):SetText(label)
-	cb.key = savedvar;
-	--cb.text:SetText(label)
-	cb:SetChecked(TidyBar.opts[savedvar]);
-	cb:SetScript("OnClick",
-    function(self)
-		TidyBarOptions[self.key] = not TidyBarOptions[self.key];
-		TidyBar.opts[self.key] = TidyBarOptions[self.key];
-
-		RefreshPositions();
-    end);
-	return cb
+    local cb = CreateFrame("CheckButton", "cb" .. savedvar, parent, "ChatConfigCheckButtonTemplate")
+    getglobal("cb" .. savedvar .. "Text"):SetText(label)
+    cb.key = savedvar
+    cb:SetChecked(TidyBar.opts[savedvar])
+    cb:SetScript("OnClick", function(self)
+        TidyBarOptions[self.key] = not TidyBarOptions[self.key]
+        TidyBar.opts[self.key] = TidyBarOptions[self.key]
+        
+        -- 处理互斥关系
+        if self.key == "HideBagAndMenu" and TidyBarOptions[self.key] then
+            -- 启用完全隐藏时，禁用总是显示
+            TidyBarOptions.AlwaysShowBagFrame = false
+            TidyBar.opts.AlwaysShowBagFrame = false
+            if _G["cbAlwaysShowBagFrame"] then
+                _G["cbAlwaysShowBagFrame"]:SetChecked(false)
+            end
+        elseif self.key == "AlwaysShowBagFrame" and TidyBarOptions[self.key] then
+            -- 启用总是显示时，禁用完全隐藏
+            TidyBarOptions.HideBagAndMenu = false
+            TidyBar.opts.HideBagAndMenu = false
+            if _G["cbHideBagAndMenu"] then
+                _G["cbHideBagAndMenu"]:SetChecked(false)
+            end
+        end
+        
+        TidyBar:UpdateCornerFrameVisibility()
+    end)
+    return cb
 end
-
 
 -- Event Handlers
 local events = {}
@@ -488,6 +561,12 @@ events.PLAYER_LEVEL_UP = RefreshPositions
 events.UPDATE_SHAPESHIFT_FORM = RefreshPositions
 events.QUEST_WATCH_UPDATE = RefreshPositions
 events.ADDON_LOADED = ConfigureOptions
+events.PLAYER_REGEN_ENABLED = function()
+    if TidyBar.pendingUpdate then
+        RefreshPositions()
+        TidyBar.pendingUpdate = false
+    end
+end
 
 local function EventHandler(frame, event)
 	if events[event] then
@@ -562,13 +641,13 @@ do
 	CornerMenuFrame:SetScale(TidyBarScale)
 
 	-- 根据 TidyBarHideBagAndMenu 的值来设置显示或隐藏
-if TidyBarHideBagAndMenu then
+    if TidyBar.opts.HideBagAndMenu then
     -- 隐藏背包和菜单栏
     CornerMenuFrame.MicroButtons:SetHeight(0)
     CornerMenuFrame.MicroButtons:SetWidth(0)
     CornerMenuFrame.BagButtonFrame:SetHeight(0)
     CornerMenuFrame.BagButtonFrame:SetWidth(0)
-else
+    else
     -- 显示背包和菜单栏
     -- 你可以根据需要设置具体的位置和大小
 	CornerMenuFrame:SetScale(TidyBarScale)
@@ -584,19 +663,19 @@ else
 	CornerMouseoverFrame:SetPoint("RIGHT", UIParent, "RIGHT")
 	CornerMouseoverFrame:SetPoint("BOTTOM", UIParent, "BOTTOM")
 	CornerMouseoverFrame:SetWidth(200)
-end
+    end
 
--- 设置鼠标悬停效果
-CornerMouseoverFrame:SetScript("OnEnter", function()
-    if not TidyBarHideBagAndMenu then
-        CornerMenuFrame:SetAlpha(1)
-    end
-end)
-CornerMouseoverFrame:SetScript("OnLeave", function()
-    if not TidyBarHideBagAndMenu then
-        CornerMenuFrame:SetAlpha(0)
-    end
-end)
+    -- 设置鼠标悬停效果
+    CornerMouseoverFrame:SetScript("OnEnter", function()
+        if not TidyBar.opts.HideBagAndMenu then
+            CornerMenuFrame:SetAlpha(1)
+        end
+    end)
+    CornerMouseoverFrame:SetScript("OnLeave", function()
+        if not TidyBar.opts.HideBagAndMenu then
+            CornerMenuFrame:SetAlpha(0)
+        end
+    end)
 end
 
 -- Start Tidy Bar

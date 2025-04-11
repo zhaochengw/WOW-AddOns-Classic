@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 110100, 30404, 11506
 ## Title: SilverDragon: Map Overlays
 ## Notes: Mobs on the maps
 ## Version: v2025.5

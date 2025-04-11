@@ -11,10 +11,10 @@ local module = core:NewModule("LDB", "AceEvent-3.0")
 local dataobject, tooltip
 
 local default_help = {
-	"Right-click to open settings",
+	"右键点击以打开设置。",
 }
 if core.debuggable then
-	table.insert(default_help, "Shift-right-click to view debug information")
+	table.insert(default_help, "Shift+右键点击以查看调试信息")
 end
 
 function module:OnInitialize()
@@ -41,13 +41,13 @@ function module:OnInitialize()
 		config.options.plugins.broker = {
 			broker = {
 				type = "group",
-				name = "Icon",
+				name = "图标",
 				order = 91,
 				args = {
 					show_lastseen = {
 						type = "toggle",
-						name = "Show last seen rare",
-						desc = "Toggle showing or hiding the last seen rare as the dataobject's text",
+						name = "显示最后看到的稀有物品",
+						desc = "切换显示或隐藏最后看到的稀有数据对象的文本",
 						get = function() return self.db.profile.show_lastseen end,
 						set = function(info, v)
 							self.db.profile.show_lastseen = v
@@ -63,8 +63,8 @@ function module:OnInitialize()
 					},
 					minimap = {
 						type = "toggle",
-						name = "Show minimap icon",
-						desc = "Toggle showing or hiding the minimap icon.",
+						name = "显示小地图图标",
+						desc = "切换显示或隐藏小地图图标.",
 						get = function() return not self.db.profile.minimap.hide end,
 						set = function(info, v)
 							local hide = not v
@@ -82,11 +82,11 @@ function module:OnInitialize()
 					},
 					tooltip = {
 						type = "select",
-						name = "Show tooltip",
+						name = "显示工具提示",
 						values = {
-							always = "Always",
-							outofcombat = "Out of Combat",
-							never = "Never",
+							always = "始终",
+							outofcombat = "脱战",
+							never = "从不",
 						},
 						get = function() return self.db.profile.tooltip end,
 						set = function(info, v)
@@ -96,8 +96,8 @@ function module:OnInitialize()
 					},
 					worldmap = {
 						type = "toggle",
-						name = "Show on the world map",
-						desc = "Toggle showing the icon in the world map's header",
+						name = "在世界地图上显示",
+						desc = "切换在世界地图标题中显示图标",
 						get = function() return self.db.profile.worldmap end,
 						set = function(info, v)
 							self.db.profile.worldmap = v
@@ -109,8 +109,8 @@ function module:OnInitialize()
 					},
 					mounts = {
 						type = "toggle",
-						name = "Show on the mount list",
-						desc = "Toggle showing the icon in the mount list",
+						name = "在坐骑列表中显示",
+						desc = "切换在坐骑列表中显示图标",
 						get = function() return self.db.profile.mounts end,
 						set = function(info, v)
 							self.db.profile.mounts = v
@@ -227,14 +227,14 @@ function module:SetupWorldMap()
 			if not button.options.config_path then
 				button.options.config_path = {'overlay'}
 				button.options.help = {
-					"Click to toggle map icons",
-					"Shift-click to toggle map icons for this zone only",
+					"点击以切换地图图标",
+					"Shift+点击以仅为此区域切换地图图标",
 				}
 				tAppendAll(button.options.help, default_help)
 			end
 		else
 			button.options.help = {
-				RED_FONT_COLOR:WrapTextInColorCode("No map icons as SilverDragon: Overlay is disabled")
+				RED_FONT_COLOR:WrapTextInColorCode("由于SilverDragon：覆盖已禁用，没有地图图标")
 			}
 			tAppendAll(button.options.help, default_help)
 		end
@@ -502,9 +502,9 @@ do
 			-- Cata-classic has TooltipDataProcessor, but doesn't actually use the new tooltips
 			core:GetModule("Tooltip"):UpdateTooltip(mobid, true, true)
 		end
-		GameTooltip:AddLine("Left-click to focus on the map", 0, 1, 1)
-		GameTooltip:AddLine("Control-click to set a waypoint", 0, 1, 1)
-		GameTooltip:AddLine("Shift-click to link location in chat", 0, 1, 1)
+		GameTooltip:AddLine("左键点击:在大地图上显示", 0, 1, 1)
+		GameTooltip:AddLine("Ctrl+左键:设置路径点", 0, 1, 1)
+		GameTooltip:AddLine("Shift+左键:在聊天中链接位置", 0, 1, 1)
 		GameTooltip:Show()
 
 		core.events:Fire("BrokerMobEnter", mobid)
@@ -551,7 +551,7 @@ do
 				end
 			end
 			if options.recent then
-				tooltip:AddHeader("Nearby")
+				tooltip:AddHeader("附近")
 			end
 		end
 
@@ -562,7 +562,7 @@ do
 		end
 
 		if #sorted_mobs > 0 then
-			local headerLine, headerIndex = tooltip:AddHeader("Name", "Count", "Last Seen")
+			local headerLine, headerIndex = tooltip:AddHeader("名称", "数量", "最后出现时间")
 			local tameableHeader = false
 
 			table.sort(sorted_mobs, mob_sorter)
@@ -664,9 +664,9 @@ do
 			local history = core:GetModule("History", true)
 			if history and #history:GetRares() > 0 then
 				if options.nearby then
-					tooltip:AddHeader("Seen this session")
+					tooltip:AddHeader("本次会话中发现")
 				end
-				tooltip:AddHeader("Name", "Zone", "Coords", "When", "Source")
+				tooltip:AddHeader("名称", "区域", "坐标", "时间", "来源")
 				for i, rare in ipairs(history:GetRares()) do
 					tooltip:AddLine(
 						core:GetMobLabel(rare.id) or core:NameForMob(rare.id) or UNKNOWN,
@@ -677,7 +677,7 @@ do
 					)
 				end
 			else
-				tooltip:AddHeader("None seen this session")
+				tooltip:AddHeader("本次会话中未发现")
 			end
 		end
 

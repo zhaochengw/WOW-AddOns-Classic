@@ -217,7 +217,7 @@ function module:ShowTooltip(pin)
     local id = pin.mobid
     if id and ns.mobdb[id] then
         tooltip:AddLine(core:GetMobLabel(id))
-        tooltip:AddDoubleLine("Last seen", core:FormatLastSeen(core.db.global.mob_seen[id]))
+        tooltip:AddDoubleLine("最近发现", core:FormatLastSeen(core.db.global.mob_seen[id]))
         if pin:Config().tooltip_completion then
             ns:UpdateTooltipWithCompletion(tooltip, id)
             ns.Loot.Summary.UpdateTooltip(tooltip, id, not pin:Config().tooltip_regularloot)

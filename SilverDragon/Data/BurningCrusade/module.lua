@@ -39,7 +39,7 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then
     -- ns.KARAZHAN_SERVANTS = 350
 end
 
-core:RegisterMobData("BurningCrusade", {
+core:RegisterMobData("争霸艾泽拉斯", {
 	[16179] = {name="Hyakiss the Lurker",locations={[KARAZHAN_SERVANTS]={48003660,50404320,59602870,65603240},},loot={30678,30677,30676,30675},tameable=true,},
 	[16180] = {name="Shadikith the Glider",locations={[KARAZHAN_SERVANTS]={48602780,59003560,59602870,64802980},},loot={30683,30682,30681,30680},tameable=132182,},
 	[16181] = {name="Rokad the Ravager",locations={[KARAZHAN_SERVANTS]={58201960,59602870,66801820,72001980},},loot={30687,30686,30685,30684},tameable=877481,},
@@ -83,7 +83,7 @@ core:RegisterMobData("BurningCrusade", {
 			{58207170, 51207090, 41007310, 41106520, r=1, g=0, b=0},
 		},},
 		loot={31176,31177,31179,31181},
-		notes="Watch for red rocks being thrown up; you can't target it before it leaves the ground",
+		notes="留意那些被抛起的红色岩石；在它离开地面之前，你无法将其锁定作为目标",
 	},
 	[18679] = {
 		name="Vorakem Doomspeaker",
@@ -106,7 +106,7 @@ core:RegisterMobData("BurningCrusade", {
 		},},
 		loot={31254},tameable=643423,
 	},
-	[18681] = {name="Coilfang Emissary",locations={[ZANGARMARSH]={25403760,25403760,25804260,59803640,62006960,63003800,63404380,63806500,64406960,64804140,70407280,72207600,73608220,74807700},},loot={31244,31246,31243,31242},notes="Many spawn points, around Naga huts"},
+	[18681] = {name="Coilfang Emissary",locations={[ZANGARMARSH]={25403760,25403760,25804260,59803640,62006960,63003800,63404380,63806500,64406960,64804140,70407280,72207600,73608220,74807700},},loot={31244,31246,31243,31242},notes="有许多刷怪点，就在娜迦小屋周围。"},
 	[18682] = {
 		name="Bog Lurker",
 		locations={[ZANGARMARSH]={22602680,24402060,40206260,50006680,51206100,60607300,82807860,85808700},},
@@ -133,7 +133,7 @@ core:RegisterMobData("BurningCrusade", {
 		},},
 		loot={31194},
 	},
-	[18685] = {name="Okrek",locations={[TEROKKAR]={30404340,49601840,57206540,57802300},},loot={31227,31228,31229,31231},note="Up in the trees"},
+	[18685] = {name="Okrek",locations={[TEROKKAR]={30404340,49601840,57206540,57802300},},loot={31227,31228,31229,31231},note="在树上"},
 	[18686] = {
 		name="Doomsayer Jurim",
 		locations={[TEROKKAR]={36404260,53802120,70605000},},
@@ -144,7 +144,7 @@ core:RegisterMobData("BurningCrusade", {
 		},},
 		loot={31232,31233,31235,31236},
 	},
-	[18689] = {name="Crippler",locations={[TEROKKAR]={38806740,30406380,32405200,39604860,48405740,48207460},},loot={31238},note="Wanders the Bone Wastes"},
+	[18689] = {name="Crippler",locations={[TEROKKAR]={38806740,30406380,32405200,39604860,48405740,48207460},},loot={31238},note="在白骨荒地中徘徊"},
 	[18690] = {
 		name="Morcrush",
 		locations={[BLADESEDGE]={61802260,78602980,61805440,68207560},},

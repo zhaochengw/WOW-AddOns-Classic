@@ -18,11 +18,11 @@ function module:OnInitialize()
         config.options.args.scanning.plugins.chat = {
             chat = {
                 type = "group",
-                name = "Chat",
+                name = "聊天",
                 get = function(info) return self.db.profile[info[#info]] end,
                 set = function(info, v) self.db.profile[info[#info]] = v end,
                 args = {
-                    enabled = config.toggle("Enabled", "Listen for mobs that announce themselves in chat", 10),
+                    enabled = config.toggle("启用", "留意那些在聊天中红字大喊的怪物", 10),
                 },
             },
         }

@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 110005, 30404, 11504
 ## Title: TrinketMenu 11.0.0
 ## Version: 11.0.0
 ## Author: Gello, Resike
@@ -15,3 +15,9 @@ TrinketMenuOpt.lua
 TrinketMenuOpt.xml
 TrinketMenuQueue.lua
 TrinketMenuQueue.xml
+
+## Title-zhCN:TrinketMenu饰品管理11.0.0
+## Author-zhCN: Gello, Resike，汉化：米拉的哀伤@NGA
+## Notes-zhCN: 饰品自动队列管理插件。
+
+

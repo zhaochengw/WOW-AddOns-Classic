@@ -19,10 +19,10 @@ function module:RegisterConfig()
 			self:Refresh()
 		end,
 		args = {
-			about = config.desc("Show a list of recently seen mobs, the easier to work out when future spawns will occur.", 0),
+			about = config.desc("显示最近发现的生物列表，以便更容易推断未来刷新的时间.", 0),
 			enabled = {
 				type = "toggle",
-				name = "Enabled",
+				name = "启用",
 				set = function(info, v)
 					self.db.profile[info[#info]] = v
 					if v then
@@ -33,18 +33,18 @@ function module:RegisterConfig()
 				end,
 				order = 10,
 			},
-			combat = config.toggle("Show in combat", "Whether to hide away when combat starts", 15),
-			empty = config.toggle("Show when empty", "Whether to show the window before you've seen anything", 20),
-			grow = config.toggle("Grow to max height", "Whether to fit the window to its contents until you reach the maximum height", 25),
-			relative = config.toggle("Use relative time", "Whether to show time in the window as relative or absolute", 30),
-			loot = config.toggle("Include loot", "Whether to include treasure vignettes", 35),
+			combat = config.toggle("在战斗中显示", "战斗开始时是否隐藏", 15),
+			empty = config.toggle("为空时显示", "是否在看到任何东西之前显示窗口", 20),
+			grow = config.toggle("增长到最大高度", "是否在达到最大高度之前根据内容调整窗口大小", 25),
+			relative = config.toggle("使用相对时间", "是否在窗口中显示相对时间或绝对时间", 30),
+			loot = config.toggle("包含宝箱", "是否包含宝藏小插图", 35),
 			othershard = {
-				type = "select", name = "Mobs from other shards",
-				desc = "How to treat mobs which are not from your current shard, and so which are probably inaccessible to you right now",
+				type = "select", name = "来自其他碎片的生物",
+				desc = "如何对待那些不属于你当前碎片的生物，因此可能目前对你来说是不可接触的",
 				values = {
-					show = "Show",
-					dim = "Dim",
-					hide = "Hide",
+					show = "显示",
+					dim = "暗淡",
+					hide = "隐藏",
 				},
 				order = 40,
 			},

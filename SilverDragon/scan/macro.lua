@@ -32,41 +32,41 @@ function module:OnInitialize()
 		config.options.args.scanning.plugins.macro = {
 			macro = {
 				type = "group",
-				name = "Macro",
+				name = "宏命令",
 				get = function(info) return self.db.profile[info[#info]] end,
 				set = function(info, v)
 					self.db.profile[info[#info]] = v
 					self:Update()
 				end,
 				args = {
-					about = config.desc("Creates a button that can be used in a macro to target rares that might be nearby.\n\n"..
-							"Either create a macro called \"SilverDragon\" or click the \"Create Macro\" button below, which will "..
-							"try to make it for you. Drag it to your bars and click it to target rares that might be nearby. There "..
-							"are strict limits on macro-length, so only the closest rares will be included.",
+					about = config.desc("创建一个可以在宏命令中使用的按钮，用于扫描可能附近的稀有怪物。\n\n"..
+							"创建一个名为“SilverDragon”的宏，或者点击下面的“创建宏”按钮，它将尝试为你创建一个。"..
+							"把它拖动到你的动作条上，点击它就可以选取附近可能出现的稀有目标。"..
+							"由于宏长度有严格的限制，因此它只能扫描附近的稀有目标。",
 							0),
 					verbose = {
 						type = "toggle",
-						name = "Announce",
-						desc = "Output a little more, so you know what the macro is looking for",
+						name = "通知",
+						desc = "输出更多信息，以便你知道宏命令正在寻找什么",
 						order = 10,
 					},
 					custom = {
 						type = "toggle",
 						name = CUSTOM,
-						desc = "Include custom mobs in the macro. Because we don't know locations for them, they'll get priority "..
-							"for being added and might push actually-close mobs out of the macro if you have too many.",
+						desc = "在宏中包含自定义怪物。因为我们不知道它们的位置，它们将优先被添加进宏中，"..
+							"如果你有太多这样的怪物，可能会把实际靠近的怪物排除。",
 						order = 20,
 					},
 					relaxed = {
 						type = "toggle",
-						name = "Relaxed targeting",
-						desc = "Target with /tar instead of /targetexact. This will sometimes target the wrong mob, but it'll also let you fit more mobs into the macro.",
+						name = "宽松选择目标",
+						desc = "使用 /tar 而不是 /targetexact 来选择目标。这有时会选中错误的怪物，但也能让你在一个宏中兼容更多的怪物。",
 						order = 30,
 					},
 					create = {
 						type = "execute",
-						name = "Create Macro",
-						desc = "Click this to create the macro",
+						name = "创建宏",
+						desc = "点击此按钮以创建宏命令",
 						func = function()
 							self:CreateMacro()
 						end,
