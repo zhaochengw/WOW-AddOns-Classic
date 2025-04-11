@@ -1,0 +1,15 @@
+## Interface: 30404
+## Title:|cff19CCF9[LNui][界面]|r AFKS
+## Title-zhCN:|cff19CCF9[LNui][界面]|r AFK屏保
+## Title-zhTW:|cff19CCF9[LNui][界面]|r AFK屏保
+## X-Vendor: LNui
+## IconTexture: Interface\Icons\SPELL_HOLY_BORROWEDTIME
+## Author: Elnarfim
+## Version: 1.9.9
+## Notes: an Enhanced standalone version of AFK Screen module of Elv UI
+## Notes-koKR: 향상된 ElvUI의 자리 비움 스크린
+## SavedVariables: AFKS_DB
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
