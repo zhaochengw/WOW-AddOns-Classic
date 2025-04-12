@@ -51,6 +51,10 @@ L['Current realm characters'] = '当前服务器角色'
 L['Other realm characters'] = '其它服务器角色'
 L['See other account character?'] = '查看其它账号角色？'
 L['Show low level characters'] = '显示低等级角色'
+L['Item level color style'] = '格子物品等级颜色风格'
+L.Light = '亮色'
+L['Quality by blizzard'] = '暴雪品质颜色'
+L.White = '白色'
 -- @locale-fill@
 
 -- @end-import@

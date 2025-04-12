@@ -22,12 +22,15 @@ L["iLvl:"] = true
 L["Inspect Gear"] = true
 L["Inspect mouseover"] = true
 L["Inspect target"] = true
+L["Item level color style"] = true
 L["Last update:"] = true
+L["Light"] = true
 L["Low level characters"] = true
 L["Major"] = true
 L["Minor"] = true
 L["No Enchant"] = true
 L["Other realm characters"] = true
+L["Quality by blizzard"] = true
 L["See other account character?"] = true
 L["Set Spec Equipment"] = true
 L["Show character gear list"] = true
@@ -46,6 +49,7 @@ L["Switch talent"] = true
 L["The key is bound to |cffffd100%s|r, are you sure you want to overwrite it?"] = true
 L["View mouseover hotkey"] = true
 L["View target hotkey"] = true
+L["White"] = true
 --@end-locale@]=]
 --[[@debug@
 -- @import:language=enUS@
@@ -90,6 +94,10 @@ L['Current realm characters'] = true
 L['Other realm characters'] = true
 L['See other account character?'] = true
 L['Show low level characters'] = true
+L['Item level color style'] = true
+L.Light = true
+L['Quality by blizzard'] = true
+L.White = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

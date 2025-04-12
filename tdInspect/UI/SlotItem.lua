@@ -38,9 +38,11 @@ function SlotItem:Constructor()
     self.IconBorder:SetPoint('CENTER')
     self.IconBorder:SetSize(67, 67)
 
-    self.LevelText = self:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
-    self.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
-    self.LevelText:Hide()
+    self.LevelText = _G[self:GetName() .. 'Count']
+
+    -- self.LevelText = self:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
+    -- self.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
+    -- self.LevelText:Hide()
 
     self.UpdateTooltip = self.OnEnter
 
@@ -73,8 +75,10 @@ function SlotItem:Update()
             local r, g, b = GetItemQualityColor(quality)
             local level = select(4, GetItemInfo(item))
             self:UpdateBorder(r, g, b)
+            self:UpdateItemLevel(level, quality)
         else
             self:UpdateBorder()
+            self:UpdateItemLevel()
         end
 
         --[=[@build<2@
@@ -90,6 +94,7 @@ function SlotItem:Update()
     else
         SetItemButtonTexture(self, self:GetEmptyIcon())
         self:UpdateBorder()
+        self:UpdateItemLevel()
         --[=[@build<2@
         self.subicon:Hide()
         --@end-build<2@]=]
@@ -104,6 +109,25 @@ function SlotItem:UpdateBorder(r, g, b)
         self.IconBorder:Show()
     else
         self.IconBorder:Hide()
+    end
+end
+
+function SlotItem:UpdateItemLevel(level, quality)
+    if level and level > 0 then
+        if ns.db.profile.itemLevelColor == 'Blizzard' then
+            local r, g, b = GetItemQualityColor(quality)
+            self.LevelText:SetTextColor(r, g, b, 1)
+        elseif ns.db.profile.itemLevelColor == 'Light' then
+            local color = ns.CUSTOM_ITEM_QUALITY_COLORS[quality]
+            local r, g, b = color.r, color.g, color.b
+            self.LevelText:SetTextColor(r, g, b, 1)
+        else
+            self.LevelText:SetTextColor(1, 1, 1, 1)
+        end
+        self.LevelText:SetText(level)
+        self.LevelText:Show()
+    else
+        self.LevelText:Hide()
     end
 end
 

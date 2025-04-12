@@ -101,6 +101,7 @@ function Addon:SetupDatabase()
             showLost = true,
             showGemsFront = false,
             showLowLevelCharacters = false,
+            itemLevelColor = 'Light',
         },
     }
 

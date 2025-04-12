@@ -21,7 +21,8 @@ local hooksecurefunc = hooksecurefunc;
 
 --非战斗状态中允许shift+左键拖动玩家头像
 local function UnitFramesPlus_PlayerShiftDrag()
-    PlayerFrame:SetScript("OnMouseDown", function(self, elapsed)
+    -- 使用HookScript而不是SetScript，这样可以保留其他插件的功能
+    PlayerFrame:HookScript("OnMouseDown", function(self, button)
         if UnitFramesPlusDB["player"]["movable"] == 1 then
             if IsShiftKeyDown() and (not InCombatLockdown()) then
                 PlayerFrame:StartMoving();
@@ -30,7 +31,7 @@ local function UnitFramesPlus_PlayerShiftDrag()
         end
     end)
 
-    PlayerFrame:SetScript("OnMouseUp", function(self, elapsed)
+    PlayerFrame:HookScript("OnMouseUp", function(self, button)
         if UnitFramesPlusVar["player"]["moving"] == 1 then
             PlayerFrame:StopMovingOrSizing();
             UnitFramesPlusVar["player"]["moving"] = 0;

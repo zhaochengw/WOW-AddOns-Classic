@@ -296,7 +296,7 @@ do
         { name = L["诺\n森\n德\n猛\n兽"], color = "32CD32" },
         { name = L["加\n拉\n克\n苏\n斯"], color = "CD5C5C" },
         { name = L["阵\n营\n冠\n军"], color = "FFD700" },
-        { name = L["瓦\n克\n里\n双\n子"], color = "7B68EE" },
+        { name = L["瓦\n格\n里\n双\n子"], color = "7B68EE" },
         { name = L["阿\n努\n巴\n拉\n克"], color = "00BFFF" },
         { name = L["嘉\n奖\n宝\n箱"], color = "FFFF00" },
         { name = L["奥\n妮\n克\n希\n亚"], color = "CC6600" },

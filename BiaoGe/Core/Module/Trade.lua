@@ -1971,7 +1971,6 @@ BG.Init(function()
                         for i = 1, 5 do
                             local bt = _G["ElvUF_Raid" .. r .. "Group" .. g .. "UnitButton" .. i]
                             if bt and bt:IsVisible() and bt.unit and BG.GN(bt.unit) == leaderName then
-                                pt(r, g, i)
                                 ShowTradingButton(bt)
                                 return
                             end

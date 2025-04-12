@@ -86,6 +86,7 @@ end
 function PaperDoll:OnShow()
     self:Event('TDINSPECT_READY', 'UpdateAll')
     self:Event('UNIT_LEVEL', 'UpdateInfo')
+    self:Event('TDINSPECT_OPTION_CHANGED')
     self:UpdateInfo()
     self:Update()
     ns.Addon:OpenInspectGearFrame()
@@ -93,6 +94,12 @@ end
 
 function PaperDoll:OnHide()
     self:UnAllEvents()
+end
+
+function PaperDoll:TDINSPECT_OPTION_CHANGED(_, key)
+    if key == 'itemLevelColor' then
+        self:Update()
+    end
 end
 
 function PaperDoll:UpdateAll()

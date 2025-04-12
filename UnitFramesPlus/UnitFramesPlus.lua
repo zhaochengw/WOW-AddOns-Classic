@@ -281,6 +281,21 @@ UnitFramesPlusDefaultVar = {
     reset = 0,              --重置设置标记
 }
 
+function UnitFramesPlus_CombatCheck()
+    if InCombatLockdown() then return true end
+
+    local id;
+    for id = 1, MAX_PARTY_MEMBERS, 1 do
+        if ( UnitExists("party"..id) ) then
+            if UnitInParty("party"..id) and UnitAffectingCombat("party"..id) then
+                return true;
+            end
+        end
+    end
+
+    return false;
+end
+
 --设置初始化
 local function UnitFramesPlus_Options_Init()
     if (not UnitFramesPlusDB) then

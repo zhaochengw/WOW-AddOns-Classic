@@ -275,21 +275,34 @@ function SeasonOfDiscovery:LoadItems()
         },
         [238830] = { -- Apple Scope
             [itemKeys.objectDrops] = {526217},
+            [itemKeys.class] = itemClasses.QUEST,
         },
         [238831] = { -- Apple Rope
             [itemKeys.objectDrops] = {526220},
+            [itemKeys.class] = itemClasses.QUEST,
         },
         [238899] = { -- Assorted Fish
             [itemKeys.objectDrops] = {526809},
         },
+        [239302] = { -- Scarlet Uniform Belt
+            [itemKeys.npcDrops] = {241120,241121,241122,241123},
+        },
         [238935] = { -- Gently Plagued Meat
-            [itemKeys.npcDrops] = {8600,240247},
+            [itemKeys.npcDrops] = {8597,8600,8601,8602,8603,240247},
         },
         [238960] = { -- Quartermaster's Crate
             [itemKeys.objectDrops] = {526937},
         },
         [239016] = { -- Holy Salts
-            [itemKeys.npcDrops] = {241120},
+            [itemKeys.npcDrops] = {241048,241119,241120,241121,241122,241123},
+        },
+        [239092] = { -- Preposterously Prosed Postage
+            [itemKeys.npcDrops] = {241437},
+            [itemKeys.startQuest] = 89340,
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [239119] = { -- Holy Arrow
+            [itemKeys.objectDrops] = {527513},
         },
         [239223] = { -- House Prop
             [itemKeys.objectDrops] = {527821},
@@ -298,7 +311,7 @@ function SeasonOfDiscovery:LoadItems()
             [itemKeys.npcDrops] = {241877},
         },
         [241652] = { -- Discolored Beast Heart
-            [itemKeys.npcDrops] = {1816,1817,8596,8597,8598,8600,8601,8602,8603,8605},
+            [itemKeys.npcDrops] = {1816,1817,8596,8597,8598,8600,8601,8602,8603,8605,240247},
         },
         [241655] = { -- Mishandled Healing Potion
             [itemKeys.objectDrops] = {531291},

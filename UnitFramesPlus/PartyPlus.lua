@@ -1488,20 +1488,23 @@ end
 local UFPHider = CreateFrame("Frame", "UFPHider");
 UFPHider:Hide();
 function UnitFramesPlus_PartyShowHideSet()
+    if InCombatLockdown() then
+        C_Timer.After(1, UnitFramesPlus_PartyShowHideSet)
+        return
+    end
+
     local parent = PartyMemberFrame1:GetParent():GetName();
     if UnitFramesPlusDB["party"]["origin"] ~= 1 or GetDisplayedAllyFrames() == nil or (GetDisplayedAllyFrames() == "raid" and (UnitFramesPlusDB["party"]["hideraid"] ~= 1 or (UnitFramesPlusDB["party"]["hideraid"] == 1 and UnitFramesPlusDB["party"]["always"] ~= 1))) then
         if parent == nil or parent == "UIParent" then
             for id = 1, MAX_PARTY_MEMBERS, 1 do
                 _G["PartyMemberFrame"..id]:SetParent(UFPHider);
             end
-            -- PartyMemberBackground:SetParent(UFPHider);
         end
     else
         if parent == "UFPHider" then
             for id = 1, MAX_PARTY_MEMBERS, 1 do
                 _G["PartyMemberFrame"..id]:SetParent(UIParent);
             end
-            -- PartyMemberBackground:SetParent(UIParent);
         end
     end
 
@@ -1651,6 +1654,11 @@ end
 
 local _PartyMemberFrame_UpdateMember = PartyMemberFrame_UpdateMember;
 function UnitFramesPlus_PartyMemberFrame_UpdateMember(self)
+    if InCombatLockdown() then
+        C_Timer.After(1, function() UnitFramesPlus_PartyMemberFrame_UpdateMember(self) end)
+        return
+    end
+
     if GetDisplayedAllyFrames() == nil or ( GetDisplayedAllyFrames() == "raid" and (UnitFramesPlusDB["party"]["hideraid"] ~= 1 or (UnitFramesPlusDB["party"]["hideraid"] == 1 and UnitFramesPlusDB["party"]["always"] ~= 1 ))) then
         self:Hide();
         UpdatePartyMemberBackground();

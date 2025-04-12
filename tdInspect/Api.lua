@@ -390,3 +390,15 @@ function ns.ShowBlizzardInventoryItem(unit, id)
     ns.FixInspectItemTooltip(GameTooltip, id, link)
     return true
 end
+
+local CUSTOM_ITEM_QUALITY_COLORS = {}
+CUSTOM_ITEM_QUALITY_COLORS[0] = {r = 0.72, g = 0.72, b = 0.72}
+CUSTOM_ITEM_QUALITY_COLORS[1] = {r = 1.0, g = 1.0, b = 1.0}
+CUSTOM_ITEM_QUALITY_COLORS[2] = {r = 0.3, g = 1.0, b = 0.38}
+CUSTOM_ITEM_QUALITY_COLORS[3] = {r = 0.4, g = 0.71, b = 1.0}
+CUSTOM_ITEM_QUALITY_COLORS[4] = {r = 0.97, g = 0.63, b = 0.83}
+CUSTOM_ITEM_QUALITY_COLORS[5] = {r = 1, g = 0.602, b = 0.2}
+CUSTOM_ITEM_QUALITY_COLORS[6] = {r = 0.94, g = 0.87, b = 0.67}
+CUSTOM_ITEM_QUALITY_COLORS[7] = {r = 0.2, g = 0.84, b = 1.0}
+CUSTOM_ITEM_QUALITY_COLORS[8] = {r = 0.2, g = 0.84, b = 1.0}
+ns.CUSTOM_ITEM_QUALITY_COLORS = CUSTOM_ITEM_QUALITY_COLORS

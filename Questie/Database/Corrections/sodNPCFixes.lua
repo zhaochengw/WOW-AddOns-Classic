@@ -18,6 +18,12 @@ function SeasonOfDiscovery:LoadNPCs()
             },
         },
         [16786] = { -- Argent Quartermaster
+            [npcKeys.spawns] = {
+                [zoneIDs.STORMWIND_CITY]={{54.8,62.13},{54.55,62.22}},
+                [zoneIDs.IRONFORGE]={{29.59,61.44},{29.37,60.04}},
+                [zoneIDs.DARNASSUS]={{39.11,45.43},{39.55,46.88}},
+                [zoneIDs.EASTERN_PLAGUELANDS]={{81.04,59.74},{80.74,59.9}},
+            },
             [npcKeys.questStarts] = {9321,9337,9341,87434,87436,87438,87440,88746,88883},
             [npcKeys.questEnds] = {9321,9337,9341,87434,87436,87438,87440,88746,88883},
         },
@@ -890,6 +896,10 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{95.3,78.38}}},
         },
+        [240607] = { -- Devon Woods
+            [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{95.31,80.24}}},
+        },
         [240631] = { -- Taylor Stitchings
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{94.69, 83.54}}},
@@ -920,7 +930,11 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [241032] = { -- Fish Barrel
             [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOM,
-            [npcKeys.spawns] = {[zoneIDs.EASTERN_KINGDOM] = {{63.08258,26.34686}}},
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_KINGDOM] = {{63.08,26.35}}},
+        },
+        [241408] = { -- Scarlet Courier
+            [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOM,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_KINGDOM] = {{99.02,89.07}}},
         },
         [241613] = { -- Kyndra Swiftarrow
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,

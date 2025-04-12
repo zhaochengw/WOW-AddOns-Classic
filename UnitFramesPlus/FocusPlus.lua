@@ -1,6 +1,7 @@
 ﻿--非战斗状态中允许shift+左键拖动焦点头像
 local function UnitFramesPlus_FocusShiftDrag()
-    FocusFrame:SetScript("OnMouseDown", function(self, elapsed)
+    -- 使用HookScript而不是SetScript，这样可以保留其他插件的功能
+    FocusFrame:HookScript("OnMouseDown", function(self, button)
         if UnitFramesPlusDB["focus"]["movable"] == 1 then
             if IsShiftKeyDown() and (not InCombatLockdown()) then
                 FocusFrame:StartMoving();
@@ -9,7 +10,7 @@ local function UnitFramesPlus_FocusShiftDrag()
         end
     end)
 
-    FocusFrame:SetScript("OnMouseUp", function(self, elapsed)
+    FocusFrame:HookScript("OnMouseUp", function(self, button)
         if UnitFramesPlusVar["focus"]["moving"] == 1 then
             FocusFrame:StopMovingOrSizing();
             UnitFramesPlusVar["focus"]["moving"] = 0;

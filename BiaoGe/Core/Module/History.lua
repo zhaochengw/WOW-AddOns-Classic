@@ -21,6 +21,10 @@ local GetItemID = ns.GetItemID
 
 local pt = print
 
+local realmID = GetRealmID()
+local player = BG.playerName
+local realmName = GetRealmName()
+
 BG.History = {}
 
 function BG.UpdateHistoryButton()
@@ -253,8 +257,8 @@ function BG.HistoryUI()
             BG.FrameHide(2)
 
             local text = ""
-            local playerFullName, server = UnitFullName("player")
-            playerFullName = playerFullName .. "-" .. server
+            local player, server = UnitFullName("player")
+            local playerFullName = player .. "-" .. server
             text = "[BiaoGe:" .. playerFullName .. "-"
             if not BG.History.EscButton:IsVisible() then
                 text = text .. L["当前表格-"] .. BG.FB1 .. "]" -- [BiaoGe:风行-阿拉希盆地-当前表格-ULD]

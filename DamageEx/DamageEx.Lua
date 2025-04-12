@@ -355,6 +355,9 @@ function DEX_ProcessCombatLog(timeStamp, flag, hideCaster, sourceGUID, sourceNam
 	end
 
 	if strsub(suffixes,1,8) == "PERIODIC" then
+		if DEX_Get("DEX_ShowDamagePeriodic") == 0 then
+            return
+        end
 		prefixes = prefixes.."_PERIODIC"
 		suffixes = strsub(suffixes,10)
 	end
@@ -472,8 +475,8 @@ _SUMMON
 	--DEX_Debug(flag);
 	spellId, spellName, spellSchool = ...
 
-	if suffixes == "DAMAGE" then
-        amount, overDamage, school, resisted, blocked, absorbed, critical, glancing, crushing = select(DEX_PREFIXES[prefixes],...);
+    if suffixes == "DAMAGE" then
+        amount, overDamage, school, resisted, blocked, absorbed, critical, glancing, crushing = select(DEX_PREFIXES[prefixes],...)
         dexText = tostring(amount)
         if critical then dexCrit = 1;end
 
@@ -485,6 +488,10 @@ _SUMMON
             dexType = DEX_DAMAGE_TYPE_SPELL
             dexSpell = spellName
         elseif prefixes == "SPELL_PERIODIC" then
+            -- 所有周期性伤害都应该遵循这个设置
+            if DEX_Get("DEX_ShowDamagePeriodic") == 0 then
+                return
+            end
             dexType = DEX_DAMAGE_TYPE_PERIODIC
             dexSpell = spellName
         end
@@ -785,6 +792,9 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
     if spell == nil then spell = ""; end
     if damage == nil then damage = 0; end
 
+    -- Add type conversion for damage
+    local damageNum = tonumber(damage) or 0
+
     if DEX_ExtraAttCount > 0 then
         if GetTime() - DEX_ExtraTimer > 0.4 then
             DEX_ExtraAttCount = 0;
@@ -852,9 +862,9 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
     local ani = dex_AniData["aniText" .. dex_lastani]
     DEX_aniReset(ani)
 
-    if DEX_Get("DEX_UniteSpell") == 1 and tonumber(damage) then
+    if DEX_Get("DEX_UniteSpell") == 1 and isNumber then
         ani.spellbak = spell
-        ani.damagebak = tonumber(damage)
+        ani.damagebak = damageNum
         ani.destbak = select(1, ...)
             local anitmp;
             local t = GetTime()
@@ -865,7 +875,7 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
                         if spell == anitmp.spellbak then
                             ani.Active = false;
                             if DEX_Get("DEX_ShowSpellName") ~= 1 or (DEX_Get("DEX_ShowSpellName") == 1 and DEX_Get("DEX_ShowNameOnCrit") == 1 and (crit ~= 1 and anitmp.crit ~= 1)) or isAOE then spell = ""; end
-                            anitmp.damagebak = anitmp.damagebak + tonumber(damage)
+                            anitmp.damagebak = anitmp.damagebak + damageNum
                             anitmp.FObject:SetText(DEX_BuildText(anitmp.damagebak, spell, originalSpell, color, colorSe))
                             if crit == 1 and anitmp.crit == 0 then
                                 anitmp.zoom = 0.8

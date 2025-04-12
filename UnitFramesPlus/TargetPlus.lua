@@ -86,7 +86,8 @@ function UnitFramesPlus_TargetPosition()
 end
 
 local function UnitFramesPlus_TargetShiftDrag()
-    TargetFrame:SetScript("OnMouseDown", function(self, elapsed)
+    -- 使用HookScript而不是SetScript，这样可以保留其他插件的功能
+    TargetFrame:HookScript("OnMouseDown", function(self, button)
         if UnitFramesPlusDB["target"]["movable"] == 1 then
             if IsShiftKeyDown() and (not InCombatLockdown()) then
                 TargetFrame:StartMoving();
@@ -95,7 +96,7 @@ local function UnitFramesPlus_TargetShiftDrag()
         end
     end)
 
-    TargetFrame:SetScript("OnMouseUp", function(self, elapsed)
+    TargetFrame:HookScript("OnMouseUp", function(self, button)
         if UnitFramesPlusVar["target"]["moving"] == 1 then
             TargetFrame:StopMovingOrSizing();
             UnitFramesPlusVar["target"]["moving"] = 0;
@@ -112,7 +113,7 @@ local function UnitFramesPlus_TargetShiftDrag()
     TargetFrame:SetUserPlaced(false);
     TargetFrame:SetClampedToScreen(true);
 
-    --更改目标头像默认位置以防止其和玩家扩展框重叠
+    -- 更改目标头像默认位置以防止其和玩家扩展框重叠
     hooksecurefunc("UIParent_UpdateTopFramePositions", function()
         if (TargetFrame and not TargetFrame:IsUserPlaced()) then
             UnitFramesPlus_TargetPosition();

@@ -65,6 +65,27 @@ function Addon:SetupOptionFrame()
         }
     end
 
+    local function drop(name, values)
+        local opts = { --
+            type = 'select',
+            name = name,
+            order = orderGen(),
+        }
+
+        if type(values) == 'function' then
+            opts.values = values
+        else
+            opts.values = {}
+            opts.sorting = {}
+
+            for i, v in ipairs(values) do
+                opts.values[v.value] = v.name
+                opts.sorting[i] = v.value
+            end
+        end
+        return opts
+    end
+
     local options = {
         type = 'group',
         name = format('%s - |cff00ff00%s|r', C_AddOns.GetAddOnMetadata(ADDON, 'Title'),
@@ -96,6 +117,10 @@ function Addon:SetupOptionFrame()
                     inspectCompare = fullToggle(L['Show inspect compare']),
                     closeCharacterFrameWhenInspect = fullToggle(L['Close character frame when inspect']),
                     showOptionButtonInInspect = fullToggle(L['Show option button in inspect gear list']),
+                    itemLevelColor = drop(L['Item level color style'], {
+                        {value = 'White', name = L['White']}, {value = 'Blizzard', name = L['Quality by blizzard']},
+                        {value = 'Light', name = L['Light']},
+                    }),
                 },
                 characterList = inline(L['Character List']) {
                     showLowLevelCharacters = fullToggle(L['Show low level characters']),

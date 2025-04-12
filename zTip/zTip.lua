@@ -1029,7 +1029,7 @@ function zTip:OnMouseOverUnit(name, unit)
     -- _G.print(CheckInteractDistance(unit, 1))
     if bplayer then
         if zTipSaves.ItemLevel or zTipSaves.ShowTalent then
-            if bplayer and UnitLevel(unit) > 9 then
+            if bplayer and UnitLevel(unit) > 9 and not InCombatLockdown() then
                 if self.ScanIns then
                     self:ScanIns(unit)
                 end
@@ -1119,7 +1119,7 @@ function zTip:OnMouseOverUnit(name, unit)
         else
             tmp2 = format("%s %s ", tmp2, UKNOWNBEING)
         end
-        if zTipSaves.ShowRc and not bplayer and iLibRangeCheck then --距离
+        if zTipSaves.ShowRc and not bplayer and iLibRangeCheck and not InCombatLockdown() then --距离
             local minRange, maxRange = iLibRangeCheck:getRange(unit)
             local text = GetRangeColorText(minRange, maxRange)
             if (text) then
