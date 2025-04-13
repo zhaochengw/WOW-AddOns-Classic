@@ -792,13 +792,28 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
     if spell == nil then spell = ""; end
     if damage == nil then damage = 0; end
 
-    -- Add type conversion for damage
-    local damageNum = tonumber(damage) or 0
+    -- 确保 damage 是数字类型
+    local damageNum = 0
+    if type(damage) == "number" then
+        damageNum = damage
+    elseif type(damage) == "string" then
+        -- 处理带括号的字符串，例如 "1000 (500)"
+        if string.find(damage, "%(") then
+            local mainDamage = string.match(damage, "(%d+)%s*%(")
+            damageNum = tonumber(mainDamage) or 0
+        else
+            -- 尝试将字符串转换为数字
+            damageNum = tonumber(damage) or 0
+        end
+    end
+
+    -- 检查是否是数字类型的伤害值
+    local isNumber = type(damageNum) == "number"
 
     if DEX_ExtraAttCount > 0 then
         if GetTime() - DEX_ExtraTimer > 0.4 then
-            DEX_ExtraAttCount = 0;
-            DEX_ExtraAttCur = 1;
+            DEX_ExtraAttCount = 0
+            DEX_ExtraAttCur = 1
         end
     end
 
@@ -866,28 +881,30 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
         ani.spellbak = spell
         ani.damagebak = damageNum
         ani.destbak = select(1, ...)
-            local anitmp;
-            local t = GetTime()
-            for i = 1, DEX_MAXANI do
-                anitmp = dex_AniData["aniText" .. i];
-                if anitmp.Active then
-                    if t - anitmp.starttime < 0.2 then
-                        if spell == anitmp.spellbak then
-                            ani.Active = false;
-                            if DEX_Get("DEX_ShowSpellName") ~= 1 or (DEX_Get("DEX_ShowSpellName") == 1 and DEX_Get("DEX_ShowNameOnCrit") == 1 and (crit ~= 1 and anitmp.crit ~= 1)) or isAOE then spell = ""; end
-                            anitmp.damagebak = anitmp.damagebak + damageNum
-                            anitmp.FObject:SetText(DEX_BuildText(anitmp.damagebak, spell, originalSpell, color, colorSe))
-                            if crit == 1 and anitmp.crit == 0 then
-                                anitmp.zoom = 0.8
-                                anitmp.crit = 1
-                                anitmp.moveTyp = DEX_MOVTYP_NONE
-                            end
-                            return
+        local anitmp
+        local t = GetTime()
+        for i = 1, DEX_MAXANI do
+            anitmp = dex_AniData["aniText" .. i]
+            if anitmp.Active then
+                if t - anitmp.starttime < 0.2 then
+                    if spell == anitmp.spellbak then
+                        ani.Active = false
+                        if DEX_Get("DEX_ShowSpellName") ~= 1 or (DEX_Get("DEX_ShowSpellName") == 1 and DEX_Get("DEX_ShowNameOnCrit") == 1 and (crit ~= 1 and anitmp.crit ~= 1)) or isAOE then 
+                            spell = "" 
                         end
+                        anitmp.damagebak = anitmp.damagebak + damageNum
+                        anitmp.FObject:SetText(DEX_BuildText(anitmp.damagebak, spell, originalSpell, color, colorSe))
+                        if crit == 1 and anitmp.crit == 0 then
+                            anitmp.zoom = 0.8
+                            anitmp.crit = 1
+                            anitmp.moveTyp = DEX_MOVTYP_NONE
+                        end
+                        return
                     end
                 end
             end
         end
+    end
 
     if not coerciveShowSpell then
         if DEX_Get("DEX_ShowNameOnCrit") == 1 and crit ~= 1 and isNumber then spell = ""; end

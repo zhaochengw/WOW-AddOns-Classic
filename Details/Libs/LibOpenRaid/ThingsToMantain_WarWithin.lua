@@ -759,10 +759,32 @@ do
 			end
 		end)
 
+		local ccSpellNameCache = {}
+		function openRaidLib.GetCCSpellIdBySpellName(spellName)
+			if (ccSpellNameCache[spellName]) then
+				return ccSpellNameCache[spellName]
+			end
+
+			for spellId in pairs(LIB_OPEN_RAID_CROWDCONTROL) do
+				local spellInfo = C_Spell.GetSpellInfo(spellId)
+				if (spellInfo) then
+					if (spellInfo.name == spellName) then
+						ccSpellNameCache[spellName] = spellId
+						return spellId
+					end
+				end
+			end
+
+			return nil
+		end
+
 		--list of all crowd control spells
 		--it is not transmitted to other clients
         -- TODO: Update for war within
 		LIB_OPEN_RAID_CROWDCONTROL = {
+			[462031] = {cooldown = 60,	class = "HUNTER"}, --Implosive Trap
+			[116844] = {cooldown = 45,	class = "MONK"}, --Ring of Peace
+			[20549] = {cooldown = 90,	class = ""}, --War Stomp (Tauren)
 			[331866] = {cooldown = 0,	class = "COVENANT|VENTHYR"}, --Agent of Chaos
 			[334693] = {cooldown = 0,	class = "DEAHTKNIGHT"}, --Absolute Zero
 			[221562] = {cooldown = 45,	class = "DEATHKNIGHT"}, --Asphyxiate
@@ -899,6 +921,13 @@ do
 				local id = spellData.shareid
 				LIB_OPEN_RAID_COOLDOWNS_SHARED_ID[id] = LIB_OPEN_RAID_COOLDOWNS_SHARED_ID[id] or {}
 				LIB_OPEN_RAID_COOLDOWNS_SHARED_ID[id][spellID] = spellData.type
+			end
+
+			if (spellData.type == 8) then --crowd control
+				if (not LIB_OPEN_RAID_CROWDCONTROL[spellID]) then
+					local ccTable = {cooldown = spellData.cooldown, class = spellData.class}
+					LIB_OPEN_RAID_CROWDCONTROL[spellID] = ccTable
+				end
 			end
 		end
 
