@@ -8,7 +8,7 @@ local ns = select(2, ...)
 
 local CONDITION_PARTTERN = '|cff%x%x%x%x%x%x' .. ENCHANT_CONDITION_REQUIRES
 local function IsConditionLine(line)
-    return line:find(CONDITION_PARTTERN)
+    return line and line:find(CONDITION_PARTTERN)
 end
 
 local function P(text)

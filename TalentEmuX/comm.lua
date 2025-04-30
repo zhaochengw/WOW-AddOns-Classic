@@ -205,7 +205,7 @@ MT.BuildEnv('COMM');
 					class, level, numGroup, activeGroup, data1, data2 = MT.TalentConversion(class, level, numGroup, activeGroup, data1, data2);
 				end
 				if cache == nil then
-					cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+					cache = MT.NewCache();
 					VT.TQueryCache[name] = cache;
 				end
 				cache.class = class;
@@ -262,7 +262,7 @@ MT.BuildEnv('COMM');
 			end
 			VT.QueryRequestNotResponsed[name] = nil;
 			if cache == nil then
-				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+				cache = MT.NewCache();
 				VT.TQueryCache[name] = cache;
 			end
 			local GlyData = cache.GlyData;
@@ -287,7 +287,7 @@ MT.BuildEnv('COMM');
 			local addon = VT.ExternalAddOn[prefix];
 			local EquData;
 			if cache == nil then
-				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+				cache = MT.NewCache();
 				VT.TQueryCache[name] = cache;
 				EquData = cache.EquData;
 			elseif addon ~= nil then
@@ -321,7 +321,7 @@ MT.BuildEnv('COMM');
 			local cache = VT.TQueryCache[name];
 			local addon = VT.ExternalAddOn[prefix];
 			if cache == nil then
-				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+				cache = MT.NewCache();
 				VT.TQueryCache[name] = cache;
 			else
 				cache.EngData = {  };
@@ -343,7 +343,7 @@ MT.BuildEnv('COMM');
 			VT.QueryRequestNotResponsed[name] = nil;
 			local cache = VT.TQueryCache[name];
 			if cache == nil then
-				cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+				cache = MT.NewCache();
 				VT.TQueryCache[name] = cache;
 			end
 			local PakData = cache.PakData;

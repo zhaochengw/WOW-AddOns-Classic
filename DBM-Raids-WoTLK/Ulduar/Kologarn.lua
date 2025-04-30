@@ -5,7 +5,7 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250408170354")
 mod:SetCreatureID(32930)--, 32933, 32934
 if mod:IsPostCata() then
 	mod:SetEncounterID(1137)
@@ -66,7 +66,7 @@ end
 function mod:OnCombatStart(delay)
 	timerNextSmash:Start(10-delay)
 	timerNextEyebeam:Start(11-delay)
-	timerNextShockwave:Start(15.7-delay)
+	timerNextShockwave:Start(13.3-delay)
 	if self:IsClassic() then
 		DBM:AddMsg("Note: Eye beam targetting is disabled by Blizzard in classic, the settings for these features will not function in pre nerf state")
 	end

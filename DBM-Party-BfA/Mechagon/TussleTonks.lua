@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2336, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250317033004")
+mod:SetRevision("20250421063128")
 mod:SetCreatureID(144244, 145185)
 mod:SetEncounterID(2257)
 mod:SetHotfixNoticeRev(20250303000000)
@@ -130,7 +130,7 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.mineCount == 1 then
 			timerBattlemineCD:Start(17, 2)
 		elseif self.vb.mineCount == 2 then
-			timerBattlemineCD:Start(28, 3)
+			timerBattlemineCD:Start(27.5, 3)
 		else
 			timerBattlemineCD:Start(35.2, self.vb.mineCount+1)
 		end

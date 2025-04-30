@@ -466,6 +466,7 @@ l10n.SLASH_NOTE = {
 	["bg_color"] = "点击设置背景颜色",
 	["show_tradeskill_frame_price_info"] = "在商业技能窗口中显示价格信息",
 	["show_tradeskill_frame_rank_info"] = "在商业技能窗口中显示等级信息",
+	["show_queue_button"] = "显示队列切换按钮",
 	["show_tradeskill_tip_craft_item_price"] = "在鼠标提示中显示物品制造信息",
 	["show_tradeskill_tip_craft_spell_price"] = "在鼠标提示中显示商业技能法术信息",
 	["show_tradeskill_tip_recipe_price"] = "在鼠标提示中显示配方信息",

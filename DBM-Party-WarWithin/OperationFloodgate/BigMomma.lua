@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2648, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250309025733")
+mod:SetRevision("20250421064654")
 mod:SetCreatureID(226398)
 mod:SetEncounterID(3020)
 mod:SetUsedIcons(8, 7, 6, 5)
@@ -160,7 +160,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 469981 then
 		self.vb.barrierCount = self.vb.barrierCount + 1
 		specWarnbarrier:Show(self.vb.barrierCount)
-		specWarnbarrier:Play("attackshield")
+		specWarnbarrier:Play("killmob")
 	end
 end
 

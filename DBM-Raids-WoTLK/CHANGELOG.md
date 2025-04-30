@@ -1,11 +1,16 @@
 # <DBM Mod> Raids (WoTLK)
 
-## [r341](https://github.com/DeadlyBossMods/DBM-WotLK/tree/r341) (2025-03-30)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-WotLK/compare/r340...r341) [Previous Releases](https://github.com/DeadlyBossMods/DBM-WotLK/releases)
+## [r342](https://github.com/DeadlyBossMods/DBM-WotLK/tree/r342) (2025-04-22)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-WotLK/compare/r341...r342) [Previous Releases](https://github.com/DeadlyBossMods/DBM-WotLK/releases)
 
-- Fix Champions (#73)  
-    from: https://nga.178.com/read.php?tid=43447096  
-- bump wrath toc  
-- Because DBT can't get it's shit together, all 77 (and counting) mods that do this just need to work around core bug  
-- Update localization.ru.lua (#72)  
-    Big update RU locale  
+- surprised this is erroring now when it wasn't before  
+- apparently i never remembered to bump tocs  
+- for pretty  
+- streamline it like retail so it's test/build cycles that don't conflict  
+- combine checks  
+- fixes?  
+- fixup CI  
+- Fix and close https://github.com/DeadlyBossMods/DBM-WotLK/issues/71  
+- replace one global, rest are a lie  
+- switch wrath to luaLS global checks  
+- api updates  

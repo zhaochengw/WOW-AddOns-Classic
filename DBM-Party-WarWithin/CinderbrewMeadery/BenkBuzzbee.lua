@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2588, "DBM-Party-WarWithin", 7, 1272)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250317005613")
+mod:SetRevision("20250421064252")
 mod:SetCreatureID(218000)
 mod:SetEncounterID(2931)
 mod:SetUsedIcons(8, 7, 6)
@@ -46,7 +46,7 @@ local specWarnGTFO							= mod:NewSpecialWarningGTFO(440141, nil, nil, nil, 1, 8
 local timerSnackTimeCD						= mod:NewNextCountTimer(33, 438025, nil, nil, nil, 3)--33
 --local timerShreddingStingCD				= mod:NewCDNPTimer(6, 438971, nil, nil, nil, 3, nil, DBM_COMMON_L.BLEED_ICON)--6-7.2 confirmed on normal
 local timerHoneyMarinadeCD					= mod:NewVarCountTimer("v11-20", 440134, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerFlutteringWingCD					= mod:NewNextCountTimer(25, 439524, nil, nil, nil, 2)
+local timerFlutteringWingCD					= mod:NewVarCountTimer("v23-27", 439524, nil, nil, nil, 2)
 
 mod:AddNamePlateOption("NPOnHoney", 443983)
 --mod:AddSetIconOption("SetIconOnBees", 438025, true, 5, {8, 7, 6})

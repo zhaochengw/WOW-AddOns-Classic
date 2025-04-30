@@ -5,7 +5,7 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250408165147")
 
 mod:SetCreatureID(33515)--34014--Add this (kitties) to pull detection when it can be ignored in kill
 if mod:IsPostCata() then
@@ -64,7 +64,7 @@ function mod:SPELL_CAST_START(args)
 		timerNextFear:Schedule(2)
 		warnFearSoon:Schedule(34)
 	elseif args:IsSpellID(64688, 64422) then --Sonic Screech
-		specWarnSonic:Show(TANK)
+		specWarnSonic:Show(DBM_COMMON_L.TANK)
 		specWarnSonic:Play("gathershare")
 		timerSonic:Start()
 		timerNextSonic:Start()

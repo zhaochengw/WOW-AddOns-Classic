@@ -53,7 +53,7 @@ do
     BG.ver = "v" .. GetAddOnMetadata(AddonName, "Version")
     BG.BG = "|cff00BFFF<BiaoGe>|r "
     BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
-    BG.iconTexCoord = { .03, .97, .03, .97 }
+    BG.iconTexCoord = { .06, .94, .06, .94 }
     BG.zaxiang = {} -- 杂项如果太多，则需要换列
     if BG.IsRetail then
         BG.CloseButtonOffset = 0
@@ -933,7 +933,7 @@ BG.Init(function()
         BiaoGe.realmName = BiaoGe.realmName or {}
         BiaoGe.realmName[realmID] = realmName
     end
-    -- 记录每个角色的职业等级
+    -- 记录每个角色的职业、等级、天赋
     do
         BiaoGe.playerInfo = BiaoGe.playerInfo or {}
         BiaoGe.playerInfo[realmID] = BiaoGe.playerInfo[realmID] or {}
@@ -946,6 +946,88 @@ BG.Init(function()
         BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, event, level)
             BiaoGe.playerInfo[realmID][player].level = level
         end)
+
+        -- 天赋
+        if not BG.IsRetail then
+            local function GetTalent()
+                local maxNum = 0
+                local ii
+                for i = 1, 3 do
+                    local num = select(5, GetTalentTabInfo(i, nil, nil, GetActiveTalentGroup()))
+                    if num and num >= maxNum then
+                        maxNum = num
+                        ii = i
+                    end
+                end
+                if maxNum == 0 then ii = nil end
+                BiaoGe.playerInfo[realmID][player].talent = ii
+            end
+            BG.RegisterEvent("PLAYER_TALENT_UPDATE", GetTalent)
+            BG.Init2(GetTalent)
+
+            function BG.GetTalentIcon(class, talent, w)
+                w = w or 0
+                if talent then
+                    local a, b, c, d = unpack(BG.iconTexCoord)
+                    local coord = format("100:100:%s:%s:%s:%s", a * 100, b * 100, c * 100, d * 100)
+                    return format("|T%s:%s:%s:0:0:%s|t", BG.talentIcon[class][talent], w, w, coord)
+                end
+                return format("|A:classicon-%s:%s:%s|a", class, w, w)
+            end
+
+            BG.talentIcon = {
+                DEATHKNIGHT = {
+                    "Interface\\Icons\\Spell_Deathknight_BloodPresence", -- T
+                    "Interface\\Icons\\Spell_Deathknight_FrostPresence",
+                    "Interface\\Icons\\Spell_Deathknight_UnholyPresence",
+                },
+                PALADIN = {
+                    "Interface\\Icons\\Spell_Holy_HolyBolt",     -- N
+                    "Interface\\Icons\\Spell_Holy_DevotionAura", -- T
+                    "Interface\\Icons\\Spell_Holy_AuraOfLight",
+                },
+                WARRIOR = {
+                    "Interface\\Icons\\ability_rogue_eviscerate",
+                    "Interface\\Icons\\ability_warrior_innerrage",
+                    "Interface\\Icons\\ability_warrior_defensivestance", -- T
+                },
+                SHAMAN = {
+                    "Interface\\Icons\\spell_nature_lightning",
+                    "Interface\\Icons\\spell_nature_lightningshield",
+                    "Interface\\Icons\\Spell_Nature_HealingWaveGreater", -- N
+                },
+                HUNTER = {
+                    "Interface\\Icons\\Ability_Hunter_BeastTaming",
+                    "Interface\\Icons\\Ability_Marksmanship",
+                    "Interface\\Icons\\Ability_Hunter_SwiftStrike",
+                },
+                DRUID = {
+                    "Interface\\Icons\\spell_nature_starfall",
+                    "Interface\\Icons\\ability_racial_bearform",
+                    "Interface\\Icons\\Spell_Nature_HealingTouch", -- N
+                },
+                ROGUE = {
+                    "Interface\\Icons\\ability_rogue_eviscerate",
+                    "Interface\\Icons\\ability_backstab",
+                    "Interface\\Icons\\Ability_Ambush",
+                },
+                MAGE = {
+                    "Interface\\Icons\\inv_misc_rune_03",
+                    "Interface\\Icons\\spell_fire_firebolt02",
+                    "Interface\\Icons\\spell_frost_frostbolt02",
+                },
+                WARLOCK = {
+                    "Interface\\Icons\\spell_shadow_deathcoil",
+                    "Interface\\Icons\\spell_shadow_metamorphosis",
+                    "Interface\\Icons\\spell_shadow_rainoffire",
+                },
+                PRIEST = {
+                    "Interface\\Icons\\spell_holy_wordfortitude", -- N
+                    "Interface\\Icons\\spell_holy_holybolt",      -- N
+                    "Interface\\Icons\\spell_shadow_shadowwordpain",
+                },
+            }
+        end
 
         if BiaoGe.PlayerItemsLevel then
             for realmID in pairs(BiaoGe.PlayerItemsLevel) do

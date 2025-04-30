@@ -123,4 +123,8 @@ GTFOLocal =
 	UI_BrannModeDescription = "This enables Brann Bronzebeard to yell at you.",
 	UI_AprilFoolsDay = "April Fools Day Joke",
 	UI_AprilFoolsDayDescription = "Uncheck this to permanently turn off the fun April Fools Day joke. :(\n\nIf you change your mind, you can type |cFFFFFFFF/GTFO Brann|r to bring him back.",
+	-- 5.17.
+	UI_IgnoreTime = "Alert Delay Time",
+	UI_IgnoreTimeDescription = "The minimum amount of delay between alert sounds. Increase this if the sounds are too spammy.",
+	UI_IgnoreTime_Seconds = "seconds",
 }

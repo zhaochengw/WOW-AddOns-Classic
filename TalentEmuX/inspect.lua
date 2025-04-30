@@ -57,7 +57,7 @@ MT.BuildEnv('INSPECT');
 			if data1 ~= nil and (numGroup == 1 or data2 ~= nil) and code ~= nil then
 				local cache = VT.TQueryCache[name];
 				if cache == nil then
-					cache = { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+					cache = MT.NewCache();
 					VT.TQueryCache[name] = cache;
 				end
 				cache.class = class;

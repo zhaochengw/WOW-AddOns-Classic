@@ -466,6 +466,7 @@ l10n.SLASH_NOTE = {
 	["bg_color"] = "Click to set background color",
 	["show_tradeskill_frame_price_info"] = "Show price info in tradeskill frame",
 	["show_tradeskill_frame_rank_info"] = "Show rank info in tradeskill frame",
+	["show_queue_button"] = "Show queue button",
 	["show_tradeskill_tip_craft_item_price"] = "Show info in tooltip of item",
 	["show_tradeskill_tip_craft_spell_price"] = "Show info in tooltip of skill",
 	["show_tradeskill_tip_recipe_price"] = "Show info in tooltip of recipes",

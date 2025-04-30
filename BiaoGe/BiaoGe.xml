@@ -46,6 +46,7 @@
     <Script file="Core\Module\InfoBar.lua"/>
     <Script file="Core\Module\Newbee.lua"/>
     <Script file="Core\Module\CommerceAuthority_Vanilla.lua"/>
+    <Script file="Core\Module\bagSync.lua"/>
 
     <Script file="Core\Module\minimap.lua"/>
     <Script file="Core\Options.lua"/>

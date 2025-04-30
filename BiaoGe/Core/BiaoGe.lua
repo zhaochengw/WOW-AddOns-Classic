@@ -2095,7 +2095,7 @@ BG.Init(function()
                 end
             end
         end)
-
+        
         local bt = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
         bt:SetSize(30, 30)
         bt.Text:SetText(BG.BG .. L["荆棘谷血月活动期间自动释放尸体和对话自动复活"])
@@ -3009,7 +3009,7 @@ end
 -- tex:SetAtlas("bags-newitem")
 -- tex:SetTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\AFD")
 -- print(GetTimePreciseSec())
---[[ 
+--[[
 
 /run print(GetTimePreciseSec()) LoadAddOn("BiaoGe") print(GetTimePreciseSec())
 /run print(GetTimePreciseSec()) LoadAddOn("Scorpio") print(GetTimePreciseSec())

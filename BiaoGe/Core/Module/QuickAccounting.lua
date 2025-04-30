@@ -54,7 +54,7 @@ BG.Init(function()
                 if i > 1 then
                     bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
                 end
-                if not IsInRaid(1) and t == 1 and i == 1 then     -- 单人时
+                if not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
                     bt:SetText(BG.GN())
                     bt:SetCursorPosition(0)
                     bt:SetTextColor(GetClassRGB(BG.GN()))
@@ -136,8 +136,8 @@ BG.Init(function()
     -- 找到合适的格子
     local function HasEmptyGeZi(link)
         local FB = BG.FB1
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+        for b = 1, Maxb[FB] do
+            for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -167,8 +167,8 @@ for b = 1, Maxb[FB] do
 
         updateFrame.time = 0
         local FB = BG.FB1
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+        for b = 1, Maxb[FB] do
+            for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
                 local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
                 local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
@@ -561,12 +561,12 @@ for b = 1, Maxb[FB] do
         text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -45)
         text:SetWidth(f:GetWidth() - 10)
         text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-        text:SetJustifyH("LEFT")     -- 对齐格式
+        text:SetJustifyH("LEFT") -- 对齐格式
         BG.ChatAccountingFrame.seeText = text
     end
 
     hooksecurefunc("SetItemRef", function(link, text, button)
-        if BG.IsML then return end     -- 如果是团长或物品分配者则退出
+        if BG.IsML then return end -- 如果是团长或物品分配者则退出
         if BiaoGe.options["fastCount"] ~= 1 then return end
         local _type, name, line, chattype = strsplit(":", link)
         if _type == "item" then

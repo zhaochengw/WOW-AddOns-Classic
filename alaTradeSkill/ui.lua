@@ -500,7 +500,7 @@ end
 									Frame:F_HideSetFrame();
 								end
 								if Frame.IsQueueEnabled then
-									if pid == 10 then
+									if pid == 10 or not VT.SET.show_queue_button then
 										Frame.QueueToggleButton:Hide();
 										Frame:F_HideQueueFrame();
 									else
@@ -3762,6 +3762,7 @@ end
 			local QueueFrame = VT.UIFrames["QUEUE"];
 			if show ~= false then
 				QueueFrame:SetParent(Frame);
+				QueueFrame:SetFrameLevel(Frame.TopChildrenLevel + 16);
 				QueueFrame.RegisterFrameOnSelection(Frame);
 				if QueueFrame:IsShown() then
 					LT_WidgetMethod.QueueFrame_OnShow(QueueFrame);
@@ -3881,19 +3882,6 @@ end
 			local todo = VT.QUEUE.todo;
 			for index = 1, #list do
 				if list[index] == self.CraftingID then
-					todo[index] = todo[index] - 1;
-					-- MT.Debug("Sub", self.CraftingID, todo[index]);
-					if todo[index] <= 0 then
-						tremove(list, index);
-						tremove(todo, index);
-						 if not self.ScrollFrame:SetNumValue(#list) then
-							self.ScrollFrame:Update();
-						end
-						-- self.F_StartCraftQueue();	--	DoTradeSkill needs hardware event.
-						self.Focus:Hide();
-						return;
-					end
-					self.ScrollFrame:Update();
 					local available = LT_SharedMethod.GetAvaiableCraftCount(self.CraftingID);
 					-- MT.Debug(name, "num =", available);
 					if available <= 0 then
@@ -3905,6 +3893,7 @@ end
 					return;
 				end
 			end
+			self.Focus:Hide();
 		end
 	end
 	function LT_WidgetMethod.QueueFrame_OnEvent(self, event, ...)
@@ -3913,6 +3902,25 @@ end
 			local unit, castID, sid = ...;
 			-- MT.Debug("SUCCEED", sid, self.CraftingID, self:IsShown(), self.IsCrafting);
 			if self.CraftingID == sid then
+				local list = VT.QUEUE.list;
+				local todo = VT.QUEUE.todo;
+				for index = 1, #list do
+					if list[index] == self.CraftingID then
+						todo[index] = todo[index] - 1;
+						-- MT.Debug("Sub", self.CraftingID, todo[index]);
+						if todo[index] <= 0 then
+							tremove(list, index);
+							tremove(todo, index);
+							if not self.ScrollFrame:SetNumValue(#list) then
+								self.ScrollFrame:Update();
+							end
+							-- self.F_StartCraftQueue();	--	DoTradeSkill needs hardware event.
+							self.Focus:Hide();
+							return;
+						end
+						self.ScrollFrame:Update();
+					end
+				end
 				MT._TimerStart(self.F_OnSucceededDelay, 0.1, 1);
 			end
 		elseif event == "UNIT_SPELLCAST_INTERRUPTED" then
@@ -4045,6 +4053,7 @@ local function LF_HookFrame(addon, meta)
 	local HookedFrame = meta.HookedFrame;
 	local Frame = CreateFrame('FRAME', nil, HookedFrame);
 	HookedFrame.Frame = Frame;
+	Frame.TopChildrenLevel = 0;
 
 	for index = 1, #meta.T_DisabledFuncName do
 		local name = meta.T_DisabledFuncName[index];
@@ -4425,6 +4434,7 @@ local function LF_HookFrame(addon, meta)
 		TabFrame.F_Update = LT_WidgetMethod.TabFrame_Update;
 		Frame.TabFrame = TabFrame;
 		TabFrame.Frame = Frame;
+		Frame.TopChildrenLevel = max(Frame.TopChildrenLevel, TabFrame:GetFrameLevel());
 	end
 
 	do	--	search_box
@@ -4511,6 +4521,7 @@ local function LF_HookFrame(addon, meta)
 
 		Frame.F_ShowProfitFrame = LT_WidgetMethod.F_ShowProfitFrame;
 		Frame.F_HideProfitFrame = LT_WidgetMethod.F_HideProfitFrame;
+		Frame.TopChildrenLevel = max(Frame.TopChildrenLevel, ProfitFrame:GetFrameLevel());
 	end
 
 	do	--	SetFrame
@@ -4620,6 +4631,7 @@ local function LF_HookFrame(addon, meta)
 		Frame.F_ShowSetFrame = LT_WidgetMethod.F_ShowSetFrame;
 		Frame.F_HideSetFrame = LT_WidgetMethod.F_HideSetFrame;
 		Frame.F_RefreshSetFrame = LT_WidgetMethod.F_RefreshSetFrame;
+		Frame.TopChildrenLevel = max(Frame.TopChildrenLevel, SetFrame:GetFrameLevel());
 	end
 
 	do	--	InfoInFrame
@@ -4828,10 +4840,12 @@ local function LF_FrameApplySetting(Frame)
 	else
 		Frame.PortraitButton:Hide();
 	end
-	if VT.SET.show_queue then
-		Frame:F_ShowQueueFrame(true);
-	else
-		Frame:F_HideQueueFrame();
+	if Frame.IsQueueEnabled then
+		if VT.SET.show_queue_button then
+			Frame.QueueToggleButton:Show();
+		else
+			Frame.QueueToggleButton:Hide();
+		end
 	end
 	--
 	local function Ticker()
@@ -7205,6 +7219,33 @@ end
 		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
 		if CFrame ~= nil then
 			CFrame:F_UpdatePriceInfo();
+		end
+	end
+	function MT.ToggleQueueButton(val)
+		local TFrame = VT.UIFrames["BLIZZARD_TRADESKILLUI"];
+		local CFrame = VT.UIFrames["BLIZZARD_CRAFTUI"];
+		local QFrame = VT.UIFrames["QUEUE"];
+		if val then
+			if TFrame ~= nil and TFrame.IsQueueEnabled then
+				TFrame.QueueToggleButton:Show();
+				if VT.SET.show_queue and TFrame:IsShown() then
+					TFrame:F_ShowQueueFrame(true);
+				end
+			end
+			if CFrame ~= nil and CFrame.IsQueueEnabled then
+				CFrame.QueueToggleButton:Show();
+				if VT.SET.show_queue and CFrame:IsShown() then
+					CFrame:F_ShowQueueFrame(true);
+				end
+			end
+		else
+			if TFrame ~= nil and TFrame.IsQueueEnabled then
+				TFrame.QueueToggleButton:Hide();
+			end
+			if CFrame ~= nil and CFrame.IsQueueEnabled then
+				CFrame.QueueToggleButton:Hide();
+			end
+			QFrame:Hide();
 		end
 	end
 -->

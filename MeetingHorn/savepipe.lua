@@ -165,6 +165,7 @@ ThreeDimensionsCode_SafePipe_CmdHandles = {
 
 	"newsize" ,		-- 1
 	"joinRoom" ,		-- 2
+	"newShortcutKey" ,		-- 3
 
 	newsize = function(cmdid,arg)
 		local pos = arg:find("x")
@@ -177,6 +178,7 @@ ThreeDimensionsCode_SafePipe_CmdHandles = {
 			if w then
 				if ns.ThreeDimensionsCode.blackboard then
 					ns.ThreeDimensionsCode.blackboard.setReadScreenWidth(w)
+                    ns.ThreeDimensionsCode:sendCommand('newShortcutKey', ns.TableToJson(ns.FindFirstTwoUnboundKeys()))
 				end
 			end
 		end
@@ -184,5 +186,9 @@ ThreeDimensionsCode_SafePipe_CmdHandles = {
 
 	joinRoom = function(cmdid)
 		ns.isOpenVoiceRoom = true
+	end ,
+
+    newShortcutKey = function(cmdid)
+		ns.Addon.db.global.newShortcutKey = ns.FindFirstTwoUnboundKeys()
 	end ,
 }

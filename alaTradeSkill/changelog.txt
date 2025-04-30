@@ -1,4 +1,14 @@
 
+2025-04-28
+Update lib.
+
+2025-04-22
+Option to toggle QueueFrame.
+QueueFrame is always on the top.
+
+2025-04-15
+Fix an issue that caused the remaining number of queued item not update.
+
 2025-04-10
 Update toc for classic era.
 

@@ -2083,12 +2083,13 @@ MT.BuildEnv('UI');
 			end
 			local recache = false;
 			local EquipmentNodes = EquipmentContainer.EquipmentNodes;
+			local SetInfo = {  };
 			for slot = 0, 19 do
 				local Node = EquipmentNodes[slot];
 				local item = EquData[slot];
 				Node.item = item;
 				if item ~= nil then
-					local name, link, quality, level, _, _, _, _, _, texture = GetItemInfo(item);
+					local name, link, quality, level, _, _, _, _, _, texture, _, _, _, _, _, setID = GetItemInfo(item);
 					if link ~= nil then
 						Node:SetNormalTexture(texture);
 						local color = CT.ITEM_QUALITY_COLORS[quality];
@@ -2099,7 +2100,7 @@ MT.BuildEnv('UI');
 						Node.ILvl:SetText(level);
 						Node.Name:SetVertexColor(r, g, b);
 						Node.Name:SetText(name);
-						local enchantable, enchanted, link, level, loc, estr = MT.GetEnchantInfo(CT.SELFLCLASS, slot, item);
+						local enchantable, enchanted, link, level, estr = MT.GetEnchantInfo(CT.SELFLCLASS, slot, item);
 						if enchantable then
 							Node.Ench:SetText(enchanted and estr or l10n.EquipmentList_MissingEnchant);
 						else
@@ -2110,6 +2111,9 @@ MT.BuildEnv('UI');
 							Node.Gem:SetText(gstr);
 						end
 						Node.link = link;
+						if setID then
+							SetInfo[setID] = (SetInfo[setID] or 0) + 1;
+						end
 					else
 						Node:SetNormalTexture(TTEXTURESET.EQUIPMENT.Empty[Node.slot]);
 						Node.Glow:Hide();
@@ -2131,8 +2135,16 @@ MT.BuildEnv('UI');
 				end
 			end
 			if recache then
+				EquData.SetInfo = nil;
 				EquipmentFrameDelayUpdateList[EquipmentContainer] = EquData;
 				MT._TimerStart(EquipmentFrameDelayUpdate, 0.5, 1);
+			else
+				EquData.SetInfo = SetInfo;
+				for slot = 1, 18 do
+					if EquData[slot] then
+						MT.TouchItemTip(EquData[slot]);
+					end
+				end
 			end
 			MT.UI.EquipmentFrameContainerResize(EquipmentContainer.EquipmentFrameContainer);
 		end
@@ -2673,6 +2685,8 @@ MT.BuildEnv('UI');
 			if Node.link ~= nil then
 				GameTooltip:SetOwner(Node, "ANCHOR_LEFT");
 				GameTooltip:SetHyperlink(Node.link);
+				MT.ColorItemSet(Node, GameTooltip);
+				MT.ColorMetaGem(Node, GameTooltip);
 			end
 		end
 		function _LeftFunc.Node_OnLeave(Node, motion)

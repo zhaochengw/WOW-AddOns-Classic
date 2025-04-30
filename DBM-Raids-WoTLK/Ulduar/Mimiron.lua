@@ -5,7 +5,7 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250408170354")
 mod:SetCreatureID(33432)
 if mod:IsPostCata() then
 	mod:SetEncounterID(1138)
@@ -310,7 +310,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 --				timerNextFrostBomb:Start(32)
 --			end
 			--These timers may just resume where they left off in earlier stages
-			timerNextP3Wx2LaserBarrage:Start(44)
+			timerNextP3Wx2LaserBarrage:Start(43.2)
 			timerRocketStrikeCD:Start(50)
 			timerNextShockblast:Start(75.5)
 		end

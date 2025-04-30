@@ -55,6 +55,7 @@ L['Item level color style'] = '格子物品等级颜色风格'
 L.Light = '亮色'
 L['Quality by blizzard'] = '暴雪品质颜色'
 L.White = '白色'
+L.Hidden = '隐藏'
 -- @locale-fill@
 
 -- @end-import@

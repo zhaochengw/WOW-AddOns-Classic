@@ -91,22 +91,45 @@ function BG.HistoryUI()
         bt:SetNormalFontObject(BG.FontGreen15)
         bt:SetDisabledFontObject(BG.FontDis15)
         bt:SetHighlightFontObject(BG.FontWhite15)
+        bt:RegisterForClicks("AnyUp")
         BG.SetTextHighlightTexture(bt)
         BG.History.HistoryButton = bt
         BG.UpdateHistoryButton()
         -- 单击触发
-        bt:SetScript("OnClick", function(self)
-            BG.FrameHide(2)
-            if BG.History.SaveButton:GetButtonState() ~= "DISABLED" then
-                BG.CreatHistoryListButton(BG.FB1)
-            end
-            if BG.History.List and BG.History.List:IsVisible() then
-                BG.History.List:Hide()
-            else
-                BG.History.List:Show()
+        bt:SetScript("OnClick", function(self, button)
+            if button == "LeftButton" then
+                BG.FrameHide(2)
+                if BG.History.SaveButton:GetButtonState() ~= "DISABLED" then
+                    BG.CreatHistoryListButton(BG.FB1)
+                end
+                if BG.History.List and BG.History.List:IsVisible() then
+                    BG.History.List:Hide()
+                else
+                    BG.History.List:Show()
+                end
+            elseif button == "RightButton" and BGV and BGV.HistoryMainFrame then
+                BG.MainFrame:Hide()
+                BGV.HistoryMainFrame:Hide()
+                BGV.HistoryMainFrame:Show()
             end
             BG.PlaySound(1)
         end)
+        BG.Init2(function ()
+            if BGV then
+                bt:SetScript("OnEnter", function(self)
+                    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+                    GameTooltip:AddLine(L["左键：打开历史表格"], 1, 0.82, 0, true)
+                    GameTooltip:AddLine(L["右键：打开历史表格汇总"], 1, 0.82, 0, true)
+                    GameTooltip:Show()
+                end)
+                bt:SetScript("OnLeave", function(self)
+                    GameTooltip:Hide()
+                end)
+            end
+        end)
+ 
     end
     ------------------保存当前表格按键------------------
     do
@@ -204,8 +227,6 @@ function BG.HistoryUI()
         bt:SetScript("OnLeave", function(self)
             GameTooltip:Hide()
         end)
-
-        -- 单击触发
         bt:SetScript("OnClick", function(self)
             BG.FrameHide(2)
             self:SetEnabled(false) -- 点击后按钮变灰2秒
@@ -213,6 +234,7 @@ function BG.HistoryUI()
                 bt:SetEnabled(true)
             end)
             BG.SaveBiaoGe()
+            BG.ClearBiaoGe("biaoge", BG.FB1)
             BG.PlaySound(2)
         end)
     end

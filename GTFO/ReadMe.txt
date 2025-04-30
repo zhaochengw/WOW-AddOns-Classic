@@ -2246,3 +2246,15 @@ Change Log:
 * Fixed The War Within spells (world)
 * Added TWW spells for Liberation of Undermine
 * Added TWW spells for TWW Delves
+
+5.17
+* Updated for patch 11.1.5
+* Updated TOC for WoW Classic 1.15.7
+* Added "Brann Mode" and "Alert Delay Time" in GTFO Options
+* Added The War Within spells (world)
+* Added TWW spells for Liberation of Undermine
+* Added TWW spells for Darkflame Cleft
+* Added TWW spells for TWW Delves 
+
+5.17.1
+* Fixed LUA crash issues

@@ -2,7 +2,7 @@
 local mod	= DBM:NewMod("Thaddius", "DBM-Raids-WoTLK", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250408163938")
 mod:SetCreatureID(15928)
 mod:SetEncounterID(1120)
 mod:SetModelID(16137)
@@ -71,8 +71,8 @@ do
 		if self.vb.phase ~= 2 or not lastShift or (GetTime() - lastShift) < 3 then return end
 		local charge
 		local i = 1
-		while UnitDebuff("player", i) do
-			local _, icon, count, _, _, _, _, _, _, _, _, _, _, _, _, count2 = UnitDebuff("player", i)
+		while C_Spell.UnitDebuff("player", i) do
+			local _, icon, count, _, _, _, _, _, _, _, _, _, _, _, _, count2 = C_Spell.UnitDebuff("player", i)
 			if icon == "Interface\\Icons\\Spell_ChargeNegative" or icon == 135768 then--Not sure if classic will return data ID or path, so include both
 				if (count2 or count) > 1 then return end--Incorrect aura, it's stacking damage one
 				charge = L.Charge1

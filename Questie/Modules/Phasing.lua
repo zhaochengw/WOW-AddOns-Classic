@@ -222,6 +222,14 @@ local phases = {
     BALNAZZAR_DEAD = 1150,
     RIVENDARE_DEAD = 1151,
     KARGATH_DEAD = 1152,
+    CAYDEN_START_AMBUSH = 1153,
+    CAYDEN_FINISH_AMBUSH = 1154,
+    OHF_THRALL_PRISON = 1155,
+    OHF_THRALL_DESTINY = 1156,
+    LINDSAY_WPL_TREE = 1157,
+    LINDSAY_WPL_TENT = 1158,
+    LINDSAY_WPL_INN = 1159,
+    MGT_KT_DEAD = 1160,
 }
 Phasing.phases = phases
 
@@ -916,6 +924,38 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.KARGATH_DEAD then
         return complete[29653] or (questLog[29653] and questLog[29653].isComplete == 1) or complete[29654] or (questLog[29654] and questLog[29654].isComplete == 1) or false
+    end
+
+    if phase == phases.CAYDEN_START_AMBUSH then
+        return not complete[27648] and (not questLog[27648] or (questLog[27648] and questLog[27648].isComplete == 0)) or false
+    end
+
+    if phase == phases.CAYDEN_FINISH_AMBUSH then
+        return complete[27648] or (questLog[27648] and questLog[27648].isComplete == 1) or false
+    end
+
+    if phase == phases.OHF_THRALL_PRISON then
+        return not complete[29599] and (not questLog[29599] or (questLog[29599] and questLog[29599].isComplete == 0)) or false
+    end
+
+    if phase == phases.OHF_THRALL_DESTINY then
+        return complete[29599] or (questLog[29599] and questLog[29599].isComplete == 1) or false
+    end
+  
+    if phase == phases.LINDSAY_WPL_TREE then
+        return not complete[26936] or false
+    end
+
+    if phase == phases.LINDSAY_WPL_TENT then
+        return (complete[26936] and not complete[27083]) or false
+    end
+
+    if phase == phases.LINDSAY_WPL_INN then
+        return complete[27083] or false
+    end
+
+    if phase == phases.MGT_KT_DEAD then
+        return complete[29685] or (questLog[29685] and questLog[29685].isComplete == 1) or false
     end
 
     return false

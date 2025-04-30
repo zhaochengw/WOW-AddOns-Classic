@@ -80,6 +80,9 @@ function CataItemFixes.Load()
         [5847] = { -- Mirefin Head
             [itemKeys.npcDrops] = {4358,4359,4360,4361,4362,4363,23841},
         },
+        [5883] = { -- Forked Mudrock Tongue
+            [itemKeys.npcDrops] = {4397},
+        },
         [8170] = { -- Rugged Leather
             [itemKeys.vendors] = {},
         },
@@ -238,7 +241,7 @@ function CataItemFixes.Load()
         [23777] = { -- Diabolical Plans
             [itemKeys.startQuest] = 26443,
         },
-        [23798] = { -- Diabolical Plans
+        [23797] = { -- Diabolical Plans
             [itemKeys.startQuest] = 26447,
         },
         [23901] = { -- Nazan's Head
@@ -337,6 +340,9 @@ function CataItemFixes.Load()
         [45885] = { -- Thistle Bear Fur
             [itemKeys.npcDrops] = {33978},
         },
+        [46128] = { -- Troll Charm
+            [itemKeys.npcDrops] = {3924,3925,3926},
+        },
         [46354] = { -- Seed of the Earth
             [itemKeys.npcDrops] = {33072},
         },
@@ -408,6 +414,12 @@ function CataItemFixes.Load()
         },
         [49172] = { -- Simmering Water Droplet
             [itemKeys.npcDrops] = {36131},
+        },
+        [49200] = { -- Infernal Power Core
+            [itemKeys.npcDrops] = {35591},
+        },
+        [49220] = { -- Infernal Power Core
+            [itemKeys.npcDrops] = {35591},
         },
         [49281] = { -- Chance the Cat
             [itemKeys.npcDrops] = {36459,36461},

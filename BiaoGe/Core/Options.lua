@@ -1905,6 +1905,19 @@ BG.Init(function()
             local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["拍卖竞价窗口自动往上吸附"] .. "*", autoAuction, 15, height - h, ontext)
             BG.options["button" .. name] = f
         end
+        h = h + 30
+        -- 匿名模式对你无效
+        do
+            local name = "autoAuctionShowSender"
+            BG.options[name .. "reset"] = 0
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["匿名模式对你无效"],
+                L["勾选后，在竞拍过程中，匿名对你无效，你将可以直接看到实际出价人，不管你是团长还是团员。"],
+            }
+            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["匿名模式对你无效"] .. "*", autoAuction, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+        end
     end
 
     -- 角色总览设置

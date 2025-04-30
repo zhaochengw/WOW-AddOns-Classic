@@ -1,6 +1,6 @@
 # Auctionator
 
-## [272](https://github.com/Auctionator/Auctionator/tree/272) (2025-04-09)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/271...272) 
+## [275](https://github.com/Auctionator/Auctionator/tree/275) (2025-04-24)
+[Full Changelog](https://github.com/Auctionator/Auctionator/compare/274...275) 
 
-- Update toc for Classic Era/SoD 1.15.7  
+- [Fixes #1675] Retail: Fix battle pet levels showing wrong  

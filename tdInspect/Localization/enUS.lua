@@ -18,6 +18,7 @@ L["Empty socket"] = true
 L["Gear List"] = true
 L["Help"] = true
 L["HELP_SUMMARY"] = true
+L["Hidden"] = true
 L["iLvl:"] = true
 L["Inspect Gear"] = true
 L["Inspect mouseover"] = true
@@ -98,6 +99,7 @@ L['Item level color style'] = true
 L.Light = true
 L['Quality by blizzard'] = true
 L.White = true
+L.Hidden = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

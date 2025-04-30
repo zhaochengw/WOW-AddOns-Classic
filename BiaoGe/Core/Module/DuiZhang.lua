@@ -520,7 +520,6 @@ function BG.DuiZhangUI()
                         text:SetTextColor(.5, .5, .5)
                     else
                         f:SetPoint("TOPLEFT", mainFrame.buttons[i - 1], "BOTTOMLEFT", 0, -1)
-                        local num = floor((i - 1) / 5) * 5 + 1
                     end
                     tinsert(mainFrame.buttons, f)
 

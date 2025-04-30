@@ -274,8 +274,41 @@ function ThreeDimensionsCode:initialize()
     frame:EnableKeyboard(true)
     frame:SetPropagateKeyboardInput(true);
     frame.PropagateKeyboardInput = true
-    frame:SetScript("OnKeyDown", function(self, event, ...)
-        if IsControlKeyDown() and (event == "PAGEUP" or event == "PAGEDOWN") then
+    C_Timer.After(2, function()
+        ns.Addon.db.global.newShortcutKey =  ns.FindFirstTwoUnboundKeys()
+    end)
+    frame:SetScript("OnKeyDown", function(_, event, ...)
+        if not ns.Addon.db.global.newShortcutKey then
+            return
+        end
+        local key1, key2 = ns.Addon.db.global.newShortcutKey[1], ns.Addon.db.global.newShortcutKey[2]
+        if not key1 or not key2 then
+            return
+        end
+        local modifier1, key1Pressed = key1:match("^(%w+)%-(.+)$")
+        if modifier1 and key1Pressed then
+            if (modifier1 == "SHIFT" and IsShiftKeyDown()) or
+                (modifier1 == "CTRL" and IsControlKeyDown()) or
+                (modifier1 == "ALT" and IsAltKeyDown()) then
+                if event == key1Pressed then
+                    ThreeDimensionsCode_Savepipe_Yin()
+                    return
+                end
+            end
+        end
+
+        local modifier2, key2Pressed = key2:match("^(%w+)%-(.+)$")
+        if modifier2 and key2Pressed then
+            if (modifier2 == "SHIFT" and IsShiftKeyDown()) or
+                (modifier2 == "CTRL" and IsControlKeyDown()) or
+                (modifier2 == "ALT" and IsAltKeyDown()) then
+                if event == key2Pressed then
+                    ThreeDimensionsCode_Savepipe_Yang()
+                    return
+                end
+            end
+        end
+        if IsAltKeyDown() and (event == "PAGEUP" or event == "PAGEDOWN") then
             if event == "PAGEDOWN" then
                 ThreeDimensionsCode_Savepipe_Yin()
             elseif event == "PAGEUP" then

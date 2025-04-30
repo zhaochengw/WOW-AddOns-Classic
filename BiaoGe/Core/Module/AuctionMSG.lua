@@ -130,7 +130,7 @@ BG.Init(function()
         local t = GetServerTime()
         for i = #BiaoGe.auctionMSGhistory, 1, -1 do
             if type(BiaoGe.auctionMSGhistory[i]) == "table" then
-                if t - BiaoGe.auctionMSGhistory[i].time > 3600 * 12 then
+                if t - BiaoGe.auctionMSGhistory[i].time > 60 * 60 * 12 then
                     tremove(BiaoGe.auctionMSGhistory, i)
                 end
             end

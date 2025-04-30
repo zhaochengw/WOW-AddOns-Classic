@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2331, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250308115734")
+mod:SetRevision("20250408164008")
 mod:SetCreatureID(150396, 144249, 150397)
 mod:SetEncounterID(2260)
 mod:SetBossHPInfoToHighest()
@@ -85,12 +85,6 @@ function mod:OnCombatStart(delay)
 	timerRecalibrateCD:Start(4.8-delay, 1)
 	timerMegaZapCD:Start(8.3-delay, 1)--8.3-9.7
 	timerTakeOffCD:Start("v30.2-35.2", 1)
-end
-
-function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 end
 
 function mod:SPELL_CAST_START(args)

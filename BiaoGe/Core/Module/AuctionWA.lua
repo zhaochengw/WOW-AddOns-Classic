@@ -5,7 +5,7 @@ local pt = print
 
 BG.Init(function()
     local aura = aura_env or {}
-    aura.ver = "v2.8"
+    aura.ver = "v2.9"
 
     function aura.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -41,7 +41,7 @@ BG.Init(function()
         end
     })
     local After = C_Timer.After
-    local _auctionID_ = "_auctionID"
+    local _auctionID_ = "auctionID"
 
     if (GetLocale() == "zhTW") then
         L["Alt+点击才能生效"] = "Alt+點擊才能生效"
@@ -101,6 +101,7 @@ BG.Init(function()
         L["ALT+点击：全部展开"] = "ALT+點擊：全部展開"
         L["点击：单个折叠"] = "點擊：單個摺疊"
         L["ALT+点击：全部折叠"] = "ALT+點擊：全部摺疊"
+        L["你已是%s的出价最高者，|cffff0000没必要自己顶自己|r。真的要继续出价到 %s ？"] = "你已是%s的出價最高者，|cffff0000沒必要自己頂自己|r。真的要繼續出價到 %s ？"
     end
 
     function aura.GN(unit)
@@ -265,7 +266,7 @@ BG.Init(function()
         if not player then
             player = aura.GN()
         end
-        if (player == aura.raidLeader) or (player == aura.ML) then
+        if (player == aura.raidLeader) or (player == aura.masterLooter) then
             return true
         end
     end
@@ -273,7 +274,7 @@ BG.Init(function()
     function aura.UpdateRaidRosterInfo()
         wipe(aura.raidRosterInfo)
         aura.raidLeader = nil
-        aura.ML = nil
+        aura.masterLooter = nil
         if IsInRaid(1) then
             for i = 1, GetNumGroupMembers() do
                 local name, rank, subgroup, level, class2, class, zone, online,
@@ -298,7 +299,7 @@ BG.Init(function()
                         aura.raidLeader = name
                     end
                     if isML then
-                        aura.ML = name
+                        aura.masterLooter = name
                     end
                 end
             end
@@ -607,7 +608,7 @@ BG.Init(function()
             f.remainingTime:SetText((format("%d", remaining) + 1) .. "s")
             f.remaining = remaining
 
-            if remaining <= 0 then
+            if remaining <= 0.5 then
                 f.myMoneyEdit:Hide()
                 f.remainingTime:SetText("0s")
             end
@@ -794,8 +795,7 @@ BG.Init(function()
         self:SetScript("OnUpdate", nil)
     end
 
-    function aura.SendMyMoney_OnClick(self)
-        local f = self.owner
+    local function SendMyMoney(f)
         if f.ButtonSendMyMoney:IsEnabled() then
             local money = tonumber(f.myMoneyEdit:GetText()) or 0
             C_ChatInfo.SendAddonMessage(aura.AddonChannel, "SendMyMoney" .. "," ..
@@ -807,6 +807,32 @@ BG.Init(function()
                 if random(10) <= 1 then
                     PlaySoundFile(BG["sound_HusbandComeOn" .. BiaoGe.options.Sound])
                 end
+            end
+        end
+    end
+    function aura.SendMyMoney_OnClick(self)
+        local f = self.owner
+        if f.ButtonSendMyMoney:IsEnabled() then
+            if f.player and f.player == aura.GN() then
+                if not StaticPopupDialogs["BiaoGeAuction_RepeatSend"] then
+                    StaticPopupDialogs["BiaoGeAuction_RepeatSend"] = {
+                        text = L["你已是%s的出价最高者，|cffff0000没必要自己顶自己|r。真的要继续出价到 %s ？"],
+                        button1 = _G.YES,
+                        button2 = _G.NO,
+                        OnCancel = function()
+                        end,
+                        timeout = 10,
+                        whileDead = true,
+                        hideOnEscape = true,
+                        showAlert = true,
+                    }
+                end
+                StaticPopupDialogs["BiaoGeAuction_RepeatSend"].OnAccept = function()
+                    SendMyMoney(f)
+                end
+                StaticPopup_Show("BiaoGeAuction_RepeatSend", f.link, tonumber(f.myMoneyEdit:GetText()) or 0)
+            else
+                SendMyMoney(f)
             end
         end
     end
@@ -836,7 +862,7 @@ BG.Init(function()
             tinsert(f.logs, { money = money, player = "|cff" .. aura.GREEN1 .. L["你"] .. "|r" })
             tinsert(f.logs2, { money = money, player = "|cff" .. aura.GREEN1 .. L["你"] .. "|r" })
         else
-            if f.mod == "anonymous" then
+            if f.mod == "anonymous" and not (BiaoGe and BiaoGe.options and BiaoGe.options.autoAuctionShowSender == 1) then
                 f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. L["別人(匿名)"])
                 tinsert(f.logs, { money = money, player = L["匿名"] })
             else

@@ -28,6 +28,12 @@ function SeasonOfDiscovery:LoadItems()
         [8766] = { -- Morning Glory Dew (modified to add new SoD vendors to drink vendor townsfolk)
             [itemKeys.vendors] = {258,274,295,465,734,955,982,1237,1247,1328,1464,1697,2303,2352,2364,2366,2388,2803,2832,3086,3298,3411,3546,3577,3621,3689,3708,3881,3882,3883,3884,3934,3937,3959,3961,4167,4169,4181,4190,4191,4192,4195,4255,4266,4554,4555,4571,4782,4875,4879,4893,4963,4981,5111,5112,5140,5611,5620,5688,5814,5871,6091,6272,6495,6727,6734,6735,6736,6737,6738,6739,6740,6741,6746,6747,6790,6791,6807,6928,6929,6930,7485,7714,7731,7733,7736,7737,7744,7941,7943,8125,8137,8143,8150,8152,8931,9356,9501,10367,11038,11103,11106,11116,11118,11187,11287,12019,12026,12196,12794,12959,14371,14624,14731,14961,14962,14963,14964,15124,15125,15174,16256,16458,241664},
         },
+        [9279] = { -- White Punch Card
+            [itemKeys.npcDrops] = {216667,216668,216669,216670,216671},
+        },
+        [9309] = { -- Robo-mechanical Guts
+            [itemKeys.npcDrops] = {215728,216666,216668,216669,216670,216671,217582,217733,218242,218243,218244,218245,218537,220072},
+        },
         [204806] = { -- Rune of Victory Rush
             [itemKeys.npcDrops] = {706,946,1986},
         },
@@ -191,6 +197,9 @@ function SeasonOfDiscovery:LoadItems()
         [221326] = { -- Sacred Stag Heart
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [221191] = { -- Dreamstone
+            [itemKeys.npcDrops] = {211956},
+        },
         [225954] = { -- Charred Spell Notes
             [itemKeys.npcDrops] = {227324},
         },
@@ -261,17 +270,13 @@ function SeasonOfDiscovery:LoadItems()
             [itemKeys.objectDrops] = {525416},
         },
         [237143] = { -- Orders from the High General
-            [itemKeys.npcDrops] = {238745},
             [itemKeys.objectDrops] = {600002}, -- fake for tooltips
-        },
-        [239764] = { -- Crimson Bladeleaf
-            [itemKeys.objectDrops] = {528481},
         },
         [238794] = { -- Unappetizing Leftovers
             [itemKeys.objectDrops] = {526132,526143,526144},
         },
         [238811] = { -- Juicy Apple
-            [itemKeys.npcDrops] = {241019,240978},
+            [itemKeys.npcDrops] = {240998,240978},
         },
         [238830] = { -- Apple Scope
             [itemKeys.objectDrops] = {526217},
@@ -284,34 +289,29 @@ function SeasonOfDiscovery:LoadItems()
         [238899] = { -- Assorted Fish
             [itemKeys.objectDrops] = {526809},
         },
-        [239302] = { -- Scarlet Uniform Belt
-            [itemKeys.npcDrops] = {241120,241121,241122,241123},
-        },
-        [238935] = { -- Gently Plagued Meat
-            [itemKeys.npcDrops] = {8597,8600,8601,8602,8603,240247},
-        },
         [238960] = { -- Quartermaster's Crate
             [itemKeys.objectDrops] = {526937},
         },
         [239016] = { -- Holy Salts
-            [itemKeys.npcDrops] = {241048,241119,241120,241121,241122,241123},
+            [itemKeys.npcDrops] = {240998,241048,241119,241120,241121,241122,241123,241877,242367,242757},
         },
         [239092] = { -- Preposterously Prosed Postage
-            [itemKeys.npcDrops] = {241437},
-            [itemKeys.startQuest] = 89340,
             [itemKeys.class] = itemClasses.QUEST,
         },
         [239119] = { -- Holy Arrow
             [itemKeys.objectDrops] = {527513},
         },
+        [239216] = { -- Lightforged Iron
+            [itemKeys.npcDrops] = {240794,240811,240812,241021,241772,241768,241769,241770,243021,243269},
+        },
         [239223] = { -- House Prop
             [itemKeys.objectDrops] = {527821},
         },
-        [239225] = { -- Classy Quill
-            [itemKeys.npcDrops] = {241877},
+        [239764] = { -- Crimson Bladeleaf
+            [itemKeys.objectDrops] = {528481},
         },
         [241652] = { -- Discolored Beast Heart
-            [itemKeys.npcDrops] = {1816,1817,8596,8597,8598,8600,8601,8602,8603,8605,240247},
+            [itemKeys.npcDrops] = {1816,1817,1824,8596,8597,8598,8600,8601,8602,8603,8605,240247},
         },
         [241655] = { -- Mishandled Healing Potion
             [itemKeys.objectDrops] = {531291},

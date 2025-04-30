@@ -1678,7 +1678,7 @@ BG.Init(function()
     do
         ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", function(self, event, msg, ...)
             if BiaoGe.options.autoAuctionLogLink ~= 1 then return end
-            if not (msg:match("^{rt6}拍卖成功{rt6}") or msg:match("^{rt6}拍賣成功{rt6}")) then return end
+            if not (msg:match("{rt6}拍卖成功{rt6}") or msg:match("{rt6}拍賣成功{rt6}")) then return end
             local itemID = GetItemID(msg)
             if not itemID then return end
             BG.chatAuctionLog = BG.chatAuctionLog or {}

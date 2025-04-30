@@ -357,6 +357,7 @@ function BG.RoleOverviewUI()
             }
         end
     end
+
     -- 角色总览UI
     local savePoint
     local function ShowAllServer()
@@ -384,6 +385,8 @@ function BG.RoleOverviewUI()
         end
         BG.UpdateFBCD()
 
+        local isVIP = BG.BiaoGeVIPVerNum and BG.BiaoGeVIPVerNum >= 10170
+
         local height = 20
         local width_jiange = 5
         local line_height = 4
@@ -408,9 +411,9 @@ function BG.RoleOverviewUI()
         end
         local nameWidth
         if ShowAllServer() then
-            nameWidth = 165
+            nameWidth = 165 + (isVIP and 20 or 0)
         else
-            nameWidth = 105
+            nameWidth = 105 + (isVIP and 20 or 0)
         end
 
         tinsert(MONEYchoice_table, 1, { name = L["角色"] .. " " .. BG.STC_dis("(" .. LEVEL .. ")"), color = "FFFFFF", width = nameWidth })
@@ -503,7 +506,10 @@ function BG.RoleOverviewUI()
                 tex:SetVertexColor(r, g, b)
                 bt:SetHighlightTexture(tex)
                 bt:SetScript("OnEnter", function(self)
-                    BGV.ShowEquipFrame(nil, bt, isAccounts, realmID, player, colorplayer, level, class, iLevel)
+                    local f = BGV.equipFrame
+                    if not (f and f:IsVisible()) then
+                        BGV.ShowEquipFrame(nil, bt, isAccounts, realmID, player, colorplayer, level, class, iLevel)
+                    end
                 end)
                 bt:SetScript("OnLeave", function(self)
                     if BGV.equipFrame and not BGV.equipFrame.click then
@@ -572,9 +578,9 @@ function BG.RoleOverviewUI()
             local lastwidth
             local nameWidth
             if ShowAllServer() then
-                nameWidth = 200
+                nameWidth = 200 + (isVIP and 20 or 0)
             else
-                nameWidth = 140
+                nameWidth = 140 + (isVIP and 20 or 0)
             end
             for i, v in ipairs(FBCDchoice_table) do
                 local t = f:CreateFontString()
@@ -636,6 +642,7 @@ function BG.RoleOverviewUI()
                                     if level and level >= BiaoGe.options["roleOverviewNotShowLevel"] then
                                         local class = db.playerInfo[realmID][player].class
                                         local iLevel = db.playerInfo[realmID][player].iLevel or (db.PlayerItemsLevel and db.PlayerItemsLevel[realmID] and db.PlayerItemsLevel[realmID][player])
+                                        local talent = db.playerInfo[realmID][player].talent
                                         if class and iLevel and iLevel >= BiaoGe.options["roleOverviewNotShowiLevel"] then
                                             local colorplayer = "|c" .. select(4, GetClassColor(class)) .. player .. (isAccounts and "*" or "")
                                             tinsert(newTbl, {
@@ -644,6 +651,7 @@ function BG.RoleOverviewUI()
                                                 class = class,
                                                 iLevel = iLevel,
                                                 level = level,
+                                                talent = talent,
                                                 realmID = realmID,
                                                 realmName = (db.realmName and db.realmName[realmID]) or BiaoGe.realmName[realmID] or realmID,
                                                 isAccounts = isAccounts,
@@ -687,12 +695,16 @@ function BG.RoleOverviewUI()
                 else
                     realmName = ""
                 end
+                local talentText=""
+                if isVIP then
+                    talentText=BG.GetTalentIcon(v.class, v.talent, 15)
+                end
                 local bt = CreateFrame("Button", nil, BG.FBCDFrame)
                 bt:SetPoint("TOPLEFT", BG.FBCDFrame, "TOPLEFT", FBCDchoice_table[1].width, -7 - height * n)
                 local t = bt:CreateFontString()
                 t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t:SetPoint("LEFT")
-                t:SetText(realmName .. colorplayer .. " |cff808080(" .. Round(iLevel, 0) .. ")|r")
+                t:SetText(talentText .. realmName .. colorplayer .. " |cff808080(" .. Round(iLevel, 0) .. ")|r")
                 bt.width = t:GetWidth()
                 bt.isFBCD = true
                 bt:SetFontString(t)
@@ -962,6 +974,7 @@ function BG.RoleOverviewUI()
                             local level = db.playerInfo[realmID] and db.playerInfo[realmID][player] and db.playerInfo[realmID][player].level
                             if (level and level >= BiaoGe.options["roleOverviewNotShowLevel"]) then
                                 local class = db.playerInfo[realmID][player].class
+                                local talent = db.playerInfo[realmID][player].talent
                                 local iLevel = db.playerInfo[realmID][player].iLevel or (db.PlayerItemsLevel and db.PlayerItemsLevel[realmID] and db.PlayerItemsLevel[realmID][player])
                                 if class and iLevel and iLevel >= BiaoGe.options["roleOverviewNotShowiLevel"] then
                                     local colorplayer = "|c" .. select(4, GetClassColor(class)) .. player .. (isAccounts and "*" or "")
@@ -971,6 +984,7 @@ function BG.RoleOverviewUI()
                                         class = class,
                                         iLevel = iLevel,
                                         level = level,
+                                        talent = talent,
                                         realmID = realmID,
                                         realmName = (db.realmName and db.realmName[realmID]) or BiaoGe.realmName[realmID] or realmID,
                                         isAccounts = isAccounts,
@@ -1010,7 +1024,10 @@ function BG.RoleOverviewUI()
                 else
                     realmName = ""
                 end
-
+                local talentText = ""
+                if isVIP then
+                    talentText = BG.GetTalentIcon(v.class, v.talent, 15)
+                end
                 local levelText = ""
                 if level then levelText = BG.STC_dis(" (" .. level .. ")") end
 
@@ -1019,7 +1036,7 @@ function BG.RoleOverviewUI()
                 local t = bt:CreateFontString()
                 t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                 t:SetPoint("LEFT")
-                t:SetText(realmName .. colorplayer .. levelText)
+                t:SetText(talentText .. realmName .. colorplayer .. levelText)
                 bt.width = t:GetWidth()
                 bt.isMoney = true
                 bt:SetFontString(t)
@@ -1422,16 +1439,17 @@ function BG.RoleOverviewUI()
             local newTbl = {}
             for player, v in pairs(BiaoGe.FBCD[realmID]) do
                 local level = BiaoGe.playerInfo[realmID] and BiaoGe.playerInfo[realmID][player] and BiaoGe.playerInfo[realmID][player].level
-                if (level and level >= BiaoGe.options["roleOverviewNotShowLevel"]) then
+                if level and level >= BiaoGe.options["roleOverviewNotShowLevel"] then
                     local class = BiaoGe.playerInfo[realmID][player].class
                     local iLevel = BiaoGe.playerInfo[realmID][player].iLevel
-                    if class and iLevel then
+                    if class and iLevel and iLevel >= BiaoGe.options["roleOverviewNotShowiLevel"] then
                         local colorplayer = "|c" .. select(4, GetClassColor(class)) .. player .. (isAccounts and "*" or "")
                         tinsert(newTbl, {
                             player = player,
                             colorplayer = colorplayer,
                             class = class,
                             iLevel = iLevel,
+                            realmID = realmID,
                             tbl = BG.Copy(v)
                         })
                     end
@@ -2236,7 +2254,7 @@ function BG.RoleOverviewUI()
                 end
             end
         end
--- /run BiaoGe.equip=nil
+        -- /run BiaoGe.equip=nil
         -- 删除角色总览旧角色
         local function DeleteOldData(db)
             for realmID, v in pairs(BiaoGe[db]) do
@@ -2263,7 +2281,7 @@ function BG.RoleOverviewUI()
             if BiaoGe.playerInfo[realmID] then
                 for player in pairs(BiaoGe.equip[realmID]) do
                     if not BiaoGe.playerInfo[realmID][player] then
-                        BiaoGe.equip[realmID][player]=nil
+                        BiaoGe.equip[realmID][player] = nil
                     end
                 end
             else

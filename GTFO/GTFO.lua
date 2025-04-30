@@ -25,11 +25,13 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { "", "", "", "" }; -- Override table for GTFO sounds
 		IgnoreSpellList = { };
+		BrannMode = 0;
+		IgnoreTimeAmount = .2;
 	};
-	Version = "5.16.3"; -- Version number (text format)
+	Version = "5.17.1"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 51603; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 51500; -- Numeric version number for checking out-of-date clients (Vanilla classic)
+	RetailVersionNumber = 51701; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 51701; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	CataclysmVersionNumber = 51502; -- Numeric version number for checking out-of-date clients (Wrath classic)
@@ -48,7 +50,6 @@ GTFO = {
 	MobID = { }; -- List of mob IDs for melee attack detection
 	GroupGUID = { }; -- List of GUIDs of members in your group
 	UpdateFound = nil; -- Upgrade available?
-	IgnoreTimeAmount = .2; -- Number of seconds between alert sounds
 	IgnoreTime = nil;
 	IgnoreUpdateTimeAmount = 5; -- Number of seconds between sending out version updates
 	IgnoreUpdateTime = nil;
@@ -198,6 +199,7 @@ function GTFO_OnEvent(self, event, ...)
 			TrivialDamagePercent = GTFOData.TrivialDamagePercent or GTFO.DefaultSettings.TrivialDamagePercent;
 			SoundChannel = GTFOData.SoundChannel or GTFO.DefaultSettings.SoundChannel;
 			BrannMode = GTFOData.BrannMode;
+			IgnoreTimeAmount = GTFOData.IgnoreTimeAmount;
 			IgnoreOptions = { };
 			SoundOverrides = { "", "", "", "" };
 			IgnoreSpellList = { };
@@ -1074,8 +1076,8 @@ function GTFO_Command_Vibrate()
 	GTFO_SaveSettings();
 end
 
-function GTFO_Command_BrannMode(bForceOff)
-	if (bForceOff or GTFO.Settings.BrannMode == 2 or (not GTFO.Settings.BrannMode and GTFO.AprilFoolsDay)) then
+function GTFO_Command_BrannMode()
+	if (GTFO.Settings.BrannMode == 2 or not GTFO.Settings.BrannMode) then
 		GTFO.Settings.BrannMode = 0;
 		GTFO_ChatPrint(GTFOLocal.BrannMode_Off);
 	elseif (GTFO.Settings.BrannMode == 1) then
@@ -1121,7 +1123,7 @@ function GTFO_PlaySound(iSound, bOverride, bForceVibrate)
 			return;
 		end
 	end
-	GTFO.IgnoreTime = currentTime + GTFO.IgnoreTimeAmount;
+	GTFO.IgnoreTime = currentTime + (GTFO.Settings.IgnoreTimeAmount or GTFO.DefaultSettings.IgnoreTimeAmount);
 
 	if (bOverride or GTFO.Settings.Sounds[iSound]) then
 		local soundChannel = GTFO.Settings.SoundChannel;
@@ -1138,8 +1140,7 @@ function GTFO_PlaySound(iSound, bOverride, bForceVibrate)
 		
 		local soundFile = tostring(GTFO.Settings.SoundOverrides[iSound] or "");
 		local soundFile2 = "";
-		local aprilFools = GTFO.AprilFoolsDay and not GTFO.Settings.BrannMode;
-		local brannSound = (GTFO.Settings.BrannMode or 0) > 0 or aprilFools;
+		local brannSound = (GTFO.Settings.BrannMode or 0) > 0;
 		if (soundFile == "") then
 			-- Sad, this only works if the dialog channel is unmuted, will need to investigate further
 			if (brannSound and iSound == 1) then
@@ -1149,7 +1150,7 @@ function GTFO_PlaySound(iSound, bOverride, bForceVibrate)
 			else
 				soundFile = GTFO.Sounds[iSound];
 			end
-			if (GTFO.Settings.BrannMode == 1 or aprilFools) then
+			if (GTFO.Settings.BrannMode == 1) then
 				soundFile2 = GTFO.Sounds[iSound];
 			end
 		end
@@ -1412,14 +1413,57 @@ function GTFO_RenderOptions()
 		VibrationButton.optionKey = "Vibration";
 		VibrationButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
 
-		if (GTFO.AprilFoolsDay and not GTFO.Settings.BrannMode) then
-			local AprilFoolsDayButton = CreateFrame("CheckButton", "GTFO_AprilFoolsDayButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
-			AprilFoolsDayButton:SetPoint("TOPLEFT", 10, -410)
-			AprilFoolsDayButton.tooltip = GTFOLocal.UI_AprilFoolsDayDescription;
-			getglobal(AprilFoolsDayButton:GetName().."Text"):SetText(GTFOLocal.UI_AprilFoolsDay);
-			AprilFoolsDayButton.optionKey = "AprilFoolsDay";
-			AprilFoolsDayButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+		local BrannModeText = ConfigurationPanel:CreateFontString("GTFO_BrannModeText","ARTWORK","GameFontNormal");
+		BrannModeText:SetPoint("TOPLEFT", 170, -420);
+		BrannModeText:SetText("");
+
+		local BrannModeSlider = CreateFrame("Slider", "GTFO_BrannModeSlider", ConfigurationPanel, "OptionsSliderTemplate");
+		BrannModeSlider:SetPoint("TOPLEFT", 12, -420);
+		BrannModeSlider:SetScript("OnValueChanged",GTFO_Option_SetBrannMode);
+		BrannModeSlider:SetMinMaxValues(0,2);
+		BrannModeSlider:SetValueStep(1);
+		BrannModeSlider:SetValue(GTFO.Settings.BrannMode or GTFO.DefaultSettings.BrannMode);
+		BrannModeSlider.tooltip = GTFOLocal.UI_BrannModeDescription;
+		BrannModeSlider:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+			GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true);
+		end);
+		BrannModeSlider:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end);
+
+		if (getglobal(GTFO_BrannModeSlider:GetName().."Text")) then
+			getglobal(GTFO_BrannModeSlider:GetName().."Text"):SetText(GTFOLocal.UI_BrannMode);
+			getglobal(GTFO_BrannModeSlider:GetName().."High"):SetText(" ");
+			getglobal(GTFO_BrannModeSlider:GetName().."Low"):SetText(" ");
 		end
+		BrannModeText:SetText(GTFO_GetCurrentBrannMode(GTFO.Settings.BrannMode));
+
+		local IgnoreTimeText = ConfigurationPanel:CreateFontString("GTFO_IgnoreTimeText","ARTWORK","GameFontNormal");
+		IgnoreTimeText:SetPoint("TOPLEFT", 170, -460);
+		IgnoreTimeText:SetText("");
+
+		local IgnoreTimeSlider = CreateFrame("Slider", "GTFO_IgnoreTimeSlider", ConfigurationPanel, "OptionsSliderTemplate");
+		IgnoreTimeSlider:SetPoint("TOPLEFT", 12, -460);
+		IgnoreTimeSlider:SetScript("OnValueChanged",GTFO_Option_SetIgnoreTime);
+		IgnoreTimeSlider:SetMinMaxValues(0,5);
+		IgnoreTimeSlider:SetValueStep(0.1);
+		IgnoreTimeSlider:SetValue(GTFO.Settings.IgnoreTimeAmount or GTFO.DefaultSettings.IgnoreTimeAmount);
+		IgnoreTimeSlider.tooltip = GTFOLocal.UI_IgnoreTimeDescription;
+		IgnoreTimeSlider:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+			GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true);
+		end);
+		IgnoreTimeSlider:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end);
+		
+		if (getglobal(GTFO_IgnoreTimeSlider:GetName().."Text")) then
+			getglobal(GTFO_IgnoreTimeSlider:GetName().."Text"):SetText(GTFOLocal.UI_IgnoreTime);
+			getglobal(GTFO_IgnoreTimeSlider:GetName().."High"):SetText(" ");
+			getglobal(GTFO_IgnoreTimeSlider:GetName().."Low"):SetText(" ");
+		end
+		IgnoreTimeText:SetText((GTFO.Settings.IgnoreTimeAmount or GTFO.DefaultSettings.IgnoreTimeAmount).." "..(GTFOLocal.UI_IgnoreTime_Seconds or ""));
 
 		-- Special Alerts frame
 		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
@@ -1692,9 +1736,6 @@ function GTFO.ToggleCheckboxOption(self)
 		GTFO.Settings.TrivialMode = checked;
 	elseif (optionKey == "Vibration") then
 		GTFO.Settings.EnableVibration = checked;
-	elseif (optionKey == "AprilFoolsDay") then
-		GTFO.Settings.BrannMode = 0;
-		getglobal("GTFO_AprilFoolsDayButton"):Hide();
 	end
 	
 	for key, option in pairs(GTFO.IgnoreSpellCategory) do
@@ -2046,6 +2087,28 @@ function GTFO_Option_SetChannel()
 	GTFO_SaveSettings();
 end
 
+function GTFO_Option_SetBrannMode()
+	if (not GTFO.UIRendered) then
+		return;
+	end
+	local brannMode = math.floor(getglobal("GTFO_BrannModeSlider"):GetValue());
+	GTFO.Settings.BrannMode = brannMode;
+	getglobal("GTFO_BrannModeSlider"):SetValue(brannMode);
+	getglobal("GTFO_BrannModeText"):SetText(GTFO_GetCurrentBrannMode(GTFO.Settings.BrannMode));
+	GTFO_SaveSettings();
+end
+
+function GTFO_Option_SetIgnoreTime()
+	if (not GTFO.UIRendered) then
+		return;
+	end
+	local ignoreTime = math.floor(getglobal("GTFO_IgnoreTimeSlider"):GetValue() * 10)/10;
+	GTFO.Settings.IgnoreTimeAmount = ignoreTime;
+	getglobal("GTFO_IgnoreTimeSlider"):SetValue(ignoreTime);
+	getglobal("GTFO_IgnoreTimeText"):SetText(GTFO.Settings.IgnoreTimeAmount.." "..(GTFOLocal.UI_IgnoreTime_Seconds or ""));
+	GTFO_SaveSettings();
+end
+
 function GTFO_Option_SetTrivialDamageText(iTrivialDamagePercent)
 	if (not GTFO.UIRendered) then
 		return;
@@ -2260,6 +2323,7 @@ function GTFO_SaveSettings()
 	GTFOData.EnableVibration = GTFO.Settings.EnableVibration;
 	GTFOData.SoundChannel = GTFO.Settings.SoundChannel;
 	GTFOData.BrannMode = GTFO.Settings.BrannMode;
+	GTFOData.IgnoreTimeAmount = GTFO.Settings.IgnoreTimeAmount;
 	GTFOData.IgnoreOptions = { };
 	if (GTFO.Settings.IgnoreOptions) then
 		for key, option in pairs(GTFO.Settings.IgnoreOptions) do
@@ -2311,9 +2375,6 @@ function GTFO_SaveSettings()
 		getglobal("GTFO_UnmuteButton"):SetChecked(GTFO.Settings.UnmuteMode);
 		getglobal("GTFO_TrivialButton"):SetChecked(GTFO.Settings.TrivialMode);
 		getglobal("GTFO_VibrationButton"):SetChecked(GTFO.Settings.EnableVibration);
-		if (GTFO.AprilFoolsDay and not GTFO.Settings.BrannMode) then
-			getglobal("GTFO_AprilFoolsDayButton"):SetChecked(GTFO.AprilFoolsDay and not GTFO.Settings.BrannMode);
-		end
 
 		for key, option in pairs(GTFO.IgnoreSpellCategory) do
 			getglobal("GTFO_IgnoreAlertButton_"..key):SetChecked(not GTFO.Settings.IgnoreOptions[key]);
@@ -2346,11 +2407,14 @@ function GTFO_SetDefaults()
 		getglobal("GTFO_VolumeSlider"):SetValue(GTFO.DefaultSettings.Volume);
 		getglobal("GTFO_TrivialDamageSlider"):SetValue(GTFO.DefaultSettings.TrivialDamagePercent);
 		getglobal("GTFO_ChannelIdSlider"):SetValue(GTFO_GetCurrentSoundChannelId(GTFO.DefaultSettings.SoundChannel));
+		getglobal("GTFO_BrannModeSlider"):SetValue(GTFO_GetCurrentBrannMode(GTFO.DefaultSettings.BrannMode));
+		getglobal("GTFO_IgnoreTimeSlider"):SetValue(GTFO.DefaultSettings.IgnoreTimeAmount);
 	end
 	GTFO.Settings.IgnoreOptions = GTFO.DefaultSettings.IgnoreOptions;
 	GTFO.Settings.SoundOverrides = GTFO.DefaultSettings.SoundOverrides;
 	GTFO.Settings.IgnoreSpellList = GTFO.DefaultSettings.IgnoreSpellList;
-	GTFO.Settings.BrannMode = nil;
+	GTFO.Settings.BrannMode = GTFO.DefaultSettings.BrannMode;
+	GTFO.Settings.IgnoreTimeAmount = GTFO.DefaultSettings.IgnoreTimeAmount;
 	GTFO_SaveSettings();
 end
 
@@ -2788,6 +2852,16 @@ function GTFO_GetCurrentSoundChannelId(sSoundChannel)
 		end
 	end
 	return 1; -- Default
+end
+
+function GTFO_GetCurrentBrannMode(iCode)
+	local code = tonumber(iCode) or 0;
+	if (code == 1) then
+		return GTFOLocal.BrannMode_OnWithDefault;
+	elseif (code == 2) then
+		return GTFOLocal.BrannMode_On;
+	end
+	return GTFOLocal.BrannMode_Off;
 end
 
 function GTFO_GetSpellName(spellId)

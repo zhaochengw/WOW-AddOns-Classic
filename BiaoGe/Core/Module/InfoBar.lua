@@ -24,7 +24,7 @@ local realmID = GetRealmID()
 local player = BG.playerName
 local realmName = GetRealmName()
 
---最后更新时间：25/4/9 17:40
+--最后更新时间：25/4/19 12:30
 local AFDtbl_360 = {
     -- 1200
     "wlk怀旧-范沃森-Selendis",
@@ -34,6 +34,7 @@ local AFDtbl_360 = {
     "陈",
     -- 360
     -- "",
+    "虎大超",
     "卧龙草船借箭-龙牙",
     "依然不低调",
     "匕首岭-麻生成实",
@@ -80,6 +81,45 @@ local tbl = {
     -- "",
     -- "",
     -- "",
+    "月影连天",
+    "Sakple",
+    "匕首岭-丹妮卡丽熙",
+    "天天好快乐",
+    "Schmnn",
+    "小龙",
+    "阳琳",
+    "梦中得婚礼",
+    "火锤-直到世界的尽头-花雪",
+    "灰烬使者-小熊布袋",
+    "柚子",
+    "啊啊啊付大夫是",
+    "aarongu826",
+    "叶弦",
+    "Tohigh",
+    "奈斯丶",
+    "风涧",
+    "凉爽皮夹黄",
+    "维克洛尔-月下斋-迪凯哥",
+    "大以巴狼",
+    "铁血II-亚洲金团",
+    "萝卜",
+    "龙之召唤-圈圈的味道",
+    "布朗熊",
+    "Jan",
+    "小啊狸",
+    "酒酿芋小圆",
+    "龍",
+    "Lanlanluu—范克瑞斯",
+    "龙牙-铁血部落-怒风战",
+    "玛卡阿巴",
+    "小亏",
+    "七禾野",
+    "猫尾巴",
+    "napoleanic",
+    "加丁-逍遥公会-三甲",
+    "面包鸡",
+    "鑫贝贝",
+    "王赜",
     "沙滩",
     "大王别介",
     "amyge977",
@@ -377,7 +417,7 @@ BG.Init(function()
             t:SetText(text)
             t:SetWidth(f:GetWidth() - w * 3)
             if not next(self.texts) then
-                t:SetPoint("TOPLEFT", w, -20)
+                t:SetPoint("TOPLEFT", 20, -20)
             else
                 t:SetPoint("TOPLEFT", self.texts[#self.texts], "BOTTOMLEFT", 0, -15)
             end

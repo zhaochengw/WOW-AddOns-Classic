@@ -373,7 +373,7 @@ function BG.GetRaidPoint()
             if not team[v.subgroup] then
                 team[v.subgroup] = {}
             end
-            table.insert(team[v.subgroup], name)
+            tinsert(team[v.subgroup], name)
         end
     end
 

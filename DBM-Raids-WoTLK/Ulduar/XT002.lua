@@ -5,7 +5,7 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250408170354")
 mod:SetCreatureID(33293)
 if mod:IsPostCata() then
 	mod:SetEncounterID(1142)
@@ -40,7 +40,7 @@ local specWarnConsumption			= mod:NewSpecialWarningGTFO(64206, nil, nil, nil, 1,
 
 local enrageTimer					= mod:NewBerserkTimer(600)
 local timerTympanicTantrum			= mod:NewBuffActiveTimer(8, 62776, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
-local timerTympanicTantrumCD		= mod:NewCDTimer(62, 62776, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
+local timerTympanicTantrumCD		= mod:NewCDTimer(61, 62776, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerHeart					= mod:NewCastTimer(30, 63849, nil, nil, nil, 6, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerLightBomb				= mod:NewTargetTimer(9, 65121, nil, nil, nil, 3)
 local timerGravityBomb				= mod:NewTargetTimer(9, 64234, nil, nil, nil, 3)

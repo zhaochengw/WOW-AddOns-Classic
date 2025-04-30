@@ -510,6 +510,26 @@ function SeasonOfDiscovery:LoadNPCs()
                 [zoneIDs.MOONGLADE] = {{41.2, 43.6}},
             },
         },
+        [216666] = { -- Techbot
+            [npcKeys.zoneID] = zoneIDs.GNOMEREGAN,
+            [npcKeys.spawns] = {[zoneIDs.GNOMEREGAN]={{-1,-1}}},
+        },
+        [216668] = { -- Irradiated Invader
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{20.9,36.02},{22.09,34.14},{19.68,36.71},{19.32,38.8},{21.81,32.2}}},
+        },
+        [216669] = { -- Caverndeep Pillager
+            [npcKeys.zoneID] = zoneIDs.DUN_MOROGH,
+            [npcKeys.spawns] = {[zoneIDs.DUN_MOROGH]={{21.79,33.69},{20.61,36.96},{18.76,39.16}}},
+        },
+        [216670] = { -- Caverndeep Looter
+            [npcKeys.zoneID] = zoneIDs.GNOMEREGAN,
+            [npcKeys.spawns] = {[zoneIDs.GNOMEREGAN]={{-1,-1}}},
+        },
+        [216671] = { -- Caverndeep Invader
+            [npcKeys.zoneID] = zoneIDs.GNOMEREGAN,
+            [npcKeys.spawns] = {[zoneIDs.GNOMEREGAN]={{-1,-1}}},
+        },
         [216902] = { -- Wulmort Jinglepocket
             [npcKeys.spawns] = {
                 [zoneIDs.IRONFORGE] = {{33.7, 67.23}},
@@ -940,16 +960,28 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{93.81,90.07}}},
         },
-        [240811] = { -- Balnazzar, SoD Scarlet Enclave Raid Boss
-            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
-            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE] = {{-1,-1}}},
-        },
         [241664] = { -- Malorie
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{95.29,78.80}}},
             [npcKeys.npcFlags] = npcFlags.VENDOR,
             [npcKeys.friendlyToFaction] = "AH",
             [npcKeys.subName] = "Food & Drink",
+        },
+        [241768] = { -- Herod
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
+        },
+        [241769] = { -- Arcanist Doan
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
+        },
+        [241770] = { -- Interrogator Vishas
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
+        },
+        [241772] = { -- Grand Crusader Caldoran
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
         },
         [241862] = { -- Scarlet Stash
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
@@ -982,11 +1014,19 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.friendlyToFaction] = "AH",
             [npcKeys.subName] = "Repair",
         },
+        [243021] = { -- Lillian Voss
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
+        },
         [243023] = { -- Inquisitor Jociphine
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{68.2,82.4}}},
             [npcKeys.questStarts] = {90510},
             [npcKeys.questEnds] = {90510},
+        },
+        [243269] = { -- Solistrasza
+            [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,
+            [npcKeys.spawns] = {[zoneIDs.SCARLET_ENCLAVE]={{-1,-1}}},
         },
         [243386] = { -- Leonid Barthalomew the Revered, terrordale
             [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,

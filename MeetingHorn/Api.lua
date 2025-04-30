@@ -40,7 +40,18 @@ ns.PROJECT_DATA = { --
 
 ns.SEARCH_ALIAS = { --
     ['5h'] = {'h', 'yx', '英雄', params = {comment = true}, ['英雄'] = {comment = true, name = true}},
+    ['周常'] = {'周常', '周长', params = {comment = true}, ['周长'] = {comment = true, name = true}},
 }
+
+local keyCombinations = {
+    "SHIFT-.", "SHIFT-[", "SHIFT-;",
+    "CTRL-.", "CTRL-[", "CTRL-;",
+    "ALT-.", "ALT-[", "ALT-;",
+    "SHIFT-,", "SHIFT-]", "SHIFT-'",
+    "CTRL-,", "CTRL-]", "CTRL-'",
+    "ALT-,", "ALT-]", "ALT-'"
+}
+
 
 local INSTANCE_DATA = {
     [2717] = {projectId = 2, logo = 'Ragnaros'}, -- 熔火之心
@@ -712,4 +723,36 @@ function ns.GetAchievementInfoIsTheSameDay(id)
         end
     end
     return false
+end
+
+function ns.IsSingleKeyBound(key)
+    return GetBindingAction(key) ~= ""
+end
+
+function ns.IsKeyCombinationAndSingleKeyUnbound(keyCombination)
+    if ns.IsSingleKeyBound(keyCombination) then
+        return false
+    end
+
+    local singleKey = keyCombination:match("[^%-]+$")
+    if singleKey then
+        if ns.IsSingleKeyBound(singleKey) then
+            return false
+        end
+    end
+
+    return true
+end
+
+function ns.FindFirstTwoUnboundKeys()
+    local unboundKeys = {}
+    for _, key in ipairs(keyCombinations) do
+        if ns.IsKeyCombinationAndSingleKeyUnbound(key) then
+            table.insert(unboundKeys, key)
+            if #unboundKeys == 2 then
+                break -- 找到两个未被绑定的按键后停止
+            end
+        end
+    end
+    return unboundKeys
 end

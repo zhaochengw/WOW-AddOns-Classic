@@ -856,9 +856,9 @@ function DEX_AddText(damage, spell, damagetype, crit, iscurTarget, coerciveShowS
         colorSe = DEX_Get("DEX_ColorHealthSe");
         if DEX_OverHeal ~= 0 then
             if DEX_Get("DEX_ShowOverHeal") == 1 then
-                damage = (damage - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
+                damage = (damageNum - DEX_OverHeal) .. " (" .. DEX_OverHeal .. ")";
             else
-                damage = damage - DEX_OverHeal;
+                damage = damageNum - DEX_OverHeal;
                 if damage == 0 then return; end
             end
         end

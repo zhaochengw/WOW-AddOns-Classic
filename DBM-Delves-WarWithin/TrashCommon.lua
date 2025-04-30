@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("DelveTrashCommon", "DBM-Delves-WarWithin")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250330084934")
+mod:SetRevision("20250413045732")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)--Stays active in all zones for zone change handlers, but registers events based on dungeon ids
 local validZones = {[2664] = true, [2679] = true, [2680] = true, [2681] = true, [2683] = true, [2684] = true, [2685] = true, [2686] = true, [2687] = true, [2688] = true, [2689] = true, [2690] = true, [2767] = true, [2768] = true, [2815] = true, [2826] = true}
 for v, _ in pairs(validZones) do
@@ -78,6 +78,7 @@ local specWarnWorthlessAdorations			= mod:NewSpecialWarningDodge(1217361, nil, n
 local specWarnTakeASelfie					= mod:NewSpecialWarningDodge(1217326, nil, nil, nil, 2, 2)
 local specWarnTheresTheDoor					= mod:NewSpecialWarningDodge(1216806, nil, nil, nil, 2, 15)
 local specWarnHeedlessCharge				= mod:NewSpecialWarningDodge(1217301, nil, nil, nil, 2, 2)
+local specWarnRecklessCharge				= mod:NewSpecialWarningDodge(473972, nil, nil, nil, 2, 2)--Insufficent data for timers
 local specWarnRocketBarrage					= mod:NewSpecialWarningDodge(473550, nil, nil, nil, 2, 2)
 local specWarnBloodbath						= mod:NewSpecialWarningRun(473995, nil, nil, nil, 4, 2)
 local specWarnEchoofRenilash				= mod:NewSpecialWarningRun(434281, nil, nil, nil, 4, 2)
@@ -148,6 +149,7 @@ local timerTakeASelfieCD					= mod:NewCDNPTimer(13.3, 1217326, nil, nil, nil, 3)
 local timerTheresTheDoorCD					= mod:NewCDNPTimer(14.6, 1216806, nil, nil, nil, 3)--14.6-18.1
 local timerZapCD							= mod:NewCDNPTimer(19.4, 1216805, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--19.4-25
 local timerHeedlessChargeCD					= mod:NewCDNPTimer(15.8, 1217301, nil, nil, nil, 3)--15.8-26.7
+--local timerRecklessChargeCD					= mod:NewCDNPTimer(15.8, 473972, nil, nil, nil, 3)--Need more data
 local timerBloodBathCD						= mod:NewCDNPTimer(15.8, 473995, nil, nil, nil, 3)--40-43
 local timerRocketBarrageCD					= mod:NewCDNPTimer(19.4, 473550, nil, nil, nil, 3)--19.4-21.8
 local timerHardenShellCD					= mod:NewCDNPTimer(30.4, 1214238, nil, nil, nil, 3)
@@ -227,6 +229,12 @@ local function workAroundLuaLimitation(self, spellId, sourceName, sourceGUID)
 		if self:AntiSpam(3, 2) then
 			specWarnHeedlessCharge:Show()
 			specWarnHeedlessCharge:Play("chargemove")
+		end
+	elseif spellId == 473972 then
+		--timerRecklessChargeCD:Start(nil, sourceGUID)
+		if self:AntiSpam(3, 2) then
+			specWarnRecklessCharge:Show()
+			specWarnRecklessCharge:Play("chargemove")
 		end
 	elseif spellId == 473995 then
 		if self:AntiSpam(3, 2) then

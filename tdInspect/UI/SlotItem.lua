@@ -17,8 +17,6 @@ local GetItemQualityColor = GetItemQualityColor
 local UnitHasRelicSlot = UnitHasRelicSlot
 local CursorUpdate = CursorUpdate
 
-local SetItemButtonTexture = SetItemButtonTexture
-
 local GameTooltip = GameTooltip
 
 local Inspect = ns.Inspect
@@ -39,10 +37,6 @@ function SlotItem:Constructor()
     self.IconBorder:SetSize(67, 67)
 
     self.LevelText = _G[self:GetName() .. 'Count']
-
-    -- self.LevelText = self:CreateFontString(nil, 'OVERLAY', 'TextStatusBarText')
-    -- self.LevelText:SetPoint('BOTTOMLEFT', 1, 0)
-    -- self.LevelText:Hide()
 
     self.UpdateTooltip = self.OnEnter
 
@@ -112,22 +106,37 @@ function SlotItem:UpdateBorder(r, g, b)
     end
 end
 
+local ItemLevelColorMethods = {
+    Blizzard = GetItemQualityColor,
+    Light = function(quality)
+        local color = ns.CUSTOM_ITEM_QUALITY_COLORS[quality]
+        return color.r, color.g, color.b
+    end,
+    White = function()
+        return 1, 1, 1
+    end,
+    Hidden = nop,
+}
+
+function SlotItem:GetItemLevelColor(quality)
+    if not quality then
+        return
+    end
+    return (ItemLevelColorMethods[ns.db.profile.itemLevelColor])(quality)
+end
+
 function SlotItem:UpdateItemLevel(level, quality)
-    if level and level > 0 then
-        if ns.db.profile.itemLevelColor == 'Blizzard' then
-            local r, g, b = GetItemQualityColor(quality)
-            self.LevelText:SetTextColor(r, g, b, 1)
-        elseif ns.db.profile.itemLevelColor == 'Light' then
-            local color = ns.CUSTOM_ITEM_QUALITY_COLORS[quality]
-            local r, g, b = color.r, color.g, color.b
+    local r, g, b = self:GetItemLevelColor(quality)
+    if not level or level == 0 or not r then
+        self.LevelText:Hide()
+    else
+        if r then
             self.LevelText:SetTextColor(r, g, b, 1)
         else
             self.LevelText:SetTextColor(1, 1, 1, 1)
         end
         self.LevelText:SetText(level)
         self.LevelText:Show()
-    else
-        self.LevelText:Hide()
     end
 end
 

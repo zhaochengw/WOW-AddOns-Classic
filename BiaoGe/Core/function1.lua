@@ -53,7 +53,7 @@ local function RGB_16(name, r, g, b)
 end
 ns.RGB_16 = RGB_16
 
-function SetColorName(name, r, g, b)
+local function SetColorName(name, r, g, b)
     if not (r and g and b) then
         return name
     end
@@ -71,6 +71,7 @@ function SetColorName(name, r, g, b)
     end
     return "|cff" .. r .. g .. b .. name .. "|r"
 end
+ns.SetColorName = SetColorName
 
 -- 第几个BOSS
 local function BossNum(FB, b, t)
@@ -96,7 +97,7 @@ function BG.GetBossNumInfo(FB, bossNum)
 end
 
 ------------------在文本里插入材质图标------------------
-local function AddTexture(Texture, y, coord)
+local function AddTexture(Texture, y, coord, width)
     if not Texture then
         return ""
     end
@@ -133,8 +134,8 @@ local function AddTexture(Texture, y, coord)
     else
         tex = Texture
     end
-    local t = "|T" .. tex .. ":0:0:" .. x .. ":" .. y .. coord .. "|t"
-    return t
+    width = width or 0
+    return "|T" .. tex .. ":" .. width .. ":" .. width .. ":" .. x .. ":" .. y .. coord .. "|t"
 end
 ns.AddTexture = AddTexture
 
@@ -660,6 +661,9 @@ function BG.DeletePlayerData(realmID, player)
     end
     if BiaoGe.equip and BiaoGe.equip[realmID] then
         BiaoGe.equip[realmID][player] = nil
+    end
+    if BiaoGe.bag and BiaoGe.bag[realmID] then
+        BiaoGe.bag[realmID][player] = nil
     end
     if BiaoGeVIP and BiaoGeVIP.RoleOverviewSort and BiaoGeVIP.RoleOverviewSort[realmID] then
         for i, v in ipairs(BiaoGeVIP.RoleOverviewSort[realmID]) do

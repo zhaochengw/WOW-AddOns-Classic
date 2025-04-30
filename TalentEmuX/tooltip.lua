@@ -45,41 +45,13 @@ MT.BuildEnv('TOOLTIP');
 		ReservedLinePlaceHolder[ReservedText] = i;
 		ReservedLine[i] = {  };
 	end
-	local function BuildTipTextList(Tooltip)
-		local name = Tooltip:GetName();
-		if name then
-			return setmetatable(
-				{
-					LPrefix = name .. "TextLeft";
-					RPrefix = name .. "TextRight";
-				},
-				{
-					__index = function(tbl, i)
-						local line = _G[tbl.LPrefix .. i];
-						if line then
-							tbl[i] = line;
-							return line;
-						end
-						return nil;
-					end,
-				}
-			);
-		end
-	end
-	local TipTextLeft = setmetatable({  }, {
-		__index = function(tbl, Tooltip)
-			local List = BuildTipTextList(Tooltip);
-			tbl[Tooltip] = List;
-			return List;
-		end,
-	});
 	local function AddReservedLines(Tooltip)
 		for i = 1, NumReservedLines do
 			Tooltip:AddLine(ReservedLinePlaceHolder[i]);
 			ReservedLine[i][Tooltip] = nil;
 		end
 		-- Tooltip:Show();
-		local List = TipTextLeft[Tooltip];
+		local List = MT.TipTextLeft[Tooltip];
 		for i = 1, Tooltip:NumLines() do
 			local Line = List[i];
 			if Line then

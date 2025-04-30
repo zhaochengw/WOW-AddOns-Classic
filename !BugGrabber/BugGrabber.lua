@@ -563,14 +563,14 @@ do
 	end
 end
 events.ADDON_ACTION_BLOCKED = events.ADDON_ACTION_FORBIDDEN
-function events:LUA_WARNING(_, warnType, warningText)
-	-- Temporary hack for the few dropdown libraries that exist that were designed poorly
-	-- Hopefully we will see a rewrite of dropdowns soon
-	if warnType == 0 and warningText:find("DropDown", nil, true) then return end
-	grabError(warningText, true)
+function events:LUA_WARNING(_, warningText, pre11_1_5warningText) -- XXX changed in 11.1.5, need to wait until it's ported to all classic versions
+	grabError(pre11_1_5warningText or warningText, true)
 end
 
-UIParent:UnregisterEvent("LUA_WARNING")
+UIParent:UnregisterEvent("LUA_WARNING") -- XXX pre-11.1.5
+if ScriptErrorsFrame then -- Post 11.1.5
+	ScriptErrorsFrame:UnregisterEvent("LUA_WARNING")
+end
 real_seterrorhandler(grabError)
 function seterrorhandler() --[[ noop ]] end
 

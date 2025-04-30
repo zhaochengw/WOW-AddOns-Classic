@@ -209,6 +209,17 @@ GTFO.SpellID["1218158"] = {
   sound = 1;
 };
 
+GTFO.SpellID["470843"] = {
+  --desc = "Noxious Ooze (Ahn'tak)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["470827"] = {
+  --desc = "Poison Breath (Ahn'tak)";
+  sound = 1;
+};
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
@@ -359,6 +370,12 @@ GTFO.SpellID["424223"] = {
   --desc = "Incite Flames (Blazikon)";
   ignoreApplication = true;
   sound = 1;
+};
+
+GTFO.SpellID["443835"] = {
+  --desc = "Blazing Storms (Blazikon)"; -- Tank is out of range
+  tankSound = 1;
+  sound = 0;
 };
 
 GTFO.SpellID["1218133"] = {

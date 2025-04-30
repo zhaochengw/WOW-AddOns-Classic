@@ -309,6 +309,45 @@ MT.BuildEnv('INIT');
 		end
 	end
 
+	function MT.NewCache()
+		return { TalData = {  }, GlyData = {  }, EquData = {  }, EngData = {  }, PakData = {  }, };
+	end
+
+	local function BuildTipTextList(Tooltip, IsRight)
+		local name = Tooltip:GetName();
+		if name then
+			return setmetatable(
+				{
+					Prefix = name .. (IsRight and "TextRight" or "TextLeft");
+				},
+				{
+					__index = function(tbl, i)
+						local Line = _G[tbl.Prefix .. i];
+						if Line then
+							tbl[i] = Line;
+							return Line;
+						end
+						return nil;
+					end,
+				}
+			);
+		end
+	end
+	MT.TipTextLeft = setmetatable({  }, {
+		__index = function(tbl, Tooltip)
+			local List = BuildTipTextList(Tooltip);
+			tbl[Tooltip] = List;
+			return List;
+		end,
+	});
+	MT.TipTextRight = setmetatable({  }, {
+		__index = function(tbl, Tooltip)
+			local List = BuildTipTextList(Tooltip, true);
+			tbl[Tooltip] = List;
+			return List;
+		end,
+	});
+
 -->
 	MT.UI = {  };
 	MT.CALLBACK = {  };

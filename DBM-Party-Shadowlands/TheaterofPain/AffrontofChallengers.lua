@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2397, "DBM-Party-Shadowlands", 6, 1187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250324043120")
+mod:SetRevision("20250419142328")
 mod:SetCreatureID(164451, 164463, 164461)--Dessia, Paceran, Sathel
 mod:SetEncounterID(2391)
 mod:SetHotfixNoticeRev(20220416000000)
@@ -48,7 +48,7 @@ local yellSearingDeath					= mod:NewYell(333231)
 local specWarnWitheringTouch			= mod:NewSpecialWarningDispel(1215600, "RemoveMagic", nil, nil, 1, 2)
 
 local timerSearingDeathCD				= mod:NewCDCountTimer(42.5, 333231, nil, nil, nil, 3)--Ultimate
-local timerWitheringTouchCD				= mod:NewVarCountTimer("v17-22", 1215600, nil, nil, nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--No clean way to correct so we'll use variance timer
+local timerWitheringTouchCD				= mod:NewVarCountTimer("v17-25.3", 1215600, nil, nil, nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--No clean way to correct so we'll use variance timer
 
 --General
 mod.vb.willCount = 0
@@ -109,11 +109,11 @@ function mod:SPELL_CAST_START(args)
 		timerMortalStrikeCD:Start(nil, self.vb.mortalStrikeCount+1, args.sourceGUID)
 	elseif spellId == 333231 then
 		self.vb.deathCount = self.vb.deathCount + 1
-		local timer = self.vb.willCount == 2 and 14.6 or self.vb.willCount == 1 and 29.1 or 42.5
+		local timer = self.vb.willCount == 2 and 14.6 or self.vb.willCount == 1 and 27.9 or 42.5
 		timerSearingDeathCD:Start(timer, self.vb.deathCount+1, args.sourceGUID)--self.vb.deathCount+1
 	elseif spellId == 320182 then
 		self.vb.sporeCount = self.vb.sporeCount + 1
-		local timer = self.vb.willCount == 2 and 14.6 or self.vb.willCount == 1 and 29.1 or 42.6
+		local timer = self.vb.willCount == 2 and 14.6 or self.vb.willCount == 1 and 27.9 or 42.6
 		timerNoxiousSporeCD:Start(timer, self.vb.sporeCount+1, args.sourceGUID)
 		--Breath timer restarts
 		timerDecayingBreathCD:HardStop(args.sourceGUID)

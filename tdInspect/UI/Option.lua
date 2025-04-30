@@ -118,8 +118,10 @@ function Addon:SetupOptionFrame()
                     closeCharacterFrameWhenInspect = fullToggle(L['Close character frame when inspect']),
                     showOptionButtonInInspect = fullToggle(L['Show option button in inspect gear list']),
                     itemLevelColor = drop(L['Item level color style'], {
-                        {value = 'White', name = L['White']}, {value = 'Blizzard', name = L['Quality by blizzard']},
-                        {value = 'Light', name = L['Light']},
+                        {value = 'Hidden', name = L['Hidden']}, --
+                        {value = 'White', name = L['White']}, --
+                        {value = 'Blizzard', name = L['Quality by blizzard']}, --
+                        {value = 'Light', name = L['Light']}, --
                     }),
                 },
                 characterList = inline(L['Character List']) {

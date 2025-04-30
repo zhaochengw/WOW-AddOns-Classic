@@ -108,7 +108,7 @@ MT.BuildEnv('RAIDTOOL');
 					local item = EquData[slot];
 					if item then
 						items = items + 1;
-						local enchantable, enchanted, link, level, loc, estr = MT.GetEnchantInfo(class, slot, item);
+						local enchantable, enchanted, link, level, estr = MT.GetEnchantInfo(class, slot, item);
 						if enchantable then
 							if enchanted then
 								enchants = enchants + 1;
@@ -160,7 +160,7 @@ MT.BuildEnv('RAIDTOOL');
 					if slot ~= 4 then
 						local item = EquData[slot];
 						if item then
-							local enchantable, enchanted, link, level, loc, estr = MT.GetEnchantInfo(class, slot, item);
+							local enchantable, enchanted, link, level, estr = MT.GetEnchantInfo(class, slot, item);
 							local A, T, M, R, Y, B, gstr = MT.ScanGemInfo(item, true);
 							if enchantable then
 								if gstr ~= "" then

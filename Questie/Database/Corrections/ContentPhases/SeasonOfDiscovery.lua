@@ -419,6 +419,7 @@ local questsToBlacklistByPhase = {
         [4604] = true,
         [4605] = true,
         [4606] = true,
+        [81975] = true, -- Never was made available as it seems
 
         -- Original Sunken Temple quests (instance reworked to raid, new quest IDs)
         [1445] = true,
@@ -639,6 +640,35 @@ local questsToBlacklistByPhase = {
         [8764] = true, -- The Changing of Paths - Protector No More
         [8765] = true, -- The Changing of Paths - Invoker No More
         [8766] = true, -- The Changing of Paths - Conqueror No More
+
+        -- AQ Tier 2.5 Gear (replaced with vendor)
+        [8556] = true, -- Signet of Unyielding Strength
+        [8557] = true, -- Drape of Unyielding Strength
+        [8558] = true, -- Sickle of Unyielding Strength
+        [8689] = true, -- Shroud of Infinite Wisdom
+        [8690] = true, -- Cloak of the Gathering Storm
+        [8691] = true, -- Drape of Vaulted Secrets
+        [8692] = true, -- Cloak of Unending Life
+        [8693] = true, -- Cloak of Veiled Shadows
+        [8694] = true, -- Shroud of Unspoken Names
+        [8695] = true, -- Cape of Eternal Justice
+        [8696] = true, -- Cloak of the Unseen Path
+        [8697] = true, -- Ring of Infinite Wisdom
+        [8698] = true, -- Ring of the Gathering Storm
+        [8699] = true, -- Band of Vaulted Secrets
+        [8700] = true, -- Band of Unending Life
+        [8701] = true, -- Band of Veiled Shadows
+        [8702] = true, -- Ring of Unspoken Names
+        [8703] = true, -- Ring of Eternal Justice
+        [8704] = true, -- Signet of the Unseen Path
+        [8705] = true, -- Gavel of Infinite Wisdom
+        [8706] = true, -- Hammer of the Gathering Storm
+        [8707] = true, -- Blade of Vaulted Secrets
+        [8708] = true, -- Mace of Unending Life
+        [8709] = true, -- Dagger of Veiled Shadows
+        [8710] = true, -- Kris of Unspoken Names
+        [8711] = true, -- Blade of Eternal Justice
+        [8712] = true, -- Scythe of the Unseen Path
 
         -- Original Naxxramas quests
         [9120] = true, -- The Fall of Kel'Thuzad - Replaced by 87360

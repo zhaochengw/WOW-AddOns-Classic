@@ -109,6 +109,7 @@ MT.BuildEnv("setting");
 		show_DBIcon = true,
 		minimapPos = 0,
 		first_auction_mod = "*",
+		show_queue_button = true,
 		show_queue = false,
 	};
 	local default_set = {
@@ -302,6 +303,8 @@ function MT.OnSettingChanged(key, val, loading)
 		MT.ToggleFrameRankInfo(val);
 	elseif key == 'show_tradeskill_frame_price_info' then
 		MT.ToggleFramePriceInfo(val);
+	elseif key == 'show_queue_button' then
+		MT.ToggleQueueButton(val);
 	elseif key == 'colored_rank_for_unknown' then
 		MT.RefreshAllFrames();
 	elseif key == 'regular_exp' then
@@ -418,6 +421,20 @@ do	--	SLASH
 					SlashCmdList["ALATRADEFRAME"]("setrank1");
 				else
 					SlashCmdList["ALATRADEFRAME"]("setrank0");
+				end
+			end,
+		},
+		{	--	show_queue_button
+			'bool',
+			"^queue" .. SEPARATOR .. "(.*)" .. SEPARATOR .. "$",
+			"show_queue_button",
+			l10n.SLASH_NOTE["show_queue_button"],
+			nil,
+			[8] = function(self)
+				if self:GetChecked() then
+					SlashCmdList["ALATRADEFRAME"]("setqueue1");
+				else
+					SlashCmdList["ALATRADEFRAME"]("setqueue0");
 				end
 			end,
 		},

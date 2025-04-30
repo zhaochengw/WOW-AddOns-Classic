@@ -41,55 +41,56 @@ function ns.FixItemSets(tip, id)
     for i = 2, tip:NumLines() do
         local textLeft = tip:GetFontStringLeft(i)
         local text = textLeft:GetText()
-
-        if not setLine then
-            local prefix, n, maxCount, suffix = text:match(setNameLinePattern)
-            if prefix then
-                setLine = i
-                textLeft:SetText(prefix .. equippedCount .. '/' .. maxCount .. suffix)
-            end
-        elseif setLine and not setLineFinished then
-            local line = text:trim()
-            local setSlotIndex = i - setLine
-            local slotItem = slots[setSlotIndex]
-
-            if not slotItem or line == '' then
-                setLineFinished = true
-            else
-                local item = equippedSetItems[slotItem.slot]
-                local hasItem = item
-                if not item then
-                    item = slotItem.itemId
+        if text and text:trim() ~= '' then
+            if not setLine then
+                local prefix, n, maxCount, suffix = text:match(setNameLinePattern)
+                if prefix then
+                    setLine = i
+                    textLeft:SetText(prefix .. equippedCount .. '/' .. maxCount .. suffix)
                 end
+            elseif setLine and not setLineFinished then
+                local line = text:trim()
+                local setSlotIndex = i - setLine
+                local slotItem = slots[setSlotIndex]
 
-                local name = GetItemInfo(item)
-                if name then
-                    textLeft:SetText('  ' .. name)
-                    if hasItem then
-                        textLeft:SetTextColor(1, 1, 0.6)
-                    else
-                        textLeft:SetTextColor(0.5, 0.5, 0.5)
+                if not slotItem or line == '' then
+                    setLineFinished = true
+                else
+                    local item = equippedSetItems[slotItem.slot]
+                    local hasItem = item
+                    if not item then
+                        item = slotItem.itemId
+                    end
+
+                    local name = GetItemInfo(item)
+                    if name then
+                        textLeft:SetText('  ' .. name)
+                        if hasItem then
+                            textLeft:SetTextColor(1, 1, 0.6)
+                        else
+                            textLeft:SetTextColor(0.5, 0.5, 0.5)
+                        end
                     end
                 end
-            end
-        elseif setLineFinished then
-            local summary, count = MatchBonus(text)
-            if summary then
-                if not firstBonusLine then
-                    firstBonusLine = i
-                end
+            elseif setLineFinished then
+                local summary, count = MatchBonus(text)
+                if summary then
+                    if not firstBonusLine then
+                        firstBonusLine = i
+                    end
 
-                if not count and firstBonusLine then
-                    count = bonus[i - firstBonusLine + 1]
-                end
+                    if not count and firstBonusLine then
+                        count = bonus[i - firstBonusLine + 1]
+                    end
 
-                if count then
-                    if equippedCount >= count then
-                        textLeft:SetText(ITEM_SET_BONUS:format(summary))
-                        textLeft:SetTextColor(0.1, 1, 0.1)
-                    else
-                        textLeft:SetText(ITEM_SET_BONUS_GRAY:format(count, summary))
-                        textLeft:SetTextColor(0.5, 0.5, 0.5)
+                    if count then
+                        if equippedCount >= count then
+                            textLeft:SetText(ITEM_SET_BONUS:format(summary))
+                            textLeft:SetTextColor(0.1, 1, 0.1)
+                        else
+                            textLeft:SetText(ITEM_SET_BONUS_GRAY:format(count, summary))
+                            textLeft:SetTextColor(0.5, 0.5, 0.5)
+                        end
                     end
                 end
             end

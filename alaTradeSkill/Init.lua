@@ -12,7 +12,6 @@ local DT = {  }; __private.DT = DT;		--	data
 	local setfenv = setfenv;
 	local loadstring, pcall, xpcall = loadstring, pcall, xpcall;
 	local geterrorhandler = geterrorhandler;
-	local hooksecurefunc = hooksecurefunc;
 	local print, date = print, date;
 	local type = type;
 	local tostring = tostring;
@@ -284,16 +283,12 @@ MT.BuildEnv('Init');
 		end
 	end
 
-	MT.ErrorHandler = geterrorhandler();
-	hooksecurefunc("seterrorhandler", function(ErrorHandler)
-		MT.ErrorHandler = ErrorHandler;
-	end);
 	if xpcall == nil then
 		local function _Proc(success, ret1, ...)
 			if success then
 				return success, ret1, ...;
 			else
-				MT.ErrorHandler(ret1);
+				geterrorhandler()(ret1);
 				return false, nil;
 			end
 		end
@@ -304,7 +299,7 @@ MT.BuildEnv('Init');
 		function MT.SafeCall(func, ...)
 			return xpcall(
 				func,
-				MT.ErrorHandler,
+				geterrorhandler(),
 				...
 			);
 		end
