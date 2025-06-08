@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("DelveTrashCommon", "DBM-Delves-WarWithin")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250413045732")
+mod:SetRevision("20250429172117")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)--Stays active in all zones for zone change handlers, but registers events based on dungeon ids
 local validZones = {[2664] = true, [2679] = true, [2680] = true, [2681] = true, [2683] = true, [2684] = true, [2685] = true, [2686] = true, [2687] = true, [2688] = true, [2689] = true, [2690] = true, [2767] = true, [2768] = true, [2815] = true, [2826] = true}
 for v, _ in pairs(validZones) do
@@ -674,7 +674,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnEnrage:Show()
 		end
-	elseif args.spellId == 470592 or args.spellId == 443482 or args.spellId == 458879 then
+	elseif (args.spellId == 470592 or args.spellId == 443482 or args.spellId == 458879) and args:IsDestTypeHostile() then
 		specWarnBlessingofDuskDispel:Show(args.destName)
 		specWarnBlessingofDuskDispel:Play("dispelboss")
 	elseif args.spellId == 445407 then

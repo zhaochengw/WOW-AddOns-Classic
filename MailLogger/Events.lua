@@ -521,7 +521,7 @@ function Frame:ADDON_LOADED(Name)
 
 	print(string.format(L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE has been loaded.|r"], Addon.Version))
 
-	-- 数据格式修复(为不带-的数据添加-)
+	--[[ 数据格式修复(为不带-的数据添加-)
 	if #TradeLog >= 1 then
 		for i = 1, #TradeLog do
 			if not string.find(TradeLog[i].PlayerName, "%-") then
@@ -531,7 +531,7 @@ function Frame:ADDON_LOADED(Name)
 				TradeLog[i].TargetName = TradeLog[i].TargetName .. "-" .. GetRealmName()
 			end
 		end
-	end
+	end]]
 end
 
 -- 进入世界

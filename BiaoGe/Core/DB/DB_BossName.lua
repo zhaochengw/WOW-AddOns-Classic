@@ -274,19 +274,19 @@ end
 -- WLK
 do
     local boss = {
-        { name = L["玛\n洛\n加\n尔"], color = "D3D3D3" },
-        { name = L["亡\n语\n者\n女\n士"], color = "D3D3D3" },
-        { name = L["炮\n舰\n战"], color = "FFD700" },
-        { name = L["萨\n鲁\n法\n尔"], color = "FFD700" },
-        { name = L["烂\n肠"], color = "FF7F50" },
-        { name = L["腐\n面"], color = "FF7F50" },
-        { name = L["普\n崔\n塞\n德\n教\n授"], color = "FF7F50" },
-        { name = L["鲜\n血\n议\n会"], color = "FF69B4" },
-        { name = L["鲜\n血\n女\n王"], color = "FF69B4" },
-        { name = L["踏\n梦\n者"], color = "90EE90" },
-        { name = L["辛\n达\n苟\n萨"], color = "90EE90" },
-        { name = L["巫\n妖\n王"], color = "00BFFF" },
-        { name = L["海\n里\n昂"], color = "993300" },
+        { name = L["玛\n洛\n加\n尔"],                              color = "D3D3D3" },
+        { name = L["亡\n语\n者\n女\n士"],                              color = "D3D3D3" },
+        { name = L["炮\n舰\n战"],                              color = "FFD700" },
+        { name = L["萨\n鲁\n法\n尔"],                              color = "FFD700" },
+        { name = L["烂\n肠"],                              color = "FF7F50" },
+        { name = L["腐\n面"],                              color = "FF7F50" },
+        { name = L["普\n崔\n塞\n德\n教\n授"],                              color = "FF7F50" },
+        { name = L["鲜\n血\n议\n会"],                              color = "FF69B4" },
+        { name = L["鲜\n血\n女\n王"],                              color = "FF69B4" },
+        { name = L["踏\n梦\n者"],                              color = "90EE90" },
+        { name = L["辛\n达\n苟\n萨"],                              color = "90EE90" },
+        { name = L["巫\n妖\n王"],                              color = "00BFFF" },
+        { name = L["海\n里\n昂"],                              color = "993300" },
     }
     local FB = "ICC"
     Addother(boss)

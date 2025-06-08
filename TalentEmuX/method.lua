@@ -280,15 +280,28 @@ MT.BuildEnv('METHOD');
 			-- local itemID, class, subClass, loc, icon, classID, subClassID = GetItemInfoInstant(item);
 			-- local itemName, link, quality, level, _, class, subClass, stack, loc, icon, price, classID, subClassID, bindType, _, set, isReagent = GetItemInfo(item);
 			local _, link, _, level, _, _, _, _, loc, _, _, classID, subClassID = GetItemInfo(item);
+			if link == nil then
+				return;
+			end
+			local enchantable = DT.EnchantableByLoc[loc];
+			local UnE = DT.UnenchantableByType[classID];
+			if UnE then
+				local u = UnE[subClassID];
+				if u == 1 then
+					enchantable = false;
+				elseif u ~= nil and u ~= class then
+					enchantable = false;
+				end
+			end
 			local itemID, enchantID = strmatch(item, "item:(%d+):(%d+):");
 			if enchantID == nil then
-				return DT.Enchantable[loc], false, link or item, level or 0;
+				return enchantable, false, link or item, level or 0;
 			end
 			enchantID = tonumber(enchantID);
 			local invType = GetItemInventoryTypeByID(item);
 			local D = DT.EnchantDB[classID];
 			if D == nil then
-				return DT.Enchantable[loc], true, link or item, level or 0, "Enchant: " .. enchantID;
+				return enchantable, true, link or item, level or 0, "Enchant: " .. enchantID;
 			end
 			D = D[enchantID];
 			if D == nil then
@@ -1280,8 +1293,8 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.EquipmentContainerUpdate(Frames[i].EquipmentContainer, cache.EquData);
-						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache.EngData);
+						MT.UI.EquipmentContainerUpdate(Frames[i].EquipmentContainer, cache);
+						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache);
 					end
 				end
 			end
@@ -1306,7 +1319,7 @@ MT.BuildEnv('METHOD');
 				for i = 1, #Frames do
 					Frames[i].objects.EquipmentFrameButton:Show();
 					if Frames[i].EquipmentFrameContainer:IsShown() then
-						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache.EngData);
+						MT.UI.EngravingContainerUpdate(Frames[i].EquipmentContainer, cache);
 					end
 				end
 			end

@@ -1,6 +1,6 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
-----Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> projecteurs@gmail.NOSPAM.com 202401211
+----Mini Dragon <流浪者酒馆-Brilla@金色平原(The Golden Plains-CN)> projecteurs@gmail.NOSPAM.com 20250510
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -51,6 +51,7 @@ L.BIGWIGS_ICON_CONFLICT		= L.DBM .. "检测到你同时开启了Bigwigs,请关�
 
 L.MOD_AVAILABLE				= L.DBM .. "已经为%s制作了相关模块。你可以在Curse, Wago, WOWI或者到GitHub Releases页面上找到新版本。"
 L.MOD_MISSING				= "找不到团队模块"
+L.NOT_INSTALLED				= "未安装"
 
 L.COMBAT_STARTED				= "%s作战开始，祝你走运 :)"
 L.COMBAT_STARTED_IN_PROGRESS	= "已进行的战斗-%s正在作战。祝你走运 :)"
@@ -179,6 +180,7 @@ L.WHISPER_SCENARIO_END_KILL_STATS	= "%s已在场景战役-%s的战斗中取得�
 L.WHISPER_SCENARIO_END_WIPE			= "%s在场景战役-%s的战斗中灭团了。"
 L.WHISPER_SCENARIO_END_WIPE_STATS	= "%s在场景战役-%s的战斗中灭团了。该难度下总共失败%d次。"
 
+L.DUNGEONS					= "地下城"
 L.VERSIONCHECK_HEADER		= L.DBM.." - 版本检测"
 L.VERSIONCHECK_ENTRY			= "%s: %s (r%d) %s"--One Boss mod
 L.VERSIONCHECK_ENTRY_TWO		= "%s: %s (r%d) & %s (r%d)"--Two Boss mods
@@ -540,10 +542,11 @@ L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "为$spell:%s的目标添加团队标记�
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "为$spell:%s的目标添加团队标记，以近战和团队阵容优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "为$spell:%s的目标添加团队标记，以远程和字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "为$spell:%s的目标添加团队标记，以远程和团队阵容优先"
-L.AUTO_ICONS_OPTION_TARGETS_MRH			= "为$spell:%s的目标添加团队标记，以近战高于远程再高于治疗排序，团队角色回退"
+L.AUTO_ICONS_OPTION_TARGETS_MRH			= "为$spell:%s的目标添加团队标记，以近战高于远程再高于治疗排序，团队阵容其次"
+L.AUTO_ICONS_OPTION_TARGETS_TOH			= "为$spell:%s的目标添加团队标记，以坦克高于近战再高于远程排序，团队阵容其次"
 L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "为$spell:%s的目标添加团队标记，以字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_ROSTER 		= "为$spell:%s的目标添加团队标记，以团队阵容优先"
-L.AUTO_ICONS_OPTION_NPCS			= "为$spell:%s添加团队标记"
+L.AUTO_ICONS_OPTION_NPCS				= "为$spell:%s添加团队标记"
 L.AUTO_ICONS_OPTION_CONFLICT 			= " （可能与其他选项冲突）"
 
 L.AUTO_ARROW_OPTION_TEXT				= "为$spell:%s的目标添加箭头"
@@ -673,6 +676,18 @@ L.DBM_INSTALL_PACKAGE_WRATH		= "巫妖王之怒模块"
 L.DBM_INSTALL_PACKAGE_CATA		= "大地的裂变模块"
 L.DBM_INSTALL_PACKAGE_MOP		= "熊猫人之谜模块"
 L.DBM_INSTALL_PACKAGE_DUNGEON	= "五人本与事件模块"
+L.DBM_INSTALL_PACKAGE_CHALLENGES= "挑战模块"
 
 -- Tests
 L.DBM_TAINTED_BY_TESTS			= "DBM曾经在当前进程中使用过测试模式的时间卷曲功能，建议你在正式战斗前 /reload 界面以防止DBM出现奇怪的问题。"
+
+-- Boss tooltip
+L.TOOLTIP_DBM					= L.DBM .. " 信息"
+L.TOOLTIP_ENRAGE_TIMER			= "战斗时间"
+L.TOOLTIP_KILLS					= "击杀 (%s)"
+L.TOOLTIP_WIPES					= "失败 (%s)"
+L.TOOLTIP_FASTEST				= "最快击杀 (%s)"
+
+-- Difficulty info not found in normal globals, used by both GUI and tooltip
+L.FOLLOWER	= "追随者"
+L.STORY 	= PLAYER_DIFFICULTY_STORY_RAID or "故事模式"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet

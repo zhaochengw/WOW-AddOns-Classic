@@ -97,6 +97,7 @@ l10n.Setting_AutoShowEquipmentFrame = "自动显示装备列表";
 l10n.Setting_IconOnMinimap = "显示小地图图标";
 l10n.Setting_ResizableBorder = "允许调整大小";
 l10n.Setting_SingleFrame = "单窗口显示";
+l10n.Setting_Style = "风格";
 l10n.Setting_TripleTrees = "三列天赋";
 l10n.Setting_SingleTree = "单列天赋";
 l10n.Setting_TalentsInTip = "鼠标提示显示天赋";

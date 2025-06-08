@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheaterofPainTrash", "DBM-Party-Shadowlands", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250419142328")
+mod:SetRevision("20250519125751")
 mod:SetZone(2293)
 mod:RegisterZoneCombat(2293)
 --mod:SetModelID(47785)
@@ -60,7 +60,7 @@ local specWarnMeatShield					= mod:NewSpecialWarningInterrupt(341977, "HasInterr
 
 local timerSoulstormCD						= mod:NewCDNPTimer(26.7, 330716, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerVileEruptionCD					= mod:NewCDNPTimer(15.4, 330614, nil, nil, nil, 3)--15.4-16.2
-local timerDeathwindsCD						= mod:NewCDNPTimer(8.4, 333294, nil, nil, nil, 3)
+local timerDeathwindsCD						= mod:NewCDNPTimer(8.1, 333294, nil, nil, nil, 3)
 local timerBoneSpikesCD						= mod:NewCDNPTimer(33.6, 331237, nil, nil, nil, 3)
 local timerRicochetingBladeCD				= mod:NewCDNPTimer(12.1, 333861, nil, nil, nil, 3)--12.1 for Harugia the Bloodthirsty,
 local timerWhirlwindCD						= mod:NewCDNPTimer(26.7, 317605, nil, nil, nil, 3)
@@ -75,8 +75,8 @@ local timerWitheringDischargeCD				= mod:NewCDNPTimer(24.1, 341969, nil, nil, ni
 local timerNecroticBoltVolleyCD				= mod:NewCDNPTimer(22.5, 330868, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 --local timerBoneSpearCD						= mod:NewCDNPTimer(23.1, 342675, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--CD deleted in Feb 28th hotfixes
 local timerMeatShieldCD						= mod:NewCDNPTimer(20.6, 341977, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--20.6-25
-local timerDemoralizingShoutCD				= mod:NewCDNPTimer(17, 330562, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
-local timerBindSoulCD						= mod:NewCDNPTimer(14.4, 330810, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--14.4-20.6
+local timerDemoralizingShoutCD				= mod:NewCDNPTimer(16.1, 330562, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerBindSoulCD						= mod:NewCDNPTimer(11.3, 330810, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--11.3-20.6
 local timerDevourFleshCD					= mod:NewCDNPTimer(27.4, 330586, nil, nil, nil, 5)
 local timerBloodthirstyChargeCD				= mod:NewCDNPTimer(18.2, 334023, nil, nil, nil, 3)
 local timerUnbalancingBlowCD				= mod:NewCDNPTimer(8.2, 333845, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
@@ -230,7 +230,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 330586 then
 		timerDevourFleshCD:Start(24.9, args.sourceGUID)--27.4-2.5
 	elseif spellId == 333845 then
-		local timer = self:GetCIDFromGUID(args.sourceGUID) == 167534 and 9.2 or 15.3--15.3 for Rek the Hardened, 9.2 for Harugia the Bloodthirsty
+		local timer = self:GetCIDFromGUID(args.sourceGUID) == 167534 and 8.5 or 15.3--15.3 for Rek the Hardened, 8.5 for Harugia the Bloodthirsty
 		timerUnbalancingBlowCD:Start(timer, args.sourceGUID)
 	end
 end
@@ -342,7 +342,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 		timerBoneSpikesCD:Start(6.1-delay, guid)--Could be 5.7
 	--Begin Minibosses
 	elseif cid == 167536 then--Harugia the Bloodthirsty
-		timerRicochetingBladeCD:Start(2.4-delay, guid)
+		timerRicochetingBladeCD:Start(2.1-delay, guid)
 		timerUnbalancingBlowCD:Start(6-delay, guid)
 		timerBloodthirstyChargeCD:Start(9.3-delay, guid)
 	elseif cid == 167533 then--Advent Nevermore
@@ -361,26 +361,26 @@ function mod:StartEngageTimers(guid, cid, delay)
 	elseif cid == 162744 then--Nekthara the Mangler
 		timerWhirlingBladeCD:Start(4-delay, guid)
 		timerInterruptingRoarCD:Start(6.8-delay, guid)
-		timerColossalSmashCD:Start(12.4-delay, guid)
+		timerColossalSmashCD:Start(12.1-delay, guid)
 	elseif cid == 167534 then--Rek the Hardened
 		--Swift Strikes (2.4)
 		timerWhirlwindCD:Start(6.1-delay, guid)
 		timerUnbalancingBlowCD:Start(11-delay, guid)
 	--End Minibosses
 	elseif cid == 170850 then--Raging Bloodhorn
-		timerRagingTantrumCD:Start(8.5-delay, guid)
+		timerRagingTantrumCD:Start(7.4-delay, guid)
 	elseif cid == 174210 then--Blighted Sludge-Spewer
 		timerWitheringDischargeCD:Start(9-delay, guid)
 	elseif cid == 160495 then--Maniacal Soulbinder
-		timerNecroticBoltVolleyCD:Start(12-delay, guid)
+		timerNecroticBoltVolleyCD:Start(11-delay, guid)
 --	elseif cid == 170882 then--Bone Magus
 --		timerBoneSpearCD:Start(11-delay, guid)
 --	elseif cid == 170690 then--Diseased Horror
 --		timerMeatShieldCD:Start(21-delay, guid)--Initial is likely health based
 	elseif cid == 164506 then--Ancient Captain
-		timerDemoralizingShoutCD:Start(4.6-delay, guid)
+		timerDemoralizingShoutCD:Start(4.4-delay, guid)
 	elseif cid == 169875 then--Shackled Soul
-		timerBindSoulCD:Start(9.7-delay, guid)
+		timerBindSoulCD:Start(8.5-delay, guid)
 --	elseif cid == 169927 then--Putrid Butcher
 --		timerDevourFleshCD:Start(20.1-delay, guid)
 	end

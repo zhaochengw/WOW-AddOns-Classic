@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CinderbrewMeaderyTrash", "DBM-Party-WarWithin", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250421012236")
+mod:SetRevision("20250513065122")
 --mod:SetModelID(47785)
 mod:SetZone(2661)
 mod.isTrashMod = true
@@ -63,7 +63,7 @@ local specWarnSpillDrink					= mod:NewSpecialWarningDispel(441214, "RemoveEnrage
 
 --All timers need rechecking, but can't use public WCL to fix this since all logs short
 local timerEruptingInfernoCD				= mod:NewCDNPTimer(17.1, 437956, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--S2 updated
-local timerBoilingFlamesCD					= mod:NewCDPNPTimer(24.3, 437721, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--S2 updated
+local timerBoilingFlamesCD					= mod:NewCDPNPTimer(22.7, 437721, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--S2 updated
 local timerCinderbrewTossCD					= mod:NewCDNPTimer(11.8, 434706, nil, nil, nil, 3)--S2 updated
 local timerThrowChairCD						= mod:NewCDNPTimer(15.8, 434756, nil, nil, nil, 3)--S2 Updated
 local timerHighSteaksCD						= mod:NewCDNPTimer(20.3, 434998, nil, nil, nil, 3)--S2 Updated
@@ -147,7 +147,6 @@ function mod:SPELL_CAST_START(args)
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "CinderbrewTarget", 0.1, 6)
 		timerCinderbrewTossCD:Start(nil, args.sourceGUID)
 	elseif spellId == 434756 then
-		timerThrowChairCD:Start(nil, args.sourceGUID)
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "ThrowChair", 0.1, 6)
 	elseif spellId == 437721 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
@@ -231,7 +230,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 441214 then
 		timerSpillDrinkCD:Start(20, args.sourceGUID)
 	elseif spellId == 441434 then
-		timerFailedBatchCD:Start(22.8, args.sourceGUID)
+		timerFailedBatchCD:Start(22, args.sourceGUID)
 		if self:AntiSpam(3, 6) then
 			specWarnFailedBatch:Show()
 			specWarnFailedBatch:Play("targetchange")
@@ -258,6 +257,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnRainOfHoney:Show()
 			specWarnRainOfHoney:Play("watchstep")
 		end
+	elseif spellId == 434756 then
+		timerThrowChairCD:Start(nil, args.sourceGUID)
 	end
 end
 
@@ -347,31 +348,31 @@ end
 --All timers subject to a ~0.5 second clipping due to ScanEngagedUnits
 function mod:StartEngageTimers(guid, cid, delay)
 	if cid == 218671 then--Venture Co Pyromaniac
-		timerEruptingInfernoCD:Start(8.9-delay, guid)
-		timerBoilingFlamesCD:Start(16-delay, guid)
+		timerEruptingInfernoCD:Start(6.6-delay, guid)
+		timerBoilingFlamesCD:Start(10.7-delay, guid)
 	elseif cid == 210269 then--Hired Muscle
 		timerVolatileKegCD:Start(8.1-delay, guid)
-		timerThrowChairCD:Start(13-delay, guid)
+		timerThrowChairCD:Start(12-delay, guid)
 	elseif cid == 214920 then--Tasting Room Agent
 		timerCinderbrewTossCD:Start(11.2-delay, guid)
 	elseif cid == 214697 then--Chef Chewie
 		timerTenderizeCD:Start(8.2-delay, guid)
 		timerHighSteaksCD:Start(12.3-delay, guid)
 	elseif cid == 223423 then--Careless Hobgoblin
-		timerRecklessDeliveryCD:Start(9.1-delay, guid)
+		timerRecklessDeliveryCD:Start(8.7-delay, guid)
 	elseif cid == 222964 then--Flavor Scientist
-		timerFailedBatchCD:Start(14.5-delay, guid)
+		timerFailedBatchCD:Start(8.5-delay, guid)
 		timerRejuvenatingHoneyCD:Start(14.5-delay, guid)--Super iffy, most heals don't have initial CDs just initial threshold of health
 	elseif cid == 220060 then--Taste Tester
 		timerSpillDrinkCD:Start(9.5-delay, guid)
-		timerFreeSamplesCD:Start(11.1-delay, guid)--11.1-15.4
+		timerFreeSamplesCD:Start(6.2-delay, guid)--6.2-15.4
 	elseif cid == 220946 then--Venture Co Honey Harvester
 		timerSwarmingSurpriseCD:Start(4.5-delay, guid)--4.5-10
 		timerBeesWaxCD:Start(10.6-delay, guid)--10.6--17
 	elseif cid == 219588 then--Yes Man
 		timerDownwardTrendCD:Start(5-delay, guid)
 	elseif cid == 214668 then--Venture Co. Patron
-		timerMeanMugCD:Start(7.6-delay, guid)
+		timerMeanMugCD:Start(7.1-delay, guid)
 	elseif cid == 218016 or cid == 210265 then--Worker Bee
 		timerShreddingStingCD:Start(9.4-delay, guid)
 	elseif cid == 210264 then--Bee Wrangler
@@ -379,7 +380,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 		timerBeastialWrathCD:Start(3.7-delay, guid)--3.7-11.4
 	elseif cid == 220141 then--Royal Jelly Purveyor
 		timerHoneyVolleyCD:Start(4.8-delay, guid)--4.8-10.1
-		timerRainofHoneyCD:Start(16.2-delay, guid)
+		timerRainofHoneyCD:Start(13.8-delay, guid)
 	end
 end
 

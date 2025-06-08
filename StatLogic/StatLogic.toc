@@ -18,5 +18,6 @@ Stats.lua
 locales\locales.xml
 
 StatLogic.lua
+DiminishingReturns.lua
 Cata_Logic.lua
 Global_Logic.lua

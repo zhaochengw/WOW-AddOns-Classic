@@ -315,7 +315,7 @@ _DrawAvailableQuest = function(questId)
     end, 0)
 end
 
----@param starter table Either an object or an NPC from QuestieDB.
+---@param starter Object|NPC Either an object or an NPC from QuestieDB.
 ---@param quest Quest A Quest from QuestieDB.
 ---@param tooltipKey string The tooltip key. For objects it's "o_<ID>", for NPCs it's "m_<ID>", for items it's "im_<ID>" or "io_<ID".
 ---@param limit number The number of icons left to draw before the limit set in AvailableQuests.DrawAvailableQuest is reached. Zero means no limit.
@@ -326,7 +326,8 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
     end
 
     -- Need to know when this quest starts from an item, so we save it later
-    local starterType = nil
+    ---@type string|nil
+    local starterType
 
     if tooltipKey == "m_"..starter.id then
         -- filter hostile starters
@@ -336,14 +337,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
             return 0
         end
     elseif tooltipKey == "im_"..starter.id then
-        -- filter drops from friendlies
-        if playerFaction == "Alliance" and starter.friendlyToFaction == "A" then
-            return 0
-        elseif playerFaction == "Horde" and starter.friendlyToFaction == "H" then
-            return 0
-        elseif starter.friendlyToFaction == "AH" then
-            return 0
-        end
+        -- We don't filter items by faction, because Questie can not differentiate neutral NPCs from friendly ones.
         -- overwrite tooltipKey, so stuff shows in monster tooltips
         tooltipKey = "m_"..starter.id
         starterType = "itemFromMonster"

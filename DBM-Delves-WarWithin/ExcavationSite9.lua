@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod("z2815", "DBM-Delves-WarWithin")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250317003248")
+mod:SetRevision("20250513065603")
 mod:SetHotfixNoticeRev(20240422000000)
 mod:SetMinSyncRevision(20240422000000)
 mod:SetZone(2815)

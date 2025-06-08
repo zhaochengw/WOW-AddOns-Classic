@@ -1,0 +1,8 @@
+## Interface: 30400
+## Title: |cffff0000T|cffff7f00e|cffffcc00k|cff00ff00s|cff0000ffl|cff4b0082o|cff9400d3o|cffff0000t|cffff7f00修|cffffcc00复|cff00ff00版|r
+## Notes: 自用修复,不保证后续更新！QQ：1563317交流
+## Author:TideQi 
+## Version: 1.0
+## SavedVariables: teksLootDB
+
+teksLoot.lua

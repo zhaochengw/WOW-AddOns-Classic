@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2567, "DBM-Party-WarWithin", 3, 1268)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250330105426")
+mod:SetRevision("20250519110303")
 mod:SetCreatureID(207205)
 mod:SetEncounterID(2861)
 --mod:SetHotfixNoticeRev(20220322000000)
@@ -35,8 +35,8 @@ local specWarnDarkGravity					= mod:NewSpecialWarningRunCount(425048, nil, nil, 
 local specWarnCrushReality					= mod:NewSpecialWarningDodgeCount(424958, nil, nil, nil, 2, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(424966, nil, nil, nil, 1, 8)
 
-local timerChaoticCorruptionCD				= mod:NewCDCountTimer(32.3, 424737, nil, nil, nil, 3)
-local timerDarkGravityCD					= mod:NewCDCountTimer(32.3, 425048, nil, nil, nil, 2)
+local timerChaoticCorruptionCD				= mod:NewCDCountTimer(32, 424737, nil, nil, nil, 3)
+local timerDarkGravityCD					= mod:NewCDCountTimer(32, 425048, nil, nil, nil, 2)
 local timerCrushRealityCD					= mod:NewCDCountTimer(15.7, 424958, nil, nil, nil, 3)
 
 mod:AddInfoFrameOption(424797)

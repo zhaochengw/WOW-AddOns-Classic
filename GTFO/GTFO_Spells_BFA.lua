@@ -350,6 +350,7 @@ GTFO.SpellID["310832"] = {
 GTFO.SpellID["296733"] = {
   --desc = "Dark Smash (Faceless Destroyer)";
   sound = 1;
+  ignoreApplication = true;
 };
 
 GTFO.SpellID["301516"] = {
@@ -424,6 +425,36 @@ GTFO.SpellID["270012"] = {
   --desc = "Defense Barrage";
   sound = 1;
 };
+
+GTFO.SpellID["308673"] = {
+  --desc = "Dark Gaze (Eye of Chaos)";
+  sound = 2;
+};
+
+GTFO.SpellID["306524"] = {
+  --desc = "Burning Soles (Horrific Visions)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["308980"] = {
+  --desc = "Corrupting Growth (Corruption Tumor)";
+  ignoreApplication = true;
+  sound = 2;
+};
+
+GTFO.SpellID["306770"] = {
+  --desc = "Forge Breath (Enthralled Weaponsmith)";
+  sound = 1;
+};
+
+GTFO.SpellID["296674"] = {
+  --desc = "Lurking Appendage (Alx'kov the Infested)";
+  sound = 1;
+  alwaysAlert = true;
+  ignoreApplication = true;
+};
+
 
 
 -- ***********************

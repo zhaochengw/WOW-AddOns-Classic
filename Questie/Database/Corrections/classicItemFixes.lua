@@ -337,6 +337,9 @@ function QuestieItemFixes:Load()
             [itemKeys.npcDrops] = {},
             [itemKeys.objectDrops] = {},
         },
+        [5086] = {
+            [itemKeys.npcDrops] = {3242,3426,3466},
+        },
         [5088] = {
             [itemKeys.relatedQuests] = {894},
             [itemKeys.npcDrops] = {},
@@ -761,6 +764,9 @@ function QuestieItemFixes:Load()
             [itemKeys.relatedQuests] = {3883},
             [itemKeys.npcDrops] = {},
             [itemKeys.objectDrops] = {174793},
+        },
+        [11148] = {
+            [itemKeys.class] = 12,
         },
         [11149] = {
             [itemKeys.relatedQuests] = {3924},

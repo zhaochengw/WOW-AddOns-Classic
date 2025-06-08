@@ -142,7 +142,7 @@ function BG.QianKuanUI(lastbt)
             SendSystemMessage(L["不在团队，无法通报"])
             BG.PlaySound(1)
         else
-            self:SetEnabled(false) -- 点击后按钮变灰2秒
+            self:SetEnabled(false) 
             C_Timer.After(2, function()
                 bt:SetEnabled(true)
             end)

@@ -62,7 +62,6 @@ BG.Init(function()
         L["出价"] = "出價"
         L["正常模式"] = "正常模式"
         L["匿名模式"] = "匿名模式"
-        L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s 拍賣時長：%ss %s"
         L["拍卖结束"] = "拍賣結束"
         L["|cffFF0000流拍：|r"] = "|cffFF0000流拍：|r"
         L["{rt7}流拍{rt7} %s"] = "{rt7}流拍{rt7} %s"
@@ -102,6 +101,9 @@ BG.Init(function()
         L["点击：单个折叠"] = "點擊：單個摺疊"
         L["ALT+点击：全部折叠"] = "ALT+點擊：全部摺疊"
         L["你已是%s的出价最高者，|cffff0000没必要自己顶自己|r。真的要继续出价到 %s ？"] = "你已是%s的出價最高者，|cffff0000沒必要自己頂自己|r。真的要繼續出價到 %s ？"
+        L["备注："] = "備註："
+        L["{rt1}拍卖开始{rt1} %s 起拍价：%s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s"
+        L["团长："] = "團長"
     end
 
     function aura.GN(unit)
@@ -640,7 +642,9 @@ BG.Init(function()
                     end
 
                     if aura.IsRaidLeader() then
-                        SendChatMessage(format(L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
+                        C_Timer.After(.2, function()
+                            SendChatMessage(format(L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
+                        end)
                     end
                 else
                     t:SetText(L["流拍"])
@@ -805,7 +809,7 @@ BG.Init(function()
 
             if not f.start and BiaoGe and BiaoGe.options and BiaoGe.options.Sound then
                 if random(10) <= 1 then
-                    PlaySoundFile(BG["sound_HusbandComeOn" .. BiaoGe.options.Sound])
+                    BG.PlaySound("HusbandComeOn")
                 end
             end
         end
@@ -862,7 +866,7 @@ BG.Init(function()
             tinsert(f.logs, { money = money, player = "|cff" .. aura.GREEN1 .. L["你"] .. "|r" })
             tinsert(f.logs2, { money = money, player = "|cff" .. aura.GREEN1 .. L["你"] .. "|r" })
         else
-            if f.mod == "anonymous" and not (BiaoGe and BiaoGe.options and BiaoGe.options.autoAuctionShowSender == 1) then
+            if f.mod == "anonymous" then
                 f.topMoneyText:SetText(L["|cffFFD100出价最高者：|r"] .. L["別人(匿名)"])
                 tinsert(f.logs, { money = money, player = L["匿名"] })
             else
@@ -911,6 +915,7 @@ BG.Init(function()
             f.autoMoneyEdit:SetEnabled(true)
             f.autoMoneyEdit.isLocked = false
             f.hide:Enable()
+            aura.AutoSendEndPlaySound()
         end
 
         aura.UpdateAutoButton(f)
@@ -1031,8 +1036,8 @@ BG.Init(function()
         parent:SetScript("OnUpdate", function(self, t)
             self.t = self.t - t
             if self.t <= 0 then self.t = 0 end
-            self:SetAlpha(1 - self.t / self.alltime)
-            self:SetScale(1 - self.t / self.alltime)
+            self:SetAlpha(max(1 - self.t / self.alltime, 0.01))
+            self:SetScale(max(1 - self.t / self.alltime, 0.01))
             self.myMoneyEdit:SetCursorPosition(0)
             if self.t <= 0 then
                 self:SetScript("OnUpdate", nil)
@@ -1173,6 +1178,12 @@ BG.Init(function()
                     f[_auctionID_] .. "," .. newmoney, "RAID")
             end
         end
+
+        function aura.AutoSendEndPlaySound()
+            if BiaoGe and BiaoGe.options and BiaoGe.options.autoAuctionAutoEndTips == 1 then
+                BG.PlaySound("autoAuctionAutoEndTips")
+            end
+        end
     end
 
     function aura.CreateAuction(auctionID, itemID, money, duration, player, mod, notAfter)
@@ -1192,6 +1203,8 @@ BG.Init(function()
             return
         end
         local AuctionFrame
+
+        mod = "normal"
 
         -- 主界面
         do
@@ -1653,6 +1666,7 @@ BG.Init(function()
             edit:SetAutoFocus(false)
             edit:SetNumeric(true)
             edit:SetText(money)
+            edit:SetMaxBytes(8)
             edit.owner = AuctionFrame
             edit:SetScript("OnTextChanged", aura.myMoney_OnTextChanged)
             edit:SetScript("OnEnterPressed", aura.SendMyMoney_OnClick)
@@ -1732,7 +1746,11 @@ BG.Init(function()
     do
         local f = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
         f:SetSize(aura.WIDTH, aura.HEIGHT)
-        f:SetFrameStrata('HIGH')
+        if BiaoGe and BiaoGe.options and BiaoGe.options.autoAuctionFrameLevel then
+            f:SetFrameStrata(BiaoGe.options.autoAuctionFrameLevel)
+        else
+            f:SetFrameStrata('HIGH')
+        end
         f:SetClampedToScreen(true)
         f:SetFrameLevel(100)
         f:SetToplevel(true)
@@ -1785,21 +1803,48 @@ BG.Init(function()
                 aura.CreateAuction(auctionID, itemID, money, duration, player, mod)
 
                 if aura.IsRaidLeader() then
-                    local tbl = {
-                        normal = L["正常模式"],
-                        anonymous = L["匿名模式"],
-                    }
-
+                    local function GetVIPTipsText(link)
+                        local tipsText = ""
+                        if BiaoGeVIP and BiaoGeVIP.auction then
+                            local tbl = {}
+                            for _, FB in pairs(BG.FBtable) do
+                                if FB == BG.FB1 then
+                                    tinsert(tbl, 1, FB)
+                                else
+                                    tinsert(tbl, FB)
+                                end
+                            end
+                            local itemID = GetItemInfoInstant(link)
+                            for _, FB in ipairs(tbl) do
+                                local text = BiaoGeVIP.auction[FB].money[itemID .. "tips"]
+                                if text then
+                                    tipsText = " " .. L["团长："] .. text
+                                    break
+                                end
+                            end
+                        end
+                        return tipsText
+                    end
                     local _, link = GetItemInfo(itemID)
                     if link then
-                        SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
-                            link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
+                        local msg = format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s"],
+                            link, money)
+                        local tipsText = GetVIPTipsText(link)
+                        if strlen(msg .. tipsText) < 255 then
+                            msg = msg .. tipsText
+                        end
+                        SendChatMessage(msg, "RAID_WARNING")
                     else
                         After(0.5, function()
                             local _, link = GetItemInfo(itemID)
                             if link then
-                                SendChatMessage(format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s 拍卖时长：%ss %s"],
-                                    link, money, duration, (tbl[mod] and "<" .. tbl[mod] .. ">" or "")), "RAID_WARNING")
+                                local msg = format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s"],
+                                    link, money)
+                                local tipsText = GetVIPTipsText(link)
+                                if strlen(msg .. tipsText) < 255 then
+                                    msg = msg .. tipsText
+                                end
+                                SendChatMessage(msg, "RAID_WARNING")
                             end
                         end)
                     end
@@ -1885,4 +1930,7 @@ end)
 
 --[[
 /run C_ChatInfo.SendAddonMessage("BiaoGeAuction","StartAuction,"..GetTime()..",".."50011"..",".."5000"..",".."60","RAID")
- ]]
+
+BiaoGeVIP.auction["ICC"].money[4367]=100
+BiaoGeVIP.auction["ICC"].money["4367".."tips"]="极品啊，法系BIS"
+]]

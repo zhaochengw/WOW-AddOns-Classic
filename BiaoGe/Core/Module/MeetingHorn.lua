@@ -113,8 +113,8 @@ BG.Init2(function()
                     GameTooltip:SetPoint("BOTTOMRIGHT", f, "BOTTOMLEFT", -2, 0)
                     GameTooltip:ClearLines()
                     GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
-                    GameTooltip:AddLine(L["|cffFFFFFF左键：|r搜索该记录"], 1, 0.82, 0)
-                    GameTooltip:AddLine(L["|cffFFFFFF右键：|r删除该记录"], 1, 0.82, 0)
+                    GameTooltip:AddLine(AddTexture("LEFT") .. L["搜索该记录"], 1, 0.82, 0)
+                    GameTooltip:AddLine(AddTexture("RIGHT") .. L["删除该记录"], 1, 0.82, 0)
                     GameTooltip:Show()
                 end)
                 BG.GameTooltip_Hide(bt)
@@ -187,8 +187,6 @@ BG.Init2(function()
                 if not select(2, GetChannelName(channelName)) then
                     local channels = { GetChannelList() }
                     if channels and #channels > 3 then
-                        MeetingHorn.MainPanel:Show()
-                        MeetingHorn.MainPanel:Hide()
                         JoinTemporaryChannel(channelName)
                     end
                     BG.After(3, JoinMeetingHorn)
@@ -873,7 +871,7 @@ BG.Init2(function()
             BG.GameTooltip_Hide(edit)
         end
 
-        -- 发送
+        -- 右键菜单
         do
             local function GetWhisperText(onlylevel)
                 local text = " "
@@ -982,27 +980,16 @@ BG.Init2(function()
             -- 聊天框右键菜单
             if BG.IsNewUI then
                 if BiaoGe.options["MeetingHorn_whisper"] == 1 then
-                    if not BG.IsVanilla then
-                        Menu.ModifyMenu("MENU_UNIT_FRIEND", function(owner, rootDescription, contextData)
-                            rootDescription:CreateButton(L["装等+职业"], function()
-                                SendWhisper(contextData.name, "onlylevel")
-                            end)
-                        end)
-                    end
                     Menu.ModifyMenu("MENU_UNIT_FRIEND", function(owner, rootDescription, contextData)
                         rootDescription:CreateDivider()
                         -- rootDescription:CreateTitle("My Addon")
                         rootDescription:CreateButton(L["密语模板"], function()
                             SendWhisper(contextData.name)
                         end)
-                    end)
-                    if BG.IsVanilla then
-                        Menu.ModifyMenu("MENU_UNIT_FRIEND", function(owner, rootDescription, contextData)
-                            rootDescription:CreateButton(L["装等+职业"], function()
-                                SendWhisper(contextData.name, "onlylevel")
-                            end)
+                        rootDescription:CreateButton(L["装等+职业"], function()
+                            SendWhisper(contextData.name, "onlylevel")
                         end)
-                    end
+                    end)
                 end
             else
                 hooksecurefunc("UnitPopup_ShowMenu", function(arg1, which)

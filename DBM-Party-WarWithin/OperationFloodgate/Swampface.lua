@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2650, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250308121633")
+mod:SetRevision("20250513065603")
 mod:SetCreatureID(226396)
 mod:SetEncounterID(3053)
 mod:SetHotfixNoticeRev(20250215000000)

@@ -1,14 +1,9 @@
 ------------------------------------------------------------------------
-r322 | funkehdude | 2025-04-23 16:05:47 +0000 (Wed, 23 Apr 2025) | 1 line
+r326 | funkehdude | 2025-05-18 16:16:38 +0000 (Sun, 18 May 2025) | 1 line
 Changed paths:
    M /trunk/.luacheckrc
-
-Update luacheck
-------------------------------------------------------------------------
-r321 | funkehdude | 2025-04-23 15:55:55 +0000 (Wed, 23 Apr 2025) | 1 line
-Changed paths:
    M /trunk/BugGrabber.lua
 
-Fix LUA_WARNING handling as of WoW 11.1.5
+Test out a different method of calculating stack height
 ------------------------------------------------------------------------
 

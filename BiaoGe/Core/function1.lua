@@ -131,6 +131,10 @@ local function AddTexture(Texture, y, coord, width)
         tex = "Interface\\AddOns\\BiaoGe\\Media\\icon\\BOX"
     elseif Texture == "DD" then
         tex = "Interface\\AddOns\\BiaoGe\\Media\\icon\\DD"
+    elseif Texture == "LEFT" then
+        return "|A:NPE_LeftClick:0:0|a"
+    elseif Texture == "RIGHT" then
+        return "|A:NPE_RightClick:0:0|a"
     else
         tex = Texture
     end
@@ -449,13 +453,16 @@ end
 
 ------------------按键声音------------------
 function BG.PlaySound(id)
-    if BiaoGe.options['buttonSound'] ~= 1 then return end
-    if id and BG["sound" .. id] then
-        if id == 2 then
-            PlaySoundFile(BG["sound" .. id])
-        else
-            PlaySound(BG["sound" .. id])
+    if BiaoGe.options['buttonSound'] == 1 and type(id) == "number" then
+        if BG["sound" .. id] then
+            if id == 2 then
+                PlaySoundFile(BG["sound" .. id])
+            else
+                PlaySound(BG["sound" .. id])
+            end
         end
+    elseif BiaoGe.options['tipsSound'] == 1 and type(id) == "string" then
+        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound], "Master")
     end
 end
 
@@ -568,7 +575,7 @@ function BG.GetItemCount(itemIDorLink)
         itemID = tonumber(itemIDorLink:match("item:(%d+)"))
     end
     for _, FB in pairs(BG.FBtable) do
-        for itemID2, _ in pairs(BG.Loot[FB].ExchangeItems) do
+        for itemID2 in pairs(BG.Loot[FB].ExchangeItems) do
             if itemID == itemID2 then
                 for _, itemID3 in pairs(BG.Loot[FB].ExchangeItems[itemID2]) do
                     local count = GetItemCount(itemID3, true)
@@ -735,3 +742,11 @@ end
 -- function BG.()
 
 -- end
+
+function BG.ClearColorCode(text)
+    return text:gsub("|c........", ""):gsub("|r", "")
+end
+
+function BG.ClearCode(text)
+    return text:gsub("|T.-|t", ""):gsub("|A.-|a", ""):gsub("|cff......", ""):gsub("|r", "")
+end

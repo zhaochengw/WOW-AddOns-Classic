@@ -1713,7 +1713,7 @@ for _, info in next, RawEnchantDB do
 	end
 end
 DT.EnchantDB = EnchantDB;
-DT.Enchantable = {
+DT.EnchantableByLoc = {
 	INVTYPE_HEAD = 1,
 	INVTYPE_SHOULDER = 1,
 	INVTYPE_CHEST = 1,
@@ -1730,6 +1730,43 @@ DT.Enchantable = {
 	INVTYPE_WEAPONMAINHAND = 1,
 	INVTYPE_WEAPONOFFHAND = 1,
 	INVTYPE_RANGEDRIGHT = 1,
+};
+local EnumItemClass = Enum and Enum.ItemClass or {
+	Weapon = 2,
+};
+local EnumWSubClass = Enum and Enum.ItemWeaponSubclass or {
+	Axe1H = 0,
+	Axe2H = 1,
+	Bows = 2,
+	Guns = 3,
+	Mace1H = 4,
+	Mace2H = 5,
+	Polearm = 6,
+	Sword1H = 7,
+	Sword2H = 8,
+	Warglaive = 9,
+	Staff = 10,
+	Bearclaw = 11,
+	Catclaw = 12,
+	Unarmed = 13,
+	Generic = 14,
+	Dagger = 15,
+	Thrown = 16,
+	Obsolete3 = 17,
+	Crossbow = 18,
+	Wand = 19,
+	Fishingpole = 20,
+};
+DT.UnenchantableByType = {
+	[EnumItemClass.Weapon] = {
+		[EnumWSubClass.Generic] = 1,
+		[EnumWSubClass.Thrown] = 1,
+		[EnumWSubClass.Wand] = 1,
+		[EnumWSubClass.Fishingpole] = 1,
+		[EnumWSubClass.Bows] = 'HUNTER',
+		[EnumWSubClass.Guns] = 'HUNTER',
+		[EnumWSubClass.Crossbow] = 'HUNTER',
+	},
 };
 
 DT.ItemSet = {

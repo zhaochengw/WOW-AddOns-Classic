@@ -29,6 +29,11 @@ Y.maxSearchText = 300 -- 最多接受多少个评价详细
 Y.searchLastDay = 360 -- 接收最近多少天内的评价
 Y.searchCD = 10
 
+local blackList = {
+    1460670757,
+    1457576818,
+}
+
 BG.Init(function()
     -- 初始化数据库
     do
@@ -133,7 +138,7 @@ BG.Init(function()
             t:SetText(L["必填"])
             edit:HookScript("OnEditFocusGained", function(self)
                 BG.lastfocus = self
-                BG.LiseYY(self)
+                BG.ListYY(self)
             end)
             edit:SetScript("OnEditFocusLost", function(self)
                 _G.L_DropDownList1:Hide()
@@ -706,7 +711,7 @@ BG.Init(function()
         local t = BG.YYMainFrame.my:CreateFontString()
         t:SetPoint("TOP", BG.YYMainFrame.my, "BOTTOM", 0, 0)
         t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE") -- 游戏主界面文字
-        t:SetText(BG.STC_w1(L["（左键修改评价，SHIFT+左键查询大众评价，ALT+右键删除评价）"]))
+        t:SetText(BG.STC_w1(format(L["（%s修改评价，SHIFT+%s查询大众评价，ALT+%s删除评价）"], AddTexture("LEFT"), AddTexture("LEFT"), AddTexture("RIGHT"))))
     end
 
     -- 查询评价Frame
@@ -1264,7 +1269,7 @@ BG.Init(function()
         BG.GameTooltip_Hide(f)
     end
 
-    ------------------把聊天里的YY转换为链接------------------
+    -- 把聊天里的YY转换为链接
     local starttime
     local UpdateFrame = CreateFrame("Frame")
     do
@@ -1301,8 +1306,16 @@ BG.Init(function()
                     break
                 end
             end
+            local blackText = ""
+            for _, yy in ipairs(blackList) do
+                if yy == tonumber(cleanedYY) then
+                    blackText = L["|cffff0000（该团长为毛团，请注意！如想举报更多毛团，请在抖音发视频后@苍穹之霜）|r"]
+                    break
+                end
+            end
+
             return "|cff" .. color .. "|Hgarrmission:BiaoGeYY:YY:" .. cleanedYY ..
-                "|h[YY:" .. cleanedYY .. PingJia(cleanedYY) .. "]" .. "|h|r"
+                "|h[YY:" .. cleanedYY .. PingJia(cleanedYY) .. "]" .. "|h|r" .. blackText
         end
         local function CreateLinkForGsub(yy)
             return CreateLink(yy:gsub("%s", ""))
@@ -1411,8 +1424,8 @@ BG.Init(function()
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine("|cff00BFFFYY:" .. yy .. RR)
                 GameTooltip:AddLine(" ")
-                GameTooltip:AddLine(L["|cffFFFFFF左键：|r查询大众评价"])
-                GameTooltip:AddLine(L["|cffFFFFFF右键：|r复制该号码"])
+                GameTooltip:AddLine(AddTexture("LEFT") .. L["查询大众评价"])
+                GameTooltip:AddLine(AddTexture("RIGHT") .. L["复制该号码"])
 
                 -- 以往查询结果
                 local yes
@@ -1482,16 +1495,17 @@ BG.Init(function()
         end
     end
 
-    ------------------记录团长发过的YY号------------------
+    -- 记录团长发过的YY号
     do
-        if not BiaoGe.YYdb.LeaderYY then
-            BiaoGe.YYdb.LeaderYY = {}
-        end
+        BiaoGe.YYdb.LeaderYY = BiaoGe.YYdb.LeaderYY or {}
+        BG.Once("yy", 250509, function()
+            wipe(BiaoGe.YYdb.LeaderYY)
+        end)
 
         -- 是否团长/助理
         function Y.IsLeader(playerName)
             if BG.raidRosterInfo and type(BG.raidRosterInfo) == "table" then
-                for index, v in ipairs(BG.raidRosterInfo) do
+                for _, v in ipairs(BG.raidRosterInfo) do
                     if v.rank == 2 and v.name == playerName then -- 团长
                         return true
                     end
@@ -1503,6 +1517,22 @@ BG.Init(function()
                     end
                 end
             end
+        end
+
+        function Y.SaveLeaderYY(yy, playerName)
+            local raidMember = {}
+            if IsInRaid(1) then
+                for _, v in ipairs(BG.raidRosterInfo) do
+                    tinsert(raidMember, v.name)
+                end
+            end
+            BiaoGe.YYdb.LeaderYY[yy] = {
+                yy = yy,
+                time = GetServerTime(),
+                name = playerName,
+                colorname = SetClassCFF(playerName),
+                raidMember = raidMember,
+            }
         end
 
         -- 收集团长YY
@@ -1524,34 +1554,19 @@ BG.Init(function()
                             return
                         end
                     end
-                    local a = {
-                        yy = cleanedYY,
-                        time = GetServerTime(),
-                        name = playerName,
-                        colorname = SetClassCFF(playerName)
-                    }
-                    tinsert(BiaoGe.YYdb.LeaderYY, 1, a)
+                    cleanedYY = tonumber(cleanedYY)
+                    Y.SaveLeaderYY(cleanedYY, playerName)
                     return
                 end
             end
-
             local cleanedYY = msg:match(Y.yykey)
             if not cleanedYY then
                 cleanedYY = msg:match(Y.yykey2)
             end
             if not cleanedYY then return end
             cleanedYY = cleanedYY:gsub("%s", "")
-            for _, v in pairs(BiaoGe.YYdb.LeaderYY) do
-                if tonumber(v.yy) == tonumber(cleanedYY) and v.name == playerName then
-                    return
-                end
-            end
-            tinsert(BiaoGe.YYdb.LeaderYY, 1, {
-                yy = cleanedYY,
-                time = GetServerTime(),
-                name = playerName,
-                colorname = SetClassCFF(playerName)
-            })
+            cleanedYY = tonumber(cleanedYY)
+            Y.SaveLeaderYY(cleanedYY, playerName)
         end)
 
         -- 进团后的x分钟内生效
@@ -1591,19 +1606,19 @@ BG.Init(function()
             end
         end)
 
-        -- 如果超过12小时就删掉该YY号记录
-        local deleteTime = 60 * 60 * 12
+        -- 如果超过x小时就删掉该YY号记录
+        local deleteTime = 60 * 60 * 6
         BG.RegisterEvent("PLAYER_ENTERING_WORLD", function()
-            for i = #BiaoGe.YYdb.LeaderYY, 1, -1 do
-                if GetServerTime() - BiaoGe.YYdb.LeaderYY[i].time >= deleteTime then
-                    tremove(BiaoGe.YYdb.LeaderYY, i)
+            for yy, v in pairs(BiaoGe.YYdb.LeaderYY) do
+                if GetServerTime() - v.time >= deleteTime then
+                    BiaoGe.YYdb.LeaderYY[yy] = nil
                 end
             end
         end)
 
         local dropDown = LibBG:Create_UIDropDownMenu(nil, UIParent)
         BG.ListYYdropDown = dropDown
-        function BG.LiseYY(edit)
+        function BG.ListYY(edit)
             if not edit:HasFocus() then return end
             if Size(BiaoGe.YYdb.LeaderYY) == 0 then return end
 
@@ -1620,11 +1635,12 @@ BG.Init(function()
                 },
             }
 
-            for i, v in ipairs(BiaoGe.YYdb.LeaderYY) do
+            for _, v in pairs(BiaoGe.YYdb.LeaderYY) do
                 local pingjiaText = ""
                 for k, vv in pairs(BiaoGe.YYdb.all) do
-                    if v.yy == vv.yy then
+                    if v.yy == tonumber(vv.yy) then
                         pingjiaText = format(BG.STC_dis(L["（曾评价为：|cff%s%s|r）"]), Y.PingjiaColor(vv.pingjia), Y.Pingjia(vv.pingjia))
+                        break
                     end
                 end
                 local a = {
@@ -1651,7 +1667,7 @@ BG.Init(function()
         end
     end
 
-    ------------------屏蔽集结号退队后弹出的评价系统------------------
+    -- 屏蔽集结号退队后弹出的评价系统
     BG.RegisterEvent("ENCOUNTER_END", function(self, _, bossId, _, _, _, success)
         if BiaoGe.YYdb.share ~= 1 then return end
         if success ~= 1 then return end
@@ -1669,36 +1685,48 @@ BG.Init(function()
         end)
     end)
 
-    ------------------快速评价------------------
+    -- 快速评价
     do
         BG.EndPJ = {}
 
         local function GetLeaderYY()
             -- 是否有团长发的YY
-            for _, v in ipairs(BiaoGe.YYdb.LeaderYY) do
+            for yy, v in pairs(BiaoGe.YYdb.LeaderYY) do
                 for _, vv in ipairs(BG.raidRosterInfo) do
                     if v.name == vv.name and vv.rank == 2 then
-                        return v.yy
+                        return yy
                     end
                 end
             end
             -- 是否有物品分配者发的YY
-            for _, v in ipairs(BiaoGe.YYdb.LeaderYY) do
+            for yy, v in pairs(BiaoGe.YYdb.LeaderYY) do
                 for _, vv in ipairs(BG.raidRosterInfo) do
                     if v.name == vv.name and vv.isML then
-                        return v.yy
+                        return yy
                     end
                 end
             end
             -- 是否有其他人发的YY
-            for _, v in ipairs(BiaoGe.YYdb.LeaderYY) do
+            for yy, v in pairs(BiaoGe.YYdb.LeaderYY) do
                 for _, vv in ipairs(BG.raidRosterInfo) do
                     if v.name == vv.name then
-                        return v.yy
+                        return yy
                     end
                 end
             end
-            return ""
+            for yy in pairs(BiaoGe.YYdb.LeaderYY) do
+                if BiaoGe.YYdb.LeaderYY[yy].raidMember then
+                    local same = 0
+                    for _, raidName in ipairs(BiaoGe.YYdb.LeaderYY[yy].raidMember) do
+                        if BG.raidRosterName[raidName] then
+                            same = same + 1
+                        end
+                    end
+                    if same >= 15 then
+                        return yy
+                    end
+                end
+            end
         end
 
         local function IsTheEndBoss(bossId)
@@ -1755,7 +1783,7 @@ BG.Init(function()
                     BG.ClearFocus()
                     BG.PlaySound(2)
                     BG.After(2.5, function()
-                        PlaySoundFile(BG["sound_pingjia" .. BiaoGe.options.Sound], "Master")
+                        BG.PlaySound("pingjia")
                     end)
                 end)
             end
@@ -1831,7 +1859,7 @@ BG.Init(function()
                 t:SetPoint("LEFT", 3, 0)
                 t:SetText(L["必填"])
                 edit:SetScript("OnEditFocusGained", function(self)
-                    BG.LiseYY(self)
+                    BG.ListYY(self)
                 end)
                 edit:SetScript("OnEditFocusLost", function(self)
                     _G.L_DropDownList1:Hide()
@@ -2197,20 +2225,19 @@ BG.Init(function()
             end
         end
 
-        BG.RegisterEvent("ENCOUNTER_END", function(self, _, bossId, _, _, _, success)
-            if not IsTheEndBoss(bossId) or success ~= 1 or BiaoGe.YYdb.share ~= 1 then
+        BG.RegisterEvent("ENCOUNTER_END", function(self, _, bossID, _, _, _, success)
+            if not IsTheEndBoss(bossID) or success ~= 1 or BiaoGe.YYdb.share ~= 1 or BG.IsLeader then
                 return
             end
-            if not (BG.raidLeader and BG.raidLeader == BG.GN()) then return end
             local yy = GetLeaderYY()
-            if yy == "" then
+            if not yy then
                 BG.After(5, function()
                     SendSystemMessage(BG.BG .. L["恭喜你们击杀尾王！由于没有记录到团长YY，快速评价框不会弹出。"])
                 end)
                 return
             end
             for k, vv in pairs(BiaoGe.YYdb.all) do
-                if yy == vv.yy then
+                if tonumber(yy) == tonumber(vv.yy) then
                     BG.After(5, function()
                         SendSystemMessage(BG.BG .. format(L["恭喜你们击杀尾王！YY%s你曾评价为：|cff%s>>%s<<。|r"], yy, Y.PingjiaColor(vv.pingjia), Y.Pingjia(vv.pingjia)))
                     end)
@@ -2223,36 +2250,37 @@ BG.Init(function()
         end)
     end
 
-    local t = BG.YYMainFrame:CreateFontString()
-    t:SetPoint("TOP", BG.MainFrame, "TOP", 0, -70)
-    t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
-    t:SetTextColor(1, 1, 1)
-    t:SetText(L["该模块已关闭。右键底部标签页开启"])
+    -- YY评价功能是否关闭
+    do
+        local t = BG.YYMainFrame:CreateFontString()
+        t:SetPoint("TOP", BG.MainFrame, "TOP", 0, -70)
+        t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
+        t:SetTextColor(1, 1, 1)
+        t:SetText(L["该模块已关闭。右键底部标签页开启"])
 
-    function BG.YYShowHide(show)
-        if show == 1 then
-            BG.YYMainFrame.new:Show()
-            BG.YYMainFrame.my:Show()
-            BG.YYMainFrame.search:Show()
-            t:Hide()
-        else
-            BG.YYMainFrame.new:Hide()
-            BG.YYMainFrame.my:Hide()
-            BG.YYMainFrame.search:Hide()
-            t:Show()
+        function BG.YYShowHide(show)
+            if show == 1 then
+                BG.YYMainFrame.new:Show()
+                BG.YYMainFrame.my:Show()
+                BG.YYMainFrame.search:Show()
+                t:Hide()
+            else
+                BG.YYMainFrame.new:Hide()
+                BG.YYMainFrame.my:Hide()
+                BG.YYMainFrame.search:Hide()
+                t:Show()
+            end
         end
     end
 
     -- 修正评价库排序
-    do
-        BG.Once("YY", 240925, function()
-            for i in ipairs(BiaoGe.YYdb.history) do
-                sort(BiaoGe.YYdb.history[i].all, function(a, b)
-                    return tonumber(a.date) > tonumber(b.date)
-                end)
-            end
-        end)
-    end
+    BG.Once("YY", 240925, function()
+        for i in ipairs(BiaoGe.YYdb.history) do
+            sort(BiaoGe.YYdb.history[i].all, function(a, b)
+                return tonumber(a.date) > tonumber(b.date)
+            end)
+        end
+    end)
 
 
     local CDing = {}

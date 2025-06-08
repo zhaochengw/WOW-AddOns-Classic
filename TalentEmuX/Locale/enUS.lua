@@ -97,6 +97,7 @@ l10n.Setting_AutoShowEquipmentFrame = "Show Equipments Automatically";
 l10n.Setting_IconOnMinimap = "Show DBIcon";
 l10n.Setting_ResizableBorder = "Resizing by Dragging";
 l10n.Setting_SingleFrame = "Single Window";
+l10n.Setting_Style = "Style";
 l10n.Setting_TripleTrees = "Triple talent trees";
 l10n.Setting_SingleTree = "Single talent tree";
 l10n.Setting_TalentsInTip = "Talents in tip";

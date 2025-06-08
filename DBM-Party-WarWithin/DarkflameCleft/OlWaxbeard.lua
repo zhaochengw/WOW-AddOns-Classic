@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2569, "DBM-Party-WarWithin", 1, 1210)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250324070519")
+mod:SetRevision("20250503234244")
 mod:SetCreatureID(210149)
 mod:SetEncounterID(2829)
 mod:SetHotfixNoticeRev(20250222000000)
@@ -64,7 +64,7 @@ function mod:OnCombatStart(delay)
 	self.vb.busterCount = 0
 	self.vb.candleCount = 0
 	self.vb.tacticsCount = 0
-	timerRockBusterCD:Start(1.3-delay, 1)
+	--timerRockBusterCD:Start(1.0-delay, 1)--Used right away
 	timerLuringCandleCD:Start(6-delay, 1)
 	timerRecklessChargeCD:Start(28-delay, 1)
 	if self:IsMythic() then

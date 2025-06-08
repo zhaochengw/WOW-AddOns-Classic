@@ -51,8 +51,23 @@ function CataItemFixes.Load()
         [4506] = { -- Stromgarde Badge
             [itemKeys.npcDrops] = {2588,2590,2591,24477},
         },
+        [5030] = { -- Centaur Bracers
+            [itemKeys.npcDrops] = {3275,3396,9456,9523,9524,44170},
+        },
+        [5061] = { -- Stolen Silver
+            [itemKeys.objectDrops] = {195224},
+        },
+        [5078] = { -- Theramore Medal
+            [itemKeys.npcDrops] = {3385,3386,3393,5629,34706,34707},
+        },
         [5084] = { -- Cap'n Garvey's Head
             [itemKeys.npcDrops] = {34750},
+        },
+        [5085] = { -- Quilboar Tusk
+            [itemKeys.npcDrops] = {3261,3265,3266,3267,3268,3269,3271,34503,34545},
+        },
+        [5086] = { -- Zhevra Hooves
+            [itemKeys.npcDrops] = {3242,3426,3466,44166},
         },
         [5169] = { -- Timberling Sprout
             [itemKeys.objectDrops] = {4608},
@@ -129,6 +144,9 @@ function CataItemFixes.Load()
         [11114] = { -- Dinosaur Bone
             [itemKeys.npcDrops] = {6501,6502,6503,6504,9162,9163,9164},
         },
+        [11148] = { -- Samophlange Manual Page
+            [itemKeys.npcDrops] = {3283,3286,9336},
+        },
         [11569] = { -- Preserved Threshadon Meat
             [itemKeys.npcDrops] = {},
         },
@@ -161,6 +179,9 @@ function CataItemFixes.Load()
         },
         [16790] = { -- Damp Note
             [itemKeys.startQuest] = 0,
+        },
+        [16976] = { -- Murgut's Totem
+            [itemKeys.npcDrops] = {},
         },
         [18240] = { -- Ogre Tannin
             [itemKeys.objectDrops] = {179499},
@@ -219,6 +240,9 @@ function CataItemFixes.Load()
         },
         [19802] = { -- Heart of Hakkar
             [itemKeys.npcDrops] = {},
+        },
+        [20483] = { -- Tainted Arcane Sliver
+            [itemKeys.class] = itemClasses.QUEST,
         },
         [20743] = { -- Unstable Mana Crystal
             [itemKeys.npcDrops] = {},
@@ -322,6 +346,9 @@ function CataItemFixes.Load()
         [44979] = { -- Overseer's Orders
             [itemKeys.npcDrops] = {32863},
         },
+        [45004] = { -- Serviceable Arrow
+            [itemKeys.npcDrops] = {},
+        },
         [45027] = { -- Tuft of Mottled Doe Hair
             [itemKeys.npcDrops] = {33313},
         },
@@ -331,8 +358,14 @@ function CataItemFixes.Load()
         [45043] = { -- The Purifier's Prayer Book
             [itemKeys.npcDrops] = {33347},
         },
+        [45051] = { -- Kadrak's Reins
+            [itemKeys.npcDrops] = {8582},
+        },
         [45066] = { -- Bathed Concoction
             [itemKeys.objectDrops] = {194651},
+        },
+        [45069] = { -- Freshly Cut Wood
+            [itemKeys.npcDrops] = {},
         },
         [45573] = { -- The Forest HEart
             [itemKeys.npcDrops] = {},
@@ -358,6 +391,9 @@ function CataItemFixes.Load()
         [46397] = { -- Oracle Orphan Whistle
             [itemKeys.class] = itemClasses.QUEST,
         },
+        [46471] = { -- Furbolg Ear
+            [itemKeys.npcDrops] = {3743,3745,3750},
+        },
         [46543] = { -- Laughing Sister's Corpse
             [itemKeys.npcDrops] = {34426},
         },
@@ -369,6 +405,9 @@ function CataItemFixes.Load()
         },
         [46702] = { -- Ancient Device Fragment
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [46827] = { -- Ship Schematics
+            [itemKeys.npcDrops] = {34754},
         },
         [46858] = { -- Personal Riches
             [itemKeys.objectDrops] = {195525},
@@ -481,6 +520,9 @@ function CataItemFixes.Load()
         },
         [49944] = { -- Belysra's Talisman
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [50054] = { -- SI:7 Briefings
+            [itemKeys.npcDrops] = {38033},
         },
         [50134] = { -- Horn of Tal'doren
             [itemKeys.class] = itemClasses.QUEST,
@@ -1083,6 +1125,9 @@ function CataItemFixes.Load()
         },
         [68638] = { -- Frostsaber Cub
             [itemKeys.npcDrops] = {51681},
+        },
+        [68820] = { -- Sputtervalve's Blueprints
+            [itemKeys.npcDrops] = {3282,3284,3285,52356,52357},
         },
         [68890] = { -- Dragon Kite 2-Pack
             [itemKeys.class] = itemClasses.QUEST,

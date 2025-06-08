@@ -1,7 +1,7 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
--- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20250209
+-- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20250510
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_L then DBM_GUI_L = {} end
@@ -23,9 +23,6 @@ L.OTabScenarios	= "场景"
 L.OTabPlugins	= "其他"
 L.OTabOptions	= "核心选项"
 L.OTabAbout		= "关于"
-
-L.FOLLOWER	= "追随者"
-L.STORY 	= "故事模式"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
 
 L.TabCategory_CURRENT_SEASON		= "当前赛季"
 
@@ -391,7 +388,8 @@ L.AreaTitle_BarSetupHuge	= "大型计时条设置"
 L.AreaTitle_BarSetupVariance	= "差异计时条设置"
 L.EnableHugeBar 			= "开启大型计时条（2号计时条）"
 L.EnableVarianceBar 		= "开启差异计时条"
-L.VarianceTransparency		= "差异计时条透明度: %0.1f"
+L.VarianceColor				= "差异颜色"
+L.VarianceTransparency		= "计时条透明度: %0.1f"
 L.VarianceTimerTextBehavior	= "设置可变计时条行为"
 L.ZeroatWindowEnds			= "文本在CD结束时归零"
 L.ZeroatWindowStartPause	= "文本在CD结束时归零并暂停T"
@@ -448,7 +446,7 @@ L.SpamBlockNoShowEventTimers		= "不显示事件计时条（角色扮演，Boss�
 L.SpamBlockNoShowUTimers			= "不显示用户自定义生成的计时条(Custom/Pull/Break)"
 L.SpamBlockNoCountdowns				= "不要播放倒计时语音"
 
-L.Area_SpamFilter_Nameplates		= "姓名版功能"
+L.Area_SpamFilter_Nameplates		= "姓名板功能"
 L.SpamBlockNoNameplate				= "不为特殊Boss机制显示姓名面板技能图标（例如敌对目标上的buff和debuff）"
 L.SpamBlockNoNameplateCD			= "不为技能冷却计时器显示姓名面板技能图标"
 L.SpamBlockNoNameplateCasts			= "不为技能施放计时器显示姓名面板技能图标"

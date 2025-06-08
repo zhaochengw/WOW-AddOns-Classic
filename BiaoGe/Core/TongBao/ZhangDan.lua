@@ -202,8 +202,8 @@ end
 
 local function HasQianKuan()
     local FB = BG.FB1
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+    for b = 1, Maxb[FB] do
+        for i = 1, BG.GetMaxi(FB, b) do
             local bt = BG.Frame[FB]["boss" .. b]["qiankuan" .. i]
             if BG.Frame[FB]["boss" .. b]["qiankuan" .. i] and BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
                 return true
@@ -414,7 +414,7 @@ local function OnClick(self)
         SendSystemMessage(L["不在团队，无法通报"])
         BG.PlaySound(1)
     else
-        self:SetEnabled(false) -- 点击后按钮变灰2秒
+        self:SetEnabled(false) 
         C_Timer.After(2, function()
             self:SetEnabled(true)
         end)
@@ -439,7 +439,7 @@ local function OnClick(self)
             BG.SendMsgToRaid(tbl, BG.tongBaoSendCD)
         else
             if HasQianKuan() then
-                PlaySoundFile(BG["sound_qiankuan" .. BiaoGe.options.Sound], "Master")
+                BG.PlaySound("qiankuan")
             end
 
             local text = L["———通报账单———"]

@@ -92,7 +92,7 @@ do
 end
 -- 初始化
 do
-    BG.Maxi                                    = 30
+    BG.Maxi                                    = 40
     BG.FBWidth                                 = {}
     BG.FBHeight                                = {}
     BG.BossNumtbl                              = {}
@@ -123,7 +123,7 @@ do
             }
             Maxi[FB] = maxiTbl
             -- 设置支出格子为x个
-            if FB == "ULD" then
+            if FB == "ULD" or FB == "ICC" then
                 tinsert(Maxi[FB], 5)
             elseif FB == "MC" then
                 tinsert(Maxi[FB], 6)
@@ -197,7 +197,7 @@ do
                 [194] = "N",
             }
             AddDB("ICC", mainFrameWidth, 875, 3, 15, { 0, 7, 13 }, { "N10", "N25", "H10", "H25", }, difTbl2,
-                { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 8, 7, })
+                { 3, 3, 3, 5, 3, 3, 5, 3, 5, 3, 5, 8, 3, 12, 6, })
             AddDB("TOC", mainFrameWidth, 835, 3, 9, { 0, 5, 8 }, { "N10", "N25", "H10", "H25", }, difTbl2,
                 { 5, 5, 5, 5, 5, 3, 8, 22, 5, }, 16)
             AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 }, { "N10", "N25" }, difTbl1,
@@ -215,6 +215,8 @@ do
                 { 4, 4, 4, 4, 4, 5, 5, 5, 5, 10, 8, 5, })
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
+            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, difTbl3,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 5, 20, 5, }, 14)
         elseif BG.IsCTM then
             AddDB("BOT", 1715, 930, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
@@ -328,7 +330,8 @@ do
 
             -- TBC
             do
-                AddDB("BWL", 469, "", nil, nil, nil, nil, L["黑翼之巢"])
+                AddDB("TAQ", 531, "", nil, nil, nil, nil, L["安其拉"])
+                AddDB("BWL", 469, "", nil, nil, nil, nil, L["黑翼"])
                 AddDB("SSC", 548, "", nil, nil, nil, nil, L["毒蛇风暴"])
                 AddDB("HS", 534, "", nil, nil, nil, nil, L["海加尔山"])
                 AddDB("BT", 564, "", nil, nil, nil, nil, L["黑暗神殿"])
@@ -389,7 +392,7 @@ do
             FB = FB or BG.FB1
             if not isScrollFrame then
                 if b == Maxb[FB] then
-                    return 30
+                    return BG.Maxi
                 elseif b == Maxb[FB] + 1 then
                     return 20
                 elseif b == Maxb[FB] + 2 then
@@ -740,7 +743,6 @@ do
         local Interface = "Interface\\AddOns\\BiaoGe\\Media\\sound\\"
         BG.soundTbl = {
             { ID = "AI", name = L["AI语音"] },
-            { ID = "YingXue", name = L["樱雪"] },
             { ID = "BeiXi", name = L["匕首岭-<TIMEs>贝西"] },
             { ID = "SiKaQi", name = L["司卡奇"] },
         }
@@ -760,6 +762,7 @@ do
             { ID = "countDownStop", name = "倒数暂停.mp3" },
             { ID = "HusbandComeOn", name = "老公加油.mp3" },
             { ID = "qiankuan", name = "未收欠款.mp3" },
+            { ID = "autoAuctionAutoEndTips", name = "自动出价结束.mp3" },
         }
         for _, vv in ipairs(BG.soundTbl) do
             local name = vv.ID
@@ -855,7 +858,7 @@ BG.Init(function()
             BiaoGe.History[FB] = {}
         end
     end
-
+    
     if not BG.IsVanilla then
         if not BiaoGe.BossFrame then
             BiaoGe.BossFrame = {}
@@ -876,9 +879,6 @@ BG.Init(function()
     local name = "moLing"
     BG.options[name .. "reset"] = 1
     BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
-
-    -- 声音方案
-    BiaoGe.options.Sound = BiaoGe.options.Sound or BG.soundTbl[random(#BG.soundTbl)]
 
     -- 高亮天赋装备
     if not BiaoGe.filterClassNum then

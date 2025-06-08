@@ -1,7 +1,7 @@
 # WclPlayerScore-WotLK
 
-## [v2.4.31](https://github.com/icaca/WclPlayerScore-WotLK/tree/v2.4.31) (2025-04-22)
-[Full Changelog](https://github.com/icaca/WclPlayerScore-WotLK/commits/v2.4.31) [Previous Releases](https://github.com/icaca/WclPlayerScore-WotLK/releases)
+## [v2.5.17](https://github.com/icaca/WclPlayerScore-WotLK/tree/v2.5.17) (2025-06-03)
+[Full Changelog](https://github.com/icaca/WclPlayerScore-WotLK/commits/v2.5.17) [Previous Releases](https://github.com/icaca/WclPlayerScore-WotLK/releases)
 
 - Daily Update  
 - Daily Update  

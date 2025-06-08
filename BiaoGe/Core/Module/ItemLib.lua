@@ -309,7 +309,7 @@ end
 do
     local function IsYesItem(itemID)
         local FB = BG.FB1
-        if not info[FB][itemID] then return end
+        if not (info[FB] and info[FB][itemID]) then return end
         local typeID = info[FB][itemID].typeID
         if not (typeID == 2 or typeID == 4) then return false end
 
@@ -603,7 +603,7 @@ do
                 exText = " " .. AddTexture(tex) .. exItemLink
             end
 
-            local get = "|cff" .. "9999FF" .. FB_5 .. " " .. BossName .. exText .. RR .. AddPrice(itemID)
+            local get = "|cff" .. "9999FF" .. FB_5 .. " " .. BossName .. exText .. RR .. AddPrice(exItemID or itemID)
 
             tinsert(db_old, {
                 itemID = itemID,
@@ -1224,7 +1224,7 @@ local function SetItemLib()
                     else
                         BiaoGeTooltip2:AddLine(L["掉落后会提醒"], 1, 1, 1, true)
                     end
-                    BiaoGeTooltip2:AddLine(L["右键取消心愿装备"], 1, 0.82, 0, true)
+                    BiaoGeTooltip2:AddLine(AddTexture("RIGHT")..L["取消心愿装备"], 1, 0.82, 0, true)
                     BiaoGeTooltip2:Show()
                     f:GetScript("OnEnter")(f)
                 end)
@@ -1744,7 +1744,7 @@ function BG.ItemLibUI()
         { name = L["序号"], width = 35, color = "FFFFFF", JustifyH = "CENTER" },
         { name = L["等级"], width = 60, color = "FFFFFF", JustifyH = "CENTER" },
         { name = L["装备"], width = 180, color = "FFFFFF", JustifyH = "LEFT", type = "item" },
-        { name = L["获取途径"], width = 200, color = "FFFFFF", JustifyH = "LEFT" },
+        { name = L["获取途径"], width = 250, color = "FFFFFF", JustifyH = "LEFT" },
     }
     WIDTH = 20
     for i, v in ipairs(titleTbl) do
@@ -2222,7 +2222,7 @@ function BG.ItemLibUI()
 
     -- 心愿汇总
     do
-        local w = 140
+        local w = 120
         local w_jiange = 5
         local h_jiange = 1
         local width = 80 + (w + w_jiange) * 4 + 25
@@ -2249,7 +2249,7 @@ function BG.ItemLibUI()
         local t = f:CreateFontString()
         t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         t:SetPoint("TOP", mainFrame.Hope, "BOTTOM", 0, 0)
-        t:SetText(L["（右键删除心愿装备）"])
+        t:SetText(AddTexture("RIGHT")..L["（删除心愿装备）"])
 
         local title_table = {
             { name = "", width = 80, color = "FFFFFF", JustifyH = "CENTER" },

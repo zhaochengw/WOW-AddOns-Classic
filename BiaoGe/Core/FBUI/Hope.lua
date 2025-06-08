@@ -486,7 +486,7 @@ function BG.HopeUI(FB)
                         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
                         GameTooltip:ClearLines()
                         GameTooltip:AddLine(format(L["当前团队还有 %s 人也许愿该装备！"], self.text:GetText()), 1, 0, 0, true)
-                        GameTooltip:AddLine(L["右键取消提示"], 1, 0.82, 0, true)
+                        GameTooltip:AddLine(AddTexture("RIGHT")..L["取消提示"], 1, 0.82, 0, true)
                         GameTooltip:Show()
                     end)
                     f:SetScript("OnLeave", function(self)
@@ -731,7 +731,7 @@ function BG.HopeUI(FB)
                     end
                 end
 
-                self:SetEnabled(false) -- 点击后按钮变灰2秒
+                self:SetEnabled(false) 
                 C_Timer.After(2, function()
                     bt:SetEnabled(true)
                 end)

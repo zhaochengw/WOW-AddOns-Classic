@@ -1,5 +1,5 @@
-## Interface: 30404
-## Version: 2.1.1
+## Interface: 11507
+## Version: 2.1.2
 ## Title: MailLogger
 ## Author: Aoikaze
 ## SavedVariables: MailLoggerDB

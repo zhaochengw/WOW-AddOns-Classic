@@ -81,8 +81,8 @@ BG.Init2(function()
             mainFrame.boss:SetSelected(13)
         elseif self.id == "AtlasLootClassic_DungeonsAndRaids" then
             -- 地下城和团队副本
-            mainFrame.subCatSelect:SetSelected("TrialoftheCrusader")
-            ClickSelectButton(10, 1, "notRefresh")
+            mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
+            ClickSelectButton(9, 1, "notRefresh")
             AtlasLoot.GUI.ItemFrame:Refresh(true)
         elseif self.id == "AtlasLootClassic_Crafting" then
             -- 专业制造
@@ -98,8 +98,8 @@ BG.Init2(function()
             -- AtlasLoot.GUI.ItemFrame:Refresh(true)
         elseif self.id == "AtlasLootClassic_Collections" then
             -- 藏品
-            ClickSelectButton(10, nil, "notRefresh")
-            ClickSelectButton(5, 1)
+            ClickSelectButton(11, nil, "notRefresh")
+            ClickSelectButton(8, 1)
             AtlasLoot.GUI.ItemFrame:Refresh(true)
         end
     end
@@ -117,7 +117,6 @@ BG.Init2(function()
             end
         end)
     end
-
 
     -- 快捷按钮
     local last
@@ -143,25 +142,25 @@ BG.Init2(function()
         end)
     end
 
-    CreateButton(L["十字军"], function()
+    CreateButton(L["冰冠"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_DungeonsAndRaids")
-        mainFrame.subCatSelect:SetSelected("TrialoftheCrusader")
-        ClickSelectButton(10, 1, "notRefresh")
+        mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
+        ClickSelectButton(9, 1, "notRefresh")
     end)
-    CreateButton(L["T9套"], function()
+    CreateButton(L["T10套"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_DungeonsAndRaids")
-        mainFrame.subCatSelect:SetSelected("TrialoftheCrusader")
-        ClickSelectButton(10, 1, "notRefresh")
-        ClickSelectButton(8, 3, "notRefresh")
+        mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
+        ClickSelectButton(14, 3, "notRefresh")
+        ClickSelectButton(14, 1, "notRefresh")
     end)
     CreateButton(L["牌子"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_Collections")
-        mainFrame.subCatSelect:SetSelected("EmblemofTriumph")
-        mainFrame.boss:SetSelected(6)
+        mainFrame.subCatSelect:SetSelected("EmblemofFrost")
+        mainFrame.boss:SetSelected(8)
     end)
-    CreateButton(L["精华"], function()
+    CreateButton(L["天谴石"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_Collections")
-        mainFrame.subCatSelect:SetSelected("SiderealEssence")
+        mainFrame.subCatSelect:SetSelected("DefilersScourgestone")
         mainFrame.boss:SetSelected(8)
     end)
 

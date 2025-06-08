@@ -467,10 +467,15 @@ end
 
 function QuestieMap:DrawLineIcon(lineFrame, areaID, x, y)
     if type(areaID) ~= "number" or type(x) ~= "number" or type(y) ~= "number" then
-        error("Questie" .. ": AddWorldMapIconMap: 'AreaID', 'x' and 'y' must be numbers " .. areaID .. " " .. x .. " " .. y)
+        error("Questie:DrawLineIcon: 'areaID', 'x' and 'y' must be numbers. Got: " .. tostring(areaID) .. ", " .. tostring(x) .. ", " .. tostring(y))
     end
 
     local uiMapId = ZoneDB:GetUiMapIdByAreaId(areaID)
+
+    if type(uiMapId) ~= "number" then
+        Questie:Debug(Questie.DEBUG_CRITICAL, "DrawLineIcon: Invalid uiMapId for areaID:", areaID)
+        return
+    end
 
     HBDPins:AddWorldMapIconMap(Questie, lineFrame, uiMapId, x, y, HBD_PINS_WORLDMAP_SHOW_CURRENT)
 end
@@ -582,6 +587,7 @@ end
 --A layer to keep the area convertion away from the other parts of the code
 --coordinates need to be 0-1 instead of 0-100
 --showFlag isn't required but may want to be Modified -- TODO: Can this be removed?
+---@param data IconData
 ---@return IconFrame, IconFrame
 function QuestieMap:DrawWorldIcon(data, areaID, x, y, phase, showFlag)
     if type(data) ~= "table" then

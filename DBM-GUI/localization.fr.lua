@@ -18,9 +18,6 @@ L.OTabPlugins						= "Autre"--Scenarios, PVP, Delves (11.x), Solo/Challenge cont
 L.OTabOptions						= "Options"
 L.OTabAbout							= "À propos"
 
-L.FOLLOWER							= "Sujet"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
-L.STORY					    		= "Histoire"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
-
 L.TabCategory_CURRENT_SEASON		= "Saison en cours"
 
 L.TabCategory_OTHER			= "Autres modules"
@@ -159,6 +156,11 @@ L.AutoAcceptFriendInvite	= "Acceptation auto des invitations venant d'un ami"
 L.AutoAcceptGuildInvite		= "Acceptation auto des invitations venant d'un membre de la guilde"
 L.Area_Advanced				= "Options avancées"
 L.FakeBW					= "Prétendre utiliser BigWigs lors des vérifications de versions au lieu de DBM (utile pour les guildes qui forcent l'utilisation de BigWigs)"
+--
+L.Area_Tooltip              = "Intégration à l'infobulle"
+L.EnableTooltip             = "Ajouter les statistiques de DBM aux infobulles des boss pris en charge"
+L.EnableTooltipInCombat     = "Afficher les informations de l'infobulle en combat"
+L.EnableTooltipHeader       = "Inclure l’en-tête DBM dans l’infobulle"
 
 -- Panel: Profiles
 L.Panel_Profile				= "Profils"

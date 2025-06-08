@@ -560,6 +560,31 @@ GTFO.SpellID["285762"] = {
   sound = 3;
 };
 
+GTFO.SpellID["308408"] = {
+  --desc = "Entropic Leap (Forge-Guard Hurrul)";
+  sound = 1;
+};
+
+GTFO.SpellID["296492"] = {
+  --desc = "Void Eruption (Void Globule)";
+  sound = 3;
+};
+
+GTFO.SpellID["296718"] = {
+  --desc = "Dark Smash (Faceless Willbreaker)";
+  sound = 3;
+};
+
+GTFO.SpellID["305672"] = {
+  --desc = "Explosive Ordnance (Alleria Windrunner)";
+  sound = 3;
+};
+
+GTFO.SpellID["311456"] = {
+  --desc = "Roaring Blast (Armsmaster Terenson)";
+  sound = 3;
+};
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************

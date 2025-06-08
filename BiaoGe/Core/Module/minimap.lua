@@ -28,6 +28,8 @@ function plugin:OnClick(button) --function plugin.OnClick(self, button)
             ns.InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
             BG.MainFrame:Hide()
         end
+    elseif button == "MiddleButton" then
+        BG.SetFBCD(nil, nil, true)
     end
     BG.PlaySound(1)
 end

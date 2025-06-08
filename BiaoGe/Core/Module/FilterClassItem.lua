@@ -276,8 +276,8 @@ function BG.FilterClassItemUI()
                     end
                     GameTooltip:AddLine(BiaoGe.FilterClassItemDB[RealmId][player][bt.num].Name, 1, 1, 1, true)
                     if bts == Buttons then
-                        GameTooltip:AddLine(L["左键使用方案"], 1, .82, 0, true)
-                        GameTooltip:AddLine(L["右键修改方案"], 1, .82, 0, true)
+                        GameTooltip:AddLine(AddTexture("LEFT") .. L["使用方案"], 1, .82, 0, true)
+                        GameTooltip:AddLine(AddTexture("RIGHT") ..L["修改方案"], 1, .82, 0, true)
                     end
                     GameTooltip:Show()
                 end)

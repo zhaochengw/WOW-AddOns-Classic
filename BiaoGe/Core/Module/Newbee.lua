@@ -208,14 +208,14 @@ end)
 BG.Init2(function()
     BG.After(3, function()
         if BiaoGe.newbee_report.uploadstate == 0 then
-            PlaySoundFile(BG["sound_uploading" .. BiaoGe.options.Sound], "Master")
+            BG.PlaySound("uploading")
             BG.SendSystemMessage(format(L["账单正在上传新手盒子！请你确保新手盒子是正在运行。上传需要%s秒。"], UPLOADTIME))
             BG.ButtonNewBee.onUpdate = BG.OnUpdateTime(function(self, elapsed)
                 self.timeElapsed = self.timeElapsed + elapsed
                 if self.timeElapsed >= UPLOADTIME then
                     self:SetScript("OnUpdate", nil)
                     self:Hide()
-                    PlaySoundFile(BG["sound_uploaded" .. BiaoGe.options.Sound], "Master")
+                    BG.PlaySound("uploaded")
                     BG.SendSystemMessage(L["账单已上传到新手盒子！你可以在|cff00ff00新手盒子-工具箱-云账单|r进行查看！感谢你的支持！"])
                     BiaoGe.newbee_report.uploadstate = 1
                 end

@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2646, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250416053116")
+mod:SetRevision("20250517053010")
 mod:SetCreatureID(231075)
 mod:SetEncounterID(3016)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3)
@@ -26,17 +25,12 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_START boss1"
 )
 
---TODO: Possibly add a bombs remaining infoframe similar to hellfire citadel 2nd boss
---TODO, stuff with Greedy Goblin's Armaments ?
---TODO, target scan giga blast?
 --TODO, VERIFY when a player is carrying a Gigabomb, use https://www.wowhead.com/ptr-2/spell=469361/giga-bomb too?
 --TODO, add stack announce for https://www.wowhead.com/ptr-2/spell=471352/juice-it when frequency of stacks is known
 --TODO, detect darkfuse cronies spawn, maybe https://www.wowhead.com/ptr-2/spell=462416/signal-flare ?
 --TODO, auto mark hob goblins? https://www.wowhead.com/ptr-2/spell=1216846/holding-a-wrench
---TODO, detect cratering cast start
---TODO, ego swapping? it'll need fancy checked ego amount checks https://www.wowhead.com/ptr-2/spell=467064/checked-ego
---TODO, announce https://www.wowhead.com/ptr-2/spell=469363/fling-giga-bomb flings?
 --TODO, possibly readd 469404 as a stack warning instead
+--TODO, LFR phase detection fails and counts don't reset and timers break at a point in fight, unclear why without some detailed trancsriptor logs of LFR
 --NOTE, it's possible to detect phase changes in story mode with anchor casts, but it's a mess and not worth dev time investment since the timers don't actually matter. As such timers just hard disabled in story mode
 --[[
 stoppedAbility.id = 1214369 or ability.id = 1214229 and (type = "applydebuff" or type = "removedebuff") or ability.id = 1220290 and type = "removebuff" or (ability.id = 1226891 or ability.id = 469293) and (type = "applybuff" or type = "removebuff")
@@ -52,6 +46,7 @@ local warnVentingHeat								= mod:NewCountAnnounce(466751, 2, nil, nil, 2)
 local warnFocusedDetonation							= mod:NewCountAnnounce(466246, nil, nil, DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.stack:format(466246))
 
 local specWarnSupression							= mod:NewSpecialWarningDodgeCount(467182, nil, nil, nil, 2, 2)
+local specWarnFinalBlast							= mod:NewSpecialWarningDodge(1219333, nil, nil, nil, 2, 2)
 local specWarnScatterblastCanisters					= mod:NewSpecialWarningCount(466340, nil, nil, nil, 2, 2)
 local specWarnScatterblastCanistersTaunt			= mod:NewSpecialWarningTaunt(466340, nil, nil, nil, 1, 2)
 local specWarnBBBBombs								= mod:NewSpecialWarningCount(465952, nil, nil, nil, 2, 2)
@@ -405,7 +400,7 @@ local allTimers = {
 				[5] = {0},
 			},
 			[1214607] = {--BBBBlast
-				[0] = {26.1, 33},
+				[0] = {"v21.7-26.1", 33},
 				[1] = {"v24.9-33.6"},
 				[2] = {"v9-38.2", 37.5},--Boss sometimes skips first cast and just goes right into second. we just handle it with variance
 				[3] = {"v17.6-27.2", 33.1},
@@ -531,6 +526,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnSupression:Play("watchstep")
 		if self:IsStory() then return end--hard disable timers in story mode
 		if self:GetStage(3) or self:IsMythic() then
+			specWarnFinalBlast:Show()
+			specWarnFinalBlast:Play("justrun")
 			timerFinalBlast:Start(6, self.vb.suppressionCount)
 		end
 		local timer
@@ -835,7 +832,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				end
 			end
 		end
-	elseif spellId == 1226891 and self:AntiSpam(2.5, 1) then--Circuit Reboot Applied
+	elseif spellId == 1226891 and self:AntiSpam(3, 1) then--Circuit Reboot Applied (1219062 is lfr id)
 		self:SetStage(0.5)--Increment stage by 0.5
 		self.vb.mayhemRocketsCount = 0
 		--Stop all timers
@@ -875,7 +872,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.InfoFrame then--Armageddon-class Plating
 			DBM.InfoFrame:Hide()
 		end
-	elseif spellId == 1214369 and self:AntiSpam(5, 3) then--Backup stage 3/1 mythic trigger
+	elseif spellId == 1214369 and self:AntiSpam(8, 3) then--Backup stage 3/1 mythic trigger
 		timerTotalDestruction:Stop()
 		if self:IsMythic() then
 			self:SetStage(0.5)--Stage should be 0.5 at this point, but this also future proofs race condition when overgearing where you might push boss to stage 2 at same time
@@ -987,7 +984,7 @@ function mod:SPELL_AURA_REMOVED(args)
 				timerEgoCheckCD:Start(allTimers[savedDifficulty][3][466958][self.vb.coilsCount][1])
 			end
 		end
-	elseif spellId == 1226891 and self:IsInCombat() and self:AntiSpam(2.5, 2) then--Circuit Reboot Removed
+	elseif spellId == 1226891 and self:IsInCombat() and self:AntiSpam(3, 2) then--Circuit Reboot Removed (1219062 is lfr id)
 		self:SetStage(0.5)--Increment stage by 0.5
 		--Reset Counts
 		self.vb.canisterCount = 0
@@ -1029,7 +1026,7 @@ end
 function mod:SPELL_INTERRUPT(args)
 	if args.extraSpellId == 466834 then
 		timerShockBarrageCast:Stop(args.destGUID)
-	elseif args.extraSpellId == 1214369 and self:AntiSpam(5, 3) then
+	elseif args.extraSpellId == 1214369 and self:AntiSpam(8, 3) then
 		timerTotalDestruction:Stop()
 		if self:IsMythic() then
 			self:SetStage(0.5)--Stage should be 0.5 at this point, but this also future proofs race condition when overgearing where you might push boss to stage 2 at same time

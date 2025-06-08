@@ -1,4 +1,10 @@
 
+2025-06-01
+Fix SettingUI error.
+
+2025-05-06
+Wont mark wand enchantable.
+
 2025-04-28
 Update lib.
 

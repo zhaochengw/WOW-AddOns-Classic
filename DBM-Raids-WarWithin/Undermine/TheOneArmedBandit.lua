@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2644, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250416053159")
+mod:SetRevision("20250513222630")
 mod:SetCreatureID(228458)
 mod:SetEncounterID(3014)
 mod:SetHotfixNoticeRev(20250209000000)
@@ -23,13 +22,9 @@ mod:RegisterEventsInCombat(
 	"UNIT_DIED"
 )
 
---TODO, mark token holders with red, blue, orange, and skull?
---TODO, revise audio as needed
---TODO, auto mark bombs with https://www.wowhead.com/ptr-2/spell=461176/reward-flame-and-bomb ?
---TODO, add https://www.wowhead.com/ptr-2/spell=464705/golden-ticket stack tracker? probably not really needed
---TODO, record new payline audio (based on if we can detect it or not)
 --TODO, bait timers and short texts
 --TODO, figure out the lineyou and farfromline overlap since we can't detect debuff and filter farfromline on private aura...
+--TODO, figure out why LFR has some serious timer queue issues where abilities go as much as -30 before being cast.
 --[[
 (ability.id = 472197 or ability.id = 460181 or ability.id = 469993 or ability.id = 460472 or ability.id = 465587 or ability.id = 461060) and type = "begincast"
 or ability.id = 465761 and type = "begincast" or ability.id = 465765 and type = "cast"
@@ -199,7 +194,7 @@ function mod:SPELL_CAST_START(args)
 			elseif self:IsHeroic() or self:IsLFR() then--Heroic/LFR swaps payline and bighit compared to normal
 				timerPaylineCD:Start("v11.1-11.8", self.vb.paylineCount+1)
 				timerFoulExhaustCD:Start("v16.0-16.7", self.vb.foulExhaustCount+1)
-				timerTheBigHitCD:Start("v22.1-23", self.vb.bigHitCount+1)
+				timerTheBigHitCD:Start("v15.3-23", self.vb.bigHitCount+1)
 			else
 				timerTheBigHitCD:Start("v11.9-13.1", self.vb.bigHitCount+1)
 				timerFoulExhaustCD:Start("v16.6-18.9", self.vb.foulExhaustCount+1)

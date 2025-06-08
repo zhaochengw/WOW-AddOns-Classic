@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2566, "DBM-Party-WarWithin", 3, 1268)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250308120337")
+mod:SetRevision("20250519110303")
 mod:SetCreatureID(209230)
 mod:SetEncounterID(2816)
 mod:SetHotfixNoticeRev(20250303000000)
@@ -41,8 +41,8 @@ local timerLightningTorrentCD				= mod:NewNextCountTimer(55.9, 444123, nil, nil,
 local timerLightningTorrent					= mod:NewCastTimer(19, 444034, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerLightningDashCD					= mod:NewNextCountTimer(55.9, 419870, nil, nil, nil, 3)--Timer confirmed by bugging out torrent to disable delays
 --local timerStormheartCD					= mod:NewCDCountTimer(33.9, 444324, nil, nil, nil, 3)
-local timerCrashingThunderCD				= mod:NewCDCountTimer(15.8, 1214325, nil, nil, nil, 3)
-local timerWildLightningCD					= mod:NewCDCountTimer(15.8, 474018, nil, nil, nil, 3)
+local timerCrashingThunderCD				= mod:NewCDCountTimer(15.3, 1214325, nil, nil, nil, 3)
+local timerWildLightningCD					= mod:NewCDCountTimer(15.3, 474018, nil, nil, nil, 3)
 
 --local castsPerGUID = {}
 
@@ -59,7 +59,7 @@ function mod:OnCombatStart(delay)
 --	self.vb.stormheartCount = 0
 	self.vb.crashingThunderCount = 0
 --	timerStormheartCD:Start(1, 1)
-	timerCrashingThunderCD:Start(5.2, 1)
+	timerCrashingThunderCD:Start(5.0, 1)
 	timerWildLightningCD:Start(9.4, 1)
 	timerLightningTorrentCD:Start(16.1, 1)
 	--Dash timer started in torrent
@@ -97,9 +97,9 @@ function mod:SPELL_CAST_START(args)
 		self.vb.wildCount = self.vb.wildCount + 1
 		specWarnWildLightning:Show(self.vb.wildCount)
 		specWarnWildLightning:Play("watchstep")
-		--"Wild Lightning-474018-npc:209230-000034D362 = pull:9.4, 42.5, 15.8, 40.1, 15.8",
+		--"Wild Lightning-474018-npc:209230-000034D362 = pull:9.4, 42.1, 15.8, 40.1, 15.8",
 		if self.vb.wildCount == 1 then
-			timerWildLightningCD:Start(42.5, 2)
+			timerWildLightningCD:Start(42.1, 2)
 		elseif self.vb.wildCount % 2 == 0 then
 			timerWildLightningCD:Start(15.8, self.vb.wildCount+1)
 		else

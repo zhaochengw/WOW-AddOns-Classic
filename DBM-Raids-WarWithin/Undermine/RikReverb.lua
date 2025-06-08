@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2641, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250313200234")
+mod:SetRevision("20250513222630")
 mod:SetCreatureID(228648)
 mod:SetEncounterID(3011)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -26,13 +25,7 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, precise stacks to special warn for for high voltage stacks. Possibly add an infoframe to monitor player rotations
---TODO, what to do with resonate echoes
---TODO, change TTS on entranced to use extra action?
---TODO, personal stack tracker forhttps://www.wowhead.com/ptr-2/spell=1214164/excitement ?
---TODO, finetune tank stacks
---TODO, perfect staging timers for weak aura compat
---TODO, you can target scan Sound Cannon, which defeats point of being private aura. if this isn't fixed by live,
+--TODO, perfect staging timers for weak aura compat (what was this note about?)
 --[[
 (ability.id = 473748 or ability.id = 466866 or ability.id = 467606 or ability.id = 466979 or ability.id = 473655 or ability.id = 473260) and type = "begincast"
  or ability.id = 1213817 and (type = "applybuff" or type = "removebuff")
@@ -44,7 +37,7 @@ local warnLingeringVoltage							= mod:NewCountAnnounce(1217122, 2, nil, nil, DB
 local warnLingeringVoltageFaded						= mod:NewFadesAnnounce(1217122, 1)--Player
 local warnResonantEchoes							= mod:NewYouAnnounce(468119, 3)
 local warnEntranced									= mod:NewTargetNoFilterAnnounce(1214598, 4)
-local warnSoundCannon								= mod:NewIncomingCountAnnounce(467606, 2)
+local warnSoundCannon								= mod:NewTargetNoFilterAnnounce(467606, 2)
 local warnFaultyZap									= mod:NewTargetNoFilterAnnounce(466979, 3)
 local warnTinnitus									= mod:NewStackAnnounce(464518, 2, nil, "Tank|Healer")
 local warnHaywire									= mod:NewSpellAnnounce(466093, 4)
@@ -59,6 +52,7 @@ local specWarnFaultyZap								= mod:NewSpecialWarningMoveAway(466979, nil, nil,
 local yellFaultyZap									= mod:NewYell(466979)
 local specWarnSparkBlastIngition					= mod:NewSpecialWarningSwitchCount(472306, nil, nil, nil, 1, 2)
 local specWarnTinnitusTaunt							= mod:NewSpecialWarningTaunt(464518, nil, nil, nil, 1, 2)
+local specwarnResonance								= mod:NewSpecialWarningMove(466128, nil, nil, nil, 1, 2)
 --local specWarnGTFO								= mod:NewSpecialWarningGTFO(459785, nil, nil, nil, 1, 8)
 
 local timerAmplificationCD							= mod:NewCDCountTimer(40, 473748, nil, nil, nil, 3)
@@ -98,11 +92,12 @@ mod.vb.sparkTimerCount = 0
 local activeBossGUIDS = {}
 local addUsedMarks = {}
 local savedDifficulty = "normal"
+local resonanceActive = false
 
 local allTimers = {
 	["mythic"] = {
 		--Amplification
-		[473748] = {10.5, 40, 37.7},
+		[473748] = {10.3, 38.5, 37.7},
 		--Echoing Chant
 		[466866] = {21.0, 39, 53},
 		--Sound Cannon
@@ -146,12 +141,16 @@ function mod:CannonTarget(targetname)
 		else
 			yellSoundCannonSoak:Say()--White Text
 		end
---	else
---		warnSurgingArc:Show(targetname)
+	elseif self:IsMythic() then
+		specWarnSoundCannonSoak:Show(self.vb.cannonCount)
+		specWarnSoundCannonSoak:Play("helpsoak")
+	else
+		warnSoundCannon:Show(targetname)
 	end
 end
 
 function mod:OnCombatStart(delay)
+	resonanceActive = false
 	self:SetStage(1)
 	table.wipe(activeBossGUIDS)
 	table.wipe(addUsedMarks)
@@ -229,12 +228,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 467606 then
 		self.vb.cannonCount = self.vb.cannonCount + 1
 		self.vb.cannonTimerCount = self.vb.cannonTimerCount+1
-		if self:IsMythic() then
-			specWarnSoundCannonSoak:Show(self.vb.cannonCount)
-			specWarnSoundCannonSoak:Play("helpsoak")
-		else
-			warnSoundCannon:Show(self.vb.cannonCount)
-		end
 		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, false, spellId, self.vb.cannonTimerCount+1)
 		if timer and timer > 0 then
 			timerSoundCannonCD:Start(timer, self.vb.cannonCount+1)
@@ -295,15 +288,22 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellFaultyZap:Yell()
 		end
 	elseif spellId == 466128 then
-		if self.Options.NPAuraOnResonance then
-			DBM.Nameplate:Show(true, args.destGUID, spellId)
+		if self:AntiSpam(3, 3) then
+			if self:IsTank() then
+				specwarnResonance:Show()
+				specwarnResonance:Play("moveboss")
+			end
+			if self.Options.NPAuraOnResonance and not resonanceActive then
+				resonanceActive = true
+				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
+			end
 		end
 	elseif spellId == 464518 then
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) then
 			local amount = args.amount or 1
 			if not args:IsPlayer() and amount >= 3 then
-				if amount >= 6 and not DBM:UnitDebuff("player", spellId) then
+				if amount >= 6 and not DBM:UnitDebuff("player", spellId) and not UnitIsDeadOrGhost("player") then
 					specWarnTinnitusTaunt:Show(args.destName)
 					specWarnTinnitusTaunt:Play("tauntboss")
 				elseif amount % 3 == 0 then
@@ -311,7 +311,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				end
 			end
 		end
-	elseif spellId == 466093 and self:AntiSpam(3, 3) then
+	elseif spellId == 466093 and self:AntiSpam(3, 4) then
 		warnHaywire:Show()
 	elseif spellId == 1213817 then--Hype Hystle / Hype Fever (final hustle)
 		self:SetStage(2)
@@ -344,7 +344,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 466128 then
 		if self.Options.NPAuraOnResonance then
-			DBM.Nameplate:Hide(true, args.destGUID, spellId)
+			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
 		end
 	elseif spellId == 467542 then--Haywire
 		for i = 1, 8, 1 do

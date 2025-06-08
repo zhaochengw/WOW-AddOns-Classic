@@ -267,6 +267,17 @@ if BG.IsWLK then
         616,
         617,
     }
+    BG.Loot.encounterID.TAQ = {
+        709,
+        710,
+        711,
+        712,
+        713,
+        714,
+        715,
+        716,
+        717,
+    }
 elseif BG.IsCTM then
     BG.Loot.encounterID.NAXX = {
         1107,

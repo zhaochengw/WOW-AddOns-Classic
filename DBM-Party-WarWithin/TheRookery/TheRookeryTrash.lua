@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheRookeryTrash", "DBM-Party-WarWithin", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250421040711")
+mod:SetRevision("20250513095927")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
@@ -258,11 +258,11 @@ end
 --All timers subject to a ~0.5 second clipping due to ScanEngagedUnits
 function mod:StartEngageTimers(guid, cid, delay)
 	if cid == 209801 then--Quartermaster Koratite
-		timerBoundingVoidCD:Start(6-delay, guid)
+		timerBoundingVoidCD:Start(5.4-delay, guid)
 		timerEntropyShieldCD:Start(9-delay, guid)
 	elseif cid == 212786 then--Cursed Stormrider
-		timerWildLightningCD:Start(11-delay, guid)
-		timerLocalizedStormCD:Start(15.9-delay, guid)
+		timerWildLightningCD:Start(7.1-delay, guid)--fairly large variance
+		timerLocalizedStormCD:Start(12.7-delay, guid)--fairly large variance
 --	elseif cid == 207186 then--Unruly Stormrook
 --		timerThunderstrikeCD:Start(0.5-delay, guid)
 --		timerEnergizedBarrageCD:Start(0.5-delay, guid)
@@ -272,7 +272,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 	elseif cid == 214419 then--Corrupted Rookguard
 		timerVoidCrushCD:Start(7.8-delay, guid)
 	elseif cid == 207199 then--Cursed Rook Tender
-		timerLightningSurgeCD:Start(9.8-delay, guid)
+		timerLightningSurgeCD:Start(8.8-delay, guid)
 	elseif cid == 214421 then--Corrupted Thunderer
 		timerAttractingShadowsCD:Start(4.4-delay, guid)
 		timerArcingVoidCD:Start(8-delay, guid)
@@ -281,7 +281,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 		timerUmbralWaveCD:Start(15.5-delay, guid)
 	elseif cid == 212739 then--Consuming Voidstone
 		timerVoidExtractionCD:Start(4.5-delay, guid)--4.5-5.9
-		timerUnleashedDarknessCD:Start(29.1-delay, guid)--100% wrong
+		timerUnleashedDarknessCD:Start(20.6-delay, guid)--20.6-25.4
 	end
 end
 

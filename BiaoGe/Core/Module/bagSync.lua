@@ -25,6 +25,7 @@ local realmID = GetRealmID()
 local pt = print
 
 BG.Init(function()
+    -- 背包
     BiaoGe.bag = BiaoGe.bag or {}
     BiaoGe.bag[realmID] = BiaoGe.bag[realmID] or {}
     BiaoGe.bag[realmID][player] = BiaoGe.bag[realmID][player] or {}
@@ -122,4 +123,47 @@ BG.Init(function()
             BG.SaveMail()
         end
     end)
+
+
+    -- 声望
+    if not BG.IsRetail then
+        BiaoGe.bag[realmID][player].faction = BiaoGe.bag[realmID][player].faction or {}
+
+        local tbl = {}
+        if BG.IsWLK then
+            tbl = {
+                1156,
+            }
+        elseif BG.IsVanilla then
+            tbl = {
+                270,
+            }
+        end
+        local function SaveReputation()
+            for i, ID in ipairs(tbl) do
+                local name, description, standingID, barMin, barMax, barValue = GetFactionInfoByID(ID)
+                if name then
+                    BiaoGe.bag[realmID][player].faction[ID] = {
+                        name = name,
+                        standingID = standingID,
+                        currentValue = barValue - barMin,
+                        maxValue = barMax - barMin,
+                        factionID = ID,
+                    }
+                end
+            end
+        end
+
+        BG.Init2(function()
+            After(10, function()
+                SaveReputation()
+            end)
+        end)
+
+        BG.RegisterEvent("UPDATE_FACTION", function(self, event)
+            After(.5, function()
+                SaveReputation()
+            end)
+        end)
+    end
 end)

@@ -25,7 +25,6 @@ BG.Frame.p = p
 local preWidget
 local framedown
 local frameright
--- local last
 local red, greed, blue = 1, 1, 1
 
 ------------------结算工资------------------
@@ -136,17 +135,61 @@ function BG.UpdateZhiChuPercent(zhuangbei, jine)
     end
 end
 
+function BG.UpdateZhiChuMan(zhuangbei, jine)
+    zhuangbei.hasMan = nil
+    jine.hasMan = nil
+    local num = tonumber(zhuangbei:GetText():match("(%d+)人"))
+    if num and num ~= 0 then
+        local money = tonumber(jine:GetText()) or 0
+        local tbl = {
+            num = num,
+            money = money,
+            avg = floor(money / num),
+        }
+        zhuangbei.hasMan = tbl
+        jine.hasMan = tbl
+
+        if zhuangbei.isEnter then
+            zhuangbei:GetScript("OnEnter")(zhuangbei)
+        end
+        if jine.isEnter then
+            jine:GetScript("OnEnter")(jine)
+        end
+        return
+    end
+    if zhuangbei.isEnter or jine.isEnter then
+        GameTooltip:Hide()
+    end
+end
+
 local function OnEnterZhiChuPercent(self)
-    if self.hasPercent then
+    if self.hasPercent or self.hasMan then
         if BG.ButtonIsInRight(self) then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
         else
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
         end
         GameTooltip:ClearLines()
+    end
+    if self.hasPercent then
         GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
         GameTooltip:AddLine(format(L["该支出项含有百分比|cff00ff00（%s%%）|r，正在自动计算支出金额。"], self.hasPercent), 1, 0.82, 0, true)
         GameTooltip:AddLine(L["你可以通过删除支出项的百分比符号来取消自动计算，或者在表格设置里关闭该项功能。"], 0.5, 0.5, 0.5, true)
+        if not self.hasMan then
+            GameTooltip:Show()
+        end
+    end
+    if self.hasMan then
+        if self.hasPercent then
+            GameTooltip:AddLine(" ", 1, 1, 1, true)
+        end
+        local money = self.hasMan.money
+        local num = self.hasMan.num
+        local avg = self.hasMan.avg
+        GameTooltip:AddLine(L["该支出项含有人数"], 1, 1, 1, true)
+        GameTooltip:AddLine(format(L["支出：%s"], money), 1, 0.82, 0, true)
+        GameTooltip:AddLine(format(L["人数：%s人"], num), 1, 0.82, 0, true)
+        GameTooltip:AddLine(format(L["每人：|cff00ff00%s|r"], avg), 1, 0.82, 0, true)
         GameTooltip:Show()
     end
 end
@@ -207,6 +250,52 @@ local function UpdateCancelDelete(self, FB, b, i, type)
             self:SetScript("OnUpdate", nil)
             BG.ButtonCancelDelete:Hide()
         end
+    end)
+end
+
+-- 鼠标提示玩家的欠款和罚款
+do
+    local CD
+    local function SetTooltip(unit)
+        local name = BG.SPN(BG.GN(unit))
+        local FB = BG.FB1
+        local fkMoney = 0
+        local qkMoney = 0
+        BG.PairFBItem(function(item, buyer, money, b, i)
+            if buyer:GetText() == name then
+                if b == Maxb[FB] then
+                    fkMoney = fkMoney + (tonumber(money:GetText()) or 0)
+                end
+                qkMoney = qkMoney + (tonumber(BiaoGe[FB]["boss" .. b]["qiankuan" .. i]) or 0)
+            end
+        end)
+        if fkMoney ~= 0 then
+            GameTooltip:AddLine(L["罚款："] .. BG.STC_w1(fkMoney), 1, .82, 0)
+        end
+        if qkMoney ~= 0 then
+            GameTooltip:AddLine(L["欠款："] .. BG.STC_w1(qkMoney), 1, .82, 0)
+        end
+        if fkMoney ~= 0 or qkMoney ~= 0 then
+            GameTooltip:Show()
+        end
+    end
+    GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+        if BiaoGe.options["mouseFK"] ~= 1 then return end
+        local unit = "mouseover"
+        if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
+        if CD then return end
+        CD = true
+        BG.After(0, function() CD = false end)
+        SetTooltip(unit)
+    end)
+
+    hooksecurefunc(GameTooltip, "SetUnit", function(self, unit)
+        if BiaoGe.options["mouseFK"] ~= 1 then return end
+        if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
+        if CD then return end
+        CD = true
+        BG.After(0, function() CD = false end)
+        SetTooltip(unit)
     end)
 end
 
@@ -321,6 +410,7 @@ local function OnTextChanged(self)
     if bossnum == Maxb[FB] + 1 then
         local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]
         BG.UpdateZhiChuPercent(self, jine)
+        BG.UpdateZhiChuMan(self, jine)
     end
 
     -- 更新未拍
@@ -382,6 +472,14 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     framedown = p["preWidget" .. ii]
     --创建关注按钮
     BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["guanzhu" .. i] = BG.CreateGuanZhuButton(bt, "biaoge")
+
+    if bt.bossnum == Maxb[FB] + 1 then
+        BG.After(0, function()
+            local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["jine" .. i]
+            BG.UpdateZhiChuPercent(bt, jine)
+            BG.UpdateZhiChuMan(bt, jine)
+        end)
+    end
 
     -- 内容改变时
     bt:SetScript("OnTextChanged", OnTextChanged)
@@ -933,6 +1031,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
         if bossnum == Maxb[FB] + 1 then
             local zhuangbei = BG.Frame[FB]["boss" .. Maxb[FB] + 1]["zhuangbei" .. i]
             BG.UpdateZhiChuPercent(zhuangbei, self)
+            BG.UpdateZhiChuMan(zhuangbei, self)
         end
         if self == BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine1"] then
             for i = 1, BG.GetMaxi(FB, Maxb[FB] + 1) do

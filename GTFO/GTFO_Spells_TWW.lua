@@ -491,6 +491,12 @@ GTFO.SpellID["433067"] = {
   sound = 1;
 };
 
+GTFO.SpellID["423393"] = {
+  --desc = "Entropy (Voidstone Monstrosity)";
+  sound = 0;
+  tankSound = 1;
+};
+
 --- ******************
 --- * The Stonevault *
 --- ******************

@@ -97,6 +97,7 @@ l10n.Setting_AutoShowEquipmentFrame = "自動顯示裝備列表";
 l10n.Setting_IconOnMinimap = "顯示小地圖圖標";
 l10n.Setting_ResizableBorder = "允許改變大小";
 l10n.Setting_SingleFrame = "單窗體顯示";
+l10n.Setting_Style = "風格";
 l10n.Setting_TripleTrees = "三列天賦";
 l10n.Setting_SingleTree = "單列天賦";
 l10n.Setting_TalentsInTip = "鼠標提示顯示天賦";

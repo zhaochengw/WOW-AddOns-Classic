@@ -379,7 +379,6 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
         ShowTardeHighLightItem_OtherJine(self)
-
         local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
         local color = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
         if maijia and color and self:GetText() ~= "" then

@@ -61,3 +61,4 @@ MailLogger：
 2.0.8 Fix line command errors.
 2.0.9 I forgot what I did
 2.1.1 Fix a old 'no records' error.
+2.1.2 Fix data form error in function 'find'.

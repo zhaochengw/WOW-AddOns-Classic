@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2648, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250421064654")
+mod:SetRevision("20250513070119")
 mod:SetCreatureID(226398)
 mod:SetEncounterID(3020)
 mod:SetUsedIcons(8, 7, 6, 5)
@@ -97,7 +96,7 @@ function mod:OnCombatStart(delay)
 	self.vb.sonicCount = 0
 	self.vb.barrierCount = 0
 	timerElectrocrushCD:Start(6-delay, 1)
-	timerSonicBoomCD:Start(15.7-delay, 1)
+	timerSonicBoomCD:Start(15.4-delay, 1)
 	timerBarrierCD:Start(51-delay, 1)
 end
 

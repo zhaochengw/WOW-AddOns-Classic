@@ -10,8 +10,7 @@
     <Script file="Libs\UTF8\utf8.lua"/>
     <Script file="Libs\LibRecipes-3.0.lua"/>
     <Script file="Libs\LibBase64\LibBase64.lua"/>
-
-    <!--@no-lib-strip@-->
+    
+    <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
     <Include file="Libs\LibDBIcon-1.0\lib.xml"/>
-    <!--@end-no-lib-strip@-->
 </Ui>

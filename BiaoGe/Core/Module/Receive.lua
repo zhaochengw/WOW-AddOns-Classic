@@ -16,7 +16,6 @@ local HopeMaxn = ns.HopeMaxn
 local HopeMaxb = ns.HopeMaxb
 local HopeMaxi = ns.HopeMaxi
 
-
 local pt = print
 
 local dangqianTbl = { "当前表格", "當前表格" }
@@ -108,7 +107,7 @@ function BG.ReceiveUI()
                 end
                 text = type .. "-" .. FB .. "-" .. historyname
 
-                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", player)
+                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", player)
             end
         end)
     end
@@ -197,7 +196,7 @@ function BG.ReceiveUI()
             end
 
             local text = "BG-" .. "FB:" .. BG.SendBiaoGe.FB .. "-" .. "DT:" .. BG.SendBiaoGe.DT .. "-" .. "BiaoTi:" .. BG.SendBiaoGe.BiaoTi -- BG-FB:ULD-DT:230420182045-BiaoTi:04年4月20日18:20:45\n 奥杜尔 风行
-            C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+            ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
 
             local text = "BG"
             for b = 1, Maxb[FB] + 2 do
@@ -207,7 +206,7 @@ function BG.ReceiveUI()
                             local t = { text, "-", "b", b, "zb", i, ":", BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] }
                             local tt = table.concat(t, "") -- BG-b1zb1:[某装备]
                             if strlen(tt) >= 255 then
-                                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
                                 t = { "BG-", "b", b, "zb", i, ":", BG.SendBiaoGe["boss" .. b]["zhuangbei" .. i] }
                                 text = table.concat(t, "")
                             else
@@ -218,7 +217,7 @@ function BG.ReceiveUI()
                             local t = { text, "-", "b", b, "mj", i, ":", BG.SendBiaoGe["boss" .. b]["maijia" .. i] }
                             local tt = table.concat(t, "") -- BG-b1zb1:[某装备]-b1mj1:某买家
                             if strlen(tt) >= 255 then
-                                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
                                 t = { "BG-", "b", b, "mj", i, ":", BG.SendBiaoGe["boss" .. b]["maijia" .. i] }
                                 text = table.concat(t, "")
                             else
@@ -228,7 +227,7 @@ function BG.ReceiveUI()
                             local t = { text, "-", "b", b, "c", i, ":", BG.SendBiaoGe["boss" .. b]["color" .. i][1] .. "," .. BG.SendBiaoGe["boss" .. b]["color" .. i][2] .. "," .. BG.SendBiaoGe["boss" .. b]["color" .. i][3] }
                             local tt = table.concat(t, "") -- BG-b1zb1:[某装备]-b1mj1:某买家-b1c1:1,1,1
                             if strlen(tt) >= 255 then
-                                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
                                 t = { "BG-", "b", b, "c", i, ":", BG.SendBiaoGe["boss" .. b]["color" .. i][1] .. "," .. BG.SendBiaoGe["boss" .. b]["color" .. i][2] .. "," .. BG.SendBiaoGe["boss" .. b]["color" .. i][3] }
                                 text = table.concat(t, "")
                             else
@@ -239,7 +238,7 @@ function BG.ReceiveUI()
                             local t = { text, "-", "b", b, "je", i, ":", BG.SendBiaoGe["boss" .. b]["jine" .. i] }
                             local tt = table.concat(t, "") -- BG-b1zb1:[某装备]-b1mj1:某买家-b1c1:1,1,1-b1je1:2000
                             if strlen(tt) >= 255 then
-                                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
                                 t = { "BG-", "b", b, "je", i, ":", BG.SendBiaoGe["boss" .. b]["jine" .. i] }
                                 text = table.concat(t, "")
                             else
@@ -252,7 +251,7 @@ function BG.ReceiveUI()
                     local t = { text, "-", "b", b, "tm", ":", BG.SendBiaoGe["boss" .. b]["time"] }
                     local tt = table.concat(t, "") -- BG-b1tm:2分10秒
                     if strlen(tt) >= 255 then
-                        C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                        ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
                         t = { "BG-", "b", b, "tm", ":", BG.SendBiaoGe["boss" .. b]["time"] }
                         text = table.concat(t, "")
                     else
@@ -261,10 +260,10 @@ function BG.ReceiveUI()
                 end
             end
             if text ~= "" then
-                C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
             end
             text = "BG-END"
-            C_ChatInfo.SendAddonMessage("BiaoGe", text, "WHISPER", sender)
+            ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", sender)
         end)
     end
     ------------------接收表格数据------------------
@@ -320,37 +319,39 @@ function BG.ReceiveUI()
                     local FB = BG.ReceiveBiaoGe.FB
                     local DT = BG.ReceiveBiaoGe.DT
                     local BiaoTi = BG.ReceiveBiaoGe.BiaoTi
-                    BG.CreateFBUI(FB, "Receive")
+                    if FB and BiaoTi then
+                        BG.CreateFBUI(FB, "Receive")
 
-                    for b = 1, Maxb[FB] + 2 do
-                        for i = 1, BG.GetMaxi(FB, b) do
-                            if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
-                                BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] or "")
-                                BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] or "")
-                                BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetCursorPosition(0)
-                                if BG.ReceiveBiaoGe["boss" .. b]["color" .. i] then
-                                    BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(BG.ReceiveBiaoGe["boss" .. b]["color" .. i][1], BG.ReceiveBiaoGe["boss" .. b]["color" .. i][2], BG.ReceiveBiaoGe["boss" .. b]["color" .. i][3])
+                        for b = 1, Maxb[FB] + 2 do
+                            for i = 1, BG.GetMaxi(FB, b) do
+                                if BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i] then
+                                    BG.ReceiveFrame[FB]["boss" .. b]["zhuangbei" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] or "")
+                                    BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] or "")
+                                    BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetCursorPosition(0)
+                                    if BG.ReceiveBiaoGe["boss" .. b]["color" .. i] then
+                                        BG.ReceiveFrame[FB]["boss" .. b]["maijia" .. i]:SetTextColor(BG.ReceiveBiaoGe["boss" .. b]["color" .. i][1], BG.ReceiveBiaoGe["boss" .. b]["color" .. i][2], BG.ReceiveBiaoGe["boss" .. b]["color" .. i][3])
+                                    end
+                                    BG.ReceiveFrame[FB]["boss" .. b]["jine" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["jine" .. i] or "")
                                 end
-                                BG.ReceiveFrame[FB]["boss" .. b]["jine" .. i]:SetText(BG.ReceiveBiaoGe["boss" .. b]["jine" .. i] or "")
+                            end
+                            if BG.ReceiveBiaoGe["boss" .. b]["time"] then
+                                BG.ReceiveFrame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BG.ReceiveBiaoGe["boss" .. b]["time"])
                             end
                         end
-                        if BG.ReceiveBiaoGe["boss" .. b]["time"] then
-                            BG.ReceiveFrame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BG.ReceiveBiaoGe["boss" .. b]["time"])
+
+                        BG.MainFrame:Hide()
+                        BG.ReceiveMainFrame:SetWidth(BG.FBWidth[FB])
+                        BG.ReceiveMainFrame:SetHeight(BG.FBHeight[FB] - 20)
+                        BG.ReceiveMainFrame:Show()
+
+                        for i, FB in ipairs(BG.FBtable) do
+                            BG["ReceiveFrame" .. FB]:Hide()
                         end
+                        BG["ReceiveFrame" .. FB]:Show()
+
+                        BG.ReceiveMainFrameTitle:SetText(BiaoTi)
+                        BG.ReceiveMainFrametext:SetText("")
                     end
-
-                    BG.MainFrame:Hide()
-                    BG.ReceiveMainFrame:SetWidth(BG.FBWidth[FB])
-                    BG.ReceiveMainFrame:SetHeight(BG.FBHeight[FB] - 20)
-                    BG.ReceiveMainFrame:Show()
-
-                    for i, FB in ipairs(BG.FBtable) do
-                        BG["ReceiveFrame" .. FB]:Hide()
-                    end
-                    BG["ReceiveFrame" .. FB]:Show()
-
-                    BG.ReceiveMainFrameTitle:SetText(BiaoTi)
-                    BG.ReceiveMainFrametext:SetText("")
                 end
             end
         end)

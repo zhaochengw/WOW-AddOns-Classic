@@ -1,12 +1,11 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod("UndermineTrash", "DBM-Raids-WarWithin", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250105060358")
+mod:SetRevision("20250513222630")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod:SetZone(2769)
-mod:RegisterZoneCombat(2769)
+--mod:RegisterZoneCombat(2769)
 
 mod:RegisterEvents(
 --	"SPELL_CAST_START,
@@ -16,6 +15,7 @@ mod:RegisterEvents(
 --	"UNIT_DIED"
 )
 
+--Trash in this zone isn't difficult enough to warrant nameplate timers and zone has bad performance anyways so this mod won't do zone combat scanning
 --local warnShadowflameBomb					= mod:NewTargetAnnounce(425300, 3)
 
 --local specWarnFixate						= mod:NewSpecialWarningYou(445553, nil, nil, nil, 1, 2)
@@ -66,16 +66,3 @@ function mod:UNIT_DIED(args)
 	end
 end
 --]]
-
---All timers subject to a ~0.5 second clipping due to ScanEngagedUnits
-function mod:StartEngageTimers(guid, cid, delay)
-	if cid == 222305 then
-
-	end
-end
-
---Abort timers when all players out of combat, so NP timers clear on a wipe
---Caveat, it won't calls top with GUIDs, so while it might terminate bar objects, it may leave lingering nameplate icons
-function mod:LeavingZoneCombat()
-	self:Stop(true)
-end

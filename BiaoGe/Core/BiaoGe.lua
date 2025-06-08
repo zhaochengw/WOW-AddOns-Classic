@@ -279,30 +279,33 @@ BG.Init(function()
         -- BiaoGe.options.SearchHistory[ns.updateText_now[1]]=nil
         if next(ns.updateText_now) and not BiaoGe.options.SearchHistory[ns.updateText_now[1]] then
             BiaoGe.options.SearchHistory[ns.updateText_now[1]] = true
-            local f = BG.CreateMainFrame()
-            f:SetSize(450, 1)
-            f:SetFrameStrata("HIGH")
-            f.titleText:SetText(L["<BiaoGe> 金团表格"])
-            f.texts = {}
-            BG.updateFrame = f
-            local w = 15
-            for i, text in ipairs(ns.updateText_now) do
-                local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-                t:SetText(text)
-                t:SetWidth(f:GetWidth() - w * 2)
-                if i == 1 then
-                    t:SetPoint("TOPLEFT", w, -35)
-                    t:SetJustifyH("CENTER")
-                else
-                    t:SetPoint("TOPLEFT", f.texts[i - 1], "BOTTOMLEFT", 0, -15)
-                    t:SetJustifyH("LEFT")
+            if BiaoGe.options.lastVer then
+                local f = BG.CreateMainFrame()
+                f:SetSize(450, 1)
+                f:SetFrameStrata("HIGH")
+                f.titleText:SetText(L["<BiaoGe> 金团表格"])
+                f.texts = {}
+                BG.updateFrame = f
+                local w = 15
+                for i, text in ipairs(ns.updateText_now) do
+                    local t = f:CreateFontString()
+                    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                    t:SetText(text)
+                    t:SetWidth(f:GetWidth() - w * 2)
+                    if i == 1 then
+                        t:SetPoint("TOPLEFT", w, -35)
+                        t:SetJustifyH("CENTER")
+                    else
+                        t:SetPoint("TOPLEFT", f.texts[i - 1], "BOTTOMLEFT", 0, -15)
+                        t:SetJustifyH("LEFT")
+                    end
+                    t:SetTextColor(1, .82, 0)
+                    tinsert(f.texts, t)
                 end
-                t:SetTextColor(1, .82, 0)
-                tinsert(f.texts, t)
+                f:SetHeight(f:GetTop() - f.texts[#f.texts]:GetBottom())
             end
-            f:SetHeight(f:GetTop() - f.texts[#f.texts]:GetBottom())
         end
+        BiaoGe.options.lastVer = BG.ver
     end
     tinsert(UISpecialFrames, "BG.MainFrame")
     ----------接收表格主界面----------
@@ -586,7 +589,7 @@ BG.Init(function()
                 t:SetPoint("LEFT", tt, "RIGHT", 0, 0)
                 t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
                 -- t:SetTextColor(RGB(BG.dis))
-                t:SetText(L["（SHIFT+左键发送装备，ALT+左键设为心愿装备，CTRL+左键打开试衣间。部位按钮支持使用滚轮切换）"])
+                t:SetText(format(L["（ALT+%s设为心愿装备。部位按钮支持使用滚轮切换）"], AddTexture("LEFT")))
             end
         end
         -- 对账
@@ -895,7 +898,7 @@ BG.Init(function()
                 text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
                 text:SetAlpha(0.8)
                 text:SetPoint("BOTTOMLEFT", bt, "BOTTOMRIGHT", 5, 0)
-                text:SetText(L["右键通知框体可还原位置"])
+                text:SetText(AddTexture("RIGHT") .. L["通知框体可还原位置"])
 
                 bt:SetScript("OnEnter", function(self)
                     font:SetTextColor(RGB("FFFFFF"))
@@ -1297,8 +1300,7 @@ BG.Init(function()
 
         if BG.IsWLK then
             BG.TabButtonsFB_TBC = CreateFrame("Frame", nil, BG.TabButtonsFB)
-            -- BG.TabButtonsFB_TBC:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 80, -28)
-            BG.TabButtonsFB_TBC:SetPoint("RIGHT", BG.TabButtonsFB, "LEFT", -60, -0)
+            BG.TabButtonsFB_TBC:SetPoint("RIGHT", BG.TabButtonsFB, "LEFT", -40, -0)
             BG.TabButtonsFB_TBC:SetHeight(20)
         end
 
@@ -1702,9 +1704,9 @@ BG.Init(function()
 
                                         if not BG.IsSavingLedger and ShowGuanZhu and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
                                             if not string.find(sound_yes, tostring(itemID)) then
-                                                BG.FrameLootMsg:AddMessage(BG.STC_g1(format(L["你关注的装备开始拍卖了：%s（右键取消关注）"],
-                                                    AddTexture(Texture) .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText())))
-                                                PlaySoundFile(BG["sound_paimai" .. BiaoGe.options.Sound], "Master")
+                                                BG.FrameLootMsg:AddMessage(BG.STC_g1(format(L["你关注的装备开始拍卖了：%s（%s取消关注）"],
+                                                    AddTexture(Texture) .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText(), AddTexture("RIGHT"))))
+                                                BG.PlaySound("paimai")
                                                 sound_yes = sound_yes .. itemID .. " "
                                             end
                                         end
@@ -1925,160 +1927,7 @@ BG.Init(function()
             end
         end)
     end
-    ----------一键分配装备给自己----------
-    BG.Init2(function()
-        if BG.IsRetail then return end
-        local isOnter
 
-        local function IsTrueLoot(quality, bindType, itemStackCount, typeID)
-            local _quality = GetLootThreshold()
-            if _quality then
-                if quality < _quality then
-                    return
-                end
-                if bindType == 4 then          -- 任务物品
-                    return
-                elseif bindType == 1 then      -- 拾取绑定的
-                    if itemStackCount > 1 then -- 堆叠数量大于1
-                        return
-                    end
-                end
-                return true
-            end
-        end
-
-        local function GiveLoot()
-            if GetLootMethod() ~= "master" then return end
-            for ci = 1, GetNumGroupMembers() do
-                for li = 1, GetNumLootItems() do
-                    if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == BG.GN() then
-                        local itemLink = GetLootSlotLink(li)
-                        if itemLink then
-                            local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
-                            _, typeID, _, bindType = GetItemInfo(itemLink)
-                            if IsTrueLoot(quality, bindType, itemStackCount, typeID) then
-                                GiveMasterLoot(li, ci)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-
-        local function OnClick(self)
-            BG.PlaySound(1)
-            GiveLoot()
-        end
-
-        local function OnEnter(self)
-            isOnter = true
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(L["一键分配"], 1, 1, 1, true)
-            if self.dis then
-                if IsInRaid(1) then
-                    GameTooltip:AddLine(L["你不是物品分配者，不能使用。"], 1, 0, 0, true)
-                else
-                    GameTooltip:AddLine(L["不在团队中，不能使用。"], 1, 0, 0, true)
-                end
-            else
-                GameTooltip:AddLine(L["把全部可交易的物品分配给自己。"], 1, 0.82, 0, true)
-            end
-            GameTooltip:AddLine(BG.STC_dis(L["你可在插件设置-BiaoGe-其他功能里关闭这个功能。"]), 0.5, 0.5, 0.5, true)
-
-            local items = {}
-            for li = 1, GetNumLootItems() do
-                if LootSlotHasItem(li) then
-                    local itemLink = GetLootSlotLink(li)
-                    if itemLink then
-                        local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
-                        _, typeID, _, bindType = GetItemInfo(itemLink)
-                        if IsTrueLoot(quality, bindType, itemStackCount, typeID) then
-                            tinsert(items, AddTexture(Texture, -3) .. link .. "|cffFFFFFF(" .. level .. ")|r")
-                        end
-                    end
-                end
-            end
-            GameTooltip:AddLine(" ", 1, 1, 0, true)
-            GameTooltip:AddLine(L["点击后会把这些物品分配给你："], 1, 1, 0, true)
-            if #items ~= 0 then
-                for i, item in ipairs(items) do
-                    GameTooltip:AddLine(i .. ". " .. item, 1, 1, 0)
-                end
-            else
-                GameTooltip:AddLine(BG.STC_dis(L["没有符合条件的物品。"]), 1, 1, 0, true)
-            end
-            GameTooltip:Show()
-        end
-
-        local function OnLeave(self)
-            isOnter = false
-            GameTooltip:Hide()
-        end
-
-        local parent = ElvLootFrame or XLootFrame or LootFrame
-        local bt = BG.CreateButton(parent)
-        bt:SetPoint("BOTTOM", parent, "TOP", 0, 0)
-        bt:SetText(L["一键分配"])
-        bt:SetSize(bt:GetFontString():GetWidth() + 10, 25)
-        bt:Hide()
-        bt:SetScript("OnClick", OnClick)
-        bt:SetScript("OnEnter", OnEnter)
-        bt:SetScript("OnLeave", OnLeave)
-
-        local f = CreateFrame("Frame", nil, bt)
-        f:SetAllPoints()
-        f.dis = true
-        f.bt = bt
-        f:SetScript("OnEnter", OnEnter)
-        f:SetScript("OnLeave", OnLeave)
-        local disframe = f
-
-        local function OnShow()
-            if BiaoGe.options["allLootToMe"] ~= 1 then
-                bt:Hide()
-                disframe:Hide()
-                return
-            end
-            isOnter = false
-
-            if GetLootMethod() == "master" then
-                bt:Show()
-                if IsInRaid(1) and BG.masterLooter == BG.GN() then
-                    disframe:Hide()
-                    bt:Enable()
-                    if BiaoGe.options["autoAllLootToMe"] == 1 and not IsModifierKeyDown() then
-                        BG.After(0.1, function()
-                            GiveLoot()
-                        end)
-                    end
-                else
-                    disframe:Show()
-                    bt:Disable()
-                end
-            else
-                bt:Hide()
-            end
-        end
-        hooksecurefunc("LootFrame_Show", OnShow)
-        if ElvLootFrame then
-            ElvLootFrame:HookScript("OnShow", OnShow)
-        end
-        if XLootFrame then
-            XLootFrame:HookScript("OnShow", OnShow)
-        end
-
-        -- 当物品被捡走时，刷新鼠标提示工具
-        BG.RegisterEvent("LOOT_SLOT_CLEARED", function(self, event)
-            if isOnter then
-                if bt:IsEnabled() then
-                    OnEnter(bt)
-                else
-                    OnEnter(disframe)
-                end
-            end
-        end)
-    end)
     ----------血月活动期间自动释放尸体和对话自动复活----------
     if BG.IsVanilla_Sod then
         local tbl = {
@@ -2095,7 +1944,7 @@ BG.Init(function()
                 end
             end
         end)
-        
+
         local bt = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
         bt:SetSize(30, 30)
         bt.Text:SetText(BG.BG .. L["荆棘谷血月活动期间自动释放尸体和对话自动复活"])
@@ -2218,7 +2067,7 @@ BG.Init(function()
             f:SetScript("OnUpdate", function(self, elapsed)
                 if needStop then
                     needStop = nil
-                    PlaySoundFile(BG["sound_countDownStop" .. BiaoGe.options.Sound], "Master")
+                    BG.PlaySound("countDownStop")
                     local text = L["{rt7}倒数暂停{rt7}"]
                     SendChatMessage(text, channel)
                     auctioning = nil
@@ -2483,7 +2332,7 @@ BG.Init(function()
                                 SendSystemMessage(BG.STC_b1(format(L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。"], BG.GetFBinfo(FB, "localName"), num)))
                             end
 
-                            PlaySoundFile(BG["sound_qingkong" .. BiaoGe.options.Sound], "Master")
+                            BG.PlaySound("qingkong")
                         end
                     end
                 end)
@@ -2498,7 +2347,7 @@ BG.Init(function()
                     BG.SetBiaoGeFormHistory(FB, 1)
                     BG.DeleteHistory(FB, 1)
                     SendSystemMessage(BG.STC_b1(L["<BiaoGe> 已撤回清空，还原了表格数据，并删除了历史表格1。"]))
-                    PlaySoundFile(BG["sound_cehuiqingkong" .. BiaoGe.options.Sound], "Master")
+                    BG.PlaySound("cehuiqingkong")
                     BG.PlaySound(1)
                 else
                     SendSystemMessage(BG.STC_b1(L["<BiaoGe>"]) .. " " .. BG.STC_r1(L["只能撤回一次。"]))
@@ -2780,8 +2629,12 @@ BG.Init(function()
             end
             ver = start .. middle .. last
             ver = ver:gsub("%D", "")
-            ver = tonumber(ver)
-            return ver
+            if ver:len() >= 6 then
+                return 0
+            else
+                ver = tonumber(ver)
+                return ver
+            end
         end
 
         -- 比较版本
@@ -2815,11 +2668,13 @@ BG.Init(function()
                         CDing[sender] = nil
                     end)
                 elseif strfind(msg, "MyVer") and not close then
-                    local _, version = strsplit("-", msg)
-                    if VerGuoQi(BG.ver, version) then
-                        SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] .. RR, BG.STC_r1(BG.ver)))
-                        BG.VerText:SetTextColor(1, 0, 0)
-                        close = true
+                    if BiaoGe.options.addonsOutTime == 1 then
+                        local _, version = strsplit("-", msg)
+                        if VerGuoQi(BG.ver, version) then
+                            SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] .. RR, BG.STC_r1(BG.ver)))
+                            BG.VerText:SetTextColor(1, 0, 0)
+                            close = true
+                        end
                     end
                 end
             elseif event == "PLAYER_ENTERING_WORLD" then
@@ -2831,6 +2686,7 @@ BG.Init(function()
                         C_ChatInfo.SendAddonMessage("BiaoGe", "VersionCheck", "GUILD")
                     end
                 end)
+
                 -- x秒后关闭检测版本是否过期的功能
                 C_Timer.After(10, function()
                     close = true
@@ -2839,7 +2695,7 @@ BG.Init(function()
         end)
 
         BG.After(10, function()
-            if BG.GetVerNum(BG.ver) < 11500 then
+            if not IsTestVer() and BG.GetVerNum(BG.ver) < 11500 then
                 BG.SendSystemMessage(L["你的BiaoGe插件存在问题，请删除本地插件再重新安装一次（需要大退）。"])
             end
         end)
@@ -2975,7 +2831,7 @@ do
 end
 
 ----------其他----------
-do
+BG.Init2(function()
     -- 插件命令
     SlashCmdList["BIAOGE"] = function()
         BG.MainFrame:SetShown(not BG.MainFrame:IsVisible())
@@ -3001,13 +2857,13 @@ do
         BG.SetFBCD(nil, nil, true)
     end
     SLASH_BiaoGeRoleOverview1 = "/bgr"
-end
+end)
 
 -- local tex = UIParent:CreateTexture()
 -- tex:SetPoint("CENTER")
--- tex:SetSize(100,100)
--- tex:SetAtlas("bags-newitem")
--- tex:SetTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\AFD")
+-- tex:SetSize(800,600)
+-- -- tex:SetAtlas("bags-newitem")
+-- tex:SetTexture("Interface\\AddOns\\BiaoGeAI\\Media\\icon\\ICC\\4.png")
 -- print(GetTimePreciseSec())
 --[[
 

@@ -7,6 +7,8 @@ local _QuestieDB = QuestieDB.private
 -------------------------
 ---@type QuestieLib
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+---@type Expansions
+local Expansions = QuestieLoader:ImportModule("Expansions")
 ---@type QuestiePlayer
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
 ---@type QuestieCorrections
@@ -54,7 +56,7 @@ local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted or C_QuestLog.IsQuestFla
 --- Strucute: [questId] = {tagId, "questType"}
 ---@type table<number, {[1]: number, [2]: string}>
 local questTagCorrections = {
-    [208] = {not Questie.IsCata and 1, not Questie.IsCata and "Elite"},
+    [208] = Expansions.Current < Expansions.Cata and {1, "Elite"} or nil,
     [373] = {81, "Dungeon"},
     [644] = {1, "Elite"},
     [645] = {1, "Elite"},
@@ -81,8 +83,11 @@ local questTagCorrections = {
     [8122] = {41, "PvP"},
     [8367] = {41, "PvP"},
     [8371] = {41, "PvP"},
+    [8375] = {41, "PvP"},
+    [8383] = {41, "PvP"},
     [8385] = {41, "PvP"},
     [8386] = {41, "PvP"},
+    [8387] = {41, "PvP"},
     [8388] = {41, "PvP"},
     [8404] = {41, "PvP"},
     [8405] = {41, "PvP"},
@@ -344,9 +349,7 @@ local questTagCorrections = {
     [8372] = {41, "PvP"},
     [8373] = {41, "PvP"},
     [8374] = {41, "PvP"},
-    [8383] = {41, "PvP"},
     [8384] = {41, "PvP"},
-    [8387] = {41, "PvP"},
     [8389] = {41, "PvP"},
     [8390] = {41, "PvP"},
     [8391] = {41, "PvP"},
@@ -387,24 +390,60 @@ local questTagCorrections = {
     [9665] = {41, "PvP"},
 }
 
--- race bitmask data, for easy access
+-- * race bitmask data, for easy access
+-- ? The PlayableRaceBit can be found in ChrRaces.dbc
+-- ? https://wago.tools/db2/ChrRaces?build=5.5.0.60802&filter[PlayableRaceBit]=>-1
+-- ? The values below are calculated by 2^PlayableRaceBit
 QuestieDB.raceKeys = {
-    ALL_ALLIANCE = Questie.IsClassic and 77 or Questie.IsCata and 2098253 or 1101,
-    ALL_HORDE = Questie.IsClassic and 178 or Questie.IsCata and 946 or 690,
+    -- Allow all alliance races
+    ALL_ALLIANCE = (function()
+        if Questie.IsClassic then
+            return 77
+        elseif Questie.IsTBC or Questie.IsWotlk then
+            return 1101
+        elseif Questie.IsCata then
+            return 2098253
+        elseif Questie.IsMoP then
+            return 18875469
+        else
+            print("Unknown expansion for ALL_ALLIANCE")
+            return 77
+        end
+    end)(),
+    -- ALlow all horde races
+    ALL_HORDE = (function()
+        if Questie.IsClassic then
+            return 178
+        elseif Questie.IsTBC or Questie.IsWotlk then
+            return 690
+        elseif Questie.IsCata then
+            return 946
+        elseif Questie.IsMoP then
+            return 33555378
+        else
+            print("Unknown expansion for ALL_HORDE")
+            return 178
+        end
+    end)(),
+    -- Allow all races (No limit on allowed races)
     NONE = 0,
 
-    HUMAN = 1,
-    ORC = 2,
-    DWARF = 4,
-    NIGHT_ELF = 8,
-    UNDEAD = 16,
-    TAUREN = 32,
-    GNOME = 64,
-    TROLL = 128,
-    GOBLIN = 256,
-    BLOOD_ELF = 512,
-    DRAENEI = 1024,
-    WORGEN = 2097152, -- lol
+    --[[PlayableRaceBit]]
+    --[[ 0]] HUMAN = 1,
+    --[[ 1]] ORC  = 2,
+    --[[ 2]] DWARF = 4,
+    --[[ 3]] NIGHT_ELF = 8,
+    --[[ 4]] UNDEAD = 16,
+    --[[ 5]] TAUREN = 32,
+    --[[ 6]] GNOME = 64,
+    --[[ 7]] TROLL = 128,
+    --[[ 8]] GOBLIN = 256,                  -- Cata
+    --[[ 9]] BLOOD_ELF = 512,               -- TBC
+    --[[10]] DRAENEI = 1024,                -- TBC
+    --[[21]] WORGEN = 2097152,              -- Cata
+    --[[23]] PANDAREN = 8388608,            -- MoP
+    --[[24]] PANDAREN_ALLIANCE = 16777216,  -- MoP
+    --[[25]] PANDAREN_HORDE = 33554432,     -- MoP
 }
 
 -- Combining these with "and" makes the order matter
@@ -421,6 +460,7 @@ QuestieDB.classKeys = {
     SHAMAN = 64,
     MAGE = 128,
     WARLOCK = 256,
+    MONK = 512,
     DRUID = 1024
 }
 
@@ -552,6 +592,8 @@ function QuestieDB:Initialize()
     Questiedbcharhidden = Questie.db.char.hidden
 end
 
+---@param objectId ObjectId
+---@return Object|nil
 function QuestieDB:GetObject(objectId)
     if not objectId then
         return nil
@@ -580,6 +622,8 @@ function QuestieDB:GetObject(objectId)
     return obj;
 end
 
+---@param itemId ItemId
+---@return Item|nil
 function QuestieDB:GetItem(itemId)
     if (not itemId) or (itemId == 0) then
         return nil
@@ -1610,8 +1654,8 @@ function QuestieDB:GetCreatureLevels(quest)
     return creatureLevels
 end
 
----@param npcId number
----@return table|nil
+---@param npcId NpcId
+---@return NPC|nil
 function QuestieDB:GetNPC(npcId)
     if not npcId then
         return nil
@@ -1676,6 +1720,13 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Modifications to questDB
 
+local questsRequiringNewbieAchievement = {
+    [31316] = true, -- Julia, The Pet Tamer
+    [31812] = true, -- Zunta, The Pet Tamer
+    [32008] = true, -- Audrey Burnhep
+    [32009] = true, -- Varzok
+}
+
 function _QuestieDB:CheckAchievementRequirements(questId)
     -- So far the only Quests that we know of that requires an earned Achievement are the ones offered by:
     -- https://www.wowhead.com/wotlk/npc=35094/crusader-silverdawn
@@ -1690,6 +1741,10 @@ function _QuestieDB:CheckAchievementRequirements(questId)
         end
 
         return false
+    end
+
+    if questsRequiringNewbieAchievement[questId] then
+        return select(13, GetAchievementInfo(7433)) -- Newbie
     end
 end
 

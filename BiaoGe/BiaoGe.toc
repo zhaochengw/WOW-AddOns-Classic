@@ -4,6 +4,6 @@
 ## Author: 苍穹之霜
 ## LoadOnDemand: 0
 ## SavedVariables: BiaoGe
-## Version: 1.17.6
+## Version: 1.18.8
 
 BiaoGe.xml

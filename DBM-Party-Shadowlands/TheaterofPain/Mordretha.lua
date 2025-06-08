@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2417, "DBM-Party-Shadowlands", 6, 1187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250308123957")
+mod:SetRevision("20250519125751")
 mod:SetCreatureID(165946)
 mod:SetEncounterID(2404)
 mod:SetZone(2293)
@@ -129,7 +129,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnDarkDevastation:Show(self.vb.darkCount)
 		specWarnDarkDevastation:Play("frontal")
 		timerDarkDevastationCD:Start(nil, self.vb.darkCount+1)
-		updateAllTimers(self, 8.3)
+		updateAllTimers(self, 8.1)
 	elseif spellId == 324589 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnDeathBolt:Show(args.sourceName)
 		specWarnDeathBolt:Play("kickcast")

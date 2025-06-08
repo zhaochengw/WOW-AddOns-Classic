@@ -350,7 +350,7 @@ BG.Init(function()
                             "|h[" .. L["设置为1小时内不再提醒"] .. "]|h|r"
                         local msg = BG.STC_r1(format(L["你有装备快过期了。%s %s"], link, link2))
                         BG.FrameLootMsg:AddMessage(msg)
-                        PlaySoundFile(BG["sound_guoqi" .. BiaoGe.options.Sound], "Master")
+                        BG.PlaySound("guoqi")
                         return
                     end
                 end

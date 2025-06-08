@@ -141,7 +141,7 @@ local function GetWCLinfo(name)
             tbl.topfen = 1
         end
         tbl.colortext = BG.Expand(wclText):gsub("%).-/", ")")
-        tbl.colortext =tbl.colortext :gsub(" ","").." "
+        tbl.colortext = tbl.colortext:gsub(" ", "") .. " "
         tbl.text = tbl.colortext:gsub("|c[fF][fF]......", ""):gsub("|r", "")
         if pmText then
             tbl.colortext = tbl.colortext .. "\n" .. pmText
@@ -157,19 +157,73 @@ local function GetWCLinfo(name)
     return tbl
 end
 
+local function GetColor(per)
+    if per < 25 then
+        return "|cFF666666" .. per .. "|r" -- 灰
+    elseif per < 50 then
+        return "|cFF1EFF00" .. per .. "|r" -- 绿
+    elseif per < 75 then
+        return "|cFF0070FF" .. per .. "|r" -- 蓝
+    elseif per < 95 then
+        return "|cFFA335EE" .. per .. "|r" -- 紫
+    elseif per < 99 then
+        return "|cFFFF8000" .. per .. "|r" -- 橙
+    elseif per < 100 then
+        return "|cFFE26880" .. per .. "|r" -- 粉
+    elseif per == 100 then
+        return "|cFFE5CC80" .. per .. "|r" -- 金
+    else
+        return per
+    end
+end
+
 local function CreateListTable()
     local wclInfo = {}
+    local function GetInfo(unit)
+        GameTooltip:SetOwner(UIParent, "ANCHOR_NONE", 0, 0)
+        GameTooltip:ClearLines()
+        GameTooltip:SetUnit(unit)
+        local tbl = {}
+        local info
+        for i = 1, GameTooltip:NumLines() do
+            local t = _G["GameTooltipTextLeft" .. i]:GetText()
+            if t then
+                tinsert(tbl, t)
+            end
+        end
+        if next(tbl) then
+            for i, t in ipairs(tbl) do
+                if t:match("Warcraft Logs") and tbl[i + 1] then
+                    local text = BG.ClearColorCode(tbl[i + 1])
+                    local FB, per = text:match("^.-%s(%a+)%s+(%d+%.-%d-)%s+")
+                    if FB and per then
+                        info = {
+                            FB = FB,
+                            per = tonumber(per),
+                            text = tbl[i + 1],
+                            clearText = text,
+                        }
+                    end
+                    break
+                end
+            end
+        end
+        if info then
+            tinsert(wclInfo, {
+                name = BG.GN(unit),
+                info = info,
+            })
+        end
+    end
     if IsInRaid(1) then
         for i = 1, GetNumGroupMembers() do
-            local name = BG.GN("raid" .. i)
-            tinsert(wclInfo, GetWCLinfo(name))
+            GetInfo("raid" .. i)
         end
     else
-        local name = BG.GN()
-        tinsert(wclInfo, GetWCLinfo(name))
+        GetInfo("player")
     end
     sort(wclInfo, function(a, b)
-        return a.topfen > b.topfen
+        return a.info.per > b.info.per
     end)
     return wclInfo
 end
@@ -186,17 +240,19 @@ function BG.WCLUI(lastbt)
     -- 鼠标悬停提示
     bt:SetScript("OnEnter", function(self)
         if BG.Backing then return end
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-        GameTooltip:ClearLines()
-        if WP_Database then
-            GameTooltip:AddLine(L["———通报wc1———"])
-            for i, v in ipairs(CreateListTable()) do
-                GameTooltip:AddLine(i .. ". " .. v.colorname .. " " .. v.colortext)
+        if IsAddOnLoaded("ArchonTooltip") then
+            local tbl = CreateListTable()
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(L["———通报WCL———"])
+            for i, v in ipairs(tbl) do
+                GameTooltip:AddLine(format("%s. %s %s %s", i, SetClassCFF(v.name), v.info.FB, GetColor(v.info.per)))
             end
-            GameTooltip:AddLine(L["更新日期"] .. ":" .. WP_Database.LASTUPDATE)
         else
+            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+            GameTooltip:ClearLines()
             GameTooltip:AddLine(L["错误"], 1, 0, 0, true)
-            GameTooltip:AddLine(L["你没有安装WclPlayerScore-WotLK-CN插件。"], 1, .82, 0, true)
+            GameTooltip:AddLine(L["你没有安装官方WCL插件。"], 1, .82, 0, true)
         end
         GameTooltip:Show()
     end)
@@ -207,26 +263,24 @@ function BG.WCLUI(lastbt)
             SendSystemMessage(L["不在团队，无法通报"])
             BG.PlaySound(1)
         else
-            self:SetEnabled(false) -- 点击后按钮变灰2秒
+            self:SetEnabled(false) 
             C_Timer.After(2, function()
                 bt:SetEnabled(true)
             end)
-
-            if not WP_Database then return end
+            local tbl = CreateListTable()
+            if not next(tbl) then return end
             yes = true
             local t = 0
             SendChatMessage(L["———通报wc1———"], "RAID")
             t = t + BG.tongBaoSendCD
             for i, v in ipairs(CreateListTable()) do
                 BG.After(t, function()
-                    SendChatMessage(i .. ". " .. v.name .. " " .. v.text, "RAID")
+                    SendChatMessage(format("%s. %s %s %s", i, v.name,
+                        v.info.FB, v.info.per), "RAID")
                 end)
                 t = t + BG.tongBaoSendCD
             end
             BG.After(t, function()
-                SendChatMessage(L["更新日期"] .. ":" .. WP_Database.LASTUPDATE, "RAID")
-            end)
-            BG.After(t + 1, function()
                 yes = false
             end)
             BG.PlaySound(2)
@@ -238,37 +292,11 @@ end
 
 local function AddWCLColor(self, event, msg, player, l, cs, t, flag, channelId, ...)
     if not yes then return false end
-    local num, name, wcl, pm = strsplit(" ", msg)
-    if num and name and wcl then
+    local num, name, FB, per = strsplit(" ", msg)
+    per = tonumber(per)
+    if num and name and per then
         name = SetClassCFF(name)
-        local newwcl = ""
-        for k, str in pairs { strsplit("%", wcl) } do
-            local topfen = tonumber(str:match("%)(%d+)"))
-            local color = "666666"
-            if topfen then
-                if topfen >= 100 then
-                    color = "E5CC80"
-                elseif topfen >= 99 then
-                    color = "E26880"
-                elseif topfen >= 95 then
-                    color = "FF8000"
-                elseif topfen >= 75 then
-                    color = "A335EE"
-                elseif topfen >= 50 then
-                    color = "0070FF"
-                elseif topfen >= 25 then
-                    color = "1EFF00"
-                else
-                    color = "666666"
-                end
-                str = str .. "%"
-            end
-            newwcl = newwcl .. "|cff" .. color .. str .. "|r"
-        end
-        local newmsg = num .. " " .. name .. " " .. newwcl
-        if pm then
-            newmsg = newmsg .. " " .. BG.STC_y1(pm)
-        end
+        local newmsg = num .. " " .. name .. " " .. FB .. " " .. GetColor(per)
         return false, newmsg, player, l, cs, t, flag, channelId, ...
     end
 end

@@ -1,14 +1,14 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2683, "DBM-KhazAlgar", nil, 1278)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250308093544")
+mod:SetRevision("20250513222630")
 mod:SetCreatureID(231821)--Bombs use https://www.wowhead.com/ptr-2/npc=236733
 mod:SetEncounterID(3128)
 --mod:SetReCombatTime(30)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 --mod:SetHotfixNoticeRev(20240119000000)
 --mod:SetMinSyncRevision(20240119000000)
+mod:SetZone(2708)
 
 mod:RegisterCombat("combat")
 --mod:RegisterKill("yell", L.Win)

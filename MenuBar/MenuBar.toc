@@ -1,0 +1,8 @@
+## Interface: 30403
+## Title: |cffFF7F00|r|cffFF7F00微|r|cffFF7F00型|r|cffFF7F00系|r|cffFF7F00统|r|cffFF7F00菜|r|cffFF7F00单|r|cffFF7F00条|r
+## Notes: 微型系统菜单条
+## SavedVariables: FuxBarDB
+## Version: 1.22
+FuxPanel.lua
+Settings.lua
+

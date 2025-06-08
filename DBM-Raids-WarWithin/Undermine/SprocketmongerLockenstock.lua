@@ -1,8 +1,7 @@
-if DBM:GetTOC() < 110100 then return end
 local mod	= DBM:NewMod(2653, "DBM-Raids-WarWithin", 1, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250328005848")
+mod:SetRevision("20250529021834")
 mod:SetCreatureID(230583)
 mod:SetEncounterID(3013)
 mod:SetHotfixNoticeRev(20250209000000)
@@ -22,11 +21,7 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_MISSED"
 )
 
---TODO, actual cast event for Polarization
---TODO, detect polarization of bombs and nameplate aura them if possible
---TODO, verify tank logic should work like Volcoross
 --TOOD, GTFO for https://www.wowhead.com/ptr-2/spell=466235/wire-transfer ?
---TODO, find firecracker trap spawn trigger
 --TODO, see if https://www.wowhead.com/ptr-2/spell=1215218/bleeding-edge still used on other difficulties
 --[[
 (ability.id = 473276 or ability.id = 1217231 or ability.id = 1214872 or ability.id = 1216508 or ability.id = 465232 or ability.id = 1218418 or ability.id = 1216525 or ability.id = 1216414 or ability.id = 1215858 or ability.id = 466765 or ability.id = 1216674 or ability.id = 1216699) and type = "begincast"
@@ -200,9 +195,9 @@ end
 function mod:OnTimerRecovery()
 	if self:IsMythic() then
 		savedDifficulty = "mythic"
-		if DBM:UnitDebuff("player", 1216934) then
+		if DBM:UnitDebuff("player", 1216934, 1217358) then
 			lastPlayerCharge = 2
-		elseif DBM:UnitDebuff("player", 1216911) then
+		elseif DBM:UnitDebuff("player", 1216911, 1217357) then
 			lastPlayerCharge = 1
 		end
 	elseif self:IsHeroic() then
@@ -347,28 +342,28 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 1216934 then
-		if args:IsPlayer() then
+		if args:IsPlayer() and lastPlayerCharge ~= 2 then
 			specWarnNegative:Show()
 			specWarnNegative:Play("negative")
 			yellPolarizationGenerator:Yell(7, "")--Red X
 			lastPlayerCharge = 2
 		end
 	elseif spellId == 1216911 then
-		if args:IsPlayer() then
+		if args:IsPlayer() and lastPlayerCharge ~= 1 then
 			specWarnPositive:Show()
 			specWarnPositive:Play("positive")
 			yellPolarizationGenerator:Yell(6, "")--Blue Square
 			lastPlayerCharge = 1
 		end
 	elseif spellId == 1217357 then--Changing to posi
-		if args:IsPlayer() and lastPlayerCharge == 2 then
+		if args:IsPlayer() and lastPlayerCharge ~= 1 then
 			specWarnPolGen:Show(BLUE_FONT_COLOR:WrapTextInColorCode(DBM_COMMON_L.POSITIVE))
 			specWarnPolGen:Play("positive")
 			yellPolarizationGenerator:Yell(6, "")--Blue Square
 			lastPlayerCharge = 1
 		end
 	elseif spellId == 1217358 then--Changing to neg
-		if args:IsPlayer() and lastPlayerCharge == 1 then
+		if args:IsPlayer() and lastPlayerCharge ~= 2 then
 			specWarnPolGen:Show(RED_FONT_COLOR:WrapTextInColorCode(DBM_COMMON_L.NEGATIVE))
 			specWarnPolGen:Play("negative")
 			yellPolarizationGenerator:Yell(7, "")--Red X

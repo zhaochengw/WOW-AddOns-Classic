@@ -77,10 +77,10 @@ MT.BuildEnv('SETTING');
 					end
 				end
 			end
-			local LookupText = function(module, key, extra)
+			local LookupText = function(type, module, key, extra)
 				if key == "style" then
 					if extra == nil then
-						return "Style";
+						return l10n.Setting_Style;
 					elseif extra == 1 then
 						return l10n.Setting_TripleTrees;
 					elseif extra == 2 then
@@ -92,14 +92,14 @@ MT.BuildEnv('SETTING');
 			VT.SettingUI = VT.__dep.__settingfactory:CreateSettingUI(__addon, GetDefault, GetConfig, SetConfig, LookupText);
 			local settings = {
 				-- { "module", "key", 'boolean', nil, nil, nil, nil, "label", },
-				{ "module", "autoShowEquipmentFrame", 'boolean', nil, nil, nil, nil, l10n.Setting_AutoShowEquipmentFrame, },
-				{ "module", "minimap", 'boolean', nil, nil, nil, nil, l10n.Setting_IconOnMinimap, },
-				{ "module", "resizable_border", 'boolean', nil, nil, nil, nil, l10n.Setting_ResizableBorder, },
-				{ "module", "singleFrame", 'boolean', nil, nil, nil, nil, l10n.Setting_SingleFrame, },
+				{ "module", "autoShowEquipmentFrame", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_AutoShowEquipmentFrame, },
+				{ "module", "minimap", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_IconOnMinimap, },
+				{ "module", "resizable_border", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_ResizableBorder, },
+				{ "module", "singleFrame", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_SingleFrame, },
 				{ "module", "style", 'radio', { 1, 2, }, nil, nil, nil, },
-				{ "module", "talents_in_tip", 'boolean', nil, nil, nil, nil, l10n.Setting_TalentsInTip, },
-				{ "module", "talents_in_tip_icon", 'boolean', nil, nil, nil, nil, l10n.Setting_TalentsInTipIcon, },
-				{ "module", "itemlevel_in_tip", 'boolean', nil, nil, nil, nil, l10n.Setting_ItemLevelInTip, },
+				{ "module", "talents_in_tip", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_TalentsInTip, },
+				{ "module", "talents_in_tip_icon", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_TalentsInTipIcon, },
+				{ "module", "itemlevel_in_tip", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_ItemLevelInTip, },
 			};
 			for _, setting in next, settings do
 				VT.SettingUI:AddSetting("GENERAL", setting);

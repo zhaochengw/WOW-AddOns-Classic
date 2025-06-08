@@ -2067,14 +2067,15 @@ MT.BuildEnv('UI');
 		end
 		local EquipmentFrameDelayUpdateList = {  };
 		local function EquipmentFrameDelayUpdate()
-			for EquipmentContainer, EquData in next, EquipmentFrameDelayUpdateList do
+			for EquipmentContainer, cache in next, EquipmentFrameDelayUpdateList do
 				EquipmentFrameDelayUpdateList[EquipmentContainer] = nil;
 				if EquipmentContainer.Frame:IsShown() then
-					MT.UI.EquipmentContainerUpdate(EquipmentContainer, EquData);
+					MT.UI.EquipmentContainerUpdate(EquipmentContainer, cache);
 				end
 			end
 		end
-		function MT.UI.EquipmentContainerUpdate(EquipmentContainer, EquData)
+		function MT.UI.EquipmentContainerUpdate(EquipmentContainer, cache)
+			local EquData = cache.EquData;
 			MT._TimerHalt(EquipmentFrameDelayUpdate);
 			if EquData.AverageItemLevel_OKay then
 				EquipmentContainer.AverageItemLevel:SetText(MT.ColorItemLevel(EquData.AverageItemLevel));
@@ -2100,7 +2101,7 @@ MT.BuildEnv('UI');
 						Node.ILvl:SetText(level);
 						Node.Name:SetVertexColor(r, g, b);
 						Node.Name:SetText(name);
-						local enchantable, enchanted, link, level, estr = MT.GetEnchantInfo(CT.SELFLCLASS, slot, item);
+						local enchantable, enchanted, link, level, estr = MT.GetEnchantInfo(cache.class, slot, item);
 						if enchantable then
 							Node.Ench:SetText(enchanted and estr or l10n.EquipmentList_MissingEnchant);
 						else
@@ -2136,7 +2137,7 @@ MT.BuildEnv('UI');
 			end
 			if recache then
 				EquData.SetInfo = nil;
-				EquipmentFrameDelayUpdateList[EquipmentContainer] = EquData;
+				EquipmentFrameDelayUpdateList[EquipmentContainer] = cache;
 				MT._TimerStart(EquipmentFrameDelayUpdate, 0.5, 1);
 			else
 				EquData.SetInfo = SetInfo;
@@ -2148,7 +2149,8 @@ MT.BuildEnv('UI');
 			end
 			MT.UI.EquipmentFrameContainerResize(EquipmentContainer.EquipmentFrameContainer);
 		end
-		function MT.UI.EngravingContainerUpdate(EquipmentContainer, EngData)
+		function MT.UI.EngravingContainerUpdate(EquipmentContainer, cache)
+			local EngData = cache.EngData;
 			local EngravingNodes = EquipmentContainer.EngravingNodes;
 			for slot = 0, 19 do
 				local Node = EngravingNodes[slot];
@@ -2711,8 +2713,8 @@ MT.BuildEnv('UI');
 		function _LeftFunc.Container_OnShow(EquipmentFrameContainer)
 			local Frame = EquipmentFrameContainer.Frame;
 			if Frame.name ~= nil then
-				MT.UI.EquipmentContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EquData);
-				MT.UI.EngravingContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name].EngData);
+				MT.UI.EquipmentContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name]);
+				MT.UI.EngravingContainerUpdate(Frame.EquipmentContainer, VT.TQueryCache[Frame.name]);
 				if VT.__support_glyph then
 					MT.UI.GlyphContainerUpdate(Frame.GlyphContainer, VT.TQueryCache[Frame.name].GlyData);
 				end

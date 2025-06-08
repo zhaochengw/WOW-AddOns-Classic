@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2109, "DBM-Party-BfA", 7, 1012)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250317030415")
+mod:SetRevision("20250504011404")
 mod:SetCreatureID(129214)
 mod:SetEncounterID(2105)
 mod:SetHotfixNoticeRev(20250302000000)
@@ -54,7 +54,7 @@ function mod:OnCombatStart(delay)
 	self.vb.magnetCount = 0
 	timerStaticPulseCD:Start(6.2-delay, 1)
 	timerFootbombLauncherCD:Start(19.3-delay, 1)
-	timerShockingClawCD:Start(30.4-delay, 1)
+	timerShockingClawCD:Start(30.1-delay, 1)
 	if not self:IsNormal() then
 		timerThrowCoinsCD:Start(12.2-delay, 1)
 	end

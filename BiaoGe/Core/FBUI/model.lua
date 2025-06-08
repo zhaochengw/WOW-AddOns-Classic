@@ -302,6 +302,16 @@ function BG.CreateBossModel()
         model:SetFacing(-0.6)
         model:SetPitch(0.8)
         model:SetRoll(-0.5)
+        local model = CreateBossModel("TAQ", 9, 10, 0, 15727, 0.45) -- 底下
+        model:SetPosition(-8, 0, -5)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        local model = CreateBossModel("TAQ", 9, 0, -10, 15589, 0.75) -- 眼睛
+        model:SetPosition(-37, 0, -3)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
     elseif BG.IsCTM then
         local model = CreateBossModel("BOT", 5, 40, 110, 45213, 0.7)
         model:SetPosition(-2, 0, 0) -- Z,X,Y
