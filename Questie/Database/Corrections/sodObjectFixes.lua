@@ -552,6 +552,13 @@ function SeasonOfDiscovery:LoadObjects()
                 [zoneIDs.BURNING_STEPPES] = {{17,46}},
             },
         },
+        [518117] = { -- Skull
+            [objectKeys.name] = "Skull",
+            [objectKeys.zoneID] = zoneIDs.BURNING_STEPPES,
+            [objectKeys.spawns] = {
+                [zoneIDs.BURNING_STEPPES] = {{39.5,27.96}},
+            },
+        },
         [525416] = {
             [objectKeys.name] = "Heart of Doom",
             [objectKeys.spawns] = {
@@ -628,6 +635,20 @@ function SeasonOfDiscovery:LoadObjects()
             [objectKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
             [objectKeys.spawns] = {
                 [zoneIDs.EASTERN_PLAGUELANDS] = {{90.32,81.98}},
+            },
+        },
+        [529720] = { -- Fallen World Tree Branch
+            [objectKeys.name] = "Fallen World Tree Branch",
+            [objectKeys.zoneID] = zoneIDs.KALIMDOR,
+            [objectKeys.spawns] = {
+                [zoneIDs.KALIMDOR] = {{55.9,30.5}},
+            },
+        },
+        [529731] = { -- Pilfered Moonglade Supplies
+            [objectKeys.name] = "Pilfered Moonglade Supplies",
+            [objectKeys.zoneID] = zoneIDs.WINTERSPRING,
+            [objectKeys.spawns] = {
+                [zoneIDs.WINTERSPRING] = {{68.01,37.01}},
             },
         },
         [531545] = { -- Dented Chest

@@ -240,7 +240,7 @@ function SeasonOfDiscovery:LoadItems()
             [itemKeys.class] = itemClasses.QUEST,
         },
         [234006] = { -- Monstrous Silithid Chitin
-            [itemKeys.npcDrops] = {11698,11724,11727,13136,15240,15286,15288,15341,15348,234798},
+            [itemKeys.npcDrops] = {11698,11722,11724,11727,11729,13136,15240,15286,15288,15341,15348,234798},
         },
         [234007] = { -- Spiked Silithid Chitin
             [itemKeys.npcDrops] = {11698,11722,11723,11724,11727,13136,15230,15233,15235,15236,15240,15318,15319,15320,15323,15324,15325,15327,15336,234798},
@@ -249,7 +249,7 @@ function SeasonOfDiscovery:LoadItems()
             [itemKeys.npcDrops] = {11880,11881,11882,11883,14479,15201,15202,15213,15247,15249,15263,15343,15516,15541,15542,234762,234800},
         },
         [234011] = { -- Qiraji Stalker Venom
-            [itemKeys.npcDrops] = {6551,6552,6554,6555,11698,11722,11724,11726,11727,11728,11729,11732,11733,11734,13136,15235,15236,15325,15327,15509},
+            [itemKeys.npcDrops] = {6551,6552,6553,6554,6555,11698,11722,11723,11724,11726,11727,11728,11729,11732,11733,11734,13136,15235,15236,15325,15327,15509},
         },
         [235045] = { -- Imperial Qiraji Regalia
             [itemKeys.npcDrops] = {15275,15276,15299,15509,15510,15511,15516,15517,15543,15544},
@@ -277,6 +277,9 @@ function SeasonOfDiscovery:LoadItems()
         },
         [238794] = { -- Unappetizing Leftovers
             [itemKeys.objectDrops] = {526132,526143,526144},
+        },
+        [237163] = { -- Ancient Hero's Skull
+            [itemKeys.objectDrops] = {518117},
         },
         [238811] = { -- Juicy Apple
             [itemKeys.npcDrops] = {240998,240978},
@@ -312,6 +315,12 @@ function SeasonOfDiscovery:LoadItems()
         },
         [239764] = { -- Crimson Bladeleaf
             [itemKeys.objectDrops] = {528481},
+        },
+        [240835] = { -- Crate of Moonglade Supplies
+            [itemKeys.objectDrops] = {529731},
+        },
+        [240848] = { -- Nordrassil Detritus
+            [itemKeys.objectDrops] = {529720},
         },
         [241652] = { -- Discolored Beast Heart
             [itemKeys.npcDrops] = {1815,1816,1817,1821,1822,1824,8596,8597,8598,8600,8601,8602,8603,8605,240247},

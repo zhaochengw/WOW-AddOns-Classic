@@ -2097,6 +2097,7 @@ BG.Init(function()
 
                 local function CreateButton(f, text)
                     local r, g, b = f.r, f.g, f.b
+                    local r, g, b = 1,1,1
                     local bt = CreateFrame("Button", nil, f, "BackdropTemplate")
                     bt:SetBackdrop({
                         bgFile = "Interface/ChatFrame/ChatFrameBackground",

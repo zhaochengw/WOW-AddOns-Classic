@@ -77,10 +77,9 @@ BC.default = {
 		selfCooldown = true,
 		dispelCooldown = true,
 		dispelStealable = true,
-		auraSize = 20,
-		auraPercent = .8,
+		auraSize = 18,
 		auraRows = 5,
-		auraX = 6,
+		auraX = -14,
 		auraY = 52,
 	},
 	targettarget = {
@@ -109,10 +108,9 @@ BC.default = {
 		selfCooldown = true,
 		dispelCooldown = true,
 		dispelStealable = true,
-		auraSize = 20,
-		auraPercent = .8,
+		auraSize = 18,
 		auraRows = 5,
-		auraX = 6,
+		auraX = -14,
 		auraY = 52,
 	},
 	focustarget = {
@@ -145,8 +143,7 @@ BC.default = {
 		dispelStealable = true,
 		auraRows = 16,
 		auraSize = 16,
-		auraPercent = .8,
-		auraX = 1,
+		auraX = -15,
 		auraY = 18,
 	},
 	partypet = {
@@ -488,7 +485,6 @@ function BC:aura(unit)
 	local maxDebuffs = MAX_TARGET_DEBUFFS -- 最多Debuff
 	local rows = self:getDB(key, 'auraRows') or maxDebuffs -- 一行Buff/Debuff数量
 	local size = self:getDB(key, 'auraSize') or 20 -- Buff/Debuff图标大小
-	local percent = self:getDB(key, 'auraPercent') or .8 -- 显示百分比
 	local auraX = self:getDB(key, 'auraX') -- 起始坐标X
 	local auraY = self:getDB(key, 'auraY') -- 起始坐标Y
 	local spac = 2 -- 间隔
@@ -499,13 +495,12 @@ function BC:aura(unit)
 	local dispelCooldown = self:getDB(key, 'dispelCooldown')
 	local dispelStealable = self:getDB(key, 'dispelStealable')
 	local total = 0
-	local x = auraX
 	for i = 1, maxBuffs do
 		local name = frame:GetName() .. 'Buff' .. i
 		local buff = _G[name] or key == 'party' and CreateFrame('Button', name, frame)
 		if not buff then break end
-
 		buff:SetFrameLevel(5)
+
 		buff.icon = _G[name .. 'Icon']
 		if not buff.icon then
 			buff.icon = buff:CreateTexture(name .. 'Icon', 'BACKGROUND')
@@ -521,6 +516,7 @@ function BC:aura(unit)
 
 		buff.count = _G[name .. 'Count'] or buff:CreateFontString(name .. 'Count', 'OVERLAY')
 		buff.count:SetPoint('BOTTOMRIGHT', 2, -2)
+		buff.count:SetFont(valueFont, (size or 21) * .6, fontFlags)
 
 		buff.stealable = _G[name .. 'Stealable']
 		if not buff.stealable then
@@ -540,7 +536,7 @@ function BC:aura(unit)
 		if dark then
 			buff.border:SetVertexColor(.1, .1, .1)
 		else
-			buff.border:SetVertexColor(.3, .3, .3)
+			buff.border:SetVertexColor(.4, .4, .4)
 		end
 
 		buff:SetScript('OnEnter', function(self)
@@ -551,7 +547,7 @@ function BC:aura(unit)
 			GameTooltip:Hide()
 		end)
 
-		local name, icon, count, dispelType, duration, expirationTime, source, isStealable, _, spellId = UnitBuff(unit, i)
+		local _, icon, count, dispelType, duration, expirationTime, source, isStealable, _, spellId = UnitBuff(unit, i)
 		if icon then
 			CooldownFrame_Set(buff.cooldown, expirationTime - duration, duration, true)
 			local selfCast = source == 'player' or source == 'pet'
@@ -563,19 +559,15 @@ function BC:aura(unit)
 				buff.cooldown._occ_show = not selfCooldown or selfCast
 			end
 
-			local iconSize = selfCast and size or size * percent
+			local iconSize = selfCast and size or size * .875
 			buff:SetSize(iconSize, iconSize)
-			buff.count:SetFont(valueFont, iconSize * .6, fontFlags)
 
 			if auraX and auraY then
+				local x = math.fmod(i, rows) -- 横排数
+				if x == 0 then x = rows end
 				local y = ceil(i / rows) -- 列数
 				buff:ClearAllPoints()
-				buff:SetPoint('TOPLEFT', buff:GetParent(), 'BOTTOMLEFT', x, auraY - (size + spac) * y)
-				if math.fmod(i, rows) == 0 then
-					x = auraX
-				else
-					x = x + iconSize + spac
-				end
+				buff:SetPoint('TOPLEFT', buff:GetParent(), 'BOTTOMLEFT', auraX + x * (size + spac), auraY - (size + spac) * y)
 			end
 
 			buff.icon:SetSize(iconSize - 2, iconSize - 2)
@@ -599,7 +591,6 @@ function BC:aura(unit)
 	-- Debuff
 	local row = ceil(total / rows) -- 行数
 	total = 0
-	x = auraX
 	for i = 1, maxDebuffs do
 		local name = frame:GetName() .. 'Debuff' .. i
 		local debuff = _G[name] or key == 'party' and CreateFrame('Button', name, frame)
@@ -621,6 +612,7 @@ function BC:aura(unit)
 
 		debuff.count = _G[name .. 'Count'] or debuff:CreateFontString(name .. 'Count', 'OVERLAY')
 		debuff.count:SetPoint('BOTTOMRIGHT', 2, -2)
+		debuff.count:SetFont(valueFont, (size or 21) * .6, fontFlags)
 
 		debuff.stealable = _G[name .. 'Stealable']
 		if not debuff.stealable then
@@ -640,7 +632,7 @@ function BC:aura(unit)
 		if dark then
 			debuff.border:SetVertexColor(.1, .1, .1)
 		else
-			debuff.border:SetVertexColor(.3, .3, .3)
+			debuff.border:SetVertexColor(.4, .4, .4)
 		end
 
 		debuff:SetScript('OnEnter', function(self)
@@ -663,19 +655,15 @@ function BC:aura(unit)
 				debuff.cooldown._occ_show = not dispelCooldown or canDispel
 			end
 
-			local iconSize = selfCast and size or size * percent
+			local iconSize = selfCast and size or size * .875
 			debuff:SetSize(iconSize, iconSize)
-			debuff.count:SetFont(valueFont, iconSize * .6, fontFlags)
 
 			if auraX and auraY then
+				local x = math.fmod(i, rows) -- 横排数
+				if x == 0 then x = rows end
 				local y = ceil(i / rows) + row -- 列数
 				debuff:ClearAllPoints()
-				debuff:SetPoint('TOPLEFT', debuff:GetParent(), 'BOTTOMLEFT', x, auraY - (size + spac) * y)
-				if math.fmod(i, rows) == 0 then
-					x = auraX
-				else
-					x = x + iconSize + spac
-				end
+				debuff:SetPoint('TOPLEFT', debuff:GetParent(), 'BOTTOMLEFT', auraX + x * (size + spac), auraY - (size + spac) * y)
 			end
 
 			debuff.icon:SetSize(iconSize - 2, iconSize - 2)
@@ -823,7 +811,7 @@ function BC:miniIcon(unit)
 				for i = 1, 6 do
 					equip = _G['EquipSetFrame' .. i]
 					if equip then
-						equip:SetAlpha(.3)
+						equip:SetAlpha(.4)
 						equip.isEquipped = nil
 					end
 				end

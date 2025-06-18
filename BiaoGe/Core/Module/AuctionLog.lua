@@ -1575,7 +1575,9 @@ BG.Init(function()
                 end
             end
         end
-
+        local function MoneyIsError(money)
+            return money:match("[!@#$%^&*]")
+        end
         BG.RegisterEvent("CHAT_MSG_RAID_LEADER", function(self, event, msg, ...)
             local time = GetServerTime()
             local zhuangbei, maijia, jine
@@ -1601,6 +1603,9 @@ BG.Init(function()
                             local a = BG.Copy(BG.sendMoneyLog[itemID][i])
                             a.i = i
                             tinsert(log, 1, a)
+                        end
+                        if MoneyIsError(jine) and BG.sendMoneyLog[itemID][#BG.sendMoneyLog[itemID]] then
+                            jine = tostring(BG.sendMoneyLog[itemID][#BG.sendMoneyLog[itemID]].money)
                         end
                         BG.After(0, function()
                             BG.sendMoneyLog[itemID] = nil

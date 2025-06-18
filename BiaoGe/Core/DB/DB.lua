@@ -741,35 +741,69 @@ do
         BG.sound3 = SOUNDKIT.IG_MAINMENU_CLOSE  -- 菜单打开音效
 
         local Interface = "Interface\\AddOns\\BiaoGe\\Media\\sound\\"
-        BG.soundTbl = {
-            { ID = "AI", name = L["AI语音"] },
-            { ID = "BeiXi", name = L["匕首岭-<TIMEs>贝西"] },
-            { ID = "SiKaQi", name = L["司卡奇"] },
+        BG.soundAuthor = {
+            { ID = "AI", addonName = AddonName, isBiaoGe = true },
         }
+        BG.soundTbl = BG.soundAuthor
         BG.soundTbl2 = {
-            { ID = "paimai", name = "拍卖啦.mp3" },
-            { ID = "hope", name = "心愿达成.mp3" },
-            { ID = "qingkong", name = "已清空表格.mp3" },
-            { ID = "cehuiqingkong", name = "已撤回清空.mp3" },
-            { ID = "alchemyReady", name = "炼金转化已就绪.mp3" },
-            { ID = "tailorReady", name = "裁缝洗布已就绪.mp3" },
-            { ID = "leatherworkingReady", name = "制皮筛盐已就绪.mp3" },
-            { ID = "pingjia", name = "给个评价吧.mp3" },
-            { ID = "biaogefull", name = "表格满了.mp3" },
-            { ID = "guoqi", name = "装备快过期了.mp3" },
-            { ID = "uploading", name = "账单正在上传.mp3" },
-            { ID = "uploaded", name = "账单上传成功.mp3" },
-            { ID = "countDownStop", name = "倒数暂停.mp3" },
-            { ID = "HusbandComeOn", name = "老公加油.mp3" },
-            { ID = "qiankuan", name = "未收欠款.mp3" },
-            { ID = "autoAuctionAutoEndTips", name = "自动出价结束.mp3" },
+            { ID = "paimai", name = "拍卖啦" },
+            { ID = "hope", name = "心愿达成" },
+            { ID = "qingkong", name = "已清空表格" },
+            { ID = "cehuiqingkong", name = "已撤回清空" },
+            { ID = "alchemyReady", name = "炼金转化已就绪" },
+            { ID = "tailorReady", name = "裁缝洗布已就绪" },
+            { ID = "leatherworkingReady", name = "制皮筛盐已就绪" },
+            { ID = "pingjia", name = "给个评价吧" },
+            { ID = "biaogefull", name = "表格满了" },
+            { ID = "guoqi", name = "装备快过期了" },
+            { ID = "uploading", name = "账单正在上传" },
+            { ID = "uploaded", name = "账单上传成功" },
+            { ID = "countDownStop", name = "倒数暂停" },
+            { ID = "HusbandComeOn", name = "老公加油" },
+            { ID = "qiankuan", name = "你有未收欠款" },
+            { ID = "autoAuctionAutoEndTips", name = "自动出价结束" },
+            { ID = "tradeSuccess", name = "交易成功" },
+            { ID = "tradeFalse", name = "交易失败" },
         }
-        for _, vv in ipairs(BG.soundTbl) do
-            local name = vv.ID
-            for _, v in ipairs(BG.soundTbl2) do
-                BG["sound_" .. v.ID .. name] = Interface .. name .. "\\" .. v.name
+
+        local function DefaultSound()
+            for i = 1, C_AddOns.GetNumAddOns() do
+                local addonName = C_AddOns.GetAddOnInfo(i)
+                local enabled = C_AddOns.GetAddOnEnableState(i, player)
+                if C_AddOns.GetAddOnMetadata(i, "X-BiaoGe-Voice") and enabled ~= 0 then
+                    local author = C_AddOns.GetAddOnMetadata(i, "Author")
+                    tinsert(BG.soundAuthor, { ID = author,  addonName = addonName })
+                end
+            end
+            for _, value in ipairs(BG.soundAuthor) do
+                local author = value.ID
+                local addonName = value.addonName
+                local isBiaoGe = value.isBiaoGe
+                for _, v in ipairs(BG.soundTbl2) do
+                    local soundID = v.ID
+                    local soundName = v.name
+                    if isBiaoGe then
+                        BG["sound_" .. soundID .. author] = Interface .. author .. "\\" .. soundName
+                    else
+                        BG["sound_" .. soundID .. author] = format("Interface\\AddOns\\%s\\sound\\%s", addonName, soundName)
+                    end
+                end
+            end
+
+            local yes
+            for i, v in ipairs(BG.soundAuthor) do
+                if BiaoGe.options.Sound == v.ID then
+                    yes = true
+                end
+            end
+            if not yes then
+                BiaoGe.options.Sound = "AI"
             end
         end
+
+        BG.Init2(function()
+            DefaultSound()
+        end)
     end
 
     hooksecurefunc(LibBG, "ToggleDropDownMenu", function(_, _, _, dropDown)
@@ -858,7 +892,7 @@ BG.Init(function()
             BiaoGe.History[FB] = {}
         end
     end
-    
+
     if not BG.IsVanilla then
         if not BiaoGe.BossFrame then
             BiaoGe.BossFrame = {}

@@ -864,6 +864,11 @@ function QuestieDB.IsDoable(questId, debugPrint)
     -- IsDoableVerbose is only called manually by the user.
 
     -- These are localized in the init function
+    if Questie.db.char.complete[questId] then
+        if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Quest " .. questId .. " is already finished!") end
+        return false
+    end
+
     if QuestieCorrectionshiddenQuests[questId] then
         if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Quest " .. questId .. " is hidden automatically!") end
         return false
@@ -1000,6 +1005,35 @@ function QuestieDB.IsDoable(questId, debugPrint)
         return false
     end
 
+    -- Check if this quest is a breadcrumb
+    local breadcrumbForQuestId = QuestieDB.QueryQuestSingle(questId, "breadcrumbForQuestId")
+    if breadcrumbForQuestId and breadcrumbForQuestId ~= 0 then
+        -- Check the target quest of this breadcrumb
+        if Questie.db.char.complete[breadcrumbForQuestId] or QuestiePlayer.currentQuestlog[breadcrumbForQuestId] then
+            if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Target of breadcrumb quest already completed or in the quest log for quest " .. questId) end
+            return false
+        end
+        -- Check if the other breadcrumbs are active
+        local otherBreadcrumbs = QuestieDB.QueryQuestSingle(breadcrumbForQuestId, "breadcrumbs")
+        for _, breadcrumbId in ipairs(otherBreadcrumbs) do
+            if breadcrumbId ~= questId and QuestiePlayer.currentQuestlog[breadcrumbId] then
+                if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Alternative breadcrumb quest in the quest log for quest " .. questId) end
+                return false
+            end
+        end
+    end
+
+    -- Check if this quest has active breadcrumbs
+    local breadcrumbs = QuestieDB.QueryQuestSingle(questId, "breadcrumbs")
+    if breadcrumbs then
+        for _, breadcrumbId in ipairs(breadcrumbs) do
+            if QuestiePlayer.currentQuestlog[breadcrumbId] then
+                if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Breadcrumb quest in the quest log for quest " .. questId) end
+                return false
+            end
+        end
+    end
+
     return true
 end
 
@@ -1024,6 +1058,14 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     -- because IsDoable is often called in a loop through every
     -- quest in the DB in order to update icons, while
     -- IsDoableVerbose is only called manually by the user.
+
+    if Questie.db.char.complete[questId] then
+        if returnText and returnBrief then
+            return "Ineligible: Already complete"
+        elseif returnText then
+            return "Player has already completed quest " .. questId .. "!"
+        end
+    end
 
     if C_QuestLog.IsOnQuest(questId) == true then
         local msg = "Quest " .. questId .. " is active!"
@@ -1178,7 +1220,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         if Questie.db.char.complete[nextQuestInChain] or QuestiePlayer.currentQuestlog[nextQuestInChain] then
             local msg = "Follow up quests already completed or in the quest log for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Later quest completed"
+                return "Ineligible: Later quest completed or active " .. nextQuestInChain
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -1254,16 +1296,46 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         end
     end
 
-    if returnText then
-        if IsQuestFlaggedCompleted(questId) then
-            if returnBrief then
-                return "Already complete"
-            else
-                return "Player has already completed quest " .. questId .. "!"
+    -- Check if this quest is a breadcrumb
+    local breadcrumbForQuestId = QuestieDB.QueryQuestSingle(questId, "breadcrumbForQuestId")
+    if breadcrumbForQuestId and breadcrumbForQuestId ~= 0 then
+        -- Check the target quest of this breadcrumb
+        if Questie.db.char.complete[breadcrumbForQuestId] or QuestiePlayer.currentQuestlog[breadcrumbForQuestId] then
+            if returnText and returnBrief then
+                return "Ineligible: Breadcrumb target " .. breadcrumbForQuestId .. " active or finished"
+            elseif returnText and not returnBrief then
+                return "Target of breadcrumb quest " .. breadcrumbForQuestId .. " already completed or in the quest log for quest " .. questId
             end
-        else
-            return "Player is eligible for quest " .. questId .. "!"
         end
+        -- Check if the other breadcrumbs are active
+        local otherBreadcrumbs = QuestieDB.QueryQuestSingle(breadcrumbForQuestId, "breadcrumbs")
+        for _, breadcrumbId in ipairs(otherBreadcrumbs) do
+            if breadcrumbId ~= questId and QuestiePlayer.currentQuestlog[breadcrumbId] then
+                if returnText and returnBrief then
+                    return "Ineligible: Another breadcrumb is active: " .. breadcrumbId
+                elseif returnText and not returnBrief then
+                    return "Alternative breadcrumb quest " .. breadcrumbId .." in the quest log for quest " .. questId
+                end
+            end
+        end
+    end
+
+    -- Check if this quest has active breadcrumbs
+    local breadcrumbs = QuestieDB.QueryQuestSingle(questId, "breadcrumbs")
+    if breadcrumbs then
+        for _, breadcrumbId in ipairs(breadcrumbs) do
+            if QuestiePlayer.currentQuestlog[breadcrumbId] then
+                if returnText and returnBrief then
+                    return "Ineligible: A breadcrumb is active: " .. breadcrumbId
+                elseif returnText and not returnBrief then
+                    return "A breadcrumb quest " .. breadcrumbId .." is in the quest log for quest " .. questId
+                end
+            end
+        end
+    end
+
+    if returnText then
+        return "Player is eligible for quest " .. questId .. "!"
     else
         return ""
     end
@@ -1368,6 +1440,8 @@ function QuestieDB.GetQuest(questId) -- /dump QuestieDB.GetQuest(867)
     ---@field public requiredMaxLevel Level
     ---@field public isComplete boolean
     ---@field public Color Color
+    ---@field public breacrumbForQuestId number
+    ---@field public breacrumbs QuestId[]
     local QO = {
         Id = questId
     }
@@ -1727,6 +1801,70 @@ local questsRequiringNewbieAchievement = {
     [32009] = true, -- Varzok
 }
 
+local questsRequiringTamingKalimdorAchievement = {
+    [31818] = true, -- Zunta
+    [31819] = true, -- Dagra the Fierce
+    [31854] = true, -- Analynn
+    [31862] = true, -- Zonya the Sadist
+    [31871] = true, -- Traitor Gluk
+    [31872] = true, -- Merda Stronghoof
+    [31904] = true, -- Cassandra Kaboom
+    [31905] = true, -- Grazzle the Great
+    [31906] = true, -- Kela Grimtotem
+    [31907] = true, -- Zoltan
+    [31908] = true, -- Elena Flutterfly
+    [31909] = true, -- Grand Master Trixxy
+}
+
+local questsRequiringTamingEasternKingdomsAchievement = {
+    [31693] = true, -- Julia Stevens
+    [31780] = true, -- Old MacDonald
+    [31781] = true, -- Lindsay
+    [31850] = true, -- Eric Davidson
+    [31851] = true, -- Bill Buckler
+    [31852] = true, -- Steven Lisbane
+    [31910] = true, -- David Kosse
+    [31911] = true, -- Deiza Plaguehorn
+    [31912] = true, -- Kortas Darkhammer
+    [31913] = true, -- Everessa
+    [31914] = true, -- Durin Darkhammer
+    [31916] = true, -- Grand Master Lydia Accoste
+}
+
+local questsRequiringTamingOutlandAchievement = {
+    [31922] = true, -- Nicki Tinytech
+    [31923] = true, -- Ras'an
+    [31924] = true, -- Narrok
+    [31925] = true, -- Morulu The Elder
+    [31926] = true, -- Grand Master Antari
+}
+
+local questsRequiringTamingNorthrendAchievement = {
+    [31931] = true, -- Beegle Blastfuse
+    [31932] = true, -- Nearly Headless Jacob
+    [31933] = true, -- Okrut Dragonwaste
+    [31934] = true, -- Gutretch
+    [31935] = true, -- Grand Master Payne
+}
+
+local questsRequiringTamingCataclysmAchievement = {
+    [31971] = true, -- Grand Master Obalis
+    [31972] = true, -- Brok
+    [31973] = true, -- Bordin Steadyfist
+    [31974] = true, -- Goz Banefury
+}
+
+local questsRequiringTamingPandariaAchievement = {
+    [31953] = true, -- Grand Master Hyuna
+    [31954] = true, -- Grand Master Mo'ruk
+    [31955] = true, -- Grand Master Nishi
+    [31956] = true, -- Grand Master Yon
+    [31957] = true, -- Grand Master Shu
+    [31958] = true, -- Grand Master Aki
+    [31991] = true, -- Grand Master Zusshi
+    [33222] = true, -- Little Tommy Newcomer
+}
+
 function _QuestieDB:CheckAchievementRequirements(questId)
     -- So far the only Quests that we know of that requires an earned Achievement are the ones offered by:
     -- https://www.wowhead.com/wotlk/npc=35094/crusader-silverdawn
@@ -1745,6 +1883,30 @@ function _QuestieDB:CheckAchievementRequirements(questId)
 
     if questsRequiringNewbieAchievement[questId] then
         return select(13, GetAchievementInfo(7433)) -- Newbie
+    end
+
+    if questsRequiringTamingKalimdorAchievement[questId] then
+        return select(13, GetAchievementInfo(6602)) -- Taming Kalimdor
+    end
+
+    if questsRequiringTamingEasternKingdomsAchievement[questId] then
+        return select(13, GetAchievementInfo(6603)) -- Taming Eastern Kingdoms
+    end
+
+    if questsRequiringTamingOutlandAchievement[questId] then
+        return select(13, GetAchievementInfo(6604)) -- Taming Outland
+    end
+
+    if questsRequiringTamingNorthrendAchievement[questId] then
+        return select(13, GetAchievementInfo(6605)) -- Taming Northrend
+    end
+
+    if questsRequiringTamingCataclysmAchievement[questId] then
+        return select(13, GetAchievementInfo(7525)) -- Taming Cataclysm
+    end
+
+    if questsRequiringTamingPandariaAchievement[questId] then
+        return select(13, GetAchievementInfo(6606)) -- Taming Pandaria
     end
 end
 

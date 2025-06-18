@@ -462,7 +462,8 @@ function BG.PlaySound(id)
             end
         end
     elseif BiaoGe.options['tipsSound'] == 1 and type(id) == "string" then
-        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound], "Master")
+        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound]..".mp3", "Master")
+        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound]..".ogg", "Master")
     end
 end
 

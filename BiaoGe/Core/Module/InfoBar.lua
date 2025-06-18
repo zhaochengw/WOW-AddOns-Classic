@@ -24,7 +24,7 @@ local realmID = GetRealmID()
 local player = BG.playerName
 local realmName = GetRealmName()
 
---最后更新时间：25/6/3 12:00
+--最后更新时间：25/6/11 9:30
 local AFDtbl_360 = {
     -- 1200
     "wlk怀旧-范沃森-Selendis",
@@ -110,11 +110,11 @@ local tbl = {
     -- "",
     -- "",
     -- "",
-    -- "",
-    -- "",
-    -- "",
-    -- "",
-    -- "",
+    "毁灭之刃-wifeisboss-上兵伐谋",
+    "硬汉-阿萨斯王子",
+    "狙安猎爹人-龙牙",
+    "奥罗-助人为乐-英魂",
+    "范克瑞斯-欧皇社团-武梓琪丶",
     "龙牙-茶余饭后俱乐部-含丶蓄",
     "莫格莱尼-暨阳山庄-丨江离丨",
     "奥金斧-Sylvanas-猎鹰",

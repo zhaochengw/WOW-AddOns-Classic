@@ -129,18 +129,8 @@ BG.Init(function()
     if not BG.IsRetail then
         BiaoGe.bag[realmID][player].faction = BiaoGe.bag[realmID][player].faction or {}
 
-        local tbl = {}
-        if BG.IsWLK then
-            tbl = {
-                1156,
-            }
-        elseif BG.IsVanilla then
-            tbl = {
-                270,
-            }
-        end
         local function SaveReputation()
-            for i, ID in ipairs(tbl) do
+            for _, ID in ipairs(BG.factionTbl) do
                 local name, description, standingID, barMin, barMax, barValue = GetFactionInfoByID(ID)
                 if name then
                     BiaoGe.bag[realmID][player].faction[ID] = {

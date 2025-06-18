@@ -5,7 +5,7 @@ local pt = print
 
 BG.Init(function()
     local aura = aura_env or {}
-    aura.ver = "v2.9"
+    aura.ver = "v3.0"
 
     function aura.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -336,6 +336,15 @@ BG.Init(function()
                 f.IsSmallWindow = false
                 f.hide:SetText(L["折叠"])
 
+                if f.highlight then
+                    f.highlight.flashGroup:Stop()
+                    f.highlight:Hide()
+                end
+                if f.autoFrame.highlight then
+                    f.autoFrame.highlight.flashGroup:Stop()
+                    f.autoFrame.highlight:Hide()
+                end
+
                 if aura.IsML() then
                     f.cancel:Show()
                 else
@@ -378,6 +387,15 @@ BG.Init(function()
                 if f.isAuto then return end
                 f.IsSmallWindow = true
                 f.hide:SetText(L["展开"])
+
+                if f.highlight then
+                    f.highlight.flashGroup:Stop()
+                    f.highlight:Hide()
+                end
+                if f.autoFrame.highlight then
+                    f.autoFrame.highlight.flashGroup:Stop()
+                    f.autoFrame.highlight:Hide()
+                end
 
                 f.autoFrame:Hide()
                 f.cancel:Hide()
@@ -972,6 +990,27 @@ BG.Init(function()
         return height
     end
 
+    local function CheckAllFrameOverlap()
+        for i = 1, aura.maxNumFrame do
+            local f = _G.BGA.Frames[i]
+            if f and not f.animing then
+                local top = f:GetTop()
+                local bottom = f:GetBottom()
+                for i = 1, aura.maxNumFrame do
+                    local _f = _G.BGA.Frames[i]
+                    if _f and not _f.animing and f.num ~= _f.num then
+                        local _top = _f:GetTop()
+                        local _bottom = _f:GetBottom()
+                        if (top <= _top and top >= _bottom) or (bottom <= _top and bottom >= _bottom) then
+                            aura.UpdateAllFrames()
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     local function UpdateAllFrameNum()
         local num = 0
         local tbl = {}
@@ -1033,6 +1072,7 @@ BG.Init(function()
     function aura.anim(parent)
         parent.alltime = 0.5
         parent.t = 0.5
+        parent.animing = true
         parent:SetScript("OnUpdate", function(self, t)
             self.t = self.t - t
             if self.t <= 0 then self.t = 0 end
@@ -1040,7 +1080,11 @@ BG.Init(function()
             self:SetScale(max(1 - self.t / self.alltime, 0.01))
             self.myMoneyEdit:SetCursorPosition(0)
             if self.t <= 0 then
+                self.animing = nil
                 self:SetScript("OnUpdate", nil)
+                C_Timer.After(0, function()
+                    CheckAllFrameOverlap()
+                end)
             end
         end)
     end
@@ -1223,7 +1267,6 @@ BG.Init(function()
             else
                 for i = 1, aura.maxNumFrame do
                     if not _G.BGA.Frames[i] then
-                        -- f:SetPoint("TOP", 0, -(aura.HEIGHT + 5) * (i - 1))
                         f.num = i
                         f:SetPoint("TOP", 0, -GetHeight(f.num))
                         break

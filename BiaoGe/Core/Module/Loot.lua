@@ -877,21 +877,22 @@ BG.Init2(function()
                     end
                 end
             end
-
-            for li = 1, GetNumLootItems() do
-                for ci = 1, GetNumGroupMembers() do
-                    if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == cpPlayer then
-                        local itemLink = GetLootSlotLink(li)
-                        if itemLink then
-                            local itemID = GetItemID(itemLink)
-                            if itemID == cpItemID then
-                                GiveMasterLoot(li, ci)
+            BG.After(0, function()
+                for li = 1, GetNumLootItems() do
+                    for ci = 1, GetNumGroupMembers() do
+                        if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == cpPlayer then
+                            local itemLink = GetLootSlotLink(li)
+                            if itemLink then
+                                local itemID = GetItemID(itemLink)
+                                if itemID == cpItemID then
+                                    GiveMasterLoot(li, ci)
+                                end
                             end
+                            break
                         end
-                        break
                     end
                 end
-            end
+            end)
         end
     end
 
@@ -1195,4 +1196,7 @@ BG.Init2(function()
     -- BG.DeBug = true
     -- local msg = format("AutoLoot,%s,%s", testItem, 5)
     -- C_ChatInfo.SendAddonMessage("BiaoGe", msg, "RAID")
+    -- function BG.A()
+    --     pt(cpPlayer, cpItemID)
+    -- end
 end)

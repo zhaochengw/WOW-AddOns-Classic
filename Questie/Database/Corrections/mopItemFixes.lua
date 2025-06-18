@@ -9,6 +9,9 @@ function MopItemFixes.Load()
     local itemClasses = QuestieDB.itemClasses
 
     return {
+        [74033] = { -- Ancient Hozen Skull
+            [itemKeys.objectDrops] = {209595}
+        },
         [74160] = { -- Zin\'Jun\'s Rifle
             [itemKeys.npcDrops] = {55470,66917}
         },
@@ -20,6 +23,9 @@ function MopItemFixes.Load()
         },
         [74163] = { -- Snuff\'s Corpse
             [itemKeys.npcDrops] = {55470,66917}
+        },
+        [74260] = { -- Bamboo Key
+            [itemKeys.class] = itemClasses.QUEST,
         },
         [74296] = { -- Stolen Carrot
             [itemKeys.npcDrops] = {55504},
@@ -43,8 +49,14 @@ function MopItemFixes.Load()
         [85784] = { -- Alliance Service Medallion
             [itemKeys.npcDrops] = {63764,63782},
         },
+        [86404] = { -- Old Map
+            [itemKeys.npcDrops] = {59639},
+        },
         [89163] = { -- Requisitioned Firework Launcher
             [itemKeys.class] = itemClasses.QUEST,
+        },
+        [89603] = { -- Encoded Captain's Log
+            [itemKeys.npcDrops] = {66148},
         },
     }
 end

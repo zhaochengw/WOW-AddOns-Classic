@@ -2446,3 +2446,9 @@ function BG.CreateExportFrame(title, text)
         BG.SetScrollBottom(BG.exportFrame.scroll, BG.exportFrame.edit)
     end)
 end
+
+function BG.ChatEditSetText(text)
+    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+    ChatEdit_ChooseBoxForSend():SetText(text)
+    ChatEdit_ChooseBoxForSend():HighlightText()
+end

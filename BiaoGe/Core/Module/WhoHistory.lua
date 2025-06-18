@@ -345,9 +345,7 @@ BG.Init(function()
         end
     end
 
-    BG.RegisterEvent("WHO_LIST_UPDATE", function()
-        GetWhoText()
-    end)
+    BG.RegisterEvent("WHO_LIST_UPDATE",GetWhoText)
 
     WhoFrame:HookScript("OnShow", function()
         if BiaoGe.options["searchList"] == 1 then

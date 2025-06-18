@@ -26,6 +26,28 @@ function MopNpcFixes.Load()
         [54135] = { -- Master Li Fei
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{38.81,25.51}}},
         },
+        [54567] = { -- Aysa Cloudsinger
+            [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{55.1,32.55}}},
+        },
+        [54616] = { -- Sully "The Pickle" McLeary
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_JADE_FOREST] = {
+                    {43.62,90.68,phases.SULLY_BELOW_SKYFIRE},
+                    {41.39,79.57,phases.SULLY_TWINSPIRE_KEEP},
+                },
+            },
+        },
+        [54617] = { -- Rell Nightwind
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_JADE_FOREST] = {
+                    {45.17,94.98,phases.RELL_ON_BARRELS},
+                    {46.47,96.3,phases.RELL_ON_DOCKS},
+                    {46.47,96.41,phases.RELL_ON_DOCKS_2},
+                    {46.2,84.81,phases.RELL_PAWDON_VILLAGE},
+                    {45.17,94.98,phases.RELL_TWINSPIRE_KEEP},
+                },
+            },
+        },
         [54631] = { -- Living Air
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{48.02,31.39}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
@@ -433,6 +455,15 @@ function MopNpcFixes.Load()
         [64033] = { -- Master Angler Marina
             [npcKeys.friendlyToFaction] = "A",
         },
+        [64596] = { -- Teng Applebloom
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_JADE_FOREST] = {
+                    {46.22,84.68,phases.TENG_VILLAGE},
+                    --{46.47,96.3,phases.RELL_ON_DOCKS},
+                    --{46.47,96.41,phases.RELL_ON_DOCKS_2},
+                },
+            },
+        },
         [64738] = { -- Hooded Crusader
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
@@ -447,11 +478,40 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = 0,
             [npcKeys.spawns] = {},
         },
+        [66292] = { -- Sky Admiral Rogers
+            [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOMS,
+            [npcKeys.spawns] = {
+                [zoneIDs.EASTERN_KINGDOMS] = {
+                    {41.48,70.2,phases.SKYFIRE_STORMWIND},
+                },
+                [zoneIDs.THE_JADE_FOREST] = {
+                    {42.04,92.75,phases.SKYFIRE_JADE_FOREST},
+                    {48.05,88.39,phases.ADMIRAL_ROGERS_PAWDON_VILLAGE},
+                },
+            },
+        },
+        [66297] = { -- Skyfire Gyrocopter
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{42.02,92.51}}},
+        },
+        [66400] = { -- Ship 1 Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{44.13,99.38}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [66401] = { -- Ship 2 Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.PANDARIA] = {{65.31,74.96}}},
+            [npcKeys.zoneID] = zoneIDs.PANDARIA,
+        },
         [66449] = { -- Ang the Wise
             [npcKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{68.4,17},{68.6,17}}},
         },
+        [66581] = { -- Rell Nightwind
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{45.17,94.98}}},
+        },
         [66741] = { -- Aki the Chosen - Remove with Patch 5.4
             [npcKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{84,28.6}}},
+        },
+        [67067] = { -- Rell's Gyrocopter
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{41.51,79.75}}},
         },
         [68430] = { -- Arcanis Mechanica
             [npcKeys.spawns] = {[zoneIDs.SILVERMOON_CITY] = {{86.4,31.8}}},
@@ -747,6 +807,9 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.TIMELESS_ISLE] = {{52,75.8},{52.2,75.4},{52.6,80},{54.4,75.4},{54.6,58.6},{55.2,60.2},{55.8,60},{57.8,76.4},{58.4,59},{58.4,59.8},{58.6,59.4},{58.6,59.8},{58.6,80.2},{58.8,81},{67.6,55.2},{67.6,55.8},{69.2,59},{69.4,49}}},
         },
         -- Fake NPCs for Auto Accept and Auto Turn in
+        [100002] = { -- A Personal Summons - Stormwind
+            [npcKeys.questStarts] = {28825,29547},
+        },
         [110000] = { -- Shu, the Spirit of Water
             [npcKeys.name] = "?",
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{79.03,37.8}}},

@@ -295,89 +295,6 @@ BG.Init2(function()
         end
     end
 
-    -- 进入DD语音房间
-    --[[     if BG.IsWLK then
-        local Browser = MeetingHorn.MainPanel.Browser
-
-        local function OnShow(...)
-            if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
-            if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
-            local arg1, arg2, arg3, arg4, arg5 = ...
-            local which                        = arg2
-            local name, realm
-            if BG.IsNewUI then
-                local contextData = arg3
-                local unit = contextData.unit
-                if unit then
-                    name = UnitNameUnmodified(unit)
-                    contextData.name = name
-                    contextData.server = realm
-                else
-                    name = contextData.name
-                    if name then
-                        local name2, server2 = strmatch(name, "^([^-]+)-(.*)")
-                        if name2 then
-                            contextData.name = name2
-                            contextData.server = server2
-                        end
-                    end
-                end
-            else
-                name = arg1.name
-            end
-            -- pt(which, name)
-            if which ~= "FRIEND" and which ~= "RAID_PLAYER" and which ~= "PLAYER" then return end
-            if name ~= BG.raidLeader then return end
-            if not MeetingHorn.db.realm.starRegiment.regimentData[name] then return end
-
-            local dropdownName = 'DropDownList' .. 1
-            local dropdown = _G[dropdownName]
-            local targetindex, targetbutton = BG.FindDropdownItem(dropdown, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_OTHER)
-            if not targetindex then return end
-
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = L["进入DD语音"]
-            info.notCheckable = true
-            info.tooltipTitle = L["进入团长的DD语音房间"]
-            info.tooltipText = L["需要你在后台已打开网易DD，否则进入失败。\n\n|cff808080你可在插件设置-BiaoGe-其他功能-密语模板里关闭这个功能。|r"]
-            info.func = function()
-                local activity = {}
-                function activity.GetLeader()
-                    return name
-                end
-
-                Browser:OpenVoiceRoom(activity)
-                if Browser.QRTooltip then
-                    Browser.QRTooltip:Hide()
-                end
-                ThreeDimensionsCode_SafePipe_CmdHandles.joinRoom()
-            end
-            UIDropDownMenu_AddButton(info)
-
-            local myindex, mybutton = BG.FindDropdownItem(dropdown, L["进入DD语音"])
-            local x, y = select(4, targetbutton:GetPoint())
-            y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-            mybutton:ClearAllPoints()
-            mybutton:SetPoint("TOPLEFT", x, y)
-            for i = targetindex + 1, UIDROPDOWNMENU_MAXBUTTONS do
-                local dropdownItem = _G[dropdownName .. 'Button' .. i]
-                if i ~= myindex then
-                    if dropdownItem:IsShown() then
-                        local p, r, rp, x, y = dropdownItem:GetPoint(1)
-                        dropdownItem:SetPoint(p, r, rp, x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
-                    else
-                        break
-                    end
-                end
-            end
-        end
-        if BG.IsNewUI then
-            hooksecurefunc(UnitPopupManager, "OpenMenu", OnShow)
-        else
-            hooksecurefunc("UnitPopup_ShowMenu", OnShow)
-        end
-    end ]]
-
     -- 密语模板
     do
         local lastfocus
@@ -497,18 +414,34 @@ BG.Init2(function()
         local AchievementTitle, AchievementTitleID, AchievementEdit, AchievementCheckButton
         if not BG.IsVanilla then
             local onEnterTextTbl = {
-                "25TOC",
-                3812,
-                3916,
-                3819,
-                3818,
-                3817,
-                "10TOC",
-                3918,
-                3917,
-                3810,
-                3809,
-                3808,
+                "25ICC",
+                4637,
+                4608,
+                4603,
+                4635,
+                4634,
+                4633,
+                4632,
+                "10ICC",
+                4636,
+                4532,
+                4602,
+                4631,
+                4630,
+                4629,
+                4628,
+                -- "25TOC",
+                -- 3812,
+                -- 3916,
+                -- 3819,
+                -- 3818,
+                -- 3817,
+                -- "10TOC",
+                -- 3918,
+                -- 3917,
+                -- 3810,
+                -- 3809,
+                -- 3808,
                 -- "ULD(25)",
                 -- 2895,
                 -- 3037,
@@ -532,22 +465,6 @@ BG.Init2(function()
                 -- 4815,
                 -- 4818,
                 -- 4817,
-                -- "ICC(25)",
-                -- 4637,
-                -- 4608,
-                -- 4603,
-                -- 4635,
-                -- 4634,
-                -- 4633,
-                -- 4632,
-                -- "ICC(10)",
-                -- 4636,
-                -- 4532,
-                -- 4602,
-                -- 4631,
-                -- 4630,
-                -- 4629,
-                -- 4628,
             }
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", 15, -30)
@@ -872,63 +789,126 @@ BG.Init2(function()
         end
 
         -- 右键菜单
-        do
-            local function GetWhisperText(onlylevel)
-                local text = " "
-                if IsShiftKeyDown() then
-                    return text
-                end
-                if BiaoGe.options["MeetingHorn_whisper"] == 1 then
-                    local iLevel
-                    if BG.IsVanilla then
-                        iLevel = iLevelCheckButton.Text:GetText() .. L["装等"]
-                    else
-                        iLevel = iLevelCheckButton.Text:GetText()
-                    end
-
-                    if onlylevel then
-                        text = text .. iLevel .. otherEdit1:GetText() .. " "
-                    else
-                        if AchievementCheckButton then
-                            if AchievementCheckButton:GetChecked() and AchievementEdit:GetText() ~= "" and GetAchievementLink(AchievementEdit:GetText()) then
-                                text = text .. GetAchievementLink(AchievementEdit:GetText()) .. " "
-                            end
-                        end
-
-                        if iLevelCheckButton:GetChecked() and (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
-                            text = text .. iLevel .. otherEdit1:GetText() .. " "
-                        elseif iLevelCheckButton:GetChecked() and not (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
-                            text = text .. iLevel .. " "
-                        elseif not iLevelCheckButton:GetChecked() and (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
-                            text = text .. otherEdit1:GetText() .. " "
-                        end
-
-                        if otherCheckButton2:GetChecked() and otherEdit2:GetText() ~= "" then
-                            text = text .. otherEdit2:GetText() .. " "
-                        end
-                    end
-                end
+        local function GetWhisperText(onlylevel)
+            local text = " "
+            if IsShiftKeyDown() then
                 return text
             end
-
-            local function SendWhisper(name, type)
-                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                ChatEdit_ChooseBoxForSend():SetText("")
-                local text = "/W " .. name .. GetWhisperText(type)
-                ChatEdit_InsertLink(text)
-            end
-
-            Browser.ActivityList:SetCallback('OnItemSignupClick', function(_, button, item)
-                if item:IsActivity() then
-                    SendWhisper(item:GetLeader())
+            if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+                local iLevel
+                if BG.IsVanilla then
+                    iLevel = iLevelCheckButton.Text:GetText() .. L["装等"]
+                else
+                    iLevel = iLevelCheckButton.Text:GetText()
                 end
-            end)
 
-            -- 集结号活动右键菜单
-            local oldFuc = Browser.CreateActivityMenu
-            function Browser:CreateActivityMenu(activity)
-                local tbl = oldFuc(Browser, activity)
-                if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+                if onlylevel then
+                    text = text .. iLevel .. otherEdit1:GetText() .. " "
+                else
+                    if AchievementCheckButton then
+                        if AchievementCheckButton:GetChecked() and AchievementEdit:GetText() ~= "" and GetAchievementLink(AchievementEdit:GetText()) then
+                            text = text .. GetAchievementLink(AchievementEdit:GetText()) .. " "
+                        end
+                    end
+
+                    if iLevelCheckButton:GetChecked() and (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
+                        text = text .. iLevel .. otherEdit1:GetText() .. " "
+                    elseif iLevelCheckButton:GetChecked() and not (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
+                        text = text .. iLevel .. " "
+                    elseif not iLevelCheckButton:GetChecked() and (otherCheckButton1:GetChecked() and otherEdit1:GetText() ~= "") then
+                        text = text .. otherEdit1:GetText() .. " "
+                    end
+
+                    if otherCheckButton2:GetChecked() and otherEdit2:GetText() ~= "" then
+                        text = text .. otherEdit2:GetText() .. " "
+                    end
+                end
+            end
+            return text
+        end
+
+        local function SendWhisper(name, type)
+            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+            ChatEdit_ChooseBoxForSend():SetText("")
+            local text = "/W " .. name .. GetWhisperText(type)
+            ChatEdit_InsertLink(text)
+        end
+
+        -- 集结号活动右键菜单
+        local oldFuc = Browser.CreateActivityMenu
+        function Browser:CreateActivityMenu(activity)
+            local tbl = oldFuc(Browser, activity)
+            if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+                local text1 = GetWhisperText()
+                if text1 ~= " " then
+                    text1 = text1:sub(2)
+                end
+                local text2 = GetWhisperText("onlylevel")
+                if text2 ~= " " then
+                    text2 = text2:sub(2)
+                end
+                tinsert(tbl, 3,
+                    {
+                        text = L["密语模板"],
+                        tooltipTitle = L["密语模板"],
+                        tooltipText = text1,
+                        func = function()
+                            SendWhisper(activity:GetLeader())
+                        end,
+                    })
+                tinsert(tbl, 4,
+                    {
+                        text = L["装等+职业"],
+                        tooltipTitle = L["装等+职业"],
+                        tooltipText = text2,
+                        func = function()
+                            SendWhisper(activity:GetLeader(), "onlylevel")
+                        end,
+                    }
+                )
+                local InviteUnit = InviteUnit or C_PartyInfo.InviteUnit
+                tinsert(tbl, 5,
+                    {
+                        text = INVITE,
+                        func = function()
+                            InviteUnit(activity:GetLeader())
+                        end,
+                    })
+                tinsert(tbl, 6,
+                    {
+                        text = L["复制活动说明"],
+                        func = function()
+                            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                            ChatEdit_ChooseBoxForSend():SetText(activity:GetComment() or "")
+                            ChatEdit_ChooseBoxForSend():HighlightText()
+                        end,
+                    })
+            end
+            return tbl
+        end
+
+        -- 聊天框右键菜单
+        if BG.IsNewUI then
+            if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+                Menu.ModifyMenu("MENU_UNIT_FRIEND", function(owner, rootDescription, contextData)
+                    rootDescription:CreateDivider()
+                    rootDescription:CreateButton(L["密语模板"], function()
+                        SendWhisper(contextData.name)
+                    end)
+                    rootDescription:CreateButton(L["装等+职业"], function()
+                        SendWhisper(contextData.name, "onlylevel")
+                    end)
+                end)
+            end
+        end
+
+        -- 输入框右键菜单
+        local edit = ChatEdit_ChooseBoxForSend()
+        if edit and edit.GetObjectType and edit:GetObjectType() == "EditBox" then
+            local dropDown = LibBG:Create_UIDropDownMenu(nil, edit)
+            edit:HookScript("OnMouseUp", function(self, button)
+                if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
+                if button == "RightButton" then
                     local text1 = GetWhisperText()
                     if text1 ~= " " then
                         text1 = text1:sub(2)
@@ -937,182 +917,84 @@ BG.Init2(function()
                     if text2 ~= " " then
                         text2 = text2:sub(2)
                     end
-                    tinsert(tbl, 3,
+                    local menu = {
                         {
                             text = L["密语模板"],
-                            tooltipTitle = L["密语模板"],
+                            notCheckable = true,
+                            tooltipTitle = L["使用密语模板"],
                             tooltipText = text1,
+                            tooltipOnButton = true,
                             func = function()
-                                SendWhisper(activity:GetLeader())
-                            end,
-                        })
-                    tinsert(tbl, 4,
+                                ChatEdit_ActivateChat(edit)
+                                local text = GetWhisperText()
+                                text = text:gsub("^%s", "")
+                                edit:SetCursorPosition(strlen(edit:GetText()))
+                                ChatEdit_InsertLink(text)
+                            end
+                        },
                         {
                             text = L["装等+职业"],
+                            notCheckable = true,
                             tooltipTitle = L["装等+职业"],
                             tooltipText = text2,
+                            tooltipOnButton = true,
                             func = function()
-                                SendWhisper(activity:GetLeader(), "onlylevel")
-                            end,
-                        }
-                    )
-                    local InviteUnit = InviteUnit or C_PartyInfo.InviteUnit
-                    tinsert(tbl, 5,
-                        {
-                            text = INVITE,
-                            func = function()
-                                InviteUnit(activity:GetLeader())
-                            end,
-                        })
-                    tinsert(tbl, 6,
-                        {
-                            text = L["复制活动说明"],
-                            func = function()
-                                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                                ChatEdit_ChooseBoxForSend():SetText(activity:GetComment() or "")
-                                ChatEdit_ChooseBoxForSend():HighlightText()
-                            end,
-                        })
-                end
-                return tbl
-            end
-
-            -- 聊天框右键菜单
-            if BG.IsNewUI then
-                if BiaoGe.options["MeetingHorn_whisper"] == 1 then
-                    Menu.ModifyMenu("MENU_UNIT_FRIEND", function(owner, rootDescription, contextData)
-                        rootDescription:CreateDivider()
-                        -- rootDescription:CreateTitle("My Addon")
-                        rootDescription:CreateButton(L["密语模板"], function()
-                            SendWhisper(contextData.name)
-                        end)
-                        rootDescription:CreateButton(L["装等+职业"], function()
-                            SendWhisper(contextData.name, "onlylevel")
-                        end)
-                    end)
-                end
-            else
-                hooksecurefunc("UnitPopup_ShowMenu", function(arg1, which)
-                    if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
-                    if (UIDROPDOWNMENU_MENU_LEVEL > 1) then return end
-                    if which ~= "FRIEND" then return end
-                    local name        = arg1.name
-                    local info        = UIDropDownMenu_CreateInfo()
-                    info.text         = L["密语模板"]
-                    info.notCheckable = true
-                    info.tooltipTitle = L["使用密语模板"]
-                    local text        = GetWhisperText()
-                    if text ~= " " then
-                        text = text:sub(2)
-                        info.tooltipText = text
-                    end
-                    info.func = function()
-                        SendWhisper(name)
-                    end
-                    UIDropDownMenu_AddButton(info)
-
-                    local info = UIDropDownMenu_CreateInfo()
-                    info.text = L["装等+职业"]
-                    info.notCheckable = true
-                    info.tooltipTitle = L["装等+职业"]
-                    local text = GetWhisperText("onlylevel")
-                    if text ~= " " then
-                        text = text:sub(2)
-                        info.tooltipText = text
-                    end
-                    info.func = function()
-                        SendWhisper(name, "onlylevel")
-                    end
-                    UIDropDownMenu_AddButton(info)
-
-                    -- 调整按钮位置，放在密语按钮后
-                    local dropdownName = 'DropDownList' .. 1
-                    local dropdown = _G[dropdownName]
-                    local myindex1, mybutton1 = BG.FindDropdownItem(dropdown, L["密语模板"])
-                    local myindex2, mybutton2 = BG.FindDropdownItem(dropdown, L["装等+职业"])
-                    local targetindex, targetbutton = BG.FindDropdownItem(dropdown, WHISPER)
-                    local x, y = select(4, targetbutton:GetPoint())
-                    y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
-                        y = y - UIDROPDOWNMENU_BUTTON_HEIGHT
-                    end
-                    mybutton1:ClearAllPoints()
-                    mybutton1:SetPoint("TOPLEFT", x, y)
-                    mybutton2:ClearAllPoints()
-                    mybutton2:SetPoint("TOPLEFT", x, y - UIDROPDOWNMENU_BUTTON_HEIGHT)
-
-                    for i = targetindex + 1, UIDROPDOWNMENU_MAXBUTTONS do
-                        if i ~= myindex1 and i ~= myindex2 then
-                            local dropdownItem = _G[dropdownName .. 'Button' .. i]
-                            if dropdownItem:IsShown() then
-                                local p, r, rp, x, y = dropdownItem:GetPoint(1)
-                                dropdownItem:SetPoint(p, r, rp, x, y - UIDROPDOWNMENU_BUTTON_HEIGHT * 2)
-                            else
-                                break
+                                ChatEdit_ActivateChat(edit)
+                                local text = GetWhisperText("onlylevel")
+                                text = text:gsub("^%s", "")
+                                edit:SetCursorPosition(strlen(edit:GetText()))
+                                ChatEdit_InsertLink(text)
                             end
-                        end
+                        },
+                        {
+                            text = CANCEL,
+                            notCheckable = true,
+                            func = function(self)
+                                LibBG:CloseDropDownMenus()
+                            end,
+                        }
+                    }
+                    LibBG:EasyMenu(menu, dropDown, "cursor", 0, 20, "MENU", 2)
+                end
+            end)
+        end
+
+        -- 组队频道的活动显示密语按钮
+        local function Set()
+            if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
+            local buttons = MeetingHorn.MainPanel.Browser.ActivityList._buttons
+            for i, v in pairs(buttons) do
+                local bt = v.Signup
+                if bt then
+                    if not bt.hasClick then
+                        bt.hasClick = true
+                        bt:RegisterForClicks("AnyUp")
+                        bt:SetScript("OnClick", function(self, button)
+                            if button == "LeftButton" then
+                                SendWhisper(v.item.leaderLower)
+                            elseif button == "RightButton" then
+                                SendWhisper(v.item.leaderLower, "onlylevel")
+                            end
+                        end)
                     end
-                    if (IsAddOnLoaded("tdInspect") and not BG.IsVanilla) and not UnitIsUnit('player', Ambiguate(name, 'none')) then
-                        dropdown:SetHeight(dropdown:GetHeight() + UIDROPDOWNMENU_BUTTON_HEIGHT)
-                    end
-                end)
+                end
+            end
+        end
+        hooksecurefunc(MeetingHorn.MainPanel.Browser.ActivityList, "update", Set)
+
+        if BiaoGe.options["MeetingHorn_whisper"] == 1 then
+            Browser.ActivityList:SetCallback('OnItemSignupClick', function() end)
+
+            function Activity:IsActivity()
+                return true
             end
 
-            -- 输入框右键菜单
-            local edit = ChatEdit_ChooseBoxForSend()
-            if edit and edit.GetObjectType and edit:GetObjectType() == "EditBox" then
-                local dropDown = LibBG:Create_UIDropDownMenu(nil, edit)
-                edit:HookScript("OnMouseUp", function(self, button)
-                    if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end
-                    if button == "RightButton" then
-                        local text1 = GetWhisperText()
-                        if text1 ~= " " then
-                            text1 = text1:sub(2)
-                        end
-                        local text2 = GetWhisperText("onlylevel")
-                        if text2 ~= " " then
-                            text2 = text2:sub(2)
-                        end
-                        local menu = {
-                            {
-                                text = L["密语模板"],
-                                notCheckable = true,
-                                tooltipTitle = L["使用密语模板"],
-                                tooltipText = text1,
-                                tooltipOnButton = true,
-                                func = function()
-                                    ChatEdit_ActivateChat(edit)
-                                    local text = GetWhisperText()
-                                    text = text:gsub("^%s", "")
-                                    edit:SetCursorPosition(strlen(edit:GetText()))
-                                    ChatEdit_InsertLink(text)
-                                end
-                            },
-                            {
-                                text = L["装等+职业"],
-                                notCheckable = true,
-                                tooltipTitle = L["装等+职业"],
-                                tooltipText = text2,
-                                tooltipOnButton = true,
-                                func = function()
-                                    ChatEdit_ActivateChat(edit)
-                                    local text = GetWhisperText("onlylevel")
-                                    text = text:gsub("^%s", "")
-                                    edit:SetCursorPosition(strlen(edit:GetText()))
-                                    ChatEdit_InsertLink(text)
-                                end
-                            },
-                            {
-                                text = CANCEL,
-                                notCheckable = true,
-                                func = function(self)
-                                    LibBG:CloseDropDownMenus()
-                                end,
-                            }
-                        }
-                        LibBG:EasyMenu(menu, dropDown, "cursor", 0, 20, "MENU", 2)
-                    end
-                end)
+            function Activity:GetTitle()
+                if not self.channel then
+                    return self.data.name
+                else
+                    return format('%s(%s)', self.data.name, self.channel)
+                end
             end
         end
     end
@@ -1177,6 +1059,21 @@ BG.Init2(function()
         local function StarTexture(currentLevel)
             return "Interface/AddOns/MeetingHorn/Media/certification_icon_" .. currentLevel
         end
+        local function GetCoords(type)
+            if ver >= 228 then
+                if type == "chat" then
+                    return ":15:18:0:0:100:100:65:95:0:50"
+                else
+                    return ":17:60:0:0:100:100:0:100:0:50"
+                end
+            else
+                if type == "chat" then
+                    return ":18:18:0:0:100:100:42:60:10:90"
+                else
+                    return ":17:60:0:0:100:100:0:60:15:85"
+                end
+            end
+        end
         local function AddStarRaidLeader(self, text, ...)
             if BiaoGe.options["MeetingHorn_starRaidLeader"] ~= 1 then return self.oldFunc_BiaoGe(self, text, ...) end
             local isChannel = text:find("|Hchannel:channel:%d+.-|h")
@@ -1187,7 +1084,7 @@ BG.Init2(function()
             currentLevel = currentLevel.level
             text = gsub(text, "(|Hchannel:channel:%d+|h.-|h)%s-(|Hplayer:.+|h.+|h)",
                 "%1"
-                .. "|T" .. StarTexture(currentLevel) .. ":18:18:0:0:100:100:42:60:10:90|t"
+                .. "|T" .. StarTexture(currentLevel) .. GetCoords("chat") .. "|t"
                 .. "%2")
             return self.oldFunc_BiaoGe(self, text, ...)
         end
@@ -1219,7 +1116,7 @@ BG.Init2(function()
             if not nameNum then return end
             local nextText = _G["GameTooltipTextLeft" .. nameNum + 1]
             if nextText and nextText:GetText() then
-                nextText:SetText("|T" .. StarTexture(currentLevel) .. ":17:60:0:0:100:100:0:60:15:85|t" .. "\n" .. nextText:GetText())
+                nextText:SetText("|T" .. StarTexture(currentLevel) .. GetCoords("tooltip") .. "|t\n" .. nextText:GetText())
                 nextText:SetWidth(nextText:GetWidth() + 2)
             end
             GameTooltip:Show()
@@ -1282,5 +1179,16 @@ BG.Init2(function()
                 end
             end
         end)
+    end
+
+    -- 禁用语音开团快人一步
+    if BG.IsWLK and LFG.SQDU then
+        local name = "MeetingHorn_banVoiceList"
+        BG.MeetingHorn.SQDU_oldFuc = LFG.SQDU
+        BG.MeetingHorn.SQDU_newFuc = function() end
+
+        if BiaoGe.options[name] == 1 then
+            LFG.SQDU = BG.MeetingHorn.SQDU_newFuc
+        end
     end
 end)

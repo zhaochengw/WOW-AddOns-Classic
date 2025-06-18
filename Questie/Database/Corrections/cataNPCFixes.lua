@@ -1672,6 +1672,9 @@ function CataNpcFixes.Load()
                 [zoneIDs.SILVERMOON_CITY] = {{69.84,42.97}},
             },
         },
+        [16915] = { -- Foreman Razelcraz
+            [npcKeys.waypoints] = {},
+        },
         [17082] = { -- Rifleman Torrig
             [npcKeys.spawns] = {[zoneIDs.SILITHUS] = {{54.48,32.94}}},
         },
@@ -1739,6 +1742,9 @@ function CataNpcFixes.Load()
         },
         [17550] = { -- Void Anomaly
             [npcKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE] = {{54.2,24.55},{53.36,22.18},{52.69,21.3},{53.31,18.98},{53.99,19.48},{52.88,19.93},{53.48,20.28},{51.5,24.78},{51.73,22.45},{52.63,25.77},{51.98,20.84},{51.22,23.22},{51.61,19.6}}},
+        },
+        [17555] = { -- Stephanos
+            [npcKeys.spawns] = {[zoneIDs.THE_EXODAR] = {{54.49,36.27}}},
         },
         [17588] = { -- Veridian Whelp
             [npcKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE] = {{65.72,25.74},{67.72,24.17},{70.91,29.91},{68.71,25.65},{72.1,27.84},{72.96,31.63},{71.94,27.8},{74.03,26.99},{72.63,24.93},{73.61,24.3},{69.8,24.23},{76.01,24.58},{74.49,22.6},{72.64,22.48},{75.07,19.51},{71.88,20.78},{69.87,21.27},{77.03,16.55},{76.06,13.72},{78.01,14.75},{77.52,13.27},{77.82,10.53},{75.78,11.75},{75.98,6.79},{75.07,8.04},{73.97,9.03},{73.91,5.99},{73.51,13.66},{73.78,11.79},{70.86,10.27},{71.06,11.7},{70.83,13.5},{69.66,18.2},{67.66,19.59},{68.69,19.83},{66.6,22.36},{75.09,31.42},{77.01,31.71}}},
@@ -1927,6 +1933,12 @@ function CataNpcFixes.Load()
         [19220] = { -- Pathaleon the Calculator
             [npcKeys.spawns] = {[zoneIDs.THE_MECHANAR_CALCULATION_CHAMBER] = {{27.39,60.62}},[zoneIDs.THE_MECHANAR] = {{-1,-1}}},
         },
+        [19255] = { -- General Krakork
+            [npcKeys.waypoints] = {},
+        },
+        [19256] = { -- Sergeant Shatterskull
+            [npcKeys.waypoints] = {},
+        },
         [19428] = { -- Cobalt Serpent
             [npcKeys.spawns] = {[zoneIDs.SETHEKK_HALLS_HALLS_OF_MOURNING] = {{32.46,67.08}},[zoneIDs.SETHEKK_HALLS] = {{48.97,94.83},{52.1,85.87},{-1,-1}}},
             [npcKeys.waypoints] = {[zoneIDs.SETHEKK_HALLS_HALLS_OF_MOURNING] = {{{30.54,88.73},{28.54,86.74},{25.94,83.42},{25.94,81.48},{31.01,74.91},{31.56,72.68},{32.46,67.08}},{{44.09,96.18},{44.13,84.84},{44.86,82.77},{49.21,82.28},{51.94,82.87},{53.05,84.3},{53.14,92.67},{51.85,94.9},{51.4,94.9}}},[zoneIDs.SETHEKK_HALLS] = {{{51.4,94.9},{48.97,94.83}},{{52.1,85.87},{49.43,85.31},{48.85,88.04},{47.57,90.98},{45,89.08}}}},
@@ -1964,6 +1976,9 @@ function CataNpcFixes.Load()
         },
         [20201] = { -- Sa'at
             [npcKeys.spawns] = {[zoneIDs.THE_BLACK_MORASS] = {{49.29,6.47},{-1,-1}}},
+        },
+        [20678] = { -- Akoru the Firecaller
+            [npcKeys.spawns] = {[zoneIDs.HELLFIRE_PENINSULA] = {{15.59,58.75}}},
         },
         [20735] = { -- Archmage Lan'dalock
             [npcKeys.spawns] = {[zoneIDs.DALARAN] = {{57.29,66.71}}},

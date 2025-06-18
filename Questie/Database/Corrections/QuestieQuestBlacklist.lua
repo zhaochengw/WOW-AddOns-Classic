@@ -5010,8 +5010,10 @@ function QuestieQuestBlacklist:Load()
         [9735] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9736] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9737] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [9738] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9745] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9757] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [9763] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9764] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9876] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [10091] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5196,6 +5198,7 @@ function QuestieQuestBlacklist:Load()
         [11345] = true, -- Not in the game
         [11347] = true, -- Not in the game
         [11353] = true, -- Not in the game
+        [11419] = Expansions.Current >= Expansions.Wotlk, -- Removed with Wotlk
         [11435] = true, -- Not in the game
         [11488] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [11492] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5750,8 +5753,11 @@ function QuestieQuestBlacklist:Load()
         [29485] = Expansions.Current >= Expansions.Cata, -- Duplicate of 29507
         [29532] = true, -- Not in the game
         [29533] = true, -- Not in the game
+        [29534] = true, -- Not in the game
         [29544] = true, -- Not in the game
         [29545] = true, -- Not in the game
+        [29554] = true, -- Not in the game
+        [29569] = true, -- Not in the game
         [29592] = true, -- Hidden quest
         [29597] = true, -- Not in the game
         [29601] = Expansions.Current >= Expansions.Cata, -- Not in the game
@@ -5764,9 +5770,9 @@ function QuestieQuestBlacklist:Load()
         [29706] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [29761] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29773] = Expansions.Current >= Expansions.MoP, -- Not in the game
-        [30105] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [30110] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [30111] = Expansions.Current >= Expansions.Cata, -- Not in the game
+        [30173] = true, -- Not in the game
         [30454] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [30455] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [30537] = true, -- Not in the game
@@ -5795,8 +5801,10 @@ function QuestieQuestBlacklist:Load()
         [30560] = true, -- Hidden quest
         [30561] = true, -- Hidden quest
         [30562] = true, -- Hidden quest
+        [30759] = true, -- Not in the game
         [30817] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [30818] = Expansions.Current >= Expansions.MoP, -- Not in the game
+        [30934] = true, -- Not in the game
         [32396] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [65593] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [65597] = Expansions.Current >= Expansions.Cata, -- Not in the game
@@ -6185,9 +6193,27 @@ function QuestieQuestBlacklist:Load()
 
         ----- MoP -------------- MoP quests --------------- MoP -----
         ----- MoP ------------- starting here -------------- MoP -----
-
+        [9754] = true, -- Not in the game
+        [9755] = true, -- Not in the game
+        [10215] = true, -- Not in the game
+        [11522] = true, -- Not in the game
+        [12445] = true, -- Not in the game
+        [12731] = true, -- Not in the game
+        [13541] = true, -- Not in the game
+        [31533] = true, -- The Perfect Feathe (not in the game)
+        [31887] = true, -- Pet Battle Trainers: Kalimdor
+        [31888] = true, -- Pet Battle Trainers: Kalimdor
+        [31890] = true, -- Pet Battle Trainers: Kalimdor
+        [31892] = true, -- Battle Pet Trainers: Kalimdor
+        [31893] = true, -- Battle Pet Trainers: Kalimdor
+        [31940] = true, -- Battle Pet Trainers: Pandaria
         [31489] = true, -- Stranger in a Strange Land (Rogue only version of 31488. For those who know Wrathion already from the Fangs quest chain)
         [31554] = true, -- On The Mend (duplicate of 31553)
+        [31979] = true, -- The Returning Champion (invalid version of 31975, 31976)
+        [32442] = true, -- Deprecated - Reuse Me! (invalid version of 32428)
+        [32482] = true, -- Test Your Chicken Guardian [PH]
+        [33121] = true, -- DEPRECATED The Celestial Tournament
+        [33122] = true, -- DEPRECATED Great Job, You Won
 
         -- Hallow's End
         [32020] = true,

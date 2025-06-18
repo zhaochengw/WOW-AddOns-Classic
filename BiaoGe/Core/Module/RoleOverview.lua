@@ -73,6 +73,7 @@ function BG.RoleOverviewUI()
                 ["gamma"] = 1,
                 ["heroe"] = 1,
                 ["week1"] = 1,
+                ["faction1156"] = 1,
             }
         elseif BG.IsCTM then
             BiaoGe.FBCDchoice = {
@@ -132,6 +133,9 @@ function BG.RoleOverviewUI()
                 BiaoGe.MONEYchoice[22726] = 1
             end)
         elseif BG.IsWLK then
+            BG.Once("FBCDchoice", 250610, function()
+                BiaoGe.FBCDchoice["faction1156"] = 1
+            end)
             BG.Once("FBCDchoice", 250512, function()
                 BiaoGe.FBCDchoice["25ICC"] = 1
                 BiaoGe.FBCDchoice["10ICC"] = 1
@@ -168,6 +172,7 @@ function BG.RoleOverviewUI()
     end
     -- 基础数据初始化
     do
+        BG.factionTbl = {}
         if BG.IsVanilla_Sod then
             BG.FBCDall_table = {
                 { name = "BWLsod", color = "00BFFF", fbId = 469, type = "fb" },
@@ -208,6 +213,11 @@ function BG.RoleOverviewUI()
                 { name = "leatherworking", name2 = L["制皮筛盐"], color = "ADFF2F", type = "profession" },
                 { name = "tailor", name2 = L["裁缝洗布"], color = "ADFF2F", type = "profession" },
             }
+            -- 声望
+            BG.factionTbl = { 910, 609, 270, 749, 529, 59, 576, }
+            for _, id in ipairs(BG.factionTbl) do
+                tinsert(BG.FBCDall_table, { name = "faction" .. id, name2 = GetFactionInfoByID(id), id = id, color = "FFFF00", type = "faction" })
+            end
 
             BG.MONEYall_table = {
                 { name = L["埃提耶什的碎片"], color = "ff8000", type = "item", id = 22726, quest = 9250, tex = 134888, width = 100 }, -- 橙片
@@ -271,6 +281,11 @@ function BG.RoleOverviewUI()
                 { name = "tailor_yueyingbu", name2 = L["月影布"], color = "ADFF2F", type = "profession" },
                 { name = "tailor_bingchuanbeibao", name2 = L["冰川背包"], color = "ADFF2F", type = "profession" },
             }
+            -- 声望
+            BG.factionTbl = { 1156 }
+            for _, id in ipairs(BG.factionTbl) do
+                tinsert(BG.FBCDall_table, { name = "faction" .. id, name2 = GetFactionInfoByID(id), id = id, color = "FFFF00", type = "faction" })
+            end
 
             BG.MONEYall_table = {
                 { name = L["影霜碎片"], color = "ff8000", type = "item", id = 50274, quest = 24548, tex = 340336, width = 90 }, -- 橙片
@@ -794,7 +809,6 @@ function BG.RoleOverviewUI()
                             end
                         end
                     end
-                    -- end
                 end
 
                 -- 专业
@@ -834,6 +848,58 @@ function BG.RoleOverviewUI()
                                     t:SetFont(STANDARD_TEXT_FONT, fontsize0, "OUTLINE")
                                     t:SetTextColor(1, .82, 0)
                                     t:SetText(BG.SecondsToTime(v.resettime))
+                                end
+                            end
+                        end
+                    end
+                end
+
+                -- 声望
+                if BiaoGe.bag[realmID] and BiaoGe.bag[realmID][player] and BiaoGe.bag[realmID][player].faction then
+                    for id in pairs(BiaoGe.bag[realmID][player].faction) do
+                        for ii, vv in ipairs(FBCDchoice_table) do
+                            if vv.type == "faction" and id == vv.id then
+                                local info = BiaoGe.bag[realmID][player].faction[id]
+                                local t = f:CreateFontString()
+                                t:SetPoint("CENTER", BG.FBCDFrame, "TOPLEFT",
+                                    (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
+                                    (-16 - height * n))
+                                if info.standingID == 8 then
+                                    t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+                                    t:SetTextColor(0, 1, 0)
+                                    t:SetText(_G["FACTION_STANDING_LABEL" .. info.standingID])
+                                else
+                                    t:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
+                                    local infoText = format("%s\n%s",
+                                        _G["FACTION_STANDING_LABEL" .. info.standingID],
+                                        info.currentValue)
+                                    t:SetText(infoText)
+                                    t:SetTextColor(1, .82, 0)
+                                end
+                            end
+                        end
+                    end
+                elseif BiaoGeAccounts and BiaoGeAccounts.bag and BiaoGeAccounts.bag[realmID]
+                    and BiaoGeAccounts.bag[realmID][player] and BiaoGeAccounts.bag[realmID][player].faction then
+                    for id in pairs(BiaoGeAccounts.bag[realmID][player].faction) do
+                        for ii, vv in ipairs(FBCDchoice_table) do
+                            if vv.type == "faction" and id == vv.id then
+                                local info = BiaoGeAccounts.bag[realmID][player].faction[id]
+                                local t = f:CreateFontString()
+                                t:SetPoint("CENTER", BG.FBCDFrame, "TOPLEFT",
+                                    (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
+                                    (-16 - height * n))
+                                if info.standingID == 8 then
+                                    t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+                                    t:SetTextColor(0, 1, 0)
+                                    t:SetText(_G["FACTION_STANDING_LABEL" .. info.standingID])
+                                else
+                                    t:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
+                                    local infoText = format("%s\n%s",
+                                        _G["FACTION_STANDING_LABEL" .. info.standingID],
+                                        info.currentValue)
+                                    t:SetText(infoText)
+                                    t:SetTextColor(1, .82, 0)
                                 end
                             end
                         end
@@ -1586,7 +1652,7 @@ function BG.RoleOverviewUI()
         BiaoGe.QuestCD = BiaoGe.QuestCD or {}
         BiaoGe.QuestCD[realmID] = BiaoGe.QuestCD[realmID] or {}
         BiaoGe.QuestCD[realmID][player] = BiaoGe.QuestCD[realmID][player] or {}
-        BG.questsCompleted={}
+        BG.questsCompleted = {}
 
         local function UpdateQuestsCompleted()
             BG.questsCompleted = GetQuestsCompleted and GetQuestsCompleted() or {}
@@ -1716,7 +1782,7 @@ function BG.RoleOverviewUI()
 
         -- 交任务时触发
         BG.RegisterEvent("QUEST_TURNED_IN", function(self, event, questID)
-            BG.After(1,function ()
+            BG.After(1, function()
                 UpdateQuestsCompleted()
             end)
             UpdateDayQuest(questID)

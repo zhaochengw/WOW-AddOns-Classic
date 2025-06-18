@@ -1172,7 +1172,7 @@ function QuestieTBCQuestFixes:Load()
         [9400] = {
             [questKeys.preQuestSingle] = {10124},
             [questKeys.triggerEnd] = nil,
-            [questKeys.objectives] = {{{17062,"Find Krun Spinebreaker"}}},
+            [questKeys.objectives] = {{{17062,"Find Krun Spinebreaker",Questie.ICON_TYPE_EVENT}}},
         },
         [9410] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Wolf Totem at the location where you found Krun Spinebreaker's body and follow the Ancestral Spirit Wolf."), 0, {{"monster", 17062}}}},
@@ -1227,6 +1227,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [9472] = {
             [questKeys.requiredSourceItems] = {29112},
+            [questKeys.objectives] = {{{17226,"Carinda's Scroll of Retribution used",Questie.ICON_TYPE_INTERACT}}},
         },
         [9484] = {
             [questKeys.triggerEnd] = {"Tame a Crazed Dragonhawk", {[zoneIDs.EVERSONG_WOODS]={{60.39,59.09},{61.23,65.08}}}},
@@ -1251,9 +1252,11 @@ function QuestieTBCQuestFixes:Load()
         },
         [9498] = {
             [questKeys.preQuestSingle] = {10124},
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE - raceIDs.BLOOD_ELF,
         },
         [9499] = {
             [questKeys.preQuestSingle] = {10124},
+            [questKeys.requiredRaces] = raceIDs.BLOOD_ELF,
         },
         [9500] = {
             [questKeys.questLevel] = -1,
@@ -1452,6 +1455,9 @@ function QuestieTBCQuestFixes:Load()
         [9718] = {
             [questKeys.triggerEnd] = {"Use the Stormcrow Amulet and explore the lakes of Zangarmarsh", {[zoneIDs.ZANGARMARSH]={{76.8,44.1}}}},
         },
+        [9720] = {
+            [questKeys.objectives] = {{{17998,"Umbrafen Lake Controls Disabled",Questie.ICON_TYPE_EVENT},{18002,"Marshlight Lake Controls Disabled",Questie.ICON_TYPE_EVENT},{18000,"Serpent Lake Controls Disabled",Questie.ICON_TYPE_EVENT},{17999,"Lagoon Controls Disabled",Questie.ICON_TYPE_EVENT}}},
+        },
         [9728] = {
             [questKeys.preQuestSingle] = {},
         },
@@ -1500,6 +1506,9 @@ function QuestieTBCQuestFixes:Load()
         [9760] = {
             [questKeys.exclusiveTo] = {9759},
         },
+        [9785] = {
+            [questKeys.objectives] = {{{17900,nil,Questie.ICON_TYPE_TALK},{17901,nil,Questie.ICON_TYPE_TALK}}},
+        },
         [9786] = {
             [questKeys.triggerEnd] = {"Explore the Boha'mu Ruins", {[zoneIDs.ZANGARMARSH]={{44.13,68.97}}}},
         },
@@ -1516,6 +1525,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [9808] = {
             [questKeys.requiredMinRep] = {970,0},
+        },
+        [9816] = {
+            [questKeys.objectives] = {nil,{{182164,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [9824] = {
             [questKeys.objectives] = {{{18161,nil,Questie.ICON_TYPE_EVENT},{18162,nil,Questie.ICON_TYPE_EVENT}}},
@@ -2079,6 +2091,9 @@ function QuestieTBCQuestFixes:Load()
         [10367] = {
             [questKeys.preQuestSingle] = {},
         },
+        [10368] = {
+            [questKeys.objectives] = {{{20677,"Morod Freed",Questie.ICON_TYPE_TALK},{20678,"Akoru Freed",Questie.ICON_TYPE_TALK},{20679,"Aylaan Freed",Questie.ICON_TYPE_TALK}}},
+        },
         [10369] = {
             [questKeys.objectives] = {{{19354}}},
         },
@@ -2105,12 +2120,6 @@ function QuestieTBCQuestFixes:Load()
         },
         [10389] = {
             [questKeys.preQuestSingle] = {10392},
-        },
-        [10393] = {
-            [questKeys.startedBy] = {{20798},nil,nil},
-        },
-        [10395] = {
-            [questKeys.startedBy] = {{19298},nil,nil},
         },
         [10403] = {
             [questKeys.startedBy] = {{20677,20678,20679},nil,nil},
@@ -2563,6 +2572,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [10792] = {
             [questKeys.requiredSourceItems] = {31347,31346},
+            [questKeys.objectives] = {{{20813,"Barracks Burned", Questie.ICON_TYPE_EVENT},{20815,"Eastern Hovel Burned", Questie.ICON_TYPE_EVENT},{20816,"Western Hovel Burned", Questie.ICON_TYPE_EVENT},{20814,"Stable Burned", Questie.ICON_TYPE_EVENT}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Light the torches"), 0, {{"object", 185144}}}},
         },
         [10793] = {
