@@ -1,9 +1,8 @@
 ------------------------------------------------------------------------
-r644 | Zimzarina | 2025-02-26 15:49:23 +0000 (Wed, 26 Feb 2025) | 1 line
+r650 | Zimzarina | 2025-06-18 00:49:18 +0000 (Wed, 18 Jun 2025) | 1 line
 Changed paths:
    M /trunk/Postal.toc
-   M /trunk/Postal_Cata.toc
 
-TOC Update Cataclysm and TWW.
+TOC Update for TWW.
 ------------------------------------------------------------------------
 

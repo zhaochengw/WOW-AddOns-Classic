@@ -2,7 +2,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 5.17.2
+## Version: 5.17.3
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 ## Category: Combat

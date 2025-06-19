@@ -1,5 +1,5 @@
 ## Interface: 30403
-## X-Min-Interface: 110105
+## X-Min-Interface: 110107
 ## X-Min-Interface-Classic: 11507
 ## X-Min-Interface-BCC: 20504
 ## X-Min-Interface-Wrath: 30403
@@ -7,7 +7,7 @@
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 5.17.2
+## Version: 5.17.3
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 ## Category: Combat

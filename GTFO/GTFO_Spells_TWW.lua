@@ -220,6 +220,18 @@ GTFO.SpellID["470827"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1231544"] = {
+  --desc = "Zapped (Goblin Zapper)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1240428"] = {
+  --desc = "Blessed Bladestorm (Joseph the Enlightened)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
