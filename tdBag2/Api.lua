@@ -31,9 +31,7 @@ local GetRealmName = GetRealmName
 local GameTooltip = GameTooltip
 
 ---- G
--- @build>2@
 local MAX_GUILDBANK_TABS = MAX_GUILDBANK_TABS
--- @end-build>2@
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local BACKPACK_CONTAINER = Enum.BagIndex.Backpack
 local BANK_CONTAINER = Enum.BagIndex.Bank
@@ -48,6 +46,16 @@ local GLOBAL_SEARCH_OWNER = '$search'
 
 ---@class ns
 local ns = select(2, ...)
+
+local BUILD = tonumber(GetBuildInfo():match('^(%d+)%.')) or 0
+
+ns.BUILD_VANILLA = BUILD == 1
+ns.BUILD_MAINLINE = BUILD >= 11
+
+ns.FEATURE_GUILDBANK = BUILD >= 2
+ns.FEATURE_CURRENCY = BUILD >= 3
+ns.FEATURE_RUNE = BUILD == 1
+ns.FEATURE_RANGED_WEAPON = BUILD < 5
 
 ns.VERSION = tonumber((C.AddOns.GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
     return format('%02d', tonumber(x))
@@ -66,25 +74,14 @@ ns.ITEM_SPACING = 2
 
 ns.SECONDS_OF_DAY = 24 * 60 * 60
 
---[====[@build^1@
-ns.KEYRING_FAMILY = 9
---@end-build^1@]====]
--- @build>2@
-ns.KEYRING_FAMILY = 256
--- @end-build>2@
+ns.KEYRING_FAMILY = ns.BUILD_VANILLA and 9 or 256
 
---[=[@retail@
-ns.ITEM_BUTTON_CLASS = 'ItemButton'
---@end-retail@]=]
--- @non-retail@
-ns.ITEM_BUTTON_CLASS = 'Button'
--- @end-non-retail@
+ns.ITEM_BUTTON_CLASS = ns.BUILD_MAINLINE and 'ItemButton' or 'Button'
 
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
 
---[====[@build^1@
-ns.RACE_ICON_TCOORDS = {
+ns.RACE_ICON_TCOORDS = ns.BUILD_VANILLA and {
     ['HUMAN_MALE'] = {0, 0.25, 0, 0.25},
     ['DWARF_MALE'] = {0.25, 0.5, 0, 0.25},
     ['GNOME_MALE'] = {0.5, 0.75, 0, 0.25},
@@ -104,10 +101,7 @@ ns.RACE_ICON_TCOORDS = {
     ['SCOURGE_FEMALE'] = {0.25, 0.5, 0.75, 1.0},
     ['TROLL_FEMALE'] = {0.5, 0.75, 0.75, 1.0},
     ['ORC_FEMALE'] = {0.75, 1.0, 0.75, 1.0},
-}
---@end-build^1@]====]
--- @build>2@
-ns.RACE_ICON_TCOORDS = {
+} or {
     ['HUMAN_MALE'] = {0, 0.125, 0, 0.25},
     ['DWARF_MALE'] = {0.125, 0.25, 0, 0.25},
     ['GNOME_MALE'] = {0.25, 0.375, 0, 0.25},
@@ -134,13 +128,12 @@ ns.RACE_ICON_TCOORDS = {
     ['DRAENEI_MALE'] = {0.5, 0.625, 0, 0.25},
     ['DRAENEI_FEMALE'] = {0.5, 0.625, 0.5, 0.75},
 }
--- @end-build>2@
 
 ns.TOKENS = {20560, 20559, 20558}
 
---[==[@debug@
+--[=[@debug@
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2')
---@end-debug@]==]
+--@end-debug@]=]
 --@non-debug@
 local L = LibStub('AceLocale-3.0'):GetLocale('tdBag2', true)
 --@end-non-debug@
@@ -152,9 +145,6 @@ local BAG_ID = { --
     MAIL = 'mail',
     EQUIP = 'equip',
     SEARCH = 'global-search',
-    -- @build>2@
-    GUILDBANK = 'guild',
-    -- @end-build>2@
 }
 
 local BAG_ICONS = { --
@@ -178,9 +168,6 @@ local BAG_TOOLTIPS = {
     [BAG_ID.BANK] = L['Bank'],
     [BAG_ID.MAIL] = L['Mail'],
     [BAG_ID.EQUIP] = L['Equipped'],
-    -- @build>2@
-    [BAG_ID.GUILDBANK] = L['Guild bank'],
-    -- @end-build>2@
     [BAG_ID.SEARCH] = L['Global search'],
 }
 
@@ -190,10 +177,13 @@ local BAGS = { --
     [BAG_ID.MAIL] = {MAIL_CONTAINER, COD_CONTAINER},
     [BAG_ID.EQUIP] = {EQUIP_CONTAINER},
     [BAG_ID.SEARCH] = {},
-    -- @build>2@
-    [BAG_ID.GUILDBANK] = {},
-    -- @end-build>2@
 }
+
+if ns.FEATURE_GUILDBANK then
+    BAG_ID.GUILDBANK = 'guild'
+    BAG_TOOLTIPS[BAG_ID.GUILDBANK] = L['Guild bank']
+    BAGS[BAG_ID.GUILDBANK] = {}
+end
 
 local BAG_CLASSES = {
     [BAG_ID.BAG] = {Frame = 'InventoryFrame', Item = 'Item', Container = 'Container'},
@@ -237,11 +227,11 @@ do
         end
     end
 
-    -- @build>2@
-    for i = 1, MAX_GUILDBANK_TABS do
-        tinsert(BAGS[BAG_ID.GUILDBANK], 50 + i)
+    if ns.FEATURE_GUILDBANK then
+        for i = 1, MAX_GUILDBANK_TABS do
+            tinsert(BAGS[BAG_ID.GUILDBANK], 50 + i)
+        end
     end
-    -- @end-build>2@
 end
 
 local INV_TOOLTIPS = {}
@@ -280,16 +270,18 @@ do
         TRINKET1SLOT = right(7),
 
         -- @non-retail@
-        MAINHANDSLOT = bottom(-1),
-        SECONDARYHANDSLOT = bottom(0),
-        RANGEDSLOT = bottom(1),
         -- @end-non-retail@
 
     }
-    --[=[@retail@
-    INV_DATA.MAINHANDSLOT = bottom(-0.5)
-    INV_DATA.SECONDARYHANDSLOT = bottom(0.5)
-    --@end-retail@]=]
+
+    if not ns.FEATURE_RANGED_WEAPON then
+        INV_DATA.MAINHANDSLOT = bottom(-0.5)
+        INV_DATA.SECONDARYHANDSLOT = bottom(0.5)
+    else
+        INV_DATA.MAINHANDSLOT = bottom(-1)
+        INV_DATA.SECONDARYHANDSLOT = bottom(0)
+        INV_DATA.RANGEDSLOT = bottom(1)
+    end
 
     for key, pos in pairs(INV_DATA) do
         local slot, icon = GetInventorySlotInfo(key)
@@ -486,10 +478,10 @@ ns.PROFILE = {
 
         style = 'Blizzard',
 
-        --[==[@debug@
+        --[=[@debug@
         colorNormal = {},
         tokens = 1,
-        --@end-debug@]==]
+        --@end-debug@]=]
     },
 }
 
@@ -511,22 +503,22 @@ end
 
 familyColor(nil, 'colorNormal', L['Normal Color'], {r = 1, g = 1, b = 1})
 familyColor({1, 2}, 'colorQuiver', L['Quiver Color'], {r = 1, g = 0.87, b = 0.68})
---[====[@build^1@
-familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
-familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
-familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
-familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
---@end-build^1@]====]
--- @build>2@
-familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
-familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
-familyColor(32, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
-familyColor(64, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
-familyColor(128, 'colorEngineer', L['Engineering Color'], {r = 0.96, g = 1, b = 0})
-familyColor(512, 'colorGems', L['Gems Color'], {r = 0.32, g = 0.61, b = 1})
-familyColor(512, 'colorMine', L['Mining Color'], {r = 0.96, g = 0.27, b = 0.90})
-familyColor(256, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
--- @end-build>2@
+
+if ns.BUILD_VANILLA then
+    familyColor({3, 4}, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
+    familyColor(6, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
+    familyColor(7, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
+    familyColor(9, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
+else
+    familyColor(4, 'colorSoul', L['Soul Color'], {r = 0.64, g = 0.39, b = 1})
+    familyColor(8, 'colorLeather', L['Leatherworking Color'], {r = 0.98, g = 0.44, b = 0.44})
+    familyColor(32, 'colorHerb', L['Herbalism Color'], {r = 0.5, g = 1, b = 0.5})
+    familyColor(64, 'colorEnchant', L['Enchanting Color'], {r = 0.64, g = 0.83, b = 1})
+    familyColor(128, 'colorEngineer', L['Engineering Color'], {r = 0.96, g = 1, b = 0})
+    familyColor(512, 'colorGems', L['Gems Color'], {r = 0.32, g = 0.61, b = 1})
+    familyColor(512, 'colorMine', L['Mining Color'], {r = 0.96, g = 0.27, b = 0.90})
+    familyColor(256, 'colorKeyring', L['Keyring Color'], {r = 1, g = 0.67, b = 0.95})
+end
 
 function ns.memorize(func)
     local cache = {}

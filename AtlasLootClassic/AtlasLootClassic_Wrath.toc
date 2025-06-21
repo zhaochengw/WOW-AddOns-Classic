@@ -1,17 +1,34 @@
 ## Interface: 30404
 ## Author: Lag
-## Version: v3.2.1-p5
+## Version: v3.2.0
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
+## DefaultState: Enabled
 ## LoadOnDemand: 0
 
-## Title: AtlasLootClassic |cFF22B14C[Core]|r
-## Title-zhCN: AtlasLoot经典版 |cFF22B14C[主程序]|r
-## Title-zhTW: |cffB973FF[裝備]|r 副本戰利品查詢
-## Notes: Shows the possible loot from the bosses
-## Notes-zhCN: 显示首领可能的掉落物品
-## Notes-zhTW: AtlasLoot Classic |n顯示首領與小怪可能掉落的物品，並可查詢各陣營與戰場的獎勵物品、套裝物品等資訊。|n|cffffd200使用方法：|r點小地圖按鈕。
-## DefaultState: Enabled
+## Title: AtlasLootClassic |cFF22B14C[Core]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Notes: Shows the possible loot from the bosses |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
+## Title-deDE: AtlasLootClassic |cFF22B14C[Kern]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esES: AtlasLootClassic |cFF22B14C[Núcleo]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esMX: AtlasLootClassic |cFF22B14C[Núcleo]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-frFR: AtlasLoot Classic |cFF22B14C[Noyau]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-itIT: AtlasLoot Classic |cFF22B14C[Core]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-koKR: AtlasLoot 클래식 |cFF22B14C[코어]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ptBR: AtlasLoot Classic |cFF22B14C[Núcleo]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ruRU: AtlasLoot Classic |cFF22B14C[Ядро]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhCN: AtlasLoot经典版 |cFF22B14C[主程序]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhTW: 副本戰利品查詢經典版 |cFF22B14C[主程式]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Notes-deDE: Zeigt die mögliche Boss-Beute. |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esES: Muestra botines posibles de jefes |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esMX: Muestra botines posibles de jefes |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-frFR: Affiche les butins possibles des boss |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-itIT: Shows the possible loot from the bosses |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-koKR: 보스로부터 획득가능한 전리품 표시 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ptBR: Mostra o possível saque dos chefes |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ruRU: Показывает возможную добычу с боссов |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhCN: 显示首领可能的掉落物品 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhTW: 顯示首領與小怪可能掉落的物品，並可查詢各陣營與戰場的獎勵物品、套裝物品等資訊。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
 
 ## X-Credits: Daviesh, Lag, Arith, Cellelach, Asurn, Pernicus, Dynaletik and many others
 ## X-Category: Map

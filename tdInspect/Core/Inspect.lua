@@ -204,53 +204,52 @@ function Inspect:GetItemLevel()
     return self.itemLevelCalculator:GetItemLevel()
 end
 
--- @build>2@
-local GEM_COLORS = {
-    [Enum.ItemGemSubclass.Red] = {Enum.ItemGemSubclass.Red},
-    [Enum.ItemGemSubclass.Yellow] = {Enum.ItemGemSubclass.Yellow},
-    [Enum.ItemGemSubclass.Blue] = {Enum.ItemGemSubclass.Blue},
-    [Enum.ItemGemSubclass.Orange] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Yellow},
-    [Enum.ItemGemSubclass.Purple] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Blue},
-    [Enum.ItemGemSubclass.Green] = {Enum.ItemGemSubclass.Yellow, Enum.ItemGemSubclass.Blue},
-    [Enum.ItemGemSubclass.Prismatic] = {
-        Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Yellow, Enum.ItemGemSubclass.Blue,
-    },
-}
+if ns.BUILD >= 2 then
+    local GEM_COLORS = {
+        [Enum.ItemGemSubclass.Red] = {Enum.ItemGemSubclass.Red},
+        [Enum.ItemGemSubclass.Yellow] = {Enum.ItemGemSubclass.Yellow},
+        [Enum.ItemGemSubclass.Blue] = {Enum.ItemGemSubclass.Blue},
+        [Enum.ItemGemSubclass.Orange] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Yellow},
+        [Enum.ItemGemSubclass.Purple] = {Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Blue},
+        [Enum.ItemGemSubclass.Green] = {Enum.ItemGemSubclass.Yellow, Enum.ItemGemSubclass.Blue},
+        [Enum.ItemGemSubclass.Prismatic] = {
+            Enum.ItemGemSubclass.Red, Enum.ItemGemSubclass.Yellow, Enum.ItemGemSubclass.Blue,
+        },
+    }
 
-local function CheckGem(out, itemId)
-    if not itemId or itemId == 0 then
-        return
-    end
+    local function CheckGem(out, itemId)
+        if not itemId or itemId == 0 then
+            return
+        end
 
-    local classId, subClassId = select(6, GetItemInfoInstant(itemId))
-    if classId ~= Enum.ItemClass.Gem then
-        return
-    end
+        local classId, subClassId = select(6, GetItemInfoInstant(itemId))
+        if classId ~= Enum.ItemClass.Gem then
+            return
+        end
 
-    local gemColors = GEM_COLORS[subClassId]
-    if not gemColors then
-        return
-    end
+        local gemColors = GEM_COLORS[subClassId]
+        if not gemColors then
+            return
+        end
 
-    for _, v in ipairs(gemColors) do
-        out[v] = (out[v] or 0) + 1
-    end
-end
-
-function Inspect:GetEquippedGemCounts()
-    local out = {}
-    for slot = 1, 18 do
-        local link = self:GetItemLink(slot)
-        if link then
-            for _, itemId in ipairs(ns.GetItemGems(link)) do
-                CheckGem(out, itemId)
-            end
+        for _, v in ipairs(gemColors) do
+            out[v] = (out[v] or 0) + 1
         end
     end
-    return out
-end
 
--- @end-build>2@
+    function Inspect:GetEquippedGemCounts()
+        local out = {}
+        for slot = 1, 18 do
+            local link = self:GetItemLink(slot)
+            if link then
+                for _, itemId in ipairs(ns.GetItemGems(link)) do
+                    CheckGem(out, itemId)
+                end
+            end
+        end
+        return out
+    end
+end
 
 function Inspect:GetEquippedSetItems(id)
     local items = {}
@@ -408,22 +407,22 @@ function Inspect:Query(unit, name, _, onlyCache)
         if self:CanBlizzardInspect(unit) then
             NotifyInspect(unit)
 
-            --[=[@build<2@
-            queryTalent = true
-            queryRune = C_Engraving.IsEngravingEnabled()
-            --@end-build<2@]=]
-            -- @build>3@
-            queryGlyph = true
-            -- @end-build>3@
+            if ns.BUILD == 1 then
+                queryTalent = true
+                queryRune = C_Engraving.IsEngravingEnabled()
+            end
+            if ns.BUILD >= 3 then
+                queryGlyph = true
+            end
         elseif self:CanOurInspect(unit) and not onlyCache then
             queryEquip = true
             queryTalent = true
-            -- @build>3@
-            queryGlyph = true
-            -- @end-build>3@
-            --[=[@build<2@
-            queryRune = C_Engraving.IsEngravingEnabled()
-            --@end-build<2@]=]
+            if ns.BUILD >= 3 then
+                queryGlyph = true
+            end
+            if ns.BUILD == 1 then
+                queryRune = C_Engraving.IsEngravingEnabled()
+            end
         end
 
         if queryEquip or queryTalent or queryGlyph or queryRune then
@@ -529,11 +528,11 @@ function Inspect:INSPECT_READY(_, guid)
         db.class = select(3, UnitClass(self.unit))
         db.race = select(3, UnitRace(self.unit))
         db.level = UnitLevel(self.unit)
-        -- @build>2@
-        db.talents = Encoder:PackTalents(true, true)
-        db.numGroups = GetNumTalentGroups and GetNumTalentGroups(true) or 1
-        db.activeGroup = GetActiveTalentGroup and GetActiveTalentGroup(true) or 1
-        -- @end-build>2@
+        if ns.BUILD >= 2 then
+            db.talents = Encoder:PackTalents(true, true)
+            db.numGroups = GetNumTalentGroups and GetNumTalentGroups(true) or 1
+            db.activeGroup = GetActiveTalentGroup and GetActiveTalentGroup(true) or 1
+        end
 
         self:TryFireMessage(self.unit, name, db)
     end
@@ -586,12 +585,12 @@ function Inspect:OnComm(cmd, sender, ...)
     if cmd == 'Q' then
         local queryTalent, queryEquip, protoVersion, queryGlyph, queryRune = ...
         if not protoVersion or protoVersion == 1 then
-            -- @build>3@
-            local talent = queryTalent and Encoder:PackTalent(nil, GetActiveTalentGroup(), true) or nil
-            -- @end-build>3@
-            -- @buid<3@
-            local talent = queryTalent and Encoder:PackTalent(nil, 1, true) or nil
-            --@end-build<3@]==]
+            local talent
+            if ns.BUILD >= 3 then
+                talent = queryTalent and Encoder:PackTalent(nil, GetActiveTalentGroup(), true) or nil
+            else
+                talent = queryTalent and Encoder:PackTalent(nil, 1, true) or nil
+            end
             local equips = queryEquip and Encoder:PackEquips(true) or nil
             local class = select(3, UnitClass('player'))
             local race = select(3, UnitRace('player'))
@@ -600,11 +599,11 @@ function Inspect:OnComm(cmd, sender, ...)
 
             self:SendCommMessage(PROTO_PREFIX, msg, 'WHISPER', sender)
         elseif protoVersion >= 2 then
-            --[=[@build<2@
-            if C_Engraving and C_Engraving.IsEngravingEnabled() then
-                C_Engraving.RefreshRunesList()
+            if ns.BUILD == 1 then
+                if C_Engraving and C_Engraving.IsEngravingEnabled() then
+                    C_Engraving.RefreshRunesList()
+                end
             end
-            --@end-build<2@]=]
             local numGroups = GetNumTalentGroups()
             local activeGroup = GetActiveTalentGroup()
             local equips = queryEquip and Encoder:PackEquips() or nil

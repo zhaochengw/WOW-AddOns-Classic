@@ -192,6 +192,12 @@ function MopQuestFixes.Load()
             [questKeys.requiredLevel] = 3,
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Take a ride"),0,{{"monster",57710}}}},
         },
+        [29690] = { -- Into the Mists
+            [questKeys.objectives] = {{{55054,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [29694] = { -- Regroup!
+            [questKeys.preQuestSingle] = {31770},
+        },
         [29744] = { -- Some "Pupil of Nature"
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbForQuestId] = 29745,
@@ -353,6 +359,12 @@ function MopQuestFixes.Load()
         },
         [29815] = { -- Forensic Science
             [questKeys.objectives] = {nil,nil,{{74621,nil,Questie.ICON_TYPE_OBJECT}}},
+        },
+        [29821] = { -- Missed Me By... That Much!
+            [questKeys.preQuestSingle] = {29827},
+        },
+        [29822] = { -- Lay of the Land
+            [questKeys.preQuestSingle] = {29827},
         },
         [30027] = { -- The Lesson of the Iron Bough
             [questKeys.requiredLevel] = 1,
@@ -534,6 +546,12 @@ function MopQuestFixes.Load()
             [questKeys.requiredLevel] = 5,
             [questKeys.objectives] = {{{62209,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.preQuestSingle] = {31013},
+        },
+        [31152] = { -- Peering Into the Past
+            [questKeys.preQuestSingle] = {31167},
+        },
+        [31167] = { -- Family Tree
+            [questKeys.preQuestSingle] = {31134},
         },
         [31169] = { -- The Art of the Monk
             [questKeys.requiredClasses] = classIDs.MONK,
@@ -757,8 +775,36 @@ function MopQuestFixes.Load()
         [31745] = { -- Onward and Inward
             [questKeys.objectives] = {{{67067,nil,Questie.ICON_TYPE_MOUNT_UP}}},
         },
+        [31765] = { -- Paint it Red!
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Get in a cannon"),0,{{"monster",66677}}}},
+        },
+        [31766] = { -- Touching Ground
+            [questKeys.objectives] = {nil,{{210039}}},
+        },
+        [31768] = { -- Fire Is Always the Answer
+            [questKeys.preQuestSingle] = {31766},
+        },
+        [31770] = { -- You're Either With Us Or...
+            [questKeys.preQuestSingle] = {31769},
+        },
+        [31771] = { -- Face to Face With Consequence
+            [questKeys.preQuestSingle] = {29694},
+        },
+        [31775] = { -- Assault on the Airstrip
+            [questKeys.preQuestSingle] = {29804},
+        },
+        [31776] = { -- Strongarm Tactics
+            [questKeys.preQuestSingle] = {31775},
+        },
         [31777] = { -- Choppertunity
             [questKeys.requiredSourceItems] = {89163},
+            [questKeys.preQuestSingle] = {31776},
+        },
+        [31778] = { -- Unreliable Allies
+            [questKeys.preQuestSingle] = {31777},
+        },
+        [31779] = { -- The Darkness Within
+            [questKeys.preQuestSingle] = {31778},
         },
         [31780] = { -- Old MacDonald
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,

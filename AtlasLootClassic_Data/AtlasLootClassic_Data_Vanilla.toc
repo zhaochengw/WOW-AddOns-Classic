@@ -1,17 +1,32 @@
-## Interface: 30404
+## Interface: 11404
 ## Author: Lag
-## Version: v3.2.1
+## Version: v3.2.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
-## Title: AtlasLootClassic |cFFFF0000[Data]|r
-## Title-zhCN: AtlasLoot经典版 |cFFFF0000[数据]|r
-## Title-zhTW: |cffB973FF[裝備]|r 副本戰利品查詢-資料
-## Notes: AtlasLoot data module
-## Notes-zhCN: AtlasLoot 数据模块
-## Notes-zhTW: AtlasLootClassic - Data |n資料模組。
-## DefaultState: Enabled	
-					 
+## Title: AtlasLootClassic |cFFFF0000[Data]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-deDE: AtlasLootClassic |cFFFF0000[Daten]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esES: AtlasLootClassic |cFFFF0000[Datos]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esMX: AtlasLootClassic |cFFFF0000[Datos]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-frFR: AtlasLoot Classic |cFFFF0000[Données]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-itIT: AtlasLootClassic |cFFFF0000[Data]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-koKR: AtlasLoot 클래식 |cFFFF0000[데이터]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ptBR: AtlasLootClassic |cFFFF0000[Dada]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ruRU: AtlasLootClassic |cFFFF0000[Data]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhCN: AtlasLoot经典版 |cFFFF0000[数据]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhTW: 副本戰利品查詢經典版 |cFFFF0000[數據]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Notes: AtlasLoot data module |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-deDE: AtlasLoot Datenmodul |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esES: AtlasLoot módulo de datos |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esMX: AtlasLoot módulo de datos |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-frFR: Module de données |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-itIT: AtlasLoot data module |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-koKR: AtlasLoot 데이터 모듈 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ptBR: Módulo de dados de AtlasLoot |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ruRU: Модуль данных AtlasLoot |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhCN: AtlasLoot 数据模块 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhTW: 副本戰利品查詢的數據設定。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
 ## X-Category: Map
 ## X-License: GPL v2
 

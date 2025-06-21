@@ -12,10 +12,7 @@ local C = LibStub('C_Everywhere')
 
 ---- WOW
 local CreateFrame = CreateFrame
-
---[=[@build^1@
 local C_Engraving = C_Engraving
---@end-build^1@]=]
 
 ---- UI
 local StackSplitFrame = StackSplitFrame
@@ -71,7 +68,7 @@ function Item:Create()
         end
     end
     return Item:Bind(
-    CreateFrame(ns.ITEM_BUTTON_CLASS, Item:GenerateName(), UIParent, 'ContainerFrameItemButtonTemplate'))
+               CreateFrame(ns.ITEM_BUTTON_CLASS, Item:GenerateName(), UIParent, 'ContainerFrameItemButtonTemplate'))
 end
 
 function Item:OnHide()
@@ -92,15 +89,15 @@ function Item:Update()
     self:UpdateFocus()
     self:UpdateBorder()
     self:UpdateSlotColor()
-    --[=[@build^1@
     self:UpdateRune()
-    --@end-build^1@]=]
     self:UpdateCooldown()
     self:UpdatePlugin()
 end
 
---[=[@build^1@
 function Item:UpdateRune()
+    if not ns.FEATURE_RUNE then
+        return
+    end
     local texture = self:GetRuneTexture()
     if texture then
         self.subicon:SetTexture(texture)
@@ -109,7 +106,6 @@ function Item:UpdateRune()
         self.subicon:Hide()
     end
 end
---@end-build^1@]=]
 
 function Item:UpdateBorder()
     local sets = self.meta.sets
@@ -196,7 +192,6 @@ else
     Item.IsPaid = nop
 end
 
---[=[@build^1@
 function Item:GetRuneTexture()
     if not C_Engraving then
         return
@@ -215,4 +210,3 @@ function Item:GetRuneTexture()
         return info and info.iconTexture
     end
 end
---@end-build^1@]=]

@@ -4,13 +4,15 @@ if not AL then return end
 
 -- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
 -- Collections
+AL["Day of the Dead"] = "亡者之日"
+AL["Pilgrim's Bounty"] = "感恩节"
 AL["%s Sets"] = "%s 套装"
 AL["'%s' Vendor"] = "'%s' 供应商"
 AL["P4'%s' Vendor"] = "'正义徽章' 供应商  P4"
 AL["P5'%s' Vendor"] = "'正义徽章' 供应商  P5"
 AL["'%s %s' Vendor"] = "'%s %s' 供应商"
 AL["Sunmote Vendor"] = "'太阳微粒' 供应商"
-AL["Sidereal Essence"] = "恒星精华 供应商"
+AL["Sidereal Essence"] = "赛德里尔精华 供应商"
 AL["Defiler's Scourgestone"] = "污染的天谴石 供应商"
 AL["Abyssal Dukes"] = "深渊公爵"
 AL["Abyssal Lords"] = "深渊议会高层"

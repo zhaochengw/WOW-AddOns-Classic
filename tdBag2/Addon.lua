@@ -278,11 +278,11 @@ function Addon:SetupCharacterOptions(owner)
             end
         end
 
-        --[==[@build<3@
-        for _, itemId in ipairs(ns.TOKENS) do
-            tinsert(watches, {itemId = itemId})
+        if not ns.FEATURE_CURRENCY then
+            for _, itemId in ipairs(ns.TOKENS) do
+                tinsert(watches, {itemId = itemId})
+            end
         end
-        --@end-build<3@]==]
     end
 
     if not character.version or character.version < 20200 then
@@ -348,18 +348,18 @@ function Addon:SetupPluginButtons()
         end,
     })
 
-    --[=[@retail@
-    self:RegisterPlugin{
-        type = 'Button',
-        key = 'Sort',
-        text = BAG_CLEANUP_BAGS,
-        icon = [[Interface\Icons\INV_Pet_Broom]],
-        order = 10002,
-        init = function(button, frame)
-            return ns.UI.SortButton:Bind(button, frame.meta)
-        end,
-    }
-    --@end-retail@]=]
+    if C_Container.SortBags then
+        self:RegisterPlugin{
+            type = 'Button',
+            key = 'Sort',
+            text = BAG_CLEANUP_BAGS,
+            icon = [[Interface\Icons\INV_Pet_Broom]],
+            order = 10002,
+            init = function(button, frame)
+                return ns.UI.SortButton:Bind(button, frame.meta)
+            end,
+        }
+    end
 end
 
 function Addon:GetFrameProfile(bagId)

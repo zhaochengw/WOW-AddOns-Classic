@@ -43,9 +43,9 @@ function GUI.CreateCheckBox()
 	self.onClickFunc = nil	-- Run on OnClick
 	self.checked = false
 
-	self.frame = CreateFrame("CheckButton", frameName, nil, "OptionsCheckButtonTemplate")
-	self.frame:SetWidth(25)
-	self.frame:SetHeight(25)
+	self.frame = CreateFrame("CheckButton", frameName, nil, "ChatConfigCheckButtonTemplate")
+	self.frame:SetWidth(26)
+	self.frame:SetHeight(26)
 	self.frame:SetScript("OnClick", OnClick)
 	self.frame.obj = self
 	self.frame.text = _G[frameName.."Text"]

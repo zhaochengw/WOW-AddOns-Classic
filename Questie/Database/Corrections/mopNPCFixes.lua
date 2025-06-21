@@ -89,6 +89,10 @@ function MopNpcFixes.Load()
                 },
             },
         },
+        [55054] = { -- General Nazgrim
+            [npcKeys.spawns] = {[zoneIDs.KALIMDOR]={{61.2,44.6}}},
+            [npcKeys.zoneID] = zoneIDs.KALIMDOR,
+        },
         [55205] = { -- Water Spirit Coaxed Credit
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{79.03,37.8}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
@@ -477,6 +481,9 @@ function MopNpcFixes.Load()
         [65325] = { -- Puntable Marmot
             [npcKeys.zoneID] = 0,
             [npcKeys.spawns] = {},
+        },
+        [66190] = { -- General Nazgrim
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{31.4,11.2}}},
         },
         [66292] = { -- Sky Admiral Rogers
             [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOMS,

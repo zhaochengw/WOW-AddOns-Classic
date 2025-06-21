@@ -53,26 +53,25 @@ function InspectFrame:Constructor()
     self.Name = InspectNameText
     self.PaperDoll = ns.UI.PaperDoll:Bind(InspectPaperDollFrame)
     self.TalentFrame = ns.UI.InspectTalent:Bind(self:CreateTabFrame())
-    --[=[@build<2@
-    talentTab = self:AddTab(TALENT, self.TalentFrame)
-    --@end-build<2@]=]
-    -- @build>2@
-    talentTab = tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectTalentFrame')
-    InspectTalentFrame:Hide()
-    InspectTalentFrame.Show = function()
-        self.TalentFrame:Show()
+    if ns.BUILD == 1 then
+        talentTab = self:AddTab(TALENT, self.TalentFrame)
+    elseif ns.BUILD >= 2 then
+        talentTab = tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectTalentFrame')
+        InspectTalentFrame:Hide()
+        InspectTalentFrame.Show = function()
+            self.TalentFrame:Show()
+        end
+        InspectTalentFrame.Hide = function()
+            self.TalentFrame:Hide()
+        end
+        InspectTalentFrame.SetShown = function(_, shown)
+            self.TalentFrame:SetShown(shown)
+        end
     end
-    InspectTalentFrame.Hide = function()
-        self.TalentFrame:Hide()
+    if ns.BUILD >= 3 then
+        self.GlyphFrame = ns.UI.GlyphFrame:Bind(self:CreateTabFrame())
+        glyphTab = self:AddTab(GLYPHS, self.GlyphFrame)
     end
-    InspectTalentFrame.SetShown = function(_, shown)
-        self.TalentFrame:SetShown(shown)
-    end
-    -- @end-build>2@
-    -- @build>3@
-    self.GlyphFrame = ns.UI.GlyphFrame:Bind(self:CreateTabFrame())
-    glyphTab = self:AddTab(GLYPHS, self.GlyphFrame)
-    -- @end-build>3@
 
     self.tabDepends = {
         [tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectPVPFrame') or tIndexOf(INSPECTFRAME_SUBFRAMES, 'InspectHonorFrame')] = function()
@@ -82,12 +81,13 @@ function InspectFrame:Constructor()
         [talentTab] = function()
             return Inspect:GetUnitClass() and Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitTalent()
         end,
-        -- @build>3@
-        [glyphTab] = function()
-            return Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitGlyph()
-        end,
-        -- @end-build>3@
     }
+
+    if ns.BUILD >= 3 then
+        self.tabDepends[glyphTab] = function()
+            return Inspect:GetNumTalentGroups() > 0 and Inspect:GetUnitGlyph()
+        end
+    end
 
     self.groupTabs = {}
     self:AddTalentGroupTab(1)
@@ -156,9 +156,9 @@ function InspectFrame:SetTalentGroup(id)
     end
 
     self.TalentFrame:SetTalentGroup(id)
-    -- @build>3@
-    self.GlyphFrame:SetTalentGroup(id)
-    -- @end-build>3@
+    if ns.BUILD >= 3 then
+        self.GlyphFrame:SetTalentGroup(id)
+    end
 end
 
 function InspectFrame:AddTalentGroupTab(id)

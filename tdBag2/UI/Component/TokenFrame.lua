@@ -15,9 +15,7 @@ local ClearCursor = ClearCursor
 local CloseDropDownMenus = CloseDropDownMenus
 
 local DELETE = DELETE
--- @build>3@
 local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS or 3
--- @end-build>3@
 
 ---@type ns
 local ns = select(2, ...)
@@ -48,9 +46,9 @@ function TokenFrame:OnShow()
     end
     self:RegisterEvent('WATCHED_TOKEN_CHANGED', 'Refresh')
     self:RegisterEvent('UPDATE_ALL', 'Refresh')
-    -- @build>3@
-    self:RegisterEvent('WATCHED_CURRENCY_CHANGED', 'Refresh')
-    -- @end-build>3@
+    if ns.FEATURE_CURRENCY then
+        self:RegisterEvent('WATCHED_CURRENCY_CHANGED', 'Refresh')
+    end
     self:RegisterFrameEvent('OWNER_CHANGED', 'Refresh')
     self:Refresh()
 end
@@ -107,8 +105,7 @@ function TokenFrame:Refresh()
     local index = 0
     local width = self.PADDING * 2
 
-    -- @build>3@
-    if self.meta:IsSelf() then
+    if ns.FEATURE_CURRENCY and self.meta:IsSelf() then
         for i = 1, MAX_WATCHED_TOKENS do
             local info = C.CurrencyInfo.GetBackpackCurrencyInfo(i)
             if info then
@@ -128,7 +125,6 @@ function TokenFrame:Refresh()
 
         self.currencyCount = index
     end
-    -- @end-build>3@
 
     for _, watch in ipairs(self.meta.character.watches) do
         index = index + 1

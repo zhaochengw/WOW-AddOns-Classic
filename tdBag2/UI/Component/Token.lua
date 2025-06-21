@@ -9,15 +9,11 @@ local ipairs = ipairs
 local C = LibStub('C_Everywhere')
 
 local IsShiftKeyDown = IsShiftKeyDown
--- @build>3@
 local CreateTextureMarkup = CreateTextureMarkup
--- @end-build>3@
 
 local GameTooltip = GameTooltip
 
--- @build>3@
 local Constants = Constants
--- @end-build>3@
 
 ---@type ns
 local ns = select(2, ...)
@@ -52,7 +48,6 @@ function Token:SetItem(owner, itemId, watchAll)
     self:SetWidth(self.Count:GetWidth() + 20)
 end
 
--- @build>3@
 function Token:SetCurrency(_, currencyId, icon, count)
     self:Clear()
     self.currencyId = currencyId
@@ -65,7 +60,6 @@ function Token:SetCurrency(_, currencyId, icon, count)
     self.Count:SetText(count)
     self:SetWidth(self.Count:GetWidth() + 20)
 end
--- @end-build>3@
 
 function Token:TooltipItem()
     ---@type UI.TokenFrame
@@ -74,10 +68,8 @@ function Token:TooltipItem()
 
     if self.itemId then
         GameTooltip:SetHyperlink('item:' .. self.itemId)
-        -- @build>3@
-    else
+    elseif ns.FEATURE_CURRENCY and self.currencyId then
         GameTooltip:SetHyperlink('currency:' .. self.currencyId)
-        -- @end-build>3@
     end
 
     if parent.meta:IsSelf() then
@@ -101,8 +93,7 @@ function Token:TooltipAll()
     GameTooltip:SetText(L['Watch Frame'])
     GameTooltip:AddLine(' ')
 
-    -- @build>3@
-    if parent.meta:IsSelf() then
+    if ns.FEATURE_CURRENCY and parent.meta:IsSelf() then
         for i = 1, parent.currencyCount do
             local info = C.CurrencyInfo.GetBackpackCurrencyInfo(i)
             if info then
@@ -124,7 +115,6 @@ function Token:TooltipAll()
             end
         end
     end
-    -- @end-build>3@
 
     local owner = parent.meta.owner
     for _, watch in ipairs(watchs) do

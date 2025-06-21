@@ -113,11 +113,6 @@ local FACTION_KEY = {
 	[609] = "Cenarion Circle",
 	[749] = "Hydraxian Waterlords",
 	[910] = "Brood of Nozdormu",
-	-- SoD
-	[889] = "Warsong Outriders",
-	[890] = "Silverwing Sentinels",
-	[2586] = "Azeroth Commerce Authority",
-	[2587] = "Durotar Supply and Logistics",
 	-- BC
 	[922] = AL["Tranquillien"], -- Horde only
 	[941] = AL["The Mag'har"], -- Horde only
@@ -344,7 +339,7 @@ function Faction.ShowToolTipFrame(button)
 		frame.standing.text:SetPoint("TOPLEFT", 3, -3)
 		frame.standing.text:SetPoint("BOTTOMRIGHT", -4, 3)
 		frame.standing.text:SetJustifyH("CENTER")
-		frame.standing.text:SetJustifyV("CENTER")
+		frame.standing.text:SetJustifyV("MIDDLE")
 		frame.standing.text:SetTextColor(1, 1, 1, 1)
 
 		frame.desc = frame:CreateFontString(name.."-desc", "ARTWORK", "GameFontNormalSmall")

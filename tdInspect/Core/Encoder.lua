@@ -138,7 +138,9 @@ function Encoder:PackGlyph(group, noEncode)
 end
 
 function Encoder:PackGlyphs(noEncode)
-    -- @build>3@
+    if ns.BUILD < 3 then
+        return
+    end
     local data = {}
     for i = 1, GetNumTalentGroups() do
         data[i] = self:PackGlyph(i, noEncode)
@@ -148,7 +150,6 @@ function Encoder:PackGlyphs(noEncode)
     else
         return tconcat(data, MAJOR_SEP)
     end
-    -- @end-build>3@
 end
 
 function Encoder:UnpackGlyph(code)
@@ -181,7 +182,9 @@ function Encoder:PackRune(i, info)
 end
 
 function Encoder:PackRunes()
-    --[[@build<2@
+    if ns.BUILD ~= 1 then
+        return
+    end
     if C_Engraving.IsEngravingEnabled() then
         local data = {}
         for i = 1, 18 do
@@ -192,7 +195,6 @@ function Encoder:PackRunes()
         end
         return tconcat(data, MAJOR_SEP)
     end
-    --@end-build<2@]]
 end
 
 function Encoder:UnpackRune(code)
@@ -211,7 +213,9 @@ function Encoder:UnpackRune(code)
 end
 
 function Encoder:UnpackRunes(code)
-    --[[@build<2@
+    if ns.BUILD ~= 1 then
+        return
+    end
     if not code then
         return
     end
@@ -224,7 +228,6 @@ function Encoder:UnpackRunes(code)
         end
     end
     return runes
-    --@end-build<2@]]
 end
 
 local encodeTalent, decodeTalent

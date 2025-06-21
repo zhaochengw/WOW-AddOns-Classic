@@ -577,7 +577,7 @@ function Proto:Clear(force)
 	end
 	if self.secButton then
 		local secButton = self.secButton
-		secButton:SetNormalTexture(nil)
+		secButton:SetNormalTexture(0)
 		secButton.overlay:SetSize(secButton:GetWidth(), secButton:GetHeight())
 		if secButton.count then secButton.count:Hide() end
 		if secButton.completed then secButton.completed:Hide() end

@@ -81,17 +81,15 @@ end
 
 function Tooltip:OnEnable()
     self:Update()
-    -- @build>2@
-    self:RegisterMessage('GUILDBANK_OPENED', 'OnGuildBankUpdate')
-    self:RegisterMessage('GUILDBANK_CLOSED', 'OnGuildBankUpdate')
-    -- @end-build>2@
+    if ns.FEATURE_GUILDBANK then
+        self:RegisterMessage('GUILDBANK_OPENED', 'OnGuildBankUpdate')
+        self:RegisterMessage('GUILDBANK_CLOSED', 'OnGuildBankUpdate')
+    end
 end
 
--- @build>2@
 function Tooltip:OnGuildBankUpdate()
     self.Cacher:RemoveCache(ns.GetCurrentGuildOwner())
 end
--- @end-build>2@
 
 function Tooltip:Update()
     if ns.Addon.db.profile.tipCount then

@@ -1,12 +1,67 @@
-## Interface: 30404
+## Interface: 11507, 30404
 ## Title: |cff00fffftdBag2|r - One bag
 ## Title-zhCN: |cff00fffftdBag2|r - 整合背包
 ## Notes: One bag, view other characters' bags, banks, mailboxes, equipment, etc.
 ## Notes-zhCN: 整合背包，查看其它角色背包、银行、邮箱、装备等
 ## IconTexture: Interface\Buttons\Button-Backpack-Up
 ## Author: Dencer
-## Version: 2.3.7
+## Version: 2.3.8
 ## OptionalDeps: tdPack2, tdSync
 ## SavedVariables: TDDB_BAG2
 
-Load.xml
+Libs\Libs.xml
+Localization\Localization.xml
+Api.lua
+Addon.lua
+
+Base\Cacher.lua
+Base\Thread.lua
+
+Cache\Forever.lua
+Cache\Current.lua
+Cache\GlobalSearch.lua
+Cache\Cache.lua
+
+Core\Events.lua
+Core\FrameMeta.lua
+Core\Counter.lua
+Core\AutoDisplay.lua
+Core\Tooltip.lua
+Core\Option.lua
+
+UI\Style\Blizzard.xml
+UI\Style\Style.lua
+
+UI\Abstract\MenuButton.lua
+
+UI\Component\Bag.lua
+UI\Component\BagFrame.lua
+UI\Component\MoneyFrame.lua
+UI\Component\OwnerSelector.lua
+UI\Component\SearchBox.lua
+UI\Component\GlobalSearchBox.lua
+UI\Component\TitleFrame.lua
+UI\Component\Token.lua
+UI\Component\TokenFrame.lua
+UI\Component\EquipBagToggle.lua
+
+UI\Item\ItemBase.lua
+UI\Item\Item.lua
+UI\Item\EquipItem.lua
+
+UI\Container\Container.lua
+UI\Container\TitleContainer.lua
+UI\Container\GlobalSearchContainer.lua
+UI\Container\EquipContainer.lua
+
+UI\Frame\Frame.lua
+UI\Frame\SimpleFrame.lua
+UI\Frame\ContainerFrame.lua
+UI\Frame\InventoryFrame.lua
+UI\Frame\BankFrame.lua
+UI\Frame\GlobalSearchFrame.lua
+UI\Frame\EquipFrame.lua
+
+UI\Plugin\BagToggle.lua
+UI\Plugin\SearchToggle.lua
+UI\Plugin\PluginFrame.lua

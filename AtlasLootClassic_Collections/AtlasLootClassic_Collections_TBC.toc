@@ -1,16 +1,31 @@
-## Interface: 30404
+## Interface: 20504
 ## Author: Lag
-## Version: v3.2.1
+## Version: v3.2.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
 
-## Title: AtlasLootClassic |cFF0099FF[Collections]|r					   
-## Title-zhCN: AtlasLoot经典版 |cFF0099FF[收藏品]|r
-## Title-zhTW: |cffB973FF[裝備]|r 副本戰利品查詢-收藏
-## Notes-zhCN: 收藏物品资料库。
-## Notes: AtlasLoot loot tables from Collections
-## Notes-zhTW: AtlasLootClassic - Collections |n 收藏 物品資料庫。
-## DefaultState: Enabled
+## Title: AtlasLootClassic |cFF0099FF[Collections]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-deDE: AtlasLootClassic |cFF0099FF[Sammlungen]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esES: AtlasLootClassic |cFF0099FF[Colecciones]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-esMX: AtlasLootClassic |cFF0099FF[Colecciones]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-frFR: AtlasLoot Classic |cFF0099FF[Collections]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-itIT: AtlasLootClassic |cFF0099FF[Collections]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-koKR: L["Title-Collections"] = "AtlasLoot 클래식 |cFF0099FF[수집품]|r" |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ptBR: AtlasLootClassic |cFF0099FF[Coleções]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-ruRU: AtlasLootClassic |cFF0099FF[Коллекции]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhCN: AtlasLoot经典版 |cFF0099FF[收藏品]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[收藏]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Notes: AtlasLoot loot tables from Collections |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-deDE: AtlasLoot Beuteverzeichnis der Sammlungen |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esES: AtlasLoot tablas de botín de Colecciones |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-esMX: AtlasLoot tablas de botín de Colecciones |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-frFR: Tables de butin des collections |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-itIT: AtlasLoot loot tables from Collections |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-koKR: L["Notes-Collections"] = "수집품에 대한 AtlasLoot 전리품 테이블" |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ptBR: Tabelas de saque AtlasLoot das Coleções |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-ruRU: Таблицы добычи AtlasLoot для коллекций предметов. |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhCN: 收藏物品资料库。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhTW: 收藏物品資料庫。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
 
 ## X-Category: Map
 ## X-License: GPL v2

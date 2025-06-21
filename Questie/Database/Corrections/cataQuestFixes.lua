@@ -1280,8 +1280,18 @@ function CataQuestFixes.Load()
         [9934] = { -- Message to Garadar
             [questKeys.preQuestSingle] = {},
         },
+        [9957] = { -- What's Wrong at Cenarion Thicket?
+            [questKeys.breadcrumbForQuestId] = 9968,
+        },
+        [9960] = { -- What's Wrong at Cenarion Thicket?
+            [questKeys.breadcrumbForQuestId] = 9968,
+        },
+        [9961] = { -- What's Wrong at Cenarion Thicket?
+            [questKeys.breadcrumbForQuestId] = 9968,
+        },
         [9968] = { -- Strange Energy
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {9957,9960,9961},
         },
         [9978] = { -- By Any Means Necessary
             [questKeys.preQuestSingle] = {},
@@ -1339,6 +1349,9 @@ function CataQuestFixes.Load()
         },
         [10103] = { -- Report to Zurai
             [questKeys.zoneOrSort] = zoneIDs.HELLFIRE_PENINSULA,
+        },
+        [10105] = { -- News for Rakoria
+            [questKeys.zoneOrSort] = zoneIDs.ZANGARMARSH,
         },
         [10120] = { -- Arrival in Outland
             [questKeys.breadcrumbs] = {9407,28705},
@@ -1522,6 +1535,23 @@ function CataQuestFixes.Load()
         },
         [10847] = { -- The Eyes of Skettis
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {10862,10863,10908},
+        },
+        [10862] = { -- Surrender to the Horde
+            [questKeys.breadcrumbForQuestId] = 10847,
+        },
+        [10863] = { -- Secrets of the Arakkoa
+            [questKeys.breadcrumbForQuestId] = 10847,
+        },
+        [10880] = { -- Cabal Orders
+            [questKeys.startedBy] = {nil,nil,{31707}},
+        },
+        [10887] = { -- Escaping the Tomb
+            [questKeys.extraObjectives] = {},
+            [questKeys.triggerEnd] = {"Akuno escorted",{[zoneIDs.TEROKKAR_FOREST] = {{33.77,51.62}}}},
+        },
+        [10908] = { -- Speak with Rilak the Redeemed
+            [questKeys.breadcrumbForQuestId] = 10847,
         },
         [10942] = { -- Children's Week
             [questKeys.zoneOrSort] = -378,
@@ -1581,6 +1611,14 @@ function CataQuestFixes.Load()
         [10968] = { -- Call on the Farseer
             [questKeys.zoneOrSort] = -378,
         },
+        [10983] = { -- Mog'dorg the Wizened
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {10984},
+        },
+        [10984] = { -- Speak with the Ogre
+            [questKeys.nextQuestInChain] = 10983,
+            [questKeys.breadcrumbForQuestId] = 10983,
+        },
         [10998] = { -- Grim(oire) Business
             [questKeys.preQuestSingle] = {},
         },
@@ -1591,6 +1629,24 @@ function CataQuestFixes.Load()
         [11003] = { -- The Fall of Magtheridon
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.zoneOrSort] = zoneIDs.HELLFIRE_PENINSULA,
+        },
+        [11004] = { -- World of Shadows
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11005] = { -- Secrets of the Talonpriests
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11008] = { -- Fires Over Skettis
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11021] = { -- Ishaal's Almanac
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11028] = { -- Countdown to Doom
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11029] = { -- A Shabby Disguise
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
         },
         [11031] = { -- Archmage No More
             [questKeys.specialFlags] = 1,
@@ -1603,6 +1659,24 @@ function CataQuestFixes.Load()
         },
         [11034] = { -- Restorer No More
             [questKeys.specialFlags] = 1,
+        },
+        [11056] = { -- Hazzik's Bargain
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11073] = { -- Terokk's Downfall
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11074] = { -- Tokens of the Descendants
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11085] = { -- Escape from Skettis
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11093] = { -- Hungry Nether Rays
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
+        },
+        [11098] = { -- To Skettis!
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
         },
         [11103] = { -- Sage No More
             [questKeys.startedBy] = {{19935}},
@@ -1732,6 +1806,9 @@ function CataQuestFixes.Load()
                 [zoneIDs.THE_EXODAR]={{40.09,28.3}},
             }},
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [11885] = { -- Adversarial Blood
+            [questKeys.zoneOrSort] = zoneIDs.SKETTIS,
         },
         [11905] = { -- Postponing the Inevitable
             [questKeys.startedBy] = {{55535}},

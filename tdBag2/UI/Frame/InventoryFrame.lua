@@ -5,9 +5,7 @@
 --
 local ipairs = ipairs
 
---[=[@build^1@
 local C_Engraving = C_Engraving
---@end-build^1@]=]
 
 ---@type ns
 local ns = select(2, ...)
@@ -16,7 +14,9 @@ local ContainerFrame = ns.UI.ContainerFrame
 ---@class UI.InventoryFrame: UI.ContainerFrame
 local InventoryFrame = ns.Addon:NewClass('UI.InventoryFrame', ContainerFrame)
 
--- @non-retail@
+if not ns.BUILD_MAINLINE then
+    return
+end
 
 local MAIN_MENU_BUTTONS = {
     _G.MainMenuBarBackpackButton, --
@@ -38,11 +38,9 @@ end
 function InventoryFrame:OnShow()
     ContainerFrame.OnShow(self)
 
-    --[[@classic@
-    if C_Engraving and C_Engraving.IsEngravingEnabled() then
+    if ns.FEATURE_RUNE and C_Engraving and C_Engraving.IsEngravingEnabled() then
         C_Engraving.RefreshRunesList()
     end
-    --@end-classic@]]
 
     self:HighlightMainMenu(true)
 end
@@ -58,4 +56,3 @@ function InventoryFrame:HighlightMainMenu(flag)
         button:RawSetChecked(flag)
     end
 end
--- @end-non-retail@

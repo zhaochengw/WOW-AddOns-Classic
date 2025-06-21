@@ -6,6 +6,8 @@
 ---@class ns
 local ns = select(2, ...)
 
+ns.BUILD = tonumber(GetBuildInfo():match('^(%d+)%.'))
+
 ns.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:228:283|t]]
 ns.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t]]
 
@@ -146,12 +148,13 @@ function ns.FixInspectItemTooltip(tip, slot, item)
     tip = LibStub('LibTooltipExtra-1.0'):New(tip)
 
     ns.FixItemSets(tip, id)
-    --[=[@build<2@
-    ns.FixRune(tip, slot, id)
-    --@end-build<2@]=]
-    -- @build>2@
-    ns.FixMetaGem(tip, item)
-    -- @end-build>2@
+
+    if ns.BUILD == 1 then
+        ns.FixRune(tip, slot, id)
+    end
+    if ns.BUILD >= 2 then
+        ns.FixMetaGem(tip, item)
+    end
 
     tip:Show()
 end
@@ -276,28 +279,26 @@ function ns.IsCanEnchant(item, inspect)
     return CAN_ENCHANT_EQUIP_LOCS[itemEquipLoc]
 end
 
--- @build>2@
-function ns.IsCanSocket(item, inspect)
-    local itemEquipLoc = select(4, GetItemInfoInstant(item))
-    if itemEquipLoc == 'INVTYPE_WAIST' then
+if ns.BUILD >= 2 then
+    function ns.IsCanSocket(item, inspect)
+        local itemEquipLoc = select(4, GetItemInfoInstant(item))
+        if itemEquipLoc == 'INVTYPE_WAIST' then
 
-    elseif itemEquipLoc == 'INVTYPE_WRIST' or itemEquipLoc == 'INVTYPE_HAND' then
-        if inspect or not ns.IsSpellKnown(2018) then -- 锻造
+        elseif itemEquipLoc == 'INVTYPE_WRIST' or itemEquipLoc == 'INVTYPE_HAND' then
+            if inspect or not ns.IsSpellKnown(2018) then -- 锻造
+                return false
+            end
+        else
             return false
         end
-    else
+        local numSockets = ns.GetNumItemSockets(item)
+        return not ns.GetItemGem(item, numSockets + 1)
+    end
+else
+    function ns.IsCanSocket()
         return false
     end
-    local numSockets = ns.GetNumItemSockets(item)
-    return not ns.GetItemGem(item, numSockets + 1)
 end
--- @end-build>2@
-
---[=[@build<2@
-function ns.IsCanSocket()
-    return false
-end
---@end-build<2@]=]
 
 function ns.GetNumItemSockets(item)
     local itemId = ns.ItemLinkToId(item)

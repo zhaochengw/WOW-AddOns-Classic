@@ -1,9 +1,8 @@
 ------------------------------------------------------------------------
-r326 | funkehdude | 2025-05-18 16:16:38 +0000 (Sun, 18 May 2025) | 1 line
+r328 | funkehdude | 2025-06-20 01:00:49 +0000 (Fri, 20 Jun 2025) | 1 line
 Changed paths:
-   M /trunk/.luacheckrc
-   M /trunk/BugGrabber.lua
+   M /trunk/!BugGrabber.toc
 
-Test out a different method of calculating stack height
+Bump toc
 ------------------------------------------------------------------------
 

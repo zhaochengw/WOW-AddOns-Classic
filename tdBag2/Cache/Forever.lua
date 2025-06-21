@@ -244,12 +244,10 @@ function Forever:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_, id)
         self.atBank = true
         self.Cacher:RemoveCache(ns.REALM, ns.PLAYER)
         self:SendMessage('BANK_OPENED')
-        -- @build>2@
-    elseif id == 10 then
+    elseif id == 10 and ns.FEATURE_GUILDBANK then
         self.atGuildBank = true
         self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
         self:SendMessage('GUILDBANK_OPENED')
-        -- @end-build>2@
     end
 end
 
@@ -269,15 +267,13 @@ function Forever:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(_, id)
             self.atBank = nil
         end
         self:SendMessage('BANK_CLOSED')
-        -- @build>2@
-    elseif id == 10 then
+    elseif id == 10 and ns.FEATURE_GUILDBANK then
         if self.atGuildBank then
             self:SaveGuild()
             self.Cacher:RemoveCache(ns.REALM, ns.GetCurrentGuildOwner())
             self.atGuildBank = nil
         end
         self:SendMessage('GUILDBANK_CLOSED')
-        -- @end-build>2@
     end
 end
 

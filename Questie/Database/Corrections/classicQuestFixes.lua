@@ -76,6 +76,9 @@ function QuestieQuestFixes:Load()
         [30] = {
             [questKeys.extraObjectives] = {{{[zoneIDs.MOONGLADE]={{36.5,41.7}}}, Questie.ICON_TYPE_EVENT, l10n("Combine the Pendant halves at the Shrine of Remulos.")}},
         },
+        [32] = { -- Rise of the Silithid
+            [questKeys.nextQuestInChain] = 4494,
+        },
         [33] = {
             [questKeys.preQuestSingle] = {},
         },
@@ -3031,6 +3034,9 @@ function QuestieQuestFixes:Load()
         [8361] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon a Templar using a full Twilight set."),0,{{"object", 180456},{"object", 180518},{"object", 180529},{"object", 180544},{"object", 180549},{"object", 180564},}}},
         },
+        [8363] = { -- Abyssal Signets
+            [questKeys.requiredMinRep] = {609,3000},
+        },
         [8367] = { -- For Great Honor
             [questKeys.zoneOrSort] = sortKeys.BATTLEGROUND,
         },
@@ -3056,10 +3062,10 @@ function QuestieQuestFixes:Load()
             [questKeys.requiredMaxLevel] = 29,
         },
         [8375] = { -- Remember Alterac Valley!
-            [questKeys.zoneOrSort] = sortKeys.ALTERAC_VALLEY,
+            [questKeys.zoneOrSort] = zoneIDs.ALTERAC_VALLEY,
         },
         [8383] = { -- Remember Alterac Valley!
-            [questKeys.zoneOrSort] = sortKeys.ALTERAC_VALLEY,
+            [questKeys.zoneOrSort] = zoneIDs.ALTERAC_VALLEY,
             [questKeys.objectivesText] = {},
         },
         [8384] = { -- Claiming Arathi Basin
@@ -3072,7 +3078,7 @@ function QuestieQuestFixes:Load()
             [questKeys.requiredMaxLevel] = 19,
         },
         [8387] = { -- Invaders of Alterac Valley
-            [questKeys.zoneOrSort] = sortKeys.ALTERAC_VALLEY,
+            [questKeys.zoneOrSort] = zoneIDs.ALTERAC_VALLEY,
             [questKeys.objectivesText] = {},
         },
         [8388] = { -- For Great Honor
@@ -4173,9 +4179,11 @@ function QuestieQuestFixes:Load()
         },
         [9415] = {
             [questKeys.exclusiveTo] = {},
+            [questKeys.nextQuestInChain] = 0,
         },
         [9416] = {
             [questKeys.exclusiveTo] = {},
+            [questKeys.nextQuestInChain] = 0,
         },
         [9419] = { -- Scouring the Desert
             [questKeys.preQuestSingle] = {},
