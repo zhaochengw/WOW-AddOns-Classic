@@ -52,25 +52,6 @@ local function OnEvent(self, event, ...)
         sync = C_ChatInfo.RegisterAddonMessagePrefix("iwowui");
         playername = UnitName("player");
         playerrealm = GetRealmName();
-    elseif event == "ADDON_LOADED" then
-        local name = ...;
-        if name == "TinyTooltip" then
-            LibStub:GetLibrary("LibEvent.7000"):attachTrigger("tooltip:unit", function(self, tip, unit)
-                if UnitIsPlayer(unit) and UnitIsFriend(unit, "player") then
-                    local name, realm = UnitName(unit);
-                    if not realm or realm == "" then realm = playerrealm end
-                    local fullname = name .. "-" .. realm;
-                    local sha1name = LibStub("LibSHA1").sha1(fullname);
-                    if whoareyou(sha1name, ddb) == true then
-                        tip:AddLine("Isler's WoWUI Designer", 0.65, 0.85, 1, 1);
-                    elseif whoareyou(sha1name, sdb) == true then
-                        tip:AddLine("Isler's WoWUI Sponsor", 0.65, 0.85, 1, 1);
-                    elseif whoareyou(fullname, udb) == true then
-                        tip:AddLine("Isler's WoWUI User", 0.65, 0.85, 1, 1);
-                    end
-                end
-            end)
-        end
     end
 end
 

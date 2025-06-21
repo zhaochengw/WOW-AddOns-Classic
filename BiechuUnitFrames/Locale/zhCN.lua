@@ -37,35 +37,35 @@ L.nameFont = '名字字体'
 L.fontList = {
 	[1] = {
 		text = '默认',
-		value = 'Fonts\\ARKai_T.ttf',
+		value = 'Fonts\\ARKai_T.ttf'
 	},
 	[2] = {
 		text = '聊天',
-		value = 'Fonts\\ARHei.ttf',
+		value = 'Fonts\\ARHei.ttf'
 	},
 	[3] = {
 		text = '伤害数字',
-		value = 'Fonts\\ARKai_C.ttf',
-	},
+		value = 'Fonts\\ARKai_C.ttf'
+	}
 }
 L.fontFlags = '字体轮廓'
 L.fontFlagsList = {
 	[1] = {
 		text = '无',
-		value = 'NONE',
+		value = 'NONE'
 	},
 	[2] = {
 		text = '细边',
-		value = 'OUTLINE',
+		value = 'OUTLINE'
 	},
 	[3] = {
 		text = '粗边',
-		value = 'THICKOUTLINE',
+		value = 'THICKOUTLINE'
 	},
 	[4] = {
 		text = '锐利',
-		value = 'MONOCHROME',
-	},
+		value = 'MONOCHROME'
+	}
 }
 L.portraitCombat = '头像显示战斗信息'
 L.valueFont = '数值字体'
@@ -80,7 +80,7 @@ L.borderList = {
 	[1] = '普通',
 	[2] = '稀有',
 	[3] = '稀有精英',
-	[4] = '精英',
+	[4] = '精英'
 }
 L.portrait = '头像'
 L.portraitList = {
@@ -90,7 +90,7 @@ L.portraitList = {
 	[3] = '狗狗',
 	[4] = '熊猫',
 	[5] = '咕有云',
-	[6] = '酷脸',
+	[6] = '酷脸'
 }
 L.nameFontSize = '名字字体大小'
 L.valueFontSize = '数值字体大小'
@@ -105,7 +105,7 @@ L.valueStyleList = {
 	[7] = '侧边百分比',
 	[8] = '侧边当前值',
 	[9] = '侧边当前值/最大值',
-	[10] = '都不显示',
+	[10] = '都不显示'
 }
 L.druidBar = '显示自定义德鲁伊法力条'
 L.hideName = '隐藏名字'
@@ -154,7 +154,7 @@ L.creatureList = {
 	['小动物'] = 11,
 	['气体云雾'] = 12,
 	['非战斗宠物'] = 13,
-	['未指定'] = 14,
+	['未指定'] = 14
 }
 
 L.playerClass = '玩家职业'

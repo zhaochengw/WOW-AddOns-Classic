@@ -5,10 +5,10 @@ local dark = BC:getDB('global', 'dark')
 local frame = CreateFrame('Frame')
 
 BC.player = PlayerFrame
-BC.player.name:SetPoint('TOP', 50, -26) -- 名字
+BC.player.name:SetPoint('TOP', 50, -26)      -- 名字
 BC.player.borderTexture = PlayerFrameTexture -- 边框
-BC.player.flash = PlayerFrameFlash -- 战斗中边框发红光
-BC.player.pvpIcon = PlayerPVPIcon -- PVP图标
+BC.player.flash = PlayerFrameFlash           -- 战斗中边框发红光
+BC.player.pvpIcon = PlayerPVPIcon            -- PVP图标
 
 -- 等级
 PlayerLevelText:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE')
@@ -123,6 +123,7 @@ function frame:equip()
 		end
 	end
 end
+
 hooksecurefunc(C_EquipmentSet, 'UseEquipmentSet', function(setID)
 	for i = 1, 6 do
 		local equip = _G['EquipSetFrame' .. i]
@@ -155,12 +156,12 @@ function frame:spark(bar, powerType)
 		if self.rate and now < self.rate then return end
 		self.rate = now + .02 --刷新率
 		if BC:getDB('player', 'fiveSecondRule')
-			and bar:IsShown()
-			and not UnitIsDeadOrGhost('player')
-			and (self.powerType or UnitPowerType('player')) == 0
-			and UnitPower('player', 0) < UnitPowerMax('player', 0)
-			and type(frame.waitTime) == 'number'
-			and frame.waitTime > now
+				and bar:IsShown()
+				and not UnitIsDeadOrGhost('player')
+				and (self.powerType or UnitPowerType('player')) == 0
+				and UnitPower('player', 0) < UnitPowerMax('player', 0)
+				and type(frame.waitTime) == 'number'
+				and frame.waitTime > now
 		then
 			self.spark:Show()
 			self.spark:SetPoint('CENTER', self, 'LEFT', self:GetWidth() * (frame.waitTime - now) / 5, 0)
@@ -205,6 +206,7 @@ function frame:druid()
 		BC.player.druid:Hide()
 	end
 end
+
 hooksecurefunc(PlayerFrameAlternateManaBar, 'Show', function(self)
 	if BC:getDB('player', 'druidBar') or BC.class ~= 'DRUID' or UnitPowerType('player') == 0 then self:Hide() end
 end)
@@ -232,9 +234,9 @@ end)
 
 BC.player.init = function()
 	PlayerFrame_UpdateGroupIndicator() -- 小队编号
-	TotemFrame:Show() -- 图腾
-	BC:miniIcon('player') -- 小图标
-	frame:equip() -- 装备小图标
+	TotemFrame:Show()                 -- 图腾
+	BC:miniIcon('player')             -- 小图标
+	frame:equip()                     -- 装备小图标
 
 	-- 载具
 	if UnitInVehicle('player') then
@@ -271,7 +273,7 @@ local point, relativeTo, relativePoint, offsetX, offsetY = PetFrameHappiness:Get
 PetFrameHappiness:SetPoint(point, relativeTo, relativePoint, offsetX - 4, offsetY + 10)
 PetFrameHappiness:SetSize(20, 20)
 
-BC.pet.borderTexture = PetFrameTexture -- 边框
+BC.pet.borderTexture = PetFrameTexture     -- 边框
 BC.pet.name:SetPoint('BOTTOMLEFT', 50, 41) -- 名字
 
 -- 体力
@@ -349,11 +351,11 @@ BC.pettarget.manabar.unit = 'pettarget'
 
 for _, event in pairs({
 	'ACTIVE_TALENT_GROUP_CHANGED', -- 天赋切换
-	'PLAYER_TALENT_UPDATE', -- 天赋点更新
-	'ZONE_CHANGED_NEW_AREA', -- 区域切换
-	'EQUIPMENT_SETS_CHANGED', -- 套装变更
-	'UPDATE_SHAPESHIFT_FORM', -- 形状变化
-	'UNIT_POWER_UPDATE', -- 法力/能量值变化
+	'PLAYER_TALENT_UPDATE',       -- 天赋点更新
+	'ZONE_CHANGED_NEW_AREA',      -- 区域切换
+	'EQUIPMENT_SETS_CHANGED',     -- 套装变更
+	'UPDATE_SHAPESHIFT_FORM',     -- 形状变化
+	'UNIT_POWER_UPDATE'           -- 法力/能量值变化
 }) do
 	frame:RegisterEvent(event)
 end

@@ -3,7 +3,7 @@
 ## Notes: Biechu Unit Frames
 ## Notes-zhCN: 别处头像框体
 
-## Version: 3.4.4_beta2
+## Version: 3.4.4_beta3
 ## Author: starpt
 ## SavedVariables: BiechuUnitFramesDB
 ## X-Localizations: enUS, zhCN

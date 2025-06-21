@@ -41,11 +41,11 @@ end)
 
 for id = 1, MAX_PARTY_MEMBERS do
 	-- 队友
-	local party = 'party'.. id
-	BC[party] = _G['PartyMemberFrame'.. id]
-	BC[party].borderTexture = _G['PartyMemberFrame'.. id .. 'Texture'] -- 边框
-	BC[party].pvpIcon = _G['PartyMemberFrame' .. id .. 'PVPIcon'] -- PVP状态图标
-	BC[party].flash = _G['PartyMemberFrame'.. id .. 'Flash'] -- 战斗中边框发红光
+	local party = 'party' .. id
+	BC[party] = _G['PartyMemberFrame' .. id]
+	BC[party].borderTexture = _G['PartyMemberFrame' .. id .. 'Texture'] -- 边框
+	BC[party].pvpIcon = _G['PartyMemberFrame' .. id .. 'PVPIcon']     -- PVP状态图标
+	BC[party].flash = _G['PartyMemberFrame' .. id .. 'Flash']         -- 战斗中边框发红光
 
 	-- 等级文字
 	BC[party].levelText = BC[party]:CreateFontString(BC[party]:GetName() .. 'Level', 'OVERLAY', 'GameFontNormalSmall')
@@ -108,8 +108,8 @@ for id = 1, MAX_PARTY_MEMBERS do
 
 	-- 队友的宠物
 	local partypet = party .. 'pet'
-	BC[partypet] = _G['PartyMemberFrame'.. id .. 'PetFrame']
-	BC[partypet].borderTexture = _G['PartyMemberFrame'.. id .. 'PetFrameTexture'] -- 边框
+	BC[partypet] = _G['PartyMemberFrame' .. id .. 'PetFrame']
+	BC[partypet].borderTexture = _G['PartyMemberFrame' .. id .. 'PetFrameTexture'] -- 边框
 
 	-- 名字
 	BC[partypet].name:ClearAllPoints()
@@ -137,7 +137,7 @@ for id = 1, MAX_PARTY_MEMBERS do
 
 	-- 队友的目标
 	local partytarget = party .. 'target'
-	BC[partytarget] = CreateFrame('Button', 'Party'.. id .. 'TargetFrame', UIParent, 'SecureUnitButtonTemplate')
+	BC[partytarget] = CreateFrame('Button', 'Party' .. id .. 'TargetFrame', UIParent, 'SecureUnitButtonTemplate')
 	BC[partytarget]:SetSize(100, 45)
 	BC[partytarget]:SetFrameLevel(3)
 	BC[partytarget].unit = partytarget
@@ -193,7 +193,7 @@ for id = 1, MAX_PARTY_MEMBERS do
 
 	BC[party].init = function()
 		frame:level(BC[party]) -- 等级
-		BC:aura(party) -- Buff/Debuff
+		BC:aura(party)       -- Buff/Debuff
 
 		-- 显示施法条
 		local showCastBar = BC:getDB('party', 'showCastBar')
@@ -211,29 +211,29 @@ for id = 1, MAX_PARTY_MEMBERS do
 		-- 定位
 		if id > 1 and not InCombatLockdown() then
 			local offsetY = ceil((MAX_TARGET_BUFFS + MAX_TARGET_DEBUFFS) / BC:getDB('party', 'auraRows')) * (BC:getDB('party', 'auraSize') + 2)
-			BC[party]:SetPoint('TOPLEFT', _G['PartyMemberFrame' .. (id - 1)], 0, -42 -offsetY - (showCastBar and 18 or 0))
+			BC[party]:SetPoint('TOPLEFT', _G['PartyMemberFrame' .. (id - 1)], 0, -42 - offsetY - (showCastBar and 18 or 0))
 		end
 	end
 end
 
 for _, event in pairs({
-	'UNIT_AURA', -- Buff/Debuff变化
-	'UNIT_LEVEL', -- 升级
-	'GROUP_ROSTER_UPDATE', -- 队伍变更
+	'UNIT_AURA',          -- Buff/Debuff变化
+	'UNIT_LEVEL',         -- 升级
+	'GROUP_ROSTER_UPDATE' -- 队伍变更
 }) do
 	frame:RegisterEvent(event)
 end
 frame:SetScript('OnEvent', function(self, event, unit)
-	local party = type(unit) =='string' and unit:match('^party%d$')
+	local party = type(unit) == 'string' and unit:match('^party%d$')
 	if event == 'UNIT_AURA' then
 		if party then BC:aura(party) end
 	elseif event == 'UNIT_LEVEL' then
 		if party and BC[party] then self:level(BC[party]) end
 	elseif event == 'GROUP_ROSTER_UPDATE' then
-		for id = 1, GetNumSubgroupMembers() do
-			self:level(BC['party'.. id])
+		for id = 1, MAX_PARTY_MEMBERS do
 			BC:update('party' .. id)
 			BC:update('party' .. id .. 'target')
+			self:level(BC['party' .. id])
 		end
 	end
 end)
@@ -245,9 +245,9 @@ frame:SetScript('OnUpdate', function(self)
 	self.rate = now + .02 -- 刷新率
 
 	for id = 1, GetNumSubgroupMembers() do
-		BC:bar(BC['party' .. id.. 'target'].healthbar)
+		BC:bar(BC['party' .. id .. 'target'].healthbar)
 		BC:bar(BC['party' .. id .. 'target'].manabar)
-		BC:bar(BC['party' .. id.. 'pet'].healthbar)
+		BC:bar(BC['party' .. id .. 'pet'].healthbar)
 		BC:bar(BC['party' .. id .. 'pet'].manabar)
 	end
 end)

@@ -34,7 +34,7 @@ option.list = {
 	'focustarget',
 	'party',
 	'partypet',
-	'partytarget',
+	'partytarget'
 }
 for index, name in pairs(option.list) do
 	option[name] = CreateFrame('Frame', option:GetName() .. name:gsub('^%l', string.upper))
@@ -45,7 +45,7 @@ end
 
 -- 暴雪变量修改
 hooksecurefunc('SetCVar', function(name, value, button)
-	if name == 'alwaysCompareItems' then -- 启用装备对比
+	if name == 'alwaysCompareItems' then    -- 启用装备对比
 		option.alwaysCompareItems:SetChecked(value == '1')
 	elseif name == 'showTargetOfTarget' then -- 目标的目标
 		if button ~= 'LeftButton' then
@@ -56,13 +56,13 @@ hooksecurefunc('SetCVar', function(name, value, button)
 	end
 end)
 
-local vertical = -31 -- 竖直间隔
+local vertical = -31   -- 竖直间隔
 local horizontal = 322 -- 水平间隔
 
 -- 数值样式
 function option:valueStyleList(...)
 	local list = {}
-	for _, i in pairs({...}) do
+	for _, i in pairs({ ... }) do
 		list[i] = L.valueStyleList[i]
 	end
 	list[10] = L.valueStyleList[10] -- 都不显示
@@ -103,7 +103,7 @@ end
 -- 拖动
 function option:slider(key, name, relative, offsetX, offsetY, widht, height, lowText, highText, valueMin, valueMax, valueStep, change)
 	local parent = key == 'global' and self or self[key]
-	parent[name] = CreateFrame('Slider',  parent:GetName() .. name:gsub('^%l', string.upper), parent, 'CompactUnitFrameProfilesSliderTemplate')
+	parent[name] = CreateFrame('Slider', parent:GetName() .. name:gsub('^%l', string.upper), parent, 'CompactUnitFrameProfilesSliderTemplate')
 	parent[name]:SetPoint('TOPLEFT', relative and parent[relative] or parent, offsetX or 0, offsetY or vertical)
 	parent[name]:SetSize(widht or 180, height or 16)
 	_G[parent[name]:GetName() .. 'Low']:SetText(lowText)
@@ -209,8 +209,8 @@ end
 
 -- 初始设置
 function option:init()
-	self.dark:SetChecked(BC:getDB('global', 'dark')) -- 暗黑风格
-	self.newClassIcon:SetChecked(BC:getDB('global', 'newClassIcon')) -- 新风格职业图标
+	self.dark:SetChecked(BC:getDB('global', 'dark'))                    -- 暗黑风格
+	self.newClassIcon:SetChecked(BC:getDB('global', 'newClassIcon'))    -- 新风格职业图标
 	self.healthBarColor:SetChecked(BC:getDB('global', 'healthBarColor')) -- 体力条颜色按生命值变化
 	self.nameClassColor:SetChecked(BC:getDB('global', 'nameClassColor')) -- 名字颜色职业色(玩家)
 
@@ -225,23 +225,23 @@ function option:init()
 		self.carrySlider:Hide()
 	end
 
-	self.nameFont:OnShow() -- 名字字体
-	self.valueFont:OnShow() -- 数值字体
-	self.fontFlags:OnShow() -- 字体轮廓
-	self.config:OnShow() -- 选择配置
+	self.nameFont:OnShow()                                                  -- 名字字体
+	self.valueFont:OnShow()                                                 -- 数值字体
+	self.fontFlags:OnShow()                                                 -- 字体轮廓
+	self.config:OnShow()                                                    -- 选择配置
 
 	self.dragSystemFarmes:SetChecked(BC:getDB('global', 'dragSystemFarmes')) -- 自由拖动系统框体
-	self.incomingHeals:SetChecked(BC:getDB('global', 'incomingHeals')) -- 显示预配治疗
+	self.incomingHeals:SetChecked(BC:getDB('global', 'incomingHeals'))      -- 显示预配治疗
 	self.alwaysCompareItems:SetChecked(GetCVar('alwaysCompareItems') == '1') -- 启用装备对比
-	self.autoTab:SetChecked(BC:getDB('global', 'autoTab')) -- PVP自动TAB选择玩家
-	self.autoDalaran:SetChecked(BC:getDB('global', 'autoDalaran')) -- 达拉然自动关闭姓名板
+	self.autoTab:SetChecked(BC:getDB('global', 'autoTab'))                  -- PVP自动TAB选择玩家
+	self.autoDalaran:SetChecked(BC:getDB('global', 'autoDalaran'))          -- 达拉然自动关闭姓名板
 
 	-- 切换天赋后装备套装
 	self.player.autoTalentEquip:SetChecked(BC:getDB('player', 'autoTalentEquip'))
 	self.player.autoTalentEquip:SetEnabled(BC:getDB('player', 'miniIcon'))
 
 
-	self.player.equipmentIcon:SetChecked(BC:getDB('player', 'equipmentIcon')) -- 显示装备小图标
+	self.player.equipmentIcon:SetChecked(BC:getDB('player', 'equipmentIcon'))    -- 显示装备小图标
 	self.player.hidePartyNumber:SetChecked(BC:getDB('player', 'hidePartyNumber')) -- 在团队中隐藏小队编号
 
 	-- 法力条显示5秒恢复
@@ -260,14 +260,13 @@ function option:init()
 		self.player.druidBar:SetEnabled(false)
 	end
 
-	self.player.border:OnShow() -- 边框
-	self.player.portrait:OnShow() -- 头像
+	self.player.border:OnShow()                                            -- 边框
+	self.player.portrait:OnShow()                                          -- 头像
 	self.party.raidShowParty:SetChecked(BC:getDB('party', 'raidShowParty')) -- 团队显示小队框体
-	self.party.showLevel:SetChecked(BC:getDB('party', 'showLevel')) -- 显示等级
-	self.party.showCastBar:SetChecked(BC:getDB('party', 'showCastBar')) -- 显示施法条
+	self.party.showLevel:SetChecked(BC:getDB('party', 'showLevel'))        -- 显示等级
+	self.party.showCastBar:SetChecked(BC:getDB('party', 'showCastBar'))    -- 显示施法条
 
 	for _, key in pairs(option.list) do
-
 		-- 隐藏框体
 		local hideFrame = self[key].hideFrame
 		if hideFrame then
@@ -276,17 +275,17 @@ function option:init()
 		end
 
 		if self[key].portraitCombat then self[key].portraitCombat:SetChecked(BC:getDB(key, 'portraitCombat')) end -- 头像显示战斗信息
-		if self[key].combatFlash then self[key].combatFlash:SetChecked(BC:getDB(key, 'combatFlash')) end -- 战斗状态边框红光
-		if self[key].threatLeft then self[key].threatLeft:SetChecked(BC:getDB(key, 'threatLeft')) end -- 居左显示威胁值
-		if self[key].portraitClass then self[key].portraitClass:SetChecked(BC:getDB(key, 'portrait') == 1) end -- 头像显示职业图标(玩家)
-		if self[key].miniIcon then self[key].miniIcon:SetChecked(BC:getDB(key, 'miniIcon')) end -- 显示小图标(职业/种类)
-		if self[key].outRange then self[key].outRange:SetChecked(BC:getDB(key, 'outRange')) end -- 超出范围半透明
+		if self[key].combatFlash then self[key].combatFlash:SetChecked(BC:getDB(key, 'combatFlash')) end        -- 战斗状态边框红光
+		if self[key].threatLeft then self[key].threatLeft:SetChecked(BC:getDB(key, 'threatLeft')) end           -- 居左显示威胁值
+		if self[key].portraitClass then self[key].portraitClass:SetChecked(BC:getDB(key, 'portrait') == 1) end  -- 头像显示职业图标(玩家)
+		if self[key].miniIcon then self[key].miniIcon:SetChecked(BC:getDB(key, 'miniIcon')) end                 -- 显示小图标(职业/种类)
+		if self[key].outRange then self[key].outRange:SetChecked(BC:getDB(key, 'outRange')) end                 -- 超出范围半透明
 		if self[key].healthBarClass then self[key].healthBarClass:SetChecked(BC:getDB(key, 'healthBarClass')) end -- 体力条职业色(玩家)
 		if self[key].statusBarClass then self[key].statusBarClass:SetChecked(BC:getDB(key, 'statusBarClass')) end -- 状态栏背景职业色(玩家)
 		if self[key].statusBarAlpha then self[key].statusBarAlpha:SetValue(BC:getDB(key, 'statusBarAlpha')) end -- 状态栏透明度
-		if self[key].nameFontSize then self[key].nameFontSize:SetValue(BC:getDB(key, 'nameFontSize')) end -- 名字字体大小
-		if self[key].valueFontSize then self[key].valueFontSize:SetValue(BC:getDB(key, 'valueFontSize')) end -- 数值字体大小
-		if self[key].valueStyleDown then self[key].valueStyle:OnShow() end -- 数值样式
+		if self[key].nameFontSize then self[key].nameFontSize:SetValue(BC:getDB(key, 'nameFontSize')) end       -- 名字字体大小
+		if self[key].valueFontSize then self[key].valueFontSize:SetValue(BC:getDB(key, 'valueFontSize')) end    -- 数值字体大小
+		if self[key].valueStyleDown then self[key].valueStyle:OnShow() end                                      -- 数值样式
 
 		-- 隐藏名字
 		local hideName = self[key].hideName
@@ -320,15 +319,16 @@ function option:init()
 			self[key].dispelCooldown:SetEnabled(hasOmniCC)
 		end
 
-		if self[key].dispelStealable then self[key].dispelStealable:SetChecked(BC:getDB(key, 'dispelStealable')) end -- 高亮显示可以驱散的Buff/Debuff
+		if self[key].dispelStealable then self[key].dispelStealable:SetChecked(BC:getDB(key, 'dispelStealable')) end                  -- 高亮显示可以驱散的Buff/Debuff
 
-		if self[key].auraSize and BC:getDB(key, 'auraSize') then self[key].auraSize:SetValue(BC:getDB(key, 'auraSize')) end -- Buff/Debuff大小
+		if self[key].auraSize and BC:getDB(key, 'auraSize') then self[key].auraSize:SetValue(BC:getDB(key, 'auraSize')) end           -- Buff/Debuff大小
 		if self[key].auraPercent and BC:getDB(key, 'auraPercent') then self[key].auraPercent:SetValue(BC:getDB(key, 'auraPercent')) end -- 其他人施放Buff/Debuff百分比
-		if self[key].auraRows and BC:getDB(key, 'auraRows') then self[key].auraRows:SetValue(BC:getDB(key, 'auraRows')) end -- 一行Buff/Debuff数量
-		if self[key].auraX and BC:getDB(key, 'auraX') then self[key].auraX:SetValue(BC:getDB(key, 'auraX')) end -- Buff/Debuf X轴位置
-		if self[key].auraY and BC:getDB(key, 'auraY') then self[key].auraY:SetValue(BC:getDB(key, 'auraY')) end -- Buff/Debuff Y轴位置
+		if self[key].auraRows and BC:getDB(key, 'auraRows') then self[key].auraRows:SetValue(BC:getDB(key, 'auraRows')) end           -- 一行Buff/Debuff数量
+		if self[key].auraX and BC:getDB(key, 'auraX') then self[key].auraX:SetValue(BC:getDB(key, 'auraX')) end                       -- Buff/Debuf X轴位置
+		if self[key].auraY and BC:getDB(key, 'auraY') then self[key].auraY:SetValue(BC:getDB(key, 'auraY')) end                       -- Buff/Debuff Y轴位置
 	end
 end
+
 option:RegisterEvent('PLAYER_ENTERING_WORLD')
 option:SetScript('OnEvent', function(self, event)
 	if event == 'PLAYER_ENTERING_WORLD' then self:init() end
@@ -341,9 +341,9 @@ option.info:SetPoint('TOPLEFT', 17, vertical - 6)
 option.info:SetTextColor(.7, .7, .7)
 option.info:SetText(L.info)
 
-option:check('global', 'dark', 'title', -1, vertical - 8) -- 使用暗黑材质
-option:check('global', 'newClassIcon', 'dark') -- 使用新职业图标
-option:check('global', 'healthBarColor', 'newClassIcon') -- 体力条颜色按生命值变化
+option:check('global', 'dark', 'title', -1, vertical - 8)  -- 使用暗黑材质
+option:check('global', 'newClassIcon', 'dark')             -- 使用新职业图标
+option:check('global', 'healthBarColor', 'newClassIcon')   -- 体力条颜色按生命值变化
 option:check('global', 'nameClassColor', 'healthBarColor') -- 名字颜色职业色(玩家)
 
 -- 数值单位
@@ -363,36 +363,36 @@ option:slider('global', 'carrySlider', 'carry', 180, -4, 72, nil, L.carryK, L.ca
 end)
 
 option:downMenu('global', 'nameFont', L.fontList, 'carry', 3, vertical - 4) -- 名字字体
-option:downMenu('global', 'valueFont',  L.fontList, 'nameFont') -- 数值字体
-option:downMenu('global', 'fontFlags', L.fontFlagsList, 'valueFont') -- 字体轮廓
+option:downMenu('global', 'valueFont', L.fontList, 'nameFont')              -- 数值字体
+option:downMenu('global', 'fontFlags', L.fontFlagsList, 'valueFont')        -- 字体轮廓
 
 -- 选择配置
 option:downMenu('global', 'config', {
 	[1] = {
 		text = L.public,
-		value = 'Public',
+		value = 'Public'
 	},
 	[2] = {
 		text = UnitClass('player'),
-		value = BC.class,
+		value = BC.class
 	},
 	[3] = {
 		text = BC.charKey,
-		value = BC.charKey,
-	},
+		value = BC.charKey
+	}
 }, nil, horizontal + 2, -18, 180, function(down, key, name, menus, width)
 	UIDropDownMenu_Initialize(down, function()
 		for i in pairs(menus) do
 			local info = UIDropDownMenu_CreateInfo()
-				info.text = menus[i].text
-				info.value = menus[i].value
-				info.func = function(self)
-					if option:combatAlert() then return end
-					BC:setDB('config', self.value)
-					UIDropDownMenu_SetSelectedID(down, self:GetID())
-					option:init()
-				end
-				UIDropDownMenu_AddButton(info)
+			info.text = menus[i].text
+			info.value = menus[i].value
+			info.func = function(self)
+				if option:combatAlert() then return end
+				BC:setDB('config', self.value)
+				UIDropDownMenu_SetSelectedID(down, self:GetID())
+				option:init()
+			end
+			UIDropDownMenu_AddButton(info)
 		end
 	end)
 	UIDropDownMenu_SetSelectedValue(down, BC:getDB('config'))
@@ -410,14 +410,14 @@ option:button('global', 'reset', 'configDown', 218, -.5, 60, function()
 end)
 
 option:check('global', 'dragSystemFarmes', nil, horizontal, vertical - 39) -- 自由拖动系统框体
-option:check('global', 'incomingHeals', 'dragSystemFarmes') -- 显示预治疗
+option:check('global', 'incomingHeals', 'dragSystemFarmes')                -- 显示预治疗
 
 option:check('global', 'alwaysCompareItems', 'incomingHeals', nil, nil, nil, function(self)
 	SetCVar('alwaysCompareItems', self:GetChecked() and '1' or '0')
 end)
 
 option:check('global', 'autoTab', 'alwaysCompareItems') -- PVP自动TAB选择玩家
-option:check('global', 'autoDalaran', 'autoTab') -- 达拉然自动关闭姓名板
+option:check('global', 'autoDalaran', 'autoTab')        -- 达拉然自动关闭姓名板
 
 -- 支付宝
 option.alipay = option:CreateTexture()
@@ -429,7 +429,7 @@ option.alipay:SetPoint('BOTTOMRIGHT', option, -20, 20)
 
 --[[ 玩家设置 开始 ]]
 option:check('player', 'portraitCombat', nil, 13, vertical - 8) -- 头像显示战斗信息
-option:check('player', 'combatFlash', 'portraitCombat') -- 战斗状态边框红光
+option:check('player', 'combatFlash', 'portraitCombat')         -- 战斗状态边框红光
 
 -- 显示天赋小图标(点击切换天赋)
 option:check('player', 'miniIcon', 'combatFlash', nil, nil, 'talentIcon', function(self)
@@ -440,12 +440,12 @@ end)
 option:check('player', 'autoTalentEquip', 'miniIcon', 12, vertical + 4) -- 切换天赋后装备套装
 option.player.autoTalentEquip:SetScale(.9)
 option:check('player', 'equipmentIcon', 'miniIcon', nil, vertical - 18) -- 显示装备小图标
-option:check('player', 'hidePartyNumber', 'equipmentIcon') -- 在团队中隐藏小队编号
-option:check('player', 'fiveSecondRule', 'hidePartyNumber') -- 法力条显示5秒恢复
+option:check('player', 'hidePartyNumber', 'equipmentIcon')              -- 在团队中隐藏小队编号
+option:check('player', 'fiveSecondRule', 'hidePartyNumber')             -- 法力条显示5秒恢复
 
 -- 显示自定义德鲁伊法力条
 option:check('player', 'druidBar', 'fiveSecondRule')
-option:check('player', 'healthBarClass', 'druidBar') -- 体力条职业色(玩家)
+option:check('player', 'healthBarClass', 'druidBar')       -- 体力条职业色(玩家)
 option:check('player', 'statusBarClass', 'healthBarClass') -- 状态栏背景职业色(玩家)
 
 -- 名字字体大小
@@ -520,7 +520,7 @@ option:slider('player', 'scale', 'drag', 4, vertical - 16, nil, nil, '50%', '150
 end)
 
 option:downMenu('player', 'border', L.borderList, 'scale', -1, vertical - 8) -- 边框
-option:downMenu('player', 'portrait', L.portraitList, 'border') -- 头像
+option:downMenu('player', 'portrait', L.portraitList, 'border')              -- 头像
 --[[ 玩家设置 结束 ]]
 
 
@@ -584,7 +584,7 @@ option:check('pettarget', 'portraitClass', 'hideFrame', nil, nil, nil, function(
 end)
 
 option:check('pettarget', 'healthBarClass', 'portraitClass') -- 体力条职业色(玩家)
-option:check('pettarget', 'outRange', 'healthBarClass') -- 超出范围半透明
+option:check('pettarget', 'outRange', 'healthBarClass')      -- 超出范围半透明
 
 -- 隐藏名字
 option:check('pettarget', 'hideName', 'outRange', nil, nil, nil, function(self, button)
@@ -612,16 +612,16 @@ option:downMenu('pettarget', 'valueStyle', option:valueStyleList(2, 3, 5, 7, 8),
 
 --[[ 目标设置 开始 ]]
 option:check('target', 'portraitCombat', nil, 13, vertical - 8) -- 头像显示战斗信息
-option:check('target', 'combatFlash', 'portraitCombat') -- 战斗状态边框红光
-option:check('target', 'threatLeft', 'combatFlash') -- 居左显示威胁值
+option:check('target', 'combatFlash', 'portraitCombat')         -- 战斗状态边框红光
+option:check('target', 'threatLeft', 'combatFlash')             -- 居左显示威胁值
 
 -- 头像显示职业图标(玩家)
 option:check('target', 'portraitClass', 'threatLeft', nil, nil, nil, function(self)
 	BC:setDB('target', 'portrait', self:GetChecked() and 1 or 0)
 end)
 
-option:check('target', 'miniIcon', 'portraitClass') -- 显示职业小图标(玩家)/NPC种类小图标
-option:check('target', 'healthBarClass', 'miniIcon') -- 体力条职业色(玩家)
+option:check('target', 'miniIcon', 'portraitClass')        -- 显示职业小图标(玩家)/NPC种类小图标
+option:check('target', 'healthBarClass', 'miniIcon')       -- 体力条职业色(玩家)
 option:check('target', 'statusBarClass', 'healthBarClass') -- 状态栏背景职业色(玩家)
 
 -- 状态栏透明度
@@ -685,7 +685,7 @@ option:button('target', 'pointPlayerCenter', 'pointPlayerAlignment', 164, 0, 160
 
 		BC:setDB('player', 'relative', relative)
 		local scale = BC:getDB('player', 'scale')
-		BC:setDB('player', 'offsetX', floor(UIParent:GetWidth() - BC:getDB('target', 'offsetX')*scale - TargetFrame:GetWidth()*scale + 0.5)/scale/2)
+		BC:setDB('player', 'offsetX', floor(UIParent:GetWidth() - BC:getDB('target', 'offsetX') * scale - TargetFrame:GetWidth() * scale + 0.5) / scale / 2)
 		BC:setDB('target', 'offsetY', 0)
 	else
 		relative = BC:getDB('player', 'relative')
@@ -740,8 +740,8 @@ option:slider('target', 'scale', 'anchor', 5, vertical - 16, nil, nil, '50%', '1
 end)
 
 option:check('target', 'selfCooldown', 'scale', -4, vertical - 8) -- 只显示我施放的Buff/Debuff倒计时(OmniCC)
-option:check('target', 'dispelCooldown', 'selfCooldown') -- 只显示可以驱散的Buff/Debuff倒计时(OmniCC)
-option:check('target', 'dispelStealable', 'dispelCooldown') -- 高亮显示可以驱散的Buff/Debuff
+option:check('target', 'dispelCooldown', 'selfCooldown')          -- 只显示可以驱散的Buff/Debuff倒计时(OmniCC)
+option:check('target', 'dispelStealable', 'dispelCooldown')       -- 高亮显示可以驱散的Buff/Debuff
 
 -- Buff/Debuff大小
 option:slider('target', 'auraSize', 'dispelStealable', 4, vertical - 20, 250, nil, 12, 64, 12, 64, 1, function(self, value)
@@ -808,7 +808,7 @@ option:check('targettarget', 'portraitClass', 'hideFrame', nil, nil, nil, functi
 end)
 
 option:check('targettarget', 'healthBarClass', 'portraitClass') -- 体力条职业色(玩家)
-option:check('targettarget', 'outRange', 'healthBarClass') -- 超出范围半透明
+option:check('targettarget', 'outRange', 'healthBarClass')      -- 超出范围半透明
 
 -- 隐藏名字
 option:check('targettarget', 'hideName', 'outRange', nil, nil, nil, function(self, button)
@@ -847,16 +847,16 @@ option:check('targettarget', 'drag', 'pointDefault', -2, vertical - 4) -- 非战
 
 --[[ 焦点设置 开始 ]]
 option:check('focus', 'portraitCombat', nil, 13, vertical - 8) -- 头像显示战斗信息
-option:check('focus', 'combatFlash', 'portraitCombat') -- 战斗状态边框红光
-option:check('focus', 'threatLeft', 'combatFlash') -- 居左显示威胁值
+option:check('focus', 'combatFlash', 'portraitCombat')         -- 战斗状态边框红光
+option:check('focus', 'threatLeft', 'combatFlash')             -- 居左显示威胁值
 
 -- 头像显示职业图标(玩家)
 option:check('focus', 'portraitClass', 'threatLeft', nil, nil, nil, function(self)
 	BC:setDB('focus', 'portrait', self:GetChecked() and 1 or 0)
 end)
 
-option:check('focus', 'miniIcon', 'portraitClass') -- 显示职业小图标(玩家)/NPC种类小图标
-option:check('focus', 'healthBarClass', 'miniIcon') -- 体力条职业色(玩家)
+option:check('focus', 'miniIcon', 'portraitClass')        -- 显示职业小图标(玩家)/NPC种类小图标
+option:check('focus', 'healthBarClass', 'miniIcon')       -- 体力条职业色(玩家)
 option:check('focus', 'statusBarClass', 'healthBarClass') -- 状态栏背景职业色(玩家)
 
 -- 状态栏透明度
@@ -961,8 +961,8 @@ option:slider('focus', 'scale', 'anchor', 5, vertical - 16, nil, nil, '50%', '15
 end)
 
 option:check('focus', 'selfCooldown', 'scale', -4, vertical - 8) -- 只显示我施放的Buff/Debuff倒计时(OmniCC)
-option:check('focus', 'dispelCooldown', 'selfCooldown') -- 只显示可以驱散的Buff/Debuff倒计时(OmniCC)
-option:check('focus', 'dispelStealable', 'dispelCooldown') -- 高亮显示可以驱散的Buff/Debuff
+option:check('focus', 'dispelCooldown', 'selfCooldown')          -- 只显示可以驱散的Buff/Debuff倒计时(OmniCC)
+option:check('focus', 'dispelStealable', 'dispelCooldown')       -- 高亮显示可以驱散的Buff/Debuff
 
 -- 自己施放的Buff/Debuff大小
 option:slider('focus', 'auraSize', 'dispelStealable', 4, vertical - 20, 250, nil, 12, 64, 12, 64, 1, function(self, value)
@@ -1026,7 +1026,7 @@ option:check('focustarget', 'portraitClass', 'hideFrame', nil, nil, nil, functio
 end)
 
 option:check('focustarget', 'healthBarClass', 'portraitClass') -- 体力条职业色(玩家)
-option:check('focustarget', 'outRange', 'healthBarClass') -- 超出范围半透明
+option:check('focustarget', 'outRange', 'healthBarClass')      -- 超出范围半透明
 
 -- 隐藏名字
 option:check('focustarget', 'hideName', 'outRange', nil, nil, nil, function(self, button)
@@ -1065,7 +1065,7 @@ option:check('focustarget', 'drag', 'pointDefault', -2, vertical - 4) -- 非战�
 
 --[[ 队友设置 开始 ]]
 
- -- 隐藏框体
+-- 隐藏框体
 option:check('party', 'hideFrame', nil, 13, vertical - 8, nil, function(self, button)
 	if option:combatAlert(function() self:SetChecked(BC:getDB('party', 'hideFrame')) end) then return end
 	local enabled = not self:GetChecked()
@@ -1109,7 +1109,6 @@ option:check('party', 'hideFrame', nil, 13, vertical - 8, nil, function(self, bu
 	option.partytarget.nameFontSize:SetEnabled(enabled and enabledTarget and not BC:getDB('partytarget', 'hideName'))
 	option.partytarget.valueFontSize:SetEnabled(enabled and enabledTarget)
 	option.partytarget.valueStyle:SetEnabled(enabled and enabledTarget)
-
 end)
 
 -- 团队显示小队框体
@@ -1120,8 +1119,8 @@ option:check('party', 'raidShowParty', 'hideFrame', nil, nil, nil, function(self
 	end
 end)
 option:check('party', 'portraitCombat', 'raidShowParty') -- 头像显示战斗信息
-option:check('party', 'combatFlash', 'portraitCombat') -- 战斗状态边框红光
-option:check('party', 'healthBarClass', 'combatFlash') -- 体力条职业色(玩家)
+option:check('party', 'combatFlash', 'portraitCombat')   -- 战斗状态边框红光
+option:check('party', 'healthBarClass', 'combatFlash')   -- 体力条职业色(玩家)
 
 -- 头像显示职业图标(玩家)
 option:check('party', 'portraitClass', 'healthBarClass', nil, nil, nil, function(self)
@@ -1129,8 +1128,8 @@ option:check('party', 'portraitClass', 'healthBarClass', nil, nil, nil, function
 end)
 
 option:check('party', 'outRange', 'portraitClass') -- 超出范围半透明
-option:check('party', 'showLevel', 'outRange') -- 显示等级
-option:check('party', 'showCastBar', 'showLevel') -- 显示队友施法条
+option:check('party', 'showLevel', 'outRange')     -- 显示等级
+option:check('party', 'showCastBar', 'showLevel')  -- 显示队友施法条
 
 -- 隐藏名字
 option:check('party', 'hideName', 'showCastBar', nil, nil, nil, function(self, button)
@@ -1177,8 +1176,8 @@ option:slider('party', 'scale', 'drag', 5, vertical - 16, nil, nil, '50%', '150%
 	end
 end)
 
-option:check('party', 'selfCooldown', 'scale', -4, vertical - 8, 'buffCooldown') -- 只显示我施放的Buff倒计时(OmniCC)
-option:check('party', 'dispelCooldown', 'selfCooldown', nil, nil, 'debuffCooldown') -- 只显示可以驱散的Debuff倒计时(OmniCC)
+option:check('party', 'selfCooldown', 'scale', -4, vertical - 8, 'buffCooldown')        -- 只显示我施放的Buff倒计时(OmniCC)
+option:check('party', 'dispelCooldown', 'selfCooldown', nil, nil, 'debuffCooldown')     -- 只显示可以驱散的Debuff倒计时(OmniCC)
 option:check('party', 'dispelStealable', 'dispelCooldown', nil, nil, 'debuffStealable') -- 高亮显示可以驱散的Debuff
 
 -- Buff/Debuff大小
@@ -1280,7 +1279,7 @@ option:check('partytarget', 'portraitClass', 'hideFrame', nil, nil, nil, functio
 end)
 
 option:check('partytarget', 'healthBarClass', 'portraitClass') -- 体力条职业色(玩家)
-option:check('partytarget', 'outRange', 'healthBarClass') -- 超出范围半透明
+option:check('partytarget', 'outRange', 'healthBarClass')      -- 超出范围半透明
 
 -- 隐藏名字
 option:check('partytarget', 'hideName', 'outRange', nil, nil, nil, function(self, button)

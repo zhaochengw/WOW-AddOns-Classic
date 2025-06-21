@@ -1,0 +1,74 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+
+    <Frame name="TinyTooltipVariablesTemplate" inherits="InsetFrameTemplate3" virtual="true">
+		<Size>
+			<AbsDimension x="540" y="465"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Frames>
+			<ScrollFrame parentKey="textarea" name="$parentScrollFrame" inherits="UIPanelScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="500" y="400"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="12" y="-10"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<ScrollChild>
+					<EditBox parentKey="text" name="$parentEditBox" autoFocus="false" multiLine="true" letters="66666">
+						<Size>
+							<AbsDimension x="480" y="400"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>
+								
+							</OnTextChanged>
+							<OnEscapePressed>
+								self:ClearFocus();
+							</OnEscapePressed>
+						</Scripts>
+						<FontString inherits="GameFontNormal"/>
+					</EditBox>
+				</ScrollChild>
+			</ScrollFrame>
+			<Button parentKey="export" inherits="GameMenuButtonTemplate" text="EXPORT">
+				<Size>
+					<AbsDimension x="100" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" >
+						<Offset>
+							<AbsDimension x="-55" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+            <Button parentKey="import" inherits="GameMenuButtonTemplate" text="IMPORT">
+				<Size>
+					<AbsDimension x="100" y="25"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM" >
+						<Offset>
+							<AbsDimension x="55" y="15"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+    
+</Ui>

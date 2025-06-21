@@ -1,0 +1,16 @@
+lightweight tag ffb2532d18b1abc1e56e8e93ffe7151f048007b5 4.4.2.1
+Author:	GitHub <noreply@github.com>
+Date:	Wed May 7 09:12:15 2025 -0700
+
+commit 82262d02d1ddb6a6bf0c90c48c7cfe5ca40f3dfb
+Author: govtgeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Wed May 7 09:11:17 2025 -0700
+
+    Version bump for Classic Era and addon
+
+commit 82262d02d1ddb6a6bf0c90c48c7cfe5ca40f3dfb
+Author: govtgeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Wed May 7 09:11:17 2025 -0700
+
+    Version bump for Classic Era and addon
+

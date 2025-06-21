@@ -7,12 +7,11 @@ end)
 
 -- 切换目标立即更新战斗状态边框红光
 hooksecurefunc('TargetFrame_Update', function(self)
+	if self.unit ~= 'target' and self.unit ~= 'focus' then return end
 	if self.flash then self.flash:Hide() end
-	if self.unit == 'target' or self.unit == 'focus' then
-		BC:update(self.unit)
-		BC:update(self.unit .. 'target')
-		BC:miniIcon(self.unit)
-	end
+	BC:update(self.unit)
+	BC:update(self.unit .. 'target')
+	BC:miniIcon(self.unit)
 end)
 
 -- 等级
@@ -22,9 +21,8 @@ end)
 
 for unit, frame in pairs({
 	target = TargetFrame,
-	focus = FocusFrame,
+	focus = FocusFrame
 }) do
-
 	-- 名字
 	frame.name:SetWidth(120)
 	frame.name:SetPoint('CENTER', -50, 17.5)
@@ -35,8 +33,8 @@ for unit, frame in pairs({
 		if self.offsetY then self:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 26, self.offsetY) end
 	end)
 
-	frame.flash = _G[frame:GetName() .. 'Flash'] -- 战斗中边框发红光
-	frame.statusBar = frame.nameBackground -- 状态栏
+	frame.flash = _G[frame:GetName() .. 'Flash']              -- 战斗中边框发红光
+	frame.statusBar = frame.nameBackground                    -- 状态栏
 	frame.deadText:SetPoint('CENTER', frame.healthbar, 0, -4) -- 死亡
 	frame.levelText:SetFont(STANDARD_TEXT_FONT, 13, 'OUTLINE') -- 等级
 
@@ -63,7 +61,7 @@ for unit, frame in pairs({
 	frame.threatNumericIndicator.text:SetFont(STANDARD_TEXT_FONT, 12, 'OUTLINE')
 
 	frame.init = function()
-		BC:aura(unit) -- 更新Buff/Debuff
+		BC:aura(unit)   -- 更新Buff/Debuff
 		BC:miniIcon(unit) -- 更新小图标
 
 		-- Quartz 施法条
@@ -72,7 +70,7 @@ for unit, frame in pairs({
 			hooksecurefunc(QuartzCastBar, 'Show', function(self)
 				if frame.castBar.offsetY then
 					self:ClearAllPoints()
-					self:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 1, frame.castBar.offsetY + 7)
+					self:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 0, frame.castBar.offsetY + 6)
 				end
 			end)
 		end
@@ -80,11 +78,7 @@ for unit, frame in pairs({
 		-- 威胁值
 		frame.threatNumericIndicator.bg:SetTexture(BC:file(BC.barList[1]))
 		frame.threatNumericIndicator.border:SetTexture(BC:file('TargetingFrame\\NumericThreatBorder'))
-		if BC:getDB(frame.unit, 'threatLeft') then
-			frame.threatNumericIndicator:SetPoint('TOP', -84, -5)
-		else
-			frame.threatNumericIndicator:SetPoint('TOP', -50, -5)
-		end
+		frame.threatNumericIndicator:SetPoint('TOP', BC:getDB(unit, 'threatLeft') and -84 or -50, -5)
 	end
 
 	-- 目标的目标
@@ -97,15 +91,15 @@ for unit, frame in pairs({
 	totFrame.healthbar.SideText = totFrame.borderTexture:GetParent():CreateFontString()
 	totFrame.healthbar.SideText:SetPoint('LEFT', totFrame.healthbar, 'RIGHT', 2, 0)
 
+	-- 死亡
+	totFrame.deadText:ClearAllPoints()
+	totFrame.deadText:SetPoint('CENTER', totFrame.healthbar, .5, -4)
+
 	-- 法力
 	totFrame.manabar.MiddleText = totFrame.borderTexture:GetParent():CreateFontString()
 	totFrame.manabar.MiddleText:SetPoint('CENTER', totFrame.manabar, 0, -.5)
 	totFrame.manabar.SideText = totFrame.borderTexture:GetParent():CreateFontString()
 	totFrame.manabar.SideText:SetPoint('LEFT', totFrame.manabar, 'RIGHT', 2, -.5)
-
-	-- 死亡
-	totFrame.deadText:ClearAllPoints()
-	totFrame.deadText:SetPoint('CENTER', totFrame.healthbar, .5, -4)
 
 	BC[unit] = frame
 	BC[unit .. 'target'] = totFrame
