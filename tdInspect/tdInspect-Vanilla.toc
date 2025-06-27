@@ -5,7 +5,7 @@
 ## Notes-zhCN: 远程观察玩家装备、天赋、雕文。
 ## IconTexture: 132092
 ## Author: Dencer
-## Version: 2.5.10
+## Version: 2.5.11
 ## OptionalDeps: tdSync, ElvUI
 ## SavedVariables: TDDB_INSPECT2
 

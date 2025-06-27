@@ -12,6 +12,8 @@ L["ALT + %s to re-attach a child window."] = "ALT + %s 重新附加子視窗。"
 L["ALT + %s while dragging a detachable child window will detach it from the parent"] = "拖曳可分離的子視窗時按住 ALT + %s 可將其與父視窗分離"
 L["Are you sure you want to reset permanently stored positions? This will reload the UI."] = "是否確定要重置永久儲存的位置? 將會重新載入介面。"
 L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "是否確定要重置永久儲存的縮放大小? 將會重新載入介面。"
+--[[Translation missing --]]
+L["Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."] = "Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."
 L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "移動暴雪視窗 BlizzMove: 您剛剛移動的框架 (％s) 可能處於損壞狀態，可能是由於其他插件造成的。"
 L["Clear"] = "清空"
 L["Clear the search filter."] = "清空搜尋過濾方式。"

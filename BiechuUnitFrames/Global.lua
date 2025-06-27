@@ -68,7 +68,7 @@ BC.default = {
 		combatFlash = true,
 		threatLeft = true,
 		miniIcon = true,
-		statusBarAlpha = .5,
+		statusBarAlpha = .8,
 		nameFontSize = 13,
 		valueFontSize = 12,
 		valueStyle = 7,
@@ -100,7 +100,7 @@ BC.default = {
 		combatFlash = true,
 		threatLeft = true,
 		miniIcon = true,
-		statusBarAlpha = .5,
+		statusBarAlpha = .8,
 		nameFontSize = 13,
 		valueFontSize = 12,
 		valueStyle = 7,
@@ -803,7 +803,7 @@ function BC:miniIcon(unit)
 		frame.miniIcon.click = function()
 			if IsShiftKeyDown() then                                                      -- 按住Shift 一键脱光
 				EQUIPMENTMANAGER_BAGSLOTS = {}                                              -- 背包空间缓存
-				for _, i in pairs({ 16, 17, 18, 5, 7, 1, 3, 9, 10, 6, 8 }) do
+				for _, i in pairs { 16, 17, 18, 5, 7, 1, 3, 9, 10, 6, 8 } do
 					local durability = GetInventoryItemDurability(i)
 					if durability and durability > 0 then -- 有耐久度
 						for bag = BACKPACK_CONTAINER, NUM_BAG_FRAMES do
@@ -935,9 +935,7 @@ function BC:dark(unit)
 			end
 		end
 		frame.statusBar:SetTexture(self:file(self.barList[1]))
-
-		-- 状态栏透明度
-		if self:getDB(key, 'statusBarAlpha') then frame.statusBar:SetAlpha(self:getDB(key, 'statusBarAlpha')) end
+		if self:getDB(key, 'statusBarAlpha') then frame.statusBar:SetAlpha(self:getDB(key, 'statusBarAlpha')) end -- 透明度
 	end
 
 	if frame.healthbar then frame.healthbar:SetStatusBarTexture(self:file(self.barList[1])) end -- 生命条
@@ -1177,21 +1175,38 @@ function BC:update(unit)
 	local key = unit:gsub('%d', '')
 
 	-- 显示/隐藏 框体
-	if self:getDB(key, 'hideFrame') then
-		frame:SetAlpha(0)
-		return
-	end
 	if key == 'party' then
-		if not UnitExists(unit) or not self:getDB('party', 'raidShowParty') and UnitInRaid('player') then
+		if self:getDB(key, 'hideFrame') or not UnitExists(unit) or not self:getDB('party', 'raidShowParty') and UnitInRaid('player') then
 			frame:SetAlpha(0)
 			if self[unit .. 'target'] then self[unit .. 'target']:SetAlpha(0) end
 			return
 		else
+			if not frame:IsShown() then
+				if InCombatLockdown() then
+					self.updateCombat = self.updateCombat or {}
+					table.insert(self.updateCombat, function()
+						frame:Show()
+						BC:update(unit .. 'target')
+					end)
+				else
+					frame:Show()
+				end
+			end
 			frame:SetAlpha(1)
-			if self[unit .. 'target'] and UnitExists(unit .. 'target') then self[unit .. 'target']:SetAlpha(1) end
+			self:update(unit .. 'target')
 		end
-	elseif unit == 'targettarget' or unit == 'pettarget' or key == 'partypet' or key == 'partytarget' then
-		if UnitExists(unit) then
+	elseif self:getDB(key, 'hideFrame') then
+		frame:SetAlpha(0)
+		return
+	elseif key == 'partytarget' then
+		local party = unit:gsub('target$', '')
+		if not self[party] or not self[party]:IsShown() or self[party]:GetAlpha() <= 0 then
+			frame:SetAlpha(0)
+			return
+		end
+	end
+	if unit == 'targettarget' or unit == 'pettarget' or key == 'partypet' or key == 'partytarget' then
+		if UnitExists(unit) and not (UnitInVehicle('player') and unit == 'pettarget') then
 			frame:SetAlpha(1)
 		else
 			frame:SetAlpha(0)
@@ -1460,54 +1475,54 @@ function BC:init(unit)
 	end
 
 	-- 超出范围半透明
-	if BC:getDB(key, 'outRange') and not frame.hook then
-		frame:SetScript('OnUpdate', function(self)
-			if not self:IsShown() or self:GetAlpha() == 0 then return end
-			local unit = self.unit
-			if type(unit) ~= 'string' or not UnitExists(unit) then return end
-			if UnitIsUnit('player', unit) or UnitInRange(unit) or (not InCombatLockdown() or UnitCanAttack('player', unit)) and CheckInteractDistance(unit, 4) then
-				self:SetAlpha(1)
-			else
-				for _, id in pairs({
-					5176, -- 愤怒
-					5185, -- 治疗之触
-					75, -- 自动射击
-					133, -- 火球术
-					635, -- 圣光术
-					2050, -- 次级治疗术
-					453, -- 安抚心灵
-					8092, -- 心灵震爆
-					589, -- 暗言术：痛
-					403, -- 闪电箭
-					331, -- 治疗波
-					686, -- 暗影箭
-					1490, -- 元素诅咒
-					603, -- 厄运诅咒
-					5138, -- 吸取法力
-					1120, -- 吸取灵魂
-					689, -- 吸取生命
-					6789, -- 死亡缠绕
-					980, -- 痛苦诅咒
-					27243, -- 腐蚀之种
-					172, -- 腐蚀术
-					702, -- 虚弱诅咒
-					1714, -- 语言诅咒
-					704 -- 鲁莽诅咒
-				}) do
-					local spell = GetSpellInfo(id)
-					if spell and IsSpellInRange(spell, unit) == 1 then
-						self:SetAlpha(1)
-						return
+	if BC:getDB(key, 'outRange') then
+		if not frame.hook then
+			frame:HookScript('OnUpdate', function(self)
+				if not BC:getDB(key, 'outRange') or not self:IsShown() or self:GetAlpha() <= 0 or not UnitExists(self.unit) then return end
+				if UnitIsUnit('player', self.unit) or UnitInRange(self.unit) or (not InCombatLockdown() or UnitCanAttack('player', self.unit)) and CheckInteractDistance(self.unit, 4) then
+					self:SetAlpha(1)
+				else
+					local spell
+					for _, id in pairs {
+						5176, -- 愤怒
+						5185, -- 治疗之触
+						75, -- 自动射击
+						133, -- 火球术
+						635, -- 圣光术
+						2050, -- 次级治疗术
+						453, -- 安抚心灵
+						8092, -- 心灵震爆
+						589, -- 暗言术：痛
+						403, -- 闪电箭
+						331, -- 治疗波
+						686, -- 暗影箭
+						1490, -- 元素诅咒
+						603, -- 厄运诅咒
+						5138, -- 吸取法力
+						1120, -- 吸取灵魂
+						689, -- 吸取生命
+						6789, -- 死亡缠绕
+						980, -- 痛苦诅咒
+						27243, -- 腐蚀之种
+						172, -- 腐蚀术
+						702, -- 虚弱诅咒
+						1714, -- 语言诅咒
+						704 -- 鲁莽诅咒
+					} do
+						spell = GetSpellInfo(id)
+						if spell and IsSpellInRange(spell, self.unit) == 1 then
+							break
+						else
+							spell = nil
+						end
 					end
+					self:SetAlpha(spell and 1 or .5)
 				end
-				self:SetAlpha(.5)
-			end
-		end)
-		frame.hook = true
+			end)
+			frame.hook = true
+		end
 	elseif frame.hook then
 		frame:SetAlpha(1)
-		frame.hook = nil
-		frame:SetScript('OnUpdate', nil)
 	end
 
 	-- PVP图标
@@ -1537,8 +1552,9 @@ function BC:init(unit)
 	self:update(unit)
 end
 
-for _, event in pairs({
+for _, event in pairs {
 	'PLAYER_ENTERING_WORLD', -- 进入世界
+	'PLAYER_REGEN_ENABLED', -- 结束战斗
 	'PLAYER_FOCUS_CHANGED', -- 焦点目标变化
 	'PLAYER_TARGET_CHANGED', -- 我的目标变化
 	'UNIT_TARGET',          -- 目标切换
@@ -1547,7 +1563,7 @@ for _, event in pairs({
 	'UNIT_HEALTH',          -- 体力变化
 	'ZONE_CHANGED',         -- 区域更改
 	'ZONE_CHANGED_NEW_AREA' -- 传送
-}) do
+} do
 	BC:RegisterEvent(event)
 end
 BC:SetScript('OnEvent', function(self, event, unit)
@@ -1555,6 +1571,13 @@ BC:SetScript('OnEvent', function(self, event, unit)
 	if event == 'PLAYER_ENTERING_WORLD' then
 		self:drag(LFGParentFrame) -- 寻求组队
 		self:init()
+	elseif event == 'PLAYER_REGEN_ENABLED' then
+		if self.updateCombat then
+			for _, fun in pairs(self.updateCombat) do
+				if type(fun) == 'function' then fun() end
+			end
+			self.updateCombat = nil
+		end
 	elseif event == 'PLAYER_FOCUS_CHANGED' then
 		self:incomingHeals('focus')
 	elseif event == 'PLAYER_TARGET_CHANGED' then

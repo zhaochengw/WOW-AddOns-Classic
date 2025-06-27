@@ -1224,7 +1224,7 @@ local function SetItemLib()
                     else
                         BiaoGeTooltip2:AddLine(L["掉落后会提醒"], 1, 1, 1, true)
                     end
-                    BiaoGeTooltip2:AddLine(AddTexture("RIGHT")..L["取消心愿装备"], 1, 0.82, 0, true)
+                    BiaoGeTooltip2:AddLine(AddTexture("RIGHT") .. L["取消心愿装备"], 1, 0.82, 0, true)
                     BiaoGeTooltip2:Show()
                     f:GetScript("OnEnter")(f)
                 end)
@@ -1396,21 +1396,23 @@ do
     function BG.UpdateItemLib_LeftHope(itemID, ShoworHide)
         local count = mainFrame.buttoncount
         if count then
-            for ii = 1, count do
-                local _itemID = mainFrame.buttons[ii].itemID
+            for i = 1, count do
+                if mainFrame.buttons[i] then
+                    local _itemID = mainFrame.buttons[i].itemID
 
-                local isExItem
+                    local isExItem
 
-                local exItemID, exItemLink = GetkExchangeItemInfo(_itemID)
-                if itemID == exItemID then
-                    isExItem = true
-                end
+                    local exItemID, exItemLink = GetkExchangeItemInfo(_itemID)
+                    if itemID == exItemID then
+                        isExItem = true
+                    end
 
-                if itemID == _itemID or isExItem then
-                    if ShoworHide == 1 then
-                        mainFrame.buttons[ii].item.hope:Show()
-                    else
-                        mainFrame.buttons[ii].item.hope:Hide()
+                    if itemID == _itemID or isExItem then
+                        if ShoworHide == 1 then
+                            mainFrame.buttons[i].item.hope:Show()
+                        else
+                            mainFrame.buttons[i].item.hope:Hide()
+                        end
                     end
                 end
             end
@@ -1420,8 +1422,10 @@ do
     function BG.UpdateItemLib_LeftHope_HideAll()
         local count = mainFrame.buttoncount
         if count then
-            for ii = 1, count do
-                mainFrame.buttons[ii].item.hope:Hide()
+            for i = 1, count do
+                if mainFrame.buttons[i] then
+                    mainFrame.buttons[i].item.hope:Hide()
+                end
             end
         end
     end
@@ -1517,12 +1521,14 @@ do
         local count = mainFrame.buttoncount
         if count then
             for i = 1, count do
-                local item = mainFrame.buttons[i].item
-                local itemID = mainFrame.buttons[i].itemID
-                if BG.GetItemCount(itemID) ~= 0 then
-                    item.haved:Show()
-                else
-                    item.haved:Hide()
+                if mainFrame.buttons[i] then
+                    local item = mainFrame.buttons[i].item
+                    local itemID = mainFrame.buttons[i].itemID
+                    if BG.GetItemCount(itemID) ~= 0 then
+                        item.haved:Show()
+                    else
+                        item.haved:Hide()
+                    end
                 end
             end
         end
@@ -1562,9 +1568,11 @@ do
         local count = mainFrame.buttoncount
         if count then
             for i = 1, count do
-                local get = mainFrame.buttons[i].get
-                local itemID = mainFrame.buttons[i].itemID
-                BG.Update_IsLooted(get, itemID)
+                if mainFrame.buttons[i] then
+                    local get = mainFrame.buttons[i].get
+                    local itemID = mainFrame.buttons[i].itemID
+                    BG.Update_IsLooted(get, itemID)
+                end
             end
         end
     end
@@ -2182,7 +2190,7 @@ function BG.ItemLibUI()
         t:SetTextColor(1, 0.82, 0)
         t:SetText(L["仅显示高于该装等的装备："])
         t:SetJustifyH("LEFT")
-        BG.ItemLibMainFrame.iLevelText=t
+        BG.ItemLibMainFrame.iLevelText = t
 
         local edit = CreateFrame("EditBox", nil, mainFrame, "InputBoxTemplate")
         edit:SetSize(100, 20)
@@ -2249,7 +2257,7 @@ function BG.ItemLibUI()
         local t = f:CreateFontString()
         t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         t:SetPoint("TOP", mainFrame.Hope, "BOTTOM", 0, 0)
-        t:SetText(AddTexture("RIGHT")..L["（删除心愿装备）"])
+        t:SetText(AddTexture("RIGHT") .. L["（删除心愿装备）"])
 
         local title_table = {
             { name = "", width = 80, color = "FFFFFF", JustifyH = "CENTER" },

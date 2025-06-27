@@ -2313,7 +2313,9 @@ function QuestieWotlkQuestFixes:Load()
         [12538] = {
             [questKeys.requiredSourceItems] = {38512},
         },
-        [12539] = {
+        [12539] = { -- Hoofing It
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {12537,12538},
             [questKeys.requiredSourceItems] = {38512},
         },
         [12540] = {
@@ -2826,7 +2828,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredSourceItems] = {},
         },
         [12737] = {
-            [questKeys.objectives] = {nil,{{191136,}}},
+            [questKeys.objectives] = {nil,{{191136,nil,Questie.ICON_TYPE_INTERACT}}},
             [questKeys.requiredMinRep] = {1105,9000},
             [questKeys.requiredSourceItems] = {},
         },

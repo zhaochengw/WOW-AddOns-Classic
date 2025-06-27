@@ -1561,3 +1561,79 @@ L:SetGeneralLocalization({
 --  Emperor Dagran Thaurissan (3049) --
 ---------------------------
 --L= DBM:GetModLocalization(2670)
+
+-----------------------------
+--  Scarlet Enclave (SoD)  --
+-----------------------------
+-- This mostly relies on the new auto-generated locales for boss names from encounter data.
+-- Only add name localization if the name in locale.generated.lua is inconsistent with the commonly used name in the language.
+
+L = DBM:GetModLocalization("Balnazzar")
+
+L:SetMiscLocalization{
+	OtherPlayer = "another player", -- Use with AUTO_SPEC_WARN_TEXTS.moveto ("$spell - move to >%%s<")
+	Tick = "Tick"
+}
+
+L = DBM:GetModLocalization("Solistrasza")
+
+
+L = DBM:GetModLocalization("Beatrix")
+
+L:SetMiscLocalization{
+	YellFroggers1 = "break their ranks",
+	YellFroggers2 = "Ready your lances",
+	CannonMistress = "Cannon Mistress Lind", -- TODO: can we automatically get the localized name?
+	YellPhase2 = "We stand united! Let our enemies tremble before our might!",
+	Footmen = "Footmen",
+	Horses = "Horses",
+	YellMeteor = "Arcanist, reduce them to ashes",
+}
+
+
+L = DBM:GetModLocalization("RebornCouncil")
+
+
+L = DBM:GetModLocalization("Caldoran")
+
+
+L = DBM:GetModLocalization("LillianVoss")
+
+
+L = DBM:GetModLocalization("Beastmaster")
+
+L:SetOptionLocalization({
+	TimerMark = "Show timer for next Enervate/Enkindle marks (with count)",
+	WarnMark = "Show warning for enervate/Enkindle marks (with count)"
+})
+
+L:SetTimerLocalization({
+	TimerMark	= "Mark %d",
+})
+
+L:SetWarningLocalization({
+	WarnMark = "Mark %d"
+})
+
+
+L = DBM:GetModLocalization("Mason")
+
+L:SetMiscLocalization{
+	Cannons1 = "Fire!",
+	Cannons2 = "Fire at will!",
+}
+
+L = DBM:GetModLocalization("SE_Trash")
+L:SetGeneralLocalization{
+	name = "Scarlet Enclave Trash"
+}
+
+L:SetOptionLocalization{
+	FlightTimer = "Show timers for Gryphon flights",
+}
+
+L:SetMiscLocalization{
+	CentralTower = "Central Tower",
+	Prison = "Prison",
+	Cathedral = "Cathedral"
+}

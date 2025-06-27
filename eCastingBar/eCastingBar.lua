@@ -42,7 +42,7 @@ local frameSuffixes = { "", }
 local castSendTime
 
 local CASTING_BAR_DEFAULTS = {
-  ["Locked"] = 0,
+  ["Locked"] = 1,
   ["Enabled"] = 1,
   ["Texture"] = "Perl",
   ["ShowTime"] = 1,
@@ -59,7 +59,7 @@ local CASTING_BAR_DEFAULTS = {
 	["IconPosition"] = "HIDDEN",
 	["ShowDelay"] = 1,
   ["ShowTicks"] = 0,
-  ["MirrorLocked"] = 0,
+  ["MirrorLocked"] = 1,
   ["MirrorEnabled"] = 1,
   ["MirrorTexture"] = "Perl",
   ["MirrorShowTime"] = 1,

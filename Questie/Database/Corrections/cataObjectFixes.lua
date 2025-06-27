@@ -218,6 +218,10 @@ function CataObjectFixes.Load()
         [180673] = { -- High Chief Winterfall Cave Mouth Spell Focus
             [objectKeys.spawns] = {[zoneIDs.WINTERSPRING] = {{69.13,50.67}}},
         },
+        [180746] = { -- Gently Shaken Gift
+            [objectKeys.questStarts] = {},
+            [objectKeys.questEnds] = {},
+        },
         [180771] = { -- Firework Launcher
             [objectKeys.spawns] = {
                 [zoneIDs.MOONGLADE] = {{37.15,57.88},{37.59,58.72},{37.39,59.64},{37.2,58.45},{37.38,59.26},{53.38,36.7},{54.16,36.9},{36.3,57.86},{35.98,59.94},{37.9,58.39},{53.92,36.84},{36.92,56.77},{36.52,60.23},{35.48,58.67},{36.5,56.81},{35.95,58.69},{42.64,35.39},{53.07,36.61},{36.45,57.12},{37.05,59.11},{36.15,57.41},{36.61,59.4},{42.53,34.3},{35.69,57.86},{35.68,58.43},{44.59,38.64},{53.63,36.77}},
@@ -295,14 +299,24 @@ function CataObjectFixes.Load()
         [183385] = { -- Sanguine Hibiscus
             [objectKeys.spawns] = {[zoneIDs.THE_UNDERBOG] = {{39.11,74.94},{26.41,51.51},{34.7,46.7},{51.08,54.69},{40.74,21.52},{52.87,29.72},{56.42,27.85},{51.22,95.38},{52.45,61.34},{71.93,58.57},{59.92,53.31},{64.87,67.28},{55.35,86.49},{61.79,87.46},{61.34,96.42},{53.73,82.18},{54.49,70.69},{34.84,57.46},{47.95,62.17},{-1,-1}}},
         },
+        [183441] = { -- Soul Mirror
+            [objectKeys.spawns] = {[zoneIDs.AUCHENAI_CRYPTS_BRIDGE_OF_SOULS] = {{74.99,49.99}},[zoneIDs.AUCHENAI_CRYPTS] = {{-1,-1}}},
+        }, 
         [185519] = { -- Mana-Tombs Stasis Chamber
             [objectKeys.spawns] = {[zoneIDs.MANA_TOMBS] = {{60.7,14.98},{-1,-1}}},
         }, 
         [186273] = { -- Damaged Diving Gear
             [objectKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH] = {{62.64,18.23},{62.33,18.88},{61.68,18.19}}},
         },
+        [187236] = { -- Winter Veil Gift
+            [objectKeys.questStarts] = {},
+            [objectKeys.questEnds] = {},
+        },
         [187578] = { -- Scrying Orb
             [objectKeys.spawns] = {[zoneIDs.MAGISTERS_TERRACE] = {{94.44,26.71},{-1,-1}}},
+        },
+        [187892] = { -- Ice Chest
+            [objectKeys.spawns] = {[zoneIDs.THE_SLAVE_PENS] = {{29.95,50.28},{-1,-1}}},
         },
         [187922] = { -- Alliance Bonfire - Burning Steppes
             [objectKeys.spawns] = {[zoneIDs.BURNING_STEPPES] = {{68.57,60.2}}},
@@ -633,10 +647,16 @@ function CataObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{77.86,70.85}}},
             [objectKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
         },
+        [206109] = { -- Warchief's Command Board
+            [objectKeys.questStarts] = {27718,27721,27722,28493,28494,28496,28504,28509,28510,28526,28527,28532,28542,28545,28548,28549,28554,28557,28705,28711,28717,28790,29157,29388,29390},
+        },
         [206111] = { -- Hero's Call Board -- Stormwind AH
             [objectKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{62.86,71.49}}},
             [objectKeys.zoneID] = zoneIDs.STORMWIND_CITY,
             [objectKeys.questStarts] = {27724,27726,27727,28551,28552,28558,28562,28563,28564,28576,28578,28579,28582,28666,28673,28675,28699,28702,28708,28709,28716,28825,29156,29387,29391},
+        },
+        [206116] = { -- Warchief's Command Board
+            [objectKeys.questStarts] = {27718,27721,27722,28493,28494,28496,28504,28509,28510,28526,28527,28532,28542,28545,28548,28549,28554,28557,28705,28711,28717,28790,29157,29388,29390},
         },
         [206294] = { -- Hero's Call Board -- Stormwind North
             [objectKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{62.23,29.86}}},
@@ -703,6 +723,9 @@ function CataObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.THE_EXODAR] = {{55.36,47.23}}},
             [objectKeys.zoneID] = zoneIDs.THE_EXODAR,
             [objectKeys.questStarts] = {27724,27726,27727,28492,28503,28507,28511,28525,28528,28531,28539,28543,28544,28550,28552,28558,28559,28708},
+        },
+        [207323] = { -- Warchief's Command Board
+            [objectKeys.questStarts] = {27718,27721,27722,28493,28494,28496,28504,28509,28510,28526,28527,28532,28542,28545,28548,28549,28554,28557,28705,28711,28717,29157,29388,29390},
         },
         [207327] = { -- Pip's Mole Machine
             [objectKeys.name] = "Pip's Mole Machine",
@@ -937,6 +960,9 @@ function CataObjectFixes.Load()
         [208442] = { -- Blueroot Vine
             [objectKeys.spawns] = {[zoneIDs.MOUNT_HYJAL] = {{26.85,54.58},{34.19,65.22},{26.47,64.54},{28.84,51.87},{27.95,51.29},{30.21,56.93},{33.57,65.24},{27.32,59.67},{27.13,58.83},{24.57,62.74},{37.74,50.71},{24.97,61.86},{33.15,64.61},{35.17,53.14},{29.55,50.79},{28.53,57.15},{34.19,65.21},{41.84,57.54},{40.56,57.17},{40.54,56.65},{39.90,56.90},{39.36,56.71},{40.17,56.32}}},
         },
+        [208550] = { -- Voodoo Pile
+            [objectKeys.spawns] = {[zoneIDs.ZUL_GURUB] = {{31.4,48.14},{-1,-1}}},
+        },
         [208551] = { -- Lucifern
             [objectKeys.spawns] = {[zoneIDs.MOLTEN_FRONT] = {{51.9,63.2},{52.51,63.32},{51.83,59.66},{52.47,62.19},{48.87,57.88},{48.37,58.2},{49.86,57.03},{50.08,56.45},{49.71,55.71},{48.04,53.36},{47.6,53.06},{46.9,53.33},{46.96,41.86},{47.41,41.39},{47.8,43.74},{48.98,44.41},{47.3,37.42},{48.28,35.65},{48.35,36.98},{47.48,36.67},{51.26,34.03},{51.71,31.69},{53.13,34.97},{52.77,35.88},{54.21,39.29},{53.48,39.27},{54.64,42.05},{54.83,43.45},{55.03,51.91},{54.51,54.62},{53.82,58.38},{52.23,58.79},{52.27,60.68}}},
         },
@@ -977,6 +1003,9 @@ function CataObjectFixes.Load()
         [209928] = { -- Unsecured Vent
             [objectKeys.spawns] = {[zoneIDs.HILLSBRAD_FOOTHILLS] = {{71.35,45.38}}},
             [objectKeys.zoneID] = zoneIDs.HILLSBRAD_FOOTHILLS,
+        },
+        [259806] = { -- Love Potion Recipe
+            [objectKeys.questStarts] = {},
         },
         [281339] = { -- Hero's Call Board -- Deepholm
             [objectKeys.spawns] = {[zoneIDs.DEEPHOLM] = {{48.82,53.06,169}}},

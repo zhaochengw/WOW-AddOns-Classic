@@ -41,7 +41,7 @@ function ns.FixItemSets(tip, id)
     for i = 2, tip:NumLines() do
         local textLeft = tip:GetFontStringLeft(i)
         local text = textLeft:GetText()
-        if text and text:trim() ~= '' then
+        if text then
             if not setLine then
                 local prefix, n, maxCount, suffix = text:match(setNameLinePattern)
                 if prefix then

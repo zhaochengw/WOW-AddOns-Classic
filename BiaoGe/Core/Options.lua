@@ -1444,7 +1444,7 @@ BG.Init(function()
                 L["语音提醒"],
                 L["在某些情况下，会有语音提醒，比如：装备快过期、拍卖啦、心愿达成、炼金转化已就绪等等。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["语音提醒*"], biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["语音提醒*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
             f:HookScript("OnClick", function()
                 local name = "Sound"
@@ -1730,7 +1730,7 @@ BG.Init(function()
                 L["鼠标提示对方的欠款和罚款"],
                 L["鼠标悬浮在一个玩家时，显示他的欠款和罚款。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["鼠标提示对方的欠款和罚款"] .. "*", biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["鼠标提示对方的欠款和罚款"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
         end
         h = h + 30
@@ -1771,7 +1771,7 @@ BG.Init(function()
                 L["插件过期提醒"],
                 L["当插件有可用更新时，红字提醒。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["插件过期提醒"] .. "*", biaoge, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["插件过期提醒"] .. "*", biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
         end
     end
@@ -2150,7 +2150,7 @@ BG.Init(function()
                 " ",
                 L["需要使用非匿名模式，而且你是团长时才会生效。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["竞拍欢呼语"] .. "*", autoAuction, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["竞拍欢呼语"] .. "*", autoAuction, 15, height - h, ontext)
             BG.options["button" .. name] = f
         end
         h = h + 30
@@ -2163,8 +2163,46 @@ BG.Init(function()
                 L["自动出价结束后语音提醒"],
                 L["自动出价结束后，语音提醒你，防止你错过装备。"],
             }
-            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动出价结束后语音提醒"] .. "*", autoAuction, 15, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["自动出价结束后语音提醒"] .. "*", autoAuction, 15, height - h, ontext)
             BG.options["button" .. name] = f
+        end
+        h = h + 30
+        -- 自动出价的延迟时间随机
+        do
+            local edit
+
+            local name = "aotoSendLate"
+            BG.options[name .. "reset"] = 0
+            BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
+            local ontext = {
+                L["自动出价的延迟时间随机"],
+                L["启用自动出价时，当别人出价后，默认是自己会延迟0.5秒后才自动出价。"],
+                " ",
+                format(L["现在可以修改这个延迟时间，并在一定范围内随机（%s秒-X秒）。X最低为%s秒，最高为%s秒。"], 1, 1, 5),
+            }
+            local f = O.CreateCheckButton(name, AddTexture("QUEST") .. L["自动出价的延迟时间随机"] .. "*", autoAuction, 15, height - h, ontext)
+            BG.options["button" .. name] = f
+            f:HookScript("OnClick", function(self)
+                if self:GetChecked() then
+                    edit:Show()
+                else
+                    edit:Hide()
+                end
+            end)
+
+            edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            edit:SetSize(80, 20)
+            edit:SetPoint("LEFT", f.Text, "RIGHT", 15, 0)
+            edit:SetAutoFocus(false)
+            edit:SetMaxBytes(8)
+            if BiaoGe.options[name] ~= 1 then edit:Hide() end
+            BG.SetEditBaseClass(edit)
+            edit:SetScript("OnTextChanged", function(self)
+                BiaoGe.Auction.aotoSendLate = tonumber(self:GetText()) or ""
+            end)
+            edit:SetScript("OnShow", function(self)
+                self:SetText(BiaoGe.Auction.aotoSendLate or "")
+            end)
         end
         h = h + 30
     end

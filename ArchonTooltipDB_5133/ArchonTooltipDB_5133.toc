@@ -1,0 +1,14 @@
+﻿## Interface: 40402
+## Title: Archon Tooltip DB - 安娜丝塔丽
+## Author: Archon
+## Dependencies: ArchonTooltip
+## DefaultState: enabled
+## LoadOnDemand: 1
+## X-Database-Key: 5133
+## X-Database-Name: 安娜丝塔丽
+## X-Updated-At: 2025-06-24T03:43:36.000Z
+## IconTexture: Interface/AddOns/ArchonTooltip/Media/logo-32-circle.tga
+## Category: Archon
+
+../ArchonTooltip/DB/db_1037_5133_5133_subscribers.lua
+../ArchonTooltip/DB/db_1037_5133_5133_weekly.lua

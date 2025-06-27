@@ -44,8 +44,8 @@ for id = 1, MAX_PARTY_MEMBERS do
 	local party = 'party' .. id
 	BC[party] = _G['PartyMemberFrame' .. id]
 	BC[party].borderTexture = _G['PartyMemberFrame' .. id .. 'Texture'] -- 边框
-	BC[party].pvpIcon = _G['PartyMemberFrame' .. id .. 'PVPIcon']     -- PVP状态图标
-	BC[party].flash = _G['PartyMemberFrame' .. id .. 'Flash']         -- 战斗中边框发红光
+	BC[party].pvpIcon = _G['PartyMemberFrame' .. id .. 'PVPIcon']      -- PVP状态图标
+	BC[party].flash = _G['PartyMemberFrame' .. id .. 'Flash']          -- 战斗中边框发红光
 
 	-- 等级文字
 	BC[party].levelText = BC[party]:CreateFontString(BC[party]:GetName() .. 'Level', 'OVERLAY', 'GameFontNormalSmall')
@@ -216,11 +216,11 @@ for id = 1, MAX_PARTY_MEMBERS do
 	end
 end
 
-for _, event in pairs({
-	'UNIT_AURA',          -- Buff/Debuff变化
-	'UNIT_LEVEL',         -- 升级
-	'GROUP_ROSTER_UPDATE' -- 队伍变更
-}) do
+for _, event in pairs {
+	'UNIT_AURA',         -- Buff/Debuff变化
+	'UNIT_LEVEL',        -- 升级
+	'GROUP_ROSTER_UPDATE' -- 团队变更
+} do
 	frame:RegisterEvent(event)
 end
 frame:SetScript('OnEvent', function(self, event, unit)

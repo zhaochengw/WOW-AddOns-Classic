@@ -19,6 +19,8 @@ L["Are you sure you want to reset permanently stored positions? This will reload
 --[[Translation missing --]]
 L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "Are you sure you want to reset permanently stored scales? This will reload the UI."
 --[[Translation missing --]]
+L["Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."] = "Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."
+--[[Translation missing --]]
 L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."
 --[[Translation missing --]]
 L["Clear"] = "Clear"

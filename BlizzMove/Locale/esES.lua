@@ -12,6 +12,8 @@ L["ALT + %s to re-attach a child window."] = "ALT + %s para recolocar una ventan
 L["ALT + %s while dragging a detachable child window will detach it from the parent"] = "ALT + %s mientras arrastra una ventana secundaria, ésta se separará de la ventana principal."
 L["Are you sure you want to reset permanently stored positions? This will reload the UI."] = "¿Estás seguro que quieres resetear permanentemente las posiciones guardadas? Esto recargará la UI."
 L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "¿Estás seguro que quieres resetear permanentemente las escalas guardadas? Esto recargará la UI."
+--[[Translation missing --]]
+L["Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."] = "Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."
 L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "BlizzMove: El marco que acabas de mover (%s) probablemente no funcione, posiblemente a causa de otros addons."
 L["Clear"] = "Borrar"
 L["Clear the search filter."] = "Borrar el filtro de búsqueda."

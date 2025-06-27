@@ -687,7 +687,7 @@ BG.Init2(function()
         52019,
     }
 
-    local cpPlayer, cpItemID, GetInfo
+    local cpPlayer, cpItemID, GetInfo, testItem
 
     local function IsTrueLoot(quality, bindType, itemStackCount, typeID, itemLink)
         local itemID = GetItemID(itemLink)
@@ -1061,22 +1061,6 @@ BG.Init2(function()
         end
     end
 
-    local testItem
-
-    function GetInfo()
-        if BG.DeBug then
-            BG.autoLoot.info.ICC.itemID = testItem
-            return BG.autoLoot.info.ICC
-        end
-        local info = BG.FB2 and BG.autoLoot.info[BG.FB2]
-        if info then
-            if info.diff and not tContains(info.diff, GetRaidDifficultyID()) then
-                return
-            end
-            return info
-        end
-    end
-
     function bt.SPbutton:Update()
         self:Hide()
         cpItemID = nil
@@ -1111,7 +1095,7 @@ BG.Init2(function()
             if BiaoGe.options["allLootToMe"] == 1 and IsMasterLooter() then
                 bt:Show()
                 bt.SPbutton:Update()
-                if BiaoGe.options["autoAllLootToMe"] == 1 and not IsModifierKeyDown() then
+                if BiaoGe.options["autoAllLootToMe"] == 1 and not IsModifierKeyDown() and bt:IsVisible() then
                     BG.After(0.1, function()
                         bt:GiveLoot()
                     end)
@@ -1141,13 +1125,36 @@ BG.Init2(function()
     BG.autoLoot = {}
     if BG.IsVanilla_60 then
         BG.autoLoot.info = {
-            NAXX = { itemID = 22726, quest = 9250, maxCount = 40 },
+            NAXX = { { itemID = 22726, quest = 9250, maxCount = 40 } },
         }
     else
         BG.autoLoot.info = {
-            ICC = { itemID = 50274, quest = 24548, maxCount = 50, diff = { 4, 6, 176, 194 } },
+            ICC = {
+                { itemID = 50274, quest = 24548, maxCount = 50, diff = { 4, 6, 176, 194 } }, -- 25人橙斧
+                { itemID = 45038, quest = 13622, maxCount = 30, diff = { 3, 5, 175, 193 } }, -- 10人橙锤
+            },
         }
     end
+
+    function GetInfo()
+        if BG.DeBug then
+            BG.autoLoot.info.ICC[2].itemID = testItem
+            return BG.autoLoot.info.ICC[2]
+        end
+        local info = BG.FB2 and BG.autoLoot.info[BG.FB2]
+        if info then
+            local _info
+            local diff = GetRaidDifficultyID()
+            for i, v in ipairs(info) do
+                if not v.diff or { v.diff and tContains(v.diff, diff) } then
+                    _info = v
+                    break
+                end
+            end
+            return _info
+        end
+    end
+
     BG.RegisterEvent("ENCOUNTER_END", function(self, event, bossID, _, _, _, success)
         if success == 1 then
             local info = GetInfo()
@@ -1191,9 +1198,19 @@ BG.Init2(function()
         end
     end)
 
+    BG.RegisterEvent("GROUP_ROSTER_UPDATE", function(self, event)
+        BG.After(.5, function()
+            if not IsInRaid(1) then
+                cpPlayer = nil
+            end
+        end)
+    end)
+
     -- DEBUG
     -- testItem = 2169
+    -- -- testItem = 5187
     -- BG.DeBug = true
+    -- BG.GetInfo = GetInfo
     -- local msg = format("AutoLoot,%s,%s", testItem, 5)
     -- C_ChatInfo.SendAddonMessage("BiaoGe", msg, "RAID")
     -- function BG.A()

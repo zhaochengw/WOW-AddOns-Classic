@@ -19,10 +19,10 @@ hooksecurefunc('TargetFrame_UpdateLevelTextAnchor', function(self)
 	if self.levelText then self.levelText:SetPoint('CENTER', 63, -16) end
 end)
 
-for unit, frame in pairs({
+for unit, frame in pairs {
 	target = TargetFrame,
 	focus = FocusFrame
-}) do
+} do
 	-- 名字
 	frame.name:SetWidth(120)
 	frame.name:SetPoint('CENTER', -50, 17.5)

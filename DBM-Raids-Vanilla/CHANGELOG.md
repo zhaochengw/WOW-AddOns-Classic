@@ -1,6 +1,7 @@
 # DBM - Vanilla and Season of Discovery
 
-## [r785](https://github.com/DeadlyBossMods/DBM-Vanilla/tree/r785) (2025-03-16)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Vanilla/compare/r784...r785) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Vanilla/releases)
+## [r811](https://github.com/DeadlyBossMods/DBM-Vanilla/tree/r811) (2025-05-21)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Vanilla/compare/r810...r811) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Vanilla/releases)
 
-- Naxx/SoD: Add extra UNIT\_AURA based detection for Overcharged pre-debuff  
+- Scarlet Enclave/Caldoran: Hotfix enrage timer after wiping on P3+  
+    Good thing that's the only wipe we had tonight, cause tests would have never caught this  

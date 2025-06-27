@@ -911,9 +911,11 @@ BG.Init(function()
                 f.autoTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
                 f.logTextButton:SetNormalFontObject(_G.BGA.FontGreen15)
             end
-            After(.5, function()
-                aura.AutoSendMyMoney(f)
-            end)
+            if f.isAuto then
+                After(aura.AutoSendLate(), function()
+                    aura.AutoSendMyMoney(f)
+                end)
+            end
         end
         aura.myMoney_OnTextChanged(f.myMoneyEdit)
 
@@ -1228,6 +1230,18 @@ BG.Init(function()
                 BG.PlaySound("autoAuctionAutoEndTips")
             end
         end
+
+        function aura.AutoSendLate()
+            if BiaoGe and BiaoGe.options and BiaoGe.options.aotoSendLate == 1 then
+                local num = tonumber(BiaoGe.Auction.aotoSendLate)
+                if num then
+                    num = min(max(num, 1), 5)
+                    num = random(1 * 10, num * 10) / 10
+                    return num
+                end
+            end
+            return 0.5
+        end
     end
 
     function aura.CreateAuction(auctionID, itemID, money, duration, player, mod, notAfter)
@@ -1413,6 +1427,7 @@ BG.Init(function()
                 edit:SetPoint("BOTTOM", 2, 27)
                 edit:SetAutoFocus(false)
                 edit:SetNumeric(true)
+                edit:SetMaxBytes(8)
                 edit.owner = AuctionFrame
                 edit.alpha = .3
                 AuctionFrame.autoMoney = 0

@@ -272,6 +272,7 @@ BG.Init(function()
         end
         BiaoGe.Auction.duration = BiaoGe.Auction.duration or 40
         BiaoGe.Auction.mod = "normal"
+        BiaoGe.Auction.aotoSendLate = BiaoGe.Auction.aotoSendLate or 3
 
         local function ClearAllFocus(f)
             f.Edit1:ClearFocus()

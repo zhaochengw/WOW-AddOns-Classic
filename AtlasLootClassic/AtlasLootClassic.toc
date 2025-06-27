@@ -1,13 +1,13 @@
-## Interface: 11404, 20504, 30404
+## Interface: 30404
 ## Author: Lag
 ## Version: v3.2.0
 ## SavedVariables: AtlasLootClassicDB
-## Title: AtlasLootClassic |cFF22B14C[Core]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes: Shows the possible loot from the bosses |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Title-zhCN: AtlasLoot经典版 |cFF22B14C[主程序]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFF22B14C[主程式]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes-zhCN: 显示首领可能的掉落物品 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhTW: 顯示首領與小怪可能掉落的物品，並可查詢各陣營與戰場的獎勵物品、套裝物品等資訊。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Title: AtlasLootClassic |cFF22B14C[Core]|r
+## Notes: Shows the possible loot from the bosses
+## Title-zhCN: AtlasLoot经典版 |cFF22B14C[主程序]|r
+## Title-zhTW: 副本戰利品查詢經典版 |cFF22B14C[主程式]|r
+## Notes-zhCN: 显示首领可能的掉落物品
+## Notes-zhTW: 顯示首領與小怪可能掉落的物品，並可查詢各陣營與戰場的獎勵物品、套裝物品等資訊。
 ## X-Credits: Daviesh, Lag, Arith, Cellelach, Asurn, Pernicus, Dynaletik and many others
 ## X-Category: Map
 ## X-Curse-Project-ID: 326516

@@ -1544,3 +1544,79 @@ L:SetGeneralLocalization({
 --  Emperor Dagran Thaurissan (3049) --
 ---------------------------
 --L= DBM:GetModLocalization(2670)
+
+-----------------------------
+--  Scarlet Enclave (SoD)  --
+-----------------------------
+-- This mostly relies on the new auto-generated locales for boss names from encounter data.
+-- Only add name localization if the name in locale.generated.lua is inconsistent with the commonly used name in the language.
+
+L = DBM:GetModLocalization("Balnazzar")
+
+L:SetMiscLocalization{
+	OtherPlayer = "다른 사람", -- Use with AUTO_SPEC_WARN_TEXTS.moveto ("$spell - move to >%%s<")
+	Tick = "틱"
+}
+
+L = DBM:GetModLocalization("Solistrasza")
+
+
+L = DBM:GetModLocalization("Beatrix")
+
+L:SetMiscLocalization{
+	YellFroggers1 = "적진을 무너뜨려라",
+	YellFroggers2 = "창을 준비하라",
+	CannonMistress = "포반장 린드", -- TODO: can we automatically get the localized name?
+	YellPhase2 = "하나 되어 맞서라! 우리의 힘 앞에 적은 전율하리라!",
+	Footmen = "보병",
+	Horses = "기병",
+	YellMeteor = "신비술사, 적을 잿더미로 만들어라",
+}
+
+
+L = DBM:GetModLocalization("RebornCouncil")
+
+
+L = DBM:GetModLocalization("Caldoran")
+
+
+L = DBM:GetModLocalization("LillianVoss")
+
+
+L = DBM:GetModLocalization("Beastmaster")
+
+L:SetOptionLocalization({
+	TimerMark = "다음 무기력/점화 징표 타이머 바 보기 (횟수 포함)",
+	WarnMark = "무기력/점화 징표 경고 보기 (횟수 포함)"
+})
+
+L:SetTimerLocalization({
+	TimerMark	= "징표 %d",
+})
+
+L:SetWarningLocalization({
+	WarnMark = "징표 %d"
+})
+
+
+L = DBM:GetModLocalization("Mason")
+
+L:SetMiscLocalization{
+	Cannons1 = "공격!",
+	Cannons2 = "공격 개시!",
+}
+
+L = DBM:GetModLocalization("SE_Trash")
+L:SetGeneralLocalization{
+	name = "붉은십자군 초소 일반몹"
+}
+
+L:SetOptionLocalization{
+	FlightTimer = "그리핀 비행 타이머 바 보기",
+}
+
+L:SetMiscLocalization{
+	CentralTower = "중앙 탑",
+	Prison = "감옥",
+	Cathedral = "대성당"
+}

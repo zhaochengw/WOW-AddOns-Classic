@@ -238,11 +238,16 @@ function eCastingBarMirror_MouseUp( strButton )
 	if( eCastingBar_Saved.MirrorLocked == 0 ) then
 		eCastingBarMirror_Outline:StopMovingOrSizing()
 
-    eCastingBar_Saved.MirrorLeft = eCastingBarMirror_Outline:GetLeft()
-    eCastingBar_Saved.MirrorBottom = eCastingBarMirror_Outline:GetBottom()
+    local left = eCastingBarMirror_Outline:GetLeft()
+    local bottom = eCastingBarMirror_Outline:GetBottom()
     
-    eCastingBarMirrorLeftSlider:SetValue(eCastingBar_Saved.MirrorLeft)
-    eCastingBarMirrorBottomSlider:SetValue(eCastingBar_Saved.MirrorBottom)
+    if left and bottom then
+        eCastingBar_Saved.MirrorLeft = left
+        eCastingBar_Saved.MirrorBottom = bottom
+        
+        eCastingBarMirrorLeftSlider:SetValue(left)
+        eCastingBarMirrorBottomSlider:SetValue(bottom)
+    end
 	end
 end
 

@@ -349,14 +349,14 @@ BC.pettarget.manabar.SideText = BC.pettarget:CreateFontString()
 BC.pettarget.manabar.SideText:SetPoint('RIGHT', BC.pettarget.manabar, 'LEFT', 0, -1)
 BC.pettarget.manabar.unit = 'pettarget'
 
-for _, event in pairs({
+for _, event in pairs {
 	'ACTIVE_TALENT_GROUP_CHANGED', -- 天赋切换
 	'PLAYER_TALENT_UPDATE',       -- 天赋点更新
 	'ZONE_CHANGED_NEW_AREA',      -- 区域切换
 	'EQUIPMENT_SETS_CHANGED',     -- 套装变更
 	'UPDATE_SHAPESHIFT_FORM',     -- 形状变化
 	'UNIT_POWER_UPDATE'           -- 法力/能量值变化
-}) do
+} do
 	frame:RegisterEvent(event)
 end
 frame:SetScript('OnEvent', function(self, event, unit)
@@ -383,7 +383,6 @@ frame:SetScript('OnUpdate', function(self)
 	self.rate = now + .02 -- 刷新率
 
 	if BC.player.druidBar and BC.player.druidBar:IsShown() then BC:bar(BC.player.druidBar) end
-
 	if BC.pettarget:IsShown() and BC.pettarget:GetAlpha() > 0 then
 		BC:bar(BC.pettarget.healthbar)
 		BC:bar(BC.pettarget.manabar)
