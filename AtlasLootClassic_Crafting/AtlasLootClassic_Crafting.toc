@@ -1,14 +1,14 @@
-## Interface: 30404
+## Interface: 11404, 20504, 30404
 ## Author: Lag
 ## Version: v3.0.0
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-## Title: AtlasLootClassic |cFF0099FF[Crafting]|r
-## Title-zhCN: AtlasLoot经典版 |cFF0099FF[制造品]|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[專業製作]|r
-## Notes: AtlasLoot loot tables of Crafting Items
-## Notes-zhCN: AtlasLoot专业制作物品列表
-## Notes-zhTW: 專業技能物品資料庫。
+## Title: AtlasLootClassic |cFF0099FF[Crafting]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhCN: AtlasLoot经典版 |cFF0099FF[制造品]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[專業製作]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
+## Notes: AtlasLoot loot tables of Crafting Items |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhCN: AtlasLoot专业制作物品列表 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+## Notes-zhTW: 專業技能物品資料庫。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
 ## X-Category: Map
 ## X-AtlasLootClassic-LootModule: 1
 ## X-Revision: BigFoot

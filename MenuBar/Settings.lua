@@ -1,3 +1,4 @@
+-- MainBar.lua
 local _, addon = ...
 local F = CreateFrame("Frame")
 
@@ -10,19 +11,20 @@ local defaults = {
     useClassColor = true,
     borderColor = {1, 1, 1, 1},
     position = {
-        point = "TOP",
+        point = "CENTER",
         relativeTo = "UIParent",
-        relativePoint = "TOP",
+        relativePoint = "CENTER",
         x = 0,
         y = 0
     },
     showTopLine = true,
     showBottomLine = true,
-    showLeftLine = true,
-    showRightLine = true,
     showTimeModule = true,
     backgroundAlpha = 0.8,
-    borderThickness = 1
+    borderThickness = 1,
+    frameWidth = 400,
+    borderScale = 1.0,
+    backgroundTexture = "Interface\\AddOns\\MenuBar\\Menu\\bj.tga",
 }
 
 local ConfigManager = {}
@@ -63,11 +65,18 @@ function ConfigManager:MigrateConfig()
         end
     end
     
-    if not self.config.backgroundColor[4] then
-        self.config.backgroundColor[4] = self.config.backgroundAlpha or 0.8
+    if self.config.backgroundWidth then
+        self.config.frameWidth = self.config.backgroundWidth
+        self.config.backgroundWidth = nil
     end
-    if not self.config.borderThickness then
-        self.config.borderThickness = 1
+    
+    if not self.config.borderScale then
+        self.config.borderScale = self.config.borderLength or 1.0
+        self.config.borderLength = nil
+    end
+    
+    if not self.config.backgroundTexture then
+        self.config.backgroundTexture = defaults.backgroundTexture
     end
 end
 
@@ -87,28 +96,6 @@ function ConfigManager:GetConfigFilePath()
     return "WTF/Account/"..account.."/SavedVariables/"..self.dbName..".lua"
 end
 
-function ConfigManager:Serialize(tbl)
-    local result = "{"
-    for k, v in pairs(tbl) do
-        if type(k) == "string" then
-            result = result..string.format("[%q]=%s,", k, self:SerializeValue(v))
-        else
-            result = result.."["..tostring(k).."]="..self:SerializeValue(v)..","
-        end
-    end
-    return result.."}"
-end
-
-function ConfigManager:SerializeValue(v)
-    if type(v) == "table" then
-        return self:Serialize(v)
-    elseif type(v) == "string" then
-        return string.format("%q", v)
-    else
-        return tostring(v)
-    end
-end
-
 function addon.CreateFuxBar()
     local bar = CreateFrame("Frame", "FuxBar", UIParent)
     bar:SetMovable(true)
@@ -117,7 +104,7 @@ function addon.CreateFuxBar()
     bar:SetFrameStrata("BACKGROUND")
     bar.modules = {}
     
-    bar:SetSize(400, 40)
+    bar:SetSize(ConfigManager.config.frameWidth, 40)
     bar:SetScale(ConfigManager.config.scale)
     bar:ClearAllPoints()
     bar:SetPoint(
@@ -130,21 +117,45 @@ function addon.CreateFuxBar()
 
     local backgroundFrame = CreateFrame("Frame", nil, bar, "BackdropTemplate")
     backgroundFrame:SetAllPoints(bar)
-    backgroundFrame:SetBackdrop({
-        bgFile = "Interface\\AddOns\\MenuBar\\Menu\\bj.tga",
-        edgeFile = nil,
-    })
+    
+    local function SetupBackgroundTexture()
+        if ConfigManager.config.backgroundTexture == "" then
+            backgroundFrame:SetBackdrop({
+                bgFile = nil,
+                edgeFile = nil,
+            })
+            backgroundFrame:SetBackdropColor(0, 0, 0, 0)
+        else
+            backgroundFrame:SetBackdrop({
+                bgFile = ConfigManager.config.backgroundTexture,
+                edgeFile = nil,
+            })
+            backgroundFrame:SetBackdropColor(1, 1, 1, ConfigManager.config.backgroundAlpha)
+        end
+    end
+    
+    SetupBackgroundTexture()
     backgroundFrame:SetAlpha(ConfigManager.config.visible and ConfigManager.config.backgroundAlpha or 0)
+    bar.backgroundFrame = backgroundFrame
 
     bar.topLine = bar:CreateTexture(nil, "ARTWORK")
     bar.topLine:SetHeight(ConfigManager.config.borderThickness)
-    bar.topLine:SetPoint("TOPLEFT", bar, "TOPLEFT")
-    bar.topLine:SetPoint("TOPRIGHT", bar, "TOPRIGHT")
-
+    
     bar.bottomLine = bar:CreateTexture(nil, "ARTWORK")
     bar.bottomLine:SetHeight(ConfigManager.config.borderThickness)
-    bar.bottomLine:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT")
-    bar.bottomLine:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+    
+    function bar:UpdateBorderPositions()
+        local centerOffset = bar:GetWidth() / 2
+        local halfLength = bar:GetWidth() * ConfigManager.config.borderScale / 2
+        
+        bar.topLine:ClearAllPoints()
+        bar.topLine:SetPoint("TOPLEFT", bar, "TOP", -halfLength, 0)
+        bar.topLine:SetPoint("TOPRIGHT", bar, "TOP", halfLength, 0)
+        
+        bar.bottomLine:ClearAllPoints()
+        bar.bottomLine:SetPoint("BOTTOMLEFT", bar, "BOTTOM", -halfLength, 0)
+        bar.bottomLine:SetPoint("BOTTOMRIGHT", bar, "BOTTOM", halfLength, 0)
+    end
 
     function bar:UpdateBorderColor()
         local r, g, b, a
@@ -169,18 +180,21 @@ function addon.CreateFuxBar()
         local currentX = spacing
         local totalWidth = spacing
         
+        local buttonTotalWidth = 0
         for _, module in ipairs(self.modules) do
-            totalWidth = totalWidth + module:GetWidth() + spacing
+            buttonTotalWidth = buttonTotalWidth + module:GetWidth() + spacing
         end
+        buttonTotalWidth = buttonTotalWidth - spacing
         
-        self:SetWidth(totalWidth)
-        backgroundFrame:SetWidth(totalWidth)
+        currentX = (self:GetWidth() - buttonTotalWidth) / 2
         
         for _, module in ipairs(self.modules) do
             module:ClearAllPoints()
             module:SetPoint("LEFT", self, "LEFT", currentX, 0)
             currentX = currentX + module:GetWidth() + spacing
         end
+
+        self:UpdateBorderPositions()
     end
     
     function bar:AddModule(module)
@@ -189,50 +203,86 @@ function addon.CreateFuxBar()
         return module
     end
 
+    bar:UpdateBorderPositions()
     bar:UpdateBorderColor()
 
-    bar:SetScript("OnMouseDown", function(self)
-        if not ConfigManager.config.lock then
-            self:StartMoving()
+    local configButton = CreateFrame("Button", nil, bar)
+    bar.configButton = configButton
+    configButton:SetSize(18, 18)
+    configButton:SetPoint("TOPRIGHT", 10, 6)
+    configButton:SetNormalTexture("Interface\\AddOns\\MenuBar\\Media\\Icons\\lockPosition.tga")
+    configButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
+    
+    configButton:SetShown(not ConfigManager.config.lock)
+
+    configButton:SetScript("OnMouseDown", function(self, button)
+        if button == "LeftButton" and not ConfigManager.config.lock then
+            bar:StartMoving()
         end
     end)
 
-    bar:SetScript("OnMouseUp", function(self)
-        self:StopMovingOrSizing()
-        if not ConfigManager.config.lock then
+    configButton:SetScript("OnMouseUp", function(self, button)
+        bar:StopMovingOrSizing()
+        
+        if button == "LeftButton" and not ConfigManager.config.lock then
             ConfigManager.config.position.point, _, 
             ConfigManager.config.position.relativePoint, 
             ConfigManager.config.position.x, 
-            ConfigManager.config.position.y = self:GetPoint()
+            ConfigManager.config.position.y = bar:GetPoint()
             ConfigManager:SaveToFile(true)
         end
     end)
 
-    bar:EnableMouse(not ConfigManager.config.lock)
-
-    local alphaSlider = _G["FuxBar设置$parentAlpha"]
-    if alphaSlider then
-        alphaSlider:SetScript("OnValueChanged", function(self, value)
-            value = math.floor(value)
-            ConfigManager.config.backgroundAlpha = value / 100
-            backgroundFrame:SetAlpha(ConfigManager.config.visible and ConfigManager.config.backgroundAlpha or 0)
-            self.Text:SetText(string.format("背景透明度：%d%%", value))
-            ConfigManager:SaveToFile()
-        end)
-    end
-
     return bar
 end
 
-function addon.CreateConfigPanel()
-    local panel = CreateFrame("Frame")
-    panel.name = "FuxBar设置"
-    panel:SetSize(600, 350)
-    local leftXOffset = 20
-    local rightXOffset = 320
-    local yOffset = -30
+local configWindow
+function addon.CreateConfigWindow()
+    configWindow = CreateFrame("Frame", "FuxBarConfigWindow", UIParent, "BackdropTemplate")
+    configWindow:SetSize(650, 550)
+    configWindow:SetPoint("CENTER")
+    configWindow:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile = true, tileSize = 32, edgeSize = 32,
+        insets = { left = 11, right = 12, top = 12, bottom = 11 }
+    })
+    configWindow:SetBackdropColor(0, 0, 0, 1)
+    configWindow:SetFrameStrata("DIALOG")
+    configWindow:EnableMouse(true)
+    configWindow:SetMovable(true)
+    configWindow:RegisterForDrag("LeftButton")
+    configWindow:SetScript("OnDragStart", function(self)
+        if not self.isMoving then
+            self:StartMoving()
+            self.isMoving = true
+        end
+    end)
+    configWindow:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        self.isMoving = false
+    end)
+    configWindow:Hide()
 
-    local visibleCheck = CreateFrame("CheckButton", "$parentVisible", panel, "UICheckButtonTemplate")
+    local titleText = configWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    titleText:SetPoint("TOP", 0, -18)
+    titleText:SetText("FuxBar 配置")
+    titleText:SetTextColor(1, 0.82, 0)
+
+    local closeButton = CreateFrame("Button", nil, configWindow, "UIPanelCloseButton")
+    closeButton:SetPoint("TOPRIGHT", -8, -8)
+    closeButton:SetScript("OnClick", function()
+        configWindow:Hide()
+    end)
+
+    local totalWidth = 560
+    local leftWidth = totalWidth * 0.5
+    local rightWidth = totalWidth * 0.5
+    local leftXOffset = 60
+    local rightXOffset = 430
+    local yOffset = -40
+
+    local visibleCheck = CreateFrame("CheckButton", "$parentVisible", configWindow, "UICheckButtonTemplate")
     visibleCheck:SetPoint("TOPLEFT", leftXOffset, yOffset)
     visibleCheck.Text:SetText("微型菜单条开关")
     visibleCheck:SetChecked(ConfigManager.config.visible)
@@ -247,9 +297,9 @@ function addon.CreateConfigPanel()
     end)
     yOffset = yOffset - 40
 
-    local lockButton = CreateFrame("CheckButton", "$parentLock", panel, "UICheckButtonTemplate")
+    local lockButton = CreateFrame("CheckButton", "$parentLock", configWindow, "UICheckButtonTemplate")
     lockButton:SetPoint("TOPLEFT", leftXOffset, yOffset)
-    lockButton.Text:SetText("移动位置开关（解锁后可拖动）")
+    lockButton.Text:SetText("移动位置开关（解锁后长按小锁可拖动）")
     lockButton:SetChecked(ConfigManager.config.lock)
     lockButton:SetScript("OnClick", function(self)
         local checked = self:GetChecked()
@@ -257,12 +307,16 @@ function addon.CreateConfigPanel()
         local fuxBar = _G["FuxBar"]
         if fuxBar then
             fuxBar:EnableMouse(not checked)
+            local configButton = fuxBar.configButton
+            if configButton then
+                configButton:SetShown(not checked)
+            end
         end
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50
 
-    local scaleSlider = CreateFrame("Slider", "$parentScale", panel, "OptionsSliderTemplate")
+    local scaleSlider = CreateFrame("Slider", "$parentScale", configWindow, "OptionsSliderTemplate")
     scaleSlider:SetPoint("TOPLEFT", leftXOffset, yOffset)
     scaleSlider:SetMinMaxValues(0.5, 2)
     scaleSlider:SetValueStep(0.05)
@@ -280,9 +334,9 @@ function addon.CreateConfigPanel()
         end
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50
 
-    local spacingSlider = CreateFrame("Slider", "$parentSpacing", panel, "OptionsSliderTemplate")
+    local spacingSlider = CreateFrame("Slider", "$parentSpacing", configWindow, "OptionsSliderTemplate")
     spacingSlider:SetPoint("TOPLEFT", leftXOffset, yOffset)
     spacingSlider:SetMinMaxValues(0, 20)
     spacingSlider:SetValueStep(1)
@@ -298,9 +352,9 @@ function addon.CreateConfigPanel()
         end
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 60
+    yOffset = yOffset - 50
 
-    local alphaSlider = CreateFrame("Slider", "$parentAlpha", panel, "OptionsSliderTemplate")
+    local alphaSlider = CreateFrame("Slider", "$parentAlpha", configWindow, "OptionsSliderTemplate")
     alphaSlider:SetPoint("TOPLEFT", leftXOffset, yOffset)
     alphaSlider:SetMinMaxValues(0, 100)
     alphaSlider:SetValueStep(1)
@@ -311,21 +365,29 @@ function addon.CreateConfigPanel()
         ConfigManager.config.backgroundAlpha = value / 100
         local fuxBar = _G["FuxBar"]
         if fuxBar then
-            local backgroundFrame = fuxBar:GetChildren()
+            local backgroundFrame = fuxBar.backgroundFrame
             backgroundFrame:SetAlpha(ConfigManager.config.visible and ConfigManager.config.backgroundAlpha or 0)
         end
         self.Text:SetText(string.format("背景透明度：%d%%", value))
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 40
+    yOffset = yOffset - 50
 
-    local talentAnimationCheck = CreateFrame("CheckButton", "$parentTalentAnimation", panel, "UICheckButtonTemplate")
-    talentAnimationCheck:SetPoint("TOPLEFT", leftXOffset, yOffset)
-    talentAnimationCheck.Text:SetText("悬停动画开关")
+    local animationGroup = CreateFrame("Frame", nil, configWindow)
+    animationGroup:SetPoint("TOPLEFT", leftXOffset, yOffset - 20)
+    animationGroup:SetSize(leftWidth - 20, 100)
+
+    local animationTitle = animationGroup:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    animationTitle:SetPoint("TOPLEFT", 0, 0)
+    animationTitle:SetText("动画效果")
+
+    local talentAnimationCheck = CreateFrame("CheckButton", "$parentTalentAnimation", animationGroup, "UICheckButtonTemplate")
+    talentAnimationCheck:SetPoint("TOPLEFT", 0, -20)
+    talentAnimationCheck.Text:SetText("悬停缩放动画")
     talentAnimationCheck:SetChecked(FuxPanel_EnableScaleAnimation)
 
-    local hoverHighlightCheck = CreateFrame("CheckButton", "$parentHoverHighlight", panel, "UICheckButtonTemplate")
-    hoverHighlightCheck:SetPoint("TOPLEFT", leftXOffset, yOffset - 40)
+    local hoverHighlightCheck = CreateFrame("CheckButton", "$parentHoverHighlight", animationGroup, "UICheckButtonTemplate")
+    hoverHighlightCheck:SetPoint("TOPLEFT", 0, -50)
     hoverHighlightCheck.Text:SetText("鼠标悬停高亮")
     hoverHighlightCheck:SetChecked(FuxPanel_EnableHighlightEffect)
 
@@ -346,8 +408,6 @@ function addon.CreateConfigPanel()
         UpdateAllButtonHighlightStates()
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 40
-
 
     hoverHighlightCheck:SetScript("OnClick", function(self)
         local checked = self:GetChecked()
@@ -365,9 +425,9 @@ function addon.CreateConfigPanel()
         ConfigManager:SaveToFile()
     end)
 
-    yOffset = -30
+    yOffset = -40
 
-    local showTopLineCheck = CreateFrame("CheckButton", "$parentShowTopLine", panel, "UICheckButtonTemplate")
+    local showTopLineCheck = CreateFrame("CheckButton", "$parentShowTopLine", configWindow, "UICheckButtonTemplate")
     showTopLineCheck:SetPoint("TOPLEFT", rightXOffset, yOffset)
     showTopLineCheck.Text:SetText("显示顶部装饰线条")
     showTopLineCheck:SetChecked(ConfigManager.config.showTopLine)
@@ -382,7 +442,7 @@ function addon.CreateConfigPanel()
     end)
     yOffset = yOffset - 40
 
-    local showBottomLineCheck = CreateFrame("CheckButton", "$parentShowBottomLine", panel, "UICheckButtonTemplate")
+    local showBottomLineCheck = CreateFrame("CheckButton", "$parentShowBottomLine", configWindow, "UICheckButtonTemplate")
     showBottomLineCheck:SetPoint("TOPLEFT", rightXOffset, yOffset)
     showBottomLineCheck.Text:SetText("显示底部装饰线条")
     showBottomLineCheck:SetChecked(ConfigManager.config.showBottomLine)
@@ -397,13 +457,13 @@ function addon.CreateConfigPanel()
     end)
     yOffset = yOffset - 40
 
-    local useClassColorCheck = CreateFrame("CheckButton", "$parentUseClassColor", panel, "UICheckButtonTemplate")
+    local useClassColorCheck = CreateFrame("CheckButton", "$parentUseClassColor", configWindow, "UICheckButtonTemplate")
     useClassColorCheck:SetPoint("TOPLEFT", rightXOffset, yOffset)
     useClassColorCheck.Text:SetText("线条使用职业颜色")
     useClassColorCheck:SetChecked(ConfigManager.config.useClassColor)
 
-    local borderColorPicker = CreateFrame("Button", "$parentBorderColor", panel, "UIPanelButtonTemplate")
-    borderColorPicker:SetPoint("TOPLEFT", rightXOffset, yOffset - 40)
+    local borderColorPicker = CreateFrame("Button", "$parentBorderColor", configWindow, "UIPanelButtonTemplate")
+    borderColorPicker:SetPoint("TOPLEFT", rightXOffset, yOffset - 30)
     borderColorPicker:SetSize(120, 25)
     borderColorPicker:SetText("线条颜色自定义")
     borderColorPicker:SetScript("OnClick", function()
@@ -450,9 +510,9 @@ function addon.CreateConfigPanel()
         end
         ConfigManager:SaveToFile()
     end)
-    yOffset = yOffset - 80
+    yOffset = yOffset - 55
 
-    local borderThicknessSlider = CreateFrame("Slider", "$parentBorderThickness", panel, "OptionsSliderTemplate")
+    local borderThicknessSlider = CreateFrame("Slider", "$parentBorderThickness", configWindow, "OptionsSliderTemplate")
     borderThicknessSlider:SetPoint("TOPLEFT", rightXOffset, yOffset - 30)
     borderThicknessSlider:SetMinMaxValues(1, 6)
     borderThicknessSlider:SetValueStep(1)
@@ -470,41 +530,174 @@ function addon.CreateConfigPanel()
         ConfigManager:SaveToFile()
     end)
 
-    -- 添加快速位置设置按钮
-    local positionTitle = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-    positionTitle:SetPoint("TOPLEFT", rightXOffset, yOffset - 80)
-    positionTitle:SetText("快速位置设置")
+    local frameWidthSlider = CreateFrame("Slider", "$parentFrameWidth", configWindow, "OptionsSliderTemplate")
+    frameWidthSlider:SetPoint("TOPLEFT", rightXOffset, yOffset - 80)
+    frameWidthSlider:SetMinMaxValues(200, 550)
+    frameWidthSlider:SetValueStep(10)
+    frameWidthSlider:SetValue(ConfigManager.config.frameWidth)
+    frameWidthSlider.Text:SetText("主框架宽度："..ConfigManager.config.frameWidth)
+    frameWidthSlider.Low:SetText("200")
+    frameWidthSlider.High:SetText("550")
+    frameWidthSlider:SetScript("OnValueChanged", function(self, value)
+        value = math.floor(value)
+        ConfigManager.config.frameWidth = value
+        self.Text:SetText("主框架宽度："..value)
+        local fuxBar = _G["FuxBar"]
+        if fuxBar then
+            fuxBar:SetSize(value, fuxBar:GetHeight())
+            
+            fuxBar:UpdateLayout()
+        end
+        ConfigManager:SaveToFile()
+    end)
 
-    local function CreatePositionButton(text, point, x, y, offsetX, offsetY)
-        local button = CreateFrame("Button", nil, panel, "UIPanelButtonTemplate")
-        button:SetSize(100, 25)
-        button:SetPoint("TOPLEFT", rightXOffset + offsetX, yOffset - 110 + offsetY)
-        button:SetText(text)
-        button:SetScript("OnClick", function()
-            local fuxBar = _G["FuxBar"]
-            if fuxBar then
-                ConfigManager.config.position.point = point
-                ConfigManager.config.position.relativePoint = point
-                ConfigManager.config.position.x = x
-                ConfigManager.config.position.y = y
-                
-                fuxBar:ClearAllPoints()
-                fuxBar:SetPoint(point, UIParent, point, x, y)
-                ConfigManager:SaveToFile()
-            end
+    ConfigManager.config.borderScale = 1.00
+    
+    yOffset = yOffset - 130
+    
+    local textureOptions = {
+        {name = "默认材质", value = "Interface\\AddOns\\MenuBar\\Media\\ClassIcon\\bj.tga"},
+        {name = "Blizzard", value = "Interface\\CHARACTERFRAME\\UI-Party-Background"},
+        {name = "Details-条纹", value = "Interface\\AddOns\\MenuBar\\Media\\ClassIcon\\overlay_indicator_1.blp"},
+        {name = "Eltreum-Tapped", value = "Interface\\AddOns\\MenuBar\\Media\\ClassIcon\\Eltreum-Tapped.tga"},
+        {name = "Eltreum-Stripes", value = "Interface\\AddOns\\MenuBar\\Media\\ClassIcon\\Eltreum-Stripes.tga"},
+        {name = "ElvUI-简约", value = "Interface\\AddOns\\ElvUI\\Core\\Media\\Textures\\NormTex"},
+        {name = "透明背景", value = ""}
+    }
+    
+    local textureDropdownContainer = CreateFrame("Frame", "FuxBarTextureDropdownContainer", configWindow)
+    textureDropdownContainer:SetPoint("TOPLEFT", rightXOffset, yOffset)
+    textureDropdownContainer:SetSize(160, 25)
+    
+    local textureDropdown = CreateFrame("Button", "FuxBarTextureDropdown", textureDropdownContainer, "UIPanelButtonTemplate")
+    textureDropdown:SetPoint("TOPLEFT", 0, 0)
+    textureDropdown:SetSize(160, 25)
+    textureDropdown:SetText("选择背景材质")
+    
+    local textureSelectionPanel = CreateFrame("Frame", "FuxBarTextureSelectionPanel", configWindow, "BackdropTemplate")
+    textureSelectionPanel:SetPoint("TOPLEFT", textureDropdownContainer, "BOTTOMLEFT", 0, -5)
+    textureSelectionPanel:SetSize(160, 160)
+    textureSelectionPanel:SetBackdrop({
+        bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+        tile = true, tileSize = 32, edgeSize = 32,
+        insets = { left = 11, right = 12, top = 12, bottom = 11 }
+    })
+    textureSelectionPanel:SetBackdropColor(0, 0, 0, 1)
+    textureSelectionPanel:Hide()
+    
+    local scrollFrame = CreateFrame("ScrollFrame", "FuxBarTextureScrollFrame", textureSelectionPanel, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT", 10, -10)
+    scrollFrame:SetPoint("BOTTOMRIGHT", -30, 10)
+    
+    local scrollContent = CreateFrame("Frame", "FuxBarTextureScrollContent", scrollFrame)
+    scrollContent:SetSize(160, 160)
+    scrollFrame:SetScrollChild(scrollContent)
+    
+    local function CreateTextureOptionTexture(parent, option, index)
+        local textureFrame = CreateFrame("Button", nil, parent, "BackdropTemplate")
+        textureFrame:SetSize(120, 20)
+        textureFrame:SetPoint("TOPLEFT", 0, -((index-1) * 20))
+        
+        textureFrame:SetBackdrop({
+            bgFile = option.value == "" and "Interface\\DialogFrame\\UI-DialogBox-Background" or option.value,
+            edgeFile = nil,
+            tile = true, tileSize = 16,
+            insets = { left = 0, right = 0, top = 0, bottom = 0 }
+        })
+        
+        textureFrame:SetScript("OnEnter", function(self)
+            self:SetBackdropBorderColor(1, 0.82, 0)
         end)
+        
+        textureFrame:SetScript("OnLeave", function(self)
+            self:SetBackdropBorderColor(1, 1, 1)
+        end)
+        
+        textureFrame:SetScript("OnClick", function()
+            ConfigManager.config.backgroundTexture = option.value
+            
+            local fuxBar = _G["FuxBar"]
+            if fuxBar and fuxBar.backgroundFrame then
+                if option.value == "" then
+                    fuxBar.backgroundFrame:SetBackdrop({
+                        bgFile = nil,
+                        edgeFile = nil,
+                    })
+                    fuxBar.backgroundFrame:SetBackdropColor(0, 0, 0, 0)
+                else
+                    fuxBar.backgroundFrame:SetBackdrop({
+                        bgFile = option.value,
+                        edgeFile = nil,
+                    })
+                    fuxBar.backgroundFrame:SetBackdropColor(1, 1, 1, ConfigManager.config.backgroundAlpha)
+                end
+            end
+            
+            textureSelectionPanel:Hide()
+            ConfigManager:SaveToFile()
+        end)
+        
+        local nameText = textureFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        nameText:SetPoint("LEFT", 5, 0)
+        nameText:SetText(option.name)
+        nameText:SetTextColor(1, 1, 1)
+        
+        return textureFrame
     end
+    
+    for i, option in ipairs(textureOptions) do
+        CreateTextureOptionTexture(scrollContent, option, i)
+    end
+    
+    textureDropdown:SetScript("OnClick", function()
+        if textureSelectionPanel:IsShown() then
+            textureSelectionPanel:Hide()
+        else
+            textureSelectionPanel:Show()
+        end
+    end)
+    
+    textureSelectionPanel:SetScript("OnHide", function()
+        textureSelectionPanel:Hide()
+    end)
+    
+    configWindow:SetScript("OnMouseDown", function(self, button)
+        if button == "LeftButton" and textureSelectionPanel:IsShown() then
+            if not textureSelectionPanel:IsMouseOver() and not textureDropdown:IsMouseOver() then
+                textureSelectionPanel:Hide()
+            end
+        end
+    end)
 
-    CreatePositionButton("顶部居中", "TOP", 0, 0, 0, 0)
-    CreatePositionButton("底部居中", "BOTTOM", 0, 0, 110, 0)
-
-    local helpText = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local helpText = configWindow:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     helpText:SetPoint("BOTTOMLEFT", 20, 20)
     helpText:SetPoint("BOTTOMRIGHT", -20, 20)
     helpText:SetJustifyH("LEFT")
     helpText:SetText("设置将自动保存 - |r|cffFF7F00蓝|r|r|cffFF7F00雨|r|r|cffFF7F00秋|r|r|cffFF7F00夜|r")
 
-    return panel
+    local resetPositionButton = CreateFrame("Button", nil, configWindow, "UIPanelButtonTemplate")
+    resetPositionButton:SetSize(120, 25)
+    resetPositionButton:SetPoint("BOTTOMRIGHT", -20, 20)
+    resetPositionButton:SetText("重置位置")
+    resetPositionButton:SetScript("OnClick", function()
+        local fuxBar = _G["FuxBar"]
+        if fuxBar then
+            ConfigManager.config.position = {
+                point = "CENTER",
+                relativeTo = "UIParent",
+                relativePoint = "CENTER",
+                x = 0,
+                y = 0
+            }
+            
+            fuxBar:ClearAllPoints()
+            fuxBar:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
+            ConfigManager:SaveToFile()
+        end
+    end)
+
+    return configWindow
 end
 
 function addon.AddModule(bar, moduleName, createFunc)
@@ -525,13 +718,7 @@ function addon.Initialize()
     
     local fuxBar = addon.CreateFuxBar()
     
-    local panel = addon.CreateConfigPanel()
-    if InterfaceOptions_AddCategory then
-        InterfaceOptions_AddCategory(panel)
-    else
-        local category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
-        Settings.RegisterAddOnCategory(category);
-    end
+    local configWindow = addon.CreateConfigWindow()
     
     StaticPopupDialogs["FUXBAR_CONFIRM_RESET"] = {
         text = "确定要重置所有配置为默认值吗？此操作不可恢复。",
@@ -543,7 +730,7 @@ function addon.Initialize()
             
             if fuxBar then
                 fuxBar:SetScale(ConfigManager.config.scale)
-                local backgroundFrame = fuxBar:GetChildren()
+                local backgroundFrame = fuxBar.backgroundFrame
                 backgroundFrame:SetAlpha(ConfigManager.config.visible and ConfigManager.config.backgroundAlpha or 0)
                 fuxBar:UpdateBorderColor()
                 
@@ -557,6 +744,7 @@ function addon.Initialize()
                 )
                 fuxBar.topLine:SetHeight(ConfigManager.config.borderThickness)
                 fuxBar.bottomLine:SetHeight(ConfigManager.config.borderThickness)
+                fuxBar:UpdateBorderPositions()
             end
         end,
         timeout = 0,
@@ -574,8 +762,11 @@ function addon.Initialize()
         elseif msg:lower() == "reset" then
             StaticPopup_Show("FUXBAR_CONFIRM_RESET")
         elseif msg:lower() == "config" or msg == "" then
-            InterfaceOptionsFrame_OpenToCategory("FuxBar设置")
-            InterfaceOptionsFrame_OpenToCategory("FuxBar设置")
+            if configWindow:IsShown() then
+                configWindow:Hide()
+            else
+                configWindow:Show()
+            end
         end
     end
     

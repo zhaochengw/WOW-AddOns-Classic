@@ -33,7 +33,7 @@ local QUEST_EXTRA_ITTYPE = data:AddExtraItemTableType("Quest")
 local PRICE_EXTRA_ITTYPE = data:AddExtraItemTableType("Price")
 
 local PROF_CONTENT = data:AddContentType(ALIL["Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
-local PROF_GATH_CONTENT = data:AddContentType(ALIL["Gathering Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
+local PROF_GATH_CONTENT = data:AddContentType(AL["Gathering Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
 local PROF_SEC_CONTENT = data:AddContentType(AL["Secondary Professions"], ATLASLOOT_SECPROFESSION_COLOR)
 local PROF_CLASS_CONTENT = data:AddContentType(AL["Class Professions"], ATLASLOOT_CLASSPROFESSION_COLOR)
 --local RAID20_CONTENT = data:AddContentType(AL["20 Raids"], ATLASLOOT_RAID20_COLOR)
@@ -46,6 +46,12 @@ data["Alchemy"] = {
 	TableType = PROF_ITTYPE,
 	CorrespondingFields = private.ALCHEMY_LINK,
 	items = {
+		{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+				{ 1, 426607 }, --Elixir of Coalesced Regret
+			},
+		},
 		{
 			name = AL["Flasks"],
 			[NORMAL_DIFF] = {
@@ -214,6 +220,14 @@ data["Blacksmithing"] = {
 	TableType = PROF_ITTYPE,
 	CorrespondingFields = private.BLACKSMITHING_LINK,
 	items = {
+			{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+				{ 1, 429348 }, --Shifting Silver Breastplate
+				{ 2, 430397 }, --Blackfathom Sharpening Stone
+				{ 3, 427063 }, --Mantle of the Second War
+			},
+		},
 		{
 			name = AL["Weapons"].." - "..ALIL["Daggers"],
 			[NORMAL_DIFF] = {
@@ -571,6 +585,12 @@ data["Enchanting"] = {
 	CorrespondingFields = private.ENCHANTING_LINK,
 	items = {
 		{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+				{ 1, 430409 }, --Brilliant Mana Oil / 310
+			}
+		},
+		{
 			name = AL["Oil"],
 			[NORMAL_DIFF] = {
 				{ 1, 25130 }, --Brilliant Mana Oil / 310
@@ -786,6 +806,12 @@ data["Engineering"] = {
 	TableType = PROF_ITTYPE,
 	CorrespondingFields = private.ENGINEERING_LINK,
 	items = {
+			{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+				{ 1, 424641 }, --Shredder Autosalvage Unit
+			}
+		},
 		{
 			name = AL["Armor"],
 			[NORMAL_DIFF] = {
@@ -1012,6 +1038,14 @@ data["Tailoring"] = {
 	TableType = PROF_ITTYPE,
 	CorrespondingFields = private.TAILORING_LINK,
 	items = {
+		{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+			{ 1, 429351 }, --Extraplanar Spidersilk Boots
+			{ 2, 428425 }, --Phoenix Bindings
+
+			}
+		},
 		{
 			name = AL["Armor"].." - "..ALIL["Cloak"],
 			[NORMAL_DIFF] = {
@@ -1307,6 +1341,13 @@ data["Leatherworking"] = {
 	TableType = PROF_ITTYPE,
 	CorrespondingFields = private.LEATHERWORKING_LINK,
 	items = {
+			{
+			name = AL["SoD Exclusives"],
+			[NORMAL_DIFF] = {
+			{ 1, 429869 }, --Void-Touched Leather Gauntlets
+			{ 2, 429354 }, --Void-Touched Leather Gloves
+			}
+		},
 		{
 			name = AL["Armor"].." - "..ALIL["Cloak"],
 			[NORMAL_DIFF] = {

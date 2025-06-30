@@ -857,9 +857,9 @@ data["DefilersScourgestone"] = {
 					{ 2, 47308 }, --Belt of Pale Thorns
 					{ 3, 47277 }, --Bindings of the Autumn Willow
 					-- agi
-					{ 16, 47284 }, --Icewalker Treads
-					{ 17, 47299 }, --Belt of the Pitiless Killer
-					{ 18, 47313 }, --Armbands of Dark Determination
+					{ 16, 237083 }, --Icewalker Treads
+					{ 17, 237080 }, --Belt of the Pitiless Killer
+					{ 18, 237076 }, --Armbands of Dark Determination
 				},
 				{ -- alliance
 					-- caster
@@ -867,9 +867,9 @@ data["DefilersScourgestone"] = {
 					{ 2, 47308 }, --Belt of Pale Thorns
 					{ 3, 47277 }, --Bindings of the Autumn Willow
 					-- agi
-					{ 16, 47284 }, --Icewalker Treads
-					{ 17, 47299 }, --Belt of the Pitiless Killer
-					{ 18, 47313 }, --Armbands of Dark Determination
+					{ 16, 237083 }, --Icewalker Treads
+					{ 17, 237080 }, --Belt of the Pitiless Killer
+					{ 18, 237076 }, --Armbands of Dark Determination
 				}
 			)
 		},
@@ -879,22 +879,22 @@ data["DefilersScourgestone"] = {
 				{ -- horde
 					-- caster
 					{ 1, 47295 }, --Sabatons of Tremoring Earth
-					{ 3, 47265 }, --Binding of the Ice Burrower
+					{ 3, 237079 }, --Binding of the Ice Burrower
 					{ 4, 47280 }, --Wristwraps of Cloudy Omen
 					-- agi
-					{ 16, 47296 }, --Greaves of Ruthless Judgment
+					{ 16, 237082 }, --Greaves of Ruthless Judgment
 					{ 17, 47311 }, --Waistguard of Deathly Dominion
-					{ 18, 47281 }, --Bracers of the Silent Massacre
+					{ 18, 237075 }, --Bracers of the Silent Massacre
 				},
 				{ -- alliance
 					-- caster
 					{ 1, 47090 }, --Boots of Tremoring Earth
-					{ 3, 46990 }, --Belt of the Ice Burrower
+					{ 3, 237052 }, --Belt of the Ice Burrower
 					{ 4, 47056 }, --Bracers of Cloudy Omen
 					-- agi
-					{ 16, 47106 }, --Sabatons of Ruthless Judgment
+					{ 16, 237055 }, --Sabatons of Ruthless Judgment
 					{ 17, 47152 }, --Belt of Deathly Dominion
-					{ 18, 47073 }, --Bracers of the Untold Massacre
+					{ 18, 237048 }, --Bracers of the Untold Massacre
 				}
 			)
 		},
@@ -908,12 +908,12 @@ data["DefilersScourgestone"] = {
 					{ 3, 47294 }, --Bracers of the Broken Bond
 					-- str
 					{ 16, 47312 }, --Greaves of the Saronite Citadel
-					{ 17, 47268 }, --Bloodbath Girdle
+					{ 17, 237078 }, --Bloodbath Girdle
 					{ 18, 47253 }, --Boneshatter Vambraces
 					-- tank
-					{ 24, 47269 }, --Dawnbreaker Sabatons
-					{ 25, 47283 }, --Belt of Bloodied Scars
-					{ 26, 47298 }, --Armguards of the Shieldmaiden
+					{ 24, 237081 }, --Dawnbreaker Sabatons
+					{ 25, 237077 }, --Belt of Bloodied Scars
+					{ 26, 237074 }, --Armguards of the Shieldmaiden
 				},
 				{ -- alliance
 					-- caster
@@ -922,12 +922,12 @@ data["DefilersScourgestone"] = {
 					{ 3, 47093 }, --Vambraces of the Broken Bond
 					-- str
 					{ 16, 47150 }, --Greaves of the 7th Legion
-					{ 17, 46999 }, --Bloodbath Belt
+					{ 17, 237051 }, --Bloodbath Belt
 					{ 18, 46961 }, --Boneshatter Armplates
 					-- tank
-					{ 24, 46997 }, --Dawnbreaker Greaves
-					{ 25, 47072 }, --Girdle of Bloodied Scars
-					{ 26, 47108 }, --Bracers of the Shieldmaiden
+					{ 24, 237054 }, --Dawnbreaker Greaves
+					{ 25, 237050 }, --Girdle of Bloodied Scars
+					{ 26, 237047 }, --Bracers of the Shieldmaiden
 				}
 			)
 		},
@@ -1014,32 +1014,32 @@ data["DefilersScourgestone"] = {
 			[NORMAL_DIFF] = AtlasLoot:GetRetByFaction(
 				{ -- horde
 					-- caster
-					{ 1, 47327 }, --Lurid Manifestation
+					{ 1, 237073 }, --Lurid Manifestation
 					{ 2, 45495 }, --Conductive Seal
 					-- healer
-					{ 5, 47278 }, --Circle of the Darkmender
+					{ 5, 237070 }, --Circle of the Darkmender
 					-- agi
-					{ 16, 47282 }, --Band of Callous Aggression
+					{ 16, 237072 }, --Band of Callous Aggression
 					-- str
-					{ 19, 46959 }, --Band of the Violent Temperment
+					{ 19, 237044 }, --Band of the Violent Temperment
 					{ 20, 45534 }, --Seal of the Betrayed King
 					-- tank
-					{ 24, 47315 }, --Band of the Traitor King
+					{ 24, 237069 }, --Band of the Traitor King
 					{ 25, 45471 }, --Fate's Clutch
 				},
 				{ -- alliance
 					-- caster
-					{ 1, 47054 }, --Band of Deplorable Violence
+					{ 1, 237046 }, --Band of Deplorable Violence
 					{ 2, 45495 }, --Conductive Seal
 					-- healer
-					{ 9, 47223 }, --Ring of the Darkmender
+					{ 9, 237043 }, --Ring of the Darkmender
 					-- agi
-					{ 16, 47070 }, --Ring of Callous Aggression
+					{ 16, 237045 }, --Ring of Callous Aggression
 					-- str
-					{ 19, 47252 }, --Ring of the Violent Temperament
+					{ 19, 237071 }, --Ring of the Violent Temperament
 					{ 20, 45534 }, --Seal of the Betrayed King
 					-- tank
-					{ 24, 47149 }, --Signet of the Traitor King
+					{ 24, 237042 }, --Signet of the Traitor King
 					{ 25, 45471 }, --Fate's Clutch
 				}
 			)
@@ -1080,43 +1080,43 @@ data["DefilersScourgestone"] = {
 			[NORMAL_DIFF] = AtlasLoot:GetRetByFaction(
 				{ -- horde
 					-- mainhand
-					{ 1, 47261 }, --Barb of Tarasque
+					{ 1, 237088 }, --Barb of Tarasque
 					{ 3, 47322 }, --Suffering's End
 					-- offhand
 					{ 5, 47276 }, --Talisman of Heedless Sins
 					{ 7, 47309 }, --Mystifying Charm
 					-- dagger
-					{ 16, 47255 }, --Stygian Bladebreaker
+					{ 16, 237090 }, --Stygian Bladebreaker
 					{ 17, 47300 }, --Gouge of the Frigid Heart
 					-- axe
-					{ 19, 47314 }, --Hellscream Slicer
+					{ 19, 237089 }, --Hellscream Slicer
 					{ 20, 47266 }, --Blood Fury
 					-- 2h-str
-					{ 22, 47285 }, --Dual-blade Butcher
+					{ 22, 237091 }, --Dual-blade Butcher
 					-- 2h-agi
-					{ 24, 47302 }, --Twin's Pact
-					{ 26, 47329 }, --Hellion Glaive
+					{ 24, 237093 }, --Twin's Pact
+					{ 26, 237092 }, --Hellion Glaive
 					-- ranged
 					{ 28, 47267 }, --Death's Head Crossbow
 				},
 				{ -- alliance
 					-- mainhand
-					{ 1, 46979 }, --Blade of Tarasque
-					{ 3, 47193 }, --Misery's End
+					{ 1, 237062 }, --Blade of Tarasque
+					{ 3, 237059 }, --Misery's End
 					-- offhand
 					{ 5, 47053 }, --Symbol of Transgression
 					{ 7, 47138 }, --Chalice of Searing Light
 					-- agi dagger
-					{ 16, 46958 }, --Steel Bladebreaker
+					{ 16, 237064 }, --Steel Bladebreaker
 					{ 17, 47104 }, --Twin Spike
 					-- axe
-					{ 19, 47148 }, --Stormpike Cleaver
+					{ 19, 237063 }, --Stormpike Cleaver
 					{ 20, 46996 }, --Lionhead Slasher
 					-- 2h-str
-					{ 22, 47069 }, --Justicebringer
+					{ 22, 237065 }, --Justicebringer
 					-- 2h-agi
-					{ 24, 47114 }, --Lupine Longstaff
-					{ 26, 47233 }, --Archon Glaive
+					{ 24, 237067 }, --Lupine Longstaff
+					{ 26, 237066 }, --Archon Glaive
 					-- ranged
 					{ 28, 46994 }, --Talonstrike
 				}
@@ -1127,15 +1127,15 @@ data["DefilersScourgestone"] = {
 			[NORMAL_DIFF] = AtlasLoot:GetRetByFaction(
 				{ -- horde
 					-- caster
-					{ 1, 47287 }, --Bastion of Resolve
+					{ 1, 237086 }, --Bastion of Resolve
 					-- tank
-					{ 16, 47260 }, --Forlorn Barrier
+					{ 16, 237087 }, --Forlorn Barrier
 				},
 				{ -- alliance
 					-- caster
-					{ 1, 47079 }, --Bastion of Purity
+					{ 1, 237060 }, --Bastion of Purity
 					-- tank
-					{ 16, 46963 }, --Crystal Plated Vanguard
+					{ 16, 237061 }, --Crystal Plated Vanguard
 				}
 			)
 		},
