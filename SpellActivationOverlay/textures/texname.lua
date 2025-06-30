@@ -9,8 +9,8 @@ local mapping =
     ["1027132"]	= "Arcane Missiles 2",
     ["1027133"]	= "Arcane Missiles 3",
     ["450913"] 	= "Art of War",
-    ["801266"] 	= "Backlash Green",
     ["460830"] 	= "Backlash",
+    ["801266"] 	= "Backlash Green",
     ["1030393"]	= "Bandits Guile",
     ["510822"] 	= "Berserk",
     ["511104"] 	= "Blood Boil",
@@ -19,6 +19,8 @@ local mapping =
     ["603338"] 	= "Dark Tiger",
     ["461878"] 	= "Dark Transformation",
     ["459313"] 	= "Daybreak",
+    ["2851787"]	= "Demonic Core", 
+    ["2888300"]	= "Demonic Core Green",
     ["511469"] 	= "Denounce",
     ["1057288"]	= "Echo of the Elements",
     ["450914"] 	= "Eclipse Moon",
@@ -27,6 +29,8 @@ local mapping =
     ["449489"] 	= "Frozen Fingers",
     ["467696"] 	= "Fulmination",
     ["460831"] 	= "Fury of Stormrage",
+    -- Yellow-ish version of Fury of Stormrage, for Holy spells
+    ["30000006"]	= "Fury of Stormrage Yellow",
     ["450917"] 	= "GenericArc 01",
     ["450918"] 	= "GenericArc 02",
     ["450919"] 	= "GenericArc 03",
@@ -39,8 +43,8 @@ local mapping =
     ["459314"] 	= "Hand of Light",
     ["2851788"] = "High Tide",
     ["449490"] 	= "Hot Streak",
-    ["801267"] 	= "Imp Empowerment Green",
     ["449491"] 	= "Imp Empowerment",
+    ["801267"] 	= "Imp Empowerment Green",
     ["457658"] 	= "Impact",
     ["458740"] 	= "Killing Machine",
     ["450926"] 	= "Lock and Load",
@@ -48,10 +52,16 @@ local mapping =
     ["1028137"]	= "Maelstrom Weapon 2",
     ["1028138"]	= "Maelstrom Weapon 3",
     ["1028139"]	= "Maelstrom Weapon 4",
-    ["450927"] 	= "Maelstrom Weapon",
+    ["450927"] 	= "Maelstrom Weapon", -- This acts as a "Maelstrom Weapon 5" texture
+    -- Maelstrom Weapon 6-10 were made up for Season of Discovery
+    ["30000001"]	= "Maelstrom Weapon 6",
+    ["30000002"]	= "Maelstrom Weapon 7",
+    ["30000003"]	= "Maelstrom Weapon 8",
+    ["30000004"]	= "Maelstrom Weapon 9",
+    ["30000005"]	= "Maelstrom Weapon 10",
     ["450928"] 	= "Master Marksman",
-    ["801268"] 	= "Molten Core Green",
     ["458741"] 	= "Molten Core",
+    ["801268"] 	= "Molten Core Green",
     ["1001511"]	= "Monk Blackout Kick",
     ["1028091"]	= "Monk Ox 2",
     ["1028092"]	= "Monk Ox 3",
@@ -64,6 +74,7 @@ local mapping =
     ["449492"] 	= "Nightfall",
     ["510823"] 	= "Feral OmenOfClarity",
     ["898423"] 	= "Predatory Swiftness",
+    ["1518303"]	= "Predatory Swiftness Green",
     ["962497"] 	= "Raging Blow",
     ["450930"] 	= "Rime",
     ["469752"] 	= "Serendipity",
@@ -92,8 +103,12 @@ for retailTexture, classicTexture in pairs(mapping) do
   local filename = classicTexture:gsub(" ", "_"):gsub("'", "");
   local fullTextureName = "Interface\\Addons\\SpellActivationOverlay\\textures\\"..filename;
   local retailNumber = tonumber(retailTexture, 10);
-  if SAO.IsCata() and retailNumber <= 511469 and -- Cataclysm game files embed textures up to (at least) 511469
-    retailNumber ~= 450914 and retailNumber ~= 450915 then -- Eclipse textures in Cataclysm were different
+  if (
+    (SAO.IsCata() and retailNumber <= 511469) -- Cataclysm game files embed textures up to (at least) 511469
+    or
+    (SAO.IsMoP() and retailNumber <= 898423) -- Mists of Pandaria game files embed textures up to (at least) 898423
+  ) and
+    retailNumber ~= 450914 and retailNumber ~= 450915 then -- Eclipse textures in Cataclysm and Pandaria were different
     -- In this case, use texture embedded in game using its FileDataID, not from addon folder using a file path
     fullTextureName = retailTexture;
   end
@@ -128,7 +143,7 @@ function SAO.MarkTexture(self, texName)
   end
 end
 
--- List fetched from bash: cd textures && ls -1 *.blp | cut -d. -f1 | tr 'A-Z' 'a-z' | grep -vE '^(mask|maskzero)$' | awk 'BEGIN{ print "local availableTextures = {" } {printf "  [\"%s\"] = true,\n", $0} END { print "}" }'
+-- List fetched from bash: cd textures && ls -1 *.blp | cut -d. -f1 | tr 'A-Z' 'a-z' | grep -vE '^(mask|maskzero|rkm128)$' | awk 'BEGIN{ print "local availableTextures = {" } {printf "  [\"%s\"] = true,\n", $0} END { print "}" }'
 local availableTextures = {
   ["arcane_missiles"] = true,
   ["arcane_missiles_1"] = true,
@@ -160,6 +175,11 @@ local availableTextures = {
   ["maelstrom_weapon_2"] = true,
   ["maelstrom_weapon_3"] = true,
   ["maelstrom_weapon_4"] = true,
+  ["maelstrom_weapon_6"] = true,
+  ["maelstrom_weapon_7"] = true,
+  ["maelstrom_weapon_8"] = true,
+  ["maelstrom_weapon_9"] = true,
+  ["maelstrom_weapon_10"] = true,
   ["master_marksman"] = true,
   ["molten_core"] = true,
   ["monk_serpent"] = true,
@@ -182,13 +202,15 @@ local availableTextures = {
 
 function SAO_DB_ResetMarkedTextures(output)
   if not SpellActivationOverlayDB.dev then
-    SpellActivationOverlayDB.dev = { marked = {} };
+    SpellActivationOverlayDB.dev = { marked = { native = {}, addon = {} } };
   else
-    SpellActivationOverlayDB.dev.marked = {};
+    SpellActivationOverlayDB.dev.marked = { native = {}, addon = {} };
   end
   if type(output) ~= 'boolean' or output then
     print("SAO_DB_ResetMarkedTextures() "..WrapTextInColorCode("OK", "FF00FF00"));
   end
+
+  return { marked = SpellActivationOverlayDB.dev.marked };
 end
 
 function SAO_DB_AddMarkedTextures(output)
@@ -198,32 +220,120 @@ function SAO_DB_AddMarkedTextures(output)
 
   for fullTextureName, filename in pairs(SAO.TextureFilenameFromFullname) do
     if SAO.MarkedTextures[fullTextureName] then
-      SpellActivationOverlayDB.dev.marked[filename] = true;
+      if type(tonumber(fullTextureName)) == 'number' then
+        SpellActivationOverlayDB.dev.marked.native[filename] = true;
+      else
+        SpellActivationOverlayDB.dev.marked.addon[filename] = true;
+      end
     end
   end
 
   if type(output) ~= 'boolean' or output then
     print("SAO_DB_AddMarkedTextures() "..WrapTextInColorCode("OK", "FF00FF00"));
   end
+
+  return { marked = SpellActivationOverlayDB.dev.marked };
+end
+
+--[[
+Lua function that compares if string a is lower than string b.
+Split each string with the underscore delimiter, then compare each splitted segment with its counterpart
+- compare 1st segment of a with 1st segment of b, if one is lower then return true or false
+- if both are equal then go to next segment and compare 2nd segment of a with 2nd segment of b, etc.
+For each segment, the comparison follows these rules:
+- if both segments are identical, continue algorithm to next segment
+- if a segment is empty and the other is not, then the empty segment belongs to the 'lowest' string
+- if a segment can be converted to a number but not the other, then the number-ish segment belongs to the 'lowest' string
+- if both segments are strings, compare both strings with the < operator, then lowest segment string belongs to the 'lowest' string
+- if both segments can be converted to numbers, compare segments using the < operator on the tonumber() conversion, then the lowest segment number belongs to the 'lowest' string
+]]
+local function compareTextureNames(a, b)
+  local function splitString(str)
+    local segments = {};
+    for segment in string.gmatch(str, "[^_]+") do
+      table.insert(segments, segment);
+    end
+    return segments;
+  end
+  local function isNumber(segment)
+    return tonumber(segment) ~= nil;
+  end
+  local segmentsA = splitString(a);
+  local segmentsB = splitString(b);
+  for i = 1, math.max(#segmentsA, #segmentsB) do
+    local segA = segmentsA[i] or "";
+    local segB = segmentsB[i] or "";
+    if segA == segB then
+      -- Segments are identical, continue to next segment
+    elseif segA == "" then
+      -- String A has less segments: a is lower
+      return true;
+    elseif segB == "" then
+      -- String B has less segments: a is lower
+      return false;
+    elseif isNumber(segA) and not isNumber(segB) then
+      -- Comparing number of A with non-number of B: A is lower
+      return true;
+    elseif not isNumber(segA) and isNumber(segB) then
+      -- Comparing non-number of A with number of B: B is lower
+      return false;
+    elseif isNumber(segA) and isNumber(segB) then
+      -- Comparing number of A with number of B
+      -- This has a flaw if two numbers are identical but different string representations
+      -- But considering how texture names are built, this should not be a problem in practice
+      -- Even if it happens, it's probably no big deal
+      return tonumber(segA) < tonumber(segB);
+    else
+      -- Comparing non-number of A with non-number of B; we know A and B are different here
+      return segA < segB;
+    end
+  end
+  -- If all segments are identical, the strings are equal
+  -- This should not happen if texture name tables were built correctly
+  return false; -- Arbitrarily return false
 end
 
 function SAO_DB_ComputeUnmarkedTextures(output)
   SAO_DB_AddMarkedTextures(false); -- Not needed in theory, but it avoids confusion
-  SpellActivationOverlayDB.dev.unmarked = {};
+  SpellActivationOverlayDB.dev.unmarked = { native = {}, addon = {} };
 
+  -- Find unmarked textures, and classify them as either native or addon
   for fullTextureName, filename in pairs(SAO.TextureFilenameFromFullname) do
     if availableTextures[filename] then
       if     not SAO.MarkedTextures[fullTextureName] -- Not marked by current class
-        and (not SpellActivationOverlayDB.dev.marked or not SpellActivationOverlayDB.dev.marked[filename]) -- Mark not stored in database
+        and (not SpellActivationOverlayDB.dev.marked -- Mark not stored in database
+              or (not SpellActivationOverlayDB.dev.marked.native[filename]
+              and not SpellActivationOverlayDB.dev.marked.addon[filename])
+            )
       then
-        SpellActivationOverlayDB.dev.unmarked[filename] = true;
+        if type(tonumber(fullTextureName)) == 'number' then
+          SpellActivationOverlayDB.dev.unmarked.native[filename] = tonumber(fullTextureName);
+        else
+          SpellActivationOverlayDB.dev.unmarked.addon[filename] = fullTextureName;
+        end
       end
     end
   end
 
+  -- Find the list of textures to exclude from the package
+  local excludeListSorted = {};
+  for k, _ in pairs(SpellActivationOverlayDB.dev.unmarked.addon) do
+    tinsert(excludeListSorted, k);
+  end
+  table.sort(excludeListSorted, compareTextureNames);
+  SpellActivationOverlayDB.dev.unmarked.excludeList = excludeListSorted;
+
   if type(output) ~= 'boolean' or output then
     print("SAO_DB_ComputeUnmarkedTextures() "..WrapTextInColorCode("OK", "FF00FF00"));
+
+    local excludeListAsString = "";
+    for _, v in ipairs(excludeListSorted) do
+      excludeListAsString = excludeListAsString .. v .. '\n';
+    end
+    SAO:DumpCopyableText("Files to exclude from package:", excludeListAsString);
   end
+
+  return { unmarked = SpellActivationOverlayDB.dev.unmarked };
 end
 
 function SAO_DB_LookForTexture(fileDataID, output, saveToDev)

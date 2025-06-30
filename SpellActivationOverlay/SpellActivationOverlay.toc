@@ -1,22 +1,29 @@
-## Interface: 30404
-## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cffdb550d2.3.4|r
-## Notes: Mimic Spell Activation Overlays from Modern World of Warcraft
+## Interface: 30403
+## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cff40abff2.5.4|r |TInterface/Icons/achievement_boss_lichking:16:16:0:0:512:512:64:448:64:448|t
+## Notes: Display overlays and glow buttons to improve your gameplay!
 ## Author: Vinny/Ennvina
-## Version: 2.3.4
+## Version: 2.5.4
 ## SavedVariables: SpellActivationOverlayDB
+## X-SAO-Build: wrath
 
 # SpellActivationOverlay.lua, SpellActivationOverlay.xml and all textures were created by Blizzard Entertainment, Inc.
+#
+# World of Warcraft®: Cataclysm®
+# ©2010 Blizzard Entertainment, Inc. All rights reserved. Cataclysm is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
 #
 # World of Warcraft®: Mists of Pandaria®
 # ©2012 Blizzard Entertainment, Inc. All rights reserved. Mists of Pandaria, World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
 #
 # World of Warcraft®: Warlords of Draenor™
 # ©2014 Blizzard Entertainment, Inc. All rights reserved. Warlords of Draenor is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
+#
 
 #@no-lib-strip@
 libs\LibStub\LibStub.lua
 libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
 #@end-no-lib-strip@
+
+components\project.lua
 
 components\aura.lua
 components\bucket.lua
@@ -28,11 +35,11 @@ components\glow.lua
 components\hash.lua
 components\item.lua
 components\overlay.lua
-components\project.lua
 components\rune.lua
 components\shutdown.lua
 components\sound.lua
 components\spell.lua
+components\tr.lua
 components\trigger.lua
 components\util.lua
 components\variable.lua
@@ -40,8 +47,8 @@ components\variable.lua
 variables\actionusable.lua
 variables\aurastacks.lua
 variables\execute.lua
-variables\holypower.lua
-variables\nativesao.lua
+variables\itemset.lua
+variables\stance.lua
 variables\talent.lua
 
 textures\texname.lua

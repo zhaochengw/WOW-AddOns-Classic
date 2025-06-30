@@ -32,7 +32,9 @@ SAO.Bucket = {
             -- Initially, nothing is displayed
             displayedHash = nil,
             currentHash = nil,
-            hashCalculator = SAO.Hash:new(),
+            hashCalculator = SAO.Hash:new(), -- Hash that reflects real state of the game
+            hashCalculatorToApply = SAO.Hash:new(); -- Hash that holds virtual situation we want to display
+            -- hashCalculator and hashCalculatorToApply may differ if and only if there is an onAboutToApplyHash handler
 
             -- Constant for more efficient debugging
             description = name.." ("..spellID..(GetSpellInfo(spellID) and " = "..GetSpellInfo(spellID) or "")..")",
@@ -115,8 +117,11 @@ SAO.Bucket = {
     end,
 
     applyHash = function(self)
-        if self.currentHash == self.hashCalculator.hash then
-            return;
+        self.hashCalculatorToApply.hash = self.hashCalculator.hash;
+        local alwaysRefresh = false;
+        if self.onAboutToApplyHash then
+            -- Possibly change the hash about do be applied right before applying it
+            alwaysRefresh = self.onAboutToApplyHash(self.hashCalculatorToApply);
         end
 
         if SAO:HasDebug() or SAO:HasTrace(Module) then
@@ -129,24 +134,47 @@ SAO.Bucket = {
                 return str, string.format("%s (%s)", str, num);
             end
 
-            if self.currentHash == nil or self.currentHash == 0 then
-                local shortStrHashAfter, longStrHashAfter = describeHash(self.hashCalculator.hash);
-                SAO:Debug(Module, "Setting hash to "..shortStrHashAfter.." for "..self.description);
-                SAO:Trace(Module, "Setting hash to "..longStrHashAfter.." for "..self.description);
-            elseif self.hashCalculator.hash == 0 then
-                local _, longStrHashBefore = describeHash(self.currentHash);
-                SAO:Debug(Module, "Resetting hash for "..self.description);
-                SAO:Trace(Module, "Resetting hash from "..longStrHashBefore.." for "..self.description);
+            local logHashUpdate = function(oldHash, newHash, prefix)
+                if oldHash == newHash then return end
+                prefix = prefix or "";
+                if oldHash == nil or oldHash == 0 then
+                    local shortStrHashAfter, longStrHashAfter = describeHash(newHash);
+                    SAO:Debug(Module, prefix.."Setting hash to "..shortStrHashAfter.." for "..self.description);
+                    SAO:Trace(Module, prefix.."Setting hash to "..longStrHashAfter.." for "..self.description);
+                elseif newHash == 0 then
+                    local _, longStrHashBefore = describeHash(oldHash);
+                    SAO:Debug(Module, prefix.."Resetting hash for "..self.description);
+                    SAO:Trace(Module, prefix.."Resetting hash from "..longStrHashBefore.." for "..self.description);
+                else
+                    local shortStrHashBefore, longStrHashBefore = describeHash(oldHash);
+                    local shortStrHashAfter, longStrHashAfter = describeHash(newHash);
+                    SAO:Debug(Module, prefix.."Changing hash from "..shortStrHashBefore.." to "..shortStrHashAfter.." for "..self.description);
+                    SAO:Trace(Module, prefix.."Changing hash from "..longStrHashBefore.." to "..longStrHashAfter.." for "..self.description);
+                end
+            end
+
+            if self.onAboutToApplyHash then
+                logHashUpdate(self.lastRealHash, self.hashCalculator.hash, "(real hash) ");
+                self.lastRealHash = self.hashCalculator.hash;
+                logHashUpdate(self.currentHash, self.hashCalculatorToApply.hash, "(virtual hash) ");
             else
-                local shortStrHashBefore, longStrHashBefore = describeHash(self.currentHash);
-                local shortStrHashAfter, longStrHashAfter = describeHash(self.hashCalculator.hash);
-                SAO:Debug(Module, "Changing hash from "..shortStrHashBefore.." to "..shortStrHashAfter.." for "..self.description);
-                SAO:Trace(Module, "Changing hash from "..longStrHashBefore.." to "..longStrHashAfter.." for "..self.description);
+                logHashUpdate(self.currentHash, self.hashCalculatorToApply.hash);
             end
         end
 
-        self.currentHash = self.hashCalculator.hash;
+        -- Get out if the hash to display is the same as the hash currently displayed
+        if self.currentHash == self.hashCalculatorToApply.hash then
+            if alwaysRefresh then
+                self:refresh();
+            end
+            return;
+        end
 
+        -- Store the new hash to display
+        self.currentHash = self.hashCalculatorToApply.hash;
+
+        -- Get out if the hash to display is incomplete
+        -- But get out *after* storing the new hash, in case someone wants to know the currently displayed hash (although this one is not 'displayed')
         if not self.trigger:isFullyInformed() then
             return;
         end
@@ -165,7 +193,7 @@ SAO.Bucket = {
                 end
             end
         else
-            local hashForAnyStacks = self.hashCalculator:toAnyAuraStacks();
+            local hashForAnyStacks = self.hashCalculatorToApply:toAnyAuraStacks();
             if self.displayedHash == nil then -- Displayed aura was 'nil'
                 if currentStacks == nil or currentStacks == 0 then
                     if self[self.currentHash] then
@@ -270,6 +298,10 @@ SAO.BucketManager = {
     end,
 
     getOrCreateBucket = function(self, name, spellID)
+        if type(spellID) ~= 'number' then
+            SAO:Warn(Module, "Creating a bucket for spellID "..tostring(spellID).." which is of type "..type(spellID).." instead of number")
+        end
+
         local bucket = SAO.RegisteredBucketsBySpellID[spellID];
         local created = false;
 
@@ -282,6 +314,10 @@ SAO.BucketManager = {
             if SAO.IsEra() and not SAO:IsFakeSpell(spellID) then
                 local spellName = GetSpellInfo(spellID);
                 if spellName then
+                    local conflictingBucket = SAO.RegisteredBucketsBySpellID[spellName];
+                    if conflictingBucket then
+                        SAO:Debug(Module, "Registering spells with different spell IDs ("..conflictingBucket.name.." uses spell ID "..conflictingBucket.spellID.." vs. "..bucket.name.." uses spell ID "..bucket.spellID..") but sharing the same spell name '"..spellName.."', this might cause issues");
+                    end
                     SAO.RegisteredBucketsBySpellID[spellName] = bucket; -- Share pointer
                 else
                     SAO:Debug(Module, "Registering bucket with unknown spell "..tostring(spellID));
@@ -320,6 +356,9 @@ function SAO:GetBucketByName(name)
 end
 
 function SAO:GetBucketBySpellID(spellID)
+    if type(spellID) ~= 'number' then
+        SAO:Warn(Module, "Asking a bucket with spell ID "..tostring(spellID).." which is of type "..type(spellID).." instead of type number");
+    end
     return self.RegisteredBucketsBySpellID[spellID];
 end
 
@@ -336,6 +375,16 @@ function SAO:GetBucketBySpellIDOrSpellName(spellID, fallbackSpellName)
     end
 end
 
+function SAO:ForEachBucket(bucketFunc)
+    for key, bucket in pairs(self.RegisteredBucketsBySpellID) do
+        -- Original buckets are indexed by their spell IDs, which are numbers, unlike spell name indexes which are strings
+        -- There is no point in parsing buckets indexed by a spell name, such buckets are already indexed somewhere else by their spell ID
+        if type(key) == 'number' then
+            bucketFunc(bucket);
+        end
+    end
+end
+
 -- Perform a manual check on all buckets
 -- If 'trigger' is set, only to buckets requiring this trigger are visited, and they check only this trigger
 function SAO:CheckManuallyAllBuckets(trigger)
@@ -345,11 +394,11 @@ function SAO:CheckManuallyAllBuckets(trigger)
             bucket.trigger:manualCheck(trigger);
         end
     else
-        for _, bucket in pairs(self.RegisteredBucketsBySpellID) do
+        SAO:ForEachBucket(function(bucket)
             if bucket.trigger.required ~= 0 then
                 bucket.trigger:manualCheckAll();
             end
-        end
+        end);
     end
 end
 
@@ -388,14 +437,14 @@ function SpellActivationOverlay_DumpBuckets(spellID, devDump)
     end
 
     local nbBuckets = 0;
-    for _, _ in pairs(SAO.RegisteredBucketsBySpellID) do
+    SAO:ForEachBucket(function(bucket)
         nbBuckets = nbBuckets + 1;
-    end
+    end);
     SAO:Info(Module, "Listing buckets ("..nbBuckets.." item"..(nbBuckets == 1 and "" or "s")..")");
 
-    for _, bucket in pairs(SAO.RegisteredBucketsBySpellID) do
+    SAO:ForEachBucket(function(bucket)
         dumpOneBucket(bucket, devDump)
-    end
+    end);
 end
 
 -- Perform a manual check on all buckets
@@ -410,13 +459,13 @@ function SpellActivationOverlay_CheckBuckets(spellID)
         end
     else
         local nbBuckets = 0;
-        for _, _ in pairs(SAO.RegisteredBucketsBySpellID) do
+        SAO:ForEachBucket(function(bucket)
             nbBuckets = nbBuckets + 1;
-        end
+        end);
         SAO:Info(Module, "Checking all buckets ("..nbBuckets.." item"..(nbBuckets == 1 and "" or "s")..")");
 
-        for _, bucket in pairs(SAO.RegisteredBucketsBySpellID) do
+        SAO:ForEachBucket(function(bucket)
             bucket.trigger:manualCheckAll();
-        end
+        end);
     end
 end

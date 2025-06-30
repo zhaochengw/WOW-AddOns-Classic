@@ -18,28 +18,28 @@ end
 
 -- Apply spell alert geometry i.e., scale and offset
 function SAO.ApplySpellAlertGeometry(self)
-    SpellActivationOverlayFrame.scale = SpellActivationOverlayDB.alert.scale;
-    SpellActivationOverlayFrame.offset = SpellActivationOverlayDB.alert.offset;
-    SpellActivationOverlay_OnChangeGeometry(SpellActivationOverlayFrame);
+    SpellActivationOverlayAddonFrame.scale = SpellActivationOverlayDB.alert.scale;
+    SpellActivationOverlayAddonFrame.offset = SpellActivationOverlayDB.alert.offset;
+    SpellActivationOverlay_OnChangeGeometry(SpellActivationOverlayAddonFrame);
 end
 
 -- Apply spell alert progressive timer effect
 function SAO.ApplySpellAlertTimer(self)
-    SpellActivationOverlayFrame.useTimer = SpellActivationOverlayDB.alert.timer ~= 0;
-    SpellActivationOverlay_OnChangeTimerVisibility(SpellActivationOverlayFrame);
+    SpellActivationOverlayAddonFrame.useTimer = SpellActivationOverlayDB.alert.timer ~= 0;
+    SpellActivationOverlay_OnChangeTimerVisibility(SpellActivationOverlayAddonFrame);
 end
 
 -- Apply spell alert sound effects toggle
 function SAO.ApplySpellAlertSound(self)
-    SpellActivationOverlayFrame.useSound = SpellActivationOverlayDB.alert.sound ~= 0;
-    SpellActivationOverlay_OnChangeSoundToggle(SpellActivationOverlayFrame);
+    SpellActivationOverlayAddonFrame.useSound = SpellActivationOverlayDB.alert.sound ~= 0;
+    SpellActivationOverlay_OnChangeSoundToggle(SpellActivationOverlayAddonFrame);
 end
 
 -- Apply glowing buttons on/off
 function SAO.ApplyGlowingButtonsToggle(self)
     -- @todo Find a way to only refresh spell alert when checking spell alert, or glowing button when clicking glowing button
-    for _, bucket in pairs(self.RegisteredBucketsBySpellID) do
+    self:ForEachBucket(function(bucket)
         bucket:reset(); -- Reset hash to force re-display if needed
         bucket.trigger:manualCheckAll();
-    end
+    end);
 end

@@ -67,15 +67,20 @@ SAO.Display = {
             SAO:Warn(Module, "Missing position for overlay");
         end
 
+        if type(overlay.texture) == 'string' or type(overlay.texture) == 'number' then
+            SAO:MarkTexture(overlay.texture);
+        end
+
         local _overlay = {
             spellID = overlay.spellID,
             texture = overlay.texture,
             position = overlay.position,
+            level = overlay.level, -- optional
             scale = overlay.scale or 1,
             r = overlay.color and overlay.color[1] or 255,
             g = overlay.color and overlay.color[2] or 255,
             b = overlay.color and overlay.color[3] or 255,
-            autoPulse = overlay.autoPulse ~= false, -- true by default
+            autoPulse = type(overlay.autoPulse) == 'function' and overlay.autoPulse or overlay.autoPulse ~= false, -- true by default
             combatOnly = overlay.combatOnly == true, -- false by default
         }
 
@@ -118,7 +123,13 @@ SAO.Display = {
             if options and options.mimicPulse then
                 forcePulsePlay = overlay.autoPulse;
             end
-            SAO:ActivateOverlay(self.hashData, overlay.spellID, overlay.texture, overlay.position, overlay.scale, overlay.r, overlay.g, overlay.b, overlay.autoPulse, forcePulsePlay, nil, overlay.combatOnly);
+
+            local extra = nil;
+            if overlay.level then
+                extra = { level = overlay.level };
+            end
+
+            SAO:ActivateOverlay(self.hashData, overlay.spellID, overlay.texture, overlay.position, overlay.scale, overlay.r, overlay.g, overlay.b, overlay.autoPulse, forcePulsePlay, nil, overlay.combatOnly, extra);
         end
     end,
 
@@ -136,7 +147,7 @@ SAO.Display = {
 
     hideButtons = function(self)
         if #self.buttons > 0 then
-            SAO:RemoveGlow(self.spellID);
+            SAO:RemoveGlow(self.spellID, self.buttons);
         end
     end,
 

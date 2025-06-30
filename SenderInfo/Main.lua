@@ -1,4 +1,3 @@
-
 local __addon, __private = ...;
 local Main = {}
 __private.Main = Main;
@@ -8,12 +7,13 @@ local WCL = __private.WCL;
 local View = __private.View;
 local SenderInfo = __private.SenderInfo;
 local _G = _G;
-local alaMeta ;
-local alaEmu ;
-local __emulib ;
+local alaMeta;
+local alaEmu;
+local __emulib;
 
 local pushState = true;
 local allChat = {};
+local allRew = {};
 local allTalent = {};
 local allEquip = {};
 local allEquipInfo = {};
@@ -25,99 +25,111 @@ local SELFNAME = "";
 local SELFFULLNAME = "";
 
 local open;
-local showClassColour = true; --职业颜色
-local showLevel = true; --显示等级
-local showDetailTalent = true; --具体天赋信息
-local showEquipLevel = true; --显示装等
-local showGS = true; --显示GS
-local showWCL = true; --显示WCL
-local infoShowToSystem = true; --显示的信息在 系统频道 / 聊天频道
+local showClassColour = true;            --职业颜色
+local showLevel = true;                  --显示等级
+local showDetailTalent = true;           --具体天赋信息
+local showEquipLevel = true;             --显示装等
+local showGS = true;                     --显示GS
+local showWCL = true;                    --显示WCL
+local useOfficialWCL = true;             --使用官方WCL
+local useUnofficialWCL = false;          --使用非官方WCL
+local showWCLReverse = false;            --WCL倒序显示
+local showWCLHideKills = false;          --WCL不显示击杀次数
+local showWCL10Normal = false;           --WCL 10人普通
+local showWCL10Heroic = false;           --WCL 10人精英
+local showWCL25Normal = false;           --WCL 25人普通
+local showWCL25Heroic = false;           --WCL 25人精英
+local infoShowToSystem = true;           --显示的信息在 系统频道 / 聊天频道
 
-local selfChat; --被我私聊人的名字
-local sendSelfInfo = true; ---发送自己的信息
-local sendSelfInfoCondition = "1"; ---发送1 才发送自己的消息
+local selfChat;                          --被我私聊人的名字
+local sendSelfInfo = true;               ---发送自己的信息
+local sendSelfInfoCondition = "1";       ---发送1 才发送自己的消息
 local sendSelfMSG_WHISPER_INFORM = true; --私聊时 可以发送
-local sendSelfMSG_SAY = true; --说时 可以发送
-local sendSelfMSG_GUILD = true;--公会频道 可以发送
-local sendSelfChatType = ""; ---发送的位置
+local sendSelfMSG_SAY = true;            --说时 可以发送
+local sendSelfMSG_GUILD = true;          --公会频道 可以发送
+local sendSelfChatType = "";             ---发送的位置
 
-local joinGroupNotify = true; --加入通知
-local JoinSystemMessage = false; --加入通知仅自己可见
-local leaderNotify = true; --只有是队长/团长 助手时才通知
+local sendSelfWCL = true;                --发送自己的WCL
+local sendSelfOfficialWCL = true;        --发送自己的官方WCL
+local sendSelfUnofficialWCL = false;     --发送自己的非官方WCL
+
+local joinGroupNotify = true;            --加入通知
+local JoinSystemMessage = false;         --加入通知仅自己可见
+local leaderNotify = true;               --只有是队长/团长 助手时才通知
 
 local L = LibStub("AceLocale-3.0"):GetLocale("SenderInfo");
-local showIntervalTime = 30; --显示间隔  防止一个人连续私聊
-local maxTime = 10; --X秒后清空缓存 因为有的人没装插件 或者 查询装备很慢的情况
+local showIntervalTime = 30;   --显示间隔  防止一个人连续私聊
+local maxTime = 10;            --X秒后清空缓存 因为有的人没装插件 或者 查询装备很慢的情况
 local yellowColour = "fff000"; --黄色
-local redColour = "ff0000"; --红色
-local huiColour = "666666"; --灰色
-local whiteColour = "ffffff"; --白色
-local greenColour = "1EFF00"; --绿色
-local blueColour = "0070FF"; --蓝色
+local redColour = "ff0000";    --红色
+local huiColour = "666666";    --灰色
+local whiteColour = "ffffff";  --白色
+local greenColour = "1EFF00";  --绿色
+local blueColour = "0070FF";   --蓝色
 local violetColour = "A335EE"; --紫色
 local orangeColour = "FF8000"; --橙色
 
 local ClassColour = {
     --DK
-	DEATHKNIGHT = "B51B36",
+    DEATHKNIGHT = "B51B36",
     --XD
-	DRUID = "CA6209",
+    DRUID = "CA6209",
     --LR
-	HUNTER = "A8D170",
+    HUNTER = "A8D170",
     --FS
-	MAGE = "38B4D5",
+    MAGE = "38B4D5",
     --QS
-	PALADIN = "E884B0",
+    PALADIN = "E884B0",
     --MS
-	PRIEST = "FFFFFF",
+    PRIEST = "FFFFFF",
     --DZ
-	ROGUE = "DCD259",
+    ROGUE = "DCD259",
     --SM
-	SHAMAN = "005FBC",
+    SHAMAN = "005FBC",
     --SS
-	WARLOCK = "7373CB",
+    WARLOCK = "7373CB",
     --ZS
-	WARRIOR = "C69B6D",
+    WARRIOR = "C69B6D",
 };
 
 local TalentConfig = {
-	talent = "天赋",
+    talent = "天赋",
 
-	DEATHKNIGHT = "死亡骑士",
-	DRUID = "德鲁伊",
-	HUNTER = "猎人",
-	MAGE = "法师",
-	PALADIN = "圣骑士",
-	PRIEST = "牧师",
-	ROGUE = "盗贼",
-	SHAMAN = "萨满",
-	WARLOCK = "术士",
-	WARRIOR = "战士",
+    DEATHKNIGHT = "死亡骑士",
+    DRUID = "德鲁伊",
+    HUNTER = "猎人",
+    MAGE = "法师",
+    PALADIN = "圣骑士",
+    PRIEST = "牧师",
+    ROGUE = "盗贼",
+    SHAMAN = "萨满",
+    WARLOCK = "术士",
+    WARRIOR = "战士",
 
-	[398] = "鲜血",
-	[399] = "冰霜",
-	[400] = "邪恶",
-	[283] = "平衡",
-	[281] = "野性战斗",
-	[282] = "恢复",
-	[361] = "野兽控制",
-	[363] = "射击",
-	[362] = "生存",
-	[81] = "奥术",
-	[41] = "火焰",
-	[61] = "冰霜",
-	[382] = "神圣",
-	[383] = "防护",
-	[381] = "惩戒",
-	[201] = "戒律",
-	[202] = "神圣",
-	[203] = "暗影",
-	[302] = "痛苦",
-	[303] = "恶魔学识",
-	[301] = "毁灭",
-	[161] = "武器",
-	[164] = "狂怒",
-	[163] = "防护",
+    [398] = "鲜血",
+    [399] = "冰霜",
+    [400] = "邪恶",
+    [283] = "平衡",
+    [281] = "野性战斗",
+    [282] = "恢复",
+    [361] = "野兽控制",
+    [363] = "射击",
+    [362] = "生存",
+    [81] = "奥术",
+    [41] = "火焰",
+    [61] = "冰霜",
+    [382] = "神圣",
+    [383] = "防护",
+    [381] = "惩戒",
+    [201] = "戒律",
+    [202] = "神圣",
+    [203] = "暗影",
+    [302] = "痛苦",
+    [303] = "恶魔学识",
+    [301] = "毁灭",
+    [161] = "武器",
+    [164] = "狂怒",
+    [163] = "防护",
 
     [752] = "平衡",
     [750] = "野性战斗",
@@ -147,16 +159,16 @@ local TalentConfig = {
     [815] = "狂怒",
     [845] = "防护",
 
-	H = "|cff00ff00治疗|r",
-	D = "|cffff0000输出|r",
-	T = "|cffafafff坦克|r",
-	P = "|cffff0000PVP|r",
-	E = "|cffffff00PVE|r",
+    H = "|cff00ff00治疗|r",
+    D = "|cffff0000输出|r",
+    T = "|cffafafff坦克|r",
+    P = "|cffff0000PVP|r",
+    E = "|cffffff00PVE|r",
 
 };
 
 --排除0 4 19
-local needSlot = {1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
+local needSlot = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
 
 --[[
 0 = 远程子弹
@@ -189,12 +201,11 @@ local VioletEquipColourLevel = 240;
 --为了好看 所以进行了颜色优化
 --更新到WLK P2 奥杜尔
 local function GetEquipAverageLevelColour(level)
-    
-    if level < WhiteEquipColourLevel then --白
+    if level < WhiteEquipColourLevel then      --白
         return whiteColour;
-    elseif level < GreenEquipColourLevel then --绿
+    elseif level < GreenEquipColourLevel then  --绿
         return greenColour;
-    elseif level < BlueEquipColourLevel then -- 蓝
+    elseif level < BlueEquipColourLevel then   -- 蓝
         return blueColour;
     elseif level < VioletEquipColourLevel then -- 紫
         return violetColour;
@@ -208,6 +219,7 @@ end
 
 local function OnChangeSenderInfo()
     allChat = {};
+    allRew = {};
     allTalent = {};
     allEquip = {};
     allEquipInfo = {};
@@ -219,6 +231,7 @@ end
 
 local function ClearData(name)
     allChat[name] = nil;
+    allRew[name] = nil;
     allTalent[name] = nil;
     allEquip[name] = nil;
     allEquipInfo[name] = nil;
@@ -228,74 +241,68 @@ end
 
 
 local function StatReport_UpdateMyData()
-    Main.MyData.Name = UnitName("player"); --名字
-    Main.MyData.LV = UnitLevel("player"); --等级
+    Main.MyData.Name = UnitName("player");                         --名字
+    Main.MyData.LV = UnitLevel("player");                          --等级
     Main.MyData.CLASS, Main.MyData.CLASS_EN = UnitClass("player"); --职业
     --MyData.TKEY, MyData.TDATA = StatReport_TalentData(); --
 end
 
 
 
-local function Print(count,colour)
+local function Print(count, colour)
     if colour then
-        SendSystemMessage(string.format("|cff%s%s|r",colour,count));
+        SendSystemMessage(string.format("|cff%s%s|r", colour, count));
     else
-        SendSystemMessage(string.format("|cff%s%s|r",yellowColour,count));
+        SendSystemMessage(string.format("|cff%s%s|r", yellowColour, count));
     end
 end
 
 
 local function PrintError(count)
-    SendSystemMessage(string.format("|cff%s%s|r",redColour,count));
+    SendSystemMessage(string.format("|cff%s%s|r", redColour, count));
 end
 
 
-local function OnEvent(frame,event,...)
-    local arg = {...};
+local function OnEvent(frame, event, ...)
+    local arg = { ... };
 
     for i, v in pairs(arg) do
-        print(i,v)
+        print(i, v)
     end
-    
+
     local msg = arg[1];
     local name = arg[5];
-    
-    print( UnitLevel(name)) --等级
-    print( GetNumTalentTabs()) --天赋页
-    print(   UnitClass(name)) --职业
+
+    print(UnitLevel(name))    --等级
+    print(GetNumTalentTabs()) --天赋页
+    print(UnitClass(name))    --职业
     --print(   UnitArmor(name)) --护甲信息 1 基础 2 最终
-    print(   UnitStat(name,1)) -- 1-4 力量 敏捷 耐力 智力
-    print(  "角色伤害:" .. UnitDamage(name))
-    print(  "角色治疗:" .. UnitGetIncomingHeals(name))
-    print(  "角色当前生命值:" .. UnitHealth(name))
-    print(  "角色最大生命值:" .. UnitHealthMax(name))
-    print(  "资源类型:" .. UnitPowerType(name))
-    print(  "资源值:" .. UnitPowerMax(name))
-    print(  "资源值2:" .. UnitPowerMax(name,UnitPowerType(name)))
+    print(UnitStat(name, 1))  -- 1-4 力量 敏捷 耐力 智力
+    print("角色伤害:" .. UnitDamage(name))
+    print("角色治疗:" .. UnitGetIncomingHeals(name))
+    print("角色当前生命值:" .. UnitHealth(name))
+    print("角色最大生命值:" .. UnitHealthMax(name))
+    print("资源类型:" .. UnitPowerType(name))
+    print("资源值:" .. UnitPowerMax(name))
+    print("资源值2:" .. UnitPowerMax(name, UnitPowerType(name)))
 end
 
 
 
-local function PrintTable(key,value,index)
-    
-    print("key" ..  index .. ": ".. key)
+local function PrintTable(key, value, index)
+    print("key" .. index .. ": " .. key)
 
     if type(value) == "table" then
-            
         for key2, value2 in pairs(value) do
-
-            PrintTable(key2,value2,index+1);
-
+            PrintTable(key2, value2, index + 1);
         end
-
     else
         print("value: " .. value)
     end
-
 end
 
 
-local __base64, __debase64 = {  }, {  };
+local __base64, __debase64 = {}, {};
 for i = 0, 9 do __base64[i] = tostring(i); end
 __base64[10] = "-";
 __base64[11] = "=";
@@ -309,23 +316,22 @@ local wipe, concat = table.wipe, table.concat;
 local TALENT_REPLY_THROTTLED_INTERVAL = 1;
 local GLYPH_REPLY_THROTTLED_INTERVAL = 4;
 local EQUIPMENT_REPLY_THROTTLED_INTERVAL = 5;
-local _TThrottle = {  };		--	Talent		--	1s lock
-local _GThrottle = {  };		--	Glyph		--	4s lock
-local _EThrottle = {  };		--	Equipment	--	15s lock
+local _TThrottle = {}; --	Talent		--	1s lock
+local _GThrottle = {}; --	Glyph		--	4s lock
+local _EThrottle = {}; --	Equipment	--	15s lock
 local COMM_PREFIX_LIST = { "ATEADD", "ATECOM", "EMUADD", "EMUCOM", };
-local COMM_PREFIX_HASH = {  };
-local _RecvBuffer = {  };
+local COMM_PREFIX_HASH = {};
+local _RecvBuffer = {};
 for i = 1, #COMM_PREFIX_LIST do
-	local prefix = COMM_PREFIX_LIST[i];
-	_RecvBuffer[prefix] = {  };
-	COMM_PREFIX_HASH[prefix] = i;
+    local prefix = COMM_PREFIX_LIST[i];
+    _RecvBuffer[prefix] = {};
+    COMM_PREFIX_HASH[prefix] = i;
 end
 
 
 
 ---获取天赋字符串
 local function GetTalent(name, code)
-
     local class, level, numGroup, activeGroup, data1, data2 = __emulib.DecodeTalentDataV2(code);
     local subIndex = 0;
     local cData = activeGroup == 1 and data1 or data2;
@@ -336,9 +342,8 @@ local function GetTalent(name, code)
     local classSpec = alaEmu.DT.ClassSpec[class];
 
     for index, value in ipairs(classSpec) do
-
         local talentDB = alaEmu.DT.TalentDB[class][value];
-        local curT = strsub(cData, subIndex + 1, subIndex + #talentDB )
+        local curT = strsub(cData, subIndex + 1, subIndex + #talentDB)
         subIndex = subIndex + #talentDB;
         local count = 0;
         for utfChar in string.gmatch(curT, "[%z\1-\127\194-\244][\128-\191]*") do
@@ -348,14 +353,13 @@ local function GetTalent(name, code)
             curTal = value;
             maxCount = count;
         end
-        
-        if	index >= #classSpec then
+
+        if index >= #classSpec then
             strT = strT .. count .. ")"
         else
             strT = strT .. count .. "/"
         end
-
-    end 
+    end
 
 
 
@@ -363,15 +367,19 @@ local function GetTalent(name, code)
 
     if showDetailTalent then
         if showLevel then
-            talentStr = string.format(L["天赋字符串1全部"], name,level,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null",strT);
+            talentStr = string.format(L["天赋字符串1全部"], name, level, TalentConfig[curTal] or "Null",
+                TalentConfig[class] or "Null", strT);
         else
-            talentStr = string.format(L["天赋字符串2无级"], name,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null",strT);
+            talentStr = string.format(L["天赋字符串2无级"], name, TalentConfig[curTal] or "Null", TalentConfig[class] or "Null",
+                strT);
         end
     else
         if showLevel then
-            talentStr = string.format(L["天赋字符串3无点"], name,level,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null");
+            talentStr = string.format(L["天赋字符串3无点"], name, level, TalentConfig[curTal] or "Null",
+                TalentConfig[class] or "Null");
         else
-            talentStr = string.format(L["天赋字符串4无级无点"], name,TalentConfig[curTal] or "Null",TalentConfig[class] or "Null");
+            talentStr = string.format(L["天赋字符串4无级无点"], name, TalentConfig[curTal] or "Null",
+                TalentConfig[class] or "Null");
         end
     end
 
@@ -381,7 +389,7 @@ local function GetTalent(name, code)
         classC = ClassColour[class];
     end
 
-    talentStr = string.format("|cff%s%s|r",classC, talentStr);
+    talentStr = string.format("|cff%s%s|r", classC, talentStr);
 
     allTalent[name] = talentStr;
     return talentStr;
@@ -389,7 +397,6 @@ end
 
 
 local function UpdateEquipLevel(name)
-
     if (not showEquipLevel) and (not showGS) then
         return true;
     end
@@ -407,25 +414,21 @@ local function UpdateEquipLevel(name)
     local allResult = true;
 
     for key, slot in pairs(haveSlot) do
-
         --有一个没有结果都要继续查询
         if itemLevelTable[slot] == nil then
-
             --因为有可能查不到需要多查几次 同步无法解决 需要等待异步 循环只是一个小处理而已
             local name, link, quality, itemLevel, _, _, _, _, _, texture = GetItemInfo(EquData[slot]);
-        
+
             --已查询到结果
             if itemLevel ~= nil then
                 itemLevelTable[slot] = itemLevel;
-                local GearScore, AltScore =  GS.GearScore_GetItemScore(link);
+                local GearScore, AltScore = GS.GearScore_GetItemScore(link);
                 itemGearScore[slot] = GearScore;
                 itemAltScore[slot] = AltScore;
             else
                 allResult = false;
             end
-
         end
-
     end
 
     if not allResult then
@@ -452,24 +455,23 @@ local function UpdateEquipLevel(name)
     end
 
     --修正值
-    local allAltScore  = 0
+    local allAltScore = 0
     for slot, AltScore in pairs(itemAltScore) do
         allAltScore = allAltScore + AltScore;
     end
 
     --local gsStr = string.format(L["装备评分"],yellowColour,greenColour, string.format("%s(+%s)", allGs,allAltScore));
-    local gsStr = string.format(L["装备评分"],yellowColour,greenColour, string.format("%s", allGs));
-    local colour = GetEquipAverageLevelColour(averageLevel);
-    local equipStr  = string.format(L["平均装等"],yellowColour,colour, string.format("%.2f", averageLevel));
+    local gsStr    = string.format(L["装备评分"], yellowColour, greenColour, string.format("%s", allGs));
+    local colour   = GetEquipAverageLevelColour(averageLevel);
+    local equipStr = string.format(L["平均装等"], yellowColour, colour, string.format("%.2f", averageLevel));
 
-    allEquip[name] = (showGS and gsStr or "") .. (showEquipLevel and equipStr or "") ;
+    allEquip[name] = (showGS and gsStr or "") .. (showEquipLevel and equipStr or "");
 
     return true;
 end
 
 
 local function GetEquipment(name, code)
-    
     if (not showEquipLevel) and (not showGS) then
         allEquipInfo[name] = {};
         return
@@ -479,7 +481,7 @@ local function GetEquipment(name, code)
 
     local cache = alaEmu.VT.TQueryCache[name];
     if cache == nil then
-        cache = { TalData = {  }, EquData = {  }, GlyData = {  }, PakData = {  }, };
+        cache = { TalData = {}, EquData = {}, GlyData = {}, PakData = {}, };
         alaEmu.VT.TQueryCache[name] = cache;
     end
 
@@ -487,37 +489,32 @@ local function GetEquipment(name, code)
 
     local isSelf = (name == alaEmu.CT.SELFNAME);
 
-    if  Decoder(EquData, code) or isSelf then
-
+    if Decoder(EquData, code) or isSelf then
         allEquipInfo[name] = {};
 
         local haveSlot = {}; -- 对于我需要查询的 我是不是有这个装备
 
         for key, slot in pairs(needSlot) do
             local item = EquData[slot];
-            if item ~= nil  then
-                table.insert(haveSlot,slot)
+            if item ~= nil then
+                table.insert(haveSlot, slot)
             end
         end
 
-        allEquipInfo[name].haveSlot = haveSlot;--存储需要查询的
+        allEquipInfo[name].haveSlot = haveSlot; --存储需要查询的
         allEquipInfo[name].itemLevelTable = {}; --查询结果
         allEquipInfo[name].EquData = EquData;
         allEquipInfo[name].itemGearScore = {};
         allEquipInfo[name].itemAltScore = {};
 
         UpdateEquipLevel(name);
-
     end
-
 end
 
 
 --name 当前名字
 --allName 带服务器的名字
-local function SendQueryRequest(name,allName)
-
-
+local function SendQueryRequest(name, allName, rew)
     if lastAllChat[name] then
         return;
     end
@@ -525,28 +522,27 @@ local function SendQueryRequest(name,allName)
     if not allName then
         allName = name .. "-" .. GetRealmName()
     end
-    
+
     local time = GetTime();
 
     lastAllChat[name] = time; -- 防止重复发送的
 
-    allChat[name] = time; -- 记录时间  X秒后直接清空 无论情况如何
+    allChat[name] = time;     -- 记录时间  X秒后直接清空 无论情况如何
+
+    allRew[name] = rew;
 
     alaEmu.MT.SendQueryRequest(allName, nil, true, false)
-
 end
 
 
-local function CHAT_MSG(self,event,...)
-
+local function CHAT_MSG(self, event, ...)
     if not open then
         return;
     end
 
-    local arg = {...};
+    local arg = { ... };
 
-    SendQueryRequest(arg[5],arg[2]);
-
+    SendQueryRequest(arg[5], arg[2], arg[1]);
 end
 
 local frame = CreateFrame("Frame")
@@ -554,24 +550,27 @@ local frame = CreateFrame("Frame")
 --frame:RegisterEvent("CHAT_MSG_GUILD");
 frame:RegisterEvent("CHAT_MSG_WHISPER");
 --frame:RegisterEvent("CHAT_MSG_CHANNEL");
-frame:SetScript("OnEvent",CHAT_MSG);
+frame:SetScript("OnEvent", CHAT_MSG);
 
 
-local function CHAT_MSG_SendSelfInfo(self,event,...)
-
+local function CHAT_MSG_SendSelfInfo(self, event, ...)
     if not open or not sendSelfInfo then
         return;
     end
 
-    local arg = {...};
-    local msg = arg[1]; --消息内容
+    local arg = { ... };
+    local msg = arg[1];  --消息内容
     local name = arg[5]; --被私聊的人的名字/发送者的名字
-
     local selfName = alaEmu.CT.SELFNAME;
+
+    if not name or name == "" then
+        if arg[2] and arg[2] ~= "" then
+            name = strsplit("-", arg[2])
+        end
+    end
 
     if event ~= "CHAT_MSG_WHISPER_INFORM" then
         if name ~= selfName then
-            --print("不是我私聊别人,且不是我说话")
             return;
         end
     end
@@ -596,15 +595,12 @@ local function CHAT_MSG_SendSelfInfo(self,event,...)
         sendSelfChatType = "PARTY";
     elseif event == "CHAT_MSG_PARTY_LEADER" then
         sendSelfChatType = "PARTY";
-
     elseif event == "CHAT_MSG_RAID" then
         sendSelfChatType = "RAID";
     elseif event == "CHAT_MSG_RAID_LEADER" then
         sendSelfChatType = "GUILD";
-
     elseif event == "CHAT_MSG_GUILD" then
         sendSelfChatType = "GUILD";
-
     elseif event == "CHAT_MSG_WHISPER_INFORM" then
         sendSelfChatType = "WHISPER";
     else
@@ -616,34 +612,32 @@ local function CHAT_MSG_SendSelfInfo(self,event,...)
 
     local code = alaEmu.VT.VAR[alaEmu.CT.SELFGUID];
 
-    if code then       
+    if code then
         selfChat = name;
-        GetTalent(selfName,code);
-        GetEquipment(selfName,code);
+        GetTalent(selfName, code);
+        GetEquipment(selfName, code);
     end
-
 end
 
 local sendSelfInfoframe = CreateFrame("Frame")
-sendSelfInfoframe:SetScript("OnEvent",CHAT_MSG_SendSelfInfo);
+sendSelfInfoframe:SetScript("OnEvent", CHAT_MSG_SendSelfInfo);
 
 --私聊
 function Main:ChangeSendSelfInfoEventWhisper(register)
     if register then
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_WHISPER_INFORM"); --私聊别人
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_WHISPER_INFORM");   --私聊别人
     else
         sendSelfInfoframe:UnregisterEvent("CHAT_MSG_WHISPER_INFORM"); --私聊别人
     end
 end
 
-
 --队伍
 function Main:ChangeSendSelfInfoEventParty(register)
     if register then
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_PARTY"); --队伍
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_PARTY_LEADER"); --队长
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_PARTY");          --队伍
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_PARTY_LEADER");   --队长
     else
-        sendSelfInfoframe:UnregisterEvent("CHAT_MSG_PARTY"); --队伍
+        sendSelfInfoframe:UnregisterEvent("CHAT_MSG_PARTY");        --队伍
         sendSelfInfoframe:UnregisterEvent("CHAT_MSG_PARTY_LEADER"); --队长
     end
 end
@@ -651,10 +645,10 @@ end
 --团队
 function Main:ChangeSendSelfInfoEventRaid(register)
     if register then
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_RAID"); --团队
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_RAID_LEADER"); --团长
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_RAID");          --团队
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_RAID_LEADER");   --团长
     else
-        sendSelfInfoframe:UnregisterEvent("CHAT_MSG_RAID"); --团队
+        sendSelfInfoframe:UnregisterEvent("CHAT_MSG_RAID");        --团队
         sendSelfInfoframe:UnregisterEvent("CHAT_MSG_RAID_LEADER"); --团长
     end
 end
@@ -662,7 +656,7 @@ end
 --公会
 function Main:ChangeSendSelfInfoEventGuild(register)
     if register then
-        sendSelfInfoframe:RegisterEvent("CHAT_MSG_GUILD"); --公会频道
+        sendSelfInfoframe:RegisterEvent("CHAT_MSG_GUILD");   --公会频道
     else
         sendSelfInfoframe:UnregisterEvent("CHAT_MSG_GUILD"); --公会频道
     end
@@ -686,8 +680,6 @@ function Main:ChangeSendSelfInfo(value)
     end
 end
 
-
-
 function Main:InitSendSelfInfoEvent(cfg)
     self:ChangeSendSelfInfoEventWhisper(cfg.SendSelfInfoEventWhisper);
     self:ChangeSendSelfInfoEventParty(cfg.SendSelfInfoEventParty);
@@ -695,8 +687,10 @@ function Main:InitSendSelfInfoEvent(cfg)
     self:ChangeSendSelfInfoEventGuild(cfg.SendSelfInfoEventGuild);
     sendSelfInfoCondition = cfg.SendSelfInfoInput;
     sendSelfInfo = cfg.SendSelfInfo;
+    sendSelfWCL = cfg.SendSelfWCL;
+    sendSelfOfficialWCL = cfg.SendSelfOfficialWCL;
+    sendSelfUnofficialWCL = cfg.SendSelfUnofficialWCL;
 end
-
 
 local function OnEquipment(prefix, name, code, version, Decoder, overheard)
     GetEquipment(name, code)
@@ -705,119 +699,114 @@ end
 
 
 local function OnTalent(prefix, name, code, version, Decoder, overheard)
-    GetTalent(name,code);
+    GetTalent(name, code);
 end
 
 
 
 local function ProcV2Message(prefix, msg, channel, sender)
+    local overheard = false;
+    local receiver = SELFNAME;
+    if channel == "INSTANCE_CHAT" then
+        local _1, _2 = strsplit("#", msg);
+        msg = _1;
+        if _2 ~= nil and _2 ~= SELFFULLNAME then
+            overheard = true;
+            receiver = _2;
+        end
+    end
 
-	local overheard = false;
-	local receiver = SELFNAME;
-	if channel == "INSTANCE_CHAT" then
-		local _1, _2 = strsplit("#", msg);
-		msg = _1;
-		if _2 ~= nil and _2 ~= SELFFULLNAME then
-			overheard = true;
-			receiver = _2;
-		end
-	end
+    if strsub(msg, 1, 2) == "!P" then
+        local num = __debase64[strsub(msg, 5, 5)] + __debase64[strsub(msg, 6, 6)] * 64;
 
-	if strsub(msg, 1, 2) == "!P" then
+        local index = __debase64[strsub(msg, 7, 7)] + __debase64[strsub(msg, 8, 8)] * 64;
 
-		local num = __debase64[strsub(msg, 5, 5)] + __debase64[strsub(msg, 6, 6)] * 64;
+        local Buffer = _RecvBuffer[prefix];
 
-		local index = __debase64[strsub(msg, 7, 7)] + __debase64[strsub(msg, 8, 8)] * 64;
+        Buffer[receiver] = Buffer[receiver] or {};
 
-		local Buffer = _RecvBuffer[prefix];
+        Buffer = Buffer[receiver]; Buffer[sender] = Buffer[sender] or {};
 
-        Buffer[receiver] = Buffer[receiver] or {  };
+        Buffer = Buffer[sender];
 
-		Buffer = Buffer[receiver]; Buffer[sender] = Buffer[sender] or {  };
+        Buffer[index] = strsub(msg, 9);
 
-		Buffer = Buffer[sender];
+        for index = 1, num do
+            if Buffer[index] == nil then
+                return;
+            end
+        end
 
-		Buffer[index] = strsub(msg, 9);
+        _RecvBuffer[prefix][receiver][sender] = nil;
 
-		for index = 1, num do
-			if Buffer[index] == nil then
-				return;
-			end
-		end
-
-		_RecvBuffer[prefix][receiver][sender] = nil;
-
-		return ProcV2Message(prefix, overheard and (concat(Buffer) .. "#" .. receiver) or concat(Buffer), channel, sender);
-
-	end
+        return ProcV2Message(prefix, overheard and (concat(Buffer) .. "#" .. receiver) or concat(Buffer), channel, sender);
+    end
 
 
-	local _;
-	local pos = 1;
-	local code = nil;
-	local v2_ctrl_code = nil;
-	local len = #msg;
-	while pos < len do
-		_, pos, code, v2_ctrl_code = strfind(msg, "((![^!])[^!]+)", pos);
-		if v2_ctrl_code == "!Q" then
-			if overheard then
-				return;
-			end
-			local name = Ambiguate(sender, 'none');
-			local now = GetTime();
+    local _;
+    local pos = 1;
+    local code = nil;
+    local v2_ctrl_code = nil;
+    local len = #msg;
+    while pos < len do
+        _, pos, code, v2_ctrl_code = strfind(msg, "((![^!])[^!]+)", pos);
+        if v2_ctrl_code == "!Q" then
+            if overheard then
+                return;
+            end
+            local name = Ambiguate(sender, 'none');
+            local now = GetTime();
 
-			local ReplyData = {  };
-			for index = 3, #code do
-				local v = strsub(code, index, index);
-				if v == "T" then
-					local prev = _TThrottle[name];
-					if prev == nil or now - prev > TALENT_REPLY_THROTTLED_INTERVAL then
-						_TThrottle[name] = now;
-						ReplyData[1] = __emulib.EncodePlayerTalentDataV2();
-						ReplyData[4] = __emulib.EncodeAddOnPackDataV2();
-					end
-				elseif v == "G" then
-					local prev = _GThrottle[name];
-					if prev == nil or now - prev > GLYPH_REPLY_THROTTLED_INTERVAL then
-						_GThrottle[name] = now;
-						ReplyData[2] = __emulib.EncodePlayerGlyphDataV2();
-					end
-				elseif v == "E" then
-					local prev = _EThrottle[name];
-					if prev == nil or now - prev > EQUIPMENT_REPLY_THROTTLED_INTERVAL then
-						_EThrottle[name] = now;
-						ReplyData[3] = __emulib.EncodePlayerEquipmentDataV2();
-					end
-				elseif v == "A" then
-				else
-				end
-			end
-			local msg = "";
-			for index = 1, 4 do
-				if ReplyData[index] ~= nil then
-					msg = msg .. ReplyData[index];
-				end
-			end
+            local ReplyData = {};
+            for index = 3, #code do
+                local v = strsub(code, index, index);
+                if v == "T" then
+                    local prev = _TThrottle[name];
+                    if prev == nil or now - prev > TALENT_REPLY_THROTTLED_INTERVAL then
+                        _TThrottle[name] = now;
+                        ReplyData[1] = __emulib.EncodePlayerTalentDataV2();
+                        ReplyData[4] = __emulib.EncodeAddOnPackDataV2();
+                    end
+                elseif v == "G" then
+                    local prev = _GThrottle[name];
+                    if prev == nil or now - prev > GLYPH_REPLY_THROTTLED_INTERVAL then
+                        _GThrottle[name] = now;
+                        ReplyData[2] = __emulib.EncodePlayerGlyphDataV2();
+                    end
+                elseif v == "E" then
+                    local prev = _EThrottle[name];
+                    if prev == nil or now - prev > EQUIPMENT_REPLY_THROTTLED_INTERVAL then
+                        _EThrottle[name] = now;
+                        ReplyData[3] = __emulib.EncodePlayerEquipmentDataV2();
+                    end
+                elseif v == "A" then
+                else
+                end
+            end
+            local msg = "";
+            for index = 1, 4 do
+                if ReplyData[index] ~= nil then
+                    msg = msg .. ReplyData[index];
+                end
+            end
 
-			if msg ~= "" then
+            if msg ~= "" then
                 --print("_SendLongMessage_____________________");
-			end
-
-		elseif v2_ctrl_code == "!T" then
+            end
+        elseif v2_ctrl_code == "!T" then
             OnTalent(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeTalentDataV2, overheard);
-		elseif v2_ctrl_code == "!G" then
+        elseif v2_ctrl_code == "!G" then
 
-		elseif v2_ctrl_code == "!E" then
+        elseif v2_ctrl_code == "!E" then
             OnEquipment(prefix, Ambiguate(sender, 'none'), code, "V2", __emulib.DecodeEquipmentDataV2, overheard);
-		elseif v2_ctrl_code == "!A" then
-	
-		end
-	end
+        elseif v2_ctrl_code == "!A" then
+
+        end
+    end
 end
 
 
-local function CHAT_MSG_ADDON(self,event,prefix, msg, channel, sender, target, zoneChannelID, localID, name, instanceID)
-
+local function CHAT_MSG_ADDON(self, event, prefix, msg, channel, sender, target, zoneChannelID, localID, name, instanceID)
     if not open then
         --print("已关闭");
         return;
@@ -838,37 +827,35 @@ local function CHAT_MSG_ADDON(self,event,prefix, msg, channel, sender, target, z
     else
         --print("一个无法解析的消息内容: " .. msg);
     end
-
 end
 
 
 --去掉所有颜色代码
 --因为在密语时 无法加载颜色 会报错
 local function GetNewMsg(msg)
-    
-    -- |cff%s--%s %s级 %s %s %s|r 
-    local cIndex = string.find(msg,"|c");
+    -- |cff%s--%s %s级 %s %s %s|r
+    local cIndex = string.find(msg, "|c");
     if cIndex then
         local start = "";
         if cIndex ~= 1 then
-            start = string.sub(msg,1,cIndex-1);
+            start = string.sub(msg, 1, cIndex - 1);
         end
 
-        local strEnd = string.sub(msg,cIndex+10,#msg);
+        local strEnd = string.sub(msg, cIndex + 10, #msg);
 
         local newMsg = start .. strEnd;
 
         return GetNewMsg(newMsg);
     end
 
-    local rIndex = string.find(msg,"|r");
+    local rIndex = string.find(msg, "|r");
     if rIndex then
         local start = "";
         if rIndex ~= 1 then
-            start = string.sub(msg,1,rIndex-1);
+            start = string.sub(msg, 1, rIndex - 1);
         end
 
-        local strEnd = string.sub(msg,rIndex+2,#msg);
+        local strEnd = string.sub(msg, rIndex + 2, #msg);
 
         local newMsg = start .. strEnd;
 
@@ -876,10 +863,9 @@ local function GetNewMsg(msg)
     end
 
     return msg;
-
 end
 
-local function SendChatJoinNotify(name,channel,infoStr)
+local function SendChatJoinNotify(name, channel, infoStr)
     local reportText = format("欢迎加入: %s ", infoStr)
 
     if JoinSystemMessage then
@@ -894,9 +880,18 @@ local function SendChatJoinNotify(name,channel,infoStr)
     allNotify[name] = nil;
 end
 
+local function CleanWCLString(str)
+    if not str then return "" end
+    str = string.gsub(str, "|c%x%x%x%x%x%x%x%x", "")
+    str = string.gsub(str, "|r", "")
+    str = string.gsub(str, "|T.-|t", "")
+    str = string.gsub(str, "{.-}", "")
+    str = string.gsub(str, "  +", " ")
+    str = string.gsub(str, "[\1-\31]", "")
+    return str
+end
 
 local function OnUpdate()
-    
     if not open then
         return;
     end
@@ -918,20 +913,11 @@ local function OnUpdate()
     end
 
     for name, _ in pairs(allEquipInfo) do
-
         if UpdateEquipLevel(name) then
-
             local msg = "";
 
             msg = msg .. (allTalent[name] or ""); --天赋信息
 
-            if showWCL then
-                local wcl = WCL.GetWclScore(name);  --WCL
-                if wcl then
-                    msg = msg .. wcl;
-                end  
-            end
-      
             if showEquipLevel or showGS then
                 msg = msg .. allEquip[name]; --装备信息 (GS -- 装等)
             end
@@ -942,11 +928,69 @@ local function OnUpdate()
 
             --如果是入队通知
             for qName, channel in pairs(allQueryRequest) do
-                if qName == name  then
-                    SendChatJoinNotify(name,channel,JoinSystemMessage and msg or allNotify[name]);
+                if qName == name then
+                    SendChatJoinNotify(name, channel, JoinSystemMessage and msg or allNotify[name]);
                     allQueryRequest[name] = nil;
                     ClearData(name);
                     return;
+                end
+            end
+
+            local useOfficialWCLContent;
+            local useUnofficialWCLContent;
+            
+            if showWCL then
+
+                local result = ""
+
+                if useOfficialWCL then
+                    useOfficialWCLContent = WCL.GetOfficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    if useOfficialWCLContent and useOfficialWCLContent ~= "" then
+                        result = result .. useOfficialWCLContent
+                    end
+                end
+
+                if useUnofficialWCL then
+                    if result ~= "" then
+                        result = result .. "\n"
+                    end
+                    useUnofficialWCLContent = WCL.GetUnofficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    if useUnofficialWCLContent and useUnofficialWCLContent ~= "" then
+                        result = result .. useUnofficialWCLContent
+                    end
+                end
+
+                if result and result ~= "" then
+                    msg = msg .. " \n " .. result;
+                else
+                    msg = msg .. " \n " .. "(未找到WCL数据)";
+                end
+            end
+
+            if sendSelfWCL then
+                local selfWclStr = ""
+                local selfWclResult = ""
+                
+                if sendSelfOfficialWCL then
+                    local officialWcl = useOfficialWCLContent or WCL.GetOfficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    if officialWcl and officialWcl ~= "" then
+                        selfWclResult = selfWclResult .. officialWcl
+                    end
+                end
+                
+                if sendSelfUnofficialWCL then
+                    if selfWclResult ~= "" then
+                        selfWclResult = selfWclResult .. "\n"
+                    end
+                    local unofficialWcl = useUnofficialWCLContent or WCL.GetUnofficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    if unofficialWcl and unofficialWcl ~= "" then
+                        selfWclResult = selfWclResult .. unofficialWcl
+                    end
+                end
+                
+                if selfWclResult ~= "" then
+                    selfWclStr = CleanWCLString(selfWclResult) or ""
+                    newMsg = newMsg .. " 评分:" .. selfWclStr;
                 end
             end
 
@@ -955,49 +999,40 @@ local function OnUpdate()
                 newMsg = newMsg .. pushMsg;
             end
 
-            if name == alaEmu.CT.SELFNAME and selfChat ~= nil  then
-                SendChatMessage(newMsg,sendSelfChatType,nil,selfChat);
+            if name == alaEmu.CT.SELFNAME and selfChat ~= nil then
+                SendChatMessage(newMsg, sendSelfChatType, nil, selfChat);
             else
-
                 if __private.InviteTeamView then
-                    __private.InviteTeamView:Add(name,msg);
+                    __private.InviteTeamView:Add(name, msg, allRew[name]);
                 end
 
-                if infoShowToSystem then  --信息显示在系统频道  还是 聊天频道 (私聊对方)
+                if infoShowToSystem then --信息显示在系统频道  还是 聊天频道 (私聊对方)
                     SendSystemMessage(msg);
                 else
-                    SendChatMessage(newMsg,"WHISPER",nil,name);
+                    SendChatMessage(newMsg, "WHISPER", nil, name);
                 end
             end
-             
+
             ClearData(name);
             return;
         end
     end
-
 end
-
-
 
 local frame2 = CreateFrame("Frame")
 frame2:RegisterEvent("CHAT_MSG_ADDON");
-frame2:SetScript("OnEvent",CHAT_MSG_ADDON);
-frame2:SetScript("OnUpdate",OnUpdate);
-
-
+frame2:SetScript("OnEvent", CHAT_MSG_ADDON);
+frame2:SetScript("OnUpdate", OnUpdate);
 
 local reportTemplate = "  %s:%s(%s%%)"
 local raidTemplate = gsub(ERR_RAID_MEMBER_ADDED_S, '%%s', '(.+)')
 local partyTemplate = gsub(JOINED_PARTY, '%%s', '(.+)')
 
-
-local function JoinGroupNotifyEvent(self,event,msg,...)
-
-
+local function JoinGroupNotifyEvent(self, event, msg, ...)
     if not open then return end
     if not msg then return end
     if not IsInGroup() then return end
-    
+
     local template, channel
     if IsInRaid() then
         template = raidTemplate
@@ -1006,7 +1041,7 @@ local function JoinGroupNotifyEvent(self,event,msg,...)
         template = partyTemplate
         channel = 'PARTY'
     end
-    
+
     local name = strmatch(msg, template)
 
     if not name then return end
@@ -1018,16 +1053,16 @@ local function JoinGroupNotifyEvent(self,event,msg,...)
         return
     end
 
-    if leaderNotify then 
+    if leaderNotify then
         if (not UnitIsGroupLeader('player') and not UnitIsGroupAssistant('player')) then
-            return 
+            return
         end
     end
 
     local infoStr = allNotify[name];
 
     if infoStr then
-        SendChatJoinNotify(name,channel,infoStr);
+        SendChatJoinNotify(name, channel, infoStr);
     else
         --需要请求
         allQueryRequest[name] = channel;
@@ -1035,25 +1070,23 @@ local function JoinGroupNotifyEvent(self,event,msg,...)
     end
 end
 
-
 local frame3 = CreateFrame("Frame")
 frame3:RegisterEvent("CHAT_MSG_SYSTEM")
-frame3:SetScript("OnEvent",JoinGroupNotifyEvent)
-
-
+frame3:SetScript("OnEvent", JoinGroupNotifyEvent)
 
 local function OpenSenderInfo()
-    InterfaceOptionsFrame_OpenToCategory("SenderInfo");
-    InterfaceOptionsFrameAddOnsListScrollBar:SetValue(0);
-    InterfaceOptionsFrame_OpenToCategory("SenderInfo");
+    if Settings and Settings.OpenToCategory and SenderInfo and SenderInfo.settingsCategory and SenderInfo.settingsCategory.ID then
+        Settings.OpenToCategory(SenderInfo.settingsCategory.ID)
+    elseif InterfaceOptionsFrame_OpenToCategory then
+        InterfaceOptionsFrame_OpenToCategory("SenderInfo")
+        InterfaceOptionsFrame_OpenToCategory("SenderInfo")
+    end
 end
 
 SLASH_SINFO1 = "/sinfo";
-SlashCmdList["SINFO"]=OpenSenderInfo;
-
+SlashCmdList["SINFO"] = OpenSenderInfo;
 
 function Main:ChangeOpen(set)
-    
     if not __private.Load.TalentEmuLoaded then
         local hint = L["依赖天赋模拟器提示2"];
         PrintError(hint)
@@ -1068,15 +1101,13 @@ function Main:ChangeOpen(set)
 
     open = set;
     OnChangeSenderInfo();
-    Print(string.format(L["开关提示1"],(open and "开启" or "关闭")));
+    Print(string.format(L["开关提示1"], (open and "开启" or "关闭")));
 end
-
 
 function Main:ChangePush(set)
     pushState = set;
-    Print(string.format(L["开关提示2"],(pushState and "开启" or "关闭")));
+    Print(string.format(L["开关提示2"], (pushState and "开启" or "关闭")));
 end
-
 
 function Main:ChangeDetailTalent(set)
     showDetailTalent = set;
@@ -1100,12 +1131,52 @@ end
 
 function Main:ChangeShowWCL(set)
     showWCL = set;
+    if set then
+        _G.SenderInfoWCL.Check(__private.View.Cfg);
+    end
+end
+
+function Main:ChangeUseOfficialWCL(set)
+    useOfficialWCL = set;
+    if set and showWCL then
+        _G.SenderInfoWCL.Check(__private.View.Cfg);
+    end
+end
+
+function Main:ChangeUseUnofficialWCL(set)
+    useUnofficialWCL = set;
+    if set and showWCL then
+        _G.SenderInfoWCL.Check(__private.View.Cfg);
+    end
+end
+
+function Main:ChangeShowWCLReverse(set)
+    showWCLReverse = set;
+end
+
+function Main:ChangeShowWCLHideKills(set)
+    showWCLHideKills = set;
+end
+
+function Main:ChangeShowWCL10Normal(set)
+    showWCL10Normal = set;
+end
+
+function Main:ChangeShowWCL10Heroic(set)
+    showWCL10Heroic = set;
+end
+
+function Main:ChangeShowWCL25Normal(set)
+    showWCL25Normal = set;
+end
+
+function Main:ChangeShowWCL25Heroic(set)
+    showWCL25Heroic = set;
 end
 
 function Main:ChangeInfoShowToSystem(set)
     infoShowToSystem = set;
 end
-
 
 function Main:ChangeShowIntervalTime(set)
     showIntervalTime = set;
@@ -1126,10 +1197,10 @@ end
 function Main:RemoveTargetNotifyInfo(name)
     --allNotify[name] = nil;
 end
+
 function Main:ClearNotifyInfo()
     allNotify = {};
 end
-
 
 function Main:ChangeWhiteEquipColourLevel(set)
     WhiteEquipColourLevel = set;
@@ -1147,9 +1218,19 @@ function Main:ChangeVioletEquipColourLevel(set)
     VioletEquipColourLevel = set;
 end
 
+function Main:ChangeSendSelfWCL(set)
+    sendSelfWCL = set;
+end
+
+function Main:ChangeSendSelfOfficialWCL(set)
+    sendSelfOfficialWCL = set;
+end
+
+function Main:ChangeSendSelfUnofficialWCL(set)
+    sendSelfUnofficialWCL = set;
+end
 
 function Main:Init()
-
     GS = __private.GS;
     WCL = __private.WCL;
     View = __private.View;
@@ -1170,6 +1251,14 @@ function Main:Init()
     showEquipLevel = cfg.ShowEquipLevel;
     showGS = cfg.ShowGS;
     showWCL = cfg.ShowWCL;
+    useOfficialWCL = cfg.UseOfficialWCL;
+    useUnofficialWCL = cfg.UseUnofficialWCL;
+    showWCLReverse = cfg.ShowWCLReverse;
+    showWCLHideKills = cfg.ShowWCLHideKills;
+    showWCL10Normal = cfg.ShowWCL10Normal;
+    showWCL10Heroic = cfg.ShowWCL10Heroic;
+    showWCL25Normal = cfg.ShowWCL25Normal;
+    showWCL25Heroic = cfg.ShowWCL25Heroic;
     infoShowToSystem = cfg.InfoShowToSystem;
     showIntervalTime = cfg.ShowIntervalTime;
 
@@ -1182,10 +1271,15 @@ function Main:Init()
     BlueEquipColourLevel = cfg.BlueEquipColourLevel;
     VioletEquipColourLevel = cfg.VioletEquipColourLevel;
 
+    sendSelfWCL = cfg.SendSelfWCL;
+    sendSelfOfficialWCL = cfg.SendSelfOfficialWCL;
+    sendSelfUnofficialWCL = cfg.SendSelfUnofficialWCL;
+
     self:InitSendSelfInfoEvent(cfg);
 
     StatReport_UpdateMyData();
 
-end 
-
-
+    if showWCL then
+        WCL.Check(__private.View.Cfg);
+    end
+end

@@ -13,12 +13,14 @@ local cleave = 845;
 local colossusSmash = 86346;
 local execute = 5308;
 local heroicStrike = 78;
+local impendingVictory = 103840;
 local overpower = 7384;
 local ragingBlowSoD = 402911;
 local revenge = 6572;
 local shieldSlam = 23922;
 local slam = 1464;
 local victoryRush = SAO.IsSoD() and 402927 or 34428;
+local wildStrike = 100130;
 
 local function easyAs123(option)
     return option == "stance:1/2/3";
@@ -318,8 +320,13 @@ local ExecuteHandler = {
 }
 
 local function customLogin(self, ...)
+    if SAO.IsMoP() then
+        -- No handlers for Mists of Pandaria: all abilities are available in all stances
+        return;
+    end
+
     local overpowerName = GetSpellInfo(overpower);
-    if (overpowerName) then
+    if overpowerName then
         -- Overpower is used for OverpowerHandler, detecting when the target dodges
         OverpowerHandler:init(overpower, overpowerName);
 
@@ -334,12 +341,12 @@ local function customLogin(self, ...)
     end
 
     local revengeName = GetSpellInfo(revenge);
-    if (revengeName) then
+    if revengeName then
         RevengeHandler:init(revenge, revengeName);
     end
 
     local executeName = GetSpellInfo(execute);
-    if (executeName) then
+    if executeName then
         ExecuteHandler:init(execute, executeName);
     end
 end
@@ -384,11 +391,11 @@ end
 local function useOverpower()
     SAO:CreateEffect(
         "overpower",
-        SAO.ALL_PROJECTS,
+        SAO.ALL_PROJECTS - SAO.MOP_AND_ONWARD, -- Already glowing natively in Mists of Pandaria and later
         overpower,
         "counter",
         {   -- Lazy evaluation for variants, because they are created later on
-            buttonOption = { variants = function() return OverpowerHandler.variants end },
+            buttonOption = not SAO.IsMoP() and { variants = function() return OverpowerHandler.variants end } or nil,
         }
     );
 end
@@ -396,11 +403,11 @@ end
 local function useExecute()
     SAO:CreateEffect(
         "execute",
-        SAO.ALL_PROJECTS,
+        SAO.ALL_PROJECTS - SAO.MOP_AND_ONWARD, -- Already glowing natively in Mists of Pandaria and later
         execute,
         "counter",
         {   -- Lazy evaluation for variants, because they are created later on
-            buttonOption = { variants = function() return ExecuteHandler.variants end },
+            buttonOption = not SAO.IsMoP() and { variants = function() return ExecuteHandler.variants end } or nil,
         }
     );
 end
@@ -408,11 +415,11 @@ end
 local function useRevenge()
     SAO:CreateEffect(
         "revenge",
-        SAO.ALL_PROJECTS,
+        SAO.ALL_PROJECTS - SAO.MOP_AND_ONWARD, -- Already glowing natively in Mists of Pandaria and later
         revenge,
         "counter",
         {   -- Lazy evaluation for variants, because they are created later on
-            buttonOption = { variants = function() return RevengeHandler.variants end },
+            buttonOption = not SAO.IsMoP() and { variants = function() return RevengeHandler.variants end } or nil,
         }
     );
 end
@@ -420,9 +427,20 @@ end
 local function useVictoryRush()
     SAO:CreateEffect(
         "victory_rush",
-        SAO.SOD + SAO.TBC + SAO.WRATH + SAO.CATA,
+        SAO.ALL_PROJECTS - SAO.ERA - SAO.MOP_AND_ONWARD, -- includes SAO.SOD, then SAO.TBC and later,
+                                                         -- except for Mists of Pandaria and later where we track a buff instead
         victoryRush,
         "counter"
+    );
+    SAO:CreateEffect(
+        "victory_rush",
+        SAO.MOP_AND_ONWARD,
+        32216, -- Victorious (buff)
+        "aura",
+        {
+            overlay = { texture = "serendipity", position = "Top", level = 4, scale = 0.9, color = { 255, 32, 32 } },
+            buttons = { victoryRush, impendingVictory },
+        }
     );
 end
 
@@ -440,16 +458,23 @@ local function useRagingBlow()
 end
 
 local function useSuddenDeath()
-    local suddenDeathBuff = SAO.IsSoD() and 440114 or 52437;
-    local suddenDeathTalent = SAO.IsSoD() and 440113 or 29723;
-
     SAO:CreateEffect(
         "sudden_death",
-        SAO.SOD + SAO.WRATH + SAO.CATA,
-        suddenDeathBuff,
+        SAO.SOD + SAO.WRATH_AND_ONWARD,
+        {
+            [SAO.SOD] = 440114,
+            [SAO.WRATH] = 52437,
+            [SAO.CATA] = 52437,
+            [SAO.MOP] = 52437,
+        },
         "aura",
         {
-            talent = suddenDeathTalent,
+            talent = {
+                [SAO.SOD] = 440113,
+                [SAO.WRATH] = 29723,
+                [SAO.CATA] = 29723,
+                [SAO.MOP] = 29725,
+            },
             overlay = { texture = "sudden_death", position = "Left + Right (Flipped)" },
             buttons = {
                 [SAO.SOD] = execute,
@@ -460,7 +485,36 @@ local function useSuddenDeath()
     );
 end
 
+local function useTasteForBlood()
+    local hash0Stacks = SAO:HashNameFromStacks(0);
+    local hash5Stacks = SAO:HashNameFromStacks(5);
+
+    SAO:CreateEffect(
+        "taste_for_blood",
+        SAO.MOP,
+        60503, -- Taste for Blood (buff)
+        "aura",
+        {
+            talent = 56636, -- Taste for Blood (passive)
+            overlays = {
+                default = { texture = "bandits_guile", position = "Left + Right (Flipped)", level = 4, scale = 0.9, option = false },
+                { stacks = 1, position = "Left", option = { setupHash = hash0Stacks, testHash = hash5Stacks } },
+                { stacks = 2 },
+                { stacks = 3 },
+                { stacks = 4 },
+                { stacks = 5 },
+            },
+            button = overpower,
+        }
+    );
+end
+
 local function useBladestorm()
+    if SAO.IsProject(SAO.MOP_AND_ONWARD) then
+        -- Not interested in Bladestorm in Mists of Pandaria and later
+        return;
+    end
+
     local bladestorm = 46924;
 
     -- Bladestorm texture orientation depends on race and gender
@@ -486,6 +540,10 @@ local function useBladestorm()
         [10] = { nil, ccw, cw  }, -- Blood Elf
         [11] = { nil, ccw, ccw }, -- Draenei
         [22] = { nil, ccw, ccw }, -- Worgen
+        -- Pandaren not included, because Bladestorm is not supported in Mists of Pandaria and later
+        -- [24] = { nil, ccw, ccw }, -- Pandaren (Neutral)
+        -- [25] = { nil, ccw, ccw }, -- Pandaren (Alliance)
+        -- [26] = { nil, ccw, ccw }, -- Pandaren (Horde)
     };
     if not positions[race] then
         SAO:Error(Module, "Unknown race "..tostring((UnitRace("player"))));
@@ -528,41 +586,130 @@ end
 
 local function useBloodsurge()
     -- Quick note: the ability is spelled "Bloodsurge" in Wrath+ and "Blood Surge" in Season of Discovery
-    local bloodsurgeBuff = SAO.IsSoD() and 413399 or 46916;
-    local bloodsurgeTalent = SAO.IsSoD() and 413380 or 46913;
+    local hash0Stacks = SAO:HashNameFromStacks(0);
+    local hash3Stacks = SAO:HashNameFromStacks(3);
 
     SAO:CreateEffect(
         "bloodsurge",
-        SAO.SOD + SAO.WRATH + SAO.CATA,
-        bloodsurgeBuff,
+        SAO.SOD + SAO.WRATH_AND_ONWARD,
+        {
+            [SAO.SOD]   = 413399,
+            [SAO.WRATH] = 46916,
+            [SAO.CATA]  = 46916,
+            [SAO.MOP]   = 46916,
+        },
         "aura",
         {
+            talent = {
+                [SAO.SOD]   = 413380,
+                [SAO.WRATH] = 46913,
+                [SAO.CATA]  = 46913,
+                [SAO.MOP]   = 46915,
+            },
             overlays = {
                 [SAO.SOD+SAO.WRATH] = { texture = "blood_surge", position = "Top" },
-                -- [SAO.CATA] = { texture = "blood_surge", position = "Top (CW)" }, -- Clockwise because texture is different
-                [SAO.CATA] = { texture = "blood_surge", position = "Left + Right (Flipped)" },
+                [SAO.CATA] = { texture = "blood_surge", position = "Left + Right (Flipped)" }, -- Left/Right because texture orientation has changed
+                [SAO.MOP]  = {
+                    { stacks = 1, texture = "blood_surge", position = "Left",                   option = false },
+                    { stacks = 2, texture = "blood_surge", position = "Left + Right (Flipped)", option = false },
+                    { stacks = 3, texture = "blood_surge", position = "Left + Right (Flipped)", option = { setupHash = hash0Stacks, testHash = hash3Stacks } },
+                },
             },
             buttons = {
-                [SAO.SOD+SAO.WRATH] = slam,
-                [SAO.CATA] = { spellID = slam, option = { subText = SAO:RecentlyUpdated() } }, -- Updated 2024-04-30
+                [SAO.SOD+SAO.WRATH+SAO.CATA] = slam,
+                -- [SAO.MOP] = wildStrike, -- Already glowing natively in Mists of Pandaria and later
             },
         }
     );
 end
 
 local function useSwordAndBoard()
-    local swordAndBoardBuff = SAO.IsSoD() and 426979 or 50227;
-    local swordAndBoardTalent = SAO.IsSoD() and 426978 or 46951;
-
     SAO:CreateEffect(
         "sword_and_board",
-        SAO.SOD + SAO.WRATH + SAO.CATA,
-        swordAndBoardBuff,
+        SAO.SOD + SAO.WRATH_AND_ONWARD,
+        {
+            [SAO.SOD]   = 426979,
+            [SAO.WRATH] = 50227,
+            [SAO.CATA]  = 50227,
+            [SAO.MOP]   = 50227,
+        },
         "aura",
         {
-            talent = swordAndBoardTalent,
+            talent = {
+                [SAO.SOD]   = 426978,
+                [SAO.WRATH] = 46951, -- Rank 1
+                [SAO.CATA]  = 46951, -- Rank 1
+                [SAO.MOP]   = 46953,
+            },
             overlay = { texture = "sword_and_board", position = "Left + Right (Flipped)" },
-            button = shieldSlam,
+            buttons = {
+                [SAO.SOD + SAO.WRATH + SAO.CATA] = shieldSlam,
+                -- [SAO.MOP] = shieldSlam, -- Already glowing natively in Mists of Pandaria and later
+            },
+        }
+    );
+end
+
+local function useUltimatum()
+    local ultimatumBuff = 122510;
+    local ultimatumTalent = 122509;
+
+    SAO:CreateEffect(
+        "ultimatum",
+        SAO.MOP,
+        ultimatumBuff,
+        "aura",
+        {
+            talent = ultimatumTalent,
+            overlay = { texture = "ultimatum", position = "Top" },
+            -- buttons = { heroicStrike, cleave }, -- Buttons already glowing natively
+        }
+    );
+end
+
+local function useIncite()
+    local inciteBuff = 86627;
+    local inciteTalent = 50685; -- Rank 1
+
+    SAO:CreateEffect(
+        "incite",
+        SAO.CATA,
+        inciteBuff,
+        "aura",
+        {
+            talent = inciteTalent,
+            button = heroicStrike,
+        }
+    );
+end
+
+local function useGlyphOfIncite()
+    local glyphOfInciteBuff = 122016;
+    local glyphOfInciteTalent = 122013;
+
+    SAO:CreateEffect(
+        "glyph_of_incite",
+        SAO.MOP,
+        glyphOfInciteBuff,
+        "aura",
+        {
+            talent = glyphOfInciteTalent,
+            buttons = { heroicStrike, cleave },
+        }
+    );
+end
+
+local function useRegicide()
+    local regicideBuff = 1231436;
+
+    SAO:CreateEffect(
+        "regicide_warrior",
+        SAO.SOD,
+        regicideBuff,
+        "aura",
+        {
+            overlay = { texture = "sudden_death", position = "Left + Right (Flipped)" },
+            button = execute,
         }
     );
 end
@@ -577,6 +724,7 @@ local function registerClass(self)
 
     -- Arms
     useSuddenDeath();
+    useTasteForBlood();
     useBladestorm();
 
     -- Fury
@@ -585,6 +733,14 @@ local function registerClass(self)
 
     -- Protection
     useSwordAndBoard();
+    useUltimatum();
+    useIncite();
+
+    -- Talents
+    useGlyphOfIncite();
+
+    -- Items
+    useRegicide();
 end
 
 SAO.Class["WARRIOR"] = {

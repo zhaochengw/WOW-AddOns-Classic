@@ -1,5 +1,6 @@
 local AddonName, SAO = ...
 local ShortAddonName = strlower(AddonName):sub(0,8) == "necrosis" and "Necrosis" or "SAO"
+local Module = "util"
 
 -- This script file is not a 'component' per se, but its functions are used across components
 
@@ -16,9 +17,16 @@ local GetSpellTabInfo = GetSpellTabInfo
 local GetTalentInfo = GetTalentInfo
 local GetTime = GetTime
 local UnitAura = UnitAura
+local UnitClassBase = UnitClassBase
 
 local GetAuraDataBySpellName = C_UnitAuras and C_UnitAuras.GetAuraDataBySpellName
 local GetPlayerAuraBySpellID = C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID
+
+local GetNumSpecializationsForClassID = C_SpecializationInfo and C_SpecializationInfo.GetNumSpecializationsForClassID
+local GetSpecializationInfo = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo
+      GetTalentInfo = C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo or GetTalentInfo
+
+local IsEquippedItem = C_Item and C_Item.IsEquippedItem
 
 --[[
     Logging functions
@@ -56,12 +64,53 @@ function SAO.Trace(self, prefix, msg, ...)
     end
 end
 
+function SAO.LogPersistent(self, prefix, msg)
+    if SpellActivationOverlayDB then
+        local line = "[@"..GetTime().."] :"..prefix..": "..msg;
+        if not SpellActivationOverlayDB.logs then
+            SpellActivationOverlayDB.logs = { line };
+        else
+            tinsert(SpellActivationOverlayDB.logs, line);
+        end
+    end
+end
+
 local timeOfLastTrace = {}
 function SAO.TraceThrottled(self, key, prefix, ...)
     key = tostring(key)..tostring(prefix);
     if not timeOfLastTrace[key] or GetTime() > timeOfLastTrace[key]+1 then
         self:Trace(prefix, ...);
         timeOfLastTrace[key] = GetTime();
+    end
+end
+
+function SAO:CanReport()
+--    return SAO.IsProject(SAO.CATA_AND_ONWARD);
+    -- Should be CATA_AND_ONWARD, but too late for Cataclysm. Maybe something to consider for Cata Classic Classic?
+    return SAO.IsProject(SAO.MOP_AND_ONWARD);
+end
+
+function SAO:HasReport()
+    return SpellActivationOverlayDB and SpellActivationOverlayDB.report ~= false; -- Default to true
+end
+
+function SAO:ReportUnkownEffect(prefix, spellID, texture, positions, scale, r, g, b)
+    if self:CanReport() and self:HasReport() and spellID and not self:GetBucketBySpellID(spellID) and not self:IsAka(spellID) then
+        if not self.UnknownNativeEffects then
+            self.UnknownNativeEffects = {}
+        end
+        if not self.UnknownNativeEffects[spellID] then
+            local text = "";
+            text = text..", flavor="..tostring(self.GetFlavorName());
+            text = text..", spell="..tostring(spellID).." ("..(GetSpellInfo(spellID) or "unknown spell")..")"
+            text = text..", tex="..tostring(texture);
+            text = text..", pos="..((type(positions) == 'string') and ("'"..positions.."'") or tostring(positions));
+            text = text..", scale="..tostring(scale);
+            text = text..", rgb=("..tostring(r).." "..tostring(g).." "..tostring(b)..")";
+            self:Info(prefix, SAO:unsupportedShowEvent(text));
+
+            self.UnknownNativeEffects[spellID] = true;
+        end
     end
 end
 
@@ -87,145 +136,37 @@ function SAO.GetGCD(self)
 end
 
 --[[
-    Label builders
+    Formatting utility functions
 ]]
 
--- Utility function to write a formatted 'number of stacks' text, translated with the client's locale
--- SAO:NbStacks(4) -- "4 Stacks"
--- SAO:NbStacks(7,9) -- "7-9 Stacks"
-function SAO:NbStacks(minStacks, maxStacks)
-    if maxStacks then
-        return string.format(CALENDAR_TOOLTIP_DATE_RANGE, tostring(minStacks), string.format(STACKS, maxStacks));
+-- Usage: SAO:gradientText("YOLO", { {r=1, g=0, b=0}, {r=0, g=0, b=1} })
+-- There must be at least two characters in the text and at least two colors in the colors table
+function SAO:gradientText(text, colors)
+    local len = #text;
+    local result = "";
+    for i = 1, len do
+        local t = (i-1)/(len-1);
+        local idx, localT;
+        if t <= 0 then
+            idx = 1;
+            localT = 0;
+        elseif t >= 1 then
+            idx = #colors - 1;
+            localT = 1;
+        else
+            -- May be subject to floating point errors, we might need to fix it if we see glitched
+            idx = math.floor(t * (#colors - 1)) + 1;
+            localT = (t * (#colors - 1)) % 1;
+        end
+        local c1 = colors[idx];
+        local c2 = colors[idx+1];
+        local r = c1.r + (c2.r-c1.r)*localT;
+        local g = c1.g + (c2.g-c1.g)*localT;
+        local b = c1.b + (c2.b-c1.b)*localT;
+        local hex = string.format("%02x%02x%02x", r*255, g*255, b*255);
+        result = result .. "|cff" .. hex .. text:sub(i,i) .. "|r";
     end
-    return string.format(STACKS, minStacks);
-end
-
--- Simple function telling something was updated recently
-function SAO:RecentlyUpdated()
-    return WrapTextInColor(KBASE_RECENTLY_UPDATED, GREEN_FONT_COLOR);
-end
-
--- Execute text to tell enemy HP is below a certain threshold
-function SAO:ExecuteBelow(threshold)
-    return string.format(string.format(HEALTH_COST_PCT, "<%s%"), threshold);
-end
-
-local function tr(translations)
-    local locale = GetLocale();
-    return translations[locale] or translations[locale:sub(1,2)] or translations["en"];
-end
-
--- Get the "Heating Up" localized buff name
-function SAO:translateHeatingUp()
-    local heatingUpTranslations = {
-        ["en"] = "Heating Up",
-        ["de"] = "Aufwärmen",
-        ["fr"] = "Réchauffement",
-        ["es"] = "Calentamiento",
-        ["ru"] = "Разогрев",
-        ["it"] = "Riscaldamento",
-        ["pt"] = "Aquecendo",
-        ["ko"] = "열기",
-        ["zh"] = "热力迸发",
-    };
-    return tr(heatingUpTranslations);
-end
-
--- Get the "Debuff" localized text
-function SAO:translateDebuff()
-    local debuffTranslations = {
-        ["en"] = "Debuff",
-        ["de"] = "Schwächung",
-        ["fr"] = "Affaiblissement",
-        ["es"] = "Perjuicio",
-        ["ru"] = "Отрицательный эффект",
-        ["it"] = "Penalità",
-        ["pt"] = "Penalidade",
-        ["ko"] = "약화",
-        ["zh"] = "负面",
-        ["zhTW"] = "減益",
-    };
-    return tr(debuffTranslations);
-end
-
--- Get the "Responsive Mode" localized text
-function SAO:responsiveMode()
-    local responsiveTranslations = {
-        ["en"] = "Responsive mode (decreases performance)",
-        ["de"] = "Responsiver Modus (verringert die Leistung)",
-        ["fr"] = "Mode réactif (diminue les performances)",
-        ["es"] = "Modo de respuesta (disminuye el rendimiento)",
-        ["ru"] = "Отзывчивый режим (снижает производительность)",
-        ["it"] = "Modalità reattiva (riduce le prestazioni)",
-        ["pt"] = "Modo responsivo (diminui o desempenho)",
-        ["ko"] = "반응형 모드(성능 저하)",
-        ["zh"] = "响应模式（降低性能）",
-    };
-    return tr(responsiveTranslations);
-end
-
--- Get the "Unsupported class" localized text
-function SAO:unsupportedClass()
-    local unsupportedClassTranslations = {
-        ["en"] = "Unsupported Class",
-        ["de"] = "Nicht unterstützte Klasse",
-        ["fr"] = "Classe non prise en charge",
-        ["es"] = "Clase no compatible",
-        ["ru"] = "Неподдерживаемый класс",
-        ["it"] = "Classe non supportata",
-        ["pt"] = "Classe sem suporte",
-        ["ko"] = "지원되지 않는 클래스",
-        ["zh"] = "不支持的类",
-    };
-    return tr(unsupportedClassTranslations);
-end
-
--- Get the "because of {reason}" localized text
-function SAO:becauseOf(reason)
-    local becauseOfTranslations = {
-        ["en"] = "because of %s",
-        ["de"] = "wegen %s",
-        ["fr"] = "à cause de %s",
-        ["es"] = "por %s",
-        ["ru"] = "из-за %s",
-        ["it"] = "a causa di %s",
-        ["pt"] = "por causa de %s",
-        ["ko"] = "%s 때문에",
-        ["zh"] = "因为 %s",
-    };
-    return string.format(tr(becauseOfTranslations), reason);
-end
-
--- Get the "Open {x}" localized text
-function SAO:openIt(x)
-    local openItTranslations = {
-        ["en"] = "Open %s",
-        ["de"] = "Öffnen %s",
-        ["fr"] = "Ouvrir %s",
-        ["es"] = "Abrir %s",
-        ["ru"] = "Открыть %s",
-        ["it"] = "Aprire %s",
-        ["pt"] = "Abrir %s",
-        ["ko"] = "열기 %s",
-        ["zh"] = "打开 %s",
-    };
-    return string.format(tr(openItTranslations), x);
-end
-
--- Get the "Disabled when {addon} is installed" localized text
-function SAO:disableWhenInstalled(addon)
-    local disableWhenInstalledTranslations = {
-        ["en"] = "Disable when %s is installed",
-        ["de"] = "Deaktivieren, wenn %s installiert ist",
-        ["fr"] = "Désactiver lorsque %s est installé",
-        ["es"] = "Desactivar cuando %s está instalado",
-        ["ru"] = "Отключить при установке %s",
-        ["it"] = "Disattivare quando è installato %s",
-        ["pt"] = "Desativar quando %s estiver instalado",
-        ["ko"] = "%s가 설치되어 있으면 사용 안 함",
-        ["zh"] = "安装 %s 时禁用",
-    };
-    return string.format(tr(disableWhenInstalledTranslations), addon);
+    return result;
 end
 
 --[[
@@ -353,21 +294,119 @@ end
     If the talent is found, returns:
     - the number of points spent for this talent
     - the total number of points possible for this talent
-    - the tabulation in which the talent was found
-    - the index in which the talent was found
+    - the tabulation in which the talent was found (for MoP+, the row/tier where it was found)
+    - the index in which the talent was found (for MoP+, the column where it was found)
     Tabulation and index can be re-used in GetTalentInfo to avoid re-parsing all talents
+    For MoP+, the tier and column can be re-used in C_SpecializationInfo.GetTalentInfo({ tier=tier, column=column })
 
     Returns nil if no talent is found with this name e.g., in the wrong expansion
 ]]
-function SAO.GetTalentByName(self, talentName)
-    for tab = 1, GetNumTalentTabs() do
-        for index = 1, GetNumTalents(tab) do
-            local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(tab, index);
-            if (name == talentName) then
-                return rank, maxRank, tab, index;
+function SAO:GetTalentByName(talentName)
+    if self.IsMoP() then
+        for tier = 1, MAX_NUM_TALENT_TIERS do
+            for column = 1, NUM_TALENT_COLUMNS do
+                local talentInfo = GetTalentInfo({ tier=tier, column=column });
+                if talentInfo and talentInfo.name == talentName then
+                    local rank = talentInfo.selected and 1 or 0; -- Use talentInfo.known, if .selected is unreliable
+                    local maxRank = talentInfo.maxRank
+                    return rank, maxRank, tier, column
+                end
+            end
+        end
+    else
+        for tab = 1, GetNumTalentTabs() do
+            for index = 1, GetNumTalents(tab) do
+                local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(tab, index);
+                if name == talentName then
+                    return rank, maxRank, tab, index;
+                end
             end
         end
     end
+end
+
+--[[
+    Get the number of talent points spent at a specific talent coordinate
+    - for Era-Cataclysm, i is the tab and j is the index
+    - for MoP+, i is the tier and j is the column
+
+    Return a number, or nil if the talent is not found
+]]
+function SAO:GetNbTalentPoints(i, j)
+    if self.IsMoP() then
+        local talentInfo = GetTalentInfo({ tier=i, column=j });
+        return talentInfo and talentInfo.selected and 1 or 0;
+    else
+        return (select(5, GetTalentInfo(i, j)));
+    end
+end
+
+-- Get the list of specializations based on a negative talent bit-field
+function SAO:GetSpecsFromTalent(talentID)
+    if type(talentID) ~= 'number' or talentID >= 0 then
+        SAO:Error(Module, "Getting specializations for a non-negative talentID "..tostring(talentID));
+        return nil;
+    end
+
+    local specs = {};
+    for spec = 1, SAO:GetNbSpecs() do
+        local hasSpec = bit.band(-talentID, bit.lshift(1, spec-1)) ~= 0;
+        if hasSpec then
+            tinsert(specs, spec);
+        end
+    end
+    return specs;
+end
+
+-- Get text and icon for either a talent as spellID, or as spec bit-field
+function SAO:GetTalentText(talentID)
+    if type(talentID) == 'number' and talentID < 0 then
+        if not self:IsMoP() then
+            self:Error(Module, "Getting talent text for a negative talentID "..talentID.." but prior to the Mists of Pandaria specialization rework");
+            return nil;
+        end
+        local specs = self:GetSpecsFromTalent(talentID);
+        if not specs or #specs == 0 then
+            return nil;
+        elseif #specs == 1 then
+            local _, name, _, icon = GetSpecializationInfo(specs[1]);
+            local text = "|T"..icon..":0|t "..name;
+            return SPECIALIZATION..": "..text;
+        else
+            local text = "";
+            for _, spec in ipairs(specs) do
+                local _, name, _, icon = GetSpecializationInfo(spec);
+                if text ~= "" then text = text.." / " end
+                text = text.."|T"..icon..":0|t "..name;
+            end
+            return SPECIALIZATION..": "..text;
+        end
+    else
+        local spellName, _, spellIcon = GetSpellInfo(talentID);
+        if not spellName then
+            self:Error(Module, "Unknown spell for talentID "..tostring(talentID));
+            return nil;
+        end
+        return "|T"..spellIcon..":0|t "..spellName;
+    end
+end
+
+-- Get the number of specializations for the current class
+function SAO:GetNbSpecs()
+    return GetNumSpecializationsForClassID(select(2, UnitClassBase("player")));
+end
+
+-- Get a function that retrieves the name of the specialization
+-- It returns a function that must be invoked explicitly, e.g. SAO:GetSpecNameFunction(1)()
+-- The reason for that is that specializations are not queriable at start
+-- Returns nil for flavors that do not support Specializations
+function SAO:GetSpecNameFunction(specIndex)
+    if not C_SpecializationInfo then
+        return nil;
+    end
+    return function()
+        return select(2, C_SpecializationInfo.GetSpecializationInfo(specIndex));
+    end;
 end
 
 -- Utility function to get the spell ID associated to an action
@@ -408,6 +447,23 @@ function SAO.GetHomonymSpellIDs(self, spell)
     end
 
     return homonyms;
+end
+
+--[[
+    Item utility functions
+]]
+
+-- Returns the number of items the player has currently equipped
+function SAO:GetNbItemsEquipped(itemList)
+    local nbItems = 0;
+
+    for _, item in ipairs(itemList) do
+        if IsEquippedItem(item) then
+            nbItems = nbItems + 1;
+        end
+    end
+
+    return nbItems;
 end
 
 --[[
@@ -510,3 +566,13 @@ SAO.GlowInterface = {
         end
     end,
 }
+
+-- Create a quick UI element that can be copy/pasted
+-- Forked from https://github.com/Zarant/WoW_Hardcore/blob/master/Achievements/Thunderstruck.lua
+-- For the record, I submitted this code here https://github.com/Zarant/WoW_Hardcore/commit/a6730a36fda24b10de6773ad8ea92b9eb3b2cebd
+function SAO:DumpCopyableText(title, text)
+    local f=CreateFrame("Frame") f:SetPoint("TOPLEFT",200,-200) f:SetWidth(256) f:SetHeight(256) f.t=f:CreateTexture() f.t:SetColorTexture(0,0,0.5); f.t:SetAllPoints()
+    local CBT = function(b,icon) b[icon]=b:CreateTexture() b[icon]:SetTexture("Interface/Buttons/UI-Panel-MinimizeButton-"..icon) b[icon]:SetAllPoints() b[icon]:SetTexCoord(0.08,0.9,0.1,0.9) return b[icon] end
+    local b=CreateFrame("Button",nil,f) b:SetPoint("TOPRIGHT",0,0) b:SetWidth(14) b:SetHeight(14) b:SetScript("OnClick", function() f:Hide() end) b:SetNormalTexture(CBT(b,"Up")) b:SetPushedTexture(CBT(b,"Down")) b:SetHighlightTexture(CBT(b,"Highlight"))
+    local g=CreateFrame("EditBox", nil, f) g:SetMultiLine(true) g:SetAutoFocus(false) g:SetAllPoints() g:SetFontObject(GameTooltipTextSmall) g:SetText(title.."\n"..text)
+end

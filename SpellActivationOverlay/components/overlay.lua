@@ -32,7 +32,7 @@ local function discardedByOverlayOption(self, auraID, optionIndex, optionAnyStac
 end
 
 -- Add or refresh an overlay
-function SAO.ActivateOverlay(self, hashData, spellID, texture, positions, scale, r, g, b, autoPulse, forcePulsePlay, endTime, combatOnly)
+function SAO.ActivateOverlay(self, hashData, spellID, texture, positions, scale, r, g, b, autoPulse, forcePulsePlay, endTime, combatOnly, extra)
     if (texture) then
         -- Discard the overlay if options are not favorable
         if type(hashData) == 'number' then
@@ -57,6 +57,15 @@ function SAO.ActivateOverlay(self, hashData, spellID, texture, positions, scale,
             forcePulsePlay = false;
         end
 
+        -- Pulse can be functions
+        -- Now is the last moment to evaluate them before showing the overlay
+        if (type(autoPulse) == 'function') then
+            autoPulse = autoPulse(self);
+        end
+        if (type(forcePulsePlay) == 'function') then
+            forcePulsePlay = forcePulsePlay(self);
+        end
+
         -- Fetch texture from functor if needed
         if (type(texture) == 'function') then
             texture = texture(self);
@@ -66,7 +75,7 @@ function SAO.ActivateOverlay(self, hashData, spellID, texture, positions, scale,
         endTime = self:GetSpellEndTime(spellID, endTime);
 
         -- Actually show the overlay(s)
-        self.ShowAllOverlays(self.Frame, spellID, texture, positions, scale, r, g, b, autoPulse, forcePulsePlay, endTime, combatOnly);
+        self.ShowAllOverlays(self.Frame, spellID, texture, positions, scale, r, g, b, autoPulse, forcePulsePlay, endTime, combatOnly, extra);
     end
 end
 

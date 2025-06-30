@@ -16,7 +16,7 @@ L["开关提示2"] = "[SenderInfo]插件 推广模式 ==> %s 感谢支持!";
 L["插件提示0"] = "[SenderInfo]作者: 大力力 - 范克瑞斯";
 L["插件提示1"] = "[SenderInfo]插件加载完毕 宏命令 /sinfo  打开配置界面  /sinfop 快捷开关功能";
 L["插件提示2"] = "[SenderInfo](必须)插件依赖 alaTalentEmu (天赋模拟器) 否则无法使用!!";
-L["插件提示3"] = "[SenderInfo](选装)如果安装 WCLPlayerScore-WotLK-CN 可以得到WCL评分信息!! \n请到wowinterface更新WCL插件";
+L["插件提示3"] = "[SenderInfo](选装)如果安装 官方WCL 可以得到WCL评分信息!!\n(选装)如果安装 WCLPlayerScore-WotLK-CN 可以得到WCL评分信息!!\n请到wowinterface更新WCL插件";
 L["插件提示4"] = "[SenderInfo]反馈Q群:469058815   [提示信息仅供参考]";
 
 L["预览"] = "预览:";
@@ -62,6 +62,8 @@ L["职业颜色2"] = "|cffE884B0%s|r";
 L["平均装等显示"] = " |cfffff000装等:|r |cffFF8000213|r";
 L["GS显示"] = "  |cfffff000GS:|r |cff1EFF004321|r";
 L["WCL显示"] = "  |cFFFF8000 xx全明星第x奶骑 |r  |cFFA335EE NAX:xx% |r";
+L["官方WCL显示"] = "  |cFFFF8000 官方WCL評分 |r  |cFFA335EE 數據來源:官方 |r";
+L["非官方WCL显示"] = "  |cFFFF8000 非官方WCL評分 |r  |cFFA335EE 數據來源:非官方 |r";
 
 
 L["显示装等标题"] = "装等";
@@ -146,3 +148,12 @@ L["白色"] = "白色"
 L["绿色"] = "绿色"
 L["蓝色"] = "蓝色"
 L["紫色"] = "紫色"
+
+L["发送自己的WCL标题"] = "發送自己的WCL";
+L["发送自己的WCL描述"] = "開啟後發送自己信息時附帶WCL評分";
+
+L["发送使用官方WCL标题"] = "發送使用官方WCL";
+L["发送使用官方WCL描述"] = "發送自己信息時使用官方WCL數據源";
+
+L["发送使用非官方WCL标题"] = "發送使用非官方WCL";
+L["发送使用非官方WCL描述"] = "發送自己信息時使用非官方WCL數據源";

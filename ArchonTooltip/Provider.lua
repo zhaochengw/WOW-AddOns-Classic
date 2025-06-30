@@ -331,3 +331,5 @@ function ArchonTooltip.AddProviderV2(lookup, provider)
 
 	providers[key] = provider
 end
+ 
+_G["ArchonTooltipPrivate"] = Private 
