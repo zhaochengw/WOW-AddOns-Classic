@@ -55,7 +55,7 @@ function Private.EncodeWithPercentileColor(percentile, content)
 	local color = Private.Colors.Common
 
 	if percentile ~= nil then
-		if percentile >= 100 then
+		if percentile >= 99.95 then
 			color = Private.Colors.Artifact
 		elseif percentile >= 99 then
 			color = Private.Colors.Astounding

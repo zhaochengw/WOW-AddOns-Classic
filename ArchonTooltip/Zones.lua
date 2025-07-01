@@ -16,7 +16,7 @@ Private.Zones[42] = {
         { id = 3015, },
         { id = 3016, },
     },
-    difficultyIconMap = nil
+    difficultyIconMap = nil,
 }
 
 Private.Zones[1033] = {
@@ -34,7 +34,7 @@ Private.Zones[1033] = {
         { id = 1291, },
         { id = 1299, },
     },
-    difficultyIconMap = nil
+    difficultyIconMap = nil,
 }
 
 Private.Zones[1037] = {
@@ -56,7 +56,7 @@ Private.Zones[1037] = {
         { id = 50855, },
         { id = 50856, },
     },
-    difficultyIconMap = nil
+    difficultyIconMap = nil,
 }
 
 Private.Zones[2018] = {
@@ -74,7 +74,26 @@ Private.Zones[2018] = {
         { id = 3190, },
         { id = 3189, },
     },
-    difficultyIconMap = nil
+    difficultyIconMap = nil,
+}
+
+Private.Zones[1034] = {
+    id = 1034,
+    name = "Blackwing Lair",
+    hasMultipleDifficulties = false,
+    hasMultipleSizes = false,
+    encounters = {
+        { id = 150610, },
+        { id = 150611, },
+        { id = 150612, },
+        { id = 150613, },
+        { id = 150614, },
+        { id = 150615, },
+        { id = 150631, },
+        { id = 150616, },
+        { id = 150617, },
+    },
+    difficultyIconMap = nil,
 }
 
 for _, zone in pairs(Private.Zones) do

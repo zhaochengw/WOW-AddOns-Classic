@@ -98,6 +98,7 @@ end
 ---@field summary ProviderProfileV2Summary|nil
 ---@field sections table<number, ProviderProfileV2Section>
 ---@field mainCharacter ProviderProfileV2MainCharacter|nil
+---@field progressOnly boolean
 
 ---@class ProviderProfileV2Summary
 ---@field zoneId number
@@ -141,15 +142,9 @@ end
 ---@field bestAverage number
 
 ---@param name string
----@param maybeRealm string
----@return ProviderProfileV2|nil
-function Private.GetProviderProfile(name, maybeRealm)
-	local realm = Private.GetRealmOrDefault(maybeRealm)
-
-	if realm == nil then
-		return nil
-	end
-
+---@param realm string
+---@return ProviderProfileV2|nil, boolean
+local function ExtractProfileForCharacter(name, realm)
 	local providerIsLoaded = false
 
 	for i = 1, 0, -1 do
@@ -161,9 +156,28 @@ function Private.GetProviderProfile(name, maybeRealm)
 			local profile = provider.data[name]
 
 			if profile then
-				return profile
+				return profile, true
 			end
 		end
+	end
+
+	return nil, providerIsLoaded
+end
+
+---@param name string
+---@param maybeRealm string
+---@return ProviderProfileV2|nil
+function Private.GetProviderProfile(name, maybeRealm)
+	local realm = Private.GetRealmOrDefault(maybeRealm)
+
+	if realm == nil then
+		return nil
+	end
+
+	local profile, providerIsLoaded = ExtractProfileForCharacter(name, realm)
+
+	if profile then
+		return profile
 	end
 
 	if not providerIsLoaded and Private.SupportsLazyLoading(realm) then
@@ -173,7 +187,8 @@ function Private.GetProviderProfile(name, maybeRealm)
 			local loaded = Private.LoadAddOn(databaseKeyToLoad, realm)
 
 			if loaded then
-				return Private.GetProviderProfile(name, realm)
+				profile = ExtractProfileForCharacter(name, realm)
+				return profile
 			end
 		end
 	end
@@ -267,69 +282,77 @@ function ArchonTooltip.AddProviderV2(lookup, provider)
 	assert(type(provider.date) == "string", "ArchonTooltip.AddProvider(lookup, provider) tables must have a string provider.date")
 	assert(type(provider.data) == "table", "ArchonTooltip.AddProvider(lookup, provider) tables must have table provider.data")
 
-	if provider.region ~= Private.CurrentRealm.region then
-		Private.Print("Provider", "rejected Provider for region " .. provider.region)
-		return
-	end
+	local function DoProviderAddition()
+		if provider.region ~= Private.CurrentRealm.region then
+			Private.Print("Provider", "rejected Provider for region " .. provider.region)
+			return
+		end
 
-	if provider.name ~= Private.CurrentRealm.database then
-		Private.Print("Provider", "rejected Provider for database " .. provider.name .. " as it is not what we should be loading")
-		return
-	end
+		if provider.name ~= Private.CurrentRealm.database then
+			Private.Print("Provider", "rejected Provider for database " .. provider.name .. " as it is not what we should be loading")
+			return
+		end
 
-	local rawData = provider.data
+		local rawData = provider.data
 
-	provider.data = {}
+		provider.data = {}
 
-	local cache = {}
+		local cache = {}
 
-	setmetatable(provider.data, {
-		__index = function(table, key)
-			if cache[key] then
-				return cache[key]
-			end
-
-			local prefix
-
-			-- string.sub works with byte indexes, but UTF8 strings can be multi-byte (like Lâ), so we find the byte index where the second character ends and sub up to that
-			local startOfThirdUtf8Character = Private.Utf8Offset(key, 3)
-
-			-- characters don't necessarily have 3 utf8 bytes
-			if startOfThirdUtf8Character == nil then
-				prefix = key
-			else
-				local endOfSecondUtf8Character = startOfThirdUtf8Character - 1
-				prefix = string.sub(key, 1, endOfSecondUtf8Character)
-			end
-
-			if prefix == nil then
-				return nil
-			end
-
-			if rawData[prefix] then
-				local name, b64_contents = v2_find(rawData[prefix], key)
-				local result = nil
-				if name ~= nil then
-					local bin_contents = Private.base64.decode(b64_contents)
-					result = provider.parse(Private.BitDecoder, bin_contents, lookup, 2)
+		setmetatable(provider.data, {
+			__index = function(table, key)
+				if cache[key] then
+					return cache[key]
 				end
-				cache[key] = result
-				return result
-			end
 
-			return nil
-		end,
-	})
+				local prefix
 
-	local key = CreateProviderKey({
-		realm = provider.realm,
-		subscribers = string.find(provider.type, "subscribers") and 1 or 0,
-		region = provider.region,
-	})
+				-- string.sub works with byte indexes, but UTF8 strings can be multi-byte (like Lâ), so we find the byte index where the second character ends and sub up to that
+				local startOfThirdUtf8Character = Private.Utf8Offset(key, 3)
 
-	Private.Print("Provider", "added v2 provider: " .. key)
+				-- characters don't necessarily have 3 utf8 bytes
+				if startOfThirdUtf8Character == nil then
+					prefix = key
+				else
+					local endOfSecondUtf8Character = startOfThirdUtf8Character - 1
+					prefix = string.sub(key, 1, endOfSecondUtf8Character)
+				end
 
-	providers[key] = provider
+				if prefix == nil then
+					return nil
+				end
+
+				if rawData[prefix] then
+					local name, b64_contents = v2_find(rawData[prefix], key)
+					local result = nil
+					if name ~= nil then
+						local bin_contents = Private.base64.decode(b64_contents)
+						result = provider.parse(Private.BitDecoder, bin_contents, lookup, 2)
+					end
+					cache[key] = result
+					return result
+				end
+
+				return nil
+			end,
+		})
+
+		local key = CreateProviderKey({
+			realm = provider.realm,
+			subscribers = string.find(provider.type, "subscribers") and 1 or 0,
+			region = provider.region,
+		})
+
+		Private.Print("Provider", "added v2 provider: " .. key)
+
+		providers[key] = provider
+	end
+
+	if #Private.LoginFnQueue > 0 then
+		table.insert(Private.LoginFnQueue, DoProviderAddition)
+	else
+		DoProviderAddition()
+	end
 end
  
 _G["ArchonTooltipPrivate"] = Private 

@@ -37,11 +37,14 @@ local function GetMainCharacterLine(mainCharacter)
 	local line = string.format("%s: ", Private.L.Main)
 
 	if mainCharacter.spec ~= "Unknown-Unknown" then
+		local formattedPercentile = Private.FormatAveragePercentile(mainCharacter.bestAverage)
+		local formattedPercentileNumber = tonumber(formattedPercentile)
+
 		line = string.format(
 			"%s %s %s",
 			line,
 			Private.EncodeWithTexture(Private.GetSpecIcon(mainCharacter.spec)),
-			Private.EncodeWithPercentileColor(mainCharacter.bestAverage, Private.FormatAveragePercentile(mainCharacter.bestAverage))
+			Private.EncodeWithPercentileColor(formattedPercentileNumber, formattedPercentile)
 		)
 	end
 
@@ -76,14 +79,20 @@ local function AddSection(section, isLastSection, lines)
 		header = string.format("%d %s", section.sizeId, header)
 	end
 
-	header = string.format(
-		"%s%s   %s   %d %s",
-		header,
-		Private.EncodeWithPercentileColor(section.anySpecRankings.bestAverage, Private.FormatAveragePercentile(section.anySpecRankings.bestAverage)),
-		Private.GetProgressString(section.zoneId, section.difficultyId, section.sizeId, section.anySpecRankings.progressKilled, section.anySpecRankings.progressPossible, true),
-		section.totalKills,
-		Private.L.Kills
-	)
+	-- to scope formattedPercentile/formattedPercentileNumber
+	do
+		local formattedPercentile = Private.FormatAveragePercentile(section.anySpecRankings.bestAverage)
+		local formattedPercentileNumber = tonumber(formattedPercentile)
+
+		header = string.format(
+			"%s%s   %s   %d %s",
+			header,
+			Private.EncodeWithPercentileColor(formattedPercentileNumber, formattedPercentile),
+			Private.GetProgressString(section.zoneId, section.difficultyId, section.sizeId, section.anySpecRankings.progressKilled, section.anySpecRankings.progressPossible, true),
+			section.totalKills,
+			Private.L.Kills
+		)
+	end
 
 	if lines then
 		table.insert(lines, header)
@@ -169,10 +178,12 @@ local function AddSection(section, isLastSection, lines)
 					local nameAndKills = WrapTextInColorCode(string.format("%s (%s)", encounterName, encounterRanking.kills), color)
 
 					if encounterRanking.kills > 0 then
+						local formattedPercentile = Private.FormatPercentile(encounterRanking.best)
+						local formattedPercentileNumber = tonumber(formattedPercentile)
 						if lines then
-							table.insert(lines, string.format("%s %s", Private.EncodeWithPercentileColor(encounterRanking.best, Private.FormatPercentile(encounterRanking.best)), nameAndKills))
+							table.insert(lines, string.format("%s %s", Private.EncodeWithPercentileColor(formattedPercentileNumber, formattedPercentile), nameAndKills))
 						else
-							GameTooltip:AddDoubleLine(nameAndKills, Private.EncodeWithPercentileColor(encounterRanking.best, Private.FormatPercentile(encounterRanking.best)))
+							GameTooltip:AddDoubleLine(nameAndKills, Private.EncodeWithPercentileColor(formattedPercentileNumber, formattedPercentile))
 						end
 					else
 						if lines then
@@ -211,7 +222,9 @@ function Private.GetProfileLines(profile)
 	}
 
 	if profile.summary ~= nil then
-		table.insert(lines, WrapTextInColorCode(Private.L["addon.parse-gate-description"], Private.Colors.DeemphasizedText))
+		if not profile.progressOnly then
+			table.insert(lines, WrapTextInColorCode(Private.L["addon.parse-gate-description"], Private.Colors.DeemphasizedText))
+		end
 	elseif #profile.sections > 0 then
 		for i, section in ipairs(profile.sections) do
 			AddSection(section, i == #profile.sections, lines)
@@ -230,7 +243,9 @@ local function DoGameTooltipUpdate(profile)
 	GameTooltip:AddLine(GetHeader(profile))
 
 	if profile.summary ~= nil then
-		GameTooltip:AddLine(WrapTextInColorCode(Private.L["addon.parse-gate-description"], Private.Colors.DeemphasizedText))
+		if not profile.progressOnly then
+			GameTooltip:AddLine(WrapTextInColorCode(Private.L["addon.parse-gate-description"], Private.Colors.DeemphasizedText))
+		end
 	elseif #profile.sections > 0 then
 		for i, section in ipairs(profile.sections) do
 			AddSection(section, i == #profile.sections)
