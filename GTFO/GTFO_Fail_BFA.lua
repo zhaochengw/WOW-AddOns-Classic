@@ -755,6 +755,16 @@ GTFO.SpellID["305369"] = {
   sound = 3;
 };
 
+GTFO.SpellID["264155"] = {
+  --desc = "Surging Rush (Aqu'sirr)";
+  sound = 3;
+};
+
+GTFO.SpellID["276292"] = {
+  --desc = "Whirling Slam (Ironhull Apprentice)";
+  sound = 3;
+};
+
 -- ******************
 -- * Waycrest Manor *
 -- ******************
@@ -1220,9 +1230,6 @@ GTFO.SpellID["250022"] = {
 -- * King's Rest *
 -- ***************
 
--- TODO: Gale Slash (Dazar, The First King)
--- TODO: Impaling Spear (Dazar, The First King)
-
 GTFO.SpellID["270003"] = {
   --desc = "Suppression Slam (Animated Guardian)";
   sound = 3;
@@ -1251,6 +1258,18 @@ GTFO.SpellID["270289"] = {
 
 GTFO.SpellID["267105"] = {
   --desc = "Torrent (Torrent Totem)";
+  sound = 3;
+};
+
+GTFO.SpellID["268419"] = {
+  --desc = "Gale Slash (Dazar, The First King)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["268796"] = {
+  --desc = "Impaling Spear (Dazar, The First King)";
+  applicationOnly = true;
   sound = 3;
 };
 

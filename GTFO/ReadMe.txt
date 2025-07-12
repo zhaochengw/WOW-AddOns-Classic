@@ -2267,3 +2267,8 @@ Change Log:
 * Updated for patch 11.1.7
 * Added The War Within spells (world)
 * Removed "TrivialLevel" from Burning Crusade spells
+
+5.17.4
+* Updated for WoW Mists of Pandaria Classic 5.5.0
+* Added BFA spells for Shrine of the Storm
+* Added BFA spells for King's Rest

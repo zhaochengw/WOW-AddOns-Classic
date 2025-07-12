@@ -1905,9 +1905,11 @@ BG.Init(function()
                     mainFrame:ClearAllPoints()
                     mainFrame:SetPoint("TOPLEFT", TradeFrame, "TOPRIGHT", 1, -20)
                     local w1 = TradeFrame:GetTop()
-                    local w2 = BG.tradelastAuctionFrame.frame:GetTop()
-                    mainFrame:SetHeight(w1 - w2 - 20 - 2)
-                    frame:SetHeight(mainFrame:GetHeight() - 25)
+                    if w1 then
+                        local w2 = BG.tradelastAuctionFrame.frame:GetTop()
+                        mainFrame:SetHeight(w1 - w2 - 20 - 2)
+                        frame:SetHeight(mainFrame:GetHeight() - 25)
+                    end
                 else
                     if gzTbl and BG.IsMLByName(gzTbl.player) then
                         mainFrame:ClearAllPoints()
@@ -2108,7 +2110,7 @@ BG.Init(function()
                 self:Hide()
             else
                 self:Show()
-                t:SetText(format(L["实际交易：%s"], money) .. goldTex)
+                t:SetText(format(L["已放金币：%s"], money) .. goldTex)
                 bt:ClearAllPoints()
                 bt:SetPoint("BOTTOMLEFT", t:GetWrappedWidth() + 10, 0)
             end

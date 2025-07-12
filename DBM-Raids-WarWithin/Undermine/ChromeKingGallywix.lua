@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod(2646, "DBM-Raids-WarWithin", 1, 1296)
+local mod	= DBM:NewMod(2646, "DBM-Raids-WarWithin", 2, 1296)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250517053010")
+mod:SetRevision("20250619040547")
 mod:SetCreatureID(231075)
 mod:SetEncounterID(3016)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3)

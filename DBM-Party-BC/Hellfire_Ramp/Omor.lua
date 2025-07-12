@@ -1,10 +1,11 @@
 local mod	= DBM:NewMod(528, "DBM-Party-BC", 1, 248)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240428124541")
+mod:SetRevision("20250609051305")
 mod:SetCreatureID(17308)
 mod:SetEncounterID(1891)
 mod:SetUsedIcons(8)
+mod:SetZone(248)
 
 if not mod:IsRetail() then
 	mod:SetModelID(18237)

@@ -40,7 +40,6 @@
 ---| "COMBAT_ARENA_END"
 ---| "COMBAT_MYTHICDUNGEON_START"
 ---| "COMBAT_MYTHICDUNGEON_END"
----| "COMBAT_MYTHICDUNGEON_CONTINUE"
 ---| "GROUP_ONENTER"
 ---| "GROUP_ONLEAVE"
 ---| "ZONE_TYPE_CHANGED"
@@ -257,18 +256,6 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field killed boolean?
 ---@field bossimage texturepath|number?
 
----@class details_encounter_table
----@field start number gettime() when the encounter started
----@field end number gettime() when the encounter ended
----@field id number the encounter id from encounter_start
----@field name string the encounter name
----@field diff number the difficulty id from encounter_start
----@field size number the raid size from encounter_start
----@field zone string the zone name from getinstanceinfo()
----@field mapid number the zone map id from getinstanceinfo()
----@field phase number the current phase of the encounter
----@field kill boolean if the encounter was a kill or a wipe
-
 ---@class details
 ---@field encounter_table table store the encounter data for the current encounter
 ---@field boss1_health_percent number store the health percentage (one to zero) of the boss1
@@ -285,8 +272,6 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field OpenSpecificBreakdownWindow fun(self: details, combatObject: combat, actorName: string, mainAttribute: number, subAttribute: number)
 ---@field GetInstanceInfo fun(self: details, id: instanceid|instancename|mapid) : details_instanceinfo
 ---@field CreatePlayerPortrait fun(self: details, parent: frame, name: string) : frame
----@field GetCurrentEncounterInfo fun(self: details) : details_encounter_table
----@field GetAllInstances fun(self: details) : instance[] return a table with all the instances
 ---@field 
 ---@field GetItemLevelFromGuid fun(self: details, guid: guid) : number return the item level of the player, if the player is not found, return 0
 ---@field GenerateActorInfo fun(self: details, actor: actor, errorText:string, bIncludeStack:boolean) : table<string, boolean|string|number> generates a table with the main attributes of the actor, this is mainly for debug purposes
@@ -401,7 +386,6 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field timeEnd number time() when the combat ended
 ---@field bloodlust number[]? combat time of when the player received a bloodlust/heroism
 ---@field bloodlust_overall number[]? exists only in segments that received a merge, uses time()
----@field compressed_charts table store chart data
 ---@field 
 ---@field __call table
 ---@field __index table
@@ -671,7 +655,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@class attributeid : number
 ---@class modeid : number
 
----@class instance : table --~i ~instance
+---@class instance : table
 ---@field segmento segmentid
 ---@field showing combat
 ---@field meu_id instanceid
@@ -704,9 +688,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field Freeze fun(instance: instance)
 ---@field UnFreeze fun(instance: instance)
 ---@field SetSegment fun(instance: instance, segment: segmentid, force: boolean|nil)
----@field SetDisplay fun(instance: instance, segmentId: segmentid?, attributeId: attributeid?, subAttributeId: attributeid?, modeId: modeid?)
 ---@field GetDisplay fun(instance: instance) : attributeid, attributeid
----@field IsShowing fun(instance: instance, segmentId: segmentid, displayId: attributeid, subDisplayId: attributeid) : boolean
 ---@field ResetWindow fun(instance: instance, resetType: number|nil, segmentId: segmentid|nil)
 ---@field RefreshData fun(instance: instance, force: boolean|nil)
 ---@field RefreshWindow fun(instance: instance, force: boolean|nil)
@@ -811,12 +793,9 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field amount number
 ---@field total number
 ---@field actorName string
----@field spellId number?
 ---@field Icon texture
----@field IconFrame frame
 ---@field InLineTexts fontstring[]
 ---@field statusBar breakdownspellbarstatusbar
----@field overlayTexture texture
 ---@field bIsFromLeftScroll boolean
 ---@field bIsFromRightScroll boolean
 

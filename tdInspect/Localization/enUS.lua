@@ -36,6 +36,7 @@ L["See other account character?"] = true
 L["Set Spec Equipment"] = true
 L["Show character gear list"] = true
 L["Show enchant"] = true
+L["Show enchant for ranged weapon only for hunter"] = true
 L["Show enchant/gem lost"] = true
 L["Show gem"] = true
 L["Show gems in front"] = true
@@ -100,6 +101,7 @@ L.Light = true
 L['Quality by blizzard'] = true
 L.White = true
 L.Hidden = true
+L['Show enchant for ranged weapon only for hunter'] = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

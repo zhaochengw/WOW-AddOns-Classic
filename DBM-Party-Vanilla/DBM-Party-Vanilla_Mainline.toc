@@ -1,4 +1,4 @@
-## Interface: 110105, 110107
+## Interface: 110107, 110200
 ## X-Min-Interface: 80000
 ## Category: DBM
 
@@ -35,7 +35,7 @@
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r199
+## Version: r201
 
 locale.generated.lua
 

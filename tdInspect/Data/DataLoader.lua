@@ -19,6 +19,9 @@ local strsplittable = strsplittable or function(delimiter, str, pieces)
 end
 
 local T = ns.memorize(function(val)
+    if type(val) == 'number' then
+        return {val}
+    end
     local t = strsplittable('/', val)
     for i, v in ipairs(t) do
         t[i] = tonumber(v) or v
@@ -183,8 +186,8 @@ end
 function ns.ItemGemOrderMake()
     ns.ItemGemOrderMake = nil
 
-    local Data = function(itemId, ...)
-        ns.ItemGemOrder[itemId] = {...}
+    local Data = function(itemId, order)
+        ns.ItemGemOrder[itemId] = T(order)
     end
 
     setfenv(2, {D = Data})

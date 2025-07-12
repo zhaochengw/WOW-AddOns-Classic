@@ -1,4 +1,4 @@
-## Interface: 110105, 110107
+## Interface: 110107, 110200
 ## Category: DBM
 ## Group: DBM-Test
 ## Title:|cffffe00a<|r|cffff7d0aDBM Tests|r|cffffe00a>|r |cff69ccf0Tests for The War Within mods|r
@@ -40,3 +40,15 @@ NerubarPalace/Ovinax-Mythic-Kill.lua
 NerubarPalace/Kyveza-Mythic-Kill.lua
 NerubarPalace/SilkenCourt-Mythic-Kill.lua
 NerubarPalace/QueenAnsurek-Mythic-Wipe.lua
+
+ManaforgeOmega/PlexusSentinel-Normal-Kill.lua
+ManaforgeOmega/Loomithar-Normal-Kill.lua
+ManaforgeOmega/SoulbinderNaazindhri-Normal-Kill.lua
+ManaforgeOmega/ForgeweaverAraz-Normal-Kill.lua
+ManaforgeOmega/ForgeweaverAraz-Heroic-Wipe.lua
+ManaforgeOmega/SoulHunters-Normal-Wipe.lua
+ManaforgeOmega/SoulHunters-Heroic-Wipe.lua
+ManaforgeOmega/Fractillus-Heroic-Wipe.lua
+ManaforgeOmega/Fractillus-Normal-Kill.lua
+ManaforgeOmega/Nexus-KingSalhadaar-Normal-Wipe.lua
+ManaforgeOmega/Nexus-KingSalhadaar-Heroic-Wipe.lua

@@ -29,7 +29,6 @@ local glow = "Interface\\AddOns\\teksLoot\\media\\glow"
 -- 职业颜色缓存
 local classCache = {}
 
--- 确保frames始终被初始化
 local frames = {}
 
 -- 取消Roll事件的记录
@@ -90,52 +89,82 @@ local function GetPlayerClass(name)
 	return nil
 end
 
--- 美化函数
-local function CreateBorder(f, r, g, b, a)
-	f:SetBackdrop({
-		edgeFile = blank, 
-		edgeSize = 1,
-		insets = { left = -1, right = -1, top = -1, bottom = -1 }
-	})
-	f:SetBackdropBorderColor(r or 0, g or 0, b or 0, 0) -- 将边框设为完全透明
+-- 美化函数合并
+local function ApplyShadowAndBorder(f)
+    if f.shadow then return end
+    local border = CreateFrame("Frame", nil, f, "BackdropTemplate")
+    border:SetFrameLevel(1)
+    border:SetPoint("TOPLEFT", -1, 1)
+    border:SetPoint("TOPRIGHT", 1, 1)
+    border:SetPoint("BOTTOMRIGHT", 1, -1)
+    border:SetPoint("BOTTOMLEFT", -1, -1)
+    border:EnableMouse(false)
+    border:SetBackdrop({ edgeFile = blank, edgeSize = 1, insets = { left = -1, right = -1, top = -1, bottom = -1 } })
+    border:SetBackdropBorderColor(0, 0, 0, 0)
+    f.border = border
+    local shadow = CreateFrame("Frame", nil, border, "BackdropTemplate")
+    shadow:SetFrameLevel(0)
+    shadow:SetPoint("TOPLEFT", -3, 3)
+    shadow:SetPoint("TOPRIGHT", 3, 3)
+    shadow:SetPoint("BOTTOMRIGHT", 3, -3)
+    shadow:SetPoint("BOTTOMLEFT", -3, -3)
+    shadow:EnableMouse(false)
+    shadow:SetBackdrop({ edgeFile = glow, bgFile = blank, edgeSize = 4, insets = {left = 4, right = 4, top = 4, bottom = 4} })
+    shadow:SetBackdropColor(0.05, 0.05, 0.05, 0)
+    shadow:SetBackdropBorderColor(0, 0, 0, 0)
+    f.shadow = shadow
 end
 
-local function CreateShadow(f)
-	if f.shadow then return end
-		
-	local border = CreateFrame("Frame", nil, f, "BackdropTemplate")
-	border:SetFrameLevel(1)
-	border:SetPoint("TOPLEFT", -1, 1)
-	border:SetPoint("TOPRIGHT", 1, 1)
-	border:SetPoint("BOTTOMRIGHT", 1, -1)
-	border:SetPoint("BOTTOMLEFT", -1, -1)
-	border:EnableMouse(false) -- 确保边框不遮挡点击
-	CreateBorder(border)
-	f.border = border
+-- =====================
+-- 全局常量
+-- =====================
+local FRAME_WIDTH = 366
+local FRAME_HEIGHT = 36
 
-	local shadow = CreateFrame("Frame", nil, border, "BackdropTemplate")
-	shadow:SetFrameLevel(0)
-	shadow:SetPoint("TOPLEFT", -3, 3)
-	shadow:SetPoint("TOPRIGHT", 3, 3)
-	shadow:SetPoint("BOTTOMRIGHT", 3, -3)
-	shadow:SetPoint("BOTTOMLEFT", -3, -3)
-	shadow:EnableMouse(false) -- 确保阴影不遮挡点击
-	shadow:SetBackdrop( { 
-		edgeFile = glow,
-		bgFile = blank,
-		edgeSize = 4,
-		insets = {left = 4, right = 4, top = 4, bottom = 4},
-	})
-	shadow:SetBackdropColor(0.05, 0.05, 0.05, 0) -- 完全透明
-	shadow:SetBackdropBorderColor(0, 0, 0, 0) -- 完全透明
-	f.shadow = shadow
-end
+-- =====================
+-- 兼容性常量
+-- =====================
+-- 兼容不同客户端的 NUM_GROUP_LOOT_FRAMES
+local NUM_GROUP_LOOT_FRAMES = 4
 
+-- =====================
+-- 通用backdrop定义
+-- =====================
 local backdrop = {
-	bgFile = blank, tile = true, tileSize = 2,
-	edgeFile = "", edgeSize = 0, -- 移除边框
-	insets = {left = 0, right = 0, top = 0, bottom = 0},
+    bgFile = blank, tile = true, tileSize = 2,
+    edgeFile = glow, edgeSize = 2,
+    insets = {left = 2, right = 2, top = 2, bottom = 2},
 }
+
+-- =====================
+-- 绑定属性判断封装
+-- =====================
+local function GetItemBindInfo(itemId, bop)
+    if not itemId then return "notbound" end
+    local info = {GetItemInfo(itemId)}
+    local iLevel = info[4]
+    local classID = info[12]
+    local subclassID = info[13]
+    local bindType = info[14]
+    if not bindType then return "notbound" end
+    if bindType == 1 then
+        return "bop", iLevel
+    elseif bindType == 2 then
+        return "boe"
+    elseif bindType == 4 then
+        return "quest"
+    else
+        if classID == 7 and (subclassID == 5 or subclassID == 6 or subclassID == 10) or
+           classID == 0 or classID == 1 or classID == 5 or 
+           classID == 7 or classID == 9 or classID == 16 or classID == 12 then
+            return "notbound"
+        end
+        return "notbound"
+    end
+end
+
+-- 确保frames始终被初始化
+local frames = {}
 
 -- 点击函数
 local function ClickRoll(frame)
@@ -163,7 +192,6 @@ for k, v in pairs(rolltypes) do
     reverseRolltypes[v] = k
 end
 
--- 确保颜色表可用
 local function EnsureClassColors()
     if not RAID_CLASS_COLORS then
         RAID_CLASS_COLORS = {
@@ -350,18 +378,16 @@ end
 
 -- 创建Roll框架
 local function CreateRollFrame()
-	local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-	frame:SetWidth(366)
-	frame:SetHeight(36)
-	
-	-- 设置屏幕限制
-	frame:SetClampedToScreen(true)
-	
-	frame:SetBackdrop(backdrop)
-	frame:SetBackdropColor(0, 0, 0, 0) -- 完全透明
-	frame:SetScript("OnEvent", OnEvent)
-	frame:RegisterEvent("CANCEL_LOOT_ROLL")
-	frame:Hide()
+    local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+    frame:SetWidth(FRAME_WIDTH)
+    frame:SetHeight(FRAME_HEIGHT)
+	frame:SetFrameStrata("HIGH")
+    frame:SetClampedToScreen(true)
+    frame:SetBackdrop(backdrop)
+    frame:SetBackdropColor(0, 0, 0, 0)
+    frame:SetScript("OnEvent", OnEvent)
+    frame:RegisterEvent("CANCEL_LOOT_ROLL")
+    frame:Hide()
 
 	local button = CreateFrame("Button", nil, frame, "BackdropTemplate")
 	button:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
@@ -376,7 +402,7 @@ local function CreateRollFrame()
 	button:SetScript("OnLeave", HideTip2)
 	button:SetScript("OnUpdate", ItemOnUpdate)
 	button:SetScript("OnClick", LootClick)
-	CreateShadow(button)				 
+	ApplyShadowAndBorder(button)				 
 	frame.button = button
 
 	local buttonborder = CreateFrame("Frame", nil, button, "BackdropTemplate")
@@ -431,7 +457,7 @@ local function CreateRollFrame()
 	})
 	statusBorder:SetBackdropBorderColor(1, 1, 1, 0.4) -- 增加一点不透明度
 	
-	CreateShadow(status)		 
+	ApplyShadowAndBorder(status)		 
 	status.parent = frame
 	frame.status = status
 
@@ -467,7 +493,7 @@ local function CreateRollFrame()
 
 	-- 添加物品名称文本
 	local loot = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-	loot:SetFont(STANDARD_TEXT_FONT, 15, "THINOUTLINE")
+	loot:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
 	loot:SetPoint("LEFT", de, "RIGHT", 0, 0.12)
 	loot:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
 	loot:SetHeight(10)
@@ -475,7 +501,6 @@ local function CreateRollFrame()
 	loot:SetJustifyH("LEFT")
 	frame.fsloot = loot
 
-	-- 初始化rolls表
 	frame.rolls = {}
 
 	return frame
@@ -483,20 +508,18 @@ end
 
 -- 创建锚点
 local anchor = CreateFrame("Button", nil, UIParent, "BackdropTemplate")
-anchor:SetWidth(366) -- 与Roll框架相同宽度
-anchor:SetHeight(36) -- 与Roll框架相同高度
+anchor:SetWidth(FRAME_WIDTH)
+anchor:SetHeight(FRAME_HEIGHT)
 anchor:SetClampedToScreen(true)
-
-CreateShadow(anchor,"Background")
-
--- 添加与Roll框架相似的边框
+anchor:SetFrameStrata("HIGH")
+ApplyShadowAndBorder(anchor)
 anchor:SetBackdrop({
     bgFile = blank, tile = true, tileSize = 2,
     edgeFile = glow, edgeSize = 2,
     insets = {left = 2, right = 2, top = 2, bottom = 2},
 })
-anchor:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- 半透明背景
-anchor:SetBackdropBorderColor(0.8, 0.8, 0.8, 0.7) -- 与Roll框架边框颜色相似
+anchor:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
+anchor:SetBackdropBorderColor(0.8, 0.8, 0.8, 0.7)
 
 -- 不再需要在锚点上直接创建标签，因为我们使用单独的文本框架
 -- 保留一个隐藏的标签用于锚点内部结构
@@ -507,11 +530,11 @@ label:Hide()
 
 -- 创建一个额外的文本框架，用于在锚点被覆盖时显示文本
 local textFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-textFrame:SetHeight(36) -- 与锚点高度相同
-textFrame:SetWidth(366) -- 与锚点宽度相同
-textFrame:SetPoint("TOPLEFT", anchor, "TOPLEFT", 0, 0) -- 直接与锚点重叠
-textFrame:SetFrameLevel(anchor:GetFrameLevel() + 10) -- 确保在锚点和Roll框架之上
-textFrame:SetClampedToScreen(true) -- 确保文本框架也受屏幕限制
+textFrame:SetHeight(FRAME_HEIGHT)
+textFrame:SetWidth(FRAME_WIDTH)
+textFrame:SetPoint("TOPLEFT", anchor, "TOPLEFT", 0, 0)
+textFrame:SetFrameLevel(anchor:GetFrameLevel() + 10)
+textFrame:SetClampedToScreen(true)
 
 -- 创建文本标签
 local textLabel = textFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -522,7 +545,6 @@ textLabel:SetJustifyH("CENTER")
 textLabel:SetWidth(350)
 textFrame:Hide() -- 默认隐藏
 
--- 确保框架在屏幕内的函数
 local function EnsureFrameOnScreen()
     -- 只在插件加载时调用一次，确保初始位置有效
     local x, y = anchor:GetCenter()
@@ -546,7 +568,7 @@ anchor:SetScript("OnClick", function(self, button)
 end)
 
 -- 确保frames始终被初始化
-local frames = frames or {}
+local frames = {}
 
 local function GetFrame()
 	-- 检查是否还有可见的框架
@@ -611,80 +633,48 @@ anchor:Hide()
 
 -- 开始Roll
 local function START_LOOT_ROLL(rollid, time)
-	if cancelled_rolls[rollid] then return end
-
-	local f = GetFrame()
-	f.rollid = rollid
-	f.time = time
-	f.rolls = {} -- 初始化rolls表
-	
-	-- 重置计数器
-	f.need:SetText("0")
-	f.greed:SetText("0")
-	f.pass:SetText("0")
-	f.disenchant:SetText("0")
-
-	local texture, name, count, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollid)
-	if not name or name == "" then return end
-	
-	f.button:SetNormalTexture(texture)
-	f.button.link = GetLootRollItemLink(rollid)
-
-	-- 设置按钮状态
-	if canNeed then GroupLootFrame_EnableLootButton(f.needbutt) else GroupLootFrame_DisableLootButton(f.needbutt) end
-	if canGreed then GroupLootFrame_EnableLootButton(f.greedbutt) else GroupLootFrame_DisableLootButton(f.greedbutt) end
-	if canDisenchant then GroupLootFrame_EnableLootButton(f.disenchantbutt) else GroupLootFrame_DisableLootButton(f.disenchantbutt) end
-
-	local color = ITEM_QUALITY_COLORS[quality]
-	
-	-- 获取物品信息和绑定状态
-	local isBoe, isBop, notBound = false, false, false
-	local itemLevel = 1
-	local itemId = f.button.link and f.button.link:match("item:(%d+)")
-	
-	if itemId and GetItemInfo then
-		local _, _, _, iLevel, _, _, _, _, _, _, _, classID, subclassID = GetItemInfo(itemId)
-		itemLevel = iLevel or 1
-		
-		-- 根据物品分类判断绑定状态
-		if classID == 7 and (subclassID == 5 or subclassID == 6 or subclassID == 10) or
-		   classID == 0 or classID == 1 or classID == 5 or 
-		   classID == 7 or classID == 9 or classID == 16 or classID == 12 then
-			notBound = true
-		elseif bop then
-			isBop = true
-		else
-			isBoe = true
-		end
-	else
-		isBop = bop or false
-		isBoe = not isBop
-	end
-	
-	-- 设置物品绑定信息
-	if isBop then
-		f.fsbind:SetText(tostring(itemLevel))
-		f.fsbind:SetVertexColor(color.r, color.g, color.b)
-	elseif isBoe then
-		f.fsbind:SetText("装绑")
-		f.fsbind:SetVertexColor(0.3, 1, 0.3) -- 绿色
-	elseif notBound then
-		f.fsbind:SetText("不绑")
-		f.fsbind:SetVertexColor(0.7, 0.7, 1) -- 淡蓝色
-	end
-	
-	-- 设置物品名称和颜色
-	f.fsloot:SetVertexColor(color.r, color.g, color.b)
-	f.fsloot:SetText(name)
-
-	-- 设置边框和进度条
-	f:SetBackdropBorderColor(color.r, color.g, color.b, 0) -- 边框透明
-	f.buttonborder:SetBackdropBorderColor(AdjustColor(color, 1.5)) 
-	f.status:SetStatusBarColor(AdjustColor(color, 1.2, 0.9))
-	f.status:SetMinMaxValues(0, time)
-	f.status:SetValue(time)
-
-	f:Show()
+    if cancelled_rolls[rollid] then return end
+    local f = GetFrame()
+    f.rollid = rollid
+    f.time = time
+    f.rolls = {}
+    f.need:SetText("0")
+    f.greed:SetText("0")
+    f.pass:SetText("0")
+    f.disenchant:SetText("0")
+    local texture, name, count, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollid)
+    if not name or name == "" then return end
+    f.button:SetNormalTexture(texture)
+    f.button.link = GetLootRollItemLink(rollid)
+    if canNeed then GroupLootFrame_EnableLootButton(f.needbutt) else GroupLootFrame_DisableLootButton(f.needbutt) end
+    if canGreed then GroupLootFrame_EnableLootButton(f.greedbutt) else GroupLootFrame_DisableLootButton(f.greedbutt) end
+    if canDisenchant then GroupLootFrame_EnableLootButton(f.disenchantbutt) else GroupLootFrame_DisableLootButton(f.disenchantbutt) end
+    local color = ITEM_QUALITY_COLORS[quality]
+    local itemId = f.button.link and f.button.link:match("item:(%d+)")
+    local bindType, itemLevel = GetItemBindInfo(itemId, bop)
+    if bindType == "bop" then
+        f.fsbind:SetText(tostring(itemLevel or "?"))
+        f.fsbind:SetVertexColor(color.r, color.g, color.b)
+    elseif bindType == "boe" then
+        f.fsbind:SetText("装绑")
+        f.fsbind:SetVertexColor(0.3, 1, 0.3)
+    elseif bindType == "notbound" then
+        f.fsbind:SetText("不绑")
+        f.fsbind:SetVertexColor(0.7, 0.7, 1)
+    elseif bindType == "quest" then
+        f.fsbind:SetText("任务")
+        f.fsbind:SetVertexColor(1, 0.82, 0)
+    else
+        f.fsbind:SetText("")
+    end
+    f.fsloot:SetVertexColor(color.r, color.g, color.b)
+    f.fsloot:SetText(name)
+    f:SetBackdropBorderColor(color.r, color.g, color.b, 0)
+    f.buttonborder:SetBackdropBorderColor(AdjustColor(color, 1.5))
+    f.status:SetStatusBarColor(AdjustColor(color, 1.2, 0.9))
+    f.status:SetMinMaxValues(0, time)
+    f.status:SetValue(time)
+    f:Show()
 end
 
 -- 修改 ParseRollChoice 函数
@@ -740,7 +730,7 @@ end
 
 -- 隐藏暴雪自带Roll框的函数
 local function HideBlizzardRollFrames()
-    for i = 1, NUM_GROUP_LOOT_FRAMES or 4 do
+    for i = 1, NUM_GROUP_LOOT_FRAMES do
         local f = _G["GroupLootFrame"..i]
         if f then
             f:UnregisterAllEvents()

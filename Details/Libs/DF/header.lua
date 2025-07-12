@@ -50,8 +50,6 @@ local wipe = wipe
 ---@field ClearColumnHeader fun(self: df_headerframe, columnHeader: df_headercolumnframe)
 ---@field GetNextHeader fun(self: df_headerframe) : df_headercolumnframe
 ---@field SetColumnSettingChangedCallback fun(self: df_headerframe, func: function) : boolean
----@field ResetFramesToHeaderAlignment fun(self: df_headerframe)
----@field GetFramesFromHeaderAlignment fun(self: df_headerframe) : table
 
 ---@class df_headercolumnframe : button
 ---@field Icon texture
@@ -95,7 +93,7 @@ detailsFramework.HeaderFunctions = {
 		self.FramesToAlign = {...}
 	end,
 
-	GetFramesFromHeaderAlignment = function(self)
+	GetFramesFromHeaderAlignment = function(self, frame)
 		return self.FramesToAlign or {}
 	end,
 

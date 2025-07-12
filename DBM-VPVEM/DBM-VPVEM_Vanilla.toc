@@ -9,7 +9,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Iceoven
-## Version: f04dede
+## Version: 1adc3bc
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: VEM English Female

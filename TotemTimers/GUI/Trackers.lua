@@ -288,7 +288,7 @@ TotemTimers.options.args.trackers = {
                             type = "range",
                             name = L["Warning Glow at x seconds left"],
                             min = 10,
-                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "4.0.11") and 300 or 60,
+                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "5.0.0") and 300 or 60,
                             step = 5,
                             set = function(info, val)
                                 TotemTimers.ActiveProfile.WeaponExpirationWarning = val

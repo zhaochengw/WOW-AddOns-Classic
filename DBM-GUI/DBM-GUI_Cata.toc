@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## Category: DBM
 ## Group: DBM-Core
 ## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Options GUI|r
@@ -28,7 +28,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.1.20
+## Version: 11.2.2
 ## X-Website: https://deadlybossmods.com
 
 Polyfills.xml

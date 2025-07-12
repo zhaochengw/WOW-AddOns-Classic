@@ -352,7 +352,7 @@ local function CreateAnchorInput(frame, k)
     return box
 end
 
-local saframe = CreateFrame("Frame", nil, UIParent, "ThinBorderTemplate")
+local saframe = CreateFrame("Frame", nil, UIParent, "ThinGoldEdgeTemplate")
 saframe:Hide()
 saframe:SetFrameStrata("DIALOG")
 saframe.close = CreateFrame("Button", nil, saframe, "UIPanelCloseButton")
@@ -373,7 +373,7 @@ CreateAnchorButton(saframe, "BOTTOM")
 saframe:SetScript("OnShow", function() grid:Show() end)
 saframe:SetScript("OnHide", function() grid:Hide() end)
 
-local caframe = CreateFrame("Frame", nil, UIParent, "ThinBorderTemplate,BackdropTemplate" or "ThinBorderTemplate")
+local caframe = CreateFrame("Frame", nil, UIParent, "ThinGoldEdgeTemplate,BackdropTemplate" or "ThinGoldEdgeTemplate")
 caframe:Hide()
 caframe:SetFrameStrata("DIALOG")
 caframe:SetBackdrop({

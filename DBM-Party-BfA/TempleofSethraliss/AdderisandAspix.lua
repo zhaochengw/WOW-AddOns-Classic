@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1030)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103105007")
+mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
+
+mod:SetRevision("20250626050841")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetUsedIcons(8)

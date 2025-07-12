@@ -730,8 +730,6 @@ GTFO.SpellID["253666"] = {
 -- * King's Rest *
 -- ***************
 
--- TODO: Hunting Leap (Reban)
-
 GTFO.SpellID["269932"] = {
   --desc = "Gust Slash";
   applicationOnly = true;
@@ -788,6 +786,11 @@ GTFO.SpellID["266191"] = {
   --desc = "Whirling Axe";
   sound = 1;
   applicationOnly = true;
+};
+
+GTFO.SpellID["269230"] = {
+  --desc = "Hunting Leap (Reban)";
+  sound = 1;
 };
 
 

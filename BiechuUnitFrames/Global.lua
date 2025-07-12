@@ -1212,6 +1212,8 @@ function BC:update(unit)
 			frame:SetAlpha(0)
 			return
 		end
+	elseif unit == 'pet'and not UnitExists('pet') and self.pettarget:GetAlpha() > 0 then
+		self.pettarget:SetAlpha(0)
 	end
 
 	-- 名字
@@ -1593,10 +1595,21 @@ BC:SetScript('OnEvent', function(self, event, unit)
 		-- PVP环境自动设置TAB选择敌对玩家
 		if self:getDB('global', 'autoTab') then
 			local _, instance = IsInInstance()
-			if instance == 'arena' or instance == 'pvp' then
-				SetBinding('TAB', 'TARGETNEARESTENEMYPLAYER', 1)
+			if InCombatLockdown() then
+				self.updateCombat = self.updateCombat or {}
+				table.insert(self.updateCombat, function()
+					if instance == 'arena' or instance == 'pvp' then
+						SetBinding('TAB', 'TARGETNEARESTENEMYPLAYER', 1)
+					else
+						SetBinding('TAB', 'TARGETNEARESTENEMY', 1)
+					end
+				end)
 			else
-				SetBinding('TAB', 'TARGETNEARESTENEMY', 1)
+				if instance == 'arena' or instance == 'pvp' then
+					SetBinding('TAB', 'TARGETNEARESTENEMYPLAYER', 1)
+				else
+					SetBinding('TAB', 'TARGETNEARESTENEMY', 1)
+				end
 			end
 		end
 

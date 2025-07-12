@@ -306,9 +306,6 @@ local segmentTypeToString = {
 			if (spellsCastedByThisActor[spellName]) then
 				local amountOfCasts = spellsCastedByThisActor[spellName]
 				if (amountOfCasts > 0) then
-					if (Details.debug_spell_cast) then
-						print("GetCrowdControlSpells > ", actorName, spellName, amountOfCasts)
-					end
 					crowdControlSpellsUsed[spellName] = amountOfCasts
 				end
 			end
@@ -1335,8 +1332,6 @@ function classCombat:NovaTabela(bTimeStarted, overallCombatObject, combatId, ...
 	combatObject.data_fim = 0
 	combatObject.data_inicio = 0
 	combatObject.tempo_start = _tempo
-
-	combatObject.compressed_charts = {}
 
 	combatObject.boss_hp = 1
 

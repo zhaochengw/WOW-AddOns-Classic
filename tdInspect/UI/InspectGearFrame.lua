@@ -63,14 +63,6 @@ function InspectGearFrame:UpdateLevel()
     self:SetLevel(Inspect:GetUnitLevel())
 end
 
-function InspectGearFrame:UpdateGears()
-    self:ResetColumnWidths()
-
-    for id, gear in pairs(self.gears) do
-        gear:SetItem(Inspect:GetItemLink(id))
-    end
-end
-
 function InspectGearFrame:UpdateDataSource()
     local dataSource = Inspect:GetDataSource()
     local lastUpdate = Inspect:GetLastUpdate()
@@ -125,16 +117,6 @@ function InspectGearFrame:GetTalentInfo(group)
     return maxName, maxIcon, maxBg, table.concat(counts, '/')
 end
 
-function InspectGearFrame:UpdateOption(_, key, value)
-    if key == 'showTalentBackground' then
-        if value then
-            self:UpdateTalents()
-        else
-            self:SetBackground()
-        end
-    elseif key == 'showOptionButtonInInspect' then
-        self:UpdateOptionButton(value)
-    elseif key == 'showGem' or key == 'showEnchant' or key == 'showLost' or key == 'showGemsFront' then
-        self:UpdateGears()
-    end
+function InspectGearFrame:GetSlotItem(id)
+    return Inspect:GetItemLink(id)
 end

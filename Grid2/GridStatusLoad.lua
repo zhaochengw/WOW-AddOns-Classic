@@ -6,7 +6,6 @@ local pairs = pairs
 local rawget = rawget
 local UnitClass = UnitClass
 local UnitExists = UnitExists
-local UnitIsUnit = UnitIsUnit
 local UnitIsFriend = UnitIsFriend
 local GetInstanceInfo = GetInstanceInfo
 local GetSpellCooldown = Grid2.API.GetSpellCooldown
@@ -189,17 +188,12 @@ do
 							if load.unitReaction.hostile then r = not r end
 						end
 						if not r then
-							if load.unitPlayer~=nil then
-								r = load.unitPlayer ~= UnitIsUnit(u,'player')
+							if load.unitAlive~=nil then
+								r = not roster_deads[u] == not load.unitAlive
 							end
 							if not r then
-								if load.unitAlive~=nil then
-									r = not roster_deads[u] == not load.unitAlive
-								end
-								if not r then
-									if load.cooldown then
-										r = cooldowns_mt[load.cooldown]
-									end
+								if load.cooldown then
+									r = cooldowns_mt[load.cooldown]
 								end
 							end
 						end
@@ -250,7 +244,7 @@ do
 
 	-- public
 	function FilterU_Register(self, load)
-		if load.unitType or load.unitReaction or load.unitClass or load.unitRole or load.cooldown or load.unitPlayer~=nil or load.unitAlive~=nil then
+		if load.unitType or load.unitReaction or load.unitClass or load.unitRole or load.cooldown or load.unitAlive~=nil then
 			self.filtered = setmetatable({source = load}, filter_mt)
 		else
 			self.filtered = nil

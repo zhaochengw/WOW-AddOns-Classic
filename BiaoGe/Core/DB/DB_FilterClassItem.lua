@@ -122,6 +122,9 @@ BG.Init(function()
             "Interface/Icons/spell_holy_guardianspirit",        -- 神圣
             "Interface/Icons/spell_shadow_shadowwordpain",      -- 暗影
 
+            "Interface/Icons/ability_monk_standingkick",        -- 武僧
+            "Interface/Icons/ability_monk_expelharm",
+            "Interface/Icons/ability_monk_summontigerstatue",
         }
         if BG.IsRetail then
             tinsert(BG.FilterClassItemDB.NewIcon, "Interface/Icons/ability_evoker_powerswell")
@@ -219,7 +222,7 @@ BG.Init(function()
                 ["PRIEST" .. "1"] = n1,    -- MS
                 ["PRIEST" .. "2"] = fx1,   -- AM
             }
-        elseif BG.IsWLK or BG.IsCTM then
+        elseif BG.IsWLK or BG.IsCTM or BG.IsMOP then
             if BG.IsWLK then
                 BG.FilterClassItemDB.ShuXing = {
                     { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
@@ -243,7 +246,7 @@ BG.Init(function()
                     { name = "法术强度", value = ITEM_MOD_SPELL_POWER_SHORT },
                     -- { name = "副手物品", value = INVTYPE_HOLDABLE, onenter = L["这里是指法系的副手，不是物理dps的副手武器"] },
                 }
-            elseif BG.IsCTM then
+            elseif BG.IsCTM or BG.IsMOP then
                 BG.FilterClassItemDB.ShuXing = {
                     { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
                     { name = "敏捷", value = "%+%C-" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
@@ -314,6 +317,10 @@ BG.Init(function()
 
                 ["PRIEST" .. "1"] = n1,        -- MS
                 ["PRIEST" .. "2"] = fx1,       -- AM
+
+                ["MONK" .. "1"] = t3,          -- 酒仙
+                ["MONK" .. "2"] = n1,          -- 织雾
+                ["MONK" .. "3"] = dps2,        -- 踏风
             }
         elseif BG.IsRetail then
             BG.FilterClassItemDB.ShuXing = {
@@ -537,6 +544,10 @@ BG.Init(function()
 
                     ["PRIEST" .. "1"]      = { G["单手斧"], G["双手斧"], G["弓"], G["枪"], G["双手锤"], G["长柄武器"], G["单手剑"], G["双手剑"], G["拳套"], G["投掷武器"], G["弩"] }, -- MS
                     ["PRIEST" .. "2"]      = { G["单手斧"], G["双手斧"], G["弓"], G["枪"], G["双手锤"], G["长柄武器"], G["单手剑"], G["双手剑"], G["拳套"], G["投掷武器"], G["弩"] }, -- AM
+
+                    ["MONK" .. "1"]        = { G["匕首"], G["双手斧"], G["双手锤"], G["双手剑"], G["弓"], G["枪"], G["投掷武器"], G["弩"], G["魔杖"] }, -- 酒仙
+                    ["MONK" .. "2"]        = { G["匕首"], G["双手斧"], G["双手锤"], G["双手剑"], G["弓"], G["枪"], G["投掷武器"], G["弩"], G["魔杖"] }, -- 织雾
+                    ["MONK" .. "3"]        = { G["匕首"], G["双手斧"], G["双手锤"], G["双手剑"], G["弓"], G["枪"], G["投掷武器"], G["弩"], G["魔杖"] }, -- 踏风
                 }
             end
         end
@@ -666,6 +677,47 @@ BG.Init(function()
                 ["MAGE" .. "1"]        = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- FS
                 ["PRIEST" .. "1"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- MS
                 ["PRIEST" .. "2"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"], G["魔印"] }, -- AM
+
+
+                ["MONK" .. "1"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 熊T
+                ["MONK" .. "2"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"] }, -- ND
+                ["MONK" .. "3"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 猫D
+            }
+        elseif BG.IsMOP then
+            BG.FilterClassItemDB.Armor = {
+                { name = "1", value = L["布甲"], onenter = L["全部布甲会被过滤（披风除外，否则本来合适你的披风也可能会被过滤）"] },
+                { name = "2", value = L["皮甲"] },
+                { name = "3", value = L["锁甲"] },
+                { name = "4", value = L["板甲"] },
+                { name = "6", value = SHIELDSLOT },
+                { name = "0", value = INVTYPE_HOLDABLE },
+            }
+            BG.FilterClassItem_Default.Armor = {
+                ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- 血DK
+                ["DEATHKNIGHT" .. "2"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
+                ["WARRIOR" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FZ
+                ["WARRIOR" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
+                ["PALADIN" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], }, -- NQ
+                ["PALADIN" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FQ
+                ["PALADIN" .. "3"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- CJQ
+                ["HUNTER" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- LR
+                ["SHAMAN" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- 元素
+                ["SHAMAN" .. "2"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- ZQS
+                ["SHAMAN" .. "3"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- NS
+                ["DRUID" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- 咕咕
+                ["DRUID" .. "2"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
+                ["DRUID" .. "3"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
+                ["DRUID" .. "4"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
+                ["ROGUE" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- DZ
+                ["WARLOCK" .. "1"]     = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- SS
+                ["MAGE" .. "1"]        = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- FS
+                ["PRIEST" .. "1"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- MS
+                ["PRIEST" .. "2"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- AM
+
+
+                ["MONK" .. "1"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
+                ["MONK" .. "2"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
+                ["MONK" .. "3"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
             }
         elseif BG.IsRetail then
             BG.FilterClassItemDB.Armor = {
@@ -769,7 +821,7 @@ BG.Init(function()
     ------------------坦克特殊过滤------------------
     do
         local type = "Tank"
-        if BG.IsWLK or BG.IsCTM then
+        if BG.IsWLK or BG.IsCTM or BG.IsMOP then
             BG.FilterClassItemDB[type] = {
                 { name = "过滤坦克", value = L["过滤没有坦克属性的装备"], },
             }
@@ -802,6 +854,9 @@ BG.Init(function()
                 ["MAGE" .. "1"]        = {}, -- FS
                 ["PRIEST" .. "1"]      = {}, -- MS
                 ["PRIEST" .. "2"]      = {}, -- AM
+                ["MONK" .. "1"]        = { "过滤坦克" }, -- 酒仙
+                ["MONK" .. "2"]        = {}, -- 织雾
+                ["MONK" .. "3"]        = {}, -- 踏风
             }
 
             for i = 1, MaxFilter[class] do

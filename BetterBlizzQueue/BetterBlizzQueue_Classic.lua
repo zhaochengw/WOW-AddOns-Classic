@@ -279,6 +279,7 @@ end
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("LFG_PROPOSAL_SHOW")
 frame:RegisterEvent("LFG_PROPOSAL_SUCCEEDED")
+frame:RegisterEvent("LFG_PROPOSAL_DONE")
 frame:RegisterEvent("LFG_PROPOSAL_FAILED")
 frame:RegisterEvent("LFG_QUEUE_STATUS_UPDATE")
 frame:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
@@ -286,7 +287,7 @@ frame:SetScript("OnEvent", function(_, event)
     if event == "LFG_PROPOSAL_SHOW" then
         HandleDungeonReadyDialog()
         HideOtherTimers()
-    elseif event == "LFG_PROPOSAL_SUCCEEDED" or event == "LFG_PROPOSAL_FAILED" then
+    elseif event == "LFG_PROPOSAL_SUCCEEDED" or event == "LFG_PROPOSAL_FAILED" or event == "LFG_PROPOSAL_DONE" then
         isPveQueueActive = false
         StopUpdateFrame()
         HideOtherTimers()

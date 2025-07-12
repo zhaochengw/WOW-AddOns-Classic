@@ -1,4 +1,4 @@
-## Interface: 110100, 110105
+## Interface: 110107, 110200
 ## Category: DBM
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000PvP|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000PvP|r
@@ -34,7 +34,7 @@
 ## X-DBM-Mod-Sort: 254
 ## X-Curse-Project-ID: 61882
 ## X-Wago-ID: Xb6Xe0Kp
-## Version: r187
+## Version: r188
 
 localization.en.lua
 localization.br.lua

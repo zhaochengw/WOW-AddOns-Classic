@@ -22,7 +22,26 @@ local pt = print
 local player = BG.playerName
 local realmID = GetRealmID()
 
+local FBCD = "RaidCD"
+local MONEY = "MONEY"
+
 function BG.RoleOverviewUI()
+    if BiaoGe.FBCD then
+        BiaoGe[FBCD] = BG.Copy(BiaoGe.FBCD)
+        BiaoGe.FBCD=nil
+    end
+    if BiaoGe.Money then
+        BiaoGe[MONEY] = BG.Copy(BiaoGe.Money)
+        BiaoGe.Money = nil
+    end
+
+    BiaoGe[FBCD] = BiaoGe[FBCD] or {}
+    BiaoGe[FBCD][realmID] = BiaoGe[FBCD][realmID] or {}
+
+    BiaoGe[MONEY] = BiaoGe[MONEY] or {}
+    BiaoGe[MONEY][realmID] = BiaoGe[MONEY][realmID] or {}
+    BiaoGe[MONEY][realmID][player] = BiaoGe[MONEY][realmID][player] or {}
+
     local fontsize = 13
     local fontsize2 = 14
     local fontsize3 = 15
@@ -75,7 +94,7 @@ function BG.RoleOverviewUI()
                 ["week1"] = 1,
                 ["faction1156"] = 1,
             }
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BiaoGe.FBCDchoice = {
                 ["DS"] = 1,
                 ["FL"] = 1,
@@ -114,7 +133,7 @@ function BG.RoleOverviewUI()
                 [2589] = 1, -- 赛德精华
                 ["money"] = 1,
             }
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BiaoGe.MONEYchoice = {
                 [396] = 1,
                 [395] = 1,
@@ -163,8 +182,7 @@ function BG.RoleOverviewUI()
             BG.Once("ro", 250602, function()
                 BiaoGe.MONEYchoice[50274] = 1
             end)
-
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BG.Once("FBCDchoice", 250405, function()
                 BiaoGe.FBCDchoice["DS"] = 1
                 BiaoGe.FBCDchoice["FL"] = 1
@@ -312,7 +330,7 @@ function BG.RoleOverviewUI()
                 { name = C_CurrencyInfo.GetCurrencyInfo(42).name, color = "D3D3D3", id = 42, tex = C_CurrencyInfo.GetCurrencyInfo(42).iconFileID, width = 70 }, -- TBC公正牌子
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BG.FBCDall_table = {
                 -- CTM
                 { name = "DS", name2 = GetRealZoneText(967), color = "9370DB", fbId = 967, type = "fb" },
@@ -441,14 +459,14 @@ function BG.RoleOverviewUI()
                 end
                 BG.FBCDFrame:Hide()
             end
-            frameName = ("BGFBCDFrame"..GetTime()):gsub("%.","")
+            frameName = ("BGFBCDFrame" .. GetTime()):gsub("%.", "")
         else
             if BG.FBCDFrame and BG.FBCDFrame.click and BG.FBCDFrame:IsVisible() then
                 return
             end
         end
         BG.UpdateFBCD()
-        
+
         local isVIP = BG.BiaoGeVIPVerNum and BG.BiaoGeVIPVerNum >= 10170
 
         local height = 20
@@ -512,9 +530,9 @@ function BG.RoleOverviewUI()
             if click then
                 for i = #UISpecialFrames, 1, -1 do
                     local name = UISpecialFrames[i]
-                    if name:match("BGFBCDFrame")then
-                        _G[name]=nil
-                        tremove(UISpecialFrames,i)
+                    if name:match("BGFBCDFrame") then
+                        _G[name] = nil
+                        tremove(UISpecialFrames, i)
                     end
                 end
                 tinsert(UISpecialFrames, frameName)
@@ -623,8 +641,8 @@ function BG.RoleOverviewUI()
                     end
                 end
             end
-            for p, v in pairs(BiaoGe.FBCD[realmID]) do
-                for i, cd in pairs(BiaoGe.FBCD[realmID][p]) do
+            for p, v in pairs(BiaoGe[FBCD][realmID]) do
+                for i, cd in pairs(BiaoGe[FBCD][realmID][p]) do
                     if cd.resettime then
                         if IsSmallRaid(cd.fbId) then
                             text3 = format(L["小团本%s"], SecondsToTime(cd.resettime, true, nil, 2))
@@ -706,11 +724,11 @@ function BG.RoleOverviewUI()
         do
             local newTbl = {}
             local function AddDB(db, isAccounts)
-                if db and db.FBCD then
+                if db and db[FBCD] then
                     local function _AddDB(realmID)
-                        if db.FBCD[realmID] then
-                            for player, v in pairs(db.FBCD[realmID]) do
-                                if not isAccounts or not (BiaoGe.FBCD[realmID] and BiaoGe.FBCD[realmID][player]) then
+                        if db[FBCD][realmID] then
+                            for player, v in pairs(db[FBCD][realmID]) do
+                                if not isAccounts or not (BiaoGe[FBCD][realmID] and BiaoGe[FBCD][realmID][player]) then
                                     local level = db.playerInfo[realmID] and db.playerInfo[realmID][player] and db.playerInfo[realmID][player].level
                                     if level and level >= BiaoGe.options["roleOverviewNotShowLevel"] then
                                         local class = db.playerInfo[realmID][player].class
@@ -738,7 +756,7 @@ function BG.RoleOverviewUI()
                     end
 
                     if ShowAllServer() then
-                        for realmID, v in pairs(db.FBCD) do
+                        for realmID, v in pairs(db[FBCD]) do
                             if type(realmID) == "number" and type(v) == "table" then
                                 _AddDB(realmID)
                             end
@@ -1012,11 +1030,11 @@ function BG.RoleOverviewUI()
         do
             -- 初始化数据
             local function DefaultDB(db, copyTbl)
-                if db and db.Money then
+                if db and db[MONEY] then
                     local function _AddDB(realmID)
-                        if db.Money[realmID] then
+                        if db[MONEY][realmID] then
                             copyTbl[realmID] = copyTbl[realmID] or {}
-                            for player, vv in pairs(db.Money[realmID]) do
+                            for player, vv in pairs(db[MONEY][realmID]) do
                                 copyTbl[realmID][player] = BG.Copy(vv)
                                 for i, v in ipairs(MONEYchoice_table) do
                                     if not v.type and not copyTbl[realmID][player][v.id] then -- 牌子，给空值设为0，主要是为了填补一些旧角色缺少某些新数据
@@ -1046,7 +1064,7 @@ function BG.RoleOverviewUI()
                     end
 
                     if ShowAllServer() then
-                        for realmID, v in pairs(db.Money) do
+                        for realmID, v in pairs(db[MONEY]) do
                             if type(realmID) == "number" and type(v) == "table" then
                                 _AddDB(realmID)
                             end
@@ -1102,7 +1120,7 @@ function BG.RoleOverviewUI()
             local function AddDB(db, copyTbl, isAccounts)
                 for realmID in pairs(copyTbl) do
                     for player, v in pairs(copyTbl[realmID]) do
-                        if not isAccounts or not (BiaoGe.Money[realmID] and BiaoGe.Money[realmID][player]) then
+                        if not isAccounts or not (BiaoGe[MONEY][realmID] and BiaoGe[MONEY][realmID][player]) then
                             local level = db.playerInfo[realmID] and db.playerInfo[realmID][player] and db.playerInfo[realmID][player].level
                             if (level and level >= BiaoGe.options["roleOverviewNotShowLevel"]) then
                                 local class = db.playerInfo[realmID][player].class
@@ -1321,8 +1339,6 @@ function BG.RoleOverviewUI()
 
     -- 获取副本CD
     do
-        BiaoGe.FBCD = BiaoGe.FBCD or {}
-        BiaoGe.FBCD[realmID] = BiaoGe.FBCD[realmID] or {}
         local colorplayer = SetClassCFF(player, "player")
 
         function BG.UpdateFBCD()
@@ -1346,9 +1362,9 @@ function BG.RoleOverviewUI()
                     end
                 end
                 if #cd ~= 0 then
-                    BiaoGe.FBCD[realmID][player] = cd
+                    BiaoGe[FBCD][realmID][player] = cd
                 else
-                    BiaoGe.FBCD[realmID][player] = {
+                    BiaoGe[FBCD][realmID][player] = {
                         {
                             player = player,
                             colorplayer = colorplayer,
@@ -1356,27 +1372,27 @@ function BG.RoleOverviewUI()
                     }
                 end
             elseif UnitLevel("player") < BG.fullLevel then
-                BiaoGe.FBCD[realmID][player] = nil
+                BiaoGe[FBCD][realmID][player] = nil
             end
 
             -- 检查其他角色cd是否到期
             local function Update(db)
-                if not (db and db.FBCD) then return end
+                if not (db and db[FBCD]) then return end
                 local function _Update(realmID)
-                    if not (type(realmID) == "number" and type(db.FBCD[realmID]) == "table") then return end
-                    for _player in pairs(db.FBCD[realmID]) do
+                    if not (type(realmID) == "number" and type(db[FBCD][realmID]) == "table") then return end
+                    for _player in pairs(db[FBCD][realmID]) do
                         if _player ~= player then
                             local yes
                             local player0, colorplayer0
-                            for i = #db.FBCD[realmID][_player], 1, -1 do
-                                local cd = db.FBCD[realmID][_player][i]
+                            for i = #db[FBCD][realmID][_player], 1, -1 do
+                                local cd = db[FBCD][realmID][_player][i]
                                 if cd and not player0 and not colorplayer0 then
                                     player0 = cd.player
                                     colorplayer0 = cd.colorplayer
                                 end
                                 if cd and cd.endtime then
                                     if time >= cd.endtime then
-                                        tremove(db.FBCD[realmID][_player], i)
+                                        tremove(db[FBCD][realmID][_player], i)
                                     elseif time < cd.endtime then
                                         cd.resettime = cd.endtime - time
                                         yes = true
@@ -1384,7 +1400,7 @@ function BG.RoleOverviewUI()
                                 end
                             end
                             if not yes then
-                                db.FBCD[realmID][_player] = {
+                                db[FBCD][realmID][_player] = {
                                     {
                                         player = player0,
                                         colorplayer = colorplayer0,
@@ -1395,7 +1411,7 @@ function BG.RoleOverviewUI()
                     end
                 end
                 if ShowAllServer() then
-                    for realmID, v in pairs(db.FBCD) do
+                    for realmID, v in pairs(db[FBCD]) do
                         _Update(realmID)
                     end
                 else
@@ -1465,7 +1481,7 @@ function BG.RoleOverviewUI()
                 { color = "9370DB", fbId = 658 }, -- 萨隆
                 { color = "9370DB", fbId = 668 }, -- 映像
             }
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BG.FBCDall_5M_table = {
                 { color = "87CEFA", fbId = 755 }, -- 托维尔失落之城
                 { color = "87CEFA", fbId = 657 }, -- 旋云之巅
@@ -1575,7 +1591,7 @@ function BG.RoleOverviewUI()
 
             -- 角色CD
             local newTbl = {}
-            for player, v in pairs(BiaoGe.FBCD[realmID]) do
+            for player, v in pairs(BiaoGe[FBCD][realmID]) do
                 local level = BiaoGe.playerInfo[realmID] and BiaoGe.playerInfo[realmID][player] and BiaoGe.playerInfo[realmID][player].level
                 if level and level >= BiaoGe.options["roleOverviewNotShowLevel"] then
                     local class = BiaoGe.playerInfo[realmID][player].class
@@ -1895,7 +1911,7 @@ function BG.RoleOverviewUI()
                     -- spell = 20600  -- test
                 },
             }
-        elseif BG.IsWLK or BG.IsCTM then
+        elseif BG.IsWLK or BG.IsCTM or BG.IsMOP then
             tbl = {
                 alchemy_yanjiu = {
                     name = L["炼金研究"],
@@ -2060,9 +2076,7 @@ function BG.RoleOverviewUI()
 
     -- 获取货币信息
     do
-        BiaoGe.Money = BiaoGe.Money or {}
-        BiaoGe.Money[realmID] = BiaoGe.Money[realmID] or {}
-        BiaoGe.Money[realmID][player] = BiaoGe.Money[realmID][player] or {}
+
 
         function BG.MONEYupdate()
             local tbl = {}
@@ -2097,7 +2111,7 @@ function BG.RoleOverviewUI()
                     end
                 end
             end
-            BiaoGe.Money[realmID][player] = tbl
+            BiaoGe[MONEY][realmID][player] = tbl
         end
 
         -- 事件
@@ -2396,9 +2410,9 @@ function BG.RoleOverviewUI()
     do
         for realmID, v in pairs(BiaoGe.playerInfo) do
             if type(realmID) == "number" and type(v) == "table" then
-                if BiaoGe.Money[realmID] then
+                if BiaoGe[MONEY][realmID] then
                     for player in pairs(BiaoGe.playerInfo[realmID]) do
-                        if not BiaoGe.Money[realmID][player] then
+                        if not BiaoGe[MONEY][realmID][player] then
                             BG.DeletePlayerData(realmID, player)
                         end
                     end
@@ -2408,7 +2422,6 @@ function BG.RoleOverviewUI()
                 end
             end
         end
-        -- /run BiaoGe.equip=nil
         -- 删除角色总览旧角色
         local function DeleteOldData(db)
             for realmID, v in pairs(BiaoGe[db]) do
@@ -2425,8 +2438,8 @@ function BG.RoleOverviewUI()
                 end
             end
         end
-        DeleteOldData("FBCD")
-        DeleteOldData("Money")
+        DeleteOldData(FBCD)
+        DeleteOldData(MONEY)
     end
 
     -- 删除重复角色装备数据

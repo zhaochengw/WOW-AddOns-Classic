@@ -43,6 +43,7 @@ difficulties.statVarTable = {
 	["timewalker"] = "timewalker",
 	["progressivechallenges"] = "normal",
 	["delves"] = "normal",
+	["duos"] = "duos",
 	--BFA
 	["normalwarfront"] = "normal",
 	["heroicwarfront"] = "heroic",
@@ -94,7 +95,7 @@ if private.isRetail then
 		[1861] = {50, 3}, [2070] = {50, 3}, [2096] = {50, 3}, [2164] = {50, 3}, [2217] = {50, 3},--BfA Raids
 		[2296] = {60, 3}, [2450] = {60, 3}, [2481] = {60, 3},--Shadowlands Raids (yes, only 3 kekw, seconded)
 		[2522] = {70, 3}, [2569] = {70, 3}, [2549] = {70, 3},--Dragonflight Raids
-		[2657] = {80, 3}, [2792] = {80, 3}, [2769] = {80, 3},--War Within Raids
+		[2657] = {80, 3}, [2792] = {80, 3}, [2769] = {80, 3}, [2810] = {80, 3},--War Within Raids
 		--Dungeons
 		[48] = {30, 2}, [230] = {30, 2}, [429] = {30, 2}, [389] = {30, 2}, [34] = {30, 2},--Classic Dungeons
 		[540] = {30, 2}, [558] = {30, 2}, [556] = {30, 2}, [555] = {30, 2}, [542] = {30, 2}, [546] = {30, 2}, [545] = {30, 2}, [547] = {30, 2}, [553] = {30, 2}, [554] = {30, 2}, [552] = {30, 2}, [557] = {30, 2}, [269] = {30, 2}, [560] = {30, 2}, [543] = {30, 2}, [585] = {30, 2},--BC Dungeons
@@ -106,13 +107,14 @@ if private.isRetail then
 		[1763] = {50, 2}, [1754] = {50, 2}, [1762] = {50, 2}, [1864] = {50, 2}, [1822] = {50, 2}, [1877] = {50, 2}, [1594] = {50, 2}, [1841] = {50, 2}, [1771] = {50, 2}, [1862] = {50, 2}, [2097] = {50, 2},--Bfa Dungeons
 		[2286] = {60, 2}, [2289] = {60, 2}, [2290] = {60, 2}, [2287] = {60, 2}, [2285] = {60, 2}, [2293] = {60, 2}, [2291] = {60, 2}, [2284] = {60, 2}, [2441] = {60, 2},--Shadowlands Dungeons
 		[2520] = {70, 2}, [2451] = {70, 2}, [2516] = {70, 2}, [2519] = {70, 2}, [2526] = {70, 2}, [2515] = {70, 2}, [2521] = {70, 2}, [2527] = {70, 2}, [2579] = {70, 2},--Dragonflight Dungeons
-		[2652] = {80, 2}, [2662] = {80, 2}, [2660] = {80, 2}, [2669] = {80, 2}, [2651] = {80, 2}, [2649] = {80, 2}, [2648] = {80, 2}, [2661] = {80, 2}, [2773] = {80, 2},--War Within Dungeons
+		[2652] = {80, 2}, [2662] = {80, 2}, [2660] = {80, 2}, [2669] = {80, 2}, [2651] = {80, 2}, [2649] = {80, 2}, [2648] = {80, 2}, [2661] = {80, 2}, [2773] = {80, 2}, [2830] = {80, 2},--War Within Dungeons
 		--Delves
-		[2664] = {80, 4}, [2679] = {80, 4}, [2680] = {80, 4}, [2681] = {80, 4}, [2682] = {80, 4}, [2683] = {80, 4}, [2684] = {80, 4}, [2685] = {80, 4}, [2686] = {80, 4}, [2687] = {80, 4}, [2688] = {80, 4}, [2689] = {80, 4}, [2690] = {80, 4}, [2767] = {80, 4}, [2768] = {80, 4}, [2831] = {80, 4}, [2815] = {80, 4}, [2826] = {80, 4}, --War Within Delves
+		[2664] = {80, 4}, [2679] = {80, 4}, [2680] = {80, 4}, [2681] = {80, 4}, [2682] = {80, 4}, [2683] = {80, 4}, [2684] = {80, 4}, [2685] = {80, 4}, [2686] = {80, 4}, [2687] = {80, 4}, [2688] = {80, 4}, [2689] = {80, 4}, [2690] = {80, 4}, [2767] = {80, 4}, [2768] = {80, 4}, [2831] = {80, 4}, [2815] = {80, 4}, [2826] = {80, 4}, [2803] = {80, 4}, [2951] = {80, 4},--War Within Delves
 		--Challenges (Mage tower, visions, torghast, proving grounds)
 		[2212] = {50, 5}, [2213] = {50, 5}, [2827] = {80, 5}, [2828] = {80, 5}, [2162]= {80, 5}, [1148] = {80, 5}, [1698] = {80, 5}, [1710] = {80, 5}, [1703] = {80, 5}, [1702] = {80, 5}, [1684] = {80, 5}, [1673] = {80, 5}, [1616] = {80, 5},
 	}
-	seasonalDungeons = {[2651]=true, [2649]=true, [2648]=true, [2661]=true, [1594]=true, [2097]=true, [2293]=true, [2773]=true,}--TWW Season 2
+	--seasonalDungeons = {[2662]=true, [2660]=true, [2773]=true, [2649]=true, [2830]=true, [2287]=true, [2441]=true}--TWW Season 3
+	seasonalDungeons = {[2651]=true, [2649]=true, [2648]=true, [2661]=true, [1594]=true, [2097]=true, [2293]=true, [2773]=true, [2662]=true, [2660]=true, [2830]=true, [2287]=true, [2441]=true}--TWW Season 2 and 3
 elseif private.isCata or private.isMop then
 	--Since 2 dungeons were changed from vanilla to cata dungeons, Cata and MoP need own table
 	--Still has to remain separate from retail due to level squishes retail has had
@@ -376,6 +378,11 @@ function bossModPrototype:IsDelve()
 	return diff == "delves"
 end
 
+function bossModPrototype:IsDuo()
+	local diff = difficulties.savedDifficulty or DBM:GetCurrentInstanceDifficulty()
+	return diff == "duos"
+end
+
 difficulties.SOD_BWL_TRIAL_BLACK  = 1
 difficulties.SOD_BWL_TRIAL_GREEN  = 2
 difficulties.SOD_BWL_TRIAL_BLUE	  = 4
@@ -549,9 +556,9 @@ function DBM:GetCurrentInstanceDifficulty()
 		local usedDelveInfo
 		--Zekvir Hack to normal/mythic since his tiers aren't numbers
 		if delveInfo2 and delveInfo2.shownState and delveInfo2.shownState == 1 then
-			return "normal", difficultyName .. "(?) - ", difficulty, instanceGroupSize, 0
+			return "normal", difficultyName .. "(?) - ", 1, instanceGroupSize, 0--Returns 1 for normal 1-5man
 		elseif delveInfo3 and delveInfo3.shownState and delveInfo3.shownState == 1 then
-			return "mythic", difficultyName .. "(??) - ", difficulty, instanceGroupSize, 0
+			return "mythic", difficultyName .. "(??) - ", 23, instanceGroupSize, 0--returns 23 for mythic 1-5man
 		elseif delveInfo and delveInfo.shownState and delveInfo.shownState == 1 then
 			usedDelveInfo = C_UIWidgetManager.GetScenarioHeaderDelvesWidgetVisualizationInfo(6183)
 		end
@@ -579,8 +586,8 @@ function DBM:GetCurrentInstanceDifficulty()
 		--	end
 		--end
 		return "normal", "", difficulty, instanceGroupSize, 0
-	elseif difficulty == 232 then--Likely Boss duos, but we'll probably store it as normal, so technically COULD leave it in else rule, but better to classify it for notation
-		return "normal", "", difficulty, instanceGroupSize, 0
+	elseif difficulty == 232 then--Duos
+		return "duos", "", difficulty, instanceGroupSize, 0
 	else--failsafe
 		return "normal", "", difficulty, instanceGroupSize, 0
 	end

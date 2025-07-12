@@ -1,11 +1,11 @@
-## Interface: 30404
+## Interface: 30405
 ## Title: |cff00fffftdInspect|r - Remote Inspect
 ## Title-zhCN: |cff00fffftdInspect|r - 远程观察/角色检视
 ## Notes: Remote inspect player's gear, talents, glyphs.
 ## Notes-zhCN: 远程观察玩家装备、天赋、雕文。
 ## IconTexture: 132092
 ## Author: Dencer
-## Version: 2.5.11
+## Version: 2.5.13
 ## OptionalDeps: tdSync, ElvUI
 ## SavedVariables: TDDB_INSPECT2
 

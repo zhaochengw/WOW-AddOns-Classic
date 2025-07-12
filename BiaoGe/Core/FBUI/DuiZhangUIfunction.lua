@@ -161,7 +161,7 @@ function BG.DuiZhangZhuangBeiUI(FB, t, b, bb, i, ii)
             if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] and i == 1 then
                 bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -20)
             else
-                bt:SetPoint("TOPLEFT", p["preWidget" .. i - 1], "BOTTOMLEFT", 0, -3)
+                bt:SetPoint("TOPLEFT", p["preWidget" .. i - 1], "BOTTOMLEFT", 0, BG.IsBigFB(FB) and 0 or -3)
             end
         end
     end

@@ -1,4 +1,4 @@
-## Interface: 110105, 110107
+## Interface: 110107, 110200
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff308530Voicepack VEM|r
@@ -9,7 +9,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Iceoven
-## Version: f04dede
+## Version: 1adc3bc
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: VEM English Female

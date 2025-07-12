@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## X-Min-Interface: 40400
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-DBM-Mod-MinExpansion: 0
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r199
+## Version: r201
 
 locale.generated.lua
 

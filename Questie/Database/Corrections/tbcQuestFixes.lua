@@ -371,6 +371,9 @@ function QuestieTBCQuestFixes:Load()
         [3741] = {
             [questKeys.requiredRaces] = raceIDs.NONE,
         },
+        [3803] = { -- Morrowgrain to Darnassus
+            [questKeys.startedBy] = {{4217}},
+        },
         [4021] = {
             [questKeys.extraObjectives] = {{{[zoneIDs.THE_BARRENS]={{44.7,28.1}}}, Questie.ICON_TYPE_EVENT, l10n("Defeat Centaur to summon Warlord Krom'zar"), 0}},
         },
@@ -1177,6 +1180,12 @@ function QuestieTBCQuestFixes:Load()
         [9410] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Wolf Totem at the location where you found Krun Spinebreaker's body and follow the Ancestral Spirit Wolf."), 0, {{"monster", 17062}}}},
         },
+        [9415] = { -- Report to Marshal Bluewall
+            [questKeys.nextQuestInChain] = 9419,
+        },
+        [9416] = { -- Report to General Kirika
+            [questKeys.nextQuestInChain] = 9422,
+        },
         [9417] = {
             [questKeys.preQuestSingle] = {},
         },
@@ -1801,9 +1810,11 @@ function QuestieTBCQuestFixes:Load()
         },
         [10040] = {
             [questKeys.objectives] = {{{18716,"Shadowy Initiate Spoken To",Questie.ICON_TYPE_TALK},{18717,"Shadowy Laborer Spoken To",Questie.ICON_TYPE_TALK},{18719,"Shadowy Advisor Spoken To",Questie.ICON_TYPE_TALK}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Get a disguise"), 0, {{"monster", 18714}}}},
         },
         [10041] = {
             [questKeys.objectives] = {{{18716,"Shadowy Initiate Spoken To",Questie.ICON_TYPE_TALK},{18717,"Shadowy Laborer Spoken To",Questie.ICON_TYPE_TALK},{18719,"Shadowy Advisor Spoken To",Questie.ICON_TYPE_TALK}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Get a disguise"), 0, {{"monster", 18714}}}},
         },
         [10044] = {
             [questKeys.objectives] = {{{18141,"Listen to Greatmother Geyah",Questie.ICON_TYPE_TALK}}},
@@ -1994,6 +2005,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [10240] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Activate the rune"), 0, {{"object", 183947}}}},
+            [questKeys.objectives] = {{{19866,"Activate Eastern Rune", Questie.ICON_TYPE_EVENT},{19867,"Activate Northeastern Rune", Questie.ICON_TYPE_EVENT},{19868,"Activate Western Rune", Questie.ICON_TYPE_EVENT}}},
         },
         [10242] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Take a ride to Spinebreaker Post"), 0, {{"monster", 19401}}}},
@@ -2015,8 +2027,8 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.objectives] = {{{16880,"Administer Antidote"}}},
         },
         [10256] = {
-            [questKeys.objectives] = {{{19938, "Use the Apex's Crystal Focus near Archmage Vargoth's Orb"}},nil,nil,nil,nil},
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Use the Apex's Crystal Focus near Archmage Vargoth's Orb"), 0, {{"object", 183507}}}},
+            [questKeys.objectives] = {{{19938,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Use Apex's Crystal Focus near Archmage Vargoth's Orb"), 0, {{"object", 183507}}}},
         },
         [10263] = {
             [questKeys.preQuestGroup] = {10551,10186},
@@ -2033,7 +2045,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.triggerEnd] = {"First triangulation point discovered", {[zoneIDs.NETHERSTORM]={{66.67,33.85}}}},
         },
         [10270] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Wind Trader Marid"), 0, {{"object", 184073}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Wind Trader Marid"), 0, {{"object", 184073}}}},
         },
         [10274] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Challenge of the Blue Fight to challenge Veraku"), 0, {{"object", 184108}}}},
@@ -2062,7 +2074,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.objectives] = {{{15608,"The Dark Portal Opened"}}},
         },
         [10299] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the B'naar Access Crystal from Overseer Theredis. Use it at the B'naar Control Console to shut it down"), 0, {{"object", 183770}}}},
+            [questKeys.objectives] = {nil,{{183770}},{{29366}}},
         },
         [10302] = {
             [questKeys.preQuestSingle] = {},
@@ -2084,13 +2096,13 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.triggerEnd] = {"Burning Legion warp-gate sabotaged", {[zoneIDs.NETHERSTORM]={{48.14,63.38}}}},
         },
         [10321] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Coruu Access Crystal from Overseer Seylanna. Use it at the Manaforge Coruu Console to shut it down"), 0, {{"object", 183956}}}},
+            [questKeys.objectives] = {nil,{{183956}},{{29396}}},
         },
         [10322] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Duro Access Crystal from Overseer Athanel. Use it at the Manaforge Duro Console to shut it down"), 0, {{"object", 184311}}}},
+            [questKeys.objectives] = {nil,{{184311}},{{29397}}},
         },
         [10323] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Ara Access Crystal from Overseer Azarad. Use it at the Manaforge Ara console to shut it down"), 0, {{"object", 184312}}}},
+            [questKeys.objectives] = {nil,{{184312}},{{29411}}},
         },
         [10325] = {
             [questKeys.requiredMaxRep] = {932,9000},
@@ -2107,19 +2119,22 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestSingle] = {},
         },
         [10329] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the B'naar Access Crystal from Overseer Theredis. Use it at the B'naar Control Console to shut it down"), 0, {{"object", 183770}}}},
+            [questKeys.objectives] = {nil,{{183770}},{{29366}}},
         },
         [10330] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Coruu Access Crystal from Overseer Seylanna. Use it at the Manaforge Coruu Console to shut it down"), 0, {{"object", 183956}}}},
+            [questKeys.objectives] = {nil,{{183956}},{{29396}}},
+        },
+        [10335] = {
+            [questKeys.objectives] = {{{20473,"Surveying Marker One placed",Questie.ICON_TYPE_EVENT},{20475,"Surveying Marker Two placed",Questie.ICON_TYPE_EVENT},{20476,"Surveying Marker Three placed",Questie.ICON_TYPE_EVENT}}},
         },
         [10337] = {
             [questKeys.triggerEnd] = {"Escort Bessy on her way home.", {[zoneIDs.NETHERSTORM]={{57.71,84.97}}}},
         },
         [10338] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Duro Access Crystal from Overseer Athanel. Use it at the Manaforge Duro Console to shut it down"), 0, {{"object", 184311}}}},
+            [questKeys.objectives] = {nil,{{184311}},{{29397}}},
         },
         [10339] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10340] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Speak with Wing Commander Dabir'ee"), 0, {{"monster", 19409}}}},
@@ -2144,7 +2159,7 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.preQuestGroup] = {10359,10360,10361},
         },
         [10365] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Obtain the Ara Access Crystal from Overseer Azarad. Use it at the Manaforge Ara console to shut it down"), 0, {{"object", 184312}}}},
+            [questKeys.objectives] = {nil,{{184312}},{{29411}}},
         },
         [10367] = {
             [questKeys.preQuestSingle] = {},
@@ -2167,10 +2182,10 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Speak with Gryphoneer Windbellow"), 0, {{"monster", 20235}}}},
         },
         [10384] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10385] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10388] = {
             [questKeys.startedBy] = {{16576,19273},nil,nil},
@@ -2183,14 +2198,14 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.startedBy] = {{20677,20678,20679},nil,nil},
         },
         [10405] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10406] = {
             [questKeys.triggerEnd] = {"Ethereum Conduit Sabotaged", {[zoneIDs.NETHERSTORM]={{56.42,42.66}}}},
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10408] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Communicate with Commander Ameer"), 0, {{"object", 410018}}}},
         },
         [10409] = {
             [questKeys.objectives] = {{{20132,"Deathblow to the Legion"}}},
@@ -2202,7 +2217,9 @@ function QuestieTBCQuestFixes:Load()
             },
         },
         [10411] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Use Navuud's Concoction before attacking Void Wastes or Seeping Sludge"), 0, {{"monster", 20501}, {"monster", 20778}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Use Navuud's Concoction before attacking Seeping Sludges"), 1, {{"monster", 20501}}},
+                                           {nil, Questie.ICON_TYPE_SLAY, l10n("Use Navuud's Concoction before attacking Void Wastes"), 2, {{"monster", 20778}}},
+            },
         },
         [10412] = {
             [questKeys.requiredMaxRep] = {934,9000},
@@ -2221,7 +2238,7 @@ function QuestieTBCQuestFixes:Load()
         [10422] = {
             [questKeys.requiredSourceItems] = {29742},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Open the prison"), 0, {{"object", 184588}}}},
-            [questKeys.objectives] = {nil,nil,nil,nil,{{{20787,20825},20787,"Captain Tyralius Freed"}}},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{20787,20825},20787,"Captain Tyralius Freed",Questie.ICON_TYPE_EVENT}}},
         },
         [10424] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Diagnostic Device while standing near the Eco-Dome Sutheron Generator"), 0, {{"object", 184609}}}},
@@ -2230,13 +2247,16 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.triggerEnd] = {"Captured Protectorate Vanguard Escorted", {[zoneIDs.NETHERSTORM]={{58.9,32.43}}}},
         },
         [10426] = {
-            [questKeys.objectives] = {{{20774,"Test Energy Modulator"}},nil,nil,nil},
+            [questKeys.objectives] = {{{20774,"Test Energy Modulator",Questie.ICON_TYPE_INTERACT}}},
         },
         [10427] = {
-            [questKeys.objectives] = {nil,nil,nil,nil,{{{20610,20777},20777,"Talbuk Tagged"}}},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{20610,20777},20777,"Talbuk Tagged",Questie.ICON_TYPE_INTERACT}}},
         },
         [10438] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Protectorate Nether Drake will fly you close enough to Ultris so that you can drop the disruptor on top of the Void Conduit"), 0, {{"monster", 20903}}}},
+        },
+        [10439] = {
+            [questKeys.objectives] = {{{19554},{20985,"Speak to Captain Saeed",Questie.ICON_TYPE_TALK}}},
         },
         [10446] = {
             [questKeys.objectives] = {nil,{{184725,nil,Questie.ICON_TYPE_EVENT}}},
@@ -2402,12 +2422,15 @@ function QuestieTBCQuestFixes:Load()
         [10563] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Box o'Tricks while standing near the communication device"), 0, {{"object", 184833}}}},
         },
+        [10565] = { -- The Stones of Vekh'nir
+            [questKeys.extraObjectives] = {{{[zoneIDs.BLADES_EDGE_MOUNTAINS]={{77.81,74.67}}}, Questie.ICON_TYPE_EVENT, l10n("Charge the Vekh'nir Crystal")}},
+        },
         [10566] = { -- Trial and Error
             [questKeys.objectives] = {{{21254,nil,Questie.ICON_TYPE_INTERACT},{21254,nil,Questie.ICON_TYPE_INTERACT},{21254,nil,Questie.ICON_TYPE_INTERACT},{21254,nil,Questie.ICON_TYPE_INTERACT}}}, -- Yes, this is correct. The quest requires you to use four wands on the same NPC.
             [questKeys.requiredSourceItems] = {30651,30652,30653,30654,30655},
         },
-        [10596] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Box o'Tricks while standing near the communication device"), 0, {{"object", 184833}}}},
+        [10567] = { -- Creating the Pendant
+            [questKeys.extraObjectives] = {{{[zoneIDs.BLADES_EDGE_MOUNTAINS]={{64.48,33.11}}}, Questie.ICON_TYPE_EVENT, l10n("Use 6 Ruuan'ok Claws to summon a Harbinger of the Raven")}},
         },
         [10570] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Place the Bundle of Bloodthistle at the end of the bridge"), 0, {{"object", 184841}}}},
@@ -2439,6 +2462,12 @@ function QuestieTBCQuestFixes:Load()
         [10594] = {
             [questKeys.triggerEnd] = {"Singing crystal resonant frequency gauged", {[zoneIDs.BLADES_EDGE_MOUNTAINS]={{59.77,73.83}}}},
         },
+        [10596] = {
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Box o'Tricks while standing near the communication device"), 0, {{"object", 184833}}}},
+        },
+        [10598] = {
+            [questKeys.objectives] = {{{21512,"Destroy Legion Hold Infernals",Questie.ICON_TYPE_EVENT}}},
+        },
         [10605] = {
             [questKeys.exclusiveTo] = {1472,1507},
         },
@@ -2457,12 +2486,6 @@ function QuestieTBCQuestFixes:Load()
         [10613] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use a Fel Reaver Control Console to take control of a Fel Reaver Sentinel"), 0, {{"object", 185059}}}},
             [questKeys.objectives] = {nil,{{184979,"Deathforged Infernal Destroyed"}}},
-        },
-        [10621] = {
-            [questKeys.startedBy] = {{21499},nil,nil},
-        },
-        [10623] = {
-            [questKeys.startedBy] = {{21499},nil,nil},
         },
         [10629] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Kill some Deranged Helboars"), 0, {{"monster", 16863}}},
@@ -2492,6 +2515,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [10646] = {
             [questKeys.objectives] = {{{18417,"Illidan's Pupil"}}},
+        },
+        [10652] = {
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Take a ride"),0,{{"monster",20162}}}},
         },
         [10653] = {
             [questKeys.requiredMaxRep] = {},
@@ -2532,7 +2558,8 @@ function QuestieTBCQuestFixes:Load()
             [questKeys.extraObjectives] = {{{[zoneIDs.ZANGARMARSH]={{15.9,40.5}}}, Questie.ICON_TYPE_EVENT, l10n("Use the Imbued Silver Spear at Portal Clearing near Marshlight Lake to awake Xeleth")}},
         },
         [10672] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use a Arcano Control Unit and then swim in the lava to tag the Greater Felfire Diemetradon"), 0, {{"object", 185008}}}},
+            [questKeys.objectives] = {{{21462,"Greater Felfire Diemetradon Tagged",Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use a Arcano Control Unit and then swim in the lava to tag the Greater Felfire Diemetradon"), 0, {{"object", 185008},{"object", 185009},{"object", 185010}}}},
         },
         [10674] = {
             [questKeys.objectives] = {{{20635,"Razaani Light Orbs trapped",Questie.ICON_TYPE_EVENT}}},
@@ -2673,9 +2700,6 @@ function QuestieTBCQuestFixes:Load()
         [10772] = {
             [questKeys.triggerEnd] = {"The Path of Conquest Discovered", {[zoneIDs.SHADOWMOON_VALLEY]={{51.23,62.75},{52.45,59.19}}}},
         },
-        [10778] = {
-            [questKeys.sourceItemId] = 31316,
-        },
         [10781] = {
             [questKeys.triggerEnd] = {"Crimson Sigil Forces Annihilated", {[zoneIDs.SHADOWMOON_VALLEY]={{51.75,72.79}}}},
         },
@@ -2718,6 +2742,9 @@ function QuestieTBCQuestFixes:Load()
         [10807] = {
             [questKeys.preQuestSingle] = {10552},
         },
+        [10808] = {
+            [questKeys.objectives] = {{{22137,"End Dark Conclave Summoning Ritual",Questie.ICON_TYPE_EVENT}}},
+        },
         [10813] = {
             [questKeys.objectives] = {nil,nil,nil,nil,{{{19440,22177},22177,"Eye of Grillok Returned"}}},
         },
@@ -2731,6 +2758,7 @@ function QuestieTBCQuestFixes:Load()
         [10822] = {
             [questKeys.requiredMaxRep] = {},
             [questKeys.preQuestSingle] = {10551,10552},
+            [questKeys.zoneOrSort] = zoneIDs.SHADOWMOON_VALLEY,
         },
         [10823] = {
             [questKeys.requiredMaxRep] = {},
@@ -2783,10 +2811,14 @@ function QuestieTBCQuestFixes:Load()
         },
         [10854] = {
             [questKeys.objectives] = {{{21722,"Enslaved Netherwing Drake freed"}}},
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use Enchanted Nethervine Crystal on Enslaved Netherwing Drake"), 0, {{"monster", 21722}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_INTERACT, l10n("Use Enchanted Nethervine Crystal on Enslaved Netherwing Drake"), 0, {{"monster", 21722}}}},
+        },
+        [10855] = { -- Fel Reavers, No Thanks!
+            [questKeys.objectives] = {{{22293,"Inactive Fel Reaver Destroyed",Questie.ICON_TYPE_EVENT}}},
         },
         [10857] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Use the Mental Interference Rod on the Mo'arg and use their Detonate Teleporter ability"), 0, {{"monster", 16943}}}},
+            [questKeys.objectives] = {{{22348,"Western Teleporter Destroyed",Questie.ICON_TYPE_EVENT},{22350,"Central Teleporter Destroyed",Questie.ICON_TYPE_EVENT},{22351,"Eastern Teleporter Destroyed",Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_INTERACT, l10n("Use the Mental Interference Rod on the Mo'arg and use their Detonate Teleporter ability"), 0, {{"monster", 16943}}}},
         },
         [10859] = {
             [questKeys.objectives] = {{{20635,"Razaani Light Orbs trapped",Questie.ICON_TYPE_EVENT}}},
@@ -5516,7 +5548,7 @@ function QuestieTBCQuestFixes:Load()
         },
         [64038] = {
             [questKeys.name] = "The Dark Portal",
-            [questKeys.startedBy] = {{376,914,928,5495,5497,5505,5515,13283},nil,nil},
+            [questKeys.startedBy] = {{331,376,914,928,5495,5497,5505,5515,13283},nil,nil},
             [questKeys.finishedBy] = {{16841},nil},
             [questKeys.requiredLevel] = 58,
             [questKeys.questLevel] = 58,

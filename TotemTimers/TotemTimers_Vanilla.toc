@@ -1,7 +1,7 @@
-## Interface: 11503, 11504, 11505
+## Interface: 11506, 11507
 ## Title: TotemTimers
 ## Author:  Xianghar
-## Version: 4.0.11
+## Version: 5.0.0
 ## SavedVariables: TotemTimers_GlobalSettings, TotemTimers_Profiles
 ## OptionalDeps: Masque
 ## LoadManagers: AddonLoader

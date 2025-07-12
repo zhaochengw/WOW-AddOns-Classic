@@ -91,6 +91,11 @@ function Offline:GetStartTime(unit)
 	return offline[unit]
 end
 
+local text = L["Offline"]
+function Offline:GetText(unit)
+	return text
+end
+
 function Offline:GetPercent(unit)
 	return self.dbx.color1.a, text
 end
@@ -101,15 +106,6 @@ end
 
 function Offline:GetIcon()
 	return "Interface\\CharacterFrame\\Disconnect-Icon"
-end
-
-local text
-function Offline:GetText(unit)
-	return text
-end
-
-function Offline:UpdateDB()
-	text = self.dbx.text or L["Offline"]
 end
 
 Offline.GetColor = Grid2.statusLibrary.GetColor

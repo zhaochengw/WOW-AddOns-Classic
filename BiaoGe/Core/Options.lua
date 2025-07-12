@@ -1605,7 +1605,7 @@ BG.Init(function()
         h = h + 30
 
         -- 自动获取在线人数
-        if BG.IsVanilla_Sod or BG.IsCTM then
+        if BG.IsVanilla_Sod or BG.IsMOP then
             do
                 local name = "autoGetOnline"
                 BG.options[name .. "reset"] = 0
@@ -2487,7 +2487,7 @@ BG.Init(function()
 
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange * 3
-            elseif BG.IsCTM then
+            elseif BG.IsCTM or BG.IsMOP then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -3194,6 +3194,32 @@ BG.Init(function()
                     L["标记已密语过的活动"],
                     L["如果你在最近15分钟内曾经密语过团长，那么该活动的说明变为灰色。"],
                 },
+            })
+            -- 根据YY评价标记活动
+            tinsert(tbl, {
+                name = "MeetingHorn_yy",
+                name2 = L["根据YY评价标记活动"] .. "*",
+                reset = 0,
+                ontext = {
+                    L["根据YY评价标记活动"],
+                    L["如果活动说明里含有YY号且你曾评价过该YY，则对该活动添加对应的评价颜色。"],
+                },
+                onClick = function(self)
+                    local addonName = "MeetingHorn"
+                    if not IsAddOnLoaded(addonName) then return end
+                    local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
+                    if self:GetChecked() then
+                    else
+                        local buttons = MeetingHorn.MainPanel.Browser.ActivityList._buttons
+                        if buttons then
+                            for _, v in pairs(buttons) do
+                                if v.NormalBg then
+                                    v.NormalBg:SetColorTexture(1, 1, 1, 0)
+                                end
+                            end
+                        end
+                    end
+                end
             })
             -- 密语模板
             tinsert(tbl, {

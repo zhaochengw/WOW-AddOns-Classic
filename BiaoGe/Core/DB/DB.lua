@@ -81,7 +81,6 @@ do
                 -- [""] = true,
                 -- [""] = true,
                 -- [""] = true,
-                -- ["苍刃"] = true,
             },
         }
     end
@@ -217,13 +216,15 @@ do
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
             AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, difTbl3,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 5, 20, 5, }, 14)
-        elseif BG.IsCTM then
-            AddDB("BOT", 1715, 930, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
+        elseif BG.IsCTM or BG.IsMOP then
+            AddDB("BOT", 1715, 850, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
-            AddDB("FL", mainFrameWidth, 770, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
+            AddDB("FL", mainFrameWidth, 800, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 10, })
-            AddDB("DS", mainFrameWidth, 770, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
+            AddDB("DS", mainFrameWidth, 800, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, })
+            AddDB("MSV", 1715, 980, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, },14)
         elseif BG.IsRetail then
             local n = 8
             AddDB("NP", mainFrameWidth, 950, 3, 10, { 0, 4, 8 }, { "R", "N", "H", "M" }, nil,
@@ -344,7 +345,7 @@ do
                     BG.instanceIDfromBossPosition["SSC"][i] = 550
                 end
             end
-        elseif BG.IsCTM then
+        elseif BG.IsCTM or BG.IsMOP then
             BG.FB1 = "BOT"
             BG.fullLevel = 85
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
@@ -364,6 +365,27 @@ do
 
             AddDB("FL", 720, "P2") -- 火焰之地
             AddDB("DS", 967, "P3") -- 巨龙之魂
+
+            if BG.IsMOP then
+                -- BG.FB1 = "MSV"
+                -- BG.fullLevel = 85
+                BG.theEndBossID = {}                              --
+                AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }) -- 魔古山
+                -- 恐惧之心
+                BG.FBIDtable[1009] = "MSV"
+                BG.bossPositionStartEnd[1009] = { 7, 12 }
+                for i = 7, 12 do
+                    BG.FBfromBossPosition["MSV"][i] = { name = "HOF", localName = GetRealZoneText(1009) }
+                    BG.instanceIDfromBossPosition["MSV"][i] = 1009
+                end
+                -- 永春台
+                BG.FBIDtable[996] = "MSV"
+                BG.bossPositionStartEnd[996] = { 13, 16 }
+                for i = 13, 16 do
+                    BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
+                    BG.instanceIDfromBossPosition["MSV"][i] = 996
+                end
+            end
         elseif BG.IsRetail then
             BG.FB1 = "NP"
             BG.fullLevel = 80
@@ -772,7 +794,7 @@ do
                 local enabled = C_AddOns.GetAddOnEnableState(i, player)
                 if C_AddOns.GetAddOnMetadata(i, "X-BiaoGe-Voice") and enabled ~= 0 then
                     local author = C_AddOns.GetAddOnMetadata(i, "Author")
-                    tinsert(BG.soundAuthor, { ID = author,  addonName = addonName })
+                    tinsert(BG.soundAuthor, { ID = author, addonName = addonName })
                 end
             end
             for _, value in ipairs(BG.soundAuthor) do

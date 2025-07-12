@@ -1,9 +1,9 @@
-local mod	= DBM:NewMod(2602, "DBM-Raids-WarWithin", 2, 1273)
+local mod	= DBM:NewMod(2602, "DBM-Raids-WarWithin", 3, 1273)
 local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "story,lfr,normal,heroic,mythic"
 
-mod:SetRevision("20250307060041")
+mod:SetRevision("20250619040547")
 mod:SetCreatureID(218370)
 mod:SetEncounterID(2922)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)

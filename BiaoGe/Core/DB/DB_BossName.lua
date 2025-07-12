@@ -400,6 +400,36 @@ do
     AddDB(FB, boss)
 end
 
+-- MOP
+do
+    local boss = {
+        { name = L["石\n头\n守\n卫"], color = "DEB887" },
+        { name = L["受\n诅\n者\n魔\n封"], color = "DEB887" },
+        { name = L["缚\n灵\n者\n戈\n拉\n亚"], color = "DEB887" },
+        { name = L["先\n王\n之\n魂"], color = "DEB887" },
+        { name = L["伊\n拉\n贡"], color = "DEB887" },
+        { name = L["皇\n帝\n的\n意\n志"], color = "DEB887" },
+        { name = L["皇\n家\n宰\n相"], color = "FFFF00" },
+        { name = L["刀\n锋\n领\n主"], color = "FFFF00" },
+        { name = L["加\n拉\n隆"], color = "FFFF00" },
+        { name = L["风\n领\n主"], color = "FFFF00" },
+        { name = L["琥\n珀\n塑\n形\n者"], color = "FFFF00" },
+        { name = L["大\n女\n皇\n夏\n柯\n希\n尔"], color = "FFFF00" },
+        { name = L["无\n尽\n守\n护\n者"], color = "4FFC56" },
+        { name = L["烛\n龙"], color = "4FFC56" },
+        { name = L["雷\n施"], color = "4FFC56" },
+        { name = L["惧\n之\n煞"], color = "4FFC56" },
+    }
+    local FB = "MSV"
+    Addother(boss)
+    AddDB(FB, boss)
+    -- { name = L["皇\n家\n宰\n相\n佐\n尔\n洛\n克"], color = "87CEFA" },
+    -- { name = L["刀\n锋\n领\n主\n塔\n亚\n克"], color = "87CEFA" },
+    -- { name = L["风\n领\n主\n梅\n尔\n加\n拉\n克"], color = "87CEFA" },
+    -- { name = L["琥\n珀\n塑\n形\n者\n昂\n舒\n克"], color = "87CEFA" },
+
+end
+
 -- Retail
 do
     local boss = {

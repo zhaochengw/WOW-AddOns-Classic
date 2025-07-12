@@ -1,4 +1,4 @@
-if not BG.IsCTM then return end
+if not (BG.IsCTM or BG.IsMOP) then return end
 
 local _, ns = ...
 

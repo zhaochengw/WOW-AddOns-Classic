@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("StratWaves", "DBM-Party-WotLK", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240412191704")
+mod:SetRevision("20250609051305")
+mod:SetZone(279)
 
 mod:RegisterEvents(
 	"UPDATE_UI_WIDGET",

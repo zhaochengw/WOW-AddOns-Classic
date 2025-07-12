@@ -1,7 +1,7 @@
-## Interface: 30400
-## Title: |cffff0000T|cffff7f00e|cffffcc00k|cff00ff00s|cff0000ffl|cff4b0082o|cff9400d3o|cffff0000t|cffff7f00修|cffffcc00复|cff00ff00版|r
-## Notes: 自用修复,不保证后续更新！QQ：1563317交流
-## Author:TideQi 
+## Interface: 30405
+## Title: |cffffcc00[拾取美化]|r |cff00c0ffROLL框替换|r
+## Notes: 基于原版teksLoot修复，兼容国服/怀旧服。原作作者：Tekkub。本修复版仅作维护分享，如原作者有异议请联系下架。
+## Author: Tekkub, vggfac
 ## Version: 1.0
 ## SavedVariables: teksLootDB
 

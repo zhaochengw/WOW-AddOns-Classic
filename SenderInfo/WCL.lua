@@ -820,6 +820,9 @@ local function GetWclScore(config, content)
 		end
 	end
 
+	if (string.find(content, "%(")) then
+		return nil
+	end
 	return content
 end
 

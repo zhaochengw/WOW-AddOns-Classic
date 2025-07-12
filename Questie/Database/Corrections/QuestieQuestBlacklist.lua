@@ -601,10 +601,12 @@ function QuestieQuestBlacklist:Load()
         [12402] = true,
         [12403] = true,
         [12404] = true,
+        [12405] = true, -- not in the game
         [12406] = true,
         [12407] = true,
         [12408] = true,
         [12409] = true,
+        [12410] = true, -- not in the game
         [12420] = true,
         [12421] = true,
         [13158] = Expansions.Current >= Expansions.Cata, -- replaced in Cata with 29829
@@ -1512,12 +1514,12 @@ function QuestieQuestBlacklist:Load()
         --[26013] = true, -- Assault on the Sanctum
 
         --- Chinese servers wotlk only
-        [78752] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Titan Rune Protocol Gamma (might become available again later on)
-        [78753] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Threats to Azeroth (might become available again later on)
+        [78752] = Expansions.Current >= Expansions.Cata, -- Proof of Demise: Titan Rune Protocol Gamma
+        [78753] = Expansions.Current >= Expansions.Cata, -- Proof of Demise: Threats to Azeroth
         [83713] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Titan Rune Protocol Alpha (new version to reward correct emblems)
         [83714] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Threats to Azeroth (new version to reward correct emblems)
-        [83717] = Expansions.Current >= Expansions.Cata, -- Not in the game
-        [87379] = Expansions.Current >= Expansions.Cata, -- Not in the game
+        [83717] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Titan Rune Protocol Gamma (not available anymore)
+        [87379] = Expansions.Current >= Expansions.Wotlk, -- Proof of Demise: Threats to Azeroth (not available anymore)
 
         --- Daily quests
         [24788] = true, -- Daily Heroic Random (1st)
@@ -2183,6 +2185,7 @@ function QuestieQuestBlacklist:Load()
         [725] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [726] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [727] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [728] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [729] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [730] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [731] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -2974,6 +2977,7 @@ function QuestieQuestBlacklist:Load()
         [2240] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [2241] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [2242] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [2258] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [2259] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [2260] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [2279] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -4875,6 +4879,7 @@ function QuestieQuestBlacklist:Load()
         [9434] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9435] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9438] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [9439] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9440] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9441] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [9442] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5109,6 +5114,7 @@ function QuestieQuestBlacklist:Load()
         [10831] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [10832] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [10833] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [10882] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [10890] = true, -- Not in the game
         [10891] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [10892] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5138,6 +5144,7 @@ function QuestieQuestBlacklist:Load()
         [11087] = true, -- Not in the game
         [11088] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [11115] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11116] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [11121] = true, -- Not in the game
         [11123] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [11124] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5223,6 +5230,12 @@ function QuestieQuestBlacklist:Load()
         [11345] = true, -- Not in the game
         [11347] = true, -- Not in the game
         [11353] = true, -- Not in the game
+        [11354] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11362] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11363] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11368] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11372] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [11382] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [11419] = Expansions.Current >= Expansions.Wotlk, -- Removed with Wotlk
         [11435] = true, -- Not in the game
         [11488] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5245,6 +5258,10 @@ function QuestieQuestBlacklist:Load()
         [12952] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13002] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13004] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [13097] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [13098] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [13099] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [13111] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13159] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13167] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13182] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5568,6 +5585,17 @@ function QuestieQuestBlacklist:Load()
         [26900] = true, -- Not in the game
         [26902] = true, -- Hidden quest
         [26951] = Expansions.Current >= Expansions.Cata, -- Seems to not be available
+        [26972] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26973] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26974] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26976] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26982] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26983] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26984] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26985] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26993] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26994] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26996] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
         [27018] = Expansions.Current >= Expansions.Cata, -- Seems to not be available
         [27052] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [27079] = true, -- Hidden quest
@@ -5793,6 +5821,7 @@ function QuestieQuestBlacklist:Load()
         [29659] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29671] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29672] = Expansions.Current >= Expansions.Cata, -- Not in the game
+        [29673] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29683] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29703] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [29705] = Expansions.Current >= Expansions.MoP, -- Not in the game
@@ -6229,7 +6258,10 @@ function QuestieQuestBlacklist:Load()
         [12445] = true, -- Not in the game
         [12731] = true, -- Not in the game
         [13541] = true, -- Not in the game
-        [31533] = true, -- The Perfect Feathe (not in the game)
+        [29547] = true, -- Not available in prepatch. Remove once MoP hits
+        [29611] = true, -- Not available in prepatch. Remove once MoP hits
+        [29612] = true, -- Not available in prepatch. Remove once MoP hits
+        [31533] = true, -- The Perfect Feather (not in the game)
         [31887] = true, -- Pet Battle Trainers: Kalimdor
         [31888] = true, -- Pet Battle Trainers: Kalimdor
         [31890] = true, -- Pet Battle Trainers: Kalimdor

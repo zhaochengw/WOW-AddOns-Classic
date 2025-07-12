@@ -1,10 +1,10 @@
-## Interface: 11507, 30404
+## Interface: 11507, 30405
 ## Title: |cff00fffftdBag2 ItemInfo|r - Item Info
 ## Title-zhCN: |cff00fffftdBag2 ItemInfo|r - 物品信息
 ## Notes: View BoE, item level, item expire time, etc.
 ## Notes-zhCN: 显示装备绑定、物品等级、物品过期时间等信息
 ## Author: Dencer
-## Version: 2.3.8
+## Version: 2.3.9
 ## Dependencies: tdBag2
 ## X-tdBag2-Plugin: Item Info
 

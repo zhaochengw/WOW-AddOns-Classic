@@ -92,7 +92,7 @@ BG.Init(function()
     end
 
     -- 在线玩家数
-    if BG.IsVanilla_Sod or BG.IsCTM then
+    if BG.IsVanilla_Sod or BG.IsMOP then
         BG.Init2(function()
             if not IsAddOnLoaded("Blizzard_Communities") then
                 UIParentLoadAddOn("Blizzard_Communities")

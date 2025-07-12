@@ -262,6 +262,12 @@ local CAN_ENCHANT_EQUIP_LOCS = {
     INVTYPE_WEAPONOFFHAND = true,
 }
 
+local CAN_ENCHANT_RANGED = {
+    [Enum.ItemWeaponSubclass.Bows] = true,
+    [Enum.ItemWeaponSubclass.Guns] = true,
+    [Enum.ItemWeaponSubclass.Crossbow] = true,
+}
+
 function ns.IsSpellKnown(spellId)
     return IsSpellKnown(spellId) or IsSpellKnownOrOverridesKnown(spellId) or IsPlayerSpell(spellId) or
                DoesSpellExist(GetSpellInfo(spellId))
@@ -270,9 +276,19 @@ end
 function ns.IsCanEnchant(item, inspect)
     local itemEquipLoc, _, classId, subClassId = select(4, GetItemInfoInstant(item))
     if itemEquipLoc == 'INVTYPE_RANGEDRIGHT' or itemEquipLoc == 'INVTYPE_RANGED' then
-        return classId == Enum.ItemClass.Weapon and
-                   (subClassId == Enum.ItemWeaponSubclass.Bows or subClassId == Enum.ItemWeaponSubclass.Guns or
-                       subClassId == Enum.ItemWeaponSubclass.Crossbow)
+        if classId ~= Enum.ItemClass.Weapon or not CAN_ENCHANT_RANGED[subClassId] then
+            return false
+        end
+        if ns.db.profile.showRangedEnchantOnlyHunter then
+            local class
+            if inspect then
+                class = ns.Inspect:GetUnitClassFileName()
+            else
+                class = UnitClassBase('player')
+            end
+            return class == 'HUNTER'
+        end
+        return true
     elseif itemEquipLoc == 'INVTYPE_FINGER' then
         return not inspect and ns.IsSpellKnown(7411) -- 附魔
     end

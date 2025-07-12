@@ -219,15 +219,6 @@ local function SetClassCFF(name, player, type)
 end
 ns.SetClassCFF = SetClassCFF
 
---[[ ------------------函数：删除颜色代码------------------
-function BG.RemoveColorCodes(str)
-    str = string.gsub(str, "|[cC]%x%x%x%x%x%x%x%x", "")
-    str = string.gsub(str, "|[rR]", "")
-    str = string.gsub(str, "\n", "")
-    return str
-end
- ]]
-
 ------------------函数：仅提取链接文本------------------
 local function GetItemID(text)
     if not text then return end
@@ -413,8 +404,8 @@ end
 
 --[[
 BG.OnUpdateTime(function(self,elapsed)
-    self.elapsed=self.elapsed+elapsed
-    if self.elapsed then
+    self.timeElapsed=self.timeElapsed+elapsed
+    if self.timeElapsed then
         self:SetScript("OnUpdate",nil)
         self:Hide()
     end
@@ -652,11 +643,17 @@ function BG.DeletePlayerData(realmID, player)
     if BiaoGe.FBCD and BiaoGe.FBCD[realmID] then
         BiaoGe.FBCD[realmID][player] = nil
     end
+    if BiaoGe.RaidCD and BiaoGe.RaidCD[realmID] then
+        BiaoGe.RaidCD[realmID][player] = nil
+    end
     if BiaoGe.QuestCD and BiaoGe.QuestCD[realmID] then
         BiaoGe.QuestCD[realmID][player] = nil
     end
     if BiaoGe.Money and BiaoGe.Money[realmID] then
         BiaoGe.Money[realmID][player] = nil
+    end
+    if BiaoGe.MONEY and BiaoGe.MONEY[realmID] then
+        BiaoGe.MONEY[realmID][player] = nil
     end
     if BiaoGe.tradeSkillCooldown and BiaoGe.tradeSkillCooldown[realmID] then
         BiaoGe.tradeSkillCooldown[realmID][player] = nil

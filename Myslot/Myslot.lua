@@ -431,16 +431,18 @@ function MySlot:Export(opt)
     if talent then
         s = "# " .. TALENTS .. ": " .. talent .. MYSLOT_LINE_SEP .. s
     end
-    if GetSpecialization then
-        s = "# " ..
-        SPECIALIZATION ..
-        ": " ..
-        (GetSpecialization() and select(2, GetSpecializationInfo(GetSpecialization())) or NONE_CAPS) ..
-        MYSLOT_LINE_SEP .. s
-    end
-    s = "# " .. CLASS .. ": " .. UnitClass("player") .. MYSLOT_LINE_SEP .. s
-    s = "# " .. PLAYER .. ": " .. UnitName("player") .. MYSLOT_LINE_SEP .. s
-    s = "# " .. L["Time"] .. ": " .. date() .. MYSLOT_LINE_SEP .. s
+    -- if GetSpecialization then
+    --     s = "# " ..
+    --     SPECIALIZATION ..
+    --     ": " ..
+    --     (GetSpecialization() and select(2, GetSpecializationInfo(GetSpecialization())) or NONE_CAPS) ..
+    --     MYSLOT_LINE_SEP .. s
+    -- end
+
+    
+    -- s = "# " .. CLASS .. ": " .. UnitClass("player") .. MYSLOT_LINE_SEP .. s
+    -- s = "# " .. PLAYER .. ": " .. UnitName("player") .. MYSLOT_LINE_SEP .. s
+    -- s = "# " .. L["Time"] .. ": " .. date() .. MYSLOT_LINE_SEP .. s
 
     if GetAddOnMetadata then
         s = "# Addon Version: " .. GetAddOnMetadata("Myslot", "Version") .. MYSLOT_LINE_SEP .. s

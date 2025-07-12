@@ -51,13 +51,9 @@ function AFK:GetStartTime(unit)
 	return afk_cache[ UnitGUID(unit) ]
 end
 
-local text
+local text = L["AFK"]
 function AFK:GetText(unit)
 	return text
-end
-
-function AFK:UpdateDB()
-	text = self.dbx.text or L["AFK"]
 end
 
 local function CreateStatusAFK(baseKey, dbx)

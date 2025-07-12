@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(665, "DBM-Party-MoP", 7, 246)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
+mod.statTypes = "normal,heroic,challenge,timewalker,duos"
 
-mod:SetRevision("20240517054509")
+mod:SetRevision("20250609053724")
 mod:SetCreatureID(59153)
 mod:SetEncounterID(1428)
-mod:SetZone(1007)
+mod:SetZone(1007, 2849)--Scholomance, Duos
 
 mod:RegisterCombat("combat")
 

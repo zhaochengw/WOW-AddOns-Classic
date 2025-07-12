@@ -46,7 +46,7 @@ function BG.CreateFBScrollFrame(frameName, FB, bossNum)
     local parent = BG[frameName .. FB]
     local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate") -- 滚动
     scroll:SetWidth(350)
-    scroll:SetHeight(BG.GetMaxi(FB, bossNum, true) * 23)
+    scroll:SetHeight(BG.GetMaxi(FB, bossNum, true) * (20 + (BG.IsBigFB(FB) and 0 or 3)))
     scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
     BG.HookScrollBarShowOrHide(scroll)
@@ -65,123 +65,6 @@ function BG.CreateFBUI(FB, type)
     if BG[FB..type.."IsRoadUI"] then return end
     BG[FB .. type .. "IsRoadUI"]=true
     if type == "FB" then
-        -- 复原之前拆分表格导致的问题
-        local wow
-        if BG.IsWLK then
-            wow = "WLK"
-            BG.Once(wow .. "FB", 240703, function()
-                local FB = "NAXX"
-                BiaoGe[FB]["boss" .. Maxb[FB] - 1] = {} -- 支出
-                BiaoGe[FB]["boss" .. Maxb[FB]] = {}     -- 总览
-                for DT in pairs(BiaoGe.History[FB]) do
-                    for k in pairs(BiaoGe.History[FB][DT]) do
-                        for b = 1, Maxb[FB] + 2 do
-                            BiaoGe.History[FB][DT]["boss" .. b] = BiaoGe.History[FB][DT]["boss" .. b] or {}
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB] - 1] = {} -- 支出
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB]] = {}     -- 总览
-                        end
-                    end
-                end
-                local FB = "TOC"
-                BiaoGe[FB]["boss" .. Maxb[FB]] = {}     -- 支出
-                BiaoGe[FB]["boss" .. Maxb[FB] + 1] = {} -- 总览
-                for DT in pairs(BiaoGe.History[FB]) do
-                    for k in pairs(BiaoGe.History[FB][DT]) do
-                        for b = 1, Maxb[FB] + 2 do
-                            BiaoGe.History[FB][DT]["boss" .. b] = BiaoGe.History[FB][DT]["boss" .. b] or {}
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB]] = {}     -- 支出
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB] + 1] = {} -- 总览
-                        end
-                    end
-                end
-                local FB = "ICC"
-                BiaoGe[FB]["boss" .. Maxb[FB]] = {}     -- 支出
-                BiaoGe[FB]["boss" .. Maxb[FB] + 1] = {} -- 总览
-                for DT in pairs(BiaoGe.History[FB]) do
-                    for k in pairs(BiaoGe.History[FB][DT]) do
-                        for b = 1, Maxb[FB] + 2 do
-                            BiaoGe.History[FB][DT]["boss" .. b] = BiaoGe.History[FB][DT]["boss" .. b] or {}
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB]] = {}     -- 支出
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB] + 1] = {} -- 总览
-                        end
-                    end
-                end
-
-                local tbl = { "OS", "EOE", "OL", "RS" }
-                for i, FB in ipairs(tbl) do
-                    BiaoGe[FB] = nil
-                    BiaoGe.History[FB] = nil
-                    BiaoGe.HistoryList[FB] = nil
-                    BiaoGe.BossFrame[FB] = nil
-
-                    for realmID in pairs(BiaoGe.Hope) do
-                        for player in pairs(BiaoGe.Hope[realmID]) do
-                            for _ in pairs(BiaoGe.Hope[realmID][player]) do
-                                BiaoGe.Hope[realmID][player][FB] = nil
-                            end
-                        end
-                    end
-                end
-            end)
-        elseif BG.IsVanilla_60 then
-            wow = "60"
-            BG.Once(wow .. "FB", 240703, function()
-                local FB = "MC"
-                BiaoGe[FB]["boss" .. Maxb[FB]] = {}     -- 支出
-                BiaoGe[FB]["boss" .. Maxb[FB] + 1] = {} -- 总览
-                for DT in pairs(BiaoGe.History[FB]) do
-                    for k in pairs(BiaoGe.History[FB][DT]) do
-                        for b = 1, Maxb[FB] + 2 do
-                            BiaoGe.History[FB][DT]["boss" .. b] = BiaoGe.History[FB][DT]["boss" .. b] or {}
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB] - 1] = {} -- 支出
-                            BiaoGe.History[FB][DT]["boss" .. Maxb[FB]] = {}     -- 总览
-                        end
-                    end
-                end
-            end)
-        elseif BG.IsCTM then
-            wow = "CTM"
-            BG.Once(wow .. "FB", 240703, function()
-                local FB = "BOT"
-                BiaoGe[FB]["boss" .. 8] = {} -- 支出
-                BiaoGe[FB]["boss" .. 9] = {} -- 总览
-                for DT in pairs(BiaoGe.History[FB]) do
-                    for k in pairs(BiaoGe.History[FB][DT]) do
-                        for b = 1, Maxb[FB] + 2 do
-                            BiaoGe.History[FB][DT]["boss" .. b] = BiaoGe.History[FB][DT]["boss" .. b] or {}
-                            BiaoGe.History[FB][DT]["boss" .. 8] = {} -- 支出
-                            BiaoGe.History[FB][DT]["boss" .. 9] = {} -- 总览
-                        end
-                    end
-                end
-
-                local FB = "OL"
-                BiaoGe[FB] = nil
-                BiaoGe.History[FB] = nil
-                BiaoGe.HistoryList[FB] = nil
-                BiaoGe.BossFrame[FB] = nil
-                for realmID in pairs(BiaoGe.Hope) do
-                    for player in pairs(BiaoGe.Hope[realmID]) do
-                        for _ in pairs(BiaoGe.Hope[realmID][player]) do
-                            BiaoGe.Hope[realmID][player][FB] = nil
-                        end
-                    end
-                end
-            end)
-        end
-        -- 删除plus黑翼表格旧内容
-        if BG.IsVanilla_Sod then
-            BG.Once("BWLsod", 240930, function()
-                local FB = "BWLsod"
-                BiaoGe[FB].tradeTbl = {}
-                for b = 1, 22 do
-                    BiaoGe[FB]["boss" .. b] = {}
-                end
-                BiaoGe.HistoryList[FB] = {}
-                BiaoGe.History[FB] = {}
-            end)
-        end
-
         -- 对账
         for t = 1, Maxt[FB] do
             local _, bb = BossNum(FB, 0, t)

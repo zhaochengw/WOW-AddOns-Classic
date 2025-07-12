@@ -200,7 +200,7 @@ BG.Init(function()
 
         -- VIP
         BG.Init2(function()
-            if not BiaoGeVIP then
+            if not IsAddOnLoaded("BiaoGeVIP") then
                 BG.VIPVerText = CreateFrame("Frame", nil, BG.MainFrame)
                 BG.VIPVerText:SetPoint("LEFT", BG.VerText, "RIGHT", 5, 0)
                 local t = BG.VIPVerText:CreateFontString()
@@ -212,7 +212,7 @@ BG.Init(function()
                 BG.VIPVerText:SetScript("OnMouseDown", function(self)
                     BG.PlaySound(1)
                     ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_ChooseBoxForSend():SetText("https://docs.qq.com/doc/DYVd6T1JUcnNQRWdp")
+                    ChatEdit_ChooseBoxForSend():SetText("https://www.biaogevip.com")
                     ChatEdit_ChooseBoxForSend():HighlightText()
                 end)
                 BG.VIPVerText:SetScript("OnEnter", function(self)
@@ -220,6 +220,9 @@ BG.Init(function()
                     GameTooltip:SetPoint("TOP", self, "BOTTOM", 0, 0)
                     GameTooltip:ClearLines()
                     for i, text in ipairs(ns.VIPinstructionsText) do
+                        if i == 1 then
+                            text = text
+                        end
                         GameTooltip:AddLine(text)
                     end
                     GameTooltip:Show()
@@ -227,34 +230,28 @@ BG.Init(function()
                 BG.VIPVerText:SetScript("OnLeave", function()
                     GameTooltip:Hide()
                 end)
-            end
-            if not BiaoGeAccounts then
-                BG.AccountsVerText = CreateFrame("Frame", nil, BG.MainFrame)
-                BG.AccountsVerText:SetPoint("LEFT", BG.VIPVerText or (BGV and BGV.VerText) or BG.VerText, "RIGHT", 5, 0)
-                local t = BG.AccountsVerText:CreateFontString()
-                t:SetPoint("CENTER")
-                t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
-                t:SetTextColor(.5, .5, .5)
-                t:SetText(L["同步模块"])
-                BG.AccountsVerText:SetSize(t:GetWidth(), 15)
-                BG.AccountsVerText:SetScript("OnMouseDown", function(self)
-                    BG.PlaySound(1)
-                    ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-                    ChatEdit_ChooseBoxForSend():SetText("https://docs.qq.com/doc/DYVFDaU5uR21sanJm")
-                    ChatEdit_ChooseBoxForSend():HighlightText()
-                end)
-                BG.AccountsVerText:SetScript("OnEnter", function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_NONE", 0, 0)
-                    GameTooltip:SetPoint("TOP", self, "BOTTOM", 0, 0)
-                    GameTooltip:ClearLines()
-                    for i, text in ipairs(ns.AccountsinstructionsText) do
-                        GameTooltip:AddLine(text)
+
+                local vipState = ""
+                local type = select(5, C_AddOns.GetAddOnInfo("BiaoGeVIP"))
+                if type == "MISSING" then
+                    vipState = L["|cffff0000（未订阅）"]
+                else
+                    vipState = L["|cffff0000（插件被禁用）"]
+                end
+                local aiState = ""
+                local type = select(5, C_AddOns.GetAddOnInfo("BiaoGeAI"))
+                if type == "MISSING" then
+                    aiState = L["|cffff0000（未订阅）"]
+                else
+                    aiState = L["|cffff0000（插件被禁用）"]
+                end
+                for i, text in ipairs(ns.VIPinstructionsText) do
+                    if text:find("BiaoGeVIP"..L["插件"]) then
+                        ns.VIPinstructionsText[i] = text .. vipState
+                    elseif text:find("BiaoGeAI"..L["插件"]) then
+                        ns.VIPinstructionsText[i] = text .. aiState
                     end
-                    GameTooltip:Show()
-                end)
-                BG.AccountsVerText:SetScript("OnLeave", function()
-                    GameTooltip:Hide()
-                end)
+                end
             end
 
             BG.HistoryMainFrame:HookScript("OnShow", function(self)
@@ -1650,6 +1647,8 @@ BG.Init(function()
             '{rt7}拍賣取消{rt7}',
             '{rt6}拍賣成功{rt6}',
             '{rt1}拍賣倒數{rt1}',
+
+            "^%d+:", -- 屏蔽部分插件的掉落通报
         }
 
         local f = CreateFrame("Frame")
@@ -1927,7 +1926,6 @@ BG.Init(function()
             end
         end)
     end
-
     ----------血月活动期间自动释放尸体和对话自动复活----------
     if BG.IsVanilla_Sod then
         local tbl = {

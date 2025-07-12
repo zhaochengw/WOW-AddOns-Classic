@@ -1,8 +1,8 @@
-## Interface: 30404
+## Interface: 110107, 50500, 30404
 ## Title: HandyNotes: Wrath of the Lich King
 ## Notes: Where are the interesting things in Northrend?
 ## Author: Kemayo
-## Version: v17
+## Version: v19
 ## IconTexture: Interface\Icons\Ability_Spy
 ## DefaultState: enabled
 ## X-Category: Map

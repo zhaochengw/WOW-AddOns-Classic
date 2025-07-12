@@ -7,7 +7,7 @@
 ## X-Database-Key: 5133
 ## X-Database-Name: 安娜丝塔丽
 ## X-Game-Version-ID: warcraft-classic
-## X-Updated-At: 2025-06-24T03:43:36.000Z
+## X-Updated-At: 2025-07-11T00:59:17.000Z
 ## IconTexture: Interface/AddOns/ArchonTooltip/Media/logo-32-circle.tga
 ## Category: Archon
 

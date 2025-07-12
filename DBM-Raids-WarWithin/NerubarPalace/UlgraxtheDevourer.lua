@@ -1,7 +1,7 @@
-local mod	= DBM:NewMod(2607, "DBM-Raids-WarWithin", 2, 1273)
+local mod	= DBM:NewMod(2607, "DBM-Raids-WarWithin", 3, 1273)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250209023836")
+mod:SetRevision("20250623105337")
 mod:SetCreatureID(215657)
 mod:SetEncounterID(2902)
 mod:SetHotfixNoticeRev(20241007000000)
@@ -268,7 +268,7 @@ function mod:OnTranscriptorSync(msg, targetName)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
+function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	--<168.89 20:49:18> [UNIT_SPELLCAST_SUCCEEDED] Ulgrax the Devourer(11.0%-100.0%){Target:Meeresdk} -Phase Transition None- [[boss1:Cast-3-2085-2657-32566-4
 	--"<173.83 20:49:23> [UNIT_SPELLCAST_SUCCEEDED] Ulgrax the Devourer(10.4%-100.0%){Target:??} -Phase Transition P2 -> P1- [[boss1:Cast-3-2085-2657-32566-44142
 	if spellId == 441425 and self:GetStage(2) then--Phase Transition None (Fires on both beginning and ending of phase 2)

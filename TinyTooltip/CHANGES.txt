@@ -1,16 +1,36 @@
-lightweight tag ffb2532d18b1abc1e56e8e93ffe7151f048007b5 4.4.2.1
+lightweight tag 5431fe6081f68025402ea650de5f7e84aca9b3c6 5.5.0.0
 Author:	GitHub <noreply@github.com>
-Date:	Wed May 7 09:12:15 2025 -0700
+Date:	Fri Jul 4 01:13:36 2025 -0700
 
-commit 82262d02d1ddb6a6bf0c90c48c7cfe5ca40f3dfb
-Author: govtgeek <26489473+GovtGeek@users.noreply.github.com>
-Date:   Wed May 7 09:11:17 2025 -0700
+commit 97e57e5cda87a8f1ff35bb6d0cd922ab22c2492b
+Author: GovtGeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Fri Jul 4 01:12:57 2025 -0700
 
-    Version bump for Classic Era and addon
+    Update TinyTooltip.toc
+    
+    Updating to work in Mists
 
-commit 82262d02d1ddb6a6bf0c90c48c7cfe5ca40f3dfb
-Author: govtgeek <26489473+GovtGeek@users.noreply.github.com>
-Date:   Wed May 7 09:11:17 2025 -0700
+commit 97e57e5cda87a8f1ff35bb6d0cd922ab22c2492b
+Author: GovtGeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Fri Jul 4 01:12:57 2025 -0700
 
-    Version bump for Classic Era and addon
+    Update TinyTooltip.toc
+    
+    Updating to work in Mists
+
+commit 277d3854ff5265485bff4727613b8fcf822f5b9f
+Author: GovtGeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Fri Jul 4 01:10:17 2025 -0700
+
+    Update Options.lua
+    
+    Changed ThinBorderTemplate to ThinGoldEdgeTemplate
+
+commit 277d3854ff5265485bff4727613b8fcf822f5b9f
+Author: GovtGeek <26489473+GovtGeek@users.noreply.github.com>
+Date:   Fri Jul 4 01:10:17 2025 -0700
+
+    Update Options.lua
+    
+    Changed ThinBorderTemplate to ThinGoldEdgeTemplate
 

@@ -1,4 +1,4 @@
-## Interface: 110105, 110107
+## Interface: 110107, 110200
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffc030c0Dungeons (DF)|r
@@ -30,7 +30,7 @@
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r199
+## Version: r201
 
 localization.en.lua
 localization.kr.lua

@@ -1,9 +1,9 @@
 # Details! Damage Meter
 
-## [Details.20250622.13623.165](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20250622.13623.165) (2025-06-22)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20250622.13622.165...Details.20250622.13623.165) 
+## [Details.20250331.13502.162-4-g3396762](https://github.com/Tercioo/Details-Damage-Meter/tree/33967622db92842c7a5bc3772c6b10327078dcba) (2025-04-05)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20250331.13502.162...33967622db92842c7a5bc3772c6b10327078dcba) 
 
-- Version up for a following fix.  
-- Merge pull request #922 from Flamanis/master  
-    Make overrides work on panda  
-- Make overrides work on panda  
+- Added Details:UnpackDeathEvent(deathEvent)  
+- Removed interrupts from crowd control. Fixed crowd control amount in the 'Crowd Control Done' display.  
+- Create FUNDING.yml  
+- Increate the core version  

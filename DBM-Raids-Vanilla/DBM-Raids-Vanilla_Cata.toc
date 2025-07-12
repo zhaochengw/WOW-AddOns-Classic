@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## X-Min-Interface-Cata: 40400
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-Curse-Project-ID: 16442
 ## X-WoWI-ID: 11700
 ## X-Wago-ID: 7x61xpN1
-## Version: r811
+## Version: r812
 
 locale.generated.lua
 

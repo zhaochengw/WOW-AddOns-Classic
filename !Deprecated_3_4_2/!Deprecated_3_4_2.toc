@@ -1,3 +1,9 @@
 ## Interface: 30404
 ## Title: !Deprecated_3_4_2
+## Notes: API兼容层
+## Author: 你的名字
+## Version: 1.0
+## LoadOnDemand: 0
+## DefaultState: Enabled
+
 core.lua

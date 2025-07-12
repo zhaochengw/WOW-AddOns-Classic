@@ -15,14 +15,14 @@ GNU General Public License for more details.
 This file is part of C_Everywhere.
 --]]
 
-local C = LibStub:NewLibrary('C_Everywhere', 12)
+local C = LibStub:NewLibrary('C_Everywhere', 13)
 if C then
 	wipe(C)
 else
 	return
 end
 
--- magic
+-- magic, does 90% of the work
 setmetatable(C, {__index = function(C, space)
 	local target = _G['C_' .. space]
 	local container = {}
@@ -41,6 +41,10 @@ setmetatable(C, {__index = function(C, space)
 end})
 
 -- specifics
+local function null(space, k)
+	space[k] = space.rawfind(k) or nop
+end
+
 local function pack(space, k, args)
 	local f = space.rawfind(k)
 	if f then
@@ -82,12 +86,19 @@ pack(C.CurrencyInfo, 'GetBackpackCurrencyInfo', 'name, quantity, iconFileID, cur
 pack(C.CurrencyInfo, 'GetBasicCurrencyInfo', 'name, description, icon, quality, displayAmount, actualAmount')
 pack(C.CurrencyInfo, 'GetCurrencyInfo', 'name, quantity, iconFileID, quantityEarnedThisWeek, maxWeeklyQuantity, maxQuantity, discovered, quality')
 pack(C.CurrencyInfo, 'GetCurrencyListInfo', 'name, isHeader, isHeaderExpanded, isTypeUnused, isShowInBackpack, quantity, iconFileID, maxQuantity, canEarnPerWeek, quantityEarnedThisWeek, discovered')
+null(C.CurrencyInfo, 'IsAccountTransferableCurrency')
+null(C.CurrencyInfo, 'IsAccountWideCurrency')
+null(C.QuestLog, 'IsQuestFlaggedCompletedOnAccount')
 pack(C.Spell, 'GetSpellInfo', 'name, rank, iconID, castTime, minRange, maxRange, spellID, originalIconID')
 
-C.CurrencyInfo.IsAccountTransferableCurrency = C.CurrencyInfo.IsAccountTransferableCurrency or nop
-C.CurrencyInfo.IsAccountWideCurrency = C.CurrencyInfo.IsAccountWideCurrency or nop
+C.QuestLog.IsComplete = C.QuestLog.IsComplete or function(id) return select(6, GetQuestLogTitle(GetQuestLogIndexByID(id))) == 1 end
 C.Bank.CanViewBank = C.Bank.CanViewBank or function(v) return v == 0 end
 C.Item.IsDressableItemByID = IsDressableItem
+C.GossipInfo.SelectActiveQuest = SelectGossipActiveQuest
+C.GossipInfo.SelectAvailableQuest = SelectGossipAvailableQuest
+C.GossipInfo.GetNumAvailableQuests = GetNumGossipAvailableQuests
+C.GossipInfo.GetNumActiveQuests = GetNumGossipActiveQuests
+C.GossipInfo.GetText = GetGossipText
 
 if not C_TooltipInfo then
 	local tip = C_EverywhereTip or CreateFrame('GameTooltip', 'C_EverywhereTip', UIParent, 'GameTooltipTemplate')

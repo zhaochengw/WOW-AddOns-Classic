@@ -793,6 +793,15 @@ function QuestieQuestFixes:Load()
         [1448] = {
             [questKeys.triggerEnd] = {"Search for the Temple of Atal'Hakkar", {[zoneIDs.SWAMP_OF_SORROWS]={{70.2,45.2},{66.6,48.1},{73.6,48.1},{64.9,53.3},{75.4,53.3},{66.6,58.4},{73.6,58.4},{70.2,60.5}}}},
         },
+        [1462] = {
+            [questKeys.objectivesText] = {},
+        },
+        [1463] = {
+            [questKeys.objectivesText] = {},
+        },
+        [1464] = {
+            [questKeys.objectivesText] = {},
+        },
         [1470] = {
             [questKeys.exclusiveTo] = {1485}, -- #999
         },
@@ -1528,6 +1537,9 @@ function QuestieQuestFixes:Load()
         [4144] = {
             [questKeys.specialFlags] = specialFlags.REPEATABLE, -- #1590
         },
+        [4146] = { -- Zapper Fuel
+            [questKeys.zoneOrSort] = zoneIDs.UN_GORO_CRATER,
+        },
         [4181] = {
             [questKeys.requiredSpecialization] = specKeys.ENGINEERING,
         },
@@ -1771,6 +1783,7 @@ function QuestieQuestFixes:Load()
         },
         [5057] = {
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+            [questKeys.objectivesText] = {},
         },
         [5059] = {
             [questKeys.preQuestSingle] = {5058}, -- #922
@@ -1782,7 +1795,7 @@ function QuestieQuestFixes:Load()
             [questKeys.specialFlags] = specialFlags.REPEATABLE, -- #1335
         },
         [5067] = { -- Leggings of Arcana
-            [questKeys.requiredLevel] = 60,
+            [questKeys.questLevel] = 60,
             [questKeys.specialFlags] = specialFlags.REPEATABLE, -- #1335
         },
         [5068] = {
@@ -1934,7 +1947,7 @@ function QuestieQuestFixes:Load()
             [questKeys.preQuestSingle] = {5401,5503,5405},
         },
         [5526] = {
-            [questKeys.zoneOrSort] = zoneIDs.DIRE_MAUL,
+            [questKeys.zoneOrSort] = zoneIDs.MOONGLADE,
             [questKeys.requiredSourceItems] = {18501},
         },
         [5561] = {
@@ -2608,9 +2621,9 @@ function QuestieQuestFixes:Load()
             [questKeys.objectivesText] = {"Bring Darkreaver's Head to Sagorne Creststrider in the Valley of Wisdom, Orgrimmar."},
             [questKeys.objectives] = {nil,nil,{{18880,nil}},nil},
             [questKeys.sourceItemId] = 18746,
-            [questKeys.zoneOrSort] = 1637,
+            [questKeys.zoneOrSort] = -82,
             [questKeys.exclusiveTo] = {8258}, -- 8258 after Phase 4
-            [questKeys.childQuests] = {7669},
+            [questKeys.preQuestSingle] = {7667},
         },
         [7669] = { --#1449
             [questKeys.name] = "Again Into the Great Ossuary",
@@ -2620,9 +2633,9 @@ function QuestieQuestFixes:Load()
             [questKeys.questLevel] = 60,
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.requiredClasses] = classIDs.SHAMAN,
-            [questKeys.zoneOrSort] = -141,
+            [questKeys.zoneOrSort] = -82,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
-            [questKeys.parentQuest] = 8258,
+            [questKeys.preQuestSingle] = {7668,8258},
         },
         [7670] = { -- #1432
             [questKeys.name] = "Lord Grayson Shadowbreaker",
@@ -2948,7 +2961,6 @@ function QuestieQuestFixes:Load()
         },
         [8258] = {
             [questKeys.exclusiveTo] = {7668}, -- 7668 before Phase 4
-            [questKeys.childQuests] = {7669},
         },
         [8262] = {
             [questKeys.requiredMinRep] = {509,3000},
@@ -4181,11 +4193,11 @@ function QuestieQuestFixes:Load()
             [questKeys.requiredRaces] = raceIDs.NONE,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
-        [9415] = {
+        [9415] = { -- Report to Marshal Bluewall
             [questKeys.exclusiveTo] = {},
             [questKeys.nextQuestInChain] = 0,
         },
-        [9416] = {
+        [9416] = { -- Report to General Kirika
             [questKeys.exclusiveTo] = {},
             [questKeys.nextQuestInChain] = 0,
         },

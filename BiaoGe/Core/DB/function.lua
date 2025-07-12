@@ -89,8 +89,12 @@ if ver >= 30000 and ver < 40000 then
     BG.IsWLK = true
 end
 
-if ver >= 40000 and ver < 60000 then
+if ver >= 40000 and ver < 50000 then
     BG.IsCTM = true
+end
+
+if ver >= 50000 and ver < 60000 then
+    BG.IsMOP = true
 end
 
 if ver >= 110000 then

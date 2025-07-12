@@ -58,8 +58,6 @@ local bugged_maps = {
 	[2315] = 2319,
 	[2317] = 2319,
 	[2318] = 2319,
-	-- Liberation of Undermine (CF ticket #1338)
-	[2428] = 2406,
 }
 
 -- LDB Tooltip
@@ -68,9 +66,6 @@ Grid2.tooltipFunc['RaidDebuffsCount'] = function(tooltip)
 		tooltip:AddDoubleLine( instance_map_name, string.format("|cffff0000%d|r %s",spells_count,L['debuffs']), 255,255,255, 255,255,0)
 	end
 end
-
--- debuffs statuses integration
-Grid2.raidDebuffsLoaded = spells_order
 
 -- roster units
 local unit_in_roster = Grid2.roster_guids
@@ -113,32 +108,14 @@ function GSRD:RefreshAuras()
 end
 
 function GSRD:OnModuleEnable()
+	self:UpdateZoneSpells()
 	if Grid2.classicDurations then
 		UnitAura = LibStub("LibClassicDurations").UnitAuraDirect
 	end
-	if not isClassic then
-		self.db.global.cache_ejid = self.db.global.cache_ejid or {}
-	end
-	self:UpdateZoneSpells()
 end
 
 function GSRD:OnModuleDisable()
 	self:ResetZoneSpells()
-end
-
--- cache to remember ej_id for each instance, to fix subzones not recognized by EJ_GetInstanceForMap()
-function GSRD:ValidateEJID(ej_id, map_id, bm)
-	if isClassic then return ej_id end
-	if IsInInstance() then
-		local cache_ejid = self.db.global.cache_ejid
-		if ej_id==0 then
-			ej_id = cache_ejid[map_id]
-			if self.debugging then self:Debug("Unknown SubZone detected bMapID[%d], using cache for instanceID[%d] => EJID[%d]",bm or -1, map_id or -1, ej_id or -1); end
-		elseif not cache_ejid[map_id] then
-			cache_ejid[map_id] = ej_id
-		end
-	end
-	return ej_id or 0
 end
 
 -- In Classic Encounter Journal data does not exist so we always use map_id so: instance_ej_id+100000=instance_map_id
@@ -146,9 +123,9 @@ function GSRD:UpdateZoneSpells(event)
 	local bm = C_Map.GetBestMapForUnit("player")
 	if bm or isClassic then
 		local map_id = select(8,GetInstanceInfo()) + 100000 -- +100000 to avoid collisions with instance_ej_id
-		if event and map_id==instance_map_id and instance_ej_id~=0 then return end
+		if event and map_id==instance_map_id then return end
 		self:ResetZoneSpells()
-		instance_ej_id = self:ValidateEJID( EJ_GetInstanceForMap( (isClassic and map_id) or bugged_maps[bm] or bm ), map_id, bm  )
+		instance_ej_id = EJ_GetInstanceForMap( (isClassic and map_id) or bugged_maps[bm] or bm )
 		instance_map_id = map_id
 		instance_map_name = GetInstanceInfo()
 		instance_bmap_id = bm or -1
@@ -342,7 +319,7 @@ function class:LoadZoneSpells()
 		end
 		spells_count = spells_count + self.spells_count
 		if GSRD.debugging then
-			GSRD:Debug("Zone[%s] C_MapID[%d] EjID[%d] mapID[%d] Status [%s]: %d raid debuffs loaded from [%d]", instance_map_name, instance_bmap_id, instance_ej_id, instance_map_id, self.name, self.spells_count, (debuffs[instance_map_id] and instance_map_id) or (debuffs[instance_ej_id] and instance_ej_id) )
+			GSRD:Debug("Zone[%s] C_MapID[%d] EjID[%d] mapID[%d] Status [%s]: %d raid debuffs loaded from [%d]", instance_map_name, instance_bmap_id, instance_ej_id, instance_map_id, self.name, spells_count, (debuffs[instance_map_id] and instance_map_id) or (debuffs[instance_ej_id] and instance_ej_id) )
 		end
 	end
 end

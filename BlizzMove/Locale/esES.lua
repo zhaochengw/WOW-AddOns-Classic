@@ -12,8 +12,6 @@ L["ALT + %s to re-attach a child window."] = "ALT + %s para recolocar una ventan
 L["ALT + %s while dragging a detachable child window will detach it from the parent"] = "ALT + %s mientras arrastra una ventana secundaria, ésta se separará de la ventana principal."
 L["Are you sure you want to reset permanently stored positions? This will reload the UI."] = "¿Estás seguro que quieres resetear permanentemente las posiciones guardadas? Esto recargará la UI."
 L["Are you sure you want to reset permanently stored scales? This will reload the UI."] = "¿Estás seguro que quieres resetear permanentemente las escalas guardadas? Esto recargará la UI."
---[[Translation missing --]]
-L["Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."] = "Blizzard has blocked the ability for addons to move certain frames. They did this without any warning or comment, after it has worked for decades. Tell them on the forums if you think this should be changed."
 L["BlizzMove: The frame you just moved (%s) is probably in a broken state, possibly because of other addons."] = "BlizzMove: El marco que acabas de mover (%s) probablemente no funcione, posiblemente a causa de otros addons."
 L["Clear"] = "Borrar"
 L["Clear the search filter."] = "Borrar el filtro de búsqueda."
@@ -28,6 +26,8 @@ L["DeModal is loaded, this addon is known to cause issues, consider replacing it
 L["Detached windows can be moved and resized independently from the parent."] = "Las ventanas separadas se pueden mover y redimensionar independientemente de la ventana principal."
 L["Do not remember"] = "No recordar"
 L["Enable the Blizzmove_Debug plugin, to find more debugging information."] = "Habilita el plugin Blizzmove_Debug, para encontrar más información de depuración."
+--[[Translation missing --]]
+L["Failed to make frame movable:"] = "Failed to make frame movable:"
 L["Filter"] = "Filtro"
 L["Found bad anchor connections, copy the popup window contents to analyze them."] = "Se encontraron conexiones de anclaje defectuosas, copie el contenido de la ventana emergente para analizarlas."
 L["frame positions are remembered until you switch to another option, click the reset button, or disable BlizzMove"] = "Las posiciones de los marcos son recordadas hasta que cambias a otra opción, click en el botón de reset, o deshabilite BlizzMove"

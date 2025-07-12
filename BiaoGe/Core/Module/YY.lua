@@ -30,8 +30,8 @@ Y.searchLastDay = 360 -- 接收最近多少天内的评价
 Y.searchCD = 10
 
 local blackList = {
-    1460670757,
-    1457576818,
+    1460670757, -- 抖音https://www.douyin.com/user/self?from_tab_name=main&modal_id=7500185851373129000&showTab=like
+    1457576818, -- ICC3000毛橙片
 }
 
 BG.Init(function()
@@ -1275,6 +1275,7 @@ BG.Init(function()
     do
         Y.yykey = "[yY][yY][：:_/%-%s]*([%d%s]*%d+)"
         Y.yykey2 = "(%d+[%d%s]*)[：:_/%-%s]*[yY][yY]"
+        ns.yykey=Y.yykey
 
         local function PingJia(cleanedYY)
             local text = ""

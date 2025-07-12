@@ -791,7 +791,7 @@ local function HookTooltip(Tooltip)
 	hooksecurefunc(Tooltip, "SetCraftItem", LF_TooltipSetCraftItem);
 	if CT.ISCLASSIC then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetItem);
-	elseif CT.VGT2X then
+	elseif CT.VLE2X then
 		hooksecurefunc(Tooltip, "SetTrainerService", LF_TooltipGUISetSpell);
 		hooksecurefunc(Tooltip, "SetGuildBankItem", LF_TooltipSetGuildBankItem);
 		hooksecurefunc(Tooltip, "SetSocketGem", LF_TooltipGUISetItem);

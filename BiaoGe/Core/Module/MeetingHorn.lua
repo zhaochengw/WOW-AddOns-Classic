@@ -1181,6 +1181,48 @@ BG.Init2(function()
         end)
     end
 
+    -- 根据YY评价着色
+    do
+        local function Set()
+            if not (BiaoGe.options["MeetingHorn_yy"] == 1 and BiaoGe.YYdb.share == 1) then return end
+            local buttons = MeetingHorn.MainPanel.Browser.ActivityList._buttons
+            if buttons then
+                for _, v in pairs(buttons) do
+                    if v.NormalBg then
+                        v.NormalBg:Hide()
+                        local text = v.Comment:GetText()
+                        if text then
+                            local yy = text:match(ns.yykey)
+                            if yy then
+                                yy = yy:gsub("%s", "")
+                                local color
+                                local alpha = .15
+                                for _, v in ipairs(BiaoGe.YYdb.all) do
+                                    if tonumber(yy) == tonumber(v.yy) then
+                                        local tbl = { { 0, 1, 0, alpha }, { 1, 1, 0, alpha }, { 1, 0, 0, alpha } }
+                                        color = tbl[v.pingjia]
+                                        break
+                                    end
+                                end
+                                if color then
+                                    v.NormalBg:Show()
+                                    v.NormalBg:SetColorTexture(unpack(color))
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        hooksecurefunc(MeetingHorn.MainPanel.Browser.ActivityList, "update", Set)
+
+        -- BG.RegisterEvent("CHAT_MSG_CHANNEL", function(_, _, msg, playerName, languageName, channelName)
+        --     if channelName:find(addonName) then
+        --         pt(date("%H%M%S",time()),SetClassCFF(playerName), msg)
+        --     end
+        -- end)
+    end
+
     -- 禁用语音开团快人一步
     if BG.IsWLK and LFG.SQDU then
         local name = "MeetingHorn_banVoiceList"

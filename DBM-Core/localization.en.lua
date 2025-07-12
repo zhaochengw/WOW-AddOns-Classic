@@ -730,8 +730,7 @@ L.DBM_INSTALL_PACKAGE_BCC		= "Burning Crusade package"
 L.DBM_INSTALL_PACKAGE_WRATH		= "Wrath package"
 L.DBM_INSTALL_PACKAGE_CATA		= "Cataclysm package"
 L.DBM_INSTALL_PACKAGE_MOP		= "Mist of Pandaria package"
-L.DBM_INSTALL_PACKAGE_DUNGEON	= "Dungeons, Delves, and Events package"
-L.DBM_INSTALL_PACKAGE_CHALLENGES= "Challenges package"
+L.DBM_INSTALL_PACKAGE_DUNGEON	= "Dungeons, Delves, Challenges, and Events package"
 
 -- Tests
 L.DBM_TAINTED_BY_TESTS			= "DBM was used in test mode with time warping in the current session, it is recommended to reload your UI prior to using DBM in a real boss fight. Everything should still work as expected, but no gurantees!"
@@ -746,3 +745,4 @@ L.TOOLTIP_FASTEST				= "Fastest kill (%s)"
 -- Difficulty info not found in normal globals, used by both GUI and tooltip
 L.FOLLOWER						= "Follower"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
 L.STORY					    	= PLAYER_DIFFICULTY_STORY_RAID or "Story"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
+L.DUOS							= "Duos"

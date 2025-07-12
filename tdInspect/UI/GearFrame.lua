@@ -35,6 +35,7 @@ local PADDING = 10
 ---@class UI.GearFrame : EventHandler, Frame, tdInspectGearFrameTemplate
 ---@field unit? UnitToken
 ---@field name? string
+---@field gears table<number, UI.GearItem>
 local GearFrame = ns.Addon:NewClass('UI.GearFrame', 'Frame')
 
 GearFrame.BG_PADDING = 4
@@ -88,7 +89,6 @@ function GearFrame:Constructor(_, inspect)
     LevelColumn:SetHeight(1)
     self.LevelColumn = LevelColumn
 
-    ---@type table<number, UI.GearItem>
     self.gears = {}
     self.columnWidths = {}
 
@@ -385,3 +385,31 @@ function GearFrame:TapTo(frame, position)
         self:SetPoint('TOPLEFT', frame, 'TOPRIGHT')
     end
 end
+
+function GearFrame:UpdateOption(_, key, value)
+    if key == 'showTalentBackground' then
+        if value then
+            self:UpdateTalents()
+        else
+            self:SetBackground()
+        end
+    elseif key == 'showOptionButtonInInspect' then
+        self:UpdateOptionButton(value)
+    elseif key == 'showGem' or key == 'showEnchant' or key == 'showLost' or key == 'showGemsFront' or key ==
+        'showRangedEnchantOnlyHunter' then
+        self:UpdateGears()
+    end
+end
+
+function GearFrame:UpdateGears()
+    self:ResetColumnWidths()
+
+    for id, gear in pairs(self.gears) do
+        gear:SetItem(self:GetSlotItem(id))
+    end
+end
+
+--[=[@debug@
+function GearFrame:GetSlotItem(id)
+end
+--@end-debug@]=]

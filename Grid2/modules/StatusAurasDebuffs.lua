@@ -18,7 +18,6 @@ local spells = {}
 local code_standard = [[
 local spells = Grid2.statuses["%s"].spells
 local dispel = Grid2.debuffPlayerDispelTypes
-local rdebuffs = Grid2.raidDebuffsLoaded
 local IsRelevantDebuff = Grid2.IsRelevantDebuff
 return function(self, unit, sid, name, count, duration, caster, boss, typ)
 	return %s
@@ -27,7 +26,6 @@ end ]]
 local code_stacks = [[
 local spells = Grid2.statuses["%s"].spells
 local dispel = Grid2.debuffPlayerDispelTypes
-local rdebuffs = Grid2.raidDebuffsLoaded
 local IsRelevantDebuff = Grid2.IsRelevantDebuff
 return function(self, unit, sid, name, count, duration, caster, boss, typ)
 	if not (%s) then return end
@@ -83,9 +81,6 @@ end
 local function CompileUpdateStateFilter(self, lazy, useSpellId, code)
 	local dbx = self.dbx
 	local t = {}
-	if dbx.filterRaidDebuffs~=nil and Grid2.raidDebuffsLoaded then
-		t[#t+1] = string.format("%s (rdebuffs[name] or rdebuffs[sid])", dbx.filterRaidDebuffs and 'not' or '')
-	end
 	if dbx.filterDispelDebuffs~=nil then
 		t[#t+1] = string.format("%s dispel[typ]", dbx.filterDispelDebuffs and '' or 'not')
 	end

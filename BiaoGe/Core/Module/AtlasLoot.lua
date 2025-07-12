@@ -82,7 +82,7 @@ BG.Init2(function()
         elseif self.id == "AtlasLootClassic_DungeonsAndRaids" then
             -- 地下城和团队副本
             mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
-            ClickSelectButton(9, 1, "notRefresh")
+            ClickSelectButton(10, 1, "notRefresh")
             AtlasLoot.GUI.ItemFrame:Refresh(true)
         elseif self.id == "AtlasLootClassic_Crafting" then
             -- 专业制造
@@ -99,7 +99,7 @@ BG.Init2(function()
         elseif self.id == "AtlasLootClassic_Collections" then
             -- 藏品
             ClickSelectButton(11, nil, "notRefresh")
-            ClickSelectButton(8, 1)
+            ClickSelectButton(9, 1)
             AtlasLoot.GUI.ItemFrame:Refresh(true)
         end
     end
@@ -145,13 +145,13 @@ BG.Init2(function()
     CreateButton(L["冰冠"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_DungeonsAndRaids")
         mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
-        ClickSelectButton(9, 1, "notRefresh")
+        ClickSelectButton(10, 1, "notRefresh")
     end)
     CreateButton(L["T10套"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_DungeonsAndRaids")
         mainFrame.subCatSelect:SetSelected("IcecrownCitadel")
         ClickSelectButton(14, 3, "notRefresh")
-        ClickSelectButton(14, 1, "notRefresh")
+        ClickSelectButton(15, 1, "notRefresh")
     end)
     CreateButton(L["牌子"], function()
         mainFrame.moduleSelect:SetSelected("AtlasLootClassic_Collections")

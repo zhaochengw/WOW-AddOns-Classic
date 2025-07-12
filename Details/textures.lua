@@ -1,4 +1,4 @@
-
+_G.GetSpecialization=nil
 ---@type details
 local Details = Details
 

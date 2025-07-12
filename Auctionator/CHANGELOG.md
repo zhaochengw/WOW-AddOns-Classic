@@ -1,6 +1,7 @@
 # Auctionator
 
-## [281](https://github.com/Auctionator/Auctionator/tree/281) (2025-06-16)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/280...281) 
+## [282](https://github.com/Auctionator/Auctionator/tree/282) (2025-07-03)
+[Full Changelog](https://github.com/Auctionator/Auctionator/compare/281...282) 
 
-- Update toc for 11.1.7  
+- [Fixes #1660] Prevent error if nil item link returned by Blizzard API  
+- Selling: Hide item tooltip after clicking on the icon to avoid results overlap  

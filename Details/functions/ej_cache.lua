@@ -224,7 +224,7 @@ function Details222.EJCache.CreateEncounterJournalDump()
 
                     --get information about the bosses in the raid
                     for encounterIndex = 1, maxRaidBosses do
-                        local encounterName, encounterDescription, journalEncounterID, rootSectionID, link, journalInstanceID, dungeonEncounterID = EJ_GetEncounterInfoByIndex(encounterIndex, journalInstanceID) --, instanceID
+                        local encounterName, encounterDescription, journalEncounterID, rootSectionID, link, journalInstanceID, dungeonEncounterID, instanceID = EJ_GetEncounterInfoByIndex(encounterIndex, journalInstanceID)
 
                         if (encounterName) then
                             local encounterData = {
@@ -236,16 +236,9 @@ function Details222.EJCache.CreateEncounterJournalDump()
                                 journalInstanceId = journalInstanceID,
                             }
 
-                            if (not dungeonEncounterID) then
-                                --dungeonEncounterID and instanceID are nil in mop
-                            end
-
                             Details222.EJCache.CurrentContent[encounterName] = true
                             Details222.EJCache.CurrentContent[journalEncounterID] = true
-
-                            if (dungeonEncounterID) then --mists of pandaria isn't returning this value
-                                Details222.EJCache.CurrentContent[dungeonEncounterID] = true
-                            end
+                            Details222.EJCache.CurrentContent[dungeonEncounterID] = true
 
                             local journalEncounterCreatureId, creatureName, creatureDescription, creatureDisplayID, iconImage, uiModelSceneID = EJ_GetCreatureInfo(1, journalEncounterID)
                             if (journalEncounterCreatureId) then
@@ -259,16 +252,14 @@ function Details222.EJCache.CreateEncounterJournalDump()
                             instanceData.encountersArray[#instanceData.encountersArray+1] = encounterData
                             instanceData.encountersByName[encounterName] = encounterData
                             --print(instanceName, encounterName, journalEncounterID, journalInstanceID, dungeonEncounterID, instanceID)
-                            if (dungeonEncounterID) then
-                                instanceData.encountersByDungeonEncounterId[dungeonEncounterID] = encounterData
-                                Details222.EJCache.CacheEncountersBy_EncounterId[dungeonEncounterID] = encounterData
-                                id_to_journalInstanceID[dungeonEncounterID] = journalInstanceID
-                            end
-                            
+                            instanceData.encountersByDungeonEncounterId[dungeonEncounterID] = encounterData
                             instanceData.encountersByJournalEncounterId[journalEncounterID] = encounterData
                             Details222.EJCache.CacheEncountersBy_EncounterName[encounterName] = encounterData
+                            Details222.EJCache.CacheEncountersBy_EncounterId[dungeonEncounterID] = encounterData
                             Details222.EJCache.CacheEncountersBy_JournalEncounterId[journalEncounterID] = encounterData
+
                             id_to_journalInstanceID[encounterName] = journalInstanceID
+                            id_to_journalInstanceID[dungeonEncounterID] = journalInstanceID
                             id_to_journalInstanceID[journalEncounterID] = journalInstanceID
                         end
                     end

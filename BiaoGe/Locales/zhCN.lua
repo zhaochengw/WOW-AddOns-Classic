@@ -1,5 +1,7 @@
 local AddonName, ns = ...
 
+local pt=print
+
 local L = setmetatable({}, {
     __index = function(table, key)
         return tostring(key)
@@ -37,7 +39,12 @@ do --简体说明书
         -- [[]] ,
         -- [[]] ,
         -- " " ,
-
+        "|cff00FF00" ..[[7月11日更新v1.19.5]] ,
+        [[-<MOP>新增支持熊猫人之谜]] ,
+        [[-集结号:增加选项"根据YY评价标记活动"（默认不勾选）]] ,
+        [[-部分功能优化]],
+        [[-修复了一些小错误]],
+        " " ,
     }
     ns.updateText_before = {
         "|cff00FF00" .. [[6月26日更新v1.19.4]],
@@ -72,58 +79,55 @@ do --简体说明书
     }
 
     ns.VIPinstructionsText = {
-        "|cff00BFFF <BiaoGeVIP>订阅模块功能介绍|cffff0000（你未安装）",
+        "|cff00BFFF订阅功能介绍",
         " ",
-        "|cffFFFFFF" .. "历史表格汇总：",
-        "根据你的所有历史表格，汇总显示每个玩家的总消费金额、每件装备的消费金额和日期。",
-        "可以通报历史总消费排名、个人历史消费记录。",
-        "功能入口在表格右上角历史表格列表旁边。",
-        "|cffFFFFFF" .. "批量邮寄工资：",
-        "可以给全团或特定名单批量邮寄金币。",
-        "功能入口在邮箱界面。",
-        "|cffFFFFFF" .. "邮件记录/交易记录：",
-        "记录你的所有邮件/交易详情。UI采用表格形式，更直观简洁。",
-        "功能入口在表格最底下的标签按钮。",
-        "|cffFFFFFF" .. "预设起拍价/一键开拍：",
-        "提前设定每个装备的自动拍卖起拍价，ALT+|A:NPE_RightClick:0:0|a点击表格/背包/聊天框装备时，直接按预设价开拍。",
-        "点击表格里的BOSS名字可以一键开拍它的全部装备。",
-        "功能入口在表格最底下的标签按钮。",
-        "|cffFFFFFF" .. "一键开团/进组欢迎语：",
-        "根据你的集结号历史开团记录，使用相同的活动类型和活动说明直接创建活动。",
-        "当有人进组时，自动密语对方你的YY号、团队规则等。",
-        "功能入口在集结号创建活动界面。",
-        "|cffFFFFFF" .. "支出模版：",
-        "直接套用你预设好的支出项和金额。",
-        "功能入口在表格里的支出文字。",
-        "|cffFFFFFF" .. "在角色总览查看每个角色装备：",
-        "输入/BGR把总览面板固定，鼠标悬停在角色名字时显示该角色的装备详情。",
-        "|cffFFFFFF" .. "角色总览自定义排序",
-        "角色总览可以通过拖拽排序，实现完全自定义顺序。",
-        "功能入口在设置-角色总览-排序方式。",
-        "|cffFFFFFF" .. "查看YY评价者：",
-        "含有具体理由的YY评价，现在会在其理由后面显示其评价者名称。",
-        "|cffFFFFFF" .. "拍卖出价全记录：",
-        "在拍卖记录里可以查看全部出价记录，而不是最后5手。匿名模式也能看。",
-        "功能入口在表格左上角的拍卖记录，|A:NPE_RightClick:0:0|a点击拍卖成功的装备。",
-        "|cffFFFFFF" .. "<WLK>旧世界表格：",
-        "可以使用太阳井、黑庙、海、毒蛇、风暴、黑翼等表格，方便你开团刷幻化。",
-        " ",
-        "|cff00ff00点击查看在线文档（图文介绍）",
     }
-    ns.AccountsinstructionsText = {
-        "|cff00BFFF <BiaoGeAccounts>同步模块功能介绍|cffff0000（你未安装）",
-        " ",
-        "|cffFFFFFF该模块由BiaoG同步软件生成。",
-        "使BiaoGe的角色总览可以显示全战网全账号角色。",
-        "使BiaoGeVIP的历史表格汇总可以汇总全战网全账号数据。",
-        "自动备份BiaoGe和BiaoGeVIP配置文件，在你更新整合包后可以一键还原配置。",
-        " ",
-        "|cff00ff00点击查看在线文档（图文介绍）",
+    tinsert(ns.VIPinstructionsText, "|cffffffffBiaoGeVIP插件：")
+    local tbl = {
+        "角色总览可以显示全战网全账号角色",
+        "角色总览可以查看所有角色的装备",
+        "角色总览可以自定义排序",
+        "自动备份BiaoGe和BiaoGeVIP配置文件，在更新整合包后可以一键还原配置",
+        "历史表格汇总。可以查看每个玩家的消费情况，数据来自你所有账号的历史表格",
+        "批量邮寄工资，给全团或特定名单批量邮寄金币",
+        "邮件记录/交易记录",
+        "预设起拍价/一键开拍",
+        "集结号一键开团/进组欢迎语",
+        "支出模版。直接套用你预设好的支出项和金额",
+        "查看YY评价者",
+        "自动拍卖的出价记录可以查看每一手记录",
+        "<WLK>旧世界表格。方便你刷幻化",
     }
+    for i, text in ipairs(tbl) do
+        tinsert(ns.VIPinstructionsText, i .. ". " .. text)
+    end
+    tinsert(ns.VIPinstructionsText, " ")
+    tinsert(ns.VIPinstructionsText, "|cffffffffBiaoGeAI插件：")
+    local tbl = {
+        "根据团员的天赋/职责，一键安排全部战术任务，并密语提醒到个人",
+        "战后可以查看战斗分析，追踪责任人任务完成情况",
+        "可以在站位图直接安排团员的具体站位",
+        "一键安排战术板，根据时间轴自动提醒下一轮需要谁施放技能",
+    }
+    for i, text in ipairs(tbl) do
+        tinsert(ns.VIPinstructionsText, i .. ". " .. text)
+    end
+    tinsert(ns.VIPinstructionsText, " ")
+    tinsert(ns.VIPinstructionsText, "|cff00ff00|A:NPE_LeftClick:0:0|a打开订阅网站")
 end
 
 local L = {}
 do
+    L["|cffff0000（未订阅）"]=true
+    L["|cffff0000（插件被禁用）"]=true
+    L["插件"]=true
+    L["已放金币：%s"]=true
+    L["根据YY评价标记活动"]=true
+    L["如果活动说明里含有YY号且你曾评价过该YY，则对该活动添加对应的评价颜色。"]=true
+
+    
+    
+
     L["自动出价的延迟时间随机"] = true
     L["启用自动出价时，当别人出价后，默认是自己会延迟0.5秒后才自动出价。"] = true
     L["现在可以修改这个延迟时间，并在一定范围内随机（%s秒-X秒）。X最低为%s秒，最高为%s秒。"] = true
@@ -1930,6 +1934,26 @@ do
         L["节\n点\n女\n亲\n王"] = true
         L["流\n丝\n之\n庭"] = true
         L["安\n苏\n雷\n克\n女\n王"] = true
+    end
+
+    -- MOP
+    do
+        L["石\n头\n守\n卫"] = true
+        L["受\n诅\n者\n魔\n封"] = true
+        L["缚\n灵\n者\n戈\n拉\n亚"] = true
+        L["先\n王\n之\n魂"] = true
+        L["伊\n拉\n贡"] = true
+        L["皇\n帝\n的\n意\n志"] = true
+        L["皇\n家\n宰\n相"] = true
+        L["刀\n锋\n领\n主"] = true
+        L["加\n拉\n隆"] = true
+        L["风\n领\n主"] = true
+        L["琥\n珀\n塑\n形\n者"] = true
+        L["大\n女\n皇\n夏\n柯\n希\n尔"] = true
+        L["无\n尽\n守\n护\n者"] = true
+        L["烛\n龙"] = true
+        L["雷\n施"] = true
+        L["惧\n之\n煞"] = true
     end
 
     -- CTM

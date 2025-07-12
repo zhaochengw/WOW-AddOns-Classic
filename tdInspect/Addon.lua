@@ -100,6 +100,7 @@ function Addon:SetupDatabase()
             showEnchant = true,
             showLost = true,
             showGemsFront = false,
+            showRangedEnchantOnlyHunter = true,
             showLowLevelCharacters = false,
             itemLevelColor = 'Light',
         },

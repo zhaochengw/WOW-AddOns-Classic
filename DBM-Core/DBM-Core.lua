@@ -76,16 +76,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20250529025737")
+DBM.Revision = parseCurseDate("20250709051637")
 DBM.TaintedByTests = false -- Tests may mess with some internal state, you probably don't want to rely on DBM for an important boss fight after running it in test mode
 
-local fakeBWVersion, fakeBWHash = 386, "0d07b1a"--386.0
+local fakeBWVersion, fakeBWHash = 390, "f0a5680"--390.3
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "11.1.20"--Core version
+DBM.DisplayVersion = "11.2.2"--Core version
 DBM.classicSubVersion = 0
 DBM.dungeonSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2025, 5, 28) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+DBM.ReleaseRevision = releaseDate(2025, 7, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 PForceDisable = 18--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2439,10 +2439,6 @@ do
 					self:Schedule(2, self.RoleCheck, false, self)
 				end
 				fireEvent("DBM_raidJoin", playerName)
-				local bigWigs = _G["BigWigs"]
-				if bigWigs and bigWigs.db.profile.raidicon and not self.Options.DontSetIcons and self:GetRaidRank() > 0 then--Both DBM and bigwigs have raid icon marking turned on.
-					self:AddMsg(L.BIGWIGS_ICON_CONFLICT)--Warn that one of them should be turned off to prevent conflict (which they turn off is obviously up to raid leaders preference, dbm accepts either or turned off to stop this alert)
-				end
 			end
 			for i = 1, GetNumGroupMembers() do
 				local name, rank, subgroup, _, _, className, _, isOnline = GetRaidRosterInfo(i)
@@ -5976,10 +5972,6 @@ do
 					dummyMod.text:Cancel()
 					dummyMod.timer:Stop()
 				end
-				local bigWigs = _G["BigWigs"]
-				if bigWigs and bigWigs.db.profile.raidicon and not self.Options.DontSetIcons and self:GetRaidRank() > 0 then--Both DBM and bigwigs have raid icon marking turned on.
-					self:AddMsg(L.BIGWIGS_ICON_CONFLICT)--Warn that one of them should be turned off to prevent conflict (which they turn off is obviously up to raid leaders preference, dbm accepts either or turned off to stop this alert)
-				end
 				if self.Options.EventSoundEngage2 and self.Options.EventSoundEngage2 ~= "" and self.Options.EventSoundEngage2 ~= "None" then
 					self:PlaySoundFile(self.Options.EventSoundEngage2, nil, true)
 				end
@@ -6293,7 +6285,7 @@ do
 					lastBossDefeat[modId .. normalizedPlayerRealm] = GetTime()--Update last defeat time before we send it, so we don't handle our own sync
 					SendWorldSync(self, 8, "WBD", modId .. "\t" .. normalizedPlayerRealm .. "\t" .. name)
 				end
-				if self.Options.EventSoundVictory2 and self.Options.EventSoundVictory2 ~= "None" and self.Options.EventSoundVictory2 ~= "" then
+				if self.Options.EventSoundVictory2 and self.Options.EventSoundVictory2 ~= "None" and self.Options.EventSoundVictory2 ~= "" and difficulties.difficultyIndex ~= 232 then--No victory in duos
 					if self.Options.EventSoundVictory2 == "Random" then
 						local victorySounds = DBM:GetVictorySounds()
 						if #victorySounds >= 3 then
@@ -9181,7 +9173,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
----@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250529025737" to be auto set by packager
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250709051406" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then

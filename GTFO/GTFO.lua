@@ -28,13 +28,14 @@ GTFO = {
 		BrannMode = 0;
 		IgnoreTimeAmount = .2;
 	};
-	Version = "5.17.3"; -- Version number (text format)
+	Version = "5.17.4"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 51703; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 51704; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 51701; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Wrath classic)
-	CataclysmVersionNumber = 51502; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	CataclysmVersionNumber = 51704; -- Numeric version number for checking out-of-date clients (Cata classic)
+	MistsVersionNumber = 51704; -- Numeric version number for checking out-of-date clients (MoP classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -81,6 +82,7 @@ GTFO = {
 	BurningCrusadeMode = nil; -- WoW TBC client detection
 	WrathMode = nil; -- WoW Wrath client detection
 	CataclysmMode = nil; -- WoW Cataclysm client detection
+	MistsMode = nil; -- WoW Mists client detection
 	SoundChannels = { 
 		{ Code = "Master", Name = _G.MASTER_VOLUME },
 		{ Code = "SFX", Name = _G.SOUND_VOLUME, CVar = "Sound_EnableSFX" },
@@ -114,6 +116,9 @@ elseif (buildNumber <= 40000) then
 elseif (buildNumber <= 50000) then
 	GTFO.CataclysmMode = true;
 	GTFO.VersionNumber = GTFO.CataclysmVersionNumber;
+elseif (buildNumber <= 60000) then
+	GTFO.MistsMode = true;
+	GTFO.VersionNumber = GTFO.MistsVersionNumber;
 else
 	GTFO.RetailMode = true;
 	GTFO.VersionNumber = GTFO.RetailVersionNumber;
@@ -2127,8 +2132,8 @@ function GTFO_CheckTankMode()
 			end
 		elseif ((not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode)) and (GTFO.PlayerClass == "MONK" or GTFO.PlayerClass == "DEMONHUNTER" or GTFO.PlayerClass == "WARRIOR" or GTFO.PlayerClass == "DEATHKNIGHT" or GTFO.PlayerClass == "PALADIN")) then
 			-- Get the exact specialization role as defined by the class
-			local spec = GetSpecialization();
-			if (spec and GetSpecializationRole(spec) == "TANK") then
+			local spec = GTFO_GetSpecIndex();
+			if (spec and GTFO_GetSpecRole(spec) == "TANK") then
 				--GTFO_DebugPrint("Tank spec found - tank mode activated");
 				return true;
 			end
@@ -2151,9 +2156,9 @@ function GTFO_CheckCasterMode()
 
 		if not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode) then
 			-- Get the exact specialization role as defined by the class
-			local spec = GetSpecialization();
+			local spec = GTFO_GetSpecIndex();
 			if (spec) then
-				local role = GetSpecializationRole(spec);
+				local role = GTFO_GetSpecRole(spec);
 				if (role == "TANK") then
 					return nil;
 				end
@@ -2161,7 +2166,7 @@ function GTFO_CheckCasterMode()
 					return true;
 				end
 			
-				local id, _ = GetSpecializationInfo(spec);
+				local id, _ = GTFO_GetSpecRole(spec);
 				if (id == 102) then
 					-- Balance Druid
 					return true;
@@ -2889,4 +2894,22 @@ function GTFO_GetSpellDescription(spellId)
 	else
 		return GetSpellDescription(spellId);
 	end
+end
+
+function GTFO_GetSpecIndex()
+	if C_SpecializationInfo and C_SpecializationInfo.GetSpecialization then
+		return C_SpecializationInfo.GetSpecialization();
+	elseif GetSpecialization then
+		return GetSpecialization();
+	end
+	return nil;
+end
+
+function GTFO_GetSpecRole(spec)
+	if C_SpecializationInfo and C_SpecializationInfo.GetSpecializationRole then
+		return C_SpecializationInfo.GetSpecializationRole(spec);
+	elseif GetSpecializationRole then
+		return GetSpecializationRole(spec);
+	end
+	return nil;
 end

@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## X-Min-Interface-Cata: 40400
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-DBM-Mod-MapID: 619,601,595,600,604,602,599,576,578,574,575,608,658,632,668,650
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 2
-## Version: r199
+## Version: r201
 
 localization.en.lua
 localization.cn.lua

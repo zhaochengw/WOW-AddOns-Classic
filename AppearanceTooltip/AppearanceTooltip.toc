@@ -1,8 +1,9 @@
-## Interface: 110100, 40402
+## Interface: 110107, 50500, 30404, 11507
 ## Title: AppearanceTooltip
 ## Author: Kemayo
 ## Notes: Show the item your mouse is over on your character in a tooltip
-## Version: v57
+## IconAtlas: poi-transmogrifier
+## Version: v59
 ## LoadOnDemand: 0
 ## OptionalDeps: tekDebug, LibStub, LibArmorToken-1.0, LibAppropriateItems-1.0
 ## X-Embeds: LibStub, LibArmorToken-1.0, LibAppropriateItems-1.0
@@ -29,7 +30,6 @@ embeds.xml
 #@end-no-lib-strip@
 
 addon.lua
-cameraids.lua
 config.lua
 
 overlays.lua

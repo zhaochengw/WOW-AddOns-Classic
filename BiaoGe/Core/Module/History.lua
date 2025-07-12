@@ -136,6 +136,10 @@ function BG.HistoryUI()
             local FB = FB or BG.FB1
             local serverTime = BiaoGe[FB].raidRoster and BiaoGe[FB].raidRoster.time or GetServerTime()
             local DT = tonumber(date("%y%m%d%H%M%S", serverTime))
+            if BiaoGe.History[FB][DT] then
+                serverTime =  GetServerTime()
+                DT = tonumber(date("%y%m%d%H%M%S", serverTime))
+            end
             local DTcn = date(L["%m月%d日%H:%M:%S\n"], serverTime)
             BiaoGe.History[FB][DT] = {}
             BiaoGe.History[FB][DT].tradeTbl = {}

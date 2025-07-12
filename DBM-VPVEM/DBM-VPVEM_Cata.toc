@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff308530Voicepack VEM|r
@@ -9,7 +9,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Iceoven
-## Version: f04dede
+## Version: 1adc3bc
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: VEM English Female

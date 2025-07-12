@@ -1,4 +1,4 @@
-## Interface: 40401, 40402
+## Interface: 40402
 ## X-Min-Interface-Cata: 40400
 ## Category: DBM
 
@@ -26,7 +26,7 @@
 ## X-Curse-Project-ID: 43970
 ## X-WoWI-ID: 21522
 ## X-Wago-ID: WqKQg7Nx
-## Version: r342
+## Version: r343
 
 localization.en.lua
 localization.tw.lua

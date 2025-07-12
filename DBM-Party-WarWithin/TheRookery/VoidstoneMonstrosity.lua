@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2568, "DBM-Party-WarWithin", 3, 1268)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250519110303")
+mod:SetRevision("20250619032115")
 mod:SetCreatureID(207207)
 mod:SetEncounterID(2836)
 mod:SetHotfixNoticeRev(20250303000000)
@@ -91,10 +91,6 @@ function mod:OnCombatEnd()
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
 end
-
---function mod:OnCombatEnd()
-
---end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

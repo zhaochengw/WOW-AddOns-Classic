@@ -1,9 +1,9 @@
-## Interface: 11507, 30404, 40402
+## Interface: 11507, 30405, 40402, 50500
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe或/GBG。角色总览命令：/BGR
 ## Author: 苍穹之霜
 ## LoadOnDemand: 0
 ## SavedVariables: BiaoGe
-## Version: 1.19.4
+## Version: 1.19.5
 
 BiaoGe.xml

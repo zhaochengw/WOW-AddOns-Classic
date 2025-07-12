@@ -7,7 +7,6 @@ local min   = math.min
 local fmt   = string.format
 local UnitHealthMax = UnitHealthMax
 local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs
-local IsEventValid = C_EventUtils.IsEventValid
 local unit_is_valid = Grid2.roster_guids
 
 -- Shields
@@ -140,8 +139,8 @@ Grid2.setupFunc["shields-overflow"] = Create
 
 Grid2:DbSetStatusDefaultValue( "shields-overflow", { type = "shields-overflow", color1 = {r=1, g=1, b=1, a=1} } )
 
--- Cataclysm implementation of missing UnitGetTotalAbsorbs()
-if Grid2.versionCli>=50000 then return end -- only cata
+-- Cataclysm classic, implementation of missing UnitGetTotalAbsorbs()
+if not Grid2.isCata then return end
 
 local next  = next
 local CalcUnitShield
@@ -228,7 +227,7 @@ end
 function Overflow:OnEnable()
 	RegisterShieldEvents(self)
 	self:RegisterEvent("UNIT_HEALTH", "UpdateUnit")
-	if IsEventValid('UNIT_HEALTH_FREQUENT') then self:RegisterEvent("UNIT_HEALTH_FREQUENT", "UpdateUnit") end
+	self:RegisterEvent("UNIT_HEALTH_FREQUENT", "UpdateUnit")
 	self:RegisterEvent("UNIT_MAXHEALTH","UpdateUnit")
 	self:RegisterMessage("Grid_UnitUpdated", "UpdateUnit")
 end
@@ -236,8 +235,8 @@ end
 function Overflow:OnDisable()
 	UnregisterShieldEvents(self)
 	self:UnregisterEvent("UNIT_HEALTH")
+	self:UnregisterEvent("UNIT_HEALTH_FREQUENT")
 	self:UnregisterEvent("UNIT_MAXHEALTH")
-	if IsEventValid('UNIT_HEALTH_FREQUENT') then self:UnregisterEvent("UNIT_HEALTH_FREQUENT") end
 	self:UnregisterMessage("Grid_UnitUpdated")
 end
 
@@ -252,3 +251,4 @@ function Grid2:UnregisterCustomAbsorbsEvent(func)
 	FireEvent = nil
 	UnregisterShieldEvents(func)
 end
+

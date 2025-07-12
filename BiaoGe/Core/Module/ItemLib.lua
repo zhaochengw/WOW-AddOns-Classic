@@ -347,7 +347,7 @@ do
             if strfind(hard, "10") then
                 color = "|cff" .. "99CCFF"
             end
-            if BG.IsCTM then
+            if BG.IsCTM or BG.IsMOP then
                 if hard == "N" then
                     color = "|cff" .. "99CCFF"
                 end
@@ -1978,7 +1978,7 @@ function BG.ItemLibUI()
                     { name = L["专业"], name2 = "profession", },
                     { name = L["PVP"], name2 = "pvp", },
                 }
-            elseif BG.IsCTM then
+            elseif BG.IsCTM or BG.IsMOP then
                 tbl = {
                     { name = L["团本：英雄难度"], name2 = "raidhero", },
                     { name = L["团本：普通难度"], name2 = "raidnormal", },

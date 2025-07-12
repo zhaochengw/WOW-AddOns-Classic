@@ -924,23 +924,10 @@ local function OnUpdate()
 
             local newMsg = GetNewMsg(msg); --取掉颜色代码
 
-            allNotify[name] = newMsg;
-
-            --如果是入队通知
-            for qName, channel in pairs(allQueryRequest) do
-                if qName == name then
-                    SendChatJoinNotify(name, channel, JoinSystemMessage and msg or allNotify[name]);
-                    allQueryRequest[name] = nil;
-                    ClearData(name);
-                    return;
-                end
-            end
-
             local useOfficialWCLContent;
             local useUnofficialWCLContent;
-            
-            if showWCL then
 
+            if showWCL then
                 local result = ""
 
                 if useOfficialWCL then
@@ -970,24 +957,26 @@ local function OnUpdate()
             if sendSelfWCL then
                 local selfWclStr = ""
                 local selfWclResult = ""
-                
+
                 if sendSelfOfficialWCL then
-                    local officialWcl = useOfficialWCLContent or WCL.GetOfficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    local officialWcl = useOfficialWCLContent or
+                        WCL.GetOfficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
                     if officialWcl and officialWcl ~= "" then
                         selfWclResult = selfWclResult .. officialWcl
                     end
                 end
-                
+
                 if sendSelfUnofficialWCL then
                     if selfWclResult ~= "" then
                         selfWclResult = selfWclResult .. "\n"
                     end
-                    local unofficialWcl = useUnofficialWCLContent or WCL.GetUnofficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
+                    local unofficialWcl = useUnofficialWCLContent or
+                        WCL.GetUnofficialWclScore(__private.View.Cfg, name, alaEmu.CT.SELFREALM)
                     if unofficialWcl and unofficialWcl ~= "" then
                         selfWclResult = selfWclResult .. unofficialWcl
                     end
                 end
-                
+
                 if selfWclResult ~= "" then
                     selfWclStr = CleanWCLString(selfWclResult) or ""
                     newMsg = newMsg .. " 评分:" .. selfWclStr;
@@ -997,6 +986,18 @@ local function OnUpdate()
             if pushState then
                 local pushMsg = L["推广后缀"];
                 newMsg = newMsg .. pushMsg;
+            end
+
+            allNotify[name] = newMsg;
+
+            --如果是入队通知
+            for qName, channel in pairs(allQueryRequest) do
+                if qName == name then
+                    SendChatJoinNotify(name, channel, JoinSystemMessage and msg or allNotify[name]);
+                    allQueryRequest[name] = nil;
+                    ClearData(name);
+                    return;
+                end
             end
 
             if name == alaEmu.CT.SELFNAME and selfChat ~= nil then

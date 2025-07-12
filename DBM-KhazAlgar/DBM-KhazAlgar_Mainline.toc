@@ -1,5 +1,5 @@
-## Interface: 110105, 110107
-## Version: 11.1.20
+## Interface: 110107, 110200
+## Version: 11.2.2
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Bosses (War Within)|r
@@ -8,8 +8,8 @@
 ## Author: MysticalOS
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core
-## SavedVariables: DBMWarWithin_AllSavedVars
-## SavedVariablesPerCharacter: DBMWarWithin_SavedStats
+## SavedVariables: DBMKhazAlgar_AllSavedVars
+## SavedVariablesPerCharacter: DBMKhazAlgar_SavedStats
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: WORLDBOSS
@@ -34,3 +34,4 @@ AggregationofHorrors.lua
 Shurrai.lua
 Orta.lua
 TheGobfather.lua
+Reshanor.lua

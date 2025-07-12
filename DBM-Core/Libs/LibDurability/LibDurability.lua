@@ -1,5 +1,5 @@
 --@curseforge-project-slug: libdurability@
-local LD = LibStub:NewLibrary("LibDurability", 2)
+local LD = LibStub:NewLibrary("LibDurability", 3)
 if not LD then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -47,15 +47,18 @@ local function GetDurability()
 end
 LD.GetDurability = GetDurability
 
-C_ChatInfo.RegisterAddonMessagePrefix("Durability")
-frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
-	if prefix == "Durability" and throttleTable[channel] then
+C_ChatInfo.RegisterAddonMessagePrefix("LibDRBLT")
+frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
+	if event == "READY_CHECK" then
+		local percent, broken = GetDurability()
+		SendAddonMessage("LibDRBLT", format("%d,%d", percent, broken), IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
+	elseif prefix == "LibDRBLT" and throttleTable[channel] then
 		if msg == "R" then
 			local t = GetTime()
 			if t - throttleTable[channel] > 4 then
 				throttleTable[channel] = t
 				local percent, broken = GetDurability()
-				SendAddonMessage("Durability", format("%d,%d", percent, broken), channel)
+				SendAddonMessage("LibDRBLT", format("%d,%d", percent, broken), channel)
 			end
 			return
 		end
@@ -71,6 +74,7 @@ frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
 	end
 end)
 frame:RegisterEvent("CHAT_MSG_ADDON")
+frame:RegisterEvent("READY_CHECK")
 
 -- For automatic group handling, don't pass a channel. The order is INSTANCE_CHAT > RAID > GROUP.
 function LD:RequestDurability(channel)
@@ -90,7 +94,7 @@ function LD:RequestDurability(channel)
 			local t = GetTime()
 			if t - throttleSendTable[channel] > 4 then
 				throttleSendTable[channel] = t
-				SendAddonMessage("Durability", "R", channel)
+				SendAddonMessage("LibDRBLT", "R", channel)
 			end
 		end
 	end

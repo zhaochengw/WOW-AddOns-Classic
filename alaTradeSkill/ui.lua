@@ -413,7 +413,7 @@ end
 				if VT.SET.show_call then
 					Frame.ToggleButton:Show();
 				end
-				if CT.VGT3X then
+				if CT.VLE3X then
 					if pid == 10 then
 						Frame.FilterDropdown:Show();
 					else
@@ -4863,6 +4863,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		local ExpandTradeSkillSubClass = _G.ExpandTradeSkillSubClass;
 		local SetTradeSkillSubClassFilter = _G.SetTradeSkillSubClassFilter;
 		local SetTradeSkillInvSlotFilter = _G.SetTradeSkillInvSlotFilter;
+		local TradeSkillOnlyShowSkillUps = _G.TradeSkillOnlyShowSkillUps;
 		local SetTradeSkillItemNameFilter = _G.SetTradeSkillItemNameFilter;
 		local SetTradeSkillItemLevelFilter = _G.SetTradeSkillItemLevelFilter;
 
@@ -4894,7 +4895,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		local TradeSkillRankFrame = _G.TradeSkillRankFrame;
 		local TradeSkillRankFrameBorder = _G.TradeSkillRankFrameBorder;
 		local TradeSkillFrameAvailableFilterCheckButton = _G.TradeSkillFrameAvailableFilterCheckButton;
-		local TradeSearchInputBox = _G.TradeSearchInputBox or _G.TradeSkillFrameEditBox;
+		local TradeSearchInputBox = _G.TradeSearchInputBox or _G.TradeSkillFrameEditBox or _G.TradeSkillFrameSearchBox;
 		local TradeSkillListScrollFrame = _G.TradeSkillListScrollFrame;
 		local TradeSkillListScrollFrameScrollBar = _G.TradeSkillListScrollFrameScrollBar;
 		local TradeSkillHighlightFrame = _G.TradeSkillHighlightFrame;
@@ -4991,10 +4992,10 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 				IncrementButton = T_UIDefinition.TEXTURE_MODERN_ARROW_RIGHT,
 				DecrementButton = T_UIDefinition.TEXTURE_MODERN_ARROW_LEFT,
 			},
-			T_HookedFrameDropdowns = {
+			T_HookedFrameDropdowns = CT.VSE5X and {
 				InvSlotDropDown = TradeSkillInvSlotDropDown,
 				SubClassDropDown = TradeSkillSubClassDropDown,
-			},
+			} or {},
 			T_HookedFrameEditboxes = {
 				InputBox = TradeSkillInputBox,
 				SearchInputBox = TradeSearchInputBox,
@@ -5009,23 +5010,30 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		-- collapse = CollapseTradeSkillSubClass,
 		F_ClearFilter = function()
 			SetTradeSkillSubClassFilter(0, 1, 1);
-			if TradeSkillSubClassDropDown.OnMenuChanged then
-				TradeSkillSubClassDropDown:OnMenuChanged();
-			else
-				UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
+			if CT.VSE5X then
+				if TradeSkillSubClassDropDown.OnMenuChanged then
+					TradeSkillSubClassDropDown:OnMenuChanged();
+				else
+					UIDropDownMenu_SetSelectedID(TradeSkillSubClassDropDown, 1);
+				end
 			end
 			SetTradeSkillInvSlotFilter(0, 1, 1);
-			if CT.VGT2X then
+			if CT.VLE5X then
+				TradeSkillOnlyShowSkillUps(false);
+			end
+			if CT.VLE2X then
 				SetTradeSkillItemNameFilter(nil);
 				SetTradeSkillItemLevelFilter(0, 0);
 			end
-			if TradeSkillInvSlotDropDown.OnMenuChanged then
-				TradeSkillInvSlotDropDown:OnMenuChanged();
-			else
-				UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
+			if CT.VSE5X then
+				if TradeSkillInvSlotDropDown.OnMenuChanged then
+					TradeSkillInvSlotDropDown:OnMenuChanged();
+				else
+					UIDropDownMenu_SetSelectedID(TradeSkillInvSlotDropDown, 1);
+				end
 			end
 			ExpandTradeSkillSubClass(0);
-			if CT.VGT2X then
+			if CT.VLE2XSE5X then
 				TradeSkillFrameAvailableFilterCheckButton:SetChecked(false);
 			end
 			if TradeSkillCollapseAllButton ~= nil then
@@ -5047,7 +5055,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 
 		F_GetRecipeInfo = GetTradeSkillInfo,
 			--	skillName, difficult & header, numAvailable, isExpanded = GetTradeSkillInfo(skillIndex)
-		F_GetRecipeSpellID = CT.VGT3X and
+		F_GetRecipeSpellID = CT.VLE3X and
 								function(arg1)
 									local link = GetTradeSkillRecipeLink(arg1);
 									return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil;
@@ -5056,7 +5064,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 								function(arg1)
 									return DataAgent.get_sid_by_pid_sname_cid(DataAgent.get_pid_by_pname(meta.F_GetSkillName()), meta.F_GetRecipeInfo(arg1), meta.F_GetRecipeItemID(arg1));
 								end,
-		F_GetRecipeSpellLink = CT.VGT3X and GetTradeSkillRecipeLink or nil;
+		F_GetRecipeSpellLink = CT.VLE3X and GetTradeSkillRecipeLink or nil;
 		F_GetRecipeItemID = function(arg1) local link = GetTradeSkillItemLink(arg1); return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil; end,
 		F_GetRecipeItemLink = GetTradeSkillItemLink,
 		F_GetRecipeIcon = GetTradeSkillIcon,
@@ -5084,19 +5092,28 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 		C_SwitchEvent = "TRADE_SKILL_SHOW",
 
 		F_WithDisabledFrame = function(self, func)
-			if CT.VGT2X then
+			if CT.VLE2XSE5X then
 				func(TradeSkillFrameAvailableFilterCheckButton);
+			end
+			if CT.VLE2X then
 				func(TradeSearchInputBox);
 				TradeSearchInputBox:ClearFocus();
 			end
 			func(TradeSkillCollapseAllButton);
-			func(TradeSkillSubClassDropDown);
-			if CT.VGT2X then
+			if CT.VSE5X then
+				func(TradeSkillSubClassDropDown);
+			end
+			if CT.VLE2XSE5X then
 				func(TradeSkillSubClassDropDownButton);
 			end
-			func(TradeSkillInvSlotDropDown);
-			if CT.VGT2X then
+			if CT.VSE5X then
+				func(TradeSkillInvSlotDropDown);
+			end
+			if CT.VLE2XSE5X then
 				func(TradeSkillInvSlotDropDownButton);
+			end
+			if CT.VLE5X then
+				func(TradeSkillFrame.FilterDropdown);
 			end
 			func(TradeSkillListScrollFrame);
 			func(TradeSkillListScrollFrameScrollBar);
@@ -5114,6 +5131,7 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 			-- "ExpandTradeSkillSubClass",
 			"SetTradeSkillSubClassFilter",
 			"SetTradeSkillInvSlotFilter",
+			"TradeSkillOnlyShowSkillUps",
 		},
 
 		T_FunctionName = {
@@ -5125,13 +5143,13 @@ local function LF_AddOnCallback_Blizzard_TradeSkillUI(addon)
 	local Frame = LF_HookFrame(addon, meta);
 	VT.UIFrames[addon] = Frame;
 	--
-	if CT.VGT2X then
+	if CT.VLE2XSE5X then
 		TradeSkillFrameAvailableFilterCheckButton:ClearAllPoints();
 		TradeSkillFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", TradeSkillFrame, "TOPLEFT", 68, -56);
 	end
 	TradeSkillExpandButtonFrame:Hide();
 	--
-	if CT.VGT3X then
+	if CT.VLE3X then
 		local ENCHANT_FILTER = l10n.ENCHANT_FILTER;
 	--	Dropdown Filter
 		local T_TradeSkillFrameFilterMeta = {
@@ -5364,7 +5382,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 
 		-- expand = ExpandCraftSkillLine,
 		-- collapse = CollapseCraftSkillLine,
-		F_ClearFilter = CT.VGT2X and function()
+		F_ClearFilter = CT.VLE2X and function()
 			CraftOnlyShowMakeable(false);
 			CraftFrameAvailableFilterCheckButton:SetChecked(false);
 			SetCraftFilter(1);
@@ -5385,7 +5403,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 
 		F_GetRecipeInfo = function(arg1) local _1, _2, _3, _4, _5, _6, _7 = GetCraftInfo(arg1); return _1, _3, _4, _5, _6, _7; end,
 			--	craftName, craftSubSpellName(""), difficult, numAvailable, isExpanded, trainingPointCost, requiredLevel = GetCraftInfo(index)
-		F_GetRecipeSpellID = CT.VGT3X and
+		F_GetRecipeSpellID = CT.VLE3X and
 								function(arg1)
 									local link = GetCraftRecipeLink(arg1);
 									return link and tonumber(strmatch(link, "[a-zA-Z]:(%d+)")) or nil;
@@ -5420,7 +5438,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 		C_SwitchEvent = "CRAFT_SHOW",
 
 		F_WithDisabledFrame = function(self, func)
-			if CT.VGT2X then
+			if CT.VLE2X then
 				func(CraftFrameAvailableFilterCheckButton);
 				func(CraftFrameFilterDropDown);
 			end
@@ -5447,7 +5465,7 @@ local function LF_AddOnCallback_Blizzard_CraftUI(addon)
 	local Frame = LF_HookFrame(addon, meta);
 	VT.UIFrames[addon] = Frame;
 	--
-	if CT.VGT2X then
+	if CT.VLE2X then
 		CraftFrameAvailableFilterCheckButton:ClearAllPoints();
 		CraftFrameAvailableFilterCheckButton:SetPoint("TOPLEFT", CraftFrame, "TOPLEFT", 68, -56);
 		CraftFrameAvailableFilterCheckButton:SetSize(20, 20);

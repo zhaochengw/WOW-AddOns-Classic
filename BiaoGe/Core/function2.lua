@@ -2452,3 +2452,7 @@ function BG.ChatEditSetText(text)
     ChatEdit_ChooseBoxForSend():SetText(text)
     ChatEdit_ChooseBoxForSend():HighlightText()
 end
+
+function BG.IsBigFB(FB)
+    return FB=="BOT" or FB=="MSV"
+end

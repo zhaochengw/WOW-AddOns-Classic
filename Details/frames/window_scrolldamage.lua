@@ -308,7 +308,6 @@ local targetDummiesIds = {
 	[225982] = true, --Cleave Dummy - Dornogal
 	[225977] = true, --Dungeoneer's Tanking dummy - Dornogal
 	[225976] = true, --Normal Tanking dummy - Dornogal
-	[225985] = true, --Kelpfist - Dornogal 
 }
 
 targetDummieHandle:SetScript("OnEvent", function(_, _, unit)

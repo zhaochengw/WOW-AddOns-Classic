@@ -184,9 +184,8 @@ local function MakeBorderGlowOptions(self, indicator,options)
 end
 
 Grid2Options:RegisterIndicatorOptions("glowborder", true, function(self, indicator)
-	local statuses, options, filter = {}, {}, {}
+	local statuses, options = {}, {}
 	MakeBorderGlowOptions(self, indicator, options)
 	self:MakeIndicatorStatusOptions(indicator, statuses)
-	self:MakeIndicatorLoadOptions(indicator, filter)
-	self:AddIndicatorOptions(indicator, statuses, options, nil, filter)
+	self:AddIndicatorOptions(indicator, statuses, options)
 end)

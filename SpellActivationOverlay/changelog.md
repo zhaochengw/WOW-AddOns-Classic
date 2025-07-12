@@ -1,5 +1,43 @@
 ## SpellActivationOverlay Changelog
 
+#### v2.5.6 (2025-07-05)
+
+Thank you to our amazing contributors for reporting issues. Thanks!
+- jokke and mistik911 for reporting the Warrior's Overpower issue
+- Adal4 for reporting the Paladin's The Art of War issue
+- Amanthuul and kakukembo for reporting the Druid's Eclipse issue
+
+New Spell Alerts
+- Paladin's The Art of War (Mists of Pandaria)
+
+Bug Fixes
+- Druids no longer get Eclipse textures errors at start (Mists of Pandaria)
+- Counters would not always glow at Rank 2 and higher (Era, TBC, Wrath)
+
+Here is the complete list of counters affected by the latter issue
+- Hunter's Counterattack (Era, TBC, Wrath)
+- Hunter's Kill Shot (Wrath)
+- Hunter's Mongoose Bite (Era, TBC)
+- Paladin's Exorcism (Era, TBC, Wrath)
+- Paladin's Hammer of Wrath (Era, TBC, Wrath)
+- Paladin's Holy Shock (Era, TBC, Wrath)
+- Warrior's Execute (Era, TBC, Wrath)
+- Warrior's Overpower (Era, TBC)
+- Warrior's Revenge (Era, TBC, Wrath)
+
+#### v2.5.5 (2025-07-01)
+
+There is now a Universal build that works for all flavors: Era, Cataclysm, etc.
+Players are still encouraged to install optimized build for each flavor
+Universal is provided for convenience to players who install addons manually
+
+New Spell Alerts
+- Soulburn (Cataclysm)
+- Demonic Rebirth (Cataclysm)
+
+Miscellaneous
+- The addon's license has been updated
+
 #### v2.5.4 (2025-06-23)
 
 Thank you to our amazing contributors for sending feedback. Thanks!

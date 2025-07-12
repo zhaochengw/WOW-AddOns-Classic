@@ -106,6 +106,7 @@ function Addon:SetupOptionFrame()
                     showGem = fullToggle(L['Show gem']),
                     showEnchant = fullToggle(L['Show enchant']),
                     showLost = fullToggle(L['Show enchant/gem lost']),
+                    showRangedEnchantOnlyHunter = fullToggle(L['Show enchant for ranged weapon only for hunter']),
                     showGemsFront = fullToggle(L['Show gems in front']),
                 },
                 characterGear = inline(L['Character Gear']) {

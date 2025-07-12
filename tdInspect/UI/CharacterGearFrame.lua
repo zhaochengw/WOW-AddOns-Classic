@@ -107,14 +107,6 @@ function CharacterGearFrame:UNIT_MODEL_CHANGED(_, unit)
     end
 end
 
-function CharacterGearFrame:UpdateGears()
-    self:ResetColumnWidths()
-
-    for id, gear in pairs(self.gears) do
-        gear:SetItem(GetInventoryItemLink('player', id))
-    end
-end
-
 function CharacterGearFrame:UpdateItemLevel()
     local itemLevel = select(2, GetAverageItemLevel())
     if itemLevel <= 0 then
@@ -169,16 +161,6 @@ function CharacterGearFrame:GetTalentInfo(group)
     return maxName, maxIcon, maxBg, table.concat(counts, '/')
 end
 
-function CharacterGearFrame:UpdateOption(_, key, value)
-    if key == 'showTalentBackground' then
-        if value then
-            self:UpdateTalents()
-        else
-            self:SetBackground()
-        end
-    elseif key == 'showOptionButtonInCharacter' then
-        self:UpdateOptionButton(value)
-    elseif key == 'showGem' or key == 'showEnchant' or key == 'showLost' or key == 'showGemsFront' then
-        self:UpdateGears()
-    end
+function CharacterGearFrame:GetSlotItem(id)
+    return GetInventoryItemLink('player', id)
 end

@@ -75,6 +75,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
 --[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
+--[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
 --[[ L["Show gem"] = "Show gem"--]] 
@@ -172,6 +174,8 @@ L = L or {}
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
+--[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
@@ -271,6 +275,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
 --[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
+--[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
 --[[ L["Show gem"] = "Show gem"--]] 
@@ -368,6 +374,8 @@ L = L or {}
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
+--[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
@@ -467,6 +475,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
 --[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
+--[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
 --[[ L["Show gem"] = "Show gem"--]] 
@@ -565,6 +575,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
 --[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
+--[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]
 --[[ L["Show gem"] = "Show gem"--]] 
@@ -600,76 +612,56 @@ end)
 T('ruRU', function(L)
 -- @locale:language=ruRU@
 L = L or {}
---[[Translation missing --]]
---[[ L["Active talent"] = "Active talent"--]] 
+L["Active talent"] = "Активный талант"
 L["Add socket"] = "Добавить сокет"
---[[Translation missing --]]
---[[ L["Bind with EquipmentSet"] = "Bind with EquipmentSet"--]] 
---[[Translation missing --]]
---[[ L["Character Gear"] = "Character Gear"--]] 
---[[Translation missing --]]
---[[ L["Character List"] = "Character List"--]] 
---[[Translation missing --]]
---[[ L["Clear Spec Equipment"] = "Clear Spec Equipment"--]] 
---[[Translation missing --]]
---[[ L["Close character frame when inspect"] = "Close character frame when inspect"--]] 
---[[Translation missing --]]
---[[ L["Current realm characters"] = "Current realm characters"--]] 
+L["Bind with EquipmentSet"] = "Персональный при надевании"
+L["Character Gear"] = "Снаряжение персонажа"
+L["Character List"] = "Список персонажей"
+L["Clear Spec Equipment"] = "Очистить экипировку специализации"
+L["Close character frame when inspect"] = "Закройте окно персонажа при осмотре"
+L["Current realm characters"] = "Персонажи текущего мира"
 L["Data source:"] = "Источник данных:"
 L["Empty socket"] = "Пустой сокет"
---[[Translation missing --]]
---[[ L["Gear List"] = "Gear List"--]] 
+L["Gear List"] = "Список снаряжения"
 L["Help"] = "Помощь"
 L["HELP_SUMMARY"] = [=[1. Большинство игроков, ПКМ по меню (друзья, гильдии, чат и т.д.), могут удаленно наблюдать за игроками.
 2. Если при нажатии ПКМ нет меню опции просмотра, попробуйте отключить аддон.
 3. В списке экипировки персонажа нет кнопки с текущими талантами, нажмите, чтобы переключить таланты.]=]
---[[Translation missing --]]
---[[ L["Hidden"] = "Hidden"--]] 
+L["Hidden"] = "Скрыть"
 L["iLvl:"] = true
---[[Translation missing --]]
---[[ L["Inspect Gear"] = "Inspect Gear"--]] 
+L["Inspect Gear"] = "Осмотреть снаряжение"
 L["Inspect mouseover"] = "Проверить наведением мыши"
 L["Inspect target"] = "Осмотреть цель"
---[[Translation missing --]]
---[[ L["Item level color style"] = "Item level color style"--]] 
+L["Item level color style"] = "Стиль цвета на уровне предмета"
 L["Last update:"] = "Последнее обновление:"
---[[Translation missing --]]
---[[ L["Light"] = "Light"--]] 
---[[Translation missing --]]
---[[ L["Low level characters"] = "Low level characters"--]] 
+L["Light"] = "Светлый"
+L["Low level characters"] = "Низкоуровневые персонажи"
 L["Major"] = "Главный"
 L["Minor"] = "Незначительный"
 L["No Enchant"] = "Нет чар"
---[[Translation missing --]]
---[[ L["Other realm characters"] = "Other realm characters"--]] 
---[[Translation missing --]]
---[[ L["Quality by blizzard"] = "Quality by blizzard"--]] 
---[[Translation missing --]]
---[[ L["See other account character?"] = "See other account character?"--]] 
---[[Translation missing --]]
---[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
+L["Other realm characters"] = "Другие персонажи сервера"
+L["Quality by blizzard"] = "Качество от Blizzard"
+L["See other account character?"] = "Видите другого персонажа аккаунта?"
+L["Set Spec Equipment"] = "Набор экипировки"
 L["Show character gear list"] = "Показать список экипировки персонажа"
 L["Show enchant"] = "Показать чары"
+--[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
 L["Show enchant/gem lost"] = "Показать чары/камни"
 L["Show gem"] = "Показать камни"
---[[Translation missing --]]
---[[ L["Show gems in front"] = "Show gems in front"--]] 
+L["Show gems in front"] = "Показать камни на переднем плане"
 L["Show inspect compare"] = "Показывать проверку сравнения"
 L["Show inspect gear list"] = "Показать список осмотренной экипировки"
---[[Translation missing --]]
---[[ L["Show low level characters"] = "Show low level characters"--]] 
+L["Show low level characters"] = "Показать персонажей низкого уровня"
 L["Show option button in character gear list"] = "Показать кнопку выбора в списке снаряжения персонажа"
 L["Show option button in inspect gear list"] = "Показать кнопку выбора в списке осмотра снаряжения"
 L["Show talent background"] = "Показать фон талантов"
---[[Translation missing --]]
---[[ L["Switch my characters"] = "Switch my characters"--]] 
---[[Translation missing --]]
---[[ L["Switch talent"] = "Switch talent"--]] 
+L["Switch my characters"] = "Сменить персонажей"
+L["Switch talent"] = "Сменить талант"
 L["The key is bound to |cffffd100%s|r, are you sure you want to overwrite it?"] = "Ключ привязан к |cffffd100%s|r, вы уверены, что хотите его перезаписать?"
 L["View mouseover hotkey"] = "Просмотр горячих клавиш при наведении мыши"
 L["View target hotkey"] = "Просмотр горячих клавиш"
---[[Translation missing --]]
---[[ L["White"] = "White"--]]
+L["White"] = "Белый"
 --@end-locale@]==]
 end)
 
@@ -738,6 +730,8 @@ L = L or {}
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant"] = "Show enchant"--]] 
+--[[Translation missing --]]
+--[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
 --[[Translation missing --]]
 --[[ L["Show enchant/gem lost"] = "Show enchant/gem lost"--]] 
 --[[Translation missing --]]

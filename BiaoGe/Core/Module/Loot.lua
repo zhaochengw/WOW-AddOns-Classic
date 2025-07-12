@@ -108,7 +108,7 @@ BG.Init(function()
                 BG.itemGuoQiFrame:Show()
                 BG.ClickTabButton(BG.FBMainFrameTabNum)
             elseif arg2 == "BiaoGeGuoQi" and arg3 == L["设置为1小时内不再提醒"] then
-                BiaoGe.lastGuoQiTime = GetServerTime() + 3300
+                BiaoGe.lastGuoQiTime = GetServerTime() + 60 * 55
                 BG.FrameLootMsg:AddMessage(BG.STC_b1(L["已设置为1小时内不再提醒。"]))
             elseif arg2 == "BiaoGeInSertItem" then
                 local _saveZaXiangNum, itemID, FB, Texture, level, Hope, count, typeID, lootplayer = arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11

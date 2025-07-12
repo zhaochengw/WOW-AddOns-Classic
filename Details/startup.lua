@@ -28,7 +28,7 @@ function Details222.StartUp.StartMeUp()
 		Details:FillUserCustomSpells()
 	end)
 
-	Details.challengeModeMapId = C_ChallengeMode and C_ChallengeMode.GetActiveChallengeMapID and C_ChallengeMode.GetActiveChallengeMapID()
+	Details.challengeModeMapId = C_ChallengeMode and C_ChallengeMode.GetActiveChallengeMapID()
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --row single click, this determines what happen when the user click on a bar
@@ -71,19 +71,6 @@ function Details222.StartUp.StartMeUp()
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialize
 
-	do
-		--advertising patreon cuz I'm in need, need to make absolute sure this is removed before 11.1.7 goes live
-		local version = GetBuildInfo()
-		if (version == "11.1.7") then
-			--limit this to 10 days to be safe, don't want problems
-			local time = time()
-			local limitTime = 1747072462 --10 days ahead of May 02
-			if (time < limitTime) then
-				Details:Msg("Help support Details! author on Patreon: https://www.patreon.com/terciob")
-			end
-		end
-	end
-
 	--make an encounter journal cache. the cache will load before this if any function tries to get information from the cache
 	C_Timer.After(3, Details222.EJCache.CreateEncounterJournalDump)
 
@@ -102,10 +89,6 @@ function Details222.StartUp.StartMeUp()
 	Details:InitializeRunCodeWindow()
 	Details:InitializePlaterIntegrationWindow()
 	Details:InitializeMacrosWindow()
-
-	if (Details.InitializeEncounterSwapper) then
-		Details:InitializeEncounterSwapper()
-	end
 
 	Details222.CreateAllDisplaysFrame()
 
@@ -315,7 +298,7 @@ function Details222.StartUp.StartMeUp()
 
 		Details.listener:RegisterEvent("PLAYER_TARGET_CHANGED")
 
-		if (not DetailsFramework.IsTimewalkWoW()) then --C_EventUtils.IsEventValid
+		if (not DetailsFramework.IsTimewalkWoW()) then
 			Details.listener:RegisterEvent("PET_BATTLE_OPENING_START")
 			Details.listener:RegisterEvent("PET_BATTLE_CLOSE")
 			Details.listener:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
@@ -410,8 +393,10 @@ function Details222.StartUp.StartMeUp()
 			lowerInstanceId = Details:GetInstance(lowerInstanceId)
 			if (lowerInstanceId) then
 				--check if there's changes in the size of the news string
-				if (false and Details.last_changelog_size ~= #Loc["STRING_VERSION_LOG"]) then
+				if (Details.last_changelog_size ~= #Loc["STRING_VERSION_LOG"]) then
 					Details.last_changelog_size = #Loc["STRING_VERSION_LOG"]
+
+					if (true) then return end --stop opening the new window automatically
 
 					if (Details.auto_open_news_window) then
 						C_Timer.After(5, function()

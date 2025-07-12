@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.17) add-on for World of Warcraft UI
-    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.28) add-on for World of Warcraft UI
+    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2024-01-26T11:10:51Z
+    This file was last updated on 2025-03-16T19:58:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -164,6 +164,20 @@ function D:PLAYER_ENTERING_WORLD()
         -- wait 10 seconds and announce Decursive's version
         self:ScheduleDelayedCall("AnnounceVersion", self.AnnounceVersion, 10, self);
     end
+end
+
+function D:PLAYER_LEAVING_WORLD()
+    if not D.Status.createdMacros then
+        return
+    end
+
+    for macroName, toDelete in pairs( D.Status.createdMacros) do
+        local index = GetMacroIndexByName(macroName)
+        if index and toDelete then
+            DeleteMacro(index)
+        end
+    end
+
 end
 
 local OncePetRetry = false;
@@ -581,9 +595,9 @@ function D:HOOK_CastSpellByName (spellName, target)
     end
 end
 
-local GetItemSpell = _G.GetItemSpell;
-local GetItemCount = _G.GetItemCount;
-local GetItemInfo  = _G.GetItemInfo;
+local GetItemSpell = _G.C_Item and _G.C_Item.GetItemSpell or _G.GetItemSpell;
+local GetItemCount = _G.C_Item and _G.C_Item.GetItemCount or _G.GetItemCount;
+local GetItemInfo  = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 function D:HOOK_UseItemByName (itemName, target)
     if self.Status.ClickCastingWIP and self.Status.ClickedMF then
         self.Status.ClickedMF.CastingSpell = GetItemSpell(itemName);
@@ -601,7 +615,7 @@ do -- Combat log event handling {{{1
     local bor           = bit.bor;
     local UnitGUID      = _G.UnitGUID;
     local GetTime       = _G.GetTime;
-    local GetSpellInfo  = _G.GetSpellInfo; -- XXX to fix for 8
+    local GetSpellInfo  = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
     local time          = _G.time;
 
     --[=[ useless bitfields {{{2
@@ -667,7 +681,7 @@ do -- Combat log event handling {{{1
             timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE = CombatLogGetCurrentEventInfo()
         end
                     --[==[@debug@
-                    if self.debug then self:Debug("COMBAT_LOG_EVENT_UNFILTERED: ", timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); end
+                    --if self.debug then self:Debug("COMBAT_LOG_EVENT_UNFILTERED: ", timestamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellNAME, _spellSCHOOL, auraTYPE_failTYPE); end
                     --@end-debug@]==]
         -- check for exceptions
         if SpecialDebuffs[spellID] and event == SpecialDebuffs[spellID] then
@@ -748,7 +762,7 @@ do -- Combat log event handling {{{1
 
             if event == "SPELL_CAST_SUCCESS" then
 
-                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end
+                if self.debug then self:Debug(L["SUCCESSCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName)); end -- XXX TWW
 
                 --self:Debug("|cFFFF0000XXXXX|r |cFF11FF11Updating color of clicked frame|r");
                 self:ScheduleDelayedCall("Dcr_UpdatePC"..self.Status.ClickedMF.CurrUnit, self.Status.ClickedMF.Update, 1, self.Status.ClickedMF);
@@ -1120,7 +1134,7 @@ do
 
         -- if we know that there are unspet talents, it means we can check for
         -- them
-        if _G.GetNumUnspentTalents and GetNumUnspentTalents() then
+        if GetUnspentTalentPoints and GetUnspentTalentPoints() > 0 then
             return true;
         end
 
@@ -1179,6 +1193,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.17";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.28";
 
 -- The Great Below

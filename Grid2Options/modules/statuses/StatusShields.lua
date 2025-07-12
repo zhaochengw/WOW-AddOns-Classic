@@ -1,7 +1,5 @@
 local L = Grid2Options.L
 
-local MAX_ABSORB = Grid2.isClassic and 200000 or 5000000
-
 Grid2Options:RegisterStatusOptions("shields-overflow", "health", nil, {
 	title = L["display damage absorb shields above max hp"],
 	titleIcon = "Interface\\ICONS\\Spell_Holy_PowerWordShield"
@@ -16,12 +14,11 @@ Grid2Options:RegisterStatusOptions("shields", "health", function(self, status, o
 	self:MakeSpacerOptions(options, 30)
 	options.maxShieldAmount = {
 		type = "range",
-		order = 31,
-		width = "full",
+		order = 34,
 		name = L["Maximum shield amount"],
 		desc = L["Value used by bar indicators. Select zero to use players Maximum Health."],
 		min = 0,
-		softMax = MAX_ABSORB,
+		softMax = 200000,
 		bigStep = 1000,
 		step = 1,
 		get = function () return status.dbx.maxShieldValue or 0 end,
@@ -33,11 +30,10 @@ Grid2Options:RegisterStatusOptions("shields", "health", function(self, status, o
 	options.thresholdMedium = {
 		type = "range",
 		order = 32,
-		width = "full",
 		name = L["Medium shield threshold"],
 		desc = L["The value below which a shield is considered medium."],
 		min = 0,
-		softMax = MAX_ABSORB,
+		softMax = 200000,
 		bigStep = 1000,
 		step = 1,
 		get = function () return status.dbx.thresholdMedium end,
@@ -49,12 +45,11 @@ Grid2Options:RegisterStatusOptions("shields", "health", function(self, status, o
 	}
 	options.thresholdLow = {
 		type = "range",
-		order = 33,
-		width = "full",
+		order = 31,
 		name = L["Low shield threshold"],
 		desc = L["The value below which a shield is considered low."],
 		min = 0,
-		softMax = MAX_ABSORB,
+		softMax = 200000,
 		bigStep = 1000,
 		step = 1,
 		get = function () return status.dbx.thresholdLow end,
@@ -67,11 +62,10 @@ Grid2Options:RegisterStatusOptions("shields", "health", function(self, status, o
 	options.blinkThreshold = {
 		type = "range",
 		order = 35,
-		width = "full",
 		name = L["Highlight"],
 		desc = L["Threshold at which to highlight the status."],
 		min = 0,
-		softMax = MAX_ABSORB,
+		softMax = 100000,
 		bigStep = 100,
 		step = 1,
 		get = function () return status.dbx.blinkThreshold or 0	end,

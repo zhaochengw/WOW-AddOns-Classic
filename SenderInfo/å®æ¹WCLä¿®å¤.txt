@@ -10,6 +10,7 @@ set "PROVIDER_FILE=%ARCHON_DIR%\\provider.lua"
 
 if not exist "%ARCHON_DIR%" (
     echo [错误] 未找到ArchonTooltip插件目录
+    echo 请安装官方WCL插件后尝试
     echo 请确保ArchonTooltip和SenderInfo都在同一个AddOns目录下
     pause
     exit /b 1

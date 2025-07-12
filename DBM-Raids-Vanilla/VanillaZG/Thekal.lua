@@ -12,7 +12,7 @@ end
 local mod = DBM:NewMod("Thekal", "DBM-Raids-Vanilla", catID)
 local L = mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103123604")
+mod:SetRevision("20250530193736")
 mod:SetCreatureID(14509, 11348, 11347)
 mod:SetEncounterID(789)
 mod:SetBossHPInfoToHighest()
@@ -48,7 +48,10 @@ local timerGouge		= mod:NewTargetTimer(4, 12540, nil, nil, nil, 3)
 function mod:OnCombatStart(delay)
 	self:SetStage(1)
 	if self.Options.InfoFrame then
-		DBM.InfoFrame:Show(10, "bosshealth", self)
+		DBM.InfoFrame:Show(10, "bosshealth", {
+			[11347] = true,
+			[11348] = true,
+		})
 		self.bossHealthUpdateTime = 0.5
 	end
 end
