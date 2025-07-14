@@ -5,7 +5,17 @@
 		<Size>
 			<AbsDimension x = "100" y = "34"/>
 		</Size>
-		
+		<Backdrop bgFile = "Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile = "true">
+			<EdgeSize>
+				<AbsValue val = "8"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val = "8"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left = "2" right = "2" top = "3" bottom = "2"/>
+			</BackgroundInsets>
+		</Backdrop>
 		<Layers>
 			<Layer level = "OVERLAY">
 				<Texture name = "$parentIcon" file = "Interface/Icons/Spell_Holy_SealOfFury">

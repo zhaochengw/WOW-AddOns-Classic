@@ -70,7 +70,7 @@ local specWarnHarvestSouls			= mod:NewSpecialWarningSpell(73654, nil, nil, nil, 
 local specWarnValkyrLow				= mod:NewSpecialWarning("SpecWarnValkyrLow", nil, nil, nil, 1, 2, nil, nil, 71844)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(68983, nil, nil, nil, 1, 8)
 
-local timerCombatStart				= mod:NewCombatTimer(53.5)
+local timerCombatStart				= mod:NewCombatTimer(54.6)
 local timerPhaseTransition			= mod:NewTimer(62.5, "PhaseTransition", 72262, nil, nil, 6)
 local timerSoulreaper	 			= mod:NewTargetTimer(5.1, 69409, nil, "Tank|Healer")
 local timerSoulreaperCD	 			= mod:NewNextTimer(30.5, 69409, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)

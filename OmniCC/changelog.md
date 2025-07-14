@@ -1,5 +1,36 @@
 # OmniCC Changelog
 
+## 11.2.4
+
+* Update TOCs for 11.1.7 and 5.5.0
+
+## 11.2.3
+
+* Fix an error that could appear when hiding flare finish effect.
+
+## 11.2.2
+
+* Added a more agressive disable for cooldown text to handle flickering issues.
+
+## 11.2.1
+
+* Fix `/omnicc` not showing the options menu,
+
+## 11.2.0
+
+* OmniCC will now disable Blizzard's default cooldown text implementation text
+  on all cooldowns by default. You can toggle this behavior via the new `/occ blizzard`
+  slash command.
+
+## 11.1.0
+
+* (Retail) OmniCC will now check GetHideCountdownNumbers and skip displaying text where the value is set to false.
+  This should prevent double text.
+
+## 11.0.8
+
+* Update TOCs for 1.15.7
+
 ## 11.0.7
 
 * Update TOCs for 11.1.0, 4.4.2 and 1.15.6

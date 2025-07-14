@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.28) add-on for World of Warcraft UI
-    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.17) add-on for World of Warcraft UI
+    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2024-02-12T02:39:55Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -738,8 +738,7 @@ end
 -- MUF EVENTS (MicroUnitF children) (OnEnter, OnLeave, OnLoad, OnPreClick) {{{
 do
     local UnitGUID = _G.UnitGUID;
-    local GetSpellInfo = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
-    local GetSpellName = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
+    local GetSpellInfo = _G.GetSpellInfo;
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
 
@@ -880,7 +879,7 @@ do
                 for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
                     ttHelpLines[Prio] = {[D:ColorText(DC.MouseButtonsReadable[MouseButtons[Prio]], D:NumToHexColor(MF_colors[Prio]))] =
 
-                    ("%s%s"):format(GetSpellName(Spell) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "")}
+                    ("%s%s"):format((GetSpellInfo(Spell)) or Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "")}
                 end
 
                 t_insert(ttHelpLines, {[DC.MouseButtonsReadable[MouseButtons[#MouseButtons - 1]]] = ("%s"):format(L["TARGETUNIT"])});
@@ -1219,9 +1218,6 @@ do
     function MicroUnitF.prototype:SetUnstableAttribute(attribute, value)
         self.Frame:SetAttribute(attribute, value);
         self.usedAttributes[attribute] = self.LastAttribUpdate;
-        --[==[@debug@
-        D:Debug("SetUnstableAttribute", attribute, value);
-        --@end-debug@]==]
     end
 
     function MicroUnitF.prototype:CleanDefuncUnstableAttributes()
@@ -1309,21 +1305,34 @@ do
 
         local MouseButtons = D.db.global.MouseButtons;
 
-
         self:SetUnstableAttribute(MouseButtons[#MouseButtons - 1]:format("macrotext"), ("/target %s"):format(Unit));
         self:SetUnstableAttribute(MouseButtons[#MouseButtons    ]:format("macrotext"), ("/focus %s"):format(Unit));
 
+        -- set the spells attributes using the lookup tables above
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do
 
-        local FoundSpells = D.Status.FoundSpells;
-        local ReversedCureOrder = D.Status.ReversedCureOrder;
-        local CuringSpells = D.Status.CuringSpells;
+            if not D.Status.FoundSpells[Spell][5] then -- if using the default macro mechanism
 
-        for prio, macroData in pairs(D.Status.prio_macro) do
-            if not D.UnitFilteringTest (Unit, macroData.unitFiltering) then
-                self:SetUnstableAttribute(MouseButtons[prio]:format("macrotext"), macroData.macroText)
+                if not D.UnitFilteringTest (Unit, D.Status.FoundSpells[Spell][6]) then
+                    --the [target=%s, help][target=%s, harm] prevents the 'please select a unit' cursor problem (Blizzard should fix this...)
+                    -- -- XXX this trick may cause issues or confusion when for some reason the unit is invalid, nothing will happen when clicking
+                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), ("%s/%s [@%s, help][@%s, harm] %s"):format(
+                    not D.Status.FoundSpells[Spell][1] and "/stopcasting\n" or "", -- pet test
+                    D.Status.FoundSpells[Spell][2] > 0 and "cast" or "use", -- item test
+                    Unit,Unit,
+                    Spell));
+                end
+            else
+                tmp = D.Status.FoundSpells[Spell][5];
+                tmp = tmp:gsub("UNITID", Unit);
+                if tmp:len() < 256 then -- last chance protection, shouldn't happen
+                    self:SetUnstableAttribute(MouseButtons[Prio]:format("macrotext"), tmp);
+                else
+                    D:errln("Macro too long for", Unit);
+                end
             end
-        end
 
+        end
 
         -- clean unused attributes...
         self:CleanDefuncUnstableAttributes();
@@ -1369,8 +1378,8 @@ do
 
     -- global access optimization
     local IsSpellInRange    = D.IsSpellInRange;
-    local IsItemInRange     = _G.C_Item and _G.C_Item.IsItemInRange or _G.IsItemInRange;
-    local IsUsableItem      = _G.C_Item and _G.C_Item.IsUsableItem or _G.IsUsableItem;
+    local IsItemInRange     = _G.IsItemInRange;
+    local IsUsableItem      = _G.IsUsableItem;
     local UnitClass         = _G.UnitClass;
     local UnitExists        = _G.UnitExists;
     local UnitIsVisible     = _G.UnitIsVisible;
@@ -1381,16 +1390,7 @@ do
     local floor             = _G.math.floor;
     local fmod              = _G.math.fmod;
     local CooldownFrame_Set = _G.CooldownFrame_Set;
-    local GetSpellCooldown  = _G.C_Spell and _G.C_Spell.GetSpellCooldown and function(spellid)
-        local cooldownInfo = _G.C_Spell.GetSpellCooldown(spellid);
-
-        if cooldownInfo then
-            return cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled;
-        else
-            return nil, nil, nil;
-        end
-    end or _G.GetSpellCooldown;
-
+    local GetSpellCooldown  = _G.GetSpellCooldown;
     local GetItemCooldown   = _G.C_Container and _G.C_Container.GetItemCooldown or _G.GetItemCooldown;
     local GetRaidTargetIndex= _G.GetRaidTargetIndex;
     local bor               = _G.bit.bor;
@@ -1871,6 +1871,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.28";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.17";
 
 -- Heresy

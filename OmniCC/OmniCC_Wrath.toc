@@ -1,17 +1,27 @@
-## Interface: 30404
-## Title: OmniCC
-## Notes: Cooldown count for everything
-## Notes-koKR: 모든 것을 위한 쿨다운 카운트
+## Interface: 30403, 30404, 30405
+## Title: OmniCC |cffff559a露露修复版|r
+## Version: 11.2.4 Rurutia fix
+## Notes: OmniCC 冷却管理插件，国服3.4.5可用。|n修复：|cffee5885露露緹婭@Bilibili|r
 ## Notes-esMX: Contador de tiempo de reutilización
 ## Notes-esES: Contador de tiempo de reutilización
 ## Notes-ptBR: Contagem de tempo de recarga
 ## Notes-frFR: Compte à rebours du temps de recharge
-## Notes-ruRU: Время восстановления абилок и т.п.
+## Notes-ruRU: Время восстановления способностей и т.п.
 ## Author: Tuller
-## Version: 10.2.6
+## Category-enUS: Combat
+## Category-deDE: Kampf
+## Category-esES: Combate
+## Category-esMX: Combate
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-koKR: 전투
+## Category-ptBR: Combate
+## Category-ruRU: Бой
+## Category-zhCN: 战斗
+## Category-zhTW: 戰鬥
+
 ## SavedVariables: OmniCCDB, OmniCC4Config
 ## IconTexture: Interface/Icons/spell_nature_timestop
-## AddonCompartmentFunc: OmniCC_Launch
 embeds.xml
 localization\localization.xml
 main.lua

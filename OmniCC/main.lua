@@ -20,6 +20,15 @@ EventUtil.ContinueOnAddOnLoaded(AddonName, function(addonName)
     SlashCmdList[AddonName] = function(cmd, ...)
         if cmd == 'version' then
             print(L.Version:format(Addon.db.global.addonVersion))
+        elseif cmd == 'blizzard' then
+            if Addon.db.global.disableBlizzardCooldownText then
+                Addon.db.global.disableBlizzardCooldownText = false
+            else
+                Addon.db.global.disableBlizzardCooldownText = true
+            end
+            C_UI.Reload()
+        elseif cmd == 'config' then
+            Addon:ShowOptionsFrame()
         else
             Addon:ShowOptionsFrame()
         end
@@ -30,27 +39,6 @@ EventUtil.ContinueOnAddOnLoaded(AddonName, function(addonName)
 
     -- watch for subsequent events
     EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", Addon.PLAYER_ENTERING_WORLD, Addon)
-
-    EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_LOGIN", function()
-        if not Addon.db.global.disableBlizzardCooldownText then return end
-
-        -- disable and preserve the user's blizzard cooldown count setting
-        Addon.countdownForCooldowns = GetCVar('countdownForCooldowns')
-        if Addon.countdownForCooldowns ~= '0' then
-            SetCVar('countdownForCooldowns', '0')
-        end
-    end)
-
-    EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_LOGOUT", function()
-        if not Addon.db.global.disableBlizzardCooldownText then return end
-
-        -- return the setting to whatever it was originally on logout
-        -- so that the user can uninstall omnicc and go back to what they had
-        local countdownForCooldowns = GetCVar('countdownForCooldowns')
-        if Addon.countdownForCooldowns ~= countdownForCooldowns then
-            SetCVar('countdownForCooldowns', Addon.countdownForCooldowns)
-        end
-    end)
 end)
 
 function Addon:PLAYER_ENTERING_WORLD()

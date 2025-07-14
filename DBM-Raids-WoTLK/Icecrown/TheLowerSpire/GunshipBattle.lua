@@ -46,7 +46,7 @@ local warnBladestorm		= mod:NewSpellAnnounce(69652, 3, nil, "Melee")
 local warnWoundingStrike	= mod:NewTargetNoFilterAnnounce(69651, 2, nil, "Tank|Healer")
 local warnAddsSoon			= mod:NewAnnounce("WarnAddsSoon", 2, addsIcon, nil, nil, nil, 23334, DBM_COMMON_L.ADDS)
 
-local timerCombatStart		= mod:NewCombatTimer(42)
+local timerCombatStart		= mod:NewCombatTimer(45)
 local timerBelowZeroCD		= mod:NewNextTimer(33.5, 69705, nil, nil, nil, 5)
 local timerBattleFuryActive	= mod:NewBuffActiveTimer(17, 69638, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerAdds				= mod:NewTimer(60, "TimerAdds", addsIcon, nil, nil, 1, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DAMAGE_ICON, nil, nil, nil, nil, nil, nil, 23334, nil, DBM_COMMON_L.ADDS)

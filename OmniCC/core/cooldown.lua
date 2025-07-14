@@ -64,7 +64,7 @@ else
     ---@param start number
     ---@param duration number
     ---@param modRate number
-    ---@return boolean    
+    ---@return boolean
     IsGCD = function (start, duration, modRate)
         if not (start > 0 and duration > 0 and modRate > 0) then
             return false
@@ -139,6 +139,10 @@ function Cooldown:CanShowText()
         return false
     end
 
+    if self.GetHideCountdownNumbers and not self:GetHideCountdownNumbers() then
+        return false
+    end
+
     local elapsed = GetTime() - start
     if elapsed >= duration or elapsed <= MIN_START_OFFSET then
         return false
@@ -191,7 +195,7 @@ function Cooldown:CanShowFinishEffect()
 
     -- cooldown expired too long ago
     -- cooldown outside of GCD bounds
-    -- or has time remaining if we're outside of GCD    
+    -- or has time remaining if we're outside of GCD
     if remain < FINISH_EFFECT_BUFFER or remain > GetGCDTimeRemaining() then
         return false
     end
@@ -251,19 +255,20 @@ end
 
 ---@param self OmniCCCooldown
 function Cooldown:Initialize()
+    -- one time initialization
     if not cooldowns[self] then
         self._occ_settings = Cooldown.GetTheme(self)
 
         self:HookScript('OnShow', Cooldown.OnVisibilityUpdated)
         self:HookScript('OnHide', Cooldown.OnVisibilityUpdated)
         self:HookScript('OnCooldownDone', Cooldown.OnCooldownDone)
-    
+
         -- this is a hack to make sure that text for charge cooldowns can appear
         -- above the charge cooldown itself, as charge cooldowns have a TOOLTIP
         -- frame level
         ---@type Frame|{ chargeCooldown: Cooldown?, cooldown: Cooldown? }?
         local parent = self:GetParent()
-        
+
         if parent and parent.chargeCooldown == self then
             local cooldown = parent.cooldown
             if cooldown then
@@ -273,6 +278,11 @@ function Cooldown:Initialize()
         end
 
         cooldowns[self] = true
+    end
+
+    -- check and turn off blizzard text if needed
+    if Addon.db.global.disableBlizzardCooldownText then
+        self:SetHideCountdownNumbers(true)
     end
 end
 
@@ -379,9 +389,9 @@ function Cooldown:SetTimer(start, duration, modRate)
         modRate = 1
     end
 
-    -- both the wow api and addons (espcially auras) have a habit of resetting
+    -- both the wow api and addons (especially auras) have a habit of resetting
     -- cooldowns every time there's an update to an aura
-    -- we chack and do nothing if there's an exact start/duration match
+    -- we check and do nothing if there is an exact start/duration match
     if self._occ_start == start and self._occ_duration == duration and self._occ_modRate == modRate then
         return
     end
@@ -527,13 +537,23 @@ function Cooldown:GetTheme()
     return Addon:GetDefaultTheme()
 end
 
+function Cooldown:OnSetHideCountdownNumbers(hide)
+    local disable = not (hide or self.noCooldownCount or self:IsForbidden())
+                    and Addon.db.global.disableBlizzardCooldownText
+
+    if disable then
+        self:SetHideCountdownNumbers(true)
+        Cooldown.Refresh(self)
+    end
+end
+
 -- misc
 function Cooldown.SetupHooks()
     local cooldown_mt = getmetatable(ActionButton1Cooldown).__index
-
     hooksecurefunc(cooldown_mt, 'SetCooldown', Cooldown.OnSetCooldown)
     hooksecurefunc(cooldown_mt, 'SetCooldownDuration', Cooldown.OnSetCooldownDuration)
     hooksecurefunc(cooldown_mt, 'Clear', Cooldown.OnClear)
+    hooksecurefunc(cooldown_mt, 'SetHideCountdownNumbers', Cooldown.OnSetHideCountdownNumbers)
     hooksecurefunc('CooldownFrame_SetDisplayAsPercentage', Cooldown.SetDisplayAsPercentage)
 end
 
