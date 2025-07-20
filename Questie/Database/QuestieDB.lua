@@ -995,7 +995,7 @@ function QuestieDB.IsDoable(questId, debugPrint)
             if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Player does not meet learned spell requirements for quest " .. questId) end
             return false
         elseif (requiredSpell < 0) and (hasSpell or hasProfSpell) then -- if requiredSpell is negative, we make the quest ineligible if the player DOES have the spell
-            if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Player does not meet unlearned spell requirements for quest " .. questId) end
+            if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Player does not meet not learned spell requirements for quest " .. questId) end
             return false
         end
     end
@@ -1568,7 +1568,7 @@ function QuestieDB.GetQuest(questId) -- /dump QuestieDB.GetQuest(867)
                     Icon = creditObjective[4]
                 }
 
-                --? There are quest(s) which have the killCredit at first so we need to switch them
+                --? There are quest(s) which have the killCredit first so we need to switch them
                 -- Place the kill credit objective first
                 if QuestieCorrections.killCreditObjectiveFirst[questId] then
                     tinsert(QO.ObjectiveData, 1, killCreditObjective);
@@ -1588,6 +1588,14 @@ function QuestieDB.GetQuest(questId) -- /dump QuestieDB.GetQuest(867)
                         ItemSourceId = spellObjective[3],
                     }
                     QO.SpellItemId = spellObjective[3]
+                end
+
+                --? There are quest(s) which have the spellObjective first so we need to switch them
+                -- Place the spell objective first
+                if QuestieCorrections.spellObjectiveFirst[questId] then
+                    tinsert(QO.ObjectiveData, 1, spellObjective);
+                else
+                    tinsert(QO.ObjectiveData, spellObjective);
                 end
             end
         end

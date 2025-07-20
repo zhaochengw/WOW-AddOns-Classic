@@ -263,7 +263,17 @@ local phases = {
     SASHA_AT_BLOODMOON_ISLE = 1191,
     FUSELAGE_ROCKET = 1192,
     FUSELAGE_CITY_SAVED = 1193,
-    HOODED_CRUSADER_ATHENAEUM = 1194,
+    HOODED_CRUSADER_ATHENAEUM_31 = 1194,
+    HOODED_CRUSADER_ATHENAEUM_90 = 1195,
+    TALKING_SKULL_BRIDGE_43 = 1196,
+    TALKING_SKULL_STUDY_43 = 1197,
+    TALKING_SKULL_BRIDGE_90 = 1198,
+    TALKING_SKULL_STUDY_90 = 1199,
+    RAGEFIRE_CHASM_GORDOTH_DEAD = 1200,
+    RIVETT_CLUTCHPOP_NOOK_OF_KONK = 1201,
+    RIVETT_CLUTCHPOP_STROGARM_AIRSTRIP = 1202,
+    RIVETT_CLUTCHPOP_NEXT_TO_NAZGRIM = 1203,
+    RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END = 1204,
 }
 Phasing.phases = phases
 
@@ -437,11 +447,11 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.ILTHALAINE_AT_BENCH then
-        return (not complete[28715]) and (not questLog[28715])
+        return not complete[28713]
     end
 
     if phase == phases.ILTHALAINE_AT_ROAD then
-        return (complete[28715] or questLog[28715] and true) or false
+        return complete[28713] or false
     end
 
     if phase == phases.KEZAN_SASSY_IN_HQ then
@@ -1108,8 +1118,48 @@ function Phasing.IsSpawnVisible(phase)
         return complete[10248] or false
     end
 
-    if phase == phases.HOODED_CRUSADER_ATHENAEUM then
-        return complete[31493] or complete[31497] or (questLog[31493] and questLog[31493].isComplete == 1) or (questLog[31497] and questLog[31497].isComplete == 1) or false
+    if phase == phases.HOODED_CRUSADER_ATHENAEUM_31 then
+        return complete[31493] or (questLog[31493] and questLog[31493].isComplete == 1) or false
+    end
+
+    if phase == phases.HOODED_CRUSADER_ATHENAEUM_90 then
+        return complete[31497] or (questLog[31497] and questLog[31497].isComplete == 1) or false
+    end
+
+    if phase == phases.TALKING_SKULL_BRIDGE_43 then
+        return not complete[31447] and (not questLog[31447] or (questLog[31447] and questLog[31447].isComplete == 0)) or false
+    end
+
+    if phase == phases.TALKING_SKULL_STUDY_43 then
+        return complete[31447] or (questLog[31447] and questLog[31447].isComplete == 1) or false
+    end
+
+    if phase == phases.TALKING_SKULL_BRIDGE_90 then
+        return not complete[31448] and (not questLog[31448] or (questLog[31448] and questLog[31448].isComplete == 0)) or false
+    end
+
+    if phase == phases.TALKING_SKULL_STUDY_90 then
+        return complete[31448] or (questLog[31448] and questLog[31448].isComplete == 1) or false
+    end
+
+    if phase == phases.RAGEFIRE_CHASM_GORDOTH_DEAD then
+        return complete[30983] or complete[30996] or (questLog[30983] and questLog[30983].isComplete == 1) or (questLog[30996] and questLog[30996].isComplete == 1) or false
+    end
+
+    if phase == phases.RIVETT_CLUTCHPOP_NOOK_OF_KONK then
+        return (not complete[31779]) and ((not questLog[31779] or questLog[31779].isComplete == 0)) or false
+    end
+
+    if phase == phases.RIVETT_CLUTCHPOP_STROGARM_AIRSTRIP then
+        return complete[31779] or (questLog[31779] and questLog[31779].isComplete == 1) or false
+    end
+
+    if phase == phases.RIVETT_CLUTCHPOP_NEXT_TO_NAZGRIM then
+        return (not complete[29939]) and ((not questLog[29939] or questLog[29939].isComplete == 0)) or false
+    end
+
+    if phase == phases.RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END then
+        return complete[29939] or (questLog[29939] and questLog[29939].isComplete == 1) or false
     end
 
     return false

@@ -27,7 +27,7 @@ local function OnClick(self, click)
 end
 
 local function OnEnter(self)
-    GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
+    GameTooltip:SetOwner(self, self:GetTooltipAnchor() or 'ANCHOR_RIGHT')
     GameTooltip:AddLine('tdPack2')
 
     for _, v in ipairs(CLICK_LIST) do
@@ -40,12 +40,17 @@ local function OnEnter(self)
     GameTooltip:Show()
 end
 
+local function GetTooltipAnchor(self)
+    return self:GetRight() >= (GetScreenWidth() / 2) and 'ANCHOR_LEFT' or 'ANCHOR_RIGHT'
+end
+
 function ns.SetupButton(button, isBank)
     button:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
 
     button:SetScript('OnClick', OnClick)
     button:SetScript('OnEnter', OnEnter)
     button:SetScript('OnLeave', GameTooltip_Hide)
+    button.GetTooltipAnchor = GetTooltipAnchor
     button._tdpack2BagType = isBank and BAG_TYPE.BANK or BAG_TYPE.BAG
 end
 

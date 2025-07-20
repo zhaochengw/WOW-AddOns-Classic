@@ -5,8 +5,8 @@
 ## Notes-zhCN: 整理背包，允许自定义背包的排序方式，支持多种背包插件
 ## IconTexture: Interface\AddOns\tdPack2\Resource\INV_Pet_Broom
 ## Author: Dencer
-## Version: 2.1.9
-## OptionalDeps: Bagnon, Combuctor, tdBag
+## Version: 2.1.10
+## OptionalDeps: Bagnon, Combuctor, Bagnonium
 ## SavedVariables: TDDB_PACK2
 
 Load.xml

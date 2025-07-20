@@ -934,6 +934,7 @@ function func.initUI()
 	ui.open:SetNormalTexture(texture_open);
 	ui.open:SetPushedTexture(texture_open);
 	ui.open:GetPushedTexture():SetVertexColor(0.25, 0.25, 0.25, 1.0);
+	ui.open:SetFrameLevel(PaperDollFrame:GetFrameLevel() + 10);
 	ui.open:EnableMouse(true);
 	ui.open:SetScript("OnClick", func.open_onclick);
 

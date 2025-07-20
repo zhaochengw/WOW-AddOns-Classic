@@ -422,6 +422,18 @@ local iconOptionsLocales = {
         ["zhCN"] = "启用此功能后，安其拉战备任务的位置将显示在 世界地图/小地图上。",
         ["zhTW"] = "啟用時，會在大地圖和小地圖上顯示安其拉之門戰火任務。",
     },
+    ["The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the Icons settings of Questie!"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Die AQ Kriegsanstrengungen-Quests werden für dich angezeigt. Wenn dein Server fertig ist, kannst du diese Quests in den Icons-Einstellungen von Questie ausblenden!",
+        ["esES"] = "Las misiones del esfuerzo de guerra de Ahn'Qiraj se muestran para ti. Si tu servidor ya terminó, puedes ocultarlas en la configuración de iconos de Questie.",
+        ["esMX"] = "Las misiones de la campaña de guerra de Ahn'Qiraj se muestran para ti. Si tu servidor ya terminó, puedes ocultarlas en la configuración de iconos de Questie.",
+        ["frFR"] = "Les quêtes de l’effort de guerre d’Ahn'Qiraj sont affichées pour vous. Si votre serveur a terminé, vous pouvez les cacher dans les paramètres des icônes de Questie.",
+        ["koKR"] = false,
+        ["ptBR"] = "As missões do Esforço de Guerra de Ahn'Qiraj estão sendo exibidas para você. Se o seu servidor já concluiu, você pode ocultá-las nas configurações de ícones de Questie.",
+        ["ruRU"] = "Задания войны в Ан'Кираже отображаются для вас. Если на вашем сервере это завершено, то вы можете скрыть эти задания в настройках значков Questie!",
+        ["zhCN"] = false,
+        ["zhTW"] = "已經為你顯示『安其拉戰線』任務。如果你的伺服器已經完成這些任務，可以在 Questie 的圖示設定中隱藏這些任務！",
+    },
     ["Toggle pfQuest/ClassicCodex icon style"] = {
         ["enUS"] = true,
         ["deDE"] = "pfQuest/ClassicCodex Iconstil umschalten",

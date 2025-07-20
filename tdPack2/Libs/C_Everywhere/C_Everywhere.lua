@@ -1,5 +1,5 @@
 --[[
-Copyright 2022-2024 João Cardoso
+Copyright 2022-2025 João Cardoso
 C_Everywhere is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this library give you permission to embed it
 with independent modules to produce an addon, regardless of the license terms of these
@@ -79,6 +79,7 @@ pack(C.Container, 'GetContainerItemInfo', 'iconFileID, stackCount, isLocked, qua
 pack(C.Container, 'GetContainerItemPurchaseInfo', 'money, itemCount, refundSeconds, currencyCount, hasEnchants')
 pack(C.Container, 'GetContainerItemQuestInfo', 'isQuestItem, questID, isActive')
 pack(C.CurrencyInfo, 'GetBackpackCurrencyInfo', 'name, quantity, iconFileID, currencyTypesID')
+pack(C.CurrencyInfo, 'GetBasicCurrencyInfo', 'name, description, icon, quality, displayAmount, actualAmount')
 pack(C.CurrencyInfo, 'GetCurrencyInfo', 'name, quantity, iconFileID, quantityEarnedThisWeek, maxWeeklyQuantity, maxQuantity, discovered, quality')
 pack(C.CurrencyInfo, 'GetCurrencyListInfo', 'name, isHeader, isHeaderExpanded, isTypeUnused, isShowInBackpack, quantity, iconFileID, maxQuantity, canEarnPerWeek, quantityEarnedThisWeek, discovered')
 pack(C.Spell, 'GetSpellInfo', 'name, rank, iconID, castTime, minRange, maxRange, spellID, originalIconID')

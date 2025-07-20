@@ -6,8 +6,19 @@ local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
 ZoneDB.private.subZoneToParentZoneOverride = [[return {
     [3545] = 3483,  -- Hellfire Citadel -> Hellfire Peninsula
     [5786] = 4265, -- The Nexus -> The Nexus
+    [6137] = 1, -- Frostmane Hovel -> Dun Morogh
+    [6170] = 12, -- Northshire -> Elwynn Forest
+    [6176] = 1, -- Coldridge Valley -> Dun Morogh
     [6384] = 796, -- Scarlet Monastery - Dungeon - Forlorn Cloister
     [6386] = 796, -- Scarlet Monastery - Dungeon - Crusader's Chapel
+    [6450] = 141, -- Shadowglen -> Teldrassil
+    [6451] = 14, -- Valley of Trials -> Durotar
+    [6452] = 215, -- Camp Narache -> Mulgore
+    [6453] = 14, -- Echo Isles -> Durotar
+    [6454] = 85, -- Deathknell -> Tirisfal Glades
+    [6455] = 3430, -- Sunstrider Isle -> Eversong Woods
+    [6456] = 3524, -- Ammen Vale -> Azuremyst Isle
+    [6457] = 1, -- New Tinkertown -> Dun Morogh
     [10000] = 2100, -- Maraudon - Zaetar's Grave (fake ID for Maraudon)
     [10001] = 2017, -- Stratholme - The Gauntlet (fake ID for Stratholme)
     [10002] = 1584, -- Blackrock Depths - Shadowforge City (fake ID for Blackrock Depths)
@@ -77,6 +88,9 @@ ZoneDB.private.subZoneToParentZoneOverride = [[return {
     [10071] = 4812, -- Icecrown Citadel -> Blood Queen Lana'thel (fake ID for ICC)
     [10072] = 4812, -- Icecrown Citadel -> The Frozen Throne (fake ID for ICC)
     [10076] = 6052, -- Scarlet Halls - Dungeon - Athenaeum
+    [10077] = 6066, -- Scholomance - Chamber of Summoning (fake ID for Scholomance MoP)
+    [10078] = 6066, -- Scholomance - The Upper Study (fake ID for Scholomance MoP)
+    [10079] = 6066, -- Scholomance - Headmaster's Study (fake ID for Scholomance MoP)
 }]]
 
 --! Generated table, add something manually here and i'll kill you //Logon

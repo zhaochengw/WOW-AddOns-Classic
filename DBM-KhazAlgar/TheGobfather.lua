@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2683, "DBM-KhazAlgar", nil, 1278)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250513222630")
+mod:SetRevision("20250716060114")
 mod:SetCreatureID(231821)--Bombs use https://www.wowhead.com/ptr-2/npc=236733
 mod:SetEncounterID(3128)
 --mod:SetReCombatTime(30)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
 --mod:SetHotfixNoticeRev(20240119000000)
 --mod:SetMinSyncRevision(20240119000000)
-mod:SetZone(2708)
+mod:SetZone(2706)
 
 mod:RegisterCombat("combat")
 --mod:RegisterKill("yell", L.Win)

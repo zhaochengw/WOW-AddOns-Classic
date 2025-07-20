@@ -1,8 +1,8 @@
 ## Interface: 30403
-## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cff40abff2.5.6|r |TInterface/Icons/achievement_boss_lichking:16:16:0:0:512:512:64:448:64:448|t
+## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cff40abff2.5.7|r |TInterface/Icons/achievement_boss_lichking:16:16:0:0:512:512:64:448:64:448|t
 ## Notes: Display overlays and glow buttons to improve your gameplay!
 ## Author: Vinny/Ennvina
-## Version: 2.5.6
+## Version: 2.5.7
 ## SavedVariables: SpellActivationOverlayDB
 ## X-SAO-Build: wrath
 
@@ -67,6 +67,7 @@ classes\warrior.lua
 
 options\defaults.lua
 options\db.lua
+options\questions.lua
 options\variables.lua
 options\InterfaceOptionsPanels.lua
 options\InterfaceOptionsPanels.xml

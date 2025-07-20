@@ -15,8 +15,14 @@ function SpecGear:OnInitialize()
     self:Event('ACTIVE_TALENT_GROUP_CHANGED')
 end
 
-function SpecGear:ACTIVE_TALENT_GROUP_CHANGED()
+function SpecGear:ACTIVE_TALENT_GROUP_CHANGED(_, new, old)
+    if not new or new == 0 then
+        return
+    end
     local group = GetActiveTalentGroup()
+    if group ~= new then
+        return
+    end
     local equipmentSetId = self.gears[group]
     if equipmentSetId then
         local name = C_EquipmentSet.GetEquipmentSetInfo(equipmentSetId)

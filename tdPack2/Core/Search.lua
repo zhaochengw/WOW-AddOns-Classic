@@ -18,7 +18,7 @@ local C = ns.C
 
 ---- LIBS
 local CustomSearch = LibStub('CustomSearch-1.0')
-local ItemSearch = LibStub('ItemSearch-1.3')
+local ItemSearch = LibStub('ItemSearchModify-1.3')
 local Filters = {}
 
 ---@class Addon.Search: AceModule, AceEvent-3.0
@@ -37,16 +37,6 @@ function Search:OnInitialize()
 end
 
 function Search:OnEnable()
-    self:RegisterMessage('TDPACK_OPTION_CHANGED_applyLibItemSearch', 'UpdateLib')
-    self:UpdateLib()
-end
-
-function Search:UpdateLib()
-    local flag = ns.Addon:GetOption('applyLibItemSearch')
-
-    for k, v in pairs(Filters) do
-        ItemSearch.Filters[k] = flag and v or nil
-    end
 end
 
 function Search:Matches(link, search)

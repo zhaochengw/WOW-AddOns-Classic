@@ -1,5 +1,5 @@
 --[[
-Copyright 2013-2024 João Cardoso
+Copyright 2013-2025 João Cardoso
 ItemSearch is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this library give you permission to embed it
 with independent modules to produce an addon, regardless of the license terms of these
@@ -15,12 +15,17 @@ GNU General Public License for more details.
 This file is part of ItemSearch.
 --]]
 
-local Lib = LibStub('ItemSearch-1.3')
+local Lib = LibStub('ItemSearchModify-1.3')
 if Lib.Filters then return end
 
 local C = LibStub('C_Everywhere')
 local Parser = LibStub('CustomSearch-1.0')
 local inRetail = C_TooltipInfo and true
+
+local LE_ITEM_BIND_ON_ACQUIRE = LE_ITEM_BIND_ON_ACQUIRE or Enum.ItemBind.OnAcquire
+local LE_ITEM_BIND_ON_EQUIP = LE_ITEM_BIND_ON_EQUIP or Enum.ItemBind.OnEquip
+local LE_ITEM_BIND_ON_USE = LE_ITEM_BIND_ON_USE or Enum.ItemBind.OnUse
+local LE_ITEM_BIND_QUEST = LE_ITEM_BIND_QUEST or Enum.ItemBind.Quest
 
 
 --[[ Baseline ]]--
@@ -100,7 +105,7 @@ Lib.Filters.bind = {
         bou = LE_ITEM_BIND_ON_USE,
         boq = LE_ITEM_BIND_QUEST,
     },
-    
+
     canSearch = function(self, operator, search)
         return not operator and self.keywords[search]
     end,
@@ -189,7 +194,7 @@ Lib.Filters.slot = {
 
 Lib.Filters.bound = {
     onlyTags = inRetail,
-    
+
     canSearch = function(self, operator, search)
         return not operator and Parser:Find(search, ITEM_SOULBOUND)
     end,
@@ -213,4 +218,106 @@ Lib.Filters.sets = {
             return Lib:BelongsToSet(tonumber(id), search)
         end
     end
+}
+
+Lib.Filters.spellKeyword = {
+    keyword = 'spell',
+
+    canSearch = function(self, operator, search)
+        return search:lower() == self.keyword
+    end,
+
+    match = function(self, item, _, search)
+        return not not C.Item.GetItemSpell(item.link)
+    end,
+}
+
+Lib.Filters.spell = {
+    tags = {'spell'},
+    onlyTags = true,
+
+    canSearch = function(self, operator, search)
+        return search
+    end,
+
+    match = function(self, item, _, search)
+        local spellName, spellId = C.Item.GetItemSpell(item.link)
+        local searchId = tonumber(search)
+        if searchId then
+            return searchId == spellId
+        else
+            return Parser:Find(search, spellName or '')
+        end
+    end,
+}
+
+Lib.Filters.equippable = {
+    keyword1 = 'equip',
+    keyword2 = EQUIPSET_EQUIP:lower(),
+
+    exclude = tInvert {'INVTYPE_BAG', 'INVTYPE_AMMO'},
+
+    canSearch = function(self, operator, search)
+        return self.keyword1 == search or self.keyword2 == search:lower()
+    end,
+
+    match = function(self, item)
+        if not C.Item.IsEquippableItem(item.link) then
+            return false
+        end
+        return not self.exclude[select(9, C.Item.GetItemInfo(item.link))]
+    end,
+}
+
+Lib.Filters.blizzarSetKeyword = {
+    keyword1 = 'bset',
+
+    canSearch = function(self, operator, search)
+        return self.keyword1 == search:lower()
+    end,
+
+    match = function(self, item, _, search)
+        local setId = select(16, C.Item.GetItemInfo(item.link))
+        return setId
+    end,
+}
+
+Lib.Filters.blizzardSet = {
+    tags = {'bset'},
+    onlyTags = true,
+
+    canSearch = function(self, operator, search)
+        return search
+    end,
+
+    match = function(self, item, _, search)
+        local setId = select(16, C.Item.GetItemInfo(item.link))
+        if setId and setId ~= 0 then
+            local setName = C.Item.GetItemSetInfo(setId)
+            return Parser:Find(search, setName)
+        end
+    end,
+}
+
+Lib.Filters.invtype = {
+    tags = {'inv'},
+    onlyTags = true,
+
+    canSearch = function(self, operator, search)
+        return search
+    end,
+
+    match = function(self, item, _, search)
+        local equipLoc = select(9, C.Item.GetItemInfo(item.link))
+        if not equipLoc then
+            return
+        end
+        local text = Parser:Clean(search)
+        if text == equipLoc:lower() then
+            return true
+        end
+
+        local localeLoc = _G[equipLoc]
+        return localeLoc and text == localeLoc:lower()
+    end,
 }

@@ -2,7 +2,7 @@ if DBM:GetTOC() < 110200 then return end
 local mod	= DBM:NewMod(2684, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250629181505")
+mod:SetRevision("20250710231919")
 mod:SetCreatureID(233814)
 mod:SetEncounterID(3129)
 mod:SetHotfixNoticeRev(20250629000000)
@@ -76,7 +76,7 @@ function mod:OnCombatStart(delay)
 	timerManifestMatricesCD:Start(11.1-delay, 1)
 	timerObliterationArcanocannonCD:Start(20.9-delay, 1)
 	timerEradicatingSalvoCD:Start(30.7-delay, 1)
-	timerProtocolPurgeCD:Start(61.2-delay)
+	timerProtocolPurgeCD:Start(61.2-delay, 1)
 end
 
 function mod:SPELL_CAST_START(args)

@@ -5,7 +5,7 @@
 ## Notes-zhCN: 整合背包，查看其它角色背包、银行、邮箱、装备等
 ## IconTexture: Interface\Buttons\Button-Backpack-Up
 ## Author: Dencer
-## Version: 2.3.9
+## Version: 2.3.10
 ## OptionalDeps: tdPack2, tdSync
 ## SavedVariables: TDDB_BAG2
 

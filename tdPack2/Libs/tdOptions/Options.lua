@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 4/15/2024, 11:37:25 PM
 --
-local MAJOR, MINOR = 'tdOptions', 5
+local MAJOR, MINOR = 'tdOptions', 6
 ---@class tdOptions
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
@@ -193,8 +193,12 @@ do
     local _L = GetLocale()
     local L = _L == 'zhCN' and { --
         tdSupport = '支持作者',
+        Afadian = '爱发电',
+        ['Use CTRL+C to copy link'] = '使用CTRL+C复制链接',
     } or { --
         tdSupport = 'Support Author',
+        Afadian = 'Afadian',
+        ['Use CTRL+C to copy link'] = 'Use CTRL+C to copy link',
     }
 
     local Addon = 'tdSupport'
@@ -204,10 +208,41 @@ do
         icon = [[Interface\ICONS\Achievement_Reputation_08]],
     }
 
+    local function OpenUrlDialog(url)
+        local Frame =  AceGUI:Create('Frame')
+
+        Frame:SetTitle(L['tdSupport'])
+        Frame:SetStatusText(L['Use CTRL+C to copy link'])
+        Frame:SetLayout('Flow')
+        Frame:SetWidth(400)
+        Frame:SetHeight(100)
+        Frame:EnableResize(false)
+        Frame:SetCallback('OnClose', function(widget)
+            AceGUI:Release(widget)
+        end)
+
+        local EditBox = AceGUI:Create('EditBox')
+        EditBox:SetText(url)
+        EditBox:SetFullWidth(true)
+        EditBox:DisableButton(true)
+        EditBox:SetFocus()
+        EditBox:HighlightText()
+        Frame:AddChild(EditBox)
+    end
+
     local opts = { --
         type = 'group',
         name = L['tdSupport'],
-        args = {desc = {type = 'description', name = [[]], order = 1}},
+        args = {
+            desc = {
+                type = 'execute',
+                name = L.Afadian,
+                order = 1,
+                func = function()
+                    OpenUrlDialog('https://afdian.com/a/dencer')
+                end,
+            },
+        },
     }
 
     AceConfigRegistry:RegisterOptionsTable(Addon, opts)

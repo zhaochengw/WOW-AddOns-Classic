@@ -1,11 +1,14 @@
 -- teksLoot 经典版
 -- 集成美化和布局
 
-local myname, ns = ...
+local _, ns = ...
 ns = ns or {}
 
 -- 确保teksLootDB变量持久化
 _G.teksLootDB = _G.teksLootDB or {x = nil, y = nil}
+
+-- 全局缩放参数 - 调整这个值可以改变整个界面的大小
+local SCALE = 1.0
 
 -- 本地化文本
 local NEED = "需求"
@@ -15,11 +18,11 @@ local PASS = "放弃"
 
 -- 聊天识别正则（只保留中文服务器实际使用的格式）
 ns.rollpairs = {
-    ["(.*)自动放弃了(.+)，因为他无法拾取该物品。$"]  = "pass",
-    ["(.*)放弃了：(.+)"] = "pass",
-    ["(.*)选择了贪婪取向：(.+)"] = "greed",
-    ["(.*)选择了需求取向：(.+)"] = "need",
-    ["(.*)选择了分解取向：(.+)"] = "disenchant",
+	["(.*)自动放弃了(.+)，因为他无法拾取该物品。$"]  = "pass",
+	["(.*)放弃了：(.+)"] = "pass",
+	["(.*)选择了贪婪取向：(.+)"] = "greed",
+	["(.*)选择了需求取向：(.+)"] = "need",
+	["(.*)选择了分解取向：(.+)"] = "disenchant",
 }
 
 -- 材质路径
@@ -29,7 +32,7 @@ local glow = "Interface\\AddOns\\teksLoot\\media\\glow"
 -- 职业颜色缓存
 local classCache = {}
 
-local frames = {}
+
 
 -- 取消Roll事件的记录
 local cancelled_rolls = {}
@@ -91,35 +94,35 @@ end
 
 -- 美化函数合并
 local function ApplyShadowAndBorder(f)
-    if f.shadow then return end
-    local border = CreateFrame("Frame", nil, f, "BackdropTemplate")
-    border:SetFrameLevel(1)
-    border:SetPoint("TOPLEFT", -1, 1)
-    border:SetPoint("TOPRIGHT", 1, 1)
-    border:SetPoint("BOTTOMRIGHT", 1, -1)
-    border:SetPoint("BOTTOMLEFT", -1, -1)
-    border:EnableMouse(false)
-    border:SetBackdrop({ edgeFile = blank, edgeSize = 1, insets = { left = -1, right = -1, top = -1, bottom = -1 } })
-    border:SetBackdropBorderColor(0, 0, 0, 0)
-    f.border = border
-    local shadow = CreateFrame("Frame", nil, border, "BackdropTemplate")
-    shadow:SetFrameLevel(0)
-    shadow:SetPoint("TOPLEFT", -3, 3)
-    shadow:SetPoint("TOPRIGHT", 3, 3)
-    shadow:SetPoint("BOTTOMRIGHT", 3, -3)
-    shadow:SetPoint("BOTTOMLEFT", -3, -3)
-    shadow:EnableMouse(false)
-    shadow:SetBackdrop({ edgeFile = glow, bgFile = blank, edgeSize = 4, insets = {left = 4, right = 4, top = 4, bottom = 4} })
-    shadow:SetBackdropColor(0.05, 0.05, 0.05, 0)
-    shadow:SetBackdropBorderColor(0, 0, 0, 0)
-    f.shadow = shadow
+	if f.shadow then return end
+	local border = CreateFrame("Frame", nil, f, "BackdropTemplate")
+	border:SetFrameLevel(1)
+	border:SetPoint("TOPLEFT", -1 * SCALE, 1 * SCALE)
+	border:SetPoint("TOPRIGHT", 1 * SCALE, 1 * SCALE)
+	border:SetPoint("BOTTOMRIGHT", 1 * SCALE, -1 * SCALE)
+	border:SetPoint("BOTTOMLEFT", -1 * SCALE, -1 * SCALE)
+	border:EnableMouse(false)
+	border:SetBackdrop({ edgeFile = blank, edgeSize = 1 * SCALE, insets = { left = -1 * SCALE, right = -1 * SCALE, top = -1 * SCALE, bottom = -1 * SCALE } })
+	border:SetBackdropBorderColor(0, 0, 0, 0)
+	f.border = border
+	local shadow = CreateFrame("Frame", nil, border, "BackdropTemplate")
+	shadow:SetFrameLevel(0)
+	shadow:SetPoint("TOPLEFT", -3 * SCALE, 3 * SCALE)
+	shadow:SetPoint("TOPRIGHT", 3 * SCALE, 3 * SCALE)
+	shadow:SetPoint("BOTTOMRIGHT", 3 * SCALE, -3 * SCALE)
+	shadow:SetPoint("BOTTOMLEFT", -3 * SCALE, -3 * SCALE)
+	shadow:EnableMouse(false)
+	shadow:SetBackdrop({ edgeFile = glow, bgFile = blank, edgeSize = 4 * SCALE, insets = {left = 4 * SCALE, right = 4 * SCALE, top = 4 * SCALE, bottom = 4 * SCALE} })
+	shadow:SetBackdropColor(0.05, 0.05, 0.05, 0)
+	shadow:SetBackdropBorderColor(0, 0, 0, 0)
+	f.shadow = shadow
 end
 
 -- =====================
 -- 全局常量
 -- =====================
-local FRAME_WIDTH = 366
-local FRAME_HEIGHT = 36
+local FRAME_WIDTH = 366 * SCALE
+local FRAME_HEIGHT = 36 * SCALE
 
 -- =====================
 -- 兼容性常量
@@ -131,36 +134,36 @@ local NUM_GROUP_LOOT_FRAMES = 4
 -- 通用backdrop定义
 -- =====================
 local backdrop = {
-    bgFile = blank, tile = true, tileSize = 2,
-    edgeFile = glow, edgeSize = 2,
-    insets = {left = 2, right = 2, top = 2, bottom = 2},
+	bgFile = blank, tile = true, tileSize = 2 * SCALE,
+	edgeFile = glow, edgeSize = 2 * SCALE,
+	insets = {left = 2 * SCALE, right = 2 * SCALE, top = 2 * SCALE, bottom = 2 * SCALE},
 }
 
 -- =====================
 -- 绑定属性判断封装
 -- =====================
 local function GetItemBindInfo(itemId, bop)
-    if not itemId then return "notbound" end
-    local info = {GetItemInfo(itemId)}
-    local iLevel = info[4]
-    local classID = info[12]
-    local subclassID = info[13]
-    local bindType = info[14]
-    if not bindType then return "notbound" end
-    if bindType == 1 then
-        return "bop", iLevel
-    elseif bindType == 2 then
-        return "boe"
-    elseif bindType == 4 then
-        return "quest"
-    else
-        if classID == 7 and (subclassID == 5 or subclassID == 6 or subclassID == 10) or
-           classID == 0 or classID == 1 or classID == 5 or 
-           classID == 7 or classID == 9 or classID == 16 or classID == 12 then
-            return "notbound"
-        end
-        return "notbound"
-    end
+	if not itemId then return "notbound" end
+	local info = {GetItemInfo(itemId)}
+	local iLevel = info[4]
+	local classID = info[12]
+	local subclassID = info[13]
+	local bindType = info[14]
+	if not bindType then return "notbound" end
+	if bindType == 1 then
+		return "bop", iLevel
+	elseif bindType == 2 then
+		return "boe"
+	elseif bindType == 4 then
+		return "quest"
+	else
+		if classID == 7 and (subclassID == 5 or subclassID == 6 or subclassID == 10) or
+		   classID == 0 or classID == 1 or classID == 5 or 
+		   classID == 7 or classID == 9 or classID == 16 or classID == 12 then
+			return "notbound"
+		end
+		return "notbound"
+	end
 end
 
 -- 确保frames始终被初始化
@@ -168,7 +171,7 @@ local frames = {}
 
 -- 点击函数
 local function ClickRoll(frame)
-    RollOnLoot(frame.parent.rollid, frame.rolltype)
+	RollOnLoot(frame.parent.rollid, frame.rolltype)
 end
 
 -- 提示函数
@@ -177,10 +180,10 @@ local function HideTip2() GameTooltip:Hide(); ResetCursor() end
 
 -- 调整颜色亮度的辅助函数
 local function AdjustColor(color, multiplier, alpha)
-    return math.min(color.r * multiplier, 1.0),
-           math.min(color.g * multiplier, 1.0),
-           math.min(color.b * multiplier, 1.0),
-           alpha or 1.0
+	return math.min(color.r * multiplier, 1.0),
+		   math.min(color.g * multiplier, 1.0),
+		   math.min(color.b * multiplier, 1.0),
+		   alpha or 1.0
 end
 
 -- Roll类型
@@ -189,54 +192,54 @@ local rolltypes = {"need", "greed", "disenchant", [0] = "pass"}
 -- 反向映射，用于匹配
 local reverseRolltypes = {}
 for k, v in pairs(rolltypes) do
-    reverseRolltypes[v] = k
+	reverseRolltypes[v] = k
 end
 
 local function EnsureClassColors()
-    if not RAID_CLASS_COLORS then
-        RAID_CLASS_COLORS = {
-            ["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43 },
-            ["MAGE"] = { r = 0.41, g = 0.8, b = 0.94 },
-            ["ROGUE"] = { r = 1, g = 0.96, b = 0.41 },
-            ["DRUID"] = { r = 1, g = 0.49, b = 0.04 },
-            ["HUNTER"] = { r = 0.67, g = 0.83, b = 0.45 },
-            ["SHAMAN"] = { r = 0, g = 0.44, b = 0.87 },
-            ["PRIEST"] = { r = 1, g = 1, b = 1 },
-            ["WARLOCK"] = { r = 0.58, g = 0.51, b = 0.79 },
-            ["PALADIN"] = { r = 0.96, g = 0.55, b = 0.73 },
-            ["DEATHKNIGHT"] = { r = 0.77, g = 0.12, b = 0.23 },
-            ["MONK"] = { r = 0, g = 1, b = 0.59 },
-            ["DEMONHUNTER"] = { r = 0.64, g = 0.19, b = 0.79 },
-        }
-    end
+	if not RAID_CLASS_COLORS then
+		RAID_CLASS_COLORS = {
+			["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43 },
+			["MAGE"] = { r = 0.41, g = 0.8, b = 0.94 },
+			["ROGUE"] = { r = 1, g = 0.96, b = 0.41 },
+			["DRUID"] = { r = 1, g = 0.49, b = 0.04 },
+			["HUNTER"] = { r = 0.67, g = 0.83, b = 0.45 },
+			["SHAMAN"] = { r = 0, g = 0.44, b = 0.87 },
+			["PRIEST"] = { r = 1, g = 1, b = 1 },
+			["WARLOCK"] = { r = 0.58, g = 0.51, b = 0.79 },
+			["PALADIN"] = { r = 0.96, g = 0.55, b = 0.73 },
+			["DEATHKNIGHT"] = { r = 0.77, g = 0.12, b = 0.23 },
+			["MONK"] = { r = 0, g = 1, b = 0.59 },
+			["DEMONHUNTER"] = { r = 0.64, g = 0.19, b = 0.79 },
+		}
+	end
 end
 
 -- 添加一个清理玩家名称的函数
 local function CleanPlayerName(name)
-    if not name then return nil end
-    
-    -- 保留玩家服务器信息
-    local playerName, serverName = name:match("([^-]+)-(.+)")
-    if not playerName then 
-        playerName = name
-    end
-    
-    -- 移除各种前缀和垃圾字符
-    playerName = playerName:gsub("|HlootHistory:%d+：", "")
-                           :gsub("%[战利品%]：", "")
-                           :gsub("%[.-%]%s*", "")
-                           :gsub("|H.-|h", "")
-                           :gsub("|h", "")
-                           :gsub("^：", "")
-                           :gsub("^%s*(.-)%s*$", "%1")
-    
-    -- 重新组合名字和服务器
-    return serverName and (playerName.."-"..serverName) or playerName
+	if not name then return nil end
+	
+	-- 保留玩家服务器信息
+	local playerName, serverName = name:match("([^-]+)-(.+)")
+	if not playerName then 
+		playerName = name
+	end
+	
+	-- 移除各种前缀和垃圾字符
+	playerName = playerName:gsub("|HlootHistory:%d+：", "")
+						   :gsub("%[战利品%]：", "")
+						   :gsub("%[.-%]%s*", "")
+						   :gsub("|H.-|h", "")
+						   :gsub("|h", "")
+						   :gsub("^：", "")
+						   :gsub("^%s*(.-)%s*$", "%1")
+	
+	-- 重新组合名字和服务器
+	return serverName and (playerName.."-"..serverName) or playerName
 end
 
 local function SetTooltipCommon(tooltip)
-    tooltip:SetFrameStrata("TOOLTIP")
-    tooltip:SetFrameLevel(180)
+	tooltip:SetFrameStrata("TOOLTIP")
+	tooltip:SetFrameLevel(180)
 end
 
 local function SetTip(frame)
@@ -255,8 +258,8 @@ local function SetTip(frame)
 		for name, roll in pairs(frame.parent.rolls) do 
 			local matched = false
 			if roll == rolltypes[frame.rolltype] or 
-               reverseRolltypes[roll] == frame.rolltype or
-               tostring(roll) == tostring(frame.rolltype) then
+			   reverseRolltypes[roll] == frame.rolltype or
+			   tostring(roll) == tostring(frame.rolltype) then
 				matched = true
 			end
 			
@@ -270,13 +273,13 @@ local function SetTip(frame)
 				end
 				rollCount = rollCount + 1
 			end
-        end
-    end
+		end
+	end
 	
 	if rollCount == 0 and frame:IsEnabled() ~= 0 then
 		GameTooltip:AddLine("暂无玩家选择", 0.7, 0.7, 0.7)
 	end
-    GameTooltip:Show()
+	GameTooltip:Show()
 end
 
 -- 物品提示
@@ -337,8 +340,8 @@ end
 local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...)
 	local f = CreateFrame("Button", nil, parent, "BackdropTemplate")
 	f:SetPoint(...)
-	f:SetWidth(36)
-	f:SetHeight(36)
+	f:SetWidth(36 * SCALE)
+	f:SetHeight(36 * SCALE)
 	f:SetNormalTexture(ntex)
 	if ptex then f:SetPushedTexture(ptex) end
 	
@@ -366,9 +369,9 @@ local function CreateRollButton(parent, ntex, ptex, htex, rolltype, tiptext, ...
 	
 	-- 改进文本创建，使其更加明显
 	local txt = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")
-	txt:SetPoint("CENTER", 0, rolltype == 2 and 1 or rolltype == 0 and -1.2 or 0)
-	txt:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-	txt:SetShadowOffset(1, -1)
+	txt:SetPoint("CENTER", 0, rolltype == 2 and 1 * SCALE or rolltype == 0 and -1.2 * SCALE or 0)
+	txt:SetFont(STANDARD_TEXT_FONT, 15 * SCALE, "OUTLINE")
+	txt:SetShadowOffset(1 * SCALE, -1 * SCALE)
 	txt:SetShadowColor(0, 0, 0, 1)
 	txt:SetText("0")
 	f:SetFontString(txt)
@@ -378,21 +381,21 @@ end
 
 -- 创建Roll框架
 local function CreateRollFrame()
-    local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-    frame:SetWidth(FRAME_WIDTH)
-    frame:SetHeight(FRAME_HEIGHT)
+	local frame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+	frame:SetWidth(FRAME_WIDTH)
+	frame:SetHeight(FRAME_HEIGHT)
 	frame:SetFrameStrata("HIGH")
-    frame:SetClampedToScreen(true)
-    frame:SetBackdrop(backdrop)
-    frame:SetBackdropColor(0, 0, 0, 0)
-    frame:SetScript("OnEvent", OnEvent)
-    frame:RegisterEvent("CANCEL_LOOT_ROLL")
-    frame:Hide()
+	frame:SetClampedToScreen(true)
+	frame:SetBackdrop(backdrop)
+	frame:SetBackdropColor(0, 0, 0, 0)
+	frame:SetScript("OnEvent", OnEvent)
+	frame:RegisterEvent("CANCEL_LOOT_ROLL")
+	frame:Hide()
 
 	local button = CreateFrame("Button", nil, frame, "BackdropTemplate")
 	button:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 0, 0)
-	button:SetWidth(36)
-	button:SetHeight(36)
+	button:SetWidth(36 * SCALE)
+	button:SetHeight(36 * SCALE)
 	button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
 	-- 减弱高亮效果，使边框更加明显
 	button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
@@ -406,15 +409,15 @@ local function CreateRollFrame()
 	frame.button = button
 
 	local buttonborder = CreateFrame("Frame", nil, button, "BackdropTemplate")
-	buttonborder:SetWidth(38) -- 稍微大一点，让边框更明显
-	buttonborder:SetHeight(38) -- 稍微大一点，让边框更明显
+	buttonborder:SetWidth(38 * SCALE) -- 稍微大一点，让边框更明显
+	buttonborder:SetHeight(38 * SCALE) -- 稍微大一点，让边框更明显
 	buttonborder:SetPoint("CENTER", button, "CENTER")
 	-- 使用有边框的背景
 	buttonborder:SetBackdrop({
 		bgFile = blank, 
 		edgeFile = glow, 
-		edgeSize = 2,
-		insets = {left = 2, right = 2, top = 2, bottom = 2},
+		edgeSize = 2 * SCALE,
+		insets = {left = 2 * SCALE, right = 2 * SCALE, top = 2 * SCALE, bottom = 2 * SCALE},
 	})
 	buttonborder:SetBackdropColor(0, 0, 0, 0) -- 背景透明
 	buttonborder:SetBackdropBorderColor(1, 1, 1, 1) -- 默认为白色，会在设置物品时更改
@@ -423,8 +426,8 @@ local function CreateRollFrame()
 	frame.buttonborder = buttonborder
 
 	local tfade = frame:CreateTexture(nil, "BORDER")
-	tfade:SetPoint("TOPLEFT", frame, "TOPLEFT", 4, -4)
-	tfade:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4, 4)
+	tfade:SetPoint("TOPLEFT", frame, "TOPLEFT", 4 * SCALE, -4 * SCALE)
+	tfade:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -4 * SCALE, 4 * SCALE)
 	tfade:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
 	tfade:SetBlendMode("ADD")
 	
@@ -435,24 +438,24 @@ local function CreateRollFrame()
 	)
 
 	local status = CreateFrame("StatusBar", nil, frame, "BackdropTemplate")
-	status:SetWidth(326)
-	status:SetHeight(12) -- 增加高度从10到12
-	status:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 4, 0)
+	status:SetWidth(326 * SCALE)
+	status:SetHeight(12 * SCALE) -- 增加高度从10到12
+	status:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 4 * SCALE, 0)
 	status:SetScript("OnUpdate", StatusUpdate)
 	status:SetFrameLevel(status:GetFrameLevel()-1)
 	status:SetStatusBarTexture("Interface\\AddOns\\teksLoot\\media\\statusbar")
 	-- 使用品质色与边框颜色一致，但增加不透明度
-    status:SetStatusBarColor(.8, .8, .8, 0.9) 
+	status:SetStatusBarColor(.8, .8, .8, 0.9) 
 	status:EnableMouse(false) -- 确保不遮挡点击
 	
 	-- 为进度条添加边框使其更明显
 	local statusBorder = CreateFrame("Frame", nil, status, "BackdropTemplate")
-	statusBorder:SetPoint("TOPLEFT", status, "TOPLEFT", -1, 1)
-	statusBorder:SetPoint("BOTTOMRIGHT", status, "BOTTOMRIGHT", 1, -1)
+	statusBorder:SetPoint("TOPLEFT", status, "TOPLEFT", -1 * SCALE, 1 * SCALE)
+	statusBorder:SetPoint("BOTTOMRIGHT", status, "BOTTOMRIGHT", 1 * SCALE, -1 * SCALE)
 	statusBorder:SetFrameLevel(status:GetFrameLevel() - 1)
 	statusBorder:SetBackdrop({
 		edgeFile = blank,
-		edgeSize = 1,
+		edgeSize = 1 * SCALE,
 		insets = {left = 0, right = 0, top = 0, bottom = 0},
 	})
 	statusBorder:SetBackdropBorderColor(1, 1, 1, 0.4) -- 增加一点不透明度
@@ -462,42 +465,42 @@ local function CreateRollFrame()
 	frame.status = status
 
 	local spark = frame:CreateTexture(nil, "OVERLAY")
-	spark:SetWidth(20) -- 增加宽度
-	spark:SetHeight(32) -- 增加高度
+	spark:SetWidth(20 * SCALE) -- 增加宽度
+	spark:SetHeight(32 * SCALE) -- 增加高度
 	spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 	spark:SetBlendMode("ADD")
 	spark:SetVertexColor(1, 1, 1, 1) -- 保持高亮度
 	status.spark = spark
 
-	local need, needtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Dice-Up", "Interface\\Buttons\\UI-GroupLoot-Dice-Highlight", "Interface\\Buttons\\UI-GroupLoot-Dice-Down", 1, NEED, "BOTTOMLEFT", frame.status, "BOTTOMLEFT", 5, -3)
+	local need, needtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Dice-Up", "Interface\\Buttons\\UI-GroupLoot-Dice-Highlight", "Interface\\Buttons\\UI-GroupLoot-Dice-Down", 1, NEED, "BOTTOMLEFT", frame.status, "BOTTOMLEFT", 5 * SCALE, -3 * SCALE)
 	-- 为绑定文本创建一个单独的框架，以便控制显示层级
 	local bindFrame = CreateFrame("Frame", nil, button)
 	bindFrame:SetFrameLevel(button:GetFrameLevel() + 5) -- 确保在按钮上层
-	bindFrame:SetPoint("BOTTOM", button, "BOTTOM", 0, 4) -- 放置在图标底部中心，稍微上移更多
-	bindFrame:SetWidth(36) -- 宽度适应字体
-	bindFrame:SetHeight(20) -- 高度适应字体
+	bindFrame:SetPoint("BOTTOM", button, "BOTTOM", 0, 4 * SCALE) -- 放置在图标底部中心，稍微上移更多
+	bindFrame:SetWidth(36 * SCALE) -- 宽度适应字体
+	bindFrame:SetHeight(20 * SCALE) -- 高度适应字体
 	
 	-- 不再添加半透明背景
 	
 	-- 在高层级框架上创建字体字符串
 	local bind = bindFrame:CreateFontString(nil, "OVERLAY")
 	bind:SetPoint("CENTER", bindFrame, "CENTER", 0, 0)
-	bind:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE") -- 设置字体大小为14
+	bind:SetFont(STANDARD_TEXT_FONT, 14 * SCALE, "OUTLINE") -- 设置字体大小为14
 	frame.fsbind = bind								  
-	local greed, greedtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Coin-Up", "Interface\\Buttons\\UI-GroupLoot-Coin-Highlight", "Interface\\Buttons\\UI-GroupLoot-Coin-Down", 2, GREED, "LEFT", need, "RIGHT", 5, 0)
+	local greed, greedtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Coin-Up", "Interface\\Buttons\\UI-GroupLoot-Coin-Highlight", "Interface\\Buttons\\UI-GroupLoot-Coin-Down", 2, GREED, "LEFT", need, "RIGHT", 5 * SCALE, 0)
 	local de, detext
-	de, detext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-DE-Up", "Interface\\Buttons\\UI-GroupLoot-DE-Highlight", "Interface\\Buttons\\UI-GroupLoot-DE-Down", 3, ROLL_DISENCHANT, "LEFT", greed, "RIGHT", 0, 1)
-	local pass, passtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", nil, "Interface\\Buttons\\UI-GroupLoot-Pass-Down", 0, PASS, "LEFT", de, "RIGHT", 175, 1.4)
+	de, detext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-DE-Up", "Interface\\Buttons\\UI-GroupLoot-DE-Highlight", "Interface\\Buttons\\UI-GroupLoot-DE-Down", 3, ROLL_DISENCHANT, "LEFT", greed, "RIGHT", 0, 1 * SCALE)
+	local pass, passtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", nil, "Interface\\Buttons\\UI-GroupLoot-Pass-Down", 0, PASS, "LEFT", de, "RIGHT", 175 * SCALE, 1.4 * SCALE)
 	frame.needbutt, frame.greedbutt, frame.disenchantbutt, frame.passbutt = need, greed, de, pass -- 添加对pass按钮的引用
 	frame.need, frame.greed, frame.pass, frame.disenchant = needtext, greedtext, passtext, detext
 
 	-- 添加物品名称文本
 	local loot = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-	loot:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-	loot:SetPoint("LEFT", de, "RIGHT", 0, 0.12)
-	loot:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
-	loot:SetHeight(10)
-	loot:SetWidth(200)
+	loot:SetFont(STANDARD_TEXT_FONT, 15 * SCALE, "OUTLINE")
+	loot:SetPoint("LEFT", de, "RIGHT", 0, 0.12 * SCALE)
+	loot:SetPoint("RIGHT", frame, "RIGHT", -5 * SCALE, 0)
+	loot:SetHeight(10 * SCALE)
+	loot:SetWidth(200 * SCALE)
 	loot:SetJustifyH("LEFT")
 	frame.fsloot = loot
 
@@ -514,19 +517,14 @@ anchor:SetClampedToScreen(true)
 anchor:SetFrameStrata("HIGH")
 ApplyShadowAndBorder(anchor)
 anchor:SetBackdrop({
-    bgFile = blank, tile = true, tileSize = 2,
-    edgeFile = glow, edgeSize = 2,
-    insets = {left = 2, right = 2, top = 2, bottom = 2},
+	bgFile = blank, tile = true, tileSize = 2 * SCALE,
+	edgeFile = glow, edgeSize = 2 * SCALE,
+	insets = {left = 2 * SCALE, right = 2 * SCALE, top = 2 * SCALE, bottom = 2 * SCALE},
 })
 anchor:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
 anchor:SetBackdropBorderColor(0.8, 0.8, 0.8, 0.7)
 
--- 不再需要在锚点上直接创建标签，因为我们使用单独的文本框架
--- 保留一个隐藏的标签用于锚点内部结构
-local label = anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
-label:SetPoint("CENTER", anchor, "CENTER", 0, 0)
-label:SetText("")
-label:Hide()
+
 
 -- 创建一个额外的文本框架，用于在锚点被覆盖时显示文本
 local textFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
@@ -539,36 +537,35 @@ textFrame:SetClampedToScreen(true)
 -- 创建文本标签
 local textLabel = textFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 textLabel:SetPoint("CENTER", textFrame, "CENTER", 0, 0)
-textLabel:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+textLabel:SetFont(STANDARD_TEXT_FONT, 14 * SCALE, "OUTLINE")
 textLabel:SetText("|cffff0000拖|cffff7f00动|cffffcc00调|cff00ff00整|cff0000ff位|cff4b0082置|r - |cff9400d3右|cffff0000键|cffff7f00点|cffffcc00击|cff00ff00隐|cff0000ff藏|r")
 textLabel:SetJustifyH("CENTER")
-textLabel:SetWidth(350)
+textLabel:SetWidth(350 * SCALE)
 textFrame:Hide() -- 默认隐藏
 
 local function EnsureFrameOnScreen()
-    -- 只在插件加载时调用一次，确保初始位置有效
-    local x, y = anchor:GetCenter()
-    
-    -- 如果位置无效，重置到默认位置
-    if not x or not y then
-        -- 重置到屏幕中央偏下位置
-        anchor:ClearAllPoints()
-        anchor:SetPoint("CENTER", UIParent, "BOTTOM", 0, 221)
-        
-        -- 保存新位置
-        teksLootDB.x, teksLootDB.y = anchor:GetCenter()
-    end
+	-- 只在插件加载时调用一次，确保初始位置有效
+	local x, y = anchor:GetCenter()
+	
+	-- 如果位置无效，重置到默认位置
+	if not x or not y then
+		-- 重置到屏幕中央偏下位置
+		anchor:ClearAllPoints()
+		anchor:SetPoint("CENTER", UIParent, "BOTTOM", 0, 221)
+		
+		-- 保存新位置
+		teksLootDB.x, teksLootDB.y = anchor:GetCenter()
+	end
 end
 
 anchor:SetScript("OnClick", function(self, button)
-    if button == "RightButton" then
-        self:Hide()
-        textFrame:Hide()
-    end
+	if button == "RightButton" then
+		self:Hide()
+		textFrame:Hide()
+	end
 end)
 
--- 确保frames始终被初始化
-local frames = {}
+
 
 local function GetFrame()
 	-- 检查是否还有可见的框架
@@ -578,41 +575,39 @@ local function GetFrame()
 			hasVisibleFrames = true
 			break
 		end
-	end
-	
-	-- 如果没有可见框架，清空frames数组
-	if not hasVisibleFrames then
-		frames = {}
-	end
-	
-	-- 先尝试重用现有框架
-	for i, f in ipairs(frames) do
-		if not f.rollid then 
-			-- 如果是重用框架，先检查它的位置是否已经设置
-			if #frames > 1 and i > 1 then
-				-- 放在前一个框架上方
-				f:ClearAllPoints()
-				f:SetPoint("BOTTOMLEFT", frames[i-1], "TOPLEFT", 0, 5)
-			else
-				-- 第一个框架与锚点重叠
-				f:ClearAllPoints()
-				f:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", 0, 0)
-			end
-			return f 
+	end		-- 如果没有可见框架，清空frames数组
+		if not hasVisibleFrames then
+			frames = {}
 		end
-	end
+		
+		-- 先尝试重用现有框架
+		for i, f in ipairs(frames) do
+			if not f.rollid then 
+				-- 如果是重用框架，先检查它的位置是否已经设置
+				if #frames > 1 and i > 1 then
+					-- 放在前一个框架上方
+					f:ClearAllPoints()
+					f:SetPoint("BOTTOMLEFT", frames[i-1], "TOPLEFT", 0, 5 * SCALE)
+				else
+					-- 第一个框架与锚点重叠
+					f:ClearAllPoints()
+					f:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", 0, 0)
+				end
+				return f 
+			end
+		end
 
-	-- 创建新框架
-	local f = CreateRollFrame()
-	
-	-- 设置框架位置
-	if #frames > 0 then
-		-- 放在之前最后一个框架的上方
-		f:SetPoint("BOTTOMLEFT", frames[#frames], "TOPLEFT", 0, 5)
-	else
-		-- 第一个框架直接与锚点重叠
-		f:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", 0, 0)
-	end
+		-- 创建新框架
+		local f = CreateRollFrame()
+		
+		-- 设置框架位置
+		if #frames > 0 then
+			-- 放在之前最后一个框架的上方
+			f:SetPoint("BOTTOMLEFT", frames[#frames], "TOPLEFT", 0, 5 * SCALE)
+		else
+			-- 第一个框架直接与锚点重叠
+			f:SetPoint("BOTTOMLEFT", anchor, "BOTTOMLEFT", 0, 0)
+		end
 	
 	table.insert(frames, f)
 	return f
@@ -633,111 +628,111 @@ anchor:Hide()
 
 -- 开始Roll
 local function START_LOOT_ROLL(rollid, time)
-    if cancelled_rolls[rollid] then return end
-    local f = GetFrame()
-    f.rollid = rollid
-    f.time = time
-    f.rolls = {}
-    f.need:SetText("0")
-    f.greed:SetText("0")
-    f.pass:SetText("0")
-    f.disenchant:SetText("0")
-    local texture, name, count, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollid)
-    if not name or name == "" then return end
-    f.button:SetNormalTexture(texture)
-    f.button.link = GetLootRollItemLink(rollid)
-    if canNeed then GroupLootFrame_EnableLootButton(f.needbutt) else GroupLootFrame_DisableLootButton(f.needbutt) end
-    if canGreed then GroupLootFrame_EnableLootButton(f.greedbutt) else GroupLootFrame_DisableLootButton(f.greedbutt) end
-    if canDisenchant then GroupLootFrame_EnableLootButton(f.disenchantbutt) else GroupLootFrame_DisableLootButton(f.disenchantbutt) end
-    local color = ITEM_QUALITY_COLORS[quality]
-    local itemId = f.button.link and f.button.link:match("item:(%d+)")
-    local bindType, itemLevel = GetItemBindInfo(itemId, bop)
-    if bindType == "bop" then
-        f.fsbind:SetText(tostring(itemLevel or "?"))
-        f.fsbind:SetVertexColor(color.r, color.g, color.b)
-    elseif bindType == "boe" then
-        f.fsbind:SetText("装绑")
-        f.fsbind:SetVertexColor(0.3, 1, 0.3)
-    elseif bindType == "notbound" then
-        f.fsbind:SetText("不绑")
-        f.fsbind:SetVertexColor(0.7, 0.7, 1)
-    elseif bindType == "quest" then
-        f.fsbind:SetText("任务")
-        f.fsbind:SetVertexColor(1, 0.82, 0)
-    else
-        f.fsbind:SetText("")
-    end
-    f.fsloot:SetVertexColor(color.r, color.g, color.b)
-    f.fsloot:SetText(name)
-    f:SetBackdropBorderColor(color.r, color.g, color.b, 0)
-    f.buttonborder:SetBackdropBorderColor(AdjustColor(color, 1.5))
-    f.status:SetStatusBarColor(AdjustColor(color, 1.2, 0.9))
-    f.status:SetMinMaxValues(0, time)
-    f.status:SetValue(time)
-    f:Show()
+	if cancelled_rolls[rollid] then return end
+	local f = GetFrame()
+	f.rollid = rollid
+	f.time = time
+	f.rolls = {}
+	f.need:SetText("0")
+	f.greed:SetText("0")
+	f.pass:SetText("0")
+	f.disenchant:SetText("0")
+	local texture, name, count, quality, bop, canNeed, canGreed, canDisenchant = GetLootRollItemInfo(rollid)
+	if not name or name == "" then return end
+	f.button:SetNormalTexture(texture)
+	f.button.link = GetLootRollItemLink(rollid)
+	if canNeed then GroupLootFrame_EnableLootButton(f.needbutt) else GroupLootFrame_DisableLootButton(f.needbutt) end
+	if canGreed then GroupLootFrame_EnableLootButton(f.greedbutt) else GroupLootFrame_DisableLootButton(f.greedbutt) end
+	if canDisenchant then GroupLootFrame_EnableLootButton(f.disenchantbutt) else GroupLootFrame_DisableLootButton(f.disenchantbutt) end
+	local color = ITEM_QUALITY_COLORS[quality]
+	local itemId = f.button.link and f.button.link:match("item:(%d+)")
+	local bindType, itemLevel = GetItemBindInfo(itemId, bop)
+	if bindType == "bop" then
+		f.fsbind:SetText(tostring(itemLevel or "?"))
+		f.fsbind:SetVertexColor(color.r, color.g, color.b)
+	elseif bindType == "boe" then
+		f.fsbind:SetText("装绑")
+		f.fsbind:SetVertexColor(0.3, 1, 0.3)
+	elseif bindType == "notbound" then
+		f.fsbind:SetText("不绑")
+		f.fsbind:SetVertexColor(0.7, 0.7, 1)
+	elseif bindType == "quest" then
+		f.fsbind:SetText("任务")
+		f.fsbind:SetVertexColor(1, 0.82, 0)
+	else
+		f.fsbind:SetText("")
+	end
+	f.fsloot:SetVertexColor(color.r, color.g, color.b)
+	f.fsloot:SetText(name)
+	f:SetBackdropBorderColor(color.r, color.g, color.b, 0)
+	f.buttonborder:SetBackdropBorderColor(AdjustColor(color, 1.5))
+	f.status:SetStatusBarColor(AdjustColor(color, 1.2, 0.9))
+	f.status:SetMinMaxValues(0, time)
+	f.status:SetValue(time)
+	f:Show()
 end
 
 -- 修改 ParseRollChoice 函数
 local function ParseRollChoice(msg)
-    for pattern, rollType in pairs(ns.rollpairs) do
-        local _, _, playername, itemname = string.find(msg, pattern)
-        if playername and itemname and playername ~= "Everyone" then 
-            -- 清理玩家名称
-            playername = CleanPlayerName(playername)
-            return playername, itemname, rollType 
-        end
-    end
-    return nil, nil, nil
+	for pattern, rollType in pairs(ns.rollpairs) do
+		local _, _, playername, itemname = string.find(msg, pattern)
+		if playername and itemname and playername ~= "Everyone" then 
+			-- 清理玩家名称
+			playername = CleanPlayerName(playername)
+			return playername, itemname, rollType 
+		end
+	end
+	return nil, nil, nil
 end
 
 -- 修改 CHAT_MSG_LOOT 函数
 local in_soviet_russia = (GetLocale() == "ruRU")
 local function CHAT_MSG_LOOT(msg)
-    local playername, itemname, rolltype = ParseRollChoice(msg)
-    if not (playername and itemname and rolltype) then return end
-    
-    if in_soviet_russia and rolltype ~= "pass" then 
-        itemname, playername = playername, itemname 
-    end
-    
-    EnsureClassColors()
-    
-    for _, f in ipairs(frames) do
-        if f and f.rollid and f.button and f.button.link and not f.rolls[playername] then
-            -- 检查是否是正确的物品
-            if string.find(f.button.link, itemname, 1, true) or 
-               string.find(itemname, f.button.link, 1, true) then
-                
-                -- 记录玩家选择并更新计数
-                f.rolls[playername] = rolltype
-                local count = tonumber(f[rolltype]:GetText()) or 0
-                f[rolltype]:SetText(count + 1)
-                
-                -- 更新提示（如果鼠标悬停在相应按钮上）
-                if (f.needbutt and f.needbutt:IsMouseOver() and rolltype == "need") or
-                   (f.greedbutt and f.greedbutt:IsMouseOver() and rolltype == "greed") or
-                   (f.disenchantbutt and f.disenchantbutt:IsMouseOver() and rolltype == "disenchant") or
-                   (f.passbutt and f.passbutt:IsMouseOver() and rolltype == "pass") then
-                    SetTip(f[rolltype == "need" and "needbutt" or 
-                            rolltype == "greed" and "greedbutt" or
-                            rolltype == "disenchant" and "disenchantbutt" or "passbutt"])
-                end
-                return
-            end
-        end
-    end
+	local playername, itemname, rolltype = ParseRollChoice(msg)
+	if not (playername and itemname and rolltype) then return end
+	
+	if in_soviet_russia and rolltype ~= "pass" then 
+		itemname, playername = playername, itemname 
+	end
+	
+	EnsureClassColors()
+	
+	for _, f in ipairs(frames) do
+		if f and f.rollid and f.button and f.button.link and not f.rolls[playername] then
+			-- 检查是否是正确的物品
+			if string.find(f.button.link, itemname, 1, true) or 
+			   string.find(itemname, f.button.link, 1, true) then
+				
+				-- 记录玩家选择并更新计数
+				f.rolls[playername] = rolltype
+				local count = tonumber(f[rolltype]:GetText()) or 0
+				f[rolltype]:SetText(count + 1)
+				
+				-- 更新提示（如果鼠标悬停在相应按钮上）
+				if (f.needbutt and f.needbutt:IsMouseOver() and rolltype == "need") or
+				   (f.greedbutt and f.greedbutt:IsMouseOver() and rolltype == "greed") or
+				   (f.disenchantbutt and f.disenchantbutt:IsMouseOver() and rolltype == "disenchant") or
+				   (f.passbutt and f.passbutt:IsMouseOver() and rolltype == "pass") then
+					SetTip(f[rolltype == "need" and "needbutt" or 
+							rolltype == "greed" and "greedbutt" or
+							rolltype == "disenchant" and "disenchantbutt" or "passbutt"])
+				end
+				return
+			end
+		end
+	end
 end
 
 -- 隐藏暴雪自带Roll框的函数
 local function HideBlizzardRollFrames()
-    for i = 1, NUM_GROUP_LOOT_FRAMES do
-        local f = _G["GroupLootFrame"..i]
-        if f then
-            f:UnregisterAllEvents()
-            f:Hide()
-            f.Show = function() end
-        end
-    end
+	for i = 1, NUM_GROUP_LOOT_FRAMES do
+		local f = _G["GroupLootFrame"..i]
+		if f then
+			f:UnregisterAllEvents()
+			f:Hide()
+			f.Show = function() end
+		end
+	end
 end
 
 -- 初始隐藏
@@ -760,7 +755,7 @@ anchor:SetScript("OnEvent", function(frame, event, ...)
 		
 		-- 设置位置
 		frame:ClearAllPoints()
-		frame:SetPoint("CENTER", UIParent, teksLootDB.x and "BOTTOMLEFT" or "BOTTOM", teksLootDB.x or 0, teksLootDB.y or 221)
+		frame:SetPoint("CENTER", UIParent, teksLootDB.x and "BOTTOMLEFT" or "BOTTOM", teksLootDB.x or 0, teksLootDB.y or 221 * SCALE)
 		EnsureFrameOnScreen()
 		
 		frame:Hide()
@@ -769,7 +764,7 @@ anchor:SetScript("OnEvent", function(frame, event, ...)
 		START_LOOT_ROLL(arg1, arg2)
 	elseif event == "CHAT_MSG_LOOT" then
 		CHAT_MSG_LOOT(arg1)
-    end
+	end
 end)
 
 -- Slash命令
@@ -778,11 +773,11 @@ SLASH_TEKSLOOT2 = "/teks"
 
 -- Slash命令处理函数
 SlashCmdList["TEKSLOOT"] = function()
-    if anchor:IsVisible() then 
-        anchor:Hide()
-        textFrame:Hide()
-    else 
-        anchor:Show()
-        textFrame:Show()
-    end
+	if anchor:IsVisible() then 
+		anchor:Hide()
+		textFrame:Hide()
+	else 
+		anchor:Show()
+		textFrame:Show()
+	end
 end

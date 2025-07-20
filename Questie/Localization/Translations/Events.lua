@@ -278,6 +278,18 @@ local eventsLocales = {
         ["zhCN"] = "暗月岛",
         ["zhTW"] = "暗月島",
     },
+    ["Riding"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Reiten",
+        ["esES"] = "Equitación",
+        ["esMX"] = "Equitación",
+        ["frFR"] = "Monte",
+        ["koKR"] = "탈것 타기",
+        ["ptBR"] = "Montaria",
+        ["ruRU"] = "Верховая езда",
+        ["zhCN"] = "骑术",
+        ["zhTW"] = "騎術",
+    },
 }
 
 for k, v in pairs(eventsLocales) do

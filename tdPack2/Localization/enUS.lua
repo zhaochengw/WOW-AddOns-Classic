@@ -11,9 +11,8 @@ end
 -- @locale:language=enUS@
 L = L or {}
 L["Add advance rule"] = true
-L["Add extension filter to ItemSearch-1.3"] = true
 L["Add rule"] = true
-L["Advancee rules use ItemSearch-1.3"] = true
+L["Advancee rules use ItemSearchModify-1.3"] = true
 L["Already exists"] = true
 L["Are you sure |cffff191919DELETE|r rule and its |cffff1919SUBRULES|r?"] = true
 L["Are you sure |cffff191919DELETE|r rule?"] = true
@@ -48,8 +47,8 @@ L["Name (Optional)"] = true
 L["None"] = true
 L["OPEN_OPTIONS"] = "Open options"
 L["OPEN_RULE_OPTIONS"] = "Open rule options"
+L["Pack canceled."] = true
 L["Pack finish."] = true
-L["Packing now"] = true
 L["Player enter combat, pack cancel."] = true
 L["Player in combat"] = true
 L["Player is dead"] = true
@@ -82,7 +81,6 @@ L["SORT_BANK_DESC"] = "Sort bank desc"
 L["SORT_DESC"] = "Sort desc"
 L["SORTING_DESC"] = "Sort bags and bank."
 L["SORTING_NAME"] = "Sorting"
-L["tdPack2 is a bag sorting addon."] = true
 L["Tools"] = true
 L["Transporter"] = true
 L["UPDATE_RULES_CONFIRM"] = [=[The current version of tdPack2 updates a large number of rules. Do you want to reset the rules to the default settings?
@@ -94,10 +92,9 @@ L["Usuable"] = true
 --@end-locale@]===]
 
 --[==[@debug@
--- @import@
+-- @import:language=enUS@
 L['Leave bank, pack cancel.'] = true
 L['Player enter combat, pack cancel.'] = true
-L['Packing now'] = true
 L['Player is dead'] = true
 L['Player in combat'] = true
 L['Please drop the item, money or skills.'] = true
@@ -111,7 +108,6 @@ L['Restore default Settings'] = true
 L['Are you sure you want to restore the current Settings?'] = true
 L['Left Click'] = true
 L['Right Click'] = true
-L['tdPack2 is a bag sorting addon.'] = true
 L['Rules'] = true
 L['Buttons'] = true
 L['Bag'] = true
@@ -135,11 +131,9 @@ L['Select an icon (Optional)'] = true
 L['Save to bank when default packing'] = true
 L['Keep bank items stack full'] = true
 L['Bank and bag stacking together'] = true
-L['Add extension filter to ItemSearch-1.3'] = true
 L['Help'] = true
 L['Drag to modify the sorting order'] = true
 L['Put in an item to add simple rule'] = true
-L['Advancee rules use ItemSearch-1.3'] = true
 L['Enjoy!'] = true
 L['Rules restore to default.'] = true
 L['Add rule'] = true
@@ -182,6 +176,7 @@ L['ITEM_TAG: Jewelry'] = 'Jewelry'
 L['ITEM_TAG: Mount'] = 'Mount'
 L['ITEM_TAG: Pet'] = 'Pet'
 
+L['Advancee rules use ItemSearchModify-1.3'] = true
 -- @locale-fill@
 
 -- @end-import@

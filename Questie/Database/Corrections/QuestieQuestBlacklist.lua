@@ -4452,6 +4452,7 @@ function QuestieQuestBlacklist:Load()
         [8274] = true, -- Not in the game
         [8275] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8286] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [8288] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8301] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8302] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8303] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5265,6 +5266,7 @@ function QuestieQuestBlacklist:Load()
         [13159] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13167] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13182] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [13190] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13204] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13205] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [13266] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5576,7 +5578,13 @@ function QuestieQuestBlacklist:Load()
         [26851] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [26852] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [26853] = Expansions.Current >= Expansions.Cata, -- Not in the game
+        [26856] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26858] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
         [26859] = true, -- Hidden quest
+        [26862] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26865] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26866] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26867] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
         [26874] = true, -- Hidden quest
         [26877] = true, -- Hidden quest
         [26879] = true, -- Hidden quest
@@ -5585,23 +5593,30 @@ function QuestieQuestBlacklist:Load()
         [26900] = true, -- Not in the game
         [26902] = true, -- Hidden quest
         [26951] = Expansions.Current >= Expansions.Cata, -- Seems to not be available
-        [26972] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26973] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26974] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26976] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26982] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26983] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26984] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26985] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26993] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26994] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
-        [26996] = Expansions.Current >= Expansions.MoP, -- Not available anymore in MoP
+        [26972] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26973] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26974] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26976] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26982] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26983] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26984] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26985] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26993] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26994] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [26996] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
         [27018] = Expansions.Current >= Expansions.Cata, -- Seems to not be available
         [27052] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [27079] = true, -- Hidden quest
         [27080] = true, -- Hidden quest
         [27081] = true, -- Not in the game
         [27121] = Expansions.Current >= Expansions.Cata, -- Not in the game
+        [27140] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27142] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27143] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27145] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27146] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27147] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [27148] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
         [27149] = true, -- Not in the game
         [27250] = true, -- Not in the game
         [27289] = true, -- Not in the game
@@ -5828,6 +5843,9 @@ function QuestieQuestBlacklist:Load()
         [29706] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [29761] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [29773] = Expansions.Current >= Expansions.MoP, -- Not in the game
+        [29859] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [29868] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
+        [29876] = Expansions.Current >= Expansions.MoP, -- Removed in MoP
         [30110] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [30111] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [30173] = true, -- Not in the game
@@ -5863,7 +5881,11 @@ function QuestieQuestBlacklist:Load()
         [30817] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [30818] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [30934] = true, -- Not in the game
+        [31033] = Expansions.Current >= Expansions.MoP, -- Not in the game
+        [31035] = Expansions.Current >= Expansions.MoP, -- Not in the game
+        [31172] = Expansions.Current >= Expansions.MoP, -- Not in the game
         [32396] = Expansions.Current >= Expansions.MoP, -- Not in the game
+        [32666] = true, -- Hidden quest
         [65593] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [65597] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [65601] = Expansions.Current >= Expansions.Cata, -- Not in the game
@@ -5871,6 +5893,23 @@ function QuestieQuestBlacklist:Load()
         [65603] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [65604] = Expansions.Current >= Expansions.Cata, -- Not in the game
         [65610] = Expansions.Current >= Expansions.Cata, -- Not in the game
+
+        --- MoP Learn to Ride quests
+        [32618] = true, -- Learn To Ride
+        [32661] = true, -- Learn To Ride
+        [32662] = true, -- Learn To Ride
+        [32663] = true, -- Learn To Ride
+        [32664] = true, -- Learn To Ride
+        [32665] = true, -- Learn To Ride
+        [32667] = true, -- Learn To Ride
+        [32668] = true, -- Learn To Ride
+        [32669] = true, -- Learn To Ride
+        [32670] = true, -- Learn To Ride
+        [32671] = true, -- Learn To Ride
+        [32672] = true, -- Learn To Ride
+        [32673] = true, -- Learn To Ride
+        [32674] = true, -- I Believe You Can Fly
+        [32675] = true, -- I Believe You Can Fly
 
         --- Daily quests
         [28905] = true, -- Daily Heroic Random (1st) (Cataclysm)

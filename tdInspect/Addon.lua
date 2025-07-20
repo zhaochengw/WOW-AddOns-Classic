@@ -202,7 +202,7 @@ function Addon:TDINSPECT_READY(_, unit, name)
     if unit == ns.Inspect.unit or name == ns.Inspect.unitName then
         ShowUIPanel(self.InspectFrame)
 
-        if ns.db.profile.closeCharacterFrameWhenInspect then
+        if ns.db.profile.closeCharacterFrameWhenInspect and not InCombatLockdown() then
             HideUIPanel(CharacterFrame)
         end
     end

@@ -4,10 +4,9 @@ if not L then
     return
 end
 
--- @import@
+-- @import:language=zhCN@
 L['Leave bank, pack cancel.'] = '离开银行，整理中止。'
 L['Player enter combat, pack cancel.'] = '进入战斗，整理中止。'
-L['Packing now'] = '正在整理'
 L['Player is dead'] = '角色已死亡'
 L['Player in combat'] = '正在战斗'
 L['Please drop the item, money or skills.'] = '请放下鼠标上的东西'
@@ -24,7 +23,6 @@ L['Are you sure you want to restore the current Settings?'] = '你确定要重�
 L['Left Click'] = '左键'
 L['Right Click'] = '右键'
 
-L['tdPack2 is a bag sorting addon.'] = 'tdPack2是一个背包整理插件。'
 L['Rules'] = '规则'
 L['Buttons'] = '按钮'
 L['Bag'] = '背包'
@@ -49,18 +47,14 @@ L['Rule'] = '规则'
 L['Put where?'] = '放在哪？'
 L['Name (Optional)'] = '名称（可选）'
 L['Select an icon (Optional)'] = '选择一个图标（可选）'
--- [comment by wct] L['Sorting rules'] = '排序规则'
--- [comment by wct] L['Saving rules'] = '保存规则'
 L['Save to bank when default packing'] = '默认整理同时保存到银行'
 L['Keep bank items stack full'] = '保持银行物品堆满'
 L['Bank and bag stacking together'] = '银行和背包一起堆叠'
--- [comment by wct] L['Global'] = '全局'
-L['Add extension filter to ItemSearch-1.3'] = '将扩展的过滤器添加到ItemSearch-1.3'
 
 L['Help'] = '帮助'
 L['Drag to modify the sorting order'] = '拖动以改变规则顺序'
 L['Put in an item to add simple rule'] = '放下一个物品以添加简单规则'
-L['Advancee rules use ItemSearch-1.3'] = '高级规则使用ItemSearch-1.3'
+L['Advancee rules use ItemSearchModify-1.3'] = '高级规则使用ItemSearchModify-1.3'
 L['Enjoy!'] = '祝你愉快！'
 L['Rules restore to default.'] = '整理规则已恢复到默认。'
 

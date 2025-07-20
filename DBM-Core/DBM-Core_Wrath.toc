@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 30405
 ## X-Min-Interface: 30403
 ## Category: DBM
 ## Group: DBM-Core
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.2.2
+## Version: 11.2.3
 ## X-Curse-Project-ID: 3358
 ## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b

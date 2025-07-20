@@ -166,7 +166,7 @@ function Addon:InitOptionFrame()
                 desc = table.concat({
                     L['Drag to modify the sorting order'], --
                     L['Put in an item to add simple rule'], --
-                    L['Advancee rules use ItemSearch-1.3'], --
+                    L['Advancee rules use ItemSearchModify-1.3'], --
                     L['Enjoy!'], --
                 }, '\n'),
             },
@@ -214,7 +214,6 @@ function Addon:InitOptionFrame()
                 }),
                 help = inline(L['Help'], {
                     console = toggle(L['Enable chat message']),
-                    applyLibItemSearch = toggle(L['Add extension filter to ItemSearch-1.3']),
                 }),
             }),
             titleButtons = treeTitle(L['Buttons']),
