@@ -17,7 +17,7 @@ GetItemLinkLabel:SetText(L['item_label_text']);
 GetItemLinkBox:SetScript("OnEnterPressed", function(self)
     local itemID = tonumber(self:GetText())
     if itemID ~= nil then
-        local itemLink = select(2, GetItemInfo(itemID))
+        local itemLink = select(2, C_Item.GetItemInfo(itemID))
         if itemLink ~= nil and itemLink ~= '' then
             DEFAULT_CHAT_FRAME:AddMessage(L['search_result_done'] .. itemLink)
         else

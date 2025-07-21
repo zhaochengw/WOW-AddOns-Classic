@@ -246,9 +246,9 @@ BG.Init(function()
                     aiState = L["|cffff0000（插件被禁用）"]
                 end
                 for i, text in ipairs(ns.VIPinstructionsText) do
-                    if text:find("BiaoGeVIP"..L["插件"]) then
+                    if text:find("BiaoGeVIP" .. L["插件"]) then
                         ns.VIPinstructionsText[i] = text .. vipState
-                    elseif text:find("BiaoGeAI"..L["插件"]) then
+                    elseif text:find("BiaoGeAI" .. L["插件"]) then
                         ns.VIPinstructionsText[i] = text .. aiState
                     end
                 end
@@ -1223,6 +1223,7 @@ BG.Init(function()
             BG.UpdateHopeFrame_IsLooted_All()
 
             -- 装备库
+            BG.itemLibNeedUpdate=true
             if BG.ItemLibMainFrame:IsShown() then
                 local samePhaseFB
                 for k, _FB in pairs(BG.phaseFBtable[lastClickFB]) do
@@ -1241,10 +1242,9 @@ BG.Init(function()
                         BG.UpdateAllItemLib()
                     end)
                 end
-                BG.lastItemLibFB = BG.FB1
-                lastClickFB = BG.FB1
             end
-
+            lastClickFB = BG.FB1
+            
             if BG.lastduizhangNum then
                 BG.DuiZhangSet(BG.lastduizhangNum)
             end

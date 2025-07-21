@@ -415,6 +415,8 @@ BG.Init2(function()
         if not BG.IsVanilla then
             local onEnterTextTbl = {
                 "25ICC",
+                -- 4816,
+                4815,
                 4637,
                 4608,
                 4603,
@@ -423,6 +425,8 @@ BG.Init2(function()
                 4633,
                 4632,
                 "10ICC",
+                -- 4818,
+                4817,
                 4636,
                 4532,
                 4602,

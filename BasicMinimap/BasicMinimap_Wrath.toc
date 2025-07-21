@@ -1,5 +1,5 @@
 ## Interface: 30405
-## Version: v11.1.1
+## Version: v11.1.2
 ## Title: BasicMinimap
 ## Notes: Configurable minimap with basic options.
 ## Notes-zhTW: 小地圖增強插件

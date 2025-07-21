@@ -1,19 +1,15 @@
 # DBM - Core
 
-## [11.2.3](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/11.2.3) (2025-07-18)
-[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/11.2.2...11.2.3) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
+## [11.2.4](https://github.com/DeadlyBossMods/DeadlyBossMods/tree/11.2.4) (2025-07-20)
+[Full Changelog](https://github.com/DeadlyBossMods/DeadlyBossMods/compare/11.2.3...11.2.4) [Previous Releases](https://github.com/DeadlyBossMods/DeadlyBossMods/releases)
 
-- prep new tag that has the mop compat fixes i pushed last week  
-- Scrap sprocket yell option for positive/negative. Only one guild in world ever tried to use it, and it didn't even work anyways.  
-- Fix a regression that caused gobfather mod to stop working a while back  
-- Several mist of pandaria classic fixes. Of primary note, raid and dungeon module version checks should function again and spec queries will now work as intended.  
-- Fractillus timer updates and renames  
-- Fix missing timer starts and counts on fractillus  
-- Update CI/tests  
-- Fixes  
-- Renames and additional data  
-- apply p1 mythic differences to araz  
-- fix bad spellname/key  
-- Update tests  
-- bump wrath toc  
+- prep new tag and bump force update to force library updates (so users avoid deprecated errors if other addons update library first. although caveat, this means users of OTHER addons will get deprecated errors from those addons until they update. but better to be first than last)  
+- update version check  
+- SendChatMessage future proofing  
+- LibSpec updates.  
+- More fixes  
+- change placement to fit load order  
+- Handle upcoming IsSpellKnown api changes  
+- Tests: Fix bad non-deterministic sorting of some timers with no spell id (#1694)  
+- Tests: Fix anonymizing names in RAID\_BOSS\_WHISPER messages (#1693)  
 - bump alpha  

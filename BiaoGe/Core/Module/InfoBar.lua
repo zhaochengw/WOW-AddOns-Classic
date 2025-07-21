@@ -847,8 +847,8 @@ BG.Init(function()
             BG.After(1, function()
                 if BugGrabberDB and BugGrabberDB.errors then
                     for i, e in next, BugGrabberDB.errors do
-                        if BugGrabberDB.session == e.session and e.message and e.message:find("BiaoGe")
-                            and not e.message.find("ADDON_ACTION_FORBIDDEN") and not e.message.find("ADDON_ACTION_BLOCKED") then
+                        if BugGrabberDB.session == e.session and type(e.message)=="string" and e.message:find("BiaoGe")
+                            and not e.message:find("ADDON_ACTION_FORBIDDEN") and not e.message:find("ADDON_ACTION_BLOCKED") then
                             self.hasError = true
                             self.errors = {
                                 time = e.time,

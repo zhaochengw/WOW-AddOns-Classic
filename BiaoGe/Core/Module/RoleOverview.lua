@@ -73,10 +73,12 @@ function BG.RoleOverviewUI()
             }
         elseif BG.IsWLK then
             BiaoGe.FBCDchoice = {
+                ["25RS"] = 1,
+                ["10RS"] = 1,
                 ["25ICC"] = 1,
                 ["10ICC"] = 1,
-                ["25TOC"] = 1,
-                ["10TOC"] = 1,
+                -- ["25TOC"] = 1,
+                -- ["10TOC"] = 1,
                 -- ["25OL"] = 1,
                 -- ["10OL"] = 1,
                 -- ["25ULD"] = 1,
@@ -152,6 +154,12 @@ function BG.RoleOverviewUI()
                 BiaoGe.MONEYchoice[22726] = 1
             end)
         elseif BG.IsWLK then
+            BG.Once("FBCDchoice", 250717, function()
+                BiaoGe.FBCDchoice["25RS"] = 1
+                BiaoGe.FBCDchoice["10RS"] = 1
+                BiaoGe.FBCDchoice["25TOC"] = nil
+                BiaoGe.FBCDchoice["10TOC"] = nil
+            end)
             BG.Once("FBCDchoice", 250626, function()
                 if BiaoGe.MONEYchoice[45039] == 1 then
                     BiaoGe.MONEYchoice[45038] = 1
@@ -1212,14 +1220,14 @@ function BG.RoleOverviewUI()
                         width = MONEYchoice_table[ii].width
                         t_paizi:SetPoint("TOPRIGHT", right, "TOPRIGHT", width, 0)
                     end
+                    if count:match("^%d+") == "0" or count:find(L["未知"]) then
+                        t_paizi:SetTextColor(0.5, 0.5, 0.5)
+                    end
                     if type(pz[id]) == "table" and pz[id].isItem and pz[id].quest then
-                        t_paizi:SetText(L["已完成"])
+                        t_paizi:SetText(L["已完成"] .. " " .. AddTexture(vv.tex))
                         t_paizi:SetTextColor(0, 1, 0)
                     else
                         t_paizi:SetText(count)
-                    end
-                    if count:match("^%d+") == "0" or count:find(L["未知"]) then
-                        t_paizi:SetTextColor(0.5, 0.5, 0.5)
                     end
                     right = t_paizi
                 end
@@ -2076,8 +2084,6 @@ function BG.RoleOverviewUI()
 
     -- 获取货币信息
     do
-
-
         function BG.MONEYupdate()
             local tbl = {}
 
@@ -2113,7 +2119,10 @@ function BG.RoleOverviewUI()
             end
             BiaoGe[MONEY][realmID][player] = tbl
         end
-
+--[[ 
+BiaoGe.MONEY[4520]["苍刃"][45038].quest=true
+BiaoGe.MONEY[4520]["苍刃"][45038].count=50
+]]
         -- 事件
         do
             local f = CreateFrame("Frame")
