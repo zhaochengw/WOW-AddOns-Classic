@@ -154,6 +154,12 @@ do
             addOverride(QuestieDB.objectDataOverrides, CataObjectFixes:LoadFactionFixes())
         end
 
+        -- MOP Corrections
+        if (Expansions.Current >= Expansions.MoP) then
+            addOverride(QuestieDB.questDataOverrides, MopQuestFixes:LoadFactionFixes())
+            addOverride(QuestieDB.npcDataOverrides, MopNpcFixes:LoadFactionFixes())
+        end
+
         -- Season of Discovery Corrections
         if Questie.IsSoD then
             addOverride(QuestieDB.questDataOverrides, SeasonOfDiscovery:LoadFactionQuestFixes())

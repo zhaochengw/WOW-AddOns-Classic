@@ -274,6 +274,44 @@ local phases = {
     RIVETT_CLUTCHPOP_STROGARM_AIRSTRIP = 1202,
     RIVETT_CLUTCHPOP_NEXT_TO_NAZGRIM = 1203,
     RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END = 1204,
+    HIGH_ELDER_CLOUDFALL_AT_TOWER = 1205,
+    HIGH_ELDER_CLOUDFALL_AT_BANQUET = 1206,
+    MALIK_AT_PILLAR = 1207,
+    MALIK_NEXT_TO_ZIKK = 1208,
+    KIL_RUK_AT_PILLAR = 1209,
+    KIL_RUK_NEXT_TO_ZIKK = 1210,
+    SOGGY_IN_HUT = 1211,
+    SOGGY_OUTSIDE = 1212,
+    SOGGY_AT_DOCK = 1213,
+    ARIE_AT_DOCK = 1214,
+    JU_LIEN_AT_COAST = 1215,
+    JU_LIEN_IN_TOWN = 1216,
+    CHEN_AT_FEAR_CLUTCH = 1217,
+    CHEN_AT_BREWGARDEN = 1218,
+    CHEN_62779_AT_BREWGARDEN = 1219,
+    CHEN_62779_INSIDE_KOR_VESS = 1220,
+    SAP_MASTERS_AT_BREWGARDEN = 1221,
+    SAP_MASTERS_AT_RIKKITUN = 1222,
+    SAP_MASTERS_AT_BREWGARDEN_CENTER = 1223,
+    SKEER_IN_CAVE = 1224,
+    SKEER_AT_KLAXXI_VEES = 1225,
+    SHANG_THUNDERFOOT_AT_THUNDERFOOT_FIELDS = 1226,
+    SHANG_THUNDERFOOT_SOUTH_OF_THUNDERFOOT_FIELDS = 1227,
+    CLEVER_ASHYO_AT_POOLS_OF_PURITY = 1228,
+    CLEVER_ASHYO_SOUTH_OF_POOLS_OF_PURITY = 1229,
+    KANG_AT_THUNDER_CLEFT = 1230,
+    KANG_AT_DAWNCHASER_RETREAT = 1231,
+    KOR_AT_THUNDER_CLEFT = 1232,
+    KOR_AT_DAWNCHASER_RETREAT = 1233,
+    DEZCO_AT_THUNDER_CLEFT = 1234,
+    DEZCO_AT_SHATTERED_CONVOY = 1235,
+    DEZCO_AT_DAWNCHASER_RETREAT = 1236,
+    LIN_TENDERPAW_AT_PAOQUAN_HOLLOW = 1237,
+    LIN_TENDERPAW_EAST_OF_STONEPLOW = 1238,
+    HEMETS_AT_CAMP = 1239,
+    HEMETS_OUTSIDE_CAMP = 1240,
+    WU_PENG_ALONE = 1241,
+    WU_PENG_REUNITED = 1242,
 }
 Phasing.phases = phases
 
@@ -989,7 +1027,7 @@ function Phasing.IsSpawnVisible(phase)
     if phase == phases.OHF_THRALL_DESTINY then
         return complete[29599] or (questLog[29599] and questLog[29599].isComplete == 1) or false
     end
-  
+
     if phase == phases.LINDSAY_WPL_TREE then
         return not complete[26936] or false
     end
@@ -1160,6 +1198,158 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END then
         return complete[29939] or (questLog[29939] and questLog[29939].isComplete == 1) or false
+    end
+
+    if phase == phases.HIGH_ELDER_CLOUDFALL_AT_TOWER then
+        return (complete[29639] or complete[29646] or complete[29647]) or (complete[29620] or (not questLog[29620]) and (not (complete[29624] and complete[29635] and complete[29637]))) or false
+    end
+
+    if phase == phases.HIGH_ELDER_CLOUDFALL_AT_BANQUET then
+        return (not (complete[29639] or complete[29646] or complete[29647])) and (complete[29624] and complete[29635] and complete[29637]) or questLog[29620] and true or false
+    end
+
+    if phase == phases.MALIK_AT_PILLAR then
+        return (not complete[31010]) or false
+    end
+
+    if phase == phases.MALIK_NEXT_TO_ZIKK then
+        return complete[31010] and true or false
+    end
+
+    if phase == phases.KIL_RUK_AT_PILLAR then
+        return (not complete[31066]) and (not questLog[31066] or questLog[31066].isComplete == 0) or false
+    end
+
+    if phase == phases.KIL_RUK_NEXT_TO_ZIKK then
+        return complete[31066] or (questLog[31066] and questLog[31066].isComplete == 1) and true or false
+    end
+
+    if phase == phases.SOGGY_IN_HUT then
+        return (not complete[31189]) and (not questLog[31189] or questLog[31189].isComplete == 0) or false
+    end
+
+    if phase == phases.SOGGY_OUTSIDE then
+        return (complete[31189] or (questLog[31189] and questLog[31189].isComplete == 1)) and ((not complete[31190]) and (not questLog[31190] or questLog[31190].isComplete == 0)) and true or false
+    end
+
+    if phase == phases.SOGGY_AT_DOCK then
+        return complete[31190] or (questLog[31190] and questLog[31190].isComplete == 1) and true or false
+    end
+
+    if phase == phases.ARIE_AT_DOCK then
+        return complete[31190] or (questLog[31190] and questLog[31190].isComplete == 1) and true or false
+    end
+
+    if phase == phases.JU_LIEN_AT_COAST then
+        return complete[31354] or ((not complete[31189]) and ((not questLog[31189]) or questLog[31189].isComplete == 0)) and true or false
+    end
+
+    if phase == phases.JU_LIEN_IN_TOWN then
+        return (not complete[31354]) and (complete[31189] or (questLog[31189] and questLog[31189].isComplete == 1)) and true or false
+    end
+
+    if phase == phases.CHEN_AT_FEAR_CLUTCH then
+        return (not complete[31077]) and (not questLog[31077]) or false
+    end
+
+    if phase == phases.CHEN_AT_BREWGARDEN then
+        return complete[31077] or questLog[31077] and true or false
+    end
+
+    if phase == phases.CHEN_62779_AT_BREWGARDEN then
+        return (not complete[31076]) and (not complete[31129]) and (not complete[31078]) or false
+    end
+
+    if phase == phases.CHEN_62779_INSIDE_KOR_VESS then
+        return (not complete[31078]) and questLog[31078] and true or false
+    end
+
+    if phase == phases.SAP_MASTERS_AT_BREWGARDEN then
+        return (not complete[31085]) and (not complete[31075]) and (not questLog[31075]) or false
+    end
+
+    if phase == phases.SAP_MASTERS_AT_RIKKITUN then
+        return (not complete[31085]) and ((not questLog[31085]) or questLog[31085].isComplete == 0) and complete[31075] or questLog[31075] and true or false
+    end
+
+    if phase == phases.SAP_MASTERS_AT_BREWGARDEN_CENTER then
+        return complete[31085] or (questLog[31085] and questLog[31085].isComplete == 1) or false
+    end
+
+    if phase == phases.SKEER_IN_CAVE then
+        return (not complete[31179]) and ((not questLog[31179] or questLog[31179].isComplete == 0)) and true or false
+    end
+
+    if phase == phases.SKEER_AT_KLAXXI_VEES then
+        return complete[31179] or (questLog[31179] and questLog[31179].isComplete == 1) or false
+    end
+
+    if phase == phases.SHANG_THUNDERFOOT_AT_THUNDERFOOT_FIELDS then
+        return (not complete[29918]) and (not questLog[29918]) or false
+    end
+
+    if phase == phases.SHANG_THUNDERFOOT_SOUTH_OF_THUNDERFOOT_FIELDS then
+        return complete[29918] or questLog[29918] and true or false
+    end
+
+    if phase == phases.CLEVER_ASHYO_AT_POOLS_OF_PURITY then
+        return complete[29577] or questLog[29577] and true or false
+    end
+
+    if phase == phases.CLEVER_ASHYO_SOUTH_OF_POOLS_OF_PURITY then
+        return (not complete[29577]) and (not questLog[29577]) and (complete[29871] or questLog[29871]) and true or false
+    end
+
+    if phase == phases.KANG_AT_THUNDER_CLEFT then
+        return (not complete[30132]) and complete[30179] or false
+    end
+
+    if phase == phases.KANG_AT_DAWNCHASER_RETREAT then
+        return complete[30132] or false
+    end
+
+    if phase == phases.KOR_AT_THUNDER_CLEFT then
+        return (not complete[30132]) and ((not questLog[30132]) or questLog[30132].isComplete == 0) and complete[30179] or false
+    end
+
+    if phase == phases.KOR_AT_DAWNCHASER_RETREAT then
+        return complete[30132] or (questLog[30132] and questLog[30132].isComplete == 1) or false
+    end
+
+    if phase == phases.DEZCO_AT_THUNDER_CLEFT then
+        return (not complete[30175]) and (not complete[30174]) and (not questLog[30174]) or false
+    end
+
+    if phase == phases.DEZCO_AT_SHATTERED_CONVOY then
+        return (not complete[30174]) and complete[30175] or false
+    end
+
+    if phase == phases.DEZCO_AT_DAWNCHASER_RETREAT then
+        return complete[30174] or (questLog[30174] and questLog[30174].isComplete == 1) or false
+    end
+
+    if phase == phases.LIN_TENDERPAW_EAST_OF_STONEPLOW then
+        return (not complete[29984]) or false
+    end
+
+    if phase == phases.LIN_TENDERPAW_AT_PAOQUAN_HOLLOW then
+        return complete[29984] or false
+    end
+
+    if phase == phases.HEMETS_AT_CAMP then
+        return ((not complete[30185]) and (not questLog[30185])) or complete[30186] or (questLog[30186] and questLog[30186].isComplete == 1) or false
+    end
+
+    if phase == phases.HEMETS_OUTSIDE_CAMP then
+        return (not complete[30186]) and (questLog[30185] or (complete[30185] and ((not questLog[30186]) or questLog[30186].isComplete == 0))) and true or false
+    end
+
+    if phase == phases.WU_PENG_ALONE then
+        return ((not complete[30834]) and (not questLog[30834])) or false
+    end
+
+    if phase == phases.WU_PENG_REUNITED then
+        return ((complete[30834]) or (questLog[30834])) or false
     end
 
     return false

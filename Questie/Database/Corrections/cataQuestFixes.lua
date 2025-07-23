@@ -293,6 +293,9 @@ function CataQuestFixes.Load()
         [2158] = { -- Rest and Relaxation
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
         },
+        [2383] = { -- Simple Parchment
+            [questKeys.requiredRaces] = raceIDs.ORC,
+        },
         [2438] = { -- The Emerald Dreamcatcher
             [questKeys.specialFlags] = 0,
             [questKeys.nextQuestInChain] = 0,-- there are some weird things happening if you completed these quests before prepatch
@@ -315,6 +318,14 @@ function CataQuestFixes.Load()
         },
         [2950] = { -- Nogg's Ring Redo
             [questKeys.zoneOrSort] = zoneIDs.ORGRIMMAR,
+        },
+        [3087] = { -- Etched Parchment
+            [questKeys.requiredRaces] = raceIDs.ORC,
+            [questKeys.startedBy] = {{3143}},
+            [questKeys.finishedBy] = {{39214}},
+        },
+        [3089] = { -- Rune-Inscribed Parchment
+            [questKeys.requiredRaces] = raceIDs.ORC,
         },
         [3091] = { -- Simple Note -- Tauren Warrior
             [questKeys.preQuestSingle] = {},
@@ -3858,12 +3869,15 @@ function CataQuestFixes.Load()
         },
         [14449] = { -- The First Step
             [questKeys.zoneOrSort] = 215,
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14452] = { -- Rite of Strength
             [questKeys.zoneOrSort] = 215,
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14455] = { -- Stop the Thorncallers
             [questKeys.zoneOrSort] = 215,
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14456] = { -- Rite of Courage
             [questKeys.zoneOrSort] = 215,
@@ -3875,17 +3889,20 @@ function CataQuestFixes.Load()
             [questKeys.zoneOrSort] = 215,
             [questKeys.preQuestGroup] = {14455,14456},
             [questKeys.preQuestSingle] = {},
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14460] = { -- Rite of Honor
             [questKeys.zoneOrSort] = 215,
             [questKeys.preQuestGroup] = {14459,14461},
             [questKeys.preQuestSingle] = {},
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14461] = { -- Feed of Evil
             [questKeys.zoneOrSort] = 215,
             [questKeys.preQuestGroup] = {14455,14456},
             [questKeys.preQuestSingle] = {},
             [questKeys.objectives] = {{{36727,nil,Questie.ICON_TYPE_EVENT},{37155,nil,Questie.ICON_TYPE_EVENT},{37156,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
         },
         [14463] = { -- Horses for Duskhaven
             [questKeys.preQuestSingle] = {},
@@ -4640,6 +4657,9 @@ function CataQuestFixes.Load()
             [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN,
         },
         [24814] = { -- An Ancient Enemy
+            [questKeys.startedBy] = {{38442}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {24812,24813},
             [questKeys.objectives] = {{{38225,nil,Questie.ICON_TYPE_TALK},{38306}}},
             [questKeys.extraObjectives] = {
                 {nil,Questie.ICON_TYPE_TALK,l10n("After Zar'jira is defeated, take a portal back to Darkspear Hold"),0,{{"monster",38437}}},
@@ -4655,6 +4675,7 @@ function CataQuestFixes.Load()
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
         },
         [24852] = { -- Our Tribe, Imprisoned
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.zoneOrSort] = 215,
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Open the cage"),0,{{"object",202112}}}},
             [questKeys.objectives] = {{{38345,nil,Questie.ICON_TYPE_INTERACT}}},
@@ -4989,6 +5010,7 @@ function CataQuestFixes.Load()
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN,
             [questKeys.nextQuestInChain] = 25167,
+            [questKeys.breadcrumbForQuestId] = 25167,
         },
         [25074] = { -- Meet Me at Triumph
             [questKeys.preQuestSingle] = {25057},
@@ -5062,26 +5084,32 @@ function CataQuestFixes.Load()
             [questKeys.objectives] = {{{10556,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [25139] = { -- Steady Shot
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{56641}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Steady Shot"), 2, {{"monster", 39214}}}},
         },
         [25141] = { -- Eviscerate
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{2098}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Eviscerate"), 2, {{"monster", 3155}}}},
         },
         [25143] = { -- Primal Strike
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{73899}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Primal Strike"), 2, {{"monster", 3157}}}},
         },
         [25145] = { -- Immolate
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{348}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Immolate"), 2, {{"monster", 3156}}}},
         },
         [25147] = { -- Charge
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{100}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Charge"), 2, {{"monster", 3153}}}},
         },
         [25149] = { -- Arcane Missiles
+            [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{5143}}},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Learn Spell: Arcane Missiles"), 2, {{"monster", 39206}}}},
         },
@@ -5142,6 +5170,7 @@ function CataQuestFixes.Load()
         },
         [25167] = { -- Breaking the Chain
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {25073},
         },
         [25171] = { -- Riding On
             [questKeys.preQuestSingle] = {},
@@ -7184,6 +7213,7 @@ function CataQuestFixes.Load()
             [questKeys.objectives] = {{{42563,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26206] = { -- The Future of Gnomeregan
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
@@ -7196,6 +7226,7 @@ function CataQuestFixes.Load()
             [questKeys.objectives] = {{{42463,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26209] = { -- Murder Was The Case That They Gave Me
             [questKeys.preQuestSingle] = {},
@@ -7224,6 +7255,7 @@ function CataQuestFixes.Load()
         [26222] = { -- Scrounging for Parts
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26228] = { -- Livin' the Life
             [questKeys.triggerEnd] = {"Livin' the Life!", {[zoneIDs.WESTFALL]={{46.25,18.99}}}},
@@ -7300,10 +7332,12 @@ function CataQuestFixes.Load()
         [26264] = { -- What's Left Behind
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26265] = { -- Dealing with the Fallout
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26266] = { -- Hope for the People
             [questKeys.preQuestSingle] = {26270},
@@ -7355,10 +7389,12 @@ function CataQuestFixes.Load()
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Open the cage"),0,{{"object",430003}}}},
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26285] = { -- Get Me Explosives Back!
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26286] = { -- In Defense of Westfall
             [questKeys.preQuestSingle] = {26266},
@@ -7430,6 +7466,7 @@ function CataQuestFixes.Load()
         [26316] = { -- What's Keeping Jessup?
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26318] = { -- Finishin' the Job
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
@@ -7437,6 +7474,7 @@ function CataQuestFixes.Load()
             [questKeys.preQuestSingle] = {},
             [questKeys.preQuestGroup] = {26284,26285},
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26320] = { -- A Vision of the Past
             [questKeys.triggerEnd] = {"Vision of the Past uncovered", {[zoneIDs.THE_DEADMINES]={{25,14.5},{-1,-1}}}},
@@ -7463,14 +7501,18 @@ function CataQuestFixes.Load()
         [26329] = { -- One More Thing
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26331] = { -- Crushcog's Minions
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26333] = { -- No Tanks!
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
+            [questKeys.objectives] = {{{42224,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [26334] = { -- Bloodlord Mandokir
             [questKeys.preQuestSingle] = {26332},
@@ -7500,6 +7542,7 @@ function CataQuestFixes.Load()
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.objectives] = {{{42291,nil,Questie.ICON_TYPE_INTERACT}}},
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26346] = { -- Myzrael's Tale [Alliance]
             [questKeys.preQuestSingle] = {26042},
@@ -7551,6 +7594,7 @@ function CataQuestFixes.Load()
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to High Tinker Mekkatorque"),0,{{"monster",42849}}}},
             [questKeys.objectives] = {{{42839}}},
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26365] = { -- Hero's Call: Redridge Mountains!
             [questKeys.nextQuestInChain] = 26503,
@@ -7568,6 +7612,8 @@ function CataQuestFixes.Load()
         [26373] = { -- On to Kharanos
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.nextQuestInChain] = 25724,
+            [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26374] = { -- Ready the Ground Troops
             [questKeys.objectives] = {{{42646,nil,Questie.ICON_TYPE_INTERACT}}},
@@ -7947,6 +7993,7 @@ function CataQuestFixes.Load()
         [26566] = { -- A Triumph of Gnomish Ingenuity
             [questKeys.zoneOrSort] = zoneIDs.CHILL_BREEZE_VALLEY,
             [questKeys.requiredRaces] = raceIDs.GNOME,
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST, -- gnome DKs don't get these quests
         },
         [26567] = { -- John J. Keeshan
             [questKeys.preQuestSingle] = {},
@@ -14493,7 +14540,7 @@ function CataQuestFixes.Load()
         },
         [29276] = { -- The Flame Spider Queen
             [questKeys.preQuestSingle] = {},
-            [questKeys.preQuestGroup] = {29272,-29205},
+            [questKeys.preQuestGroup] = {29192,29272,-29205},
             [questKeys.exclusiveTo] = {29273,29274,29275},
         },
         [29278] = { -- Living Obsidium

@@ -25,12 +25,30 @@ QuestieCorrections.spellObjectiveFirst[24530] = true
 QuestieCorrections.spellObjectiveFirst[24531] = true
 QuestieCorrections.spellObjectiveFirst[24532] = true
 QuestieCorrections.spellObjectiveFirst[24533] = true
+QuestieCorrections.spellObjectiveFirst[24640] = true
+QuestieCorrections.spellObjectiveFirst[24752] = true
+QuestieCorrections.spellObjectiveFirst[24760] = true
+QuestieCorrections.spellObjectiveFirst[24766] = true
+QuestieCorrections.spellObjectiveFirst[24772] = true
+QuestieCorrections.spellObjectiveFirst[24784] = true
 QuestieCorrections.spellObjectiveFirst[24964] = true
 QuestieCorrections.spellObjectiveFirst[24965] = true
 QuestieCorrections.spellObjectiveFirst[24966] = true
 QuestieCorrections.spellObjectiveFirst[24967] = true
 QuestieCorrections.spellObjectiveFirst[24968] = true
 QuestieCorrections.spellObjectiveFirst[24969] = true
+QuestieCorrections.spellObjectiveFirst[25139] = true
+QuestieCorrections.spellObjectiveFirst[25141] = true
+QuestieCorrections.spellObjectiveFirst[25143] = true
+QuestieCorrections.spellObjectiveFirst[25145] = true
+QuestieCorrections.spellObjectiveFirst[25147] = true
+QuestieCorrections.spellObjectiveFirst[25149] = true
+QuestieCorrections.spellObjectiveFirst[26198] = true
+QuestieCorrections.spellObjectiveFirst[26200] = true
+QuestieCorrections.spellObjectiveFirst[26201] = true
+QuestieCorrections.spellObjectiveFirst[26204] = true
+QuestieCorrections.spellObjectiveFirst[26207] = true
+QuestieCorrections.spellObjectiveFirst[26274] = true
 QuestieCorrections.spellObjectiveFirst[26904] = true
 QuestieCorrections.spellObjectiveFirst[26913] = true
 QuestieCorrections.spellObjectiveFirst[26914] = true
@@ -50,15 +68,40 @@ QuestieCorrections.spellObjectiveFirst[26966] = true
 QuestieCorrections.spellObjectiveFirst[26968] = true
 QuestieCorrections.spellObjectiveFirst[26969] = true
 QuestieCorrections.spellObjectiveFirst[26970] = true
+QuestieCorrections.spellObjectiveFirst[27020] = true
+QuestieCorrections.spellObjectiveFirst[27021] = true
+QuestieCorrections.spellObjectiveFirst[27023] = true
+QuestieCorrections.spellObjectiveFirst[27027] = true
+QuestieCorrections.spellObjectiveFirst[27066] = true
+QuestieCorrections.spellObjectiveFirst[27067] = true
 QuestieCorrections.spellObjectiveFirst[27091] = true
 QuestieCorrections.killCreditObjectiveFirst[29555] = true
+QuestieCorrections.killCreditObjectiveFirst[29578] = true
+QuestieCorrections.objectObjectiveFirst[29628] = true
+QuestieCorrections.objectObjectiveFirst[29726] = true
 QuestieCorrections.objectObjectiveFirst[29730] = true
+QuestieCorrections.itemObjectiveFirst[29749] = true
+QuestieCorrections.objectObjectiveFirst[30325] = true
+QuestieCorrections.killCreditObjectiveFirst[30457] = true
+QuestieCorrections.killCreditObjectiveFirst[30466] = true
+QuestieCorrections.killCreditObjectiveFirst[31019] = true
+QuestieCorrections.eventObjectiveFirst[31091] = true
+QuestieCorrections.spellObjectiveFirst[31138] = true
 QuestieCorrections.spellObjectiveFirst[31142] = true
 QuestieCorrections.spellObjectiveFirst[31147] = true
 QuestieCorrections.spellObjectiveFirst[31151] = true
+QuestieCorrections.spellObjectiveFirst[31157] = true
+QuestieCorrections.spellObjectiveFirst[31162] = true
+QuestieCorrections.spellObjectiveFirst[31166] = true
 QuestieCorrections.spellObjectiveFirst[31169] = true
 QuestieCorrections.spellObjectiveFirst[31171] = true
 QuestieCorrections.spellObjectiveFirst[31173] = true
+QuestieCorrections.spellObjectiveFirst[31467] = true
+QuestieCorrections.spellObjectiveFirst[31471] = true
+QuestieCorrections.spellObjectiveFirst[31474] = true
+QuestieCorrections.spellObjectiveFirst[31476] = true
+QuestieCorrections.spellObjectiveFirst[31477] = true
+QuestieCorrections.spellObjectiveFirst[31480] = true
 
 function MopQuestFixes.Load()
     local questKeys = QuestieDB.questKeys
@@ -71,6 +114,33 @@ function MopQuestFixes.Load()
     local questFlags = QuestieDB.questFlags
 
     return {
+        [2383] = { -- Simple Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [3087] = { -- Etched Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [3088] = { -- Encrypted Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [3089] = { -- Rune-Inscribed Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [3090] = { -- Tainted Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [3091] = { -- Simple Note
+            [questKeys.requiredLevel] = 2,
+        },
+        [3092] = { -- Etched Note
+            [questKeys.requiredLevel] = 2,
+        },
+        [3093] = { -- Rune-Inscribed Note
+            [questKeys.requiredLevel] = 2,
+        },
+        [3094] = { -- Verdant Note
+            [questKeys.requiredLevel] = 2,
+        },
         [3095] = { -- Simple Scroll
             [questKeys.requiredLevel] = 2,
         },
@@ -238,6 +308,61 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{44389}},nil,nil,nil,nil,{{589}}},
             [questKeys.extraObjectives] = {},
         },
+        [24622] = { -- A Troll's Truest Companion
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24623] = { -- Saving the Young
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24624] = { -- Mercy for the Lost
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24625] = { -- Consort of the Sea Witch
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24626] = { -- Young and Vicious
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24640] = { -- The Arts of a Warrior
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [24752] = { -- The Arts of a Mage
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{38038}},nil,nil,nil,nil,{{122}}},
+        },
+        [24760] = { -- The Arts of a Shaman
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [24766] = { -- The Arts of a Druid
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{38038}},nil,nil,nil,nil,{{8921}}},
+        },
+        [24772] = { -- The Arts of a Rogue
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [24778] = { -- The Arts of a Hunter
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [24784] = { -- Learnin' tha Word
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{38038}},nil,nil,nil,nil,{{589}}},
+        },
+        [24812] = { -- No More Mercy
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24813] = { -- Territorial Fetish
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [24814] = { -- An Ancient Enemy
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
         [24961] = { -- The Truth of the Grave
             [questKeys.breadcrumbs] = {28651,31148},
         },
@@ -271,11 +396,130 @@ function MopQuestFixes.Load()
             [questKeys.requiredLevel] = 2,
             [questKeys.extraObjectives] = {},
         },
+        [25035] = { -- Breaking the Line
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [25037] = { -- Crab Fishin'
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+            [questKeys.preQuestSingle] = {24643,24755,24763,24769,24775,24781,24787,26277,31163},
+        },
+        [25064] = { -- Moraya
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+            [questKeys.preQuestSingle] = {24643,24755,24763,24769,24775,24781,24787,26277,31163},
+        },
+        [25073] = { -- Sen'jin Village
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.HUNTER + classIDs.DRUID + classIDs.SHAMAN + classIDs.MONK,
+        },
+        [25138] = { -- Glyphic Parchment
+            [questKeys.requiredLevel] = 2,
+        },
+        [25139] = { -- Steady Shot
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [25141] = { -- Eviscerate
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [25143] = { -- Primal Strike
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [25145] = { -- Corruption
+            [questKeys.requiredLevel] = 2,
+            [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{172}}},
+            [questKeys.extraObjectives] = {},
+        },
+        [25147] = { -- Charge
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [25149] = { -- Frost Nova
+            [questKeys.requiredLevel] = 2,
+            [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{122}}},
+            [questKeys.extraObjectives] = {},
+        },
+        [26198] = { -- The Arts of a Mage
+            [questKeys.requiredLevel] = 2,
+            [questKeys.objectives] = {{{44171}},nil,nil,nil,nil,{{122}}},
+            [questKeys.extraObjectives] = {},
+        },
+        [26200] = { -- The Arts of a Priest
+            [questKeys.requiredLevel] = 2,
+            [questKeys.objectives] = {{{44171}},nil,nil,nil,nil,{{589}}},
+            [questKeys.extraObjectives] = {},
+        },
+        [26201] = { -- The Power of a Warlock
+            [questKeys.requiredLevel] = 2,
+            [questKeys.objectives] = {{{44171}},nil,nil,nil,nil,{{172}}},
+            [questKeys.extraObjectives] = {},
+        },
+        [26204] = { -- The Arts of a Warrior
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [26205] = { -- A Job for the Multi-Bot
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26207] = { -- The Arts of a Rogue
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [26208] = { -- The Fight Continues
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26222] = { -- Scrounging for Parts
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26264] = { -- What's Left Behind
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26265] = { -- Dealing with the Fallout
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26274] = { -- The Arts of a Warlock
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{38038}},nil,nil,nil,nil,{{172}}},
+        },
+        [26284] = { -- Missing in Action
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26285] = { -- Get Me Explosives Back!
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26316] = { -- What's Keeping Jessup?
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26318] = { -- Finishin' the Job
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26329] = { -- One More Thing
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26331] = { -- Crushcog's Minions
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26333] = { -- No Tanks!
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26342] = { -- Paint it Black
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26364] = { -- Down with Crushcog!
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [26373] = { -- On to Kharanos
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
         [26389] = { -- Blackrock Invasion
             [questKeys.preQuestSingle] = {28817,28818,28819,28820,28821,28822,28823,29083,31145},
         },
         [26391] = { -- Extinguishing Hope
             [questKeys.preQuestSingle] = {28817,28818,28819,28820,28821,28822,28823,29083,31145},
+        },
+        [26566] = { -- A Triumph of Gnomish Ingenuity
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
         },
         [26841] = { -- Forbidden Sigil
             [questKeys.requiredLevel] = 2,
@@ -374,14 +618,53 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{44703}},nil,nil,nil,nil,{{589}}},
             [questKeys.extraObjectives] = {},
         },
+        [27014] = { -- Hallowed Note
+            [questKeys.requiredLevel] = 2,
+        },
+        [27015] = { -- Consecrated Note
+            [questKeys.requiredLevel] = 2,
+        },
+        [27020] = { -- The First Lesson
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [27021] = { -- The Hunter's Path
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [27023] = { -- The Way of the Sunwalkers
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{44848}},nil,nil,nil,nil,{{105361}}},
+        },
+        [27027] = { -- Primal Strike
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+        },
+        [27066] = { -- Learning the Word
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{44848}},nil,nil,nil,nil,{{589}}},
+        },
+        [27067] = { -- Moonfire
+            [questKeys.requiredLevel] = 2,
+            [questKeys.extraObjectives] = {},
+            [questKeys.objectives] = {{{44848}},nil,nil,nil,nil,{{8921}}},
+        },
         [27091] = { -- Charge!
             [questKeys.requiredLevel] = 2,
             [questKeys.extraObjectives] = {},
+        },
+        [27635] = { -- Decontamination
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
         },
         [27670] = { -- Pinned Down
             [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
         },
         [27671] = { -- See to the Survivors
+            [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
+        },
+        [27674] = { -- To the Surface
             [questKeys.requiredClasses] = classIDs.WARRIOR + classIDs.MAGE + classIDs.WARLOCK + classIDs.ROGUE + classIDs.PRIEST + classIDs.MONK, -- gnome DKs don't get these quests
         },
         [28167] = { -- Report to Carvo Blastbolt
@@ -554,6 +837,20 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbs] = {29576},
         },
+        [29579] = { -- Rally the Survivors
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{54763,54872},54872,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [29585] = { -- Spitfire
+            [questKeys.objectives] = {{{54780,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29586] = { -- The Splintered Path
+            [questKeys.objectives] = {{{55009,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.preQuestGroup] = {29578,29579,29580,29585},
+            [questKeys.preQuestSingle] = {},
+        },
+        [29587] = { -- Unbound
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{54990,61472},54990,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
         [29611] = { -- The Art of War
             [questKeys.objectives] = {{{54870,nil,Questie.ICON_TYPE_TALK}}},
         },
@@ -567,6 +864,71 @@ function MopQuestFixes.Load()
         [29618] = { -- The High Elder
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbs] = {29617},
+        },
+        [29619] = { -- A Courteous Guest
+            [questKeys.preQuestSingle] = {29618},
+        },
+        [29620] = { -- The Great Banquet
+            [questKeys.objectives] = {{{54914,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [29622] = { -- Your Training Starts Now
+            [questKeys.preQuestSingle] = {29620},
+        },
+        [29623] = { -- Perfection
+            [questKeys.triggerEnd] = {"Survive the Melee", {[zoneIDs.THE_JADE_FOREST]={{41.36,27.57}}}},
+            [questKeys.objectives] = {},
+        },
+        [29626] = { -- Groundskeeper Wu
+            [questKeys.preQuestSingle] = {29620},
+        },
+        [29627] = { -- A Proper Weapon
+            [questKeys.preQuestSingle] = {29626},
+        },
+        [29628] = { -- A Strong Back
+            [questKeys.objectives] = {{{54915,nil,Questie.ICON_TYPE_EVENT}},{{209551}}},
+            [questKeys.preQuestSingle] = {29627},
+        },
+        [29629] = { -- A Steady Hand
+            [questKeys.preQuestSingle] = {29627},
+        },
+        [29630] = { -- And a Heavy Fist
+            [questKeys.preQuestSingle] = {29627},
+        },
+        [29631] = { -- Burning Bright
+            [questKeys.preQuestSingle] = {29627},
+        },
+        [29632] = { -- Becoming Battle-Ready
+            [questKeys.preQuestSingle] = {29620},
+        },
+        [29633] = { -- Zhi-Zhi, the Dextrous
+            [questKeys.preQuestSingle] = {29632},
+        },
+        [29634] = { -- Husshun, the Wizened
+            [questKeys.preQuestSingle] = {29632},
+        },
+        [29635] = { -- Xiao, the Eater
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29633,29634},
+        },
+        [29637] = { -- The Rumpus
+            [questKeys.triggerEnd] = {"Survive the Melee", {[zoneIDs.THE_JADE_FOREST]={{39,23.18}}}},
+            [questKeys.objectives] = {},
+            [questKeys.extraObjectives] = {{{[zoneIDs.THE_JADE_FOREST]={{39,23.18}}}, Questie.ICON_TYPE_INTERACT, l10n("Shoot the fireworks")}},
+        },
+        [29639] = { -- Flying Colors
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29624,29628,29629,29630,29635,29637},
+            [questKeys.exclusiveTo] = {29646,29647},
+        },
+        [29646] = { -- Flying Colors
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29624,29628,29629,29630,29635,29637},
+            [questKeys.exclusiveTo] = {29639,29647},
+        },
+        [29647] = { -- Flying Colors
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29624,29628,29629,29630,29635,29637},
+            [questKeys.exclusiveTo] = {29639,29646},
         },
         [29661] = { -- The Lesson of Dry Fur
             [questKeys.requiredLevel] = 3,
@@ -595,6 +957,9 @@ function MopQuestFixes.Load()
         [29666] = { -- The Sting of Learning
             [questKeys.requiredLevel] = 3,
             [questKeys.requiredRaces] = raceIDs.PANDAREN_ALLIANCE + raceIDs.PANDAREN_HORDE + raceIDs.PANDAREN,
+        },
+        [29670] = { -- Maul Gormal
+            [questKeys.preQuestSingle] = {29586},
         },
         [29676] = { -- Finding an Old Friend
             [questKeys.requiredLevel] = 3,
@@ -631,27 +996,95 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{55141,nil,Questie.ICON_TYPE_TALK},{55146,nil,Questie.ICON_TYPE_TALK},{55162,nil,Questie.ICON_TYPE_TALK},{55170,nil,Questie.ICON_TYPE_TALK}}},
             [questKeys.preQuestSingle] = {31769},
         },
+        [29716] = { -- The Double Hozen Dare
+            [questKeys.objectives] = {{{55267,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestSingle] = {31230},
+        },
+        [29717] = { -- Down Kitty!
+            [questKeys.startedBy] = {{55274,55413}},
+            [questKeys.preQuestSingle] = {31230},
+        },
+        [29725] = { -- SI:7 Report: Fire From the Sky
+            [questKeys.preQuestSingle] = {29733},
+            [questKeys.objectives] = {{{55349,nil,Questie.ICON_TYPE_EVENT},{55350,nil,Questie.ICON_TYPE_EVENT},{55351,nil,Questie.ICON_TYPE_EVENT},{55352,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [29726] = { -- SI:7 Report: Hostile Natives
+            [questKeys.preQuestSingle] = {29725},
+            [questKeys.objectives] = {{{55378,nil,Questie.ICON_TYPE_INTERACT},{55380,nil,Questie.ICON_TYPE_INTERACT},{55381,nil,Questie.ICON_TYPE_TALK}},{{209615}}},
+        },
+        [29727] = { -- SI:7 Report: Hostile Natives
+            [questKeys.preQuestSingle] = {29726},
+            [questKeys.objectives] = {{{55408,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Use it"),0,{{"object",209621}}}},
+        },
         [29730] = { -- Scouting Report: Hostile Natives
             [questKeys.preQuestSingle] = {29971},
         },
         [29731] = { -- Scouting Report: On the Right Track
             [questKeys.preQuestSingle] = {29730},
         },
+        [29733] = { -- SI:7 Report: Lost in the Woods
+            [questKeys.preQuestSingle] = {29894},
+            [questKeys.objectives] = {{{55454}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",55343}}}},
+        },
         [29743] = { -- Monstrosity
             [questKeys.finishedBy] = {{110002}},
             [questKeys.objectives] = {nil,{{212182},{212183},{212184},{212186}}},
             [questKeys.preQuestSingle] = {31774},
         },
-        [29744] = { -- Some "Pupil of Nature"
-            [questKeys.preQuestSingle] = {},
-            [questKeys.breadcrumbForQuestId] = 29745,
-        },
         [29745] = { -- The Sprites' Plight
+            [questKeys.finishedBy] = {{110004}},
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbs] = {29744},
         },
+        [29747] = { -- Break the Cycle
+            [questKeys.finishedBy] = {{110005}},
+        },
+        [29748] = { -- Simulacrumble
+            [questKeys.finishedBy] = {{110005}},
+            [questKeys.objectives] = {nil,{{214873}}},
+            [questKeys.preQuestSingle] = {29745},
+        },
+        [29749] = { -- An Urgent Plea
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29747,29748},
+        },
+        [29750] = { -- Vessels of the Spirit
+            [questKeys.preQuestSingle] = {29749},
+        },
+        [29751] = { -- Ritual Artifacts
+            [questKeys.preQuestSingle] = {29749},
+        },
+        [29752] = { -- The Wayward Dead
+            [questKeys.objectives] = {{{55290,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {29749},
+        },
+        [29753] = { -- Back to Nature
+            [questKeys.preQuestGroup] = {29750,29751,29752},
+            [questKeys.extraObjectives] = {{{[zoneIDs.THE_JADE_FOREST]={{39.42,13.13},{40.36,12.34},{41.11,10.94},{37.92,8.02},{38.84,10}}},Questie.ICON_TYPE_EVENT,l10n("Smash the Spirit Bottles")}},
+        },
+        [29754] = { -- To Bridge Earth and Sky
+            [questKeys.finishedBy] = {{110006}},
+            [questKeys.triggerEnd] = {"Protect Pei-Zhi during his ritual", {[zoneIDs.THE_JADE_FOREST]={{43.77,12.58}}}},
+            [questKeys.objectives] = {},
+            [questKeys.preQuestGroup] = {29753,29756},
+        },
+        [29755] = { -- Pei-Back
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_SLAY,l10n("Defeat the Stonebound Colossus"),0,{{"monster",56595}}}},
+        },
+        [29756] = { -- A Humble Offering
+            [questKeys.preQuestGroup] = {29750,29751,29752},
+        },
         [29757] = { -- Bottletoads
-            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Scoop the toadspawn"),0,{{"object",209950}}}},
+            [questKeys.objectives] = {nil,{{209950,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29759] = { -- Kung Din
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29558,29559,29560},
+        },
+        [29762] = { -- Family Heirlooms
+            [questKeys.preQuestGroup] = {29883,29885},
         },
         [29768] = { -- Missing Mallet
             [questKeys.requiredLevel] = 4,
@@ -845,8 +1278,7 @@ function MopQuestFixes.Load()
         },
         [29822] = { -- Lay of the Land
             [questKeys.objectives] = {{{63058,nil,Questie.ICON_TYPE_EVENT},{63059,nil,Questie.ICON_TYPE_EVENT}},nil,nil,nil,{{{55651,55622},55622},},},
-            [questKeys.preQuestSingle] = {},
-            [questKeys.preQuestGroup] = {29827,31112},
+            [questKeys.preQuestSingle] = {29827},
         },
         [29823] = { -- Scouting Report: The Friend of My Enemy
             [questKeys.preQuestSingle] = {29731},
@@ -858,13 +1290,21 @@ function MopQuestFixes.Load()
         [29827] = { -- Acid Rain
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Get in"),0,{{"monster",55674}}}},
         },
+        [29865] = { -- The Silkwood Road
+            [questKeys.preQuestSingle] = {31230},
+        },
+        [29866] = { -- The Threads that Stick
+            [questKeys.preQuestSingle] = {31230},
+        },
         [29871] = { -- Clever Ashyo
             [questKeys.preQuestSingle] = {30086},
         },
         [29872] = { -- Lin Tenderpaw
             [questKeys.preQuestSingle] = {30086},
+            [questKeys.breadcrumbForQuestId] = 29981,
         },
         [29873] = { -- Ken-Ken
+            [questKeys.breadcrumbForQuestId] = 30079,
             [questKeys.preQuestSingle] = {30086},
         },
         [29874] = { -- Kang Bramblestaff [Alliance]
@@ -875,14 +1315,97 @@ function MopQuestFixes.Load()
         },
         [29877] = { -- A Poor Grasp of the Basics
             [questKeys.preQuestSingle] = {29907},
-            [questKeys.objectives] = {nil,nil,nil,nil,{{{56146,56149,56150,56151,56278,56279,56280,56281},56146}}},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{56146,56149,56150,56151,56278,56279,56280,56281},56146,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29883] = { -- The Pearlfin Situation
+            [questKeys.preQuestSingle] = {29562},
+            [questKeys.objectives] = {{{59058,nil,Questie.ICON_TYPE_TALK},{56693,nil,Questie.ICON_TYPE_TALK},{56690,nil,Questie.ICON_TYPE_TALK},{54960,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [29885] = { -- Road Rations
+            [questKeys.preQuestSingle] = {29562},
+        },
+        [29887] = { -- The Elder's Instruments
+            [questKeys.preQuestGroup] = {29883,29885},
+        },
+        [29888] = { -- Seek Out the Lorewalker
+            [questKeys.preQuestSingle] = {29727},
+        },
+        [29889] = { -- Borrowed Brew
+            [questKeys.objectives] = {nil,{{209845}}},
+        },
+        [29890] = { -- Finding Your Center
+            [questKeys.preQuestGroup] = {29891,29892,29893},
+            [questKeys.objectives] = {nil,{{213754}}},
+        },
+        [29891] = { -- Potency
+            [questKeys.preQuestSingle] = {31130},
+            [questKeys.startedBy] = {{56287,61218}},
+        },
+        [29892] = { -- Body
+            [questKeys.preQuestSingle] = {31130},
+            [questKeys.startedBy] = {{56287,61218}},
+        },
+        [29893] = { -- Hue
+            [questKeys.preQuestSingle] = {31130},
+            [questKeys.startedBy] = {{56287,61218}},
+        },
+        [29894] = { -- Spirits of the Water
+            [questKeys.preQuestGroup] = {29762,29887},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{56398,54960},56398,nil,Questie.ICON_TYPE_TALK},{{54894},54894,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [29898] = { -- Sacred Waters
+            [questKeys.preQuestSingle] = {29890},
+            [questKeys.objectives] = {nil,{{209885},{209888},{209889},{209890}}},
+        },
+        [29899] = { -- Rest in Peace
+            [questKeys.preQuestSingle] = {29890},
+        },
+        [29900] = { -- An Ancient Legend
+            [questKeys.preQuestSingle] = {29890},
+        },
+        [29901] = { -- Anduin's Decision
+            [questKeys.startedBy] = {{110009}},
+            [questKeys.preQuestGroup] = {29898,29899,29900},
+            [questKeys.objectives] = {{{56434,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [29903] = { -- A Perfect Match
+            [questKeys.preQuestSingle] = {29727},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{54959,56585,56591,56592},56585,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.extraObjectives] = {
+                {nil,Questie.ICON_TYPE_TALK,l10n("Give him a shield"),0,{{"monster",54959}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Give him a book"),0,{{"monster",56585}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Give him a staff"),0,{{"monster",56591}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Give him a dagger"),0,{{"monster",56592}}},
+            },
+        },
+        [29905] = { -- Let Them Burn
+            [questKeys.finishedBy] = {{54960}},
+        },
+        [29906] = { -- Carp Diem
+            [questKeys.finishedBy] = {{54960}},
+            [questKeys.preQuestSingle] = {29904},
         },
         [29907] = { -- Chen and Li Li
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {32018,32019}
+        },
+        [29909] = { -- Low Turnip Turnout
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29908,29877},
         },
         [29910] = { -- Rampaging Rodents
             [questKeys.preQuestSingle] = {29909},
             [questKeys.objectives] = {{{56203,nil,Questie.ICON_TYPE_INTERACT}},{{209835,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29912] = { -- The Fabulous Miss Fanny
+            [questKeys.requiredSourceItems] = {75256,75258,75259},
+            [questKeys.objectives] = {{{56192,nil,Questie.ICON_TYPE_TALK},{56192,nil,Questie.ICON_TYPE_TALK},{56192,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.extraObjectives] = {
+                {nil,Questie.ICON_TYPE_TALK,l10n("After quest is complete, select 3rd option"),0,{{"monster",56192}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Pink Turnip - 2nd option"),1,{{"monster",56192}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Watermelon - 1st option"),2,{{"monster",56192}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Tofu - 3rd option"),3,{{"monster",56192}}},
+            },
         },
         [29913] = { -- The Meat They'll Eat
             [questKeys.preQuestSingle] = {29912},
@@ -902,11 +1425,43 @@ function MopQuestFixes.Load()
         },
         [29919] = { -- Great Minds Drink Alike
             [questKeys.preQuestSingle] = {29918},
+            [questKeys.objectives] = {},
+            [questKeys.triggerEnd] = {"	Escort Chen and Li Li", {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS]={{68.87,43.14}}}},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chen"),0,{{"monster",56133}}}},
+        },
+        [29922] = { -- In Search of Wisdom
+            [questKeys.preQuestSingle] = {29901},
+            [questKeys.objectives] = {{{56737,nil,Questie.ICON_TYPE_TALK}}},
         },
         [29924] = { -- Kill Kher Shan
             [questKeys.finishedBy] = {{110003}},
             [questKeys.preQuestSingle] = {31167},
+        },
+        [29925] = { -- All We Can Spare
+            [questKeys.preQuestSingle] = {29723}, -- could also be 29716
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Toya"),0,{{"monster",56348}}}},
+        },
+        [29926] = { -- Calamity Jade
+            [questKeys.preQuestSingle] = {29928},
+        },
+        [29927] = { -- Mann's Man
+            [questKeys.objectives] = {{{56347,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.preQuestSingle] = {29928},
+        },
+        [29928] = { -- I Have No Jade And I Must Scream
+            [questKeys.preQuestSingle] = {29925},
+        },
+        [29929] = { -- Trapped!
+            [questKeys.objectives] = {{{56464,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29930] = { -- What's Mined Is Yours
+            [questKeys.objectives] = {{{56527,nil,Questie.ICON_TYPE_MOUNT_UP}}},
+        },
+        [29931] = { -- The Serpent's Heart
+            [questKeys.preQuestSingle] = {29930},
+        },
+        [29932] = { -- The Temple of the Jade Serpent
+            [questKeys.objectives] = {{{57242,nil,Questie.ICON_TYPE_TALK}}},
         },
         [29933] = { -- The Bees' Knees
             [questKeys.preQuestSingle] = {31167},
@@ -914,9 +1469,11 @@ function MopQuestFixes.Load()
         [29936] = { -- Instant Messaging
             [questKeys.objectives] = {{{56402,nil,Questie.ICON_TYPE_OBJECT}}},
             [questKeys.preQuestSingle] = {29935},
+            [questKeys.finishedBy] = {{56339}},
         },
         [29937] = { -- Furious Fowl
             [questKeys.preQuestSingle] = {29941},
+            [questKeys.finishedBy] = {{56406}},
         },
         [29939] = { -- Boom Bait
             [questKeys.extraObjectives] = {{{[zoneIDs.THE_JADE_FOREST]={{26.75,55.33}}},Questie.ICON_TYPE_INTERACT,l10n("Throw the Gut Bomb"),0}},
@@ -926,7 +1483,7 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {29936},
         },
         [29942] = { -- Silly Wikket, Slickies are for Hozen
-            [questKeys.preQuestSingle] = {31239},
+            [questKeys.preQuestGroup] = {29937,31239}, -- 29937 is definitely a prequest. If someone else had 31239 then assume it must need both rather than just 31239
         },
         [29943] = { -- Guerrillas in our Midst
             [questKeys.preQuestSingle] = {29824},
@@ -952,9 +1509,16 @@ function MopQuestFixes.Load()
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Fill the vial"),0,{{"object",209921}}}},
         },
         [29952] = { -- Broken Dreams
-            [questKeys.preQuestSingle] = {29950}, -- might be prequest group with 29951
+            [questKeys.preQuestSingle] = {29950},
             [questKeys.objectives] = {{{56680,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chen"),0,{{"monster",56133}}}},
+        },
+        [29966] = { -- Burning Down the House
+            [questKeys.objectives] = {{{56509,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [29967] = { -- Boom Goes the Doonamite!
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{56603,56624,56639,56644,56645},56603}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Rivett"),0,{{"monster",56525}}}},
         },
         [29968] = { -- Green-ish Energy
             [questKeys.preQuestSingle] = {29824},
@@ -964,9 +1528,14 @@ function MopQuestFixes.Load()
         },
         [29981] = { -- Stemming the Swarm
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {29872},
         },
         [29982] = { -- Evacuation Orders
             [questKeys.objectives] = {{{57120,nil,Questie.ICON_TYPE_TALK}},nil,nil,nil,{{{57122,57121},57121,nil,Questie.ICON_TYPE_TALK},{{57124,57123},57123,nil,Questie.ICON_TYPE_TALK},{{57127,57126},57126,nil,Questie.ICON_TYPE_TALK},},}
+        },
+        [29983] = { -- The Hidden Master
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29981,29982},
         },
         [29984] = { -- Unyielding Fists: Trial of Bamboo
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Master Bruised Paw"),0,{{"monster",56714}}}},
@@ -979,6 +1548,8 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {nil,{{209945,nil,Questie.ICON_TYPE_OBJECT},{209946,nil,Questie.ICON_TYPE_OBJECT},{209947,nil,Questie.ICON_TYPE_OBJECT}}},
         },
         [29987] = { -- Unyielding Fists: Trial of Wood
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29985,29986,29992},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Master Bruised Paw"),0,{{"monster",56714}}}},
         },
         [29989] = { -- Unyielding Fists: Trial of Stone
@@ -990,13 +1561,47 @@ function MopQuestFixes.Load()
         [29992] = { -- Tenderpaw By Name, Tender Paw By Reputation
             [questKeys.preQuestSingle] = {29984},
         },
+        [29993] = { -- Find the Boy
+            [questKeys.preQuestSingle] = {29866},
+        },
+        [29997] = { -- The Scryer's Dilemma
+            [questKeys.preQuestSingle] = {29932},
+        },
+        [29998] = { -- The Librarian's Quandary
+            [questKeys.preQuestSingle] = {29932},
+        },
+        [29999] = { -- The Rider's Bind
+            [questKeys.objectives] = {{{56853,nil,Questie.ICON_TYPE_INTERACT},{56852,nil,Questie.ICON_TYPE_INTERACT},{56851,nil,Questie.ICON_TYPE_INTERACT},{56850,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {29932},
+        },
+        [30000] = { -- The Jade Serpent
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {29999,30005,30011}, -- might need more than these 3
+        },
+        [30002] = { -- Pages of History
+            [questKeys.preQuestSingle] = {29998},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Search through the book"),0,{{"object",209594}}}},
+        },
+        [30004] = { -- Everything In Its Place
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30001,30002},
+        },
+        [30005] = { -- Lighting Up the Sky
+            [questKeys.objectives] = {nil,{{209672}}},
+            [questKeys.preQuestSingle] = {29932},
+        },
+        [30015] = { -- Dawn's Blossom
+            [questKeys.preQuestSingle] = {29967},
+            [questKeys.preQuestGroup] = {},
+        },
         [30027] = { -- The Lesson of the Iron Bough
             [questKeys.requiredLevel] = 1,
             [questKeys.requiredSourceItems] = {73209},
             [questKeys.requiredRaces] = raceIDs.PANDAREN_ALLIANCE + raceIDs.PANDAREN_HORDE + raceIDs.PANDAREN,
         },
         [30028] = { -- Grain Recovery
-            [questKeys.preQuestSingle] = {30031},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30029,30030,30031},
         },
         [30029] = { -- Wee Little Shenanigans
             [questKeys.preQuestSingle] = {30048},
@@ -1114,10 +1719,14 @@ function MopQuestFixes.Load()
         },
         [30057] = { -- Seeing Orange
             [questKeys.triggerEnd] = {"Bring Mina Mudclaw home to her father", {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS]={{44.22,34.65}}}},
+            [questKeys.objectives] = {},
         },
         [30058] = { -- Mothallus!
             [questKeys.preQuestSingle] = {30059},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Use the bait"),0,{{"object",210117}}}},
+        },
+        [30066] = { -- Hidden Power
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{57316,57326,57400},57316,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [30069] = { -- No Plan Survives Contact with the Enemy
             [questKeys.preQuestSingle] = {31733},
@@ -1128,6 +1737,10 @@ function MopQuestFixes.Load()
         [30072] = { -- Where Silk Comes From
             [questKeys.preQuestSingle] = {},
             [questKeys.exclusiveTo] = {32035}, --ingame bug
+        },
+        [30073] = { -- The Emperor
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30047,30172,30055},
         },
         [30075] = { -- Clear the Way
             [questKeys.preQuestSingle] = {30074},
@@ -1140,16 +1753,83 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{57662,nil,Questie.ICON_TYPE_INTERACT}}};
         },
         [30078] = { -- Cleaning House
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30075,30076,30077},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chen"),0,{{"monster",56133}}},{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Mudmug"),0,{{"monster",58027}}},{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Li Li"),0,{{"monster",58028}}},{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chen"),0,{{"monster",58029}}}},
+        },
+        [30079] = { -- What's Eating Zhu's Watch?
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {29873},
+            [questKeys.objectives] = {{{57457,nil,Questie.ICON_TYPE_TALK},{57830,nil,Questie.ICON_TYPE_TALK},{57825,nil,Questie.ICON_TYPE_TALK},{57744,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30080] = { -- Finding Yi-Mo
+            [questKeys.objectives] = {{{58376,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30081] = { -- Materia Medica
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30079,30082},
+        },
+        [30082] = { -- Cheer Up, Yi-Mo
+            [questKeys.objectives] = {{{57310,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Yi-Mo"),0,{{"monster",58376}}}},
+        },
+        [30083] = { -- Securing the Province
+            [questKeys.preQuestSingle] = {30091},
+        },
+        [30084] = { -- Borderlands
+            [questKeys.preQuestSingle] = {30091},
+            [questKeys.objectives] = {{{58161,nil,Questie.ICON_TYPE_INTERACT},{58170,nil,Questie.ICON_TYPE_INTERACT},{58173,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [30085] = { -- Into the Brewery
             [questKeys.breadcrumbForQuestId] = 31327,
         },
         [30086] = { -- The Search for the Hidden Master
-            [questKeys.preQuestSingle] = {29908},
+            [questKeys.preQuestGroup] = {29908,29877},
+        },
+        [30088] = { -- Why So Serious?
+            [questKeys.preQuestSingle] = {30081},
+        },
+        [30089] = { -- Apply Directly to the Forehead
+            [questKeys.preQuestSingle] = {30088},
+            [questKeys.objectives] = {{{57457,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30090] = { -- Zhu's Despair
+            [questKeys.preQuestSingle] = {30089},
+            [questKeys.objectives] = {{{58409},{58410,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [30117] = { -- Stoneplow Thirsts
             [questKeys.preQuestSingle] = {30078},
+        },
+        [30121] = { -- Search Party
+            [questKeys.nextQuestInChain] = 30179,
+            [questKeys.breadcrumbForQuestId] = 30179,
+        },
+        [30123] = { -- Skitterer Stew
+            [questKeys.preQuestSingle] = {30179},
+        },
+        [30124] = { -- Blind Them!
+            [questKeys.preQuestSingle] = {30179},
+        },
+        [30127] = { -- Threat from Dojan
+            [questKeys.preQuestSingle] = {30123}, --might be group with 30124
+        },
+        [30128] = { -- The Water of Youth
+            [questKeys.objectives] = {nil, nil,{{78934,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Na Lek"),0,{{"monster",55597}}}},
+        },
+        [30129] = { -- The Mogu Agenda
+            [questKeys.preQuestSingle] = {30123}, --might be group with 30124
+        },
+        [30130] = { -- Herbal Remedies
+            [questKeys.preQuestSingle] = {30123}, --might be group with 30124
+        },
+        [30131] = { -- Life
+            [questKeys.objectives] = {{{58585,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Sunwalker Dezco"),0,{{"monster",58113}}}},
+        },
+        [30133] = { -- Into the Wilds
+            [questKeys.preQuestSingle] = {30090},
+            [questKeys.objectives] = {{{59151,nil,Questie.ICON_TYPE_TALK}}},
         },
         [30135] = { -- Beating the Odds
             [questKeys.nextQuestInChain] = 30136,
@@ -1184,8 +1864,32 @@ function MopQuestFixes.Load()
         [30143] = { -- They Grow Like Weeds
             [questKeys.preQuestSingle] = {30142},
         },
+        [30160] = { --A Ruby Shard for Ella
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [30163] = { -- For the Tribe
+            [questKeys.preQuestSingle] = {30132},
+            [questKeys.objectives] = {{{58608,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30164] = { -- The Stoneplow Convoy [Horde]
+            [questKeys.preQuestGroup] = {30229,30230,30163}, -- might not be all, my turn in order was 30229, 30163, 30230
+            [questKeys.objectives] = {{{58955,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
         [30172] = { -- Barreling Along
+            [questKeys.objectives] = {},
             [questKeys.triggerEnd] = {"Lead Mudmug back to Halfhill", {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS]={{55.92,49.33}}}},
+        },
+        [30174] = { -- For Family
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30164,30175},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Kor Bloodtusk"),0,{{"monster",58670}}}},
+        },
+        [30175] = { -- The Mantid
+            [questKeys.preQuestGroup] = {30229,30230,30163}, -- might not be all, my turn in order was 30229, 30163, 30230
+        },
+        [30179] = { -- Poisoned! [Horde]
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {30121},
         },
         [30184] = { -- Mushan Mastery: Darkhide
             [questKeys.preQuestSingle] = {30181},
@@ -1199,8 +1903,20 @@ function MopQuestFixes.Load()
         [30188] = { -- Riding the Skies (Jade Cloud Serpent)
             [questKeys.preQuestGroup] = {30140,30187},
         },
+        [30189] = { -- A Lovely Apple for Ella
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [30229] = { -- The Greater Danger
+            [questKeys.preQuestSingle] = {30132},
+        },
+        [30230] = { -- Re-Reclaim
+            [questKeys.preQuestSingle] = {30132},
+        },
         [30240] = { -- Survival Ring: Flame
             [questKeys.preQuestSingle] = {30640},
+        },
+        [30241] = { -- Warn Stoneplow [Horde]
+            [questKeys.exclusiveTo] = {30376},
         },
         [30242] = { -- Survival Ring: Blades
             [questKeys.preQuestSingle] = {30640},
@@ -1212,6 +1928,7 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{58719,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [30254] = { -- Learn and Grow II: Tilling and Planting
+            [questKeys.preQuestSingle] = {30535},
             [questKeys.objectives] = {{{59985,nil,Questie.ICON_TYPE_INTERACT}},{{59990,nil,Questie.ICON_TYPE_INTERACT}}},
         },
         [30255] = { -- Learn and Grow III: Tending Crops
@@ -1222,12 +1939,42 @@ function MopQuestFixes.Load()
         },
         [30257] = { -- Learn and Grow V: Halfhill Market
             [questKeys.objectives] = {nil,nil,{{80314,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.requiredSourceItems] = {79269},
+        },
+        [30258] = { --Mung-Mung's Vote I: A Hozen's Problem
+            [questKeys.requiredMinRep] = {1272,14600} -- available at 5600/12000 honored with Tillers
+        },
+        [30260] = { -- Growing the Farm I: The Weeds
+            [questKeys.requiredMinRep] = {1272,9000} -- Tillers at Honored (wowhead)
         },
         [30261] = { -- Roll Club: Serpent's Spine
             [questKeys.preQuestSingle] = {30640},
         },
         [30266] = { -- Bloodied Skies
             [questKeys.preQuestSingle] = {30640},
+        },
+        [30268] = { -- The Murksweats
+            [questKeys.preQuestSingle] = {30269},
+        },
+        [30269] = { -- Unsafe Passage
+            [questKeys.preQuestSingle] = {30133,30178}, -- Either Horde or Alliance version as prequest
+            [questKeys.triggerEnd] = {"Accompany Koro to Crane Wing Refuge", {[zoneIDs.KRASARANG_WILDS]={{43.86,36.77}}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Koro Mistwalker"),0,{{"monster",58547}}},{nil,Questie.ICON_TYPE_INTERACT,l10n("Talk to Koro Mistwalker"),0,{{"monster",58978}}}},
+        },
+        [30270] = { -- Blinding the Riverblades
+            [questKeys.preQuestSingle] = {30269},
+        },
+        [30271] = { -- Sha Can Awe
+            [questKeys.preQuestGroup] = {30268,30270,30694}, -- might not be all, my turn in order was 30268, 30694, 30270
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{58968,58969,59297},59297,nil,Questie.ICON_TYPE_EVENT},},},
+        },
+        [30272] = { -- Striking the Rain
+            [questKeys.preQuestGroup] = {30268,30270,30694}, -- might not be all, my turn in order was 30268, 30694, 30270
+        },
+        [30273] = { -- In the House of the Red Crane
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30271,30272,30695}, -- might not be all, my turn in order was 30695, 30271, 30272
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chi-Ji"),0,{{"monster",59653}}}},
         },
         [30277] = { -- The Crumbling Hall
             [questKeys.preQuestSingle] = {30640},
@@ -1243,6 +1990,9 @@ function MopQuestFixes.Load()
         },
         [30322] = { -- Money Matters
             [questKeys.preQuestSingle] = {30257},
+        },
+        [30325] = { -- Where it Counts
+            [questKeys.objectives] = {{{59123}},{{210890},{210955}}},
         },
         [30326] = { -- The Kunzen Legend-Chief
             [questKeys.preQuestSingle] = {30257},
@@ -1267,8 +2017,36 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {30257},
             [questKeys.exclusiveTo] = {30328,30329,30330,30331},
         },
+        [30333] = { -- The Lesser of Two Evils
+            [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30334,30335,30336,30337},
+        },
         [30334] = { -- Stealing is Bad... Re-Stealing is OK
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30333,30335,30336,30337},
+        },
+        [30335] = { -- Stalling the Ravage
+            [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30333,30334,30336,30337},
+        },
+        [30336] = { -- The Kunzen Hunter-Chief
+            [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30333,30334,30335,30337},
+        },
+        [30337] = { -- Simian Sabotage
+            [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30333,30334,30335,30336},
+            [questKeys.objectives] = {{{59276,nil,Questie.ICON_TYPE_INTERACT},{59278,nil,Questie.ICON_TYPE_INTERACT},{59279,nil,Questie.ICON_TYPE_INTERACT},{59280,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30357] = { -- The Stoneplow Convoy [Alliance]
+            --[questKeys.preQuestGroup] = {30229,30230,30163}, -- Prequests from horde version, will need changing
+            [questKeys.objectives] = {{{58955,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30359] = { -- The Lord Reclaimer
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Lyalia"),0,{{"monster",58976}}}},
+        },
+        [30360] = { -- Warn Stoneplow [Alliance]
+            [questKeys.exclusiveTo] = {30376},
         },
         [30379] = { -- A Ruby Shard for Gina
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
@@ -1430,56 +2208,211 @@ function MopQuestFixes.Load()
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30434] = { -- A Ruby Shard for Jogu
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30435] = { -- A Lovely Apple for Jogu
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30436] = { -- A Jade Cat for Jogu
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30437] = { -- A Blue Feather for Jogu
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30438] = { -- A Marsh Lily for Jogu
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [30439] = { -- A Dish for Jogu
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
+        [30457] = { -- Call Out Their Leader
+            [questKeys.preQuestSingle] = {},
+        },
+        [30460] = { -- Hit Medicine
+            [questKeys.objectives] = {{{59143,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30466] = { -- Sufficient Motivation
+            [questKeys.objectives] = {nil,nil,{{79884}},nil,{{{59740,59296},59296,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {30000},
+            [questKeys.breadcrumbs] = {30499},
+        },
         [30470] = { -- A Gift For Tina
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30471,30472,30473,30474,30475,30476,30477,30478,30479},
         },
         [30471] = { -- A Gift For Chee Chee
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30472,30473,30474,30475,30476,30477,30478,30479},
         },
         [30472] = { -- A Gift For Sho
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30473,30474,30475,30476,30477,30478,30479},
+            [questKeys.objectives] = {nil,{{210873,nil,Questie.ICON_TYPE_OBJECT}}},
         },
         [30473] = { -- A Gift For Fish
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30474,30475,30476,30477,30478,30479},
         },
         [30474] = { -- A Gift For Ella
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30475,30476,30477,30478,30479},
         },
         [30475] = { -- A Gift For Fung
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30474,30476,30477,30478,30479},
         },
         [30476] = { -- A Gift For Old Hillpaw
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30474,30475,30477,30478,30479},
         },
         [30477] = { -- A Gift For Haohan
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30474,30475,30476,30478,30479},
         },
         [30478] = { -- A Gift For Jogu
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30474,30475,30476,30477,30479},
         },
         [30479] = { -- A Gift For Gina
             [questKeys.preQuestSingle] = {30257},
+            [questKeys.exclusiveTo] = {30470,30471,30472,30473,30474,30475,30476,30477,30478},
+        },
+        [30480] = { -- The Ritual
+            [questKeys.objectives] = {nil,nil,{{60973,nil,Questie.ICON_TYPE_TALK},{61654},{61530,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30484] = { -- Gauging Our Progress
+            [questKeys.objectives] = {nil,nil,{{80013,nil,Questie.ICON_TYPE_TALK},{80014,nil,Questie.ICON_TYPE_TALK},{80015,nil,Questie.ICON_TYPE_TALK},{80061,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30485] = { -- Last Piece of the Puzzle
+            [questKeys.preQuestGroup] = {30466,30484},
+            [questKeys.objectives] = {nil,{{213652}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Mishi"),0,{{"monster",64207}}}},
+        },
+        [30487] = { -- Comin' Round the Mountain
+            [questKeys.preQuestGroup] = {30601,30618,30621},
+            [questKeys.objectives] = {{{60094,nil,Questie.ICON_TYPE_MOUNT_UP},{60022,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [30488] = { -- The Missing Muskpaw
+            [questKeys.preQuestSingle] = {},
+        },
+        [30491] = { -- At the Yak Wash
+            [questKeys.extraObjectives] = {
+                {{[zoneIDs.KUN_LAI_SUMMIT]={{71.4,69.27}}}, Questie.ICON_TYPE_EVENT, l10n("Bring the yak to the wash")},
+                {nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Mount up"),0,{{"monster",59319},{"monster",59662},{"monster",61874}}}
+            },
+        },
+        [30492] = { -- Back in Yak
+            [questKeys.objectives] = {},
+            [questKeys.triggerEnd] = {"	Bring Yak Herd to Lucky Eightcoins", {[zoneIDs.KUN_LAI_SUMMIT]={{65.38,61.45}}}},
+        },
+        [30495] = { -- Love's Labor
+            [questKeys.objectives] = {{{59395,nil,Questie.ICON_TYPE_TALK},{59401,nil,Questie.ICON_TYPE_TALK},{59392,nil,Questie.ICON_TYPE_TALK},{59397,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.extraObjectives] = {
+                {nil,Questie.ICON_TYPE_TALK,l10n("Talk to Kitemaster Shoku for a ride to the top"),4,{{"monster",59392}}},
+                {nil,Questie.ICON_TYPE_TALK,l10n("Talk to Kitemaster Inga for a ride back to the bottom"),4,{{"monster",59400}}},
+            },
+        },
+        [30498] = { -- Get Back Here! (Alliance)
+            [questKeys.preQuestSingle] = {30000},
+        },
+        [30499] = { -- Get Back Here! (Horde)
+            [questKeys.preQuestSingle] = {30000},
+            [questKeys.breadcrumbForQuestId] = 30466,
+        },
+        [30502] = { -- Jaded Heart
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{59434,59454},59454,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {31303},
+            [questKeys.requiredSourceItems] = {80074},
+        },
+        [30504] = { -- Emergency Response
+            [questKeys.objectives] = {{{64360,nil,Questie.ICON_TYPE_INTERACT},{64362,nil,Questie.ICON_TYPE_INTERACT},{64363,nil,Questie.ICON_TYPE_INTERACT},{64364,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {31303},
+        },
+        [30509] = { -- General Nazgrim has Awakened
+            [questKeys.exclusiveTo] = {30510,30511},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30457,30459,30460},
+        },
+        [30510] = { -- General Nazgrim has Awakened
+            [questKeys.exclusiveTo] = {30509,30511},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30457,30459,30460},
+        },
+        [30511] = { -- General Nazgrim has Awakened
+            [questKeys.exclusiveTo] = {30509,30510},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30457,30459,30460},
+        },
+        [30513] = { -- Eastwind Rest
+            [questKeys.objectives] = {{{63751,nil,Questie.ICON_TYPE_TALK},{63535,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30514] = { -- Challenge Accepted [Alliance]
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Set the Yaungol Banner ablaze"),0,{{"object",210933}}}},
+        },
+        [30515] = { -- Challenge Accepted [Horde]
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Set the Yaungol Banner ablaze"),0,{{"object",210933}}}},
+        },
+        [30517] = { -- Farmer Fung's Vote I: Yak Attack
+            --[questKeys.preQuestSingle] = {31946}, -- Conflicting info that Mung-Mung's chain needs to be completed before Farmer Fung's - some comments on wowhead about doing in parallel. Placeholder prequest in case this is a requirement
+            [questKeys.requiredMinRep] = {1272,25500} -- Tillers 4500 into Revered (wowhead)
+        },
+        [30519] = { -- Nana's Vote I: Nana's Secret Recipe
+            [questKeys.preQuestSingle] = {31947}, -- Farmer Fung chain required for Nana
+            [questKeys.requiredMinRep] = {1272,29500} -- Tillers 8500 into Revered (wowhead)
+        },
+        [30521] = { -- Haohan's Vote I: Bungalow Break-In
+            [questKeys.preQuestSingle] = {31949}, -- Nana chain required for Haohan
+            [questKeys.requiredMinRep] = {1272,37800} -- Tillers 16800 into Revered (wowhead)
+        },
+        [30523] = { -- Growing the Farm II: The Broken Wagon
+            [questKeys.requiredMinRep] = {1272,21000} -- Tillers at Revered (wowhead)
+        },
+        [30525] = { -- Haohan's Vote III: Pure Poison
+            [questKeys.preQuestSingle] = {30522},
+        },
+        [30526] = { -- Lost and Lonely
+            [questKeys.requiredMinRep] = {1272,33600} -- Tillers 12600 into Revered (wowpedia)
+        },
+        [30527] = { -- Haohan's Vote IV: Melons For Felons
+            [questKeys.preQuestSingle] = {30525},
+        },
+        [30528] = { -- Haohan's Vote V: Chief Yip-Yip
+            [questKeys.preQuestSingle] = {30527},
+        },
+        [30529] = { -- Growing the Farm III: The Mossy Boulder
+            [questKeys.requiredMinRep] = {1272,42000} -- Tillers at Exalted (wowhead)
         },
         [30535] = { -- Learn and Grow I: Seeds
             [questKeys.preQuestSingle] = {30252},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Merchant Greenfield"),0,{{"monster",58718}}}},
+        },
+        [30565] = { -- An Unexpected Advantage
+            [questKeys.preQuestSingle] = {30000},
+        },
+        [30568] = { -- Helping the Cause
+            [questKeys.preQuestSingle] = {30000},
+            [questKeys.objectives] = {{{59572},{59562},{59609,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Open the cage"),0,{{"monster",59563}}}},
+        },
+        [30570] = { -- Trouble on the Farmstead
+            [questKeys.preQuestSingle] = {30515},
+        },
+        [30571] = { -- Farmhand Freedom
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_SLAY,l10n("Slay the overseers"),0,{{"monster",59580}}}},
+            [questKeys.objectives] = {{{59577,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30581] = { -- ...and the Pot, Too!
+            [questKeys.preQuestSingle] = {30570},
         },
         [30589] = { -- Wrecking the Wreck
             [questKeys.requiredLevel] = 5,
@@ -1495,13 +2428,291 @@ function MopQuestFixes.Load()
             [questKeys.requiredLevel] = 5,
             [questKeys.requiredRaces] = raceIDs.PANDAREN_ALLIANCE + raceIDs.PANDAREN_HORDE + raceIDs.PANDAREN,
         },
+        [30594] = { -- Deanimate the Reanimated
+            [questKeys.preQuestSingle] = {30515},
+        },
+        [30595] = { -- Profiting off of the Past
+            [questKeys.preQuestSingle] = {30515},
+        },
+        [30599] = { -- A Monkey Idol
+            [questKeys.objectives] = {nil,{{210931},{211275},{211276}}},
+            [questKeys.requiredSourceItems] = {80428,80429,80430},
+        },
+        [30600] = { -- No Pack Left Behind
+            [questKeys.preQuestSingle] = {30603},
+        },
+        [30601] = { -- Instant Courage
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{60382,59818},59818,nil,Questie.ICON_TYPE_INTERACT}}}
+        },
+        [30602] = { -- The Rabbitsfoot
+            [questKeys.objectives] = {{{59806,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30603] = { -- The Broketooth Ravage
+            [questKeys.preQuestSingle] = {30592},
+        },
+        [30604] = { -- Breaking Brokentooth
+            [questKeys.preQuestSingle] = {30603},
+        },
+        [30605] = { -- Bros Before Hozen
+            [questKeys.objectives] = {{{60008,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30606] = { -- Thumping Knucklethump
+            [questKeys.preQuestSingle] = {30605},
+        },
+        [30607] = { -- Hozen Love Their Keys
+            [questKeys.objectives] = {{{59421,nil,Questie.ICON_TYPE_INTERACT}},nil,{{80535}}}, --sorry in advance Cheeq
+        },
+        [30608] = { -- The Snackrifice
+            [questKeys.preQuestSingle] = {30605},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{60027,60012},60012,nil,Questie.ICON_TYPE_INTERACT}}}
+        },
+        [30610] = { -- Grummle! Grummle! Grummle!
+            [questKeys.objectives] = {nil,{{211686,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30611] = { -- Unleash The Yeti!
+            [questKeys.preQuestSingle] = {30606},
+        },
+        [30617] = { -- Roadside Assistance
+            [questKeys.preQuestGroup] = {30616,30616,30808},
+            [questKeys.preQuestSingle] = {},
+        },
+        [30618] = { -- Resupplying One Keg
+            [questKeys.preQuestSingle] = {30999},
+        },
+        [30620] = { -- Mogu?! Oh No-gu!
+            [questKeys.preQuestSingle] = {30515},
+        },
+        [30621] = { -- They Stole My Luck
+            [questKeys.preQuestSingle] = {30999},
+        },
+        [30622] = { -- The Swarm Begins
+            [questKeys.preQuestSingle] = {30241,30360,30376}, -- any of the (mandatory) breadcrumbs that trigger the mantid invasion phase in western four winds
+        },
+        [30623] = { -- The Mantidote
+            [questKeys.preQuestSingle] = {30241,30360,30376}, -- any of the (mandatory) breadcrumbs that trigger the mantid invasion phase in western four winds
+            [questKeys.objectives] = {{{59874}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Use Ken-Ken's Mask on Ik'thik Wing Commander"),0,{{"monster",56723}}}},
+        },
+        [30627] = { -- The Savior of Stoneplow
+            [questKeys.preQuestSingle] = {30626},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Talk to Miss Fanny"),0,{{"monster",59857}}}},
+        },
+        [30648] = { -- Moving On
+            [questKeys.finishedBy] = {{110007}},
+            [questKeys.objectives] = {{{59899,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestSingle] = {30504,31319}, -- became available after 30504/31319 only
+        },
+        [30650] = { -- Pandaren Prisoners [Alliance]
+            [questKeys.objectives] = {{{60038,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30651] = { -- Barrels of Fun [Alliance]
+            [questKeys.preQuestSingle] = {31252},
+            [questKeys.requiredSourceItems] = {80528},
+            [questKeys.objectives] = {{{60096,nil,Questie.ICON_TYPE_INTERACT},{60098,nil,Questie.ICON_TYPE_INTERACT},{60099,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Pick up an Explosives Barrel"),0,{{"object",211312}}}},
+        },
+        [30652] = { -- In Tents Channeling [Alliance]
+            [questKeys.preQuestSingle] = {31252},
+        },
+        [30653] = { -- It Does You No Good Inside The Keg
+            [questKeys.preQuestSingle] = {30241,30360,30376}, -- any of the (mandatory) breadcrumbs that trigger the mantid invasion phase in western four winds
+            [questKeys.objectives] = {{{59844,nil,Questie.ICON_TYPE_EVENT},{59846,nil,Questie.ICON_TYPE_EVENT},{59829,nil,Questie.ICON_TYPE_EVENT},{59851,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [30655] = { -- Pandaren Prisoners [Horde]
+            [questKeys.objectives] = {{{60038,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30656] = { -- Barrels of Fun [Horde]
+            [questKeys.preQuestSingle] = {31253},
+            [questKeys.requiredSourceItems] = {80528},
+            [questKeys.objectives] = {{{60096,nil,Questie.ICON_TYPE_INTERACT},{60098,nil,Questie.ICON_TYPE_INTERACT},{60099,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Pick up an Explosives Barrel"),0,{{"object",211312}}}},
+        },
+        [30657] = { -- In Tents Channeling [Horde]
+            [questKeys.preQuestSingle] = {31253},
+        },
+        [30665] = { -- The Defense of Shado-Pan Fallback
+            [questKeys.preQuestGroup] = {30459,30460},
+            [questKeys.breadcrumbs] = {31453},
+        },
+        [30670] = { -- Turnabout
+            [questKeys.preQuestSingle] = {30457},
+        },
+        [30672] = { -- Balance
+            [questKeys.preQuestSingle] = {30671},
+        },
+        [30674] = { -- Balance Without Violence
+            [questKeys.preQuestSingle] = {30671},
+            [questKeys.objectives] = {{{30674,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30683] = { -- One Traveler's Misfortune
+            [questKeys.objectives] = {{{60765,nil,Questie.ICON_TYPE_OBJECT},{60769}}},
+        },
+        [30684] = { -- Seeker's Folly
+            [questKeys.preQuestSingle] = {30683},
+        },
+        [30691] = { -- Misery
+            [questKeys.preQuestSingle] = {30669},
+        },
+        [30692] = { -- The Burlap Trail: To Kota Basecamp
+            [questKeys.preQuestSingle] = {30612},
+            [questKeys.objectives] = {},
+            [questKeys.triggerEnd] = {"Escort grummies to Kota Basecamp", {[zoneIDs.KUN_LAI_SUMMIT]={{43.74,68.93}}}},
+        },
+        [30694] = { -- Tread Lightly
+            [questKeys.preQuestSingle] = {30269},
+            [questKeys.objectives] = {nil,{{223819,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [30695] = { -- Ahead on the Way
+            [questKeys.preQuestGroup] = {30268,30270,30694}, -- might not be all, my turn in order was 30268, 30694, 30270
+        },
+        [30742] = { -- Shut it Down
+            [questKeys.exclusiveTo] = {30823},
+        },
+        [30743] = { -- Gourmet Kafa
+            [questKeys.objectives] = {nil,{{211456}}},
+            [questKeys.exclusiveTo] = {30824},
+        },
+        [30744] = { -- Kota Blend
+            [questKeys.objectives] = {nil,nil,{{81054}}},
+            [questKeys.exclusiveTo] = {30825},
+        },
         [30745] = { -- Trouble Brewing
             [questKeys.requiredLevel] = 85,
+            [questKeys.exclusiveTo] = {30826},
+        },
+        [30747] = { -- The Burlap Grind
+            [questKeys.preQuestSingle] = {30746},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Feed the Flask of Kafa to Kota Kon"),0,{{"monster",60587}}}},
         },
         [30767] = { -- Risking It All
             [questKeys.requiredLevel] = 5,
             [questKeys.objectives] = {{{60727,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.requiredRaces] = raceIDs.PANDAREN_ALLIANCE + raceIDs.PANDAREN_HORDE + raceIDs.PANDAREN,
+        },
+        [30794] = { -- Emergency Care
+            [questKeys.breadcrumbs] = {30816},
+            [questKeys.objectives] = {{{60694,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.requiredSourceItems] = {81177},
+        },
+        [30795] = { -- Staying Connected
+            [questKeys.objectives] = {{{61166,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Mishi"),0,{{"monster",60796}}}},
+        },
+        [30797] = { -- It Was Almost Alive
+            [questKeys.objectives] = {nil, nil, {{81892,nil,Questie.ICON_TYPE_OBJECT}}},
+        },
+        [30800] = { -- Stealing Their Thunder King
+            [questKeys.objectives] = {nil, {{214572}},{{82764}}},
+        },
+        [30801] = { -- Lessons from History
+            [questKeys.objectives] = {{{61316,nil,Questie.ICON_TYPE_OBJECT}}},
+        },
+        [30806] = { -- The Scent of Life
+            [questKeys.preQuestSingle] = {30794},
+        },
+        [30807] = { -- By the Falls, For the Fallen
+            [questKeys.preQuestSingle] = {30794},
+        },
+        [30808] = { -- A Grummle's Luck
+            [questKeys.preQuestSingle] = {},
+        },
+        [30816] = { -- Checking In
+            [questKeys.preQuestSingle] = {30935},
+            [questKeys.breadcrumbForQuestId] = 30794,
+        },
+        [30819] = { -- Preparing the Remains
+            [questKeys.preQuestGroup] = {30805,30806,30807},
+        },
+        [30820] = { -- A Funeral
+            [questKeys.preQuestSingle] = {30819},
+            [questKeys.objectives] = {{{60883,nil,Questie.ICON_TYPE_OBJECT}}},
+        },
+        [30821] = { -- The Burlap Grind (Daily)
+            [questKeys.preQuestSingle] = {30746},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Feed the Flask of Kafa to Kota Kon"),0,{{"monster",60587}}}},
+        },
+        [30823] = { -- Shut it Down
+            [questKeys.exclusiveTo] = {30742},
+        },
+        [30824] = { -- Gourmet Kafa
+            [questKeys.objectives] = {nil,{{211456}}},
+            [questKeys.exclusiveTo] = {30743},
+        },
+        [30825] = { -- Kota Blend
+            [questKeys.objectives] = {nil,nil,{{81054}}},
+            [questKeys.exclusiveTo] = {30744},
+        },
+        [30826] = { -- Trouble Brewing
+            [questKeys.exclusiveTo] = {30745},
+        },
+        [30828] = { -- Cleansing the Mere
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Cleanse the pool"),0,{{"monster",61500}}}},
+        },
+        [30829] = { -- The Tongue of Ba-Shon
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Cho"),0,{{"monster",61315}}}},
+        },
+        [30834] = { -- Father and Child Reunion
+            [questKeys.objectives] = {},
+            [questKeys.triggerEnd] = {"Reunite Wu-Peng and Merchant Shi", {[zoneIDs.KUN_LAI_SUMMIT]={{74.92,88.72}}}},
+        },
+        [30879] = { -- Round 1: Brewmaster Chani
+            [questKeys.preQuestSingle] = {31511,31512},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Brewmaster Chani"),0,{{"monster",60996}}}},
+            [questKeys.exclusiveTo] = {30880},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30880] = { -- Round 1: The Streetfighter
+            [questKeys.preQuestSingle] = {31511,31512},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Lun-Chi"),0,{{"monster",60994}}}},
+            [questKeys.exclusiveTo] = {30879},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30881] = { -- Round 2: Clever Ashyo & Ken-Ken
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to ??"),0,{{"monster",??}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30882] = { -- Round 2: Kang Bramblestaff
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Kang Bramblestaff"),0,{{"monster",60978}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30883] = { -- Round 3: The Wrestler
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to The Wrestler"),0,{{"monster",60997}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30885] = { -- Round 3: Master Boom Boom
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Master Boom Boom"),0,{{"monster",61013}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30902] = { -- Round 4: Master Windfur
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Master Windfur"),0,{{"monster",61012}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30907] = { -- Round 4: The P.U.G
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to ??"),0,{{"monster",??}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+        },
+        [30935] = { -- Fisherman's Tale
+            [questKeys.objectives] = {{{61382,nil,Questie.ICON_TYPE_TALK},{61380,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30942] = { -- Make A Fighter Out of Me
+            [questKeys.preQuestSingle] = {30935},
+            [questKeys.objectives] = {{{66165},{64202},{66707}}},
+        },
+        [30943] = { -- Handle With Care
+            [questKeys.preQuestSingle] = {30935},
+        },
+        [30944] = { -- It Takes A Village
+            [questKeys.preQuestSingle] = {30935},
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{61417,61554,61381},61381,nil,Questie.ICON_TYPE_TALK}}}
+        },
+        [30945] = { -- What's Yours Is Mine
+            [questKeys.preQuestSingle] = {30935},
+        },
+        [30946] = { -- Revelations
+            [questKeys.objectives] = {{{62629,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [30967] = { -- Free the Dissenters
+            [questKeys.objectives] = {{{61566,nil,Questie.ICON_TYPE_TALK}}},
         },
         [30982] = { -- Animal Control
             [questKeys.preQuestSingle] = {},
@@ -1529,20 +2740,54 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {nil,nil,nil,nil,{{{61788,61780,61790},61788,nil,Questie.ICON_TYPE_INTERACT}}},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Open the cage"),0,{{"object",211883}}}},
         },
-        [31034] = { -- Enemies Below
-            [questKeys.startedBy] = {{39605}},
-            [questKeys.exclusiveTo] = {31036,31037},
-            [questKeys.nextQuestInChain] = 0,
+        [30999] = { -- Path Less Traveled
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31459,31460},
         },
-        [31036] = { -- Enemies Below
-            [questKeys.startedBy] = {{36648}},
-            [questKeys.exclusiveTo] = {31034,31037},
-            [questKeys.nextQuestInChain] = 0,
+        [31000] = { -- Dread Space
+            [questKeys.breadcrumbForQuestId] = 31002,
         },
-        [31037] = { -- Enemies Below
-            [questKeys.startedBy] = {{10181}},
-            [questKeys.exclusiveTo] = {31034,31036},
-            [questKeys.nextQuestInChain] = 0,
+        [31001] = { -- Falling Down
+            [questKeys.objectives] = {{{62166,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31895},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Use the rope"),0,{{"object",212229}}}},
+        },
+        [31002] = { -- Nope
+            [questKeys.objectives] = {{{62077,nil,Questie.ICON_TYPE_INTERACT},{61981}}},
+            [questKeys.breadcrumbs] = {31000,31391,31847,31886},
+        },
+        [31003] = { -- Psycho Mantid
+            [questKeys.preQuestGroup] = {31001,31002},
+        },
+        [31004] = { -- Preserved in Amber
+            [questKeys.objectives] = {nil,{{212868}}},
+        },
+        [31005] = { -- Wakening Sickness
+            [questKeys.preQuestSingle] = {31004},
+        },
+        [31007] = { -- The Dread Clutches
+            [questKeys.preQuestSingle] = {31006},
+        },
+        [31006] = { -- The Klaxxi Council
+            [questKeys.triggerEnd] = {"Meet with Kil'ruk the Wind-Reaver", {[zoneIDs.DREAD_WASTES]={{55,34}}}},
+            [questKeys.preQuestSingle] = {31005,31676},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Kil'ruk"),0,{{"monster",62202}}}},
+        },
+        [31008] = { -- Amber Arms
+            [questKeys.preQuestSingle] = {31006},
+        },
+        [31009] = { -- Dead Zone
+            [questKeys.finishedBy] = {nil,{110008}},
+            [questKeys.objectives] = {nil,{{212524}}},
+            [questKeys.preQuestSingle] = {31006},
+        },
+        [31010] = { -- In Her Clutch
+            [questKeys.objectives] = {nil,{{214674}}},
+        },
+        [31011] = { -- Enemies At Our Door
+            [questKeys.preQuestGroup] = {30942,30943,30944,30945},
+            [questKeys.preQuestSingle] = {},
         },
         [31012] = { -- Joining the Horde
             [questKeys.requiredLevel] = 5,
@@ -1560,8 +2805,182 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{62209,nil,Questie.ICON_TYPE_EVENT}}},
             [questKeys.preQuestSingle] = {31013},
         },
+        [31015] = { -- Your Private Collection
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31016},
+        },
+        [31016] = { -- Your Private Collection
+            [questKeys.breadcrumbForQuestId] = 31015,
+        },
+        [31018] = { -- Beneath the Heart of Fear
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000},
+        },
+        [31019] = { -- Amber Is Life
+            [questKeys.preQuestSingle] = {31066},
+        },
+        [31020] = { -- Feeding the Beast
+            [questKeys.preQuestSingle] = {31019},
+        },
+        [31021] = { -- Living Amber
+            [questKeys.preQuestSingle] = {31019},
+            [questKeys.requiredSourceItems] = {82864},
+        },
+        [31022] = { -- Kypari Zar
+            [questKeys.triggerEnd] = {"Korven the Prime defeneded", {[zoneIDs.DREAD_WASTES]={{59.93,59.43}}}},
+            [questKeys.objectives] = {nil,{{212933}}},
+            [questKeys.preQuestGroup] = {31020,31021},
+        },
+        [31024] = { -- Kunchong Treats
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
+        [31034] = { -- Enemies Below
+            [questKeys.startedBy] = {{39605}},
+            [questKeys.exclusiveTo] = {31036,31037},
+            [questKeys.nextQuestInChain] = 0,
+        },
+        [31036] = { -- Enemies Below
+            [questKeys.startedBy] = {{36648}},
+            [questKeys.exclusiveTo] = {31034,31037},
+            [questKeys.nextQuestInChain] = 0,
+        },
+        [31037] = { -- Enemies Below
+            [questKeys.startedBy] = {{10181}},
+            [questKeys.exclusiveTo] = {31034,31036},
+            [questKeys.nextQuestInChain] = 0,
+        },
+        [31066] = { -- A Cry From Darkness
+            [questKeys.preQuestSingle] = {31010},
+        },
+        [31067] = { -- The Heavens Hum With War
+            [questKeys.preQuestSingle] = {31066},
+            [questKeys.breadcrumbs] = {31730},
+            [questKeys.extraObjectives] = {{{[zoneIDs.DREAD_WASTES]={{53.66,15.87}}},Questie.ICON_TYPE_EVENT,l10n("Enter the burrow")}},
+        },
+        [31068] = { -- Sacred Recipe
+            [questKeys.preQuestSingle] = {31066},
+        },
+        [31069] = { -- Bound With Shade
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{62751,65996},62751}}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {31067,31068},
+        },
+        [31070] = { -- Daggers of the Great Ones
+            [questKeys.preQuestGroup] = {31067,31068},
+        },
+        [31071] = { -- I Bring Us Great Shame
+            [questKeys.preQuestGroup] = {31067,31068},
+        },
+        [31072] = { -- Rending Daggers
+            [questKeys.preQuestGroup] = {31067,31068},
+        },
+        [31073] = { -- Bound With Wood
+            [questKeys.preQuestGroup] = {31069,31070},
+        },
+        [31074] = { -- Wood and Shade
+            [questKeys.objectives] = {nil,{{212643,nil,Questie.ICON_TYPE_EVENT},{212642,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.preQuestSingle] = {31072},
+        },
+        [31075] = { -- Sunset Kings
+            [questKeys.preQuestGroup] = {31073,31078},
+        },
+        [31076] = { -- Fate of the Stormstouts
+            [questKeys.objectives] = {{{62666,nil,Questie.ICON_TYPE_TALK},{62667,nil,Questie.ICON_TYPE_TALK},{62845,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestGroup] = {31067,31068},
+            [questKeys.exclusiveTo] = {29907,31129},
+        },
+        [31077] = { -- Evie Stormstout
+            [questKeys.finishedBy] = {{67138}},
+            [questKeys.objectives] = {{{67138,nil,Questie.ICON_TYPE_EVENT}},{{440002,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [31078] = { -- Han Stormstout
+            [questKeys.objectives] = {{{62776,nil,Questie.ICON_TYPE_OBJECT}}},
+            [questKeys.extraObjectives] = {{{[zoneIDs.DREAD_WASTES]={{47.29,16.82}}},Questie.ICON_TYPE_EVENT,l10n("Enter the burrow")}},
+        },
+        [31079] = { -- The Horror Comes A-Rising
+            [questKeys.preQuestSingle] = {31075},
+        },
+        [31080] = { -- Fiery Wings
+            [questKeys.preQuestSingle] = {31075},
+        },
+        [31081] = { -- Incantations Fae and Primal
+            [questKeys.preQuestSingle] = {31075},
+        },
+        [31082] = { -- Great Vessel of Salvation
+            [questKeys.triggerEnd] = {"Bring Motherseeds back to the Motherseed Pit", {[zoneIDs.DREAD_WASTES]={{36.86,17.44}}}},
+            [questKeys.objectives] = {},
+            [questKeys.preQuestSingle] = {31075},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Let the Chanter pick-up the Motherseeds"),0,{{"monster",62601}}}},
+        },
+        [31083] = { -- Promises of Gold
+            [questKeys.startedBy] = {{62767}},
+            [questKeys.preQuestSingle] = {31075},
+        },
+        [31084] = { -- Bind the Glamour
+            [questKeys.triggerEnd] = {"Allow Chief Rikkitun to enchant the forked blade", {[zoneIDs.DREAD_WASTES]={{39.42,23.15}}}},
+            [questKeys.objectives] = {},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Chief Rikkitun"),0,{{"monster",62771}}}},
+        },
+        [31085] = { -- Fires and Fears of Old
+            [questKeys.objectives] = {{{62773,nil,Questie.ICON_TYPE_INTERACT}},nil,nil,nil,{{{63102,63103,63104},63102}}},
+            [questKeys.preQuestSingle] = {31084},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Remove the boulders"),0,{{"object",440003}}}},
+        },
+        [31086] = { -- Blood of Ancients
+            [questKeys.preQuestSingle] = {31084},
+        },
+        [31087] = { -- Extending Our Coverage
+            [questKeys.objectives] = {{{65328,nil,Questie.ICON_TYPE_EVENT},{65478}},{{213250}}},
+            [questKeys.preQuestSingle] = {31066},
+            [questKeys.exclusiveTo] = {31679},
+        },
+        [31088] = { -- Crime and Punishment
+            [questKeys.preQuestSingle] = {31087},
+            [questKeys.exclusiveTo] = {31680}
+        },
+        [31089] = { -- By the Sea, Nevermore
+            [questKeys.objectives] = {nil,{{212294,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {31088,31090},
+            [questKeys.exclusiveTo] = {31682},
+        },
+        [31090] = { -- Better With Age
+            [questKeys.preQuestSingle] = {31087},
+            [questKeys.exclusiveTo] = {31681},
+        },
+        [31091] = { -- Reunited
+            [questKeys.finishedBy] = {{64344}},
+            [questKeys.triggerEnd] = {"Escort Kaz'tik the Manipulator to the Undisturbed Dirt", {[zoneIDs.DREAD_WASTES]={{41.75,71.89}}}},
+            [questKeys.objectives] = {{{62542,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.preQuestSingle] = {31089,31682},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Talk to Kaz'tik"),0,{{"monster",63876}}}},
+        },
+        [31092] = { -- Feed or Be Eaten
+            [questKeys.preQuestSingle] = {31091},
+            [questKeys.requiredSourceItems] = {86489},
+        },
+        [31107] = { -- Citizens of a New Empire
+            [questKeys.preQuestSingle] = {31010},
+        },
+        [31108] = { -- Concentrated Fear
+            [questKeys.preQuestGroup] = {31008,31661},
+        },
         [31121] = { -- Stay a While, and Listen
             [questKeys.objectives] = {nil,{{212900}}},
+        },
+        [31129] = { -- Fate of the Stormstouts
+            [questKeys.objectives] = {{{62666,nil,Questie.ICON_TYPE_TALK},{62667,nil,Questie.ICON_TYPE_TALK},{62845,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestGroup] = {29907,31067,31068},
+            [questKeys.exclusiveTo] = {31076},
+        },
+        [31130] = { -- A Visit with Lorewalker Cho
+            [questKeys.objectives] = {nil,{{211659},{211661},{213191}}},
+            [questKeys.finishedBy] = {{56287,61218}},
+        },
+        [31132] = { -- A Mile in My Shoes
+            [questKeys.finishedBy] = {{63217}},
+        },
+        [31133] = { -- Kor'thik Aggression
+            [questKeys.preQuestGroup] = {31069,31070},
         },
         [31134] = { -- If These Stones Could Speak
             [questKeys.objectives] = {nil,{{212926},{212925},{212924}}},
@@ -1572,13 +2991,16 @@ function MopQuestFixes.Load()
             [questKeys.requiredRaces] = raceIDs.GNOME,
         },
         [31137] = { -- Meet the High Tinker
+            [questKeys.startedBy] = {{63238}},
             [questKeys.preQuestSingle] = {31135},
             [questKeys.requiredRaces] = raceIDs.GNOME,
         },
         [31138] = { -- The Arts of a Monk
+            [questKeys.requiredLevel] = 2,
             [questKeys.preQuestSingle] = {31135},
             [questKeys.requiredRaces] = raceIDs.GNOME,
             [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.objectives] = {{{44171}},nil,nil,nil,nil,{{100787}}},
         },
         [31139] = { -- Beating Them Back!
             [questKeys.requiredRaces] = raceIDs.HUMAN,
@@ -1634,6 +3056,42 @@ function MopQuestFixes.Load()
             [questKeys.triggerEnd] = {"Lorewalker Cho escorted to Circle of Stone", {[zoneIDs.THE_JADE_FOREST]={{29,32.4}}}},
             [questKeys.preQuestSingle] = {31134},
         },
+        [31156] = { -- Calligraphed Parchment
+            [questKeys.startedBy] = {{3143}},
+            [questKeys.requiredRaces] = raceIDs.ORC,
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {25126},
+        },
+        [31157] = { -- Tiger Palm
+            [questKeys.requiredRaces] = raceIDs.ORC,
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.objectives] = {{{44820}},nil,nil,nil,nil,{{100787}}},
+        },
+        [31158] = { -- The Basics: Hitting Things
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
+        [31160] = { -- A Rough Start
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
+        [31161] = { -- Proving Pit
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+            [questKeys.objectives] = {{{39062,nil,Questie.ICON_TYPE_TALK},{38142}}},
+        },
+        [31162] = { -- The Arts of a Monk
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+            [questKeys.objectives] = {{{38038}},nil,nil,nil,nil,{{100787}}},
+        },
+        [31163] = { -- More Than Expected
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
+        [31165] = { -- Calligraphed Note
+            [questKeys.startedBy] = {{44927}},
+            [questKeys.requiredClasses] = classIDs.MONK,
+        },
+        [31166] = { -- Tiger Palm
+            [questKeys.preQuestSingle] = {31165},
+            [questKeys.objectives] = {{{44848}},nil,nil,nil,nil,{{100787}}},
+        },
         [31167] = { -- Family Tree
             [questKeys.objectives] = {nil,{{212969}}},
             [questKeys.preQuestSingle] = {31152},
@@ -1661,14 +3119,149 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {},
             [questKeys.objectives] = {{{44703}},nil,nil,nil,nil,{{100787}}},
         },
+        [31181] = { -- Fresh Pots
+            [questKeys.objectives] = {nil,{{440001}}},
+            [questKeys.preQuestSingle] = {31265},
+            [questKeys.requiredSourceItems] = {85230},
+        },
+        [31182] = { -- You Otter Know
+            [questKeys.objectives] = {{{63376,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {31265},
+        },
+        [31183] = { -- Meet the Cap'n
+            [questKeys.preQuestGroup] = {31181,31182},
+        },
+        [31184] = { -- Old Age and Treachery
+            [questKeys.preQuestSingle] = {31183},
+        },
+        [31185] = { -- Walking Dog
+            [questKeys.objectives] = {{{63879,nil,Questie.ICON_TYPE_EVENT},{63880,nil,Questie.ICON_TYPE_EVENT},{63881,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.preQuestSingle] = {31183},
+        },
+        [31186] = { -- Dog Food
+            [questKeys.finishedBy] = {{63955,63277}},
+            [questKeys.objectives] = {{{63369}}},
+            [questKeys.preQuestSingle] = {31183},
+        },
+        [31187] = { -- On the Crab
+            [questKeys.objectives] = {nil,{{213508}}},
+            [questKeys.preQuestSingle] = {31183},
+        },
+        [31188] = { -- Shark Week
+            [questKeys.preQuestSingle] = {31183},
+            [questKeys.requiredSourceItems] = {85998},
+        },
+        [31189] = { -- Reeltime Strategy
+            [questKeys.objectives] = {{{64259,nil,Questie.ICON_TYPE_TALK},{64270}}},
+            [questKeys.preQuestGroup] = {31184,31187,31188},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_OBJECT,l10n("Reel in the fishing rod"),0,{{"object",213744},{"object",213746},{"object",213752},{"object",213753}}}},
+        },
+        [31190] = { -- The Mariner's Revenge
+            [questKeys.preQuestSingle] = {31189},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Jump in"),0,{{"monster",64350}}}},
+        },
+        [31207] = { -- The Arena of Annihilation
+            [questKeys.preQuestSingle] = {31511,31512},
+        },
+        [31208] = { -- Venomous Intent
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000}, -- TODO: These actually have some sort of pre-quest
+        },
+        [31209] = { -- Dark Wings, Dark Things
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000}, -- TODO: These actually have some sort of pre-quest
+        },
+        [31210] = { -- A Shade of Dread
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000}, -- TODO: These actually have some sort of pre-quest
+        },
+        [31211] = { -- The Poisoned Mind
+            [questKeys.preQuestSingle] = {31018},
+        },
+        [31216] = { -- Dark Skies
+            [questKeys.preQuestSingle] = {31018},
+        },
+        [31228] = { -- Prophet Khar'zul
+            [questKeys.objectives] = {{{65855,nil,Questie.ICON_TYPE_TALK},{61541}},nil,nil,nil,{{{64631,64639,64643,64642},64642}}}
+        },
+        [31230] = { -- Welcome to Dawn's Blossom
+            [questKeys.objectives] = {{{59160,nil,Questie.ICON_TYPE_TALK},{55809,nil,Questie.ICON_TYPE_TALK},{59173,nil,Questie.ICON_TYPE_TALK}}},
+            [questKeys.preQuestSingle] = {29922,30015},
+        },
+        [31231] = { -- Dreadspinner Extermination
+            [questKeys.preQuestSingle] = {31066},
+        },
+        [31232] = { -- An Ancient Empire
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31233] = { -- Sap Tapping
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31234] = { -- Putting An Eye Out
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31235] = { -- Nope Nope Nope
+            [questKeys.objectives] = {{{62077,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {31066},
+        },
+        [31237] = { -- Debugging the Terrace
+            [questKeys.preQuestSingle] = {31439},
+        },
+        [31238] = { -- Brain Food
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
         [31239] = { -- What's in a Name Name?
             [questKeys.preQuestSingle] = {29941},
         },
         [31241] = { -- Wicked Wikkets
             [questKeys.preQuestSingle] = {29879},
         },
+        [31251] = { -- Best Meals Anywhere!
+            [questKeys.preQuestSingle] = {30515},
+        },
+        [31252] = { -- Back to Westwind Rest
+            [questKeys.preQuestGroup] = {30571,30581},
+        },
+        [31253] = { -- Back to Eastwind Rest
+            [questKeys.preQuestGroup] = {30571,30581},
+        },
+        [31254] = { -- The Road to Kun-Lai [Alliance]
+            [questKeys.objectives] = {{{62738,nil,Questie.ICON_TYPE_TALK},{63367,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [31255] = { -- The Road to Kun-Lai [Horde]
+            [questKeys.objectives] = {{{62738,nil,Questie.ICON_TYPE_TALK},{63367,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [31256] = { -- Round 'Em Up
+            [questKeys.preQuestSingle] = {30515},
+            [questKeys.objectives] = {{{59611,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Round up a yak"),0,{{"monster",59610}}}},
+        },
         [31261] = { -- Captain Jack's Dead
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
+        [31265] = { -- Mazu's Breath
+            [questKeys.triggerEnd] = {"Drink the Potion of Mazu's Breath", {[zoneIDs.DREAD_WASTES]={{54.79,72.15}}}},
+            [questKeys.objectives] = {},
+            [questKeys.preQuestSingle] = {31066},
+        },
+        [31268] = { -- A Little Brain Work
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
+        [31269] = { -- The Scale-Lord
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31270] = { -- The Fight Against Fear
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31271] = { -- Bad Genes
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31272] = { -- Infection
+            [questKeys.preQuestSingle] = {31439},
+        },
+        [31279] = { -- Everything I Know About Cooking
+            [questKeys.requiredLevel] = 86,
+            [questKeys.exclusiveTo] = {31486},
+        },
+        [31285] = { -- The Spring Drifter
+            [questKeys.objectives] = {{{63517,nil,Questie.ICON_TYPE_MOUNT_UP}}},
         },
         [31288] = { -- Research Project: The Mogu Dynasties
             [questKeys.exclusiveTo] = {31289},
@@ -1676,14 +3269,37 @@ function MopQuestFixes.Load()
         [31289] = { -- Uncovering the Past
             [questKeys.exclusiveTo] = {31288},
         },
-        [31309] = { -- On The Mend
-            [questKeys.objectives] = {{{6749,nil,Questie.ICON_TYPE_TALK}}},
-        },
         [31302] = { -- Ready For Greatness
             [questKeys.preQuestSingle] = {31281},
         },
+        [31303] = { -- The Seal is Broken
+            [questKeys.preQuestSingle] = {30485,31362},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Mishi"),0,{{"monster",64244}}}},
+            [questKeys.objectives] = {{{64269,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [31308] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
+        },
+        [31309] = { -- On The Mend
+            [questKeys.objectives] = {{{6749,nil,Questie.ICON_TYPE_TALK}}},
+        },
         [31312] = { -- The Old Map
             [questKeys.nextQuestInChain] = 31313,
+            [questKeys.requiredMinRep] = {1272,42000}, -- Tillers
+
+                -- requires exalted with Tillers and best friend with farmers but Questie only supports one faction rep currently
+                 -- Tillers
+                --{1273,42000}, -- Jogu
+                --{1275,42000}, -- Ella
+                --{1276,42000}, -- Old Hillpaw
+                --{1277,42000}, -- Chee Chee
+                --{1278,42000}, -- Sho
+                --{1279,42000}, -- Haohan
+                --{1280,42000}, -- Tina
+                --{1281,42000}, -- Gina
+                --{1282,42000}, -- Fish
+                --{1283,42000} -- Farmer Fung
+            --},
         },
         [31313] = { -- Just A Folk Stor
             [questKeys.preQuestSingle] = {31312},
@@ -1699,9 +3315,59 @@ function MopQuestFixes.Load()
         [31316] = { -- Julia, The Pet Tamer
             [questKeys.objectives] = {{{64330,nil,Questie.ICON_TYPE_PET_BATTLE}}},
         },
+        [31319] = { -- Emergency Response
+            [questKeys.objectives] = {{{64491,nil,Questie.ICON_TYPE_INTERACT},{64493,nil,Questie.ICON_TYPE_INTERACT},{64494,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {31303},
+        },
+        [31320] = { -- Buy A Fish A Drink?
+            [questKeys.requiredMinRep] = {1273,8400}, -- Aquaintance level with Jogu
+        },
+        [31321] = { -- Buy A Fish A Round?
+            [questKeys.requiredMinRep] = {1273,16800}, -- Buddy level with Jogu
+        },
+        [31322] = { -- Buy A Fish A Keg?
+            [questKeys.requiredMinRep] = {1273,25200}, -- Friend level with Jogu
+        },
+        [31323] = { -- Buy A Fish A Brewery?
+            [questKeys.requiredMinRep] = {1273,36000}, -- within 6000 rep of Best Friend (wowhead comment)
+        },
+        [31325] = { -- A Very Nice Necklace
+            [questKeys.requiredMaxRep] = {1280,8399}, -- Tina at Stranger level (0-8400)
+        },
+        [31326] = { -- Tina's Tasteful Tiara
+            [questKeys.requiredMinRep] = {1280,8400}, -- Tina at Acquaintance level (8400-16800)
+            [questKeys.requiredMaxRep] = {1280,16799},
+        },
         [31327] = { -- Trouble Brewing
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbs] = {30085},
+        },
+        [31328] = { -- An Exquisite Earring
+            [questKeys.requiredMinRep] = {1280,16800}, -- Tina at Buddy level (16800-25200)
+            [questKeys.requiredMaxRep] = {1280,25199},
+        },
+        [31329] = { -- A Beautiful Brooch
+            [questKeys.requiredMinRep] = {1280,25200}, -- Tina at Friend level or above (25200+)
+        },
+        [31338] = { -- Lost Sheepie
+            [questKeys.requiredMinRep] = {1277,8400}, -- Aquaintance level with Chee Chee
+        },
+        [31339] = { -- Lost Sheepie... Again
+            [questKeys.requiredMinRep] = {1277,25200}, -- Friend level with Chee Chee
+        },
+        [31340] = { -- Oh Sheepie...
+            [questKeys.requiredMinRep] = {1277,33600}, -- Good Friends level with Chee Chee
+        },
+        [31354] = { -- Mazu's Bounty
+            [questKeys.preQuestSingle] = {31190},
+        },
+        [31355] = { -- Restoring Jade's Purity
+            [questKeys.objectives] = {{{56448},{56732},{56843,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [31362] = { -- Last Piece of the Puzzle
+            [questKeys.preQuestGroup] = {30565,30568},
+            [questKeys.objectives] = {nil,{{213652}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Talk to Mishi"),0,{{"monster",64475}}}},
         },
         [31376] = { -- Attack At The Temple of the Jade Serpent
             [questKeys.exclusiveTo] = {31378,31380,31382},
@@ -1727,19 +3393,160 @@ function MopQuestFixes.Load()
         [31383] = { -- Defense At Niuzao Temple
             [questKeys.exclusiveTo] = {31377,31379,31381},
         },
+        [31391] = { -- The Klaxxi
+            [questKeys.breadcrumbForQuestId] = 31002,
+        },
+        [31392] = { -- Temple of the White Tiger [Alliance]
+            [questKeys.breadcrumbForQuestId] = 31394,
+            [questKeys.exclusiveTo] = {31394},
+        },
+        [31393] = { -- Temple of the White Tiger
+            [questKeys.startedBy] = {{55809,60289,63751,64448,64521}},
+            [questKeys.breadcrumbForQuestId] = 31395,
+        },
+        [31394] = { --A Celestial Experience [Alliance]
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31392},
+            [questKeys.objectives] = {{{64528,nil,Questie.ICON_TYPE_TALK},{64656},{64684},{64744}}},
+        },
+        [31395] = { --A Celestial Experience [Horde]
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31393},
+            [questKeys.objectives] = {{{64528,nil,Questie.ICON_TYPE_TALK},{64656},{64684},{64744}}},
+        },
+        [31398] = { -- Falling to Pieces
+            [questKeys.preQuestSingle] = {31091},
+        },
+        [31439] = { -- Dropping Our Signal
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000},
+        },
         [31450] = { -- A New Fate
             [questKeys.requiredLevel] = 5,
             [questKeys.objectives] = {{{56013,nil,Questie.ICON_TYPE_TALK}}},
             [questKeys.requiredRaces] = raceIDs.PANDAREN_ALLIANCE + raceIDs.PANDAREN_HORDE + raceIDs.PANDAREN,
         },
+        [31451] = { -- The Missing Merchant [Horde]
+            [questKeys.preQuestGroup] = {30655,30656,30661},
+            [questKeys.breadcrumbForQuestId] = 30467,
+        },
+        [31453] = { -- The Shado-Pan
+            [questKeys.preQuestGroup] = {30655,30656,30661},
+            [questKeys.breadcrumbForQuestId] = 30665,
+        },
+        [31454] = { -- A Legend in the Making
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {31488,31489},
+        },
+        [31457] = { -- Muskpaw Ranch
+            [questKeys.preQuestGroup] = {30655,30656,30661},
+        },
+        [31458] = { -- Damage Control
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000},
+        },
+        [31467] = { -- Strong as a Tiger
+            [questKeys.objectives] = {nil,nil,{{74642}},nil,nil,{{104298}}},
+        },
+        [31471] = { -- Agile as a Tiger
+            [questKeys.objectives] = {nil,nil,{{74643}},nil,nil,{{104301}}},
+        },
+        [31474] = { -- The Soup of Contemplation
+            [questKeys.objectives] = {nil,nil,{{74644}},nil,nil,{{104304}}},
+        },
+        [31476] = { -- The Spirit of Cooking
+            [questKeys.objectives] = {nil,nil,{{74654}},nil,nil,{{104307}}},
+        },
+        [31477] = { -- Endurance
+            [questKeys.objectives] = {nil,nil,{{74654}},nil,nil,{{104310}}},
+        },
+        [31480] = { -- Have a Drink
+            [questKeys.objectives] = {nil,nil,{{75026}},nil,nil,{{124052}}},
+        },
+        [31175] = { -- Skeer the Bloodseeker
+            [questKeys.objectives] = {nil,{{212980}}},
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,9000},
+            [questKeys.extraObjectives] = {{{[zoneIDs.DREAD_WASTES]={{25.72,54.31}}},Questie.ICON_TYPE_EVENT,l10n("Enter the underwater cave")}},
+        },
+        [31176] = { -- A Strange Appetite
+            [questKeys.preQuestSingle] = {31175},
+        },
+        [31177] = { -- Fine Dining
+            [questKeys.preQuestSingle] = {31175},
+        },
+        [31178] = { -- A Bloody Delight
+            [questKeys.preQuestSingle] = {31175},
+        },
+        [31179] = { -- The Scent of Blood
+            [questKeys.preQuestGroup] = {31176,31177,31178},
+        },
+        [31459] = { -- Cho's Missive [Horde]
+            [questKeys.breadcrumbForQuestId] = 30999,
+            [questKeys.preQuestGroup] = {30655,30656,30661},
+        },
+        [31460] = { -- Cho's Missive [Alliance]
+            [questKeys.breadcrumbForQuestId] = 30999,
+        },
+        [31465] = { -- Extracting Answers
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,21000},
+        },
+        [31486] = { -- Everything I Know About Cooking
+            [questKeys.requiredLevel] = 86,
+            [questKeys.exclusiveTo] = {31279},
+        },
+        [31487] = { -- Sonic Disruption
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
         [31488] = { -- Stranger in a Strange Land
-            [questKeys.startedBy] = {{62871,64047,64144,66225,66409,66415}},
+            [questKeys.startedBy] = {{62871,63218,64047,64144,64457,66225,66409,66415}},
+            [questKeys.breadcrumbForQuestId] = 31454,
+        },
+        [31489] = { -- Stranger in a Strange Land
+            [questKeys.breadcrumbForQuestId] = 31454,
         },
         [31490] = { -- Rank and File
             [questKeys.objectives] = {nil,nil,nil,nil,{{{58632,58676,58683,58684,58685,58756,58898,58998,59150,59175,59191,59240,59241,59293,59303,59372,59373},58632}}}
         },
+        [31492] = { -- The Torch of Strength
+            [questKeys.preQuestSingle] = {31511,31512},
+            [questKeys.exclusiveTo] = {31517};
+        },
+        [31494] = { -- Free From Her Clutches
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
         [31495] = { -- Rank and File
             [questKeys.objectives] = {nil,nil,nil,nil,{{{58632,58676,58683,58684,58685,58756,58898,58998,59150,59175,59191,59240,59241,59293,59303,59372,59373},58632}}}
+        },
+        [31496] = { -- Sampling the Empire's Finest
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31502] = { -- Wing Clip
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31503] = { -- Shortcut to Ruin
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31504] = { -- Ordnance Disposal
+            [questKeys.preQuestSingle] = {31439},
+        },
+        [31506] = { -- Shackles of Manipulation
+            [questKeys.preQuestGroup] = {31092,31359,31398},
+        },
+        [31507] = { -- Meltdown
+            [questKeys.preQuestSingle] = {31026},
+        },
+        [31508] = { -- Specimen Request
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31509] = { -- Fear Takes Root
+            [questKeys.preQuestSingle] = {31606},
+        },
+        [31510] = { -- Quiet Now
+            [questKeys.preQuestSingle] = {31439},
+        },
+        [31511] = { -- A Witness to History [Horde]
+            [questKeys.objectives] = {{{64853,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [31512] = { -- A Witness to History [Alliance]]
+            [questKeys.objectives] = {{{64848,nil,Questie.ICON_TYPE_TALK}}},
         },
         [31514] = { -- Unto Dust Thou Shalt Return
             [questKeys.objectives] = {{{3977,nil,Questie.ICON_TYPE_INTERACT}}},
@@ -1747,13 +3554,18 @@ function MopQuestFixes.Load()
         [31516] = { -- Unto Dust Thou Shalt Return
             [questKeys.objectives] = {{{3977,nil,Questie.ICON_TYPE_INTERACT}}},
         },
+        [31517] = { -- Contending With Bullies
+            [questKeys.preQuestSingle] = {31511,31512},
+            [questKeys.exclusiveTo] = {31492};
+        },
         [31519] = {-- A Worthy Challenge: Yan-zhu the Uncasked
             [questKeys.exclusiveTo] = {31520,31522,31523,31524,31525,31526,31527,31528},
         },
         [31520] = {-- A Worthy Challenge: Sha of Doubt
             [questKeys.exclusiveTo] = {31519,31522,31523,31524,31525,31526,31527,31528},
         },
-        [31521] = { -- To Be a Master
+        [31521] = { -- To Be a Master -- might also have cooking skill/rank requirement
+            [questKeys.preQuestGroup] = {31311,31470,31472,31475,31478,31479},
             [questKeys.objectives] = {{{64930},{64931},{64932},{64933},{64934},{64935}}},
         },
         [31522] = {-- A Worthy Challenge: Sha of Hatred
@@ -1777,8 +3589,36 @@ function MopQuestFixes.Load()
         [31528] = {-- A Worthy Challenge: Darkmaster Gandling
             [questKeys.exclusiveTo] = {31519,31520,31522,31523,31524,31525,31526,31527},
         },
+        [31529] = { -- Mission: Culling The Vermin
+            [questKeys.requiredMinRep] = {1278,12600}, -- 4200 into Aquaintance with Sho
+        },
+        --[31530] = { -- Mission: The Hozen Dozen -- Don't think this made it to live so blacklisted
+            --[questKeys.requiredMinRep] = {1278,} --
+       -- },
+        [31531] = { -- Mission: Aerial Threat
+            [questKeys.requiredMinRep] = {1278,29400}, -- 4200 into Friend with Sho
+        },
+        [31532] = { -- Mission: Predator of the Cliffs
+            [questKeys.requiredMinRep] = {1278,37800}, -- 4200 into Good Friend with Sho
+        },
+        [31534] = { -- The Beginner's Brew
+            [questKeys.requiredMinRep] = {1275,16800}, -- Buddy level with Ella
+        },
+        [31535] = { -- Replenishing the Pantry
+            [questKeys.preQuestSingle] = {31536},
+        },
+        [31536] = { -- Preserving Freshness
+            [questKeys.preQuestGroup] = {31311,31470,31472,31475,31478,31479},
+        },
+        [31537] = { -- Ella's Taste Test
+            [questKeys.requiredMinRep] = {1275,25200}, -- Friend level with Ella
+        },
+        [31538] = { -- A Worthy Brew
+            [questKeys.requiredMinRep] = {1275,33600}, -- Good friends level with Ella
+        },
         [31548] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63075}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31549] = { -- On The Mend
             [questKeys.objectives] = {{{9980,nil,Questie.ICON_TYPE_TALK}}},
@@ -1788,6 +3628,7 @@ function MopQuestFixes.Load()
         },
         [31552] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63070}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31553] = { -- On The Mend
             [questKeys.startedBy] = {{63070}},
@@ -1795,6 +3636,7 @@ function MopQuestFixes.Load()
         },
         [31556] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63077}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31568] = { -- On The Mend
             [questKeys.startedBy] = {{63077}},
@@ -1803,12 +3645,16 @@ function MopQuestFixes.Load()
         [31569] = { -- Got one!
             [questKeys.startedBy] = {{63077}},
         },
+        [31571] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
+        },
         [31572] = { -- On The Mend
             [questKeys.startedBy] = {{63061}},
             [questKeys.objectives] = {{{9987,nil,Questie.ICON_TYPE_TALK}}},
         },
         [31573] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63067}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31574] = { -- On The Mend
             [questKeys.startedBy] = {{63067}},
@@ -1819,6 +3665,7 @@ function MopQuestFixes.Load()
         },
         [31576] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63073}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31577] = { -- On The Mend
             [questKeys.startedBy] = {{63073}},
@@ -1826,6 +3673,9 @@ function MopQuestFixes.Load()
         },
         [31578] = { -- Got one!
             [questKeys.startedBy] = {{63073}},
+        },
+        [31579] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
         },
         [31580] = { -- On The Mend
             [questKeys.startedBy] = {{63080}},
@@ -1836,10 +3686,14 @@ function MopQuestFixes.Load()
         },
         [31582] = { -- Learning the Ropes
             [questKeys.startedBy] = {{63083}},
+            [questKeys.requiredSpell] = 119467,
         },
         [31583] = { -- On The Mend
             [questKeys.startedBy] = {{63083}},
             [questKeys.objectives] = {{{10085,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [31585] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
         },
         [31586] = { -- On The Mend
             [questKeys.startedBy] = {{63086}},
@@ -1848,15 +3702,82 @@ function MopQuestFixes.Load()
         [31587] = { -- Got one!
             [questKeys.startedBy] = {{63086}},
         },
+        [31588] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
+        },
         [31589] = { -- On The Mend
             [questKeys.objectives] = {{{47764,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [31591] = { -- Learning the Ropes
+            [questKeys.requiredSpell] = 119467,
         },
         [31592] = { -- On The Mend
             [questKeys.objectives] = {{{11069,nil,Questie.ICON_TYPE_TALK}}},
         },
+        [31605] = { -- The Zan'thik Dig
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,9000},
+            [questKeys.breadcrumbForQuestId] = 31606,
+        },
+        [31606] = { -- The Dissector Wakens
+            [questKeys.objectives] = {{{67091}}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,9000},
+            [questKeys.breadcrumbs] = {31605},
+        },
+        [31660] = { -- Not Fit to Swarm
+            [questKeys.preQuestSingle] = {31006},
+        },
+        [31661] = { -- A Source of Terrifying Power
+            [questKeys.preQuestSingle] = {31006},
+        },
+        [31669] = { -- The Cabbage Test
+            [questKeys.exclusiveTo] = {31670,31671,31672,31673,31674,31675,31941,31942,31943},
+        },
+        [31670] = { -- That Dangling Carrot
+            [questKeys.exclusiveTo] = {31669,31671,31672,31673,31674,31675,31941,31942,31943},
+        },
+        [31671] = { -- Why Not Scallions?
+            [questKeys.exclusiveTo] = {31669,31670,31672,31673,31674,31675,31941,31942,31943},
+        },
+        [31672] = { -- A Pumpkin-y Perfume
+            [questKeys.exclusiveTo] = {31669,31670,31671,31673,31674,31675,31941,31942,31943},
+        },
+        [31673] = { -- Red Blossom Leeks, You Make the Croc-in' World Go Down
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31674,31675,31941,31942,31943},
+        },
+        [31674] = { -- The Pink Turnip Challenge
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31673,31675,31941,31942,31943},
+        },
+        [31675] = { -- The White Turnip Treatment
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31673,31674,31941,31942,31943},
+        },
+        [31676] = { -- Ancient Vengeance
+            [questKeys.preQuestSingle] = {31004},
+        },
+        [31679] = { -- Extending Our Coverage
+            [questKeys.exclusiveTo] = {31087},
+        },
+        [31680] = { -- Crime and Punishment
+            [questKeys.exclusiveTo] = {31088},
+        },
+        [31681] = { -- Better With Age
+            [questKeys.exclusiveTo] = {31090},
+        },
+        [31682] = { -- By the Sea, Nevermore
+            [questKeys.objectives] = {nil,{{212294,nil,Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {31680,31681},
+            [questKeys.exclusiveTo] = {31089},
+        },
+        [31689] = { -- The Dreadsworn
+            [questKeys.preQuestGroup] = {31007,31660}, -- not entirely sure. I also turned in 31008 and 31661 before checking
+        },
         [31693] = { -- Julia Stevens
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.objectives] = {{{64330,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [31695] = { -- Beyond The Wall
+            [questKeys.preQuestGroup] = {30655,30656,30661},
         },
         [31724] = { -- Old MacDonald
             [questKeys.objectives] = {{{65648,nil,Questie.ICON_TYPE_PET_BATTLE}}},
@@ -1872,6 +3793,9 @@ function MopQuestFixes.Load()
         },
         [31729] = { -- Steven Lisbane
             [questKeys.objectives] = {{{63194,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [31730] = { -- A Not So Friendly Request
+            [questKeys.breadcrumbForQuestId] = 31067,
         },
         [31732] = { -- Unleash Hell
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_MOUNT_UP,l10n("Mount up"),0,{{"monster",66297}}}},
@@ -1900,10 +3824,18 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {31737},
             [questKeys.objectives] = {nil,{{215133}}},
         },
+        [31741] = { -- Twinspire Keep
+            [questKeys.preQuestGroup] = {31738,31740},
+        },
+        [31742] = { -- Fractured Forces
+            [questKeys.preQuestGroup] = {31738,31740},
+        },
         [31743] = { -- Smoke Before Fire
+            [questKeys.preQuestGroup] = {31738,31740},
             [questKeys.objectives] = {nil,{{215275,nil,Questie.ICON_TYPE_EVENT}},nil,nil,{{{66279},66279,nil,Questie.ICON_TYPE_EVENT},{{66277},66277,nil,Questie.ICON_TYPE_EVENT},{{66278},66278,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [31744] = { -- Unfair Trade
+            [questKeys.preQuestGroup] = {31738,31740},
             [questKeys.objectives] = {{{66366,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [31745] = { -- Onward and Inward
@@ -1938,6 +3870,7 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {31769},
         },
         [31774] = { -- Seeking Zin'jun
+            [questKeys.finishedBy] = {{55403}},
             [questKeys.preQuestSingle] = {},
             [questKeys.preQuestGroup] = {29694,31770,31771,31773},
         },
@@ -1955,6 +3888,7 @@ function MopQuestFixes.Load()
             [questKeys.preQuestSingle] = {29804},
         },
         [31779] = { -- The Darkness Within
+            [questKeys.finishedBy] = {nil,{215844}},
             [questKeys.preQuestSingle] = {},
             [questKeys.preQuestGroup] = {31775,31776,31777,31778,},
         },
@@ -1965,6 +3899,12 @@ function MopQuestFixes.Load()
         [31781] = { -- Lindsay
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.objectives] = {{{65651,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [31782] = { -- Overthrone
+            [questKeys.preQuestSingle] = {32030},
+        },
+        [31808] = { -- Rampage Against the Machine
+            [questKeys.preQuestGroup] = {31092,31359,31398},
         },
         [31810] = { -- Riding the Skies (Azure Cloud Serpent)
             [questKeys.preQuestGroup] = {30139,30187},
@@ -2001,14 +3941,100 @@ function MopQuestFixes.Load()
         [31831] = { -- Level Up!
             [questKeys.startedBy] = {{63067}},
         },
+        [31833] = { -- Continue Your Training: Master Woo
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbs] = {31855},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66254}}}},
+        },
         [31834] = { -- Begin Your Training: Master Cheng
+            [questKeys.requiredClasses] = classIDs.MONK,
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
             [questKeys.zoneOrSort] = zoneIDs.PEAK_OF_SERENITY,
+            [questKeys.breadcrumbs] = {31856},
+        },
+        [31835] = { -- Continue Your Training: Master Kistane
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66253}}}},
+            [questKeys.breadcrumbs] = {31857},
+        },
+        [31836] = { -- Continue Your Training: Master Yoon
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66255}}}},
+            [questKeys.breadcrumbs] = {31858},
+        },
+        [31837] = { -- Continue Your Training: Master Cheng
+            [questKeys.requiredClasses] = classIDs.MONK,
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.breadcrumbs] = {31859},
+        },
+        [31838] = { -- Continue Your Training: Master Tsang
+            [questKeys.requiredClasses] = classIDs.MONK,
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.breadcrumbs] = {31860},
+        },
+        [31839] = { -- Continue Your Training: Master Hsu
+            [questKeys.requiredClasses] = classIDs.MONK,
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.breadcrumbs] = {31861},
         },
         [31840] = { -- Practice Makes Perfect: Master Cheng
+            [questKeys.requiredClasses] = classIDs.MONK,
             [questKeys.preQuestSingle] = {31834},
             [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
             [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31841,31842,31843,31844,31845,31846},
+            [questKeys.requiredMaxLevel] = 29,
+        },
+        [31841] = { -- Practice Makes Perfect: Master Woo
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31833},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66254}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31842,31843,31844,31845,31846},
+            [questKeys.requiredMaxLevel] = 39,
+        },
+        [31842] = { -- Practice Makes Perfect: Master Kistane
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31835},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66253}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31841,31843,31844,31845,31846},
+            [questKeys.requiredMaxLevel] = 49,
+        },
+        [31843] = { -- Practice Makes Perfect: Master Yoon
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31836},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66255}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31841,31842,31844,31845,31846},
+            [questKeys.requiredMaxLevel] = 59,
+        },
+        [31844] = { -- Practice Makes Perfect: Master Cheng
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31837},
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31841,31842,31843,31845,31846},
+            [questKeys.requiredMaxLevel] = 69,
+        },
+        [31845] = { -- Practice Makes Perfect: Master Tsang
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31838},
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31841,31842,31843,31844,31846},
+            [questKeys.requiredMaxLevel] = 79,
+        },
+        [31846] = { -- Practice Makes Perfect: Master Hsu
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.preQuestSingle] = {31839},
+            --[questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_TALK,l10n("Start the event"),0,{{"monster",66258}}}},
+            [questKeys.questFlags] = questFlags.DAILY,
+            [questKeys.exclusiveTo] = {31840,31841,31842,31843,31844,31845},
+            [questKeys.requiredMaxLevel] = 89,
+        },
+        [31847] = { -- Better Dead then Dread
+            [questKeys.breadcrumbForQuestId] = 31002,
         },
         [31850] = { -- Eric Davidson
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
@@ -2028,6 +4054,34 @@ function MopQuestFixes.Load()
         [31854] = { -- Analynn
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
             [questKeys.objectives] = {{{66136,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [31855] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31833,
+        },
+        [31856] = { -- The Peak of Serenity - Begin Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31834,
+        },
+        [31857] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31835,
+        },
+        [31858] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31836,
+        },
+        [31859] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31837,
+        },
+        [31860] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31838,
+        },
+        [31861] = { -- The Peak of Serenity - Continue Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31839,
         },
         [31862] = { -- Zonya the Sadist
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
@@ -2062,6 +4116,9 @@ function MopQuestFixes.Load()
         [31877] = { -- The Inkmasters of the Arboretum
             [questKeys.requiredSkill] = {profKeys.INSCRIPTION, 1},
         },
+        [31886] = { -- Dread Space
+            [questKeys.breadcrumbForQuestId] = 31002,
+        },
         [31889] = { -- Battle Pet Tamers: Kalimdor
             [questKeys.objectives] = {{{66352,nil,Questie.ICON_TYPE_PET_BATTLE},{66436,nil,Questie.ICON_TYPE_PET_BATTLE},{66452,nil,Questie.ICON_TYPE_PET_BATTLE},{66442,nil,Questie.ICON_TYPE_PET_BATTLE},{66412,nil,Questie.ICON_TYPE_PET_BATTLE}}},
             [questKeys.preQuestSingle] = {31917},
@@ -2069,6 +4126,9 @@ function MopQuestFixes.Load()
         [31891] = { -- Battle Pet Tamers: Kalimdor
             [questKeys.objectives] = {{{66352,nil,Questie.ICON_TYPE_PET_BATTLE},{66436,nil,Questie.ICON_TYPE_PET_BATTLE},{66452,nil,Questie.ICON_TYPE_PET_BATTLE},{66442,nil,Questie.ICON_TYPE_PET_BATTLE},{66412,nil,Questie.ICON_TYPE_PET_BATTLE}}},
             [questKeys.preQuestSingle] = {31918},
+        },
+        [31895] = { -- Better Off Dread
+            [questKeys.breadcrumbForQuestId] = 31001,
         },
         [31897] = { -- Grand Master Trixxy
             [questKeys.objectives] = {{{66466,nil,Questie.ICON_TYPE_PET_BATTLE}}},
@@ -2181,8 +4241,30 @@ function MopQuestFixes.Load()
         [31935] = { -- Grand Master Payne
             [questKeys.objectives] = {{{66675,nil,Questie.ICON_TYPE_PET_BATTLE}}},
         },
+        [31941] = { -- Squash Those Foul Odors
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31673,31674,31675,31942,31943},
+        },
+        [31942] = { -- It's Melon Time
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31673,31674,31675,31941,31943},
+        },
+        [31943] = { -- Which Berries? Witchberries.
+            [questKeys.exclusiveTo] = {31669,31670,31671,31672,31673,31674,31675,31941,31942},
+        },
+        [31944] = { -- Complete Your Training: The Final Test
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbs] = {31989},
+        },
         [31945] = { -- Learn and Grow VI: Gina's Vote
-            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_LOOT,l10n("Buy Scallion Seeds"),0,{{"monster",58718}}}},
+            [questKeys.requiredSourceItems] = {80591},
+        },
+        [31946] = { -- Mung-Mung's Vote III: The Great Carrot Caper
+            [questKeys.preQuestSingle] = {30259},
+        },
+        [31947] = { -- Farmer Fung's Vote III: Crazy For Cabbage
+            [questKeys.preQuestSingle] = {30518},
+        },
+        [31949] = { --Nana's Vote III: Witchberry Julep
+            [questKeys.preQuestSingle] = {31948},
         },
         [31952] = { -- Battle Pet Tamers: Pandaria
             [questKeys.objectives] = {{{66730,nil,Questie.ICON_TYPE_PET_BATTLE},{66734,nil,Questie.ICON_TYPE_PET_BATTLE},{66733,nil,Questie.ICON_TYPE_PET_BATTLE},{66738,nil,Questie.ICON_TYPE_PET_BATTLE},{66918,nil,Questie.ICON_TYPE_PET_BATTLE},{66739,nil,Questie.ICON_TYPE_PET_BATTLE}}},
@@ -2204,6 +4286,21 @@ function MopQuestFixes.Load()
         },
         [31958] = { -- Grand Master Aki
             [questKeys.objectives] = {{{66741,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [31959] = { -- The Empress' Gambit
+            [questKeys.preQuestGroup] = {
+                31004, -- Kil'ruk the Wind-Reaver
+                31085, -- Iyyokuk the Lucid
+                31010, -- Malik the Unscathed
+                31018, -- Xaril the Poisoned Mind
+                31026, -- Korven the Prime
+                31179, -- Skeer the Bloodseeker
+                31354, -- Ka'roz the Locust
+                31439, -- Hisek the Swarmkeeper
+                31606, -- Rik'kal the Dissector
+                31682, -- Kaz'tik the Manipulator
+            },
+            [questKeys.requiredMinRep] = {factionIDs.THE_KLAXXI,42000},
         },
         [31966] = { -- Battle Pet Tamers: Cataclysm
             [questKeys.objectives] = {{{66819,nil,Questie.ICON_TYPE_PET_BATTLE},{66815,nil,Questie.ICON_TYPE_PET_BATTLE},{66822,nil,Questie.ICON_TYPE_PET_BATTLE}}},
@@ -2262,6 +4359,10 @@ function MopQuestFixes.Load()
         [31986] = { -- The Triumphant Return
             [questKeys.preQuestSingle] = {31970},
         },
+        [31989] = { -- The Peak of Serenity - Complete Your Training
+            [questKeys.requiredClasses] = classIDs.MONK,
+            [questKeys.breadcrumbForQuestId] = 31944,
+        },
         [31990] = { -- Audrey Burnhep
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.exclusiveTo] = {31316},
@@ -2305,6 +4406,17 @@ function MopQuestFixes.Load()
         [32017] = { -- Elder Charms of Good Fortune
             [questKeys.startedBy] = {{63996}},
         },
+        [32018] = { -- His Name Was... Stormstout
+            [questKeys.exclusiveTo] = {32019},
+            [questKeys.breadcrumbForQuestId] = 29907,
+        },
+        [32019] = { -- They Call Him... Stormstout
+            [questKeys.exclusiveTo] = {32018},
+            [questKeys.breadcrumbForQuestId] = 29907,
+        },
+        [32030] = { -- Once in a Hundred Lifetimes
+            [questKeys.preQuestSingle] = {},
+        },
         [32035] = { -- Got Silk?
             [questKeys.exclusiveTo] = {30072},
         },
@@ -2313,6 +4425,9 @@ function MopQuestFixes.Load()
         },
         [32175] = { -- Darkmoon Pet Battle
             [questKeys.objectives] = {{{67370,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [32317] = { -- Seeking the Soulstones
+            [questKeys.objectives] = {nil,nil,{{92494},{92495},{92496},{92497}}},
         },
         [32428] = { -- Pandaren Spirit Tamer
             [questKeys.objectives] = {{{68463},{68465},{68464},{68462}}},
@@ -2395,6 +4510,9 @@ function MopQuestFixes.Load()
         [32675] = { -- I Believe You Can Fly
             [questKeys.requiredLevel] = 60,
         },
+        [32805] = { -- Celestial Blessings
+            [questKeys.objectives] = {{{61093,nil,Questie.ICON_TYPE_TALK},{59653,nil,Questie.ICON_TYPE_TALK},{64528,nil,Questie.ICON_TYPE_TALK},{71954,nil,Questie.ICON_TYPE_TALK}},nil,nil,nil,{{{61093,59653,64528,71954},61093,nil,Questie.ICON_TYPE_TALK}}},
+        },
         [32863] = { -- What We've Been Training For
             [questKeys.objectives] = {{{110001}}},
         },
@@ -2454,4 +4572,31 @@ function MopQuestFixes.Load()
             }},
         },
     }
+end
+
+function MopQuestFixes:LoadFactionFixes()
+    local questKeys = QuestieDB.questKeys
+
+    local questFixesHorde = {
+        [30376] = { -- Hope Springs Eternal
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30174,30273}, --From wowhead this has complicated requirements. It is not only 30273 as DB indicates (confirmed in game). At this point I had also completed all of the Four Winds quest hubs and most of Krasarang working east to west
+            [questKeys.exclusiveTo] = {30241},
+        },
+    }
+
+
+    local questFixesAlliance = {
+        [30376] = { -- Hope Springs Eternal
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {30359,30273}, --From wowhead this has complicated requirements. It is not only 30273 as DB indicates (confirmed in game). At this point I had also completed all of the Four Winds quest hubs and most of Krasarang working east to west
+            [questKeys.exclusiveTo] = {30360},
+        },
+    }
+
+    if UnitFactionGroup("Player") == "Horde" then
+        return questFixesHorde
+    else
+        return questFixesAlliance
+    end
 end

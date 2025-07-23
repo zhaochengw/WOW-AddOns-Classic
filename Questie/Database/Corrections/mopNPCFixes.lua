@@ -54,6 +54,18 @@ function MopNpcFixes.Load()
                 },
             },
         },
+        [3101] = { -- Vile Familiar
+            [npcKeys.spawns] = {[zoneIDs.BURNING_BLADE_COVEN] = {{22.41,48.41},{43.38,52.32},{45.42,61.84},{53.59,67.31},{50.91,82.17},{43.94,81.35},{34.25,86.64},{18.7,68.29},{30.72,63},{37.02,46.1},{22.03,26.88},{41.04,30.07},{43.58,48.4},{54.73,29.47},{60.22,52.04},{68.79,76.59},{74.33,85.37}},[zoneIDs.VALLEY_OF_TRIALS] = {{56.76,19.04},{55.36,20.95},{55.12,24.12},{59.86,23.13},{58.17,24.17},{57.36,26.77},{60.31,28.41},{59.11,31.39},{56.81,31.9},{54.72,28.46},{54.49,31.39},{54.66,34.95},{52.41,30.8},{52.47,27.79},{52.26,24.07},{53.39,19.55},{52.2,20.9},{47.54,16.6},{49.98,19.63},{49.33,20.89},{49.84,23.26},{49.81,27.88},{49.98,31.06},{49.39,35.34},{45.93,32.44},{47.25,31.05},{47.54,28.35},{47.04,22.73},{44.23,23.11},{44.53,27.33},{42.4,30.4},{40.31,28.26}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_TRIALS,
+        },
+        [3102] = { -- Felstalker
+            [npcKeys.spawns] = {[zoneIDs.BURNING_BLADE_COVEN] = {{20.64,37.63},{25.84,20.57},{36.45,20.64},{49.07,33.77},{62.26,27.54},{63.68,40.05},{31.13,53.33},{13.49,60.64},{26.38,82.64},{43.24,73},{51.1,60.08},{61.2,68.97},{56.02,77.15},{76.64,80.9},{72.3,90.22}}},
+            [npcKeys.zoneID] = zoneIDs.BURNING_BLADE_COVEN,
+        },
+        [3183] = { -- Yarrog Baneshadow
+            [npcKeys.spawns] = {[zoneIDs.BURNING_BLADE_COVEN] = {{14.94,46.65}}},
+            [npcKeys.zoneID] = zoneIDs.BURNING_BLADE_COVEN,
+        },
         [3593] = { -- Alyissia
             [npcKeys.spawns] = {[zoneIDs.SHADOWGLEN] = {{49.21,52.42}}},
             [npcKeys.zoneID] = zoneIDs.SHADOWGLEN,
@@ -82,6 +94,9 @@ function MopNpcFixes.Load()
         },
         [10181] = { -- Lady Sylvanas Windrunner
             [npcKeys.questStarts] = {9626,9813,31037},
+        },
+        [15187] = { -- Cenarion Emissary Jademoon
+            [npcKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{82.69,29.59}}},
         },
         [15278] = { -- Magistrix Erona
             [npcKeys.spawns] = {[zoneIDs.SUNSTRIDER_ISLE] = {{61.04,45.12}}},
@@ -124,6 +139,37 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.COLDSHIRE_VALLEY] = {{51.47,82.68}},[zoneIDs.FROSTMANE_HOVEL] = {{44.06,30.42},{78.9,58.17},{79.91,67.83},{53.4,68.98},{45.46,88.5},{44.58,87.82},{42.49,88.56},{37.31,73.4},{57.84,35.62},{59.34,41.62},{68.04,42.93},{74.16,23.83},{69.97,18},{60.56,17.75},{55.47,12.55},{43.85,15.86},{42.27,26.36},{45.63,34.52},{46.32,43.84},{53.13,52.72},{49.28,50.58},{43.53,50.04},{42.21,47.59},{32.8,36.3},{31.15,45.97},{30.6,52.38},{26.73,47.47},{11.43,52.4},{13.95,40.87}}},
             [npcKeys.zoneID] = zoneIDs.COLDSHIRE_VALLEY,
         },
+        [37961] = { -- Corrupted Bloodtalon
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{38.04,66.02},{35.1,67.5},{36.57,65.81},{36.46,64.17},{37.82,62.97},{35.63,63.02},{34.67,62.51},{34.37,64.41},{34.17,66.08},{33.52,68.78},{32.76,69.58},{31.92,71.53},{33.03,72.51},{34.36,70.31},{34.13,71.92},{35.3,72.77},{36,72.98},{36.7,74.21},{38.1,74.01},{39.9,74.8},{39.14,72.51},{40.52,73.21},{40.31,70.25},{40.27,68.88},{40.43,67.57},{38.67,69.15},{37.72,71.39},{38.16,70.22}}},
+            [npcKeys.zoneID] = zoneIDs.ECHO_ISLES,
+        },
+        [37989] = { -- Swiftclaw
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{45.02,85.47}}},
+            [npcKeys.waypoints] = {[zoneIDs.ECHO_ISLES] = {{{45.02,85.47},{45.47,85.89},{45.89,86.41},{46.09,87.14},{46.04,87.91},{45.58,88.27},{45.04,88.32},{44.26,88.37},{43.72,89.21},{43.50,90.21},{43.20,91.32},{43.37,91.96},{44.11,91.94},{44.57,91.62},{44.91,90.55},{45.19,89.92},{45.69,89.65},{46.17,89.90},{46.33,90.67},{46.48,91.44},{46.64,92.20},{46.85,92.95},{47.28,93.17},{47.58,92.53},{47.67,91.75},{47.66,90.94},{47.68,90.13},{47.72,89.32},{47.85,88.53},{48.30,88.22},{48.66,88.71},{48.58,89.49},{48.23,90.07},{47.79,89.70},{47.61,88.95},{47.56,88.15},{47.50,87.35},{47.22,86.68},{46.83,86.13},{46.47,85.54},{46.28,84.84},{46.53,84.15},{47.00,83.77},{47.47,83.94},{47.89,84.45},{48.38,84.19},{48.42,83.43},{48.20,82.70},{47.84,82.18},{47.32,81.98},{46.80,81.84},{46.27,81.90},{45.88,82.37},{45.66,82.98},{45.36,83.65},{45.07,84.32},{44.77,84.99},{44.62,85.33},{44.52,85.61},{44.29,86.35},{44.04,87.08},{43.65,87.63},{43.17,87.80},{42.99,87.04},{42.88,86.25},{43.04,85.50},{43.38,84.87},{43.73,84.25},{44.07,83.35},{43.59,82.72},{42.86,82.32},{42.38,82.62},{42.09,83.62},{41.90,84.18},{41.50,85.23},{41.08,86.22},{40.80,86.89},{40.72,87.68},{40.93,88.38},{41.45,88.49},{41.97,88.34},{42.38,87.81},{42.65,87.12},{42.90,86.40},{43.26,85.80},{43.72,85.38},{44.24,85.25},{44.64,85.32}}}},
+            [npcKeys.zoneID] = zoneIDs.ECHO_ISLES,
+        },
+        [38002] = { -- Swiftclaw
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{53.35,63.86}}},
+            [npcKeys.zoneID] = zoneIDs.ECHO_ISLES,
+        },
+        [38142] = { -- Captive Spitescale Scout
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{56.89,51.93},{51.07,50.73}}},
+        },
+        [38300] = { -- Spitescale Wavethrasher
+            [npcKeys.spawns] = {[zoneIDs.SPITESCALE_CAVERN] = {{71.18,50.44},{68.27,31.81},{72.41,66.18},{72.07,67.53},{33.53,42.5},{43.42,38.38},{43.47,46.43},{47.25,56.73},{53.9,54.4},{63.63,69.31},{62.76,68.58},{71.51,79.77},{75.03,78.92},{77.54,62.88},{76.99,61.59},{74.21,48.97},{79.34,34.28},{78.77,35.64},{76.27,22.35},{73.9,33.4},{70.05,28.74},{62.35,30.55},{60.88,47.32},{61.22,48.77},{70.24,43.6},{69.26,43.21},{62.15,42.18},{63.3,49.34},{67.68,53.12},{65.48,63.4}},[zoneIDs.ECHO_ISLES] = {{63.67,39.33},{63.89,39.85},{63.74,40.26},{62.98,39.02},{62.77,39.16},{62.88,39.72},{62.09,39.97},{62.04,39.42},{61.77,39.12},{60.76,37.29},{60.56,37.2},{60.53,37.39},{59.64,35.72},{59.13,35.92},{61.52,27.65},{61.51,27.54},{61.38,27.36},{61.05,26.6},{60.93,26.68},{60.81,26.56},{61.14,25.76},{61.12,25.59},{61.64,25.8},{61.72,25.38},{64.02,25.62},{65.86,25.56},{65.7,21.45},{67.16,21.26},{65.96,14.01},{67.39,12.81},{65.89,9.27},{64.21,11},{55.34,15.97},{63.35,8.97},{62.27,9.01},{62.32,7.74},{60.47,8.51},{58.63,9.93},{56.36,9.64},{56.69,12.17},{55.02,11.68},{56.62,14.23}}},
+        },
+        [38301] = { -- Spitescale Siren
+            [npcKeys.spawns] = {[zoneIDs.SPITESCALE_CAVERN] = {{71.38,48.94},{67.39,32.04},{33.23,43.86},{40.79,41.42},{59.91,59.23},{76.65,85.68},{74.18,47.98},{78.59,17.06},{63.14,29.8},{65.16,53.92},{62.13,41.2},{66.48,61.36}},[zoneIDs.ECHO_ISLES] = {{62.01,24.97},{62.56,37.68},{62.08,38.2},{62.43,26.07},{60.32,15.75},{60.68,15.1},{68.42,17.23},{65.33,27.73}}},
+        },
+        [38437] = { -- Vanira
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{60.29,15.71}}},
+        },
+        [38440] = { -- Tortunga
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{58.96,66.83}}},
+        },
+        [38442] = { -- Morakki
+            [npcKeys.spawns] = {[zoneIDs.ECHO_ISLES] = {{58.91,23.09}}},
+        },
         [39605] = { -- Garrosh Hellscream
             [npcKeys.questStarts] = {9627,13842,25275,26293,26324,26830,26840,28909,31034},
         },
@@ -135,6 +181,18 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.COLDSHIRE_VALLEY] = {{62.02,13.31}}},
             [npcKeys.zoneID] = zoneIDs.COLDSHIRE_VALLEY,
         },
+        [42222] = { -- Rockjaw Marauder
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN] = {{34.55,68.11},{36.16,73.6},{38.94,70.29},{36.57,75.19},{37.34,79.56},{38.77,72.22},{40.14,77.79},{40.13,73.04},{40.45,67.37},{40.71,73.84},{40.86,71.82},{42.14,69.81},{42.68,74.92},{44.92,77.45},{46.97,78.12},{46.66,73.8},{49.11,75.36},{46.05,71.34},{50.54,69.21},{46.94,69.5},{46.97,66.46},{51.85,70.38}},[zoneIDs.FROSTMANE_HOLD] = {{27.6,63.07}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN,
+        },
+        [42463] = { -- Operation: Gnomeregan Recap Credit
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN] = {{38.46,32.97}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN,
+        },
+        [42552] = { -- Physician's Assistant
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{53.57,83.24},{51.63,79.6}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
         [42604] = { -- Elemental Resistance Totem
             [npcKeys.spawns] = {[zoneIDs.COLDSHIRE_VALLEY] = {{61.65,13.37}}},
             [npcKeys.zoneID] = zoneIDs.COLDSHIRE_VALLEY,
@@ -143,9 +201,81 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.COLDSHIRE_VALLEY] = {{62,13.98}}},
             [npcKeys.zoneID] = zoneIDs.COLDSHIRE_VALLEY,
         },
+        [42773] = { -- Boss Bruggor
+            [npcKeys.spawns] = {[zoneIDs.FROSTMANE_HOLD] = {{28.17,49.7}}},
+            [npcKeys.zoneID] = zoneIDs.FROSTMANE_HOLD,
+        },
         [43006] = { -- Rhyanda
             [npcKeys.spawns] = {[zoneIDs.SHADOWGLEN] = {{47.36,59.69}}},
             [npcKeys.zoneID] = zoneIDs.SHADOWGLEN,
+        },
+        [43089] = { -- Living Contamination
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN] = {{36.37,40.84},{37.17,40.98},{37.97,41.33},{38.59,40.54},{39.06,40.72},{39.98,40.43},{40.99,40.26}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN,
+        },
+        [45847] = { -- S.A.F.E. Operative
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{55.32,73.84},{48.16,44.14},{48.44,44.2},{48.69,44.23},{58.77,23.21},{59.04,23.28},{59.31,23.34},{55.83,85.03},{55.38,85.46},{55.33,79.45},{54.59,75.91},{53.36,75.82},{49.12,62.94},{49.13,61.97},{51.02,32.35},{50.47,31.5},{40.88,34.77},{41.13,29.76},{36.62,29.92},{36.34,30.46},{36.34,32.24},{33.21,31.64},{34.43,35.26},{35.07,33.52},{36.55,33.61},{38.13,33.66},{39.89,33.6},{39.96,32.61},{40.09,31.64},{40.17,30.71}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [45966] = { -- Nevin Twistwrench
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{34.08,32.21}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46025] = { -- S.A.F.E. Officer
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{55.34,84.72},{52.06,81.23},{49.31,64.92},{47.93,44.09},{58.46,23.19}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46185] = { -- Sanitron 500
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{58.74,82.97},{58.79,81.74},{58.85,80.51}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46208] = { -- Clean Cannon X-2
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{61.53,79.32},{63.19,79.6},{62.7,84.63},{61,84.54}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46230] = { -- S.A.F.E. Technician
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{60.41,84.44},{61.32,85.6},{65.05,84.86},{63.84,78.51},{63.48,78.98},{61.72,78.81},{60.73,78.58},{56.38,65.2}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46255] = { -- Technician Braggle
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{66.42,81.62}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46267] = { -- Rescued Survivor
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{55.05,85.63},{54.74,83.09},{53.38,83.36},{52.46,82.04},{52.33,81.67},{51.4,78.25},{51.14,81.93},{51.16,81.56},{51.48,80.68},{51.17,79.48},{52.03,77.28},{53.57,83.24},{51.63,79.6}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46268] = { -- Survivor
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{54.47,60.74},{50.66,54.71},{52.88,56.34},{55.69,53.74},{54.95,45.13},{53.42,47.3},{54.89,35.91},{55.11,36.99},{53.87,43.43},{60.22,43.73},{64.36,37.56},{64.03,32.78},{62.89,28.4},{57.71,30.97},{56.03,23.34},{53.17,29.39},{52.17,27.67},{52.65,23.14},{45.87,24.34},{50.08,30.67},{47.65,29.98},{43.92,30.14},{42.58,36.44},{51,42.9},{51.56,37.33}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46274] = { -- Gaffer Coilspring
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{53.08,82.33}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46293] = { -- Torben Zapblast
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{67.28,84.11}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46363] = { -- Crazed Leper Gnome
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{61.89,43.09},{56.44,30.34},{53.97,25.23},{50.87,39.28},{49,39.34},{47.73,41.64},{45.17,39.95},{44.34,31.82},{44.18,35.89},{46.68,35.71},{44.94,26.18},{46.57,24.68},{48.49,26.26},{50.84,29.76},{53.02,29.54},{57.24,24.79},{58.57,27.01},{62.14,27.88},{61.77,32.52},{63.44,35.16},{59.17,35.3},{60.49,37.32},{58.82,43.2},{56.84,42.47},{55.6,36.98},{54.56,40.41},{54.46,32.9},{51.69,41.78},{52.73,36.17},{52.77,46.56},{51.39,52.24},{50.72,56.89},{54.51,59.39},{53.85,63.72},{55.01,68.35},{52.74,68.35}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46391] = { -- Crazed Leper Gnome
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{55.46,73.67},{54.74,71.99},{53.75,71.91},{42.9,33.32},{42.95,32.27},{42.96,31.42}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46447] = { -- Injured Gnome
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{35.29,34.47},{33.09,31.4},{34.59,29.52}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [46449] = { -- S.A.F.E. Operative
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{42.42,25.57},{33.8,29.71}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [47250] = { -- Carvo Blastbolt
+            [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{50.95,31.94}}},
+            [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
         },
         [49480] = { -- Tarindrella
             [npcKeys.spawns] = {[zoneIDs.SHADOWTHREAD_CAVE] = {{45.32,91.08}}},
@@ -193,6 +323,10 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{48.02,31.39}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
         },
+        [54780] = { -- Orchard Fire
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{43.21,75.17},{42.96,74.78},{43.79,73.5},{43.71,73.26},{43.91,72.75},{43.57,72.41},{43.69,71.8},{43.43,71.66},{43.74,71.08},{44.08,71.88},{44.44,72.4},{44.7,71.94},{44.73,73.29},{44.83,74.02},{44.6,74.6},{44.46,75.54},{43.89,76.75}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
         [54786] = { -- Master Shang Xi
             [npcKeys.spawns] = {
                 [zoneIDs.THE_WANDERING_ISLE] = {
@@ -203,6 +337,18 @@ function MopNpcFixes.Load()
         },
         [54787] = { -- Huo
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{39.42,29.55}}},
+        },
+        [54894] = { -- Rassharom
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.63,83.15}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [54914] = { -- High Elder Cloudfall
+            [npcKeys.spawns] = {
+                [zoneIDs.THE_JADE_FOREST] = {
+                    {45.22,25.07,phases.HIGH_ELDER_CLOUDFALL_AT_TOWER},
+                    {42.74,23.17,phases.HIGH_ELDER_CLOUDFALL_AT_BANQUET},
+                },
+            },
         },
         [54943] = { -- Merchant Lorvo
             [npcKeys.spawns] = {
@@ -231,21 +377,56 @@ function MopNpcFixes.Load()
             },
         },
         [55054] = { -- General Nazgrim
-            [npcKeys.spawns] = {[zoneIDs.KALIMDOR]={{61.2,44.6}}},
+            [npcKeys.spawns] = {[zoneIDs.KALIMDOR] = {{61.2,44.6}}},
             [npcKeys.zoneID] = zoneIDs.KALIMDOR,
         },
         [55205] = { -- Water Spirit Coaxed Credit
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{79.03,37.8}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
         },
+        [55274] = { -- An Windfur
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{39.47,47.55}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [55282] = { -- Sully "The Pickle" McLeary
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.87,81.81}}},
+        },
+        [55283] = { -- Amber Kearnen
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.93,81.93}}},
+        },
+        [55284] = { -- Little Lu
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{59.07,81.89}}},
+        },
+        [55333] = { -- Rell Nightwind
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.98,81.82}}},
+        },
+        [55349] = { -- Sully SE Credit
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{49.9,63.44}}},
+        },
+        [55350] = { -- Sully SW Credit
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{45.18,62.54}}},
+        },
+        [55351] = { -- Sully N Credit
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{48.02,57.03}}},
+        },
+        [55352] = { -- Sully Return Credit
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{51.08,63.2}}},
+        },
+        [55368] = { -- Widow Greenpaw
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{39.34,46.22}}},
+        },
         [55378] = { -- Lifelike Jade Statue
-            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{38.85,45.92},{38.84,46.19},{38.88,46.42},{39.04,46.51},{38.93,46},{39.08,46.01},{39.15,45.79}}},
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{38.85,45.92},{38.84,46.19},{38.88,46.42},{39.04,46.51},{38.93,46},{39.08,46.01},{39.15,45.79}}},
         },
         [55381] = { -- Widow Greenpaw
-            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{39.23,46.22}}},
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{39.24,46.21}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [55438] = { -- Outcast Sprite
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{48.67,24.94},{47.87,21.61},{47.49,21.26},{47.88,21.32},{48.16,21.3},{48.12,21.1},{47.68,20.73},{49.47,22.51},{49.44,21.36},{49.47,21.45},{49.34,21.94},{49.29,22.59},{49.43,22.84},{48.93,22.8},{49.15,21.45},{48.99,23.45},{48.98,22.99},{49.1,21.98},{49.19,22.51},{48.77,21.85},{48.73,21.86},{48.95,22.8},{49.03,22.4},{48.93,22.4},{48.91,24.44},{48.79,24.88},{48.64,24.2},{48.78,24.65},{48.52,24.34},{48.69,24.69},{49.03,23.94},{49.06,24.01},{48.93,23.95},{48.91,23.96}}},
         },
         [55521] = { -- Rivett Clutchpop
-            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {
                 {31.2,21.6,phases.RIVETT_CLUTCHPOP_NOOK_OF_KONK},
                 {28,24.6,phases.RIVETT_CLUTCHPOP_STROGARM_AIRSTRIP},
             }},
@@ -267,11 +448,40 @@ function MopNpcFixes.Load()
         [55768] = { -- Lore Walker Cho
             [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{27.59,32.68}}},
         },
+        [55787] = { -- Peaceful Beast Spirit
+            [npcKeys.spawns] = {},
+        },
+        [55788] = { -- Lo Wanderbrew
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{52.59,38.12}}},
+        },
+        [55790] = { -- Raging Beast Spirit
+            [npcKeys.spawns] = {},
+        },
         [55942] = { -- Ji Firepaw
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{36.36,72.53}}},
         },
         [55944] = { -- Delora Lionheart
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{42.22,86.54}}},
+        },
+        [56111] = { -- Lin Tenderpaw
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {
+                {19.87,56.92,phases.LIN_TENDERPAW_EAST_OF_STONEPLOW},
+                {18.06,31.01,phases.LIN_TENDERPAW_AT_PAOQUAN_HOLLOW},
+            }},
+        },
+        [56113] = { -- Clever Ashyo
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {
+                {59.25,27.56,phases.CLEVER_ASHYO_AT_POOLS_OF_PURITY},
+                {61.23,34.23,phases.CLEVER_ASHYO_SOUTH_OF_POOLS_OF_PURITY},
+            }},
+        },
+        [56133] = { -- Chen Stormstout
+            -- Placeholder all locations until phasing implementation
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{83.64,21.45},{75.6,24.33},{68.8,43.2},{55.8,49.6},{32.2,68.4},{32.2,68.4}}},
+        },
+        [56138] = { -- Li Li
+            -- Placeholder all locations until phasing implementation
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{83.81,21.59},{75.61,24.52},{68.8,43.2},{52.6,62.8},{36.0,69.0},{32.2,68.4}}},
         },
         [56146] = { -- Barrow Tree
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{79.14,25.83}}},
@@ -291,24 +501,99 @@ function MopNpcFixes.Load()
         [56183] = { -- Engorged Crocolisk
             [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{22.2,35},{22.4,34.4},{22.6,34.6},{22.8,33.4},{23.4,33.6},{23.4,36.2},{23.4,37},{23.6,33.4},{23.6,33.6},{23.6,37},{24.4,35.2},{24.4,36.2},{24.6,34.4},{24.6,34.6},{24.6,36.4},{24.6,36.6}}},
         },
+        [56192] = { -- Miss Fanny
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{83,21.37}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [56222] = { -- Bold Karasshi
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.97,81.69}}},
+        },
+        [56310] = { -- Mist Horror
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.2,90}}},
+        },
+        [56312] = { -- Shang Thunderfoot
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {
+                {78.19,32.8,phases.SHANG_THUNDERFOOT_AT_THUNDERFOOT_FIELDS},
+                {74.68,34.59,phases.SHANG_THUNDERFOOT_SOUTH_OF_THUNDERFOOT_FIELDS},
+            }},
+        },
         [56406] = { -- Rivett Clutchpop
             [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {
                 {28.3,47.79,phases.RIVETT_CLUTCHPOP_NEXT_TO_NAZGRIM},
                 {27.23,50.78,phases.RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END},
             }},
         },
+        [56439] = { -- Sha of Doubt
+            [npcKeys.spawns] = {[zoneIDs.TEMPLE_OF_THE_JADE_SERPENT]= {{60.91,59.35},{-1,-1}}},
+        },
+        [56448] = { -- Wise Mari
+            [npcKeys.spawns] = {[zoneIDs.TEMPLE_OF_THE_JADE_SERPENT]= {{44.58,19.28},{-1,-1}}},
+        },
         [56456] = { -- Silk Farm Exploration Credit
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{62.39,59.73}}},
         },
+        [56467] = { -- Hao Mann
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{46.3,29.39}}},
+        },
+        [56527] = { -- Jade Cart
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{46.27,29.47}}},
+        },
+        [56546] = { -- Silk Farm Exploration Credit
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{62.34,59.03}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
         [56547] = { -- Water Village Exploration Credit
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{61.42,35.43}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
         },
         [56548] = { -- Waterfall Exploration Credit
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{74.85,42.36}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
         },
         [56686] = { -- Master Shang Xi
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{19.46,51.22}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
+        },
+        [56708] = { -- Syra Goldendraft
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{52.57,38.12}}},
+        },
+        [56732] = { -- Liu Flameheart
+            [npcKeys.spawns] = {[zoneIDs.TEMPLE_OF_THE_JADE_SERPENT]= {{48.2,53.18},{-1,-1}}},
+        },
+        [56787] = { -- Wise Mari
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{57.57,56.04}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [56838] = { -- Shokia
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{28.4,51.8}}},
+        },
+        [56843] = { -- Lorewalker Stonestep
+            [npcKeys.spawns] = {[zoneIDs.TEMPLE_OF_THE_JADE_SERPENT]= {{26.18,75.03},{-1,-1}}},
+        },
+        [56856] = { -- Playful Azure Serpent
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{59.19,56.74}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [56858] = { -- Playful Crimson Serpent
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.18, 61.39}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [56859] = { -- Playful Emerald Serpent
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{56.54,58.4}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [56860] = { -- Playful Gold Serpent
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{55.99, 60.33}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [57108] = { -- General Nazgrim
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{28.03,47.21}}},
+        },
+        [57198] = { -- Guard Captain Oakenshield
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{11.58,49.53}}},
+        },
+        [57237] = { -- Bookworm
+            [npcKeys.spawns] = {},
         },
         [57306] = { -- Ugly Weed
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{38.54,49.84},{38.88,49.91},{39.14,50.01},{39.08,50.34},{38.74,50.37},{38.45,50.37},{38.19,50.47},{38.20,50.88},{38.48,50.85},{38.80,50.83},{39.01,50.88},{38.96,51.25},{38.61,51.28},{38.34,51.31},{38.07,51.41},{38.51,79.00},{38.27,51.76},{38.84,51.70},{39.10,51.80},{39.02,52.22},{38.70,52.27},{38.37,52.26},{38.09,52.25}}},
@@ -317,8 +602,33 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{79.7,39.07}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
         },
+        [57242] = { -- Elder Sage Wind-Yi
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{55.84,57.08}}},
+        },
         [57662] = { -- Barreled Pandaren
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{32.97,67.94},{34.28,67.24},{35.10,66.44},{35.30,66.23},{35.72,65.55},{35.86,66.11},{36.20,65.79},{36.69,65.85},{36.88,65.73},{37.08,65.30},{37.25,65.02},{37.51,64.80},{37.51,64.64},{37.72,64.77}}},
+        },
+        [58113] = { -- Sunwalker Dezco
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {
+                {60.41,25.57,phases.DEZCO_AT_THUNDER_CLEFT},
+                {15.98,39.78,phases.DEZCO_AT_SHATTERED_CONVOY},
+                {28.89,50.87,phases.DEZCO_AT_DAWNCHASER_RETREAT},
+            }},
+        },
+        [58421] = { -- Hemet Nesingwary
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {
+                {16.01,82.49,phases.HEMETS_AT_CAMP},
+                {19.83,75.64,phases.HEMETS_OUTSIDE_CAMP},
+            }},
+        },
+        [58422] = { -- Hemet Nesingwary Jr.
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {
+                {16.07,82.62,phases.HEMETS_AT_CAMP},
+                {19.91,75.67,phases.HEMETS_OUTSIDE_CAMP},
+            }},
+        },
+        [58608] = { -- Dawnchaser Captive
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{27.5,39.73},{26.51,39.39},{26.74,41.99},{26.77,37.96},{25.46,39.46},{24.68,37.91},{22.48,47.1},{22.47,46.27},{22.61,44.04},{22.6,45.1},{24.07,45.86},{23.53,44.79},{23.05,43.47},{23.82,41.44},{25.33,42.59},{26.23,45.28},{22.51,47.16},{22.51,46.24},{24.04,45.89},{26.13,45.27}}},
         },
         [58632] = { -- Armsmaster Harlan
             [npcKeys.spawns] = {
@@ -347,11 +657,20 @@ function MopNpcFixes.Load()
         [58756] = { -- Scarlet Evoker
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
+        [58858] = { -- Riverblade Pathstalker
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{38.63,38.77},{38.81,40.63},{41.58,43.11},{40.43,42.09},{41.19,40.06},{46.40,40.66},{47.08,37.93},{47.66,37.27},{47.28,36.67},{47.96,35.52},{47.42,33.35},{46.45,34.28},{45.79,33.29},{47.22,30.59},{46.13,30.18},{47.49,77.92},{44.90,27.42},{42.32,29.31},{41.27,29.69},{36.75,31.35},{37.4,34.41}}},
+        },
         [58876] = { -- Starving Hound
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
         [58898] = { -- Vigilant Watchman
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
+        },
+        [58955] = { -- Stoneplow Envoy
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{17.01,35.22},{15.89,34.65},{15.41,35.45},{14.23,35.62},{13.57,36.29},{14.43,36.67},{15.92,36.63},{15.45,37.74},{16.67,37.62}}},
+        },
+        [58978] = { -- Koro Mistwalker
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{43.79,38.30}}},
         },
         [58998] = { -- Scarlet Defender
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
@@ -377,6 +696,9 @@ function MopNpcFixes.Load()
         [59175] = { -- Master Archer
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
+        [59178] = { -- Lo Wanderbrew
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{46.63,45.31}}},
+        },
         [59184] = { -- Jandice Barov
             [npcKeys.spawns] = {
                 [zoneIDs.SCHOLOMANCE_MOP_CHAMBER_OF_SUMMONING] = {{58.85,18.32}},
@@ -395,6 +717,24 @@ function MopNpcFixes.Load()
         [59241] = { -- Scarlet Treasurer
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
+        [59272] = { -- Wu-Peng
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {
+                {74.68,76.94,phases.WU_PENG_ALONE},
+                {74.97,88.78,phases.WU_PENG_REUNITED},
+            }},
+        },
+        [59276] = { -- Weapons Credit
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{30.44,28.09}}},
+        },
+        [59278] = { -- Tools Credit
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{32.75,30.52}}},
+        },
+        [59279] = { -- Beer Credit
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{32.13,25.98}}},
+        },
+        [59280] = { -- Grain Credit
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{34.94,21.95}}},
+        },
         [59303] = { -- Houndmaster Braun
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{54.55,29.07},{-1,-1}}},
         },
@@ -407,6 +747,12 @@ function MopNpcFixes.Load()
         [59373] = { -- Scarlet Pupil
             [npcKeys.spawns] = {[zoneIDs.SCARLET_HALLS] = {{-1,-1}}},
         },
+        [59391] = { -- Foreman Raike
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{48.31,61.35}}},
+        },
+        [59411] = { -- Lorewalker Cho
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{44.78,67.09}}},
+        },
         [59467] = { -- Candlestick Mage
             [npcKeys.spawns] = {[zoneIDs.SCHOLOMANCE_MOP] = {{-1,-1}}},
         },
@@ -416,9 +762,30 @@ function MopNpcFixes.Load()
         [59503] = { -- Brittle Skeleton
             [npcKeys.spawns] = {[zoneIDs.SCHOLOMANCE_MOP] = {{-1,-1}}},
         },
+        [59611] = { -- Captured Yak
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{62.17,79.93}}},
+        },
+        [59874] = { -- Manifestation of Fear
+            [npcKeys.spawns] = {}, --removed for quest clutter
+        },
+        [60096] = { -- Eastern Oil Rig
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{50.95,79.29}}},
+        },
+        [60098] = { -- Southern Oil Rig
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{49.61,80.99}}},
+        },
+        [60099] = { -- Western Oil Rig
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{47.79,81.61}}},
+        },
         [60488] = { -- Water Spout Bunny
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{78.54,37.08},{78.31,37.77},{78.77,37.52},{78.63,38.81},{78.72,37.2},{78.32,37.1},{79.46,37.99},{79.56,37.64},{78.33,37.75},{78.8,38.64},{79.41,36.63},{79.78,37.54},{79.22,37.4},{79.94,37.7},{79.2,36.68},{78.4,38.79},{79.07,37.03}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
+        },
+        [60491] = { -- Sha of Anger
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{67.79,77.96}}},
+        },
+        [60564] = { -- Kafa-Crazed Yeti
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{39.28,75.27},{39.53,75.5},{39.24,74.31},{38.81,74.18},{38.57,74.15},{38.16,74.26},{38.13,72.52},{37.8,73.92},{35.24,69.62},{35.09,70.77},{35.41,70.66},{36.07,69.26},{35.95,68.96},{36.54,68.56},{37.22,67.87}}},
         },
         [60566] = { -- Aysa Cloudsinger
             [npcKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{74.2,91.98}}},
@@ -432,9 +799,16 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{36.43,87.53}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
         },
+        [60883] = { -- Light Incense Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{66.96,33.32},}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
         [60916] = { -- Wugou
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{68.84,64.88}}},
             [npcKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
+        },
+        [60970] = { -- Admiral Taylor
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{58.87,81.67}}},
         },
         [61071] = { -- Small Frog
             [npcKeys.spawns] = {
@@ -509,6 +883,10 @@ function MopNpcFixes.Load()
                 [3711] = {{22,70},{36.4,80.4},{41.4,48.2},{51.8,30.4},{57.8,45}},
             },
         },
+        [61166] = { -- Cho Summon Bunny
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{57.97,49.04}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
         [61169] = { -- Roach
             [npcKeys.zoneID] = 10,
             [npcKeys.spawns] = {
@@ -521,6 +899,10 @@ function MopNpcFixes.Load()
                 [1497] = {{50.8,60},{59.2,29},{59.6,37},{59.8,36},{61.4,52.2},{64.2,33.4},{65.8,25.8},{66.2,27.8},{68,36},{68.8,36.8},{73.4,68.6},{78.2,72.6},{81.6,68.4},{83.4,33.8},{83.6,63.8},{84,41.8},{84.2,63.4}},
                 [5287] = {{39.8,72.6},{41.6,73},{42,68.4},{42,74.4},{42,74.6},{43,71.6},{43.2,71.2}},
             },
+        },
+        [61297] = { -- Image of Lorewalker Cho
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{57.97,49.04}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
         },
         [61313] = { -- Parrot
             [npcKeys.spawns] = {
@@ -681,6 +1063,12 @@ function MopNpcFixes.Load()
         [61841] = { -- Brunn Goldenmug
             [npcKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{71.4,48.6},{71.8,48.4},{72,48.6}}},
         },
+        [61842] = { -- Zandalari Warrior
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{80.91,75.69},{67.31,70.34},{66.93,77.92},{62.82,87.17},{56.48,86.10},{55.81,76.68},{56.28,66.40},{60.15,58.71},{62.69,60.09}}},
+        },
+        [61981] = { -- Dreadspinner Tender
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{65.8,28},{66,29.8},{66.4,28.8},{67.2,29.4},{67.2,29.6},{67.4,30.8},{67.6,30.4},{67.8,31.2},{68.4,29},{68.6,30},{70.2,25.8},{70.4,27.6},{70.6,27.6},{71.2,22.4},{71.2,22.6},{71.2,26.2},{71.4,24.2},{71.4,27.2},{71.6,24.4},{71.6,28.4},{72,26.4},{72,26.6},{72.2,29.2},{72.4,22.4},{72.4,23},{72.4,29.6},{72.6,22.2},{72.8,23.4},{72.8,23.6},{72.8,29.4},{72.8,29.8},{74,22.4},{74,22.6},{74,24.4},{74,24.6}}},
+        },
         [62019] = { -- Cat
             [npcKeys.spawns] = {
                 [12] = {{43.4,52.8},{44,52.6},{44.2,52.4},{44.4,53.8},{44.6,53.4},{44.6,53.6}},
@@ -689,9 +1077,16 @@ function MopNpcFixes.Load()
                 [6455] = {{59.4,41.2},{61,41.2}},
             },
         },
+        [62077] = { -- Dreadspinner Egg
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{68.72,30.33},{67.91,31.6},{67.49,30.45},{67.48,28.78},{65.99,30.08},{65.58,28.08},{66.03,27.34},{68.56,28.79},{69.31,30.24},{72.83,30.16},{72.47,29.83},{72.56,28.73},{72.04,27.58},{71.52,28.67},{71.36,27.47},{72.1,26.59},{71.13,26.08},{71.41,24.29},{70.89,22.17},{71.58,22.02},{72.47,22.12},{72.57,23.3},{73.78,22.49},{74.75,21.22},{74.23,23.9},{74.13,24.78}}},
+            [npcKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
         [62092] = { -- Garrosh Hellscream
             [npcKeys.spawns] = {[zoneIDs.ORGRIMMAR] = {{70.62,31.42}}},
             [npcKeys.zoneID] = zoneIDs.ORGRIMMAR,
+        },
+        [62166] = { -- Marksman Lann
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{72.55,28.67}}},
         },
         [62177] = { -- Forest Moth
             [npcKeys.spawns] = {
@@ -730,6 +1125,11 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.6,49},{-1,-1}}},
             [npcKeys.zoneID] = zoneIDs.BRAWLGAR_ARENA,
         },
+        [62232] = { -- Korven the Prime
+            [npcKeys.name] = "Korven the Prime",
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{66.76,65.29}}},
+            [npcKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
         [62373] = { -- Silky Moth
             [npcKeys.spawns] = {
                 [490] = {{30.2,30.6},{34.2,28.6},{47.4,28.6}},
@@ -741,27 +1141,133 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.SILVERMOON_CITY,
             [npcKeys.spawns] = {[zoneIDs.SILVERMOON_CITY] = {{82.8,38.8}}},
         },
+        [62538] = { -- Kil'ruk the Wind-Reaver
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {55.09,33.83,phases.KIL_RUK_AT_PILLAR},
+                {55.06,35.86,phases.KIL_RUK_NEXT_TO_ZIKK},
+            }},
+        },
+        [62542] = { -- Kovok
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{41.33,71.29}}},
+        },
+        [62666] = { -- Sapmaster Vu
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {51.21,11.39,phases.SAP_MASTERS_AT_BREWGARDEN},
+                {38.18,17.18,phases.SAP_MASTERS_AT_RIKKITUN},
+            }},
+        },
+        [62667] = { -- Lya of Ten Songs
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {50.73,11.71,phases.SAP_MASTERS_AT_BREWGARDEN},
+                {38.3,17.14,phases.SAP_MASTERS_AT_RIKKITUN},
+            }},
+        },
+        [62668] = { -- Olon
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {51.17,11.21,phases.SAP_MASTERS_AT_BREWGARDEN},
+                {38.2,17.12,phases.SAP_MASTERS_AT_RIKKITUN},
+            }},
+        },
+        [62751] = { -- Dread Lurker
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{51.6,19},{52,18.4},{52.8,18.6},{54,20.4},{54,20.6},{54.2,18.2},{54.4,17.4},{54.4,18.6},{54.6,18.4},{54.6,18.6},{54.6,19.6},{54.8,16.8},{56,16.4},{56.2,17.4},{56.2,17.6},{56.4,19},{56.8,18.6},{57.4,20.4},{57.6,20.4},{58.4,19.2},{58.6,19.2}}},
+        },
+        [62760] = { -- Frightened Mushan
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{46.8,20.4},{47.2,20.8},{47.8,20.6},{48.4,18.6},{48.4,20.4},{48.6,20.2},{48.8,21.4},{49,18.4},{49,18.6},{49.2,16.4},{49.6,16.4},{49.6,16.6},{49.8,17.6},{49.8,19.4},{51,17.6},{51.2,15},{51.2,16.8},{51.4,16.2},{51.6,14.8},{52,16.4},{52,16.6},{54,16},{56,19.4},{56,19.6}}},
+        },
+        [62773] = { -- Iyyokuk the Lucid
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{32.67,33.88}}},
+        },
+        [62774] = { -- Malik the Unscathed
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {54.89,34.14,phases.MALIK_AT_PILLAR},
+                {55.06,35.47,phases.MALIK_NEXT_TO_ZIKK},
+            }},
+        },
+        [62779] = { -- Chen Stormstout
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {50.45,12.05,phases.CHEN_62779_AT_BREWGARDEN},
+                {44.41,16.8,phases.CHEN_62779_INSIDE_KOR_VESS}
+            }},
+        },
         [62923] = { -- Empty Package
             [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
             [npcKeys.spawns] = {
                 [zoneIDs.THE_JADE_FOREST] = {{22.9,30.6}}
             },
         },
+        [63071] = { -- Skeer the Bloodseeker
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {
+                {25.71,50.58,phases.SKEER_IN_CAVE},
+                {44.41,16.8,phases.SKEER_IN_KLAXXI_VEES}
+            }},
+        },
         [63296] = { -- Gato
             [npcKeys.zoneID] = zoneIDs.VALLEY_OF_TRIALS,
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_TRIALS] = {{42.2,68.4}}},
         },
         [63307] = { -- Lore Walker Cho
-            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{28.82,32.62}}},
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{28.82,32.62}}},
+        },
+        [63317] = { -- Captain "Soggy" Su-Dao
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={
+                {55.66,72.49,phases.SOGGY_IN_HUT},
+                {54.77,72.11,phases.SOGGY_OUTSIDE},
+            }},
         },
         [63335] = { -- Mojo Stormstout
-            [npcKeys.spawns] = {[zoneIDs.AMMEN_VALE]={{50.46,48.71}}},
+            [npcKeys.spawns] = {[zoneIDs.AMMEN_VALE] = {{50.46,48.71}}},
+        },
+        [63349] = { -- Deck Boss Arie
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={
+                {56.57,75.82,phases.ARIE_AT_DOCK},
+                {54.72,72.16}, -- She is always at this location. Right now she won't show at both locations, because the distance is too short.
+            }},
+        },
+        [63369] = { -- Rockshell Snapclaw
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{39,79.4},{39.2,79.6},{39.4,78.4},{39.6,78.2},{40,79.6},{40.2,79.4},{40.8,77.8},{41,77.4},{41.6,76},{41.8,78},{42,77},{42.2,75},{42.4,79.2},{42.6,79.2},{42.6,79.6},{42.8,77},{43,78.4},{43.2,76.2},{43.4,74.8},{43.6,74.8},{43.8,71.8},{43.8,79.6},{44,78.6},{44.4,76.4},{44.4,77.4},{44.4,78},{44.6,76.4},{44.6,76.6},{45.2,78.4},{45.2,79.4},{45.4,79.6},{45.6,69},{45.6,76},{45.6,78.4},{45.6,78.6},{46.6,74.8},{46.6,78.6},{47,77.4},{47,77.6},{47,80.2},{47,81.4},{47,81.6},{47.8,71.4},{47.8,75.4},{48,76},{48.8,76.6},{49,75.4},{49.2,75.8}}},
+        },
+        [63517] = { -- The Spring Drifter
+            [npcKeys.spawns] = {[zoneIDs.THE_VEILED_STAIRS]={{52.04,43.12}}},
         },
         [63778] = { -- Messenger Grummie
-            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{18.47,56.60},{55.37,50.18},{69.99,23.56}}},
+            [npcKeys.spawns] = {
+                [zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{18.47,56.60},{55.37,50.18},{69.99,23.56}},
+                [zoneIDs.KRASARANG_WILDS] = {{40.46,33.92}},
+            }
+        },
+        [63879] = { -- Silt Vents Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{46.42,73.94}}},
+        },
+        [63465] = { -- Muckscale Flesheater
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{25.73,52.79}}},
+        },
+        [63466] = { -- Muckscale Flesheater
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{25.73,52.79}}},
+        },
+        [63880] = { -- Shipwreck Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{44.66,78.66}}},
+        },
+        [63881] = { -- Whale Corpse Kill Credit
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{40.01,78.89}}},
+        },
+        [63944] = { -- Longfin Thresher
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{38.8,78.2},{39,79.6},{39.4,77.4},{39.4,78.6},{39.8,79.8},{40.2,78.4},{40.2,78.6},{40.8,80.6},{41.2,76.8},{41.2,78.2},{41.2,80},{41.4,76.4},{41.4,79},{41.6,76},{41.6,79.2},{41.8,80.6},{42,79.6},{42.4,77.4},{42.4,77.8},{42.6,77.4},{42.8,76.4},{42.8,78.8},{43,81},{43.2,75.4},{43.2,80.2},{43.4,70.4},{43.4,77.8},{43.8,80},{44,69.6},{44,76},{44,79},{44,80.6},{44.2,77.2},{44.4,75.2},{44.4,78.4},{44.6,77.4},{44.8,74.2},{44.8,78},{45,71.2},{45,74.6},{45,80.4},{45,80.6},{45.2,72.8},{45.2,78.6},{45.2,81.6},{45.4,75.6},{45.6,74.6},{45.6,76},{45.8,76.6},{45.8,78.2},{45.8,80},{45.8,82.2},{46,73.2},{46,80.6},{46.2,74.4},{46.2,79.2},{46.6,76},{46.6,78.6},{46.6,80.6},{46.8,71.4},{46.8,72.2},{46.8,74.4},{46.8,77.4},{46.8,77.6},{47,82},{47,83.2},{47.2,75.2},{47.4,72.8},{47.4,79.6},{47.6,73},{47.6,75.6},{47.6,77.6},{47.6,79.8},{47.8,75.2},{48,77},{48,79.4},{48.2,74},{48.2,82.8},{48.6,72.4},{48.8,77}}},
         },
         [64033] = { -- Master Angler Marina
             [npcKeys.friendlyToFaction] = "A",
+        },
+        [64259] = { -- Master Angler Ju Lien
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={
+                {53.64,76.04,phases.JU_LIEN_AT_COAST},
+                {54.9,72.82,phases.JU_LIEN_IN_TOWN},
+            }},
+        },
+        [64269] = { -- Sha of Doubt Portal
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{49.36,60.79},{49.13,59.67},{48.67,58.91},{48.14,58.81},{47.38,58.59},{46.58,58.95},{45.99,59.7},{45.93,60.64},{46.3,61.87},{46.93,62.54},{47.68,62.36},{48.37,62.03}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [64344] = { -- Kaz'tik the Manipulator
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{41.77,72.03}}},
         },
         [64562] = { -- Talking Skull
             [npcKeys.spawns] = {
@@ -840,11 +1346,26 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = 0,
             [npcKeys.spawns] = {},
         },
+        [65354] = { -- Ancient Amber Chunk
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{66.88,65.4}}},
+        },
+        [65365] = { -- Kor'ik
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={{48.12,49.62}}},
+        },
+        [65899] = { -- Master Kistane
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{48.12,40.35}}},
+        },
+        [65960] = { -- Master Woo
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{48.12,40.35}}},
+        },
+        [66073] = { -- Master Yoon
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{48.12,40.35}}},
+        },
         [66138] = { -- Master Cheng
-            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT]={{48.11,40.35}}},
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{48.12,40.35}}},
         },
         [66190] = { -- General Nazgrim
-            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{31.4,11.2}}},
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{31.4,11.2}}},
         },
         [66292] = { -- Sky Admiral Rogers
             [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOMS,
@@ -891,6 +1412,12 @@ function MopNpcFixes.Load()
         },
         [67067] = { -- Rell's Gyrocopter
             [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{41.51,79.75}}},
+        },
+        [67138] = { -- Chen Stormstout
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES]={
+                {54.11,20.48,phases.CHEN_AT_FEAR_CLUTCH},
+                {44.41,16.8,phases.CHEN_AT_BREWGARDEN},
+            }},
         },
         [68430] = { -- Arcanis Mechanica
             [npcKeys.spawns] = {[zoneIDs.SILVERMOON_CITY] = {{86.4,31.8}}},
@@ -1185,10 +1712,13 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.TIMELESS_ISLE,
             [npcKeys.spawns] = {[zoneIDs.TIMELESS_ISLE] = {{52,75.8},{52.2,75.4},{52.6,80},{54.4,75.4},{54.6,58.6},{55.2,60.2},{55.8,60},{57.8,76.4},{58.4,59},{58.4,59.8},{58.6,59.4},{58.6,59.8},{58.6,80.2},{58.8,81},{67.6,55.2},{67.6,55.8},{69.2,59},{69.4,49}}},
         },
+
         -- Fake NPCs for Auto Accept and Auto Turn in
         [100002] = { -- A Personal Summons - Stormwind
             [npcKeys.questStarts] = {28825,29547},
         },
+
+        -- For MoP fixes 110000-119999
         [110000] = { -- Shu, the Spirit of Water
             [npcKeys.name] = "?",
             [npcKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{79.03,37.8}}},
@@ -1210,5 +1740,64 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
             [npcKeys.questEnds] = {29924},
         },
+        [110004] = { -- The Sprites' Plight
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{49.04,21.03}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+            [npcKeys.questEnds] = {29745},
+        },
+        [110005] = { -- Break the Cycle & Simulacrumble
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{47.73,16.71}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+            [npcKeys.questEnds] = {29747,29748},
+        },
+        [110006] = { -- To Bridge Earth and Sky
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{43.77,12.58}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+            [npcKeys.questEnds] = {29754},
+        },
+        [110007] = { -- Moving On
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{86.04,21.82}}},
+            [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+            [npcKeys.questEnds] = {29754},
+        },
+        [110008] = { -- Dead Zone
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{40.07,38.99}}},
+            [npcKeys.zoneID] = zoneIDs.DREAD_WASTES,
+            [npcKeys.questEnds] = {31009},
+        },
+        [110009] = { -- Anduin's Decision
+            [npcKeys.name] = "!",
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{65.9,79.37}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+            [npcKeys.questStarts] = {29901},
+        },
     }
+end
+
+function MopNpcFixes:LoadFactionFixes()
+    local npcKeys = QuestieDB.npcKeys
+    local zoneIDs = ZoneDB.zoneIDs
+
+    local npcFixesHorde = {
+        [59151] = { -- Zhu's Watch Courier
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS]={{62.56,25.46}}},
+        }
+    }
+
+    local npcFixesAlliance = {
+        [59151] = { -- Zhu's Watch Courier
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS]={{66.2,30.8}}},
+        }
+    }
+
+    if UnitFactionGroup("Player") == "Horde" then
+        return npcFixesHorde
+    else
+        return npcFixesAlliance
+    end
 end
