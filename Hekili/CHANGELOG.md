@@ -1,18 +1,46 @@
-# Hekili
+# Hekili 黑科研修复版
 
-## [v3.4.3-1.0.7](https://github.com/Hekili/hekili/tree/v3.4.3-1.0.7) (2024-04-20)
-[Full Changelog](https://github.com/Hekili/hekili/compare/v3.4.3-1.0.6...v3.4.3-1.0.7) [Previous Releases](https://github.com/Hekili/hekili/releases)
+v3.4.5-1.0.3
 
-- Merge pull request #3210 from Supernuss/wrath  
-    Enhancer and ProtPala rotation update  
-- Enhancer updated rota and minor fixes; ProtPala using clash instead of wait now  
-- Ignore workspace  
-- Tweaks to active\_dot and action.X.clash  
-- Merge pull request #3013 from Supernuss/wrath  
-    updated Shadow, Prot Warri, Prot Pala for P4  
-- added active\_dot-check to DP generator  
-- added multiple shared attributes, renamed debuff  
-- updated Shadow, Prot Warri, Prot Pala for P4  
+一、插件完善：
+
+1、修复技能高亮提示，现在ndui也可以提示高亮技能了。
+
+二、职业调整：
+
+法师：
+1.加入T10阶段法伤提升饰品函数magic_damage_increase，加入2T10触发buff函数pushing_the_limit。
+2.修复活动炸弹技能id错误。
+3.(试验)重做火法技能循环，完善燃烧3+1和2T10逻辑，供玩家测试。
+
+其他：
+1.修复暗牧的吸血鬼鞭笞、死亡骑士的天灾打击，修复暗牧T10套装物品id。
+2.修改死亡骑士湮灭技能验证符文逻辑。
+
+v3.4.5-1.0.2
+
+职业调整（术士）
+
+1.修改暗影箭和鬼影缠身的技能飞行速度为正确近似值，新增灵魂之火、烧尽技能飞行时间。
+2.修复暗影箭、灵魂之火、烧尽施法时间，加入急速影响.
+3.修复灵魂之火技能id错误。
+4.修改痛苦无常技能施放逻辑。
+5.加入鬼影缠身提前量，默认2s。
+6.禁用超级加速器，由玩家自行释放。
+
+bug：腐蚀术的刷新逻辑仍有问题，可以配合相关wa提示刷新。
+
+v3.4.5-1.0.1
+
+一、插件完善：
+1、适配3.4.5版本。
+
+二、职业调整（战士）：
+
+1.优化狂暴战技能循环。
+2.优化4T10循环猛击技能提示逻辑，加入猛击优先开关，默认关闭。可能存在增加公共冷却时间的bug 或 导致总伤害更低的问题，玩家自行决定。
+3.优化破甲逻辑，启用后在没有贼打破甲情况下提示，只对boss级别有效。
+4.优化各种怒吼逻辑。
 
 v3.4.4-1.1.2
 

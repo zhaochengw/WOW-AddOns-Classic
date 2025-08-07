@@ -319,6 +319,8 @@ local function RegisterFrames()
     local LAB = {
         original = LibStub:GetLibrary("LibActionButton-1.0", true),
         elvui = LibStub:GetLibrary("LibActionButton-1.0-ElvUI", true),
+        NDui = LibStub:GetLibrary("LibActionButton-1.0-NDui", true), --添加ndui技能高亮 by 风雪20250731
+        UI = LibStub:GetLibrary("LibActionButton-1.0-UI", true)      --添加UI  技能高亮 by 风雪20250731
     }
 
     for _, lib in pairs(LAB) do

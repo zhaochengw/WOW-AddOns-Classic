@@ -63,7 +63,7 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{29.07,51.28},{29.2,51.22},{29.07,51.28},{29.2,51.22},{29.2,51.22},{29.07,51.28},{31.26,49.96},{31.47,49.92},{32.7,53.5},{32.5,53.58},{32.5,53.58},{31.47,49.92},{31.26,49.96},{32.7,53.5},{32.53,46.81},{32.48,46.66},{33.17,46.15},{33.45,50.86},{32.48,46.66},{33.13,46.3},{33.17,46.15},{33.13,46.3},{32.53,46.81},{33.45,50.86},{33.17,46.15},{33.13,46.3},{32.48,46.66},{32.53,46.81},{32.53,46.81},{32.48,46.66},{33.17,46.15},{33.13,46.3},{28.26,49.88},{28.26,49.58},{28.19,49.95},{28.19,49.95},{28.26,49.58},{28.26,49.88},{28.19,49.95},{28.26,49.58}}},
         },
         [209672] = { -- Firework Launcher
-            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST]={{56.4,58.2},{56.9,58.8},{57.1,57.7},{57.2,59.9},{57.5,61.4},{57.5,61.5},{57.9,59.5},{58,58.8},{58.3,58.2},{58.4,57.2},{58.5,56.3},{58.6,56.9},{58.6,57.6}}},
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{56.4,58.2},{56.9,58.8},{57.1,57.7},{57.2,59.9},{57.5,61.4},{57.5,61.5},{57.9,59.5},{58,58.8},{58.3,58.2},{58.4,57.2},{58.5,56.3},{58.6,56.9},{58.6,57.6}}},
             [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
         },
         [209826] = { -- Silk Patch
@@ -126,18 +126,66 @@ function MopObjectFixes.Load()
         [210005] = { -- Weapon Rack
             [objectKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{59.19,17.25},{58.67,16.32},{56.86,19.64},{57.59,17.59},{58.03,19.95},{57.85,20.06},{58.86,16.72},{57.24,16.73},{57.23,19.23},{56.98,20.49}}},
         },
+        [210191] = { -- Memorial Flame of Zhu
+            [objectKeys.name] = 'Memorial Flame of Zhu',
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{72.75,18.2}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [210213] = { -- Memorial Flame of Rin
+            [objectKeys.name] = 'Memorial Flame of Rin',
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{71.23,17.56}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [210214] = { -- Memorial Flame of Po
+            [objectKeys.name] = 'Memorial Flame of Po',
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{73.95,16.88}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
         [210565] = { -- Dark Soil
             [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{52.82,47.98}}},
             [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
         },
         [210931] = { -- Dak Dak's Altar
-            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{49.56,39.54}}},
-            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+            [objectKeys.spawns] = {[zoneIDs.THE_DEEPER] = {{49.56,39.54}}},
+            [objectKeys.zoneID] = zoneIDs.THE_DEEPER,
         },
         [210933] = { -- Yaungol Banner
             [objectKeys.name] = 'Yaungol Banner',
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{58.2,84.09}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [210938] = { -- Partially Chewed Carrot
+            [objectKeys.name] = 'Partially Chewed Carrot',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{41.3,40},{41.5,38.4},{41.8,35.3},{42,40},{42.7,39.2},{43.6,37.5},{43.9,35.1},{44.2,40.1},{44.5,42.6},{44.6,40}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [210942] = { -- Partially Chewed Carrot
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{41.6,39.2},{42.8,36.3},{43.4,38.5},{43.6,37.4},{43.6,41.4},{44.5,38.2},{44.7,42.2}}}, -- wowhead coords, might be more
+        },
+        [210956] = { -- Preserved Vegetables
+            [objectKeys.name] = 'Preserved Vegetables',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{39.3,17.1},{43.8,22.7},{44.1,20.4},{44.9,18.7},{46.1,21.6},{46.7,21.7},{47.7,18.8},{48.3,19.6}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [210957] = { -- Preserved Vegetables
+            [objectKeys.name] = 'Preserved Vegetables',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{44.2,19.9},{44.9,18.7},{44.9,19.8},{46.1,21.5},{46.2,21.4},{46.7,20.7},{47.2,20.4},{47.5,19},{48.5,18.2}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [210958] = { -- Chrysoberyl Outcropping
+            [objectKeys.name] = 'Chrysoberyl Outcropping',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{39.7,20},{44,22.7},{47.3,21}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [210959] = { -- Chrysoberyl Outcropping
+            [objectKeys.name] = 'Chrysoberyl Outcropping',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{39.2,18.9},{44.5,20.8}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [210960] = { -- Chrysoberyl Outcropping
+            [objectKeys.name] = 'Chrysoberyl Outcropping',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{38.9,16.6},{45,18.9},{45.2,19.5},{48.9,19.2}}}, -- wowhead coords, might be more
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
         },
         [210964] = { -- Pei-Wu Forest Gate
             [objectKeys.name] = 'Pei-Wu Forest Gate',
@@ -149,6 +197,30 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.THE_WANDERING_ISLE] = {{51.59,61.29}}},
             [objectKeys.zoneID] = zoneIDs.THE_WANDERING_ISLE,
         },
+        [211020] = { -- Yoon's Apples
+            [objectKeys.name] = 'Yoon\'s Apples',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{52.63,47.8}}},
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [211022] = { -- Yoon's Craneberries
+            [objectKeys.name] = 'Yoon\'s Craneberries',
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{52.82,47.84}}},
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [211112] = { -- Mysterious Whirlpool
+            [objectKeys.name] = 'Mysterious Whirlpool',
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{34.17,31.69}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [211118] = { -- Jagged Abalone
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{69.5,38.67},{69.34,37.76},{70.61,38.74},{70.53,41.76},{69.08,39.99},{69.14,39.19},{68.67,39.33},{68.26,40.18},{68.88,36.48},{69.18,36.89},{69.7,36.38},{71.31,37.11},{71.39,37.83},{71.87,38.29},{71.76,40.36},{71.01,40.86},{70.28,41.78}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [211169] = { -- Crane Yolk Pool
+            [objectKeys.name] = 'Crane Yolk Pool',
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{65.03,50.04}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
         [211275] = { -- Ko Ko's Altar
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{52.27,71.44}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
@@ -157,10 +229,18 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{56.84,70.98}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
         },
+        [211306] = { -- Revelite Crystal
+            [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{23.15,30.87},{23.49,33.25},{26.96,32.85},{27.65,29.00},{26.07,28.38},{26.33,25.12},{24.14,27.42},{21.59,28.46},{20.39,30.60},{22.37,30.78},{21.57,31.41},{23.16,30.73},{23.18,26.58},{22.11,27.19}}},
+            [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
+        },
         [211312] = { -- Items for Barrels of Fun
             [objectKeys.name] = 'Explosives Barrel',
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{51.24,79.33},{49.61,78.99},{49.34,81.06},{47.55,80.08}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [211365] = { -- Ball and Chain
+            [objectKeys.spawns] = {[6088] = {{38.68,23.02}}},
+            [objectKeys.zoneID] = 6088,
         },
         [211376] = { -- Items for Build Your Own Raft
             [objectKeys.name] = 'Spare Plank',
@@ -177,9 +257,23 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{61.01,21.52}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
         },
+        [211511] = { -- Drywood Cage
+            [objectKeys.name] = 'Drywood Cage',
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{66.72,43.99},{65.9,44.81},{66.68,45.31},{66.15,46.24},{66.41,46.96},{67.39,46.31},{67.04,45.83},{67.5,46.92},{66.75,48.05},{67.28,49.51},{65.67,49.39},{66.13,48.83},{64.82,50.52},{66.26,51.48},{66.06,52.13},{67.29,51.36},{67.96,50.82}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [211515] = { -- Peat Mound
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{71.48,72.29}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
         [211526] = { -- Waterfall Polished Stone
-            [objectKeys.name] = 'Waterfall Polished Stone',
+            [objectKeys.name] = 'Waterfall-Polished Stone',
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{58.78,24.71},{58.96,24.63},{60.22,31.40},{60.11,31.09},{59.71,29.96},{59.69,29.61},{59.17,27.32},{58.96,27.32},{59.03,27.20}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [211545] = { -- Incense of Life
+            [objectKeys.name] = 'Incense of Life',
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{66.95,33.33}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
         },
         [211720] = { -- Meeting Stone (Terrace of Endless Spring)
@@ -200,17 +294,53 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{56.34,43.43}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
         },
+        [211863] = { -- Krik'thik Limb
+            [objectKeys.name] = 'Krik\'thik Limb',
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{77.19,88.74},{76.93,88.98},{76.72,88.92},{76.3,90.03},{74.87,82.69},{74.28,83.72},{74.33,83.81},{74.39,84.01},{74.19,84.34},{74.17,84.36},{74.27,85.47},{73.85,84.98},{73.34,84.29},{71.54,85.1}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [211871] = { -- Dread Orb
+            [objectKeys.name] = 'Dread Orb',
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{56.8,7.6},{65.4,87.1},{65.4,88.7},{65.5,88.6},{66,87.7},{66.1,86.4},{66.1,86.6},{66.8,87.3},{66.8,87.5},{67.7,87.5},{67.9,86.4},{68,86.5},{68.3,89.1},{69.1,88.1},{69.1,89.5},{69.3,89.2}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [211872] = { -- Dread Orb
+            [objectKeys.name] = 'Dread Orb',
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{64.9,88.7},{66,87.7},{66.2,86.6},{67.3,86.9},{67.8,87.6},{67.9,86.7},{68.3,89.1},{69.1,88.1},{69.4,88.9}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [211873] = { -- Dread Orb
+            [objectKeys.name] = 'Dread Orb',
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{65.9,86.7},{66.2,87.5},{66.9,87.1},{68,86.4},{68,88.3},{68,88.6},{68.1,86.5},{69.1,88.1},{69.1,89.5},{69.3,89.1}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
         [211883] = { -- Scout Cage
             [objectKeys.name] = 'Scout Cage',
             [objectKeys.spawns] = {[zoneIDs.RAGEFIRE_CHASM] = {{36.72,84.38},{36.24,84.61},{35.79,84.91},{-1,-1}}},
             [objectKeys.zoneID] = zoneIDs.RAGEFIRE_CHASM,
         },
+        [212003] = { -- Yaungol Oil Barrel
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{26.2, 59.9}, {26.3, 59.1}, {26.6, 59.4}, {27.2, 60.2}, {27.4, 60.8}, {27.7, 61}, {28.4, 61.5}, {28.5, 61.1}, {28.5, 61.5}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [212131] = { -- Niuzao Food Supply
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{41.58,61.5},{42.34,62.04},{39.82,63.39},{38.99,64.1},{38.3,63.61},{37.61,64.03},{37.57,63.98},{40.13,56.89},{40.32,58.7},{42.66,58.73},{41.35,62.11},{39.28,61.58},{39.27,61.6},{37.74,62.45},{37.85,61.03},{39.65,57.7},{42.44,57.99},{41.79,61.62},{43.26,58.19},{41.4,63.08},{40.94,63.59},{40.32,64.19},{39.72,64.67},{39.81,60.92},{38.69,60.97},{38.62,61.45},{39.01,60.13}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
         [212294] = { -- Ocean-Worn Rocks
             [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{43.3,63.49}}},
             [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
         },
+        [212744] = { -- Whitepetal Reeds
+            [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{38.4,48.1},{38.4,49.4},{38.4,49.5},{38.5,49.4},{38.5,49.5},{38.6,47.3},{38.6,47.5},{38.8,44.4},{38.8,53.2},{38.9,45.5},{39,44.8},{39.4,52},{39.7,43.9},{40,51.4},{40.4,42.9},{40.4,51.6},{40.5,51.4},{40.5,51.6},{40.7,42.4},{40.7,42.8},{42.3,52.5},{42.4,52.4},{42.5,52.4},{42.5,52.5},{43.3,48.4},{43.3,48.6},{43.3,51},{43.4,47},{43.5,47},{43.6,49.2},{43.6,50.5},{43.8,50.2}}},
+            [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
+        },
         [214674] = { -- Ancient Amber Chunk
             [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{44.76,41.66}}},
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [212038] = { -- Ancient Amber Chunk
+            [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{31.92,42.43}}},
             [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
         },
         [212389] = { -- Scroll of Auspice
@@ -226,9 +356,17 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{82.4,29.4},{82.4,29.5},{82.5,29.4},{82.5,29.5}}},
             [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
         },
+        [212742] = { -- Fresh Dirt
+            [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{37.3,45.4},{37.3,45.5},{38,42.1},{38,46},{38.2,48.1},{38.3,48.8},{38.4,44.9},{38.4,47.4},{38.5,44.4},{38.5,47.5},{38.5,48.9},{38.6,44.7},{38.6,47.4},{39.1,53.5},{39.2,42.4},{39.2,42.5},{39.2,53.3},{40,53.2},{40.2,42},{40.3,41},{40.3,51.7},{40.5,40.9},{40.5,42.1},{41.3,40.2},{41.4,42.6},{41.4,52.2},{41.5,40.1},{41.6,42.6},{41.6,52.4},{42.2,42.1},{42.3,53.3},{42.3,53.5},{42.5,53.6},{42.7,39.4},{42.7,39.5},{42.9,42},{43,51.8},{43,53.1},{43.4,50.8},{43.5,50.8},{43.6,50.4},{44.6,51.4},{44.6,51.5},{44.7,50},{44.9,45.7},{45.4,39.4},{45.4,39.6},{45.5,39.4},{45.5,39.6},{45.8,47.5},{45.9,47.4},{46.1,42.7},{46.4,41.2},{46.8,46.3},{46.8,46.5},{47.1,41.4},{47.1,41.5}}},
+            [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
+        },
         [212868] = { -- Ancient Amber Chunk
             [objectKeys.name] = 'Ancient Amber Chunk',
             [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{70.19,25.63}}},
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [212923] = { -- Amber Collector
+            [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{32.9,50.4},{32.9,50.5},{34,51.1},{34.4,51.6},{34.5,51.3},{34.8,51.5},{37,51.8},{38.6,49.3},{39.4,52.1},{39.6,52},{40.4,47.7},{40.5,47.9},{41.4,52.4},{41.4,52.5},{41.5,52.4},{41.5,52.6},{42.3,50.2},{42.5,50.2},{44.9,57.9},{45,57},{45.6,52.1},{46.8,53.7},{48.8,64},{49.3,62.6},{49.7,66.3},{50.7,64.2},{51.4,66.2},{51.5,66.2}}},
             [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
         },
         [212935] = { -- Mogu Artifact
@@ -246,6 +384,10 @@ function MopObjectFixes.Load()
         },
         [213255] = { -- Meeting Stone (Mogu Shan Palace)
             [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{74.8,30.3}}},
+            [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
+        },
+        [213365] = { -- Stolen Mistfall Keg
+            [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{34.6,75.32}}}, -- needs more spawns
             [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
         },
         [213454] = { -- Soggy's Footlocker
@@ -284,6 +426,10 @@ function MopObjectFixes.Load()
             [objectKeys.name] = "Stormstout Secrets",
             [objectKeys.spawns] = {[zoneIDs.STORMSTOUT_BREWERY] = {{-1,-1}}}, -- TODO: Add coords from inside the dungeon
             [objectKeys.zoneID] = zoneIDs.STORMSTOUT_BREWERY,
+        },
+        [214062] = { -- Glowing Amber
+            [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{41.87,63.71}}},
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
         },
         [214101] = { -- In the Shadow of the Light
             [objectKeys.spawns] = {[zoneIDs.SCHOLOMANCE_MOP] = {{58.91,81.74},{50.21,36.36},{76.73,48.96},{72.15,64.34},{53.37,53.62},{69.29,45.05},{65.87,78.88},{58.59,39.78},{-1,-1}}},
@@ -337,6 +483,15 @@ function MopObjectFixes.Load()
                 [zoneIDs.SCARLET_MONASTERY] = {{-1,-1}},
             },
             [objectKeys.zoneID] = zoneIDs.SCARLET_MONASTERY,
+        },
+        [214543] = { -- Dreadspore Bulb
+            [objectKeys.name] = "Dreadspore Bulb",
+            [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{33.2,85.93}}}, -- there are like 100 more spawns, used one so we can have tooltips
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [214824] = { -- Ancient Mogu Chest
+            [objectKeys.spawns] = {[zoneIDs.MOGUSHAN_PALACE_VAULTS_OF_KINGS_PAST] = {{60.12,82.45},{38.92,88.24},{37.39,64.61},{42.97,59.72}}},
+            [objectKeys.zoneID] = zoneIDs.MOGUSHAN_PALACE_VAULTS_OF_KINGS_PAST,
         },
         [214873] = { -- Vacant Destroyer
             [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{47.81,18.73},{47.75,18.26},{47.13,16.98},{47.82,16.4},{46.72,16.75},{46.91,16.16},{46.99,15.68},{46.29,15.78},{45.23,16.22},{48.55,16.22},{48.72,19.74},{48.97,20.27},{48.54,20.75},{48.11,20.25},{48.61,19.37},{48.32,18.78},{48.8,18.06},{48.8,17.7}}},
@@ -408,6 +563,18 @@ function MopObjectFixes.Load()
             [objectKeys.name] = 'Enormous Landslide',
             [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{29.91,31.27}}},
             [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [440004] = {
+            [objectKeys.name] = "Lesser Charm of Good Fortune",
+        },
+        [440005] = {
+            [objectKeys.name] = "Elder Charm of Good Fortune",
+        },
+        [440006] = {
+            [objectKeys.name] = "Mogu Archaeology Fragment",
+        },
+        [440007] = {
+            [objectKeys.name] = "Pandaren Archaeology Fragment",
         },
     }
 end

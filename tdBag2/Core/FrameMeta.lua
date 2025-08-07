@@ -5,6 +5,8 @@
 --
 local pairs = pairs
 
+local C = LibStub('C_Everywhere')
+
 ---@type ns
 local ns = select(2, ...)
 
@@ -110,4 +112,15 @@ end
 
 function FrameMeta:IsBagHidden(bag)
     return self.character.hiddenBags and self.character.hiddenBags[bag]
+end
+
+function FrameMeta:GetBagFamily(bag)
+    if ns.IsBank(bag) or ns.IsBackpack(bag) then
+        return 0
+    end
+    if ns.IsKeyring(bag) then
+        return ns.KEYRING_FAMILY
+    end
+    local info = Cache:GetBagInfo(self.owner, bag)
+    return info.link and C.Item.GetItemFamily(info.link) or 0
 end

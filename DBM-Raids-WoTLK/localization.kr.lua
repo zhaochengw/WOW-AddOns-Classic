@@ -514,7 +514,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails			= "용암 파도와 어둠의 균열을 맞은 공대원을 공격대 대화로 알림 (승급 권한 필요)",
 	TimerTenebron			= "테네브론 도착 타이머 바 보기",
 	TimerShadron			= "샤드론 도착 타이머 바 보기",
 	TimerVesperon			= "베스페론 도착 타이머 바 보기",
@@ -532,11 +531,7 @@ L:SetMiscLocalization({
 	Portal			= "%s|1이;가; 황혼의 차원문을 엽니다!!",
 	NameTenebron	= "테네브론",
 	NameShadron		= "샤드론",
-	NameVesperon	= "베스페론",
-	FireWallOn		= "용암 파도: %s",
-	VoidZoneOn		= "어둠의 균열: %s",
-	VoidZones		= "어둠의 균열 맞은 사람 (이번 트라이): %s",
-	FireWalls		= "용암 파도 맞은 사람 (이번 트라이): %s"
+	NameVesperon	= "베스페론"
 })
 
 ---------------
@@ -791,16 +786,13 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerHardmode			= "하드 모드 타이머 바 보기",
-	AnnounceFails			= "$spell:62017에 맞은 사람 공격대 대화로 알림<br/>(알림 옵션 활성화 및 공대장/승급 상태 필요)"
+	TimerHardmode			= "하드 모드 타이머 바 보기"
 }
 
 L:SetMiscLocalization{
 	YellPhase1				= "침입자라니! 감히 내 취미 생활을 방해하는 놈들은 쓴맛을 단단히... 잠깐... 너는...",
 	YellPhase2				= "건방진 젖먹이 같으니... 감히 여기까지 기어올라와 내게 도전해? 내 손으로 쓸어버리겠다!",
-	YellKill				= "무기를 거둬라! 내가 졌다!",
-	ChargeOn				= "번개 충전: %s",
-	Charge					= "번개 충전에 맞은 사람 (이번 트라이): %s"
+	YellKill				= "무기를 거둬라! 내가 졌다!"
 }
 
 -------------
@@ -1128,9 +1120,7 @@ L:SetOptionLocalization{
 	warnAdds					= "새 쫄 알림",
 	timerAdds					= "새 쫄 타이머 바 보기",
 	TimerEmerge					= "출현 타이머 바 보기",
-	TimerSubmerge				= "숨기 타이머 바 보기",
-	AnnouncePColdIcons			= "$spell:66013 대상에 설정된 공격대 징표를 공격대 대화로 알림 (공격대장 권한 필요)",
-	AnnouncePColdIconsRemoved	= "$spell:66013 대상의 공격대 징표가 제거될 때 알림 (공격대장 권한 필요)"
+	TimerSubmerge				= "숨기 타이머 바 보기"
 }
 
 ----------------------
@@ -1231,13 +1221,8 @@ L:SetGeneralLocalization{
 	name = "구린속"
 }
 
-L:SetOptionLocalization{
-	AchievementCheck		= "'역병 예방접종' 업적 실패시 공격대에 알림<br/>(공대장 권한 필요)"
-}
-
 L:SetMiscLocalization{
-	SporeSet				= "가스 포자 징표 {rt%d}: %s",
-	AchievementFailed		= ">> 업적 실패: %s|1이;가; 역병 저항 %d중첩 <<"
+	SporeSet				= "가스 포자 징표 {rt%d}: %s"
 }
 
 ---------------
@@ -1380,17 +1365,12 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon			= "지상 단계 사전 경고 보기",
 	TimerNextAirphase			= "다음 공중 단계 타이머 바 보기",
 	TimerNextGroundphase		= "다음 지상 단계 타이머 바 보기",
-	AnnounceFrostBeaconIcons	= "$spell:70126 대상의 공격대 징표를 공격대 대화로 알림<br/>(공격대장 권한 필요)",
-	ClearIconsOnAir			= "공중 단계 전에 모든 공격대 징표 제거",
-	AchievementCheck			= "'신비한 아픔' 업적 경고를 공격대에 알림<br/>(승급 상태 필요)",
+	ClearIconsOnAir			= "공중 단계 전에 모든 공격대 징표 제거"
 }
 
 L:SetMiscLocalization{
 	YellAirphase			= "여기가 끝이다! 아무도 살아남지 못하리라!",
-	YellPhase2				= "자, 주인님의 무한한 힘을 느끼고 절망에 빠져보아라!",
-	BeaconIconSet			= "냉기 봉화 징표 {rt%d}: %s",
-	AchievementWarning		= "경고: %s의 신비한 강타 5중첩",
-	AchievementFailed		= ">> 업적 실패: %s|1이;가; 신비한 강타 %d중첩 <<"
+	YellPhase2				= "자, 주인님의 무한한 힘을 느끼고 절망에 빠져보아라!"
 }
 
 ---------------------
@@ -1422,18 +1402,12 @@ L:SetOptionLocalization{
 	PhaseTransition				= "단계 전환 타이머 바 보기",
 	ValkyrWarning				= "발키르 어둠수호병이 붙잡은 대상 알림",
 	SpecWarnYouAreValkd			= "발키르 어둠수호병에게 붙잡혔을 때 특수 알림 보기",
-	AnnounceValkGrabs			= "발키르 어둠수호병이 붙잡은 대상 공격대 대화로 알림<br/>(알림 설정 활성화 및 승급 상태 필요)",
-	SpecWarnValkyrLow			= "발키르의 생명력이 55%이하가 되면 특수 알림 보기",
-	AnnouncePlagueStack			= "$spell:70337 중첩을 공격대에 알림 (10 중첩까지, 그 이상은 5중첩마다)<br/>(승급 상태 필요)"
+	SpecWarnValkyrLow			= "발키르의 생명력이 55%이하가 되면 특수 알림 보기"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "그러니까 성스러운 빛이 자랑하던 정의가 마침내 왔다 이건가? 폴드링, 서리한을 내려놓고 자비라도 애걸하라는 건가?",
-	LKRoleplay				= "진정으로 정의에 이끌렸단 말이냐? 궁금하구나...",
-	ValkGrabbedIcon			= "발키르 어둠수호병 {rt%d} 붙잡기: %s",
-	ValkGrabbed				= "발키르 어둠수호병이 %s|1을;를; 붙잡음",
-	PlagueStackWarning		= "경고: %s의 괴저 역병 %d중첩",
-	AchievementCompleted	= ">> 업적 성공: %s의 괴저 역병 %d중첩 <<"
+	LKRoleplay				= "진정으로 정의에 이끌렸단 말이냐? 궁금하구나..."
 }
 
 -------------

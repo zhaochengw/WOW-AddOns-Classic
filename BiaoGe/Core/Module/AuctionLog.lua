@@ -328,7 +328,7 @@ BG.Init(function()
 
         -- 搜索
         do
-            local edit = CreateFrame("EditBox", nil, f, "SearchBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_SearchBoxTemplate")
             edit:SetSize(f:GetWidth() - 20, 22)
             edit:SetPoint("TOPLEFT", BG.auctionLogFrame.sumText, "BOTTOMLEFT", 7, -5)
             BG.auctionLogFrame.serachEdit = edit
@@ -549,7 +549,7 @@ BG.Init(function()
 
             -- 手动添加装备
             do
-                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(110, 20)
                 edit:SetPoint("LEFT", title, "RIGHT", 10, 0)
                 edit:SetAutoFocus(false)
@@ -625,7 +625,7 @@ BG.Init(function()
             t:SetWidth(60)
             t:SetJustifyH("RIGHT")
             t:SetWordWrap(false)
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(110, 20)
             edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
             edit:SetAutoFocus(false)
@@ -691,7 +691,7 @@ BG.Init(function()
             t:SetWidth(60)
             t:SetJustifyH("RIGHT")
             t:SetWordWrap(false)
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(110, 20)
             edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
             edit:SetAutoFocus(false)
@@ -1338,7 +1338,7 @@ BG.Init(function()
         end
         -- 已拍未交易
         if v.type == 1 and v.trade then
-            local text = bts.frame:CreateFontString()
+            local text = bts.frame:CreateFontString(nil, "OVERLAY")
             text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
             text:SetPoint("TOPRIGHT", -1, -1)
             text:SetText(L["已交易"])

@@ -122,7 +122,11 @@ function Private.GetProfileUrl(name, realmNameOrId, projectId)
 	---@type string|nil
 	local subdomain = nil
 	if projectId == WOW_PROJECT_CLASSIC then
-		subdomain = "sod"
+		if C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh then
+			subdomain = "fresh"
+		else
+			subdomain = "sod"
+		end
 	elseif projectId == WOW_PROJECT_WRATH_CLASSIC or projectId == WOW_PROJECT_CATACLYSM_CLASSIC then
 		subdomain = "classic"
 	end

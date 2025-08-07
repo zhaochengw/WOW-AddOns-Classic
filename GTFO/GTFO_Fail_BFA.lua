@@ -585,6 +585,78 @@ GTFO.SpellID["311456"] = {
   sound = 3;
 };
 
+GTFO.SpellID["296898"] = {
+  --desc = "Entropy (Boundless Corruption)";
+  sound = 3;
+};
+
+GTFO.SpellID["316510"] = {
+  --desc = "Split Personality";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["306828"] = {
+  --desc = "Void Torrent (Inquisitor Gnshal)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["306726"] = {
+  --desc = "Defiled Ground (Vez'okk the Lightless)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["306828"] = {
+  --desc = "Defiled Ground (Thrall)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["304251"] = {
+  --desc = "Void Quills (Suffer)";
+  sound = 3;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["304334"] = {
+  --desc = "Stampeding Corruption (Suffer)";
+  sound = 3;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["299111"] = {
+  --desc = "Orb of Annihilation (Annihilator Lak'hal)";
+  sound = 3;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["304101"] = {
+  --desc = "Maddening Roar (Misha)";
+  sound = 3;
+};
+
+GTFO.SpellID["306646"] = {
+  --desc = "Ring of Chaos (Vez'okk the Lightless)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["306010"] = {
+  --desc = "Explosive Leap (Voidcrazed Hulk)";
+  sound = 3;
+  alwaysAlert = true;
+};
+
+GTFO.SpellID["304634"] = {
+  --desc = "Despair (Oblivion Elemental)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+
+
 -- ***********************
 -- * Shrine of the Storm *
 -- ***********************
@@ -1229,6 +1301,12 @@ GTFO.SpellID["250022"] = {
 -- ***************
 -- * King's Rest *
 -- ***************
+
+GTFO.SpellID["276031"] = {
+  --desc = "Pit of Despair";
+  applicationOnly = true;
+  sound = 3;
+};
 
 GTFO.SpellID["270003"] = {
   --desc = "Suppression Slam (Animated Guardian)";
@@ -2062,6 +2140,7 @@ GTFO.SpellID["303729"] = {
   --desc = "Crackling Tornado (Rak'sha the Swift)";
   sound = 3;
 };
+
 
 -- *************
 -- * Ny'alotha *

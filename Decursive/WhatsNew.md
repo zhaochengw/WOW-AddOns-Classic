@@ -1,5 +1,117 @@
-Decursive 2.7.17
+Decursive 2.7.27
 ================
+
+
+Decursive 2.7.27 (2025-03-17)
+-----------------------------
+
+- Enable role detection in non-retail versions of WoW.
+
+- Fix unit sorting when using the "player" placeholder.
+
+- Widen the populate list UI.
+
+- Improve and fix class locals initialization where the female version was
+  always selected in WoW retail.
+
+- Fix Lua error forwarding in WoW retail.
+
+- TOC updates.
+
+
+**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
+delegate your stake to my pool: [anfra.io](https://anfra.io)
+
+
+Decursive 2.7.25 (2025-01-06)
+-----------------------------
+
+- Fix: Player's character was ignored in priority list if other non-present
+  player names appeared before.
+
+- New "Player" entry in the populate priority list GUI to add the currently
+  playing character (useful when using the same profile on different
+  characters).
+
+- TOC updates.
+
+
+Decursive 2.7.24 (2024-11-01)
+-----------------------------
+
+- Detect Void Rift in TWW and allow it to be cured by the 1st registered spell ([issue #30](https://github.com/2072/Decursive/issues/30)).
+
+- Fix potential initialization issue.
+
+
+Decursive 2.7.23 (2024-10-04)
+-----------------------------
+
+- Fix pet's spells addition by name in the custom spell interface.
+
+- WoW classic: fix Lua errors with pet's spells
+
+- Fix Improved Detox detection for Mistweaver monks.
+
+- WoW Cataclysm 4.4.1 (current PTR): fix Lua error due to API change.
+
+
+Decursive 2.7.22 (2024-08-16)
+-----------------------------
+
+- Fix Cooldown related Lua error in WoW 11
+
+
+Decursive 2.7.21 (2024-08-06)
+-----------------------------
+
+- Fix many compatibility issues with WoW 11 (Cooldown issue and various Lua errors).
+
+- Fix Evoker's spells priorities.
+
+- Add Remove Greater Curse for mages in WoW Classic SoD.
+
+- Fix bug introduced in 2.7.20 for spells set up to only work on the player (or
+  all other units but the player), they had become unusable.
+
+- Mark this version as incompatible with WotLK (This version of WoW classic is still being used in China - Players from China need to stick with Decursive 2.7.17 when playing WotLK).
+
+
+Decursive 2.7.20 (2024-07-19)
+-----------------------------
+
+- Compatible with The War Within Beta.
+
+- Cataclysm: Devour Magic (Felhunter) actually can't remove magic effects on friendly units
+
+- Cataclysm: Fix Priest Dispel Magic capabilities detection: Dispel Magic only
+  works on the player unless they are Holy
+
+- TOC updates
+
+
+Decursive 2.7.19 (2024-05-10)
+-----------------------------
+
+- Cataclysm: fix Druid Nature's Cure talent detection.
+
+- Show a checkbox in the main option panel when the MUF's handle was hidden
+  using the /dcr related command to make it easily visible again.
+
+- TOC update for 10.2.7
+
+
+Decursive 2.7.18 (2024-05-02)
+-----------------------------
+
+- Cataclysm compatibility update.
+ There might be some other necessary fixes, update [issue #23](https://github.com/2072/Decursive/issues/23)
+ on GitHub if you find anything.
+
+- Fix expired version false alert in Retail.
+
+- Update TOC for classic.
+
 
 Decursive 2.7.17 (2024-03-21)
 -----------------------------
@@ -81,10 +193,6 @@ Decursive 2.7.12 (2023-11-08)
 -----------------------------
 
 - TOC update for Retail
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.11 (2023-10-22)

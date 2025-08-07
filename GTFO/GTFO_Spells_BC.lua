@@ -63,6 +63,12 @@ GTFO.SpellID["30915"] = {
   ignoreApplication = true;
 };
 
+GTFO.SpellID["38463"] = {
+  --desc = "Poison (Broggok - Blood Furnace)";
+  sound = 1;
+  ignoreApplication = true;
+};
+
 GTFO.SpellID["40657"] = {
   --desc = "Ancient Flames (Terokk)";
   sound = 1;

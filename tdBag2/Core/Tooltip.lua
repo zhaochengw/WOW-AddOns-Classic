@@ -50,7 +50,6 @@ Tooltip.APIS = {
     'SetSendMailItem',
     'SetHyperlink',
     'SetTradeSkillItem',
-    'SetAction',
     'SetItemByID',
     'SetMerchantCostItem',
     'SetGuildBankItem',
@@ -58,6 +57,7 @@ Tooltip.APIS = {
     'SetSocketGem',
     'SetSocketedItem',
     SetCraftItem = true,
+    SetAction = true,
 }
 Tooltip.EMPTY = {}
 Tooltip.CACHED_EMPTY = {cached = true}
@@ -136,6 +136,19 @@ function Tooltip:SetCraftItem(tip, index, slot)
         return self:OnItem(tip, GetCraftItemLink(index))
     else
         return self:OnItem(tip, GetCraftReagentItemLink(index, slot))
+    end
+end
+
+function Tooltip:SetAction(tip, action)
+    local actionType, id = GetActionInfo(action)
+    local link, _
+    if actionType == 'item' then
+        _, link = GetItemInfo(id)
+    elseif actionType == 'macro' then
+        _, link = GetMacroItem(id)
+    end
+    if link then
+        return self:OnItem(tip, link)
     end
 end
 

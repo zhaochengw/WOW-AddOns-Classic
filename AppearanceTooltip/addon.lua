@@ -383,6 +383,7 @@ function ns:ShowItem(link, for_tooltip)
         for itemid, tclass, relevant in LAT:IterateItemsForToken(id) do
             found = found or itemid
             if relevant then
+                found = itemid -- make *sure* the item shown is a relevant one, if one exists
                 AddItemToTooltip(itemid, for_tooltip, tclass == class and class_colored or tclass)
             else
                 counts[tclass] = (counts[tclass] or 0) + 1
@@ -417,13 +418,14 @@ function ns:ShowItem(link, for_tooltip)
         if self.slot_facings[slot] and IsDressableItem(id) and (not db.currentClass or appropriateItem) then
             local model, cameraID
             local isHeld = self.slot_held[slot]
+            local shouldZoom = (db.zoomWorn and not isHeld) or (db.zoomHeld and isHeld)
             local appearanceID = C_TransmogCollection.GetItemInfo(link) or C_TransmogCollection.GetItemInfo(id)
 
             tooltip.model:Hide()
             tooltip.modelZoomed:Hide()
             tooltip.modelWeapon:Hide()
 
-            if (db.zoomWorn and not isHeld) or (db.zoomHeld and isHeld) then
+            if shouldZoom then
                 cameraID = appearanceID and C_TransmogCollection.GetAppearanceCameraID(appearanceID)
                 -- Classic Era always returns 0, in which case a non-truthy value gets better results:
                 if cameraID == 0 then cameraID = nil end
@@ -432,11 +434,6 @@ function ns:ShowItem(link, for_tooltip)
             if cameraID then
                 if isHeld then
                     model = tooltip.modelWeapon
-                    if appearanceID then
-                        model:SetItemAppearance(appearanceID)
-                    else
-                        model:SetItem(id)
-                    end
                 else
                     model = tooltip.modelZoomed
                     model:SetUseTransmogSkin(db.zoomMasked and slot ~= "INVTYPE_HEAD")
@@ -481,9 +478,17 @@ function ns:ShowItem(link, for_tooltip)
                     end
                 end
             end
-            C_Timer.After(0, function()
+
+            -- Finally set the item onto the model
+            if isHeld and shouldZoom then
+                if appearanceID then
+                    model:SetItemAppearance(appearanceID)
+                else
+                    model:SetItem(id)
+                end
+            else
                 model:TryOn(link)
-            end)
+            end
         else
             tooltip:Hide()
         end

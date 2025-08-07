@@ -455,6 +455,34 @@ GTFO.SpellID["296674"] = {
   ignoreApplication = true;
 };
 
+GTFO.SpellID["306752"] = {
+  --desc = "Defiled Ground (Thrall)";
+  ignoreApplication = true;
+  alwaysAlert = true;
+  negatingDebuffSpellID = 306828; -- Defiled Ground (stun)
+  sound = 1;
+};
+
+GTFO.SpellID["305720"] = {
+  --desc = "Toxic Residue (Misha)";
+  ignoreApplication = true;
+  alwaysAlert = true;
+  sound = 1;
+};
+
+GTFO.SpellID["305892"] = {
+  --desc = "Visceral Fluid (Coagulated Horror)";
+  sound = 1;
+  alwaysAlert = true;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["303594"] = {
+  --desc = "Sanguine Residue (Coagulated Horror)";
+  ignoreApplication = true;
+  sound = 1;
+  alwaysAlert = true;
+};
 
 
 -- ***********************
@@ -529,6 +557,7 @@ GTFO.SpellID["268086"] = {
 
 GTFO.SpellID["257274"] = {
   --desc = "Vile Coating";
+  ignoreApplication = true;
   sound = 1;
 };
 
@@ -754,6 +783,7 @@ GTFO.SpellID["270891"] = {
 GTFO.SpellID["270931"] = {
   --desc = "Darkshot";
   sound = 1;
+  ignoreApplication = true;
 };
 
 GTFO.SpellID["270503"] = {
@@ -774,6 +804,7 @@ GTFO.SpellID["270928"] = {
 GTFO.SpellID["270292"] = {
   --desc = "Purifying Flame";
   sound = 1;
+  ignoreApplication = true;
 };
 
 GTFO.SpellID["271564"] = {

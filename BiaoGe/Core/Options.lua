@@ -289,7 +289,7 @@ BG.Init(function()
                 slider.Text:SetText(text)
                 slider.Text:SetTextColor(1, .8, 0)
 
-                slider.edit = CreateFrame("EditBox", nil, slider, "InputBoxTemplate")
+                slider.edit = CreateFrame("EditBox", nil, slider, "BiaoGe_InputBoxTemplate")
                 slider.edit:SetSize(50, 20)
                 slider.edit:SetPoint("TOP", slider, "BOTTOM")
                 slider.edit:SetJustifyH("CENTER")
@@ -1385,7 +1385,7 @@ BG.Init(function()
                 text:SetPoint("TOPLEFT", BG.options.buttonQingKongPeople, "BOTTOMRIGHT", 0, -5)
                 text:SetText(L["|cffFFFFFF10人团本分钱人数：|r"])
 
-                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(50, 20)
                 edit:SetPoint("LEFT", text, "RIGHT", 5, 0)
                 edit:SetJustifyH("CENTER")
@@ -1402,7 +1402,7 @@ BG.Init(function()
                 text:SetPoint("LEFT", edit, "RIGHT", 40, 0)
                 text:SetText(L["|cffFFFFFF25人团本分钱人数：|r"])
 
-                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(50, 20)
                 edit:SetPoint("LEFT", text, "RIGHT", 5, 0)
                 edit:SetJustifyH("CENTER")
@@ -1967,7 +1967,7 @@ BG.Init(function()
             end)
 
             local function CreateEdit(i)
-                local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(80, 20)
                 if i == 1 then
                     edit:SetPoint("TOPLEFT", f, "BOTTOMRIGHT", 5, 0)
@@ -2190,7 +2190,7 @@ BG.Init(function()
                 end
             end)
 
-            edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(80, 20)
             edit:SetPoint("LEFT", f.Text, "RIGHT", 15, 0)
             edit:SetAutoFocus(false)
@@ -2487,7 +2487,7 @@ BG.Init(function()
 
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange * 3
-            elseif BG.IsCTM or BG.IsMOP then
+            elseif BG.IsCTM then
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
@@ -2495,6 +2495,57 @@ BG.Init(function()
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
                 height = CreateFBCDbutton(1, #BG.FBCDall_table - 34, width, height, 100, height_jiange)
+
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText(BG.STC_b1(EXPANSION_NAME2 .. "*"))
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(#BG.FBCDall_table - 33, #BG.FBCDall_table - 14, width, height, 100, height_jiange)
+
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText(BG.STC_r3(EXPANSION_NAME1 .. "*"))
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(#BG.FBCDall_table - 15, #BG.FBCDall_table - 5, width, height, 100, height_jiange)
+
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText(BG.STC_g2(LFG_LIST_LEGACY .. "*"))
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(#BG.FBCDall_table - 4, #BG.FBCDall_table, width, height, 100, height_jiange)
+
+                -- 货币
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText(BG.STC_w1(L["货币*"]))
+                height = height - height_jiange
+                local l = O.CreateLine(roleOverview, height + line_height)
+
+                height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
+                height = height - height_jiange * 3
+            elseif BG.IsMOP then
+                --团本CD
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText("|cff00FF00" .. EXPANSION_NAME4 .. "*")
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(1, #BG.FBCDall_table - 41, width, height, 100, height_jiange)
+
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText("|cffFF4500" .. EXPANSION_NAME3 .. "*")
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(#BG.FBCDall_table - 40, #BG.FBCDall_table - 34, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2742,7 +2793,7 @@ BG.Init(function()
             t:SetTextColor(1, 1, 1)
             t:SetText(L["不显示低于该等级的角色："])
 
-            local edit = CreateFrame("EditBox", nil, roleOverview, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, roleOverview, "BiaoGe_InputBoxTemplate")
             edit:SetSize(50, 20)
             edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
             edit:SetText(BiaoGe.options[name] or 0)
@@ -2768,7 +2819,7 @@ BG.Init(function()
             t:SetTextColor(1, 1, 1)
             t:SetText(L["不显示低于该装等的角色："])
 
-            local edit = CreateFrame("EditBox", nil, roleOverview, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, roleOverview, "BiaoGe_InputBoxTemplate")
             edit:SetSize(50, 20)
             edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
             edit:SetText(BiaoGe.options[name] or 0)

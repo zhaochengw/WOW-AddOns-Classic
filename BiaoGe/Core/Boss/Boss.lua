@@ -158,7 +158,7 @@ BG.Init(function()
             t:SetText(L["该BOSS攻略提供：@祈福-太乙公会 大树\n点击复制NGA攻略地址"])
             f:SetSize(t:GetStringWidth(), t:GetStringHeight())
 
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(400, 20)
             edit:SetPoint("TOPRIGHT", f, "BOTTOMRIGHT", -2, 0)
             edit:SetText("https://bbs.nga.cn/read.php?tid=37708565")

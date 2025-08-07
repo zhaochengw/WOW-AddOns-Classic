@@ -1051,7 +1051,8 @@ BG.Init(function()
             bt.Text:SetText(L["工资抹零"])
             bt.Text:SetTextColor(RGB(BG.b1))
             bt.Text:ClearAllPoints()
-            bt.Text:SetPoint("TOPLEFT", bt:GetParent(), "BOTTOMLEFT", 3, -1)
+            bt.Text:SetHeight(20)
+            bt.Text:SetPoint("TOPLEFT", bt:GetParent(), "BOTTOMLEFT", 3, 0)
             bt:SetPoint("LEFT", bt.Text, "RIGHT", 0, -1)
             bt:SetHitRectInsets(-bt.Text:GetWidth(), 0, 0, 0)
             bt.name = name
@@ -1223,7 +1224,7 @@ BG.Init(function()
             BG.UpdateHopeFrame_IsLooted_All()
 
             -- 装备库
-            BG.itemLibNeedUpdate=true
+            BG.itemLibNeedUpdate = true
             if BG.ItemLibMainFrame:IsShown() then
                 local samePhaseFB
                 for k, _FB in pairs(BG.phaseFBtable[lastClickFB]) do
@@ -1244,7 +1245,7 @@ BG.Init(function()
                 end
             end
             lastClickFB = BG.FB1
-            
+
             if BG.lastduizhangNum then
                 BG.DuiZhangSet(BG.lastduizhangNum)
             end
@@ -1275,7 +1276,6 @@ BG.Init(function()
             else
                 bt:SetPoint("LEFT", last, "RIGHT", 0, 0)
             end
-            -- bt:SetText(BG.GetFBinfo(FB, "localName"))
             bt:SetText(shortName or BG.GetFBinfo(FB, "localName"))
             local t = bt:GetFontString()
             bt:SetWidth(t:GetStringWidth() + (shortName and 10 or 20))
@@ -2385,10 +2385,11 @@ BG.Init(function()
                 if not (BiaoGe.clearBiaoGeMoney and BiaoGe.clearBiaoGeMoney[FB]) then
                     f:Hide()
                 else
-                    local jine = BG.Frame[FB]["boss" .. Maxb[FB] + 2].jine5
+                    local zhuangbei = BG.Frame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5
+                    local scroll = BG["Frame" .. FB]["scrollFrame" .. Maxb[FB] + 2].owner
                     f:Show()
                     f:ClearAllPoints()
-                    f:SetPoint("TOPLEFT", jine, "BOTTOMLEFT", 0, -2)
+                    f:SetPoint("TOPLEFT", scroll, "BOTTOMLEFT", zhuangbei:GetWidth() + 10, 0)
                     f.Text:SetText(BiaoGe.clearBiaoGeMoney[FB].money)
                     if BiaoGe.clearBiaoGeMoney[FB].realmID == realmID and BiaoGe.clearBiaoGeMoney[FB].name == player then
                         f.Text:SetTextColor(1, .82, 0)
@@ -2399,7 +2400,7 @@ BG.Init(function()
                     end
                 end
             end
-
+            
             local jine = BG.Frame[BG.FB1]["boss" .. Maxb[BG.FB1] + 2].jine5
             local f = CreateFrame("Frame", nil, BG.FBMainFrame, "BackdropTemplate")
             f:SetSize(jine:GetWidth(), 20)
@@ -2674,7 +2675,7 @@ BG.Init(function()
                     if BiaoGe.options.addonsOutTime == 1 then
                         local _, version = strsplit("-", msg)
                         if VerGuoQi(BG.ver, version) then
-                            SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] .. RR, BG.STC_r1(BG.ver)))
+                            -- SendSystemMessage("|cff00BFFF" .. format(L["< BiaoGe > 你的当前版本%s已过期，请更新插件。"] .. RR, BG.STC_r1(BG.ver)))
                             BG.VerText:SetTextColor(1, 0, 0)
                             close = true
                         end
@@ -2816,20 +2817,6 @@ do
         C_Timer.After(0.5, function()
             BG.UpdateRaidRosterInfo()
         end)
-    end)
-
-    C_Timer.NewTicker(3, function() -- 每3秒执行一次
-        if not BG.raidRosterInfo or not BG.groupRosterInfo then return end
-        local num = GetNumGroupMembers(1)
-        local max
-        if IsInRaid(1) then
-            max = #BG.raidRosterInfo
-        elseif IsInGroup(1) then
-            max = #BG.groupRosterInfo
-        end
-        if tonumber(num) and tonumber(max) and tonumber(num) ~= tonumber(max) then
-            BG.UpdateRaidRosterInfo()
-        end
     end)
 end
 

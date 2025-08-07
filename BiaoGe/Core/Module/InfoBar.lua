@@ -662,8 +662,8 @@ BG.Init(function()
                     if tbl[i]:find(realmName, 1, true) then
                         tbl[i] = BG.STC_g1(tbl[i])
                     end
-                    if not same[tbl[i]] then
-                        same[tbl[i]] = true
+                    if not same[tbl[i] ] then
+                        same[tbl[i] ] = true
                     else
                         remove[i] = true
                     end

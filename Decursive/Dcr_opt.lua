@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.17) add-on for World of Warcraft UI
-    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.27) add-on for World of Warcraft UI
+    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2024-02-19T03:51:57Z
+    This file was last updated on 2025-03-16T19:58:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -56,6 +56,28 @@ T._LoadedFiles["Dcr_opt.lua"] = false;
 
 local D = T.Dcr;
 
+local function RegisterClassLocals_Once() -- {{{
+
+
+    -- Make sure to never crash if some locals are missing (seen this happen on
+    -- Chinese clients when relying on LOCALIZED_CLASS_NAMES_MALE constant)
+    -- While that was probably caused by a badd-on redefining the constant,
+    -- it's best to stay on the safe side...
+
+    local localizedClasses = {};
+
+    D:tcopy(localizedClasses, LocalizedClassList and LocalizedClassList(false) or FillLocalizedClassList({}, false));
+
+
+    -- D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)(false), {__index = function(t,k) return k end});
+    D.LC = setmetatable(localizedClasses, {__index = function(t,k) return k end});
+
+    RegisterLocals_Once = nil;
+end -- }}}
+
+T._CatchAllErrors = "RegisterClassLocals_Once";      RegisterClassLocals_Once();
+
+
 local L  = D.L;
 local LC = D.LC;
 local DC = T._C;
@@ -74,9 +96,10 @@ local abs               = _G.math.abs;
 local GetNumRaidMembers = DC.GetNumRaidMembers;
 local GetNumPartyMembers= _G.GetNumSubgroupMembers;
 local InCombatLockdown  = _G.InCombatLockdown;
-local GetSpellBookItemInfo = _G.GetSpellBookItemInfo;
-local GetSpellInfo      = _G.GetSpellInfo;
-local GetSpellDescription = _G.GetSpellDescription;
+local GetItemInfo           = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
+local GetSpellInfo          = _G.C_Spell and _G.C_Spell.GetSpellInfo or _G.GetSpellInfo;
+local GetSpellName          = _G.C_Spell and _G.C_Spell.GetSpellName or function (spellId) return (GetSpellInfo(spellId)) end;
+local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
 local GetSpecialization = _G.GetSpecialization or (GetActiveTalentGroup or function () return nil; end);
 local GetAddOnMetadata  = _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata;
 local _;
@@ -187,7 +210,7 @@ function D:GetDefaultsSettings()
             MFScanEverybodyTimer = 1,
             MFScanEverybodyReport = false,
             --[=[@alpha@
-            MFScanEverybodyReport = true,
+            -- MFScanEverybodyReport = true, -- UNdebuff is triggered very often, not sure when. No more need for reporting though.
             --@end-alpha@]=]
 
             delayedDebuffOccurences = 0,
@@ -587,11 +610,11 @@ local function GetStaticOptions ()
         if tonumber(v) then
             v = tonumber(v);
             -- test if it's valid
-            if not (GetSpellInfo(v)) and not (GetItemInfo(v)) then
+            if not GetSpellName(v) and not (GetItemInfo(v)) then
                 return error(L["OPT_INPUT_SPELL_BAD_INPUT_ID"]);
             end
 
-            isItem = not (GetSpellInfo(v));
+            isItem = not GetSpellName(v);
 
         elseif D:GetSpellFromLink(v) then
             -- We got a spell link!
@@ -600,12 +623,12 @@ local function GetStaticOptions ()
             -- We got a item link!
             isItem = true;
             v = D:GetItemFromLink(v);
-        elseif type(v) == 'string' and (GetSpellBookItemInfo(v)) then -- not a number, not a spell link, then a spell name?
+        elseif type(v) == 'string' and (D:GetSpellUsefulInfoIfKnown(v)) then -- not a number, not a spell link, then a spell name?
             -- We got a spell name!
-            D:Debug(v, "is a spell name in our book:", GetSpellBookItemInfo(v));
-            local SPItype, id = GetSpellBookItemInfo(v);
+            D:Debug(v, "is a spell name in our book:", D:GetSpellUsefulInfoIfKnown(v));
+            local id, isPet = D:GetSpellUsefulInfoIfKnown(v);
             v = id;
-            isPetAbility = SPItype == "PETACTION" and true or false;
+            isPetAbility = isPet;
         elseif type(v) == 'string' and (GetItemInfo(v)) then
             D:Debug(v, "is a item name:", GetItemInfo(v));
             -- We got an item name!
@@ -615,8 +638,8 @@ local function GetStaticOptions ()
             return error(L["OPT_INPUT_SPELL_BAD_INPUT_NOT_SPELL"]);
         end
 
-        if not isItem and v > 0xffffff then
-            v = bit.band(0xffffff, v); -- XXX does not seem to yield the expected results in wotlk for pet spells...
+        if not isItem and v > 0xfffff then
+            v = bit.band(0xfffff, v);
         end
 
         -- avoid spellID/itemID collisions
@@ -672,16 +695,16 @@ local function GetStaticOptions ()
                 type = 'toggle',
                 name = L["OPT_HIDEMUFSHANDLE"],
                 desc = L["OPT_HIDEMUFSHANDLE_DESC"],
-                guiHidden = true,
+                guiHidden = D.profile and not D.profile.HideMUFsHandle,
                 disabled = function() return not D:IsEnabled() or not D.profile.ShowDebuffsFrame and D.profile.AutoHideMUFs == 1; end,
                 get = function(info) return not D.MFContainerHandle:IsMouseEnabled(); end,
                 order = -4,
             },
             debug = {
                 type = "toggle",
+                guiHidden = not D.debug,
                 name = L["OPT_ENABLEDEBUG"],
                 desc = L["OPT_ENABLEDEBUG_DESC"],
-                guiHidden = true,
                 order = -5,
             },
             -- Atticus Ross rules!
@@ -1940,7 +1963,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.17", "John Wellesz", ("2024-03-21T03:38:23Z"):sub(1,10),
+                                    "2.7.27", "John Wellesz", ("2025-03-17T01:25:10Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2020,7 +2043,7 @@ local function GetOptions()
     options.args.general.args.profiles.hidden = function() return not D:IsEnabled(); end;
     options.args.general.args.profiles.disabled = function() return D.Status.Combat or not D:IsEnabled(); end;
 
-    if DC.WOTLK or not DC.WOWC then
+    if DC.CATACLYSM or not DC.WOWC then
         -- Add dual-spec support
         local LibDualSpec = LibStub('LibDualSpec-1.0');
         LibDualSpec:EnhanceDatabase(D.db, "DecursiveDB");
@@ -2090,7 +2113,7 @@ function D:SetCureCheckBoxNum (Type, checkBox)
 end
 
 function D:GetCureOrderTable ()
-    local activeSpec = nil; -- GetSpecialization();
+    local activeSpec = GetActiveTalentGroup();
     local generalCureOrder = D.classprofile.CureOrder;
 
     if not activeSpec or activeSpec == 5 then
@@ -2129,7 +2152,7 @@ function D:CheckCureOrder ()
         [DC.BLEED]          = 7,
     };
     local AuthorizedValues = {
-        [false] = true; -- LOL Yes, it's TRUE tnat FALSE is an authorized value xD
+        [false] = true; -- LOL Yes, it's TRUE that FALSE is an authorized value xD
         -- Other <0  values are used when there used to be a spell...
         [1]     = DC.ENEMYMAGIC,
         [-11]   = DC.ENEMYMAGIC,
@@ -2216,7 +2239,7 @@ function D:SetCureOrder (ToChange)
 
    -- take care of the lost spells here
    -- Sort the lost spells so that they can be read in the correct order
-   LostSpells =  D:tSortUsingKeys(LostSpells);
+   LostSpells = D:tSortUsingKeys(LostSpells);
 
    -- Place the lost spells after the found ones but with <0 values so they
    -- can be readded later using their former priorities
@@ -2300,7 +2323,7 @@ function D:SetCureOrder (ToChange)
         D:SetIcon(DC.IconOFF);
     end
 
-
+    self:SetMacrosPerPrioTable("mouseover");
 
 end
 
@@ -2446,7 +2469,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
                 --D:Debug("Dealing with spell description for ", spellID);
                 if spellID ~= 0 then
-                    if spellDesc == "" then
+                    if spellDesc == "" or not spellDesc then
                         if not C_Spell.IsSpellDataCached(spellID) then
                             C_Spell.RequestLoadSpellData(spellID);
                             desc = L["OPT_SPELL_DESCRIPTION_LOADING"];
@@ -2578,7 +2601,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
     end
 
     local AddFunc = function (spellID)
-        local newDebuff = GetSpellInfo(spellID);
+        local newDebuff = GetSpellName(spellID);
         if newDebuff then
             DebuffsSkipList[newDebuff] = spellID;
             D:Debug("'%s' added to debuff skip list", newDebuff, spellID);
@@ -2647,7 +2670,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
                 if spellID ~= 0 and not C_Spell.DoesSpellExist(spellID) then
                     RemoveFunc({["Debuff"] = debuffName});
                 else
-                    realName = (GetSpellInfo(spellID));
+                    realName = GetSpellName(spellID);
                     if realName and realName ~= debuffName then
                         DebuffsSkipList[debuffName] = nil;
                         DebuffsSkipList[realName] = spellID;
@@ -2669,7 +2692,7 @@ do -- All this block predates Ace3, it could be recoded in a much more effecicen
 
                         D:Print((L["OPT_FILTERED_DEBUFF_RENAMED"]):format(debuffName, realName, spellID));
                     elseif not realName then
-                        D:Debug(realName, "no name for spell ID", spellID, (GetSpellInfo(spellID)))
+                        D:Debug(realName, "no name for spell ID", spellID, GetSpellName(spellID))
                     end
                 end
             end
@@ -3749,6 +3772,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.17";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.27";
 
 -- Closer

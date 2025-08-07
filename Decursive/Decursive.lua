@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.17) add-on for World of Warcraft UI
-    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.27) add-on for World of Warcraft UI
+    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2024-02-19T03:51:57Z
+    This file was last updated on 2025-03-16T19:58:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -402,12 +402,31 @@ end
 do
 
     local D                 = D;
+    local C_UnitAuras       = _G.C_UnitAuras
 
-    local UnitDebuff        = _G.UnitDebuff;
+    local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i);
+
+        if not auraData then
+			return nil;
+		end
+
+        return auraData.name,
+		auraData.icon,
+		auraData.applications,
+		auraData.dispelName,
+		auraData.duration,
+		auraData.expirationTime,
+		nil,
+		nil,
+		nil,
+		auraData.spellId;
+    end
+
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
     local GetTime           = _G.GetTime;
-    local GetSpellDescription  = _G.GetSpellDescription;
+    local GetSpellDescription = _G.C_Spell and _G.C_Spell.GetSpellDescription or _G.GetSpellDescription;
     local IsSpellDataCached    = _G.C_Spell.IsSpellDataCached
     local RequestLoadSpellData = _G.C_Spell.RequestLoadSpellData
 
@@ -518,6 +537,9 @@ do
             -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
+            elseif DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
+                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                Type = DC.NameToTypes[TypeName]
             elseif self.Status.CuringSpells[DC.BLEED] then
                 checkSpellIDForBleed();
                 if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
@@ -807,10 +829,10 @@ do
 
                     if (not self.Status.delayedDebuffReportDisabled) and self.db.global.MFScanEverybodyReport then
                         if IsDebuffed then
-                            self:AddDebugText("delayed debuff found by scaneveryone", Unit, Debuffs[1].Name);
+                            self:AddDebugText("delayed debuff found by scaneveryone (you can disable this error by unchecking the `Periodic scan debug reporting` option in the MUFs performance options - see Decursive 2.7.16 release notes)", Unit, Debuffs[1].Name);
                             --D:ScheduleDelayedCall("Dcr_lateanalysis" .. Unit, self.MicroUnitF.LateAnalysis, 1, self.MicroUnitF, "ScanEveryone", Debuffs, MUF, MUF.UnitStatus);
                         else
-                            self:AddDebugText("delayed UNdebuff found by scaneveryone on", Unit, MUFDebuffName, IsDebuffed, IsMUFDebuffed, MUF.UnitStatus);
+                            self:AddDebugText("delayed UNdebuff found by scaneveryone (you can disable this error by unchecking the `Periodic scan debug reporting` option in the MUFs performance options - see Decursive 2.7.16 release notes)", Unit, MUFDebuffName, IsDebuffed, IsMUFDebuffed, MUF.UnitStatus);
                         end
                     else
                         self:Debug("delayed buff found but no-report is set")
@@ -929,6 +951,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.17";
+T._LoadedFiles["Decursive.lua"] = "2.7.27";
 
 -- Sin

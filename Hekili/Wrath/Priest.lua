@@ -9,7 +9,8 @@ local spec = Hekili:NewSpecialization( 5 )
 -- Sets
 spec:RegisterGear( "tier7", 39521, 39530, 39529, 39528, 39523, 40456, 40454, 40459, 40457, 40458 )
 spec:RegisterGear( "tier9", 48755, 48756, 48757, 48758, 48759, 48078, 48077, 48081, 48079, 48080, 48085, 48086, 48082, 48084, 48083 )
-spec:RegisterGear( "tier10", 51259, 51257, 51256, 51255, 51258, 51181, 51180, 51182, 51183, 51184, 51741, 51740, 51739, 51738, 51737 )
+spec:RegisterGear( "tier10", 51259, 51257, 51256, 51255, 51258, 51181, 51180, 51182, 51183, 51184, 50392, 50396, 50391, 50393, 50394 ) 
+--加入251T10套装 by风雪 20250731
 
 -- Resources
 spec:RegisterResource( Enum.PowerType.Mana )
@@ -516,7 +517,7 @@ spec:RegisterAuras( {
         duration = 1800,
         max_stack = 1,
     },
-    -- $s2 Shadow damage every $t2 seconds. Priest's party or raid members gain 1% of their maximum mana per 5 sec when the priest deals damage from Mind Blast.
+    -- 吸血鬼之触$s2 Shadow damage every $t2 seconds. Priest's party or raid members gain 1% of their maximum mana per 5 sec when the priest deals damage from Mind Blast.
     vampiric_touch = {
         id = 34914,
         duration = function() return ( 15 + ( set_bonus.tier9_2pc == 1 and 6 or 0 ) ) * ( buff.shadowform.up and spell_haste or 1 ) end,
@@ -1718,7 +1719,7 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Causes 450 Shadow damage over 15 sec to your target and causes up to 10 party or raid members to gain 1% of their maximum mana per 5 sec when you deal damage from Mind Blast. In addition, if the Vampiric Touch is dispelled it will cause 720 damage to the afflicted target.
+    -- 吸血鬼之触Causes 450 Shadow damage over 15 sec to your target and causes up to 10 party or raid members to gain 1% of their maximum mana per 5 sec when you deal damage from Mind Blast. In addition, if the Vampiric Touch is dispelled it will cause 720 damage to the afflicted target.
     vampiric_touch = {
         id = 34914,
         cast = function() return 1.5 * haste end,
@@ -1738,6 +1739,9 @@ spec:RegisterAbilities( {
             end
             applyDebuff( "target", "vampiric_touch" )
         end,
+
+        copy = { 34914, 34916, 34917, 48159, 48160 }, --添加高等级技能，by风雪 20250731
+
     },
 } )
 

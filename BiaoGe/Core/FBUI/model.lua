@@ -312,7 +312,7 @@ function BG.CreateBossModel()
         model:SetFacing(0)
         model:SetPitch(0)
         model:SetRoll(0)
-    elseif BG.IsCTM or BG.IsMOP then
+    elseif BG.IsCTM then
         local model = CreateBossModel("BOT", 5, 40, 110, 45213, 0.7)
         model:SetPosition(-2, 0, 0) -- Z,X,Y
         model:SetFacing(-0.1)       -- 左右
@@ -343,7 +343,7 @@ function BG.CreateBossModel()
         model:SetPitch(0)              -- 上下
         model:SetRoll(0)               -- 倾斜
         -- CreateAllTestButton(model)
-        if BG.IsMOP then
+    elseif BG.IsMOP then
             local model = CreateBossModel("MSV", 6, 0, 0, 60400, .55)
             model:SetPosition(-0, 0, 0) -- Z,X,Y
             model:SetFacing(0)          -- 左右
@@ -362,7 +362,6 @@ function BG.CreateBossModel()
             model:SetPitch(0)              -- 上下
             model:SetRoll(0)               -- 倾斜
             -- CreateAllTestButton(model)
-        end
     elseif BG.IsRetail then
         local model = CreateBossModel("NP", 8, 0, -10, 219778, 0.6)
         model:SetPosition(-0, 0, 0) -- Z,X,Y

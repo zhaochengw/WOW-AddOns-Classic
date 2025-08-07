@@ -141,6 +141,59 @@ BG.Init(function()
             if not BG.tradeSeeFrame.CheckButton:GetChecked() then
                 return returntext
             end
+            local qiankuan = 0
+            if BG.tradeQianKuanEdit and tonumber(BG.tradeQianKuanEdit:GetText()) then
+                qiankuan = qiankuan + tonumber(BG.tradeQianKuanEdit:GetText())
+            end
+            local qiankuantext = ""
+            if qiankuan ~= 0 then
+                qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, qiankuan)
+            end
+            if BG.tradeSeeFrame.fakuanButton.isChoose and (targetmoney ~= 0 or playermoney ~= 0) then
+                local Player, Money
+                if targetmoney ~= 0 then
+                    Player = target
+                    Money = targetmoney
+                elseif playermoney ~= 0 then
+                    Player = player
+                    Money = playermoney
+                end
+                returntext = (format("|cff00BFFF" ..
+                    L["< 交易记账成功 >|r\n项目：|cffff0000罚款|r\n玩家：%s\n金额：%s%d|rg"],
+                    SetClassCFF(Player), "|cffFFD700",
+                    Money + qiankuan,
+                    qiankuantext))
+                if saved then
+                    local hasGZ
+                    BG.PairFBItem(function(item, buyer, money, b, i)
+                        if item:GetText() == "" and buyer:GetText() == "" and money:GetText() == ""
+                            and not BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
+                            hasGZ = true
+                            local _r, _g, _b = GetClassRGB(Player)
+                            item:SetText(L["罚款"])
+                            buyer:SetText(Player)
+                            buyer:SetTextColor(_r, _g, _b)
+                            money:SetText(Money + qiankuan)
+                            BiaoGe[FB]["boss" .. b]["zhuangbei" .. i] = L["罚款"]
+                            BiaoGe[FB]["boss" .. b]["maijia" .. i] = Player
+                            BiaoGe[FB]["boss" .. b]["jine" .. i] = Money + qiankuan
+                            for k, v in pairs(BG.playerClass) do
+                                BiaoGe[FB]["boss" .. b][k .. i] = select(v.select, v.func(Player))
+                            end
+                            if qiankuan ~= 0 then
+                                BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = qiankuan
+                                BG.Frame[FB]["boss" .. b]["qiankuan" .. i]:Show()
+                            end
+                            return true
+                        end
+                    end, Maxb[FB])
+                    if not hasGZ then
+                        returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["罚款格子满了。。"])
+                        BG.PlaySound("fakuanFull")
+                    end
+                end
+                return returntext
+            end
             -- 双方都给出装备
             if targetitems[1] and playeritems[1] and targetmoney == 0 and playermoney == 0 then --双方都有装备，但没金额，这种是交易失败
                 returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["双方都给了装备，但没金额"] .. NN .. L["我不知道谁才是买家"] .. NN .. NN .. L["如果有金额我就能识别了"])
@@ -205,15 +258,6 @@ BG.Init(function()
             end
 
             -- 非自动拍卖的记账
-            local qiankuan = 0
-            if BG.tradeQianKuanEdit and tonumber(BG.tradeQianKuanEdit:GetText()) then
-                qiankuan = qiankuan + tonumber(BG.tradeQianKuanEdit:GetText())
-            end
-            local qiankuantext = ""
-            if qiankuan ~= 0 then
-                qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, qiankuan)
-            end
-
             local Items, Money, Items2, Money2, Player
             for ii = 1, 2 do
                 if ii == 1 then -- 玩家给出金额，得到装备（玩家买装备情景）:1、双方都有装备，但玩家出了金
@@ -333,7 +377,7 @@ BG.Init(function()
             f:EnableMouse(true)
             f:SetFrameLevel(TradeRecipientMoneyBg:GetFrameLevel() + 10)
 
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(90, 20)
             edit:SetPoint("RIGHT", -5, 0)
             edit:SetText("")
@@ -1087,12 +1131,14 @@ BG.Init(function()
                     BG.tradeSeeFrame.CheckButton:SetChecked(true)
                     BG.tradeSeeFrame.text:SetText("")
                 end
+                BG.tradeSeeFrame.fakuanButton:Reset()
             end
 
             function BG.tradeSeeFrame.frame:Update()
                 self:Hide()
                 if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["tradePreview"] == 1 and IsInRaid(1) then
                     self:Show()
+                    BG.tradeSeeFrame.fakuanButton:UpdateShow()
                     BG.tradeSeeFrame.text:SetText(BG.GetTradeSeeText())
                 end
             end
@@ -1131,8 +1177,42 @@ BG.Init(function()
             BG.tradeSeeFrame.CheckButton = bt
             bt:SetScript("OnClick", function(self)
                 BG.PlaySound(1)
+                BG.tradeSeeFrame.fakuanButton:UpdateShow()
                 BG.tradeSeeFrame.frame:Update()
             end)
+        end
+
+        -- 交易记录罚款
+        do
+            local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
+            bt:SetSize(25, 25)
+            bt.Text:SetText(L["本次交易记为罚款"])
+            bt:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.CheckButton, "TOPLEFT", 0, 0)
+            bt:SetHitRectInsets(0, -bt.Text:GetWidth(), 0, 0)
+            BG.tradeSeeFrame.fakuanButton = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                self.isChoose = self:GetChecked()
+                BG.tradeSeeFrame.frame:Update()
+            end)
+
+            function BG.tradeSeeFrame.fakuanButton:UpdateShow()
+                self:Show()
+                self.isChoose = self:GetChecked()
+                if not BG.tradeSeeFrame.CheckButton:GetChecked() or
+                    next(BG.trade.targetitems) or next(BG.trade.playeritems) then
+                    self:Hide()
+                    self:SetChecked(false)
+                    self.isChoose = false
+                    return
+                end
+            end
+
+            function BG.tradeSeeFrame.fakuanButton:Reset()
+                self.isChoose = false
+                self:SetChecked(false)
+                self:Show()
+            end
         end
     end
 

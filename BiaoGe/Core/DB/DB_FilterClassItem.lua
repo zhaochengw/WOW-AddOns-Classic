@@ -246,7 +246,7 @@ BG.Init(function()
                     { name = "法术强度", value = ITEM_MOD_SPELL_POWER_SHORT },
                     -- { name = "副手物品", value = INVTYPE_HOLDABLE, onenter = L["这里是指法系的副手，不是物理dps的副手武器"] },
                 }
-            elseif BG.IsCTM or BG.IsMOP then
+            else
                 BG.FilterClassItemDB.ShuXing = {
                     { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
                     { name = "敏捷", value = "%+%C-" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
@@ -318,7 +318,7 @@ BG.Init(function()
                 ["PRIEST" .. "1"] = n1,        -- MS
                 ["PRIEST" .. "2"] = fx1,       -- AM
 
-                ["MONK" .. "1"] = t3,          -- 酒仙
+                ["MONK" .. "1"] = t2,          -- 酒仙
                 ["MONK" .. "2"] = n1,          -- 织雾
                 ["MONK" .. "3"] = dps2,        -- 踏风
             }
@@ -832,6 +832,9 @@ BG.Init(function()
                 STAT_DODGE,
                 STAT_BLOCK,
             }
+            if BG.IsCTM or BG.IsMOP then
+                tinsert(BG.FilterClassItem_Default.TankKey, STAT_MASTERY)
+            end
 
             BG.FilterClassItem_Default[type] = {
                 ["DEATHKNIGHT" .. "1"] = { "过滤坦克" }, -- 血DK

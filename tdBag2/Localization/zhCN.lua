@@ -158,6 +158,11 @@ L['Item level color'] = '物品等级颜色'
 L.Light = '亮色'
 L['Quality by blizzard'] = '暴雪品质颜色'
 L.White = '白色'
+L['Bag break type'] = '背包打散方式'
+L['Break height'] = '打散间隔高度'
+L['By bag'] = '以容器'
+L['By type'] = '以容器类型'
+L.None = '无'
 -- @locale-fill@
 
 -- @end-import@

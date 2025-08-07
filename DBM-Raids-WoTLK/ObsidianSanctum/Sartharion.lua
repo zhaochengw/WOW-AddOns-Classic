@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25"
 
-mod:SetRevision("20241116133824")
+mod:SetRevision("20250720212401")
 mod:SetCreatureID(28860)
 mod:SetEncounterID(1090)
 mod:SetModelID(27035)
@@ -13,8 +13,6 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 57579 59127",
-	"SPELL_AURA_APPLIED 57491",
-	"SPELL_DAMAGE 59128",
 	"RAID_BOSS_EMOTE"
 )
 
@@ -27,8 +25,6 @@ local warnFireWall			= mod:NewSpecialWarning("WarningFireWall", nil, nil, nil, 2
 local warnVesperonPortal	= mod:NewSpecialWarning("WarningVesperonPortal", false, nil, nil, 1, 7)
 local warnTenebronPortal	= mod:NewSpecialWarning("WarningTenebronPortal", false, nil, nil, 1, 7)
 local warnShadronPortal		= mod:NewSpecialWarning("WarningShadronPortal", false, nil, nil, 1, 7)
-
-mod:AddBoolOption("AnnounceFails", false, "announce")
 
 local timerShadowFissure    = mod:NewCastTimer(5, 59128, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--Cast timer until Void Blast. it's what happens when shadow fissure explodes.
 local timerWall             = mod:NewCDTimer(30, 43113, nil, nil, nil, 2)
@@ -74,52 +70,12 @@ function mod:OnCombatStart(delay)
 	twipe(lastfire)
 end
 
-function mod:OnCombatEnd(wipe)
-	if not self.Options.AnnounceFails then return end
-	if DBM:GetRaidRank() < 1 or not self.Options.Announce or not IsInGroup() then return end
-	local channel = IsInRaid() and "RAID" or "PARTY"
-	local voids = ""
-	for k, v in pairs(lastvoids) do
-		tinsert(sortedFails, k)
-	end
-	tsort(sortedFails, sortFails1)
-	for i, v in ipairs(sortedFails) do
-		voids = voids.." "..v.."("..(lastvoids[v] or "")..")"
-	end
-	SendChatMessage(L.VoidZones:format(voids), channel)
-	twipe(sortedFails)
-	local fire = ""
-	for k, v in pairs(lastfire) do
-		tinsert(sortedFails, k)
-	end
-	tsort(sortedFails, sortFails2)
-	for i, v in ipairs(sortedFails) do
-		fire = fire.." "..v.."("..(lastfire[v] or "")..")"
-	end
-	SendChatMessage(L.FireWalls:format(fire), channel)
-	twipe(sortedFails)
-end
-
 function mod:SPELL_CAST_SUCCESS(args)
     if args:IsSpellID(57579, 59127) and self:AntiSpam(3, 1) then
         warnShadowFissure:Show()
         warnShadowFissure:Play("watchstep")
         timerShadowFissure:Start()
     end
-end
-
-function mod:SPELL_AURA_APPLIED(args)
-	if self.Options.AnnounceFails and self.Options.Announce and args.spellId == 57491 and DBM:GetRaidRank() >= 1 and DBM:GetRaidUnitId(args.destName) ~= "none" and args.destName then
-		lastfire[args.destName] = (lastfire[args.destName] or 0) + 1
-		SendChatMessage(L.FireWallOn:format(args.destName), "RAID")
-	end
-end
-
-function mod:SPELL_DAMAGE(_, _, _, _, _, destName, _, _, spellId)
-	if self.Options.AnnounceFails and self.Options.Announce and spellId == 59128 and DBM:GetRaidRank() >= 1 and DBM:GetRaidUnitId(destName) ~= "none" and destName then
-		lastvoids[destName] = (lastvoids[destName] or 0) + 1
-		SendChatMessage(L.VoidZoneOn:format(destName), "RAID")
-	end
 end
 
 function mod:RAID_BOSS_EMOTE(msg, mob)

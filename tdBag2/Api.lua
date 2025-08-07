@@ -321,6 +321,12 @@ ns.TRADE_BAG_ORDER = { --
     BOTTOM = 'bottom',
 }
 
+ns.BREAK_TYPE = { --
+    NONE = 'none',
+    TYPE = 'type',
+    BAG = 'bag',
+}
+
 ns.FRAME_OPTION_EVENTS = { --
     bagFrame = 'BAG_FRAME_TOGGLED',
     managed = 'MANAGED_TOGGLED',
@@ -395,6 +401,8 @@ ns.PROFILE = {
                 tradeBagOrder = ns.TRADE_BAG_ORDER.BOTTOM,
                 iconCharacter = false,
                 hiddenBags = {},
+                breakType = ns.BREAK_TYPE.TYPE,
+                breakHeight = 10,
             },
             [BAG_ID.BANK] = { --
                 window = {point = 'TOPLEFT', x = 50, y = -100},
@@ -410,6 +418,8 @@ ns.PROFILE = {
                 tradeBagOrder = ns.TRADE_BAG_ORDER.NONE,
                 iconCharacter = false,
                 hiddenBags = {},
+                breakType = ns.BREAK_TYPE.TYPE,
+                breakHeight = 10,
             },
             [BAG_ID.MAIL] = { --
                 window = {point = 'TOPLEFT', x = 50, y = -100},

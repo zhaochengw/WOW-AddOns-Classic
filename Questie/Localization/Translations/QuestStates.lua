@@ -98,6 +98,30 @@ local questStateLocales = {
         ["zhCN"] = "符文",
         ["zhTW"] = "符文",
     },
+    ["Daily"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Täglich",
+        ["esES"] = "Diario",
+        ["esMX"] = "Diario",
+        ["frFR"] = "Journalier",
+        ["koKR"] = "일일",
+        ["ptBR"] = "Diário",
+        ["ruRU"] = "Ежедневное",
+        ["zhCN"] = false,
+        ["zhTW"] = false,
+    },
+    ["Weekly"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Wöchentlich",
+        ["esES"] = "Semanal",
+        ["esMX"] = "Semanal",
+        ["frFR"] = "Hebdomadaire",
+        ["koKR"] = "주간",
+        ["ptBR"] = "Semanal",
+        ["ruRU"] = "Еженедельное",
+        ["zhCN"] = false,
+        ["zhTW"] = false,
+    },
 }
 
 for k, v in pairs(questStateLocales) do

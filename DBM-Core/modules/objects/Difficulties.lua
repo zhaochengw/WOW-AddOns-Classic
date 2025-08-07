@@ -339,12 +339,12 @@ end
 ---Pretty much ANYTHING that has mythic mode, with mythic+ included
 function bossModPrototype:IsMythic()
 	local diff = difficulties.savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "mythic" or diff == "challenge5" or diff == "mythicisland" or diff == "mythic5"
+	return (diff == "mythic" or diff == "challenge5" or diff == "mythicisland" or diff == "mythic5") and not self:IsMop()
 end
 
 function bossModPrototype:IsMythicPlus()
 	local diff = difficulties.savedDifficulty or DBM:GetCurrentInstanceDifficulty()
-	return diff == "challenge5"
+	return diff == "challenge5" and not self:IsMop()
 end
 
 -- Check if the SoD "Black Essence" buff in BWL is enabled. Do not use outside of SoD BWL.
@@ -409,7 +409,7 @@ function DBM:GetCurrentInstanceDifficulty()
 	elseif difficulty == 7 then--Legacy 25 man LFR (ie pre WoD zones)
 		return "lfr25", difficultyName .. " - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 8 then--Dungeon, Mythic+ (Challenge modes in mists and wod)
-		local keystoneLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() or 0
+		local keystoneLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo and C_ChallengeMode.GetActiveKeystoneInfo() or 0
 		return "challenge5", PLAYER_DIFFICULTY6 .. "+ (" .. keystoneLevel .. ") - ", difficulty, instanceGroupSize, keystoneLevel
 	 --20 man classic raids:
 	 -- 226 is SoD 20 (and 10/20 flex)

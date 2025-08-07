@@ -5,7 +5,7 @@
 GTFO Friendly Fire List - Mists of Pandaria
 ]]--
 
-if (GTFO.RetailMode) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode or GTFO.CataclysmMode)) then
 
 -- ***************
 -- * Scholomance *

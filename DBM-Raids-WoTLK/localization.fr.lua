@@ -505,7 +505,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails		= "Affiche les joueurs qui n'ont pas évité les zones de vide / Tsunamis de flammes (Nécessite l'activation des annonces et être promu ou leader)",
 	TimerTenebron		= "Montre le timer pour Ténébron",
 	TimerShadron		= "Montre le timer pour Obscuron",
 	TimerVesperon		= "Montre le timer pour Vespéron",
@@ -523,11 +522,7 @@ L:SetMiscLocalization({
 	Portal			= "commence à incanter un portail",
 	NameTenebron	= "Ténébron",
 	NameShadron		= "Obscuron",
-	NameVesperon	= "Vespéron",
-	FireWallOn		= "Tsunamis de flammes: %s",
-	VoidZoneOn		= "Zone de vide : %s",
-	VoidZones		= "Zones de vide ratées (cet essai): %s",
-	FireWalls		= "Tsunamis de flammes ratés (cet essai): %s"
+	NameVesperon	= "Vespéron"
 })
 
 ---------------
@@ -866,16 +861,13 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	TimerHardmode			= "Afficher le timer pour le mode difficile",
-	AnnounceFails			= "Affiche les joueurs qui n'ont pas évité les Charges de foudre (Nécessite l'activation des annonces et être promu ou leader)",
 	LightningOrb			= "Montre une alerte spéciale pour les Charges de foudre"
 }
 
 L:SetMiscLocalization{
 	YellPhase1		= "Des intrus ! Mortels, vous qui osez me déranger en plein divertissement allez pay -  Attendez, vous -",
 	YellPhase2		= "Avortons impertinents, vous osez me défier sur mon piédestal ? Je vais vous écraser moi-même !",
-	YellKill		= "Retenez vos coups ! Je me rends !",
-	ChargeOn		= "Charge(s) de foudre: %s",
-	Charge			= "Charge(s) de foudre non évitée(s) (cet essai): %s"
+	YellKill		= "Retenez vos coups ! Je me rends !"
 }
 
 -------------
@@ -1269,8 +1261,7 @@ L:SetOptionLocalization{
 	warnAdds				= "Montre une alerte pour l'arrivée des add",
 	timerAdds				= "Montre le timer avant l'arrivée des nouveaux add",
 	TimerEmerge				= "Montre le timer pour la sortie du boss",
-	TimerSubmerge			= "Montre le timer pour la rentrée du boss dans la terre",
-	AnnouncePColdIcons		= "Marque les icones des cible du Froid pénétrant dans le chatt (Requiert les annonces activer et être le leader ou avoir une promot)"
+	TimerSubmerge			= "Montre le timer pour la rentrée du boss dans la terre"
 }
 
 ----------------------
@@ -1582,7 +1573,6 @@ L:SetOptionLocalization{
 	WarnInstability				= "Montre une alerte pour les stacks de $spell:69766",
 	WarnChilledtotheBone		= "Montre une alerte pour les stacks de $spell:70106",
 	WarnMysticBuffet			= "Montre une alerte pour les stacks de $spell:70128",
-	AnnounceFrostBeaconIcons	= "Annonce les icones pour les cibles de $spell:70126 dans le chat de raid (requires announce to be enabled and leader/promoted status)",
 	ClearIconsOnAir				= "Retire toutes les icones avant la phase d'envol",
 	RangeFrame					= "Montre la fenêtre de portée (10 normal, 20 heroic) (Montre uniquement les icones marquer sur les joueurs)"
 }
@@ -1591,8 +1581,7 @@ L:SetMiscLocalization{
 	YellAirphase	= "Votre incursion s'arrête ici",
 	YellPhase2		= "Sentez maintenant le pouvoir infini de mon",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet	= "Icone de Guide de givre {rt%d} mis sur %s"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 ---------------------
@@ -1638,8 +1627,7 @@ L:SetOptionLocalization{
 L:SetMiscLocalization{
 	LKPull			= "la fameuse justice de la Lumière",
 	YellKill		= "No questions remain unanswered. No doubts linger. You ARE Azeroth's greatest champions. You overcame every challenge I laid before you. My mightiest servants have fallen before your relentless onslaught... your unbridled fury...",
-	LKRoleplay		= "Is it truly righteousness that drives you? I wonder...",
-	PlagueWhisper	= "Vous êtes infecter par"
+	LKRoleplay		= "Is it truly righteousness that drives you? I wonder..."
 }
 
 -------------

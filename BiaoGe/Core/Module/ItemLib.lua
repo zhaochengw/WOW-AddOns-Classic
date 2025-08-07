@@ -1987,6 +1987,7 @@ function BG.ItemLibUI()
                     { name = L["声望"], name2 = "faction", },
                     { name = L["专业"], name2 = "profession", },
                     { name = L["世界掉落"], name2 = "world", },
+                    { name = L["世界BOSS"], name2 = "worldboss", },
                 }
             elseif BG.IsRetail then
                 tbl = {
@@ -2192,7 +2193,7 @@ function BG.ItemLibUI()
         t:SetJustifyH("LEFT")
         BG.ItemLibMainFrame.iLevelText = t
 
-        local edit = CreateFrame("EditBox", nil, mainFrame, "InputBoxTemplate")
+        local edit = CreateFrame("EditBox", nil, mainFrame, "BiaoGe_InputBoxTemplate")
         edit:SetSize(100, 20)
         edit:SetPoint("LEFT", t, "RIGHT", 10, 0)
         edit:SetAutoFocus(false)
@@ -2331,7 +2332,7 @@ function BG.ItemLibUI()
                     bt:SetScript("OnClick", BG.InvOnClick)
                     bt:SetScript("OnMouseWheel", OnMouseWheel)
                 else
-                    local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                    local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                     edit:SetSize(title_table[ii].width, BUTTONHEIGHT)
                     edit:SetPoint("LEFT", right, "RIGHT", w_jiange, 0)
                     edit:SetAutoFocus(false)

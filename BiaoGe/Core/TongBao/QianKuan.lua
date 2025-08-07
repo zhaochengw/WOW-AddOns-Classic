@@ -24,8 +24,8 @@ local function CreateListTable(onClick, tbl1)
     local sumtable = {}
     local allsum = 0
     local FB = BG.FB1
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+    for b = 1, Maxb[FB] do
+        for i = 1, BG.GetMaxi(FB, b) do
             if BG.Frame[FB]["boss" .. b]["qiankuan" .. i] then
                 if BiaoGe[FB]["boss" .. b]["qiankuan" .. i] then
                     local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText() == "" and L["没记买家"]
@@ -112,7 +112,7 @@ end
 
 
 function BG.QianKuanUI(lastbt)
-    local bt=BG.CreateButton(BG.ButtonZhangDan)
+    local bt = BG.CreateButton(BG.ButtonZhangDan)
     bt:SetSize(BG.ButtonZhangDan:GetWidth(), BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", BG.ButtonZhangDan.jiange, 0)
     bt:SetText(L["欠款"])
@@ -142,7 +142,7 @@ function BG.QianKuanUI(lastbt)
             SendSystemMessage(L["不在团队，无法通报"])
             BG.PlaySound(1)
         else
-            self:SetEnabled(false) 
+            self:SetEnabled(false)
             C_Timer.After(2, function()
                 bt:SetEnabled(true)
             end)

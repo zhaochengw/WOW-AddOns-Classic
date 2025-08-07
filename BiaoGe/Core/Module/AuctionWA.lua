@@ -5,7 +5,7 @@ local pt = print
 
 BG.Init(function()
     local aura = aura_env or {}
-    aura.ver = "v3.0"
+    aura.ver = "v3.1"
 
     function aura.GetVerNum(str)
         return tonumber(string.match(str, "v(%d+%.%d+)")) or 0
@@ -200,7 +200,9 @@ BG.Init(function()
             { 5000, 100, 100 },
             { 10000, 500, 100 },
             { 100000, 1000, 500 },
-            { nil, 5000, 1000 },
+            { 500000, 5000, 1000 },
+            { 1000000, 10000, 1000 },
+            { nil, 50000, 5000 },
         }
     end
 
@@ -229,6 +231,33 @@ BG.Init(function()
         _G.BGA.FontWhite15 = CreateFont("BGA.Font" .. color)
         _G.BGA.FontWhite15:SetTextColor(1, 1, 1)
         _G.BGA.FontWhite15:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+    end
+
+    function aura.SetEditBg(edit)
+        edit.Left = edit:CreateTexture()
+        edit.Left:SetPoint("LEFT", -5, 0)
+        edit.Left:SetSize(8, 20)
+        edit.Left:SetTexture("interface/common/commonsearch")
+        edit.Left:SetTexCoord(.88, .95, .01, .31)
+
+        edit.Right = edit:CreateTexture()
+        edit.Right:SetPoint("RIGHT", 0, 0)
+        edit.Right:SetSize(8, 20)
+        edit.Right:SetTexture("interface/common/commonsearch")
+        edit.Right:SetTexCoord(0, .07, .338, .638)
+
+        edit.Middle = edit:CreateTexture()
+        edit.Middle:SetSize(10, 20)
+        edit.Middle:SetPoint("LEFT", edit.Left, "RIGHT", 0, 0)
+        edit.Middle:SetPoint("RIGHT", edit.Right, "LEFT", 0, 0)
+        edit.Middle:SetTexture("interface/common/commonsearch")
+        edit.Middle:SetTexCoord(0, .8, .01, .31)
+
+        edit:SetFontObject(ChatFontNormal)
+        edit:SetScript("OnTabPressed", EditBox_OnTabPressed)
+        edit:SetScript("OnEscapePressed", EditBox_ClearFocus)
+        edit:SetScript("OnEditFocusLost", EditBox_ClearHighlight)
+        edit:SetScript("OnEditFocusGained", EditBox_HighlightText)
     end
 
     function aura.FormatNumber(num)
@@ -272,7 +301,7 @@ BG.Init(function()
         end
     end
 
-    function aura.UpdateRaidRosterInfo()
+    function aura.UpdateRaidRosterInfo(canSend)
         wipe(aura.raidRosterInfo)
         aura.raidLeader = nil
         aura.masterLooter = nil
@@ -304,7 +333,9 @@ BG.Init(function()
                     end
                 end
             end
-            C_ChatInfo.SendAddonMessage(aura.AddonChannel, "MyVer" .. "," .. aura.ver, "RAID")
+            if canSend then
+                C_ChatInfo.SendAddonMessage(aura.AddonChannel, "MyVer" .. "," .. aura.ver, "RAID")
+            end
         end
         for _, f in pairs(_G.BGA.Frames) do
             if not f.IsEnd and aura.IsML() then
@@ -317,6 +348,23 @@ BG.Init(function()
                 f.autoTextButton:SetPoint("TOP", 0, -2)
             end
         end
+    end
+
+    local lastNum = 0
+    function aura.canSend()
+        local n
+        local canSend = true
+        if IsInRaid(1) then
+            n = GetNumGroupMembers(1)
+            if lastNum >= n then
+                canSend = false
+            end
+        else
+            canSend = false
+            n = 0
+        end
+        lastNum = n
+        return canSend
     end
 
     function aura.GetAuctioningFromRaid()
@@ -1159,6 +1207,7 @@ BG.Init(function()
 
         function aura.AutoButton_OnClick(self)
             local f = self.owner
+            if not f.autoButton:IsEnabled() then return end
             if f.isAuto then
                 f.isAuto = false
                 f.autoTitleText:SetText(L["设置心理价格"])
@@ -1420,13 +1469,14 @@ BG.Init(function()
                 AuctionFrame.autoTitleText = t
             end
 
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BackdropTemplate")
             do
+                aura.SetEditBg(edit)
                 edit:SetSize(f:GetWidth() - 30, 20)
                 edit:SetPoint("BOTTOM", 2, 27)
                 edit:SetAutoFocus(false)
                 edit:SetNumeric(true)
-                edit:SetMaxBytes(8)
+                edit:SetMaxBytes(9)
                 edit.owner = AuctionFrame
                 edit.alpha = .3
                 AuctionFrame.autoMoney = 0
@@ -1717,13 +1767,14 @@ BG.Init(function()
             AuctionFrame.topMoneyText = t
 
             -- 输入框
-            local edit = CreateFrame("EditBox", nil, currentMoneyText, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, currentMoneyText, "BackdropTemplate")
+            aura.SetEditBg(edit)
             edit:SetSize(AuctionFrame:GetRight() - currentMoneyText:GetRight() - 3, 20)
             edit:SetPoint("TOPLEFT", currentMoneyText, "TOPRIGHT", 0, 0)
             edit:SetAutoFocus(false)
             edit:SetNumeric(true)
             edit:SetText(money)
-            edit:SetMaxBytes(8)
+            edit:SetMaxBytes(9)
             edit.owner = AuctionFrame
             edit:SetScript("OnTextChanged", aura.myMoney_OnTextChanged)
             edit:SetScript("OnEnterPressed", aura.SendMyMoney_OnClick)
@@ -1959,8 +2010,9 @@ BG.Init(function()
                 C_ChatInfo.SendAddonMessage(aura.AddonChannel, "MyVer" .. "," .. aura.ver, "RAID")
             end
         elseif event == "GROUP_ROSTER_UPDATE" then
+            local canSend = aura.canSend()
             After(0.5, function()
-                aura.UpdateRaidRosterInfo()
+                aura.UpdateRaidRosterInfo(canSend)
             end)
         elseif event == "PLAYER_ENTERING_WORLD" then
             self:UnregisterEvent("PLAYER_ENTERING_WORLD")

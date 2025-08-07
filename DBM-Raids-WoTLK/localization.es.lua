@@ -520,7 +520,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails			= "Anunciar jugadores que reciban daño de &spell:57491 y $spell:57579 en el chat de banda (requiere líder o ayudante)",
 	TimerTenebron			= "Mostrar temporizador para la llegada de Tenebron",
 	TimerShadron			= "Mostrar temporizador para la llegada de Shadron",
 	TimerVesperon			= "Mostrar temporizador para la llegada de Vesperon",
@@ -538,11 +537,7 @@ L:SetMiscLocalization({
 	Portal			= "%s comienza a abrir un Portal Crepuscular",
 	NameTenebron	= "Tenebron",
 	NameShadron		= "Shadron",
-	NameVesperon	= "Vesperon",
-	FireWallOn		= "Tsunami de llamas: %s",
-	VoidZoneOn		= "Fisura de las Sombras: %s",
-	VoidZones		= "Fallos en Fisura de las Sombras (en este intento): %s",
-	FireWalls		= "Fallos en Tsunami de llamas (en este intento): %s"
+	NameVesperon	= "Vesperon"
 })
 
 -------------
@@ -793,16 +788,13 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerHardmode	= "Mostrar temporizador para el modo difícil",
-	AnnounceFails	= "Anunciar jugadores que reciban daño de $spell:62017 en el chat de banda (requiere líder o ayudante)"
+	TimerHardmode	= "Mostrar temporizador para el modo difícil"
 }
 
 L:SetMiscLocalization{
 	YellPhase1	= "¡Intrusos! Vosotros, mortales que osáis interferir en mi diversión, pagaréis... Un momento...",
 	YellPhase2	= "Gusanos impertinentes, ¿cómo osáis desafiarme en mi pedestal? ¡Os machacaré con mis propias manos!",
-	YellKill	= "¡Guardad las armas! ¡Me rindo!",
-	ChargeOn	= "Carga relámpago: %s",
-	Charge		= "Fallos en Carga relámpago (en este intento): %s"
+	YellKill	= "¡Guardad las armas! ¡Me rindo!"
 }
 
 -----------
@@ -1155,9 +1147,7 @@ L:SetOptionLocalization{
 	warnAdds				= "Anunciar cuando aparezcan esbirros",
 	timerAdds				= "Mostrar temporizador para los siguientes esbirros",
 	TimerEmerge				= "Mostrar temporizador para cuando Anub'arak regrese a la superficie",
-	TimerSubmerge			= "Mostrar temporizador para cuando Anub'arak se entierre en el suelo",
-	AnnouncePColdIcons		= "Anunciar iconos de los objetivos de $spell:66013 en el chat de banda (requiere líder o ayudante)",
-	AnnouncePColdIconsRemoved	= "Anunciar iconos quitados de los objetivos de $spell:66013 (requiere que la opción anterior esté habilitada)"
+	TimerSubmerge			= "Mostrar temporizador para cuando Anub'arak se entierre en el suelo"
 }
 
 ------------------
@@ -1270,14 +1260,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Mostrar marco de distancia (8 m)",
-	SetIconOnGasSpore	= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(69279),
-	AchievementCheck	= "Anunciar si se falla el logro 'Sin vacunas' en el chat de banda (requiere líder o ayudante)"
+	RangeFrame			= "Mostrar marco de distancia (8 m)"
 }
 
 L:SetMiscLocalization{
-	SporeSet			= "Icono {rt%d} de Espora de gas en %s",
-	AchievementFailed	= ">> LOGRO FALLADO: %s tiene %d acumulaciones de Inoculado <<"
+	SporeSet			= "Icono {rt%d} de Espora de gas en %s"
 }
 
 ----------------
@@ -1435,11 +1422,7 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "Mostrar aviso previo para el cambio a fase en tierra",
 	TimerNextAirphase		= "Mostrar temporizador para la siguiente fase aérea",
 	TimerNextGroundphase	= "Mostrar temporizador para la siguiente fase en tierra",
-	AnnounceFrostBeaconIcons= "Anunciar iconos de los objetivos de $spell:70126 en el chat de banda (requiere líder)",
-	SetIconOnFrostBeacon	= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(70126),
-	SetIconOnUnchainedMagic	= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(69762),
 	ClearIconsOnAir			= "Quitar todos los iconos al comenzar la fase aérea",
-	AchievementCheck		= "Anunciar avisos del logro 'Sacúdete' en el chat de banda (requiere líder o ayudante)",
 	RangeFrame				= "Mostrar marco de distancia (10/20 m) dinámico en función de la última habilidad usada por el jefe y los perjuicios de los jugadores"
 }
 
@@ -1447,10 +1430,7 @@ L:SetMiscLocalization{
 	YellAirphase	= "¡Aquí termina vuestra incursión! ¡Nadie sobrevivirá!",
 	YellPhase2		= "¡Ahora sentid el poder sin fin de mi maestro y desesperad!",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet		= "Icono {rt%d} de Señal de Escarcha en %s",
-	AchievementWarning	= "Aviso: %s tiene 5 acumulaciones de Sacudida mística",
-	AchievementFailed	= ">> LOGRO FALLADO: %s tiene %d acumulaciones de Sacudida mística <<"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 --------------------
@@ -1482,23 +1462,12 @@ L:SetOptionLocalization{
 	PhaseTransition			= "Mostrar duración de los intermedios",
 	ValkyrWarning			= "Anunciar jugadores agarrados por las Guardias de las Sombras Val'kyr",
 	SpecWarnYouAreValkd		= "Mostrar aviso especial cuando te agarrae una Guardia de las Sombras Val'kyr",--npc36609
-	DefileIcon				= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(72762),
-	NecroticPlagueIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(70337),
-	RagingSpiritIcon		= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(69200),
-	TrapIcon				= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(73539),
-	HarvestSoulIcon			= DBM_CORE_L.AUTO_ICONS_OPTION_TARGETS:format(68980),
-	AnnounceValkGrabs		= "Anunciar jugadores agarrados por las Guardias de las Sombras Val'kyr en el chat de banda (requiere líder o ayudante)",
-	SpecWarnValkyrLow		= "Mostrar aviso especial cuando una Guardia de las Sombras Val'kyr esté por debajo del 55% de salud",
-	AnnouncePlagueStack		= "Anunciar acumulaciones de $spell:70337 en el chat de banda (al llegar a 10 y tras cada 5; requiere líder o ayudante)"
+	SpecWarnValkyrLow		= "Mostrar aviso especial cuando una Guardia de las Sombras Val'kyr esté por debajo del 55% de salud"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "¿Así que por fin ha llegado la elogiada justicia de la Luz? ¿Debería deponer la Agonía de Escarcha y confiar en tu piedad, Vadín?",
-	LKRoleplay				= "¿Me pregunto si de verdad os mueve la... rectitud?",
-	ValkGrabbedIcon			= "Una Val'kyr ha agarrado a %s {rt%d}",
-	ValkGrabbed				= "Una Val'kyr ha agarrado a %s",
-	PlagueStackWarning		= "Aviso: %s tiene %d acumulaciones de Peste necrótica",
-	AchievementCompleted	= ">> LOGRO COMPLETADO: %s tiene %d acumulaciones de Plaga necrótica <<"
+	LKRoleplay				= "¿Me pregunto si de verdad os mueve la... rectitud?"
 }
 
 ----------------------

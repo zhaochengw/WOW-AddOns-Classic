@@ -55,6 +55,10 @@ do
     BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
     BG.iconTexCoord = { .06, .94, .06, .94 }
     BG.zaxiang = {} -- 杂项如果太多，则需要换列
+    BG.zhuangbeiWidth = 140
+    BG.zhuangbeiWidth2 = 235
+    BG.maijiaWidth = 90
+    BG.jineWidth = 90
     if BG.IsRetail then
         BG.CloseButtonOffset = 0
     else
@@ -161,7 +165,7 @@ do
             AddDB("AQL", mainFrameWidth, 810, 3, 8, { 0, 5, 7 }, nil, nil,
                 { 5, 5, 5, 5, 5, 5, 28, 5, }, 23)
             AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, nil,
-                { 4, 4, 4, 4, 4, 4, 4, 4, 5, 20, 5, }, 14)
+                { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
             AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
         elseif BG.IsWLK then
@@ -212,26 +216,27 @@ do
                 { 5, 5, 5, 5, 5, 7, 5 })
             AddDB("SSC", mainFrameWidth, 835, 3, 12, { 0, 6, 10 }, nil, difTbl3,
                 { 4, 4, 4, 4, 4, 5, 5, 5, 5, 10, 8, 5, })
+            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, difTbl3,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
-            AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, difTbl3,
-                { 4, 4, 4, 4, 4, 4, 4, 4, 5, 20, 5, }, 14)
-        elseif BG.IsCTM or BG.IsMOP then
+        elseif BG.IsCTM then
             AddDB("BOT", 1715, 850, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
             AddDB("FL", mainFrameWidth, 800, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 10, })
             AddDB("DS", mainFrameWidth, 800, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, })
+        elseif BG.IsMOP then
             AddDB("MSV", 1715, 980, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
-                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, },14)
+                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, }, 14)
         elseif BG.IsRetail then
             local n = 8
             AddDB("NP", mainFrameWidth, 950, 3, 10, { 0, 4, 8 }, { "R", "N", "H", "M" }, nil,
                 { n, n, n, n, n, n, n, n, 5, 5, }, 12)
         end
     end
-
+    
     do
         local function AddDB(FB, instanceID, phase, maxplayers, lootQuality,
                              phaseTable, bossPositionTbl, shortName)
@@ -240,7 +245,7 @@ do
                 {
                     FB = FB,
                     ID = instanceID,
-                    localName = GetRealZoneText(instanceID),
+                    localName = GetRealZoneText(instanceID) or shortName or UNKNOWN,
                     phase = phase,
                     maxplayers = maxplayers,
                     shortName = shortName,
@@ -331,8 +336,8 @@ do
 
             -- TBC
             do
-                AddDB("TAQ", 531, "", nil, nil, nil, nil, L["安其拉"])
                 AddDB("BWL", 469, "", nil, nil, nil, nil, L["黑翼"])
+                AddDB("TAQ", 531, "", nil, nil, nil, nil, L["安其拉"])
                 AddDB("SSC", 548, "", nil, nil, nil, nil, L["毒蛇风暴"])
                 AddDB("HS", 534, "", nil, nil, nil, nil, L["海加尔山"])
                 AddDB("BT", 564, "", nil, nil, nil, nil, L["黑暗神殿"])
@@ -345,7 +350,7 @@ do
                     BG.instanceIDfromBossPosition["SSC"][i] = 550
                 end
             end
-        elseif BG.IsCTM or BG.IsMOP then
+        elseif BG.IsCTM then
             BG.FB1 = "BOT"
             BG.fullLevel = 85
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
@@ -365,26 +370,25 @@ do
 
             AddDB("FL", 720, "P2") -- 火焰之地
             AddDB("DS", 967, "P3") -- 巨龙之魂
-
-            if BG.IsMOP then
-                -- BG.FB1 = "MSV"
-                -- BG.fullLevel = 85
-                BG.theEndBossID = {}                              --
-                AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }) -- 魔古山
-                -- 恐惧之心
-                BG.FBIDtable[1009] = "MSV"
-                BG.bossPositionStartEnd[1009] = { 7, 12 }
-                for i = 7, 12 do
-                    BG.FBfromBossPosition["MSV"][i] = { name = "HOF", localName = GetRealZoneText(1009) }
-                    BG.instanceIDfromBossPosition["MSV"][i] = 1009
-                end
-                -- 永春台
-                BG.FBIDtable[996] = "MSV"
-                BG.bossPositionStartEnd[996] = { 13, 16 }
-                for i = 13, 16 do
-                    BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
-                    BG.instanceIDfromBossPosition["MSV"][i] = 996
-                end
+        elseif BG.IsMOP then
+            BG.FB1 = "MSV"
+            BG.fullLevel = 60
+            BG.theEndBossID = { 1407, 1501, 1431 } -- 魔古山 大女皇 惧之煞
+            BG.worldBossID = { 1564, 1563, 1571, 1587, } -- 怒之煞 炮舰 纳拉克 乌达斯塔
+            AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["魔古山宝库"]) -- 魔古山
+            -- 恐惧之心
+            BG.FBIDtable[1009] = "MSV"
+            BG.bossPositionStartEnd[1009] = { 7, 12 }
+            for i = 7, 12 do
+                BG.FBfromBossPosition["MSV"][i] = { name = "HOF", localName = GetRealZoneText(1009) }
+                BG.instanceIDfromBossPosition["MSV"][i] = 1009
+            end
+            -- 永春台
+            BG.FBIDtable[996] = "MSV"
+            BG.bossPositionStartEnd[996] = { 13, 16 }
+            for i = 13, 16 do
+                BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
+                BG.instanceIDfromBossPosition["MSV"][i] = 996
             end
         elseif BG.IsRetail then
             BG.FB1 = "NP"
@@ -786,6 +790,7 @@ do
             { ID = "autoAuctionAutoEndTips", name = "自动出价结束" },
             { ID = "tradeSuccess", name = "交易成功" },
             { ID = "tradeFalse", name = "交易失败" },
+            { ID = "fakuanFull", name = "罚款格子满了" },
         }
 
         local function DefaultSound()

@@ -8,6 +8,8 @@ local FindUnitBuffByID = ns.FindUnitBuffByID
 
 local spec = Hekili:NewSpecialization( 9 )
 
+local strformat = string.format --新增 by风雪20250723
+
 spec:RegisterResource( Enum.PowerType.Mana )
 
 -- Talents
@@ -98,6 +100,12 @@ spec:RegisterTalents( {
 
 -- Auras
 spec:RegisterAuras( {
+    -- 4T10邪念，新增by风雪 20250723
+    devious_minds = {
+        id = 70840,
+        duration = 10,
+        max_stack = 1,
+    },    
     -- Dazed.
     aftermath = {
         id = 18118,
@@ -652,7 +660,8 @@ spec:RegisterStateFunction( "start_shadow_cleave", function()
 end )
 
 
-spec:RegisterStateExpr( "persistent_multiplier", function( action )
+spec:RegisterStateExpr( "persistent_multiplier", function( action ) 
+-- spec:RegisterStateExpr( "persistent_multiplier", function() --function()内不带参数，修改by风雪 20250716，暂缓加入
     local mult = 1
     if action == "corruption" then
         if talent.deaths_embrace.enabled and target.health.pct < 35 then
@@ -661,6 +670,11 @@ spec:RegisterStateExpr( "persistent_multiplier", function( action )
 
         if buff.tricks_of_the_trade_buff.up then
             mult = mult * 1.15
+        end
+
+        -- 新增4T10邪念增伤逻辑 by风雪 20250715
+        if buff.devious_minds.up then
+            mult =mult * 1.1
         end
     end
 
@@ -1452,7 +1466,7 @@ spec:RegisterAbilities( {
     },
 
 
-    -- You send a ghostly soul into the target, dealing 405 to 473 Shadow damage and increasing all damage done by your Shadow damage-over-time effects on the target by 20% for 12 sec. When the Haunt spell ends or is dispelled, the soul returns to you, healing you for 100% of the damage it did to the target.
+    -- 鬼影缠身You send a ghostly soul into the target, dealing 405 to 473 Shadow damage and increasing all damage done by your Shadow damage-over-time effects on the target by 20% for 12 sec. When the Haunt spell ends or is dispelled, the soul returns to you, healing you for 100% of the damage it did to the target.
     haunt = {
         id = 48181,
         cast = function()
@@ -1465,7 +1479,7 @@ spec:RegisterAbilities( {
         spend = 0.12,
         spendType = "mana",
 
-		velocity = 6,
+		velocity = 20, --原始技能飞行速度为6码/s，修改by风雪 20250714
 		impact = function() end,
 
         talent = "haunt",
@@ -1605,12 +1619,12 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Deals 416 to 480 Fire damage to your target and an additional 104 to 120 Fire damage if the target is affected by an Immolate spell.
+    -- 烧尽 Deals 416 to 480 Fire damage to your target and an additional 104 to 120 Fire damage if the target is affected by an Immolate spell.
     incinerate = {
         id = 47838,
         cast = function()
             if buff.backlash.up then return 0 end
-            return ( 2.5 - 0.05 * talent.emberstorm.rank ) * ( 1 - 0.1 * ( buff.molten_core.up and talent.molten_core.rank or 0 ) ) * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ) )
+            return ( 2.5 - 0.05 * talent.emberstorm.rank ) * haste * ( 1 - 0.1 * ( buff.molten_core.up and talent.molten_core.rank or 0 ) ) * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ) ) --加入急速影响，修改by风雪 20250723
         end,
         cooldown = 0,
         gcd = "spell",
@@ -1620,6 +1634,8 @@ spec:RegisterAbilities( {
 
         startsCombat = true,
         texture = 135789,
+
+        velocity = 20, --加入技能飞行速度，修改by风雪 20250723
 
         handler = function ()
             removeBuff( "backlash" )
@@ -1817,13 +1833,13 @@ spec:RegisterAbilities( {
     }, ]]
 
 
-    -- Sends a shadowy bolt at the enemy, causing 13 to 18 Shadow damage.
+    -- 暗影箭Sends a shadowy bolt at the enemy, causing 13 to 18 Shadow damage.
     shadow_bolt = {
         id = 47809,
-        cast = function()
+        cast = function() --修改基础施法时间为3s，修改急速影响 by风雪 20250723
             if buff.backlash.up then return 0 end
             if buff.shadow_trance.up then return 0 end
-            return ( 1.7 - 0.1 * talent.bane.rank ) * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ) * haste )
+            return ( 3.0 - 0.1 * talent.bane.rank ) * haste * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ))
         end,
         cooldown = 0,
         gcd = "spell",
@@ -1836,7 +1852,7 @@ spec:RegisterAbilities( {
 
 		cycle = "shadow_bolt",
 
-		velocity = 6,
+		velocity = 20, --原始技能飞行速度为6码/s，修改by风雪 20250714
 		impact = function()
             if talent.improved_shadow_bolt.rank == 5 then applyDebuff( "target", "shadow_mastery", nil, debuff.shadow_mastery.stack + 1 ) end
         end,
@@ -1968,8 +1984,8 @@ spec:RegisterAbilities( {
 
     -- Burn the enemy's soul, causing 640 to 801 Fire damage.
     soul_fire = {
-        id = 47824,
-        cast = function() return ( 6 - 0.4 * talent.bane.rank ) * ( 1 - 0.2 * ( buff.decimation.up and talent.decimation.rank or 0 ) ) * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ) ) end,
+        id = 47825,--技能id错误，修改 by 风雪 20250723
+        cast = function() return ( 6 - 0.4 * talent.bane.rank ) * haste * ( 1 - 0.2 * ( buff.decimation.up and talent.decimation.rank or 0 ) ) * ( 1 - 0.1 * ( buff.backdraft.up and talent.backdraft.rank or 0 ) ) end, --加入急速haste影响，修改by 风雪 20250723
         cooldown = 0,
         gcd = "spell",
 
@@ -1978,6 +1994,8 @@ spec:RegisterAbilities( {
 
         startsCombat = true,
         texture = 135808,
+
+        velocity = 20, --新增技能飞行速度，修改by风雪 20250723
 
         usable = function() return buff.decimation.up or soul_shards > 0, "requires decimation or a soul_shard" end,
 
@@ -1989,7 +2007,7 @@ spec:RegisterAbilities( {
             removeStack( "backdraft" )
         end,
 
-        copy = { 6353, 17924, 27211, 30545 },
+        copy = { 6353, 17924, 27211, 30545, 47824 }, ---技能id错误，修改 by 风雪 20250723
     },
 
 
@@ -2368,12 +2386,23 @@ spec:RegisterSetting( "group_type", "party", {
 
 spec:RegisterSetting( "shadow_mastery", true, {
     type = "toggle",
-    name = "掌握暗影箭强化(暗影精通)",
-    desc = "如果在天赋中学习了暗影箭强化，当你在团队中并且需要你负责维持目标身上的暗影精通Debuff，请将此选项设置为|cFF00FF00启用|r。\n\n"
+    name = "掌握强化暗影箭(暗影精通)",
+    desc = "如果在天赋中学习了强化暗影箭，当你在团队中并且需要你负责维持目标身上的暗影精通Debuff，请将此选项设置为|cFF00FF00启用|r。\n\n"
         .. "如果此项工作由别人负责，你可以|cFFFF0000禁用|r本设置，将一些暗影法术从默认优先级中移除。",
     width = "full"
 } )
 
+--新增 鬼影缠身提前量 by风雪20250723
+spec:RegisterSetting( "haunt_advance", 2, {
+    type = "range",
+    name = strformat( "%s 提前量", Hekili:GetSpellLinkWithTexture( spec.abilities.haunt.id ) ),
+    desc = strformat( "设置 %s 补充提前量（已考虑施法+技能飞行+延迟）。\n\n"..
+        "建议值: 1.5-2，默认值: 2", Hekili:GetSpellLinkWithTexture( spec.abilities.haunt.id ) ),
+    width = "full",
+    min = 0,
+    softMax = 3,
+    step = 0.1,
+} )
 
 spec:RegisterOptions( {
     enabled = true,
@@ -2390,24 +2419,24 @@ spec:RegisterOptions( {
 
     potion = "wild_magic",
 
-    package = "痛苦",
+    package = "痛苦(黑科研)",
     usePackSelector = true
 } )
 
-spec:RegisterPack( "痛苦", 20230226, [[Hekili:DRvwVrkoq4FlJgj0UkjmaD6CSIULM9HvAYoA0kX8mGdTjTv4sG7otl1IF7BzmnymMJC0AL2xMjbB)vhUQVQCP4A6(txNnik29hwgwlmSSUv3000WWY1HEid76KHcEg9e8djOy4F)AyyejGsstylDikfTHbrr6U8ayzxNh3rIOFlX9r14A66G2r3MM7683KO0axNTKnBW89JlGFNT)RmSUY62)O0)Vi)Q0)7KqCP)przL(rPprck9PPL(jP0s)CCyoUyBP)lFb(0trhYGFgb63ESURtePGwWuViab4))rL5IQv)nyeDRxqkjY1bNGEmcVX9pDPGg3zx5isIxfaD2fLbqiAxeTb42LDcYjuCobXXzp2dNGJj4Is)vL(ML(AGnGYFct13Irr0T6zbG1SU036MwrNVlXJ)ZEmlHBpE87HcAJMolXAx6FDLyLxy9hJ(GsXmfAXSvia7fFaYTadcce81dkyf4BpF8X)chSJwzBlhueYyVCEyxfuvfjLLJdsJFePmw6euH4ipuEml1HLPKtY4F)R)Z3l93Vq)ADZRm1VrFzP)Nf1Uh3fgQxDq9nPVKu6F8yPVWhZXXqiopgX8oJXJR(uPFg4n53Mv3FCfVkW2Ovzl2fhd2mOZB3LaND8GJxjQ7tjBEbf9mh2HV6FLWsIZg)EUIFrNDT5rrz617Pc4k)zZkm)Cl8N(md8Be5wYs5)Fh2NBhjsocNq1b1mpDpEJxXweiiVhtJOD0LcmLssEQqVEdXOcaHdvRTbxPPDxrsFfWLhEEkjqMbvP(3H9Cxb2du)4cPnnCOWMuQ(UKckBjput1MorPbGA7rjX87u2j2IGOS29SUZEUaizYr7H0NMFpcknLeWDjSp6rt92qG1wZ4NfYFvOktgZrjbpd(FEIMcTZE1mvVw1OcHXdoLfCgoVa4AGigVyOkfjlIGZRCnmvkinpFxfbIEw7YTcSD9MOw1xx84P4dEb7YlW1mmQ8QwxlGoBVEPHEONstomEuFmkb1qTAAWnUzNjkg2SuDk5DdNWjAdmPlycBpWCWzq5hGFpahHZrN8w3ZaKWy9yUqpsidPGNlwVYu736fpyVQjw4cH4GlQJboECImc7vCvs5EAHUgoT6YHcMgOwlbPO4Iu5MTU(3L7oc6(lQx3rSocgTZOZ(fRCvmfX2obhcIyhGzNfmTfuRF519RoMQZZurKngVX8e2IHfMmRZaPtVB5itY0LfAEWpIptMnrvW0K9VTuHEmkpIeRxt8tDfKrR5uVNU(5EllrZROzBqXxmsD2IjElHif)G1YpBfbgUPWUC9L(3BmlEYXBc49usFYluBz06vX9Su4FM2WBUUF7ZPKVsmxEMDmJ0IGYuJj1eypc0gVPwhu5lynFDJrf8TfGyp4K)nssiopj17eEnYTEHXByqvr0Xu97)VR4OPbt29ixDDSfFASYo8nhMHQgVnaNdkjOURjdzkVWi27FzincNYz7XodhRBne38pmxi(QgXfLB7PAGeJYI)k9rd1fdtqSGPoDZ0ie5kpnJBrmNsvb0HjLp3HKvUV9ScwWc1Jn04oxNxq5jSByxNVfNLMtzWFlV2Ak8wJQH8Px(a4rYWbSCkhiKjKeHDD(CPVQPJu(a)Wf6ndE5IvFPz(kxscxjn0KJh7pWeBZ7muJK8Wpya(P2jrOX34QXpD7qoEthhsCEDN70nb7uQVv16pKd1qXzngq9AZDysAgP5AdKIRn8SmkFOr4GiLMb3LSPVTQOs8DttG3N1JqCT1ntIf8uN(GzFTw3pS(nIolrVp8Rx82qREwoCFV05TNX5zx)SdlEQLc(B9c2TClPuvqynJZa3y1RE8OYUvxpCNQscDGwnRmvHxWEVH05u0gc7m96Bz9OpuxBQ3P37T4YQptwIUl(t)7oSGrvH5zxn3gkEDV5Y3Tz0TlhLoYPKH2jvuc66EWeIDf0D7v3yODQg1AldnPw5MwnvnkRUhsKJ8KOSnnoECweMN8GlLqLtxEzV0XvI5J8Tk0BGGx4uReGQOC)Nr22(rfwdRcI0e18qkQw0UsZ0JvU4WzTZk8v71MFlnYmv60SsHhFEFQGvnB67HVua7zLhOjncqvi9HNCi4xNfZUTPs9QDSsxkou2v))AMSDkbdoQxjzr9j69MIl78gHvMkBerbDnhVpSqIwKHET(ibUlSJy39gXj3x0305iPIDAAixmgKszQVt04uvtdYOwPqQLItPO)YEECPcuQhs7K9lm8Wz7ZYl1vU9cXOlwicZUA(tdP)sT)9GWEWQ7)c]] )
+spec:RegisterPack( "痛苦(黑科研)", 20250723, [[Hekili:vNvBpTnww4FlJgPQIqRfjHqNkrrANpnt1k0kL9Z(fCUHyHJTLTdTrQYk0UmaT86uwGw6mLoLwM2oqlIzyOjHYpg8RFQ)f2Z1xNehJTb2LzhTcjWY3Z95Co3ZZ5fFHod9)GUqroDe9OzhiB(bUr2CuzUrUbYniDb9Aki6ckC8tWno8Gexf43oRVP7JE919AUIZoR4S1Q9HLOMOmxrmsAYvv5bPilB9WnbjCEZH2ZvNUWyvfe1)wj6XIQqyBkiE6rVjDHYcflIiIG04Pl4EYtmp6T2pSU7do2S1gwtpRtJD8MEbNJ3Z65nmBS43GMqquWE)5SMFnN5M1A2dnp(zNw)(g3242N1ioT(YEVCrVnF7P1xPT2XsMHY8K9Sx9J2pDDRJ33zVDT((59(Lw4NBTLBJ3580)jXg8E5p6(I59Q)CRgV28Og27(sNxSN7jRy2QLv9wFU182R9bRF6hDM63829(MF8rot9UtRpLZd2X6dhhgb71p0B9F13oZI1T12l0r34ne7(x7y7d(xKDcAY6HBzn9RSR)kS1C8(wpEbkJBNlaSWaq0RqrVvFI77FVVohmWFjbt713Y6OJiIHvYQFYREt3pTIVO5Pikk8XH9slBn3cEZSeygEn3WDVTZQ5l8quoVEkNv)z3dNgItWgX22t(zqmNv33zX3yT3HUZ8w8j4mpeutqCASQJ)5wp1D6LDFAD7N9E4W2A2FhoijwHzZfSF2CERVN3pTb2Tx69MnFfqbSwEwNnpYA6dUdhypoB3GSjatGrQkxsqe4H0fMePQjilfMTDhovjbPX1Ol8TvuKv1rfnyVHblhVoiObROGMUgCwsxW)jmTwuOec(7O(zlijUXerfP)A6cKTGjRC6Lz4LfeP1bnLKuQCcsm(yPd)a7Qexvr94aMxvqhPkWr28KigKeQIasZG9wgSzmyVMbRoN64iDQYior9Yuk86gSJyWMDOU6tTQed5zgSNq8hgsASMECwAYQDyd2b9vB0fg5QXE4KXhkJM7cBqa25Uc0RgcueO4btuXXG)WxC8r3fXxv333YNOkIID(lg2DzskQiE5kJXflxQnuLqImCQvKvdR6XQwQeL)BPkkFhG9FV7zWg6LQOkaPLqaY8vdqQlRkOqG8V(3)BgStMJAqQm)LmudrL3G9ltldqRALkGNaws5QsGfe2s(cdwf4CMeN9JSexYNYpqCKJiOoPSqX7WjoXLf2OH(iWkur5YHx04CB8WHlgDUEqBCXAkLPAVcvWU8H1pi0zfCWbd(qjaUIS)FbjUrsUtzoaeMXKHko9qVfrs6uGxQkpjQitiX6XC0q664IMubcuHtdqOM)Afr(gBVR0XK)Q2KYE0BWE6QxEzv(YT3KE3mNuy0DD6KiCv1qmGgROLg)PQKMo(LmCLkjke8YUw61lkdP)CaHTB2WiTBxeSap4Zm6cvagr)rwsxLBsiZRZIIWSps816Z)KZh7y0Fp5D9cEV7h)AgDzMIcWQJGBoKVV0i1(2upEhqO1f4NaIT9rY(JZFpJvKGx5)S)Ez4kojNepQV0sjGyUAvLOh4DTiIbPGBHdCka0kq)sbfrbKQFmaBPDXGsP7YPLRWxvfOfYLy4gxwQwmKYk1y8LjOKiUjt0J5SKUHvKNemZ0s7IlRVcNexNQ9zgG4Lx4sbHdk5ANG1r1JfkwxdFYPaD4Gwi8irKkx0J6E8lSXmigWBIbuaxGgFYYiucli)eAJCRmx7SSJHVvhQr)HOf9hqjU39oho(W3kiFjoz6cDaCxlOFCilhmR8GwIj2fRWzhSVOZKbF2Iy4ONFbi8ijPu85)bb2KhpRBkc82A8IyaWEQg2EbZ4Um9(2czInPl1jUU06ix6LutDkR)BuwK85uh16sRNmrRDMsHLWKPZDaY8Xyax(23rQa2HcDnsXXuBTeitVhFNz5iDcI5tacOR6(FvrkzmNF1(eNL4kPFq2RO6KGIUzQdK()Nduez2EZJwW7z1DF9uUVONp(3G18OvnydF1bwlCG1h(oNMp2(hE(LA4JOD6VsN84S(J7VFGbR9SR5Ri75NYP5UKRtX6dlz2yrYfS0p5gA63Q5HUN8CY6935gpsBAMZjShHOF2wtKpMo)fl5nPWycEnjMT5E2BnJ9UnnB8cZgpYS5HwBVd44zYdaAn7m(QnAW8)GPOITQX56rGmHQohTuyO8vbPsivj5yQX274mWyAdnazmTo9LXxna5DbOW0wbrhK6I5QXm0rNjO(ZzOHmdG19zA6qxy4W3zrWNo1ZmpJMjPk3KQXLe9V2HZCQxekgJt4cCaFKsE0LRIp4864cDX2Oi58JSqbsz1UBmUV8m2TfTWO12VX93EKvRgwZVwNlTTFsTs7nESzRTnp5hGQl97mvlNhSZP1NQJuKLTM7nMh)esLfC(5HheFBE85yI35rpYPhCrwP089shct8oCW9jHCH47MhD2GoxtxQdELsV0)4Zyid7xvVm(MXi)7b8Fh9)o]] )
 
-spec:RegisterPack( "恶魔 (wowtbc.gg)", 20230625, [[Hekili:TI12UTnoq0VLIcySlAI8LCTfj5HfDxGMTBEXfOVjjAkkjctjkqsfddeOV9DiPUqjl54K2xILiN5mdN5Wzgf)L()WFDesr8FA1IvxS46vx5T8QfxV8w)1Q9fe)1fi8wuc8qokd(7xjz8CoJNSVk8p2X3P2G9ss(tTC7zCuKgpjVuGbztvQc5xMpVvm4jfB7CmdjLNNusJiY5rTaE(oKGXXBN7VEtjLP(wU)MHohaEbb7)0Nb0PrreRiej2F9psPYQWcbLlOkW72HGx3bpRi5vHBqssuvihEuLsGnA8PQWFkqQuyR46T(ofdV(V0CypJt6v9y1JAp48fRoF1nFPkSk8VZLLcqyfsKquaEugRkKrFgwJXZticnAOgZHrsqifntB6uTdjiyEwgjpYyN18sq9)HkCn21NV6kJX(p0wIRmaEPe82QWyoyMVsW0mKIQpBBkJHJH(a54aigjx55VMrLkPobH4e4NNmjFsoAdJe5)x(RXqWIiOiqaScojbKCsgLaHXhQcVWUkp3FDgrHY4IIuUKk9vq2zsG(qvyzrNM0SmoZ4QbOsbsR7fVtNqMII47IzAwjaZLVxyiKOaECaMleLfM1a0UAaAns7iv)dPII3AsKZQchAW7QcVeeFpMrcS0fPo2dM56jmtDyI87Wik99Jyujt1MYBmJ5QhfhqYk47icGmQCDNMeBJ4fC7V9Ky603ah26uE6RabkEqeLysfrCLxZX1lc4ewBCqK4OP4iIM37LTpaxkKao8D5gJAEnirWllaDAr1SGv2XY2hhyhUdu2QdLHjZ3tKOJFnsSOpf9MjnxmnjvfiiziAULVVA5IQWxEbkpWLsJpmqgn7zXrUGFRlpOecPGTYKdOcFEspYgeDb1RSWnwebvMq5yBG42bm0aCQwkTjwU4xOsZY3u9ULq(vjOyTIo5aeJfyFjqxo1wunW2Buxwvl(0LdRlftZke8NHcp2IybB4mLxTcMWsnVRE7mO5brS3ZnDPBOey7N8jibpSUObsJZm9f0e2(IupgnwxXOON9nwVDN(S(MLnOFPlXOpTPp5y50xYmglQTj2aQXWRjThC37HLSGyOVOXqtFp0sdHadjxxVN41JWKJP5erDTML34EWCJP9owWRfMg5BqQJ3r1yBKacpdcNXeGqPx)vBKwardlr1XZkZ03qaqskrIOxTI8rW4zonAhITLioEX2JJcqTpEj1FdSURF1UstxC8eUbooXYKSFMiK6DCMhfgAnhQSd89VbTrfk9z5cB)z9azMzUGz60efEmLbrSp(r9mBDJr)t7yVvpQ3y1vvHpwMdCDTj0ZcArs61s0(09ZBjnNrJVFa1ACngqu069HU04r1PJy8w0cIWNK4njwTWJZnMDiVyCOSuHj8QMuP2oNajWjYdApYKsUBpWWWknZTycb1n)NDyfThgD8hxGCgvrJ1ydKmR3uoUk3nGYu66kD38fNIxpYOkUG1RxGgVEtC8amrYlVONgzwV1V7YfUG0oPXb5I6zcAP)dhUy2GblE42rYo06HdmhxORJBSyqF(Z0D4VhAWFMDOG7xQvYYRBgB4HL9I9DCQtKYn7OD9VRTX3Nw5ANFT7pdZu9zpoxzoSj9yeJUPsCJ2TDw7sx9AcpryZT4he5hJunibCXqfELeDTuoFk5Pa6HFY4POLJ09(knltQ92wFyU7YjorK3eiqhTsvkmIX62)ThM(z())d]] )
+spec:RegisterPack( "恶魔(黑科研)", 20250723, [[Hekili:TA1wpTXru4Fl9LQevPvyUKqKQ6d9PgEiV4(8UE8UJThXEtZUlilfTYKuuacKaTUCVjKlajKIjO06sm2HFm492t5VqpZo2K1oSou1iKW7oZ589DMZ57CMvmJ4plMvbzJfVZWdn8ydDZHhriZnhzOXgxmRDztSywtK8KOIWd6in4)(Zup6WQxl60vc2FLGDQEDMfLvnqkmKSmCOYGv8T9wylWIGxx3F(kIzZ7quTVTUy((jeCZellENBjMTerrbZnbBjlMn8SnAFYb(luj8(TA3CDVzNlOX(rZUuqRAEpTr7gp6NWtsuj(hpV3IRgm)CEZvVDRTpVY9CNWDIppioVYYrV4rrBDW5vwPl7mlZi0(SA(vFV)MR5164GAh69Rlg9Nnzp3CNWgVjyZFHhdrV4jHpBXOkp1RXETpPH)HVi4z1cpBL2nB6vP5hBUO)QV175pjyM)o6W71(9pmyM3CELzcU)(EVTvse8xRE0A)vCComJBVxU0fCZC4s9F1w(V735Ecm5TWoEZURFLDzrtRJ9(TLeCNyKoGLeaoVeLOQBeE0rXCoANZBWABf(W98xBhVtoHBgJKQFiQYPHFyLythtGtuY0H)Jx2B(LIEWJHWi601dR9YHTIn(gcb7ntq1xfwFwOoboYITnEfywq1JdE0R9Qvp8bhWYGpybGMo1P8of)yZndND5WnR4V9rqY2BU)bsK8OO9Pl5V98rRvl65RZo2p(O2NUlib8wEUGToXB23nncINGx2G7eGjOiPgfiQGoum7uyQfXqpPABAevNOx0sm7T1mnO2yf3CJ4MdjBdg6MtLyzBb5sXSih7sguqnhRzeZgVdtMJmWWp3jU5bRJYRIve)ry5yeeZQHTrAguZsgweGfzkXgtjiUbtHLW6ync2Yn3paelAdXwkar00murSNLqouusO(g3CoMmFhjfFTkHumMUGACx7xoegnnyWyfjJcsYguQJjFTVmAJLcAxokWzXMipjutCZ9T8crsq)E3CJcMxwwflzJOfXqraY9an3yW5n8xdsSzZIkGCuTVOK3LgfSMHorwcdYOPXunSUDYWPBHTR5Mg8F7XI0kFxHJapmfSjAqiBiPqWXfafdBHUElOaYMyahqjUi1WXus2HA1dBk48ofkiOvMVLaOM0J5n(vPyVaGgq12Yq14QH7GkMxjnZaYfFY)EYg38)AZBbsXs2suSgIOZL6dNzi3C39UU5YByzfhg9zdtuneJSXtQdCGShaQMvFsHBLseflZKKlXoIjdiEAmz4k4yMmBOaZRq6Y8uX4mkYm0)Jjnz6FE3aNdKbQ)2uImZXeftKQQe)fj24u(qvj(3wWgRYmpTXH8rAs5nGEXeKBJuHopqZdJ9NcMwLWmHoOeNv6i86STgYc8VSqYILmSMetd5M77GYBCWKwdQkPaBsHzYiPOAzZscD3PhYJP(ID6Q5ZmAsHrFsVEehz6VjJ9bsusN(IGzo0)pQW4a((a(D4jBdDuLkqOFU4rblt0IR6DvoxlLgPEZm2u0uy1p9oBuJUC5RhhOPouwxMOJP9ntJlIHsfwNDhdwizdwVS2HLyssR7nfjcFoUjflBOLhzpOlVlahmevJDVFFrz8Qxu6svK6OXAxbyk6GOk91jzc5wEZYaV7MJXugeLPrQtIPdeLuV6MJc0xmq3tB69xfb(n(IxaMAL8YuTxHw94sn)pX)9p]] )
 
 spec:RegisterPack( "毁灭", 20230204, [[Hekili:1EvBloUnq4FlhhKV09CTDYMBlKeOh9d92wwkK(zBRylNiwzlJS8EeWOF7DKKF3YjPuklSjXAMNzMN5n5aVG)o4ycsGdEZ31FTRV7ghp3nF175GJIRf4GJfO43rNHVKJYG))B4sbVkwqy5QZUszOefgLSkEmCEWXtveQ475bNSd8Aq2cCCWB)sWXlKKeSrsCz8iWLr)aXPS43LrfCcJtexLrPmUm63XVtOKGJusPOuzAkjfdF(MowqnUwcgjUegZi0GJ4C0jkoj4BbcWBgjfhrYd1amskHcGuufv0bC)XhJbVbZjidoFGdX54mcUugTtg53JoVkp089qLZAC5qdpwk6CMhc5dYiVhdzedRGE9IqFbJOIlofXcJd)8JHRML0utbhhZYoHSsoTqLIPHiEgJBsUCsH55)6F9NYOpw7SXX9lEW)9LrFEO3DQkn1rROtc7hqDqDTmAWd54miNz4AVxCVnl(jO6blCmKzVVvwLLbHijR42m1z61IloQapuGkCAKrgTQXJ6or5P9W3(yf4BgwUvWmFoPutLXUbtwEbb4Ns1zHBwHSw7Ace)me0jqQdLhJnmLlO61yQYVuNwQmNfQRZMyCsilfAG48QMm3dyAGVfK43j5NTBUPuDR5iq(GQgwmo3DtS2SawdDzkjhhgNeCCRfmgyRm2hk7OZgL3PNpbRZ9zxdJR4L4MQui41)m8mNvva607p6hdCP4cqzuCgohS)9kBBcDt5Fct40srJBaSqHT0CpFKd1oN5A6D0OWPm4TJrlre6ml)QcPN))SfA7OO5cIvgEIbtMhhmF9FfB2xKmIp9TwgbO)Y9AJH1zdKOc4hW8zLtecAdxYlB6AfKmiWzHjevJ7Ez0wxnzLHYrMr2qZMV5zK8umpNf2rQQORbNjd53yvJbvpMd0(4sZHSplOP1zyRMcKLlUnkmjOax8fxtam6HQ5w2Qj8gvItYJbRBPc3B5sCB89Ho6(bBasySmTDwUbWAETZol4fRDVr3MEk1hyEP6yZTR88HjbWfMYbMfQ5(EwbJluveplJm4iJ03xYr(QA)nlLqbU6ZYiBRJLVA0P0PBt)pT)N7wO)ejD)KT011Z3qVd2oBhP(1VkO(u)gA7I3M3vcBFCYQ5JsSdLPZv(QmQ5VwPGZMC3NNu36zp8jy1X7725Fx1Gn6Z17G3D1tfckf77E35)CVZA7BTHzPk(0lFmLSkySvfVA0AQj63UerNxAgAwxBB9ZoVjQoynZKtkzu2T9Pjk8FmHBCNU9eZ8Z2PyZdY5BfgKRnQ3wbn6HDJ7NsNMPQkdnVrF3(TURAh2DW3D1KHZ11ZgLVBZmPwo6AgiVFRY8ndDxMNnc05p7EXTUU7hEUluV1p4DQFmCcP94)ae(pqXW4XFlqLauwmWAy(tpAqpPQyS)Y0pn6gH79S0XUE1KltROIPio7QYpeWTvEtHRRf0cilPJ1SUf9BRc61xvcaa0)2YZpAWRiJQexuVq3FqG3m)lFdcMeIwA9oPG)5d]] )
 
 
-spec:RegisterPackSelector( "affliction", "痛苦", "|T136145:0|t 痛苦",
+spec:RegisterPackSelector( "affliction", "痛苦(黑科研)", "|T136145:0|t 痛苦",
     "如果你在|T136145:0|t痛苦天赋中投入的点数多于其他天赋，将会为你自动选择该优先级。",
     function( tab1, tab2, tab3 )
         return tab1 > max( tab2, tab3 )
     end )
 
-spec:RegisterPackSelector( "demonology", "恶魔 (wowtbc.gg)", "|T136172:0|t 恶魔",
+spec:RegisterPackSelector( "demonology", "恶魔(黑科研)", "|T136172:0|t 恶魔",
     "如果你在|T136172:0|t恶魔天赋中投入的点数多于其他天赋，将会为你自动选择该优先级。",
     function( tab1, tab2, tab3 )
         return tab2 > max( tab1, tab3 )

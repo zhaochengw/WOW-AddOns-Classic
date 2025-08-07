@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2437, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103105705")
+mod:SetRevision("20250804140508")
 mod:SetCreatureID(175616)
 mod:SetEncounterID(2425)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -49,12 +49,6 @@ function mod:OnCombatStart(delay)
 	timerArmedSecurityCD:Start(7.2-delay)
 	timerImpoundContrabandCD:Start(18.1-delay)
 	timerInterrogationCD:Start(31.6-delay)
-end
-
-function mod:OnCombatEnd()
-	if self.Options.InfoFrame then
-		DBM.InfoFrame:Hide()
-	end
 end
 
 function mod:SPELL_CAST_START(args)

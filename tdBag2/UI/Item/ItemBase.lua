@@ -380,14 +380,7 @@ function ItemBase:OnUpdatePlugin()
 end
 
 function ItemBase:GetBagFamily()
-    if ns.IsBank(self.bag) or ns.IsBackpack(self.bag) then
-        return 0
-    end
-    if ns.IsKeyring(self.bag) then
-        return KEYRING_FAMILY
-    end
-    local info = Cache:GetBagInfo(self.meta.owner, self.bag)
-    return info.link and C.Item.GetItemFamily(info.link) or 0
+    return self.meta:GetBagFamily(self.bag)
 end
 
 function ItemBase:GetBorderColor()

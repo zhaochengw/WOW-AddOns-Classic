@@ -1,4 +1,90 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <EditBox name="tdBag2SearchBoxTemplate" autoFocus="false" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture parentKey="Left" file="interface/common/commonsearch">
+                    <Size x="8" y="20"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="-5" y="0"/>
+                    </Anchors>
+                    <TexCoords left="0.88671875" right="0.94921875" top="0.0078125" bottom="0.3203125"/>
+                </Texture>
+                <Texture parentKey="Right" file="interface/common/commonsearch">
+                    <Size x="8" y="20"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="0" y="0"/>
+                    </Anchors>
+                    <TexCoords left="0.00390625" right="0.06640625" top="0.3359375" bottom="0.6484375"/>
+                </Texture>
+                <Texture parentKey="Middle" file="interface/common/commonsearch">
+                    <Size x="10" y="20"/>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="LEFT"/>
+                    </Anchors>
+                    <TexCoords left="0.00390625" right="0.87890625" top="0.0078125" bottom="0.3203125"/>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <Texture file="Interface\Common\UI-Searchbox-Icon" parentKey="searchIcon">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="0" y="-2"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Instructions" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontDisableSmall" setAllPoints="true">
+                    <Color r="0.35" g="0.35" b="0.35"/>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button parentKey="clearButton" hidden="true">
+                <Size x="17" y="17"/>
+                <Anchors>
+                    <Anchor point="RIGHT" x="-3" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="ARTWORK">
+                        <Texture file="Interface\FriendsFrame\ClearBroadcastIcon" alpha="0.5" parentKey="texture">
+                            <Size>
+                                <AbsDimension x="17" y="17"/>
+                            </Size>
+                            <Anchors>
+                                <Anchor point="TOPLEFT" x="0" y="0"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnter>
+                        self.texture:SetAlpha(1.0);
+                    </OnEnter>
+                    <OnLeave>
+                        self.texture:SetAlpha(0.5);
+                    </OnLeave>
+                    <OnMouseDown>
+                        if self:IsEnabled() then
+                            self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1);
+                        end
+                    </OnMouseDown>
+                    <OnMouseUp>
+                        self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0);
+                    </OnMouseUp>
+                    <OnClick function="SearchBoxTemplateClearButton_OnClick"/>
+                </Scripts>
+            </Button>
+        </Frames>
+        <FontString inherits="GameFontHighlightSmall"/>
+        <Scripts>
+            <OnLoad function="SearchBoxTemplate_OnLoad"/>
+            <OnEditFocusLost function="SearchBoxTemplate_OnEditFocusLost"/>
+            <OnEditFocusGained function="SearchBoxTemplate_OnEditFocusGained"/>
+            <OnTextChanged function="SearchBoxTemplate_OnTextChanged"/>
+        </Scripts>
+    </EditBox>
+
     <Frame name="tdBag2BaseFrameTemplate" inherits="PortraitFrameTemplate" hidden="true" toplevel="true" movable="true" enableMouse="true" frameStrata="MEDIUM" clampedToScreen="true" virtual="true">
         <KeyValues>
             <KeyValue key="fixedWidth" value="24" type="number"/>
@@ -65,7 +151,7 @@
                     <Anchor point="TOPLEFT" relativeKey="$parent.Inset" relativePoint="TOPLEFT" x="8" y="-8"/>
                 </Anchors>
             </Frame>
-            <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate">
+            <EditBox parentKey="SearchBox" inherits="tdBag2SearchBoxTemplate">
                 <Size y="28"/>
                 <Anchors>
                     <Anchor point="LEFT" relativePoint="TOPLEFT" x="74" y="-42"/>

@@ -1148,6 +1148,7 @@ GTFO.SpellID["211634"] = {
 GTFO.SpellID["204744"] = {
   --desc = "Toxic Chitin (Skorpyron)";
   sound = 1;
+  ignoreApplication = true;
 };
 
 GTFO.SpellID["211659"] = {

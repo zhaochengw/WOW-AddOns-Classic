@@ -67,11 +67,11 @@ end
 ------------------装备------------------
 function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
     local parent = scrollFrame or BG["ReceiveFrame" .. FB]
-    local bt = CreateFrame("EditBox", nil, parent, "InputBoxTemplate");
+    local bt = CreateFrame("EditBox", nil, parent, "BiaoGe_InputBoxTemplate");
     if BossNum(FB, b, t) <= Maxb[FB] then
-        bt:SetSize(150, 20)
+        bt:SetSize(BG.zhuangbeiWidth, 20)
     else
-        bt:SetSize(245, 20)
+        bt:SetSize(BG.zhuangbeiWidth2, 20)
     end
     bt:SetFrameLevel(110)
     if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] - 1 and i == BG.zaxiang[FB].i then
@@ -152,8 +152,8 @@ end
 
 ------------------买家------------------
 function BG.ReceiveMaiJiaUI(FB, t, b, bb, i, ii)
-    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
-    bt:SetSize(90, 20)
+    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "BiaoGe_InputBoxTemplate");
+    bt:SetSize(BG.maijiaWidth, 20)
     bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
     bt:SetFrameLevel(110)
     bt:SetMaxBytes(19) --限制字数
@@ -179,8 +179,8 @@ end
 
 ------------------金额------------------
 function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
-    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "InputBoxTemplate");
-    bt:SetSize(80, 20)
+    local bt = CreateFrame("EditBox", nil, BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i], "BiaoGe_InputBoxTemplate");
+    bt:SetSize(BG.jineWidth, 20)
     bt:SetPoint("TOPLEFT", preWidget, "TOPRIGHT", 5, 0);
     bt:SetFrameLevel(110)
     bt:SetAutoFocus(false)

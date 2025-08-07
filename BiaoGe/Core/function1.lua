@@ -453,8 +453,10 @@ function BG.PlaySound(id)
             end
         end
     elseif BiaoGe.options['tipsSound'] == 1 and type(id) == "string" then
-        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound]..".mp3", "Master")
-        PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound]..".ogg", "Master")
+        if BG["sound_" .. id .. BiaoGe.options.Sound] then
+            PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".mp3", "Master")
+            PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".ogg", "Master")
+        end
     end
 end
 
@@ -747,4 +749,29 @@ end
 
 function BG.ClearCode(text)
     return text:gsub("|T.-|t", ""):gsub("|A.-|a", ""):gsub("|cff......", ""):gsub("|r", "")
+end
+
+local lastNum = 0
+function BG.canSend()
+    local n
+    local canSend = true
+    if IsInRaid(1) then
+        n = GetNumGroupMembers(1)
+        if lastNum >= n then
+            canSend = false
+        end
+    else
+        canSend = false
+        n = 0
+    end
+    lastNum = n
+    return canSend
+end
+
+function BG.ValueInTable(tbl, value)
+    for k, v in pairs(tbl) do
+        if v == value then
+            return true
+        end
+    end
 end

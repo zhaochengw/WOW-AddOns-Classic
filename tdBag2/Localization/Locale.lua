@@ -27,6 +27,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Auto Display"] = "Auto Display"--]] 
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -40,6 +42,12 @@ L = L or {}
 --[[ L["Border Style"] = "Border Style"--]] 
 --[[Translation missing --]]
 --[[ L["Bottom"] = "Bottom"--]] 
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 --[[Translation missing --]]
@@ -158,6 +166,8 @@ L = L or {}
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 --[[Translation missing --]]
 --[[ L["Normal Color"] = "Normal Color"--]] 
 --[[Translation missing --]]
@@ -297,6 +307,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Auto Display"] = "Auto Display"--]] 
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -310,6 +322,12 @@ L = L or {}
 --[[ L["Border Style"] = "Border Style"--]] 
 --[[Translation missing --]]
 --[[ L["Bottom"] = "Bottom"--]] 
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 --[[Translation missing --]]
@@ -428,6 +446,8 @@ L = L or {}
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 --[[Translation missing --]]
 --[[ L["Normal Color"] = "Normal Color"--]] 
 --[[Translation missing --]]
@@ -567,6 +587,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Auto Display"] = "Auto Display"--]] 
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -580,6 +602,12 @@ L = L or {}
 --[[ L["Border Style"] = "Border Style"--]] 
 --[[Translation missing --]]
 --[[ L["Bottom"] = "Bottom"--]] 
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 --[[Translation missing --]]
@@ -698,6 +726,8 @@ L = L or {}
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 --[[Translation missing --]]
 --[[ L["Normal Color"] = "Normal Color"--]] 
 --[[Translation missing --]]
@@ -837,6 +867,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Auto Display"] = "Auto Display"--]] 
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -850,6 +882,12 @@ L = L or {}
 --[[ L["Border Style"] = "Border Style"--]] 
 --[[Translation missing --]]
 --[[ L["Bottom"] = "Bottom"--]] 
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 --[[Translation missing --]]
@@ -968,6 +1006,8 @@ L = L or {}
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 --[[Translation missing --]]
 --[[ L["Normal Color"] = "Normal Color"--]] 
 --[[Translation missing --]]
@@ -1100,6 +1140,8 @@ L["Appearance"] = "모양"
 L["Are you sure you want to restore the current Settings?"] = "현재 설정을 복원 하시겠습니까?"
 L["Auto Close"] = "자동 닫기"
 L["Auto Display"] = "자동 표시"
+--[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
 L["Bag Frame"] = "가방 프레임"
 L["Bag Style"] = "가방 스타일"
 L["Bag Toggle"] = "가방 전환"
@@ -1108,6 +1150,12 @@ L["Blizzard Panel"] = "블리자드 창 위치"
 --[[Translation missing --]]
 --[[ L["Border Style"] = "Border Style"--]] 
 L["Bottom"] = "하단"
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 L["Character Specific Settings"] = "캐릭터 개별 설정"
 L["Closing the Character Info"] = "캐릭터 정보 닫을 때"
 L["Closing Trade Skills"] = "전문 기술 닫을 때"
@@ -1176,6 +1224,8 @@ L["Move up"] = "위로 이동"
 L["Need to reload UI to make some settings take effect"] = "일부 설정을 적용하려면 UI를 다시 재시작(reload)해야합니다."
 L["Never show"] = "표시 안함"
 L["No record"] = "기록 없음"
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 L["Normal Color"] = "보통 색상"
 L["Opening the Character Info"] = "캐릭터 정보 열 때"
 L["Opening Trade Skills"] = "전문 기술 열 때"
@@ -1267,6 +1317,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Auto Display"] = "Auto Display"--]] 
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -1280,6 +1332,12 @@ L = L or {}
 --[[ L["Border Style"] = "Border Style"--]] 
 --[[Translation missing --]]
 --[[ L["Bottom"] = "Bottom"--]] 
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 --[[Translation missing --]]
@@ -1398,6 +1456,8 @@ L = L or {}
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 --[[Translation missing --]]
 --[[ L["Normal Color"] = "Normal Color"--]] 
 --[[Translation missing --]]
@@ -1533,6 +1593,8 @@ L["Appearance"] = "Внешний вид"
 L["Auto Close"] = "Автоматическое закрытие"
 L["Auto Display"] = "Автоматический дисплей"
 --[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
+--[[Translation missing --]]
 --[[ L["Bag Frame"] = "Bag Frame"--]] 
 --[[Translation missing --]]
 --[[ L["Bag Style"] = "Bag Style"--]] 
@@ -1542,6 +1604,12 @@ L["Blizzard Panel"] = "Blizzard панель"
 --[[Translation missing --]]
 --[[ L["Border Style"] = "Border Style"--]] 
 L["Bottom"] = "Дно"
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 --[[Translation missing --]]
 --[[ L["Character Specific Settings"] = "Character Specific Settings"--]] 
 L["Closing the Character Info"] = "Закрытие информации о персонаже"
@@ -1628,6 +1696,8 @@ L["Lock Frames"] = "Закрепить рамку"
 --[[ L["Never show"] = "Never show"--]] 
 --[[Translation missing --]]
 --[[ L["No record"] = "No record"--]] 
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 L["Normal Color"] = "Нормальный цвет"
 L["Opening the Character Info"] = "Открытие информации о персонаже"
 L["Opening Trade Skills"] = "Открытие торговых навыков"
@@ -1730,6 +1800,8 @@ L["Appearance"] = "外觀"
 L["Are you sure you want to restore the current Settings?"] = "你確定要恢覆到默認設置嗎"
 L["Auto Close"] = "自動關閉"
 L["Auto Display"] = "自動顯示"
+--[[Translation missing --]]
+--[[ L["Bag break type"] = "Bag break type"--]] 
 L["Bag Frame"] = "背包列表"
 L["Bag Style"] = "背包風格"
 L["Bag Toggle"] = "背包按鈕"
@@ -1738,6 +1810,12 @@ L["Blizzard Panel"] = "暴雪標準面板"
 --[[Translation missing --]]
 --[[ L["Border Style"] = "Border Style"--]] 
 L["Bottom"] = "底部"
+--[[Translation missing --]]
+--[[ L["Break height"] = "Break height"--]] 
+--[[Translation missing --]]
+--[[ L["By bag"] = "By bag"--]] 
+--[[Translation missing --]]
+--[[ L["By type"] = "By type"--]] 
 L["Character Specific Settings"] = "角色獨立設置"
 L["Closing the Character Info"] = "關閉角色面板時"
 L["Closing Trade Skills"] = "關閉專業技能時"
@@ -1806,6 +1884,8 @@ L["Move up"] = "上移"
 L["Need to reload UI to make some settings take effect"] = "需要重新載入UI後，使部分設置生效"
 L["Never show"] = "從不顯示"
 L["No record"] = "沒有記錄"
+--[[Translation missing --]]
+--[[ L["None"] = "None"--]] 
 L["Normal Color"] = "普通容器顏色"
 L["Opening the Character Info"] = "打開角色面板時"
 L["Opening Trade Skills"] = "打開專業技能時"

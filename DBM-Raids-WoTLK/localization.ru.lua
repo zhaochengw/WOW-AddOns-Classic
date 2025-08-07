@@ -516,7 +516,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails			= "Объявлять игроков, потерпевших неудачу в Огненной стене и Расщелине тьмы<br/>(требуются права лидера или помощника)",
 	TimerTenebron			= "Отсчет времени до прибытия Тенеброна",
 	TimerShadron			= "Отсчет времени до прибытия Шадрона",
 	TimerVesperon			= "Отсчет времени до прибытия Весперона",
@@ -798,15 +797,12 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	TimerHardmode	= "Отсчет времени для сложного режима",
-	AnnounceFails	= "Объявлять игроков, попавших под $spell:62017, в рейд-чат<br/>(требуются права лидера или помощника)"
 }
 
 L:SetMiscLocalization{
 	YellPhase1	= "Незваные гости! Вы заплатите за то, что посмели вмешаться... Погодите, вы...",
 	YellPhase2	= "Бесстыжие выскочки, вы решили бросить вызов мне лично? Я сокрушу вас всех!",
-	YellKill	= "Придержите мечи! Я сдаюсь.",
-	ChargeOn	= "Разряд молнии: %s",
-	Charge		= "Попали под Разряд молнии (в этом бою): %s"
+	YellKill	= "Придержите мечи! Я сдаюсь."
 }
 
 -------------
@@ -1129,9 +1125,7 @@ L:SetOptionLocalization{
 	warnAdds				= "Показывать предупреждение о призыве помощников",
 	timerAdds				= "Отсчет времени до призыва помощников",
 	TimerEmerge				= "Отсчет времени до появления",
-	TimerSubmerge			= "Отсчет времени до закапывания",
-	AnnouncePColdIcons		= "Объявлять иконки для целей $spell:66013 в рейд-чат<br/>(требуются права лидера)",
-	AnnouncePColdIconsRemoved	= "Объявлять о снятии иконок для $spell:66013<br/>(требуются права лидера)"
+	TimerSubmerge			= "Отсчет времени до закапывания"
 }
 
 L:SetMiscLocalization{
@@ -1240,13 +1234,8 @@ L:SetGeneralLocalization{
 	name = "Тухлопуз"
 }
 
-L:SetOptionLocalization{
-	AchievementCheck	= "Объявлять о провале достижения 'Масок нет!' в рейд-чат<br/>(требуются права помощника)"
-}
-
 L:SetMiscLocalization{
-	SporeSet	= "Метка Газообразных спор {rt%d} установлена на: %s",
-	AchievementFailed	= ">> ДОСТИЖЕНИЕ ПРОВАЛЕНО: %s получил %d стаков Невосприимчивости к гнили <<"
+	SporeSet	= "Метка Газообразных спор {rt%d} установлена на: %s"
 }
 
 ---------------
@@ -1388,19 +1377,14 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "Заранее предупреждать о наземной фазе",
 	TimerNextAirphase		= "Отсчет времени до следующей воздушной фазы",
 	TimerNextGroundphase	= "Отсчет времени до следующей наземной фазы",
-	AnnounceFrostBeaconIcons= "Объявлять метки целей заклинания $spell:70126 в рейд-чат<br/>(требуются права помощника)",
-	ClearIconsOnAir			= "Снимать все метки перед воздушной фазой",
-	AchievementCheck		= "Объявлять предупреждения для достижения 'Таинственная дама'<br/>в рейд-чат (требуются права помощника)",
+	ClearIconsOnAir			= "Снимать все метки перед воздушной фазой"
 }
 
 L:SetMiscLocalization{
 	YellAirphase		= "Здесь ваше вторжение и окончится! Никто не уцелеет.",
 	YellPhase2			= "А теперь почувствуйте всю мощь господина и погрузитесь в отчаяние!",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet		= "Ледяная метка {rt%d} установлена на: %s",
-	AchievementWarning	= "Предупреждение: %s получил 5 стаков Таинственной энергии",
-	AchievementFailed	= ">> ДОСТИЖЕНИЕ ПРОВАЛЕНО: %s получил %d стаков Таинственной энергии <<"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 ---------------------
@@ -1432,18 +1416,12 @@ L:SetOptionLocalization{
 	PhaseTransition			= "Отсчет времени для переходной фазы",
 	ValkyrWarning			= "Объявлять, кого схватили Валь'киры",
 	SpecWarnYouAreValkd		= "Показывать спецпредупреждение, когда Вас схватила Валь'кира",
-	AnnounceValkGrabs		= "Объявлять игроков, схваченных Валь'кирами, в рейд-чат<br/>(требуются права помощника)",
-	SpecWarnValkyrLow		= "Показывать спецпредупреждение, когда у Валь'киры меньше 55% HP",
-	AnnouncePlagueStack		= "Объявлять стаки заклинания $spell:70337 в рейд-чат (10 стаков, далее каждые 5 после 10)<br/>(требуются права помощника)"
+	SpecWarnValkyrLow		= "Показывать спецпредупреждение, когда у Валь'киры меньше 55% HP"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "Неужели прибыли наконец хваленые силы Света? Мне бросить Ледяную Скорбь и сдаться на твою милость, Фордринг?",
-	LKRoleplay				= "Что движет вами?.. Праведность? Не знаю...",
-	ValkGrabbedIcon			= "Валь'кира {rt%d} схватила %s",
-	ValkGrabbed				= "Валь'кира схватила %s",
-	PlagueStackWarning		= "Предупреждение: %s получил %d стаков Мертвящей чумы",
-	AchievementCompleted	= ">> ДОСТИЖЕНИЕ ВЫПОЛНЕНО: %s получил %d стаков Мертвящей чумы <<"
+	LKRoleplay				= "Что движет вами?.. Праведность? Не знаю..."
 }
 
 -------------

@@ -232,6 +232,17 @@ GTFO.SpellID["1240428"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1241134"] = {
+  --desc = "Storm Cloud (Storm Cloud)";
+  sound = 1;
+};
+
+GTFO.SpellID["456890"] = {
+  --desc = "Azeroth's Pain";
+  sound = 1;
+  alwaysAlert = true;
+};
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
@@ -1157,6 +1168,11 @@ GTFO.SpellID["474554"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1225931"] = {
+  --desc = "Stormfury Finger Gun (Mug'Zee)";
+  sound = 1;
+};
+
 GTFO.SpellID["466509"] = {
   --desc = "Stormfury Finger Gun (Mug'Zee)";
   applicationOnly = true;
@@ -1203,6 +1219,25 @@ GTFO.SpellID["1215209"] = {
   sound = 1;
 };
 
+--- ********************
+--- * Eco-Dome Al'dani *
+--- ********************
+
+GTFO.SpellID["1217446"] = {
+  --desc = "Digestive Spittle (Azhiccar)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1222202"] = {
+  --desc = "Arcane Burn (Overcharged Sentinel)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+--- *******************
+--- * Manaforge Omega *
+--- *******************
 
 end
 

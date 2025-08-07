@@ -898,7 +898,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails			= "公佈踩中暗影裂縫和撞上火焰障壁的玩家到團隊頻道 (需要團隊隊長或助理權限)",
 	TimerTenebron			= "為坦納伯朗到來顯示計時器",
 	TimerShadron			= "為夏德朗到來顯示計時器",
 	TimerVesperon			= "為維斯佩朗到來顯示計時器",
@@ -1167,16 +1166,13 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerHardmode	= "為困難模式顯示計時器",
-	AnnounceFails	= "公佈中了閃電充能的玩家到團隊頻道<br/>(需要團隊隊長或助理權限)"
+	TimerHardmode	= "為困難模式顯示計時器"
 }
 
 L:SetMiscLocalization{
 	YellPhase1	= "擅闖者!像你們這種膽敢干涉我好事的凡人將付出...等等--你...",
 	YellPhase2	= "無禮的小輩，你竟敢在我的王座之上挑戰我?我會親手碾碎你們!",
-	YellKill	= "住手!我認輸了!",
-	ChargeOn	= "閃電充能: %s",
-	Charge		= "中了閃電充能 (這一次): %s"
+	YellKill	= "住手!我認輸了!"
 }
 
 -------------
@@ -1500,9 +1496,7 @@ L:SetOptionLocalization{
 	warnAdds				= "提示奈幽掘洞者出現",
 	timerAdds				= "為下一次 奈幽掘洞者出現顯示計時器",
 	TimerEmerge				= "為持續鑽地顯示計時器",
-	TimerSubmerge			= "為下一次 鑽地顯示計時器",
-	AnnouncePColdIcons		= "公佈$spell:68510目標設置的標記到團隊頻道<br/>(需要團隊隊長或助理權限)",
-	AnnouncePColdIconsRemoved	= "當移除$spell:68510的標記時也提示<br/>(需要上述選項)"
+	TimerSubmerge			= "為下一次 鑽地顯示計時器"
 }
 
 ----------------------
@@ -1608,13 +1602,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "顯示距離框 (8碼)",
-	AchievementCheck	= "公佈 '流感疫苗短缺' 成就失敗到團隊頻道<br/>(需助理權限)"
+	RangeFrame			= "顯示距離框 (8碼)"
 }
 
 L:SetMiscLocalization{
-	SporeSet			= "氣體孢子{rt%d}: %s",
-	AchievementFailed	= ">> 成就失敗: %s中了%d層孢子 <<"
+	SporeSet			= "氣體孢子{rt%d}: %s"
 }
 
 ---------------
@@ -1765,9 +1757,7 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "為地上階段顯示預先警告",
 	TimerNextAirphase		= "為下一次 空中階段顯示計時器",
 	TimerNextGroundphase	= "為下一次 地上階段顯示計時器",
-	AnnounceFrostBeaconIcons= "公佈$spell:70126目標設置的標記到團隊頻道<br/>(需要團隊隊長)",
 	ClearIconsOnAir			= "空中階段前清除所有標記",
-	AchievementCheck		= "公佈 '吃到飽' 成就警告到團隊頻道<br/>(需助理權限)",
 	RangeFrame				= "根據最後首領使用的技能跟玩家減益顯示動態距離框(10/20碼)"
 }
 
@@ -1775,10 +1765,7 @@ L:SetMiscLocalization{
 	YellAirphase		= "你們的入侵將在此終止!誰也別想存活!",
 	YellPhase2			= "現在，絕望地感受我主無限的力量吧!",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet		= "冰霜信標{rt%d}: %s",
-	AchievementWarning	= "警告: %s中了5層秘能連擊",
-	AchievementFailed	= ">> 成就失敗: %s中了%d層秘能連擊 <<"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 ---------------------
@@ -1810,18 +1797,12 @@ L:SetOptionLocalization{
 	PhaseTransition			= "為轉換階段顯示計時器",
 	ValkyrWarning			= "提示誰給華爾琪影衛抓住了",
 	SpecWarnYouAreValkd		= "當你給華爾琪影衛抓住時顯示特別警告",
-	AnnounceValkGrabs		= "提示誰被華爾琪影衛抓住到團隊頻道<br/>(需開啟團隊廣播及助理權限)",
-	SpecWarnValkyrLow		= "當華爾琪血量低於55%時顯示特別警告",
-	AnnouncePlagueStack		= "提示$spell:73912層數到團隊頻道 (10層, 10層後每5層提示一次)<br/>(需開啟助理權限)"
+	SpecWarnValkyrLow		= "當華爾琪血量低於55%時顯示特別警告"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "聖光所謂的正義終於來了嗎?我是否該把霜之哀傷放下，祈求你的寬恕呢，弗丁?",
-	LKRoleplay				= "你們的原動力真的是正義感嗎?我很懷疑...",
-	ValkGrabbedIcon			= "華爾琪影衛{rt%d}抓住了%s",
-	ValkGrabbed				= "華爾琪影衛抓住了%s",
-	PlagueStackWarning		= "警告: %s中了%d層亡域瘟疫",
-	AchievementCompleted	= ">> 成就成功: %s中了%d層亡域瘟疫 <<"
+	LKRoleplay				= "你們的原動力真的是正義感嗎?我很懷疑..."
 }
 
 -------------

@@ -5,7 +5,7 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250720212401")
 mod:SetCreatureID(32865)
 if mod:IsPostCata() then
 	mod:SetEncounterID(1141)
@@ -22,7 +22,7 @@ mod:RegisterKill("yell", L.YellKill)
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 62042 62130 62526 62527",
 	"SPELL_CAST_SUCCESS 62042 62466 62130",
-	"SPELL_DAMAGE 62017 62466",
+	"SPELL_DAMAGE 62017",
 	"CHAT_MSG_MONSTER_YELL"
 )
 
@@ -61,26 +61,9 @@ function mod:OnCombatStart(delay)
 	table.wipe(lastcharge)
 end
 
-local sortedFailsC = {}
-local function sortFails1C(e1, e2)
-	return (lastcharge[e1] or 0) > (lastcharge[e2] or 0)
-end
-
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Hide()
-	end
-	if self.Options.AnnounceFails and DBM:GetRaidRank() >= 1 then
-		local lcharge = ""
-		for k, v in pairs(lastcharge) do
-			table.insert(sortedFailsC, k)
-		end
-		table.sort(sortedFailsC, sortFails1C)
-		for i, v in ipairs(sortedFailsC) do
-			lcharge = lcharge.." "..v.."("..(lastcharge[v] or "")..")"
-		end
-		SendChatMessage(L.Charge:format(lcharge), "RAID")
-		table.wipe(sortedFailsC)
 	end
 end
 
@@ -125,9 +108,6 @@ function mod:SPELL_DAMAGE(_, _, _, _, _, destName, destFlags, _, spellId)
 			specWarnLightningShock:Show()
 			specWarnLightningShock:Play("runaway")
 		end
-	elseif self.Options.AnnounceFails and spellId == 62466 and DBM:GetRaidRank() >= 1 and DBM:GetRaidUnitId(destName) ~= "none" and destName then
-		lastcharge[destName] = (lastcharge[destName] or 0) + 1
-		SendChatMessage(L.ChargeOn:format(destName), "RAID")
 	end
 end
 

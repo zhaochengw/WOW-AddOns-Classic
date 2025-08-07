@@ -560,7 +560,7 @@ do
             for i = 1, MaxI do
                 local n = (t - 1) * MaxI + i
 
-                local bt = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+                local bt = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
                 bt:SetSize(btwidth, btheight)
                 bt:SetFrameLevel(125)
                 bt:SetTextInsets(14, 0, 0, 0)
@@ -915,8 +915,8 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
     local raid = BG.SortRaidRosterInfo(filter)
     for t = 1, 4 do
         for i = 1, 10 do
-            local bt = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
-            bt:SetSize(90, 20)
+            local bt = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
+            bt:SetSize(BG.maijiaWidth, 20)
             bt:SetFrameLevel(125)
             bt:SetAutoFocus(false)
             if t >= 2 and i == 1 then
@@ -1210,7 +1210,7 @@ do
         t:SetWidth(f:GetWidth() - 5)
         t:SetWordWrap(false)
 
-        local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+        local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
         edit:SetSize(f:GetWidth() - 15, 20)
         edit:SetTextColor(1, 0, 0)
         edit:SetPoint("TOP", t, "BOTTOM", 2, -5)
@@ -2454,5 +2454,32 @@ function BG.ChatEditSetText(text)
 end
 
 function BG.IsBigFB(FB)
-    return FB=="BOT" or FB=="MSV"
+    return FB == "BOT" or FB == "MSV"
+end
+
+function BG.SetEditBg(edit)
+    edit.Left = edit:CreateTexture()
+    edit.Left:SetPoint("LEFT", -5, 0)
+    edit.Left:SetSize(8, 20)
+    edit.Left:SetTexture("interface/common/commonsearch")
+    edit.Left:SetTexCoord(.88, .95, .01, .31)
+
+    edit.Right = edit:CreateTexture()
+    edit.Right:SetPoint("RIGHT", 0, 0)
+    edit.Right:SetSize(8, 20)
+    edit.Right:SetTexture("interface/common/commonsearch")
+    edit.Right:SetTexCoord(0, .07, .338, .638)
+
+    edit.Middle = edit:CreateTexture()
+    edit.Middle:SetSize(10, 20)
+    edit.Middle:SetPoint("LEFT", edit.Left, "RIGHT", 0, 0)
+    edit.Middle:SetPoint("RIGHT", edit.Right, "LEFT", 0, 0)
+    edit.Middle:SetTexture("interface/common/commonsearch")
+    edit.Middle:SetTexCoord(0, .8, .01, .31)
+
+    edit:SetFontObject(ChatFontNormal)
+    edit:SetScript("OnTabPressed", EditBox_OnTabPressed)
+    edit:SetScript("OnEscapePressed", EditBox_ClearFocus)
+    edit:SetScript("OnEditFocusLost", EditBox_ClearHighlight)
+    edit:SetScript("OnEditFocusGained", EditBox_HighlightText)
 end

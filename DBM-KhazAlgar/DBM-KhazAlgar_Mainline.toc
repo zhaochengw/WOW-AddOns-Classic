@@ -1,5 +1,5 @@
 ## Interface: 110107, 110200
-## Version: 11.2.4
+## Version: 11.2.5
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Bosses (War Within)|r

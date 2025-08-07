@@ -343,7 +343,7 @@ elseif BG.IsCTM then
 end
 
 -- CTM
-if BG.IsCTM or BG.IsMOP then
+if BG.IsCTM then
     BG.Loot.encounterID.BOT = {
         1030,
         1032,
@@ -380,7 +380,7 @@ if BG.IsCTM or BG.IsMOP then
     }
 end
 
--- CTM
+-- MOP
 if BG.IsMOP then
     BG.Loot.encounterID.MSV = {
         1395,

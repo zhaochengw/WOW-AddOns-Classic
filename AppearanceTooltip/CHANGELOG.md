@@ -1,6 +1,8 @@
 # AppearanceTooltip
 
-## [v59](https://github.com/kemayo/wow-appearancetooltip/tree/v59) (2025-07-07)
-[Full Changelog](https://github.com/kemayo/wow-appearancetooltip/compare/v58...v59) [Previous Releases](https://github.com/kemayo/wow-appearancetooltip/releases)
+## [v61](https://github.com/kemayo/wow-appearancetooltip/tree/v61) (2025-08-03)
+[Full Changelog](https://github.com/kemayo/wow-appearancetooltip/compare/v60...v61) [Previous Releases](https://github.com/kemayo/wow-appearancetooltip/releases)
 
-- Fix error when entering combat  
+- Possible case-sensitive library loading issue  
+- TOC for 11.2.0  
+- Fix for 11.2.0 bank system  

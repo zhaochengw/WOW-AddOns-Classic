@@ -312,6 +312,29 @@ local phases = {
     HEMETS_OUTSIDE_CAMP = 1240,
     WU_PENG_ALONE = 1241,
     WU_PENG_REUNITED = 1242,
+    ORBISS_AT_SUMPRUSH = 1243,
+    ORBISS_AT_BORROW = 1244,
+    KU_MO_AT_BRIDGE = 1245,
+    KU_MO_AT_TEMPLE = 1246,
+    SUNA_AT_OUTPOST = 1247,
+    SUNA_AT_CAMP_OSUL = 1248,
+    BAN_AT_OUTPOST = 1249,
+    BAN_AT_CAMP_OSUL = 1250,
+    BEFORE_MANTID_INVASION = 1251,
+    AFTER_MANTID_INVASION = 1252,
+    BLUESADDLE_TEMPLE = 1253,
+    BLUESADDLE_LAKE = 1254,
+    BROTHER_YAKSHOE_AT_BURLAP_WAYSTATION = 1255,
+    BROTHER_YAKSHOE_AT_KNUCKLETHUMP_HOLE = 1256,
+    BROTHER_YAKSHOE_AT_THE_DOOKER_DOME = 1257,
+    LUSSHAN_TOP_STAIRS = 1258,
+    LUSSHAN_PUDDLE = 1259,
+    CHO_NEAR_BEER_TABLE = 1260,
+    CHO_NEAR_PAGODAS = 1261,
+    AN_WINDFUR_DAWNS_BLOSSOM_GATE = 1262,
+    AN_WINDFUR_DAWNS_BLOSSOM_UP = 1263,
+    AN_WINDFUR_DAWNS_BLOSSOM_JADE_HOUSE = 1264,
+    AN_WINDFUR_FOREST_HEART = 1265,
 }
 Phasing.phases = phases
 
@@ -1125,7 +1148,7 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.SKYFIRE_JADE_FOREST then
-        return complete[29548] or (questLog[29548] and questLog[29548].isComplete == 1) or false
+        return (complete[29548] or (questLog[29548] and questLog[29548].isComplete == 1)) and not complete[30070] or false
     end
 
     if phase == phases.RELL_ON_BARRELS then
@@ -1137,7 +1160,19 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.RELL_ON_DOCKS_2 then
-        return complete[31735] or false
+        return (complete[31735] and (not (complete[31736] and complete[31737]))) or false
+    end
+
+    if phase == phases.RELL_PAWDON_VILLAGE then
+        return complete[31736] and complete[31737] and not complete[30070] and (not questLog[30070] or (questLog[30070] and questLog[30070].isComplete == 0)) or false
+    end
+
+    if phase == phases.RELL_TWINSPIRE_KEEP then
+        return complete[30070] or (questLog[30070] and questLog[30070].isComplete == 1) or false
+    end
+
+    if phase == phases.ADMIRAL_ROGERS_PAWDON_VILLAGE then
+        return complete[30070] or false
     end
 
     if phase == phases.SASHA_AT_DUSKHOWL_DEN then
@@ -1350,6 +1385,110 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.WU_PENG_REUNITED then
         return ((complete[30834]) or (questLog[30834])) or false
+    end
+
+    if phase == phases.ORBISS_AT_SUMPRUSH then
+        return (not complete[30793]) and (not questLog[30793]) or false
+    end
+
+    if phase == phases.ORBISS_AT_BORROW then
+        return (complete[30793] or questLog[30793]) and true or false
+    end
+
+    if phase == phases.KU_MO_AT_BRIDGE then
+        return (not complete[30932]) and (not questLog[30932]) or false
+    end
+
+    if phase == phases.KU_MO_AT_TEMPLE then
+        return (complete[30932] or questLog[30932]) and true or false
+    end
+
+    if phase == phases.SUNA_AT_OUTPOST then
+        return (not complete[30769]) and (not questLog[30769]) or false
+    end
+
+    if phase == phases.SUNA_AT_CAMP_OSUL then
+        return (complete[30769] or questLog[30769]) and true or false
+    end
+
+    if phase == phases.BAN_AT_OUTPOST then
+        return ((complete[30776] or questLog[30776]) or ((not questLog[30770]) and (not questLog[30771]))) and true or false
+    end
+
+    if phase == phases.BAN_AT_CAMP_OSUL then
+        return ((not complete[30776]) and (not questLog[30776]) and (complete[30770] or questLog[30770]) and (complete[30771] or questLog[30771])) and true or false
+    end
+
+    if phase == phases.BEFORE_MANTID_INVASION then
+        return ((not complete[30241]) and (not complete[30360]) and (not complete[30376])) or false
+    end
+
+    if phase == phases.AFTER_MANTID_INVASION then
+        return ((complete[30241]) or (complete[30360]) or (complete[30376])) or false
+    end
+
+    if phase == phases.BLUESADDLE_TEMPLE then
+        return (not complete[30929]) or false
+    end
+
+    if phase == phases.BLUESADDLE_LAKE then
+        return (complete[30929]) or false
+    end
+
+    if phase == phases.BROTHER_YAKSHOE_AT_KNUCKLETHUMP_HOLE then
+        return (not complete[30612]) and (not questLog[30612]) and (not complete[30610]) and ((not questLog[30610]) or questLog[30610].isComplete == 0) and (not complete[30607]) and ((not questLog[30607]) or questLog[30607].isComplete == 0) or false
+    end
+
+    if phase == phases.BROTHER_YAKSHOE_AT_BURLAP_WAYSTATION then
+        return (complete[30612] or questLog[30612] and true) or ((not complete[30610]) and ((not questLog[30610]) or questLog[30610].isComplete == 0) and (complete[30607] or (questLog[30607] and questLog[30607].isComplete == 1))) or false
+    end
+
+    if phase == phases.BROTHER_YAKSHOE_AT_THE_DOOKER_DOME then
+        return (not complete[30612]) and (not questLog[30612]) and (complete[30610] or (questLog[30610] and questLog[30610].isComplete == 1)) or false
+    end
+
+    if phase == phases.SULLY_BELOW_SKYFIRE then
+        return (not complete[31735]) or false
+    end
+
+    if phase == phases.SULLY_TWINSPIRE_KEEP then
+        return complete[31735] or false
+    end
+
+    if phase == phases.LUSSHAN_TOP_STAIRS then
+        return not complete[29887] or (complete[29894] and not(complete[29905] and complete[29906]) and not (questLog[29905] and questLog[29905].isComplete == 1) and not (questLog[29906] and questLog[29906].isComplete == 1)) or false
+    end
+
+    if phase == phases.LUSSHAN_PUDDLE then
+        return (complete[29887] and not complete[29894]) or false
+    end
+
+    if phase == phases.LUSSHAN_PEARLS then
+        return (complete[29905] and complete[29906]) or ((questLog[29905] and questLog[29905].isComplete == 1) and (questLog[29906] and questLog[29906].isComplete == 1)) or false
+    end
+
+    if phase == phases.CHO_NEAR_BEER_TABLE then
+        return not complete[31130] or false
+    end
+
+    if phase == phases.CHO_NEAR_PAGODAS then
+        return complete[31130] or false
+    end
+
+    if phase == phases.AN_WINDFUR_DAWNS_BLOSSOM_GATE then
+        return (not complete[29723]) and ((not questLog[29723]) or questLog[29723].isComplete == 0) or false
+    end
+
+    if phase == phases.AN_WINDFUR_DAWNS_BLOSSOM_UP then
+        return complete[29723] or (questLog[29723] and questLog[29723].isComplete == 1) or false
+    end
+
+    if phase == phases.AN_WINDFUR_DAWNS_BLOSSOM_JADE_HOUSE then
+        return (questLog[29723] and questLog[29723].isComplete == 0) or false
+    end
+
+    if phase == phases.AN_WINDFUR_FOREST_HEART then
+        return (not complete[29723]) and ((not questLog[29723]) or questLog[29723].isComplete == 0) or complete[29723] or false
     end
 
     return false

@@ -366,8 +366,6 @@ Spell( 1079, { name = "Rip", tick = 2, overlay = {"tick", "end"}, duration = 16,
 Cooldown( 5217, { name = "Tiger's Fury", color = colors.DBROWN, ghost = true, ghosteffect = "AEGWYNN", scale_until = 5})
 -- Spell( 5217, { name = "Tiger's Fury", duration = 6, color = colors.GOLD, scale = 0.7, group = "buffs", shine = true })
 Spell( 52610, { name = "Savage Roar", group = "buffs", priority = -10, color = colors.PURPLE, duration = 34 })
-
-Spell( 2893 ,{ name = "Abolish Poison", tick = 2, tickshine = true, overlay = {"tick", "end"}, group = "buffs", duration = 8, color = colors.TEAL2 })
 Spell( 29166 , { name = "Innervate", duration = 20, shine = true, color = colors.DBLUE })
 
 Spell( 8936, { name = "Regrowth", duration = 6, scale = 0.7, color = colors.LGREEN })

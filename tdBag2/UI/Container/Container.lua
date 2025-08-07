@@ -341,6 +341,8 @@ function Container:Layout()
 end
 
 function Container:OnLayout()
+    self.prevBreak = nil
+
     local profile = self.meta.profile
     local column = profile.column
     local scale = profile.scale
@@ -348,9 +350,16 @@ function Container:OnLayout()
 
     local x, y = 0, 0
     local size = ns.ITEM_SIZE + ns.ITEM_SPACING
+    local breakHeight = 0
 
     for _, bag in self:IterateBags() do
         if not self.meta:IsBagHidden(bag) then
+            if self:NeedBreak(bag) then
+                breakHeight = breakHeight + self.meta.profile.breakHeight
+                y = y + 1
+                x = 0
+            end
+
             local slotBegin, slotEnd, slotStep
             if not reverseSlot then
                 slotBegin, slotEnd, slotStep = 1, self:NumSlots(bag), 1
@@ -366,7 +375,7 @@ function Container:OnLayout()
                 end
 
                 itemButton:ClearAllPoints()
-                itemButton:SetPoint('TOPLEFT', self, 'TOPLEFT', x * size, -y * size)
+                itemButton:SetPoint('TOPLEFT', self, 'TOPLEFT', x * size, -y * size - breakHeight * scale)
                 itemButton:SetScale(scale)
                 itemButton:Show()
 
@@ -380,10 +389,26 @@ function Container:OnLayout()
     end
 
     local width = max(1, column * size * scale)
-    local height = max(1, y * size * scale)
+    local height = max(1, y * size * scale + breakHeight * scale)
     self:SetSize(width, height)
 end
 
 function Container:NumSlots(bag)
     return Cache:GetBagInfo(self.meta.owner, bag).count or 0
+end
+
+function Container:NeedBreak(bag)
+    local breakType = self.meta.profile.breakType
+    if breakType == ns.BREAK_TYPE.NONE then
+        return false
+    elseif breakType == ns.BREAK_TYPE.BAG then
+        local r = self.prevBreak and self.prevBreak ~= bag
+        self.prevBreak = bag
+        return r
+    elseif breakType == ns.BREAK_TYPE.TYPE then
+        local family = self.meta:GetBagFamily(bag)
+        local r = self.prevBreak and self.prevBreak ~= family
+        self.prevBreak = family
+        return r
+    end
 end

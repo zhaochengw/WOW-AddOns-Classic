@@ -491,7 +491,7 @@ BG.Init2(function()
             AchievementTitleID = t
 
             -- 编辑框
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetSize(80, 20)
             edit:SetPoint("LEFT", t, "RIGHT", 5, 0)
             edit:SetAutoFocus(false)
@@ -679,7 +679,7 @@ BG.Init2(function()
                 BG.PlaySound(1)
             end)
 
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetPoint("TOPLEFT", otherCheckButton1, "TOPRIGHT", 5, -2)
             edit:SetSize(BG.MeetingHorn.WhisperFrame.width - 60, 20)
             edit:SetAutoFocus(false)
@@ -744,7 +744,7 @@ BG.Init2(function()
                 BG.PlaySound(1)
             end)
 
-            local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
             edit:SetPoint("TOPLEFT", otherCheckButton2, "TOPRIGHT", 5, -2)
             edit:SetSize(BG.MeetingHorn.WhisperFrame.width - 60, 20)
             edit:SetAutoFocus(false)

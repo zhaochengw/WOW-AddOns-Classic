@@ -525,7 +525,7 @@ function BG.FilterClassItemUI()
         t:SetTextColor(RGB("FFD100"))
         t:SetText(L["名称："])
 
-        local edit = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+        local edit = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
         do
             edit:SetSize(150, 20)
             edit:SetPoint("TOPLEFT", t, "BOTTOMLEFT", 0, -5)

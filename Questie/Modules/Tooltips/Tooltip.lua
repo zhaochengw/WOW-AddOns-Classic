@@ -191,6 +191,7 @@ local function _FetchTooltipsForGroupMembers(key, tooltipData)
 end
 
 ---@param key string
+---@return table<number, string>|nil tooltipLines
 function QuestieTooltips.GetTooltip(key)
     Questie:Debug(Questie.DEBUG_SPAM, "[QuestieTooltips.GetTooltip]", key)
     if (not key) then
@@ -246,9 +247,10 @@ function QuestieTooltips.GetTooltip(key)
     }]]
     --
     local tooltipData = {}
-    local tooltipLines = {}
+    local tooltipLines
 
     if QuestieTooltips.lookupByKey[key] then
+        tooltipLines = {}
         local playerName = UnitName("player")
 
         local finishedAndUnacceptedQuests = {}
@@ -349,6 +351,11 @@ function QuestieTooltips.GetTooltip(key)
             end
         end
         if hasObjective then
+            if (not tooltipLines) then
+                -- We only have tooltips from other players
+                tooltipLines = {}
+            end
+
             tinsert(tooltipLines, questData.title);
             for _, text in pairs(tempObjectives) do
                 tinsert(tooltipLines, text);

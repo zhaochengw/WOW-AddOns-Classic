@@ -469,7 +469,7 @@ f:SetScript("OnEvent", function(self, event)
         local c = r .. g .. b
         return c
     end
-    local edit = CreateFrame("EditBox", nil, ColorPickerFrame, "InputBoxTemplate")
+    local edit = CreateFrame("EditBox", nil, ColorPickerFrame, "BiaoGe_InputBoxTemplate")
     do
         edit:SetSize(80, 20)
         edit:SetPoint("BOTTOM", 62, 40)

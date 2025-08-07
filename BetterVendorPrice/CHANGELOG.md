@@ -1,6 +1,6 @@
 # Better Vendor Price
 
-## [v1.21.06](https://github.com/mooreatv/BetterVendorPrice/tree/v1.21.06) (2025-01-28)
-[Full Changelog](https://github.com/mooreatv/BetterVendorPrice/compare/v1.21.04...v1.21.06) [Previous Releases](https://github.com/mooreatv/BetterVendorPrice/releases)
+## [v1.22.0](https://github.com/mooreatv/BetterVendorPrice/tree/v1.22.0) (2025-08-06)
+[Full Changelog](https://github.com/mooreatv/BetterVendorPrice/compare/v1.21.10...v1.22.0) [Previous Releases](https://github.com/mooreatv/BetterVendorPrice/releases)
 
-- SoD is now 1.15.6, retail 11.0.7  
+- Switching packager; Changes for MoP and Retail 11.2.0 - report any issue  

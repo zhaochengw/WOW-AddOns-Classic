@@ -171,6 +171,12 @@ function Addon:SetupOptionFrame()
                 reverseSlot = toggle(L['Reverse Slot Order']),
                 column = range(L['Columns'], 6, 36, 1),
                 scale = range(L['Item Scale'], 0.5, 2),
+                breakType = drop(L['Bag break type'], {
+                    {name = L['None'], value = ns.BREAK_TYPE.NONE}, --
+                    {name = L['By bag'], value = ns.BREAK_TYPE.BAG}, --
+                    {name = L['By type'], value = ns.BREAK_TYPE.TYPE},
+                }),
+                breakHeight = range(L['Break height'], 0, 30),
                 tradeBagOrder = drop(L['Trade Containers Location'], {
                     {name = L['Default'], value = ns.TRADE_BAG_ORDER.NONE},
                     {name = L['Top'], value = ns.TRADE_BAG_ORDER.TOP},

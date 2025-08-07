@@ -124,7 +124,7 @@ BG.Init(function()
         end
         -- YY号
         do
-            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.new, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.new, "BiaoGe_InputBoxTemplate")
             edit:SetSize(150, 20)
             edit:SetPoint("TOPLEFT", 110, -15 - height * n)
             edit:SetAutoFocus(false)
@@ -182,7 +182,7 @@ BG.Init(function()
         end
         -- 备注
         do
-            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.new, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.new, "BiaoGe_InputBoxTemplate")
             edit:SetSize(150, 20)
             edit:SetPoint("TOPLEFT", 110, -15 - height * n)
             edit:SetAutoFocus(false)
@@ -751,7 +751,7 @@ BG.Init(function()
             f.Text:SetTextColor(1, 1, 1)
             f.Text:SetJustifyH("RIGHT")
             -- YY输入框
-            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.search, "InputBoxTemplate")
+            local edit = CreateFrame("EditBox", nil, BG.YYMainFrame.search, "BiaoGe_InputBoxTemplate")
             edit:SetSize(120, 20)
             edit:SetPoint("LEFT", f, "RIGHT", 10, 2)
             edit:SetAutoFocus(false)
@@ -1275,7 +1275,8 @@ BG.Init(function()
     do
         Y.yykey = "[yY][yY][：:_/%-%s]*([%d%s]*%d+)"
         Y.yykey2 = "(%d+[%d%s]*)[：:_/%-%s]*[yY][yY]"
-        ns.yykey=Y.yykey
+        Y.yykey3 = "歪歪[：:_/%-%s]*([%d%s]*%d+)"
+        ns.yykey = Y.yykey
 
         local function PingJia(cleanedYY)
             local text = ""
@@ -1333,7 +1334,7 @@ BG.Init(function()
                     return false, link, player, l, cs, t, flag, channelId, ...
                 end
             end
-            msg = msg:gsub(Y.yykey, CreateLinkForGsub):gsub(Y.yykey2, CreateLinkForGsub)
+            msg = msg:gsub(Y.yykey, CreateLinkForGsub):gsub(Y.yykey2, CreateLinkForGsub):gsub(Y.yykey3, CreateLinkForGsub)
             return false, msg, player, l, cs, t, flag, channelId, ...
         end
 
@@ -1847,7 +1848,7 @@ BG.Init(function()
             end
             -- YY号
             do
-                local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(190, 20)
                 edit:SetPoint("TOPLEFT", 100, height_start - height * n)
                 edit:SetAutoFocus(false)
@@ -1900,7 +1901,7 @@ BG.Init(function()
             end
             -- 备注
             do
-                local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "InputBoxTemplate")
+                local edit = CreateFrame("EditBox", nil, BG.EndPJ.new, "BiaoGe_InputBoxTemplate")
                 edit:SetSize(190, 20)
                 edit:SetPoint("TOPLEFT", 100, height_start - height * n)
                 edit:SetAutoFocus(false)

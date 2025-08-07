@@ -11,6 +11,7 @@ L["Appearance"] = true
 L["Are you sure you want to restore the current Settings?"] = true
 L["Auto Close"] = true
 L["Auto Display"] = true
+L["Bag break type"] = true
 L["Bag Frame"] = true
 L["Bag Style"] = true
 L["Bag Toggle"] = true
@@ -18,6 +19,9 @@ L["Bank"] = true
 L["Blizzard Panel"] = true
 L["Border Style"] = true
 L["Bottom"] = true
+L["Break height"] = true
+L["By bag"] = true
+L["By type"] = true
 L["Character Specific Settings"] = true
 L["Closing the Character Info"] = true
 L["Closing Trade Skills"] = true
@@ -77,6 +81,7 @@ L["Move up"] = true
 L["Need to reload UI to make some settings take effect"] = true
 L["Never show"] = true
 L["No record"] = true
+L["None"] = true
 L["Normal Color"] = true
 L["Opening the Character Info"] = true
 L["Opening Trade Skills"] = true
@@ -292,6 +297,11 @@ L['Item level color'] = true
 L.Light = true
 L['Quality by blizzard'] = true
 L.White = true
+L['Bag break type'] = true
+L['Break height'] = true
+L['By bag'] = true
+L['By type'] = true
+L.None = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

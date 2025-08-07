@@ -46,7 +46,7 @@ function BG.CreateFBScrollFrame(frameName, FB, bossNum)
     local parent = BG[frameName .. FB]
     local scroll = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate") -- 滚动
     scroll:SetWidth(350)
-    scroll:SetHeight(BG.GetMaxi(FB, bossNum, true) * (20 + (BG.IsBigFB(FB) and 0 or 3)))
+    scroll:SetHeight(BG.GetMaxi(FB, bossNum, true) * (20 + (BG.IsBigFB(FB) and .1 or 3)))
     scroll:SetPoint("TOPLEFT", pointFrame, "BOTTOMLEFT", pointX, pointY)
     BG.CreateSrollBarBackdrop(scroll.ScrollBar)
     BG.HookScrollBarShowOrHide(scroll)

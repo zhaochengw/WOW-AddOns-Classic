@@ -2272,3 +2272,17 @@ Change Log:
 * Updated for WoW Mists of Pandaria Classic 5.5.0
 * Added BFA spells for Shrine of the Storm
 * Added BFA spells for King's Rest
+
+5.18
+* Fixed spells not loading for Mists of Pandaria Classic
+* Fixed BC spells for Blood Furnace
+* Fixed BFA spells for Freehold
+* Fixed BFA spells for King's Rest
+* Fixed LGN spells for Nighthold
+* Added The War Within spells (world)
+* Added Battle for Azeroth spells (world)
+* Added TWW spells for Liberation of Undermine
+
+5.18.1
+* Updated for patch 11.2
+* Added TWW spells for Eco-Dome Al'dani

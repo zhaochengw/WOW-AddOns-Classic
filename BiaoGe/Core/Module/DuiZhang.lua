@@ -471,6 +471,7 @@ function BG.DuiZhangUI()
             BG.PlaySound(1)
             local text = ""
             local num = BG.lastduizhangNum
+            if not (BiaoGe.duizhang[num] and BiaoGe.duizhang[num].member) then return end
             for name, v in pairs(BiaoGe.duizhang[num].member) do
                 local color = "ffFFFFFF"
                 if v.class then
@@ -568,6 +569,7 @@ function BG.DuiZhangUI()
                 bt.icon:SetTexture(nil)
             end
             local num = BG.lastduizhangNum
+            if not (BiaoGe.duizhang[num] and BiaoGe.duizhang[num].member) then return end
             for name, v in pairs(BiaoGe.duizhang[num].member) do
                 local team, n = strsplit("-", v.point)
                 team = tonumber(team)
@@ -603,7 +605,7 @@ function BG.DuiZhangUI()
         })
         f:SetBackdropColor(0, 0, 0, 0.6)
         f:SetPoint("BOTTOMRIGHT", BG.MainFrame, -40, 90)
-        f:SetSize(335, 200)
+        f:SetSize(335, 190)
         f:EnableMouse(true)
 
         local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate") -- 滚动

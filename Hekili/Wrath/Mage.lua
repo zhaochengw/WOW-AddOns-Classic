@@ -101,7 +101,57 @@ spec:RegisterTalents( {
 } )
 
 spec:RegisterAuras( {
--- Increases magic damage taken by up to $s1 and healing by up to $s2.
+    -- 法师2T10效果：冲破极限，急速提高12%，持续5s by风雪 20250728
+    pushing_the_limit = {
+        id = 70753,
+        duration = 5,
+        max_stack = 1,
+    },
+    -- 法师4T10镜像效果：四核强能，法伤提高18%，持续30s by风雪 20250728
+    quad_core = {
+        id = 70747,
+        duration = 30,
+        max_stack = 1,
+    },    
+    -- 天堂之焰效果，法伤提高959，持续10s by风雪 20250728
+    flame_of_the_heavens = {
+        id = 64713,
+        duration = 10,
+        max_stack = 1,
+    },
+    -- 无名巫妖的护符匣效果：虹吸能量，法伤提高1074或1207，持续20s by风雪 20250728
+    siphoned_power = {
+        id = 71605,
+        duration = 20,
+        max_stack = 1,
+        copy = { 71605, 71636 },
+    },    
+    -- 谬论之笔效果：能量动荡，法伤提高716，持续20s by风雪 20250728
+    elusive_power = {
+        id = 71579,
+        duration = 20,
+        max_stack = 1,
+    },    
+    -- 被摘除的外物效果：能量涌动，法伤提高105，每2s提高105，持续20s by风雪 20250728
+    surge_of_power = {
+        id = 71601,
+        duration = 20,
+        max_stack = 1,
+        copy = { 71601, 71644 },
+    },  
+    -- 277戒指特效：霜铸先知，法伤提高285，持续10s by风雪 20250728
+    frostforged_sage = {
+        id = 72416,
+        duration = 10,
+        max_stack = 1,
+    },        
+    -- 法伤提升，触发法伤提升的饰品，最长时间。by风雪 20250728
+    magic_damage_increase = {
+        alias = { "flame_of_the_heavens", "siphoned_power", "elusive_power", "surge_of_power" },
+        aliasType = "buff",
+        aliasMode = "longest"
+    },    
+    -- Increases magic damage taken by up to $s1 and healing by up to $s2.
     amplify_magic = {
         id = 43017,
         duration = 600,
@@ -364,10 +414,10 @@ spec:RegisterAuras( {
         copy = { 44614, 47610 },
     },
     heating_up = {
-        duration = 3600, -- Heating up is a pseudo buff that has no duration
+        duration = 3600, -- 加热状态，是一种没有持续时间的伪增益。
         max_stack = 1,
     },
-    -- Your next Pyroblast spell is instant cast.
+    -- 法术连击Your next Pyroblast spell is instant cast.
     hot_streak = {
         id = 48108,
         duration = 10,
@@ -456,11 +506,11 @@ spec:RegisterAuras( {
     },
     -- Causes $s1 Fire damage every $t1 sec.  After $d or when the spell is dispelled, the target explodes causing $55362s1 Fire damage to all enemies within $55362a1 yards.
     living_bomb = {
-        id = 55360,
+        id = 55360, --修复技能id错误，by风雪 20250725
         duration = 12,
         tick_time = 3,
         max_stack = 1,
-        copy = { 44461, 55361, 55362 },
+        copy = { 44457, 55359, 55360 }, --修复技能id错误，by风雪 20250725
     },
     -- Resistance to all magic schools increased by $s1 and allows $s2% of your mana regeneration to continue while casting.  Duration of all harmful Magic effects reduced by $s3%.
     mage_armor = {
@@ -1536,9 +1586,9 @@ spec:RegisterAbilities( {
         end,
     },
 
-    -- The target becomes a Living Bomb, taking $o1 Fire damage over $d.  After $d or when the spell is dispelled, the target explodes dealing $44461s1 Fire damage to all enemies within $44461a1 yards.
+    -- 活动炸弹The target becomes a Living Bomb, taking $o1 Fire damage over $d.  After $d or when the spell is dispelled, the target explodes dealing $44461s1 Fire damage to all enemies within $44461a1 yards.
     living_bomb = {
-        id = 55362,
+        id = 55360, --修复技能id错误，by风雪 20250725
         cast = 0,
         cooldown = 0,
         gcd = "spell",
@@ -1551,7 +1601,7 @@ spec:RegisterAbilities( {
         handler = function()
             applyDebuff( "target", "living_bomb" )
         end,
-        copy = { 44461, 55361, 55362 },
+        copy = { 44457, 55359, 55360 }, --修复技能id错误，by风雪 20250725
     },
 
     -- Increases your resistance to all magic by $s1 and allows $s2% of your mana regeneration to continue while casting.  Only one type of Armor spell can be active on the Mage at any time.  Lasts $d.
@@ -1912,7 +1962,7 @@ spec:RegisterPackSelector( "arcane", "Arcane Wowhead", "|T135932:0|t 奥术",
         return tab1 > max( tab2, tab3 )
     end )
 
-spec:RegisterPackSelector( "fire", "Fire Wowhead", "|T135810:0|t 火焰",
+spec:RegisterPackSelector( "fire", "火焰(黑科研)", "|T135810:0|t 火焰",
     "如果你在|T135810:0|t火焰天赋中投入的点数多于其他天赋，将会为你自动选择该优先级。",
     function( tab1, tab2, tab3 )
         return tab2 > max( tab1, tab3 )
@@ -1925,5 +1975,9 @@ spec:RegisterPackSelector( "frost", "Frost Wowhead", "|T135846:0|t 冰霜",
     end )
 
 spec:RegisterPack( "奥术 Wowhead", 20230924, [[Hekili:9EvBVTTnq4FlffWjfRw2X5TLIMc01bSLGTGH5o09jjrjF2MiuKAKu2nfb63(UJ6Lqjl7g0c0Vyjt(W7nE39Ck8KWpgoFbZcH3nB6StNE1SZdMoD6StonCU9HCiCEol9E2k8fjld)996uMekJ)KA7AGTG2)bHcFbLJrvOtrmRT2CZBMmz72TbBRWfKQYMSvzf3pzvbFbmjvWmgWmjdL9eMtOtwKBgRvwMLRKJtvkXc1wPzmlHl4woygNVbLEsbxyVrgMmSHplCoRWUwPdN)7W94jr7HVybuDaWKgoNoW4PxnE2zVPm(gjkBMOm2QzsJWP8Y4LAvwRtgeoxWnwd5JmfGpUZf3ajlralc)LW5PAUf0Cgg1y6vGnyl3UMlpzkEIusK4tNtgbFoxOm0kw00DISgqUgmGmfIulJY4Yf(kaXEQp2eb)lFHP7J5mFmlf4nMXQ53dDHzPaXswHW26knNjvvirhXKdcrpz3XwDamwG1hvhRudzQnquAH2adzP7jakaPnGlXWfzkrSeJsNtsmO(aLXJkJtkwUCyuuAJdsLDeSsOsyIi7AqNHpnS8CqhLUMUPc04f8dEbnUgI2srw0ip)hHr6G0Q2GI8NmMdz4K9DrN0hv1ZoH5l9ruNbMR2c6E4(zFC80hI2aCPPhOR8bLX1ALoIN5Ao0bhM13nUrLDAEE1b)hd2(GjFGQ44Y7bRbFBnZIlQb5r4tf5WB5eomplLVKdunyJMlmqeEpKzC6A)vIeEm7dKqg28Om(DLXZ8Y0zcru1FIOQ7QA8OQUCuvoj8z7v4la39wDinb7MzdmwSxzz81LXN5UzpU(YnJBmCbIIP1y0cVIlJF8XYySGFt0Q0fbx0roLXVAN7SAru5YN(DzvdAsTzJyblxUAh9xJZP(ZgiNYPQ(Pb7V8jJjzb5POR(2Y4lN63XihlS4M1reeNuU45jf)wTWgvQRrEvZomoJ0pjm7qDU77iAUqWzsIhRtA7CihZ5sanMfH8h(2HMX9Q23rqUGBBh0b9Kxug)CeYo7ZX2kcbKAR0rFNPD7D6mtvTrmDMs3NAaJxBWwveQgMv0zXwtsmVa7i8P3)33DZD)gYCwg)X1yjkplxPX7GLkm0CunXYrOdb)xb2vdDkJkJk5lSQmKWgxa7GjxbMGYB)donmbXd)bLe1RB7JQ7U(VOuSkV)30Afx)4t(8RAp)5FZNV82BCMpDStBimkJD0942uUJAjwOeo)LLX)jg0qnvpc0T4k(t6GDnh76A(0SoJDt5WtRhWzmf1htt5GdYCWjDCcVxghzSVex(VAYMlVTYCnbTj4)01t2jZ518LxtjxJouI1HevBwejPx81e1O9NFoSwEkvSXd)1QCOw4ii)5s8x)P5q8x1FUJkr(HMySpSwsxYXoaJ(OdZIp6zpMHVYpe6Vt7zNjk81B1yc(R4pwG)6TJb4VOpTVll9BKo3xMTe6DUX7Xp)AIz(AKyMcoDP2F3SbCNggtc(EPfV(SrhVhk6hFCp0ZVAaLvFSVMU2l17OkA3HKSBIGo52(mKKgBObF7Lt9b2sc2bZjtPQSM6qmC(KQA)YKQ0VoFgt)J0)Bv6VFZ3N0F9oFtcLnqJEsKoH))]] )
+
+spec:RegisterPack( "火焰(黑科研)", 20250731, [[Hekili:LEvtVnsny4FlCH2kKg1K0VabibxqDfkhy6kUnE8mJtgR6XEQTNwYEyurls8XHvuP92UhqIdRybjGl7LvWFMLUr9FbV2ojJNKmPrGQutQ9RFE)6XpVUr9IolkmdRjrd7VF)d3)4b9c6Du)d71lkupPKefwItphpg(chxa)E6x)Rt)M)y37E9ntFXnt)PNUNXIjmboZGKsujtbRIctQOm9P8OKLHhmQKKgn8KOWCAwgXzcrLgf(2N)B3(3VC6t(9Pp9pDo42F4zGpM(lV6TF)1V56F8UF(j39Sx(MRV52V7v)ZF9864gqlLIruM11xsKkQG77YRWsoLpwff(LFYxm80HF2huhxhFwoPoMwukK664rczD8ozKr4kMEN6yj5IkQKKvhRefGD4kTOaYeyH0CmFmrfu)GpNYHTocq7HCvvPbjJb4uneaaCJyqrdLIl3bmU(bNwm3IbngXOkTbROqWf5czuOlnJcT7ykR9pR3(WNd7n)x6OqchNWizrFAuyQKQjskokC3mss1Orbm6Lq6IsefjbssbMYv1XFmeP1XM0CnwLjUIVxD87whVRDVYkvUztDobXOfuDlC2nfR0in1uyEpguv4PtGt7dqobRnauvAX254v2QQ0Ee3YcnsPLe85ZoHbrOQyRtrHJGUrcMXGKFy)1xiMBA5ePiHbHOFTzlDDvjaQ2qjTmH5oAb2PIkoGiqIHqXZ5ZIQ1fowBvAcMz6PCGqK5VikviyMm2GXGoWOGkLcjIwyVl2KvZp3bEvKkfbjgncng8dS26PkUsSPDD)CMTH14ATxuHZG8rsAvEHGMMIYWMGhr5PqHwzSypFwrZrx49pSo(47dLzHGbNnyLFcDOZAnwoMOnmcMopOmvB93GJ2ZVxxKuPSFhkXh6tdOPtqxsaixIdCKVrlU(VKrh7BuPW9zlloPdAGP1cDWcLtZuslDR)qLrIIpbsljLFordPQohd5ews47aFkGBYYROg7mcW0ruswGXvV)sUQfUqnyskJGCflLLovG)ku7vd94eU0DE86THp5BwT3iGG0cugLy7m96B72Dq0mbRvhCr0M41QaLbK7pqgDtFVzw(scIWjfuIJd03PUICd1WcIf8o0xBvrM(TpE6JFHja3oNBtLgIKrFX31TPy96qyBzvmF5Q77csZTPDNp0jyUwAWA0XBj62OKAIUbBw29EldRouzPQHDqNXth0b)Fdk7ljHpS3HDGHj5rRasHWW2Sh8OUoOuO0UtlyTo8y2KY8Gf7hm)Wg0oEdHHDEMhoUrpLsIHwGBg(SwQGetZAA(yzkggTKiPmgfZtDkJlrEdjLG4rcrAF60GMGzLtVP5zZmMcZbzmsARkX7aVCAlIRv2Fbyb37KqO2t4iSSW8wPLybvC6fve3Mb(ZgxBhqKwPq2BnTAMsXSBvZeoYe6apBRJ)O649DTkJYXAAsZ9GLLHUcFjznQFxr1WTbhHVRsTDccqRPNtwjxneifGfS2S7rZEAXjBQ8LjXJfCf0qGNcL3Dy1FrLRjzOp6ryzw7rv6wAyD)i15OKd)xfMxprYaPIucJiXnJ28E1s3VY7)Yt6w7Ri7qo7)f(Tempy7CWwG0HEiTQas7(H7NO)n]] )
+
 spec:RegisterPack( "火焰 Wowhead", 20230925, [[Hekili:DAvxVTTnu0FlffW5HflBR20LuahG9b2wc2cgIBrFtsuuuweMIuLKkAUpOF77EPSKPKTZkgcqSn5LhE)4CVhgTk6trBYiww0tHldF3Y7cVjy5T3egUkAJDFflAtfHUJSf(IKuc))34AwBYxunfmsgU7EHc(cGIrvRPGffwBL5Jlw000e00zxavvUOrzf7wSTMNXwqfeJHzwuciVihGCrwLzUwzjwUsoNQuImvJ0mNKYfClNzMx9cGDAnxyFqgLEwNE1DGxuXOrpDl4g8SmwNLmdnAdA58L3np8Mp2M8GeaLiAtSAI0iC3ABsUwvoeBbrBeCJ1GHgrXGpEYLSyssQGLf9ZrBOAULP5eivr0Bz2GgUTGlxTeobfHeCyiqTXneW5TG3obGERYfqU1y18DmFutRZZdWSJbWhwlOUcDkjlMcP(BreF33PlfE8YY0KTkPjovZi2ceK37IXbpM)TVr0z(WAH)G0yoPwyhse9hGQQLWDcjEHy8HUy86S1yzeHx8CCX4(6)qe2FWsUwR0X8shJC0D9(X(uzATP77JS6gFR409XVW4sZeJ(GVrUAtmLunXOF03Ok1zURBNe9ipuZR6S8ZgOnIi3JuqUChZAGVvqSWIAM8k4tLTGPB4ODiPMNZziPS)kRnSyOwxAWR6UlKOf8x4YTXPq6ask7PcwChVWGfXnLK)jE8Q(NOlOpHrz5q(WQIZ4GNDFBYQW2KzTjzmhD178bUs44W(z22Abr3M88HED07HgMlXIXa5fwmtYkHHaU7ZJktjcrC3pIXM1Uw24Ujvytlc(L7ADoCHYgdTEmYUa4FuRxrDVw56FDWmLlFeMsfgYEmgOJn(4bVCl6wX(QIayQJXINjO3OJi1VfKpfDOnIMJBLsM22bHqLMHTae75gB1FAIMsGEVunxi4ejo7EuTAdRc4xPmOAHdp99CnHN5Q6Uu4jaf038E5K2BAt(Ea5K95WSgHGrThyxtcMHTF9HJoeRL8VwZIj6sLEcALq6Mj72Ay4Y5RHAvDLZlpqvZu2GCfT2eddP402K1TjEccEB5kvqX6fy4jU3Gyw0MgIwcCkOF8l)0Zp9Wt)oOz1M8PcOJJxwP0W4HCfuxU6Wq5RGSj7R1aDaYOgvjoBP2QkbnsybAbrULzcAF8pHHTTjFaq7ZstDfIeAqNZbWnmS7kW42hFOS3I3D0iNQiSnet12ci)S5py7avAK1PY5cGg922K)cMqdxJ75cpc)2)vbWC35U5UhFxWC3lc4u3JbMJJ3NJViae9F1xf4GEcpfD83cl)399aTp256MGH2IFy9It4BxZZxJuYzVgD81GAG7Hi9M)lOMDzw95VfFojEdNNdF(Z6X6WJ6iTZopHD9Y(e4V2XTgqeWXxR3F9JA3xFqpF9zKZ7G9x6lJ(a4lSp(c7fY9xDq42FXbUR)IDcZoAY)tfxF0g0CDaEIwMVPE6GxpsID9QRpr2D9evxSgDQA79RcNDbv2rPSjIIxJYHRb1qe1X6P3hokx1R3nWUMQnokDpOYHM3PboA)rAxow35L7MckkOHuWEEm45WohFiTxYP)92tn2790d8XBhIQXVOE6zh)84tVSWt9SdpyghMh9V]] )
+
 spec:RegisterPack( "冰霜 Wowhead", 20230930, [[Hekili:fJ1FpsTnq0plOkT3Du2S)4G7a0DivkQTGApv1qf9VsI3Kj76Eo2bBNBzpDkF27yNnjoztwOuHQqcYAp(nppEM5ztWIG3h4Nq0qWnlNV885V485ElE6Y5p95b(6D5qGFoj(wYA8dojd)7Fsku6YOpi2UbijMP3Xe4himkrHmgnzJwNRE5SzB3U1BBLDEXISzBfA2TZwxqtGzXmIsbQzzi0Zsnyoljxnvk0envWNgleSeXwUAkzfLr1uqnn)oe8vfuM(T8Gvdt7lrAKdXb3G8FdnjbQSeuXb()g6RxwgvTdENllPX7MEhq5QwEo1YqACf5MA45uddrsCuww(oFixdzRazzKHByisksPmK7FxzuxoGd8nJgi29ys57WrXH)DjG4VIGeGeBaq5Lxp03F9mImMWHWvskJrj8y4j00RLeAYKvfPPEhmTNX1hfkkxdmgeRni9OphuDMRzPhXlXc(FxiHWmcNeUgYmEP(7W4ne5AqD1YHxBMGPbEirMjKM1z9DbN(XcOAWJ4xvrwMGhUftdLHadYaUMWS7XCq7zwYDWK1SD5B8a0goHvzShWjRyqYWWMkIlu4Mznn2G1APOiFsfyHjcTNZ8xpFyiY3jfRWehBaFLqPQp6FdKskyTh82OxbgJLyvdJ5oUDaLgWDeJINeXjx3ouyDkxfS)yDcOlazuPuidPMC2oapEy7ljwHiG1jH26e3b3NWKl2I57oJNYW(wHXKC3bZfMVEsHccfPPHRXn3IUbfwsOItYn0YyvZavzNnmOkJToA4mUeYi4)(QlMBlf)tfugr47kJ0sk)wqRWV2GLGrejWpb)xHEdi3sn2z6GrtPqINlNm0GI1ZQwaFda5MMjaCp(lTOmcRfW4l(JDyZ4YitoaAaLVgpHrFKw36jQQUa9fndtiWiNOqXq6TLQ3GKAVDRWYdCzY9)mLkXL8ACWomlbPryQLfM41PjGniHTSUh4Ef5p8q1VRObgXdTDZ8uAuB56fNn50kS8sRDsOXXEuEykJUEJ(HhCnO7CN15WUE(MA5dCkwmHPByoNNdTBpbDgS(m8QymkgQPzWJpY(4aA0SpA4YkS1hVfC0E3fTIrV)EImXy((YDGdzyZ8xTCYJYe3HUTBok3K9AtnhCnAZjS2ZCIs5lMp5qi2xZaFkNjuMcIVoyQ2P19BQMV7YwoVZofW4PTd9NRo0mrtB9owv3K3lpwF1LDGhUteBfg7yZ5ZhmrjW)o8SehT9Meb(BjsoUhub(F4h(JBE7n)mkzxg9(nyYpnlxiXAIutrXjjv9tpPmscFSaddjyfLWu)rk0ImSbwITudtyuyjZVInslJwS8LMwMC0X25pzF(4FDsvnCZVR79HJF6IpDMNPl(BT(3SSLOtS7hSmNQ0g8d8r3Urid8)f4w8Mab(2zS3XRIP4N3yVZx1sd8DB)h4V3HbVoqJXdJDTJ0SKwzad(wPb3bB0gmyCURVCve65RN2ZxXsSvNKsc8Fuz0rKfCy1GYkgSFMlhA6q3Jax4AKRwsp7U01UgTLEg9CJroPRMyEZIQY57TIxm6(VJ6tz0KYObuGSJpUkuz0RkJUyU7P(Ean(EX8Eo3CDzjnVY0VsLRwF1OBz91IrsQC67oeb(FuPZ9W40YO(IBLrp8W(ZKregIUgR5lJoZEiDADv7OIDvaoUGhIKns2V8SLLJj8zjWHIFnxXQts0acHLrxHgulgwg94JUVDktAA2A495hN3hks2dOMqMfTXBC0viZwcS0UfXokvAuTaxR9AH8z)7HSNgPDS((WvV26Nl(24N(I6wFD5O(AVC(bOV0PDrRaVfSJ2ERV4EVgDlgVtxTuTnn7sh3lHCmNLQ2yX9axBKQ63cBeup3b1MRjybOJOOZTdCjV28w(9VYQriDGEzh8U2ED0o4)HGw2AECCBt(HFG8qAZD0l)sa5G57(s7d2mnt3OQpA029D32O(YofbDER(X1(h(14oxOW517nk9JfvAFtUDV)F8sfJx8AFWU1f7lJ79ODREGBXv7unxWy4Ob(qENRru)g)G2)e8pd]] )

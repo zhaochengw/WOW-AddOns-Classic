@@ -171,26 +171,33 @@ local T_Recipe_Data = {
 --	TradeSkill
 	--[[
 		SpellEffect.db2
-			sid = 36SpellID
-			cid = 14EffectItemType
-			min = 9EffectBasePoints + 1
-			max = 9EffectBasePoints + 13EffectDieSides
+			sid = [36AJ] SpellID
+			cid = [14N] EffectItemType
+			base = [9I] EffectBasePoints
+			side = [13M] EffectDieSides
+				side == 0
+					min = max(base, 1)
+					max = min
+				side >0
+					min = base + 1
+					max = min + side - 1
 		SpellReagents.db2
-			sid = 2SpellID
-			reagent = 3Reagent...10
-			num = 11ReagentCount...19
+			sid = [2B] SpellID
+			reagent = [3C] Reagent...10
+			num = [11K] ReagentCount...19
 		SkillLineAbility.db2
 			通过3SkillLine查表SkillLine.db2得技能名筛选
-			sid = 4SpellID
-			pid = *(3SkillLine)
-			Grey = 10TrivialSkillLineRankLow
-			Yellow = 9TrivialSkillLineRankHigh
+			sid = [4D] SpellID
+			pid = *([3C] SkillLine)
+			Grey = [10J] TrivialSkillLineRankLow
+			Yellow = [9I] TrivialSkillLineRankHigh
 		SkillLine.db2
-			6SkillLine
-			1DisplayName_lang
+			[6F] SkillLine
+			[1A] DisplayName_lang
 		ItemEffect.db2
-			sid = 8SpellID
-			recipe = 10ParentItemID * SpellName
+			[3C] TriggerType == 6 (OnLearn)
+			sid = [8H] SpellID
+			recipe = [10J] ParentItemID * SpellName
 			--	Skip Spell:843
 	--]]
 	--------------.-PHA-PID-----SID-----CID-LEARN--Y--GREEN-GREY-MIN--MAX---------R-------N--TRAINER-PRICE-RECIPE-QUEST-OBJ-CLASS-SPEC
@@ -4309,7 +4316,7 @@ local T_Recipe_Data = {
 	[86653]  = { nil, 1, 16,  86653,  62245, 515, 525, 530, 535,  1,  1, { 61981, 52329, 52328, 67335, }, { 12, 36, 12, 1, }, true, 150000, },
 	[86615]  = { nil, 1, 16,  86615,  61987, 525, 525, 530, 535,  1,  1, { 61981, 52329, 39502, }, { 10, 30, 1, }, true, 200000, },
 	[86654]  = { nil, 1, 16,  86654,  63276, 525, 525, 530, 535,  1,  1, { 39502, 61978, }, { 1, 1, }, },
-	
+
 --	Extra
 	[19566] = { nil, 1,  3,  19566,  15409, 275, 275, 275, 275,   1,   1, { 8150, }, { 1, }, },	--	筛盐器
 

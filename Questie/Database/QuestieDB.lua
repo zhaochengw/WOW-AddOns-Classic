@@ -1016,7 +1016,7 @@ function QuestieDB.IsDoable(questId, debugPrint)
         end
         -- Check if the other breadcrumbs are active
         local otherBreadcrumbs = QuestieDB.QueryQuestSingle(breadcrumbForQuestId, "breadcrumbs")
-        for _, breadcrumbId in ipairs(otherBreadcrumbs) do
+        for _, breadcrumbId in ipairs(otherBreadcrumbs or {}) do -- TODO: Remove `or {}` when we have a validation for the breadcrumb data
             if breadcrumbId ~= questId and QuestiePlayer.currentQuestlog[breadcrumbId] then
                 if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Alternative breadcrumb quest in the quest log for quest " .. questId) end
                 return false
@@ -1874,8 +1874,17 @@ local questsRequiringTamingPandariaAchievement = {
     [33222] = true, -- Little Tommy Newcomer
 }
 
-local questsRequiringDreadHasteMakesDreadWasteAchievement = {
-    [32030] = true, -- Once in a Hundred Lifetimes
+local questsRequiringPandarenSpiritTamerAchievement = {
+    [32434] = true, -- Burning Pandaren Spirit
+    [32439] = true, -- Flowing Pandaren Spirit
+    [32440] = true, -- Whispering Pandaren Spirit
+    [32441] = true, -- Thundering Pandaren Spirit
+}
+
+local questsRequiringFabledPandarenTamerAchievement = {
+    [32604] = true, -- Beasts of Fable Book I
+    [32868] = true, -- Beasts of Fable Book II
+    [32869] = true, -- Beasts of Fable Book III
 }
 
 function _QuestieDB:CheckAchievementRequirements(questId)
@@ -1922,8 +1931,12 @@ function _QuestieDB:CheckAchievementRequirements(questId)
         return select(13, GetAchievementInfo(6606)) -- Taming Pandaria
     end
 
-    if questsRequiringDreadHasteMakesDreadWasteAchievement[questId] then
-        return select(13, GetAchievementInfo(6540)) -- Dread Haste Makes Dread Waste
+    if questsRequiringPandarenSpiritTamerAchievement[questId] then
+        return select(13, GetAchievementInfo(7936)) -- Pandaren Spirit Tamer
+    end
+
+    if questsRequiringFabledPandarenTamerAchievement[questId] then
+        return select(13, GetAchievementInfo(8080)) -- Beasts of Fable
     end
 end
 

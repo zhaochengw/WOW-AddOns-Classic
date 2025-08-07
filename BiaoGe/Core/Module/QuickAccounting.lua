@@ -39,8 +39,8 @@ BG.Init(function()
         local raid = BG.SortRaidRosterInfo()
         for t = 1, 4 do
             for i = 1, 10 do
-                local bt = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
-                bt:SetSize(90, 20)
+                local bt = CreateFrame("EditBox", nil, f, "BiaoGe_InputBoxTemplate")
+                bt:SetSize(BG.maijiaWidth, 20)
                 bt:SetAutoFocus(false)
                 bt:SetEnabled(false)
                 if t >= 2 and i == 1 then
@@ -339,7 +339,7 @@ BG.Init(function()
 
     -- 金额
     do
-        local edit = CreateFrame("EditBox", nil, BG.ChatAccountingFrame, "InputBoxTemplate")
+        local edit = CreateFrame("EditBox", nil, BG.ChatAccountingFrame, "BiaoGe_InputBoxTemplate")
         edit:SetSize(120, 20)
         edit:SetPoint("BOTTOMRIGHT", BG.ChatAccountingFrame, "BOTTOM", -10, 60)
         edit:SetAutoFocus(false)
@@ -396,7 +396,7 @@ BG.Init(function()
 
     -- 欠款
     do
-        local edit = CreateFrame("EditBox", nil, BG.ChatAccountingFrame, "InputBoxTemplate")
+        local edit = CreateFrame("EditBox", nil, BG.ChatAccountingFrame, "BiaoGe_InputBoxTemplate")
         edit:SetSize(120, 20)
         edit:SetPoint("BOTTOMRIGHT", BG.ChatAccountingFrame, "BOTTOMRIGHT", -40, 60)
         edit:SetAutoFocus(false)

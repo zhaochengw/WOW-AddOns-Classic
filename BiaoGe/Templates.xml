@@ -1,0 +1,129 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	<EditBox name="BiaoGe_InputBoxScriptTemplate" enableMouse="true" virtual="true">
+		<Scripts>
+			<OnTabPressed function="EditBox_OnTabPressed"/>
+			<OnEscapePressed function="EditBox_ClearFocus"/>
+			<OnEditFocusLost function="EditBox_ClearHighlight"/>
+			<OnEditFocusGained function="EditBox_HighlightText"/>
+		</Scripts>
+	</EditBox>
+
+	<EditBox name="BiaoGe_InputBoxVisualTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Right" file="interface/common/commonsearch">
+					<Size x="8" y="20"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+					<TexCoords left="0" right="0.07" top=".338" bottom=".638"/>
+				</Texture>
+				<Texture parentKey="Left" file="interface/common/commonsearch">
+					<Size x="8" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" x="-5" y="0"/>
+					</Anchors>
+					<TexCoords left=".88" right=".95" top=".01" bottom=".31"/>
+				</Texture>
+				<Texture parentKey="Middle" file="interface/common/commonsearch">
+					<Size x="10" y="20"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT"/>
+						<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="LEFT"/>
+					</Anchors>
+					<TexCoords left="0" right="0.8" top=".01" bottom=".31"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<FontString inherits="ChatFontNormal"/>
+	</EditBox>
+
+	<EditBox name="BiaoGe_InputBoxTemplate" inherits="BiaoGe_InputBoxScriptTemplate, BiaoGe_InputBoxVisualTemplate" virtual="true"/>
+
+
+	<EditBox name="BiaoGe_InputBoxInstructionsTemplate" inherits="BiaoGe_InputBoxTemplate" virtual="true">
+		<!--KeyValues>
+				Optional
+				<KeyValue key="disabledColor" value="GRAY_FONT_COLOR" type="global"/>
+				<KeyValue key="enabledColor" value="HIGHLIGHT_FONT_COLOR" type="global"/>
+			</KeyValues-->
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Instructions" justifyH="LEFT" justifyV="MIDDLE" inherits="GameFontDisableSmall" setAllPoints="true">
+					<Color r="0.35" g="0.35" b="0.35"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnTextChanged function="InputBoxInstructions_OnTextChanged"/>
+			<OnDisable function="InputBoxInstructions_OnDisable"/>
+			<OnEnable function="InputBoxInstructions_OnEnable"/>
+		</Scripts>
+		<FontString inherits="GameFontHighlightSmall"/>
+	</EditBox>
+
+	<EditBox name="BiaoGe_SearchBoxTemplate" inherits="BiaoGe_InputBoxInstructionsTemplate" autoFocus="false" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentSearchIcon" file="Interface\Common\UI-Searchbox-Icon" parentKey="searchIcon">
+					<Size x="14" y="14"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="-2"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentClearButton" parentKey="clearButton" hidden="true">
+				<Size x="17" y="17"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="-3" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\FriendsFrame\ClearBroadcastIcon" alpha="0.5" parentKey="texture">
+							<Size>
+								<AbsDimension x="17" y="17"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+							self.texture:SetAlpha(1.0);
+					</OnEnter>
+					<OnLeave>
+							self.texture:SetAlpha(0.5);
+					</OnLeave>
+					<OnMouseDown>
+							if self:IsEnabled() then
+								self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1);
+							end
+					</OnMouseDown>
+					<OnMouseUp>
+							self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0);
+					</OnMouseUp>
+					<OnClick function="SearchBoxTemplateClearButton_OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad function="SearchBoxTemplate_OnLoad"/>
+			<OnEscapePressed function="EditBox_ClearFocus"/>
+			<OnEnterPressed function="EditBox_ClearFocus"/>
+			<OnEditFocusLost function="SearchBoxTemplate_OnEditFocusLost"/>
+			<OnEditFocusGained function="SearchBoxTemplate_OnEditFocusGained"/>
+			<OnTextChanged function="SearchBoxTemplate_OnTextChanged"/>
+		</Scripts>
+	</EditBox>
+</Ui>
+
+<!-- 
+common-search-border-left
+common-search-border-right
+common-search-border-middle
+<Texture parentKey="Left" atlas="common-gray-button-entrybox-left" useAtlasSize="false">
+ -->

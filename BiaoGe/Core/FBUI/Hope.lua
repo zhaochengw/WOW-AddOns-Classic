@@ -100,7 +100,7 @@ function BG.HopeUI(FB)
             for i = 1, HopeMaxi, 1 do
                 ------------------装备------------------
                 do
-                    local bt = CreateFrame("EditBox", nil, BG["HopeFrame" .. FB], "InputBoxTemplate")
+                    local bt = CreateFrame("EditBox", nil, BG["HopeFrame" .. FB], "BiaoGe_InputBoxTemplate")
                     bt:SetSize(btwidth, 20)
                     bt:SetFrameLevel(110)
                     if i == 1 then

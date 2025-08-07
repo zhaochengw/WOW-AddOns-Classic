@@ -1,9 +1,9 @@
-## Interface: 30404
+## Interface: 30300
 ## Title: Better Vendor Price
 ## Notes: Vendor Price display with stack price information (|cFF99E5FF/bvp config|r)
 ## Notes: Legacy 3.3.5a edition
 ## Author: MooreaTV moorea@ymail.com
-## Version: v1.21.06
+## Version: v1.22.0
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: betterVendorPriceSaved

@@ -520,13 +520,15 @@ BG.Init(function()
                 end
 
                 if not BG.IsVanilla then
-                    if typeID == 9 or typeID == 10 or typeID == 3 then -- 过滤图纸、牌子、宝石
+                    -- WLK不记录图纸、牌子、宝石
+                    if typeID == 9 or typeID == 10 or typeID == 3 then 
                         return
                     end
+                    -- 不记录ICC声望戒指
                     if FB == "ICC" then
                         for i = 2, 5 do
                             if BG.Loot.ICC.Faction["1156:" .. i] then
-                                for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do -- 过滤ICC声望戒指
+                                for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do 
                                     if itemID == _itemId then
                                         return
                                     end

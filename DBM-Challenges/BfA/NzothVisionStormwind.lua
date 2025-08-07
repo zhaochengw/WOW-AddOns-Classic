@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250703201323")
+mod:SetRevision("20250805031427")
 
 mod:RegisterCombat("scenario", 2213, 2827)
 mod:RegisterZoneCombat(2827)
@@ -72,7 +72,7 @@ local specWarnAgonizingTorment	= mod:NewSpecialWarningInterrupt(308366, "HasInte
 local specWarnEntropicMissiles	= mod:NewSpecialWarningInterrupt(309035, "HasInterrupt", nil, nil, 1, 2)
 local specWarnMentalAssault		= mod:NewSpecialWarningInterrupt(296537, "HasInterrupt", nil, nil, 1, 2)
 local specWarnShadowShift		= mod:NewSpecialWarningInterrupt(308575, "HasInterrupt", nil, nil, 1, 2)
-local specWarnTouchoftheAbyss	= mod:NewSpecialWarningInterrupt(298033, "HasInterrupt", nil, nil, 1, 2)
+local specWarnTouchoftheAbyss	= mod:NewSpecialWarningInterrupt(298033, "HasInterrupt", nil, 2, 3, 2)
 local specWarnPsychicScream		= mod:NewSpecialWarningInterrupt(308375, "HasInterrupt", nil, nil, 1, 2)
 local specWarnImproveMorale		= mod:NewSpecialWarningInterrupt(308998, "HasInterrupt", nil, nil, 1, 2)--possibly 9.7 CD
 local specWarnVoidBuffet		= mod:NewSpecialWarningInterrupt(297315, "HasInterrupt", nil, nil, 1, 2)
@@ -88,7 +88,7 @@ local specWarnDarkSmash			= mod:NewSpecialWarningDodge(296718, nil, nil, nil, 2,
 local specWarnBrutalSmash		= mod:NewSpecialWarningDodge(309882, nil, nil, nil, 2, 2)
 local specWarnRainofFire		= mod:NewSpecialWarningDodge(308801, nil, nil, nil, 2, 2)
 --Hogger
-local specWarnMaddeningCall		= mod:NewSpecialWarningInterrupt(1223112, "HasInterrupt", nil, nil, 1, 2)
+local specWarnMaddeningCall		= mod:NewSpecialWarningInterrupt(1223112, "HasInterrupt", nil, 2, 3, 2)
 
 --General
 local timerGiftoftheTitan		= mod:NewBuffFadesTimer(20, 313698, nil, nil, nil, 5)
@@ -432,7 +432,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 end
 
 --Abort timers when all players out of combat, so NP timers clear on a wipe
---Caveat, it won't calls top with GUIDs, so while it might terminate bar objects, it may leave lingering nameplate icons
+--Caveat, it won't call stop with GUIDs, so while it might terminate bar objects, it may leave lingering nameplate icons
 function mod:LeavingZoneCombat()
 	self:Stop(true)
 end

@@ -1,8 +1,8 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.17) add-on for World of Warcraft UI
-    Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
+    Decursive (v 2.7.27) add-on for World of Warcraft UI
+    Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2019-11-18T13:42:00Z
+    This file was last updated on 2025-03-16T19:58:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then
-    T._LoadedFiles["frFR.lua"] = "2.7.17";
+    T._LoadedFiles["frFR.lua"] = "2.7.27";
     return;
 end
 
@@ -229,7 +229,7 @@ L["OPT_BLEED_EFFECT_DESCRIPTION"] = "Description (Spell ID: |cFF00C000%s|r)"
 L["OPT_BLEED_EFFECT_HOLDER"] = "Gestion des effets de saignement"
 L["OPT_BLEED_EFFECT_HOLDER_DESC"] = "Gérer la détection des effets de saignement"
 L["OPT_BLEED_EFFECT_IDENTIFIERS"] = "Mots-clefs des descriptions des effets de saignement:"
-L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[Chaque mot clef devrait correspondre à un terme présent dans les |cFFFF0000descriptions|c des afflictions causant des saignements et pouvant être utilisé pour identifier de tels effets.
+L["OPT_BLEED_EFFECT_IDENTIFIERS_DESC"] = [=[Chaque mot clef devrait correspondre à un terme présent dans les |cFFFF0000descriptions|r des afflictions causant des saignements et pouvant être utilisé pour identifier de tels effets.
 
 Un mot clef par ligne.
 
@@ -539,4 +539,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.7.17";
+T._LoadedFiles["frFR.lua"] = "2.7.27";

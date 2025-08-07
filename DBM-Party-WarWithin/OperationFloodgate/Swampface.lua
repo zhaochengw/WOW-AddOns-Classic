@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2650, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250513065603")
+mod:SetRevision("20250726201204")
 mod:SetCreatureID(226396)
 mod:SetEncounterID(3053)
 mod:SetHotfixNoticeRev(20250215000000)
@@ -56,8 +56,8 @@ function mod:OnCombatStart(delay)
 	self.vb.clawsCount = 0
 	timerSludgeClawsCD:Start(2-delay, 1)
 --	timerRazorchokeVinesCD:Start(1-delay, 1)--Now cast instantly on pull
-	timerMudslideCD:Start(9-delay)
-	timerAwakenSwampCD:Start(19-delay)
+	timerMudslideCD:Start(9-delay, 1)
+	timerAwakenSwampCD:Start(19-delay, 1)
 end
 
 function mod:OnCombatEnd()

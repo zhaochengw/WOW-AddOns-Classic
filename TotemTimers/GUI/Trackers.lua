@@ -288,7 +288,7 @@ TotemTimers.options.args.trackers = {
                             type = "range",
                             name = L["Warning Glow at x seconds left"],
                             min = 10,
-                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "5.0.0") and 300 or 60,
+                            max =( C_AddOns.GetAddOnMetadata("TotemTimers", "Version") == "5.0.1") and 300 or 60,
                             step = 5,
                             set = function(info, val)
                                 TotemTimers.ActiveProfile.WeaponExpirationWarning = val
@@ -345,7 +345,7 @@ local shieldValues = function()
         [SpellIDs.WaterShield] = SpellNames[SpellIDs.WaterShield],
         [SpellIDs.EarthShield] = SpellNames[SpellIDs.EarthShield],
     }
-    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC  or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+    if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
         values[SpellIDs.TotemicCall] = SpellNames[SpellIDs.TotemicCall]
     end
     return values

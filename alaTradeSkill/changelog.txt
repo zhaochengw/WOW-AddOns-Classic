@@ -1,4 +1,13 @@
 
+2025-08-04
+Update MOP Data. (horrible huge work)
+Thanks to Hubbotu's ruRU translations.
+Todo:
+    varify the skill list.
+    cooking way.
+    quest info.
+    skills taught by world object or any other thing.
+
 2025-07-01
 Support MOP UI. (data to do)
 

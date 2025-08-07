@@ -3133,7 +3133,7 @@ end
 		for name, func in next, Frame.T_DisabledFunc do
 			_G[name] = func;
 		end
-		Frame.F_HookedFrameUpdate()
+		Frame:F_HookedFrameUpdate()
 	end
 	function LT_WidgetMethod._OnEvent(Frame, event, _1, ...)
 		Frame.update = true;
