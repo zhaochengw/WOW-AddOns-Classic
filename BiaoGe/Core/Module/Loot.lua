@@ -519,18 +519,25 @@ BG.Init(function()
                     return
                 end
 
-                if not BG.IsVanilla then
-                    -- WLK不记录图纸、牌子、宝石
-                    if typeID == 9 or typeID == 10 or typeID == 3 then 
+                if BG.IsMOP then
+                    -- 不记录牌子、宝石
+                    if typeID == 10 or typeID == 3 then
                         return
                     end
-                    -- 不记录ICC声望戒指
-                    if FB == "ICC" then
-                        for i = 2, 5 do
-                            if BG.Loot.ICC.Faction["1156:" .. i] then
-                                for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do 
-                                    if itemID == _itemId then
-                                        return
+                else
+                    if not BG.IsVanilla then
+                        -- WLK不记录图纸、牌子、宝石
+                        if typeID == 9 or typeID == 10 or typeID == 3 then 
+                            return
+                        end
+                        -- 不记录ICC声望戒指
+                        if FB == "ICC" then
+                            for i = 2, 5 do
+                                if BG.Loot.ICC.Faction["1156:" .. i] then
+                                    for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do 
+                                        if itemID == _itemId then
+                                            return
+                                        end
                                     end
                                 end
                             end

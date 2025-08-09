@@ -1,4 +1,4 @@
-## Interface: 110107, 110200
+## Interface: 110200
 ## X-Min-Interface: 80000
 ## Category: DBM
 
@@ -36,7 +36,7 @@
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r205
+## Version: r207
 
 localization.en.lua
 localization.de.lua

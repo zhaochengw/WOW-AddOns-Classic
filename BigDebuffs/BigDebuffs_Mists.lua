@@ -268,6 +268,7 @@ addon.Spells = {
     [113287] = { type = CROWD_CONTROL },  -- Solar Beam (Symbiosis)
     [116947] = { type = ROOT },  -- Earthbind (Earthgrab Totem)
     [118345] = { type = CROWD_CONTROL },  -- Pulverize (Primal Earth Elemental)
+    [110806] = { type = BUFF_OTHER },  -- Spiritwalker's Grace
 
     -- Paladin
     -- WoTLK
@@ -284,7 +285,7 @@ addon.Spells = {
     [853] = { type = CROWD_CONTROL }, -- Hammer of Justice
     [1044] = { type = BUFF_DEFENSIVE }, -- Blessing of Freedom
     [20066] = { type = CROWD_CONTROL }, -- Repentance
-    [20170] = { type = CROWD_CONTROL }, -- Seal of Justice stun
+    [20170] = { type = ROOT }, -- Seal of Justice slow
     [6940] = { type = BUFF_DEFENSIVE }, -- Blessing of Sacrifice
     [10326] = { type = CROWD_CONTROL }, -- Turn Evil
     [31884] = { type = BUFF_OFFENSIVE }, -- Avenging Wrath
@@ -554,4 +555,5 @@ addon.Spells = {
     [116095] = { type = ROOT }, -- Disable
     [123586] = { type = ROOT }, -- Flying Serpent Kick
     [123727] = { type = ROOT }, -- Dizzying Haze
+    [126456] = { type = BUFF_DEFENSIVE }, -- Fortifying Brew
 }

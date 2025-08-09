@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2675, "DBM-Party-WarWithin", 10, 1303)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250729235010")
+mod:SetRevision("20250809072732")
 mod:SetCreatureID(234893)
 mod:SetEncounterID(3107)
 mod:SetHotfixNoticeRev(20250728000000)
@@ -54,7 +54,7 @@ function mod:OnCombatStart(delay)
 	self.vb.devourCount = 0
 	self.vb.invadingShriekCount = 0
 	self.vb.toxicRegurgitationCount = 0
-	timerInvadingShriekCD:Start(5.7-delay, 1)
+	timerInvadingShriekCD:Start(5.1-delay, 1)
 	timerToxicRegurgitationCD:Start(15.4-delay, 1)
 	timerDevourCD:Start(60-delay, 1)
 end
@@ -77,7 +77,7 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.invadingShriekCount % 2 == 0 then
 			timerInvadingShriekCD:Start(48.5, self.vb.invadingShriekCount+1)
 		else
-			timerInvadingShriekCD:Start(37.6, self.vb.invadingShriekCount+1)
+			timerInvadingShriekCD:Start(37.2, self.vb.invadingShriekCount+1)
 		end
 	elseif spellId == 1227745 then
 		self.vb.toxicRegurgitationCount = self.vb.toxicRegurgitationCount + 1
@@ -126,14 +126,14 @@ function mod:RAID_BOSS_WHISPER(msg)
 		specWarnToxicRegurgitation:Show(self.vb.toxicRegurgitationCount)
 		specWarnToxicRegurgitation:Play("runout")
 		yellToxicRegurgitation:Yell()
-		yellToxicRegurgitationFades:Countdown(8)
+		yellToxicRegurgitationFades:Countdown(6)--6 On Mythic 0, maybe lower on M+? (tooltip says 8 btw, typical blizzard)
 	end
 end
 
 function mod:OnTranscriptorSync(msg, targetName)
 	if msg:find("1227748") and targetName and self:AntiSpam(5, targetName) then
 		targetName = Ambiguate(targetName, "none")
-		warnToxicRegurgitation:Show(targetName)
+		warnToxicRegurgitation:CombinedShow(0.5, targetName)
 	end
 end
 

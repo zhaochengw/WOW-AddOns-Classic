@@ -434,8 +434,8 @@ function BG.RoleOverviewUI()
                 { name = "TES", name2 = GetRealZoneText(996), color = "00ff00", fbId = 996, type = "fb" },
                 { name = "HOF", name2 = GetRealZoneText(1009), color = "00ff00", fbId = 1009, type = "fb" },
                 { name = "MSV", name2 = GetRealZoneText(1008), color = "00ff00", fbId = 1008, type = "fb" },
-                { name = "worldBoss2", name2 = L["炮舰"], color = "99ff99", type = "worldBoss" },
-                { name = "worldBoss1", name2 = L["怒之煞"], color = "99ff99", type = "worldBoss" },
+                { name = "worldBoss2", name2 = L["怒之煞"], color = "99ff99", type = "worldBoss" },
+                { name = "worldBoss1", name2 = L["炮舰"], color = "99ff99", type = "worldBoss" },
                 -- CTM
                 { name = "DS", name2 = GetRealZoneText(967), color = "9370DB", fbId = 967, type = "fb" },
                 { name = "FL", name2 = GetRealZoneText(720), color = "FF4500", fbId = 720, type = "fb" },
@@ -1859,16 +1859,19 @@ function BG.RoleOverviewUI()
                 endtime = timestamp
             }
         end
-        BG.RegisterEvent("ENCOUNTER_END", function(self, event, bossID, _, _, _, success)
-            if success == 1 then
-                for i, _bossID in ipairs(BG.worldBossID) do
-                    if _bossID == bossID then
-                        SaveWorldBoss(i)
-                        return
+
+        local function GetBossIsKill()
+            if InCombatLockdown() then return end
+            for bossIndex, questID in ipairs(BG.worldBossID) do
+                if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+                    if not BiaoGe.worldBossCD[realmID][player]["worldBoss" .. bossIndex] then
+                        SaveWorldBoss(bossIndex)
                     end
+                else
+                    BiaoGe.worldBossCD[realmID][player]["worldBoss" .. bossIndex] = nil
                 end
             end
-        end)
+        end
 
         local function UpdateWorldBossEndTime()
             local time = GetServerTime()
@@ -1898,6 +1901,9 @@ function BG.RoleOverviewUI()
         end)
         C_Timer.NewTicker(60, function()
             UpdateWorldBossEndTime()
+        end)
+        C_Timer.NewTicker(5, function()
+            GetBossIsKill()
         end)
     end
 
@@ -2680,3 +2686,19 @@ BiaoGe.MONEY[4520]["苍刃"][45038].count=50
         end
     end
 end
+
+--[[
+function()
+    if not aura_env.last or aura_env.last < GetTime() - 2 then
+        aura_env.last = GetTime()
+        local bossIds = { Galleon = 32098, Sha = 32099, Nalak = 32518, Oondasta = 32519, Rukhmar = 37464}
+        local label = "World Bosses: \n-------------\n"
+        for name, id in pairs(bossIds) do
+            label = label .. format("%s: %s", name, C_QuestLog.IsQuestFlaggedCompleted(id) and "\124cff00ff00Yes\124r" or "\124cffff0000No\124r") .. "\n"
+        end
+        aura_env.label = label
+    end
+
+    return aura_env.label
+end
+ ]]

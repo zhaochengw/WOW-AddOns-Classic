@@ -374,7 +374,8 @@ do
             BG.FB1 = "MSV"
             BG.fullLevel = 60
             BG.theEndBossID = { 1407, 1501, 1431 } -- 魔古山 大女皇 惧之煞
-            BG.worldBossID = { 1564, 1563, 1571, 1587, } -- 怒之煞 炮舰 纳拉克 乌达斯塔
+            -- BG.worldBossID = { 1564, 1563, 1571, 1587, } -- 怒之煞 炮舰 纳拉克 乌达斯塔
+            BG.worldBossID = { 32098, 32099, 32518, 32519, 37464 } -- 炮舰 怒之煞 纳拉克 乌达斯塔 鲁赫马尔
             AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["魔古山宝库"]) -- 魔古山
             -- 恐惧之心
             BG.FBIDtable[1009] = "MSV"
@@ -1084,7 +1085,7 @@ BG.Init(function()
                 },
                 PRIEST = {
                     "Interface\\Icons\\spell_holy_wordfortitude", -- N
-                    "Interface\\Icons\\spell_holy_holybolt",      -- N
+                    "Interface\\Icons\\spell_holy_guardianspirit", -- N
                     "Interface\\Icons\\spell_shadow_shadowwordpain",
                 },
             }

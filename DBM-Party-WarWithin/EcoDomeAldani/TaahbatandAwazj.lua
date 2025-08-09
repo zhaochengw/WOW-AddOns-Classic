@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2676, "DBM-Party-WarWithin", 10, 1303)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250729082314")
+mod:SetRevision("20250809072732")
 mod:SetCreatureID(234933, 237514) -- Taah'bat and Awazj
 mod:SetEncounterID(3108)
 mod:SetHotfixNoticeRev(20250728000000)
@@ -37,7 +37,7 @@ local specWarnRiftClaws					= mod:NewSpecialWarningDefensive(1219482, nil, nil, 
 local timerArcaneBlitzCD				= mod:NewCDCountTimer(30, 1219700, nil, nil, nil, 6)
 local timerBindingJavelinCD				= mod:NewCDCountTimer(26.7, 1236130, nil, nil, nil, 3)
 local timerWarpStrikeCD					= mod:NewCDCountTimer(26.7, 1227918, nil, nil, nil, 3)
-local timerRiftClawsCD					= mod:NewVarCountTimer("v24.3-26.7", 1219482, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerRiftClawsCD					= mod:NewVarCountTimer("v23.5-26.7", 1219482, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerDestabalized					= mod:NewBuffActiveTimer(15, 1219731, nil, nil, nil, 5)
 
 --mod:AddInfoFrameOption(445262)
@@ -56,8 +56,8 @@ function mod:OnCombatStart(delay)
 	self.vb.warpStrikeCount = 0
 	self.vb.riftClawsCount = 0
 	timerRiftClawsCD:Start(6-delay, 1)
-	timerBindingJavelinCD:Start(12.1-delay, 1)
-	timerWarpStrikeCD:Start(23-delay, 1)
+	timerBindingJavelinCD:Start(11.2-delay, 1)
+	timerWarpStrikeCD:Start(22.1-delay, 1)
 	timerArcaneBlitzCD:Start(34-delay, 1)
 end
 
@@ -97,7 +97,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 1219731 and self.vb.blitzActive then
 		self.vb.blitzActive = false
 		timerDestabalized:Start()
-		timerRiftClawsCD:Start(24, self.vb.riftClawsCount+1)
+		timerRiftClawsCD:Start(23.6, self.vb.riftClawsCount+1)
 		timerBindingJavelinCD:Start(30.1, self.vb.blitzCount+1)
 		timerWarpStrikeCD:Start(41, self.vb.warpStrikeCount+1)
 		timerArcaneBlitzCD:Start(78.6, self.vb.blitzCount+1)

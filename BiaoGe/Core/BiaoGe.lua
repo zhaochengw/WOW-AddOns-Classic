@@ -1972,7 +1972,6 @@ BG.Init(function()
         end)
 
         local wh = "DEATH"
-        -- local wh = "CONFIRM_DELETE_SELECTED_MACRO"
         hooksecurefunc("StaticPopup_Show", function(whick)
             if whick == wh then
                 local yes

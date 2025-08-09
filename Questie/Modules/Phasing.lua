@@ -335,6 +335,14 @@ local phases = {
     AN_WINDFUR_DAWNS_BLOSSOM_UP = 1263,
     AN_WINDFUR_DAWNS_BLOSSOM_JADE_HOUSE = 1264,
     AN_WINDFUR_FOREST_HEART = 1265,
+    SHEEPIE_FIRST_TIME = 1266,
+    SHEEPIE_SECOND_TIME = 1267,
+    OLD_HILLPAW_HALFHILL = 1268,
+    TINA_MUDCLAW_HALFHILL = 1269,
+    FARM_HAS_8_SLOTS = 1270,
+    FARM_HAS_12_SLOTS = 1271,
+    FARM_HAS_16_SLOTS = 1272,
+    ZIN_AT_AXE_OF_THUNDER_KING = 1273,
 }
 Phasing.phases = phases
 
@@ -1228,19 +1236,19 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.RIVETT_CLUTCHPOP_NEXT_TO_NAZGRIM then
-        return (not complete[29939]) and ((not questLog[29939] or questLog[29939].isComplete == 0)) or false
+        return (not complete[29937]) and ((not questLog[29937] or questLog[29937].isComplete == 0)) or false
     end
 
     if phase == phases.RIVETT_CLUTCHPOP_GROOKIN_HILL_SOUTH_END then
-        return complete[29939] or (questLog[29939] and questLog[29939].isComplete == 1) or false
+        return complete[29937] or (questLog[29937] and questLog[29937].isComplete == 1) or false
     end
 
     if phase == phases.HIGH_ELDER_CLOUDFALL_AT_TOWER then
-        return (complete[29639] or complete[29646] or complete[29647]) or (complete[29620] or (not questLog[29620]) and (not (complete[29624] and complete[29635] and complete[29637]))) or false
+        return (complete[29639] or complete[29646] or complete[29647]) or (complete[29620] or (not questLog[29620]) and (not (complete[29624] and complete[29628] and complete[29629] and complete[29630] and complete[29637]))) or false
     end
 
     if phase == phases.HIGH_ELDER_CLOUDFALL_AT_BANQUET then
-        return (not (complete[29639] or complete[29646] or complete[29647])) and (complete[29624] and complete[29635] and complete[29637]) or questLog[29620] and true or false
+        return (not (complete[29639] or complete[29646] or complete[29647])) and (complete[29624] and complete[29628] and complete[29629] and complete[29630] and complete[29637]) or questLog[29620] and true or false
     end
 
     if phase == phases.MALIK_AT_PILLAR then
@@ -1489,6 +1497,38 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.AN_WINDFUR_FOREST_HEART then
         return (not complete[29723]) and ((not questLog[29723]) or questLog[29723].isComplete == 0) or complete[29723] or false
+    end
+
+    if phase == phases.SHEEPIE_FIRST_TIME then
+        return not complete[31338] or false
+    end
+
+    if phase == phases.SHEEPIE_SECOND_TIME then
+        return complete[31338] or false
+    end
+
+    if phase == phases.OLD_HILLPAW_HALFHILL then
+        return ((complete[30318]) or (questLog[30318])) or false
+    end
+
+    if phase == phases.TINA_MUDCLAW_HALFHILL then
+        return ((complete[30323]) or (questLog[30323])) or false
+    end
+
+    if phase == phases.FARM_HAS_8_SLOTS then
+        return complete[30516] or false
+    end
+
+    if phase == phases.FARM_HAS_12_SLOTS then
+        return complete[30524] or false
+    end
+
+    if phase == phases.FARM_HAS_16_SLOTS then
+        return complete[30529] or false
+    end
+
+    if phase == phases.ZIN_AT_AXE_OF_THUNDER_KING then
+        return complete[30642] or (questLog[30642] and questLog[30642].isComplete == 1) or false
     end
 
     return false

@@ -1690,7 +1690,7 @@ BG.Init(function()
             local text = f:CreateFontString()
             text:SetPoint("TOP", 0, -5)
             text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-            text:SetText(L["一键发工资"])
+            text:SetText(L["工资与补贴"])
 
             local bt = BG.CreateButton(f)
             bt:SetSize(50, 17)
@@ -1725,30 +1725,47 @@ BG.Init(function()
         local function GetQianKuan()
             return tonumber(BG.tradeQianKuanListFrame.Text2.text:GetText()) or 0
         end
-        local function SetMoney(money, name, isExpenses, isMan)
-            BG.SetMyTradeMoney(money)
-            lastClick = nil
-            if isExpenses and not isMan then
-                lastClick = {
-                    money = money,
-                    name = name,
+        function BG.TradeCopyMoney(money, name, isExpenses, isMan)
+            if not StaticPopupDialogs["BiaoGe_Copy_Money"] then
+                StaticPopupDialogs["BiaoGe_Copy_Money"] = {
+                    text = L["按下 Ctrl+X 复制金额"],
+                    button1 = OKAY,
+                    hasEditBox = 1,
+                    timeout = 0,
+                    whileDead = true,
+                    hideOnEscape = true,
+                    OnShow = function(self,money)
+                        self.editBox:SetScript("OnEditFocusLost",function ()
+                            self:Hide()
+                        end)
+                        self.editBox:SetFocus()
+                        self.editBox:SetText(money)
+                        self.editBox:HighlightText()
+                    end,
+                    OnHide = function(self)
+                        ChatEdit_FocusActiveWindow()
+                        self.editBox:SetText("")
+                    end,
+                    EditBoxOnTextChanged = function(self)
+                        if self:GetText() == "" then
+                            self:GetParent():Hide()
+                        end
+                    end,
+                    EditBoxOnEscapePressed = function(self)
+                        self:GetParent():Hide()
+                    end,
                 }
             end
-            BG.After(0, function()
-                BG.tradeUpdateFrame.elapsed = 0
-                BG.tradeUpdateFrame:SetScript("OnUpdate", function(self, elapsed)
-                    if not TradeFrame:IsVisible() or BG.tradeSameMoney:IsVisible() then
-                        self:SetScript("OnUpdate", nil)
-                        return
-                    end
-                    self.elapsed = self.elapsed + elapsed
-                    if self.elapsed >= .2 then
-                        self:SetScript("OnUpdate", nil)
-                        UIErrorsFrame:AddMessage(format(L["确认交易%s%s%s？"], SetClassCFF(BG.GN("NPC")), money, goldTex), 1, 1, 0)
-                        AcceptTrade()
-                    end
-                end)
-            end)
+            StaticPopup_Show("BiaoGe_Copy_Money",nil,nil,money)
+            if name then
+                lastClick = nil
+                if isExpenses and not isMan then
+                    lastClick = {
+                        money = money,
+                        name = name,
+                    }
+                end
+            end
         end
         local function CreateButton(name, money, isExpenses, hasMan)
             local ds
@@ -1841,11 +1858,10 @@ BG.Init(function()
             do
                 bt:SetSize(width * .25 - 5, nameFrame:GetHeight() - 2)
                 bt:SetPoint("LEFT", moneyFrame, "RIGHT", 2, 0)
-                bt:SetText(L["交易"])
+                bt:SetText(L["复制"])
                 bt:RegisterForClicks("AnyUp")
                 bt:SetScript("OnClick", function(self, button)
                     BG.PlaySound(1)
-                    BG.tradeMyMoneyFrame.canShow = true
                     local money = money
                     local isMan
                     if button == "RightButton" and hasMan then
@@ -1885,10 +1901,10 @@ BG.Init(function()
                                 end
                                 StaticPopupDialogs["BIAOGE_FASTTRADE_QIANKUAN"].OnButton1 = function()
                                     StaticPopupDialogs["BiaoGeClearAllQianKuan"].OnAccept()
-                                    SetMoney(money - qiankuan, name, isExpenses, isMan)
+                                    BG.TradeCopyMoney(money - qiankuan, name, isExpenses, isMan)
                                 end
                                 StaticPopupDialogs["BIAOGE_FASTTRADE_QIANKUAN"].OnButton2 = function()
-                                    SetMoney(money, name, isExpenses, isMan)
+                                    BG.TradeCopyMoney(money, name, isExpenses, isMan)
                                 end
                                 StaticPopup_Hide("BIAOGE_FASTTRADE_QIANKUAN2")
                                 StaticPopup_Show("BIAOGE_FASTTRADE_QIANKUAN",
@@ -1908,13 +1924,13 @@ BG.Init(function()
                                     }
                                 end
                                 StaticPopupDialogs["BIAOGE_FASTTRADE_QIANKUAN2"].OnAccept = function()
-                                    SetMoney(money, name, isExpenses, isMan)
+                                    BG.TradeCopyMoney(money, name, isExpenses, isMan)
                                 end
                                 StaticPopup_Hide("BIAOGE_FASTTRADE_QIANKUAN")
                                 StaticPopup_Show("BIAOGE_FASTTRADE_QIANKUAN2", qiankuan, money)
                             end
                         else
-                            SetMoney(money, name, isExpenses, isMan)
+                            BG.TradeCopyMoney(money, name, isExpenses, isMan)
                         end
                     else
                         UIErrorsFrame:AddMessage(L["你的钱不够！"], 1, 0, 0)
@@ -1925,9 +1941,9 @@ BG.Init(function()
                     if hasMan then
                         GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
                         GameTooltip:ClearLines()
-                        GameTooltip:AddLine(TRADE, 1, 1, 1, true)
-                        GameTooltip:AddLine(AddTexture("LEFT") .. TRADE .. money, 1, .82, 0, true)
-                        GameTooltip:AddLine(AddTexture("RIGHT") .. TRADE .. hasMan.avg, 1, .82, 0, true)
+                        GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+                        GameTooltip:AddLine(AddTexture("LEFT") .. self:GetText() .. money, 1, .82, 0, true)
+                        GameTooltip:AddLine(AddTexture("RIGHT") .. self:GetText() .. hasMan.avg, 1, .82, 0, true)
                         GameTooltip:Show()
                     end
                 end)
@@ -2094,109 +2110,6 @@ BG.Init(function()
                 end
             end
         end)
-    end
-
-    -- 摆放交易金币
-    do
-        function BG.ResetTradeMoney()
-            local playerTradeMoney = GetPlayerTradeMoney()
-            if playerTradeMoney > 0 then
-                ClearCursor()
-                PickupTradeMoney(playerTradeMoney)
-                ClearCursor()
-            end
-        end
-
-        local function PickUpMyMoney(money)
-            ClearCursor()
-            PickupPlayerMoney(money)
-            _G["TradePlayerItem1ItemButton"]:Click()
-        end
-        function BG.SetMyTradeMoney(giveMoney)
-            BG.tradeMyMoneyFrame.canShow = true
-            BG.ResetTradeMoney()
-            giveMoney = giveMoney * 10000
-            local money = GetMoney()
-            if money >= giveMoney then
-                PickUpMyMoney(giveMoney)
-            else
-                UIErrorsFrame:AddMessage(L["你的钱不够！"], 1, 0, 0)
-            end
-            BG.TradeUpdate()
-        end
-    end
-
-    -- 我的实际交易金币
-    do
-        local f = CreateFrame("Frame", nil, TradeFrame, "BackdropTemplate")
-        f:SetSize(170, 20)
-        f:SetPoint("BOTTOM", TradePlayerInputMoneyInsetBg, "TOP", 0, -0)
-        f:SetFrameLevel(TradeRecipientMoneyBg:GetFrameLevel() + 15)
-        BG.tradeMyMoneyFrame = f
-        local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-        t:SetPoint("BOTTOM")
-        t:SetWidth(f:GetWidth() - 10)
-        t:SetTextColor(1, 1, 1)
-        t:SetJustifyH("LEFT")
-        f.Text = t
-
-        -- 重置金币
-        local bt = CreateFrame("Button", nil, f)
-        do
-            bt:SetSize(16, 16)
-            bt:SetPoint("BOTTOMLEFT", t, "BOTTOMRIGHT", 0, 0)
-            local tex = bt:CreateTexture()
-            tex:SetPoint("CENTER")
-            tex:SetSize(bt:GetWidth() + 10, bt:GetHeight() + 10)
-            tex:SetTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Up]])
-            bt:SetNormalTexture(tex)
-            local tex = bt:CreateTexture()
-            tex:SetPoint("CENTER")
-            tex:SetSize(bt:GetWidth() + 10, bt:GetHeight() + 10)
-            tex:SetTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Down]])
-            bt:SetPushedTexture(tex)
-            local tex = bt:CreateTexture()
-            tex:SetPoint("CENTER")
-            tex:SetSize(bt:GetWidth() + 10, bt:GetHeight() + 10)
-            tex:SetTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Highlight]])
-            bt:SetHighlightTexture(tex)
-            bt:SetScript("OnClick", function(self)
-                f.alwaysShow = true
-                BG.ResetTradeMoney()
-                BG.TradeUpdate()
-            end)
-            bt:SetScript("OnEnter", function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:AddLine(L["重置交易金额"], 1, 1, 1, true)
-                GameTooltip:Show()
-            end)
-            bt:SetScript("OnLeave", GameTooltip_Hide)
-        end
-        function BG.tradeMyMoneyFrame:Reset()
-            self:Hide()
-            self.alwaysShow = nil
-            self.canShow = nil
-        end
-
-        function BG.tradeMyMoneyFrame:Update()
-            if not BG.tradeMyMoneyFrame.canShow then
-                self:Hide()
-                return
-            end
-            local money = tonumber(floor(GetPlayerTradeMoney() / 10000)) or 0
-            if money == 0 and not self.alwaysShow then
-                self:Hide()
-            else
-                self:Show()
-                t:SetText(format(L["已放金币：%s"], money) .. goldTex)
-                bt:ClearAllPoints()
-                bt:SetPoint("BOTTOMLEFT", t:GetWrappedWidth() + 10, 0)
-            end
-        end
-
-        BG.tradeMyMoneyFrame:Update()
     end
 
     -- 交易通知框架
@@ -2490,12 +2403,6 @@ BG.Init(function()
                 BG.tradeUpdateFrame:SetScript("OnUpdate", nil)
             end
         end
-        local function SetMyMoney()
-            if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionSetMoney"] == 1) then return end
-            if sumPlayerMoney > 0 then
-                BG.SetMyTradeMoney(sumPlayerMoney)
-            end
-        end
 
         local function UpdateGiveMeMoneyTextColor()
             local targetMoney = GetTargetTradeMoney()
@@ -2542,6 +2449,7 @@ BG.Init(function()
             end
         end
         local function ResetMoneyText()
+            BG.tradeCopyMoneyButton:Hide()
             BG.trade.GiveMeMoneyText:Hide()
             BG.trade.GiveYouMoneyText:Hide()
             for i = 1, 6 do
@@ -2557,14 +2465,7 @@ BG.Init(function()
             BG.auctionLogFrame.GetTargetTradeTbl(BG.ImML() and BG.GN("NPC") or player)
             sumTargetMoney = 0
             sumPlayerMoney = 0
-            for i = 1, 6 do
-                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText:Hide()
-                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText.money = 0
-                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText:Hide()
-                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText.money = 0
-            end
-            BG.trade.GiveMeMoneyText:Hide()
-            BG.trade.GiveYouMoneyText:Hide()
+            ResetMoneyText()
             if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
             if not BG.ImML() then return end
             local tradeName = BG.GN("NPC")
@@ -2697,13 +2598,13 @@ BG.Init(function()
             end
             if BiaoGe.options["autoAuctionMoney"] == 1 then
                 if sumPlayerMoney ~= 0 then
+                    BG.tradeCopyMoneyButton:ShowButton(sumPlayerMoney)
                     BG.trade.GiveYouMoneyText:Show()
                     BG.trade.GiveYouMoneyText:SetText(L["合计应付："] .. GetMoneyString(tonumber(sumPlayerMoney .. "0000")))
                     UpdateGiveYouMoneyTextColor()
                 end
             end
             UpdateMyQianKuan()
-            SetMyMoney()
         end)
 
         BG.RegisterEvent("TRADE_MONEY_CHANGED", function(self, ...)
@@ -2751,6 +2652,25 @@ BG.Init(function()
         end)
     end
 
+    -- 复制应付金额
+    do
+        local bt = BG.CreateButton(TradeFrame)
+        bt:SetSize(100, 20)
+        bt:SetPoint("BOTTOMLEFT", TradePlayerInputMoneyInsetBg, "TOPLEFT", 0, 2)
+        bt:SetFrameLevel(TradeRecipientMoneyBg:GetFrameLevel() + 15)
+        bt:SetText(L["复制应付金额"])
+        bt:Hide()
+        BG.tradeCopyMoneyButton = bt
+        bt:SetScript("OnClick",function (self)
+            BG.TradeCopyMoney(self.money)
+        end)
+        function BG.tradeCopyMoneyButton:ShowButton(money)
+            if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionSetMoney"] == 1) then return end
+            self.money=money
+            self:Show()
+        end
+    end
+
     -- 交易状态变化时
     do
         function BG.TradeUpdate()
@@ -2759,7 +2679,6 @@ BG.Init(function()
             BG.tradeSeeFrame.frame:Update()
             BG.tradeSameMoney:Update()
             BG.tradeGoldTop:Update()
-            BG.tradeMyMoneyFrame:Update()
             BG.tradeAutoPickItem.TradeMyMoneyChange()
         end
 
@@ -2784,7 +2703,6 @@ BG.Init(function()
         BG.tradeQianKuanEdit:Update()
         BG.tradeGoldTop:Update()
         BG.tradeSameMoney:Update()
-        BG.tradeMyMoneyFrame:Reset()
 
         BG.tradeQianKuanListFrame:Reset()
         BG.tradeQianKuanListFrame:Update()

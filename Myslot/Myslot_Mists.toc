@@ -1,4 +1,4 @@
-## Interface: 11507
+## Interface: 50500
 ## X-Curse-Project-ID: 48863
 ## X-Wago-ID: BKpq0BGE
 ## Title: Myslot

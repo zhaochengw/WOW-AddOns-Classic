@@ -4600,7 +4600,7 @@ function QuestieQuestBlacklist:Load()
         [8809] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8810] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8829] = Expansions.Current >= Expansions.Cata, -- Removed with cata
-        [8869] = Expansions.Current >= Expansions.Cata, -- Removed with cata
+        [8869] = true, -- incorrect duplicate of 5305
         [8893] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8905] = Expansions.Current >= Expansions.Cata, -- Removed with cata
         [8906] = Expansions.Current >= Expansions.Cata, -- Removed with cata
@@ -5965,7 +5965,6 @@ function QuestieQuestBlacklist:Load()
         [31437] = true, -- Not in the game
         [31438] = true, -- Not in the game
         [31530] = true, -- Not in the game
-        [31603] = true, -- Not in the game -- remove after first MoP raid reset
         [31604] = true, -- Not in the game
         [31665] = true, -- Not in the game
         [31666] = true, -- Not in the game
@@ -5981,6 +5980,8 @@ function QuestieQuestBlacklist:Load()
         [31968] = true, -- Not in the game
         [32010] = true, -- Not in the game
         [32011] = true, -- Not in the game
+        [32189] = true, -- Not in the game
+        [32198] = true, -- Not in the game
         [32396] = true, -- Not in the game
         [32666] = true, -- Hidden quest
         [32890] = true, -- Not in the game

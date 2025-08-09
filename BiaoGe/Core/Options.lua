@@ -843,8 +843,8 @@ BG.Init(function()
                 L["最近拍卖/对方已拍："],
                 L["如果你是物品分配者，会显示最近拍卖且可交易的装备，点击一下就能把装备放到交易里。"],
                 " ",
-                L["一键发工资："],
-                L["增加一键发工资和补贴的按钮。"],
+                L["工资与补贴："],
+                L["增加复制工资与补贴的按钮。"],
             }
             local f = O.CreateCheckButton(name, L["交易增强*"], biaoge, 15, height - h, ontext)
             BG.options["button" .. name] = f
@@ -1939,7 +1939,6 @@ BG.Init(function()
             end)
         end
 
-
         h = h + 60
 
         O.CreateLine(autoAuction, height - h)
@@ -2080,16 +2079,16 @@ BG.Init(function()
             end
         end
         h = h + 30
-        -- 交易时自动填写交易金额
+        -- 复制应付金额
         do
             local name = "autoAuctionSetMoney"
             BG.options[name .. "reset"] = 1
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
             local ontext = {
-                L["交易时自动填写交易金额"],
-                L["交易时，自定填写应付的交易金额。"],
+                L["复制应付金额"],
+                L["在交易界面增加一个复制应付金额的按钮。"],
             }
-            local f = O.CreateCheckButton(name, L["交易时自动填写交易金额"] .. "*", autoAuction, 40, height - h, ontext)
+            local f = O.CreateCheckButton(name, L["复制应付金额"] .. "*", autoAuction, 40, height - h, ontext)
             BG.options["button" .. name] = f
             if BiaoGe.options["autoAuctionMoney"] ~= 1 then
                 f:Hide()

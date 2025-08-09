@@ -1,6 +1,6 @@
 ## Interface: 110107, 110200
 ## X-Min-Interface: 100206
-## Version: 11.2.5
+## Version: 11.2.6
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff6010Raids (WW)|r
