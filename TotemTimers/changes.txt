@@ -1,11 +1,3 @@
-5.0.1
-    - Added missing totems in MoP
-    - Added several long cooldowns in MoP
-    - Fix not clickable buttons in MoP
-    - Fixes for Searing Totem, Earthgrab and Earthbind Totems
-5.0.0
-    - Added support for 10 Maelstrom stacks
-    - First round of changes for MoP
 4.0.12
     - Changed self cast for Spirit of the Alpha with a cancelaura macro in case True Alpha is still bugged sometimes
 4.0.11

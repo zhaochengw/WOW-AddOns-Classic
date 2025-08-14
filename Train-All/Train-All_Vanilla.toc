@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 11500
 ## Title: TrainAll
 ## Version: 11.1.0
 ## Notes: Adds a Train All button to the Profession trainer UI

@@ -19,20 +19,18 @@ Private.Zones[42] = {
     difficultyIconMap = nil,
 }
 
-Private.Zones[1033] = {
-    id = 1033,
-    name = "Dragon Soul",
+Private.Zones[1038] = {
+    id = 1038,
+    name = "Mogu'shan Vaults",
     hasMultipleDifficulties = true,
     hasMultipleSizes = true,
     encounters = {
-        { id = 1292, },
-        { id = 1294, },
-        { id = 1295, },
-        { id = 1296, },
-        { id = 1297, },
-        { id = 1298, },
-        { id = 1291, },
-        { id = 1299, },
+        { id = 1395, },
+        { id = 1390, },
+        { id = 1434, },
+        { id = 1436, },
+        { id = 1500, },
+        { id = 1407, },
     },
     difficultyIconMap = nil,
 }
@@ -77,21 +75,21 @@ Private.Zones[2018] = {
     difficultyIconMap = nil,
 }
 
-Private.Zones[1034] = {
-    id = 1034,
-    name = "Blackwing Lair",
+Private.Zones[1035] = {
+    id = 1035,
+    name = "Temple of Ahn'Qiraj",
     hasMultipleDifficulties = false,
     hasMultipleSizes = false,
     encounters = {
-        { id = 150610, },
-        { id = 150611, },
-        { id = 150612, },
-        { id = 150613, },
-        { id = 150614, },
-        { id = 150615, },
-        { id = 150631, },
-        { id = 150616, },
-        { id = 150617, },
+        { id = 150709, },
+        { id = 150710, },
+        { id = 150711, },
+        { id = 150712, },
+        { id = 150713, },
+        { id = 150714, },
+        { id = 150715, },
+        { id = 150716, },
+        { id = 150717, },
     },
     difficultyIconMap = nil,
 }

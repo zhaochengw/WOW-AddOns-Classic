@@ -81,34 +81,34 @@ function MopItemFixes.Load()
             [itemKeys.npcDrops] = {55291,65779},
         },
         [74840] = { -- Green Cabbage
-            [itemKeys.npcDrops] = {58567,63157},
+            [itemKeys.npcDrops] = {58567,60113,63157},
         },
         [74841] = { -- Juicycrunch Carrot
-            [itemKeys.npcDrops] = {63154,63158},
+            [itemKeys.npcDrops] = {63154,63156,63158},
         },
         [74842] = { -- Mogu Pumpkin
-            [itemKeys.npcDrops] = {63180,63185},
+            [itemKeys.npcDrops] = {63180,63184,63185},
         },
         [74843] = { -- Scallions
-            [itemKeys.npcDrops] = {63160,63165},
+            [itemKeys.npcDrops] = {63160,63164,63165},
         },
         [74844] = { -- Red Blossom Leek
-            [itemKeys.npcDrops] = {63223,63229},
+            [itemKeys.npcDrops] = {63223,63228,63229},
         },
         [74846] = { -- Witchberries
-            [itemKeys.npcDrops] = {66080,66085},
+            [itemKeys.npcDrops] = {66080,66084,66085},
         },
         [74847] = { -- Jade Squash
-            [itemKeys.npcDrops] = {66108,66113},
+            [itemKeys.npcDrops] = {66108,66112,66113},
         },
         [74848] = { -- Striped Melon
-            [itemKeys.npcDrops] = {66123,66129},
+            [itemKeys.npcDrops] = {66123,66128,66129},
         },
         [74849] = { -- Pink Turnip
-            [itemKeys.npcDrops] = {63245,63250},
+            [itemKeys.npcDrops] = {63245,63249,63250},
         },
         [74850] = { -- White Turnip
-            [itemKeys.npcDrops] = {63260,63265},
+            [itemKeys.npcDrops] = {63260,63264,63265},
         },
         [75023] = { -- Pristine Silk Strand
             [itemKeys.objectDrops] = {209826},
@@ -337,7 +337,7 @@ function MopItemFixes.Load()
             [itemKeys.objectDrops] = {210803},
         },
         [79828] = { -- Yak Statuette
-            [itemKeys.npcDrops] = {59124},
+            [itemKeys.npcDrops] = {59124,59154},
         },
         [79833] = { -- Shadelight Truffle
             [itemKeys.objectDrops] = {210810,210811,210812},
@@ -714,6 +714,9 @@ function MopItemFixes.Load()
         [84118] = { -- Fragrant Corewood
             [itemKeys.npcDrops] = {62876},
         },
+        [84121] = { -- Silken Feather
+            [itemKeys.npcDrops] = {58457},
+        },
         [84239] = { -- Flitterling Dust
             [itemKeys.npcDrops] = {62764},
         },
@@ -731,6 +734,12 @@ function MopItemFixes.Load()
         },
         [84656] = { -- Stunned Whitepetal Carp
             [itemKeys.npcDrops] = {62984},
+        },
+        [84727] = { -- Ancient Spirit Dust
+            [itemKeys.npcDrops] = {62679},
+        },
+        [84762] = { -- Highly Explosive Yaungol Oil
+            [itemKeys.objectDrops] = {212877},
         },
         [84779] = { -- Chunk of Solidified Amber
             [itemKeys.objectDrops] = {212902},
@@ -771,6 +780,15 @@ function MopItemFixes.Load()
         [85582] = { -- Shao-Tien Cage Key
             [itemKeys.class] = itemClasses.QUEST,
             [itemKeys.npcDrops] = {63610,63611,63641},
+        },
+        [85635] = { -- Pristine Mire Beast Eye
+            [itemKeys.npcDrops] = {63731},
+        },
+        [85664] = { -- Amber Sap
+            [itemKeys.objectDrops] = {213319,213326},
+        },
+        [85665] = { -- Mushan Tongue
+            [itemKeys.npcDrops] = {62029,66599},
         },
         [85681] = { -- Lushroom
             [itemKeys.objectDrops] = {213350,213352,213353},
@@ -901,6 +919,9 @@ function MopItemFixes.Load()
         },
         [88538] = { -- Sha-Haunted Crystal
             [itemKeys.startQuest] = 31661,
+        },
+        [88715] = { -- Ashes of Warlord Gurthan
+            [itemKeys.startQuest] = 31677,
         },
         [89054] = { -- Stolen Boots
             [itemKeys.objectDrops] = {214865,214866,214867,214868},

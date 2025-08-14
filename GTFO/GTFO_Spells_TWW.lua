@@ -243,6 +243,35 @@ GTFO.SpellID["456890"] = {
   alwaysAlert = true;
 };
 
+GTFO.SpellID["1221165"] = {
+  --desc = "Whirling Sand (Grubber)";
+  sound = 1;
+};
+
+GTFO.SpellID["1236958"] = {
+  --desc = "Devouring Spittle (Engorged Siltfeaster)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1234786"] = {
+  --desc = "Shadowbind Lance (Shadow-Captain Lakheesh)";
+  ignoreApplication = true;
+  sound = 2;
+};
+
+GTFO.SpellID["1237906"] = {
+  --desc = "Void Corruption (Reshanor)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1246457"] = {
+  --desc = "Energy Surge";
+  applicationOnly = true;
+  sound = 1;
+};
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
@@ -456,6 +485,11 @@ GTFO.SpellID["425556"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1238782"] = {
+  --desc = "Earthshattering Spear (Captain Dailcry)";
+  sound = 1;
+  ignoreApplication = true;
+};
 
 --- *******************
 --- * The Dawnbreaker *
@@ -786,6 +820,28 @@ GTFO.SpellID["474155"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1237258"] = {
+  --desc = "Decroding Puddle (Great Devourer)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["473539"] = {
+  --desc = "Flurry of Punches (Punchy Thug)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["1245758"] = {
+  --desc = "Atomized (Nexus-Princess Ky'veza)";
+  sound = 1;
+};
+
+GTFO.SpellID["1250052"] = {
+  --desc = "The Shadows (Nexus-Princess Ky'veza)";
+  ignoreApplication = true;
+  sound = 1;
+};
 
 --- *******************
 --- * Nerub-ar Palace *
@@ -1054,6 +1110,12 @@ GTFO.SpellID["473287"] = {
   sound = 1;
 };
 
+GTFO.SpellID["468723"] = {
+  --desc = "Shock Water (Geezle Gigazap)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
 --- ***************************
 --- * Liberation of Undermine *
 --- ***************************
@@ -1238,6 +1300,64 @@ GTFO.SpellID["1222202"] = {
 --- *******************
 --- * Manaforge Omega *
 --- *******************
+
+GTFO.SpellID["1219248"] = {
+  --desc = "Arcane Radiation (Arcanomatrix Atomizer)";
+  sound = 1;
+};
+
+GTFO.SpellID["1219354"] = {
+  --desc = "Potent Mana Residue (Plexus Sentinel)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1218668"] = {
+  --desc = "Energy Cutter (Plexus Sentinel)";
+  sound = 1;
+};
+
+GTFO.SpellID["1223235"] = {
+  --desc = "Arcane Sludge (Darkmage Zadus)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1223723"] = {
+  --desc = "Glare Splatter (Waygate Watcher)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1223620"] = {
+  --desc = "Cursed Gaze (Waygate Watcher)";
+  ignoreSelfInflicted = true;
+  sound = 4;
+};
+
+GTFO.SpellID["1226915"] = {
+  --desc = "Sticky Silk";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1246022"] = {
+  --desc = "Attuned Spillage";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1226366"] = {
+  --desc = "Living Silk (Loom'ithar)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1243771"] = {
+  --desc = "Arcane Ichor (Loom'ithar)";
+  ignoreApplication = true;
+  sound = 1;
+};
 
 end
 

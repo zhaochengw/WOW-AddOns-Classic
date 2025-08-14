@@ -8,7 +8,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("TotemTimers_GUI", true)
 
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0", true)
 
-local metadatafunc = GetAddOnMetadata or C_AddOns.GetAddOnMetadata
 
 TotemTimers.options = {
     type = "group",
@@ -20,7 +19,7 @@ TotemTimers.options = {
                 version= {
                     order = 0,
                     type ="description",
-                    name = L["Version"]..": "..tostring(metadatafunc("TotemTimers", "Version"))
+                    name = L["Version"]..": "..tostring(GetAddOnMetadata("TotemTimers", "Version"))
                 },
                 info= {
                     order = 1,

@@ -2286,3 +2286,14 @@ Change Log:
 5.18.1
 * Updated for patch 11.2
 * Added TWW spells for Eco-Dome Al'dani
+
+5.18.2
+* Added The War Within spells (world)
+* Added TWW spells for Eco-Dome Al'dani
+* Added TWW spells for TWW Delves 
+
+5.18.3
+* Added The War Within spells (world)
+* Added TWW spells for Manaforge Omega 
+* Added TWW spells for Priory of the Scared Flame
+* Added TWW spells for Operation: Floodgate

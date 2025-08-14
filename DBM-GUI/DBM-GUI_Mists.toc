@@ -28,7 +28,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 11.2.6
+## Version: 11.2.8
 ## X-Website: https://deadlybossmods.com
 
 Polyfills.xml
@@ -87,3 +87,5 @@ modules\options\frames\Range.lua
 modules\options\frames\Nameplate.lua
 
 modules\options\dev\Dev.lua
+
+modules\options\tools.lua

@@ -21,7 +21,7 @@ end
 
 function Postal_Express:MAIL_SHOW()
 	if Postal.db.profile.Express.EnableAltClick and not self:IsHooked(GameTooltip, "OnTooltipSetItem") then
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic or Postal.WOWMists then
 			self:HookScript(GameTooltip, "OnTooltipSetItem")
 		else
 			if TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall then
@@ -32,7 +32,7 @@ function Postal_Express:MAIL_SHOW()
 				end)
 			end
 		end
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic or Postal.WOWMists then
 			self:RawHook("ContainerFrameItemButton_OnModifiedClick", true)
 		end
 		if Postal.WOWRetail then
@@ -53,7 +53,7 @@ end
 function Postal_Express:Reset(event)
 	if self:IsHooked(GameTooltip, "OnTooltipSetItem") then
 		self:Unhook(GameTooltip, "OnTooltipSetItem")
-		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic or Postal.WOWMists then
 			self:Unhook("ContainerFrameItemButton_OnModifiedClick")
 		end
 	end
@@ -318,14 +318,14 @@ function Postal_Express.SetEnableAltClick(dropdownbutton, arg1, arg2, checked)
 	if checked then
 		if MailFrame:IsVisible() and not self:IsHooked(GameTooltip, "OnTooltipSetItem") then
 			self:HookScript(GameTooltip, "OnTooltipSetItem")
-			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic or Postal.WOWMists then
 				self:RawHook("ContainerFrameItemButton_OnModifiedClick", true)
 			end
 		end
 	else
 		if self:IsHooked(GameTooltip, "OnTooltipSetItem") then
 			self:Unhook(GameTooltip, "OnTooltipSetItem")
-			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic then
+			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic or Postal.WOWCataClassic or Postal.WOWMists then
 				self:Unhook("ContainerFrameItemButton_OnModifiedClick")
 			end	
 		end

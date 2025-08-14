@@ -1,11 +1,10 @@
-if DBM:GetTOC() < 110200 then return end
 local mod	= DBM:NewMod(2684, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250727064709")
+mod:SetRevision("20250813141951")
 mod:SetCreatureID(233814)
 mod:SetEncounterID(3129)
-mod:SetHotfixNoticeRev(20250629000000)
+mod:SetHotfixNoticeRev(20250813000000)
 --mod:SetMinSyncRevision(20240921000000)
 mod:SetZone(2810)
 mod.respawnTime = 29
@@ -13,7 +12,7 @@ mod.respawnTime = 29
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 1219450 1219263 1219531 1220489 1220553 1220555 1234733",
+	"SPELL_CAST_START 1219450 1219263 1219531 1220489 1220553 1220555",--1234733
 --	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED 1219459 1219439 1219607",
 --	"SPELL_AURA_APPLIED_DOSE",
@@ -27,31 +26,32 @@ mod:RegisterEventsInCombat(
 --TODO verify all purge IDs used
 --TODO, change to tables or counted casts to stop timers when no further casts expected. right now it's starting all timers as variance until we see live/final version of fight
 --[[
-(ability.id = 1220489 or ability.id = 1220553 or ability.id = 1220555 or ability.id = 1234733) and type = "begincast"
+(ability.id = 1220489 or ability.id = 1220553 or ability.id = 1220555) and type = "begincast"
  or (ability.id = 1220618 or ability.id = 1220981 or ability.id = 1220982) and type = "removebuff"
+ or ability.id = 1234733 and type = "begincast"
 --]]
 --Stage One: Purge The Intruders
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(31626))
 local warnManifestMatrices							= mod:NewTargetAnnounce(1219450, 3)
-local warnEradicatingSalvo							= mod:NewTargetCountAnnounce(1219531, 3, nil, nil, nil, nil, nil, nil, true)
+local warnEradicatingSalvo							= mod:NewTargetCountAnnounce(1219607, 3, nil, nil, nil, nil, nil, nil, true)
 
 local specWarnManifestMatrices						= mod:NewSpecialWarningMoveAway(1219450, nil, nil, nil, 1, 2)
 local yellManifestMatrices							= mod:NewShortYell(1219450)
 local yellManifestMatricesFades						= mod:NewShortFadesYell(1219450)
-local specWarnObliterationArcanocannon				= mod:NewSpecialWarningYou(1219263, nil, nil, nil, 1, 2)
+local specWarnObliterationArcanocannon				= mod:NewSpecialWarningYouCount(1219263, nil, nil, nil, 1, 2)
 local yellObliterationArcanocannon					= mod:NewShortYell(1219263)
 local yellObliterationArcanocannonFades				= mod:NewShortFadesYell(1219263)
 local specWarnObliterationArcanocannonOther			= mod:NewSpecialWarningTaunt(1219263, nil, nil, nil, 1, 2)
 local specWarnEradicatingSalvo						= mod:NewSpecialWarningYouPosCount(1219531, nil, nil, nil, 1, 2)
-local yellEradicatingSalvo							= mod:NewShortPosYell(1219531, nil, nil, nil, "YELL")
-local yellEradicatingSalvoFades						= mod:NewIconFadesYell(1219531, nil, nil, nil, "YELL")
-local specWarnGTFO									= mod:NewSpecialWarningGTFO(1219354, nil, nil, nil, 1, 8)
+local yellEradicatingSalvo							= mod:NewShortPosYell(1219607, nil, nil, nil, "YELL")
+local yellEradicatingSalvoFades						= mod:NewIconFadesYell(1219607, nil, nil, nil, "YELL")
+local specWarnGTFO									= mod:NewSpecialWarningGTFO(1219607, nil, nil, nil, 1, 8)
 
-mod:AddSetIconOption("SetIconOnEradicatingSalvo", 1219531, true, 0, {1, 2})
+mod:AddSetIconOption("SetIconOnEradicatingSalvo", 1219607, true, 0, {1, 2})
 
 local timerManifestMatricesCD						= mod:NewVarCountTimer("v33.1-38.9", 1219450, nil, nil, nil, 3)
 local timerObliterationArcanocannonCD				= mod:NewVarCountTimer("v34.0-36.5", 1219263, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerEradicatingSalvoCD						= mod:NewVarCountTimer("v34.0-36.5", 1219531, nil, nil, nil, 3)
+local timerEradicatingSalvoCD						= mod:NewVarCountTimer("v34.0-36.5", 1219607, nil, nil, nil, 3)
 --Stage Two: The Sieve Awakens
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(31634))
 local specWarnProtocolPurge							= mod:NewSpecialWarningCount(1220489, nil, nil, nil, 3, 2)
@@ -65,6 +65,76 @@ mod.vb.eradicatingSalvoCount = 0
 mod.vb.radicatingIcon = 1
 mod.vb.purgeCount = 0
 
+local savedDifficulty = "normal"
+local allTimers = {
+	["mythic"] = {
+		[0] = {
+			[1219450] = {9.5, 28.1},--Manifest Matrices
+			[1219263] = {21.7, 30.4},--Obliteration Arcanocannon
+			[1219531] = {41.0},--Eradicating Salvo
+		},
+		[1] = {--1 and 2 should be identical
+			[1219450] = {"v4.7-5.6", 23.2, 23.2, 24.4},--Manifest Matrices
+			[1219263] = {"v12.6-14.1", "v28.0-29.2", "v28.0-29.2"},--Obliteration Arcanocannon
+			[1219531] = {"v19.4-21.4", 35, 32.1},--Eradicating Salvo
+		},
+		[2] = {--1 and 2 should be identical
+			[1219450] = {"v4.7-5.6", 23.2, 23.2, 24.4},--Manifest Matrices
+			[1219263] = {"v12.6-14.1", "v28.0-29.2", "v28.0-29.2"},--Obliteration Arcanocannon
+			[1219531] = {"v19.4-21.4", 35, 32.1},--Eradicating Salvo
+		},
+		[3] = {--Need more data to get soft enrage repeater
+			[1219450] = {5.4, 23.1, 23.1, "v31.6-33.1", "v31.6-33.1"},--Manifest Matrices
+			[1219263] = {13.3, 29.1, 29.2, "29.2-32.8", "30.4-32.8"},--Obliteration Arcanocannon
+			[1219531] = {21.2, 33.7, "v36.9-38.2", 31.6},--Eradicating Salvo
+		},
+	},
+	["heroic"] = {
+		[0] = {
+			[1219450] = {10.4, 34.0},--Manifest Matrices
+			[1219263] = {21.2, 32.9},--Obliteration Arcanocannon
+			[1219531] = {30.1},--Eradicating Salvo
+		},
+		[1] = {
+			[1219450] = {6.2, 35.2, 35.2},--Manifest Matrices
+			[1219263] = {"v17.9-20.3", "v34.0-35.2", 34.0},--Obliteration Arcanocannon
+			[1219531] = {"v27.9-28.7", "v34.0-35.2"},--Eradicating Salvo
+		},
+		[2] = {
+			[1219450] = {6.2, 35.2, 35.2},--Manifest Matrices
+			[1219263] = {"v18.2-20.2", "v34.0-35.2", 34.0},--Obliteration Arcanocannon
+			[1219531] = {"v27.9-28.7", "v34.0-35.2"},--Eradicating Salvo
+		},
+		[3] = {--Need more data to get soft enrage repeater
+			[1219450] = {6.4, 35.2, 35.2, 35.2, 36.4},--Manifest Matrices
+			[1219263] = {18.5, 34.0, 36.4, 35.2, 34.4},--Obliteration Arcanocannon
+			[1219531] = {28.2, 37.6, 35.2, 35.2},--Eradicating Salvo
+		},
+	},
+	["normal"] = {
+		[0] = {
+			[1219450] = {10.6, 33.9},--Manifest Matrices
+			[1219263] = {20.9, 32.8},--Obliteration Arcanocannon
+			[1219531] = {30.0},--Eradicating Salvo
+		},
+		[1] = {
+			[1219450] = {"v5.4-6.5", 35.2, "v35.2-37.0"},--Manifest Matrices
+			[1219263] = {18.2, 34.0, "v33.5-34.0"},--Obliteration Arcanocannon
+			[1219531] = {27.9, "v34.0-35.2"},--Eradicating Salvo
+		},
+		[2] = {
+			[1219450] = {"v5.4-6.5", 35.2, "v35.2-37.0"},--Manifest Matrices
+			[1219263] = {18.2, 34.0, "v33.5-34.0"},--Obliteration Arcanocannon
+			[1219531] = {27.9, "v34.0-35.2"},--Eradicating Salvo
+		},
+		[3] = {--Eventually normal becomes 36.4 repeating?
+			[1219450] = {6.1, 35.2, 35.2, 38.8, 35.2, 36.4, 36.4, 36.4},--Manifest Matrices
+			[1219263] = {18.2, 34.0, 36.5, 34.0, 36.4, 36.4, 36.4, 36.4},--Obliteration Arcanocannon
+			[1219531] = {28.0, 34.0, 35.2, 36.4, 36.4, 36.4, 36.4},--Eradicating Salvo
+		},
+	},
+}
+
 function mod:OnCombatStart(delay)
 	self:SetStage(1)
 	self.vb.matricesCount = 0
@@ -72,27 +142,50 @@ function mod:OnCombatStart(delay)
 	self.vb.eradicatingSalvoCount = 0
 	self.vb.radicatingIcon = 1
 	self.vb.purgeCount = 0
-	timerManifestMatricesCD:Start(11.1-delay, 1)
-	timerObliterationArcanocannonCD:Start(20.9-delay, 1)
-	timerEradicatingSalvoCD:Start(30.7-delay, 1)
-	timerProtocolPurgeCD:Start(61.2-delay, 1)
+	if self:IsMythic() then
+		savedDifficulty = "mythic"
+	elseif self:IsHeroic() then
+		savedDifficulty = "heroic"
+	else--Combine LFR and Normal
+		savedDifficulty = "normal"
+	end
+	timerManifestMatricesCD:Start(allTimers[savedDifficulty][0][1219450][1]-delay, 1)
+	timerObliterationArcanocannonCD:Start(allTimers[savedDifficulty][0][1219263][1]-delay, 1)
+	timerEradicatingSalvoCD:Start(allTimers[savedDifficulty][0][1219531][1]-delay, 1)
+	timerProtocolPurgeCD:Start(60.8-delay, 1)--Was 69 on heroic but not likely still 69 since it was 61 on normal and mythic
+end
+
+function mod:OnTimerRecovery()
+	if self:IsMythic() then
+		savedDifficulty = "mythic"
+	elseif self:IsHeroic() then
+		savedDifficulty = "heroic"
+	else--Combine LFR and Normal
+		savedDifficulty = "normal"
+	end
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 1219450 then
 		self.vb.matricesCount = self.vb.matricesCount + 1
-		local timer = self.vb.purgeCount == 0 and 33.1 or self.vb.purgeCount == 4 and "v35.2-38.9" or 35.2
-		timerManifestMatricesCD:Start(timer, self.vb.matricesCount+1)
+		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.purgeCount, spellId, self.vb.matricesCount+1)
+		if timer then
+			timerManifestMatricesCD:Start(timer, self.vb.matricesCount+1)
+		end
 	elseif spellId == 1219263 then
 		self.vb.arcanocannonCount = self.vb.arcanocannonCount + 1
-		local timer = self.vb.purgeCount == 4 and "v34.0-36.5" or 34
-		timerObliterationArcanocannonCD:Start(timer, self.vb.arcanocannonCount+1)
+		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.purgeCount, spellId, self.vb.arcanocannonCount+1)
+		if timer then
+			timerObliterationArcanocannonCD:Start(timer, self.vb.arcanocannonCount+1)
+		end
 	elseif spellId == 1219531 then
 		self.vb.eradicatingSalvoCount = self.vb.eradicatingSalvoCount + 1
 		self.vb.radicatingIcon = 1
-		local timer = self.vb.purgeCount == 4 and "v34.0-36.5" or 34
-		timerEradicatingSalvoCD:Start(timer, self.vb.eradicatingSalvoCount+1)
+		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.purgeCount, spellId, self.vb.eradicatingSalvoCount+1)
+		if timer then
+			timerEradicatingSalvoCD:Start(timer, self.vb.eradicatingSalvoCount+1)
+		end
 	elseif spellId == 1220489 or spellId == 1220553 or spellId == 1220555 then
 		self:SetStage(2)
 		self.vb.purgeCount = self.vb.purgeCount + 1
@@ -102,8 +195,8 @@ function mod:SPELL_CAST_START(args)
 		timerManifestMatricesCD:Stop()
 		timerObliterationArcanocannonCD:Stop()
 		timerEradicatingSalvoCD:Stop()
-	elseif spellId == 1234733 and self.vb.purgeCount < 4 then
-		self.vb.purgeCount = 4
+--	elseif spellId == 1234733 and self.vb.purgeCount < 4 then
+--		self.vb.purgeCount = 4
 	end
 end
 
@@ -128,7 +221,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 1219439 then
 		if args:IsPlayer() then
-			specWarnObliterationArcanocannon:Show()
+			specWarnObliterationArcanocannon:Show(self.vb.arcanocannonCount)
 			specWarnObliterationArcanocannon:Play("runout")
 			yellObliterationArcanocannon:Yell()
 			yellObliterationArcanocannonFades:Countdown(spellId)
@@ -177,13 +270,13 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.arcanocannonCount = 0
 		self.vb.eradicatingSalvoCount = 0
 		self.vb.radicatingIcon = 1
-		timerManifestMatricesCD:Start("v5.9-6.8", 1)
-		timerObliterationArcanocannonCD:Start(2)
-		timerEradicatingSalvoCD:Start("v27.7-28.8", 1)
+		timerManifestMatricesCD:Start(allTimers[savedDifficulty][self.vb.purgeCount][1219450][1], 1)
+		timerObliterationArcanocannonCD:Start(allTimers[savedDifficulty][self.vb.purgeCount][1219263][1], 1)
+		timerEradicatingSalvoCD:Start(allTimers[savedDifficulty][self.vb.purgeCount][1219531][1], 1)
 		if self.vb.purgeCount < 3 then
 			timerProtocolPurgeCD:Start(94, self.vb.purgeCount+1)
 		else
-			timerCleansetheChamberCD:Start(93.3, self.vb.purgeCount+1)
+			timerCleansetheChamberCD:Start(92.9, self.vb.purgeCount+1)
 		end
 	end
 end

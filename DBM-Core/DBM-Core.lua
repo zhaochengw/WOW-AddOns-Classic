@@ -76,16 +76,16 @@ end
 ---@class DBM
 local DBM = private:GetPrototype("DBM")
 _G.DBM = DBM
-DBM.Revision = parseCurseDate("20250808133035")
+DBM.Revision = parseCurseDate("20250813153914")
 DBM.TaintedByTests = false -- Tests may mess with some internal state, you probably don't want to rely on DBM for an important boss fight after running it in test mode
 
-local fakeBWVersion, fakeBWHash = 391, "1adddef"--391.1
+local fakeBWVersion, fakeBWHash = 393, "9e38763"--393.0
 local PForceDisable
 -- The string that is shown as version
-DBM.DisplayVersion = "11.2.6"--Core version
+DBM.DisplayVersion = "11.2.8"--Core version
 DBM.classicSubVersion = 0
 DBM.dungeonSubVersion = 0
-DBM.ReleaseRevision = releaseDate(2025, 8, 8) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+DBM.ReleaseRevision = releaseDate(2025, 8, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 PForceDisable = 19--When this is incremented, trigger force disable regardless of major patch
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2244,6 +2244,61 @@ do
 		self:AddMsg(L.VERSIONCHECK_FOOTER:format(TotalUsers - NoDBM, TotalUsers - NoBigwigs), false)
 		self:AddMsg(L.VERSIONCHECK_OUTDATED:format(OldMod, #outdatedUsers > 0 and tconcat(outdatedUsers, ", ") or NONE), false)
 	end
+end
+
+------------------------
+--  Break/Pull Timer  --
+------------------------
+
+---@param timer number --time in seconds
+function DBM:CreateBreakTimer(timer)
+	--Apparently BW wants to accept all pull timers regardless of length, and not support break timers that can be used by all users
+	--Sadly, this means DBM has to also be as limiting because if boss mods are not on same page it creates conflicts within multi mod groups
+	local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.
+	if (self:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" then
+		return self:AddMsg(L.ERROR_NO_PERMISSION)
+	end
+	if IsEncounterInProgress() then
+		return self:AddMsg(L.ERROR_NO_PERMISSION_COMBAT)
+	end
+	if timer > 60 then
+		return self:AddMsg(L.BREAK_USAGE)
+	end
+	timer = timer * 60
+	--Make sure 1 minute break timer is sent as a break timer and not a pull timer
+	--if timer == 60 then
+	--	timer = 61
+	--end
+	--if not private.isWrath then
+	--	--Send blizzard countdown timer that all users see (including modless)
+	--	C_PartyInfo.DoCountdown(timer)
+	--	DBM:Debug("Sending Blizzard Countdown Timer")
+	--else
+	private.sendSync(private.DBMSyncProtocol, "BT", timer, "ALERT")
+	self:Debug("Sending DBM Break Timer")
+	--end
+end
+
+---@param timer number --time in seconds
+function DBM:CreatePullTimer(timer)
+	--Apparently BW wants to accept all pull timers regardless of length, and not support break timers that can be used by all users
+	--Sadly, this means DBM has to also be as limiting because if boss mods are not on same page it creates conflicts within multi mod groups
+	local LFGTankException = IsPartyLFG and IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.
+	if (self:GetRaidRank() == 0 and IsInGroup() and not LFGTankException) or select(2, IsInInstance()) == "pvp" then
+		return self:AddMsg(L.ERROR_NO_PERMISSION)
+	end
+	if IsEncounterInProgress() then
+		return self:AddMsg(L.ERROR_NO_PERMISSION_COMBAT)
+	end
+	if timer > 0 and timer < 3 then
+		return self:AddMsg(L.PULL_TIME_TOO_SHORT)
+	end
+	--if timer > 60 then
+	--	return DBM:AddMsg(L.PULL_TIME_TOO_LONG)
+	--end
+	--Send blizzard countdown timer that all users see (including modless)
+	C_PartyInfo.DoCountdown(timer)
+	self:Debug("Sending Blizzard Countdown Timer")
 end
 
 -------------------
@@ -9177,7 +9232,7 @@ function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	end
 end
 
----@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250808133035" to be auto set by packager
+---@param revision number|string Either a number in the format "202101010000" (year, month, day, hour, minute) or string "20250813153914" to be auto set by packager
 function bossModPrototype:SetRevision(revision)
 	revision = parseCurseDate(revision or "")
 	if not revision or type(revision) == "string" then

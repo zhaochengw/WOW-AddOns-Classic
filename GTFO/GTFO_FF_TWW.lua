@@ -30,5 +30,10 @@ GTFO.FFSpellID["472849"] = {
   sound = 4;
 }
 
+GTFO.FFSpellID["1223620"] = {
+  --desc = "Cursed Gaze (Waygate Watcher)";
+  sound = 4;
+};
+
 end
 

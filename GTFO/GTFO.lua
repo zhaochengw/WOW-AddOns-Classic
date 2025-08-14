@@ -28,9 +28,9 @@ GTFO = {
 		BrannMode = 0;
 		IgnoreTimeAmount = .2;
 	};
-	Version = "5.18.1"; -- Version number (text format)
+	Version = "5.18.3"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 51801; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 51803; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 51701; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 50000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 50503; -- Numeric version number for checking out-of-date clients (Wrath classic)

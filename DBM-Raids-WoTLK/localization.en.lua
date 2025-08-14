@@ -1433,7 +1433,7 @@ L:SetWarningLocalization{
 
 L:SetOptionLocalization{
 	SpecWarnTrapL		= "Show special warning for Deathbound Ward trap activation",
-	SpecWarnTrapP		= "Show special warning for engeful Fleshreapers trap activation",
+	SpecWarnTrapP		= "Show special warning for Vengeful Fleshreapers trap activation",
 	SpecWarnGosaEvent	= "Show special warning for Sindragosa gauntlet event"
 }
 

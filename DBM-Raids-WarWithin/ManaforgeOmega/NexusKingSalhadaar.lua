@@ -1,11 +1,10 @@
-if DBM:GetTOC() < 110200 then return end
 local mod	= DBM:NewMod(2690, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250801093109")
+mod:SetRevision("20250813150918")
 mod:SetCreatureID(237763)
 mod:SetEncounterID(3134)
-mod:SetHotfixNoticeRev(20250731000000)
+mod:SetHotfixNoticeRev(20250813000000)
 mod:SetMinSyncRevision(20250731000000)
 mod:SetZone(2810)
 mod.respawnTime = 29
@@ -43,22 +42,22 @@ local warnKingsThrall								= mod:NewTargetNoFilterAnnounce(1224767, 2)--Could 
 
 local specWarnConquer								= mod:NewSpecialWarningSoakCount(1224787, nil, nil, nil, 2, 2)
 local specWarnVanquish								= mod:NewSpecialWarningSpell(1224812, nil, nil, nil, 2, 15)
-local specWarnBanishment							= mod:NewSpecialWarningMoveAway(1227529, nil, nil, nil, 1, 2)
-local yellBanishmentFades							= mod:NewShortFadesYell(1227529)
+local specWarnBanishment							= mod:NewSpecialWarningMoveAway(1227549, nil, nil, nil, 1, 2)
+local yellBanishmentFades							= mod:NewShortFadesYell(1227549)
 local specWarnInvokeTheOath							= mod:NewSpecialWarningSpell(1224906, nil, nil, nil, 2, 2)
 local specWarnGTFO									= mod:NewSpecialWarningGTFO(1231097, nil, nil, nil, 1, 8)
 
 local timerSubjugationRuleCD						= mod:NewCDCountTimer(40, 1224776, DBM_COMMON_L.TANKCOMBO.." (%s)", nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerBanishmentCD								= mod:NewCDCountTimer(97.3, 1227529, nil, nil, nil, 3)
+local timerBanishmentCD								= mod:NewCDCountTimer(97.3, 1227549, nil, nil, nil, 3)
 local timerInvokeTheOathCD							= mod:NewNextTimer(117, 1224906, nil, nil, nil, 2)
 
 mod:AddInfoFrameOption(1224731, true)
 ----Royal Voidwing
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(32228))
-local specWarnBesiege								= mod:NewSpecialWarningDodgeCount(1225016, nil, nil, nil, 2, 2)
+local specWarnBesiege								= mod:NewSpecialWarningDodgeCount(1227470, nil, nil, nil, 2, 2)
 
 local timerBeheadCD									= mod:NewCDCountTimer(40, 1224827, nil, nil, nil, 3)
-local timerBesiegeCD								= mod:NewCDCountTimer(40, 1225016, nil, nil, nil, 3)
+local timerBesiegeCD								= mod:NewCDCountTimer(40, 1227470, nil, nil, nil, 3)
 
 mod:AddPrivateAuraSoundOption(1224855, true, 1224827, 1)--Behead
 --Intermission One: Nexus Descent
@@ -120,11 +119,11 @@ mod:AddTimerLine(DBM:EJ_GetSectionInfo(31575))
 local specWarnStarshattered						= mod:NewSpecialWarningYou(1226413, nil, nil, nil, 1, 6)
 local specWarnStarshatteredTaunt				= mod:NewSpecialWarningTaunt(1226413, nil, nil, nil, 1, 2)
 
-local timerGalacticSmashCD						= mod:NewCDCountTimer(55, 1225319, nil, nil, nil, 3)
+local timerGalacticSmashCD						= mod:NewCDCountTimer(55, 1226648, nil, nil, nil, 3)
 local timerStarkillerSwingCD					= mod:NewCDCountTimer(97.3, 1226442, nil, nil, nil, 3)
 local timerWorldInTwilightCD					= mod:NewNextTimer(185, 1225634, nil, nil, nil, 6)--172.5+12.5ish
 
-mod:AddPrivateAuraSoundOption(1225316, true, 1225319, 1)--Galactic Smash
+mod:AddPrivateAuraSoundOption(1225316, true, 1226648, 1)--Galactic Smash
 mod:AddPrivateAuraSoundOption(1226018, true, 1226442, 1)--Starkiller Swing
 
 local castsPerGUID = {}
@@ -156,12 +155,14 @@ function mod:OnCombatStart(delay)
 	self.vb.smashCount = 0
 	self.vb.swingCount = 0
 	--Boss
-	timerSubjugationRuleCD:Start(self:IsEasy() and 12.5 or 14.5-delay, 1)
-	timerBanishmentCD:Start(30-delay, 1)
+	timerSubjugationRuleCD:Start(self:IsEasy() and 12.5 or 13.4-delay, 1)
+	if not self:IsEasy() then
+		timerBanishmentCD:Start(30-delay, 1)
+	end
 	timerInvokeTheOathCD:Start(117-delay)--Until cast finish (not cast start)
 	--Voidwing
-	timerBeheadCD:Start(32.4-delay, 1)
-	timerBesiegeCD:Start(self:IsMythic() and 9 or self:IsEasy() and 46 or 49-delay, 1)
+	timerBeheadCD:Start((self:IsHard() and 32.5 or 35)-delay, 1)
+	timerBesiegeCD:Start((self:IsMythic() and 9 or self:IsEasy() and 46 or 49)-delay, 1)
 	self:EnablePrivateAuraSound(1224855, "lineyou", 17)--Behead
 	self:EnablePrivateAuraSound(1224857, "lineyou", 17, 1224855)--Behead
 	self:EnablePrivateAuraSound(1224858, "lineyou", 17, 1224855)--Behead
@@ -195,6 +196,9 @@ function mod:OnCombatEnd()
 	if self.Options.NPAuraOnTwilightBarrier then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
+	if self.Options.InfoFrame then
+		DBM.InfoFrame:Hide()
+	end
 end
 
 function mod:SPELL_CAST_START(args)
@@ -216,7 +220,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 1227529 then
 		self.vb.banishmentCount = self.vb.banishmentCount + 1
 		if self.vb.banishmentCount < 4 then
-			local timer = self.vb.banishmentCount % 2 == 0 and 24.1 or 15.9
+			local timer = self.vb.banishmentCount % 2 == 0 and 23.6 or 16.4
 			timerBanishmentCD:Start(timer, self.vb.banishmentCount+1)
 		end
 	elseif spellId == 1224906 then
@@ -229,7 +233,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.besiegeCount = self.vb.besiegeCount + 1
 		specWarnBesiege:Show(self.vb.besiegeCount)
 		specWarnBesiege:Play("breathsoon")
-		timerBesiegeCD:Start(nil, self.vb.besiegeCount+1)
+		timerBesiegeCD:Start(40, self.vb.besiegeCount+1)
 	elseif spellId == 1228065 then
 		--Intermission One: Nexus Descent
 		--Timers for adds start on phase start, but their GUIDS aren't known until they spawn, so we can't start them here
@@ -338,7 +342,7 @@ function mod:SPELL_CAST_START(args)
 		timerBesiegeCD:Stop()
 	elseif spellId == 1225319 then
 		self.vb.smashCount = self.vb.smashCount + 1
-		timerGalacticSmashCD:Start(nil, self.vb.smashCount+1)
+		timerGalacticSmashCD:Start(55, self.vb.smashCount+1)
 	elseif spellId == 1228053 then
 		timerReapCD:Start(nil, args.sourceGUID)
 	elseif spellId == 1237106 then
