@@ -49,14 +49,14 @@ function BG.ReceiveTitleUI(FB, t, b, bb, i, ii)
     p.preWidget0 = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 155, 0);
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.zhuangbeiWidth+5, 0);
     version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["买家"])
     preWidget = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 95, 0);
+    version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.maijiaWidth+5, 0);
     version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["金额"])
@@ -80,10 +80,10 @@ function BG.ReceiveZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
         if scrollFrame and i == 1 then
             bt:SetPoint("TOPLEFT", scrollFrame, 5, 0)
         elseif b > 1 and i == 1 then
-            bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -20)
+            bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, BG.IsBigFB(FB) and -15 or -20)
         else
             if BG.zaxiang[FB] and BossNum(FB, b, t) == Maxb[FB] and i == 1 then
-                bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -20)
+                bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, BG.IsBigFB(FB) and -15 or -20)
             else
                 bt:SetPoint("TOPLEFT", p["preWidget" .. i - 1], "BOTTOMLEFT", 0, BG.IsBigFB(FB) and 0 or -3)
             end

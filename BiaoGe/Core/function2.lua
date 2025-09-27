@@ -1939,11 +1939,9 @@ end
 ------------------获取Auction插件里某个物品的历史价格------------------
 function BG.GetAuctionPrice(itemID, mod)
     itemID = tostring(itemID)
-    local realmName = GetRealmName()
-    local faction = UnitFactionGroup("player")
-    if AUCTIONATOR_PRICE_DATABASE and AUCTIONATOR_PRICE_DATABASE[realmName .. " " .. faction] and
-        AUCTIONATOR_PRICE_DATABASE[realmName .. " " .. faction][itemID] then
-        local m = Auctionator.Database:GetFirstPrice({ itemID })
+    if Auctionator and Auctionator.Database and Auctionator.Database.GetPrice then
+        -- local m = Auctionator.Database:GetFirstPrice({ itemID })
+        local m = Auctionator.Database:GetPrice(itemID )
         if m and type(m) == "number" then
             if mod == "notsilver" then
                 m = m - (m % 10000)

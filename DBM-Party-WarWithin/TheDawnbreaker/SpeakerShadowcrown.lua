@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2580, "DBM-Party-WarWithin", 5, 1270)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250307060117")
+mod:SetRevision("20250906064714")
 mod:SetCreatureID(211087)
 mod:SetEncounterID(2837)
 mod:SetHotfixNoticeRev(20241005000000)
@@ -30,8 +30,8 @@ mod:RegisterEventsInCombat(
 local warnBurnignShadows					= mod:NewTargetNoFilterAnnounce(426734, 3, nil, "RemoveMagic|Healer")
 
 local specWarnDarknessComes					= mod:NewSpecialWarningCount(453859, nil, nil, nil, 3, 2)
-local specWarnObsidianBlast					= mod:NewSpecialWarningDefensive(425264, nil, nil, nil, 1, 2)--Heroic and Lower
-local specWarnObsidianBeam					= mod:NewSpecialWarningDefensive(453212, nil, nil, nil, 1, 2, 4)--Mythic and Higher
+local specWarnObsidianBlast					= mod:NewSpecialWarningCount(425264, nil, nil, nil, 1, 2)--Heroic and Lower
+local specWarnObsidianBeam					= mod:NewSpecialWarningCount(453212, nil, nil, nil, 1, 2, 4)--Mythic and Higher
 local specWarnCollapsingDarkness			= mod:NewSpecialWarningDodgeCount(445996, nil, nil, nil, 2, 2)--Heroic and Lower
 local specWarnCollapsingNight				= mod:NewSpecialWarningDodgeCount(453140, nil, nil, nil, 2, 2, 4)--Mythic and Higher
 local specWarnBurningShadows				= mod:NewSpecialWarningYou(426734, nil, nil, nil, 1, 2)
@@ -53,15 +53,14 @@ mod.vb.shadowsCount = 0
 
 --Attempt at handling the predictable spell queues with hardcoded table
 --if this fails, ugglier updateAllTimers will be used as fallback
-local warnedTimerMissing = false--Single warn for single spell to avoid spam. As long as user finds ONE missing timer, their log is useful
 local allTimers = {
 	[1] = {
 		[425264] = {6, 34.3},--Obsidian Blast (Non Mythic)
-		[453212] = {7.1, 31.9, 26.0},--Obsidian Beam (Mythic)
+		[453212] = {7.1, 31.9, 25.3},--Obsidian Beam (Mythic)
 		[445996] = {13.1},--Collapsing Darkness (Non Mythic)
 		[453140] = {23.3, 28.1, 25.9},--Collapsing Night (Mythic)
 		[4267341] = {9.3, 35.5},--Burning Shadows (Non Mythic)
-		[4267342] = {19.2, 15.7, 24.1},--Burning Shadows (Mythic)
+		[4267342] = {19.2, 15.7, 22.4},--Burning Shadows (Mythic)
 	},
 	[2] = {
 		[425264] = {6.8, 17},--Obsidian Blast (Non Mythic)
@@ -144,10 +143,11 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 425264 then--Non Mythic
 		self.vb.obsidianCount = self.vb.obsidianCount + 1
-		if self:IsTanking("player", "boss1", nil, true) then
-			specWarnObsidianBlast:Show()
+		specWarnObsidianBlast:Show(self.vb.obsidianCount)
+		if self:IsTanking("player", nil, nil, true) then
 			specWarnObsidianBlast:Play("defensive")
 		end
+		specWarnObsidianBlast:ScheduleVoice(1, "farfromline")
 		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.obsidianCount+1)
 		if timer and timer > 0 then
 			timerObsidianBlastCD:Start(timer, self.vb.obsidianCount+1)
@@ -157,10 +157,11 @@ function mod:SPELL_CAST_START(args)
 --		updateAllTimers(self, 3.4)
 	elseif spellId == 453212 then--Mythic
 		self.vb.obsidianCount = self.vb.obsidianCount + 1
-		if self:IsTanking("player", "boss1", nil, true) then
-			specWarnObsidianBeam:Show()
+		specWarnObsidianBeam:Show(self.vb.obsidianCount)
+		if self:IsTanking("player", nil, nil, true) then
 			specWarnObsidianBeam:Play("defensive")
 		end
+		specWarnObsidianBeam:ScheduleVoice(1, "farfromline")
 		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.obsidianCount+1)
 		if timer and timer > 0 then
 			timerObsidianBeamCD:Start(timer, self.vb.obsidianCount+1)

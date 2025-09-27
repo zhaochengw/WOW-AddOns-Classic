@@ -1,9 +1,11 @@
 local mod	= DBM:NewMod(663, "DBM-Party-MoP", 7, 246)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
+if DBM:IsRetail() then
+	mod.statTypes = "normal,heroic,challenge,timewalker"
+end
 
-mod:SetRevision("20231024034207")
+mod:SetRevision("20250915043254")
 mod:SetCreatureID(59184)--59220 seem to be her mirror images
 mod:SetEncounterID(1427)
 mod:SetZone(1007)

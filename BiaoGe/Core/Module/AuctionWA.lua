@@ -104,6 +104,7 @@ BG.Init(function()
         L["备注："] = "備註："
         L["{rt1}拍卖开始{rt1} %s 起拍价：%s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s"
         L["团长："] = "團長"
+        L["|cffff0000该装备在拍卖结束后一直没收到团长发出的团队通知，所以你显示的拍卖结果可能不正确，请告知团长。"] = "|cffff0000該裝備在拍賣結束後一直沒收到團長發出的團隊通知，所以你顯示的拍賣結果可能不正確，請告知團長。"
     end
 
     function aura.GN(unit)
@@ -192,6 +193,7 @@ BG.Init(function()
         aura.backdropColor_IsMe = { aura.RGB("009900", .6) }
         aura.backdropBorderColor_IsMe = { 0, 1, 0, 1 }
         aura.raidRosterInfo = {}
+        aura.endMsg = {}
 
         aura.MiniMoneyTbl = {
             -- 小于该价格时，每次加价幅度，最低加价幅度
@@ -199,8 +201,9 @@ BG.Init(function()
             { 100, 10, 1 },
             { 5000, 100, 100 },
             { 10000, 500, 100 },
-            { 100000, 1000, 500 },
-            { 500000, 5000, 1000 },
+            { 30000, 1000, 500 },
+            { 100000, 2000, 500 },
+            { 300000, 5000, 1000 },
             { 1000000, 10000, 1000 },
             { nil, 50000, 5000 },
         }
@@ -283,13 +286,8 @@ BG.Init(function()
         end
     end
 
-    function aura.IsRaidLeader(player)
-        if not player then
-            player = aura.GN()
-        end
-        if player == aura.raidLeader then
-            return true
-        end
+    function aura.IsRaidLeader()
+        return IsInRaid(1) and UnitIsGroupLeader("player")
     end
 
     function aura.IsML(player)
@@ -691,7 +689,11 @@ BG.Init(function()
                 t:SetFont(STANDARD_TEXT_FONT, 30, "OUTLINE")
                 t:SetPoint("TOPRIGHT", f.itemFrame, "BOTTOMRIGHT", -10, -5)
 
+                local itemID = f.itemID
+                local link = f.link
+                local result
                 if f.player and f.player ~= "" then
+                    result = f.player .. f.money
                     t:SetText(L["拍卖成功"])
                     t:SetTextColor(0, 1, 0)
                     f.currentMoneyText:SetText(L["|cff00FF00成交价：|r"] .. f.money)
@@ -707,11 +709,12 @@ BG.Init(function()
                     end
 
                     if aura.IsRaidLeader() then
-                        C_Timer.After(.2, function()
+                        After(.2, function()
                             SendChatMessage(format(L["{rt6}拍卖成功{rt6} %s %s %s"], f.link, f.player, f.money), "RAID")
                         end)
                     end
                 else
+                    result = L["流拍"]
                     t:SetText(L["流拍"])
                     t:SetTextColor(1, 0, 0)
                     f.currentMoneyText:SetText(L["|cffFF0000流拍：|r"] .. f.money)
@@ -724,6 +727,24 @@ BG.Init(function()
 
                 After(aura.HIDEFRAME_TIME, function()
                     aura.UpdateFrame(f)
+                end)
+
+                After(3, function()
+                    if not aura.endMsg[itemID] then
+                        SendSystemMessage("|cff00BFFF<BiaoGe>|r " ..
+                            format(L["%s（%s）"], link, result) ..
+                            L["|cffff0000该装备在拍卖结束后一直没收到团长发出的团队通知，所以你显示的拍卖结果可能不正确，请告知团长。"])
+
+                        if BG then
+                            if not aura.soundCD then
+                                aura.soundCD = true
+                                After(2, function()
+                                    aura.soundCD = nil
+                                end)
+                                BG.PlaySound("auctionError")
+                            end
+                        end
+                    end
                 end)
             end
         end)
@@ -1131,7 +1152,7 @@ BG.Init(function()
             if self.t <= 0 then
                 self.animing = nil
                 self:SetScript("OnUpdate", nil)
-                C_Timer.After(0, function()
+                After(0, function()
                     CheckAllFrameOverlap()
                 end)
             end
@@ -1142,6 +1163,18 @@ BG.Init(function()
         aura.lastFocus = self
         self:HighlightText()
     end
+
+    function aura.SaveEndMsg(item)
+        local itemID = tonumber(item:match("item:(%d+):"))
+        local time = GetTime()
+        aura.endMsg[itemID] = time
+        After(6, function()
+            if aura.endMsg[itemID] == time then
+                aura.endMsg[itemID] = nil
+            end
+        end)
+    end
+    
 
     -- 自动出价函数
     do
@@ -1879,6 +1912,7 @@ BG.Init(function()
     _G.BGA.Event:RegisterEvent("GROUP_ROSTER_UPDATE")
     _G.BGA.Event:RegisterEvent("PLAYER_ENTERING_WORLD")
     _G.BGA.Event:RegisterEvent("MODIFIER_STATE_CHANGED")
+    _G.BGA.Event:RegisterEvent("CHAT_MSG_RAID_LEADER")
     _G.BGA.Event:SetScript("OnEvent", function(self, event, ...)
         if event == "CHAT_MSG_ADDON" then
             local prefix, msg, distType, sender = ...
@@ -2032,6 +2066,22 @@ BG.Init(function()
                 else
                     SetCursor(nil)
                 end
+            end
+        elseif event == "CHAT_MSG_RAID_LEADER" then
+            local msg = ...
+            local zhuangbei, maijia, jine
+            zhuangbei, maijia, jine = msg:match("{rt6}拍卖成功{rt6} (.-) (.-) (.+)")
+            if not (zhuangbei and maijia and jine) then
+                zhuangbei, maijia, jine = msg:match("{rt6}拍賣成功{rt6} (.-) (.-) (.+)")
+            end
+            if (zhuangbei and maijia and jine) then
+                aura.SaveEndMsg(zhuangbei)
+                return
+            end
+            zhuangbei = msg:match("{rt7}流拍{rt7} (.+)")
+            if zhuangbei then
+                aura.SaveEndMsg(zhuangbei)
+                return
             end
         end
     end)

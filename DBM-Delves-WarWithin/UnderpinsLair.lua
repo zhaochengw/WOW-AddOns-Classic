@@ -2,8 +2,9 @@ local mod	= DBM:NewMod("z2831", "DBM-Delves-WarWithin")
 local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,mythic"--Best way to really call it
+mod.soloChallenge = true
 
-mod:SetRevision("20250317003825")
+mod:SetRevision("20250914033315")
 mod:SetCreatureID(234168)--Non hard placeholder on load. Real one set in OnCombatStart
 mod:SetEncounterID(3126, 3138)--Normal, Hard
 --mod:SetHotfixNoticeRev(20240914000000)

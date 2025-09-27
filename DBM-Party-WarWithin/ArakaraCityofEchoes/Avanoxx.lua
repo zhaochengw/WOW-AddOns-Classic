@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2583, "DBM-Party-WarWithin", 6, 1271)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250808031502")
+mod:SetRevision("20250821014351")
 mod:SetCreatureID(213179)
 mod:SetEncounterID(2926)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -42,8 +42,8 @@ local specWarnHunger						= mod:NewSpecialWarningRun(439070, nil, nil, nil, 1, 2
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(372820, nil, nil, nil, 1, 8)
 
 local timerVoraciousBiteCD					= mod:NewCDCountTimer(14.1, 438471, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerAlertingShrillCD					= mod:NewVarCountTimer("v38.7-40.1", 438476, nil, nil, nil, 1)--38.7-40.1
-local timerGossamerOnslaughtCD				= mod:NewVarCountTimer("v38.7-40.1", 438473, nil, nil, nil, 3)--38.7-40.1
+local timerAlertingShrillCD					= mod:NewVarCountTimer("v38.7-40.9", 438476, nil, nil, nil, 1)--38.7-40.9
+local timerGossamerOnslaughtCD				= mod:NewVarCountTimer("v38.7-40.5", 438473, nil, nil, nil, 3)--38.7-40.5
 
 mod:AddSetIconOption("SetIconOnAdds", 438476, true, 5, {1, 2, 3, 4})
 

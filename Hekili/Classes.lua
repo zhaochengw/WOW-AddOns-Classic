@@ -1108,11 +1108,6 @@ ns.isDefault = function( name, category )
     return false
 end
 
-
--- Trinket APL
--- ns.storeDefault( [[Usable Items]], 'actionLists', 20180208.181753, [[dq0NnaqijvTjPKpjrrJssPtjr1TufQSljzyk0XqjldPQNHsPAAiLsDnukLTHuk5BOunouk5CQcLMNKk3tQSpjfhucAHivEOefMisPYfvfSrvHmsukQtkbwPu4LOuKBkrj7uv6NQcflvI8uvMkQ0vLOuBfLc9vKsH9s6Vsvdw4WGwScEmctgvDzOnlL6ZOy0iLCAIvJuQ61OuWSv0Tb2Ts)wvnCKILJONlA6uDDKSDuX3vfQA8sOZRkA9iLIMVu0(PSYs5QhTdBdPMUsNEVqaQxzNWHjArbocs9kKWL)Mkx9LLYvVhw4We5v607fcq9ODKqkgA5w8BBX9PMPEfS8cb0)K6T)f1ReoryI6l9JSyN1OELW8trsGPYvD9kCqMI)upEsifdT8(F7(8tnt9ocsHgxV6Tir3LLjR4LeomrElAzH1as4chShxeiyArnDwKO7YYKvazfafWIwwynQ1IeDxwMScalkakGfDDwmArZMwajCHd2JlcemTOUols0DzzYkaSOaOawuU66l9kx9EyHdtKxPtVJGuOX1REls0DzzYkEjHdtK3IwwynGeUWb7XfbcMwutNfj6USmzfqwbqbSOLfwJATir3LLjRaWIcGcyrxNfJw0SPfqcx4G94IabtlQRZIeDxwMScalkakGfLRxjm)uKeyQCvxVchKP4p1RnKA6p7j(uRJKaeMuKOEfS8cb0)K6T)f1ReoryI6l9JSyN1OEVqaQ3JGut)PfLXNADKeGWKIevxFz7kx9EyHdtKxPtVJGuOX1REls0DzzYkEjHdtK3IwwynGeUWb7XfbcMwutNfj6USmzfqwbqbSOLfwJATir3LLjRaWIcGcyrxNfJw0SPfqcx4G94IabtlQRZIeDxwMScalkakGfLR3leG69iC(4EmYe5TOGTnsUWPfLfKGwYI6v4Gmf)PETX5xMiFVSTrYfo7bqcAjlQxjm)uKeyQCvxVs4eHjQV0pYIDwJ6vWYleq)tQ3(xuD9L2w5Q3dlCyI8kD69cbOEp6tYGTfC5lZ0IhbhifcO)j1ReMFkscmvUQRxHdYu8N61(tYGTfC5Z(2WbsHa6Fs9ky5fcO)j1B)lQxjCIWe1x6hzXoRr9ocsHgxV6Tir3LLjR4LeomrElAzH1as4chShxeiyArnDwKO7YYKvazfafWIwwynQ1IeDxwMScalkakGfDDwmArZMwajCHd2JlcemTOUols0DzzYkaSOaOawuU66lBt5Q3dlCyI8kD6DeKcnUE1BrIUlltwXljCyI8w0YcRbKWfoypUiqW0IA6Sir3LLjRaYkakGfTSWAuRfj6USmzfawuaual66Sy0IMnTas4chShxeiyArDDwKO7YYKvayrbqbSOC9EHaup28NCT432c2iC(j1RWbzk(t9O1NC7)T75aNFs9kH5NIKatLR66vcNimr9L(rwSZAuVcwEHa6Fs92)IQRV0wkx9EyHdtKxPtVJGuOX1REls0DzzYkEjHdtK3IwwynGeUWb7XfbcMwutNfj6USmzfqwbqbSOLfwJATir3LLjRaWIcGcyrxNfJw0SPfqcx4G94IabtlQRZIeDxwMScalkakGfLRxjm)uKeyQCvxVchKP4p1JnitApe5Xn7hOixzz6F8ssl9ky5fcO)j1B)lQxjCIWe1x6hzXoRr9EHaup2KmltApe5XTmtlOJICLLXcAdjPL66l7kx9EyHdtKxPtVxia1RSegA5w8BBbBI8NuPELW8trsGPYvD9kCqMI)upGWqlV)3UNnq(tQuVcwEHa6Fs92)I6vcNimr9L(rwSZAuVJGuOX1REls0DzzYkEjHdtK3IwwynGeUWb7XfbcMwutNfj6USmzfqwbqbSOLfwJATir3LLjRaWIcGcyrxNfJw0SPfqcx4G94IabtlQRZIeDxwMScalkakGfLRU(Ywkx9EyHdtKxPtVJGuOX1REls0DzzYkEjHdtK3IwwynGeUWb7XfbcMwutNfj6USmzfqwbqbSOLfwJATir3LLjRaWIcGcyrxNfJw0SPfqcx4G94IabtlQRZIeDxwMScalkakGfLR3leG6vswgl(TTOm(ZjKMuwglEeLtrIPEfoitXFQhPSm9)29e)5estkltFBkNIet9kH5NIKatLR66vcNimr9L(rwSZAuVcwEHa6Fs92)IQRVpwLREpSWHjYR0P3rqk046vVfj6USmzfVKWHjYBrllSgqcx4G94IabtlQPZIeDxwMSciRaOaw0YcRrTwKO7YYKvayrbqbSORZIrlA20ciHlCWECrGGPf11zrIUlltwbGffafWIY1ReMFkscmvUQRxHdYu8N6L0Geos2)B3pGoj8jCQxblVqa9pPE7Fr9kHteMO(s)il2znQ3leG6D0GeosAXVTf0Hoj8jCQU(YAu5Q3dlCyI8kD6DeKcnUE1BrIUlltwXljCyI8w0YcRbKWfoypUiqW0IA6Sir3LLjRaYkakGfTSWAuRfj6USmzfawuaual66Sy0IMnTas4chShxeiyArDDwKO7YYKvayrbqbSOC9ky5fcO)j1B)lQxHdYu8N65Fa2)B3tTKqo4uwM(eUI)uVsy(PijWu5QUELWjctuFPFKf7Sg17fcq94(bOf)2wu2ljKdoLLXIdUI)uD9LflLREpSWHjYR0P3rqk046vVfj6USmzfVKWHjYBrllSgqcx4G94IabtlQPZIeDxwMSciRaOaw0YcRrTwKO7YYKvayrbqbSORZIrlA20ciHlCWECrGGPf11zrIUlltwbGffafWIY1ReMFkscmvUQRxHdYu8N6rbgiHZEW)VmtOWbt9ky5fcO)j1B)lQxjCIWe1x6hzXoRr9EHauVYgmqcNwuw))YmHchmvxFzrVYvVhw4We5v607iifAC9Q3IeDxwMSIxs4We5TOLfwdiHlCWECrGGPf10zrIUlltwbKvaualAzH1Owls0DzzYkaSOaOaw01zXOfnBAbKWfoypUiqW0I66Sir3LLjRaWIcGcyr56vcZpfjbMkx11RWbzk(t94iWz)VDpbctCIz27)IYM6vWYleq)tQ3(xuVs4eHjQV0pYIDwJ69cbOESrboT432IYaHjoXmTG7VOSP6QRxjCIWe1x6hzXwJ0pYwvSyNTX(iBP3rqk046PhBw45XvPtVJgKqGtH2e6YF13r1vfa]] )
-
-
 function Hekili:NewSpecialization( specID, isRanged, icon )
 
     if not specID or specID < 0 then return end
@@ -1515,6 +1510,21 @@ all:RegisterAuras( {
         shared = "target",
         copy = { 7405, 8380, 11596, 11597, 25225, 47467, 58567, 65936, 71554 },
     },
+    -- 新增女王蜂拥之影监控 by风雪 20250806
+    swarming_shadows = {
+        id = 71265,
+        duration = 6,
+        max_stack = 1,
+        shared = "player"
+    },
+
+    -- 新增教授-高达破甲buff,100%武器伤害，使目标对物理伤害抗性降低4%，持续20s，最多叠加5次。by风雪 20250805
+    mutated_slash = {
+        id = 70542,
+        duration = 20,
+        max_stack = 5,
+        shared = "target",
+    },    
 
     major_armor_reduction = {
         alias = { "sunder_armor", "acid_spit", "expose_armor" },
@@ -1556,35 +1566,6 @@ all:RegisterAuras( {
         aliasMode = "longest"
     },
 
-    -- Deals Frost damage over $d.  Reduces melee and ranged attack speed.
-    frost_fever = {
-        id = 55095,
-        duration = function () return 15 + ( 3 * talent.epidemic.rank ) end,
-        tick_time = 3,
-        max_stack = 1,
-        shared = "target",
-        
-        -- 判断冰霜疾病来源于自己，修复 by 风雪20250403
-        generate = function ( t )
-            local name, _, _, _, duration, expires, caster = FindUnitDebuffByID( "target", 55095, "PLAYER" )
-            
-            if name then
-                t.name = name
-                t.count = 1
-                t.expires = expires
-                t.applied = expires - duration
-                t.caster = caster
-                return
-            end
-
-            t.count = 0
-            t.expires = 0
-            t.applied = 0
-            t.caster = "nobody"
-        end,  
-        --修复结束  
-    },
-
     -- Movement speed slowed by $s1% and attack speed slowed by $s2%.
     infected_wounds = {
         id = 58181,
@@ -1613,7 +1594,7 @@ all:RegisterAuras( {
     },
 
     attack_speed_reduction = {
-        alias = { "frost_fever", "infected_wounds", "judgements_of_the_just", "thunder_clap" },
+        alias = { "infected_wounds", "judgements_of_the_just", "thunder_clap" }, --暂时去掉frost_fever冰霜疾病 by风雪 20250806
         aliasType = "debuff",
         aliasMode = "longest"
     },
@@ -4232,14 +4213,37 @@ if Hekili.IsWrath() then
         texture = function() return tinker.hand.spell == 54758 and tinker.hand.texture or 0 end,
         startsCombat = true,
 
---        toggle = "cooldowns", 超级加速器分类由 主要爆发 调整为 默认 by风雪20250422
-
         usable = function ()
             return tinker.hand.spell == 54758
         end,
 
         handler = function()
             applyBuff("hyperspeed_acceleration")
+        end
+    } )
+
+    --新增火箭靴 by风雪 20250809
+    all:RegisterAura( "nitro_boosts", {
+        id = 54861,
+        duration = 5,
+        max_stack = 1
+    })    
+    all:RegisterAbility( "nitro_boosts", {
+        id = 55004,
+        known = function () return tinker.feet.spell == 55004 end,
+        cast = 0,
+        cooldown = 180,
+        gcd = "off",
+
+        item = function() return tinker.feet.spell == 55004 and tinker.feet.item or 0 end,
+        itemKey = "nitro_boosts",
+
+        texture = function() return tinker.feet.spell == 55004 and tinker.feet.texture or 0 end,
+        startsCombat = true,
+        usable = function () return tinker.feet.spell == 55004 end,
+
+        handler = function()
+            applyBuff("nitro_boosts")
         end
     } )
 end

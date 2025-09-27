@@ -28,28 +28,115 @@ local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
 BG.Init(function()
     -- 时光徽章价格
     do
-        local function OnEnter(self)
-            if self.currentPrice then
-                local currentPrice = self.currentPrice
-                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-                GameTooltip:ClearLines()
-                GameTooltip:AddLine(L["当前时光徽章"], 1, 1, 1, true)
-                GameTooltip:AddLine(GetMoneyString(currentPrice, false), 1, 0.82, 0, true)
-                if BG.IsWLK or BG.IsRetail then
-                    GameTooltip:AddLine(" ", 1, 1, 1, true)
-                    local m1 = currentPrice / 90 / 10000
-                    m1 = floor(m1) * 10000
-                    GameTooltip:AddLine("￥1 = " .. GetMoneyString(m1, false), 1, 0.82, 0, true)
-                    local m2 = 90 / (currentPrice / 10000)
-                    if BG.IsRetail then
-                        m2 = format("%.6f", m2)
-                    else
-                        m2 = format("%.4f", m2)
-                    end
-                    GameTooltip:AddLine(GetMoneyString(10000, false) .. " = " .. m2 .. "￥", 1, 0.82, 0, true)
-                end
-                GameTooltip:Show()
+        BiaoGe.marketPrice = BiaoGe.marketPrice or {}
+        local saveCD = 60 * 60 * 2
+        local saveMaxCount = 20
+
+        local function CreateHistoryFrame(self)
+            if not self.currentPrice then return end
+            local titleWidth = 130
+            local barWidth = 200
+            local priceWidth = 100
+            local frameWidth = titleWidth + barWidth + priceWidth + 20
+            local barHeight = 18
+            local _max, _min = 0, 0
+            for i, v in ipairs(BiaoGe.marketPrice) do
+                _max = max(v.price, _max)
+                _min = min(v.price, _min)
             end
+            local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+            f:SetBackdrop({
+                bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                edgeSize = 1,
+            })
+            f:SetBackdropColor(0, 0, 0, 0.8)
+            f:SetBackdropBorderColor(1, 1, 1, .5)
+            f:SetSize(500, 300)
+            f:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 0)
+            f:SetFrameStrata("HIGH")
+            f:SetClampedToScreen(true)
+            f.buttons = {}
+            self.frame = f
+            local toptitle = f:CreateFontString()
+            toptitle:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            toptitle:SetPoint("TOP", f, "TOP", 0, -5)
+            toptitle:SetTextColor(0, .75, 1)
+            toptitle:SetText(AddTexture(1120721) .. L["时光徽章历史价格"])
+
+            local function CreateBar(i, v, isNow)
+                local title = f:CreateFontString()
+                title:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+                title:SetSize(titleWidth, barHeight)
+                if next(f.buttons) then
+                    title:SetPoint("TOPLEFT", f.buttons[i - 1], "BOTTOMLEFT", 0, 0)
+                else
+                    title:SetPoint("TOPLEFT", f, "TOPLEFT", 5, -30)
+                end
+                title:SetTextColor(1, 1, 1)
+                title:SetText(isNow and L["现在"] or date("%m-%d %H:%M", v.time))
+                title:SetJustifyH("RIGHT")
+                title:SetWordWrap(false)
+                tinsert(f.buttons, title)
+
+                local bar = CreateFrame("Frame", nil, f, "BackdropTemplate")
+                bar:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                })
+                bar:SetBackdropColor(1, 1, 0,.8)
+                bar:SetPoint("LEFT", title, "RIGHT", 5, 0)
+                local widthPercent = v.price / _max
+                if widthPercent ~= 1 then
+                    widthPercent = widthPercent * widthPercent
+                end
+                local width
+                if widthPercent == 0 then
+                    width = 5
+                else
+                    width = barWidth * widthPercent
+                end
+                bar:SetSize(width, 14)
+
+                local price = f:CreateFontString()
+                price:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+                price:SetSize(priceWidth, 20)
+                price:SetPoint("LEFT", bar, "RIGHT", 5, 0)
+                price:SetTextColor(1, 0.82, 0)
+                price:SetText(GetMoneyString(v.price, true))
+                price:SetJustifyH("LEFT")
+                price:SetWordWrap(false)
+            end
+            for i, v in ipairs(BiaoGe.marketPrice) do
+                CreateBar(i, v)
+            end
+            CreateBar(#BiaoGe.marketPrice + 1, { price = self.currentPrice or 0 }, true)
+
+            local text
+            local moneyTitle, money
+            if not (BG.IsVanilla_Sod or BG.IsMOP) then
+                moneyTitle = "¥"
+                money = 90
+            else
+                moneyTitle = "HK$"
+                money = 150
+            end
+            local m1 = self.currentPrice / money / 10000
+            m1 = floor(m1) * 10000
+            text = moneyTitle .. "1 = " .. GetMoneyString(m1, true)
+            local m2 = money / (self.currentPrice / 10000)
+            if BG.IsRetail then
+                m2 = format("%.6f", m2)
+            else
+                m2 = format("%.4f", m2)
+            end
+            text = text .. "   " .. GetMoneyString(10000, true) .. " = " .. m2 .. moneyTitle
+            local bottomText = f:CreateFontString()
+            bottomText:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+            bottomText:SetPoint("BOTTOM", f, "BOTTOM", 0, 8)
+            bottomText:SetTextColor(1, .85, 0)
+            bottomText:SetText(text)
+
+            f:SetSize(frameWidth, (#f.buttons + 1) * barHeight + 40)
         end
 
         local f = CreateFrame("Frame", nil, BG.MainFrame)
@@ -59,36 +146,51 @@ BG.Init(function()
         f.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
         f.text:SetPoint("LEFT")
         f.text:SetTextColor(1, 1, 1)
-        f:SetScript("OnEnter", OnEnter)
-        f:SetScript("OnLeave", GameTooltip_Hide)
+        f:SetScript("OnEnter", CreateHistoryFrame)
+        f:SetScript("OnLeave", function(self)
+            if self.frame then
+                self.frame:Hide()
+            end
+        end)
         BG.ButtonToken = f
 
-        if not BG.IsVanilla then
-            local function OnTokenMarketPriceUpdated(event, result)
-                if C_WowTokenPublic.GetCurrentMarketPrice() then
-                    local currentPrice = C_WowTokenPublic.GetCurrentMarketPrice()
-                    f.currentPrice = currentPrice
-                    f.text:SetText(AddTexture(1120721) .. GetMoneyString(currentPrice, false))
-                    f:SetWidth(f.text:GetWidth() + 10)
-                else
-                    f.text:SetText("")
-                    f:SetWidth(1)
+        local function SavePrice(currentPrice)
+            if not next(BiaoGe.marketPrice) or
+                GetServerTime() - BiaoGe.marketPrice[#BiaoGe.marketPrice].time > saveCD then
+                tinsert(BiaoGe.marketPrice, {
+                    time = GetServerTime(),
+                    price = currentPrice,
+                })
+                if #BiaoGe.marketPrice > saveMaxCount then
+                    for i = #BiaoGe.marketPrice - saveMaxCount, 1, -1 do
+                        tremove(BiaoGe.marketPrice, i)
+                    end
                 end
             end
-            local frame = CreateFrame("Frame")
-            frame:RegisterEvent("TOKEN_MARKET_PRICE_UPDATED")
-            frame:SetScript("OnEvent", OnTokenMarketPriceUpdated)
-
-            BG.Init2(function()
-                C_Timer.After(2, function()
-                    C_WowTokenPublic.UpdateMarketPrice()
-                    OnTokenMarketPriceUpdated()
-                end)
-            end)
-            C_Timer.NewTicker(60, function()
-                C_WowTokenPublic.UpdateMarketPrice()
-            end)
         end
+        local function OnTokenMarketPriceUpdated(event, result)
+            local currentPrice = C_WowTokenPublic.GetCurrentMarketPrice()
+            if currentPrice then
+                SavePrice(currentPrice)
+                f.currentPrice = currentPrice
+                f.text:SetText(AddTexture(1120721) .. GetMoneyString(currentPrice, true))
+                f:SetWidth(f.text:GetWidth() + 10)
+            else
+                f.text:SetText("")
+                f:SetWidth(1)
+            end
+        end
+        BG.RegisterEvent("TOKEN_MARKET_PRICE_UPDATED", OnTokenMarketPriceUpdated)
+
+        BG.Init2(function()
+            C_Timer.After(2, function()
+                C_WowTokenPublic.UpdateMarketPrice()
+                OnTokenMarketPriceUpdated()
+            end)
+        end)
+        C_Timer.NewTicker(60, function()
+            C_WowTokenPublic.UpdateMarketPrice()
+        end)
     end
 
     -- 在线玩家数

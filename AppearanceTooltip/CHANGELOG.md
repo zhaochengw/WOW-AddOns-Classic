@@ -1,7 +1,9 @@
 # AppearanceTooltip
 
-## [v63](https://github.com/kemayo/wow-appearancetooltip/tree/v63) (2025-08-09)
-[Full Changelog](https://github.com/kemayo/wow-appearancetooltip/compare/v62...v63) [Previous Releases](https://github.com/kemayo/wow-appearancetooltip/releases)
+## [v64](https://github.com/kemayo/wow-appearancetooltip/tree/v64) (2025-09-14)
+[Full Changelog](https://github.com/kemayo/wow-appearancetooltip/compare/v63...v64) [Previous Releases](https://github.com/kemayo/wow-appearancetooltip/releases)
 
-- Fix pet-related error in classic  
-    It has C\_PetJournal for some reason...  
+- Don't try to alert if the alert system doesn't exist (Mists)  
+- Split out overlay icon styling so it's easier to override  
+- Change bags\_unbound default to only be true on classic  
+    Retail has a lot more usable-to-learn items that are soulbound.  

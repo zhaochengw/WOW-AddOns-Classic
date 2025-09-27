@@ -114,6 +114,14 @@ all = class.specs[ 0 ]
 
 
 all:RegisterAuras({
+    -- Phase 5
+    -- 新增红玉圣殿物理破甲饰品 by风雪 20250901
+    piercing_twilight = {
+        id = 75456,
+        duration = 15,
+        max_stack = 1,
+        copy = {75456, 75458}
+    },
     -- Phase 4
     -- Death's Verdict/Choice Buffs
     paragon_str = {

@@ -39,6 +39,9 @@ function Hekili_Btn_CreateBtnFrame()
     Hekili_BtnFrame = CreateFrame("Frame", "BtnFrame")
     Hekili_BtnFrame:SetSize(9, 9)
 
+    -- 在创建框架后立即设置初始透明度 --
+    Hekili_BtnFrame:SetAlpha(HekiliDisplayPrimary and HekiliDisplayPrimary.alpha or 1)
+
     Hekili_Btnbutton1 = CreateFrame("Button", "Hekili_BtnButton", Hekili_BtnFrame, "UIPanelButtonTemplate")
     Hekili_Btnbutton1:SetSize(20, 20)
     Hekili_Btnbutton1:SetPoint("TOPLEFT", Hekili_BtnFrame, "TOPLEFT", 0, 0)
@@ -102,13 +105,14 @@ function Hekili_Btn_CreateBtnFrame()
 end
 
 local function UpdateBtnFrameVisibility()
-    if HekiliDisplayPrimary and Hekili.DB.profile.btnFunction then
+    if HekiliDisplayPrimary and Hekili.DB.profile.btnFunction and not UnitIsAFK("player") then
         if not Hekili_BtnFrame then
             Hekili_Btn_CreateBtnFrame()
             Hekili_BtnFrame:ClearAllPoints() -- 清除原来的位置
             Hekili_BtnFrame:SetPoint("TOPLEFT", HekiliDisplayPrimary, "TOPLEFT", 0, 20)
         end
         Hekili_BtnFrame:Show()
+
     elseif Hekili_BtnFrame then
         Hekili_BtnFrame:Hide()
     end
@@ -123,3 +127,5 @@ frame:SetScript("OnUpdate", function()
         UpdateBtnFrameVisibility()
     end
 end)
+
+

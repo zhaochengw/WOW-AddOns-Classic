@@ -488,7 +488,7 @@ GTFO.SpellID["346866"] = {
 
 GTFO.SpellID["322945"] = {
   --desc = "Heave Debris (Halkias)";
-  sound = 3;
+  sound = 0; -- Changed in 11.2 to be an AOE attack
 };
 
 GTFO.SpellID["338013"] = {

@@ -83,6 +83,34 @@ function BG.HistoryUI()
         text:SetPoint("TOP", BG.History.List, "BOTTOM", 0, 0)
         text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
         text:SetText(BG.STC_w1(format(L["（ALT+%s改名，ALT+%s删除表格）"], AddTexture("LEFT"), AddTexture("RIGHT"))))
+    
+        local bt = BG.CreateButton(BG.History.List)
+        bt:SetSize(110, 25)
+        bt:SetPoint("BOTTOMLEFT", BG.History.List, "BOTTOMRIGHT", 0, 5)
+        bt:SetText(L["清空历史表格"])
+        bt:SetScript("OnClick", function(self)
+            local FB = BG.FB1
+            StaticPopupDialogs["BiaoGe_ClearAllHistory"].OnAccept = function()
+                wipe(BiaoGe.History[FB])
+                wipe(BiaoGe.HistoryList[FB])
+                BG.ClickTabButton(BG.FBMainFrameTabNum)
+                BG.EscHistoryFrame()
+                BG.UpdateHistoryButton()
+            end
+            StaticPopup_Show("BiaoGe_ClearAllHistory", BG.GetFBinfo(FB, "localName"))
+        end)
+
+        StaticPopupDialogs["BiaoGe_ClearAllHistory"] = {
+            text = L["确定清空<%s>的所有历史表格？"],
+            button1 = L["是"],
+            button2 = L["否"],
+            OnCancel = function()
+            end,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            showAlert = true,
+        }
     end
     ------------------历史表格按键------------------
     do
@@ -494,6 +522,13 @@ function BG.HistoryUI()
     end
     ------------------退出历史表格按键------------------
     do
+        function BG.EscHistoryFrame()
+            BG.FrameHide(0)
+            BG.FBMainFrame:Show()
+            BG.UpdateAuctionLogFrame()
+            BG.PlaySound(1)
+        end
+
         local bt = CreateFrame("Button", nil, BG.HistoryMainFrame)
         bt:SetPoint("TOPRIGHT", BG.History.YongButton, "TOPLEFT", width_jiange, 0)
         bt:SetNormalFontObject(BG.FontFen15)
@@ -503,13 +538,8 @@ function BG.HistoryUI()
         bt:SetSize(bt:GetFontString():GetWidth(), 20)
         BG.SetTextHighlightTexture(bt)
         BG.History.EscButton = bt
+        bt:SetScript("OnClick", BG.EscHistoryFrame)
 
-        bt:SetScript("OnClick", function(self)
-            BG.FrameHide(2)
-            BG.FBMainFrame:Show()
-            BG.UpdateAuctionLogFrame()
-            BG.PlaySound(1)
-        end)
     end
     ------------------改名------------------
     do

@@ -12,6 +12,7 @@ ns.Events:Embed(SpecGear)
 
 function SpecGear:OnInitialize()
     self.gears = ns.char.gears
+    self.aliases = ns.char.aliases
     self:Event('ACTIVE_TALENT_GROUP_CHANGED')
 end
 
@@ -38,4 +39,16 @@ end
 
 function SpecGear:GetSpecGear(group)
     return self.gears[group]
+end
+
+function SpecGear:SetSpecAliasName(group, name)
+    if name and name:trim() == '' then
+        name = nil
+    end
+    self.aliases[group] = name
+    ns.Events:Fire('TDINSPECT_SPEC_ALIAS_CHANGED', group, name)
+end
+
+function SpecGear:GetSpecAliasName(group)
+    return self.aliases[group]
 end

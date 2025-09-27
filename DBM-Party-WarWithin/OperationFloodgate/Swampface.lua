@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2650, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250809065905")
+mod:SetRevision("20250905232649")
 mod:SetCreatureID(226396)
 mod:SetEncounterID(3053)
 mod:SetHotfixNoticeRev(20250215000000)
@@ -28,8 +28,8 @@ mod:RegisterEventsInCombat(
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 local specWarnRazorchokeVines				= mod:NewSpecialWarningYouCount(470038, nil, nil, nil, 1, 2)--Pre target debuff
-local specWarnVinePartner					= mod:NewSpecialWarningLink(433425, nil, nil, nil, 1, 2)
-local yellRazorchokeVines					= mod:NewIconTargetYell(433425)
+local specWarnVinePartner					= mod:NewSpecialWarningLink(470039, nil, nil, nil, 1, 2)
+local yellRazorchokeVines					= mod:NewIconTargetYell(470039)
 --local yellInfestationFades				= mod:NewShortFadesYell(433740)
 local specWarnAwakenSwamp					= mod:NewSpecialWarningDodgeCount(473070, nil, nil, nil, 2, 2)
 local specWarnMudslide						= mod:NewSpecialWarningDodgeCount(473114, nil, nil, nil, 2, 2)

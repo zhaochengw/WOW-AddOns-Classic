@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2452, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250805131137")
+mod:SetRevision("20250909053250")
 mod:SetCreatureID(176564)
 mod:SetEncounterID(2440)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -65,9 +65,9 @@ local timerSupressionSparkCD			= mod:NewCDTimer(37.6, 355438, nil, nil, nil, 2, 
 local timerCrowdControlCD				= mod:NewCDTimer(21.8, 350919, nil, nil, nil, 3)
 --Hard Mode Timers
 local timerDischordantSongCD			= mod:NewCDNPTimer(18.2, 357404, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
-local timerDrumrollCD					= mod:NewCDNPTimer(27.9, 357513, nil, nil, nil, 2)
-local timerInfectiousSoloCD				= mod:NewCDNPTimer(20.6, 357436, nil, nil, nil, 2)
-local timerRipChordCD					= mod:NewCDNPTimer(17, 357542, nil, nil, nil, 3)
+local timerDrumrollCD					= mod:NewCDNPTimer(27.4, 357513, nil, nil, nil, 2)
+local timerInfectiousSoloCD				= mod:NewCDNPTimer(20.2, 357436, nil, nil, nil, 2)
+local timerRipChordCD					= mod:NewCDNPTimer(16.6, 357542, nil, nil, nil, 3)
 local timerSoundblastCD					= mod:NewCDNPTimer(18.2, 1244630, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption(5, 359222)
@@ -108,14 +108,14 @@ function mod:SPELL_CAST_START(args)
 		if spellId == 350916 then--Security Guards
 			timerSecuritySlamCD:Start(13.7, args.sourceGUID)
 		else--Boss (stage 2)
-			timerSecuritySlamCD:Start(15.8, args.sourceGUID)--15.8 but lowest spell priority, meaming it's often queued a long time
+			timerSecuritySlamCD:Start(14.6, args.sourceGUID)--14.6-15.8 but lowest spell priority, meaming it's often queued a long time
 		end
 	elseif spellId == 350922 then
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnMenacingShout:Show(args.sourceName)
 			specWarnMenacingShout:Play("kickcast")
 		end
-		if args:GetSrcCreatureID() == 166970 then--Main boss
+		if args:GetSrcCreatureID() == 176563 then--Main boss
 			timerMenacingShoutCD:Start(21.5, args.sourceGUID)
 		else
 			timerMenacingShoutCD:Start(25.5, args.sourceGUID)
@@ -156,7 +156,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 181089 then
 		self:SetStage(2)
 		timerSecuritySlamCD:Start(6.4, args.sourceGUID)--Boss version 6.4-8.6
-		timerMenacingShoutCD:Start(12.5, args.sourceGUID)--Boss version
+		timerMenacingShoutCD:Start(12.1, args.sourceGUID)--Boss version
 		timerSupressionSparkCD:Start(19.8)
 		timerCrowdControlCD:Start(27.1)
 	elseif spellId == 1244630 then

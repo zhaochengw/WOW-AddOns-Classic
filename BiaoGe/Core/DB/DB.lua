@@ -99,7 +99,8 @@ do
     BG.FBWidth                                 = {}
     BG.FBHeight                                = {}
     BG.BossNumtbl                              = {}
-    local mainFrameWidth                       = 1295
+    local mainFrameWidth                       = 1275
+    local mainFrameWidth2                      = 1685
     local Maxt, Maxb, Maxi, HopeMaxb, HopeMaxn = {}, {}, {}, {}, {}
     do
         local function AddDB(FB, width, height, maxt, maxb, bossNumTbl, diffTbl, diffIDTbl, maxiTbl, zaxiangI)
@@ -166,7 +167,7 @@ do
                 { 5, 5, 5, 5, 5, 5, 28, 5, }, 23)
             AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
-            AddDB("NAXX", 1715, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
+            AddDB("NAXX", mainFrameWidth2, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
         elseif BG.IsWLK then
             local difTbl1 = {
@@ -205,7 +206,7 @@ do
                 { 5, 5, 5, 5, 5, 3, 8, 22, 5, }, 16)
             AddDB("ULD", mainFrameWidth, 875, 3, 16, { 0, 7, 13 }, { "N10", "N25" }, difTbl1,
                 { 4, 3, 3, 4, 5, 3, 3, 4, 4, 4, 4, 4, 6, 4, 8, 5, })
-            AddDB("NAXX", 1715, 945, 4, 19, { 0, 6, 12, 16 }, { "N10", "N25" }, difTbl1,
+            AddDB("NAXX", mainFrameWidth2, 945, 4, 19, { 0, 6, 12, 16 }, { "N10", "N25" }, difTbl1,
                 { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 14, 6, 6, 5, })
             -- TBC
             AddDB("SW", mainFrameWidth, 835, 3, 8, { 0, 5, 8 }, nil, difTbl3,
@@ -221,14 +222,14 @@ do
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
         elseif BG.IsCTM then
-            AddDB("BOT", 1715, 850, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
+            AddDB("BOT", mainFrameWidth2, 850, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
             AddDB("FL", mainFrameWidth, 800, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 10, })
             AddDB("DS", mainFrameWidth, 800, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, })
         elseif BG.IsMOP then
-            AddDB("MSV", 1715, 980, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
+            AddDB("MSV", mainFrameWidth2, 960, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, }, 14)
         elseif BG.IsRetail then
             local n = 8
@@ -792,6 +793,7 @@ do
             { ID = "tradeSuccess", name = "交易成功" },
             { ID = "tradeFalse", name = "交易失败" },
             { ID = "fakuanFull", name = "罚款格子满了" },
+            { ID = "auctionError", name = "拍卖出错了" },
         }
 
         local function DefaultSound()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2387, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250808082114")
+mod:SetRevision("20250824012350")
 mod:SetCreatureID(164185)
 mod:SetEncounterID(2380)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -40,10 +40,10 @@ local yellStoneShatteringLeap		= mod:NewYell(319941, 47482)
 local yellStoneShatteringLeapFades	= mod:NewShortFadesYell(319941, 47482)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-local timerStoneCallCD				= mod:NewVarCountTimer("v42.5-51.8", 319733, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerStoneCallCD				= mod:NewVarCountTimer("v42.5-53", 319733, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerStoneShatteringLeapCD	= mod:NewVarCountTimer("v28.3-32.7", 319941, 47482, nil, nil, 3)--shortText "Leap"
-local timerCurseofStoneCD			= mod:NewVarCountTimer("v28.3-32.7", 328206, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)
-local timerBloodTorrentCD			= mod:NewVarCountTimer("v16.9-25.5", 326389, nil, nil, nil, 2)--16.9 unless delayed by one of other casts
+local timerCurseofStoneCD			= mod:NewVarCountTimer("v28.3-33.5", 328206, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)
+local timerBloodTorrentCD			= mod:NewVarCountTimer("v16.9-29.1", 326389, nil, nil, nil, 2)--16.9 unless delayed by one of other casts
 
 mod:AddNamePlateOption("NPAuraOnStoneForm", 319724)
 

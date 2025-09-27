@@ -26,6 +26,7 @@ local pt = print
 local realmID = GetRealmID()
 local player = BG.playerName
 local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
+local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
 
 BG.Init(function()
     ----------主界面----------
@@ -355,7 +356,7 @@ BG.Init(function()
         bt:SetBackdropColor(0, 0, 0, 0.5)
         bt:SetBackdropBorderColor(r, g, b)
         bt:SetSize(120, 30)
-        bt:SetPoint("BOTTOM", BG.ReceiveMainFrame, "BOTTOM", 0, 30)
+        bt:SetPoint("BOTTOM", BG.ReceiveMainFrame, "BOTTOM", 0, 20)
         bt:SetNormalFontObject(BG.FontWhite15)
         bt:SetText(L["保存至历史表格"])
         local t = bt:GetFontString()
@@ -661,8 +662,8 @@ BG.Init(function()
             end
         end
 
-        if BG.IsWLK then
-            -- 团员成就
+        -- 团员成就
+        if BG.IsWLK or BG.IsMOP then
             local name = "AchievementMainFrame"
             BG[name] = CreateFrame("Frame", "BG." .. name, BG.MainFrame)
             do
@@ -697,8 +698,10 @@ BG.Init(function()
                     t:SetText(L["查看团员的团本成就完成情况（该功能引用于比较成就里的API）"])
                 end
             end
+        end
 
-            -- 团本攻略
+        -- 团本攻略
+        if BG.IsWLK then
             BG.BossMainFrame = CreateFrame("Frame", nil, BG.MainFrame)
             do
                 BG.BossMainFrame:Hide()
@@ -1403,6 +1406,8 @@ BG.Init(function()
             if #BG.tabButtons == 0 then
                 if BG.IsWLK then
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -330, 1)
+                elseif BG.IsMOP then
+                    bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -300, 1)
                 else
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -280, 1)
                 end
@@ -1537,7 +1542,7 @@ BG.Init(function()
             end
         end)
 
-        if BG.IsWLK then
+        if BG.IsWLK or BG.IsMOP then
             local bt = BG.Create_TabButton(BG.AchievementMainFrameTabNum, L["团员成就"], BG.AchievementMainFrame)
             bt:HookScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1546,7 +1551,8 @@ BG.Init(function()
                 GameTooltip:AddLine(L["查看团员的团本成就完成情况（该功能引用于比较成就里的API）"], 1, 0.82, 0, true)
                 GameTooltip:Show()
             end)
-
+        end
+        if BG.IsWLK then
             local bt = BG.Create_TabButton(BG.BossMainFrameTabNum, L["团本攻略"], BG.BossMainFrame)
             bt:HookScript("OnEnter", function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
@@ -1992,7 +1998,11 @@ BG.Init(function()
                     bt.Text:SetWidth(StaticPopup1:GetWidth() - 50)
                     bt:Show()
                     if BiaoGe.options["xueyueAuto"] == 1 then
-                        dialog.button1:Click()
+                        if dialog.button1 then
+                            dialog.button1:Click()
+                        else
+                            dialog.visibleButtons[1]:Click()
+                        end
                     end
                 end
             end
@@ -2365,8 +2375,8 @@ BG.Init(function()
                 local FB = BG.FB1
                 local p = SetClassCFF(BiaoGe.clearBiaoGeMoney[FB].name)
                 local f = BG.GetFBinfo(BiaoGe.clearBiaoGeMoney[FB].FB, "localName")
-                local t = date("%m/%d %H:%M", BiaoGe.clearBiaoGeMoney[FB].time)
-                local m = GetMoneyString(BiaoGe.clearBiaoGeMoney[FB].money .. "0000")
+                local t = date("%m-%d %H:%M", BiaoGe.clearBiaoGeMoney[FB].time)
+                local m = GetMoneyString(BiaoGe.clearBiaoGeMoney[FB].money .. "0000", true)
                 GameTooltip:SetOwner(poit, "ANCHOR_TOPLEFT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine(L["清空表格时携带的金币"], 1, 1, 1, true)
@@ -2399,7 +2409,7 @@ BG.Init(function()
                     end
                 end
             end
-            
+
             local jine = BG.Frame[BG.FB1]["boss" .. Maxb[BG.FB1] + 2].jine5
             local f = CreateFrame("Frame", nil, BG.FBMainFrame, "BackdropTemplate")
             f:SetSize(jine:GetWidth(), 20)

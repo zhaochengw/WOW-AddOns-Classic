@@ -151,7 +151,7 @@ do
                         local item = Item:CreateFromItemID(_itemID)
                         item:ContinueOnItemLoad(function()
                             local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
-                            _, typeID, subclassID, bindType = GetItemInfo(itemID)
+                            _, typeID, subclassID, bindType, _, setID = GetItemInfo(itemID)
                             local tooltipText = BG.GetTooltipTextLeftAll(_itemID)
                             info[FB][itemID] = {
                                 name = name,
@@ -163,6 +163,7 @@ do
                                 typeID = typeID,
                                 subclassID = subclassID,
                                 bindType = bindType,
+                                setID = setID,
                                 tooltipText = tooltipText,
                             }
                             cacheCount = cacheCount + 1
@@ -341,6 +342,7 @@ do
         local level = info[FB][itemID].level
         local Texture = info[FB][itemID].Texture
         local bindType = info[FB][itemID].bindType
+        local setID = info[FB][itemID].setID
 
         if type == "raid" then -- 团本掉落
             local color = "|cff" .. "00BFFF"
@@ -422,6 +424,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 i = ii,
                 hard = hard,
                 hardnum = GetHardNum(hard),
@@ -429,7 +432,7 @@ do
                 type = GetTypeID(type),
                 type2 = FB,
                 hope = hope,
-                haved = CheckHaved(itemID)
+                haved = CheckHaved(itemID),
             })
         elseif type == "quest" then -- 野外任务
             local FBname = other.FBname
@@ -477,6 +480,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 i = 0,
                 players = players,
                 type = GetTypeID(type),
@@ -524,6 +528,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 type2 = get,
                 haved = CheckHaved(itemID)
@@ -554,6 +559,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 type2 = faction,
                 haved = CheckHaved(itemID)
@@ -577,7 +583,7 @@ do
             elseif other == "考古" then
                 icon = AddTexture(441139, nil, ":100:100:8:92:8:92")
             end
-            local name = TRADE_SKILLS .. ": " .. L[other] .. icon
+            local name = icon..TRADE_SKILLS .. ": " .. L[other]
             local get = BG.STC_y2(name) .. AddPrice(itemID)
 
             tinsert(db_old, {
@@ -588,6 +594,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 type2 = other,
                 haved = CheckHaved(itemID)
@@ -613,6 +620,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 type2 = FB_5,
                 haved = CheckHaved(itemID)
@@ -636,6 +644,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 haved = CheckHaved(itemID)
             })
@@ -651,6 +660,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 haved = CheckHaved(itemID)
             })
@@ -699,18 +709,22 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 haved = CheckHaved(itemID)
             })
         elseif type == "sod_currency" then -- 赛季服货币/牌子
-            local get, count, icon, color, _type = strsplit("-", other)
-            if not count then
-                count = ""
-            elseif _type and _type ~= "" then
+            local _get, count, icon, color, _type = strsplit("-", other)
+            local get
+            if _type and _type ~= "" then
                 count = select(2, GetItemInfo(count)) or ""
             end
-            if not color then color = "FFFFFF" end
-            local get = "|cff" .. color .. get .. RR .. " " .. count .. AddTexture(icon) .. RR .. AddPrice(itemID)
+            if icon=="" then
+                icon = select(5, GetItemInfoInstant(count))
+                get = format("|cff%s%s|r %s%s|r%s", color, _get, AddTexture(icon), count, AddPrice(itemID))
+            else
+                get = format("|cff%s%s|r %s%s|r%s", color, _get, count, AddTexture(icon), AddPrice(itemID))
+            end
             tinsert(db_old, {
                 itemID = itemID,
                 link = link,
@@ -719,6 +733,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 type2 = get,
                 haved = CheckHaved(itemID)
@@ -765,6 +780,7 @@ do
                 texture = Texture,
                 get = get,
                 bindType = bindType,
+                setID = setID,
                 type = GetTypeID(type),
                 haved = CheckHaved(itemID)
             })
@@ -1012,7 +1028,16 @@ local function SetItemLib()
 
     for ii, vv in ipairs(db) do
         local lastButton
-        local i_table = { ii, vv.level, (AddTexture(vv.texture) .. vv.link), vv.getTbl[1] }
+        local setText=""
+        if vv.setID then
+            setText = format(L["|c%s★|r"], select(4, GetItemQualityColor(vv.quality)))
+        end
+        local i_table = {
+            ii,
+            vv.level,
+            (AddTexture(vv.texture) .. setText .. vv.link .. setText),
+            vv.getTbl[1]
+        }
         for i, v in ipairs(titleTbl) do
             local f = CreateFrame("Frame", nil, mainFrame.child)
             if i == #titleTbl then
@@ -1978,13 +2003,24 @@ function BG.ItemLibUI()
                     { name = L["专业"], name2 = "profession", },
                     { name = L["PVP"], name2 = "pvp", },
                 }
-            elseif BG.IsCTM or BG.IsMOP then
+            elseif BG.IsCTM then
                 tbl = {
                     { name = L["团本：英雄难度"], name2 = "raidhero", },
                     { name = L["团本：普通难度"], name2 = "raidnormal", },
                     { name = L["5人本"], name2 = "fb5", },
                     { name = L["牌子/货币"], name2 = "currency", },
                     { name = L["声望"], name2 = "faction", },
+                    { name = L["专业"], name2 = "profession", },
+                    { name = L["世界掉落"], name2 = "world", },
+                    { name = L["世界BOSS"], name2 = "worldboss", },
+                }
+            elseif BG.IsMOP then
+                tbl = {
+                    { name = L["团本：英雄难度"], name2 = "raidhero", },
+                    { name = L["团本：普通难度"], name2 = "raidnormal", },
+                    -- { name = L["5人本"], name2 = "fb5", },
+                    { name = L["牌子/货币"], name2 = "currency", },
+                    -- { name = L["声望"], name2 = "faction", },
                     { name = L["专业"], name2 = "profession", },
                     { name = L["世界掉落"], name2 = "world", },
                     { name = L["世界BOSS"], name2 = "worldboss", },
@@ -2434,7 +2470,7 @@ function BG.ItemLibUI()
     end
 end
 
-BG.itemLibNeedUpdate=true
+BG.itemLibNeedUpdate = true
 BG.Init2(function()
     mainFrame.first = true
     mainFrame:HookScript("OnShow", function(self)

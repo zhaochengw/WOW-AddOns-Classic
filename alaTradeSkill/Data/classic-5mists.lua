@@ -25,8 +25,8 @@ DataAgent.DBMAXPID = 16;
 --[==[--
 	by ALA
 	dbfilesclient
-	##	2024-05-16
-		Initialize CATA data
+	##	2025-08-01
+		Initialize MISTS data
 --]==]--
 
 local bitclass = {

@@ -262,13 +262,13 @@ function QuestieWotlkQuestFixes:Load()
         [5057] = {
             [questKeys.requiredRaces] = raceIDs.NONE,
         },
-        [5305]  ={
+        [5305] = {
             [questKeys.requiredSpecialization] = 0,
         },
-        [5306]  ={
+        [5306] = {
             [questKeys.requiredSpecialization] = 0,
         },
-        [5307]  ={
+        [5307] = {
             [questKeys.requiredSpecialization] = 0,
         },
         [5502] = {
@@ -283,6 +283,15 @@ function QuestieWotlkQuestFixes:Load()
         },
         [5531] = {
             [questKeys.nextQuestInChain] = 0,
+        },
+        [5658] = { -- Touch of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5661] = { -- Touch of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5663] = { -- Touch of Weakness
+            [questKeys.startedBy] = {},
         },
         [5721] = {
             [questKeys.extraObjectives] = {{{[zoneIDs.EASTERN_PLAGUELANDS]={{35.01,84.05}}}, Questie.ICON_TYPE_EVENT, l10n("Place the Relic Bundle in the Town Square."),}},
@@ -1105,9 +1114,6 @@ function QuestieWotlkQuestFixes:Load()
         },
         [11529] = {
             [questKeys.extraObjectives] = {{{[zoneIDs.HOWLING_FJORD]={{37.2,74.8}}}, Questie.ICON_TYPE_OBJECT, l10n("Use The Big Gun at the front of the ship to slay Sorlof"),0,{{"monster", 24992}}}},
-        },
-        [11531] = {
-            [questKeys.specialFlags] = 1,
         },
         [11566] = {
             [questKeys.requiredSourceItems] = {},
@@ -7705,7 +7711,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"The Lich King's presence mustn't extend any further!","","The Council of Six has decreed that any strong enough fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Defiler\'s Medallion from any final dungeon boss.","","This quest may only be completed on any Titan Rune Protocol Gamma dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211206}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
@@ -7719,7 +7725,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"We must continue putting pressure on all fronts!","","The Council of Six has decreed that any willing fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Mysterious Artifact from any final dungeon boss.","","This quest may only be completed on any Heroic dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211207}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
@@ -7733,7 +7739,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"The Lich King's presence mustn't extend any further!","","The Council of Six has decreed that any strong enough fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Defiler\'s Medallion from any final dungeon boss.","","This quest may only be completed on any Titan Rune Protocol Alpha dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211206}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
@@ -7747,7 +7753,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"We must continue putting pressure on all fronts!","","The Council of Six has decreed that any willing fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Mysterious Artifact from any final dungeon boss.","","This quest may only be completed on any Heroic dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211207}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
@@ -7761,7 +7767,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"The Lich King's presence mustn't extend any further!","","The Council of Six has decreed that any strong enough fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Defiler\'s Medallion from any final dungeon boss.","","This quest may only be completed on any Titan Rune Protocol Beta dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211206}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
@@ -7775,7 +7781,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredLevel] = 80,
             [questKeys.questLevel] = 80,
             [questKeys.requiredRaces] = raceIDs.NONE,
-            [questKeys.objectivesText] = {"We must continue putting pressure on all fronts!","","The Council of Six has decreed that any willing fighter should take up arms and aid in keeping Azeroth safe!"},
+            [questKeys.objectivesText] = {"Archmage Lan\'dalock in Dalaran wants you to return with the Mysterious Artifact from any final dungeon boss.","","This quest may only be completed on any Heroic dungeon difficulty."},
             [questKeys.objectives] = {nil,nil,{{211207}}},
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,

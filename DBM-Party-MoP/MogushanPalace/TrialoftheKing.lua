@@ -1,9 +1,11 @@
 local mod	= DBM:NewMod(708, "DBM-Party-MoP", 5, 321)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
+if DBM:IsRetail() then
+	mod.statTypes = "normal,heroic,challenge,timewalker"
+end
 
-mod:SetRevision("20240623004247")
+mod:SetRevision("20250915043254")
 mod:SetCreatureID(61442, 61444, 61445)--61442 (Kuai the Brute), 61444 (Ming the Cunning), 61445 (Haiyan the Unstoppable)
 mod:SetEncounterID(1442)
 

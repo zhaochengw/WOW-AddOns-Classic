@@ -33,6 +33,7 @@ L["No Enchant"] = true
 L["Other realm characters"] = true
 L["Quality by blizzard"] = true
 L["See other account character?"] = true
+L["Set alias name"] = true
 L["Set Spec Equipment"] = true
 L["Show character gear list"] = true
 L["Show enchant"] = true
@@ -102,6 +103,7 @@ L['Quality by blizzard'] = true
 L.White = true
 L.Hidden = true
 L['Show enchant for ranged weapon only for hunter'] = true
+L['Set alias name'] = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

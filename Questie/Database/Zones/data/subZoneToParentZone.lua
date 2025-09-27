@@ -15,6 +15,7 @@ ZoneDB.private.subZoneToParentZoneOverride = [[return {
     [6137] = 1, -- Frostmane Hovel -> Dun Morogh
     [6170] = 12, -- Northshire -> Elwynn Forest
     [6176] = 1, -- Coldridge Valley -> Dun Morogh
+    [6213] = 5842, -- Niuzao Catacombs -> Townlong Steppes
     [6384] = 796, -- Scarlet Monastery - Dungeon - Forlorn Cloister
     [6386] = 796, -- Scarlet Monastery - Dungeon - Crusader's Chapel
     [6450] = 141, -- Shadowglen -> Teldrassil
@@ -103,6 +104,8 @@ ZoneDB.private.subZoneToParentZoneOverride = [[return {
     [10079] = 6066, -- Scholomance - Headmaster's Study (fake ID for Scholomance MoP)
     [10080] = 5840, -- Guo-Lai Halls - The Hall of the Serpent (fake ID cave in Vale of Eternal Blossoms)
     [10081] = 5785, -- Greenstone Quarry Lower Quarry(fake ID cave in The Jade Forest)
+    [10082] = 6141, -- Shrine of Two Moons - The Imperial Mercantile - Top Floor
+    [10083] = 6142, -- Shrine of Seven Stars - The Imperial Exchange - Top Floor
 }]]
 
 --! Generated table, add something manually here and i'll kill you //Logon

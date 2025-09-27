@@ -294,16 +294,16 @@ StaticPopupDialogs["POSTAL_NEW_PROFILE"] = {
 	maxLetters = 128,
 	editBoxWidth = 350,  -- Needed in Cata
 	OnAccept = function(self)
-		Postal.db:SetProfile(strtrim(self.editBox:GetText()))
+		Postal.db:SetProfile(strtrim(StaticPopup1EditBox:GetText()))
 	end,
 	OnShow = function(self)
-		self.editBox:SetText(Postal.db:GetCurrentProfile())
-		self.editBox:SetFocus()
+		StaticPopup1EditBox:SetText(Postal.db:GetCurrentProfile())
+		StaticPopup1EditBox:SetFocus()
 	end,
 	OnHide = StaticPopupDialogs["SET_GUILDPLAYERNOTE"].OnHide,
 	EditBoxOnEnterPressed = function(self)
 		local parent = self:GetParent()
-		Postal.db:SetProfile(strtrim(parent.editBox:GetText()))
+		Postal.db:SetProfile(strtrim(StaticPopup1EditBox:GetText()))
 		parent:Hide()
 	end,
 	EditBoxOnEscapePressed = StaticPopupDialogs["SET_GUILDPLAYERNOTE"].EditBoxOnEscapePressed,

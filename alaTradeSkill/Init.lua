@@ -127,11 +127,11 @@ local DT = {  }; __private.DT = DT;		--	data
 	CT.ISWLK = CT.TOCVERSION >= 30400 and CT.TOCVERSION < 40000;
 	CT.ISCATA = CT.TOCVERSION >= 40400 and CT.TOCVERSION < 50000;
 	CT.ISMOP = CT.TOCVERSION >= 50500 and CT.TOCVERSION < 90000;
-	CT.VLE2X = CT.ISBCC or CT.ISWLK or CT.ISCATA or CT.ISMOP;
-	CT.VLE3X = CT.ISWLK or CT.ISCATA or CT.ISMOP;
-	CT.VLE5X = CT.ISMOP;
-	CT.VSE5X = CT.ISCLASSIC or CT.ISBCC or CT.ISWLK or CT.ISCATA;
-	CT.VLE2XSE5X = CT.ISBCC or CT.ISWLK or CT.ISCATA;
+	CT.VGE2X = CT.ISBCC or CT.ISWLK or CT.ISCATA or CT.ISMOP;
+	CT.VGE3X = CT.ISWLK or CT.ISCATA or CT.ISMOP;
+	CT.VGE5X = CT.ISMOP;
+	CT.VLE5X = CT.ISCLASSIC or CT.ISBCC or CT.ISWLK or CT.ISCATA;
+	CT.VGE2XLE5X = CT.ISBCC or CT.ISWLK or CT.ISCATA;
 	CT.ISRETAIL = CT.TOCVERSION >= 90000;
 	CT.LOCALE = GetLocale();
 	CT.BNTAG = select(2, BNGetInfo());
@@ -442,7 +442,7 @@ MT.BuildEnv('Init');
 				ChatEdit_InsertLink(MT.GetSkillLink(sid), __addon);
 			end
 		end
-	elseif CT.VLE2X then
+	elseif CT.VGE2X then
 		function MT.GetSkillLink(sid)
 			local name = GetSpellInfo(sid);
 			if name then

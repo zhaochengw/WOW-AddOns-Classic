@@ -1136,9 +1136,14 @@ BG.Init(function()
             [[哇哦！<%s>这一出手，直接把竞拍变成了“老板的Show Time”！]],
         }
 
-        local minMoney = 10000
-        if BG.IsWLK then
-            minMoney = 20000
+        if BG.IsVanilla then
+            BG.autoAuctionHappySay_minMoney = 20000
+        elseif BG.IsWLK then
+            BG.autoAuctionHappySay_minMoney = 100000
+        elseif BG.IsMOP then
+            BG.autoAuctionHappySay_minMoney = 1000000
+        else
+            BG.autoAuctionHappySay_minMoney = 20000
         end
         BG.RegisterEvent("CHAT_MSG_ADDON", function(self, event, ...)
             if not (BG.IsLeader and BiaoGe.options.autoAuctionHappySay == 1) then return end
@@ -1149,7 +1154,7 @@ BG.Init(function()
             if arg1 == "SendMyMoney" and distType == "RAID" then
                 local auctionID = tonumber(arg2)
                 local money = tonumber(arg3)
-                if money and money >= minMoney then
+                if money and money >= BG.autoAuctionHappySay_minMoney then
                     for _, f in pairs(_G.BGA.Frames) do
                         if not f.IsEnd and f.mod ~= "anonymous" and f.auctionID == auctionID then
                             if random(10) > 5 then

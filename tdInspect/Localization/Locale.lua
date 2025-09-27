@@ -69,6 +69,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
 --[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
+--[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
@@ -168,6 +170,8 @@ L = L or {}
 --[[ L["Quality by blizzard"] = "Quality by blizzard"--]] 
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
+--[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
 --[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
@@ -269,6 +273,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
 --[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
+--[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
@@ -368,6 +374,8 @@ L = L or {}
 --[[ L["Quality by blizzard"] = "Quality by blizzard"--]] 
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
+--[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
 --[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
@@ -469,6 +477,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
 --[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
+--[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
@@ -569,6 +579,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
 --[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
+--[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]
 --[[ L["Show character gear list"] = "Show character gear list"--]] 
@@ -642,11 +654,12 @@ L["No Enchant"] = "Нет чар"
 L["Other realm characters"] = "Другие персонажи сервера"
 L["Quality by blizzard"] = "Качество от Blizzard"
 L["See other account character?"] = "Видите другого персонажа аккаунта?"
+--[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
 L["Set Spec Equipment"] = "Набор экипировки"
 L["Show character gear list"] = "Показать список экипировки персонажа"
 L["Show enchant"] = "Показать чары"
---[[Translation missing --]]
---[[ L["Show enchant for ranged weapon only for hunter"] = "Show enchant for ranged weapon only for hunter"--]] 
+L["Show enchant for ranged weapon only for hunter"] = "Показать зачарование дальнобойного оружия только для охотника"
 L["Show enchant/gem lost"] = "Показать чары/камни"
 L["Show gem"] = "Показать камни"
 L["Show gems in front"] = "Показать камни на переднем плане"
@@ -724,6 +737,8 @@ L = L or {}
 --[[ L["Quality by blizzard"] = "Quality by blizzard"--]] 
 --[[Translation missing --]]
 --[[ L["See other account character?"] = "See other account character?"--]] 
+--[[Translation missing --]]
+--[[ L["Set alias name"] = "Set alias name"--]] 
 --[[Translation missing --]]
 --[[ L["Set Spec Equipment"] = "Set Spec Equipment"--]] 
 --[[Translation missing --]]

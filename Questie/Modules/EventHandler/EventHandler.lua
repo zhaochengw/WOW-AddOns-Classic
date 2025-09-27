@@ -65,6 +65,16 @@ local FACTION_STANDING_CHANGED_PATTERN
 
 function EventHandler:RegisterEarlyEvents()
     Questie:RegisterEvent("PLAYER_LOGIN", _EventHandler.PlayerLogin)
+
+    Questie:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+        if GetCVar("questPOI") == "0" and WorldMapFrame:IsShown() then
+            -- We need to manually hide the map, because having questPOI set to 0 will open it on login, thanks to Blizzard.
+            -- Don't use WorldMapFrame:Hide() that will cause taint issues
+            HideUIPanel(WorldMapFrame)
+            tinsert(UISpecialFrames, "WorldMapFrame") -- This helps to not taint when in combat on login
+        end
+        Questie:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    end)
 end
 
 function EventHandler:RegisterLateEvents()
@@ -198,6 +208,44 @@ function EventHandler:RegisterLateEvents()
         Questie:RegisterEvent("PLAYER_EQUIPMENT_CHANGED", AchievementEventHandler.PlayerEquipmentChanged)
     end
 
+    if Expansions.Current >= Expansions.MoP then
+        -- Challenge Mode and Scenario Events
+        Questie:RegisterEvent("CHALLENGE_MODE_START", function()
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_START")
+            QuestieTracker:Update() -- Update the Tracker right away, because players are not infight on start
+        end)
+
+        Questie:RegisterEvent("CHALLENGE_MODE_RESET", function()
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] CHALLENGE_MODE_RESET")
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
+        end)
+
+        Questie:RegisterEvent("SCENARIO_CRITERIA_UPDATE", function(_, criteriaIndex)
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_CRITERIA_UPDATE")
+            QuestieTracker.UpdateScenarioLines(criteriaIndex)
+            QuestieTracker.UpdateScenarioLines(0) -- Always update 0 index, because that is the trash count
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
+        end)
+
+        Questie:RegisterEvent("SCENARIO_UPDATE", function()
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_UPDATE")
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
+        end)
+
+        Questie:RegisterEvent("SCENARIO_POI_UPDATE", function()
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] SCENARIO_POI_UPDATE")
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
+        end)
+    end
+
     -- Questie Debug Offer
     if Questie.IsSoD or Questie.db.profile.enableBugHintsForAllFlavors then
         Questie:RegisterEvent("LOOT_OPENED", QuestieDebugOffer.LootWindow)
@@ -207,6 +255,15 @@ function EventHandler:RegisterLateEvents()
        -- This is fired pretty often when an auto complete quest frame is showing. We want the default one to be hidden though.
         Questie:RegisterEvent("UPDATE_ALL_UI_WIDGETS", function()
             QuestieCombatQueue:Queue(WatchFrameHook.Hide)
+        end)
+    end
+
+    if Expansions.Current >= Expansions.MoP then
+        Questie:RegisterEvent("PLAYER_ENTERING_WORLD", function()
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[EVENT] PLAYER_ENTERING_WORLD")
+            QuestieCombatQueue:Queue(function()
+                QuestieTracker:Update()
+            end)
         end)
     end
 

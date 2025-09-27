@@ -26,7 +26,7 @@ do
 		ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
 		PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
 		UseContainerItem = UseContainerItem or C_Container.UseContainerItem
-		GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+		--GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
 		GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
 		GetContainerItemCooldown = GetContainerItemCooldown or C_Container.GetContainerItemCooldown
 		GetContainerNumFreeSlots = GetContainerNumFreeSlots or C_Container.GetContainerNumFreeSlots

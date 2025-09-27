@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2649, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250513070119")
+mod:SetRevision("20250818205258")
 mod:SetCreatureID(226403, 226402)
 mod:SetEncounterID(3019)
 mod:SetHotfixNoticeRev(20250215000000)
@@ -60,7 +60,7 @@ local specWarnWallop						= mod:NewSpecialWarningDefensive(459799, nil, nil, nil
 local yellWallop							= mod:NewShortYell(459799)
 
 local timerChargeCD							= mod:NewVarCountTimer(33.9, 470022, nil, nil, nil, 3)
-local timerWallopCD							= mod:NewVarCountTimer("v17-32.8", 459799, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerWallopCD							= mod:NewVarCountTimer("v17-38.8", 459799, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --mod.vb.bombCount = 0
 mod.vb.bombCastCount = 0

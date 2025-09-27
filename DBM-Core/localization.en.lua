@@ -267,26 +267,29 @@ L.INFOFRAME_ALT							= "Alt:"--Alternate Power
 
 L.LFG_INVITE							= "LFG Invite"
 
+--Common slash commands
 L.SLASHCMD_HELP							= {
 	"Available slash commands:",
 	"-----------------",
 	"/dbm unlock: Shows a movable status bar timer (alias: move).",
-	"/range <number> or /distance <number>: Shows range frame. /rrange or /rdistance to reverse colors.",
-	"/hudar <number>: Shows HUD based range finder.",
+	"/dbm pull <sec>: Sends a pull timer for <sec> seconds to the raid (requires promoted. alias: pull).",
+	"/dbm break <min>: Sends a break timer for <min> minutes to the raid (requires promoted. alias: break).",
 	"/dbm timer: Starts a custom " .. L.DBM .. " timer, see '/dbm timer' for details.",
-	"/dbm arrow: Shows the " .. L.DBM .. " arrow, see '/dbm arrow help' for details.",
-	"/dbm hud: Shows the " .. L.DBM .. " hud, see '/dbm hud' for details.",
-	"/dbm help2: Shows raid management slash commands"
+	"/keys: Performs M+ keystone and rating checks on party/guild and shortcuts to dungeon teleports. (alias: key, keystone)",
+	"/dbm lag: Performs a raid-wide latency check.",
+	"/dbm durability: Performs a raid-wide durability check.",
+	"/dbm help2: Shows additional slash commands"
 }
+--Less used slash commands
 L.SLASHCMD_HELP2						= {
 	"Available slash commands:",
 	"-----------------",
-	"/dbm pull <sec>: Sends a pull timer for <sec> seconds to the raid (requires promoted. alias: pull).",
-	"/dbm break <min>: Sends a break timer for <min> minutes to the raid (requires promoted. alias: break).",
 	"/dbm version: Performs a boss mod version check (alias: ver).",
 	"/dbm version2: Performs a boss mod version check that also whispers out of date users (alias: ver2).",
-	"/dbm lag: Performs a raid-wide latency check.",
-	"/dbm durability: Performs a raid-wide durability check."
+	"/range <number> or /distance <number>: Shows range frame. /rrange or /rdistance to reverse colors.",
+	"/hudar <number>: Shows HUD based range finder.",
+	"/dbm arrow: Shows the " .. L.DBM .. " arrow, see '/dbm arrow help' for details.",
+	"/dbm hud: Shows the " .. L.DBM .. " hud, see '/dbm hud' for details."
 }
 L.TIMER_USAGE							= {
 	L.DBM .. " timer commands:",
@@ -691,6 +694,7 @@ L.TIMER_RESPAWN							= "%s Respawn"
 
 L.LAG_HEADER							= L.DBM.. " - Latency Results"
 L.DUR_HEADER							= L.DBM.. " - Durability Results"
+L.KEYSTONES_HEADER						= L.DBM.. " - Keystones"
 
 L.OVERRIDE_ACTIVATED					= "Configuration overrides have been activated for this encounter by RL"
 
@@ -740,3 +744,16 @@ L.TOOLTIP_FASTEST				= "Fastest kill (%s)"
 L.FOLLOWER						= "Follower"--i.e. the new dungeon type in 10.2.5. I haven't found a translated string yet
 L.STORY					    	= PLAYER_DIFFICULTY_STORY_RAID or "Story"--i.e. the new dungeon type in 11.0.0. I haven't found a translated string yet
 L.DUOS							= "Duos"
+
+-- Keystone dungeon names (keep to a max of 6 characters)
+-- See https://wago.tools/db2/MapChallengeMode for ID => Dungeon Names
+L.KEYSTONE_NAMES = {
+	[378] = 'HOA', -- Halls of Atonement
+	[391] = 'STREET', -- Tazavesh: Streets of Wonder
+	[392] = 'GAMBIT', -- Tazavesh: So'leah's Gambit
+	[499] = 'PRIORY', -- Priority of the Sacred Flame
+	[503] = 'ARAK', -- Ara-Kara, City of Echoes
+	[505] = 'DAWN', -- The Dawnbreaker
+	[525] = 'FLOOD', -- Operation Floodgate
+	[542] = 'DOME' -- Eco-Dome Al'dani
+}

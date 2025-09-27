@@ -57,6 +57,7 @@ L['Quality by blizzard'] = '暴雪品质颜色'
 L.White = '白色'
 L.Hidden = '隐藏'
 L['Show enchant for ranged weapon only for hunter'] = '仅猎人的远程武器显示附魔缺失'
+L['Set alias name'] = '设置天赋别名'
 -- @locale-fill@
 
 -- @end-import@

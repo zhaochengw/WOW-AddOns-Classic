@@ -1,9 +1,11 @@
 local mod	= DBM:NewMod(657, "DBM-Party-MoP", 3, 312)
 local L		= mod:GetLocalizedStrings()
 
-mod.statTypes = "normal,heroic,challenge,timewalker"
+if DBM:IsRetail() then
+	mod.statTypes = "normal,heroic,challenge,timewalker"
+end
 
-mod:SetRevision("20240520102954")
+mod:SetRevision("20250915043254")
 mod:SetCreatureID(56541)
 mod:SetEncounterID(1304)
 mod:SetHotfixNoticeRev(20240517000000)

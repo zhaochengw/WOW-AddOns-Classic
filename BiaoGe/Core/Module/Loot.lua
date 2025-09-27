@@ -24,6 +24,7 @@ local HopeMaxi = ns.HopeMaxi
 local pt = print
 local RealmId = GetRealmID()
 local player = BG.playerName
+local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
 
 local saveZaXiangNum = 0
 local saveZaXiangTbl = {}
@@ -617,7 +618,7 @@ BG.Init(function()
                 return
             end
         else
-            -- TOC的图纸记到杂项
+            -- MOP、TOC的图纸记到杂项
             if typeID == 9 then
                 local numb = Maxb[FB] - 1
                 AddLootItem(FB, numb, link, Texture, level, Hope, count, typeID, lootplayer, nil, typeID == 9)

@@ -1,4 +1,4 @@
-## Interface: 40402
+## Interface: 40401
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Extra|r|cffffe00a>|r |cff69ccf0Spell Timers|r
@@ -22,7 +22,7 @@
 ## SavedVariables: DBM_SpellTimers_Settings
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-Curse-Project-ID: 18712
-## Version: r162
+## Version: r160
 
 localization.en.lua
 localization.de.lua

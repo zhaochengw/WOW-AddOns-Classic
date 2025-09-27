@@ -45,6 +45,43 @@ local function CreateMenu(self)
             ns.SpecGear:SetSpecGear(self.id, nil)
         end,
     })
+
+    tinsert(menu, ns.DROPDOWN_SEPARATOR)
+
+    tinsert(menu, {
+        text = ns.L['Set alias name'],
+        notCheckable = true,
+        func = function()
+            if not StaticPopupDialogs['TDINSPECT_SET_SPEC_ALIAS'] then
+                local function OnAccept(frame)
+                    local text = frame.editBox:GetText()
+                    ns.SpecGear:SetSpecAliasName(frame.data.specId, text)
+                end
+
+                StaticPopupDialogs['TDINSPECT_SET_SPEC_ALIAS'] = {
+                    text = ns.L['Set alias name'],
+                    button1 = ACCEPT,
+                    button2 = CANCEL,
+                    hasEditBox = true,
+                    maxLetters = 20,
+                    OnAccept = OnAccept,
+                    EditBoxOnEnterPressed = function(self)
+                        local parent = self:GetParent()
+                        OnAccept(parent)
+                        parent:Hide()
+                    end,
+                    OnShow = function(self)
+                        self.editBox:SetText(self.data.specName or '')
+                        self.editBox:SetFocus()
+                        self.editBox:HighlightText()
+                    end,
+                }
+            end
+
+            StaticPopup_Show('TDINSPECT_SET_SPEC_ALIAS', nil, nil,
+                             {specId = self.id, specName = ns.SpecGear:GetSpecAliasName(self.id)})
+        end,
+    })
     return menu
 end
 
@@ -71,6 +108,7 @@ function CharacterGearFrame:OnShow()
     self:Event('ACTIVE_TALENT_GROUP_CHANGED', 'UpdateTalents')
     self:Event('PLAYER_AVG_ITEM_LEVEL_UPDATE', 'UpdateItemLevel')
     self:Event('TDINSPECT_OPTION_CHANGED', 'UpdateOption')
+    self:Event('TDINSPECT_SPEC_ALIAS_CHANGED', 'UpdateTalents')
 
     self:UpdateOptionButton(ns.db.profile.showOptionButtonInCharacter)
 
@@ -143,10 +181,11 @@ end
 
 function CharacterGearFrame:GetTalentInfo(group)
     local maxPoint = 0
-    local maxName = nil
+    local maxName
     local maxIcon
     local maxBg
     local counts = {}
+
     for i = 1, GetNumTalentTabs() do
         local name, icon, pointsSpent, bg = ns.GetTalentTabInfo(i, nil, nil, group)
         if pointsSpent > maxPoint then
@@ -158,6 +197,7 @@ function CharacterGearFrame:GetTalentInfo(group)
 
         tinsert(counts, pointsSpent)
     end
+
     return maxName, maxIcon, maxBg, table.concat(counts, '/')
 end
 

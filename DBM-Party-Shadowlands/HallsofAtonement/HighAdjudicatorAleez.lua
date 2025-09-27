@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2411, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250808082114")
+mod:SetRevision("20250821014351")
 mod:SetCreatureID(165410)
 mod:SetEncounterID(2403)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -42,7 +42,7 @@ local specWarnAnimaFountain			= mod:NewSpecialWarningDodgeCount(329340, nil, nil
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
 --local timerVolleyofPowerCD		= mod:NewCDTimer(10.9, 323552, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--12-20
-local timerSpectralProcessionCD		= mod:NewCDCountTimer(20.6, 323597, nil, nil, nil, 1)
+local timerSpectralProcessionCD		= mod:NewCDCountTimer(20.4, 323597, nil, nil, nil, 1)
 local timerAnimaFountainCD			= mod:NewCDCountTimer(23, 329340, nil, nil, nil, 3)
 local timerUnstableAnimaCD			= mod:NewCDCountTimer(15.7, 1236512, nil, nil, nil, 3)
 
@@ -58,7 +58,7 @@ function mod:OnCombatStart(delay)
 	self.vb.animaFountainCount = 0
 	self.vb.unstableAnimaCount = 0
 	timerUnstableAnimaCD:Start(10.6-delay, 1)
-	timerSpectralProcessionCD:Start(16.7-delay, 1)
+	timerSpectralProcessionCD:Start(15.6-delay, 1)
 	timerAnimaFountainCD:Start(20.3-delay, 1)
 	if self.Options.NPAuraOnFixate then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")

@@ -138,7 +138,7 @@ function _QuestieJourney.questsByZone:CollectZoneQuests(zoneId)
         -- Only show quests which are not hidden
         if QuestieCorrections.hiddenQuests and ((not QuestieCorrections.hiddenQuests[questId]) or QuestieEvent:IsEventQuest(questId)) and QuestieDB.QuestPointers[questId] then
             temp.value = questId
-            temp.text = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false, true)
+            temp.text = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false)
 
             -- Completed quests
             if Questie.db.char.complete[questId] then
@@ -177,7 +177,7 @@ function _QuestieJourney.questsByZone:CollectZoneQuests(zoneId)
                     tinsert(zoneTree[3].children, temp)
                     completedCounter = completedCounter + 1
                 -- Unobtainable reputation quests
-                elseif not QuestieReputation:HasReputation(requiredMinRep, requiredMaxRep) then
+                elseif not QuestieReputation.HasReputation(requiredMinRep, requiredMaxRep) then
                     tinsert(zoneTree[5].children, temp)
                     unobtainableQuestIds[questId] = true
                     unobtainableCounter = unobtainableCounter + 1

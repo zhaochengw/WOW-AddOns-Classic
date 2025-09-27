@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("AraKaraTrash", "DBM-Party-WarWithin", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250809064410")
+mod:SetRevision("20250909012850")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
@@ -25,7 +25,7 @@ ability.id = 434802 and (type = "begincast" or type = "cast")
  or (source.type = "NPC" and source.firstSeen = timestamp and source.id = 217531) or (target.type = "NPC" and target.firstSeen = timestamp and target.id = 217531)
 --]]
 local warnHorrifyingshrill					= mod:NewCastAnnounce(434802, 4)--High Prio Off interrupt
-local warnRadiantBarrage					= mod:NewSpellAnnounce(434793, 4)--High Prio Off interrupt
+local warnResonantBarrage					= mod:NewSpellAnnounce(434793, 4)--High Prio Off interrupt
 local warnVenomVolley						= mod:NewCastAnnounce(433841, 4)--High Prio Off interrupt
 local warnAlarmShill						= mod:NewCastAnnounce(432967, 4, nil, nil, nil, nil, nil, 2)
 local warnToxicRupture						= mod:NewSpellAnnounce(438622, 4, nil, "Melee")
@@ -41,16 +41,16 @@ local specWarnEruptingWebs					= mod:NewSpecialWarningDodge(433845, nil, nil, ni
 local specWarnExtractionStrike				= mod:NewSpecialWarningDefensive(433002, nil, nil, nil, 1, 2)
 --local specWarnStormshield					= mod:NewSpecialWarningDispel(386223, "MagicDispeller", nil, nil, 1, 2)
 local specWarnHorrifyingShrill				= mod:NewSpecialWarningInterrupt(434802, "HasInterrupt", nil, nil, 1, 2)--High Prio
-local specWarnRadiantBarrage				= mod:NewSpecialWarningInterrupt(434793, "HasInterrupt", nil, nil, 1, 2)--High Prio
+local specWarnResonantBarrage				= mod:NewSpecialWarningInterrupt(434793, "HasInterrupt", nil, nil, 1, 2)--High Prio
 local specWarnPoisonBolt					= mod:NewSpecialWarningInterrupt(436322, "HasInterrupt", nil, nil, 1, 2)--High Prio (no CD timer, it's recast out of spell lockout regardless
 local specWarnRevoltingVolley				= mod:NewSpecialWarningInterrupt(448248, "HasInterrupt", nil, nil, 1, 2)
 local specWarnVenomVolley					= mod:NewSpecialWarningInterrupt(433841, "HasInterrupt", nil, nil, 1, 2)--High Prio
 
 local timerMassiveSlamCD					= mod:NewCDNPTimer(15.4, 434252, nil, nil, nil, 2)--Removed in 11.2? keeping object for now but not starting on engage
 local timerWebSprayCD						= mod:NewCDPNPTimer(7, 434824, nil, nil, nil, 3)--7-8.2 from last cast finish/kick
-local timerHorrifyingShrillCD				= mod:NewCDPNPTimer(22.8, 434802, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--13.3-15.5 from last cast finish/kick
-local timerRadiantBarrageCD					= mod:NewCDNPTimer(16.8, 434793, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
-local timerCalloftheBroodCD					= mod:NewCDNPTimer(26.6, 438877, nil, nil, nil, 1)
+local timerHorrifyingShrillCD				= mod:NewCDPNPTimer(20.9, 434802, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--13.3-15.5 from last cast finish/kick
+local timerResonantBarrageCD				= mod:NewCDNPTimer(16.8, 434793, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerCalloftheBroodCD					= mod:NewCDNPTimer(21.8, 438877, nil, nil, nil, 1)
 local timerPoisonousCloudCD					= mod:NewCDNPTimer(15.3, 438826, nil, nil, nil, 3)--15.3-24.7
 local timerRevoltingVolleyCD				= mod:NewCDNPTimer(22.2, 448248, nil, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerImpaleCD							= mod:NewCDPNPTimer(10.9, 453161, nil, nil, nil, 3)
@@ -95,7 +95,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 438877 then
 		warnCalloftheBrood:Show()
-		timerCalloftheBroodCD:Start(26.6, args.sourceGUID)--Ok to start here, Nakt can't be interrupted or CCed
+		timerCalloftheBroodCD:Start(nil, args.sourceGUID)--Ok to start here, Nakt can't be interrupted or CCed
 	elseif spellId == 436322 then
 		--Even though high priorty, no off interrupt announce due to fact it'll be recast every 3-6 (based on spell lockout)
 		--We do not want to spam users in this way. By Quazii's SS, it's high prio but only if you can spare an interrupt CD for it.
@@ -159,12 +159,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerHorrifyingShrillCD:Start(nil, args.sourceGUID)
 	elseif spellId == 434793 then
 		if self.Options.SpecWarn434793interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-			specWarnRadiantBarrage:Show(args.sourceName)
-			specWarnRadiantBarrage:Play("kickcast")
+			specWarnResonantBarrage:Show(args.sourceName)
+			specWarnResonantBarrage:Play("kickcast")
 		elseif self:AntiSpam(3, 7) then
-			warnRadiantBarrage:Show()
+			warnResonantBarrage:Show()
 		end
-		timerRadiantBarrageCD:Start(16.8, args.sourceGUID)
+		timerResonantBarrageCD:Start(16.8, args.sourceGUID)
 	elseif spellId == 438622 and self:AntiSpam(3, 6) then
 		warnToxicRupture:Show()
 	elseif spellId == 448248 then
@@ -211,7 +211,7 @@ function mod:UNIT_DIED(args)
 		timerWebSprayCD:Stop(args.destGUID)
 		timerPoisonousCloudCD:Stop(args.destGUID)
 	elseif cid == 216293 then--Trilling Attendant
-		timerRadiantBarrageCD:Stop(args.destGUID)
+		timerResonantBarrageCD:Stop(args.destGUID)
 	elseif cid == 223253 then--Bloodstained Webmage
 		timerRevoltingVolleyCD:Stop(args.destGUID)
 	elseif cid == 216338 then--Hulking Bodyguard
@@ -236,22 +236,22 @@ function mod:StartEngageTimers(guid, cid, delay)
 		timerCalloftheBroodCD:Start(9.7-delay, guid)
 		timerWebSprayCD:Start(14.3-delay, guid)
 	elseif cid == 217533 then--Atik
-		timerWebSprayCD:Start(4-delay, guid)--4-6
-		timerPoisonousCloudCD:Start(8.8-delay, guid)--8.8-14.4
+		timerWebSprayCD:Start(3.6-delay, guid)--3.6-6
+		timerPoisonousCloudCD:Start(7.9-delay, guid)--7.9-14.4
 	elseif cid == 216293 then--Trilling Attendant
-		timerRadiantBarrageCD:Start(2.1-delay, guid)--2.1-3.8
+		timerResonantBarrageCD:Start(2.1-delay, guid)--2.1-3.8
 	elseif cid == 223253 then--Bloodstained Webmage
 		timerRevoltingVolleyCD:Start(6.4-delay, guid)
 	elseif cid == 216338 then--Hulking Bodyguard
-		timerLocusSwarmCD:Start(5.6-delay, guid)
-		timerImpaleCD:Start(16.6-delay, guid)--Delayed in S3 because of new locus swarm cast
+--		timerLocusSwarmCD:Start(5.6-delay, guid)--can be used instantly on pull
+		timerImpaleCD:Start(16.4-delay, guid)--Delayed in S3 because of new locus swarm cast
 	elseif cid == 216364 then--Blood Overseer
 		timerVenomVolleyCD:Start(5.2-delay, guid)--5.2-7.4
 		timerEruptingWebsCD:Start(11.3-delay, guid)--11.3-13.9
 --	elseif cid == 217039 then--Nerubian Hauler
 --		timerMassiveSlamCD:Start(3-delay, guid)--3-4 (removed in 11.2?)
 	elseif cid == 216333 then--Bloodstained Assistant
-		timerExtractionStrikeCD:Start(9-delay, guid)
+		timerExtractionStrikeCD:Start(3.5-delay, guid)
 	end
 end
 

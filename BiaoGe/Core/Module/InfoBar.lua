@@ -608,7 +608,8 @@ BG.Init(function()
         end
         bt:SetNormalFontObject(BG.FontYellow13)
         bt:SetHighlightFontObject(BG.FontWhite13)
-        bt:SetText("|A:classicon-" .. string.lower(select(2, UnitClass("player"))) .. ":0:0|a" .. L["角色总览"])
+        bt:SetText("|A:GarrMission_ClassIcon-" .. string.lower(select(2, UnitClass("player"))) .. ":0:0|a" .. L["角色总览"])
+        -- bt:SetText("|A:classicon-" .. string.lower(select(2, UnitClass("player"))) .. ":0:0|a" .. L["角色总览"])
         bt:SetWidth(bt:GetFontString():GetStringWidth())
         BG.ButtonRoleOverview = bt
         lastBt = bt

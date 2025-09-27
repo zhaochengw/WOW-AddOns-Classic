@@ -157,8 +157,9 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg:find(L.PullAlliance, 1, true) then
-		timerCombatStart:Start(self:IsRetail() and 45 or 48)
+		timerCombatStart:Start(self:IsRetail() and 45 or 50.3) --修正怀旧服联盟开怪时间为50.3（露露，20250530）
 	elseif msg:find(L.PullHorde, 1, true) then
-		timerCombatStart:Start(self:IsRetail() and 94.5 or 97.5)--Retail has been confirmed 94.5 more than once, but classic is a little slower
+		timerCombatStart:Start(self:IsRetail() and 94.5 or 97.8) --修正怀旧服部落开怪时间为97.8（露露，20250530）
+		--Retail has been confirmed 94.5 more than once, but classic is a little slower
 	end
 end

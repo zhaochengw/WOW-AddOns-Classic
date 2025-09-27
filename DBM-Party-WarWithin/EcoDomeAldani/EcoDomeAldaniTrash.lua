@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("EcoDomeAldaniTrash", "DBM-Party-WarWithin", 10)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250809072732")
+mod:SetRevision("20250909224021")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
@@ -9,12 +9,10 @@ mod:SetZone(2830)
 mod:RegisterZoneCombat(2830)
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 1229474 426893 1221190 1226111 1235368 1222356 1229510 1222815 1221532 1226306 1222341 1223007 1237195 1237220 1215850",
+	"SPELL_CAST_START 1229474 426893 1226111 1235368 1222356 1229510 1222815 1221532 1226306 1222341 1223007 1237195 1237220 1215850",
 	"SPELL_CAST_SUCCESS 426893 1221190 1226111 1235368 1222356 1221679 1229510 1223000 1222341 1221483",
 	"SPELL_INTERRUPT",
-	"SPELL_AURA_APPLIED 1221133 1221483 1231608 1223000 1239229",
---	"SPELL_AURA_APPLIED_DOSE",
---	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED 1221133 1221483 1231608 1223000 1239229 1221190",
 	"UNIT_DIED"
 )
 
@@ -38,7 +36,7 @@ local specWarnGorgingSmash					= mod:NewSpecialWarningSpell(426893, nil, nil, ni
 local specErraticRitual						= mod:NewSpecialWarningSpell(1221532, nil, nil, nil, 2, 2)
 local specWarnStingingSandstorm				= mod:NewSpecialWarningSpell(1237220, nil, nil, nil, 2, 2)
 local specWarnConsumeSpirit					= mod:NewSpecialWarningSwitch(1226306, "-Healer", nil, nil, 1, 2)
-local specWarnGluttonousMiasma				= mod:NewSpecialWarningDodge(1221190, nil, nil, nil, 2, 2)
+local specWarnGluttonousMiasma				= mod:NewSpecialWarningMoveAway(1221190, nil, nil, nil, 2, 2)
 local specWarnVolatileEjection				= mod:NewSpecialWarningYou(1226111, nil, nil, nil, 1, 2)
 local yellVolatileEjection					= mod:NewShortYell(1226111)
 local specWarnVolatileEjectionOther			= mod:NewSpecialWarningTarget(1226111, nil, nil, nil, 2, 2)
@@ -65,7 +63,7 @@ local timerArcingZapCD						= mod:NewCDPNPTimer(24.2, 1229510, nil, nil, nil, 4)
 local timerArcingEnergyCD					= mod:NewCDNPTimer(9.4, 1221483, nil, nil, nil, 3)--actually alternates between 10.9 and 13.3 due to a spell queue
 local timerErraticRitualCD					= mod:NewCDPNPTimer(19.8, 1221532, nil, nil, nil, 2)--19.8-31.6
 local timerConsumeSpiritCD					= mod:NewCDPNPTimer(51.9, 1226306, nil, nil, nil, 1)--Iffy
-local timerEmbraceOfKareshCD				= mod:NewCDNPTimer(20.7, 1223000, nil, nil, nil, 5)--Iffy
+local timerEmbraceOfKareshCD				= mod:NewCDNPTimer(17, 1223000, nil, nil, nil, 5)
 local timerGloomBiteCD						= mod:NewCDNPTimer(12.1, 1222341, nil, nil, nil, 5)--Iffy 14.6-2.5
 local timerBurrowingEruptionCD				= mod:NewCDNPTimer(18.3, 1223007, nil, nil, nil, 3)--Iffy
 local timerBurrowChargeCD					= mod:NewCDNPTimer(19.5, 1237195, nil, nil, nil, 3)--Iffy 19.5-25
@@ -104,11 +102,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnGorgingSmash:Show()
 			specWarnGorgingSmash:Play("aesoon")
 		end
-	elseif spellId == 1221190 then
-		if self:AntiSpam(3, 2) then
-			specWarnGluttonousMiasma:Show()
-			specWarnGluttonousMiasma:Play("watchstep")
-		end
 	elseif spellId == 1226111 then
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "VolatileTarget", 0.1, 4)
 	elseif spellId == 1235368 then
@@ -116,9 +109,9 @@ function mod:SPELL_CAST_START(args)
 			warnArcaneSlash:Show()
 		end
 	elseif spellId == 1222356 then
-		if self:AntiSpam(3, 2) then
+		if self:AntiSpam(3.5, 2) then
 			specWarnWarp:Show()
-			specWarnWarp:Play("watchstep")
+			specWarnWarp:Play("farfromline")
 		end
 	elseif spellId == 1229510 then
 		if self:CheckInterruptFilter(args.sourceGUID, nil, true) then
@@ -233,6 +226,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnEmbraceOfKaresh:Play("dispelnow")
 	elseif spellId == 1239229 and args:IsPlayer() then
 		warnKareshiSurge:Show()
+	elseif spellId == 1221190 and args:IsPlayer() then
+		if self:AntiSpam(3, 1) then
+			specWarnGluttonousMiasma:Show()
+			specWarnGluttonousMiasma:Play("scatter")
+		end
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -274,7 +272,7 @@ function mod:StartEngageTimers(guid, cid, delay)
 	if cid == 234883 then--Voracious Gorger
 		timerGorgingSmashCD:Start(24-delay, guid)
 	elseif cid == 236995 then--Ravenous Destroyer
-		timerGluttonousMiasmaCD:Start(8-delay, guid)--Iffy
+		timerGluttonousMiasmaCD:Start(7.7-delay, guid)
 		timerVolatileEjectionCD:Start(14-delay, guid)--Iffy
 --	elseif cid == 242631 then--Overcharged Sentinel
 --		timerArcaneSlashCD:Start(8-delay, guid)--UNKNOWN, placeholder

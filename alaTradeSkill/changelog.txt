@@ -1,4 +1,13 @@
 
+2025-08-15
+Try to fix the issue that enchanting does work.
+
+2025-08-13
+Fix an issue occured in some language.
+
+2025-08-06
+Change the default phase to 4 in wotlk.
+
 2025-08-04
 Update MOP Data. (horrible huge work)
 Thanks to Hubbotu's ruRU translations.

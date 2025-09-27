@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50500, 50501
 ## Title: BasicMinimap_Options
 ## Author: Funkeh
 ## Notes: BasicMinimap Configuration Options.
@@ -12,7 +12,7 @@
 ## Notes-koKR: BasicMinimap|1을;를; 설정하는 옵션입니다.
 ## Notes-ptBR: BasicMinimap Opções de Configuração.
 ## Notes-ruRU: BasicMinimap параметры настроек.
-## Version: v11.1.2
+## Version: v11.2.1
 ## LoadOnDemand: 1
 ## Dependencies: BasicMinimap
 

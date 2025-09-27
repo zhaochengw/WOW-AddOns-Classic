@@ -1,36 +1,40 @@
 ---@class Private
 local Private = select(2, ...)
 
-Private.Zones[42] = {
-    id = 42,
-    name = "Undermine",
+Private.Zones[44] = {
+    id = 44,
+    name = "Manaforge",
     hasMultipleDifficulties = true,
     hasMultipleSizes = false,
     encounters = {
-        { id = 3009, },
-        { id = 3010, },
-        { id = 3011, },
-        { id = 3012, },
-        { id = 3013, },
-        { id = 3014, },
-        { id = 3015, },
-        { id = 3016, },
+        { id = 3129, },
+        { id = 3131, },
+        { id = 3130, },
+        { id = 3132, },
+        { id = 3122, },
+        { id = 3133, },
+        { id = 3134, },
+        { id = 3135, },
     },
     difficultyIconMap = nil,
 }
 
-Private.Zones[1038] = {
-    id = 1038,
-    name = "Mogu'shan Vaults",
+Private.Zones[1040] = {
+    id = 1040,
+    name = "HoF / ToES",
     hasMultipleDifficulties = true,
     hasMultipleSizes = true,
     encounters = {
-        { id = 1395, },
-        { id = 1390, },
-        { id = 1434, },
-        { id = 1436, },
-        { id = 1500, },
-        { id = 1407, },
+        { id = 1507, },
+        { id = 1504, },
+        { id = 1463, },
+        { id = 1498, },
+        { id = 1499, },
+        { id = 1501, },
+        { id = 1409, },
+        { id = 1505, },
+        { id = 1506, },
+        { id = 1431, },
     },
     difficultyIconMap = nil,
 }

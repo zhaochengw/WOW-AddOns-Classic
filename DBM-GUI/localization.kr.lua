@@ -26,7 +26,7 @@ L.Tools_KeystoneCheck				= "쐐기돌 확인"
 L.Tools_BreakTimer					= "휴식 타이머 시작"
 L.Tools_PizzaTimer					= "일반 타이머 시작"
 
-L.Tools_Duration					= "내구도"
+L.Tools_Duration					= "지속시간"
 L.Tools_Message						= "타이머 메시지"
 
 L.TabCategory_CURRENT_SEASON		= "현재 시즌"
@@ -601,6 +601,7 @@ L.Panel_Range				= "거리 창"
 -- Panel: Nameplate
 L.Panel_Nameplates			= "이름표"
 L.Plater_Config						= "Plater 설정창 열기"
+L.ThreatPlates_Config						= "Threat Plates 설정창 열기"
 L.Area_NPStyle				= "외형 (알림: Plater를 사용하지 않을 때만 설정이 가능합니다)"
 L.NPAuraText					= "이름표 아이콘에 타이머 텍스트 표시"
 L.NPAuraSize				= "아이콘 픽셀 크기 (정사각형): %d"

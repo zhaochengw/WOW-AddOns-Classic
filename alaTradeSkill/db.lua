@@ -114,6 +114,7 @@ local T_TradeSkill_Spec2Pid = DataAgent.T_TradeSkill_Spec2Pid;
 local T_TradeSkill_RecipeList = DataAgent.T_TradeSkill_RecipeList;
 --	Hash
 --[[auto]]local T_sname2sid = {  };		--	[pid][sname] = { sid }
+--[[auto]]local T_sname2pid_noconflict = {  };
 local T_cis2sid = {  };			--	[cid] = { sid }
 local T_cidpid2sid = {  };		--	[cid][pid] = { sid }
 local T_rid2sid = {  };			--	[rid] = sid
@@ -158,6 +159,18 @@ local function LF_HashSpell(sid, sname, sname_lower)
 			pt[sname_lower] = ptn;
 		end
 		ptn[#ptn + 1] = sid;
+		if T_sname2pid_noconflict[sname] == nil then
+			T_sname2pid_noconflict[sname] = pid;
+		else
+			T_sname2pid_noconflict[sname] = -1;
+		end
+		if sname ~= sname_lower then
+			if T_sname2pid_noconflict[sname_lower] == nil then
+				T_sname2pid_noconflict[sname_lower] = pid;
+			else
+				T_sname2pid_noconflict[sname_lower] = -1;
+			end
+		end
 	end
 end
 local function LF_CacheSpell(sid)
@@ -579,6 +592,13 @@ end);
 			if info ~= nil then
 				return info[index_pid];
 			end
+		end
+	end
+	--	sname | pid
+	function DataAgent.try_get_pid_by_sname(sname)
+		local pid = T_sname2pid_noconflict[sname];
+		if pid and pid > 0 then
+			return pid;
 		end
 	end
 	--	sid | cid

@@ -69,6 +69,8 @@ local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips");
 local QuestieDBMIntegration = QuestieLoader:ImportModule("QuestieDBMIntegration");
 ---@type TrackerQuestTimers
 local TrackerQuestTimers = QuestieLoader:ImportModule("TrackerQuestTimers")
+---@type ChallengeModeTimer
+local ChallengeModeTimer = QuestieLoader:ImportModule("ChallengeModeTimer")
 ---@type QuestieCombatQueue
 local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieSlash
@@ -235,11 +237,11 @@ end
 QuestieInit.Stages[3] = function() -- run as a coroutine
     Questie:Debug(Questie.DEBUG_INFO, "[QuestieInit:Stage3] Stage 3 start.")
 
-    -- register events that rely on questie being initialized
-    EventHandler:RegisterLateEvents()
-
     QuestieTooltips:Initialize()
     TrackerQuestTimers:Initialize()
+    if Expansions.Current >= Expansions.MoP then
+        ChallengeModeTimer.Initialize()
+    end
     QuestieComms:Initialize()
 
     coYield()
@@ -313,6 +315,9 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     end
 
     Questie.started = true
+
+    -- register events that rely on questie being initialized
+    EventHandler:RegisterLateEvents()
 
     -- ! Never implemented
     if (Questie.IsWotlk or Questie.IsTBC) and QuestiePlayer.IsMaxLevel() then

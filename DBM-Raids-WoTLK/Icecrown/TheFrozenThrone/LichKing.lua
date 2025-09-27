@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20250720212401")
+mod:SetRevision("20241103133102")
 mod:SetCreatureID(36597)
 mod:SetEncounterID(not mod:IsPostCata() and 856 or 1106)
 mod:DisableEEKillDetection()--EE fires at 10%
@@ -70,7 +70,7 @@ local specWarnHarvestSouls			= mod:NewSpecialWarningSpell(73654, nil, nil, nil, 
 local specWarnValkyrLow				= mod:NewSpecialWarning("SpecWarnValkyrLow", nil, nil, nil, 1, 2, nil, nil, 71844)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(68983, nil, nil, nil, 1, 8)
 
-local timerCombatStart				= mod:NewCombatTimer(53.5)
+local timerCombatStart				= mod:NewCombatTimer(54.6)
 local timerPhaseTransition			= mod:NewTimer(62.5, "PhaseTransition", 72262, nil, nil, 6)
 local timerSoulreaper	 			= mod:NewTargetTimer(5.1, 69409, nil, "Tank|Healer")
 local timerSoulreaperCD	 			= mod:NewNextTimer(30.5, 69409, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
@@ -98,6 +98,7 @@ mod:AddSetIconOption("RagingSpiritIcon", 69200, false, 0, {6})
 mod:AddSetIconOption("TrapIcon", 73539, true, 0, {7})
 mod:AddSetIconOption("ValkyrIcon", 71844, true, 5, {1, 2, 3})
 mod:AddSetIconOption("HarvestSoulIcon", 68980, false, 0, {5})
+mod:AddBoolOption("AnnounceValkGrabs", false, nil, nil, nil, nil, 71844)
 
 local warnedValkyrGUIDs = {}
 local plagueHop = DBM:GetSpellName(70338)--Hop spellID only, not cast one.
@@ -342,6 +343,7 @@ end
 
 do
 	local valkyrTargets = {}
+	local grabIcon = 1
 	local lastValk = 0
 	local UnitIsUnit, UnitInVehicle, IsInRaid = UnitIsUnit, UnitInVehicle, IsInRaid
 
@@ -355,11 +357,21 @@ do
 						specWarnYouAreValkd:Show()
 						specWarnYouAreValkd:Play("targetyou")
 					end
+					if IsInGroup() and self.Options.AnnounceValkGrabs and DBM:GetRaidRank() > 1 then
+						local channel = (IsInRaid() and "RAID") or "PARTY"
+						if self.Options.ValkyrIcon then
+							SendChatMessage(L.ValkGrabbedIcon:format(grabIcon, UnitName(uId)), channel)
+							grabIcon = grabIcon + 1--Makes assumption discovery order of vehicle grabs will match combat log order, since there is a delay
+						else
+							SendChatMessage(L.ValkGrabbed:format(UnitName(uId)), channel)
+						end
+					end
 				end
 			end
 			self:Schedule(0.5, scanValkyrTargets, self)  -- check for more targets in a few
 		else
 			table.wipe(valkyrTargets)       -- no more valkyrs this round, so lets clear the table
+			grabIcon = 1
 			self.vb.valkIcon = 1
 		end
 	end

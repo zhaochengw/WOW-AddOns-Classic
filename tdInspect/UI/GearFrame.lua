@@ -347,7 +347,10 @@ function GearFrame:UpdateTalent(button, group, isActive, onlyOne)
     local name, icon, bg, points = self:GetTalentInfo(group)
     if name then
         button.Icon:SetTexture(icon)
-        if onlyOne then
+        local showName = not self.inspect and ns.SpecGear:GetSpecAliasName(group)
+        if showName then
+            button.Text:SetText(showName)
+        elseif onlyOne then
             button.Text:SetText(name)
         else
             button.Text:SetFormattedText('%s: %s', group == 1 and L.Major or L.Minor, name)

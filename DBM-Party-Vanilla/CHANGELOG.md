@@ -1,10 +1,9 @@
 # DBM - Dungeons, Delves, & Events
 
-## [r208](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r208) (2025-08-12)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r207...r208) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
+## [r213](https://github.com/DeadlyBossMods/DBM-Dungeons/tree/r213) (2025-09-15)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-Dungeons/compare/r212...r213) [Previous Releases](https://github.com/DeadlyBossMods/DBM-Dungeons/releases)
 
-- Another round of Tazavesh streets timers and alerts  
-- squeeze in some new delve alerts for high priority dodges and interrupts  
-- Update localization.tw.lua (#521)  
-- Update zhCN (#520)  
-- Add 6 more spell timers to tazavesh  
+- Add separate difficulty for tracking celestial dungeons in mop classic  
+    no longer add timewalking difficulty stats to mop classic  
+- toc bumps for current PTRs  
+- make nemesis delve bosses report boss health and difficulty type correctly in engage/wipe/kill messages  

@@ -43,6 +43,9 @@ local function get_character_data_listMenu()
 	local factionstr, faction_icon, colorCode
 	local i = 1
 	
+	-- Clear the character_data_list before rebuilding it
+	wipe(character_data_list)
+	
 	for serverkey, server_value in pairs(Accountant_ClassicSaveData) do
 		for charkey, char_value in pairs(Accountant_ClassicSaveData[serverkey]) do
 			factionstr = Accountant_ClassicSaveData[serverkey][charkey]["options"].faction or nil
@@ -65,32 +68,37 @@ local function to_confirm_character_removal(value)
 	local selected_char  = character_data_list[value][2]
 	local faction_icon, class_color
 
+	-- Check if the character data still exists
+	if not Accountant_ClassicSaveData[selected_srv] or not Accountant_ClassicSaveData[selected_srv][selected_char] then
+		return
+	end
+
 	local factionstr = Accountant_ClassicSaveData[selected_srv][selected_char]["options"].faction or nil
 	faction_icon = factionstr and "|TInterface\\PVPFrame\\PVP-Currency-"..factionstr..":0:0|t" or ""
 
 	local classToken = Accountant_ClassicSaveData[selected_srv][selected_char]["options"].class or nil
 	class_color = classToken and "|c"..RAID_CLASS_COLORS[classToken]["colorStr"] or ""
 
-	-- Confirm box
-	LibDialog:Register("ACCLOC_CHARREMOVE", {
+	StaticPopupDialogs["ACCLOC_CHARREMOVE"] = {
 		text = L["The selected character is about to be removed.\nAre you sure you want to remove the following character from Accountant Classic?"].."\n|r"..faction_icon..class_color..selected_srv.." - "..selected_char,
-		buttons = {
-			{
-				text = OKAY,
-				on_click = function() addon:CharacterRemovalProceed(selected_srv, selected_char) end,
-			},
-			{
-				text = CANCEL,
-				on_click = function(self, mouseButton, down) LibDialog:Dismiss("ACCLOC_CHARREMOVE") end,
-			},
-		},
-		show_while_dead = true,
-		hide_on_escape = true,
-		is_exclusive = true,
-		show_during_cinematic = false,
-		
-	})
-	LibDialog:Spawn("ACCLOC_CHARREMOVE")
+		button1 = OKAY,
+		button2 = CANCEL,
+		OnAccept = function()
+			addon:CharacterRemovalProceed(selected_srv, selected_char)
+			-- Force refresh of the dropdown menu after removal
+			get_character_data_listMenu()
+			-- Reset the selected character if it was the one removed
+			if AC_SELECTED_CHAR_NUM == value then
+				AC_SELECTED_CHAR_NUM = nil
+			end
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,
+	}
+
+	StaticPopup_Show("ACCLOC_CHARREMOVE")
 end
 
 local options, moduleOptions = nil, {}
@@ -357,7 +365,9 @@ local function getOptions()
 									end,
 									set = function(info, value)
 										to_confirm_character_removal(value)
-										InterfaceOptionsFrame:Hide()
+										if InterfaceOptionsFrame then
+											InterfaceOptionsFrame:Hide()
+										end
 									end,
 								},
 							},
@@ -376,12 +386,10 @@ end
 
 
 function addon:OpenOptions() 
-	-- open the profiles tab before, so the menu expands
-	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.Profiles)
-	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.Profiles)
-	InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.General)
-	if InterfaceOptionsFrame then
-		InterfaceOptionsFrame:Raise()
+	if InterfaceOptionsFrame_OpenToCategory and addon.optionsFrames.General then
+		InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.General)
+	else
+		AceConfigDialog:Open(addon.LocName)
 	end
 end
 

@@ -370,7 +370,7 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questStarts] = {90072},
         },
         [2129] = { -- Dark Cleric Beryl
-            [npcKeys.questStarts] = {5650,5663,90158},
+            [npcKeys.questStarts] = {5650,90158},
         },
         [2152] = { -- Gnarlpine Ambusher
             [npcKeys.questStarts] = {90207},
@@ -514,6 +514,9 @@ function SeasonOfDiscovery:LoadNPCs()
         },
         [2995] = { -- Tal
             [npcKeys.questStarts] = {6364,90243},
+        },
+        [3044] = { -- Miles Welsh
+            [npcKeys.questStarts] = {5642,5663},
         },
         [3058] = { -- Arra'chea
             [npcKeys.questStarts] = {90093,90095},
@@ -679,8 +682,11 @@ function SeasonOfDiscovery:LoadNPCs()
         [4160] = { -- Ainethil
             [npcKeys.questEnds] = {90567},
         },
+        [4606] = { -- Aelthalyste
+            [npcKeys.questStarts] = {5658},
+        },
         [4607] = { -- Father Lankester
-            [npcKeys.questStarts] = {5643,5656,5658,5679,79080},
+            [npcKeys.questStarts] = {5643,5656,5679,79080},
             [npcKeys.questEnds] = {79080},
         },
         [4713] = { -- Slitherblade Warrior
@@ -1115,6 +1121,9 @@ function SeasonOfDiscovery:LoadNPCs()
         [11397] = { -- Nara Meideros
             [npcKeys.questStarts] = {5632,5638,78194,78195},
             [npcKeys.questEnds] = {78194},
+        },
+        [11407] = { -- Var'jun
+            [npcKeys.questStarts] = {5654,5661},
         },
         [11438] = { -- Bibbly F'utzbuckle
             [npcKeys.questStarts] = {5501,79235},
@@ -2834,6 +2843,26 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{68.2,82.4}}},
             [npcKeys.questStarts] = {90510},
             [npcKeys.questEnds] = {90510},
+        },
+        [243200] = { -- "Behind the Tavern" Kill Credit
+            [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{95.238,77.715}}},
+        },
+        [243201] = { -- "Behind the Town Hall" Kill Credit
+            [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{90.573,86.653}}},
+        },
+        [243202] = { -- "In front of the Prison" Kill Credit
+            [npcKeys.zoneID] = zoneIDs.EASTERN_PLAGUELANDS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_PLAGUELANDS] = {{92.441,95.080}}},
+        },
+        [243203] = { -- "Behind the Mage Tower" Kill Credit
+            [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOMS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_KINGDOMS] = {{62.82488,25.45694}}},
+        },
+        [243204] = { -- "Behind the Barracks" Kill Credit
+            [npcKeys.zoneID] = zoneIDs.EASTERN_KINGDOMS,
+            [npcKeys.spawns] = {[zoneIDs.EASTERN_KINGDOMS] = {{62.68678,24.80937}}},
         },
         [243269] = { -- Solistrasza
             [npcKeys.zoneID] = zoneIDs.SCARLET_ENCLAVE,

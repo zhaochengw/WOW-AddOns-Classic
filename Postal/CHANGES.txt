@@ -1,8 +1,12 @@
 ------------------------------------------------------------------------
-r655 | Zimzarina | 2025-08-06 12:17:18 +0000 (Wed, 06 Aug 2025) | 1 line
+r657 | Zimzarina | 2025-09-26 01:58:05 +0000 (Fri, 26 Sep 2025) | 3 lines
 Changed paths:
-   M /trunk/Postal.toc
+   M /trunk/Modules/QuickAttach.lua
+   M /trunk/Postal.lua
+   M /trunk/Postal_Mists.toc
 
-TOC Update Retail.
+Fixed issue where quickattach set name dialog failed to work.
+Fixed issue where new profile dialog failed to work.
+Updated TOC number for MOP.
 ------------------------------------------------------------------------
 

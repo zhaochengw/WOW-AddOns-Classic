@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2413, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250812162644")
+mod:SetRevision("20250906011856")
 mod:SetCreatureID(164218)
 mod:SetEncounterID(2381)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -35,9 +35,9 @@ local specWarnEruptingTorment		= mod:NewSpecialWarningRunCount(1236973, nil, nil
 local specWarnRitualofWoe			= mod:NewSpecialWarningSoakCount(328791, nil, nil, nil, 1, 7)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-local timerTelekineticTossCD		= mod:NewVarCountTimer("v9.7-12.2", 323142, nil, nil, nil, 3)
+local timerTelekineticTossCD		= mod:NewVarCountTimer("v9.7-12.5", 323142, nil, nil, nil, 3)
 local timerUnleashedSufferingCD		= mod:NewVarCountTimer("v21.8-24.3", 323236, nil, nil, nil, 3)
---local timerStigmaofPrideCD			= mod:NewCDTimer(27.8, 323437, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+--local timerStigmaofPrideCD		= mod:NewCDTimer(27.8, 323437, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 local timerEruptingTormentCD		= mod:NewVarCountTimer("v23-24.3", 1236973, nil, nil, nil, 3)
 --Other phasae
 local timerRitualofWoeCD			= mod:NewVarCountTimer(8.2, 328791, nil, nil, nil, 2)
@@ -53,8 +53,8 @@ function mod:OnCombatStart(delay)
 	self.vb.tormentCount = 0
 	self.vb.woeCount = 0
 	--timerStigmaofPrideCD:Start(6.5-delay)--SUCCESS
-	timerTelekineticTossCD:Start(9.6-delay, 1)
-	timerUnleashedSufferingCD:Start(15.7-delay, 1)--But sometimes never cast and boss goes into more tosses instead
+	timerTelekineticTossCD:Start(8-delay, 1)
+	timerUnleashedSufferingCD:Start(14.5-delay, 1)--But sometimes never cast and boss goes into more tosses instead
 	timerEruptingTormentCD:Start(25.4-delay, 1)
 end
 
@@ -70,15 +70,17 @@ function mod:SPELL_CAST_START(args)
 		self.vb.woeCount = self.vb.woeCount + 1
 		specWarnRitualofWoe:Show(self.vb.woeCount)
 		specWarnRitualofWoe:Play("helpsoak")
+		timerRitualofWoeCD:Stop()--Avoid false debug in debugmode
 	elseif spellId == 323236 then--event fires multiple times
 		self.vb.sufferingCount = self.vb.sufferingCount + 1
 		specWarnUnleashedSuffering:Show(self.vb.sufferingCount)
 		specWarnUnleashedSuffering:Play("shockwave")
-		--timerUnleashedSufferingCD:Start()--TODO, need longer pulls that don't reset timer with Ritual of Woe
+		timerUnleashedSufferingCD:Start(21.8, self.vb.sufferingCount+1)
 	elseif spellId == 327885 or spellId == 1236973 then
 		self.vb.tormentCount = self.vb.tormentCount + 1
 		specWarnEruptingTorment:Show(self.vb.tormentCount)
 		specWarnEruptingTorment:Play("justrun")
+		timerEruptingTormentCD:Stop()--Avoid false debug in debugmode
 	elseif spellId == 329104 then--Door of Shadows (cast before Telekinetic Onslaught but slightly less accurate)
 		timerTelekineticTossCD:Stop()
 		--timerStigmaofPrideCD:Stop()

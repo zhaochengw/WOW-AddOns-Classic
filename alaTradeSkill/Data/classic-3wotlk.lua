@@ -16,7 +16,7 @@ local DataAgent = DT.DataAgent;
 
 DataAgent.__DataVersion = 220904;
 
-DataAgent.CURPHASE = 3;
+DataAgent.CURPHASE = 4;
 DataAgent.MAXPHASE = 4;
 DataAgent.MAXRANK = 450;
 DataAgent.DBMINPID = 1;

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2454, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250804142301")
+mod:SetRevision("20250906092635")
 mod:SetCreatureID(176556, 176555, 176705)
 mod:SetEncounterID(2441)
 mod:SetUsedIcons(1)
@@ -43,7 +43,7 @@ local specWarnGripofHunger			= mod:NewSpecialWarningRun(349663, nil, nil, nil, 4
 local specWarnGrandConsumption		= mod:NewSpecialWarningDodge(349663, nil, nil, nil, 2, 2)
 
 local timerGripofHungerCD			= mod:NewCDTimer(23, 349663, nil, nil, nil, 2)--23-30
-local timerGrandconsumptionCD		= mod:NewCDTimer(30.3, 349797, nil, nil, nil, 3)
+local timerGrandconsumptionCD		= mod:NewCDTimer(30, 349797, nil, nil, nil, 3)
 
 mod:AddSetIconOption("SetIconOnGluttony", 349627, true, 0, {1})
 --Achillite
@@ -54,7 +54,7 @@ local specWarnPurificationProtocol	= mod:NewSpecialWarningDispel(349954, "Remove
 local timerAchilliteCD				= mod:NewNextTimer(23, -23231, nil, nil, nil, 1, "132349")
 local timerVentingProtocolCD		= mod:NewCDTimer(26.6, 349987, nil, nil, nil, 3)
 local timerFlagellationProtocolCD	= mod:NewCDTimer(23, 349934, nil, nil, nil, 3)
-local timerPurificationProtocolCD	= mod:NewCDTimer(18.2, 320200, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
+local timerPurificationProtocolCD	= mod:NewCDTimer(18.2, 349954, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 
 mod:AddInfoFrameOption(349934, true)
 --Venza Goldfuse
@@ -72,7 +72,7 @@ mod.vb.chainsCast = 0
 
 function mod:OnCombatStart(delay)
 	--Alcruux timers
-	timerGripofHungerCD:Start(11.8-delay)
+	timerGripofHungerCD:Start(11.6-delay)
 	timerGrandconsumptionCD:Start(24.2-delay)
 	--if hardmode stuff then
 		--timerAchilliteCD:Start(28-delay)
@@ -114,22 +114,22 @@ function mod:SPELL_CAST_START(args)
 		self.vb.chainsCast = self.vb.chainsCast + 1
 		specWarnChainsofDamnation:Show()
 		specWarnChainsofDamnation:Play("targetchange")
-		timerChainsofDamnationCD:Start(self.vb.chainsCast == 1 and 21.8 or 30.3, self.vb.chainsCast+1)
+		timerChainsofDamnationCD:Start(self.vb.chainsCast == 1 and 21.8 or 29.1, self.vb.chainsCast+1)
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 181089 then
+	if spellId == 181089 then--Encounter Event
 		local cid = self:GetCIDFromGUID(args.sourceGUID)
 		if cid == 176555 then--Achillite
-			timerPurificationProtocolCD:Start(4.7)
-			timerFlagellationProtocolCD:Start(14.5)
-			timerVentingProtocolCD:Start(21.7)
+			timerPurificationProtocolCD:Start(2.4)
+			timerFlagellationProtocolCD:Start(13.3)
+			timerVentingProtocolCD:Start(19.5)
 		elseif cid == 176705 then--Venza Gldfuse
 			self.vb.chainsCast = 0
 			timerChainsofDamnationCD:Start(4.8, 1)
-			timerWhirlingAnnihilationCD:Start(16.9)
+			timerWhirlingAnnihilationCD:Start(15.7)
 		end
 	end
 end

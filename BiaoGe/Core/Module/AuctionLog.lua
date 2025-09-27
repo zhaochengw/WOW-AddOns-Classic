@@ -844,20 +844,35 @@ BG.Init(function()
     local function CreateMenu(f, i, v, notAuctioned, link, icon, isHistory)
         local FB = BG.FB1
         local menu
-        if isHistory then
-            -- 成功
-            if v.type == 1 and v.log then
-                local text = ""
-                local isMore = true
+        local function GetLogTooltipText()
+            local text = ""
+            local isMore = true
+            local maxNum = 80
+            if #v.log > maxNum then
+                for i = 1 + (#v.log - maxNum), #v.log do
+                    local _v = v.log[i]
+                    if _v.i == 1 then
+                        isMore = false
+                    end
+                    text = text .. _v.i .. L["、"] .. _v.money .. format(L["（%s）"], _v.player) .. NN
+                end
+            else
                 for i, _v in ipairs(v.log) do
                     if _v.i == 1 then
                         isMore = false
                     end
                     text = text .. _v.i .. L["、"] .. _v.money .. format(L["（%s）"], _v.player) .. NN
                 end
-                if isMore then
-                    text = BG.STC_dis("......\n") .. text
-                end
+            end
+
+            if isMore then
+                text = BG.STC_dis("......\n") .. text
+            end
+            return text
+        end
+        if isHistory then
+            -- 成功
+            if v.type == 1 and v.log then
                 menu = {
                     {
                         isTitle = true,
@@ -868,7 +883,7 @@ BG.Init(function()
                         text = L["出价记录"],
                         notCheckable = true,
                         tooltipTitle = L["出价记录"],
-                        tooltipText = text,
+                        tooltipText = GetLogTooltipText(),
                         tooltipOnButton = true,
                     },
                     {
@@ -1009,23 +1024,12 @@ BG.Init(function()
 
                 local num = 2
                 if v.log then
-                    local text = ""
-                    local isMore = true
-                    for i, _v in ipairs(v.log) do
-                        if _v.i == 1 then
-                            isMore = false
-                        end
-                        text = text .. _v.i .. L["、"] .. _v.money .. format(L["（%s）"], _v.player) .. NN
-                    end
-                    if isMore then
-                        text = BG.STC_dis("......\n") .. text
-                    end
                     tinsert(menu, num,
                         {
                             text = L["出价记录"],
                             notCheckable = true,
                             tooltipTitle = L["出价记录"],
-                            tooltipText = text,
+                            tooltipText = GetLogTooltipText(),
                             tooltipOnButton = true,
                         }
                     )
@@ -1575,6 +1579,7 @@ BG.Init(function()
                 end
             end
         end
+
         local function MoneyIsError(money)
             return money:match("[!@#$%^&*]")
         end

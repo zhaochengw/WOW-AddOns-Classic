@@ -124,7 +124,7 @@ end
 
 function Addon:SetupCharacterProfile()
     ---@class CharacterProfile: table
-    local characterProfile = {gears = {}, equipmentSets = {}}
+    local characterProfile = {gears = {}, equipmentSets = {}, aliases = {}}
 
     local name = ns.UnitName('player')
     local char = ns.db.global.characters[name]

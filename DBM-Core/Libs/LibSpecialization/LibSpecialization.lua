@@ -4,11 +4,12 @@ local cataWowID = 14
 local mistsWowID = 19
 if wowID ~= 1 and wowID ~= cataWowID and wowID ~= mistsWowID then return end -- Retail, Cata, Mists
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 22)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 23)
 if not LS then return end -- No upgrade needed
 
 LS.callbackMapGroup = LS.callbackMapGroup or {}
 LS.callbackMapGuild = LS.callbackMapGuild or {}
+LS.callbackMapPlayerSpecChange = LS.callbackMapPlayerSpecChange or {}
 LS.frame = LS.frame or CreateFrame("Frame")
 
 -- Positions of roles
@@ -276,6 +277,26 @@ function LS.UnregisterGuild(addon)
 	callbackMapGuild[addon] = nil
 end
 
+function LS.RegisterPlayerSpecChange(addon, func)
+	if type(addon) ~= "table" or addon == LS then
+		error("LibSpecialization: The function lib.RegisterPlayerSpecChange expects your own addon object as the first arg.")
+	end
+
+	local t = type(func)
+	if t == "function" then
+		LS.callbackMapPlayerSpecChange[addon] = func
+	else
+		error("LibSpecialization: The function lib.RegisterPlayerSpecChange expects your own function as the second arg.")
+	end
+end
+
+function LS.UnregisterPlayerSpecChange(addon)
+	if type(addon) ~= "table" or addon == LS then
+		error("LibSpecialization: The function lib.UnregisterPlayerSpecChange expects your own addon object.")
+	end
+	LS.callbackMapPlayerSpecChange[addon] = nil
+end
+
 local GetInfo
 if wowID == cataWowID then
 	function GetInfo()
@@ -534,6 +555,9 @@ do
 		elseif event == "GROUP_FORMED" then -- Join new group
 			LS.RequestGroupSpecialization()
 		elseif event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_SPECIALIZATION_CHANGED" or ((event == "ACTIVE_COMBAT_CONFIG_CHANGED" or event == "TRAIT_CONFIG_UPDATED") and prefix == C_ClassTalents_GetActiveConfigID()) then
+			for _,func in next, LS.callbackMapPlayerSpecChange do
+				securecallfunction(func) -- Notify when the player has changed their spec
+			end
 			if IsInGroup() then
 				if IsInGroup(2) then -- Instance group
 					PrepareForInstance()

@@ -44,22 +44,26 @@ L["SettingsLookupLabel"] = [[lookup a profile by name and realm]]
 
 if Private.IsRetail then
     L["addon.parse-gate-description"] = "Parses shown after 20H or 5M kills"
-    L["Encounter-3009"] = [[Vexie and the Geargrinders]]
-    L["Encounter-3010"] = [[Cauldron of Carnage]]
-    L["Encounter-3011"] = [[Rik Reverb]]
-    L["Encounter-3012"] = [[Stix Bunkjunker]]
-    L["Encounter-3013"] = [[Sprocketmonger Lockenstock]]
-    L["Encounter-3014"] = [[One-Armed Bandit]]
-    L["Encounter-3015"] = [[Mug'Zee, Heads of Security]]
-    L["Encounter-3016"] = [[Chrome King Gallywix]]
+    L["Encounter-3129"] = [[Plexus Sentinel]]
+    L["Encounter-3131"] = [[Loom'ithar]]
+    L["Encounter-3130"] = [[Soulbinder Naazindhri]]
+    L["Encounter-3132"] = [[Forgeweaver Araz]]
+    L["Encounter-3122"] = [[The Soul Hunters]]
+    L["Encounter-3133"] = [[Fractillus]]
+    L["Encounter-3134"] = [[Nexus-King Salhadaar]]
+    L["Encounter-3135"] = [[Dimensius, the All-Devouring]]
 elseif Private.IsMists then
-    L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-    L["Encounter-1395"] = [[The Stone Guard]]
-    L["Encounter-1390"] = [[Feng the Accursed]]
-    L["Encounter-1434"] = [[Gara'jal the Spiritbinder]]
-    L["Encounter-1436"] = [[The Spirit Kings]]
-    L["Encounter-1500"] = [[Elegon]]
-    L["Encounter-1407"] = [[Will of the Emperor]]
+    L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+    L["Encounter-1507"] = [[Imperial Vizier Zor'lok]]
+    L["Encounter-1504"] = [[Blade Lord Ta'yak]]
+    L["Encounter-1463"] = [[Garalon]]
+    L["Encounter-1498"] = [[Wind Lord Mel'jarak]]
+    L["Encounter-1499"] = [[Amber-Shaper Un'sok]]
+    L["Encounter-1501"] = [[Grand Empress Shek'zeer]]
+    L["Encounter-1409"] = [[Protectors of the Endless]]
+    L["Encounter-1505"] = [[Tsulong]]
+    L["Encounter-1506"] = [[Lei Shi]]
+    L["Encounter-1431"] = [[Sha of Fear]]
 elseif Private.IsWrath then
     L["addon.parse-gate-description"] = "Parses shown after 20H kills"
     L["Encounter-50845"] = [[Lord Marrowgar]]
@@ -141,22 +145,26 @@ if locale == "deDE" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Parses shown after 20H or 5M kills"
-        L["Encounter-3009"] = [[Strolch und die Gangzwinger]]
-        L["Encounter-3010"] = [[Kessel des Gemetzels]]
-        L["Encounter-3011"] = [[Rik Resonanz]]
-        L["Encounter-3012"] = [[Stix Kojenschrotter]]
-        L["Encounter-3013"] = [[Ritzelkrämer Lockenstock]]
-        L["Encounter-3014"] = [[Einarmiger Bandit]]
-        L["Encounter-3015"] = [[Mug'Zee, Wachleitung]]
-        L["Encounter-3016"] = [[Chromkönig Gallywix]]
+        L["Encounter-3129"] = [[Plexuswache]]
+        L["Encounter-3131"] = [[Loom'ithar]]
+        L["Encounter-3130"] = [[Seelenbinderin Naazindhri]]
+        L["Encounter-3132"] = [[Schmiedeweber Araz]]
+        L["Encounter-3122"] = [[Die Seelenjäger]]
+        L["Encounter-3133"] = [[Fraktillus]]
+        L["Encounter-3134"] = [[Nexuskönig Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius der alles Verschlingende]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[Die Steinwache]]
-        L["Encounter-1390"] = [[Feng der Verfluchte]]
-        L["Encounter-1434"] = [[Gara'jal der Geisterbinder]]
-        L["Encounter-1436"] = [[Die Geisterkönige]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Der Wille des Kaisers]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Kaiserlicher Wesir Zor'lok]]
+        L["Encounter-1504"] = [[Klingenfürst Ta'yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Windfürst Mel'jarak]]
+        L["Encounter-1499"] = [[Bernformer Un'sok]]
+        L["Encounter-1501"] = [[Großkaiserin Shek'zeer]]
+        L["Encounter-1409"] = [[Beschützer des Endlosen]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha der Angst]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Lord Mark'gar]]
@@ -236,22 +244,26 @@ elseif locale == "esES" or locale == "esMX" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Parses shown after 20H or 5M kills"
-        L["Encounter-3009"] = [[Vexie y los Cadenas]]
-        L["Encounter-3010"] = [[Caldera de la Carnicería]]
-        L["Encounter-3011"] = [[Rik Reverberación]]
-        L["Encounter-3012"] = [[Stix Chatarracatre]]
-        L["Encounter-3013"] = [[Piñonero Todolisto]]
-        L["Encounter-3014"] = [[Bandido manco]]
-        L["Encounter-3015"] = [[Mug'Zee, responsable de seguridad]]
-        L["Encounter-3016"] = [[Rey Cromado Gallywix]]
+        L["Encounter-3129"] = [[Centinela del plexo]]
+        L["Encounter-3131"] = [[Loom'ithar]]
+        L["Encounter-3130"] = [[Vinculadora de almas Naazindhri]]
+        L["Encounter-3132"] = [[Tejeforjas Araz]]
+        L["Encounter-3122"] = [[Los cazaalmas]]
+        L["Encounter-3133"] = [[Fractillus]]
+        L["Encounter-3134"] = [[Rey-nexo Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius el Devoratodo]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[La guardia de piedra]]
-        L["Encounter-1390"] = [[Feng el Detestable]]
-        L["Encounter-1434"] = [[Gara'jal el Vinculador de Espíritus]]
-        L["Encounter-1436"] = [[Los Reyes Espíritu]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Voluntad del Emperador]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Visir imperial Zor'lok]]
+        L["Encounter-1504"] = [[Señor de las espadas Ta'yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Señor del viento Mel'jarak]]
+        L["Encounter-1499"] = [[Formador de ámbar Un'sok]]
+        L["Encounter-1501"] = [[Gran emperatriz Shek'zeer]]
+        L["Encounter-1409"] = [[Protectores de la Eternidad]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha del miedo]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Lord Tuétano]]
@@ -330,22 +342,26 @@ elseif locale == "frFR" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Les parses seront affichés après 20H ou 5M boss tués"
-        L["Encounter-3009"] = [[Vexie et les Écrouabouilles]]
-        L["Encounter-3010"] = [[Chaudron du carnage]]
-        L["Encounter-3011"] = [[Rik Rebond]]
-        L["Encounter-3012"] = [[Stix Jettetout]]
-        L["Encounter-3013"] = [[Pignonneur Crosseplatine]]
-        L["Encounter-3014"] = [[Bandit manchot]]
-        L["Encounter-3015"] = [[Verr’Minh, chefs de la sécurité]]
-        L["Encounter-3016"] = [[Roi du chrome Gallywix]]
+        L["Encounter-3129"] = [[Sentinelle du Plexus]]
+        L["Encounter-3131"] = [[Rou’ethar]]
+        L["Encounter-3130"] = [[Lieuse d’âme Naazindhri]]
+        L["Encounter-3132"] = [[Tisseforge Araz]]
+        L["Encounter-3122"] = [[Chasseurs d’âmes]]
+        L["Encounter-3133"] = [[Fractillus]]
+        L["Encounter-3134"] = [[Roi-nexus Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius l’Omni-dévoreur]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[La garde de pierre]]
-        L["Encounter-1390"] = [[Feng le Maudit]]
-        L["Encounter-1434"] = [[Gara’jal le Lieur d’esprit]]
-        L["Encounter-1436"] = [[Les esprits-rois]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Volonté de l’empereur]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Vizir impérial Zor’lok]]
+        L["Encounter-1504"] = [[Seigneur des lames Ta’yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Seigneur du Vent Mel’jarak]]
+        L["Encounter-1499"] = [[Sculpte-ambre Un’sok]]
+        L["Encounter-1501"] = [[Grande impératrice Shek’zeer]]
+        L["Encounter-1409"] = [[Protecteurs de l’Éternel]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha de la peur]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Seigneur Gargamoelle]]
@@ -424,22 +440,26 @@ elseif locale == "itIT" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Parses shown after 20H or 5M kills"
-        L["Encounter-3009"] = [[Vexie e i Pestaruote]]
-        L["Encounter-3010"] = [[Calderone del Massacro]]
-        L["Encounter-3011"] = [[Rik Riverbero]]
-        L["Encounter-3012"] = [[Stix Tritabrande]]
-        L["Encounter-3013"] = [[Ingraniere Lockenstock]]
-        L["Encounter-3014"] = [[Bandito con un Braccio Solo]]
-        L["Encounter-3015"] = [[Mug'zee, Capi della Sicurezza]]
-        L["Encounter-3016"] = [[Re Cromato Gallywix]]
+        L["Encounter-3129"] = [[Sentinella del Plesso]]
+        L["Encounter-3131"] = [[Loom'ithar]]
+        L["Encounter-3130"] = [[Vincolatrice d'Anime Naazindhri]]
+        L["Encounter-3132"] = [[Tessiforgia Araz]]
+        L["Encounter-3122"] = [[I Cacciatori d'Anime]]
+        L["Encounter-3133"] = [[Fractillus]]
+        L["Encounter-3134"] = [[Re del Nexus Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius il Divoratore]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[Guardia di Pietra]]
-        L["Encounter-1390"] = [[Feng il Maledetto]]
-        L["Encounter-1434"] = [[Gara'jal il Vincolaspiriti]]
-        L["Encounter-1436"] = [[Reggenti Spirituali]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Volontà dell'Imperatore]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Visir Imperiale Zor'lok]]
+        L["Encounter-1504"] = [[Signore delle Lame Ta'yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Signore del Vento Mel'jarak]]
+        L["Encounter-1499"] = [[Un'sok il Plasmatore d'Ambra]]
+        L["Encounter-1501"] = [[Grande Imperatrice Shek'zeer]]
+        L["Encounter-1409"] = [[Protettori dell'Eterno]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha della Paura]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Lord Marrowgar]]
@@ -518,22 +538,26 @@ elseif locale == "koKO" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Parses shown after 20H or 5M kills"
-        L["Encounter-3009"] = [[벡시와 연마공]]
-        L["Encounter-3010"] = [[살육의 도가니]]
-        L["Encounter-3011"] = [[리크 리버브]]
-        L["Encounter-3012"] = [[스틱스 벙크정커]]
-        L["Encounter-3013"] = [[스프로켓몽거 로켄스톡]]
-        L["Encounter-3014"] = [[외팔이 좀도둑]]
-        L["Encounter-3015"] = [[보안 책임자 머그지]]
-        L["Encounter-3016"] = [[크롬왕 갤리윅스]]
+        L["Encounter-3129"] = [[흐름망 파수꾼]]
+        L["Encounter-3131"] = [[룸이타르]]
+        L["Encounter-3130"] = [[영혼술사 나진드리]]
+        L["Encounter-3132"] = [[제련직공 아라즈]]
+        L["Encounter-3122"] = [[영혼 사냥꾼]]
+        L["Encounter-3133"] = [[프랙틸루스]]
+        L["Encounter-3134"] = [[연합왕 살라다르]]
+        L["Encounter-3135"] = [[만물의 포식자 디멘시우스]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[바위 수호자]]
-        L["Encounter-1390"] = [[저주받은 펑]]
-        L["Encounter-1434"] = [[영혼결속자 가라잘]]
-        L["Encounter-1436"] = [[유령 왕]]
-        L["Encounter-1500"] = [[엘레곤]]
-        L["Encounter-1407"] = [[황제의 의지]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[황실 장로 조르로크]]
+        L["Encounter-1504"] = [[칼날군주 타야크]]
+        L["Encounter-1463"] = [[가랄론]]
+        L["Encounter-1498"] = [[바람군주 멜자라크]]
+        L["Encounter-1499"] = [[호박석구체자 운속]]
+        L["Encounter-1501"] = [[위대한 여제 셰크지르]]
+        L["Encounter-1409"] = [[영원의 수호병]]
+        L["Encounter-1505"] = [[출롱]]
+        L["Encounter-1506"] = [[레이 스]]
+        L["Encounter-1431"] = [[공포의 샤]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[군주 매로우가르]]
@@ -612,22 +636,26 @@ elseif locale == "ptBR" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Análises apresentadas após 20H ou 5M mortes"
-        L["Encounter-3009"] = [[Vexie e os Trincatracas]]
-        L["Encounter-3010"] = [[Caldeirão da Carnificina]]
-        L["Encounter-3011"] = [[Rik Reverb]]
-        L["Encounter-3012"] = [[Stix Sucateiro]]
-        L["Encounter-3013"] = [[Rebimbocador Travaguarda]]
-        L["Encounter-3014"] = [[Bandido de Um Braço]]
-        L["Encounter-3015"] = [[Mag'Guila, Chefes de Segurança]]
-        L["Encounter-3016"] = [[Rei do Cromo Gallywix]]
+        L["Encounter-3129"] = [[Sentinela do Plexo]]
+        L["Encounter-3131"] = [[Fian'dhar]]
+        L["Encounter-3130"] = [[Atalmas Naazindhri]]
+        L["Encounter-3132"] = [[Tece-forja Araz]]
+        L["Encounter-3122"] = [[Os Caça-almas]]
+        L["Encounter-3133"] = [[Fractillus]]
+        L["Encounter-3134"] = [[Rei do Nexus Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius, que Tudo Devora]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[Sentinela Pétrea]]
-        L["Encounter-1390"] = [[Feng, o Amaldiçoado]]
-        L["Encounter-1434"] = [[Gara'jal, o Atador de Almas]]
-        L["Encounter-1436"] = [[Espectros dos Reis]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Vontade do Imperador]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Vizir Imperial Zor'lok]]
+        L["Encounter-1504"] = [[Senhor das Lâminas Ta'yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Senhor do Vento Mel'jarak]]
+        L["Encounter-1499"] = [[Molda-âmbar Un'sok]]
+        L["Encounter-1501"] = [[Grã-imperatriz Shek'zeer]]
+        L["Encounter-1409"] = [[Protetores do Infinito]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha do Medo]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Lorde Medulante]]
@@ -706,22 +734,26 @@ elseif locale == "ruRU" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "Парсы показываются после 20Г или 5M убийств"
-        L["Encounter-3009"] = [[Векси и зуботочеры]]
-        L["Encounter-3010"] = [[Котел смерти]]
-        L["Encounter-3011"] = [[Рик Ревербер]]
-        L["Encounter-3012"] = [[Стикс Бункохламзень]]
-        L["Encounter-3013"] = [[Зубцеторг Всесхватс]]
-        L["Encounter-3014"] = [[Однорукий бандит]]
-        L["Encounter-3015"] = [[Граб'Зи, главы отдела охраны]]
-        L["Encounter-3016"] = [[Хромовый король Галливикс]]
+        L["Encounter-3129"] = [[Сплетенный страж]]
+        L["Encounter-3131"] = [[Ткан'итар]]
+        L["Encounter-3130"] = [[Стражница душ Наазиндри]]
+        L["Encounter-3132"] = [[Ткач горна Араз]]
+        L["Encounter-3122"] = [[Ловцы душ]]
+        L["Encounter-3133"] = [[Разломий]]
+        L["Encounter-3134"] = [[Соправитель Салхадаар]]
+        L["Encounter-3135"] = [[Пространствус Всепоглощающий]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[Каменные стражи]]
-        L["Encounter-1390"] = [[Фэн Проклятый]]
-        L["Encounter-1434"] = [[Душелов Гара'джал]]
-        L["Encounter-1436"] = [[Призрачные короли]]
-        L["Encounter-1500"] = [[Элегон]]
-        L["Encounter-1407"] = [[Воля императора]]
+        L["addon.parse-gate-description"] = "Parses shown after 25H kills"
+        L["Encounter-1507"] = [[Императорский визирь Зор'лок]]
+        L["Encounter-1504"] = [[Повелитель клинков Та'як]]
+        L["Encounter-1463"] = [[Гаралон]]
+        L["Encounter-1498"] = [[Повелитель ветров Мел'джарак]]
+        L["Encounter-1499"] = [[Ваятель янтаря Ун'сок]]
+        L["Encounter-1501"] = [[Великая императрица Шек'зир]]
+        L["Encounter-1409"] = [[Вечные защитники]]
+        L["Encounter-1505"] = [[Цулон]]
+        L["Encounter-1506"] = [[Лэй Ши]]
+        L["Encounter-1431"] = [[Ша Страха]]
     elseif Private.IsWrath then
         L["addon.parse-gate-description"] = "Parses shown after 20H kills"
         L["Encounter-50845"] = [[Лорд Ребрад]]
@@ -800,24 +832,28 @@ elseif locale == "zhCN" then
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "分数在20次H或5次M击杀后显示"
-        L["Encounter-3009"] = [[维克茜和磨轮]]
-        L["Encounter-3010"] = [[血腥大熔炉]]
-        L["Encounter-3011"] = [[里克·混响]]
-        L["Encounter-3012"] = [[斯提克斯·堆渣]]
-        L["Encounter-3013"] = [[链齿狂人洛肯斯多]]
-        L["Encounter-3014"] = [[独臂盗匪]]
-        L["Encounter-3015"] = [[穆格·兹伊，安保头子]]
-        L["Encounter-3016"] = [[铬武大王加里维克斯]]
+        L["Encounter-3129"] = [[集能哨兵]]
+        L["Encounter-3131"] = [[卢米萨尔]]
+        L["Encounter-3130"] = [[缚魂者娜欣达利]]
+        L["Encounter-3132"] = [[熔炉编织者阿拉兹]]
+        L["Encounter-3122"] = [[狩魂猎手]]
+        L["Encounter-3133"] = [[弗兰克提鲁斯]]
+        L["Encounter-3134"] = [[节点之王萨哈达尔]]
+        L["Encounter-3135"] = [[诸界吞噬者迪门修斯]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[石头守卫]]
-        L["Encounter-1390"] = [[受诅者魔封]]
-        L["Encounter-1434"] = [[缚灵者戈拉亚]]
-        L["Encounter-1436"] = [[先王之魂]]
-        L["Encounter-1500"] = [[伊拉贡]]
-        L["Encounter-1407"] = [[皇帝的意志]]
+        L["addon.parse-gate-description"] = "分数在 25H 击杀后显示"
+        L["Encounter-1507"] = [[皇家宰相佐尔洛克]]
+        L["Encounter-1504"] = [[刀锋领主塔亚克]]
+        L["Encounter-1463"] = [[加拉隆]]
+        L["Encounter-1498"] = [[风领主梅尔加拉克]]
+        L["Encounter-1499"] = [[琥珀塑形者昂舒克]]
+        L["Encounter-1501"] = [[大女皇夏柯希尔]]
+        L["Encounter-1409"] = [[无尽守护者]]
+        L["Encounter-1505"] = [[烛龙]]
+        L["Encounter-1506"] = [[雷施]]
+        L["Encounter-1431"] = [[惧之煞]]
     elseif Private.IsWrath then
-        L["addon.parse-gate-description"] = "Parses shown after 20H kills"
+        L["addon.parse-gate-description"] = "分数在 20H 击杀后显示"
         L["Encounter-50845"] = [[玛洛加尔领主]]
         L["Encounter-50846"] = [[亡语者女士]]
         L["Encounter-50847"] = [[冰冠冰川炮舰战]]
@@ -841,7 +877,7 @@ elseif locale == "zhCN" then
         L["Encounter-3190"] = [[莉莉安·沃斯]]
         L["Encounter-3189"] = [[凯尔多兰]]
     elseif Private.IsClassicEra and C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh then
-        L["addon.parse-gate-description"] = "Parses shown after 20H kills"
+        L["addon.parse-gate-description"] = "分数在 20H 击杀后显示"
         L["Encounter-150709"] = [[预言者斯克拉姆]]
         L["Encounter-150710"] = [[安其拉三宝]]
         L["Encounter-150711"] = [[沙尔图拉]]
@@ -870,48 +906,52 @@ elseif locale == "zhTW" then
     L["Subscriber"] = [[訂閱者]]
     L["ShiftToExpand"] = [[按住 <Shift> 展開]]
     L["SubAddonMissing"] = [[[%s] Database for '%s' (%s) is missing. It may be that you logged in to the game while the addon was in the middle of an update. Check the desktop app to see if the update has finished, and then run '/reload' to try again.]]
-    L["DBLoadError"] = [[[%s] Could not load database for '%s'. Reason: %s]]
+    L["DBLoadError"] = [[[%s] 無法載入資料庫 '%s'。原因: %s]]
     L["Main"] = [[Main]]
-    L["ClickToOpenSettings"] = [[Click to open Settings]]
-    L["ShowTooltipInCombat"] = [[Show Tooltip in Combat]]
-    L["ShowTooltipInCombatDescription"] = [[Whether to extend the tooltip in combat too. Disabled by default as performance measure.]]
-    L["AllowShiftExpansionInCombat"] = [[Allow Shift Expansion in Combat]]
-    L["AllowShiftExpansionInCombatDescription"] = [[Whether to render extended data in combat too. Enables the setting above.]]
-    L["ShowRank"] = [[Show Rank]]
-    L["ShowRankDescription"] = [[Toggles adding the rank to the tooltip.]]
-    L["ShowAsp"] = [[Show All Stars]]
-    L["ShowAspDescription"] = [[Toggles adding All Stars Points to the tooltip.]]
-    L["ShowShiftHint"] = [[Show Shift Hint]]
-    L["ShowShiftHintDescription"] = [[Toggles appending the hint to expand the info when holding Shift.]]
-    L["MenuIntegration"] = [[Extend Menu Options]]
-    L["MenuIntegrationDescription"] = [[Whether to extend menus with an option to copy the characters profile URL.]]
-    L["SettingsLookupUsage"] = [[Usage: /%s lookup <name> <realm>]]
-    L["SettingsLookupNoData"] = [[No data found.]]
+    L["ClickToOpenSettings"] = [[點擊開啟設定]]
+    L["ShowTooltipInCombat"] = [[戰鬥中顯示工具提示]]
+    L["ShowTooltipInCombatDescription"] = [[是否在戰鬥中延伸工具提示。預設停用以提升效能。]]
+    L["AllowShiftExpansionInCombat"] = [[允許戰鬥中使用Shift擴展]]
+    L["AllowShiftExpansionInCombatDescription"] = [[是否在戰鬥中渲染延伸資料。啟用上方設定。]]
+    L["ShowRank"] = [[顯示排名]]
+    L["ShowRankDescription"] = [[切換在工具提示中顯示排名]]
+    L["ShowAsp"] = [[顯示所有星數]]
+    L["ShowAspDescription"] = [[切換在工具提示中顯示所有星數點數]]
+    L["ShowShiftHint"] = [[顯示Shift提示]]
+    L["ShowShiftHintDescription"] = [[切換按住Shift時附加提示擴展資訊]]
+    L["MenuIntegration"] = [[延伸選單選項]]
+    L["MenuIntegrationDescription"] = [[是否延伸選單以複製角色個人檔案URL選項]]
+    L["SettingsLookupUsage"] = [[使用方式：/%s 查詢 <名稱> <伺服器>]]
+    L["SettingsLookupNoData"] = [[找不到資料]]
     L["SettingsLookupDataFor"] = [[%s for %s - %s]]
-    L["SettingsAvailableCommands"] = [[Available commands:]]
-    L["SettingsOpenSettingsLabel"] = [[opens the settings]]
-    L["SettingsLookupLabel"] = [[lookup a profile by name and realm]]
+    L["SettingsAvailableCommands"] = [[可用指令：]]
+    L["SettingsOpenSettingsLabel"] = [[開啟設定]]
+    L["SettingsLookupLabel"] = [[依據名稱與伺服器查詢角色個人檔案]]
 
     if Private.IsRetail then
         L["addon.parse-gate-description"] = "戰績解鎖條件：累積20小時或500萬擊殺"
-        L["Encounter-3009"] = [[Vexie and the Geargrinders]]
-        L["Encounter-3010"] = [[Cauldron of Carnage]]
-        L["Encounter-3011"] = [[Rik Reverb]]
-        L["Encounter-3012"] = [[Stix Bunkjunker]]
-        L["Encounter-3013"] = [[Sprocketmonger Lockenstock]]
-        L["Encounter-3014"] = [[One-Armed Bandit]]
-        L["Encounter-3015"] = [[Mug'Zee, Heads of Security]]
-        L["Encounter-3016"] = [[Chrome King Gallywix]]
+        L["Encounter-3129"] = [[Plexus Sentinel]]
+        L["Encounter-3131"] = [[Loom'ithar]]
+        L["Encounter-3130"] = [[Soulbinder Naazindhri]]
+        L["Encounter-3132"] = [[Forgeweaver Araz]]
+        L["Encounter-3122"] = [[The Soul Hunters]]
+        L["Encounter-3133"] = [[Fractillus]]
+        L["Encounter-3134"] = [[Nexus-King Salhadaar]]
+        L["Encounter-3135"] = [[Dimensius, the All-Devouring]]
     elseif Private.IsMists then
-        L["addon.parse-gate-description"] = "Parses shown after 15H kills"
-        L["Encounter-1395"] = [[The Stone Guard]]
-        L["Encounter-1390"] = [[Feng the Accursed]]
-        L["Encounter-1434"] = [[Gara'jal the Spiritbinder]]
-        L["Encounter-1436"] = [[The Spirit Kings]]
-        L["Encounter-1500"] = [[Elegon]]
-        L["Encounter-1407"] = [[Will of the Emperor]]
+        L["addon.parse-gate-description"] = "擊殺數達 後顯示解析數據"
+        L["Encounter-1507"] = [[Imperial Vizier Zor'lok]]
+        L["Encounter-1504"] = [[Blade Lord Ta'yak]]
+        L["Encounter-1463"] = [[Garalon]]
+        L["Encounter-1498"] = [[Wind Lord Mel'jarak]]
+        L["Encounter-1499"] = [[Amber-Shaper Un'sok]]
+        L["Encounter-1501"] = [[Grand Empress Shek'zeer]]
+        L["Encounter-1409"] = [[Protectors of the Endless]]
+        L["Encounter-1505"] = [[Tsulong]]
+        L["Encounter-1506"] = [[Lei Shi]]
+        L["Encounter-1431"] = [[Sha of Fear]]
     elseif Private.IsWrath then
-        L["addon.parse-gate-description"] = "Parses shown after 20H kills"
+        L["addon.parse-gate-description"] = "擊殺數達 後顯示解析數據"
         L["Encounter-50845"] = [[Lord Marrowgar]]
         L["Encounter-50846"] = [[Lady Deathwhisper]]
         L["Encounter-50847"] = [[Icecrown Gunship Battle]]
@@ -935,7 +975,7 @@ elseif locale == "zhTW" then
         L["Encounter-3190"] = [[Lillian Voss]]
         L["Encounter-3189"] = [[Caldoran]]
     elseif Private.IsClassicEra and C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh then
-        L["addon.parse-gate-description"] = "Parses shown after 20H kills"
+        L["addon.parse-gate-description"] = "擊殺數達 後顯示解析數據"
         L["Encounter-150709"] = [[The Prophet Skeram]]
         L["Encounter-150710"] = [[Silithid Royalty]]
         L["Encounter-150711"] = [[Battleguard Sartura]]

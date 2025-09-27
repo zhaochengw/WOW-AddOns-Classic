@@ -110,6 +110,14 @@ local function ZongLan(onClick, tbl1, tbl2)
     return tbl1, tbl2
 end
 
+local function GetFaKuanSumMoney()
+    local sum = 0
+    BG.PairFBItem(function(item, buyer, money, b, i)
+        sum = sum + (tonumber(money:GetText()) or 0)
+    end, Maxb[BG.FB1])
+    return sum
+end
+
 local function FaKuan(onClick, tbl1, tbl2)
     local FB = BG.FB1
     local tbl1 = tbl1 or {}
@@ -150,6 +158,9 @@ local function FaKuan(onClick, tbl1, tbl2)
             tbl[i] = v
         end
         table.insert(tbl2, tbl)
+        local sumText = format(L["罚款合计：%s"], GetFaKuanSumMoney())
+        table.insert(tbl1, sumText)
+        table.insert(tbl2, { sumText })
     end
     if not yes then
         local text = L["没有罚款"]
@@ -272,13 +283,18 @@ local function CreateListTable(onClick, tbl1)
                 else
                     b_tx = L["Boss："]
                 end
+
                 local bossname2 = BG.Boss[FB]["boss" .. b].name2
                 local bosscolor = BG.Boss[FB]["boss" .. b].color
                 local text
+                local faKuanSumText = ""
+                if b == Maxb[FB] then
+                    faKuanSumText = format(L["（合计%s）"], GetFaKuanSumMoney())
+                end
                 if onClick then
-                    text = b_tx .. bossname2
+                    text = b_tx .. bossname2 .. faKuanSumText
                 else
-                    text = "|cff" .. bosscolor .. b_tx .. bossname2 .. RN
+                    text = "|cff" .. bosscolor .. b_tx .. bossname2 .. faKuanSumText .. "|r"
                 end
 
                 table.insert(tbl2, { text })
@@ -414,7 +430,7 @@ local function OnClick(self)
         SendSystemMessage(L["不在团队，无法通报"])
         BG.PlaySound(1)
     else
-        self:SetEnabled(false) 
+        self:SetEnabled(false)
         C_Timer.After(2, function()
             self:SetEnabled(true)
         end)
@@ -495,92 +511,6 @@ local function OnClick(self)
     end
 end
 
---[[
-    ["tradeTbl"] = {
-        {
-            {
-                ["i"] = 3,
-                ["itemID"] = 24478,
-                ["link"] = "|cff1eff00|Hitem:24478::::::::64:::::::::|h[裂纹的珍珠]|h|r",
-                ["FB"] = "ULD",
-                ["b"] = 15,
-            }, -- [1]
-            {
-                ["i"] = 1,
-                ["itemID"] = 27854,
-                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
-                ["FB"] = "ULD",
-                ["b"] = 15,
-            }, -- [2]
-            {
-                ["i"] = 2,
-                ["itemID"] = 27503,
-                ["link"] = "|cffffffff|Hitem:27503::::::::64:::::::::|h[力量卷轴 V]|h|r",
-                ["FB"] = "ULD",
-                ["b"] = 15,
-            }, -- [3]
-        }, -- [1]
-        {
-            {
-                ["i"] = 7,
-                ["itemID"] = 14530,
-                ["link"] = "|cffffffff|Hitem:14530::::::::64:::::::::|h[厚符文布绷带]|h|r",
-                ["FB"] = "ULD",
-                ["b"] = 15,
-            }, -- [1]
-            {
-                ["i"] = 8,
-                ["itemID"] = 27854,
-                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
-                ["FB"] = "ULD",
-                ["b"] = 15,
-            }, -- [2]
-        }, -- [2]
-    },
-
-
-    ["tradeTbl"] = {
-        {
-            {
-                ["i"] = 3,
-                ["itemID"] = 24478,
-                ["b"] = 15,
-                ["FB"] = "ULD",
-                ["link"] = "|cff1eff00|Hitem:24478::::::::64:::::::::|h[裂纹的珍珠]|h|r",
-            }, -- [1]
-            {
-                ["i"] = 1,
-                ["itemID"] = 27854,
-                ["b"] = 15,
-                ["FB"] = "ULD",
-                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
-            }, -- [2]
-            {
-                ["i"] = 2,
-                ["itemID"] = 27503,
-                ["b"] = 15,
-                ["FB"] = "ULD",
-                ["link"] = "|cffffffff|Hitem:27503::::::::64:::::::::|h[力量卷轴 V]|h|r",
-            }, -- [3]
-        }, -- [1]
-        {
-            {
-                ["i"] = 7,
-                ["itemID"] = 14530,
-                ["b"] = 15,
-                ["FB"] = "ULD",
-                ["link"] = "|cffffffff|Hitem:14530::::::::64:::::::::|h[厚符文布绷带]|h|r",
-            }, -- [1]
-            {
-                ["i"] = 8,
-                ["itemID"] = 27854,
-                ["b"] = 15,
-                ["FB"] = "ULD",
-                ["link"] = "|cffffffff|Hitem:27854::::::::64:::::::::|h[熏烤塔布羊排]|h|r",
-            }, -- [2]
-        }, -- [2]
-    },
-]]
 
 function BG.ZhangDanUI(lastbt)
     local bt = BG.CreateButton(BG.FBMainFrame)

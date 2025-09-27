@@ -20,10 +20,9 @@ print( "|cFFA335EE".."啊~")
 print( "|cFF0070FF".."啊~")
 print( "|cFF1EFF00".."啊~")
 print( "|cFF666666".."啊~")
-
 5046匕首岭
  ]]
-
+--[[ 
 function BG.Expand(v)
     local switch = {
         ["r"] = function()
@@ -156,7 +155,7 @@ local function GetWCLinfo(name)
     tbl.name = name
     return tbl
 end
-
+ ]]
 local function GetColor(per)
     if per < 25 then
         return "|cFF666666" .. per .. "|r" -- 灰
@@ -195,7 +194,7 @@ local function CreateListTable()
             for i, t in ipairs(tbl) do
                 if t:match("Warcraft Logs") and tbl[i + 1] then
                     local text = BG.ClearColorCode(tbl[i + 1])
-                    local FB, per = text:match("^.-%s(%a+)%s+(%d+%.-%d-)%s+")
+                    local FB, per = text:match("^.-%s(%a+%s-%a-)%s+(%d+%.-%d-)%s+")
                     if FB and per then
                         info = {
                             FB = FB,

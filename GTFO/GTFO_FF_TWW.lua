@@ -35,5 +35,11 @@ GTFO.FFSpellID["1223620"] = {
   sound = 4;
 };
 
+GTFO.FFSpellID["1238964"] = {
+  --desc = "Bonemelt (The Bone Melter)";
+  sound = 4;
+};
+
+
 end
 

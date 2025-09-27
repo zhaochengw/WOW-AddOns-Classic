@@ -1,6 +1,6 @@
 # Auctionator
 
-## [288](https://github.com/Auctionator/Auctionator/tree/288) (2025-08-04)
-[Full Changelog](https://github.com/Auctionator/Auctionator/compare/287...288) 
+## [295](https://github.com/TheMouseNest/Auctionator/tree/295) (2025-09-23)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/294...295) 
 
-- Fix error when posting too low price with "Post next item" enabled  
+- Mists: Update toc for 5.5.1  

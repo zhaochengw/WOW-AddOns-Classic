@@ -49,7 +49,8 @@ function QuestieQuestFixes:Load()
 
     return {
         [5] = {
-            [questKeys.preQuestSingle] = {}, -- #1198
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {163} -- #1198
         },
         [17] = {
             [questKeys.requiredLevel] = 38, -- #2437
@@ -78,12 +79,16 @@ function QuestieQuestFixes:Load()
         },
         [33] = {
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {5261}, -- #1726
         },
         [46] = {
             [questKeys.preQuestSingle] = {39},
         },
         [90] = {
             [questKeys.requiredSkill] = {185, 50},
+        },
+        [95] = {
+            [questKeys.breadcrumbs] = {164}
         },
         [100] = {
             [questKeys.childQuests] = {1103}, -- #1658
@@ -101,7 +106,8 @@ function QuestieQuestFixes:Load()
             [questKeys.nextQuestInChain] = 145,
         },
         [148] = {
-            [questKeys.preQuestSingle] = {}, -- #1173
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {165} -- #1173
         },
         [155] = {
             [questKeys.triggerEnd] = {"Escort The Defias Traitor to discover where VanCleef is hiding", {[zoneIDs.WESTFALL]={{42.55,71.53}}}},
@@ -110,13 +116,13 @@ function QuestieQuestFixes:Load()
             [questKeys.nextQuestInChain] = 4493,
         },
         [163] = {
-            [questKeys.exclusiveTo] = {5}, -- Raven Hill breadcrumb
+            [questKeys.breadcrumbForQuestId] = 5, -- #1198
         },
         [164] = {
-            [questKeys.exclusiveTo] = {95}, -- deliveries to sven is a breadcrumb
+            [questKeys.breadcrumbForQuestId] = 95, -- deliveries to sven is a breadcrumb
         },
         [165] = {
-            [questKeys.exclusiveTo] = {148}, --#1173
+            [questKeys.breadcrumbForQuestId] = 148, --#1173
         },
         [178] = {
             [questKeys.objectivesText] = {"Bring the Faded Shadowhide Pendant to Theocritus the Mage. NOTE: This is a very rare drop!"},
@@ -155,12 +161,18 @@ function QuestieQuestFixes:Load()
         [275] = {
             [questKeys.objectivesText] = {"Kill 12 Fen Creepers, then return to Rethiel the Greenwarden in the Wetlands."},
         },
+        [276] = {
+            [questKeys.breadcrumbs] = {463},
+        },
         [282] = {
             [questKeys.exclusiveTo] = {287},
         },
         [287] = {
             [questKeys.preQuestSingle] = {},
             [questKeys.breadcrumbs] = {420},
+        },
+        [297] = {
+             [questKeys.breadcrumbs] = {436}, -- #2492
         },
         [308] = {
             [questKeys.exclusiveTo] = {311}, -- distracting jarven can't be completed once you get the followup
@@ -182,6 +194,10 @@ function QuestieQuestFixes:Load()
         },
         [353] = {
             [questKeys.preQuestSingle] = {}, -- #2364
+        },
+        [355] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {354,362},
         },
         [363] = {
             [questKeys.nextQuestInChain] = 364,
@@ -243,7 +259,8 @@ function QuestieQuestFixes:Load()
             [questKeys.triggerEnd] = {"Erland must reach Rane Yorick", {[zoneIDs.SILVERPINE_FOREST]={{54.37,13.38}}}},
         },
         [436] = {
-            [questKeys.exclusiveTo] = {297} -- #2492
+            [questKeys.nextQuestInChain] = 297,
+            [questKeys.breadcrumbForQuestId] = 297, -- #2492
         },
         [437] = {
             [questKeys.triggerEnd] = {"Enter the Dead Fields",{[zoneIDs.SILVERPINE_FOREST]={{45.91, 21.27}}}},
@@ -259,10 +276,12 @@ function QuestieQuestFixes:Load()
             [questKeys.breadcrumbs] = {468},
         },
         [463] = {
-            [questKeys.exclusiveTo] = {276}, --greenwarden cant be completed if you have trampling paws
+            [questKeys.nextQuestInChain] = 276,
+            [questKeys.breadcrumbForQuestId] = 276, --greenwarden cant be completed if you have trampling paws
         },
         [464] = {
             [questKeys.preQuestSingle] = {}, -- #809
+            [questKeys.breadcrumbs] = {473}, -- #2173
         },
         [466] = {
             [questKeys.preQuestSingle] = {}, -- #2066
@@ -277,7 +296,8 @@ function QuestieQuestFixes:Load()
         },
         [473] = {
             [questKeys.preQuestSingle] = {455}, -- #809
-            [questKeys.exclusiveTo] = {464}, -- #2173
+            [questKeys.nextQuestInChain] = 464,
+            [questKeys.breadcrumbForQuestId] = 464, -- #2173
         },
         [484] = {
             [questKeys.requiredMinRep] = {72,0}, -- #1501
@@ -286,7 +306,8 @@ function QuestieQuestFixes:Load()
             [questKeys.startedBy] = {{2081,2083,2151,2155},nil,nil},
         },
         [495] = {
-            [questKeys.exclusiveTo] = {518},
+            [questKeys.nextQuestInChain] = 518,
+            [questKeys.breadcrumbForQuestId] = 518,
         },
         [504] = {
             [questKeys.objectivesText] = {"Slay 15 Crushridge Warmongers, then return to Marshal Redpath in Southshore."},
@@ -299,6 +320,7 @@ function QuestieQuestFixes:Load()
         },
         [518] = {
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {495},
         },
         [526] = {
             [questKeys.exclusiveTo] = {322,324}, -- not 100% sure on this one but it seems lightforge ingots is optional, block it after completing subsequent steps (#587)
@@ -344,10 +366,12 @@ function QuestieQuestFixes:Load()
             [questKeys.inGroupWith] = {}, -- #886
         },
         [638] = {
-            [questKeys.exclusiveTo] = {639}, -- #1205
+            [questKeys.nextQuestInChain] = 639,
+            [questKeys.breadcrumbForQuestId] = 639, -- #1205
         },
         [639] = {
             [questKeys.preQuestSingle] = {}, -- #1205
+            [questKeys.breadcrumbs] = {638},
         },
         [640] = {
             [questKeys.objectivesText] = {"Retrieve the 11 Sigil Fragments from the defenders in Stromgarde, and bring them to Tor'gan in Hammerfall.",},
@@ -380,7 +404,8 @@ function QuestieQuestFixes:Load()
             [questKeys.preQuestSingle] = {},
         },
         [707] = {
-            [questKeys.exclusiveTo] = {738}, --#2069
+            [questKeys.nextQuestInChain] = 738,
+            [questKeys.breadcrumbForQuestId] = 738, --#1289
         },
         [715] = {
             [questKeys.requiredSkill] = {},
@@ -404,7 +429,8 @@ function QuestieQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon Dagun the Ravenous using an Enchanted Sea Kelp"), 2, {{"object", 2871}}}},
         },
         [738] = {
-            [questKeys.preQuestSingle] = {}, -- #1289
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {707}, -- #1289
         },
         [742] = {
             [questKeys.exclusiveTo] = {235,6382,6383},
@@ -1211,6 +1237,34 @@ function QuestieQuestFixes:Load()
         [2845] = {
             [questKeys.triggerEnd] = {"Take Shay Leafrunner to Rockbiter's camp", {[zoneIDs.FERALAS]={{42.33,21.85}}}},
         },
+        [2847] = {
+            [questKeys.requiredSkill] = {profKeys.LEATHERWORKING,200},
+        },
+        [2851] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {2848,2849,2850}, -- #7161
+        },
+        [2852] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {2848,2849,2850}, -- #7161
+        },
+        [2853] = {
+             [questKeys.preQuestGroup] = {2851,2852}, -- #7161
+        },
+        [2854] = {
+            [questKeys.requiredSkill] = {profKeys.LEATHERWORKING,200},
+        },
+        [2858] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {2855,2856,2857}, -- #7161
+        },
+        [2859] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.preQuestGroup] = {2855,2856,2857}, -- #7161
+        },
+        [2860] = {
+             [questKeys.preQuestGroup] = {2858,2859}, -- #7161
+        },
         [2861] = {
             [questKeys.startedBy] = {{4568,5144,5497,5885},nil,nil}, -- #1152
             [questKeys.exclusiveTo] = {2846},
@@ -1910,16 +1964,16 @@ function QuestieQuestFixes:Load()
             [questKeys.preQuestSingle] = {5236},
         },
         [5261] = {
-            [questKeys.exclusiveTo] = {33}, -- #1726
+            [questKeys.breadcrumbForQuestId] = 33, -- #1726
         },
-        [5305]  ={
+        [5305] = {
             [questKeys.exclusiveTo] = {8869},
             [questKeys.requiredSpecialization] = specKeys.BLACKSMITHING_WEAPON,
         },
-        [5306]  ={
+        [5306] = {
             [questKeys.requiredSpecialization] = specKeys.BLACKSMITHING_WEAPON,
         },
-        [5307]  ={
+        [5307] = {
             [questKeys.requiredSpecialization] = specKeys.BLACKSMITHING_WEAPON,
         },
         [5321] = {
@@ -1978,13 +2032,13 @@ function QuestieQuestFixes:Load()
             [questKeys.extraObjectives] = {{{[zoneIDs.DESOLACE]={{60.58,62}}}, Questie.ICON_TYPE_EVENT, l10n("Lure the Kodos to Smeed Scrabblescrew.")}},
         },
         [5621] = { -- Garments of the Moon
-            [questKeys.objectives] = {{{12427,"Heal and fortify Sentinel Shaya",Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.objectives] = {{{12429,"Heal and fortify Sentinel Shaya",Questie.ICON_TYPE_INTERACT}}},
         },
         [5622] = {
             [questKeys.questLevel] = 5, -- #2306
         },
         [5624] = { -- Garments of the Light
-            [questKeys.objectives] = {{{12427,"Heal and fortify Guard Roberts",Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.objectives] = {{{12423,"Heal and fortify Guard Roberts",Questie.ICON_TYPE_INTERACT}}},
         },
         [5625] = { -- Garments of the Light
             [questKeys.objectives] = {{{12427,"Heal and fortify Mountaineer Dolf",Questie.ICON_TYPE_INTERACT}}},
@@ -2030,7 +2084,17 @@ function QuestieQuestFixes:Load()
             [questKeys.objectives] = {{{12427,"Heal and fortify Grunt Kor'ja",Questie.ICON_TYPE_INTERACT}}},
         },
         [5650] = { -- Garments of Darkness
-            [questKeys.objectives] = {{{12427,"Heal and fortify Grunt Kor'ja",Questie.ICON_TYPE_INTERACT}}},
+            [questKeys.objectives] = {{{12428,"Heal and fortify Deathguard Kel",Questie.ICON_TYPE_INTERACT}}},
+        },
+        [5658] = { -- #7083 and #1603
+            [questKeys.startedBy] = {{4606},nil,nil},
+            [questKeys.objectivesText] = {},
+        },
+        [5661] = { -- #7083 and #1603
+            [questKeys.startedBy] = {{11407},nil,nil},
+        },
+        [5663] = { -- #7083 and #1603
+            [questKeys.startedBy] = {{3044},nil,nil},
         },
         [5676] = {
             [questKeys.exclusiveTo] = {5677,5678},
@@ -3039,20 +3103,36 @@ function QuestieQuestFixes:Load()
         [8317] = {
             [questKeys.requiredSourceItems] = {20424},
         },
-        [8331]  ={
-            [questKeys.exclusiveTo] = {8332},
+        [8331] = {
+            [questKeys.breadcrumbForQuestId] = 8332,
         },
         [8332] = {
             [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {8331},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon a Templar using a full Twilight set."),2,{{"object", 180456},{"object", 180518},{"object", 180529},{"object", 180544},{"object", 180549},{"object", 180564},}}},
         },
         [8341] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {8343},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon a Duke using a full Twilight set and neck."),2,{{"object", 180461},{"object", 180534},{"object", 180554},}}},
         },
+        [8343] = {
+            [questKeys.breadcrumbForQuestId] = 8341,
+        },
         [8348] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {8349},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon a Duke using a full Twilight set and neck."),0,{{"object", 180461},{"object", 180534},{"object", 180554},}}},
         },
+        [8349] = {
+            [questKeys.breadcrumbForQuestId] = 8348,
+        },
+        [8351] = {
+            [questKeys.breadcrumbForQuestId] = 8352,
+        },
         [8352] = {
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {8351},
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Summon a Lord using a full Twilight set, neck and ring."),0,{{"object", 180466},{"object", 180539},{"object", 180559},}}},
         },
         [8353] = {
@@ -3817,7 +3897,7 @@ function QuestieQuestFixes:Load()
         [8868] = {
             [questKeys.triggerEnd] = {"Receive Elune's Blessing.", {[zoneIDs.MOONGLADE]={{63.89,62.5}}}},
         },
-        [8869]  ={
+        [8869] = {
             [questKeys.exclusiveTo] = {5305},
         },
         [8870] = {
@@ -4464,3 +4544,4 @@ function QuestieQuestFixes:LoadFactionFixes()
         return questFixesAlliance
     end
 end
+

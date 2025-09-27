@@ -1,4 +1,4 @@
-if not BG.IsWLK then return end
+if not (BG.IsWLK or BG.IsMOP) then return end
 if BG.IsBlackListPlayer then return end
 
 local AddonName, ns = ...
@@ -34,127 +34,187 @@ BG.Init(function()
     local raidAchievement_Total = {}
     local UpdateChoose
 
-    local db = {
-        ["25ULD"] = {
-            -- 40821, -- test
-            2895,
-            3037,
-            4626,
-            3164,
-            3163,
-            3189,
-            3184,
-            2944,
-            3059,
-        },
-        ["10ULD"] = {
-            2894,
-            3036,
-            3159,
-            3158,
-            3180,
-            3182,
-            2941,
-            3058,
-        },
-        ["25ICC"] = {
-            -- 4816,
-            4815,
-            4637,
-            4608,
-            4625,
-            4635,
-            4634,
-            4633,
-            4632,
+    local db
+    local db_stats
+    if BG.IsWLK then
+        db = {
+            ["25ULD"] = {
+                -- 40821, -- test
+                2895,
+                3037,
+                4626,
+                3164,
+                3163,
+                3189,
+                3184,
+                2944,
+                3059,
+            },
+            ["10ULD"] = {
+                2894,
+                3036,
+                3159,
+                3158,
+                3180,
+                3182,
+                2941,
+                3058,
+            },
+            ["25ICC"] = {
+                4816,
+                4815,
+                4637,
+                4608,
+                4625,
+                4635,
+                4634,
+                4633,
+                4632,
 
-            4603,
-            4610,
-            4611,
-            4612,
-            4613,
-            4614,
-            4615,
-            4616,
-            4617,
-            4618,
-            4619,
-            4620,
-            4621,
-            4622,
-        },
-        ["10ICC"] = {
-            -- 4818,
-            4817,
-            4636,
-            4532,
-            4631,
-            4630,
-            4629,
-            4628,
-            
-            4602,
-            4534,
-            4535,
-            4536,
-            4537,
-            4538,
-            4577,
-            4578,
-            4582,
-            4539,
-            4579,
-            4580,
-            4601,
-        },
-        ["25TOC"] = {
-            3812,
-            3916,
-            3819,
-            3818,
-            3817,
-        },
-        ["10TOC"] = {
-            3918,
-            3917,
-            3810,
-            3809,
-            3808,
-        },
-        ["25NAXX"] = {
-            2054,
-        },
-        ["10NAXX"] = {
-            2051,
-        },
-    }
-    local db_stats = {
-        {
-            ID = 334,
-            name = L["历史最大金币"],
-            icon = "Interface/MoneyFrame/UI-GoldIcon",
-        },
-        {
-            ID = 1544,
-            name = L["工程技能点"],
-            icon = "Interface/Icons/trade_engineering",
-        },
-        {
-            ID = 339,
-            name = L["获得坐骑数量"],
-            icon = "Interface/Icons/inv_misc_summerfest_brazierorange",
-        },
-        {
-            ID = 338,
-            name = L["获得小宠物数量"],
-            icon = "Interface/Icons/spell_nature_polymorph",
-        },
-        {
-            ID = 336,
-            name = L["拥有传说物品"],
-            icon = "Interface/Icons/inv_sword_39",
-        },
-    }
+                4603,
+                4610,
+                4611,
+                4612,
+                4613,
+                4614,
+                4615,
+                4616,
+                4617,
+                4618,
+                4619,
+                4620,
+                4621,
+                4622,
+            },
+            ["10ICC"] = {
+                4818,
+                4817,
+                4636,
+                4532,
+                4631,
+                4630,
+                4629,
+                4628,
+
+                4602,
+                4534,
+                4535,
+                4536,
+                4537,
+                4538,
+                4577,
+                4578,
+                4582,
+                4539,
+                4579,
+                4580,
+                4601,
+            },
+            ["25TOC"] = {
+                3812,
+                3916,
+                3819,
+                3818,
+                3817,
+            },
+            ["10TOC"] = {
+                3918,
+                3917,
+                3810,
+                3809,
+                3808,
+            },
+            ["25NAXX"] = {
+                2054,
+            },
+            ["10NAXX"] = {
+                2051,
+            },
+        }
+        db_stats = {
+            {
+                ID = 334,
+                name = L["历史最大金币"],
+                icon = "Interface/MoneyFrame/UI-GoldIcon",
+            },
+            {
+                ID = 1544,
+                name = L["工程技能点"],
+                icon = "Interface/Icons/trade_engineering",
+            },
+            {
+                ID = 339,
+                name = L["获得坐骑数量"],
+                icon = "Interface/Icons/inv_misc_summerfest_brazierorange",
+            },
+            {
+                ID = 338,
+                name = L["获得小宠物数量"],
+                icon = "Interface/Icons/spell_nature_polymorph",
+            },
+            {
+                ID = 336,
+                name = L["拥有传说物品"],
+                icon = "Interface/Icons/inv_sword_39",
+            },
+        }
+    else
+        db = {
+            ["H_MSV"] = {
+                6932, -- 团队的荣耀
+                6734, -- 惧之煞
+                6733,
+                6732,
+                6731,
+                6730, -- 女皇
+                6729,
+                6728,
+                6727,
+                6726,
+                6725,
+                6724, -- 皇帝
+                6723,
+                6722,
+                6721,
+                6720,
+                6719,
+            },
+            ["N_MSV"] = {
+                6689, -- 永春台
+                6845, -- 恐惧之心
+                6718,
+                6844, -- 魔古山
+                6458,
+            },
+        }
+        db_stats = {
+            {
+                ID = 334,
+                name = L["历史最大金币"],
+                icon = "Interface/MoneyFrame/UI-GoldIcon",
+            },
+            {
+                ID = 1544,
+                name = L["工程技能点"],
+                icon = "Interface/Icons/trade_engineering",
+            },
+            {
+                ID = 1524,
+                name = L["烹饪技能点"],
+                icon = "Interface/Icons/inv_misc_food_15",
+            },
+            {
+                ID = 339,
+                name = L["获得坐骑数量"],
+                icon = "Interface/Icons/inv_misc_summerfest_brazierorange",
+            },
+            {
+                ID = 338,
+                name = L["获得小宠物数量"],
+                icon = "Interface/Icons/spell_nature_polymorph",
+            },
+        }
+    end
 
     --[[
 /dump SetAchievementComparisonUnit("raid1")
@@ -245,7 +305,13 @@ BG.Init(function()
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(L["成就："])
             local FB = BG.FB1
-            for _, num in ipairs({ 25, 10 }) do
+            local tbl
+            if BG.IsWLK then
+                tbl = { 25, 10 }
+            else
+                tbl = { "H_", "N_" }
+            end
+            for _, num in ipairs(tbl) do
                 if db[num .. FB] then
                     for _, ID in ipairs(db[num .. FB]) do
                         local text, r1, g1, b1, r2, g2, b2
@@ -636,14 +702,27 @@ BG.Init(function()
         end
         wipe(BG.AchievementMainFrame.Frame3.buttons)
 
-        if db["25" .. FB] then
-            for i, ID in ipairs(db["25" .. FB]) do
-                CreateButton(i, ID, BG.AchievementMainFrame.Frame1)
+        if BG.IsWLK then
+            if db["25" .. FB] then
+                for i, ID in ipairs(db["25" .. FB]) do
+                    CreateButton(i, ID, BG.AchievementMainFrame.Frame1)
+                end
             end
-        end
-        if db["10" .. FB] then
-            for i, ID in ipairs(db["10" .. FB]) do
-                CreateButton(i, ID, BG.AchievementMainFrame.Frame2)
+            if db["10" .. FB] then
+                for i, ID in ipairs(db["10" .. FB]) do
+                    CreateButton(i, ID, BG.AchievementMainFrame.Frame2)
+                end
+            end
+        else
+            if db["H_" .. FB] then
+                for i, ID in ipairs(db["H_" .. FB]) do
+                    CreateButton(i, ID, BG.AchievementMainFrame.Frame1)
+                end
+            end
+            if db["N_" .. FB] then
+                for i, ID in ipairs(db["N_" .. FB]) do
+                    CreateButton(i, ID, BG.AchievementMainFrame.Frame2)
+                end
             end
         end
         for i in pairs(db_stats) do

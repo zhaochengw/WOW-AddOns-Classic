@@ -1,6 +1,6 @@
-## Interface: 110200
+## Interface: 110200, 110205
 ## X-Min-Interface: 100206
-## Version: 11.2.8
+## Version: 11.2.17
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff6010Raids (WW)|r
@@ -29,7 +29,6 @@
 ## X-DBM-Mod-MinCoreRevision: 20230617000000
 ## X-DBM-Mod-MinExpansion: 10
 ## X-Curse-Project-ID: 3358
-## X-WoWI-ID: 8814
 ## X-Wago-ID: qv633o6b
 
 localization.en.lua

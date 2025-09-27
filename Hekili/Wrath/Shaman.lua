@@ -223,7 +223,7 @@ spec:RegisterAuras( {
     -- $s2 Fire damage every $t2 seconds.
     flame_shock = {
         id = 49233,
-        duration = 18,
+        duration = function() return 18 * haste end, --修复by风雪 20250808
         max_stack = 1,
         copy = { 8050, 8052, 8053, 10447, 10448, 25457, 29228, 49232, 49233 },
     },
@@ -1167,14 +1167,17 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Hurls a lightning bolt at the enemy, dealing 982 to 1123 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.
+    -- 闪电链Hurls a lightning bolt at the enemy, dealing 982 to 1123 Nature damage and then jumping to additional nearby enemies.  Each jump reduces the damage by 30%.  Affects 3 total targets.
     chain_lightning = {
         id = 421,
         cast = function ()
             if buff.elemental_mastery.up then return 0 end
-            return 2 * (1 - (buff.maelstrom_weapon.stack * 2) / 10) * haste
+            return (2 - (talent.lightning_mastery.rank * 0.1)) * (1 - (buff.maelstrom_weapon.stack * 2) / 10) * haste
         end,
-        cooldown = 6,
+        cooldown = function () 
+            return 6 - (talent.storm_earth_and_fire.rank == 1 and 0.75 or talent.storm_earth_and_fire.rank == 2 and 1.5 or 2.5) --修复by风雪 20250808
+        end,
+
         gcd = "spell",
 
         spend = function ()
@@ -1472,11 +1475,13 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Causes the shaman's active Fire totem to emit a wave of flames, inflicting 893 to 997 Fire damage to enemies within 10 yards of the totem.
+    -- 火焰新星Causes the shaman's active Fire totem to emit a wave of flames, inflicting 893 to 997 Fire damage to enemies within 10 yards of the totem.
     fire_nova = {
         id = 1535,
         cast = 0,
-        cooldown = function() return glyph.fire_nova.enabled and 7 or 10 end,
+        cooldown = function()
+            return (glyph.fire_nova.enabled and 7 or 10) - talent.improved_fire_nova.rank * 2
+        end,
         gcd = "spell",
 
         spend = 0.22,
@@ -1519,11 +1524,11 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Instantly sears the target with fire, causing 505 Fire damage immediately and 842 Fire damage over 16.45 sec. This periodic damage may critically strike and will occur more rapidly based on the caster's spell haste.
+    -- 烈焰震击Instantly sears the target with fire, causing 505 Fire damage immediately and 842 Fire damage over 16.45 sec. This periodic damage may critically strike and will occur more rapidly based on the caster's spell haste.
     flame_shock = {
         id = 8050,
         cast = 0,
-        cooldown = 6,
+        cooldown = function () return 6 - talent.booming_echoes.rank * 1 end, --修复by风雪 20250808
         gcd = function() return glyph.shocking.enabled and "totem" or "spell" end,
 
         spend = function ()
@@ -1624,11 +1629,11 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Instantly shocks the target with frost, causing 820 to 867 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.  Causes a high amount of threat.
+    -- 冰霜震击Instantly shocks the target with frost, causing 820 to 867 Frost damage and slowing movement speed by 50%.  Lasts 8 sec.  Causes a high amount of threat.
     frost_shock = {
         id = 8056,
         cast = 0,
-        cooldown = 6,
+        cooldown = function () return 6 - talent.booming_echoes.rank * 1 end, --修复by风雪 20250808
         gcd = function() return glyph.shocking.enabled and "totem" or "spell" end,
 
         spend = function ()
@@ -1788,18 +1793,20 @@ spec:RegisterAbilities( {
     },
 
 
-    -- You hurl molten lava at the target, dealing 1203 to 1534 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
+    -- 熔岩爆裂You hurl molten lava at the target, dealing 1203 to 1534 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
     lava_burst = {
         id = 51505,
         cast = function ()
             if buff.elemental_mastery.up then return 0 end
-            return 2 * haste
+            return (2 - talent.lightning_mastery.rank * 0.1) * haste  --修复施法时间by 风雪 20250808
         end,
         cooldown = 8,
         gcd = "spell",
 
         spend = 0.1,
         spendType = "mana",
+
+		velocity = 20, --新增技能飞行速度，修改by风雪 20250808
 
         startsCombat = true,
         texture = 237582,
@@ -1855,12 +1862,12 @@ spec:RegisterAbilities( {
     },
 
 
-    -- Casts a bolt of lightning at the target for 726 to 828 Nature damage.
+    -- 闪电箭Casts a bolt of lightning at the target for 726 to 828 Nature damage.
     lightning_bolt = {
         id = 403,
         cast = function ()
             if buff.elemental_mastery.up or buff.natures_swiftness.up then return 0 end
-            return 2.5 * (1 - (buff.maelstrom_weapon.stack * 2) / 10) * haste
+            return (2.5 - talent.lightning_mastery.rank * 0.1) * (1 - (buff.maelstrom_weapon.stack * 2) / 10) * haste
         end,
         cooldown = 0,
         gcd = "spell",
@@ -2530,7 +2537,7 @@ spec:RegisterAbilities( {
 } )
 
 
-spec:RegisterSetting( "st_cl_mana_threshold", 80, {
+spec:RegisterSetting( "st_cl_mana_threshold", 30, {
     type = "range",
     name = "|T136015:0|t单目标使用闪电链的阈值",
     desc = "当法力值低于设定的百分比时，默认优先级将不会推荐对单目标使用|T136015:0|t闪电链。\n\n"
@@ -2540,18 +2547,6 @@ spec:RegisterSetting( "st_cl_mana_threshold", 80, {
     step = 1,
     width = "full",
 } )
-
---[[ 注销掉，翻译错误+无用函数 by 风雪20250506
-spec:RegisterSetting( "st_fn_mana_threshold", 3000, {
-    type = "range",
-    name = "|T136088:0|t萨满之怒阈值",
-    desc = "当法力值低于设定的百分比时，插件会提示使用萨满之怒来恢复法力值。",
-    min = 0,
-    softMax = 10000,
-    step = 100,
-    width = "full",
-} )
-]]
 
 spec:RegisterSetting( "shaman_rage_threshold", 50, {
     type = "range",
@@ -2578,15 +2573,15 @@ spec:RegisterOptions( {
     damageExpiration = 6,
     potion = "speed",
 
-    package = "增强(黑科研)",
+    package = "元素(黑科研)",
     usePackSelector = true
 } )
 
-spec:RegisterPack( "增强(黑科研)", 20250508, [[Hekili:TEv3UTrru4NLEbOwHYkBN4KuPcxWvqVOCXYDi21J3DS3rE2DSMzSnrQYkQOuCIOTev(Rkqkbe0FefuVjcfsepm41o5TGZmR)zwBVRBI4MKvZCMZ335BoNZCStrNp2X2hjXo3PuHsLluUWMwflvS4QB4yl3Qj2XUjYRbQo8reke(B8pFy8PNC9l(79h(S9h(tF9nuwSfLH8vEsWAX9aRs2oEVdalg(IJhS72o2vBrOYpmYP6maciHAjdyC4y)YdV4Gx6yhq89XjwIfEo2N)ppP)F9Yb7T95F(z9p97J3P3WtE2f78GHN9hXp9K(N8Wpa3GqjdE9UXF53oC3EX9oU)z)W)U996E7U3EEU8jj48Pa15SAekqyh72yUGWImPvhepIevx4ypO3xfV3tJ)ZtJ35x7FY9xFcBI79DNF0Z1i5ytjcPqlO4AOwuj85D0cmocvLI9DEFhBporI5eKYOQTQvZYdjKaiwTA2TYB3TYmR2Uu3kVB3kfanYtQONDhsKVRiaJa9Yd1mzrhjW7XWjtb44ZbNGcE0TdQn24Kdp83JF0(RuUWBD(rBFXx8OejNtg7ydcRjwictfsol0Tdg1KfzjKqcIMKL1bGchzGvtpz3k3cwSGIBRMPkODkemYaxjtIdT8zDI0osVtnchVWn6aPq8fUdIm36HOiucJEVUvkziMEik1LvZvgGDXuCiocUab(UMIVJnQLa7c0nuygcGrLnnQjl5)PSy9zc7XgRJQr4HOjSDEHFYvuV7dxrk)Trw(dZb3iAsazDHhCZm1FjIxhlT6qKbKOIfMrUGlqbwQYefwIaeSHlhAga6fhlcyu)PCizBOcG4PTXGhXhC45p(hv84M5NJQ1LiwBKzQDADbXWM0xDY2GwgHdjyH((TOcOIfYhjVaejYLsQhivL4g4baSssrroLcZbBXP5F5vHOPwXftTPY1d(M(N94jKymLNqw3QmQ8svyQHnJ(dtDZ1GRUgG)1HYO8cjjuv)56tWquc(6Mg3wu4fbOveZRHgGvxgaAEkKmEiqusdSUa1idA6oA)T2BK)MPdXu3fIQhIgvBPCxzd3nrRxl(13BWPVyWXhn4v)w8tEEEzitfQqw7X60vmtynTvIoQE8HkGcqr(wCS67K04eEyndn0pm0TY70TcfAag5TLHFy1QDLDZufUQwSw)YjwzNBAQv)VjkPH7QQjlXlZkjByijlOHvQg)f3Cz5UqFFO5Vk4vnm1frwJmCQwjciyQ)m51tPDY2A8YOXQX0gmPLrbBk9aE4MXxCj)TsvXN8o9Kk(sfwGKywfNwukLvJVmlONqsGgRMqYRNxbxghD9BKzxHsLwqiqrTrUuKiy2ayPD4Um3QJY7vHwUxUs1yQypwyv0sMO8AQNUjrQ8Dxsy1wJa1C5aKaMtatPnzDW80tvwRfFRrfLoJMN8sHZsbrN)jzr1BHhJJnhf1ySfwZBa0h4ZCv2SI(z9SNJe4euRBqPCHD8iE58m1BAPx589Z8J2E37M1STt2z(HBNSv6PBx(KS6rqZFUZu54B4SKHA1jKvrcS)hfTWFoiCZ7P8JYqN)l]] )
+spec:RegisterPack( "增强(黑科研)", 20250820, [[Hekili:TE1wVTrru4Fl8aOwHYQ1oX5IuHh4jOpuEy5ne76X7o27ip7owZm2Mivzfvukor0wIk3QkKsab9I4I6lrOqI4hdETt(xWzM1EV5Bjr8IZQDoZ5778DUSNyxY(JST8qsS9DkBwUI5MLnnkzAwzTnSTKB3cBB1c52e1aEiefa)g9thgD6j34I)(Grp)Gr)4xDtLfBtzipLNeS2CxWQ4JJ2)PGfJE5Xd3BhBRATju5heAxlhGaK2wO2sFghU2p)WlE6RST8jEE4ylXcxBRZ)NNm4VE1W9358p7SbN(Dr72F0jp)IDFWOZ(JONDYGtE47JBsOKHVEVOV4BgTx)O(hp4SV)F35E9UDVBpnx(4yC(eG6CwDcfiSTvhmxqyHzPvxepKe2qyBnS)xgT)ZI(ZtJ29xgCY9xpHnr9)2Zp6fAKSTOeHuOfuCDuBQeE8oLM8J02chIQrXE2VNTvBb2PRpaTJlsibqugz5YjsmNG0EqDOeXBGLoeHJs7vxIvVUtdxpT5ixPIXwHejN5uJXuWlHiqXbxuR4ttTRlj0Zr4Jr88qvRD96gJ5Hr7w9Q(w9Qw4TDk3R670RQz2GaqA1zhDtaeGIc32PlQdodJgD4Vf9OdwPI5BE(r7CXN)O40mNKq4uYPjractfqig40fJAXcnesOOutOkAYQWr6B0Yv2R6TGxAQ42AkvidPk4uqfK(osMehy4X6gQDK(K6eoEMh0fkB5Z8eezQ3hGcrXm6D7vTSzQO4IOuin6i9XoykoahgN1QO47eJuPAGUbIcc(6znQfl(V5SyJCj)r9Vpi1tjWt8Gouhtcenoek4VnliJjxfZHBiArazDAaHlUvoIe90dp)X)q61f(iqHGggIRdxpFjn)ex1B0Li9jHLmliNqcwGLQQsHrSx0oa0tow4ZOEfcGsMlUivRbHSoOC9m5emelh)u3SdOBH4acwOtWL0inNM9KmVpIe6qjn8LQ5kzWdayL4UIf0lmfSLslaxulIMALZqT0KYd(6bN94eKNFZYcDFs8LezWSiy6Nc25mGi19Vbua0eUIougN4LKavdOJhbdrjGXwzYwu4ZqWqmMBtnaRTma08xiz8aiainX6o0m1HPNO9xLlL)kmIi1DbOgbOX9rk3T(mCxTCXFaRZKW)AMGxtBLORAoDGQcZhf6zWXQNJRoJzNrH6p9W9EvF7EvPWGTq3TZ4h1NzUUU5YuWVw0RV3WtF5WJpA4V)Rrp5fAXAJRIy9)MQKVQ96kklXlZTjzjsYMzKKzmWk)GUTwwTlmJhg0Rej1yxDtKXydt1uHpbt9kuxNY64J1RzmNbRzwTGjnY0WMt3GVCZ4ZUL)w564J)qDshF5sZqsY2fNxukxEzKSydDcjbASAmjVXI6mNZvx)MZDQq5vNriqrDqouKWVyaS0jCxLS64(dvOTWKRuTBm2LfudLSg7CgGR(2mju1x4qcQ1EmOzFTpsalkGP0wSUyE(9rR3MV94Mx7jRUEvWzPGOR)KSWgTXtWXIJcBoXcJPnaMx8PokBwr)z9vxeNGzczO0cHD57KEPB9QSy)m9UT39UZB52KtME72KJYVE7YxLn3wQxIDm3WEjB1QliRHeyVpmCM)pOqM3v5hLH2)3]] )
 
 -- spec:RegisterPack( "增强(新手盒子)", 20241230, [[Hekili:LJvtZnTvx4FlSXlObHLDc00jol6QwwqxOURds6A5RJ1y9HhPRJjZKrJtPbcqOjLMxOneAH2qBAPqs7W0xQJ9W)fQLSZk(l0ZvY26kzzzG2PB6MeNZ9CFoFFE8nI8IFSOqjeblEXCzZnlFUCZZLl)C55pVOazLAyrHAiLQOLGpyG0HF6U1M9w7XUF3342ULK3DoY763S39UT7t2MQ5kAMOsueTnRBPaAxHqQz)EN9SnA0GRHIwrZlZPyQlkuSUQg5dnelMGXNLF2zffq1jvmTefIAIkQLkHdUg2wruO)HpY7Gh6E)72BNFLvZEh)mVBSV39Egi05cWVD3FxV9Ac)1hGRQQPEY63QxNN(Q2B2953SFNoVS5ES3(LnVFWv9262Dp(3)ZMFkeCwMLv1GqcPqunnS5QzHHqPiI8ofoBdvJsLRBTIudmQMPXmQLlCkDKQrfKrjjv9I1XLYekOcYwYUgwtRMzdSLZfscXYAq2MyASuD8qqTqgvleOl34hZPJUSevLZWNO5)7ADkMMLlZazYxvtDPkedvJLKSROI1krVyX6LlZf8NCLmByK8nvqAAsMLLivWsynSo2Gyp62yKfPIeXKG19Hy1v9fxw1cpU0gqlL14IrQSct2jQzsLn6Sb1wiwahGv6)61N34Qc9c0SJH5YiQEuXldzwdSUk2ErEwfvQawxAuPBuwxhH1SjwM6ddcBcSnOWCzsdSgivssgmJIPPgnZZnYV4SW042EHcz5oFM4v0bhU4KV3m2yLct(ywVkSVSOPgzQr4y5DOfWuP6mkROOb(hYAjmXUa)m0QAuz58lkevLQGXYeiLJOQtJkPsQ4flmFKuFAD9XAVZmw39W8xUSSyAtmT0HOsTkoC8luw02F2(ewH6OL0rbMjj)zuLtdChdLvCKZ4ihQ0GqbPL0ehGEW8SFon5Qu42daeajAHbsQbxHdBGkQbtntCZs0SqetGwgjPHSRmTGLrgx9Azgt2Wmq()Pca)wVfyLq7U8LE6SC5ZlkSm2YgmuaDz2z5brnqwuZzdmLpz)aAnV7CnG1Qx7wUh9fUh(hN0C3E7CWjp6i3VCTE7(zE7CO3MRbCAUh3Q)tFQ3HB195)C32FL76B0R1pEYv6CYEn7)dR5U56E38xEv7DDUGJ8zCK)KUDEbatVR)tamxcyobfC3(XDp(4UD(FE)2d9276bsC37GrO195pbSyGPHR4TXD63C9HagiM)sU3EZbFohf3(V4R9EW)3DTDDp6QEF(b9V12qm42ANav6)9R7U)18EWwSqdbdqYVX2U34BDpST76pQBRRMdIkVB0S)v64UXD7)Wd81ruqt1My7)DEWLr11iWhVO)3bkOec5ZrR7ffguKeFFrcKYPAfkrqXsfMdvrIcNYro22C)HHjSrp0uJVpxuGYqmuJ0zrO(u(08PO8cPAwaQzNiur3J7iVOJmpdAd3DqbzUjcsklBDKl4ipNFklDtfJLIAWZfZGaFaO3ejeMwy57ePWNiVa4QavvSLDr2h4JuAUWOonGNKgdN)TpPfcwu6nkSVBmyJu(d2cb2IL6IojimgHMOqUynwd428tcJZVbXp4AZtDH5tpYIXUfMutGHds9oY5YY0mKaVj1M8zt3OX5bdrK5eFGISwiSnp6wb(jVwyI9h0MOxFwZqFGH8X305zDqgc14U4KhTtHzk0ZyOxtQFl4yFdnhRdXMoJ5qNJvVr8XX1AQZfS0ZHUBcu0(np5NCIm(OYBxcAWC5crLoIc3r(00Dh5ZNAsKqFP5GNJmIB6nH15uVgepXEU6)Pz3EZAXNcbx8xP6iV6QJtue7K4VwL5OOVyD6l)Imyf8u2Otv(nyfr24sFeCsW)fhyuTgqBc8q0tf)R]] )
 
-spec:RegisterPack( "元素(黑科研)", 20250705, [[Hekili:1E1YUTTrx4NLGci3IArBjx30l2gOx(xeTWTaS7kkjhrouCQjNHGZirOcdcNg4eNa7ABaJ2GMfXbOPj)nOoB6LCRPpmnuszvFf6zgklrslz7IISrGCMZ8nFNZ35cLrnJpZq3bjWgRwF(6lo)fNFrTA1xS(Ig6IUHyd9qK9AOwWduua8B6MxP)VC4R)YNUF)7TF)dp4nKw01NHCKaXzTJSbR8eIq(7n3CXXXAe7Uv7GjuUMnlyUyMWFTQ2(ioNyph2hhGPcKFvUhkarR6eYRg2bxnIjqccJw1MX8DyXuEvutIprqWCd9MTj(IlrnAwM6adcX2gRErGcehhCMjyUTHEgJtVXTas3)))B9U(gF(GBU)GDVw6MB1)GB)fjnsAutR3w3S33(DV4r)8lE0odUZD7FRN)3pB7SftV(o92DV()WtYw)V24RtAuxdSlD7nt37bFWN8)ath9A)TUA6U7RmAbT0N(KbhD0l3CN092Q)LH9ECm6f)XF2)G7lr)Wh3BNJgCTFAWtEqZ2UdU3pchmD3B0KX59UYMPx9xbJsF2gP79WSZcGEmidE4Vlp4D2U3TVBVR)8He4YFFVV5(d2zpWqdDFcxWvIm2f12xapUATJ)ryOJPOM(yhJp0qhzld5g6U(Guly0wTXMXyuOCn7iIahrqg6xiXkarOEiQJjjOzB4ScqboDiTr((MmxtHh2COOZZdk44UAyuKWZuWe4anPMNyvjXsTJljcpXnIb5pAI7Gi5xxsXfKrHCCRGlji2RrOTkfem5Em71Kh(TM6HH0wKwOTiXAPelowiay4ACHPTVPCpWNJWao(ojwRVoe8yDkCrcV2uhCexWIcK30INEKKdrj48z(2jcHtkqjqrTWcTyIWJqRpV8oE7P6nomHwoxxlclfBEI1kjw2iWReezBGJzJpQdYSzBG9syV4uHvAFhq6P4aOcwHwnf5gh9w5mIE5sM8akz6tA5jOQqPScpIeMT7QymePfmGVryi9aE2JaxPSZab5t(kvJLelMYEnjVFhjVh5shJRztMFbnq6J6HryOpwt0OcPPMsvUk50QVo7kOSmDUhbldfLK9SLphz6VYRZoJk(ck1N6JSb5Plm0qkyagGmrCLcgU7mrWwugKyG8bD0PBIv7WztSCy0zGfJrurMk3MdgsezNmgpthSAnihaj1GVKbG)rF8WlqtjIqeUduXjjrUrhXOiPSdS8sbHSiHeIfauSZYxuns1sAitbyUe)rvbCTr5eV5YZDsXDwI7YxOuYqsJxlX6FV))()N9)KgtI0tsSK0EIPlvMuQsLjMMuzcPitMbQ9Luiocj8gD3LtiLHTXf4UeAMBgJ6MTciRex5ZEiHkoc19uui0abE1dXLDdxddQzOm2pLOrHwSJOsrgQ1omZ5CWbmkX2e(ojbSO8ZigIjGumqqOMfWl)QkNA0N(KDn53huptIkBi3Ikjk7vtzQ4SYVhBzedljyX2RRul)bhFrbq)BCu3cuzCREvA6WXG5nzClEPftz(WkJMnu4QvzoJqpBYxLYqm6olOTNRM3fcqfNkOUWHdxw50hlNdK8dJLimC2PdeWruB8slxB(khJ6sV78RV(Oxo3xrX5l5Yx0aXe2pa1kavk37eLbfpIABkRdQ8gtx7hAqPGgObfeHSzijwT87g6bYGRSzsMIi3oMfTMMs3kIA5OyHiw5qkervWRP(nRl04JRnCmwzI)ksOGE6TfESid98)5a1idJ)5p]] )
+spec:RegisterPack( "元素(黑科研)", 20250820, [[Hekili:nxvtVTrry4Fl9cPvGw540GtKaK4RdnhciTCdXU7SZo27qMDMvZmRT8LrPuCBsvCJJuuPICOPckT0ksVa02Ks5hdz96CI)c8o7My7eLOYboWfRXVZZ7ZZ7NZ6nR3x45gH0eVLRxR(81wOEnNAlE15NFbpxD3uINBkcVcQfCGJsGFZ7DJIFD3lF0bBv8OTk2D7Ryr0LjqrwMuImjgq55gMrz6RX9cpn91aEvPeS3Yn8CJPrrKkief2ZTI08BVdWBXp)7dxF1VC092A0M3kV3AfBF)VYeKV3g539Bd7E0pCNJ25jMLmlnRZW1U3W7(Dh(IF5Wx0F0dEyXoV(VF1gvgZxV)Wnhu8J7xz)Vw9Bmlv3bWLVrV8bp9d)SpfGo(VfRDZ8n3Qe0Co5hS)O927OE9ZhSwX1H7Ezh0H)XFwS9JTSV7lh2FVr36jJ2)PHznh9OFcCmFZBhkuQH3Ox(n)nau(RwnFWZQ8fi9esg9SNBD8bBm8(pC46V(4a46F)W784r9haa9CzuLwv2yinrzmnCC5zp5hTNlHJczKiVpYZntr87etzeFmsPP8wwqUiSMk4qlJQLc)qHWYxjwrZM(TWrLOWsQMiPOsDSuOrYweTpv5dDAn0YoFnN43LmbjikpgXJ8PjHzW9J1UjdMx0cERmicjOuWgq5CVjkHYzthcsQJ91cnjXjs0HBcEltq5nnPsY5ErhyitEU3GOtBFsaIrmgup81XeFcJKq4qrccXRAR8xu6QP4vSv5tNM(QybEfRZZFHoNG4iNuS2e8EMGg1mbcPj4YNY6c1kJ6erBqIRmrdDCgpIivAHmXkY7(VQiEELQQoSthQoMYRxBIekOKdIwH3QrJlmrIeANPYAhjXodOmbFGjWoe6RPjK3wlrTjSQZmO3WXDNOgd1g5hMbzKvQfoJu2hdK00kOtR8XrppftJmbx69nbZ1yXg1RkAJlKqyOiA7UGYbIgmZ3Eh0MLeiGztnIIJHa3NrBfR52MkellEMyzCeFciyBcwiNkO8S5GBQKGfjHOX7Q)xTW8g3bl71QykHfDMb8QvIQRoz37cRZFodHjMGUWd4WyIDka6O0MW5ys3zKWvCbuCrmjbf11eKL(oMGibFgWyhexBDcSQaGuDLNDiZ0MuAd6wiBM)12z(p(towaN)xT3x2gBdBzwqt91QoiPTVdVFETKuHuBtM5G8PKntq5B1oMLa(Z0XcPN70FYYoyiSVTE8CI3)8]] )
 
 
 

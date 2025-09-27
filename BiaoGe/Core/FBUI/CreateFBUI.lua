@@ -30,17 +30,17 @@ function BG.CreateFBScrollFrame(frameName, FB, bossNum)
     if b == 1 then
         if BG.zaxiang[FB] and bossNum == Maxb[FB] then
             pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetMaxi(FB, bossNum - 1, true)]
-            pointX, pointY = -5, -20
+            pointX, pointY = -5, BG.IsBigFB(FB) and -15 or -20
         else
             pointFrame = BG[frameName].p["preWidget" .. 0]
             pointX, pointY = -5, -3
         end
     elseif BG[frameName .. FB]["scrollFrame" .. bossNum - 1] then
         pointFrame = BG[frameName .. FB]["scrollFrame" .. bossNum - 1].owner
-        pointX, pointY = 0, -18
+        pointX, pointY = 0, BG.IsBigFB(FB) and -13 or -18
     else
         pointFrame = BG[frameName][FB]["boss" .. bossNum - 1]["zhuangbei" .. BG.GetMaxi(FB, bossNum - 1, true)]
-        pointX, pointY = -5, -20
+        pointX, pointY = -5, BG.IsBigFB(FB) and -15 or -20
     end
 
     local parent = BG[frameName .. FB]

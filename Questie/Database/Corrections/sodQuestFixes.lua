@@ -31,6 +31,16 @@ function SeasonOfDiscovery:LoadQuests()
     -- TODO: ZoneIDs, sort keys
 
     return {
+        [5658] = { -- Touch of Weakness
+            [questKeys.startedBy] = {{4606}},
+            [questKeys.objectivesText] = {},
+        },
+        [5661] = { -- Touch of Weakness
+            [questKeys.startedBy] = {{11407}},
+        },
+        [5663] = { -- Touch of Weakness
+            [questKeys.startedBy] = {{3044}},
+        },
         [7636] = { -- An Introduction
             [questKeys.nextQuestInChain] = 84546,
         },
@@ -6491,7 +6501,7 @@ function SeasonOfDiscovery:LoadQuests()
         [90129] = {
             [questKeys.name] = "Lacerate",
             [questKeys.startedBy] = {nil,{407117,407120}},
-            [questKeys.finishedBy] = {{407120}},
+            [questKeys.finishedBy] = {nil,{407120}},
             [questKeys.requiredLevel] = 1,
             [questKeys.questLevel] = 15,
             [questKeys.requiredRaces] = raceIDs.NONE,

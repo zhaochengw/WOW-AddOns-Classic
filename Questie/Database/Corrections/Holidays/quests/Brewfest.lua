@@ -11,8 +11,8 @@ tinsert(eventQuests, {"Brewfest", 11127}) -- <NYI>Thunderbrew Secrets
 tinsert(eventQuests, {"Brewfest", 12022}) -- Chug and Chuck!
 tinsert(eventQuests, {"Brewfest", 11122}) -- There and Back Again
 tinsert(eventQuests, {"Brewfest", 11412}) -- There and Back Again
-tinsert(eventQuests, {"Brewfest", 11117}) -- Catch the Wild Wolpertinger!
-tinsert(eventQuests, {"Brewfest", 11431}) -- Catch the Wild Wolpertinger!
+tinsert(eventQuests, {"Brewfest", 11117, nil, nil, Expansions.Current >= Expansions.Cata}) -- Catch the Wild Wolpertinger!
+tinsert(eventQuests, {"Brewfest", 11431, nil, nil, Expansions.Current >= Expansions.Cata}) -- Catch the Wild Wolpertinger!
 tinsert(eventQuests, {"Brewfest", 11318}) -- Now This is Ram Racing... Almost.
 tinsert(eventQuests, {"Brewfest", 11409}) -- Now This is Ram Racing... Almost.
 tinsert(eventQuests, {"Brewfest", 11438}) -- [PH] Beer Garden B
@@ -23,12 +23,12 @@ tinsert(eventQuests, {"Brewfest", 11437}) -- [PH] Beer Garden A
 tinsert(eventQuests, {"Brewfest", 12420}) -- Brew of the Month Club
 tinsert(eventQuests, {"Brewfest", 12421}) -- Brew of the Month Club
 --tinsert(eventQuests, {"Brewfest", 12306}) -- Brew of the Month Club
-tinsert(eventQuests, {"Brewfest", 11120}) -- Pink Elekks On Parade
+tinsert(eventQuests, {"Brewfest", 11118, nil, nil, Expansions.Current >= Expansions.Cata}) -- Pink Elekks On Parade
+tinsert(eventQuests, {"Brewfest", 11120, nil, nil, Expansions.Current >= Expansions.Cata}) -- Pink Elekks On Parade
 tinsert(eventQuests, {"Brewfest", 11400}) -- Brewfest Riding Rams
 tinsert(eventQuests, {"Brewfest", 11442}) -- Welcome to Brewfest!
 tinsert(eventQuests, {"Brewfest", 11447}) -- Welcome to Brewfest!
 --tinsert(eventQuests, {"Brewfest", 12278}) -- Brew of the Month Club
-tinsert(eventQuests, {"Brewfest", 11118}) -- Pink Elekks On Parade
 tinsert(eventQuests, {"Brewfest", 11320}) -- [NYI] Now this is Ram Racing... Almost.
 tinsert(eventQuests, {"Brewfest", 11441}) -- Brewfest!
 tinsert(eventQuests, {"Brewfest", 11446}) -- Brewfest!

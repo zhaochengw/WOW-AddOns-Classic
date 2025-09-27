@@ -515,6 +515,7 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
+	AnnounceFails			= "Post player fails for Fire Wall and Shadow Fissure to raid chat<br/>(requires announce to be enabled and leader/promoted status)",
 	TimerTenebron			= "Show timer for Tenebron's arrival",
 	TimerShadron			= "Show timer for Shadron's arrival",
 	TimerVesperon			= "Show timer for Vesperon's arrival",
@@ -532,7 +533,11 @@ L:SetMiscLocalization({
 	Portal			= "%s begins to open a Twilight Portal!",
 	NameTenebron	= "Tenebron",
 	NameShadron		= "Shadron",
-	NameVesperon	= "Vesperon"
+	NameVesperon	= "Vesperon",
+	FireWallOn		= "Fire Wall: %s",
+	VoidZoneOn		= "Shadow Fissure: %s",
+	VoidZones		= "Shadow Fissure fails (this try): %s",
+	FireWalls		= "Fire Wall fails (this try): %s"
 })
 
 ---------------
@@ -791,13 +796,16 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerHardmode	= "Show timer for hard mode"
+	TimerHardmode	= "Show timer for hard mode",
+	AnnounceFails	= "Post player fails for $spell:62017 to raid chat<br/>(requires announce to be enabled and leader/promoted status)"
 }
 
 L:SetMiscLocalization{
 	YellPhase1	= "Interlopers! You mortals who dare to interfere with my sport will pay.... Wait--you...",
 	YellPhase2	= "Impertinent whelps, you dare challenge me atop my pedestal? I will crush you myself!",
-	YellKill	= "Stay your arms! I yield!"
+	YellKill	= "Stay your arms! I yield!",
+	ChargeOn	= "Lightning Charge: %s",
+	Charge		= "Lightning Charge fails (this try): %s"
 }
 
 -------------
@@ -1119,12 +1127,16 @@ L:SetOptionLocalization{
 	warnAdds					= "Announce new adds",
 	timerAdds					= "Show timer for new adds",
 	TimerEmerge					= "Show timer for emerge",
-	TimerSubmerge				= "Show timer for submerge"
+	TimerSubmerge				= "Show timer for submerge",
+	AnnouncePColdIcons			= "Announce icons for $spell:66013 targets to raid chat (requires raid leader)",
+	AnnouncePColdIconsRemoved	= "Announce when icons are removed for $spell:66013 (requires raid leader)"
 }
 
 L:SetMiscLocalization{
 	Emerge						= "emerges from the ground!",
 	Burrow						= "burrows into the ground!",
+	PcoldIconSet				= "PCold icon {rt%d} set on %s",
+	PcoldIconRemoved			= "PCold icon removed from %s",
 	EmAndSub					= "Emerge and Submerge"
 }
 
@@ -1226,8 +1238,13 @@ L:SetGeneralLocalization{
 	name = "Festergut"
 }
 
+L:SetOptionLocalization{
+	AchievementCheck	= "Announce 'Flu Shot Shortage' achievement failure to raid<br/>(requires promoted status)"
+}
+
 L:SetMiscLocalization{
-	SporeSet			= "Gas Spore icon {rt%d} set on %s"
+	SporeSet			= "Gas Spore icon {rt%d} set on %s",
+	AchievementFailed	= ">> ACHIEVEMENT FAILED: %s has %d stacks of Inoculated <<"
 }
 
 ---------------
@@ -1369,14 +1386,19 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "Show pre-warning for ground phase",
 	TimerNextAirphase		= "Show timer for next air phase",
 	TimerNextGroundphase	= "Show timer for next ground phase",
-	ClearIconsOnAir			= "Clear all icons before air phase"
+	AnnounceFrostBeaconIcons= "Announce icons for $spell:70126 targets to raid chat<br/>(requires raid leader)",
+	ClearIconsOnAir			= "Clear all icons before air phase",
+	AchievementCheck		= "Announce 'All You Can Eat' achievement warnings to raid<br/>(requires promoted status)"
 }
 
 L:SetMiscLocalization{
 	YellAirphase		= "Your incursion ends here! None shall survive!",
 	YellPhase2			= "Now, feel my master's limitless power and despair!",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
+	BeaconIconSet		= "Frost Beacon icon {rt%d} set on %s",
+	AchievementWarning	= "Warning: %s has 5 stacks of Mystic Buffet",
+	AchievementFailed	= ">> ACHIEVEMENT FAILED: %s has %d stacks of Mystic Buffet <<"
 }
 
 ---------------------
@@ -1408,12 +1430,18 @@ L:SetOptionLocalization{
 	PhaseTransition			= "Show time for phase transitions",
 	ValkyrWarning			= "Announce Val'kyr Shadowguards grab targets",
 	SpecWarnYouAreValkd		= "Show special warning when you have been grabbed by a Val'kyr Shadowguard",--npc36609
-	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP"
+	AnnounceValkGrabs		= "Announce Val'kyr Shadowguard grab targets in raid chat<br/>(requires announce to be enabled and promoted status)",
+	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP",
+	AnnouncePlagueStack		= "Announce $spell:70337 stacks to raid (10 stacks, every 5 after 10)<br/>(requires promoted status)"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "So the Light's vaunted justice has finally arrived? Shall I lay down Frostmourne and throw myself at your mercy, Fordring?",
-	LKRoleplay				= "Is it truly righteousness that drives you? I wonder..."
+	LKRoleplay				= "Is it truly righteousness that drives you? I wonder...",
+	ValkGrabbedIcon			= "Valkyr Shadowguard {rt%d} grabbed %s",
+	ValkGrabbed				= "Valkyr Shadowguard grabbed %s",
+	PlagueStackWarning		= "Warning: %s has %d stacks of Necrotic Plague",
+	AchievementCompleted	= ">> ACHIEVEMENT COMPLETE: %s has %d stacks of Necrotic Plague <<"
 }
 
 -------------
@@ -1433,7 +1461,7 @@ L:SetWarningLocalization{
 
 L:SetOptionLocalization{
 	SpecWarnTrapL		= "Show special warning for Deathbound Ward trap activation",
-	SpecWarnTrapP		= "Show special warning for Vengeful Fleshreapers trap activation",
+	SpecWarnTrapP		= "Show special warning for engeful Fleshreapers trap activation",
 	SpecWarnGosaEvent	= "Show special warning for Sindragosa gauntlet event"
 }
 

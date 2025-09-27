@@ -2595,3 +2595,55 @@ else
         return output, source
     end
 end
+
+state.defile_target_is_me = false  --新增污染目标判断函数 by风雪 20250831
+
+-- 方案1：团队目标查找
+RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function()
+    local _, subevent, _, _, sourceName, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
+    if subevent ~= "SPELL_CAST_START" or sourceName ~= "巫妖王" or spellID ~= 72762 then return end --只处理巫妖王开始施法污染
+
+    C_Timer.After(0.2, function()
+        -- 遍历团队成员查找目标为巫妖王的单位
+        for i = 1, 25 do
+            -- 构建团队成员目标单位ID
+            local raidtarget = "raid"..i.."target"
+            -- 检查成员目标是否存在且是巫妖王
+            if UnitExists(raidtarget) and UnitName(raidtarget) == "巫妖王" then
+                local LichKingTarget = raidtarget.."target"  -- 巫妖王的目标
+                -- 检查巫妖王的目标是否是玩家自己
+                if UnitExists(LichKingTarget) then
+                    state.defile_target_is_me = (UnitName(LichKingTarget) == UnitName("player"))
+                    return -- 无论是否自己都终止循环
+                end
+            end
+        end
+    end)
+
+    C_Timer.After(3.0, function() state.defile_target_is_me = false end)
+
+end)
+
+--[[
+-- 方案2：焦点目标查找，需设置巫妖王为焦点
+
+RegisterUnitEvent( "UNIT_SPELLCAST_START", "focus", "target", function( event, unit, cast, spellID )
+
+    if spellID ~= 72762 then return end -- 污染
+
+    C_Timer.After(0.2, function()
+        local playerName = UnitName("player") -- 角色
+        local targetName = UnitName("target") -- 目标
+        local focustargetName = UnitName("focustarget")    -- 焦点目标
+        local targettargetName = UnitName("targettarget")  -- 目标的目标
+        
+        if focustargetName == playerName or (targetName ~= playerName and targettargetName == playerName) then
+            state.defile_target_is_me = true
+            return
+        end
+    end)
+
+    C_Timer.After(3.0, function() state.defile_target_is_me = false end)
+
+end)
+]]

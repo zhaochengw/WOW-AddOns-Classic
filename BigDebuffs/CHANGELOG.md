@@ -1,6 +1,6 @@
 # BigDebuffs
 
-## [v53](https://github.com/jordonwow/bigdebuffs/tree/v53) (2025-08-10)
-[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v52...v53) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
+## [v55](https://github.com/jordonwow/bigdebuffs/tree/v55) (2025-08-20)
+[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v54...v55) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
 
-- Added additional important spells (#850)  
+- fix: add some missing MOP spells (#857)  

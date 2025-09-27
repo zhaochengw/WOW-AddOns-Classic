@@ -49,6 +49,12 @@ function BG.RoleOverviewUI()
     local r, g, b = GetClassRGB(nil, "player")
 
     -- 选择初始化
+    if BG.IsMOP then
+        BG.Once("FBCDchoice", 250904, function()
+            BiaoGe.FBCDchoice = nil
+            BiaoGe.MONEYchoice = nil
+        end)
+    end
     if not BiaoGe.FBCDchoice then
         if BG.IsVanilla then
             BiaoGe.FBCDchoice = {
@@ -113,6 +119,15 @@ function BG.RoleOverviewUI()
                 ["MSV"] = 1,
                 ["worldBoss2"] = 1,
                 ["worldBoss1"] = 1,
+                ["faction1359"] = 1,
+                ["faction1341"] = 1,
+                ["faction1269"] = 1,
+                ["faction1270"] = 1,
+                ["faction1337"] = 1,
+                ["faction1271"] = 1,
+                ["faction1272"] = 1,
+                ["faction1302"] = 1,
+                ["faction1345"] = 1,
             }
         elseif BG.IsRetail then
             BiaoGe.FBCDchoice = {
@@ -154,6 +169,10 @@ function BG.RoleOverviewUI()
                 [396] = 1,
                 [395] = 1,
                 [3350] = 1,
+                [697] = 1,
+                [738] = 1,
+                [390] = 1,
+                [1901] = 1,
                 ["money"] = 1,
             }
         elseif BG.IsRetail then
@@ -207,26 +226,6 @@ function BG.RoleOverviewUI()
             end)
         elseif BG.IsCTM then
         elseif BG.IsMOP then
-            BG.Once("FBCDchoice", 250801, function()
-                BiaoGe.FBCDchoice["TES"] = 1
-                BiaoGe.FBCDchoice["HOF"] = 1
-                BiaoGe.FBCDchoice["MSV"] = 1
-                BiaoGe.FBCDchoice["DS"] = nil
-                BiaoGe.FBCDchoice["FL"] = nil
-                BiaoGe.FBCDchoice["BOT"] = nil
-                BiaoGe.FBCDchoice["BWD"] = nil
-                BiaoGe.FBCDchoice["TOF"] = nil
-                BiaoGe.FBCDchoice["25BH"] = nil
-                BiaoGe.FBCDchoice["10BH"] = nil
-
-                BiaoGe.MONEYchoice[396] = 1
-                BiaoGe.MONEYchoice[395] = 1
-                BiaoGe.MONEYchoice[3350] = 1
-            end)
-            BG.Once("FBCDchoice", 250802, function()
-                BiaoGe.FBCDchoice["worldBoss2"] = 1
-                BiaoGe.FBCDchoice["worldBoss1"] = 1
-            end)
         end
     end
     -- 基础数据初始化
@@ -349,20 +348,20 @@ function BG.RoleOverviewUI()
             BG.MONEYall_table = {
                 { name = L["影霜碎片"], color = "ff8000", type = "item", id = 50274, quest = 24548, tex = 340336, width = 90 }, -- 橙片
                 { name = L["瓦兰奈尔碎片"], color = "ff8000", type = "item", id = 45038, quest = 13622, tex = "Interface/Icons/inv_ingot_titansteel_red", width = 90 }, -- 橙片
-                { name = C_CurrencyInfo.GetCurrencyInfo(341).name, color = "00BFFF", id = 341, tex = C_CurrencyInfo.GetCurrencyInfo(341).iconFileID, width = 70 }, -- 寒冰
-                { name = C_CurrencyInfo.GetCurrencyInfo(301).name, color = "7B68EE", id = 301, tex = C_CurrencyInfo.GetCurrencyInfo(301).iconFileID, width = 70 }, -- 凯旋
-                { name = C_CurrencyInfo.GetCurrencyInfo(221).name, color = "FFFF00", id = 221, tex = C_CurrencyInfo.GetCurrencyInfo(221).iconFileID, width = 70 }, -- 征服
-                { name = C_CurrencyInfo.GetCurrencyInfo(102).name, color = "BA55D3", id = 102, tex = C_CurrencyInfo.GetCurrencyInfo(102).iconFileID, width = 70 }, -- 勇气
-                { name = C_CurrencyInfo.GetCurrencyInfo(101).name, color = "E6E6FA", id = 101, tex = C_CurrencyInfo.GetCurrencyInfo(101).iconFileID, width = 70 }, -- 英雄
-                { name = C_CurrencyInfo.GetCurrencyInfo(2711).name, color = "00FF00", id = 2711, tex = C_CurrencyInfo.GetCurrencyInfo(2711).iconFileID, width = 70 }, -- 天灾石
-                { name = C_CurrencyInfo.GetCurrencyInfo(2589).name, color = "00FFFF", id = 2589, tex = C_CurrencyInfo.GetCurrencyInfo(2589).iconFileID, width = 70 }, -- 赛德精华
-                { name = C_CurrencyInfo.GetCurrencyInfo(241).name, color = "FFFFFF", id = 241, tex = C_CurrencyInfo.GetCurrencyInfo(241).iconFileID, width = 70 }, -- 冠军印章
-                { name = C_CurrencyInfo.GetCurrencyInfo(61).name, color = "FFFFFF", id = 61, tex = C_CurrencyInfo.GetCurrencyInfo(61).iconFileID, width = 70 }, -- 珠宝日常
-                { name = C_CurrencyInfo.GetCurrencyInfo(81).name, color = "FFFFFF", id = 81, tex = C_CurrencyInfo.GetCurrencyInfo(81).iconFileID, width = 70 }, -- 烹饪日常
-                { name = C_CurrencyInfo.GetCurrencyInfo(161).name, color = "FFFFFF", id = 161, tex = C_CurrencyInfo.GetCurrencyInfo(161).iconFileID, width = 70 }, -- 岩石守卫
-                { name = C_CurrencyInfo.GetCurrencyInfo(1900).name, color = "FFFFFF", id = 1900, tex = C_CurrencyInfo.GetCurrencyInfo(1900).iconFileID, width = 85 }, -- JJC
-                { name = C_CurrencyInfo.GetCurrencyInfo(1901).name, color = "FFFFFF", id = 1901, tex = C_CurrencyInfo.GetCurrencyInfo(1901).iconFileID, width = 85 }, -- 荣誉
-                { name = C_CurrencyInfo.GetCurrencyInfo(42).name, color = "D3D3D3", id = 42, tex = C_CurrencyInfo.GetCurrencyInfo(42).iconFileID, width = 70 }, -- TBC公正牌子
+                { color = "00BFFF", id = 341, width = 70 }, -- 寒冰
+                { color = "7B68EE", id = 301, width = 70 }, -- 凯旋
+                { color = "FFFF00", id = 221, width = 70 }, -- 征服
+                { color = "BA55D3", id = 102, width = 70 }, -- 勇气
+                { color = "E6E6FA", id = 101, width = 70 }, -- 英雄
+                { color = "00FF00", id = 2711, width = 70 }, -- 天灾石
+                { color = "00FFFF", id = 2589, width = 70 }, -- 赛德精华
+                { color = "FFFFFF", id = 241, width = 70 }, -- 冠军印章
+                { color = "FFFFFF", id = 61, width = 70 }, -- 珠宝日常
+                { color = "FFFFFF", id = 81, width = 70 }, -- 烹饪日常
+                { color = "FFFFFF", id = 161, width = 70 }, -- 岩石守卫
+                { color = "FFFFFF", id = 1900, width = 85 }, -- JJC
+                { color = "FFFFFF", id = 1901, width = 85 }, -- 荣誉
+                { color = "D3D3D3", id = 42, width = 70 }, -- TBC公正牌子
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
         elseif BG.IsCTM then
@@ -415,17 +414,17 @@ function BG.RoleOverviewUI()
             }
 
             BG.MONEYall_table = {
-                { name = C_CurrencyInfo.GetCurrencyInfo(396).name, color = "BA55D3", id = 396, tex = C_CurrencyInfo.GetCurrencyInfo(396).iconFileID, width = 70 }, -- 勇气点数
-                { name = C_CurrencyInfo.GetCurrencyInfo(395).name, color = "00BFFF", id = 395, tex = C_CurrencyInfo.GetCurrencyInfo(395).iconFileID, width = 70 }, -- 正义点数
-                { name = C_CurrencyInfo.GetCurrencyInfo(390).name, color = "FF3333", id = 390, tex = C_CurrencyInfo.GetCurrencyInfo(390).iconFileID, width = 70 }, -- 征服
-                { name = C_CurrencyInfo.GetCurrencyInfo(1901).name, color = "CC0033", id = 1901, tex = C_CurrencyInfo.GetCurrencyInfo(1901).iconFileID, width = 70 }, -- 荣誉
-                { name = C_CurrencyInfo.GetCurrencyInfo(2711).name, color = "00FF00", id = 2711, tex = C_CurrencyInfo.GetCurrencyInfo(2711).iconFileID, width = 70 }, -- 天灾石
-                { name = C_CurrencyInfo.GetCurrencyInfo(2589).name, color = "00FFFF", id = 2589, tex = C_CurrencyInfo.GetCurrencyInfo(2589).iconFileID, width = 70 }, -- 赛德精华
-                { name = C_CurrencyInfo.GetCurrencyInfo(241).name, color = "FFFFFF", id = 241, tex = C_CurrencyInfo.GetCurrencyInfo(241).iconFileID, width = 70 }, -- 冠军印章
-                { name = C_CurrencyInfo.GetCurrencyInfo(61).name, color = "FFFFFF", id = 61, tex = C_CurrencyInfo.GetCurrencyInfo(61).iconFileID, width = 70 }, -- 珠宝日常
-                { name = C_CurrencyInfo.GetCurrencyInfo(81).name, color = "FFFFFF", id = 81, tex = C_CurrencyInfo.GetCurrencyInfo(81).iconFileID, width = 70 }, -- 烹饪日常
-                { name = C_CurrencyInfo.GetCurrencyInfo(161).name, color = "FFFFFF", id = 161, tex = C_CurrencyInfo.GetCurrencyInfo(161).iconFileID, width = 70 }, -- 岩石守卫
-                { name = C_CurrencyInfo.GetCurrencyInfo(1900).name, color = "FFFFFF", id = 1900, tex = C_CurrencyInfo.GetCurrencyInfo(1900).iconFileID, width = 85 }, -- JJC
+                { color = "BA55D3", id = 396, width = 70 }, -- 勇气点数
+                { color = "00BFFF", id = 395, width = 70 }, -- 正义点数
+                { color = "00FF00", id = 2711, width = 70 }, -- 天灾石
+                { color = "00FFFF", id = 2589, width = 70 }, -- 赛德精华
+                { color = "FFFFFF", id = 241, width = 70 }, -- 冠军印章
+                { color = "FFFFFF", id = 61, width = 70 }, -- 珠宝日常
+                { color = "FFFFFF", id = 81, width = 70 }, -- 烹饪日常
+                { color = "FFFFFF", id = 161, width = 70 }, -- 岩石守卫
+                { color = "FFFFFF", id = 390, width = 70 }, -- 征服点数
+                { color = "FFFFFF", id = 1900, width = 85 }, -- 竞技场点数
+                { color = "FFFFFF", id = 1901, width = 85 }, -- 荣誉点数
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
         elseif BG.IsMOP then
@@ -482,11 +481,35 @@ function BG.RoleOverviewUI()
                 { name = "BWL", name2 = L["黑翼"], color = "D3D3D3", fbId = 469, num = 40, type = "fb" },
                 { name = "MC", name2 = L["熔火之心"], color = "D3D3D3", fbId = 409, num = 40, type = "fb" },
             }
-
+            -- 声望
+            BG.factionTbl = {
+                1359, -- 黑王子
+                1341, -- 至尊天神
+                1269, -- 金莲教
+                1270, -- 影踪派
+                1337, -- 卡拉克西
+                1271, -- 云端翔龙骑士团
+                1272, -- 阡陌客
+                1302, -- 垂钓翁
+                1345, -- 游学者
+            }
+            for _, id in ipairs(BG.factionTbl) do
+                tinsert(BG.FBCDall_table, { name = "faction" .. id, name2 = GetFactionInfoByID(id), id = id, color = "FFFF00", type = "faction" })
+            end
+            --[[
+/dump C_CurrencyInfo.GetCurrencyInfo(697)
+/dump C_CurrencyInfo.GetCurrencyInfo(396)
+GameTooltip:SetCurrencyByID(697)
+]]
             BG.MONEYall_table = {
-                { name = C_CurrencyInfo.GetCurrencyInfo(396).name, color = "BA55D3", id = 396, tex = C_CurrencyInfo.GetCurrencyInfo(396).iconFileID, width = 70 }, -- 勇气点数
-                { name = C_CurrencyInfo.GetCurrencyInfo(395).name, color = "00BFFF", id = 395, tex = C_CurrencyInfo.GetCurrencyInfo(395).iconFileID, width = 70 }, -- 正义点数
-                { name = C_CurrencyInfo.GetCurrencyInfo(3350).name, color = "00FFFF", id = 3350, tex = C_CurrencyInfo.GetCurrencyInfo(3350).iconFileID, width = 80 }, -- 至尊石碎片
+                { color = "BA55D3", id = 396, width = 70 }, -- 勇气点数
+                { color = "00BFFF", id = 395, width = 70 }, -- 正义点数
+                { color = "00FFFF", id = 3350, width = 80 }, -- 至尊石碎片
+                { color = "FFD700", id = 697, width = 80 }, -- 长者的好运符
+                { color = "C0C0C0", id = 738, width = 80 }, -- 次级好运护符
+                { color = "FFFFFF", id = 390, width = 70 }, -- 征服点数
+                { color = "FFFFFF", id = 1901, width = 85 }, -- 荣誉点数
+                -- { color = "FFFFFF", id = 515, width = 70 }, -- 暗月
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
         elseif BG.IsRetail then
@@ -497,6 +520,13 @@ function BG.RoleOverviewUI()
             BG.MONEYall_table = {
                 { name = L["金币"], color = "FFD700", id = "money", tex = 237618, width = 90 }, -- 金币
             }
+        end
+        for i, v in ipairs(BG.MONEYall_table) do
+            if not v.type and type(v.id) == "number" then
+                BG.MONEYall_table[i].name = C_CurrencyInfo.GetCurrencyInfo(v.id).name
+                BG.MONEYall_table[i].tex = C_CurrencyInfo.GetCurrencyInfo(v.id).iconFileID
+                BG.MONEYall_table[i].type = "currency"
+            end
         end
     end
 
@@ -1036,7 +1066,17 @@ function BG.RoleOverviewUI()
                                         _G["FACTION_STANDING_LABEL" .. info.standingID],
                                         info.currentValue)
                                     t:SetText(infoText)
-                                    t:SetTextColor(1, .82, 0)
+                                    if info.standingID == 7 then
+                                        t:SetTextColor(0, .9, 0)
+                                    elseif info.standingID == 6 then
+                                        t:SetTextColor(0, .8, 0)
+                                    elseif info.standingID == 5 then
+                                        t:SetTextColor(0, .7, 0)
+                                    elseif info.standingID == 4 then
+                                        t:SetTextColor(1, .82, 0)
+                                    else
+                                        t:SetTextColor(.51, 0, .02)
+                                    end
                                 end
                             end
                         end
@@ -1287,6 +1327,7 @@ function BG.RoleOverviewUI()
                 end
             end
 
+            -- 开始创建
             for _, v in ipairs(newTbl) do
                 local colorplayer = v.colorplayer
                 local player = v.player
@@ -1328,7 +1369,7 @@ function BG.RoleOverviewUI()
                     local vv = MONEYchoice_table[ii]
                     local id = vv.id
                     local count = GetCount(pz, id)
-                    count = tostring(count):gsub("-", "") .. " " .. AddTexture(vv.tex)
+                    local countString = tostring(count):gsub("-", "") .. " " .. AddTexture(vv.tex)
                     local t_paizi = f:CreateFontString()
                     t_paizi:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
                     local width
@@ -1339,14 +1380,29 @@ function BG.RoleOverviewUI()
                         width = MONEYchoice_table[ii].width
                         t_paizi:SetPoint("TOPRIGHT", right, "TOPRIGHT", width, 0)
                     end
-                    if count:match("^%d+") == "0" or count:find(L["未知"]) then
+                    if countString:match("^%d+") == "0" or countString:find(L["未知"]) then
                         t_paizi:SetTextColor(0.5, 0.5, 0.5)
+                    end
+                    if vv.type == "currency" and tonumber(count) then
+                        local maxCount = C_CurrencyInfo.GetCurrencyInfo(id).maxQuantity
+                        if maxCount > 0 then
+                            local c
+                            if player == BG.GN() and realmID == GetRealmID()
+                                and C_CurrencyInfo.GetCurrencyInfo(id).useTotalEarnedForMaxQty then
+                                c = C_CurrencyInfo.GetCurrencyInfo(id).totalEarned
+                            else
+                                c = count
+                            end
+                            if tonumber(c) >= maxCount then
+                                t_paizi:SetTextColor(1, 0, 0)
+                            end
+                        end
                     end
                     if type(pz[id]) == "table" and pz[id].isItem and pz[id].quest then
                         t_paizi:SetText(L["已完成"] .. " " .. AddTexture(vv.tex))
                         t_paizi:SetTextColor(0, 1, 0)
                     else
-                        t_paizi:SetText(count)
+                        t_paizi:SetText(countString)
                     end
                     right = t_paizi
                 end
@@ -1578,7 +1634,7 @@ function BG.RoleOverviewUI()
     end
 
     -- 5人本CD
-    if not BG.IsVanilla then
+    if false then
         local height = 22
         local width_fb = 100
 
@@ -2339,10 +2395,6 @@ function BG.RoleOverviewUI()
             BiaoGe[MONEY][realmID][player] = tbl
         end
 
-        --[[
-BiaoGe.MONEY[4520]["苍刃"][45038].quest=true
-BiaoGe.MONEY[4520]["苍刃"][45038].count=50
-]]
         -- 事件
         do
             local f = CreateFrame("Frame")
@@ -2464,8 +2516,12 @@ BiaoGe.MONEY[4520]["苍刃"][45038].count=50
                 -- bt.tbl = { 259 }           -- 燃烧的远征test
             elseif i == 2 then
                 bt.type = "zhiding"
-                bt.tbl = { 2463, } --伽马灵魂烘炉。贝塔要塞2481（已删）
-                -- bt.tbl = { 136 }  -- 地狱火test
+                if BG.IsWLK then
+                    bt.tbl = { 2463, } --伽马灵魂烘炉。贝塔要塞2481（已删）
+                    -- bt.tbl = { 136 }  -- 地狱火test
+                else
+                    bt.tbl = {}
+                end
             end
             bt:Hide()
             bt:SetScript("OnClick", OnClick)

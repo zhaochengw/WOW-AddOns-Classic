@@ -2297,3 +2297,28 @@ Change Log:
 * Added TWW spells for Manaforge Omega 
 * Added TWW spells for Priory of the Scared Flame
 * Added TWW spells for Operation: Floodgate
+
+5.18.4
+* Added TWW spells for Manaforge Omega 
+
+5.18.5
+* Added The War Within spells (world)
+* Added TWW spells for Manaforge Omega 
+
+5.18.6
+* Fixed TWW spells for Manaforge Omega 
+* Added TWW spells for Manaforge Omega 
+
+5.18.7
+* Added The War Within spells (world)
+* Added TWW spells for Ara-Kara, City of Echoes
+* Added TWW spells for TWW Delves 
+* Added TWW spells for Manaforge Omega
+
+5.19
+* Fixed localization issues when strings were not localized
+
+5.19.1
+* Added TWW spells for Manaforge Omega
+* Fixed TWW spells for Ara-Kara, City of Echoes
+* Fixed SL spells for Halls of Atonement

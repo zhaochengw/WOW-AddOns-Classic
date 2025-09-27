@@ -415,7 +415,7 @@ BG.Init2(function()
         if not BG.IsVanilla then
             local onEnterTextTbl = {
                 "25ICC",
-                -- 4816,
+                4816,
                 4815,
                 4637,
                 4608,
@@ -425,7 +425,7 @@ BG.Init2(function()
                 4633,
                 4632,
                 "10ICC",
-                -- 4818,
+                4818,
                 4817,
                 4636,
                 4532,
@@ -464,11 +464,6 @@ BG.Init2(function()
                 -- 3182,
                 -- 2941,
                 -- 3058,
-                -- "RS",
-                -- 4816,
-                -- 4815,
-                -- 4818,
-                -- 4817,
             }
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", 15, -30)

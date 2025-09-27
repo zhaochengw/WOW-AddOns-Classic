@@ -268,6 +268,9 @@ BG.Init(function()
                 BiaoGe.options[name] = value
 
                 local template = BG.IsNewUI and "TextToSpeechSliderTemplate" or "OptionsSliderTemplate"
+                if BG.IsMOP then
+                    template ="OptionsSliderTemplate"
+                end
                 local slider = CreateFrame("Slider", nil, parent, template)
                 slider:SetPoint("TOPLEFT", parent, x, y)
                 slider:SetWidth(width or 180)
@@ -2145,7 +2148,7 @@ BG.Init(function()
             local ontext = {
                 L["竞拍欢呼语"],
                 format(L["在竞价过程中，如果有人出价超过%s，有%s概率团长在团队频道发送一段随机的欢呼语，以活跃拍卖氛围。"],
-                    BG.IsVanilla and ("1" .. "万") or ("2" .. "万"), "50%"),
+                    BG.autoAuctionHappySay_minMoney, "50%"),
                 " ",
                 L["需要使用非匿名模式，而且你是团长时才会生效。"],
             }
@@ -2530,13 +2533,14 @@ BG.Init(function()
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange * 3
             elseif BG.IsMOP then
+                local raidNum = #BG.FBCDall_table - #BG.factionTbl
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
                 text:SetText("|cff00FF00" .. EXPANSION_NAME4 .. "*")
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(1, #BG.FBCDall_table - 41, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(1, raidNum - 41, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2544,7 +2548,7 @@ BG.Init(function()
                 text:SetText("|cffFF4500" .. EXPANSION_NAME3 .. "*")
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 40, #BG.FBCDall_table - 34, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 40, raidNum - 34, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2552,7 +2556,7 @@ BG.Init(function()
                 text:SetText(BG.STC_b1(EXPANSION_NAME2 .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 33, #BG.FBCDall_table - 14, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 33, raidNum - 14, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2560,7 +2564,7 @@ BG.Init(function()
                 text:SetText(BG.STC_r3(EXPANSION_NAME1 .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 15, #BG.FBCDall_table - 5, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 15, raidNum - 5, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2568,7 +2572,16 @@ BG.Init(function()
                 text:SetText(BG.STC_g2(LFG_LIST_LEGACY .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 4, #BG.FBCDall_table, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 4, raidNum, width, height, 100, height_jiange)
+
+                -- 声望
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText("|cffFFFF00" .. (L["声望"] .. "*") .. RR)
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(raidNum + 1, #BG.FBCDall_table, width, height, 100, height_jiange)
 
                 -- 货币
                 height = height - height_jiange - height_jiange
@@ -2832,7 +2845,7 @@ BG.Init(function()
         end
 
         -- 5人本完成总览
-        if not BG.IsVanilla then
+        if false then
             height = height - 30
 
             local name = "FB5M"
@@ -3077,7 +3090,7 @@ BG.Init(function()
         end
 
         -- AtlasLoot
-        if BG.IsWLK then
+        if BG.IsWLK or BG.IsMOP then
             local text = others:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             text:SetPoint("TOPLEFT", width, height - h)
             text:SetText(BG.STC_g1("AtlasLoot"))

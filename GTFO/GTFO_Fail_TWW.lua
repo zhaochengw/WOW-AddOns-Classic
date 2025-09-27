@@ -638,6 +638,33 @@ GTFO.SpellID["1236933"] = {
   sound = 3;
 };
 
+GTFO.SpellID["1242834"] = {
+  --desc = "Tripwire";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1252578"] = {
+  --desc = "Unstable Void Rift";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1242832"] = {
+  --desc = "Void Beam";
+  sound = 3;
+};
+
+GTFO.SpellID["1241572"] = {
+  --desc = "Witherdusk Surge (Oath-Breaker Desamirah)";
+  sound = 3;
+};
+
+GTFO.SpellID["1241000"] = {
+  --desc = "Erratic Barrage (Arcana-Monger So'zer)";
+  sound = 3;
+};
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
@@ -661,7 +688,6 @@ GTFO.SpellID["438623"] = {
 GTFO.SpellID["438832"] = {
   --desc = "Poisonous Cloud (Atik - Impact)";
   sound = 3;
-  test = true; -- Verification
 };
 
 GTFO.SpellID["433443"] = {
@@ -710,6 +736,7 @@ GTFO.SpellID["453767"] = {
 GTFO.SpellID["461507"] = {
   --desc = "Cultivated Poisons (Ki'katal the Harvester)";
   sound = 3;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["456320"] = {
@@ -1937,6 +1964,48 @@ GTFO.SpellID["1245594"] = {
   sound = 3;
 };
 
+GTFO.SpellID["1236256"] = {
+  --desc = "Vorpal Cleave (Shadowguard Phasecutter)";
+  sound = 3;
+  ignoreApplication = true;
+};
+
+GTFO.SpellID["1236228"] = {
+  --desc = "Arcano Repulsor (Shadowguard Arcanotech)";
+  sound = 3;
+};
+
+GTFO.SpellID["1244311"] = {
+  --desc = "Torrential Energy (Pactsworn Arcanist)";
+  sound = 3;
+};
+
+GTFO.SpellID["1231144"] = {
+  --desc = "Null Breath (Siphoned Drake)";
+  sound = 3;
+};
+
+GTFO.SpellID["1244252"] = {
+  --desc = "Charge Through (Pactsworn Sandreaver)";
+  sound = 3;
+};
+
+GTFO.SpellID["1231478"] = {
+  --desc = "Errant Explosion (Shoddily Stored Explosives)";
+  sound = 3;
+};
+
+GTFO.SpellID["473963"] = {
+  --desc = "Reckless Charge (Underpaid Brute)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["1215058"] = {
+  --desc = "Long Fuse Missiles (Torque Clankfire)";
+  sound = 3;
+};
+
 
 --- *******************
 --- * Nerub-ar Palace *
@@ -2983,6 +3052,205 @@ GTFO.SpellID["1226827"] = {
   sound = 3;
 };
 
+GTFO.SpellID["1223883"] = {
+  --desc = "Eye Barrage (Watcher Gaz'Kreth)";
+  sound = 3;
+};
+
+GTFO.SpellID["1225167"] = {
+  --desc = "Anomalous Discharge (Unstable Mana)";
+  sound = 3;
+};
+
+GTFO.SpellID["1234324"] = {
+  applicationOnly = true;
+  --desc = "Photon Blast (Arcane Collector)";
+  sound = 3;
+};
+
+GTFO.SpellID["1225167"] = {
+  --desc = "Anomalous Discharge (Unstable Mana)";
+  sound = 3;
+};
+
+GTFO.SpellID["1237322"] = {
+  --desc = "Prime Sequence (Arcane Collector)";
+  sound = 3;
+};
+
+GTFO.SpellID["1224765"] = {
+  --desc = "Arcane Flurries (Forge Sentinel)";
+  sound = 3;
+};
+
+GTFO.SpellID["1228168"] = {
+  --desc = "Silencing Tempest (Forgeweaver Araz)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1250600"] = {
+  --desc = "Void Lightning";
+  sound = 3;
+};
+
+GTFO.SpellID["1227340"] = {
+  --desc = "Infernal Strike (Ilyssa Darksorrow)";
+  sound = 3;
+};
+
+GTFO.SpellID["1232130"] = {
+  --desc = "Nexus Shrapnel (Fractillus)";
+  sound = 3;
+};
+
+GTFO.SpellID["1238844"] = {
+  --desc = "Echo Barrage (Enforcer Jak'tull)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["1232403"] = {
+  --desc = "Dread Mortar (Manaforged Titan)";
+  sound = 3;
+};
+
+GTFO.SpellID["1227897"] = {
+  --desc = "Coalesce Voidwing (Nexus-King Salhadaar)";
+  sound = 3;
+};
+
+GTFO.SpellID["1225645"] = {
+  --desc = "Twilight Spikes (Nexus-King Salhadaar)";
+  sound = 3;
+};
+
+GTFO.SpellID["1247213"] = {
+  --desc = "Fractal Claw (Nexus-King Salhadaar)";
+  sound = 3;
+};
+
+GTFO.SpellID["1238763"] = {
+  --desc = "Siphon Discharge (Crystalline Golem)";
+  sound = 3;
+};
+
+GTFO.SpellID["1238369"] = {
+  --desc = "Arcane Overload";
+  sound = 3;
+};
+
+GTFO.SpellID["1238773"] = {
+  --desc = "Extinction (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1229325"] = {
+  --desc = "Oblivion (Dimensius)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1237080"] = {
+  --desc = "Broken World (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1239270"] = {
+  --desc = "Voidwarding (Voidwarden)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["1233292"] = {
+  --desc = "Accretion Disk (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1234052"] = {
+  --desc = "Darkened Sky (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1243055"] = {
+  --desc = "Fists of the Voidlord (Dimensius)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["1227665"] = {
+  --desc = "Fists of the Voidlord (Dimensius)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["1243694"] = {
+  --desc = "Shattered Space (Dimensius)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["1230674"] = {
+  --desc = "Spaghettification (Dimensius)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1234054"] = {
+  --desc = "Shadowquake (Dimensius)";
+  sound = 3;
+  applicationOnly = true;
+  minimumStacks = 1;
+};
+
+GTFO.SpellID["1234266"] = {
+  --desc = "Cosmic Fragility (Dimensius)";
+  applicationOnly = true;
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["1252456"] = {
+  --desc = "Accretion Disk (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1237695"] = {
+  --desc = "Stardust Nova (Pargoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["1237694"] = {
+  --desc = "Mass Ejection (Artoshion)";
+  sound = 3;
+};
+
+GTFO.SpellID["1237098"] = {
+  --desc = "Astrophysical Jet (Dimensius)";
+  sound = 3;
+};
+
+GTFO.SpellID["1243699"] = {
+  --desc = "Spatial Fragment (Dimensius)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["1230999"] = {
+	--desc = "Dark Matter (Dimensius)";
+	soundFunction = function() -- Warn only if you get hit more than once
+		if (GTFO_FindEvent("DMDarkMatter")) then
+			return 3;
+		end
+		GTFO_AddEvent("DMDarkMatter", 2);
+		return 0;
+	end;
+};
+
+GTFO.SpellID["1242310"] = {
+  --desc = "Static Lightning (Plexus Sentinel)";
+  sound = 3;
+};
 
 end
 

@@ -1,5 +1,5 @@
 ## Interface: 30405
-## Version: v3.4.5-1.0.3-黑科研风雪修复版
+## Version: v3.4.5-1.0.6-黑科研风雪修复版
 ## Title: Hekili
 ## Title-zhCN: Hekili 黑科研修复版
 ## Author: Hekili,Hutu,风雪

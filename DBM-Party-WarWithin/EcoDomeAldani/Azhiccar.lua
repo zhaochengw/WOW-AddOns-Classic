@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2675, "DBM-Party-WarWithin", 10, 1303)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250809072732")
+mod:SetRevision("20250818213247")
 mod:SetCreatureID(234893)
 mod:SetEncounterID(3107)
 mod:SetHotfixNoticeRev(20250728000000)
@@ -75,7 +75,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnInvadingShriek:Show(self.vb.invadingShriekCount)
 		specWarnInvadingShriek:Play("killmob")
 		if self.vb.invadingShriekCount % 2 == 0 then
-			timerInvadingShriekCD:Start(48.5, self.vb.invadingShriekCount+1)
+			timerInvadingShriekCD:Start(47.3, self.vb.invadingShriekCount+1)
 		else
 			timerInvadingShriekCD:Start(37.2, self.vb.invadingShriekCount+1)
 		end

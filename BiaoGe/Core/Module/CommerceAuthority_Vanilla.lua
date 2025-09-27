@@ -105,7 +105,7 @@ local function SetTooltipText(itemID, itemName, tooltip)
                 end)
             end
 
-            tooltip:AddDoubleLine(L["金钱奖励"], GetMoneyString(v.moneygive), 1, 0.82, 0, 1, 1, 1)
+            tooltip:AddDoubleLine(L["金钱奖励"], GetMoneyString(v.moneygive,true), 1, 0.82, 0, 1, 1, 1)
             tooltip:AddDoubleLine(L["声望奖励"], v.fullgive, 1, 0.82, 0, 1, 1, 1)
 
             local faction

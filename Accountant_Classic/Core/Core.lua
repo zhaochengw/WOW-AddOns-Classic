@@ -1643,26 +1643,45 @@ end
 
 function addon:CharacterRemovalProceed(server, character)
 	local faction_icon, class_color
-	for ka, va in pairs(Accountant_ClassicSaveData) do
-		if (ka == server) then
-			for kb, vb in pairs(Accountant_ClassicSaveData[ka]) do
-				if (kb == character) then
-					local factionstr = Accountant_ClassicSaveData[ka][kb]["options"].faction or nil
-					faction_icon = factionstr and "|TInterface\\PVPFrame\\PVP-Currency-"..factionstr..":0:0|t" or ""
 
-					local classToken = Accountant_ClassicSaveData[ka][kb]["options"].class  or nil
-					class_color = classToken and "|c"..RAID_CLASS_COLORS[classToken]["colorStr"] or ""
+	-- Check if the character data exists
+	if not Accountant_ClassicSaveData[server] or not Accountant_ClassicSaveData[server][character] then
+		return
+	end
 
-					Accountant_ClassicSaveData[ka][kb] = nil
-					ACC_Print(format(L["|cffffffff\"%s - %s|cffffffff\" character's Accountant Classic data has been removed."], faction_icon..class_color..server, character))
-					addon:PopulateCharacterList()
-					if AccountantClassicFrame:IsVisible() then
-						AccountantClassic_OnShow()
-					end
-					return
-				end
-			end
+	local factionstr = Accountant_ClassicSaveData[server][character]["options"].faction or nil
+	faction_icon = factionstr and "|TInterface\\PVPFrame\\PVP-Currency-"..factionstr..":0:0|t" or ""
+
+	local classToken = Accountant_ClassicSaveData[server][character]["options"].class  or nil
+	class_color = classToken and "|c"..RAID_CLASS_COLORS[classToken]["colorStr"] or ""
+
+	-- Clean up character data
+	Accountant_ClassicSaveData[server][character] = nil
+	
+	-- Clean up zone data if it exists
+	if Accountant_ClassicZoneDB and Accountant_ClassicZoneDB[server] and Accountant_ClassicZoneDB[server][character] then
+		Accountant_ClassicZoneDB[server][character] = nil
+	end
+
+	-- If server has no more characters, remove the server entry
+	if next(Accountant_ClassicSaveData[server]) == nil then
+		Accountant_ClassicSaveData[server] = nil
+		if Accountant_ClassicZoneDB and Accountant_ClassicZoneDB[server] then
+			Accountant_ClassicZoneDB[server] = nil
 		end
+	end
+
+	ACC_Print(format(L["|cffffffff\"%s - %s|cffffffff\" character's Accountant Classic data has been removed."], faction_icon..class_color..server, character))
+
+	-- Update the character list and UI
+	addon:PopulateCharacterList()
+	if AccountantClassicFrame:IsVisible() then
+		AccountantClassic_OnShow()
+	end
+
+	-- Force update of dropdowns
+	if AccountantClassicFrameCharacterDropDown:IsVisible() then
+		AccountantClassicFrameCharacterDropDown_Setup()
 	end
 end
 
@@ -2028,4 +2047,22 @@ function AccountantClassicTabButtonMixin:OnClick()
 	AC_CURRTAB = id
 	PlaySound(841)
 	AccountantClassic_OnShow()
+end
+
+function addon:OpenOptions() 
+    if Settings and Settings.OpenToCategory and addon.optionsFrames.General then
+        Settings.OpenToCategory(addon.optionsFrames.General)
+    else
+        AceConfigDialog:Open(addon.LocName)
+    end
+end
+
+function addon:SetupOptions()
+    self.optionsFrames = {}
+
+    -- setup options table
+    AceConfigReg:RegisterOptionsTable(addon.LocName, getOptions)
+    self.optionsFrames.General = AceConfigDialog:AddToBlizOptions(addon.LocName, nil, nil, "general")
+
+    self:RegisterModuleOptions("Profiles", giveProfiles, L["Profile Options"])
 end

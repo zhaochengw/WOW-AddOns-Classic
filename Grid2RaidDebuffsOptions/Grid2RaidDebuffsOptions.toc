@@ -1,4 +1,4 @@
-## Interface: 40401
+## Interface: 40402
 ## Title: Grid2 |cd2ff7d0aRaidDebuffs Options|r
 ## Title-esES: Grid2 |cd2ff7d0aRaidDebuffs Opciones|r
 ## Notes: Load on demand Options for Grid2RaidDebuffs.
@@ -6,7 +6,7 @@
 ## Author: Michael
 ## Dependencies: Grid2
 ## LoadOnDemand: 1
-## Version: 2.8.75
+## Version: 2.8.77
 ## IconTexture: Interface/AddOns/Grid2/media/iconsmall.tga
 
 Grid2RaidDebuffsOptions.lua

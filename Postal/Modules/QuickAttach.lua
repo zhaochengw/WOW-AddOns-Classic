@@ -320,20 +320,20 @@ StaticPopupDialogs["POSTAL_QUICKATTACH_CHARACTER_NAME"] = {
 	editBoxWidth = 350,  -- Needed in Cata
 	OnAccept = function(self)
 		local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
-		name = strtrim(self.editBox:GetText())
+		name = strtrim(StaticPopup1EditBox:GetText())
 		Postal_QuickAttachSetQAButtonCharName(name, classID, subclassID)	
 	end,
 	OnShow = function(self)
 		local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
-		self.editBox:SetText(name)
-		self.editBox:HighlightText()
-		self.editBox:SetFocus()
+		StaticPopup1EditBox:SetText(name)
+		StaticPopup1EditBox:HighlightText()
+		StaticPopup1EditBox:SetFocus()
 	end,
 	OnHide = StaticPopupDialogs["SET_GUILDPLAYERNOTE"].OnHide,
 	EditBoxOnEnterPressed = function(self)
 		local parent = self:GetParent()
 		local name, classID, subclassID = strsplit("|", QAButtonDialogInfo)
-		name = strtrim(parent.editBox:GetText())
+		name = strtrim(StaticPopup1EditBox:GetText())
 		Postal_QuickAttachSetQAButtonCharName(name, classID, subclassID)	
 		parent:Hide()
 	end,
