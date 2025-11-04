@@ -269,9 +269,9 @@ BC.pet = PetFrame
 PetFrameFlash:SetAlpha(0)
 
 -- 快乐值图标
-local point, relativeTo, relativePoint, offsetX, offsetY = PetFrameHappiness:GetPoint()
-PetFrameHappiness:SetPoint(point, relativeTo, relativePoint, offsetX - 4, offsetY + 10)
-PetFrameHappiness:SetSize(20, 20)
+--local point, relativeTo, relativePoint, offsetX, offsetY = PetFrameHappiness:GetPoint()
+--PetFrameHappiness:SetPoint(point, relativeTo, relativePoint, offsetX - 4, offsetY + 10)
+--PetFrameHappiness:SetSize(20, 20)
 
 BC.pet.borderTexture = PetFrameTexture     -- 边框
 BC.pet.name:SetPoint('BOTTOMLEFT', 50, 41) -- 名字

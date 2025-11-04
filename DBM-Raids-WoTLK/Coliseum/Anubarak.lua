@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250720212401")
 mod:SetCreatureID(34564)
 mod:SetEncounterID(not mod:IsPostCata() and 645 or 1085)
 mod:SetModelID(29268)
@@ -52,8 +52,6 @@ local enrageTimer			= mod:NewBerserkTimer(570)	-- 9:30 ? hmpf (no enrage while s
 
 mod:AddSetIconOption("PursueIcon", 67574, true, 0, {8})
 mod:AddSetIconOption("SetIconsOnPCold", 66013, true, 0, {1, 2, 3, 4, 5})
-mod:AddBoolOption("AnnouncePColdIcons", false, nil, nil, nil, nil, 66013)
-mod:AddBoolOption("AnnouncePColdIconsRemoved", false, nil, nil, nil, nil, 66013)
 
 mod.vb.Burrowed = false
 local pcoldIcons = {}
@@ -172,9 +170,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		local icon = #pcoldIcons
 		if self.Options.SetIconsOnPCold then
 			self:SetIcon(args.destName, icon, nil, true)
-			if self.Options.AnnouncePColdIcons and IsInGroup() and DBM:GetRaidRank() > 1 then
-				SendChatMessage(L.PcoldIconSet:format(icon, args.destName), IsInRaid() and "RAID" or "PARTY")
-			end
 		end
 		if args:IsPlayer() then
 			specWarnPCold:Show()
@@ -199,9 +194,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif args.spellId == 66013 then
 		if self.Options.SetIconsOnPCold then
 			self:SetIcon(args.destName, 0)
-			if self.Options.AnnouncePColdIconsRemoved and DBM:GetRaidRank() > 1 then
-				SendChatMessage(L.PcoldIconRemoved:format(args.destName), "RAID")
-			end
 		end
 	elseif args.spellId == 1022 and self:IsInCombat() then
 		timerHoP:Cancel(args.destName)

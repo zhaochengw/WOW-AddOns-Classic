@@ -36,7 +36,8 @@ BG.Init(function()
     })
     f:SetBackdropColor(0, 0, 0, 0.7)
     f:SetBackdropBorderColor(0, 0, 0, 1)
-    f:SetPoint("BOTTOMLEFT", WhoFrameEditBoxInset, "BOTTOMRIGHT", 5, 0)
+    f:SetPoint("BOTTOMLEFT", WhoFrameEditBoxInset or WhoFrameEditBox, "BOTTOMRIGHT",
+        WhoFrameEditBoxInset and 5 or 15, 0)
     f:SetSize(100, FriendsFrame:GetHeight() - 80)
     f:Hide()
     BG.WhoFrameList = f

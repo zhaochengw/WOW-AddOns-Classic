@@ -1,4 +1,4 @@
-## Interface: 11507, 30405
+## Interface: 11507, 50502
 ## Title: |cff00fffftdBag2|r - One bag
 ## Title-zhCN: |cff00fffftdBag2|r - 整合背包
 ## Notes: One bag, view other characters' bags, banks, mailboxes, equipment, etc.

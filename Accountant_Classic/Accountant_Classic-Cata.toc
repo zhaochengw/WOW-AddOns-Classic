@@ -1,0 +1,44 @@
+## Interface: 40400
+## Title: Accountant Classic
+## Title-deDE: Accountant Classic
+## Title-esES: Accountant Classic
+## Title-frFR: Accountant Classic
+## Title-koKR: Accountant Classic
+## Title-ptBR: Accountant Classic
+## Title-ruRU: Accountant Classic
+## Title-zhCN: Accountant Classic
+## Title-zhTW: Accountant Classic
+## Notes: A basic tool to track your monetary and currencies incomings and outgoings within WoW.
+## Notes-deDE: Ein einfaches Hilfsprogramm, um deine monetären Einnahmen und Ausgaben sowie deine Währungen in WoW zu verfolgen.
+## Notes-esES: Una herramienta básica para rastrear tus ingresos y gastos de oro y monedas en WoW.
+## Notes-frFR: Un outil basique pour suivre vos revenus et dépenses d’or et de monnaies dans WoW.
+## Notes-koKR: WoW에서 골드와 각종 화폐의 수입과 지출을 추적하는 기본 도구입니다.
+## Notes-ptBR: Uma ferramenta básica para acompanhar suas entradas e saídas de ouro e moedas no WoW.
+## Notes-ruRU: Основной инструмент для отслеживания ваших денежных и валютных доходов и расходов в WoW.
+## Notes-zhCN: 用于在魔兽世界中追踪你的金币与各类货币的收入与支出。
+## Notes-zhTW: 用於在魔獸世界中追蹤你的金幣與各類貨幣的收入與支出。
+## Author: kamusis
+## X-Original-Author: arith
+## Version: v3.00.00
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibDBIcon-1.0, LibDialog-1.0, !LibUIDropDownMenu
+## SavedVariables: Accountant_ClassicSaveData, Accountant_ClassicDB, Accountant_Classic_NewDB, Accountant_ClassicZoneDB, Accountant_Classic_CurrencyDB
+## X-Credits: Sabaki, Shadow, Rophy, arith
+## X-Date: 2024-11-17T13:08:54Z
+## X-Website: https://www.curseforge.com/wow/addons/accountant-classic-continued
+## X-License: GPLv2
+## X-Category: Information
+## X-Localizations: enUS, frFR, deDE, zhCN, zhTW, koKR, esES, ptBR, ruRU
+## AddonCompartmentFunc: AccountantClassic_ButtonOnClick
+## IconTexture: Interface\AddOns\Accountant_Classic\Images\AccountantClassicButton-Up
+## X-Curse-Project-ID: 1131429
+
+Libs\Libs.xml
+Locale\Locales.xml
+Core\Constants.lua
+
+Core\Core.lua
+Core\Template.xml
+Core\Core.xml
+Core\MoneyFrame.lua
+Core\Config.lua
+

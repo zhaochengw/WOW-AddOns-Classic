@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <!-- Currency Tracker Module Files -->
+    <!-- Load order is important: Constants -> Storage -> DataManager -> EventHandler -> UIController -> DisplayIntegration -> Core -->
+    
+    <Script file="CurrencyConstants.lua"/>
+    <Script file="CurrencyStorage.lua"/>
+    <Script file="CurrencyDataManager.lua"/>
+    <Script file="CurrencyEventHandler.lua"/>
+    <Include file="CurrencyTemplate.xml"/>
+    <Include file="CurrencyFrame.xml"/>
+    <Script file="CurrencyFrame.lua"/>
+    <Script file="CurrencyCore.lua"/>
+</Ui>

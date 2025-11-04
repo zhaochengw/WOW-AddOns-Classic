@@ -1,4 +1,3 @@
--- $Id: Atlas-frFR.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,27 +23,23 @@
 
 --]]
 
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local L = AceLocale:NewLocale("Atlas", "frFR", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas", "deDE", false);
--- Sur un travail de Wysiwyg, Khiria, TrAsHeR entre 2007 et 2017. Many thanks to all contributors !
--- Atlas French Localization.
-if ( GetLocale() ==		"frFR" ) then
+local L = LibStub("AceLocale-3.0"):NewLocale("Atlas", "frFR");
+
+if (GetLocale() == "frFR") then
 	-- Define the leading strings to be ignored while sorting
 	-- Ex: The Stockade
-	AtlasSortIgnore = {"le (.+)", "la (.+)", "les (.+)"};
+	AtlasSortIgnore = { "le (.+)", "la (.+)", "les (.+)" };
 
 	-- Syntax: ["real_zone_name"] = "localized map zone name"
 	AtlasZoneSubstitutions = {
-		["Ahn'Qiraj"] = "Temple d'Ahn'Qiraj";
-		["The Temple of Atal'Hakkar"] = "Le temple d'Atal'Hakkar";
-	--	["Throne of Tides"] = "The Abyssal Maw: Throne of the Tides";
+		["Ahn'Qiraj"] = "Temple d'Ahn'Qiraj",
+		["The Temple of Atal'Hakkar"] = "Le temple d'Atal'Hakkar",
+		--	["Throne of Tides"] = "The Abyssal Maw: Throne of the Tides";
 	};
 end
 
+if not L then return end
 
-if L then
 L[" 1/2"] = "1/2"
 L[" 2/2"] = "2/2"
 L["Adult"] = "Adulte"
@@ -56,7 +51,6 @@ L["Andormu <Keepers of Time>"] = "Andormu <Les Gardiens du temps>"
 L["Arazmodu <The Scale of Sands>"] = "Arazmodu <La Balance des sables>"
 L["Arcane Container"] = "Récipient arcanique"
 L["Arms Warrior"] = "Guerrier Armes"
-L["ATLAS_BUTTON_CLOSE"] = "Fermer"
 L["ATLAS_CLICK_TO_OPEN"] = "Cliquez pour ouvrir la fenêtre de carte Atlas."
 L["ATLAS_CLOSE_ATLASLOOT_WINDOW"] = "Clic-droit pour fermer la fenêtre AtlasLoot."
 L["ATLAS_COLLAPSE_BUTTON"] = "Clic pour fermer le panneau Atlas'legend."
@@ -106,82 +100,39 @@ L["ATLAS_DDL_TYPE_INSTANCE"] = "Instances"
 L["ATLAS_DEP_MSG1"] = "Atlas a détecté un ou plusieurs addon(s) qui ne sont pas à jour."
 L["ATLAS_DEP_MSG2"] = "Ils ont été désactivés pour ce personnage."
 L["ATLAS_DEP_MSG3"] = "Les supprimer de votre dossier AddOns."
-L["ATLAS_DEP_OK"] = "Ok"
 L["ATLAS_ENTRANCE_BUTTON"] = "Entrée"
-L["ATLAS_INFO"] = "Atlas Information"
-L["ATLAS_INFO_12200"] = [=[Information importante : 
-
-Suite à l'augmentation de la taille des fichiers de l'addon, nous avons déplacé 
-une partie de nos cartes des donjons et créé des modules séparés avec. 
-
-Les utilisateurs qui téléchargent nos addons à partir de fameux sites tiers 
-pourraient n'avoir que l'addon principal qui ne contient que les fonctions de 
-base et les cartes de la dernière extension de WoW. 
-
-Si vous souhaitez également voir les cartes des vieilles extensions, et donc 
-avoir tous ces modules Atlas que nous avons fait, vous devez les télécharger 
-et les installer séparément. 
-
-Pour plus d'information, lire le sujet suivant sur notre forum : 
-|cff6666ffhttp://www.atlasmod.com/phpBB3/viewtopic.php?t=1522|cffffffff 
-
-Ou visiter notre site web pour voir où les télécharger. 
-|cff6666ffhttp://www.atlasmod.com/]=]
-L["ATLAS_INFO_12201"] = [=[Veuillez noter que nous avons créé un nouveau plug-in - |cff6666ffAtlas Scenarios|cffffffff, 
-afin de fournir les cartes des scénarios introduits dans WoW 5.0. 
-
-Visitez notre site web pour plus de détail, et n'oubliez pas de le 
-télécharger/installer séparément.]=]
 L["ATLAS_INSTANCE_BUTTON"] = "Instance"
 L["ATLAS_LDB_HINT"] = [=[Clic-Gauche pour ouvrir Atlas.
 Clic-Milieu pour les options d'Atlas.
 Clic-Droit pour le menu d'affichage.]=]
-L["ATLAS_MINIMAPLDB_HINT"] = [=[Clic-Gauche pour ouvrir Atlas.
-Clic-Droit pour les options d'Atlas.
-Clic-Gauche et glisser pour déplacer ce bouton.
-|cff6666ffhttp://www.atlasmod.com/|cffffffff]=]
-L["ATLAS_MISSING_MODULE"] = "Atlas a détecté des module(s)/plug-in(s) manquant : "
-L["ATLAS_OPEN_ADDON_LIST"] = "Ouvrir la liste des addons"
 L["ATLAS_OPEN_ADVENTURE"] = "Cliquer pour ouvrir la fenêtre du Guilde de l'aventurier"
 L["ATLAS_OPTIONS_ACRONYMS"] = "Afficher les acronymes VO/VF"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "Afficher les acronymes de l'instance dans les détails de la carte"
 L["ATLAS_OPTIONS_AUTOSEL"] = "Sélection automatique de la carte"
 L["ATLAS_OPTIONS_AUTOSEL_TIP"] = "Sélection automatique de la carte, Atlas détectera votre localisation pour choisir votre instance à afficher."
-L["ATLAS_OPTIONS_BOSS_DESC"] = "Afficher la description des boss, si disponible"
-L["ATLAS_OPTIONS_BOSS_DESC_SCALE"] = "Mise à l'échelle de l'info-bulles pour les descriptions de boss sur la carte"
-L["ATLAS_OPTIONS_BOSS_DESC_TIP"] = "Afficher la description d'un boss au passage de la souris sur son numéro, si disponible."
-L["ATLAS_OPTIONS_BUTPOS"] = "Position du bouton"
-L["ATLAS_OPTIONS_BUTRAD"] = "Rayon du bouton"
 L["ATLAS_OPTIONS_BUTTON"] = "Options"
 L["ATLAS_OPTIONS_CATDD"] = "Trier les instances par :"
-L["ATLAS_OPTIONS_CHECKMODULE"] = "Me rappeler en cas de module(s)/plug-in(s) manquant."
-L["ATLAS_OPTIONS_CHECKMODULE_TIP"] = "Activer pour vérifier après le chargement de WoW s'il manque un module/plug-in Atlas."
 L["ATLAS_OPTIONS_CLAMPED"] = "Fixer la fenêtre à l'écran"
 L["ATLAS_OPTIONS_CLAMPED_TIP"] = "Fixer la fenêtre à l'écran, désactiver pour permettre de déplacer le fenêtre d'Atlas."
 L["ATLAS_OPTIONS_COLORINGDROPDOWN"] = "Afficher les donjons de la liste par couleurs de difficulté"
 L["ATLAS_OPTIONS_COLORINGDROPDOWN_TIP"] = "Basé sur le niveau minimum recommandé par le donjon et le niveau du joueur, pour afficher le donjon avec des couleurs de difficulté."
-L["ATLAS_OPTIONS_CTRL"] = "Maintenir la touche Ctrl enfoncée pour voir les infobulles"
-L["ATLAS_OPTIONS_CTRL_TIP"] = "Maintenir la touche Ctrl enfoncée pour voir les infobulles au passage de la souris. Très utile quand le texte est trop long pour apparaitre dans la fenêtre."
-L["ATLAS_OPTIONS_DONTSHOWAGAIN"] = "Ne pas remontrer de nouveau l'information"
 L["ATLAS_OPTIONS_LOCK"] = "Verrouiller la fenêtre d'Atlas"
 L["ATLAS_OPTIONS_LOCK_TIP"] = "Verrouiller/déverrouiller la fenêtre d'Atlas"
 L["ATLAS_OPTIONS_RCLICK"] = "Clic droit pour afficher la carte du monde"
 L["ATLAS_OPTIONS_RCLICK_TIP"] = "Active le clic droit dans la fenêtre Atlas pour afficher la carte du monde."
-L["ATLAS_OPTIONS_RESETPOS"] = "Position initiale"
-L["ATLAS_OPTIONS_SCALE"] = "Mise à l'échelle de la fenêtre Atlas"
+L["ATLAS_OPTIONS_SCALE"] = "Échelle"
 L["ATLAS_OPTIONS_SHOWBUT"] = "Afficher le bouton sur la mini-carte"
 L["ATLAS_OPTIONS_SHOWBUT_TIP"] = "Afficher le bouton Atlas autour de la mini-carte"
 L["ATLAS_OPTIONS_TRANS"] = "Transparence"
-L["ATLAS_SEARCH_UNAVAIL"] = "Recherche Indisponible"
+L["ATLAS_OPTIONS_FRAME"] = "Fenêtre Atlas"
+L["ATLAS_OPTIONS_FRAME_SMALL"] = "Petite Fenêtre Atlas"
 L["ATLAS_SLASH"] = "/atlas"
 L["ATLAS_SLASH_OPTIONS"] = "options"
-L["ATLAS_STRING_CLEAR"] = "Nettoyer"
 L["ATLAS_STRING_LEVELRANGE"] = "Niveau"
 L["ATLAS_STRING_LOCATION"] = "Lieu"
 L["ATLAS_STRING_MINLEVEL"] = "Niveau Minimum"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Limite de joueurs"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Niveau recommandé"
-L["ATLAS_STRING_SEARCH"] = "Rechercher"
 L["ATLAS_STRING_SELECT_CAT"] = "Choix de la catégorie"
 L["ATLAS_STRING_SELECT_MAP"] = "Choix de la carte"
 L["ATLAS_TITLE"] = "Atlas"
@@ -221,12 +172,10 @@ L["Holy Priest"] = "Prêtre Sacré"
 L["Hyphen"] = "-"
 L["Imp"] = "Diablotin"
 L["Key"] = "Clé"
-L["L-DQuote"] = "\""
 L["Lothos Riftwaker"] = "Lothos Ouvrefaille"
 L["Love is in the Air"] = "De l'amour dans l'air"
 L["Lower"] = "En bas"
 L["L-Parenthesis"] = "("
-L["L-SBracket"] = "["
 L["Lunar Festival"] = "Festival lunaire"
 L["MapA"] = " [A]"
 L["MapB"] = " [B]"
@@ -238,8 +187,6 @@ L["MapG"] = " [G]"
 L["MapH"] = " [H]"
 L["MapI"] = " [I]"
 L["MapJ"] = " [J]"
-L["MapsNotFound"] = [=[Le donjon actuellement sélectionné n'a pas d'image de la carte correspondante.
-Assurez-vous d'avoir installé le bon module de cartes d'Atlas]=]
 L["Meeting Stone"] = "Pierre de rencontre"
 L["Middle"] = "Milieu"
 L["Midsummer Festival"] = "Solstice d'été : la fête du Feu"
@@ -252,21 +199,16 @@ L["Optional"] = "Optionel"
 L["Orange"] = "Orange"
 L["Orb of Command"] = "Orbe de Commandement"
 L["Outside"] = "Extérieur"
-L["Period"] = "."
 L["Portal"] = "Portail"
 L["Protection Warrior"] = "Guerrier Protection"
 L["Purple"] = "Violet"
 L["Random"] = "Aléatoire"
 L["Rare"] = "Rare"
-L["R-DQuote"] = "\""
 L["Repair"] = "Réparation"
 L["Retribution Paladin"] = "Paladin Vindicte"
-L["Rewards"] = "Récompenses"
 L["R-Parenthesis"] = ") "
-L["R-SBracket"] = "]"
 L["Scarshield Quartermaster <Scarshield Legion>"] = "Intendant du Bouclier balafré <Légion du Bouclier balafré>"
 L["Second Stop"] = "Deuxième arrêt"
-L["Semicolon"] = "; "
 L["Shadow Priest"] = "Prêtre Ombre"
 L["Slash"] = "/ "
 L["Soridormi <The Scale of Sands>"] = "Soridormi <La Balance des sables>"
@@ -295,4 +237,5 @@ L["West"] = "Ouest"
 L["Yarley <Armorer>"] = "Yarley <Armurier>"
 L["Zaladormu"] = "Zaladormu"
 
-end
+L["Find group for this instance"] = "Rechercher un groupe pour cette instance"
+L["LFG is unavailable until level 10"] = "LFG n'est pas disponible jusqu'au niveau 10"

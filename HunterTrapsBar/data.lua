@@ -5,10 +5,12 @@
 
 FLO_ASPECT_SPELLS = {
 	["HUNTER"] = {
-		{ id = 27753 },-- frost
-		{ id = 13809 },-- freezing
+		{ id = 77769 },-- trap launcher MISTS		
+		{ id = 27025 },-- explosive WRATH
+		{ id = 13812 },-- explosive MISTS
+		{ id = 13809 },-- frost/ice WRATH/MISTS
+		{ id = 27753 },-- freezing
 		{ id = 13795 },-- immolate
-		{ id = 27025 },-- explosive
 		{ id = 43449 },-- snake
 	}
 };

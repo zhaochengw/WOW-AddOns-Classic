@@ -6,7 +6,7 @@ local ADDON_NAME, private = ...
 local LibStub = _G.LibStub
 local RareScanner = LibStub("AceAddon-3.0"):GetAddon("RareScanner")
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner", false)
-local LibDialog = LibStub("LibDialog-1.0")
+local LibDialog = LibStub("LibDialog-1.0RS")
 
 local RSLootOptions = private.NewLib("RareScannerLootOptions")
 
@@ -48,18 +48,24 @@ private.ITEM_QUALITY = {
 local SPEAR_ID = 17 --CHECK (none uses it)
 
 private.ITEM_CLASSES = {
-	[Enum.ItemClass.Consumable] = { 0, 1, 2, 3, 4, 5, 7, 8 }, --consumables
-	[Enum.ItemClass.Container] = { 0, 1, 2, 3, 4, 5, 6, 7 }, --bags
+	[Enum.ItemClass.Consumable] = { 0, 1, 2, 3, 5, 7, 8, 9 }, --consumables
+	[Enum.ItemClass.Container] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, --bags
 	[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Bows, Enum.ItemWeaponSubclass.Guns, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Warglaive, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Bearclaw, Enum.ItemWeaponSubclass.Catclaw, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Thrown, SPEAR_ID, Enum.ItemWeaponSubclass.Crossbow, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole }, --weapons
-	[Enum.ItemClass.Gem] = { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, --gemes
-	[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Cloth, Enum.ItemArmorSubclass.Leather, Enum.ItemArmorSubclass.Mail, Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Shield, Enum.ItemArmorSubclass.Libram, Enum.ItemArmorSubclass.Idol, Enum.ItemArmorSubclass.Totem }, --armor
-	[Enum.ItemClass.Reagent] = { 0 }, --consumable
+	[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Generic, Enum.ItemArmorSubclass.Cloth, Enum.ItemArmorSubclass.Leather, Enum.ItemArmorSubclass.Mail, Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Cosmetic, Enum.ItemArmorSubclass.Shield, Enum.ItemArmorSubclass.Libram, Enum.ItemArmorSubclass.Idol, Enum.ItemArmorSubclass.Totem, Enum.ItemArmorSubclass.Sigil, Enum.ItemArmorSubclass.Relic }, --armor
+	[Enum.ItemClass.Reagent] = { 0, 1 }, --consumable
 	[Enum.ItemClass.Projectile] = { 2, 3 }, --projectile
-	[Enum.ItemClass.Tradegoods] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }, --tradeables
-	[Enum.ItemClass.Recipe] = { Enum.ItemRecipeSubclass.Book, Enum.ItemRecipeSubclass.Leatherworking, Enum.ItemRecipeSubclass.Tailoring, Enum.ItemRecipeSubclass.Engineering, Enum.ItemRecipeSubclass.Blacksmithing, Enum.ItemRecipeSubclass.Cooking, Enum.ItemRecipeSubclass.Alchemy, Enum.ItemRecipeSubclass.FirstAid, Enum.ItemRecipeSubclass.Enchanting, Enum.ItemRecipeSubclass.Fishing, Enum.ItemRecipeSubclass.Jewelcrafting }, --recipes
+	[Enum.ItemClass.Tradegoods] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16 }, --tradeables
+	--[Enum.ItemClass.ItemEnhancement] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }, --object improvements
+	[Enum.ItemClass.Recipe] = { Enum.ItemRecipeSubclass.Book, Enum.ItemRecipeSubclass.Leatherworking, Enum.ItemRecipeSubclass.Tailoring, Enum.ItemRecipeSubclass.Engineering, Enum.ItemRecipeSubclass.Blacksmithing, Enum.ItemRecipeSubclass.Cooking, Enum.ItemRecipeSubclass.Alchemy, Enum.ItemRecipeSubclass.FirstAid, Enum.ItemRecipeSubclass.Enchanting, Enum.ItemRecipeSubclass.Fishing, Enum.ItemRecipeSubclass.Jewelcrafting, Enum.ItemRecipeSubclass.Inscription }, --recipes
+	-- [10] = { }, --money (obsolete)
+	-- [Enum.ItemClass.Quiver] = { 0 }, --quiver  (obsolete)
 	[Enum.ItemClass.Questitem] = { 0 }, --quests
 	[Enum.ItemClass.Key] = { 0, 1 }, --keys
+	-- [14] = { }, --permanent (obsolete)
 	[Enum.ItemClass.Miscellaneous] = { Enum.ItemMiscellaneousSubclass.Junk, Enum.ItemMiscellaneousSubclass.Reagent, Enum.ItemMiscellaneousSubclass.CompanionPet, Enum.ItemMiscellaneousSubclass.Holiday, Enum.ItemMiscellaneousSubclass.Other, Enum.ItemMiscellaneousSubclass.Mount }, --miscellaneous
+	--[Enum.ItemClass.Glyph] = { 0 }, --glyphs
+	[Enum.ItemClass.Battlepet] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, --battle pets
+	--[Enum.ItemClass.WowToken] = { 0 }, --wow token
 }
 
 -----------------------------------------------------------------------
@@ -73,7 +79,7 @@ local function GetMainCategories()
 		main_categories = {}
 		
 		for k, v in pairs(private.ITEM_CLASSES) do
-			main_categories[k] = GetItemClassInfo(k)
+			main_categories[k] = C_Item.GetItemClassInfo(k)
 		end
 	end
 	
@@ -83,7 +89,7 @@ end
 local function LoadSubcategoryCombo(mainClassID)
 	options.args.filters.args.category_filters.args.lootFilters.values = {}
 	for _, subcategoryID in ipairs(private.ITEM_CLASSES[mainClassID]) do
-		options.args.filters.args.category_filters.args.lootFilters.values[subcategoryID] = GetItemSubClassInfo(mainClassID, subcategoryID)
+		options.args.filters.args.category_filters.args.lootFilters.values[subcategoryID] = C_Item.GetItemSubClassInfo(mainClassID, subcategoryID)
 	end
 end
 
@@ -120,7 +126,11 @@ end
 -- Options tab: Display
 -----------------------------------------------------------------------
 
+local customLine = "custom_%s_line"
+
 function RSLootOptions.GetLootOptions()	
+	local customItemsPosition = 7
+	
 	if (not options) then
 		private.loot_toggle_all = true
 		private.loot_main_category_ID = nil
@@ -214,6 +224,30 @@ function RSLootOptions.GetLootOptions()
 							end,
 							width = "full",
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+						},
+						canImogit = {
+							order = 1,
+							type = "toggle",
+							name = AL["LOOT_TOOLTIPS_CANIMOGIT"],
+							desc = AL["LOOT_TOOLTIPS_CANIMOGIT_DESC"],
+							get = function() return RSConfigDB.IsShowingLootCanimogitTooltip() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingLootCanimogitTooltip(value)
+							end,
+							width = "full",
+							disabled = function() return (not CanIMogIt or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap())) end,
+						},
+						tsm = {
+							order = 2,
+							type = "toggle",
+							name = AL["LOOT_TOOLTIPS_TSM"],
+							desc = AL["LOOT_TOOLTIPS_TSM_DESC"],
+							get = function() return RSConfigDB.IsShowingLootTSMTooltip() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingLootTSMTooltip(value)
+							end,
+							width = "full",
+							disabled = function() return (not TSM_API or not TSM_API.GetCustomPriceValue or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap())) end,
 						}
 					},
 					disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
@@ -286,8 +320,20 @@ function RSLootOptions.GetLootOptions()
 							width = "full",
 							disabled = function() return (not RSConfigDB.IsFilteringByExplorerResults()) end,
 						},
-						open_explorer = {
+						show_appearances = {
 							order = 6,
+							type = "toggle",
+							name = AL["LOOT_EXPLORER_SHOW_MISSING_APPEARANCES"],
+							desc = AL["LOOT_EXPLORER_SHOW_MISSING_APPEARANCES_DESC"],
+							get = function() return RSConfigDB.IsShowingMissingAppearances() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingMissingAppearances(value)
+							end,
+							width = "full",
+							disabled = function() return (not RSConfigDB.IsFilteringByExplorerResults()) end,
+						},
+						open_explorer = {
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition,
 							name = AL["LOOT_EXPLORER_OPEN"],
 							desc = AL["LOOT_EXPLORER_OPEN"],
 							type = "execute",
@@ -297,12 +343,12 @@ function RSLootOptions.GetLootOptions()
 							width = "normal",
 						},
 						separator_reset = {
-							order = 7,
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition + 1,
 							type = "header",
 							name = AL["LOOT_RESET"],
 						},
 						reset = {
-							order = 8,
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition + 2,
 							name = AL["LOOT_RESET"],
 							desc = AL["LOOT_RESET_DESC"],
 							type = "execute",
@@ -314,7 +360,7 @@ function RSLootOptions.GetLootOptions()
 						},
 						category_filters = {
 							type = "group",
-							order = 9,
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition + 3,
 							name = AL["LOOT_CATEGORY_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_CATEGORY_FILTERS_DESC"],
@@ -360,8 +406,8 @@ function RSLootOptions.GetLootOptions()
 											private.loot_toggle_all = true
 										end
 		
-										for _, v in pairs(options.args.filters.args.category_filters.args.lootFilters.values) do
-											RSConfigDB.SetLootFilterByCategory(private.loot_main_category_ID, v, private.loot_toggle_all)
+										for k, _ in pairs(options.args.filters.args.category_filters.args.lootFilters.values) do
+											RSConfigDB.SetLootFilterByCategory(private.loot_main_category_ID, k, private.loot_toggle_all)
 										end
 									end,
 									width = "full",
@@ -381,10 +427,11 @@ function RSLootOptions.GetLootOptions()
 									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								}
 							},
+							disabled = function() return (RSConfigDB.IsFilteringByExplorerResults()) end,
 						},
 						individual = {
 							type = "group",
-							order = 10,
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition + 4,
 							name = AL["LOOT_INDIVIDUAL_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_INDIVIDUAL_FILTERS_DESC"],
@@ -420,7 +467,7 @@ function RSLootOptions.GetLootOptions()
 						},
 						other_filters = {
 							type = "group",
-							order = 11,
+							order = RSUtils.GetTableLength(RSCollectionsDB.GetItemGroups()) + customItemsPosition + 5,
 							name = AL["LOOT_OTHER_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_OTHER_FILTERS_DESC"],
@@ -494,6 +541,23 @@ function RSLootOptions.GetLootOptions()
 		}
 	end
 		
+	-- Load custom item filters
+	for groupKey, groupName in pairs(RSCollectionsDB.GetItemGroups()) do
+		options.args.filters.args[string.format(customLine, groupKey)] = {
+			order = customItemsPosition,
+			type = "toggle",
+			name = string.format(AL["LOOT_EXPLORER_SHOW_MISSING_CUSTOM"], groupName),
+			desc = string.format(AL["LOOT_EXPLORER_SHOW_MISSING_CUSTOM_DESC"], groupName),
+			get = function() return RSConfigDB.IsShowingCustomItems(groupKey) end,
+			set = function(_, value)
+				RSConfigDB.SetShowingCustomItems(groupKey, value)
+			end,
+			width = "full",
+			disabled = function() return (not RSConfigDB.IsFilteringByExplorerResults()) end,
+		}
+		customItemsPosition = customItemsPosition + 1
+	end
+	
 	-- Load filtered items
 	LoadFilteredItems()
 

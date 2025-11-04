@@ -196,6 +196,9 @@ function QuestieTBCQuestFixes:Load()
         [1322] = {
             [questKeys.objectivesText] = {"Acquire 5 Acidic Venom Sacs for Do'gol in Brackenwall Village."},
         },
+        [1361] = {
+            [questKeys.startedBy] = {{2229,4485,10540}},
+        },
         [1437] = {
             [questKeys.triggerEnd] = {"Find and search Tyranis and Dalinda Malem's wagon", {[zoneIDs.DESOLACE]={{56.52,17.84}}}},
         },
@@ -222,6 +225,9 @@ function QuestieTBCQuestFixes:Load()
         },
         [1687] = {
             [questKeys.questLevel] = -1,
+        },
+        [1698] = {
+            [questKeys.startedBy] = {{5479,7315}},
         },
         [1699] = {
             [questKeys.triggerEnd] = {"Enter the Rethban Caverns", {[zoneIDs.REDRIDGE_MOUNTAINS]={{19.22,25.25}}}},
@@ -1907,6 +1913,7 @@ function QuestieTBCQuestFixes:Load()
         [10106] = {
             [questKeys.questLevel] = -1,
             [questKeys.requiredMaxRep] = {},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [10107] = {
             [questKeys.objectives] = {{{18261,"Hear the Tale of the Blademaster",Questie.ICON_TYPE_TALK}}},
@@ -1917,6 +1924,7 @@ function QuestieTBCQuestFixes:Load()
         [10110] = {
             [questKeys.questLevel] = -1,
             [questKeys.requiredMaxRep] = {},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [10111] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Jump!"), 0, {{"object", 183146}}}},

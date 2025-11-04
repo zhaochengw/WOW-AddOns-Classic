@@ -30,6 +30,28 @@ local Localization={
 		OptionsSetting_Integration_Format="%1$s Integration |cff%2$s(%3$s)|r";--	Receives title/name, color code, and load state
 		OptionsSetting_Integration_Loaded="Loaded";
 	};
+	ruRU={--	Translated by ZamestoTV
+--		Options Panel
+		Options_ByAuthor_Format="от %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="Достижения";
+		OptionsSetting_Links_BattlePet="Боевые питомцы";
+		OptionsSetting_Links_BattlePet_Ability="Способности";
+		OptionsSetting_Links_CalendarEvent="События календаря";
+		OptionsSetting_Links_GarrisonFollower="Гарнизонные соратники";
+		OptionsSetting_Links_GarrisonFollower_Ability="Способности";
+		OptionsSetting_Links_Item="Предметы";
+		OptionsSetting_Links_Player="Игроки";
+		OptionsSetting_Links_Player_RaceGender="Раса/Пол";
+		OptionsSetting_Links_Player_Class="Класс";
+		OptionsSetting_Links_Spell="Заклинания";
+		OptionsSetting_Links_Tradeskill="Профессии";
+		OptionsSetting_Links_Transmog="Трансмогрификация";
+
+		OptionsSetting_Integration_Format="Интеграция %1$s |cff%2$s(%3$s)|r";--	Receives title/name, color code, and load state
+		OptionsSetting_Integration_Loaded="Загружено";
+	};
 };
 
 ----------------------------------

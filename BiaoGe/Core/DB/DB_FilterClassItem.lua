@@ -82,9 +82,9 @@ BG.Init(function()
             ["EVOKER" .. "3"] = { icon = "Interface/Icons/ability_evoker_reversion_green", name = L["唤魔师-增辉"] },
             ["DEMONHUNTER" .. "1"] = { icon = "Interface/Icons/ability_demonhunter_specdps", name = L["恶魔猎手-浩劫"] },
             ["DEMONHUNTER" .. "2"] = { icon = "Interface/Icons/spell_shadow_demonform", name = L["恶魔猎手-复仇"] },
-            ["MONK" .. "1"] = { icon = "Interface/Icons/ability_monk_standingkick", name = L["武僧-酒仙"] },
-            ["MONK" .. "2"] = { icon = "Interface/Icons/ability_monk_expelharm", name = L["武僧-织雾"] },
-            ["MONK" .. "3"] = { icon = "Interface/Icons/ability_monk_summontigerstatue", name = L["武僧-踏风"] },
+            ["MONK" .. "1"] = { icon = "Interface/Icons/spell_monk_brewmaster_spec", name = L["武僧-酒仙"] },
+            ["MONK" .. "2"] = { icon = "Interface/Icons/spell_monk_mistweaver_spec", name = L["武僧-织雾"] },
+            ["MONK" .. "3"] = { icon = "Interface/Icons/spell_monk_windwalker_spec", name = L["武僧-踏风"] },
         }
 
         for i = 1, MaxFilter[class] do
@@ -127,9 +127,9 @@ BG.Init(function()
             "Interface/Icons/spell_holy_guardianspirit",        -- 神圣
             "Interface/Icons/spell_shadow_shadowwordpain",      -- 暗影
 
-            "Interface/Icons/ability_monk_standingkick",        -- 武僧
-            "Interface/Icons/ability_monk_expelharm",
-            "Interface/Icons/ability_monk_summontigerstatue",
+            "Interface/Icons/spell_monk_brewmaster_spec",       -- 武僧
+            "Interface/Icons/spell_monk_mistweaver_spec",
+            "Interface/Icons/spell_monk_windwalker_spec",
         }
         if BG.IsRetail then
             tinsert(BG.FilterClassItemDB.NewIcon, "Interface/Icons/ability_evoker_powerswell")
@@ -227,6 +227,79 @@ BG.Init(function()
                 ["PRIEST" .. "1"] = n1,    -- MS
                 ["PRIEST" .. "2"] = fx1,   -- AM
             }
+        elseif BG.IsMOP then
+            BG.FilterClassItemDB.ShuXing = {
+                { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
+                { name = "敏捷", value = "%+%C-" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
+                { name = "智力", value = "%+%C-" .. ITEM_MOD_INTELLECT_SHORT, name2 = ITEM_MOD_INTELLECT_SHORT },
+                { name = "精神", value = "%+%C-" .. ITEM_MOD_SPIRIT_SHORT, name2 = ITEM_MOD_SPIRIT_SHORT },
+                -- { name = "5回法力值", value = ITEM_MOD_MANA_REGENERATION },
+                { name = "精通", value = "%+%C-" .. ITEM_MOD_MASTERY_RATING_SHORT, name2 = ITEM_MOD_MASTERY_RATING_SHORT },
+                { name = "命中", value = HIT_LCD },
+                { name = "急速", value = STAT_HASTE },
+                { name = "暴击", value = STAT_CRITICAL_STRIKE },
+                { name = "韧性", value = RESILIENCE },
+                { name = "防御", value = STAT_CATEGORY_DEFENSE },
+                { name = "招架", value = STAT_PARRY },
+                { name = "躲闪", value = STAT_DODGE },
+                -- { name = "格挡", value = ITEM_MOD_BLOCK_RATING_SHORT },
+                -- { name = "格挡值", value = ITEM_MOD_BLOCK_VALUE_SHORT },
+                { name = "攻击强度", value = ITEM_MOD_ATTACK_POWER_SHORT },
+                { name = "精准", value = STAT_EXPERTISE },
+                { name = "近战攻击", value = MELEE_ATTACK },
+                { name = "远程攻击", value = RANGED_ATTACK },
+                { name = "法术强度", value = ITEM_MOD_SPELL_POWER_SHORT },
+            }
+            local t1 = { "敏捷", "智力", "精神", "法术强度", } -- FZ, FQ
+            local t2 = { "敏捷", "智力", "精神", "法术强度", "格挡", "格挡值", } -- DKT
+            local t3 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", } -- 熊T
+            local t4 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", } -- 酒仙
+
+            local dps1 = { "敏捷", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- KBZ/CJQ/DK
+            local dps2 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- DZ/猫/踏风
+            local dps3 = { "力量", "智力", "精神", "格挡", "格挡值", "招架", "躲闪", "防御", } -- ZQS
+            local dps4 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- LR
+
+            local fx1 = { "力量", "敏捷", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", } -- 法系dps
+            local fx2 = { "力量", "敏捷", "精神", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", }
+
+            local n1 = { "力量", "敏捷", "命中", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", } -- 治疗
+
+            BG.FilterClassItem_Default.ShuXing = {
+                ["DEATHKNIGHT" .. "1"] = t2,   -- 血DK
+                ["DEATHKNIGHT" .. "2"] = dps1, -- DK
+
+                ["WARRIOR" .. "1"] = t1,       -- FZ
+                ["WARRIOR" .. "2"] = dps1,     -- KBZ
+
+                ["PALADIN" .. "1"] = n1,       -- NQ
+                ["PALADIN" .. "2"] = t1,       -- FQ
+                ["PALADIN" .. "3"] = dps1,     -- CJQ
+
+                ["HUNTER" .. "1"] = dps4,      -- LR
+
+                ["SHAMAN" .. "1"] = fx1,       -- 元素
+                ["SHAMAN" .. "2"] = dps3,      -- ZQS
+                ["SHAMAN" .. "3"] = n1,        -- NS
+
+                ["DRUID" .. "1"] = fx1,        -- 咕咕
+                ["DRUID" .. "2"] = t3,         -- 熊T
+                ["DRUID" .. "3"] = dps2,       -- 猫D
+                ["DRUID" .. "4"] = n1,         -- ND
+
+                ["ROGUE" .. "1"] = dps2,       -- DZ
+
+                ["WARLOCK" .. "1"] = fx1,      -- SS
+
+                ["MAGE" .. "1"] = fx1,         -- FS
+
+                ["PRIEST" .. "1"] = n1,        -- MS
+                ["PRIEST" .. "2"] = fx1,       -- AM
+
+                ["MONK" .. "1"] = t4,          -- 酒仙
+                ["MONK" .. "2"] = n1,          -- 织雾
+                ["MONK" .. "3"] = dps2,        -- 踏风
+            }
         elseif BG.IsWLK or BG.IsCTM then
             if BG.IsWLK then
                 BG.FilterClassItemDB.ShuXing = {
@@ -322,79 +395,6 @@ BG.Init(function()
                 ["PRIEST" .. "2"] = fx1,       -- AM
 
                 ["MONK" .. "1"] = t2,          -- 酒仙
-                ["MONK" .. "2"] = n1,          -- 织雾
-                ["MONK" .. "3"] = dps2,        -- 踏风
-            }
-        elseif BG.IsMOP then
-            BG.FilterClassItemDB.ShuXing = {
-                { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
-                { name = "敏捷", value = "%+%C-" .. SPEC_FRAME_PRIMARY_STAT_AGILITY, name2 = SPEC_FRAME_PRIMARY_STAT_AGILITY },
-                { name = "智力", value = "%+%C-" .. ITEM_MOD_INTELLECT_SHORT, name2 = ITEM_MOD_INTELLECT_SHORT },
-                { name = "精神", value = "%+%C-" .. ITEM_MOD_SPIRIT_SHORT, name2 = ITEM_MOD_SPIRIT_SHORT },
-                -- { name = "5回法力值", value = ITEM_MOD_MANA_REGENERATION },
-                { name = "精通", value = "%+%C-" .. ITEM_MOD_MASTERY_RATING_SHORT, name2 = ITEM_MOD_MASTERY_RATING_SHORT },
-                { name = "命中", value = HIT_LCD },
-                { name = "急速", value = STAT_HASTE },
-                { name = "暴击", value = STAT_CRITICAL_STRIKE },
-                { name = "韧性", value = RESILIENCE },
-                { name = "防御", value = STAT_CATEGORY_DEFENSE },
-                { name = "招架", value = STAT_PARRY },
-                { name = "躲闪", value = STAT_DODGE },
-                -- { name = "格挡", value = ITEM_MOD_BLOCK_RATING_SHORT },
-                -- { name = "格挡值", value = ITEM_MOD_BLOCK_VALUE_SHORT },
-                { name = "攻击强度", value = ITEM_MOD_ATTACK_POWER_SHORT },
-                { name = "精准", value = STAT_EXPERTISE },
-                { name = "近战攻击", value = MELEE_ATTACK },
-                { name = "远程攻击", value = RANGED_ATTACK },
-                { name = "法术强度", value = ITEM_MOD_SPELL_POWER_SHORT },
-            }
-            local t1 = { "敏捷", "智力", "精神", "法术强度", } -- FZ, FQ
-            local t2 = { "敏捷", "智力", "精神", "法术强度", "格挡", "格挡值", } -- DKT
-            local t3 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", } -- 熊T
-            local t4 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", } -- 酒仙
-
-            local dps1 = { "敏捷", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- KBZ/CJQ/DK
-            local dps2 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- DZ/猫/踏风
-            local dps3 = { "力量", "智力", "精神", "格挡", "格挡值", "招架", "躲闪", "防御", } -- ZQS
-            local dps4 = { "力量", "智力", "精神", "法术强度", "格挡", "格挡值", "招架", "躲闪", "防御", } -- LR
-
-            local fx1 = { "力量", "敏捷", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", } -- 法系dps
-            local fx2 = { "力量", "敏捷", "精神", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", } -- 元素萨
-
-            local n1 = { "力量", "敏捷", "命中", "格挡", "格挡值", "招架", "躲闪", "防御", "精准", "攻击强度", "护甲穿透", "近战攻击", "远程攻击", } -- 治疗
-
-            BG.FilterClassItem_Default.ShuXing = {
-                ["DEATHKNIGHT" .. "1"] = t2,   -- 血DK
-                ["DEATHKNIGHT" .. "2"] = dps1, -- DK
-
-                ["WARRIOR" .. "1"] = t1,       -- FZ
-                ["WARRIOR" .. "2"] = dps1,     -- KBZ
-
-                ["PALADIN" .. "1"] = n1,       -- NQ
-                ["PALADIN" .. "2"] = t1,       -- FQ
-                ["PALADIN" .. "3"] = dps1,     -- CJQ
-
-                ["HUNTER" .. "1"] = dps4,      -- LR
-
-                ["SHAMAN" .. "1"] = fx2,       -- 元素
-                ["SHAMAN" .. "2"] = dps3,      -- ZQS
-                ["SHAMAN" .. "3"] = n1,        -- NS
-
-                ["DRUID" .. "1"] = fx1,        -- 咕咕
-                ["DRUID" .. "2"] = t3,         -- 熊T
-                ["DRUID" .. "3"] = dps2,       -- 猫D
-                ["DRUID" .. "4"] = n1,         -- ND
-
-                ["ROGUE" .. "1"] = dps2,       -- DZ
-
-                ["WARLOCK" .. "1"] = fx1,      -- SS
-
-                ["MAGE" .. "1"] = fx1,         -- FS
-
-                ["PRIEST" .. "1"] = n1,        -- MS
-                ["PRIEST" .. "2"] = fx1,       -- AM
-
-                ["MONK" .. "1"] = t4,          -- 酒仙
                 ["MONK" .. "2"] = n1,          -- 织雾
                 ["MONK" .. "3"] = dps2,        -- 踏风
             }
@@ -720,6 +720,42 @@ BG.Init(function()
                 ["PRIEST" .. "1"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- MS
                 ["PRIEST" .. "2"]  = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], G["圣契"], G["神像"], G["图腾"] }, -- AM
             }
+        elseif BG.IsMOP then
+            BG.FilterClassItemDB.Armor = {
+                { name = "1", value = L["布甲"], onenter = L["全部布甲会被过滤（披风除外，否则本来合适你的披风也可能会被过滤）"] },
+                { name = "2", value = L["皮甲"] },
+                { name = "3", value = L["锁甲"] },
+                { name = "4", value = L["板甲"] },
+                { name = "6", value = SHIELDSLOT },
+                { name = "0", value = INVTYPE_HOLDABLE },
+            }
+            BG.FilterClassItem_Default.Armor = {
+                ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- 血DK
+                ["DEATHKNIGHT" .. "2"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
+                ["WARRIOR" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FZ
+                ["WARRIOR" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
+                ["PALADIN" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], }, -- NQ
+                ["PALADIN" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FQ
+                ["PALADIN" .. "3"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- CJQ
+                ["HUNTER" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- LR
+                ["SHAMAN" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- 元素
+                ["SHAMAN" .. "2"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- ZQS
+                ["SHAMAN" .. "3"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- NS
+                ["DRUID" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- 咕咕
+                ["DRUID" .. "2"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
+                ["DRUID" .. "3"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
+                ["DRUID" .. "4"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
+                ["ROGUE" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- DZ
+                ["WARLOCK" .. "1"]     = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- SS
+                ["MAGE" .. "1"]        = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- FS
+                ["PRIEST" .. "1"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- MS
+                ["PRIEST" .. "2"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- AM
+
+
+                ["MONK" .. "1"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
+                ["MONK" .. "2"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
+                ["MONK" .. "3"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
+            }
         elseif BG.IsWLK then
             BG.FilterClassItemDB.Armor = {
                 { name = "1", value = L["布甲"], onenter = L["全部布甲会被过滤（披风除外，否则本来合适你的披风也可能会被过滤）"] },
@@ -794,42 +830,6 @@ BG.Init(function()
                 ["MONK" .. "1"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 熊T
                 ["MONK" .. "2"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"] }, -- ND
                 ["MONK" .. "3"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["神像"], G["圣契"], G["图腾"], G["魔印"], G["副手物品"] }, -- 猫D
-            }
-        elseif BG.IsMOP then
-            BG.FilterClassItemDB.Armor = {
-                { name = "1", value = L["布甲"], onenter = L["全部布甲会被过滤（披风除外，否则本来合适你的披风也可能会被过滤）"] },
-                { name = "2", value = L["皮甲"] },
-                { name = "3", value = L["锁甲"] },
-                { name = "4", value = L["板甲"] },
-                { name = "6", value = SHIELDSLOT },
-                { name = "0", value = INVTYPE_HOLDABLE },
-            }
-            BG.FilterClassItem_Default.Armor = {
-                ["DEATHKNIGHT" .. "1"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- 血DK
-                ["DEATHKNIGHT" .. "2"] = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
-                ["WARRIOR" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FZ
-                ["WARRIOR" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- DPS
-                ["PALADIN" .. "1"]     = { G["布甲"], G["皮甲"], G["锁甲"], }, -- NQ
-                ["PALADIN" .. "2"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["副手物品"] }, -- FQ
-                ["PALADIN" .. "3"]     = { G["布甲"], G["皮甲"], G["锁甲"], G["盾牌"], G["副手物品"] }, -- CJQ
-                ["HUNTER" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- LR
-                ["SHAMAN" .. "1"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- 元素
-                ["SHAMAN" .. "2"]      = { G["布甲"], G["皮甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- ZQS
-                ["SHAMAN" .. "3"]      = { G["布甲"], G["皮甲"], G["板甲"], }, -- NS
-                ["DRUID" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- 咕咕
-                ["DRUID" .. "2"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
-                ["DRUID" .. "3"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
-                ["DRUID" .. "4"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
-                ["ROGUE" .. "1"]       = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- DZ
-                ["WARLOCK" .. "1"]     = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- SS
-                ["MAGE" .. "1"]        = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- FS
-                ["PRIEST" .. "1"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- MS
-                ["PRIEST" .. "2"]      = { G["皮甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- AM
-
-
-                ["MONK" .. "1"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 熊T
-                ["MONK" .. "2"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], }, -- ND
-                ["MONK" .. "3"] = { G["布甲"], G["锁甲"], G["板甲"], G["盾牌"], G["副手物品"] }, -- 猫D
             }
         elseif BG.IsRetail then
             BG.FilterClassItemDB.Armor = {
@@ -933,7 +933,7 @@ BG.Init(function()
     ------------------坦克特殊过滤------------------
     do
         local type = "Tank"
-        if BG.IsWLK or BG.IsCTM or BG.IsMOP then
+        if not BG.IsVanilla then
             BG.FilterClassItemDB[type] = {
                 { name = "过滤坦克", value = L["过滤没有坦克属性的装备"], },
             }

@@ -2,7 +2,7 @@
 
 if not AL then return end
 
--- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
+-- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic-mists/localization
 -- Options
 AL["Add line break before source."] = "제작자 표시 전 위치에 추가"
 AL["Add new list"] = "새 목록 등록"
@@ -20,7 +20,6 @@ AL["Content bottom bar"] = "내용 하단 바"
 AL["Content phase settings"] = "내용 단계 설정"
 AL["Content top bar"] = "내용 상단 바"
 AL["Delete list"] = "목록 삭제"
-AL["Enable Atlas map integration if available."] = "아틀라스 애드온이 활성화 된 경우 가능하면 연동하여 표시"
 AL["Enable auto selection of bosses if available."] = "가능하면 보스 몬스터를 자동 선택하여 표시"
 AL["Enable auto selection of instances if available."] = "가능하면 던전을 자동 선택하여 표시"
 AL["Enable colored loot table names."] = "전리품 목록 이름에 색상화 하기"
@@ -55,6 +54,7 @@ AL["Show extra info in every tooltip."] = "모든 툴팁에 추가정보 보기"
 AL["Show favourite item icon in item tooltip"] = "아이템 툴팁에 즐겨찾기 아이템 아이콘 보기"
 AL["Show ID's."] = "아이템ID 보기"
 AL["Show Item level."] = "아이템 레벨 보기"
+AL["Show learned info for companions."] = "소환수 수집 여부를 표시합니다"
 AL["Show level range if available."] = "가능한 경우 레벨 범위를 표시"
 AL["Show listname in item tooltip"] = "아이템 툴팁에 목록 이름 표시"
 AL["Show minimap button."] = "미니맵 버튼 보기"

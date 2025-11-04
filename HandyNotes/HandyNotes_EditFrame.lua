@@ -4,14 +4,12 @@ local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
 local HN = HandyNotes:GetModule("HandyNotes")
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
 
-local WoW10 = select(4, GetBuildInfo()) >= 100000
-
 local info = {}
 local backdrop2 = {
-    bgFile = nil,
-    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    tile = true, tileSize = 16, edgeSize = 16,
-    insets = { left = 0, right = 0, top = 0, bottom = 0 },
+	bgFile = nil,
+	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+	tile = true, tileSize = 16, edgeSize = 16,
+	insets = { left = 0, right = 0, top = 0, bottom = 0 },
 }
 
 -- Create the main frame
@@ -23,10 +21,10 @@ HNEditFrame:SetWidth(350)
 HNEditFrame:SetHeight(235)
 HNEditFrame:SetPoint("BOTTOM", 0, 90)
 HNEditFrame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true, tileSize = 32, edgeSize = 32,
-    insets = { left = 11, right = 12, top = 12, bottom = 11 },
+	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+	tile = true, tileSize = 32, edgeSize = 32,
+	insets = { left = 11, right = 12, top = 12, bottom = 11 },
 })
 --HNEditFrame:SetBackdropColor(0, 0, 0, 0.75)
 HNEditFrame:SetBackdropColor(0,0,0,1)
@@ -54,10 +52,10 @@ temp:SetPoint("TOP", 0, 8)
 temp:EnableMouse(true)
 temp:RegisterForDrag("LeftButton")
 temp:SetScript("OnDragStart", function(self)
-    self:GetParent():StartMoving()
+	self:GetParent():StartMoving()
 end)
 temp:SetScript("OnDragStop", function(self)
-    self:GetParent():StopMovingOrSizing()
+	self:GetParent():StopMovingOrSizing()
 end)
 
 -- Create the Close button
@@ -111,25 +109,25 @@ HNEditFrame.descinputbox:SetAutoFocus(false)
 HNEditFrame.descinputbox:SetFontObject("GameFontHighlightSmall")
 HNEditFrame.descinputbox:SetMultiLine(true)
 HNEditFrame.descinputbox:SetScript("OnCursorChanged", function(self, x, y, w, h)
-    local scrollFrame = self:GetParent()
-    local height = scrollFrame:GetHeight()
-    local range = scrollFrame:GetVerticalScrollRange()
-    local scroll = scrollFrame:GetVerticalScroll()
-    local cursorOffset = -y
-    while ( cursorOffset < scroll ) do
-        scroll = (scroll - (height / 2))
-        if ( scroll < 0 ) then
-            scroll = 0
-        end
-        scrollFrame:SetVerticalScroll(scroll)
-    end
-    while ( (cursorOffset + h) > (scroll + height) and scroll < range ) do
-        scroll = (scroll + (height / 2))
-        if ( scroll > range ) then
-            scroll = range
-        end
-        scrollFrame:SetVerticalScroll(scroll)
-    end
+	local scrollFrame = self:GetParent()
+	local height = scrollFrame:GetHeight()
+	local range = scrollFrame:GetVerticalScrollRange()
+	local scroll = scrollFrame:GetVerticalScroll()
+	local cursorOffset = -y
+	while ( cursorOffset < scroll ) do
+		scroll = (scroll - (height / 2))
+		if ( scroll < 0 ) then
+			scroll = 0
+		end
+		scrollFrame:SetVerticalScroll(scroll)
+	end
+	while ( (cursorOffset + h) > (scroll + height) and scroll < range ) do
+		scroll = (scroll + (height / 2))
+		if ( scroll > range ) then
+			scroll = range
+		end
+		scrollFrame:SetVerticalScroll(scroll)
+	end
 end)
 HNEditFrame.descinputbox:SetScript("OnEscapePressed", HNEditFrame.descinputbox.ClearFocus)
 -- Attach the ScrollChild to the ScrollFrame
@@ -149,38 +147,38 @@ HNEditFrame.icondropdown.texture:SetPoint("RIGHT", HNEditFrame.icondropdown, -41
 HNEditFrame.icondropdown.Text:SetPoint("RIGHT", HNEditFrame.icondropdown.texture, "LEFT", -3, 0)
 HNEditFrame.icondropdown.Text:SetWidth(HNEditFrame.icondropdown.Text:GetWidth() - 9)
 HNEditFrame.icondropdown.OnClick = function(button, value)
-    local t = HN.icons[value]
-    HNEditFrame.icondropdown.selectedValue = value
-    HNEditFrame.icondropdown.texture:SetTexture(t.icon)
-    if t.tCoordLeft then
-        HNEditFrame.icondropdown.texture:SetTexCoord(t.tCoordLeft, t.tCoordRight, t.tCoordTop, t.tCoordBottom)
-    else
-        HNEditFrame.icondropdown.texture:SetTexCoord(0, 1, 0, 1)
-    end
-    HNEditFrame.icondropdown.Text:SetText(t.text)
-    local color = t.color
-    if color then
-        HNEditFrame.icondropdown.Text:SetTextColor(color.r, color.g, color.b, color.a or 1)
-    else
-        HNEditFrame.icondropdown.Text:SetTextColor(1, 1, 1, 1)
-    end
+	local t = HN.icons[value]
+	HNEditFrame.icondropdown.selectedValue = value
+	HNEditFrame.icondropdown.texture:SetTexture(t.icon)
+	if t.tCoordLeft then
+		HNEditFrame.icondropdown.texture:SetTexCoord(t.tCoordLeft, t.tCoordRight, t.tCoordTop, t.tCoordBottom)
+	else
+		HNEditFrame.icondropdown.texture:SetTexCoord(0, 1, 0, 1)
+	end
+	HNEditFrame.icondropdown.Text:SetText(t.text)
+	local color = t.color
+	if color then
+		HNEditFrame.icondropdown.Text:SetTextColor(color.r, color.g, color.b, color.a or 1)
+	else
+		HNEditFrame.icondropdown.Text:SetTextColor(1, 1, 1, 1)
+	end
 end
 HNEditFrame.icondropdown.initialize = function(level)
-    wipe(info)
-    for i = 1, #HN.icons do
-        local t = HN.icons[i]
-        info.text = t.text
-        info.icon = t.icon
-        info.tCoordLeft = t.tCoordLeft
-        info.tCoordRight = t.tCoordRight
-        info.tCoordTop = t.tCoordTop
-        info.tCoordBottom = t.tCoordBottom
-        info.arg1 = i
-        info.func = HNEditFrame.icondropdown.OnClick
-        info.checked = HNEditFrame.icondropdown.selectedValue == i
-        info.keepShownOnClick = nil
-        UIDropDownMenu_AddButton(info)
-    end
+	wipe(info)
+	for i = 1, #HN.icons do
+		local t = HN.icons[i]
+		info.text = t.text
+		info.icon = t.icon
+		info.tCoordLeft = t.tCoordLeft
+		info.tCoordRight = t.tCoordRight
+		info.tCoordTop = t.tCoordTop
+		info.tCoordBottom = t.tCoordBottom
+		info.arg1 = i
+		info.func = HNEditFrame.icondropdown.OnClick
+		info.checked = HNEditFrame.icondropdown.selectedValue == i
+		info.keepShownOnClick = nil
+		UIDropDownMenu_AddButton(info)
+	end
 end
 
 -- Create the Show on Continent checkbox
@@ -218,15 +216,15 @@ HNEditFrame.cancelbutton:SetScript("OnClick", HNEditFrame.CloseButton:GetScript(
 
 -- Additional Behavior functions
 HNEditFrame:SetScript("OnMouseDown", function(self, button)
-    if MouseIsOver(HNEditFrame.descframe) and button == "LeftButton" then
-        HNEditFrame.descinputbox:SetFocus()
-    end
+	if MouseIsOver(HNEditFrame.descframe) and button == "LeftButton" then
+		HNEditFrame.descinputbox:SetFocus()
+	end
 end)
 HNEditFrame.titleinputbox:SetScript("OnTabPressed", function(self)
-    HNEditFrame.descinputbox:SetFocus()
+	HNEditFrame.descinputbox:SetFocus()
 end)
 HNEditFrame.descinputbox:SetScript("OnTabPressed", function(self)
-    HNEditFrame.titleinputbox:SetFocus()
+	HNEditFrame.titleinputbox:SetFocus()
 end)
 -- Makes ESC key close HNEditFrame
 tinsert(UISpecialFrames, "HNEditFrame")
@@ -236,27 +234,27 @@ tinsert(UISpecialFrames, "HNEditFrame")
 -- OnShow function to show a note for adding or editing
 
 HNEditFrame:SetScript("OnShow", function(self)
-    local data = HN.db.global[self.mapID][self.coord]
-    if data then
-        HNEditFrame.title:SetText(L["Edit Handy Note"])
-        HNEditFrame.titleinputbox:SetText(data.title)
-        HNEditFrame.descinputbox:SetText(data.desc)
-        HNEditFrame.icondropdown.OnClick(nil, data.icon)
-        HNEditFrame.continentcheckbox:SetChecked(data.cont)
-    else
-        HNEditFrame.title:SetText(L["Add Handy Note"])
-        HNEditFrame.titleinputbox:SetText("")
-        HNEditFrame.descinputbox:SetText("")
-        HNEditFrame.icondropdown.OnClick(nil, 1)
-        HNEditFrame.continentcheckbox:SetChecked(nil)
-    end
-    if WorldMapFrame:IsShown() then
-        self:SetParent(WorldMapFrame)
-        self:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 20)
-    else
-        self:SetParent(UIParent)
-        self:SetFrameLevel(10)
-    end
+	local data = HN.db.global[self.mapID][self.coord]
+	if data then
+		HNEditFrame.title:SetText(L["Edit Handy Note"])
+		HNEditFrame.titleinputbox:SetText(data.title)
+		HNEditFrame.descinputbox:SetText(data.desc)
+		HNEditFrame.icondropdown.OnClick(nil, data.icon)
+		HNEditFrame.continentcheckbox:SetChecked(data.cont)
+	else
+		HNEditFrame.title:SetText(L["Add Handy Note"])
+		HNEditFrame.titleinputbox:SetText("")
+		HNEditFrame.descinputbox:SetText("")
+		HNEditFrame.icondropdown.OnClick(nil, 1)
+		HNEditFrame.continentcheckbox:SetChecked(nil)
+	end
+	if WorldMapFrame:IsShown() then
+		self:SetParent(WorldMapFrame)
+		self:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 20)
+	else
+		self:SetParent(UIParent)
+		self:SetFrameLevel(10)
+	end
 end)
 
 
@@ -264,15 +262,15 @@ end)
 -- OnClick function to accept the changes for a new/edited note
 
 HNEditFrame.okbutton:SetScript("OnClick", function(self)
-    local data = HN.db.global[HNEditFrame.mapID][HNEditFrame.coord]
-    if not data then
-        data = {}
-        HN.db.global[HNEditFrame.mapID][HNEditFrame.coord] = data
-    end
-    data.title = HNEditFrame.titleinputbox:GetText()
-    data.desc = HNEditFrame.descinputbox:GetText()
-    data.icon = HNEditFrame.icondropdown.selectedValue
-    data.cont = HNEditFrame.continentcheckbox:GetChecked()
-    HNEditFrame:Hide()
-    HN:SendMessage("HandyNotes_NotifyUpdate", "HandyNotes")
+	local data = HN.db.global[HNEditFrame.mapID][HNEditFrame.coord]
+	if not data then
+		data = {}
+		HN.db.global[HNEditFrame.mapID][HNEditFrame.coord] = data
+	end
+	data.title = HNEditFrame.titleinputbox:GetText()
+	data.desc = HNEditFrame.descinputbox:GetText()
+	data.icon = HNEditFrame.icondropdown.selectedValue
+	data.cont = HNEditFrame.continentcheckbox:GetChecked()
+	HNEditFrame:Hide()
+	HN:SendMessage("HandyNotes_NotifyUpdate", "HandyNotes")
 end)

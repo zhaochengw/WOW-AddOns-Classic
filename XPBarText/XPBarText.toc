@@ -1,0 +1,10 @@
+﻿##Interface: 110200, 110205
+##Author: GeodesicDragon
+##Version: 2.5.50
+##SavedVariables: XPTConfig
+##Title: |cFFFF8000XP Bar Text|r
+##Notes: Shows XP details on the XP bar.
+
+Localisation.lua
+XPBarText_Retail.lua
+Options_Retail.lua

@@ -14,8 +14,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["(Troll)"] = "(Troll)"
 	L["(Undead)"] = "(Non Morto)"
-	L["< 4 stacks"] = "< 4 accumuli"
-	L["5 stacks"] = "5 accumuli"
 	L["Abilities"] = "Abilità"
 	L["Add Triggers"] = "Aggiungi Inneschi"
 	L["Always Active"] = "Sempre Attivo"
@@ -45,8 +43,6 @@ local L = WeakAuras.L
 	L["Bloodlust/Heroism"] = "Brama di Sangue/Eroismo"
 	L["buff"] = "buff"
 	L["Buffs"] = "Buffs"
-	L["Cancel"] = "Cancella"
-	L["Cast"] = "Lancia"
 	L["Charge and Buff Tracking"] = "Monitoraggio di cariche e potenziamenti"
 	L["Charge and Debuff Tracking"] = "Monitoraggio di cariche e penalità "
 	L["Charge and Duration Tracking"] = "Monitoraggio della carica e della durata"
@@ -63,10 +59,6 @@ local L = WeakAuras.L
 	L["Debuffs"] = "Debuffs"
 	--[[Translation missing --]]
 	L["dps buff"] = "dps buff"
-	--[[Translation missing --]]
-	L["General"] = "General"
-	--[[Translation missing --]]
-	L["Health"] = "Health"
 	--[[Translation missing --]]
 	L["Highlight while action is queued."] = "Highlight while action is queued."
 	--[[Translation missing --]]
@@ -90,10 +82,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["Master Channeler Rune"] = "Master Channeler Rune"
 	--[[Translation missing --]]
-	L["Max 3"] = "Max 3"
-	--[[Translation missing --]]
-	L["Max 4"] = "Max 4"
-	--[[Translation missing --]]
 	L["Next"] = "Next"
 	--[[Translation missing --]]
 	L["Only show the aura if the target has the debuff."] = "Only show the aura if the target has the debuff."
@@ -113,10 +101,6 @@ local L = WeakAuras.L
 	L["Other cooldown"] = "Other cooldown"
 	--[[Translation missing --]]
 	L["Pet alive"] = "Pet alive"
-	--[[Translation missing --]]
-	L["Pet Behavior"] = "Pet Behavior"
-	--[[Translation missing --]]
-	L["PvP Talents"] = "PvP Talents"
 	--[[Translation missing --]]
 	L["regen buff"] = "regen buff"
 	--[[Translation missing --]]
@@ -203,8 +187,6 @@ local L = WeakAuras.L
 	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."
 	--[[Translation missing --]]
 	L["Unknown Item"] = "Unknown Item"
-	--[[Translation missing --]]
-	L["Unknown Spell"] = "Unknown Spell"
 	--[[Translation missing --]]
 	L["Warrior cooldown"] = "Warrior cooldown"
 

@@ -1,4 +1,3 @@
--- $Id: LibBabble.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -23,17 +22,7 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --]]
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
--- Libraries
-local pairs = _G.pairs
-local LibStub, C_Map = _G.LibStub, _G.C_Map
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+
 local FOLDER_NAME, private = ...
 
 local MapData = private.MapData
@@ -55,14 +44,15 @@ Get english translations for non translated things. (Combines located and englis
 Only useable with LibBabble
 ]]
 function Atlas_GetLocaleLibBabble(typ)
-
 	local rettab = {}
 	local tab = LibStub(typ):GetBaseLookupTable()
 	local loctab = LibStub(typ):GetUnstrictLookupTable()
-	for k,v in pairs(loctab) do
+
+	for k, v in pairs(loctab) do
 		rettab[k] = v
 	end
-	for k,v in pairs(tab) do
+
+	for k, v in pairs(tab) do
 		if not rettab[k] then
 			if typ == "LibBabble-SubZone-3.0" then
 				rettab[k] = getAreaInfo(k) or v
@@ -71,5 +61,6 @@ function Atlas_GetLocaleLibBabble(typ)
 			end
 		end
 	end
+
 	return rettab
 end

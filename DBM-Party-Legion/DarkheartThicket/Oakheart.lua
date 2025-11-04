@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod(1655, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240714045506")
+mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
+
+mod:SetRevision("20250929055241")
 mod:SetCreatureID(103344)
 mod:SetEncounterID(1837)
 mod:SetHotfixNoticeRev(20240329000000)

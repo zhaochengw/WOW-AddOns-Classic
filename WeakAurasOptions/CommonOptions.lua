@@ -101,6 +101,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasDown = input.__down
   local hasDuplicate = input.__duplicate
   local hasApplyTemplate = input.__applyTemplate
+  local hasDynamicTextCodes = input.__dynamicTextCodes
   local defaultCollapsed = input.__collapsed
   local hiddenFunc = input.__hidden
   local notcollapsable = input.__notcollapsable
@@ -125,7 +126,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   end
 
   local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
-                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
+                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0) - (hasDynamicTextCodes and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = marginTop and "header" or "description",
@@ -243,6 +244,22 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
+    end
+
+    if hasDynamicTextCodes then
+      options[key .. "dynamicTextCodesButton"] = {
+        type = "execute",
+        name = L["Dynamic Text Replacements"],
+        desc = L["There are several special codes available to make this text dynamic. Click to view a list with all dynamic text codes."],
+        order = order + 0.8,
+        width = 0.15,
+        hidden = hiddenFunc,
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\sidebar",
+      }
+      setFuncs(options[key .. "dynamicTextCodesButton"], input.__dynamicTextCodes)
     end
   end
 
@@ -1054,6 +1071,7 @@ local function ProgressOptions(data)
   local options = {
     __title = L["Progress Settings"],
     __order = 98,
+    __collapsed = true
   }
 
   options.progressSource = {
@@ -1146,7 +1164,14 @@ local function ProgressOptions(data)
     width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
-    order = order + 1
+    order = order + 1,
+    set = function(info, value)
+      data.useAdjustededMin = value
+      if not value then
+        data.adjustedMin = ""
+      end
+      WeakAuras.Add(data)
+    end
   };
 
   options.adjustedMin = {
@@ -1172,7 +1197,14 @@ local function ProgressOptions(data)
     width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
-    order = order + 4
+    order = order + 4,
+    set = function(info, value)
+      data.useAdjustededMax = value
+      if not value then
+        data.adjustedMax = ""
+      end
+      WeakAuras.Add(data)
+    end
   }
 
   options.adjustedMax = {
@@ -1211,8 +1243,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
 
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
-    __title = L["Position Settings"],
+    __title = L["Position and Size Settings"],
     __order = metaOrder,
+    __collapsed = true,
     width = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -1442,6 +1475,308 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   return positionOptions;
 end
 
+--- @type fun(data: auraData, options: table, startOrder: number, areaAnchors: table, pointAnchors: table)
+local function PositionOptionsForSubElement(data, options, startOrder, areaAnchors, pointAnchors)
+  options.anchor_mode = {
+    name = L["Anchor Mode"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    order = startOrder,
+    values = OptionsPrivate.Private.anchor_mode,
+  }
+
+  options.anchor_area = {
+    name = L["Area"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.1,
+    values = areaAnchors,
+    hidden = function()
+      return data.anchor_mode == "point"
+    end
+  }
+
+  options.anchor_space = {
+    name = "",
+    type = "description",
+    order = startOrder + 0.2,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.self_point = {
+    name = L["Anchor"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.3,
+    values = OptionsPrivate.Private.point_types,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.anchor_point = {
+    name = L["To Region's"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.4,
+    values = pointAnchors,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.width = {
+    name = L["Width"],
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    min = 0,
+    softMax = 200,
+    step = 1,
+    order = startOrder + 0.5,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.height = {
+    name = L["Height"],
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    min = 0,
+    softMax = 200,
+    step = 1,
+    order = startOrder + 0.6,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.xOffset = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    name = function()
+      if data.anchor_mode == "area" then
+        return L["Extra Width"]
+      else
+        return L["X Offset"]
+      end
+    end,
+    order = startOrder + 0.7,
+    width = WeakAuras.normalWidth,
+    softMin = -200,
+    softMax = 200,
+    step = 1,
+  }
+
+  options.yOffset = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    name = function()
+      if data.anchor_mode == "area" then
+        return L["Extra Height"]
+      else
+        return L["Y Offset"]
+      end
+    end,
+    order = startOrder + 0.8,
+    width = WeakAuras.normalWidth,
+    softMin = -200,
+    softMax = 200,
+    step = 1,
+  }
+end
+
+--- @type fun(parentData: auraData, data: table, options: table, startOrder: number)
+local function ProgressOptionsForSubElement(parentData, data, options, startOrder, progressSourceHidden)
+  options.progress_source = {
+    type = "select",
+    width = WeakAuras.doubleWidth,
+    name = L["Progress Source"],
+    order = startOrder,
+    control = "WeakAurasTwoColumnDropdown",
+    values = OptionsPrivate.Private.GetProgressSourcesForUi(parentData, true),
+    get = function(info)
+      return OptionsPrivate.Private.GetProgressValueConstant(data.progressSource or {-2, ""})
+    end,
+    set = function(info, value)
+      if value then
+        data.progressSource = data.progressSource or {}
+        -- Copy only trigger + property
+        data.progressSource[1] = value[1]
+        data.progressSource[2] = value[2]
+      else
+        data.progressSource = nil
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  }
+
+  options.progressSourceWarning = {
+    type = "description",
+    width = WeakAuras.doubleWidth,
+    name = L["Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""],
+    order = startOrder + 0.1,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(parentData, data.progressSource)
+      -- Auto progress, Manual Progress or the progress source has a total property
+      if not progressSource or progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil then
+        return true
+      end
+      return false
+    end,
+  }
+
+  local function hiddenManual()
+    if type(progressSourceHidden) == "function" and progressSourceHidden() then
+      return true
+    end
+    if data.progressSource and data.progressSource[1] == 0 then
+      return false
+    end
+    return true
+  end
+
+  options.progressSourceManualValue = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Value"],
+    order = startOrder + 0.2,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[3] or 0
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[3] = value
+      WeakAuras.Add(parentData)
+    end
+  }
+
+  options.progressSourceManualTotal = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Total"],
+    order = startOrder + 0.3,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[4] or 100
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[4] = value
+      WeakAuras.Add(parentData)
+    end
+  }
+
+  options.useAdjustededMin = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Minimum Progress"],
+    desc = L["Values/Remaining Time below this value are displayed as zero progress."],
+    order = startOrder + 0.4,
+    set = function(info, value)
+      data.useAdjustededMin = value
+      if not value then
+        data.adjustedMin = ""
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  };
+
+  options.adjustedMin = {
+    type = "input",
+    validate = WeakAuras.ValidateNumericOrPercent,
+    width = WeakAuras.normalWidth,
+    order = startOrder + 0.5,
+    name = L["Minimum"],
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not data.useAdjustededMin
+    end,
+    desc = L["Enter static or relative values with %"]
+  };
+
+  options.useAdjustedMinSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = startOrder + 0.6,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not (not data.useAdjustededMin and data.useAdjustededMax)
+    end,
+  }
+
+  options.useAdjustededMax = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Maximum Progress"],
+    desc = L["Values/Remaining Time above this value are displayed as full progress."],
+    order = startOrder + 0.7,
+    set = function(info, value)
+      data.useAdjustededMax = value
+      if not value then
+        data.adjustedMax = ""
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  }
+
+  options.adjustedMax = {
+    type = "input",
+    width = WeakAuras.normalWidth,
+    validate = WeakAuras.ValidateNumericOrPercent,
+    order = startOrder + 0.8,
+    name = L["Maximum"],
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not data.useAdjustededMax
+    end,
+    desc = L["Enter static or relative values with %"]
+  }
+
+  options.useAdjustedMaxSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = startOrder + 0.9,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not (data.useAdjustededMin and not data.useAdjustededMax)
+    end,
+  }
+end
+
+
 local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
   local borderOptions = {
     borderHeader = {
@@ -1626,14 +1961,11 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       code = "return " .. code;
 
-      local loadedFunction, errorString = loadstring(code);
+      local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, data.id, true);
 
       if not errorString then
         if options.validator then
-          local ok, validate = xpcall(loadedFunction, function(err) errorString = err end)
-          if ok then
-            errorString = options.validator(validate)
-          end
+          errorString = options.validator(loadedFunction)
         end
       end
       return errorString and "|cFFFF0000"..errorString or "";
@@ -1776,7 +2108,9 @@ OptionsPrivate.commonOptions.CreateSetAll = CreateSetAll
 OptionsPrivate.commonOptions.CreateExecuteAll = CreateExecuteAll
 
 OptionsPrivate.commonOptions.PositionOptions = PositionOptions
+OptionsPrivate.commonOptions.PositionOptionsForSubElement = PositionOptionsForSubElement
 OptionsPrivate.commonOptions.ProgressOptions = ProgressOptions
+OptionsPrivate.commonOptions.ProgressOptionsForSubElement = ProgressOptionsForSubElement
 OptionsPrivate.commonOptions.BorderOptions = BorderOptions
 OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
 

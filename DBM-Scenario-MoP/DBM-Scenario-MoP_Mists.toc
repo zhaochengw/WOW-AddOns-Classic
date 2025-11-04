@@ -1,0 +1,63 @@
+## Interface: 50501, 50502
+## X-Min-Interface: 50500
+## Category: DBM
+
+## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ffScenario (MoP)|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM Мод|r|cffffe00a>|r |cff4565ffСценарии (Пандария)|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ff시나리오 (판다)|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ffSzenarien (MoP)|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ffGestas (MoP)|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ff场景战役|r
+## Title-frFR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ffScénario (MoP)|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff4565ff事件-潘達利亞之謎|r
+## Author: MysticalOS/Arta
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMScenarioMoP_AllSavedVars
+## SavedVariablesPerCharacter: DBMScenarioMoP_SavedStats
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: SCENARIO
+## X-DBM-Mod-Category: MOP
+## X-DBM-StatTypes: normal,heroic
+## X-DBM-Mod-Name: Scenario (MoP)
+## X-DBM-Mod-Name-ruRU: Сценарии (Пандария)
+## X-DBM-Mod-Name-koKR: 시나리오 (판다)
+## X-DBM-Mod-Name-deDE: Szenarien (MoP)
+## X-DBM-Mod-Name-esES: Gestas (MoP)
+## X-DBM-Mod-Name-zhTW: 事件 (潘達利亞之謎)
+## X-DBM-Mod-Name-zhCN: 场景战役 (熊猫人之谜)
+## X-DBM-Mod-Name-frFR: Scénario (MoP)
+## X-DBM-Mod-Sort: 703
+## X-DBM-Mod-MapID: 1000,999,1031,1103,1102,1135,1112,1030,1005,1104,1050,1048,1051,1095,1024,1130,1144,1099,1131,1157
+## X-DBM-Mod-MinCoreRevision: 20240516041700
+## X-DBM-Mod-MinExpansion: 4
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+## Version: r183
+
+localization.en.lua
+localization.kr.lua
+localization.de.lua
+localization.es.lua
+localization.tw.lua
+localization.cn.lua
+localization.ru.lua
+BrewingStorm.lua
+BattleHighSeas.lua
+BloodInSnow.lua
+CryptofKings.lua
+DarkHeartPandaria.lua
+FindingIngredient.lua
+SecretsOfRagefire.lua
+ALittlePatience.lua
+ArenaOfAnnihilation.lua
+AssaultofZanvess.lua
+BrewmoonFestival.lua
+DaggerInDark.lua
+GreenstoneVillage.lua
+Landfall.lua
+Theramore.lua
+Troves.lua
+UngaIngoo.lua
+GreenFire.lua

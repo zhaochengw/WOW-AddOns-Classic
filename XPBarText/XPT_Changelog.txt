@@ -1,0 +1,248 @@
+== Version 2.5.50 (September 24th 2025) ==
+
+* Bumped Retail TOC to 110205.
+* Bumped MoP Classic TOC to 50501.
+
+== Version 2.5.48 (August 8th 2025) ==
+
+* Bumped Retail TOC to 110200.
+
+== Version 2.5.47 (July 27th 2025) ==
+
+* Fixed XP bar not showing in MoP Classic for players above Level 85.
+
+== Version 2.5.46 (July 21st 2025) ==
+
+* Added support for MoP Classic.
+* Bumped Retail TOC to 110107.
+
+== Version 2.4.45 (April 12th 2025) ==
+
+* Bumped Retail TOC to 110105.
+* Bumped Vanilla Classic TOC to 11507.
+
+== Version 2.4.43 (January 30th 2025) ==
+
+* Bumped Retail TOC to 110100.
+* Bumped Cata Classic TOC to 40402.
+* Bumped Vanilla Classic TOC to 11506.
+
+== Version 2.4.40 (January 1st 2025) ==
+
+* Bumped Retail TOC to 110007.
+
+== Version 2.4.39 (November 26th 2024) ==
+
+* Bumped Vanilla TOC to 11505.
+
+== Version 2.4.38 (November 15th 2024) ==
+
+* Bumped Retail TOC to 110005.
+* Bumped Cata Classic TOC to 40401.
+
+== Version 2.4.36 (September 25th 2024) ==
+
+* Bumped Vanilla TOC to 11504.
+* Vanilla: Fixed //attempt to call global 'InterfaceOptions_AddCategory' (a nil value)// error.
+
+== Version 2.4.34 (August 23rd 2024) ==
+
+* Retail: Text on the XP bar will now be hidden once your character reaches level 80.
+* Cataclysm: Text on the XP bar will now be hidden once your character reaches level 85.
+* Vanilla: Text on the XP bar will now be hidden once your character reaches level 60.
+
+== Version 2.4.31 (August 18th 2024) ==
+
+* Retail: Fixed //attempt to call global 'GetAddOnInfo' (a nil value)// error.
+* Retail: Fixed //attempt to call global 'GetAddOnMetadata' (a nil value)// error.
+
+== Version 2.4.29 (August 12th 2024) ==
+
+* Bumped Retail TOC to 110000.
+* Bumped Vanilla TOC to 11503.
+* Fixed /xpt command not opening options window properly in Retail.
+
+== Version 2.4.26 (May 4th 2024) ==
+
+* Removed the ability to move the text, as it was causing a lot of problems.
+* Removed mentions of Hunter pet XP in Cataclysm Classic.
+
+== Version 2.4.24 (May 1st 2024) ==
+
+* Added support for Cataclysm Classic.
+
+== Version 2.3.24 (April 12th 2024) ==
+
+* Added the ability to move the text to wherever you like.
+
+== Version 2.2.24 (March 31st 2024) ==
+
+* Bumped Retail TOC to 100206.
+
+== Version 2.2.23 (February 21st 2024) ==
+
+* Bumped Retail TOC to 100205.
+* Bumped Vanilla TOC to 11501.
+
+== Version 2.2.21 (November 27th 2023) ==
+
+* Bumped Vanilla TOC to 11500.
+
+== Version 2.2.20 (November 11th 2023) ==
+
+* Bumped Retail TOC to 100200.
+* Bumped WOTLKC TOC to 30403.
+* Bumped Vanilla TOC to 11404.
+
+== Version 2.2.17 (August 22nd 2023) ==
+
+* Added checks to hopefully prevent 'divide by zero' errors.
+* Bumped Retail TOC to 100105.
+
+== Version 2.2.15 (June 25th 2023) ==
+
+* Bumped Retail TOC to 100100.
+* Bumped WOTLKC TOC to 30402.
+
+== Version 2.2.13 (March 27th 2023) ==
+
+* Fixed an issue which was causing a tooltip to persist when the options menu was closed.
+* Retail: Fixed text not showing for characters under Level 70.
+
+== Version 2.2.11 (March 23rd 2023) ==
+	
+* Bumped Retail TOC to 100007.
+* Bumped WOTLKC TOC to 30401.
+
+== Version 2.2.9 (November 29th 2022) ==
+
+* Bumped Retail TOC to 100000.
+
+== Version 2.2.8 (October 29th 2022) ==
+
+* Bumped Retail TOC to 100000.
+
+== Version 2.2.7 (September 4th 2022) ==
+
+* Added WOTLK Classic compatibility.
+
+== Version 2.1.7 (August 20th 2022) ==
+
+* Bumped Retail TOC to 90207.
+
+== Version 2.1.6 (June 1st 2022) ==
+
+* Now works with Retail, though a few features that are present in the Classic version have had to be removed due to errors.
+* Bumped Vanilla TOC to 11403.
+
+== Version 2.0.5 (March 26th 2022) ==
+
+* Bumped BCC TOC to 20504.
+* Bumped Vanilla TOC to 11402.
+
+== Version 2.0.3 (November 14th 2021) ==
+
+* Bumped BCC TOC to 20502.
+* Bumped Vanilla TOC to 11401.
+
+== Version 2.0.1 (July 14th 2021) ==
+
+* Fixed rested XP arrow not being hidden properly when the option to show it is disabled.
+
+== Version 2.0.0 (June 15th 2021) ==
+
+* Added Burning Crusade Classic compatibility.
+* Bumped Vanilla Classic TOC to 11307.
+
+== Version 1.13.23 (March 27th 2021) ==
+
+* Added an option to show or hide the arrow on the experience bar which shows you how much rested XP you have left.
+	* Thanks to comCorn from my Discord server for suggesting that I add this feature.
+
+== Version 1.12.23 (March 25th 2021) ==
+
+* Bumped TOC to 11306.
+
+== Version 1.12.22 (July 24th 2020) ==
+
+* Bumped TOC to 11305.
+
+== Version 1.12.21 (March 22nd 2020) ==
+
+* Bumped TOC to 11304.
+* Fixed XP to next level not being shown to Hunters who have enabled more information but disabled pet information.
+
+== Version 1.12.19 (January 15th 2020) ==
+
+* The config window now appears under the 'AddOns' tab in the Interface Options menu.
+	* Using /xpt now takes you directly to it.
+* Text on the XP bar is now updated as soon as you change one of the available config options.
+* Added text to show how much XP is needed for the next level.
+	* It will only appear if you have 'Show more information' enabled.
+	* Thanks to Shane A from my Discord server for suggesting this feature (and apologies for taking so long to actually get around to it).
+* Removed redundant XML file.
+
+== Version 1.10.17 (December 29th 2019) ==
+
+* Added Italian localisation.
+* Removed name and level from the XP bar.
+
+== Version 1.9.16 (December 14th 2019) ==
+
+* Fixed reputation bar text disappearing when the bar is moused over.
+
+== Version 1.9.15 (December 11th 2019) ==
+
+* Bumped TOC to 11303.
+
+== Version 1.9.14 (November 6th 2019) ==
+
+* If you are showing the reputation bar, the text is now displayed all the time.
+* Re-repositioned the text on the experience bar so it doesn't partially obscure the reputation bar. 
+
+== Version 1.8.13 (October 26th 2019) ==
+
+* Percentages are now worked out correctly.
+
+== Version 1.8.12 (October 6th 2019) ==
+
+* Fixed //bad argument #1 to 'match' (string expected, got nil)// error when killing enemies while not rested.
+* Updated French localisation.
+* Updated German localisation.
+
+== Version 1.8.9 (October 1st 2019) ==
+
+* Added the ability to split XP numbers with a comma so that they are easier to read.
+
+== Version 1.7.9 (September 28th 2019) ==
+
+* Added the ability to toggle whether the text is shown all the time, or only appears when you hover over the XP bar.
+* Fixed the Lua error that sometimes appeared on login and when you changed zones... I think.
+* Slightly repositioned the text on the bar so it isn't partially obscured.
+
+== Version 1.6.7 (September 21st 2019) ==
+
+* Added the ability to configure how the information is displayed:
+	* Name, Level, Current/Max XP, Percentage Progress, Rest State, and Rested XP remaining (if applicable).
+	* Current/Max XP only.
+* Added a new options window to make configuration easier. The command to access is ///xpt//.
+* Added the ability for Hunters to choose whether or not to show their pet's information alongside their own.
+* Added localisation support.
+* Fixed //attempt to concatenate a nil value// error when entering or leaving a dungeon.
+
+== Version 1.2.6 (September 17th 2019) ==
+
+* Hunters: fixed //attempt to concatenate local 'petName' (a nil value)// error while using a flight path.
+
+== Version 1.2.5 (September 17th 2019) ==
+
+* Added level progression percentage to the XP bar.
+* Added XP of currently active Hunter pet to the XP bar.
+* Hovering over the XP bar with your mouse no longer shows the in-game XP text.
+* Hovering over the XP bar with your mouse no longer shows the XP tooltip.
+* The rested XP tick (the little mark that appears on your bar when rested) is now hidden while you are resting.
+* Removed the Level 60 check.
+
+== Version 1.0.1 (September 15th 2019) ==
+
+* Initial Release.

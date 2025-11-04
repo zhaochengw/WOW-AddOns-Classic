@@ -17,8 +17,7 @@ function RareScanner_OnAddonCompartmentClick(addonName, button)
 	if (button == "LeftButton") then
 		RSExplorerFrame:Show()
 	elseif (button == "RightButton") then
-		InterfaceOptionsFrame_OpenToCategory("RareScanner")
-		InterfaceOptionsFrame_OpenToCategory("RareScanner")
+		Settings.OpenToCategory("RareScanner")
 	end
 end
 

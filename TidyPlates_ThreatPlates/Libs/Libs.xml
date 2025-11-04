@@ -34,9 +34,13 @@
     <Script file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/>
     @end-version-wrath@-->
 
-    <!--@version-cata@-->
+    <!--@version-cata@
     <Script file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/>
-    <!--@end-version-cata@-->
+    @end-version-cata@-->
+
+    <!--@version-mists@-->
+    <Script file="LibDualSpec-1.0\LibDualSpec-1.0.lua"/>
+    <!--@end-version-mists@-->
 
     <!--@version-classic@
     @end-version-classic@-->

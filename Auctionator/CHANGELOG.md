@@ -1,6 +1,6 @@
 # Auctionator
 
-## [295](https://github.com/TheMouseNest/Auctionator/tree/295) (2025-09-23)
-[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/294...295) 
+## [301](https://github.com/TheMouseNest/Auctionator/tree/301) (2025-11-01)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/300...301) 
 
-- Mists: Update toc for 5.5.1  
+- LegacyAH: Bags: Attempt to fix incomplete charges detection  

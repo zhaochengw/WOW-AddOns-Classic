@@ -453,12 +453,15 @@ function BG.PlaySound(id)
             end
         end
     elseif BiaoGe.options['tipsSound'] == 1 and type(id) == "string" then
-        if BG["sound_" .. id .. BiaoGe.options.Sound] and GetFileIDFromPath(BG["sound_" .. id .. BiaoGe.options.Sound]) then
-            PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".mp3", "Master")
-            PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".ogg", "Master")
-        elseif BG["sound_" .. id .. "AI"] then
-            PlaySoundFile(BG["sound_" .. id .. "AI"] .. ".mp3", "Master")
-            PlaySoundFile(BG["sound_" .. id .. "AI"] .. ".ogg", "Master")
+        if BG["sound_" .. id .. BiaoGe.options.Sound] then
+            if not PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".mp3", "Master") then
+                if not PlaySoundFile(BG["sound_" .. id .. BiaoGe.options.Sound] .. ".ogg", "Master") then
+                    if BG["sound_" .. id .. "AI"] then
+                        PlaySoundFile(BG["sound_" .. id .. "AI"] .. ".mp3", "Master")
+                        PlaySoundFile(BG["sound_" .. id .. "AI"] .. ".ogg", "Master")
+                    end
+                end
+            end
         end
     end
 end

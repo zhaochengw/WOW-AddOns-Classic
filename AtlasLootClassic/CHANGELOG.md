@@ -1,22 +1,67 @@
-# AtlasLootClassic
+# 5.0.4 (September 4, 2025)
+- Added Transmog tracker feature from AtlasLoot v8+ (Shadowlands version?)
+- Added new Celestial dungeon drops (HoF)
+- Added source tooltip for T14 items
 
-This mod is distributed under Version 2 of the GPL.  A copy of the GPL is included in this zip file with links to non-english translations.
+# 5.0.3 (August 27, 2025)
+- Added Celestial Dungeon drops
+- Added Rare mobs and items to Collections
+- Added rest of S12 PvP gear
 
-[Changelog history](https://github.com/Hoizame/AtlasLootClassic/blob/master/AtlasLootClassic/Documentation/Release_Notes.md)
+# 5.0.2 (July 24, 2025)
+- Added Dungeons and Raids + Crafting item sources
+- Added MoP Tier token data
+- Added Siege of Orgrimmar loot
+- Added Phase tags for items released in later phases
+- Fix issue where AtlasLoot didn't autoselect dungeon player is in
+- MoP factions data organized
+- Cleanup Gathering profs
+- Small fixes as usual
 
-## v3.2.0 (Oct. 22, 2023)
+# 5.0.1 (July 21, 2025)
+- Celestial loot organized by raid, since it's being gated
+- Challenge mode armor sets added
+- Darkmoon decks/cards and corresponding trinkets organized
+- More small fixes + locale fixes
 
-- update .toc version
-- fix lua error with companions
-- Hallow's End update PR #416
-- Fix epic blue gem id, add Ashen Verdict engineering PR #413
-- Add Defiler Scourgestone Vendor
-- Update Dalaran Vendor
-- #397, #388 Update to use new Mount API
-- #396 Added "Maiden of Grief" Missing items in Titan Rune Beta - Halls of Stone
-- #395 Fixed "King Dred" Wrong loot in Titan Rune Beta - Drak'Tharon Keep
-- #394 Fixed "The Prophet Tharon'ja" Wrong loot in Titan Rune Beta - Drak'Tharon Keep
-- #393 Added Missing Leatherworking Fur Linings
-- #391 Added Enchanting Cloak Resistances (Arcane, Fire, Frost, Nature, Shadow), Removed Duplicates
-- #387 Fixed Incorrect Set Links for Death Knight Season 7 PvP Set
-- #381 Added "Six Shared Loot Bosses" Missing items in Titan Rune Beta - Violet Hold
+# v5.0.0 (July 19, 2025)
+- Initial release of AtlasLootClassic MoP! Lots of things are still underworks.
+- Factions, Collections, Crafting modules are mostly complete
+- Dungeons and Raids module missing SoO and Celestial dungeons
+- PvP module only displays sets right now
+- New update screen
+
+# v5.0.0-beta1 (July 1, 2025)
+- Initial MoP Pre-patch Support
+- Lots of things still broken or not populated
+- Dungeons and Raids mostly there
+
+# 4.3.2 (May 13, 2025)
+- Add rest of S11 PvP gear
+- Noblegarden items added
+- Several small fixes to old world loot
+- Change order of expansions to put newest one on top first
+(2025-09-04)
+
+[Full Changelog](https://github.com/snowflame0/AtlasLootClassic_MoP/compare/v5.0.3...v5.0.4)
+
+## Commits
+
+Adal (1):
+
+- Phase correction
+
+Snowflame (11):
+
+- Update release notes and update panel
+- Added new (HoF) Celestial dungeon drops
+- no change
+- Fix global variable issue
+- Fix global variable issue
+- Update sources for T14 pieces, fix some duplication issues
+- Add tier tokens to celestial diff in dungeons and raids
+- Fixed celestial loot source raid, lots of misplaced items
+- Whitespace clean
+- Transmog nil check
+- Port Transmog feature from retail AL
+

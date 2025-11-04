@@ -2,7 +2,7 @@
 
 if not AL then return end
 
--- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
+-- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic-mists/localization
 -- Factions
 AL["Path of the Violet Assassin"] = "El camino del asesino Violeta"
 AL["Path of the Violet Mage"] = "El camino del mago Violeta"

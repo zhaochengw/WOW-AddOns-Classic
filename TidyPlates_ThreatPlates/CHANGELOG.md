@@ -1,5 +1,4 @@
-# 12.1.0 (2025-03-07)
+# 12.6.2 (2025-10-22)
 
-* Fixed a bug that caused widgets to not update when transparency settings were changed.
-* Improved performance of Healer Tracker widget by limiting combat log parsing for spell detection to battlegrounds and world PvP (during combat only).
-* Added FrameSort support to the Arena widget [PR GH-560].
+* Fixed a bug that prevented turning the camera while the right mouse button was held down and the cursor was hovering over an aura with aura tooltips enabled [Comment #7764].
+* Fixed a Lua error that occurred when enabling bar mode for auras [GH-613].

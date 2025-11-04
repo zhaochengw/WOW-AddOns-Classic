@@ -1,4 +1,3 @@
--- $Id: EJIntegration.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -25,37 +24,22 @@
 --]]
 
 -- Atlas JournalEncounter Integration
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
-local pairs = _G.pairs
-local select = _G.select
-local tonumber = _G.tonumber
--- Libraries
-local GameTooltip, GetBuildInfo = _G.GameTooltip, _G.GetBuildInfo
 
 -- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
-local wowversion  = select(4, GetBuildInfo())
+local WoWClassicEra, WoWClassic, WoWRetail
+local wowversion = select(4, GetBuildInfo())
 if wowversion < 20000 then
 	WoWClassicEra = true
-elseif wowversion < 30000 then 
-	WoWClassicTBC = true
-elseif wowversion < 40000 then 
-	WoWWOTLKC = true
+elseif wowversion > 20000 and wowversion < 90000 then
+	WoWClassic = true
 elseif wowversion > 90000 then
 	WoWRetail = true
-else
-	-- n/a
 end
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
 local _, private = ...
-local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local BB = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0")
@@ -76,15 +60,14 @@ end
 function addon:GetBossName(bossname, encounterID, creatureIndex, moduleName)
 	local LL
 	if (moduleName) then LL = LibStub("AceLocale-3.0"):GetLocale("Atlas_"..moduleName) end
-	
-	if (WoWRetail) then
+
+	if (WoWRetail or WoWClassic) then
 		if (encounterID and EJ_GetEncounterInfo) then
 			local _, encounter, iconImage
 			if (not creatureIndex) then
 				encounter = EJ_GetEncounterInfo(encounterID)
 				_, _, _, _, iconImage = EJ_GetCreatureInfo(1, encounterID)
 			else
-				-- id, name, description, displayInfo, iconImage = EJ_GetCreatureInfo(index[, encounterID])
 				_, encounter, _, _, iconImage = EJ_GetCreatureInfo(creatureIndex or 1, encounterID)
 			end
 
@@ -97,7 +80,13 @@ function addon:GetBossName(bossname, encounterID, creatureIndex, moduleName)
 					--bossname = bossname
 				end
 			else
-				bossname = iconImage and format("|T%d:0:2.5|t%s", iconImage, encounter) or encounter
+				-- If this is a specific creature in an encounter, skip the image because it either duplicates the main image or doesn't have an image at all
+				if (creatureIndex) then
+					-- Add padding to account for the main image
+					bossname = "          "..encounter
+				else
+					bossname = iconImage and format("|T%d:0:2.5|t%s", iconImage, encounter) or encounter
+				end
 			end
 		elseif (bossname and L[bossname]) then
 			bossname = LL and LL[bossname] or bossname
@@ -110,7 +99,7 @@ function addon:GetBossName(bossname, encounterID, creatureIndex, moduleName)
 		if (bossname and BB[bossname]) then
 			bossname = BB[bossname]
 		elseif (bossname and L[bossname]) then
-			bossname = LL and LL[bossname] or bossname	
+			bossname = LL and LL[bossname] or bossname
 		else
 			--bossname = bossname
 		end
@@ -124,12 +113,10 @@ function Atlas_GetBossName(bossname, encounterID, creatureIndex)
 end
 
 function addon:AdventureJournalButton_OnClick(frame)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	
+	if (WoWClassicEra) then return end
+
 	local instanceID = frame.instanceID
-	local disabled = not C_AdventureJournal.CanBeShown()
-	if (disabled) then return end
-	
+
 	if (not instanceID) then
 		return
 	end
@@ -138,7 +125,7 @@ function addon:AdventureJournalButton_OnClick(frame)
 		return
 	end
 
-	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
+	if (not EncounterJournal or not EncounterJournal:IsShown()) then
 		ToggleEncounterJournal()
 	end
 	-- EncounterJournal_ListInstances();
@@ -149,8 +136,8 @@ function addon:AdventureJournalButton_OnClick(frame)
 end
 
 function addon:AdventureJournalButton_OnEnter(frame)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	
+	if (WoWClassicEra) then return end
+
 	local instanceID = frame.instanceID
 	if (not instanceID) then return end
 
@@ -159,17 +146,12 @@ function addon:AdventureJournalButton_OnEnter(frame)
 			EJ_SelectInstance(instanceID)
 
 			local name, description = EJ_GetInstanceInfo()
-			local disabled = not C_AdventureJournal.CanBeShown()
 
 			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 			GameTooltip:SetText(name)
 			GameTooltipTextLeft1:SetTextColor(1, 1, 1)
 			GameTooltip:AddLine(description, nil, nil, nil, true)
-			if (disabled) then
-				GameTooltip:AddLine(FEATURE_NOT_YET_AVAILABLE, 0.7, 0, 0, true)
-			else
-				GameTooltip:AddLine(L["ATLAS_OPEN_ADVENTURE"], 0.5, 0.5, 1, true)
-			end
+			GameTooltip:AddLine(L["ATLAS_OPEN_ADVENTURE"], 0.5, 0.5, 1, true)
 			GameTooltip:Show()
 		end
 	else
@@ -178,12 +160,9 @@ function addon:AdventureJournalButton_OnEnter(frame)
 end
 
 function addon:AdventureJournal_EncounterButton_OnClick(instanceID, encounterID, keepAtlas)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	
+	if (WoWClassicEra) then return end
+
 	if (not instanceID or not encounterID) then return end
-	
-	local disabled = not C_AdventureJournal.CanBeShown()
-	if (disabled) then return end
 
 	if (not EJ_GetInstanceInfo(instanceID)) then
 		return
@@ -192,7 +171,7 @@ function addon:AdventureJournal_EncounterButton_OnClick(instanceID, encounterID,
 		return
 	end
 
-	if ( not EncounterJournal or not EncounterJournal:IsShown() ) then
+	if (not EncounterJournal or not EncounterJournal:IsShown()) then
 		ToggleEncounterJournal()
 	end
 	-- EncounterJournal_ListInstances();
@@ -206,32 +185,23 @@ function addon:AdventureJournal_EncounterButton_OnClick(instanceID, encounterID,
 end
 
 function addon:AdventureJournal_MapButton_OnClick(frame)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
-	
-	local uiMapID = frame.mapID
-	local dungeonLevel = frame.dungeonLevel
+	if (WoWClassicEra) then return end
 
-	HideUIPanel(AtlasFrame)
-	local disabled = not C_AdventureJournal.CanBeShown()
-	if (disabled) then 
-		WorldMapFrame.fromJournal = false
-	else
-		WorldMapFrame.fromJournal = true
-	end
+	local uiMapID = frame.mapID
+
+	AtlasFrame:Hide()
+	WorldMapFrame.fromJournal = true
 	ShowUIPanel(WorldMapFrame)
 	if (uiMapID) then
 		WorldMapFrame:SetMapID(uiMapID)
 	end
---	if (dungeonLevel) then
---		SetDungeonMapLevel(dungeonLevel)
---	end
 end
 
 -- Added Atlas button to Encounter Journal
 function addon:EncounterJournal_Binding()
 	local function autoSelect_from_EncounterJournal()
 		local instanceID = EncounterJournal.instanceID
-		
+
 		if (not instanceID) then
 			return
 		end
@@ -256,7 +226,7 @@ function addon:EncounterJournal_Binding()
 	end
 
 	local function toggleFromEncounterJournal_OnShow(self)
-		local ElvUI = select(4, GetAddOnInfo("ElvUI"))
+		local ElvUI = select(4, C_AddOns.GetAddOnInfo("ElvUI"))
 
 		if (not ElvUI) then return end
 		local ElvUI_BZSkin = false
@@ -273,25 +243,25 @@ function addon:EncounterJournal_Binding()
 				end
 			end
 		end
-		
+
 		if (ElvUI_BZSkin) then
 			local button = _G["AtlasToggleFromEncounterJournal"]
 			if (button) then
 				button:SetNormalTexture("Interface\\WorldMap\\WorldMap-Icon")
 				button:SetWidth(16)
 				button:SetHeight(16)
-				button:SetPoint("TOPRIGHT", EncounterJournalCloseButton, -28, -6, "TOPRIGHT") 
+				button:SetPoint("TOPRIGHT", EncounterJournalCloseButton, -28, -6, "TOPRIGHT")
 			end
 		end
 	end
 
 	local button = _G["AtlasToggleFromEncounterJournal"]
 	if (not button) then
-		button = CreateFrame("Button","AtlasToggleFromEncounterJournal", EncounterJournal)
+		button = CreateFrame("Button", "AtlasToggleFromEncounterJournal", EncounterJournal)
 		button:SetWidth(32)
 		button:SetHeight(32)
-		
-		button:SetPoint("TOPRIGHT", EncounterJournalCloseButton, -23, 0, "TOPRIGHT") 
+
+		button:SetPoint("TOPRIGHT", EncounterJournalCloseButton, -23, 0, "TOPRIGHT")
 		button:SetNormalTexture("Interface\\AddOns\\Atlas\\Images\\AtlasButton-Up")
 		button:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
 
@@ -304,6 +274,3 @@ function addon:EncounterJournal_Binding()
 		button:SetScript("OnShow", toggleFromEncounterJournal_OnShow)
 	end
 end
-
--- End of Encounter Journal's button bidding
-

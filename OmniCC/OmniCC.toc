@@ -1,7 +1,6 @@
-## Interface: 110107, 50500, 40402, 11507
-## Title: OmniCC |cffff559a露露修复版|r
-## Version: 11.2.4 Rurutia fix
-## Notes: OmniCC 冷却管理插件，国服3.4.5可用版本。|n修复：|cffee5885露露緹婭@Bilibili|r
+## Interface: 110205, 110200, 50501, 50500, 11507
+## Title: OmniCC
+## Notes: Cooldown count for everything
 ## Notes-esMX: Contador de tiempo de reutilización
 ## Notes-esES: Contador de tiempo de reutilización
 ## Notes-ptBR: Contagem de tempo de recarga
@@ -19,7 +18,7 @@
 ## Category-ruRU: Бой
 ## Category-zhCN: 战斗
 ## Category-zhTW: 戰鬥
-
+## Version: 11.2.7
 ## SavedVariables: OmniCCDB, OmniCC4Config
 ## IconTexture: Interface/Icons/spell_nature_timestop
 embeds.xml

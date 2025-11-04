@@ -63,8 +63,11 @@ local MenuButtonFrames = {
 	CollectionsMicroButton,
 	PVPMicroButton,
 	LFGMicroButton,
+	GuildMicroButton,
 	MainMenuMicroButton,
 	HelpMicroButton,
+	EJMicroButton,
+	StoreMicroButton,
 	--MainMenuBarPerformanceBarFrame,
 }
 
@@ -77,7 +80,7 @@ local BagButtonFrameList = {
 	KeyRingButton,
 }
 
-local maxLevel = 80
+local maxLevel = 85
 local playerLevel = UnitLevel("player")
 local ButtonGridIsShown = false
 local Corner_Artwork_Texture = "Interface\\Addons\\TidyBar\\CornerArt"
@@ -159,9 +162,9 @@ end
 
 function TidyBar:HideExperienceBar()
 	MainMenuExpBar:Hide()
-	MainMenuExpBar:SetHeight(.001)
+	MainMenuExpBar:SetHeight(1)
 	ReputationWatchBar:Hide()
-	ReputationWatchBar:SetHeight(.001)
+	ReputationWatchBar:SetHeight(1)
 end
 
 function TidyBar:ShowExperienceBar()

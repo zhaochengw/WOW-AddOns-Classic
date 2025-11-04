@@ -1,6 +1,6 @@
 local addOnName, ns = ...
 local questCache = {}
-local LEVEL_CAP = 80 -- 85 on launch
+local LEVEL_CAP = GetMaxPlayerLevel()
 
 local QXP = CreateFrame("FRAME")
 QXP:RegisterEvent("ADDON_LOADED")
@@ -14,19 +14,12 @@ function QXP:ADDON_LOADED(loadedAddOnName)
         QXP:RegisterEvent("QUEST_REMOVED")
 
         hooksecurefunc("QuestLog_Update", function()
-            QXP:QuestLog_Update("QuestLog")
+            QXP:QuestLog_Update()
         end)
 
         hooksecurefunc(QuestLogListScrollFrame, "update", function()
-            QXP:QuestLog_Update("QuestLog")
+            QXP:QuestLog_Update()
         end)
-
-        -- support QuestLogEx
-        if QuestLogEx then
-            hooksecurefunc("QuestLog_Update", function()
-                QXP:QuestLog_Update("QuestLogEx")
-            end)
-        end
     end
 end
 
@@ -50,120 +43,49 @@ function QXP:QUEST_ACCEPTED(questIndex, questID)
             QXPdb[questID] = {
                 XP = questXP
             }
-            -- questCache[questID] = QXPdb[questID]
         end
     end
+    
 end
 
 function QXP:QUEST_REMOVED(questID)
     QXPdb[questID] = nil
 end
 
-function QXP:QuestLog_Update(addonName)
-    local headerXP = {}
-    local header
+function QXP:QuestLog_Update()
     local xpLeveLTag = 'xp'
-
-    if UnitLevel("player") == GetMaxPlayerLevel() then -- testing GetMaxPlayerLevel()
+    if UnitLevel("player") == LEVEL_CAP then
         xpLeveLTag = '**'
     end
 
-    local numEntries, numQuests = GetNumQuestLogEntries();
+    local numEntries = GetNumQuestLogEntries();
     local scrollOffset = HybridScrollFrame_GetOffset(QuestLogListScrollFrame);
-    local buttons = QuestLogListScrollFrame.buttons;
-    local buttonHeight = buttons[1]:GetHeight();
-    local displayedHeight = 0;
+	local buttons = QuestLogListScrollFrame.buttons;
 
-    local questIndex, questLogTitle, questTitleTag, questNumGroupMates, questNormalText, questHighlight, questCheck, questLogChildren;
-    -- local questLogTitleText, level, questTag, isHeader, isCollapsed, isComplete, color;
-    local numPartyMembers, partyMembersOnQuest, tempWidth, textWidth;
+    for i=1, QUESTS_DISPLAYED, 1 do
+		local questLogTitle = buttons[i];
+		local questIndex = i + scrollOffset;
+		questLogTitle:SetID(questIndex);
 
-    if addonName == "QuestLogEx" then
-        numQuestsDisplayed = QuestLogEx.db.global.maxQuestsDisplayed
-    else
-        numQuestsDisplayed = QUESTS_DISPLAYED
-    end
-
-    for i=1, numQuestsDisplayed, 1 do
-        questLogTitle = buttons[i];
-        questIndex = i + scrollOffset;
-        questLogTitle:SetID(questIndex);
-        questTitleTag = questLogTitle.tag;
-        questNumGroupMates = questLogTitle.groupMates;
-        questCheck = questLogTitle.check;
-        questNormalText = questLogTitle.normalText;
-        questLogChildren = questLogTitle:GetChildren();
-
-        -- Need to get the quest info here, for the buttons
+		local questTitleTag = questLogTitle.tag;
         if ( questIndex <= numEntries ) then
-            local questLogTitleText, level, questTag, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling = GetQuestLogTitle(questIndex);
+            local questLogTitleText, level, questTag, isHeader, isCollapsed, isComplete, frequency, questID = GetQuestLogTitle(questIndex)
 
-            -- This looked like a good idea, but the quest in the log is actually wrong
-            -- if questLogChildren and questLogChildren:IsVisible() and questLogChildren:GetName() == "QuestLogHighlightFrame" then
-            --     local currentQuestLogXP = GetQuestLogRewardXP()
-            --     -- print(questID, questLogTitleText, currentQuestLogXP)
-            --     if QXPdb[questID] and QXPdb[questID].XP ~= currentQuestLogXP then
-            --         QXPdb[questID].XP = currentQuestLogXP
-            --         questCache[questID].XP = currentQuestLogXP
-            --     end
-            -- end
-
-            -- Set the quest tag
-            if ( isComplete and isComplete < 0 ) then
-                questTag = FAILED;
-            elseif ( isComplete and isComplete > 0 ) then
-                questTag = COMPLETE;
-            elseif ( frequency == LE_QUEST_FREQUENCY_DAILY ) then
-                if ( questTag ) then
-                    questTag = format(DAILY_QUEST_TAG_TEMPLATE, questTag);
-                else
-                    questTag = DAILY;
-                end
-            end
-
-            if ( questTag ) then
+            if not isHeader then           
                 if QXPdb[questID] then
-                    questTitleTag:SetText(string.format("(%d%s)(%s)", QXPdb[questID].XP, xpLeveLTag, questTag));
-                else
-                    questTitleTag:SetText("("..questTag..")");
-                end
-                -- Shrink text to accomdate quest tags without wrapping
-                tempWidth = 275 - 15 - questTitleTag:GetWidth();
-
-                if ( QuestLogDummyText:GetWidth() > tempWidth ) then
-                    textWidth = tempWidth;
-                else
-                    textWidth = QuestLogDummyText:GetWidth();
-                end
-                questNormalText:SetWidth(tempWidth);
-                -- If there's quest tag position check accordingly
-                questTitleTag:Show();
-                --questCheck:Hide();
-            else
-                if QXPdb[questID] then
-                    questTitleTag:SetText(string.format("(%d%s)", QXPdb[questID].XP, xpLeveLTag));
-
-                    -- Shrink text to accomdate quest tags without wrapping
-                    tempWidth = 275 - 15 - questTitleTag:GetWidth();
-
-                    if ( QuestLogDummyText:GetWidth() > tempWidth ) then
-                        textWidth = tempWidth;
+                    if questTitleTag:GetText() then
+                        questTitleTag:SetText(string.format("(%d%s)%s", QXPdb[questID].XP, xpLeveLTag, questTitleTag:GetText()));
                     else
-                        textWidth = QuestLogDummyText:GetWidth();
+                        questTitleTag:SetText(string.format("(%d%s)", QXPdb[questID].XP, xpLeveLTag))
+                        questTitleTag:Show()
                     end
-                    questNormalText:SetWidth(tempWidth);
-                    -- If there's quest tag position check accordingly
-                    questTitleTag:Show();
-                    --questCheck:Hide();
-                else
-                    questTitleTag:SetText("");
+
+                    QuestLogTitleButton_Resize(questLogTitle);
                 end
             end
 
-            QuestLogTitleButton_Resize(questLogTitle)
         end
     end
-
 end
 
 QXP:SetScript("OnEvent",

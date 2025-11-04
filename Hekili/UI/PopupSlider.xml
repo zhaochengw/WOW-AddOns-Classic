@@ -5,7 +5,7 @@
     <Slider name="HekiliPopupDropdownSliderTemplate" minValue="0" maxValue="100" inherits="UnitPopupSliderTemplate" virtual="true">
         <Size x="0" y="17"/>
         <Anchors>
-            <Anchor point="LEFT" x="20" y="0"/>
+            <Anchor point="LEFT" x="18" y="0"/>
             <Anchor point="RIGHT" relativeKey="$parent.Text" relativePoint="LEFT" x="0" y="0"/>
         </Anchors>
         <Scripts>
@@ -38,6 +38,9 @@
         <Frames>
             <Frame parentKey="Text" inherits="HekiliPopupDropdownTextTemplate"/>
             <Slider parentKey="Slider" inherits="HekiliPopupDropdownSliderTemplate" mixin="HekiliPopupDropdownSliderMixin"/>
+            <Frame parentKey="NewFeature" inherits="NewFeatureLabelTemplate" frameStrata="HIGH" scale=".8" frameLevel="100" hidden="true">
+				<Size x="1" y="1"/>
+			</Frame>
         </Frames>
     </Frame>
 </Ui>

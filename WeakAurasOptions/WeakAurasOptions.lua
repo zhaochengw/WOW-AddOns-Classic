@@ -13,7 +13,7 @@ local _G = _G
 
 -- WoW APIs
 local InCombatLockdown = InCombatLockdown
-local CreateFrame, IsAddOnLoaded, LoadAddOn = CreateFrame, IsAddOnLoaded, LoadAddOn
+local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -456,7 +456,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
   end,
   showAlert = true,
   whileDead = true,
-  preferredindex = STATICPOPUP_NUMDIALOGS,
+  preferredindex = 4,
 }
 
 function OptionsPrivate.IsWagoUpdateIgnored(auraId)
@@ -549,7 +549,7 @@ local function OnRename(event, uid, oldid, newid)
   end
 
   OptionsPrivate.StopGrouping()
-  OptionsPrivate.SortDisplayButtons()
+  OptionsPrivate.SortDisplayButtons(nil, true)
 
   frame:OnRename(uid, oldid, newid)
 
@@ -571,45 +571,47 @@ local function OptionsFrame()
   end
 end
 
----@type fun(msg: string, Private: Private)
-function WeakAuras.ToggleOptions(msg, Private)
-  if not Private then
-    return
-  end
-  if not OptionsPrivate.Private then
-    OptionsPrivate.Private = Private
-    Private.OptionsFrame = OptionsFrame
-    for _, fn in ipairs(OptionsPrivate.registerRegions) do
-      fn()
+if not WeakAuras.ToggleOptions then
+  ---@type fun(msg: string, Private: Private)
+  function WeakAuras.ToggleOptions(msg, Private)
+    if not Private then
+      return
     end
-    OptionsPrivate.Private.callbacks:RegisterCallback("AuraWarningsUpdated", function(event, uid)
-      local id = OptionsPrivate.Private.UIDtoID(uid)
-      if displayButtons[id] then
-        -- The button does not yet exists if a new aura is created
-        displayButtons[id]:UpdateWarning()
+    if not OptionsPrivate.Private then
+      OptionsPrivate.Private = Private
+      Private.OptionsFrame = OptionsFrame
+      for _, fn in ipairs(OptionsPrivate.registerRegions) do
+        fn()
       end
-      local data = Private.GetDataByUID(uid)
-      if data and data.parent then
-        local button = OptionsPrivate.GetDisplayButton(data.parent);
-        if button then
-          button:UpdateParentWarning()
+      OptionsPrivate.Private.callbacks:RegisterCallback("AuraWarningsUpdated", function(event, uid)
+        local id = OptionsPrivate.Private.UIDtoID(uid)
+        if displayButtons[id] then
+          -- The button does not yet exists if a new aura is created
+          displayButtons[id]:UpdateWarning()
         end
-      end
-    end)
+        local data = Private.GetDataByUID(uid)
+        if data and data.parent then
+          local button = OptionsPrivate.GetDisplayButton(data.parent);
+          if button then
+            button:UpdateParentWarning()
+          end
+        end
+      end)
 
-    OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
-    OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
-    OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
-    OptionsPrivate.Private.OpenUpdate = OptionsPrivate.OpenUpdate
-  end
+      OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
+      OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
+      OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
+      OptionsPrivate.Private.OpenUpdate = OptionsPrivate.OpenUpdate
+    end
 
-  if(frame and frame:IsVisible()) then
-    WeakAuras.HideOptions();
-  elseif (InCombatLockdown()) then
-    WeakAuras.prettyPrint(L["Options will open after combat ends."])
-    reopenAfterCombat = true;
-  else
-    WeakAuras.ShowOptions(msg);
+    if(frame and frame:IsVisible()) then
+      WeakAuras.HideOptions();
+    elseif (InCombatLockdown()) then
+      WeakAuras.prettyPrint(L["Options will open after combat ends."])
+      reopenAfterCombat = true;
+    else
+      WeakAuras.ShowOptions(msg);
+    end
   end
 end
 
@@ -726,9 +728,11 @@ local function LayoutDisplayButtons(msg)
       for id, button in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] then
           button:PriorityShow(1);
+          coroutine.yield()
         end
       end
       OptionsPrivate.Private.OptionsFrame().loadedButton:RecheckVisibility()
+      coroutine.yield()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
 
@@ -761,11 +765,11 @@ local function LayoutDisplayButtons(msg)
     end
 
     local co2 = coroutine.create(func2);
-    OptionsPrivate.Private.dynFrame:AddAction("LayoutDisplayButtons2", co2);
+    OptionsPrivate.Private.Threads:Add("LayoutDisplayButtons2", co2);
   end
 
   local co1 = coroutine.create(func1);
-  OptionsPrivate.Private.dynFrame:AddAction("LayoutDisplayButtons1", co1);
+  OptionsPrivate.Private.Threads:Add("LayoutDisplayButtons1", co1);
 end
 
 function OptionsPrivate.DeleteAuras(auras, parents)
@@ -814,7 +818,7 @@ function OptionsPrivate.DeleteAuras(auras, parents)
   end
 
   local co1 = coroutine.create(func1)
-  OptionsPrivate.Private.dynFrame:AddAction("Deleting Auras", co1)
+  OptionsPrivate.Private.Threads:Add("Deleting Auras", co1)
 end
 
 function WeakAuras.ShowOptions(msg)
@@ -884,7 +888,10 @@ function WeakAuras.ShowOptions(msg)
   end
 
   if (frame.window == "codereview") then
-    frame.codereview:Close();
+    local codereview = OptionsPrivate.CodeReview(frame, true)
+    if codereview then
+      codereview:Close();
+    end
   end
 
   if firstLoad then
@@ -918,27 +925,27 @@ function OptionsPrivate.GetPickedDisplay()
 end
 
 function OptionsPrivate.OpenTextEditor(...)
-  frame.texteditor:Open(...);
+  OptionsPrivate.TextEditor(frame):Open(...);
 end
 
 function OptionsPrivate.ExportToString(id)
-  frame.importexport:Open("export", id);
+  OptionsPrivate.ImportExport(frame):Open("export", id);
 end
 
 function OptionsPrivate.ExportToTable(id)
-  frame.importexport:Open("table", id);
+  OptionsPrivate.ImportExport(frame):Open("table", id);
 end
 
 function OptionsPrivate.ImportFromString()
-  frame.importexport:Open("import");
+  OptionsPrivate.ImportExport(frame):Open("import");
 end
 
 function OptionsPrivate.OpenDebugLog(text)
-  frame.debugLog:Open(text)
+  OptionsPrivate.DebugLog(frame):Open(text)
 end
 
 function OptionsPrivate.OpenUpdate(data, children, target, linkedAuras, sender, callbackFunc)
-  return frame.update:Open(data, children, target, linkedAuras, sender, callbackFunc)
+  return OptionsPrivate.UpdateFrame(frame):Open(data, children, target, linkedAuras, sender, callbackFunc)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)
@@ -1143,7 +1150,8 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
 
   local aurasMatchingFilter = {}
-  local useTextFilter = filter and filter ~= ""
+  local useTextFilter = filter ~= ""
+  local filterTable = OptionsPrivate.Private.splitAtOr(filter)
   local topLevelLoadedAuras = {}
   local topLevelUnloadedAuras = {}
   local visible = {}
@@ -1162,29 +1170,31 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
         end
       end
       if hasLoaded > 0 then
-        child:SetLoaded(1, {0, 0.68, 0.30, 1}, L["Loaded"], L["%d displays loaded"]:format(hasLoaded))
+        child:SetLoaded(1, "loaded", L["Loaded"], L["%d displays loaded"]:format(hasLoaded))
       elseif hasStandBy > 0 then
-        child:SetLoaded(2, {0.96, 0.82, 0.16, 1}, L["Standby"], L["%d displays on standby"]:format(hasStandBy))
+        child:SetLoaded(2, "standby", L["Standby"], L["%d displays on standby"]:format(hasStandBy))
       elseif hasNotLoaded > 0 then
-        child:SetLoaded(3, {0.6, 0.6, 0.6, 1}, L["Not Loaded"], L["%d displays not loaded"]:format(hasNotLoaded))
+        child:SetLoaded(3, "unloaded", L["Not Loaded"], L["%d displays not loaded"]:format(hasNotLoaded))
       else
         child:ClearLoaded()
       end
     else
       if OptionsPrivate.Private.loaded[id] == true then
-        child:SetLoaded(1, {0, 0.68, 0.30, 1}, L["Loaded"], L["This display is currently loaded"])
+        child:SetLoaded(1, "loaded", L["Loaded"], L["This display is currently loaded"])
       elseif OptionsPrivate.Private.loaded[id] == false then
-        child:SetLoaded(2, {0.96, 0.82, 0.16, 1}, L["Standby"], L["This display is on standby, it will be loaded when needed."])
+        child:SetLoaded(2, "standby", L["Standby"], L["This display is on standby, it will be loaded when needed."])
       else
-        child:SetLoaded(3, {0.6, 0.6, 0.6, 1}, L["Not Loaded"], L["This display is not currently loaded"])
+        child:SetLoaded(3, "unloaded", L["Not Loaded"], L["This display is not currently loaded"])
       end
     end
 
     if useTextFilter then
-      if(id:lower():find(filter, 1, true)) then
-        aurasMatchingFilter[id] = true
-        for parent in OptionsPrivate.Private.TraverseParents(child.data) do
-          aurasMatchingFilter[parent.id] = true
+      for _, word in ipairs(filterTable) do
+        if(id:lower():find(word, 1, true)) then
+          aurasMatchingFilter[id] = true
+          for parent in OptionsPrivate.Private.TraverseParents(child.data) do
+            aurasMatchingFilter[parent.id] = true
+          end
         end
       end
     else
@@ -1573,7 +1583,7 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
   end
 
   local co1 = coroutine.create(func1)
-  OptionsPrivate.Private.dynFrame:AddAction("Dropping Auras", co1)
+  OptionsPrivate.Private.Threads:Add("Dropping Auras", co1)
 end
 
 function OptionsPrivate.StartDrag(mainAura)
@@ -1624,6 +1634,7 @@ end
 function OptionsPrivate.DropIndicator()
   local indicator = frame.dropIndicator
   if not indicator then
+    ---@class Frame
     indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")
@@ -1685,33 +1696,33 @@ function WeakAuras.UpdateThumbnail(data)
 end
 
 function OptionsPrivate.OpenTexturePicker(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
-  frame.texturePicker:Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
+   OptionsPrivate.TexturePicker(frame):Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
 end
 
 function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
-  frame.iconPicker:Open(baseObject, paths, groupIcon)
+  OptionsPrivate.IconPicker(frame):Open(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)
-  if not(IsAddOnLoaded("WeakAurasModelPaths")) then
-    local loaded, reason = LoadAddOn("WeakAurasModelPaths");
+  if not(C_AddOns.IsAddOnLoaded("WeakAurasModelPaths")) then
+    local loaded, reason = C_AddOns.LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["ModelPaths could not be loaded, the addon is %s"], reason));
       WeakAuras.ModelPaths = {};
     end
-    frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
+    OptionsPrivate.ModelPicker(frame).modelTree:SetTree(WeakAuras.ModelPaths)
   end
-  frame.modelPicker:Open(baseObject, path);
+  OptionsPrivate.ModelPicker(frame):Open(baseObject, path);
 end
 
 function OptionsPrivate.OpenCodeReview(data)
-  frame.codereview:Open(data);
+  OptionsPrivate.CodeReview(frame):Open(data);
 end
 
 function OptionsPrivate.OpenTriggerTemplate(data, targetId)
-  if not(IsAddOnLoaded("WeakAurasTemplates")) then
-    local loaded, reason = LoadAddOn("WeakAurasTemplates");
+  if not(C_AddOns.IsAddOnLoaded("WeakAurasTemplates")) then
+    local loaded, reason = C_AddOns.LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
       WeakAuras.prettyPrint(string.format(L["Templates could not be loaded, the addon is %s"], reason));
@@ -1722,6 +1733,171 @@ function OptionsPrivate.OpenTriggerTemplate(data, targetId)
   -- This is called multiple times if a group is selected
   if frame.window ~= "newView" then
     frame.newView:Open(data, targetId);
+  end
+end
+
+OptionsPrivate.currentDynamicTextInput = false;
+
+local BaseDynamicTextCodes = {
+  trigger = {
+    {type = "mini", name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
+    {type = "mini", name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
+    {type = "mini", name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
+    {type = "mini", name = "i", desc = L["Icon - The icon associated with the display"]},
+    {type = "mini", name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"]},
+  },
+  global = {
+    {type = "mini", name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
+    {type = "mini", name = "%", desc = L["% - To show a percent sign"]},
+  }
+}
+
+function OptionsPrivate.UpdateTextReplacements(frame, data)
+  frame.scrollList:ReleaseChildren()
+
+  local props = OptionsPrivate.Private.GetAdditionalProperties(data)
+  local sortedProps = {}
+
+  -- Add global header and markers
+  table.insert(sortedProps, {type = "header", triggerNum = 0, name = "Global Properties"})
+  for index, icon in ipairs(ICON_LIST) do
+    table.insert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..index.."}", desc = icon..":0|t", widthFraction = #ICON_LIST})
+  end
+
+  -- Add base dynamic text codes
+  local globalProps = {}
+  tAppendAll(globalProps, CopyTable(BaseDynamicTextCodes.trigger))
+  tAppendAll(globalProps, CopyTable(BaseDynamicTextCodes.global))
+  for _, prop in ipairs(globalProps) do
+    prop.widthFraction = #globalProps
+    prop.triggerNum = 0
+    table.insert(sortedProps, prop)
+  end
+
+  -- Process each trigger's properties
+  for triggerNum, triggerProps in pairs(props) do
+    if next(triggerProps) then
+      -- Create a temporary table for this trigger's properties
+      local tempProps = {}
+
+      -- Add the properties to the temporary table
+      for name, data in pairs(triggerProps) do
+        table.insert(tempProps, {triggerNum = triggerNum, name = name, desc = data.display})
+      end
+
+      -- Sort the temporary table by name
+      table.sort(tempProps, function(a, b)
+        return a.name < b.name
+      end)
+
+      -- Add a header for the trigger
+      table.insert(sortedProps, {type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum)})
+
+      -- Add the base properties for the trigger
+      for _, v in ipairs(BaseDynamicTextCodes.trigger) do
+        local prop = CopyTable(v)
+        prop.widthFraction = #BaseDynamicTextCodes.trigger
+        prop.triggerNum = triggerNum
+        table.insert(sortedProps, prop)
+      end
+
+      -- Add the sorted properties to the sortedProps table
+      for _, prop in ipairs(tempProps) do
+        table.insert(sortedProps, prop)
+      end
+    end
+  end
+
+  -- Create a modified WeakAurasSnippetButton for each property and add it to ScrollList
+  local lastType, miniGroup
+  for i, prop in ipairs(sortedProps) do
+    if prop.type == "header" then
+      local heading = AceGUI:Create("Heading")
+      heading:SetText(prop.name)
+      heading:SetRelativeWidth(1)
+      heading.label:SetFontObject(GameFontNormalSmall2)
+      frame.scrollList:AddChild(heading)
+    else
+      if ((prop.type == "mini" or prop.type == "marker") and prop.type ~= lastType)
+      then
+        miniGroup = AceGUI:Create("SimpleGroup")
+        miniGroup:SetLayout("Flow")
+        miniGroup:SetAutoAdjustHeight(true)
+        miniGroup:SetRelativeWidth(1)
+        frame.scrollList:AddChild(miniGroup)
+      end
+      local button = AceGUI:Create("WeakAurasSnippetButton")
+      local propIndex = prop.triggerNum > 0 and ("%s"):format(prop.triggerNum) or ""
+      local propPrefix = prop.triggerNum > 0 and ("%%%s."):format(propIndex) or "%"
+      if prop.type == "marker" then
+        button:SetTitle(prop.desc)
+      else
+        button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
+      end
+      if prop.type == "mini" or prop.type == "marker" then
+        button:SetRelativeWidth((1/prop.widthFraction) - 1e-10)
+      else
+        button:SetRelativeWidth(1)
+      end
+      button.title:SetFontObject(GameFontNormal)
+      button.frame:SetHeight(28)
+      button:SetDynamicTextStyle()
+
+      -- Set Tooltip
+      if prop.type ~= "marker" then
+        button.frame:SetScript("OnEnter", function(frame)
+          local tooltip = GameTooltip
+          tooltip:SetWidth(300)
+          tooltip:SetOwner(frame, "ANCHOR_RIGHT")
+          tooltip:ClearLines()
+          tooltip:AddLine(("%s%s"):format(propPrefix, prop.name))
+          tooltip:AddLine(prop.desc, 1, 1, 1, true)
+          if prop.name ~= "c" and prop.name ~= "%" then
+            tooltip:AddLine("\n")
+            tooltip:AddLine(
+              prop.triggerNum > 0
+              and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
+              or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
+              0.8, 0.8, 0.8,
+              true)
+          end
+          tooltip:Show()
+          frame.obj:Fire("OnEnter")
+        end)
+      else
+        button.frame:SetScript("OnEnter", nil)
+      end
+
+      -- Insert dynamic text property on click
+      button:SetCallback("OnClick", function()
+        local insertProp
+        if prop.type == "marker" then
+          insertProp = prop.name
+        else
+          if IsShiftKeyDown() then
+            insertProp = prop.name == "%" and "%%" or ("%%{%s}"):format(prop.name)
+            if prop.triggerNum > 0 then
+              insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+            end
+          else
+            insertProp = prop.name == "%" and "%%" or ("%%%s"):format(prop.name)
+            if prop.triggerNum > 0 then
+              insertProp = string.format("%%%d.%s", propIndex, prop.name)
+            end
+          end
+        end
+
+        OptionsPrivate.currentDynamicTextInput.editbox:Insert(insertProp)
+        OptionsPrivate.currentDynamicTextInput.editbox:SetFocus()
+      end)
+
+      if prop.type == "mini" or prop.type == "marker" then
+        miniGroup:AddChild(button)
+      else
+        frame.scrollList:AddChild(button)
+      end
+    end
+    lastType = prop.type
   end
 end
 

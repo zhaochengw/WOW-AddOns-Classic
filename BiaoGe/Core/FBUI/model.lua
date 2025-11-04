@@ -203,7 +203,8 @@ function BG.CreateBossModel()
         model:SetPitch(0.3)
         model:SetRoll(-0.1)
         -- CreateAllTestButton(model)
-    elseif BG.IsVanilla_Sod then
+    end
+    if BG.IsVanilla_Sod then
         local model = CreateBossModel("BD", 7, 80, -10, 213334, 0.5)
         model:SetPosition(0, 0, 0) -- Z,X,Y
         model:SetFacing(0)         -- 左右
@@ -237,7 +238,8 @@ function BG.CreateBossModel()
         model:SetFacing(-0.6)
         model:SetPitch(0.8)
         model:SetRoll(-0.5)
-    elseif BG.IsWLK then
+    end
+    if BG.IsWLK then
         local model = CreateBossModel("ICC", 12, 0, -70, 31301, 0.5)
         model:SetPosition(0, 0, 0) -- Z,X,Y
         model:SetFacing(0)         -- 左右
@@ -312,7 +314,8 @@ function BG.CreateBossModel()
         model:SetFacing(0)
         model:SetPitch(0)
         model:SetRoll(0)
-    elseif BG.IsCTM then
+    end
+    if BG.IsCTM then
         local model = CreateBossModel("BOT", 5, 40, 110, 45213, 0.7)
         model:SetPosition(-2, 0, 0) -- Z,X,Y
         model:SetFacing(-0.1)       -- 左右
@@ -343,26 +346,28 @@ function BG.CreateBossModel()
         model:SetPitch(0)              -- 上下
         model:SetRoll(0)               -- 倾斜
         -- CreateAllTestButton(model)
-    elseif BG.IsMOP then
-            local model = CreateBossModel("MSV", 6, 0, 0, 60400, .55)
-            model:SetPosition(-0, 0, 0) -- Z,X,Y
-            model:SetFacing(0)          -- 左右
-            model:SetPitch(0)           -- 上下
-            model:SetRoll(0)            -- 倾斜
-            -- CreateAllTestButton(model)
-            local model = CreateBossModel("MSV", 12, 10, 20, 62837, .75)
-            model:SetPosition(-1, 0, 0) -- Z,X,Y
-            model:SetFacing(math.rad(-10)) -- 左右
-            model:SetPitch(0)           -- 上下
-            model:SetRoll(0)            -- 倾斜
-            -- CreateAllTestButton(model)
-            local model = CreateBossModel("MSV", 16, 20, 60, 60999, .7)
-            model:SetPosition(-1, 0, 0)    -- Z,X,Y
-            model:SetFacing(math.rad(-10)) -- 左右
-            model:SetPitch(0)              -- 上下
-            model:SetRoll(0)               -- 倾斜
-            -- CreateAllTestButton(model)
-    elseif BG.IsRetail then
+    end
+    if BG.IsMOP_TW then
+        local model = CreateBossModel("MSV", 6, 0, 0, 60400, .55)
+        model:SetPosition(-0, 0, 0)     -- Z,X,Y
+        model:SetFacing(0)              -- 左右
+        model:SetPitch(0)               -- 上下
+        model:SetRoll(0)                -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("MSV", 12, 10, 20, 62837, .75)
+        model:SetPosition(-1, 0, 0)        -- Z,X,Y
+        model:SetFacing(math.rad(-10))     -- 左右
+        model:SetPitch(0)                  -- 上下
+        model:SetRoll(0)                   -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("MSV", 16, 20, 60, 60999, .7)
+        model:SetPosition(-1, 0, 0)        -- Z,X,Y
+        model:SetFacing(math.rad(-10))     -- 左右
+        model:SetPitch(0)                  -- 上下
+        model:SetRoll(0)                   -- 倾斜
+        -- CreateAllTestButton(model)
+    end
+    if BG.IsRetail then
         local model = CreateBossModel("NP", 8, 0, -10, 219778, 0.6)
         model:SetPosition(-0, 0, 0) -- Z,X,Y
         model:SetFacing(0)          -- 左右

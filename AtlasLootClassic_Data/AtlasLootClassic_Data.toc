@@ -1,16 +1,35 @@
-﻿## Interface: 11404, 20504, 30404
-## Author: Lag
-## Version: v3.0.0
+## Interface: 50500
+## Author: Snowflame0
+## Version: v5.0.4
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-## Title: AtlasLootClassic |cFFFF0000[Data]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhCN: AtlasLoot经典版 |cFFFF0000[数据]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFFFF0000[數據]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes: AtlasLoot data module |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhCN: AtlasLoot 数据模块 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhTW: 副本戰利品查詢的數據設定。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
+## Title: AtlasLootClassic |cFF33FFBDMoP|r |cFFFF0000[Data]|r
+## Notes: AtlasLoot Data module
+
+## Title-deDE: AtlasLootClassic |cFFFF5733MoP|r |cFFFF0000[Daten]|r
+## Title-esES: AtlasLoot Classic |cFFFF5733MoP|r |cFFFF0000[Datos]|r
+## Title-esMX: AtlasLoot Classic |cFFFF5733MoP|r |cFFFF0000[Datos]|r
+## Title-frFR: AtlasLoot Classic |cFFFF5733MoP|r |cFFFF0000[Données]|r
+## Title-itIT: AtlasLootClassic |cFFFF5733MoP|r |cFFFF0000[Data]|r
+## Title-koKR: AtlasLoot Classic |cFFFF5733MoP|r |cFFFF0000[Data]|r
+## Title-ptBR: AtlasLoot Classic |cFFFF5733MoP|r |cFFFF0000[Dada]|r
+## Title-ruRU: AtlasLootClassic |cFFFF5733MoP|r |cFFFF0000[Data]|r
+## Title-zhCN: AtlasLootClassic |cFFFF5733MoP|r |cFFFF0000[Data]|r
+## Title-zhTW: AtlasLootClassic |cFFFF5733MoP|r |cFFFF0000[Data]|r
+## Notes-deDE: AtlasLoot Datenmodul
+## Notes-esES: AtlasLoot módulo de datos
+## Notes-esMX: AtlasLoot módulo de datos
+## Notes-frFR: Module de données
+## Notes-itIT: AtlasLoot data module
+## Notes-koKR: AtlasLoot 데이터 모듈
+## Notes-ptBR: Módulo de dados de AtlasLoot
+## Notes-ruRU: Модуль данных AtlasLoot
+## Notes-zhCN: AtlasLoot 数据模块
+## Notes-zhTW: AtlasLoot data module
+
 ## X-Category: Map
-## X-Revision: BigFoot
+## X-License: GPL v2
 
 core.lua
 
@@ -19,3 +38,5 @@ items.lua
 source.lua
 source-tbc.lua
 source-wrath.lua
+source-cata.lua
+source-mop.lua

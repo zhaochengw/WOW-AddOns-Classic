@@ -22,7 +22,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	WarnPortal			= "Показывать предупреждение для цели $spell:46021",
-	SpecWarnWildMagic	= "Показать спецпредупреждение для $spell:45004",
+	SpecWarnWildMagic	= "Показывать спецпредупреждение для $spell:45004",
 	ShowFrame			= "Показывать фрейм $spell:44852",
 	FrameClassColor		= "Использовать цвета классов во фрейме $spell:44852",
 	FrameUpwards		= "Развернуть фрейм $spell:44852 вверх",
@@ -122,8 +122,8 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerHuman		= "Следующие Гуманоиды (%s)",
-	TimerVoid		= "Следующий Часовой Бездны (%s)",
+	TimerHuman		= "След. Гуманоиды (%s)",
+	TimerVoid		= "След. Часовой Бездны (%s)",
 	TimerPhase		= "Энтропий"
 }
 
@@ -131,8 +131,8 @@ L:SetOptionLocalization{
 	WarnHuman		= "Показывать предупреждение для Гуманоидов",
 	WarnVoid		= "Показывать предупреждение для Часового Бездны",
 	WarnFiend		= "Показывать предупреждение для Демонов во 2-й фазе",
-	TimerHuman		= "Отсчёт времени до Гуманоидов",
-	TimerVoid		= "Отсчёт времени до Часового Бездны",
+	TimerHuman		= "Отсчёт времени до появления Гуманоидов",
+	TimerVoid		= "Отсчёт времени до появления Часового Бездны",
 	TimerPhase		= "Отсчёт времени до перехода на 2-ю фазу"
 }
 
@@ -245,8 +245,8 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	warnAshtongueDefender	= "Показывать предупреждение для Пеплоуста-защитника",
 	warnAshtongueSorcerer	= "Показывать предупреждение для Пеплоуста-колдуна",
-	timerAshtongueDefender	= "Отсчёт времени до Пеплоуста-защитника",
-	timerAshtongueSorcerer	= "Отсчёт времени до Пеплоуста-колдуна"
+	timerAshtongueDefender	= "Отсчёт времени до появления Пеплоуста-защитника",
+	timerAshtongueSorcerer	= "Отсчёт времени до появления Пеплоуста-колдуна"
 })
 
 -------------------------
@@ -281,11 +281,11 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("Souls")
 
 L:SetGeneralLocalization{
-	name = "Воплощение Душ"
+	name = "Реликварий душ"
 }
 
 L:SetWarningLocalization{
-	WarnMana		= "Ноль маны через 30 сек"
+	WarnMana		= "Ноль маны через 30 сек."
 }
 
 L:SetTimerLocalization{
@@ -293,8 +293,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnMana		= "Показывать предупреждение, когда ноль маны во 2-й фазе",
-	TimerMana		= "Показывать таймер, когда ноль маны во 2-й фазе"
+	WarnMana		= "Показывать предупреждение, когда нет маны во 2-й фазе",
+	TimerMana		= "Отсчет времени до момента, когда нет маны во 2-й фазе"
 }
 
 L:SetMiscLocalization{
@@ -370,8 +370,8 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerNextHuman		= "Следующая Обычная фаза",
-	TimerNextDemon		= "Следующая фаза Демона"
+	TimerNextHuman		= "След. Обычная фаза",
+	TimerNextDemon		= "След. Фаза Демона"
 }
 
 L:SetOptionLocalization{
@@ -379,7 +379,7 @@ L:SetOptionLocalization{
 	WarnDemon		= "Показывать предупреждение для фазы Демона",
 	TimerNextHuman	= "Отсчёт времени до Обычной фазы",
 	TimerNextDemon	= "Отсчёт времени до фазы Демона",
-	RangeFrame		= "Показывать проверку дистанции (10 ярдов) в фазах 3 и 4"
+	RangeFrame		= "Показывать проверку дистанции (10 м.) в фазах 3 и 4"
 }
 
 L:SetMiscLocalization{
@@ -452,8 +452,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnWave		= "Предупреждать о приближении новой волны",
-	DetailedWave	= "Подробное предупреждение о приближении новой волны (какие именно мобы)",
+	WarnWave		= "Показывать предупреждение о приближении новой волны",
+	DetailedWave	= "Показывать подробное предупреждение о приближении новой волны (какие именно мобы)",
 	TimerWave		= "Отсчёт времени до следующей волны"
 }
 
@@ -566,7 +566,7 @@ L:SetWarningLocalization{
 	WarnMobDead		= "%s упал",
 	WarnEgg			= "Появилось яйцо Феникса",
 	SpecWarnGaze	= "Взгляни на себя - убегай!",
-	SpecWarnEgg		= "Появилось яйцо Феникса — поменяйте цель!"
+	SpecWarnEgg		= "Появилось яйцо Феникса - переключитесь!"
 }
 
 L:SetTimerLocalization{
@@ -632,8 +632,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	WarnMark		= "Показать предупреждение для меток",
-	WarnPhase		= "Показать предупреждение для следующей фазы",
+	WarnMark		= "Показывать предупреждение для меток",
+	WarnPhase		= "Показывать предупреждение для следующей фазы",
 	SpecWarnMark	= "Показывать предупреждение, когда урон от дебаффа меток превышает 100%",
 	TimerMark		= "Отсчёт времени до следующих меток"
 }
@@ -658,8 +658,8 @@ L:SetWarningLocalization{
 }
 
 L:SetTimerLocalization{
-	TimerSubmerge		= "Восстановление Погружения",
-	TimerEmerge			= "Восстановление Появления"
+	TimerSubmerge		= "Восст. Погружения",
+	TimerEmerge			= "Восст. Появления"
 }
 
 L:SetOptionLocalization{
@@ -875,9 +875,9 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	Event				= "Tonight... we explore a tale of forbidden love!",
+	Event				= "Сегодня... мы увидим историю любви!",
 	RJ_Pull				= "Что ты за дьявол, что меня так мучишь?",
-	DBM_RJ_PHASE2_YELL	= "Ночь, добрая и строгая, приди! Верни мне моего Ромуло!",
+	DBM_RJ_PHASE2_YELL	= "Приди же, ласковая ночь, верни мне моего Ромуло!",
 	Romulo				= "Ромуло",
 	Julianne			= "Джулианна"
 }
@@ -918,7 +918,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	AnnounceBosses			= "Показывать предупреждение о появлении боссов",
-	ShowBossTimers			= "Показывать таймеры появления боссов"
+	ShowBossTimers			= "Отсчет времени до появления боссов"
 }
 
 L:SetMiscLocalization{
@@ -996,10 +996,10 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	warningPortal			= "Показывать предупреждение для фазы портала",
+	warningPortal			= "Показывать предупреждение для фазы порталов",
 	warningBanish			= "Показывать предупреждение для фазы изгнания",
-	timerPortalPhase		= "Показать таймер длительности фазы портала",
-	timerBanishPhase		= "Показать таймер длительности фазы изгнания"
+	timerPortalPhase		= "Показывать таймер длительности фазы порталов",
+	timerBanishPhase		= "Показывать таймер длительности фазы изгнания"
 }
 
 L:SetMiscLocalization{
@@ -1015,7 +1015,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetTimerLocalization{
-	timerCheat	= "Восстановление жульничества"
+	timerCheat	= "Восст. Жульничества"
 }
 
 L:SetOptionLocalization{

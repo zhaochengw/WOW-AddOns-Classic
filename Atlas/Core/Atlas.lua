@@ -1,4 +1,3 @@
--- $Id: Atlas.lua 434 2023-03-28 14:39:00Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,70 +23,33 @@
 
 --]]
 
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
-local pairs, select, type, unpack, next = pairs, select, type, unpack, next
-local string, table, math, tonumber = string, table, math, tonumber
--- Libraries
-local bit = bit
-local strfind, strsub, format, gsub, strlower, strgmatch = string.find, string.sub, string.format, string.gsub, string.lower, string.gmatch
-local strlen, strgfind = string.len, string.gfind
-local strtrim = strtrim
-local floor, fmod = math.floor, math.fmod
-local getn, tinsert, tsort = table.getn, table.insert, table.sort
-local GetAddOnInfo, GetAddOnEnableState, UnitLevel, GetBuildInfo = _G.GetAddOnInfo, _G.GetAddOnEnableState, _G.UnitLevel, _G.GetBuildInfo
-local GetLFGDungeonInfo = _G.GetLFGDungeonInfo
-local hooksecurefunc = hooksecurefunc
-
 -- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
-local wowversion  = select(4, GetBuildInfo())
+local WoWClassicEra, WoWClassic, WoWRetail
+local wowversion = select(4, GetBuildInfo())
 if wowversion < 20000 then
 	WoWClassicEra = true
-elseif wowversion < 30000 then 
-	WoWClassicTBC = true
-elseif wowversion < 40000 then 
-	WoWWOTLKC = true
+elseif wowversion > 20000 and wowversion < 90000 then
+	WoWClassic = true
 elseif wowversion > 90000 then
 	WoWRetail = true
-else
-	-- n/a
 end
-
-local GetQuestGreenRange, UnitQuestTrivialLevelRange
-if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
-	GetQuestGreenRange = _G.GetQuestGreenRange
-else
-	UnitQuestTrivialLevelRange = _G.UnitQuestTrivialLevelRange
-end
-
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
 -- ----------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
+local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceConsole-3.0", "AceEvent-3.0")
 
-local LibStub = _G.LibStub
-local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceConsole-3.0")
 addon.constants = private.constants
 addon.Templates = private.Templates
---addon.dropdowns. = private.dropdowns
 addon.constants.addon_name = private.addon_name
 addon.Name = FOLDER_NAME
-addon.LocName = select(2, GetAddOnInfo(addon.Name))
-addon.Notes = select(3, GetAddOnInfo(addon.Name))
+addon.LocName = select(2, C_AddOns.GetAddOnInfo(addon.Name))
+addon.Notes = select(3, C_AddOns.GetAddOnInfo(addon.Name))
 _G.Atlas = addon
 
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
-local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
-local BB = Atlas_GetLocaleLibBabble("LibBabble-Boss-3.0")
-local LibDialog = LibStub("LibDialog-1.0")
 local AceDB = LibStub("AceDB-3.0")
--- UIDropDownMenu
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local profile
 
@@ -96,26 +58,27 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Atlas", {
 	type = "launcher",
 	text = L["ATLAS_TITLE"],
 	icon = "Interface\\WorldMap\\WorldMap-Icon",
+	OnClick = function(_, button)
+		if button == "LeftButton" then
+			Atlas_Toggle()
+		elseif button == "RightButton" then
+			addon:OpenOptions()
+		end
+	end,
+	OnTooltipShow = function(tooltip)
+		if not tooltip or not tooltip.AddLine then return end
+		tooltip:AddLine("|cffffffff"..ATLAS_TITLE)
+		tooltip:AddLine(ATLAS_LDB_HINT)
+	end
 })
 
 local minimapButton = LibStub("LibDBIcon-1.0")
 
---[[
-function addon:Toggle()
-	self.db.profile.minimap.hide = not self.db.profile.minimap.hide
-	if self.db.profile.minimap.hide then
-		minimapButton:Hide("Atlas")
-		--AtlasOptions.AtlasButtonShown = false
-	else
-		minimapButton:Show("Atlas")
-		--AtlasOptions.AtlasButtonShown = true
-	end
-end
-]]
 function Atlas_ButtonToggle2()
 	profile.minimap.hide = not profile.minimap.hide
 	Atlas_ButtonToggle()
 end
+
 function Atlas_ButtonToggle()
 	if profile.minimap.hide then
 		minimapButton:Hide("Atlas")
@@ -148,7 +111,7 @@ end
 
 function addon:GetCreatureName(creatureName, id)
 	if (not creatureName) and (not id) then return end
-	
+
 	getCreatureNamebyID(id)
 	creatureName = creature_cache or creatureName
 	creature_cache = nil
@@ -161,23 +124,17 @@ end
 -- core Atlas or plugins
 local Atlas_CoreMapsKey = {}
 local Atlas_CoreMapsKey_Index = 0
---[[ -- now being handled within Atlas:RegisterModule()
-for kc, vc in pairs(AtlasMaps) do
-	Atlas_CoreMapsKey[Atlas_CoreMapsKey_Index] = kc
-	Atlas_CoreMapsKey_Index = Atlas_CoreMapsKey_Index + 1
-end
-]]
 
 function addon:RegisterPlugin(name, myCategory, myData, myNPCData)
 	ATLAS_PLUGINS[name] = {}
-	local i = getn(Atlas_MapTypes) + 1
+	local i = #Atlas_MapTypes + 1
 	Atlas_MapTypes[i] = ATLAS_PLUGINS_COLOR..myCategory -- Plugin category name to be added with green color, and then added to array
-	
+
 	for k, v in pairs(myData) do
 		tinsert(ATLAS_PLUGINS[name], k)
 		AtlasMaps[k] = v
 	end
-	
+
 	tinsert(ATLAS_PLUGIN_DATA, myData)
 	ATLAS_PLUGIN_MENUS = ATLAS_PLUGIN_MENUS + 1
 
@@ -186,12 +143,12 @@ function addon:RegisterPlugin(name, myCategory, myData, myNPCData)
 			AtlasMaps_NPC_DB[k] = v
 		end
 	end
-	
-	if ( ATLAS_OLD_TYPE and ATLAS_OLD_TYPE <= ATLAS_MODULE_MENUS + getn(Atlas_MapTypes) ) then
+
+	if (ATLAS_OLD_TYPE and ATLAS_OLD_TYPE <= ATLAS_MODULE_MENUS + #Atlas_MapTypes) then
 		profile.options.dropdowns.module = ATLAS_OLD_TYPE
 		profile.options.dropdowns.zone = ATLAS_OLD_ZONE
 	end
-	
+
 	addon:PopulateDropdowns()
 	Atlas_Refresh()
 end
@@ -215,11 +172,11 @@ local function registerModule(moduleKey)
 	end
 	-- register module maps' dropdowns order
 	if (module.db.DropDownLayouts_Order) then
-		for k_cat,v_cat in pairs(module.db.DropDownLayouts_Order) do
+		for k_cat, v_cat in pairs(module.db.DropDownLayouts_Order) do
 			if (not addon.dropdowns.DropDownLayouts_Order[k_cat]) then
 				addon.dropdowns.DropDownLayouts_Order[k_cat] = v_cat
 			else
-				for i=1, #module.db.DropDownLayouts_Order[k_cat] do
+				for i = 1, #module.db.DropDownLayouts_Order[k_cat] do
 					local v = module.db.DropDownLayouts_Order[k_cat][i]
 					if (not tContains(addon.dropdowns.DropDownLayouts_Order[k_cat], v)) then
 						tinsert(addon.dropdowns.DropDownLayouts_Order[k_cat], v)
@@ -238,7 +195,7 @@ local function registerModule(moduleKey)
 					if (not addon.dropdowns.DropDownLayouts[k_cat][k_scat]) then
 						addon.dropdowns.DropDownLayouts[k_cat][k_scat] = v_scat
 					else
-						for i=1, #module.db.DropDownLayouts[k_cat][k_scat] do
+						for i = 1, #module.db.DropDownLayouts[k_cat][k_scat] do
 							local v = module.db.DropDownLayouts[k_cat][k_scat][i]
 							if (not tContains(addon.dropdowns.DropDownLayouts[k_cat][k_scat], v)) then
 								tinsert(addon.dropdowns.DropDownLayouts[k_cat][k_scat], v)
@@ -255,7 +212,7 @@ local function registerModule(moduleKey)
 			for ka, va in pairs(module.db[k_table]) do
 				if (addon.assocs[k_table][ka]) then
 					if (type(addon.assocs[k_table][ka]) == "table") then
-						for i=1, #addon.assocs[k_table][ka] do
+						for i = 1, #addon.assocs[k_table][ka] do
 							local v = module.db[k_table][ka][i]
 							if (not tContains(addon.assocs[k_table][ka], v)) then
 								tinsert(addon.assocs[k_table][ka], v)
@@ -293,15 +250,7 @@ local function bossButtonCleanUp(button)
 end
 
 local function bossButtonUpdate(button, encounterID, instanceID, b_iconImage, moduleData)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then 
-		return
-	end
-	
-	local rolesByFlag = {
-		[0] = "TANK",
-		[1] = "DAMAGER",
-		[2] = "HEALER"
-	}
+	if (WoWClassicEra) then return end
 
 	button:SetID(encounterID)
 	button.encounterID = encounterID
@@ -310,60 +259,12 @@ local function bossButtonUpdate(button, encounterID, instanceID, b_iconImage, mo
 	end
 	button.AtlasModule = moduleData or nil
 
-	local ejbossname, description, _, rootSectionID, link = EJ_GetEncounterInfo(encounterID)
+	local ejbossname, description, _, _, link = EJ_GetEncounterInfo(encounterID)
 	if (ejbossname) then
 		button.tooltiptitle = ejbossname
 		button.tooltiptext = description
 		button.link = link
 
-		local sectionInfo = C_EncounterJournal.GetSectionInfo(rootSectionID)
---[[
-      Name = "EncounterJournalSectionInfo",
-      Type = "Structure",
-      Fields =
-      {
-        { Name = "spellID", Type = "number", Nilable = false },
-        { Name = "title", Type = "string", Nilable = false },
-        { Name = "description", Type = "string", Nilable = true },
-        { Name = "headerType", Type = "number", Nilable = false },
-        { Name = "abilityIcon", Type = "number", Nilable = false },
-        { Name = "creatureDisplayID", Type = "number", Nilable = false },
-        { Name = "uiModelSceneID", Type = "number", Nilable = false },
-        { Name = "siblingSectionID", Type = "number", Nilable = true },
-        { Name = "firstChildSectionID", Type = "number", Nilable = true },
-        { Name = "filteredByDifficulty", Type = "bool", Nilable = false },
-        { Name = "link", Type = "string", Nilable = false },
-        { Name = "startsOpen", Type = "bool", Nilable = false },
-      },
-]]
-		if (sectionInfo and addon:EncounterJournal_IsHeaderTypeOverview(sectionInfo.headerType)) then
-			button.overviewDescription = sectionInfo.description or nil
-			local nextSectionID = sectionInfo.firstChildSectionID or nil
-
-			local spec, role
-
-			spec = GetSpecialization()
-			if (spec) then
-				role = GetSpecializationRole(spec)
-			else
-				role = "DAMAGER"
-			end
-
-			local description
-			local i = 1
-			while nextSectionID do
-				local flag1 = C_EncounterJournal.GetSectionIconFlags(nextSectionID)
-				sectionInfo = C_EncounterJournal.GetSectionInfo(nextSectionID)
-				if (role == rolesByFlag[flag1]) then
-					description = gsub(sectionInfo.description, "$bullet;", "- ")
-					button.roleOverview = "|cffffffff"..sectionInfo.title.."|r".."\n"..description
-					break
-				end
-				i = i + 1
-				nextSectionID = sectionInfo.firstChildSectionID
-			end
-		end
-		
 		if (b_iconImage) then
 			local id, name, description, displayInfo, iconImage, uiModelSceneID = EJ_GetCreatureInfo(1, encounterID)
 			button.name = name
@@ -371,15 +272,21 @@ local function bossButtonUpdate(button, encounterID, instanceID, b_iconImage, mo
 			button.displayInfo = displayInfo
 			button.description = description
 			button.uiModelSceneID = uiModelSceneID
-			if ( iconImage ) then
+			if (iconImage) then
 				SetPortraitTextureFromCreatureDisplayID(button.bgImage, displayInfo)
+			end
+			if button.DefeatedOverlay then
+				local complete = C_EncounterJournal.IsEncounterComplete(encounterID);
+				button.DefeatedOpacity:SetShown(complete);
+				button.DefeatedOverlay:SetShown(complete);
+				button.bgImage:SetDesaturation(complete and 0.7 or 0);
 			end
 		end
 	end
 end
 
 local function searchText(text)
-	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone]
+	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone] or ATLAS_DROPDOWNS[1][1]
 	local mapdata = AtlasMaps
 	local base = mapdata[zoneID]
 
@@ -392,18 +299,42 @@ local function searchText(text)
 	end
 
 	-- Populate the scroll frame entries list, the update func will do the rest
+	wipe(ATLAS_SCROLL_LIST)
 	local i = 1
-	while ( data[i] ~= nil ) do
-		ATLAS_SCROLL_LIST[i] = data[i][1]
-		if (data[i][2] ~= nil) then
-			ATLAS_SCROLL_ID[i] = { data[i][2], base.JournalInstanceID or 0, data[i][3] or "", data[i][4] or ""}
+	while (data[i] ~= nil) do
+		if (data[i][3] and data[i][3] ~= "") then
+			ATLAS_SCROLL_LIST[i] = {
+				type = "Item",
+				data = {
+					text = data[i][1],
+					itemID = data[i][2],
+					fallbackName = data[i][4],
+				}
+			}
+		elseif (type(data[i][2]) == "number" and data[i][2] < 10000 and select(4, GetBuildInfo()) > 40000) then
+			ATLAS_SCROLL_LIST[i] = {
+				type = "Boss",
+				data = {
+					text = data[i][1],
+					encounterID = data[i][2],
+					instanceID = base.JournalInstanceID or 0,
+					module = base.Module or base.ALModule or nil
+				}
+			}
+		elseif (type(data[i][2]) == "string") then
+			local achievementID = strmatch(data[i][2], "ac=(%d+)")
+			ATLAS_SCROLL_LIST[i] = {
+				type = "Achievement",
+				data = { achievementID = tonumber(achievementID) }
+			}
 		else
-			ATLAS_SCROLL_ID[i] = { 0, 0, "", "" }
+			ATLAS_SCROLL_LIST[i] = {
+				type = "String",
+				data = { text = data[i][1] }
+			}
 		end
 		i = i + 1
 	end
-
-	ATLAS_CUR_LINES = i - 1
 end
 
 function addon:SearchAndRefresh(text)
@@ -411,60 +342,44 @@ function addon:SearchAndRefresh(text)
 	Atlas_ScrollBar_Update()
 end
 
-local function parse_entry_strings(typeStr, id, preStr, index, lineplusoffset)
-	if (typeStr == "item") then
-		local itemID = id
-		local itemName = GetItemInfo(itemID)
-		itemName = itemName or GetItemInfo(itemID) or preStr or ""
-		if (itemName) then _G["AtlasEntry"..index.."_Text"]:SetText(ATLAS_SCROLL_LIST[lineplusoffset]..itemName); end
+function addon:SearchLFG()
+	-- LFG tool isn't available until level 10
+	if (UnitLevel("player") < 10) then return end
+
+	-- Open LFG to the group browser
+	ShowLFGParentFrame(2);
+
+	-- Set Category
+	UIDropDownMenu_SetSelectedValue(LFGBrowseFrame.CategoryDropDown, AtlasFrameLFGButton.ActivityID[1]);
+	UIDropDownMenu_Initialize(LFGBrowseFrame.CategoryDropDown, LFGBrowseCategoryDropDown_Initialize);
+
+	-- Set Activity
+	LFGBrowseActivityDropDown_ValueReset(LFGBrowseFrame.ActivityDropDown);
+	UIDropDownMenu_ClearAll(LFGBrowseFrame.ActivityDropDown);
+	UIDropDownMenu_Initialize(LFGBrowseFrame.ActivityDropDown, LFGBrowseActivityDropDown_Initialize);
+	LFGBrowseActivityDropDown_ValueSetSelected(LFGBrowseFrame.ActivityDropDown, AtlasFrameLFGButton.ActivityID[2], true);
+
+	-- Start search
+	LFGBrowse_DoSearch();
+end
+
+function addon:SearchLFG_Enter(button)
+	GameTooltip:SetOwner(button, "ANCHOR_RIGHT");
+	if (UnitLevel("player") < 10) then
+		GameTooltip:SetText(L["Find group for this instance"].."\n"..RED_FONT_COLOR_CODE..L["LFG is unavailable until level 10"]);
+	else
+		GameTooltip:SetText(L["Find group for this instance"]);
 	end
 end
 
 function Atlas_ScrollBar_Update()
-	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module] and ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone] or ATLAS_DROPDOWNS[1][1]
-	local mapdata = AtlasMaps
-	local base = mapdata[zoneID]
+	if (AtlasFrameBottomInset.ScrollBox) then
+		local DataProvider = CreateDataProvider(ATLAS_SCROLL_LIST)
+		local ScrollView = AtlasFrameBottomInset.ScrollBox:GetView()
+		ScrollView:SetDataProvider(DataProvider)
+	end
 
 	GameTooltip:Hide()
-	local lineplusoffset
-	FauxScrollFrame_Update(AtlasScrollBar,ATLAS_CUR_LINES,ATLAS_NUM_LINES,15)
-	for i = 1, ATLAS_NUM_LINES do
-		local button = _G["AtlasEntry"..i]
-		if button then bossButtonCleanUp(button); end
-		
-		lineplusoffset = i + FauxScrollFrame_GetOffset(AtlasScrollBar)
-		if (lineplusoffset <= ATLAS_CUR_LINES) then
-			_G["AtlasEntry"..i.."_Text"]:SetText(ATLAS_SCROLL_LIST[lineplusoffset])
-			if (ATLAS_SCROLL_ID[lineplusoffset]) then
-				if (type(ATLAS_SCROLL_ID[lineplusoffset][1]) == "number") then
-					local id = ATLAS_SCROLL_ID[lineplusoffset][1]
-					bossButtonUpdate(button, ATLAS_SCROLL_ID[lineplusoffset][1], ATLAS_SCROLL_ID[lineplusoffset][2], false, base.Module or base.ALModule)
-				elseif (type(ATLAS_SCROLL_ID[lineplusoffset][1]) == "string") then
-					-- handling achievement
-					local spos, epos = strfind(ATLAS_SCROLL_ID[lineplusoffset][1], "ac=")
-					if (spos) then
-						local achievementID = strsub(ATLAS_SCROLL_ID[lineplusoffset][1], epos+1)
-						achievementID = tonumber(achievementID)
-						addon:AchievementButtonUpdate(button, achievementID)
-					end
-				else
-				end
-				
-				if (ATLAS_SCROLL_ID[lineplusoffset][3] and ATLAS_SCROLL_ID[lineplusoffset][3]~= "") then
-					parse_entry_strings(ATLAS_SCROLL_ID[lineplusoffset][3], ATLAS_SCROLL_ID[lineplusoffset][1], ATLAS_SCROLL_ID[lineplusoffset][4], i, lineplusoffset)
---[[					if (ATLAS_SCROLL_ID[lineplusoffset][3] == "item") then
-						local itemID = ATLAS_SCROLL_ID[lineplusoffset][1]
-						local itemName = GetItemInfo(itemID)
-						itemName = itemName or GetItemInfo(itemID) or ATLAS_SCROLL_ID[lineplusoffset][4] or ""
-						if (itemName) then _G["AtlasEntry"..i.."_Text"]:SetText(ATLAS_SCROLL_LIST[lineplusoffset]..itemName); end
-					end]]
-				end
-			end
-			button:Show()
-		elseif (button) then
-			button:Hide()
-		end
-	end
 end
 
 local function simpleSearch(data, text)
@@ -481,15 +396,10 @@ local function simpleSearch(data, text)
 	i, v = next(data, nil); -- The i is an index of data, v = data[i]
 	n = i
 	while i do
-		if ( type(i) == "number" ) then
-			if ( strgmatch ) then 
-				fmatch = strgmatch(strlower(data[i][1]), search_text)()
-			else 
-				fmatch = strgfind(strlower(data[i][1]), search_text)(); 
-			end
-			if ( fmatch ) then
-				new[n] = {}
-				new[n][1] = data[i][1]
+		if (type(i) == "number") then
+			fmatch = gmatch(strlower(data[i][1]), search_text)()
+			if (fmatch) then
+				new[n] = data[i]
 				n = n + 1
 			end
 		end
@@ -505,12 +415,7 @@ local function sanitizeName(text)
 	text = strlower(text)
 	if (AtlasSortIgnore) then
 		for _, v in pairs(AtlasSortIgnore) do
-			local fmatch; 
-			if (strgmatch) then 
-				fmatch = strgmatch(text, v)()
-			else 
-				fmatch = strgfind(text, v)()
-			end
+			local fmatch = gmatch(text, v)()
 			if (fmatch) and ((strlen(text) - strlen(fmatch)) <= 4) then
 				return fmatch
 			end
@@ -531,65 +436,80 @@ function addon:PopulateDropdowns()
 	local i = 1
 	local catName = addon.dropdowns.DropDownLayouts_Order[profile.options.dropdowns.menuType]
 	local subcatOrder = addon.dropdowns.DropDownLayouts_Order[catName]
-	if (subcatOrder and type(subcatOrder) == "table") then 
-		tsort(subcatOrder) 
-		for n = 1, getn(subcatOrder), 1 do
+	if (subcatOrder and type(subcatOrder) == "table") then
+		sort(subcatOrder)
+		for n = 1, #subcatOrder, 1 do
 			local subcatItems = addon.dropdowns.DropDownLayouts[catName][subcatOrder[n]]
-			tsort(subcatItems, sortZonesAlpha)
+			sort(subcatItems, sortZonesAlpha)
 
-			local q = (#subcatItems-(#subcatItems%ATLAS_MAX_MENUITEMS))/ATLAS_MAX_MENUITEMS or 0
-			for p=0, q do
-				ATLAS_DROPDOWNS[i+p] = {}
+			local q = (#subcatItems - (#subcatItems % ATLAS_MAX_MENUITEMS)) / ATLAS_MAX_MENUITEMS or 0
+			for p = 0, q do
+				ATLAS_DROPDOWNS[i + p] = {}
 			end
 
-			for k,v in pairs(subcatItems) do
-				local q1 = (k-(k%ATLAS_MAX_MENUITEMS))/ATLAS_MAX_MENUITEMS
-				if v then tinsert(ATLAS_DROPDOWNS[i+q1], v) end
+			for k, v in pairs(subcatItems) do
+				local q1 = (k - (k % ATLAS_MAX_MENUITEMS)) / ATLAS_MAX_MENUITEMS
+				if v then tinsert(ATLAS_DROPDOWNS[i + q1], v) end
 			end
-	--		for p = 0, q do
-	--			tsort(ATLAS_DROPDOWNS[i+p], sortZonesAlpha)
-	--		end
 
 			i = i + q + 1
 		end
-		--ATLAS_MODULE_MENUS = i - 1
 	end
-	
+
 	if (ATLAS_PLUGIN_DATA) then
 		for ka, va in pairs(ATLAS_PLUGIN_DATA) do
-
 			ATLAS_DROPDOWNS[i] = {}
 
-			for kb,vb in pairs(va) do
+			for kb, vb in pairs(va) do
 				if (type(vb) == "table") then
 					tinsert(ATLAS_DROPDOWNS[i], kb)
 				end
 			end
 
-			tsort(ATLAS_DROPDOWNS[i], sortZonesAlpha)
+			sort(ATLAS_DROPDOWNS[i], sortZonesAlpha)
 
 			i = i + 1
-		end	
+		end
 	end
 end
 
 local function process_Deprecated()
-	local Deprecated_List = addon.constants.deprecatedList
+	-- Check to see if a module that is now bundled with Atlas is enabled and if so, recommend disabling it
+	local includedModulePresent = false;
+	local includedModules = {
+		"Atlas_ClassicWoW",
+		"Atlas_BurningCrusade",
+		"Atlas_WrathoftheLichKing",
+		"Atlas_Cataclysm",
+		"Atlas_MistsofPandaria",
+		"Atlas_WarlordsofDraenor",
+		"Atlas_Legion",
+		"Atlas_BattleforAzeroth"
+	};
+	for _, module in ipairs(includedModules) do
+		if (C_AddOns.GetAddOnEnableState(module) ~= 0) then
+			includedModulePresent = true;
+		end
+	end
+	if (includedModulePresent == true) then
+		DEFAULT_CHAT_FRAME:AddMessage(L["ATLAS_INCLUDED_MODULES"]);
+	end
 
+	local Deprecated_List = addon.constants.deprecatedList
 	-- Check for outdated modules, build a list of them, then disable them and tell the player
 	local OldList = {}
 	for k, v in pairs(Deprecated_List) do
-		if ( addon:CheckAddonStatus(GetAddOnInfo(v[1])) ) then
+		if (addon:CheckAddonStatus(C_AddOns.GetAddOnInfo(v[1]))) then
 			local outdated = false
 			local compatibleVer
-			local currVer = GetAddOnMetadata(v[1], "Version")
+			local currVer = C_AddOns.GetAddOnMetadata(v[1], "Version")
 			if (v[3] and (strsub(currVer, 1, 1) == "r")) then
 				compatibleVer = tonumber(string.sub(v[3], 2))
 				currVer = tonumber(string.sub(currVer, 2))
 				if (currVer < compatibleVer) then
 					outdated = true
 				end
-			elseif (v[2] and (strsub(currVer, 1, 1) ~= "r") and currVer < v[2]) then
+			elseif (v[2] and (strsub(currVer, 1, 1) ~= "r") and (strsub(currVer, 1, 1) ~= "@") and currVer < v[2]) then
 				outdated = true
 			end
 			if (outdated) then
@@ -597,25 +517,13 @@ local function process_Deprecated()
 			end
 		end
 	end
-	if table.getn(OldList) > 0 then
+
+	if #OldList > 0 then
 		local textList = ""
 		for k, v in pairs(OldList) do
-			textList = textList.."\n"..v..", "..GetAddOnMetadata(v, "Version")
-			--DisableAddOn(v)
+			textList = textList.."\n"..v..", "..C_AddOns.GetAddOnMetadata(v, "Version")
 		end
-
-		LibDialog:Register("ATLAS_OLD_MODULES", {
-			text = L["ATLAS_DEP_MSG1"].."\n"..L["ATLAS_DEP_MSG3"].."\n|cff6666ff"..textList.."|r\n\n"..L["ATLAS_DEP_MSG4"],
-			buttons = {
-				{
-					text = OKAY,
-				},
-			},
-			width = 550,
-			show_while_dead = false,
-			hide_on_escape = true,
-		})
-		LibDialog:Spawn("ATLAS_OLD_MODULES")
+		DEFAULT_CHAT_FRAME:AddMessage(L["ATLAS_DEP_MSG1"].."\n"..L["ATLAS_DEP_MSG3"].."\n|cff6666ff"..textList.."|r\n\n"..L["ATLAS_DEP_MSG4"]);
 	end
 end
 
@@ -630,56 +538,35 @@ function Atlas_OnLoad(self)
 
 	-- Allows Atlas to be closed with the Escape key
 	tinsert(UISpecialFrames, "AtlasFrame")
-	tinsert(UISpecialFrames, "AtlasFrameLarge")
 	tinsert(UISpecialFrames, "AtlasFrameSmall")
-	
+
 	-- Dragging involves some special registration
 	self:RegisterForDrag("LeftButton")
 end
 
--- Main Atlas event handler
-function Atlas_OnEvent(self, event, ...)
-	local arg1 = ...
-	if (event=="ADDON_LOADED" and (arg1=="Atlas" or arg1=="Blizzard_EncounterJournal")) then
-		--Blizzard_EncounterJournal
-		if (IsAddOnLoaded("Blizzard_EncounterJournal") and IsAddOnLoaded("Atlas")) then
-			-- Added Atlas button to Encounter Journal
-			--addon:EncounterJournal_Binding()
-		end
-	end
-
---	if (event == "ADDON_LOADED" and arg1 == "Atlas") then
---		addon:Init()
---	end
-	
-end
-
 --Called whenever the Atlas frame is displayed
 function Atlas_OnShow()
-	--if (AtlasOptions.AtlasAutoSelect) then
 	if (profile.options.autoSelect) then
 		Atlas_AutoSelect()
 	end
-	-- Sneakiness
+
 	AtlasFrameDropDownType_OnShow()
 	AtlasFrameDropDown_OnShow()
 end
 
 -- Simple function to toggle the visibility of the Atlas frame
 function Atlas_Toggle()
-	addon:isModuleOrPluginLoaded()
-	if (ATLAS_MODULE_MENUS == 0 and ATLAS_PLUGIN_MENUS == 0) then return end
 	if (ATLAS_SMALLFRAME_SELECTED) then
 		if (AtlasFrameSmall:IsVisible()) then
-			HideUIPanel(AtlasFrameSmall)
+			AtlasFrameSmall:Hide();
 		else
-			ShowUIPanel(AtlasFrameSmall)
+			AtlasFrameSmall:Show();
 		end
 	else
 		if (AtlasFrame:IsVisible()) then
-			HideUIPanel(AtlasFrame)
+			AtlasFrame:Hide();
 		else
-			ShowUIPanel(AtlasFrame)
+			AtlasFrame:Show();
 		end
 	end
 end
@@ -717,14 +604,14 @@ local function checkInstanceHasGearLevel()
 	else
 		iLFGhasGearInfo = false
 	end
-	
+
 	return iLFGhasGearInfo
 end
 
 function addon:FormatColor(color_array)
 	if (not color_array or type(color_array) ~= "table") then return; end
 	if (not (color_array.r and color_array.g and color_array.b)) then return; end
-	
+
 	local colortag = format("|cff%02x%02x%02x", color_array.r * 255, color_array.g * 255, color_array.b * 255)
 	return colortag
 end
@@ -732,13 +619,13 @@ end
 -- Calculate the dungeon difficulty based on the dungeon's level and player's level
 -- Codes adopted from FastQuest_Classic
 function addon:GetDungeonDifficultyColor(minRecLevel)
-	local color = {r = 1.00, g = 1.00, b = 1.00}
-	if (not minRecLevel) then 
+	local color = { r = 1.00, g = 1.00, b = 1.00 }
+	if (not minRecLevel) then
 		return color
 	end
-	
+
 	local greenLevel
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
+	if (WoWClassicEra or WoWClassic) then
 		greenLevel = GetQuestGreenRange()
 	else
 		greenLevel = UnitQuestTrivialLevelRange('player')
@@ -746,49 +633,48 @@ function addon:GetDungeonDifficultyColor(minRecLevel)
 
 	local lDiff = minRecLevel - UnitLevel("player")
 	if (lDiff >= 0) then
-		for i= 1.00, 0.10, -0.10 do
-			color = {r = 1.00, g = i, b = 0.00}
-			if ((i/0.10)==(10-lDiff)) then return color; end
+		for i = 1.00, 0.10, -0.10 do
+			color = { r = 1.00, g = i, b = 0.00 }
+			if ((i / 0.10) == (10 - lDiff)) then return color; end
 		end
-	elseif ( -lDiff < greenLevel ) then
-		for i= 0.90, 0.10, -0.10 do
-			color = {r = i, g = 1.00, b = 0.00}
-			if ((9-i/0.10)==(-1*lDiff)) then return color; end
+	elseif (-lDiff < greenLevel) then
+		for i = 0.90, 0.10, -0.10 do
+			color = { r = i, g = 1.00, b = 0.00 }
+			if ((9 - i / 0.10) == (-1 * lDiff)) then return color; end
 		end
-	elseif ( -lDiff == greenLevel ) then
-		color = {r = 0.50, g = 1.00, b = 0.50}
+	elseif (-lDiff == greenLevel) then
+		color = { r = 0.50, g = 1.00, b = 0.50 }
 	else
-		--color = {r = 0.75, g = 0.75, b = 0.75}
-		color = {r = 1.00, g = 1.00, b = 1.00}
+		color = { r = 1.00, g = 1.00, b = 1.00 }
 	end
 	return color
 end
 
 local function getGearItemLevelDiffColor(minGearLevel)
-	local color = {r = 1.00, g = 1.00, b = 1.00}
+	local color = { r = 1.00, g = 1.00, b = 1.00 }
 	if (minGearLevel == nil) then return color end
 	local lDiff = minGearLevel
 	lDiff = tonumber(lDiff)
-	if (GetAverageItemLevel) then 
+	if (GetAverageItemLevel) then
 		lDiff = minGearLevel - GetAverageItemLevel()
 	end
-	
+
 	if (lDiff >= 0) then
-		for i= 1.00, 0.10, -0.10 do
-			color = {r = 1.00, g = i, b = 0.00}
-			if ( (i/0.10)==round(((100-lDiff)/10),0) ) then return color; end
+		for i = 1.00, 0.10, -0.10 do
+			color = { r = 1.00, g = i, b = 0.00 }
+			if ((i / 0.10) == round(((100 - lDiff) / 10), 0)) then return color; end
 		end
 	elseif (-lDiff < 100) then
-		for i= 0.90, 0.10, -0.10 do
-			color = {r = i, g = 1.00, b = 0.00}
-			if ((9-i/0.10)==round(((-1*lDiff)/10),0) ) then return color; end
+		for i = 0.90, 0.10, -0.10 do
+			color = { r = i, g = 1.00, b = 0.00 }
+			if ((9 - i / 0.10) == round(((-1 * lDiff) / 10), 0)) then return color; end
 		end
 	elseif (-lDiff == 100) then
-		color = {r = 0.50, g = 1.00, b = 0.50}
+		color = { r = 0.50, g = 1.00, b = 0.50 }
 	else
-		color = {r = 1.00, g = 1.00, b = 1.00}
+		color = { r = 1.00, g = 1.00, b = 1.00 }
 	end
-	
+
 	return color
 end
 
@@ -807,38 +693,37 @@ function addon:MapAddNPCButton()
 
 	if (t) then
 		while (t[i]) do
-			local info_mark 	= t[i][1]
-			local info_id 		= t[i][2]
-			local info_x 		= t[i][3]
-			local info_y 		= t[i][4]
-			local info_colortag	= t[i][7]
-			
+			local info_mark     = t[i][1]
+			local info_id       = t[i][2]
+			local info_x        = t[i][3]
+			local info_y        = t[i][4]
+			local info_colortag = t[i][7]
+
 			if (info_x == nil) then info_x = -18; end
 			if (info_y == nil) then info_y = -18; end
 
-			if (WoWRetail and info_id < 10000 and profile.options.frames.showBossPotrait) then
+			if ((WoWRetail or WoWClassic) and info_id < 10000 and profile.options.frames.showBossPotrait) then
 				bossbutton = _G["AtlasMapBossButton"..bossindex]
+				local template = WoWRetail and "AtlasFrameBossButtonTemplate" or "AtlasFrameBossButtonTemplateClassic"
 				if (not bossbutton) then
-					bossbutton = CreateFrame("Button", "AtlasMapBossButton"..bossindex, AtlasFrame, "AtlasFrameBossButtonTemplate")
+					bossbutton = CreateFrame("Button", "AtlasMapBossButton"..bossindex, AtlasFrame, template)
 				end
 				bossButtonCleanUp(bossbutton)
 				bossButtonUpdate(bossbutton, info_id, base.JournalInstanceID, true)
-				
+
 				bossbuttonS = _G["AtlasMapBossButtonS"..bossindexS]
 				if (not bossbuttonS) then
-					bossbuttonS = CreateFrame("Button", "AtlasMapBossButtonS"..bossindexS, AtlasFrameSmall, "AtlasFrameBossButtonTemplate")
+					bossbuttonS = CreateFrame("Button", "AtlasMapBossButtonS"..bossindexS, AtlasFrameSmall, template)
 				end
 				bossButtonCleanUp(bossbuttonS)
 				bossButtonUpdate(bossbuttonS, info_id, base.JournalInstanceID, true)
-				
+
 				bossbutton:ClearAllPoints()
-				--bossbutton:SetWidth(20)
-				--bossbutton:SetHeight(20)
-				bossbutton:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", info_x + 18-15, -info_y - 82+15)
+				bossbutton:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", info_x + 4 - 15, -info_y - 76 + 15)
 				bossbutton:Show()
 
 				bossbuttonS:ClearAllPoints()
-				bossbuttonS:SetPoint("TOPLEFT", "AtlasFrameSmall", "TOPLEFT", info_x + 18-15, -info_y - 82+15)
+				bossbuttonS:SetPoint("TOPLEFT", "AtlasFrameSmall", "TOPLEFT", info_x + 4 - 15, -info_y - 76 + 15)
 				bossbuttonS:Show()
 
 				bossindex = bossindex + 1
@@ -859,26 +744,35 @@ function addon:MapAddNPCButton()
 						if (v[2] == info_id) then
 							tip_title = v[1]
 							if (v[3] and v[3] == "item") then
-								local itemName = GetItemInfo(v[2])
-								itemName = itemName or GetItemInfo(v[2])
+								local itemName = C_Item.GetItemInfo(v[2])
+								itemName = itemName or C_Item.GetItemInfo(v[2])
 
 								button.tooltiptitle = itemName or nil
 								buttonS.tooltiptitle = itemName or nil
 							else
 								local _, endpos = strfind(tip_title, ") ")
 								if (endpos) then
-									button.tooltiptitle = strsub(tip_title, endpos+1)
-									buttonS.tooltiptitle = strsub(tip_title, endpos+1)
+									button.tooltiptitle = strsub(tip_title, endpos + 1)
+									buttonS.tooltiptitle = strsub(tip_title, endpos + 1)
 								end
 							end
 							break
 						end
 					end
 				end
-				button:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", info_x + 18, -info_y - 82 )
+				button:SetPoint("TOPLEFT", "AtlasFrame", "TOPLEFT", info_x + 4, -info_y - 76)
 				button:SetID(info_id)
+				-- TODO: This will set a letter texture on non-encounter buttons but it should be formatted text because there are some things that are not just letters
+				--       The other problem is just restricting it to new maps
+				--[[ if (info_id > 10000) then
+					button.LetterImage:SetTexture("Interface\\AddOns\\Atlas\\Images\\Atlas_Marks_Letters1");
+					if (ATLAS_LETTER_MARKS_TCOORDS["Atlas_Letter_Blue_"..info_mark]) then
+						local temp = ATLAS_LETTER_MARKS_TCOORDS["Atlas_Letter_Blue_"..info_mark];
+						button.LetterImage:SetTexCoord(temp[1], temp[2], temp[3], temp[4]);
+					end
+				end ]]
 				button:Show()
-				buttonS:SetPoint("TOPLEFT", "AtlasFrameSmall", "TOPLEFT", info_x + 18, -info_y - 82 )
+				buttonS:SetPoint("TOPLEFT", "AtlasFrameSmall", "TOPLEFT", info_x + 4, -info_y - 76)
 				buttonS:SetID(info_id)
 				buttonS:Show()
 
@@ -886,17 +780,8 @@ function addon:MapAddNPCButton()
 				buttonindexS = buttonindexS + 1
 			end
 
-			-- Disable the set text unless one day we want the text to be added dynamatically
-			-- Or, enable it for debugging purpose
---[[
-			local f_text = button:CreateFontString(button:GetName().."_Text", "OVERLAY", "NumberFont_Outline_Huge")
-			f_text:SetPoint("CENTER", button, "CENTER", 0, 0)
-			f_text:SetText(info_mark)
-]]
 			i = i + 1
 		end
-		-- We started the counting from 1, plus 1 in each loop, need to adjust by removing 1 after the loop is ended
-		--ATLAS_MAP_NPC_NUM = i - 1
 	end
 
 	bossbutton = _G["AtlasMapBossButton"..bossindex]
@@ -914,7 +799,7 @@ function addon:MapAddNPCButton()
 		bossindexS = bossindexS + 1
 		bossbuttonS = _G["AtlasMapBossButtonS"..bossindexS]
 	end
-	
+
 	button = _G["AtlasMapNPCButton"..buttonindex]
 	while button do
 		button.bgImage:SetTexture(nil)
@@ -930,167 +815,16 @@ function addon:MapAddNPCButton()
 		buttonindexS = buttonindexS + 1
 		buttonS = _G["AtlasMapNPCButtonS"..buttonindexS]
 	end
-
-end
-
-function addon:MapAddNPCButtonLarge()
-	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone]
-	local t = AtlasMaps_NPC_DB[zoneID]
-	local data = AtlasMaps
-	local base = data[zoneID]
-	local i = 1
-	local bossindex = 1
-	local buttonindex = 1
-	local bossbutton, button
-
-	if (t) then
-		while (t[i]) do
-			local info_mark 	= t[i][1]
-			local info_id 		= t[i][2]
-			local info_x 		= t[i][5]
-			local info_y 		= t[i][6]
-			local info_colortag	= t[i][7]
-
-			if (WoWRetail and info_id < 10000 and info_x and info_y and profile.options.frames.showBossPotrait) then
-				bossbutton = _G["AtlasMapBossButtonL"..bossindex]
-				if (not bossbutton) then
-					bossbutton = CreateFrame("Button", "AtlasMapBossButtonL"..bossindex, AtlasFrameLarge, "AtlasFrameBossButtonTemplate")
-				end
-				bossButtonCleanUp(bossbutton)
-				bossButtonUpdate(bossbutton, info_id, base.JournalInstanceID, true)
-				bossbutton:ClearAllPoints()
-				bossbutton:SetPoint("TOPLEFT", "AtlasFrameLarge", "TOPLEFT", info_x, -info_y - 82+15)
-				bossbutton:Show()
-
-				bossindex = bossindex + 1
-			elseif (info_x and info_y) then
-				button = _G["AtlasMapNPCButtonL"..buttonindex]
-				if (not button) then
-					button = CreateFrame("Button", "AtlasMapNPCButtonL"..buttonindex, AtlasFrameLarge, "AtlasMapNPCButtonTemplate")
-				end
-				local text = _G[button:GetName().."_Text"]
-				if (text) then
-					text:SetText("")
-				end
-				button.TaxiImage:SetTexture(nil)
-				button.bgImage:SetTexture(nil)
-				--button.LetterImage:SetTexture(nil)
-
-				local tip_title
-				for k, v in pairs(AtlasMaps[zoneID]) do
-					if (v[2] == info_id) then
-						tip_title = v[1]
-						local _, endpos = strfind(tip_title, ") ")
-						if (endpos) then
-							button.tooltiptitle = strsub(tip_title, endpos+1)
-						end
-						break
-					end
-				end
-
-				if (info_colortag) then
---[[
-					-- Arith: 2016.08.15 - I decided to use fontstring instead of pre-made character image. But codes can be left here for future reference until I don't need it anymore.
-					if (info_colortag == "Blue" or info_colortag == "Purple") then
-						local texcoord
-						texcoord = "Atlas_Letter_"..info_colortag.."_"..info_mark
-						button.LetterImage:SetTexture("Interface\\AddOns\\Atlas\\Images\\Atlas_Marks_Letters1")
-						button.LetterImage:SetTexCoord(unpack(ATLAS_LETTER_MARKS_TCOORDS[texcoord]))
-						button:SetWidth(20)
-						button:SetHeight(20)
-]]
-					if (info_colortag == "Dungeon" or info_colortag == "Raid") then
-						button.bgImage:SetTexture("Interface\\MINIMAP\\"..info_colortag)
-					elseif (info_colortag == "Battlegrounds") then
-						button.bgImage:SetTexture("Interface\\MINIMAP\\Tracking\\BattleMaster")
-					elseif (info_colortag == "PvP") then
-						button.bgImage:SetAtlas("worldquest-icon-pvp-ffa", true)
-					elseif (info_colortag == "FlightMaster") then
-						button.TaxiImage:SetTexture("Interface\\MINIMAP\\Tracking\\FlightMaster")
-						button.TaxiImage:SetTexCoord(0, 1, 0, 1)
-					elseif (info_colortag == "TaxiAlliance" or info_colortag == "TaxiHorde" or info_colortag == "TaxiNeutral" ) then
-						button.TaxiImage:SetTexture("Interface\\AddOns\\Atlas\\Images\\POIICONS")
-						button.TaxiImage:SetTexCoord(unpack(ATLAS_TAXI_TCOORDS[info_colortag]))
-					elseif (info_colortag == "White" or 
-						info_colortag == "Yellow" or 
-						info_colortag == "Red" or 
-						info_colortag == "Orange" or 
-						info_colortag == "Green" or 
-						info_colortag == "Purple" or
-						info_colortag == "Blue") then
-						if (not text) then
-							text = button:CreateFontString(button:GetName().."_Text", "OVERLAY", "AtlasSystemFont_Large_Outline_Thick")
-						end
-						text:SetPoint("CENTER", button, "CENTER", 0, 0)
-						text:SetText(info_mark)
-						text:SetTextColor(unpack(ATLAS_FONT_COLORS[info_colortag]))
-						button:SetWidth(20)
-						button:SetHeight(20)
-					elseif (info_colortag == "HUNTER" or
-						info_colortag == "WARLOCK" or
-						info_colortag == "PRIEST" or
-						info_colortag == "PALADIN" or
-						info_colortag == "MAGE" or
-						info_colortag == "ROGUE" or
-						info_colortag == "DRUID" or
-						info_colortag == "SHAMAN" or
-						info_colortag == "WARRIOR" or
-						info_colortag == "DEATHKNIGHT" or
-						info_colortag == "MONK" or
-						info_colortag == "DEMONHUNTER") then
-						if (not text) then
-							text = button:CreateFontString(button:GetName().."_Text", "OVERLAY", "AtlasSystemFont_Large_Outline_Thick")
-						end
-						local color = RAID_CLASS_COLORS[info_colortag]
-						text:SetPoint("CENTER", button, "CENTER", 0, 0)
-						text:SetText(info_mark)
-						text:SetTextColor(color.r, color.g, color.b)
-						button:SetWidth(20)
-						button:SetHeight(20)
-
-					else
-						-- Do Nothing
-					end
-					
-				end
-				button:SetPoint("TOPLEFT", "AtlasFrameLarge", "TOPLEFT", info_x + 18, -info_y - 82 )
-				button:SetID(info_id)
-				button:Show()
-
-				buttonindex = buttonindex + 1
-			else
-				-- Do Nothing
-			end
-
-			i = i + 1
-		end
-	end
-
-	bossbutton = _G["AtlasMapBossButtonL"..bossindex]
-	while bossbutton do
-		bossbutton.bgImage:SetTexture(nil)
-		bossbutton:Hide()
-		bossindex = bossindex + 1
-		bossbutton = _G["AtlasMapBossButtonL"..bossindex]
-	end
-	
-	button = _G["AtlasMapNPCButtonL"..buttonindex]
-	while button do
-		button.bgImage:SetTexture(nil)
-		button:Hide()
-		buttonindex = buttonindex + 1
-		button = _G["AtlasMapNPCButtonL"..buttonindex]
-	end
 end
 
 local function getPlayerText(maxPlayers, maxPlayersH, maxPlayersM, icontext_instance, players)
-	local WHIT = "|cffffffff"
-	local playerText = L["ATLAS_STRING_PLAYERLIMIT"]..L["Colon"]..WHIT
-	local icontext_heroic 	= " |TInterface\\EncounterJournal\\UI-EJ-HeroicTextIcon:0:0|t"
-	local icontext_mythic 	= " |TInterface\\AddOns\\Atlas\\Images\\\UI-EJ-MythicTextIcon:0:0|t"
+	local WHIT            = "|cffffffff"
+	local playerText      = L["ATLAS_STRING_PLAYERLIMIT"]..L["Colon"]..WHIT
+	local icontext_heroic = " |TInterface\\EncounterJournal\\UI-EJ-HeroicTextIcon:0:0|t"
+	local icontext_mythic = " |TInterface\\AddOns\\Atlas\\Images\\UI-EJ-MythicTextIcon:0:0|t"
 
 	if ((maxPlayers and maxPlayers ~= 0) or (maxPlayersH and maxPlayersH ~= 0) or (maxPlayersM and maxPlayersM ~= 0)) then
-		if (maxPlayers and maxPlayers ~= 0) then 
+		if (maxPlayers and maxPlayers ~= 0) then
 			playerText = playerText..maxPlayers..icontext_instance
 		end
 		if (maxPlayersH and maxPlayersH ~= 0) then
@@ -1103,12 +837,12 @@ local function getPlayerText(maxPlayers, maxPlayersH, maxPlayersM, icontext_inst
 		end
 	else
 		if not players or type(players) ~= "table" then return end
-		
+
 		if #players == 1 then
 			playerText = format("%s%d", playerText, players[1])
 		elseif #players > 1 then
 			local text
-			for i=1, #players do
+			for i = 1, #players do
 				if i == 1 then
 					text = format("%d", players[i])
 				else
@@ -1120,7 +854,7 @@ local function getPlayerText(maxPlayers, maxPlayersH, maxPlayersM, icontext_inst
 			return
 		end
 	end
-	
+
 	return playerText
 end
 
@@ -1139,23 +873,22 @@ function Atlas_MapRefresh(mapID)
 	local typeID, subtypeID, minLevel, maxLevel, minRecLevel, maxRecLevel, maxPlayers, minGearLevel
 	local typeIDH, subtypeIDH, minLevelH, maxLevelH, minRecLevelH, maxRecLevelH, maxPlayersH, minGearLevelH
 	local typeIDM, subtypeIDM, minLevelM, maxLevelM, minRecLevelM, maxRecLevelM, maxPlayersM, minGearLevelM
-	local _RED = "|cffcc3333"
-	local WHIT = "|cffffffff"
+	local _RED             = "|cffcc3333"
+	local WHIT             = "|cffffffff"
 	local colortag, dungeon_difficulty
-	local icontext_heroic 	= " |TInterface\\EncounterJournal\\UI-EJ-HeroicTextIcon:0:0|t"
-	local icontext_mythic 	= " |TInterface\\AddOns\\Atlas\\Images\\\UI-EJ-MythicTextIcon:0:0|t"
-	local icontext_dungeon 	= "|TInterface\\MINIMAP\\Dungeon:0:0|t"
-	local icontext_raid 	= "|TInterface\\MINIMAP\\Raid:0:0|t"
+	local icontext_heroic  = " |TInterface\\EncounterJournal\\UI-EJ-HeroicTextIcon:0:0|t"
+	local icontext_mythic  = " |TInterface\\AddOns\\Atlas\\Images\\UI-EJ-MythicTextIcon:0:0|t"
+	local icontext_dungeon = "|TInterface\\MINIMAP\\Dungeon:0:0|t"
+	local icontext_raid    = "|TInterface\\MINIMAP\\Raid:0:0|t"
 	local icontext_instance
-	
+
 	if (base.DungeonID) then
-		-- name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, _, minGearLevel = GetLFGDungeonInfo(dungeonID)
 		if (GetLFGDungeonInfo) then
 			_, typeID, subtypeID, minLevel, maxLevel, _, minRecLevel, maxRecLevel, _, _, _, _, maxPlayers, _, _, _, _, _, _, minGearLevel = GetLFGDungeonInfo(base.DungeonID)
 		end
 
 		-- For some unknown reason, some of the dungeons do not have recommended level range
-		if (minRecLevel == 0) then 
+		if (minRecLevel == 0) then
 			minRecLevel = minLevel
 		end
 		if (maxRecLevel == 0) then
@@ -1186,7 +919,7 @@ function Atlas_MapRefresh(mapID)
 			maxRecLevelM = maxRecLevel
 		end
 	end
-	
+
 	if ((typeID and typeID == 2) or (typeIDH and typeIDH == 2) or (typeIDM and typeIDM == 2)) then
 		icontext_instance = icontext_raid
 	elseif ((typeID and typeID == 1 and subtypeID == 3) or (typeIDH and typeIDH == 1 and subtypeIDH == 3) or (typeIDM and typeIDM == 1 and subtypeIDM == 3)) then
@@ -1197,16 +930,13 @@ function Atlas_MapRefresh(mapID)
 
 	-- Zone Name and Acronym
 	local tName = base.ZoneName[1]
-	if (base.LargeMap) then
-		AtlasFrameLarge.ZoneName.Text:SetText(tName)
-	end
 	AtlasFrameSmall.ZoneName.Text:SetText(tName)
 	AtlasFrame.ZoneName.Text:SetText(tName)
 	if (profile.options.frames.showAcronyms and base.Acronym ~= nil) then
 		tName = tName.._RED.." ["..base.Acronym.."]"
 	end
 	AtlasText_ZoneName_Text:SetText(tName)
-	
+
 	-- Map Location
 	local tLoc = ""
 	if (base.Location) then
@@ -1218,7 +948,7 @@ function Atlas_MapRefresh(mapID)
 	local tLR = ""
 	if (minLevel or minLevelH or minLevelM) then
 		local tmp_LR = L["ATLAS_STRING_LEVELRANGE"]..L["Colon"]
-		if (minLevel) then 
+		if (minLevel) then
 			dungeon_difficulty = addon:GetDungeonDifficultyColor(minLevel)
 			colortag = addon:FormatColor(dungeon_difficulty)
 			if (minLevel ~= maxLevel) then
@@ -1264,11 +994,11 @@ function Atlas_MapRefresh(mapID)
 	AtlasText_LevelRange_Text:SetText(tLR)
 
 	-- Map's Recommended Level Range
-	if (WoWRetail) then
+	if (WoWRetail or WoWClassic) then
 		local tRLR = ""
 		if (minRecLevel or minRecLevelH or minRecLevelM) then
 			local tmp_RLR = L["ATLAS_STRING_RECLEVELRANGE"]..L["Colon"]
-			if (minRecLevel) then 
+			if (minRecLevel) then
 				dungeon_difficulty = addon:GetDungeonDifficultyColor(minRecLevel)
 				colortag = addon:FormatColor(dungeon_difficulty)
 				if (minRecLevel ~= maxRecLevel) then
@@ -1318,7 +1048,7 @@ function Atlas_MapRefresh(mapID)
 	local tML = ""
 	if (minLevel or minLevelH or minLevelM) then
 		tML = L["ATLAS_STRING_MINLEVEL"]..L["Colon"]
-		if (minLevel) then 
+		if (minLevel) then
 			dungeon_difficulty = addon:GetDungeonDifficultyColor(minLevel)
 			colortag = addon:FormatColor(dungeon_difficulty)
 			tML = tML..colortag..minLevel..icontext_instance
@@ -1354,38 +1084,38 @@ function Atlas_MapRefresh(mapID)
 	local tPL = getPlayerText(maxPlayers, maxPlayersH, maxPlayersM, icontext_instance, base.PlayerLimit) or ""
 
 	AtlasText_PlayerLimit_Text:SetText(tPL)
-	
+
 	-- Map's Minimum Gear Level for player
 	local tMGL = ""
 	local iLFGhasGearInfo = checkInstanceHasGearLevel()
 
-	if (iLFGhasGearInfo ) then
+	if (iLFGhasGearInfo) then
 		tMGL = L["ATLAS_STRING_MINGEARLEVEL"]..L["Colon"]
-		if ( minGearLevel and minGearLevel ~= 0 ) then 
+		if (minGearLevel and minGearLevel ~= 0) then
 			local itemDiff, gearcolortag
 
 			itemDiff = getGearItemLevelDiffColor(minGearLevel)
 			gearcolortag = addon:FormatColor(itemDiff)
 			tMGL = tMGL..gearcolortag..minGearLevel..icontext_instance
 		end
-		if ( minGearLevelH and minGearLevelH ~= 0 ) then
+		if (minGearLevelH and minGearLevelH ~= 0) then
 			local itemDiff, gearcolortag, slash
 
 			itemDiff = getGearItemLevelDiffColor(minGearLevelH)
 			gearcolortag = addon:FormatColor(itemDiff)
-			if ( base.DungeonID and minGearLevel ~= 0 ) then 
+			if (base.DungeonID and minGearLevel ~= 0) then
 				slash = L["Slash"]
 			else
 				slash = ""
 			end
 			tMGL = tMGL..WHIT..slash..gearcolortag..minGearLevelH..icontext_heroic
 		end
-		if ( minGearLevelM and minGearLevelM ~= 0 ) then
+		if (minGearLevelM and minGearLevelM ~= 0) then
 			local itemDiff, gearcolortag, slash
 
 			itemDiff = getGearItemLevelDiffColor(minGearLevelM)
 			gearcolortag = addon:FormatColor(itemDiff)
-			if ( (base.DungeonID and minGearLevel ~= 0) or (base.DungeonHeroicID and minGearLevelH ~= 0) ) then 
+			if ((base.DungeonID and minGearLevel ~= 0) or (base.DungeonHeroicID and minGearLevelH ~= 0)) then
 				slash = L["Slash"]
 			else
 				slash = ""
@@ -1409,17 +1139,18 @@ function Atlas_MapRefresh(mapID)
 	-- Check if Journal Encounter Instance is available
 	if (base.JournalInstanceID) then
 		AtlasFrame.AdventureJournal.instanceID = base.JournalInstanceID
-		AtlasFrameLarge.AdventureJournal.instanceID = base.JournalInstanceID
 		AtlasFrameSmall.AdventureJournal.instanceID = base.JournalInstanceID
-		if WoWRetail then
+		if (WoWClassic or WoWRetail) then
 			AtlasFrameAdventureJournalButton:Show()
-			AtlasFrameLargeAdventureJournalButton:Show()
 			AtlasFrameSmallAdventureJournalButton:Show()
 			Atlas_SetEJBackground(base.JournalInstanceID)
+		else
+			AtlasFrameAdventureJournalButton:Hide()
+			AtlasFrameSmallAdventureJournalButton:Hide()
+			Atlas_SetEJBackground()
 		end
 	else
 		AtlasFrameAdventureJournalButton:Hide()
-		AtlasFrameLargeAdventureJournalButton:Hide()
 		AtlasFrameSmallAdventureJournalButton:Hide()
 		Atlas_SetEJBackground()
 	end
@@ -1427,34 +1158,22 @@ function Atlas_MapRefresh(mapID)
 	-- Check if WorldMap ID is available, if so, show the map button
 	if (base.WorldMapID) then
 		AtlasFrame.AdventureJournalMap.mapID = base.WorldMapID
-		AtlasFrameLarge.AdventureJournalMap.mapID = base.WorldMapID
 		AtlasFrameSmall.AdventureJournalMap.mapID = base.WorldMapID
-		if WoWRetail then
+		if (WoWClassic or WoWRetail) then
 			AtlasFrameAdventureJournalMapButton:Show()
-			AtlasFrameLargeAdventureJournalMapButton:Show()
 			AtlasFrameSmallAdventureJournalMapButton:Show()
 		end
 	else
 		AtlasFrameAdventureJournalMapButton:Hide()
-		AtlasFrameLargeAdventureJournalMapButton:Hide()
 		AtlasFrameSmallAdventureJournalMapButton:Hide()
 	end
 
 	-- Check if DungeonLevel ID is available
 	if (base.DungeonLevel) then
 		AtlasFrame.AdventureJournalMap.dungeonLevel = base.DungeonLevel
-		AtlasFrameLarge.AdventureJournalMap.dungeonLevel = base.DungeonLevel
 		AtlasFrameSmall.AdventureJournalMap.dungeonLevel = base.DungeonLevel
 	end
 
-	if (base.LargeMap) then
-		AtlasFrameSizeUpButton:Show()
-		AtlasFrameSmallSizeUpButton:Show()
-	else
-		AtlasFrameSizeUpButton:Hide()
-		AtlasFrameSmallSizeUpButton:Hide()
-	end
-	
 	-- Searching for the map path from Atlas or from plugins
 	local AtlasMapPath
 	for k, v in pairs(Atlas_CoreMapsKey) do
@@ -1462,7 +1181,7 @@ function Atlas_MapRefresh(mapID)
 		if (zoneID == v) then
 			if (base.Module) then
 				-- if the map belong to a module, set the path to module
-				AtlasMapPath = "Interface\\AddOns\\"..base.Module.."\\Images\\"
+				AtlasMapPath = "Interface\\AddOns\\Atlas\\Images\\"..base.Module.."\\"
 				break
 			end
 		end
@@ -1470,9 +1189,9 @@ function Atlas_MapRefresh(mapID)
 	-- Check if selected map is from plugin
 	if (not AtlasMapPath) then
 		-- Searching for plugins
-		for ka,va in pairs(ATLAS_PLUGINS) do
+		for ka, va in pairs(ATLAS_PLUGINS) do
 			-- Searching for plugin's maps
-			for kb,vb in pairs(ATLAS_PLUGINS[ka]) do
+			for kb, vb in pairs(ATLAS_PLUGINS[ka]) do
 				if (zoneID == vb) then
 					AtlasMapPath = "Interface\\AddOns\\"..ka.."\\Images\\"
 					break
@@ -1481,58 +1200,40 @@ function Atlas_MapRefresh(mapID)
 			if (AtlasMapPath) then break; end
 		end
 	end
+
 	if (AtlasMapPath) then
 		AtlasMap:SetTexture(AtlasMapPath..zoneID)
 		AtlasMapSmall:SetTexture(AtlasMapPath..zoneID)
 	end
 
-	local AtlasMap_Text = _G["AtlasMap_Text"]
-	local AtlasMapS_Text = _G["AtlasMapS_Text"]
-	if (not AtlasMap_Text) then
-		AtlasMap_Text = AtlasFrame:CreateFontString("AtlasMap_Text", "OVERLAY", "GameFontHighlightLarge")
-	end
-	if (not AtlasMapS_Text) then
-		AtlasMapS_Text = AtlasFrameSmall:CreateFontString("AtlasMapS_Text", "OVERLAY", "GameFontHighlightLarge")
-	end
-	AtlasMap_Text:SetPoint("CENTER", "AtlasFrame", "LEFT", 256, -32)
-	AtlasMapS_Text:SetPoint("CENTER", "AtlasFrameSmall", "LEFT", 256, -32)
 	-- Check if the map image is available, if not replace with black and Map Not Found text
-	if (base.Module) then
-		local loadable = select(4, GetAddOnInfo(base.Module))
-		local enabled = GetAddOnEnableState(UnitName("player"), base.Module)
-		if ((enabled == 0) or (not loadable)) then
-			-- AtlasMap:SetTexture(0, 0, 0)
-			-- Legion changes: texture:SetTexture(r, g, b, a) changes into texture:SetColorTexture(r, g, b, a)
-			AtlasMap:SetColorTexture(0, 0, 0, 0); 
-			AtlasMap_Text:SetText(L["MapsNotFound"].."\n\n"..L["PossibleMissingModule"].."\n|cff6666ff"..base.Module)
-			AtlasMapSmall:SetColorTexture(0, 0, 0, 0); 
-			AtlasMapS_Text:SetText(L["MapsNotFound"].."\n\n"..L["PossibleMissingModule"].."\n|cff6666ff"..base.Module)
-			if (not AtlasMap_Text:IsShown()) then
-				AtlasMap_Text:Show()
-			end
-			if (not AtlasMapS_Text:IsShown()) then
-				AtlasMapS_Text:Show()
-			end
-		else 
-			AtlasMap_Text:SetText("")
-			AtlasMapS_Text:SetText("")
-		end
+	if (not GetFileIDFromPath(AtlasMapPath..zoneID)) then
+		AtlasMap:SetColorTexture(0, 0, 0);
+		AtlasMap_Text:SetText(L["MapNotYetAvailable"])
+		AtlasMapSmall:SetColorTexture(0, 0, 0);
+		AtlasMapS_Text:SetText(L["MapNotYetAvailable"])
+		AtlasMap_Text:Show()
+		AtlasMapS_Text:Show()
 	else
-		AtlasMap_Text:SetText("")
-		AtlasMapS_Text:SetText("")
-	end
-
-	-- Large Atlas map
-	if (base.LargeMap) then
-		for i=1, 12 do
-			_G["AtlasMapLarge"..i]:SetTexture(AtlasMapPath..zoneID.."\\"..base.LargeMap..i)
-		end
+		AtlasMap_Text:Hide()
+		AtlasMapS_Text:Hide()
 	end
 
 	-- The boss description to be added here
 	addon:MapAddNPCButton()
-	addon:MapAddNPCButtonLarge()
-	--Atlas_Clear_NPC_Button()
+
+	-- LFG Button
+	if (WoWClassicEra and C_LFGList.IsPremadeGroupFinderEnabled() and (base.ActivityID or base.ActivityIDSoD)) then
+		AtlasFrameLFGButton:Show();
+
+		if (C_Seasons.GetActiveSeason() == 2 and base.ActivityIDSoD) then
+			AtlasFrameLFGButton.ActivityID = base.ActivityIDSoD;
+		elseif (base.ActivityID) then
+			AtlasFrameLFGButton.ActivityID = base.ActivityID;
+		end
+	else
+		AtlasFrameLFGButton:Hide();
+	end
 end
 
 -- Refreshes the Atlas frame, usually because a new map needs to be displayed
@@ -1557,131 +1258,118 @@ function Atlas_Refresh(mapID)
 		return
 	end
 
-	-- Dealing with the scenario that when user is in a large map, but then the newly selected map does not have large map
-	if (not base.LargeMap and AtlasFrameLarge:IsVisible() ) then
-		if (ATLAS_SMALLFRAME_SELECTED) then
-			AtlasFrameLarge:Hide()
-			AtlasFrameSmall:Show()
-		else
-			AtlasFrameLarge:Hide()
-			AtlasFrame:Show()
-		end
-	end
-	
 	if WoWRetail then
 		if (AtlasEJLootFrame:IsShown()) then
 			AtlasEJLootFrame:Hide()
 		end
 	end
 	Atlas_MapRefresh()
-	
-	ATLAS_DATA = base
-	ATLAS_SEARCH_METHOD = data.Search
 
-	if ( data.Search == nil ) then
-		ATLAS_SEARCH_METHOD = simpleSearch
-	end
-	
-	if ( data.Search ~= false ) then
-		AtlasSearchEditBox:Show()
-		AtlasNoSearch:Hide()
-	else
-		AtlasSearchEditBox:Hide()
-		AtlasNoSearch:Show()
-		ATLAS_SEARCH_METHOD = nil
-	end
+	ATLAS_DATA = base
+	ATLAS_SEARCH_METHOD = data.Search and data.Search or simpleSearch
 
 	-- Populate the scroll frame entries list, the update func will do the rest
 	searchText("")
 	AtlasSearchEditBox:SetText("")
 	AtlasSearchEditBox:ClearFocus()
 
-	-- Create and align any new entry buttons that we need
-	for i = 1, ATLAS_CUR_LINES do
-		if (not _G["AtlasEntry"..i]) then
-			local f = CreateFrame("Button", "AtlasEntry"..i, AtlasFrame, "AtlasEntryTemplate")
-			if i == 1 then
-				f:SetPoint("TOPLEFT", "AtlasScrollBar", "TOPLEFT", 16, -2)
-			else
-				f:SetPoint("TOPLEFT", "AtlasEntry"..(i - 1), "BOTTOMLEFT")
-			end
-		end
-	end
-
 	Atlas_ScrollBar_Update()
 
 	-- Deal with the switch to entrance/instance button here
 	-- Only display if appropriate
 	-- See if we should display the button or not, and decide what it should say
-	local matchFound = {}
-	local isEntrance = false
-	for k, v in pairs(addon.assocs.EntToInstMatches) do
-		if (k == zoneID) then
-			matchFound = v
-			isEntrance = false
-			break
-		end
-	end
-	if (not matchFound[1]) then
-		for k, v in pairs(addon.assocs.InstToEntMatches) do
-			if (k == zoneID) then
-				matchFound = v
-				isEntrance = true
-				break
-			end
-		end
-	end
-	-- Below try to add the series maps into switch button's map list
-	if (not matchFound[1]) then
-		for k, v in pairs(addon.assocs.MapSeries) do
-			if (k == zoneID) then
-				matchFound = v
-				isEntrance = false
-				break
-			end
-		end
+	local matches = {}
+	local defaultText
+
+	if addon.assocs.EntToInstMatches[zoneID] then
+		matches = addon.assocs.EntToInstMatches[zoneID]
+		defaultText = ATLAS_INSTANCE_BUTTON
+	elseif addon.assocs.InstToEntMatches[zoneID] then
+		matches = addon.assocs.InstToEntMatches[zoneID]
+		defaultText = ATLAS_ENTRANCE_BUTTON
 	end
 
-	-- Set the button's text, populate the dropdown menu, and show or hide the button
-	if (matchFound[1]) then
-		ATLAS_INST_ENT_DROPDOWN = {}
-		for k, v in pairs(matchFound) do
-			tinsert(ATLAS_INST_ENT_DROPDOWN, v)
+	sort(matches, sortZonesAlpha)
+
+	if (#matches > 1) then
+		local function GeneratorFunction(dropdown, rootDescription)
+			for key, match in ipairs(matches) do
+				rootDescription:CreateButton(AtlasMaps[match].ZoneName[1], AtlasSwitch_OnSet, match)
+			end
 		end
-		tsort(ATLAS_INST_ENT_DROPDOWN, AtlasSwitchDD_Sort)
-		if (isEntrance) then
-			AtlasSwitchButton:SetText(ATLAS_ENTRANCE_BUTTON)
-		else
-			AtlasSwitchButton:SetText(ATLAS_INSTANCE_BUTTON)
-		end
-		AtlasSwitchButton:Show()
-		LibDD:UIDropDownMenu_Initialize(AtlasSwitchDD, AtlasSwitchDD_OnLoad)
-	else
-		AtlasSwitchButton:Hide()
+
+		AtlasFrameSwitchDropdown:SetDefaultText(defaultText);
+		AtlasFrameSwitchDropdown:SetupMenu(GeneratorFunction);
+		AtlasFrameSwitchDropdown:Show();
+		AtlasFrameSwitchButton:Hide();
+		AtlasFrameSmallSwitchDropdown:SetDefaultText(defaultText);
+		AtlasFrameSmallSwitchDropdown:SetupMenu(GeneratorFunction);
+		AtlasFrameSmallSwitchDropdown:Show();
+		AtlasFrameSmallSwitchButton:Hide();
 	end
+
+	if (#matches == 1) then
+		AtlasFrameSwitchButton:SetText(defaultText)
+		AtlasFrameSwitchButton:SetScript("OnClick", function() AtlasSwitch_OnSet(matches[1]) end)
+		AtlasFrameSwitchButton:Show();
+		AtlasFrameSwitchDropdown:Hide();
+		AtlasFrameSmallSwitchButton:SetText(defaultText)
+		AtlasFrameSmallSwitchButton:SetScript("OnClick", function() AtlasSwitch_OnSet(matches[1]) end)
+		AtlasFrameSmallSwitchButton:Show();
+		AtlasFrameSmallSwitchDropdown:Hide();
+	end
+
+	if (#matches == 0) then
+		AtlasFrameSwitchButton:Hide();
+		AtlasFrameSwitchDropdown:Hide();
+		AtlasFrameSmallSwitchButton:Hide();
+		AtlasFrameSmallSwitchDropdown:Hide();
+	end
+
+	-- Below try to add the series maps into switch button's map list
+	--[[ if addon.assocs.MapSeries[zoneID] then
+		local function IsSelected(index) return index == ATLAS_DROPDOWNS[addon.db.profile.options.dropdowns.module][addon.db.profile.options.dropdowns.zone]; end
+		local function SetSelection(index)
+			AtlasSwitch_OnSet(index);
+		end
+
+		local function GeneratorFunction(dropdown, rootDescription)
+			for key, match in ipairs(addon.assocs.MapSeries[zoneID]) do
+				rootDescription:CreateRadio(AtlasMaps[match].ZoneName[1], IsSelected, SetSelection, match)
+			end
+		end
+
+		AtlasPrevNextDropdown:SetupMenu(GeneratorFunction);
+	end ]]
 
 	-- Handle the Prev / Next Map buttons' showing or hiding
+	if (base.NextMap or base.PrevMap) then
+		AtlasFramePrevNextContainer:Show()
+		AtlasFrameSmallPrevNextContainer:Show()
+	else
+		AtlasFramePrevNextContainer:Hide()
+		AtlasFrameSmallPrevNextContainer:Hide()
+	end
+
 	if (base.NextMap) then
-		AtlasFrame.NextMap:Show()
-		AtlasFrame.NextMap.mapID = base.NextMap
-
-		AtlasFrameSmall.NextMap:Show()
-		AtlasFrameSmall.NextMap.mapID = base.NextMap
+		AtlasFramePrevNextContainer.NextMap:Enable()
+		AtlasFramePrevNextContainer.NextMap.mapID = base.NextMap
+		AtlasFrameSmallPrevNextContainer.NextMap:Enable()
+		AtlasFrameSmallPrevNextContainer.NextMap.mapID = base.NextMap
 	else
-		AtlasFrame.NextMap:Hide()
-		AtlasFrameSmall.NextMap:Hide()
+		AtlasFramePrevNextContainer.NextMap:Disable()
+		AtlasFrameSmallPrevNextContainer.NextMap:Disable()
 	end
+
 	if (base.PrevMap) then
-		AtlasFrame.PrevMap:Show()
-		AtlasFrame.PrevMap.mapID = base.PrevMap
-
-		AtlasFrameSmall.PrevMap:Show()
-		AtlasFrameSmall.PrevMap.mapID = base.PrevMap
+		AtlasFramePrevNextContainer.PrevMap:Enable()
+		AtlasFramePrevNextContainer.PrevMap.mapID = base.PrevMap
+		AtlasFrameSmallPrevNextContainer.PrevMap:Enable()
+		AtlasFrameSmallPrevNextContainer.PrevMap.mapID = base.PrevMap
 	else
-		AtlasFrame.PrevMap:Hide()
-		AtlasFrameSmall.PrevMap:Hide()
+		AtlasFramePrevNextContainer.PrevMap:Disable()
+		AtlasFrameSmallPrevNextContainer.PrevMap:Disable()
 	end
-	
 end
 
 -- Modifies the value of GetRealZoneText to account for some naming conventions
@@ -1692,7 +1380,7 @@ local function getFixedZoneText()
 		return AtlasZoneSubstitutions[currentZone]
 	end
 	return currentZone
-end 
+end
 
 -- Checks the player's current location against all Atlas maps
 -- If a match is found display that map right away
@@ -1702,16 +1390,6 @@ function Atlas_AutoSelect()
 	local currentZone = getFixedZoneText()
 	local currentSubZone = GetSubZoneText()
 	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module] and ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone] or ATLAS_DROPDOWNS[1][1]
---[[
-	local factionGroup = UnitFactionGroup("player")
-	if ( factionGroup and factionGroup ~= "Neutral" ) then
-		if ( factionGroup == "Alliance" ) then
-			
-		elseif ( factionGroup == "Horde" ) then
-			
-		end
-	end
-]]
 	debug("Using auto-select to open the best map.")
 
 	-- Check if the current zone is defined in AssocDefaults table
@@ -1745,7 +1423,7 @@ function Atlas_AutoSelect()
 		end
 		debug("Selecting the map...")
 		for k_DropDownType, v_DropDownType in pairs(ATLAS_DROPDOWNS) do
-			for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do         
+			for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do
 				if (selected_map == v_DropDownZone) then
 					profile.options.dropdowns.module = k_DropDownType
 					profile.options.dropdowns.zone = k_DropDownZone
@@ -1761,16 +1439,8 @@ function Atlas_AutoSelect()
 		if (addon.assocs.OutdoorZoneToAtlas[currentZone]) then
 			debug("This world zone "..currentZone.." is associated with a map.")
 			local targetZone = addon.assocs.OutdoorZoneToAtlas[currentZone]
-			-- handling exception for Dalaran
---[[ we don't need these exception handling since WoW 8.0.1 as mapID now changed to uiMapID
-			if addon:GetModule("WrathoftheLichKing") and select(1, GetCurrentMapAreaID()) == 504 then
-				targetZone = "VioletHold"
-			elseif addon:GetModule("Legion") and select(1, GetCurrentMapAreaID()) == 1014 then
-				targetZone = "AssaultonVioletHold"
-			end
-]]			
 			for k_DropDownType, v_DropDownType in pairs(ATLAS_DROPDOWNS) do
-				for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do         
+				for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do
 					if (targetZone == v_DropDownZone) then
 						profile.options.dropdowns.module = k_DropDownType
 						profile.options.dropdowns.zone = k_DropDownZone
@@ -1799,11 +1469,11 @@ function Atlas_AutoSelect()
 		end
 		debug("Searching through all maps for a ZoneName match.")
 		for k_DropDownType, v_DropDownType in pairs(ATLAS_DROPDOWNS) do
-			for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do         
+			for k_DropDownZone, v_DropDownZone in pairs(v_DropDownType) do
 				-- Compare the currentZone to the new substr of ZoneName
-				if (AtlasMaps[v_DropDownZone] and AtlasMaps[v_DropDownZone].ZoneName[1] and 
-				( currentZone == strsub(AtlasMaps[v_DropDownZone].ZoneName[1], strlen(AtlasMaps[v_DropDownZone].ZoneName[1]) - strlen(currentZone) + 1) ) 
-				) then
+				if (AtlasMaps[v_DropDownZone] and AtlasMaps[v_DropDownZone].ZoneName[1] and
+						(currentZone == strsub(AtlasMaps[v_DropDownZone].ZoneName[1], strlen(AtlasMaps[v_DropDownZone].ZoneName[1]) - strlen(currentZone) + 1))
+					) then
 					profile.options.dropdowns.module = k_DropDownType
 					profile.options.dropdowns.zone = k_DropDownZone
 					Atlas_Refresh()
@@ -1817,7 +1487,7 @@ function Atlas_AutoSelect()
 end
 
 function addon:DungeonMinGearLevelToolTip(self)
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then return end
+	if (WoWClassicEra or WoWClassic) then return end
 	local currGearLevel = GetAverageItemLevel()
 	local str = format(ITEM_LEVEL, currGearLevel)
 
@@ -1830,17 +1500,15 @@ function addon:DungeonMinGearLevelToolTip(self)
 
 	if (checkInstanceHasGearLevel() or base.MinGearLevel) then
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
-		GameTooltip.NineSlice:SetCenterColor(0, 0, 0, 1 * profile.options.frames.alpha)
 		GameTooltip:SetText(str, 1, 1, 1, nil, 1)
 		GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL_TOOLTIP)
-		GameTooltip:SetScale(profile.options.frames.boss_description_scale * profile.options.frames.scale)
 		GameTooltip:Show()
 	end
 end
 
 -- In Development, this could be fun
 function Atlas_SetEJBackground(instanceID)
---[[	local f = _G["AtlasEJBackground"]
+	--[[	local f = _G["AtlasEJBackground"]
 	if (not f) then
 		f = CreateFrame("Frame", "AtlasEJBackground", AtlasFrame)
 	end
@@ -1870,14 +1538,8 @@ end
 
 function addon:CheckAddonStatus(addonName)
 	if not addonName then return nil end
-	-- name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(index or "name")
-	--    loadable : Boolean - Indicates if the AddOn is loaded or eligible to be loaded, true if it is, false if it is not.
-	local loadable = select(4, GetAddOnInfo(addonName))
-	-- GetAddOnEnableState("character", index): 
-	--	0: addon is disabled
-	--	1: partially enabled (only when querying all characters)
-	-- 	2: fully enabled
-	local enabled = GetAddOnEnableState(UnitName("player"), addonName)
+	local loadable = select(4, C_AddOns.GetAddOnInfo(addonName))
+	local enabled = C_AddOns.GetAddOnEnableState(addonName, UnitName("player"))
 	if (enabled > 0 and loadable) then
 		return true
 	else
@@ -1885,137 +1547,12 @@ function addon:CheckAddonStatus(addonName)
 	end
 end
 
--- Detect if not all modules / plugins are installed
-local function check_Modules()
-	if (not profile.options.checkMissingModules) then
-		return
-	end
-	local Module_List = addon.constants.moduleList
-
-	-- Check for outdated modules, build a list of them, then disable them and tell the player
-	local List = {}
-	for _, module in pairs(Module_List) do
-		local loadable = select(4, GetAddOnInfo(module))
-		local enabled = GetAddOnEnableState(UnitName("player"), module)
-		if ( (enabled == 0) or (not loadable) ) then
-			tinsert(List, module)
-		end
-	end
-	if (table.getn(List) > 0) then
-		local textList = ""
-		for _, str in pairs(List) do
-			textList = textList.."\n"..str
-		end
-
-		LibDialog:Register("DetectMissing", {
-			text = L["ATLAS_MISSING_MODULE"].."\n|cff6666ff"..textList.."|r\n",
-			buttons = {
-				{
-					text = CLOSE,
-				},
-				{
-					text = L["ATLAS_OPEN_ADDON_LIST"],
-					on_click = AddonList_Show,
-				},
-			},
-			width = 500,
-			show_while_dead = false,
-			hide_on_escape = true,
-		})
-		LibDialog:Spawn("DetectMissing")
-	end
-end
-
-function addon:isModuleOrPluginLoaded()
-	if (ATLAS_MODULE_MENUS == 0 and ATLAS_PLUGIN_MENUS == 0) then
-		LibDialog:Register("NeedModuleOrPlugin", {
-			text = L["ATLAS_NO_MODULE_OR_PLUGIN"],
-			buttons = {
-				{
-					text = CLOSE,
-				},
-				{
-					text = L["ATLAS_OPEN_ADDON_LIST"],
-					on_click = AddonList_Show,
-				},
-			},
-			width = 400,
-			show_while_dead = false,
-			hide_on_escape = true,
-		})
-		LibDialog:Spawn("NeedModuleOrPlugin")
-		
-		LDB.OnTooltipShow = function(tooltip)
-			if not tooltip or not tooltip.AddLine then return end
-			tooltip:AddLine("|cffffffff"..L["ATLAS_TITLE"])
-			tooltip:AddLine(L["ATLAS_NO_MODULE_OR_PLUGIN"])
-		end
-	end
-end
-
--- Initializes everything relating to saved variables and data in other lua files
--- This should be called ONLY when we're sure our variables are in memory
-local function initialization() 
-	-- Make the Atlas window go all the way to the edge of the screen, exactly
-	AtlasFrame:SetClampRectInsets(12, 0, -12, 0)
-	AtlasFrameLarge:SetClampRectInsets(12, 0, -12, 0)
-	AtlasFrameSmall:SetClampRectInsets(12, 0, -12, 0)
-	
-	ATLAS_MAX_MENUITEMS = profile.options.dropdowns.maxItems or ATLAS_MAX_MENUITEMS
-
-	-- Populate the dropdown lists...yeeeah this is so much nicer!
-	addon:PopulateDropdowns()
-	
-	if (not ATLAS_DROPDOWNS[profile.options.dropdowns.module]) then
-		ATLAS_OLD_TYPE = profile.options.dropdowns.module
-		ATLAS_OLD_ZONE = profile.options.dropdowns.zone
-	end
-	
-	-- Now that saved variables have been loaded, update everything accordingly
-	Atlas_Refresh()
-	addon:UpdateLock()
-	addon:UpdateAlpha()
-	addon:UpdateScale()
-	AtlasFrame:SetClampedToScreen(profile.options.frames.clamp)
-	AtlasFrameLarge:SetClampedToScreen(profile.options.frames.clamp)
-	AtlasFrameSmall:SetClampedToScreen(profile.options.frames.clamp)
-	
-	-- Make an LDB object
-	LDB.OnClick = function(self, button)
-		if button == "LeftButton" then
-			Atlas_Toggle()
-		elseif button == "RightButton" then
-			addon:OpenOptions()
-		end
-	end
-	LDB.OnTooltipShow = function(tooltip)
-		if not tooltip or not tooltip.AddLine then return end
-		tooltip:AddLine("|cffffffff"..ATLAS_TITLE)
-		tooltip:AddLine(ATLAS_LDB_HINT)
-	end
-	
-	check_Modules()
-	if (WoWClassicEra) then
-		if (profile.options.worldMapButton) then
-			AtlasToggleFromWorldMap:Show()
-		else
-			AtlasToggleFromWorldMap:Hide()
-		end
-	else
-		if (profile.options.worldMapButton) then
-			addon.WorldMap.Button:Show()
-		else
-			addon.WorldMap.Button:Hide()
-		end
-	end
-end
-
 -- ///////////////////////////////////////////////////////
 function addon:OnInitialize()
 	self.db = AceDB:New("AtlasDB", addon.constants.defaults, true)
-	
+
 	profile = self.db.profile
-	
+
 	minimapButton:Register("Atlas", LDB, self.db.profile.minimap)
 	self:RegisterChatCommand("atlasbutton", Atlas_ButtonToggle2)
 	self:RegisterChatCommand("atlas", Atlas_Toggle)
@@ -2024,7 +1561,35 @@ function addon:OnInitialize()
 	self.db.RegisterCallback(self, "OnProfileCopied", "Refresh")
 	self.db.RegisterCallback(self, "OnProfileReset", "Refresh")
 
-	initialization()
+	-- Make the Atlas window go all the way to the edge of the screen, exactly
+	AtlasFrame:SetClampRectInsets(12, 0, -12, 0)
+	AtlasFrameSmall:SetClampRectInsets(12, 0, -12, 0)
+
+	ATLAS_MAX_MENUITEMS = profile.options.dropdowns.maxItems or ATLAS_MAX_MENUITEMS
+
+	-- Populate the dropdown lists...yeeeah this is so much nicer!
+	addon:PopulateDropdowns()
+
+	if (not ATLAS_DROPDOWNS[profile.options.dropdowns.module]) then
+		ATLAS_OLD_TYPE = profile.options.dropdowns.module
+		ATLAS_OLD_ZONE = profile.options.dropdowns.zone
+	end
+
+	-- Now that saved variables have been loaded, update everything accordingly
+	addon:UpdateLock()
+	addon:UpdateAlpha()
+	addon:UpdateSmallAlpha()
+	addon:UpdateScale()
+	addon:UpdateSmallScale()
+	AtlasFrame:SetClampedToScreen(profile.options.frames.clamp)
+	AtlasFrameSmall:SetClampedToScreen(profile.options.frames.clamp)
+
+	if (profile.options.worldMapButton) then
+		addon.WorldMap.Button:Show()
+	else
+		addon.WorldMap.Button:Hide()
+	end
+
 	self:SetupOptions()
 end
 
@@ -2032,6 +1597,63 @@ function addon:OnEnable()
 	for k, v in pairs(self.modules) do
 		registerModule(k)
 	end
+
+	-- Register for events
+	self:RegisterEvent("BOSS_KILL");
+
+	AtlasFrame:SetPortraitToAsset("Interface\\WorldMap\\WorldMap-Icon");
+	AtlasFrame:SetTitle(ATLAS_TITLE_VERSION);
+	AtlasFrameSmall:SetPortraitToAsset("Interface\\WorldMap\\WorldMap-Icon");
+	AtlasFrameSmall:SetTitle(ATLAS_TITLE_VERSION);
+	AtlasFrameSmallCloseButton:SetPropagateMouseMotion(true)
+
+	-- On retail, adjust the position of the lock button
+	if (WoWRetail) then
+		AtlasFrameLockButton:SetPoint("RIGHT", "AtlasFrameCloseButton", "LEFT", 6, 0)
+		AtlasFrameSmallLockButton:SetPoint("RIGHT", "AtlasFrameSmallCloseButton", "LEFT", 6, 0)
+	end
+
+	-- Create scroll frame
+	local ScrollBox = CreateFrame("Frame", nil, AtlasFrameBottomInset, "WowScrollBoxList")
+	ScrollBox:SetPoint("TOPLEFT", 15, -5)
+	ScrollBox:SetSize(456, 389)
+
+	local ScrollBar
+	if WoWRetail then
+		ScrollBar = CreateFrame("EventFrame", nil, AtlasFrameBottomInset, "MinimalScrollBar")
+		ScrollBar:SetPoint("TOPLEFT", ScrollBox, "TOPRIGHT")
+		ScrollBar:SetPoint("BOTTOMLEFT", ScrollBox, "BOTTOMRIGHT")
+	else
+		ScrollBar = CreateFrame("EventFrame", nil, AtlasFrameBottomInset, "WowClassicScrollBar")
+		ScrollBar:SetPoint("TOPLEFT", ScrollBox, "TOPRIGHT", -3, 6)
+		ScrollBar:SetPoint("BOTTOMLEFT", ScrollBox, "BOTTOMRIGHT", -3, -7)
+	end
+
+	local ScrollView = CreateScrollBoxListLinearView()
+
+	ScrollUtil.InitScrollBoxListWithScrollBar(ScrollBox, ScrollBar, ScrollView)
+
+	local function Initializer(frame, data)
+		frame.data = data.data
+		frame:Init(data.data)
+	end
+
+	local function CustomFactory(factory, data)
+		local template = "Atlas"..data.type.."EntryTemplate"
+		factory(template, Initializer)
+	end
+
+	ScrollView:SetElementFactory(CustomFactory)
+
+	ScrollBar:SetHideIfUnscrollable(true)
+
+	local DataProvider = CreateDataProvider()
+	ScrollView:SetDataProvider(DataProvider)
+
+	AtlasFrameBottomInset.ScrollBox = ScrollBox
+
+	-- Initial data fetch
+	Atlas_Refresh()
 end
 
 function addon:Refresh()
@@ -2044,21 +1666,43 @@ function addon:Refresh()
 	AtlasFrameDropDown_OnShow()
 	addon:UpdateLock()
 	addon:UpdateAlpha()
+	addon:UpdateSmallAlpha()
 	addon:UpdateScale()
+	addon:UpdateSmallScale()
 	AtlasFrame:SetClampedToScreen(profile.options.frames.clamp)
-	AtlasFrameLarge:SetClampedToScreen(profile.options.frames.clamp)
 	AtlasFrameSmall:SetClampedToScreen(profile.options.frames.clamp)
-	if (WoWClassicEra) then
-		if (profile.options.worldMapButton) then
-			AtlasToggleFromWorldMap:Show()
-		else
-			AtlasToggleFromWorldMap:Hide()
-		end
+	if (profile.options.worldMapButton) then
+		addon.WorldMap.Button:Show()
 	else
-		if (profile.options.worldMapButton) then
-			addon.WorldMap.Button:Show()
-		else
-			addon.WorldMap.Button:Hide()
+		addon.WorldMap.Button:Hide()
+	end
+end
+
+function addon:BOSS_KILL(_, encounterID)
+	local zoneID = ATLAS_DROPDOWNS[profile.options.dropdowns.module][profile.options.dropdowns.zone]
+	local t = AtlasMaps_NPC_DB[zoneID]
+	local i = 1
+	if (t) then
+		while (t[i]) do
+			local button = _G["AtlasMapBossButton"..i]
+			if button and button.DefeatedOpacity then
+				local complete = C_EncounterJournal.IsEncounterComplete(button.encounterID);
+				button.DefeatedOpacity:SetShown(complete);
+				button.DefeatedOverlay:SetShown(complete);
+				button.bgImage:SetDesaturation(complete and 0.7 or 0);
+			end
+
+			button = _G["AtlasMapBossButtonS"..i]
+			if button and button.DefeatedOpacity then
+				local complete = C_EncounterJournal.IsEncounterComplete(button.encounterID);
+				button.DefeatedOpacity:SetShown(complete);
+				button.DefeatedOverlay:SetShown(complete);
+				button.bgImage:SetDesaturation(complete and 0.7 or 0);
+			end
+
+			i = i + 1
 		end
 	end
+
+	-- TODO: replace boss image in list with an X when defeated
 end

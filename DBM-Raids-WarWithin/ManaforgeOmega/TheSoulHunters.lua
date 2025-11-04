@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2688, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250906024126")
+mod:SetRevision("20251024015154")
 mod:SetCreatureID(237660, 237661, 237662)
 mod:SetEncounterID(3122)
 mod:SetBossHPInfoToHighest()
@@ -392,7 +392,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 	if spellId == 1241254 then
 		self.vb.bladeDanceCount = self.vb.bladeDanceCount + 1
 		specWarnBladeDance:Show(self.vb.bladeDanceCount)
-		specWarnBladeDance:Play("whirlwind")
+		specWarnBladeDance:Play("farfromline")
 		timerBladeDanceCD:Start(self:IsMythic() and 34 or self:IsHeroic() and 34.7 or 35.6, self.vb.bladeDanceCount+1)
 	end
 end

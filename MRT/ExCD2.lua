@@ -12,13 +12,18 @@ local GetSpellCooldown = ExRT.F.GetSpellCooldown or GetSpellCooldown
 local GetSpellInfo = ExRT.F.GetSpellInfo or GetSpellInfo
 local GetSpellLink = C_Spell and C_Spell.GetSpellLink or GetSpellLink
 local GetSpellTexture = C_Spell and C_Spell.GetSpellTexture or GetSpellTexture
+local GetSpellName = C_Spell and C_Spell.GetSpellName or GetSpellInfo
 local GetItemInfo, GetItemInfoInstant, GetItemSpell = C_Item and C_Item.GetItemInfo or GetItemInfo, C_Item and C_Item.GetItemInfoInstant or GetItemInfoInstant, C_Item and C_Item.GetItemSpell or GetItemSpell
 local GetCVar = C_CVar and C_CVar.GetCVar or C_CVar
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned or ExRT.NULLfunc
+local GetSpecializationInfo = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or GetSpecializationInfo
+local SendChatMessage = C_ChatInfo and C_ChatInfo.SendChatMessage or SendChatMessage
 
 local GetSpellLevelLearned = C_Spell and C_Spell.GetSpellLevelLearned or GetSpellLevelLearned
 if ExRT.isClassic then
-	GetSpellLevelLearned = function () return 1 end
+	if not ExRT.isMoP then
+		GetSpellLevelLearned = function () return 1 end
+	end
 	IsInJailersTower = function() end
 end
 
@@ -111,7 +116,7 @@ module.db.specInDBase = {
 	[1467] = 5,	[1468] = 6,	[1473] = 7,
 	[0] = 4,
 }
-if ExRT.isCata then
+if ExRT.isCata and not ExRT.isMoP then
 	module.db.specInDBase = {
 		[746] = 5,	[815] = 6,	[845] = 7,	
 		[831] = 5,	[839] = 6,	[855] = 7,	
@@ -170,7 +175,7 @@ do
 		[1473] = "EVOKERDPS2",		--Augmentation
 		[0] = "NO",
 	}
-	if ExRT.isCata then
+	if ExRT.isCata and not ExRT.isMoP then
 		specList = {
 			[746] = "WARRIORDPS1",	--Arms
 			[815] = "WARRIORDPS2",	--Fury
@@ -298,7 +303,7 @@ do
 					local n = {}
 					e = setmetatable({},{
 						__index = function (t1,k1) 
-							return n[k1] or type(k1) == "number" and k1 > 0 and n[GetSpellInfo(k1) or ""]
+							return n[k1] or type(k1) == "number" and k1 > 0 and n[GetSpellName(k1) or ""]
 						end,
 						__newindex = function (t1,k1,v1)
 							n[k1] = v1
@@ -353,6 +358,11 @@ do
 			end
 		end
 	end
+end
+
+module.db.playerTalentTree = {}
+function module:SetPlayerTalentTree(player, tree)
+	module.db.playerTalentTree[player] = tree
 end
 
 module.db.session_Pets = {}
@@ -517,8 +527,18 @@ module.db.spell_cdByTalent_isScalable = {
 	[296320] = true,
 }
 
-module.db.tierSetsSpells = {}	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
-module.db.tierSetsList = {}	-- [itemID] = specID.tierID.tierMark
+module.db.tierSetsSpells = {	--[classID[2].patchID[3].tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
+	[13112] = {1236368},
+	[3112] = {1236370},
+	[5112] = {1236398},
+	[4112] = {nil,1236403},
+}
+module.db.tierSetsList = {	-- [itemID] = specID.tierID.tierMark
+	[237658] = 13112,	[237656] = 13112,	[237655] = 13112,	[237654] = 13112,	[237653] = 13112,
+	[237649] = 3112,	[237647] = 3112,	[237646] = 3112,	[237645] = 3112,	[237644] = 3112,
+	[237710] = 5112,	[237709] = 5112,	[237708] = 5112,	[237712] = 5112,	[237707] = 5112,
+	[237667] = 4112,	[237665] = 4112,	[237664] = 4112,	[237663] = 4112,	[237662] = 4112,
+}
 
 module.db.spell_talentReplaceOther = {		--Спелы, показ которых нужно убрать при наличии таланта (талант заменяет эти спелы) [spellID] = [talent Spell ID]
 	[34428]=202168,
@@ -932,7 +952,7 @@ if ExRT.isClassic then
 	module.db.spell_cdByTalent_fix = {}
 	module.db.spell_durationByTalent_fix = {}
 end
-if ExRT.isLK then
+if ExRT.isLK and not ExRT.isMoP then
 	local spellToLvl = {
 		[31884] = 70,
 		[642] = 34,
@@ -1260,7 +1280,7 @@ do
 			local n = {}
 			for k in pairs(module.db.spell_isTalent) do
 				if type(k) == "number" then
-					n[#n+1] = GetSpellInfo(k) or "spell:"..k
+					n[#n+1] = GetSpellName(k) or "spell:"..k
 				end
 			end
 			for _,v in pairs(n) do
@@ -1296,14 +1316,25 @@ do
 				((data[8] and data[8][1] and data[8][2] and data[8][3]) or not data[8])
 			then
 				spellDB[#spellDB+1] = data
-				if data.itemID and data[2] and strsplit(",",data[2]) == "ITEMS" then
-					_db.itemsToSpells[data.itemID] = data[1]
-					if data.isEquip then
-						_db.spell_isTalent[ data[1] ] = true
-					end
-				end
+				local icon
 				if data.isTalent then
 					_db.spell_isTalent[ data[1] ] = true
+				else
+					_db.spell_isTalent[ data[1] ] = nil
+				end
+				if data.itemID and data[2] and strsplit(",",data[2]) == "ITEMS" then
+					_db.itemsToSpells[data.itemID] = data[1]
+					icon = select(5,GetItemInfoInstant(data.itemID))
+					_db.itemsToSpells[data.itemID] = data[1]
+					_db.spell_isTalent[ data[1] ] = true
+				end
+				if data.icon then
+					icon = tonumber(data.icon) or data.icon
+				end
+				if icon then
+					module.db.differentIcons[ data[1] ] = icon
+				else
+					module.db.differentIcons[ data[1] ] = nil
 				end
 			end
 		end
@@ -2156,9 +2187,10 @@ local function LineIconOnClick(self)
 end
 local function LineIconOnClickWhisper(self)
 	local parent = self:GetParent()
-	if not parent.data then	return end
-	if parent.data.specialClick then
-		parent.data.specialClick(parent.data)
+	local data = parent.data
+	if not data then	return end
+	if data.specialClick then
+		data.specialClick(data)
 		return
 	end
 	if (parent:GetParent().methodsLineClickMod == "shift" and not IsShiftKeyDown()) or
@@ -2166,20 +2198,30 @@ local function LineIconOnClickWhisper(self)
 		(parent:GetParent().methodsLineClickMod == "ctrl" and not IsControlKeyDown()) then
 		return
 	end
-	local time = parent.data.lastUse + parent.data.cd - GetTime()
-	if time > 0 then return end
-	local spellLink = GetSpellLink(parent.data.db[1])
+	local currTime = GetTime()
+	local time = data.lastUse + data.cd - currTime
+
+	local charge
+	if data.isCharge then
+		if data.charge then
+			if data.charge <= currTime and (data.charge+data.cd) > currTime then
+				charge = 1
+			elseif data.charge > currTime then
+				charge = 0
+			end
+		else
+			charge = 2
+		end
+	end
+
+	if time > 0 and (not charge or charge == 0) then return end
+	local spellLink = GetSpellLink(data.db[1])
 	if not spellLink or spellLink == "" then
-		spellLink = parent.data.spellName
+		spellLink = data.spellName
 	end
 	local text = "Use "..spellLink
 	local chat_type = ExRT.F.chatType(true)
-	--SendChatMessage(text,"WHISPER",nil,parent.data.fullName)
-	SendChatMessage(parent.data.spellName, "WHISPER", nil, parent.data.fullName)
-	if IsInRaid() then
-		local msg = tostring(parent.data.db[1])
-		C_ChatInfo.SendAddonMessage("EXRTADD", msg, "WHISPER", parent.data.fullName)
-	end
+	SendChatMessage(text,"WHISPER",nil,data.fullName)
 end
 local function LineIconOnClickBoth(self)
 	local parent = self:GetParent()
@@ -3176,6 +3218,7 @@ do
 		timerATFReset = 100
 	end
 
+	local slow_rf = 0
 	function module:timer(elapsed)
 		local forceUpdateAllData
 
@@ -3196,6 +3239,11 @@ do
 			module:toggleCombatVisibility(false,1)
 		end
 
+		slow_rf = slow_rf - 1
+		if slow_rf > 0 then
+			return
+		end
+		slow_rf = 2
 
 		---------> Check status
 		statusTimer2 = statusTimer2 + elapsed
@@ -3733,7 +3781,7 @@ local function UpdateRoster()
 					if _db.spell_isRacial[ SpellID ] and race ~= _db.spell_isRacial[ SpellID ] then
 						AddThisSpell = false
 					end
-					if not GetSpellInfo(SpellID) then	--non exist, removed spells
+					if not GetSpellName(SpellID) then	--non exist, removed spells
 						AddThisSpell = false
 					end
 					local spellClass,spellClass2 = strsplit(",",spellData[2])
@@ -3803,7 +3851,8 @@ local function UpdateRoster()
 							lastUse,nowCd = VMRT.ExCD2.Save[sName][1],VMRT.ExCD2.Save[sName][2]
 						end
 
-						local spellName,_,spellTexture = GetSpellInfo(SpellID)
+						local spellName = GetSpellName(SpellID)
+						local spellTexture = GetSpellTexture(SpellID)
 						spellTexture = spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK"
 						spellName = spellName or "unk"
 						local shownName = DelUnitNameServer(name)
@@ -3814,8 +3863,9 @@ local function UpdateRoster()
 
 						for l=4,8 do
 							if spellData[l] then
-								local h = (ExRT.isClassic and not ExRT.isCata) and _db.cdsNav[name][GetSpellInfo(spellData[l][1])] or _db.cdsNav[name][spellData[l][1]]
+								local h = (ExRT.isClassic and not ExRT.isCata) and _db.cdsNav[name][GetSpellName(spellData[l][1])] or _db.cdsNav[name][spellData[l][1]]
 								if h then
+									local needUpdate
 									h.db = spellData
 									if lastUse ~= 0 and nowCd ~= 0 and h.lastUse == 0 and h.cd == 0 then
 										h.cd = nowCd
@@ -3824,6 +3874,9 @@ local function UpdateRoster()
 									h.sort = prior
 									h.sort2 = secondPrior
 									h.spellName = spellName
+									if h.icon ~= spellTexture then
+										needUpdate = true
+									end
 									h.icon = spellTexture
 									h.column = spellColumn
 									h.guid = h.guid or UnitGUID(name)
@@ -3841,6 +3894,10 @@ local function UpdateRoster()
 										_db.vars.isMage[h.guid] = true
 									elseif spellClass == "HUNTER" and h.guid then
 										_db.vars.isHunter[h.guid] = true
+									end
+
+									if needUpdate and h.bar then
+										h.bar:Update()
 									end
 								end
 							end
@@ -4111,6 +4168,10 @@ do
 					if (not specReduceCD or (specReduceCD < 0 and globalGUIDs[fullName] ~= specReduceCD or globalGUIDs[fullName] == specReduceCD)) then
 						passSpecCheck = true
 					else
+						passSpecCheck = false
+					end
+					local talentTreeID = talentSpellID[3]
+					if passSpecCheck and talentTreeID and module.db.playerTalentTree[fullName] ~= talentTreeID then
 						passSpecCheck = false
 					end
 					talentSpellID = talentSpellID[1]
@@ -4700,7 +4761,7 @@ function module.main:UNIT_AURA(unitID)
 		if not FD_Found then
 			local line = _db.cdsNav[UnitName(unitID)][5384]
 			if ExRT.isClassic and not ExRT.isCata and not line then
-				line = _db.cdsNav[UnitName(unitID)][GetSpellInfo(5384)]
+				line = _db.cdsNav[UnitName(unitID)][GetSpellName(5384)]
 			end
 			if line then
 				CLEUstartCD(line)
@@ -5008,6 +5069,8 @@ do
 		UnitHealthMax = UnitHealthMax,
 		UnitHealth = UnitHealth,
 		GetSpellInfo = GetSpellInfo,
+		GetSpellName = GetSpellName,
+		GetSpellTexture = GetSpellTexture,
 		type = type,
 		Gtype = type,
 		pairs = pairs,
@@ -5209,7 +5272,7 @@ do
 				[22812]=true,[198589]=true,[48792]=true,[204021]=true,[109304]=true,[55342]=true,
 				[115203]=true,[19236]=true,[108271]=true,[104773]=true,[871]=true,[118038]=true,
 				[184364]=true,[498]=true,[31850]=true,[185311]=true,[212800]=true,
-				[403876]=true,[363916]=true,[243435]=true,
+				[403876]=true,[363916]=true,[243435]=true,[55233]=true,
 			}
 			thundercharge = {}
 			faerie = {}
@@ -5664,7 +5727,7 @@ do
 				$$$1
 			end
 		]],subevents={RANGE_DAMAGE=true,SPELL_PERIODIC_DAMAGE=true,SWING_DAMAGE=[[
-			local meleeStr = GetSpellInfo(6603)
+			local meleeStr = GetSpellName(6603)
 			return function (timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand)
 				if not eventsView.SPELL_DAMAGE then return end
 				return eventsView.SPELL_DAMAGE(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,meleeStr,1,amount,overkill,school,resisted,blocked,absorbed,critical,glancing,crushing,isOffHand)
@@ -5688,7 +5751,7 @@ do
 				$$$1
 			end
 		]],subevents={RANGE_MISSED=true,SPELL_PERIODIC_MISSED=true,SWING_MISSED=[[
-			local meleeStr = GetSpellInfo(6603)
+			local meleeStr = GetSpellName(6603)
 			return function (timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,missType,isOffHand,amountMissed,critical)
 				if not eventsView.SPELL_MISSED then return end	--temp fix
 				return eventsView.SPELL_MISSED(timestamp,event,hideCaster,sourceGUID,sourceName,sourceFlags,sourceFlags2,destGUID,destName,destFlags,destFlags2,6603,meleeStr,1,missType,isOffHand,amountMissed,critical)
@@ -5796,12 +5859,12 @@ do
 			local guid = UnitGUID(unitID)
 			local name = UnitName(unitID)
 
-			eventsView.SPELL_CAST_SUCCESS(0,"SPELL_CAST_SUCCESS",false,guid,name,0,0,"","",0,0,spellID,GetSpellInfo(spellID),1)
+			eventsView.SPELL_CAST_SUCCESS(0,"SPELL_CAST_SUCCESS",false,guid,name,0,0,"","",0,0,spellID,GetSpellName(spellID),1)
 
 			if spellID == 5384 then
 				local line = _db.cdsNav[name][5384]
 				if ExRT.isClassic and not ExRT.isCata and not line then
-					line = _db.cdsNav[name][GetSpellInfo(5384)]
+					line = _db.cdsNav[name][GetSpellName(5384)]
 				end
 				if line then
 					line:SetCD(360)
@@ -5843,7 +5906,7 @@ do
 			if not UnitIsGhost(unitID) then
 				local hp = UnitHealth(unitID) / max(UnitHealthMax(unitID),1)
 				if hp < 0.45 then
-					eventsView.SPELL_CAST_SUCCESS(0,"SPELL_CAST_SUCCESS",false,UnitGUID(unitID),name,0,0,"","",0,0,20608,GetSpellInfo(20608),1)
+					eventsView.SPELL_CAST_SUCCESS(0,"SPELL_CAST_SUCCESS",false,UnitGUID(unitID),name,0,0,"","",0,0,20608,GetSpellName(20608),1)
 				end
 			end
 			_db.spell_ReincarnationFix[name] = nil
@@ -6278,7 +6341,8 @@ function module.options:Load()
 					local spellID = module.db.spell_cdByTalent_fix[ data[1] ][j]
 					local specInfo 
 					if type(spellID) == "table" then
-						specInfo = L.specLocalizate[ module.db.specInLocalizate[ spellID[2] ] ]
+						if spellID[2] then specInfo = L.specLocalizate[ module.db.specInLocalizate[ spellID[2] ] ] end
+						if spellID[3] then specInfo = "Hero Spec "..spellID[3] end
 						spellID = spellID[1]
 					end
 
@@ -6334,7 +6398,7 @@ function module.options:Load()
 				GameTooltip:AddLine("|cffffffaa"..L.cd2AddSpellFrameCharge.."|r")
 			else
 				GameTooltip:AddLine("|cffffffaa"..L.cd2AddSpellFrameChargeChange..":|r")
-				local sname = GetSpellInfo(module.db.spell_charge_fix[ data[1] ])
+				local sname = GetSpellName(module.db.spell_charge_fix[ data[1] ])
 				GameTooltip:AddLine("|cffffffff - "..(sname or "???") .."|r")
 			end
 		end
@@ -6342,7 +6406,7 @@ function module.options:Load()
 		if module.db.spell_sharingCD[ data[1] ] then
 			GameTooltip:AddLine("|cffffffaa"..L.cd2AddSpellFrameSharing..": |r")
 			for otherID,otherCD in pairs(module.db.spell_sharingCD[ data[1] ]) do
-				local sname = GetSpellInfo(otherID)
+				local sname = GetSpellName(otherID)
 				GameTooltip:AddLine("|cffffffff - "..(sname or "???") .." (".. otherCD ..")|r")
 			end
 		end
@@ -6392,7 +6456,7 @@ function module.options:Load()
 		if module.db.spell_durationByTalent_fix[ data[1] ] then
 			GameTooltip:AddLine("|cffaaffaa"..L.cd2AddSpellFrameDuration..":|r")
 			for j=1,#module.db.spell_durationByTalent_fix[data[1]],2 do
-				local sname = GetSpellInfo(module.db.spell_durationByTalent_fix[ data[1] ][j]) or "???"
+				local sname = GetSpellName(module.db.spell_durationByTalent_fix[ data[1] ][j]) or "???"
 				local cd = module.db.spell_durationByTalent_fix[ data[1] ][j+1]
 				local isRank 
 				if type(cd) == 'table' then
@@ -6418,7 +6482,7 @@ function module.options:Load()
 		do
 			for auraID,sID in pairs(module.db.spell_aura_list) do
 				if sID == data[1] then
-					local sname = GetSpellInfo(auraID) or "???"
+					local sname = GetSpellName(auraID) or "???"
 					GameTooltip:AddLine("|cffaaffaa"..L.cd2AddSpellFrameDurationLost..":|r")
 					GameTooltip:AddLine("|cffffffff - \""..sname.."\"|r")
 
@@ -6852,7 +6916,7 @@ function module.options:Load()
 					end
 					cats[cat] = true
 				end
-				if (categoryNow == "ENABLED" and data[1] and GetSpellInfo(data[1]) and VMRT.ExCD2.CDE[ data[1] ]) then
+				if (categoryNow == "ENABLED" and data[1] and GetSpellName(data[1]) and VMRT.ExCD2.CDE[ data[1] ]) then
 					list[#list+1] = data
 				end
 				if (categoryNow == "FAV" and data[1] and VMRT.ExCD2.OptFav[ data[1] ]) then
@@ -6862,7 +6926,7 @@ function module.options:Load()
 		end
 		if self.search then
 			for i=#list,1,-1 do
-				local name = GetSpellInfo(list[i][1])
+				local name = GetSpellName(list[i][1])
 				if name and not name:lower():find(self.search) then
 					tremove(list,i)
 				end
@@ -6874,7 +6938,7 @@ function module.options:Load()
 		cats = SortCategories(cats)
 		if categoryNow and module.options.CATEGORIES_VIS[categoryNow].isClassCategory then
 			local class = categoryNow
-			local specList = not ExRT.isClassic and module.db.specByClass[class] or {0}
+			local specList = (not ExRT.isClassic or ExRT.isMoP) and module.db.specByClass[class] or {0}
 
 			local newList = {}
 			local specsLen = #specList - 1
@@ -7077,8 +7141,9 @@ function module.options:Load()
 
 				isHideMost = true
 			else
-				local spellName,_,spellTexture = GetSpellInfo(data[1])
-				line.icon:SetTexture(spellTexture)
+				local spellName = GetSpellName(data[1])
+				local spellTexture = GetSpellTexture(data[1])
+				line.icon:SetTexture(data.icon or spellTexture)
 				line.spellName:SetText(spellName or "Removed spell #"..data[1])
 
 				line.tooltipFrame.link = nil
@@ -7132,7 +7197,7 @@ function module.options:Load()
 							specID = specs[j-4]
 						end
 					end
-					if data[4] and not ExRT.isClassic then
+					if data[4] and (not ExRT.isClassic or ExRT.isMoP) then
 						dataSpecs = #specs
 					end
 					line.colExpand.specs = {}
@@ -7343,7 +7408,7 @@ function module.options:Load()
 	self.searchEditBox:SetTextColor(0,1,0,1)
 
 
-	self.addModSpellFrame = ELib:Popup():Size(570,275)
+	self.addModSpellFrame = ELib:Popup():Size(570,300)
 
 	self.addModSpellFrame.Save = ELib:Button(self.addModSpellFrame,L.BossmodsKromogSetupsSave):Size(558,20):Point("BOTTOM",0,1):OnClick(function(self)
 		local parent = self:GetParent()
@@ -7386,7 +7451,7 @@ function module.options:Load()
 		local parent = self:GetParent()
 		local data = parent.data
 		local spellID = data[1]
-		if not GetSpellInfo(spellID) then
+		if not GetSpellName(spellID) then
 			self:Disable()
 			parent.spellIDIcon:ColorBorder(true)
 			return
@@ -7412,27 +7477,56 @@ function module.options:Load()
 		--self.Save:Click()
 	end)
 
-	self.addModSpellFrame.spellIDIcon = ELib:Edit(self.addModSpellFrame):Size(100,20):Point("TOPLEFT",150,-50):LeftText("Spell ID (for icon):"):OnChange(function(self,isUser)
+	self.addModSpellFrame.spellIDIcon = ELib:Edit(self.addModSpellFrame):Size(180,20):Point("TOPLEFT",150,-50):LeftText("Spell ID (for icon):"):OnChange(function(self,isUser)
 		local text = self:GetText() or ""
 		if not tonumber(text) then
 			text = "0"
 		end
 		local spellID = tonumber(text)
 		local parent = self:GetParent()
-		parent.data[1] = spellID
+		if isUser then
+			parent.data[1] = spellID
+		end
 		parent.Save:Check()
 
 		local spellName,_,spellIcon = GetSpellInfo(spellID)
 		self.RightText:SetText((spellIcon and "|T"..spellIcon..":20|t " or "")..(spellName or ""))
+	end):Tooltip(function(self)
+		local parent = self:GetParent()
+		local spellID = parent.data[1]
+		if not spellID or not GetSpellName(spellID) then
+			return "Spell does not exist"
+		end
+		local AllSpells = module.options:GetAllSpells(true)
+		for _,line in pairs(AllSpells) do
+			if line[1] == spellID and line ~= parent.data then
+				return "Spell already found in cooldowns list"
+			end
+		end
 	end)
 	self.addModSpellFrame.spellIDIcon.leftText:Color():Shadow()
 	self.addModSpellFrame.spellIDIcon.RightText = ELib:Text(self.addModSpellFrame.spellIDIcon,"",12):Point("LEFT",self.addModSpellFrame.spellIDIcon,"RIGHT",5,0):Color():Shadow()
 
-	self.addModSpellFrame.chkSpellIsTalent = ELib:Check(self.addModSpellFrame,L.cd2SpellIsTalent):Tooltip(L.cd2SpellIsTalentTip):Point(150,-75):OnClick(function(self) 
+	self.addModSpellFrame.chkSpellIsTalent = ELib:Check(self.addModSpellFrame,L.cd2SpellIsTalent):Tooltip(L.cd2SpellIsTalentTip):Point(150,-100):OnClick(function(self) 
 		local parent = self:GetParent()
 		parent.data.isTalent = self:GetChecked()
 		parent.Save:Check()
 	end)
+
+	self.addModSpellFrame.customIcon = ELib:Edit(self.addModSpellFrame):Size(180,20):Point("TOPLEFT",150,-75):LeftText("Custom icon:"):OnChange(function(self,isUser)
+		local text = self:GetText() or ""
+		if text:trim() == "" then
+			text = nil
+		end
+		if isUser then
+			local parent = self:GetParent()
+			parent.data.icon = text
+		end
+
+		self.RightText:SetText((text and "|T"..text..":20|t " or ""))
+	end):Tooltip("Icon ID or icon path.\nLeave empty to use icon from item or spell")
+	self.addModSpellFrame.customIcon.leftText:Color():Shadow()
+	self.addModSpellFrame.customIcon.RightText = ELib:Text(self.addModSpellFrame.customIcon,"",12):Point("LEFT",self.addModSpellFrame.customIcon,"RIGHT",5,0):Color():Shadow()
 
 	local function addModSpellFrameEditCLEU(self)
 		local text = self:GetText() or ""
@@ -7448,7 +7542,7 @@ function module.options:Load()
 	end
 
 	for i=1,5 do
-		self.addModSpellFrame["spellIDCLEU"..i] = ELib:Edit(self.addModSpellFrame):Size(180,20):Point("TOPLEFT",150,-125-(i-1)*25):OnChange(addModSpellFrameEditCLEU):Tooltip("Leave empty for ignoring"):LeftText("")
+		self.addModSpellFrame["spellIDCLEU"..i] = ELib:Edit(self.addModSpellFrame):Size(180,20):Point("TOPLEFT",150,-150-(i-1)*25):OnChange(addModSpellFrameEditCLEU):Tooltip("Leave empty for ignoring"):LeftText("")
 		self.addModSpellFrame["spellIDCLEU"..i].leftText:Color():Shadow()
 
 		self.addModSpellFrame["cd"..i] = ELib:Edit(self.addModSpellFrame):Size(100,20):Point("LEFT",self.addModSpellFrame["spellIDCLEU"..i],"RIGHT",10,0):OnChange(addModSpellFrameEditCD)
@@ -7459,7 +7553,7 @@ function module.options:Load()
 	self.addModSpellFrame.cdtext = ELib:Text(self.addModSpellFrame,L.cd2EditBoxCDTooltip,12):Point("BOTTOM",self.addModSpellFrame.cd1,"TOP",0,2):Color():Shadow()
 	self.addModSpellFrame.durtext = ELib:Text(self.addModSpellFrame,L.cd2EditBoxDurationTooltip,12):Point("BOTTOM",self.addModSpellFrame.dur1,"TOP",0,2):Color():Shadow()
 
-	self.addModSpellFrame.dropDown = ELib:DropDown(self.addModSpellFrame,200,10):Size(210):Point("TOPLEFT",150,-25)
+	self.addModSpellFrame.dropDown = ELib:DropDown(self.addModSpellFrame,200,10):Size(180):Point("TOPLEFT",150,-25)
 	self.addModSpellFrame.dropDown.LeftText = ELib:Text(self.addModSpellFrame.dropDown,L.cd2Class..":",12):Point("RIGHT",self.addModSpellFrame.dropDown,"LEFT",-5,0):Color():Shadow()
 
 	function self.addModSpellFrame.dropDown:SetValue(newValue)
@@ -7481,12 +7575,12 @@ function module.options:Load()
 	end
 	if ExRT.isClassic then
 		tremove(self.addModSpellFrame.dropDown.List, 12)
-		tremove(self.addModSpellFrame.dropDown.List, 10)
+		if not ExRT.isMoP then tremove(self.addModSpellFrame.dropDown.List, 10) end
 		if not ExRT.isLK then tremove(self.addModSpellFrame.dropDown.List, 6) end
 	end
 
 	self.addModSpellFrame.dropDown.List[#self.addModSpellFrame.dropDown.List + 1] = {
-		text = L.cd2CatItems,
+		text = BANK_TAB_ASSIGN_EQUIPMENT_CHECKBOX or L.cd2CatItems,
 		justifyH = "CENTER",
 		func = self.addModSpellFrame.dropDown.SetValue,
 		arg1 = "ITEMS",
@@ -7519,17 +7613,6 @@ function module.options:Load()
 		parent:Hide()
 	end)
 
-	self.addModSpellFrame.isEquip = ELib:Check(self.addModSpellFrame,"|cffffffffIs Equipment:"):Left():Point("LEFT",self.addModSpellFrame["spellIDCLEU3"],"LEFT",0,0):OnClick(function(self)
-		local parent = self:GetParent()
-		local data = parent.data
-
-		if self:GetChecked() then
-			data.isEquip = true
-		else
-			data.isEquip = nil
-		end
-	end)
-
 	self.addModSpellFrame.itemToSpell = ELib:Edit(self.addModSpellFrame,nil,true):Size(180,20):Point("LEFT",self.addModSpellFrame["spellIDCLEU4"],"LEFT",0,0):OnChange(function(self,isUser)
 		local parent = self:GetParent()
 		local data = parent.data
@@ -7537,8 +7620,11 @@ function module.options:Load()
 		self.RightText:SetText("")
 		local itemID = tonumber(self:GetText() or "")
 
-		data.itemID = itemID
-		parent.Save:Check()
+		local class = strsplit(",",module.options.addModSpellFrame.data[2])
+		if class ~= "OTHER" then
+			data.itemID = itemID
+			parent.Save:Check()
+		end
 
 		if itemID then
 			local itemName, _, _, _, _, _, _, _, _, itemIcon = GetItemInfo(itemID)
@@ -7556,6 +7642,11 @@ function module.options:Load()
 	end):LeftText("Item ID:"):Run(function(self) 
 		self.leftText:Color() 
 		self.RightText = ELib:Text(self,"",12):Point("TOPLEFT",self,"BOTTOMLEFT",3,-3):Color():Shadow()
+	end):Tooltip(function()
+		local class = strsplit(",",module.options.addModSpellFrame.data[2])
+		if class == "OTHER" then
+			return "This field is only for helping to find out spell id for usable item."
+		end
 	end)
 
 
@@ -7574,7 +7665,7 @@ function module.options:Load()
 			end
 		end
 
-		local specList = not ExRT.isClassic and module.db.specByClass[class] or {0}
+		local specList = (not ExRT.isClassic or ExRT.isMoP) and module.db.specByClass[class] or {0}
 		for i=1,#specList do
 			local specID = specList[i]
 			local icon 
@@ -7607,10 +7698,14 @@ function module.options:Load()
 		end
 
 		self.itemToSpell:SetText(data.itemID or "")
-		self.isEquip:SetChecked(data.isEquip)
-		self.itemToSpell:SetShown(class == "ITEMS")
-		self.isEquip:SetShown(class == "ITEMS")
+		self.itemToSpell:SetShown(class == "ITEMS" or class == "OTHER")
+		self.itemToSpell:LeftText(class == "ITEMS" and "Item ID:" or "Get spell ID from item ID:")
+		self.customIcon:SetText(data.icon or "")
+		self.customIcon:SetShown(true)
 		self.chkSpellIsTalent:SetShown(class ~= "ITEMS")
+		self.spellIDIcon:LeftText(class == "ITEMS" and "Spell ID (for options):" or "Spell ID (for icon):")
+
+		self.Save:Check()
 
 		local isNew = true
 		local AllSpells = module.options:GetAllSpells(true)
@@ -10642,7 +10737,7 @@ function module.options:Load()
 		profilesTab.autoSpec4Down:Hide()
 	else
 		for i=1,4 do
-			--local _, name = GetSpecializationInfo(i)
+			local _, name = GetSpecializationInfo(i)
 			--if not name then
 			--	_, name = ExRT.Classic.GetSpecializationInfoByID(ExRT.GDB.ClassSpecializationList[class][i])
 			--end
@@ -11413,14 +11508,11 @@ module.db.AllSpells = {
 
 
 	{107574,"WARRIOR,DPS",3,--Аватара
-		{107574,90,20},
-		isTalent=true,cdDiff={296320,"*0.80"},durationDiff={400314,"*2"}},
-	{6673,	"WARRIOR",1,--Боевой крик
-		{6673,15,0},nil,nil,nil},
+		nil,{107574,90,20},{107574,90,20},{401150,90,20},
+		isTalent=true,cdDiff={296320,"*0.80"},durationDiff={400314,"*2"},sameTalent={107574,401150}},
 	{18499,	"WARRIOR,DEF",4,--Ярость берсерка
 		{18499,60,6},nil,nil,nil,
 		isTalent=true},
---227847	Bladestorm	found in	444780		When you Execute a target that you've Marked for Execution, you both reduce the cooldown of Bladestorm by 5 sec and apply 2 stacks of Overwhelmed to the target per stack of Marked for Execution consumed.
 	{227847,"WARRIOR,DPS",3,--Вихрь клинков
 		nil,{227847,90,6},nil,nil,
 		isTalent=true,cdDiff={296320,"*0.80",236308,"*0.67"},hasCharges=382953,hideWithTalent=152277,reduceCdAfterCast={{1715,152278,71},-0.5,{1464,152278,71},-1,{330334,152278,71},-1.5,{2565,152278,71},-1.5,{12294,152278,71},-1.5,{190456,152278,71},-2,{1680,152278,71},-1.5,{163201,152278,71},-1.5}},
@@ -11428,7 +11520,7 @@ module.db.AllSpells = {
 		nil,nil,nil,{1161,120,0},
 		isTalent=true},
 	{386071,"WARRIOR,TAUNT",5,--Disrupting Shout
-		nil,nil,nil,{386071,75,0},
+		nil,nil,nil,{386071,90,0},
 		isTalent=true},
 	{100,	"WARRIOR",3,--Рывок
 		{100,20,0},nil,nil,nil,
@@ -11500,7 +11592,7 @@ module.db.AllSpells = {
 		cdDiff={383115,-1}},
 	{97462,	"WARRIOR,RAID",1,--Ободряющий клич
 		{97462,180,10},nil,nil,nil,
-		isTalent=true,durationDiff={382310,3,335034,{"*1.20","*1.22","*1.24","*1.26","*1.28","*1.30","*1.32","*1.34","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48"}},cdDiff={235941,-90}},
+		isTalent=true,durationDiff={382310,3,335034,{"*1.20","*1.22","*1.24","*1.26","*1.28","*1.30","*1.32","*1.34","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48"}},cdDiff={235941,-120}},
 	{1719,	"WARRIOR,DPS",3,--Безрассудство
 		nil,nil,{1719,90,12},nil,
 		isTalent=true,durationDiff={337162,{"*1.20","*1.215","*1.23","*1.245","*1.26","*1.275","*1.29","*1.305","*1.32","*1.335","*1.35","*1.365","*1.38","*1.395","*1.41"},383922,4},cdDiff={296320,"*0.80"},reduceCdAfterCast={{1715,152278,72},-0.5,{184367,152278,72},-4,{1464,152278,72},-1,{330334,152278,72},-1.5,{2565,152278,72},-1.5,{190456,152278,72},-3,{163201,152278,72},-1.5},increaseDurAfterCast={{317349,354131},1.5}},
@@ -11517,7 +11609,7 @@ module.db.AllSpells = {
 		{2565,16,0},nil,nil,nil,
 		hasCharges=1,changeCdWithHaste=true,increaseDurAfterCast={{23922,203177},1}},
 	{871,	"WARRIOR,DEFTANK",4,--Глухая оборона
-		nil,nil,nil,{871,210,8},
+		nil,nil,nil,{871,180,8},
 		isTalent=true,hasCharges=397103,cdDiff={334993,{-20,-22,-24,-26,-28,-30,-32,-34,-36,-38,-40,-42,-44,-46,-48},397103,-30,391271,"*0.95"},reduceCdAfterCast={{23922,384072},-5,{1715,152278,73},-1,{23922,335239},-5,{330334,152278,73},-3,{2565,152278,73},-3,{190456,152278,73},-4,{1680,152278,73},-3,{163201,152278,73},-3}},
 	{46968,	"WARRIOR,AOECC",1,--Ударная волна
 		{46968,40,2},
@@ -11563,7 +11655,7 @@ module.db.AllSpells = {
 		nil,nil,{118000,30,0},{118000,30,0},
 		isTalent=true},
 	{202168,"WARRIOR,DEF",3,--Верная победа
-		{202168,30,0},nil,nil,nil,
+		{202168,25,0},nil,nil,nil,
 		isTalent=true},
 	{228920,"WARRIOR,DPS",3,--Опустошитель
 		{228920,90,10},nil,nil,nil,
@@ -11572,7 +11664,7 @@ module.db.AllSpells = {
 		nil,nil,{280772,30,10},nil,
 		isTalent=true},
 	{260643,"WARRIOR",3,--Рассекатель черепов
-		nil,{260643,30,0},nil,nil,
+		nil,{260643,21,0},nil,nil,
 		isTalent=true,changeCdWithHaste=true},
 	{107570,"WARRIOR,CC",3,--Удар громовержца
 		{107570,30,0},nil,nil,nil,
@@ -11593,7 +11685,7 @@ module.db.AllSpells = {
 		{236077,45,5},nil,nil,nil,
 		isTalent=true},
 	{206572,"WARRIOR,PVP",3,--Рывок дракона
-		nil,nil,nil,{206572,20,0},
+		nil,nil,nil,{206572,45,0},
 		isTalent=true},
 	{236273,"WARRIOR,PVP",3,--Дуэль
 		nil,{236273,60,8},nil,nil,
@@ -11603,9 +11695,6 @@ module.db.AllSpells = {
 		isTalent=true},
 	{198817,"WARRIOR,PVP",3,--Заточка клинка
 		nil,{198817,30,0},nil,nil,
-		isTalent=true},
-	{198912,"WARRIOR,PVP",3,--Удар щитом
-		nil,nil,nil,{198912,10,0},
 		isTalent=true},
 	{236320,"WARRIOR,PVP",3,--Боевое знамя
 		nil,{236320,90,15},nil,nil,
@@ -11653,7 +11742,7 @@ module.db.AllSpells = {
 		isTalent=true,hasCharges=199454,reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
 	{1022,	"PALADIN,DEFTAR",2,--Благословение защиты
 		{1022,300,10},nil,nil,nil,
-		isTalent=true,hasCharges=199454,cdDiff={384909,-60,216853,"*0.67",378425,{"*0.85","*0.7"}},sameSpell={1022,204018},icon="Interface\\Icons\\spell_holy_sealofprotection",reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
+		isTalent=true,hasCharges=199454,cdDiff={384909,-60,216853,"*0.67",378425,"*0.85"},sameSpell={1022,204018},icon="Interface\\Icons\\spell_holy_sealofprotection",reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
 	{6940,	"PALADIN,DEFTAR",2,--Жертвенное благословение
 		{6940,120,12},nil,nil,nil,
 		isTalent=true,cdDiff={384820,-60,216853,"*0.67"},durationDiff={199452,-6},stopDurWithAuraFade=6940,reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
@@ -11664,11 +11753,11 @@ module.db.AllSpells = {
 		nil,nil,{213644,8,0},{213644,8,0},
 		isTalent=true,isDispel=true},
 	{498,	"PALADIN,DEF",4,--Божественная защита
-		nil,{498,60,8},nil,{498,60,8},
+		nil,{498,60,8},nil,{403876,60,8},
 		cdDiff={114154,"*0.7"},icon=524353},
 	{642,	"PALADIN,DEF",2,--Божественный щит
 		{642,300,8},nil,nil,nil,
-		cdDiff={114154,"*0.7",332542,"*0.4",378425,{"*0.85","*0.7"}},stopDurWithAuraFade=642,reduceCdAfterCast={{85673,385422},{-1,-2},{53600,385422},{-1,-2},{85256,385422},{-1,-2},{53385,385422},{-1,-2},{215661,385422},{-1,-2}},
+		cdDiff={114154,"*0.7",332542,"*0.4",378425,"*0.85"},stopDurWithAuraFade=642,reduceCdAfterCast={{85673,385422},{-1,-2},{53600,385422},{-1,-2},{85256,385422},{-1,-2},{53385,385422},{-1,-2},{215661,385422},{-1,-2}},
 		CLEU_PREP = [[
 			spell338741_var = {}
 		]],CLEU_SPELL_DAMAGE=[[
@@ -11685,8 +11774,8 @@ module.db.AllSpells = {
 			end
 		]]},
 	{190784,"PALADIN,MOVE",4,--Божественный скакун
-		{190784,45,3},nil,nil,nil,
-		isTalent=true,hasCharges=230332,durationDiff={432990,2,376996,2,335424,3,199542,2,339268,{"*1.50","*1.55","*1.60","*1.65","*1.70","*1.75","*1.80","*1.85","*1.90","*1.95","*2.00","*2.05","*2.10","*2.15","*2.20"}},ignoreUseWithAura=375253,changeCdWithAura={381752,"*0.85"}},
+		{190784,45,4},nil,nil,nil,
+		isTalent=true,hasCharges=230332,cdDiff={469409,"*0.8"},durationDiff={432990,2,376996,2,335424,3,199542,2,339268,{"*1.50","*1.55","*1.60","*1.65","*1.70","*1.75","*1.80","*1.85","*1.90","*1.95","*2.00","*2.05","*2.10","*2.15","*2.20"},469409,"*0.6"},ignoreUseWithAura=375253,changeCdWithAura={381752,"*0.85"}},
 	{86659,	"PALADIN,DEFTANK",4,--Защитник древних королей
 		nil,nil,{86659,300,8},nil,
 		isTalent=true,cdDiff={340030,{-15,-16.5,-18,-19.5,-21,-22.5,-24,-25.5,-27,-28.5,-30,-31.5,-33,-34.5,-36}},hideWithTalent=228049,sameSpell={86659,212641},reduceCdAfterCast={{53600,204074},-2,{85673,204074},-2,{53600,204074},-2,{85256,204074},-2,{53385,204074},-2,{215661,204074},-2},
@@ -11700,8 +11789,8 @@ module.db.AllSpells = {
 			end
 		]]},
 	{853,	"PALADIN",3,--Молот правосудия
-		{853,60,6},nil,nil,nil,
-		reduceCdAfterCast={{85673,234299},{-3,-6},{53600,234299},{-3,-6},{85256,234299},{-3,-6},{53385,234299},{-3,-6},{215661,234299},{-3,-6}}},
+		{853,45,6},nil,nil,nil,
+		cdDiff={234299,-15}},
 	{183218,"PALADIN",3,--Преграждающая длань
 		nil,nil,nil,{183218,30,10},
 		CLEU_PREP=[[
@@ -11725,7 +11814,7 @@ module.db.AllSpells = {
 		{62124,8,0},nil,nil,nil,
 		hideWithTalent=207028},
 	{20473,	"PALADIN",3,--Шок небес
-		nil,{20473,8.5,0},nil,nil,
+		nil,{20473,9.5,0},nil,nil,
 		cdDiff={332401,-1.5,53376,{"*0.8",31884}},changeCdWithHaste=true,reduceCdAfterCast={{35395,196926},-1},
 		CLEU_SPELL_AURA_REMOVED=[[
 			if spellID == 54149 and destName and session_gGUIDs[destName][392961] then
@@ -11737,7 +11826,7 @@ module.db.AllSpells = {
 		]]},
 	{633,	"PALADIN,DEFTAR",2,--Возложение рук
 		{633,600,0},nil,nil,nil,
-		isTalent=true,cdDiff={114154,"*0.7",378425,{"*0.85","*0.7"}},reduceCdAfterCast={{85673,392928},-3,{53600,392928},-3,{85256,392928},-3,{53385,392928},-3,{85673,414720},-4.5,{53600,414720},-4.5,{85256,414720},-4.5,{53385,414720},-4.5,{85222,414720},-4.5},
+		isTalent=true,cdDiff={114154,"*0.7",378425,"*0.85"},reduceCdAfterCast={{85673,392928},-3,{53600,392928},-3,{85256,392928},-3,{53385,392928},-3,{85673,414720},-4.5,{53600,414720},-4.5,{85256,414720},-4.5,{53385,414720},-4.5,{85222,414720},-4.5},
 		CLEU_SPELL_HEAL=[[
 			if spellID == 633 and session_gGUIDs[sourceName][326734] then
 				local line = CDList[sourceName][633]
@@ -11757,7 +11846,19 @@ module.db.AllSpells = {
 		]]},
 	{96231,	"PALADIN,KICK",5,--Укор
 		{96231,15,0},nil,nil,nil,
-		isTalent=true},
+		isTalent=true,
+		CLEU_SPELL_INTERRUPT=[[
+			if sourceName and session_gGUIDs[sourceName][469886] and spellID == 96231 then
+				local line = CDList[sourceName][96231]
+				if line then
+					line:ReduceCD(1)
+
+					if IsAuraActive(sourceName,432502) then
+						line:ReduceCD(1)
+					end
+				end
+			end
+		]]},
 	{184662,"PALADIN,DEF",4,--Щит возмездия
 		nil,nil,nil,{184662,90,15},
 		isTalent=true,cdDiff={114154,"*0.7"},stopDurWithAuraFade=184662},
@@ -11833,10 +11934,10 @@ module.db.AllSpells = {
 		isTalent=true,sameSpell={388007,388010,388011,388013}},
 	{204018,"PALADIN,DEFTAR",2,--Благословение защиты от заклинаний
 		nil,nil,{204018,300,10},nil,
-		isTalent=true,cdDiff={384909,-60,216853,"*0.67",378425,{"*0.85","*0.7"}},sameSpell={1022,204018},reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
+		isTalent=true,cdDiff={384909,-60,216853,"*0.67",378425,"*0.85"},sameSpell={1022,204018},reduceCdAfterCast={{85256,337600},-3,{85222,337600},-3,{85673,337600},-3,{53385,337600},-3,{152262,337600},-3,{53600,337600},-3}},
 	{115750,"PALADIN",3,--Слепящий свет
 		{115750,90,0},nil,nil,nil,
-		isTalent=true},
+		isTalent=true,cdDiff={469325,-15}},
 	{205191,"PALADIN",3,--Око за око
 		nil,nil,nil,{205191,60,10},
 		isTalent=true},
@@ -11857,13 +11958,13 @@ module.db.AllSpells = {
 		isTalent=true},
 	{387174,"PALADIN,DEFTANK",3,--Око Тира
 		nil,nil,{387174,60,9},nil,
-		isTalent=true,cdDiff={405757,"*0.75"}},
+		isTalent=true,cdDiff={405757,"*0.67"}},
 	{378974,"PALADIN",3,--Бастион Света
 		nil,nil,{378974,120,0},nil,
 		isTalent=true},
 	{20066,	"PALADIN,CC",3,--Покаяние
 		{20066,15,0},nil,nil,nil,
-		isTalent=true},
+		isTalent=true,cdDiff={469325,-15}},
 	{414273,"PALADIN",3,
 		nil,{414273,90,0},nil,nil,
 		isTalent=true},
@@ -11871,14 +11972,11 @@ module.db.AllSpells = {
 		nil,nil,nil,{198034,120,0},
 		isTalent=true},
 	{210256,"PALADIN,PVP",3,--Благословение святилища
-		nil,nil,nil,{210256,45,5},
+		nil,nil,nil,{210256,60,5},
 		isTalent=true},
 	{236186,"PALADIN,PVP",3,--Очищающий свет
 		nil,nil,{236186,4,0},{236186,4,0},
 		isTalent=true,isDispel=true},
-	{210294,"PALADIN",3,--Божественное одобрение
-		nil,{210294,30,0},nil,nil,
-		isTalent=true},
 	{228049,"PALADIN,PVP",3,--Страж забытой королевы
 		nil,nil,{228049,300,10},nil,
 		isTalent=true},
@@ -11925,7 +12023,7 @@ module.db.AllSpells = {
 		]]},
 	{359844,"HUNTER,DPS",3,--Зов дикой природы
 		nil,{359844,120,20},nil,nil,
-		isTalent=true},
+		isTalent=true,cdDiff={{1236370,nil,44},-60}},
 	{19574,	"HUNTER,DPS",3,--Звериный гнев
 		nil,{19574,90,15},nil,nil,
 		isTalent=true,reduceCdAfterCast={{217200,231548},-12}},
@@ -12016,16 +12114,16 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={265895,-10}},
 	{19577,	"HUNTER,CC",3,--Устрашение
 		{19577,60,5},
-		isTalent=true,cdDiff={459507,-5},reduceCdAfterCast={{34026,459533,253},-0.5,{19434,459533,254},-0.5,{259495,459533,255},-0.5}},
+		isTalent=true,cdDiff={459507,-10},reduceCdAfterCast={{34026,459533,253},-0.5,{19434,459533,254},-0.5,{259495,459533,255},-0.5}},
 	{34477,	"HUNTER",3,--Перенаправление
 		{34477,30,0},
-		isTalent=true,cdDiff={248518,15}},
+		isTalent=true,cdDiff={248518,15,459546,-5}},
 	{187707,"HUNTER,KICK",3,--Намордник
 		nil,nil,nil,{187707,15,0},
 		isTalent=true,cdDiff={388039,-2}},
 	{257044,"HUNTER",3,--Быстрая стрельба
 		nil,nil,{257044,20,0},nil,
-		isTalent=true,cdDiff={400472,"*0.9",288613,"*0.3"}},
+		isTalent=true,cdDiff={400472,"*0.9",288613,{"*0.3",288613}}},
 	{187698,"HUNTER",3,--Смоляная ловушка
 		{187698,30,0},
 		isTalent=true,cdDiff={343247,-5}},
@@ -12034,7 +12132,7 @@ module.db.AllSpells = {
 		isTalent=true},
 	{288613,"HUNTER,DPS",3,--Меткий выстрел
 		nil,nil,{288613,120,15},nil,
-		isTalent=true,durationDiff={336849,3,339920,{"*1.20","*1.22","*1.24","*1.27","*1.29","*1.31","*1.33","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48","*1.50"},389449,3},cdDiff={203129,-20,296320,"*0.80",336742,"*0.65"},reduceCdAfterCast={{257620,260404},-2.5,{185358,260404},-2.5}},
+		isTalent=true,durationDiff={336849,3,339920,{"*1.20","*1.22","*1.24","*1.27","*1.29","*1.31","*1.33","*1.36","*1.38","*1.40","*1.42","*1.44","*1.46","*1.48","*1.50"},389449,3},cdDiff={260404,-30,203129,-20,{1236370,nil,44},-60,296320,"*0.80",336742,"*0.65"}},
 	{131894,"HUNTER",3,--Стая воронов
 		nil,{131894,60,15},nil,nil,
 		isTalent=true},
@@ -12056,12 +12154,6 @@ module.db.AllSpells = {
 	{53209,	"HUNTER",3,--Выстрел химеры
 		nil,{53209,15,0},nil,nil,
 		isTalent=true,changeCdWithHaste=true},
-	{120679,"HUNTER",3,--Ужасный зверь
-		nil,{120679,20,0},nil,nil,
-		isTalent=true,durationDiff={385810,2}},
-	{260402,"HUNTER",3,--Двойной выстрел
-		nil,nil,{260402,60,0},nil,
-		isTalent=true},
 	{212431,"HUNTER",3,--Разрывной выстрел
 		{212431,30,0},
 		isTalent=true},
@@ -12071,9 +12163,6 @@ module.db.AllSpells = {
 	{360966,"HUNTER",3,--Острие копья
 		nil,nil,nil,{360966,90,0},
 		isTalent=true,cdDiff={378962,-30}},
-	{201430,"HUNTER,DPS",3,--Звериный натиск
-		{201430,120,12},
-		isTalent=true},
 	{162488,"HUNTER",3,--Капкан
 		{162488,30,0},
 		isTalent=true,cdDiff={343247,-5}},
@@ -12089,9 +12178,6 @@ module.db.AllSpells = {
 	{236776,"HUNTER",3,--Фугасная ловушка
 		{236776,40,0},
 		isTalent=true,cdDiff={343247,-5}},
-	{248518,"HUNTER,PVP",3,--Вмешательство
-		nil,{248518,45,0},nil,nil,
-		isTalent=true,startCdAfterAuraFade=248519},
 	{212640,"HUNTER,PVP",3,--Целебная повязка
 		nil,nil,nil,{212640,25,0},
 		isTalent=true},
@@ -12126,16 +12212,22 @@ module.db.AllSpells = {
 		isTalent=true},
 	{264735,"HUNTER",3,--Survival of the Fittest
 		{264735,120,6},
-		isTalent=true,cdDiff={388039,-30,266921,{"*0.9","*0.8"}},durationDiff={388039,2},hasCharges=459450},
+		isTalent=true,cdDiff={388039,-30},durationDiff={388039,2},hasCharges=459450},
 	{360952,"HUNTER",3,--Coordinated Assault
 		nil,nil,nil,{360952,120,20},
+		isTalent=true},
+	{462031,"HUNTER",3,--Implosive Trap
+		{462031,60,0},
+		isTalent=true},
+	{474421,"HUNTER",3,--Intimidation
+		nil,nil,{474421,60,0},
 		isTalent=true},
 
 
 
 	{13750,	"ROGUE,DPS",3,--Выброс адреналина
 		nil,nil,{13750,180,20},nil,
-		isTalent=true,cdDiff={296320,"*0.80"}},
+		isTalent=true,cdDiff={{1236403,nil,52},-30,296320,"*0.80"}},
 	{315341,"ROGUE",3,--Промеж глаз
 		nil,nil,{315341,45,0},nil},
 	{13877,	"ROGUE",3,--Шквал клинков
@@ -12181,7 +12273,7 @@ module.db.AllSpells = {
 		{1966,15,6},
 		isTalent=true,hasCharges=423647,cdDiff={354825,"0.8"}},
 	{1776,	"ROGUE,CC",3,--Парализующий удар
-		{1776,20,0},
+		{1776,25,0},
 		isTalent=true},
 	{195457,"ROGUE,MOVE",3,--Абордажный крюк
 		nil,nil,{195457,45,0},nil,
@@ -12189,15 +12281,15 @@ module.db.AllSpells = {
 	{1766,	"ROGUE,KICK",5,--Пинок
 		{1766,15,0},nil,nil,nil},
 	{408,	"ROGUE,CC",3,--Удар по почкам
-		{408,20,0},nil,nil,nil},
+		{408,30,0},nil,nil,nil},
 	{315508,"ROGUE",3,--Игра в кости
 		nil,nil,{315508,45,0},nil,
 		isTalent=true},
 	{381989,"ROGUE",3,--Призовая игра
-		nil,nil,{381989,420,0},nil,
+		nil,nil,{381989,360,0},nil,
 		isTalent=true},
 	{121471,"ROGUE,DPS",3,--Теневые клинки
-		nil,nil,nil,{121471,120,20},
+		nil,nil,nil,{121471,90,16},
 		isTalent=true,cdDiff={296320,"*0.80",354825,"0.8"},
 		CLEU_SPELL_ENERGIZE=[[
 			if destGUID and isRogue[destGUID] and destName and session_gGUIDs[sourceName][341559] and spellID == 196911 then
@@ -12274,14 +12366,11 @@ module.db.AllSpells = {
 	{343142,"ROGUE",3,--Клинки Ужаса
 		nil,nil,{343142,120,10},nil,
 		isTalent=true},
-	{200806,"ROGUE,DPS",3,--Пускание крови
-		nil,{200806,45,0},nil,nil,
-		isTalent=true},
 	{196937,"ROGUE",3,--Призрачный удар
 		nil,nil,{196937,90,0},nil,
-		isTalent=true},
+		isTalent=true,cdDiff={{1236403,nil,52},-15}},
 	{51690,	"ROGUE,DPS",3,--Череда убийств
-		nil,nil,{51690,120,0},nil,
+		nil,nil,{51690,180,0},nil,
 		isTalent=true},
 	{137619,"ROGUE,DPS",3,--Метка смерти
 		{137619,40,0},nil,nil,nil,
@@ -12317,19 +12406,13 @@ module.db.AllSpells = {
 		isTalent=true},
 	{360194,"ROGUE",3,--Метка смерти
 		nil,{360194,120,0},nil,nil,
-		isTalent=true},
+		isTalent=true,cdDiff={{1236403,nil,52},-30}},
 	{385408,"ROGUE",3,--Сепсис
 		{385408,90,10},
 		isTalent=true,changeCdBeforeAuraFullDur={385408,-30}},
-	{385424,"ROGUE",3,--Зазубренный костяной шип
-		nil,{385424,30,0},
-		isTalent=true,hasCharges=1},
 	{385627,"ROGUE",3,--Погибель королей
 		nil,{385627,60,0},
-		isTalent=true},
-	{381802,"ROGUE",3,--Тотальная бойня
-		nil,{381802,60,0},
-		isTalent=true,startCdAfterAuraFade=381802},
+		isTalent=true,cdDiff={{1236403,nil,52},-15}},
 	{384631,"ROGUE",3,--Флагелляция
 		nil,nil,nil,{323654,90,12},
 		isTalent=true},
@@ -12373,7 +12456,7 @@ module.db.AllSpells = {
 		]]},
 	{88625,	"PRIEST",3,--Слово Света: Наказание
 		nil,nil,{88625,60,0},nil,
-		isTalent=true,resetBy=200183,reduceCdAfterCast={{14914,336314},-4,{14914,390994},{-2,-4},585,-4,{585,196985},{-0.4,-0.8},{585,200183,nil,200183},-12,{585,338345},{-0.24,-0.352,-0.384,-0.416,-0.448,-0.48,-0.512,-0.544,-0.576,-0.608,-0.64,-0.672,-0.704,-0.736,-0.768},{585,338345,nil,200183},{-0.72,-1.056,-1.152,-1.248,-1.344,-1.44,-1.536,-1.632,-1.728,-1.824,-1.92,-2.016,-2.112,-2.208,-2.304}},
+		isTalent=true,cdDiff={1215275,-15},resetBy=200183,reduceCdAfterCast={{14914,336314},-4,{14914,390994},{-2,-4},585,-4,{585,196985},{-0.4,-0.8},{585,200183,nil,200183},-12,{585,338345},{-0.24,-0.352,-0.384,-0.416,-0.448,-0.48,-0.512,-0.544,-0.576,-0.608,-0.64,-0.672,-0.704,-0.736,-0.768},{585,338345,nil,200183},{-0.72,-1.056,-1.152,-1.248,-1.344,-1.44,-1.536,-1.632,-1.728,-1.824,-1.92,-2.016,-2.112,-2.208,-2.304}},
 		CLEU_SPELL_CAST_SUCCESS=[[
 			if spellID == 88625 and IsAuraActive(sourceName,372760) then
 				local line = CDList[sourceName][88625]
@@ -12384,10 +12467,10 @@ module.db.AllSpells = {
 		]]},
 	{34861,	"PRIEST",3,--Слово Света: Освящение
 		nil,nil,{34861,60,0},nil,
-		isTalent=true,resetBy=200183,hasCharges=235587,reduceCdAfterCast={32546,-3,{32546,196985},{-0.3,-0.6},{32546,200183,nil,200183},-9,{32546,338345},{-0.18,-0.264,-0.288,-0.312,-0.336,-0.36,-0.384,-0.408,-0.432,-0.456,-0.48,-0.504,-0.528,-0.552,-0.576},{32546,338345,nil,200183},{-0.54,-0.792,-0.864,-0.936,-1.008,-1.08,-1.152,-1.224,-1.296,-1.368,-1.44,-1.512,-1.584,-1.656,-1.728},139,-2,{139,196985},{-0.2,-0.4},{139,200183,nil,200183},-6,{139,338345},{-0.12,-0.176,-0.192,-0.208,-0.224,-0.24,-0.256,-0.272,-0.288,-0.304,-0.32,-0.336,-0.352,-0.368,-0.384},{139,338345,nil,200183},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{204883,336314},-4,{204883,390994},{-2,-4},596,-6,{596,196985},{-0.6,-1.2},{596,200183,nil,200183},-18,{596,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{596,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456}}},
+		isTalent=true,cdDiff={1215275,-15},resetBy=200183,hasCharges=235587,reduceCdAfterCast={32546,-3,{32546,196985},{-0.3,-0.6},{32546,200183,nil,200183},-9,{32546,338345},{-0.18,-0.264,-0.288,-0.312,-0.336,-0.36,-0.384,-0.408,-0.432,-0.456,-0.48,-0.504,-0.528,-0.552,-0.576},{32546,338345,nil,200183},{-0.54,-0.792,-0.864,-0.936,-1.008,-1.08,-1.152,-1.224,-1.296,-1.368,-1.44,-1.512,-1.584,-1.656,-1.728},139,-2,{139,196985},{-0.2,-0.4},{139,200183,nil,200183},-6,{139,338345},{-0.12,-0.176,-0.192,-0.208,-0.224,-0.24,-0.256,-0.272,-0.288,-0.304,-0.32,-0.336,-0.352,-0.368,-0.384},{139,338345,nil,200183},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{204883,336314},-4,{204883,390994},{-2,-4},596,-6,{596,196985},{-0.6,-1.2},{596,200183,nil,200183},-18,{596,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{596,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456}}},
 	{2050,	"PRIEST,DEFTAR",3,--Слово Света: Безмятежность
 		nil,nil,{2050,60,0},nil,
-		isTalent=true,hasCharges=235587,resetBy=200183,reduceCdAfterCast={32546,-3,{32546,196985},{-0.3,-0.6},{32546,200183,nil,200183},-9,{32546,338345},{-0.18,-0.264,-0.288,-0.312,-0.336,-0.36,-0.384,-0.408,-0.432,-0.456,-0.48,-0.504,-0.528,-0.552,-0.576},{32546,338345,nil,200183},{-0.54,-0.792,-0.864,-0.936,-1.008,-1.08,-1.152,-1.224,-1.296,-1.368,-1.44,-1.512,-1.584,-1.656,-1.728},2060,-6,{2060,196985},{-0.2,-0.4},{2060,200183,nil,200183},-18,{2060,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{2060,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456},{33076,336314},-4,{33076,390994},{-2,-4},2061,-6,{2061,196985},{-0.6,-1.2},{2061,200183,nil,200183},-18,{2061,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{2061,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456}}},
+		isTalent=true,cdDiff={1215275,-15},hasCharges=235587,resetBy=200183,reduceCdAfterCast={32546,-3,{32546,196985},{-0.3,-0.6},{32546,200183,nil,200183},-9,{32546,338345},{-0.18,-0.264,-0.288,-0.312,-0.336,-0.36,-0.384,-0.408,-0.432,-0.456,-0.48,-0.504,-0.528,-0.552,-0.576},{32546,338345,nil,200183},{-0.54,-0.792,-0.864,-0.936,-1.008,-1.08,-1.152,-1.224,-1.296,-1.368,-1.44,-1.512,-1.584,-1.656,-1.728},2060,-6,{2060,196985},{-0.2,-0.4},{2060,200183,nil,200183},-18,{2060,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{2060,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456},{33076,336314},-4,{33076,390994},{-2,-4},2061,-6,{2061,196985},{-0.6,-1.2},{2061,200183,nil,200183},-18,{2061,338345},{-0.36,-0.528,-0.576,-0.624,-0.672,-0.72,-0.768,-0.816,-0.864,-0.912,-0.96,-1.008,-1.056,-1.104,-1.152},{2061,338345,nil,200183},{-1.08,-1.584,-1.728,-1.872,-2.016,-2.16,-2.304,-2.448,-2.592,-2.736,-2.88,-3.024,-3.168,-3.312,-3.456}}},
 	{73325,	"PRIEST,UTIL",2,--Духовное рвение
 		{73325,90,0},nil,nil,nil,
 		isTalent=true,hasCharges=336470,cdDiff={390620,-30,337678,{-20,-22,-24,-26,-28,-30,-32,-34,-36,-38,-40,-42,-44,-46,-48}},sameSpell={336471,73325},ignoreUseWithAura=375254,changeCdWithAura={381753,"*0.85"}},
@@ -12396,7 +12479,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={426438,-60}},
 	{33206,	"PRIEST,DEFTAR",2,--Подавление боли
 		nil,{33206,180,8},nil,nil,
-		isTalent=true,durationDiff={329693,"*1.80"},hasCharges=373035},
+		isTalent=true,durationDiff={329693,"*1.80"},hasCharges=373035,reduceCdAfterCast={{17,373035},-3}},
 	{10060,	"PRIEST,UTIL",3,--Придание сил
 		{10060,120,20},nil,nil,nil,
 		isTalent=true,
@@ -12420,7 +12503,7 @@ module.db.AllSpells = {
 		nil,{62618,180,10},nil,nil,
 		isTalent=true,cdDiff={197590,-90},hideWithTalent=271466,icon="Interface\\Icons\\spell_holy_powerwordbarrier"},
 	{194509,"PRIEST",3,--Слово силы: Сияние
-		nil,{194509,20,0},nil,nil,
+		nil,{194509,18,0},nil,nil,
 		isTalent=true,hasCharges=322115,cdDiff={390684,-5}},
 	{33076,	"PRIEST",3,--Молитва восстановления
 		nil,nil,{33076,12,0},nil,
@@ -12445,7 +12528,7 @@ module.db.AllSpells = {
 		changeCdWithHaste=true},
 	{34433,	"PRIEST,DPS,HEAL",3,--Исчадие Тьмы
 		{34433,180,15},nil,nil,nil,
-		isTalent=true,cdDiff={296320,"*0.80"},hideWithTalent=123040,reduceCdAfterCast={{47540,390770},-4,{585,390770},-4,{8092,390770},-4}},
+		isTalent=true,cdDiff={296320,"*0.80",390770,"*0.5"},hideWithTalent=123040,reduceCdAfterCast={{47540,390770},-8,{8092,390770},-8},sameSpell={34433,451235}},
 	{15487,	"PRIEST,CC,KICK",3,--Безмолвие
 		nil,nil,nil,{15487,45,4},
 		isTalent=true,cdDiff={263716,-15}},
@@ -12478,36 +12561,30 @@ module.db.AllSpells = {
 	{110744,"PRIEST",3,--Божественная звезда
 		nil,{110744,15,0},{110744,15,0},{122121,15,0},
 		isTalent=true},
-	{246287,"PRIEST,HEAL",3,--Проповедь
-		nil,{246287,90,0},nil,nil,
-		isTalent=true},
+	{472433,"PRIEST,HEAL",3,--Проповедь
+		nil,{472433,90,0},nil,nil,
+		isTalent=true,sameSpell={246287,472433},sameTalent={246287,472433}},
 	{120517,"PRIEST",3,--Сияние
 		nil,{120517,60,0},{120517,60,0},{120644,60,0},
 		isTalent=true},
 	{265202,"PRIEST,RAID",1,--Слово Света: Спасение
 		nil,nil,{265202,720,0},nil,
-		isTalent=true,reduceCdAfterCast={34861,-15,2050,-15,{34861,196985},{-1.5,-3},{2050,196985},{-1.5,-3}}},
+		isTalent=true,cdDiff={1215275,-15},reduceCdAfterCast={34861,-15,2050,-15,{34861,196985},{-1.5,-3},{2050,196985},{-1.5,-3}}},
 	{200174,"PRIEST",3,--Подчинитель разума
 		nil,nil,nil,{200174,60,15},
 		isTalent=true},
 	{123040,"PRIEST",3,--Подчинитель разума
 		nil,{123040,60,12},nil,nil,
-		isTalent=true,cdDiff={296320,"*0.80"},reduceCdAfterCast={{585,390770},-2,{47540,390770},-2,{8092,390770},-2}},
+		isTalent=true,cdDiff={296320,"*0.80",390770,"*0.5"},reduceCdAfterCast={{585,390770},-4,{8092,390770},-4},sameSpell={123040,451235}},
 	{64044,	"PRIEST,CC",3,--Глубинный ужас
 		nil,nil,nil,{64044,45,4},
 		isTalent=true},
-	{314867,"PRIEST",3,--Темный завет
-		nil,{314867,30,7},nil,nil,
-		isTalent=true,durationDiff={372985,4}},
 	{263165,"PRIEST",3,--Поток Бездны
-		nil,nil,nil,{263165,45,3},
+		nil,nil,nil,{263165,30,3},
 		isTalent=true,cdDiff={373221,-15}},
 	{375901,"PRIEST,PVP",3,--Игры разума
 		{375901,45,5},
 		isTalent=true,durationDiff={391112,2},stopDurWithAuraFade=375901,reduceCdAfterCast={{585,390996},{-0.5,-1},{47540,390996},{-0.5,-1},{8092,390996},{-0.5,-1},{73510,390996},{-0.5,-1},{14914,390996},{-0.5,-1}}},
-	{197862,"PRIEST,PVP",3,--Архангел
-		nil,{197862,60,15},nil,nil,
-		isTalent=true},
 	{197871,"PRIEST,PVP",3,--Темный архангел
 		nil,{197871,60,8},nil,nil,
 		isTalent=true},
@@ -12532,9 +12609,6 @@ module.db.AllSpells = {
 	{108968,"PRIEST,DEFTAR",2,--Вхождение в Бездну
 		{108968,300,0},nil,nil,nil,
 		isTalent=true},
-	{215982,"PRIEST,PVP",3,--Дух воздаятеля
-		nil,nil,{215769,180,7},nil,
-		isTalent=true},
 	{428924,"PRIEST",3,--Premonition
 		{428924,60,0},
 		isTalent=true,cdDiff={440661,-15},hasCharges=440742},
@@ -12549,10 +12623,10 @@ module.db.AllSpells = {
 
 	{48707,	"DEATHKNIGHT,DEF",4,--Антимагический панцирь
 		{48707,60,5},
-		isTalent=true,durationDiff={205727,"*1.4",207321,5},cdDiff={205727,-20},stopDurWithAuraFade=48707},
+		durationDiff={205727,"*1.4",207321,5},cdDiff={205727,-20},stopDurWithAuraFade=48707},
 	{51052,	"DEATHKNIGHT,RAID",3,--Зона антимагии
-		{51052,120,8},
-		isTalent=true,durationDiff={337764,{2,2.2,2.4,2.6,2.8,3,3.2,3.4,3.6,3.8,4,4.2,4.4,4.6,4.8}},cdDiff={374383,-30}},
+		{51052,240,6},
+		isTalent=true,durationDiff={374383,2,337764,{2,2.2,2.4,2.6,2.8,3,3.2,3.4,3.6,3.8,4,4.2,4.4,4.6,4.8}},cdDiff={374383,-60}},
 	{275699,"DEATHKNIGHT,DPS",3,--Апокалипсис
 		nil,nil,nil,{275699,45,15},
 		isTalent=true,cdDiff={288848,-15,296320,"*0.80",338553,-1},reduceCdAfterCast={{47541,276837},-1}},
@@ -12602,13 +12676,13 @@ module.db.AllSpells = {
 		{48265,45,0},
 		hasCharges=356367,ignoreUseWithAura=375226,changeCdWithAura={381732,"*0.85"}},
 	{47568,	"DEATHKNIGHT,DPS",3,--Усиление рунического оружия
-		{47568,120,20},
-		isTalent=true,cdDiff={296320,"*0.80"}},
+		{47568,30,0},
+		isTalent=true,cdDiff={296320,"*0.80"},hasCharges=1},
 	{383269,"DEATHKNIGHT,DPS",3,--Рука поганища
-		{383269,120,12},
+		{383269,90,12},
 		isTalent=true},
 	{279302,"DEATHKNIGHT",3,--Ярость ледяного змея
-		nil,nil,{279302,180,10},nil,
+		nil,nil,{279302,90,10},nil,
 		isTalent=true,cdDiff={334692,"*0.5",377047,"*0.5"}},
 	{108199,"DEATHKNIGHT,UTIL",1,--Хватка Кровожада
 		nil,{108199,120,0},nil,nil,
@@ -12631,7 +12705,7 @@ module.db.AllSpells = {
 			end
 		]]},
 	{51271,	"DEATHKNIGHT,DPS,DEF",3,--Ледяной столп
-		nil,nil,{51271,60,12},nil,
+		nil,nil,{51271,45,12},nil,
 		isTalent=true,cdDiff={207126,-15}},
 	{61999,	"DEATHKNIGHT,RES",3,--Воскрешение союзника
 		{61999,600,0},nil,nil,nil,
@@ -12658,8 +12732,8 @@ module.db.AllSpells = {
 		nil,{194844,60,0},nil,nil,
 		isTalent=true},
 	{152279,"DEATHKNIGHT,DPS",3,--Дыхание Синдрагосы
-		nil,nil,{152279,120,0},nil,
-		isTalent=true},
+		nil,nil,{1249658,90,0},nil,
+		isTalent=true,sameTalent={152279,1249658}},
 	{274156,"DEATHKNIGHT",3,--Пожирание
 		nil,{274156,30,0},nil,nil,
 		isTalent=true},
@@ -12667,11 +12741,8 @@ module.db.AllSpells = {
 		{48743,120,0},
 		isTalent=true},
 	{152280,"DEATHKNIGHT",3,--Осквернение
-		nil,nil,nil,{152280,20,0},
+		nil,nil,nil,{152280,30,0},
 		isTalent=true,reduceCdAfterCast={{47541,334898},-2,{49998,334898},-2}},
-	{57330,	"DEATHKNIGHT",3,--Зимний горн
-		nil,nil,{57330,45,0},nil,
-		isTalent=true},
 	{321995,"DEATHKNIGHT",3,--Гипотермия
 		nil,nil,{321995,45,8},nil,
 		isTalent=true},
@@ -12720,7 +12791,7 @@ module.db.AllSpells = {
 		cdDiff={193876,-240},specialCheck=function(_,name) return UnitFactionGroup(name or "")=="Alliance" end},
 	{192058,"SHAMAN,AOECC",1,--Тотем конденсации
 		{192058,60,2},nil,nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6},338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}},
+		isTalent=true,cdDiff={381867,-6,338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}},
 		CLEU_PREP = [[
 			CapacitorMain = {}
 			CapacitorPrev,CapacitorCount = 0,0
@@ -12760,7 +12831,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={329534,"*0.6"}},
 	{2484,	"SHAMAN,AOECC",3,--Тотем оков земли
 		{2484,30,20},nil,nil,nil,
-		cdDiff={381867,{-3,-6},338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}}},
+		cdDiff={381867,-6,338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}}},
 	{51533,	"SHAMAN,DPS",3,--Дух дикого зверя
 		nil,nil,{51533,90,15},nil,
 		isTalent=true,cdDiff={296320,"*0.80"},resetBy={{328923,333352}},
@@ -12823,10 +12894,10 @@ module.db.AllSpells = {
 		isTalent=true},
 	{5394,	"SHAMAN",3,--Тотем исцеляющего потока
 		{5394,30,0},nil,nil,nil,
-		isTalent=true,hasCharges=108283,hideWithTalent=157153,cdDiff={381867,{-3,-6}}},
+		isTalent=true,hasCharges=108283,hideWithTalent=157153,cdDiff={381867,-6}},
 	{108280,"SHAMAN,RAID",3,--Тотем целительного прилива
 		nil,nil,nil,{108280,180,12},
-		isTalent=true,cdDiff={381867,{-3,-6},353115,-45,296320,"*0.80"},
+		isTalent=true,cdDiff={381867,-6,353115,-45,296320,"*0.80"},
 		CLEU_PREP=[[
 			spell356218_var108280 = {}
 		]],CLEU_SPELL_DAMAGE=[[
@@ -12862,7 +12933,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={204268,-15},sameSpell={51514,211015,210873,211010,211004,269352,277778,277784,309328}},
 	{16191,	"SHAMAN,HEALUTIL",3,--Тотем прилива маны
 		nil,nil,nil,{16191,180,8},
-		isTalent=true,cdDiff={381867,{-3,-6}},
+		isTalent=true,cdDiff={381867,-6},
 		CLEU_SPELL_AURA_REMOVED_DOSE=[[
 			if spellID == 53390 and session_gGUIDs[sourceName][382030] then
 				local line = CDList[sourceName][16191]
@@ -12910,7 +12981,7 @@ module.db.AllSpells = {
 		]]},
 	{98008,	"SHAMAN,RAID",1,--Тотем духовной связи
 		nil,nil,nil,{98008,180,6},
-		isTalent=true,hideWithTalent=204293,cdDiff={381867,{-3,-6}}},
+		isTalent=true,hideWithTalent=204293,cdDiff={381867,-6}},
 	{58875,	"SHAMAN,MOVE",3,--Поступь духа
 		{58875,60,8},
 		isTalent=true,cdDiff={381678,{-10,-20}},ignoreUseWithAura=375256,changeCdWithAura={381756,"*0.85"}},
@@ -12925,7 +12996,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={378779,-5}},
 	{8143,	"SHAMAN,UTIL",1,--Тотем трепета
 		{8143,60,10},nil,nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6},338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}}},
+		isTalent=true,cdDiff={381867,-6,338042,{-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15}}},
 	{57994,	"SHAMAN,KICK",5,--Пронизывающий ветер
 		{57994,12,0},nil,nil,nil,
 		isTalent=true,cdDiff={329526,-4}},
@@ -12937,7 +13008,7 @@ module.db.AllSpells = {
 		isTalent=true,startCdAfterAuraFade=378081},
 	{207399,"SHAMAN,RAID",1,--Тотем защиты Предков
 		nil,nil,nil,{207399,300,30},
-		isTalent=true,cdDiff={381867,{-3,-6}}},
+		isTalent=true,cdDiff={381867,-6}},
 	{114051,"SHAMAN,DPS",3,--Перерождение
 		nil,nil,{114051,180,15},nil,
 		isTalent=true,durationDiff={462443,3}},
@@ -12949,10 +13020,10 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={462440,-60}},
 	{198838,"SHAMAN,HEAL",3,--Тотем земляной стены
 		nil,nil,nil,{198838,60,15},
-		isTalent=true,stopDurWithAuraFade=198839,cdDiff={381867,{-3,-6}}},
+		isTalent=true,stopDurWithAuraFade=198839,cdDiff={381867,-6}},
 	{51485,	"SHAMAN,AOECC",3,--Тотем хватки земли
-		{51485,60,20},
-		isTalent=true,cdDiff={381867,{-3,-6}}},
+		{51485,30,20},
+		isTalent=true,cdDiff={381867,-6}},
 	{320125,"SHAMAN",3,--Вторящий шок
 		nil,{320125,30,0},nil,nil,
 		isTalent=true},
@@ -12962,12 +13033,9 @@ module.db.AllSpells = {
 	{333974,"SHAMAN",3,--Кольцо огня
 		nil,nil,{333974,15,0},nil,
 		isTalent=true},
-	{342240,"SHAMAN",3,--Ледяной клинок
-		nil,nil,{342240,15,0},nil,
-		isTalent=true},
 	{192222,"SHAMAN",3,--Тотем жидкой магмы
-		nil,{192222,60,15},nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6}}},
+		nil,{192222,30,6},nil,nil,
+		isTalent=true,cdDiff={381867,-6}},
 	{191634,"SHAMAN,DPS",3,--Хранитель бурь
 		nil,{191634,60,0},nil,nil,
 		isTalent=true},
@@ -12979,10 +13047,10 @@ module.db.AllSpells = {
 		isTalent=true},
 	{192077,"SHAMAN,RAIDSPEED",1,--Тотем ветряного порыва
 		{192077,120,15},nil,nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6},462791,-30}},
+		isTalent=true,cdDiff={381867,-6,462791,-30}},
 	{383013,"SHAMAN,DISPEL",3,--Тотем противоядия
-		{383013,45,6},
-		isTalent=true,cdDiff={381867,{-3,-6}},
+		{383013,120,6},
+		isTalent=true,cdDiff={381867,-6},
 		CLEU_SPELL_AURA_REMOVED_DOSE=[[
 			if spellID == 53390 and session_gGUIDs[sourceName][382030] then
 				local line = CDList[sourceName][383013]
@@ -13000,10 +13068,10 @@ module.db.AllSpells = {
 		]]},
 	{204331,"SHAMAN,PVP",3,--Тотем контрудара
 		{204331,45,15},nil,nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6}}},
+		isTalent=true,cdDiff={381867,-6}},
 	{204336,"SHAMAN,PVP",3,--Тотем заземления
 		{204336,30,3},nil,nil,nil,
-		isTalent=true,cdDiff={381867,{-3,-6}}},
+		isTalent=true,cdDiff={381867,-6}},
 	{305483,"SHAMAN,CC",3,--Молния-лассо
 		{305483,45,0},
 		isTalent=true},
@@ -13050,7 +13118,7 @@ module.db.AllSpells = {
 		]]},
 	{157153,"SHAMAN",3,--Тотем разразившегося ливня
 		nil,nil,nil,{157153,45,15},
-		cdDiff={381867,{-3,-6}}},
+		cdDiff={381867,-6}},
 	{192249,"SHAMAN,DPS",3,--Элементаль бури
 		nil,{192249,150,30},nil,nil,
 		isTalent=true,durationDiff={338303,{"*1.35","*1.36","*1.37","*1.38","*1.39","*1.40","*1.41","*1.43","*1.44","*1.45","*1.46","*1.47","*1.48","*1.49","*1.50"}},cdDiff={296320,"*0.80"},
@@ -13069,13 +13137,13 @@ module.db.AllSpells = {
 		{375982,30,0},
 		isTalent=true,cdDiff={382046,-15}},
 	{384352,"SHAMAN",3,--Doom Winds
-		nil,nil,{384352,90,0},nil,
+		nil,nil,{384352,60,0},nil,
 		isTalent=true},
 	{443454,"SHAMAN",3,--Ancestral Swiftness
-		nil,{443454,45,0},nil,nil,
+		nil,{443454,30,0},nil,nil,
 		isTalent=true},
 	{428332,"SHAMAN",3,--Primordial Wave
-		nil,nil,nil,{428332,35,0},
+		nil,nil,nil,{428332,30,0},
 		isTalent=true},
 	{409293,"SHAMAN,PVP",3,--Burrow
 		nil,{409293,120,0},nil,nil,
@@ -13131,7 +13199,7 @@ module.db.AllSpells = {
 		{1953,15,0},nil,nil,nil,
 		cdDiff={382268,{-2,-4},336636,{-2,-2.2,-2.4,-2.6,-2.8,-3,-3.2,-3.4,-3.6,-3.8,-4,-4.2,-4.4,-4.6,-4.8}},hideWithTalent=212653,ignoreUseWithAura=375240,changeCdWithAura={381750,"*0.85"},resetBy={{342245,342249}}},
 	{190356,"MAGE",3,--Снежная буря
-		nil,nil,nil,{190356,8,0},
+		nil,nil,nil,{190356,15,0},
 		isTalent=true,changeCdWithHaste=true},
 	{235219,"MAGE",3,--Холодная хватка
 		nil,nil,nil,{235219,300,0},
@@ -13403,14 +13471,14 @@ module.db.AllSpells = {
 		nil,nil,nil,{153595,30,0},
 		isTalent=true},
 	{257537,"MAGE",3,--Полярная стрела
-		nil,nil,nil,{257537,45,0},
+		nil,nil,nil,{257537,30,0},
 		isTalent=true},
 	{157997,"MAGE",3,--Кольцо обледенения
 		{157997,25,0},
 		isTalent=true},
 	{153561,"MAGE",3,--Метеор
 		{153561,45,0},
-		isTalent=true,cdDiff={416719,-15}},
+		isTalent=true,cdDiff={416719,-10}},
 	{389713,"MAGE",3,--Перемещение
 		{389713,45,0},
 		isTalent=true},
@@ -13436,7 +13504,7 @@ module.db.AllSpells = {
 		{212653,25,0},nil,nil,nil,
 		isTalent=true,hasCharges=1,cdDiff={382268,{-2,-4},336636,{-2,-2.2,-2.4,-2.6,-2.8,-3,-3.2,-3.4,-3.6,-3.8,-4,-4.2,-4.4,-4.6,-4.8}},ignoreUseWithAura=375240,changeCdWithAura={381750,"*0.85"},resetBy={{342245,342249}}},
 	{414660,"MAGE",3,--Массовая преграда
-		{414660,120,0},
+		{414660,180,0},
 		isTalent=true},
 	{414664,"MAGE",3,--Массовая невидимость
 		{414664,300,12},
@@ -13448,7 +13516,7 @@ module.db.AllSpells = {
 		{352278,90,0},
 		isTalent=true},
 	{353082,"MAGE,PVP",3,--Ring of fire
-		{353082,30,0},
+		{353082,45,0},
 		isTalent=true},
 	{44614,"MAGE",3,--Flurry
 		nil,nil,nil,{44614,30,0},
@@ -13540,7 +13608,7 @@ module.db.AllSpells = {
 		nil,nil,nil,{152108,30,0},
 		isTalent=true},
 	{196447,"WARLOCK",3,--Направленный демонический огонь
-		nil,nil,nil,{196447,24,0},
+		nil,nil,nil,{196447,25,0},
 		isTalent=true},
 	{108416,"WARLOCK,DEF",3,--Темный пакт
 		{108416,60,0},
@@ -13573,7 +13641,7 @@ module.db.AllSpells = {
 		nil,nil,nil,{6353,45,0},
 		isTalent=true},
 	{264119,"WARLOCK",3,--Призыв мерзотня
-		nil,nil,{264119,30,0},nil,
+		nil,nil,{264119,25,0},nil,
 		isTalent=true},
 	{278350,"WARLOCK",3,--Пагуба
 		nil,{278350,30,0},nil,nil,
@@ -13621,7 +13689,7 @@ module.db.AllSpells = {
 		nil,{322507,45,0},nil,nil,
 		isTalent=true,cdDiff={325093,"*0.8"},hasCharges=450892,resetBy=115399},
 	{324312,"MONK",3,--Столкновение
-		nil,{324312,45,0},nil,nil,
+		nil,{324312,60,0},nil,nil,
 		isTalent=true},
 	{218164,"MONK,DISPEL",5,--Детоксикация
 		{218164,8,0},nil,nil,nil,
@@ -13652,8 +13720,8 @@ module.db.AllSpells = {
 		nil,nil,{123904,120,20},nil,
 		isTalent=true},
 	{322118,"MONK,HEAL",3,--Призыв Юй-лун, Нефритовой Змеи
-		nil,nil,nil,{322118,180,25},
-		isTalent=true,hideWithTalent=325197,cdDiff={388212,-120},durationDiff={388212,-12},reduceCdAfterCast={{115151,336773},-0.3,{116670,336773},-0.3,{322101,336773},-0.3,{124682,336773},-0.3,{115151,388031},-0.3,{116670,388031},-0.3,{322101,388031},-0.3,{124682,388031},-0.3}},
+		nil,nil,nil,{322118,120,25},
+		isTalent=true,hideWithTalent=325197,cdDiff={388212,-60},durationDiff={388212,-13},reduceCdAfterCast={{115151,336773},-0.3,{116670,336773},-0.3,{322101,336773},-0.3,{124682,336773},-0.3,{115151,388031},-0.3,{116670,388031},-0.3,{322101,388031},-0.3,{124682,388031},-0.3}},
 	{119381,"MONK,AOECC",1,--Круговой удар ногой
 		{119381,60,3},nil,nil,nil,
 		cdDiff={344359,{-5,-10}}},
@@ -13779,7 +13847,7 @@ module.db.AllSpells = {
 		nil,{325153,60,0},nil,nil,
 		isTalent=true},
 	{325197,"MONK,HEAL",3,--Призыв Чи-Цзи, Красного Журавля
-		nil,nil,nil,{325197,180,25},
+		nil,nil,nil,{325197,120,25},
 		isTalent=true,cdDiff={388212,-120},durationDiff={388212,-12},reduceCdAfterCast={{115151,336773},-0.3,{116670,336773},-0.3,{322101,336773},-0.3,{124682,336773},-0.3,{115151,388031},-0.3,{116670,388031},-0.3,{322101,388031},-0.3,{124682,388031},-0.3}},
 	{116844,"MONK,UTIL",1,--Круг мира
 		{116844,45,5},
@@ -13814,11 +13882,8 @@ module.db.AllSpells = {
 	{202370,"MONK,PVP",3,--Удар могучего быка
 		nil,{202370,30,0},nil,{202370,30,0},
 		isTalent=true},
-	{209584,"MONK,PVP",3,--Чай дзен-концентрации
-		nil,nil,nil,{209584,30,5},
-		isTalent=true},
 	{388193,"MONK",3,--Волшебная линия
-		nil,nil,{388193,15,0},{388193,15,0},
+		nil,nil,{388193,30,0},{388193,30,0},
 		isTalent=true,cdDiff={406888,-10}},
 	{354540,"MONK,PVP",3,--Nimble Brew
 		nil,{354540,90,0},
@@ -13834,7 +13899,7 @@ module.db.AllSpells = {
 
 	{22812,	"DRUID,DEFTANK,DEF",4,--Дубовая кожа
 		{22812,60,8},nil,nil,nil,nil,
-		durationDiff={329800,8,327993,4,393611,1},cdDiff={203965,{"*0.85","*0.7"},340529,{"*0.9","*0.89","*0.88","*0.87","*0.86","*0.85","*0.84","*0.83","*0.82","*0.81","*0.80","*0.79","*0.78","*0.76"}}},
+		durationDiff={329800,8,327993,4,393611,2},cdDiff={203965,{"*0.85","*0.7"},340529,{"*0.9","*0.89","*0.88","*0.87","*0.86","*0.85","*0.84","*0.83","*0.82","*0.81","*0.80","*0.79","*0.78","*0.76"}}},
 	{50334,	"DRUID,DPS",3,--Берсерк
 		nil,nil,nil,{50334,180,15},nil,
 		cdDiff={339062,-30,329802,-54},hideWithTalent=102558},
@@ -13843,7 +13908,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={296320,"*0.80",329802,-54,391174,-60},hideWithTalent=102543,reduceCdAfterCast={{274837,340053,103},-0.2,{106785,340053,103},-0.2,{202028,340053,103},-0.2,{5221,340053,103},-0.2,{1822,340053,103},-0.2,{106830,340053,103},-0.2}},
 	{194223,"DRUID,DPS",3,--Парад планет
 		nil,{194223,180,20},nil,nil,nil,
-		isTalent=true,durationDiff={340706,{5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,10.5,11,11.5,12}},cdDiff={296320,"*0.80",329802,-54},hideWithTalent=102560},
+		isTalent=true,durationDiff={340706,{5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,10.5,11,11.5,12},468743,"*0.8"},cdDiff={468743,-80,329802,-54,434249,-15,296320,"*0.80",},hideWithTalent=102560,hasCharges=468743},
 	{391528,"DRUID,DPS",3,--Созыв духов
 		{391528,120,0},
 		isTalent=true,cdDiff={391548,"*0.5",393991,"*0.5",393371,"*0.5",393414,"*0.5"}},
@@ -13900,7 +13965,7 @@ module.db.AllSpells = {
 		nil,nil,nil,nil,{102342,90,12},
 		isTalent=true,cdDiff={382552,-20},durationDiff={392116,4}},
 	{22570,	"DRUID",3,--Калечение
-		{22570,20,0},
+		{22570,30,0},
 		isTalent=true},
 	{88423,	"DRUID,DISPEL",5,--Природный целитель
 		nil,nil,nil,nil,{88423,8,0},
@@ -13995,7 +14060,7 @@ module.db.AllSpells = {
 		]]},
 	{132469,"DRUID,UTIL",3,--Тайфун
 		{61391,30,0},nil,nil,nil,nil,
-		isTalent=true},
+		isTalent=true,cdDiff={400140,-5}},
 	{102793,"DRUID,UTIL",3,--Вихрь Урсола
 		{102793,60,10},nil,nil,nil,nil,
 		isTalent=true},
@@ -14052,7 +14117,7 @@ module.db.AllSpells = {
 		isTalent=true},
 	{80313,	"DRUID",3,--Раздавить
 		nil,nil,nil,{80313,45,0},nil,
-		isTalent=true,cdDiff={441846,-5}},
+		isTalent=true,cdDiff={441846,-10}},
 	{108238,"DRUID,DEF",3,--Обновление
 		{108238,90,0},nil,nil,nil,nil,
 		isTalent=true},
@@ -14080,9 +14145,6 @@ module.db.AllSpells = {
 	{329042,"DRUID,PVP",3,--Изумрудная дрема
 		nil,nil,nil,{329042,120,0},nil,
 		isTalent=true},
-	{305497,"DRUID,PVP",3,--Шипы
-		nil,{305497,45,12},{305497,45,12},nil,{305497,45,12},
-		isTalent=true},
 	{204066,"DRUID,PVP",3,--Lunar Beam
 		nil,nil,nil,{204066,60,8},nil,
 		isTalent=true},
@@ -14090,7 +14152,7 @@ module.db.AllSpells = {
 
 
 	{188499,"DEMONHUNTER",3,--Танец клинков
-		nil,{188499,10,0},nil,
+		nil,{188499,15,0},nil,
 		changeCdWithHaste=true,resetBy=191427},
 	{198589,"DEMONHUNTER,DEF",4,--Затуманивание
 		nil,{198589,60,10},nil,
@@ -14111,7 +14173,7 @@ module.db.AllSpells = {
 		{183752,15,0},nil,nil},
 	{198013,"DEMONHUNTER",3,--Пронзающий взгляд
 		nil,{198013,40,0},nil,
-		isTalent=true,resetBy=191427},
+		isTalent=true,resetBy=191427,cdDiff={258887,-5}},
 	{212084,"DEMONHUNTER",3,--Опустошение Скверной
 		nil,nil,{212084,40,0},
 		isTalent=true},
@@ -14125,7 +14187,7 @@ module.db.AllSpells = {
 		nil,nil,{204021,60,10},
 		isTalent=true,hasCharges=389732,cdDiff={389732,-15,338671,{-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-20}}},
 	{258920,"DEMONHUNTER",3,--Обжигающий жар
-		{258920,25,0},nil,nil,
+		{258920,30,0},nil,nil,
 		hasCharges=427775},
 	{217832,"DEMONHUNTER,CC",3,--Пленение
 		{217832,45,0},nil,nil,
@@ -14145,7 +14207,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][204596]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14156,14 +14218,14 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][204596]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
 		]]},
 	{207684,"DEMONHUNTER,AOECC",1,--Печать страдания
 		{207684,120,2},
-		isTalent=true,durationDiff={209281,-1},cdDiff={320418,-30,211489,"*0.75"},hasCharges=428557,
+		isTalent=true,durationDiff={209281,-1},cdDiff={320418,-30,211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var207684 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -14173,7 +14235,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][207684]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14184,14 +14246,14 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][207684]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
 		]]},
 	{202137,"DEMONHUNTER,UTIL",1,--Печать немоты
 		nil,nil,{202137,90,2},
-		isTalent=true,durationDiff={209281,-1},cdDiff={211489,"*0.75"},hasCharges=428557,
+		isTalent=true,durationDiff={209281,-1},cdDiff={211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var202137 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -14201,7 +14263,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][202137]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14212,14 +14274,14 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][202137]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
 		]]},
 	{188501,"DEMONHUNTER",3,--Призрачное зрение
 		{188501,30,10},nil,nil,
-		stopDurWithAuraFade=188501,durationDiff={389849,6},cdDiff={391429,30}},
+		stopDurWithAuraFade=188501,cdDiff={391429,30,389849,-5}},
 	{185123,"DEMONHUNTER",3,--Бросок боевого клинка
 		{185123,9,0},nil,nil},
 	{185245,"DEMONHUNTER,TAUNT",5,--Мучение
@@ -14246,14 +14308,14 @@ module.db.AllSpells = {
 		{232893,15,0},nil,nil,
 		isTalent=true,changeCdWithHaste=true},
 	{342817,"DEMONHUNTER",3,--Буря клинков
-		nil,{342817,20,0},nil,
+		nil,{342817,25,0},nil,
 		isTalent=true,changeCdWithHaste=true},
 	{196555,"DEMONHUNTER,DEF",3,--Путь Пустоты
 		nil,{196555,180,6},nil,
 		isTalent=true},
 	{202138,"DEMONHUNTER,UTIL",3,--Печать цепей
 		nil,nil,{202138,60,2},
-		isTalent=true,cdDiff={211489,"*0.75"},hasCharges=428557,
+		isTalent=true,cdDiff={211489,"*0.75"},
 		CLEU_PREP = [[
 			spell389718_var202138 = {}
 		]],CLEU_SPELL_AURA_APPLIED=[[
@@ -14263,7 +14325,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][202138]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14274,7 +14336,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][202138]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14294,7 +14356,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][390163]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14305,7 +14367,7 @@ module.db.AllSpells = {
 					
 					local line = CDList[sourceName][390163]
 					if line then
-						line:ReduceCD(2)
+						line:ReduceCD(5)
 					end
 				end
 			end
@@ -14314,7 +14376,7 @@ module.db.AllSpells = {
 		nil,nil,{205630,60,0},
 		isTalent=true},
 	{206803,"DEMONHUNTER,PVP",3,--Удар с небес
-		nil,{206803,60,0},nil,
+		nil,{206803,90,0},nil,
 		isTalent=true},
 	{205604,"DEMONHUNTER,PVP",3,--Обращение магии
 		{205604,60,0},nil,nil,
@@ -14337,9 +14399,6 @@ module.db.AllSpells = {
 		isTalent=true},
 	{355913,"EVOKER",3,--Изумрудный цветок
 		{355913,30,0},nil,nil},
-	{360806,"EVOKER,CC",3,--Лунатизм
-		{360806,15,0},
-		isTalent=true,cdDiff={410962,-15}},
 	{365585,"EVOKER,DISPEL",5,--Нейтрализация
 		{365585,8,0},
 		isTalent=true,isDispel=true},
@@ -14365,7 +14424,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={375528,-30}},
 	{370553,"EVOKER",3,--Смещение равновесия
 		{370553,120,0},
-		isTalent=true,startCdAfterAuraFade=370553},
+		isTalent=true,startCdAfterAuraFade=370553,cdDiff={{1236368,nil,38},-60}},
 	{370665,"EVOKER,UTIL,MOVE",2,--Спасение
 		{370665,60,0},
 		isTalent=true},
@@ -14409,7 +14468,7 @@ module.db.AllSpells = {
 		isTalent=true,cdDiff={376150,-10}},
 	{357170,"EVOKER,DEFTAR",2,--Растяжение времени
 		nil,nil,{357170,60,8},
-		isTalent=true,durationDiff={376240,{"*1.15","*1.3"}}},
+		isTalent=true,durationDiff={376204,-10,376240,{"*1.15","*1.3"}},hasCharges=376204},
 	{370537,"EVOKER",3,--Стазис
 		nil,nil,{370537,90,0},
 		isTalent=true},
@@ -14441,8 +14500,8 @@ module.db.AllSpells = {
 		{370388,90,0},
 		isTalent=true},
 	{443328,"EVOKER",3,--Spatial Paradox
-		nil,{443328,30,0},
-		isTalent=true},
+		nil,{443328,27,0},
+		isTalent=true,changeCdWithHaste=true},
 	{378441,"EVOKER,PVP",3,--Time Stop
 		{378441,45,0},
 		isTalent=true},
@@ -14482,7 +14541,7 @@ module.db.AllSpells = {
 	{91797,	"PET,DEATHKNIGHT",3,--Чудовищный удар
 		{91797,90,0}},
 	{89751,	"PET,WARLOCK",3,--Буря Скверны
-		{89751,45,6}},
+		{89751,30,6}},
 	{89766,	"PET,WARLOCK,CC,KICK",5,--Метание топора
 		{89766,30,0},
 		sameSpell={89766,119914}},
@@ -14492,7 +14551,7 @@ module.db.AllSpells = {
 		{17767,120,20},
 		sameSpell={119907,17767}},
 	{89808,	"PET,WARLOCK,DISPEL",5,--Опаляющая магия
-		{89808,10,0},
+		{89808,15,0},
 		sameSpell={119905,89808}},
 	{119899,"PET,WARLOCK",4,--Прижигание ран хозяина
 		{119899,30,12}},
@@ -14515,7 +14574,7 @@ module.db.AllSpells = {
 
 
 	{68992,	"RACIAL",3,--Легкость тьмы
-		{68992,120,10},
+		{68992,90,10},
 		isRacial="Worgen"},
 	{20589,	"RACIAL",3,--Мастер побега
 		{20589,60,0},
@@ -14524,7 +14583,7 @@ module.db.AllSpells = {
 		{20594,120,8},
 		isRacial="Dwarf",startCdAfterAuraApply=65116},
 	{121093,"RACIAL",3,--Дар наару
-		{121093,180,5},
+		{121093,120,5},
 		sameSpell={121093,59545,59543,59548,59542,59544,59547,28880},isRacial="Draenei"},
 	{58984,	"RACIAL",3,--Слиться с тенью
 		{58984,120,0},
@@ -14587,14 +14646,17 @@ module.db.AllSpells = {
 		{312411,90,0},
 		isRacial="Vulpera"},
 	{291944,"RACIAL",3,--Регенерация
-		{291944,150,6},
+		{291944,180,6},
 		isRacial="ZandalariTroll"},
 	{357214,"RACIAL",3,--Взмах крыльями
-		{357214,90,0},
-		isRacial="Dracthyr",cdDiff={368838,-45}},
+		{357214,180,0},
+		isRacial="Dracthyr",cdDiff={368838,-120}},
 	{368970,"RACIAL",3,--Взмах крыльями
-		{368970,90,0},
-		isRacial="Dracthyr",cdDiff={375443,-45}},
+		{368970,180,0},
+		isRacial="Dracthyr",cdDiff={375443,-120}},
+	{436344,"RACIAL",3,--Azerite Surge
+		{436344,120,0},
+		isRacial="EarthenDwarf"},
 
 
 	{67826,	"ITEMS",3,--Дживс
@@ -14685,14 +14747,14 @@ module.db.AllSpells = {
 		{345228,60,15},
 		item={175921,185197}},
 	{345231,"ITEMS",3,--Эмблема гладиатора
-		{345231,120,20},
+		{345231,90,15},
 		item={178447,185282}},
 	{336126,"ITEMS",3,--Медальон гладиатора
 		{336126,120,0},
 		item={181333,185304}},
 	{307192,"ITEMS",3,--Духовное зелье исцеления
 		{307192,300,0},
-		sameSpell={307192,213664,216431,216802,216468,338447,301308}},
+		sameSpell={307192,213664,216431,216802,216468,338447,301308,431416}},
 	{6262,	"ITEMS",3,--Камень здоровья
 		{6262,60,0}},
 	{355327,"ITEMS",3,--Зажим черной души
@@ -14741,7 +14803,7 @@ module.db.AllSpells = {
 		{367802,60,0},
 		item=188266},
 	{368894,"ITEMS",3,--Заряженный сердечник Возвращающего
-		{368894,150,0},
+		{368894,90,0},
 		icon=463521,item=188263},
 	{367885,"ITEMS",3,--Клетка навязчивых идей
 		{367885,180,0},
@@ -14770,6 +14832,9 @@ module.db.AllSpells = {
 	{427113,"ITEMS",3,--Dreambinder
 		{427113,120,4},
 		item=208616},
+	{431416,"ITEMS",3,--Algari Healing Potion
+		{431416,300,0},
+		sameSpell={307192,213664,216431,216802,216468,338447,301308,431416,431418,1238009,1238009,1238009},icon=1385244},
 
 
 	{295373,"ESSENCES",3,--Сосредоточенный огонь
@@ -15063,7 +15128,411 @@ module.db.AllSpells = {
 		isTalent=true,isCovenant=2},
 }
 
-if ExRT.isCata then
+if ExRT.isMoP then
+	module.db.AllSpells = {
+		{29166,	"DRUID",	1,	{29166,	180,	10}},	--Озарение
+		{20484,	"DRUID",	1,	{20484,	600,	0}},	--BR
+		{6795,	"DRUID",	1,	{6795,	8,	0}},	--Taunt
+		{740,	"DRUID",	1,	{740,	480,	8}},	--Tranq
+		{48505,	"DRUID",	1,	nil,{48505,	90,	10}},	--Звездопад
+		{102342,"DRUID",	1,	nil,nil,nil,nil,{102342,60,	12}},	--Железная кора
+		{106898,"DRUID",	1,	{106898,120,	8},	nil,			{77764,	120,	8},	{77761,	120,	8},	},	--Тревожный рев
+
+		{355,	"WARRIOR",	1,	{355,	8,	0}},	--Taunt
+		{12975,	"WARRIOR",	1,	{12975,	180,	20}},	--Last stand
+		{871,	"WARRIOR",	1,	{871,	180,	12}},	--SW
+		{676,	"WARRIOR",	1,	{676,	60,	8}},	--Disarm
+		{55694,	"WARRIOR",	1,	{55694,	60,	5}},	--Enraged Regeneration
+		{64382,	"WARRIOR",	1,	{64382,	300,	10}},	--Shattering Throw	
+		{97462,	"WARRIOR",	1,	{97462,	180,	10}},	--Rallying Cry	
+		{114203,"WARRIOR",	1,	{114203,180,	15}},	--Деморализующее знамя
+		{114030,"WARRIOR",	1,	{114030,120,	12}},	--Бдительность
+		{114207,"WARRIOR",	1,	{114207,180,	10}},	--Знамя с черепом
+		{118038,"WARRIOR",	1,	nil,	{118038,120,	8},	{118038,120,	8},	nil,			},	--Бой насмерть
+
+
+		{11958,	"MAGE",		1,	{11958,	180,	0}},	--Cold Snap
+		{12472,	"MAGE",		1,	nil,nil,nil,{12472,	180,	20}},	--IV
+		{45438,	"MAGE",		1,	{45438,	300,	10}},	--IB
+		{55342,	"MAGE",		1,	{55342,	180,	30}},	--Mirrors
+		{80353,	"MAGE",		1,	{80353,	300,	40}},	--Искажение времени
+
+		{642,	"PALADIN",	1,	{642,	300,	8}},	--DS
+		{633,	"PALADIN",	1,	{633,	600,	0}},	--LoH
+		{31884,	"PALADIN",	1,	{31884,	180,	20}},	--AW
+		{1022,	"PALADIN",	1,	{1022,	300,	10}},	--BoP
+		{1044,	"PALADIN",	1,	{1044,	25,	6}},	--Freedom
+		{1038,	"PALADIN",	1,	{1038,	120,	10}},	--Salv
+		{6940,	"PALADIN",	1,	{6940,	120,	12}},	--Sac
+		{62124,	"PALADIN",	1,	{62124,	8,	0}},	--Taunt
+		{31821,	"PALADIN",	1,	{31821,	180,	6}},	--Aura Mastery
+		{54428,	"PALADIN",	1,	{54428,	120,	9}},	--Divine Plea
+		{114039,"PALADIN",	1,	{114039,30,	6}},	--Длань очищения
+
+		{16190,	"SHAMAN",	1,	nil,nil,nil,{16190,	180,	12}},	--MTT
+		{98008,	"SHAMAN",	1,	nil,nil,nil,{98008,	180,	6}},	--SLT
+		{32182,	"SHAMAN",	1,	{32182,	300,	40},	specialCheck=function() if UnitFactionGroup('player')=="Alliance" then return true end end},	--BL [A]
+		{2825,	"SHAMAN",	1,	{2825,	300,	40},	specialCheck=function() if UnitFactionGroup('player')=="Horde" then return true end end},	--BL [H]
+		{20608,	"SHAMAN",	1,	{21169,	1800,	0}},	--Reincarnation
+		{2894, 	"SHAMAN",	1,	{2894,	300,	60}},	--FET
+		{2062, 	"SHAMAN",	1,	{2062, 	300,	60}},	--EET
+		{108280,"SHAMAN",	1,	{108280,180,	10}},	--Тотем целительного прилива
+		{108281,"SHAMAN",	1,	{108281,120,	10}},	--Наставления предков
+		{120668,"SHAMAN",	1,	{120668,300,	10}},	--Тотем порыва бури
+
+
+		{20707,	"WARLOCK",	1,	{20707,	600,	0}},	--Soulstone
+		{110913,"WARLOCK",	1,	{110913,180,	8}},	--Темная сделка
+
+		{34477, "HUNTER",	1,	{34477,	30,	0}},	--MD
+		{19577, "HUNTER",	1,	{19577,	60,	3}},	--MD
+		{5384, 	"HUNTER",	1,	{5384,	30,	0}},	--Feign Death
+
+		{64843, "PRIEST",	1,	nil,nil,{64843,	180,	8}}, 	--Divine Hymn
+		{62618, "PRIEST",	1,	nil,{62618,	180,	10}}, 	--Слово силы: Барьер
+		{6346, 	"PRIEST",	1,	{6346,	180,	0}}, 	--Fear Ward
+		{10060, "PRIEST",	1,	{10060,	120,	15}},	--Power Infusion
+		{64901, "PRIEST",	1,	{64901,	360,	0}}, 	--Hymn of Hope
+		{47788, "PRIEST",	1,	nil,nil,{47788,	180,	10}}, 	--Guardian Spirit
+		{33206, "PRIEST",	1,	nil,{33206,	180,	8}}, 	--Pain Suppression
+		{15286,	"PRIEST",	1,	nil,nil,nil,{15286,	180,	15}},	--Объятия вампира
+		{73325,	"PRIEST",	1,	{73325,	90,	0}},	--Духовное рвение
+		{108968,"PRIEST",	1,	{108968,300,	0},	nil,			nil,			{142723,600,	0},	},	--Вхождение в Бездну
+		{109964,"PRIEST",	1,	nil,			{109964,60,	10},	nil,			nil,			},	--Щит души
+
+
+		{5277, 	"ROGUE",	1,	{5277,	120,	10}},	--Evasion
+		{57934, "ROGUE",	1,	{57934,	30,	6}},	--Tricks of the Trade
+		{76577,	"ROGUE",	1,	{76577,	180,	5}},	--Дымовая шашка
+
+
+		{49576,	"DEATHKNIGHT",	1,	{49576,	25,	0}},	--Grip
+		{48707,	"DEATHKNIGHT",	1,	{48707,	45,	5}},	--AMS
+		{42650,	"DEATHKNIGHT",	1,	{42650,	600,	0}},	--Army
+		{61999,	"DEATHKNIGHT",	1,	{61999,	600,	0}},	--Res
+		{56222,	"DEATHKNIGHT",	1,	{56222,	8,	0}},	--Taunt
+		{51052,	"DEATHKNIGHT",	1,	{51052,	120,	3}},	--AMZ
+		{49028,	"DEATHKNIGHT",	1,	nil,{49028,	90,	12}},	--DRW
+		{49016,	"DEATHKNIGHT",	1,	nil,nil,nil,{49016,	180,	30}},	--Unholy Frenzy
+		{108199,"DEATHKNIGHT",	1,	{108199,60,	0}},	--Хватка Кровожада
+
+
+		{115213,"MONK",		1,	nil,			{115213,180,	6},	nil,			nil,			},	--Отведение ударов
+		{115310,"MONK",		1,	nil,			nil,			nil,			{115310,180,	0},	},	--Восстановление сил
+		{115176,"MONK",		1,	{115176,180,	8},	nil,			nil,			nil,			},	--Дзен-медитация
+		{116849,"MONK",		1,	nil,			nil,			nil,			{116849,120,	12},	},	--Исцеляющий кокон
+
+	}
+
+	module.db.spell_autoTalent[84608] = 73
+	module.db.spell_autoTalent[92364] = 105
+	module.db.spell_autoTalent[53503] = 70
+
+	ExRT.F.table_add2(module.db.spell_isTalent,{
+		[55694]=2,	[103840]=2,	[107566]=3,	[102060]=3,	[46924]=4,	[46968]=4,	[118000]=4,	
+		[114028]=5,	[114029]=5,	[114030]=5,	[107574]=6,	[12292]=6,	[107570]=6,	[85499]=1,	
+		[105593]=2,	[20066]=2,	[114163]=3,	[20925]=3,	[114039]=4,	[105809]=5,	[114165]=6,	
+		[114158]=6,	[114157]=6,	[109248]=2,	[19386]=2,	[19577]=2,	[109304]=3,	[109260]=3,	
+		[82726]=4,	[120679]=4,	[131894]=5,	[120697]=5,	[117050]=6,	[109259]=6,	[120360]=6,	
+		[74001]=2,	[36554]=4,	[137619]=6,	[108920]=1,	[108921]=1,	[123040]=3,	[19236]=4,	
+		[112833]=4,	[10060]=5,	[121135]=6,	[127632]=6,	[110744]=6,	[122121]=6,	[120517]=6,	
+		[120644]=6,	[123693]=1,	[115989]=1,	[49039]=2,	[51052]=2,	[96268]=3,	[108194]=3,	
+		[48743]=4,	[108199]=6,	[108200]=6,	[108201]=6,	[108270]=1,	[108271]=1,	[51485]=2,	
+		[108273]=2,	[108285]=3,	[108287]=3,	[16166]=4,	[16188]=4,	[108281]=5,	[117014]=6,	
+		[12043]=1,	[108843]=1,	[115610]=2,	[11426]=2,	[113724]=3,	[111264]=3,	[102051]=3,	
+		[110959]=4,	[11958]=4,	[112948]=5,	[1463]=6,	[108359]=1,	[47897]=2,	[6789]=2,	
+		[30283]=2,	[108416]=3,	[110913]=3,	[111397]=4,	[108482]=4,	[108501]=5,	[108503]=5,	
+		[108508]=6,	[116841]=1,	[115098]=2,	[124081]=2,	[123986]=2,	[116844]=4,	[119392]=4,	
+		[119381]=4,	[122278]=5,	[122783]=5,	[116847]=6,	[123904]=6,	[102280]=1,	[132302]=1,	
+		[108238]=2,	[102351]=2,	[102359]=3,	[132469]=3,	[106731]=4,	[102560]=4,	[102543]=4,	
+		[102558]=4,	[33891]=4,	[99]=5,		[102793]=5,	[5211]=5,	[108288]=6,	[108291]=6,	
+		[108292]=6,	[108293]=6,	[108294]=6,	[124974]=6,	
+	})
+
+	ExRT.F.table_add2(module.db.spell_charge_fix,{
+		[6940]=105622,
+		[1022]=105622,
+		[1044]=105622,
+		[1038]=105622,
+		[100]=103827,
+		[108839]=108839,
+		[77801]=108505,
+		[113860]=108505,
+		[113858]=108505,
+		[113861]=108505,
+		[1953]=146659,
+		[80240]=146962,
+		[109132]=1,
+		[115008]=1,
+		[19263]=1,
+		[148467]=1,
+		[61336]=1,
+		[4987]=171929,
+		[115450]=171926,
+		[88423]=171924,
+		[527]=171921,
+		[77130]=171933,
+		[115295]=1,
+	})
+
+	ExRT.F.table_add2(module.db.spell_durationByTalent_fix,{
+		[31884] = {53376,"*1.5"},
+		[31842] = {53376,"*1.5"},
+		[76577] = {56819,2},
+		[1719] = {94374,"*1.5"},
+		[53271] = {63068,4},
+		[79140] = {63249,10},
+		[1856] = {89758,2},
+		[5277] = {56799,5},
+		[15286] = {120584,-5},
+		[48792] = {58673,"*0.25"},
+		[77606] = {63331,4},
+		[79206] = {55446,5,159650,-7},
+		[108269] = {55442,-2},
+		[11129] = {56368,"*2"},
+		[12042] = {62210,"*2"},
+		[61336] = {114223,"*0.5"},
+		[52174] = {159708,3},
+		[47585] = {159598,3},	
+		[51533] = {159640,-15},
+		[113860] = {159665,"*0.5"},
+		[113861] = {159665,"*0.5"},
+		[113858] = {159665,"*0.5"},
+		[112071] = {159445,45},
+	})
+
+	ExRT.F.table_add2(module.db.spell_cdByTalent_fix,{
+		[498] = {114154,"*0.5"},
+		[633] = {54939,120,	114154,"*0.5"},
+		[642] = {114154,"*0.5"},
+		[100] = {103826,-8},
+		[781] = {118675,-10},
+		[19263] = {118675,-60},
+		[148467] = {118675,-60},
+		[109132] = {115173,-5},
+		[115008] = {115173,-5},
+		[31821] = {146955,-60},
+		[6343] = {58356,3},
+		[23920] = {63328,-5},
+		[52174] = {63325,-15},
+		[6673] = {58387,-30},
+		[1784] = {63253,-4},
+		[1766] = {56805,-2},
+		[64044] = {55688,-10},
+		[6346] = {55678,-60},
+		[47585] = {63229,-15},
+		[47528] = {58686,-1},
+		[48792] = {58673,"*0.5"},
+		[77606] = {63331,-30},
+		[51490] = {63270,-10,	131549,"*0.5"},
+		[8056] = {55443,-2},
+		[58875] = {55454,"*0.75"},
+		[57994] = {55451,3},
+		[51514] = {63291,-10},
+		[8177] = {55441,20,159643,-3},
+		[2894] = {55455,"*0.5"},
+		[2139] = {115703,4},
+		[11129] = {56368,"*2",	123101,"*0.8"},
+		[122] = {56376,-5},
+		[12042] = {62210,"*2"},
+		[48020] = {63309,-4},
+		[104773] = {146964,-60,159697,60},
+		[80240] = {146962,35},
+		[48438] = {62970,2},
+		[61336] = {114223,-40},
+		[106839] = {116216,5},
+		[1850] = {59219,-60},
+		[871] = {63329,120},
+		[1044] = {159573,-5},
+		[1856] = {159638,-60},
+		[5277] = {159635,-30},
+		[4987] = {171929,4},
+		[115450] = {171926,4},
+		[88423] = {171924,4},
+		[527] = {171921,4},
+		[77130] = {171933,4},
+		[586] = {159628,60},
+		[15487] = {159626,-25},
+		[48982] = {159428,10},
+		[51533] = {159640,-60},
+		[30823] = {159648,60},
+		[79206] = {159650,-60},
+		[113860] = {159665,"*0.5"},
+		[113861] = {159665,"*0.5"},
+		[113858] = {159665,"*0.5"},
+		[115080] = {123391,120},
+		[119996] = {123023,-5},
+	
+		[31842] = {144613,-60,162604,"*0.5"},
+		[1719] = {123144,-90},
+		[12975] = {123146,-60},
+		[55233] = {123079,-20},
+		[20473] = {123103,-1},
+		[31850] = {123104,-60},
+		[12472] = {123101,"*0.5"},
+		[45438] = {131619,-30},
+		[34861] = {123113,-4},
+		[18562] = {123089,-3,	38417,-2},
+		[102342] = {131739,-30},
+		[116680] = {138289,-5},
+		[113656] = {123149,-5},
+
+		[740] = {92364,-300},
+		[871] = {84608,-60,63329,120},
+		[642] = {114154,"*0.5"},
+		[633] = {114154,"*0.5"},
+		[31884] = {53503,-60},
+	})
+
+	ExRT.F.table_add2(module.db.tierSetsSpells,{	--[specID.tierID.tierMark] = {2P Bonus Spell ID, 4P Bonus Spell ID}
+		[65161] = {nil,144613},		--> Paladin,Holy,T16
+		[65141] = {nil,123103},		--> Paladin,Holy,T14
+		[66141] = {123104,nil},		--> Paladin,Tank,T14
+		[71141] = {nil,123144},		--> Warrior,DPS,T14
+		[73141] = {123146,nil},		--> Warrior,Tank,T14
+		[250151] = {138195,nil},	--> DK,Tank,T15
+		[250141] = {123079,nil},	--> DK,Tank,T14
+		[62141] = {nil,123101},		--> Mage,DPS,T14
+		[62162] = {nil,131619},		--> Mage,DPS,A15
+		[256141] = {nil,123113},	--> Priest,Heal,T14
+		[262162] = {nil,131549},	--> Shaman,Elem,A15
+		[104141] = {123086,nil},	--> Druid,Tank,T14
+		[105141] = {nil,123089},	--> Druid,Heal,T14
+		[105162] = {38417,131739},	--> Druid,Heal,A15
+		[270151] = {nil,138289},	--> Monk,Heal,T15
+		[269141] = {123149,nil},	--> Monk,DPS,T14
+		[259141] = {nil,123122},	--> Rogue,DPS,T14
+		[11171] = {{165437},{166677}},	--> Druid T17
+		[7171] = {{165605},nil},	--> Shaman T17
+	})
+
+	ExRT.F.table_add2(module.db.tierSetsList, {
+		[99377] = 65161, [99378] = 65161, [99375] = 65161, [99376] = 65161, [99374] = 65161, [99133] = 65161, [99124] = 65161, [99125] = 65161, [99134] = 65161, [99135] = 65161, [99626] = 65161, [99666] = 65161, [99656] = 65161, [99648] = 65161, [99665] = 65161, [99003] = 65161, [98980] = 65161, [99076] = 65161, [98982] = 65161, [98979] = 65161,
+		[87108] = 65141, [87107] = 65141, [87106] = 65141, [87105] = 65141, [87104] = 65141, [85344] = 65141, [85345] = 65141, [85346] = 65141, [85347] = 65141, [85348] = 65141, [86684] = 65141, [86685] = 65141, [86686] = 65141, [86687] = 65141, [86688] = 65141,
+		[87113] = 66141, [87112] = 66141, [87111] = 66141, [87110] = 66141, [87109] = 66141, [85319] = 66141, [85320] = 66141, [85321] = 66141, [85322] = 66141, [85323] = 66141, [86659] = 66141, [86660] = 66141, [86661] = 66141, [86662] = 66141, [86663] = 66141,
+		[87196] = 71141, [87195] = 71141, [87194] = 71141, [87193] = 71141, [87192] = 71141,  [85332] = 71141, [85329] = 71141, [85330] = 71141, [85331] = 71141, [85333] = 71141, [86669] = 71141, [86670] = 71141, [86671] = 71141, [86672] = 71141, [86673] = 71141,	
+		[87201] = 73141, [87199] = 73141, [87200] = 73141, [87198] = 73141, [87197] = 73141, [85324] = 73141, [85325] = 73141, [85326] = 73141, [85327] = 73141, [85328] = 73141, [86664] = 73141, [86665] = 73141, [86666] = 73141, [86667] = 73141, [86668] = 73141,	
+		[96574] = 250151, [96575] = 250151, [96576] = 250151, [96578] = 250151, [96577] = 250151, [95230] = 250151, [95231] = 250151, [95232] = 250151, [95233] = 250151, [95234] = 250151, [95830] = 250151, [95831] = 250151, [95832] = 250151, [95833] = 250151, [95834] = 250151,	
+		[86922] = 250141, [86921] = 250141, [86919] = 250141, [86920] = 250141, [86918] = 250141, [85314] = 250141, [85315] = 250141, [85316] = 250141, [85317] = 250141, [85318] = 250141, [86654] = 250141, [86655] = 250141, [86656] = 250141, [86657] = 250141, [86658] = 250141,	
+		[87011] = 62141, [87010] = 62141, [87009] = 62141, [87008] = 62141, [87007] = 62141, [85374] = 62141, [85375] = 62141, [85376] = 62141, [85377] = 62141, [85378] = 62141, [86714] = 62141, [86715] = 62141, [86716] = 62141, [86717] = 62141, [86718] = 62141,	
+		[84413] = 62162, [84414] = 62162, [84415] = 62162, [84416] = 62162, [84417] = 62162, [84837] = 62162, [84855] = 62162, [84875] = 62162, [84904] = 62162, [84917] = 62162, [85016] = 62162, [85031] = 62162, [85062] = 62162, [85068] = 62162, [85085] = 62162, [88251] = 62162, [88252] = 62162, [88253] = 62162, [88254] = 62162, [88255] = 62162, [91232] = 62162, [91233] = 62162, [91234] = 62162, [91235] = 62162, [91236] = 62162, [91237] = 62162, [91238] = 62162, [91239] = 62162, [91240] = 62162, [91241] = 62162, [91585] = 62162, [91587] = 62162, [91589] = 62162, [91591] = 62162, [91593] = 62162, [93499] = 62162, [93500] = 62162, [93501] = 62162, [93502] = 62162, [93503] = 62162, [94362] = 62162, [94381] = 62162, [94389] = 62162, [94431] = 62162, [94451] = 62162, [98825] = 62162, [98826] = 62162, [98827] = 62162, [98828] = 62162, [98829] = 62162, [99852] = 62162, [99853] = 62162, [99854] = 62162, [99855] = 62162, [99856] = 62162, [100032] = 62162, [100051] = 62162, [100059] = 62162, [100101] = 62162, [100121] = 62162, [100328] = 62162, [100329] = 62162, [100330] = 62162, [100331] = 62162, [100332] = 62162, [100333] = 62162, [100334] = 62162, [100335] = 62162, [100336] = 62162, [100337] = 62162, [100592] = 62162, [100611] = 62162, [100619] = 62162, [100661] = 62162, [100681] = 62162, [102648] = 62162, [102667] = 62162, [102673] = 62162, [102715] = 62162, [102735] = 62162, [102845] = 62162, [102864] = 62162, [102870] = 62162, [102912] = 62162, [102932] = 62162, [103224] = 62162, [103225] = 62162, [103226] = 62162, [103227] = 62162, [103228] = 62162, [103421] = 62162, [103422] = 62162, [103423] = 62162, [103424] = 62162, [103425] = 62162,
+		[85359] = 256141, [85360] = 256141, [85361] = 256141, [85362] = 256141, [85363] = 256141, [86699] = 256141, [86700] = 256141, [86701] = 256141, [86702] = 256141, [86703] = 256141, [87114] = 256141, [87115] = 256141, [87116] = 256141, [87117] = 256141, [87118] = 256141,
+		[85379] = 104141, [85380] = 104141, [85381] = 104141, [85382] = 104141, [85383] = 104141, [86719] = 104141, [86720] = 104141, [86721] = 104141, [86722] = 104141, [86723] = 104141, [86938] = 104141, [86939] = 104141, [86940] = 104141, [86941] = 104141, [86942] = 104141,
+		[85354] = 105141, [85355] = 105141, [85356] = 105141, [85357] = 105141, [85358] = 105141, [86694] = 105141, [86695] = 105141, [86696] = 105141, [86697] = 105141, [86698] = 105141, [86928] = 105141, [86929] = 105141, [86930] = 105141, [86931] = 105141, [86932] = 105141,
+		[84483] = 262162, [84484] = 262162, [84485] = 262162, [84486] = 262162, [84487] = 262162, [84798] = 262162, [84845] = 262162, [84860] = 262162, [84879] = 262162, [84924] = 262162, [84988] = 262162, [85012] = 262162, [85036] = 262162, [85048] = 262162, [85079] = 262162, [88216] = 262162, [88217] = 262162, [88218] = 262162, [88219] = 262162, [88220] = 262162, [91380] = 262162, [91381] = 262162, [91382] = 262162, [91383] = 262162, [91384] = 262162, [91385] = 262162, [91386] = 262162, [91387] = 262162, [91388] = 262162, [91389] = 262162, [91733] = 262162, [91735] = 262162, [91737] = 262162, [91739] = 262162, [91741] = 262162, [93590] = 262162, [93591] = 262162, [93592] = 262162, [93593] = 262162, [93594] = 262162, [94350] = 262162, [94408] = 262162, [94409] = 262162, [94459] = 262162, [94497] = 262162, [98905] = 262162, [98906] = 262162, [98907] = 262162, [98908] = 262162, [98909] = 262162, [99927] = 262162, [99928] = 262162, [99929] = 262162, [99930] = 262162, [99931] = 262162, [100020] = 262162, [100078] = 262162, [100079] = 262162, [100129] = 262162, [100167] = 262162, [100470] = 262162, [100471] = 262162, [100472] = 262162, [100473] = 262162, [100474] = 262162, [100475] = 262162, [100476] = 262162, [100477] = 262162, [100478] = 262162, [100479] = 262162, [100580] = 262162, [100638] = 262162, [100639] = 262162, [100689] = 262162, [100727] = 262162, [102637] = 262162, [102692] = 262162, [102693] = 262162, [102743] = 262162, [102781] = 262162, [102834] = 262162, [102889] = 262162, [102890] = 262162, [102940] = 262162, [102978] = 262162, [103299] = 262162, [103300] = 262162, [103301] = 262162, [103302] = 262162, [103303] = 262162, [103496] = 262162, [103497] = 262162, [103498] = 262162, [103499] = 262162, [103500] = 262162,
+		[84385] = 105162, [84386] = 105162, [84387] = 105162, [84388] = 105162, [84389] = 105162, [84833] = 105162, [84850] = 105162, [84882] = 105162, [84907] = 105162, [84927] = 105162, [85026] = 105162, [85043] = 105162, [85051] = 105162, [85071] = 105162, [85082] = 105162, [88201] = 105162, [88202] = 105162, [88203] = 105162, [88204] = 105162, [88205] = 105162, [91172] = 105162, [91173] = 105162, [91174] = 105162, [91175] = 105162, [91176] = 105162, [91177] = 105162, [91178] = 105162, [91179] = 105162, [91180] = 105162, [91181] = 105162, [91420] = 105162, [91422] = 105162, [91424] = 105162, [91426] = 105162, [91428] = 105162, [91525] = 105162, [91527] = 105162, [91529] = 105162, [91531] = 105162, [91533] = 105162, [93466] = 105162, [93467] = 105162, [93468] = 105162, [93469] = 105162, [93470] = 105162, [98797] = 105162, [98798] = 105162, [98799] = 105162, [98800] = 105162, [98801] = 105162, [99819] = 105162, [99820] = 105162, [99821] = 105162, [99822] = 105162, [99823] = 105162, [100041] = 105162, [100042] = 105162, [100107] = 105162, [100147] = 105162, [100162] = 105162, [100268] = 105162, [100269] = 105162, [100270] = 105162, [100271] = 105162, [100272] = 105162, [100273] = 105162, [100274] = 105162, [100275] = 105162, [100276] = 105162, [100277] = 105162, [100601] = 105162, [100602] = 105162, [100667] = 105162, [100707] = 105162, [100722] = 105162, [102657] = 105162, [102658] = 105162, [102721] = 105162, [102761] = 105162, [102776] = 105162, [102854] = 105162, [102855] = 105162, [102918] = 105162, [102958] = 105162, [102973] = 105162, [103192] = 105162, [103193] = 105162, [103194] = 105162, [103195] = 105162, [103196] = 105162, [103389] = 105162, [103390] = 105162, [103391] = 105162, [103392] = 105162, [103393] = 105162,
+		[95270] = 270151, [95271] = 270151, [95272] = 270151, [95273] = 270151, [95274] = 270151, [95900] = 270151, [95901] = 270151, [95902] = 270151, [95903] = 270151, [95904] = 270151, [96644] = 270151, [96645] = 270151, [96646] = 270151, [96647] = 270151, [96648] = 270151,
+		[85394] = 269141, [85395] = 269141, [85396] = 269141, [85397] = 269141, [85398] = 269141, [86734] = 269141, [86735] = 269141, [86736] = 269141, [86737] = 269141, [86738] = 269141, [87084] = 269141, [87085] = 269141, [87086] = 269141, [87087] = 269141, [87088] = 269141,
+		[85299] = 259141, [85300] = 259141, [85301] = 259141, [85302] = 259141, [85303] = 259141, [86639] = 259141, [86640] = 259141, [86641] = 259141, [86642] = 259141, [86643] = 259141, [87124] = 259141, [87125] = 259141, [87126] = 259141, [87127] = 259141, [87128] = 259141,
+		[115540] = 11171, [115541] = 11171, [115542] = 11171, [115543] = 11171, [115544] = 11171, 
+		[115575] = 7171, [115576] = 7171, [115577] = 7171, [115578] = 7171, [115579] = 7171, 
+		
+	})
+
+	ExRT.F.table_add2(module.db.spell_talentReplaceOther,{
+		[85673] = 114163,
+		[3411] = 114029,
+		[853] = 105593,
+		[34433] = 123040,
+		[47476] = 108194,
+		[2484] = 51485,
+		[66] = 110959,
+		[109132] = 115008,
+		[101546] = 116847,
+		[5246] = 176289,
+		[23920] = 114028,
+		[43265] = 152280,
+		[45438] = 157913,
+	})
+	
+	ExRT.F.table_add2(module.db.spell_aura_list,{
+		[109964]=109964,
+		[33206]=33206,
+		[47788]=47788,
+		[6940]=6940,
+		[1022]=1022,
+		[15286]=15286,
+		[115176]=115176,
+		[110913]=110913,
+		[116849]=116849,
+		[108281]=108281,
+		[102342]=102342,
+		[114039]=114039,
+		[118038]=118038,
+		[1044]=1044,
+		[1038]=1038,
+		[114030]=114030,
+		[147833]=3411,
+		[114192]=114192,
+		[31850]=31850,
+		[74001]=74001,
+		[79140]=79140,
+		[114018]=114018,
+		[112833]=112833,
+		[47585]=47585,
+		[48707]=48707,
+		[110960]=110959,
+		[45438]=45438,
+		[32612]=66,
+		[116680]=116680,
+		[122470]=122470,
+		[122278]=122278,
+		[112071]=112071,
+	})
+	
+	ExRT.F.table_add2(module.db.spell_afterCombatReset,{
+		[740]=true,
+		[86659]=true,
+		[161642]=true,
+	})
+	ExRT.F.table_add2(module.db.spell_afterCombatNotReset,{
+		[90355]=true,
+		[126393]=true,
+		[53478]=true,
+		[55709]=true,
+		[20608]=true,
+		[21169]=true,
+		[159931]=true,
+		[159956]=true,
+	})
+	ExRT.F.table_add2(module.db.spell_reduceCdByHaste,{
+		[20473]=true,
+	})
+	ExRT.F.table_add2(module.db.spell_resetOtherSpells,{
+		[11958]={45438,122},
+		[108285]={108269,8177,51485,8143,5394,108270,108273},
+		[14185]={1856,2983,5277},
+	})
+	ExRT.F.table_add2(module.db.spell_sharingCD,{
+		[102060]={[6552]=15,},
+		[6552]={[102060]=15,},
+		[106898]={[77764]=120,[77761]=120,},
+		[77764]={[106898]=120,[77761]=120,},
+		[77761]={[77764]=120,[106898]=120,},
+	})
+	ExRT.F.table_add2(module.db.spell_reduceCdCast,{
+		[2098]={13750,-10,51690,-10,2983,-10},
+		[121411]={13750,-10,51690,-10,2983,-10},
+		[5185]={{132158,54825},-2},
+		[5176]={{112071,166677},-3},
+		[2912]={{112071,166677},-3},
+		[17364]={{51533,165605},-5},
+	})
+	ExRT.F.table_add2(module.db.spell_increaseDurationCast,{
+		[12294]={{118038,58386},2},
+		[100130]={{118038,58386},0.25},
+	})
+	ExRT.F.table_add2(module.db.spell_startCDbyAuraFade,{
+		[89485]=true,
+		[132158]=true,
+		[34477]=true,
+	})
+	ExRT.F.table_add2(module.db.spell_reduceCdByAuraFade,{
+		[31850]={{31850,159548},-120},
+	})
+	
+
+elseif ExRT.isCata then
 	module.db.AllSpells = {
 		{29166,	"DRUID",	1,	{29166,	180,	10}},	--Озарение
 		{20484,	"DRUID",	1,	{20484,	600,	0}},	--BR
@@ -15162,7 +15631,7 @@ if ExRT.isCata then
 
 	module.db.spell_afterCombatNotReset[GetSpellInfo(20608) or "spell:20608"] = true	module.db.spell_afterCombatNotReset[20608] = true
 
-	module.db.spell_cdByTalent_fix[31884] = {53375,{-20,-40,-60}}
+	module.db.spell_cdByTalent_fix[31884] = {53375,{-20,-40,-60},93417,{-30,-60}}
 	module.db.spell_cdByTalent_fix[871] = {12312,{-30,-60}}
 	module.db.spell_cdByTalent_fix[10278] = {20174,{-60,-120}}
 	module.db.spell_cdByTalent_fix[10310] = {20234,{-120,-240}}
@@ -15192,54 +15661,54 @@ if ExRT.isCata then
 	module.db.spell_sharingCD[GetSpellInfo(31884) or "spell:31884"] = {[GetSpellInfo(642) or "spell:642"]=30}
 elseif ExRT.isLK then
 	module.db.AllSpells = {
-		{29166,	"DRUID",	1,	{29166,	180,	20}},	--Innervate
-		{48477,	"DRUID",	1,	{48477,	600,	0}},	--Rebirth
-		{6795,	"DRUID",	1,	{6795,	8,	0}},	--Growl
-		{48447,	"DRUID",	1,	{48447,	480,	8}},	--Tranquility
+		{29166,	"DRUID",	1,	{29166,	180,	20}},	--Озарение
+		{20748,	"DRUID",	1,	{20748,	600,	0}},	--BR
+		{6795,	"DRUID",	1,	{6795,	8,	0}},	--Taunt
+		{9863,	"DRUID",	1,	{9863,	480,	8}},	--Tranq
 		{5209,	"DRUID",	1,	{5209,	180,	6}},	--Challenging Roar
 
 		{355,	"WARRIOR",	1,	{355,	8,	0}},	--Taunt
 		{12975,	"WARRIOR",	1,	{12975,	180,	20}},	--Last stand
-		{871,	"WARRIOR",	1,	{871,	300,	10}},	--Shield Wall
+		{871,	"WARRIOR",	1,	{871,	300,	10}},	--SW
 		{1161,	"WARRIOR",	1,	{1161,	180,	6}},	--Challenging Shout
 		{12809,	"WARRIOR",	1,	{12809,	30,	5}},	--Concussion Blow
 		{676,	"WARRIOR",	1,	{676,	60,	10}},	--Disarm
 		{55694,	"WARRIOR",	1,	{55694,	180,	10}},	--Enraged Regeneration
-		{64382,	"WARRIOR",	1,	{64382,	300,	10}},	--Shattering Throw
+		{64382,	"WARRIOR",	1,	{64382,	300,	10}},	--Shattering Throw	
 
 		{11958,	"MAGE",		1,	{11958,	480,	0}},	--Cold Snap
-		{12472,	"MAGE",		1,	{12472,	180,	20}},	--Icy Veins
-		{45438,	"MAGE",		1,	{45438,	300,	10}},	--Ice Block
+		{12472,	"MAGE",		1,	{12472,	180,	20}},	--IV
+		{45438,	"MAGE",		1,	{45438,	300,	10}},	--IB
 		{55342,	"MAGE",		1,	{55342,	180,	30}},	--Mirrors
 
-		{642,	"PALADIN",	1,	{642,	300,	12}},	--Divine Shield
-		{10310,	"PALADIN",	1,	{10310,	1200,	0}},	--Lay on Hands
-		{19752,	"PALADIN",	1,	{19752,	600,	180}},	--Divine Intervention
-		{31884,	"PALADIN",	1,	{31884,	180,	20}},	--Avenging Wrath
-		{10278,	"PALADIN",	1,	{10278,	300,	10}},	--Hand of Protection
-		{1044,	"PALADIN",	1,	{1044,	25,	6}},	--Hand of Freedom
-		{1038,	"PALADIN",	1,	{1038,	120,	10}},	--Hand of Salvation
-		{6940,	"PALADIN",	1,	{6940,	120,	12}},	--Hand of Sacrifice
-		{62124,	"PALADIN",	1,	{62124,	8,	0}},	--Hand of Reckoning
+		{642,	"PALADIN",	1,	{642,	300,	12}},	--DS
+		{10310,	"PALADIN",	1,	{10310,	1200,	0}},	--LoH
+		{19752,	"PALADIN",	1,	{19752,	600,	180}},	--DI
+		{31884,	"PALADIN",	1,	{31884,	180,	20}},	--AW
+		{10278,	"PALADIN",	1,	{10278,	300,	10}},	--BoP
+		{1044,	"PALADIN",	1,	{1044,	25,	6}},	--Freedom
+		{1038,	"PALADIN",	1,	{1038,	120,	10}},	--Salv
+		{6940,	"PALADIN",	1,	{6940,	120,	12}},	--Sac
+		{62124,	"PALADIN",	1,	{62124,	8,	0}},	--Taunt
 		{64205,	"PALADIN",	1,	{64205,	120,	10}},	--Divine Sacrifice
 		{31821,	"PALADIN",	1,	{31821,	120,	6}},	--Aura Mastery
 
-		{16190,	"SHAMAN",	1,	{16190,	300,	12}},	--Mana Tide Totem
-		{32182,	"SHAMAN",	1,	{32182,	300,	40},	specialCheck = function() if UnitFactionGroup("player") == "Alliance" then return true end end},	--BL [A]
-		{2825,	"SHAMAN",	1,	{2825,	300,	40},	specialCheck = function() if UnitFactionGroup("player") == "Horde" then return true end end},	        --BL [H]
+		{16190,	"SHAMAN",	1,	{16190,	300,	12}},	--MTT
+		{32182,	"SHAMAN",	1,	{32182,	300,	40},	specialCheck=function() if UnitFactionGroup('player')=="Alliance" then return true end end},	--BL [A]
+		{2825,	"SHAMAN",	1,	{2825,	300,	40},	specialCheck=function() if UnitFactionGroup('player')=="Horde" then return true end end},	--BL [H]
 		{20608,	"SHAMAN",	1,	{21169,	1800,	0}},	--Reincarnation
-		{2894, 	"SHAMAN",	1,	{2894,	600,	120}},	--Fire Elemental Totem
-		{2062, 	"SHAMAN",	1,	{2062, 	600,	120}},	--Earth Elemental Totem
+		{2894, 	"SHAMAN",	1,	{2894,	600,	120}},	--FET
+		{2062, 	"SHAMAN",	1,	{2062, 	600,	120}},	--EET
 
-		{47883,	"WARLOCK",	1,	{47883,	900,	0}},	--Soulstone
+		{20765,	"WARLOCK",	1,	{20765,	900,	0}},	--Soulstone
 
 		{19801, "HUNTER",	1,	{19801,	8,	0}},	--Tranq
-		{34477, "HUNTER",	1,	{34477,	30,	0}},	--Misdirection
-		{19577, "HUNTER",	1,	{19577,	60,	3}},	--Intimidation
+		{34477, "HUNTER",	1,	{34477,	30,	0}},	--MD
+		{19577, "HUNTER",	1,	{19577,	60,	3}},	--MD
 		{5384, 	"HUNTER",	1,	{5384,	30,	0}},	--Feign Death
 
 		{64843, "PRIEST",	1,	{64843,	480,	8}}, 	--Divine Hymn
-		{48087, "PRIEST",	1,	{48087,	180,	0}}, 	--Lightwell
+		{724, 	"PRIEST",	1,	{724,	180,	0}}, 	--Lightwell
 		{6346, 	"PRIEST",	1,	{6346,	180,	0}}, 	--Fear Ward
 		{10060, "PRIEST",	1,	{10060,	120,	15}},	--Power Infusion
 		{64901, "PRIEST",	1,	{64901,	360,	0}}, 	--Hymn of Hope
@@ -15249,13 +15718,13 @@ elseif ExRT.isLK then
 		{5277, 	"ROGUE",	1,	{5277,	180,	15}},	--Evasion
 		{57934, "ROGUE",	1,	{57934,	30,	6}},	--Tricks of the Trade
 
-		{49576,	"DEATHKNIGHT",	1,	{49576,	35,	0}},	--Death Grip
-		{48707,	"DEATHKNIGHT",	1,	{48707,	45,	5}},	--Anti-Magic Shell
-		{42650,	"DEATHKNIGHT",	1,	{42650,	600,	0}},	--Army of the Dead
-		{61999,	"DEATHKNIGHT",	1,	{61999,	600,	0}},	--Raise Ally
-		{56222,	"DEATHKNIGHT",	1,	{56222,	8,	0}},	--Dark Command
-		{51052,	"DEATHKNIGHT",	1,	{51052,	120,	10}},	--Anti-Magic Zone
-		{49028,	"DEATHKNIGHT",	1,	{49028,	90,	12}},	--Dancing Rune Weapon
+		{49576,	"DEATHKNIGHT",	1,	{49576,	35,	0}},	--Grip
+		{48707,	"DEATHKNIGHT",	1,	{48707,	45,	5}},	--AMS
+		{42650,	"DEATHKNIGHT",	1,	{42650,	600,	0}},	--Army
+		{61999,	"DEATHKNIGHT",	1,	{61999,	600,	0}},	--Res
+		{56222,	"DEATHKNIGHT",	1,	{56222,	8,	0}},	--Taunt
+		{51052,	"DEATHKNIGHT",	1,	{51052,	120,	10}},	--AMZ
+		{49028,	"DEATHKNIGHT",	1,	{49028,	90,	12}},	--DRW
 		{49016,	"DEATHKNIGHT",	1,	{49016,	180,	30}},	--Unholy Frenzy
 	}
 	module.db.spell_isTalent[GetSpellInfo(16190) or "spell:16190"] = true	module.db.spell_isTalent[16190] = true

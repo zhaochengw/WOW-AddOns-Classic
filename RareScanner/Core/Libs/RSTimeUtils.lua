@@ -8,6 +8,7 @@ local ADDON_NAME, private = ...
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
 local RSTimeUtils = private.NewLib("RareScannerTimeUtils")
+local RSConstants = private.ImportLib("RareScannerConstants")
 
 ---============================================================================
 -- Function to calculate next covenant assault reset time
@@ -111,6 +112,33 @@ function RSTimeUtils.TimeStampToClock(seconds, countUp)
 		local days = math.floor(hours / 24);
 		return days.." "..AL["MAP_TOOLTIP_DAYS"].." "..string.format("%02.f", hours%24)..":"..string.format("%02.f", minutes%60)..":"..string.format("%02.f", seconds%60)
 	end
+end
+
+---============================================================================
+-- Holidays events
+---============================================================================
+
+function RSTimeUtils.IsHolidayEventActive(eventID)
+	local eventTextureID = RSConstants.EVENTS[eventID]
+	if (not eventTextureID) then
+		return false;
+	elseif(type(eventTextureID) ~= "number") then
+		return eventTextureID
+	end
+
+	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
+	local numDayEvents = C_Calendar.GetNumDayEvents(0, currentCalendarTime.monthDay)
+	
+	if (numDayEvents and numDayEvents > 0) then
+		for index = 1, numDayEvents do
+			local info = C_Calendar.GetHolidayInfo(0, currentCalendarTime.monthDay, index)
+			if (info and info.texture == eventTextureID) then
+	     		return true
+	      	end
+		end
+	end
+	
+	return false
 end
 
 ---============================================================================

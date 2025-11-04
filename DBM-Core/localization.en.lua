@@ -6,12 +6,8 @@ DBM_CORE_L = L
 L.DEADLY_BOSS_MODS						= "Deadly Boss Mods" -- NO TRANSLATE
 L.DBM									= "DBM" -- NO TRANSLATE
 
-local guild = GetGuildInfo("player")
 local dateTable = date("*t")
-if C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 12 and guild == "OnlyFangs" then
-	L.DEADLY_BOSS_MODS					= "Deadly Boss Lua"
-	L.DBM								= "Boss Loa"
-elseif dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
+if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
 	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
 	L.DBM								= "HMM"
 end
@@ -44,6 +40,7 @@ L.TEXT_ONLY_RANGE						= "Range frame is limited to text only due to Blizzard di
 L.NO_RANGE								= "Range frame can not be used due to Blizzard disabling that functionality in this area."
 L.NO_ARROW								= "Arrow can not be used in instances"
 L.NO_HUD								= "HUDMap can not be used in instances"
+L.NO_COMMS								= "Addon communication can not be used during encounters or active M+ dungeons. Use this command again after encounter or dungeon ends."--Midnight+
 
 L.DYNAMIC_DIFFICULTY_CLUMP				= L.DBM .. " has disabled dynamic range frame on this fight do to insufficient information about number of players needed to affect clump check for a group of your size."
 L.DYNAMIC_ADD_COUNT						= L.DBM .. " has disabled add count warnings on this fight do to insufficient information about number of adds that spawn for a group of your size."
@@ -76,7 +73,8 @@ L.SCENARIO_COMPLETE_L					= "%s completed after %s! Your last clear took %s and 
 L.SCENARIO_COMPLETE_NR					= "%s completed after %s! This is a new record! (Old record was %s). You have %d total clears."
 L.COMBAT_ENDED_AT						= "Combat against %s (%s) ended after %s."
 L.COMBAT_ENDED_AT_LONG					= "Combat against %s (%s) ended after %s. You have %d total wipe(s) on this difficulty."
-L.GUILD_COMBAT_ENDED_AT					= "%s's Guild group has wiped on %s (%s) after %s."
+L.GUILD_COMBAT_ENDED_AT					= "%s's Guild group has wiped on %s (%s) after %s."--Health Included
+L.GUILD_COMBAT_ENDED					= "%s's Guild group has wiped on %s after %s."--No health (post midnight)
 L.SCENARIO_ENDED_AT						= "%s ended after %s."
 L.SCENARIO_ENDED_AT_LONG				= "%s ended after %s. You have %d total incompletes on this difficulty."
 L.COMBAT_STATE_RECOVERED				= "%s was engaged %s ago, recovering timers... "
@@ -275,7 +273,7 @@ L.SLASHCMD_HELP							= {
 	"/dbm pull <sec>: Sends a pull timer for <sec> seconds to the raid (requires promoted. alias: pull).",
 	"/dbm break <min>: Sends a break timer for <min> minutes to the raid (requires promoted. alias: break).",
 	"/dbm timer: Starts a custom " .. L.DBM .. " timer, see '/dbm timer' for details.",
-	"/keys: Performs M+ keystone and rating checks on party/guild and shortcuts to dungeon teleports. (alias: key, keystone)",
+	"/dbm key: Performs M+ keystone and rating checks on party/guild and shortcuts to dungeon teleports. (alias: key, keys, keystone)",
 	"/dbm lag: Performs a raid-wide latency check.",
 	"/dbm durability: Performs a raid-wide durability check.",
 	"/dbm help2: Shows additional slash commands"
@@ -748,6 +746,20 @@ L.DUOS							= "Duos"
 -- Keystone dungeon names (keep to a max of 6 characters)
 -- See https://wago.tools/db2/MapChallengeMode for ID => Dungeon Names
 L.KEYSTONE_NAMES = {
+	[197] = 'EOA', -- Eye of Azshara
+	[198] = 'DHT', -- Darkheart Thicket
+	[199] = 'BRH', -- Black Rook Hold
+	[200] = 'HOV', -- Halls of Valor
+	[206] = 'NL', -- Neltharion's Lair
+	[207] = 'VOTW', -- Vault of the Wardens
+	[208] = 'MOS', -- Maw of Souls
+	[209] = 'ARC', -- The Arcway
+	[210] = 'COS', -- Court of Stars
+	[227] = 'LKARA', -- Return to Karazhan: Lower
+	[233] = 'COEN', -- Cathedral of Eternal Night
+	[234] = 'UKARA', -- Return to Karazhan: Upper
+	[239] = 'SOTT', -- Seat of the Triumvirate
+
 	[378] = 'HOA', -- Halls of Atonement
 	[391] = 'STREET', -- Tazavesh: Streets of Wonder
 	[392] = 'GAMBIT', -- Tazavesh: So'leah's Gambit

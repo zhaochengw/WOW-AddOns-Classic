@@ -34,7 +34,7 @@ local function PlaySound(soundFile)
 end
 
 function RSAudioAlerts.PlaySoundAlert(atlasName)
-	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName))) then
+	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
 		PlaySound(RSConfigDB.GetSoundPlayedWithObjects())
 	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
 		PlaySound(RSConfigDB.GetSoundPlayedWithNpcs())

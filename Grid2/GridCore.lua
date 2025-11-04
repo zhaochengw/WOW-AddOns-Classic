@@ -23,6 +23,7 @@ Grid2.isSoD     = C_Seasons and C_Seasons.GetActiveSeason()==2
 Grid2.isTBC     = versionCli>=20000 and versionCli<30000
 Grid2.isWrath   = versionCli>=30000 and versionCli<40000
 Grid2.isCata    = versionCli>=40000 and versionCli<50000
+Grid2.isMoP     = versionCli>=50000 and versionCli<60000
 Grid2.isWoW90   = versionCli>=90000
 Grid2.isDevelop = versionToc=='\@project-version\@'
 Grid2.versionstring = "Grid2 v"..(Grid2.isDevelop and 'Dev' or versionToc)
@@ -162,11 +163,11 @@ function Grid2:OnEnable()
 	end
 
 	self.db.RegisterCallback(self, "OnProfileShutdown", "ProfileShutdown")
-	self.db.RegisterCallback(self, "OnProfileChanged", "ProfileChanged")
+    self.db.RegisterCallback(self, "OnProfileChanged", "ProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileCopied", "ProfileChanged")
 	self.db.RegisterCallback(self, "OnProfileReset", "ProfileChanged")
 
-	self.playerClassSpec = self.playerClass .. (0)
+	self.playerClassSpec = self.playerClass .. (self.GetSpecialization() or 0)
 
 	self:UpdatePlayerDispelTypes()
 
@@ -205,7 +206,7 @@ end
 function Grid2:ReloadProfile()
 	local db = Grid2.profiles.char
 	if db.enabled then
-		local pro = db[0] or db
+		local pro = db[self.GetSpecialization() or 0] or db
 		if type(pro)=="string" and pro~=Grid2.db:GetCurrentProfile() then
 			if not self:RunSecure(1, self, "ReloadProfile") then
 				Grid2.db:SetProfile(pro)
@@ -218,7 +219,7 @@ end
 -- Themes
 function Grid2:PLAYER_SPECIALIZATION_CHANGED(event,unit)
 	if event == 'ACTIVE_TALENT_GROUP_CHANGED' or unit == 'player' then
-		local playerClassSpec = self.playerClass .. (0)
+		local playerClassSpec = self.playerClass .. (self.GetSpecialization() or 0)
 		if playerClassSpec ~= self.playerClassSpec then
 			self.playerClassSpec = playerClassSpec
 			if not Grid2:ReloadProfile() then
@@ -249,7 +250,7 @@ function Grid2:CheckTheme()
 	local themes  = self.db.profile.themes
 	local enabled = themes.enabled
 	local theme   = enabled.default or 0
-	local spec    = GetActiveTalentGroup() or 0
+	local spec    = self.GetSpecialization() or 0
 	local role    = self.UnitGroupRolesAssigned('player') or 0
 	local groupType, instType, maxPlayers = self:GetGroupType()
 	local kM   = tostring(maxPlayers)

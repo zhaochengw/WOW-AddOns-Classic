@@ -1534,24 +1534,33 @@ end
 ------------------------------------------------------------------------------
 -- "Smart" Anchoring
 ------------------------------------------------------------------------------
-local function GetTipAnchor(frame)
+local function GetTipAnchor(frame, original)
     local x, y = frame:GetCenter()
-	--if not x or not y then return "TOPLEFT", "BOTTOMLEFT" end
-	if not x or not y then return "BOTTOMLEFT" end
-	local hhalf = (x > UIParent:GetWidth() * 2 / 3) and "RIGHT" or (x < UIParent:GetWidth() / 3) and "LEFT" or "LEFT"
-	--local vhalf = (y > UIParent:GetHeight() / 2) and "TOP" or "BOTTOM"
-	--return vhalf .. hhalf, frame, (vhalf == "TOP" and "BOTTOM" or "TOP") .. hhalf
-	return "BOTTOM"..hhalf, frame, "BOTTOM".. (hhalf == "RIGHT" and "LEFT" or "RIGHT")
+    
+    if (original) then
+		if not x or not y then return "TOPLEFT", "BOTTOMLEFT" end
+		local hhalf = (x > UIParent:GetWidth() * 2 / 3) and "RIGHT" or (x < UIParent:GetWidth() / 3) and "LEFT" or "LEFT"
+		local vhalf = (y > UIParent:GetHeight() / 2) and "TOP" or "BOTTOM"
+		local hFrame = hhalf == "LEFT" and "RIGHT" or "LEFT"
+		local vFrame = vhalf == "TOP" and "BOTTOM" or "TOP"
+		local xOffset = hFrame == "RIGHT" and 40 or -40
+		local yOffset = vFrame == "TOP" and 40 or - 40
+		return vhalf .. hhalf, frame, vFrame .. hFrame, xOffset, yOffset
+	else
+		if not x or not y then return "BOTTOMLEFT" end
+		local hhalf = (x > UIParent:GetWidth() * 2 / 3) and "RIGHT" or (x < UIParent:GetWidth() / 3) and "LEFT" or "LEFT"
+		return "BOTTOM"..hhalf, frame, "BOTTOM".. (hhalf == "RIGHT" and "LEFT" or "RIGHT")
+	end
 end
 
-function tipPrototype:SmartAnchorTo(frame)
+function tipPrototype:SmartAnchorTo(frame, original)
     if not frame then
         error("Invalid frame provided.", 2)
     end
 
     self:ClearAllPoints()
     self:SetClampedToScreen(true)
-    self:SetPoint(GetTipAnchor(frame))
+    self:SetPoint(GetTipAnchor(frame, original))
 end
 
 ------------------------------------------------------------------------------

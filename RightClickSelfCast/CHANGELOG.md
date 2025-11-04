@@ -1,6 +1,7 @@
 # RightClickSelfCast
 
-## [v5.0](https://github.com/Xruptor/RightClickSelfCast/tree/v5.0) (2024-04-08)
-[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v4.9...v5.0) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
+## [v5.4](https://github.com/Xruptor/RightClickSelfCast/tree/v5.4) (2025-10-05)
+[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v5.3...v5.4) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
 
-- Fix for WOWInterface.com and Cataclysm Classic support.  
+- Added support for Multibars  
+    * Added additional support for Multibars.  Special thanks to @Fafnyir for pointing this out.  (Fixes #7)  

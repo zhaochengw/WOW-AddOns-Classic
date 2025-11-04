@@ -21,19 +21,9 @@ function AddOn.Events_RegisterEvent(event,func)
 		end
 	end
 
-	if EventRegistry.RegisterFrameEventAndCallback then--	Wrath and DF
-		EventRegistry:RegisterFrameEventAndCallback(event,func);
-	else--	Vanilla
-		EventRegistry:RegisterFrameEvent(event);
-		EventRegistry:RegisterCallback(event,func,newproxy());
-	end
+	EventRegistry:RegisterFrameEventAndCallback(event,func);
 end
 
 function AddOn.Events_UnregisterEvent(owner,event)
-	if EventRegistry.UnregisterFrameEventAndCallback then--	Wrath and DF
-		EventRegistry:UnregisterFrameEventAndCallback(event,owner);
-	else--	Vanilla
-		EventRegistry:UnregisterFrameEvent(event);
-		EventRegistry:UnregisterCallback(event,owner);
-	end
+	EventRegistry:UnregisterFrameEventAndCallback(event,owner);
 end

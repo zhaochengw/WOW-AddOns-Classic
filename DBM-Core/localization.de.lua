@@ -33,7 +33,8 @@ L.COPY_URL_DIALOG					= "Kopiere URL"
 --L.TEXT_ONLY_RANGE						= "Range frame is limited to text only due to API restrictions in this area."
 L.NO_RANGE					= "Das Abstandsradar kann in Instanzen nicht genutzt werden. Es wird stattdessen die alte textbasierte Abstandsanzeige verwendet."
 L.NO_ARROW					= "Der Pfeil kann in Instanzen nicht genutzt werden."
-L.NO_HUD						= "Die HudMap kann in Instanzen nicht genutzt werden."
+L.NO_HUD					= "Die HudMap kann in Instanzen nicht genutzt werden."
+L.NO_COMMS					= "Addon-Kommunikation kann während Begegnungen oder aktiven M+ Dungeons nicht verwendet werden. Verwende diesen Befehl erneut, nachdem die Begegnung oder der Dungeon endet."
 
 L.DYNAMIC_DIFFICULTY_CLUMP	= L.DBM.." hat das dynamische Abstandsfenster für diesen Kampf deaktiviert, da nicht genügend Informationen vorliegen, auf wieviel versammelte Spieler bei deiner Gruppengröße geprüft werden muss."
 L.DYNAMIC_ADD_COUNT			= L.DBM.." hat Warnungen bezüglich der Anzahl der Gegner für diesen Kampf deaktiviert, da nicht genügend Informationen vorliegen, wieviel Gegner bei deiner Gruppengröße erscheinen."
@@ -256,7 +257,7 @@ L.SLASHCMD_HELP				= {
 	"/dbm pull <sec>: Schickt einen Pull-Timer für <sec> Sekunden an alle Schlachzugsmitglieder (nur als Leiter/Assistent).",
 	"/dbm break <min>: Schickt einen Pause-Timer für <min> Minuten an alle Schlachzugsmitglieder (nur als Leiter/Assistent).",
 	"/dbm timer: Startet einen benutzerdefinierten DBM-Timer, siehe '/dbm timer' für Details.",
-	"/keys: Führt M+ Schlüsselstein- und Bewertungsprüfungen für Gruppe/Gilde durch und bietet Abkürzungen zu Dungeon-Transporten an. (alias: key, keystone)",--AI translated (check me)
+	"/dbm key: Führt M+ Schlüsselstein- und Bewertungsprüfungen für Gruppe/Gilde durch und bietet Abkürzungen zu Dungeon-Transporten an. (alias: key, keys, keystone)",--AI translated (check me)
 	"/dbm lag: Prüft die Latenz im gesamten Schlachtzug.",
 	"/dbm durability: Prüft die Haltbarkeit im gesamten Schlachtzug.",
 	"/dbm help2: Zeigt zusätzliche Slash-Kommandos an."--AI translated (check me)

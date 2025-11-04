@@ -267,10 +267,7 @@ BG.Init(function()
                 value = max(minValue, value)
                 BiaoGe.options[name] = value
 
-                local template = BG.IsNewUI and "TextToSpeechSliderTemplate" or "OptionsSliderTemplate"
-                if BG.IsMOP then
-                    template ="OptionsSliderTemplate"
-                end
+                local template = BG.IsWLK and "TextToSpeechSliderTemplate" or "OptionsSliderTemplate"
                 local slider = CreateFrame("Slider", nil, parent, template)
                 slider:SetPoint("TOPLEFT", parent, x, y)
                 slider:SetWidth(width or 180)
@@ -1608,7 +1605,7 @@ BG.Init(function()
         h = h + 30
 
         -- 自动获取在线人数
-        if BG.IsVanilla_Sod or BG.IsMOP then
+        if BG.IsVanilla_Sod or BG.IsMOP_TW then
             do
                 local name = "autoGetOnline"
                 BG.options[name .. "reset"] = 0
@@ -2490,13 +2487,15 @@ BG.Init(function()
                 height = CreateMONEYbutton(1, #BG.MONEYall_table, width, height, 65, height_jiange)
                 height = height - height_jiange * 3
             elseif BG.IsCTM then
+                local questNum = 3 -- 日常任务的数量
+                local raidNum = #BG.FBCDall_table - #BG.factionTbl - questNum
                 --团本CD
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
                 text:SetPoint("TOPLEFT", width, height)
                 text:SetText("|cffFF4500" .. EXPANSION_NAME3 .. "*")
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(1, #BG.FBCDall_table - 34, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(1, raidNum - 34, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2504,7 +2503,7 @@ BG.Init(function()
                 text:SetText(BG.STC_b1(EXPANSION_NAME2 .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 33, #BG.FBCDall_table - 14, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 33, raidNum - 16, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2512,7 +2511,7 @@ BG.Init(function()
                 text:SetText(BG.STC_r3(EXPANSION_NAME1 .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 15, #BG.FBCDall_table - 5, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 15, raidNum - 5, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -2520,7 +2519,25 @@ BG.Init(function()
                 text:SetText(BG.STC_g2(LFG_LIST_LEGACY .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(#BG.FBCDall_table - 4, #BG.FBCDall_table, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 4, raidNum, width, height, 100, height_jiange)
+
+                -- 任务
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText("|cffFF8C00" .. (QUESTS_LABEL .. "*") .. RR)
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(raidNum + 1, raidNum + questNum, width, height, 100, height_jiange)
+
+                -- 声望
+                height = height - height_jiange - height_jiange
+                local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+                text:SetPoint("TOPLEFT", width, height)
+                text:SetText("|cffFFFF00" .. (L["声望"] .. "*") .. RR)
+                height = height - height_jiange
+                O.CreateLine(roleOverview, height + line_height)
+                height = CreateFBCDbutton(raidNum + questNum + 1, #BG.FBCDall_table, width, height, 100, height_jiange)
 
                 -- 货币
                 height = height - height_jiange - height_jiange
@@ -2556,7 +2573,7 @@ BG.Init(function()
                 text:SetText(BG.STC_b1(EXPANSION_NAME2 .. "*"))
                 height = height - height_jiange
                 O.CreateLine(roleOverview, height + line_height)
-                height = CreateFBCDbutton(raidNum - 33, raidNum - 14, width, height, 100, height_jiange)
+                height = CreateFBCDbutton(raidNum - 33, raidNum - 16, width, height, 100, height_jiange)
 
                 height = height - height_jiange - height_jiange
                 local text = roleOverview:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -3085,12 +3102,30 @@ BG.Init(function()
                     end
                 end)
             end
-
+            -- 牌子拾取增强
+            if not BG.IsVanilla then
+                h = h + 30
+                local name = "showCurrencyCount"
+                BG.options[name .. "reset"] = 1
+                if not BiaoGe.options[name] then
+                    BiaoGe.options[name] = BG.options[name .. "reset"]
+                end
+                local ontext = {
+                    L["牌子拾取增强"],
+                    L["拾取牌子时，增加显示该牌子的现有数量。"],
+                    " ",
+                    L["拾取牌子时，如果已经达到该牌子的数量上限，播放语音提醒。"],
+                    " ",
+                    L["在部分物品的提示文本中，增加显示该牌子的数量。比如在熊猫人之怒的正义奖章里，提示正义点数现有数量。"],
+                }
+                local f = O.CreateCheckButton(name, L["牌子拾取增强"] .. "*", others, 15, height - h, ontext)
+                BG.options["button" .. name] = f
+            end
             h = h + 45
         end
 
         -- AtlasLoot
-        if BG.IsWLK or BG.IsMOP then
+        if BG.canShowAtlasLoot then
             local text = others:CreateFontString(nil, "ARTWORK", "GameFontNormal")
             text:SetPoint("TOPLEFT", width, height - h)
             text:SetText(BG.STC_g1("AtlasLoot"))

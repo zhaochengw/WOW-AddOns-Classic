@@ -665,6 +665,12 @@ GTFO.SpellID["1241000"] = {
   sound = 3;
 };
 
+GTFO.SpellID["1241312"] = {
+  --desc = "Arcane Burrow (Lurking Phaseburrower)";
+  sound = 3;
+};
+
+
 --- ****************************
 --- * Ara-Kara, City of Echoes *
 --- ****************************
@@ -2006,6 +2012,16 @@ GTFO.SpellID["1215058"] = {
   sound = 3;
 };
 
+GTFO.SpellID["1231660"] = {
+  --desc = "Behold! (Lesser Eye)";
+  sound = 3;
+};
+
+GTFO.SpellID["441011"] = {
+  --desc = "Flattened";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- *******************
 --- * Nerub-ar Palace *
@@ -3249,6 +3265,18 @@ GTFO.SpellID["1230999"] = {
 
 GTFO.SpellID["1242310"] = {
   --desc = "Static Lightning (Plexus Sentinel)";
+  sound = 3;
+};
+
+GTFO.SpellID["1226440"] = {
+  --desc = "Bound (Shadowguard Weavemaster)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["1238878"] = {
+  --desc = "Echoing Tempest (Arcane Echo)";
+  applicationOnly = true;
   sound = 3;
 };
 

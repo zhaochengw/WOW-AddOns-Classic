@@ -1,0 +1,672 @@
+<!-- $Id: CurrencyFrame.xml $ -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!-- Currency Row Templates -->
+	<Frame name="CurrencyRowTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="590" y="20"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- Currency Icon -->
+				<Texture name="$parentIcon" file="Interface\Icons\INV_Misc_QuestionMark">
+					<Size>
+						<AbsDimension x="16" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="5" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				
+				<!-- Currency Name -->
+				<FontString name="$parentText" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="45" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Income Column -->
+				<FontString name="$parentIncome" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="220" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Outgoing Column -->
+				<FontString name="$parentOutgoing" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="320" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Net Column -->
+				<FontString name="$parentNet" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="420" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- TotalMax Column -->
+				<FontString name="$parentTotalMax" inherits="GameFontNormalSmall" text="" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="CENTER">
+							<Offset>
+								<AbsDimension x="200" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- Tracking Checkbox -->
+			<CheckButton name="$parentTrack" inherits="UICheckButtonTemplate">
+				<Size>
+					<AbsDimension x="16" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="25" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						if CurrencyTracker and CurrencyTracker.CurrencyFrame and CurrencyTracker.CurrencyFrame.OnTrackingCheckboxClicked then
+							CurrencyTracker.CurrencyFrame.OnTrackingCheckboxClicked(self, self.currencyId);
+						end
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+		</Frames>
+	</Frame>
+
+	<Frame name="CurrencySourceRowTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="590" y="19"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<!-- Source Name -->
+				<FontString name="$parentSource" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="20" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Income Column -->
+				<FontString name="$parentIncome" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="220" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Outgoing Column -->
+				<FontString name="$parentOutgoing" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="320" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				
+				<!-- Net Column -->
+				<FontString name="$parentNet" inherits="GameFontNormalSmall" text="">
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="LEFT">
+							<Offset>
+								<AbsDimension x="420" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Main Currency Tracker Window -->
+	<Frame name="AccountantClassicCurrencyFrame" toplevel="true" enableMouse="true" movable="true" parent="UIParent" hidden="true">
+		<Size>
+			<AbsDimension x="640" y="512"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT">
+				<Offset>
+					<AbsDimension x="0" y="-104"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentPortrait">
+					<Size>
+						<AbsDimension x="60" y="60"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-6"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLeft" file="Interface\AddOns\Accountant_Classic\Images\AccountantClassicFrame-Left">
+					<Size>
+						<AbsDimension x="512" y="512"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentRight" file="Interface\AddOns\Accountant_Classic\Images\AccountantClassicFrame-Right">
+					<Size>
+						<AbsDimension x="128" y="512"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+							<Offset>
+								<AbsDimension x="512" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitleText" inherits="GameFontHighlight" text="ACCLOC_TITLE">
+					<Size>
+						<AbsDimension x="620" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-21"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSubtitle" inherits="GameFontHighlight" text="">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP">
+							<Offset>
+								<AbsDimension x="0" y="-40"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<!-- Top selection area placeholders -->
+			<Frame name="$parentServerDropDown" inherits="UIDropDownMenuTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-10" y="-38"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentCharacterDropDown" inherits="UIDropDownMenuTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-10" y="-62"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentCurrencyDropDown" inherits="UIDropDownMenuTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-10" y="-86"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+
+			<!-- Header row for column titles -->
+			<Frame name="$parentHeaderRow">
+				<Size>
+					<AbsDimension x="590" y="19"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="21" y="-90"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<!-- Currency Name Header -->
+						<FontString name="$parentNameHeader" inherits="GameFontHighlight" text="Currency">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension x="45" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						
+						<!-- TotalMax Header placed in first wide column -->
+						<FontString name="$parentTotalMaxHeader" inherits="GameFontHighlight" text="Cap" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension x="220" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						
+						<!-- Income Header -->
+						<FontString name="$parentIncomeHeader" inherits="GameFontHighlight" text="Income" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension x="320" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						
+						<!-- Outgoing Header -->
+						<FontString name="$parentOutgoingHeader" inherits="GameFontHighlight" text="Outgoing" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension x="420" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						
+						<!-- Net Header -->
+						<FontString name="$parentNetHeader" inherits="GameFontHighlight" text="Net" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension x="520" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			
+			<!-- Background for scroll area -->
+			<Frame name="$parentScrollBackground">
+				<Size>
+					<AbsDimension x="590" y="360"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="20" y="-112"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBG" setAllPoints="true">
+							<Color r="0" g="0" b="0" a="0"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			
+			<!-- Middle scroll area -->
+			<ScrollFrame name="AccountantClassicCurrencyScrollBar" inherits="FauxScrollFrameTemplate">
+				<Size>
+					<AbsDimension x="590" y="360"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="20" y="-112"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnVerticalScroll>
+						FauxScrollFrame_OnVerticalScroll(self, offset, 20, CurrencyTracker.CurrencyFrame.UpdateScrollFrame);
+					</OnVerticalScroll>
+					<OnShow>
+						if CurrencyTracker and CurrencyTracker.CurrencyFrame and CurrencyTracker.CurrencyFrame.UpdateScrollFrame then
+							CurrencyTracker.CurrencyFrame.UpdateScrollFrame();
+						end
+					</OnShow>
+				</Scripts>
+			</ScrollFrame>
+
+			<!-- Row templates (will be instantiated dynamically) -->
+			<Frame name="$parentRow1" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="21" y="-113"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
+			
+			<!-- Add more rows as needed -->
+			<Frame name="$parentRow2" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow1" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow3" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow2" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow4" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow3" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow5" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow4" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow6" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow5" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow7" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow6" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow8" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow7" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow9" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow8" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow10" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow9" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow11" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow10" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow12" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow11" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow13" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow12" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow14" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow13" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow15" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow14" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow16" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow15" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow17" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow16" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+			
+			<Frame name="$parentRow18" inherits="CurrencyRowTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRow17" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+			</Frame>
+
+			<!-- Bottom timeframe tabs - match Gold Tracker layout (two rows) -->
+			<Button name="$parentTab1" inherits="CurrencyTabTemplate" id="1" text="Session">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="15" y="-20"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab2" inherits="CurrencyTabTemplate" id="2" text="Day">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab3" inherits="CurrencyTabTemplate" id="3" text="PrvDay">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="-32"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab4" inherits="CurrencyTabTemplate" id="4" text="Week">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab5" inherits="CurrencyTabTemplate" id="5" text="PrvWeek">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- Second row starts under Tab1 (y = -32) and chains similarly with x = 5 spacing -->
+			<Button name="$parentTab6" inherits="CurrencyTabTemplate" id="6" text="Month">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab4" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab7" inherits="CurrencyTabTemplate" id="7" text="PrvMonth">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab5" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab8" inherits="CurrencyTabTemplate" id="8" text="Year">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab6" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab9" inherits="CurrencyTabTemplate" id="9" text="PrvYear">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab7" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentTab10" inherits="CurrencyTabTemplate" id="10" text="Total">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTab8" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CurrencyTracker.CurrencyFrame.OnTimeframeTabClicked(self)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<!-- Add more tabs for Week, Month, etc., following pattern -->
+
+			<!-- Close button -->
+			<Button name="$parentCloseButton" inherits="UIPanelCloseButton">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="-16"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				tinsert(UISpecialFrames, "AccountantClassicCurrencyFrame");
+				UIPanelWindows["AccountantClassicCurrencyFrame"] = { area = "left", pushable = 11 };
+				self:RegisterForDrag("LeftButton");
+				self:SetClampedToScreen(true);
+			</OnLoad>
+			<OnShow>
+				if CurrencyTracker and CurrencyTracker.CurrencyFrame then
+					if CurrencyTracker.CurrencyFrame.RefreshView then
+						CurrencyTracker.CurrencyFrame.RefreshView()
+					end
+					if CurrencyTracker.CurrencyFrame.SetupTabs then
+						CurrencyTracker.CurrencyFrame.SetupTabs()
+					end
+				end
+			</OnShow>
+			<OnEvent>
+				AccountantClassicCurrency_OnEvent(self, event, ...);
+			</OnEvent>
+			<OnMouseDown>
+				AccountantClassicCurrency_OnMouseDown(self, button);
+			</OnMouseDown>
+			<OnMouseUp>
+				AccountantClassicCurrency_OnMouseUp(self, button);
+			</OnMouseUp>
+		</Scripts>
+	</Frame>
+</Ui>

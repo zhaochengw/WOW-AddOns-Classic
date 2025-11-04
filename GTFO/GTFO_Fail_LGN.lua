@@ -448,6 +448,11 @@ GTFO.SpellID["286002"] = {
   vehicle = true;
 };
 
+GTFO.SpellID["213146"] = {
+  --desc = "Dark Gaze (Eye of Keletress)";
+  sound = 3;
+};
+
 -- *******************
 -- * Brawler's Guild *
 -- *******************
@@ -2524,5 +2529,21 @@ GTFO.SpellID["250007"] = {
   sound = 4;
   test = true;
 };
+
+--- ****************************
+--- * The Broken Isles (Remix) *
+--- ****************************
+
+GTFO.SpellID["187341"] = {
+  --desc = "Arcing Smash (Fel Lord Nezmet)";
+  sound = 3;
+};
+
+GTFO.SpellID["205646"] = {
+  --desc = "Felsoul Cleave (Fel Lord Nezmet)";
+  sound = 3;
+  ignoreApplication = true;
+};
+
 
 end

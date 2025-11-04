@@ -56,7 +56,7 @@ function BG.Init(func)
         if addonName ~= AddonName then return end
         self:UnregisterEvent("ADDON_LOADED")
         self:Hide()
-        func()
+        func(self, event)
     end)
 end
 
@@ -66,7 +66,7 @@ function BG.Init2(func)
     f:SetScript("OnEvent", function(self, event)
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
         self:Hide()
-        func()
+        func(self, event)
     end)
 end
 
@@ -74,18 +74,16 @@ end
 local ver = select(4, GetBuildInfo())
 if ver < 20000 then
     BG.IsVanilla = true
-    BG.IsNewUI = true
+    if (C_Engraving and C_Engraving.IsEngravingEnabled()) then
+        BG.IsVanilla_Sod = true
+    end
+
+    if not (C_Engraving and C_Engraving.IsEngravingEnabled()) then
+        BG.IsVanilla_60 = true
+    end
 end
 
-if BG.IsVanilla and (C_Engraving and C_Engraving.IsEngravingEnabled()) then
-    BG.IsVanilla_Sod = true
-end
-
-if BG.IsVanilla and not (C_Engraving and C_Engraving.IsEngravingEnabled()) then
-    BG.IsVanilla_60 = true
-end
-
-if ver >= 30000 and ver < 40000 then
+if ver >= 30000 and ver < 38000 then
     BG.IsWLK = true
 end
 
@@ -95,6 +93,17 @@ end
 
 if ver >= 50000 and ver < 60000 then
     BG.IsMOP = true
+    if GetCurrentRegion() ~= 5 then
+        BG.IsMOP_TW = true
+    else
+        BG.IsMOP_CN = true
+        BG.IsCTM = true
+    end
+    -- BG.IsMOP_TW = nil
+    -- BG.IsCTM = true
+
+    -- BG.IsMOP_TW = true
+    -- BG.IsCTM = nil
 end
 
 if ver >= 110000 then
@@ -110,7 +119,7 @@ function BG.IsWLKFB(FB)
     end
 end
 
-local tbl = { "SW", "BT", "HS", "TK", "SSC", "ZA", "KZ", "BWL" ,"TAQ",}
+local tbl = { "SW", "BT", "HS", "TK", "SSC", "ZA", "KZ", "BWL", "TAQ", }
 function BG.IsTBCFB(FB)
     if not BG.IsWLK then return false end
     local FB = FB or BG.FB1

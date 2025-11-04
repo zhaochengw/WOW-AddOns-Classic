@@ -1,9 +1,10 @@
-## Interface: 30404
+## Interface: 40402
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
-## Version: 5.12.9
+## Version: 5.20.6
 ## Notes: Model paths for WeakAuras
-## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
+## Notes-esES: Las rutas de modelos para WeakAuras
+## Notes-esMX: Las rutas de modelos para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras
 ## Notes-ruRU: Ссылки на файлы моделей WeakAuras
 ## Notes-zhTW: WeakAuras的模組路徑
@@ -14,4 +15,4 @@
 ## Dependencies: WeakAuras, WeakAurasOptions
 ## AllowLoadGameType: cata
 
-ModelPathsWrath.lua
+ModelPathsCata.lua

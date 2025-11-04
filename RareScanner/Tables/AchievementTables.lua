@@ -4,13 +4,13 @@
 local FOLDER_NAME, private = ...
 
 private.ACHIEVEMENT_ZONE_IDS = {
-	[1948] = { 1312 }; --Shadowmoon valley (BC)
-	[1953] = { 1312 }; --Netherstorm (BC)
-	[1944] = { 1312 }; --Hellfire peninsula (BC)
-	[1949] = { 1312 }; --Blades edge mountains (BC)
-	[1946] = { 1312 }; --Zangarmarsh (BC)
-	[1952] = { 1312 }; --Terokkar forest (BC)
-	[1951] = { 1312 }; --Nagrand (BC)
+	[104] = { 1312 }; --Shadowmoon valley (BC)
+	[109] = { 1312 }; --Netherstorm (BC)
+	[100] = { 1312 }; --Hellfire peninsula (BC)
+	[105] = { 1312 }; --Blades edge mountains (BC)
+	[102] = { 1312 }; --Zangarmarsh (BC)
+	[108] = { 1312 }; --Terokkar forest (BC)
+	[107] = { 1312 }; --Nagrand (BC)
 	[119] = { 2257 }; --Sholazar basin (WOLK)
 	[120] = { 2257 }; --The storm peaks (WOLK)
 	[114] = { 2257 }; --Borean tundra (WOLK)
@@ -19,9 +19,45 @@ private.ACHIEVEMENT_ZONE_IDS = {
 	[115] = { 2257 }; --Dragonblight (WOLK)
 	[118] = { 2257 }; --Icecrown (WOLK)
 	[116] = { 2257 }; --Grizzly hills (WOLK)
+	[554] = { 8714 }; --Timeless isle (Pandaria)
+	[555] = { 8714 }; --Cavern of lost spirits (Pandaria)
+	[504] = { 8103, 8049, 8050, 8051 }; --Isle of thunder (Pandaria)
+	[505] = { 8103 }; --Lightning vein mine (Pandaria)
+	[371] = { 7439, 7284, 7997, 6850, 6858, 7230, 6754, 6716, 6855, 6846 }; --The jade forest (Pandaria)
+	[379] = { 7439, 7284, 7997, 6850, 6858, 7230, 6754, 6716, 6855, 6846, 6847 }; --Kun lai summit (Pandaria)
+	[390] = { 7439, 6858, 6754, 6855 }; --Vale of eternal blossoms (Pandaria)
+	[376] = { 7439, 7284, 7997, 6850, 6858, 6846, 6856 }; --Valley of the four winds (Pandaria)
+	[388] = { 7439, 7284, 7997, 6855, 6847 }; --Townlong steppes (Pandaria)
+	[418] = { 7439, 7284, 7997, 6850, 7230, 6754, 6716, 6855, 6846, 6856 }; --Krasarang wilds (Pandaria)
+	[422] = { 7439, 7284, 6716, 6857 }; --Dread wastes (Pandaria)
+	[433] = { 6716 }; --The Veiled Stair (Pandaria)
 }
 
+private.ACHIEVEMENT_WITH_CRITERIA = { 
+	6850, 6858, 7230, 6754, 6716, 6855, 6846, 6856, 6847, 6857, 8049, 8050, 8051
+}
+
+private.ACHIEVEMENT_SPELL_IDS = {}
+
 private.ACHIEVEMENT_TARGET_IDS = {
-	[1312] = { 18695, 18697, 18694, 18686, 18678, 18692, 18680, 18690, 18685, 18683, 18682, 18681, 18689, 18698, 17144, 18696, 18677, 20932, 18693, 18679 }; --Bloody Rare (Burning Crusade)
 	[2257] = { 32517, 32495, 32358, 32377, 32398, 32409, 32422, 32438, 32471, 32481, 32630, 32487, 32501, 32357, 32361, 32386, 32400, 32417, 32429, 32447, 32475, 32485, 32500 }; --Frostbitten (Wrath of the Lich king)
+	[1312] = { 18695, 18697, 18694, 18686, 18678, 18692, 18680, 18690, 18685, 18683, 18682, 18681, 18689, 18698, 17144, 18696, 18677, 20932, 18693, 18679 }; --Bloody Rare (Burning Crusade)
+	[8714] = { 73158, 73161, 72245, 72193, 71864, 72048, 73277, 73282, 73166, 73704, 73170, 73171, 73173, 73167, 73279, 73174, 73666, 73160, 72909, 71919, 72045, 73854, 72769, 72775, 72808, 73163, 73157, 73169, 73175, 73172, 72970, 73281 }; --Timeless Champion (Pandaria)
+	[8103] = { 50358, 69996, 69998, 70000, 70002, 69664, 69997, 69999, 70001, 70003 }; --Champions of Lei Shen (Pandaria)
+	[7439] = { 50823, 50830, 50832, 50840, 50766, 50769, 50776, 50363, 50388, 50734, 50749, 50339, 50341, 50347, 50350, 50352, 50355, 50359, 50811, 50817, 50821, 50782, 50787, 50791, 50806, 51059, 50332, 50334, 50828, 50831, 50836, 50750, 50768, 50772, 50780, 50364, 50733, 50739, 50338, 50340, 50344, 50349, 50351, 50354, 50356, 50808, 50816, 50820, 50822, 50783, 50789, 50805, 51078, 50331, 50333, 50336 }; --Glorious! (Pandaria)
+	[7284] = { 224626, 213364, 213742, 64272, 213363 }; --Is Another Man's Treasure
+	[7997] = { 213366, 214339, 213368, 214338, 213748, 213362, 214337, 213959 }; --Riches of Pandaria
+	[6850] = { 211990, 215785, 211993, 211994 }; --Hozen in the Mist
+	[6858] = { 213413, 213415, 213511, 213414, 213416 }; --What Is Worth Fighting For
+	[7230] = { 213407, 213438, 213512 }; --Legend of the Brewfathers
+	[6754] = { 213331, 213333, 213332, 213334 }; --The Dark Heart of the Mogu
+	[6716] = { 213327, 213329, 213328, 213330 }; --Between a Saurok and a Hard Place
+	[6855] = { 215799, 213421, 213445, 213455, 215797, 213422, 213443, 213456 }; --The Seven Burdens of Shaohao
+	[6846] = { 215779, 215782, 215780, 215783 }; --Fish Tales
+	[6856] = { 213459, 213461, 213460, 215765 }; --Ballad of Liu Lang
+	[6847] = { 213417, 215798, 213418, 213420 }; --The Song of the Yaungol
+	[6857] = { 213409, 213411, 213410, 213412 }; --Heart of the Mantid Swarm
+	[8049] = { 218427, 218429, 218428, 218430 }; --The Zandalari Prophecy
+	[8050] = { 218431, 218433, 218432, 218434 }; --Rumbles of Thunder
+	[8051] = { 218435, 218437, 218436, 218438 }; --Gods and Monsters
 }

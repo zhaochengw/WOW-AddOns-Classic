@@ -446,17 +446,17 @@ end
 local COLUMN_INFO = {
   {
     title = L["Name"],
-    width = 300,
+    width = 1,
     attribute = "name",
   },
   {
     title = L["Time"],
-    width = 80,
+    width = 100,
     attribute = "time",
   },
   {
     title = L["Spike"],
-    width = 80,
+    width = 100,
     attribute = "spike",
   },
 }
@@ -475,6 +475,8 @@ local modes = {
 }
 WeakAurasProfilingMixin = {}
 
+local MinPanelWidth, MinPanelHeight = 500, 300
+local MinPanelMinimizedWidth, MinPanelMinimizedHeight = 250, 80
 function WeakAurasProfilingMixin:OnShow()
   if self.initialised then
     return
@@ -483,7 +485,9 @@ function WeakAurasProfilingMixin:OnShow()
 
   ButtonFrameTemplate_HidePortrait(self)
   self:SetTitle(L["WeakAuras Profiling"])
-  self:SetSize(500, 300)
+  self:SetSize(MinPanelWidth, MinPanelHeight)
+  self.ResizeButton:Init(self, MinPanelMinimizedWidth, MinPanelMinimizedHeight)
+  self:SetResizeBounds(MinPanelWidth, MinPanelHeight)
   self.mode = 1
   UIDropDownMenu_SetText(self.buttons.modeDropDown, modes[1])
 
@@ -495,17 +499,20 @@ function WeakAurasProfilingMixin:OnShow()
   minimizeButton:SetOnMaximizedCallback(function()
     self.minimized = false
     self.buttons:Show()
+    self.ResizeButton:Show()
     self.ColumnDisplay:Show()
     self.ScrollBox:Show()
     self.ScrollBar:Show()
     self.stats:Show()
     self:ClearAllPoints()
     self:SetPoint("TOPRIGHT", UIParent, "BOTTOMLEFT", self.right, self.top)
-    self:SetHeight(self.prevHeight)
+    self:SetHeight(self.prevHeight > MinPanelHeight and self.prevHeight or MinPanelHeight)
+    self:SetWidth(self.prevWidth > MinPanelWidth and self.prevWidth or MinPanelWidth)
   end)
   minimizeButton:SetOnMinimizedCallback(function()
     self.minimized = true
     self.buttons:Hide()
+    self.ResizeButton:Hide()
     self.ColumnDisplay:Hide()
     self.ScrollBox:Hide()
     self.ScrollBar:Hide()
@@ -514,10 +521,35 @@ function WeakAurasProfilingMixin:OnShow()
     self:ClearAllPoints()
     self:SetPoint("TOPRIGHT", UIParent, "BOTTOMLEFT", self.right, self.top)
     self.prevHeight = self:GetHeight()
-    self:SetHeight(60)
+    self.prevWidth = self:GetWidth()
+    self:SetHeight(MinPanelMinimizedHeight)
+    self:SetWidth(MinPanelMinimizedWidth)
   end)
 
   self.ColumnDisplay:LayoutColumns(COLUMN_INFO)
+
+  -- LayoutColumns doesn't handle resizable columns, fix it
+  local headers = {}
+  for header in self.ColumnDisplay.columnHeaders:EnumerateActive() do
+    headers[header:GetID()] = header
+  end
+  local prevHeader
+  for i, header in ipairs_reverse(headers) do
+    header:ClearAllPoints()
+    local info = COLUMN_INFO[i]
+    if info.width ~= 1 then
+      header:SetWidth(info.width)
+    end
+    if prevHeader == nil then
+      header:SetPoint("BOTTOMRIGHT", -25, 1)
+    else
+      header:SetPoint("BOTTOMRIGHT", prevHeader, "BOTTOMLEFT", 2, 0)
+    end
+    if i == 1 then
+      header:SetPoint("BOTTOMLEFT", 3, 0)
+    end
+    prevHeader = header
+  end
 
   local view = CreateScrollBoxListLinearView()
   view:SetElementInitializer("WeakAurasProfilingLineTemplate", function(frame, elementData)
@@ -784,7 +816,10 @@ end
 
 function WeakAurasProfilingMixin:Toggle()
   if self:IsShown() then
-    self:Stop()
+    if currentProfileState == "profiling" then
+      self:Stop()
+    end
+    self:Hide()
   else
     self:Start()
   end

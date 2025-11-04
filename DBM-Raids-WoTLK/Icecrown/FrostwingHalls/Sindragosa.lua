@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250720212401")
 mod:SetCreatureID(36853)
 mod:SetEncounterID(not mod:IsPostCata() and 855 or 1105)
 mod:SetModelID(30362)
@@ -62,14 +62,11 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 mod:AddSetIconOption("SetIconOnFrostBeacon", 70126, true, 7, {1, 2, 3, 4, 5, 6})--Uses roster sorting icons, so it does NOT match BWs. Cross mod raids should disable DBM or BW
 mod:AddSetIconOption("SetIconOnUnchainedMagic", 69762, true, 0, {2, 3, 4, 5, 6, 7})--Starts at 2 so it doesn't steal frost beacon icon and the like
 mod:AddBoolOption("ClearIconsOnAir", false, nil, nil, nil, nil, 70126)
-mod:AddBoolOption("AnnounceFrostBeaconIcons", false, nil, nil, nil, nil, 70126)
-mod:AddBoolOption("AchievementCheck", false, "announce", nil, nil, nil, 4620, "achievement")--group it with achievement timer
 mod:AddRangeFrameOption("10/20")
 
 local beaconTargets		= {}
 local unchainedTargets	= {}
 mod.vb.warned_P2 = false
-mod.vb.warnedfailed = false
 mod.vb.unchainedIcons = 2
 local playerUnchained = false
 local playerBeaconed = false
@@ -124,7 +121,6 @@ function mod:OnCombatStart(delay)
 	timerNextAirphase:Start(50-delay)
 	timerNextBlisteringCold:Start(33-delay)
 	self.vb.warned_P2 = false
-	self.vb.warnedfailed = false
 	table.wipe(beaconTargets)
 	table.wipe(unchainedTargets)
 	self.vb.unchainedIcons = 2
@@ -158,9 +154,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerNextBeacon:Start(nil, self.vb.beaconCount+1)
 			if self.Options.SetIconOnFrostBeacon then
 				self:SetIcon(args.destName, 1)
-				if self.Options.AnnounceFrostBeaconIcons and IsInGroup() and DBM:GetRaidRank() > 1 then
-					SendChatMessage(L.BeaconIconSet:format(1, args.destName), IsInRaid() and "RAID" or "PARTY")
-				end
 				if playerBeaconed then
 					yellFrostBeacon:Yell(1, 1)
 					yellFrostBeaconFades:Countdown(args.spellId, nil, 1)
@@ -180,9 +173,6 @@ function mod:SPELL_AURA_APPLIED(args)
 					if name == DBM:GetMyPlayerInfo() then
 						yellFrostBeacon:Yell(i, i)
 						yellFrostBeaconFades:Countdown(args.spellId, nil, i)
-					end
-					if self.Options.AnnounceFrostBeaconIcons and IsInGroup() and DBM:GetRaidRank() > 1 then
-						SendChatMessage(L.BeaconIconSet:format(i, name, IsInRaid() and "RAID" or "PARTY"))
 					end
 				end
 				warnBeaconTargets(self)
@@ -236,19 +226,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnMysticBuffet:Play("stackhigh")
 			else
 				warnMysticBuffet:Show(args.amount or 1)
-			end
-			if self.Options.AchievementCheck and not self.vb.warnedfailed and (args.amount or 1) < 2 then
-				timerMysticAchieve:Start()
-			end
-		end
-		if args:IsDestTypePlayer() then
-			if self.Options.AchievementCheck and DBM:GetRaidRank() > 0 and not self.vb.warnedfailed and self:AntiSpam(3) then
-				if (args.amount or 1) == 5 then
-					SendChatMessage(L.AchievementWarning:format(args.destName), "RAID")
-				elseif (args.amount or 1) > 5 then
-					self.vb.warnedfailed = true
-					SendChatMessage(L.AchievementFailed:format(args.destName, (args.amount or 1)), "RAID_WARNING")
-				end
 			end
 		end
 	end

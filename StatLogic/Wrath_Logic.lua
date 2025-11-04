@@ -2,13 +2,16 @@ local addonName, addon = ...
 ---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
--- 3.1.0
+-- Patch 3.1.0
 -- Haste Rating: Shamans, Paladins, Druids, and Death Knights now receive 30% more melee haste from Haste Rating.
-StatLogic.ExtraHasteClasses["PALADIN"] = true
-StatLogic.ExtraHasteClasses["DEATHKNIGHT"] = true
-StatLogic.ExtraHasteClasses["SHAMAN"] = true
-StatLogic.ExtraHasteClasses["DRUID"] = true
-local extraHaste = StatLogic.ExtraHasteClasses[addon.class] and 1.3 or 1
+-- These rates can be extracted from the client at GameTables/OCTClassCombatRatingScalar.txt
+local ExtraHasteClasses = {
+	PALADIN = true,
+	DEATHKNIGHT = true,
+	SHAMAN = true,
+	DRUID = true,
+}
+local extraHaste = ExtraHasteClasses[addon.class] and 1.3 or 1
 
 -- Level 60 rating base
 StatLogic.RatingBase = {
@@ -882,7 +885,7 @@ addon.baseArmorTable = {
 			},
 		},
 	},
-	[Enum.ItemQuality.Good] = {
+	[Enum.ItemQuality.Good or Enum.ItemQuality.Uncommon] = {
 		[WRISTSLOT] = {
 			[Enum.ItemArmorSubclass.Mail] = {
 				[33] = 91,
@@ -965,7 +968,7 @@ addon.baseArmorTable = {
 			},
 		},
 	},
-	[Enum.ItemQuality.Standard] = {
+	[Enum.ItemQuality.Standard or Enum.ItemQuality.Common] = {
 		[SECONDARYHANDSLOT] = {
 			[Enum.ItemArmorSubclass.Shield] = {
 				[1] = 10,

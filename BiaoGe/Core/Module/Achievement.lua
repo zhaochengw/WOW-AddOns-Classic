@@ -160,8 +160,31 @@ BG.Init(function()
         }
     else
         db = {
+            ["H_DS"] = {
+                6116,
+                6115,
+                6114,
+                6113,
+                6112,
+                6111,
+                6110,
+                6109,
+                6169, -- 成就龙
+                6174,
+                6128,
+                6129,
+                6175,
+                6084,
+                6105,
+                6133,
+                6180,
+            },
+            ["N_DS"] = {
+                6177,
+                6107,
+                6106,
+            },
             ["H_MSV"] = {
-                6932, -- 团队的荣耀
                 6734, -- 惧之煞
                 6733,
                 6732,
@@ -178,6 +201,7 @@ BG.Init(function()
                 6721,
                 6720,
                 6719,
+                6932, -- 成就龙
             },
             ["N_MSV"] = {
                 6689, -- 永春台
@@ -248,7 +272,7 @@ BG.Init(function()
     end
 
     -- 10人
-    local f, child = BG.CreateScrollFrame(BG.AchievementMainFrame, 300, 250, nil, true)
+    local f, child = BG.CreateScrollFrame(BG.AchievementMainFrame, 300, 210, nil, true)
     do
         f:SetBackdrop({
             bgFile = "Interface/ChatFrame/ChatFrameBackground",

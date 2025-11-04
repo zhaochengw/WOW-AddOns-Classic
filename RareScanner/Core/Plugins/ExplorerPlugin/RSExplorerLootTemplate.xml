@@ -1,0 +1,346 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+	<Frame name="RSExplorerCustomLootTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="background" atlas="GarrLanding-MiddleTile">
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Border" setAllPoints="true" frameLevel="100">
+				<Layers>
+					<Layer level="BORDER" textureSubLevel="4">
+						<Texture parentKey="BaseFrameTopEdge" atlas="GarrLanding-Top" useAtlasSize="false">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" y="-4" />
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="TOPRIGHT" y="-82" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameBottomEdge" atlas="GarLanding-Bottom" useAtlasSize="false">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="BOTTOMLEFT" y="86" />
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameLeftEdge" atlas="GarLanding-Left" useAtlasSize="false">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="83" y="-30" />
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMLEFT" x="-3" y="30" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameRightEdge" atlas="GarLanding-Right" useAtlasSize="false">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPRIGHT" x="-83" y="-30" />
+								<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="3" y="30" />
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="BORDER" textureSubLevel="5">
+						<Texture parentKey="BaseFrameTopLeftCorner" atlas="GarrLanding-upperleft" useAtlasSize="true">
+							<Size>
+								<AbsDimension x="32" y="32" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-4" y="-2" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameTopRightCorner" atlas="GarrLanding-upperright" useAtlasSize="true">
+							<Size>
+								<AbsDimension x="32" y="32" />
+							</Size>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="4" y="-2" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameBottomLeftCorner" atlas="GarrLanding-lowerleft" useAtlasSize="true">
+							<Size>
+								<AbsDimension x="32" y="32" />
+							</Size>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT" x="-5" y="-2" />
+							</Anchors>
+						</Texture>
+						<Texture parentKey="BaseFrameBottomRightCorner" atlas="GarrLanding-lowerright" useAtlasSize="true">
+							<Size>
+								<AbsDimension x="32" y="32" />
+							</Size>
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="4" y="-1" />
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad>
+						self:SetScale(0.4)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="ControlFrame" inherits="RSExplorerLootControlTemplate" frameLevel="101">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="5" y="-25" />
+					<Anchor point="TOPRIGHT" x="-5" y="25" />
+				</Anchors>
+			</Frame>
+			<Frame parentKey="GroupList" inherits="RSExplorerLootGroupListTemplate" frameLevel="101">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.ControlFrame" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="BOTTOM" relativeKey="$parent" relativePoint="BOTTOM" y="10" />
+				</Anchors>
+			</Frame>
+			<Frame parentKey="GroupInfo" inherits="RSExplorerGroupInfo" frameLevel="101">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.GroupList" relativePoint="TOPRIGHT" x="-20"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="-10" y="10" />
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<Frame name="RSExplorerLootControlTemplate" virtual="true">
+		<Size y="80" />
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="LootGroupLabel" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Size x="250" />
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="15" y="-5" />
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="LootNewGroupLabel" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Size x="250" />
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.LootGroupLabel" relativePoint="RIGHT" x="20" />
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="ItemListLabel" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Size x="250" />
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="15" y="-45" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<DropdownButton parentKey="LootGroupDropDown" inherits="WowStyle1DropdownTemplate">
+				<Size x="265" y="25" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.LootGroupLabel" relativePoint="BOTTOMLEFT" x="-4" y="-2" />
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+					  	self:GetParent().mainFrame:ShowTooltip(self)
+					</OnEnter>
+					<OnLeave>
+					  	self:GetParent().mainFrame:HideTooltip(self)
+					</OnLeave>
+				</Scripts>
+			</DropdownButton>
+			<EditBox parentKey="NewGroup" letters="40" inherits="InputBoxTemplate" autoFocus="false">
+				<Size x="250" y="30" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.LootNewGroupLabel" relativePoint="BOTTOMLEFT" y="2" />
+				</Anchors>
+				<FontString inherits="GameFontHighlightSmall" />
+				<Scripts>
+					<OnEnterPressed>
+						self:GetParent():GetParent():AddNewGroup(self)
+					</OnEnterPressed>
+					<OnEnter>
+					  	self:GetParent().mainFrame:ShowTooltip(self)
+					</OnEnter>
+					<OnLeave>
+					  	self:GetParent().mainFrame:HideTooltip(self)
+					</OnLeave>
+				</Scripts>
+			</EditBox>
+			<EditBox parentKey="ItemList" inherits="InputBoxTemplate" autoFocus="false">
+				<Size x="840" y="30" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.ItemListLabel" relativePoint="BOTTOMLEFT" y="2" x="2" />
+				</Anchors>
+				<FontString inherits="GameFontHighlightSmall" />
+				<Scripts>
+					<OnEnterPressed>
+						self:GetParent():GetParent():AddItems(self)
+					</OnEnterPressed>
+					<OnEnter>
+					  	self:GetParent().mainFrame:ShowTooltip(self)
+					</OnEnter>
+					<OnLeave>
+					  	self:GetParent().mainFrame:HideTooltip(self)
+					</OnLeave>
+				</Scripts>
+			</EditBox>
+		</Frames>
+	</Frame>
+
+	<Frame name="RSExplorerLootGroupListTemplate" virtual="true">
+		<Size x="240" y="200" />
+		<Frames>
+			<Frame parentKey="scrollBox" inherits="WowScrollBoxList">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="10" y="-5" />
+					<Anchor point="BOTTOMRIGHT" x="-35" />
+				</Anchors>
+			</Frame>
+			<EventFrame parentKey="scrollBar" inherits="MinimalScrollBar">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.ScrollBox" relativePoint="TOPRIGHT" x="-30" y="-5"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ScrollBox" relativePoint="BOTTOMRIGHT" x="7" y="5"/>
+				</Anchors>
+			</EventFrame>
+		</Frames>
+	</Frame>
+
+	<Button name="RSExplorerGroupButtonTemplate" virtual="true">
+		<Size x="170" y="20" />
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BG" atlas="GarrMission_FollowerListButton" useAtlasSize="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="Selected" atlas="GarrMission_FollowerListButton-Select" useAtlasSize="false" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+					<Size x="180" y="0" />
+					<Anchors>
+						<Anchor point="LEFT" x="5" Y="-1" />
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<HighlightTexture parentKey="Highlight" atlas="GarrMission_FollowerListButton-Highlight" useAtlasSize="false">
+			<Anchors>
+				<Anchor point="TOPLEFT" />
+				<Anchor point="BOTTOMRIGHT" />
+			</Anchors>
+		</HighlightTexture>
+	</Button>
+
+	<Frame name="RSExplorerGroupInfo" virtual="true">
+		<Anchors>
+			<Anchor point="TOPLEFT" />
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BG" atlas="UI-Frame-Neutral-CardParchmentWider" useAtlasSize="false">
+					<Anchors>
+						<Anchor point="TOPLEFT" />
+						<Anchor point="BOTTOMRIGHT" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="NoItems" inherits="GameFontNormal" hidden="true" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="CENTER" />
+					</Anchors>
+					<Color r="0" g="0" b="0" a="1" />
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox parentKey="EditGroupName" letters="40" inherits="InputBoxTemplate" autoFocus="false">
+				<Size x="250" y="30" />
+				<Anchors>
+					<Anchor point="TOPLEFT" y="-20" x="40" />
+				</Anchors>
+				<FontString inherits="GameFontHighlightSmall" />
+				<Scripts>
+					<OnEnterPressed>
+						self:GetParent():GetParent():EditGroupName(self)
+					</OnEnterPressed>
+					<OnEnter>
+					  	self:GetParent().mainFrame:ShowTooltip(self)
+					</OnEnter>
+					<OnLeave>
+					  	self:GetParent().mainFrame:HideTooltip(self)
+					</OnLeave>
+				</Scripts>
+			</EditBox>
+			<Button parentKey="DeleteGroup" inherits="StaticPopupButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.EditGroupName" relativePoint="RIGHT" />
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="atlasName" value="128-RedButton" type="string" />
+				</KeyValues>
+				<Scripts>
+					<OnClick>
+						self:GetParent():GetParent():DeleteGroup(self, button)
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Frame parentKey="ItemPanel">
+				<Anchors>
+					<Anchor point="TOPLEFT" y="-50" x="35" />
+					<Anchor point="BOTTOMRIGHT" y="30" x="-30" />
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+	
+	<Button name="RSExplorerCustomLootItemTemplate" virtual="true">
+		<Size x="32" y="32" />
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon">
+					<Size x="32" y="32" />
+					<Anchors>
+						<Anchor point="CENTER" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="IconBorder" atlas="GarrMission_RewardsShadow">
+					<Size x="32" y="32" />
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.Icon" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<Texture parentKey="IconOverlay" hidden="true">
+					<Size x="34" y="34" />
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.Icon" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEnter function="RSExplorerCustomLootItem_OnEnter" />
+			<OnLeave function="RSExplorerCustomLootItem_OnLeave" />
+			<OnClick>
+				RSExplorerCustomLootItem_OnClick(self, button);
+			</OnClick>
+		</Scripts>
+	</Button>
+</Ui>

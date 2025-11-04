@@ -3,6 +3,7 @@ local GlobalAddonName, ExRT = ...
 local math_ceil, IsEncounterInProgress, abs, UnitHealth, UnitHealthMax, GetTime, format, tableCopy = math.ceil, IsEncounterInProgress, abs, UnitHealth, UnitHealthMax, GetTime, format, ExRT.F.table_copy2
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local VMRT = nil
+local SendChatMessage = C_ChatInfo and C_ChatInfo.SendChatMessage or SendChatMessage
 
 local module = ExRT:New("Timers",ExRT.L.timers)
 local ELib,L = ExRT.lib,ExRT.L
@@ -87,7 +88,9 @@ local function CreateTimers(ctime,cname)
 		dbmPlayerPrefix = ""
 	end
 	if cname == L.timerattack then
-		if SlashCmdList.BIGWIGSPULL then
+		if SlashCmdList.pull then
+			SlashCmdList.pull(ctime)
+		elseif SlashCmdList.BIGWIGSPULL then
 			SlashCmdList.BIGWIGSPULL(ctime)
 		elseif SlashCmdList.DEADLYBOSSMODSPULL then
 			SlashCmdList.DEADLYBOSSMODSPULL(ctime)
@@ -99,7 +102,9 @@ local function CreateTimers(ctime,cname)
 			C_PartyInfo.DoCountdown(ctime)
 		end
 	elseif cname == L.timerafk then
-		if SlashCmdList.BIGWIGSBREAK then
+		if SlashCmdList["break"] then
+			SlashCmdList["break"](tostring(tonumber(ctime)/60))
+		elseif SlashCmdList.BIGWIGSBREAK then
 			SlashCmdList.BIGWIGSBREAK(tostring(tonumber(ctime)/60))
 		elseif SlashCmdList.DEADLYBOSSMODSBREAK then
 			SlashCmdList.DEADLYBOSSMODSBREAK(tostring(tonumber(ctime)/60))
@@ -108,7 +113,9 @@ local function CreateTimers(ctime,cname)
 		SendAddonMessage("BigWigs", "P^Break^"..ctime, chat_type,playerName)
 		SendAddonMessage(dbmPrefix, ("%s1\tBT\t%d"):format(dbmPlayerPrefix, ctime), chat_type,playerName)
 	else
-		if SlashCmdList.BIGWIGSLOCALBAR then
+		if SlashCmdList.raidbar then
+			SlashCmdList.raidbar(ctime.." "..cname)
+		elseif SlashCmdList.BIGWIGSLOCALBAR then
 			SlashCmdList.BIGWIGSLOCALBAR(ctime.." "..cname)
 		elseif SlashCmdList.DEADLYBOSSMODS then
 			SlashCmdList.DEADLYBOSSMODS("timer "..ctime.." "..cname)
@@ -306,7 +313,7 @@ function module.options:Load()
 	self:CreateTilte()
 
 	local GetSpecializationInfoByID = GetSpecializationInfoByID
-	if ExRT.isClassic then
+	if ExRT.isClassic and not ExRT.isMoP then
 		GetSpecializationInfoByID = GetSpecializationInfoForSpecID or ExRT.Classic.GetSpecializationInfoByID
 	end
 
@@ -497,6 +504,9 @@ function module.options:Load()
 			"WARLOCK",
 			"DRUID",
 		}
+		if ExRT.isMoP then
+			tinsert(module.db.classNames, "MONK")
+		end
 	end
 	for key, class in ipairs(module.db.classNames) do
 		local column = (key-1) % 3

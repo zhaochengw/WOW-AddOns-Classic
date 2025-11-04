@@ -4,7 +4,7 @@
 local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
-local LibDialog = LibStub("LibDialog-1.0")
+local LibDialog = LibStub("LibDialog-1.0RS")
 
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
@@ -75,6 +75,20 @@ LibDialog:Register(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS, {
 					RSConfigDB.SetShowingMissingToys(false)
 				end
 				
+				if (self.data.filters[RSConstants.EXPLORER_FILTER_DROP_APPEARANCES]) then
+					RSConfigDB.SetShowingMissingAppearances(true)
+				else
+					RSConfigDB.SetShowingMissingAppearances(false)
+				end
+				
+				for groupKey, _ in pairs(RSCollectionsDB.GetItemGroups()) do
+					if (self.data.filters[string.format(RSConstants.EXPLORER_FILTER_DROP_CUSTOM, groupKey)]) then
+						RSConfigDB.SetShowingCustomItems(groupKey, true)
+					else
+						RSConfigDB.SetShowingCustomItems(groupKey, false)
+					end
+				end
+				
 				RSLogger:PrintMessage(AL["LOG_LOOT_FILTERS_APPLIED"])
             end,
         },
@@ -92,7 +106,7 @@ LibDialog:Register(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS, {
 ---============================================================================
 
 LibDialog:Register(RSConstants.EXPLORER_SCAN_NOT_DONE, {
-	text = string.format(AL["EXPLORER_SCAN_NOT_DONE"]),
+	text = AL["EXPLORER_SCAN_NOT_DONE"],
 	no_close_button = true,
     buttons = {
         {
@@ -111,25 +125,36 @@ LibDialog:Register(RSConstants.EXPLORER_SCAN_NOT_DONE, {
 })
 
 ---============================================================================
--- TargetUnit tracker warning
+-- Explorer custom loot messages
 ---============================================================================
 
-LibDialog:Register(RSConstants.TARGET_UNIT_WARNING, {
-	text = string.format(AL["TARGET_UNIT_WARNING"]),
+LibDialog:Register(RSConstants.ITEM_LIST_VALIDATION_ERROR, {
+	text = AL["EXPLORER_CUSTOM_ITEMS_LIST_VALIDATION"],
+	no_close_button = false,
+	no_cancel_on_escape = true
+})
+
+LibDialog:Register(RSConstants.ITEM_LIST_WRONG_IDS_ERROR, {
+	text = AL["EXPLORER_CUSTOM_ITEMS_WRONG_IDS_VALIDATION"],
+	no_close_button = false,
+	no_cancel_on_escape = true
+})
+
+LibDialog:Register(RSConstants.DELETE_GROUP_CONFIRMATION, {
+	text = AL["EXPLORER_CUSTOM_ITEMS_DELETE_GROUP_CONFIRMATION"],
 	no_close_button = true,
     buttons = {
         {
             text = YES,
             on_click = function(self, mouseButton, down)
-            	RSConfigDB.SetScanningTargetUnit(true)
-            	LibStub("AceConfigRegistry-3.0"):NotifyChange("RareScanner General")
+            	local callback = self.data.callback
+        		callback()
             end,
         },
         {
             text = NO,
             on_click = function(self, mouseButton, down)
-            	RSConfigDB.SetScanningTargetUnit(false)
-            	LibDialog:Dismiss(RSConstants.TARGET_UNIT_WARNING)
+            	LibDialog:Dismiss(RSConstants.DELETE_GROUP_CONFIRMATION)
             end,
         },
     },          

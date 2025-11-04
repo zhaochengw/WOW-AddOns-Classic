@@ -171,7 +171,8 @@ local function createCustomList(f)
         il:SetPoint("TOPLEFT", b, "TOPRIGHT", 2, -2);
         il:Hide();
 
-        local it = itemf:CreateFontString(nil, nil,"GameFontNormalGraySmall");
+        local it = itemf:CreateFontString(nil, nil,"GameFontNormalSmall");
+        it:SetTextColor(.6, .6, .6);
         it:SetPoint("BOTTOMLEFT", b, "BOTTOMRIGHT", 2, 2);
         it:Hide();
 

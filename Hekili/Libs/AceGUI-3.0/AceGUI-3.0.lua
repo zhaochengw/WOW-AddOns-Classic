@@ -868,9 +868,8 @@ AceGUI:RegisterLayout("Table",
 			obj:SetUserData("layoutCache", layoutCache)
 		end
 		local t, laneH, laneV, rowspans, rowStart, colStart = unpack(layoutCache)
-
 		-- Create the grid
-		local n, slotFound = 0
+		local n, slotFound = 0, nil
 		for i,child in ipairs(children) do
 			if child:IsShown() then
 				repeat

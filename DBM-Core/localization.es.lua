@@ -36,6 +36,7 @@ L.TEXT_ONLY_RANGE			= "El marco de distancia está limitado a texto únicamente 
 L.NO_RANGE					= "No se puede usar el radar de distancia en estancias. Se procederá a usar el marco de distancia por texto."
 L.NO_ARROW					= "No se puede usar la flecha en estancias."
 L.NO_HUD					= "No se puede usar el indicador en pantalla en estancias."
+L.NO_COMMS					= "La comunicación de addons no se puede usar durante encuentros o mazmorras M+ activas. Usa este comando nuevamente después de que termine el encuentro o la mazmorras."
 
 L.DYNAMIC_DIFFICULTY_CLUMP	= L.DBM .. " ha desactivado el marco de distancia dinámico para este combate debido a la falta de información sobre las diferencias según el número de jugadores."
 L.DYNAMIC_ADD_COUNT			= L.DBM .. " ha desactivado los anuncios de esbirros para este combate debido a la falta de información sobre las diferencias según el número de jugadores."
@@ -53,7 +54,7 @@ L.COMBAT_STARTED				= "Encuentro de %s iniciado. ¡Buena suerte!"
 L.COMBAT_STARTED_IN_PROGRESS	= "Te has unido al encuentro de %s mientras estaba en curso. ¡Buena suerte!"
 L.GUILD_COMBAT_STARTED			= "El encuentro de %s has sido iniciado por el grupo de hermandad de %s."
 L.SCENARIO_STARTED				= "%s iniciado. ¡Buena suerte!"
-L.SCENARIO_STARTED_IN_PROGRESS	= "Te has unido al escenario de %s mientras estaba en curso. ¡Buena suerte!"
+L.SCENARIO_STARTED_IN_PROGRESS	= "Te has unido a %s mientras estaba en curso. ¡Buena suerte!"
 L.BOSS_DOWN						= "¡%s ha sido derrotado en %s!"
 L.BOSS_DOWN_I					= "¡%s ha sido derrotado! Tienes %d victorias en total."
 L.BOSS_DOWN_L					= "¡%s ha sido derrotado en %s! Tu última victoria fue en %s, y tu récord actual es %s. Tienes %d victorias en total."
@@ -267,7 +268,7 @@ L.SLASHCMD_HELP							= {--AI translated (check me)
 	"/dbm pull <sec>: Envía un temporizador de inicio por <sec> segundos a la banda (requiere ser promovido. alias: pull).",
 	"/dbm break <min>: Envía un temporizador de descanso por <min> minutos a la banda (requiere ser promovido. alias: break).",
 	"/dbm timer: Inicia un temporizador personalizado de " .. L.DBM .. ", consulta '/dbm timer' para más detalles.",
-	"/keys: Realiza comprobaciones de piedra angular y calificación de M+ en el grupo/gremio y accesos directos a teletransportes de mazmorras. (alias: key, keystone)",
+	"/dbm key: Realiza comprobaciones de piedra angular y calificación de M+ en el grupo/gremio y accesos directos a teletransportes de mazmorras. (alias: key, keys, keystone)",
 	"/dbm lag: Realiza una comprobación de latencia en toda la banda.",
 	"/dbm durability: Realiza una comprobación de durabilidad en toda la banda.",
 	"/dbm help2: Muestra comandos de barra adicionales"
@@ -299,8 +300,8 @@ L.PULL_TIME_TOO_LONG			= "El temporizador de inicio no puede durar más de 60 se
 
 L.BREAK_USAGE				= "El temporizador de descanso no puede durar más de 60 minutos. Asegúrate de que has escrito el tiempo en minutos y no en segundos."
 L.BREAK_START				= "El descanso inicia ahora. ¡Tienes %s! (Enviado por %s)"
-L.BREAK_MIN					= "¡El descanso termina en %s minuto(s)!"
-L.BREAK_SEC					= "¡El descanso termina en %s segundo(s)!"
+L.BREAK_MIN					= "¡El descanso termina en %s |4minuto:minutos;!"
+L.BREAK_SEC					= "¡El descanso termina en %s |4segundo:segundos;!"
 L.TIMER_BREAK				= "¡Toca descanso!"
 L.ANNOUNCE_BREAK_OVER		= "El descanso ha terminado."
 

@@ -1,4 +1,5 @@
-LBIS.ReCacheDate = time({year=2022, month=12, day=22, hour=22})
+LBIS.ReCacheDate = time({year=2024, month=05, day=22, hour=00})
+LBIS.SpellCache = {};
 
 function LBIS:PreCacheItems()
     if LBIS.AllItemsCached then return LBIS.AllItemsCached; end
@@ -6,6 +7,7 @@ function LBIS:PreCacheItems()
     LBIS.AllItemsCached = true;
     --If cache date is updated (because of cache changing) reset the cache
     if (not LBISServerSettings.LastCacheDate or LBISServerSettings.LastCacheDate < LBIS.ReCacheDate) then
+        print("LBIS: Clearing Cache");
         LBISServerSettings.ItemCache = {};
         LBISServerSettings.LastCacheDate = time();
     end
@@ -24,7 +26,7 @@ function LBIS:PreCacheItems()
             LBIS:ConvertCustomList(LBISServerSettings.CustomList[prioSpec][prioSlot]);
 
             for _, item in pairs(LBISServerSettings.CustomList[prioSpec][prioSlot]) do
-                
+
                 if LBIS.CustomEditList.Items[item.ItemId] == nil then
                     LBIS.CustomEditList.Items[item.ItemId] = {};
                 end
@@ -46,7 +48,7 @@ end
 
 --TODO: Remove this after a few months ?
 function LBIS:ConvertCustomList(list)
-    
+
     local itemCount = 1;
     --Loop through all items in list
     for _, item in pairs(list) do
@@ -128,7 +130,6 @@ itemSlots["INVTYPE_WEAPON"] = LBIS.L["Main Hand"].."/"..LBIS.L["Off Hand"];
 itemSlots["INVTYPE_SHIELD"] = LBIS.L["Off Hand"];
 itemSlots["INVTYPE_RANGED"] = LBIS.L["Ranged/Relic"];
 itemSlots["INVTYPE_CLOAK"] = LBIS.L["Back"];
-itemSlots["INVTYPE_2HWEAPON"] = LBIS.L["Two Hand"];
 itemSlots["INVTYPE_BAG"] = LBIS.L["Bag"];
 itemSlots["INVTYPE_TABARD"] = LBIS.L["Tabard"];
 itemSlots["INVTYPE_ROBE"] = LBIS.L["Chest"];
@@ -155,9 +156,9 @@ function LBIS:GetItemInfo(itemId, returnFunc)
         local itemCache = Item:CreateFromItemID(itemId)
 
         itemCache:ContinueOnItemLoad(function()
-            local itemId, itemType, subType, itemSlot, _, classId = GetItemInfoInstant(itemId);
+            local itemId, itemType, subType, itemSlot, _, classId = C_Item.GetItemInfoInstant(itemId);
             local name = itemCache:GetItemName();
-            
+
             local newItem = {
                 Id = itemId,
                 Name = name,
@@ -169,11 +170,11 @@ function LBIS:GetItemInfo(itemId, returnFunc)
                 Class = classId,
                 Slot = itemSlots[itemSlot]
             };
-            
+
             if name and LBIS.ItemSources[itemId] ~= nil then
                 LBISServerSettings.ItemCache[itemId] = newItem;
             end
-            
+
             returnFunc(newItem);
         end);
     end
@@ -194,21 +195,21 @@ function LBIS:GetSpellInfo(spellId, returnFunc)
 
         spellCache:ContinueOnSpellLoad(function()
             local name = spellCache:GetSpellName();
-            
+
             local newSpell = {
                 Id = spellId,
                 Name = name,
                 SubText = spellCache:GetSpellSubtext(),
-                Texture = GetSpellTexture(spellId)
+                Texture = C_Spell.GetSpellTexture(spellId)
             };
 
             if name then
                 LBIS.SpellCache[spellId] = newSpell;
             end
-            
+
             returnFunc(newSpell);
         end);
-    end           
+    end
 end
 
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
@@ -223,11 +224,14 @@ function LBIS:CreateDropdown(opts, width)
     local menu_items = opts['items'] or {}
     local title_text = opts['title'] or ''
     local default_val = opts['defaultVal'] or ''
-    local change_func = opts['changeFunc'] or function (dropdown_val) end
+    local change_func = opts['changeFunc'] or function (dropdown_frame, dropdown_val) end
 
+---@diagnostic disable-next-line: undefined-field
     local dropdown = LibDD:Create_UIDropDownMenu(dropdown_name, opts['parent'])
 
+---@diagnostic disable-next-line: undefined-field
     LibDD:UIDropDownMenu_Initialize(dropdown, function(self, level, _)
+        ---@diagnostic disable-next-line: undefined-field
         local info = LibDD:UIDropDownMenu_CreateInfo()
         for key, val in pairs(menu_items) do
             info.text = val;
@@ -235,16 +239,21 @@ function LBIS:CreateDropdown(opts, width)
             info.isNotRadio = true;
             info.noClickSound = true
             info.func = function(b)
+                ---@diagnostic disable-next-line: undefined-field
                 LibDD:UIDropDownMenu_SetSelectedValue(dropdown, b.value, b.value)
+                ---@diagnostic disable-next-line: undefined-field
                 LibDD:UIDropDownMenu_SetText(dropdown, b.value)
                 info.checked = true
                 change_func(dropdown, b.value)
             end
+            ---@diagnostic disable-next-line: undefined-field
             LibDD:UIDropDownMenu_AddButton(info)
         end
     end)
 
+---@diagnostic disable-next-line: undefined-field
     LibDD:UIDropDownMenu_SetText(dropdown, default_val)
+    ---@diagnostic disable-next-line: undefined-field
     LibDD:UIDropDownMenu_SetWidth(dropdown, width, 0)
 
     local dd_title = dropdown:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall')
@@ -254,9 +263,9 @@ function LBIS:CreateDropdown(opts, width)
     return dropdown
 end
 
-local itemIsOnEnter = false;
+local itemIsOnEnter = nil;
 function LBIS:SetTooltipOnButton(b, item, isSpell)
-    
+
     b.ItemId = item.Id;
     b.ItemLink = item.Link;
 
@@ -282,7 +291,7 @@ function LBIS:SetTooltipOnButton(b, item, isSpell)
         end
     );
 
-    b:SetScript("OnEnter", 
+    b:SetScript("OnEnter",
         function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT");
             if isSpell == nil or isSpell == false then
@@ -292,7 +301,7 @@ function LBIS:SetTooltipOnButton(b, item, isSpell)
             end
             GameTooltip:Show();
             itemIsOnEnter = GameTooltip;
-                
+
             if IsShiftKeyDown() and itemIsOnEnter then
                 GameTooltip_ShowCompareItem(GameTooltip)
             end
@@ -328,14 +337,14 @@ function LBIS:spairs(t, order)
 
     if t ~= nil then
         for k in pairs(t) do keys[#keys+1] = k end
-        
+
         -- if order function given, sort by it by passing the table and keys a, b,
         -- otherwise just sort the keys 
         if order then
             table.sort(keys, function(a,b) return order(t, a, b) end)
         else
             table.sort(keys)
-        end    
+        end
     end
     -- return the iterator function
     local i = 0
@@ -379,7 +388,9 @@ local function stringify(object)
 end
 
 function LBIS:Debug(startString, object)
-    ChatFrame6:AddMessage("LBIS:"..startString..stringify(object));
+    if LBIS.Debugging then
+        print("LBIS:"..startString..stringify(object));
+    end
 end
 
 function LBIS:Error(startString, object)
@@ -410,6 +421,272 @@ function LBIS:DeepCopy(src, dst)
 		end
 	end
 	return dst
+end
+
+
+local function printItemSource(itemId, specItemSource, dl, printNumber, printLocation)
+
+    local text = "";
+
+    if printNumber == nil then
+        printNumber = true;
+    end
+    if printLocation == nil then
+        printLocation = true;
+    end
+    local sourceText = specItemSource.Source;
+    local sourceNumberText = specItemSource.SourceNumber;
+    local sourceLocationText = specItemSource.SourceLocation;
+
+    local sourceText1, sourceText2, sourceText3 = strsplit("~", sourceText);
+    local sourceNumberText1, sourceNumberText2, sourceNumberText3 = strsplit("~", sourceNumberText);
+    local sourceLocationText1, sourceLocationText2, sourceLocationText3 = strsplit("~", sourceLocationText);
+
+    local function printSourceText(sourceText, sourceNumberText, sourceLocationText, firstRow)
+        if not firstRow then
+            text = text.."\n"
+        end
+
+        local sourceSplit = { strsplit("&", sourceText) };
+        local sourceNumberSplit = { strsplit("&", sourceNumberText) };
+
+		local first = false;
+        for index, source in pairs(sourceSplit) do		
+			if first then
+				text = text.." & ";
+			else
+				first = true;
+			end
+            text = text..strtrim(source);
+			if sourceNumberSplit[index] ~= nil and printNumber then
+				local trimNumber = strtrim(sourceNumberSplit[index]);
+				if trimNumber ~= "" and trimNumber ~= "0" and trimNumber ~= "1" then
+					text = text.." ("..trimNumber..")";
+				end
+			end
+        end
+
+        if sourceLocationText ~= nil and sourceLocationText ~= "" and printLocation then
+            text = text.." - "..sourceLocationText;
+        end
+    end
+
+    if sourceText1 ~= nil and sourceText1 ~= "" then
+        printSourceText(sourceText1, sourceNumberText1, sourceLocationText1, true);
+    end
+
+    if sourceText2 ~= nil and sourceText2 ~= "" then
+        printSourceText(sourceText2, sourceNumberText2, sourceLocationText2, false);       	
+    end
+
+    if sourceText3 ~= nil and sourceText3 ~= "" then
+		printSourceText(sourceText3, sourceNumberText3, sourceLocationText3, false);
+    end
+
+    dl:SetText(text);
+end
+
+local function createSourceTypeText(specItemSource)
+
+    local function getSourceColor(sourceType)
+        if sourceType == LBIS.L["Profession"] then
+            return "|cFF33ADFF";
+        elseif sourceType == LBIS.L["Reputation"] then
+            return "|cFF23E4C4";
+        elseif sourceType == LBIS.L["Quest"] then
+            return "|cFFFFEF27";
+        elseif sourceType == LBIS.L["Dungeon Token"] then
+            return "|cFFFF276D";
+        elseif sourceType == LBIS.L["Tier Token"] then
+            return "|cFFFC6A03";
+        elseif sourceType == LBIS.L["Vendor"] then
+            return "|cFF43DC00";
+        elseif sourceType == LBIS.L["PvP"] then
+            return "|cFFE52AED";
+        elseif sourceType == LBIS.L["Drop"] then
+            return "|cFF7727FF";
+        else
+            return "|cFFFFFFFF";
+        end
+    end
+
+    local sourceType1, sourceType2 = strsplit("~", specItemSource.SourceType)    
+
+    --Create Drop Text
+    local dtColor = getSourceColor(sourceType1);
+    local text = dtColor..sourceType1;
+
+    if sourceType2 ~= nil then
+        dtColor = getSourceColor(sourceType2);
+        text = text.."|cFFFFD100/"..dtColor..sourceType2;
+    end
+	return text;
+end
+
+function LBIS.CreateItemRow(f, specItem, specItemSource)
+
+    LBIS:GetItemInfo(specItem.Id, function(item)
+        local window = LBIS.BrowserWindow.Window;
+
+        if item == nil or item.Id == nil or item.Link == nil or item.Type == nil then
+            LBIS:Error("Failed Load: "..specItem.Id);
+        end
+        --Create Item Button and Text
+
+        local b = CreateFrame("Button", nil, f);
+        b:SetSize(32, 32);
+        local bt = b:CreateTexture();
+        bt:SetAllPoints();
+        bt:SetTexture(item.Texture);
+        b:SetPoint("TOPLEFT", f, 2, -5);
+
+        LBIS:SetTooltipOnButton(b, item);
+
+        local t = f:CreateFontString(nil, nil, "GameFontNormal");
+        t:SetText((item.Link or item.Name):gsub("[%[%]]", ""));
+        t:SetPoint("TOPLEFT", b, "TOPRIGHT", 2, -2);
+
+        local type = item.Type;
+        if item.Subtype and item.Type ~= item.Subtype then
+            type = item.Type .. ", " .. item.Subtype;
+        end
+        type = type.. ", "..specItem.Slot;
+        local st = f:CreateFontString(nil, nil,"GameFontNormalSmall");
+        st:SetTextColor(.6, .6, .6);
+        st:SetText(type:gsub("~", "/"));
+        st:SetPoint("BOTTOMLEFT", b, "BOTTOMRIGHT", 2, 2);
+
+        local pt = f:CreateFontString(nil, nil, "GameFontNormal");
+        if specItem.Phase == nil or specItem.Phase == "0" or specItem.Phase == "99" then
+            pt:SetText("("..specItem.Bis..")");
+        else
+            pt:SetText("("..specItem.Bis.." "..string.gsub(specItem.Phase, "0", "PreRaid")..")");
+        end
+        pt:SetPoint("TOPLEFT", t, "TOPRIGHT", 4, 0);
+
+		local d = f:CreateFontString(nil, nil, "GameFontNormal");
+		d:SetText(createSourceTypeText(specItemSource));
+		d:SetJustifyH("LEFT");
+		d:SetWidth(window.ScrollFrame:GetWidth() / 2);
+		d:SetPoint("TOPLEFT", (window.ScrollFrame:GetWidth() / 2), -5);
+
+        local dl = f:CreateFontString(nil, nil, "GameFontNormalSmall");
+
+        local function showSourceButton(item, item2, text, isSpell)
+			
+			local itemSize = 28;
+			if item2 ~= nil then
+				itemSize = 22;
+			end
+		
+            local tb = CreateFrame("Button", nil, f);
+            tb:SetSize(itemSize, itemSize);
+            local bt = tb:CreateTexture();
+            bt:SetAllPoints();
+            bt:SetTexture(item.Texture);
+            tb:SetPoint("TOPRIGHT", -40, -16);
+            LBIS:SetTooltipOnButton(tb, item, isSpell);
+
+            if item2 ~= nil then                
+                local ft = f:CreateFontString(nil, nil, "GameFontNormalSmall")
+                ft:SetText("+");
+                ft:SetPoint("RIGHT", tb, "LEFT", -1, 0);
+
+                local tb2 = CreateFrame("Button", nil, f);
+                tb2:SetSize(itemSize, itemSize);
+                local bt2 = tb2:CreateTexture();
+                bt2:SetAllPoints();
+                bt2:SetTexture(item2.Texture);
+                tb2:SetPoint("RIGHT", ft, "LEFT", -1, 0);
+                LBIS:SetTooltipOnButton(tb2, item2, isSpell);
+
+                local ft2 = f:CreateFontString(nil, nil, "GameFontNormalSmall")
+                ft2:SetText(text);
+                ft2:SetPoint("BOTTOMLEFT", tb2, "TOPLEFT", 0, 3);
+            else
+                local ft = f:CreateFontString(nil, nil, "GameFontNormalSmall")
+                ft:SetText(text);
+                ft:SetPoint("BOTTOMLEFT", tb, "TOPLEFT", 0, 3);
+            end
+        end
+
+        if specItemSource.SourceType == LBIS.L["Tier Token"] then
+            local tokenNumber, tokenNumber2 = strsplit('~', specItemSource.SourceNumber);
+            LBIS:GetItemInfo(tonumber(tokenNumber), function(tierToken)
+                if tokenNumber2 ~= nil and tokenNumber2 ~= tokenNumber then
+                    LBIS:GetItemInfo(tonumber(tokenNumber2), function(tierToken2)
+                        showSourceButton(tierToken, tierToken2, "Token:", false);
+                    end);
+                else 
+                    showSourceButton(tierToken, nil, "Token:", false);
+                end
+            end);
+            printItemSource(specItem.Id, specItemSource, dl, false, true)
+            dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);
+        elseif specItemSource.SourceType == LBIS.L["Profession"] and tonumber(specItemSource.SourceLocation) ~= nil then
+            LBIS:GetSpellInfo(tonumber(specItemSource.SourceLocation), function(professionSpell)
+                showSourceButton(professionSpell, nil, "Skill:", true);
+            end);
+            printItemSource(specItem.Id, specItemSource, dl, false, false)
+            dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);
+        else
+            printItemSource(specItem.Id, specItemSource, dl)
+            dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);
+        end
+        dl:SetJustifyH("LEFT");
+
+        local userItemCache = LBIS.UserItems[item.Id];
+        if userItemCache then
+            local ot = f:CreateTexture(nil,"BACKGROUND")
+            ot:SetSize(24, 24);
+            if userItemCache == "player" then
+                ot:SetTexture("Interface/AddOns/LoonBestInSlot/Icons/checkmark.tga")
+            elseif userItemCache == "bag" then
+                ot:SetTexture("Interface/AddOns/LoonBestInSlot/Icons/bag.tga")
+            elseif userItemCache == "bank" then
+                ot:SetTexture("Interface/AddOns/LoonBestInSlot/Icons/bank.tga")
+            end
+            ot:SetPoint("TOPRIGHT", -2, -6);
+        end
+    end);
+
+    -- even if we are reusing, it may not be in the same order
+    local _, count = string.gsub(specItemSource.Source, "~", "")
+    if count > 1 then
+        count = count - 1;
+    else 
+        count = 0;
+    end
+    return (46 + (count * 10));
+end
+
+function LBIS:IsInZone(specItem)
+    local zone, _ = gsub(gsub(specItem.SourceLocation, "%(25H%)", "(25)"), "%(10H%)", "(10)")
+
+    if LBISSettings.SelectedZone == LBIS.L["All"] then
+        return true;
+    elseif strfind(zone, gsub(gsub(LBISSettings.SelectedZone, "%(", "%%%("), "%)", "%%%)")) ~= nil then
+        return true;
+    end
+    return false;
+end
+
+function LBIS:IsInSlot(specItem)
+    if LBISSettings.SelectedSlot == LBIS.L["All"] then
+        return true;
+    elseif strfind(specItem.Slot, LBISSettings.SelectedSlot) ~= nil then
+        return true;
+    end
+    return false;
+end
+
+function LBIS:IsInSource(specItem)
+    if LBISSettings.SelectedSourceType == LBIS.L["All"] then
+        return true;
+    elseif strfind(specItem.SourceType, LBISSettings.SelectedSourceType) ~= nil then
+        return true;
+    end
+    return false;
 end
 
 function LBIS:MeasureCode(codeName, func)

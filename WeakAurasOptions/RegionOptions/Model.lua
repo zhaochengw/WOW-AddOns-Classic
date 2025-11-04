@@ -208,6 +208,17 @@ local function createOptions(id, data)
       order = 26,
       hidden = function() return not data.api end
     },
+    alpha = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Alpha"],
+      order = 50,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
     endHeader = {
       type = "header",
       order = 100,
@@ -225,13 +236,14 @@ local function createOptions(id, data)
   };
 end
 
--- Duplicated because Private does not exist when we want to create the first thumnail
+-- Duplicated because Private does not exist when we want to create the first thumbnail
 local function ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
   -- In Dragonflight the api changed, this converts to the new api
   self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), -s)
 end
 
 local function createThumbnail()
+    ---@class frame
   local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
@@ -241,6 +253,7 @@ local function createThumbnail()
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
+  ---@class Model
   local model = CreateFrame("PlayerModel", nil, borderframe);
   borderframe.model = model;
   model.SetTransformFixed = ModelSetTransformFixed
@@ -259,9 +272,9 @@ local function modifyThumbnail(parent, region, data)
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
   model:SetPoint("center", region, "center");
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+  WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetScript("OnShow", function()
-    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+    WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
     if data.api then
       model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -320,7 +333,6 @@ if WeakAuras.IsRetail() then
     data = {
       width = 100,
       height = 100,
-      model_path = "spells/6fx_smallfire.m2",
       model_fileId = "937416", -- spells/6fx_smallfire.m2
       model_x = 0,
       model_y = -0.5,
@@ -335,7 +347,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_druid_halfmoon_missile.m2",
       model_fileId = "1322288", -- spells/7fx_druid_halfmoon_missile.m2
       model_x = 0,
       model_y = 0.7,
@@ -350,7 +361,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/proc_arcane_impact_low.m2",
       model_fileId = "1042743", -- spells/proc_arcane_impact_low.m2
       model_x = 0,
       model_y = 0.8,
@@ -365,7 +375,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_godking_orangerune_state.m2",
       model_fileId = "1307356", -- spells/7fx_godking_orangerune_state.m2
     },
   })
@@ -377,7 +386,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_godking_bluerune_state.m2",
       model_fileId = "1307354", -- spells/7fx_godking_bluerune_state.m2
     }
   })
@@ -389,7 +397,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_godking_yellowrune_state.m2",
       model_fileId = "1307358", -- spells/7fx_godking_yellowrune_state.m2
     }
   })
@@ -401,7 +408,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_godking_purplerune_state.m2",
       model_fileId = "1307355", -- spells/7fx_godking_purplerune_state.m2
     }
   })
@@ -413,7 +419,6 @@ if WeakAuras.IsRetail() then
       height = 100,
       advance = true,
       sequence = 1,
-      model_path = "spells/7fx_godking_greenrune_state.m2",
       model_fileId = "1307357", -- spells/7fx_godking_greenrune_state.m2
     }
   })

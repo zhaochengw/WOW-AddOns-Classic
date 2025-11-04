@@ -551,6 +551,18 @@ GTFO.SpellID["238691"] = {
   sound = 1;
 };
 
+GTFO.SpellID["194091"] = {
+  --desc = "Fel Creep";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["194147"] = {
+  --desc = "Fel Fire";
+  ignoreApplication = true;
+  sound = 1;
+};
+
 
 -- ********************
 -- * The Broken Shore *
@@ -1205,6 +1217,7 @@ GTFO.SpellID["224572"] = {
 GTFO.SpellID["225390"] = {
   --desc = "Stellar Dust";
   sound = 1;
+  ignoreApplication = true;
 };
 
 GTFO.SpellID["212736"] = {

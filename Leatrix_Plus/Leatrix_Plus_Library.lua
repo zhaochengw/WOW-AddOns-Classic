@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- L00: Leatrix Plus Library for Cataclysm Classic
+-- L00: Leatrix Plus Library for Mists of Pandaria Classic
 ----------------------------------------------------------------------
 
 -- LibDBIcon 10.0.1:

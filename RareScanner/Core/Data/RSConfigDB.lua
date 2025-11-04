@@ -13,6 +13,8 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
+local RSEventDB = private.ImportLib("RareScannerEventDB")
+local RSMapDB = private.ImportLib("RareScannerMapDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -66,6 +68,22 @@ end
 
 function RSConfigDB.SetLockingPosition(value)
 	private.db.display.lockPosition = value
+end
+
+function RSConfigDB.GetClickKeybinding()
+	return private.db.display.clickkeybinding
+end
+
+function RSConfigDB.SetClickKeybinding(value)
+	private.db.display.clickkeybinding = value
+end
+
+function RSConfigDB.GetHideKeybinding()
+	return private.db.display.hidekeybinding
+end
+
+function RSConfigDB.SetHideKeybinding(value)
+	private.db.display.hidekeybinding = value
 end
 
 ---============================================================================
@@ -200,12 +218,28 @@ function RSConfigDB.SetDisplayingRaidWarning(value)
 	private.db.display.displayRaidWarning = value
 end
 
+function RSConfigDB.IsFlashingWindowsTaskbar()
+	return private.db.display.flashWindowsTaskBar
+end
+
+function RSConfigDB.SetFlashingWindowsTaskbar(value)
+	private.db.display.flashWindowsTaskBar = value
+end
+
 function RSConfigDB.IsDisplayingChatMessages()
 	return private.db.display.displayChatMessage
 end
 
 function RSConfigDB.SetDisplayingChatMessages(value)
 	private.db.display.displayChatMessage = value
+end
+
+function RSConfigDB.GetChatWindowName()
+	return private.db.display.chatWindowName
+end
+
+function RSConfigDB.SetChatWindowName(value)
+	private.db.display.chatWindowName = value
 end
 
 function RSConfigDB.IsDisplayingTimestampChatMessages()
@@ -260,6 +294,38 @@ function RSConfigDB.SetScanningWhileOnTaxi(value)
 	private.db.general.scanOnTaxi = value
 end
 
+function RSConfigDB.IsScanningWhileOnPetBattle()
+	return private.db.general.scanOnPetBattle
+end
+
+function RSConfigDB.SetScanningWhileOnPetBattle(value)
+	private.db.general.scanOnPetBattle = value
+end
+
+function RSConfigDB.IsScanningWorldMapVignettes()
+	return private.db.general.scanWorldmapVignette
+end
+
+function RSConfigDB.SetScanningWorldMapVignettes(value)
+	private.db.general.scanWorldmapVignette = value
+end
+
+function RSConfigDB.IsScanningWithMacro()
+	return private.db.general.scanWithMacro
+end
+
+function RSConfigDB.SetScanningWithMacro(value)
+	private.db.general.scanWithMacro = value
+end
+
+function RSConfigDB.IsIgnoringCompletedEntities()
+	return private.db.general.ignoreCompletedEntities
+end
+
+function RSConfigDB.SetIgnoringCompletedEntities(value)
+	private.db.general.ignoreCompletedEntities = value
+end
+
 function RSConfigDB.IsScanningForNpcs()
 	return private.db.general.scanRares
 end
@@ -276,12 +342,20 @@ function RSConfigDB.SetScanningForContainers(value)
 	private.db.general.scanContainers = value
 end
 
-function RSConfigDB.IsScanningTargetUnit()
-	return private.db.general.scanTargetUnit
+function RSConfigDB.IsScanningForEvents()
+	return private.db.general.scanEvents
 end
 
-function RSConfigDB.SetScanningTargetUnit(value)
-	private.db.general.scanTargetUnit = value
+function RSConfigDB.SetScanningForEvents(value)
+	private.db.general.scanEvents = value
+end
+
+function RSConfigDB.IsScanningChatAlerts()
+	return private.db.general.scanChatAlerts
+end
+
+function RSConfigDB.SetScanningChatAlerts(value)
+	private.db.general.scanChatAlerts = value
 end
 
 ---============================================================================
@@ -294,6 +368,18 @@ end
 
 function RSConfigDB.SetShowingOldNotDiscoveredMapIcons(value)
 	private.db.map.displayOldNotDiscoveredMapIcons = value
+end
+
+---============================================================================
+-- Ingame filters database
+---============================================================================
+
+function RSConfigDB.IsShowingFilteredIngameMapIcons()
+	return private.db.map.displayFilteredIngameMapIcons
+end
+
+function RSConfigDB.SetShowingFilteredIngameMapIcons(value)
+	private.db.map.displayFilteredIngameMapIcons = value
 end
 
 ---============================================================================
@@ -312,6 +398,18 @@ function RSConfigDB.IsNpcFiltered(npcID)
 	local filterType = RSConfigDB.GetNpcFiltered(npcID)
 	if (filterType and filterType == RSConstants.ENTITY_FILTER_ALL) then
 		return true
+	end
+	
+	-- If weekly filter
+	local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+	if (npcInfo and RSConfigDB.IsWeeklyRepNpcFilterEnabled()) then
+		if (npcInfo.warbandQuestID) then
+			for _, questID in ipairs(npcInfo.warbandQuestID) do
+				if (C_QuestLog.IsQuestFlaggedCompletedOnAccount(questID)) then
+					return true
+				end
+			end
+		end
 	end
 	
 	return false
@@ -396,6 +494,14 @@ function RSConfigDB.FilterAllNpcs(routines, routineTextOutput)
 	table.insert(routines, filterAllNpcsRoutine)
 end
 
+function RSConfigDB.IsWeeklyRepNpcFilterEnabled()
+	return private.db.rareFilters.filterWeeklyRep
+end
+
+function RSConfigDB.SetWeeklyRepNpcFilterEnabled(value)
+	private.db.rareFilters.filterWeeklyRep = value
+end
+
 function RSConfigDB.IsShowingFriendlyNpcs()
 	return private.db.map.displayFriendlyNpcIcons
 end
@@ -404,12 +510,36 @@ function RSConfigDB.SetShowingFriendlyNpcs(value)
 	private.db.map.displayFriendlyNpcIcons = value
 end
 
+function RSConfigDB.IsShowingAlreadyKilledNpcs()
+	return private.db.map.displayAlreadyKilledNpcIcons
+end
+
+function RSConfigDB.SetShowingAlreadyKilledNpcs(value)
+	private.db.map.displayAlreadyKilledNpcIcons = value
+end
+
+function RSConfigDB.IsShowingWeeklyRepFilterEnabled()
+	return private.db.map.displayWeeklyRepNpcIcons
+end
+
+function RSConfigDB.SetShowingWeeklyRepFilterEnabled(value)
+	private.db.map.displayWeeklyRepNpcIcons = value
+end
+
 function RSConfigDB.IsShowingNotDiscoveredNpcs()
 	return private.db.map.displayNotDiscoveredNpcIcons
 end
 
 function RSConfigDB.SetShowingNotDiscoveredNpcs(value)
 	private.db.map.displayNotDiscoveredNpcIcons = value
+end
+
+function RSConfigDB.IsShowingAlreadyKilledNpcsInReseteableZones()
+	return private.db.map.displayAlreadyKilledNpcIconsReseteable
+end
+
+function RSConfigDB.SetShowingAlreadyKilledNpcsInReseteableZones(value)
+	private.db.map.displayAlreadyKilledNpcIconsReseteable = value
 end
 
 function RSConfigDB.IsMaxSeenTimeFilterEnabled()
@@ -458,6 +588,20 @@ function RSConfigDB.SetShowingAchievementRareNPCs(value)
 	private.db.map.displayAchievementRaresNpcIcons = value
 end
 
+function RSConfigDB.IsMinieventFiltered(minieventID)
+	if (minieventID and private.db.map.displayMinieventsNpcIcons[minieventID]) then
+		return private.db.map.displayMinieventsNpcIcons[minieventID]
+	end
+	
+	return false
+end
+
+function RSConfigDB.SetMinieventFiltered(minieventID, filtered)
+	if (minieventID) then
+		private.db.map.displayMinieventsNpcIcons[minieventID] = filtered
+	end
+end
+
 function RSConfigDB.IsShowingOtherRareNPCs()
 	return private.db.map.displayOtherRaresNpcIcons
 end
@@ -470,7 +614,7 @@ function RSConfigDB.IsCustomNpcGroupFiltered(group)
 	if (group and private.db.map.displayCustomGroupNpcIcons[group]) then
 		return private.db.map.displayCustomGroupNpcIcons[group]
 	end
-
+	
 	return false
 end
 
@@ -580,6 +724,14 @@ function RSConfigDB.FilterAllContainers(routines, routineTextOutput)
 	table.insert(routines, filterAllContainersRoutine)
 end
 
+function RSConfigDB.IsShowingAlreadyOpenedContainers()
+	return private.db.map.displayAlreadyOpenedContainersIcons
+end
+
+function RSConfigDB.SetShowingAlreadyOpenedContainers(value)
+	private.db.map.displayAlreadyOpenedContainersIcons = value
+end
+
 function RSConfigDB.IsShowingNotDiscoveredContainers()
 	return private.db.map.displayNotDiscoveredContainerIcons
 end
@@ -642,6 +794,151 @@ function RSConfigDB.SetShowingOtherContainers(value)
 	private.db.map.displayOtherContainerIcons = value
 end
 
+function RSConfigDB.IsAchievementContainerFilterEnabled()
+	return private.db.containerFilters.filterAchievements
+end
+
+function RSConfigDB.SetAchievementContainerFilterEnabled(value)
+	private.db.containerFilters.filterAchievements = value
+end
+
+---============================================================================
+-- Event filters database
+---============================================================================
+
+function RSConfigDB.IsShowingEvents()
+	return private.db.map.displayEventIcons
+end
+
+function RSConfigDB.SetShowingEvents(value)
+	private.db.map.displayEventIcons = value
+end
+
+function RSConfigDB.IsShowingCompletedEvents()
+	return private.db.map.displayAlreadyCompletedEventIcons
+end
+
+function RSConfigDB.SetShowingCompletedEvents(value)
+	private.db.map.displayAlreadyCompletedEventIcons = value
+end
+
+function RSConfigDB.IsShowingNotDiscoveredEvents()
+	return private.db.map.displayNotDiscoveredEventIcons
+end
+
+function RSConfigDB.SetShowingNotDiscoveredEvents(value)
+	private.db.map.displayNotDiscoveredEventIcons = value
+end
+
+function RSConfigDB.IsMaxSeenTimeEventFilterEnabled()
+	return private.db.map.maxSeenTimeEvent ~= 0
+end
+
+function RSConfigDB.EnableMaxSeenEventTimeFilter()
+	-- If while disabled they setted the time through the options panel
+	if (RSConfigDB.GetMaxSeenEventTimeFilter() > 0) then
+		RSLogger:PrintDebugMessage(string.format("EnableMaxSeenEventTimeFilter [maxSeenTimeEvent = %s]", RSConfigDB.GetMaxSeenEventTimeFilter()))
+		return;
+	end
+
+	if (private.db.map.maxSeenEventTimeBak and private.db.map.maxSeenEventTimeBak > 0) then
+		RSConfigDB.SetMaxSeenEventTimeFilter(private.db.map.maxSeenEventTimeBak)
+		-- Its possible that they enabled it though the options panel
+	else
+		RSConfigDB.SetMaxSeenEventTimeFilter(RSConstants.PROFILE_DEFAULTS.profile.map.maxSeenTimeEvent, false)
+	end
+	RSLogger:PrintDebugMessage(string.format("EnableMaxSeenEventTimeFilter [maxSeenTimeEvent = %s]", RSConfigDB.GetMaxSeenEventTimeFilter()))
+end
+
+function RSConfigDB.DisableMaxSeenEventTimeFilter()
+	private.db.map.maxSeenEventTimeBak = RSConfigDB.GetMaxSeenEventTimeFilter()
+	RSConfigDB.SetMaxSeenEventTimeFilter(0, false)
+	RSLogger:PrintDebugMessage(string.format("DisableMaxSeenEventTimeFilter [maxSeenTimeEvent = %s]", RSConfigDB.GetMaxSeenEventTimeFilter()))
+end
+
+function RSConfigDB.GetMaxSeenEventTimeFilter()
+	return private.db.map.maxSeenTimeEvent
+end
+
+function RSConfigDB.SetMaxSeenEventTimeFilter(value, clearBak)
+	private.db.map.maxSeenTimeEvent = value
+	RSLogger:PrintDebugMessage(string.format("SetMaxSeenEventTimeFilter [maxSeenTimeEvent = %s]", value))
+	if (clearBak) then
+		private.db.map.maxSeenEventTimeBak = nil
+	end
+end
+
+function RSConfigDB.IsEventFiltered(eventID)
+	local filterType = RSConfigDB.GetEventFiltered(eventID)
+	if (filterType and filterType == RSConstants.ENTITY_FILTER_ALL) then
+		return true
+	end
+	
+	return false
+end
+
+function RSConfigDB.IsEventFilteredOnlyWorldmap(eventID)
+	local filterType = RSConfigDB.GetEventFiltered(eventID)
+	if (filterType and filterType == RSConstants.ENTITY_FILTER_WORLDMAP) then
+		return true
+	end
+	
+	return false
+end
+
+function RSConfigDB.IsEventFilteredOnlyAlerts(eventID)
+	local filterType = RSConfigDB.GetEventFiltered(eventID)
+	if (filterType and filterType == RSConstants.ENTITY_FILTER_ALERTS) then
+		return true
+	end
+	
+	return false
+end
+
+function RSConfigDB.GetEventFiltered(eventID)
+	if (eventID and private.db.eventFilters.filteredEvents and private.db.eventFilters.filteredEvents[eventID]) then
+		return private.db.eventFilters.filteredEvents[eventID]
+	end
+	
+	return nil
+end
+
+function RSConfigDB.SetEventFiltered(eventID, filterType)
+	--RSLogger:PrintDebugMessage(string.format("RSConfigDB.SetEventFiltered [%s][%s]", eventID, filterType or ""))
+	if (not private.db.eventFilters.filteredEvents) then
+		private.db.eventFilters.filteredEvents = {}
+	end
+	
+	if (eventID) then
+		if (filterType) then
+			private.db.eventFilters.filteredEvents[eventID] = filterType
+		else
+			private.db.eventFilters.filteredEvents[eventID] = RSConfigDB.GetDefaultEventFilter()
+		end
+	end
+end
+
+function RSConfigDB.DeleteEventFiltered(eventID)
+	--RSLogger:PrintDebugMessage(string.format("RSConfigDB.DeleteEventFiltered [%s]", eventID))
+	if (eventID and private.db.eventFilters.filteredEvents and private.db.eventFilters.filteredEvents[eventID]) then
+		private.db.eventFilters.filteredEvents[eventID] = nil
+	end
+	
+	if (RSUtils.GetTableLength(private.db.eventFilters.filteredEvents) == 0) then
+		private.db.eventFilters.filteredEvents = nil
+	end
+end
+
+function RSConfigDB.SetDefaultEventFilter(filterType)
+	if (filterType) then
+		private.db.eventFilters.defaultEventFilterType = filterType
+	end
+end
+
+function RSConfigDB.GetDefaultEventFilter()
+	return private.db.eventFilters.defaultEventFilterType
+end
+
 ---============================================================================
 -- Zone filters database
 ---============================================================================
@@ -673,20 +970,20 @@ function RSConfigDB.IsZoneFilteredOnlyAlerts(zoneID)
 	return false
 end
 
-function RSConfigDB.IsEntityZoneFilteredOnlyAlerts(entityID, atlasName)
+function RSConfigDB.IsEntityZoneFilteredOnlyAlerts(entityID, atlasName, mapID)
 	if (entityID and atlasName) then
 		-- If npc
 		if (RSConstants.IsNpcAtlas(atlasName)) then
 			local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
 			if (npcInfo) then
 				if (RSNpcDB.IsInternalNpcMultiZone(entityID)) then
-					for mapID, _ in pairs (npcInfo.zoneID) do
-						if (RSConfigDB.GetZoneFiltered(mapID)) then
+					for zoneMapID, _ in pairs (npcInfo.zoneID) do
+						if (mapID == zoneMapID and RSConfigDB.GetZoneFiltered(mapID)) then
 							return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
 						end
 					end
 				elseif (RSNpcDB.IsInternalNpcMonoZone(entityID)) then
-					return RSConfigDB.IsZoneFilteredOnlyAlerts(npcInfo.zoneID)
+					return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
 				end
 			end
 		-- If container
@@ -694,20 +991,28 @@ function RSConfigDB.IsEntityZoneFilteredOnlyAlerts(entityID, atlasName)
 			local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
 			if (containerInfo) then
 				if (RSContainerDB.IsInternalContainerMultiZone(entityID)) then
-					for mapID, _ in pairs (containerInfo.zoneID) do
-						if (RSConfigDB.GetZoneFiltered(mapID)) then
+					for zoneMapID, _ in pairs (containerInfo.zoneID) do
+						if (mapID == zoneMapID and RSConfigDB.GetZoneFiltered(mapID)) then
 							return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
 						end
 					end
 				elseif (RSContainerDB.IsInternalContainerMonoZone(entityID)) then
-					return RSConfigDB.IsZoneFilteredOnlyAlerts(containerInfo.zoneID)
+					return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
 				end
 			end
 		-- If event
 		elseif (RSConstants.IsEventAtlas(atlasName)) then
 			local eventInfo = RSEventDB.GetInternalEventInfo(entityID)
 			if (eventInfo) then
-				return RSConfigDB.IsZoneFilteredOnlyAlerts(eventInfo.zoneID)
+				if (RSEventDB.IsInternalEventMultiZone(entityID)) then
+					for zoneMapID, _ in pairs (eventInfo.zoneID) do
+						if (mapID == zoneMapID and RSConfigDB.GetZoneFiltered(mapID)) then
+							return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
+						end
+					end
+				elseif (RSEventDB.IsInternalEventMonoZone(entityID)) then
+					return RSConfigDB.IsZoneFilteredOnlyAlerts(mapID)
+				end
 			end
 		end
 	end
@@ -827,14 +1132,6 @@ end
 -- Loot filters
 ---============================================================================
 
-function RSConfigDB.IsItemFiltered(itemID)
-	if (itemID) then
-		return private.db.loot.filteredItems[itemID] == true
-	end
-
-	return false
-end
-
 function RSConfigDB.GetItemFiltered(itemID)
 	if (itemID) then
 		return private.db.loot.filteredItems[itemID]
@@ -941,6 +1238,32 @@ function RSConfigDB.SetShowingMissingToys(value)
 	private.db.loot.showingMissingToys = value
 end
 
+function RSConfigDB.IsShowingMissingAppearances()
+	return private.db.loot.showingMissingAppearances
+end
+
+function RSConfigDB.SetShowingMissingAppearances(value)
+	private.db.loot.showingMissingAppearances = value
+end
+
+function RSConfigDB.IsShowingCustomItems(group)
+	if (group and private.db.loot.showMissingCustomItems) then
+		return private.db.loot.showMissingCustomItems[group]
+	end
+	
+	return false
+end
+
+function RSConfigDB.SetShowingCustomItems(group, value)
+	if (group) then
+		if (not private.db.loot.showMissingCustomItems) then
+			private.db.loot.showMissingCustomItems = {}
+		end
+		
+		private.db.loot.showMissingCustomItems[group] = value
+	end
+end
+
 ---============================================================================
 -- Collection filters
 ---============================================================================
@@ -993,6 +1316,14 @@ function RSConfigDB.IsSearchingAppearances()
 	return private.db.collections.searchingAppearances
 end
 
+function RSConfigDB.SetSearchingMissingAchievementCriteria(value)
+	private.db.collections.searchingMissingAchievementCriteria = value
+end
+
+function RSConfigDB.IsSearchingMissingAchievementCriteria()
+	return private.db.collections.searchingMissingAchievementCriteria
+end
+
 function RSConfigDB.SetShowFiltered(value)
 	private.db.collections.showFiltered = value
 end
@@ -1007,6 +1338,22 @@ end
 
 function RSConfigDB.IsShowWithoutCollectibles()
 	return private.db.collections.showWithoutCollectibles
+end
+
+function RSConfigDB.SetSearchingCustom(groupKey, value)
+	if (not private.db.collections.showCustom) then
+		private.db.collections.showCustom = {}
+	end
+	
+	private.db.collections.showCustom[groupKey] = value
+end
+
+function RSConfigDB.IsSearchingCustom(groupKey)
+	if (private.db.collections.showCustom and private.db.collections.showCustom[groupKey]) then
+		return true
+	end
+	
+	return false
 end
 
 function RSConfigDB.SetShowDead(value)
@@ -1056,6 +1403,7 @@ function RSConfigDB.ResetLootFilters()
 	RSConfigDB.SetFilteringByExplorerResults(false)
 	RSConfigDB.SetFilteringLootByNotMatchingClass(false)
 	RSConfigDB.SetFilteringLootByNotMatchingFaction(true)
+	RSConfigDB.SetFilteringByExplorerResults(false)
 end
 
 ---============================================================================
@@ -1068,6 +1416,22 @@ end
 
 function RSConfigDB.SetShowingLootTooltipsCommands(value)
 	private.db.loot.tooltipsCommands = value
+end
+
+function RSConfigDB.IsShowingLootCanimogitTooltip()
+	return private.db.loot.tooltipsCanImogit
+end
+
+function RSConfigDB.SetShowingLootCanimogitTooltip(value)
+	private.db.loot.tooltipsCanImogit = value
+end
+
+function RSConfigDB.IsShowingLootTSMTooltip()
+	return private.db.loot.tooltipsTSM
+end
+
+function RSConfigDB.SetShowingLootTSMTooltip(value)
+	private.db.loot.tooltipsTSM = value
 end
 
 ---============================================================================
@@ -1100,6 +1464,26 @@ end
 
 function RSConfigDB.SetAddingTomtomWaypointsAutomatically(value)
 	private.db.general.autoTomtomWaypoints = TomTom and value
+end
+
+---============================================================================
+-- Worldmap searcher
+---============================================================================
+
+function RSConfigDB.SetShowingWorldMapSearcher(value)
+	private.db.map.showingWorldMapSearcher = value
+end
+
+function RSConfigDB.IsShowingWorldMapSearcher()
+	return private.db.map.showingWorldMapSearcher
+end
+
+function RSConfigDB.SetClearingWorldMapSearcher(value)
+	private.db.map.cleanWorldMapSearcherOnChange = value
+end
+
+function RSConfigDB.IsClearingWorldMapSearcher()
+	return private.db.map.cleanWorldMapSearcherOnChange
 end
 
 ---============================================================================
@@ -1178,12 +1562,28 @@ function RSConfigDB.SetShowingTooltipsSeen(value)
 	private.db.map.tooltipsSeen = value
 end
 
+function RSConfigDB.IsShowingTooltipsState()
+	return private.db.map.tooltipsState
+end
+
+function RSConfigDB.SetShowingTooltipsState(value)
+	private.db.map.tooltipsState = value
+end
+
 function RSConfigDB.IsShowingTooltipsCommands()
 	return private.db.map.tooltipsCommands
 end
 
 function RSConfigDB.SetShowingTooltipsCommands(value)
 	private.db.map.tooltipsCommands = value
+end
+
+function RSConfigDB.IsShowingTooltipsFilterState()
+	return private.db.map.tooltipsFilterState
+end
+
+function RSConfigDB.SetShowingTooltipsFilterState(value)
+	private.db.map.tooltipsFilterState = value
 end
 
 ---============================================================================
@@ -1263,4 +1663,124 @@ end
 
 function RSConfigDB.SetAnimationForContainers(value)
 	private.db.map.animationContainersType = value
+end
+
+function RSConfigDB.IsShowingAnimationForEvents()
+	return private.db.map.animationEvents
+end
+
+function RSConfigDB.SetShowingAnimationForEvents(value)
+	private.db.map.animationEvents = value
+end
+
+function RSConfigDB.GetAnimationForEvents()
+	return private.db.map.animationEventsType
+end
+
+function RSConfigDB.SetAnimationForEvents(value)
+	private.db.map.animationEventsType = value
+end
+
+---============================================================================
+-- Worldmap guidance icons
+---============================================================================
+
+function RSConfigDB.IsShowingAutoGuidanceIcons()
+	return private.db.map.autoGuidanceIcons
+end
+
+function RSConfigDB.SetShowingAutoGuidanceIcons(value)
+	private.db.map.autoGuidanceIcons = value
+end
+
+---============================================================================
+-- Chat waypoints
+---============================================================================
+
+function RSConfigDB.IsAddingchatTomtomWaypoints()
+	return TomTom and private.db.chat.waypointTomtom
+end
+
+function RSConfigDB.SetAddingchatTomtomWaypoints(value)
+	private.db.chat.waypointTomtom = TomTom and value
+end
+
+function RSConfigDB.GetChatTooltipsScale()
+	return private.db.chat.tooltipsScale
+end
+
+function RSConfigDB.SetChatTooltipsScale(value)
+	private.db.chat.tooltipsScale = value
+end
+
+function RSConfigDB.IsShowingChatTooltipsAchievements()
+	return private.db.chat.tooltipsAchievements
+end
+
+function RSConfigDB.SetShowingChatTooltipsAchievements(value)
+	private.db.chat.tooltipsAchievements = value
+end
+
+function RSConfigDB.IsShowingChatTooltipsNotes()
+	return private.db.chat.tooltipsNotes
+end
+
+function RSConfigDB.SetShowingChatTooltipsNotes(value)
+	private.db.chat.tooltipsNotes = value
+end
+
+function RSConfigDB.IsShowingChatTooltipsSeen()
+	return private.db.chat.tooltipsSeen
+end
+
+function RSConfigDB.SetShowingChatTooltipsSeen(value)
+	private.db.chat.tooltipsSeen = value
+end
+
+function RSConfigDB.IsShowingChatTooltipsLoot()
+	return private.db.chat.tooltipsLoot
+end
+
+function RSConfigDB.SetShowingChatTooltipsLoot(value)
+	private.db.chat.tooltipsLoot = value
+end
+
+function RSConfigDB.IsShowingChatTooltipsCommands()
+	return private.db.chat.tooltipsCommands
+end
+
+function RSConfigDB.SetShowingChatTooltipsCommands(value)
+	private.db.chat.tooltipsCommands = value
+end
+
+function RSConfigDB.GetChatLootAchievTooltipsScale()
+	return private.db.chat.tooltipsFilterScale
+end
+
+function RSConfigDB.SetChatLootAchievTooltipsScale(value)
+	private.db.chat.tooltipsFilterScale = value
+end
+
+function RSConfigDB.GetChatLinkColorNpc()
+	return private.db.chat.colorNpc
+end
+
+function RSConfigDB.SetChatLinkColorNpc(value)
+	private.db.chat.colorNpc = value
+end
+
+function RSConfigDB.GetChatLinkColorContainer()
+	return private.db.chat.colorContainer
+end
+
+function RSConfigDB.SetChatLinkColorContainer(value)
+	private.db.chat.colorContainer = value
+end
+
+function RSConfigDB.GetChatLinkColorEvent()
+	return private.db.chat.colorEvent
+end
+
+function RSConfigDB.SetChatLinkColorEvent(value)
+	private.db.chat.colorEvent = value
 end

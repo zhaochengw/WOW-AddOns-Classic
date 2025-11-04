@@ -1,0 +1,60 @@
+## Interface: 110205, 50502, 40402, 30405, 11508
+## Title: Syndicator
+## Version: 246
+## Author: plusmouse
+## SavedVariables: SYNDICATOR_CONFIG, SYNDICATOR_DATA, SYNDICATOR_SUMMARIES
+## IconTexture: Interface\AddOns\Syndicator\Assets\logo.tga
+
+## Category-enUS: Inventory
+## Category-deDE: Inventar
+## Category-esES: Inventario
+## Category-esMX: Inventario
+## Category-frFR: Inventaire
+## Category-itIT: Inventario
+## Category-koKR: 소지품
+## Category-ptBR: Inventário
+## Category-ruRU: Предметы
+## Category-zhCN: 物品栏
+## Category-zhTW: 物品欄
+
+Locales.lua
+
+Libs\LibStub.lua
+Libs\LibBattlePetTooltipLine\LibBattlePetTooltipLine.xml
+
+Core\Objects.lua
+Core\Locales.lua
+Core\Constants.lua
+Core\Config.lua
+Core\Utilities.lua
+Core\SlashCmd.lua
+Core\Initialize.lua
+
+Options\Initialize.lua
+
+Tracking\Utilities.lua
+Tracking\BagCache.lua
+Tracking\MailCache.lua
+Tracking\EquippedCache.lua
+Tracking\CurrencyCache.lua
+Tracking\GuildCache.lua
+Tracking\VoidCache.lua
+Tracking\AuctionCacheModern.lua
+Tracking\AuctionCacheLegacy.lua
+Tracking\ItemSummaries.lua
+Tracking\Tooltips.lua
+Tracking\CurrencyTooltipData.lua
+Tracking\Initialize.lua
+
+Search\Constants.lua
+Search\Initialize.lua
+Search\BaseInfo.lua
+Search\CheckItem.lua
+Search\GetGroupingKey.lua
+Search\OfflineList.lua
+Search\OfflineList.xml
+Search\SearchEverywhere.lua
+Search\UI\Builder.lua
+Search\Utilities.lua
+
+API\Main.lua

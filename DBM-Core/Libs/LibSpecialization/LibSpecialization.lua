@@ -307,7 +307,7 @@ if wowID == cataWowID then
 				local position = positionTable[specId]
 				local role = roleTable[specId]
 				if position and role then
-					if specId == 750 and not IsPlayerSpell(57880) then -- Cataclysm Feral Druids, if you don't have 2 points in 'Natural Reaction' we assume you're a cat
+					if specId == 750 and not C_SpellBook.IsSpellKnownOrInSpellBook(57880) then -- Cataclysm Feral Druids, if you don't have 2 points in 'Natural Reaction' we assume you're a cat
 						return specId, "DAMAGER", position
 					end
 					return specId, role, position

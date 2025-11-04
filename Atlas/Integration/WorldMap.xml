@@ -1,4 +1,3 @@
-<!-- $Id: WorldMap.xml 431 2023-03-20 14:46:49Z arithmandar $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,10 +23,8 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
-
-  <Script file="WorldMapButtonMixin.lua"/>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
+	<Script file="WorldMapButtonMixin.lua"/>
 
 	<Button name="AtlasWorldMapButtonTemplate" frameStrata="HIGH" mixin="AtlasWorldMapButtonMixin" hidden="true" virtual="true" toplevel="true">
 		<Size x="32" y="32"/>
@@ -38,7 +35,6 @@
 					<Anchors>
 						<Anchor point="TOPLEFT" x="2" y="-4"/>
 					</Anchors>
-					<Color r="1" g="1" b="1" a="1"/>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
@@ -49,7 +45,7 @@
 					</Anchors>
 				</Texture>
 			</Layer>
-			<Layer level="ARTWORK">
+			<Layer level="OVERLAY">
 				<Texture parentKey="Border" file="Interface\Minimap\MiniMap-TrackingBorder">
 					<Size x="54" y="54"/>
 					<Anchors>
@@ -58,12 +54,7 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<HighlightTexture name="$parentHightlight" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
-			<Size x="48" y="48"/>
-			<Anchors>
-				<Anchor point="CENTER"/>
-			</Anchors>
-		</HighlightTexture>
+		<HighlightTexture name="$parentHightlight" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight" alphaMode="ADD" />
 		<Scripts>
 			<OnLoad method="OnLoad"/>
 			<OnEnter method="OnEnter"/>
@@ -71,5 +62,4 @@
 			<OnClick method="OnClick"/>
 		</Scripts>
 	</Button>
-
 </Ui>

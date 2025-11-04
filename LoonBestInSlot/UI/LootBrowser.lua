@@ -66,7 +66,7 @@ end
 local failedLoad = false;
 local window_cache = {};
 
-function LBIS:InitializeUI()    
+function LBIS:InitializeUI()
     for specId, spec in pairs(LBIS.ClassSpec) do
         if strlen(spec.Spec) > 0 then
             window_cache[spec.Class..": "..spec.Spec] = {};
@@ -78,7 +78,7 @@ function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, frameName, p
     local window = LBIS.BrowserWindow.Window;
     local spacing = 1;
     local reusing = false;
-    
+
     local f = nil;
     if(next(window_cache[LBISSettings.SelectedSpec]) ~= nil) then
 		for i=1, #window_cache[LBISSettings.SelectedSpec] do			
@@ -89,7 +89,7 @@ function LBIS.BrowserWindow:CreateItemRow(specItem, specItemSource, frameName, p
             end
         end
     end
-    
+
     if not reusing then        
         f = CreateFrame("Frame", frameName, window.Container);
 
@@ -169,7 +169,7 @@ function LBIS.BrowserWindow:UpdateItemsForSpec(rowFunc)
     window.ScrollFrame:SetScrollChild(window.Container);
 end
 
-local function createTabs(window, content) 
+local function createTabs(window, content)
 
     local itemListTabButton = CreateFrame("Button", "ContainerTab1", window, "CharacterFrameTabButtonTemplate")
     local itemListTabString = itemListTabButton:CreateFontString("ItemListTabText", "OVERLAY", "GameFontNormalSmall");
@@ -207,7 +207,6 @@ local function createTabs(window, content)
         LBIS.BrowserWindow:RefreshItems();
     end);
 
-
     customListTabButton = CreateFrame("Button", "ContainerTab4", window, "CharacterFrameTabButtonTemplate")
     local customListTabString = customListTabButton:CreateFontString("CustomListTabText", "OVERLAY", "GameFontNormalSmall");
     customListTabString:SetPoint("CENTER", customListTabButton, "CENTER", 0, 3);
@@ -228,7 +227,7 @@ local function createTabs(window, content)
     customEditTabButton:SetScript("OnClick", function(self)
         PanelTemplates_SetTab(content, 5);
         LBISSettings.OpenTab = "CustomEditList";
-    
+
         LBIS.BrowserWindow:RefreshItems();
     end);
 
@@ -272,7 +271,7 @@ local function createDropDowns(window)
         ['title']='Slot:',
         ['items']= { LBIS.L["All"], LBIS.L["Head"], LBIS.L["Shoulder"], LBIS.L["Back"], LBIS.L["Chest"], LBIS.L["Wrist"], 
             LBIS.L["Hands"], LBIS.L["Waist"], LBIS.L["Legs"], LBIS.L["Feet"], LBIS.L["Neck"], LBIS.L["Ring"], LBIS.L["Trinket"], 
-            LBIS.L["Main Hand"], LBIS.L["Off Hand"], LBIS.L["Two Hand"], LBIS.L["Ranged/Relic"] },        
+            LBIS.L["Main Hand"], LBIS.L["Off Hand"], LBIS.L["Ranged/Relic"] },        
         ['defaultVal']=LBISSettings.SelectedSlot,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedSlot = dropdown_val;
@@ -282,11 +281,32 @@ local function createDropDowns(window)
     window.SlotDropDown = LBIS:CreateDropdown(slot_opts, 90);
     window.SlotDropDown:SetPoint("TOPLEFT", window, 195, -28);
 
+    local function getPhases()
+        local phases = { LBIS.L["All"], LBIS.L["PreRaid"] };
+        if LBIS.CurrentPhase >= 1 then
+            table.insert(phases, LBIS.L["Phase 1"]);
+        end
+        if LBIS.CurrentPhase >= 2 then
+            table.insert(phases, LBIS.L["Phase 2"]);
+        end
+        if LBIS.CurrentPhase >= 3 then
+            table.insert(phases, LBIS.L["Phase 3"]);
+        end
+        if LBIS.CurrentPhase >= 4 then
+            table.insert(phases, LBIS.L["Phase 4"]);
+        end
+        if LBIS.CurrentPhase >= 5 then
+            table.insert(phases, LBIS.L["Phase 5"]);
+        end
+        table.insert(phases, LBIS.L["BIS"]);
+        return phases;
+    end
+
     local phase_opts = {
         ['name']='phase',
         ['parent']=window,
         ['title']='Phase:',
-        ['items']= { LBIS.L["All"], LBIS.L["PreRaid"], LBIS.L["Phase 1"], LBIS.L["Phase 2"], LBIS.L["Phase 3"], LBIS.L["Phase 4"], "BIS" },
+        ['items']= getPhases(),
         ['defaultVal']=LBISSettings.SelectedPhase,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedPhase = dropdown_val;
@@ -314,7 +334,8 @@ local function createDropDowns(window)
         ['name']='source',
         ['parent']=window,
         ['title']='Source:',
-        ['items']= { LBIS.L["All"], LBIS.L["Drop"], LBIS.L["Profession"], LBIS.L["Reputation"], LBIS.L["Dungeon Token"], LBIS.L["Vendor"], LBIS.L["Quest"], LBIS.L["PvP"] },
+        ['items']= { LBIS.L["All"], LBIS.L["Drop"], LBIS.L["Profession"], LBIS.L["Reputation"], LBIS.L["Token"], 
+            LBIS.L["Vendor"], LBIS.L["Quest"], LBIS.L["PvP"] },
         ['defaultVal']= LBISSettings.SelectedSourceType,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedSourceType = dropdown_val;
@@ -324,18 +345,40 @@ local function createDropDowns(window)
     window.SourceDropDown = LBIS:CreateDropdown(source_opts, 110);
     window.SourceDropDown:SetPoint("TOPLEFT", window, 450, -28);
 
+    local function getZoneItems()
+        local items = { LBIS.L["All"], LBIS.L["Temple of the Jade Serpent"], LBIS.L["Stormstout Brewery"], LBIS.L["Mogu'shan Palace"], 
+            LBIS.L["Shado-Pan Monastery"], LBIS.L["Gate of the Setting Sun"], LBIS.L["Siege of Niuzao Temple"],
+            LBIS.L["Heroic: Scarlet Halls"], LBIS.L["Heroic: Scarlet Monastery"], LBIS.L["Heroic: Scholomance"]  }-- Phase 0
+
+        if LBIS.CurrentPhase >= 1 then            
+            table.insert(items, LBIS.L["Mogu'shan Vaults"]);
+            table.insert(items, LBIS.L["Heart of Fear"]);
+            table.insert(items, LBIS.L["Terrace of Endless Spring"]);
+        end
+
+        if LBIS.CurrentPhase >= 2 then
+        end
+
+        if LBIS.CurrentPhase >= 3 then
+            table.insert(items, LBIS.L["Throne of Thunder"]);
+        end
+
+        if LBIS.CurrentPhase >= 4 then
+            table.insert(items, LBIS.L[""]);
+        end
+
+        if LBIS.CurrentPhase >= 5 then
+            table.insert(items, LBIS.L["Siege of Orgrimmar"]);
+        end
+
+        return items;
+    end
+
     local zone_opts = {
         ['name']='zone',
         ['parent']=window,
-        ['title']='Raid:',
-        ['items']= { LBIS.L["All"], LBIS.L["Heroic"], LBIS.L["Naxxramas"], LBIS.L["The Eye of Eternity"], LBIS.L["The Obsidian Sanctum"], 
-            LBIS.L["Ulduar (10)"], LBIS.L["Ulduar (25)"],
-            LBIS.L["Vault of Archavon (10)"], LBIS.L["Vault of Archavon (25)"], 
-            LBIS.L["Trial of the Crusader (10)"], LBIS.L["Trial of the Crusader (25)"],
-            LBIS.L["Trial of the Grand Crusader (10)"], LBIS.L["Trial of the Grand Crusader (25)"],
-            LBIS.L["Onyxia (10)"], LBIS.L["Onyxia (25)"], 
-            LBIS.L["Icecrown Citadel (10)"], LBIS.L["Icecrown Citadel (25)"],
-            LBIS.L["The Ruby Sanctum (10)"], LBIS.L["The Ruby Sanctum (25)"]},
+        ['title']='Zone:',
+        ['items']= getZoneItems(),
         ['defaultVal']= LBISSettings.SelectedZone,
         ['changeFunc']=function(dropdown_frame, dropdown_val)
             LBISSettings.SelectedZone = dropdown_val;

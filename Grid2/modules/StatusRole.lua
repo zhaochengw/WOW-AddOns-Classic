@@ -15,6 +15,7 @@ local GetPartyAssignment = GetPartyAssignment
 local UnitGroupRolesAssigned = Grid2.UnitGroupRolesAssigned
 local GetTexCoordsForRoleSmallCircle = Grid2.API.GetTexCoordsForRoleSmallCircle
 local GetTexCoordsForRoleSmall = Grid2.API.GetTexCoordsForRoleSmall
+local GetLootMethod = C_PartyInfo and C_PartyInfo.GetLootMethod or GetLootMethod
 local UnitIsUnit = UnitIsUnit
 local MAIN_TANK = MAIN_TANK
 local MAIN_ASSIST = MAIN_ASSIST
@@ -302,7 +303,7 @@ end
 
 function MasterLooter:CalculateMasterLooter()
 	local method, partyID, raidID = GetLootMethod()
-	if method=='master' then
+	if method=='master' or method==2 then -- 2 => masterlooter in retail
 		if raidID then
 			return 'raid'..raidID
 		elseif partyID then
@@ -352,7 +353,7 @@ Grid2:DbSetStatusDefaultValue( "master-looter", { type = "master-looter", color1
 
 -- dungeon-role status
 
-if Grid2.versionCli<30000 then return end
+-- if Grid2.versionCli<30000 then return end
 
 local isValidRole = { TANK = true, HEALER = true, DAMAGER = true }
 local roleTexture = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"

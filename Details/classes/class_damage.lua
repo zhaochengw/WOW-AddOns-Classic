@@ -567,7 +567,7 @@ end
 	function Details:ToolTipBySpell(instance, tabela, thisLine, keydown)
 
 		local GameCooltip = GameCooltip
-		local combat = instance.showing
+		local combat = instance:GetCombat()
 		local from_spell = tabela [1] --spellid
 		local from_spellname
 		if (from_spell) then
@@ -1066,7 +1066,7 @@ end
 			tabela._custom = true
 		end
 
-		local total = instance.showing.totals.by_spell
+		local total = instance:GetCombat().totals.by_spell
 		local porcentagem
 
 		if (instance.row_info.percent_type == 1) then
@@ -1147,7 +1147,7 @@ end
 		local GameCooltip = GameCooltip
 
 		--mantendo a fun��o o mais low level poss�vel
-		local damage_container = instancia.showing [1]
+		local damage_container = instancia:GetCombat() [1]
 
 		local frag_actor = damage_container._ActorTable [damage_container._NameIndexTable [ name ]]
 
@@ -1260,7 +1260,7 @@ end
 			tabela._custom = true
 		end
 
-		local total = instancia.showing.totals.frags_total
+		local total = instancia:GetCombat().totals.frags_total
 		local porcentagem
 
 		if (instancia.row_info.percent_type == 1) then
@@ -1529,7 +1529,7 @@ end
 
 	function Details:ToolTipVoidZones(instancia, actor, barra, keydown)
 
-		local damage_actor = instancia.showing[1]:PegarCombatente(_, actor.damage_twin)
+		local damage_actor = instancia:GetCombat()[1]:PegarCombatente(_, actor.damage_twin)
 		local habilidade
 		local alvos
 
@@ -1673,9 +1673,9 @@ end
 		self.minha_barra = whichRowLine
 		thisLine.colocacao = colocacao
 
-		local total = instancia.showing.totals.voidzone_damage
+		local total = instancia:GetCombat().totals.voidzone_damage
 
-		local combat_time = instancia.showing:GetCombatTime()
+		local combat_time = instancia:GetCombat():GetCombatTime()
 		local dps = math.floor(self.damage / combat_time)
 
 		local formated_damage = selectedToKFunction(_, self.damage)
@@ -1712,7 +1712,7 @@ end
 
 		local rightText = formated_damage .. bars_brackets[1] .. formated_dps .. bars_separator .. porcentagem .. bars_brackets[2]
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instancia.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instancia.showing, instancia, rightText))
+			thisLine.lineText4:SetText(stringReplace(instancia.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instancia:GetCombat(), instancia, rightText))
 		else
 			if (instancia.use_multi_fontstrings) then
 				instancia:SetInLineTexts(thisLine, formated_damage, formated_dps, porcentagem)
@@ -1863,7 +1863,7 @@ function damageClass:RefreshWindow(instanceObject, combatObject, bForceUpdate, b
 	end
 
 	if (keyName == "frags") then
-		local frags = instanceObject.showing.frags
+		local frags = instanceObject:GetCombat().frags
 		local frags_total_kills = 0
 		local index = 0
 
@@ -2209,7 +2209,7 @@ function damageClass:RefreshWindow(instanceObject, combatObject, bForceUpdate, b
 		elseif(windowMode == DETAILS_MODE_ALL) then --mostrando ALL
 			--faz o sort da categoria e retorna o amount corrigido
 			if (subAttribute == 2) then
-				local combat_time = instanceObject.showing:GetCombatTime()
+				local combat_time = instanceObject:GetCombat():GetCombatTime()
 				total = damageClass:ContainerRefreshDps(actorTableContent, combat_time)
 			else
 				--pega o total ja aplicado na tabela do combate
@@ -2374,7 +2374,7 @@ function damageClass:RefreshWindow(instanceObject, combatObject, bForceUpdate, b
 		end
 	end
 
-	local combatTime = instanceObject.showing:GetCombatTime()
+	local combatTime = instanceObject:GetCombat():GetCombatTime()
 	bUsingCustomLeftText = instanceObject.row_info.textL_enable_custom_text
 	bUsingCustomRightText = instanceObject.row_info.textR_enable_custom_text
 
@@ -2844,7 +2844,7 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 		local rightText = formatedDamage .. bars_brackets[1] .. formatedDps .. bars_separator .. percentString .. bars_brackets[2]
 
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formatedDamage, formatedDps, percentString, self, instanceObject.showing, instanceObject, rightText))
+			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formatedDamage, formatedDps, percentString, self, instanceObject:GetCombat(), instanceObject, rightText))
 		else
 			if (instanceObject.use_multi_fontstrings) then
 				instanceObject:SetInLineTexts(thisLine, formatedDamage, formatedDps, percentString)
@@ -2911,7 +2911,7 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 		end
 
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_dps, formated_damage, percentString, self, instanceObject.showing, instanceObject, rightText))
+			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_dps, formated_damage, percentString, self, instanceObject:GetCombat(), instanceObject, rightText))
 		else
 			if (instanceObject.use_multi_fontstrings) then
 				--instance:SetInLineTexts(thisLine, formated_damage, formated_dps, porcentagem)
@@ -2944,7 +2944,7 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 
 		local rightText = formated_damage_taken .. bars_brackets[1] .. formated_dtps .. bars_separator .. percentString .. bars_brackets[2]
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_damage_taken, formated_dtps, percentString, self, instanceObject.showing, instanceObject, rightText))
+			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_damage_taken, formated_dtps, percentString, self, instanceObject:GetCombat(), instanceObject, rightText))
 		else
 			if (instanceObject.use_multi_fontstrings) then
 				instanceObject:SetInLineTexts(thisLine, formated_damage_taken, formated_dtps, percentString)
@@ -2969,7 +2969,7 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 
 		local rightText = formated_friendly_fire .. bars_brackets[1] .. percentString ..  bars_brackets[2]
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_friendly_fire, "", percentString, self, instanceObject.showing, instanceObject, rightText))
+			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formated_friendly_fire, "", percentString, self, instanceObject:GetCombat(), instanceObject, rightText))
 		else
 			if (instanceObject.use_multi_fontstrings) then
 				instanceObject:SetInLineTexts(thisLine, "", formated_friendly_fire, percentString)
@@ -3000,7 +3000,7 @@ function damageClass:RefreshLine(instanceObject, lineContainer, whichRowLine, ra
 
 		local rightText = formatedDamageTaken .. bars_brackets[1] .. formatedDtps .. bars_separator .. percentString .. bars_brackets[2]
 		if (bUsingCustomRightText) then
-			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formatedDamageTaken, formatedDtps, percentString, self, instanceObject.showing, instanceObject, rightText))
+			thisLine.lineText4:SetText(stringReplace(instanceObject.row_info.textR_custom_text, formatedDamageTaken, formatedDtps, percentString, self, instanceObject:GetCombat(), instanceObject, rightText))
 		else
 			if (instanceObject.use_multi_fontstrings) then
 				instanceObject:SetInLineTexts(thisLine, formatedDamageTaken, formatedDtps, percentString)
@@ -3240,7 +3240,7 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 				local sizeOffset = instance.row_info.arena_role_icon_size_offset
 				local leftText = barNumber .. "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t " .. self.displayName
 				if (usingCustomLeftText) then
-					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t ", self, instance.showing, instance, leftText))
+					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t ", self, instance:GetCombat(), instance, leftText))
 				else
 					bar.lineText1:SetText(leftText)
 				end
@@ -3248,7 +3248,7 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 				--don't show arena role icon
 				local leftText = barNumber .. self.displayName
 				if (usingCustomLeftText) then
-					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, " ", self, instance.showing, instance, leftText))
+					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, " ", self, instance:GetCombat(), instance, leftText))
 				else
 					bar.lineText1:SetText(leftText)
 				end
@@ -3259,14 +3259,14 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 				if (Details.faction_against == "Horde") then
 					local leftText = barNumber .. "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:0:32:0:32|t"..self.displayName
 					if (usingCustomLeftText) then
-						bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:0:32:0:32|t", self, instance.showing, instance, leftText))
+						bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:0:32:0:32|t", self, instance:GetCombat(), instance, leftText))
 					else
 						bar.lineText1:SetText(leftText) --seta o texto da esqueda -- HORDA
 					end
 				else --alliance
 					local leftText = barNumber .. "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:32:64:0:32|t"..self.displayName
 					if (usingCustomLeftText) then
-						bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:32:64:0:32|t", self, instance.showing, instance, leftText))
+						bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\AddOns\\Details\\images\\icones_barra:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:32:32:64:0:32|t", self, instance:GetCombat(), instance, leftText))
 					else
 						bar.lineText1:SetText(leftText) --seta o texto da esqueda -- ALLY
 					end
@@ -3275,7 +3275,7 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 				--don't show faction icon
 				local leftText = barNumber .. self.displayName
 				if (usingCustomLeftText) then
-					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, " ", self, instance.showing, instance, leftText))
+					bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, " ", self, instance:GetCombat(), instance, leftText))
 				else
 					bar.lineText1:SetText(leftText)
 				end
@@ -3286,14 +3286,14 @@ function Details:SetBarLeftText(bar, instance, enemy, arenaEnemy, arenaAlly, usi
 			local sizeOffset = instance.row_info.arena_role_icon_size_offset
 			local leftText = barNumber .. "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t " .. self.displayName
 			if (usingCustomLeftText) then
-				bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t ", self, instance.showing, instance, leftText))
+				bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" ..(instance.row_info.height + sizeOffset)..":"..(instance.row_info.height + sizeOffset) .. ":0:0:256:256:" .. Details.role_texcoord [self.role or "NONE"] .. "|t ", self, instance:GetCombat(), instance, leftText))
 			else
 				bar.lineText1:SetText(leftText)
 			end
 		else
 			local leftText = barNumber .. self.displayName
 			if (usingCustomLeftText) then
-				bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "", self, instance.showing, instance, leftText))
+				bar.lineText1:SetText(stringReplace(instance.row_info.textL_custom_text, bar.colocacao, self.displayName, "", self, instance:GetCombat(), instance, leftText))
 			else
 				bar.lineText1:SetText(leftText) --seta o texto da esqueda
 			end
@@ -3364,8 +3364,8 @@ function Details:SetClassIcon(texture, instance, class) --[[exported]] --~icons
 	end
 
 	--set the size offset of the icon
-	local iconSizeOffset = instance.row_info.icon_size_offset
-	local iconSize = instance.row_info.height
+	local iconSizeOffset = instance.row_info.icon_size_offset or 0
+	local iconSize = instance.row_info.height or instance.settings.lines.height
 	local newIconSize = iconSize + iconSizeOffset
 	texture:SetSize(newIconSize, newIconSize)
 
@@ -3900,8 +3900,34 @@ local barAlha = .6
 Details222.commprefixes = "Comm"
 
 ---------DAMAGE DONE & DPS
+local findPlayerPositionInEnemyDamageTaken = function(playerName, enemyName, combatObject)
+	--find the player position in the enemy damage taken table
+	---@type actordamage
+	local enemyActor = combatObject(DETAILS_ATTRIBUTE_DAMAGE, enemyName)
+	local damagers = {}
+	if (enemyActor) then
+		local damageTakenTable = enemyActor.damage_from
+		for damagerName in pairs(damageTakenTable) do
+			---@type actordamage
+			local damagerActor = combatObject(DETAILS_ATTRIBUTE_DAMAGE, damagerName)
+			if (damagerActor and damagerActor:IsPlayer()) then
+				local amount = damagerActor.targets[enemyName] or 0
+				damagers[#damagers+1] = {damagerName, amount}
+			end
+		end
+	end
 
-function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
+	table.sort(damagers, Details.Sort2)
+
+	for i = 1, #damagers do
+		if (damagers[i][1] == playerName) then
+			return "#" .. i --return the position of the player in the enemy damage taken table
+		end
+	end
+	return "" --not found
+end
+
+function damageClass:ToolTip_DamageDone(instance, numero, barra, keydown)
 	local owner = self.owner
 	if (owner and owner.classe) then
 		r, g, b = unpack(Details.class_colors [owner.classe])
@@ -3912,7 +3938,7 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 		r, g, b = unpack(Details.class_colors [self.classe])
 	end
 
-	local combatObject = instancia:GetShowingCombat()
+	local combatObject = instance:GetCombat()
 
 	--habilidades
 	local icon_size = Details.tooltip.icon_size
@@ -3939,11 +3965,11 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 			if (Details.time_type == 1 or not self.grupo) then
 				meu_tempo = self:Tempo()
 			elseif(Details.time_type == 2 or Details.use_realtimedps) then
-				meu_tempo = instancia.showing:GetCombatTime()
+				meu_tempo = combatObject:GetCombatTime()
 			end
 
 			if (not meu_tempo) then
-				meu_tempo = instancia.showing:GetCombatTime()
+				meu_tempo = combatObject:GetCombatTime()
 				if (Details.time_type == 3) then --time type 3 is deprecated
 					Details.time_type = 2
 				end
@@ -3959,11 +3985,11 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 
 			--add actor pets
 			for petIndex, petName in ipairs(self:Pets()) do
-				local petActor = instancia.showing[class_type]:PegarCombatente(nil, petName)
+				local petActor = combatObject[class_type]:PegarCombatente(nil, petName)
 				if (petActor) then
 					for _spellid, _skill in pairs(petActor:GetActorSpells()) do
 						local formattedPetName = petName:gsub((" <.*"), "")
-						if (instancia.row_info.textL_translit_text) then
+						if (instance.row_info.textL_translit_text) then
 							formattedPetName = Translit:Transliterate(formattedPetName, "!")
 						end
 						ActorSkillsSortTable [#ActorSkillsSortTable+1] = {_spellid, _skill.total, _skill.total/meu_tempo, formattedPetName}
@@ -4039,7 +4065,7 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 						percent = percent  .. "0"
 					end
 
-					if (instancia.sub_atributo == 1 or instancia.sub_atributo == 6) then
+					if (instance.sub_atributo == 1 or instance.sub_atributo == 6) then
 						GameCooltip:AddLine(nome_magia, formatTooltipNumber(_, totalDamage) .."  ("..percent.."%)")
 					else
 						GameCooltip:AddLine(nome_magia, formatTooltipNumber(_, math.floor(totalDPS)) .."  ("..percent.."%)")
@@ -4076,7 +4102,7 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 
 		--targets(enemies)
 			local topEnemy = ActorTargetsSortTable[1] and ActorTargetsSortTable[1][2] or 0
-			if (instancia.sub_atributo == 1 or instancia.sub_atributo == 6) then
+			if (instance.sub_atributo == 1 or instance.sub_atributo == 6) then
 				--small blank space
 				Details:AddTooltipSpellHeaderText("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
 
@@ -4100,7 +4126,9 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 
 				for i = 1, math.min(max_targets, #ActorTargetsSortTable) do
 					local enemyTable = ActorTargetsSortTable[i]
-					GameCooltip:AddLine(enemyTable[1], formatTooltipNumber(_, enemyTable[2]) .." ("..format("%.1f", enemyTable[2] / ActorDamageWithPet * 100).."%)")
+
+					local position = findPlayerPositionInEnemyDamageTaken(self.nome, enemyTable[1], combatObject)
+					GameCooltip:AddLine(enemyTable[1], formatTooltipNumber(_, enemyTable[2]) .. "  " .. position .. "  ("..format("%.1f", enemyTable[2] / ActorDamageWithPet * 100).."%)")
 
 					local portraitTexture-- = Details222.Textures.GetPortraitTextureForNpcID(enemyTable[3]) --disabled atm
 					if (portraitTexture) then
@@ -4115,8 +4143,6 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 	end
 
 	--PETS
-	local instance = instancia
-	local combatObject = instance:GetShowingCombat()
 
 	local myPets = self.pets
 	if (#myPets > 0) then --teve ajudantes
@@ -4202,7 +4228,7 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 					petName = Translit:Transliterate(petName, "!")
 				end
 
-				if (instancia.sub_atributo == 1) then
+				if (instance.sub_atributo == 1) then
 					GameCooltip:AddLine(petName, formatTooltipNumber(_, petDamageDone) .. " (" .. math.floor(petDamageDone/self.total*100) .. "%)")
 				else
 					GameCooltip:AddLine(petName, formatTooltipNumber(_, math.floor(petDPS)) .. " (" .. math.floor(petDamageDone/self.total*100) .. "%)")
@@ -4216,10 +4242,9 @@ function damageClass:ToolTip_DamageDone(instancia, numero, barra, keydown)
 	end
 
 	--~Phases
-	local segment = instancia:GetShowingCombat()
-	if (segment and self.grupo) then
-		local bossInfo = segment:GetBossInfo()
-		local phasesInfo = segment:GetPhases()
+	if (combatObject and self.grupo) then
+		local bossInfo = combatObject:GetBossInfo()
+		local phasesInfo = combatObject:GetPhases()
 		if (bossInfo and phasesInfo) then
 			if (#phasesInfo > 1) then
 
@@ -4444,7 +4469,7 @@ function damageClass:ToolTip_Enemies(instanceObject, numero, barra, keydown)
 	GameCooltip:AddIcon(instanceObject:GetSkinTexture(), 1, 1, 14, 14, 0.005859375 + half, 0.025390625 - half, 0.3623046875, 0.3818359375)
 	GameCooltip:AddStatusBar(0, 1, r, g, b, 1, false, enemies_background)
 
-	local heal_actor = instanceObject.showing(2, self.nome)
+	local heal_actor = instanceObject:GetCombat()(2, self.nome)
 	if (heal_actor) then
 		GameCooltip:AddLine(Loc ["STRING_ATTRIBUTE_HEAL_ENEMY"], formatTooltipNumber(_, math.floor(heal_actor.heal_enemy_amt)))
 	else
@@ -4476,7 +4501,7 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 	local combatObject = instance:GetShowingCombat()
 	local damageContainer = combatObject:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
 
-	---@type {key1:actorname, key2:valueamount, key3:class, key4:actor}
+	---@type {[1]:actorname, [2]:valueamount, [3]:class, [4]:actor}[]
 	local damageTakenDataSorted = {}
 	local mainAttribute, subAttribute = instance:GetDisplay()
 
@@ -4496,7 +4521,7 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 			--get the aggressor
 			local enemyActorObject = damageContainer:GetActor(enemyName)
 			if (enemyActorObject) then
-				---@type {key1:actorname, key2:valueamount, key3:class, key4:actor}
+				---@type {[1]:actorname, [2]:valueamount, [3]:class, [4]:actor}
 				local damageTakenTable
 				local damageInflictedByThisEnemy = enemyActorObject.targets[actorName]
 
@@ -4570,17 +4595,17 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 	-- create a full list of incoming damage, before adding any lines to the tooltip, so we can sort them appropriately
 
 	---@class cooltip_icon
-	---@field key1 textureid
-	---@field key2 number 1 for main tooltip frame, 2 for the secondary frame
-	---@field key3 number 1 for the left side, 2 for the right size
-	---@field key4 width
-	---@field key5 height
-	---@field key6 coordleft
-	---@field key7 coordright
-	---@field key8 coordtop
-	---@field key9 coordbottom
+	---@field [1] textureid|texturepath
+	---@field [2] number 1 for main tooltip frame, 2 for the secondary frame
+	---@field [3] number 1 for the left side, 2 for the right size
+	---@field [4] width
+	---@field [5] height
+	---@field [6] coordleft?
+	---@field [7] coordright?
+	---@field [8] coordtop?
+	---@field [9] coordbottom?
 
-	---@type {key1:valueamount, key2:table<string, string>, key3:cooltip_icon}
+	---@type {[1]:valueamount, [2]:{[1]:actorname, [1]:string, [3]:nil, [4]:color}, [3]:cooltip_icon}
 	local lines_to_add = {}
 
 	for i = 1, maxDataAllowed do
@@ -4591,7 +4616,7 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 		--the iteration doesnt check friendly fire for all actors, only a few cases like Monk Stagger
 
 		if (enemyActorObject:IsNeutralOrEnemy() or enemyActorObject:Name() == self:Name()) then
-			---@type {key1:spellid, key2:valueamount, key:actorname}
+			---@type {[1]:spellid, [2]:valueamount, [3]:actorname}[]
 			local spellTargetDamageList = {}
 
 			for spellId, spellTable in pairs(enemyActorObject.spells._ActorTable) do
@@ -4624,14 +4649,14 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 				})
 			end
 		else
-			---@type actorname, valueamount, class, actor
+			---@type {[1]:actorname, [2]:valueamount, [3]:class, [4]:actor}
 			local thisAggrossorTable = damageTakenDataSorted[i]
 			local actorName = thisAggrossorTable[1]
 			local amount = thisAggrossorTable[2]
 			local class = thisAggrossorTable[3]
 			local actorObject = thisAggrossorTable[4]
 
-			---@type {key1:actorname, key2:string, key3:nil, key4:color}
+			---@type {[1]:actorname, [1]:string, [3]:nil, [4]:color}
 			local addLineArgs
 			---@type cooltip_icon
 			local addIconArgs
@@ -4671,7 +4696,7 @@ function damageClass:ToolTip_DamageTaken(instance, numero, barra, keydown)
 		GameCooltip:AddIcon(instance:GetSkinTexture(), 1, 1, iconSize, iconSize, 0.005859375 + half, 0.025390625 - half, 0.3623046875, 0.3818359375)
 		Details:AddTooltipBackgroundStatusbar()
 
-		local heal_actor = instance.showing(2, self.nome)
+		local heal_actor = instance:GetCombat()(2, self.nome)
 		if (heal_actor) then
 			GameCooltip:AddLine(Loc ["STRING_ATTRIBUTE_HEAL_DONE"], formatTooltipNumber(_, math.floor(heal_actor.heal_enemy_amt)))
 		else
@@ -4698,7 +4723,7 @@ function damageClass:ToolTip_FriendlyFire(instancia, numero, barra, keydown)
 	local FriendlyFireTotal = self.friendlyfire_total
 	local combat = instancia:GetShowingCombat()
 
-	local tabela_do_combate = instancia.showing
+	local tabela_do_combate = instancia:GetCombat()
 	local showing = tabela_do_combate [class_type]
 
 	local icon_size = Details.tooltip.icon_size
@@ -5042,9 +5067,9 @@ function damageClass:MontaInfoFriendlyFire() --~friendlyfire ~friendly ~ff
 end
 
 local damageTakenSpellSourcesHeadersAllowed = {icon = true, name = true, rank = true, amount = true, persecond = true, percent = true}
-function damageClass.BuildDamageTakenSpellListFromAgressor(targetActor, aggressorActor)
+function damageClass:BuildDamageTakenSpellListFromAgressor(aggressorActor)
 	--target actor name
-	local targetActorName = targetActor:Name()
+	local targetActorName = self:Name()
 
 	---@type combat
 	local combatObject = Details:GetCombatFromBreakdownWindow()
@@ -5090,6 +5115,67 @@ function damageClass.BuildDamageTakenSpellListFromAgressor(targetActor, aggresso
 			end
 		end
 	end
+
+	return resultTable
+end
+
+---@return {topValue: number, totalValue: number, headersAllowed: table, combatTime: number, [number]: {spellId: number, total: number, petName: string, spellScholl: number}}
+function damageClass:BuildDamageTakenSpellList()
+	--target actor name
+	local targetActorName = self:Name()
+
+	---@type combat
+	local combatObject = Details:GetCombatFromBreakdownWindow()
+
+	---@type actorcontainer
+	local damageContainer = combatObject:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+
+	--create the table which will be returned with the data
+	---@type {topValue: number, totalValue: number, headersAllowed: table, combatTime: number, [number]: {spellId: number, total: number, petName: string, spellScholl: number}}
+	local resultTable = {topValue = 0, totalValue = 0, headersAllowed = damageTakenSpellSourcesHeadersAllowed, combatTime = combatObject:GetCombatTime()}
+
+	--- @type table<number, {spellId: number, total: number, petName: string, spellScholl: number}>
+	local unsortedSpells = {}
+
+	for enemyName, _ in pairs(self.damage_from) do --who damaged the player
+		--get the aggressor
+		local enemyActorObject = damageContainer:GetActor(enemyName)
+		if (
+			enemyActorObject
+			and (
+				(enemyActorObject.targets[targetActorName] and enemyActorObject:IsNeutralOrEnemy())
+				or (enemyActorObject.friendlyfire[targetActorName] and enemyActorObject:Name() == targetActorName)
+			)
+		) then
+			if (enemyActorObject.targets[targetActorName]) then
+				for spellId, spellTable in pairs(enemyActorObject.spells._ActorTable) do
+					---@cast spellTable spelltable
+					local damageOnTarget = spellTable.targets[targetActorName]
+					if (damageOnTarget) then
+						unsortedSpells[spellId] = unsortedSpells[spellId] or {spellId = spellId, total = 0, petName = "", spellScholl = spellTable.spellschool}
+						unsortedSpells[spellId].total = unsortedSpells[spellId].total + damageOnTarget
+						resultTable.totalValue = resultTable.totalValue + damageOnTarget
+					end
+				end
+			else
+				local staggerSpellId = 124255
+				local friendlyFire = enemyActorObject.friendlyfire[targetActorName]
+				if (friendlyFire and friendlyFire.spells[staggerSpellId] and friendlyFire.spells[staggerSpellId] > 0) then
+					local staggerDamage = friendlyFire.spells[staggerSpellId]
+					unsortedSpells[staggerSpellId] = unsortedSpells[staggerSpellId] or {spellId = staggerSpellId, total = 0, petName = "", spellScholl = 1}
+					unsortedSpells[staggerSpellId].total = unsortedSpells[staggerSpellId].total + staggerDamage
+					resultTable.totalValue = resultTable.totalValue + staggerDamage
+				end
+			end
+		end
+	end
+	local sortedSpells = {}
+	for _, spellTable in pairs(unsortedSpells) do
+		sortedSpells[#sortedSpells+1] = spellTable
+	end
+
+	table.sort(sortedSpells, function(a, b) return a.total > b.total end)
+	Mixin(resultTable, sortedSpells)
 
 	return resultTable
 end
@@ -5220,7 +5306,7 @@ end
 		end
 	end
 
-	if (detalhes and self.detalhes and self.detalhes == spellId and breakdownWindowFrame.showing == index) then
+	if (detalhes and self.detalhes and self.detalhes == spellId and breakdownWindowFrame:GetCombat() == index) then
 		self:MontaDetalhes(row.show, row, breakdownWindowFrame.instancia)
 	end
 end
@@ -5375,7 +5461,7 @@ function damageClass:MontaInfoDamageDone()
 	if (Details.time_type == 1 or not actorObject.grupo) then
 		actorCombatTime = actorObject:Tempo()
 	elseif(Details.time_type == 2 or Details.use_realtimedps) then
-		actorCombatTime = breakdownWindowFrame.instancia.showing:GetCombatTime()
+		actorCombatTime = breakdownWindowFrame.instancia:GetCombat():GetCombatTime()
 	end
 
 	--actor spells
@@ -5777,7 +5863,7 @@ function damageClass:MontaDetalhesFriendlyFire(nome, barra)
 	local barras = breakdownWindowFrame.barras3
 	local instancia = breakdownWindowFrame.instancia
 
-	local tabela_do_combate = breakdownWindowFrame.instancia.showing
+	local tabela_do_combate = breakdownWindowFrame.instancia:GetCombat()
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 
 	local friendlyfire = self.friendlyfire
@@ -5839,7 +5925,7 @@ end
 -- detalhes info enemies
 function damageClass:MontaDetalhesEnemy(spellid, barra)
 
-	local container = breakdownWindowFrame.instancia.showing[1]
+	local container = breakdownWindowFrame.instancia:GetCombat()[1]
 	local barras = breakdownWindowFrame.barras3
 	local instancia = breakdownWindowFrame.instancia
 
@@ -5863,7 +5949,7 @@ function damageClass:MontaDetalhesEnemy(spellid, barra)
 
 	for target_name, amount in pairs(targets) do
 		local classe
-		local this_actor = breakdownWindowFrame.instancia.showing(1, target_name)
+		local this_actor = breakdownWindowFrame.instancia:GetCombat()(1, target_name)
 		if (this_actor) then
 			classe = this_actor.classe or "UNKNOW"
 		else
@@ -5940,7 +6026,7 @@ function damageClass:MontaDetalhesDamageTaken(nome, barra)
 	local barras = breakdownWindowFrame.barras3
 	local instancia = breakdownWindowFrame.instancia
 
-	local tabela_do_combate = breakdownWindowFrame.instancia.showing
+	local tabela_do_combate = breakdownWindowFrame.instancia:GetCombat()
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 
 	local este_agressor = showing._ActorTable[showing._NameIndexTable[nome]]
@@ -6345,7 +6431,7 @@ function Details:BuildPlayerDetailsSpellChart()
 end
 
 function damageClass:MontaTooltipDamageTaken(thisLine, index)
-	local aggressor = breakdownWindowFrame.instancia.showing [1]:PegarCombatente(_, thisLine.nome_inimigo)
+	local aggressor = breakdownWindowFrame.instancia:GetCombat() [1]:PegarCombatente(_, thisLine.nome_inimigo)
 	local container = aggressor.spells._ActorTable
 	local habilidades = {}
 
@@ -6428,7 +6514,7 @@ function damageClass:MontaTooltipAlvos(thisLine, index, instancia) --~deprecated
 
 	--add pets
 	for _, PetName in ipairs(self.pets) do
-		local PetActor = instancia.showing(class_type, PetName)
+		local PetActor = instancia:GetCombat()(class_type, PetName)
 		if (PetActor) then
 			local PetSkillsContainer = PetActor.spells._ActorTable
 			for _spellid, _skill in pairs(PetSkillsContainer) do
@@ -6460,7 +6546,7 @@ function damageClass:MontaTooltipAlvos(thisLine, index, instancia) --~deprecated
 	if (Details.time_type == 1 or not self.grupo) then
 		meu_tempo = self:Tempo()
 	elseif(Details.time_type == 2 or Details.use_realtimedps) then
-		meu_tempo = breakdownWindowFrame.instancia.showing:GetCombatTime()
+		meu_tempo = breakdownWindowFrame.instancia:GetCombat():GetCombatTime()
 	end
 
 	local is_dps = breakdownWindowFrame.instancia.sub_atributo == 2

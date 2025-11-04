@@ -1,49 +1,41 @@
-# [5.12.9](https://github.com/WeakAuras/WeakAuras2/tree/5.12.9) (2024-04-29)
+# [5.20.6](https://github.com/WeakAuras/WeakAuras2/tree/5.20.6) (2025-10-21)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.12.8...5.12.9)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.20.5...5.20.6)
 
 ## Highlights
 
- - Added "Parent Frame" as option to "Glow Frame Type"
-- Cataclysm bug fixes 
+bugfix release for 1.15.8 & toc bump for classic era & mop classic
+
+fixes:
+
+- icon visible condition behavior is more sane now
+- another workaround for insane AbbreviateNumbers behavior
+- adjusted to new api environment in classic era
+
+removals:
+
+- WeakAuras now detects & refuses to boot if it was installed on a Midnight client, instead of spewing thousands of errors.
 
 ## Commits
 
-Boneshock (1):
+Adal (1):
 
-- add Location trigger (#4917)
+- update mists toc for 5.5.1
 
-InfusOnWoW (8):
+InfusOnWoW (5):
 
-- Update Atlas File List from wago.tools
-- Fix tracking specific charges being affeced by paused evoker spells
-- Weapon Enchant Trigger: Fix trigger stack check and missing condition
-- Add missing order increment
-- Fix AddFakeInformation for TSU auras to not overwrite progressType
-- Shape shift Trigger: Add note for incompatibility with SoD's Gladiator rune
-- Remove dead code
-- Update Atlas File List from wago.tools
+- Update Discord List
+- Update Discord List
+- Fix Icon visible Condition not reversing correctly
+- Midnight: Disable WeakAuras with an message
+- Mop/Classic: Workaround another bug in AbbreviateNumbers
 
-Lynn (1):
-
-- Added "Parent Frame" as option to "Glow Frame Type" (#5025)
-
-Stanzilla (4):
+Stanzilla (2):
 
 - Update WeakAurasModelPaths from wago.tools
 - Update WeakAurasModelPaths from wago.tools
-- Update WeakAurasModelPaths from wago.tools
-- Mark model paths script as executeable
 
-emptyrivers (1):
+mrbuds (1):
 
-- only use whisper comms if target is on the actually same server (#5019)
-
-mrbuds (5):
-
-- Cataclysm: add class & spec load option
-- FontString:SetJustifyV error with "CENTER" on cataclysm beta
-- Types (#5013)
-- Cataclysm: remove "Resilience" from "Character Stats" trigger
-- Classic: fix talent not checked on changing talent group
+- Classic Era 1.15.8 update
 

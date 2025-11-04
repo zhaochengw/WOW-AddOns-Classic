@@ -1,0 +1,54 @@
+## Interface: 110205, 110207, 120000
+## X-Min-Interface: 80000
+## Category: DBM
+
+## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Bosses (MoP)|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10필드 보스 (판다)|r
+## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10Pandaria|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10Pandaria|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM Мод|r|cffffe00a>|r |cff10ff10Мировые боссы (Пандария)|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10潘达利亚|r
+## Title-frFR:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10Pandarie|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10潘達利亞|r
+## Author: MysticalOS/nBlueWiz
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMPandaria_AllSavedVars
+## SavedVariablesPerCharacter: DBMPandaria_SavedStats
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: WORLDBOSS
+## X-DBM-Mod-Category: MOP
+## X-DBM-StatTypes: normal
+## X-DBM-Mod-Name: World Bosses (Pandaria)
+## X-DBM-Mod-Name-koKR: 필드 보스 (판다리아)
+## X-DBM-Mod-Name-ruRU: Мировые боссы (Пандария)
+## X-DBM-Mod-World-Boss: 1
+## X-DBM-Mod-Sort: 704
+## X-DBM-Mod-MapID: 870,1064
+## X-DBM-Mod-LoadCID: 62346,60491,69161,69099,71952,71954,72057,71953,71955,69768,69769,69841,69842
+## X-DBM-Mod-MinCoreRevision: 20210721040757
+## X-DBM-Mod-MinExpansion: 4
+## X-Curse-Project-ID: 85688
+## X-WoWI-ID: 23199
+## X-Wago-ID: 0mNwz4Go
+## Version: r183
+
+localization.en.lua
+localization.de.lua
+localization.es.lua
+localization.kr.lua
+localization.ru.lua
+localization.tw.lua
+localization.cn.lua
+localization.br.lua
+Anger.lua
+Salyis.lua
+Nalak.lua
+Oondasta.lua
+ChiJi.lua
+Yulon.lua
+Niuzao.lua
+Xuen.lua
+Ordos.lua
+Zandalari.lua

@@ -15,11 +15,11 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local tooltipNames = {}
 local lootTooltip
 
-local function GetTooltipNameScanner()
+local function GetTooltipNameScanner(npcID)
 	local now = GetTime()
 	for i, tip in ipairs(tooltipNames) do
-		if (not tip.npcID or now - tip.lastUpdate > 0.5) then
-			tip.lastUpdate = now
+		if (not tip.npcID or tip.npcID == npcID) then
+			tip.npcID = npcID
 			return tip
 		end
 	end
@@ -27,21 +27,24 @@ local function GetTooltipNameScanner()
 	local tip = CreateFrame('GameTooltip', 'TooltipNpcName' .. (#tooltipNames + 1), UIParent, 'GameTooltipTemplate')
 	tip:Show()
 	tip:SetHyperlink('unit:')
-	tip.lastUpdate = now
+	tip.npcID = npcID
 	tinsert(tooltipNames, tip)
 	return tip
 end
 	
 function RSTooltipScanners.ScanNpcName(npcID, callback, secondTry)
-	local tip = GetTooltipNameScanner()
+	if (not npcID) then
+		return
+	end
+	
+	local tip = GetTooltipNameScanner(npcID)
 	tip:SetOwner(UIParent, 'ANCHOR_NONE')
-	tip.npcID = npcID or 0
 	tip:SetScript('OnTooltipSetUnit', function(self)
 		local tipName = self:GetName()
 		local name, _ = _G[tipName .. 'TextLeft1']:GetText(), _G[tipName ..'TextLeft2']:GetText()
 		if (name) then
 			--Cannot use RSNpcDB.SetNpcName(self.npcID, name), cyclic import!
-			private.dbglobal.rare_names[GetLocale()][npcID] = name
+			private.dbglobal.rare_names[GetLocale()][self.npcID] = name
 			if (callback) then
 				callback(name)
 			end

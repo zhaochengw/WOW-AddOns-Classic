@@ -1,22 +1,19 @@
 local mod	= DBM:NewMod(2762, "DBM-KhazAlgar", nil, 1278)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250904080623")
+mod:SetRevision("20251017235729")
 mod:SetCreatureID(238319)
 mod:SetEncounterID(3184)
---mod:SetReCombatTime(30)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
---mod:SetHotfixNoticeRev(20240119000000)
---mod:SetMinSyncRevision(20240119000000)
+mod:SetHotfixNoticeRev(20251017000000)
+mod:SetMinSyncRevision(20251017000000)
 mod:SetZone(2738)
 
 mod:RegisterCombat("combat")
---mod:RegisterKill("yell", L.Win)
+mod:SetWipeTime(40)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 1237905 1237261 1237893"
---	"SPELL_CAST_SUCCESS",
---	"SPELL_AURA_APPLIED"
 )
 
 local warnUntetheredRetreat			= mod:NewSpellAnnounce(1237261, 3)

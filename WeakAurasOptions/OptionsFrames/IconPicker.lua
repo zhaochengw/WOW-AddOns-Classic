@@ -8,7 +8,7 @@ local OptionsPrivate = select(2, ...)
 local pairs  = pairs
 
 -- WoW APIs
-local CreateFrame, GetSpellInfo = CreateFrame, GetSpellInfo
+local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -53,7 +53,7 @@ local function ConstructIconPicker(frame)
     if (tonumber(subname)) then
       local spellId = tonumber(subname);
       if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
-        local name, _, icon = GetSpellInfo(spellId)
+        local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(spellId)
         if name and icon then
           AddButton(name, icon)
         end
@@ -162,7 +162,7 @@ local function ConstructIconPicker(frame)
     else
       self.givenPath = {};
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
-        if(child) then
+        if child and paths[child.id] then
           local value = valueFromPath(child, paths[child.id])
           self.givenPath[child.id] = value or "";
         end
@@ -218,7 +218,7 @@ local function ConstructIconPicker(frame)
   return group
 end
 
-function OptionsPrivate.IconPicker(frame)
-  iconPicker = iconPicker or ConstructIconPicker(frame)
+function OptionsPrivate.IconPicker(frame, noConstruct)
+  iconPicker = iconPicker or (not noConstruct and ConstructIconPicker(frame))
   return iconPicker
 end

@@ -8,7 +8,7 @@ local AddOn=select(2,...);
 
 AddOn.Options.Integration_Pawn=true;
 
-local Loaded=IsAddOnLoaded("Pawn");
+local Loaded=C_AddOns.IsAddOnLoaded("Pawn");
 local Button=AddOn.Options_CreateOptionButton(2,"Integration_Pawn",AddOn.IntegrationTools_FormatOptionLabel("Pawn"));
 Button:SetEnabled(Loaded);
 if not Loaded then return; end

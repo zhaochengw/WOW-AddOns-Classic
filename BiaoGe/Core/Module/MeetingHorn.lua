@@ -412,8 +412,9 @@ BG.Init2(function()
 
         -- 成就
         local AchievementTitle, AchievementTitleID, AchievementEdit, AchievementCheckButton
-        if not BG.IsVanilla then
-            local onEnterTextTbl = {
+        local AchievementIDs
+        if BG.IsWLK then
+            AchievementIDs = {
                 "25ICC",
                 4816,
                 4815,
@@ -465,6 +466,52 @@ BG.Init2(function()
                 -- 2941,
                 -- 3058,
             }
+        elseif BG.IsCTM then
+            AchievementIDs = {
+                L["英雄难度"],
+                6116,
+                6115,
+                6114,
+                6113,
+                6112,
+                6111,
+                6110,
+                6109,
+                L["普通难度"],
+                6177,
+                6107,
+                6106,
+            }
+        elseif BG.IsMOP then
+            AchievementIDs = {
+                L["英雄难度"],
+                6932,
+                6734,
+                6733,
+                6732,
+                6731,
+                6730,
+                6729,
+                6728,
+                6727,
+                6726,
+                6725,
+                6724,
+                6723,
+                6722,
+                6721,
+                6720,
+                6719,
+                L["普通难度"],
+                6689,
+                6845,
+                6718,
+                6844,
+                6458,
+            }
+        end
+
+        if AchievementIDs then
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", 15, -30)
             t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
@@ -516,7 +563,7 @@ BG.Init2(function()
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine(L["成就ID参考"], 1, 1, 1)
-                for i, ID in ipairs(onEnterTextTbl) do
+                for i, ID in ipairs(AchievementIDs) do
                     if tonumber(ID) then
                         if select(4, GetAchievementInfo(ID)) then
                             local r, g, b = 1, .82, 0
@@ -1160,7 +1207,13 @@ BG.Init2(function()
         end
         hooksecurefunc(MeetingHorn.MainPanel.Browser.ActivityList, "update", Set)
 
-        hooksecurefunc("SendChatMessage", function(msg, chatType, _, name)
+        local tbl
+        if C_ChatInfo and C_ChatInfo.SendChatMessage then
+            tbl = C_ChatInfo
+        else
+            tbl = _G
+        end
+        hooksecurefunc(tbl, "SendChatMessage", function(msg, chatType, _, name)
             if chatType == "WHISPER" and BiaoGe.options["MeetingHorn_isSend"] == 1 then
                 isSend[name] = time()
                 if MeetingHorn.MainPanel.Browser.ActivityList:IsVisible() then

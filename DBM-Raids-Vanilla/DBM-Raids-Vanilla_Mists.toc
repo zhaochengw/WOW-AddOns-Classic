@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50501, 50502
 ## X-Min-Interface: 50500
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-Curse-Project-ID: 16442
 ## X-WoWI-ID: 11700
 ## X-Wago-ID: 7x61xpN1
-## Version: r812
+## Version: r815
 
 locale.generated.lua
 

@@ -1,4 +1,3 @@
--- $Id: DropDownConfig.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -23,20 +22,12 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --]]
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
--- Libraries
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+
 local FOLDER_NAME, private = ...
-local LibStub = _G.LibStub
+
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 
-local dropdowns = { }
+local dropdowns = {}
 addon.dropdowns = dropdowns
 
 dropdowns.DropDownLayouts_Order = {
@@ -45,9 +36,9 @@ dropdowns.DropDownLayouts_Order = {
 	[3] = ATLAS_DDL_LEVEL,
 	[4] = ATLAS_DDL_PARTYSIZE,
 	[5] = ATLAS_DDL_TYPE,
-	[ATLAS_DDL_CONTINENT] = { },
-	[ATLAS_DDL_EXPANSION] = { },
-	[ATLAS_DDL_LEVEL] = { },
+	[ATLAS_DDL_CONTINENT] = {},
+	[ATLAS_DDL_EXPANSION] = {},
+	[ATLAS_DDL_LEVEL] = {},
 	[ATLAS_DDL_PARTYSIZE] = {
 		ATLAS_DDL_PARTYSIZE_5,
 		ATLAS_DDL_PARTYSIZE_10,
@@ -59,14 +50,14 @@ dropdowns.DropDownLayouts_Order = {
 	},
 }
 
-dropdowns.DropDownLayouts = { 
+dropdowns.DropDownLayouts = {
 	[ATLAS_DDL_PARTYSIZE] = {
-		[ATLAS_DDL_PARTYSIZE_5] = { },
-		[ATLAS_DDL_PARTYSIZE_10] = { },
-		[ATLAS_DDL_PARTYSIZE_20TO40] = { },
+		[ATLAS_DDL_PARTYSIZE_5] = {},
+		[ATLAS_DDL_PARTYSIZE_10] = {},
+		[ATLAS_DDL_PARTYSIZE_20TO40] = {},
 	},
 	[ATLAS_DDL_TYPE] = {
-		[ATLAS_DDL_TYPE_INSTANCE] = { },
-		[ATLAS_DDL_TYPE_ENTRANCE] = { },
+		[ATLAS_DDL_TYPE_INSTANCE] = {},
+		[ATLAS_DDL_TYPE_ENTRANCE] = {},
 	},
 }

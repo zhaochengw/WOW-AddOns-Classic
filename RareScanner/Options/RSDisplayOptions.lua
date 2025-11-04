@@ -14,6 +14,7 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
+local RSUtils = private.ImportLib("RareScannerUtils")
 
 -- RareScanner service libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
@@ -39,7 +40,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					name = AL["MAIN_BUTTON_OPTIONS"],
 				},
 				displayButton = {
-					order = 1,
+					order = 1.1,
 					type = "toggle",
 					name = AL["DISPLAY_BUTTON"],
 					desc = AL["DISPLAY_BUTTON_DESC"],
@@ -47,7 +48,77 @@ function RSDisplayOptions.GetDisplayOptions()
 					set = function(_, value)
 						RSConfigDB.SetButtonDisplaying(value)
 					end,
-					width = "full",
+					width = 2.3,
+				},
+				keybindingTarget = {
+					order = 1.2,
+					type = "keybinding",
+					name = AL["KEYBINDING_TARGET"],
+					desc = AL["KEYBINDING_TARGET_DESC"],
+					get = function() return RSConfigDB.GetClickKeybinding() end,
+					set = function(_, value)
+						-- Unbind previous key
+						if (RSConfigDB.GetClickKeybinding()) then
+							SetBinding(RSConfigDB.GetClickKeybinding())
+						end
+						
+						-- Bind new key
+						RSConfigDB.SetClickKeybinding(value)
+						if (value) then
+							SetBindingClick(value, RSConstants.RS_BUTTON_NAME, "LeftButton")
+						end
+					end,
+					validate = function(_, value)
+						if (value) then
+							local bindingAction = GetBindingByKey(value);
+							if (bindingAction) then
+								if (not RSUtils.Contains(bindingAction, RSConstants.RS_BUTTON_NAME)) then
+									return string.format(AL["KEYBINDING_ERROR"], bindingAction)
+								elseif (RSConfigDB.GetHideKeybinding() and value == RSConfigDB.GetHideKeybinding()) then
+									return string.format(AL["KEYBINDING_ERROR"], bindingAction)
+								end
+							end
+						end
+						
+						return true
+					end,
+					width = 0.7,
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
+				},
+				keybindingClose = {
+					order = 1.3,
+					type = "keybinding",
+					name = AL["KEYBINDING_HIDE"],
+					desc = AL["KEYBINDING_HIDE_DESC"],
+					get = function() return RSConfigDB.GetHideKeybinding() end,
+					set = function(_, value)
+						-- Unbind previous key
+						if (RSConfigDB.GetHideKeybinding()) then
+							SetBinding(RSConfigDB.GetHideKeybinding())
+						end
+						
+						-- Bind new key
+						RSConfigDB.SetHideKeybinding(value)
+						if (value) then
+							SetBindingClick(value, RSConstants.RS_BUTTON_NAME, "RightButton")
+						end
+					end,
+					validate = function(_, value)
+						if (value) then
+							local bindingAction = GetBindingByKey(value);
+							if (bindingAction) then
+								if (not RSUtils.Contains(bindingAction, RSConstants.RS_BUTTON_NAME)) then
+									return string.format(AL["KEYBINDING_ERROR"], bindingAction)
+								elseif (RSConfigDB.GetClickKeybinding() and value == RSConfigDB.GetClickKeybinding()) then
+									return string.format(AL["KEYBINDING_ERROR"], bindingAction)
+								end
+							end
+						end
+						
+						return true
+					end,
+					width = 0.7,
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
 				},
 				displayMiniature = {
 					order = 2,
@@ -117,6 +188,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					type = "execute",
 					func = function() RareScanner:Test() end,
 					width = "normal",
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
 				},
 				lockPosition = {
 					order = 7.1,
@@ -128,6 +200,7 @@ function RSDisplayOptions.GetDisplayOptions()
 						RSConfigDB.SetLockingPosition(value)
 					end,
 					width = "double",
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
 				},
 				resetPosition = {
 					order = 7.2,
@@ -136,6 +209,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					type = "execute",
 					func = function() RareScanner:ResetPosition() end,
 					width = "normal",
+					disabled = function() return not RSConfigDB.IsButtonDisplaying() end,
 				},
 				separatorMessages = {
 					order = 8,
@@ -153,36 +227,24 @@ function RSDisplayOptions.GetDisplayOptions()
 					end,
 					width = "full",
 				},
-				displayChatMessage = {
+				flashWindowsTaskBar = {
 					order = 10,
 					type = "toggle",
-					name = AL["SHOW_CHAT_ALERT"],
-					desc = AL["SHOW_CHAT_ALERT_DESC"],
-					get = function() return RSConfigDB.IsDisplayingChatMessages() end,
+					name = AL["FLASH_WINDOWS_TASKBAR"],
+					desc = AL["FLASH_WINDOWS_TASKBAR_DESC"],
+					get = function() return RSConfigDB.IsFlashingWindowsTaskbar() end,
 					set = function(_, value)
-						RSConfigDB.SetDisplayingChatMessages(value)
+						RSConfigDB.SetFlashingWindowsTaskbar(value)
 					end,
 					width = "full",
-				},
-				displayChatTimestampMessage = {
-					order = 11,
-					type = "toggle",
-					name = AL["SHOW_CHAT_TIMESTAMP_ALERT"],
-					desc = AL["SHOW_CHAT_TIMESTAMP_ALERT_DESC"],
-					get = function() return RSConfigDB.IsDisplayingTimestampChatMessages() end,
-					set = function(_, value)
-						RSConfigDB.SetDisplayingTimestampChatMessages(value)
-					end,
-					width = "full",
-					disabled = function() return not RSConfigDB.IsDisplayingChatMessages() end,
 				},
 				separatorNavigation = {
-					order = 12,
+					order = 11,
 					type = "header",
 					name = AL["NAVIGATION_OPTIONS"],
 				},
 				enableNavigation = {
-					order = 13,
+					order = 12,
 					type = "toggle",
 					name = AL["NAVIGATION_ENABLE"],
 					desc = AL["NAVIGATION_ENABLE_DESC"],
@@ -193,7 +255,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					width = "full",
 				},
 				navigationLockEntity = {
-					order = 14,
+					order = 13,
 					type = "toggle",
 					name = AL["NAVIGATION_LOCK_ENTITY"],
 					desc = AL["NAVIGATION_LOCK_ENTITY_DESC"],
@@ -205,12 +267,12 @@ function RSDisplayOptions.GetDisplayOptions()
 					disabled = function() return not RSConfigDB.IsDisplayingNavigationArrows() end,
 				},
 				separatorMap = {
-					order = 15,
+					order = 14,
 					type = "header",
 					name = AL["MAP_OPTIONS"],
 				},
 				minimapButton = {
-					order = 16,
+					order = 15,
 					type = "toggle",
 					name = AL["DISPLAY_MINIMAP_BUTTON"],
 					desc = AL["DISPLAY_MINIMAP_BUTTON_DESC"],
@@ -222,7 +284,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					width = "full",
 				},
 				worldmapButton = {
-					order = 17,
+					order = 16,
 					type = "toggle",
 					name = AL["DISPLAY_WORLDMAP_BUTTON"],
 					desc = AL["DISPLAY_WORLDMAP_BUTTON_DESC"],

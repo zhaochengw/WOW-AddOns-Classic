@@ -1412,7 +1412,7 @@ BG.Init(function()
                     bt:SetPoint("TOPLEFT", BG.MainFrame, "BOTTOM", -280, 1)
                 end
             else
-                bt:SetPoint("LEFT", BG.tabButtons[#BG.tabButtons].button, "RIGHT", BG.IsWLK and 3 or 20, 0)
+                bt:SetPoint("LEFT", BG.tabButtons[#BG.tabButtons].button, "RIGHT", 3, 0)
             end
             bt.bg = bt:CreateTexture(nil, "BACKGROUND")
             bt.bg:SetAllPoints()
@@ -1442,11 +1442,11 @@ BG.Init(function()
             return bt
         end
 
-        local bt = BG.Create_TabButton(BG.FBMainFrameTabNum, L["当前表格"], BG.FBMainFrame)
+        local bt = BG.Create_TabButton(BG.FBMainFrameTabNum, L["表格"], BG.FBMainFrame)
         bt:HookScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(L["< 当前表格 >"], 1, 1, 1, true)
+            GameTooltip:AddLine(L["< 表格 >"], 1, 1, 1, true)
             GameTooltip:AddLine(L["表格的核心功能都在这里"], 1, 0.82, 0, true)
             GameTooltip:Show()
         end)
@@ -2791,19 +2791,14 @@ do
     end
 
     function BG.ImML()
-        if GetLootMethod() == "master" then
-            if BG.masterLooter and BG.masterLooter == BG.GN() then
-                return true
-            end
-        else
-            if BG.IsLeader then
-                return true
-            end
+        if IsMasterLooter() or BG.IsLeader then
+            return true
         end
     end
 
     function BG.IsMLByName(name)
-        if GetLootMethod() == "master" then
+        local loot = GetLootMethod()
+        if loot == "master" or loot == 2 then
             if BG.masterLooter and BG.masterLooter == name then
                 return true
             end

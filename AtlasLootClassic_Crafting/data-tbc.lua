@@ -22,7 +22,7 @@ local GetColorSkill = AtlasLoot.Data.Profession.GetColorSkillRankNoSpell
 local AL = AtlasLoot.Locales
 local ALIL = AtlasLoot.IngameLocales
 
-local NORMAL_DIFF = data:AddDifficulty(AL["Normal"], "n", 1, nil, true)
+local NORMAL_DIFF = data:AddDifficulty("NORMAL", "n", 1, nil, true)
 local LEATHER_DIFF = data:AddDifficulty(ALIL["Leather"], "leather", 0)
 local MAIL_DIFF = data:AddDifficulty(ALIL["Mail"], "mail", 0)
 local PLATE_DIFF = data:AddDifficulty(ALIL["Plate"], "plate", 0)
@@ -34,7 +34,7 @@ local QUEST_EXTRA_ITTYPE = data:AddExtraItemTableType("Quest")
 local PRICE_EXTRA_ITTYPE = data:AddExtraItemTableType("Price")
 
 local PROF_CONTENT = data:AddContentType(ALIL["Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
-local PROF_GATH_CONTENT = data:AddContentType(AL["Gathering Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
+local PROF_GATH_CONTENT = data:AddContentType(ALIL["Gathering Professions"], ATLASLOOT_PRIMPROFESSION_COLOR)
 local PROF_SEC_CONTENT = data:AddContentType(AL["Secondary Professions"], ATLASLOOT_SECPROFESSION_COLOR)
 local PROF_CLASS_CONTENT = data:AddContentType(AL["Class Professions"], ATLASLOOT_CLASSPROFESSION_COLOR)
 
@@ -184,7 +184,7 @@ data["BlacksmithingBC"] = {
 		{
 			name = AL["Weapons"].." - "..AL["Axes"],
 			[NORMAL_DIFF] = {
-				{ 1, "INV_sword_04", nil, ALIL["One-Handed Axes"] },
+				{ 1, "INV_axe_04", nil, ALIL["One-Handed Axes"] },
 				{ 2, 36260 }, -- Wicked Edge of the Planes (385)
 				{ 3, 34542 }, -- Black Planar Edge (385)
 				{ 4, 34541 }, -- The Planar Edge (360)
@@ -192,7 +192,7 @@ data["BlacksmithingBC"] = {
 				{ 7, 36134 }, -- Stormforged Axe (340)
 				{ 8, 29557 }, -- Fel Iron Hatchet (320)
 				{ 10, 36126 }, -- Light Skyforged Axe (280)
-				{ 16, "INV_sword_04", nil, ALIL["Two-Handed Axes"] },
+				{ 16, "INV_axe_09", nil, ALIL["Two-Handed Axes"] },
 				{ 17, 36261 }, -- Bloodmoon (385)
 				{ 18, 34544 }, -- Mooncleaver (385)
 				{ 19, 34543 }, -- Lunar Crescent (360)
@@ -204,7 +204,7 @@ data["BlacksmithingBC"] = {
 		{
 			name = AL["Weapons"].." - "..AL["Maces"],
 			[NORMAL_DIFF] = {
-				{ 1, "INV_sword_04", nil, ALIL["One-Handed Maces"] },
+				{ 1, "INV_mace_04", nil, ALIL["One-Handed Maces"] },
 				{ 2, 36262 }, -- Dragonstrike (385)
 				{ 3, 34546 }, -- Dragonmaw (385)
 				{ 4, 34545 }, -- Drakefist Hammer (360)
@@ -213,7 +213,7 @@ data["BlacksmithingBC"] = {
 				{ 8, 36136 }, -- Lavaforged Warhammer (340)
 				{ 9, 29558 }, -- Fel Iron Hammer (325)
 				{ 11, 36128 }, -- Light Emberforged Hammer (280)
-				{ 16, "INV_sword_04", nil, ALIL["Two-Handed Maces"] },
+				{ 16, "INV_mace_07", nil, ALIL["Two-Handed Maces"] },
 				{ 17, 36263 }, -- Stormherald (385)
 				{ 18, 34548 }, -- Deep Thunder (385)
 				{ 19, 34547 }, -- Thunder (360)
@@ -234,7 +234,7 @@ data["BlacksmithingBC"] = {
 				{ 7, 29571 }, -- Adamantite Rapier (335)
 				{ 8, 36131 }, -- Windforged Rapier (340)
 				{ 10, 36125 }, -- Light Earthforged Blade (280)
-				{ 16, "INV_sword_06", nil, ALIL["Two-Handed Swords"] },
+				{ 16, "INV_sword_19", nil, ALIL["Two-Handed Swords"] },
 				{ 17, 36259 }, -- Lionheart Executioner (385)
 				{ 18, 34540 }, -- Lionheart Champion (385)
 				{ 19, 34538 }, -- Lionheart Blade (360)
@@ -1586,6 +1586,30 @@ data["MiningBC"] = {
 	}
 }
 
+data["SkinningBC"] = {
+	name = ALIL["Skinning"],
+	ContentType = PROF_GATH_CONTENT,
+	LoadDifficulty = NORMAL_DIFF,
+	TableType = NORMAL_ITTYPE,
+	CorrespondingFields = private.SKINNING_LINK,
+	items = {
+		{
+			name = AL["Master"],
+			[NORMAL_DIFF] = {
+				{ 1, 25708 }, -- Thick Clefthoof Leather
+				{ 2, 25699 }, -- Crystal Infused Leather
+				{ 3, 21887 }, -- Knothide Leather
+				{ 4, 25649 }, -- Knothide Leather Scraps
+				{ 16, 25700 }, -- Fel Scales
+				{ 17, 29547 }, -- Wind Scales
+				{ 18, 29539 }, -- Cobra Scales
+				{ 19, 29548 }, -- Nether Dragonscales
+				{ 21, 25707 }, -- Fel Hide
+			}
+		},
+	}
+}
+
 data["HerbalismBC"] = {
 	name = ALIL["Herbalism"],
 	ContentType = PROF_GATH_CONTENT,
@@ -1598,14 +1622,16 @@ data["HerbalismBC"] = {
 			[NORMAL_DIFF] = {
 				{ 1,  22793 }, -- Mana Thistle
 				{ 2,  22792 }, -- Nightmare Vine
-				{ 3,  22791, 22576 }, -- Netherbloom
+				{ 3,  22791 }, -- Netherbloom
 				{ 4,  22790 }, -- Ancient Lichen
 				{ 5,  22789 }, -- Terocone
 				{ 6,  22787 }, -- Ragveil
 				{ 7,  22786 }, -- Dreaming Glory
-				{ 8,  22785, 22795 }, -- Felweed
+				{ 8,  22785 }, -- Felweed
 				{ 16,  22794 }, -- Fel Lotus
-				{ 17,  22575 }, -- Mote of Life
+				{ 18,  22576 }, -- Mote of Mana
+				{ 19,  22575 }, -- Mote of Life
+				{ 21,  22795 }, -- Fel Blossom
 			}
 		},
 	}
@@ -1792,45 +1818,6 @@ data["FishingBC"] = {
 				{ 7, 27437 }, -- Icefin Bluefish
 				{ 8, 27425 }, -- Spotted Feltail
 				{ 9, 27429 }, -- Zangarian Sporefish
-			}
-		},
-	}
-}
-
-data["RoguePoisonsBC"] = {
-	name = format("|c%s%s|r", RAID_CLASS_COLORS["ROGUE"].colorStr, ALIL["ROGUE"]),
-	ContentType = PROF_CLASS_CONTENT,
-	LoadDifficulty = NORMAL_DIFF,
-	TableType = PROF_ITTYPE,
-	CorrespondingFields = private.ROGUE_POISONS_LINK,
-	items = {
-		{
-			name = ALIL["Poisons"],
-			[NORMAL_DIFF] = {
-				{ 1, 26892 }, -- Instant Poison VII
-				{ 2, 11343 }, -- Instant Poison VI
-				{ 3, 11342 }, -- Instant Poison V
-				{ 4, 11341 }, -- Instant Poison IV
-				{ 5, 8691  }, -- Instant Poison III
-				{ 6, 8687  }, -- Instant Poison II
-				{ 7, 8681  }, -- Instant Poison
-				{ 9, 27283 },  -- Wound Poison V
-				{ 10, 13230 },  -- Wound Poison IV
-				{ 11, 13229 },  -- Wound Poison III
-				{ 12, 13228 }, -- Wound Poison II
-				{ 13, 13220 }, -- Wound Poison
-				{ 15, 3420  }, -- Crippling Poison
-				{ 16, 27282 }, -- Deadly Poison VII
-				{ 17, 26969 }, -- Deadly Poison VI
-				{ 18, 25347 }, -- Deadly Poison V
-				{ 19, 11358 }, -- Deadly Poison IV
-				{ 20, 11357 }, -- Deadly Poison III
-				{ 21, 2837  }, -- Deadly Poison II
-				{ 22, 2835  }, -- Deadly Poison
-				{ 26, 11400 }, -- Mind-numbing Poison III
-				{ 27, 8694  }, -- Mind-numbing Poison II
-				{ 28, 5763  }, -- Mind-numbing Poison
-				{ 30, 26786  }, -- Anesthetic Poison
 			}
 		},
 	}

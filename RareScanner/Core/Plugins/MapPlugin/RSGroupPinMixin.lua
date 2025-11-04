@@ -52,10 +52,6 @@ function RSGroupPinMixin:OnAcquired(POI, dataProvider)
 	end
 	self.IconTexture:SetAtlas(POI.iconAtlas)
 	self:SetPosition(POI.x, POI.y);
-	
-	if (self.SetPassThroughButtons) then
-		self:SetPassThroughButtons("MiddleButton");
-	end
 end
 
 function RSGroupPinMixin:OnMouseEnter()
@@ -107,7 +103,7 @@ function RSGroupPinMixin:ShowOverlay(childPOI)
 		-- Adds the new one
 		for _, coordinates in ipairs (overlay) do
 			local x, y = strsplit("-", coordinates)
-			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), r, g, b, childPOI);
+			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), r, g, b, childPOI, self);
 		end
 		
 		-- Adds the new one to the minimap

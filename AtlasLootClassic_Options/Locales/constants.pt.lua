@@ -2,7 +2,7 @@
 
 if not AL then return end
 
--- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
+-- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic-mists/localization
 -- Options
 AL["Add line break before source."] = "Adiciona quebra de linha antes da fonte."
 AL["Add new list"] = "Adicionar nova lista"
@@ -20,7 +20,6 @@ AL["Content bottom bar"] = "Barra inferior do conteúdo"
 AL["Content phase settings"] = "Configurações da fase de conteúdo"
 AL["Content top bar"] = "Barra superior do conteúdo"
 AL["Delete list"] = "Excluir lista"
-AL["Enable Atlas map integration if available."] = "Ative a integração do mapa Atlas, se disponível."
 AL["Enable auto selection of bosses if available."] = "Ative a seleção automática de chefes, se disponível."
 AL["Enable auto selection of instances if available."] = "Ative a seleção automática de instâncias, se disponível."
 AL["Enable WoWHead links."] = "Habilite os links WoWHead."

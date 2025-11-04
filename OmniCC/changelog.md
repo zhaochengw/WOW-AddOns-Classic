@@ -1,5 +1,19 @@
 # OmniCC Changelog
 
+## 11.2.7
+
+* Update TOCs for 11.2.5 and 5.5.1
+
+## 11.2.6
+
+* The Cooldown Timer Offset option should work again.
+* Added an additional guard to hopefully prevent instances of the Attempt to call method 'RemoveCooldown' error
+* Resolved the 'Attempted to release inactive object' error for the Shine and Flare effects.
+
+## 11.2.5
+
+* Update TOCs for 11.2.0 (thanks Hollicsh)
+
 ## 11.2.4
 
 * Update TOCs for 11.1.7 and 5.5.0

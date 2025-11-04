@@ -74,17 +74,20 @@ Options:SetScript("OnShow",function(self)
 	end
 end)
 
-function Options:SetPage(page)
-	if Options.CurrentFrame then
+function Options:SetPage(page,dontreload)
+	local isSamePage = Options.CurrentFrame == page
+	if Options.CurrentFrame and (not dontreload or not isSamePage) then
 		Options.CurrentFrame:Hide()
 	end
 	Options.CurrentFrame = page
 
-	if Options.CurrentFrame.AdditionalOnShow then
+	if Options.CurrentFrame.AdditionalOnShow and (not dontreload or not isSamePage) then
 		Options.CurrentFrame:AdditionalOnShow()
 	end
 
-	Options.CurrentFrame:Show()
+	if (not dontreload or not isSamePage) then
+		Options.CurrentFrame:Show()
+	end
 
 	if Options.CurrentFrame.isWide and Options.nowWide ~= Options.CurrentFrame.isWide then
 		local frameWidth = type(Options.CurrentFrame.isWide)=='number' and Options.CurrentFrame.isWide or 850
@@ -118,6 +121,7 @@ function MRT.Options:Add(moduleName,frameName)
 	local self = CreateFrame("Frame",OptionsFrameName..moduleName,Options)
 	self:SetSize(Options.Width-Options.ListWidth,Options.Height-16)
 	self:SetPoint("TOPLEFT",Options.ListWidth,-16)
+	self.moduleName = moduleName
 	
 	local pos = #Options.Frames + 1
 	Options.modulesList.L[pos] = frameName or moduleName
@@ -134,11 +138,28 @@ end
 
 function MRT.Options:AddIcon(moduleName,icon)
 	Options.modulesList.IconsRight = Options.modulesList.IconsRight or {}
-	for i=1,#Options.modulesList.L do
-		if Options.modulesList.L[i] == moduleName then
+	for i=1,#Options.Frames do
+		if Options.Frames[i].moduleName == moduleName then
 			Options.modulesList.IconsRight[i] = icon
 			break
 		end
+	end
+	if Options:IsShown() then
+		Options.modulesList:Update()
+	end
+end
+function MRT.Options:RemoveIcon(moduleName)
+	if not Options.modulesList.IconsRight then
+		return
+	end
+	for i=1,#Options.Frames do
+		if Options.Frames[i].moduleName == moduleName then
+			Options.modulesList.IconsRight[i] = nil
+			break
+		end
+	end
+	if Options:IsShown() then
+		Options.modulesList:Update()
 	end
 end
 
@@ -225,6 +246,68 @@ Options.scale:SetScript("OnMouseUp",function(self,button)
 end)
 
 ----> Minimap Icon
+
+--[=[
+
+local LDB = LibStub("LibDataBroker-1.1",true)
+local LDBI = LibStub("LibDBIcon-1.0",true)
+
+if LDB and LDBI then
+	local dataBroker = LDB:NewDataObject("MRT",
+		{type = "launcher", label = "Method Raid Tools", icon = "Interface\\AddOns\\"..GlobalAddonName.."\\media\\MiniMap"}
+	)
+	
+	function dataBroker.OnClick(self, button)
+		if button == "RightButton" then
+			for _,func in pairs(MRT.MiniMapMenu) do
+				func:miniMapMenu()
+			end
+			MRT.Options:UpdateModulesList()
+			ELib.ScrollDropDown.EasyMenu(self,MRT.F.menuTable,150)
+		elseif button == "LeftButton" then
+			MRT.Options:Open()
+		end
+	end
+	
+	function dataBroker.OnEnter(self)
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT") 
+		GameTooltip:AddLine("Method Raid Tools") 
+		GameTooltip:AddLine(L.minimaptooltiplmp,1,1,1) 
+		GameTooltip:AddLine(L.minimaptooltiprmp,1,1,1) 
+		GameTooltip:Show() 
+		if not self.anim then
+			self.iconMini = self:CreateTexture(nil, "ARTWORK")
+			self.iconMini:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\MiniMap")
+			self.iconMini:SetSize(18,18)
+			self.iconMini:SetPoint("CENTER", self, "CENTER")
+			self.iconMini:SetVertexColor(1,.5,.5,1)
+			self.iconMini:Hide()
+
+			self.anim = self:CreateAnimationGroup()
+			self.anim:SetLooping("BOUNCE")
+			self.timer = self.anim:CreateAnimation()
+			self.timer:SetDuration(2)
+			self.timer:SetScript("OnUpdate", function(s,elapsed) 
+				self.iconMini:SetAlpha(s:GetProgress())
+			end)
+		end
+		self.anim:Play()
+		self.iconMini:Show()
+	end
+
+	function dataBroker.OnLeave(self)
+		GameTooltip:Hide()
+		if self.anim then
+			self.anim:Stop()
+			self.iconMini:Hide()
+		end
+	end
+
+	VMRT.IconDB = VMRT.IconDB or {}
+	LDBI:Register("MRT", dataBroker, VMRT.IconDB)
+end
+
+]=]
 
 local MiniMapIcon = CreateFrame("Button", "LibDBIcon10_MethodRaidTools", Minimap)
 MRT.MiniMapIcon = MiniMapIcon
@@ -448,6 +531,8 @@ MRT.F.menuTable = {
 { text = L.minimapmenu, isTitle = true, notCheckable = true, notClickable = true },
 { text = L.minimapmenuset, func = MRT.Options.Open, notCheckable = true, keepShownOnClick = true, },
 { text = " ", isTitle = true, notCheckable = true, notClickable = true },
+{ text = " ", isTitle = true, notCheckable = true, notClickable = true },
+{ text = "Profiling", func = function() CloseDropDownMenus() ELib.ScrollDropDown.Close() MRT.F:ProfilingWindow() end, notCheckable = true },
 { text = " ", isTitle = true, notCheckable = true, notClickable = true },
 { text = L.minimapmenuclose, func = function() CloseDropDownMenus() ELib.ScrollDropDown.Close() end, notCheckable = true },
 }
@@ -841,30 +926,55 @@ function OptionsFrame:AddChest(chestType)
 		captured = animated
 		animated.texture = animated:CreateTexture()
 		animated.texture:SetAllPoints()
-		animated.texture:SetTexture([[Interface\AddOns\MRT\media\frieren.jpg]])
+		local list = {
+			{img = [[Interface\AddOns\MRT\media\frieren.jpg]],w = 256*1.5,h = 256*1.5,s = 0.15,m = 14},
+			{img = [[Interface\AddOns\MRT\media\frieren2.jpg]],w = 597 * 0.75,h = 408 * 0.75,s = 0.15},
+			{img = [[Interface\AddOns\MRT\media\frieren3.jpg]],w = 1024 * 0.5,h = 576 * 0.5,s = 0.10,m=31,is=8,se={[16]={.6,.9,1,.4},[17]={.12,.52,1,.3},[18]=-1,[19]=-1,[20]={.12,.52,1,.1},[24]={.6,.9,1,.3},[25]={.12,.52,1,.3},[26]={.12,.52,1,.2},[27]={.12,.52,1,.1},[28]={.12,.52,1,.05},[29]=-1}},
+		}
+		local data = list[math.random(1,#list)]
+		animated.texture:SetTexture(data.img)
 		animated:SetFrameStrata("DIALOG")
+
+		animated.specialeffect = animated:CreateTexture(nil,"BACKGROUND")
+		animated.specialeffect:SetAllPoints(UIParent)
+		animated.specialeffect:SetColorTexture(.12,.52,1,0)
 		
 		animated:SetPoint("CENTER")
-		animated:SetSize(256*1.5,256*1.5)
+		animated:SetSize(data.w,data.h)
 		animated.texture:SetTexCoord(0,0.25,0,0.25)
 		
 		animated.frame = 0
-		animated.frame_max = 14
+		animated.frame_max = data.m or 15
 		animated.tmr = 1
 		animated:SetScript("OnUpdate",function(self,elapsed)
 			self.tmr = self.tmr + elapsed
-			if self.tmr > 0.15 then
+			if self.tmr > data.s then
 				self.tmr = 0
 				self.frame = self.frame + 1
-		
-				if self.frame > self.frame_max then
-					self.frame = 1
+
+				if not Options:IsShown() then
+					self:Hide()
 				end
 		
-				local w = self.frame % 4
-				local h = floor(self.frame / 4)
+				if self.frame > self.frame_max then
+					self.frame = 0
+				end
+		
+				local w = self.frame % (data.is or 4)
+				local h = floor(self.frame / (data.is or 4))
 				
-				self.texture:SetTexCoord(w * 0.25,(w + 1) * 0.25,h * 0.25,(h + 1) * 0.25)
+				local ww = 1 / (data.is or 4)
+				self.texture:SetTexCoord(w * ww,(w + 1) * ww,h * 0.25,(h + 1) * 0.25)
+
+				if data.se then
+					local c = data.se[self.frame]
+					if c then
+						if c == -1 then for i=self.frame-1,0,-1 do c = data.se[i] if c~=-1 then break end end end
+						animated.specialeffect:SetColorTexture(unpack(c))
+					else
+						animated.specialeffect:SetColorTexture(0,0,0,0)
+					end	
+				end
 			end
 		end)
 		animated:SetScript("OnClick",function(self)
@@ -891,6 +1001,142 @@ function OptionsFrame:AddChest(chestType)
 end
 
 
+function OptionsFrame:AddWeb()
+	local sf = OptionsFrame.HWWebFrame or CreateFrame("ScrollFrame", nil, Options)
+	OptionsFrame.HWWebFrame = sf
+
+	if not sf.c then
+		sf.c = CreateFrame("Frame", nil, sf) 
+		sf:SetScrollChild(sf.c)
+	
+		sf:SetSize(200,200)
+		sf:SetPoint("TOPRIGHT",0,-16)
+		sf.c:SetSize(200,200)
+	
+		local X,Y = -0,-0
+		local function l(x1,y1,x2,y2)
+			local line = sf.c:CreateLine(nil,"ARTWORK",nil,2)
+			line:SetColorTexture(1,1,1,.4)
+			line:SetStartPoint("TOPRIGHT",x1+X,y1+Y)
+			line:SetEndPoint("TOPRIGHT",x2+X,y2+Y)
+			line:SetThickness(2)
+		end
+		local ANGLE = 5
+		local RADIUS,SPACE,PIES = 160, 20, 18
+		local pie_angle = (360/PIES)
+		for i=0+ANGLE,359,pie_angle do
+			if i >= 180-45 and i <= 270+45 then
+				local x = math.cos(2*math.pi/360*i)*RADIUS
+				local y = math.sin(2*math.pi/360*i)*RADIUS
+				l(0,0,x,y)
+			end
+		end
+		
+		for i=0+ANGLE,359,pie_angle do
+			if i >= 180-45 and i <= 270+45 then
+				for j=RADIUS-10,SPACE,-SPACE do
+					local x1 = math.cos(2*math.pi/360*i)*j
+					local y1 = math.sin(2*math.pi/360*i)*j
+					local x2 = math.cos(2*math.pi/360*(i+pie_angle))*j
+					local y2 = math.sin(2*math.pi/360*(i+pie_angle))*j
+					l(x1,y1,x2,y2)
+				end
+			end
+		end
+	end
+
+	local sf = OptionsFrame.GhostFrame or CreateFrame("ScrollFrame", nil, Options)
+	OptionsFrame.GhostFrame = sf
+	sf:SetPoint("TOPLEFT")
+	sf:SetPoint("BOTTOMRIGHT")
+
+	if not sf.C then
+		sf.C = sf.C or CreateFrame("Frame", nil, sf) 
+		sf:SetScrollChild(sf.C)
+		sf.C:SetSize(Options:GetWidth(),Options:GetHeight())
+
+		sf.g = {}
+		sf.c = 0
+		local function CreateGhost(i,parent,size)
+			if not i then 
+				sf.c = sf.c + 1
+				i = sf.c
+			end
+			if sf.g[i] then
+				sf.g[i]:Show()
+				return sf.g[i]
+			end
+			local f = CreateFrame("Frame",nil,parent)
+			f:SetSize(1,1)
+		
+			f:SetAlpha(.3)
+
+			sf.g[i] = f
+		
+			local function ct(i,x)
+				local g1 = f:CreateTexture(nil, "BACKGROUND",nil,-6)
+				g1:SetTexture(i and "Interface\\AddOns\\MRT\\media\\circle256inv" or "Interface\\AddOns\\MRT\\media\\circle256")
+				g1:SetVertexColor(1,1,1,1)
+				g1:SetTexCoord(0,1,0,x and 1 or .5)
+				return g1
+			end
+		
+			local s = size / 100
+		
+			local g1 = ct()
+			g1:SetPoint("TOP",0,0)
+			g1:SetSize(130*s,70*s)
+			
+			local g2 = f:CreateTexture(nil, "BACKGROUND",nil,-6)
+			g2:SetColorTexture(1,1,1,1)
+			g2:SetPoint("TOP",g1,"BOTTOM",0,0)
+			g2:SetSize(130*s,200*s)
+			
+			local g3 = ct(true)
+			g3:SetPoint("TOPLEFT",g2,"BOTTOMLEFT",0,0)
+			g3:SetSize(40*s,20*s)
+			
+			local g4 = ct(true)
+			g4:SetPoint("LEFT",g3,"RIGHT",0,0)
+			g4:SetSize(50*s,20*s)
+			
+			local g5 = ct(true)
+			g5:SetPoint("LEFT",g4,"RIGHT",0,0)
+			g5:SetSize(40*s,20*s)
+			
+			local g6 = ct(nil,true)
+			g6:SetVertexColor(0,0,0,1)
+			g6:SetPoint("CENTER",g1,-25*s,-40*s)
+			g6:SetSize(20*s,30*s)
+			
+			local g7 = ct(nil,true)
+			g7:SetVertexColor(0,0,0,1)
+			g7:SetPoint("CENTER",g1,25*s,-40*s)
+			g7:SetSize(20*s,30*s)
+		
+			return f
+		end
+		sf.CreateGhost = CreateGhost
+	end
+
+
+	if not OptionsFrame.hatBut then
+		local hat = CreateFrame("Button",nil,OptionsFrame)  
+		OptionsFrame.hatBut = hat
+		hat:SetAllPoints(OptionsFrame_image) 
+
+		hat:RegisterForClicks("LeftButtonDown","RightButtonDown")
+		hat:SetScript("OnClick",function(self,button) 
+			if button == "RightButton" then
+				sf.c = 0
+				for i=1,#sf.g do sf.g[i]:Hide() end
+				return
+			end
+			local g = sf.CreateGhost(nil,sf.C,30)
+			g:SetPoint("TOPLEFT",math.random(0,Options:GetWidth()),-math.random(0,Options:GetHeight()))
+		end)
+	end
+end
 
 OptionsFrame_image = OptionsFrame:CreateTexture(nil,"ARTWORK")
 
@@ -903,6 +1149,7 @@ OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\
 OptionsFrame_image:SetPoint("TOPLEFT",15,5)
 OptionsFrame_image:SetSize(140,140)
 OptionsFrame_image.Point = OptionsFrame_image.SetPoint
+
 
 OptionsFrame_title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame_image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
 
@@ -918,7 +1165,8 @@ local function pmove_OnUpdate(self,elapsed)
 	if self.isReverse and self:IsMouseOver() and IsMouseButtonDown() then
 		self.isReverse = false
 	end
-	pmove_pos = pmove_pos + (self.isReverse and -1 or 1) * (100 / GetFramerate() * 0.333)
+	--pmove_pos = pmove_pos + (self.isReverse and -1 or 1) * (100 / GetFramerate() * 0.333)
+	pmove_pos = pmove_pos + (self.isReverse and -1 or 1) * (100 / 60 * 0.333)
 	if self.isReverse and pmove_pos < 40 then
 		pmove_pos = 40
 		self:SetScript("OnUpdate",nil)
@@ -987,7 +1235,7 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 			isSnowDay = true
 		end
 	end
-	if (today.wday == 6 and today.day % 2 == 0) then
+	if (today.wday == 6 and today.day % 2 == 0 and today.day > 16 and today.month % 2 == 0) and not MRT.isClassic then
 		isFrierenFriday = true
 	end	
 	
@@ -1024,6 +1272,14 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 		OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogost")
 
 		OptionsFrame:AddDeathStar(nil,2)
+
+		return
+	end
+
+	if (today.month == 10 and today.day >= 30) or (today.month == 11 and today.day <= 1) then
+		OptionsFrame_image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogohw")
+
+		OptionsFrame:AddWeb()
 
 		return
 	end
@@ -1287,7 +1543,7 @@ OptionsFrame.contactLeft = ELib:Text(OptionsFrame,L.setcontact,12):Size(150,25):
 OptionsFrame.contactRight = ELib:Text(OptionsFrame,"e-mail: ykiigor@gmail.com",12):Size(520,25):Point(135,-235):Color():Shadow():Top()
 
 OptionsFrame.thanksLeft = ELib:Text(OptionsFrame,L.SetThanks,12):Size(150,25):Point(15,-255):Shadow():Top()
-OptionsFrame.thanksRight = ELib:Text(OptionsFrame,"Phanx, funkydude, Shurshik, Kemayo, Guillotine, Rabbit, fookah, diesal2010, Felix, yuk6196, martinkerth, Gyffes, Cubetrace, tigerlolol, Morana, SafeteeWoW, Dejablue, Wollie, eXochron, Firehead94, Mitalie",12):Size(540,0):Point(135,-255):Color():Shadow():Top()
+OptionsFrame.thanksRight = ELib:Text(OptionsFrame,"Phanx, funkydude, Shurshik, Kemayo, Guillotine, Rabbit, fookah, diesal2010, Felix, yuk6196, martinkerth, Gyffes, Cubetrace, tigerlolol, Morana, SafeteeWoW, Dejablue, Wollie, eXochron, Firehead94, Mitalie, m33shoq",12):Size(540,0):Point(135,-255):Color():Shadow():Top()
 
 if L.TranslateBy ~= "" then
 	OptionsFrame.translateLeft = ELib:Text(OptionsFrame,L.SetTranslate,12):Size(150,25):Point("LEFT",OptionsFrame,15,0):Point("TOP",OptionsFrame.thanksRight,"BOTTOM",0,-8):Shadow():Top()
@@ -1297,7 +1553,7 @@ end
 OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(680,180):Point("TOP",0,-335):OnShow(function(self)
 	local text = MRT.Options.Changelog or ""
 	text = text:gsub("(v%.%d+([^\n]*).-\n\n)",function(a,b)
-		if (b == "-Classic" and MRT.isClassic and not MRT.isBC) or (b == "-BC" and MRT.isBC and not MRT.isLK) or (b == "-LK" and MRT.isLK and not MRT.isCata) or (b == "-Cata" and MRT.isCata) or (b == "-LK" and MRT.isCata and tonumber(a:match("%d+") or "4841")<=4840) or ((b ~= "-Classic" and b ~= "-BC" and b ~= "-LK" and b ~= "-Cata") and not MRT.isClassic) then
+		if (b == "-Classic" and MRT.isClassic and not MRT.isBC) or (b == "-BC" and MRT.isBC and not MRT.isLK) or (b == "-LK" and MRT.isLK and not MRT.isCata) or (b == "-Cata" and MRT.isCata) or (b == "-MoP" and MRT.isMoP) or (b == "-LK" and MRT.isCata and tonumber(a:match("%d+") or "4841")<=4840) or (b == "-Cata" and MRT.isMoP and tonumber(a:match("%d+") or "5181")<=5180) or ((b ~= "-Classic" and b ~= "-BC" and b ~= "-LK" and b ~= "-Cata" and b ~= "-MoP") and not MRT.isClassic) then
 			return a
 		else
 			return ""

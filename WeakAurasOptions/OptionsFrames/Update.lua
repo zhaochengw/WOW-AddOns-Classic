@@ -76,7 +76,10 @@ local function scamCheck(codes, data)
   if (data.actions) then
     if data.actions.init then
       addCode(codes, L["%s - Init Action"]:format(data.id), data.actions.init.custom, data.actions.init.do_custom)
+      addCode(codes, L["%s - OnLoad"]:format(data.id), data.actions.init.customOnLoad, data.actions.init.do_custom_load)
+      addCode(codes, L["%s - OnUnload"]:format(data.id), data.actions.init.customOnUnload, data.actions.init.do_custom_unload)
     end
+
     if data.actions.start then
       addCode(codes, L["%s - Start Action"]:format(data.id), data.actions.start.custom, data.actions.start.do_custom)
       addCode(codes, L["%s - Start Custom Text"]:format(data.id), data.actions.start.message_custom, data.actions.start.do_message)
@@ -186,15 +189,15 @@ local function recurseUpdate(data, chunk)
   end
 end
 
-local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
+local function RecurseDiff(ours, theirs, ignored)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
-    if not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
+    local ignoredVal = ignored and ignored[key]
+    if not ignoredVal or type(ignoredVal) == "table" then
       seen[key] = true
       local theirVal = theirs[key]
       if type(ourVal) == "table" and type(theirVal) == "table" then
-        local diffVal = RecurseDiff(ourVal, theirVal,
-                                    type(ignoredForDiffChecking) == table and ignoredForDiffChecking[key] or nil)
+        local diffVal = RecurseDiff(ourVal, theirVal, type(ignoredVal) == "table" and ignoredVal or nil)
         if diffVal then
           diff[key] = diffVal
           same = false
@@ -211,7 +214,7 @@ local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
     end
   end
   for key, theirVal in pairs(theirs) do
-    if not seen[key] and not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
+    if not seen[key] and not (type(ignored) == "table" and ignored[key] == true) then
       diff[key] = theirVal
       same = false
     end
@@ -247,13 +250,15 @@ local function DebugPrintDiff(diff, id, uid)
 end
 
 local function Diff(ours, theirs)
-  local ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields,
-                                                  OptionsPrivate.Private.non_transmissable_fields)
+  local ignored = CreateFromMixins(
+    OptionsPrivate.Private.internal_fields,
+    OptionsPrivate.Private.non_transmissable_fields
+  )
 
   -- generates a diff which WeakAuras.Update can use
   local debug = false
   if not ours or not theirs then return end
-  local diff = RecurseDiff(ours, theirs, ignoredForDiffChecking)
+  local diff = RecurseDiff(ours, theirs, ignored)
   if diff then
     if debug then
       DebugPrintDiff(diff, theirs.id, theirs.uid)
@@ -757,6 +762,7 @@ local function BuildUidMap(data, children, type)
     for _, childUid in ipairs(children) do
       self:EnsureUniqueIdOfUnmatched(childUid, IncProgress)
     end
+    coroutine.yield(0.1, "ensure unique uids")
   end
 
   uidMap.InsertUnmatchedPhase1 = function(self, otherUidMap, otherUid, IncProgress)
@@ -795,10 +801,10 @@ local function BuildUidMap(data, children, type)
           end
         else
           IncProgress()
-          coroutine.yield()
+          coroutine.yield(0.1)
         end
       end
-      coroutine.yield()
+      coroutine.yield(0.1)
     end
 
     for uid, otherList in pairs(matchToInsert) do
@@ -818,8 +824,9 @@ local function BuildUidMap(data, children, type)
             otherUidMap:SetUIDMatch(otherUid, otherUid) -- Uids are the same!
             self:SetUIDMatch(otherUid, otherUid)
             IncProgress()
-            coroutine.yield()
+            coroutine.yield(0.1)
           end
+          coroutine.yield(0.1)
         end
 
         if otherList.after then
@@ -833,11 +840,12 @@ local function BuildUidMap(data, children, type)
             otherUidMap:SetUIDMatch(otherUid, otherUid) -- Uids are the same!
             self:SetUIDMatch(otherUid, otherUid)
             IncProgress()
-            coroutine.yield()
+            coroutine.yield(0.1)
           end
+          coroutine.yield(0.1)
         end
       end
-      coroutine.yield()
+      coroutine.yield(0.1)
     end
 
     for _, otherUid in ipairs(waitingForMatch) do
@@ -857,7 +865,7 @@ local function BuildUidMap(data, children, type)
       otherUidMap:SetUIDMatch(otherUid, otherUid) -- Uids are the same!
       self:SetUIDMatch(otherUid, otherUid)
       IncProgress()
-      coroutine.yield()
+      coroutine.yield(0.1)
     end
 
     return #waitingForMatch > 0
@@ -1347,14 +1355,28 @@ end
 
 local methods = {
   Open = function(self, data, children, target, linkedAuras, sender, callbackFunc)
-    if(self.optionsWindow.window == "importexport") then
-      self.optionsWindow.importexport:Close();
-    elseif(self.optionsWindow.window == "texture") then
-      self.optionsWindow.texturePicker:CancelClose();
-    elseif(self.optionsWindow.window == "icon") then
-      self.optionsWindow.iconPicker:CancelClose();
-    elseif(self.optionsWindow.window == "model") then
-      self.optionsWindow.modelPicker:CancelClose();
+    local optionsWindow =  self.optionsWindow
+    local optionsWindowTitle = self.optionsWindow.window
+    if(optionsWindowTitle == "importexport") then
+      local importexport = OptionsPrivate.ImportExport(optionsWindow, true)
+      if importexport then
+        importexport:Close();
+      end
+    elseif(optionsWindowTitle == "texture") then
+      local texturepicker = OptionsPrivate.TexturePicker(optionsWindow, true)
+      if texturepicker then
+        texturepicker:CancelClose();
+      end
+    elseif(optionsWindowTitle == "icon") then
+      local iconpicker = OptionsPrivate.IconPicker(optionsWindow, true)
+      if iconpicker then
+        iconpicker:CancelClose();
+      end
+    elseif(optionsWindowTitle == "model") then
+      local modelpicker = OptionsPrivate.ModelPicker(optionsWindow, true)
+      if modelpicker then
+        modelpicker:CancelClose();
+      end
     end
     self.optionsWindow.window = "update"
     self.optionsWindow:UpdateFrameVisible()
@@ -1545,7 +1567,7 @@ local methods = {
       local flavorWarning = AceGUI:Create("Label")
       flavorWarning:SetFontObject(GameFontHighlight)
       flavorWarning:SetFullWidth(true)
-      flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild]))
+      flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild] or L["Unknown"]))
       flavorWarning:SetColor(1, 0, 0)
       self:AddChild(flavorWarning)
     end
@@ -1605,7 +1627,27 @@ local methods = {
     end
   end,
   Import = function(self)
-    OptionsPrivate.Private.dynFrame:AddAction("import", coroutine.create(function()
+    if WeakAuras.IsClassicEra() and C_GameRules.IsHardcoreActive() then
+      StaticPopupDialogs["WEAKAURAS_CONFIRM_IMPORT_HARDCORE"] = {
+        text = L["You are about to Import an Aura with custom Lua code on a Hardcore server.\n\n|cFFFF0000There is a risk the custom code could be used to kill your hardcore character!|r\n\nWould you like to continue?"],
+        button1 = L["Import"],
+        button2 = L["Cancel"],
+        OnShow = function(self)
+          self.text:SetFontObject(GameFontNormalLarge)
+        end,
+        OnHide = function(self)
+          self.text:SetFontObject(GameFontNormal)
+        end,
+        OnAccept = function()
+          OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()
+            self:ImportImpl()
+          end))
+        end,
+      }
+      StaticPopup_Show("WEAKAURAS_CONFIRM_IMPORT_HARDCORE")
+      return
+    end
+    OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()
       self:ImportImpl()
     end))
   end,
@@ -1618,27 +1660,35 @@ local methods = {
     self.closeButton:SetEnabled(false)
     self.viewCodeButton:SetEnabled(false)
     OptionsPrivate.Private.SetImporting(true)
-
+    coroutine.yield(10, "init")
     -- Adjust UI
     self:ReleaseChildren()
     self:AddBasicInformationWidgets(pendingData.data, pendingData.sender)
     self:AddProgressWidgets()
 
+    ---@type {uid: uid, data: auraData, source: string}[]
+    local copies = {}
     local pendingPickData
 
     if userChoices.mode == "import" then
+      coroutine.yield(0.1, "start import")
       self:InitializeProgress(2 * (#pendingData.children + 1))
 
       EnsureUniqueUid(pendingData.data)
+      coroutine.yield(0.1, "ensure unique uids")
       for i, child in ipairs(pendingData.children) do
         EnsureUniqueUid(child)
+        coroutine.yield(0.1, "ensure unique uids")
       end
 
+      coroutine.yield(1, "build uid map")
       local uidMap = BuildUidMap(pendingData.data, pendingData.children, "new")
 
       local phase2Order = {}
+      coroutine.yield(1, "start phase 1")
       self:ImportPhase1(uidMap, uidMap:GetRootUID(), phase2Order)
-      self:ImportPhase2(uidMap, phase2Order)
+      coroutine.yield(1, "start phase 2")
+      self:ImportPhase2(uidMap, phase2Order, copies)
 
       pendingPickData = {
         id = uidMap:GetIdFor(uidMap:GetRootUID())
@@ -1646,9 +1696,10 @@ local methods = {
       if #pendingData.children > 0 then
         pendingPickData.tabToShow = "group"
       end
-
+      coroutine.yield(1, "update ui")
       OptionsPrivate.SortDisplayButtons()
     elseif userChoices.mode == "update" then
+      coroutine.yield(0.1, "start update")
       local onePhaseProgress = matchInfo.oldUidMap:GetTotalCount() + matchInfo.newUidMap:GetTotalCount()
       local IncProgress = function() self:IncProgress() end
 
@@ -1661,9 +1712,9 @@ local methods = {
       -- On update, we won't match A_new to A_old, because A_old is outside the matched parent group
       -- Thus on import A_new needs to get its own uid
       -- On next import, the auras uids won't match either, there's not much we can do about that.
+      coroutine.yield(0.1, "ensure unique uids")
       matchInfo.newUidMap:EnsureUniqueIdOfUnmatched(nil, IncProgress)
       self:SetMinimumProgress(1 * onePhaseProgress)
-      coroutine.yield()
 
       local removeOldGroups = matchInfo.activeCategories.arrangement and userChoices.activeCategories.arrangement
       if userChoices.activeCategories.oldchildren or removeOldGroups then
@@ -1693,6 +1744,7 @@ local methods = {
         if not userChoices.activeCategories.oldchildren then
           -- Keep old children
           matchInfo.newUidMap:InsertUnmatchedFrom(matchInfo.oldUidMap, IncProgress)
+          coroutine.yield(0.1, "keep old children done")
         end
 
         self:SetMinimumProgress(4 * onePhaseProgress)
@@ -1759,17 +1811,26 @@ local methods = {
         end
       end
 
+      coroutine.yield(10, "prep done")
       local phase2Order = {}
       self:UpdatePhase1(structureUidMap, structureUidMap:GetRootUID(), GetPhase1Data, phase2Order)
       self:SetMinimumProgress(16 * onePhaseProgress)
+      coroutine.yield(10, " phase 1 done")
+      self:UpdatePhase2(structureUidMap, GetPhase2Data, phase2Order, copies)
 
-      self:UpdatePhase2(structureUidMap, GetPhase2Data, phase2Order)
       self:SetMinimumProgress(26 * onePhaseProgress)
+      coroutine.yield(10, " phase 2 done")
+
+      local renameTries = 0
       while(self:RenameAuras(targetNames)) do
         -- Try renaming again and again...
+        renameTries = renameTries + 1
+        if renameTries % 10 == 0 then
+          coroutine.yield(0.1, "renaming auras")
+        end
       end
       self:SetMaxProgress()
-      coroutine.yield()
+      coroutine.yield(0.1, "renaming auras done")
 
       pendingPickData = {
         id = OptionsPrivate.Private.GetDataByUID(matchInfo.oldUidMap:GetRootUID()).id
@@ -1780,7 +1841,7 @@ local methods = {
 
       OptionsPrivate.SortDisplayButtons()
     end
-
+    coroutine.yield(0.1, "winding down")
     OptionsPrivate.Private.SetImporting(false)
     self.viewCodeButton:SetEnabled(true)
     self.importButton:SetEnabled(true)
@@ -1793,6 +1854,12 @@ local methods = {
       OptionsPrivate.ClearPicks()
       WeakAuras.PickDisplay(pendingPickData.id, pendingPickData.tabToShow)
     end
+    OptionsPrivate.Private.Threads:Add("history_update", coroutine.create(function()
+      for _, copy in ipairs(copies) do
+        OptionsPrivate.Private.SetHistory(copy.uid, copy.data, copy.source)
+        coroutine.yield()
+      end
+    end), "background")
   end,
   -- This ensures that the id that we are adding is either
   --  same for existing uids
@@ -1916,7 +1983,7 @@ local methods = {
       end
     end
     self:IncProgress()
-    coroutine.yield()
+    coroutine.yield(0.1, "remove unmatched old")
     return false
   end,
   RemoveUnmatchedNew = function(self, uidMap, uid, otherMap, removeAuras, removeGroups)
@@ -1954,7 +2021,7 @@ local methods = {
       end
     end
     self:IncProgress()
-    coroutine.yield()
+    coroutine.yield(0.1, "remove unmatched new")
     return false
   end,
   UpdatePhase1 = function(self, structureUidMap, uid, GetPhase1Data, phase2Order)
@@ -1968,7 +2035,7 @@ local methods = {
     WeakAuras.Add(data)
     WeakAuras.NewDisplayButton(data, true)
     self:IncProgress10()
-    coroutine.yield()
+    coroutine.yield(1, "adding phase 1 data")
 
     local children = structureUidMap:GetChildren(uid)
     local parentIsDynamicGroup = data.regionType == "dynamicgroup"
@@ -1978,14 +2045,14 @@ local methods = {
       structureUidMap:SetParentIsDynamicGroup(childUid, parentIsDynamicGroup)
     end
   end,
-  UpdatePhase2 = function(self, structureUidMap, GetPhase2Data, phase2Order)
+  UpdatePhase2 = function(self, structureUidMap, GetPhase2Data, phase2Order, copies)
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = GetPhase2Data(uid)
       data.preferToUpdate = true
       data.authorMode = nil
       WeakAuras.Add(data)
-      OptionsPrivate.Private.SetHistory(data.uid, data, "import")
+      table.insert(copies, {uid = uid, data = CopyTable(data), source = "update"})
       local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
@@ -2039,14 +2106,14 @@ local methods = {
       uidMap:SetParentIsDynamicGroup(childUid, parentIsDynamicGroup)
     end
   end,
-  ImportPhase2 = function(self, uidMap, phase2Order)
+  ImportPhase2 = function(self, uidMap, phase2Order, copies)
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = uidMap:GetPhase2Data(uid)
       data.preferToUpdate = false
       data.authorMode = nil
       WeakAuras.Add(data)
-      OptionsPrivate.Private.SetHistory(data.uid, data, "import")
+      table.insert(copies, {uid = uid, data = CopyTable(data), source = "import"})
 
       local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
@@ -2210,7 +2277,7 @@ local function ConstructUpdateFrame(frame)
   return group
 end
 
-function OptionsPrivate.UpdateFrame(frame)
-  updateFrame = updateFrame or ConstructUpdateFrame(frame)
+function OptionsPrivate.UpdateFrame(frame, noConstruct)
+  updateFrame = updateFrame or (not noConstruct and ConstructUpdateFrame(frame))
   return updateFrame
 end

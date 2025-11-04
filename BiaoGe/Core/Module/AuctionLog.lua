@@ -1185,7 +1185,7 @@ BG.Init(function()
                             bts.ischoose = not bts.ischoose
                             if bts.ischoose then
                                 if #BG.auctionLogFrame.choosed < 5 then
-                                    tinsert(BG.auctionLogFrame.choosed, itemID)
+                                    tinsert(BG.auctionLogFrame.choosed, { id = itemID, link = link })
                                     bts.tex:SetColorTexture(1, 1, 0, .5)
                                 else
                                     bts.ischoose = nil
@@ -1193,7 +1193,7 @@ BG.Init(function()
                                 lastChoose = num
                             else
                                 for _i = #BG.auctionLogFrame.choosed, 1, -1 do
-                                    if BG.auctionLogFrame.choosed[_i] == itemID then
+                                    if BG.auctionLogFrame.choosed[_i].id == itemID then
                                         tremove(BG.auctionLogFrame.choosed, _i)
                                     end
                                 end
@@ -1219,7 +1219,7 @@ BG.Init(function()
                                     if count < 5 then
                                         local bt = BG.auctionLogFrame.buttons[_i]
                                         bt.ischoose = true
-                                        tinsert(BG.auctionLogFrame.choosed, bt.itemID)
+                                        tinsert(BG.auctionLogFrame.choosed, {id=bt.itemID,link=bt.link})
                                         bt.tex:SetColorTexture(1, 1, 0, .5)
                                         count = count + 1
                                     end
@@ -1238,12 +1238,12 @@ BG.Init(function()
 
                             bts.ischoose = not bts.ischoose
                             if bts.ischoose then
-                                tinsert(BG.auctionLogFrame.choosed, itemID)
+                                tinsert(BG.auctionLogFrame.choosed, { id = itemID, link = link })
                                 bts.tex:SetColorTexture(1, 1, 0, .5)
                                 lastChoose = num
                             else
                                 for _i = #BG.auctionLogFrame.choosed, 1, -1 do
-                                    if BG.auctionLogFrame.choosed[_i] == itemID then
+                                    if BG.auctionLogFrame.choosed[_i].id == itemID then
                                         tremove(BG.auctionLogFrame.choosed, _i)
                                     end
                                 end
@@ -1505,7 +1505,8 @@ BG.Init(function()
                 end
                 BG.UpdateAuctioning()
 
-                for i, itemID in ipairs(BG.auctionLogFrame.choosed) do
+                for i, v in ipairs(BG.auctionLogFrame.choosed) do
+                    local itemID = v.id
                     for i, bt in ipairs(BG.auctionLogFrame.buttons) do
                         if bt.itemID == itemID then
                             bt.ischoose = true

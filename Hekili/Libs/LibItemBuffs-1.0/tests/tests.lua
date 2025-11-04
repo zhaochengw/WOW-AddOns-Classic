@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 --[[
 LibItemBuffs-1.0 - buff-to-item database.
 (c) 2013-2018 Adirelle (adirelle@gmail.com)

@@ -11,7 +11,7 @@ local L = WeakAuras.L
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 --- Modernizes the aura data
 ---@param data auraData
-function Private.Modernize(data)
+function Private.Modernize(data, oldSnapshot)
   if not data.internalVersion or data.internalVersion < 2 then
     WeakAuras.prettyPrint(string.format("Data for '%s' is too old, can't modernize.", data.id))
     data.internalVersion = 2
@@ -2034,6 +2034,449 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 74 then
+    for _, triggerData in ipairs(data.triggers) do
+      local t = triggerData.trigger
+      if t.type == "spell" and t.event == "Cooldown Progress (Spell)" then
+        if t.use_exact_spellName then
+          t.use_ignoreoverride = true
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 75 then
+    -- this commit from nov 2019 https://github.com/WeakAuras/WeakAuras2/commit/6d8f11c17422aeffdb82a0aa05181edfdd137896
+    -- changed adjustedMin & adjustedMax type from number to string (range => input)
+    -- but didn't include a migration
+    if type(data.adjustedMin) == "number" then
+      data.adjustedMin = tostring(data.adjustedMin)
+    end
+    if type(data.adjustedMax) == "number" then
+      data.adjustedMax = tostring(data.adjustedMax)
+    end
+    -- this commit https://github.com/WeakAuras/WeakAuras2/commit/dbcb70b1e4df262af82f63620b3b0d80741e6df2
+    -- set a default for adjustedMin & adjustedMax with an empty string
+    -- in Private.validate if type of value is different from type of default, value is set to default
+    -- which had effect to lose data if aura was made before nov 2019 ~ 2020
+    -- try detect data loss and restore from Archivist
+    if data.internalVersion == 74 and oldSnapshot then
+      local restoreMin = data.useAdjustededMin and data.adjustedMin == ""
+      local restoreMax = data.useAdjustededMax and data.adjustedMax == ""
+      if restoreMin or restoreMax then
+        if restoreMin and type(oldSnapshot.adjustedMin) == "number" then
+          data.adjustedMin = tostring(oldSnapshot.adjustedMin)
+        end
+        if restoreMax and type(oldSnapshot.adjustedMax) == "number" then
+          data.adjustedMax = tostring(oldSnapshot.adjustedMax)
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 76 then
+    local function removeHoles(t)
+      local keys = {}
+      for key in pairs(t) do
+        table.insert(keys, key)
+      end
+      if #keys ~= #t then
+        table.sort(keys)
+        local newTable = {}
+        for i, key in ipairs(keys) do
+          newTable[i] = t[key]
+        end
+        return newTable
+      else
+        return t
+      end
+    end
+    local trigger_migration = {
+      ["Spell Cast Succeeded"] = {
+        "spellId",
+      },
+      ["Unit Characteristics"] = {
+        "level",
+      },
+      ["Power"] = {
+        "power",
+        "percentpower",
+        "deficit",
+        "maxpower",
+      },
+      ["Combat Log"] = {
+        "spellId",
+        "spellName",
+      },
+      ["Health"] = {
+        "health",
+        "percenthealth",
+        "deficit",
+        "maxhealth",
+        "absorb",
+        "healabsorb",
+        "healprediction",
+      },
+      ["Faction Reputation"] = {
+        "value",
+        "total",
+        "percentRep",
+      },
+      ["Location"] = {
+        "zone",
+        "subzone",
+      },
+      ["Threat Situation"] = {
+        "threatpct",
+        "rawthreatpct",
+        "threatvalue",
+      },
+      ["Character Stats"] = {
+        "mainstat",
+        "strength",
+        "agility",
+        "intellect",
+        "spirit",
+        "stamina",
+        "criticalrating",
+        "criticalpercent",
+        "hitrating",
+        "hitpercent",
+        "hasterating",
+        "hastepercent",
+        "meleehastepercent",
+        "expertiserating",
+        "expertisebonus",
+        "spellpenpercent",
+        "masteryrating",
+        "masterypercent",
+        "versatilityrating",
+        "versatilitypercent",
+        "attackpower",
+        "leechrating",
+        "leechpercent",
+        "movespeedrating",
+        "movespeedpercent",
+        "runspeedpercent",
+        "avoidancerating",
+        "avoidancepercent",
+        "dodgerating",
+        "dodgepercent",
+        "parryrating",
+        "parrypercent",
+        "blockpercent",
+        "blocktargetpercent",
+        "blockvalue",
+        "staggerpercent",
+        "staggertargetpercent",
+        "armorrating",
+        "armorpercent",
+        "armortargetpercent",
+        "resistanceholy",
+        "resistancefire",
+        "resistancenature",
+        "resistancefrost",
+        "resistanceshadow",
+        "resistancearcane",
+      },
+      ["Cast"] = {
+        "spellNames",
+        "spellIds",
+        "stage",
+      },
+      ["Alternate Power"] = {
+        "power",
+      },
+      ["Experience"] = {
+        "level",
+        "currentXP",
+        "totalXP",
+        "percentXP",
+        "restedXP",
+        "percentrested",
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local trigger = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[trigger.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          if type(trigger[field]) == "table" then
+            trigger[field] = removeHoles(trigger[field])
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 77 then
+    -- fix data broken by wago export
+    local triggerFix = {
+      talent = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      form = {
+        multi = true
+      },
+      specId = {
+        multi = true
+      },
+      actualSpec = true,
+      arena_spec = true
+    }
+    local loadFix = {
+      talent = {
+        multi = true
+      },
+      talent2 = {
+        multi = true
+      },
+      talent3 = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      class_and_spec = {
+        multi = true
+      }
+    }
+
+    local function fixData(data, fields)
+      for k, v in pairs(fields) do
+        if v == true and type(data[k]) == "table" then
+          -- fix field k
+          local tofix = {}
+          for key in pairs(data[k]) do
+              if type(key) == "string" then
+                table.insert(tofix, key)
+              end
+          end
+          for _, oldkey in ipairs(tofix) do
+              local newkey = tonumber(oldkey)
+              if newkey then
+                data[k][newkey] = data[k][oldkey]
+              end
+              data[k][oldkey] = nil
+          end
+        elseif type(v) == "table" and type(data[k]) == "table" then
+          -- recurse
+          fixData(data[k], fields[k])
+        end
+      end
+    end
+
+    for _, triggerData in ipairs(data.triggers) do
+      fixData(triggerData.trigger, triggerFix)
+    end
+    fixData(data.load, loadFix)
+  end
+
+  if data.internalVersion < 78 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Item Type is now always a multi selection
+        if trigger and trigger.type == "item" and trigger.event == "Item Type Equipped" then
+          local value = trigger.itemTypeName and trigger.itemTypeName.single or nil
+          if trigger.use_itemTypeName and value then
+            trigger.use_itemTypeName = false
+            trigger.itemTypeName = {multi = {[value] = true}}
+          else
+            trigger.itemTypeName = {multi = {}}
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 79 then
+    if data.triggers then
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "unit" and trigger.event == "Unit Characteristics" then
+          if trigger.use_ignoreDead then
+            if trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" then
+              trigger.use_dead = false
+            else
+              -- since this option was previously only available for group units,
+              -- nil it out if the unit isn't group to avoid surprises from vestigial data
+              trigger.use_dead = nil
+            end
+          end
+          trigger.use_ignoreDead = nil
+        end
+      end
+    end
+  end
+
+
+  if data.internalVersion < 80 then
+    -- Use common names for anchor areas/points so
+    -- that up/down of sub regions can adapt that
+
+    local conversions = {
+      subborder = {
+        border_anchor = "anchor_area",
+      },
+      subglow = {
+        glow_anchor = "anchor_area"
+      },
+      subtext = {
+        text_anchorPoint = "anchor_point"
+      }
+    }
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if conversions[subRegionData.type] then
+          for oldKey, newKey in pairs(conversions[subRegionData.type]) do
+            subRegionData[newKey] = subRegionData[oldKey]
+            subRegionData[oldKey] = nil
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 81 then
+    -- Rename 'progressSources' to 'progressSource' for Linear/CircularProgressTexture/StopMotion sub elements
+    local conversions = {
+      sublineartexture = {
+        progressSources = "progressSource",
+      },
+      subcirculartexture = {
+        progressSources = "progressSource",
+      },
+      substopmotion = {
+        progressSources = "progressSource",
+      }
+    }
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if conversions[subRegionData.type] then
+          for oldKey, newKey in pairs(conversions[subRegionData.type]) do
+            subRegionData[newKey] = subRegionData[oldKey]
+            subRegionData[oldKey] = nil
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 82 then
+    -- noMerge for separator custom option doesn't make sense,
+    -- and groups achieve the desired effect better,
+    -- so drop the feature
+    if data.authorOptions then
+      for _, optionData in ipairs(data.authorOptions) do
+        if optionData.type == "header" then
+          optionData.noMerge = nil
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 83 then
+    local propertyRenames = {
+      cooldownText = "cooldownTextDisabled",
+    }
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if propertyRenames[change.property] then
+            change.property = propertyRenames[change.property]
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 84 then
+    if data.triggers then
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "addons" then
+          if trigger.event == "Boss Mod Timer" or trigger.event == "BigWigs Timer" or trigger.event == "DBM Timer" then
+            -- if trigger don't filter bars, show only those active in the addon config for triggers made before this option was added
+            -- show disabled bars when looking for specific ids/name
+            if not (trigger.use_message or trigger.use_spellId) then
+              trigger.use_isBarEnabled = true
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 85 then
+    if data.triggers then
+      local eventTypes = {
+        ["Unit Characteristics"] = true,
+        ["Health"] = true,
+        ["Power"] = true,
+        ["Alternate Power"] = true,
+        ["Cast"] = true
+      }
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "unit" then
+          if eventTypes[trigger.event] then
+            local rt = trigger.raidMarkIndex
+            if type(rt) == "number" then
+              trigger.raidMarkIndex = {
+                single = rt
+              }
+            end
+            if trigger.use_raidMarkIndex == false then
+              trigger.use_raidMarkIndex = nil
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 86 then
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "submodel" then
+          subRegionData.bar_model_attach = subRegionData.bar_model_clip
+          subRegionData.bar_model_clip = nil
+          if subRegionData.bar_model_attach then
+            subRegionData.bar_model_stretch = true
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 87 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "icon_visible" then
+            change.property = "icon"
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
+--- Returns true if Modernize will use data from last snapshot before a new one is done
+function Private.ModernizeNeedsOldSnapshot(data)
+  if data.internalVersion == 74 then
+    local restoreMin = data.useAdjustededMin and data.adjustedMin == ""
+    local restoreMax = data.useAdjustededMax and data.adjustedMax == ""
+    if restoreMin or restoreMax then
+      return true
+    end
+  end
+end

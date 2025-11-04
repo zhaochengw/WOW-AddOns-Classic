@@ -1,9 +1,13 @@
 # Details! Damage Meter
 
-## [Details.20250331.13502.162-4-g3396762](https://github.com/Tercioo/Details-Damage-Meter/tree/33967622db92842c7a5bc3772c6b10327078dcba) (2025-04-05)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20250331.13502.162...33967622db92842c7a5bc3772c6b10327078dcba) 
+## [Details.20251023.13811.166](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20251023.13811.166) (2025-10-23)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20251021.13809.166...Details.20251023.13811.166) 
 
-- Added Details:UnpackDeathEvent(deathEvent)  
-- Removed interrupts from crowd control. Fixed crowd control amount in the 'Crowd Control Done' display.  
-- Create FUNDING.yml  
-- Increate the core version  
+- Fixes for Classic and Remix  
+    Flamanis:  
+    - Fix an issue with role assignment in vanilla wow.  
+    - Fix error in remix mythic plus dungeons where one of the affixes is sanguine.  
+- Readd sanguine special unit cause lemix  
+- Ignore path helper  
+- Framework Update  
+- Don't use GetSpecializationRole on classic era cause blizz makes it error  

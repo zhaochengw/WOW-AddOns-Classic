@@ -1,4 +1,3 @@
--- $Id: Templates.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,51 +23,39 @@
 
 --]]
 
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
-
--- Libraries
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
-
-local LibStub = _G.LibStub
--- UIDropDownMenu
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local Templates = {}
 private.Templates = Templates
 
--- //////////////////////////////////////////
 -- AtlasFrameDropDownTypeTemplate
 function Templates.CreateFrameDropDownType(name, parent)
-	local f = _G[name] or LibDD:Create_UIDropDownMenu(name, parent)
-	
-	f:SetPoint("TOPLEFT", parent, 60, -50)
-	
+	local f = _G[name] or CreateFrame("DropdownButton", name, parent, "WowStyle1DropdownTemplate")
+
+	f:SetPoint("TOPLEFT", parent, 65, -44)
+	f:SetWidth(ATLAS_DROPDOWN_WIDTH)
+	f:SetPropagateMouseMotion(true)
+
 	f.Label = f:CreateFontString(name.."Label", "BACKGROUND", "GameFontNormalSmall")
 	f.Label:SetText(ATLAS_STRING_SELECT_CAT)
-	f.Label:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 21, 0)
-	
+	f.Label:SetPoint("TOPLEFT", f, "TOPLEFT", 3, 14)
+
 	return f
 end
 
--- //////////////////////////////////////////
 -- AtlasFrameDropDownTemplate
 function Templates.CreateFrameDropDown(name, parent)
-	local f = _G[name] or LibDD:Create_UIDropDownMenu(name, parent)
-	
+	local f = _G[name] or CreateFrame("DropdownButton", name, parent, "WowStyle1DropdownTemplate")
+
 	local ref = parent and parent:GetName().."DropDownType" or nil
-	
-	f:SetPoint("LEFT", ref or nil, "RIGHT", 0, 0)
-	
+
+	f:SetPoint("LEFT", ref or nil, "RIGHT", 20, 0)
+	f:SetWidth(ATLAS_DROPDOWN_WIDTH)
+	f:SetPropagateMouseMotion(true)
+
 	f.Label = f:CreateFontString(name.."Label", "BACKGROUND", "GameFontNormalSmall")
 	f.Label:SetText(ATLAS_STRING_SELECT_MAP)
-	f.Label:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 21, 0)
-	
+	f.Label:SetPoint("TOPLEFT", f, "TOPLEFT", 3, 14)
+
 	return f
 end

@@ -82,6 +82,7 @@ local specToSpecIconMap = {
 	--
 	["DemonHunter-Vengeance"] = "ability_demonhunter_spectank",
 	["DemonHunter-Havoc"] = "ability_demonhunter_specdps",
+	["DemonHunter-Devourer"] = "classicon_demonhunter_void",
 }
 
 table.insert(Private.LoginFnQueue, function()

@@ -1,11 +1,15 @@
-local MinBuild, OverBuild = 100000, 0
+local MinBuild, OverBuild = 50500, 0  -- MoP: Set to MoP build number
 local BuildStr, _, _, Build = GetBuildInfo()
 if BuildStr:match("^3.4.") then MinBuild = 30400 end
-if Build < (MinBuild or 0) or ( (OverBuild or 0) > 0 and Build >= OverBuild ) then return end
+-- MoP: Skip build checks for compatibility
+-- if Build < (MinBuild or 0) or ( (OverBuild or 0) > 0 and Build >= OverBuild ) then return end
 local AddonName, a = ...
 a.AddonName = AddonName
-local AddonTitle = select(2, GetAddOnInfo(AddonName))
-local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
+-- MoP: Use legacy GetAddOnInfo instead of C_AddOns
+local AddonTitle = select(2, GetAddOnInfo and GetAddOnInfo(AddonName) or "SpellFlashCore")
+-- MoP: GetSpellSubtext doesn't exist, use fallback
+local GetSpellSubtext = function() return "" end
+local PlainAddonTitle = (AddonTitle or "SpellFlashCore"):gsub("|c........", ""):gsub("|r", "")
 local L = a.Localize
 function a.print(...)
     print("|cFF0099FF["..PlainAddonTitle.."]|r", ...)
@@ -14,7 +18,7 @@ if SpellFlashCore and not SpellFlashCore.LS then
     a.print(L["Old uncompletable version of SFC detected, shuttingdown. \r\n Please update other copies of SFC before use."])
     return
 end
-SpellFlashCore = LibStub:NewLibrary("SpellFlashCore", tonumber("20230411150302") or tonumber(date("%Y%m%d%H%M%S")))
+SpellFlashCore = LibStub:NewLibrary("SpellFlashCore", tonumber("20240915150302") or tonumber(date("%Y%m%d%H%M%S")))
 if not SpellFlashCore then return end
 SpellFlashCore.LS = true
 local FrameNames = {}
@@ -46,23 +50,30 @@ SpellFlashCore.RegisterBigLibTimer(a)
 
 local EmptyTable = {}
 
-local SpellCache = setmetatable({}, {__index = function(t, v) if GetSpellInfo(v) then t[v] = {GetSpellInfo(v)} return t[v] end return EmptyTable end})
-function SpellFlashCore.GetSpellInfo(id)
-    if type(id) == "string" then return GetSpellInfo(id) end
-    return unpack(SpellCache[id])
-end
-local GetSpellInfo = SpellFlashCore.GetSpellInfo
+-- MoP: Use legacy spell and item APIs
+local GetSpellInfo, GetSpellSubtext = GetSpellInfo, GetSpellSubtext or function() return nil end
+local LegacyGetItemInfo = GetItemInfo
 
-local ItemCache = setmetatable({}, {__index = function(t, v) if GetItemInfo(v) then t[v] = {GetItemInfo(v)} return t[v] end return EmptyTable end})
+local ItemCache = setmetatable({}, {__index = function(t, v) 
+    local itemInfo = _G.GetItemInfo(v) -- Changed LegacyGetItemInfo to _G.GetItemInfo
+    if itemInfo then 
+        t[v] = {itemInfo} 
+        return t[v] 
+    end 
+    return EmptyTable 
+end})
+
 function SpellFlashCore.GetItemInfo(id)
-    if type(id) == "string" then return GetItemInfo(id) end
+    if type(id) == "string" then return LegacyGetItemInfo(id) end
     return unpack(ItemCache[id])
 end
 local GetItemInfo = SpellFlashCore.GetItemInfo
 
 function SpellFlashCore.SpellName(GlobalSpellID, NoSubName)
     if type(GlobalSpellID) == "number" then
-        local SpellName = GetSpellInfo(GlobalSpellID)
+        local sInfo = GetSpellInfo(GlobalSpellID)
+        if not sInfo then return GlobalSpellID end
+        local SpellName = sInfo.name
         local SubName = GetSpellSubtext(GlobalSpellID)
         if not NoSubName and SubName and SubName ~= "" then
             return SpellName.."("..SubName..")"
@@ -74,9 +85,21 @@ end
 
 function SpellFlashCore.ItemName(ItemID)
     if type(ItemID) == "number" then
-        return (GetItemInfo(ItemID))
+        if _G.GetItemInfo and type(_G.GetItemInfo) == "function" then
+            -- GetItemInfo can return multiple values; the name is the first.
+            local name = select(1, _G.GetItemInfo(ItemID))
+            if name then
+                return name
+            else
+                -- _G.GetItemInfo was called but didn't return a name.
+                return tostring(ItemID) -- Fallback to ItemID string.
+            end
+        else
+            -- _G.GetItemInfo is not available or not a function.
+            return tostring(ItemID) -- Fallback to ItemID string.
+        end
     end
-    return ItemID
+    return ItemID -- If ItemID wasn't a number.
 end
 
 function SpellFlashCore.Replace(...)
@@ -150,8 +173,9 @@ local function RegisterButtons()
     for i = 1, 180 do
         if HasAction(i) then
             local Type, ID = GetActionInfo(i)
+            local name = GetActionText(i)
             if Type == "macro" then
-                if BodyHasMetaTag(GetMacroBody(ID)) then
+                if BodyHasMetaTag(GetMacroBody(name)) then
                     ID = tostring(ID)
                     if not Buttons.Macro[ID] then
                         Buttons.Macro[ID] = a:CreateTable()
@@ -194,7 +218,8 @@ local function RegisterButtons()
             end
         end
     end
-    if IsAddOnLoaded("ButtonForge") then
+    -- MoP: Use legacy IsAddOnLoaded instead of C_AddOns
+    if IsAddOnLoaded and IsAddOnLoaded("ButtonForge") then
         local i = 1
         local frame = _G["ButtonForge"..i]
         while type(frame) == "table" do
@@ -276,28 +301,42 @@ FrameNames.Action = {
 }
 
 local function FrameScriptCheck(script,tipe)
-    if tipe == "Form" then
-        for i=1, 10, 1 do
-            if script == _G["StanceButton" .. i]:GetScript("OnClick") then return true end
-        end
-    elseif tipe == "Pet" then
-        for i=1, 10, 1 do
-            if script == _G["PetActionButton" .. i]:GetScript("OnClick") then return true end
-        end
-    elseif tipe == "Action" then
-        local BarNames = {"Action","MultiBarBottomRight","MultiBarBottomLeft","MultiBarRight","MultiBarLeft","MultiBar5","MultiBar6","MultiBar7"}
-        for _, BarName in pairs(BarNames) do
-            for i=1, 12, 1 do
-                local button = _G[BarName .. "Button" .. i]
+    if not script then return false end
+    
+    local success, result = pcall(function()
+        if tipe == "Form" then
+            for i=1, 10, 1 do
+                local button = _G["StanceButton" .. i]
+                if button and script == button:GetScript("OnClick") then return true end
+            end
+        elseif tipe == "Pet" then
+            for i=1, 10, 1 do
+                local button = _G["PetActionButton" .. i]
+                if button and script == button:GetScript("OnClick") then return true end
+            end
+        elseif tipe == "Action" then
+            local BarNames = {"Action","MultiBarBottomRight","MultiBarBottomLeft","MultiBarRight","MultiBarLeft","MultiBar5","MultiBar6","MultiBar7","MultiBarRightAction","MultiBarLeftAction","MultiBarBottomRightAction","MultiBarBottomLeftAction","MultiBar5Action","MultiBar6Action","MultiBar7Action"}
+            for _, BarName in pairs(BarNames) do
+                for i=1, 12, 1 do
+                    local button = _G[BarName .. "Button" .. i]
+                    if button and script == button:GetScript("OnClick") then return true end
+                end
+            end
+        elseif tipe == "Vehicle" then
+            for i=1, 6, 1 do
+                local button = _G["OverrideActionBarButton" .. i]
                 if button and script == button:GetScript("OnClick") then return true end
             end
         end
-    elseif tipe == "Vehicle" then
-        for i=1, 6, 1 do
-            if script == _G["OverrideActionBarButton" .. i]:GetScript("OnClick") then return true end
-        end
+        return false
+    end)
+    
+    if success then
+        return result
+    else
+        -- Script comparison failed, likely due to deprecated references
+        return false
     end
-    return false
 end
 
 local function RegisterFrames()
@@ -319,40 +358,60 @@ local function RegisterFrames()
     local LAB = {
         original = LibStub:GetLibrary("LibActionButton-1.0", true),
         elvui = LibStub:GetLibrary("LibActionButton-1.0-ElvUI", true),
-        NDui = LibStub:GetLibrary("LibActionButton-1.0-NDui", true), --添加ndui技能高亮 by 风雪20250731
-        UI = LibStub:GetLibrary("LibActionButton-1.0-UI", true)      --添加UI  技能高亮 by 风雪20250731
+        NDui = LibStub:GetLibrary("LibActionButton-1.0-NDui", true),
+        UI = LibStub:GetLibrary("LibActionButton-1.0-UI", true)
     }
 
     for _, lib in pairs(LAB) do
-        for frame in pairs(lib:GetAllButtons()) do
-            if not DuplicateFrame(frame) then
-                ButtonFrames.Action[frame] = 1
+        if lib and lib.GetAllButtons then
+            local success, buttons = pcall(function() return lib:GetAllButtons() end)
+            if success and buttons then
+                for frame in pairs(buttons) do
+                    local frameSuccess = pcall(function()
+                        if not DuplicateFrame(frame) then
+                            ButtonFrames.Action[frame] = 1
+                        end
+                    end)
+                    -- Skip frames that cause errors
+                end
             end
         end
     end
     local frame = EnumerateFrames()
 
     while frame do
-        if type(frame) == "table" and type(frame[0]) == "userdata" and frame.IsProtected and frame.GetObjectType and frame.GetScript and frame:GetObjectType() == "CheckButton" and frame:IsProtected() then
-            if FrameScriptCheck(frame:GetScript("OnClick"),"Form") then
-                if not DuplicateFrame(frame) then
-                    ButtonFrames.Form[frame] = 1
-                end
-            elseif FrameScriptCheck(frame:GetScript("OnClick"),"Pet") then
-                if not DuplicateFrame(frame) then
-                    ButtonFrames.Pet[frame] = 1
-                end
-            elseif FrameScriptCheck(frame:GetScript("OnClick"),"Action") then
-                if not DuplicateFrame(frame) then
-                    ButtonFrames.Action[frame] = 1
-                end
-            elseif FrameScriptCheck(frame:GetScript("OnClick"),"Vehicle") then
-                if not DuplicateFrame(frame) then
-                    ButtonFrames.Vehicle[frame] = 1
+        local success, result = pcall(function()
+            if type(frame) == "table" and type(frame[0]) == "userdata" and frame.IsProtected and frame.GetObjectType and frame.GetScript and frame:GetObjectType() == "CheckButton" and frame:IsProtected() then
+                if FrameScriptCheck(frame:GetScript("OnClick"),"Form") then
+                    if not DuplicateFrame(frame) then
+                        ButtonFrames.Form[frame] = 1
+                    end
+                elseif FrameScriptCheck(frame:GetScript("OnClick"),"Pet") then
+                    if not DuplicateFrame(frame) then
+                        ButtonFrames.Pet[frame] = 1
+                    end
+                elseif FrameScriptCheck(frame:GetScript("OnClick"),"Action") then
+                    if not DuplicateFrame(frame) then
+                        ButtonFrames.Action[frame] = 1
+                    end
+                elseif FrameScriptCheck(frame:GetScript("OnClick"),"Vehicle") then
+                    if not DuplicateFrame(frame) then
+                        ButtonFrames.Vehicle[frame] = 1
+                    end
                 end
             end
+        end)
+        
+        if not success then
+            -- Skip problematic frames that reference deprecated 'this'
         end
-        frame = EnumerateFrames(frame)
+        
+        local nextSuccess, nextFrame = pcall(EnumerateFrames, frame)
+        if nextSuccess then
+            frame = nextFrame
+        else
+            break
+        end
     end
 
     FRAMESREGISTERED = 1
@@ -590,13 +649,14 @@ function SpellFlashCore.FlashFrame(frame, color, size, brightness, blink, textur
             frame[FlashFrameName]:SetAlpha(0)
             frame[FlashFrameName]:SetAllPoints(frame)
             frame[FlashFrameName].FlashTexture = frame[FlashFrameName]:CreateTexture(nil, "OVERLAY")
-            if texture and C_Texture.GetAtlasInfo(texture) then
+            -- MoP: C_Texture doesn't exist, skip atlas check
+            if texture then
                 frame[FlashFrameName].FlashTexture:SetAtlas(texture or "AftLevelup-WhiteStarBurst")
             else
                 frame[FlashFrameName].FlashTexture:SetTexture(texture or "Interface\\Cooldown\\star4")
             end
-            frame[FlashFrameName].FlashTexture:SetPoint("CENTER", frame[FlashFrameName], "CENTER")
-            frame[FlashFrameName].FlashTexture:SetBlendMode("ADD")
+	    frame[FlashFrameName].FlashTexture:SetPoint("CENTER", frame[FlashFrameName], "CENTER")
+	    frame[FlashFrameName].FlashTexture:SetBlendMode("ADD")
             frame[FlashFrameName].UpdateInterval = 0.02
             frame[FlashFrameName].TimeSinceLastUpdate = 0
             frame[FlashFrameName]:SetScript("OnUpdate", FlashFrameOnUpdate)
@@ -671,6 +731,17 @@ Event.ACTIONBAR_HIDEGRID = RegisterAll
 Event.LEARNED_SPELL_IN_TAB = RegisterAll
 Event.CHARACTER_POINTS_CHANGED = RegisterAll
 Event.ACTIVE_TALENT_GROUP_CHANGED = RegisterAll
+function Event.ACTIONBAR_SLOT_CHANGED(event, arg1)
+    local Type, ID = GetActionInfo(arg1)
+    local name = GetActionText(arg1)
+    local Name = SpellFlashCore.SpellName(ID) or ID
+    if Name then
+        if not Buttons.Spell[Name] then
+            Buttons.Spell[Name] = a:CreateTable()
+        end
+        Buttons.Spell[Name][arg1] = 1
+    end
+end
 if Build >= 100000 then Event.PLAYER_SPECIALIZATION_CHANGED = RegisterAll end -- Does not exist in Wrath.
 Event.UPDATE_MACROS = RegisterAll
 Event.VEHICLE_UPDATE = RegisterAll
@@ -684,7 +755,7 @@ local function StartUp()
     if LOADING then
         a:SetTimer("RegisterFrames", 2, 0, RegisterFrames)
         a:SetTimer("RegisterButtons", 2, 0, RegisterButtons)
-        LOADING = nil
+        LOADING = false
     end
 end
 Event.PLAYER_ENTERING_WORLD = StartUp
@@ -777,7 +848,8 @@ function SpellFlashCore.Flashable(SpellName, NoMacros)
     elseif FRAMESREGISTERED and BUTTONSREGISTERED then
         local SpellName, PlainName = SpellName, SpellName
         if type(SpellName) == "number" then
-            local name = GetSpellInfo(SpellName)
+            local sInfo = GetSpellInfo(SpellName)
+            local name = sInfo and sInfo.name
             local second =  GetSpellSubtext(SpellName)
             if name then
                 PlainName = name
@@ -791,18 +863,19 @@ function SpellFlashCore.Flashable(SpellName, NoMacros)
         if SpellName then
             if Buttons.Spell[SpellName] or Buttons.Item[SpellName] or Frames.Spell[SpellName] or Frames.Item[SpellName] then
                 return true
-            elseif not NoMacros and type(SpellName) == "string" and ( GetSpellInfo(SpellName) or GetItemCount(SpellName) > 0 ) then
-                local SpellTexture = GetSpellTexture(SpellName)
+            end            local sInfo = GetSpellInfo(SpellName)
+            if not NoMacros and type(SpellName) == "string" and ( sInfo and sInfo.name or GetItemCount(SpellName, true) > 0 ) then
+                local SpellTexture = sInfo and sInfo.iconID
                 local ItemTexture = GetItemIcon(SpellName)
                 for ID in pairs(Buttons.Macro) do
-                    local name, Texture, body = GetMacroInfo(tonumber(ID))
-                    if Texture and ( Texture == SpellTexture or Texture == ItemTexture ) and body and body:lower():find(PlainName:lower(), nil, true) then
+                    local mInfo = GetSpellInfo(ID)
+                    if mInfo and SpellName == mInfo.name then
                         return true
                     end
                 end
                 for ID in pairs(Frames.Macro) do
-                    local name, Texture, body = GetMacroInfo(tonumber(ID))
-                    if Texture and ( Texture == SpellTexture or Texture == ItemTexture ) and body and body:lower():find(PlainName:lower(), nil, true) then
+                    local mInfo = GetSpellInfo(ID)
+                    if mInfo and SpellName == mInfo.name then
                         return true
                     end
                 end
@@ -832,7 +905,8 @@ function SpellFlashCore.FlashAction(SpellName, color, size, brightness, blink, N
     elseif FRAMESREGISTERED and BUTTONSREGISTERED then
         local SpellName, PlainName = SpellName, SpellName
         if type(SpellName) == "number" then
-            local name = GetSpellInfo(SpellName)
+            local sInfo = GetSpellInfo(SpellName)
+            local name = sInfo and sInfo.name
             local second =  GetSpellSubtext(SpellName)
             if name then
                 PlainName = name
@@ -863,24 +937,25 @@ function SpellFlashCore.FlashAction(SpellName, color, size, brightness, blink, N
                 for frame in pairs(Frames.Item[SpellName]) do
                     SpellFlashCore.FlashFrame(frame, color, size, brightness, blink, texture, fixedSize, fixedBrightness)
                 end
-            end
-            if not NoMacros and type(SpellName) == "string" and ( GetSpellInfo(SpellName) or GetItemCount(SpellName) > 0 ) then
-                local SpellTexture = GetSpellTexture(SpellName)
+            end            local sInfo = GetSpellInfo(SpellName)
+            if not NoMacros and type(SpellName) == "string" and ( sInfo and sInfo.name or GetItemCount(SpellName, true) > 0 ) then
+                local SpellTexture = sInfo and sInfo.iconID
                 local ItemTexture = GetItemIcon(SpellName)
                 for ID, Table in pairs(Buttons.Macro) do
-                    local name, Texture, body = GetMacroInfo(tonumber(ID))
-                    if Texture and ( Texture == SpellTexture or Texture == ItemTexture ) and body and body:lower():find(PlainName:lower(), nil, true) then
+                    local mInfo = GetSpellInfo(ID)
+                    if mInfo and mInfo.name then
                         for button in pairs(Table) do
-                            FlashActionButton(button, color, size, brightness, blink, texture, fixedSize, fixedBrightness)
+                            if SpellName == mInfo.name then
+                                FlashActionButton(button, color, size, brightness, blink, texture, fixedSize, fixedBrightness)
+                            end
                         end
                     end
                 end
                 for ID, Table in pairs(Frames.Macro) do
-                    local name, Texture, body = GetMacroInfo(tonumber(ID))
-                    if Texture and ( Texture == SpellTexture or Texture == ItemTexture ) and body and body:lower():find(PlainName:lower(), nil, true) then
-                        for frame in pairs(Table) do
-                            SpellFlashCore.FlashFrame(frame, color, size, brightness, blink, texture, fixedSize, fixedBrightness)
-                        end
+                    local mInfo = GetSpellInfo(ID)
+
+                    if mInfo and SpellName == mInfo.name then
+                        SpellFlashCore.FlashFrame(frame, color, size, brightness, blink, texture, fixedSize, fixedBrightness)
                     end
                 end
             end

@@ -62,16 +62,20 @@ end
 WidgetHandler.EventHandlerFrame = _G.CreateFrame("Frame", nil, WorldFrame)
 WidgetHandler.EventHandlerFrame:SetScript("OnEvent", EventHandler)
 
-local function RegisterEvent(widget, event, func)
+local function RegisterEvent(widget, event, func, register_for_current_expansion)
+  if not Addon:ExpansionSupportsEvent(event, register_for_current_expansion) then return end
+
   if not WidgetHandler.RegisteredEventsByWidget[event] then
     WidgetHandler.RegisteredEventsByWidget[event] = {}
-  end
+  end  
 
   WidgetHandler.RegisteredEventsByWidget[event][widget] = func or true
-  WidgetHandler.EventHandlerFrame:RegisterEvent(event)
+  Addon:RegisterEvent(WidgetHandler.EventHandlerFrame, event, register_for_current_expansion)
 end
 
-local function RegisterUnitEvent(widget, event, unitid, func)
+local function RegisterUnitEvent(widget, event, unitid, func, register_for_current_expansion)
+  if not Addon:ExpansionSupportsEvent(event, register_for_current_expansion) then return end
+
   if not widget.EventHandlerFrame then
     widget.EventHandlerFrame = _G.CreateFrame("Frame", nil, WorldFrame)
     widget.EventHandlerFrame.Widget = widget
@@ -79,20 +83,22 @@ local function RegisterUnitEvent(widget, event, unitid, func)
   end
 
   widget.RegistedUnitEvents[event] = func or true
-  widget.EventHandlerFrame:RegisterUnitEvent(event, unitid)
+  Addon:RegisterUnitEvent(widget.EventHandlerFrame, event, unitid, register_for_current_expansion)
 end
 
 local function UnregisterEvent(widget, event)
+  if not Addon:ExpansionSupportsEvent(event) then return end
+
   if WidgetHandler.RegisteredEventsByWidget[event] then
     WidgetHandler.RegisteredEventsByWidget[event][widget] = nil
 
     if next(WidgetHandler.RegisteredEventsByWidget[event]) == nil then -- last registered widget removed?
-      WidgetHandler.EventHandlerFrame:UnregisterEvent(event)
+      Addon:UnregisterEvent(WidgetHandler.EventHandlerFrame, event)
     end
   end
 
   if widget.EventHandlerFrame then
-    widget.EventHandlerFrame:UnregisterEvent(event)
+    Addon:UnregisterEvent(widget.EventHandlerFrame, event)
     widget.RegistedUnitEvents[event] = nil
   end
 end
@@ -102,9 +108,8 @@ local function UnregisterAllEvents(widget)
     UnregisterEvent(widget, event)
   end
 
-  -- Also remove all remaining registered unit events (that are not in RegisteredEventsByWidget)
   for event, _ in pairs(widget.RegistedUnitEvents) do
-    widget.EventHandlerFrame:UnregisterEvent(event)
+    Addon:UnregisterEvent(widget.EventHandlerFrame, event)
   end
   widget.RegistedUnitEvents = {}
 end
@@ -261,8 +266,14 @@ function WidgetHandler:InitializeWidget(widget_name)
 end
 
 function WidgetHandler:InitializeAllWidgets()
+  -- Initialize the script widget first, so that it is available for all other widgets, especially
+  -- things done in OnEnable
+  self:InitializeWidget("Script")
+
   for widget_name, _ in pairs(self.Widgets) do
-    self:InitializeWidget(widget_name)
+    if widget_name ~= "Script" then
+      self:InitializeWidget(widget_name)
+    end
   end
 end
 
@@ -519,3 +530,9 @@ end
 --    end
 --  end
 --end
+
+function Addon:DebugWidgetHandler()
+  for event, _ in pairs(WidgetHandler.RegisteredEventsByWidget) do
+    Addon.Logging.Debug("    Event:", event)
+  end
+end

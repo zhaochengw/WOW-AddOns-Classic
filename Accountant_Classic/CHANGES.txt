@@ -1,0 +1,44 @@
+tag 23750d0dca39588f1f516bfe7f10b4d75bb49a6c 3.0.00-alpha.3
+Author:	kamusis <kamusis@gmail.com>
+Date:	Wed Sep 17 14:39:24 2025 +0900
+
+Release 3.0.00-alpha.3 (Currency Tracker UI prototype)
+
+commit 638e8592eafc51f4aaef436d640637af8ecbe5a6
+Author: kamusis <kamusis@gmail.com>
+Date:   Tue Sep 16 21:28:31 2025 +0900
+
+    fix(currency): run login priming only once per session
+    
+    - Add session guard `didLoginPrime` to CurrencyEventHandler
+    - Reset guard on PLAYER_LOGIN; gate priming in OnPlayerEnteringWorld
+      using Blizzard flags (isInitialLogin, isReloadingUi)
+    - Prevent repeated "Login prime summary" on zone/instance changes and /reload
+    - Keep baseline behavior: prime Total-only baseline when Total is empty and live > 0
+    
+    Files:
+    - CurrencyTracker/CurrencyEventHandler.lua
+
+commit b86e611808c0c9821e35482611eb309e1ed45a3c
+Author: kamusis <kamusis@gmail.com>
+Date:   Tue Sep 16 20:38:10 2025 +0900
+
+    feat(currency-ui): add currency totals UI with timeframe support
+    
+    - Implement Currency Tracker UI to view current character's currency totals across timeframes
+      - Files: CurrencyTracker/CurrencyFrame.xml, CurrencyTracker/CurrencyFrame.lua
+    - Localize and align header labels; unify header/row geometry via COL constants
+    - Consolidate header rendering to UI:Show() with “immediate + next-frame” finalization to win late writes
+    - Lift header draw layer/strata to avoid being occluded
+    - Keep PanelTemplates two-row tabs behavior with next-frame pass and hooks
+    - Persist UI state (timeframe, server, character, currency) and refresh consistently
+    - Add `/ct ui` command to open Currency Tracker UI
+    
+    Display-only changes; no storage or calculation semantics modified.
+
+commit b6bfae97e3bc09455ff3a898e50506c46a5aa200
+Author: kamusis <kamusis@gmail.com>
+Date:   Mon Sep 15 23:21:13 2025 +0900
+
+    fix(currency): make /ct repair remove work with string sources
+

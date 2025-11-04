@@ -9,10 +9,15 @@
 	<Include file="Plugins\MapPlugin\RSMinimapPinTemplate.xml"/>
 	<Include file="Plugins\MapPlugin\RSGuideTemplate.xml"/>
 	<Include file="Plugins\MapPlugin\RSWorldMapButtonTemplate.xml"/>
+	<Include file="Plugins\SearchPlugin\RSSearchTemplate.xml"/>
+	<Include file="Plugins\ExplorerPlugin\RSExplorerLootTemplate.xml"/>
 	<Include file="Plugins\ExplorerPlugin\RSExplorerListTemplate.xml"/>
 	<Include file="Plugins\ExplorerPlugin\RSExplorerTemplate.xml"/>
 		
 	<!-- Addon compartment -->
 	<Include file="Service/RSAddonCompartment.lua"/>
+		
+	<!-- Internal libraries (with dependencies of the previous) -->
+	<Include file="SpecialEvents\ShadowlandsPrePatch.lua"/>
 	
 </Ui>

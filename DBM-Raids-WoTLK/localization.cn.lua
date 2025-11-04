@@ -531,7 +531,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails           = "公布踩中暗影裂隙和撞上烈焰之啸的玩家到团队频道 (需要团长或助理权限)",
 	TimerTenebron           = "为塔尼布隆到来显示计时条",
 	TimerShadron            = "为沙德隆到来显示计时条",
 	TimerVesperon           = "为维斯匹隆到来显示计时条",
@@ -860,16 +859,13 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization{
 	SoundWOP = "为重要技能播放额外的警报语音",
-	TimerHardmode			= "为困难模式显示计时条",
-	AnnounceFails			= "公布中了闪电充能的玩家到团队频道<br/>(需要团长或助理权限)"
+	TimerHardmode			= "为困难模式显示计时条"
 }
 
 L:SetMiscLocalization{
 	YellPhase1			= "入侵者！你们这些凡人竟敢坏了我的兴致，看我怎么……等等，你们……",
 	YellPhase2			= "狂妄的小崽子们，竟敢在我的地盘上挑战我？我要亲自碾碎你们！",
-	YellKill			= "住手！我认输了！",
-	ChargeOn			= "闪电充能 -> %s",
-	Charge				= "中了闪电充能(这一次): %s"
+	YellKill			= "住手！我认输了！"
 }
 
 -------------
@@ -1239,9 +1235,7 @@ L:SetOptionLocalization{
 	warnAdds			= "提示掘地者出现",
 	timerAdds			= "为下一次掘地者出现显示计时器",
 	TimerEmerge			= "为首领钻地显示计时器",
-	TimerSubmerge			= "为下一次钻地显示计时器",
-	AnnouncePColdIcons		= "公布$spell:68510目标设置的标记到团队频道<br/>(需要团长或助理权限)",
-	AnnouncePColdIconsRemoved	= "当移除$spell:68510的标记时也提示<br/>(需要上述选项)"
+	TimerSubmerge			= "为下一次钻地显示计时器"
 }
 
 ----------------------
@@ -1347,13 +1341,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "显示距离框 (8码)",
-	AchievementCheck	= "公布 '流感疫苗短缺' 成就失败到团队频道<br/>(需助理权限)"
+	RangeFrame			= "显示距离框 (8码)"
 }
 
 L:SetMiscLocalization{
-	SporeSet			= "气体孢子{rt%d}: %s",
-	AchievementFailed	= ">> 成就失败: %s中了%d层孢子 <<"
+	SporeSet			= "气体孢子{rt%d}: %s"
 }
 
 ---------------
@@ -1504,9 +1496,7 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "为地上阶段显示预先警告",
 	TimerNextAirphase		= "为下一次 空中阶段显示计时器",
 	TimerNextGroundphase	= "为下一次 地上阶段显示计时器",
-	AnnounceFrostBeaconIcons= "公布$spell:70126目标设置的标记到团队频道<br/>(需要团队队长)",
 	ClearIconsOnAir				= "空中阶段前清除所有标记",
-	AchievementCheck		= "公布 '吃到饱' 成就警告到团队频道<br/>(需助理权限)",
 	RangeFrame				= "根据最后首领使用的技能跟玩家减益显示动态距离框(10/20码)"
 }
 
@@ -1514,10 +1504,7 @@ L:SetMiscLocalization{
 	YellAirphase		= "你们的入侵结束了！无人可以生还！",
 	YellPhase2			= "绝望吧，体会主人那无穷无尽的力量吧！",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet		= "冰霜信标{rt%d}: %s",
-	AchievementWarning	= "警告: %s中了5层秘能连击",
-	AchievementFailed	= ">> 成就失败: %s中了%d层秘能连击 <<"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 ---------------------
@@ -1549,18 +1536,12 @@ L:SetOptionLocalization{
 	PhaseTransition			= "为转换阶段显示计时器",
 	ValkyrWarning			= "提示谁给瓦基里安影卫抓住了",
 	SpecWarnYouAreValkd		= "当你给瓦基里安影卫抓住时显示特別警告",
-	AnnounceValkGrabs		= "提示谁被瓦基里安影卫抓住到团队频道<br/>(需开启团队广播及助理权限)",
-	SpecWarnValkyrLow		= "当瓦基里安血量低于55%时显示特別警告",
-	AnnouncePlagueStack		= "提示$spell:73912层数到团队频道 (10层, 10层后每5层提示一次)<br/>(需开启助理权限)"
+	SpecWarnValkyrLow		= "当瓦基里安血量低于55%时显示特別警告"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "怎么，自诩正义的圣光终于来了？我是不是该丢下霜之哀伤，恳求您的宽恕呢，弗丁？",
-	LKRoleplay				= "真的是正义在驱使你吗？我很好奇……",
-	ValkGrabbedIcon			= "瓦基里安影卫{rt%d}抓住了%s",
-	ValkGrabbed				= "瓦基里安影卫抓住了%s",
-	PlagueStackWarning		= "警告: %s中了%d层亡域瘟疫",
-	AchievementCompleted	= ">> 成就成功: %s中了%d层亡域瘟疫 <<"
+	LKRoleplay				= "真的是正义在驱使你吗？我很好奇……"
 }
 
 -------------

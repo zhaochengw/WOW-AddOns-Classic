@@ -1,27 +1,5 @@
---[[
-	tullaRangeConfig localization
---]]
+-- enUS
 
-local AddonName, Addon = ...
-
-local L = {
-	ColorSettings = 'Colors',
-
-	ColorSettingsTitle = 'tullaRange color configuration settings',
-
-	oor = 'Out of Range',
-
-	oom = 'Out of Mana',
-
-	unusable = 'Unusable',
-
-	Red = 'Red',
-
-	Green = 'Green',
-
-	Blue = 'Blue',
-
-	Desaturate = 'Desaturate'
-}
-
-Addon.L = setmetatable(L, { __index = function(t, k) return k end })
+-- this file is left blank, as English is the default locale. The only
+-- reason it is present at all is to prevent loading errors when using the new
+-- [TextLocale] directive

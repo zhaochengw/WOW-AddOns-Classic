@@ -1,4 +1,3 @@
--- $Id: Atlas-koKR.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,27 +23,25 @@
 
 --]]
 
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local L = AceLocale:NewLocale("Atlas", "koKR", false);
+local L = LibStub("AceLocale-3.0"):NewLocale("Atlas", "koKR");
 
--- Atlas Spanish Localization
-if ( GetLocale() == "koKR" ) then
--- Define the leading strings to be ignored while sorting
--- Ex: The Stockade
-AtlasSortIgnore = {
-	--"the (.+)",
-};
+if (GetLocale() == "koKR") then
+	-- Define the leading strings to be ignored while sorting
+	-- Ex: The Stockade
+	AtlasSortIgnore = {
+		--"the (.+)",
+	};
 
--- Syntax: ["real_zone_name"] = "localized map zone name"
-AtlasZoneSubstitutions = {
---	["Ahn'Qiraj"] = "Templo de Ahn'Qiraj";
---	["The Temple of Atal'Hakkar"] = "El Templo de Atal'Hakkar";
---	["Throne of Tides"] = "Fauce Abisal: Trono de las Mareas";
-};
+	-- Syntax: ["real_zone_name"] = "localized map zone name"
+	AtlasZoneSubstitutions = {
+		--	["Ahn'Qiraj"] = "Templo de Ahn'Qiraj";
+		--	["The Temple of Atal'Hakkar"] = "El Templo de Atal'Hakkar";
+		--	["Throne of Tides"] = "Fauce Abisal: Trono de las Mareas";
+	};
 end
 
+if not L then return end
 
-if L then
 L[" 1/2"] = " 1/2"
 L[" 2/2"] = " 2/2"
 L["%s Dungeons"] = "%s 던전"
@@ -59,7 +56,6 @@ L["Andormu <Keepers of Time>"] = "안도르무 <시간의 수호자>"
 L["Arazmodu <The Scale of Sands>"] = "아라즈모두 <시간의 중재자>"
 L["Arcane Container"] = "마법 단지"
 L["Arms Warrior"] = "무기 전사"
-L["ATLAS_BUTTON_CLOSE"] = "닫기"
 L["ATLAS_CLICK_TO_OPEN"] = "Atlas 지도 창을 열려면 클릭하세요."
 L["ATLAS_CLOSE_ATLASLOOT_WINDOW"] = "AtlasLoot 창을 닫으려면 우클릭하세요."
 L["ATLAS_COLLAPSE_BUTTON"] = "Atlas 일러두기를 닫으려면 클릭하세요."
@@ -128,54 +124,11 @@ L["ATLAS_DEP_MSG3"] = [=[AddOns 폴더에서 파일을 삭제하고 최신 버�
 
 오래된 플러그인/모듈/애드온 목록:]=]
 L["ATLAS_DEP_MSG4"] = "최신 버전을 설치했으면 애드온 목록에서 최신 버전을 활성화해야 합니다."
-L["ATLAS_DEP_OK"] = "확인"
 L["ATLAS_ENTRANCE_BUTTON"] = "입구"
 L["ATLAS_EXPAND_BUTTON"] = "Atlas 일러두기 패널을 열려면 클릭하세요."
-L["ATLAS_INFO"] = "Atlas 정보"
-L["ATLAS_INFO_12200"] = [=[중요 공지:
-
-애드온 파일 크기 증가에 대한 우려로 인해, 던전 맵과 내장
-플러그인은 별도의 애드온 패키지에 포함되어 있지 않습니다.
-
-일부 유명한 게임 웹 사이트에서 애드온을 다운로드하는
-사용자는 Atlas 핵심 기능과 최신 와우 확장팩 지도만 포함하는
-핵심 애드온 만 얻을 수 있습니다.
-
-이전 확장팩의 모든 지도를 보고싶은 경우 그리고 모든 지도를 원할 경우
-우리가 만든 Atlas 플러그인을 별도로 다운로드하여 설치해야합니다.
-
-자세한 정보는 아래 포럼 주제를 읽어보세요.:
-|cff6666ffhttp://www.atlasmod.com/phpBB3/viewtopic.php?t=1522|cffffffff
-
-또는 웹 사이트를 방문하여 다운로드 할 위치를 확인하세요.:
-|cff6666ffhttp://www.atlasmod.com/|cffffffff]=]
-L["ATLAS_INFO_12201"] = [=[[Wow 5.0에서 추가된 새로운 시나리오 지도를 제공하기 위해, 새로운 플러그인 - |cff6666ffAtlas Scenarios|cffffffff 를 제작하였습니다.
-
-Atlas 홈페이지에서 더 자세한 사항을 확인하시고, 플러그인을 따로 다운로드 / 설치 하는것을 잊지 마십시오.
-|cff6666ffhttp://www.atlasmod.com/|cffffffff]=]
 L["ATLAS_INSTANCE_BUTTON"] = "인스턴스"
 L["ATLAS_LDB_HINT"] = [=[좌클릭 - Atlas 열기.
 우클릭 - Atlas 옵션.]=]
-L["ATLAS_MINIMAPLDB_HINT"] = [=[좌클릭은 Atlas 열기.
-우클릭은 Atlas 옵션.
-좌클릭 끌기는 이 버튼 이동. ]=]
-L["ATLAS_MISSING_MODULE"] = [=[Atlas가 누락된 모듈 / 플러그인을 감지했습니다.
-
-Atlas가 비활성화 한 오래된 모듈 / 플러그인이 있을 수 있습니다.
-최신 버전을 모두 설치 한 경우 애드온 목록으로 이동하여 모든 기능이 활성화되어 있는지 확인하세요.
-
-\"누락된\" 모듈 / 플러그인이 필요하지 않고 이 메시지를 다시 표시하지 않으려는 경우 옵션 패널로 이동하여 알림을 비활성화 할 수 있습니다.
-
-누락된 모듈 / 플러그인 목록:
-]=]
-L["ATLAS_NO_MODULE_OR_PLUGIN"] = [=[|cffff66ff오류:|r
-Atlas는 설치 및 활성화 된 맵 모듈 또는 
-플러그인을 감지 할 수 없습니다.
-Atlas 자체는 맵 브라우저이므로 맵을 
-찾아 보려면 최소한 하나의 맵 모듈 또는 
-플러그인을 설치해야 합니다.]=]
-L["ATLAS_OPEN_ACHIEVEMENT"] = "상세 업적을 열려면 클릭하세요."
-L["ATLAS_OPEN_ADDON_LIST"] = "애드온 목록 열기"
 L["ATLAS_OPEN_ADVENTURE"] = "모험 안내서 창을 열려면 클릭하세요."
 L["ATLAS_OPEN_ATLASLOOT_WINDOW"] = "AtlasLoot 창을 열려면 클릭하세요."
 L["ATLAS_OPEN_WOWMAP_WINDOW"] = "모험 안내서 지도 창을 열려면 클릭하세요."
@@ -183,23 +136,13 @@ L["ATLAS_OPTIONS_ACRONYMS"] = "약어 표시"
 L["ATLAS_OPTIONS_ACRONYMS_TIP"] = "지도 상세에 인스턴스의 약어를 표시합니다."
 L["ATLAS_OPTIONS_AUTOSEL"] = "인스턴스 지도 자동 선택"
 L["ATLAS_OPTIONS_AUTOSEL_TIP"] = "Atlas가 위치를 감지하여 가장 나은 인스턴스 지도를 자동 선택합니다."
-L["ATLAS_OPTIONS_BOSS_DESC"] = "가능한 경우 보스 설명 표시"
-L["ATLAS_OPTIONS_BOSS_DESC_SCALE"] = "보스 설명 지도 툴팁 크기"
-L["ATLAS_OPTIONS_BOSS_DESC_TIP"] = "마우스를 보스 번호 위에 올리면, 관련 정보를 이용할 수 있는 경우 보스 설명을 표시합니다."
 L["ATLAS_OPTIONS_BOSS_POTRAIT"] = "가능한 경우 보스 초상화 표시"
-L["ATLAS_OPTIONS_BUTPOS"] = "버튼 위치"
-L["ATLAS_OPTIONS_BUTRAD"] = "버튼 반지름"
 L["ATLAS_OPTIONS_BUTTON"] = "옵션"
 L["ATLAS_OPTIONS_CATDD"] = "인스턴스 지도 정렬 방식:"
-L["ATLAS_OPTIONS_CHECKMODULE"] = "누락된 모듈 / 플러그인 알림."
-L["ATLAS_OPTIONS_CHECKMODULE_TIP"] = "와우가 로드된 후 누락된 Atlas 모듈 / 플러그인이 있는지 확인합니다."
 L["ATLAS_OPTIONS_CLAMPED"] = "창을 화면에 가둠"
 L["ATLAS_OPTIONS_CLAMPED_TIP"] = "게임 화면 밖으로 마우스로 끌 수 없도록 Atlas 창을 화면에 가둡니다."
 L["ATLAS_OPTIONS_COLORINGDROPDOWN"] = "인스턴스 드롭다운을 색상으로 표시"
 L["ATLAS_OPTIONS_COLORINGDROPDOWN_TIP"] = "인스턴스의 최소 권장 레벨과 플레이어의 레벨에 따라, 인스턴스 난이도를 색상으로 표시합니다. "
-L["ATLAS_OPTIONS_CTRL"] = "툴팁을 보기 위해 Control 키 사용"
-L["ATLAS_OPTIONS_CTRL_TIP"] = "Control 키를 누르면서 지도 정보 위에 마우스를 올려 놓은 동안 툴팁 텍스트를 표시합니다. 창에 표시하기 너무 길 때 유용합니다."
-L["ATLAS_OPTIONS_DONTSHOWAGAIN"] = "같은 정보를 다시 표시하지 않음."
 L["ATLAS_OPTIONS_HEADER_ADDONCONFIG"] = "애드온 구성"
 L["ATLAS_OPTIONS_HEADER_DISPLAY"] = "표시 옵션"
 L["ATLAS_OPTIONS_LOCK"] = "Atlas 창 잠금"
@@ -208,25 +151,21 @@ L["ATLAS_OPTIONS_MAXMENUITEMS"] = "최대 메뉴 항목 수"
 L["ATLAS_OPTIONS_MAXMENUITEMS_TIP"] = "다른 메뉴 범주로 나누기 전에 표시할 최대 드롭다운 메뉴 항목 수를 설정합니다."
 L["ATLAS_OPTIONS_RCLICK"] = "우클릭 세계 지도"
 L["ATLAS_OPTIONS_RCLICK_TIP"] = "Atlas 창에서 우클릭하면 WoW 세계 지도로 전환할 수 있습니다."
-L["ATLAS_OPTIONS_RESETPOS"] = "초기화 위치"
-L["ATLAS_OPTIONS_SCALE"] = "Atlas 프레임 크기"
+L["ATLAS_OPTIONS_SCALE"] = "크기"
 L["ATLAS_OPTIONS_SHOWBUT"] = "미니맵에 버튼 표시"
 L["ATLAS_OPTIONS_SHOWBUT_TIP"] = "미니맵 주변에 Atlas 버튼을 보입니다."
 L["ATLAS_OPTIONS_SHOWWMBUT"] = "세계 지도 창에 버튼을 표시합니다."
 L["ATLAS_OPTIONS_TRANS"] = "투명도"
 L["ATLAS_REOPEN_LOOT_AGAIN"] = "전리품 창을 다시 열어 다시 로드하십시오."
 L["ATLAS_ROPEN_ATLASLOOT_WINDOW"] = "AtlasLoot 창을 열려면 우클릭하세요."
-L["ATLAS_SEARCH_UNAVAIL"] = "검색 불가"
 L["ATLAS_SLASH"] = "/atlas"
 L["ATLAS_SLASH_OPTIONS"] = "옵션"
-L["ATLAS_STRING_CLEAR"] = "지우기"
 L["ATLAS_STRING_LEVELRANGE"] = "레벨 범위"
 L["ATLAS_STRING_LOCATION"] = "위치"
 L["ATLAS_STRING_MINGEARLEVEL"] = "최소 장비 레벨"
 L["ATLAS_STRING_MINLEVEL"] = "최소 레벨"
 L["ATLAS_STRING_PLAYERLIMIT"] = "플레이어 수 제한"
 L["ATLAS_STRING_RECLEVELRANGE"] = "추천 레벨"
-L["ATLAS_STRING_SEARCH"] = "검색"
 L["ATLAS_STRING_SELECT_CAT"] = "카테고리 선택"
 L["ATLAS_STRING_SELECT_MAP"] = "지도 선택"
 L["ATLAS_TITLE"] = "Atlas"
@@ -267,12 +206,10 @@ L["Holy Priest"] = "신성 사제"
 L["Hyphen"] = " - "
 L["Imp"] = "임프"
 L["Key"] = "열쇠"
-L["L-DQuote"] = "\""
 L["Lothos Riftwaker"] = "로소스 리프트웨이커"
 L["Love is in the Air"] = "온누리에 사랑을"
 L["Lower"] = "하층"
 L["L-Parenthesis"] = " ("
-L["L-SBracket"] = "["
 L["Lunar Festival"] = "달의 축제"
 L["MapA"] = " [A]"
 L["MapB"] = " [B]"
@@ -284,9 +221,6 @@ L["MapG"] = " [G]"
 L["MapH"] = " [H]"
 L["MapI"] = " [I]"
 L["MapJ"] = " [J]"
-L["MapsNotFound"] = [=[현재 선택된 인스턴스에는 해당 맵 이미지가 연결되어 있지 않습니다.
-
-해당 Atlas 맵 모듈을 설치했는지 확인하십시오.]=]
 L["Meeting Stone"] = "만남의 돌"
 L["Middle"] = "중앙"
 L["Midsummer Festival"] = "한여름 불꽃축제"
@@ -299,25 +233,19 @@ L["Optional"] = "선택"
 L["Orange"] = "주황색"
 L["Orb of Command"] = "지배의 보주"
 L["Outside"] = "야외"
-L["Period"] = ". "
 L["Portal"] = "차원문"
 L["Portal to %s"] = "%s|1으로;로; 통하는 차원문"
-L["PossibleMissingModule"] = "이 지도는 다음 모듈에 있습니다:"
 L["Profile Options"] = "프로필 옵션"
 L["Protection Warrior"] = "방어 전사"
 L["Purple"] = "보라색"
 L["Random"] = "무작위"
 L["Rare"] = "희귀"
-L["R-DQuote"] = "\""
 L["Repair"] = "수리"
 L["Retribution Paladin"] = "징벌 기사"
-L["Rewards"] = "보상"
 L["R-Parenthesis"] = ") "
-L["R-SBracket"] = "]"
 L["Scale and Transparency"] = "크기 및 투명도"
 L["Scarshield Quartermaster <Scarshield Legion>"] = "방패부대 병참장교 <방패 부대>"
 L["Second Stop"] = "두 번째 대기"
-L["Semicolon"] = "; "
 L["Shadow Priest"] = "암흑 사제"
 L["Slash"] = " / "
 L["Soridormi <The Scale of Sands>"] = "소리도르미 <시간의 중재자>"
@@ -348,5 +276,3 @@ L["Wave 6"] = "6 웨이브"
 L["West"] = "서쪽"
 L["Yarley <Armorer>"] = "야를리 <방어구 제작자>"
 L["Zaladormu"] = "잘라도르무"
-
-end

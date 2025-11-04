@@ -91,7 +91,7 @@ if not isRangeAvail then
 			getHostile  = function() return 686 end -- Shadow Bolt
 			getFriendly = function() return IVS(20707) end -- Soulstone
 		elseif playerClass == 'WARRIOR' then
-			getHostile  = function() return IVS(355) or 772 end  -- Taunt, Rend
+			getHostile  = function() return IVS(355) or IVS(772) end  -- Taunt, Rend
 			getFriendly = function() return nil end  -- no avail
 		elseif playerClass == 'HUNTER' then
 			getHostile  = function() return IVS(3044) or IVS(1978) end -- Arcane Shot, Serpent Sting
@@ -105,6 +105,9 @@ if not isRangeAvail then
 		elseif playerClass == 'DEATHKNIGHT' then
 			getHostile  = function() return IVS(47541) or IVS(49576) end -- Death Coil, Death Grip
 			getFriendly = function() return IVS(47541) end -- Death Coil
+		elseif playerClass == 'MONK' then
+			getHostile  = function() return 115546 end -- Provoke
+			getFriendly = function() return 116670 end -- Vivify
 		end
 	end
 

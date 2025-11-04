@@ -15,12 +15,13 @@
 	<Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
 	<Include file="Libs\AceGUI-3.0_SFX-Widgets\AceGUI-3.0_SFX-Widgets.xml"/>
 	<Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
-	<Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
+	<Script file="Libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua"/>
 	<Script file="Libs\LibCompress\LibCompress.lua"/>
 	<Script file="Libs\LibDeflate\LibDeflate.lua"/>
 	<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
 	<Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
 	<Script file="Libs\LibDualSpec-1.0\LibDualSpec-1.0.lua"/>
+	<Script file="Libs\LibClassicSwingTimerAPI\LibClassicSwingTimerAPI.lua"/>
 	<Include file="Libs\LibItemBuffs-1.0\LibItemBuffs-1.0.xml"/>
 	<Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
 	<Include file="Libs\LibChatAnims\LibChatAnims.xml"/>
@@ -28,5 +29,5 @@
 	<Script file="Libs\SpellFlashCore\libs\BigLibTimer\BigLibTimer.lua"/>
 	<Script file="Libs\SpellFlashCore\Localization.lua"/>
 	<Script file="Libs\SpellFlashCore\SpellFlashCore.lua"/>
-	<Include file="UI\PopupSlider.xml"/>
+    <Include file="UI\PopupSlider.xml"/>
 </Ui>

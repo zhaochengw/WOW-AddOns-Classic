@@ -1,4 +1,3 @@
--- $Id: IngameLocales.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,27 +23,24 @@
 
 --]]
 
-local setmetatable, rawget = setmetatable, rawget
-local _G = getfenv(0)
-local GetItemInfo = _G.GetItemInfo
-
-
 Atlas_IngameLocales = {
 	-- ######################################################################
 	--- Items
 	-- ######################################################################
 	-- Keys
-	["Burial Trove Key"] = GetItemInfo(95497),
-	["Dark Keeper Key"] = GetItemInfo(11197),
-	["J'eevee's Jar"] = GetItemInfo(18663),
-	["Key to the Palace of Lei Shen"] = GetItemInfo(94222),
-	["Relic Coffer Key"] = GetItemInfo(11078),
-	["The Eye of Haramad"] = GetItemInfo(32092),
+	["Burial Trove Key"] = C_Item.GetItemInfo(95497),
+	["Dark Keeper Key"] = C_Item.GetItemInfo(11197),
+	["J'eevee's Jar"] = C_Item.GetItemInfo(18663),
+	["Key to the Palace of Lei Shen"] = C_Item.GetItemInfo(94222),
+	["Relic Coffer Key"] = C_Item.GetItemInfo(11078),
+	["The Eye of Haramad"] = C_Item.GetItemInfo(32092),
 }
 
 do
-	setmetatable(Atlas_IngameLocales, {__index = function(tab, key)
-		return rawget(tab, key) or key end
+	setmetatable(Atlas_IngameLocales, {
+		__index = function(tab, key)
+			return rawget(tab, key) or key
+		end
 	})
 end
 
@@ -58,4 +54,3 @@ function Atlas_GetClassName(class)
 		return LOCALIZED_CLASS_NAMES_MALE[class];
 	end
 end
-

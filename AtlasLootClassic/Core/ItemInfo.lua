@@ -7,6 +7,7 @@ local IngameLocales = AtlasLoot.IngameLocales
 
 local type, rawset, rawget, setmetatable = type, rawset, rawget, setmetatable
 -- local GetAuctionItemClasses, GetAuctionItemSubClasses = GetAuctionItemClasses, GetAuctionItemSubClasses
+local GetItemClassInfo, GetItemSubClassInfo = C_Item.GetItemClassInfo, C_Item.GetItemSubClassInfo
 
 local LOC_DATA = {
 	[0] = {
@@ -18,7 +19,7 @@ local LOC_DATA = {
 	[1] = {
 		["__name"] = "Container",
 		[0] = "Bag",
-		[1] = "Soul Bag",
+		[1] = "Soul Bag(OBSOLETE)",
 		[2] = "Herb Bag",
 		[3] = "Enchanting Bag",
 		[4] = "Engineering Bag",
@@ -60,9 +61,9 @@ local LOC_DATA = {
 		[4] = "Plate",
 		[5] = "Bucklers",
 		[6] = "Shields",
-		[7] = "Librams",
-		[8] = "Idols",
-		[9] = "Totems",
+		--[7] = "Librams",
+		--[8] = "Idols",
+		--[9] = "Totems",
 	},
 	[5] = {
 		["__name"] = "Reagent",
@@ -70,11 +71,11 @@ local LOC_DATA = {
 	},
 	[6] = {
 		["__name"] = "Projectile",
-		[0] = "Wand(OBSOLETE)",
-		[1] = "Bolt(OBSOLETE)",
-		[2] = "Arrow",
-		[3] = "Bullet",
-		[4] = "Thrown(OBSOLETE)",
+		--[0] = "Wand(OBSOLETE)",
+		--[1] = "Bolt(OBSOLETE)",
+		--[2] = "Arrow",
+		--[3] = "Bullet",
+		--[4] = "Thrown(OBSOLETE)",
 	},
 	[7] = {
 		["__name"] = "Trade Goods",
@@ -157,8 +158,8 @@ local ITEM_DESC_INFO = {
 		["INVTYPE_AMMO"]				= _G["INVTYPE_AMMO"],
 		["INVTYPE_BODY"]				= _G["INVTYPE_BODY"], -- Shirt
 		["INVTYPE_QUIVER"]				= _G["INVTYPE_QUIVER"],
-		["INVTYPE_RELIC"]				= _G["INVTYPE_RELIC"],
-		["INVTYPE_THROWN"]				= _G["INVTYPE_THROWN"],
+		["INVTYPE_RELIC"]				= "", -- _G["INVTYPE_RELIC"],
+		["INVTYPE_THROWN"]				= "", -- _G["INVTYPE_THROWN"],
 		["INVTYPE_WEAPONMAINHAND"] 		= _G["INVTYPE_WEAPONMAINHAND"],
 		["INVTYPE_WEAPONMAINHAND_PET"]	= _G["INVTYPE_WEAPONMAINHAND_PET"],	-- "Main Attack"
 		["INVTYPE_WEAPONOFFHAND"]		= _G["INVTYPE_WEAPONOFFHAND"],

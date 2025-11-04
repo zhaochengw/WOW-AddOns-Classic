@@ -1513,3 +1513,70 @@ function bossModPrototype:GetLocalizedTimerText(timerType, spellId, Name)
 	end
 	return pformat(L.AUTO_TIMER_TEXTS[timerType], spellName)
 end
+
+--TODO, Fire callbacks instead and then have modules with their own checkbox determine if timers should start or not per boss level if blizzard ever provides spellIds/names
+--IE each boss will have a checkbox to enable/disable timers for that specific boss
+--TODO, make sure DBM core can track timers in startedTimers table?
+--TODO, re-enable icon when blizzard unfucks SetTexture
+--/run C_EncounterTimeline.AddEditModeEvents()
+function DBM:ENCOUNTER_TIMELINE_EVENT_ADDED(eventInfo, barState)
+	local source = eventInfo.source--(0-Encounter, 1-Script, 2-EditMode)
+	if self.Options.DontShowBossTimers and source == 0 then return end
+	if self.Options.DontShowUserTimers and source == 1 then return end
+	local eventID = eventInfo.id
+	local duration = eventInfo.duration
+	--Secrets
+	local spellId = eventInfo.tooltipSpellID
+	local spellName = C_Spell.GetSpellName(spellId)--Must use blizzard fucntion, wrapper taints secret
+	local iconId = eventInfo.iconFileID
+--	local effectType = eventInfo.dispelType ("None", "Poison", "Magic", "Curse", "Disease", "Enrage", "Bleed")
+--	local role = eventInfo.role ("None", "Tank", "Healer", "Damager")
+--	local priority = eventInfo.priority ("Normal", "Deadly")
+
+	--We want to store timer references for secret timers so we can stop them later
+	--if not tContains(self.startedTimers, eventID) then--Make sure timer doesn't exist already before adding it
+	--	tinsert(self.startedTimers, eventID)
+	--end
+	--self:Unschedule(removeEntry, self.startedTimers, eventID)
+	--self:Schedule(duration, removeEntry, self.startedTimers, eventID)
+	DBT:CreateBar(duration, eventID, iconId, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, spellName, true, barState == 1)--barState 1 is "paused"
+end
+
+
+--/run C_EncounterTimeline.AddScriptEvent({duration = 120,tooltipSpellID = 12345,iconFileID = 237550,expirationTime= C_EncounterTimeline.GetCurrentTime() + 120})
+--/run C_EncounterTimeline.HasActiveEvents()
+--/run C_EncounterTimeline.GetEventList()
+--/run C_EncounterTimeline.PauseScriptEvent()
+--/run C_EncounterTimeline.ResumeScriptEvent()
+function DBM:ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED(eventID, barState)
+	local newBar = DBT:GetBar(eventID)
+	if newBar then
+		if barState == 1 then
+			newBar:Pause()
+		elseif barState == 0 then
+			newBar:Resume()
+		end
+	end
+--	self:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
+--	self:Unschedule(removeEntry, self.startedTimers, eventID)
+--	tremove(self.startedTimers, eventID)
+end
+
+function DBM:ENCOUNTER_TIMELINE_EVENT_REMOVED(eventID)
+	DBT:CancelBar(eventID)
+--	self:Unschedule(playCountSound, self.startedTimers[i])--Unschedule countdown by timerId
+--	self:Unschedule(removeEntry, self.startedTimers, eventID)
+--	tremove(self.startedTimers, eventID)
+end
+
+--/run DBM:RecoverBlizzardTimers()
+function DBM:RecoverBlizzardTimers()
+	if C_EncounterTimeline.HasActiveEvents() then
+		local eventList = C_EncounterTimeline.GetEventList()
+		for _, v in ipairs(eventList) do
+			local eventId = C_EncounterTimeline.GetEventInfo(v)
+			local eventState = C_EncounterTimeline.GetEventState(v)
+			self:ENCOUNTER_TIMELINE_EVENT_ADDED(eventId, eventState)
+		end
+	end
+end

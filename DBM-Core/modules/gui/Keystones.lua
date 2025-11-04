@@ -26,6 +26,8 @@ if not LibKeystone or not LibSpec then
 	return
 end
 
+local isPlayerRemix = PlayerIsTimerunning and PlayerIsTimerunning()
+
 local playerSpecs = {}
 do
 	local function UpdateSpec(specID, _, _, playerName)
@@ -36,16 +38,39 @@ do
 end
 
 -- [ChallengeModeID] = {MapID, TeleportID, bgImage}
-local teleports = {
-	[378] = {2287, 354465, 3759908}, -- Halls of Atonement
-	[391] = {2441, 367416, 4182022}, -- Tazavesh: Streets of Wonder
-	[392] = {2441, 367416, 4182022}, -- Tazavesh: So'leah's Gambit
-	[499] = {2649, 445444, 5912551}, -- Priority of the Sacred Flame
-	[503] = {2660, 445417, 5912546}, -- Ara-Kara, City of Echoes
-	[505] = {2662, 445414, 5912552}, -- The Dawnbreaker
-	[525] = {2773, 1216786, 6422412}, -- Operation Floodgate
-	[542] = {2830, 1237215,7074042} -- Eco-Dome Al'dani
-}
+local teleports
+local function updateTeleports()
+	isPlayerRemix = PlayerIsTimerunning and PlayerIsTimerunning()
+	if isPlayerRemix then
+		teleports = {
+			--[197] = {1456, nil, 1498157}, -- Eye of Azshara
+			[198] = {1466, 424163, 1411855}, -- Darkheart Thicket
+			[199] = {1501, 424153, 1411853}, -- Black Rook Hold
+			[200] = {1477, 393764, 1498158}, -- Halls of Valor
+			[206] = {1458, 410078, 1450574}, -- Neltharion's Lair
+			--[207] = {1493, nil, 1411858}, -- Vault of the Wardens
+			--[208] = {1492, nil, 1411856}, -- Maw of Souls
+			--[209] = {1516, nil, 1411857}, -- The Arcway
+			[210] = {1571, 393766, 1498156}, -- Court of Stars
+			[227] = {1651, 373262, 1537283}, -- Return to Karazhan: Lower
+			--[233] = {1677, nil, 1616922}, -- Cathedral of Eternal Night
+			[234] = {1651, 373262, 1537283}, -- Return to Karazhan: Upper
+			--[239] = {1753, nil, 1718213}, -- Seat of the Triumvirate
+		}
+	else
+		teleports = {
+			[378] = {2287, 354465, 3759908}, -- Halls of Atonement
+			[391] = {2441, 367416, 4182022}, -- Tazavesh: Streets of Wonder
+			[392] = {2441, 367416, 4182022}, -- Tazavesh: So'leah's Gambit
+			[499] = {2649, 445444, 5912551}, -- Priority of the Sacred Flame
+			[503] = {2660, 445417, 5912546}, -- Ara-Kara, City of Echoes
+			[505] = {2662, 445414, 5912552}, -- The Dawnbreaker
+			[525] = {2773, 1216786, 6422412}, -- Operation Floodgate
+			[542] = {2830, 1237215,7074042} -- Eco-Dome Al'dani
+		}
+	end
+end
+updateTeleports()
 
 local partyKeystones, guildKeystones = {}, {}
 
@@ -321,7 +346,7 @@ function PartyGuildUpdate(table)
 			textDungeon:SetAttribute('spell', teleports[v.mapID][2])
 		end
 
-		textRating.Text:SetText(v.playerRating or '?')
+		textRating.Text:SetText(v.playerRating == 0 and '-' or v.playerRating or '?')
 		textRating:SetPoint("TOP", titleRating, "BOTTOM", 0, offset)
 		textRating:SetWidth(titleRating:GetWidth())
 	end
@@ -331,37 +356,80 @@ function PartyGuildUpdate(table)
 	frame:SetWidth(child:GetWidth() + 32)
 end
 
-local function UpdateKeystones()
-	local resetTime = C_DateAndTime.GetWeeklyResetStartTime()
-	if not DBM_Keystones.resetTime or resetTime ~= DBM_Keystones.resetTime then
-		DBM_Keystones.resetTime = resetTime
-		DBM_Keystones.keys = {}
-	end
+local UpdateKeystones
 
-	-- If not max level, don't store this character in the keys system
-	if UnitLevel('player') ~= GetMaxPlayerLevel() then
-		return
-	end
+do
+	local type, strsplit = type, string.split
+	local GetContainerNumSlots, GetContainerItemID, GetContainerItemLink, IsItemKeystoneByID =
+		C_Container.GetContainerNumSlots, C_Container.GetContainerItemID, C_Container.GetContainerItemLink, C_Item.IsItemKeystoneByID
 
-	local name = UnitName('player')
-	local currentRating = C_PlayerInfo.GetPlayerMythicPlusRatingSummary('player')
-	DBM_Keystones.keys[UnitGUID('player')] = {
-		name = name,
-		specID = playerSpecs[name] or 0,
-		keyLevel = C_MythicPlus.GetOwnedKeystoneLevel() or 0,
-		mapID = C_MythicPlus.GetOwnedKeystoneChallengeMapID() or 0,
-		playerRating = currentRating and currentRating.currentSeasonScore or 0,
-	}
+	function UpdateKeystones()
+		local resetTime = C_DateAndTime.GetWeeklyResetStartTime()
+		if not DBM_Keystones.resetTime or resetTime ~= DBM_Keystones.resetTime then
+			DBM_Keystones.resetTime = resetTime
+			DBM_Keystones.keys = {}
+		end
 
-	-- Update the character frame
-	if selectedTab == 3 then -- Characters tab
-		PartyGuildUpdate(DBM_Keystones.keys)
+		-- If not max level, don't store this character in the keys system
+		-- Unless we're in remix
+		if UnitLevel('player') ~= GetMaxPlayerLevel() and not isPlayerRemix then
+			return
+		end
+
+		local name = UnitName('player')
+		local currentRating = C_PlayerInfo.GetPlayerMythicPlusRatingSummary('player')
+		local keyLevel = C_MythicPlus.GetOwnedKeystoneLevel() or 0
+		local keyMap = C_MythicPlus.GetOwnedKeystoneChallengeMapID() or 0
+
+		-- Legion remix
+		if keyLevel == 0 and keyMap == 0 and isPlayerRemix then
+			for currentBag = 0, 4 do -- 0=Backpack, 1/2/3/4=Bags
+				local slots = GetContainerNumSlots(currentBag)
+				for currentSlot = 1, slots do
+					local itemID = GetContainerItemID(currentBag, currentSlot)
+					if itemID and IsItemKeystoneByID(itemID) then
+						local itemLink = GetContainerItemLink(currentBag, currentSlot)
+						if type(itemLink) == "string" then
+							local _, _, _, strChallengeMapID, strLevel = strsplit(":", itemLink)
+							local level = tonumber(strLevel)
+							local challengeMapID = tonumber(strChallengeMapID)
+							if challengeMapID and level then
+								keyLevel = level
+								keyMap = challengeMapID
+								break
+							end
+						end
+					end
+				end
+			end
+		end
+
+		DBM_Keystones.keys[UnitGUID('player')] = {
+			name = name,
+			specID = playerSpecs[name] or 0,
+			keyLevel = keyLevel or 0,
+			mapID = keyMap or 0,
+			playerRating = currentRating and currentRating.currentSeasonScore or 0,
+		}
+
+		-- Update the character frame
+		if selectedTab == 3 then -- Characters tab
+			PartyGuildUpdate(DBM_Keystones.keys)
+		end
 	end
 end
 
 frame:CreateTab(PARTY, function()
 	refresh:Show()
 	partyKeystones = {}
+	for _, v in pairs(DBM:GetRaidRoster()) do
+		partyKeystones[v.name] = {
+			name = v.name,
+			keyLevel = 0,
+			mapID = 0,
+			playerRating = 0,
+		}
+	end
 	PartyGuildUpdate(partyKeystones)
 	RegisterLibKeystone()
 	LibKeystone.Request("PARTY")
@@ -450,6 +518,7 @@ frame:SetScript('OnEvent', function(_, event, arg1, arg2)
 			LibKeystone.Request("PARTY")
 		end
 	elseif event == 'PLAYER_ENTERING_WORLD' then
+		updateTeleports()
 		if not DBM_Keystones then
 			DBM_Keystones = {
 				keys = {}

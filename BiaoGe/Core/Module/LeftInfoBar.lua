@@ -113,7 +113,7 @@ BG.Init(function()
 
             local text
             local moneyTitle, money
-            if not (BG.IsVanilla_Sod or BG.IsMOP) then
+            if not (BG.IsVanilla_Sod or BG.IsMOP_TW) then
                 moneyTitle = "¥"
                 money = 90
             else
@@ -194,7 +194,7 @@ BG.Init(function()
     end
 
     -- 在线玩家数
-    if BG.IsVanilla_Sod or BG.IsMOP then
+    if BG.IsVanilla_Sod or BG.IsMOP_TW then
         BG.Init2(function()
             if not IsAddOnLoaded("Blizzard_Communities") then
                 UIParentLoadAddOn("Blizzard_Communities")

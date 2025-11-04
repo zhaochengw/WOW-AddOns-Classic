@@ -37,6 +37,8 @@ local function LinkConverterCallback(link,type,id,text)
 end
 
 function AddOn.LinkConverter_ConvertLinks(str)
+	if type(str)~="string" then return str; end
+
 	local fix; str,fix=str:gsub("(|H([^:|]+):([^|]-)|h(.-)|h)",LinkConverterCallback);
 	if fix>0 then
 --		Fix links with color codes having textures inserted inside them

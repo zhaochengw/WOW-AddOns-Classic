@@ -1,0 +1,16 @@
+<Ui>
+	<Script file='modules/build.lua'/>
+	<Script file='modules/misc.lua'/>
+	<Script file='modules/event.lua'/>
+	<Script file='modules/callback.lua'/>
+	<Script file='modules/input.lua'/>
+	<Script file='modules/output.lua'/>
+	<Script file='modules/defer.lua'/>
+	<Script file='modules/locale.lua'/>
+	<Script file='modules/load.lua'/>
+	<Script file='modules/widgets.lua'/>
+	<Script file='modules/settings.lua'/>
+	<Script file='modules/library.lua'/>
+	<Script file='modules/object.lua'/>
+	<Script file='modules/pin.lua'/>
+</Ui>

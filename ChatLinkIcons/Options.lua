@@ -5,7 +5,7 @@
 --------------------------------------------------------------------------
 
 local Name,AddOn=...;
-local Title=select(2,GetAddOnInfo(Name)):gsub("%s*v?[%d%.]+$","");
+local Title=select(2,C_AddOns.GetAddOnInfo(Name)):gsub("%s*v?[%d%.]+$","");
 AddOn.Options_OnOptionsUpdate=AddOn.Callbacks_New();
 
 ----------------------------------
@@ -65,12 +65,12 @@ local Panel=CreateFrame("Frame"); do
 	local author=Panel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall");
 	author:SetPoint("TOP",title,"BOTTOM",0,0);
 	author:SetTextColor(1,0.5,0.25);
-	author:SetText(AddOn.Localization.Options_ByAuthor_Format:format(GetAddOnMetadata(Name,"Author")));
+	author:SetText(AddOn.Localization.Options_ByAuthor_Format:format(C_AddOns.GetAddOnMetadata(Name,"Author")));
 
 	local version=Panel:CreateFontString(nil,"OVERLAY","GameFontNormalSmall");
 	version:SetPoint("TOPLEFT",title,"TOPRIGHT",4,0);
 	version:SetTextColor(0.5,0.5,0.5);
-	version:SetText("v"..GetAddOnMetadata(Name,"Version"));
+	version:SetText("v"..C_AddOns.GetAddOnMetadata(Name,"Version"));
 end
 
 --------------------------

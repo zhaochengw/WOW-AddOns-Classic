@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 11502
 ## Title: HandyNotes_NPCs (Classic)
 ## Version: 1.35a
 ## Notes: Shows locations of various old world npcs

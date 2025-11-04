@@ -21,6 +21,8 @@ local QuestieComms = QuestieLoader:ImportModule("QuestieComms")
 local l10n = QuestieLoader:ImportModule("l10n")
 ---@type QuestXP
 local QuestXP = QuestieLoader:ImportModule("QuestXP")
+---@type ZoneDB
+local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
 
 local HBDPins = LibStub("HereBeDragonsQuestie-Pins-2.0")
 local GetCoinTextureString = C_CurrencyInfo.GetCoinTextureString or GetCoinTextureString
@@ -35,6 +37,18 @@ local TRANSPARENT_ICON_TEXTURE = "|T" .. TRANSPARENT_ICON_PATH .. ":14:14:2:0|t"
 local DEFAULT_WAYPOINT_HOVER_COLOR = { 0.93, 0.46, 0.13, 0.8 }
 
 local lastTooltipShowTimestamp = GetTime()
+
+-- helper function to format a label with a colon, respecting localization rules
+---@param label string
+---@return string
+local function FormatLabelWithColon(label)
+    local locale = GetLocale()
+    if locale == "frFR" then
+        return label .. " :"
+    else
+        return label .. ":"
+    end
+end
 
 function MapIconTooltip:Show()
     local _, _, _, alpha = self.texture:GetVertexColor();
@@ -241,6 +255,16 @@ function MapIconTooltip:Show()
                             self:AddDoubleLine(TRANSPARENT_ICON_TEXTURE .. " " .. questData.title, rewardString, 1, 1, 1, 1, 1, 0);
                         end
                     end
+                    -- Add dungeon information if this is a dungeon quest
+                    if shift and quest then
+                        local zoneOrSort = quest.zoneOrSort
+                        if zoneOrSort and zoneOrSort > 0 then
+                            local dungeonName = ZoneDB:GetDungeonName(zoneOrSort)
+                            if dungeonName then
+                                self:AddLine("  " .. FormatLabelWithColon(l10n("Dungeon")) .. " " .. dungeonName, 0.7, 0.7, 0.7)
+                            end
+                        end
+                    end
                 end
                 if questData.subData and shift then
                     local dataType = type(questData.subData)
@@ -262,48 +286,18 @@ function MapIconTooltip:Show()
                 if Questie.db.profile.enableTooltipsNextInChain then
                     local nextQuestInChain = QuestieDB.QueryQuestSingle(questData.questId, "nextQuestInChain")
                     if shift and nextQuestInChain > 0 and (not Questie.db.char.hidden[nextQuestInChain]) then
-                        -- add quest chain info
                         local nextQuest = QuestieDB.GetQuest(nextQuestInChain)
                         local firstInChain = true;
                         while nextQuest ~= nil and (not Questie.db.char.hidden[nextQuest.Id]) do
-
-                            local nextQuestTitleString;
-                            local nextQuestXpRewardString = "";
-                            local nextQuestMoneyRewardString = "";
-                            local nextQuestIdString = "";
-                            local nextQuestTagString = "";
                             if firstInChain then
                                 self:AddLine("  |TInterface\\Addons\\Questie\\Icons\\nextquest.blp:16|t " .. l10n("Next in chain:"), 0.86, 0.86, 0.86)
                                 firstInChain = false
                             end
 
-                            if Questie.db.profile.enableTooltipsQuestLevel then
-                                nextQuestTitleString = string.format("%s", QuestieLib:GetLevelString(nextQuest.Id, nextQuest.level) .. nextQuest.name)
-                            else
-                                nextQuestTitleString = string.format("%s", nextQuest.name)
-                            end
+                            local questTitle, rewardString = _MapIconTooltip.GetNextQuestInChainLines(nextQuest.Id, nextQuest.level)
 
-                            if Questie.db.profile.enableTooltipsQuestID then
-                                nextQuestIdString = string.format(" (%d)", nextQuest.Id)
-                            end
+                            self:AddDoubleLine(questTitle, rewardString, 1, 1, 1)
 
-                            local nextQuestXpReward = QuestXP:GetQuestLogRewardXP(nextQuest.Id, Questie.db.profile.showQuestXpAtMaxLevel)
-                            if nextQuestXpReward > 0 then
-                                nextQuestXpRewardString = string.format(" (%s%s)", FormatLargeNumber(nextQuestXpReward), xpString)
-                            end
-
-                            local nextQuestMoneyReward = QuestXP:GetQuestRewardMoney(nextQuest.Id);
-                            if nextQuestMoneyReward > 0 then
-                                nextQuestMoneyRewardString = Questie:Colorize(string.format(" (%s)", GetCoinTextureString(nextQuestMoneyReward)), "white")
-                            end
-
-                            if (QuestieDB.IsGroupQuest(nextQuest.Id) or QuestieDB.IsDungeonQuest(nextQuest.Id) or QuestieDB.IsRaidQuest(nextQuest.Id)) then
-                                local _, nextQuestTagName = QuestieDB.GetQuestTagInfo(nextQuest.Id)
-                                nextQuestTagString = Questie:Colorize(string.format(" (%s)", nextQuestTagName))
-                            end
-
-                            local nextQuestString = string.format("      %s%s%s%s%s", nextQuestTitleString, nextQuestIdString, nextQuestXpRewardString, nextQuestMoneyRewardString, nextQuestTagString) -- we need an offset to align with description
-                            self:AddLine(QuestieLib:PrintDifficultyColor(nextQuest.level, nextQuestString, QuestieDB.IsRepeatable(nextQuest.Id), QuestieDB.IsActiveEventQuest(nextQuest.Id), QuestieDB.IsPvPQuest(nextQuest.Id)), 1, 1, 1)
                             if nextQuest.nextQuestInChain > 0 then
                                 nextQuest = QuestieDB.GetQuest(nextQuest.nextQuestInChain)
                             else
@@ -350,29 +344,20 @@ function MapIconTooltip:Show()
                 end
             end
 
-            local function _GetLevelString(creatureLevels, name)
-                local levelString = name
-                if creatureLevels[name] then
-                    local minLevel = creatureLevels[name][1]
-                    local maxLevel = creatureLevels[name][2]
-                    local rank = creatureLevels[name][3]
-                    if minLevel == maxLevel then
-                        levelString = name .. " (" .. minLevel
-                    else
-                        levelString = name .. " (" .. minLevel .. "-" .. maxLevel
-                    end
-
-                    if rank and rank == 1 then
-                        levelString = levelString .. "+"
-                    end
-
-                    levelString = levelString .. ")"
-                end
-                return levelString
-            end
-
             -- Used to get the white color for the quests which don't have anything to collect
             local defaultQuestColor = QuestieLib:GetRGBForObjective({})
+
+            -- Add what dungeon this is in if this is a dungeon quest
+            if shift and quest then
+                local zoneOrSort = quest.zoneOrSort
+                if zoneOrSort and zoneOrSort > 0 then
+                    local dungeonName = ZoneDB:GetDungeonName(zoneOrSort)
+                    if dungeonName then
+                        self:AddLine("   " .. FormatLabelWithColon(l10n("Dungeon")) .. " " .. dungeonName, 0.7, 0.7, 0.7)
+                    end
+                end
+            end
+
             if shift then
                 local creatureLevels = QuestieDB:GetCreatureLevels(quest) -- Data for min and max level
                 local addedCreatureNames = {}
@@ -383,13 +368,13 @@ function MapIconTooltip:Show()
                             for name in pairs(nameData) do
                                 if (not addedCreatureNames[name]) then
                                     addedCreatureNames[name] = true
-                                    name = _GetLevelString(creatureLevels, name)
+                                    name = _MapIconTooltip.GetLevelString(creatureLevels, name)
                                     self:AddLine("   |cFFDDDDDD" .. name);
                                 end
                             end
                         elseif dataType == "string" and (not addedCreatureNames[nameData]) then
                             addedCreatureNames[nameData] = true
-                            nameData = _GetLevelString(creatureLevels, nameData)
+                            nameData = _MapIconTooltip.GetLevelString(creatureLevels, nameData)
                             self:AddLine("   |cFFDDDDDD" .. nameData);
                         end
                         self:AddLine("      " .. defaultQuestColor .. textLine);
@@ -637,4 +622,49 @@ function _MapIconTooltip:AddTooltipsForQuest(icon, tip, quest, usedText)
             end
         end
     end
+end
+
+---@param creatureLevels table<string, table<number, number, number>>
+---@param name string
+---@return string
+function _MapIconTooltip.GetLevelString(creatureLevels, name)
+    local levelString = name
+    if creatureLevels[name] then
+        local minLevel = creatureLevels[name][1]
+        local maxLevel = creatureLevels[name][2]
+        local rank = creatureLevels[name][3]
+        if minLevel == maxLevel then
+            levelString = name .. " (" .. minLevel
+        else
+            levelString = name .. " (" .. minLevel .. "-" .. maxLevel
+        end
+
+        if rank and rank == 1 then
+            levelString = levelString .. "+"
+        end
+
+        levelString = levelString .. ")"
+    end
+    return levelString
+end
+
+---@param questId QuestId
+---@param questLevel number
+---@return string, string
+function _MapIconTooltip.GetNextQuestInChainLines(questId, questLevel)
+    local questTitle = QuestieLib:GetColoredQuestName(questId, Questie.db.profile.enableTooltipsQuestLevel, false);
+
+    local nextQuestXpRewardString = "";
+    local xpReward = QuestXP:GetQuestLogRewardXP(questId, Questie.db.profile.showQuestXpAtMaxLevel)
+    if xpReward > 0 then
+        nextQuestXpRewardString = QuestieLib:PrintDifficultyColor(questLevel, "(" .. FormatLargeNumber(xpReward) .. l10n('xp') .. ") ", QuestieDB.IsRepeatable(questId), QuestieDB.IsActiveEventQuest(questId), QuestieDB.IsPvPQuest(questId))
+    end
+
+    local nextQuestMoneyRewardString = "";
+    local moneyReward = QuestXP.GetQuestRewardMoney(questId)
+    if moneyReward > 0 then
+        nextQuestMoneyRewardString = Questie:Colorize("(" .. GetCoinTextureString(moneyReward) .. ") ", "white")
+    end
+
+    return "      " .. questTitle, nextQuestXpRewardString .. nextQuestMoneyRewardString
 end

@@ -19,11 +19,6 @@ L = DBM:GetModLocalization("ThreeBugs")
 L:SetGeneralLocalization{
 	name = "Семейство жуков"
 }
-L:SetMiscLocalization{
-	Yauj = "Принцесса Яудж",
-	Vem = "Вем",
-	Kri = "Лорд Кри"
-}
 
 -------------
 -- Sartura --
@@ -55,8 +50,8 @@ L:SetWarningLocalization{
 	WarnShatter	= "Разрушение: %d/3"
 }
 L:SetOptionLocalization{
-	WarnFreeze	= "Объявлять о состоянии заморозки",
-	WarnShatter	= "Объявлять о состоянии разрушения"
+	WarnFreeze	= "Показывать предупреждение о состоянии заморозки",
+	WarnShatter	= "Показывать предупреждение о состоянии разрушения"
 }
 L:SetMiscLocalization{
 	Slow	= "начинает замедляться",
@@ -84,10 +79,6 @@ L = DBM:GetModLocalization("TwinEmpsAQ")
 
 L:SetGeneralLocalization{
 	name = "Императоры-близнецы"
-}
-L:SetMiscLocalization{
-	Veklor = "Император Век'лор",
-	Veknil = "Император Век'нилаш"
 }
 
 ------------
@@ -118,16 +109,15 @@ L:SetOptionLocalization{
 	WarnGiantEyeTentacle	= "Показывать предупреждение для Гигантского глазного отростка",
 	WarnGiantClawTentacle	= "Показывать предупреждение для Гигантского Когтещупальца",
 	SpecWarnWeakened		= "Показывать спецпредупреждение, когда босс ослабевает",
-	TimerEyeTentacle		= "Показывать таймер до следующих Глазных отростков",
-	TimerClawTentacle		= "Показывать таймер до следующего Когтещупальца",
-	TimerGiantEyeTentacle	= "Показывать таймер до следующих Гигантских Глазных отростков",
-	TimerGiantClawTentacle	= "Показывать таймер до следующего Гигантского Когтещупальца",
-	TimerWeakened			= "Показывать таймер продолжительности ослабления босса",
+	TimerEyeTentacle		= "Отсчет времени до следующих Глазных отростков",
+	TimerClawTentacle		= "Отсчет времени до следующего Когтещупальца",
+	TimerGiantEyeTentacle	= "Отсчет времени до следующих Гигантских Глазных отростков",
+	TimerGiantClawTentacle	= "Отсчет времени до следующего Гигантского Когтещупальца",
+	TimerWeakened			= "Отсчет времени продолжительности ослабления босса",
 	RangeFrame				= "Показывать окно дистанции (10 м.)"
 }
 L:SetMiscLocalization{
 	Stomach		= "Желудок",
-	Eye			= "Око К'Туна",
 	FleshTent	= "Мясистое щупальце",
 	Weakened 	= "weaken",
 	NotValid	= "AQ40 частично очищен. Осталось %s дополнительных боссов."
@@ -142,8 +132,7 @@ L:SetGeneralLocalization{
 }
 L:SetWarningLocalization{
 	WarnSubmerge		= "Закапывание",
-	WarnEmerge			= "Появление",
-	SpecWarnEye			= "Отвернитесь",
+	WarnEmerge			= "Появление"
 }
 L:SetTimerLocalization{
 	TimerSubmerge		= "Закапывание",
@@ -151,9 +140,9 @@ L:SetTimerLocalization{
 }
 L:SetOptionLocalization{
 	WarnSubmerge		= "Показывать предупреждение о закапывании",
-	TimerSubmerge		= "Показывать таймер до закапывания",
+	TimerSubmerge		= "Отсчет времени до закапывания",
 	WarnEmerge			= "Показывать предупреждение о появлении",
-	TimerEmerge			= "Показывать таймер до появления",
+	TimerEmerge			= "Отсчет времени до появления",
 	SpecWarnEye			= "Показывать предупреждение о Гигантском глазе"
 }
 
@@ -177,7 +166,7 @@ L:SetWarningLocalization{
 L:SetOptionLocalization{
 	WarnExplosion = "Показывать предупреждение взрывающихся Призраков ($spell:1214871)",
 	SpecWarnExplosion = "Показывать спецпредупреждение при появлении нескольких взрывающихся Призраков ($spell:1214871)",
-	TimerExplosion = "Показывать таймер, когда появляется несколько взрывающихся Призраков ($spell:1214871)"
+	TimerExplosion = "Отсчет времени до появления нескольких взрывающихся Призраков ($spell:1214871)"
 }
 
 ---------------
@@ -269,7 +258,7 @@ L:SetTimerLocalization{
 }
 L:SetOptionLocalization{
 	WarnVulnerable	= "Показывать предупреждение о слабости",
-	TimerVulnerable	= "Показывать таймер до слабости"
+	TimerVulnerable	= "Отсчет времени до слабости"
 }
 
 ----------------
@@ -292,7 +281,7 @@ L:SetWarningLocalization{
 L:SetOptionLocalization{
 	WarnExplosion = "Показывать предупреждение взрывающихся Призраков ($spell:1214871)",
 	SpecWarnExplosion = "Показывать спецпредупреждение при появлении нескольких взрывающихся Призраков ($spell:1214871)",
-	TimerExplosion = "Показывать таймер, когда появляется несколько взрывающихся Призраков ($spell:1214871)"
+	TimerExplosion = "Отсчет времени до появления нескольких взрывающихся Призраков ($spell:1214871)"
 }
 
 -----------------
@@ -307,7 +296,7 @@ L:SetTimerLocalization{
 	TimerAddsSpawn	= "Появление аддов"
 }
 L:SetOptionLocalization{
-	TimerAddsSpawn	= "Показывать таймер до первого появления аддов"
+	TimerAddsSpawn	= "Отсчет времени до первого появления аддов"
 }
 L:SetMiscLocalization{
 	Phase2Emote	= "убегает, как только сила сферы пошла на спад.",
@@ -379,7 +368,7 @@ L:SetTimerLocalization{
 	TimerBrandCD	= "Клеймо"
 }
 L:SetOptionLocalization{
-	TimerBrandCD	= "Показать таймер для восстановления Клейма"
+	TimerBrandCD	= "Отсчет времени до восстановления Клейма"
 }
 
 L:SetMiscLocalization{
@@ -435,7 +424,7 @@ L:SetOptionLocalization{
 	TimerBreathCD	= "Показывать время восстановления дыханий",
 	TimerBreath		= "Показывать применение Дыхания",
 	TimerVulnCD		= "Показывать восстановление уязвимости",
-	TimerAllBreaths = "Показывать таймер для Дыхательного града"
+	TimerAllBreaths = "Отсчет времени до Дыхательного града"
 }
 L:SetMiscLocalization{
 	Breath1		= "Первое Дыхание",
@@ -508,7 +497,7 @@ L:SetTimerLocalization{
 L:SetOptionLocalization{
 	SpecWarnBothBombs		= "Показывать спецпредупреждение, если на одном и том же игроке находятся и синяя, и зеленая бомбы.",
 	SpecWarnBothBombsYou	= "Показывать спецпредупреждение, если на Вас как синяя, так и зеленая бомбы.",
-	TimerBombs				= "Показывать таймер для синих и зеленых бомб (Испытание драконов)"
+	TimerBombs				= "Отсчет времени до синих и зеленых бомб (Испытание драконов)"
 }
 
 L:SetMiscLocalization{
@@ -607,7 +596,7 @@ L:SetTimerLocalization{
 	timerShieldCD		= "Следующий щит"
 }
 L:SetOptionLocalization{
-	timerShieldCD		= "Показывать таймер для следующего урона/отражения щита"
+	timerShieldCD		= "Отсчет времени до следующего урона/отражения щита"
 }
 
 ----------------
@@ -629,9 +618,9 @@ L:SetTimerLocalization{
 }
 L:SetOptionLocalization{
 	WarnSubmerge		= "Показывать предупреждение о погружении",
-	TimerSubmerge		= "Показывать время до погружения",
+	TimerSubmerge		= "Отсчет времени до погружения",
 	WarnEmerge			= "Показывать предупреждение о появлении",
-	TimerEmerge			= "Показывать время до появления",
+	TimerEmerge			= "Отсчет времени до появления",
 	timerCombatStart	= DBM_CORE_L.AUTO_TIMER_OPTIONS.combat
 }
 L:SetMiscLocalization{
@@ -650,7 +639,7 @@ L:SetGeneralLocalization{
 
 L:SetOptionLocalization{
 	YellHeartCleared	= "Кричать, когда Сердце Пепла/Пепел будет удалено.",
-	WarnBossPower		= "Показывать предупреждения, когда энергия босса достигает 50%, 75%, 90% и 100%"
+	WarnBossPower		= "Показывать предупреждение, когда энергия босса достигает 50%, 75%, 90% и 100%"
 }
 
 L:SetWarningLocalization{
@@ -711,17 +700,14 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	WarnSimulKill	= "Объявлять о смерти первого адда",
-	TimerSimulKill	= "Показывать время до воскрешения жреца"
+	WarnSimulKill	= "Показывать предупреждение о смерти первого адда",
+	TimerSimulKill	= "Отсчет времени до воскрешения жреца"
 })
 
 L:SetMiscLocalization({
 	PriestDied	= "%s умирает.",
 	YellPhase2	= "Ширвалла, наполни меня своим ГНЕВОМ!",
-	YellKill	= "Хаккар больше не властен надо мной! Наконец-то я обрел покой!",
-	Thekal		= "Верховный жрец Текал",
-	Zath		= "Ревнитель Зат",
-	LorKhan		= "Ревнитель Лор'Кхан"
+	YellKill	= "Хаккар больше не властен надо мной! Наконец-то я обрел покой!"
 })
 
 -------------------
@@ -811,8 +797,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerWhelps				= "Отсчет времени до дракончиков Ониксии",
-	WarnWhelpsSoon			= "Предупреждать заранее о дракончиках Ониксии",
+	TimerWhelps				= "Отсчет времени до появления дракончиков Ониксии",
+	WarnWhelpsSoon			= "Заранее предупреждать о дракончиках Ониксии",
 	SoundWTF3				= "Воспроизвести забавные звуки из легендарного классического рейда Ониксии"
 }
 
@@ -833,14 +819,10 @@ L:SetGeneralLocalization({
 	name = "Ануб'Рекан"
 })
 
-L:SetOptionLocalization({
-	ArachnophobiaTimer	= "Отсчет времени для Арахнофобия (достижение)"
-})
-
 L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Арахнофобия",
 	Pull1				= "Бегите, бегите! Я люблю горячую кровь!",
-	Pull2				= "Посмотрим, какие вы на вкус!"
+	Pull2				= "Посмотрим, какие вы на вкус!",
+	Pull3				= "Выхода нет."
 })
 
 ----------------------------
@@ -858,12 +840,13 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningEmbraceExpire	= "Предупреждение, когда Объятие Вдовы исчезает",
-	WarningEmbraceExpired	= "Предупреждение, когда Объятие Вдовы закончится"
+	WarningEmbraceExpire	= "Заранее предупреждать, когда $spell:28732 исчезнет",
+	WarningEmbraceExpired	= "Показывать предупреждение, когда $spell:28732 исчезнет"
 })
 
 L:SetMiscLocalization({
-	Pull					= "Склонитесь передо мной, черви!"
+	Pull1					= "На колени предо мной, червь!",
+	Pull2					= "Тебе не скрыться от меня!"
 })
 
 ---------------
@@ -885,13 +868,9 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningSpidersSoon	= "Предупреждать перед следующим призывом Паученышей Мексны",
-	WarningSpidersNow	= "Предупреждение для призыва Паученышей Мексны",
-	TimerSpider			= "Отсчет времени до Паученышей Мексны"
-})
-
-L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Арахнофобия"
+	WarningSpidersSoon	= "Показывать предупреждение перед следующим призывом Паученышей Мексны",
+	WarningSpidersNow	= "Показывать предупреждение для призыва Паученышей Мексны",
+	TimerSpider			= "Отсчет времени до появления Паученышей Мексны"
 })
 
 ------------------------------
@@ -914,17 +893,17 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningTeleportNow	= "Предупреждение о телепортации",
-	WarningTeleportSoon	= "Предупреждать перед следующей телепортацией",
+	WarningTeleportNow	= "Показывать предупреждение о телепортации",
+	WarningTeleportSoon	= "Показывать предупреждение перед следующей телепортацией",
 	TimerTeleport		= "Отсчет времени до телепортации",
 	TimerTeleportBack	= "Отсчет времени до обратной телепортации"
 })
 
 L:SetMiscLocalization({
-	Pull				= "Смерть чужакам!",
-	AddsYell			= "Восстаньте, мои воины! Восстаньте и сразитесь вновь!",
-	Adds				= "призывает скелетов-воинов!",
-	AddsTwo				= "поднимает новых скелетов!"
+	Pull1				= "Умри, преступник!",
+	Pull2				= "Слава господину!",
+	Pull3				= "Жизнь – плата за твои проступки.",
+	AddsYell			= "Восстаньте, мои воины! Восстаньте и сразитесь вновь!"
 })
 
 --------------------------
@@ -946,13 +925,14 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningTeleportNow	= "Предупреждение о телепортации",
-	WarningTeleportSoon	= "Предупреждать перед следующей телепортацией",
+	WarningTeleportNow	= "Показывать предупреждение о телепортации",
+	WarningTeleportSoon	= "Показывать предупреждение перед следующей телепортацией",
 	TimerTeleport		= "Отсчет времени до телепортации"
 })
 
 L:SetMiscLocalization({
-	Pull				= "Теперь вы принадлежите мне!"
+	Pull1				= "Теперь вы принадлежите мне!",
+	Pull2				= "Я вижу вас..."
 })
 
 ---------------
@@ -970,8 +950,8 @@ L:SetWarningLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningHealSoon		= "Предупреждать заранее перед 3-х секундным окном исцеления",
-	WarningHealNow		= "Предупреждение для 3-х секундного окна исцеления"
+	WarningHealSoon		= "Заранее предупреждать перед 3-х секундным окном исцеления",
+	WarningHealNow		= "Показывать предупреждение для 3-х секундного окна исцеления"
 })
 
 -----------------
@@ -1022,15 +1002,13 @@ L:SetMiscLocalization({
 	Yell	= "Сталагг сокрушит вас!",
 	Emote	= "Катушка Теслы перезагружается!",
 	Emote2	= "Катушка Теслы теряет связь!",
-	Boss1	= "Фойген",
-	Boss2	= "Сталагг",
 	Charge1 = "отрицательную",
 	Charge2 = "положительную"
 })
 
 L:SetOptionLocalization({
-	WarningChargeChanged	= "Спецпредупреждение, когда Ваша полярность изменена",
-	WarningChargeNotChanged	= "Спецпредупреждение, когда Ваша полярность не изменена",
+	WarningChargeChanged	= "Показывать спецпредупреждение, когда Ваша полярность изменена",
+	WarningChargeNotChanged	= "Показывать спецпредупреждение, когда Ваша полярность не изменена",
 	AirowsEnabled			= "Показывать стрелки во время $spell:28089",
 	Never					= "Никогда",
 	TwoCamp					= "Показывать стрелки (обычная \"2-сторонняя\" стратегия)",
@@ -1060,7 +1038,7 @@ L:SetMiscLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningShieldWallSoon	= "Предупреждать о скором окончании Глухой обороны"
+	WarningShieldWallSoon	= "Показывать предупреждение о скором окончании Глухой обороны"
 })
 
 L:SetWarningLocalization({
@@ -1079,10 +1057,10 @@ L:SetGeneralLocalization({
 L:SetOptionLocalization({
 	TimerWave			= "Отсчет времени до следующей волны",
 	TimerPhase2			= "Отсчет времени до 2-й фазы",
-	WarningWaveSoon		= "Предупреждать перед следующей волной",
-	WarningWaveSpawned	= "Предупреждение для волны призыва",
-	WarningRiderDown	= "Предупреждение, когда Всадник мертв",
-	WarningKnightDown	= "Предупреждение, когда Рыцарь мертв"
+	WarningWaveSoon		= "Показывать предупреждение перед следующей волной",
+	WarningWaveSpawned	= "Показывать предупреждение для волны призыва",
+	WarningRiderDown	= "Показывать предупреждение, когда Всадник мертв",
+	WarningKnightDown	= "Показывать предупреждение, когда Рыцарь мертв"
 })
 
 L:SetTimerLocalization({
@@ -1099,12 +1077,12 @@ L:SetWarningLocalization({
 })
 
 L:SetMiscLocalization({
-	yell			= "Глупо было искать свою смерть.",
 	WarningWave1	= "%d %s",
 	WarningWave2	= "%d %s и %d %s",
 	WarningWave3	= "%d %s, %d %s и %d %s",
 	Trainee			= "Ученика",
 	Knight			= "Рыцаря",
+	Horse			= "Призрачного коня",
 	Rider			= "Всадника"
 })
 
@@ -1118,9 +1096,9 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningMarkSoon				= "Предупреждать перед следующими знаком",
-	SpecialWarningMarkOnPlayer	= "Спецпредупреждение, когда больше 4-х знаков на Вас",
-	timerMark					= "Показывать таймер для следующего знака Всадника (со счетчиком)"
+	WarningMarkSoon				= "Показывать предупреждение перед следующими знаком",
+	SpecialWarningMarkOnPlayer	= "Показывать спецпредупреждение, когда на Вас больше 4-х знаков",
+	timerMark					= "Отсчет времени до следующего знака Всадника (со счетчиком)"
 })
 
 L:SetTimerLocalization({
@@ -1130,13 +1108,6 @@ L:SetTimerLocalization({
 L:SetWarningLocalization({
 	WarningMarkSoon				= "Метка %d через 3 сек.",
 	SpecialWarningMarkOnPlayer	= "%s: %s"
-})
-
-L:SetMiscLocalization({
-	Korthazz	= "Тан Кортазз",
-	Rivendare	= "Барон Ривендер",
-	Blaumeux	= "Леди Бломе",
-	Zeliek		= "Сэр Зелиек"
 })
 
 -----------------
@@ -1149,17 +1120,13 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningAirPhaseSoon	= "Предупреждать о приближении Воздушной фазы",
-	WarningAirPhaseNow	= "Объявлять Воздушную фазу",
-	WarningLanded		= "Объявлять Наземную фазу",
+	WarningAirPhaseSoon	= "Показывать предупреждение о приближении Воздушной фазы",
+	WarningAirPhaseNow	= "Показывать предупреждение о Воздушной фазе",
+	WarningLanded		= "Показывать предупреждение о Наземной фазе",
 	TimerAir			= "Отсчет времени до Воздушной фазы",
 	TimerLanding		= "Отсчет времени до приземления",
 	TimerIceBlast		= "Отсчет времени до Ледяного дыхания",
-	WarningDeepBreath	= "Специальное объявление Ледяного Дыхания"
-})
-
-L:SetMiscLocalization({
-	EmoteBreath			= "%s делает глубокий вдох."
+	WarningDeepBreath	= "Показывать спецпредупреждение для $spell:29318"
 })
 
 L:SetWarningLocalization({
@@ -1187,8 +1154,8 @@ L:SetGeneralLocalization({
 
 L:SetOptionLocalization({
 	TimerPhase2			= "Отсчет времени до 2-й фазы",
-	specwarnP2Soon		= "Спецпредупреждение за 10 сек. до вступления Кел'Тузада в бой",
-	warnAddsSoon		= "Предупреждать заранее о Стражах Ледяной Короны"
+	specwarnP2Soon		= "Показывать спецпредупреждение за 10 сек. до вступления Кел'Тузада в бой",
+	warnAddsSoon		= "Заранее предупреждать о Стражах Ледяной Короны"
 })
 
 L:SetMiscLocalization({
@@ -1436,7 +1403,7 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization({
-	timerTankCD	= "Показывать таймер перезарядки случайных способностей танка на 4-й фазе"
+	timerTankCD	= "Отсчет времени до перезарядки случайных способностей танка на 4-й фазе"
 })
 
 ------------------
@@ -1589,10 +1556,10 @@ L = DBM:GetModLocalization("Beatrix")
 L:SetMiscLocalization{
 	YellFroggers1 = "break their ranks",
 	YellFroggers2 = "Ready your lances",
-	CannonMistress = "Cannon Mistress Lind", -- TODO: can we automatically get the localized name?
-	YellPhase2 = "We stand united! Let our enemies tremble before our might!",
-	Footmen = "Footmen",
-	Horses = "Horses"
+	CannonMistress = "Офицер артиллерии Линд",
+	YellPhase2 = "Наша сила в единстве! Враги дрогнут перед нашим натиском!",
+	Footmen = "Лакей",
+	Horses = "Лошади"
 }
 
 L = DBM:GetModLocalization("RebornCouncil")
@@ -1604,8 +1571,8 @@ L = DBM:GetModLocalization("LillianVoss")
 L = DBM:GetModLocalization("Beastmaster")
 
 L:SetOptionLocalization({
-	TimerMark = "Показывать таймер для следующих меток Озарение/Воспламенение (со счётчиком)",
-	WarnMark = "Показывать предупреждение для меток Озарение/Воспламенение (с количеством)"
+	TimerMark = "Отсчет времени до следующих меток $spell:1230200 и $spell:1230242 (с подсчетом)",
+	WarnMark = "Показывать предупреждение для меток $spell:1230200 и $spell:1230242 (с подсчетом)"
 })
 
 L:SetTimerLocalization({
@@ -1619,8 +1586,8 @@ L:SetWarningLocalization({
 L = DBM:GetModLocalization("Mason")
 
 L:SetMiscLocalization{
-	Cannons1 = "Fire!",
-	Cannons2 = "Fire at will!"
+	Cannons1 = "Огонь!",
+	Cannons2 = "Пли!"
 }
 
 L = DBM:GetModLocalization("SE_Trash")
@@ -1629,7 +1596,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	FlightTimer = "Показывать таймеры для полетов Грифонов",
+	FlightTimer = "Отсчет времени до полетов Грифонов",
 }
 
 L:SetMiscLocalization{

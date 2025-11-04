@@ -3179,6 +3179,7 @@ lib:SetBaseTranslations
 	["Karazan Chess"] = "Karazan Chess",
 	["Karazhan"] = "Karazhan",
 	["Karazhan Catacombs"] = "Karazhan Catacombs",
+	["Karazhan Crypts"] = "Karazhan Crypts",
 	["Kargath"] = "Kargath",
 	["Kargathar Proving Grounds"] = "Kargathar Proving Grounds",
 	["Kargathia Keep"] = "Kargathia Keep",
@@ -4790,6 +4791,7 @@ lib:SetBaseTranslations
 	["Scarab Terrace"] = "Scarab Terrace",
 	["Scarlet Base Camp"] = "Scarlet Base Camp",
 	["Scarlet Encampment"] = "Scarlet Encampment",
+	["Scarlet Enclave"] = "Scarlet Enclave",
 	["Scarlet Halls"] = "Scarlet Halls",
 	["Scarlet Halls, Dark Ranger"] = "Scarlet Halls, Dark Ranger",
 	["Scarlet Hold"] = "Scarlet Hold",
@@ -8259,4 +8261,3 @@ lib:SetBaseTranslations
 if GetLocale() == "enUS" then
 	lib:SetCurrentTranslations(true)
 end
-

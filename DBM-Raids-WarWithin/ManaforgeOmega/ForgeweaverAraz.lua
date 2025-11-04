@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2687, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250923203627")
+mod:SetRevision("20251023043114")
 mod:SetCreatureID(233817)
 mod:SetEncounterID(3132)
 mod:SetHotfixNoticeRev(20250821000000)
@@ -37,7 +37,7 @@ mod:RegisterEventsInCombat(
 --]]
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(28754))
 --local warnOverwhelmingPower						= mod:NewStackAnnounce(1228502, 2, nil, "Tank|Healer")
-local warnVoidTear									= mod:NewCountAnnounce(1248133, 3)
+local warnVoidTear									= mod:NewCountAnnounce(1248171, 3)
 
 --local specWarnOverwhelmingPower					= mod:NewSpecialWarningStack(1228502, nil, 10, nil, nil, 1, 6)
 --local specWarnOverwhelmingPowerTaunt				= mod:NewSpecialWarningTaunt(1228502, false, nil, nil, 1, 2)
@@ -50,7 +50,7 @@ local specWarnArcaneExpulsion						= mod:NewSpecialWarningCount(1227631, nil, 28
 local specWarnInvokeCollector						= mod:NewSpecialWarningSwitchCount(1231720, "-Tank", nil, nil, 1, 2)--Tank should stay away
 local specWarnAstralHarvest							= mod:NewSpecialWarningYou(1228214, nil, nil, nil, 1, 2)
 local yellAstralHarvestFades						= mod:NewShortFadesYell(1228214, DBM_COMMON_L.ORBS)
-local specWarnVoidTear								= mod:NewSpecialWarningCount(1248133, "Tank", nil, nil, 1, 2)
+local specWarnVoidTear								= mod:NewSpecialWarningCount(1248171, "Tank", nil, nil, 1, 2)
 --local specWarnGTFO								= mod:NewSpecialWarningGTFO(459785, nil, nil, nil, 1, 8)
 
 local timerOverwhelmingPowerCD						= mod:NewCDCountTimer(44, 1228502, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
@@ -108,11 +108,11 @@ local allTimers = {
 			--Arcane Expulsion
 			[1227631] = {155},--5 second longer than heroic
 			--Invoke Collector
-			[1231720] = {9, 44, 43},
+			[1231720] = {9, 43.5, 41.9},
 			--Void Tear
-			[1248133] = {21.5, 46, 14.4, 28.5, 14.4, 15},--14.4s can sometimes be 15.5
+			[1248133] = {21.5, 45.5, 14.4, 28.5, 14.4, 15},--14.4s can sometimes be 15.5
 			--Astral Harvest
-			[1228213] = {23.4, 46, 15.5, 28.9, 14.5, 15.5},
+			[1228213] = {23.4, 46, 14.5, 28.9, 14.5, 15.5},
 		},
 		[2] = {
 			--Overwhelming Power
@@ -332,6 +332,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 1234328 then
 		local uId = self:GetUnitIdFromGUID(args.sourceGUID)
+		if not uId then return end--Won't happen but satisfies LuaLS
 		if UnitPower(uId) > 70 then--Might need fine tuning
 			timerPhotonBlastCD:Start(19, args.sourceGUID)
 		else

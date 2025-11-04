@@ -1237,6 +1237,7 @@ do
             BG.FrameJineList:Hide()
         end)
         edit:SetScript("OnEditFocusGained", function(self)
+            self:HighlightText()
             BG.CreateNumFrame(BG.FrameJineList)
         end)
         edit:HookScript("OnEditFocusLost", function(self)
@@ -1941,7 +1942,7 @@ function BG.GetAuctionPrice(itemID, mod)
     itemID = tostring(itemID)
     if Auctionator and Auctionator.Database and Auctionator.Database.GetPrice then
         -- local m = Auctionator.Database:GetFirstPrice({ itemID })
-        local m = Auctionator.Database:GetPrice(itemID )
+        local m = Auctionator.Database:GetPrice(itemID)
         if m and type(m) == "number" then
             if mod == "notsilver" then
                 m = m - (m % 10000)
@@ -2452,7 +2453,7 @@ function BG.ChatEditSetText(text)
 end
 
 function BG.IsBigFB(FB)
-    return FB == "BOT" or FB == "MSV"
+    return FB == "BOT" or FB == "FL" or FB == "DS" or FB == "MSV"
 end
 
 function BG.SetEditBg(edit)
@@ -2480,4 +2481,17 @@ function BG.SetEditBg(edit)
     edit:SetScript("OnEscapePressed", EditBox_ClearFocus)
     edit:SetScript("OnEditFocusLost", EditBox_ClearHighlight)
     edit:SetScript("OnEditFocusGained", EditBox_HighlightText)
+end
+
+function BG.GetBossIndexByBossID(bossID, FB)
+    FB = FB or BG.FB2
+    if bossID and BG.Loot.encounterID[FB] then
+        for numb, bossIDs in ipairs(BG.Loot.encounterID[FB]) do
+            for _, _bossID in ipairs(bossIDs) do
+                if bossID and (bossID == _bossID) then
+                    return numb
+                end
+            end
+        end
+    end
 end

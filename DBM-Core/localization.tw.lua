@@ -37,6 +37,7 @@ L.TEXT_ONLY_RANGE				= "範圍框架受限於該區域的API限制，只限於�
 L.NO_RANGE						= "距離雷達不能在副本中使用，使用傳統文字距離框架取代"
 L.NO_ARROW						= "箭頭不能在副本中使用"
 L.NO_HUD						= "HUDMap不能在副本中使用"
+L.NO_COMMS						= "在遭遇戰或活躍的M+地下城中無法使用附加元件通信。請在遭遇戰或地下城結束後再次使用此命令。"
 
 L.DYNAMIC_DIFFICULTY_CLUMP		= L.DBM.."已中禁用動態距離框架，你目前的團隊人數在這場戰鬥中的機制資訊不足。"
 L.DYNAMIC_ADD_COUNT				= L.DBM.."已中禁用小怪計數警告，你目前的團隊人數在這場戰鬥中的機制資訊不足。"
@@ -267,7 +268,7 @@ L.SLASHCMD_HELP							= {--AI translated (check me)
 	"/dbm pull <sec>: 向團隊發送 <sec> 秒的拉怪計時器（需要提升權限。別名：pull）。",
 	"/dbm break <min>: 向團隊發送 <min> 分鐘的休息計時器（需要提升權限。別名：break）。",
 	"/dbm timer: 開始一個自訂的 " .. L.DBM .. " 計時器，詳情請參見 '/dbm timer'。",
-	"/keys: 在隊伍/公會上執行 M+ 鑰匙和評分檢查，並快捷方式到地下城傳送。 （別名：key，keystone）",
+	"/dbm key: 在隊伍/公會上執行 M+ 鑰匙和評分檢查，並快捷方式到地下城傳送。 （別名：key，keys，keystone）",
 	"/dbm lag: 執行全團延遲檢查。",
 	"/dbm durability: 執行全團耐久度檢查。",
 	"/dbm help2: 顯示其他斜線命令"
@@ -708,6 +709,20 @@ L.DUOS							= "雙煞"
 
 -- Keystone dungeon names (keep to a max of 6 characters)
 -- See https://wago.tools/db2/MapChallengeMode for ID => Dungeon Names
+L.KEYSTONE_NAMES[197] = '艾眼' -- Eye of Azshara
+L.KEYSTONE_NAMES[198] = '暗心' -- Darkheart Thicket
+L.KEYSTONE_NAMES[199] = '玄鴉' -- Black Rook Hold
+L.KEYSTONE_NAMES[200] = '英靈' -- Halls of Valor
+L.KEYSTONE_NAMES[206] = '巢穴' -- Neltharion's Lair
+L.KEYSTONE_NAMES[207] = '看守' -- Vault of the Wardens
+L.KEYSTONE_NAMES[208] = '靈魂' -- Maw of Souls
+L.KEYSTONE_NAMES[209] = '地道' -- The Arcway
+L.KEYSTONE_NAMES[210] = '眾星' -- Court of Stars
+L.KEYSTONE_NAMES[227] = '卡拉贊下' -- Return to Karazhan: Lower
+L.KEYSTONE_NAMES[233] = '永夜' -- Cathedral of Eternal Night
+L.KEYSTONE_NAMES[234] = '卡拉贊上' -- Return to Karazhan: Upper
+L.KEYSTONE_NAMES[239] = '議會' -- Seat of the Triumvirate
+
 L.KEYSTONE_NAMES[378] = '贖罪' -- Halls of Atonement
 L.KEYSTONE_NAMES[391] = '街道' -- Tazavesh: Streets of Wonder
 L.KEYSTONE_NAMES[392] = '險招' -- Tazavesh: So'leah's Gambit

@@ -31,15 +31,27 @@ function SeasonOfDiscovery:LoadQuests()
     -- TODO: ZoneIDs, sort keys
 
     return {
+        [5641] = { -- Fear Ward (Ironforge)
+            [questKeys.startedBy] = {{11406},nil,nil},
+        },
+        [5645] = { -- Fear Ward (Stormwind)
+            [questKeys.startedBy] = {{376},nil,nil},
+        },
         [5658] = { -- Touch of Weakness
             [questKeys.startedBy] = {{4606}},
             [questKeys.objectivesText] = {},
+        },
+        [5657] = { -- Hex of Weakness (Undercity)
+            [questKeys.startedBy] = {{4606},nil,nil},
         },
         [5661] = { -- Touch of Weakness
             [questKeys.startedBy] = {{11407}},
         },
         [5663] = { -- Touch of Weakness
             [questKeys.startedBy] = {{3044}},
+        },
+        [5676] = { -- Feedback (Stormwind)
+            [questKeys.startedBy] = {{376},nil,nil},
         },
         [7636] = { -- An Introduction
             [questKeys.nextQuestInChain] = 84546,

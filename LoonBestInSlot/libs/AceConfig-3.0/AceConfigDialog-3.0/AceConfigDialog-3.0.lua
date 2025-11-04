@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, invisible, cast-local-type, duplicate-set-field, assign-type-mismatch, inject-field
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0

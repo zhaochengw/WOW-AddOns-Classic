@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.27) add-on for World of Warcraft UI
+    Decursive (v 2.7.30) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2025-10-22T11:11:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -647,7 +647,7 @@ end
 function D:isSpellReady(spellID, isPetAbility)
 
     -- in wow classic flavors, the 'display all ranks' option in the spell book UI changes the output of the IsSpellKnown() function...
-    if DC.WOWC and (isPetAbility or not IsSpellKnownOrOverridesKnown(spellID, isPetAbility)) then
+    if DC.WOWC and not DC.CATACLYSM and (isPetAbility or not IsSpellKnownOrOverridesKnown(spellID, isPetAbility)) then
         -- Former ranks of known pet spell abilities are lost in WoW classic
         -- so we need to get back to the corresponding current spell id using
         -- the name of the spell.
@@ -1061,4 +1061,4 @@ do
         return nocase:trim();
     end
 end
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.27";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.30";

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2747, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250906024126")
+mod:SetRevision("20251001061751")
 mod:SetCreatureID(237861)
 mod:SetEncounterID(3133)
 mod:SetHotfixNoticeRev(20250818000000)
@@ -71,7 +71,7 @@ function mod:OnCombatStart(delay)
 	else
 		timerShockwaveSlamCD:Start(18.1-delay, 1)
 		timerShatterShellCD:Start(40.2-delay, 1)
-		timerShatteringBackhandCD:Start(48.9-delay, 1)
+		timerShatteringBackhandCD:Start(48.4-delay, 1)
 	end
 end
 

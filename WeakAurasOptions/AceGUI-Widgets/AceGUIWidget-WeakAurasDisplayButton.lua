@@ -455,6 +455,14 @@ local function IsParentRecursive(needle, parent)
   end
 end
 
+local tabsForWarning = {
+  tts_condition = "conditions",
+  sound_condition = "conditions",
+  tts_action = "action",
+  sound_action = "action",
+  spammy_event_warning = "trigger"
+}
+
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -488,11 +496,17 @@ local methods = {
               fullName = name
             end
           end
-          local url = ""
-          if self.data.url then
-            url = " ".. self.data.url
+
+          if not (GetCurrentRegion() == 5 or GetLocale() == "zhCN") then -- China region (5), and chinese locale profanity filter doesn't allow links in chat
+            local url = ""
+            if self.data.url then
+              url = " ".. self.data.url
+            end
+            editbox:Insert("[WeakAuras: "..fullName.." - "..self.data.id.."]"..url)
+          else
+            editbox:Insert("[WeakAuras: "..fullName.." - "..self.data.id.."]")
           end
-          editbox:Insert("[WeakAuras: "..fullName.." - "..self.data.id.."]"..url)
+
           OptionsPrivate.Private.linked = OptionsPrivate.Private.linked or {}
           OptionsPrivate.Private.linked[self.data.id] = GetTime()
         elseif not self.data.controlledChildren then
@@ -1049,13 +1063,13 @@ local methods = {
       Show_Long_Tooltip(self.frame, self.frame.description);
     end
   end,
-  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouing)
+  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouping)
     self.grouping = groupingData;
     self:UpdateIconsVisible()
     if(selected) then
       self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
       self:SetDescription(L["Cancel"], L["Do not group this display"]);
-    elseif (childOfGrouing) then
+    elseif (childOfGrouping) then
       self:Disable();
     else
       if(self.data.regionType == "dynamicgroup" and groupingGroup) then
@@ -1384,7 +1398,7 @@ local methods = {
       self:Collapse();
     end
   end,
-  ["UpdateStatusIcon"] = function(self, key, prio, icon, title, tooltip, onClick, color)
+  ["UpdateStatusIcon"] = function(self, key, prio, icon, title, tooltip, onClick)
     local iconButton
     for _, button in ipairs(self.statusIcons.buttons) do
       if button.key == key then
@@ -1394,6 +1408,7 @@ local methods = {
     end
     if not iconButton then
       iconButton = statusIconPool:Acquire()
+      iconButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
       tinsert(self.statusIcons.buttons, iconButton)
       iconButton:SetParent(self.statusIcons)
       iconButton.key = key
@@ -1416,11 +1431,6 @@ local methods = {
       iconButton:SetScript("OnLeave", Hide_Tooltip)
     else
       iconButton:SetScript("OnEnter", nil)
-    end
-    if color then
-      iconButton:GetNormalTexture():SetVertexColor(unpack(color))
-    else
-      iconButton:GetNormalTexture():SetVertexColor(1, 1, 1, 1)
     end
     iconButton:SetScript("OnClick", onClick)
     iconButton:Show()
@@ -1458,9 +1468,30 @@ local methods = {
     end
     if warnings then
       for severity, warning in pairs(warnings) do
-        local onClick = function()
-          WeakAuras.PickDisplay(warning.auraId, warning.tab)
+        local onClick
+        if severity == "sound" or severity == "tts" then
+          local soundText = L["Show Sound Setting"]
+          local removeText = L["Remove All Sounds"]
+          if severity == "tts" then
+            soundText = L["Show Text To Speech Setting"]
+            removeText = L["Remove All Text To Speech"]
+          end
+          onClick = function()
+            MenuUtil.CreateContextMenu(UIParent, function(ownerRegion, root)
+              root:CreateButton(soundText, function()
+                WeakAuras.PickDisplay(warning.auraId, tabsForWarning[warning.key] or "information")
+              end)
+              root:CreateButton(removeText, function()
+                OptionsPrivate.Private.ClearSounds(self.data.uid, severity)
+              end)
+            end)
+          end
+        else
+          onClick = function()
+            WeakAuras.PickDisplay(warning.auraId, tabsForWarning[warning.key] or "information")
+          end
         end
+
         self:UpdateStatusIcon(severity, warning.prio, warning.icon, warning.title, warning.message, onClick)
       end
     end
@@ -1505,8 +1536,8 @@ local methods = {
     self:ClearStatusIcon("load")
     self:SortStatusIcons()
   end,
-  ["SetLoaded"] = function(self, prio, color, title, description)
-    self:UpdateStatusIcon("load", prio, "Interface\\AddOns\\WeakAuras\\Media\\Textures\\loaded", title, description, nil, color)
+  ["SetLoaded"] = function(self, prio, file, title, description)
+    self:UpdateStatusIcon("load", prio, "Interface\\AddOns\\WeakAuras\\Media\\Textures\\" .. file, title, description, nil)
     self:SortStatusIcons()
   end,
   ["IsLoaded"] = function(self)
@@ -1767,6 +1798,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
+  ---@class Button
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(32);
   button:SetWidth(1000);
@@ -1806,6 +1838,7 @@ local function Constructor()
 
   button.description = {};
 
+  ---@class Button
   local view = CreateFrame("Button", nil, button);
   button.view = view;
   view:SetWidth(16);
@@ -1915,6 +1948,7 @@ local function Constructor()
   downgroup:SetScript("OnLeave", Hide_Tooltip);
   downgroup:Hide();
 
+  ---@class Button
   local expand = CreateFrame("Button", nil, button);
   button.expand = expand;
   expand.expanded = true;

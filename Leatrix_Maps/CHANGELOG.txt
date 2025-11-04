@@ -1,4 +1,55 @@
-﻿4.0.50 - 28th February 2021
+﻿5.1.07 - 27th October 2025
+- Updated for Mists of Pandaria game patch 5.5.2.
+- Updated map positioning code.
+
+5.1.01 - 24th September 2025
+- Fixed the Lua error with 'Unlock map frame' when dragging the map.
+
+5.1.00 - 24th September 2025
+- Updated for Mists of Pandaria game patch 5.5.1.
+
+5.0.09 - 17th September 2025
+- Added a new option called 'Use English language'.  If enabled, text used throughout the addon will be shown in English regardless of your game locale.
+
+5.0.08 - 10th September 2025
+- PTR (5.5.1) Updated for Mists of Pandaria game patch 5.5.1.
+
+5.0.03 - 5th August 2025
+- Fixed the location of Explorers' League Digsite flight point icon.
+
+5.0.02 - 14th July 2025
+- Fixed the Southern Barrens map.
+
+5.0.01 - 7th July 2025
+- The default UI map options dropdown menu is now shown at the top of the map frame.
+- The 'Show objectives' and 'Show digsites' options have been removed as you can access them from the map options dropdown menu.
+- Fixed the Wintergrasp map.
+
+5.0.00 - 4th July 2025
+- Updated for Mists of Pandaria game patch 5.5.0.
+
+4.0.71 - 18th June 2025
+- The 'Show zone levels' option has been removed since it's now included in the default UI.
+
+4.0.69 - 14th May 2025
+- Mists of Pandaria Classic Beta: Added the Vashj'ir portal to the Stormwind map.
+
+4.0.68 - 7th May 2025
+- Fixed an issue with map scaling which affected users using a non-standard UI scale.
+
+4.0.67 - 6th May 2025
+- Toggling 'Enlarge player arrow', 'Show points of interest' and 'Show zone levels' now requires a UI reload.
+- For 'Show points of interest', dungeon levels are now always shown.
+- The 'Sticky map frame' option has been removed.
+
+4.0.64 - 28th April 2025
+- Preliminary update for Mists of Pandaria Classic Beta.
+- Mists of Pandaria Classic Beta: Added dungeon icons and flight points.
+- Mists of Pandaria Classic Beta: Updated map reveal data.
+- Mists of Pandaria Classic Beta: Minor updates.
+- Mists of Pandaria Classic Beta: The 'Show zone levels' option now only applies to dungeon levels since zone levels are now shown in the default UI.
+
+4.0.50 - 28th February 2021
 - Fixed an issue with map positioning.
 
 4.0.48 - 21st February 2021

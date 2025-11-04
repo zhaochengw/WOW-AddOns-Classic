@@ -1,10 +1,9 @@
 local mod	= DBM:NewMod("Kal", "DBM-Raids-BC", 1)
-local Kal 	= DBM:GetModByName("Kal")--Why? this is just saying kal = mod, why not just call mod?
 local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal25"
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20250703142136")
 mod:SetCreatureID(24850)
 mod:SetEncounterID(724, 2488)
 mod:SetModelID(26628)
@@ -39,22 +38,22 @@ mod:AddRangeFrameOption(10, 46021)
 mod:AddBoolOption("ShowFrame", true)
 mod:AddBoolOption("FrameLocked", false)
 mod:AddBoolOption("FrameClassColor", true, nil, function()
-	Kal:UpdateColors()
+	mod:UpdateColors()
 end)
 mod:AddBoolOption("FrameUpwards", false, nil, function()
-	Kal:ChangeFrameOrientation()
+	mod:ChangeFrameOrientation()
 end)
 
-Kal.Options.FramePoint = "CENTER"
-Kal.Options.FrameX = 150
-Kal.Options.FrameY = -50
+mod.Options.FramePoint = "CENTER"
+mod.Options.FrameX = 150
+mod.Options.FrameY = -50
 
 mod.vb.portCount = 1
 
 function mod:OnCombatStart(delay)
 	self.vb.portCount = 1
 	if self.Options.ShowFrame then
-		Kal:CreateFrame()
+		self:CreateFrame()
 	end
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show()
@@ -62,7 +61,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	Kal:DestroyFrame()
+	self:DestroyFrame()
 	DBM.RangeCheck:Hide()
 end
 
@@ -102,7 +101,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				grp = 0
 				class = select(2, UnitClass("player"))
 			end
-			Kal:AddEntry(("%s (%d)"):format(args.destName, grp or 0), class)
+			self:AddEntry(("%s (%d)"):format(args.destName, grp or 0), class)
 			warnPortal:Show(self.vb.portCount, args.destName, grp or 0)
 			self.vb.portCount = self.vb.portCount + 1
 			timerNextPortal:Start(nil, self.vb.portCount)
@@ -148,7 +147,7 @@ function mod:UNIT_DIED(args)
 		else
 			grp = 0
 		end
-		Kal:RemoveEntry(("%s (%d)"):format(args.destName, grp or 0))
+		self:RemoveEntry(("%s (%d)"):format(args.destName, grp or 0))
 	end
 end
 
@@ -162,6 +161,6 @@ end
 function mod:OnSync(msg, id, health, sender)
 	if not self:IsInCombat() or msg ~= "Health" then return end
 	if self.Options.ShowFrame then
-		Kal:UpdateHealth(tonumber(id), tonumber(health))
+		self:UpdateHealth(tonumber(id), tonumber(health))
 	end
 end

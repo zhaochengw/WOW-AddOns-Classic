@@ -2322,3 +2322,21 @@ Change Log:
 * Added TWW spells for Manaforge Omega
 * Fixed TWW spells for Ara-Kara, City of Echoes
 * Fixed SL spells for Halls of Atonement
+
+5.19.2
+* Updated for WoW Mists of Pandaria Classic 5.5.1
+* Added The War Within spells (world)
+* Added TWW spells for TWW Delves 
+* Added TWW spells for Manaforge Omega
+
+5.19.3
+* Updated for patch 11.2.5
+* Added TWW spells for Manaforge Omega
+
+5.19.4
+* Updated Wrath Classic TOC to 3.4.5
+* Updated TOC for WoW Classic 1.15.8
+* Fixed alerts from going off from "drowning" events when caused by a spell in Trial of Valor
+* Fixed Legion spells for Nighthold
+* Added Legion spells for The Broken Isles (world)
+* Added TWW spells for TWW Delves 

@@ -8,7 +8,9 @@ local tbl_insert, tbl_remove = table.insert, table.remove
 
 -- WoW
 local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or _G.GetAddOnMetadata
-local GetNumAddOns, GetAddOnInfo, IsAddOnLoaded = GetNumAddOns, GetAddOnInfo, IsAddOnLoaded
+local GetNumAddOns, GetAddOnInfo, IsAddOnLoaded = C_AddOns.GetNumAddOns, C_AddOns.GetAddOnInfo, C_AddOns.IsAddOnLoaded
+local GetAddOnEnableState = C_AddOns.GetAddOnEnableState
+local LoadAddOn = C_AddOns.LoadAddOn
 local GetTime = GetTime
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
@@ -24,10 +26,7 @@ local AllLoaded
 local LoaderQueue = {}
 local LoaderQueueSaves = {}
 local ModuleList = {}
-local AtlasModuleList = {}
 local LoadModuleSpam = {}
-
-local AtlasMapsModuleLoaded = false
 
 -- A list of officiel AtlasLoot modules
 local ATLASLOOT_MODULE_LIST = {
@@ -35,6 +34,13 @@ local ATLASLOOT_MODULE_LIST = {
 		addonName = "AtlasLootClassic_DungeonsAndRaids",
 		--icon = "Interface\\ICONS\\Inv_ChampionsOfAzeroth",
 		name = AL["Dungeons and Raids"],
+		tt_title = nil,		-- ToolTip title
+		tt_text = nil,		-- ToolTip text
+	},
+	{
+		addonName = "AtlasLootClassic_Collections",
+		--icon = "Interface\\ICONS\\Inv_ChampionsOfAzeroth",
+		name = AL["Collections"],
 		tt_title = nil,		-- ToolTip title
 		tt_text = nil,		-- ToolTip text
 	},
@@ -56,13 +62,6 @@ local ATLASLOOT_MODULE_LIST = {
 		addonName = "AtlasLootClassic_PvP",
 		--icon = "Interface\\ICONS\\Inv_ChampionsOfAzeroth",
 		name = AL["PvP"],
-		tt_title = nil,		-- ToolTip title
-		tt_text = nil,		-- ToolTip text
-	},
-	{
-		addonName = "AtlasLootClassic_Collections",
-		--icon = "Interface\\ICONS\\Inv_ChampionsOfAzeroth",
-		name = AL["Collections"],
 		tt_title = nil,		-- ToolTip title
 		tt_text = nil,		-- ToolTip text
 	},
@@ -111,7 +110,7 @@ function Loader.Init()
 		if tmp[1] and str_find(tmp[1], "AtlasLootClassic_") then
 			ModuleList[tmp[1]] = {
 				index = i,
-				enabled = GetAddOnEnableState(playerName, i) ~= 0, --tmp[4], -- 0 = Disabled on char, 1 = Enabled only on some chars (including this), 2 = enabled on all chars
+				enabled = GetAddOnEnableState(i, playerName) ~= 0, --tmp[4], -- 0 = Disabled on char, 1 = Enabled only on some chars (including this), 2 = enabled on all chars
 				loaded = IsAddOnLoaded(i),
 				loadReason = tmp[5],
 				standardModule = ATLASLOOT_MODULE_LIST_NAMES[tmp[1]],
@@ -119,8 +118,6 @@ function Loader.Init()
 				moduleName = GetAddOnMetadata(tmp[1], "X-AtlasLootClassic-ModuleName") or tmp[1],
 				lootModule = GetAddOnMetadata(tmp[1], "X-AtlasLootClassic-LootModule"),
 			}
-		elseif tmp[1] and str_find(tmp[1], "Atlas_") then
-			AtlasModuleList[tmp[1]] = GetAddOnEnableState(playerName, i) ~= 0
 		end
 	end
 	IsInit = true
@@ -129,12 +126,6 @@ function Loader.Init()
 		local loadCustom = AllLoaded == "loadAll" and true or false
 		AllLoaded = nil
 		Loader:LoadAllModules(loadCustom)
-	end
-
-	if ModuleList["AtlasLootClassic_Maps"] and ModuleList["AtlasLootClassic_Maps"].enabled then
-		Loader:LoadModule("AtlasLootClassic_Maps", function() AtlasMapsModuleLoaded = true end)
-	else
-		AtlasMapsModuleLoaded = false
 	end
 
 	AtlasLoot.Data.AutoSelect:RefreshOptions()
@@ -260,17 +251,5 @@ function Loader:LoadAllModules(loadCustom)
 		for k,v in ipairs(moduleList.custom) do
 			Loader:LoadModule(v.addonName)
 		end
-	end
-end
-
-function Loader.IsMapsModuleAviable(moduleName)
-	if moduleName then
-		if AtlasLoot.db.enableAtlasMapIntegration then
-			return AtlasModuleList[moduleName]
-		else
-			return false
-		end
-	else
-		return AtlasMapsModuleLoaded
 	end
 end

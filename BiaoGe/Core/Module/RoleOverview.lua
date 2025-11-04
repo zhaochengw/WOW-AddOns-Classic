@@ -49,12 +49,19 @@ function BG.RoleOverviewUI()
     local r, g, b = GetClassRGB(nil, "player")
 
     -- 选择初始化
-    if BG.IsMOP then
-        BG.Once("FBCDchoice", 250904, function()
+    if BG.IsCTM then
+        BG.Once("FBCDchoice", 251030, function()
             BiaoGe.FBCDchoice = nil
             BiaoGe.MONEYchoice = nil
         end)
     end
+    if BG.IsMOP_TW and BiaoGe.options.SearchHistory.FBCDchoice251030 then
+        BG.Once("FBCDchoice", 251031, function()
+            BiaoGe.FBCDchoice = nil
+            BiaoGe.MONEYchoice = nil
+        end)
+    end
+
     if not BiaoGe.FBCDchoice then
         if BG.IsVanilla then
             BiaoGe.FBCDchoice = {
@@ -111,6 +118,8 @@ function BG.RoleOverviewUI()
                 ["TOF"] = 1,
                 ["25BH"] = 1,
                 ["10BH"] = 1,
+                ["faction1204"] = 1,
+                ["faction1171"] = 1,
             }
         elseif BG.IsMOP then
             BiaoGe.FBCDchoice = {
@@ -119,6 +128,9 @@ function BG.RoleOverviewUI()
                 ["MSV"] = 1,
                 ["worldBoss2"] = 1,
                 ["worldBoss1"] = 1,
+
+                ["faction1376"] = 1,
+                ["faction1375"] = 1,
                 ["faction1359"] = 1,
                 ["faction1341"] = 1,
                 ["faction1269"] = 1,
@@ -160,8 +172,13 @@ function BG.RoleOverviewUI()
             }
         elseif BG.IsCTM then
             BiaoGe.MONEYchoice = {
+                [77952] = 1, -- 橙片
+                [69815] = 1, -- 橙片
                 [396] = 1,
                 [395] = 1,
+                [3281] = 1,
+                [3148] = 1,
+                [1901] = 1,
                 ["money"] = 1,
             }
         elseif BG.IsMOP then
@@ -226,6 +243,10 @@ function BG.RoleOverviewUI()
             end)
         elseif BG.IsCTM then
         elseif BG.IsMOP then
+            BG.Once("FBCDchoice", 250927, function()
+                BiaoGe.FBCDchoice["faction" .. "1376"] = 1
+                BiaoGe.FBCDchoice["faction" .. "1375"] = 1
+            end)
         end
     end
     -- 基础数据初始化
@@ -346,7 +367,7 @@ function BG.RoleOverviewUI()
             end
 
             BG.MONEYall_table = {
-                { name = L["影霜碎片"], color = "ff8000", type = "item", id = 50274, quest = 24548, tex = 340336, width = 90 }, -- 橙片
+                { name = L["影霜碎片"], color = "ff8000", type = "item", id = 50274, quest = 24548, tex = 340336, width = 70 }, -- 橙片
                 { name = L["瓦兰奈尔碎片"], color = "ff8000", type = "item", id = 45038, quest = 13622, tex = "Interface/Icons/inv_ingot_titansteel_red", width = 90 }, -- 橙片
                 { color = "00BFFF", id = 341, width = 70 }, -- 寒冰
                 { color = "7B68EE", id = 301, width = 70 }, -- 凯旋
@@ -372,8 +393,8 @@ function BG.RoleOverviewUI()
                 { name = "BOT", name2 = GetRealZoneText(671), color = "FFFF00", fbId = 671, type = "fb" },
                 { name = "BWD", name2 = GetRealZoneText(669), color = "FF1493", fbId = 669, type = "fb" },
                 { name = "TOF", name2 = GetRealZoneText(754), color = "87CEFA", fbId = 754, type = "fb" },
-                { name = "25BH", name2 = GetRealZoneText(757), color = "FFA500", fbId = 757, num = 25, type = "fb" },
-                { name = "10BH", name2 = GetRealZoneText(757), color = "FFA500", fbId = 757, num = 10, type = "fb" },
+                { name = "25BH", name2 = "25" .. GetRealZoneText(757), color = "8B4513", fbId = 757, num = 25, type = "fb" },
+                { name = "10BH", name2 = "10" .. GetRealZoneText(757), color = "8B4513", fbId = 757, num = 10, type = "fb" },
                 --WLK
                 { name = "25RS", name2 = L["25红玉"], color = "FF4500", fbId = 724, num = 25, type = "fb" },
                 { name = "10RS", name2 = L["10红玉"], color = "FF4500", fbId = 724, num = 10, type = "fb" },
@@ -411,19 +432,43 @@ function BG.RoleOverviewUI()
                 { name = "ZUG", name2 = L["祖格"], color = "D3D3D3", fbId = 309, num = 20, type = "fb" },
                 { name = "BWL", name2 = L["黑翼"], color = "D3D3D3", fbId = 469, num = 40, type = "fb" },
                 { name = "MC", name2 = L["熔火之心"], color = "D3D3D3", fbId = 409, num = 40, type = "fb" },
+                -- 日常
+                { name = "zhubao", name2 = L["珠宝"], color = "FF8C00", type = "quest" },
+                { name = "cooking", name2 = L["烹饪"], color = "FF8C00", type = "quest" },
+                { name = "fish", name2 = L["钓鱼"], color = "FF8C00", type = "quest" },
             }
+            -- 声望
+            BG.factionTbl = {
+                1204, -- 海加尔复仇者
+                1171, -- 塞拉赞恩
+                1158, -- 海山
+                1135, -- 大地之环
+                1173, -- 拉穆卡恒
+            }
+            if BG.IsAlliance then
+                tinsert(BG.factionTbl, 1177) -- 巴拉丁典狱官
+                tinsert(BG.factionTbl, 1174) -- 蛮锤部族
+            elseif BG.IsHorde then
+                tinsert(BG.factionTbl, 1172) -- 龙吼氏族
+                tinsert(BG.factionTbl, 1178) -- 地狱咆哮近卫军
+            end
+            for _, id in ipairs(BG.factionTbl) do
+                tinsert(BG.FBCDall_table, { name = "faction" .. id, name2 = GetFactionInfoByID(id), id = id, color = "FFFF00", type = "faction" })
+            end
 
             BG.MONEYall_table = {
+                { name = L["橙匕碎片"], color = "ff8000", type = "item", id2 = 77951, id = 77952, quest2 = 30107, quest = 30116, tex2 = 134101, tex = 458969, width = 70 }, -- 橙片
+                { name = L["橙仗碎片"], color = "ff8000", type = "item", id = 69815, quest = 29270, tex = 514016, width = 70 }, -- 橙片
                 { color = "BA55D3", id = 396, width = 70 }, -- 勇气点数
                 { color = "00BFFF", id = 395, width = 70 }, -- 正义点数
-                { color = "00FF00", id = 2711, width = 70 }, -- 天灾石
-                { color = "00FFFF", id = 2589, width = 70 }, -- 赛德精华
-                { color = "FFFFFF", id = 241, width = 70 }, -- 冠军印章
-                { color = "FFFFFF", id = 61, width = 70 }, -- 珠宝日常
+                { color = "CC9966", id = 3281, width = 80 }, -- 裂隙石碎片P3
+                { color = "CC6633", id = 3148, width = 80 }, -- 裂隙石碎片P2
+                { color = "FFFFFF", id = 615, width = 70 }, -- 死亡之翼的堕落精华
+                { color = "FFFFFF", id = 614, width = 70 }, -- 黑暗之尘
+                { color = "FFFFFF", id = 361, width = 70 }, -- 珠宝日常
                 { color = "FFFFFF", id = 81, width = 70 }, -- 烹饪日常
-                { color = "FFFFFF", id = 161, width = 70 }, -- 岩石守卫
+                { color = "FFFFFF", id = 515, width = 70 }, -- 暗月
                 { color = "FFFFFF", id = 390, width = 70 }, -- 征服点数
-                { color = "FFFFFF", id = 1900, width = 85 }, -- 竞技场点数
                 { color = "FFFFFF", id = 1901, width = 85 }, -- 荣誉点数
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
@@ -441,8 +486,8 @@ function BG.RoleOverviewUI()
                 { name = "BOT", name2 = GetRealZoneText(671), color = "FFFF00", fbId = 671, type = "fb" },
                 { name = "BWD", name2 = GetRealZoneText(669), color = "FF1493", fbId = 669, type = "fb" },
                 { name = "TOF", name2 = GetRealZoneText(754), color = "87CEFA", fbId = 754, type = "fb" },
-                { name = "25BH", name2 = GetRealZoneText(757), color = "FFA500", fbId = 757, num = 25, type = "fb" },
-                { name = "10BH", name2 = GetRealZoneText(757), color = "FFA500", fbId = 757, num = 10, type = "fb" },
+                { name = "25BH", name2 = "25" .. GetRealZoneText(757), color = "FFA500", fbId = 757, num = 25, type = "fb" },
+                { name = "10BH", name2 = "10" .. GetRealZoneText(757), color = "FFA500", fbId = 757, num = 10, type = "fb" },
                 --WLK
                 { name = "25RS", name2 = L["25红玉"], color = "FF4500", fbId = 724, num = 25, type = "fb" },
                 { name = "10RS", name2 = L["10红玉"], color = "FF4500", fbId = 724, num = 10, type = "fb" },
@@ -493,6 +538,11 @@ function BG.RoleOverviewUI()
                 1302, -- 垂钓翁
                 1345, -- 游学者
             }
+            if BG.IsAlliance then
+                tinsert(BG.factionTbl, 2, 1376) -- 神盾守备军
+            elseif BG.IsHorde then
+                tinsert(BG.factionTbl, 2, 1375) -- 统御先锋军
+            end
             for _, id in ipairs(BG.factionTbl) do
                 tinsert(BG.FBCDall_table, { name = "faction" .. id, name2 = GetFactionInfoByID(id), id = id, color = "FFFF00", type = "faction" })
             end
@@ -508,8 +558,8 @@ GameTooltip:SetCurrencyByID(697)
                 { color = "FFD700", id = 697, width = 80 }, -- 长者的好运符
                 { color = "C0C0C0", id = 738, width = 80 }, -- 次级好运护符
                 { color = "FFFFFF", id = 390, width = 70 }, -- 征服点数
+                { color = "FFFFFF", id = 515, width = 70 }, -- 暗月
                 { color = "FFFFFF", id = 1901, width = 85 }, -- 荣誉点数
-                -- { color = "FFFFFF", id = 515, width = 70 }, -- 暗月
                 { name = L["金币"], color = "FFD700", type = "money", id = "money", tex = 237618, width = 90 }, -- 金币
             }
         elseif BG.IsRetail then
@@ -540,7 +590,7 @@ GameTooltip:SetCurrencyByID(697)
             return true
         end
     end
-    -- 检查子账号
+    -- 检查子账号名称
     local function CheckSameName(frame, realmID, player)
         -- if BiaoGeAccounts and BiaoGeAccounts.accountName and BGV and BGV.ShowEquipFrame then
         --     BG.After(0, function()
@@ -574,6 +624,34 @@ GameTooltip:SetCurrencyByID(697)
         --         end
         --     end)
         -- end
+    end
+    local function SetFactionText(f, FBCDchoice_table, text_table, info, ii, height, n)
+        local t = f:CreateFontString()
+        t:SetPoint("CENTER", BG.FBCDFrame, "TOPLEFT",
+            (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
+            (-16 - height * n))
+        if info.standingID == 8 then
+            t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+            t:SetTextColor(0, 1, 0)
+            t:SetText(_G["FACTION_STANDING_LABEL" .. info.standingID])
+        else
+            t:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
+            local infoText = format("%s\n%s",
+                _G["FACTION_STANDING_LABEL" .. info.standingID],
+                info.currentValue)
+            t:SetText(infoText)
+            if info.standingID == 7 then
+                t:SetTextColor(0, .9, 0)
+            elseif info.standingID == 6 then
+                t:SetTextColor(0, .8, 0)
+            elseif info.standingID == 5 then
+                t:SetTextColor(0, .7, 0)
+            elseif info.standingID == 4 then
+                t:SetTextColor(1, .82, 0)
+            else
+                t:SetTextColor(.51, 0, .02)
+            end
+        end
     end
     function BG.SetFBCD(self, position, click, refresh)
         local frameName
@@ -1052,32 +1130,7 @@ GameTooltip:SetCurrencyByID(697)
                         for ii, vv in ipairs(FBCDchoice_table) do
                             if vv.type == "faction" and id == vv.id then
                                 local info = BiaoGe.bag[realmID][player].faction[id]
-                                local t = f:CreateFontString()
-                                t:SetPoint("CENTER", BG.FBCDFrame, "TOPLEFT",
-                                    (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
-                                    (-16 - height * n))
-                                if info.standingID == 8 then
-                                    t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-                                    t:SetTextColor(0, 1, 0)
-                                    t:SetText(_G["FACTION_STANDING_LABEL" .. info.standingID])
-                                else
-                                    t:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
-                                    local infoText = format("%s\n%s",
-                                        _G["FACTION_STANDING_LABEL" .. info.standingID],
-                                        info.currentValue)
-                                    t:SetText(infoText)
-                                    if info.standingID == 7 then
-                                        t:SetTextColor(0, .9, 0)
-                                    elseif info.standingID == 6 then
-                                        t:SetTextColor(0, .8, 0)
-                                    elseif info.standingID == 5 then
-                                        t:SetTextColor(0, .7, 0)
-                                    elseif info.standingID == 4 then
-                                        t:SetTextColor(1, .82, 0)
-                                    else
-                                        t:SetTextColor(.51, 0, .02)
-                                    end
-                                end
+                                SetFactionText(f, FBCDchoice_table, text_table, info, ii, height, n)
                             end
                         end
                     end
@@ -1087,22 +1140,7 @@ GameTooltip:SetCurrencyByID(697)
                         for ii, vv in ipairs(FBCDchoice_table) do
                             if vv.type == "faction" and id == vv.id then
                                 local info = BiaoGeAccounts.bag[realmID][player].faction[id]
-                                local t = f:CreateFontString()
-                                t:SetPoint("CENTER", BG.FBCDFrame, "TOPLEFT",
-                                    (FBCDchoice_table[ii].width + text_table[ii]:GetWidth() / 2),
-                                    (-16 - height * n))
-                                if info.standingID == 8 then
-                                    t:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-                                    t:SetTextColor(0, 1, 0)
-                                    t:SetText(_G["FACTION_STANDING_LABEL" .. info.standingID])
-                                else
-                                    t:SetFont(STANDARD_TEXT_FONT, 9, "OUTLINE")
-                                    local infoText = format("%s\n%s",
-                                        _G["FACTION_STANDING_LABEL" .. info.standingID],
-                                        info.currentValue)
-                                    t:SetText(infoText)
-                                    t:SetTextColor(1, .82, 0)
-                                end
+                                SetFactionText(f, FBCDchoice_table, text_table, info, ii, height, n)
                             end
                         end
                     end
@@ -1181,6 +1219,7 @@ GameTooltip:SetCurrencyByID(697)
             local count
             local v = pz[id]
             if type(v) == "table" then -- 牌子
+                -- pt(id, v.isNotKnow)
                 if v.isNotKnow then
                     count = L["未知"]
                 else
@@ -1204,7 +1243,7 @@ GameTooltip:SetCurrencyByID(697)
                             for player, vv in pairs(db[MONEY][realmID]) do
                                 copyTbl[realmID][player] = BG.Copy(vv)
                                 for i, v in ipairs(MONEYchoice_table) do
-                                    if not v.type and not copyTbl[realmID][player][v.id] then -- 牌子，给空值设为0，主要是为了填补一些旧角色缺少某些新数据
+                                    if (not v.type or v.type == "currency") and not copyTbl[realmID][player][v.id] then -- 牌子，给空值设为0，主要是为了填补一些旧角色缺少某些新数据
                                         copyTbl[realmID][player][v.id] = {
                                             count = 0,
                                             tex = BG.IsVanilla and v.tex or C_CurrencyInfo.GetCurrencyInfo(v.id).iconFileID,
@@ -1606,13 +1645,23 @@ GameTooltip:SetCurrencyByID(697)
         end
 
         local f = CreateFrame("Frame")
+        f.cd = nil
         f:RegisterEvent("PLAYER_ENTERING_WORLD")
         f:RegisterEvent("ENCOUNTER_END")
-        f:SetScript("OnEvent", function(self, event, bossId, _, _, _, success)
-            if event ~= "ENCOUNTER_END" or (event == "ENCOUNTER_END" and success == 1) then
-                BG.After(0.5, function()
-                    RequestRaidInfo()
-                end)
+        f:RegisterEvent("CHAT_MSG_SYSTEM")
+        f:SetScript("OnEvent", function(self, event, msg, _, _, _, success)
+            if event == "PLAYER_ENTERING_WORLD" then
+                self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+            end
+            if event == "PLAYER_ENTERING_WORLD" or (event == "ENCOUNTER_END" and success == 1)
+                or (event == "CHAT_MSG_SYSTEM" and msg == INSTANCE_SAVED) then
+                if not self.cd then
+                    self.cd = true
+                    BG.After(0.5, function()
+                        self.cd = nil
+                        RequestRaidInfo()
+                    end)
+                end
             end
         end)
 
@@ -1621,12 +1670,15 @@ GameTooltip:SetCurrencyByID(697)
         f:RegisterEvent("ENCOUNTER_END")
         f:RegisterEvent("UPDATE_INSTANCE_INFO")
         f:SetScript("OnEvent", function(self, event, bossId, _, _, _, success)
+            if event == "PLAYER_ENTERING_WORLD" then
+                self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+            end
             if event ~= "ENCOUNTER_END" or (event == "ENCOUNTER_END" and success == 1) then
                 BG.After(1, function()
                     BG.UpdateFBCD()
                     BG.GetLockoutID()
                     if not BG.IsVanilla and BG.FBCD_5M_Frame and BG.FBCD_5M_Frame:IsVisible() then
-                        BG.UpdateFBCD_5M()
+                        -- BG.UpdateFBCD_5M()
                     end
                 end)
             end
@@ -1867,10 +1919,10 @@ GameTooltip:SetCurrencyByID(697)
     end
 
     -- 世界BOSS（MOP）
-    if BG.IsMOP then
-        BiaoGe.worldBossCD = BiaoGe.worldBossCD or {}
-        BiaoGe.worldBossCD[realmID] = BiaoGe.worldBossCD[realmID] or {}
-        BiaoGe.worldBossCD[realmID][player] = BiaoGe.worldBossCD[realmID][player] or {}
+    BiaoGe.worldBossCD = BiaoGe.worldBossCD or {}
+    BiaoGe.worldBossCD[realmID] = BiaoGe.worldBossCD[realmID] or {}
+    BiaoGe.worldBossCD[realmID][player] = BiaoGe.worldBossCD[realmID][player] or {}
+    if BG.IsMOP_TW then
         local function SaveWorldBoss(bossIndex)
             local resetDay = 2
             if BG.IsCN() then
@@ -1987,6 +2039,12 @@ GameTooltip:SetCurrencyByID(697)
                 cooking = { 13114, 13116, 13113, 13115, 13112,
                     13102, 13100, 13107, 13101, 13103 },
                 fish = { 13836, 13833, 13834, 13832, 13830 },
+            }
+        elseif BG.IsCTM then
+            BG.dayQuests = {
+                zhubao = { 25156, 25161, 25159, 25158, 25162, 25160, 25154, 25155, 25105, 25157 },
+                cooking = { 29316, 29352, 29314, 29356, 29351, 26190, 26153, 29313, 26183, 29362, 26192, 29358, 26235, 26233, 29333, 29334, 26177, 29318, 29364, 29365, 26234, 26220, 29357, 29363, 26226, 26227, 29332, 29315, 29353, 29355, 29360 },
+                fish = { 26557, 29322, 29354, 29361, 26588, 29317, 26572, 29320, 29345, 29348, 29346, 26543, 29319, 26556, 29349, 26420, 29342, 26536, 29321, 29324, 29344, 29343, 29350, 29347, 29359, 26488, 29323, 29325, 26414, 26442 },
             }
         end
         local function SaveDayQuest(questName, questID)
@@ -2369,12 +2427,18 @@ GameTooltip:SetCurrencyByID(697)
                 if v.type == "money" then
                     tbl.money = floor(GetMoney() / 1e4)
                 elseif v.type == "item" then
-                    local count = GetItemCount(v.id, true)
-                    local quest
-                    if v.quest and BG.questsCompleted[v.quest] then
-                        quest = true
+                    local id = v.id
+                    local tex = v.tex
+                    if v.quest2 and not BG.questsCompleted[v.quest2] then
+                        id = v.id2
+                        tex = v.tex2
                     end
-                    tbl[v.id] = { count = count, tex = v.tex, isItem = true, quest = quest, }
+                    local count = GetItemCount(id, true)
+                    local questsCompleted
+                    if v.quest and BG.questsCompleted[v.quest] then
+                        questsCompleted = true
+                    end
+                    tbl[v.id] = { count = count, tex = tex, isItem = true, quest = questsCompleted, }
                 else
                     if BG.IsVanilla_Sod then
                         local count
@@ -2403,10 +2467,96 @@ GameTooltip:SetCurrencyByID(697)
             f:RegisterEvent("PLAYER_MONEY")
             f:RegisterEvent("BAG_UPDATE_DELAYED")
             f:SetScript("OnEvent", function(self, event, ...)
+                if event == "PLAYER_ENTERING_WORLD" then
+                    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+                end
                 C_Timer.After(0.5, function()
                     BG.MONEYupdate()
                 end)
             end)
+        end
+    end
+
+    -- 牌子拾取增强
+    do
+        if BG.IsMOP then
+            -- MOP在正义奖章和一袋岩石碎片里显示正义点数数量
+            local itemIDs = {
+                [395] = { 247796, 256883 },
+                [3350] = { 248329 },
+            }
+
+            local function AddInfo(self)
+                if BiaoGe.options["showCurrencyCount"] ~= 1 then return end
+                local name, link = self:GetItem()
+                if not link then return end
+                local itemID = GetItemID(link)
+                for currency, v in pairs(itemIDs) do
+                    for _, _itemID in ipairs(v) do
+                        if itemID == _itemID then
+                            local info = C_CurrencyInfo.GetCurrencyInfo(currency)
+                            local name = info.name
+                            local count = info.quantity
+                            local maxCount = info.maxQuantity
+                            local tex = info.iconFileID
+                            local quality = info.quality
+                            local r, g, b = GetItemQualityColor(quality)
+                            self:AddLine(" ")
+                            self:AddLine("< BiaoGe >", 0, .75, 1)
+                            if not info.useTotalEarnedForMaxQty then
+                                self:AddDoubleLine(AddTexture(tex) .. name, count .. "/" .. maxCount, r, g, b, 1, 1, 1)
+                            else
+                                local totalEarned = info.totalEarned
+                                self:AddDoubleLine(AddTexture(tex) .. name,
+                                    format(L["%s(总上限:%s/%s)"], count, totalEarned, maxCount), r, g, b, 1, 1, 1)
+                            end
+                            self:Show()
+                            return
+                        end
+                    end
+                end
+            end
+            GameTooltip:HookScript("OnTooltipSetItem", AddInfo)
+        end
+
+        if not BG.IsVanilla then
+            local text1 = LOOT_ITEM_PUSHED_SELF_MULTIPLE:gsub("%%s", "(.+)"):gsub("%%d", "(%%d+)")
+            local text2 = LOOT_ITEM_PUSHED_SELF:gsub("%%s", "(.+)")
+            local function func(self, event, msg, player, l, cs, t, flag, channelId, ...)
+                if BiaoGe.options["showCurrencyCount"] ~= 1 then return end
+                local link = strmatch(msg, text1)
+                if not link then
+                    link = strmatch(msg, text2)
+                end
+                if link then
+                    local currencyID = link:match("currency:(%d+)")
+                    if currencyID then
+                        local info = C_CurrencyInfo.GetCurrencyInfo(tonumber(currencyID))
+                        local maxCount = info.maxQuantity
+                        local count = info.quantity
+                        local color = "00BFFF"
+                        local newMsg
+                        if not info.useTotalEarnedForMaxQty and maxCount > 0 then
+                            if count >= maxCount then
+                                BG.PlaySound("currencyfull")
+                                color = "FF0000"
+                            end
+                            newMsg = format(L["|cff%s（|cffffffff%s|r/%s）|r"], color, count, maxCount)
+                        else
+                            if info.useTotalEarnedForMaxQty then
+                                local totalEarned = info.totalEarned
+                                if totalEarned >= maxCount then
+                                    BG.PlaySound("currencyfull")
+                                    color = "FF0000"
+                                end
+                            end
+                            newMsg = format(L["|cff%s（%s）|r"], color, count)
+                        end
+                        return false, msg .. newMsg, player, l, cs, t, flag, channelId, ...
+                    end
+                end
+            end
+            ChatFrame_AddMessageEventFilter("CHAT_MSG_CURRENCY", func)
         end
     end
 
@@ -2416,6 +2566,24 @@ GameTooltip:SetCurrencyByID(697)
         BiaoGe.equip[realmID] = BiaoGe.equip[realmID] or {}
         BiaoGe.equip[realmID][player] = BiaoGe.equip[realmID][player] or {}
 
+        local ItemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+        local function GetItemLevelByTooltip(slot)
+            BiaoGeTooltip4:SetOwner(UIParent, "ANCHOR_NONE")
+            BiaoGeTooltip4:SetInventoryItem("player", slot)
+            local text, level
+            for i = 2, 5 do
+                if _G[BiaoGeTooltip4:GetName() .. "TextLeft" .. i] then
+                    text = _G[BiaoGeTooltip4:GetName() .. "TextLeft" .. i]:GetText() or ""
+                    level = string.match(text, ItemLevelPattern)
+                    if level then
+                        return tonumber(level)
+                    end
+                end
+            end
+            level = select(4, GetItemInfo(link)) or 0
+            return level
+        end
+
         function BG.GetPlayerEquip()
             local tbl = BiaoGe.equip[realmID][player]
             wipe(tbl)
@@ -2424,7 +2592,12 @@ GameTooltip:SetCurrencyByID(697)
                 if link then
                     local itemID = GetInventoryItemID("player", slot)
                     local quality = GetInventoryItemQuality("player", slot)
-                    local level = select(4, GetItemInfo(itemID))
+                    local level
+                    if BG.IsMOP then
+                        level = GetItemLevelByTooltip(slot)
+                    else
+                        level = select(4, GetItemInfo(link))
+                    end
                     slot = tostring(slot)
                     tbl[slot] = {
                         link = link,
@@ -2436,7 +2609,7 @@ GameTooltip:SetCurrencyByID(697)
             end
         end
 
-        local function GetPlayerItemsLevel()
+        local function GetPlayerAverageItemLevel()
             local _, avgLevel = GetAverageItemLevel()
             BiaoGe.playerInfo[realmID][player].iLevel = avgLevel or 0
             local avgLevel0 = Round(avgLevel, 0)
@@ -2446,17 +2619,21 @@ GameTooltip:SetCurrencyByID(697)
             end
         end
 
-        BG.Init2(function()
-            BG.After(1, function()
-                BG.GetPlayerEquip()
-                GetPlayerItemsLevel()
-            end)
-        end)
-
-        BG.RegisterEvent("UNIT_INVENTORY_CHANGED", function(self, event, ...)
-            BG.After(0.5, function()
-                BG.GetPlayerEquip()
-                GetPlayerItemsLevel()
+        local f = CreateFrame("Frame")
+        f:RegisterEvent("UNIT_INVENTORY_CHANGED")
+        f:RegisterEvent("PLAYER_ENTERING_WORLD")
+        f:SetScript("OnEvent", function(self, event, ...)
+            if event == "PLAYER_ENTERING_WORLD" then
+                self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+            end
+            self.t = 0
+            self:SetScript("OnUpdate", function(_, t)
+                self.t = self.t + t
+                if self.t > 1 then
+                    self:SetScript("OnUpdate", nil)
+                    BG.GetPlayerEquip()
+                    GetPlayerAverageItemLevel()
+                end
             end)
         end)
     end

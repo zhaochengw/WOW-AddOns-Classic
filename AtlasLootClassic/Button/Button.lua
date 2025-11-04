@@ -7,6 +7,7 @@
 		petID			= 123,
 		questID			= 123,
 		mountID			= 123,
+		suffixID		= 123,
 	}
 ]]
 
@@ -37,13 +38,13 @@ local GetAlTooltip = AtlasLoot.Tooltip.GetTooltip
 local DEFAULT_BACKGROUND_COLOR = {0.82, 0.82, 0.82, 0.4}
 
 -- UnitFactionGroup("player")		"Alliance", "Horde", "Neutral" or nil.
--- :SetAtlas()
 local WOW_HEAD_LINK, WOW_HEAD_LINK_LOC
 if AtlasLoot:GetGameVersion() == AtlasLoot.BC_VERSION_NUM then
 	WOW_HEAD_LINK, WOW_HEAD_LINK_LOC = "https://tbc.wowhead.com/%s=%d", "https://%s.tbc.wowhead.com/%s=%d"
 elseif AtlasLoot:GetGameVersion() == AtlasLoot.WRATH_VERSION_NUM then
-	--WOW_HEAD_LINK, WOW_HEAD_LINK_LOC = "https://wotlk.wowhead.com/%s=%d", "https://%s.wotlk.wowhead.com/%s=%d"
 	WOW_HEAD_LINK, WOW_HEAD_LINK_LOC = "https://www.wowhead.com/wotlk/%s=%d", "https://%s.wowhead.com/wotlk/%s=%d"
+elseif AtlasLoot:GetGameVersion() == AtlasLoot.CATA_VERSION_NUM then
+	WOW_HEAD_LINK, WOW_HEAD_LINK_LOC =  "https://www.wowhead.com/cata/%s=%d", "https://%s.wowhead.com/cata/%s=%d"
 else
 	WOW_HEAD_LINK, WOW_HEAD_LINK_LOC = "https://classic.wowhead.com/%s=%d", "https://%s.classic.wowhead.com/%s=%d"
 end
@@ -577,7 +578,7 @@ function Proto:Clear(force)
 	end
 	if self.secButton then
 		local secButton = self.secButton
-		secButton:SetNormalTexture(0)
+		secButton:SetNormalTexture(nil)
 		secButton.overlay:SetSize(secButton:GetWidth(), secButton:GetHeight())
 		if secButton.count then secButton.count:Hide() end
 		if secButton.completed then secButton.completed:Hide() end
@@ -719,7 +720,7 @@ function Proto:SetContentTable(tab, formatTab, setOnlySec)
 				end
 			end
 			if not found and button_types[formatType] and button_types[formatType].GetStringContent then
-				self:SetType(formatType,  button_types[formatType].GetStringContent(curContent))
+				self:SetType(formatType, button_types[formatType].GetStringContent(curContent))
 			end
 		elseif button_types[curContent] then
 			self.__atlaslootinfo[formatType] = nil

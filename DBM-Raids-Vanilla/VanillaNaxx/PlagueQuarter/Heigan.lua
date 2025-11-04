@@ -7,13 +7,13 @@ else
 	mod.statTypes = "normal"
 end
 
-mod:SetRevision("20241222110740")
+mod:SetRevision("20251028030235")
 mod:SetCreatureID(15936)
 mod:SetEncounterID(1112)
 mod:SetModelID(16309)
 mod:SetZone(533)
 
-mod:RegisterCombat("combat_yell", L.Pull)
+mod:RegisterCombat("combat_yell", L.Pull1, L.Pull2)
 
 local warnTeleportSoon	= mod:NewAnnounce("WarningTeleportSoon", 2, "135736")
 local warnTeleportNow	= mod:NewAnnounce("WarningTeleportNow", 3, "135736")

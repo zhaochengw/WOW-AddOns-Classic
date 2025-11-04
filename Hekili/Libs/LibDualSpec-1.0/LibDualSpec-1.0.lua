@@ -31,10 +31,11 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --]]
 
--- Don't load unless we are Retail or Wrath Classic
-if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and WOW_PROJECT_ID ~= WOW_PROJECT_WRATH_CLASSIC and (WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC or C_Seasons.GetActiveSeason() ~= 2) then return end
+-- Only load in Classic Era on Season of Discovery and Anniversary realms
+-- MoP: Skip this check for Mists of Pandaria compatibility
+-- if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and C_Seasons.GetActiveSeason() ~= 2 and C_Seasons.GetActiveSeason() ~= 11 and C_Seasons.GetActiveSeason() ~= 12 then return end
 
-local MAJOR, MINOR = "LibDualSpec-1.0", 22
+local MAJOR, MINOR = "LibDualSpec-1.0", 25
 assert(LibStub, MAJOR.." requires LibStub")
 local lib, minor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
@@ -85,7 +86,7 @@ if isRetail then
 	end
 end
 
-local GetSpecialization = isRetail and GetSpecialization or GetActiveTalentGroup
+local GetSpecialization = isRetail and GetSpecialization or (GetActiveTalentGroup or function() return 1 end)
 local CanPlayerUseTalentSpecUI = isRetail and C_SpecializationInfo.CanPlayerUseTalentSpecUI or function()
 	return true, HELPFRAME_CHARACTER_BULLET5
 end
@@ -346,7 +347,7 @@ for i = 1, numSpecs do
 			local specIndex = tonumber(info[#info]:sub(-1))
 			local highPointsSpentIndex = nil
 			for treeIndex = 1, 3 do
-				local name, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(treeIndex, false, false, specIndex)
+				local _, name, _, _, pointsSpent, _, previewPointsSpent = GetTalentTabInfo(treeIndex, nil, nil, specIndex)
 				if name then
 					local displayPointsSpent = pointsSpent + previewPointsSpent
 					points[treeIndex] = displayPointsSpent
@@ -427,21 +428,23 @@ end
 -- Inspection
 -- ----------------------------------------------------------------------------
 
-local function iterator(registry, key)
-	local data
-	key, data = next(registry, key)
-	if key then
-		return key, data.name
+do
+	local function iterator(t, key)
+		local data
+		key, data = next(t, key)
+		if key then
+			return key, data.name
+		end
 	end
-end
 
---- Iterate through enhanced AceDB3.0 instances.
--- The iterator returns (instance, name) pairs where instance and name are the
--- arguments that were provided to lib:EnhanceDatabase.
--- @name LibDualSpec:IterateDatabases
--- @return Values to be used in a for .. in .. do statement.
-function lib:IterateDatabases()
-	return iterator, lib.registry
+	--- Iterate through enhanced AceDB3.0 instances.
+	-- The iterator returns (instance, name) pairs where instance and name are the
+	-- arguments that were provided to lib:EnhanceDatabase.
+	-- @name LibDualSpec:IterateDatabases
+	-- @return Values to be used in a for .. in .. do statement.
+	function lib:IterateDatabases()
+		return iterator, lib.registry
+	end
 end
 
 -- ----------------------------------------------------------------------------

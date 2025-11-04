@@ -12,7 +12,8 @@ local abs = abs
 -- WoW APIs
 local UnitIsConnected, UnitCanAttack, UnitIsPVP = UnitIsConnected, UnitCanAttack, UnitIsPVP
 local UnitIsPlayer, UnitPlayerControlled = UnitIsPlayer, UnitPlayerControlled
-local UnitThreatSituation, UnitIsUnit, UnitExists, UnitGroupRolesAssigned = UnitThreatSituation, UnitIsUnit, UnitExists, UnitGroupRolesAssigned
+local UnitThreatSituation, UnitIsUnit, UnitExists = UnitThreatSituation, UnitIsUnit, UnitExists
+local UnitGroupRolesAssignedWrapper = UnitGroupRolesAssigned
 local IsInInstance = IsInInstance
 -- WoW Classic APIs:
 local GetPartyAssignment = GetPartyAssignment
@@ -35,13 +36,15 @@ local _G =_G
 -- Wrapper functions for WoW Classic
 ---------------------------------------------------------------------------------------------------
 
--- Quest tooltips: not sure since when available
-if not Addon.IS_MAINLINE then -- 
-  -- UnitGroupRolesAssigned does still not seem to work in Classic
-  UnitGroupRolesAssigned = function(target_unit)
-    return (GetPartyAssignment("MAINTANK", target_unit) and "TANK") or "NONE"
+if not Addon.ExpansionIsAtLeastMists then
+  -- UnitGroupRolesAssigned does still not seem to work in Classic before Mists
+  UnitGroupRolesAssignedWrapper = function(target_unit)
+    return (GetPartyAssignment("MAINTANK", target_unit) and "TANK") or _G.UnitGroupRolesAssigned(target_unit) or "NONE"
   end
+end
 
+-- Quest tooltips: not sure since when available
+if not Addon.ExpansionIsAtLeastMists then -- 
   -- Quest widget is not available in Classic
   ShowQuestUnit = function(...) return false end
 end
@@ -171,13 +174,13 @@ local function GetThreatSituation(unit, style, enable_off_tank)
         local target_threat_situation = UnitThreatSituation(target_unit, unit.unitid) or 0
         if target_threat_situation > 1 then
           -- Target unit does tank unit, so check if target unit is a tank or an tank-like pet/guardian
-          if ("TANK" == UnitGroupRolesAssigned(target_unit) and not UnitIsUnit("player", target_unit)) or UnitIsUnit(target_unit, "pet") or IsOffTankCreature(target_unit) then
+          if ("TANK" == UnitGroupRolesAssignedWrapper(target_unit) and not UnitIsUnit("player", target_unit)) or UnitIsUnit(target_unit, "pet") or IsOffTankCreature(target_unit) then
             unit.IsOfftanked = true
           else
             -- Reset "unit.IsOfftanked"
             -- Target unit does tank unit, but is not a tank or a tank-like pet/guardian
             unit.IsOfftanked = false
-          end
+          end          
         end
       end
     end
@@ -276,8 +279,12 @@ local function GetColorByReaction(unit)
       color = db[UNIT_COLOR_MAP[unit.reaction][unit_type][unit_is_pvp][player_is_pvp]]
     end
   -- * From here: For NPCs (without pets)
-  elseif not UnitCanAttack("player", unit.unitid) and unit.blue < 0.1 and unit.green > 0.5 and unit.green < 0.6 and unit.red > 0.9 then
-    -- Handle non-attackable units with brown healtbars - currently, I know no better way to detect this.
+  elseif unit.blue < 0.1 and unit.green > 0.5 and unit.green < 0.6 and unit.red > 0.9 then
+    -- Unfriendly NPCs are shown with a brown healthbar color. 
+    -- These NPCs can have a UnitReaction of 3 (neutral) or 4 (hostile), e.g., Addled Enforcer in The Ringing Deeps.
+    -- Checking for UnitReaction("player", unit.unitid) == 3 will not work reliably.
+    -- Before TWW, I thought that only non-attackable units are shown in brown, but in TWW there are now 
+    -- also attackable unfriendly NPCs with brown healthbars. 
     color = db.UnfriendlyFaction
   else
     color = db[UNIT_COLOR_MAP[unit.reaction][unit_type]]
@@ -391,7 +398,24 @@ function Addon:SetHealthbarColor(unit)
     color_bg_r, color_bg_g, color_bg_b, bg_alpha = color.r, color.g, color.b, 1 - db_healthbar.BackgroundOpacity
   end
 
-  return color_r, color_g, color_b, nil, color_bg_r, color_bg_g, color_bg_b, bg_alpha
+  -- For simplicity, border color is uneffected by marks, threat, etc.
+  local border_r, border_g, border_b  
+  if style == "unique" then
+    if unique_setting.UseBorderColor then
+      -- 100% color values are not saved in the database
+      local border_color = unique_setting.BorderColor
+      border_r, border_g, border_b = border_color.r or 1, border_color.g or 1, border_color.b or 1
+    else
+      border_r, border_g, border_b = 0, 0, 0  
+    end
+  elseif db_healthbar.BorderUseForegroundColor then
+    border_r, border_g, border_b = color_r, color_g, color_b
+  else
+    local border_color = db_healthbar.BorderColor
+    border_r, border_g, border_b = border_color.r or 1, border_color.g or 1, border_color.b or 1
+  end
+
+  return color_r, color_g, color_b, nil, color_bg_r, color_bg_g, color_bg_b, bg_alpha, border_r, border_g, border_b
 end
 
 ThreatPlates.GetColorByHealthDeficit = GetColorByHealthDeficit

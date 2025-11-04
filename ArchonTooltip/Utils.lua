@@ -127,7 +127,7 @@ function Private.GetProfileUrl(name, realmNameOrId, projectId)
 		else
 			subdomain = "sod"
 		end
-	elseif projectId == WOW_PROJECT_WRATH_CLASSIC or projectId == WOW_PROJECT_CATACLYSM_CLASSIC then
+	elseif projectId == WOW_PROJECT_WRATH_CLASSIC or projectId == WOW_PROJECT_CATACLYSM_CLASSIC or projectId == WOW_PROJECT_MISTS_CLASSIC then
 		subdomain = "classic"
 	end
 

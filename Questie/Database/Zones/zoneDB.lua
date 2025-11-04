@@ -126,7 +126,6 @@ function ZoneDB:GetAreaIdByUiMapId(uiMapId)
     end
 end
 
-
 ---@param areaId AreaId
 ---@return AreaCoordinate?
 function ZoneDB:GetDungeonLocation(areaId)
@@ -137,6 +136,21 @@ function ZoneDB:GetDungeonLocation(areaId)
         local alternativeDungeonAreaId = alternativeDungeonAreaIdToDungeonAreaId[areaId]
         if alternativeDungeonAreaId then
             return dungeons[alternativeDungeonAreaId][4]
+        end
+    end
+    return nil
+end
+
+---@param areaId AreaId
+---@return string?
+function ZoneDB:GetDungeonName(areaId)
+    local dungeon = dungeons[areaId]
+    if dungeon then
+        return dungeon[1]
+    else
+        local alternativeDungeonAreaId = alternativeDungeonAreaIdToDungeonAreaId[areaId]
+        if alternativeDungeonAreaId then
+            return dungeons[alternativeDungeonAreaId][1]
         end
     end
     return nil
@@ -313,7 +327,7 @@ function _ZoneDB.SplitSeasonalQuests()
     updatedZoneMap[-404] = {}
 
     for questId, _ in pairs(questsToSplit) do
-        local eventName = QuestieEvent:GetEventNameFor(questId)
+        local eventName = QuestieEvent.GetEventNameFor(questId)
         if eventName == "Love is in the Air" then
             updatedZoneMap[-400][questId] = true
         elseif eventName == "Children's Week" then

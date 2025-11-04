@@ -1,4 +1,86 @@
-﻿4.0.48 - 21st February 2021
+﻿5.1.07 - 26th October 2025
+- Updated for Mists of Pandaria game patch 5.5.2.
+- For 'Enhance tooltip' ('Interface'), world map tooltips (such as quest objectives) will now be scaled.
+- Updated deprecated functions.
+
+5.1.06 - 22nd October 2025
+- For 'Dismount me' ('System'), the remove shapeshift button will now use the same layout regardless of whether 'Enhance flight map' ('Interface') is enabled or not. 
+- For 'Enhance tooltip' ('Interface'), fixed the issue with hide tooltips for world units during combat.
+
+5.1.01 - 24th September 2025
+- Fixed the Lua error with 'Faster auto loot' ('System').
+
+5.1.00 - 24th September 2025
+- Updated for Mists of Pandaria game patch 5.5.1.
+
+5.0.09 - 17th September 2025
+- Added a new option called 'Use English language' ('Settings').  If enabled, text used throughout the addon will be shown in English regardless of your game locale.
+
+5.0.08 - 10th September 2025
+- PTR (5.5.1): Updated for Mists of Pandaria game patch 5.5.1.
+
+5.0.07 - 3rd September 2025
+- For 'Enhance minimap' ('Interface'), you can now set the square minimap border width.
+
+5.0.02 - 8th July 2025
+- For 'Enhance tooltip' ('Interface'), fixed an anchor to cursor positioning issue.
+- Updates for Mists of Pandaria Classic.
+
+5.0.01 - 5th July 2025
+- The 'Enhance dressup' option ('Interace') now also hides model controls for the Blizzard shop.
+- The 'Auction house extras' option ('Interface') has been removed since it's now included in the game.
+- Various fixes for Mists of Pandaria Classic.
+
+5.0.00 - 4th July 2025
+- Updated for Mists of Pandaria game patch 5.5.0.
+- You can now hold down control and left click the Leatrix Plus minimap button to toggle target tracking.
+
+4.0.72 - 26th June 2025
+- Mists of Pandaria Classic Beta: Fixed 'Enhance flight map' ('Interface') for the latest game update.
+
+4.0.71 - 18th June 2025
+- Mists of Pandaria Classic Beta: For 'Show Wowhead links' ('Interface'), quest log Wowhead links will now be shown in the quest log title bar.
+
+4.0.70 - 11th June 2025
+- Mists of Pandaria Classic Beta: The 'Show bag search box' option ('Interface') has been removed as it's now included in the default UI.
+
+4.0.69 - 14th May 2025
+- Mists of Pandaria Classic Beta: For 'Show bag search box' ('Interface'), the bag search box will now only show in the backpack frame since the default UI shows it in the bank and guild bank frames.
+
+4.0.67 - 6th May 2025
+- The 'Show vendor price' ('Interface') option is now called 'Expand vendor price'.  While showing the vendor price is now part of the default UI, this option shows the vendor price in tooltips that the default UI does not cover such as quest reward tooltips, equipped gear tooltips and tooltips for items linked in chat.
+
+4.0.66 - 4th May 2025
+- Mists of Pandaria Classic Beta: For 'Recent chat window', there is now an entry in the right-click chat menu to invoke the recent chat window.
+- Mists of Pandaria Classic Beta: Minor updates.
+- Added the 'Show vendor price' ('Interface') option once again because the default UI does not show the vendor price in some essential tooltips (such as for quest reward choices and equipped gear).
+
+4.0.65 - 3rd May 2025
+- Mists of Pandaria Classic Beta: Added a new option called 'Block pet battle duels' ('Blocking').  If checked, pet battle duel requests will be blocked unless the player requesting the duel is a friend.
+- Mists of Pandaria Classic Beta: Added a new option called 'Show pet save button' ('Interface').  If checked, you will be able to save your current pet battle team to a single command.
+- Mists of Pandaria Classic Beta: Added a new option called 'Hide event toasts' ('Frames').  If checked, event toasts will not be shown.  Event toasts are used for encounter objectives, level-ups, pet battle rewards, etc.
+- Mists of Pandaria Classic Beta: Added a new option called 'Disable pet automation' ('System').  If checked, battle pets which are automatically summoned will be dismissed automatically.
+- Mists of Pandaria Classic Beta: Added a new option called 'Remove transforms' ('System').  If enabled, you can have various transforms automatically removed when applied (such as Hallow's End, Noblegarden and Pilgrim's Bounty).
+- Mists of Pandaria Classic Beta: For 'Automate gossip' ('Automation'), class trainer gossip is no longer automatically skipped.
+- Mists of Pandaria Classic Beta: For 'Release in PvP' ('Automation'), added exclusion settings for Battle for Gilneas, Isle of Conquest, Silvershard Mines, Temple of Kotmogu and Wintergrasp.
+- Mists of Pandaria Classic Beta: For 'Mute mount sounds' ('System'), the 'Travelers' setting now includes the Grand Expedition Yak.  Added a new setting for panthers.
+- Mists of Pandaria Classic Beta: For 'Silence rested emotes' ('System'), this option now includes pet battles, The Halfhill Market, The Summer Terrace and The Golden Terrace.
+- Mists of Pandaria Classic Beta: For 'Media', added 'Arenas', 'Pet Battles' and 'Themes' ('Various').  Tracks in the 'Cinematics' section ('Various') are now shown by movie name instead of filename.
+- Mists of Pandaria Classic Beta: For 'Show Wowhead links' ('Interface') and the web link keybind, Wowhead links are now updated for Mists of Pandaria Classic.
+- For 'Mute game sounds' ('System'), the mount settings have been moved into a new option called 'Mute mount sounds'.  Added new settings for 'Sniffing', 'Pierre' and 'Balls'.
+- For 'Mute mount sounds' ('System'), added a new setting for rockets.
+- The 'Show vendor price' option ('System') has been removed as it's now included in the default UI.
+
+4.0.62 - 28th April 2015
+- Preliminary update for Mists of Pandaria Classic Beta.
+- Mists of Pandaria Classic Beta: For 'Media', added lots of Mists of Pandaria media.
+- Mists of Pandaria Classic Beta: Minor updates.
+- For 'Enhanced dressup' ('Interface'), fixed an issue with the dressup buttons position.
+
+4.0.56 - 9th April 2025
+- For 'Show Wowhead links' and web link, added support for Mexico (mx.wowhead.com) and traditional Chinese (tw.wowhead.com).
+
+4.0.48 - 21st February 2021
 - Updated for game version 4.4.2.
 
 4.0.46 - 5th February 2025

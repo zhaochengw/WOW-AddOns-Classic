@@ -7,13 +7,16 @@ local RSRecentlySeenTracker = private.NewLib("RareScannerRecentlySeenTracker")
 
 -- RareScanner database libraries
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
+local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
+local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
+local RSProvider = private.ImportLib("RareScannerProvider")
 
 -- Timers
 local RESET_RECENTLY_SEEN_TIMER
@@ -36,10 +39,33 @@ local function InitResetRecentlySeenTimer()
 			local currenTime = time()
 			
 			-- If its an entity that spawns only in one spot
-			if (currenTime > (entityInfo + RSConstants.RECENTLY_SEEN_RESET_TIMER)) then
-				--RSLogger:PrintDebugMessage(string.format("ResetRecentlySeen[%s] (mono)", entityID))
-				recently_seen_entities[entityID] = nil
-				RSGeneralDB.DeleteRecentlySeen(entityID)
+			if (type(entityInfo) == "number") then
+				if (currenTime > (entityInfo + RSConstants.RECENTLY_SEEN_RESET_TIMER)) then
+					--RSLogger:PrintDebugMessage(string.format("ResetRecentlySeen[%s] (mono)", entityID))
+					recently_seen_entities[entityID] = nil
+					RSGeneralDB.DeleteRecentlySeen(entityID)
+				end			
+			-- If its an entity that spawns in multiple spots at the same time
+			else
+				for xy, info in pairs (entityInfo) do
+					local RESET_TIMER = RSConstants.RECENTLY_SEEN_RESET_TIMER
+					-- In instances keep showing the icons longer
+					if (IsInInstance()) then
+						RESET_TIMER = RSConstants.RECENTLY_SEEN_INSTANCE_RESET_TIMER
+					end
+					
+					if (currenTime > (entityInfo[xy].time + RESET_TIMER)) then
+						if (RSUtils.GetTableLength(recently_seen_entities[entityID]) == 1) then
+							recently_seen_entities[entityID] = nil
+							--RSLogger:PrintDebugMessage(string.format("ResetRecentlySeen[%s] (multi/last)", entityID))
+							RSGeneralDB.DeleteRecentlySeen(entityID)
+							break;
+						else
+							recently_seen_entities[entityID][xy] = nil
+							RSLogger:PrintDebugMessage(string.format("ResetRecentlySeen[%s] (multi)", entityID))
+						end
+					end
+				end
 			end
 		end
 	end)
@@ -65,13 +91,41 @@ function RSRecentlySeenTracker.AddRecentlySeen(entityID, atlasName, isNavigating
 		return
 	end
 	
-	recently_seen_entities[entityID] = currentTime
-	RSGeneralDB.SetRecentlySeen(entityID)
+	local shouldAnimate = false
+	
+	-- If spawning in multiple places at the same time stores also the coordinates
+	if (RSNpcDB.IsMultiZoneSpawn(entityID) or RSContainerDB.IsMultiZoneSpawn(entityID)) then
+		-- Extracts info from internal database
+		if (not recently_seen_entities[entityID]) then
+			recently_seen_entities[entityID] = {}
+		end
+		
+		local xy = entityInfo.coordX.."_"..entityInfo.coordY
+		recently_seen_entities[entityID][xy] = {}
+		recently_seen_entities[entityID][xy].x = entityInfo.coordX
+		recently_seen_entities[entityID][xy].y = entityInfo.coordY
+		recently_seen_entities[entityID][xy].mapID = entityInfo.mapID
+		recently_seen_entities[entityID][xy].atlasName = atlasName
+		recently_seen_entities[entityID][xy].time = currentTime
+		
+		RSGeneralDB.SetRecentlySeen(entityID)
+		shouldAnimate = true
+		--RSLogger:PrintDebugMessage(string.format("AddRecentlySeen[%s] (multi) [%s]", entityID, RSTimeUtils.TimeStampToClock(currentTime)))
+	-- Otherwise stores only the time if it isn't already seen
+	elseif (not recently_seen_entities[entityID]) then
+		recently_seen_entities[entityID] = currentTime
+		RSGeneralDB.SetRecentlySeen(entityID)
+		shouldAnimate = true
+		--RSLogger:PrintDebugMessage(string.format("AddRecentlySeen[%s] (mono) [%s]", entityID, RSTimeUtils.TimeStampToClock(currentTime)))
+	end
 	
 	-- Adds to the list to show ping animation
-	if ((RSConstants.IsNpcAtlas(atlasName) and RSConfigDB.IsShowingAnimationForNpcs() and RSConfigDB.GetAnimationForNpcs() ~= RSConstants.MAP_ANIMATIONS_ON_CLICK) or 
-			(RSConstants.IsContainerAtlas(atlasName) and RSConfigDB.IsShowingAnimationForContainers() and RSConfigDB.GetAnimationForContainers() ~= RSConstants.MAP_ANIMATIONS_ON_CLICK)) then
-		RSRecentlySeenTracker.AddPendingAnimation(entityID, entityInfo.mapID, entityInfo.coordX, entityInfo.coordY)
+	if (shouldAnimate) then
+		if ((RSConstants.IsNpcAtlas(atlasName) and RSConfigDB.IsShowingAnimationForNpcs() and RSConfigDB.GetAnimationForNpcs() ~= RSConstants.MAP_ANIMATIONS_ON_CLICK) or 
+				(RSConstants.IsContainerAtlas(atlasName) and RSConfigDB.IsShowingAnimationForContainers() and RSConfigDB.GetAnimationForContainers() ~= RSConstants.MAP_ANIMATIONS_ON_CLICK) or
+				(RSConstants.IsEventAtlas(atlasName) and RSConfigDB.IsShowingAnimationForEvents() and RSConfigDB.GetAnimationForEvents() ~= RSConstants.MAP_ANIMATIONS_ON_CLICK)) then
+			RSRecentlySeenTracker.AddPendingAnimation(entityID, entityInfo.mapID, entityInfo.coordX, entityInfo.coordY)
+		end
 	end
 end
 
@@ -83,9 +137,54 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 	end
 	
 	-- If its an entity that spawns only in one spot
-	recently_seen_entities[entityID] = nil
-	RSGeneralDB.DeleteRecentlySeen(entityID)
-	return nil
+	if (type(entityInfo) == "number") then
+		--RSLogger:PrintDebugMessage(string.format("RemoveRecentlySeen[%s] (mono)", entityID))
+		recently_seen_entities[entityID] = nil
+		RSGeneralDB.DeleteRecentlySeen(entityID)
+		return nil
+	end
+	
+	-- If its an entity that spawns in multiple spots at the same time
+					
+	-- Calculates the distance between all of them and the player
+	local xyDistances = {}
+	
+	for xy, info in pairs (entityInfo) do
+		local playerMapPosition = C_Map.GetPlayerMapPosition(info.mapID, "player")
+		if (playerMapPosition) then
+			local x, y = playerMapPosition:GetXY()
+			local distance = RSUtils.DistanceBetweenCoords(x, info.x, y, info.y)
+			xyDistances[xy] = distance
+		end
+	end
+	
+	-- If for whatever reason it couldnt get the players coordinates it will be empty
+	if (RSUtils.GetTableLength(xyDistances) == 0) then
+		return nil
+	end
+	
+	-- And removes the closest to the player
+	local distances = {}
+	for xy, distance in pairs (xyDistances) do
+		table.insert(distances, distance)
+	end
+	
+	local min = math.min(unpack(distances))
+	for xy, distance in pairs (xyDistances) do
+		if (distance == min) then
+			local x, y = strsplit("_", xy)
+			if (RSUtils.GetTableLength(recently_seen_entities[entityID]) == 1) then
+				--RSLogger:PrintDebugMessage(string.format("RemoveRecentlySeen[%s,x=%s,y=%s] (multi/last)", entityID, x, y))
+				recently_seen_entities[entityID] = nil
+				RSGeneralDB.DeleteRecentlySeen(entityID)
+			else
+				--RSLogger:PrintDebugMessage(string.format("RemoveRecentlySeen[%s,x=%s,y=%s] (multi)", entityID, x, y))
+				recently_seen_entities[entityID][xy] = nil
+			end
+			
+			return x, y
+		end
+	end
 end
 
 function RSRecentlySeenTracker.IsRecentlySeen(entityID, x, y)
@@ -100,7 +199,19 @@ function RSRecentlySeenTracker.IsRecentlySeen(entityID, x, y)
 	end
 	
 	-- If its an entity that spawns only in one spot
-	return true
+	if (type(entityInfo) == "number") then
+		return true
+	end
+	
+	-- If its an entity that spawns in multiple spots then check all the coordinates
+	for _, info in pairs (entityInfo) do
+		if (info.x == x and info.y == y) then
+			return true
+		end
+	end
+
+	-- Otherwise it isnt recently seen
+	return false
 end
 
 function RSRecentlySeenTracker.GetAllRecentlySeenSpots()
@@ -162,7 +273,7 @@ function RSRecentlySeenTracker.AddPendingAnimation(entityID, mapID, x, y, refres
 	end
 	
 	if (refreshWorldMap and WorldMapFrame:IsShown()) then
-		WorldMapFrame:RefreshAllDataProviders();
+		RSProvider.RefreshAllDataProviders()
 	end
 end
 

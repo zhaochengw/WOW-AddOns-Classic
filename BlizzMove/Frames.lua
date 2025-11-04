@@ -1,9 +1,8 @@
 --- @type BlizzMoveAPI
-local BlizzMoveAPI = _G.BlizzMoveAPI
+local BlizzMoveAPI = _G.BlizzMoveAPI ---@diagnostic disable-line: undefined-field
 if not BlizzMoveAPI then return; end
 
-BlizzMoveAPI:RegisterFrames(
-{
+BlizzMoveAPI:RegisterFrames({
     ["AddonList"] =
     {
         MinVersion = 0,
@@ -118,7 +117,7 @@ BlizzMoveAPI:RegisterFrames(
     ["ContainerFrame1"] =
     {
         MinVersion = 100000,
-         -- while it does indeed exist in classic, blizzard does not make other bags follow its position automatically like in retail
+        -- while it does indeed exist in classic, blizzard does not make other bags follow its position automatically like in retail
         SilenceCompatabilityWarnings = true,
         SubFrames =
         {
@@ -537,8 +536,14 @@ BlizzMoveAPI:RegisterFrames(
     },
 });
 
-BlizzMoveAPI:RegisterAddOnFrames(
-{
+BlizzMoveAPI:RegisterAddOnFrames({
+    ["Blizzard_AccountStore"] =
+    {
+        ["AccountStoreFrame"] =
+        {
+            MinVersion = 110205,
+        },
+    },
     ["Blizzard_AchievementUI"] =
     {
         ["AchievementFrame"] =
@@ -893,6 +898,13 @@ BlizzMoveAPI:RegisterAddOnFrames(
             MinVersion = 40000,
         },
     },
+    ["Blizzard_CooldownViewer"] =
+    {
+        ["CooldownViewerSettings"] =
+        {
+            MinVersion = 110205,
+        },
+    },
     ["Blizzard_CovenantPreviewUI"] =
     {
         ["CovenantPreviewFrame"] =
@@ -1184,6 +1196,13 @@ BlizzMoveAPI:RegisterAddOnFrames(
             },
         },
     },
+    ["Blizzard_GuildRename"] =
+    {
+        ["GuildRenameFrame"] =
+        {
+            MinVersion = 110205,
+        },
+    },
     ["Blizzard_GuildUI"] =
     {
         ["GuildFrame"] =
@@ -1436,6 +1455,17 @@ BlizzMoveAPI:RegisterAddOnFrames(
             SubFrames =
             {
                 ["ReforgingFrame.invisButton"] = {},
+            },
+        },
+    },
+    ["Blizzard_RemixArtifactUI"] =
+    {
+        ["RemixArtifactFrame"] =
+        {
+            MinVersion = 110205,
+            SubFrames =
+            {
+                ["RemixArtifactFrame.ButtonsParent"] = {},
             },
         },
     },

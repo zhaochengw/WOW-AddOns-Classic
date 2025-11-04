@@ -46,7 +46,7 @@ local function GetContinentMapIds()
 		for k, v in pairs(RSMapDB.GetContinents()) do
 			if (v.zonefilter) then
 				if (v.id) then
-					continent_map_ids[k] = RSMap.GetMapName(k)
+					continent_map_ids[k] = RSMapDB.GetMapName(k)
 				else
 					continent_map_ids[k] = AL["ZONES_CONTINENT_LIST"][k]
 				end
@@ -62,7 +62,7 @@ local function LoadSubmapCombo(continentID)
 		options.args.subzones.values = {}
 		private.filter_npcs_subzones = nil
 		table.foreach(RSMapDB.GetContinents()[continentID].zones, function(index, mapID)
-			local mapName = RSMap.GetMapName(mapID)
+			local mapName = RSMapDB.GetMapName(mapID)
 			if (mapName) then
 				options.args.subzones.values[mapID] = mapName
 			end
@@ -137,21 +137,18 @@ local function AddNpc(name, npcID)
 	}
 end
 
-local function SearchNpcByZoneID(zoneID, npcName, isContinentZone)
+local function SearchNpcByZoneID(mapID, npcName, isContinentZone)
 	if (not isContinentZone) then
 		ResetResults();
 	end
 	
-	if (zoneID) then
-		for npcID, info in pairs(RSNpcDB.GetAllInternalNpcInfo()) do
-			local name = RSNpcDB.GetNpcName(npcID)
-			if (not name) then
-				name = string.format("%s", npcID)
-			else
-				name = string.format("%s (%s)", name, npcID)
-			end
-			if (RSNpcDB.IsInternalNpcInMap(npcID, zoneID, true) and ((npcName and RSUtils.Contains(name,npcName)) or not npcName)) then
-				npcs[npcID] = name
+	if (mapID) then
+		local npcIDsWithNames = RSNpcDB.GetActiveNpcIDsWithNamesByMapID(mapID)
+		if (RSUtils.GetTableLength(npcIDsWithNames) > 0) then
+			for npcID, name in pairs(npcIDsWithNames) do
+				if (not npcName or RSUtils.Contains(name, npcName)) then
+					npcs[npcID] = name
+				end
 			end
 		end
 	end

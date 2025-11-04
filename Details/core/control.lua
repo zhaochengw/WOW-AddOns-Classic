@@ -306,7 +306,7 @@
 
 		--is in a m+ dungeon?
 		Details222.MythicPlus.debug_auras = {}
-		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() or 1
+		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() or 1 --not mop friendly
 		if (mythicLevel) then
 			if (Details222.MythicPlus.debug_auras) then
 				--iterate among all actors on the utility container and store the update of each buff
@@ -523,6 +523,8 @@
 
 		Details222.GuessSpecSchedules.ClearSchedules()
 
+		Details:SetDeathLogTemporaryLimit(nil)
+
 		--Details222.TimeCapture.StopCombat() --it did not start
 
 		--check if this isn't a boss and try to find a boss in the segment
@@ -553,6 +555,8 @@
 
 		--remove death events that are irrelevant for the death log
 		currentCombat:CutDeathEventsByTime()
+
+		Details222.Parser.CountInterruptOverlaps()
 
 		--get waste shields
 		if (Details.close_shields) then
@@ -605,7 +609,7 @@
 		end
 
 		--tag as a mythic dungeon segment, can be any type of segment, this tag also avoid the segment to be tagged as trash
-		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo()
+		local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo and C_ChallengeMode.GetActiveKeystoneInfo()
 		if (mythicLevel and mythicLevel >= 2) then
 			currentCombat.is_mythic_dungeon_segment = true
 			currentCombat.is_mythic_dungeon_run_id = Details.mythic_dungeon_id
@@ -915,20 +919,29 @@
 		--issue: invalidCombat will be just floating around in memory if not destroyed
 	end --end of leaving combat function
 
+	--~arena
+	---@class arena_ally : table
+	---@field role string
+	---@field guid string
+
+	---@class details : table
+	---@field arena_table arena_ally
+	---@field arena_enemies table<actorname, unit>
+
 	function Details:GetPlayersInArena() --ARENA_OPPONENT_UPDATE
 		local aliados = GetNumGroupMembers() -- LE_PARTY_CATEGORY_HOME
 		for i = 1, aliados-1 do
 			local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned("party" .. i) or "DAMAGER"
 			if (role ~= "NONE" and UnitExists("party" .. i)) then
 				local unitName = Details:GetFullName("party" .. i)
-				Details.arena_table [unitName] = {role = role}
+				Details.arena_table [unitName] = {role = role, guid = UnitGUID("party" .. i)}
 			end
 		end
 
 		local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned("player") or "DAMAGER"
 		if (role ~= "NONE") then
 			local playerName = Details:GetFullName("player")
-			Details.arena_table [playerName] = {role = role}
+			Details.arena_table [playerName] = {role = role, guid = UnitGUID("player")}
 		end
 
 		--enemies
@@ -939,6 +952,40 @@
 			local enemyName = Details:GetFullName("arena" .. i)
 			if (enemyName) then
 				Details.arena_enemies[enemyName] = "arena" .. i
+			end
+		end
+	end
+
+	---@param self details
+	---@param actorObject actor
+	function Details:ArenaPlayerCreated(actorObject)
+		if (actorObject:IsPlayer()) then
+			if (UnitIsUnit("player", actorObject.nome)) then
+				return
+			end
+
+			for i = 1, GetNumGroupMembers()-1 do
+				local unitId = "party" .. i
+				if (UnitExists(unitId) and actorObject.nome == Details:GetFullName(unitId)) then
+					actorObject.arena_ally = true
+					local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned("player") or "DAMAGER"
+					Details.arena_table[actorObject.nome] = {role = role, guid = UnitGUID(unitId)}
+					Details222.ArenaSummary.NewPlayer(actorObject, true, unitId)
+					return
+				end
+			end
+
+			local enemiesAmount = GetNumArenaOpponentSpecs and GetNumArenaOpponentSpecs() or 5
+			for i = 1, enemiesAmount do
+				local unitId = "arena" .. i
+				if (UnitExists(unitId) and actorObject.nome == Details:GetFullName(unitId)) then
+					actorObject.enemy = true
+					actorObject.arena_enemy = true
+					local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned(unitId) or "DAMAGER"
+					Details.arena_enemies[actorObject.nome] = unitId
+					Details222.ArenaSummary.NewPlayer(actorObject, false, unitId)
+					return
+				end
 			end
 		end
 	end
@@ -1044,7 +1091,53 @@
 			local nTimeIntervalBetweenUpdates = 0.1
 			Details:SetWindowUpdateSpeed(nTimeIntervalBetweenUpdates, bNoSave)
 		end
+
+		Details222.ArenaSummary.OnArenaStart()
 	end
+
+	--PVP_MATCH_STATE_CHANGED
+	--PVP_MATCH_COMPLETE
+
+	local isInArena = false
+	local arenaStarted = false
+	local tdebugframe = CreateFrame("Frame", "DetailsParserDebugFrameASD", UIParent)
+
+	if (detailsFramework.IsDragonflightAndBeyond()) then
+		tdebugframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	end
+
+	tdebugframe:SetScript("OnEvent", function(self, event, ...)
+		local zoneName, instanceType = GetInstanceInfo()
+
+		if (event == "ZONE_CHANGED_NEW_AREA" and instanceType == "arena") then
+			if (not isInArena) then
+				isInArena = true
+				tdebugframe:RegisterEvent("PVP_MATCH_COMPLETE")
+				tdebugframe:RegisterEvent("PVP_MATCH_STATE_CHANGED")
+			elseif (isInArena and instanceType ~= "arena") then
+				isInArena = false
+				tdebugframe:UnregisterEvent("PVP_MATCH_COMPLETE")
+				tdebugframe:UnregisterEvent("PVP_MATCH_STATE_CHANGED")
+			end
+
+			return
+		end
+
+        if (C_PvP and C_PvP.IsMatchActive) then -- retail check
+            --C_PvP.IsMatchActive() is true even before the arena match starts
+            if (C_PvP.IsMatchActive() and not arenaStarted) then
+                arenaStarted = true
+
+            elseif (not C_PvP.IsMatchActive() and arenaStarted) then
+				--print("not C_PvP.IsMatchActive()")
+                arenaStarted = false
+				C_Timer.After(1, function()
+                	Details:LeftArena()
+                	Details.is_in_arena = false
+				end)
+            end
+        end
+	end)
 
 	--return the GetTime() of the current or latest arena match
 	function Details:GetArenaStartTime()
@@ -1088,6 +1181,10 @@
 			Details:Msg("(debug) player LeftArena().")
 		end
 
+		if (not Details.is_in_arena) then
+			return
+		end
+
 		Details.is_in_arena = false
 		Details.arena_begun = false
 
@@ -1101,10 +1198,21 @@
 		Details:TimeDataUnregister("Your Team Healing")
 		Details:TimeDataUnregister("Enemy Team Healing")
 
+		Details:EndCombat()
+
+		--block captures
+		Details:CaptureSet(false, "damage", false, 15)
+		Details:CaptureSet(false, "energy", false, 15)
+		Details:CaptureSet(false, "aura", false, 15)
+		Details:CaptureSet(false, "energy", false, 15)
+		Details:CaptureSet(false, "spellcast", false, 15)
+
 		Details:SendEvent("COMBAT_ARENA_END")
 
 		--reset the update speed, as it could have changed when the arena started.
 		Details:SetWindowUpdateSpeed(Details.update_speed)
+
+		Details222.ArenaSummary.OnArenaEnd()
 	end
 
 	function Details:FlagActorsOnPvPCombat()
@@ -1451,6 +1559,48 @@
 		end
 	end
 
+	function Details:PostBuildInstanceBarTooltip(actorObject)
+		if (actorObject.serial and actorObject.serial ~= "") then
+			local avatar = NickTag:GetNicknameTable(actorObject:Name(), true)
+			if (avatar and not Details.ignore_nicktag) then
+				if (avatar[2] and avatar[4] and avatar[1]) then
+					GameCooltip:SetBannerImage(1, 1, avatar [2], 80, 40, avatarPoint, avatarTexCoord, nil) --overlay [2] avatar path
+					GameCooltip:SetBannerImage(1, 2, avatar [4], 200, 55, backgroundPoint, avatar [5], avatar [6]) --background
+					GameCooltip:SetBannerText(1, 1, (not Details.ignore_nicktag and avatar[1]) or actorObject.nome, textPoint, avatarTextColor, 14, SharedMedia:Fetch("font", Details.tooltip.fontface)) --text [1] nickname
+				end
+			end
+		end
+
+		Details:AddRoundedCornerToTooltip()
+
+		GameCooltip:ShowCooltip()
+
+		if (not Details.GameCooltipFrame1Shadow) then
+			Details.GameCooltipFrame1Shadow = GameCooltipFrame1:CreateTexture(nil, "background")
+			Details.GameCooltipFrame1Shadow:SetTexture([[Interface\AddOns\Details\images\shadow_square.png]], nil, nil, "TRILINEAR")
+			GameCooltipFrame1:HookScript("OnHide", function(self)
+				Details.GameCooltipFrame1Shadow:Hide()
+			end)
+		end
+
+		if (Details.tooltip.show_border_shadow) then
+			local offset = 1
+			if (GameCooltipFrame1:GetHeight() > 200) then
+				offset = 4
+			elseif (GameCooltipFrame1:GetHeight() > 150) then
+				offset = 3
+			elseif (GameCooltipFrame1:GetHeight() > 80) then
+				offset = 2
+			end
+
+			Details.GameCooltipFrame1Shadow:SetPoint("topleft", GameCooltipFrame1, "topleft", -offset, offset)
+			Details.GameCooltipFrame1Shadow:SetPoint("bottomright", GameCooltipFrame1, "bottomright", offset, -offset)
+			Details.GameCooltipFrame1Shadow:Show()
+		else
+			Details.GameCooltipFrame1Shadow:Hide()
+		end
+	end
+
 	---@param self instance
 	---@param frame table
 	---@param whichRowLine number
@@ -1494,45 +1644,7 @@
 		local bTooltipBuilt = object:ToolTip(self, whichRowLine, thisLine, keydown) --instance, lineId, lineObject, keydown
 
 		if (bTooltipBuilt) then
-			if (object.serial and object.serial ~= "") then
-				local avatar = NickTag:GetNicknameTable(object:Name(), true)
-				if (avatar and not Details.ignore_nicktag) then
-					if (avatar[2] and avatar[4] and avatar[1]) then
-						GameCooltip:SetBannerImage(1, 1, avatar [2], 80, 40, avatarPoint, avatarTexCoord, nil) --overlay [2] avatar path
-						GameCooltip:SetBannerImage(1, 2, avatar [4], 200, 55, backgroundPoint, avatar [5], avatar [6]) --background
-						GameCooltip:SetBannerText(1, 1, (not Details.ignore_nicktag and avatar[1]) or object.nome, textPoint, avatarTextColor, 14, SharedMedia:Fetch("font", Details.tooltip.fontface)) --text [1] nickname
-					end
-				end
-			end
-
-			Details:AddRoundedCornerToTooltip()
-
-			GameCooltip:ShowCooltip()
-
-			if (not Details.GameCooltipFrame1Shadow) then
-				Details.GameCooltipFrame1Shadow = GameCooltipFrame1:CreateTexture(nil, "background")
-				Details.GameCooltipFrame1Shadow:SetTexture([[Interface\AddOns\Details\images\shadow_square.png]], nil, nil, "TRILINEAR")
-				GameCooltipFrame1:HookScript("OnHide", function(self)
-					Details.GameCooltipFrame1Shadow:Hide()
-				end)
-			end
-
-			if (Details.tooltip.show_border_shadow) then
-				local offset = 1
-				if (GameCooltipFrame1:GetHeight() > 200) then
-					offset = 4
-				elseif (GameCooltipFrame1:GetHeight() > 150) then
-					offset = 3
-				elseif (GameCooltipFrame1:GetHeight() > 80) then
-					offset = 2
-				end
-
-				Details.GameCooltipFrame1Shadow:SetPoint("topleft", GameCooltipFrame1, "topleft", -offset, offset)
-				Details.GameCooltipFrame1Shadow:SetPoint("bottomright", GameCooltipFrame1, "bottomright", offset, -offset)
-				Details.GameCooltipFrame1Shadow:Show()
-			else
-				Details.GameCooltipFrame1Shadow:Hide()
-			end
+			Details:PostBuildInstanceBarTooltip(object)
 		end
 	end
 
@@ -1793,3 +1905,134 @@
 		_tempo = Details._tempo
 	end
 
+
+local keyName
+local sortIfHaveKey = function(table1, table2)
+	if (table1[keyName] and table2[keyName]) then
+		return table1[keyName] > table2[keyName]
+
+	elseif (table1[keyName] and not table2[keyName]) then
+		return true
+	else
+		return false
+	end
+end
+
+--make an ascending sort
+local sortIfHaveKey_ASC = function(table1, table2)
+	if (table1[keyName] and table2[keyName]) then
+		return table1[keyName] < table2[keyName]
+
+	elseif (table1[keyName] and not table2[keyName]) then
+		return false
+	elseif (not table1[keyName] and table2[keyName]) then
+		return true
+	else
+		return false
+	end
+end
+
+function Details:GetKeyNameFromAttribute(attribute, subAttribute)
+	if (attribute == 1) then
+		if (subAttribute == 1) then --DAMAGE DONE
+			return "total"
+		elseif(subAttribute == 2) then --DPS
+			return "last_dps"
+		elseif(subAttribute == 3) then --DAMAGE TAKEN
+			return "damage_taken"
+		elseif(subAttribute == 4) then --FRIENDLY FIRE
+			return "friendlyfire_total"
+		elseif(subAttribute == 5) then --FRAGS
+			return "frags"
+		elseif(subAttribute == 6) then --ENEMIES
+			return "enemies"
+		elseif(subAttribute == 7) then --AURAS VOIDZONES
+			return "voidzones"
+		elseif(subAttribute == 8) then --BY SPELL
+			return "damage_taken_by_spells"
+		end
+
+	elseif (attribute == 2) then
+		if (subAttribute == 1) then --healing DONE
+			return "total"
+		elseif (subAttribute == 2) then --HPS
+			return "last_hps"
+		elseif (subAttribute == 3) then --overheal
+			return "totalover"
+		elseif (subAttribute == 4) then --healing take
+			return "healing_taken"
+		elseif (subAttribute == 5) then --enemy heal
+			return "heal_enemy_amt"
+		elseif (subAttribute == 6) then --absorbs
+			return "totalabsorb"
+		elseif (subAttribute == 7) then --heal absorb
+			return "totaldenied"
+		end
+
+	elseif (attribute == 3) then
+		if (subAttribute == 1) then --RESOURCE GAINED
+			return "total"
+		elseif (subAttribute == 2) then --RESOURCE SPENT
+			return "totalover"
+		elseif (subAttribute == 3) then --MANA REGEN
+			return "mana_potion"
+		end
+
+	elseif (attribute == 4) then
+		if (subAttribute == 1) then --CC BREAKS
+			return "cc_break"
+		elseif (subAttribute == 2) then --RESS
+			return "ress"
+		elseif (subAttribute == 3) then --INTERRUPT
+			return "interrupt"
+		elseif (subAttribute == 4) then --DISPELLS
+			return "dispell"
+		elseif (subAttribute == 5) then --DEATHS
+			return "dead"
+		elseif (subAttribute == 6) then --DEFENSIVE COOLDOWNS
+			return "cooldowns_defensive"
+		elseif (subAttribute == 7) then --BUFF UPTIME
+			return "buff_uptime"
+		elseif (subAttribute == 8) then --DEBUFF UPTIME
+			return "debuff_uptime"
+		end
+	end
+end
+
+---@param self details
+---@param combatObject combat
+---@param attribute number
+---@param subAttribute number
+---@param order string
+function Details:JustSortData(combatObject, attribute, subAttribute, order)
+	---@type actorcontainer
+	local actorContainer = combatObject[attribute]
+	keyName = Details:GetKeyNameFromAttribute(attribute, subAttribute)
+	if (order == "ASC") then
+		table.sort(actorContainer._ActorTable, sortIfHaveKey_ASC)
+	else
+		table.sort(actorContainer._ActorTable, sortIfHaveKey)
+	end
+	actorContainer:Remap()
+end
+
+--the received actorContainer is already sorted by 'order', find the top player respecting the order
+function Details:FindTopPlayer(actorContainer, order)
+	if (order == "ASC") then
+		--iterate from the end of the table to index 1 and find the first actor with the key 'grupo'
+		for i = #actorContainer._ActorTable, 1, -1 do
+			local actorObject = actorContainer._ActorTable[i]
+			if (actorObject.grupo) then
+				return actorObject
+			end
+		end
+	else
+		--iterate from index 1 to the end of the table and find the first actor with the key 'grupo'
+		for i = 1, #actorContainer._ActorTable do
+			local actorObject = actorContainer._ActorTable[i]
+			if (actorObject.grupo) then
+				return actorObject
+			end
+		end
+	end
+end

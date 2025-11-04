@@ -19,30 +19,38 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local tomtom_waypoint
 
 function RSTomtom.AddWorldMapTomtomWaypoint(mapID, x, y, name)
-	if (TomTom and RSConfigDB.IsAddingWorldMapTomtomWaypoints() and mapID and x and y and name) then
+	if (TomTom and mapID and x and y and name) then
 		RSTomtom.RemoveCurrentTomtomWaypoint()
-				
-		tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), RSUtils.FixCoord(x), RSUtils.FixCoord(y), {
-			title = name,
-			persistent = false,
-			minimap = false,
-			world = false,
-			cleardistance = 25
-		})
+		
+		local fixedX = RSUtils.FixCoord(x)
+		local fixedY = RSUtils.FixCoord(y)
+		if (fixedX and fixedY) then
+			tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), fixedX, fixedY, {
+				title = name,
+				persistent = false,
+				minimap = false,
+				world = false,
+				cleardistance = 25
+			})
+		end
 	end
 end
 
 function RSTomtom.AddTomtomWaypoint(mapID, x, y, name)
-	if (TomTom and RSConfigDB.IsTomtomSupportEnabled() and mapID and mapID ~= "" and x and y and name) then
+	if (TomTom and mapID and mapID ~= "" and x and y and name) then
 		RSTomtom.RemoveCurrentTomtomWaypoint()
 		
-		tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), RSUtils.FixCoord(x), RSUtils.FixCoord(y), {
-			title = name,
-			persistent = false,
-			minimap = false,
-			world = false,
-			cleardistance = 25
-		})
+		local fixedX = RSUtils.FixCoord(x)
+		local fixedY = RSUtils.FixCoord(y)
+		if (fixedX and fixedY) then
+			tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), fixedX, fixedY, {
+				title = name,
+				persistent = false,
+				minimap = false,
+				world = false,
+				cleardistance = 25
+			})
+		end
 	end
 end
 

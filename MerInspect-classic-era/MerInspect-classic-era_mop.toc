@@ -1,0 +1,21 @@
+## Interface: 50500
+## Title: MerInspect for classic era
+## Version: 1.2.0
+## Notes: Inspect Assist 
+## Notes-zhCN: 观察助手
+## Notes-zhTW: 觀察助手
+## Author: M(Mermaid) maintained by Timtam
+## Thanks: Mermaid, 独孤傲雪, xLoki
+## SavedVariables: MerInspectDB
+
+libs\lib.xml
+locales\locales.xml
+templates\templates.xml
+Options.lua
+ItemSlot.lua
+ItemBorder.lua
+InspectCore.lua
+InspectUnit.lua
+InspectUnitGemAndEnchant.lua
+InspectUnitSpecialization.lua
+InspectUnitStats.lua

@@ -13,7 +13,6 @@ local LSM = LibStub("LibSharedMedia-3.0");
 
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
-local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
 local WrapTextInColorCode = WrapTextInColorCode
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
@@ -124,14 +123,27 @@ Private.precision_types = {
 ---@type table<string, string>
 Private.big_number_types = {
   ["AbbreviateNumbers"] = L["AbbreviateNumbers (Blizzard)"],
-  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"]
+  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"],
+  ["BreakUpLargeNumbers"] = L["BreakUpLargeNumbers (Blizzard)"],
 }
+if WeakAuras.IsClassicEra() then
+  Private.big_number_types.BreakUpLargeNumbers = nil
+end
+---@type table<string, string>
+Private.big_number_types_with_disable = CopyTable(Private.big_number_types)
+Private.big_number_types_with_disable["disable"] = L["Disabled"]
 
 ---@type table<string, string>
 Private.round_types = {
   floor = L["Floor"],
   ceil = L["Ceil"],
   round = L["Round"]
+}
+
+---@type table<string, string>
+Private.pad_types = {
+  left = L["Left"],
+  right = L["Right"]
 }
 
 ---@type table<string, string>
@@ -208,6 +220,24 @@ if gameLocale == "koKR" or gameLocale == "zhCN" or gameLocale == "zhTW" then
     end
     return tostring(value);
   end
+elseif WeakAuras.IsClassicOrCataOrMists then
+  local NUMBER_ABBREVIATION_DATA_FIXED = {
+        -- Work around another bug in NUMBER_ABBREVIATION_DATA, https://github.com/WeakAuras/WeakAuras2/issues/6061
+        { breakpoint = 10000000,        abbreviation = SECOND_NUMBER_CAP_NO_SPACE,      significandDivisor = 1000000,   fractionDivisor = 1 },
+        { breakpoint = 1000000,         abbreviation = SECOND_NUMBER_CAP_NO_SPACE,      significandDivisor = 100000,            fractionDivisor = 10 },
+        { breakpoint = 10000,           abbreviation = FIRST_NUMBER_CAP_NO_SPACE,       significandDivisor = 1000,              fractionDivisor = 1 },
+        { breakpoint = 1000,            abbreviation = FIRST_NUMBER_CAP_NO_SPACE,       significandDivisor = 100,               fractionDivisor = 10 }
+  }
+
+  AbbreviateNumbers = function(value)
+    for i, data in ipairs(NUMBER_ABBREVIATION_DATA_FIXED) do
+      if value >= data.breakpoint then
+              local finalValue = math.floor(value / data.significandDivisor) / data.fractionDivisor;
+              return finalValue .. data.abbreviation;
+      end
+    end
+    return tostring(value);
+  end
 end
 
 local simpleFormatters = {
@@ -218,6 +248,10 @@ local simpleFormatters = {
   AbbreviateLargeNumbers = function(value)
     if type(value) == "string" then value = tonumber(value) end
     return (type(value) == "number") and AbbreviateLargeNumbers(Round(value)) or value
+  end,
+  BreakUpLargeNumbers = function(value)
+    if type(value) == "string" then value = tonumber(value) end
+    return (type(value) == "number") and BreakUpLargeNumbers(value) or value
   end,
   floor = function(value)
     if type(value) == "string" then value = tonumber(value) end
@@ -305,11 +339,45 @@ Private.format_types = {
           return not get(symbol .. "_abbreviate")
         end
       })
+      addOption(symbol .. "_pad", {
+        type = "toggle",
+        name = L["Pad"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_mode", {
+        type = "select",
+        name = L["Pad Mode"],
+        width = WeakAuras.halfWidth,
+        values = Private.pad_types,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_max", {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        name = L["Pad to"],
+        width = WeakAuras.halfWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+      })
     end,
     CreateFormatter = function(symbol, get)
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
-      if abbreviate then
+      local pad = get(symbol .. "_pad", false)
+      local padMode = get(symbol .. "_pad_mode", "left")
+      local padLength = get(symbol .. "_pad_max", 8)
+      if abbreviate and pad then
+        return function(input)
+          return WeakAuras.PadString(WeakAuras.WA_Utf8Sub(input, abbreviateMax), padMode, padLength)
+        end
+      elseif pad then
+        return function(input)
+          return WeakAuras.PadString(input, padMode, padLength)
+        end
+      elseif abbreviate then
         return function(input)
           return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
         end
@@ -496,9 +564,64 @@ Private.format_types = {
       end
     end
   },
+  Money = {
+    display = L["Money"],
+    AddOptions = function(symbol, hidden, addOption)
+      addOption(symbol .. "_money_format", {
+        type = "select",
+        name = L["Format Gold"],
+        width = WeakAuras.normalWidth,
+        values = Private.big_number_types_with_disable,
+        hidden = hidden
+      })
+      addOption(symbol .. "_money_precision", {
+        type = "select",
+        name = L["Coin Precision"],
+        width = WeakAuras.normalWidth,
+        values = Private.money_precision_types,
+        hidden = hidden
+      })
+    end,
+    CreateFormatter = function(symbol, get)
+      local format = get(symbol .. "_money_format", "AbbreviateNumbers")
+      local precision = get(symbol .. "_money_precision", 3)
+
+      return function(value)
+        if type(value) ~= "number" then
+          return ""
+        end
+        local gold = floor(value / 1e4)
+        local silver = floor(value / 100 % 100)
+        local copper = value % 100
+
+        if (format == "AbbreviateNumbers") then
+          gold = simpleFormatters.AbbreviateNumbers(gold)
+        elseif (format == "BreakUpLargeNumbers") then
+          gold = simpleFormatters.BreakUpLargeNumbers(gold)
+        elseif (format == "AbbreviateLargeNumbers") then
+          gold = simpleFormatters.AbbreviateLargeNumbers(gold)
+        end
+
+        local formatCode
+        if precision == 1 then
+          formatCode = "%s%s"
+        elseif precision == 2 then
+          formatCode = "%s%s %d%s"
+        else
+          formatCode = "%s%s %d%s %d%s"
+        end
+
+        return string.format(formatCode,
+          tostring(gold), Private.coin_icons.gold,
+          silver, Private.coin_icons.silver,
+          copper, Private.coin_icons.copper
+        )
+      end
+    end
+  },
   BigNumber = {
     display = L["Big Number"],
-    AddOptions = function(symbol, hidden, addOption)
+    AddOptions = function(symbol, hidden, addOption, get)
       addOption(symbol .. "_big_number_format", {
         type = "select",
         name = L["Format"],
@@ -512,13 +635,49 @@ Private.format_types = {
         width = WeakAuras.normalWidth,
         hidden = hidden
       })
+      addOption(symbol .. "_pad", {
+        type = "toggle",
+        name = L["Pad"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_mode", {
+        type = "select",
+        name = L["Pad Mode"],
+        width = WeakAuras.halfWidth,
+        values = Private.pad_types,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_max", {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        name = L["Pad to"],
+        width = WeakAuras.halfWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+      })
     end,
     CreateFormatter = function(symbol, get)
       local format = get(symbol .. "_big_number_format", "AbbreviateNumbers")
+      local pad = get(symbol .. "_pad", false)
+      local padMode = get(symbol .. "_pad_mode", "left")
+      local padLength = get(symbol .. "_pad_max", 8)
+      local formatterFunc
       if (format == "AbbreviateNumbers") then
-        return simpleFormatters.AbbreviateNumbers
+        formatterFunc = simpleFormatters.AbbreviateNumbers
+      elseif (format == "BreakUpLargeNumbers") then
+        formatterFunc = simpleFormatters.BreakUpLargeNumbers
+      else
+        formatterFunc = simpleFormatters.AbbreviateLargeNumbers
       end
-      return simpleFormatters.AbbreviateLargeNumbers
+      if pad then
+        return function(input)
+          return WeakAuras.PadString(formatterFunc(input), padMode, padLength)
+        end
+      end
+      return formatterFunc
     end
   },
   Number = {
@@ -541,18 +700,51 @@ Private.format_types = {
           return get(symbol .. "_decimal_precision") ~= 0
         end
       })
+      addOption(symbol .. "_pad", {
+        type = "toggle",
+        name = L["Pad"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_mode", {
+        type = "select",
+        name = L["Pad Mode"],
+        width = WeakAuras.halfWidth,
+        values = Private.pad_types,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_max", {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        name = L["Pad to"],
+        width = WeakAuras.halfWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+      })
     end,
     CreateFormatter = function(symbol, get)
       local precision = get(symbol .. "_decimal_precision", 1)
+      local pad = get(symbol .. "_pad", false)
+      local padMode = get(symbol .. "_pad_mode", "left")
+      local padLength = get(symbol .. "_pad_max", 8)
+      local formatterFunc
       if precision == 0 then
         local type = get(symbol .. "_round_type", "floor")
-        return simpleFormatters[type]
+        formatterFunc = simpleFormatters[type]
       else
         local format = "%." .. precision .. "f"
-        return function(value)
+        formatterFunc = function(value)
           return (type(value) == "number") and string.format(format, value) or value
         end
       end
+      if pad then
+        return function(input)
+          return WeakAuras.PadString(formatterFunc(input), padMode, padLength)
+        end
+      end
+      return formatterFunc
     end
   },
   Unit = {
@@ -583,7 +775,7 @@ Private.format_types = {
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
         control = "WeakAurasSpinBox",
-        name = L["Max Char "],
+        name = L["Max Char"],
         width = WeakAuras.normalWidth,
         min = 1,
         max = 20,
@@ -593,12 +785,38 @@ Private.format_types = {
           return not get(symbol .. "_abbreviate")
         end
       })
+      addOption(symbol .. "_pad", {
+        type = "toggle",
+        name = L["Pad"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_mode", {
+        type = "select",
+        name = L["Pad Mode"],
+        width = WeakAuras.halfWidth,
+        values = Private.pad_types,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_max", {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        name = L["Pad to"],
+        width = WeakAuras.halfWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+      })
     end,
     CreateFormatter = function(symbol, get, withoutColor)
       local color = not withoutColor and get(symbol .. "_color", true)
       local realm = get(symbol .. "_realm_name", "never")
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
+      local pad = get(symbol .. "_pad", false)
+      local padMode = get(symbol .. "_pad_mode", "left")
+      local padLength = get(symbol .. "_pad_max", 8)
 
       local nameFunc
       local colorFunc
@@ -617,41 +835,49 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(unit)
-          return unit and UnitName(unit)
+          return unit and WeakAuras.UnitName(unit) or ""
         end
       elseif realm == "star" then
         nameFunc = function(unit)
           if not unit then
             return ""
           end
-          local name, realm = UnitName(unit)
+          local name, realm = WeakAuras.UnitName(unit)
           if realm then
             return name .. "*"
           end
-          return name
+          return name or ""
         end
       elseif realm == "differentServer" then
         nameFunc = function(unit)
           if not unit then
             return ""
           end
-          local name, realm = UnitName(unit)
+          local name, realm = WeakAuras.UnitName(unit)
           if realm then
             return name .. "-" .. realm
           end
-          return name
+          return name or ""
         end
       elseif realm == "always" then
         nameFunc = function(unit)
           if not unit then
             return ""
           end
-          local name, realm = WeakAuras.UnitNameWithRealm(unit)
+          local name, realm = WeakAuras.UnitNameWithRealmCustomName(unit)
           return name .. "-" .. realm
         end
       end
 
-      if abbreviate then
+      if pad and abbreviate then
+        abbreviateFunc = function(input)
+          return WeakAuras.PadString(WeakAuras.WA_Utf8Sub(input, abbreviateMax), padMode, padLength)
+        end
+      elseif pad then
+        abbreviateFunc = function(input)
+          return WeakAuras.PadString(input, padMode, padLength)
+        end
+      elseif abbreviate then
         abbreviateFunc = function(input)
           return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
         end
@@ -720,12 +946,38 @@ Private.format_types = {
           return not get(symbol .. "_abbreviate")
         end
       })
+      addOption(symbol .. "_pad", {
+        type = "toggle",
+        name = L["Pad"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_mode", {
+        type = "select",
+        name = L["Pad Mode"],
+        width = WeakAuras.halfWidth,
+        values = Private.pad_types,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_pad_max", {
+        type = "range",
+        control = "WeakAurasSpinBox",
+        name = L["Pad to"],
+        width = WeakAuras.halfWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+      })
     end,
     CreateFormatter = function(symbol, get, withoutColor)
       local color = not withoutColor and get(symbol .. "_color", true)
       local realm = get(symbol .. "_realm_name", "never")
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
+      local pad = get(symbol .. "_pad", false)
+      local padMode = get(symbol .. "_pad_mode", "left")
+      local padLength = get(symbol .. "_pad_max", 8)
 
       local nameFunc
       local colorFunc
@@ -742,10 +994,11 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(name, realm)
-          return name
+          return WeakAuras.GetName(name)
         end
       elseif realm == "star" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm ~= "" then
             return name .. "*"
           end
@@ -753,6 +1006,7 @@ Private.format_types = {
         end
       elseif realm == "differentServer" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm ~= "" then
             return name .. "-" .. realm
           end
@@ -760,6 +1014,7 @@ Private.format_types = {
         end
       elseif realm == "always" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm == "" then
             realm = select(2, WeakAuras.UnitNameWithRealm("player"))
           end
@@ -767,7 +1022,15 @@ Private.format_types = {
         end
       end
 
-      if abbreviate then
+      if pad and abbreviate then
+        abbreviateFunc = function(input)
+          return WeakAuras.PadString(WeakAuras.WA_Utf8Sub(input, abbreviateMax), padMode, padLength)
+        end
+      elseif pad then
+        abbreviateFunc = function(input)
+          return WeakAuras.PadString(input, padMode, padLength)
+        end
+      elseif abbreviate then
         abbreviateFunc = function(input)
           return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
         end
@@ -892,16 +1155,16 @@ Private.format_types = {
 
         if cast then
           local _, _, _, _, endTime = WeakAuras.UnitCastingInfo("player")
-          local castExpirationTIme = endTime and endTime > 0 and (endTime / 1000) or 0
-          if castExpirationTIme > 0 then
-            result = min(result, now + value - castExpirationTIme)
+          local castExpirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
+          if castExpirationTime > 0 then
+            result = min(result, now + value - castExpirationTime)
           end
         end
         if channel then
           local _, _, _, _, endTime = WeakAuras.UnitChannelInfo("player")
-          local castExpirationTIme = endTime and endTime > 0 and (endTime / 1000) or 0
-          if castExpirationTIme > 0 then
-            result = min(result, now + value - castExpirationTIme)
+          local castExpirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
+          if castExpirationTime > 0 then
+            result = min(result, now + value - castExpirationTime)
           end
         end
 
@@ -983,6 +1246,10 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
+if WeakAuras.IsRetail() then
+  Private.debuff_class_types.bleed = L["Bleed"]
+end
+
 ---@type table<string, string>
 Private.player_target_events = {
   PLAYER_TARGET_CHANGED = "target",
@@ -1029,6 +1296,12 @@ Private.unit_types_bufftrigger_2 = Mixin({
   pet = L["Pet"],
   member = L["Specific Unit"],
   multi = L["Multi-target"]
+}, target_unit_types)
+
+---@type table<string, string>
+Private.actual_unit_types = Mixin({
+  player = L["Player"],
+  pet = L["Pet"],
 }, target_unit_types)
 
 ---@type table<string, string>
@@ -1097,7 +1370,7 @@ do
     [6] = true,
     [7] = true,
     [8] = true,
-    [9] = not WeakAuras.IsClassicEraOrWrath() and true or nil, -- Goblin
+    [9] = not WeakAuras.IsClassicEra() and true or nil, -- Goblin
     [10] = true,
     [11] = true,
     [22] = true,
@@ -1116,6 +1389,8 @@ do
     [37] = true,
     [52] = true, -- Dracthyr
     [70] = true, -- Dracthyr
+    [84] = true, -- Earthen
+    [85] = true, -- Earthen
   }
 
   for raceId, enabled in pairs(races) do
@@ -1145,16 +1420,20 @@ Private.faction_group = {
 ---@type table<number, string>
 Private.form_types = {};
 local function update_forms()
-  wipe(Private.form_types);
-  Private.form_types[0] = "0 - "..L["Humanoid"]
+  local oldForms = Private.form_types
+  Private.form_types = {}
+  Private.form_types[0] = "0 - " .. L["Humanoid"]
   for i = 1, GetNumShapeshiftForms() do
     local _, _, _, id = GetShapeshiftFormInfo(i);
     if(id) then
-      local name = GetSpellInfo(id);
+      local name = Private.ExecEnv.GetSpellName(id);
       if(name) then
         Private.form_types[i] = i.." - "..name
       end
     end
+  end
+  if Private.OptionsFrame and not tCompare(oldForms, Private.form_types) then
+    Private.OptionsFrame():ReloadOptions()
   end
 end
 
@@ -1218,16 +1497,13 @@ for k, v in pairs(Private.point_types) do
 end
 
 Private.default_types_for_anchor["ALL"] = {
-  display = L["Whole Area"],
+  display = L["Full Region"],
   type = "area"
 }
 
----@type table<string, string>
-Private.aurabar_anchor_areas = {
-  icon = L["Icon"],
-  fg = L["Foreground"],
-  bg = L["Background"],
-  bar = L["Full Bar"],
+Private.anchor_mode = {
+  area = L["Fill Area"],
+  point = L["Attach to Point"]
 }
 
 Private.inverse_point_types = {
@@ -1403,14 +1679,27 @@ elseif WeakAuras.IsCataClassic() then
   Private.power_types[16] = nil
   Private.power_types[17] = nil
   Private.power_types[18] = nil
-  Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
+elseif WeakAuras.IsMists() then
+  Private.power_types[8] = nil
+  Private.power_types[14] = BURNING_EMBERS
+  Private.power_types[13] = nil
+  Private.power_types[15] = POWER_TYPE_DEMONIC_FURY
+  Private.power_types[16] = nil
+  Private.power_types[17] = nil
+  Private.power_types[18] = nil
+  Private.power_types[28] = SHADOW_ORBS
+  Private.power_types[99] = L["Stagger"]
+end
 
----@type table<string, string>
-  Private.eclipse_direction_types = {
-    none = L["None"],
-    sun = L["Sun"],
-    moon = L["Moon"]
-  }
+if WeakAuras.IsCataOrMists() then
+  Private.power_types[26] = ECLIPSE
+
+  ---@type table<string, string>
+    Private.eclipse_direction_types = {
+      none = L["None"],
+      sun = L["Sun"],
+      moon = L["Moon"]
+    }
 end
 
 ---@type table<string, string>
@@ -1505,12 +1794,26 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
+---@type table<string, string>
+Private.coin_icons = {
+  ["gold"] = "|Tinterface/moneyframe/ui-goldicon:0|t",
+  ["silver"] = "|Tinterface/moneyframe/ui-silvericon:0|t",
+  ["copper"] = "|Tinterface/moneyframe/ui-coppericon:0|t"
+}
+
+---@type table<number, string>
+Private.money_precision_types = {
+  [1] = "123 " .. Private.coin_icons.gold,
+  [2] = "123 " .. Private.coin_icons.gold .. " 45 " .. Private.coin_icons.silver,
+  [3] = "123 " .. Private.coin_icons.gold .. " 45 " .. Private.coin_icons.silver .. " 67 " .. Private.coin_icons.copper
+}
+
 if WeakAuras.IsRetail() then
   Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsWrathOrCata() then
+elseif WeakAuras.IsCataOrMists() then
   Private.GetCurrencyListSize = GetCurrencyListSize
   ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
@@ -1629,34 +1932,63 @@ local function InitializeReputations()
   ---@type table<string, boolean>
   Private.reputations_headers = {}
 
+  -- Ensure all factions are shown by adjusting filters
+  local showLegacy = true
+  if not Private.ExecEnv.AreLegacyReputationsShown() then
+    showLegacy = false
+    C_Reputation.SetLegacyReputationsShown(true)
+  end
+  local sortType = 0
+  if Private.ExecEnv.GetReputationSortType() > 0 then
+    sortType = Private.ExecEnv.GetReputationSortType()
+    C_Reputation.SetReputationSortType(0)
+  end
+
+  -- Dynamic expansion of all collapsed headers
   local collapsed = {}
-  for i = 1, GetNumFactions() do
-    local name, _, _, _, _, _, _, _, _, isCollapsed = GetFactionInfo(i)
-    if isCollapsed then
-      collapsed[name] = true
+  local index = 1
+  while index <= Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
+    if factionData and factionData.isHeader and factionData.isCollapsed then
+      Private.ExecEnv.ExpandFactionHeader(index)
+      collapsed[factionData.name] = true
     end
+    index = index + 1
   end
 
-  ExpandAllFactionHeaders()
-  for i = 1, GetNumFactions() do
-    local name, _, _, _, _, _, _, _, isHeader, _, hasRep, _, _, factionID = GetFactionInfo(i)
-    if hasRep or not isHeader then
-      if factionID then
-        Private.reputations[factionID] = name
-        Private.reputations_sorted[factionID] = i
+  -- Process all faction data
+  for i = 1, Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
+    if factionData then
+      if factionData.currentStanding > 0 or not factionData.isHeader then
+        local factionID = factionData.factionID
+        if factionID then
+          Private.reputations[factionID] = factionData.name
+          Private.reputations_sorted[factionID] = i
+        end
+      else
+        local name = factionData.name
+        Private.reputations[name] = name
+        Private.reputations_sorted[name] = i
+        Private.reputations_headers[name] = true
       end
-    else
-      Private.reputations[name] = name
-      Private.reputations_sorted[name] = i
-      Private.reputations_headers[name] = true
     end
   end
 
-  for i = GetNumFactions(), 1, -1 do
-    local name = GetFactionInfo(i)
-    if collapsed[name] then
-      CollapseFactionHeader(i)
+  -- Collapse headers back to their original state
+  for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
+    if factionData and collapsed[factionData.name] then
+      Private.ExecEnv.CollapseFactionHeader(i)
     end
+  end
+
+  -- Restore filters if they were changed
+  if not showLegacy then
+    C_Reputation.SetLegacyReputationsShown(false)
+  end
+  if sortType > 0 then
+    C_Reputation.SetReputationSortType(sortType)
   end
 end
 
@@ -1716,6 +2048,7 @@ Private.orientation_types = {
   VERTICAL_INVERSE = L["Top to Bottom"]
 }
 
+---@type table<string, string>
 Private.orientation_with_circle_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],
@@ -1753,18 +2086,20 @@ WeakAuras.spec_types_specific = {}
 
 ---@type table<number, string>
 Private.spec_types_all = {}
+Private.specs_sorted = {}
 local function update_specs()
-  local cataFix = WeakAuras.IsCataClassic() and -1 or 0 -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
-  for classFileName, classID in pairs(WeakAuras.class_ids) do
+  for _, classFileName in pairs(WeakAuras.classes_sorted) do
+    local classID = WeakAuras.class_ids[classFileName]
     WeakAuras.spec_types_specific[classFileName] = {}
-    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID)
+    local numSpecs = WeakAuras.IsCataClassic() and 3 or Private.ExecEnv.GetNumSpecializationsForClassID(classID) -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
     for i = 1, numSpecs do
-      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i + cataFix);
+      local specId, tabName, _, icon = Private.ExecEnv.GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
         local classColor = WA_GetClassColor(classFileName)
         Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
         .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
+        tinsert(Private.specs_sorted, specId)
       end
     end
   end
@@ -1772,7 +2107,7 @@ end
 
 ---@type table<number, string>
 Private.talent_types = {}
-if WeakAuras.IsCataOrRetail() then
+if WeakAuras.IsCataOrMistsOrRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -1782,14 +2117,6 @@ else
       local talentId = (tab - 1) * MAX_NUM_TALENTS + num_talent
       Private.talent_types[talentId] = L["Tab "]..tab.." - "..num_talent
     end
-  end
-end
-
----@type table<number, string>
-Private.pvp_talent_types = {}
-if WeakAuras.IsRetail() then
-  for i = 1,10 do
-    tinsert(Private.pvp_talent_types, string.format(L["PvP Talent %i"], i));
   end
 end
 
@@ -1829,13 +2156,13 @@ Private.loss_of_control_types = {
 
 ---@type table<number, string>
 Private.main_spell_schools = {
-  [1] = GetSchoolString(1),
-  [2] = GetSchoolString(2),
-  [4] = GetSchoolString(4),
-  [8] = GetSchoolString(8),
-  [16] = GetSchoolString(16),
-  [32] = GetSchoolString(32),
-  [64] = GetSchoolString(64),
+  [1] = C_Spell.GetSchoolString(1),
+  [2] = C_Spell.GetSchoolString(2),
+  [4] = C_Spell.GetSchoolString(4),
+  [8] = C_Spell.GetSchoolString(8),
+  [16] = C_Spell.GetSchoolString(16),
+  [32] = C_Spell.GetSchoolString(32),
+  [64] = C_Spell.GetSchoolString(64),
 }
 
 ---@type table<string, table<string, string>>
@@ -1925,6 +2252,8 @@ Private.texture_types = {
     ["2888300"] = "Demonic Core Vertical",
     ["4699056"] = "Essence Burst",
     ["4699057"] = "Snapfire",
+    ["6160020"] = "Arcane Soul",
+    ["6160021"] = "Hyperthermia",
   },
   ["Icons"] = {
     ["165558"] = "Paw",
@@ -2200,7 +2529,21 @@ Private.texture_types = {
   }
 }
 
-if Private.AtlasList then
+if C_Texture and C_Texture.GetAtlasElements then
+  if WeakAuras.buildType == "dev" and Private.AtlasList then
+    WeakAuras.prettyPrint("Private.AtlasList can be removed now.")
+  end
+
+  Private.texture_types["Blizzard Atlas"] = function()
+    local atlasList = C_Texture.GetAtlasElements()
+    table.sort(atlasList)
+    local atlasTable = {}
+    for _, atlas in ipairs(atlasList) do
+      atlasTable[atlas] = atlas
+    end
+    return atlasTable
+  end
+elseif Private.AtlasList then
   Private.texture_types["Blizzard Atlas"] = {}
   for _, atlas in ipairs(Private.AtlasList) do
     Private.texture_types["Blizzard Atlas"][atlas] = atlas
@@ -2234,7 +2577,7 @@ if WeakAuras.IsClassicEra() then -- Classic
       runes[tostring(v)] = nil
     end
   end
-elseif WeakAuras.IsWrathOrCata() then
+elseif WeakAuras.IsCataClassic() then
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -2257,6 +2600,70 @@ elseif WeakAuras.IsWrathOrCata() then
       runes[tostring(v)] = nil
     end
   end
+elseif WeakAuras.IsMists() then
+  Private.texture_types["Blizzard Alerts"] = {
+    ["424570"] 	= "Spell Activation Overlay 0",
+    ["449486"]  = "Arcane Missiles",
+    ["449487"] 	= "Blood Surge",
+    ["449488"] 	= "Brain Freeze",
+    ["449489"] 	= "Frozen Fingers",
+    ["449490"] 	= "Hot Streak",
+    ["449491"] 	= "Imp Empowerment",
+    ["449492"] 	= "Nightfall",
+    ["449493"] 	= "Sudden Death",
+    ["449494"] 	= "Sword and Board",
+    ["450913"] 	= "Art of War",
+    ["450914"] 	= "Eclipse Moon",
+    ["450915"] 	= "Eclipse Sun",
+    ["450916"] 	= "Focus Fire",
+    ["450917"] 	= "Generic Arc 1",
+    ["450918"] 	= "Generic Arc 2",
+    ["450919"] 	= "Generic Arc 3",
+    ["450920"] 	= "Generic Arc 4",
+    ["450921"] 	= "Generic Arc 5",
+    ["450922"] 	= "Generic Arc 6",
+    ["450923"] 	= "Generic Top 1",
+    ["450924"] 	= "Generic Top 2",
+    ["450925"] 	= "Grand Crusader",
+    ["450926"] 	= "Lock and Load",
+    ["450927"] 	= "Maelstrom Weapon",
+    ["450928"] 	= "Master Marksman",
+    ["450929"] 	= "Nature's Grace",
+    ["450930"] 	= "Rime",
+    ["450931"] 	= "Slice and Dice",
+    ["450932"] 	= "Sudden Doom",
+    ["450933"] 	= "Surge of Light",
+    ["457658"] 	= "Impact",
+    ["458740"] 	= "Killing Machine",
+    ["458741"] 	= "Molten Core",
+    ["459313"] 	= "Daybreak",
+    ["459314"] 	= "Hand of Light",
+    ["460830"] 	= "Backslash",
+    ["460831"] 	= "Fury of Stormrage",
+    ["461878"] 	= "Dark Transformation",
+    ["463452"] 	= "Shooting Stars",
+    ["467696"] 	= "Fulmination",
+    ["469752"] 	= "Serendipity",
+    ["510822"] 	= "Berserk",
+    ["510823"] 	= "Omen of Clarity (Feral)",
+    ["511104"] 	= "Blood Boil",
+    ["511105"] 	= "Necropolis",
+    ["511469"] 	= "Denounce",
+    ["592058"] 	= "Surge of Darkness",
+    ["603338"] 	= "Dark Tiger",
+    ["603339"] 	= "White Tiger",
+    ["623950"] 	= "Monk Ox",
+    ["623951"] 	= "Monk Serpent",
+    ["623952"] 	= "Monk Tiger",
+    ["627609"] 	= "Shadow of Death",
+    ["627610"] 	= "Ultimatum",
+    ["656728"] 	= "Shadow Word Insanity",
+    ["774420"] 	= "Tooth and Claw",
+    ["801266"] 	= "Backlash_Green",
+    ["801267"] 	= "Imp Empowerment Green",
+    ["801268"] 	= "Molten Core Green",
+    ["898423"] 	= "Predatory Swiftness",
+  }
 end
 
 local PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
@@ -2451,6 +2858,9 @@ Private.weapon_types = {
   ["main"] = MAINHANDSLOT,
   ["off"] = SECONDARYHANDSLOT
 }
+if WeakAuras.IsCataClassic() then
+  Private.weapon_types.ranged = RANGEDSLOT
+end
 
 ---@type table<string, string>
 Private.swing_types = {
@@ -2458,11 +2868,11 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassicEraOrWrath() then
+if WeakAuras.IsClassicEra() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-if WeakAuras.IsWrathOrCata() then
+if WeakAuras.IsCataOrMists() then
   ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
@@ -2708,7 +3118,7 @@ end
 ---@type table
 Private.instance_difficulty_types = {}
 
-if WeakAuras.IsRetail() then
+if not WeakAuras.IsClassicEra() then
   -- Fill out instance_difficulty_types automatically.
   -- Unfortunately the names BLizzard gives are not entirely unique,
   -- so try hard to disambiguate them via the type, and if nothing works by
@@ -2767,9 +3177,20 @@ if WeakAuras.IsRetail() then
     [192] = L["Dungeon (Mythic+)"], -- "Challenge Level 1" TODO: check if this label is correct
     [193] = L["10 Player Raid (Heroic)"],
     [194] = L["25 Player Raid (Heroic)"],
+    [205] = L["Follower Dungeon"],
+    [208] = L["Delve"],
+    [216] = L["Quest Party"],
+    [220] = L["Story Raid"],
+    [230] = unused, -- heroic party
+    [231] = unused, -- normal raid dungeon
+    [232] = unused, -- event party
+    [236] = L["Lorewalking"],
+    [237] = WeakAuras.IsMists() and L["Dungeon (Celestial)"] or unused,
   }
 
-  for i = 1, 200 do
+  Private.instance_difficulty_types[0] =L["None"]
+
+  for i = 1, 240 do
     local name, type = GetDifficultyInfo(i)
     if name then
       if instance_difficulty_names[i] then
@@ -2795,7 +3216,8 @@ Private.TocToExpansion = {
    [7] = L["Legion"],
    [8] = L["Battle for Azeroth"],
    [9] = L["Shadowlands"],
-  [10] = L["Dragonflight"]
+  [10] = L["Dragonflight"],
+  [11] = L["The War Within"]
 }
 
 ---@type table<string, string>
@@ -2816,12 +3238,6 @@ if WeakAuras.IsRetail() then
     lfr = PLAYER_DIFFICULTY3,
     challenge = PLAYER_DIFFICULTY5
   }
-elseif WeakAuras.IsWrathClassic() then
-  Private.difficulty_types = {
-    none = L["None"],
-    normal = PLAYER_DIFFICULTY1,
-    heroic = PLAYER_DIFFICULTY2,
-  }
 elseif WeakAuras.IsCataClassic() then
   Private.difficulty_types = {
     none = L["None"],
@@ -2829,10 +3245,19 @@ elseif WeakAuras.IsCataClassic() then
     normal = PLAYER_DIFFICULTY1,
     heroic = PLAYER_DIFFICULTY2,
   }
+elseif WeakAuras.IsMists() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+    mythic = PLAYER_DIFFICULTY6,
+    lfr = PLAYER_DIFFICULTY3,
+    challenge = PLAYER_DIFFICULTY5
+  }
 end
 
 ---@type table<string, string>
-if WeakAuras.IsClassicEraOrWrathOrCata() then
+if WeakAuras.IsClassicOrCataOrMists() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -2841,13 +3266,11 @@ if WeakAuras.IsClassicEraOrWrathOrCata() then
 end
 
 ---@type table<string, string>
-if WeakAuras.IsWrathOrCataOrRetail() then
-  Private.role_types = {
-    TANK = INLINE_TANK_ICON.." "..TANK,
-    DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
-    HEALER = INLINE_HEALER_ICON.." "..HEALER
-  }
-end
+Private.role_types = {
+  TANK = INLINE_TANK_ICON.." "..TANK,
+  DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
+  HEALER = INLINE_HEALER_ICON.." "..HEALER
+}
 
 ---@type table<string, string>
 Private.group_member_types = {
@@ -2866,6 +3289,26 @@ Private.classification_types = {
   trivial = L["Trivial (Low Level)"],
   minus = L["Minus (Small Nameplate)"]
 }
+
+if WeakAuras.IsMistsOrRetail() then
+  ---@type table<number, string>
+  Private.creature_type_types = {}
+  for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do
+    local creatureInfo = C_CreatureInfo.GetCreatureTypeInfo(creatureID)
+    if creatureInfo then
+      Private.creature_type_types[creatureID] = creatureInfo.name
+    end
+  end
+
+  ---@type table<number, string>
+  Private.creature_family_types = {}
+  for _, familyID in ipairs(C_CreatureInfo.GetCreatureFamilyIDs()) do
+    local familyInfo = C_CreatureInfo.GetCreatureFamilyInfo(familyID)
+    if familyInfo then
+      Private.creature_family_types[familyID] = familyInfo.name
+    end
+  end
+end
 
 ---@type table<string, string>
 Private.anim_start_preset_types = {
@@ -2918,6 +3361,7 @@ Private.chat_message_types = {
   CHAT_MSG_BG_SYSTEM_HORDE = L["BG-System Horde"],
   CHAT_MSG_BN_WHISPER = L["Battle.net Whisper"],
   CHAT_MSG_CHANNEL = L["Channel"],
+  CHAT_MSG_COMMUNITIES_CHANNEL = L["Communities"],
   CHAT_MSG_EMOTE = L["Emote"],
   CHAT_MSG_GUILD = L["Guild"],
   CHAT_MSG_MONSTER_YELL = L["Monster Yell"],
@@ -2936,6 +3380,13 @@ Private.chat_message_types = {
   CHAT_MSG_YELL = L["Yell"],
   CHAT_MSG_SYSTEM = L["System"],
   CHAT_MSG_LOOT = L["Loot"],
+}
+
+---@type table<string, string>
+Private.chat_message_leader_event = {
+  CHAT_MSG_INSTANCE_CHAT = "CHAT_MSG_INSTANCE_CHAT_LEADER",
+  CHAT_MSG_PARTY = "CHAT_MSG_PARTY_LEADER",
+  CHAT_MSG_RAID = "CHAT_MSG_RAID_LEADER"
 }
 
 ---@type table<string, string>
@@ -2958,21 +3409,6 @@ Private.send_chat_message_types = {
 
 Private.send_chat_message_types.TTS = L["Text-to-speech"]
 
----@type table
-Private.tts_voices = {}
-
-local function updateTts()
-  wipe(Private.tts_voices)
-  for i, voiceInfo in pairs(C_VoiceChat.GetTtsVoices()) do
-    Private.tts_voices[voiceInfo.voiceID] = voiceInfo.name
-  end
-end
-
-updateTts()
-
-local TtsUpdateFrame = CreateFrame("FRAME")
-TtsUpdateFrame:RegisterEvent("VOICE_CHAT_TTS_VOICES_UPDATE")
-TtsUpdateFrame:SetScript("OnEvent", updateTts)
 
 ---@type table<string, string>
 Private.group_aura_name_info_types = {
@@ -2994,6 +3430,7 @@ Private.cast_types = {
 }
 
 -- register sounds
+LSM:Register("sound", "Heartbeat Single", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\HeartbeatSingle.ogg")
 LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg")
 LSM:Register("sound", "Bike Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.ogg")
 LSM:Register("sound", "Boxing Arena Gong", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BoxingArenaSound.ogg")
@@ -3127,17 +3564,33 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
       Private.sound_types[path] = key
       Private.sound_file_types[path] = key
     end
+  elseif mediatype == "statusbar" or mediatype == "statusbar_atlas" then
+    local path = LSM:Fetch(mediatype, key)
+    if path then
+      Private.texture_types["LibSharedMedia Textures"][path] = key
+    end
   end
 end)
+
+Private.texture_types["LibSharedMedia Textures"] = {}
+for _, mediaType in ipairs{"statusbar", "statusbar_atlas"} do
+  local mediaTable = LSM:HashTable(mediaType)
+  if mediaTable then
+    for name, path in pairs(mediaTable) do
+      Private.texture_types["LibSharedMedia Textures"][path] = name
+    end
+  end
+end
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 -- Other Fira fonts
-LSM:Register("font", "Fira Sans Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Black.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
-LSM:Register("font", "Fira Sans Condensed Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Black.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "Fira Sans Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Heavy.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "Fira Sans Condensed Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Heavy.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Condensed Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
-
+LSM:Register("font", "PT Sans Narrow Regular", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\PTSansNarrow-Regular.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\PTSansNarrow-Bold.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
 -- register plain white border
 LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
@@ -3147,6 +3600,35 @@ LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures
 LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
 LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
 LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
+
+if PowerBarColor then
+  local function capitalizeFirstLetter(str)
+    -- Split the string into words separated by underscores
+    local words = {}
+    for word in string.gmatch(str, "[^_]+") do
+      table.insert(words, word)
+    end
+    -- Capitalize the first letter of each word
+    for i, word in ipairs(words) do
+      words[i] = word:sub(1, 1):upper() .. word:sub(2):lower()
+    end
+    return table.concat(words, " ")
+  end
+
+  for power, data in pairs(PowerBarColor) do
+    local name, path
+    if type(power) == "string" and data.atlas then
+      name = "Blizzard " .. capitalizeFirstLetter(power)
+      path = data.atlas
+    elseif data.atlasElementName then
+      name = "Blizzard " .. data.atlasElementName
+      path = "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName
+    end
+    if name and path then
+      LSM:Register("statusbar_atlas", name, path)
+    end
+  end
+end
 
 ---@type table<string, string>
 Private.duration_types = {
@@ -3174,7 +3656,7 @@ Private.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if WeakAuras.IsClassicEraOrWrath() then
+if WeakAuras.IsClassicEra() then
   Private.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
   Private.pet_behavior_types.assist = nil
 end
@@ -3222,7 +3704,9 @@ Private.bufftrigger_2_progress_behavior_types = {
 ---@type table<string, string>
 Private.bufftrigger_2_preferred_match_types = {
   showLowest = L["Least remaining time"],
-  showHighest = L["Most remaining time"]
+  showHighest = L["Most remaining time"],
+  showLowestSpellId = L["Lowest Spell Id"],
+  showHighestSpellId = L["Highest Spell Id"],
 }
 
 ---@type table<string, string>
@@ -3295,7 +3779,8 @@ Private.bool_types = {
 ---@type table<string, string>
 Private.absorb_modes = {
   OVERLAY_FROM_START = L["Attach to Start"],
-  OVERLAY_FROM_END = L["Attach to End"]
+  OVERLAY_FROM_END = L["Attach to End"],
+  OVERLAY_FROM_END_REVERSE = L["Attach to End, backwards"]
 }
 
 ---@type table
@@ -3427,7 +3912,8 @@ Private.update_categories = {
       "url",
       "desc",
       "version",
-      "semver"
+      "semver",
+      "wagoID", -- i don't *love* that we're so closely tied to wago, but eh
     },
     default = true,
     label = L["Meta Data"],
@@ -3627,7 +4113,6 @@ Private.author_option_fields = {
   header = {
     useName = false,
     text = "",
-    noMerge = false
   },
   group = {
     groupType = "simple",
@@ -3796,7 +4281,15 @@ Private.difficulty_info = {
   [176] = {
     size = "twentyfive",
     difficulty = "heroic",
-  }
+  },
+  [186] = {
+    size = "fortyman",
+    difficulty = "normal",
+  },
+  [226] = {
+    size = "twenty",
+    difficulty = "normal",
+  },
 }
 
 Private.glow_types = {
@@ -3805,11 +4298,8 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsRetail() then
-  local build = select(4, GetBuildInfo())
-  if build >= 100105 then
-    Private.glow_types.Proc = L["Proc Glow"]
-  end
+if WeakAuras.IsMistsOrRetail() then
+  Private.glow_types.Proc = L["Proc Glow"]
 end
 
 ---@type table<string, string>
@@ -3869,7 +4359,7 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsWrathOrCataOrRetail() then
+if WeakAuras.IsCataOrMistsOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
@@ -3900,6 +4390,12 @@ Private.dbm_types = {
   [5] = L["Role"],
   [6] = L["Phase"],
   [7] = L["Important"]
+}
+
+Private.bossmods_timerTypes = {
+  PULL = L["Pull"],
+  BREAK = L["Break"],
+  TIMER = L["Timer"],
 }
 
 ---@type table<string, string>
@@ -3934,6 +4430,7 @@ Private.reset_ranged_swing_spells = {
   [5019] = true, -- Shoot Wands
   [75] = true, -- Auto Shot
   [5384] = true, -- Feign Death
+  [467718] = true, -- Bleak Arrows
 }
 
 Private.noreset_swing_spells = {
@@ -3982,7 +4479,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassicEraOrWrath() then
+if WeakAuras.IsClassicOrCataOrMists() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
@@ -3990,598 +4487,24 @@ end
 
 for i = 0, 20 do
   if not skippedWeaponTypes[i] then
-    Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
+    Private.item_weapon_types[2 * 256 + i] = C_Item.GetItemSubClassInfo(2, i)
   end
 end
 
 -- Shields
-Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
+Private.item_weapon_types[4 * 256 + 6] = C_Item.GetItemSubClassInfo(4, 6)
 WeakAuras.item_weapon_types = Private.item_weapon_types
 
-WeakAuras.StopMotion = {}
-WeakAuras.StopMotion.texture_types = {}
+WeakAuras.StopMotion = WeakAuras.StopMotion or {}
+WeakAuras.StopMotion.texture_types = WeakAuras.StopMotion.texture_types or {}
+WeakAuras.StopMotion.texture_data = WeakAuras.StopMotion.texture_data or {}
 
 WeakAuras.StopMotion.texture_types.Basic = {
   ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = "Example",
 }
 
-WeakAuras.StopMotion.texture_data = {}
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = { count = 64, rows = 8, columns = 8 }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\circle"] = {
-     ["count"] = 256,
-     ["rows"] = 16,
-     ["columns"] = 16
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\checkmark"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\redx"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\leftarc"] = {
-     ["count"] = 256,
-     ["rows"] = 16,
-     ["columns"] = 16
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\rightarc"] = {
-     ["count"] = 256,
-     ["rows"] = 16,
-     ["columns"] = 16
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\fireball"] = {
-     ["count"] = 7,
-     ["rows"] = 5,
-     ["columns"] = 5
-  }
-
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\AURARUNE8"] = {
-     ["count"] = 256,
-     ["rows"] = 16,
-     ["columns"] = 16
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionv"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionw"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionf"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionword"] = {
-     ["count"] = 64,
-     ["rows"] = 8,
-     ["columns"] = 8
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = {
-      ["count"] = 32,
-      ["rows"] = 8,
-      ["columns"] = 4
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Gadget"] = {
-     ["count"] = 32,
-     ["rows"] = 8,
-     ["columns"] = 4
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Radar"] = {
-     ["count"] = 32,
-     ["rows"] = 8,
-     ["columns"] = 4
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = {
-     ["count"] = 32,
-     ["rows"] = 8,
-     ["columns"] = 4
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Saber"] = {
-     ["count"] = 32,
-     ["rows"] = 8,
-     ["columns"] = 4
-  }
-
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Waveform"] = {
-     ["count"] = 32,
-     ["rows"] = 8,
-     ["columns"] = 4
-  }
-
--- Blizzard flipbooks, only for Retail
-if WeakAuras.IsRetail() then
-  WeakAuras.StopMotion.texture_types.Blizzard = {}
-  local replacementString = {}
-
-  -- Action bar GCD
-  WeakAuras.StopMotion.texture_data["UI-HUD-ActionBar-GCD-Flipbook-2x"] = {
-    ["rows"] = 11,
-    ["columns"] = 2,
-    ["count"] = 22,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UI-HUD-ActionBar-GCD-Flipbook-2x"] = "UI-HUD-ActionBar-GCD-Flipbook-2x"
-
-  -- Arcane shock
-  WeakAuras.StopMotion.texture_data["UF-Arcane-ShockFX"] = {
-    ["rows"] = 5,
-    ["columns"] = 6,
-    ["count"] = 28,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UF-Arcane-ShockFX"] = "UF-Arcane-ShockFX"
-
-  -- Checkmark
-  WeakAuras.StopMotion.texture_data["activities-checkmark_flipbook-large"] = {
-    ["rows"] = 2,
-    ["columns"] = 4,
-    ["count"] = 8,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["activities-checkmark_flipbook-large"] = "activities-checkmark_flipbook-large"
-
-  -- Chi wind
-  WeakAuras.StopMotion.texture_data["UF-Chi-WindFX"] = {
-    ["rows"] = 3,
-    ["columns"] = 6,
-    ["count"] = 17,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UF-Chi-WindFX"] = "UF-Chi-WindFX"
-
-  -- Death knight runes
-  replacementString = {
-    "Blood",
-    "Default",
-    "Frost",
-    "Unholy"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("UF-DKRunes-%sDeplete"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 4,
-      ["columns"] = 6,
-      ["count"] = 23,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Dice
-  WeakAuras.StopMotion.texture_data["lootroll-animdice"] = {
-    ["rows"] = 9,
-    ["columns"] = 5,
-    ["count"] = 44,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["lootroll-animdice"] = "lootroll-animdice"
-
-  -- Dragonriding vigor
-  WeakAuras.StopMotion.texture_data["dragonriding_vigor_fill_flipbook"] = {
-    ["rows"] = 5,
-    ["columns"] = 4,
-    ["count"] = 20,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["dragonriding_vigor_fill_flipbook"] = "dragonriding_vigor_fill_flipbook"
-
-  -- Druid combo points
-  WeakAuras.StopMotion.texture_data["UF-DruidCP-Slash"] = {
-    ["rows"] = 3,
-    ["columns"] = 8,
-    ["count"] = 20,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UF-DruidCP-Slash"] = "UF-DruidCP-Slash"
-
-  -- Essence spinner
-  WeakAuras.StopMotion.texture_data["UF-Essence-Flipbook-FX-Circ"] = {
-    ["rows"] = 3,
-    ["columns"] = 10,
-    ["count"] = 29,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UF-Essence-Flipbook-FX-Circ"] = "UF-Essence-Flipbook-FX-Circ"
-
-  -- Experience bars
-  replacementString = {
-    "Rested",
-    "Reputation",
-    "Experience",
-    "Honor",
-    "ArtifactPower"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("UI-HUD-ExperienceBar-Fill-%s-2x-Flipbook"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 30,
-      ["columns"] = 1,
-      ["count"] = 30,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  replacementString = {
-    "Rested",
-    "Reputation",
-    "XP",
-    "Faction-Orange",
-    "ArtifactPower"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("UI-HUD-ExperienceBar-Flare-%s-2x-Flipbook"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 7,
-      ["columns"] = 4,
-      ["count"] = 28,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Great vault unlocking
-  WeakAuras.StopMotion.texture_data["greatVault-unlocked-anim"] = {
-    ["rows"] = 11,
-    ["columns"] = 5,
-    ["count"] = 54,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["greatVault-unlocked-anim"] = "greatVault-unlocked-anim"
-
-  -- Group finder eye
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-initial"] = {
-    ["rows"] = 5,
-    ["columns"] = 11,
-    ["count"] = 52,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-initial"] = "groupfinder-eye-flipbook-initial"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-searching"] = {
-    ["rows"] = 8,
-    ["columns"] = 11,
-    ["count"] = 80,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-searching"] = "groupfinder-eye-flipbook-searching"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-mouseover"] = {
-    ["rows"] = 1,
-    ["columns"] = 12,
-    ["count"] = 12,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-mouseover"] = "groupfinder-eye-flipbook-mouseover"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-foundfx"] = {
-    ["rows"] = 5,
-    ["columns"] = 15,
-    ["count"] = 75,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-foundfx"] = "groupfinder-eye-flipbook-foundfx"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-found-initial"] = {
-    ["rows"] = 7,
-    ["columns"] = 11,
-    ["count"] = 70,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-found-initial"] = "groupfinder-eye-flipbook-found-initial"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-found-loop"] = {
-    ["rows"] = 4,
-    ["columns"] = 11,
-    ["count"] = 41,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-found-loop"] = "groupfinder-eye-flipbook-found-loop"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-initial"] = {
-    ["rows"] = 6,
-    ["columns"] = 11,
-    ["count"] = 66,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-poke-initial"] = "groupfinder-eye-flipbook-poke-initial"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-loop"] = {
-    ["rows"] = 6,
-    ["columns"] = 11,
-    ["count"] = 62,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-poke-loop"] = "groupfinder-eye-flipbook-poke-loop"
-
-  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-end"] = {
-    ["rows"] = 4,
-    ["columns"] = 11,
-    ["count"] = 38,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["groupfinder-eye-flipbook-poke-end"] = "groupfinder-eye-flipbook-poke-end"
-
-  -- Holy power runes
-  for i = 1, 5 do
-    local name = ("UF-HolyPower-DepleteRune%d"):format(i)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 5,
-      ["columns"] = 6,
-      ["count"] = 26,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Loot roll reveal
-  WeakAuras.StopMotion.texture_data["lootroll-animreveal-a"] = {
-    ["rows"] = 2,
-    ["columns"] = 6,
-    ["count"] = 12,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["lootroll-animreveal-a"] = "lootroll-animreveal-a"
-
-   -- Mail
-   WeakAuras.StopMotion.texture_data["UI-HUD-Minimap-Mail-New-Flipbook-2x"] = {
-    ["rows"] = 5,
-    ["columns"] = 4,
-    ["count"] = 20,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UI-HUD-Minimap-Mail-New-Flipbook-2x"] = "UI-HUD-Minimap-Mail-New-Flipbook-2x"
-
-  WeakAuras.StopMotion.texture_data["UI-HUD-Minimap-Mail-Reminder-Flipbook-2x"] = {
-    ["rows"] = 3,
-    ["columns"] = 4,
-    ["count"] = 12,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UI-HUD-Minimap-Mail-Reminder-Flipbook-2x"] = "UI-HUD-Minimap-Mail-Reminder-Flipbook-2x"
-
-  -- Ping markers
-  replacementString = {
-    "Assist",
-    "Attack",
-    "OnMyWay",
-    "Warning",
-    "NonThreat",
-    "Threat"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("Ping_Marker_FlipBook_%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 4,
-      ["columns"] = 6,
-      ["count"] = 21,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Player rest
-  WeakAuras.StopMotion.texture_data["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = {
-    ["rows"] = 7,
-    ["columns"] = 6,
-    ["count"] = 42,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = "UI-HUD-UnitFrame-Player-Rest-Flipbook"
-
-  -- Priest void bar
-  WeakAuras.StopMotion.texture_data["Unit_Priest_Void_Fill_Flipbook"] = {
-    ["rows"] = 9,
-    ["columns"] = 5,
-    ["count"] = 45,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["Unit_Priest_Void_Fill_Flipbook"] = "Unit_Priest_Void_Fill_Flipbook"
-
-  -- Professions
-  replacementString = {
-    "Alchemy",
-    "Blacksmithing",
-    "Cooking",
-    "Engineering",
-    "Fishing",
-    "Herbalism",
-    "Inscription",
-    "Leatherworking",
-    "Mining",
-    "Skinning",
-    "Tailoring"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("Skillbar_Fill_Flipbook_%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 30,
-      ["columns"] = 2,
-      ["count"] = 60,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Enchanting"] = {
-    ["rows"] = 37,
-    ["columns"] = 2,
-    ["count"] = 74,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["Skillbar_Fill_Flipbook_Enchanting"] = "Skillbar_Fill_Flipbook_Enchanting"
-
-  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Jewelcrafting"] = {
-    ["rows"] = 22,
-    ["columns"] = 2,
-    ["count"] = 44,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["Skillbar_Fill_Flipbook_Jewelcrafting"] = "Skillbar_Fill_Flipbook_Jewelcrafting"
-
-  replacementString = {
-    "Alchemy",
-    "Blacksmithing",
-    "Enchanting",
-    "Engineering",
-    "Herbalism",
-    "Inscription",
-    "Jewelcrafting",
-    "Leatherworking",
-    "Mining",
-    "Skinning",
-    "Tailoring"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("SpecDial_Fill_Flipbook_%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 6,
-      ["columns"] = 6,
-      ["count"] = 36,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-
-    name = ("SpecDial_Pip_Flipbook_%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 4,
-      ["columns"] = 4,
-      ["count"] = 16,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-
-    name = ("SpecDial_EndPip_Flipbook_%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 4,
-      ["columns"] = 6,
-      ["count"] = 24,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  for i = 1, 5 do
-    local name = ("GemAppear_T%d_Flipbook"):format(i)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 3,
-      ["columns"] = 4,
-      ["count"] = 12,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-
-    name = ("Quality-BarFill-Flipbook-T%d-x2"):format(i)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 15,
-      ["columns"] = 4,
-      ["count"] = 60,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  for i = 1, 4 do
-    local name = ("GemDissolve_T%d_Flipbook"):format(i)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 3,
-      ["columns"] = 4,
-      ["count"] = 12,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Rogue combo points
-  replacementString = {
-    "Red",
-    "Blue"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("UF-RogueCP-Slash-%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 3,
-      ["columns"] = 6,
-      ["count"] = 17,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  -- Soul shards
-  replacementString = {
-    "A",
-    "B",
-    "C"
-  }
-
-  for _, v in ipairs(replacementString) do
-    local name = ("UF-SoulShards-Flipbook-Deplete%s"):format(v)
-    WeakAuras.StopMotion.texture_data[name] = {
-      ["rows"] = 3,
-      ["columns"] = 6,
-      ["count"] = 15,
-      ["isBlizzardFlipbook"] = true
-    }
-    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
-  end
-
-  WeakAuras.StopMotion.texture_data["UF-SoulShards-Flipbook-Soul"] = {
-    ["rows"] = 3,
-    ["columns"] = 7,
-    ["count"] = 18,
-    ["isBlizzardFlipbook"] = true
-  }
-  WeakAuras.StopMotion.texture_types.Blizzard["UF-SoulShards-Flipbook-Soul"] = "UF-SoulShards-Flipbook-Soul"
-
-  -- Supplement the data
-  for k, v in pairs(WeakAuras.StopMotion.texture_data) do
-    if v.isBlizzardFlipbook then
-      local atlasInfo = C_Texture.GetAtlasInfo(k)
-      if atlasInfo then
-        if atlasInfo.rawSize then
-          v.tileWidth = atlasInfo.rawSize.x / v.columns
-          v.tileHeight = atlasInfo.rawSize.y / v.rows
-        end
-      end
-    end
-  end
-end
 
 WeakAuras.StopMotion.animation_types = {
   loop = L["Loop"],
@@ -4625,43 +4548,11 @@ if WeakAuras.IsClassicEra() then
   end
 end
 
-if WeakAuras.IsWrathOrCata() then
-  if not WeakAuras.IsCataClassic() then
-    Private.item_slot_types[0] = AMMOSLOT
-    Private.item_slot_types[18] = RANGEDSLOT
-  end
+if WeakAuras.IsCataClassic() then
+  Private.item_slot_types[18] = RELICSLOT
   for slot = 20, 28 do
     Private.item_slot_types[slot] = nil
   end
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
-
-  local reset_swing_spell_list = {
-    1464, 8820, 11604, 11605, 25241, 25242, -- Slam
-    78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286, 29707, 30324, -- Heroic Strike
-    845, 7369, 11608, 11609, 20569, 25231, -- Cleave
-    2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, 27014, -- Raptor Strike
-    6807, 6808, 6809, 8972, 9745, 9880, 9881, 26996, -- Maul
-    20549, -- War Stomp
-    2764, 3018, -- Shoots,
-    19434, 20900, 20901, 20902, 20903, 20904, 27065, -- Aimed Shot
-    20066, -- Repentance
-    11350, -- Fire Shield (Oil of Immolation)
-    50986, -- Sulfuron Slammer
-    439, 440, 441, 2024, 4042, 17534, 28495, -- Minor/Lesser/Greater/Superior/Major/Super Healing Potion
-    41619, 41620, -- Cenarion Healing Salve/Bottled Nethergon Vapor
-    5384, -- Feign Death
-  }
-  for _, spellid in ipairs(reset_swing_spell_list) do
-    Private.reset_swing_spells[spellid] = true
-  end
-
-  local reset_ranged_swing_spell_list = {
-    2764, 3018, -- Shoots
-    19434, 20900, 20901, 20902, 20903, 20904, 27065 -- Aimed Shot
-  }
-
-  for _, spellid in ipairs(reset_ranged_swing_spell_list) do
-    Private.reset_ranged_swing_spells[spellid] = true
-  end
 end

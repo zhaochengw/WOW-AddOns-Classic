@@ -61,12 +61,10 @@ local funcs = {
 	strconcat = strconcat,
 	strtrim = strtrim,
 	tostringall = tostringall,
-
 	tinsert = table.insert,
 	tremove = table.remove,
 	tconcat = table.concat,
 	tContains = tContains,
-	tconcat = table.concat,
 	sort = table.sort,
 	wipe = wipe,
 

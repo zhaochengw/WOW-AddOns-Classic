@@ -24,13 +24,49 @@ local ipairs = ipairs
 local db -- We'll put our saved vars here later
 
 -- Make some of the inventory functions more local (ordered by string length!)
-local GetAddOnMetadata = GetAddOnMetadata
-local GetItemQualityColor = GetItemQualityColor
+-- also compat
+local nop = function(...) end
+local GetAddOnMetadata = function(...)
+    if C_AddOns and C_AddOns.GetAddOnMetadata then
+        return C_AddOns.GetAddOnMetadata(...)
+    elseif _G.GetAddOnMetadata then
+        return _G.GetAddOnMetadata(...)
+    end
+end
+local GetItemQualityColor = function(...)
+    if C_Item and C_Item.GetItemQualityColor then
+        return C_Item.GetItemQualityColor(...)
+    elseif _G.GetItemQualityColor then
+        return _G.GetItemQualityColor(...)
+    end
+end
+local GetDetailedItemLevelInfo = function(...)
+    if C_Item and C_Item.GetDetailedItemLevelInfo then
+        return C_Item.GetDetailedItemLevelInfo(...)
+    elseif _G.GetDetailedItemLevelInfo then
+        return _G.GetDetailedItemLevelInfo(...)
+    end
+end
+local GetCurrentItemLevel = function(...)
+    if C_Item and C_Item.GetCurrentItemLevel then
+        return C_Item.GetCurrentItemLevel(...)
+    else
+        return nop(...)
+    end
+end
+local CreateFromEquipmentSlot = function(...)
+    if ItemLocation and ItemLocation.CreateFromEquipmentSlot then
+        return ItemLocation:CreateFromEquipmentSlot(...)
+    else
+        return nop(...)
+    end
+end
+local GetAverageItemLevel = GetAverageItemLevel
 local GetInventorySlotInfo = GetInventorySlotInfo
 local GetInventoryItemLink = GetInventoryItemLink
 local GetInventoryItemQuality = GetInventoryItemQuality
-local GetDetailedItemLevelInfo = GetDetailedItemLevelInfo
 local GetInventoryItemDurability = GetInventoryItemDurability
+local GetRelativeDifficultyColor = GetRelativeDifficultyColor
 
 -- Flag to check if the borders were created or not
 local bordersCreated = false
@@ -158,10 +194,11 @@ local IsClassic
 do
     local is_retail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
     local is_classic = not is_retail
+    local is_mop_classic = WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
 
     -- Returns true on a Classic client or nil at other times.
     IsClassic = function()
-        return is_classic
+        return is_classic, is_mop_classic
     end
 end
 
@@ -175,15 +212,16 @@ function Fizzle:OnInitialize()
 
     -- Register our options
     LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Fizzle", getOptions)
-    LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Fizzle", title)
+    self._ACD = LibStub("AceConfigDialog-3.0")
+    self._ACD:AddToBlizOptions("Fizzle", title)
 
     -- Register chat command to open options dialog
     self:RegisterChatCommand("fizzle", function()
-        InterfaceOptionsFrame_OpenToCategory(title)
+        Fizzle:showOptions()
     end)
 
     self:RegisterChatCommand("fizz", function()
-        InterfaceOptionsFrame_OpenToCategory(title)
+        Fizzle:showOptions()
     end)
 end
 
@@ -202,6 +240,14 @@ function Fizzle:OnDisable()
     end
 
     self:HideBorders()
+end
+
+function Fizzle:showOptions()
+    if self._ACD.OpenFrames["Fizzle"] then
+        self._ACD:Close("Fizzle")
+    else
+        self._ACD:Open("Fizzle")
+    end
 end
 
 function Fizzle:CreateBorder(slottype, slot, name, hasText)
@@ -269,7 +315,8 @@ function Fizzle:MakeTypeTable()
         "Shirt",
     }
 
-    if IsClassic() then
+    local is_classic, is_mop_classic = IsClassic()
+    if is_classic and not is_mop_classic then
         -- Ranged slot exists in Classic.
         items[#items + 1] = "Ranged"
 
@@ -305,7 +352,7 @@ local function GetDurabilityNumbers(slotId)
     local cur, max = GetInventoryItemDurability(slotId)
     cur, max = tonumber(cur) or 0, tonumber(max) or 0
 
-    local percent = cur / max * 100
+    local percent = max==0 and 100 or (cur / max * 100)
 
     return cur, max, percent
 end
@@ -313,12 +360,19 @@ end
 -- Returns: ilevel
 local function GetiLevel(slotId)
     local link = GetInventoryItemLink("player", slotId)
-
+    local base, current
     if link then
-        local iLevel = GetDetailedItemLevelInfo(link)
-        if iLevel then
-            return iLevel
+        base = GetDetailedItemLevelInfo(link)
         end
+    local iloc = CreateFromEquipmentSlot(slotId)
+    if iloc and iloc:IsValid() then
+        current = GetCurrentItemLevel(iloc)
+    end
+    if current then
+        return current, base
+    end
+    if base then
+        return base
     end
     return nil
 end
@@ -326,6 +380,8 @@ end
 function Fizzle:UpdateItems()
     -- Don't update unless the charframe is open.
     -- No point updating what we can't see.
+    local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvp = GetAverageItemLevel()
+
     if CharacterFrame:IsVisible() then
         -- Go and set the durability string for each slot that has an item equipped that has durability.
         -- Thanks Tekkub again for the base of this code.
@@ -360,7 +416,7 @@ function Fizzle:UpdateItems()
             end
 
             -- display item levels
-            self:ShowiLevel(item, id)
+            self:ShowiLevel(item, id, avgItemLevel)
 
             --Finally, colour the borders
             self:ColourBorders(id, item)
@@ -369,7 +425,7 @@ function Fizzle:UpdateItems()
         for _, item in ipairs(nditems) do
             local id, _ = GetInventorySlotInfo(item .. "Slot")
 
-            self:ShowiLevel(item, id)
+            self:ShowiLevel(item, id, avgItemLevel)
             self:ColourBorders(id, item)
         end
     end
@@ -377,28 +433,41 @@ end
 
 function Fizzle:CharacterFrame_OnShow()
     self:RegisterEvent("UNIT_INVENTORY_CHANGED", "UpdateItems")
+    self:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE", "UpdateItems")
     self:RegisterBucketEvent("UPDATE_INVENTORY_DURABILITY", 0.5, "UpdateItems")
     self:UpdateItems()
 end
 
 function Fizzle:CharacterFrame_OnHide()
     self:UnregisterEvent("UNIT_INVENTORY_CHANGED")
+    self:UnregisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE", "UpdateItems")
     self:UnregisterBucket("UPDATE_INVENTORY_DURABILITY")
 end
 
 
 -- Fetch and display iLevel if appropriate
-function Fizzle:ShowiLevel(item, id)
+function Fizzle:ShowiLevel(item, id, avgIlvl)
     -- add the ilevel if desired
     local istr = _G[item .. "FizzleiLevel"]
     if not istr then return end
 
     if db.showiLevel then
-        istr:SetText(GetiLevel(id))
+        local iLvl, bLvl = GetiLevel(id)
+        if iLvl then
+            local color = GetRelativeDifficultyColor(avgIlvl, iLvl)
+            local iLevelStr = tostring(iLvl)
+            if bLvl and bLvl ~= iLvl then
+                iLevelStr = iLevelStr.." |cffffffff*|r"
+            end
+            istr:SetText(iLevelStr)
+            istr:SetTextColor(color.r, color.g, color.b)
         istr:Show()
     else
         istr:Hide()
     end
+    else
+        istr:Hide()
+end
 end
 
 function Fizzle:ColourBorders(slotID, rawslot)

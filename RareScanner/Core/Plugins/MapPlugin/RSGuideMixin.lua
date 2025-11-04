@@ -11,8 +11,8 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner service libraries
+local RSUtils = private.ImportLib("RareScannerUtils")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
-
 
 RSGuideMixin = CreateFromMixins(MapCanvasPinMixin);
 
@@ -22,23 +22,23 @@ function RSGuideMixin:OnLoad()
 	self:SetScalingLimits(1, 0.75, 1.0);
 end
 
-function RSGuideMixin:OnAcquired(POI)
-	self:UseFrameLevelType("PIN_FRAME_LEVEL_AREA_POI", self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate"));
+function RSGuideMixin:OnAcquired(POI, pin)
+	self:UseFrameLevelType("PIN_FRAME_LEVEL_DIG_SITE", self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate"));
 
 	-- Set attributes
 	self.POI = POI
+	self.pin = pin
 	self.Texture:SetTexture(POI.texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self:SetPosition(POI.x, POI.y);
-	
-	if (self.SetPassThroughButtons) then
-		self:SetPassThroughButtons("MiddleButton");
-	end
 end
 
 function RSGuideMixin:OnMouseEnter()
 	if (self.ShowPingAnim:IsPlaying()) then
 		self.ShowPingAnim:Stop()
+	end
+	if (self.pin and self.pin.ShowPingAnim and not self.pin.ShowPingAnim:IsPlaying()) then
+		self.pin.ShowPingAnim:Play();
 	end
 	
 	if (self.POI.tooltip) then
@@ -59,6 +59,9 @@ end
 function RSGuideMixin:OnMouseLeave()
 	if (self.POI.tooltip) then
 		GameTooltip:Hide()
+	end
+	if (self.pin and self.pin.ShowPingAnim and self.pin.ShowPingAnim:IsPlaying()) then
+		self.pin.ShowPingAnim:Stop();
 	end
 end
 

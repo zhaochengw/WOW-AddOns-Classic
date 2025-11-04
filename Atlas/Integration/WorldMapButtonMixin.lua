@@ -1,4 +1,3 @@
--- $Id: WorldMapButtonMixin.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -25,30 +24,17 @@
 --]]
 
 -- Atlas WorldMap Integration
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
-local pairs, tonumber = _G.pairs, _G.tonumber
--- Libraries
-local GameTooltip = _G.GameTooltip
-local GetBuildInfo = _G.GetBuildInfo
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
-local FOLDER_NAME, private = ...
-local LibStub = _G.LibStub
-local addon = LibStub("AceAddon-3.0"):GetAddon("Atlas")
+
+local addon      = LibStub("AceAddon-3.0"):GetAddon("Atlas")
 
 -- Determine WoW TOC Version
 local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
-local wowversion  = select(4, GetBuildInfo())
+local wowversion = select(4, GetBuildInfo())
 if wowversion < 20000 then
 	WoWClassicEra = true
-elseif wowversion < 30000 then 
+elseif wowversion < 30000 then
 	WoWClassicTBC = true
-elseif wowversion < 40000 then 
+elseif wowversion < 40000 then
 	WoWWOTLKC = true
 elseif wowversion > 90000 then
 	WoWRetail = true
@@ -67,7 +53,7 @@ function AtlasWorldMapButtonMixin:OnLoad()
 end
 
 function AtlasWorldMapButtonMixin:OnEnter()
-	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	GameTooltip:SetText(ATLAS_CLICK_TO_OPEN, nil, nil, nil, nil, 1)
 end
 
@@ -82,7 +68,5 @@ function AtlasWorldMapButtonMixin:OnClick()
 end
 
 function AtlasWorldMapButtonMixin:Refresh()
-	
+
 end
-
-

@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch, assign-type-mismatch, inject-field, deprecated
 --[[-----------------------------------------------------------------------------
 EditBox Widget
 -------------------------------------------------------------------------------]]

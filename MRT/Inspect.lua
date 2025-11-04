@@ -6,12 +6,16 @@ local UnitCombatlogname, RaidInCombat, ScheduleTimer, DelUnitNameServer = ExRT.F
 local CheckInteractDistance, CanInspect, TooltipUtil, C_TooltipInfo = CheckInteractDistance, CanInspect, TooltipUtil, C_TooltipInfo
 
 local GetSpellInfo = ExRT.F.GetSpellInfo or GetSpellInfo
-local GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
+local GetInspectSpecialization, GetTalentInfo = GetInspectSpecialization, GetTalentInfo or ExRT.F.GetTalentInfoMoP
 local GetInventoryItemQuality, GetInventoryItemID = GetInventoryItemQuality, GetInventoryItemID
 local GetTalentInfoClassic = GetTalentInfo
 local C_SpecializationInfo_GetInspectSelectedPvpTalent
 local GetItemInfo, GetItemInfoInstant  = C_Item and C_Item.GetItemInfo or GetItemInfo,  C_Item and C_Item.GetItemInfoInstant or GetItemInfoInstant
-if ExRT.isClassic then
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetNumSpecializationsForClassID = C_SpecializationInfo and C_SpecializationInfo.GetNumSpecializationsForClassID or GetNumSpecializationsForClassID
+if ExRT.isMoP then
+	C_SpecializationInfo_GetInspectSelectedPvpTalent = ExRT.NULLfunc
+elseif ExRT.isClassic then
 	GetInspectSpecialization = function () return 0 end
 	if not ExRT.isCata then
 		GetNumSpecializationsForClassID = GetInspectSpecialization
@@ -94,14 +98,14 @@ module.db.itemsSlotTable = {
 	16,	--INVSLOT_MAINHAND
 	17,	--INVSLOT_OFFHAND
 }
-if ExRT.isClassic then
+if ExRT.isClassic and not ExRT.isMoP then
 	module.db.itemsSlotTable[#module.db.itemsSlotTable+1] = 18 	--INVSLOT_RANGED
 end
 
 local inspectScantip 
 if ExRT.isClassic then
 	inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
-	inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+	inspectScantip:SetOwner(WorldFrame, "ANCHOR_NONE")
 end
 
 do
@@ -197,6 +201,21 @@ local function CheckForSuccesInspect(name)
 	end
 end
 
+
+local function forbidden()end
+local exec_env = setmetatable({}, { __index = function(t, k)
+	if k == "_G" then
+		return t
+	elseif k == "ShowUIPanel" then
+		return forbidden
+	else
+		return _G[k]
+	end
+end})
+
+local rereg_auto = nil
+local rereg_auto2 = nil
+
 local lastCheckNext = {}
 local inspectLastTime = 0
 local function InspectNext()
@@ -205,7 +224,7 @@ local function InspectNext()
 	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
-		if name and UnitName(name) and (not ExRT.isClassic or (not InCombatLockdown() and CheckInteractDistance(name,1))) and CanInspect(name) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) and (ExRT.isClassic or (select(4,UnitPosition'player') == select(4,UnitPosition(name)))) then
+		if name and UnitName(name) and (not ExRT.isClassic or (not InCombatLockdown() and CheckInteractDistance(name,1))) and CanInspect(name,false) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) then
 			lastCheckNext[name] = nowTime
 			if ExRT.isLK then
 				MuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
@@ -215,15 +234,48 @@ local function InspectNext()
 			end
 			NotifyInspect(name)
 
-			if (VMRT and VMRT.InspectViewer and VMRT.InspectViewer.EnableA4ivs) and not module.db.inspectDBAch[name] and not ExRT.isClassic then
+			if (VMRT and VMRT.InspectViewer and VMRT.InspectViewer.EnableA4ivs) and not module.db.inspectDBAch[name] and (not ExRT.isClassic or ExRT.isMoP) then
 				if AchievementFrameComparison then
 					AchievementFrameComparison:UnregisterEvent("INSPECT_ACHIEVEMENT_READY")
-					ExRT.F.Timer(AchievementFrameComparison.RegisterEvent, inspectForce and 1 or 2.5, AchievementFrameComparison, "INSPECT_ACHIEVEMENT_READY")
+					module.db.blizzinterfaceunloaded = true
+					if rereg_auto then
+						rereg_auto:Cancel()
+					end
+					rereg_auto = C_Timer.NewTimer(10,function() 
+						if module.db.blizzinterfaceunloaded then
+							AchievementFrameComparison:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
+						end
+						rereg_auto = nil
+					end)
 				end
-				if ACHIEVEMENT_FUNCTIONS and not ACHIEVEMENT_FUNCTIONS.categoryIndex then ACHIEVEMENT_FUNCTIONS.categoryIndex = 1 end
 
-				ClearAchievementComparisonUnit()
-				SetAchievementComparisonUnit(name)
+				if (AchievementFrame_DisplayComparison and not ExRT.isClassic and false) then
+					local func = AchievementFrame_DisplayComparison
+					local def_env = getfenv(func)
+					setfenv(func, exec_env)
+					func(name)
+					setfenv(func, def_env)
+					if AchievementFrame_DisplayComparison:IsShown() then
+						HideUIPanel(AchievementFrame_DisplayComparison)
+					end
+				else
+					ClearAchievementComparisonUnit()
+					SetAchievementComparisonUnit(name)
+				end
+			end
+
+			if InspectPVPFrame and not INSPECTED_UNIT then
+				InspectPVPFrame:UnregisterEvent("INSPECT_HONOR_UPDATE")
+				module.db.blizzinterfaceunloaded2 = true
+				if rereg_auto2 then
+					rereg_auto2:Cancel()
+				end
+				rereg_auto2 = C_Timer.NewTimer(10,function() 
+					if module.db.blizzinterfaceunloaded2 then
+						InspectPVPFrame:RegisterEvent("INSPECT_HONOR_UPDATE")
+					end
+					rereg_auto2 = nil
+				end)
 			end
 
 			module.db.inspectQuery[name] = nil
@@ -527,7 +579,7 @@ do
 					--|cffe6cc80|Hitem:128935::140840:139250:140840::::110:262:16777472:9:1:744:113:1:3:3443:1472:3336:2:1806:1502:3:3443:1467:1813|h[Кулак Ра-дена]|h
 					--|cffe6cc80|Hitem:128908::140837:140841:140817::::110:65 :256     :9:1:751:660:3:3516:1502:3337:3:3516:1497:3336:3:3515:1477:1813|h[Боевые мечи валарьяров]|h|r
 
-					local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",itemLink,15)
+					local _,itemID,enchant,gem1,gem2,gem3,gem4,suffixID,uniqueID,level,specializationID,upgradeType,instanceDifficultyID,numBonusIDs,restLink = strsplit(":",itemLink:match("|H.-|h") or itemLink,15)
 
 					if ((gem1 and gem1 ~= "") or (gem2 and gem2 ~= "") or (gem1 and gem3 ~= "")) and (numBonusIDs and numBonusIDs ~= "") then
 						numBonusIDs = tonumber(numBonusIDs)
@@ -631,7 +683,7 @@ end
 hooksecurefunc("NotifyInspect", function() module.db.inspectID = GetTime() module.db.inspectCleared = nil end)
 hooksecurefunc("ClearInspectPlayer", function() module.db.inspectCleared = true end)
 
-if not ExRT.isClassic then
+if not ExRT.isClassic or ExRT.isMoP then
 	hooksecurefunc("SetAchievementComparisonUnit", function() module.db.achievementCleared = nil end)
 	hooksecurefunc("ClearAchievementComparisonUnit", function() module.db.achievementCleared = true end)
 end
@@ -656,12 +708,12 @@ end
 
 function module:Enable()
 	module:RegisterTimer()
-	module:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START','ENCOUNTER_END')
+	module:RegisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START','ENCOUNTER_END','UNIT_SPELLCAST_SUCCEEDED')
 	module:RegisterAddonMessage()
 end
 function module:Disable()
 	module:UnregisterTimer()
-	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START','ENCOUNTER_END')
+	module:UnregisterEvents('PLAYER_SPECIALIZATION_CHANGED','INSPECT_READY','UNIT_INVENTORY_CHANGED','PLAYER_EQUIPMENT_CHANGED','GROUP_ROSTER_UPDATE','ZONE_CHANGED_NEW_AREA','INSPECT_ACHIEVEMENT_READY','CHALLENGE_MODE_START','ENCOUNTER_START','ENCOUNTER_END','UNIT_SPELLCAST_SUCCEEDED')
 	module:UnregisterAddonMessage()
 end
 
@@ -721,6 +773,36 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 
 		module.db.inspectQuery[name] = GetTime()
 		module.db.inspectNotItemsOnly[name] = true
+	end
+end
+
+function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,castGUID,spellID)
+	if unitID and (spellID == 384255 or spellID == 200749) and UnitName(unitID) then
+		local name = UnitCombatlogname(unitID)
+
+		module:AddToQueue(name) 
+
+		--spec change
+		if spellID == 200749 then
+			--------> ExCD2
+			VMRT.ExCD2.gnGUIDs[name] = nil
+	
+			local _,class = UnitClass(name)
+			if cooldownsModule.db.spell_talentsList[class] then
+				for specID,specTalents in pairs(cooldownsModule.db.spell_talentsList[class]) do
+					for _,spellID in pairs(specTalents) do
+						if type(spellID) == "number" then
+							cooldownsModule.db.session_gGUIDs[name] = -spellID
+						end
+					end
+				end
+			end
+	
+			cooldownsModule:ClearSessionDataReason(name,"talent","pvptalent","autotalent")
+	
+			cooldownsModule:UpdateAllData()
+			--------> / ExCD2
+		end
 	end
 end
 
@@ -980,6 +1062,7 @@ do
 					
 	
 					data.talentSubTree = nil
+					cooldownsModule:SetPlayerTalentTree(name)
 					local entries = {}
 					local c = 0
 					for i=1,#nodes do
@@ -1009,6 +1092,9 @@ do
 												list[specIndex][ #list[specIndex]+1 ] = spellID
 											end
 											if node.subTreeID and (not data.talentSubTree or node.subTreeActive) then
+												if data.talentSubTree ~= node.subTreeID then
+													cooldownsModule:SetPlayerTalentTree(name, node.subTreeID)
+												end
 												data.talentSubTree = node.subTreeID
 											end
 											if node.currentRank and node.currentRank > 0 and (not node.subTreeID or node.subTreeActive) then
@@ -1070,6 +1156,86 @@ do
 								cooldownsModule.db.spell_isPvpTalent[spellID] = true
 							end
 						end
+					end
+				end
+			elseif ExRT.isMoP then
+				--local talentGroup = GetActiveSpecGroup(true) or 1
+				local talentGroup = 1
+				for tier=1, 7 do
+					data[-tier] = nil
+					for column=1, 3 do
+						local talentData = C_SpecializationInfo.GetTalentInfo({tier=tier, column=column, groupIndex=talentGroup, isInspect=true, target=inspectedName})
+
+						if talentData and talentData.spellID then
+
+							local list = cooldownsModule.db.spell_talentsList[class]
+							if not list then
+								list = {}
+								cooldownsModule.db.spell_talentsList[class] = list
+							end
+		
+							list[0] = list[0] or {}
+		
+							if not ExRT.F.table_find(list[0],talentData.spellID) then
+								list[0][ #list[0]+1 ] = talentData.spellID
+							end
+							if (talentData.selected or talentData.isGrantedByAura) then
+								cooldownsModule.db.session_gGUIDs[name] = {talentData.spellID,"talent"}
+		
+								if cooldownsModule.db.spell_talentProvideAnotherTalents[talentData.spellID] then
+									for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[talentData.spellID]) do
+										cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+									end
+								end
+	
+								cooldownsModule:SetTalentClassicRank(name,talentData.spellID,1)
+							end
+							if (talentData.selected) then
+								data[tier] = column
+								data.talentsIDs[tier] = talentData.talentID
+								data[-tier] = talentData.spellID
+							end
+		
+							cooldownsModule.db.spell_isTalent[GetSpellInfo(talentData.spellID) or "spell:"..talentData.spellID] = true
+							cooldownsModule.db.spell_isTalent[talentData.spellID] = true
+
+						end
+					end
+				end
+
+				for glyphPos=1,6 do
+					local P = 7 + (glyphPos % 2 == 0 and glyphPos / 2 or (glyphPos+1)/2+3)
+
+					data[P] = nil
+					local enabled, glyphType, glyphTooltipIndex, glyphSpell, iconFilename, glyphID = GetGlyphSocketInfo(glyphPos, talentGroup, true, inspectedName)
+					if glyphSpell then
+						data[P] = glyphSpell
+
+						local list = cooldownsModule.db.spell_talentsList[class]
+						if not list then
+							list = {}
+							cooldownsModule.db.spell_talentsList[class] = list
+						end
+	
+						list[0] = list[0] or {}
+	
+						if not ExRT.F.table_find(list[0],glyphSpell) then
+							list[0][ #list[0]+1 ] = glyphSpell
+						end
+
+						cooldownsModule.db.session_gGUIDs[name] = {glyphSpell,"talent"}
+
+						if cooldownsModule.db.spell_talentProvideAnotherTalents[glyphSpell] then
+							for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[glyphSpell]) do
+								cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+							end
+						end
+
+						cooldownsModule:SetTalentClassicRank(name,glyphSpell,1)
+
+	
+						cooldownsModule.db.spell_isTalent[GetSpellInfo(glyphSpell) or "spell:"..glyphSpell] = true
+						cooldownsModule.db.spell_isTalent[glyphSpell] = true
 					end
 				end
 			elseif ExRT.isLK then
@@ -1134,6 +1300,14 @@ do
 	local lastInspectTime,lastInspectGUID = 0
 	module.db.acivementsIDs = {} 
 	function module.main:INSPECT_ACHIEVEMENT_READY(guid)
+		if module.db.blizzinterfaceunloaded and AchievementFrameComparison then
+			AchievementFrameComparison:RegisterEvent("INSPECT_ACHIEVEMENT_READY")
+			module.db.blizzinterfaceunloaded = nil
+		end
+		if module.db.blizzinterfaceunloaded2 and InspectPVPFrame then
+			InspectPVPFrame:UnregisterEvent("INSPECT_HONOR_UPDATE")
+			module.db.blizzinterfaceunloaded2 = nil
+		end
 		if RaidInCombat() then
 			return
 		end
@@ -1486,6 +1660,7 @@ else
 		return talents
 	end
 end
+
 
 function module:GetInspectTalentsClassicData(class)
 	if not ExRT.isLK then

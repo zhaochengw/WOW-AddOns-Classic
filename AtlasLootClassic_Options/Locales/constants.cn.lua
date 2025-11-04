@@ -2,7 +2,7 @@
 
 if not AL then return end
 
--- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
+-- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic-mists/localization
 -- Options
 AL["Add line break before source."] = "在来源之前添加空行。"
 AL["Add new list"] = "添加新列表"
@@ -20,7 +20,6 @@ AL["Content bottom bar"] = "内容底部区块"
 AL["Content phase settings"] = "内容部分的设定"
 AL["Content top bar"] = "内容顶部区块"
 AL["Delete list"] = "删除列表"
-AL["Enable Atlas map integration if available."] = "如果有的话，请启用Atlas地图整合。"
 AL["Enable auto selection of bosses if available."] = "启用自动选择BOSS"
 AL["Enable auto selection of instances if available."] = "自动选择副本"
 AL["Enable colored loot table names."] = "启用拾取列表名称染色。"

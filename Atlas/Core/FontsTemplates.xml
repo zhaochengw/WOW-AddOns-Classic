@@ -1,4 +1,3 @@
-<!-- $Id: FontsTemplates.xml 431 2023-03-20 14:46:49Z arithmandar $ -->
 <!--
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,8 +23,7 @@
 
 -->
 
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<FontFamily name="AtlasSystemFont_Shadow_Large_Outline_Thick" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Fonts\FRIZQT__.TTF" height="16" outline="THICK">
@@ -190,7 +188,7 @@
 		<Member alphabet="russian">
 			<Font font="Fonts\SKURRI_CYR.TTF" height="30" outline="THICK"/>
 		</Member>
-	</FontFamily>	
+	</FontFamily>
 	<FontFamily name="AtlasZoneInfoFont_Outline_Thick_Huge2" virtual="true">
 		<Member alphabet="roman">
 			<Font font="Fonts\FRIZQT__.TTF" height="22" outline="THICK"/>

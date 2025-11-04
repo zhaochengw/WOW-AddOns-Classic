@@ -1,14 +1,14 @@
-## Interface: 30404
+## Interface: 120000, 110207, 110205, 50503, 50502, 11508
 ## Title: tullaRange
 ## Author: Tuller
 ## Category: Action Bars
 ## Notes: Out of range coloring based on RedRange
 ## Notes-ruRU: Аддон, который позволяет полностью менять цвет кнопок действий
-## Version: 11.0.8
+## Version: 11.2.0
 ## SavedVariables: TULLARANGE_COLORS
 ## IconTexture: Interface/Icons/Inv_misc_punchcards_red
 attackFlash.lua
 actionState.lua
-updater.modern.lua
-updater.classic.lua
+updater.modern.lua [AllowLoadGameType mainline]
+updater.classic.lua [AllowLoadGameType classic]
 tullaRange.lua

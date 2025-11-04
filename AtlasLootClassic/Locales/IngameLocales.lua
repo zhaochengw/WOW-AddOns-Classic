@@ -8,8 +8,10 @@ local format = string.format
 local rawget = _G.rawget
 
 -- WoW
-local GetSpellInfo = GetSpellInfo
-local GetItemClassInfo, GetItemSubClassInfo = GetItemClassInfo, GetItemSubClassInfo
+-- TODO: Fix name of new function bindings
+local GetSpellName, GetItemInfo = C_Spell.GetSpellName, C_Item.GetItemInfo
+local GetItemClassInfo, GetItemSubClassInfo = C_Item.GetItemClassInfo, C_Item.GetItemSubClassInfo
+local GetDifficultyInfo, GetCurrencyInfo = GetDifficultyInfo, C_CurrencyInfo.GetCurrencyInfo
 
 -- ----------------------------------------------------------------------------
 -- AddOn namespace.
@@ -34,8 +36,7 @@ local months = {
 }
 
 local GLOBAL = setmetatable({}, {__index = function(t,k) return _G[k] or k end})
-local GetMapNameByID = GetMapNameByID
-
+local GetMapNameByID = C_Map.GetMapInfo
 
 local function AtlasLootGLOBALetClassName(class)
 	if (not LOCALIZED_CLASS_NAMES_MALE[class]) then
@@ -56,6 +57,10 @@ local function GetLocRepStanding(id)
 	end
 end
 
+local function GetCurrencyName(currencyID)
+	return GetCurrencyInfo(currencyID)['name']
+end
+
 local IngameLocales = {
 	-- ######################################################################
 	-- Faction standing
@@ -73,35 +78,46 @@ local IngameLocales = {
 	-- Professions
 	-- ######################################################################
 	["Professions"] = GLOBAL["TRADE_SKILLS"],
-	["First Aid"] = GetSpellInfo(3273),
-	["Blacksmithing"] = GetSpellInfo(2018),
-	["Leatherworking"] = GetSpellInfo(2108),
-	["Alchemy"] = GetSpellInfo(2259),
-	["Herbalism"] = GetSpellInfo(2366),
-	["Cooking"] = GetSpellInfo(2550),
-	["Mining"] = GetSpellInfo(2575),
-	["Tailoring"] = GetSpellInfo(3908),
-	["Engineering"] = GetSpellInfo(4036),
-	["Enchanting"] = GetSpellInfo(7411),
-	["Fishing"] = GetSpellInfo(7732),
-	["Skinning"] = GetSpellInfo(8618),
-	["Poisons"] = GetSpellInfo(2842),
-	["Jewelcrafting"] = GetSpellInfo(353970) or UNKNOWN,
-	["Inscription"] = GetSpellInfo(45357) or UNKNOWN,
+	["First Aid"] = GetSpellName(3273),
+	["Blacksmithing"] = GetSpellName(2018),
+	["Leatherworking"] = GetSpellName(2108),
+	["Alchemy"] = GetSpellName(2259),
+	["Herbalism"] = GetSpellName(2366),
+	["Cooking"] = GetSpellName(2550),
+	["Mining"] = GetSpellName(2575),
+	["Tailoring"] = GetSpellName(3908),
+	["Engineering"] = GetSpellName(4036),
+	["Enchanting"] = GetSpellName(7411),
+	["Fishing"] = GetSpellName(7732),
+	["Skinning"] = GetSpellName(8618),
+	["Poisons"] = GetSpellName(2842),
+	["Jewelcrafting"] = GetSpellName(353970) or UNKNOWN,
+	["Inscription"] = GetSpellName(45357) or UNKNOWN,
+	["Archaeology"] = GetSpellName(78670) or UNKNOWN,
 
-	-- sub Professions
-	["Armorsmith"] = GetSpellInfo(9788),
-	["Weaponsmith"] = GetSpellInfo(9787),
-	["Hammersmith"] = GetSpellInfo(17041),
-	["Axesmith"] = GetSpellInfo(17041),
-	["Swordsmith"] = GetSpellInfo(17039),
-	["Gnomish Engineer"] = GetSpellInfo(20220),
+	-- Sub Professions
+	["Armorsmith"] = GetSpellName(9788),
+	["Weaponsmith"] = GetSpellName(9787),
+	["Hammersmith"] = GetSpellName(17041),
+	["Axesmith"] = GetSpellName(17041),
+	["Swordsmith"] = GetSpellName(17039),
+	["Gnomish Engineer"] = GetSpellName(20220),
+
+	-- MoP Cooking
+	["Way of the Brew"] = GetSpellName(125589),
+	["Way of the Grill"] = GetSpellName(124694),
+	["Way of the Oven"] = GetSpellName(125588),
+	["Way of the Pot"] = GetSpellName(125586),
+	["Way of the Steamer"] = GetSpellName(125587),
+	["Way of the Wok"] = GetSpellName(125584),
 
 	-- glyphs
 	["Minor Glyph"] = GLOBAL["MINOR_GLYPH"],
 	["Minor Glyphs"] = GLOBAL["MINOR_GLYPHS"],
 	["Major Glyph"] = GLOBAL["MAJOR_GLYPH"],
 	["Major Glyphs"] = GLOBAL["MAJOR_GLYPHS"],
+	["Prime Glyph"] = GLOBAL["PRIME_GLYPH"],
+	["Prime Glyphs"] = GLOBAL["PRIME_GLYPHS"],
 
 
 	-- ######################################################################
@@ -187,6 +203,7 @@ local IngameLocales = {
 	["Dodge"] = GLOBAL["ITEM_MOD_DODGE_RATING_SHORT"],
 	["Attack Power"] = GLOBAL["ITEM_MOD_ATTACK_POWER_SHORT"],
 	["Armor Penetration Rating"] = GLOBAL["ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT"],
+	["Mastery"] = GLOBAL["ITEM_MOD_MASTERY_RATING_SHORT"],
 
 	-- ######################################################################
 	-- Slots
@@ -274,7 +291,7 @@ local IngameLocales = {
 	["WARLOCK"] 	= AtlasLootGLOBALetClassName("WARLOCK"),
 	["WARRIOR"] 	= AtlasLootGLOBALetClassName("WARRIOR"),
 	["DEATHKNIGHT"] = AtlasLootGLOBALetClassName("DEATHKNIGHT"),
-
+	["MONK"] 		= AtlasLootGLOBALetClassName("MONK"),
 
 	-- ######################################################################
 	-- Item Quality
@@ -287,6 +304,35 @@ local IngameLocales = {
 	["Legendary"] 	= GLOBAL["ITEM_QUALITY5_DESC"],
 	["Artifact"] 	= GLOBAL["ITEM_QUALITY6_DESC"],
 	["Heirloom"] 	= GLOBAL["ITEM_QUALITY7_DESC"],
+
+	-- ######################################################################
+	-- Difficulties
+	-- ######################################################################
+	["Normal"]			= GetDifficultyInfo(1),
+	["Heroic"]			= GetDifficultyInfo(2),
+	["10 Raid"]			= GetDifficultyInfo(3),
+	["25 Raid"]     	= GetDifficultyInfo(4),
+	["10 Raid Heroic"]  = GetDifficultyInfo(5),
+	["25 Raid Heroic"]  = GetDifficultyInfo(6),
+	["Challenge Mode"]  = GetDifficultyInfo(8),
+	["40 Raid"]     	= GetDifficultyInfo(7),
+	["Normal Scenario"] = GetDifficultyInfo(12),
+	["Flexible"]		= GetDifficultyInfo(14),
+	["20 Raid"]     	= GetDifficultyInfo(148),
+	["Celestial"]     	= GetDifficultyInfo(237),
+
+	-- ######################################################################
+	-- Currencies
+	-- ######################################################################
+	["Justice Points"]			= GetCurrencyName(395),
+	["Valor Points"]			= GetCurrencyName(396),
+	["Ironpaw Token"]			= GetCurrencyName(402),
+	["Sidereal Essence"] 		= GetCurrencyName(2589),
+	["Defiler's Scourgestone"] 	= GetCurrencyName(2711),
+	["Fissure Stone Fragment"] 	= GetCurrencyName(3148),
+	["Obsidian Fragment"] 		= GetCurrencyName(3281),
+	["August Stone Fragment"] 	= GetCurrencyName(3350),
+	["Spirit of Harmony"] 		= GetItemInfo(76061),
 
 	-- ######################################################################
 	-- Misc
@@ -306,6 +352,162 @@ local IngameLocales = {
 	["Achievements"] = GLOBAL["ACHIEVEMENTS"],
 	["Companions"] = GLOBAL["COMPANIONS"],
 	["Currency"] = GLOBAL["CURRENCY"],
+
+	-- ######################################################################
+	-- Rares
+	-- ######################################################################
+	--- Mists of Pandaria - Pandaria: Glorious!
+	["Aethis"] = GetAchievementCriteriaInfo(7439,8),
+	["Ahone the Wanderer"] = GetAchievementCriteriaInfo(7439,39),
+	["Ai-Li Skymirror"] = GetAchievementCriteriaInfo(7439,41),
+	["Ai-Ran the Shifting Cloud"] = GetAchievementCriteriaInfo(7439,42),
+	["Arness the Scale"] = GetAchievementCriteriaInfo(7439,45),
+	["Blackhoof"] = GetAchievementCriteriaInfo(7439,51),
+	["Bonobos"] = GetAchievementCriteriaInfo(7439,2),
+	["Borginn Darkfist"] = GetAchievementCriteriaInfo(7439,25),
+	["Cournith Waterstrider"] = GetAchievementCriteriaInfo(7439,10),
+	["Dak the Breaker"] = GetAchievementCriteriaInfo(7439,55),
+	["Eshelon"] = GetAchievementCriteriaInfo(7439,12),
+	["Ferdinand"] = GetAchievementCriteriaInfo(7439,50),
+	["Gaarn the Toxic"] = GetAchievementCriteriaInfo(7439,24),
+	["Gar'lok"] = GetAchievementCriteriaInfo(7439,20),
+	["Go-Kan"] = GetAchievementCriteriaInfo(7439,52),
+	["Havak"] = GetAchievementCriteriaInfo(7439,32),
+	["Ik-Ik the Nimble"] = GetAchievementCriteriaInfo(7439,6),
+	["Jonn-Dar"] = GetAchievementCriteriaInfo(7439,30),
+	["Kah'tir"] = GetAchievementCriteriaInfo(7439,33),
+	["Kal'tik the Blight"] = GetAchievementCriteriaInfo(7439,21),
+	["Kang the Soul Thief"] = GetAchievementCriteriaInfo(7439,28),
+	["Karr the Darkener"] = GetAchievementCriteriaInfo(7439,27),
+	["Kor'nas Nightsavage"] = GetAchievementCriteriaInfo(7439,22),
+	["Korda Torros"] = GetAchievementCriteriaInfo(7439,53),
+	["Krax'ik"] = GetAchievementCriteriaInfo(7439,15),
+	["Krol the Blade"] = GetAchievementCriteriaInfo(7439,34),
+	["Lith'ik the Stalker"] = GetAchievementCriteriaInfo(7439,19),
+	["Lon the Bull"] = GetAchievementCriteriaInfo(7439,54),
+	["Major Nanners"] = GetAchievementCriteriaInfo(7439,7),
+	["Mister Ferocious"] = GetAchievementCriteriaInfo(7439,1),
+	["Moldo One-Eye"] = GetAchievementCriteriaInfo(7439,49),
+	["Morgrinn Crackfang"] = GetAchievementCriteriaInfo(7439,29),
+	["Nal'lak the Ripper"] = GetAchievementCriteriaInfo(7439,16),
+	["Nalash Verdantis"] = GetAchievementCriteriaInfo(7439,13),
+	["Nasra Spothide"] = GetAchievementCriteriaInfo(7439,37),
+	["Nessos the Oracle"] = GetAchievementCriteriaInfo(7439,46),
+	["Norlaxx"] = GetAchievementCriteriaInfo(7439,26),
+	["Omnis Grinlok"] = GetAchievementCriteriaInfo(7439,48),
+	["Qu'nas"] = GetAchievementCriteriaInfo(7439,31),
+	["Ruun Ghostpaw"] = GetAchievementCriteriaInfo(7439,38),
+	["Sahn Tidehunter"] = GetAchievementCriteriaInfo(7439,14),
+	["Salyin Warscout"] = GetAchievementCriteriaInfo(7439,44),
+	["Sarnak"] = GetAchievementCriteriaInfo(7439,43),
+	["Scritch"] = GetAchievementCriteriaInfo(7439,4),
+	["Sele'na"] = GetAchievementCriteriaInfo(7439,9),
+	["Siltriss the Sharpener"] = GetAchievementCriteriaInfo(7439,47),
+	["Ski'thik"] = GetAchievementCriteriaInfo(7439,18),
+	["Spriggin"] = GetAchievementCriteriaInfo(7439,3),
+	["Sulik'shor"] = GetAchievementCriteriaInfo(7439,23),
+	["The Yowler"] = GetAchievementCriteriaInfo(7439,5),
+	["Torik-Ethis"] = GetAchievementCriteriaInfo(7439,17),
+	["Urgolax"] = GetAchievementCriteriaInfo(7439,35),
+	["Urobi the Walker"] = GetAchievementCriteriaInfo(7439,36),
+	["Yorik Sharpeye"] = GetAchievementCriteriaInfo(7439,56),
+	["Yul Wildpaw"] = GetAchievementCriteriaInfo(7439,40),
+	["Zai the Outcast"] = GetAchievementCriteriaInfo(7439,11),
+
+	--- Mists of Pandaria - Isle of Thunder: Champions of Lei Shen
+	["Haywire Sunreaver Construct"] = GetAchievementCriteriaInfo(8103,1),
+
+	--- Mists of Pandaria - Isle of Thunder: It Was Worth Every Ritual Stone
+	["Ancient Mogu Guardian"] = GetAchievementCriteriaInfo(8101,6),
+	["Cera"] = GetAchievementCriteriaInfo(8101,8),
+	["Echo of Kros"] = GetAchievementCriteriaInfo(8101,3),
+	["Electromancer Ju'le"] = GetAchievementCriteriaInfo(8101,4),
+	["Incomplete Drakkari Colossus"] = GetAchievementCriteriaInfo(8101,9),
+	["Kor'dok and Tinzo the Emberkeeper"] = GetAchievementCriteriaInfo(8101,2),
+	["Qi'nor"] = GetAchievementCriteriaInfo(8101,5),
+	["Spirit of Warlord Teng"] = GetAchievementCriteriaInfo(8101,1),
+	["Windweaver Akil'amon"] = GetAchievementCriteriaInfo(8101,7),
+
+	--- Mists of Pandaria - Timeless Isle: Eyes On The Ground
+	["Crane Nest"] = GetAchievementCriteriaInfo(8725,3),
+
+	--- Mists of Pandaria - Timeless Isle: Killing Time
+	["Ashleaf Sprite"] = GetAchievementCriteriaInfo(8712,11),
+	["Burning Berserker"] = GetAchievementCriteriaInfo(8712,25),
+	["Crag Stalker"] = GetAchievementCriteriaInfo(8712,10),
+	["Damp Shambler"] = GetAchievementCriteriaInfo(8712,18),
+	["Eternal Kilnmaster"] = GetAchievementCriteriaInfo(8712,31),
+	["Foreboding Flame"] = GetAchievementCriteriaInfo(8712,13),
+	["Gulp Frog"] = GetAchievementCriteriaInfo(8712,21),
+	["Jademist Dancer"] = GetAchievementCriteriaInfo(8712,14),
+	["Molten Guardian"] = GetAchievementCriteriaInfo(8712,26),
+	["Ordon Candlekeeper"] = GetAchievementCriteriaInfo(8712,12),
+	["Ordon Oathguard"] = GetAchievementCriteriaInfo(8712,24),
+	["Primal Stalker"] = GetAchievementCriteriaInfo(8712,19),
+	["Windfeather Nestkeeper"] = GetAchievementCriteriaInfo(8712,5),
+
+	--- Mists of Pandaria - Timeless Isle: Timeless Champion
+	["Archiereus of Flame"] = GetAchievementCriteriaInfo(8714,31),
+	["Bufo"] = GetAchievementCriteriaInfo(8714,14),
+	["Champion of the Black Flame"] = GetAchievementCriteriaInfo(8714,23),
+	["Chelon"] = GetAchievementCriteriaInfo(8714,8),
+	["Cinderfall"] = GetAchievementCriteriaInfo(8714,24),
+	["Cranegnasher"] = GetAchievementCriteriaInfo(8714,10),
+	["Dread Ship Vazuvius"] = GetAchievementCriteriaInfo(8714,30),
+	["Emerald Gander"] = GetAchievementCriteriaInfo(8714,1),
+	["Evermaw"] = GetAchievementCriteriaInfo(8714,29),
+	["Flintlord Gairan"] = GetAchievementCriteriaInfo(8714,26),
+	["Garnia"] = GetAchievementCriteriaInfo(8714,15),
+	["Golganarr"] = GetAchievementCriteriaInfo(8714,28),
+	["Great Turtle Furyshell"] = GetAchievementCriteriaInfo(8714,3),
+	["Gu'chi the Swarmbringer"] = GetAchievementCriteriaInfo(8714,4),
+	["Huolon"] = GetAchievementCriteriaInfo(8714,27),
+	["Imperial Python"] = GetAchievementCriteriaInfo(8714,18),
+	["Jakur of Ordon"] = GetAchievementCriteriaInfo(8714,22),
+	["Karkanos"] = GetAchievementCriteriaInfo(8714,7),
+	["Leafmender"] = GetAchievementCriteriaInfo(8714,13),
+	["Monstrous Spineclaw"] = GetAchievementCriteriaInfo(8714,17),
+	["Rattleskew"] = GetAchievementCriteriaInfo(8714,11),
+	["Rock Moss"] = GetAchievementCriteriaInfo(8714,20),
+	["Spelurk"] = GetAchievementCriteriaInfo(8714,9),
+	["Spirit of Jadefire"] = GetAchievementCriteriaInfo(8714,12),
+	["Tsavo'ka"] = GetAchievementCriteriaInfo(8714,16),
+	["Urdur the Cauterizer"] = GetAchievementCriteriaInfo(8714,25),
+	["Watcher Osu"] = GetAchievementCriteriaInfo(8714,21),
+	["Zesqua"] = GetAchievementCriteriaInfo(8714,5),
+	["Zhu-Gon the Sour"] = GetAchievementCriteriaInfo(8714,6),
+
+	-- ######################################################################
+	-- Zones
+	-- ######################################################################
+	-- Mists of Pandaria
+	-- ["Brawl'gar Arena"] = GetMapNameByID(925), -- already existing as faction
+	["Deeprun Tram"] = GetMapNameByID(922),
+	["Dread Wastes"] = GetMapNameByID(858),
+	["Gate of the Setting Sun"] = GetMapNameByID(875),
+	["Heart of Fear"] = GetMapNameByID(897),
+	["Isle of Giants"] = GetMapNameByID(929),
+	["Isle of Thunder"] = GetMapNameByID(928),
+	["Krasarang Wilds"] = GetMapNameByID(857),
+	["Kun-Lai Summit"] = GetMapNameByID(809),
+	["Mogu'Shan Palace"] = GetMapNameByID(885),
+	["Mogu'shan Vaults"] = GetMapNameByID(896),
+	["Pandaria"] = GetAchievementCriteriaInfo(46,6),
+	["Scarlet Halls"] = GetMapNameByID(871),
+	["Scarlet Monastery"] = GetMapNameByID(874),
+	["Scholomance"] = GetMapNameByID(898),
+	["Shado-pan Monastery"] = GetMapNameByID(877),
+	["Siege of Niuzao Temple"] = GetMapNameByID(887),
+	["Siege of Orgrimmar"] = GetMapNameByID(953),
+	["Stormstout Brewery"] = GetMapNameByID(876),
+	["Temple of the Jade Serpent"] = GetMapNameByID(867),
+	["Terrace of Endless Spring"] = GetMapNameByID(886),
+	["The Jade Forest"] = GetMapNameByID(806),
+	["Throne of Thunder"] = GetMapNameByID(930),
+	["Timeless Isle"] = GetMapNameByID(951),
+	["Townlong Steppes"] = GetMapNameByID(810),
+	["Vale of Eternal Blossoms"] = GetMapNameByID(811),
+	["Valley of the Four Winds"] = GetMapNameByID(807),
 }
 AtlasLoot.IngameLocales = IngameLocales
 

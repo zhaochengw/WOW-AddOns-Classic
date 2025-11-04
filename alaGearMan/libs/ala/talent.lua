@@ -48,7 +48,9 @@ end
 	local UnitInBattleground = UnitInBattleground;
 	local GetNumTalentGroups = GetNumTalentGroups or function() return 1; end
 	local GetActiveTalentGroup = GetActiveTalentGroup or function() return 1; end
-	local GetNumTalentTabs, GetNumTalents, GetTalentInfo = GetNumTalentTabs, GetNumTalents, GetTalentInfo;
+	local GetNumTalentTabs = GetNumSpecializations or GetNumTalentTabs;
+	local GetNumTalents = GetNumTalents;
+	local GetTalentInfo = GetSpecializationInfo or GetTalentInfo;
 	local GetNumGlyphSockets, GetGlyphSocketInfo = GetNumGlyphSockets, GetGlyphSocketInfo;
 	local GetInventoryItemLink = GetInventoryItemLink;
 	local GetItemInfo = GetItemInfo;
@@ -66,7 +68,38 @@ end
 	local function __table_sub(T, index, index2)
 		return T[index];
 	end;
+
 -->			constant
+
+	
+-- 使用专精系统API替代旧的天赋API
+local function Script_GetNumTalentTabs()
+	-- 如果GetNumSpecializations可用，优先使用专精系统
+	if GetNumSpecializations ~= nil then
+		return GetNumSpecializations();
+	end
+	-- 否则回退到旧的天赋系统
+	return GetNumTalentTabs and GetNumTalentTabs() or 0;
+end
+local function Script_GetNumTalents(tab)
+	return GetNumTalents and GetNumTalents(tab) or 0;
+end
+local function Script_GetTalentInfo(tab, index)
+	-- 如果专精系统可用，使用专精API
+	if GetSpecializationInfo ~= nil and tab ~= nil then
+		return GetSpecializationInfo(tab);
+	end
+	-- 否则使用旧的天赋API
+	return GetTalentInfo and GetTalentInfo(tab, index) or nil;
+end
+local function Script_GetActiveTalentGroup()
+	-- 如果专精系统可用，使用专精API
+	if GetSpecialization ~= nil then
+		return GetSpecialization() or 1;
+	end
+	-- 否则使用旧的天赋组API
+	return GetActiveTalentGroup and GetActiveTalentGroup() or 1;
+end
 	--
 	local BIG_NUMBER = 4294967295;
 	local TOC_VERSION = __ala_meta__.TOC_VERSION;

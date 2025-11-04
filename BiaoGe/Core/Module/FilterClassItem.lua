@@ -42,6 +42,7 @@ do
 end
 
 function BG.FilterClassItemUI()
+    BG.filterClassButtons = {}
     local function UpdateAllButton(num)
         for k, v in pairs(F.frames) do
             if num then
@@ -50,16 +51,15 @@ function BG.FilterClassItemUI()
                 v:Hide()
             end
         end
-        for ii = 1, 2 do
-            local bts = ii == 1 and "Buttons" or "Buttons2"
+        for k, bts in pairs(BG.filterClassButtons) do
             local i = 1
-            while BG.FilterClassItemMainFrame[bts][i] do
+            while bts[i] do
                 if not num or i ~= num then
-                    BG.FilterClassItemMainFrame[bts][i].icon:SetDesaturated(true)
-                    BG.FilterClassItemMainFrame[bts][i].tex:Hide()
+                    bts[i].icon:SetDesaturated(true)
+                    bts[i].tex:Hide()
                 else
-                    BG.FilterClassItemMainFrame[bts][i].icon:SetDesaturated(false)
-                    BG.FilterClassItemMainFrame[bts][i].tex:Show()
+                    bts[i].icon:SetDesaturated(false)
+                    bts[i].tex:Show()
                 end
                 i = i + 1
             end
@@ -82,6 +82,12 @@ function BG.FilterClassItemUI()
         end
     end
 
+    local function UpdateAllFilterClassButtons()
+        for k, buttons in pairs(BG.filterClassButtons) do
+            BG.CreateFilterClassButtons(buttons)
+        end
+    end
+
     local function OnClick(self, enter)
         local num = self.num
         if enter ~= "RightButton" then
@@ -90,9 +96,13 @@ function BG.FilterClassItemUI()
             else
                 UpdateAllButton(nil)
             end
+            if self.type==3 then
+                BGV.UpdateMerchantFrame()
+            else
+            end
             BG.UpdateAllFilter()
             LibBG:CloseDropDownMenus()
-        else
+        elseif self.type ~= 3 then
             if BG.DropDownListIsVisible(self) then
                 _G.L_DropDownList1:Hide()
             else
@@ -126,7 +136,7 @@ function BG.FilterClassItemUI()
                                 end
                                 UpdateAllButton(chooseID)
                             end
-                            F.CreateClassButtons()
+                            UpdateAllFilterClassButtons()
                             BG.UpdateAllFilter()
                             LibBG:CloseDropDownMenus()
                         end
@@ -193,7 +203,7 @@ function BG.FilterClassItemUI()
                                     UpdateAllButton(chooseID)
                                 end
                             end
-                            F.CreateClassButtons()
+                            UpdateAllFilterClassButtons()
                             BG.UpdateAllFilter()
                         end
                     },
@@ -217,73 +227,70 @@ function BG.FilterClassItemUI()
         BG.PlaySound(1)
     end
 
-    function F.CreateClassButtons()
-        local Buttons = BG.FilterClassItemMainFrame.Buttons
-        local Buttons2 = BG.FilterClassItemMainFrame.Buttons2
-        for ii = 1, 2 do
-            local bts = ii == 1 and Buttons or Buttons2
-            for k, v in ipairs(bts) do
-                v:Hide()
-                bts[k] = nil
+    function BG.CreateFilterClassButtons(parent)
+        for k, v in ipairs(parent) do
+            v:Hide()
+            parent[k] = nil
+        end
+
+        local type = parent.type
+        local width = 0
+
+        local i = 1
+        while BiaoGe.FilterClassItemDB[RealmId][player][i] do
+            local bt = CreateFrame("Button", nil, parent)
+            if i == 1 then
+                bt:SetPoint("LEFT", 0, 0)
+            else
+                bt:SetPoint("LEFT", parent[i - 1], "RIGHT", 10, 0)
+            end
+            bt:SetSize(25, 25)
+            bt:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+            bt.num = i
+            bt.type = type
+            width = width + 35
+            parent:SetWidth(width)
+            tinsert(parent, bt)
+
+            local tex = bt:CreateTexture(nil, "BACKGROUND") -- 选中材质
+            tex:SetSize(40, 40)
+            tex:SetPoint("CENTER")
+            tex:SetTexture("Interface/ChatFrame/UI-ChatIcon-BlinkHilight")
+            tex:Hide()
+            bt.tex = tex
+
+            local icon = bt:CreateTexture(nil, "ARTWORK") -- 图标
+            icon:SetAllPoints()
+            icon:SetTexture(BiaoGe.FilterClassItemDB[RealmId][player][i].Icon)
+            icon:SetDesaturated(true)
+            bt.icon = icon
+            if BiaoGe.FilterClassItemDB[RealmId][player].chooseID == i then
+                icon:SetDesaturated(false)
+                tex:Show()
             end
 
-            local width = 0
+            local hightex = bt:CreateTexture(nil, "HIGHLIGHT") -- 悬停材质
+            hightex:SetSize(23, 23)
+            hightex:SetPoint("CENTER")
+            hightex:SetColorTexture(RGB("FFFFFF", 0.2))
 
-            local i = 1
-            while BiaoGe.FilterClassItemDB[RealmId][player][i] do
-                local bt = CreateFrame("Button", nil, bts)
-                if i == 1 then
-                    bt:SetPoint("LEFT", 0, 0)
-                else
-                    bt:SetPoint("LEFT", bts[i - 1], "RIGHT", 10, 0)
+            bt:SetScript("OnClick", OnClick)
+            bt:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", -3, 2)
+                GameTooltip:ClearLines()
+                if type ~= 1 then
+                    local r, g, b = RGB(BG.g1)
+                    GameTooltip:AddLine(L["使用装备过滤方案："], r, g, b, true)
                 end
-                bt:SetSize(25, 25)
-                bt:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-                bt.num = i
-                width = width + 35
-                bts:SetWidth(width)
-                tinsert(bts, bt)
-
-                local tex = bt:CreateTexture(nil, "BACKGROUND") -- 选中材质
-                tex:SetSize(40, 40)
-                tex:SetPoint("CENTER")
-                tex:SetTexture("Interface/ChatFrame/UI-ChatIcon-BlinkHilight")
-                tex:Hide()
-                bt.tex = tex
-
-                local icon = bt:CreateTexture(nil, "ARTWORK") -- 图标
-                icon:SetAllPoints()
-                icon:SetTexture(BiaoGe.FilterClassItemDB[RealmId][player][i].Icon)
-                icon:SetDesaturated(true)
-                bt.icon = icon
-                if BiaoGe.FilterClassItemDB[RealmId][player].chooseID == i then
-                    icon:SetDesaturated(false)
-                    tex:Show()
+                GameTooltip:AddLine(BiaoGe.FilterClassItemDB[RealmId][player][bt.num].Name, 1, 1, 1, true)
+                if type == 1 then
+                    GameTooltip:AddLine(AddTexture("LEFT") .. L["使用方案"], 1, .82, 0, true)
+                    GameTooltip:AddLine(AddTexture("RIGHT") .. L["修改方案"], 1, .82, 0, true)
                 end
-
-                local hightex = bt:CreateTexture(nil, "HIGHLIGHT") -- 悬停材质
-                hightex:SetSize(23, 23)
-                hightex:SetPoint("CENTER")
-                hightex:SetColorTexture(RGB("FFFFFF", 0.2))
-
-                bt:SetScript("OnClick", OnClick)
-                bt:SetScript("OnEnter", function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", -3, 2)
-                    GameTooltip:ClearLines()
-                    if bts == Buttons2 then
-                        local r, g, b = RGB(BG.g1)
-                        GameTooltip:AddLine(L["使用装备过滤方案："], r, g, b, true)
-                    end
-                    GameTooltip:AddLine(BiaoGe.FilterClassItemDB[RealmId][player][bt.num].Name, 1, 1, 1, true)
-                    if bts == Buttons then
-                        GameTooltip:AddLine(AddTexture("LEFT") .. L["使用方案"], 1, .82, 0, true)
-                        GameTooltip:AddLine(AddTexture("RIGHT") ..L["修改方案"], 1, .82, 0, true)
-                    end
-                    GameTooltip:Show()
-                end)
-                BG.GameTooltip_Hide(bt)
-                i = i + 1
-            end
+                GameTooltip:Show()
+            end)
+            BG.GameTooltip_Hide(bt)
+            i = i + 1
         end
     end
 
@@ -458,24 +465,29 @@ function BG.FilterClassItemUI()
     do
         Buttons:SetPoint("TOP", 30, -40)
         Buttons:SetSize(0, 30)
+        Buttons.type = 1
         BG.FilterClassItemMainFrame.Buttons = Buttons
-
+        tinsert(BG.filterClassButtons, Buttons)
         local t = Buttons:CreateFontString()
         t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
         t:SetText(L["选择方案："])
         t:SetPoint("RIGHT", Buttons, "LEFT", -10, 0)
         t:SetTextColor(1, 0.82, 0)
         BG.FilterClassItemMainFrame.ChossesText = t
+        BG.CreateFilterClassButtons(Buttons)
     end
     local Buttons2 = CreateFrame("Frame", nil, BG.MainFrame)
     do
         Buttons2:SetPoint("BOTTOMLEFT", 410, 35)
         Buttons2:SetSize(0, 30)
+        Buttons2.type = 2
         BG.FilterClassItemMainFrame:SetParent(Buttons2)
         BG.FilterClassItemMainFrame:SetFrameLevel(290)
         BG.FilterClassItemMainFrame.Buttons2 = Buttons2
+        BG.CreateFilterClassButtons(Buttons2)
+        tinsert(BG.filterClassButtons, Buttons2)
     end
-    F.CreateClassButtons()
+
     -- 新建方案的框体
     local f = CreateFrame("Frame", nil, BG.FilterClassItemMainFrame, "BackdropTemplate")
     do
@@ -568,7 +580,7 @@ function BG.FilterClassItemUI()
                 -- if BG.IsRetail then
                 --     break
                 -- else
-                    isOther = true
+                isOther = true
                 -- end
             end
             if not isOther then
@@ -671,7 +683,7 @@ function BG.FilterClassItemUI()
                 BiaoGe.FilterClassItemDB[RealmId][player][f.xiugai].Icon = f.icon
             end
             f:Hide()
-            F.CreateClassButtons()
+            UpdateAllFilterClassButtons()
             BG.UpdateAllFilter()
             BG.PlaySound(1)
         end)
@@ -901,8 +913,6 @@ function BG.FilterClassItemUI()
             else
                 BG.FilterClassItemMainFrame:Show()
             end
-            BG.FilterClassItemMainFrame:ClearAllPoints()
-
             BG.PlaySound(1)
         end)
         bt:SetScript("OnEnter", function(self)

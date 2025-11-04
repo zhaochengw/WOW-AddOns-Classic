@@ -15,11 +15,12 @@ local next, pairs, tblconcat, tblsort = _G.next, _G.pairs, _G.table.concat, _G.t
 local format, strsub, strmatch, strgmatch, strsplit = _G.format, _G.strsub, _G.strmatch, _G.gmatch, _G.strsplit
 
 -- WoW
-local GetItemInfo = _G.GetItemInfo
+local GetItemInfo, GetItemInfoInstant = C_Item.GetItemInfo, C_Item.GetItemInfoInstant
+local GetAddOnInfo = C_AddOns.GetAddOnInfo
 local GetServerTime = _G.GetServerTime
-local GetItemInfoInstant = _G.GetItemInfoInstant
+local ItemExist = C_Item.DoesItemExistByID
+
 local RETRIEVING_ITEM_INFO = _G["RETRIEVING_ITEM_INFO"]
-local ItemExist = _G.C_Item.DoesItemExistByID
 
 -- locals
 local ICONS_PATH = ALPrivate.ICONS_PATH
@@ -34,12 +35,11 @@ local KEY_WEAK_MT = {__mode="k"}
 local ChatLinkPending = false
 local ChatLinkData = false
 local TooltipsHooked = false
-local TooltipCache, TooltipTextCache = {}
+local TooltipCache, TooltipTextCache = {}, {}
 local ListNameCache
 local ListNoteCache
 local ListBiSCache
 local ItemCountCache
-local PluginOutfitterLoading
 setmetatable(TooltipCache, KEY_WEAK_MT)
 
 Favourites.BASE_NAME_P, Favourites.BASE_NAME_G = BASE_NAME_P, BASE_NAME_G
@@ -97,14 +97,14 @@ Favourites.IconList = {
     ICONS_PATH.."groupfinder-icon-role-large-dps",
     ICONS_PATH.."groupfinder-icon-role-large-heal",
     ICONS_PATH.."groupfinder-icon-role-large-tank",
-    ICONS_PATH.."Vehicle-HammerGold",
-    ICONS_PATH.."Vehicle-HammerGold-1",
-    ICONS_PATH.."Vehicle-HammerGold-2",
-    ICONS_PATH.."Vehicle-HammerGold-3",
-    ICONS_PATH.."Vehicle-TempleofKotmogu-CyanBall",
-    ICONS_PATH.."Vehicle-TempleofKotmogu-GreenBall",
-    ICONS_PATH.."Vehicle-TempleofKotmogu-OrangeBall",
-    ICONS_PATH.."Vehicle-TempleofKotmogu-PurpleBall",
+    "Interface\\Minimap\\Vehicle-HammerGold",
+    "Interface\\Minimap\\Vehicle-HammerGold-1",
+    "Interface\\Minimap\\Vehicle-HammerGold-2",
+    "Interface\\Minimap\\Vehicle-HammerGold-3",
+    "Interface\\Minimap\\TempleofKotmogu_ball_cyan",
+    "Interface\\Minimap\\TempleofKotmogu_ball_green",
+    "Interface\\Minimap\\TempleofKotmogu_ball_orange",
+    "Interface\\Minimap\\TempleofKotmogu_ball_purple",
     ICONS_PATH.."worldquest-tracker-questmarker",
 }
 STD_ICON, STD_ICON2 = Favourites.IconList[1], Favourites.IconList[2]
@@ -223,30 +223,6 @@ local function PopulateListBiS(db, dest)
             end
         end
     end
-    -- Outfitter sets
-    local _, pluginOutfitter = GetAddOnInfo("Outfitter")
-    if pluginOutfitter then
-        if Outfitter and Outfitter.Settings and Outfitter.Settings.Outfits then
-            -- Check outfitter equip sets
-            local outfits = Outfitter.Settings.Outfits
-            for outfitType, outfitList in pairs(outfits) do
-                for outfitIndex, outfitData in ipairs(outfitList) do
-                    local outfitItems = outfitData:GetItems()
-                    for outfitterSlot, outfitterItem in pairs(outfitItems) do
-                        if outfitterItem.Code then
-                            itemsEquipped[outfitterItem.Code] = true
-                        end
-                    end
-                end
-            end
-        else
-            -- Outfitter not (yet) loaded, add callback to populate database again once Outfitter was loaded
-            -- TODO: Find a better way to access outfitter data when ready
-            if not PluginOutfitterLoading then
-                PluginOutfitterLoading = true
-            end
-        end
-    end
     for listId, listData in pairs(db) do
         if not dest[listId] then
             dest[listId] = {
@@ -257,7 +233,7 @@ local function PopulateListBiS(db, dest)
         for itemId in pairs(listData) do
             if type(itemId) == "number" then
                 local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType,
-                    itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
+                itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
                 local itemData = { itemId, itemLink, itemLevel, 0, itemType, itemSubType }
                 destList.byId[itemId] = itemData
                 if itemEquipLoc and itemLevel then
@@ -296,7 +272,7 @@ local function PopulateListBiS(db, dest)
                 if destList.bestInSlot[itemEquipLoc] then
                     local bestId, bestLink, bestLevel, secondBestLevel, bestType, bestSubType = unpack(destList.bestInSlot[itemEquipLoc])
                     local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType,
-                        itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
+                    itemSubType, itemStackCount, itemEquipLoc = GetItemInfo(itemId)
                     if (bestLevel > itemLevel) and not mainItems[itemId] then
                         destList.obsolete[itemId] = true
                     end
@@ -841,27 +817,31 @@ function Favourites:CountFavouritesByList(addonName, contentName, boss, dif, inc
     local items, tableType, diffData = ItemDB:GetItemTable(addonName, contentName, boss, dif)
     -- Check if items is nil or empty
     if not items or next(items) == nil then
-        return
+        return result
     end
     for l, listData in pairs(self.db.lists) do
-        local listName = listData.__name
-        for i, item in ipairs(items) do
-            if type(item[2]) == "number" then
-                local itemID = item[2]
-                if listData[itemID] and (includeObsolete or not self:IsItemEquippedOrObsolete(itemID, l)) then
-                    result[listName] = (result[listName] or 0) + 1
+        if self:ListIsGlobalActive(l) or self:ListIsProfileActive(l) then
+            local listName = listData.__name
+            for i, item in ipairs(items) do
+                if type(item[2]) == "number" then
+                    local itemID = item[2]
+                    if listData[itemID] and (includeObsolete or not self:IsItemEquippedOrObsolete(itemID, l)) then
+                        result[listName] = (result[listName] or 0) + 1
+                    end
                 end
             end
         end
     end
 
     for l, listData in pairs(self.globalDb.lists) do
-        local listName = listData.__name
-        for i, item in ipairs(items) do
-            if type(item[2]) == "number" then
-                local itemID = item[2]
-                if listData[itemID] and (includeObsolete or not self:IsItemEquippedOrObsolete(itemID, l)) then
-                    result[listName] = (result[listName] or 0) + 1
+        if self:ListIsGlobalActive(l) or self:ListIsProfileActive(l) then
+            local listName = listData.__name
+            for i, item in ipairs(items) do
+                if type(item[2]) == "number" then
+                    local itemID = item[2]
+                    if listData[itemID] and (includeObsolete or not self:IsItemEquippedOrObsolete(itemID, l)) then
+                        result[listName] = (result[listName] or 0) + 1
+                    end
                 end
             end
         end
@@ -908,10 +888,6 @@ function Favourites:GetFavouriteItemText(itemId, listId)
 end
 
 function Favourites:IsItemEquippedOrObsolete(itemId, listId)
-    if PluginOutfitterLoading then
-        PluginOutfitterLoading = false
-        self:UpdateDb()
-    end
     if not listId then
         for listId, listData in pairs(self.db.lists) do
             local obsoleteType = self:IsItemEquippedOrObsolete(itemId, listId)

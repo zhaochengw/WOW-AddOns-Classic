@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2676, "DBM-Party-WarWithin", 10, 1303)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250818213247")
+mod:SetRevision("20250928201440")
 mod:SetCreatureID(234933, 237514) -- Taah'bat and Awazj
 mod:SetEncounterID(3108)
 mod:SetHotfixNoticeRev(20250728000000)
@@ -56,8 +56,8 @@ function mod:OnCombatStart(delay)
 	self.vb.warpStrikeCount = 0
 	self.vb.riftClawsCount = 0
 	timerRiftClawsCD:Start(5.2-delay, 1)
-	timerBindingJavelinCD:Start(11.2-delay, 1)
-	timerWarpStrikeCD:Start(22.1-delay, 1)
+	timerBindingJavelinCD:Start(10.9-delay, 1)
+	timerWarpStrikeCD:Start(21.8-delay, 1)
 	timerArcaneBlitzCD:Start(34-delay, 1)
 end
 

@@ -186,21 +186,38 @@ function RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasNa
 	return nil
 end
 
-function RSGeneralDB.GetBestMapForUnit(entityID, atlasName)
+function RSGeneralDB.GetBestMapForUnit(entityID, atlasName)	
+	if (RSConstants.IsNpcAtlas(atlasName) and RSNpcDB.IsInternalNpcMonoZone(entityID)) then
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
+		return npcInfo.zoneID
+	elseif (RSConstants.IsContainerAtlas(atlasName) and RSContainerDB.IsInternalContainerMonoZone(entityID)) then
+		local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
+		return containerInfo.zoneID
+	end
+	
 	local mapID = C_Map.GetBestMapForUnit("player")
 	if (mapID) then
 		return mapID
 	end
 	
-	if (RSConstants.IsNpcAtlas(atlasName) and RSNpcDB.IsInternalNpcMonoZone(entityID)) then
-		local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
-		return npcInfo.zoneID
-	elseif (RSConstants.IsNpcAtlas(atlasName) and RSContainerDB.IsInternalContainerMonoZone(entityID)) then
-		local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
-		return containerInfo.zoneID
-	end
-	
 	return nil
+end
+
+---============================================================================
+-- Entities with pre-events
+----- Obtains the latest entityID in a chain of pre-events
+---============================================================================
+
+function RSGeneralDB.GetFinalEntityID(entityPreEventID)
+	local entityID = tonumber(entityPreEventID)
+	
+	-- NPC with pre-event
+	entityID = RSNpcDB.GetFinalNpcID(entityID)
+	
+	-- Container with pre-event
+	entityID = RSContainerDB.GetFinalContainerID(entityID)
+	
+	return entityID
 end
 
 ---============================================================================
@@ -220,7 +237,7 @@ function RSGeneralDB.GetItemName(itemID)
 	end
 
 	-- The first time request the server for the information
-	local retOk, itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = pcall(GetItemInfo, itemID)
+	local retOk, itemName, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ = pcall(C_Item.GetItemInfo, itemID)
 	return itemName
 end
 
@@ -231,7 +248,7 @@ function RSGeneralDB.GetItemInfo(itemID)
 
 	-- The first time request the server for the information
 	if (not private.dbglobal.loot_info[itemID]) then
-		local retOk, _, itemLink, itemRarity, _, _, _, _, _, itemEquipLoc, iconFileDataID, _, itemClassID, itemSubClassID, _, _, _, _ = pcall(GetItemInfo, itemID)
+		local retOk, _, itemLink, itemRarity, _, _, _, _, _, itemEquipLoc, iconFileDataID, _, itemClassID, itemSubClassID, _, _, _, _ = pcall(C_Item.GetItemInfo, itemID)
 		if (itemLink and itemRarity and itemEquipLoc and iconFileDataID and itemClassID and itemSubClassID) then
 			RSGeneralDB.SetItemInfo(itemID, itemLink, itemRarity, itemEquipLoc, iconFileDataID, itemClassID, itemSubClassID)
 		end
@@ -249,6 +266,41 @@ function RSGeneralDB.SetItemInfo(itemID, itemLink, itemRarity, itemEquipLoc, ico
 end
 
 ---============================================================================
+-- Completed quests cache database
+----- Stores information of completed quests
+---============================================================================
+
+function RSGeneralDB.InitCompletedQuestDB()
+	if (RSConstants.DEBUG_MODE and not private.dbchar.quests_completed) then
+		private.dbchar.quests_completed = {}
+	end
+end
+
+function RSGeneralDB.IsCompletedQuestInCache(questID)
+	if (questID and private.dbchar.quests_completed) then
+		return private.dbchar.quests_completed[questID]
+	end
+	
+	return false
+end
+
+function RSGeneralDB.SetCompletedQuest(questID)
+	if (questID and private.dbchar.quests_completed) then
+		private.dbchar.quests_completed[questID] = true
+	end
+end
+
+function RSGeneralDB.ResetCompletedQuestDB()
+	if (private.dbchar.quests_completed) then
+		if (RSConstants.DEBUG_MODE) then
+			private.dbchar.quests_completed = {}
+		else
+			private.dbchar.quests_completed = nil
+		end
+	end
+end
+
+---============================================================================
 -- Recently seen entities database
 ---============================================================================
 
@@ -256,20 +308,20 @@ function RSGeneralDB.InitRecentlySeenDB()
 	private.dbglobal.recentlySeen = {}
 end
 
-function RSGeneralDB.DeleteRecentlySeen(npcID)
-	if (npcID and private.dbglobal.recentlySeen[npcID]) then
-		private.dbglobal.recentlySeen[npcID] = nil
+function RSGeneralDB.DeleteRecentlySeen(entityID)
+	if (entityID and private.dbglobal.recentlySeen[entityID]) then
+		private.dbglobal.recentlySeen[entityID] = nil
 	end
 end
 
-function RSGeneralDB.SetRecentlySeen(npcID)
-	if (npcID) then
-		private.dbglobal.recentlySeen[npcID] = true
+function RSGeneralDB.SetRecentlySeen(entityID)
+	if (entityID) then
+		private.dbglobal.recentlySeen[entityID] = true
 	end
 end
 
-function RSGeneralDB.IsRecentlySeen(npcID)
-	if (npcID and private.dbglobal.recentlySeen[npcID]) then
+function RSGeneralDB.IsRecentlySeen(entityID)
+	if (entityID and private.dbglobal.recentlySeen[entityID]) then
 		return true
 	end
 
@@ -486,4 +538,38 @@ end
 
 function RSGeneralDB.SetLastCleanDb()
 	private.dbchar.lastClean = time()
+end
+
+---============================================================================
+-- Search plugin integration
+---============================================================================
+
+function RSGeneralDB.ClearWorldMapTextFilter()
+	private.dbchar.worldMapTextFilter = nil
+end
+
+function RSGeneralDB.GetWorldMapTextFilter()
+	return private.dbchar.worldMapTextFilter
+end
+
+function RSGeneralDB.SetWorldMapTextFilter(text)
+	if (text == '') then
+		RSGeneralDB.ClearWorldMapTextFilter()
+	else
+		private.dbchar.worldMapTextFilter = text
+	end
+end
+
+---============================================================================
+-- Cinematics
+---============================================================================
+
+local isCinematicPlaying = false
+
+function RSGeneralDB.SetCinematicPlaying(value)
+	isCinematicPlaying = value
+end
+
+function RSGeneralDB.GetCinematicPlaying()
+	return isCinematicPlaying
 end

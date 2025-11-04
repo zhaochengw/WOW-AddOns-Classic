@@ -1,8 +1,8 @@
-## Interface: 30404
+## Interface: 50502, 11508, 110205, 110207
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli
-## Version: 2.3.3
+## Version: 108
 ## SavedVariables: SpeedyAutoLootDB
 ## IconTexture: 4675637
 ## OptionalDeps: ElvUI, ElvUI_Config
@@ -18,6 +18,6 @@
 ## Category-ptBR: Saque
 ## Category-ruRU: Добыча
 ## Category-zhCN: 战利品
-## Category-zhTW: 拾取
+## Category-zhTW: 戰利品
 
 SpeedyAutoLoot.lua

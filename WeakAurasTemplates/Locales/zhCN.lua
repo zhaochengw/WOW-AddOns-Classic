@@ -7,20 +7,12 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
-	--[[Translation missing --]]
-	L["(Dwarf)"] = "(Dwarf)"
-	--[[Translation missing --]]
-	L["(Dwarf/Human)"] = "(Dwarf/Human)"
-	--[[Translation missing --]]
-	L["(Human)"] = "(Human)"
-	--[[Translation missing --]]
-	L["(Night Elf)"] = "(Night Elf)"
-	--[[Translation missing --]]
-	L["(Troll)"] = "(Troll)"
-	--[[Translation missing --]]
-	L["(Undead)"] = "(Undead)"
-	L["< 4 stacks"] = "小于4层"
-	L["5 stacks"] = "5层"
+	L["(Dwarf)"] = "（矮人）"
+	L["(Dwarf/Human)"] = "（矮人/人类）"
+	L["(Human)"] = "（人类）"
+	L["(Night Elf)"] = "（暗夜精灵）"
+	L["(Troll)"] = "（巨魔）"
+	L["(Undead)"] = "（亡灵）"
 	L["Abilities"] = "技能"
 	L["Add Triggers"] = "添加触发器"
 	L["Always Active"] = "总是激活"
@@ -28,7 +20,7 @@ local L = WeakAuras.L
 	L["Always show the aura, highlight it if debuffed."] = "总是显示光环，存在减益时高亮。"
 	L["Always show the aura, turns grey if on cooldown."] = "总是显示光环，冷却中时变灰。"
 	L["Always show the aura, turns grey if the debuff not active."] = "总是显示光环，无减益时变灰。"
-	L["Always shows highlights if enchant missing."] = "如果附魔缺失，总是显示发光"
+	L["Always shows highlights if enchant missing."] = "如果附魔缺失，总是显示高亮。"
 	L["Always shows the aura, grey if buff not active."] = "总是显示光环，无增益时变灰。"
 	L["Always shows the aura, highlight it if buffed."] = "总是显示光环，有增益时高亮。"
 	L["Always shows the aura, highlight when active, turns blue on insufficient resources."] = "总是显示光环，激活时高亮，资源不足时变蓝。"
@@ -49,8 +41,6 @@ local L = WeakAuras.L
 	L["Bloodlust/Heroism"] = "嗜血/英勇"
 	L["buff"] = "增益效果"
 	L["Buffs"] = "增益效果"
-	L["Cancel"] = "取消"
-	L["Cast"] = "施放"
 	L["Charge and Buff Tracking"] = "可用次数充能和增益效果追踪"
 	L["Charge and Debuff Tracking"] = "可用次数充能和减益效果追踪"
 	L["Charge and Duration Tracking"] = "充能和持续时间追踪"
@@ -61,10 +51,7 @@ local L = WeakAuras.L
 	L["Create Auras"] = "创建光环"
 	L["debuff"] = "减益效果"
 	L["Debuffs"] = "减益"
-	--[[Translation missing --]]
-	L["dps buff"] = "dps buff"
-	L["General"] = "一般"
-	L["Health"] = "生命值"
+	L["dps buff"] = "伤害加成"
 	L["Highlight while action is queued."] = "动作在队列中时高亮"
 	L["Highlight while active, red when out of range."] = "激活时高亮，超出距离时变红"
 	L["Highlight while active."] = "激活时高亮"
@@ -75,10 +62,7 @@ local L = WeakAuras.L
 	L["Highlight while spell is active."] = "当法术激活时高亮"
 	L["Hold CTRL to create multiple auras at once"] = "按住 CTRL 键来一次性创建多个光环"
 	L["Keeps existing triggers intact"] = "保持现存触发器完整"
-	--[[Translation missing --]]
-	L["Master Channeler Rune"] = "Master Channeler Rune"
-	L["Max 3"] = "最大 3"
-	L["Max 4"] = "最大 4"
+	L["Master Channeler Rune"] = "引导大师符文"
 	L["Next"] = "下一个"
 	L["Only show the aura if the target has the debuff."] = "只有在目标拥有减益效果时才显示此光环"
 	L["Only show the aura when the item is on cooldown."] = "只有当物品在冷却中时才显示此光环"
@@ -89,10 +73,7 @@ local L = WeakAuras.L
 	L["Only shows the aura when the ability is ready to use."] = "只有当技能可用时才显示此光环"
 	L["Other cooldown"] = "其他冷却"
 	L["Pet alive"] = "宠物存活"
-	L["Pet Behavior"] = "宠物行为"
-	L["PvP Talents"] = "PvP 天赋"
-	--[[Translation missing --]]
-	L["regen buff"] = "regen buff"
+	L["regen buff"] = "法力值恢复速度加成"
 	L["Replace all existing triggers"] = "替换所有现存的触发器"
 	L["Replace Triggers"] = "替换触发器"
 	L["Resources"] = "资源"
@@ -135,6 +116,5 @@ local L = WeakAuras.L
 	L["Tracks the charge and the debuff, highlight while the debuff is active, blue on insufficient resources."] = "追踪可用次数和减益效果，当减益效果激活时高亮，当没有足够资源是变蓝显示"
 	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "追踪法术的充能和持续时间，当法术激活时高亮，没有足够的能量时变蓝。"
 	L["Unknown Item"] = "未知物品"
-	L["Unknown Spell"] = "未知法术"
 	L["Warrior cooldown"] = "战士冷却"
 

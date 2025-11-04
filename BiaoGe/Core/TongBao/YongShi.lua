@@ -95,7 +95,7 @@ function BG.YongShiUI(lastbt)
     local f = CreateFrame("Frame")
     f:RegisterEvent("ENCOUNTER_START")
     f:RegisterEvent("BOSS_KILL")
-    f:SetScript("OnEvent", function(self, event, ID)
+    f:SetScript("OnEvent", function(self, event, bossID)
         if not BG.FB2 then return end
         if event == "ENCOUNTER_START" then
             timestart = GetTime()
@@ -108,13 +108,9 @@ function BG.YongShiUI(lastbt)
                 timestart = nil
 
                 local numb
-                if BG.Loot.encounterID[BG.FB2] then
-                    for _numb, _bossID in ipairs(BG.Loot.encounterID[BG.FB2]) do
-                        if ID == _bossID then
-                            numb = _numb
-                            break
-                        end
-                    end
+                local _numb = BG.GetBossIndexByBossID(bossID)
+                if _numb then
+                    numb = _numb
                 end
                 if not numb then return end
 

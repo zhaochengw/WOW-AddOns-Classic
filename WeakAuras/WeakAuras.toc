@@ -1,11 +1,12 @@
-## Interface: 30404
+## Interface: 110205
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 5.12.9
+## Version: 5.20.6
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
+## Notes-esMX: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
 ## Notes-ruRU: Мощный, многосторонний инструмент для отображения графики и информации, основанной на баффах, дебаффах и других триггерах.
 ## Notes-zhTW: 一個強大且全面實用的顯示圖形和訊息基於增益，減益和其它觸發。
@@ -18,7 +19,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, LibSpecialization, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, LibSpecialization, !LibUIDropDownMenu, !!AddonLocale, CustomNames, BigWigs, DBM-Core
 
 # External code + initialization
 embeds.xml
@@ -28,8 +29,10 @@ Libs\TaintLess\TaintLess.xml
 
 # Client flavor specific libs
 Libs\LibSpecialization\LibSpecialization.lua
+Libs\LibDispel\LibDispel.lua
 
 Init.lua
+Compatibility.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
@@ -37,7 +40,7 @@ DefaultOptions.lua
 # Core files
 SubscribableObject.lua
 Features.lua
-Atlas_Retail.lua
+TimeMachine.lua
 Types_Retail.lua
 Types.lua
 Prototypes.lua
@@ -58,6 +61,7 @@ GenericTrigger.lua
 BossMods.lua
 
 # Helper Systems
+TSUHelpers.lua
 AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
@@ -67,13 +71,19 @@ Dragonriding.lua
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
 RegionTypes\RegionPrototype.lua
+RegionTypes\Empty.lua
+BaseRegions\TextureCoords.lua
+BaseRegions\CircularProgressTexture.lua
+BaseRegions\LinearProgressTexture.lua
 RegionTypes\ProgressTexture.lua
+BaseRegions\Texture.lua
 RegionTypes\Texture.lua
 RegionTypes\AuraBar.lua
 RegionTypes\Icon.lua
 RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
+BaseRegions\StopMotion.lua
 RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
@@ -84,6 +94,11 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
+SubRegionTypes\StopMotion.lua
+SubRegionTypes\Texture.lua
+SubRegionTypes\CircularProgressTexture.lua
+SubRegionTypes\LinearProgressTexture.lua
 
 # Misc
 Legendaries.lua
+DiscordList.lua

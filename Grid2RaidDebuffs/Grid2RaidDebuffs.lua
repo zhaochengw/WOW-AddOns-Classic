@@ -10,7 +10,7 @@ local ipairs = ipairs
 local strfind = strfind
 local GetTime = GetTime
 local UnitGUID = UnitGUID
-local isClassic = Grid2.isClassic
+local isClassic = Grid2.versionCli<50000 -- for this module MoP is not considered classic because supports EncounterJournal IDs
 local UnitAura = Grid2.API.UnitAuraLite
 
 local GetSpellInfo = Grid2.API.GetSpellInfo
@@ -68,6 +68,9 @@ Grid2.tooltipFunc['RaidDebuffsCount'] = function(tooltip)
 		tooltip:AddDoubleLine( instance_map_name, string.format("|cffff0000%d|r %s",spells_count,L['debuffs']), 255,255,255, 255,255,0)
 	end
 end
+
+-- debuffs statuses integration
+Grid2.raidDebuffsLoaded = spells_order
 
 -- roster units
 local unit_in_roster = Grid2.roster_guids
@@ -339,7 +342,7 @@ function class:LoadZoneSpells()
 		end
 		spells_count = spells_count + self.spells_count
 		if GSRD.debugging then
-			GSRD:Debug("Zone[%s] C_MapID[%d] EjID[%d] mapID[%d] Status [%s]: %d raid debuffs loaded from [%d]", instance_map_name, instance_bmap_id, instance_ej_id, instance_map_id, self.name, spells_count, (debuffs[instance_map_id] and instance_map_id) or (debuffs[instance_ej_id] and instance_ej_id) )
+			GSRD:Debug("Zone[%s] C_MapID[%d] EjID[%d] mapID[%d] Status [%s]: %d raid debuffs loaded from [%d]", instance_map_name, instance_bmap_id, instance_ej_id, instance_map_id, self.name, self.spells_count, (debuffs[instance_map_id] and instance_map_id) or (debuffs[instance_ej_id] and instance_ej_id) )
 		end
 	end
 end

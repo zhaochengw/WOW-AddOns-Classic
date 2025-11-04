@@ -8,6 +8,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
 -- RareScanner other addons integration services
 local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSButtonHandler = private.ImportLib("RareScannerButtonHandler")
 
 -- Navigation cache
 local navigationCache = {}
@@ -110,7 +111,7 @@ function RSNavigationMixin:Navigate()
 	end
 
 	-- Refresh button
-	self:GetParent():DetectedNewVignette(self:GetParent(), vignetteInfo, true)
+	RSButtonHandler.AddAlert(self:GetParent(), vignetteInfo, true)
 
 	-- Adds waypoint
 	RSTomtom.AddTomtomAutomaticWaypoint(vignetteInfo.mapID, vignetteInfo.x, vignetteInfo.y, vignetteInfo.name)

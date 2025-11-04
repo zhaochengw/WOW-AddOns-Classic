@@ -1,0 +1,27 @@
+## Interface: 50500
+## Title: Classic Talent Viewer
+## Notes: View any spec's talents from any character
+## Author: Numy
+## IconTexture: Interface\Addons\ClassicTalentViewer\media\icon
+## Version: v1.0.0
+## SavedVariables: ClassicTalentViewerDB
+## OptionalDeps: BlizzMove
+## X-Curse-Project-ID: 631740
+## Category-enUS: Combat
+## Category-deDE: Kampf
+## Category-esES: Combate
+## Category-esMX: Combate
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-koKR: 전투
+## Category-ptBR: Combate
+## Category-ruRU: Бой
+## Category-zhCN: 战斗
+## Category-zhTW: 戰鬥
+
+libs\load_libs.xml
+
+data.lua
+
+TalentViewer.lua
+TalentViewerUI.xml

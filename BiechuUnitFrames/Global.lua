@@ -757,125 +757,104 @@ end)
 
 -- 小图标(职业/种类)
 function BC:miniIcon(unit)
-	local frame = self[unit]
-	if not (frame and frame.miniIcon and frame.miniIcon:IsShown()) then return end
-	if unit == 'player' then
-		local active = GetActiveTalentGroup('player', false) -- 当前天赋
-		local passive = 3 - active                         -- 将切换天赋
-		local talent = {}
-		local text
-		for i = 1, MAX_TALENT_TABS do
-			local _, name, _, icon, point = GetTalentTabInfo(i, 'player', false, active)
-			text = (text and text .. '/' or '') .. point
-			if point > 0 and (type(talent[active]) ~= 'table' or talent[active].point < point) then
-				talent[active] = {
-					name = name,
-					icon = icon,
-					point = point
-				}
-			end
-			_, name, _, _, point = GetTalentTabInfo(i, 'player', false, passive)
-			if point > 0 and (type(talent[passive]) ~= 'table' or talent[passive].point < point) then
-				talent[passive] = {
-					name = name,
-					point = point
-				}
-			end
-		end
+    local frame = self[unit]
+    if not (frame and frame.miniIcon and frame.miniIcon:IsShown()) then return end
+    if unit == 'player' then
+        -- 使用专精系统API
+        local numSpecs = GetNumSpecializations and GetNumSpecializations()
+        if numSpecs and numSpecs > 0 then
+            local specIndex = GetSpecialization and GetSpecialization()
+            if specIndex then
+                local specInfo = {GetSpecializationInfo and GetSpecializationInfo(specIndex)}
+                if specInfo[1] then
+                    local _, name, _, icon = unpack(specInfo)
+                    frame.miniIcon.tip = { [1] = { L.specialization .. ':', name, 1, 1, 0, 0, 1, 0 } }
+                    frame.miniIcon.icon:SetTexture(icon)
+                else
+                    frame.miniIcon.tip = { [1] = { L.specialization .. ':', L.none, 1, 1, 0, 1, 0, 0 } }
+                    frame.miniIcon.icon:SetTexture('Interface\\Icons\\INV_Misc_QuestionMark')
+                end
+            else
+                frame.miniIcon.tip = { [1] = { L.specialization .. ':', L.none, 1, 1, 0, 1, 0, 0 } }
+                frame.miniIcon.icon:SetTexture('Interface\\Icons\\INV_Misc_QuestionMark')
+            end
+        else
+            frame.miniIcon.tip = { [1] = { L.specialization .. ':', L.none, 1, 1, 0, 1, 0, 0 } }
+            frame.miniIcon.icon:SetTexture('Interface\\Icons\\INV_Misc_QuestionMark')
+        end
 
-		if type(talent[active]) == 'table' and type(talent[active].name) == 'string' then
-			frame.miniIcon.tip = { [1] = { (active == 1 and L.primary or L.secondary) .. '(' .. talent[active].name .. '):', text, 1, 1, 0, 0, 1, 0 } }
-			frame.miniIcon.icon:SetTexture(talent[active].icon)
-		else
-			frame.miniIcon.tip = { [1] = { (active == 1 and L.primary or L.secondary) .. ':', text, 1, 1, 0, 1, 0, 0 } }
-			frame.miniIcon.icon:SetTexture('Interface\\Icons\\INV_Misc_QuestionMark')
-		end
-
-		frame.miniIcon.tip[2] = { L.shiftKeyDown .. ':', L.nude, 1, 1, 0, 0, 1, 0 } -- Shift 一键脱装
-
-		if GetNumTalentGroups('player', false) > 1 then                           -- 可以切换天赋(开启双天赋)
-			frame.miniIcon.tip[3] = { L.click .. ':', L.switch .. (active == 1 and L.secondary or L.primary), 1, 1, 0, 0, 1, 0 }
-			if BC:getDB('player', 'autoTalentEquip') and type(talent[passive]) == 'table' and type(talent[passive].name) == 'string' then
-				frame.miniIcon.tip[4] = { L.switchAfter .. ':', talent[passive].name, 1, 1, 0, 0, 1, 0 } -- 切换天赋后
-			end
-		end
-		if type(frame.miniIcon.callBack) == 'function' then frame.miniIcon.callBack() end -- 切换天赋后回调
-		frame.miniIcon.click = function()
-			if IsShiftKeyDown() then                                                      -- 按住Shift 一键脱光
-				EQUIPMENTMANAGER_BAGSLOTS = {}                                              -- 背包空间缓存
-				for _, i in pairs { 16, 17, 18, 5, 7, 1, 3, 9, 10, 6, 8 } do
-					local durability = GetInventoryItemDurability(i)
-					if durability and durability > 0 then -- 有耐久度
-						for bag = BACKPACK_CONTAINER, NUM_BAG_FRAMES do
-							local free, family = C_Container.GetContainerNumFreeSlots(bag)
-							if free > 0 and family == 0 then -- 有空位 且是背包
-								EQUIPMENTMANAGER_BAGSLOTS[bag] = EQUIPMENTMANAGER_BAGSLOTS[bag] or {}
-								for slot = 1, C_Container.GetContainerNumSlots(bag) do
-									if not C_Container.GetContainerItemID(bag, slot) and not EQUIPMENTMANAGER_BAGSLOTS[bag][slot] then -- 有空位
-										PickupInventoryItem(i)
-										if bag == 0 then
-											PutItemInBackpack()
-										else
-											PutItemInBag(C_Container.ContainerIDToInventoryID(bag))
-										end
-										EQUIPMENTMANAGER_BAGSLOTS[bag][slot] = true
-										break
-									end
-								end
-							end
-						end
-					end
-				end
-				for i = 1, 6 do
-					equip = _G['EquipSetFrame' .. i]
-					if equip then
-						equip:SetAlpha(.3)
-						equip.isEquipped = nil
-					end
-				end
-			else
-				SetActiveTalentGroup(passive)    -- 切换天赋
-				frame.miniIcon.callBack = function() -- 切换天赋回调
-					if BC:getDB('player', 'autoTalentEquip') and type(talent[passive]) == 'table' and talent[passive].name then
-						local setID = C_EquipmentSet.GetEquipmentSetID(talent[passive].name)
-						if setID then C_EquipmentSet.UseEquipmentSet(setID) end
-					end
-					frame.miniIcon.callBack = nil
-				end
-			end
-		end
-	else
-		if UnitIsPlayer(unit) then
-			local class, base = UnitClass(unit)
-			local color = RAID_CLASS_COLORS[base]
-			if color then
-				frame.miniIcon.tip = { [1] = { L.playerClass .. ':', class, 1, 1, 0, color.r, color.g, color.b } }
-				if UnitFactionGroup('player') == UnitFactionGroup(unit) and not UnitIsUnit('player', unit) then -- 同阵营
-					frame.miniIcon.tip[2] = { L.altKeyDown .. ':', L.invite, 1, 1, 0, 0, 1, 0 }
-				end
-				frame.miniIcon.tip[4] = { L.shiftKeyDown .. ':', L.copyName, 1, 1, 0, 0, 1, 0 }
-				frame.miniIcon.tip[5] = { L.leftButton .. ':', L.inspect, 1, 1, 0, 0, 1, 0 }
-				if UnitIsFriend('player', unit) and not UnitIsUnit('player', unit) then
-					frame.miniIcon.tip[3] = { L.ctrlKeyDown .. ':', L.trade, 1, 1, 0, 0, 1, 0 }
-					frame.miniIcon.tip[6] = { L.middleButton .. ':', L.sendTell, 1, 1, 0, 0, 1, 0 }
-					frame.miniIcon.tip[7] = { L.rightButton .. ':', L.followUnit, 1, 1, 0, 0, 1, 0 }
-				end
-			end
-			local coord = CLASS_ICON_TCOORDS[base]
-			if coord then
-				frame.miniIcon.icon:SetTexture(self:getDB('global', 'newClassIcon') and (self.texture .. self.portraitList[0]) or self:file(self.portraitList[1]))
-				frame.miniIcon.icon:SetTexCoord(unpack(coord))
-			end
-		else
-			local creature = UnitCreatureType(unit)
-			if creature and L.creatureList[creature] then
-				frame.miniIcon.tip = { [1] = { L.creatureType .. ':', creature, 1, 1, 0, 0, 1, 0 } }
-				frame.miniIcon.tip[2] = { L.shiftKeyDown .. ':', L.copyName, 1, 1, 0, 0, 1, 0 }
-				frame.miniIcon.icon:SetTexture(self.creatureList[L.creatureList[creature]])
-				frame.miniIcon.icon:SetTexCoord(.05, .95, .05, .95)
-			end
-		end
-	end
+        frame.miniIcon.tip[2] = { L.shiftKeyDown .. ':', L.nude, 1, 1, 0, 0, 1, 0 } -- Shift 一键脱装
+        
+        -- 移除天赋切换相关代码，改为专精系统
+        frame.miniIcon.click = function()
+            if IsShiftKeyDown() then
+                -- 一键脱光逻辑保持不变
+                EQUIPMENTMANAGER_BAGSLOTS = {}
+                for _, i in pairs { 16, 17, 18, 5, 7, 1, 3, 9, 10, 6, 8 } do
+                    local durability = GetInventoryItemDurability(i)
+                    if durability and durability > 0 then
+                        for bag = BACKPACK_CONTAINER, NUM_BAG_FRAMES do
+                            local free, family = C_Container.GetContainerNumFreeSlots(bag)
+                            if free > 0 and family == 0 then
+                                EQUIPMENTMANAGER_BAGSLOTS[bag] = EQUIPMENTMANAGER_BAGSLOTS[bag] or {}
+                                for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                                    if not C_Container.GetContainerItemID(bag, slot) and not EQUIPMENTMANAGER_BAGSLOTS[bag][slot] then
+                                        PickupInventoryItem(i)
+                                        if bag == 0 then
+                                            PutItemInBackpack()
+                                        else
+                                            PutItemInBag(C_Container.ContainerIDToInventoryID(bag))
+                                        end
+                                        EQUIPMENTMANAGER_BAGSLOTS[bag][slot] = true
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                for i = 1, 6 do
+                    equip = _G['EquipSetFrame' .. i]
+                    if equip then
+                        equip:SetAlpha(.3)
+                        equip.isEquipped = nil
+                    end
+                end
+            end
+        end
+    else
+        -- 其他单位处理逻辑保持不变
+        if UnitIsPlayer(unit) then
+            local class, base = UnitClass(unit)
+            local color = RAID_CLASS_COLORS[base]
+            if color then
+                frame.miniIcon.tip = { [1] = { L.playerClass .. ':', class, 1, 1, 0, color.r, color.g, color.b } }
+                if UnitFactionGroup('player') == UnitFactionGroup(unit) and not UnitIsUnit('player', unit) then
+                    frame.miniIcon.tip[2] = { L.altKeyDown .. ':', L.invite, 1, 1, 0, 0, 1, 0 }
+                end
+                frame.miniIcon.tip[4] = { L.shiftKeyDown .. ':', L.copyName, 1, 1, 0, 0, 1, 0 }
+                frame.miniIcon.tip[5] = { L.leftButton .. ':', L.inspect, 1, 1, 0, 0, 1, 0 }
+                if UnitIsFriend('player', unit) and not UnitIsUnit('player', unit) then
+                    frame.miniIcon.tip[3] = { L.ctrlKeyDown .. ':', L.trade, 1, 1, 0, 0, 1, 0 }
+                    frame.miniIcon.tip[6] = { L.middleButton .. ':', L.sendTell, 1, 1, 0, 0, 1, 0 }
+                    frame.miniIcon.tip[7] = { L.rightButton .. ':', L.followUnit, 1, 1, 0, 0, 1, 0 }
+                end
+            end
+            local coord = CLASS_ICON_TCOORDS[base]
+            if coord then
+                frame.miniIcon.icon:SetTexture(self:getDB('global', 'newClassIcon') and (self.texture .. self.portraitList[0]) or self:file(self.portraitList[1]))
+                frame.miniIcon.icon:SetTexCoord(unpack(coord))
+            end
+        else
+            local creature = UnitCreatureType(unit)
+            if creature and L.creatureList[creature] then
+                frame.miniIcon.tip = { [1] = { L.creatureType .. ':', creature, 1, 1, 0, 0, 1, 0 } }
+                frame.miniIcon.tip[2] = { L.shiftKeyDown .. ':', L.copyName, 1, 1, 0, 0, 1, 0 }
+                frame.miniIcon.icon:SetTexture(self.creatureList[L.creatureList[creature]])
+                frame.miniIcon.icon:SetTexCoord(.05, .95, .05, .95)
+            end
+        end
+    end
 end
 
 -- 设置暗黑模式

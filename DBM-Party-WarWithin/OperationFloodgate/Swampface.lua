@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2650, "DBM-Party-WarWithin", 9, 1298)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250905232649")
+mod:SetRevision("20251019055226")
 mod:SetCreatureID(226396)
 mod:SetEncounterID(3053)
 mod:SetHotfixNoticeRev(20250215000000)
@@ -90,7 +90,7 @@ end
 --"<166.37 22:50:49> [NAME_PLATE_UNIT_ADDED] Swampface#Vehicle-0-4212-2773-29843-226396-000014147D",
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 1214337 then
+	if spellId == 1214337 and self:AntiSpam(5, 1) then
 		timerRP:Start()
 	end
 end

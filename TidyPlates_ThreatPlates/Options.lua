@@ -23,8 +23,9 @@ local UnitsExists, UnitName = UnitsExists, UnitName
 local GameTooltip = GameTooltip
 local GetSpellInfo = Addon.GetSpellInfo
 local GetAddOnEnableState = (C_AddOns and C_AddOns.GetAddOnEnableState)
-    -- classic's GetAddonEnableState and retail's C_AddOns have their parameters swapped
-    or function(name, character) return GetAddOnEnableState(character, name) end
+-- classic's GetAddonEnableState and retail's C_AddOns have their parameters swapped
+or function(name, character) return GetAddOnEnableState(character, name) end
+local GetSpecializationInfo = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or _G.GetSpecializationInfo
 
 -- ThreatPlates APIs
 local TidyPlatesThreat = TidyPlatesThreat
@@ -349,6 +350,188 @@ local function AddImportExportOptions(options_profiles)
       func = function() ShowImportFrame() end
     },
   }
+end
+
+-------------------------------------------------------------------------------
+-- Icon constants and functions (including API interface to scripts)
+-------------------------------------------------------------------------------
+
+local IconTexturesByOptions = {
+  ["Arena"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\ArenaWidget\\BG",
+  -- Class.<CLASS_NAME>, e.g. Class.DRUID
+  -- ComboPoint.<NO>.On, e.g., ComboPoint.1.On
+  -- ComboPoint.<NO>.Off, e.g., ComboPoint.1.Off
+  -- FocusHighlight.Center|Left|Right
+  ["Quest.Highlight"] = nil,
+  ["Quest.KillObjective"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\QuestWidget\\kill",
+  ["Quest.LootObjective"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\QuestWidget\\loot",  
+  ["HealerTracker"] = "Interface\\Icons\\Achievement_Guild_DoctorIsIn",
+  -- Social.* does not support tex coords
+  ["Social.Alliance"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\SocialWidget\\allianceicon",
+  ["Social.Horde"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\SocialWidget\\hordeicon",
+  ["Social.Friend"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\SocialWidget\\friendicon",
+  ["Social.BattleNetFriend"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\SocialWidget\\BattleNetFriend", -- "Interface\\FriendsFrame\\PlusManz-BattleNet"
+  ["Social.GuildMember"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\SocialWidget\\guildicon",
+  ["Stealth"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\StealthWidget\\stealthicon",
+  -- TargetHighlight.Center|Left|Right
+  -- TargetMarker.<NAME>, e.g., TargetMarker.SKULL 
+  -- Totem.<SPELL_ID>, e.g., 
+  ["UnitClassification.Rare"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\default",
+  ["UnitClassification.Boss"] = "Interface\\TargetingFrame\\UI-TargetingFrame-Skull",
+}
+
+local TARGET_MARKER_TEXTURES = {
+  ["STAR"] = { x = 0, y =0 },
+  ["CIRCLE"] = { x = 0.25, y = 0 },
+  ["DIAMOND"] = { x = 0.5, y = 0 },
+  ["TRIANGLE"] = { x = 0.75, y = 0},
+  ["MOON"] = { x = 0, y = 0.25},
+  ["SQUARE"] = { x = .25, y = 0.25},
+  ["CROSS"] = { x = .5, y = 0.25},
+  ["SKULL"] = { x = .75, y = 0.25},
+  ["GREEN_FLAG"] = { x = 0.5, y = 0.75 },
+  ["MURLOC"] = { x = 0.75, y = 0.75 },
+}
+
+for target_marker, tex_coords in pairs(TARGET_MARKER_TEXTURES) do
+  IconTexturesByOptions["TargetMarker." .. target_marker] = { 
+    Texture = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", 
+    TexCoords = { tex_coords.x, tex_coords.x + 0.25, tex_coords.y, tex_coords.y + 0.25 }
+  }
+end
+
+Addon.IconTextures = setmetatable( {}, { __index = IconTexturesByOptions })
+
+function Addon:GetIconTexture(icon_id, ...)
+  local icon_source = Addon.IconTextures[icon_id]
+
+  if type(icon_source) == "function" then
+    -- Environment for this function is set in ScriptWidget when setting it for icon_id
+    local call_ok, return_value = pcall(icon_source, ...)
+    if call_ok then
+      return return_value
+    else
+      -- If the function call failed, we log the error and return nothing
+      Addon.Logging.Error(string.format(L["Error executing icon texture function for %s:"], icon_id), return_value)
+    end
+  else
+    return icon_source
+  end
+end
+
+function Addon:UpdateIconTexture(icon, texture_info)
+  if type(texture_info) == "table" then
+    icon:SetTexture(texture_info.Texture) -- ?  or EMPTY_TEXTURE
+
+    local tex_coords = texture_info.TexCoords
+    if tex_coords then
+      icon:SetTexCoord(tex_coords[1] or 0, tex_coords[2] or 1, tex_coords[3] or 0, tex_coords[4] or 1)
+    end
+
+    local color = texture_info.Color
+    if color then
+      icon:SetDesaturated(true)
+      icon:SetVertexColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
+    end
+
+    if texture_info.Alpha then
+      icon:SetAlpha(texture_info.Alpha)
+    end
+    
+    if texture_info.Desaturated then
+      icon:SetDesaturated(texture_info.Desaturated)
+    end
+  else
+    icon:SetTexture(texture_info) -- ?  or EMPTY_TEXTURE
+  end
+end
+
+function Addon:SetIconTexture(icon, icon_id, ...)
+  local texture_info = Addon:GetIconTexture(icon_id, ...)
+  if not texture_info then return end
+  
+  Addon:UpdateIconTexture(icon, texture_info)
+end
+
+local function UpdateUnitClassificationIconTextures(style, options_path)
+  IconTexturesByOptions["UnitClassification.Rare"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. style
+  if options_path then
+    options_path.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewRare.image = IconTexturesByOptions["UnitClassification.Rare"]
+    options_path.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewElite.image = string.gsub(IconTexturesByOptions["UnitClassification.Rare"], style, "elite-" .. style)
+    options_path.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewRareElite.image = string.gsub(IconTexturesByOptions["UnitClassification.Rare"], style, "rareelite-" .. style)
+  end
+end
+
+local function UpdateQuestIconTexture(icon_texture, options_path)
+  IconTexturesByOptions["Quest.Highlight"] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\QuestWidget\\" .. icon_texture
+  if options_path then
+    options_path.args.Widgets.args.QuestWidget.args.ModeIcon.args.Texture.args.Preview.image = IconTexturesByOptions["Quest.Highlight"]
+  end
+end
+
+local function UpdateClassIconTextures(class_theme, options_path)
+  local class_list = t.CopyTable(CLASS_SORT_ORDER)
+  sort(class_list)
+  for i, class in ipairs(class_list) do
+    IconTexturesByOptions["Class." .. class] = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\ClassIconWidget\\" .. class_theme .. "\\" .. class
+    if options_path then
+      options_path.args.Widgets.args.ClassIconWidget.args.Textures.args["Prev" .. i].image = IconTexturesByOptions["Class." .. class]
+    end
+  end
+end
+
+local function UpdateTotemIconTexture(totem_style, totem_info, options_path)
+  IconTexturesByOptions["Totem." .. tostring(totem_info.SpellID)] = "Interface\\Addons\\TidyPlates_ThreatPlates\\Widgets\\TotemIconWidget\\" .. totem_style .. "\\" .. totem_info.Icon
+  if options_path then
+    options_path.args.Totems.args[totem_info.Name].args.Textures.args.Icon.image = IconTexturesByOptions["Totem." .. tostring(totem_info.SpellID)]
+  end
+end
+
+local function UpdateTotemIconTextures(totem_settings, options_path)
+  for _, totem_info in pairs(Addon.TotemInformation) do
+    UpdateTotemIconTexture(totem_settings[totem_info.ID].Style, totem_info, options_path)
+  end
+end
+
+local function SetTargetArtIconTexture(icon_id, style, tex_coords)
+  IconTexturesByOptions[icon_id] = {
+    Texture = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\TargetArtWidget\\" .. style,
+    TexCoords = tex_coords,
+  }
+end
+local function UpdateTargetArtIconTexture(style, options_path)
+  -- This also sets these icon ids unsed for the selected style, but they are not used it that case, so it does not matter
+  SetTargetArtIconTexture("TargetHighlight.Center", style, { 0, 1, 0, 1 })
+  SetTargetArtIconTexture("TargetHighlight.Left", style, { 0, 1, 0, 1 })
+  SetTargetArtIconTexture("TargetHighlight.Right", style, { 1, 0, 0, 1 })
+
+  if options_path then
+    options.args.Widgets.args.TargetArtWidget.args.Indicator.args.Texture.args.Preview.image = IconTexturesByOptions["TargetHighlight.Center"].Texture
+  end
+end
+
+local function UpdateFocusArtIconTexture(style, options_path)
+  -- This also sets these icon ids unsed for the selected style, but they are not used it that case, so it does not matter
+  SetTargetArtIconTexture("FocusHighlight.Center", style, { 0, 1, 0, 1 })
+  SetTargetArtIconTexture("FocusHighlight.Left", style, { 0, 1, 0, 1 })
+  SetTargetArtIconTexture("FocusHighlight.Right", style, { 1, 0, 0, 1 })
+
+  if options_path then
+    options.args.Widgets.args.FocusWidget.args.Texture.args.Preview.image = IconTexturesByOptions["FocusHighlight.Center"].Texture
+  end
+end
+
+function Addon:InitializeIconTextures(options_path)
+  local db = self.db.profile
+
+  --wipe(Addon.IconTextures)
+
+  UpdateUnitClassificationIconTextures(db.settings.eliteicon.theme, options_path)
+  UpdateQuestIconTexture(db.questWidget.IconTexture, options_path)
+  UpdateClassIconTextures(db.classWidget.theme, options)
+  UpdateTotemIconTextures(db.totemSettings, options)
+  UpdateTargetArtIconTexture(db.targetWidget.theme, options_path)
+  UpdateFocusArtIconTexture(db.FocusWidget.theme, options_path)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -695,7 +878,8 @@ local MAP_OPTION_TO_WIDGET = {
   ArenaWidget = "Arena",
   ExperienceWidget = "Experience",
   ThreatPercentage = "Threat",
-  HealerTrackerWidget = "HealerTracker"
+  HealerTrackerWidget = "HealerTracker",
+  BossModsWidget = "BossMods"
 }
 
 local function GetWidgetName(info)
@@ -1960,17 +2144,17 @@ local function CreateComboPointsWidgetOptions()
                 type = "select",
                 order = 10,
                 values = {
-                  DEATHKNIGHT = (Addon.ExpansionIsAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING) and L["Death Knight"]) or nil,
+                  DEATHKNIGHT = (Addon.ExpansionIsAtLeastWrath and L["Death Knight"]) or nil,
                   DRUID = L["Druid"],
-                  EVOKER = (Addon.ExpansionIsAtLeast(LE_EXPANSION_DRAGONFLIGHT) and L["Evoker"]) or nil,
+                  EVOKER = (Addon.ExpansionIsAtLeastDF and L["Evoker"]) or nil,
                   -- Arcane Charge as a resource mechanic was introduced with Patch 7.0.3 (Legion)
-                  MAGE = (Addon.ExpansionIsAtLeast(LE_EXPANSION_LEGION) and L["Arcane Mage"]) or nil,
-                  MONK = (Addon.ExpansionIsAtLeast(LE_EXPANSION_MISTS_OF_PANDARIA)  and L["Windwalker Monk"]) or nil,
+                  MAGE = (Addon.ExpansionIsAtLeastLegion and L["Arcane Mage"]) or nil,
+                  MONK = (Addon.ExpansionIsAtLeastMists  and L["Windwalker Monk"]) or nil,
                   -- Holy Power was introduced with Patch 4.0.1 (Cataclysm)
-                  PALADIN = (Addon.ExpansionIsAtLeast(LE_EXPANSION_CATACLYSM)  and L["Paladin"]) or nil,
+                  PALADIN = (Addon.ExpansionIsAtLeastCata  and L["Paladin"]) or nil,
                   ROGUE = L["Rogue"],
                   -- Soul Shard as a resource mechanic was introduced with Path 4.0.1 (Cataclysm)
-                  WARLOCK = (Addon.ExpansionIsAtLeast(LE_EXPANSION_CATACLYSM)  and L["Warlock"]) or nil,
+                  WARLOCK = (Addon.ExpansionIsAtLeastCata  and L["Warlock"]) or nil,
                 },
                 arg = { "ComboPoints", "Specialization" },
               },
@@ -2097,7 +2281,7 @@ local function CreateComboPointsWidgetOptions()
                 end,
                 hasAlpha = false,
                 -- Charged Combo Points were introduced with Battle for Azerorth  
-                hidden = function() return db.ComboPoints.Specialization ~= "ROGUE" or not Addon.ExpansionIsAtLeast(LE_EXPANSION_BATTLE_FOR_AZEROTH) end
+                hidden = function() return db.ComboPoints.Specialization ~= "ROGUE" or not Addon.ExpansionIsAtLeastBfA end
               },
               ColorDeathrune = {
                 name = L["Death Rune"],
@@ -2113,7 +2297,7 @@ local function CreateComboPointsWidgetOptions()
                 end,
                 hasAlpha = false,
                 -- Deathrunes were available from Wrath to WoD
-                hidden = function() return db.ComboPoints.Specialization ~= "DEATHKNIGHT" or Addon.ExpansionIsAtLeast(LE_EXPANSION_LEGION) end
+                hidden = function() return db.ComboPoints.Specialization ~= "DEATHKNIGHT" or Addon.ExpansionIsAtLeastLegion end
               },
             },
           },
@@ -2144,14 +2328,14 @@ local function CreateComboPointsWidgetOptions()
         type = "group",
         order = 30,
         inline = false,
-        hidden = function() return not Addon.ExpansionIsAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING) end,
+        hidden = function() return not Addon.ExpansionIsAtLeastWrath end,
         args = {
           RuneCooldown= {
             name = L["Death Knigh Rune Cooldown"],
             order = 70,
             type = "group",
             inline = true,
-            hidden = function() return not Addon.ExpansionIsAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING) end,
+            hidden = function() return not Addon.ExpansionIsAtLeastWrath end,
             args = {
               Enable = {
                 name = L["Enable"],
@@ -2167,7 +2351,7 @@ local function CreateComboPointsWidgetOptions()
             order = 80,
             type = "group",
             inline = true,
-            hidden = function() return not Addon.ExpansionIsAtLeast(LE_EXPANSION_DRAGONFLIGHT) end,
+            hidden = function() return not Addon.ExpansionIsAtLeastDF end,
             args = {
               Enable = {
                 name = L["Enable"],
@@ -2568,14 +2752,11 @@ end
     name = L["Quest"],
     order = 100,
     type = "group",
-    hidden = function() return not Addon.IS_MAINLINE end,
+    hidden = function() return not Addon.ExpansionIsAtLeastMists end,
     args = {
       Enable = GetEnableEntry(L["Enable Quest Widget"], L["This widget shows a quest icon above unit nameplates or colors the nameplate healthbar of units that are involved with any of your current quests."], "questWidget", true,
         function(info, val)
           SetValue(info, val) -- SetValue because nameplate healthbars must be updated (if healthbar mode is enabled)
-          if db.questWidget.ON or db.questWidget.ShowInHeadlineView then
-            SetCVar("showQuestTrackingTooltips", 1)
-          end
           Addon.Widgets:InitializeWidget("Quest")
         end),
       Visibility = { type = "group",	order = 10,	name = L["Visibility"], inline = true,
@@ -2628,8 +2809,8 @@ end
                 type = "select",
                 order = 10,
                 set = function(info, val)
+                  UpdateQuestIconTexture(val, options)
                   SetValue(info, val)
-                  options.args.Widgets.args.QuestWidget.args.ModeIcon.args.Texture.args.Preview.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\QuestWidget\\" .. db.questWidget.IconTexture;
                 end,
                 values = { QUESTICON = L["Blizzard"], SKULL = L["Skull"] },
                 arg = { "questWidget", "IconTexture" },
@@ -2638,7 +2819,7 @@ end
                 name = L["Preview"],
                 order = 20,
                 type = "execute",
-                image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\QuestWidget\\" .. db.questWidget.IconTexture,
+                image = IconTexturesByOptions["Quest.Highlight"],
               },
               PlayerColor = {
                 name = L["Color"],
@@ -2755,7 +2936,7 @@ local function CreateTargetArtWidgetOptions()
                 name = L["Preview"],
                 order = 10,
                 type = "execute",
-                image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\TargetArtWidget\\" .. db.targetWidget.theme,
+                image = IconTexturesByOptions["TargetHighlight.Center"].Texture,
                 imageWidth = 64,
                 imageHeight = 64,
               },
@@ -2764,8 +2945,8 @@ local function CreateTargetArtWidgetOptions()
                 type = "select",
                 order = 20,
                 set = function(info, val)
+                  UpdateTargetArtIconTexture(val, options)
                   SetValueWidget(info, val)
-                  options.args.Widgets.args.TargetArtWidget.args.Indicator.args.Texture.args.Preview.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\TargetArtWidget\\" .. db.targetWidget.theme;
                 end,
                 values = Addon.TARGET_TEXTURES,
                 arg = { "targetWidget", "theme" },
@@ -3211,7 +3392,7 @@ local function CreateExperienceWidgetOptions()
     type = "group",
     order = 54,
     childGroups = "tab",
-    hidden = function() return not Addon.IS_MAINLINE end,
+    hidden = function() return not Addon.ExpansionIsAtLeastBfA end,
     set = SetValueWidget,
     args = {
       Enable = GetEnableEntry(
@@ -3456,7 +3637,7 @@ local function CreateFocusWidgetOptions()
             name = L["Preview"],
             order = 10,
             type = "execute",
-            image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\TargetArtWidget\\" .. db.FocusWidget.theme,
+            image = IconTexturesByOptions["FocusHighlight.Center"].Texture,
             imageWidth = 64,
             imageHeight = 64,
           },
@@ -3465,8 +3646,8 @@ local function CreateFocusWidgetOptions()
             type = "select",
             order = 20,
             set = function(info, val)
+              UpdateFocusArtIconTexture(val, options)
               SetValueWidget(info, val)
-              options.args.Widgets.args.FocusWidget.args.Texture.args.Preview.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\TargetArtWidget\\" .. db.FocusWidget.theme
             end,
             values = Addon.TARGET_TEXTURES,
             arg = { "FocusWidget", "theme" },
@@ -3876,19 +4057,147 @@ local function CreateBossModsWidgetOptions()
   local entry = {
     name = L["Boss Mods"],
     type = "group",
+    childGroups = "tab",
     order = 30,
+    set = SetValueWidget,
     args = {
       Enable = GetEnableEntry(L["Enable Boss Mods Widget"], L["This widget shows auras from boss mods on your nameplates (since patch 7.2, hostile nameplates only in instances and raids)."], "BossModsWidget", true, function(info, val) SetValuePlain(info, val); Addon.Widgets:InitializeWidget("BossMods") end),
-      Aura = {
-        name = L["Aura Icon"],
+      Appearance = {
+        name = L["Appearance"],
         type = "group",
         order = 10,
-        inline = true,
+        inline = false,
         args = {
+          Enable = {
+            name = L["Enable"],
+            type = "group",
+            order = 10,
+            inline = true,
+            args = {          
+              ShowNameplateAuras = {
+                type = "toggle",
+                order = 10,
+                name = L["Auras"],
+                arg = { "BossModsWidget",  "ShowAuras" }
+              },
+              ShowTimers = {
+                type = "toggle",
+                order = 20,
+                name = L["Timers"],
+                arg = { "BossModsWidget",  "ShowTimers" }
+              },
+            },            
+          },
+          Effects = {
+            name = L["Effects"],
+            type = "group",
+            order = 15,
+            inline = true,
+            args = {
+              CooldownSpiral = {
+                name = L["Cooldown Spiral"],
+                type = "toggle",
+                order = 10,
+                desc = L["Show a cooldown swipe on the icon."],
+                arg = { "BossModsWidget", "ShowCooldownSpiral" },
+              },
+              Glow = {
+                name = L["Highlight for Expiring Icons"],
+                type = "group",
+                order = 15,
+                inline = true,
+                args = {
+                  Priority = {
+                    name = L["Priority"],
+                    type = "select",
+                    order = 10,
+                    values = {
+                      None = L["None"],
+                      Important = L["Important"],
+                      All = L["All"],
+                    },
+                    desc = L["Only highlight expiring alerts with the selected priority."],
+                    arg = { "BossModsWidget",  "Glow", "Priority" },
+                  },
+                  GlowType = {
+                    name = L["Glow Type"],
+                    type = "select",
+                    values = Addon.GLOW_TYPES,
+                    order = 20,
+                    arg = { "BossModsWidget",  "Glow", "Type" },
+                  },
+                  GlowColorEnable = {
+                    name = L["Glow Color"],
+                    type = "toggle",
+                    order = 30,
+                    arg = { "BossModsWidget", "Glow", "CustomColor" },
+                  },
+                  GlowColor = {
+                    name = L["Color"],
+                    type = "color",
+                    order = 40,
+                    hasAlpha = true,
+                    set = function(info, r, g, b, a)
+                      local color = db.BossModsWidget.Glow.Color
+                      color[1], color[2], color[3], color[4] = r, g, b, a
+                      Addon.Widgets:UpdateSettings("BossMods")
+                    end,
+                    get = function(info)
+                      local color = db.BossModsWidget.Glow.Color
+                      return unpack(color)
+                    end,
+                    arg = { "BossModsWidget", "Glow", "Color" },
+                  },
+                },
+              },
+            },
+          },
+          Config = {
+            name = L["Configuration Mode"],
+            order = 30,
+            type = "group",
+            inline = true,
+            args = {
+              Toggle = {
+                name = L["Toggle on Target"],
+                type = "execute",
+                order = 1,
+                width = "full",
+                func = function() Addon:ConfigBossModsWidget() end,
+              },
+            },
+          },  
+        },
+      },
+      Layout ={
+        name = L["Layout"],
+        type = "group",
+        order = 15,
+        inline = false,
+        args = {
+          Positioning = GetFramePositioningEntry(20, { "BossModsWidget" }),
+        }
+      },
+      Aura = {
+        name = L["Icon"],
+        type = "group",
+        order = 20,
+        inline = false,
+        args = {
+          Layout = {
+            name = L["Layout"],
+            order = 10,
+            type = "group",
+            inline = true,
+            args = {
+              Size = GetSizeEntry(L["Size"], 10, {"BossModsWidget",  "scale" } ),
+              Spacing = { name = L["Spacing"], order = 20, type = "range", min = 0, max = 100, step = 1, arg = { "BossModsWidget", "AuraSpacing" }, },
+            },
+          },
           Font = {
             name = L["Font"],
             type = "group",
-            order = 10,
+            order = 20,
             inline = true,
             args = {
               Font = { name = L["Typeface"], type = "select", order = 10, dialogControl = "LSM30_Font", values = AceGUIWidgetLSMlists.font, arg = { "BossModsWidget", "Font" }, },
@@ -3896,36 +4205,19 @@ local function CreateBossModsWidgetOptions()
               FontColor = {	name = L["Color"], type = "color",	order = 30,	get = GetColor,	set = SetColorWidget,	arg = {"BossModsWidget", "FontColor"},	hasAlpha = false, },
             },
           },
-          Layout = {
-            name = L["Layout"],
-            order = 20,
-            type = "group",
-            inline = true,
-            args = {
-              Size = GetSizeEntry(L["Size"], 10, {"BossModsWidget",  "scale" } ),
-              Spacing = { name = L["Spacing"], order = 20, type = "range", min = 0, max = 100, step = 1, arg = { "BossModsWidget", "AuraSpacing" }, },
-            },
-          } ,
         },
       },
-      Placement = GetPlacementEntryWidget(30, "BossModsWidget", true),
-      Config = {
-        name = L["Configuration Mode"],
-        order = 40,
-        type = "group",
-        inline = true,
-        args = {
-          Toggle = {
-            name = L["Toggle on Target"],
-            type = "execute",
-            order = 1,
-            width = "full",
-            func = function() Addon:ConfigBossModsWidget() end,
-          },
-        },
-      },
+      Label = GetTextEntry(L["Label"], 30, { "BossModsWidget", "LabelText" } )
     },
   }
+
+  -- entry.args.Layout.args.Positioning.args.AnchorTo = {
+  --   name = L["Anchor to"],
+  --   order = 1,
+  --   type = "select",
+  --   values = { Healthbar = L["Healthbar"], Buffs = L["Buffs"], Debuffs = L["Debuffs"], CrowdControl = L["Crowd Control"] },
+  --   arg = { "BossModsWidget",  "AnchorTo" }
+  -- }
 
   return entry
 end
@@ -4006,10 +4298,9 @@ local function CreateAuraAreaLayoutOptions(pos, widget_info)
       return values
     end,
     set = function(info, val)
-      if val ~= "Healthbar" and db.AuraWidget[val].AnchorTo == widget_info then
+      local call_ok, return_value = pcall(SetValueWidget, info, val)
+      if not call_ok then
         Addon.Logging.Error(L["Cyclic anchoring of aura areas to each other is not possible."], string.format(L["%s already anchored to %s."], val, widget_info))
-      else
-        SetValueWidget(info, val)
       end
     end,
     arg = { "AuraWidget", widget_info, "AnchorTo" }
@@ -4896,7 +5187,7 @@ local function CreateAurasWidgetOptions()
                     end,
                     arg = { "AuraWidget", "Debuffs", "ShowBlizzardForFriendly" },
                     disabled = function() return not db.AuraWidget.Debuffs.ShowFriendly end,
-                    hidden = function() return not Addon.IS_MAINLINE end
+                    hidden = function() return not Addon.WOW_FEATURE_BLIZZARD_AURA_FILTER end
                   },
                   Dispellable = {
                     name = L["Dispellable"],
@@ -5042,7 +5333,7 @@ local function CreateAurasWidgetOptions()
                     end,
                     arg = { "AuraWidget", "Debuffs", "ShowBlizzardForEnemy" },
                     disabled = function() return not db.AuraWidget.Debuffs.ShowEnemy end,
-                    hidden = function() return not Addon.IS_MAINLINE end
+                    hidden = function() return not Addon.WOW_FEATURE_BLIZZARD_AURA_FILTER end
                   },
                 },
               },
@@ -5140,7 +5431,7 @@ local function CreateAurasWidgetOptions()
                     end,
                     arg = { "AuraWidget", "CrowdControl", "ShowBlizzardForFriendly" },
                     disabled = function() return not db.AuraWidget.CrowdControl.ShowFriendly end,
-                    hidden = function() return not Addon.IS_MAINLINE end
+                    hidden = function() return not Addon.WOW_FEATURE_BLIZZARD_AURA_FILTER end
                   },
                   Dispellable = {
                     name = L["Dispellable"],
@@ -5196,7 +5487,7 @@ local function CreateAurasWidgetOptions()
                     end,
                     arg = { "AuraWidget", "CrowdControl", "ShowAllEnemy" },
                     disabled = function() return not db.AuraWidget.CrowdControl.ShowEnemy end,
-                    hidden = function() return not Addon.IS_MAINLINE end
+                    hidden = function() return not Addon.WOW_FEATURE_BLIZZARD_AURA_FILTER end
                   },
                   Blizzard = {
                     name = L["Blizzard"],
@@ -5210,7 +5501,7 @@ local function CreateAurasWidgetOptions()
                     end,
                     arg = { "AuraWidget", "CrowdControl", "ShowBlizzardForEnemy" },
                     disabled = function() return not db.AuraWidget.CrowdControl.ShowEnemy end,
-                    hidden = function() return not Addon.IS_MAINLINE end
+                    hidden = function() return not Addon.WOW_FEATURE_BLIZZARD_AURA_FILTER end
                   },
                 },
               },
@@ -5985,7 +6276,7 @@ local function CreateBlizzardSettings()
                 order = 10,
                 type = "range",
                 min = 0,
-                max = (Addon.IS_CLASSIC  and 20) or (Addon.IS_TBC_CLASSIC and 41) or (Addon.IS_WRATH_CLASSIC and 41) or (Addon.IS_CATA_CLASSIC and 41) or 100,
+                max = Addon.NAMEPLATE_MAX_DISTANCE_MAX_VALUE[Addon.GetExpansionLevel()],
                 step = 1,
                 width = "double",
                 desc = L["The max distance to show nameplates."],
@@ -6569,14 +6860,14 @@ local function CreateHealthbarOptions()
                 order = 29,
                 type = "toggle",
                 arg = { "settings", "healthbar", "ShowHealAbsorbs" },
-                hidden = function() return not Addon.IS_MAINLINE end, -- Absorbs were added with Mists
+                hidden = function() return not Addon.WOW_FEATURE_ABSORBS end, -- Absorbs were added with Mists
               },
               ShowAbsorbs = {
                 name = L["Absorbs"],
                 order = 30,
                 type = "toggle",
                 arg = { "settings", "healthbar", "ShowAbsorbs" },
-                hidden = function() return not Addon.IS_MAINLINE end, -- Absorbs were added with Mists
+                hidden = function() return not Addon.WOW_FEATURE_ABSORBS end, -- Absorbs were added with Mists
               },
               ShowMouseoverHighlight = {
                 type = "toggle",
@@ -6668,8 +6959,7 @@ local function CreateHealthbarOptions()
                 name = L["Custom"],
                 order = 60,
                 type = "toggle",
-                width = "half",
-                desc = L["Use a custom color for the healtbar's background."],
+                desc = L["Use a custom color for the healthbar's background."],
                 set = function(info, val)
                   SetThemeValue(info, not val)
                 end,
@@ -6683,12 +6973,47 @@ local function CreateHealthbarOptions()
                 order = 70,
                 type = "color",
                 get = GetColor, set = SetColor, arg = {"settings", "healthbar", "BackgroundColor"},
-                width = "half",
                 disabled = function() return db.settings.healthbar.BackgroundUseForegroundColor end,
               },
+              Spacer2 = GetSpacerEntry(75),
+              BorderColorText = {
+                type = "description",
+                order = 80,
+                width = "single",
+                name = L["Border Color:"],
+              },
+              BorderColorForegroundToggle = {
+                name = L["Same as Foreground"],
+                order = 81,
+                type = "toggle",
+                desc = L["Use the healthbar's foreground color also for the border."],
+                set = SetThemeValue,
+                arg = { "settings", "healthbar", "BorderUseForegroundColor" },
+              },
+              BorderColorCustomToggle = {
+                name = L["Custom"],
+                order = 82,
+                type = "toggle",
+                desc = L["Use a custom color for the healthbar's border."],
+                set = function(info, val)
+                  SetValue(info, not val)
+                end,
+                get = function(info, val)
+                  return not GetValue(info, val)
+                end,
+                arg = { "settings", "healthbar", "BorderUseForegroundColor" },
+              },
+              BorderColorCustom = {
+                name = L["Color"],
+                order = 83,
+                type = "color",
+                get = GetColor, set = SetColor, arg = {"settings", "healthbar", "BorderColor"},
+                disabled = function() return db.settings.healthbar.BorderUseForegroundColor end,
+              },
+              Spacer3 = GetSpacerEntry(85),
               BackgroundOpacity = {
                 name = L["Background Transparency"],
-                order = 80,
+                order = 90,
                 type = "range",
                 min = 0,
                 max = 1,
@@ -6698,10 +7023,10 @@ local function CreateHealthbarOptions()
               },
               AbsorbGroup = {
                 name = L["Absorbs"],
-                order = 90,
+                order = 100,
                 type = "group",
                 inline = true,
-                hidden = function() return not Addon.IS_MAINLINE end, -- Absorbs were added with Mists
+                hidden = function() return not Addon.WOW_FEATURE_ABSORBS end, -- Absorbs were added with Mists
                 args = {
                   AbsorbColor = {
                     name = L["Color"],
@@ -7962,6 +8287,10 @@ local function CustomPlateSetIcon(index, icon_location)
   elseif not icon_location then
     icon = custom_plate.icon
   else
+    -- Syntax: 
+    --   Enter an icon's name (with the *.blp ending), 
+    --   a spell ID, a spell name or 
+    --   a full icon path (using '\' to separate directory folders)."],
     custom_plate.SpellID = nil
     custom_plate.SpellName = nil
 
@@ -7977,7 +8306,7 @@ local function CustomPlateSetIcon(index, icon_location)
       end
     else
       icon_location = tostring(icon_location)
-      local spell_info = GetSpellInfo(spell_id)
+      local spell_info = GetSpellInfo(icon_location)
       if spell_info then
         icon = spell_info.iconID
         custom_plate.SpellName = icon_location
@@ -8529,7 +8858,7 @@ CreateCustomNameplateEntry = function(index)
             inline = true,
             args = {
               CustomColor = {
-                name = L["Color"],
+                name = L["Healthbar"],
                 order = 1,
                 type = "toggle",
                 desc = L["Define a custom color for this nameplate and overwrite any other color settings."],
@@ -8548,7 +8877,7 @@ CreateCustomNameplateEntry = function(index)
               },
               UseRaidMarked = {
                 name = L["Color by Target Mark"],
-                order = 4,
+                order = 3,
                 type = "toggle",
                 width = "double",
                 desc = L["Additionally color the nameplate's healthbar or name based on the target mark if the unit is marked."],
@@ -8556,6 +8885,25 @@ CreateCustomNameplateEntry = function(index)
                   return not db.uniqueSettings[index].useColor
                 end,
                 arg = { "uniqueSettings", index, "allowMarked" },
+              },
+            Spacer0 = GetSpacerEntry(3.5),
+              CustomBorderColor = {
+                name = L["Border"],
+                order = 4,
+                type = "toggle",
+                desc = L["Define a custom color for this border and overwrite any other color settings."],
+                arg = { "uniqueSettings", index, "UseBorderColor" },
+              },
+              BorderColorSetting = {
+                name = L["Color"],
+                order = 5,
+                type = "color",
+                disabled = function()
+                  return not db.uniqueSettings[index].UseBorderColor
+                end,
+                get = GetColor,
+                set = SetColor,
+                arg = { "uniqueSettings", index, "BorderColor" },
               },
               Spacer1 = GetSpacerEntry(10),
               CustomAlpha = {
@@ -8854,8 +9202,7 @@ CreateCustomNameplateEntry = function(index)
                 custom_style.Scripts.Event = nil
               end
 
-              Addon:InitializeCustomNameplates()
-              Addon.Widgets:UpdateSettings("Script")
+              UpdateSpecial()
             end,
             get = function(info)
               return CustomPlateGetExampleForEventScript(db.uniqueSettings[index], db.uniqueSettings[index].Scripts.Function)
@@ -8931,7 +9278,7 @@ CreateCustomNameplateEntry = function(index)
                     val = nil
                   end
 
-                  local custom_style = db.uniqueSettings[index]
+                  local custom_style = db.uniqueSettings[Addon.ScriptEditor.SelectedIndex]
                   if custom_style.Scripts.Function == "WoWEvent" then
                     custom_style.Scripts.Code.Events[custom_style.Scripts.Event] = val
                   elseif custom_style.Scripts.Function == "Legacy" then
@@ -8945,9 +9292,7 @@ CreateCustomNameplateEntry = function(index)
                     custom_style.Scripts.Event = nil
                   end
 
-                  Addon:InitializeCustomNameplates()
-                  Addon.Widgets:UpdateSettings("Script")
-
+                  UpdateSpecial()
                   frame:Hide()
                   Addon.LibAceConfigDialog:Open(t.ADDON_NAME)
                 end
@@ -8960,6 +9305,7 @@ CreateCustomNameplateEntry = function(index)
                 label = "Event: " .. db.uniqueSettings[index].Scripts.Function
               end
               Addon.ScriptEditor.Editor:SetLabel(label)
+              Addon.ScriptEditor.SelectedIndex = index
 
               Addon.ScriptEditor.Editor:SetText(CustomPlateGetExampleForEventScript(db.uniqueSettings[index], db.uniqueSettings[index].Scripts.Function))
 
@@ -9394,8 +9740,8 @@ local function CreateTotemOptions()
               order = 1,
               width = "full",
               set = function(info, val)
+                UpdateTotemIconTexture(val, totem_info, options)
                 SetValue(info, val)
-                options.args.Totems.args[totem_info.Name].args.Textures.args.Icon.image = "Interface\\Addons\\TidyPlates_ThreatPlates\\Widgets\\TotemIconWidget\\" .. db.totemSettings[totem_info.ID].Style .. "\\" .. totem_info.Icon;
               end,
               values = { normal = "Normal", special = "Special" },
               arg = { "totemSettings", totem_info.ID, "Style" },
@@ -10201,7 +10547,7 @@ local function CreateOptionsTable()
                       type = "group",
                       inline = true,
                       set = SetThemeValue,
-                      hidden = function() return not Addon.IS_MAINLINE end, -- Absorbs were added with Mists
+                      hidden = function() return not Addon.WOW_FEATURE_ABSORBS end, -- Absorbs were added with Mists
                       args = {
                         EnableAmount = {
                           name = L["Amount"],
@@ -10317,9 +10663,7 @@ local function CreateOptionsTable()
                       values = { default = "Default", stddragon = "Blizzard Dragon", skullandcross = "Skull and Crossbones", lion = "Lions", wolf = "Wolves", necro = "Necrolord", fae = "Night Fae", venthyr = "Venthyr", kyrian = "Kyrian", alliance = "Alliance", horde = "Horde" },
                       set = function(info, val)
                         SetThemeValue(info, val)
-                        options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewRare.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. val
-                        options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewElite.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. "elite-" .. val
-                        options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewRareElite.image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. "rareelite-" .. val
+                        UpdateUnitClassificationIconTextures(val, options)
                         Addon:ForceUpdate()
                       end,
                       arg = { "settings", "eliteicon", "theme" },
@@ -10328,19 +10672,19 @@ local function CreateOptionsTable()
                       name = L["Preview Rare"],
                       type = "execute",
                       order = 20,
-                      image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. db.settings.eliteicon.theme,
+                      image = IconTexturesByOptions["UnitClassification.Rare"],
                     },
                     PreviewElite = {
                       name = L["Preview Elite"],
                       type = "execute",
                       order = 30,
-                      image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. "elite-" .. db.settings.eliteicon.theme,
+                      image = string.gsub(IconTexturesByOptions["UnitClassification.Rare"], db.settings.eliteicon.theme, "elite-" .. db.settings.eliteicon.theme),
                     },
                     PreviewRareElite = {
                       name = L["Preview Rare Elite"],
                       type = "execute",
                       order = 40,
-                      image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\EliteArtWidget\\" .. "rareelite-" .. db.settings.eliteicon.theme,
+                      image = string.gsub(IconTexturesByOptions["UnitClassification.Rare"], db.settings.eliteicon.theme, "rareelite-" .. db.settings.eliteicon.theme),
                     },
                   },
                 },
@@ -10924,7 +11268,7 @@ local function CreateOptionsTable()
               desc = L["Set the roles your specs represent."],
               disabled = function() return not db.threat.ON end,
               order = 70,
-              args = (Addon.IS_MAINLINE and CreateSpecRolesRetail()) or CreateSpecRolesClassic(),
+              args = (Addon.ExpansionIsAtLeastMists and CreateSpecRolesRetail()) or CreateSpecRolesClassic(),
             },
           },
         },
@@ -11085,8 +11429,6 @@ local function CreateOptionsTable()
     }
   end
   
-  local class_list = t.CopyTable(CLASS_SORT_ORDER)
-  sort(class_list)
   local ClassOpts = {
     Style = {
       name = "Style",
@@ -11094,10 +11436,8 @@ local function CreateOptionsTable()
       type = "select",
       width = "full",
       set = function(info, val)
+        UpdateClassIconTextures(val, options)
         SetValue(info, val)
-        for i, class in ipairs(class_list) do
-          options.args.Widgets.args.ClassIconWidget.args.Textures.args["Prev" .. i].image = "Interface\\AddOns\\TidyPlates_ThreatPlates\\Widgets\\ClassIconWidget\\" .. db.classWidget.theme .. "\\" .. class
-        end
       end,
       values = { 
         default = L["Default"], 
@@ -11111,6 +11451,8 @@ local function CreateOptionsTable()
       arg = { "classWidget", "theme" },
     },
   };
+  local class_list = t.CopyTable(CLASS_SORT_ORDER)
+  sort(class_list)
   for i, class in ipairs(class_list) do
     ClassOpts["Prev" .. i] = {
       name = class,
@@ -11126,11 +11468,15 @@ local function CreateOptionsTable()
   options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(Addon.db)
   options.args.profiles.order = 10000
 
-  if Addon.ExpansionIsAtLeast(LE_EXPANSION_WRATH_OF_THE_LICH_KING) then
-    -- Add dual-spec support
-    local LibDualSpec = LibStub("LibDualSpec-1.0", true)
-    LibDualSpec:EnhanceDatabase(Addon.db, t.ADDON_NAME)
-    LibDualSpec:EnhanceOptions(options.args.profiles, Addon.db)
+  -- Add dual-spec support
+  if Addon.ExpansionIsAtLeastWrath then
+    local LibDualSpec = LibStub:GetLibrary("LibDualSpec-1.0", true)
+    if LibDualSpec then
+      LibDualSpec:EnhanceDatabase(Addon.db, t.ADDON_NAME)
+      LibDualSpec:EnhanceOptions(options.args.profiles, Addon.db)
+    else
+      Addon.Logging.Error("LibDualSpec-1.0 cannot be loaded, dual-spec support will not be available.")
+    end
   end
 
   AddImportExportOptions(options.args.profiles)
@@ -11178,21 +11524,8 @@ function Addon:ProfChange()
 
   -- Update options stuff after profile change
   if options then
-    options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewRare.image = path .. "EliteArtWidget\\" .. db.settings.eliteicon.theme
-    options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewElite.image = path .. "EliteArtWidget\\" .. "elite-" .. db.settings.eliteicon.theme
-    options.args.NameplateSettings.args.EliteIcon.args.Texture.args.PreviewElite.image = path .. "EliteArtWidget\\" .. "rareelite-" .. db.settings.eliteicon.theme
-
     local base = options.args.Widgets.args
     base.TargetArtWidget.args.Indicator.args.Texture.args.Preview.image = path .. "TargetArtWidget\\" .. db.targetWidget.theme;
-    local class_list = t.CopyTable(CLASS_SORT_ORDER)
-    sort(class_list)
-    for i, class in ipairs(class_list) do
-      base.ClassIconWidget.args.Textures.args["Prev" .. i].image = path .. "ClassIconWidget\\" .. db.classWidget.theme .. "\\" .. class
-    end
-
-    if Addon.IS_MAINLINE then
-      base.QuestWidget.args.ModeIcon.args.Texture.args.Preview.image = path .. "QuestWidget\\" .. db.questWidget.IconTexture
-    end
 
     local threat_path = path .. "ThreatWidget\\" .. db.threat.art.theme .. "\\"
     base = options.args.ThreatOptions.args.Textures.args.Options.args
@@ -11200,10 +11533,6 @@ function Addon:ProfChange()
     base.PrevLow.image = threat_path .. "HIGH"
     base.PrevMed.image = threat_path .. "MEDIUM"
     base.PrevHigh.image = threat_path .. "LOW"
-
-    for _, totem_info in pairs(Addon.TotemInformation) do
-      options.args.Totems.args[totem_info.Name].args.Textures.args.Icon.image = "Interface\\Addons\\TidyPlates_ThreatPlates\\Widgets\\TotemIconWidget\\" .. db.totemSettings[totem_info.ID].Style .. "\\" .. totem_info.Icon
-    end
 
     CreateCustomNameplatesGroup()
   end
@@ -11229,6 +11558,15 @@ function TidyPlatesThreat:ConfigTableChanged(event, app_name)
   if app_name == t.ADDON_NAME then
     RegisterOptionsTable()
     CreateCustomNameplatesGroup()
+  end
+end
+
+function TidyPlatesThreat:OpenOptionsDialog(group)
+  RegisterOptionsTable()
+  Addon.LibAceConfigDialog:Open(t.ADDON_NAME)
+
+  if group == "BossMods" then
+    Addon.LibAceConfigDialog:SelectGroup(t.ADDON_NAME, "Widgets", "BossModsWidget")
   end
 end
 

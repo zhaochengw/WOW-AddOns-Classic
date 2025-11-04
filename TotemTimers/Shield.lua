@@ -55,6 +55,29 @@ table.insert(TotemTimers.Modules, TotemTimers.CreateShieldTracker)
 local ShieldChargesOnly = false
 
 
+local function EmptyUpdate()
+end
+
+local function ConfigShieldButtonUpdate(sco)
+    if sco then
+        Timers[6].Update = EmptyUpdate
+        Timers[6].prohibitCooldown = true
+        Timers[6].timeStyle = "sec"
+        Timers[6].button.count:SetText("")
+    else
+        Timers[6].Update = nil
+        Timers[6].prohibitCooldown = false
+        Timers[6].timeStyle = TotemTimers.ActiveProfile.TimeStyle --"blizz"
+    end
+end
+
+function TotemTimers.SetShieldUpdate()
+    ShieldChargesOnly = TotemTimers.ActiveProfile.ShieldChargesOnly
+    ConfigShieldButtonUpdate(ShieldChargesOnly)
+    TotemTimers.ShieldEvent(Timers[6].button, "UNIT_AURA", "player")
+end
+
+
 local ShieldSpellNames = {}
 for k,v in pairs(TotemTimers.ShieldSpells) do
     ShieldSpellNames[SpellNames[v]] = true
@@ -90,6 +113,15 @@ function TotemTimers.ShieldEvent(self, event, unit)
             if name == EarthShieldName and self.name ~= EarthShieldName then
                 self.timer:Stop(1)
             end
+
+            local sco = ShieldChargesOnly
+            if LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_MISTS_OF_PANDARIA then
+                if name ~= EarthShieldName then
+                    sco = false
+                end
+                ConfigShieldButtonUpdate(sco)
+            end
+
             if name ~= self.shield
              or (not ShieldChargesOnly and timeleft > self.timer.timers[1])
              or ShieldChargesOnly
@@ -100,7 +132,7 @@ function TotemTimers.ShieldEvent(self, event, unit)
                 self.timer.warningIcons[1] = texture
                 self.timer.warningSpells[1] = name
                 self.shield = name
-                if not ShieldChargesOnly then
+                if not sco then
                     self.timer.warningPoint = 10
                     self.timer:Start(1, timeleft, duration)
                 else
@@ -108,7 +140,7 @@ function TotemTimers.ShieldEvent(self, event, unit)
                     self.timer:Start(1, count, 3)
                 end
             end
-            if not ShieldChargesOnly then
+            if not sco then
                 if count and count > 0 then
                     self.count:SetText(count)
                 else
@@ -123,20 +155,4 @@ function TotemTimers.ShieldEvent(self, event, unit)
     end
 end
 
-local function EmptyUpdate()
-end
 
-function TotemTimers.SetShieldUpdate()
-    ShieldChargesOnly = TotemTimers.ActiveProfile.ShieldChargesOnly
-    if ShieldChargesOnly then
-        Timers[6].Update = EmptyUpdate
-        Timers[6].prohibitCooldown = true
-        Timers[6].timeStyle = "sec"
-        Timers[6].button.count:SetText("")
-    else
-        Timers[6].Update = nil
-        Timers[6].prohibitCooldown = false
-        Timers[6].timeStyle = TotemTimers.ActiveProfile.TimeStyle --"blizz"
-    end
-    TotemTimers.ShieldEvent(Timers[6].button, "UNIT_AURA", "player")
-end

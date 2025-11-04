@@ -16,7 +16,28 @@ if ML.isLegacy then
   end
 end
 
+
+--[[ let's use the proper one below in new ShowConfigPanel/ConfigPanel instead of this:
+
+if InterfaceOptionsFrame_OpenToCategory == nil then
+	-- Stolen from https://github.com/Gethe/wow-ui-source/blob/10.2.7/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_Deprecated.lua
+function InterfaceOptionsFrame_OpenToCategory(categoryIDOrFrame)
+	if type(categoryIDOrFrame) == "table" then
+		local categoryID = categoryIDOrFrame.name;
+		return Settings.OpenToCategory(categoryID);
+	else
+		return Settings.OpenToCategory(categoryIDOrFrame);
+	end
+end
+end
+
+]]
+
 function ML:ShowConfigPanel(p)
+    if ML.configCategory then
+      Settings.OpenToCategory(ML.configCategory.ID)
+      return
+    end
     -- Show config panel
     -- used to be/need InterfaceOptionsList_DisplayPanel(BVP.optionsPanel)
     -- also used to need InterfaceOptionsFrame which is gone in dragonflight
@@ -25,6 +46,26 @@ function ML:ShowConfigPanel(p)
     end
     InterfaceOptionsFrame_OpenToCategory(p) -- gets our name selected
 end
+
+function ML:ConfigPanel(frame)
+    if Settings == nil then
+      -- Older code
+      return InterfaceOptions_AddCategory(frame)
+    end
+    ML.configCategory = Settings.RegisterCanvasLayoutCategory(frame, ML.name)
+    Settings.RegisterAddOnCategory(ML.configCategory)
+    frame.OnCommit = frame.okay
+    frame.OnDefault = frame.default
+    frame.OnRefresh = frame.refresh
+end
+
+function ML:GetMouseFocus()
+  if GetMouseFocus ~= nil then
+    return GetMouseFocus()
+  end
+  return GetMouseFoci()[1]
+end
+
 
 ML.id = 0
 function ML:NextId()
@@ -508,7 +549,7 @@ function ML.Frame(addon, name, global, template, parent, typ) -- to not shadow s
     t:SetJustifyV("TOP")
     self:addMethods(t)
     if t.SetMaxLines == nil then
-      t.SetMaxLines = function (...) end -- isLegacy case
+      t.SetMaxLines = function () end -- isLegacy case
     end
     return t
   end
@@ -656,11 +697,11 @@ function ML.Frame(addon, name, global, template, parent, typ) -- to not shadow s
   end
 
   f.addCheckBox = function(self, text, tooltip, optCallback)
-    local name= nil
+    local lname = nil
     if addon.isLegacy then
-      name = "MoLib" .. self.name .. "ChkBox".. tostring(addon:NextId())
+      lname = "MoLib" .. self.name .. "ChkBox".. tostring(addon:NextId())
     end
-    local c = CreateFrame("CheckButton", name, self, "InterfaceOptionsCheckButtonTemplate")
+    local c = CreateFrame("CheckButton", lname, self, "InterfaceOptionsCheckButtonTemplate")
     addon:Debug(8, "check box starts with % points", c:GetNumPoints())
     if c.Text == nil then
       c.Text = _G[c:GetName().."Text"]
@@ -668,6 +709,14 @@ function ML.Frame(addon, name, global, template, parent, typ) -- to not shadow s
     c.Text:SetText(text)
     if tooltip then
       c.tooltipText = tooltip
+      if c:GetScript("OnEnter") == nil then
+        c:SetScript("OnEnter", function()
+          addon:ShowToolTip(c)
+        end)
+        c:SetScript("OnLeave", function()
+          GameTooltip:Hide()
+        end)
+      end
     end
     self:addMethods(c)
     c.extraWidth = c.Text:GetWidth()
@@ -692,11 +741,27 @@ function ML.Frame(addon, name, global, template, parent, typ) -- to not shadow s
     step = step or 1
     lowL = lowL or tostring(minV)
     highL = highL or tostring(maxV)
-    local name= nil
+    local lname= nil
     if addon.isLegacy then
-      name = "MoLib" .. self.name .. "Slider".. tostring(addon:NextId())
+      lname = "MoLib" .. self.name .. "Slider".. tostring(addon:NextId())
     end
-    local s = CreateFrame("Slider", name, self, "OptionsSliderTemplate")
+    local toc = select(4, GetBuildInfo())
+    if toc == 11504 then
+      if _G["molibSliderWarning"] == nil then
+        addon:Warning("Blizzard broke OptionsSliderTemplate - set values by hand meanwhile")
+        _G["molibSliderWarning"] = true
+      end
+      local s = self:addText("Broken slider:" .. text)
+      s.SetValue = function(ws, v)
+        ws:SetText("Broken slider:" .. text .. ": " .. v)
+        ws.value = v
+      end
+      s.GetValue = function(ws) return ws.value end
+      s.DoDisable = function() end
+      s.DoEnable = function() end
+      return s
+    end
+    local s = CreateFrame("Slider", lname, self, "OptionsSliderTemplate")
     if s.Text == nil then
       s.Text = _G[name.."Text"]
       s.Low = _G[name.."Low"]
@@ -770,11 +835,11 @@ function ML.Frame(addon, name, global, template, parent, typ) -- to not shadow s
 
   -- the call back is either a function or a command to send to addon.Slash
   f.addButton = function(self, text, tooltip, cb)
-    local name= nil
+    local lname= nil
     if addon.isLegacy then
-      name = "MoLib" .. self.name .. "Button".. tostring(addon:NextId())
+      lname = "MoLib" .. self.name .. "Button".. tostring(addon:NextId())
     end
-    local c = CreateFrame("Button", name, self, "UIPanelButtonTemplate")
+    local c = CreateFrame("Button", lname, self, "UIPanelButtonTemplate")
     if c.Text == nil then
       c.Text = _G[c:GetName().."Text"]
     end

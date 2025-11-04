@@ -1,8 +1,8 @@
-## Interface: 110107,110200
+## Interface: 110200,110205
 
 ## Title: RangeDisplay Options
 ## Author: mitch0
-## Version: v6.2.2
+## Version: v6.2.3
 ## Notes: Configuration options for RangeDisplay
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
 ## Dependencies: RangeDisplay

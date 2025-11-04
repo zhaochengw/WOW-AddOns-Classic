@@ -103,6 +103,13 @@ local migrationFunctions = {
     [13] = function()
         Questie.db.profile.questAnnounceIncompleteBreadcrumb = true
     end,
+    [14] = function()
+        Questie.db.profile.hideTrackerInPetBattles = true
+    end,
+    [15] = function()
+        Questie.db.profile.globalTownsfolkScale = 0.6
+        Questie.db.profile.globalMiniMapTownsfolkScale = 0.7
+    end,
 }
 
 function Migration:Migrate()

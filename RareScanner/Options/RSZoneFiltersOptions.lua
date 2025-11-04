@@ -45,7 +45,7 @@ local function GetContinentMapIds()
 		for k, v in pairs(RSMapDB.GetContinents()) do
 			if (v.zonefilter) then
 				if (v.id) then
-					continent_map_ids[k] = RSMap.GetMapName(k)
+					continent_map_ids[k] = RSMapDB.GetMapName(k)
 				else
 					continent_map_ids[k] = AL["ZONES_CONTINENT_LIST"][k]
 				end
@@ -127,12 +127,9 @@ local function SearchZoneByContinentID(continentID, zoneName)
 	ResetResults();
 	
 	if (continentID) then
-		for _, subZoneID in ipairs(RSMapDB.GetContinents()[continentID].zones) do
-			local name = RSMap.GetMapName(subZoneID)
-			name = string.format("%s (%s)", name, subZoneID)
-			
-			if (not zoneName or RSUtils.Contains(name,zoneName)) then
-				zones[subZoneID] = name
+		for mapID, name in pairs(RSMapDB.GetActiveMapIDsWithNamesByMapID(continentID)) do
+			if (not zoneName or RSUtils.Contains(name, zoneName)) then
+				zones[mapID] = name
 			end
 		end
 	

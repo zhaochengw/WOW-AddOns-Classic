@@ -24,7 +24,6 @@ local HopeMaxi = ns.HopeMaxi
 local pt = print
 local RealmId = GetRealmID()
 local player = BG.playerName
-local GetLootMethod = GetLootMethod or C_PartyInfo.GetLootMethod
 
 local saveZaXiangNum = 0
 local saveZaXiangTbl = {}
@@ -184,7 +183,7 @@ BG.Init(function()
     local remindUpdateFrame = CreateFrame("Frame")
     local function NotLootRemind()
         if BiaoGe.options.autoLoot == 1 and BiaoGe.options.autolootRemind == 1
-            and IsMasterLooter() and GetLootMethod() == "master" then
+            and IsMasterLooter() then
             remindUpdateFrame.t = 0
             remindUpdateFrame:SetScript("OnUpdate", function(self, t)
                 self.t = self.t + t
@@ -221,12 +220,10 @@ BG.Init(function()
                 numb = IsBWLsod_boss5orboss6(bossID)
                 lasttime = GetTime()
             else
-                for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
-                    if bossID and (bossID == _bossID) then
-                        numb = _numb
-                        lasttime = GetTime()
-                        return
-                    end
+                local _numb = BG.GetBossIndexByBossID(bossID)
+                if _numb then
+                    numb = _numb
+                    lasttime = GetTime()
                 end
             end
         elseif event == "ENCOUNTER_END" then
@@ -235,18 +232,16 @@ BG.Init(function()
                     numb = IsBWLsod_boss5orboss6(bossID)
                     lasttime = GetTime()
                 else
-                    for _numb, _bossID in ipairs(BG.Loot.encounterID[FB]) do
-                        if bossID and (bossID == _bossID) then
-                            numb = _numb
-                            lasttime = GetTime()
-                            start = nil
-                            BiaoGe[FB].raidRoster = { time = GetServerTime(), realm = GetRealmName(), roster = {} }
-                            for i, v in ipairs(BG.raidRosterInfo) do
-                                tinsert(BiaoGe[FB].raidRoster.roster, v.name)
-                            end
-                            NotLootRemind()
-                            return
+                    local _numb = BG.GetBossIndexByBossID(bossID)
+                    if _numb then
+                        numb = _numb
+                        lasttime = GetTime()
+                        start = nil
+                        BiaoGe[FB].raidRoster = { time = GetServerTime(), realm = GetRealmName(), roster = {} }
+                        for i, v in ipairs(BG.raidRosterInfo) do
+                            tinsert(BiaoGe[FB].raidRoster.roster, v.name)
                         end
+                        NotLootRemind()
                     end
                 end
             else
@@ -528,14 +523,14 @@ BG.Init(function()
                 else
                     if not BG.IsVanilla then
                         -- WLK不记录图纸、牌子、宝石
-                        if typeID == 9 or typeID == 10 or typeID == 3 then 
+                        if typeID == 9 or typeID == 10 or typeID == 3 then
                             return
                         end
                         -- 不记录ICC声望戒指
                         if FB == "ICC" then
                             for i = 2, 5 do
                                 if BG.Loot.ICC.Faction["1156:" .. i] then
-                                    for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do 
+                                    for _, _itemId in ipairs(BG.Loot.ICC.Faction["1156:" .. i]) do
                                         if itemID == _itemId then
                                             return
                                         end
@@ -1162,6 +1157,12 @@ BG.Init2(function()
                 { itemID = 50274, quest = 24548, maxCount = 50, diff = { 4, 6, 176, 194 } }, -- 25人橙斧
                 { itemID = 45038, quest = 13622, maxCount = 30, diff = { 3, 5, 175, 193 } }, -- 10人橙锤
             },
+            FL = {
+                { itemID = 69815, quest = 29270, maxCount = 1000 },
+            },
+            DS = {
+                { itemID = 77952, quest = 30107, maxCount = 1000 },
+            },
         }
     end
 
@@ -1191,15 +1192,10 @@ BG.Init2(function()
     end
 
     -- BOSS战结束后，发送自己的橙片数量到插件频道，以便物品分配者查看每个人的橙片数量
-    local cd
     BG.RegisterEvent("ENCOUNTER_END", function(self, event, bossID, _, _, _, success)
         if success == 1 then
             local info = GetInfo()
             if info and IsInRaid(1) then
-                cd = true
-                BG.After(0.3, function()
-                    cd = nil
-                end)
                 local count = GetItemCount(info.itemID, true)
                 if info.quest and BG.questsCompleted[info.quest] then
                     count = "finish"
@@ -1246,7 +1242,7 @@ BG.Init2(function()
                     if lootplayer == BG.GN() then
                         BG.After(1, function()
                             local count = GetItemCount(info.itemID, true)
-                            local msg = format("AutoLoot,%s,%s", info.itemID, count)
+                            local msg = format("AutoLoot,%s,%s,print", info.itemID, count)
                             C_ChatInfo.SendAddonMessage("BiaoGe", msg, "RAID")
                         end)
                     end
@@ -1257,7 +1253,7 @@ BG.Init2(function()
 
     BG.RegisterEvent("CHAT_MSG_ADDON", function(self, event, prefix, msg, distType, sender)
         if not (prefix == "BiaoGe" and distType == "RAID") then return end
-        local arg1, itemID, count = strsplit(",", msg)
+        local arg1, itemID, count, canprint = strsplit(",", msg)
         sender = BG.GSN(sender)
         if arg1 == "AutoLoot" then
             itemID = tonumber(itemID)
@@ -1270,8 +1266,10 @@ BG.Init2(function()
                 bt.SPbutton:Update()
             end
             -- 如果是刚刚拾取橙片的玩家发过来的插件消息
-            if not cd and sender == lootplayer then
-                BG.SendSystemMessage(format(L["%s当前橙片数量：%s"], SetClassCFF(lootplayer), count))
+            if canprint == "print" and sender == lootplayer then
+                if itemID ~= 77952 then
+                    BG.SendSystemMessage(format(L["%s当前橙片数量：%s"], SetClassCFF(lootplayer), count))
+                end
             end
         end
     end)
@@ -1299,5 +1297,3 @@ BG.Init2(function()
     -- local msg = format("AutoLoot,%s,%s", 45038, 1)
     -- C_ChatInfo.SendAddonMessage("BiaoGe", msg, "RAID")
 end)
-
-

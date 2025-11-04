@@ -30,7 +30,7 @@ local TotemUpdate
 
 local MultiCastActions = {}
 TotemTimers.MultiCastActions = MultiCastActions
-if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE then
+if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE and LE_EXPANSION_LEVEL_CURRENT < LE_EXPANSION_MISTS_OF_PANDARIA then
     for i=1,4 do
         local index = SHAMAN_TOTEM_PRIORITIES[i];
         MultiCastActions[index] =
@@ -294,10 +294,16 @@ function TotemTimers:TotemEvent(event, arg1, arg2, arg3, ...)
     local settings = TotemTimers.ActiveProfile
     if event == "PLAYER_TOTEM_UPDATE" then
         if self.element == arg1 then
-            local _, totemName, startTime, duration, icon = GetTotemInfo(arg1)
-            local totem = TextureToSpellID[icon]
+            local _, totemName, startTime, duration, icon, _, spellID = GetTotemInfo(arg1)
+            local totem = spellID
+            if totem then
+                totem = TotemTimers.GetBaseSpellID(totem)
+            end
             if not totem then
-                totemName = string.gsub(totemName, "[IV]*$", "") -- strip spell rank from name
+                totem = TextureToSpellID[icon]
+            end
+            if not totem then
+                totemName = string.gsub(totemName, "%s?[IV]*$", "") -- strip spell rank from name
                 totem = NameToSpellID[totemName]
             end
             if duration > 0 and totem and TotemData[totem] then
@@ -521,7 +527,7 @@ function TotemTimers.CreateCastButtons()
                                                                             control:CallMethod("ChangeTotemOrder", value, ...)
                                                                             return "clear"
                                                                        end]])
-            if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE then
+            if LE_EXPANSION_LEVEL_CURRENT > LE_EXPANSION_BURNING_CRUSADE and LE_EXPANSION_LEVEL_CURRENT < LE_EXPANSION_MISTS_OF_PANDARIA then
                 button:SetAttribute("_childupdate-mspell", [[ self:SetAttribute("*action*", message) ]])
                 button:SetAttribute("_childupdate-mspelldisabled", [[ if message then self:SetAttribute("*type2", nil) else self:SetAttribute("*type2", "multispell") end]])
                 local multispell = TotemTimers.ActiveProfile.LastMultiCastSpell or SpellIDs.CallOfElements
@@ -579,7 +585,7 @@ function TotemTimers.SetCastButtonSpells()
         local timer = XiTimers.timers[i]
         local totems = {}
         for k, v in pairs(Profile.TotemOrder[timer.nr]) do
-            if TotemTimers.AvailableSpells[v] and not Profile.HiddenTotems[v] then
+            if TotemTimers.AvailableSpells[v] and not Profile.HiddenTotems[v] and not TotemData[v].isOverride then
                 table.insert(totems, v)
             end
         end

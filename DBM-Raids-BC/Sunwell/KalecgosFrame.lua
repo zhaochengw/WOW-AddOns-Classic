@@ -3,6 +3,9 @@ local Kal 	= DBM:GetModByName("Kal")
 local L		= Kal:GetLocalizedStrings()
 
 function Kal:InitializeMenu()
+	if not self.Options then--Bad Load?
+		return
+	end
 	local info1 = UIDropDownMenu_CreateInfo()
 	info1.text = L.name
 	info1.notClickable = 1

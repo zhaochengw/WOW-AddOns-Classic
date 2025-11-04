@@ -212,7 +212,7 @@ L.Tab_RaidWarning 			= "알림"
 L.RaidWarning_Header		= "알림 설정"
 L.RaidWarnColors 			= "알림 색상"
 L.RaidWarnColor_1 			= "색상 1"
-L.RaidWarnColor_2 			= "색상 2"
+L.RaidWarnColor_2 			= "색상 2"--Only one used in midnight
 L.RaidWarnColor_3 			= "색상 3"
 L.RaidWarnColor_4 			= "색상 4"
 L.InfoRaidWarning			= [[레이드 경고 프레임의 위치와 색상을 설정할 수 있습니다.
@@ -231,6 +231,7 @@ L.ThickOutline				= "두꺼운 외곽선"
 L.MonochromeOutline			= "단색 외곽선"
 L.MonochromeThickOutline	= "단색 두꺼운 외곽선"
 L.RaidWarnSound				= "레이드 알림에 효과음 재생"
+L.AnnouncementMidnightNotice		= "이 패널엔 블리자드에서 '하급'으로 분류한 경고들의 설정이 있습니다"
 
 -- Panel: Spec Warn Frame
 L.Panel_SpecWarnFrame		= "특수 알림"
@@ -250,11 +251,15 @@ L.SpecWarn_FlashAlpha		= "점멸 투명도: %0.1f"
 L.SpecWarn_DemoButton		= "예제 보기"
 L.SpecWarn_ResetMe			= "기본값으로 초기화"
 L.SpecialWarnSoundOption	= "기본 효과음 설정"
+--PreMidnight
 L.SpecialWarnHeader1		= "유형 1: 당신이 뭔가 걸렸거나 취해야 할 행동에 대한 보통 수준 알림 설정 세트"
 L.SpecialWarnHeader2		= "유형 2: 공격대 전체에 해당되는 보통 수준 알림 설정 세트"
 L.SpecialWarnHeader3		= "유형 3: 최우선 알림 설정 세트"
 L.SpecialWarnHeader4		= "유형 4: 최우선 도망 특수 알림 설정 세트"
 L.SpecialWarnHeader5		= "유형 5: 메모에 당신의 이름이 있을 때 알림 설정 세트"
+--Post Midnight
+L.SpecialWarnHeaderMedium			= "블리자드에서 '중간' 등급으로 분류한 스킬 알림"
+L.SpecialWarnHeaderCritical			= "블리자드에서 '치명적' 등급으로 분류한 스킬 알림"
 
 -- Panel: Generalwarnings
 L.Tab_GeneralMessages 		= "대화창 메시지"
@@ -327,7 +332,7 @@ L.Area_ColorBytype			= "속성별 바 색상 가이드"
 L.Panel_ColorByType	 		= "바 색상"
 L.AreaTitle_BarColors				= "일반 바 색상 (기본값은 스킬 속성마다 지정)"
 L.AreaTitle_ImpBarColors			= "중요 바 색상 (사용자가 중요로 설정한 바)"
-L.BarTexture 				= "바 텍스쳐"
+L.BarTexture 				= "바 텍스처"
 L.BarStyle 					= "바 작동 방식"
 L.BarDBM					= "Classic (처음 생긴 바가 확대 표시될 위치로 스르륵 이동)"
 L.BarSimple					= "Simple (처음 바는 사라지고 큰 바가 새로 생성)"
@@ -369,7 +374,7 @@ L.CBTAOE							= "광역 주문"
 L.CBTTargeted						= "대상 지정 주문"
 L.CBTInterrupt						= "차단 가능 주문"
 L.CBTRole							= "특정 역할 전용 주문"
-L.CBTPhase							= "페이즈 전환"
+L.CBTPhase							= "페이즈 변경"
 L.CBTImportant						= "사용자 지정 중요 주문"
 --Dropdown Options
 L.SAOne						= "일반 음성 1 (개인 알림)"
@@ -410,7 +415,7 @@ L.BarIconLeft 				= "왼쪽 아이콘"
 L.BarIconRight 				= "오른쪽 아이콘"
 L.ExpandUpwards				= "위로 쌓기"
 L.FillUpBars				= "채워나가기"
-L.ClickThrough				= "마우스 클릭 불가"
+L.ClickThrough				= "마우스 클릭 방지 (클릭 통과)"
 L.Bar_Decimal				= "남은시간 소수점 표시: %d초 이하"
 L.Bar_Alpha					= "투명도: %0.1f"
 L.Bar_EnlargeTime			= "다음 시간보다 적으면 바 확대: %d초"
@@ -547,6 +552,7 @@ L.HideBossEmoteFrame		= "보스 전투중 보스 감정표현 프레임 숨기�
 L.HideWatchFrame			= "추적중인 업적이 없고 신화+ 난이도가 아니라면 보스 전투시 퀘스트 추적 프레임 숨기기"
 L.HideQuestTooltips			= "보스 전투중 툴팁에서 퀘스트 목표 숨기기"--Currently hidden (NYI)
 L.HideTooltips				= "보스 전투중 툴팁 완전히 숨기기"
+L.HideBlizzardTimeline				= "보스 전투중 블리자드 기본 공격대 타임라인 숨기기"
 
 -- Panel: Raid Leader Controls
 L.Tab_RLControls					= "공대장 제어 설정"

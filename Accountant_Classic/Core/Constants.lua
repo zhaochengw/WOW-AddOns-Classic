@@ -107,6 +107,9 @@ if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		-- Others
 		"CHAT_MSG_MONEY",
 		"PLAYER_MONEY",
+		-- Currency tracking
+		"CURRENCY_DISPLAY_UPDATE",
+		"BAG_UPDATE",
 	}
 	constants.logtypes = {
 		"TRAIN", "TAXI", "TRADE", "AH", "MERCH", "REPAIRS", "MAIL", "QUEST", "LOOT", "OTHER" 
@@ -186,6 +189,9 @@ else
 		-- Others
 		"CHAT_MSG_MONEY",
 		"PLAYER_MONEY",
+		-- Currency tracking
+		"CURRENCY_DISPLAY_UPDATE",
+		"BAG_UPDATE",
 	}
 	constants.logtypes = {
 	--	"VOID", 

@@ -847,6 +847,18 @@ GTFO.SpellID["1242921"] = {
   sound = 1;
 };
 
+GTFO.SpellID["1238895"] = {
+  --desc = "Null Breath (Voidripper)";
+  sound = 1;
+};
+
+GTFO.SpellID["1234297"] = {
+  --desc = "Ensnared by Void";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+
 --- *******************
 --- * Nerub-ar Palace *
 --- *******************
@@ -1458,6 +1470,25 @@ GTFO.SpellID["1225445"] = {
   ignoreApplication = true;
   sound = 1;
 };
+
+GTFO.SpellID["1231002"] = {
+  --desc = "Dark Energy (Dimensius)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1237696"] = {
+  --desc = "Debris Field (Dimensius)";
+  ignoreApplication = true;
+  sound = 1;
+};
+
+GTFO.SpellID["1242212"] = {
+  --desc = "Burning Aftermath";
+  ignoreApplication = true;
+  sound = 1;
+};
+
 
 end
 

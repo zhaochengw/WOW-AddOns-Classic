@@ -319,6 +319,12 @@ function CataQuestFixes.Load()
         [2950] = { -- Nogg's Ring Redo
             [questKeys.zoneOrSort] = zoneIDs.ORGRIMMAR,
         },
+        [2963] = { -- Portents of Uldum
+            [questKeys.nextQuestInChain] = 0,
+        },
+        [2965] = { -- Portents of Uldum
+            [questKeys.nextQuestInChain] = 0,
+        },
         [3087] = { -- Etched Parchment
             [questKeys.requiredRaces] = raceIDs.ORC,
             [questKeys.startedBy] = {{3143}},
@@ -540,6 +546,9 @@ function CataQuestFixes.Load()
         [6032] = { -- Sacred Cloth
             [questKeys.reputationReward] = {{factionIDs.TIMBERMAW_HOLD,8}},
             [questKeys.zoneOrSort] = 1769,
+        },
+        [6181] = { -- A Swift Message
+            [questKeys.requiredRaces] = raceIDs.HUMAN,
         },
         [6261] = { -- Dungar Longdrink
             [questKeys.requiredRaces] = raceIDs.HUMAN,
@@ -1960,6 +1969,30 @@ function CataQuestFixes.Load()
         [11294] = { -- Bark for the Thunderbrews!
             [questKeys.exclusiveTo] = {11293},
         },
+        [11336] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.IRONFORGE]={{70.41,91.10}},
+                [zoneIDs.SHATTRATH_CITY]={{67.41,33.86}},
+                [zoneIDs.DARNASSUS]={{58.02,34.52}},
+                [zoneIDs.THE_EXODAR]={{26.6,50.06}},
+                [zoneIDs.STORMWIND_CITY]={{86.82,36.08}},
+                [zoneIDs.DALARAN]={{29.79,75.78}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{44.5,46}},
+            }},
+        },
+        [11340] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.ORGRIMMAR]={{74.83,45.48}},
+                [zoneIDs.THUNDER_BLUFF]={{57.8,76.4}},
+                [zoneIDs.UNDERCITY]={{58.27,97.9}},
+                [zoneIDs.SILVERMOON_CITY]={{97,38.3}},
+                [zoneIDs.SHATTRATH_CITY]={{66.96,56.6}},
+                [zoneIDs.DALARAN]={{58.19,20.59}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{58.4,33.3}},
+            }},
+        },
         [11354] = { -- Wanted: Nazan's Riding Crop
             [questKeys.zoneOrSort] = zoneIDs.HELLFIRE_CITADEL,
             [questKeys.startedBy] = {},
@@ -2382,6 +2415,8 @@ function CataQuestFixes.Load()
         },
         [13129] = { -- Head Games
             [questKeys.preQuestSingle] = {},
+            [questKeys.startedBy] = {{55677}},
+            [questKeys.extraObjectives] = {},
         },
         [13187] = { -- The Faceless Ones
             [questKeys.preQuestSingle] = {29826},
@@ -2411,6 +2446,30 @@ function CataQuestFixes.Load()
         },
         [13411] = { -- Hellfire Fortifications
             [questKeys.nextQuestInChain] = 10110,
+        },
+        [13427] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.IRONFORGE]={{70.41,91.10}},
+                [zoneIDs.SHATTRATH_CITY]={{67.41,33.86}},
+                [zoneIDs.DARNASSUS]={{58.02,34.52}},
+                [zoneIDs.THE_EXODAR]={{26.6,50.06}},
+                [zoneIDs.STORMWIND_CITY]={{86.82,36.08}},
+                [zoneIDs.DALARAN]={{29.79,75.78}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{44.5,46}},
+            }},
+        },
+        [13428] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.ORGRIMMAR]={{74.83,45.48}},
+                [zoneIDs.THUNDER_BLUFF]={{57.8,76.4}},
+                [zoneIDs.UNDERCITY]={{58.27,97.9}},
+                [zoneIDs.SILVERMOON_CITY]={{97,38.3}},
+                [zoneIDs.SHATTRATH_CITY]={{66.96,56.6}},
+                [zoneIDs.DALARAN]={{58.19,20.59}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{58.4,33.3}},
+            }},
         },
         [13432] = { -- The Vials of Eternity
             [questKeys.startedBy] = {{19935}},
@@ -2784,6 +2843,7 @@ function CataQuestFixes.Load()
         },
         [13845] = { -- Sealed Vial of Poison
             [questKeys.zoneOrSort] = 4613,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [13848] = { -- Bad News Bear-er
             [questKeys.preQuestSingle] = {13805},
@@ -3874,6 +3934,12 @@ function CataQuestFixes.Load()
             [questKeys.exclusiveTo] = {14408},
             [questKeys.preQuestSingle] = {14322},
         },
+        [14447] = { -- Takes One to Know One
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
+        [14448] = { -- Takes One to Know One
+            [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
+        },
         [14449] = { -- The First Step
             [questKeys.zoneOrSort] = 215,
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
@@ -3986,6 +4052,30 @@ function CataQuestFixes.Load()
         },
         [24215] = { -- Rite of the Winds
             [questKeys.zoneOrSort] = 215,
+        },
+        [24426] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.IRONFORGE]={{70.41,91.10}},
+                [zoneIDs.SHATTRATH_CITY]={{67.41,33.86}},
+                [zoneIDs.DARNASSUS]={{58.02,34.52}},
+                [zoneIDs.THE_EXODAR]={{26.6,50.06}},
+                [zoneIDs.STORMWIND_CITY]={{86.82,36.08}},
+                [zoneIDs.DALARAN]={{29.79,75.78}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{44.5,46}},
+            }},
+        },
+        [24427] = { -- Call to Arms: Alterac Valley
+            [questKeys.triggerEnd] = {"Victory in Alterac Valley", {
+                [zoneIDs.ORGRIMMAR]={{74.83,45.48}},
+                [zoneIDs.THUNDER_BLUFF]={{57.8,76.4}},
+                [zoneIDs.UNDERCITY]={{58.27,97.9}},
+                [zoneIDs.SILVERMOON_CITY]={{97,38.3}},
+                [zoneIDs.SHATTRATH_CITY]={{66.96,56.6}},
+                [zoneIDs.DALARAN]={{58.19,20.59}},
+                [zoneIDs.WINTERGRASP]={{50.02,15.16}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{58.4,33.3}},
+            }},
         },
         [24429] = { -- A Most Puzzling Circumstance
             [questKeys.requiredRaces] = raceIDs.ALL_HORDE,
@@ -5139,7 +5229,7 @@ function CataQuestFixes.Load()
         [25157] = { -- The Latest Fashion!
             [questKeys.exclusiveTo] = {25105,25154,25155,25156},
             [questKeys.requiredSkill] = {profKeys.JEWELCRAFTING,475},
-            [questKeys.extraObjectives] = {{{[zoneIDs.STORMWIND_CITY] = {{63.8,60.8}}},Questie.ICON_TYPE_EVENT,l10n("Use Stardust No. 2 on ten Humanoids")}},
+            [questKeys.objectives] = {{{39237,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [25158] = { -- Nibbler!  No!
             [questKeys.exclusiveTo] = {25159,25160,25161,25162},
@@ -5148,7 +5238,7 @@ function CataQuestFixes.Load()
         [25159] = { -- The Latest Fashion!
             [questKeys.exclusiveTo] = {25158,25160,25161,25162},
             [questKeys.requiredSkill] = {profKeys.JEWELCRAFTING,475},
-            [questKeys.extraObjectives] = {{{[zoneIDs.ORGRIMMAR] = {{72.5,36.2}}},Questie.ICON_TYPE_EVENT,l10n("Use Stardust No. 2 on ten Humanoids")}},
+            [questKeys.objectives] = {{{39237,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [25160] = { -- A Present for Lila
             [questKeys.exclusiveTo] = {25158,25159,25161,25162},
@@ -15172,29 +15262,32 @@ function CataQuestFixes.Load()
         },
         [29658] = { -- The Calculator
             [questKeys.preQuestSingle] = {29657},
-            [questKeys.startedBy] = {{100001}},
+            [questKeys.startedBy] = {{19219}},
+        },
+        [29659] = { -- Lost Treasure
+            [questKeys.startedBy] = {{19218,19710}},
         },
         [29660] = { -- Saving the Botanica
             [questKeys.startedBy] = {{100071}},
         },
         [29667] = { -- Culling the Herd
             [questKeys.preQuestSingle] = {29660},
-            [questKeys.startedBy] = {{100001}},
+            [questKeys.startedBy] = {{100073}},
         },
         [29669] = { -- A Most Somber Task
             [questKeys.preQuestSingle] = {29667},
-            [questKeys.startedBy] = {{100001}},
+            [questKeys.startedBy] = {{100074}},
         },
         [29674] = { -- Unbound Darkness
             [questKeys.startedBy] = {{100072}},
         },
         [29675] = { -- Hey There Dalliah
             [questKeys.preQuestSingle] = {29674},
-            [questKeys.startedBy] = {{100001}},
+            [questKeys.startedBy] = {{100075}},
         },
         [29681] = { -- Maximum Security Breakout
             [questKeys.preQuestSingle] = {29675},
-            [questKeys.startedBy] = {{100001}},
+            [questKeys.startedBy] = {{100076}},
         },
         [29682] = { -- Magisters' Terrace
             [questKeys.preQuestSingle] = {},
@@ -15207,6 +15300,9 @@ function CataQuestFixes.Load()
         [29692] = { -- Bring Me Another Shrubbery!
             [questKeys.preQuestSingle] = {29691},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
+        },
+        [29761] = { -- Master Pit Fighter
+            [questKeys.preQuestSingle] = {29760},
         },
         [29802] = { -- A Hidden Message
             [questKeys.objectives] = {{{57800,nil,Questie.ICON_TYPE_TALK},{55488,nil,Questie.ICON_TYPE_TALK}},nil,{{74752}}},
@@ -15311,6 +15407,20 @@ function CataQuestFixes.Load()
         },
         [30112] = { -- A Score to Settle
             [questKeys.exclusiveTo] = {11272},
+        },
+        [64845] = { -- Alliance War Effort
+            [questKeys.triggerEnd] = {"Victory in a battleground match", {
+                [zoneIDs.SHATTRATH_CITY] = {{67.41,33.86}},
+                [zoneIDs.STORMWIND_CITY] = {{86.82,36.09}},
+                [zoneIDs.HILLSBRAD_FOOTHILLS] = {{44.5,46}},
+                [zoneIDs.ASHENVALE] = {{61.8,83.8}},
+                [zoneIDs.THE_EXODAR] = {{26.6,50.06}},
+                [zoneIDs.ARATHI_HIGHLANDS] = {{40.43,45.84}},
+                [zoneIDs.DALARAN] = {{29.79,75.78}},
+                [zoneIDs.DARNASSUS] = {{56.05,47.61}},
+                [zoneIDs.IRONFORGE] = {{70.41,91.10}},
+                [zoneIDs.WINTERGRASP] = {{50.02,15.16}},
+            }},
         },
         [82948] = {
             [questKeys.name] = "Hero's Call Board",
@@ -15820,6 +15930,10 @@ function CataQuestFixes:LoadFactionFixes()
         [29836] = { -- Just Checkin'
             [questKeys.nextQuestInChain] = 29844,
             [questKeys.exclusiveTo] = {13098},
+        },
+        [30120] = { -- Cleansing Drak'Tharon
+            [questKeys.requiredSourceItems] = {35797,38303},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_EVENT, l10n("Drink Drakuru's Elixir after gathering 5 Enduring Mojo"),0,{{"object", 190629}}}},
         },
     }
 

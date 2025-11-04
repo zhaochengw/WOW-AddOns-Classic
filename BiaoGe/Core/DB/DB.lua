@@ -16,6 +16,7 @@ BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameToolt
 BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate") -- 用于装备库
 BiaoGeTooltip2:SetClampedToScreen(false)
 BiaoGeTooltip3 = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
+BiaoGeTooltip4 = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParent, "GameTooltipTemplate") -- 用于装等获取
 
 -- 游戏按键设置
 BINDING_HEADER_BIAOGE = "BiaoGe"
@@ -66,7 +67,7 @@ do
     end
 
     BG.blackListPlayer = {}
-    if BG.IsWLK then
+    if not BG.IsVanilla then
         BG.blackListPlayer = {
             ["匕首岭"] = {
                 ["曰日曰日曰"] = true,
@@ -93,6 +94,7 @@ do
         BG.IsBlackListPlayer = true
     end
 end
+
 -- 初始化
 do
     BG.Maxi                                    = 40
@@ -156,7 +158,8 @@ do
                 { 4, 4, 4, 4, 8, 5, 21, 7, 5, })
             AddDB("Worldsod", mainFrameWidth, 810, 3, 10, { 0, 4, 9 }, nil, nil,
                 { 10, 5, 5, 5, 5, 5, 5, 5, 4, 5 })
-        elseif BG.IsVanilla_60 then
+        end
+        if BG.IsVanilla_60 then
             AddDB("MC", mainFrameWidth, 810, 3, 13, { 0, 7, 12 }, nil, nil,
                 { 3, 3, 3, 4, 3, 3, 4, 3, 4, 5, 8, 15, 4, }, 6)
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, nil,
@@ -169,7 +172,8 @@ do
                 { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
             AddDB("NAXX", mainFrameWidth2, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
-        elseif BG.IsWLK then
+        end
+        if BG.IsWLK then
             local difTbl1 = {
                 [3] = "N10",
                 [175] = "N10",
@@ -221,23 +225,26 @@ do
                 { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
-        elseif BG.IsCTM then
-            AddDB("BOT", mainFrameWidth2, 850, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
+        end
+        if BG.IsCTM then
+            AddDB("BOT", mainFrameWidth2, 830, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
-            AddDB("FL", mainFrameWidth, 800, 3, 9, { 0, 4, 8 }, { "N", "H" }, nil,
-                { 6, 6, 6, 6, 6, 6, 6, 6, 10, })
-            AddDB("DS", mainFrameWidth, 800, 3, 10, { 0, 4, 8 }, { "N", "H" }, nil,
-                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, })
-        elseif BG.IsMOP then
+            AddDB("FL", mainFrameWidth, 830, 3, 9, { 0, 5, 8 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 19, 18, })
+            AddDB("DS", mainFrameWidth, 830, 3, 10, { 0, 5, 9 }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 13, 18, })
+        end
+        if BG.IsMOP_TW then
             AddDB("MSV", mainFrameWidth2, 960, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, }, 14)
-        elseif BG.IsRetail then
+        end
+        if BG.IsRetail then
             local n = 8
             AddDB("NP", mainFrameWidth, 950, 3, 10, { 0, 4, 8 }, { "R", "N", "H", "M" }, nil,
                 { n, n, n, n, n, n, n, n, 5, 5, }, 12)
         end
     end
-    
+
     do
         local function AddDB(FB, instanceID, phase, maxplayers, lootQuality,
                              phaseTable, bossPositionTbl, shortName)
@@ -290,7 +297,8 @@ do
             AddOneBoss("Worldsod", 2789, 3, "TTS")
             -- 水晶谷
             AddOneBoss("Worldsod", 2804, 4, "TCV")
-        elseif BG.IsVanilla_60 then
+        end
+        if BG.IsVanilla_60 then
             BG.FB1 = "MC"
             BG.fullLevel = 60
             BG.theEndBossID = { 672, 617, 793, 723, 717, 1114 } --MC BWL ZUG AQL TAQ NAXX
@@ -305,9 +313,10 @@ do
             BG.bossPositionStartEnd[249] = { 11, 11 }
             BG.FBfromBossPosition["MC"][11] = { name = "OL", localName = GetRealZoneText(249) }
             BG.instanceIDfromBossPosition["MC"][11] = 249
-        elseif BG.IsWLK then
+        end
+        if BG.IsWLK then
             BG.FB1 = "NAXX"
-            BG.fullLevel = 80
+            BG.fullLevel = 70
             BG.theEndBossID = { 1114, 756, 645, 856, }
 
             AddDB("NAXX", 533, "P1", nil, nil, nil, { 1, 15 })
@@ -351,9 +360,10 @@ do
                     BG.instanceIDfromBossPosition["SSC"][i] = 550
                 end
             end
-        elseif BG.IsCTM then
-            BG.FB1 = "BOT"
-            BG.fullLevel = 85
+        end
+        if BG.IsCTM then
+            BG.FB1 = "DS"
+            BG.fullLevel = 80
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
             AddDB("BOT", 671, "P1", nil, nil, nil, { 1, 5 })    -- 暮光堡垒
             BG.FBIDtable[669] = "BOT"                           -- 黑翼血环
@@ -371,11 +381,11 @@ do
 
             AddDB("FL", 720, "P2") -- 火焰之地
             AddDB("DS", 967, "P3") -- 巨龙之魂
-        elseif BG.IsMOP then
+        end
+        if BG.IsMOP_TW then
             BG.FB1 = "MSV"
-            BG.fullLevel = 60
+            BG.fullLevel = 85
             BG.theEndBossID = { 1407, 1501, 1431 } -- 魔古山 大女皇 惧之煞
-            -- BG.worldBossID = { 1564, 1563, 1571, 1587, } -- 怒之煞 炮舰 纳拉克 乌达斯塔
             BG.worldBossID = { 32098, 32099, 32518, 32519, 37464 } -- 炮舰 怒之煞 纳拉克 乌达斯塔 鲁赫马尔
             AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["魔古山宝库"]) -- 魔古山
             -- 恐惧之心
@@ -392,7 +402,8 @@ do
                 BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
                 BG.instanceIDfromBossPosition["MSV"][i] = 996
             end
-        elseif BG.IsRetail then
+        end
+        if BG.IsRetail then
             BG.FB1 = "NP"
             BG.fullLevel = 80
             BG.theEndBossID = { 2922, }
@@ -794,8 +805,12 @@ do
             { ID = "tradeFalse", name = "交易失败" },
             { ID = "fakuanFull", name = "罚款格子满了" },
             { ID = "auctionError", name = "拍卖出错了" },
+            { ID = "currencyfull", name = "牌子满了" },
         }
-
+        --[[
+/run BG.PlaySound("paimai")
+/run BG.PlaySound("hope")
+]]
         local function DefaultSound()
             for i = 1, C_AddOns.GetNumAddOns() do
                 local addonName = C_AddOns.GetAddOnInfo(i)
@@ -1013,30 +1028,58 @@ BG.Init(function()
 
         -- 天赋
         if not BG.IsRetail then
-            local function GetTalent()
-                local maxNum = 0
-                local ii
-                for i = 1, 3 do
-                    local num = select(5, GetTalentTabInfo(i, nil, nil, GetActiveTalentGroup()))
-                    if num and num >= maxNum then
-                        maxNum = num
-                        ii = i
+            local function GetTalent(_, event)
+                local specIndex
+                if BG.IsMOP then
+                    specIndex = C_SpecializationInfo.GetSpecialization()
+                    if specIndex == 0 or specIndex == 5 then
+                        specIndex = nil
                     end
+                else
+                    local maxNum = 0
+                    for i = 1, 3 do
+                        local num = select(5, GetTalentTabInfo(i, nil, nil, GetActiveTalentGroup()))
+                        if num and num >= maxNum then
+                            maxNum = num
+                            specIndex = i
+                        end
+                    end
+                    if maxNum == 0 then specIndex = nil end
                 end
-                if maxNum == 0 then ii = nil end
-                BiaoGe.playerInfo[realmID][player].talent = ii
+                BiaoGe.playerInfo[realmID][player].talent = specIndex
             end
-            BG.RegisterEvent("PLAYER_TALENT_UPDATE", GetTalent)
-            BG.Init2(GetTalent)
+
+            local f = CreateFrame("Frame")
+            f:RegisterEvent("PLAYER_TALENT_UPDATE")
+            f:RegisterEvent("PLAYER_ENTERING_WORLD")
+            if BG.IsMOP then
+                f:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+            end
+            f:SetScript("OnEvent", function(self, event, ...)
+                if event == "PLAYER_ENTERING_WORLD" then
+                    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+                end
+                self.t = 0
+                self:SetScript("OnUpdate", function(_, t)
+                    self.t = self.t + t
+                    if self.t > 1 then
+                        self:SetScript("OnUpdate", nil)
+                        GetTalent()
+                    end
+                end)
+            end)
 
             function BG.GetTalentIcon(class, talent, w)
                 w = w or 0
                 if talent then
                     local a, b, c, d = unpack(BG.iconTexCoord)
                     local coord = format("100:100:%s:%s:%s:%s", a * 100, b * 100, c * 100, d * 100)
-                    return format("|T%s:%s:%s:0:0:%s|t", BG.talentIcon[class][talent], w, w, coord)
+                    local tex = BG.talentIcon[class][talent]
+                    if tex then
+                        return format("|T%s:%s:%s:0:0:%s|t", BG.talentIcon[class][talent], w, w, coord)
+                    end
                 end
-                return format("|A:classicon-%s:%s:%s|a", class, w, w)
+                return format("|A:GarrMission_ClassIcon-%s:%s:%s|a", class, w, w)
             end
 
             BG.talentIcon = {
@@ -1065,10 +1108,10 @@ BG.Init(function()
                     "Interface\\Icons\\Ability_Marksmanship",
                     "Interface\\Icons\\Ability_Hunter_SwiftStrike",
                 },
-                DRUID = {
-                    "Interface\\Icons\\spell_nature_starfall",
-                    "Interface\\Icons\\ability_racial_bearform",
-                    "Interface\\Icons\\Spell_Nature_HealingTouch", -- N
+                MONK = {
+                    "Interface/Icons/spell_monk_brewmaster_spec", -- 酒仙
+                    "Interface/Icons/spell_monk_mistweaver_spec", -- 织雾
+                    "Interface/Icons/spell_monk_windwalker_spec", -- 踏风
                 },
                 ROGUE = {
                     "Interface\\Icons\\ability_rogue_eviscerate",
@@ -1086,11 +1129,25 @@ BG.Init(function()
                     "Interface\\Icons\\spell_shadow_rainoffire",
                 },
                 PRIEST = {
-                    "Interface\\Icons\\spell_holy_wordfortitude", -- N
+                    "Interface\\Icons\\spell_holy_wordfortitude",  -- N
                     "Interface\\Icons\\spell_holy_guardianspirit", -- N
                     "Interface\\Icons\\spell_shadow_shadowwordpain",
                 },
             }
+            if BG.IsMOP or BG.IsCTM then
+                BG.talentIcon.DRUID = {
+                    "Interface\\Icons\\spell_nature_starfall",     -- 鸟
+                    "Interface\\Icons\\ability_druid_catform",     -- 猫
+                    "Interface\\Icons\\ability_racial_bearform",   -- 熊
+                    "Interface\\Icons\\Spell_Nature_HealingTouch", -- N
+                }
+            else
+                BG.talentIcon.DRUID = {
+                    "Interface\\Icons\\spell_nature_starfall",
+                    "Interface\\Icons\\ability_racial_bearform",
+                    "Interface\\Icons\\Spell_Nature_HealingTouch", -- N
+                }
+            end
         end
 
         if BiaoGe.PlayerItemsLevel then

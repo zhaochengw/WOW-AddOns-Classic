@@ -16,8 +16,7 @@ itemSlotOrder[LBIS.L["Ring"]] = 10;
 itemSlotOrder[LBIS.L["Trinket"]] = 11;
 itemSlotOrder[LBIS.L["Main Hand"]] = 12;
 itemSlotOrder[LBIS.L["Off Hand"]] = 13;
-itemSlotOrder[LBIS.L["Two Hand"]] = 14;
-itemSlotOrder[LBIS.L["Ranged/Relic"]] = 15;
+itemSlotOrder[LBIS.L["Ranged/Relic"]] = 14;
 
 local function itemSortFunction(table, k1, k2)
 
@@ -133,7 +132,6 @@ local defaultCustomList = {
 	[LBIS.L["Trinket"]] = {},
 	[LBIS.L["Main Hand"]] = {},
 	[LBIS.L["Off Hand"]] = {},
-	[LBIS.L["Two Hand"]] = {},
 	[LBIS.L["Ranged/Relic"]] = {}
 };
 function LBIS.CustomEditList:UpdateItems()

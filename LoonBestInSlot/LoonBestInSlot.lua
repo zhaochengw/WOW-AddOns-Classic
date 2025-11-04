@@ -9,27 +9,25 @@ LBIS.ItemsBySpecAndId = {};
 LBIS.GemsBySpecAndId = {};
 LBIS.EnchantsBySpecAndId = {};
 
-LBIS.SpellCache = {};
-
 LBIS.AllItemsCached = false;
-LBIS.CurrentPhase = 4;
+LBIS.CurrentPhase = 2;
+LBIS.Debugging = false;
 
-LBIS.EventFrame = CreateFrame("FRAME",addonName.."Events")
+LBIS.EventFrame = CreateFrame("FRAME", addonName.."Events")
 
 SLASH_LOONBESTINSLOT1 = '/bis'
 SLASH_LOONBESTINSLOT2 = '/비스'
 SlashCmdList["LOONBESTINSLOT"] = function(command)
 	command = command:lower()
-    
+
 	if command == "" then
 		LBIS.BrowserWindow:OpenWindow()
 	elseif command == "edit" then
 		LBIS.BrowserWindow:OpenWindow("CustomEditList")
 	elseif command == "custom" then
 		LBIS.BrowserWindow:OpenWindow("CustomItemList")
-	elseif command == "settings"	then
-		InterfaceOptionsFrame_Show()
-		InterfaceOptionsFrame_OpenToCategory("Loon Best In Slot")
+	elseif command == "settings"	then		
+		Settings.OpenToCategory("Loon Best In Slot")
 	end
 end
 
@@ -75,15 +73,15 @@ function LBIS:RegisterEvent(...)
 end
 
 function LBIS:RegisterSpec(class, spec, phase)
-	
+
 	if not spec then spec = "" end
-	
+
     local classSpec = {
 		Class = class,
 		Spec = spec,
 		Phase = phase
 	}
-	
+
 	classSpec.Id = spec..class
 
     LBIS.ClassSpec[classSpec.Id] = classSpec
@@ -102,18 +100,16 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 
 	if LBIS.CurrentPhase < tonumber(bisEntry.Phase) then
 		return;
-	end	
-	
+	end
+
 	if not LBIS.ItemsByIdAndSpec[itemId] then
 		LBIS.ItemsByIdAndSpec[itemId] = {}
-	end
-	
-	if zone == nil then
-		zone = "";
 	end
 
 	if bisEntry.Phase == "0" then
 		bis = LBIS.L["PreRaid"];
+	elseif bisEntry.Phase == "99" then
+		bis = LBIS.L["PrePatch"];
 	elseif tonumber(bisEntry.Phase) < LBIS.CurrentPhase then
 		bis = string.gsub(bis, "BIS", "Alt");
 	end
@@ -123,11 +119,11 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 	if searchedItem == nil then
 
 		searchedItem = { Id = itemId, Bis = bis, Phase = bisEntry.Phase, Slot = slot, SortOrder = addOrder }
-		
+
 		if not LBIS.ItemsBySpecAndId[bisEntry.Id] then
 			LBIS.ItemsBySpecAndId[bisEntry.Id] = {}
 		end
-			
+	
 	else
 		if bisEntry.Phase > searchedItem.Phase then
 			searchedItem.Bis = bis;
@@ -146,7 +142,7 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 
 	LBIS.ItemsBySpecAndId[bisEntry.Id][itemId] = searchedItem;
 	LBIS.ItemsByIdAndSpec[itemId][bisEntry.Id] = searchedItem;
-	
+
 	local itemSource = LBIS.ItemSources[itemId];
 
 	if itemSource == nil then
@@ -158,7 +154,7 @@ function LBIS:AddItem(bisEntry, id, slot, bis)
 			LBIS.ItemsByIdAndSpec[tonumber(itemSource.SourceNumber)] = {}
 		end			
 		LBIS.ItemsByIdAndSpec[tonumber(itemSource.SourceNumber)][bisEntry.Id] = searchedItem
-	end	
+	end
 	addOrder = addOrder + 1;
 end
 
@@ -173,10 +169,10 @@ function LBIS:AddGem(bisEntry, id, quality, isMeta)
 	if LBIS.CurrentPhase < tonumber(bisEntry.Phase) then
 		return;
 	end
-	
+
 	if not LBIS.ItemsByIdAndSpec[gemId] then
 		LBIS.ItemsByIdAndSpec[gemId] = {}
-	end	
+	end
 
 	local searchedItem = LBIS.ItemsByIdAndSpec[gemId][bisEntry.Id];
 
@@ -198,7 +194,7 @@ function LBIS:AddGem(bisEntry, id, quality, isMeta)
 	if designId > 0 then		
 		if not LBIS.ItemsByIdAndSpec[designId] then
 			LBIS.ItemsByIdAndSpec[designId] = {}
-		end	
+		end
 
 		LBIS.ItemsByIdAndSpec[designId][bisEntry.Id] = searchedItem;
 	end
@@ -214,20 +210,19 @@ function LBIS:AddEnchant(bisEntry, id, slot)
 
 	if LBIS.CurrentPhase < tonumber(bisEntry.Phase) then
 		return;
-	end	
-	
+	end
+
 	if not LBIS.EnchantsBySpecAndId[bisEntry.Id] then
 		LBIS.EnchantsBySpecAndId[bisEntry.Id] = {}
 	end
 
 	local enchantSource = LBIS.EnchantSources[enchantId];
 	local designId = tonumber(enchantSource.DesignId);
-	local scrollId = tonumber(enchantSource.ScrollId);
 
 	local item = { Id = enchantId, Slot = slot, Phase = "", Bis = "" };
 
 	if enchantSource.IsSpell == "False" then
-	
+
 		if not LBIS.ItemsByIdAndSpec[enchantId] then
 			LBIS.ItemsByIdAndSpec[enchantId] = {}
 		end
@@ -247,15 +242,7 @@ function LBIS:AddEnchant(bisEntry, id, slot)
 		end
 
 		LBIS.ItemsByIdAndSpec[designId][bisEntry.Id] = item;
-	end	
-
-	if scrollId > 0 then
-		if not LBIS.ItemsByIdAndSpec[scrollId] then
-			LBIS.ItemsByIdAndSpec[scrollId] = {}
-		end
-
-		LBIS.ItemsByIdAndSpec[scrollId][bisEntry.Id] = item;
-	end	
+	end
 
 	LBIS.EnchantsBySpecAndId[bisEntry.Id][enchantId] = item;
 end

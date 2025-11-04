@@ -512,7 +512,6 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AnnounceFails			= "Verkünde Spieler im SZ-Chat, die bei Feuerwand und Schattenspalt scheitern (benötigt aktivierte Mitteilungen und Leiter-/Assistentenstatus)",
 	TimerTenebron			= "Zeige Zeit bis Tenebron in den Kampf eingreift",
 	TimerShadron			= "Zeige Zeit bis Shadron in den Kampf eingreift",
 	TimerVesperon			= "Zeige Zeit bis Vesperon in den Kampf eingreift",
@@ -530,11 +529,7 @@ L:SetMiscLocalization({
 	Portal			= "%s beginnt, ein Portal des Zwielichts zu öffnen!",
 	NameTenebron	= "Tenebron",
 	NameShadron		= "Shadron",
-	NameVesperon	= "Vesperon",
-	FireWallOn		= "Feuerwand: %s",
-	VoidZoneOn		= "Schattenspalt: %s",
-	VoidZones		= "Fehler bei Schattenspalt (dieser Versuch): %s",
-	FireWalls		= "Fehler bei Feuerwand (dieser Versuch): %s"
+	NameVesperon	= "Vesperon"
 })
 
 ---------------
@@ -781,16 +776,13 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerHardmode	= "Zeige Timer für Hard Mode",
-	AnnounceFails	= "Verkünde Spieler im Schlachtzugchat, die bei $spell:62466 scheitern (benötigt aktivierte Mitteilungen und Leiter-/Assistentenstatus)"
+	TimerHardmode	= "Zeige Timer für Hard Mode"
 }
 
 L:SetMiscLocalization{
 	YellPhase1	= " Eindringlinge! Ihr Sterblichen, die Ihr es wagt, Euch in mein Vergnügen einzumischen, werdet... Wartet... Ihr...",
 	YellPhase2	= "Ihr unverschämtes Geschmeiß! Ihr wagt es, mich in meinem Refugium herauszufordern? Ich werde Euch eigenhändig zerschmettern!",
-	YellKill	= "Senkt Eure Waffen! Ich ergebe mich!",
-	ChargeOn	= "Blitzladung: %s",
-	Charge		= "Fehler bei Blitzladung (dieser Versuch): %s"
+	YellKill	= "Senkt Eure Waffen! Ich ergebe mich!"
 }
 
 -------------
@@ -1113,9 +1105,7 @@ L:SetOptionLocalization{
 	warnAdds				= "Verkünde neue Adds",
 	timerAdds				= "Zeige Zeit bis neue Adds erscheinen",
 	TimerEmerge				= "Zeige Zeit bis Auftauchen",
-	TimerSubmerge			= "Zeige Zeit bis Abtauchen",
-	AnnouncePColdIcons		= "Verkünde Zeichen für Ziele von $spell:66013 im Schlachtzugchat (nur als Leiter)",
-	AnnouncePColdIconsRemoved	= "Verkünde auch das Entfernen von Zeichen für $spell:66013 (benötigt obige Einstellung)"
+	TimerSubmerge			= "Zeige Zeit bis Abtauchen"
 }
 
 ----------------------
@@ -1220,13 +1210,11 @@ L:SetGeneralLocalization{
 }
 
 L:SetOptionLocalization{
-	RangeFrame			= "Zeige Abstandsfenster (8m)",
-	AchievementCheck	= "Verkünde Fehlschlag des Erfolgs 'Grippeimpfungs-Engpass' an Schlachtzug (nur als Leiter/Assistent)"
+	RangeFrame			= "Zeige Abstandsfenster (8m)"
 }
 
 L:SetMiscLocalization{
-	SporeSet			= "Gassporenzeichen {rt%d} auf %s gesetzt",
-	AchievementFailed	= ">> ERFOLG FEHLGESCHLAGEN: %s hat %d Stapel von Geimpft <<"
+	SporeSet			= "Gassporenzeichen {rt%d} auf %s gesetzt"
 }
 
 ---------------
@@ -1376,9 +1364,7 @@ L:SetOptionLocalization{
 	WarnGroundphaseSoon		= "Zeige Vorwarnung für Bodenphase",
 	TimerNextAirphase		= "Zeige Zeit bis nächste Luftphase",
 	TimerNextGroundphase	= "Zeige Zeit bis nächste Bodenphase",
-	AnnounceFrostBeaconIcons= "Verkünde Zeichen für Ziele von $spell:70126 im SZ-Chat (nur als Leiter)",
 	ClearIconsOnAir			= "Entferne alle Zeichen vor der Luftphase",
-	AchievementCheck		= "Verkünde Warnungen für den Erfolg 'Das Buffet ist eröffnet' an Schlachtzug (nur als Leiter/Assistent)",
 	RangeFrame				= "Zeige dynamisches Abstandsfenster (10m/20m) basierend auf zuletzt genutzten Bossfähigkeiten und Spieler-Debuffs"
 }
 
@@ -1386,10 +1372,7 @@ L:SetMiscLocalization{
 	YellAirphase		= "Euer Vormarsch endet hier! Keiner wird überleben!",
 	YellPhase2			= "Fühlt die grenzenlose Macht meines Meisters, und verzweifelt!",
 	YellAirphaseDem		= "Rikk zilthuras rikk zila Aman adare tiriosh ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar ",--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
-	BeaconIconSet		= "Frostleuchtfeuer-Zeichen {rt%d} auf %s gesetzt",
-	AchievementWarning	= "Warnung: %s hat 5 Stapel von Mystischer Puffer",
-	AchievementFailed	= ">> ERFOLG FEHLGESCHLAGEN: %s hat %d Stapel von Mystischer Puffer <<"
+	YellPhase2Dem		= "Zar kiel xi romathIs zilthuras revos ruk toralar "--Demonic, since curse of tonges is used by some guilds and it messes up yell detection.
 }
 
 ---------------------
@@ -1421,18 +1404,12 @@ L:SetOptionLocalization{
 	PhaseTransition			= "Dauer der Phasenübergänge anzeigen",
 	ValkyrWarning			= "Verkünde Griffziele der Schattenwächterinnen der Val'kyr",
 	SpecWarnYouAreValkd		= "Spezialwarnung, wenn du von einer Schattenwächterin der Val'kyr gegriffen wurdest",--npc36609
-	AnnounceValkGrabs		= "Verkünde Griffziele der Schattenwächterinnen der Val'kyr im SZ-Chat (benötigt aktivierte Mitteilungen und Leiter-/Assistentenstatus)",
-	SpecWarnValkyrLow		= "Spezialwarnung, wenn eine Schattenwächterin der Val'kyr unter 55% Lebenspunkte ist",
-	AnnouncePlagueStack		= "Verkünde $spell:70337 Stapel an den Schlachtzug (ab 10 Stapel, danach alle 5 Stapel) (nur als Leiter/Assistent)"
+	SpecWarnValkyrLow		= "Spezialwarnung, wenn eine Schattenwächterin der Val'kyr unter 55% Lebenspunkte ist"
 }
 
 L:SetMiscLocalization{
 	LKPull					= "Der vielgerühmte Streiter des Lichts ist endlich hier? Soll ich Frostgram niederlegen und mich Eurer Gnade ausliefern, Fordring?",
-	LKRoleplay				= "Ist es wirklich Rechtschaffenheit, die Euch treibt? Ich bin mir nicht sicher…",
-	ValkGrabbedIcon			= "Schattenwächterin der Val'kyr {rt%d} hat %s gegriffen",
-	ValkGrabbed				= "Schattenwächterin der Val'kyr hat %s gegriffen",
-	PlagueStackWarning		= "Warnung: %s hat %d Stapel von Nekrotischer Seuche",
-	AchievementCompleted	= ">> ERFOLG FERTIG: %s hat %d Stapel von Nekrotischer Seuche <<"
+	LKRoleplay				= "Ist es wirklich Rechtschaffenheit, die Euch treibt? Ich bin mir nicht sicher…"
 }
 
 -------------

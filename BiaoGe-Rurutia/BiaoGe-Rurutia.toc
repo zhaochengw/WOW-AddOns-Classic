@@ -1,0 +1,8 @@
+## Interface: 11507, 20504, 30405, 40402, 50500, 110200
+## Title: <BiaoGe> |cffff559a露露语音包|r
+## Author: 露露缇娅
+## Version: 1.0.5
+## Notes: Biaoge插件的额外语音包，替换默认AI语音，需要安装并加载Biaoge插件。|n作者：|cffff559a露露緹婭@Bilibili|r，抖音：|cffff559a露露缇娅|r。
+
+## RequiredDeps: BiaoGe
+## X-BiaoGe-Voice: 1

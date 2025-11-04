@@ -21,6 +21,6 @@ L["Show the repair cost minus the 10% faction discount."] = "显示受声望减�
 L["Inspect"] = "检视"
 L["Show item quality when inspecting people."] = "显示别人的物品品质."
 L["Inspect iLevels"] = "检视物品等级"
-L["Show the iLevel on an inspected characters items."] = " 显示别人的物品等级"
+L["Show the iLevel on an inspected characters items."] = "显示别人的物品等级"
 L["Show iLevel"] = "显示物品等级"
 L["Show items' iLevel"] = "显示物品等级"

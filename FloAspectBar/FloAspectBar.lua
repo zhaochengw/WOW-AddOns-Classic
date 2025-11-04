@@ -7,6 +7,11 @@
 -------------------------------------------------------------------------------
 
 local VERSION = "2.1.0"
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	VERSION = "8.3.27"
+elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+	VERSION = "1.13.27"
+end
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -22,12 +27,11 @@ local ACTIVE_OPTIONS = FLOASPECTBAR_OPTIONS[1];
 -- Ugly
 local changingSpec = false;
 
-local GetSpecialization = _G.GetSpecialization
-local function FloAspectBar_GetSpecialization()
-  if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+local GetSpecialization = GetSpecialization;
+if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+	GetSpecialization = function ()
     return 1
   end
-  return GetSpecialization()
 end
 
 -------------------------------------------------------------------------------
@@ -46,7 +50,7 @@ function FloAspectBar_OnLoad(self)
     return;
   end
 
-  if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+	if WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
     self.hideCooldowns = true;
   end
 
@@ -94,12 +98,13 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
   -- 替换所有 GetSpecialization() 调用为 FloAspectBar_GetSpecialization()
   if event == "LEARNED_SPELL_IN_TAB" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED" then
     if not changingSpec then
-      if FloAspectBar_GetSpecialization() ~= FLOASPECTBAR_OPTIONS.active then
-        FloAspectBar_CheckTalentGroup(FloAspectBar_GetSpecialization());
+      if GetSpecialization() ~= FLOASPECTBAR_OPTIONS.active then
+        FloAspectBar_CheckTalentGroup(GetSpecialization());
       else
         FloLib_Setup(self);
       end
     end
+
   elseif event == "ADDON_LOADED" and arg1 == "FloAspectBar" then
     FloAspectBar_CheckTalentGroup(FLOASPECTBAR_OPTIONS.active);
 

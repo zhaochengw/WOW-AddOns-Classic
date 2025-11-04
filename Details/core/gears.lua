@@ -33,7 +33,7 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-function Details:SetDeathLogLimit(limitAmount)
+function Details:SetDeathLogLimit(limitAmount) --the temporary limit function is inside the parser as it need to deal with upvalues
 	if (limitAmount and type(limitAmount) == "number" and limitAmount >= 8) then
 		Details.deadlog_events = limitAmount
 
@@ -705,6 +705,7 @@ function ilvl_core:CalcItemLevel(unitid, guid, shout)
 
 			--------------------------------------------------------------------------------------------------------
 
+			--[=[
 			for i = 1, 7 do
 				for o = 1, 3 do
 					--need to review this in classic
@@ -720,6 +721,7 @@ function ilvl_core:CalcItemLevel(unitid, guid, shout)
 				Details.cached_talents [guid] = talents
 				Details:SendEvent("UNIT_TALENTS", nil, unitid, talents, guid)
 			end
+			--]=]
 		end
 
 		--------------------------------------------------------------------------------------------------------

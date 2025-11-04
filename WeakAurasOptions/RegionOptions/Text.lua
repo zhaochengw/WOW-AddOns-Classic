@@ -14,6 +14,8 @@ local hiddenFontExtra = function()
   return OptionsPrivate.IsCollapsed("text", "text", "fontflags", true)
 end
 
+local dynamicTextInputs = {}
+
 local function createOptions(id, data)
   local function hideCustomTextOption()
     if OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) then
@@ -42,12 +44,13 @@ local function createOptions(id, data)
   local options = {
     __title = L["Text Settings"],
     __order = 1,
+    __dynamicTextCodes = function()
+      local widget = dynamicTextInputs["displayText"]
+      OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
+    end,
     displayText = {
       type = "input",
       width = WeakAuras.doubleWidth,
-      desc = function()
-        return L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
-      end,
       multiline = true,
       name = L["Display Text"],
       order = 10,
@@ -56,11 +59,28 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.displayText = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v);
+
+        local metaData = OptionsPrivate.Private.GetAdditionalProperties(data)
+        OptionsPrivate.Private.SetDefaultFormatters(data, data.displayText, "displayText_format_", metaData)
+
         WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id)
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end,
+      control = "WeakAurasMultiLineEditBox",
+      callbacks = {
+        OnEditFocusGained = function(self)
+          local widget = dynamicTextInputs["displayText"]
+          OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+        end,
+        OnEditFocusLost = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
+        end,
+        OnShow = function(self)
+          dynamicTextInputs["displayText"] = self
+        end,
+      }
     },
     customTextUpdate = {
       type = "select",
@@ -69,6 +89,30 @@ local function createOptions(id, data)
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
       order = 36
+    },
+    text_customTextUpdateThrottle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      softMin = 0,
+      softMax = 5,
+      bigStep = 0.1,
+      min = 0,
+      width = WeakAuras.doubleWidth,
+      name = L["Custom Text Update Throttle"],
+      order = 36.1,
+      get = function() return data.customTextUpdateThrottle or 0 end,
+      set = function(info, v)
+        v = tonumber(v) or 0
+        if v < 0 then
+          v = 0
+        end
+        data.customTextUpdateThrottle = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end,
+      hidden = function()
+        return hideCustomTextOption() or (data.customTextUpdate ~= "update")
+      end
     },
     -- code editor added below
 

@@ -13,13 +13,12 @@ AtlasLoot.AtlasLootDBDefaults = {
 		enableAutoSelect = true,
 		enableAutoSelectBoss = true,
 		showDropRate = true,
-		enableAtlasMapIntegration = true,
 		enableColorsInNames = true,
-		ContentPhase = {
-			enableOnLootTable = false,
-			enableOnItems = false,
-			enableOnCrafting = false,
-			enableOnSets = false,
+		ContentPhases = {
+			enableOnLootTable = true,
+			enableOnItems = true,
+			enableOnCrafting = true,
+			enableOnSets = true,
 			enableTT = false,
 		},
 		Tooltip = {	-- Core\Tooltip.lua
@@ -29,7 +28,7 @@ AtlasLoot.AtlasLootDBDefaults = {
 		GUI = {		-- GUI\GUI.lua
 			point = {"CENTER"},
 			DefaultFrameLocked = false,
-			selected = {"AtlasLootClassic_DungeonsAndRaids", "Deadmines", 1, 0},
+			selected = {"AtlasLootClassic_DungeonsAndRaids", "BlackrockCaverns", 1, 0},
 			selectedGameVersion = AtlasLoot:GetGameVersion(),
 			classFilter = false,
 			autoselect = true,
@@ -65,14 +64,6 @@ AtlasLoot.AtlasLootDBDefaults = {
 		OptionsFrame = {
 			point = { "CENTER", nil, "CENTER", 0, 0 },
 		},
-		Map = {		-- Map\
-			point = {"CENTER"},
-			locked = false,
-		},
-		WorldMap = {
-			showbutton = true,
-			buttonOnTitleBar = true,
-		},
 		minimap = {
 			shown = true,
 			locked = false,
@@ -89,6 +80,7 @@ AtlasLoot.AtlasLootDBDefaults = {
 	},
 	global = {
 		Addons = {},
-		VendorPrice = {}
+		VendorPrice = {},
+		HideUntilUpdate = true,
 	}
 }

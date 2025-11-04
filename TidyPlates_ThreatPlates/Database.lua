@@ -16,6 +16,7 @@ local math_min = math.min
 -- WoW APIs
 local GetCVar = GetCVar
 local UnitClass = UnitClass
+local GetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
 
 -- ThreatPlates APIs
 local L = ThreatPlates.L
@@ -31,15 +32,15 @@ local _G =_G
 ---------------------------------------------------------------------------------------------------
 
 -- GetSpecialization: Mists - Patch 5.0.4 (2012-08-28): Replaced GetPrimaryTalentTree.
-if Addon.IS_MAINLINE then
+if Addon.ExpansionIsAtLeastMists  then
   local PLAYER_ROLE_BY_SPEC = ThreatPlates.SPEC_ROLES[Addon.PlayerClass]
 
   function Addon:PlayerRoleIsTank()
     local db = Addon.db
     if db.profile.optionRoleDetectionAutomatic then
-      return PLAYER_ROLE_BY_SPEC[_G.GetSpecialization()] or false
+      return PLAYER_ROLE_BY_SPEC[GetSpecialization()] or false
     else
-      return db.char.spec[_G.GetSpecialization()]
+      return db.char.spec[GetSpecialization()]
     end
   end
 
@@ -48,7 +49,7 @@ if Addon.IS_MAINLINE then
     if index then
       Addon.db.char.spec[index] = value
     else
-      Addon.db.char.spec[_G.GetSpecialization()] = value
+      Addon.db.char.spec[GetSpecialization()] = value
     end
   end
 else
@@ -640,7 +641,15 @@ local function CurrentVersionIsOlderThan(current_version, max_version)
     return current_version_no < max_version_no
   end
 end
-Addon.CurrentVersionIsOlderThan = CurrentVersionIsOlderThan
+
+local CurrentVersion = VersionToNumber(Addon.ThreatPlates.Meta("version"))
+
+function TidyPlatesThreat:VersionIsAtLeast(min_version)
+  if CurrentVersion == 0 then return true end -- Always return true in development (version = "12.6.2")
+
+  local min_version_no, _ = VersionToNumber(min_version)
+  return min_version_no > 0 and CurrentVersion >= min_version_no
+end
 
 local function DatabaseEntryExists(db, keys)
   for index = 1, #keys do
@@ -1369,6 +1378,25 @@ local function MigrateSetJustifyVCENTER(profile_name, profile)
   MigrateVerticalAlignmentEntry(profile, { "settings", "castbar", "CastTarget", "Font", })
 end
 
+local function MigrateAnchorsForWidgets(profile_name, profile)
+  if DatabaseEntryExists(profile, { "BossModsWidget" }) then
+    local default_profile = ThreatPlates.DEFAULT_SETTINGS.profile
+
+    profile.BossModsWidget.HealthbarMode = profile.BossModsWidget.HealthbarMode or {}
+    profile.BossModsWidget.NameMode = profile.BossModsWidget.NameMode or {}
+
+    profile.BossModsWidget.HealthbarMode.HorizontalOffset = GetValueOrDefault(profile.BossModsWidget.x, default_profile.BossModsWidget.HealthbarMode.HorizontalOffset)
+    profile.BossModsWidget.HealthbarMode.VerticalOffset = GetValueOrDefault(profile.BossModsWidget.y, default_profile.BossModsWidget.HealthbarMode.VerticalOffset)
+    profile.BossModsWidget.NameMode.HorizontalOffset = GetValueOrDefault(profile.BossModsWidget.x_hv, default_profile.BossModsWidget.NameMode.HorizontalOffset)
+    profile.BossModsWidget.NameMode.VerticalOffset = GetValueOrDefault(profile.BossModsWidget.y_hv, default_profile.BossModsWidget.NameMode.VerticalOffset)
+
+    DatabaseEntryDelete(profile, { "BossModsWidget", "x" })
+    DatabaseEntryDelete(profile, { "BossModsWidget", "y" })
+    DatabaseEntryDelete(profile, { "BossModsWidget", "x_hv" })
+    DatabaseEntryDelete(profile, { "BossModsWidget", "y_hv" })
+  end
+end
+
 local TEST_FUNCTIONS = {
   MigrateFixAurasCyclicAnchoring = MigrateFixAurasCyclicAnchoring
 }
@@ -1435,7 +1463,8 @@ local DEPRECATED_SETTINGS = {
   { MigrateFixAurasCyclicAnchoring, "10.3.1", NoDefaultProfile = true, CleanupDatabase = true },
   { MigrateThreatValue, "10.3.6", NoDefaultProfile = true, CleanupDatabase = true },
   { MigrateFontFlagsNONE, "11.1.25", NoDefaultProfile = true, CleanupDatabase = true },
-  { MigrateSetJustifyVCENTER,  "12.0.4", NoDefaultProfile = true, CleanupDatabase = true },
+  { MigrateSetJustifyVCENTER, "12.0.4", NoDefaultProfile = true, CleanupDatabase = true },
+  { MigrateAnchorsForWidgets, "12.2.0", NoDefaultProfile = true, CleanupDatabase = true },
 }
 
 local function MigrateDatabase(current_version)
@@ -1446,7 +1475,6 @@ local function MigrateDatabase(current_version)
   local profile_table = Addon.db.profiles
   for index, entry in ipairs(DEPRECATED_SETTINGS) do
     local action = entry[1]
-
     if type(action) == "function" then
       if entry.Version == nil or entry.Version == true then
         local max_version = entry[2]

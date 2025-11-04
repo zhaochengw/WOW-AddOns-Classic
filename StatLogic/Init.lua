@@ -27,7 +27,7 @@ Features:
 
 --@non-debug@
 -- Add 80000 to always supercede Whitetooth's revisions
-local MINOR_VERSION = 80000 + 431
+local MINOR_VERSION = 80000 + 537
 --@end-non-debug@
 --[==[@debug@
 local MINOR_VERSION = 2 ^ 32 -- LibStub doesn't accept math.huge as a number

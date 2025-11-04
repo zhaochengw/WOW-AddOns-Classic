@@ -9,15 +9,21 @@ local AddOn=select(2,...);
 ------------------------------------------
 --[[	ScrollingMessageFrame Hooks	]]
 ------------------------------------------
+local TextCache={};
 local FontString_SetText=UIParent:CreateFontString().SetText;
 
 local function ScrollingMessageFrameFontString_SetText(self,str)
+	TextCache[self]=str;
 	FontString_SetText(self,AddOn.LinkConverter_ConvertLinks(str));
 --	getmetatable(self).__index.SetText(self,);
 end
 
 local function ScrollingMessageFrameFontString_SetFormattedText(self,fmt,...)
 	ScrollingMessageFrameFontString_SetText(self,fmt:format(...));
+end
+
+local function ScrollingMessageFrameFontString_GetText(self)
+	return TextCache[self];
 end
 
 local HookedFontStrings={};
@@ -30,6 +36,7 @@ local function ScrollingMessageFrame_AcquireFontString(self)
 --			Insecure, but as of 10.1.5, the mainline client is having problems with links becoming uninteractable if :SetText() is called in quick succession
 			fontstring.SetText=ScrollingMessageFrameFontString_SetText;
 			fontstring.SetFormattedText=ScrollingMessageFrameFontString_SetFormattedText;
+			fontstring.GetText=ScrollingMessageFrameFontString_GetText;
 
 			HookedFontStrings[fontstring]=true;
 		end

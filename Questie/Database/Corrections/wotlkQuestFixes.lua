@@ -174,6 +174,9 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.zoneOrSort] = sortKeys.SPECIAL,
         },
+        [1698] = {
+            [questKeys.startedBy] = {{5479,7315}},
+        },
         [1716] = {
             [questKeys.preQuestSingle] = {},
         },
@@ -284,6 +287,39 @@ function QuestieWotlkQuestFixes:Load()
         [5531] = {
             [questKeys.nextQuestInChain] = 0,
         },
+        [5641] = { -- Fear Ward
+            [questKeys.startedBy] = {},
+        },
+        [5642] = { -- Shadowguard
+            [questKeys.startedBy] = {},
+        },
+        [5643] = { -- Shadowguard
+            [questKeys.startedBy] = {},
+        },
+        [5644] = { -- Devouring Plague
+            [questKeys.startedBy] = {},
+        },
+        [5645] = { -- Fear Ward
+            [questKeys.startedBy] = {},
+        },
+        [5646] = { -- Devouring Plague
+            [questKeys.startedBy] = {},
+        },
+        [5652] = { -- Hex of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5654] = { -- Hex of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5655] = { -- Hex of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5656] = { -- Hex of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5657] = { -- Hex of Weakness
+            [questKeys.startedBy] = {},
+        },
         [5658] = { -- Touch of Weakness
             [questKeys.startedBy] = {},
         },
@@ -291,6 +327,15 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.startedBy] = {},
         },
         [5663] = { -- Touch of Weakness
+            [questKeys.startedBy] = {},
+        },
+        [5676] = { -- Feedback
+            [questKeys.startedBy] = {},
+        },
+        [5679] = { -- Devouring Plague
+            [questKeys.startedBy] = {},
+        },
+        [5680] = { -- Shadowguard
             [questKeys.startedBy] = {},
         },
         [5721] = {
@@ -2530,7 +2575,7 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_TALK, l10n("Listen to what the Avatar of Freya has to say"), 0, {{"monster", 27801}}}},
         },
         [12622] = {
-            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Kill Jin'Alai Trolls until their leaders appear"), 0, {{"monster", 28388},{"monster", 28504},{"object", 193768},{"object", 193769},{"object", 193770}}}},
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_SLAY, l10n("Kill Jin'Alai Trolls near a totem until their leaders appear"), 0, {{"monster", 28388},{"monster", 28504},{"object", 193768},{"object", 193769},{"object", 193770}}}},
         },
         [12629] = {
             [questKeys.preQuestSingle] = {12637},
@@ -4549,15 +4594,19 @@ function QuestieWotlkQuestFixes:Load()
         },
         [13408] = {
             [questKeys.preQuestSingle] = {10143,10483},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [13409] = {
             [questKeys.preQuestSingle] = {10124},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [13410] = {
             [questKeys.preQuestSingle] = {10143,10483},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [13411] = {
             [questKeys.preQuestSingle] = {10124},
+            [questKeys.objectives] = {{{19028,nil,Questie.ICON_TYPE_EVENT},{19029,nil,Questie.ICON_TYPE_EVENT},{19032,nil,Questie.ICON_TYPE_EVENT}}},
         },
         [13413] = {
             [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_MOUNT_UP, l10n("Mount up"), 1, {{"monster", 32548}}}},

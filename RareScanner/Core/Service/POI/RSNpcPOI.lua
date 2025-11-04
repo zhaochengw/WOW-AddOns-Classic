@@ -11,6 +11,7 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSAchievementDB = private.ImportLib("RareScannerAchievementDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSMapDB = private.ImportLib("RareScannerMapDB")
+local RSProfessionDB = private.ImportLib("RareScannerProfessionDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -50,6 +51,59 @@ local function RemoveNotDiscoveredNpc(npcID)
 end
 
 ---============================================================================
+-- Dreamsurge NPCs POIs
+---- NPCs that are part of a dreamsurge event (Dragonflight)
+---============================================================================
+
+local function findClosestSpot(npcID, mapID, poiX, poiY)
+	local mapNpcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
+  	if (not mapNpcInfo or not mapNpcInfo.overlay) then
+    	return poiX, poiY
+  	else
+    	local xyDistances = {}
+    	for _, coordinatePair in ipairs (mapNpcInfo.overlay) do
+      		local coordx, coordy =  strsplit("-", coordinatePair)
+          		local distance = RSUtils.DistanceBetweenCoords(coordx, poiX, coordy, poiY)
+      			if (distance > 0.01) then
+            		xyDistances[coordinatePair] = distance
+      			end
+        	end
+  
+    		if (RSUtils.GetTableLength(xyDistances) == 0) then
+    			return poiX, poiY
+        	end
+  
+        	local distances = {}
+        	for xy, distance in pairs (xyDistances) do
+          		table.insert(distances, distance)
+        	end
+        
+        	local min = math.min(unpack(distances))
+        	for xy, distance in pairs (xyDistances) do
+          		if (distance == min) then
+            		local xo, yo = strsplit("-", xy)
+        		return xo, yo
+      		end
+    	end
+	end
+end
+
+local function GetMinieventXY(npcID, mapID, atlasName)
+	local areaPOIs = GetAreaPOIsForPlayerByMapIDCached(mapID);
+  	for _, areaPoiID in ipairs(areaPOIs) do
+    	local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
+    	if (poiInfo) then
+	    	local isPrimaryMapForPOI = poiInfo.isPrimaryMapForPOI
+    		local x, y = poiInfo.position:GetXY()
+	    	
+	  		if (isPrimaryMapForPOI and poiInfo.atlasName == atlasName) then
+		      	return findClosestSpot(npcID, mapID, x, y)
+	    	end
+	    end
+	end
+end
+
+---============================================================================
 -- NPC Map POIs
 ---- Manage adding NPC icons to the world map and minimap
 ---============================================================================
@@ -60,7 +114,21 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.isNpc = true
 	POI.grouping = true
 	POI.name = RSNpcDB.GetNpcName(npcID)
-	POI.mapID = mapID
+	POI.mapID = mapID	
+	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
+	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
+	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
+	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
+	
+	if (npcInfo) then
+		POI.worldmap = npcInfo.worldmap
+		POI.factionID = npcInfo.factionID
+		POI.minieventID = npcInfo.minieventID
+		POI.custom = npcInfo.custom
+		POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID, npcInfo.achievementID, npcInfo.questID, npcInfo.criteria)
+	end
+	
+	-- Coordinates
 	if (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
 		POI.x = alreadyFoundInfo.coordX
 		POI.y = alreadyFoundInfo.coordY
@@ -68,18 +136,12 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	  	POI.x, POI.y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 	end
 	
-	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
-	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
-	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
-	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID)
-	
-	if (npcInfo) then
-		POI.worldmap = npcInfo.worldmap
-		POI.custom = npcInfo.custom
-	end
-	
 	-- Textures
-	if (RSRecentlySeenTracker.IsRecentlySeen(npcID, POI.x, POI.y)) then
+	if (POI.isDead) then
+		POI.Texture = RSConstants.BLUE_NPC_TEXTURE
+	elseif (POI.isFriendly) then
+		POI.Texture = RSConstants.LIGHT_BLUE_NPC_TEXTURE
+	elseif (RSRecentlySeenTracker.IsRecentlySeen(npcID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_NPC_TEXTURE
 	elseif (POI.custom) then
 		POI.Texture = RSConstants.PURPLE_NPC_TEXTURE
@@ -90,19 +152,43 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	end
 	
 	-- Mini icons
-	if (RSUtils.GetTableLength(POI.achievementIDs) > 0) then
+	if (POI.minieventID and RSConstants.MINIEVENTS_WORLDMAP_FILTERS[POI.minieventID] and RSConstants.MINIEVENTS_WORLDMAP_FILTERS[POI.minieventID].atlas) then
+		POI.iconAtlas = RSConstants.MINIEVENTS_WORLDMAP_FILTERS[POI.minieventID].atlas
+	elseif (RSUtils.GetTableLength(POI.achievementIDs) > 0) then
 		POI.iconAtlas = RSConstants.ACHIEVEMENT_ICON_ATLAS
 	end
 	
 	return POI
 end
 
-local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, group, onWorldMap, onMinimap)
+local function IsEventUnlocked(eventQuestIDs)
+	for _, questID in ipairs(eventQuestIDs) do
+		if (C_TaskQuest.IsActive(questID) or C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+			return true
+		end
+	end
+	
+	return false
+end
+
+local function IsNpcPOIFiltered(npcID, mapID, artID, npcInfo, questTitles, onWorldMap, onMinimap)
 	local name = RSNpcDB.GetNpcName(npcID)
 	
 	-- Skip if part of a disabled event
 	if (RSNpcDB.IsDisabledEvent(npcID)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Parte de un evento desactivado.", npcID))
+		return true
+	end
+	
+	-- Skip if active while aura active
+	if (npcInfo and npcInfo.spellID and not C_UnitAuras.GetPlayerAuraBySpellID(RSConstants.SEAFURY_TEMPEST_ID)) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado porque su evento no esta activo [%s].", npcID, npcInfo.spellID))
+		return true
+	end
+	
+	-- Skip if filtering by name in the world map search box
+	if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado por nombre [%s][%s].", npcID, name, RSGeneralDB.GetWorldMapTextFilter()))
 		return true
 	end
 
@@ -111,22 +197,45 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, group, onWorld
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado en opciones (filtro completo o mapa del mundo).", npcID))
 		return true
 	end
-
+	
 	-- Skip if custom NPC group filtered
-	if (group and RSConfigDB.IsCustomNpcGroupFiltered(group)) then
+	if (npcInfo and npcInfo.group and RSConfigDB.IsCustomNpcGroupFiltered(npcInfo.group)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado grupo.", npcID))
 		return true
 	end
 	
-	-- Skip if achievement rare and is filtered
-	local isAchievement = RSUtils.GetTableLength(RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID)) > 0;
-	if (not RSConfigDB.IsShowingAchievementRareNPCs() and isAchievement) then
-		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado NPC con logro.", npcID))
-		return true
+	-- Skip if rare part of a filtered minievent
+	local isMinieventWithFilter = false;
+	if (npcInfo and npcInfo.minieventID) then
+		isMinieventWithFilter = RSConstants.MINIEVENTS_WORLDMAP_FILTERS[npcInfo.minieventID].active
+		
+		-- Skip if minievent is filtered
+		if (RSConfigDB.IsMinieventFiltered(npcInfo.minieventID)) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado minievento [%s].", npcID, npcInfo.minieventID))
+			return true
+		-- Skip if Dreamsurge minievent is not up
+		elseif (npcInfo.minieventID == RSConstants.DRAGONFLIGHT_DREAMSURGE_MINIEVENT and not GetMinieventXY(npcID, mapID, RSConstants.DREAMSURGE_ICON_ATLAS)) then
+		    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Investigacion pico onirico que no esta activa.", npcID))
+		    return true
+		-- Skip if Fyrakk assault minievent is not up
+		elseif (npcInfo.minieventID == RSConstants.DRAGONFLIGHT_FYRAKK_MINIEVENT and not GetMinieventXY(npcID, mapID, RSConstants.FYRAKK_ICON_ATLAS)) then
+		    RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Asalto Fyrakk que no esta activo.", npcID))
+		    return true
+		end
+	end
+	
+	-- Skip if not completed achievement and is filtered
+	local isNotCompletedAchievement = false
+	if (npcInfo) then
+		isNotCompletedAchievement = RSUtils.GetTableLength(RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID, npcInfo.achievementID, npcInfo.questID, npcInfo.criteria)) > 0;
+		if (not RSConfigDB.IsShowingAchievementRareNPCs() and isNotCompletedAchievement) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado NPC con logro.", npcID))
+			return true
+		end
 	end
 	
 	-- Skip if other filtered
-	if (not RSConfigDB.IsShowingOtherRareNPCs() and not isAchievement) then
+	if (not RSConfigDB.IsShowingOtherRareNPCs() and not isMinieventWithFilter and not isNotCompletedAchievement and (not npcInfo or not npcInfo.prof)) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado otro NPC.", npcID))
 		return true
 	end
@@ -138,18 +247,13 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, group, onWorld
 	end
 
 	-- Skip if the entity appears only while a quest event is going on and it isnt active
-	if (zoneQuestID) then
+	if (npcInfo and npcInfo.zoneQuestId) then
 		local active = false
-		for _, questID in ipairs(zoneQuestID) do
+		for _, questID in ipairs(npcInfo.zoneQuestId) do
 			if (C_TaskQuest.IsActive(questID) or C_QuestLog.IsQuestFlaggedCompleted(questID)) then
 				active = true
 				break
 			end
-		end
-
-		if (not active) then
-			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Evento asociado no esta activo.", npcID))
-			return true
 		end
 	end
 
@@ -160,10 +264,56 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, group, onWorld
 		return true
 	end
 
+	-- Skip if this NPC has a world quest active right now
+	-- We don't want to show our icon on top of the quest one
+	if (RSUtils.Contains(questTitles, npcName)) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Tiene misión del mundo activa.", npcID))
+		return true
+	end
+
+	-- A 'not discovered' NPC will be setted as killed when the kill is detected while loading the addon and its questID is completed
+	local npcDead = RSNpcDB.IsNpcKilled(npcID)
+
+	-- Skip if dead 
+	if (npcDead) then
+		-- and not showing dead entities in 'not reseteable' maps
+		if (RSConfigDB.IsShowingAlreadyKilledNpcsInReseteableZones() and not RSMapDB.IsReseteableKillMapID(mapID, artID)) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto (zona no reseteable).", npcID))
+			return true
+		--  and not showing dead entities
+		elseif (not RSConfigDB.IsShowingAlreadyKilledNpcsInReseteableZones() and not RSConfigDB.IsShowingAlreadyKilledNpcs()) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Esta muerto.", npcID))
+			return true
+		end
+	end
+	
+	-- Skip if wrong profession
+	if (npcInfo and npcInfo.prof) then
+		if (not RSProfessionDB.HasPlayerProfession(npcInfo.prof)) then
+			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Profesión incorrecta.", npcID))
+			return true
+		end
+	end
+	
+	-- Skip if it doesn't drop weekly rep anymore
+	if (npcInfo and not RSConfigDB.IsShowingWeeklyRepFilterEnabled()) then
+		-- If dungeons/delve/raid ignore
+		local mapInfo = C_Map.GetMapInfo(mapID)
+		
+		if (npcInfo.warbandQuestID) then
+			for _, questID in ipairs(npcInfo.warbandQuestID) do
+				if (C_QuestLog.IsQuestFlaggedCompletedOnAccount(questID)) then
+					RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: No aporta reputación esta semana.", npcID))
+					return true
+				end
+			end
+		end
+	end
+
 	return false
 end
 
-function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, onWorldMap, onMinimap)
+function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, onWorldMap, onMinimap)
 	-- Skip if not showing NPC icons
 	if (not RSConfigDB.IsShowingNpcs()) then
 		return
@@ -214,7 +364,7 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, onWorldMap, onMinimap)
 		end
 
 		-- Skip if common filters
-		if (not filtered and not IsNpcPOIFiltered(npcID, mapID, RSNpcDB.GetInternalNpcArtID(npcID, mapID), npcInfo.zoneQuestId, npcInfo.group, onWorldMap, onMinimap)) then
+		if (not filtered and not IsNpcPOIFiltered(npcID, mapID, RSNpcDB.GetInternalNpcArtID(npcID, mapID), npcInfo, questTitles, onWorldMap, onMinimap)) then
 			tinsert(POIs, RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo))
 		end
 	end
@@ -222,7 +372,7 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, onWorldMap, onMinimap)
 	return POIs
 end
 
-function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, onWorldMap, onMinimap)
+function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, questTitles, onWorldMap, onMinimap)
 	-- Skip if not showing NPC icons
 	if (not RSConfigDB.IsShowingNpcs()) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Iconos de NPCs deshabilitado.", npcID))
@@ -230,6 +380,14 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, onWor
 	end
 
 	local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+	local npcDead = RSNpcDB.IsNpcKilled(npcID)
+
+	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
+	-- This filter doesnt apply to dead entities or worldmap npcs
+	if (not npcDead and (npcInfo and not npcInfo.worldmap) and RSConfigDB.IsMaxSeenTimeFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenTimeFilter())) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Visto hace demasiado tiempo.", npcID))
+		return
+	end
 
 	-- Skip if the entity belongs to a different map that the one displaying
 	-- First checks with the already found information
@@ -256,14 +414,7 @@ function RSNpcPOI.GetMapAlreadyFoundNpcPOI(npcID, alreadyFoundInfo, mapID, onWor
 	end
 
 	-- Skip if common filters
-	local zoneQuestID
-	local group
-	if (npcInfo) then
-		zoneQuestID = npcInfo.zoneQuestId
-		group = npcInfo.group
-	end
-
-	if (not IsNpcPOIFiltered(npcID, mapID, alreadyFoundInfo.artID, zoneQuestID, group, onWorldMap, onMinimap)) then
+	if (not IsNpcPOIFiltered(npcID, mapID, alreadyFoundInfo.artID, npcInfo, questTitles, onWorldMap, onMinimap)) then
 		return RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	end
 end

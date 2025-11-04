@@ -1,4 +1,4 @@
-## Interface: 11507, 30405
+## Interface: 11507, 50502
 ## Title: |cff00fffftdBag2 ItemInfo|r - Item Info
 ## Title-zhCN: |cff00fffftdBag2 ItemInfo|r - 物品信息
 ## Notes: View BoE, item level, item expire time, etc.

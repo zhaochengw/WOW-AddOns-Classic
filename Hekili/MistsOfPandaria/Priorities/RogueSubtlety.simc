@@ -1,0 +1,52 @@
+# Rogue: Subtlety (MoP 5.5.1) 
+# Based on WoWSims MoP Subtlety Rogue mechanics and T16H patterns
+
+## Precombat Actions
+actions.precombat+=/flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/potion
+actions.precombat+=/premeditation,if=talent.premeditation.enabled
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
+actions.precombat+=/slice_and_dice,if=combo_points>=1
+
+## Main Actions
+actions+=/kick,if=target.casting
+actions+=/potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/use_item,slot=hands,if=buff.shadow_dance.up|target.time_to_die<20
+actions+=/use_item,slot=trinket1,if=buff.shadow_dance.up|buff.shadow_blades.up|target.time_to_die<20
+actions+=/use_item,slot=trinket2,if=buff.shadow_dance.up|buff.shadow_blades.up|target.time_to_die<20
+actions+=/blood_fury,if=buff.shadow_dance.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/arcane_torrent,if=energy<60
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60&talent.preparation.enabled
+# Core rotation
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=cooldowns
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<6&combo_points>=1
+actions+=/rupture,if=combo_points>=5&(!dot.rupture.ticking|dot.rupture.remains<4)&target.time_to_die>10
+actions+=/hemorrhage,if=talent.hemorrhage.enabled&(!dot.hemorrhage.ticking|dot.hemorrhage.remains<4)
+actions+=/eviscerate,if=combo_points>=5&dot.rupture.up
+actions+=/ambush,if=buff.shadow_dance.up&combo_points<5
+actions+=/backstab,if=combo_points<5&energy>=35
+
+# Cooldowns
+actions.cooldowns+=/shadow_dance,if=settings.use_shadow_dance&energy>=75&!stealthed.all&buff.slice_and_dice.up&dot.rupture.remains>=10
+actions.cooldowns-=/shadow_dance,if=settings.use_shadow_dance&energy>=75&!stealthed.all&buff.slice_and_dice.up&dot.rupture.remains>=10
+actions.cooldowns+=/shadow_dance,if=settings.use_shadow_dance&energy>=settings.energy_threshold&!stealthed.all&buff.slice_and_dice.up&dot.rupture.remains>=settings.dance_min_rupture
+actions.cooldowns+=/vanish,if=energy>=45&combo_points<=2&!stealthed.all&cooldown.shadow_dance.remains>10
+actions.cooldowns+=/shadow_blades,if=talent.shadow_blades.enabled&settings.use_shadow_blades&(buff.shadow_dance.up|time<20|target.time_to_die<40)
+actions.cooldowns+=/shadowstep,if=settings.allow_shadowstep&talent.shadowstep.enabled&target.distance>=12
+
+# AoE
+actions.aoe+=/slice_and_dice,if=buff.slice_and_dice.remains<6&combo_points>=1
+actions.aoe+=/crimson_tempest,if=combo_points>=4&active_enemies>=4&!dot.crimson_tempest.ticking
+actions.aoe+=/eviscerate,if=combo_points>=5
+actions.aoe+=/ambush,if=buff.shadow_dance.up&combo_points<5
+actions.aoe+=/fan_of_knives,if=combo_points<5&active_enemies>=3
+
+# Generators
+actions.generators+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
+actions.generators+=/hemorrhage,if=talent.hemorrhage.enabled&combo_points<5&(!dot.hemorrhage.ticking|dot.hemorrhage.remains<4)
+actions.generators+=/backstab,if=combo_points<5&energy>=35
+actions.generators+=/shuriken_toss,if=talent.shuriken_toss.enabled&combo_points<5&energy<40

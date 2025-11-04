@@ -18,7 +18,7 @@ local data = AtlasLoot.ItemDB:Add(addonname, 1, AtlasLoot.CLASSIC_VERSION_NUM)
 local AL = AtlasLoot.Locales
 local ALIL = AtlasLoot.IngameLocales
 
-local NORMAL_DIFF = data:AddDifficulty(AL["Normal"], "n", 1, nil, true)
+local NORMAL_DIFF = data:AddDifficulty("NORMAL", "n", 1, nil, true)
 local ALLIANCE_DIFF
 local HORDE_DIFF
 local LOAD_DIFF
@@ -43,6 +43,7 @@ local SET_EXTRA_ITTYPE = data:AddExtraItemTableType("Set")
 local PVP_CONTENT = data:AddContentType(AL["Battlegrounds"], ATLASLOOT_PVP_COLOR)
 local GENERAL_CONTENT = data:AddContentType(GENERAL, ATLASLOOT_RAID40_COLOR)
 
+--[[
 local KEYS = {	-- Keys
 	name = AL["Keys"],
 	TableType = NORMAL_ITTYPE,
@@ -79,6 +80,7 @@ local KEYS = {	-- Keys
 		{ 30, 21986 },
 	},
 }
+--]]
 
 local HORDE, ALLIANCE, RANK_FORMAT = "Horde", "Alliance", AL["|cff33ff99Rank:|r %s"]
 local GetRankName, GetRankIcon = AtlasLoot.Data.Requirements.GetPvPRankName, AtlasLoot.Data.Requirements.GetPvPRankIcon
@@ -134,7 +136,6 @@ local PVP_RANKS = {	-- Keys
 
 data["AlteracValley"] = {
 	MapID = 2597,
-	AtlasMapID = "AlteracValley",
 	ContentType = PVP_CONTENT,
 	LoadDifficulty = LOAD_DIFF,
 	ContentPhase = 2.5,
@@ -257,7 +258,6 @@ data["AlteracValley"] = {
 
 data["WarsongGulch"] = {
 	MapID = 3277,
-	AtlasMapID = "WarsongGulch",
 	ContentType = PVP_CONTENT,
 	LoadDifficulty = LOAD_DIFF,
 	ContentPhase = 2.5,
@@ -486,7 +486,6 @@ data["WarsongGulch"] = {
 
 data["ArathiBasin"] = {
 	MapID = 3358,
-	AtlasMapID = "ArathiBasin",
 	ContentType = PVP_CONTENT,
 	LoadDifficulty = LOAD_DIFF,
 	ContentPhase = 4,

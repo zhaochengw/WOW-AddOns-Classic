@@ -105,6 +105,7 @@ BG.Init(function()
         L["{rt1}拍卖开始{rt1} %s 起拍价：%s"] = "{rt1}拍賣開始{rt1} %s 起拍價：%s"
         L["团长："] = "團長"
         L["|cffff0000该装备在拍卖结束后一直没收到团长发出的团队通知，所以你显示的拍卖结果可能不正确，请告知团长。"] = "|cffff0000該裝備在拍賣結束後一直沒收到團長發出的團隊通知，所以你顯示的拍賣結果可能不正確，請告知團長。"
+        L["|cffff0000团长离线，该装备的拍卖结果可能不正确。"] = "|cffff0000團長離線，該裝備的拍賣結果可能不正確。"
     end
 
     function aura.GN(unit)
@@ -611,8 +612,7 @@ BG.Init(function()
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
         end
         GameTooltip:ClearLines()
-        GameTooltip:SetItemByID(self.itemID)
-        GameTooltip:Show()
+        GameTooltip:SetHyperlink(self.link)
         if IsControlKeyDown() then
             SetCursor("Interface/Cursor/Inspect")
         end
@@ -693,7 +693,7 @@ BG.Init(function()
                 local link = f.link
                 local result
                 if f.player and f.player ~= "" then
-                    result = f.player .. f.money
+                    result = aura.SetClassCFF(f.player) .. f.money
                     t:SetText(L["拍卖成功"])
                     t:SetTextColor(0, 1, 0)
                     f.currentMoneyText:SetText(L["|cff00FF00成交价：|r"] .. f.money)
@@ -731,17 +731,22 @@ BG.Init(function()
 
                 After(3, function()
                     if not aura.endMsg[itemID] then
-                        SendSystemMessage("|cff00BFFF<BiaoGe>|r " ..
-                            format(L["%s（%s）"], link, result) ..
-                            L["|cffff0000该装备在拍卖结束后一直没收到团长发出的团队通知，所以你显示的拍卖结果可能不正确，请告知团长。"])
-
+                        if aura.raidLeader and UnitIsConnected(aura.raidLeader) then
+                            SendSystemMessage("|cff00BFFF<BiaoGe>|r " ..
+                                format(L["%s（%s）："], link, result) ..
+                                L["|cffff0000该装备在拍卖结束后一直没收到团长发出的团队通知，所以你显示的拍卖结果可能不正确，请告知团长。"])
+                        else
+                            SendSystemMessage("|cff00BFFF<BiaoGe>|r " ..
+                                format(L["%s（%s）："], link, result) ..
+                                L["|cffff0000团长离线，该装备的拍卖结果可能不正确。"])
+                        end
                         if BG then
                             if not aura.soundCD then
                                 aura.soundCD = true
                                 After(2, function()
                                     aura.soundCD = nil
                                 end)
-                                BG.PlaySound("auctionError")
+                                -- BG.PlaySound("auctionError")
                             end
                         end
                     end
@@ -1174,7 +1179,6 @@ BG.Init(function()
             end
         end)
     end
-    
 
     -- 自动出价函数
     do
@@ -1325,18 +1329,19 @@ BG.Init(function()
         end
     end
 
-    function aura.CreateAuction(auctionID, itemID, money, duration, player, mod, notAfter)
+    function aura.CreateAuction(auctionID, itemID, money, duration, player, mod, link, notAfter)
         for _, f in pairs(_G.BGA.Frames) do
             if f[_auctionID_] == auctionID then
                 return
             end
         end
 
-        local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture, _, classID, subclassID, bindType = GetItemInfo(itemID)
+        local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture,
+        _, classID, subclassID, bindType = GetItemInfo(link or itemID)
         if not link then
             if not notAfter then
                 After(0.5, function()
-                    aura.CreateAuction(auctionID, itemID, money, duration - 0.5, player, mod, true)
+                    aura.CreateAuction(auctionID, itemID, money, duration - 0.5, player, mod, link, true)
                 end)
             end
             return
@@ -1917,7 +1922,7 @@ BG.Init(function()
         if event == "CHAT_MSG_ADDON" then
             local prefix, msg, distType, sender = ...
             if prefix ~= aura.AddonChannel then return end
-            local arg1, arg2, arg3, arg4, arg5, arg6, arg7 = strsplit(",", msg)
+            local arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 = strsplit(",", msg, 8)
             sender = aura.GSN(sender)
             if arg1 == "SendMyMoney" and distType == "RAID" then
                 local auctionID = tonumber(arg2)
@@ -1942,7 +1947,9 @@ BG.Init(function()
                 local duration = tonumber(arg5)
                 local player = arg6
                 local mod = arg7
-                aura.CreateAuction(auctionID, itemID, money, duration, player, mod)
+                local link = arg8
+                if link == "" then link = nil end
+                aura.CreateAuction(auctionID, itemID, money, duration, player, mod, link)
 
                 if aura.IsRaidLeader() then
                     local function GetVIPTipsText(link)
@@ -1967,8 +1974,14 @@ BG.Init(function()
                         end
                         return tipsText
                     end
-                    local _, link = GetItemInfo(itemID)
+                    local item
                     if link then
+                        item = Item:CreateFromItemLink(link)
+                    else
+                        item = Item:CreateFromItemID(itemID)
+                    end
+                    item:ContinueOnItemLoad(function()
+                        local link = item:GetItemLink()
                         local msg = format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s"],
                             link, money)
                         local tipsText = GetVIPTipsText(link)
@@ -1976,20 +1989,7 @@ BG.Init(function()
                             msg = msg .. tipsText
                         end
                         SendChatMessage(msg, "RAID_WARNING")
-                    else
-                        After(0.5, function()
-                            local _, link = GetItemInfo(itemID)
-                            if link then
-                                local msg = format(L["{rt1}拍卖开始{rt1} %s 起拍价：%s"],
-                                    link, money)
-                                local tipsText = GetVIPTipsText(link)
-                                if strlen(msg .. tipsText) < 255 then
-                                    msg = msg .. tipsText
-                                end
-                                SendChatMessage(msg, "RAID_WARNING")
-                            end
-                        end)
-                    end
+                    end)
                 end
             elseif arg1 == "CancelAuction" and distType == "RAID" then
                 local auctionID = tonumber(arg2)

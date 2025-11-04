@@ -3,7 +3,7 @@ local mod	= DBM:NewMod("d640", "DBM-Challenges", 4, nil, function(t)
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250720212337")
+mod:SetRevision("20251002044755")
 mod.noStatistics = true
 
 --mod:RegisterCombat("scenario", 1148)
@@ -220,7 +220,10 @@ do
 				name = Ambiguate(name, "none")
 				local diffID, currWave = C_Scenario.GetProvingGroundsInfo()--, maxWave, duration
 				local message = L.ReplyWhisper:format(UnitName("player"), mode[diffID], currWave)
-				--TODO, change this in 12.0 when SendChatMessage is blocked in combat
+				if self:IsPostMidnight() then
+					--Post midnight yell restrictions in instances
+					return
+				end
 				if msg == "status" then
 					SendChatMessage(message, "WHISPER", nil, name)
 				elseif self:AntiSpam(20, name) then--If not "status" then auto respond only once per 20 seconds per person.

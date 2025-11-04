@@ -5,10 +5,25 @@ https://www.curseforge.com/members/sdphantomgamer/projects
 ===============================================================================
 
 All Rights Reserved - Use at your own risk
-UnZip contents into the "Interface\AddOns" folder in your WoW instalation directory
+UnZip contents into the "Interface\AddOns" folder in your WoW installation directory
 
 ===============================================================================
 Versions:
+v3.7.2 (2025-07-23)
+	-Patched Blizzard's missing monk class atlas
+
+v3.7.1 (2025-05-02)
+	-Added ruRU locale (Courtesy of ZamestoTV)
+
+v3.7 (2025-01-15)
+	-Added replication mitigation for other addons modifying existing chat lines using :GetText()
+
+v3.6 (2024-08-18)
+	-Fixed API changes with fetching ToC data
+
+v3.5 (2024-07-25)
+	-Fixed LinkConverter error when given a non-string
+
 v3.4 (2024-01-23)
 	-Converted race/class icons to use atlases to be more robust against Blizzard shuffling icons
 

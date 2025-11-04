@@ -1,18 +1,12 @@
-## Interface: 30403
-## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cff40abff2.5.7|r |TInterface/Icons/achievement_boss_lichking:16:16:0:0:512:512:64:448:64:448|t
+## Interface: 50500
+## Title: |TInterface/Icons/Spell_Frost_Stun:16:16:0:0:512:512:64:448:64:448|t SpellActivationOverlay |cff00ff962.5.7|r |TInterface/Icons/achievement_character_pandaren_female:16:16:0:0:512:512:64:448:64:448|t
 ## Notes: Display overlays and glow buttons to improve your gameplay!
 ## Author: Vinny/Ennvina
 ## Version: 2.5.7
 ## SavedVariables: SpellActivationOverlayDB
-## X-SAO-Build: wrath
+## X-SAO-Build: mop
 
 # SpellActivationOverlay.lua, SpellActivationOverlay.xml and all textures were created by Blizzard Entertainment, Inc.
-#
-# World of Warcraft®: Cataclysm®
-# ©2010 Blizzard Entertainment, Inc. All rights reserved. Cataclysm is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
-#
-# World of Warcraft®: Mists of Pandaria®
-# ©2012 Blizzard Entertainment, Inc. All rights reserved. Mists of Pandaria, World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
 #
 # World of Warcraft®: Warlords of Draenor™
 # ©2014 Blizzard Entertainment, Inc. All rights reserved. Warlords of Draenor is a trademark, and World of Warcraft, Warcraft and Blizzard Entertainment are trademarks or registered trademarks of Blizzard Entertainment, Inc. in the U.S. and/or other countries.
@@ -47,7 +41,9 @@ components\variable.lua
 variables\actionusable.lua
 variables\aurastacks.lua
 variables\execute.lua
+variables\holypower.lua
 variables\itemset.lua
+variables\nativesao.lua
 variables\stance.lua
 variables\talent.lua
 
@@ -58,6 +54,7 @@ classes\deathknight.lua
 classes\druid.lua
 classes\hunter.lua
 classes\mage.lua
+classes\monk.lua
 classes\paladin.lua
 classes\priest.lua
 classes\rogue.lua

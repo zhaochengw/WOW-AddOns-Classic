@@ -444,6 +444,7 @@ PPA.EventHdlrs = {
 
   PLAYER_ENTERING_WORLD = function(_self, ...)
     PPA:Debug("OnPlayerEnteringWorld " .. PPA:Dump(...))
+    PPA:CreateOptionsPanel()
     if PPA.startWithGridOn then
       PPA:ShowGrid()
     end
@@ -492,15 +493,10 @@ PPA.EventHdlrs = {
       pixelPerfectAlignSaved = {}
     end
     pixelPerfectAlignSaved.addonVersion = PPA.manifestVersion
-    pixelPerfectAlignSaved.addonHash = "d1a7adb"
+    pixelPerfectAlignSaved.addonHash = "4d0c64f"
     PPA:deepmerge(PPA, nil, pixelPerfectAlignSaved)
     PPA:Debug(3, "Merged in saved variables.")
     PPA.savedVar = pixelPerfectAlignSaved -- by ref, for SetSaved,...
-    C_Timer.After(1, function() 
-      if Settings and Settings.RegisterCanvasLayoutCategory then
-        PPA:CreateOptionsPanel()
-      end
-    end)
   end
 }
 
@@ -534,7 +530,7 @@ function PPA.Slash(arg) -- can't be a : because used directly as slash command
     local subText = L["Please submit on discord or on https://|cFF99E5FFbit.ly/ppabug|r or email"]
     PPA:PrintDefault(L["PixelPerfectAddon bug report open: "] .. subText)
     -- base molib will add version and date/timne
-    PPA:BugReport(subText, "d1a7adb\n\n" .. L["Bug report from slash command"])
+    PPA:BugReport(subText, "4d0c64f\n\n" .. L["Bug report from slash command"])
   elseif cmd == "t" then
     PPA:ToggleGrid()
   elseif cmd == "i" then
@@ -544,13 +540,11 @@ function PPA.Slash(arg) -- can't be a : because used directly as slash command
   elseif cmd == "v" then
     -- version
     PPA:PrintDefault("PixelPerfectAlign " .. PPA.manifestVersion ..
-                       " (d1a7adb) by MooreaTv (moorea@ymail.com)")
+                       " (4d0c64f) by MooreaTv (moorea@ymail.com)")
   elseif PPA:StartsWith(arg, "coord") then
     PPA:ToggleCoordinates()
   elseif cmd == "c" then
-        if Settings then
-        Settings.OpenToCategory(PPA.optionsPanel.name)
-       end
+    PPA:ShowConfigPanel(PPA.optionsPanel)
   elseif cmd == "e" then
     -- copied from PixelPerfectAlign, as augment on event trace
     UIParentLoadAddOn("Blizzard_DebugTools")
@@ -614,7 +608,7 @@ function PPA:CreateOptionsPanel()
   PPA.optionsPanel = p
   p:addText(L["PixelPerfectAlign options"], "GameFontNormalLarge"):Place()
   p:addText(L["These options let you control the behavior of PixelPerfectAlign"] .. " " .. PPA.manifestVersion ..
-              " d1a7adb"):Place()
+              " 4d0c64f"):Place()
 
   local lineLengthSlider = p:addSlider(L["Grid line length"], L["How many pixels for the lines/crosses drawn"], 1, 128,
                                        1):Place(8, 24)
@@ -756,17 +750,8 @@ function PPA:CreateOptionsPanel()
       self:HandleOk()
     end
   end
-    if Settings then
-        PPA.optionsPanel.name = "PixelPerfectAlign"
-        Settings.RegisterCanvasLayoutCategory(PPA.optionsPanel)
-        PPA.optionsPanel.Open = function() 
-        if SettingsPanel:IsShown() then
-            Settings.OpenToCategory(PPA.optionsPanel.name)
-        else
-            Settings.OpenToOptionsFrame(PPA.optionsPanel.name)
-        end
-    end
-    end
+  -- Add the panel to the Interface Options
+  PPA:ConfigPanel(PPA.optionsPanel)
 end
 
 -- bindings / localization

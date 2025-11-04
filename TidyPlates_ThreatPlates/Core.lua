@@ -6,7 +6,7 @@ local t = Addon.ThreatPlates
 ---------------------------------------------------------------------------------------------------
 
 -- Lua APIs
-local tonumber, pairs = tonumber, pairs
+local tonumber, tostring, pairs = tonumber, tostring, pairs
 
 -- WoW APIs
 local SetNamePlateFriendlyClickThrough = C_NamePlate.SetNamePlateFriendlyClickThrough
@@ -16,6 +16,8 @@ local GetCVar, IsAddOnLoaded = GetCVar, C_AddOns.IsAddOnLoaded
 local C_NamePlate, Lerp =  C_NamePlate, Lerp
 local C_Timer_After = C_Timer.After
 local NamePlateDriverFrame = NamePlateDriverFrame
+local GetSpecialization = C_SpecializationInfo and C_SpecializationInfo.GetSpecialization or _G.GetSpecialization
+local GetSpecializationInfo = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or _G.GetSpecializationInfo
 
 -- ThreatPlates APIs
 local TidyPlatesThreat = TidyPlatesThreat
@@ -144,15 +146,6 @@ end
 -- Global configs and funtions
 ---------------------------------------------------------------------------------------------------
 
-function Addon:SpecName()
-  local _,name,_,_,_,role = GetSpecializationInfo(GetSpecialization(false,false,1),nil,false)
-  if name then
-    return name
-  else
-    return L["Undetermined"]
-  end
-end
-
 local tankRole = L["|cff00ff00tanking|r"]
 local dpsRole = L["|cffff0000dpsing / healing|r"]
 
@@ -170,6 +163,7 @@ local EVENTS = {
   --"PLAYER_TALENT_UPDATE"
 
   "PLAYER_ENTERING_WORLD",
+  "PLAYER_MAP_CHANGED",
   --"PLAYER_LOGIN",
   --"PLAYER_LOGOUT",
   "PLAYER_REGEN_ENABLED",
@@ -216,13 +210,13 @@ local EVENTS = {
 
 local function EnableEvents()
   for i = 1, #EVENTS do
-    TidyPlatesThreat:RegisterEvent(EVENTS[i])
+    Addon:RegisterEvent(TidyPlatesThreat, EVENTS[i])
   end
 end
 
 local function DisableEvents()
   for i = 1, #EVENTS do
-    TidyPlatesThreat:UnregisterEvent(EVENTS[i])
+    Addon:UnregisterEvent(TidyPlatesThreat, EVENTS[i])
   end
 end
 
@@ -272,6 +266,7 @@ function Addon:ReloadTheme()
   Addon:SetThemes()
   Addon:UpdateConfigurationStatusText()
   Addon:InitializeCustomNameplates()
+  Addon:InitializeIconTextures()
   Addon.Widgets:InitializeAllWidgets()
 
   -- Update existing nameplates as certain settings may have changed that are not covered by ForceUpdate()
@@ -307,7 +302,7 @@ function Addon:CheckForFirstStartUp()
     Addon.db.char.welcome = true
 
     -- GetNumSpecializations: Mists - Patch 5.0.4 (2012-08-28): Replaced GetNumTalentTabs.
-    if Addon.IS_MAINLINE then
+    if Addon.ExpansionIsAtLeastMists then
       -- initialize roles for all available specs (level > 10) or set to default (dps/healing)
       for index=1, GetNumSpecializations() do
         local id, spec_name, description, icon, background, role = GetSpecializationInfo(index)
@@ -514,17 +509,7 @@ end
 -- Fired when the player enters the world, reloads the UI, enters/leaves an instance or battleground, or respawns at a graveyard.
 -- Also fires any other time the player sees a loading screen
 function TidyPlatesThreat:PLAYER_ENTERING_WORLD()
-  local db = Addon.db.profile.questWidget
-  -- showQuestTrackingTooltips: not sure when introduced
-  if Addon.IS_MAINLINE then
-    if db.ON or db.ShowInHeadlineView then
-      CVars:Set("showQuestTrackingTooltips", 1)
-    else
-      CVars:RestoreFromProfile("showQuestTrackingTooltips")
-    end
-  end
-
-  db = Addon.db.profile.Automation
+  local db = Addon.db.profile.Automation
   local isInstance, instance_type = IsInInstance()
 
   --Addon.IsInInstance = isInstance
@@ -571,6 +556,48 @@ function TidyPlatesThreat:PLAYER_ENTERING_WORLD()
   -- be bugged
   Addon:SetBaseNamePlateSize()
   Addon.Font:SetNamesFonts()
+end
+
+-- Instances without PLAYER_ENTERING_WORLD event on enter (or leave), hence "walk-in".
+-- Currently only delves; possibly there are more.
+-- To avoid redundant calls, make sure to only add instance IDs here that do not trigger the PLAYER_ENTERING_WORLD event.
+local WalkInInstances = {
+  -- Delves
+  -- TWW Vanilla
+  ["2664"] = true, -- Fungal Folly
+  ["2679"] = true, -- Mycomancer Cavern
+  ["2680"] = true, -- Earthcrawl Mines
+  ["2681"] = true, -- Kriegval's Rest
+  ["2683"] = true, -- The Waterworks
+  ["2684"] = true, -- The Dread Pit
+  ["2685"] = true, -- Skittering Breach
+  ["2686"] = true, -- Nightfall Sanctum
+  ["2687"] = true, -- The Sinkhole
+  ["2688"] = true, -- The Spiral Weave
+  ["2689"] = true, -- Tak-Rethan Abyss
+  ["2690"] = true, -- The Underkeep
+  ["2767"] = true, -- The Sinkhole
+  ["2768"] = true, -- Tak-Rethan Abyss
+  ["2836"] = true, -- Earthcrawl Mines
+  ["2682"] = true, -- Zekvir's Lair; boss delve
+  -- TWW Undermine
+  ["2815"] = true, -- Excavation Site 9
+  ["2826"] = true, -- Sidestreet Sluice
+  ["2831"] = true, -- Demolition Dome; boss delve
+  -- TWW Karesh
+  ["2803"] = true, -- Archival Assault
+  ["2951"] = true, -- Voidrazor Sanctuary; boss delve
+}
+
+function TidyPlatesThreat:PLAYER_MAP_CHANGED(_, previousID, currentID)
+  if WalkInInstances[tostring(currentID)] or WalkInInstances[tostring(previousID)] then
+    -- The event fires very early, too early for GetInstanceInfo to retrieve the new ID.
+    -- A delay of `0` (aka next frame) seems to be enough in *many* cases, but sometimes not;
+    -- no idea what this depends on (server lag?); so using a delay like 1 or 3s is probably better.
+    -- A too long delay might cause trouble if the player starts combat immediately after entering/leaving the instance.
+    -- Note: Instead of delaying, we could also pass the ID as argument, but this would require various changes down the line.
+    C_Timer.After(3, TidyPlatesThreat.PLAYER_ENTERING_WORLD)
+  end
 end
 
 --function TidyPlatesThreat:PLAYER_LEAVING_WORLD()

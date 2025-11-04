@@ -1,7 +1,7 @@
-## Interface: 30404
+## Interface: 110107
 ## IconTexture: Interface\Buttons\UI-LinkProfession-Up
-## Title: ChatLinkIcons v3.4
-## Version: 3.4
+## Title: ChatLinkIcons v3.7.2
+## Version: 3.7.2
 ## Author: SDPhantom
 
 ## OptionalDeps: Pawn, WIM

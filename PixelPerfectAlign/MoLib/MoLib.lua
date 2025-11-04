@@ -232,7 +232,11 @@ function ML:PrintInfo(...)
 end
 
 ML.initNotDone = 1
-ML.manifestVersion = GetAddOnMetadata(addon, "Version")
+if C_AddOns ~= nil then
+  ML.manifestVersion = C_AddOns.GetAddOnMetadata(addon, "Version")
+else
+  ML.manifestVersion = GetAddOnMetadata(addon, "Version")
+end
 local globe = "MooreaTvLibrary"
 
 -- Returns 1 if already done; must be called with : (as method, to access state)

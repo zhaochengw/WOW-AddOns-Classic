@@ -1,9 +1,11 @@
-## Interface: 30404
+## Interface: 110205
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
-## Version: 5.12.9
+## Version: 5.20.6
 ## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Templates for WeakAuras
+## Notes-esES: Plantillas para WeakAuras
+## Notes-esMX: Plantillas para WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras
 ## DefaultState: Enabled

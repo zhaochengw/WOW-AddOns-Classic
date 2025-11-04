@@ -16,10 +16,12 @@ local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 -- RareScanner service libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSTooltip = private.ImportLib("RareScannerTooltip")
+local RSProvider = private.ImportLib("RareScannerProvider")
 
 -- RareScanner services
 local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
 local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 
 -- RareScanner general libraries
 local RSUtils = private.ImportLib("RareScannerUtils")
@@ -41,10 +43,6 @@ function RSEntityPinMixin:OnAcquired(POI, dataProvider)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self.IconTexture:SetAtlas(POI.iconAtlas)
 	self:SetPosition(RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y));
-	
-	if (self.SetPassThroughButtons) then
-		self:SetPassThroughButtons("MiddleButton");
-	end
 end
 
 function RSEntityPinMixin:OnMouseEnter()
@@ -58,8 +56,8 @@ function RSEntityPinMixin:OnMouseLeave()
 end
 
 function RSEntityPinMixin:OnMouseDown(button)
-	if (button == "LeftButton") then
-		--Toggle state
+	if (button == "LeftButton") then		
+		--Filter/unfilter
 		if (IsShiftKeyDown() and IsAltKeyDown()) then
 			if (self.POI.isNpc) then
 				if (RSConfigDB.GetDefaultNpcFilter() == RSConstants.ENTITY_FILTER_ALERTS) then
@@ -75,11 +73,18 @@ function RSEntityPinMixin:OnMouseDown(button)
 					RSConfigDB.SetContainerFiltered(self.POI.entityID)
 				end
 				self:Hide();
+			elseif (self.POI.isEvent) then
+				if (RSConfigDB.GetDefaultEventFilter() == RSConstants.ENTITY_FILTER_ALERTS) then
+					RSConfigDB.SetEventFiltered(self.POI.entityID, RSConstants.ENTITY_FILTER_ALL)
+				else
+					RSConfigDB.SetEventFiltered(self.POI.entityID)
+				end
+				self:Hide();
 			end
-			self:GetMap():RefreshAllDataProviders();
+			RSProvider.RefreshAllDataProviders()
 			RSMinimap.RefreshEntityState(self.POI.entityID)
 		-- Toggle overlay
-		elseif (not IsShiftKeyDown() and not IsAltKeyDown()) then
+		elseif (not IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown()) then
 			-- If overlay showing then hide it
 			local overlayInfo = RSGeneralDB.GetOverlayActive(self.POI.entityID)
 			if (overlayInfo) then
@@ -101,7 +106,7 @@ function RSEntityPinMixin:OnMouseDown(button)
 				RSTomtom.AddWorldMapTomtomWaypoint(self.POI.mapID, self.POI.x, self.POI.y, self.POI.name)
 			end
 		-- Toggle guide
-		else
+		elseif (not IsShiftKeyDown() and not IsAltKeyDown() and not IsControlKeyDown()) then
 			-- If guide showing then hide it
 			local guideEntityID = RSGeneralDB.GetGuideActive()
 			if (guideEntityID) then
@@ -131,6 +136,8 @@ function RSEntityPinMixin:ShowOverlay()
 		overlay = RSNpcDB.GetInternalNpcOverlay(self.POI.entityID, self.POI.mapID)
 	elseif (self.POI.isContainer) then
 		overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
+	elseif (self.POI.isEvent) then
+		overlay = RSEventDB.GetInternalEventOverlay(self.POI.entityID, self.POI.mapID)
 	end
 
 	if (overlay) then

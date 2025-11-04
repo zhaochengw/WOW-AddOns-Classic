@@ -2,14 +2,11 @@
 
 if not AL then return end
 
--- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic/localization
+-- These localization strings are translated on Curseforge: https://www.curseforge.com/wow/addons/atlaslootclassic-mists/localization
 -- Collections
 AL["'%s %s' Vendor"] = "Comerciante de '%s %s'"
 AL["%s Sets"] = "%s Conjuntos"
 AL["'%s' Vendor"] = "'%s' Comerciante"
-AL["Abyssal Dukes"] = "Duques abissais"
-AL["Abyssal Lords"] = "Lordes abissais"
-AL["Abyssal Templars"] = "Templários abissais"
 AL["Ahune"] = "Ahune"
 AL["Avalanchion"] = "Avalanchion"
 AL["Azure Templar"] = "Templário Lazúli"
@@ -41,7 +38,6 @@ AL["Harvest Festival"] = "Festival da Colheita"
 AL["High Marshal Whirlaxis"] = "Grão-marechal Viráxis"
 AL["Hoary Templar"] = "Templário Gris"
 AL["Idols"] = "Ídolos"
-AL["Legendarys"] = "Lendários"
 AL["Librams"] = "Livretos"
 AL["Lord Skwol"] = "Lorde Skwol"
 AL["Love is in the Air"] = "O Amor Está no Ar"

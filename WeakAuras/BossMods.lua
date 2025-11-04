@@ -7,6 +7,29 @@ local Private = select(2, ...)
 local timer = WeakAuras.timer;
 local L = WeakAuras.L
 
+
+local function TestForMultiSelect(trigger, name, checkValue)
+  if(trigger["use_"..name] == false) then -- multi selection
+    if trigger[name] and trigger[name].multi then
+      if trigger[name].multi[checkValue] then
+        return "true"
+      else
+        return "nil"
+      end
+    end
+    return "false"
+  elseif(trigger["use_"..name]) then -- single selection
+    local value = trigger[name] and trigger[name].single
+    if not value then
+      return "false"
+    end
+    return (value == checkValue) and "true" or "false"
+  else
+    return "nil"
+  end
+end
+
+
 Private.ExecEnv.BossMods = {}
 
 -- DBM
@@ -35,6 +58,7 @@ Private.ExecEnv.BossMods.DBM = {
     state.dbmType = bar.dbmType
     state.dbmColor = bar.dbmColor
     state.extend = extendTimer
+    state.isBarEnabled = bar.isBarEnabled
     if extendTimer ~= 0 then
       state.autoHide = true
     end
@@ -42,7 +66,7 @@ Private.ExecEnv.BossMods.DBM = {
     state.remaining = bar.remaining
   end,
 
-  TimerMatches = function(self, timerId, message, operator, spellId, counter, triggerId, dbmType, noCastBar)
+  TimerMatches = function(self, timerId, message, operator, spellId, counter, triggerId, dbmType, noCastBar, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
     if not self.bars[timerId] then
       return false
     end
@@ -52,6 +76,9 @@ Private.ExecEnv.BossMods.DBM = {
       return false
     end
     if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
+    end
+    if isBarEnabled ~= nil and isBarEnabled ~= v.isBarEnabled then
       return false
     end
     if message and message ~= "" and operator then
@@ -83,11 +110,23 @@ Private.ExecEnv.BossMods.DBM = {
     if dbmType and dbmType ~= v.dbmType then
       return false
     end
+
+    if isPullTimer or isBreakTimer or isTimer then
+      if (isPullTimer and v.timerType == "pull")
+      or (isBreakTimer and v.timerType == "break")
+      or (isTimer and (v.timerType ~= "break" and v.timerType ~= "pull"))
+      then
+        -- pass if one of the types match
+      else
+        return false
+      end
+    end
+
     return true
   end,
 
-  TimerMatchesGeneric = function(self, timerId, message, operator, spellId, counter)
-    return self:TimerMatches(timerId, message, operator, spellId, counter, nil, nil, true)
+  TimerMatchesGeneric = function(self, timerId, message, operator, spellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
+    return self:TimerMatches(timerId, message, operator, spellId, counter, nil, nil, true, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
   end,
 
   GetStage = function()
@@ -105,10 +144,10 @@ Private.ExecEnv.BossMods.DBM = {
     return self.bars[timerId]
   end,
 
-  GetTimer = function(self, message, operator, spellId, extendTimer, count, triggerId, dbmType, noCastBar)
+  GetTimer = function(self, message, operator, spellId, extendTimer, count, triggerId, dbmType, noCastBar, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
     local bestMatch
     for timerId, bar in pairs(self.bars) do
-      if self:TimerMatches(timerId, message, operator, spellId, count, triggerId, dbmType, noCastBar)
+      if self:TimerMatches(timerId, message, operator, spellId, count, triggerId, dbmType, noCastBar, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -118,8 +157,8 @@ Private.ExecEnv.BossMods.DBM = {
     return bestMatch
   end,
 
-  GetTimerGeneric = function(self, message, operator, spellId, extendTimer, count)
-    return self:GetTimer(message, operator, spellId, extendTimer, count, nil, nil, true)
+  GetTimerGeneric = function(self, message, operator, spellId, extendTimer, count, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
+    return self:GetTimer(message, operator, spellId, extendTimer, count, nil, nil, true, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
   end,
 
   RecheckTimers = function(self)
@@ -139,9 +178,9 @@ Private.ExecEnv.BossMods.DBM = {
           end
           if not bar.expired then
             bar.expired = true
-            WeakAuras.ScanEvents("DBM_TimerStop", timerId)
+            Private.ScanEvents("DBM_TimerStop", timerId)
             if self.isGeneric then
-              WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+              Private.ScanEvents("BossMod_TimerStop", timerId)
             end
           end
         elseif self.nextExpire == nil then
@@ -158,14 +197,14 @@ Private.ExecEnv.BossMods.DBM = {
 
   EventCallback = function(self, event, ...)
     if event == "DBM_Announce" then
-      local message, icon, _, spellId, _, count = ...
-      WeakAuras.ScanEvents("DBM_Announce", spellId, message, icon)
+      local message, icon, _, spellId, _, _, count = ...
+      Private.ScanEvents("DBM_Announce", spellId, message, icon)
       if self.isGeneric then
         count = count and tostring(count) or "0"
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, message, icon, count)
+        Private.ScanEvents("BossMod_Announce", spellId, message, icon, count)
       end
-    elseif event == "DBM_TimerStart" then
-      local timerId, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount = ...
+    elseif event == "DBM_TimerBegin" then
+      local timerId, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount, _, _, _, _, isBarEnabled = ...
       local now = GetTime()
       local expirationTime = now + duration
       self.bars[timerId] = self.bars[timerId] or {}
@@ -175,10 +214,16 @@ Private.ExecEnv.BossMods.DBM = {
       bar.duration = duration
       bar.icon = icon
       bar.timerType = timerType
+      if timerType == "break" then
+        spellId = -1
+      elseif timerType == "pull" then
+        spellId = -2
+      end
       bar.spellId = tostring(spellId)
       bar.count = timerCount and tostring(timerCount) or "0"
       bar.dbmType = dbmType
       bar.expired = nil
+      bar.isBarEnabled = isBarEnabled
 
       local r, g, b = 0, 0, 0
       if DBT.GetColorForType then
@@ -211,9 +256,9 @@ Private.ExecEnv.BossMods.DBM = {
       end
       bar.dbmColor = {r, g, b}
 
-      WeakAuras.ScanEvents("DBM_TimerStart", timerId)
+      Private.ScanEvents("DBM_TimerStart", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerStart", timerId)
+        Private.ScanEvents("BossMod_TimerStart", timerId)
       end
       if self.nextExpire == nil then
         self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, expirationTime - now, self)
@@ -231,9 +276,9 @@ Private.ExecEnv.BossMods.DBM = {
           self.bars[timerId] = nil
         end
         bar.expired = true
-        WeakAuras.ScanEvents("DBM_TimerStop", timerId)
+        Private.ScanEvents("DBM_TimerStop", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+          Private.ScanEvents("BossMod_TimerStop", timerId)
         end
       end
     elseif event == "DBM_TimerPause" then
@@ -242,9 +287,9 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
-        WeakAuras.ScanEvents("DBM_TimerPause", timerId)
+        Private.ScanEvents("DBM_TimerPause", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerPause", timerId)
+          Private.ScanEvents("BossMod_TimerPause", timerId)
         end
         if self.recheckTimer then
           timer:CancelTimer(self.recheckTimer)
@@ -258,9 +303,9 @@ Private.ExecEnv.BossMods.DBM = {
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
-        WeakAuras.ScanEvents("DBM_TimerResume", timerId)
+        Private.ScanEvents("DBM_TimerResume", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerResume", timerId)
+          Private.ScanEvents("BossMod_TimerResume", timerId)
         end
         if self.nextExpire == nil then
           self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, bar.expirationTime - GetTime(), self)
@@ -288,9 +333,9 @@ Private.ExecEnv.BossMods.DBM = {
           self.nextExpire = expirationTime
         end
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdate", timerId)
+      Private.ScanEvents("DBM_TimerUpdate", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerUpdate", timerId)
+        Private.ScanEvents("BossMod_TimerUpdate", timerId)
       end
     elseif event == "DBM_TimerUpdateIcon" then
       local timerId, icon = ...
@@ -298,14 +343,14 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.icon = icon
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdateIcon", timerId)
+      Private.ScanEvents("DBM_TimerUpdateIcon", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerUpdateIcon", timerId)
+        Private.ScanEvents("BossMod_TimerUpdateIcon", timerId)
       end
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
-      WeakAuras.ScanEvents("DBM_SetStage")
+      Private.ScanEvents("DBM_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     end
   end,
@@ -321,7 +366,7 @@ Private.ExecEnv.BossMods.DBM = {
   end,
 
   RegisterTimer = function(self)
-    self:RegisterCallback("DBM_TimerStart")
+    self:RegisterCallback("DBM_TimerBegin")
     self:RegisterCallback("DBM_TimerStop")
     self:RegisterCallback("DBM_TimerPause")
     self:RegisterCallback("DBM_TimerResume")
@@ -343,9 +388,9 @@ Private.ExecEnv.BossMods.DBM = {
 
   DoScan = function(self, fireTime)
     self.scheduled_scans[fireTime] = nil
-    WeakAuras.ScanEvents("DBM_TimerUpdate")
+    Private.ScanEvents("DBM_TimerUpdate")
     if self.isGeneric then
-      WeakAuras.ScanEvents("BossMod_TimerUpdate")
+      Private.ScanEvents("BossMod_TimerUpdate")
     end
   end,
 
@@ -356,329 +401,353 @@ Private.ExecEnv.BossMods.DBM = {
   end
 }
 
-Private.event_prototypes["DBM Stage"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "DBM_SetStage"
-  },
-  force_events = "DBM_SetStage",
-  name = L["DBM Stage"],
-  init = function(trigger)
-    Private.ExecEnv.BossMods.DBM:RegisterStage()
-    return ""
-  end,
-  args = {
-    {
-      name = "stage",
-      init = "Private.ExecEnv.BossMods.DBM:GetStage()",
-      display = L["Journal Stage"],
-      desc = L["Matches stage number of encounter journal.\nIntermissions are .5\nE.g. 1;2;1;2;2.5;3"],
-      type = "number",
-      conditionType = "number",
-      store = true,
+if not WeakAuras.IsMistsOrRetail() then
+  Private.event_prototypes["DBM Stage"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "DBM_SetStage"
     },
-    {
-      name = "stageTotal",
-      init = "select(2, Private.ExecEnv.BossMods.DBM:GetStage())",
-      display = L["Stage Counter"],
-      desc = L["Increases by one per stage or intermission."],
-      type = "number",
-      conditionType = "number",
-      store = true,
+    force_events = "DBM_SetStage",
+    name = L["DBM Stage"],
+    init = function(trigger)
+      Private.ExecEnv.BossMods.DBM:RegisterStage()
+      return ""
+    end,
+    args = {
+      {
+        name = "stage",
+        init = "Private.ExecEnv.BossMods.DBM:GetStage()",
+        display = L["Journal Stage"],
+        desc = L["Matches stage number of encounter journal.\nIntermissions are .5\nE.g. 1;2;1;2;2.5;3"],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      },
+      {
+        name = "stageTotal",
+        init = "select(2, Private.ExecEnv.BossMods.DBM:GetStage())",
+        display = L["Stage Counter"],
+        desc = L["Increases by one per stage or intermission."],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      },
     },
-  },
-  automaticrequired = true,
-  statesParameter = "one",
-  progressType = "none"
-}
-Private.category_event_prototype.addons["DBM Stage"] = L["DBM Stage"]
+    automaticrequired = true,
+    statesParameter = "one",
+    progressType = "none"
+  }
+  Private.category_event_prototype.addons["DBM Stage"] = L["DBM Stage"]
 
-Private.event_prototypes["DBM Announce"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "DBM_Announce"
-  },
-  name = L["DBM Announce"],
-  init = function(trigger)
-    Private.ExecEnv.BossMods.DBM:RegisterMessage();
-    local ret = "local use_cloneId = %s;"
-    return ret:format(trigger.use_cloneId and "true" or "false");
-  end,
-  statesParameter = "all",
-  args = {
-    {
-      name = "spellId",
-      init = "arg",
-      display = L["Spell Id"],
-      type = "spell",
-      noValidation = true,
-      showExactOption = false,
-      negativeIsEJ = true
+  Private.event_prototypes["DBM Announce"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "DBM_Announce"
     },
-    {
-      name = "message",
-      init = "arg",
-      display = L["Message"],
-      type = "longstring",
-      store = true,
-      conditionType = "string"
+    name = L["DBM Announce"],
+    init = function(trigger)
+      Private.ExecEnv.BossMods.DBM:RegisterMessage();
+      local ret = "local use_cloneId = %s;"
+      return ret:format(trigger.use_cloneId and "true" or "false");
+    end,
+    statesParameter = "all",
+    args = {
+      {
+        name = "spellId",
+        init = "arg",
+        display = L["Spell Id"],
+        type = "spell",
+        noValidation = true,
+        showExactOption = false,
+        negativeIsEJ = true
+      },
+      {
+        name = "message",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring",
+        store = true,
+        conditionType = "string"
+      },
+      {
+        name = "name",
+        init = "message",
+        hidden = true,
+        test = "true",
+        store = true,
+      },
+      {
+        name = "icon",
+        init = "arg",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
     },
-    {
-      name = "name",
-      init = "message",
-      hidden = true,
-      test = "true",
-      store = true,
-    },
-    {
-      name = "icon",
-      init = "arg",
-      store = true,
-      hidden = true,
-      test = "true"
-    },
-    {
-      name = "cloneId",
-      display = L["Clone per Event"],
-      type = "toggle",
-      test = "true",
-      init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
-    },
-  },
-  timedrequired = true,
-  progressType = "timed"
-}
-Private.category_event_prototype.addons["DBM Announce"] = L["DBM Announce"]
+    timedrequired = true,
+    progressType = "timed"
+  }
+  Private.category_event_prototype.addons["DBM Announce"] = L["DBM Announce"]
 
-Private.event_prototypes["DBM Timer"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause",
-    "DBM_TimerUpdateIcon"
-  },
-  force_events = "DBM_TimerForce",
-  name = L["DBM Timer"],
-  progressType = "timed",
-  triggerFunction = function(trigger)
-    Private.ExecEnv.BossMods.DBM:RegisterTimer()
-    local ret = [=[
-      local triggerCounter = %q
-      local counter
-      if triggerCounter and triggerCounter ~= "" then
-        counter = Private.ExecEnv.CreateTriggerCounter(triggerCounter)
-      else
-        counter = Private.ExecEnv.CreateTriggerCounter()
-      end
-      return function (states, event, timerId)
-        local triggerId = %q
-        local triggerSpellId = %q
-        local triggerText = %q
-        local triggerTextOperator = %q
-        local useClone = %s
-        local extendTimer = %s
-        local triggerUseRemaining = %s
-        local triggerRemaining = %s
-        local triggerDbmType = %s
-        local cloneId = useClone and timerId or ""
-        local state = states[cloneId]
-        local counter = counter
+  Private.event_prototypes["DBM Timer"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause",
+      "DBM_TimerUpdateIcon"
+    },
+    force_events = "DBM_TimerForce",
+    name = L["DBM Timer"],
+    progressType = "timed",
+    triggerFunction = function(trigger)
+      Private.ExecEnv.BossMods.DBM:RegisterTimer()
+      local ret = [=[
+        local triggerCounter = %q
+        local counter
+        if triggerCounter and triggerCounter ~= "" then
+          counter = Private.ExecEnv.CreateTriggerCounter(triggerCounter)
+        else
+          counter = Private.ExecEnv.CreateTriggerCounter()
+        end
+        return function (states, event, timerId)
+          local triggerId = %q
+          local triggerSpellId = %q
+          local triggerText = %q
+          local triggerTextOperator = %q
+          local useClone = %s
+          local extendTimer = %s
+          local triggerUseRemaining = %s
+          local triggerRemaining = %s
+          local triggerDbmType = %s
+          local isBarEnabled = %s
+          local cloneId = useClone and timerId or ""
+          local state = states[cloneId]
+          local counter = counter
 
-        function copyOrSchedule(bar, cloneId)
-          local remainingTime
-          local changed
-          if bar.paused then
-            remainingTime = bar.remaining + extendTimer
-          else
-            remainingTime = bar.expirationTime - GetTime() + extendTimer
-          end
-          if triggerUseRemaining then
-            if remainingTime > 0 and remainingTime %s triggerRemaining then
-              Private.ExecEnv.BossMods.DBM:CopyBarToState(bar, states, cloneId, extendTimer)
-              changed = true
+          function copyOrSchedule(bar, cloneId)
+            local remainingTime
+            local changed
+            if bar.paused then
+              remainingTime = bar.remaining + extendTimer
             else
-              local state = states[cloneId]
-              if state and state.show then
-                state.show = false
-                state.changed = true
+              remainingTime = bar.expirationTime - GetTime() + extendTimer
+            end
+            if triggerUseRemaining then
+              if remainingTime > 0 and remainingTime %s triggerRemaining then
+                Private.ExecEnv.BossMods.DBM:CopyBarToState(bar, states, cloneId, extendTimer)
+                changed = true
+              else
+                local state = states[cloneId]
+                if state and state.show then
+                  state.show = false
+                  state.changed = true
+                  changed = true
+                end
+              end
+              if not bar.paused then
+                if extendTimer > 0 then
+                  bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
+                end
+                if remainingTime >= triggerRemaining  then
+                  Private.ExecEnv.BossMods.DBM:ScheduleCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                end
+              end
+            else
+              if not bar.paused and extendTimer > 0 then
+                bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
+              end
+              if remainingTime > 0 then
+                Private.ExecEnv.BossMods.DBM:CopyBarToState(bar, states, cloneId, extendTimer)
                 changed = true
               end
             end
-            if not bar.paused then
-              if extendTimer > 0 then
-                bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
-              end
-              if remainingTime >= triggerRemaining  then
-                Private.ExecEnv.BossMods.DBM:ScheduleCheck(bar.expirationTime - triggerRemaining + extendTimer)
-              end
-            end
-          else
-            if not bar.paused and extendTimer > 0 then
-              bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
-            end
-            if remainingTime > 0 then
-              Private.ExecEnv.BossMods.DBM:CopyBarToState(bar, states, cloneId, extendTimer)
-              changed = true
-            end
+            return changed
           end
-          return changed
-        end
 
-        if useClone then
-          if event == "DBM_TimerStart"
-          or event == "DBM_TimerPause"
-          or event == "DBM_TimerResume"
-          then
-            if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
-              local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(timerId)
-              if bar then
-                return copyOrSchedule(bar, cloneId)
-              end
-            end
-          elseif event == "DBM_TimerStop" and state then
-            local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
-            if state.extend == 0 or bar_remainingTime <= 0 then
-              state.show = false
-              state.changed = true
-              return true
-            end
-          elseif event == "DBM_TimerUpdate" or event == "DBM_TimerUpdateIcon" then
-            local changed
-            for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
-                changed = copyOrSchedule(bar, timerId) or changed
-              else
-                local state = states[timerId]
-                if state then
-                  local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
-                  if state.extend == 0 or bar_remainingTime <= 0 then
-                    state.show = false
-                    state.changed = true
-                    changed = true
-                  end
+          if useClone then
+            if event == "DBM_TimerStart"
+            or event == "DBM_TimerPause"
+            or event == "DBM_TimerResume"
+            then
+              if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType, isBarEnabled) then
+                local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(timerId)
+                if bar then
+                  return copyOrSchedule(bar, cloneId)
                 end
               end
-            end
-            return changed
-          elseif event == "DBM_TimerForce" then
-            local changed
-            for _, state in pairs(states) do
-              state.show = false
-              state.changed = true
-              changed = true
-            end
-            for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
-                changed = copyOrSchedule(bar, timerId) or changed
-              end
-            end
-            return changed
-          end
-        else
-          if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
-            if extendTimer ~= 0 then
-              if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
-                local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(timerId)
-                Private.ExecEnv.BossMods.DBM:ScheduleCheck(bar.expirationTime + extendTimer)
-              end
-            end
-          end
-          local bar = Private.ExecEnv.BossMods.DBM:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerId, triggerDbmType)
-          if bar then
-            if extendTimer == 0
-              or not (state and state.show)
-              or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
-            then
-              return copyOrSchedule(bar, cloneId)
-            end
-          else
-            if state and state.show then
+            elseif event == "DBM_TimerStop" and state then
               local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
               if state.extend == 0 or bar_remainingTime <= 0 then
                 state.show = false
                 state.changed = true
                 return true
               end
+            elseif event == "DBM_TimerUpdate" or event == "DBM_TimerUpdateIcon" then
+              local changed
+              for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType, isBarEnabled) then
+                  changed = copyOrSchedule(bar, timerId) or changed
+                else
+                  local state = states[timerId]
+                  if state then
+                    local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
+                    if state.extend == 0 or bar_remainingTime <= 0 then
+                      state.show = false
+                      state.changed = true
+                      changed = true
+                    end
+                  end
+                end
+              end
+              return changed
+            elseif event == "DBM_TimerForce" then
+              local changed
+              for _, state in pairs(states) do
+                state.show = false
+                state.changed = true
+                changed = true
+              end
+              for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType, isBarEnabled) then
+                  changed = copyOrSchedule(bar, timerId) or changed
+                end
+              end
+              return changed
+            end
+          else
+            if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
+              if extendTimer ~= 0 then
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType, isBarEnabled) then
+                  local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(timerId)
+                  Private.ExecEnv.BossMods.DBM:ScheduleCheck(bar.expirationTime + extendTimer)
+                end
+              end
+            end
+            local bar = Private.ExecEnv.BossMods.DBM:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerId, triggerDbmType, isBarEnabled)
+            if bar then
+              if extendTimer == 0
+                or not (state and state.show)
+                or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
+              then
+                return copyOrSchedule(bar, cloneId)
+              end
+            else
+              if state and state.show then
+                local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
+                if state.extend == 0 or bar_remainingTime <= 0 then
+                  state.show = false
+                  state.changed = true
+                  return true
+                end
+              end
             end
           end
         end
-      end
-      ]=]
+        ]=]
 
-    return ret:format(
-      trigger.use_count and trigger.count or "",
-      trigger.use_id and trigger.id or "",
-      trigger.use_spellId and tostring(trigger.spellId) or "",
-      trigger.use_message and trigger.message or "",
-      trigger.use_message and trigger.message_operator or "",
-      trigger.use_cloneId and "true" or "false",
-      trigger.use_extend and tonumber(trigger.extend or 0) or 0,
-      trigger.use_remaining and "true" or "false",
-      trigger.remaining and tonumber(trigger.remaining or 0) or 0,
-      trigger.use_dbmType and trigger.dbmType or "nil",
-      trigger.remaining_operator or "<"
-    )
-  end,
-  statesParameter = "full",
-  args = {
-    {
-      name = "id",
-      display = L["Timer Id"],
-      type = "string",
+      return ret:format(
+        trigger.use_count and trigger.count or "",
+        trigger.use_id and trigger.id or "",
+        trigger.use_spellId and tostring(trigger.spellId) or "",
+        trigger.use_message and trigger.message or "",
+        trigger.use_message and trigger.message_operator or "",
+        trigger.use_cloneId and "true" or "false",
+        trigger.use_extend and tonumber(trigger.extend or 0) or 0,
+        trigger.use_remaining and "true" or "false",
+        trigger.remaining and tonumber(trigger.remaining or 0) or 0,
+        trigger.use_dbmType and trigger.dbmType or "nil",
+        trigger.use_isBarEnabled == nil and "nil" or trigger.use_isBarEnabled and "true" or "false",
+        trigger.remaining_operator or "<"
+      )
+    end,
+    statesParameter = "full",
+    args = {
+      {
+        name = "id",
+        display = L["Timer Id"],
+        type = "string",
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        store = true,
+        type = "spell",
+        conditionType = "string",
+        noValidation = true,
+        showExactOption = false,
+        negativeIsEJ = true
+      },
+      {
+        name = "message",
+        display = L["Message"],
+        type = "longstring",
+        store = true,
+        conditionType = "string"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+      },
+      {
+        name = "extend",
+        display = L["Offset Timer"],
+        type = "string",
+      },
+      {
+        name = "count",
+        display = L["Count"],
+        desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if DBM shows it on it's bar"],
+        type = "string",
+        store = true,
+        conditionType = "string",
+        operator_types = "none",
+        preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+        test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.CreateTriggerCounter(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          preamble:SetCount(tonumber(state.count) or 0)
+          return preamble:Match()
+        end,
+      },
+      {
+        name = "dbmType",
+        display = L["Type"],
+        type = "select",
+        values = "dbm_types",
+        conditionType = "select",
+        test = "true"
+      },
+      {
+        name = "isBarEnabled",
+        display = L["Bar enabled in DBM settings"],
+        desc = L["Test if bar is enabled in DBM settings"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle"
+      }
     },
-    {
-      name = "spellId",
-      display = L["Spell Id"],
-      store = true,
-      type = "spell",
-      conditionType = "string",
-      noValidation = true,
-      showExactOption = false,
-      negativeIsEJ = true
-    },
-    {
-      name = "message",
-      display = L["Message"],
-      type = "longstring",
-      store = true,
-      conditionType = "string"
-    },
-    {
-      name = "remaining",
-      display = L["Remaining Time"],
-      type = "number",
-    },
-    {
-      name = "extend",
-      display = L["Offset Timer"],
-      type = "string",
-    },
-    {
-      name = "count",
-      display = L["Count"],
-      desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if DBM shows it on it's bar"],
-      type = "string",
-      conditionType = "string",
-    },
-    {
-      name = "dbmType",
-      display = L["Type"],
-      type = "select",
-      values = "dbm_types",
-      conditionType = "select",
-      test = "true"
-    },
-    {
-      name = "cloneId",
-      display = L["Clone per Event"],
-      type = "toggle"
-    }
-  },
-  automaticrequired = true,
-}
-Private.category_event_prototype.addons["DBM Timer"] = L["DBM Timer"]
+    automaticrequired = true,
+  }
+  Private.category_event_prototype.addons["DBM Timer"] = L["DBM Timer"]
+end
 
 -- BigWigs
 Private.ExecEnv.BossMods.BigWigs = {
@@ -699,6 +768,7 @@ Private.ExecEnv.BossMods.BigWigs = {
     state.text = bar.text
     state.message = bar.text
     state.name = bar.text
+    state.timerType = bar.timerType
     state.duration = bar.duration + extendTimer
     state.expirationTime = bar.expirationTime + extendTimer
     state.bwBarColor = bar.bwBarColor
@@ -715,15 +785,19 @@ Private.ExecEnv.BossMods.BigWigs = {
     state.paused = bar.paused
     state.remaining = bar.remaining
     state.isCooldown = bar.isCooldown
+    state.isBarEnabled = bar.isBarEnabled
   end,
 
-  TimerMatches = function(self, timerId, message, operator, spellId, counter, cast, cooldown)
+  TimerMatches = function(self, timerId, message, operator, spellId, counter, cast, cooldown, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
     if not self.bars[timerId] then
       return false
     end
 
     local v = self.bars[timerId]
     if spellId and spellId ~= "" and spellId ~= v.spellId then
+      return false
+    end
+    if isBarEnabled ~= nil and isBarEnabled ~= v.isBarEnabled then
       return false
     end
     if message and message ~= "" and operator then
@@ -753,11 +827,21 @@ Private.ExecEnv.BossMods.BigWigs = {
     if cooldown ~= nil and v.isCooldown ~= cooldown then
       return false
     end
+    if isPullTimer or isBreakTimer or isTimer then
+      if (isPullTimer and v.timerType == "pull")
+      or (isBreakTimer and v.timerType == "break")
+      or (isTimer and (v.timerType ~= "break" and v.timerType ~= "pull"))
+      then
+        -- pass if one of the types match
+      else
+        return false
+      end
+    end
     return true
   end,
 
-  TimerMatchesGeneric = function(self, timerId, message, operator, spellId, counter)
-    return self:TimerMatches(timerId, message, operator, spellId, counter, false, nil)
+  TimerMatchesGeneric = function(self, timerId, message, operator, spellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
+    return self:TimerMatches(timerId, message, operator, spellId, counter, false, nil, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
   end,
 
   GetStage = function(self)
@@ -772,10 +856,10 @@ Private.ExecEnv.BossMods.BigWigs = {
     return self.bars[timerId]
   end,
 
-  GetTimer = function(self, text, operator, spellId, extendTimer, counter, cast, cooldown)
+  GetTimer = function(self, text, operator, spellId, extendTimer, counter, cast, cooldown, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
     local bestMatch
     for timerId, bar in pairs(self.bars) do
-      if self:TimerMatches(timerId, text, operator, spellId, counter, cast, cooldown)
+      if self:TimerMatches(timerId, text, operator, spellId, counter, cast, cooldown, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -785,8 +869,8 @@ Private.ExecEnv.BossMods.BigWigs = {
     return bestMatch
   end,
 
-  GetTimerGeneric = function(self, text, operator, spellId, extendTimer, counter)
-    return self:GetTimer(text, operator, spellId, extendTimer, counter, false, nil)
+  GetTimerGeneric = function(self, text, operator, spellId, extendTimer, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
+    return self:GetTimer(text, operator, spellId, extendTimer, counter, false, nil, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
   end,
 
   RecheckTimers = function(self)
@@ -806,9 +890,9 @@ Private.ExecEnv.BossMods.BigWigs = {
           end
           if not bar.expired then
             bar.expired = true
-            WeakAuras.ScanEvents("BigWigs_StopBar", timerId)
+            Private.ScanEvents("BigWigs_StopBar", timerId)
             if self.isGeneric then
-              WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+              Private.ScanEvents("BossMod_TimerStop", timerId)
             end
           end
         elseif self.nextExpire == nil then
@@ -826,14 +910,45 @@ Private.ExecEnv.BossMods.BigWigs = {
 
   EventCallback = function(self, event, ...)
     if event == "BigWigs_Message" then
-      WeakAuras.ScanEvents("BigWigs_Message", ...)
+      Private.ScanEvents("BigWigs_Message", ...)
       if self.isGeneric then
         local _, spellId, text, _, icon = ...
         local count = text and text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, text, icon, count)
+        Private.ScanEvents("BossMod_Announce", spellId, text, icon, count)
       end
-    elseif event == "BigWigs_StartBar" then
-      local addon, spellId, text, duration, icon, isCD = ...
+    elseif event == "BigWigs_Timer"
+    or event == "BigWigs_TargetTimer"
+    or event == "BigWigs_CastTimer"
+    or event == "BigWigs_StartBreak"
+    or event == "BigWigs_StartPull"
+    then
+      local addon, spellId, duration, _, text, count, icon, isCooldown, isBarEnabled, timerType
+      if event == "BigWigs_Timer" then
+        addon, spellId, duration, _, text, count, icon, isCooldown, isBarEnabled = ...
+        timerType = "timer"
+      elseif event == "BigWigs_TargetTimer" or event == "BigWigs_CastTimer" then
+        addon, spellId, duration, _, text, count, icon, _, isBarEnabled = ...
+        isCooldown = false
+        timerType = "cast"
+      elseif event == "BigWigs_StartBreak" then
+        addon, duration, _, _, _, text, icon = ...
+        text = text
+        spellId = -1
+        count = 0
+        icon = icon
+        isCooldown = false
+        isBarEnabled = true
+        timerType = "break"
+      elseif event == "BigWigs_StartPull" then
+        addon, duration, _, text, icon = ...
+        text = text
+        spellId = -2
+        count = 0
+        icon = 136116
+        isCooldown = false
+        isBarEnabled = true
+        timerType = "pull"
+      end
       local now = GetTime()
       local expirationTime = now + duration
 
@@ -846,18 +961,20 @@ Private.ExecEnv.BossMods.BigWigs = {
       bar.duration = duration
       bar.expirationTime = expirationTime
       bar.icon = icon
-      bar.isCooldown = isCD or false
+      bar.isCooldown = isCooldown or false
       bar.expired = nil
+      bar.timerType = timerType
       local BWColorModule = BigWigs:GetPlugin("Colors")
       bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
       bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
       bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
-      bar.count = text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
-      bar.cast = not(text:match("^[^<]") and true)
+      bar.count = count or 0
+      bar.isBarEnabled = isBarEnabled
+      bar.cast = event == "BigWigs_CastTimer"
 
-      WeakAuras.ScanEvents("BigWigs_StartBar", text)
+      Private.ScanEvents("BigWigs_StartBar", text)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerStart", text)
+        Private.ScanEvents("BossMod_TimerStart", text)
       end
       if self.nextExpire == nil then
         self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, expirationTime - now, self)
@@ -874,9 +991,9 @@ Private.ExecEnv.BossMods.BigWigs = {
         if bar.scheduledScanExpireAt == nil or bar.scheduledScanExpireAt <= GetTime() then
           self.bars[text] = nil
         end
-        WeakAuras.ScanEvents("BigWigs_StopBar", text)
+        Private.ScanEvents("BigWigs_StopBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerStop", text)
+          Private.ScanEvents("BossMod_TimerStop", text)
         end
       end
     elseif event == "BigWigs_PauseBar" then
@@ -885,9 +1002,9 @@ Private.ExecEnv.BossMods.BigWigs = {
       if bar and not bar.paused then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
-        WeakAuras.ScanEvents("BigWigs_PauseBar", text)
+        Private.ScanEvents("BigWigs_PauseBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerPause", text)
+          Private.ScanEvents("BossMod_TimerPause", text)
         end
         if self.recheckTimer then
           timer:CancelTimer(self.recheckTimer)
@@ -901,9 +1018,9 @@ Private.ExecEnv.BossMods.BigWigs = {
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
-        WeakAuras.ScanEvents("BigWigs_ResumeBar", text)
+        Private.ScanEvents("BigWigs_ResumeBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerResume", text)
+          Private.ScanEvents("BossMod_TimerResume", text)
         end
         if self.nextExpire == nil then
           self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, bar.expirationTime - GetTime(), self)
@@ -921,24 +1038,24 @@ Private.ExecEnv.BossMods.BigWigs = {
       for timerId, bar in pairs(self.bars) do
         if bar.addon == addon then
           self.bars[timerId] = nil
-          WeakAuras.ScanEvents("BigWigs_StopBar", timerId)
+          Private.ScanEvents("BigWigs_StopBar", timerId)
           if self.isGeneric then
-            WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+            Private.ScanEvents("BossMod_TimerStop", timerId)
           end
         end
       end
     elseif event == "BigWigs_SetStage" then
       local addon, stage = ...
       self.currentStage = stage
-      WeakAuras.ScanEvents("BigWigs_SetStage")
+      Private.ScanEvents("BigWigs_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     elseif event == "BigWigs_OnBossWipe" or event == "BigWigs_OnBossWin" then
       self.currentStage = 0
-      WeakAuras.ScanEvents("BigWigs_SetStage")
+      Private.ScanEvents("BigWigs_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     end
   end,
@@ -966,12 +1083,16 @@ Private.ExecEnv.BossMods.BigWigs = {
   end,
 
   RegisterTimer = function(self)
-    self:RegisterCallback("BigWigs_StartBar")
+    self:RegisterCallback("BigWigs_Timer")
+    self:RegisterCallback("BigWigs_TargetTimer")
+    self:RegisterCallback("BigWigs_StartBreak")
+    self:RegisterCallback("BigWigs_CastTimer")
     self:RegisterCallback("BigWigs_StopBar")
     self:RegisterCallback("BigWigs_StopBars")
     self:RegisterCallback("BigWigs_OnBossDisable")
     self:RegisterCallback("BigWigs_PauseBar")
     self:RegisterCallback("BigWigs_ResumeBar")
+    self:RegisterCallback("BigWigs_StartPull")
   end,
 
   RegisterMessage = function(self)
@@ -988,9 +1109,9 @@ Private.ExecEnv.BossMods.BigWigs = {
 
   DoScan = function(self, fireTime)
     self.scheduled_scans[fireTime] = nil
-    WeakAuras.ScanEvents("BigWigs_Timer_Update")
+    Private.ScanEvents("BigWigs_Timer_Update")
     if self.isGeneric then
-      WeakAuras.ScanEvents("BossMod_TimerUpdate")
+      Private.ScanEvents("BossMod_TimerUpdate")
     end
   end,
 
@@ -1001,323 +1122,346 @@ Private.ExecEnv.BossMods.BigWigs = {
   end
 }
 
-Private.event_prototypes["BigWigs Stage"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "BigWigs_SetStage"
-  },
-  name = L["BigWigs Stage"],
-  init = function(trigger)
-    Private.ExecEnv.BossMods.BigWigs:RegisterStage()
-    return ""
-  end,
-  args = {
-    {
-      name = "stage",
-      init = "Private.ExecEnv.BossMods.BigWigs:GetStage()",
-      display = L["Stage"],
-      type = "number",
-      conditionType = "number",
-      store = true,
-    }
-  },
-  automaticrequired = true,
-  statesParameter = "one",
-  progressType = "none"
-}
-Private.category_event_prototype.addons["BigWigs Stage"] = L["BigWigs Stage"]
+if not WeakAuras.IsMistsOrRetail() then
+  Private.event_prototypes["BigWigs Stage"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "BigWigs_SetStage"
+    },
+    name = L["BigWigs Stage"],
+    init = function(trigger)
+      Private.ExecEnv.BossMods.BigWigs:RegisterStage()
+      return ""
+    end,
+    args = {
+      {
+        name = "stage",
+        init = "Private.ExecEnv.BossMods.BigWigs:GetStage()",
+        display = L["Stage"],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      }
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+    progressType = "none"
+  }
+  Private.category_event_prototype.addons["BigWigs Stage"] = L["BigWigs Stage"]
 
-Private.event_prototypes["BigWigs Message"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "BigWigs_Message"
-  },
-  name = L["BigWigs Message"],
-  init = function(trigger)
-    Private.ExecEnv.BossMods.BigWigs:RegisterMessage();
-    local ret = "local use_cloneId = %s;"
-    return ret:format(trigger.use_cloneId and "true" or "false");
-  end,
-  statesParameter = "all",
-  args = {
-    {
-      name = "addon",
-      init = "arg",
-      display = L["BigWigs Addon"],
-      type = "string"
+  Private.event_prototypes["BigWigs Message"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "BigWigs_Message"
     },
-    {
-      name = "spellId",
-      init = "arg",
-      display = L["ID"],
-      desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
-      type = "spell",
-      conditionType = "string",
-      noValidation = true,
-      showExactOption = false,
-      negativeIsEJ = true
+    name = L["BigWigs Message"],
+    init = function(trigger)
+      Private.ExecEnv.BossMods.BigWigs:RegisterMessage();
+      local ret = "local use_cloneId = %s;"
+      return ret:format(trigger.use_cloneId and "true" or "false");
+    end,
+    statesParameter = "all",
+    args = {
+      {
+        name = "addon",
+        init = "arg",
+        display = L["BigWigs Addon"],
+        type = "string"
+      },
+      {
+        name = "spellId",
+        init = "arg",
+        display = L["ID"],
+        desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
+        type = "spell",
+        conditionType = "string",
+        noValidation = true,
+        showExactOption = false,
+        negativeIsEJ = true
+      },
+      {
+        name = "text",
+        init = "arg",
+        display = L["Message"],
+        type = "longstring",
+        store = true,
+        conditionType = "string"
+      },
+      {
+        name = "name",
+        init = "text",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {}, -- Importance, might be useful
+      {
+        name = "icon",
+        init = "arg",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
+      },
     },
-    {
-      name = "text",
-      init = "arg",
-      display = L["Message"],
-      type = "longstring",
-      store = true,
-      conditionType = "string"
-    },
-    {
-      name = "name",
-      init = "text",
-      hidden = true,
-      test = "true",
-      store = true
-    },
-    {}, -- Importance, might be useful
-    {
-      name = "icon",
-      init = "arg",
-      hidden = true,
-      test = "true",
-      store = true
-    },
-    {
-      name = "cloneId",
-      display = L["Clone per Event"],
-      type = "toggle",
-      test = "true",
-      init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
-    },
-  },
-  timedrequired = true,
-  progressType = "timed"
-}
-Private.category_event_prototype.addons["BigWigs Message"] = L["BigWigs Message"]
+    timedrequired = true,
+    progressType = "timed"
+  }
+  Private.category_event_prototype.addons["BigWigs Message"] = L["BigWigs Message"]
 
-Private.event_prototypes["BigWigs Timer"] = {
-  type = "addons",
-  events = {},
-  internal_events = {
-    "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update", "BigWigs_PauseBar", "BigWigs_ResumeBar"
-  },
-  force_events = "BigWigs_Timer_Force",
-  name = L["BigWigs Timer"],
-  progressType = "timed",
-  triggerFunction = function(trigger)
-    Private.ExecEnv.BossMods.BigWigs:RegisterTimer()
-    local ret = [=[
-      local triggerCounter = %q
-      local counter
-      if triggerCounter and triggerCounter ~= "" then
-        counter = Private.ExecEnv.CreateTriggerCounter(triggerCounter)
-      else
-        counter = Private.ExecEnv.CreateTriggerCounter()
-      end
-      return function(states, event, timerId)
-        local triggerSpellId = %q
-        local triggerText = %q
-        local triggerTextOperator = %q
-        local useClone = %s
-        local extendTimer = %s
-        local triggerUseRemaining = %s
-        local triggerRemaining = %s
-        local triggerCast = %s
-        local triggerIsCooldown = %s
-        local cloneId = useClone and timerId or ""
-        local state = states[cloneId]
-        local counter = counter
+  Private.event_prototypes["BigWigs Timer"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update", "BigWigs_PauseBar", "BigWigs_ResumeBar"
+    },
+    force_events = "BigWigs_Timer_Force",
+    name = L["BigWigs Timer"],
+    progressType = "timed",
+    triggerFunction = function(trigger)
+      Private.ExecEnv.BossMods.BigWigs:RegisterTimer()
+      local ret = [=[
+        local triggerCounter = %q
+        local counter
+        if triggerCounter and triggerCounter ~= "" then
+          counter = Private.ExecEnv.CreateTriggerCounter(triggerCounter)
+        else
+          counter = Private.ExecEnv.CreateTriggerCounter()
+        end
+        return function(states, event, timerId)
+          local triggerSpellId = %q
+          local triggerText = %q
+          local triggerTextOperator = %q
+          local useClone = %s
+          local extendTimer = %s
+          local triggerUseRemaining = %s
+          local triggerRemaining = %s
+          local triggerCast = %s
+          local triggerIsCooldown = %s
+          local isBarEnabled = %s
+          local cloneId = useClone and timerId or ""
+          local state = states[cloneId]
+          local counter = counter
 
-        function copyOrSchedule(bar, cloneId)
-          local remainingTime
-          local changed
-          if bar.paused then
-            remainingTime = bar.remaining + extendTimer
-          else
-            remainingTime = bar.expirationTime - GetTime() + extendTimer
-          end
-          if triggerUseRemaining then
-            if remainingTime > 0 and remainingTime %s triggerRemaining then
-              Private.ExecEnv.BossMods.BigWigs:CopyBarToState(bar, states, cloneId, extendTimer)
-              changed = true
+          function copyOrSchedule(bar, cloneId)
+            local remainingTime
+            local changed
+            if bar.paused then
+              remainingTime = bar.remaining + extendTimer
             else
-              local state = states[cloneId]
-              if state and state.show then
-                state.show = false
-                state.changed = true
+              remainingTime = bar.expirationTime - GetTime() + extendTimer
+            end
+            if triggerUseRemaining then
+              if remainingTime > 0 and remainingTime %s triggerRemaining then
+                Private.ExecEnv.BossMods.BigWigs:CopyBarToState(bar, states, cloneId, extendTimer)
+                changed = true
+              else
+                local state = states[cloneId]
+                if state and state.show then
+                  state.show = false
+                  state.changed = true
+                  changed = true
+                end
+              end
+              if not bar.paused then
+                if extendTimer > 0 then
+                  bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
+                end
+                if remainingTime >= triggerRemaining then
+                  Private.ExecEnv.BossMods.BigWigs:ScheduleCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                end
+              end
+            else
+              if not bar.paused and extendTimer > 0 then
+                bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
+              end
+              if remainingTime > 0 then
+                Private.ExecEnv.BossMods.BigWigs:CopyBarToState(bar, states, cloneId, extendTimer)
                 changed = true
               end
             end
-            if not bar.paused then
-              if extendTimer > 0 then
-                bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
-              end
-              if remainingTime >= triggerRemaining then
-                Private.ExecEnv.BossMods.BigWigs:ScheduleCheck(bar.expirationTime - triggerRemaining + extendTimer)
-              end
-            end
-          else
-            if not bar.paused and extendTimer > 0 then
-              bar.scheduledScanExpireAt = math.max(bar.scheduledScanExpireAt or 0, bar.expirationTime + extendTimer)
-            end
-            if remainingTime > 0 then
-              Private.ExecEnv.BossMods.BigWigs:CopyBarToState(bar, states, cloneId, extendTimer)
-              changed = true
-            end
+            return changed
           end
-          return changed
-        end
 
-        if useClone then
-          if event == "BigWigs_StartBar"
-          or event == "BigWigs_PauseBar"
-          or event == "BigWigs_ResumeBar"
-          then
-            if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
-              local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
-              if bar then
-                return copyOrSchedule(bar, cloneId)
-              end
-            end
-          elseif event == "BigWigs_StopBar" and state then
-            local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
-            if state.extend == 0 or bar_remainingTime <= 0 then
-              state.show = false
-              state.changed = true
-              return true
-            end
-          elseif event == "BigWigs_Timer_Update" then
-            local changed
-            for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
-                changed = copyOrSchedule(bar, timerId) or changed
-              end
-            end
-            return changed
-          elseif event == "BigWigs_Timer_Force" then
-            local changed
-            for _, state in pairs(states) do
-              state.show = false
-              state.changed = true
-              changed = true
-            end
-            for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
-                changed = copyOrSchedule(bar, timerId) or changed
-              end
-            end
-            return changed
-          end
-        else
-          if event == "BigWigs_StartBar" then
-            if extendTimer ~= 0 then
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
-                local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
-                Private.ExecEnv.BossMods.BigWigs:ScheduleCheck(bar.expirationTime + extendTimer)
-              end
-            end
-          end
-          local bar = Private.ExecEnv.BossMods.BigWigs:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerCast, triggerIsCooldown)
-          if bar then
-            if extendTimer == 0
-              or not (state and state.show)
-              or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
+          if useClone then
+            if event == "BigWigs_StartBar"
+            or event == "BigWigs_PauseBar"
+            or event == "BigWigs_ResumeBar"
             then
-              return copyOrSchedule(bar, cloneId)
-            end
-          else
-            if state and state.show then
+              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown, isBarEnabled) then
+                local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
+                if bar then
+                  return copyOrSchedule(bar, cloneId)
+                end
+              end
+            elseif event == "BigWigs_StopBar" and state then
               local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
               if state.extend == 0 or bar_remainingTime <= 0 then
                 state.show = false
                 state.changed = true
                 return true
               end
+            elseif event == "BigWigs_Timer_Update" then
+              local changed
+              for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
+                if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown, isBarEnabled) then
+                  changed = copyOrSchedule(bar, timerId) or changed
+                end
+              end
+              return changed
+            elseif event == "BigWigs_Timer_Force" then
+              local changed
+              for _, state in pairs(states) do
+                state.show = false
+                state.changed = true
+                changed = true
+              end
+              for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
+                if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown, isBarEnabled) then
+                  changed = copyOrSchedule(bar, timerId) or changed
+                end
+              end
+              return changed
+            end
+          else
+            if event == "BigWigs_StartBar" then
+              if extendTimer ~= 0 then
+                if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown, isBarEnabled) then
+                  local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
+                  Private.ExecEnv.BossMods.BigWigs:ScheduleCheck(bar.expirationTime + extendTimer)
+                end
+              end
+            end
+            local bar = Private.ExecEnv.BossMods.BigWigs:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerCast, triggerIsCooldown, isBarEnabled)
+            if bar then
+              if extendTimer == 0
+                or not (state and state.show)
+                or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
+              then
+                return copyOrSchedule(bar, cloneId)
+              end
+            else
+              if state and state.show then
+                local bar_remainingTime = state.expirationTime - GetTime() + (state.extend or 0)
+                if state.extend == 0 or bar_remainingTime <= 0 then
+                  state.show = false
+                  state.changed = true
+                  return true
+                end
+              end
             end
           end
         end
-      end
-    ]=]
-    return ret:format(
-      trigger.use_count and trigger.count or "",
-      trigger.use_spellId and tostring(trigger.spellId) or "",
-      trigger.use_text and trigger.text or "",
-      trigger.use_text and trigger.text_operator or "",
-      trigger.use_cloneId and "true" or "false",
-      trigger.use_extend and tonumber(trigger.extend or 0) or 0,
-      trigger.use_remaining and "true" or "false",
-      trigger.remaining and tonumber(trigger.remaining or 0) or 0,
-      trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
-      trigger.use_isCooldown == nil and "nil" or trigger.use_isCooldown and "true" or "false",
-      trigger.remaining_operator or "<"
-    )
-  end,
-  statesParameter = "full",
-  args = {
-    {
-      name = "spellId",
-      display = L["ID"],
-      desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
-      type = "spell",
-      conditionType = "string",
-      noValidation = true,
-      showExactOption = false,
-      negativeIsEJ = true
+      ]=]
+      return ret:format(
+        trigger.use_count and trigger.count or "",
+        trigger.use_spellId and tostring(trigger.spellId) or "",
+        trigger.use_text and trigger.text or "",
+        trigger.use_text and trigger.text_operator or "",
+        trigger.use_cloneId and "true" or "false",
+        trigger.use_extend and tonumber(trigger.extend or 0) or 0,
+        trigger.use_remaining and "true" or "false",
+        trigger.remaining and tonumber(trigger.remaining or 0) or 0,
+        trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
+        trigger.use_isCooldown == nil and "nil" or trigger.use_isCooldown and "true" or "false",
+        trigger.use_isBarEnabled == nil and "nil" or trigger.use_isBarEnabled and "true" or "false",
+        trigger.remaining_operator or "<"
+      )
+    end,
+    statesParameter = "full",
+    args = {
+      {
+        name = "spellId",
+        display = L["ID"],
+        desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
+        type = "spell",
+        conditionType = "string",
+        noValidation = true,
+        showExactOption = false,
+        negativeIsEJ = true
+      },
+      {
+        name = "text",
+        display = L["Message"],
+        type = "longstring",
+        store = true,
+        conditionType = "string"
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+      },
+      {
+        name = "extend",
+        display = L["Offset Timer"],
+        type = "string",
+      },
+      {
+        name = "count",
+        display = L["Count"],
+        desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if BigWigs shows it on it's bar"],
+        type = "string",
+        store = true,
+        conditionType = "string",
+        operator_types = "none",
+        preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+        test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.CreateTriggerCounter(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          preamble:SetCount(tonumber(state.count) or 0)
+          return preamble:Match()
+        end,
+      },
+      {
+        name = "cast",
+        display = L["Cast Bar"],
+        desc = L["Filter messages with format <message>"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "isCooldown",
+        display = L["Cooldown"],
+        desc = L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "isBarEnabled",
+        display = L["Bar enabled in BigWigs settings"],
+        desc = L["Test if bar is enabled in BigWigs settings"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "cloneId",
+        display = L["Clone per Event"],
+        type = "toggle",
+        test = "true",
+        init = "false"
+      },
     },
-    {
-      name = "text",
-      display = L["Message"],
-      type = "longstring",
-      store = true,
-      conditionType = "string"
-    },
-    {
-      name = "remaining",
-      display = L["Remaining Time"],
-      type = "number",
-    },
-    {
-      name = "extend",
-      display = L["Offset Timer"],
-      type = "string",
-    },
-    {
-      name = "count",
-      display = L["Count"],
-      desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if BigWigs shows it on it's bar"],
-      type = "string",
-      store = true,
-      conditionType = "string",
-    },
-    {
-      name = "cast",
-      display = L["Cast Bar"],
-      desc = L["Filter messages with format <message>"],
-      type = "tristate",
-      test = "true",
-      init = "false",
-      conditionType = "bool"
-    },
-    {
-      name = "isCooldown",
-      display = L["Cooldown"],
-      desc = L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"],
-      type = "tristate",
-      test = "true",
-      init = "false",
-      conditionType = "bool"
-    },
-    {
-      name = "cloneId",
-      display = L["Clone per Event"],
-      type = "toggle",
-      test = "true",
-      init = "false"
-    },
-  },
-  automaticrequired = true,
-}
-Private.category_event_prototype.addons["BigWigs Timer"] = L["BigWigs Timer"]
+    automaticrequired = true,
+  }
+  Private.category_event_prototype.addons["BigWigs Timer"] = L["BigWigs Timer"]
+end
 
 -- Unified
 if BigWigsLoader or not DBM then
@@ -1461,13 +1605,18 @@ Private.event_prototypes["Boss Mod Announce"] = {
       display = L["Count"],
       desc = L["Occurrence of the event\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nWorks only if Boss Mod addon show counter"],
       type = "string",
-      preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
-      test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
-      conditionTest = function(state, needle, op, preamble)
-        return preamble:Check(state.count)
-      end,
       store = true,
       conditionType = "string",
+      operator_types = "none",
+      preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+      test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+      conditionPreamble = function(input)
+        return Private.ExecEnv.CreateTriggerCounter(input)
+      end,
+      conditionTest = function(state, needle, op, preamble)
+        preamble:SetCount(tonumber(state.count) or 0)
+        return preamble:Match()
+      end,
     },
     {
       name = "cloneId",
@@ -1512,6 +1661,9 @@ Private.event_prototypes["Boss Mod Timer"] = {
       local isDBM = Private.ExecEnv.BossMods.Generic == Private.ExecEnv.BossMods.DBM
 
       return function (states, event, timerId)
+        local isPullTimer = %s
+        local isBreakTimer = %s
+        local isTimer = %s
         local triggerSpellId = %q
         local triggerText = %q
         local triggerTextOperator = %q
@@ -1519,6 +1671,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
         local extendTimer = %s
         local triggerUseRemaining = %s
         local triggerRemaining = %s
+        local isBarEnabled = %s
         local cloneId = useClone and timerId or ""
         local state = states[cloneId]
         local counter = counter
@@ -1568,7 +1721,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
           or event == "BossMod_TimerPause"
           or event == "BossMod_TimerResume"
           then
-            if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then
+            if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer) then
               local bar = Private.ExecEnv.BossMods.Generic:GetTimerById(timerId)
               if bar then
                 return copyOrSchedule(bar, cloneId)
@@ -1584,7 +1737,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
           elseif event == "BossMod_TimerUpdate" or event == "BossMod_TimerUpdateIcon" then
             local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer) then
                 changed = copyOrSchedule(bar, timerId) or changed
               else
                 local state = states[timerId]
@@ -1607,7 +1760,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               changed = true
             end
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer) then
                 changed = copyOrSchedule(bar, timerId) or changed
               end
             end
@@ -1616,13 +1769,13 @@ Private.event_prototypes["Boss Mod Timer"] = {
         else
           if event == "BossMod_TimerStart" or event == "BossMod_TimerUpdate" then
             if extendTimer ~= 0 then
-              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer) then
                 local bar = Private.ExecEnv.BossMods.Generic:GetTimerById(timerId)
                 Private.ExecEnv.BossMods.Generic:ScheduleCheck(bar.expirationTime + extendTimer)
               end
             end
           end
-          local bar = Private.ExecEnv.BossMods.Generic:GetTimerGeneric(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter)
+          local bar = Private.ExecEnv.BossMods.Generic:GetTimerGeneric(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, isBarEnabled, isPullTimer, isBreakTimer, isTimer)
           if bar then
             if extendTimer == 0
               or not (state and state.show)
@@ -1646,6 +1799,9 @@ Private.event_prototypes["Boss Mod Timer"] = {
 
     return ret:format(
       trigger.use_count and trigger.count or "",
+      TestForMultiSelect(trigger, "timerType", "PULL"),
+      TestForMultiSelect(trigger, "timerType", "BREAK"),
+      TestForMultiSelect(trigger, "timerType", "TIMER"),
       trigger.use_spellId and tostring(trigger.spellId) or "",
       trigger.use_message and trigger.message or "",
       trigger.use_message and trigger.message_operator or "",
@@ -1653,6 +1809,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
       trigger.use_extend and tonumber(trigger.extend or 0) or 0,
       trigger.use_remaining and "true" or "false",
       trigger.remaining and tonumber(trigger.remaining or 0) or 0,
+      trigger.use_isBarEnabled == nil and "nil" or trigger.use_isBarEnabled and "true" or "false",
       trigger.remaining_operator or "<"
     )
   end,
@@ -1676,6 +1833,13 @@ Private.event_prototypes["Boss Mod Timer"] = {
       conditionType = "string"
     },
     {
+      name = "timerType",
+      desc = L["Select the type of timer to filter"],
+      display = L["Bar Type"],
+      type = "multiselect",
+      values = "bossmods_timerTypes"
+    },
+    {
       name = "remaining",
       display = L["Remaining Time"],
       type = "number",
@@ -1691,6 +1855,26 @@ Private.event_prototypes["Boss Mod Timer"] = {
       desc = L["Occurrence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nOnly if DBM shows it on it's bar"],
       type = "string",
       conditionType = "string",
+      operator_types = "none",
+      preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+      test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+      conditionPreamble = function(input)
+        return Private.ExecEnv.CreateTriggerCounter(input)
+      end,
+      conditionTest = function(state, needle, op, preamble)
+        preamble:SetCount(tonumber(state.count) or 0)
+        return preamble:Match()
+      end,
+      store = true,
+    },
+    {
+      name = "isBarEnabled",
+      display = L["Bar enabled in Boss Mod addon settings"],
+      desc = L["Test if bar is enabled in Boss Mod addon settings"],
+      type = "tristate",
+      test = "true",
+      init = "false",
+      conditionType = "bool",
     },
     {
       name = "cloneId",

@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-return, duplicate-set-field
 --- AceConfigCmd-3.0 handles access to an options table through the "command line" interface via the ChatFrames.
 -- @class file
 -- @name AceConfigCmd-3.0

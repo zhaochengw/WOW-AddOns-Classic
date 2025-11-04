@@ -1,0 +1,20 @@
+## Interface: 50500
+## Category: DBM
+
+## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff308530Sound Events Pack|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM Медиа|r|cffffe00a>|r |cff308530Пакет звуковых событий|r
+## DefaultState: enabled
+## RequiredDeps: DBM-Core
+## Author: MysticalOS, Pardua, Cigawoot
+## Version: 1.6.42
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
+## X-DBM-VictoryPack: 1
+## X-DBM-VictoryPack-GlobalName: DBMVPSoundEventsPack
+## X-DBM-DefeatPack: 1
+## X-DBM-DefeatPack-GlobalName: DBMDPSoundEventsPack
+## X-DBM-MusicPack: 1
+## X-DBM-MusicPack-GlobalName: DBMMPSoundEventsPack
+## X-Curse-Project-ID: 289311
+## X-Wago-ID: qv63WD6b
+
+LoadList.lua

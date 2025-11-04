@@ -1,7 +1,7 @@
-## Interface: 30404
-## Title: HunterTrapsBar
-## Author: Xckbucl, Thanks to Floraline for the base source from aspect one
-## Notes: Add an hunter traps bar similar
+## Interface: 50501
+## Title: Zomar's Hunter Traps Bar
+## Author: Zomar, Revised version of Xckbucl's Hunter Traps Bar ( which is based on BoboFloraline's FloAspectBar) for MoP Classic
+## Notes: Add a hunter traps bar
 ## OptionalDeps: 
 ## Dependencies:
 ## SavedVariables: 

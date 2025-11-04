@@ -11,7 +11,7 @@ AddOn.IntegrationTools_MessageUpdateDispatcher=AddOn.Callbacks_New(); do
 end
 
 function AddOn.IntegrationTools_FormatOptionLabel(addon)
-	local name,title,_,_,reason=GetAddOnInfo(addon);
+	local name,title,_,_,reason=C_AddOns.GetAddOnInfo(addon);
 	return AddOn.Localization.OptionsSetting_Integration_Format:format(
 		title or name or addon
 		,reason and "ff0000" or "00ff00"

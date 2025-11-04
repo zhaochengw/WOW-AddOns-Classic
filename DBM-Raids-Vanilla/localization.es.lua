@@ -18,11 +18,6 @@ L = DBM:GetModLocalization("ThreeBugs")
 L:SetGeneralLocalization{
 	name = "Realeza silítida"
 }
-L:SetMiscLocalization{
-	Yauj = "Princesa Yauj",
-	Vem = "Vem",
-	Kri = "Lord Kri"
-}
 
 -------------
 -- Sartura --
@@ -59,12 +54,12 @@ L:SetOptionLocalization{
 	WarnShatter	= "Mostrar anuncio para hacerse añicos"
 }
 L:SetMiscLocalization{
-	Slow	= "comienza a ir más despacio!",
-	Freezing= "se está congelando!",
-	Frozen	= "no se puede mover!",
-	Phase4 	= "comienza a desmoronarse!",
-	Phase5 	= "parece a punto de hacerse añicos!",
-	Phase6 	= "explota!",--Might want to double check this, since no further messages appeared after the previous one.
+	Slow	= "comienza a ir más despacio",
+	Freezing= "se está congelando",
+	Frozen	= "no se puede mover",
+	Phase4 	= "comienza a desmoronarse",
+	Phase5 	= "parece a punto de hacerse añicos",
+	Phase6 	= "explota",--Might want to double check this, since no further messages appeared after the previous one.
 
 	FrostHitsPerSecond = "Golpes de escarcha por segundo",
 	MeleeHitsPerSecond = "Golpes cuerpo a cuerpo por segundo"
@@ -83,11 +78,7 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("TwinEmpsAQ")
 
 L:SetGeneralLocalization{
-	name = "Los Emperadores Gemelos"
-}
-L:SetMiscLocalization{
-	Veklor = "Emperor Vek'lor",
-	Veknil = "Emperor Vek'nilash"
+	name = "Emperadores Gemelos"
 }
 
 ------------
@@ -107,10 +98,10 @@ L:SetWarningLocalization{
 	SpecWarnWeakened		= "¡C'Thun está débil!"
 }
 L:SetTimerLocalization{
-	TimerEyeTentacle		= "Siguiente Tentáculo ocular",
-	TimerClawTentacle		= "Siguiente Tentáculo Garral",
-	TimerGiantEyeTentacle	= "Siguiente Tentáculo ocular gigante",
-	TimerGiantClawTentacle	= "Siguiente Tentáculo garral gigante",
+	TimerEyeTentacle		= "Tentáculo ocular",
+	TimerClawTentacle		= "Tentáculo Garral",
+	TimerGiantEyeTentacle	= "Tentáculo ocular gigante",
+	TimerGiantClawTentacle	= "Tentáculo garral gigante",
 	TimerWeakened			= "Debilidad termina"
 }
 L:SetOptionLocalization{
@@ -120,16 +111,15 @@ L:SetOptionLocalization{
 	WarnGiantClawTentacle	= "Mostrar anuncio cuando aparezca un Tentáculo garral gigante",
 	WarnWeakened			= "Mostrar anuncio cuando C'Thun se vuelva débil",
 	SpecWarnWeakened		= "Mostrar anuncio especial cuando C'Thun se vuelva débil",
-	TimerEyeTentacle		= "Mostrar temporizador para el siguiente Tentáculo ocular",
-	TimerClawTentacle		= "Mostrar temporizador para el siguiente Tentáculo Garral",
-	TimerGiantEyeTentacle	= "Mostrar temporizador para el siguiente Tentáculo ocular gigante",
-	TimerGiantClawTentacle	= "Mostrar temporizador para el siguiente Tentáculo garral gigante",
+	TimerEyeTentacle		= "Mostrar temporizador para el próximo Tentáculo ocular",
+	TimerClawTentacle		= "Mostrar temporizador para el próximo Tentáculo Garral",
+	TimerGiantEyeTentacle	= "Mostrar temporizador para el próximo Tentáculo ocular gigante",
+	TimerGiantClawTentacle	= "Mostrar temporizador para el próximo Tentáculo garral gigante",
 	TimerWeakened			= "Mostrar temporizador para la duración de la debilidad de C'Thun",
 	RangeFrame				= "Mostrar marco de distancia (10 m)"
 }
 L:SetMiscLocalization{
 	Stomach		= "Estómago de C'Thun",
-	Eye			= "Ojo de C'Thun",
 	FleshTent	= "Tentáculo de carne",
 	Weakened 	= "está débil!",
 	NotValid	= "AQ40 parcialmente limpiado. Quedan %s jefes opcionales."
@@ -143,9 +133,8 @@ L:SetGeneralLocalization{
 	name = "Ouro"
 }
 L:SetWarningLocalization{
-	WarnSubmerge		= "Ouro se sumerge",
-	WarnEmerge			= "Ouro regresa",
-	SpecWarnEye			= "Mira hacia otro lado"
+	WarnSubmerge		= "Sumersión",
+	WarnEmerge			= "Emersión"
 }
 L:SetTimerLocalization{
 	TimerSubmerge		= "Sumersión",
@@ -165,7 +154,7 @@ L:SetOptionLocalization{
 L = DBM:GetModLocalization("AQ40Trash")
 
 L:SetGeneralLocalization{
-	name = "AQ40: Bichos"
+	name = "Bichos"
 }
 
 L:SetTimerLocalization{
@@ -237,12 +226,12 @@ L:SetWarningLocalization{
 	WarnDismember	= "%s en >%s< (%s)"
 }
 L:SetOptionLocalization{
-	WarnPursue		= "Mostrar anuncio para objetivos de la persecución de Buru",
-	SpecWarnPursue	= "Mostrar anuncio especial cuando te persiga el jefe",
+	WarnPursue		= "Mostrar anuncio para los objetivos de la persecución de Buru",
+	SpecWarnPursue	= "Mostrar anuncio especial cuando te persiga",
 	WarnDismember	= DBM_CORE_L.AUTO_ANNOUNCE_OPTIONS.spell:format(96)
 }
 L:SetMiscLocalization{
-	PursueEmote 	= "fija su mirada en"
+	PursueEmote 	= " mira a "
 }
 
 -------------
@@ -279,7 +268,7 @@ L:SetOptionLocalization{
 L = DBM:GetModLocalization("AQ20Trash")
 
 L:SetGeneralLocalization{
-	name = "AQ20: Bichos"
+	name = "Bichos"
 }
 
 L:SetTimerLocalization{
@@ -312,7 +301,7 @@ L:SetOptionLocalization{
 }
 L:SetMiscLocalization{
 	Phase2Emote	= "huyen mientras se consume el poder del orbe.",
-	YellPull	= "¡Tenemos intrusos en El Criadero! ¡Haced sonar la alarma! ¡Proteged los huevos a toda costa!"
+	YellPull	= "¡Los invasores han penetrado en El Criadero! ¡Activad la alarma! ¡Hay que proteger los huevos a toda costa!"
 }
 -------------------
 --  Vaelastrasz  --
@@ -324,7 +313,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	Event				= "¡Demasiado tarde, amigos! Ahora estoy poseído por la corrupción de Nefarius... No puedo... controlarme."
+	Event				= "¡Demasiado tarde, amigos! Ahora estoy poseído por la corrupción de Nefarius. No puedo... controlarme."
 }
 -----------------
 --  Broodlord  --
@@ -336,7 +325,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-    Pull    = "¡Ninguno de los vuestros debería estar aquí! ¡Os habéis condenado vosotros mismos!"
+    Pull    = "¡Nadie de vuestra raza debería estar aquí! ¡Os aniquilaré!"
 }
 
 ---------------
@@ -354,7 +343,7 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("Ebonroc")
 
 L:SetGeneralLocalization{
-	name = "Ebonorroca"
+	name = "Ebanorroca"
 }
 
 ----------------
@@ -368,8 +357,10 @@ L:SetGeneralLocalization{
 ----------------
 --  Ebonroc and Flamegor  --
 ----------------
+L = DBM:GetModLocalization("EbonrocandFlamegor")
+
 L:SetGeneralLocalization{
-	name = "Ebonorroca y Flamagor"
+	name = "Ebanorroca y Flamagor"
 }
 
 L:SetTimerLocalization{
@@ -380,7 +371,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	Ebonroc		= "Ebonorroca",
+	Ebonroc		= "Ebanorroca",
 	Flamegor	= "Flamagor"
 }
 -----------------------
@@ -390,7 +381,7 @@ L:SetMiscLocalization{
 L = DBM:GetModLocalization("BWLTrash")
 
 L:SetGeneralLocalization{
-	name = "Guardias Garramortal"--FIXME
+	name = "Guardias Garramortal"
 }
 L:SetWarningLocalization{
 	WarnVulnerable		= "Vulnerabilidad: %s"
@@ -420,23 +411,23 @@ L:SetWarningLocalization{
 	WarnVulnerable	= "Vulnerabilidad: %s"
 }
 L:SetTimerLocalization{
-	TimerBreathCD	= "%s TdR",
+	TimerBreathCD	= "%s reutilización",
 	TimerBreath		= "%s lanzamiento",
-	TimerVulnCD		= "TdR de Vulnerabilidad",
-	TimerAllBreaths = "Lluvia de aliento"
+	TimerVulnCD		= "Reutilización de vulnerabilidad",
+	TimerAllBreaths = "Lluvia de respiración"
 }
 L:SetOptionLocalization{
-	WarnBreath			= "Mostrar anuncio cuando Chromaggus lance uno de sus alientos",
-	WarnVulnerableNew	= "Mostrar temporizador para el tiempo de reutilización de los alientos",
-	TimerBreathCD		= "Mostrar TdR de aliento",
-	TimerBreath			= "Mostrar lanzamiento de aliento",
-	TimerVulnCD			= "Mostrar TdR de Vulnerabilidad",
-	TimerAllBreaths 	= "Mostrar temporizador para Lluvia de aliento"
+	WarnBreath			= "Mostrar anuncio cuando Chromaggus lance una de sus respiraciones",
+	WarnVulnerableNew	= "Mostrar temporizador para el tiempo de reutilización de las respiraciones",
+	TimerBreathCD		= "Mostrar reutilización de respiración",
+	TimerBreath			= "Mostrar lanzamiento de respiración",
+	TimerVulnCD			= "Mostrar reutilización de vulnerabilidad",
+	TimerAllBreaths 	= "Mostrar temporizador para Lluvia de respiración"
 }
 L:SetMiscLocalization{
-	Breath1	= "Primer aliento",
-	Breath2	= "Segundo aliento",
-	VulnEmote	= "%s se estremece mientras su piel empieza a brillar.",
+	Breath1		= "Primera respiración",
+	Breath2		= "Segunda respiración",
+	VulnEmote	= "se estremece mientras su piel empieza a brillar.",
 	Vuln		= "Vulnerabilidad",
 	Fire		= "Fuego",
 	Nature		= "Naturaleza",
@@ -455,7 +446,7 @@ L:SetGeneralLocalization{
 	name = "Nefarian"
 }
 L:SetWarningLocalization{
-	WarnAddsLeft		= "%d restante",
+	WarnAddsLeft		= "%d |4restante:restantes;",
 	WarnClassCall		= "Llamada de %s",
 	specwarnClassCall	= "¡Llamada de tu clase!"
 }
@@ -464,13 +455,14 @@ L:SetTimerLocalization{
 }
 L:SetOptionLocalization{
 	TimerClassCall		= "Mostrar temporizador para la duración de las llamadas en cada clase",
-	WarnAddsLeft		= "Mostrar anuncios para las muertes restantes hasta Fase 2",
+	WarnAddsLeft		= "Mostrar anuncios para las muertes restantes hasta fase 2",
 	WarnClassCall		= "Mostrar anuncio para las llamadas de clase",
 	specwarnClassCall	= "Mostrar anuncio especial cuando se ve afectado por la llamada de clase"
 }
 L:SetMiscLocalization{
-	YellP2		= "Bien hecho, mis esbirros. El coraje de los mortales empieza a mermar. ¡Veamos ahora cómo se enfrentan al verdadero Señor de la Cubre de Roca Negra!",
-	YellP3		= "¡Imposible! ¡Erguíos, mis esbirros! ¡Servid a vuestro maestro una vez más!",
+	YellP1		= "¡Que comiencen los juegos!",
+	YellP2		= "Bien hecho, mis esbirros. El coraje de los mortales empieza a mermar. ¡Veamos ahora cómo se enfrentan al verdadero Señor de la Cumbre de Roca Negra!",
+	YellP3		= "¡Imposible! ¡Levantaos, esbirros! ¡Servid a vuestro maestro una vez más!",
 	YellShaman	= "¡Chamanes, mostradme lo que pueden hacer vuestros tótems!",
 	YellPaladin	= "Paladines... He oído que tenéis muchas vidas. Demostrádmelo.",
 	YellDruid	= "Los druidas y vuestro estúpido poder de cambiar de forma. ¡Veámoslo en acción!",
@@ -479,7 +471,7 @@ L:SetMiscLocalization{
 	YellRogue	= "¿Pícaros? ¡Dejad de esconderos y enfrentaos a mí!",
 	YellWarlock	= "Brujos... No deberíais estar jugando con magia que no comprendéis. ¿Veis lo que pasa?",
 	YellHunter	= "¡Cazadores y vuestras molestas cerbatanas!",
-	YellMage	= "¡Magos también? Deberíais tener más cuidado cuando jugáis con la magia...",
+	YellMage	= "¿Magos también? Deberíais tener más cuidado cuando jugáis con la magia...",
 	YellDK		= "¡Caballeros de la Muerte... venid aquí!",
 	YellMonk	= "Monjes, ¿no os mareáis con tanta vuelta?",
 	YellDH		= "¿Cazadores de demonios? Qué raro eso de taparos los ojos así. ¿No os cuesta ver lo que tenéis alrededor?"--Demon Hunter call; I know this hasn't been implemented yet in DBM, but I added it just in case.
@@ -585,7 +577,12 @@ L = DBM:GetModLocalization("Majordomo")
 L:SetGeneralLocalization{
 	name = "Mayordomo Executus"
 }
-
+L:SetTimerLocalization{
+	timerShieldCD		= "Escudo"
+}
+L:SetOptionLocalization{
+	timerShieldCD		= "Mostrar temporizador para el próximo Escudo de daño/reflejo"
+}
 ----------------
 --  Ragnaros  --
 ----------------
@@ -595,8 +592,8 @@ L:SetGeneralLocalization{
 	name = "Ragnaros"
 }
 L:SetWarningLocalization{
-	WarnSubmerge		= "Ragnaros se sumerge",
-	WarnEmerge			= "Ragnaros ha regresado"
+	WarnSubmerge		= "Sumersión",
+	WarnEmerge			= "Emersión"
 }
 L:SetTimerLocalization{
 	TimerSubmerge		= "Sumersión",
@@ -609,7 +606,7 @@ L:SetOptionLocalization{
 	TimerEmerge			= "Mostrar temporizador para cuando Ragnaros regrese a la superficie"
 }
 L:SetMiscLocalization{
-	Submerge	= "¡AVANZAD, MIS SIRVIENTES! ¡DEFENDED A VUESTRO MAESTRO!",
+	Submerge	= "¡SIERVOS, A MÍ! ¡DEFENDED A VUESTRO MAESTRO!",
 	Pull		= "¡Crías imprudentes! ¡Os habéis precipitado hasta vuestra propia muerte! ¡Ahora mirad, el maestro se agita!"
 }
 
@@ -629,6 +626,14 @@ L:SetOptionLocalization{
 
 L:SetWarningLocalization{
 	WarnBossPower		= "Energía del jefe al %d%%"
+}
+-----------------
+--  MC: Trash  --
+-----------------
+L = DBM:GetModLocalization("MCTrash")
+
+L:SetGeneralLocalization{
+	name = "Bichos"
 }
 -------------------
 --  Venoxis  --
@@ -681,11 +686,8 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	PriestDied	= "%s muere.",
-	YellPhase2	= "Shirvallah, ¡lléname de tu IRA!",
-	YellKill	= "¡Estoy libre de Hakkar! ¡Por fin tengo paz!",
-	Thekal		= "Sumo Sacerdote Thekal",
-	Zath		= "Integrista Zath",
-	LorKhan		= "Integrista Lor'Khan"
+	YellPhase2	= "Shirvallah, ¡lléname de IRA!",
+	YellKill	= "¡Hakkar ya no me controla! ¡Por fin, algo de paz!"
 })
 
 -------------------
@@ -773,8 +775,8 @@ L:SetTimerLocalization{
 }
 
 L:SetOptionLocalization{
-	TimerWhelps				= "Mostrar temporizador para las siguientes Crías de Onyxia",
-	WarnWhelpsSoon			= "Mostrar anuncio anticipado para las siguientes Crías de Onyxia",
+	TimerWhelps				= "Mostrar temporizador para las próximas Crías de Onyxia",
+	WarnWhelpsSoon			= "Mostrar anuncio anticipado para las próximas Crías de Onyxia",
 	SoundWTF3				= "Reproducir sonidos graciosos de cierta banda legendaria"
 }
 
@@ -796,9 +798,9 @@ L:SetGeneralLocalization({
 })
 
 L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Logro: Aracnofobia",
 	Pull1				= "¡Eso, corred! ¡Así la sangre circula más rápido!",
-	Pull2				= "Solo un bocado..."
+	Pull2				= "Solo un bocado...",
+	Pull3				= "No hay salida."
 })
 
 -------------------------
@@ -811,7 +813,7 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	WarningEmbraceExpire	= "Abrazo de la viuda expirando en 5 s",
+	WarningEmbraceExpire	= "Abrazo de la viuda expirando en 5 segundos",
 	WarningEmbraceExpired	= "Abrazo de la viuda ha expirado"
 })
 
@@ -821,7 +823,8 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Pull					= "¡Arrodíllate ante mí, sabandija!"--Not actually pull trigger, but often said on pull
+	Pull1					= "¡Arrodíllate ante mí, sabandija!",
+	Pull2 					= "¡No puedes esconderte de mí!"
 })
 
 -------------
@@ -834,22 +837,18 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	WarningSpidersSoon	= "Arañitas de Maexxna en 5 s",
-	WarningSpidersNow	= "Arañitas de Maexxna"
+	WarningSpidersSoon	= "Arañitas Maexxna en 5 segundos",
+	WarningSpidersNow	= "Arañitas Maexxna"
 })
 
 L:SetTimerLocalization({
-	TimerSpider	= "Siguientes arañitas"
+	TimerSpider	= "Arañitas"
 })
 
 L:SetOptionLocalization({
-	WarningSpidersSoon	= "Mostrar anuncio anticipado para cuando aparezcan Arañitas de Maexxna",
-	WarningSpidersNow	= "Mostrar anuncio cuando aparezcan Arañitas de Maexxna",
-	TimerSpider			= "Mostrar temporizador para las siguientes Arañitas de Maexxna"
-})
-
-L:SetMiscLocalization({
-	ArachnophobiaTimer	= "Logro: Aracnofobia"
+	WarningSpidersSoon	= "Mostrar anuncio anticipado para cuando aparezcan Arañitas Maexxna",
+	WarningSpidersNow	= "Mostrar anuncio cuando aparezcan Arañitas Maexxna",
+	TimerSpider			= "Mostrar temporizador para las próximas Arañitas Maexxna"
 })
 
 -----------------------
@@ -863,7 +862,7 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Teletransporte",
-	WarningTeleportSoon	= "Teletransporte en 20 s"
+	WarningTeleportSoon	= "Teletransporte en 20 segundos"
 })
 
 L:SetTimerLocalization({
@@ -874,15 +873,15 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	WarningTeleportNow	= "Mostrar anuncio para Teletransporte",
 	WarningTeleportSoon	= "Mostrar anuncio anticipado para Teletransporte",
-	TimerTeleport		= "Mostrar temporizador para el siguiente Teletransporte: Balcón",
+	TimerTeleport		= "Mostrar temporizador para Teletransporte: Balcón",
 	TimerTeleportBack	= "Mostrar temporizador para Teletransporte: Suelo"
 })
 
 L:SetMiscLocalization({
-	Pull				= "¡Muere, intruso!",
-	AddsYell			= "¡Levantaos, soldados míos! ¡Levantaos y luchad una vez más!",
-	Adds				= "invoca a guerreros esqueletos!",
-	AddsTwo				= "alza más esqueletos!"
+	Pull1				= "¡Muere, intruso!",
+	Pull2				= "¡Gloria al amo!",
+	Pull3 				= "¡No tienes derecho a vivir!",
+	AddsYell			= "¡Levantaos, soldados míos! ¡Levantaos y luchad una vez más!"
 })
 
 ----------------------
@@ -896,7 +895,7 @@ L:SetGeneralLocalization({
 
 L:SetWarningLocalization({
 	WarningTeleportNow	= "Teletransporte",
-	WarningTeleportSoon	= "Teletransporte en %d s"
+	WarningTeleportSoon	= "Teletransporte en %d |4segundo:segundos;"
 })
 
 L:SetTimerLocalization({
@@ -906,11 +905,12 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	WarningTeleportNow	= "Mostrar anuncio para Teletransporte",
 	WarningTeleportSoon	= "Mostrar anuncio anticipado para Teletransporte",
-	TimerTeleport		= "Mostrar anuncio para Teletransporte"
+	TimerTeleport		= "Mostrar temporizador para Teletransporte"
 })
 
 L:SetMiscLocalization({
-	Pull				= "Ahora me perteneces."
+	Pull1				= "Ahora me perteneces.",
+	Pull2				= "Te veo..."
 })
 
 -------------
@@ -923,13 +923,13 @@ L:SetGeneralLocalization({
 })
 
 L:SetWarningLocalization({
-	WarningHealSoon	= "Sanación posible en 3 s",
-	WarningHealNow	= "¡Sanad ahora!"
+	WarningHealSoon	= "Curación posible en 3 segundos",
+	WarningHealNow	= "¡Cura ahora!"
 })
 
 L:SetOptionLocalization({
-	WarningHealSoon		= "Mostrar anuncio anticipado para la franja de sanación",
-	WarningHealNow		= "Mostrar anuncio para la franja de sanación"
+	WarningHealSoon		= "Mostrar anuncio anticipado para el periodo de curación",
+	WarningHealNow		= "Mostrar anuncio para el periodo de curación"
 })
 
 ---------------
@@ -980,8 +980,6 @@ L:SetMiscLocalization({
 	Yell	= "¡Stalagg aplasta!",
 	Emote	= "¡%s se sobrecarga!",
 	Emote2	= "¡Espiral Tesla se sobrecarga!",
-	Boss1	= "Feugen",
-	Boss2	= "Stalagg",
 	Charge1 = "negativo",
 	Charge2 = "positivo"
 })
@@ -995,10 +993,9 @@ L:SetOptionLocalization({
 	ArrowsRightLeft			= "Mostrar flechas de izquierda y derecha (estrategia de cuatro grupos; muestra la flecha izquierda si cambia la polaridad, y la derecha si no cambia)",
 	ArrowsInverse			= "Mostrar flechas de izquierda y derecha inversas (estrategia de cuatro grupos; muestra la flecha derecha si cambia la polaridad, y la izquierda si no cambia)"
 })
-
 L:SetWarningLocalization({
 	WarningChargeChanged	= "Polaridad cambiada a %s",
-	WarningChargeNotChanged	= "Tu polaridad no ha cambiado"
+	WarningChargeNotChanged	= "Polaridad no ha cambiado"
 })
 
 --------------------------
@@ -1022,7 +1019,7 @@ L:SetOptionLocalization({
 })
 
 L:SetWarningLocalization({
-	WarningShieldWallSoon	= "Barrera de huesos termina en 5 s"
+	WarningShieldWallSoon	= "Muro de escudo termina en 5 segundos"
 })
 
 --------------------------
@@ -1036,7 +1033,7 @@ L:SetGeneralLocalization({
 
 L:SetOptionLocalization({
 	TimerWave			= "Mostrar temporizador para la siguiente oleada de esbirros",
-	TimerPhase2			= "Mostrar temporizador para el cambio a Fase 2",
+	TimerPhase2			= "Mostrar temporizador para el cambio a fase 2",
 	WarningWaveSoon		= "Mostrar anuncio anticipado para la siguiente oleada de esbirros",
 	WarningWaveSpawned	= "Mostrar anuncio cuando comience una oleada de esbirros",
 	WarningRiderDown	= "Mostrar anuncio cuando muera un Jinete inflexible",
@@ -1049,7 +1046,7 @@ L:SetTimerLocalization({
 })
 
 L:SetWarningLocalization({
-	WarningWaveSoon		= "Oleada %d: %s en 3 s",
+	WarningWaveSoon		= "Oleada %d: %s en 3 segundos",
 	WarningWaveSpawned	= "Oleada %d: %s",
 	WarningRiderDown	= "Jinete muerto",
 	WarningKnightDown	= "Caballero muerto",
@@ -1057,13 +1054,13 @@ L:SetWarningLocalization({
 })
 
 L:SetMiscLocalization({
-	yell			= "Tú mismo has buscado tu final.",
 	WarningWave1	= "%d %s",
 	WarningWave2	= "%d %s y %d %s",
 	WarningWave3	= "%d %s, %d %s y %d %s",
-	Trainee			= "practicantes",
-	Knight			= "caballeros",
-	Rider			= "jinetes"
+	Trainee			= "Alumnos",
+	Knight			= "Caballeros",
+	Horse			= "Caballo espectral",
+	Rider			= "Jinetes"
 })
 
 ------------------------
@@ -1077,22 +1074,17 @@ L:SetGeneralLocalization({
 
 L:SetOptionLocalization({
 	WarningMarkSoon				= "Mostrar anuncio anticipado para las marcas",
-	SpecialWarningMarkOnPlayer	= "Mostrar anuncio especial cuando estés afectado por más de cuatro marcas"
+	SpecialWarningMarkOnPlayer	= "Mostrar anuncio especial cuando estés afectado por más de cuatro marcas",
+	timerMark					= "Mostrar temporizador para la siguiente marca de los jinetes (con contador)"
 })
 
 L:SetTimerLocalization({
+	timerMark	= "Marca %d"
 })
 
 L:SetWarningLocalization({
-	WarningMarkSoon				= "Marca %d en 3 s",
+	WarningMarkSoon				= "Marca %d en 3 segundos",
 	SpecialWarningMarkOnPlayer	= "%s: %s"
-})
-
-L:SetMiscLocalization({
-	Korthazz	= "Señor feudal Korth'azz",
-	Rivendare	= "Barón Osahendido",
-	Blaumeux	= "Lady Blaumeux",
-	Zeliek		= "Sir Zeliek"
 })
 
 ---------------
@@ -1105,23 +1097,17 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	WarningAirPhaseSoon	= "Mostrar anuncio anticipado para el cambio a fase aérea",
-	WarningAirPhaseNow	= "Mostrar anuncio para el cambio a fase aérea",
-	WarningLanded		= "Mostrar anuncio para el cambio a fase en tierra",
-	TimerAir			= "Mostrar temporizador para el cambio a fase aérea",
-	TimerLanding		= "Mostrar temporizador para el cambio a fase en tierra",
+	WarningAirPhaseSoon	= "Mostrar anuncio anticipado para la fase aérea",
+	WarningAirPhaseNow	= "Mostrar anuncio para la fase aérea",
+	WarningLanded		= "Mostrar anuncio para la fase en tierra",
+	TimerAir			= "Mostrar temporizador para la fase aérea",
+	TimerLanding		= "Mostrar temporizador para la fase en tierra",
 	TimerIceBlast		= "Mostrar temporizador para $spell:28524",
 	WarningDeepBreath	= "Mostrar anuncio especial para $spell:28524",
-	WarningIceblock		= "Gritar cuando te afecte $spell:28522"
-})
-
-L:SetMiscLocalization({
-	EmoteBreath			= "%s respira hondo.",
-	WarningYellIceblock	= "¡Soy un bloque de hielo!"
 })
 
 L:SetWarningLocalization({
-	WarningAirPhaseSoon	= "Fase aérea en 10 s",
+	WarningAirPhaseSoon	= "Fase aérea en 10 segundos",
 	WarningAirPhaseNow	= "Fase aérea",
 	WarningLanded		= "Fase en tierra",
 	WarningDeepBreath	= "Aliento de Escarcha"
@@ -1144,8 +1130,8 @@ L:SetGeneralLocalization({
 })
 
 L:SetOptionLocalization({
-	TimerPhase2			= "Mostrar temporizador para el cambio a Fase 2",
-	specwarnP2Soon		= "Mostrar anuncio especial 10 s antes del cambio a Fase 2",
+	TimerPhase2			= "Mostrar temporizador para fase 2",
+	specwarnP2Soon		= "Mostrar anuncio especial 10 segundos antes del cambio a fase 2",
 	warnAddsSoon		= "Mostrar anuncio anticipado para cuando aparezcan los Guardianes de Corona de Hielo"
 })
 
@@ -1154,14 +1140,22 @@ L:SetMiscLocalization({
 })
 
 L:SetWarningLocalization({
-	specwarnP2Soon	= "Fase 2 en 10 s",
+	specwarnP2Soon	= "Fase 2 en 10 segundos",
 	warnAddsSoon	= "Guardianes de Corona de Hielo en breve"
 })
 
 L:SetTimerLocalization({
 	TimerPhase2	= "Fase 2"
 })
+-----------------
+--  Naxx Trash --
+-----------------
 
+L = DBM:GetModLocalization("NaxxTrash")
+
+L:SetGeneralLocalization({
+	name = "Bichos"
+})
 ---------------------------
 --  Season of Discovery  --
 ---------------------------
@@ -1411,3 +1405,21 @@ L = DBM:GetModLocalization("ShadeofEranikusSoD")
 L:SetGeneralLocalization({
 	name = "Sombra de Eranikus"
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

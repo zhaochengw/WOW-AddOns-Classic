@@ -13,7 +13,7 @@ function eCastingBarMirror_Show(timer, value, maxvalue, scale, paused, label)
 	end
 	if ( not dialog ) then
 		-- Find a free dialog
-		for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
+		for index = 1, MIRRORTIMER_NUMTIMERS, 1 do
 			local frame = _G["eCastingBarMirror"..index];
 			if ( not frame:IsShown() ) then
 				dialog = frame;

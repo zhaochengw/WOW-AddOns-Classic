@@ -13,6 +13,9 @@
 	<Script file="MageFrost.lua" />
 	<Script file="MageFire.lua" />
 	<Script file="MageArcane.lua" />
+	<Script file="MonkBrewmaster.lua" />
+	<Script file="MonkMistweaver.lua" />
+	<Script file="MonkWindwalker.lua" />
 	<Script file="PaladinHoly.lua" />
 	<Script file="PaladinRetribution.lua" />
 	<Script file="PaladinProtection.lua" />

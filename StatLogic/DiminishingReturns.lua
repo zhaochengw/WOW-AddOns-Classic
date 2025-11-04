@@ -14,7 +14,7 @@ This includes
 
 The following is the result of hours of work gathering data from beta servers and then spending even more time running multiple regression analysis on the data.
 
-1. DR for Dodge, Parry, Missed are calculated separately.
+1. DR for Dodge, Parry, Miss are calculated separately.
 2. Base avoidances are not affected by DR, (ex: Dodge from base Agility)
 3. Death Knight's Parry from base Strength is affected by DR, base for parry is 5%.
 4. Direct avoidance gains from talents and spells(ex: Evasion) are not affected by DR.
@@ -31,12 +31,12 @@ c is the cap of the stat, and changes with class.
 k is is a value that changes with class.
 -----------------------------------]]
 
-function StatLogic:GetMissedChanceBeforeDR()
+function StatLogic:GetMissChanceBeforeDR()
 	local baseDefense, additionalDefense = UnitDefense("player")
 	local defenseFromDefenseRating = floor(GetCombatRatingBonus(CR_DEFENSE_SKILL))
-	local modMissed = defenseFromDefenseRating * 0.04
-	local drFreeMissed = 5 + (baseDefense + additionalDefense - defenseFromDefenseRating) * 0.04
-	return modMissed, drFreeMissed
+	local modMiss = defenseFromDefenseRating * 0.04
+	local drFreeMiss = 5 + (baseDefense + additionalDefense - defenseFromDefenseRating) * 0.04
+	return modMiss, drFreeMiss
 end
 
 --[[
@@ -87,13 +87,13 @@ function StatLogic:GetDodgePerAgi()
 	end
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", LE_UNIT_STAT_AGILITY)
 	local modAgi = 1
-	if addon.ModAgiClasses[addon.class] then
+	if addon.ModAgiClasses and addon.ModAgiClasses[addon.class] then
 		modAgi = self:GetStatMod("MOD_AGI")
 		-- Talents that modify Agi will not add to posBuff, so we need to calculate baseAgi
 		-- But Agi from Kings etc. will add to posBuff, so we subtract those if present
 		for _, case in ipairs(StatLogic.StatModTable["ALL"]["MOD_AGI"]) do
 			if case.group == addon.ExclusiveGroup.AllStats then
-				if StatLogic:GetAuraInfo(C_Spell.GetSpellName(case.aura), true) then
+				if StatLogic:GetAuraInfo(case.aura, true) then
 					modAgi = modAgi - case.value
 				end
 			end
@@ -167,7 +167,7 @@ function StatLogic:GetParryPerStr()
 	-- 	-- But Str from Kings etc. will add to posBuff, so we subtract those if present
 	-- 	for _, case in ipairs(StatLogic.StatModTable["ALL"]["MOD_STR"]) do
 	-- 		if case.group == addon.ExclusiveGroup.AllStats then
-	-- 			if StatLogic:GetAuraInfo(C_Spell.GetSpellName(case.aura), true) then
+	-- 			if StatLogic:GetAuraInfo(case.aura, true) then
 	-- 				modStr = modStr - case.value
 	-- 			end
 	-- 		end
@@ -251,7 +251,7 @@ The DR formula: 1/x' = 1/c+k/x
 * k is is a value that changes with class.
 
 Formula details:
-* DR for Dodge, Parry, Missed are calculated separately.
+* DR for Dodge, Parry, Miss are calculated separately.
 * Base avoidances are not affected by DR, (ex: Dodge from base Agility)
 * Death Knight's Parry from base Strength is affected by DR, base for parry is 5%.
 * Direct avoidance gains from talents and spells(ex: Evasion) are not affected by DR.
@@ -273,9 +273,9 @@ function StatLogic:GetAvoidanceAfterDR(stat, avoidanceBeforeDR)
 		avoidanceBeforeDR = math.floor(128 * avoidanceBeforeDR + 0.5) / 128
 	end
 
-	if C and avoidanceBeforeDR > 0 then
-		local class = addon.class
-		return 1 / (1 / C[class] + addon.K[class] / avoidanceBeforeDR)
+	local cap = C and C[addon.class] or 0
+	if cap > 0 and avoidanceBeforeDR > 0 then
+		return 1 / (1 / cap + addon.K[addon.class] / avoidanceBeforeDR)
 	elseif avoidanceBeforeDR > 0 then
 		return avoidanceBeforeDR
 	else
@@ -299,7 +299,7 @@ function StatLogic:GetAvoidanceGainAfterDR(stat, gainBeforeDR)
 		if newAvoidanceChance < 0 then newAvoidanceChance = 0 end -- because GetDodgeChance() is 0 when negative
 		return newAvoidanceChance - GetDodgeChance()
 	elseif stat == StatLogic.Stats.Miss then
-		local modAvoidance = self:GetMissedChanceBeforeDR()
+		local modAvoidance = self:GetMissChanceBeforeDR()
 		return self:GetAvoidanceAfterDR(stat, modAvoidance + gainBeforeDR) - self:GetAvoidanceAfterDR(stat, modAvoidance)
 	elseif stat == StatLogic.Stats.BlockChance then
 		local modAvoidance, drFreeAvoidance = self:GetBlockChanceBeforeDR()
@@ -311,17 +311,8 @@ function StatLogic:GetAvoidanceGainAfterDR(stat, gainBeforeDR)
 	end
 end
 
-function StatLogic:GetResilienceEffectAfterDR(damageReductionBeforeDR)
-	return 100 - 100 * 0.99 ^ damageReductionBeforeDR
-end
-
-function StatLogic:GetResilienceEffectGainAfterDR(resAfter, resBefore)
-	local resCurrent = GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
-	local drBefore
-	if resBefore then
-		drBefore = self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resBefore, StatLogic.Stats.ResilienceRating))
-	else
-		drBefore = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
-	end
-	return self:GetResilienceEffectAfterDR(self:GetEffectFromRating(resCurrent + resAfter, StatLogic.Stats.ResilienceRating)) - drBefore
+function StatLogic:GetResilienceEffectGainAfterDR(gainBeforeDR)
+	local currentResilienceBeforeDR = self:GetEffectFromRating(GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN), StatLogic.Stats.ResilienceRating)
+	local currentResilienceAfterDR = GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
+	return self:GetResilienceEffectAfterDR(currentResilienceBeforeDR + gainBeforeDR) - currentResilienceAfterDR
 end

@@ -186,43 +186,47 @@ BG.Init(function()
         if cd then return end
         for i = 1, 10 do
             local header = _G["WeakAurasLoadedHeaderButton" .. i]
-            if header and _G[header:GetName() .. "Text"]:GetText():match("Loaded/Standby") then
-                local tbl = header.obj.childButtons
-                for i, v in ipairs(tbl) do
-                    local bt = v.frame
-                    if WeakAuras.IsAuraLoaded(bt.id) and bt:GetPoint(1) then
-                        local ver = bt.id:match("<BiaoGe>拍卖%s-v(%d+%.%d+)")
-                        if ver then
-                            if IsShiftKeyDown() then
-                                cd = true
-                                BG.After(2, function() cd = nil end)
-                                BG.PlaySound(2)
-                                local edit = ChatEdit_ChooseBoxForSend()
-                                edit:SetText("")
-                                ChatEdit_ActivateChat(edit)
-                                bt:Click()
-                                BG.ButtonRaidAuction.WACode = edit:GetText()
-                                edit:SetText("")
-                                edit:Hide()
-                                GameTooltip:Hide()
-                                if BG.ButtonRaidAuction.isOnEnter then
-                                    BG.ButtonRaidAuction:GetScript("OnEnter")(BG.ButtonRaidAuction)
-                                end
-                                if BG.ButtonRaidAuction.WACode ~= "" then
-                                    for _, v in ipairs(BG.raidRosterInfo) do
-                                        if not BG.raidAuctionVersion[v.name] and v.online then
-                                            SendChatMessage(BG.ButtonRaidAuction.WACode, "WHISPER", nil, v.name)
+            if header then
+                local titleString = _G[header:GetName() .. "Text"]:GetText()
+                if titleString:match("/") then
+                -- if titleString:match("Loaded/Standby") or titleString:match("已载入") then
+                    local tbl = header.obj.childButtons
+                    for i, v in ipairs(tbl) do
+                        local bt = v.frame
+                        if WeakAuras.IsAuraLoaded(bt.id) and bt:GetPoint(1) then
+                            local ver = bt.id:match("<BiaoGe>拍卖%s-v(%d+%.%d+)")
+                            if ver then
+                                if IsShiftKeyDown() then
+                                    cd = true
+                                    BG.After(2, function() cd = nil end)
+                                    BG.PlaySound(2)
+                                    local edit = ChatEdit_ChooseBoxForSend()
+                                    edit:SetText("")
+                                    ChatEdit_ActivateChat(edit)
+                                    bt:Click()
+                                    BG.ButtonRaidAuction.WACode = edit:GetText()
+                                    edit:SetText("")
+                                    edit:Hide()
+                                    GameTooltip:Hide()
+                                    if BG.ButtonRaidAuction.isOnEnter then
+                                        BG.ButtonRaidAuction:GetScript("OnEnter")(BG.ButtonRaidAuction)
+                                    end
+                                    if BG.ButtonRaidAuction.WACode ~= "" then
+                                        for _, v in ipairs(BG.raidRosterInfo) do
+                                            if not BG.raidAuctionVersion[v.name] and v.online then
+                                                SendChatMessage(BG.ButtonRaidAuction.WACode, "WHISPER", nil, v.name)
+                                            end
                                         end
                                     end
+                                else
+                                    BG.SendSystemMessage(L["需要按下SHIFT才能发送WA。"])
                                 end
-                            else
-                                BG.SendSystemMessage(L["需要按下SHIFT才能发送WA。"])
+                                return
                             end
-                            return
                         end
                     end
+                    break
                 end
-                break
             end
         end
         BG.SendSystemMessage(L["在你的WA面板里未找到拍卖WA字符串，你需要先从表格左上角的\"拍卖WA\"按钮导入该字符串。"])
@@ -286,8 +290,7 @@ BG.Init(function()
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
             end
             GameTooltip:ClearLines()
-            GameTooltip:SetItemByID(self.itemID)
-            GameTooltip:Show()
+            GameTooltip:SetHyperlink(self.link)
             self.isOnEnter = true
             if self.isIcon then
                 self.owner.lastIcon = self
@@ -316,10 +319,12 @@ BG.Init(function()
             local mod = BiaoGe.Auction.mod
             if not (money and duration) then return end
             local t = 0
-            for i, itemID in ipairs(self.itemIDs) do
+            for i, v in ipairs(self.items) do
+                local itemID = v.id
+                local link = v.link
                 BG.After(t, function()
                     local text = "StartAuction," .. GetTime() .. "," .. itemID .. "," ..
-                        money .. "," .. duration .. ",," .. mod
+                        money .. "," .. duration .. ",," .. mod .. "," .. link
                     C_ChatInfo.SendAddonMessage("BiaoGeAuction", text, "RAID")
                 end)
                 t = t + 0.2
@@ -353,16 +358,16 @@ BG.Init(function()
             if not link then return end
             if not BG.IsML then return end
             local link = BG.Copy(link)
-            local itemIDs = {}
+            local items = {}
             if type(link) == "table" then
-                itemIDs = link
+                items = link
             else
-                itemIDs[1] = GetItemID(link)
+                items[1] = { id = GetItemID(link), link = link }
             end
             if BG.StartAucitonFrame then BG.StartAucitonFrame:Hide() end
             GameTooltip:Hide()
             local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture,
-            _, classID, subclassID, bindType = GetItemInfo(itemIDs[1])
+            _, classID, subclassID, bindType = GetItemInfo(items[1].link)
 
             local mainFrame
             local mainFrameWidth = 250
@@ -432,7 +437,8 @@ BG.Init(function()
                 f:SetPoint("TOPLEFT", f:GetParent(), "TOPLEFT", 2, -2)
                 f:SetPoint("BOTTOMRIGHT", f:GetParent(), "TOPRIGHT", -2, -35)
                 f:SetFrameLevel(f:GetParent():GetFrameLevel() + 10)
-                f.itemID = itemIDs[1]
+                f.itemID = items[1].id
+                f.link = items[1].link
                 f:SetScript("OnMouseUp", function(self)
                     mainFrame:GetScript("OnMouseUp")(mainFrame)
                 end)
@@ -448,9 +454,11 @@ BG.Init(function()
                 s:SetStatusBarColor(0, 0, 0, 0.8)
 
                 local icons = {}
-                for i, itemID in ipairs(itemIDs) do
+                for i, v in ipairs(items) do
+                    local itemID = v.id
+                    local link = v.link
                     local name, link, quality, level, _, itemType, itemSubType, _, itemEquipLoc, Texture,
-                    _, classID, subclassID, bindType = GetItemInfo(itemID)
+                    _, classID, subclassID, bindType = GetItemInfo(link)
 
                     -- 图标
                     local r, g, b = GetItemQualityColor(quality)
@@ -467,6 +475,7 @@ BG.Init(function()
                     end
                     ftex:SetSize(f:GetHeight() - 2, f:GetHeight() - 2)
                     ftex.itemID = itemID
+                    ftex.link = link
                     tinsert(icons, ftex)
 
                     ftex.isIcon = true
@@ -500,7 +509,7 @@ BG.Init(function()
                     end
                 end
 
-                if #itemIDs == 1 then
+                if #items == 1 then
                     -- 装备名称
                     local t = f:CreateFontString()
                     t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
@@ -622,7 +631,7 @@ BG.Init(function()
                 local bt = BG.CreateButton(mainFrame)
                 bt:SetSize(width + 19, 25)
                 bt:SetPoint("TOPLEFT", mainFrame.Text3, "BOTTOMLEFT", -1, -35)
-                bt.itemIDs = itemIDs
+                bt.items = items
                 bt:SetText(L["开始拍卖"])
                 mainFrame.bt = bt
                 bt:SetScript("OnClick", Start_OnClick)
@@ -638,7 +647,7 @@ BG.Init(function()
                                 tinsert(tbl, FB)
                             end
                         end
-                        local itemID = itemIDs[1]
+                        local itemID = items[1].id
                         for _, FB in ipairs(tbl) do
                             local money = BiaoGeVIP.auction[FB].money[itemID]
                             if money then
@@ -1179,6 +1188,7 @@ BG.Init(function()
     ]]
     -- 更新记录
     local updateTbl = {
+        -- L["v3.2：竞拍一个随机属性的装备时，会正确显示其属性"],
         L["v3.1：修复了输入框变绿的问题"],
         L["v3.0：修复了拍卖框架的一个重叠问题"],
         L["v2.9：匿名模式下团长现在可以无视匿名。重复出价时现在需要点击确认框后才能出价"],

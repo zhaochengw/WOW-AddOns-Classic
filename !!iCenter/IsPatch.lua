@@ -254,13 +254,13 @@ hooksecurefunc(GameTooltip, "SetUnitAura", function(self, unit, index, filter)
 end)
 
 --插件列表鼠标滚动
-InterfaceOptionsFrameAddOns:SetScript("OnMouseWheel", function(self, delta)
-    if InterfaceOptionsFrameAddOnsListScrollBar:IsShown() then
-        local offset = math.ceil(InterfaceOptionsFrameAddOnsListScrollBar:GetValue() - delta*ADDON_BUTTON_HEIGHT*5 - 0.5);
-        if offset < 1 then offset = 1 end
-        AddonListScrollFrame_OnVerticalScroll(InterfaceOptionsFrameAddOnsList, offset);
-    end
-end)
+--InterfaceOptionsFrameAddOns:SetScript("OnMouseWheel", function(self, delta)
+--    if InterfaceOptionsFrameAddOnsListScrollBar:IsShown() then
+--        local offset = math.ceil(InterfaceOptionsFrameAddOnsListScrollBar:GetValue() - delta*ADDON_BUTTON_HEIGHT*5 - 0.5);
+--        if offset < 1 then offset = 1 end
+--        AddonListScrollFrame_OnVerticalScroll(InterfaceOptionsFrameAddOnsList, offset);
+--    end
+--end)
 
 -- --新职业颜色
 -- if GetLocale() == "zhCN" then

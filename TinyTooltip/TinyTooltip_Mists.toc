@@ -1,0 +1,29 @@
+## Interface: 50501, 40402, 30403, 11507
+## Title: TinyTooltip
+## Notes: TinyTooltip
+## Author: M, GovtGeek
+## Version: 5.5.0.1
+## SavedVariables: BigTipDB
+## SavedVariablesPerCharacter: TinyTooltipCharacterDB
+
+# Mist bug fix
+frames\ThinBorderTemplate.xml
+
+libs\lib.xml
+Core.lua
+Config.lua
+General.lua
+Anchor.lua
+Unit.lua
+Target.lua
+Model.lua
+Item.lua
+Spell.lua
+Quest.lua
+LinkID.lua
+Mount.lua
+SkinFrames.lua
+
+libs\Template.xml
+locales\locales.xml
+Options.lua

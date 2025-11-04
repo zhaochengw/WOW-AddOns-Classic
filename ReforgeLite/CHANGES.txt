@@ -1,0 +1,28 @@
+tag 999aca3ccbcdf79978fe4f11355ce33908f00c65 v2.3.2
+Author:	skyler-code <skylerh15@github.com>
+Date:	Fri Oct 31 19:24:26 2025 -0500
+
+commit 292b380660ba94703721cbeb333176f927ccb53f
+Author: skyler-code <skylerh15@github.com>
+Date:   Fri Oct 31 19:12:57 2025 -0500
+
+    fix for Brazilian clients
+
+commit 5bf0953ebfe3b0148f906199b859f9c8ede4f02f
+Author: skyler-code <skylerh15@github.com>
+Date:   Fri Oct 31 13:04:28 2025 -0500
+
+    Leftover code was causing column expanding to break
+
+commit c8f394daf6e3409bb3963d04f5c8776adad81ff2
+Author: skyler-code <skylerh15@github.com>
+Date:   Fri Oct 31 01:27:25 2025 -0500
+
+    cleanup
+
+commit 52bc6aa86a5916cfa5893b53f6501458c5bbf9ba
+Author: skyler-code <skylerh15@github.com>
+Date:   Thu Oct 30 13:23:35 2025 -0500
+
+    utilize FormatLargeNumber
+

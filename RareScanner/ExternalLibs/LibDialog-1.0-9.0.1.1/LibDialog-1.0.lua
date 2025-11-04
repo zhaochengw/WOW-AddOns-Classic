@@ -20,7 +20,7 @@ local table = _G.table
 -- Library namespace.
 -----------------------------------------------------------------------
 local LibStub = _G.LibStub
-local MAJOR = "LibDialog-1.0"
+local MAJOR = "LibDialog-1.0RS"
 
 _G.assert(LibStub, MAJOR .. " requires LibStub")
 
@@ -35,6 +35,27 @@ local dialog_prototype = _G.CreateFrame("Frame", nil, _G.UIParent, _G.BackdropTe
 local dialog_meta = {
     __index = dialog_prototype
 }
+
+local function _SetupAnchor(dialog)
+    local default_dialog
+    if _G.StaticPopup_DisplayedFrames then
+        default_dialog = _G.StaticPopup_DisplayedFrames[#_G.StaticPopup_DisplayedFrames]
+    elseif (_G.StaticPopup_HasDisplayedFrames and _G.StaticPopup_IsLastDisplayedFrame) then
+        if StaticPopup_HasDisplayedFrames() then
+            for idx = STATICPOPUP_NUMDIALOGS,1,-1 do
+                local test_dialog = _G["StaticPopup"..idx]
+                if StaticPopup_IsLastDisplayedFrame(test_dialog) then
+                    default_dialog = test_dialog
+                end
+            end
+        end
+    end
+    if default_dialog then
+        dialog:SetPoint("TOP", default_dialog, "BOTTOM", 0, 0)
+    else
+        dialog:SetPoint("TOP", _G.UIParent, "TOP", 0, -135)
+    end
+end
 
 -----------------------------------------------------------------------
 -- Migrations.
@@ -148,7 +169,7 @@ local function _RefreshDialogAnchors()
         current_dialog:ClearAllPoints()
 
         if index == 1 then
-            local default_dialog = _G.StaticPopup_DisplayedFrames[#_G.StaticPopup_DisplayedFrames]
+            local default_dialog = _SetupAnchor(current_dialog)
 
             if default_dialog then
                 current_dialog:SetPoint("TOP", default_dialog, "BOTTOM", 0, 0)
@@ -830,7 +851,7 @@ function lib:Spawn(reference, data)
     if #active_dialogs > 0 then
         dialog:SetPoint("TOP", active_dialogs[#active_dialogs], "BOTTOM", 0, 0)
     else
-        local default_dialog = _G.StaticPopup_DisplayedFrames[#_G.StaticPopup_DisplayedFrames]
+        local default_dialog =_SetupAnchor(dialog)
 
         if default_dialog then
             dialog:SetPoint("TOP", default_dialog, "BOTTOM", 0, 0)

@@ -772,7 +772,7 @@ function MopObjectFixes.Load()
             [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{42.31,92.81}}},
             [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
         },
-        [215689] = {
+        [215689] = { -- Rappelling Rope
             [objectKeys.name] = "Rappelling Rope",
             [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{31.51,11.1},{31.43,10.69},{31.35,10.42}}},
             [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
@@ -780,6 +780,112 @@ function MopObjectFixes.Load()
         [215705] = { -- Tillers Shrine
             [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{52.02,49.05}}},
             [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [215873] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [215874] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{41.69,23.14}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215875] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.SHRINE_OF_TWO_MOONS_TOP_FLOOR] = {{58.64,78.23}}},
+            [objectKeys.zoneID] = zoneIDs.SHRINE_OF_TWO_MOONS_TOP_FLOOR,
+        },
+        [215876] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [215877] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [215879] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_VEILED_STAIR] = {{55.11,72.23}}},
+            [objectKeys.zoneID] = zoneIDs.THE_VEILED_STAIR,
+        },
+        [215880] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{45.79,43.61}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215881] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215884] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{48.1,34.62}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215886] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{55.72,24.41}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215889] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{54.6,63.33}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215891] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{59.56,83.24}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215892] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [215894] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{75.92,6.87}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [215895] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{57.46,59.96}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215897] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{72.74,92.28}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215898] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{62.77,80.5}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215899] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{64.21,61.28}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215900] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{54.07,82.82}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215902] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{71.14,57.77}}},
+            [objectKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [215903] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{35.14,77.78}}},
+            [objectKeys.zoneID] = zoneIDs.VALE_OF_ETERNAL_BLOSSOMS,
+        },
+        [215904] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{61.03,25.14}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [215905] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{83.65,20.13}}},
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [215906] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{19.88,55.78}}},
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [215907] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{44.8,84.36}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215908] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{28.46,13.27}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [215914] = { -- Candy Bucket
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [215915] = { -- Candy Bucket
+            [objectKeys.spawns] = {[zoneIDs.SHRINE_OF_SEVEN_STARS] = {{37.81,65.86}}},
+            [objectKeys.zoneID] = zoneIDs.SHRINE_OF_SEVEN_STARS,
         },
         [215973] = { -- Mailbox
             [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{44.83,84.61}}},
@@ -791,6 +897,10 @@ function MopObjectFixes.Load()
         },
         [216106] = { -- Mailbox
             [objectKeys.factionID] = 1735, -- horde only
+        },
+        [216160] = { -- Chunk of Stone
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{77.1,20.4},{77.3,18.3},{77.4,17.2},{77.4,19.1},{77.4,20.5},{77.5,20.5},{77.9,19.1},{78,18},{78.2,16.9},{78.4,19.9},{78.5,17.9},{78.5,18.6},{78.5,19.9},{79.1,17}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
         },
         [216162] = { -- Mound of Dirt
             [objectKeys.name] = "Mound of Dirt",
@@ -806,31 +916,109 @@ function MopObjectFixes.Load()
             [objectKeys.questStarts] = nil,
             [objectKeys.questEnds] = {32163,32166},
         },
-        [216274] = {
+        [216231] = { -- Powder Magazine
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{12.33,75.58}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216232] = { -- Powder Magazine
+            [objectKeys.name] = "Powder Magazine",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{15.1,76.65},{15.09,76.65},{15.09,76.63},{15.09,76.64},{15.1,76.63},{15.1,76.61},{15.11,76.62},{15.12,76.62},{15.11,76.6},{15.11,76.57},{15.1,76.59},{15.09,76.61},{15.07,76.62},{15.07,76.64},{15.06,76.67}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216274] = { -- Signal Fire
             [objectKeys.name] = "Signal Fire",
-            [objectKeys.zoneID] = 6134,
-            [objectKeys.spawns] = {
-                [6134] = {{8.5,63.8}},
-            },
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{8.44,63.98}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
             [objectKeys.questStarts] = nil,
             [objectKeys.questEnds] = {32108},
         },
-        [216427] = {
+        [216347] = { -- Divine Bell
+            [objectKeys.name] = "Divine Bell",
+            [objectKeys.spawns] = {[zoneIDs.DARNASSUS] = {{39.81,39.75}}},
+            [objectKeys.zoneID] = zoneIDs.DARNASSUS,
+        },
+        [216360] = { -- Untamed Amber
+            [objectKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{65.68,71.66}}},
+            [objectKeys.zoneID] = zoneIDs.DREAD_WASTES,
+        },
+        [216362] = { -- A Keg of Metal Brew
+            [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{33.74,34.44}}},
+            [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [216420] = { -- Portal to The Purple Parlor
+            [objectKeys.name] = "Portal to The Purple Parlor",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{89.19,33.56}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216421] = { -- Mallet Head
+            [objectKeys.name] = "Mallet Head",
+            [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{24.98,28.06}}},
+            [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
+        },
+        [216427] = { -- Hammer of Fellowship
             [objectKeys.name] = "Hammer of Fellowship",
             [objectKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{33.4,34.3}}},
             [objectKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
         },
-        [216452] = {
+        [216452] = { -- Treasure Chest
             [objectKeys.name] = "Treasure Chest",
             [objectKeys.zoneID] = 0,
             [objectKeys.spawns] = nil,
             [objectKeys.questStarts] = nil,
             [objectKeys.questEnds] = {32340},
         },
-        [216625] = {
+        [216625] = { -- Memory Wine
             [objectKeys.name] = "Memory Wine",
             [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{60.5,55.4}}},
             [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [216643] = { -- Mogu Statue
+            [objectKeys.name] = "Mogu Statue",
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{58.08,84.56},{58.22,84.94},{58.35,84.05}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [216664] = { -- Weathered Journal
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{58.26,84.21}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [216678] = { -- Divine Bell
+            [objectKeys.name] = "Divine Bell",
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{61.71,20.75}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [216710] = { -- Sunreaver Portal: Darnassus
+            [objectKeys.name] = "Sunreaver Portal: Darnassus",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{9.78,53.3}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216720] = { -- Portal to Dalaran
+            [objectKeys.name] = "Portal to Dalaran",
+            [objectKeys.spawns] = {[zoneIDs.TELDRASSIL] = {{39.98,50.6}}},
+            [objectKeys.zoneID] = zoneIDs.TELDRASSIL,
+        },
+        [216721] = { -- Divine Bell
+            [objectKeys.name] = "Divine Bell",
+            [objectKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{55.95,31.8}}},
+            [objectKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [216743] = { -- Goblin Explosives Crate
+            [objectKeys.name] = "Goblin Explosives Crate",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{25.47,59.41}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216744] = { -- Goblin Explosives Crate
+            [objectKeys.name] = "Goblin Explosives Crate",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{23.91,54.62}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216745] = { -- Goblin Explosives Crate
+            [objectKeys.name] = "Goblin Explosives Crate",
+            [objectKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{15.27,58.98}}},
+            [objectKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [216837] = { -- Wrathion's Jewel Chest
+            [objectKeys.spawns] = {[zoneIDs.THE_VEILED_STAIR] = {{54.99,72.65}}},
+            [objectKeys.zoneID] = zoneIDs.THE_VEILED_STAIR,
         },
         [216885] = { -- Mailbox
             [objectKeys.name] = "Mailbox",
@@ -913,11 +1101,6 @@ function MopObjectFixes.Load()
             [objectKeys.name] = "Golden Falls",
             [objectKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{56.71,21.87}}},
             [objectKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
-        },
-        [440009] = {
-            [objectKeys.name] = "Deeprun Tram Entrance",
-            [objectKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{69.49, 31.2}}},
-            [objectKeys.zoneID] = zoneIDs.STORMWIND_CITY,
         },
     }
 end

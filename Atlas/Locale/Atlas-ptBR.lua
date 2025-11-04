@@ -1,4 +1,3 @@
--- $Id: Atlas-ptBR.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,27 +23,23 @@
 
 --]]
 
-local AceLocale = LibStub:GetLibrary("AceLocale-3.0");
-local L = AceLocale:NewLocale("Atlas", "ptBR", false);
--- Localize file must set above to false, for example:
---    local AL = AceLocale:NewLocale("Atlas", "deDE", false);
+local L = LibStub("AceLocale-3.0"):NewLocale("Atlas", "ptBR");
 
--- Atlas English Localization
-if ( GetLocale() == "ptBR" ) then
--- Define the leading strings to be ignored while sorting
--- Ex: The Stockade
---AtlasSortIgnore = {"the (.+)"};
+if (GetLocale() == "ptBR") then
+	-- Define the leading strings to be ignored while sorting
+	-- Ex: The Stockade
+	--AtlasSortIgnore = {"the (.+)"};
 
--- Syntax: ["real_zone_name"] = "localized map zone name"
-AtlasZoneSubstitutions = {
---	["Ahn'Qiraj"] = "Temple of Ahn'Qiraj";
---	["The Temple of Atal'Hakkar"] = "Sunken Temple";
---	["Throne of Tides"] = "The Abyssal Maw: Throne of the Tides";
-};
+	-- Syntax: ["real_zone_name"] = "localized map zone name"
+	AtlasZoneSubstitutions = {
+		--	["Ahn'Qiraj"] = "Temple of Ahn'Qiraj";
+		--	["The Temple of Atal'Hakkar"] = "Sunken Temple";
+		--	["Throne of Tides"] = "The Abyssal Maw: Throne of the Tides";
+	};
 end
 
+if not L then return end
 
-if L then
 L["Adult"] = "Adulto"
 L["AKA"] = "Conhecido como"
 L["Arms Warrior"] = "Guerreiro Armas"
@@ -77,37 +72,24 @@ L["ATLAS_DDL_PARTYSIZE"] = "Tamanho do Grupo"
 L["ATLAS_DDL_TYPE"] = "Tipo"
 L["ATLAS_DDL_TYPE_ENTRANCE"] = "Entradas"
 L["ATLAS_DEP_MSG1"] = "O Atlas detectou módulo(s) desatualizado(s)."
-L["ATLAS_DEP_OK"] = "Ok!"
 L["ATLAS_ENTRANCE_BUTTON"] = "Entrada"
 L["ATLAS_EXPAND_BUTTON"] = "Clique para abrir o painel de legendas do Atlas."
-L["ATLAS_INFO"] = "Informações do Atlas"
 L["ATLAS_INSTANCE_BUTTON"] = "Instância"
 L["ATLAS_LDB_HINT"] = [=[Clique com o botão esquerdo para abrir o Atlas.
 Clique com o botão direito para abrir as opções do Atlas.]=]
-L["ATLAS_MINIMAPLDB_HINT"] = [=[Clique com o botão esquerdo para abrir o Atlas.
-Clique com o botão direito para as opções do Atlas.
-Clique com o botão esquerdo e arraste para mover este botão.]=]
-L["ATLAS_OPEN_ADDON_LIST"] = "Abra a lista de addons"
 L["ATLAS_OPTIONS_AUTOSEL"] = "Selecione automaticamente o Mapa da Instância"
 L["ATLAS_OPTIONS_AUTOSEL_TIP"] = "Selecione automaticamente o Mapa da Instância, o Atlas vai detectar a sua localização para escolher o melhor mapa de instância para você."
-L["ATLAS_OPTIONS_BOSS_DESC"] = "Mostre a descrição do Chefe quando dsiponível"
-L["ATLAS_OPTIONS_BUTPOS"] = "Poisção do botão"
 L["ATLAS_OPTIONS_BUTTON"] = "Opções"
 L["ATLAS_OPTIONS_CATDD"] = "Organize os Mapas de Instâncias por:"
-L["ATLAS_OPTIONS_DONTSHOWAGAIN"] = "Não mostre a mesma informação novamente."
 L["ATLAS_OPTIONS_LOCK"] = "Travar a janela do Atlas"
 L["ATLAS_OPTIONS_RCLICK"] = "Clique com o botão direito para ir para o Mapa do Mundo"
-L["ATLAS_OPTIONS_RESETPOS"] = "Recarregar posição"
 L["ATLAS_OPTIONS_TRANS"] = "Transparência"
-L["ATLAS_SEARCH_UNAVAIL"] = "Busca Indisponível"
 L["ATLAS_SLASH"] = "/atlas"
 L["ATLAS_SLASH_OPTIONS"] = "opções"
-L["ATLAS_STRING_CLEAR"] = "Claro"
 L["ATLAS_STRING_LOCATION"] = "Localização"
 L["ATLAS_STRING_MINLEVEL"] = "Nível Mínimo"
 L["ATLAS_STRING_PLAYERLIMIT"] = "Limite de Jogadores"
 L["ATLAS_STRING_RECLEVELRANGE"] = "Nível Recomendado"
-L["ATLAS_STRING_SEARCH"] = "Pesquisa"
 L["ATLAS_STRING_SELECT_CAT"] = "Selecione a Categoria"
 L["ATLAS_STRING_SELECT_MAP"] = "Selecione o Mapa"
 L["ATLAS_TITLE"] = "Atlas"
@@ -133,9 +115,7 @@ L["Holy Paladin"] = "Paladino Sagrado"
 L["Holy Priest"] = "Sacerdote Sagrado"
 L["Hyphen"] = "-"
 L["Key"] = "Chave"
-L["L-DQuote"] = "“"
 L["L-Parenthesis"] = "("
-L["L-SBracket"] = "["
 L["MapA"] = "[A]"
 L["MapB"] = "[B]"
 L["MapC"] = "[C]"
@@ -151,21 +131,14 @@ L["Mythic"] = "Mítico"
 L["Mythic_Symbol"] = "(M)"
 L["North"] = "Norte"
 L["Optional"] = "Opcional"
-L["Period"] = "."
 L["Portal"] = "Portal"
-L["PossibleMissingModule"] = "É provável que este mapa seja deste módulo:"
 L["Protection Warrior"] = "Guerreiro Proteção"
 L["Random"] = "Aleatório"
 L["Rare"] = "Raro"
-L["R-DQuote"] = "“"
 L["Repair"] = "Reparar"
 L["Retribution Paladin"] = "Paladino Retribuição"
-L["Rewards"] = "Recompensas"
 L["R-Parenthesis"] = ")"
-L["R-SBracket"] = [=[]
-]=]
 L["Second Stop"] = "Segunda Parada"
-L["Semicolon"] = ";"
 L["Slash"] = "/"
 L["South"] = "Sul"
 L["Start"] = "início"
@@ -178,5 +151,3 @@ L["Tunnel"] = "Túnel"
 L["West"] = "Oeste"
 L["Yarley <Armorer>"] = "Yarley <Armoraria>"
 L["Zaladormu"] = "Zaladormu"
-
-end

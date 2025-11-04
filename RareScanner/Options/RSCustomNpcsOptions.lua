@@ -24,7 +24,6 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 -- RareScanner service libraries
 local RSMap = private.ImportLib("RareScannerMap")
 local RSCustomNpcs = private.ImportLib("RareScannerCustomNpcs")
-local RSTargetUnitTracker = private.ImportLib("RareScannerTargetUnitTracker")
 
 local options
 
@@ -71,7 +70,7 @@ local function GetContinentMapIds()
 		for k, v in pairs(RSMapDB.GetContinents()) do
 			if (v.zonefilter) then
 				if (v.id) then
-					continent_map_ids[k] = RSMap.GetMapName(k)
+					continent_map_ids[k] = RSMapDB.GetMapName(k)
 				else
 					continent_map_ids[k] = AL["ZONES_CONTINENT_LIST"][k]
 				end
@@ -98,7 +97,7 @@ local function LoadSubmapCombo(continentID, group, npcID)
 			private.options_cnpcs[groupKey][npcKey].subzone = RSConstants.ALL_ZONES_CUSTOM_NPC
 		else
 			table.foreach(RSMapDB.GetContinents()[continentID].zones, function(index, zoneID)
-				local zoneName = RSMap.GetMapName(zoneID)
+				local zoneName = RSMapDB.GetMapName(zoneID)
 				if (zoneName) then
 					options.args[groupKey].args[npcKey].args.subzones.values[zoneID] = zoneName
 				end
@@ -302,12 +301,11 @@ local function AddNewCustomNpc(npcID, group)
 						if (private.options_cnpcs[groupKey][npcKey].subzone == RSConstants.ALL_ZONES_CUSTOM_NPC) then
 							private.options_cnpcs[groupKey][npcKey].zones[private.options_cnpcs[groupKey][npcKey].subzone] = AL["ALL_ZONES"]
 						else
-							private.options_cnpcs[groupKey][npcKey].zones[private.options_cnpcs[groupKey][npcKey].subzone] = RSMap.GetMapName(private.options_cnpcs[groupKey][npcKey].subzone)
+							private.options_cnpcs[groupKey][npcKey].zones[private.options_cnpcs[groupKey][npcKey].subzone] = RSMapDB.GetMapName(private.options_cnpcs[groupKey][npcKey].subzone)
 						end
 						
 						private.options_cnpcs[groupKey][npcKey].zone = private.options_cnpcs[groupKey][npcKey].subzone
 						RSNpcDB.SetCustomNpcInfo(npcID, private.options_cnpcs[groupKey][npcKey])
-						RSTargetUnitTracker.Refresh()
 					end
 				end,
 				width = "normal",
@@ -580,7 +578,7 @@ local function RefresCustomNpcList()
 						private.options_cnpcs[groupKey][npcKey].zones[zoneID] = AL["ALL_ZONES"]
 						private.options_cnpcs[groupKey][npcKey].zone = zoneID
 					else
-						private.options_cnpcs[groupKey][npcKey].zones[zoneID] = RSMap.GetMapName(zoneID)
+						private.options_cnpcs[groupKey][npcKey].zones[zoneID] = RSMapDB.GetMapName(zoneID)
 						private.options_cnpcs[groupKey][npcKey].zone = zoneID
 						private.options_cnpcs[groupKey][npcKey].coordinates[zoneID] = ParseCustomNpcOverlay(zoneInfo.overlay)
 					end
@@ -590,7 +588,7 @@ local function RefresCustomNpcList()
 					private.options_cnpcs[groupKey][npcKey].zones[npcInfo.zoneID] = AL["ALL_ZONES"]
 					private.options_cnpcs[groupKey][npcKey].zone = npcInfo.zoneID
 				else
-					private.options_cnpcs[groupKey][npcKey].zones[npcInfo.zoneID] = RSMap.GetMapName(npcInfo.zoneID)
+					private.options_cnpcs[groupKey][npcKey].zones[npcInfo.zoneID] = RSMapDB.GetMapName(npcInfo.zoneID)
 					private.options_cnpcs[groupKey][npcKey].zone = npcInfo.zoneID
 					private.options_cnpcs[groupKey][npcKey].coordinates[npcInfo.zoneID] = ParseCustomNpcOverlay(npcInfo.overlay)
 				end
@@ -604,184 +602,194 @@ end
 -----------------------------------------------------------------------
 
 function RSCustomNpcsOptions.GetCustomNpcsOptions()
-	if (not options) then
-		-- Adds default group
-		if (not RSNpcDB.GetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP)) then
-			RSNpcDB.SetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP, AL["CUSTOM_NPC_GROUP_DEFAULT"])
-		end
-		
-		options = {
-			type = "group",
-			order = 0,
-			name = AL["CUSTOM_NPCS"],
-			handler = RareScanner,
-			desc = AL["CUSTOM_NPCS"],
-			args = {
-				description = {
-					order = 0,
-					type = "description",
-					name = AL["CUSTOM_NPC_TEXT"],
-				},
-				groups = {
-					order = 1.1,
-					type = "select",
-					name = AL["CUSTOM_NPC_GROUP"],
-					desc = AL["CUSTOM_NPC_GROUP_DESC"],
-					values = function ()						
-						return RSNpcDB.GetCustomNpcGroups()
-					end,
-					get = function(_, value)
-						-- Selects default group
-						if (not private.options_cnpcs_selectedGroup) then
-							for group, _ in pairs (RSNpcDB.GetCustomNpcGroups()) do
-								private.options_cnpcs_selectedGroup = group
-								break;
-							end
-						end
-						
-						return private.options_cnpcs_selectedGroup
-					end,
-					set = function(_, value)
-						private.options_cnpcs_selectedGroup = value
-					end,
-					width = "normal",
-				},
-				addNewGroup = {
-					order = 1.2,
-					type = "input",
-					name = AL["CUSTOM_NPC_GROUP_ADD"],
-					desc = AL["CUSTOM_NPC_GROUP_ADD_DESC"],
-					get = function(_, value) return private.options_cnpcs_newGroup_input end,
-					set = function(_, value)
-						if (value and strtrim(value) ~= '') then
-							local groupAlreadyExists = false
-							for _, groupName in pairs (RSNpcDB.GetCustomNpcGroups()) do
-								if (groupName == strtrim(value)) then
-									groupAlreadyExists = true
-								end
-							end
-							
-							if (not groupAlreadyExists) then
-								RSNpcDB.AddCustomNpcGroup(strtrim(value))
-								options.args.groups.values = RSNpcDB.GetCustomNpcGroups()
-							end
-						end
-					end,
-					validate = function(_, value)
-						-- Check length
-						if (value and strlen(strtrim(value)) > 20) then
-							return AL["CUSTOM_NPC_VALIDATION_GROUP"]
-						end
-						
-						return true
-					end,
-					width = "normal",
-				},
-				deleteGroup = {
-					order = 1.3,
-					name = AL["CUSTOM_NPC_GROUP_DELETE"],
-					desc = AL["CUSTOM_NPC_GROUP_DELETE"],
-					type = "execute",
-					func = function()
-						-- Deletes the current group
-						RSNpcDB.DeleteCustomNpcGroup(private.options_cnpcs_selectedGroup)
-						
-						-- Autoselects the next group available
-						if (RSUtils.GetTableLength(RSNpcDB.GetCustomNpcGroups()) == 0) then
-							RSNpcDB.SetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP, AL["CUSTOM_NPC_GROUP_DEFAULT"])
-							private.options_cnpcs_selectedGroup = RSConstants.DEFAULT_GROUP
-						else
-							for group, _ in pairs (RSNpcDB.GetCustomNpcGroups()) do
-								private.options_cnpcs_selectedGroup = group
-								break
-							end
-						end
-	 				end,
-					width = "normal",
-					disabled = function()
-						local groupKey = RSCustomNpcs.GetGroupKey(private.options_cnpcs_selectedGroup)
-						
-						-- If the groups contains NPCs or there is only one group and it is the default one
-						if ((private.options_cnpcs and private.options_cnpcs[groupKey] and RSUtils.GetTableLength(private.options_cnpcs[groupKey]) > 0) or (RSUtils.GetTableLength(RSNpcDB.GetCustomNpcGroups()) == 1 and private.options_cnpcs_selectedGroup == RSConstants.DEFAULT_GROUP)) then
-							return true
-						else
-							return false
+	-- Refresh only if needed
+	-- This flag is set in RSCommandLine
+	if (options and not private.refreshCustomNpcs) then
+		return options
+	else
+		private.refreshCustomNpcs = nil
+	end
+	
+	-- Adds default group
+	if (not RSNpcDB.GetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP)) then
+		RSNpcDB.SetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP, AL["CUSTOM_NPC_GROUP_DEFAULT"])
+	end
+	
+	private.options_cnpcs = nil
+	private.options_cnpcs_selectedGroup = nil
+	private.options_cnpcs_newNpcID_input = nil
+	
+	options = {
+		type = "group",
+		order = 0,
+		name = AL["CUSTOM_NPCS"],
+		handler = RareScanner,
+		desc = AL["CUSTOM_NPCS"],
+		args = {
+			description = {
+				order = 0,
+				type = "description",
+				name = AL["CUSTOM_NPC_TEXT"],
+			},
+			groups = {
+				order = 1.1,
+				type = "select",
+				name = AL["CUSTOM_NPC_GROUP"],
+				desc = AL["CUSTOM_NPC_GROUP_DESC"],
+				values = function ()						
+					return RSNpcDB.GetCustomNpcGroups()
+				end,
+				get = function(_, value)
+					-- Selects default group
+					if (not private.options_cnpcs_selectedGroup) then
+						for group, _ in pairs (RSNpcDB.GetCustomNpcGroups()) do
+							private.options_cnpcs_selectedGroup = group
+							break;
 						end
 					end
-				},
-				newNpcID = {
-					order = 2.1,
-					type = "input",
-					name = AL["CUSTOM_NPC_ADD_NPC"],
-					desc = AL["CUSTOM_NPC_ADD_NPC_DESC"],
-					get = function(_, value) return private.options_cnpcs_newNpcID_input end,
-					set = function(_, value)
-						-- Adds new custom NPC
-						AddNewCustomNpc(value, private.options_cnpcs_selectedGroup);
-						private.options_cnpcs_newNpcID_input = nil
-	
-						-- Selects the group
-						RSACD:SelectGroup("RareScanner Custom NPCs", RSCustomNpcs.GetGroupKey(private.options_cnpcs_selectedGroup), RSCustomNpcs.GetNpcKey(value))
-					end,
-					validate = function(_, value)
-						-- Check if number
-						if (tonumber(value) == nil) then
-							return AL["CUSTOM_NPC_VALIDATION_NUMBER"]
-						end
-						
-						-- Check if valid NPC
-						-- Call several times to let the server load it
-						RSNpcDB.GetNpcName(tonumber(value))
-						RSNpcDB.GetNpcName(tonumber(value))
-						local name = RSNpcDB.GetNpcName(tonumber(value))
-						if (not name) then
-							return AL["CUSTOM_NPC_ADD_NPC_NOEXIST"]
-						end
-						
-						-- Check if already supported by RareScanner
-						if (RSNpcDB.GetInternalNpcInfo(tonumber(value)) or RSNpcDB.GetCustomNpcInfo(tonumber(value))) then
-							return AL["CUSTOM_NPC_ADD_NPC_EXISTS_RS"]
-						end
-						
-						-- Check if already added in the list
-						if (RSUtils.GetTableLength(private.options_cnpcs) > 0) then
-							for groupKey, _ in pairs (private.options_cnpcs) do
-								if (private.options_cnpcs[groupKey][RSCustomNpcs.GetNpcKey(value)]) then
-									return AL["CUSTOM_NPC_ADD_NPC_EXISTS_RS"]
-								end
+					
+					return private.options_cnpcs_selectedGroup
+				end,
+				set = function(_, value)
+					private.options_cnpcs_selectedGroup = value
+				end,
+				width = "normal",
+			},
+			addNewGroup = {
+				order = 1.2,
+				type = "input",
+				name = AL["CUSTOM_NPC_GROUP_ADD"],
+				desc = AL["CUSTOM_NPC_GROUP_ADD_DESC"],
+				get = function(_, value) return private.options_cnpcs_newGroup_input end,
+				set = function(_, value)
+					if (value and strtrim(value) ~= '') then
+						local groupAlreadyExists = false
+						for _, groupName in pairs (RSNpcDB.GetCustomNpcGroups()) do
+							if (groupName == strtrim(value)) then
+								groupAlreadyExists = true
 							end
 						end
 						
-						return true
-					end,
-					width = "normal",
-				},
-				separator = {
-					order = 2.2,
-					type = "description",
-					name = AL["CUSTOM_NPC_IMPORT_OR"],
-					width = 0.1,
-				},
-				importNpc = {
-					order = 2.3,
-					type = "input",
-					name = AL["CUSTOM_NPC_IMPORT_NPC"],
-					desc = AL["CUSTOM_NPC_IMPORT_NPC_DESC"],
-					type = "execute",
-					func = function()
-						importNpcsEditBox:SetText(AL["CUSTOM_NPC_IMPORT_HELP"])
-  						importNpcsEditBox:HighlightText()
-  						importNpcsEditBox.exporting = false
-						importNpcsFrame:Show()
-	 				end,
-					width = "normal",
-				},
+						if (not groupAlreadyExists) then
+							RSNpcDB.AddCustomNpcGroup(strtrim(value))
+							options.args.groups.values = RSNpcDB.GetCustomNpcGroups()
+						end
+					end
+				end,
+				validate = function(_, value)
+					-- Check length
+					if (value and strlen(strtrim(value)) > 20) then
+						return AL["CUSTOM_NPC_VALIDATION_GROUP"]
+					end
+					
+					return true
+				end,
+				width = "normal",
 			},
-		}
-		
-		-- Preload already added custom NPCs
-		RefresCustomNpcList()
-	end
+			deleteGroup = {
+				order = 1.3,
+				name = AL["CUSTOM_NPC_GROUP_DELETE"],
+				desc = AL["CUSTOM_NPC_GROUP_DELETE"],
+				type = "execute",
+				func = function()
+					-- Deletes the current group
+					RSNpcDB.DeleteCustomNpcGroup(private.options_cnpcs_selectedGroup)
+					
+					-- Autoselects the next group available
+					if (RSUtils.GetTableLength(RSNpcDB.GetCustomNpcGroups()) == 0) then
+						RSNpcDB.SetCustomNpcGroupByKey(RSConstants.DEFAULT_GROUP, AL["CUSTOM_NPC_GROUP_DEFAULT"])
+						private.options_cnpcs_selectedGroup = RSConstants.DEFAULT_GROUP
+					else
+						for group, _ in pairs (RSNpcDB.GetCustomNpcGroups()) do
+							private.options_cnpcs_selectedGroup = group
+							break
+						end
+					end
+ 				end,
+				width = "normal",
+				disabled = function()
+					local groupKey = RSCustomNpcs.GetGroupKey(private.options_cnpcs_selectedGroup)
+					
+					-- If the groups contains NPCs or there is only one group and it is the default one
+					if ((private.options_cnpcs and private.options_cnpcs[groupKey] and RSUtils.GetTableLength(private.options_cnpcs[groupKey]) > 0) or (RSUtils.GetTableLength(RSNpcDB.GetCustomNpcGroups()) == 1 and private.options_cnpcs_selectedGroup == RSConstants.DEFAULT_GROUP)) then
+						return true
+					else
+						return false
+					end
+				end
+			},
+			newNpcID = {
+				order = 2.1,
+				type = "input",
+				name = AL["CUSTOM_NPC_ADD_NPC"],
+				desc = AL["CUSTOM_NPC_ADD_NPC_DESC"],
+				get = function(_, value) return private.options_cnpcs_newNpcID_input end,
+				set = function(_, value)
+					-- Adds new custom NPC
+					AddNewCustomNpc(value, private.options_cnpcs_selectedGroup);
+					private.options_cnpcs_newNpcID_input = nil
+
+					-- Selects the group
+					RSACD:SelectGroup("RareScanner Custom NPCs", RSCustomNpcs.GetGroupKey(private.options_cnpcs_selectedGroup), RSCustomNpcs.GetNpcKey(value))
+				end,
+				validate = function(_, value)
+					-- Check if number
+					if (tonumber(value) == nil) then
+						return AL["CUSTOM_NPC_VALIDATION_NUMBER"]
+					end
+					
+					-- Check if valid NPC
+					-- Call several times to let the server load it
+					RSNpcDB.GetNpcName(tonumber(value))
+					RSNpcDB.GetNpcName(tonumber(value))
+					local name = RSNpcDB.GetNpcName(tonumber(value))
+					if (not name) then
+						return AL["CUSTOM_NPC_ADD_NPC_NOEXIST"]
+					end
+					
+					-- Check if already supported by RareScanner
+					if (RSNpcDB.GetInternalNpcInfo(tonumber(value)) or RSNpcDB.GetCustomNpcInfo(tonumber(value))) then
+						return AL["CUSTOM_NPC_ADD_NPC_EXISTS_RS"]
+					end
+					
+					-- Check if already added in the list
+					if (RSUtils.GetTableLength(private.options_cnpcs) > 0) then
+						for groupKey, _ in pairs (private.options_cnpcs) do
+							if (private.options_cnpcs[groupKey][RSCustomNpcs.GetNpcKey(value)]) then
+								return AL["CUSTOM_NPC_ADD_NPC_EXISTS_RS"]
+							end
+						end
+					end
+					
+					return true
+				end,
+				width = "normal",
+			},
+			separator = {
+				order = 2.2,
+				type = "description",
+				name = AL["CUSTOM_NPC_IMPORT_OR"],
+				width = 0.1,
+			},
+			importNpc = {
+				order = 2.3,
+				type = "input",
+				name = AL["CUSTOM_NPC_IMPORT_NPC"],
+				desc = AL["CUSTOM_NPC_IMPORT_NPC_DESC"],
+				type = "execute",
+				func = function()
+					importNpcsEditBox:SetText(AL["CUSTOM_NPC_IMPORT_HELP"])
+					importNpcsEditBox:HighlightText()
+					importNpcsEditBox.exporting = false
+					importNpcsFrame:Show()
+ 				end,
+				width = "normal",
+			},
+		},
+	}
+	
+	-- Preload already added custom NPCs
+	RefresCustomNpcList()
 
 	return options
 end
@@ -810,7 +818,6 @@ RSImportNpcsFrameButton:SetScript("OnClick", function(self)
 		else
 			importNpcsFrame:Hide()
 		end
-		RSTargetUnitTracker.Refresh()
 		
 		-- Refresh UI
 		RefresCustomNpcList()

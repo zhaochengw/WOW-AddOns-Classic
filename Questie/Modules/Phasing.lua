@@ -455,6 +455,27 @@ local phases = {
     GENERAL_NAZGRIM_OUTSIDE_TENT = 1383,
     GENERAL_NAZGRIM_NEAR_SPEARS = 1384,
     GENERAL_NAZGRIM_NEAR_ANDUINN = 1385,
+    THRALL_VALLEY_OF_TRIALS = 1386,
+    THRALL_ECHO_ISLES_1 = 1387,
+    THRALL_ECHO_ISLES_2 = 1388,
+    SARANNHA_AT_MOGUJIA = 1389,
+    SARANNHA_AT_RUINS_OF_KORUNE = 1390,
+    JAINA_IN_DARNASSUS = 1391,
+    JAINA_IN_TELDRASSIL = 1392,
+    ANDUIN_ENTRANCE_OF_TOMB = 1393,
+    ANDUIN_AT_LIONS_LANDING = 1394,
+    GARROSH_TOP_FLOOR_WEST = 1395,
+    GARROSH_TOP_FLOOR_EAST = 1396,
+    BAINE_IN_SHRINE = 1397,
+    BAINE_AT_GARROSHAR_ADVANCE = 1398,
+    ISHI_AT_RUINS_OF_KORUNE = 1399,
+    ISHI_IN_CRYPT = 1400,
+    ROMMATH_NEAR_BANK = 1401,
+    ROMMATH_IN_TUNNEL_1 = 1402,
+    ROMMATH_IN_TUNNEL_2 = 1403,
+    ROMMATH_AT_TUNNEL_RAMP = 1404,
+    ROMMATH_AT_RUNEWEAVER_SQUARE = 1405,
+    THERON_SILVERMOON_CITY_LANDFALL = 1406,
 }
 Phasing.phases = phases
 
@@ -1532,11 +1553,11 @@ function Phasing.IsSpawnVisible(phase)
     end
 
     if phase == phases.BAN_AT_OUTPOST then
-        return ((complete[30776] or questLog[30776]) or ((not questLog[30770]) and (not questLog[30771]))) and true or false
+        return complete[30776] or (questLog[30776] and questLog[30776].isComplete == 1) or false
     end
 
     if phase == phases.BAN_AT_CAMP_OSUL then
-        return ((not complete[30776]) and (not questLog[30776]) and (complete[30770] or questLog[30770]) and (complete[30771] or questLog[30771])) and true or false
+        return not (complete[30776] or (questLog[30776] and questLog[30776].isComplete == 1)) or false
     end
 
     if phase == phases.BEFORE_MANTID_INVASION then
@@ -2088,6 +2109,90 @@ function Phasing.IsSpawnVisible(phase)
 
     if phase == phases.ADMIRAL_TAYLOR_OUTSIDE_TENT then
         return complete[30650] or (questLog[30650] and questLog[30650].isComplete == 1) or false
+    end
+
+    if phase == phases.THRALL_VALLEY_OF_TRIALS then
+        return not (complete[32320] or (questLog[32320] and questLog[32320].isComplete == 1)) or false
+    end
+
+    if phase == phases.THRALL_ECHO_ISLES_1 then
+        return (complete[32320] or (questLog[32320] and questLog[32320].isComplete == 1)) and not (complete[32372] or (questLog[32372] and questLog[32372].isComplete == 1)) or false
+    end
+
+    if phase == phases.THRALL_ECHO_ISLES_2 then
+        return complete[32372] or (questLog[32372] and questLog[32372].isComplete == 1) or false
+    end
+
+    if phase == phases.SARANNHA_AT_MOGUJIA then
+        return not complete[32371] or false
+    end
+
+    if phase == phases.SARANNHA_AT_RUINS_OF_KORUNE then
+        return complete[32371] or false
+    end
+
+    if phase == phases.JAINA_IN_DARNASSUS then
+        return not (complete[32460] or (questLog[32460] and questLog[32460].isComplete == 1)) or false
+    end
+
+    if phase == phases.JAINA_IN_TELDRASSIL then
+        return complete[32460] or (questLog[32460] and questLog[32460].isComplete == 1) or false
+    end
+
+    if phase == phases.ANDUIN_ENTRANCE_OF_TOMB then
+        return not complete[32321] or false
+    end
+
+    if phase == phases.ANDUIN_AT_LIONS_LANDING then
+        return complete[32321] or false
+    end
+
+    if phase == phases.GARROSH_TOP_FLOOR_WEST then
+        return not complete[32384] or false
+    end
+
+    if phase == phases.GARROSH_TOP_FLOOR_EAST then
+        return complete[32384] or false
+    end
+
+    if phase == phases.BAINE_IN_SHRINE then
+        return not complete[32330] or false
+    end
+
+    if phase == phases.BAINE_AT_GARROSHAR_ADVANCE then
+        return complete[32330] or false
+    end
+
+    if phase == phases.ISHI_AT_RUINS_OF_KORUNE then
+        return not (complete[32392] or (questLog[32392] and questLog[32392].isComplete == 1)) or false
+    end
+
+    if phase == phases.ISHI_IN_CRYPT then
+        return complete[32392] or (questLog[32392] and questLog[32392].isComplete == 1) or false
+    end
+
+    if phase == phases.ROMMATH_NEAR_BANK then
+        return not (complete[32403] or (questLog[32403] and questLog[32403].isComplete == 1)) or false
+    end
+
+    if phase == phases.ROMMATH_IN_TUNNEL_1 then
+        return (complete[32403] or (questLog[32403] and questLog[32403].isComplete == 1)) and not (complete[32404] or (questLog[32404] and questLog[32404].isComplete == 1)) or false
+    end
+
+    if phase == phases.ROMMATH_IN_TUNNEL_2 then
+        return (complete[32404] or (questLog[32404] and questLog[32404].isComplete == 1)) and not (complete[32405] or (questLog[32405] and questLog[32405].isComplete == 1)) or false
+    end
+
+    if phase == phases.ROMMATH_AT_TUNNEL_RAMP then
+        return (complete[32405] or (questLog[32405] and questLog[32405].isComplete == 1)) and not (complete[32406] or questLog[32406]) or false
+    end
+
+    if phase == phases.ROMMATH_AT_RUNEWEAVER_SQUARE then
+        return (complete[32406] or questLog[32406]) or false
+    end
+
+    if phase == phases.THERON_SILVERMOON_CITY_LANDFALL then
+        return (complete[32412] or questLog[32412]) and not (complete[32398] or questLog[32398]) or false
     end
 
     return false

@@ -20,6 +20,9 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTooltipScanners = private.ImportLib("RareScannerTooltipScanners")
 local RSRoutines = private.ImportLib("RareScannerRoutines")
 
+-- RareScanner service libraries
+local RSMinimap = private.ImportLib("RareScannerMinimap")
+
 -----------------------------------------------------------------------
 -- Functions to delete custom NPCs
 -----------------------------------------------------------------------
@@ -59,6 +62,9 @@ function RSCustomNpcs.DeleteCustomNpc(npcID, options)
 			private.options_cnpcs[groupKey] = nil
 		end
 	end
+	
+	-- Update minimap
+	RSMinimap.HideIcon(tonumber(npcID))
 end
 
 -----------------------------------------------------------------------
@@ -111,6 +117,8 @@ function RSCustomNpcs.ImportNpcs(text, options, callback)
 					AddLineError(npcErrorLines, s, AL["CUSTOM_NPC_ERROR1_NPCID"])
 				elseif (tonumber(npcID) == nil) then
 					AddLineError(npcErrorLines, s, string.format(AL["CUSTOM_NPC_ERROR2_NPCID"], npcID))
+				elseif (not RSNpcDB.GetCustomNpcInfo(tonumber(npcID)) and RSNpcDB.GetInternalNpcInfo(tonumber(npcID))) then
+					AddLineError(npcErrorLines, s, string.format(AL["CUSTOM_NPC_ERROR4_NPCID"], npcID))
 				else
 					npcIDcorrect = true
 				end
@@ -245,7 +253,9 @@ function RSCustomNpcs.ImportNpcs(text, options, callback)
 							AddLineError(npcErrorLines, s, string.format(AL["CUSTOM_NPC_ERROR3_NPCID"], npcID))
 						elseif (RSUtils.GetTableLength(npcErrorLines) == 0) then
 							-- Deletes just in case it already exists
-							RSCustomNpcs.DeleteCustomNpc(npcID, options)
+							if (options) then
+								RSCustomNpcs.DeleteCustomNpc(npcID, options)
+							end
 							
 							-- If the group doesn't exist, create it first
 							if (not newNpcInfo.group and not RSNpcDB.GetCustomNpcGroupByValue(groupName)) then

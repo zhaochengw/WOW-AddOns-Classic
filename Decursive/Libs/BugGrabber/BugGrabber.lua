@@ -1,12 +1,13 @@
 
 local _G = _G
 local type, table, next, tostring, tonumber, print = type, table, next, tostring, tonumber, print
-local debuglocals, debugstack, wipe, IsEncounterInProgress, GetTime = debuglocals, debugstack, table.wipe, IsEncounterInProgress, GetTime
+local wipe = table.wipe
 local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
-local DisableAddOn = C_AddOns.DisableAddOn or DisableAddOn
-local GetAddOnInfo = C_AddOns.GetAddOnInfo or GetAddOnInfo
-local IsAddOnLoaded = C_AddOns.IsAddOnLoaded or IsAddOnLoaded
-local GetNumAddOns = C_AddOns.GetNumAddOns or GetNumAddOns
+local DisableAddOn = C_AddOns.DisableAddOn
+local GetAddOnEnableState = C_AddOns.GetAddOnEnableState
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
+local GetNumAddOns = C_AddOns.GetNumAddOns
+local playerName = UnitNameUnmodified("player")
 
 -----------------------------------------------------------------------
 -- Check if we already exist in the global space
@@ -22,8 +23,8 @@ local STANDALONE_NAME = "!BugGrabber"
 if bugGrabberParentAddon ~= STANDALONE_NAME then
 	local tbl = { STANDALONE_NAME, "!Swatter", "!ImprovedErrorFrame" }
 	for i = 1, 3 do
-		local _, _, _, enabled = GetAddOnInfo(tbl[i])
-		if enabled then return end -- Bail out
+		local enabled = GetAddOnEnableState(tbl[i], playerName)
+		if enabled == 2 then return end -- Bail out
 	end
 end
 if not parentAddonTable.BugGrabber then parentAddonTable.BugGrabber = {} end
@@ -67,8 +68,8 @@ local displayObjectName = nil
 for i = 1, GetNumAddOns() do
 	local meta = GetAddOnMetadata(i, "X-BugGrabber-Display")
 	if meta then
-		local _, _, _, enabled = GetAddOnInfo(i)
-		if enabled then
+		local enabled = GetAddOnEnableState(i, playerName)
+		if enabled == 2 then
 			displayObjectName = meta
 			break
 		end
@@ -86,7 +87,6 @@ local loadErrors = {}
 local paused = nil
 local isBugGrabbedRegistered = nil
 local callbacks = nil
-local playerName = UnitName("player")
 local chatLinkFormat = "|Hbuggrabber:%s:%s:|h|cffff0000[Error %s]|r|h"
 local tableToString = "table: %s"
 
@@ -253,7 +253,30 @@ end
 -- Error handler
 local grabError
 do
+	local GetErrorData
+	do
+		local GetCallstackHeight, GetErrorCallstackHeight, debugstack, debuglocals = GetCallstackHeight, GetErrorCallstackHeight, debugstack, debuglocals
+		function GetErrorData() -- This code is lifted from Blizzard's error handler, and adapted to compensate for GetErrorCallstackHeight sometimes being nil
+			local currentStackHeight = GetCallstackHeight()
+			local errorCallStackHeight = GetErrorCallstackHeight()
+			if errorCallStackHeight then
+				local errorStackOffset = errorCallStackHeight - 1
+				local debugStackLevel = currentStackHeight - errorStackOffset
+
+				local stack = debugstack(debugStackLevel)
+				local locals = debuglocals(debugStackLevel)
+
+				return stack, locals
+			else
+				local stack = debugstack(3)
+				local locals = debuglocals(3)
+				return stack, locals
+			end
+		end
+	end
+
 	local msgsAllowed = BUGGRABBER_ERRORS_PER_SEC_BEFORE_THROTTLE
+	local GetTime, date = GetTime, date
 	local msgsAllowedLastTime = GetTime()
 	local lastWarningTime = 0
 	function grabError(errorMessage, isSimple)
@@ -316,7 +339,7 @@ do
 					counter = 1,
 				}
 			else
-				local stack = debugstack(3)
+				local stack, locals = GetErrorData()
 				local tbl = {}
 
 				-- Scan for version numbers in the stack
@@ -325,11 +348,10 @@ do
 						tbl[#tbl+1] = findVersions(line)
 					end
 				end
-				local inCombat = IsEncounterInProgress() -- debuglocals can be slow sometimes (200ms+)
 				errorObject = {
 					message = sanitizedMessage,
 					stack = stack and table.concat(tbl, "\n") or "Debugstack was nil.",
-					locals = inCombat and "Skipped (In Encounter)" or debuglocals(3),
+					locals = locals or "Debuglocals was nil.",
 					session = addon:GetSessionId(),
 					time = date("%Y/%m/%d %H:%M:%S"),
 					counter = 1,
@@ -540,8 +562,8 @@ do
 			end
 			Swatter = nil
 
-			local _, _, _, enabled = GetAddOnInfo("Stubby")
-			if enabled then createSwatter() end
+			local enabled = GetAddOnEnableState("Stubby", playerName)
+			if enabled == 2 then createSwatter() end
 
 			real_seterrorhandler(grabError)
 		end
@@ -563,14 +585,14 @@ do
 	end
 end
 events.ADDON_ACTION_BLOCKED = events.ADDON_ACTION_FORBIDDEN
-function events:LUA_WARNING(_, warnType, warningText)
-	-- Temporary hack for the few dropdown libraries that exist that were designed poorly
-	-- Hopefully we will see a rewrite of dropdowns soon
-	if warnType == 0 and warningText:find("DropDown", nil, true) then return end
-	grabError(warningText, true)
+function events:LUA_WARNING(_, warningText, pre11_1_5warningText) -- XXX changed in 11.1.5, need to wait until it's ported to all classic versions
+	grabError(pre11_1_5warningText or warningText, true)
 end
 
-UIParent:UnregisterEvent("LUA_WARNING")
+UIParent:UnregisterEvent("LUA_WARNING") -- XXX pre-11.1.5
+if ScriptErrorsFrame then -- Post 11.1.5
+	ScriptErrorsFrame:UnregisterEvent("LUA_WARNING")
+end
 real_seterrorhandler(grabError)
 function seterrorhandler() --[[ noop ]] end
 

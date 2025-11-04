@@ -15,8 +15,7 @@ itemSlotOrder[LBIS.L["Ring"]] = 10;
 itemSlotOrder[LBIS.L["Trinket"]] = 11;
 itemSlotOrder[LBIS.L["Main Hand"]] = 12;
 itemSlotOrder[LBIS.L["Off Hand"]] = 13;
-itemSlotOrder[LBIS.L["Two Hand"]] = 14;
-itemSlotOrder[LBIS.L["Ranged/Relic"]] = 15;
+itemSlotOrder[LBIS.L["Ranged/Relic"]] = 14;
 
 local function itemSortFunction(table, k1, k2)
 
@@ -25,11 +24,14 @@ local function itemSortFunction(table, k1, k2)
 
     local item1Score = 0;
     local item2Score = 0;
-    
-    if itemSlotOrder[item1.Slot] < itemSlotOrder[item2.Slot] then
+
+    local item1Slot = strsplit("~", item1.Slot);
+    local item2lot = strsplit("~", item2.Slot);
+
+    if itemSlotOrder[item1Slot] < itemSlotOrder[item2lot] then
         item1Score = item1Score + 1000;
     end
-    if itemSlotOrder[item1.Slot] > itemSlotOrder[item2.Slot] then
+    if itemSlotOrder[item1Slot] > itemSlotOrder[item2lot] then
         item2Score = item2Score +  1000;
     end
 
@@ -41,9 +43,16 @@ local function itemSortFunction(table, k1, k2)
 end
 
 local function IsInSlot(specItem)
+    local slot1, slot2, slot3, slot4 = strsplit("~", specItem.Slot);
     if LBISSettings.SelectedSlot == LBIS.L["All"] then
         return true;
-    elseif strfind(specItem.Slot, LBISSettings.SelectedSlot) ~= nil then
+    elseif slot1 ~= nil and strfind(slot1, LBISSettings.SelectedSlot) ~= nil then
+        return true;
+    elseif slot2 ~= nil and strfind(slot2, LBISSettings.SelectedSlot) ~= nil then
+        return true;
+    elseif slot3 ~= nil and strfind(slot3, LBISSettings.SelectedSlot) ~= nil then
+        return true;
+    elseif slot4 ~= nil and strfind(slot4, LBISSettings.SelectedSlot) ~= nil then
         return true;
     end
     return false;
@@ -75,8 +84,9 @@ local function createItemRow(f, specEnchant, specEnchantSource)
         t:SetText((item.Link or item.Name):gsub("[%[%]]", ""));
         t:SetPoint("TOPLEFT", b, "TOPRIGHT", 2, -2);
 
-        local st = f:CreateFontString(nil, nil,"GameFontNormalGraySmall");
-        st:SetText(specEnchant.Slot);
+        local st = f:CreateFontString(nil, nil,"GameFontNormalSmall");
+        st:SetTextColor(.6, .6, .6);
+        st:SetText(specEnchant.Slot:gsub("~", "/"));
         st:SetPoint("BOTTOMLEFT", b, "BOTTOMRIGHT", 2, 2);
         
         if tonumber(specEnchantSource.DesignId) > 0 and tonumber(specEnchantSource.DesignId) < 99999 then
@@ -90,7 +100,7 @@ local function createItemRow(f, specEnchant, specEnchantSource)
                 b2:SetSize(32, 32);
                 local bt2 = b2:CreateTexture();
                 bt2:SetAllPoints();
-                bt2:SetTexture(designItem.Texture);                                        
+                bt2:SetTexture(designItem.Texture);
                 b2:SetPoint("TOPLEFT", (window.ScrollFrame:GetWidth() / 2), -5);
 
                 LBIS:SetTooltipOnButton(b2, designItem);
@@ -103,7 +113,7 @@ local function createItemRow(f, specEnchant, specEnchantSource)
                 local dl = f:CreateFontString(nil, nil, "GameFontNormalSmall");
                 dl:SetText(specEnchantSource.SourceLocation);
                 dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);
-            end); 
+            end);
         else
             local d = f:CreateFontString(nil, nil, "GameFontNormal");
             d:SetText(specEnchantSource.Source);
@@ -116,7 +126,7 @@ local function createItemRow(f, specEnchant, specEnchantSource)
             dl:SetPoint("TOPLEFT", d, "BOTTOMLEFT", 0, -5);
         end
     end);
-                
+
     -- even if we are reusing, it may not be in the same order
     local _, count = string.gsub(specEnchantSource.Source, "/", "")
     if count > 1 then
@@ -138,19 +148,19 @@ function LBIS.EnchantList:UpdateItems()
     LBIS.BrowserWindow:UpdateItemsForSpec(function(point)
 
         local specEnchants = LBIS.EnchantsBySpecAndId[LBIS.NameToSpecId[LBISSettings.SelectedSpec]];
-                
+
         if specEnchants == nil then
             LBIS.BrowserWindow.Window.ShowUnavailable();
         end
 
         for enchantId, specEnchant in LBIS:spairs(specEnchants, itemSortFunction) do
-        
+
             local specEnchantSource = LBIS.EnchantSources[specEnchant.Id];
-    
+
             if specEnchantSource == nil then
                 LBIS:Error("Missing Enchant source: ", specEnchant);
             else
-                if IsInSlot(specEnchant) then
+                if LBIS:IsInSlot(specEnchant) then
                     point = LBIS.BrowserWindow:CreateItemRow(specEnchant, specEnchantSource, LBISSettings.SelectedSpec.."_"..specEnchantSource.Name.."_"..specEnchant.Id, point, createItemRow)
                 end
             end

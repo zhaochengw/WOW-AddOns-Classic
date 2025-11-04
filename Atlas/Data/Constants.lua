@@ -1,4 +1,3 @@
--- $Id: Constants.lua 431 2023-03-20 14:46:49Z arithmandar $
 --[[
 
 	Atlas, a World of Warcraft instance map browser
@@ -24,30 +23,17 @@
 
 --]]
 
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
-local _G = getfenv(0)
--- Libraries
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
 local FOLDER_NAME, private = ...
 private.addon_name = "Atlas"
 
-local constants = { }
+local constants = {}
 private.constants = constants
 
 -- Initialization
-ATLAS_VERSION = GetAddOnMetadata(private.addon_name, "Version")
+ATLAS_VERSION = C_AddOns.GetAddOnMetadata(private.addon_name, "Version")
 ATLAS_PLAYER_FACTION = UnitFactionGroup("player")
 ATLAS_DROPDOWNS = {}
-ATLAS_INST_ENT_DROPDOWN = {}
-ATLAS_NUM_LINES = 26
-ATLAS_CUR_LINES = 0
 ATLAS_SCROLL_LIST = {}
-ATLAS_SCROLL_ID = {}
 ATLAS_DATA = {}
 ATLAS_SEARCH_METHOD = nil
 ATLAS_PLUGINS = {}
@@ -55,7 +41,7 @@ ATLAS_PLUGIN_DATA = {}
 Atlas_MapTypes = {}
 AtlasMaps_NPC_DB = {}
 ATLAS_SMALLFRAME_SELECTED = false
-ATLAS_DROPDOWN_WIDTH = 190
+ATLAS_DROPDOWN_WIDTH = 210
 ATLAS_PLUGINS_COLOR = "|cff66cc33"
 ATLAS_OLD_TYPE = false
 ATLAS_OLD_ZONE = false
@@ -64,10 +50,8 @@ ATLAS_MODULE_MENUS = 0
 ATLAS_PLUGIN_MENUS = 0
 ATLAS_DROPDOWN_TYPES = {}
 
-ATLAS_GAMETOOLTIP_ORIGINAL_SCALE = GameTooltip:GetScale()
-
 -- Only update this version number when the options have been revised and a force update is needed.
-ATLAS_OLDEST_VERSION_SAME_SETTINGS = "1.24.00" 
+ATLAS_OLDEST_VERSION_SAME_SETTINGS = "1.24.00"
 
 -- Turn ON / OFF Atlas debug mode
 ATLAS_DEBUGMODE = false
@@ -114,10 +98,10 @@ Column	Field 		Type 		Notes
 # Structure of LFGDungeons.dbc
 Column	Field 		Type 		Notes
 ------	-------------	--------	----------------------------------------------------------------------------------------------
-1 	ID 		Integer 		
+1 	ID 		Integer
 2	Map Name	String		Dungeon Name
-3	level_min 	Integer 	Minimum level to participate. 
-4 	level_max 	Integer 	Maximum level when this dungeon becomes trivial. 
+3	level_min 	Integer 	Minimum level to participate.
+4 	level_max 	Integer 	Maximum level when this dungeon becomes trivial.
 5	rec_level	Integer
 6	rec_minlevel	Integer
 7	rec_maxlevel	Integer
@@ -129,8 +113,8 @@ Column	Field 		Type 		Notes
 ]]
 
 AtlasMaps = {
---[[
-Syntax: 
+	--[[
+Syntax:
 	MapName = {
 		ZoneName = { "Map name" },
 		Location = { "Location of this map" },
@@ -144,9 +128,8 @@ Syntax:
 		DungeonHeoricID = LFGDungeon ID for Heroic mode,
 		DungeonMythicID = LFGDungeon ID for Mythic mode,
 		WorldMapID = uiMapID,
-		DungeonLevel = level number of the dungeon map series, 
+		DungeonLevel = level number of the dungeon map series,
 		Module = "map module name",
-		LargeMap = "large map's prefix name",
 		PrevMap = "previous map name",
 		NextMap = "next map name",
 		{ "list entry 1", id of list entry or encounter id },
@@ -158,8 +141,8 @@ Syntax:
 }
 
 AtlasMaps_NPC_DB = {
---[[
-Syntax: 
+	--[[
+Syntax:
 	MapName = {
 		{ number, EJ_BossID, X coordinate, Y coordinate };
 		{ 2, 193,339, 435 };
@@ -168,58 +151,58 @@ Syntax:
 }
 
 ATLAS_LETTER_MARKS_TCOORDS = {
-	["Atlas_Letter_Blue_A"] 	= {0.00000000, 0.15625000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_B"] 	= {0.15625000, 0.31250000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_C"] 	= {0.31250000, 0.46875000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_D"] 	= {0.46875000, 0.62500000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_E"] 	= {0.62500000, 0.78125000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_F"] 	= {0.78125000, 0.93750000, 0.00000000, 0.15625000},
-	["Atlas_Letter_Blue_G"] 	= {0.00000000, 0.15625000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_H"] 	= {0.15625000, 0.31250000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_I"] 	= {0.31250000, 0.46875000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_J"] 	= {0.46875000, 0.62500000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_K"] 	= {0.62500000, 0.78125000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_L"] 	= {0.78125000, 0.93750000, 0.15625000, 0.31250000},
-	["Atlas_Letter_Blue_M"] 	= {0.00000000, 0.15625000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_N"] 	= {0.15625000, 0.31250000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_O"] 	= {0.31250000, 0.46875000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_P"] 	= {0.46875000, 0.62500000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_Q"] 	= {0.62500000, 0.78125000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_R"] 	= {0.78125000, 0.93750000, 0.31250000, 0.46875000},
-	["Atlas_Letter_Blue_S"] 	= {0.00000000, 0.15625000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Blue_T"] 	= {0.15625000, 0.31250000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Blue_U"] 	= {0.31250000, 0.46875000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Blue_V"] 	= {0.46875000, 0.62500000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Purple_A"] 	= {0.62500000, 0.78125000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Purple_B"] 	= {0.78125000, 0.93750000, 0.46875000, 0.62500000},
-	["Atlas_Letter_Purple_C"] 	= {0.00000000, 0.15625000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_D"] 	= {0.15625000, 0.31250000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_E"] 	= {0.31250000, 0.46875000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_F"] 	= {0.46875000, 0.62500000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_G"] 	= {0.62500000, 0.78125000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_H"] 	= {0.78125000, 0.93750000, 0.62500000, 0.78125000},
-	["Atlas_Letter_Purple_I"] 	= {0.00000000, 0.15625000, 0.78125000, 0.93750000},
-	["Atlas_Letter_Purple_J"] 	= {0.15625000, 0.31250000, 0.78125000, 0.93750000},
-	["Atlas_Letter_Purple_K"] 	= {0.31250000, 0.46875000, 0.78125000, 0.93750000},
-	["Atlas_Letter_Purple_L"] 	= {0.46875000, 0.62500000, 0.78125000, 0.93750000},
-	["Atlas_Letter_Purple_M"] 	= {0.62500000, 0.78125000, 0.78125000, 0.93750000},
-	["Atlas_Letter_Purple_N"] 	= {0.78125000, 0.93750000, 0.78125000, 0.93750000},
+	["Atlas_Letter_Blue_A"]   = { 0.00000000, 0.15625000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_B"]   = { 0.15625000, 0.31250000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_C"]   = { 0.31250000, 0.46875000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_D"]   = { 0.46875000, 0.62500000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_E"]   = { 0.62500000, 0.78125000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_F"]   = { 0.78125000, 0.93750000, 0.00000000, 0.15625000 },
+	["Atlas_Letter_Blue_G"]   = { 0.00000000, 0.15625000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_H"]   = { 0.15625000, 0.31250000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_I"]   = { 0.31250000, 0.46875000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_J"]   = { 0.46875000, 0.62500000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_K"]   = { 0.62500000, 0.78125000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_L"]   = { 0.78125000, 0.93750000, 0.15625000, 0.31250000 },
+	["Atlas_Letter_Blue_M"]   = { 0.00000000, 0.15625000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_N"]   = { 0.15625000, 0.31250000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_O"]   = { 0.31250000, 0.46875000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_P"]   = { 0.46875000, 0.62500000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_Q"]   = { 0.62500000, 0.78125000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_R"]   = { 0.78125000, 0.93750000, 0.31250000, 0.46875000 },
+	["Atlas_Letter_Blue_S"]   = { 0.00000000, 0.15625000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Blue_T"]   = { 0.15625000, 0.31250000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Blue_U"]   = { 0.31250000, 0.46875000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Blue_V"]   = { 0.46875000, 0.62500000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Purple_A"] = { 0.62500000, 0.78125000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Purple_B"] = { 0.78125000, 0.93750000, 0.46875000, 0.62500000 },
+	["Atlas_Letter_Purple_C"] = { 0.00000000, 0.15625000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_D"] = { 0.15625000, 0.31250000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_E"] = { 0.31250000, 0.46875000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_F"] = { 0.46875000, 0.62500000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_G"] = { 0.62500000, 0.78125000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_H"] = { 0.78125000, 0.93750000, 0.62500000, 0.78125000 },
+	["Atlas_Letter_Purple_I"] = { 0.00000000, 0.15625000, 0.78125000, 0.93750000 },
+	["Atlas_Letter_Purple_J"] = { 0.15625000, 0.31250000, 0.78125000, 0.93750000 },
+	["Atlas_Letter_Purple_K"] = { 0.31250000, 0.46875000, 0.78125000, 0.93750000 },
+	["Atlas_Letter_Purple_L"] = { 0.46875000, 0.62500000, 0.78125000, 0.93750000 },
+	["Atlas_Letter_Purple_M"] = { 0.62500000, 0.78125000, 0.78125000, 0.93750000 },
+	["Atlas_Letter_Purple_N"] = { 0.78125000, 0.93750000, 0.78125000, 0.93750000 },
 }
 
 ATLAS_FONT_COLORS = {
-	["White"] 	= {1.00, 1.00, 1.00},
-	["Yellow"] 	= {1.00, 1.00, 0.00},
-	["Green"] 	= {0.00, 1.00, 0.00},
-	["Red"] 	= {1.00, 0.00, 0.00},
-	["Orange"] 	= {1.00, 0.82, 0.00},
-	["Purple"]	= {0.73, 0.40, 1.00},
-	["Blue"]	= {0.40, 0.40, 1.00},
+	["White"]  = { 1.00, 1.00, 1.00 },
+	["Yellow"] = { 1.00, 1.00, 0.00 },
+	["Green"]  = { 0.00, 1.00, 0.00 },
+	["Red"]    = { 1.00, 0.00, 0.00 },
+	["Orange"] = { 1.00, 0.82, 0.00 },
+	["Purple"] = { 0.73, 0.40, 1.00 },
+	["Blue"]   = { 0.40, 0.40, 1.00 },
 }
 
 ATLAS_TAXI_TCOORDS = {
-	["TaxiNeutral"] 	= {0.00000000, 0.31250000, 0.00000000, 0.31250000},
-	["TaxiHorde"] 		= {0.31250000, 0.62500000, 0.00000000, 0.31250000},
-	["TaxiAlliance"] 	= {0.62500000, 0.93750000, 0.00000000, 0.31250000},
+	["TaxiNeutral"]  = { 0.00000000, 0.31250000, 0.00000000, 0.31250000 },
+	["TaxiHorde"]    = { 0.31250000, 0.62500000, 0.00000000, 0.31250000 },
+	["TaxiAlliance"] = { 0.62500000, 0.93750000, 0.00000000, 0.31250000 },
 }
 
 constants.defaults = {
@@ -227,53 +210,35 @@ constants.defaults = {
 		minimap = {
 			hide = false,
 			minimapPos = 190,
+			showInCompartment = true,
 		},
 		dropdowns = {
 		},
 		options = {
-			autoSelect = false,			-- AtlasAutoSelect
+			autoSelect = false, -- AtlasAutoSelect
 			frames = {
-				alpha = 1.0,			-- AtlasAlpha
-				scale = 1.0,			-- AtlasScale
-				boss_description_scale = 0.9,	-- AtlasBossDescScale
-				showBossDesc = true,		-- AtlasBossDesc
+				alpha = 1.0, -- AtlasAlpha
+				smallAlpha = 1.0, -- AtlasAlpha
+				scale = 1.0, -- AtlasScale
+				smallScale = 1.0, -- AtlasScale
 				showBossPotrait = true,
-				lock = false,			-- AtlasLocked
-				rightClick = false,		-- AtlasRightClick
-				contrClclick = false, 		-- AtlasCtrl
-				clamp = true, 			-- AtlasClamped
-				showAcronyms = true,		-- AtlasAcronyms
+				lock = false, -- AtlasLocked
+				rightClick = false, -- AtlasRightClick
+				clamp = true, -- AtlasClamped
+				showAcronyms = true, -- AtlasAcronyms
 			},
 			dropdowns = {
-				color = true,			-- AtlasColoringDropDown
-				menuType = 1,			-- AtlasSortBy
-				module = 1,			-- AtlasType
-				zone = 1,			-- AtlasZone
+				color = true, -- AtlasColoringDropDown
+				menuType = 1, -- AtlasSortBy
+				module = 1, -- AtlasType
+				zone = 1, -- AtlasZone
 				maxItems = 30,
 			},
-			worldMapButton = true,			-- AtlasWorldMapButtonShown
-			checkMissingModules = false,		-- AtlasCheckModule
+			worldMapButton = true,                               -- AtlasWorldMapButtonShown
 			last_compatible_version = ATLAS_OLDEST_VERSION_SAME_SETTINGS, -- AtlasVersion
 		},
 		options_copied = false,
 	},
-}
-
-constants.moduleList = {
-	"Atlas_ClassicWoW",
-	"Atlas_BurningCrusade",
-	"Atlas_WrathoftheLichKing",
-	"Atlas_Cataclysm",
-	"Atlas_MistsofPandaria",
-	"Atlas_WarlordsofDraenor",
-	"Atlas_Legion",
-	"Atlas_BattleforAzeroth",
-	"Atlas_Battlegrounds",
-	"Atlas_DungeonLocs",
-	"Atlas_OutdoorRaids",
-	"Atlas_Transportation",
-	"Atlas_Scenarios",
-	"Atlas_ClassOrderHalls",
 }
 
 constants.deprecatedList = {
@@ -286,27 +251,25 @@ constants.deprecatedList = {
 	-- For example, name it as 2.09 instead of 2.9
 	-- Most recent (working) versions of known modules at time of release
 	-- Atlas Modules
-	{ "Atlas_BattleforAzeroth", 	"1.50.00", "r30" },
-	{ "Atlas_Legion",	 			"1.50.00", "r169" },
-	{ "Atlas_WarlordsofDraenor", 	"1.50.00", "r69" },
-	{ "Atlas_MistsofPandaria",		"1.50.00", "r49" },
-	{ "Atlas_Cataclysm", 			"1.50.00", "r51" },
-	{ "Atlas_WrathoftheLichKing", 	"1.50.00", "r58" },
-	{ "Atlas_BurningCrusade", 		"1.50.00", "r61" },
-	{ "Atlas_ClassicWoW", 			"1.50.00", "r83" },
+	{ "Atlas_BattleforAzeroth",   "1.50.00",  "r30" },
+	{ "Atlas_Legion",             "1.50.00",  "r169" },
+	{ "Atlas_WarlordsofDraenor",  "1.50.00",  "r69" },
+	{ "Atlas_MistsofPandaria",    "1.50.00",  "r49" },
+	{ "Atlas_Cataclysm",          "1.50.00",  "r51" },
+	{ "Atlas_WrathoftheLichKing", "1.50.00",  "r58" },
+	{ "Atlas_BurningCrusade",     "1.50.00",  "r61" },
+	{ "Atlas_ClassicWoW",         "1.50.00",  "r83" },
 	-- Atlas Plugins
-	{ "Atlas_Battlegrounds", 		"1.50.00", "r1579" },
-	{ "Atlas_DungeonLocs", 			"1.50.00", "r75" },
-	{ "Atlas_OutdoorRaids", 		"1.50.00", "r74" },
-	{ "Atlas_Transportation", 		"1.50.00", "r144" },
-	{ "Atlas_Scenarios", 			"1.44.00", "r53" },
-	{ "Atlas_ClassOrderHalls",		"1.50.00", "r134" },
+	{ "Atlas_Battlegrounds",      "1.50.00",  "r1579" },
+	{ "Atlas_DungeonLocs",        "1.50.00",  "r75" },
+	{ "Atlas_OutdoorRaids",       "1.50.00",  "r74" },
+	{ "Atlas_Transportation",     "1.50.00",  "r144" },
+	{ "Atlas_Scenarios",          "1.44.00",  "r53" },
+	{ "Atlas_ClassOrderHalls",    "1.50.00",  "r134" },
 	-- 3rd parties plugins
-	{ "AtlasQuest", 		"4.10.25" },
-	{ "Atlas_Arena", 		"1.07.02", "r80" },
-	{ "Atlas_WorldEvents", 		"3.24", "r107" },
-	{ "AtlasLoot", 			"v8.03.02", "r4615" },
-	{ "AtlasMajorCitiesEnhanced", 	"v1.15" }, 	
-	--{ "AtlasWorld", 		"3.3.5.25" }, 	-- updated July 14, 2010 -- comment out because this plugin is no longer maintained
+	{ "AtlasQuest",               "4.10.25" },
+	{ "Atlas_Arena",              "1.07.02",  "r80" },
+	{ "Atlas_WorldEvents",        "3.24",     "r107" },
+	{ "AtlasLoot",                "v8.03.02", "r4615" },
+	{ "AtlasMajorCitiesEnhanced", "v1.15" },
 }
-

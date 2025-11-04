@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HoVTrash", "DBM-Party-Legion", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20251011043638")
 --mod:SetModelID(47785)
 mod:SetZone(1477)
 
@@ -17,6 +17,7 @@ mod:RegisterEvents(
 )
 
 --TODO wicked dagger (199674)?
+--TODO, HIGH chance most nameplate timers are wrong in Legion Remix, if so they'll be disabled in remix with "not self:IsRemix()" checks
 local warnCrackle					= mod:NewTargetAnnounce(199805, 2)
 local warnCracklingStorm			= mod:NewTargetAnnounce(198892, 2)
 local warnThunderousBolt			= mod:NewCastAnnounce(198595, 3)
@@ -125,7 +126,7 @@ function mod:SPELL_CAST_START(args)
 		end
 		timerBlastofLightCD:Start(nil, args.sourceGUID)
 	elseif spellId == 198595 then
-		timerThunderousBoltCD:Start(nil, args.sourceGUID)
+		timerThunderousBoltCD:Start(self:IsRemix() and 3.6 or 4.8, args.sourceGUID)
 		if self.Options.SpecWarn198595interrupt and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 			specWarnThunderousBolt:Show(args.sourceName)
 			specWarnThunderousBolt:Play("kickcast")

@@ -19,6 +19,9 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 
 -- RareScanner services
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
+local RSCustomNpcs = private.ImportLib("RareScannerCustomNpcs")
+local RSProvider = private.ImportLib("RareScannerProvider")
+local RSMinimap = private.ImportLib("RareScannerMinimap")
 
 -- RareScanner other addons integration services
 local RSTomtom = private.ImportLib("RareScannerTomtom")
@@ -28,8 +31,10 @@ local RSTomtom = private.ImportLib("RareScannerTomtom")
 ---============================================================================
 
 local RARESCANNER_CMD = "rarescanner"
+local RARESCANNERS_CMD = "rs"
 
 function RSCommandLine.SlashCommand(command, ...)
+	local refreshMap = false
 	if (command == RSConstants.CMD_TOGGLE_MAP_ICONS) then
 		if (not private.db.map.cmdToggle) then
 			RSCommandLine.CmdHide()
@@ -38,6 +43,7 @@ function RSCommandLine.SlashCommand(command, ...)
 			RSCommandLine.CmdShow()
 			private.db.map.cmdToggle = false
 		end
+		refreshMap = true
 	elseif (command == RSConstants.CMD_TOGGLE_ALERTS) then
 		if (not private.db.general.cmdToggleAlerts) then
 			RSCommandLine.CmdDisableAlerts()
@@ -48,10 +54,17 @@ function RSCommandLine.SlashCommand(command, ...)
 		end
 	elseif (command == RSConstants.CMD_TOGGLE_RARES) then
 		RSCommandLine.CmdToggleRares()
+		refreshMap = true
 	elseif (command == RSConstants.CMD_TOGGLE_RARES_ALERTS) then
 		RSCommandLine.CmdToggleRaresAlerts()
+	elseif (command == RSConstants.CMD_TOGGLE_EVENTS) then
+		RSCommandLine.CmdToggleEvents()
+		refreshMap = true
+	elseif (command == RSConstants.CMD_TOGGLE_EVENTS_ALERTS) then
+		RSCommandLine.CmdToggleEventsAlerts()
 	elseif (command == RSConstants.CMD_TOGGLE_TREASURES) then
 		RSCommandLine.CmdToggleTreasures()
+		refreshMap = true
 	elseif (command == RSConstants.CMD_TOGGLE_TREASURES_ALERTS) then
 		RSCommandLine.CmdToggleTreasuresAlerts()
 	elseif (RSUtils.Contains(command, RSConstants.CMD_TOMTOM_WAYPOINT)) then
@@ -62,14 +75,42 @@ function RSCommandLine.SlashCommand(command, ...)
 	elseif (RSUtils.Contains(command, RSConstants.CMD_RECENTLY_SEEN)) then
 		local _, entityID, mapID, x, y = strsplit(";", command)
 		RSRecentlySeenTracker.AddPendingAnimation(tonumber(entityID), mapID, x, y, true)
+	elseif (command == RSConstants.CMD_OPEN_EXPLORER) then
+		RSExplorerFrame:Show()
+	elseif (RSUtils.Contains(command, RSConstants.CMD_IMPORT)) then
+		local _, text = strsplit(" ", command, 2)
+		if (text) then
+			RSCustomNpcs.ImportNpcs(text, nil, function(output)
+				if (output) then
+					for i, value in ipairs(output) do
+						if ((i == 1 and RSUtils.GetTableLength(output) == 1) or i > 1) then
+							RSLogger:PrintMessage(value)
+						end
+					end
+					
+					-- Refresh the options panel
+					private.refreshCustomNpcs = true
+					LibStub("AceConfigRegistry-3.0"):NotifyChange("RareScanner Custom NPCs")
+				end
+			end)
+		end
 	else
 		print("|cFFFBFF00"..AL["CMD_HELP1"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
-		print("|cFFFBFF00   /"..RARESCANNER_CMD.." "..RSConstants.CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_OPEN_EXPLORER.." |cFF00FFFB"..AL["CMD_HELP12"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
+		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_IMPORT.." |cFFFFFFFBstring".." |cFF00FFFB"..AL["CMD_HELP13"])
+	end
+	
+	if (refreshMap) then
+		RSProvider.RefreshAllDataProviders()
+		RSMinimap.RefreshAllData(true)
 	end
 end
 
@@ -121,6 +162,26 @@ function RSCommandLine.CmdToggleRaresAlerts()
 	end
 end
 
+function RSCommandLine.CmdToggleEvents()
+	if (private.db.map.displayEventIcons) then
+		private.db.map.displayEventIcons = false
+		RSLogger:PrintMessage(AL["CMD_HIDE_EVENTS"])
+	else
+		private.db.map.displayEventIcons = true
+		RSLogger:PrintMessage(AL["CMD_SHOW_EVENTS"])
+	end
+end
+
+function RSCommandLine.CmdToggleEventsAlerts()
+	if (private.db.general.scanEvents) then
+		private.db.general.scanEvents = false
+		RSLogger:PrintMessage(AL["CMD_DISABLE_EVENTS_ALERTS"])
+	else
+		private.db.general.scanEvents = true
+		RSLogger:PrintMessage(AL["CMD_ENABLE_EVENTS_ALERTS"])
+	end
+end
+
 function RSCommandLine.CmdToggleTreasures()
 	if (private.db.map.displayContainerIcons) then
 		private.db.map.displayContainerIcons = false
@@ -143,4 +204,5 @@ end
 
 function RSCommandLine.Initialize(addon) 
 	addon:RegisterChatCommand(RARESCANNER_CMD, RSCommandLine.SlashCommand)
+	addon:RegisterChatCommand(RARESCANNERS_CMD, RSCommandLine.SlashCommand)
 end

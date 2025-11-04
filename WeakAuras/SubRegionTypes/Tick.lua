@@ -145,7 +145,7 @@ local function onRelease(subRegion)
 end
 
 local funcs = {
-  Update = function(self, state, states)
+  UpdateProgress = function(self, state, states)
     for i, progressSource in ipairs(self.progressSources) do
       self.progressData[i] = {}
       Private.UpdateProgressFrom(self.progressData[i], progressSource, {}, state, states, self.parent)
@@ -202,6 +202,7 @@ local funcs = {
       self:UpdateTickDesaturated()
     else
       for _, tick in ipairs(self.ticks) do
+        tick:SetVertexColor(r, g, b, a or 1)
         tick:SetColorTexture(r, g, b, a or 1)
       end
     end
@@ -441,6 +442,31 @@ local funcs = {
     end
     self.use_texture = use
     self:UpdateTexture()
+  end,
+
+  AnchorSubRegion = function(self, subRegion, anchorType, anchorPoint, subRegionPoint, anchorXOffset, anchorYOffset)
+    subRegion:ClearAllPoints()
+
+    if anchorType == "point" then
+      local xOffset = anchorXOffset or 0
+      local yOffset = anchorYOffset or 0
+
+      subRegionPoint = Private.point_types[subRegionPoint] and subRegionPoint or "CENTER"
+      local tickIndex = tonumber(anchorPoint:sub(6))
+      local anchorTo = tickIndex and self.ticks[tickIndex] or nil
+      if anchorTo then
+        subRegion:SetPoint(subRegionPoint, anchorTo, "CENTER", xOffset, yOffset)
+      end
+    else
+      local tickIndex = tonumber(anchorPoint:sub(10))
+      local anchorTo = tickIndex and self.ticks[tickIndex] or nil
+      local xOffset = anchorXOffset or 0
+      local yOffset = anchorYOffset or 0
+      if anchorTo then
+        subRegion:SetPoint("BOTTOMLEFT", anchorTo, "BOTTOMLEFT", -xOffset, -yOffset)
+        subRegion:SetPoint("TOPRIGHT", anchorTo, "TOPRIGHT", xOffset,  yOffset)
+      end
+    end
   end
 }
 
@@ -483,7 +509,7 @@ local function modify(parent, region, parentData, data, first)
       texture:SetSnapToPixelGrid(false)
       texture:SetTexelSnappingBias(0)
       texture:SetDrawLayer("ARTWORK", 3)
-      texture:SetAllPoints(region)
+      texture:SetAllPoints()
       region.ticks[i] = texture
     end
   end
@@ -520,9 +546,10 @@ local function modify(parent, region, parentData, data, first)
   region:SetTickRotation(data.tick_rotation)
   region:SetTickMirror(data.tick_mirror)
 
+  region:UpdateTickPlacement()
   region:UpdateTickSize()
 
-  parent.subRegionEvents:AddSubscriber("Update", region)
+  parent.subRegionEvents:AddSubscriber("UpdateProgress", region)
   parent.subRegionEvents:AddSubscriber("OrientationChanged", region)
   parent.subRegionEvents:AddSubscriber("InverseChanged", region)
   parent.subRegionEvents:AddSubscriber("OnRegionSizeChanged", region)

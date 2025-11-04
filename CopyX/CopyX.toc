@@ -1,0 +1,7 @@
+## Interface: 110205,110207,50502
+## Title: CopyX
+## Notes: 复制聊天框文本到剪贴板
+## Author: 小猫迷人-雷鳞
+## Version: 1.0
+
+CopyX.lua

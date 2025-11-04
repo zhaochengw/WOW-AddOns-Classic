@@ -330,7 +330,7 @@ do
 		return -- Invalid input
 	end
 
-	function DBT:CreateBar(timer, id, icon, huge, small, color, isDummy, colorType, inlineIcon, keep, fade, countdown, countdownMax, isCooldown)
+	function DBT:CreateBar(timer, id, icon, huge, small, color, isDummy, colorType, inlineIcon, keep, fade, countdown, countdownMax, isCooldown, secretText, isSecret, isPaused)
 		local varianceMaxTimer, varianceMinTimer, varianceDuration
 		varianceMaxTimer, varianceMinTimer, varianceDuration = parseTimer(timer) -- either normal number or with variance
 		if self.Options.VarianceEnabled then
@@ -349,7 +349,7 @@ do
 		if newBar then -- Update an existing bar
 			newBar.lastUpdate = GetTime()
 			newBar.huge = huge or nil
-			newBar.paused = nil
+			newBar.paused = isPaused or nil
 			newBar.minTimer = varianceMinTimer or nil
 			newBar.varianceDuration = varianceDuration or 0
 			newBar.hasVariance = varianceMinTimer and true or false
@@ -363,7 +363,11 @@ do
 				return
 			end
 			newBar:ApplyStyle()
-			newBar:SetText(id)
+			if isSecret then
+				newBar:SetText(secretText, nil, true)
+			else
+				newBar:SetText(id)
+			end
 			newBar:SetIcon(icon)
 		else -- Create a new bar
 			newBar = next(unusedBarObjects)
@@ -388,6 +392,8 @@ do
 				newBar.countdownMax = countdownMax
 				newBar.isCooldown = isCooldown
 				newBar.alwaysHuge = nil
+				newBar.huge = huge or nil
+				newBar.paused = isPaused or nil
 				newBar.minTimer = varianceMinTimer or nil
 				newBar.varianceDuration = varianceDuration or 0
 				newBar.hasVariance = varianceMinTimer and true or false
@@ -437,7 +443,11 @@ do
 				newBar.huge = nil
 				tinsert(smallBars, newBar)
 			end
-			newBar:SetText(id)
+			if isSecret then
+				newBar:SetText(secretText, nil, true)
+			else
+				newBar:SetText(id)
+			end
 			newBar:SetIcon(icon)
 			self.bars[newBar] = true
 			self:UpdateBars(true)
@@ -842,12 +852,16 @@ function barPrototype:SetElapsed(elapsed)
 	DBT:UpdateBars(true)
 end
 
-function barPrototype:SetText(text, inlineIcon)
-	if not DBT.Options.InlineIcons then
-		inlineIcon = nil
+function barPrototype:SetText(text, inlineIcon, isSecret)
+	if isSecret then--We can't touch the text in ANY way
+		_G[self.frame:GetName().."BarName"]:SetText(text)
+	else
+		if not DBT.Options.InlineIcons then
+			inlineIcon = nil
+		end
+		-- Force change color type 7 to custom inlineIcon
+		_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType >= 7 and DBT.Options.Bar7CustomInline) and DBM_COMMON_L.IMPORTANT_ICON or inlineIcon or "") .. text)
 	end
-	-- Force change color type 7 to custom inlineIcon
-	_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType >= 7 and DBT.Options.Bar7CustomInline) and DBM_COMMON_L.IMPORTANT_ICON or inlineIcon or "") .. text)
 end
 
 function barPrototype:SetIcon(icon)
@@ -1207,6 +1221,7 @@ do
 	local tostring, mfloor = tostring, math.floor
 	local ChatEdit_GetActiveWindow, SendChatMessage, IsInGroup, IsInRaid = ChatEdit_GetActiveWindow, C_ChatInfo.SendChatMessage or SendChatMessage, IsInGroup, IsInRaid
 	function barPrototype:Announce()
+		if DBM:IsPostMidnight() then return end--Don't announce if it's past midnight, secrets can't be shared
 		local msg
 		if DBT.announceHook then
 			msg = DBT.announceHook(self)
@@ -1216,7 +1231,9 @@ do
 		if chatWindow then
 			chatWindow:Insert(msg)
 		else
-			SendChatMessage(msg, (IsInGroup(2) and "INSTANCE_CHAT") or (IsInRaid() and "RAID") or "PARTY")
+			if not DBM:IsPostMidnight() then
+				SendChatMessage(msg, (IsInGroup(2) and "INSTANCE_CHAT") or (IsInRaid() and "RAID") or "PARTY")
+			end
 		end
 	end
 end

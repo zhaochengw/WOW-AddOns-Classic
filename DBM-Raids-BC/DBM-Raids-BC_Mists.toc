@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50501, 50502
 ## X-Min-Interface: 50500
 ## Category: DBM
 
@@ -23,7 +23,7 @@
 ## X-DBM-Mod-MapID: 580, 564, 534, 550, 548, 544, 565, 532, 568
 ## X-DBM-Mod-MinCoreRevision: 20230521000000
 ## X-DBM-Mod-MinExpansion: 1
-## Version: r10
+## Version: r11
 
 localization.en.lua
 localization.tw.lua

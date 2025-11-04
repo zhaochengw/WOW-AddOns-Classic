@@ -34,7 +34,8 @@ L.COPY_URL_DIALOG					= "Copia URL"
 --L.TEXT_ONLY_RANGE						= "Range frame is limited to text only due to API restrictions in this area."
 L.NO_RANGE					= "Il Radar Distanziometro non può essere utilizzato nelle istanze. Verrà utilizzato il precedente riquadro testuale"
 L.NO_ARROW					= "La Freccia non può essere usata nelle istanze"
-L.NO_HUD						= "La HUDMap non può essere usata nelle istanze"
+L.NO_HUD					= "La HUDMap non può essere usata nelle istanze"
+L.NO_COMMS					= "La comunicazione degli addon non può essere utilizzata durante gli incontri o le istanze M+ attive. Utilizza nuovamente questo comando dopo la fine dell'incontro o dell'istanza."
 
 L.DYNAMIC_DIFFICULTY_CLUMP	= ""..L.DBM.." ha disabilitato il riquadro distanziometro per questo combattimento per insufficienti informazioni sulle distanze richieste con un gruppo di queste dimensioni."
 L.DYNAMIC_ADD_COUNT			= ""..L.DBM.." ha disabilitato gli avvisi sulla quantità degli add per questo combattimento per insufficienti informazioni sul numero di add presenti con un gruppo di queste dimensioni."
@@ -259,7 +260,7 @@ L.SLASHCMD_HELP							= {--AI translated (check me)
 	"/dbm pull <sec>: Invia un timer di ingaggio per <sec> secondi al raid (richiede promozione. alias: pull).",
 	"/dbm break <min>: Invia un timer di pausa per <min> minuti al raid (richiede promozione. alias: break).",
 	"/dbm timer: Avvia un timer personalizzato di " .. L.DBM .. ", vedere '/dbm timer' per dettagli.",
-	"/keys: Esegue controlli delle chiavi M+ e delle valutazioni su party/gilda e scorciatoie per i teletrasporti delle dungeon. (alias: key, keystone)",
+	"/dbm key: Esegue controlli delle chiavi M+ e delle valutazioni su party/gilda e scorciatoie per i teletrasporti delle dungeon. (alias: key, keys, keystone)",
 	"/dbm lag: Esegue un controllo della latenza per tutto il raid.",
 	"/dbm durability: Esegue un controllo della durabilità per tutto il raid.",
 	"/dbm help2: Mostra comandi slash aggiuntivi"

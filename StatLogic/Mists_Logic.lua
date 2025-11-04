@@ -2,11 +2,13 @@ local addonName, addon = ...
 ---@class StatLogic
 local StatLogic = LibStub:GetLibrary(addonName)
 
+-- Extracted from the client at GameTables/OCTClassCombatRatingScalar.txt
+local extraHaste = addon.class == "WARRIOR" and 1.5 or 1
+
 -- Level 60 rating base
 StatLogic.RatingBase = {
 	[StatLogic.Stats.DodgeRating] = 20.700001,
 	[StatLogic.Stats.ParryRating] = 20.700001,
-	[StatLogic.Stats.BlockRating] = 6.900001,
 	[StatLogic.Stats.MeleeHitRating] = 8,
 	[StatLogic.Stats.RangedHitRating] = 8,
 	[StatLogic.Stats.SpellHitRating] = 8,
@@ -14,20 +16,26 @@ StatLogic.RatingBase = {
 	[StatLogic.Stats.RangedCritRating] = 14,
 	[StatLogic.Stats.SpellCritRating] = 14,
 	[StatLogic.Stats.ResilienceRating] = 9.29154,
-	[StatLogic.Stats.MeleeHasteRating] = 10,
-	[StatLogic.Stats.RangedHasteRating] = 10,
-	[StatLogic.Stats.SpellHasteRating] = 10,
+	[StatLogic.Stats.MeleeHasteRating] = 10 / extraHaste,
+	[StatLogic.Stats.RangedHasteRating] = 10 / extraHaste,
+	[StatLogic.Stats.SpellHasteRating] = 10 / extraHaste,
 	[StatLogic.Stats.ExpertiseRating] = 8,
 	[StatLogic.Stats.MasteryRating] = 14,
-	[StatLogic.Stats.PvPPowerRating] = 14,
+	[StatLogic.Stats.PvpPowerRating] = 12.021399,
 }
 
-local NormalManaRegenPerSpi = function(level)
-	return 0
-end
+-- Extracted from the client at GameTables/RegenMPPerSpt.txt via wow.tools.local
+local RegenMPPerSpt = {
+	["PALADIN"]     = 0.225754,
+	["PRIEST"]      = 0.225754,
+	["SHAMAN"]      = 0.225754,
+	["MAGE"]        = 0.056438,
+	["MONK"]        = 0.225754,
+	["DRUID"]       = 0.225754,
+}
 
-local NormalManaRegenPerInt = function(level)
-	return 0
+local NormalManaRegenPerSpi = function()
+	return 5 * RegenMPPerSpt[addon.class]
 end
 
 local ten_thousandth = setmetatable({}, { __index = function()
@@ -287,7 +295,496 @@ addon.bonusArmorInventoryTypes = {
 	["INVTYPE_TRINKET"] = true,
 }
 
-addon.baseArmorTable = {}
+addon.baseArmorTable = {
+	[Enum.ItemQuality.Good or Enum.ItemQuality.Uncommon] = {
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[57] = 219,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[16] = 120,
+				[20] = 143,
+				[40] = 259,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[46] = 441,
+				[62] = 551,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[54] = 182,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 378,
+				[62] = 482,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 171,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 409,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[60] = 75,
+				[108] = 160,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[33] = 95,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[41] = 1110,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[28] = 118,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[45] = 270,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 309,
+				[60] = 375,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[47] = 365,
+				[61] = 445,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[114] = 271,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[174] = 934,
+			},
+		},
+	},
+	[Enum.ItemQuality.Epic] = {
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 506,
+				[63] = 510,
+				[74] = 549,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 325,
+				[69] = 337,
+				[74] = 353,
+				[75] = 357,
+				[83] = 384,
+				[90] = 438,
+				[105] = 581,
+				[123] = 662,
+				[136] = 722,
+				[146] = 790,
+				[159] = 887,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[65] = 767,
+				[74] = 804,
+				[251] = 2540,
+				[264] = 2638,
+				[277] = 2764,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 163,
+				[78] = 178,
+				[146] = 393,
+				[159] = 439,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 236,
+				[77] = 250,
+				[83] = 264,
+				[90] = 301,
+				[123] = 455,
+				[136] = 496,
+				[146] = 543,
+				[159] = 610,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 370,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[70] = 541,
+				[71] = 544,
+				[73] = 550,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[71] = 148,
+				[136] = 328,
+				[146] = 357,
+				[159] = 399,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 215,
+				[78] = 229,
+				[81] = 235,
+				[90] = 274,
+				[105] = 363,
+				[123] = 414,
+				[136] = 451,
+				[146] = 494,
+				[159] = 555,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 336,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 495,
+				[90] = 585,
+				[130] = 910,
+				[251] = 1587,
+				[264] = 1649,
+				[277] = 1728,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[74] = 200,
+				[81] = 217,
+				[136] = 426,
+				[146] = 464,
+				[159] = 518,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[74] = 287,
+				[75] = 290,
+				[90] = 356,
+				[105] = 472,
+				[123] = 538,
+				[136] = 587,
+				[146] = 642,
+				[159] = 721,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[74] = 446,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[66] = 626,
+				[74] = 653,
+				[105] = 1063,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 192,
+				[71] = 207,
+				[81] = 234,
+				[136] = 459,
+				[146] = 500,
+				[159] = 558,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 284,
+				[71] = 301,
+				[90] = 383,
+				[105] = 508,
+				[123] = 580,
+				[136] = 632,
+				[146] = 691,
+				[159] = 777,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 471,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 653,
+				[61] = 657,
+				[71] = 693,
+				[232] = 2094,
+				[264] = 2308,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[65] = 164,
+				[74] = 184,
+				[78] = 194,
+				[136] = 393,
+				[146] = 428,
+				[159] = 479,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 243,
+				[74] = 265,
+				[90] = 328,
+				[105] = 436,
+				[123] = 497,
+				[136] = 542,
+				[146] = 592,
+				[159] = 666,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[71] = 404,
+				[74] = 412,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 702,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 325,
+				[251] = 1111,
+				[264] = 1154,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 137,
+				[113] = 278,
+				[126] = 293,
+				[141] = 330,
+				[154] = 371,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[141] = 239,
+				[154] = 267,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[72] = 120,
+				[73] = 121,
+				[77] = 128,
+				[83] = 137,
+				[105] = 207,
+				[110] = 224,
+				[115] = 230,
+				[128] = 246,
+				[200] = 404,
+				[213] = 426,
+				[232] = 461,
+				[264] = 556,
+				[353] = 604,
+				[403] = 793,
+				[480] = 1081,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[46] = 1766,
+				[65] = 2186,
+				[90] = 2477,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[61] = 176,
+				[66] = 184,
+				[76] = 202,
+				[123] = 373,
+				[136] = 406,
+				[146] = 444,
+				[159] = 499,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[90] = 526,
+				[264] = 1484,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[146] = 321,
+				[159] = 359,
+			},
+		},
+	},
+	[Enum.ItemQuality.Rare] = {
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[59] = 596,
+				[63] = 609,
+				[65] = 616,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[30] = 221,
+				[36] = 259,
+				[62] = 407,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[68] = 268,
+				[115] = 515,
+			},
+		},
+		[BACKSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[35] = 51,
+				[45] = 64,
+				[50] = 70,
+				[52] = 73,
+				[62] = 85,
+				[63] = 86,
+				[71] = 95,
+				[91] = 128,
+				[112] = 182,
+				[115] = 185,
+				[167] = 312,
+				[187] = 363,
+			},
+		},
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[21] = 700,
+				[30] = 945,
+				[59] = 1687,
+			},
+		},
+		[WRISTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[50] = 229,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 178,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 73,
+			},
+		},
+		[FEETSLOT] = {
+			[Enum.ItemArmorSubclass.Mail] = {
+				[41] = 200,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 101,
+				[43] = 128,
+				[53] = 155,
+				[63] = 176,
+				[66] = 181,
+				[71] = 190,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 66,
+				[43] = 84,
+				[53] = 101,
+				[61] = 115,
+				[63] = 118,
+				[66] = 123,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[56] = 399,
+			},
+		},
+		[LEGSSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[52] = 475,
+				[65] = 539,
+				[114] = 985,
+				[166] = 1697,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[52] = 194,
+				[68] = 235,
+				[71] = 241,
+				[100] = 371,
+				[115] = 451,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[62] = 148,
+				[68] = 160,
+			},
+		},
+		[SHOULDERSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[55] = 175,
+				[68] = 201,
+				[71] = 207,
+				[115] = 386,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 125,
+				[71] = 143,
+			},
+		},
+		[WAISTSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[33] = 83,
+				[43] = 105,
+				[53] = 127,
+				[63] = 144,
+				[100] = 239,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[33] = 54,
+				[43] = 69,
+				[53] = 83,
+				[60] = 93,
+				[63] = 96,
+				[109] = 201,
+				[115] = 208,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[71] = 358,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[65] = 163,
+				[66] = 164,
+				[71] = 172,
+				[115] = 322,
+			},
+			[Enum.ItemArmorSubclass.Mail] = {
+				[62] = 254,
+			},
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[61] = 104,
+				[66] = 111,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[114] = 704,
+			},
+		},
+		[HEADSLOT] = {
+			[Enum.ItemArmorSubclass.Cloth] = {
+				[63] = 139,
+				[71] = 155,
+			},
+			[Enum.ItemArmorSubclass.Leather] = {
+				[71] = 224,
+				[100] = 345,
+				[115] = 419,
+			},
+			[Enum.ItemArmorSubclass.Plate] = {
+				[43] = 371,
+				[60] = 487,
+				[115] = 917,
+			},
+		},
+	},
+	[Enum.ItemQuality.Standard or Enum.ItemQuality.Common] = {
+		[SECONDARYHANDSLOT] = {
+			[Enum.ItemArmorSubclass.Shield] = {
+				[1] = 57,
+			},
+		},
+		[HANDSSLOT] = {
+			[Enum.ItemArmorSubclass.Leather] = {
+				[1] = 12,
+			},
+		},
+		[CHESTSLOT] = {
+			[Enum.ItemArmorSubclass.Plate] = {
+				[60] = 518,
+			},
+		},
+	},
+}
 
 StatLogic.StatModTable = {}
 if addon.class == "DRUID" then
@@ -362,11 +859,11 @@ if addon.class == "DRUID" then
 				["aura"] = 33891,
 				["group"] = addon.ExclusiveGroup.Feral,
 			},
-			-- Passive: Mastery: Nature's Guardian
-			-- TODO: Get value from tooltip?
+			-- Passive: Mastery: Nature's Guardian (Bear Form)
 			{
+				["aura"] = 5487,
 				["known"] = 77494,
-				["value"] = 0.16,
+				["mastery"] = true,
 			},
 			-- Buff: Moonkin Form
 			{
@@ -380,12 +877,29 @@ if addon.class == "DRUID" then
 				["aura"] = 33891,
 				["group"] = addon.ExclusiveGroup.Feral,
 			},
-			-- Talent: Heart of the Wild (Bear Form)
+			-- Talent: Heart of the Wild (Bear Form) (Balance)
 			{
 				["tab"] = 6,
 				["num"] = 1,
 				["value"] = 0.95,
 				["aura"] = 5487,
+				["spec"] = 1,
+			},
+			-- Talent: Heart of the Wild (Bear Form) (Feral)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 0.95,
+				["aura"] = 5487,
+				["spec"] = 2,
+			},
+			-- Talent: Heart of the Wild (Bear Form) (Restoration)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 0.95,
+				["aura"] = 5487,
+				["spec"] = 4,
 			},
 		},
 		["MOD_AGI"] = {
@@ -403,19 +917,53 @@ if addon.class == "DRUID" then
 				["num"] = 1,
 				["value"] = 0.06,
 			},
-			-- Talent: Heart of the Wild (Bear Form)
+			-- Talent: Heart of the Wild (Bear Form) (Balance)
 			{
 				["tab"] = 6,
 				["num"] = 1,
 				["value"] = 0.5,
 				["aura"] = 5487,
+				["spec"] = 1,
 			},
-			-- Talent: Heart of the Wild (Cat Form)
+			-- Talent: Heart of the Wild (Bear Form) (Feral)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 0.5,
+				["aura"] = 5487,
+				["spec"] = 2,
+			},
+			-- Talent: Heart of the Wild (Bear Form) (Restoration)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 0.5,
+				["aura"] = 5487,
+				["spec"] = 4,
+			},
+			-- Talent: Heart of the Wild (Cat Form) (Balance)
 			{
 				["tab"] = 6,
 				["num"] = 1,
 				["value"] = 1.1,
 				["aura"] = 768,
+				["spec"] = 1,
+			},
+			-- Talent: Heart of the Wild (Cat Form) (Guardian)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 1.1,
+				["aura"] = 768,
+				["spec"] = 3,
+			},
+			-- Talent: Heart of the Wild (Cat Form) (Restoration)
+			{
+				["tab"] = 6,
+				["num"] = 1,
+				["value"] = 1.1,
+				["aura"] = 768,
+				["spec"] = 4,
 			},
 		},
 		["MOD_STA"] = {
@@ -449,7 +997,7 @@ if addon.class == "DRUID" then
 					[1] = true,
 					[4] = true,
 				},
-				["spellid"] = 86104,
+				["known"] = 86104,
 			},
 			-- Talent: Heart of the Wild
 			{
@@ -512,6 +1060,11 @@ if addon.class == "DRUID" then
 			{
 				["known"] = 108299,
 				["value"] = 1,
+			},
+		},
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
 			},
 		},
 		["ADD_MANA_REGEN_MOD_NORMAL_MANA_REGEN"] = {
@@ -578,6 +1131,15 @@ elseif addon.class == "DEATHKNIGHT" then
 			{
 				["aura"] = 51271,
 				["value"] = 0.2,
+				["group"] = addon.ExclusiveGroup.SetBonus,
+			},
+			-- Set: Battlegear of the Lost Catacomb (Pillar of Frost)
+			{
+				["set"] = 1123,
+				["pieces"] = 4,
+				["aura"] = 51271,
+				["value"] = 0.25,
+				["group"] = addon.ExclusiveGroup.SetBonus,
 			},
 			-- Plate Specialization (Frost, Unholy)
 			{
@@ -586,6 +1148,7 @@ elseif addon.class == "DEATHKNIGHT" then
 					[2] = true,
 					[3] = true,
 				},
+				["known"] = 86524,
 				["spellid"] = 86113,
 			},
 			-- Passive: Unholy Might
@@ -611,7 +1174,8 @@ elseif addon.class == "DEATHKNIGHT" then
 				["armorspec"] = {
 					[1] = true,
 				},
-				["known"] = 86537,
+				["known"] = 86524,
+				["spellid"] = 86537,
 			},
 		},
 		["MOD_ARMOR"] = {
@@ -624,8 +1188,14 @@ elseif addon.class == "DEATHKNIGHT" then
 		["MOD_HEALTH"] = {
 			-- Buff: Vampiric Blood
 			{
-				["aura"] = 5233,
+				["aura"] = 55233,
 				["value"] = 0.15,
+			},
+			-- Glyph of Vampiric Blood
+			{
+				["value"] = -0.15 / (1 + 0.15),
+				["aura"] = 55233,
+				["glyph"] = 58676,
 			},
 		},
 		["ADD_CRIT_RATING_MOD_DODGE_RATING"] = {
@@ -692,13 +1262,13 @@ elseif addon.class == "HUNTER" then
 		["MOD_RANGED_AP"] = {
 			-- Buff: Aspect of the Hawk
 			{
-				["buff"] = 13165,
+				["aura"] = 13165,
 				["value"] = 0.35,
 				["group"] = addon.ExclusiveGroup.Aspect,
 			},
 			-- Buff: Aspect of the Iron Hawk
 			{
-				["buff"] = 109260,
+				["aura"] = 109260,
 				["value"] = 0.35,
 				["group"] = addon.ExclusiveGroup.Aspect,
 			},
@@ -763,7 +1333,12 @@ elseif addon.class == "MAGE" then
 				["value"] = 0.05,
 			},
 		},
-		["MOD_MANA_REGEN"] = {
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
+		["MOD_NORMAL_MANA_REGEN"] = {
 			-- Talent: Invocation
 			{
 				["aura"] = 116257,
@@ -773,6 +1348,13 @@ elseif addon.class == "MAGE" then
 			{
 				["aura"] = 116014,
 				["value"] = 0.75,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_HEALTH"] = {
+			-- Talent: Rune of Power
+			{
+				["aura"] = 116014,
+				["value"] = 0.01 * 5,
 			},
 		},
 	}
@@ -797,11 +1379,12 @@ elseif addon.class == "MONK" then
 		},
 		["ADD_DODGE"] = {
 			-- Buff: Elusive Brew
-			-- TODO: Needs to be exact spell ID
 			{
 				["aura"] = 115308,
 				["value"] = 30,
+				["exact"] = true,
 			},
+			-- Buff: Adaptation
 			{
 				["aura"] = 126050,
 				["value"] = 25,
@@ -827,6 +1410,12 @@ elseif addon.class == "MONK" then
 				["aura"] = 116033,
 				["stack"] = 5,
 				["max_stacks"] = 3,
+			},
+			-- Glyph of Fists of Fury
+			{
+				["glyph"] = 125671,
+				["value"] = 100,
+				["aura"] = 113656,
 			},
 		},
 		["ADD_AP_MOD_STR"] = {
@@ -868,6 +1457,12 @@ elseif addon.class == "MONK" then
 			{
 				["aura"] = 120954,
 				["value"] = 0.2,
+			},
+			-- Glyph of Fortifying Brew
+			{
+				["glyph"] = 124997,
+				["aura"] = 120954,
+				["value"] = -0.1 / (1 + 0.2),
 			},
 		},
 		["MOD_AGI"] = {
@@ -931,6 +1526,11 @@ elseif addon.class == "MONK" then
 			{
 				["stance"] = "interface/icons/monk_stance_wiseserpent",
 				["value"] = 2,
+			},
+		},
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
 			},
 		},
 		["ADD_MANA_REGEN_MOD_NORMAL_MANA_REGEN"] = {
@@ -1062,11 +1662,24 @@ elseif addon.class == "PALADIN" then
 				["value"] = 0.1,
 			},
 		},
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
 		["ADD_MANA_REGEN_MOD_NORMAL_MANA_REGEN"] = {
 			-- Passive: Holy Insight
 			{
 				["known"] = 112859,
 				["value"] = 0.5,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_HEALTH"] = {
+			-- Glyph of Avenging Wrath
+			{
+				["glyph"] = 54927,
+				["value"] = 0.01 * 2.5,
+				["aura"] = 31884,
 			},
 		},
 	}
@@ -1113,6 +1726,14 @@ elseif addon.class == "PRIEST" then
 			{
 				["aura"] = 588,
 				["value"] = 0.6,
+				["group"] = addon.ExclusiveGroup.Armor,
+			},
+			-- Glyph of Inner Fire
+			{
+				["glyph"] = 55686,
+				["aura"] = 588,
+				["value"] = 0.9,
+				["group"] = addon.ExclusiveGroup.Armor,
 			},
 			-- Buff: Shadowform
 			{
@@ -1132,6 +1753,11 @@ elseif addon.class == "PRIEST" then
 			{
 				["known"] = 89745,
 				["value"] = 0.05,
+			},
+		},
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
 			},
 		},
 		["ADD_MANA_REGEN_MOD_NORMAL_MANA_REGEN"] = {
@@ -1202,6 +1828,12 @@ elseif addon.class == "ROGUE" then
 			{
 				["aura"] = 73651,
 				["value"] = 0.04 * 5/3,
+			},
+			-- Glyph of Recuperate
+			{
+				["glyph"] = 56806,
+				["aura"] = 73651,
+				["value"] = 0.01 * 5/3,
 			},
 		},
 		["MOD_AGI"] = {
@@ -1294,6 +1926,11 @@ elseif addon.class == "SHAMAN" then
 				["value"] = 0.65,
 			},
 		},
+		["ADD_NORMAL_MANA_REGEN_MOD_SPI"] = {
+			{
+				["regen"] = NormalManaRegenPerSpi,
+			},
+		},
 		["ADD_MANA_REGEN_MOD_NORMAL_MANA_REGEN"] = {
 			-- Passive: Meditation
 			{
@@ -1316,17 +1953,27 @@ elseif addon.class == "SHAMAN" then
 				["armorspec"] = {
 					[2] = true,
 				},
+				["spellid"] = 86099,
 			},
 		},
 		["MOD_INT"] = {
-			-- Mail Specialization
+			-- Mail Specialization (Elemental)
 			{
 				["value"] = 0.05,
 				["known"] = 86529,
 				["armorspec"] = {
 					[1] = true,
+				},
+				["spellid"] = 86108,
+			},
+			-- Mail Specialization (Restoration)
+			{
+				["value"] = 0.05,
+				["known"] = 86529,
+				["armorspec"] = {
 					[3] = true,
 				},
+				["spellid"] = 86100,
 			},
 		},
 	}
@@ -1404,7 +2051,7 @@ elseif addon.class == "WARLOCK" then
 				["tab"] = 4,
 				["num"] = 2,
 				["aura"] = 111400,
-				["value"] = 0.04 * 5,
+				["value"] = -0.04 * 5,
 			},
 			-- Talent: Grimoire of Sacrifice
 			{
@@ -1412,6 +2059,18 @@ elseif addon.class == "WARLOCK" then
 				["num"] = 3,
 				["aura"] = 108503,
 				["value"] = 0.02,
+			},
+			-- Glyph of Ember Tap
+			{
+				["glyph"] = 63304,
+				["aura"] = 114635,
+				["value"] = 0.0248 * 5,
+			},
+			-- Glyph of Healthstone
+			{
+				["glyph"] = 56224,
+				["aura"] = 6262,
+				["value"] = 0.04 * 5,
 			},
 		},
 	}
@@ -1472,12 +2131,19 @@ elseif addon.class == "WARRIOR" then
 			},
 		},
 		["MOD_STR"] = {
-			-- Plate Specialization (Arms, Fury)
+			-- Plate Specialization (Arms)
 			{
 				["value"] = 0.05,
-				["spell"] = 86101,
+				["known"] = 86101,
 				["armorspec"] = {
 					[1] = true,
+				},
+			},
+			-- Plate Specialization (Fury)
+			{
+				["value"] = 0.05,
+				["known"] = 86110,
+				["armorspec"] = {
 					[2] = true,
 				},
 			},
@@ -1523,6 +2189,22 @@ elseif addon.class == "WARRIOR" then
 			{
 				["known"] = 29144,
 				["value"] = 0.25,
+			},
+		},
+		["ADD_HEALTH_REG_MOD_HEALTH"] = {
+			-- Talent: Enraged Regeneration
+			{
+				["tab"] = 2,
+				["num"] = 1,
+				["aura"] = 55694,
+				["value"] = 0.02 * 5,
+			},
+			-- Talent: Second Wind
+			{
+				["tab"] = 2,
+				["num"] = 2,
+				["aura"] = 125667,
+				["value"] = 0.03 * 5,
 			},
 		},
 	}
@@ -1711,6 +2393,38 @@ StatLogic.StatModTable["ALL"] = {
 			})
 		},
 	},
+	["ADD_NORMAL_HEALTH_REG_MOD_HEALTH"] = {
+		{
+			-- Levels 1-19 are likely two piecewise linear sections,
+			-- with the intersection at roughly 15
+			["level"] = setmetatable({
+				0.6250,
+				0.5938,
+				0.5625,
+				0.5313,
+				0.5000,
+				0.4688,
+				0.4375,
+				0.4063,
+				0.3750,
+				0.3438,
+				0.3125,
+				0.2813,
+				0.2500,
+				0.2188,
+				0.1875,
+				0.1528,
+				0.1212,
+				0.0893,
+				0.0574,
+			}, {
+				-- Levels 20-85 are all 2.5% HP5 (1% HP2)
+				__index = function()
+					return 0.025
+				end
+			})
+		},
+	},
 	["ADD_MANA_REGEN_OUT_OF_COMBAT_MOD_NORMAL_MANA_REGEN"] = {
 		-- Base
 		{
@@ -1760,6 +2474,24 @@ StatLogic.StatModTable["ALL"] = {
 			["value"] = 0.05,
 			["group"] = addon.ExclusiveGroup.AllStats,
 		},
+		-- Buff: Blessing of Niuzao
+		{
+			["aura"] = 1244203,
+			["value"] = 0.10,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao (Oxen Fortitude)
+		{
+			["aura"] = 1244374,
+			["stack"] = 0.05,
+			["max_stacks"] = 20,
+		},
+		-- Buff: Blessing of Xuen
+		{
+			["aura"] = 1243315,
+			["value"] = 0.15,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
 	},
 	["MOD_AGI"] = {
 		-- Buff: Mark of the Wild
@@ -1797,6 +2529,24 @@ StatLogic.StatModTable["ALL"] = {
 			["aura"] = 146385,
 			["value"] = 0.05,
 			["group"] = addon.ExclusiveGroup.AllStats,
+		},
+		-- Buff: Blessing of Niuzao
+		{
+			["aura"] = 1244203,
+			["value"] = 0.10,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao (Oxen Fortitude)
+		{
+			["aura"] = 1244374,
+			["stack"] = 0.05,
+			["max_stacks"] = 20,
+		},
+		-- Buff: Blessing of Xuen
+		{
+			["aura"] = 1243315,
+			["value"] = 0.15,
+			["group"] = addon.ExclusiveGroup.Zandalar
 		},
 	},
 	["MOD_INT"] = {
@@ -1836,6 +2586,30 @@ StatLogic.StatModTable["ALL"] = {
 			["value"] = 0.05,
 			["group"] = addon.ExclusiveGroup.AllStats,
 		},
+		-- Buff: Blessing of Yu'lon
+		{
+			["aura"] = 1244204,
+			["value"] = 0.15,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao
+		{
+			["aura"] = 1244203,
+			["value"] = 0.10,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao (Oxen Fortitude)
+		{
+			["aura"] = 1244374,
+			["stack"] = 0.05,
+			["max_stacks"] = 20,
+		},
+		-- Buff: Blessing of Chi-Ji
+		{
+			["aura"] = 1244285,
+			["value"] = 0.10,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
 	},
 	["MOD_STA"] = {
 		-- Buff: Power Word: Fortitude
@@ -1855,6 +2629,30 @@ StatLogic.StatModTable["ALL"] = {
 			["aura"] = 469,
 			["value"] = 0.1,
 			["group"] = addon.ExclusiveGroup.Stamina,
+		},
+		-- Buff: Blessing of Yu'lon
+		{
+			["aura"] = 1244204,
+			["value"] = 0.05,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao
+		{
+			["aura"] = 1244203,
+			["value"] = 0.20,
+			["group"] = addon.ExclusiveGroup.Zandalar
+		},
+		-- Buff: Blessing of Niuzao (Oxen Fortitude)
+		{
+			["aura"] = 1244374,
+			["stack"] = 0.06,
+			["max_stacks"] = 20,
+		},
+		-- Buff: Blessing of Chi-Ji
+		{
+			["aura"] = 1244285,
+			["value"] = 0.10,
+			["group"] = addon.ExclusiveGroup.Zandalar
 		},
 	},
 	["MOD_AP"] = {
@@ -1940,6 +2738,12 @@ StatLogic.StatModTable["ALL"] = {
 			["level"] = addon.conversionFallback(addon.ParryPerStr[addon.class], StatLogic.GetParryPerStr)
 		}
 	},
+	["ADD_PVP_DAMAGE_REDUCTION_MOD_RESILIENCE"] = {
+		-- Base
+		{
+			["value"] = 1,
+		},
+	},
 }
 
 -----------------------------------
@@ -2002,9 +2806,20 @@ addon.C_b = {
 	["DRUID"]       = 0,
 }
 
-addon.ModAgiClasses = {
-	["DRUID"] = true,
-	["HUNTER"] = true,
-	["ROGUE"] = true,
-	["SHAMAN"] = true,
-}
+do
+	-- Derived by fitting a curve to the values in GameTables/ResilienceDR.txt
+	-- baseResilience changed patch-by-patch in original Mists, and the values
+	-- in the GameTable were regenerated each time to reflect the new base.
+	-- In Mists Classic, it appears that the in-game base resilience will
+	-- change patch-by-patch, but the GameTable (and thus DR) will stay locked
+	-- to the values generated from a base of 77.
+	local baseResilience = 77
+	local k = 2610.65913
+
+	---@param damageReductionBeforeDR number
+	---@return number
+	---@diagnostic disable-next-line: duplicate-set-field
+	function StatLogic:GetResilienceEffectAfterDR(damageReductionBeforeDR)
+		return 100 - baseResilience + 1 / (1 / (baseResilience - 100) - damageReductionBeforeDR / k)
+	end
+end

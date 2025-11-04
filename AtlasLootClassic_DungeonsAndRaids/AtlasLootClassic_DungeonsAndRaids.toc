@@ -1,21 +1,43 @@
-﻿## Interface: 11404, 20504, 30404
-## Author: Lag
-## Version: v3.0.0
+## Interface: 50500
+## Author: Snowflame0
+## Version: v5.0.4
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-## Title: AtlasLootClassic |cFF0099FF[Dungeons and Raids]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhCN: AtlasLoot经典版 |cFF0099FF[地下城和团队]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[地城和團隊]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes: AtlasLoot loot tables from Dungeons and Raids |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhCN: AtlasLoot 地下城&团队副本掉落列表 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhTW: 地城和團隊物品資料庫。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
+## Title: AtlasLootClassic |cFF33FFBDMoP|r |cFF0099FF[Dungeons and Raids]|r
+## Notes: AtlasLoot Dungeons and Raids loot tables
+
+## Title-deDE: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Instanzen und Raids]|r
+## Title-esES: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Mazmorras y Bandas]|r
+## Title-esMX: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Mazmorras y Bandas]|r
+## Title-frFR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Donjons et Raids]|r
+## Title-itIT: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Dungeons and Raids]|r
+## Title-koKR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Dungeons and Raids]|r
+## Title-ptBR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Masmorras e Raides]|r
+## Title-ruRU: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Dungeons and Raids]|r
+## Title-zhCN: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Dungeons and Raids]|r
+## Title-zhTW: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Dungeons and Raids]|r
+## Notes-deDE: AtlasLoot Beuteverzeichnis der Instanzen und Raids
+## Notes-esES: AtlasLoot tablas de botín de Mazmorras y Bandas
+## Notes-esMX: AtlasLoot tablas de botín de Calabozos y Bandas
+## Notes-frFR: Tables de butin des donjons et raids
+## Notes-itIT: AtlasLoot loot tables from Dungeons and Raids
+## Notes-koKR: AtlasLoot 던전&레이드 전리품 목록
+## Notes-ptBR: Tabelas de saque AtlasLoot de Masmorras e Raides
+## Notes-ruRU: Таблицы добычи AtlasLoot -  Подземелья и Рейды
+## Notes-zhCN: AtlasLoot - 地下城和团队副本掉落物品列表
+## Notes-zhTW: AtlasLoot loot tables from Dungeons and Raids
+
 ## X-Category: Map
+## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
-## X-Revision: BigFoot
 
 Locales\Locales.xml
 
 data.lua
 data-tbc.lua
 data-wrath.lua
+data-cata.lua
+data-mop.lua
 droprate.lua

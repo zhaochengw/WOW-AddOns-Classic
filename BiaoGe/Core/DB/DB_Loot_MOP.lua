@@ -1,4 +1,4 @@
-if not BG.IsMOP then return end
+if not BG.IsMOP_TW then return end
 
 local _, ns = ...
 
@@ -34,7 +34,7 @@ do
             BG.Loot[FB].H.boss15 = { 89263, 89262, 89261, 87170, 87166, 87168, 87171, 87169, 87184, 87177, 87185, 87186, 87179, 87183, 87178, 87182, 87181, 87180, 87167, 87172, }
             BG.Loot[FB].H.boss16 = { 89260, 89259, 89258, 87176, 87173, 89949, 89950, 89951, 87174, 87175, }
             -- 小怪
-            BG.Loot[FB].H.boss17 = { 86043, 86042, 86045, 86044, 86046, 86192, 86186, 86183, 86187, 86185, 86189, 86184, 86188, 86191, 86190, 74248, }
+            BG.Loot[FB].H.boss17 = { 86043, 86042, 86045, 86044, 86046, 86192, 86186, 86183, 86187, 86185, 86189, 86184, 86188, 86191, 86190, 74248, 80433 ,}
 
             -- PT
             BG.Loot[FB].N.boss1  = { 85924, 85976, 85922, 85979, 89766, 85923, 89768, 86134, 89767, 85977, 85978, 85926, 85975, 85925, }
@@ -148,6 +148,7 @@ do
             BG.Loot[FB].ExchangeItems[89265] = { 86688, 86707, 86683, 86700, 86663, 86712, }
             BG.Loot[FB].ExchangeItems[89266] = { 86728, 86734, 86693, 86638, 86732, 86629, 86628, 86672, 86668, }
             BG.Loot[FB].ExchangeItems[89264] = { 86678, 86658, 86695, 86645, 86653, 86719, 86715, 86643, }
+            
             BG.Loot[FB].ExchangeItems[89270] = { 86677, 86642, 86657, 86698, 86718, 86720, 86648, 86652, }
             BG.Loot[FB].ExchangeItems[89272] = { 86630, 86637, 86667, 86671, 86729, 86692, 86735, 86627, 86727, }
             BG.Loot[FB].ExchangeItems[89271] = { 86687, 86662, 86682, 86703, 86709, 86704, }
@@ -360,6 +361,76 @@ do
             AddCurrency(FB, 396, 88881, 1250)
             AddCurrency(FB, 396, 88867, 1750)
             AddCurrency(FB, 396, 88876, 1750)
+
+            if BG.IsAlliance then
+                AddCurrency(FB, 396, 93244, 1250)
+                AddCurrency(FB, 396, 93246, 1250)
+                AddCurrency(FB, 396, 93245, 1250)
+                AddCurrency(FB, 396, 93247, 1250)
+                AddCurrency(FB, 396, 93243, 1250)
+                AddCurrency(FB, 396, 93347, 1750)
+                AddCurrency(FB, 396, 93350, 1750)
+                AddCurrency(FB, 396, 93346, 1750)
+                AddCurrency(FB, 396, 93349, 1750)
+                AddCurrency(FB, 396, 93348, 1750)
+                AddCurrency(FB, 396, 93258, 1750)
+                AddCurrency(FB, 396, 93260, 1750)
+                AddCurrency(FB, 396, 93261, 1750)
+                AddCurrency(FB, 396, 93259, 1750)
+                AddCurrency(FB, 396, 93262, 1750)
+                AddCurrency(FB, 396, 93340, 1750)
+                AddCurrency(FB, 396, 93338, 1750)
+                AddCurrency(FB, 396, 93276, 1750)
+                AddCurrency(FB, 396, 93275, 1750)
+                AddCurrency(FB, 396, 93277, 1750)
+                AddCurrency(FB, 396, 93278, 1750)
+                AddCurrency(FB, 396, 93337, 1750)
+                AddCurrency(FB, 396, 93333, 1750)
+                AddCurrency(FB, 396, 93334, 1750)
+                AddCurrency(FB, 396, 93335, 1750)
+                AddCurrency(FB, 396, 93273, 1750)
+                AddCurrency(FB, 396, 93274, 1750)
+                AddCurrency(FB, 396, 93279, 1750)
+                AddCurrency(FB, 396, 93280, 1750)
+                AddCurrency(FB, 396, 93336, 1750)
+                AddCurrency(FB, 396, 93272, 1750)
+                AddCurrency(FB, 396, 93332, 1750)
+                AddCurrency(FB, 396, 93339, 1750)
+            elseif BG.IsHorde then
+                AddCurrency(FB, 396, 93249, 1250)
+                AddCurrency(FB, 396, 93251, 1250)
+                AddCurrency(FB, 396, 93250, 1250)
+                AddCurrency(FB, 396, 93252, 1250)
+                AddCurrency(FB, 396, 93248, 1250)
+                AddCurrency(FB, 396, 93344, 1750)
+                AddCurrency(FB, 396, 93345, 1750)
+                AddCurrency(FB, 396, 93341, 1750)
+                AddCurrency(FB, 396, 93342, 1750)
+                AddCurrency(FB, 396, 93343, 1750)
+                AddCurrency(FB, 396, 93255, 1750)
+                AddCurrency(FB, 396, 93257, 1750)
+                AddCurrency(FB, 396, 93256, 1750)
+                AddCurrency(FB, 396, 93254, 1750)
+                AddCurrency(FB, 396, 93253, 1750)
+                AddCurrency(FB, 396, 93270, 1750)
+                AddCurrency(FB, 396, 93323, 1750)
+                AddCurrency(FB, 396, 93268, 1750)
+                AddCurrency(FB, 396, 93269, 1750)
+                AddCurrency(FB, 396, 93326, 1750)
+                AddCurrency(FB, 396, 93327, 1750)
+                AddCurrency(FB, 396, 93328, 1750)
+                AddCurrency(FB, 396, 93329, 1750)
+                AddCurrency(FB, 396, 93264, 1750)
+                AddCurrency(FB, 396, 93266, 1750)
+                AddCurrency(FB, 396, 93324, 1750)
+                AddCurrency(FB, 396, 93325, 1750)
+                AddCurrency(FB, 396, 93265, 1750)
+                AddCurrency(FB, 396, 93267, 1750)
+                AddCurrency(FB, 396, 93271, 1750)
+                AddCurrency(FB, 396, 93330, 1750)
+                AddCurrency(FB, 396, 93331, 1750)
+                AddCurrency(FB, 396, 93263, 1750)
+            end
         end
         -- 正义
         do

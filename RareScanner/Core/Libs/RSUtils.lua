@@ -107,12 +107,12 @@ function RSUtils.Contains(cTable, item)
 	end
 
 	if (type(cTable) == "table") then
-		for k, v in pairs(cTable) do
+		for _, v in pairs(cTable) do
 			if (type(v) == "table") then
 				return RSUtils.Contains(v, item)
 			elseif (type(item) == "table") then
 				return RSUtils.Contains(item, v)
-			elseif (type(v) == "string" and string.find(string.upper(v), string.upper(item))) then
+			elseif (type(v) == "string" and string.find(string.upper(strtrim(v)), string.upper(strtrim(item)))) then
 				return true;
 			elseif (v == item) then
 				return true;
@@ -121,7 +121,7 @@ function RSUtils.Contains(cTable, item)
 	else
 		if (type(item) == "table") then
 			return RSUtils.Contains(item, cTable)
-		elseif (type(cTable) == "string" and string.find(string.upper(cTable), string.upper(item))) then
+		elseif (type(cTable) == "string" and string.find(string.upper(strtrim(cTable)), string.upper(strtrim(item)))) then
 			return true;
 		elseif (cTable == item) then
 			return true;
@@ -129,6 +129,34 @@ function RSUtils.Contains(cTable, item)
 	end
 
 	return false;
+end
+
+function RSUtils.ContainsKeyValue(table, keyTable, value)
+	if (not table or not keyTable or not value) then
+		return false
+	end
+	
+	if (type(table) ~= "table") then
+		return false
+	elseif (type(keyTable) ~= "table") then
+		return false
+	else
+		for k, _ in pairs (table) do
+			local currentKey = nil
+			for _, key in ipairs (keyTable) do
+				if (k == key) then
+					currentKey = k;
+					break
+				end
+			end
+			
+			if (currentKey and table[currentKey][value]) then
+				return true
+			end
+		end
+		
+		return false
+	end
 end
 
 ---============================================================================
@@ -169,12 +197,20 @@ function RSUtils.tostring(s)
 	return nil
 end
 
+function RSUtils.IsNumber(n)
+	if (n and type(n) == "number") then
+		return true
+	end
+	
+	return false
+end
+
 ---============================================================================
 -- Arithmetic utils
 ---============================================================================
 
 function RSUtils.DistanceBetweenCoords(x1, x2, y1, y2)
-	if (x1 and x2 and y1 and y2) then
+	if (RSUtils.IsNumber(x1) and RSUtils.IsNumber(x2) and RSUtils.IsNumber(y1) and RSUtils.IsNumber(y2)) then
 		local dx = RSUtils.FixCoord(x1) - RSUtils.FixCoord(x2)
 		local dy = RSUtils.FixCoord(y1) - RSUtils.FixCoord(y2)
 		return math.sqrt ( (dx * dx) + (dy * dy) )
@@ -212,11 +248,31 @@ end
 function RSUtils.FixCoord(coord)
 	if (RSUtils.Contains(tostring(coord), "0.")) then
 		coord = RSUtils.Rpad(tostring(coord):gsub('(0%.)',''), 4, '0')
+	else
+		coord = RSUtils.Lpad(coord, 4, '0')
 	end
 	
-	if (tonumber(strsub(coord, 1, 2)) == 0) then
-		return tonumber(string.format("0.%s00", strsub(coord, 3)));
+	if (tonumber(strsub(coord, 1, 3)) == 0) then
+		return tonumber(string.format("0.00%s", strsub(coord, 3)));
+	elseif (tonumber(strsub(coord, 1, 2)) == 0) then
+		return tonumber(string.format("0.0%s", strsub(coord, 2)));
 	else
 		return tonumber(string.format("0.%s", coord));
 	end
+end
+
+---============================================================================
+-- RGB to HEX
+---============================================================================
+
+local color = CreateFromMixins(ColorMixin)
+
+function RSUtils.RGBToHex(r, g, b)
+	color:SetRGBA(r, g, b)
+	return string.sub(color:GenerateHexColor(), 3, 8)
+end
+
+function RSUtils.HexToRGB(hex)
+	local rhex, ghex, bhex = string.sub(hex, 1, 2), string.sub(hex, 3, 4), string.sub(hex, 5, 6)
+	return tonumber(rhex, 16)/255, tonumber(ghex, 16)/255, tonumber(bhex, 16)/255
 end

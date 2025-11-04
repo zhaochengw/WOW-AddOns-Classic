@@ -6,12 +6,8 @@ local L = DBM_CORE_L
 L.DEADLY_BOSS_MODS						= "Deadly Boss Mods"
 L.DBM									= "DBM"
 
-local guild = GetGuildInfo("player")
 local dateTable = date("*t")
-if C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 12 and guild == "OnlyFangs" then
-	L.DEADLY_BOSS_MODS					= "Deadly Boss Lua"
-	L.DBM								= "Boss Loa"
-elseif dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
+if dateTable.day and dateTable.month and dateTable.day == 1 and dateTable.month == 4 then
 	L.DEADLY_BOSS_MODS					= "Harmless Minion Mods"
 	L.DBM								= "HMM"
 end
@@ -43,6 +39,7 @@ L.TEXT_ONLY_RANGE					= "Радар ограничен только тексто
 L.NO_RANGE							= "Радар не может быть использован, поскольку Blizzard отключила некоторые функции в этой зоне."
 L.NO_ARROW							= "Стрелка не может быть использована в подземельях"
 L.NO_HUD							= "HUDMap не может быть использован в подземельях"
+L.NO_COMMS							= "Связь с аддоном нельзя использовать во время сражений или активных подземелий M+. Используйте эту команду снова после окончания сражения или подземелья."
 
 L.DYNAMIC_DIFFICULTY_CLUMP			= L.DBM .. " отключил динамическое окно проверки дистанции в этом бою, т.к. нет точной информации о необходимом количестве игроков в одном скоплении для рейда Вашего размера."
 L.DYNAMIC_ADD_COUNT					= L.DBM .. " отключил предупреждения о появлении аддов в этом бою, т.к. нет точной информации о количестве аддов, которые появляются в рейде Вашего размера."
@@ -76,6 +73,7 @@ L.SCENARIO_COMPLETE_NR				= "%s завершён спустя %s! Это нов�
 L.COMBAT_ENDED_AT					= "Бой против %s (%s) завершился спустя %s."
 L.COMBAT_ENDED_AT_LONG				= "Бой против %s (%s) завершился спустя %s. На этом уровне сложности Вы вайпнулись уже %d раз."
 L.GUILD_COMBAT_ENDED_AT				= "Группа гильдии %s вайпнулась на %s (%s) спустя %s."
+L.GUILD_COMBAT_ENDED				= "Группа гильдии %s вайпнулась на %s спустя %s."
 L.SCENARIO_ENDED_AT					= "%s закончился спустя %s."
 L.SCENARIO_ENDED_AT_LONG			= "%s закончился спустя %s. На этом уровне сложности Вы не завершили сценарий уже %d раз."
 L.COMBAT_STATE_RECOVERED			= "%s был атакован %s назад, восстанавливаю таймеры..."
@@ -274,7 +272,7 @@ L.SLASHCMD_HELP							= {--AI translated (it's fine)
 	"/dbm pull <sec>: Отправляет таймер атаки на <sec> секунд в рейд (требуются права лидера. псевдоним: pull).",
 	"/dbm break <min>: Отправляет таймер перерыва на <min> минут в рейд (требуются права лидера. псевдоним: break).",
 	"/dbm timer: Запускает пользовательский таймер " .. L.DBM .. ", подробности в разделе '/dbm timer'.",
-	"/keys: Выполняет проверки ключей M+ и рейтинга для группы/гильдии, а также предоставляет быстрые телепорты к подземельям. (псевдоним: key, keystone)",
+	"/dbm key: Выполняет проверки ключей M+ и рейтинга для группы/гильдии, а также предоставляет быстрые телепорты к подземельям. (псевдоним: key, keys, keystone)",
 	"/dbm lag: Выполняет проверку задержки для всего рейда.",
 	"/dbm durability: Выполняет проверку прочности для всего рейда.",
 	"/dbm help2: Показывает дополнительные команды"
@@ -729,10 +727,24 @@ L.DUOS						= "Дуо"
 
 -- Keystone dungeon names (keep to a max of 6 characters)
 -- See https://wago.tools/db2/MapChallengeMode for ID => Dungeon Names
+L.KEYSTONE_NAMES[197] = 'ОА' -- Eye of Azshara
+L.KEYSTONE_NAMES[198] = 'ЧТС' -- Darkheart Thicket
+L.KEYSTONE_NAMES[199] = 'КЧЛ' -- Black Rook Hold
+L.KEYSTONE_NAMES[200] = 'ЧД' -- Halls of Valor
+L.KEYSTONE_NAMES[206] = 'ЛН' -- Neltharion's Lair
+L.KEYSTONE_NAMES[207] = 'КС' -- Vault of the Wardens
+L.KEYSTONE_NAMES[208] = 'УАП' -- Maw of Souls
+L.KEYSTONE_NAMES[209] = 'КС' -- The Arcway
+L.KEYSTONE_NAMES[210] = 'КЗ' -- Court of Stars
+L.KEYSTONE_NAMES[227] = 'ВКН' -- Return to Karazhan: Lower
+L.KEYSTONE_NAMES[233] = 'СВН' -- Cathedral of Eternal Night
+L.KEYSTONE_NAMES[234] = 'ВКВ' -- Return to Karazhan: Upper
+L.KEYSTONE_NAMES[239] = 'ПТ' -- Seat of the Triumvirate
+
 L.KEYSTONE_NAMES[378] = 'ЧП' -- Halls of Atonement
 L.KEYSTONE_NAMES[391] = 'РТУЧ' -- Tazavesh: Streets of Wonder
 L.KEYSTONE_NAMES[392] = 'РТГС' -- Tazavesh: So'leah's Gambit
-L.KEYSTONE_NAMES[499] = 'ПСП' -- Priory of the Sacred Flame
+L.KEYSTONE_NAMES[499] = 'ПСП' -- Priority of the Sacred Flame
 L.KEYSTONE_NAMES[503] = 'АКГО' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = 'СР' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = 'ШЛЮЗ' -- Operation Floodgate

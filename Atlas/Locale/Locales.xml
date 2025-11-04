@@ -1,6 +1,6 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ https://raw.githubusercontent.com/Meorawr/wow-ui-schema/main/UI.xsd">
 	<Script file="LibBabble.lua"/>
-	
+
 	<Script file="Atlas-enUS.lua"/>
 	<Script file="Atlas-ruRU.lua"/>
 	<Script file="Atlas-deDE.lua"/>
@@ -14,4 +14,82 @@
 	<Script file="Atlas-koKR.lua"/>
 
 	<Script file="Atlas_GlobalStrings.lua"/>
+
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-enUS.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-ruRU.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-deDE.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-frFR.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-zhCN.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-esES.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-esMX.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-zhTW.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-ptBR.lua"/>
+	<Script file="Atlas_ClassicWoW\Atlas_ClassicWoW-koKR.lua"/>
+
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-enUS.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-ruRU.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-deDE.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-frFR.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-zhCN.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-esES.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-esMX.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-zhTW.lua"/>
+	<Script file="Atlas_BurningCrusade\Atlas_BurningCrusade-koKR.lua"/>
+
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-enUS.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-ruRU.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-deDE.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-frFR.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-zhCN.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-esES.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-esMX.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-zhTW.lua"/>
+	<Script file="Atlas_WrathoftheLichKing\Atlas_WrathoftheLichKing-koKR.lua"/>
+
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-enUS.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-ruRU.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-deDE.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-frFR.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-zhCN.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-esES.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-esMX.lua"/>
+	<Script file="Atlas_Cataclysm\Atlas_Cataclysm-zhTW.lua"/>
+
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-enUS.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-ruRU.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-deDE.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-frFR.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-zhCN.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-esES.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-esMX.lua"/>
+	<Script file="Atlas_MistsofPandaria\Atlas_MistsofPandaria-zhTW.lua"/>
+
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-enUS.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-ruRU.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-deDE.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-frFR.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-zhCN.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-esES.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-esMX.lua"/>
+	<Script file="Atlas_WarlordsofDraenor\Atlas_WarlordsofDraenor-zhTW.lua"/>
+
+	<Script file="Atlas_Legion\Atlas_Legion-enUS.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-ruRU.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-deDE.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-frFR.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-zhCN.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-esES.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-esMX.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-zhTW.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-ptBR.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-itIT.lua"/>
+	<Script file="Atlas_Legion\Atlas_Legion-koKR.lua"/>
+
+	<Script file="Atlas_BattleforAzeroth\Atlas_BattleforAzeroth-enUS.lua"/>
+
+	<Script file="Atlas_Shadowlands\Atlas_Shadowlands-enUS.lua"/>
+
+	<Script file="Atlas_Dragonflight\Atlas_Dragonflight-enUS.lua"/>
+
+	<Script file="Atlas_TheWarWithin\Atlas_TheWarWithin-enUS.lua"/>
 </Ui>

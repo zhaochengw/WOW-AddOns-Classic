@@ -1,0 +1,10 @@
+## Interface: 30401
+## Title: tdBag2 BoE
+## Notes: BoE overlay on bag and bank items
+## Author: Road-block
+## Version: 0.0.7
+## Dependencies: tdBag2
+## X-tdBag2-Plugin: BoE
+
+locales.lua
+core.lua

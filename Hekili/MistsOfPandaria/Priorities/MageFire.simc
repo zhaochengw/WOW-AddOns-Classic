@@ -1,0 +1,81 @@
+# Mage: Fire - Optimized from WoWSims MoP
+# Updated October 1, 2025
+
+## Precombat - Updated from WoWSims MoP
+actions.precombat+=/arcane_brilliance,if=!buff.arcane_brilliance.up
+actions.precombat+=/molten_armor,if=!buff.molten_armor.up
+actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled
+actions.precombat+=/potion
+actions.precombat+=/pyroblast,if=time<3
+actions.precombat+=/evocation,if=!buff.evocation.up
+actions.precombat+=/mirror_image,if=!buff.mirror_image.up
+actions.precombat+=/pyroblast,if=time<3
+
+## Main Priority List - Enhanced from WoWSims MoP
+
+# Auto-cast cooldowns
+actions+=/autocast_other_cooldowns
+
+# Evocation for mana when low - improved conditions
+actions+=/evocation,if=mana<=30000
+actions+=/evocation,if=buff.rune_of_power.remains<=cast_time
+
+# Maintain Rune of Power
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&(buff.rune_of_power.down|buff.rune_of_power.remains<=cast_time)
+
+# Advanced Alter Time mechanics from WoWSims
+actions+=/alter_time,if=!buff.alter_time.up&buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time_activate.ready
+actions+=/alter_time_activate,if=buff.alter_time.up&!buff.hot_streak.up&!buff.presence_of_mind.up
+
+# Alter Time sequence with Hot Streak + Heating Up (advanced play)
+actions+=/use_item,slot=trinket1,if=buff.alter_time.up&buff.hot_streak.up&buff.heating_up.up
+actions+=/use_item,slot=trinket2,if=buff.alter_time.up&buff.hot_streak.up&buff.heating_up.up
+actions+=/combustion,if=buff.alter_time.up&dot.combustion.refreshable&combustion_dot_value>=4000000
+
+# Alter Time + burst sequence
+actions+=/alter_time,if=buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time_activate.ready
+
+# Alter Time active - use Hot Streak or Presence of Mind
+actions+=/pyroblast,if=buff.alter_time.up&(buff.hot_streak.up|buff.presence_of_mind.up)
+
+# Alter Time active without Hot Streak/PoM - wait for stacks before Alter Time Activate
+actions+=/alter_time_activate,if=buff.alter_time.up&!buff.hot_streak.up&!buff.presence_of_mind.up
+
+# Advanced Pyroblast mechanics from WoWSims MoP
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time.ready
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time.remains>10
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time.remains<=10&combustion_dot_value>=2600000
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up&cooldown.alter_time.remains<=10&combustion_dot_value>=460000&!buff.alter_time.up
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up&target.time_to_die<=25&combustion_dot_value>=350000
+actions+=/pyroblast,if=buff.hot_streak.up&!buff.heating_up.up&cooldown.combustion.remains>=5
+actions+=/pyroblast,if=buff.hot_streak.up&!buff.heating_up.up&dot.pyroblast.remains<=2
+
+# Rune of Power usage
+actions+=/rune_of_power,if=cooldown.combustion.remains>=55
+
+# Multi-dotting with Living Bomb and Nether Tempest
+actions+=/living_bomb,cycle_targets=1,max_cycle_targets=3,if=talent.living_bomb.enabled&!dot.living_bomb.ticking
+actions+=/nether_tempest,cycle_targets=1,max_cycle_targets=5,if=talent.nether_tempest.enabled&!dot.nether_tempest.ticking
+
+# Frost Bomb application
+actions+=/frost_bomb,if=talent.frost_bomb.enabled&!debuff.frost_bomb.up
+
+# Advanced Combustion mechanics from WoWSims MoP
+actions+=/combustion,if=combustion_dot_value>=5600000
+actions+=/combustion,if=buff.bloodlust.up&combustion_dot_value>=4600000
+actions+=/combustion,if=!buff.bloodlust.up&combustion_dot_value>=2600000
+actions+=/combustion,if=!buff.alter_time.up&!cooldown.alter_time.ready&cooldown.alter_time.remains>=45&cooldown.alter_time.remains<=173&combustion_dot_value>=460000
+actions+=/combustion,if=target.time_to_die<=25&combustion_dot_value>=350000
+
+# Inferno Blast to convert Heating Up to Hot Streak
+actions+=/inferno_blast,if=buff.heating_up.up&!buff.hot_streak.up&!buff.alter_time.up
+
+# Advanced filler mechanics from WoWSims MoP
+actions+=/fireball,if=buff.hot_streak.up&!buff.heating_up.up&cooldown.combustion.remains>=5
+actions+=/fireball,if=buff.hot_streak.up&!buff.heating_up.up&dot.pyroblast.remains<=2
+actions+=/pyroblast,if=buff.hot_streak.up&buff.heating_up.up
+
+# Advanced filler spells
+actions+=/scorch,if=buff.heating_up.up&!buff.hot_streak.up&movement.distance>0
+actions+=/fireball,if=!buff.heating_up.up&!buff.hot_streak.up
+actions+=/fireball

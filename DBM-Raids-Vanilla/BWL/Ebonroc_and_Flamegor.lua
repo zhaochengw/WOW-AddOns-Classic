@@ -1,4 +1,5 @@
 if not DBM:IsSeasonal("SeasonOfDiscovery") then return end--If not SoM/SoD, these two bosses load separately
+--Above check no longer works on aniversary realms. So it's just disabled in toc instead since this version of fight currently no longer exists on any classic flavor
 local mod	= DBM:NewMod("EbonrocandFlamegor", "DBM-Raids-Vanilla", 5)
 local L		= mod:GetLocalizedStrings()
 
@@ -8,7 +9,7 @@ else
 	mod.statTypes = "normal"
 end
 
-mod:SetRevision("20250119115238")
+mod:SetRevision("20251022232519")
 mod:SetCreatureID(14601, 11981)
 mod:SetEncounterID(614, 615, 2566)
 mod:SetModelID(6377)

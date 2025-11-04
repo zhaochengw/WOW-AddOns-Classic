@@ -1,20 +1,42 @@
-﻿## Interface: 11404, 20504, 30404
-## Author: Lag
-## Version: v3.0.0
+## Interface: 50500
+## Author: Snowflame0
+## Version: v5.0.4
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-## Title: AtlasLootClassic |cFF0099FF[Factions]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhCN: AtlasLoot经典版 |cFF0099FF[阵营]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[陣營]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes: AtlasLoot loot tables from Factions |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhCN: AtlasLoot 阵营掉落列表 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhTW: 陣營物品資料庫。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
+## Title: AtlasLootClassic |cFF33FFBDMoP|r |cFF0099FF[Factions]|r
+## Notes: AtlasLoot Faction loot tables
+
+## Title-deDE: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Fraktionen]|r
+## Title-esES: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Facciones]|r
+## Title-esMX: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Facciones]|r
+## Title-frFR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Title-itIT: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Title-koKR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Title-ptBR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[Facções]|r
+## Title-ruRU: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Title-zhCN: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Title-zhTW: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[Factions]|r
+## Notes-deDE: AtlasLoot Beuteverzeichnis der Fraktionen
+## Notes-esES: AtlasLoot tablas de botín de Facciones
+## Notes-esMX: AtlasLoot tablas de botín de Facciones
+## Notes-frFR: Tables de butin des factions
+## Notes-itIT: AtlasLoot loot tables from Factions
+## Notes-koKR: AtlasLoot 평판 전리품 목록
+## Notes-ptBR: Tabelas de saque AtlasLoot das Facções
+## Notes-ruRU: Таблицы добычи AtlasLoot -  Фракции
+## Notes-zhCN: AtlasLoot - 声望阵营奖励物品列表
+## Notes-zhTW: AtlasLoot loot tables from Factions
+
 ## X-Category: Map
+## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
-## X-Revision: BigFoot
 
 Locales\Locales.xml
 
 data.lua
 data-tbc.lua
 data-wrath.lua
+data-cata.lua
+data-mop.lua

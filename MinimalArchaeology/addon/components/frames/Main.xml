@@ -1,0 +1,60 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Frame name="MinArchMain" inherits="MATBasic" frameStrata="LOW" enableMouse="true" clampedToScreen="true" movable="true" parent="UIParent">
+		<size x="300" y="560" />
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent" />
+		</Anchors>
+		<Frames>
+			<!-- Top Level Buttons (Hist|Arch|X) -->
+			<Button name="$parentButtonOpenHist" inherits="MATBOpenHist" parentKey="openHistButton" />
+			<Button name="$parentButtonOpenADI" inherits="MATBOpenADI" parentKey="openADIButton" />
+
+			<!-- Archaeology Skill Bar -->
+			<StatusBar name="$parentSkillBar" inherits="MATSkillBar" parentKey="skillBar">
+				<Size>
+					<AbsDimension x="246" y="13"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-20"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parentBorder" file="Interface\PaperDollInfoFrame\UI-Character-Skills-BarBorder">
+							<Size>
+								<AbsDimension x="255" y="29"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" x="-5" y="0"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</StatusBar>
+		</Frames>
+	</Frame>
+
+	<!-- Left Floating Tooltip Icon -->
+	<Frame name="MinArchTooltipIcon" frameStrata="TOOLTIP" clampedToScreen="true" parent="GameTooltip">
+		<size x="64" y="64" />
+		<Anchors>
+			<Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent" />
+		</Anchors>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" parentKey="icon">
+					<size x="64" y="64" />
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent" x="0" y="-5" />
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:Hide();
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

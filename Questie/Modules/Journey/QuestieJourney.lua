@@ -50,6 +50,7 @@ local questCategoryKeys = {
     PROFESSIONS = 11,
     EVENTS = 12,
     PET_BATTLES = 13,
+    SCENARIOS = 14,
 }
 QuestieJourney.questCategoryKeys = questCategoryKeys
 
@@ -62,7 +63,9 @@ function QuestieJourney:Initialize()
             not (questCategoryKeys.CATACLYSM == id and Expansions.Current < Expansions.Cata) and
             not (questCategoryKeys.THE_MAELSTROM == id and Expansions.Current < Expansions.Cata) and
             not (questCategoryKeys.PANDARIA == id and Expansions.Current < Expansions.MoP) and
-            not (questCategoryKeys.PET_BATTLES == id and Expansions.Current < Expansions.MoP) then
+            not (questCategoryKeys.PET_BATTLES == id and Expansions.Current < Expansions.MoP) and
+            not (questCategoryKeys.SCENARIOS == id and Expansions.Current < Expansions.MoP)
+        then
             continents[id] = l10n(name)
         end
     end
@@ -75,6 +78,9 @@ function QuestieJourney:Initialize()
     self.zones = ZoneDB.GetRelevantZones()
     coroutine.yield()
     self:BuildMainFrame()
+
+    -- Set up default keybinding for Journey window
+    self:SetupKeybinding()
 end
 
 function QuestieJourney:BuildMainFrame()
@@ -158,6 +164,15 @@ function QuestieJourney:ToggleJourneyWindow()
         end
     else
         Questie:Error("QuestieJourney:ToggleJourneyWindow() called before QuestieJourneyFrame was initialized!")
+    end
+end
+
+function QuestieJourney:SetupKeybinding()
+    _G.BINDING_NAME_QUESTIE_TOGGLE_JOURNEY = l10n("Toggle My Journey")
+    local currentBinding = GetBindingKey("QUESTIE_TOGGLE_JOURNEY")
+    if not currentBinding then
+        SetBinding("SEMICOLON", "QUESTIE_TOGGLE_JOURNEY")
+        Questie:Debug(Questie.DEBUG_INFO, "Set default keybind ';' for Questie Journey")
     end
 end
 

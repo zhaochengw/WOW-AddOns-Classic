@@ -13,6 +13,7 @@ local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+local RSEventDB = private.ImportLib("RareScannerEventDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -64,7 +65,7 @@ local function pingAnimation(pin, animation, entityID, mapID, x, y)
 	end
 end
 
-function RareScannerDataProviderMixin:ShowAnimations()	
+function RareScannerDataProviderMixin:ShowAnimations()
 	-- Show recently seen animations
 	if (RSConfigDB.IsShowingAnimationForNpcs() or RSConfigDB.IsShowingAnimationForContainers() or RSConfigDB.IsShowingAnimationForEvents()) then
 		for pin in self:GetMap():EnumeratePinsByTemplate("RSEntityPinTemplate") do
@@ -166,10 +167,22 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	-- Adds all the POIs to the WorldMap
 	local currentGuideActive = nil
 	for _, POI in ipairs (POIs) do
+		-- Skip if an ingame vignette is already showing this entity (on AreaPOIPinTemplate)
+		-- Only vignettes on WorldMap are actually shown in this layer
+		-- If its a group it doesn't matter, because there are several entities inside
 		local filtered = false
+		if (POI.isNpc) then
+			for pin in self:GetMap():EnumeratePinsByTemplate("AreaPOIPinTemplate") do
+				if (pin.name == POI.name) then
+					RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Saltado NPC [%s]: Hay un vignette del juego mostrándolo (AreaPOI).", POI.entityID))
+					filtered = true
+				end
+			end
+		end
 
 		-- If the entity is only available when shown in the world map, there is no need to fill the map with useless icons
 		if (POI.worldmap) then
+			RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Saltado NPC [%s]: Solo se muestra cuando aparece en el mapa del mundo.", POI.entityID))
 			filtered = true
 		elseif (POI.isGroup) then
 			for _, subPOI in ipairs(POI.POIs) do
@@ -185,6 +198,11 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			if (POI.isGroup) then
 				pin = self:GetMap():AcquirePin("RSGroupPinTemplate", POI, self);
 
+				-- Animates the ping in case the filter is on
+				if (RSGeneralDB.GetWorldMapTextFilter()) then
+					pin.ShowSearchAnim:Play();
+				end
+
 				-- Adds children overlay/guide
 				for _, childPOI in ipairs (POI.POIs) do
 					-- Adds overlay if active
@@ -197,6 +215,11 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			else
 				RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Mostrando Entidad [%s].", POI.entityID))
 				pin = self:GetMap():AcquirePin("RSEntityPinTemplate", POI, self);
+
+				-- Animates the ping in case the filter is on
+				if (RSGeneralDB.GetWorldMapTextFilter()) then
+					pin.ShowSearchAnim:Play();
+				end
 
 				-- Adds overlay if active
 				-- Avoids adding multiple spots if the entity spawns in multiple places at the same time

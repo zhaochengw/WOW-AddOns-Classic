@@ -1734,17 +1734,19 @@ BG.Init(function()
                     timeout = 0,
                     whileDead = true,
                     hideOnEscape = true,
-                    OnShow = function(self,money)
-                        self.editBox:SetScript("OnEditFocusLost",function ()
+                    OnShow = function(self, money)
+                        local edit = self.EditBox or self.editBox
+                        edit:SetScript("OnEditFocusLost", function()
                             self:Hide()
                         end)
-                        self.editBox:SetFocus()
-                        self.editBox:SetText(money)
-                        self.editBox:HighlightText()
+                        edit:SetFocus()
+                        edit:SetText(money)
+                        edit:HighlightText()
                     end,
                     OnHide = function(self)
                         ChatEdit_FocusActiveWindow()
-                        self.editBox:SetText("")
+                        local edit = self.EditBox or self.editBox
+                        edit:SetText("")
                     end,
                     EditBoxOnTextChanged = function(self)
                         if self:GetText() == "" then
@@ -1756,7 +1758,7 @@ BG.Init(function()
                     end,
                 }
             end
-            StaticPopup_Show("BiaoGe_Copy_Money",nil,nil,money)
+            StaticPopup_Show("BiaoGe_Copy_Money", nil, nil, money)
             if name then
                 lastClick = nil
                 if isExpenses and not isMan then
@@ -1767,6 +1769,7 @@ BG.Init(function()
                 end
             end
         end
+
         local function CreateButton(name, money, isExpenses, hasMan)
             local ds
             local f = CreateFrame("Frame", nil, child)
@@ -2661,12 +2664,12 @@ BG.Init(function()
         bt:SetText(L["复制应付金额"])
         bt:Hide()
         BG.tradeCopyMoneyButton = bt
-        bt:SetScript("OnClick",function (self)
+        bt:SetScript("OnClick", function(self)
             BG.TradeCopyMoney(self.money)
         end)
         function BG.tradeCopyMoneyButton:ShowButton(money)
             if not (BiaoGe.options["autoAuctionMoney"] == 1 and BiaoGe.options["autoAuctionSetMoney"] == 1) then return end
-            self.money=money
+            self.money = money
             self:Show()
         end
     end

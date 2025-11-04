@@ -1,0 +1,31 @@
+## Interface: 40402
+## Title: Minimal Archaeology
+## Author: Gyula Pataki, Joseph O'Connor, Josef Drexler
+## Email: gyussz@live.com
+## Version: 11.2.2
+## Notes: Archaeology UI replacement, Archaeology History and more... - Cataclysm Version
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: MinArchOptions
+## SavedVariables: MinArchDB, MinArchDigsitesGlobalDB
+## AddonCompartmentFunc: MinArch_OnAddonCompartmentClick
+## AddonCompartmentFuncOnEnter: MinArch_OnAddonCompartmentEnter
+## AddonCompartmentFuncOnLeave: MinArch_OnAddonCompartmentLeave
+## X-Curse-Project-ID: 28160
+## X-Wago-ID: nGvpwe6x
+## IconTexture: Interface\Icons\Trade_Archaeology_Dinosaurskeleton
+## Category-enUS: Professions
+## Category-deDE: Berufe
+## Category-esES: Profesiones
+## Category-esMX: Profesiones
+## Category-frFR: Métiers
+## Category-itIT: Professioni
+## Category-koKR: 전문 기술
+## Category-ptBR: Profissões
+## Category-ruRU: Профессии
+## Category-zhCN: 专业
+## Category-zhTW: 專業技能
+# Special thanks to joevt for the contribution
+
+embeds.xml
+addon\addon-cata.xml

@@ -75,10 +75,40 @@ local function GetCustomTriggerOptions(data, triggernum)
         WeakAuras.Add(data);
       end
     },
+    onUpdateThrottle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      softMin = 0,
+      softMax = 5,
+      bigStep = 0.1,
+      min = 0,
+      width = WeakAuras.doubleWidth,
+      name = L["Custom trigger Update Throttle"],
+      order = 9.01,
+      get = function() return trigger.onUpdateThrottle or 0 end,
+      set = function(info, v)
+        v = tonumber(v) or 0
+        if v < 0 then
+          v = 0
+        end
+        trigger.onUpdateThrottle = v
+        WeakAuras.Add(data)
+      end,
+      hidden = function() return not (
+        trigger.type == "custom"
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
+        and (
+          (trigger.check == "update")
+          or (trigger.check == "event" and type(trigger.events) == "string" and trigger.events:find("FRAME_UPDATE", 1, true))
+        )
+      )
+      end,
+    },
     events = {
       type = "input",
       multiline = true,
       control = "WeakAuras-MultiLineEditBoxWithEnter",
+      LAAC = { disableFunctions = true, disableSystems = true },
       width = WeakAuras.doubleWidth,
       name = L["Event(s)"],
       desc = L["Custom trigger status tooltip"],
@@ -96,6 +126,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       type = "input",
       multiline = true,
       control = "WeakAuras-MultiLineEditBoxWithEnter",
+      LAAC = { disableFunctions = true, disableSystems = true },
       name = L["Event(s)"],
       desc = L["Custom trigger event tooltip"],
       width = WeakAuras.doubleWidth,
@@ -325,7 +356,8 @@ local function GetCustomTriggerOptions(data, triggernum)
     paused = "string",
     remaining = "string",
     modRate = "string",
-    useModRate = "boolean"
+    useModRate = "boolean",
+    formatter = "string"
   }
 
   local function validateCustomVariables(variables)
@@ -467,7 +499,7 @@ local function GetGenericTriggerOptions(data, triggernum)
   {
     subeventPrefix = {
       type = "select",
-      name = L["Message Prefix"],
+      name = L["Subevent"],
       width = WeakAuras.normalWidth,
       order = 8,
       values = OptionsPrivate.Private.subevent_prefix_types,
@@ -484,7 +516,7 @@ local function GetGenericTriggerOptions(data, triggernum)
     subeventSuffix = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = L["Message Suffix"],
+      name = L["Subevent Suffix"],
       order = 9,
       values = OptionsPrivate.Private.subevent_suffix_types,
       sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.subevent_suffix_types),

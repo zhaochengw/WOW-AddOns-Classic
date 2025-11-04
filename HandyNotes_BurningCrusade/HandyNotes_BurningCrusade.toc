@@ -1,0 +1,16 @@
+## Interface: 110200, 50500, 30405
+## Title: HandyNotes: Burning Crusade
+## Notes: Where are the interesting things in Outland?
+## Author: Kemayo
+## Version: v13
+## DefaultState: enabled
+## X-Category: Map
+## X-eMail: kemayo @ gmail DOT com
+## X-Curse-Project-ID: 706498
+## X-Wago-ID: 7nGvyjKx
+## SavedVariables: HandyNotes_BurningCrusadeDB
+## RequiredDeps: HandyNotes
+
+handler\handler.xml
+
+burningcrusade.lua

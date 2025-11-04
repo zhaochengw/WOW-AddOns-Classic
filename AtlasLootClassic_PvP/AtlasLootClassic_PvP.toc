@@ -1,17 +1,37 @@
-﻿## Interface: 11404, 20504, 30404
-## Author: Lag
-## Version: v3.0.0
+## Interface: 50500
+## Author: Snowflame0
+## Version: v5.0.4
 ## Dependencies: AtlasLootClassic
 ## LoadOnDemand: 1
-## Title: AtlasLootClassic |cFF0099FF[PvP]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhCN: AtlasLoot经典版 |cFF0099FF[PvP]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Title-zhTW: 副本戰利品查詢經典版 |cFF0099FF[PvP]|r |cff99ddff谷|r|cff88ccee风|r|cff77bbdd修|r|cff66aacc复|r|cff5599bb版|r
-## Notes: AtlasLoot loot tables from PvP |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhCN: AtlasLoot  PvP掉落列表 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
-## Notes-zhTW: PvP 物品資料庫。 |cff99ddff谷|r|cff88ccee风|r|cff77bbdd@|r|cff66aaccD|r|cff5599bbo|r|cff4488aau|r|cff00aaffY|r|cff0099ffi|r|cff0088ffn|r
+
+## Title: AtlasLootClassic |cFF33FFBDMoP|r |cFF0099FF[PvP]|r
+## Notes: AtlasLoot PvP loot tables
+
+## Title-deDE: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Title-esES: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[JcJ]|r
+## Title-esMX: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[JcJ]|r
+## Title-frFR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[JcJ]|r
+## Title-itIT: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Title-koKR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Title-ptBR: AtlasLoot Classic |cFFFF5733MoP|r |cFF0099FF[JxJ]|r
+## Title-ruRU: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Title-zhCN: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Title-zhTW: AtlasLootClassic |cFFFF5733MoP|r |cFF0099FF[PvP]|r
+## Notes-deDE: AtlasLoot Beuteverzeichnis für PvP
+## Notes-esES: AtlasLoot tablas de botín de JcJ
+## Notes-esMX: AtlasLoot tablas de botín de JcJ
+## Notes-frFR: Tables de butin JcJ
+## Notes-itIT: AtlasLoot loot tables from PvP
+## Notes-koKR: AtlasLoot PvP 아이템 전리품 목록
+## Notes-ptBR: Tabelas de saque AtlasLoot de JxJ
+## Notes-ruRU: Таблицы добычи AtlasLoot -  PvP
+## Notes-zhCN: AtlasLoot - PVP 奖励物品列表
+## Notes-zhTW: AtlasLoot loot tables from PvP
+
 ## X-Category: Map
+## X-License: GPL v2
+
 ## X-AtlasLootClassic-LootModule: 1
-## X-Revision: BigFoot
 
 Locales\Locales.xml
 
@@ -19,3 +39,5 @@ private.lua
 data.lua
 data-tbc.lua
 data-wrath.lua
+data-cata.lua
+data-mop.lua

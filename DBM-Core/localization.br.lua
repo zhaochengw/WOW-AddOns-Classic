@@ -36,6 +36,7 @@ L.TEXT_ONLY_RANGE 					= "O quadro de distância está limitado apenas a texto d
 L.NO_RANGE 							= "O quadro de distância não pode ser usado devido a restrições de API nesta área."
 L.NO_ARROW 							= "A seta não pode ser usada em instâncias."
 L.NO_HUD 							= "O HUDMap não pode ser usado em instâncias."
+L.NO_COMMS							= "A comunicação do addon não pode ser usada durante encontros ou masmorras M+ ativas. Use este comando novamente após o término do encontro ou masmorra."
 
 L.DYNAMIC_DIFFICULTY_CLUMP			= L.DBM .. " desativou o quadro de distância dinâmico nesta luta, por falta de informação sobre o número de jogadores à ficarem amontoados para um grupo desse tamanho."
 L.DYNAMIC_ADD_COUNT					= L.DBM .. " desativou anúncio da contagem de adds nesta luta, por falta de informação da quantidade de adds para um grupo deste tamanho."
@@ -69,6 +70,7 @@ L.SCENARIO_COMPLETE_NR				= "%s completado após %s! Esse é o seu novo recorde!
 L.COMBAT_ENDED_AT					= "Combate contra %s (%s) encerrado após %s."
 L.COMBAT_ENDED_AT_LONG				= "Combate contra %s (%s) encerrado após %s. Você tem um total de %d derrotas nessa dificuldade."
 L.GUILD_COMBAT_ENDED_AT				= "Guilda foi derrotada por %s (%s) após %s."--Uncomment when updated, args have changed
+L.GUILD_COMBAT_ENDED				= "Guilda foi derrotada por %s após %s."--Uncomment when updated, args have changed
 L.SCENARIO_ENDED_AT					= "%s finalizado após %s."
 L.SCENARIO_ENDED_AT_LONG			= "%s finalizado após %s. Você tem %d de vitórias parciais nessa dificuldade."
 L.COMBAT_STATE_RECOVERED			= "Luta contra %s começou %s atrás, reajustando cronômetros..."
@@ -127,7 +129,7 @@ L.MOD_DEFAULT_LOADED				= "Foram carregadas opções padrão para esta luta."
 
 L.WORLDBOSS_ENGAGED					= "%s foi possivelmente puxado no seu reino %s por cento de vida. (Enviado por %s)"
 L.WORLDBOSS_DEFEATED				= "%s foi possivelmente derrotado no seu reino (Enviado por %s)."
-L.WORLDBUFF_STARTED					= "%s buff começou em seu reino para a facção da %s (Enviado por %s)."
+L.WORLDBUFF_STARTED					= "%s começou em seu reino para a facção da %s (Enviado por %s)."
 
 L.TIMER_FORMAT_SECS					= "%.2f |4segundo:segundos;"
 L.TIMER_FORMAT_MINS					= "%d |4minuto:minutos;"
@@ -265,7 +267,7 @@ L.SLASHCMD_HELP						= {
 	"/dbm pull <seg>: Dispara um cronômetro para iniciar a luta em <seg> segundos. Dá a todos os integrantes da raide um cronômetro para iniciar a luta (requer status de líder/assistente).",
 	"/dbm break <min>: Inicia um cronômetro de intervalo de <min> minutos. Dá a todos os integrantes da raide um cronômetro de intervalo (requer status de líder/assistente).",
 	"/dbm timer: Inicia um cronômetro personalizado do " .. L.DBM .. ", veja '/dbm timer' para detalhes.",
-	"/keys: Realiza verificações de keystone e classificação de M+ no grupo/guarda e atalhos para teletransportes de masmorras. (alias: key, keystone)",--AI translated (check me)
+	"/dbm key: Realiza verificações de keystone e classificação de M+ no grupo/guarda e atalhos para teletransportes de masmorras. (alias: key, keys, keystone)",--AI translated (check me)
 	"/dbm lag: Realiza uma verificação de latência em toda a raide.",
 	"/dbm durability: Realiza uma verificação de durabilidade em toda a raide.",
 	"/dbm help2: Mostra comandos de gerenciamento de raide."--AI translated (check me)
@@ -297,8 +299,8 @@ L.PULL_TIME_TOO_LONG				= "O cronômetro de puxada não pode ser maior que que 6
 
 L.BREAK_USAGE 						= "O cronômetro de pausa não pode ser maior que 60 minutos. Certifique-se de inserir o tempo em minutos e não em segundos."
 L.BREAK_START						= "Pausa começando agora - você tem %s!"
-L.BREAK_MIN							= "Pausa encerra-se em %s minutos!"
-L.BREAK_SEC							= "Pausa encerra-se em %s segundos!"
+L.BREAK_MIN							= "Pausa encerra-se em %s |4minuto:minutos;!"
+L.BREAK_SEC							= "Pausa encerra-se em %s |4segundo:segundos;!"
 L.TIMER_BREAK						= "Pausa!"
 L.ANNOUNCE_BREAK_OVER				= "A pausa acabou"
 

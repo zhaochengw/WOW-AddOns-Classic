@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20250720212401")
 mod:SetCreatureID(36626)
 mod:SetEncounterID(not mod:IsPostCata() and 849 or 1097)
 mod:SetModelID(31006)
@@ -14,8 +14,8 @@ mod:SetZone(631)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 69195",
-	"SPELL_AURA_APPLIED 69279 69166 72219 69240 69291",
-	"SPELL_AURA_APPLIED_DOSE 69166 72219 69291",
+	"SPELL_AURA_APPLIED 69279 69166 72219 69240",
+	"SPELL_AURA_APPLIED_DOSE 69166 72219",
 	"SPELL_AURA_REMOVED 69279",
 	"UNIT_SPELLCAST_SUCCEEDED"
 )
@@ -50,12 +50,10 @@ local berserkTimer			= mod:NewBerserkTimer(300)
 
 mod:AddRangeFrameOption(10, 69240, "Ranged")
 mod:AddSetIconOption("SetIconOnGasSpore", 69279, true, 7, {1, 2, 3})
-mod:AddBoolOption("AchievementCheck", false, "announce", nil, nil, nil, 4615, "achievement")
 
 local gasSporeTargets = {}
 local vileGasTargets = {}
 mod.vb.gasSporeCast = 0
-mod.vb.warnedfailed = false
 
 local function warnGasSporeTargets()
 	warnGasSpore:Show(table.concat(gasSporeTargets, "<, >"))
@@ -76,7 +74,6 @@ function mod:OnCombatStart(delay)
 	table.wipe(gasSporeTargets)
 	table.wipe(vileGasTargets)
 	self.vb.gasSporeCast = 0
-	self.vb.warnedfailed = false
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(10)
 	end
@@ -156,14 +153,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		self:Unschedule(warnVileGasTargets)
 		self:Schedule(0.8, warnVileGasTargets)
-	elseif args.spellId == 69291 and args:IsDestTypePlayer() then	--Inoculated
-		local amount = args.amount or 1
-		if self.Options.AchievementCheck and DBM:GetRaidRank() > 0 and not self.vb.warnedfailed and self:AntiSpam(3, 1) then
-			if amount == 3 then
-				self.vb.warnedfailed = true
-				SendChatMessage(L.AchievementFailed:format(args.destName, amount), "RAID_WARNING")
-			end
-		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

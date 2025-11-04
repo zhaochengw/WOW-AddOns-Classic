@@ -46,7 +46,7 @@ local function GetContinentMapIds()
 		for k, v in pairs(RSMapDB.GetContinents()) do
 			if (v.zonefilter) then
 				if (v.id) then
-					continent_map_ids[k] = RSMap.GetMapName(k)
+					continent_map_ids[k] = RSMapDB.GetMapName(k)
 				else
 					continent_map_ids[k] = AL["ZONES_CONTINENT_LIST"][k]
 				end
@@ -62,7 +62,7 @@ local function LoadSubmapCombo(continentID)
 		options.args.subzones.values = {}
 		private.filter_options_subzones = nil
 		table.foreach(RSMapDB.GetContinents()[continentID].zones, function(index, mapID)
-			local mapName = RSMap.GetMapName(mapID)
+			local mapName = RSMapDB.GetMapName(mapID)
 			if (mapName) then
 				options.args.subzones.values[mapID] = mapName
 			end
@@ -137,21 +137,18 @@ local function AddContainer(name, containerID)
 	}
 end
 
-local function SearchContainerByZoneID(zoneID, containerName, isContinentZone)
+local function SearchContainerByZoneID(mapID, containerName, isContinentZone)
 	if (not isContinentZone) then
 		ResetResults();
 	end
 	
-	if (zoneID) then
-		for containerID, info in pairs(RSContainerDB.GetAllInternalContainerInfo()) do
-			local name = RSContainerDB.GetContainerName(containerID)
-			if (not name) then
-				name = string.format("%s (%s)", AL["CONTAINER"], containerID)
-			else
-				name = string.format("%s (%s)", name, containerID)
-			end
-			if (RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
-				containers[containerID] = name
+	if (mapID) then
+		local containerIDsWithNames = RSContainerDB.GetActiveContainerIDsWithNamesByMapID(mapID)
+		if (RSUtils.GetTableLength(containerIDsWithNames) > 0) then
+			for containerID, name in pairs(containerIDsWithNames) do
+				if (not containerName or RSUtils.Contains(name, containerName)) then
+					containers[containerID] = name
+				end
 			end
 		end
 	end

@@ -7,13 +7,13 @@ else
 	mod.statTypes = "normal"
 end
 
-mod:SetRevision("20250209025759")
+mod:SetRevision("20251101203426")
 mod:SetCreatureID(15953)
 mod:SetEncounterID(1110)
 mod:SetModelID(15940)
 mod:SetZone(533)
 
-mod:RegisterCombat("combat_yell", L.Pull)
+mod:RegisterCombat("combat_yell", L.Pull1, L.Pull2)
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 28798 28732 28794",--54100, 54097, 54099

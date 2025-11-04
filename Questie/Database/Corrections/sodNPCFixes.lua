@@ -63,7 +63,7 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questEnds] = {3103,77619},
         },
         [376] = { -- High Priestess Laurena
-            [npcKeys.questStarts] = {5634,5641,5673,84320,84321,84324,84326,84327,84329,84413},
+            [npcKeys.questStarts] = {5634,5645,5673,5676,84320,84321,84324,84326,84327,84329,84413},
             [npcKeys.questEnds] = {5634,5635,5636,5637,5638,5639,5640,5676,5677,5678,78193,84320,84323,84324,84325,84326,84412,84413},
         },
         [391] = { -- Old Murk-Eye
@@ -516,7 +516,7 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questStarts] = {6364,90243},
         },
         [3044] = { -- Miles Welsh
-            [npcKeys.questStarts] = {5642,5663},
+            [npcKeys.questStarts] = {5642,5644,5656,5663},
         },
         [3058] = { -- Arra'chea
             [npcKeys.questStarts] = {90093,90095},
@@ -663,7 +663,7 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questEnds] = {967,970,973,976,981,1140,78088,78093},
         },
         [3707] = { -- Ken'jai
-            [npcKeys.questStarts] = {5649,5657,77642},
+            [npcKeys.questStarts] = {5649,77642},
             [npcKeys.questEnds] = {3085,77642},
         },
         [4047] = { -- Zor Lonetree
@@ -683,10 +683,10 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questEnds] = {90567},
         },
         [4606] = { -- Aelthalyste
-            [npcKeys.questStarts] = {5658},
+            [npcKeys.questStarts] = {5643,5657,5658,5679},
         },
         [4607] = { -- Father Lankester
-            [npcKeys.questStarts] = {5643,5656,5679,79080},
+            [npcKeys.questStarts] = {79080},
             [npcKeys.questEnds] = {79080},
         },
         [4713] = { -- Slitherblade Warrior
@@ -800,7 +800,7 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questStarts] = {90343},
         },
         [6018] = { -- Ur'kyo
-            [npcKeys.questStarts] = {5652,5662,8254,79079},
+            [npcKeys.questStarts] = {5646,5652,5662,5680,8254,79079},
             [npcKeys.questEnds] = {5642,5643,5652,5654,5655,5656,5657,5680,79079},
         },
         [6113] = { -- Vejrek
@@ -1122,8 +1122,11 @@ function SeasonOfDiscovery:LoadNPCs()
             [npcKeys.questStarts] = {5632,5638,78194,78195},
             [npcKeys.questEnds] = {78194},
         },
+        [11406] = { -- High Priest Rohan
+            [npcKeys.questStarts] = {5639,5641,5675,5677,7639,8254},
+        },
         [11407] = { -- Var'jun
-            [npcKeys.questStarts] = {5654,5661},
+            [npcKeys.questStarts] = {5655,5661},
         },
         [11438] = { -- Bibbly F'utzbuckle
             [npcKeys.questStarts] = {5501,79235},

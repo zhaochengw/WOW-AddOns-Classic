@@ -1,0 +1,11 @@
+<Bindings>
+	<Binding name="MINARCH_SHOWHIDE" runOnUp="true" header="MINARCH_HEADER" category="Minimal Archaeology">
+		if (keystate == "down") then
+			local Main = MinArch:LoadModule("MinArchMain")
+			Main:ToggleWindow(true);
+		end
+	</Binding>
+	<Binding name="MINARCH_CASTSURVEY" runOnUp="true" category="Minimal Archaeology">
+		MinArch:BindingCast()
+	</Binding>
+</Bindings>

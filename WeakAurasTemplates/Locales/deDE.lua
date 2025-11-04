@@ -7,22 +7,12 @@ end
 local L = WeakAuras.L
 
 -- WeakAuras/Templates
-	--[[Translation missing --]]
-	L["(Dwarf)"] = "(Dwarf)"
-	--[[Translation missing --]]
-	L["(Dwarf/Human)"] = "(Dwarf/Human)"
-	--[[Translation missing --]]
-	L["(Human)"] = "(Human)"
-	--[[Translation missing --]]
-	L["(Night Elf)"] = "(Night Elf)"
-	--[[Translation missing --]]
+	L["(Dwarf)"] = "(Zwerg)"
+	L["(Dwarf/Human)"] = "(Zwerg/Mensch)"
+	L["(Human)"] = "(Mensch)"
+	L["(Night Elf)"] = "(Nachtelf)"
 	L["(Troll)"] = "(Troll)"
-	--[[Translation missing --]]
-	L["(Undead)"] = "(Undead)"
-	--[[Translation missing --]]
-	L["< 4 stacks"] = "< 4 stacks"
-	--[[Translation missing --]]
-	L["5 stacks"] = "5 stacks"
+	L["(Undead)"] = "(Untot)"
 	L["Abilities"] = "Fähigkeiten"
 	L["Add Triggers"] = "Auslöser hinzufügen"
 	L["Always Active"] = "Immer aktiv"
@@ -69,8 +59,6 @@ local L = WeakAuras.L
 	L["Bloodlust/Heroism"] = "Kampfrausch/Heldentum"
 	L["buff"] = "buff"
 	L["Buffs"] = "Buffs"
-	L["Cancel"] = "Abbrechen"
-	L["Cast"] = "Zauberwirken"
 	--[[Translation missing --]]
 	L["Charge and Buff Tracking"] = "Charge and Buff Tracking"
 	--[[Translation missing --]]
@@ -89,8 +77,6 @@ local L = WeakAuras.L
 	L["Debuffs"] = "Debuffs"
 	--[[Translation missing --]]
 	L["dps buff"] = "dps buff"
-	L["General"] = "Allgemein"
-	L["Health"] = "Gesundheit"
 	--[[Translation missing --]]
 	L["Highlight while action is queued."] = "Highlight while action is queued."
 	--[[Translation missing --]]
@@ -112,10 +98,6 @@ local L = WeakAuras.L
 	L["Keeps existing triggers intact"] = "Verändert existierende Auslöser nicht"
 	--[[Translation missing --]]
 	L["Master Channeler Rune"] = "Master Channeler Rune"
-	--[[Translation missing --]]
-	L["Max 3"] = "Max 3"
-	--[[Translation missing --]]
-	L["Max 4"] = "Max 4"
 	L["Next"] = "Nächste"
 	--[[Translation missing --]]
 	L["Only show the aura if the target has the debuff."] = "Only show the aura if the target has the debuff."
@@ -134,8 +116,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["Other cooldown"] = "Other cooldown"
 	L["Pet alive"] = "Begleiter am Leben"
-	L["Pet Behavior"] = "Begleiterverhalten"
-	L["PvP Talents"] = "PvP-Talente"
 	--[[Translation missing --]]
 	L["regen buff"] = "regen buff"
 	L["Replace all existing triggers"] = "Ersetzt alle vorhandenen Auslöser "
@@ -213,7 +193,6 @@ local L = WeakAuras.L
 	--[[Translation missing --]]
 	L["Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."] = "Tracks the charge and the duration of spell, highlight while the spell is active, blue on insufficient resources."
 	L["Unknown Item"] = "Unbekannter Gegenstand"
-	L["Unknown Spell"] = "Unbekannter Zauber"
 	--[[Translation missing --]]
 	L["Warrior cooldown"] = "Warrior cooldown"
 

@@ -4,6 +4,37 @@
 local addon, ns = ...
 local Hekili = _G[addon]
 
+-- MoP Compatibility Layer
+if Hekili.IsMoP and Hekili.IsMoP() then
+    -- Create compatibility wrappers for missing MoP APIs
+    if not C_Timer then
+        C_Timer = {
+            After = function(duration, callback)
+                local frame = CreateFrame("Frame")
+                frame:SetScript("OnUpdate", function(self, elapsed)
+                    self.elapsed = (self.elapsed or 0) + elapsed
+                    if self.elapsed >= duration then
+                        self:SetScript("OnUpdate", nil)
+                        callback()
+                    end
+                end)
+                return frame
+            end
+        }
+    end
+    
+    -- PixelUtil compatibility
+    if not PixelUtil then
+        PixelUtil = {}
+        PixelUtil.GetNearestPixelSize = function(val, factor, scale)
+            return val
+        end
+        PixelUtil.GetPixelToUIUnitFactor = function()
+            return 1
+        end
+    end
+end
+
 local class = Hekili.Class
 local state = Hekili.State
 
@@ -18,19 +49,127 @@ local multiUnpack = ns.multiUnpack
 local orderedPairs = ns.orderedPairs
 local round = ns.round
 
-local format, insert = string.format, table.insert
+-- Always reference the global API to avoid local recursion/shadowing.
+local IsCurrentItem = _G.IsCurrentItem
+local IsUsableItem = ns.IsUsableItem
+local IsCurrentSpell = _G.IsCurrentSpell
 
-local GetSpecialization = function() return GetActiveTalentGroup() end
-local GetSpecializationInfo = function()
-    local name, baseName, id = UnitClass( "player" )
-    return id, baseName, name
+-- Safe item cooldown wrapper for MoP: normalize return to 4 values.
+local GetItemCooldown = function(item)
+    local start, duration, enabled
+    if _G.GetItemCooldown then
+        start, duration, enabled = _G.GetItemCooldown(item)
+    else
+        start, duration, enabled = 0, 0, 1
+    end
+    -- modRate is not available in MoP; default to 1.
+    return start or 0, duration or 0, enabled or 1, 1
 end
-local HasVehicleActionBar, HasOverrideActionBar, UnitHasVehicleUI, UnitOnTaxi = HasVehicleActionBar, HasOverrideActionBar, UnitHasVehicleUI, UnitOnTaxi
-local IsInPetBattle = Hekili.IsWrath() and function() return false end or C_PetBattles.IsInBattle
-local IsSpellOverlayed = _G.IsSpellOverlayed or function() return false end
+local GetItemInfoInstant = function(itemID)
+    local GetItemInfoFunc = ns.CachedGetItemInfo
+    if not GetItemInfoFunc then return nil, nil, nil end
+    local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfoFunc(itemID)
+    return name, texture, quality
+end
+local GetSpellTexture = function(spellID)
+    local name, rank, icon = _G.GetSpellInfo(spellID)
+    return icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+end
+-- Safe IsUsableSpell wrapper (avoid recursion); fall back to usable=true when API missing.
+local IsUsableSpell = function(spellID)
+    local usable, noMana = true, false
+    if _G.IsUsableSpell then
+        usable, noMana = _G.IsUsableSpell(spellID)
+    end
+    return (usable and not noMana) or false, noMana
+end
+
+-- Safe spell cooldown wrapper (avoid recursion); normalize to 4 values.
+local GetSpellCooldown = function(spellID)
+    local start, duration, enable, modRate = 0, 0, 1, 1
+    if _G.GetSpellCooldown then
+        start, duration, enable, modRate = _G.GetSpellCooldown(spellID)
+    end
+    return start or 0, duration or 0, enable ~= nil and enable or 1, modRate or 1
+end
+
+local floor, format, insert = math.floor, string.format, table.insert
+
+-- MoP API compatibility
+local HasVehicleActionBar = _G.HasVehicleActionBar
+local HasOverrideActionBar = _G.HasOverrideActionBar
+local IsInPetBattle = _G.IsInPetBattle or function() return false end
+local UnitHasVehicleUI = _G.UnitHasVehicleUI
+local UnitOnTaxi = _G.UnitOnTaxi
+local Tooltip = ns.Tooltip
 
 local Masque, MasqueGroup
 local _
+
+
+-- Simple performance presets for MoP fork (Low/Medium/High)
+local performanceSettings = {
+    [1] = { refreshRate = 0.5,  combatRate = 0.2,  frameCeiling = 20 }, -- Low
+    [2] = { refreshRate = 0.25, combatRate = 0.1,  frameCeiling = 15 }, -- Medium (default)
+    [3] = { refreshRate = 0.1,  combatRate = 0.05, frameCeiling = 10 }, -- High
+}
+
+-- FPS smoothing system for stable budget calculations
+local fpsTracker = {
+    samples = {}, -- Sliding window of FPS samples
+    maxSamples = 30, -- 30 samples for smoothing
+    smoothedFPS = 60, -- Current smoothed FPS value
+    lastUpdate = 0, -- Last update time
+    updateInterval = 0.1 -- Update every 100ms
+}
+
+local function updateSmoothedFPS()
+    local now = GetTime()
+    if now - fpsTracker.lastUpdate >= fpsTracker.updateInterval then
+        local currentFPS = GetFramerate()
+        
+        -- Add to sliding window
+        table.insert( fpsTracker.samples, currentFPS )
+        if #fpsTracker.samples > fpsTracker.maxSamples then
+            table.remove( fpsTracker.samples, 1 )
+        end
+        
+        -- Calculate smoothed average
+        local sum = 0
+        for _, fps in ipairs( fpsTracker.samples ) do
+            sum = sum + fps
+        end
+        fpsTracker.smoothedFPS = sum / #fpsTracker.samples
+        fpsTracker.lastUpdate = now
+    end
+    
+    return fpsTracker.smoothedFPS
+end
+
+-- Expose smoothed FPS for use in other places
+function Hekili.GetSmoothedFPS()
+    return updateSmoothedFPS()
+end
+
+-- Calculate frame budget based on user percentage
+local function calculateFrameBudget()
+    local smoothedFPS = updateSmoothedFPS()
+    local frameBudget = Hekili.DB.profile.performance.frameBudget or 0.7
+    
+    -- local rawFPS = GetFramerate()
+    
+    -- Calculate frame time
+    local frameTime = 1000 / math.max( smoothedFPS, 30 ) -- min 30 FPS
+    
+    -- Apply user percentage directly to frame time
+    local userBudget = frameTime * frameBudget
+    
+    -- Debug output
+    -- print(string.format("[Hekili Budget] Setting: %d%%, Raw FPS: %.1f, Smoothed FPS: %.1f, Frame Time: %.2fms, Budget: %.2fms",
+    --     frameBudget, rawFPS, smoothedFPS, frameTime, userBudget))
+    
+    return userBudget
+end
 
 
 function Hekili:GetScale()
@@ -46,17 +185,15 @@ end
 local movementData = {}
 
 local function startScreenMovement(frame)
-    _, _, _, movementData.origX, movementData.origY = frame:GetPoint()
+    movementData.origX, movementData.origY = select( 4, frame:GetPoint() )
     frame:StartMoving()
-    _, _, _, movementData.fromX, movementData.fromY = frame:GetPoint()
+    movementData.fromX, movementData.fromY = select( 4, frame:GetPoint() )
     frame.Moving = true
 end
 
 local function stopScreenMovement(frame)
-    local monitor = (tonumber(GetCVar("gxMonitor")) or 0) + 1
-    local resolutions = {GetScreenResolutions()}
-    local resolution = resolutions[GetCurrentResolution()] or GetCVar("gxWindowedResolution") or "1024x768"
-    local scrW, scrH = resolution:match("(%d+)x(%d+)")
+    -- MoP compatibility: Use GetScreenWidth/Height instead of C_VideoOptions
+    local scrW, scrH = GetScreenWidth(), GetScreenHeight()
 
     local scale, pScale = Hekili:GetScale(), UIParent:GetScale()
 
@@ -66,7 +203,7 @@ local function stopScreenMovement(frame)
     local limitX = (scrW - frame:GetWidth() ) / 2
     local limitY = (scrH - frame:GetHeight()) / 2
 
-    _, _, _, movementData.toX, movementData.toY = frame:GetPoint()
+    movementData.toX, movementData.toY = select( 4, frame:GetPoint() )
     frame:StopMovingOrSizing()
     frame.Moving = false
     frame:ClearAllPoints()
@@ -144,59 +281,61 @@ function ns.StartConfiguration( external )
     local ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
     -- Notification Panel
-    ns.UI.Notification.Mover = ns.UI.Notification.Mover or CreateFrame( "Frame", "HekiliNotificationMover", ns.UI.Notification, "BackdropTemplate" )
-    ns.UI.Notification.Mover:SetAllPoints(HekiliNotification)
-    ns.UI.Notification.Mover:SetBackdrop( {
-        bgFile = "Interface/Buttons/WHITE8X8",
-        edgeFile = "Interface/Buttons/WHITE8X8",
-        tile = false,
-        tileSize = 0,
-        edgeSize = 1,
-        insets = { left = 0, right = 0, top = 0, bottom = 0 }
-    } )
+    if ns.UI.Notification then
+        ns.UI.Notification.Mover = ns.UI.Notification.Mover or CreateFrame( "Frame", "HekiliNotificationMover", ns.UI.Notification, "BackdropTemplate" )
+        ns.UI.Notification.Mover:SetAllPoints(HekiliNotification)
+        ns.UI.Notification.Mover:SetBackdrop( {
+            bgFile = "Interface/Buttons/WHITE8X8",
+            edgeFile = "Interface/Buttons/WHITE8X8",
+            tile = false,
+            tileSize = 0,
+            edgeSize = 1,
+            insets = { left = 0, right = 0, top = 0, bottom = 0 }
+        } )
 
-    ns.UI.Notification.Mover:SetBackdropColor( 0, 0, 0, .8 )
-    ns.UI.Notification.Mover:SetBackdropBorderColor( ccolor.r, ccolor.g, ccolor.b, 1 )
-    ns.UI.Notification.Mover:Show()
+        ns.UI.Notification.Mover:SetBackdropColor( 0, 0, 0, .8 )
+        ns.UI.Notification.Mover:SetBackdropBorderColor( ccolor.r, ccolor.g, ccolor.b, 1 )
+        ns.UI.Notification.Mover:Show()
 
-    local f = ns.UI.Notification.Mover
+        local f = ns.UI.Notification.Mover
 
-    if not f.Header then
-        f.Header = f:CreateFontString( "HekiliNotificationHeader", "OVERLAY", "GameFontNormal" )
-        local path = f.Header:GetFont()
-        f.Header:SetFont( path, 18, "OUTLINE" )
-    end
-    f.Header:SetAllPoints( HekiliNotificationMover )
-    f.Header:SetText( "通知栏" )
-    f.Header:SetJustifyH( "CENTER" )
-    f.Header:Show()
-
-    if HekiliNotificationMover:GetFrameLevel() > HekiliNotification:GetFrameLevel() then
-        local orig = HekiliNotificationMover:GetFrameLevel()
-        HekiliNotification:SetFrameLevel(orig)
-        HekiliNotificationMover:SetFrameLevel(orig-1)
-    end
-
-    ns.UI.Notification:EnableMouse( true )
-    ns.UI.Notification:SetMovable( true )
-
-    HekiliNotification:SetScript( "OnMouseDown", Mover_OnMouseDown )
-    HekiliNotification:SetScript( "OnMouseUp", Mover_OnMouseUp )
-    HekiliNotification:SetScript( "OnEnter", function( self )
-        local H = Hekili
-
-        if H.Config then
-            GameTooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
-
-            GameTooltip:SetText( "Hekili:通知栏" )
-            GameTooltip:AddLine( "鼠标左键拖动可移动位置。", 1, 1, 1 )
-            GameTooltip:AddLine( "鼠标右键点击可打开通知栏设置页面。", 1, 1, 1 )
-            GameTooltip:Show()
+        if not f.Header then
+            f.Header = f:CreateFontString( "HekiliNotificationHeader", "OVERLAY", "GameFontNormal" )
+            local path = f.Header:GetFont()
+            f.Header:SetFont( path, 18, "OUTLINE" )
         end
-    end )
-    HekiliNotification:SetScript( "OnLeave", function(self)
-        GameTooltip:Hide()
-    end )
+        f.Header:SetAllPoints( HekiliNotificationMover )
+        f.Header:SetText( "通知栏" )
+        f.Header:SetJustifyH( "CENTER" )
+        f.Header:Show()
+
+        if HekiliNotificationMover:GetFrameLevel() > HekiliNotification:GetFrameLevel() then
+            local orig = HekiliNotificationMover:GetFrameLevel()
+            HekiliNotification:SetFrameLevel(orig)
+            HekiliNotificationMover:SetFrameLevel(orig-1)
+        end
+
+        ns.UI.Notification:EnableMouse( true )
+        ns.UI.Notification:SetMovable( true )
+
+        HekiliNotification:SetScript( "OnMouseDown", Mover_OnMouseDown )
+        HekiliNotification:SetScript( "OnMouseUp", Mover_OnMouseUp )
+        HekiliNotification:SetScript( "OnEnter", function( self )
+            local H = Hekili
+
+            if H.Config then
+                Tooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
+
+            Tooltip:SetText( "Hekili:通知栏" )
+            Tooltip:AddLine( "鼠标左键拖动可移动位置。", 1, 1, 1 )
+            Tooltip:AddLine( "鼠标右键点击可打开通知栏设置页面。", 1, 1, 1 )
+                Tooltip:Show()
+            end
+        end )
+        HekiliNotification:SetScript( "OnLeave", function(self)
+            Tooltip:Hide()
+        end )
+    end
 
     Hekili:ProfileFrame( "NotificationFrame", HekiliNotification )
 
@@ -209,7 +348,7 @@ function ns.StartConfiguration( external )
             v.Header:Hide()
         end
 
-        if ns.UI.Buttons[ i ][ 1 ] and Hekili.DB.profile.displays[ i ] then
+        if ns.UI.Buttons[ i ][ 1 ] and Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.displays[ i ] then
             -- if not Hekili:IsDisplayActive( i ) then v:Show() end
 
             v.Backdrop = v.Backdrop or CreateFrame( "Frame", v:GetName().. "_Backdrop", UIParent, "BackdropTemplate" )
@@ -266,17 +405,17 @@ function ns.StartConfiguration( external )
                 local H = Hekili
 
                 if H.Config then
-                    GameTooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
+                    Tooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
 
-                    GameTooltip:SetText( "Hekili: " .. i )
-                    GameTooltip:AddLine( "鼠标左键拖动可移动位置。", 1, 1, 1 )
-                    GameTooltip:AddLine( "鼠标右键点击打开" .. i .. "设置页面。", 1, 1, 1 )
-                    if not H:IsDisplayActive( i, true ) then GameTooltip:AddLine( "此显示栏处于未激活状态。", 0.5, 0.5, 0.5 ) end
-                    GameTooltip:Show()
+                    Tooltip:SetText( "Hekili: " .. i )
+                    Tooltip:AddLine( "鼠标左键拖动可移动位置。", 1, 1, 1 )
+                    Tooltip:AddLine( "鼠标右键点击打开" .. i .. "设置页面。", 1, 1, 1 )
+                    if not H:IsDisplayActive( i, true ) then Tooltip:AddLine( "此显示栏处于未激活状态。", 0.5, 0.5, 0.5 ) end
+                    Tooltip:Show()
                 end
             end )
             v.Backdrop:SetScript( "OnLeave", function( self )
-                GameTooltip:Hide()
+                Tooltip:Hide()
             end )
             v:Show()
 
@@ -290,7 +429,7 @@ function ns.StartConfiguration( external )
 
             if i == "Defensives" then v.Header:SetText( AtlasToString( "nameplates-InterruptShield" ) )
             elseif i == "Interrupts" then v.Header:SetText( AtlasToString( "voicechat-icon-speaker-mute" ) )
-            elseif i == "Cooldowns" then v.Header:SetText( AtlasToString( "VignetteEventElite" ) )
+            elseif i == "Cooldowns" then v.Header:SetText( AtlasToString( "chromietime-32x32" ) )
             else v.Header:SetText( i ) end
 
             v.Header:SetJustifyH("CENTER")
@@ -308,15 +447,21 @@ function ns.StartConfiguration( external )
         ACD:Open( "Hekili" )
 
         local oFrame = ACD.OpenFrames["Hekili"].frame
-        --if not Hekili.IsDragonflight() then oFrame:SetMinResize( 800,608 ) end
+        oFrame:SetResizeBounds( 800, 120 )
 
         ns.OnHideFrame = ns.OnHideFrame or CreateFrame( "Frame" )
         ns.OnHideFrame:SetParent( oFrame )
         ns.OnHideFrame:SetScript( "OnHide", function(self)
             ns.StopConfiguration()
             self:SetScript( "OnHide", nil )
-            collectgarbage()
-            Hekili:UpdateDisplayVisibility()
+            self:SetParent( nil )
+            if not InCombatLockdown() then
+                collectgarbage()
+                Hekili:UpdateDisplayVisibility()
+            else
+                -- MoP compatibility: Use simple timer instead of C_Timer.After
+                C_Timer.After(0, function() Hekili:UpdateDisplayVisibility() end)
+            end
         end )
 
         if not ns.OnHideFrame.firstTime then
@@ -365,8 +510,6 @@ function ns.StopConfiguration()
     HekiliNotification:SetMovable( false )
     HekiliNotification.Mover:Hide()
     -- HekiliNotification.Mover.Header:Hide()
-
-    Hekili:UpdateDisplayVisibility()
 end
 
 local function MasqueUpdate( Addon, Group, SkinID, Gloss, Backdrop, Colors, Disabled )
@@ -390,17 +533,18 @@ do
     menu.info = {}
 
     menu.AddButton = UIDropDownMenu_AddButton
-    menu.AddSeparator = UIDropDownMenu_AddSeparator
-
-    local function SetDisplayMode( mode )
+    menu.AddSeparator = UIDropDownMenu_AddSeparator    local function SetDisplayMode( mode )
+        if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.toggles then return end
         Hekili.DB.profile.toggles.mode.value = mode
         if WeakAuras and WeakAuras.ScanEvents then WeakAuras.ScanEvents( "HEKILI_TOGGLE", "mode", mode ) end
         if ns.UI.Minimap then ns.UI.Minimap:RefreshDataText() end
+
         Hekili:UpdateDisplayVisibility()
         Hekili:ForceUpdate( "HEKILI_TOGGLE", true )
     end
 
     local function IsDisplayMode( p, mode )
+        if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.toggles then return false end
         return Hekili.DB.profile.toggles.mode.value == mode
     end
 
@@ -414,7 +558,7 @@ do
         {
             text = "启用",
             func = function () Hekili:Toggle() end,
-            checked = function () return Hekili.DB.profile.enabled end,
+            checked = function () return Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.enabled end,
         },
 
         {
@@ -476,202 +620,201 @@ do
         {
             text = "主要爆发",
             func = function() Hekili:FireToggle( "cooldowns" ); ns.UI.Minimap:RefreshDataText() end,
-            checked = function () return Hekili.DB.profile.toggles.cooldowns.value end,
+            checked = function () return Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.toggles.cooldowns.value end,
         },
 
         {
-            text = "次要爆发",
-            func = function() Hekili:FireToggle( "essences" ); ns.UI.Minimap:RefreshDataText() end,
-            checked = function () return Hekili.DB.profile.toggles.essences.value end,
-        },
-
-        {
-            text = "打断",
+            text = "功能/打断",
             func = function() Hekili:FireToggle( "interrupts" ); ns.UI.Minimap:RefreshDataText() end,
-            checked = function () return Hekili.DB.profile.toggles.interrupts.value end,
+            checked = function () return Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.toggles.interrupts.value end,
         },
 
         {
             text = "防御",
             func = function() Hekili:FireToggle( "defensives" ); ns.UI.Minimap:RefreshDataText() end,
-            checked = function () return Hekili.DB.profile.toggles.defensives.value end,
+            checked = function () return Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.toggles.defensives.value end,
         },
 
         {
             text = "药剂",
             func = function() Hekili:FireToggle( "potions" ); ns.UI.Minimap:RefreshDataText() end,
-            checked = function () return Hekili.DB.profile.toggles.potions.value end,
-        },
-
+            checked = function () return Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.toggles.potions.value end,
+        }
     }
 
     local specsParsed = false
     menu.args = {}
 
+    UIDropDownMenu_SetDisplayMode( menu, "MENU" )
+
     function menu:initialize( level, list )
         if not level and not list then
             return
-        end
-
-        if level == 1 then
+        end        if level == 1 then
             if not specsParsed then
                 -- Add specialization toggles where applicable.
-                for i, spec in pairs( Hekili.Class.specs ) do
+                if Hekili.Class and Hekili.Class.specs then
+                    for i, spec in pairs( Hekili.Class.specs ) do
                     if i > 0 then
                         insert( menuData, {
                             isSeparator = 1,
-                            hidden = function () return Hekili.State.spec.id ~= i end,
+                            hidden = function () return not Hekili.State.spec or not Hekili.State.spec.id or Hekili.State.spec.id ~= i end,
                         } )
                         insert( menuData, {
                             isTitle = 1,
                             text = spec.name,
                             notCheckable = 1,
-                            hidden = function () return Hekili.State.spec.id ~= i end,
+                            hidden = function () return not Hekili.State.spec or not Hekili.State.spec.id or Hekili.State.spec.id ~= i end,
                         } )
-
-                        local submenu = {
-                            text = "优先级列表",
-                            hasArrow = true,
-                            menuList = {},
-                            notCheckable = true,
-                            keepShownOnClick = false,
-                            hidden = function () return Hekili.State.spec.id ~= i end,
-                        }
-
-                        for name, package in ns.orderedPairs( Hekili.DB.profile.packs ) do
-                            if package.spec == Hekili.State.spec.id then
-                                insert( submenu.menuList, {
-                                    text = name,
-                                    func = function ()
-                                        Hekili.DB.profile.specs[ Hekili.State.spec.id ].package = name
-                                        Hekili:ForceUpdate( "PACKAGE_CHANGED" )
-                                    end,
-                                    keepShownOnClick = false,
-                                    checked = function ()
-                                        return Hekili.DB.profile.specs[ Hekili.State.spec.id ].package == name
-                                    end,
-                                    hidden = function () return Hekili.State.spec.id ~= i end,
-                                } )
-                            end
-                        end
-
-                        insert( menuData, submenu )
-
-                        if #class.specs[ i ].packSelectors > 0 then
-                            insert( menuData, {
-                                text = "使用优先级选择器",
-                                func = function ()
-                                    local spec = rawget( Hekili.DB.profile.specs, i )
-                                    if spec then
-                                        spec.usePackSelector = not spec.usePackSelector
-                                        if Hekili.DB.profile.notifications.enabled then
-                                            Hekili:Notify( "优先级选择器：" .. ( spec.selector and "开" or "关" ) )
-                                        else
-                                            self:Print( "优先级选择器：" .. ( spec.selector and " |cFF00FF00启用|r。" or " |cFFFF0000禁用|r。" ) )
-                                        end
-                                    end
-                                end,
-                                checked = function ()
-                                    local spec = rawget( Hekili.DB.profile.specs, i )
-                                    return spec.usePackSelector
-                                end,
-                                hidden = function () return Hekili.State.spec.id ~= i end,
-                            } )
-                        end
-
                         insert( menuData, {
-                            text = "推荐切换目标",
-                            func = function ()
+                            text = "|TInterface\\Addons\\Hekili\\Textures\\Cycle:0|t 推荐切换目标",
+                            tooltipTitle = "|TInterface\\Addons\\Hekili\\Textures\\Cycle:0|t 推荐切换目标",
+                            tooltipText = "如果勾选，出现 |TInterface\\Addons\\Hekili\\Textures\\Cycle:0|t 提示时，意味着你应该在另外的目标上使用该技能。",
+                            tooltipOnButton = true,                            func = function ()
+                                if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.specs then return end
                                 local spec = rawget( Hekili.DB.profile.specs, i )
                                 if spec then
                                     spec.cycle = not spec.cycle
-                                    if Hekili.DB.profile.notifications.enabled then
+                                    if Hekili.DB.profile.notifications and Hekili.DB.profile.notifications.enabled then
                                         Hekili:Notify( "推荐切换目标：" .. ( spec.cycle and "开" or "关" ) )
                                     else
-                                        self:Print( "推荐切换目标：" .. ( spec.cycle and " |cFF00FF00启用|r。" or " |cFFFF0000禁用|r。" ) )
+                                        Hekili:Print( "推荐切换目标：" .. ( spec.cycle and " |cFF00FF00启用|r。" or " |cFFFF0000禁用|r。" ) )
                                     end
                                 end
-                            end,
-                            checked = function ()
+                            end,                            checked = function ()
+                                if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.specs then return false end
                                 local spec = rawget( Hekili.DB.profile.specs, i )
-                                return spec.cycle
+                                return spec and spec.cycle
                             end,
-                            hidden = function () return Hekili.State.spec.id ~= i end,
+                            hidden = function () return not Hekili.State.spec or Hekili.State.spec.id ~= i end,
                         } )
+
+                        local potionMenu = {
+                            text = "|T967533:0|t 首选药剂",
+                            tooltipTitle = "|T967533:0|t 首选药剂",
+                            tooltipText = "选择当 |cFFFFD100药剂|r 启用时，你想要使用的药剂。",
+                            tooltipOnButton = true,
+                            hasArrow = true,
+                            menuList = {},
+                            notCheckable = true,
+                            hidden = function () return not Hekili.State.spec or Hekili.State.spec.id ~= i end,
+                        }
+
+                        for k, v in orderedPairs( class.potionList ) do
+                            insert( potionMenu.menuList, {
+                                text = v,                                func = function ()
+                                    if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.specs or not Hekili.State.spec then return end
+                                    Hekili.DB.profile.specs[ Hekili.State.spec.id ].potion = k
+                                    for _, display in pairs( Hekili.DisplayPool ) do
+                                        display:OnEvent( "HEKILI_MENU" )
+                                    end
+                                end,                                checked = function ()
+                                    if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.specs or not Hekili.State.spec then return false end
+                                    return Hekili.DB.profile.specs[ Hekili.State.spec.id ].potion == k
+                                end,
+                            } )
+                        end
+
+                        insert( menuData, potionMenu )
 
                         -- Check for Toggles.
                         for n, setting in pairs( spec.settings ) do
-                            if setting.isPackSelector then
-                                -- do nothing.
-                            elseif not setting.info.arg or setting.info.arg() then
-                                if setting.info.type == "header" then
-                                    insert( menuData, {
-                                        isSeparator = 1,
-                                        hidden = function () return Hekili.State.spec.id ~= i end,
-                                    } )
-                                    insert( menuData, {
-                                        isTitle = 1,
-                                        text = setting.info.name,
-                                        notCheckable = 1,
-                                        hidden = function () return Hekili.State.spec.id ~= i end,
-                                    } )
-
-                                elseif setting.info.type == "toggle" then
-                                    insert( menuData, {
-                                        text = setting.info.name,
-                                        tooltipTitle = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name,
+                            if setting.info and ( not setting.info.arg or setting.info.arg() ) then
+                                if setting.info.type == "toggle" then
+                                    local name = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
+                                    local submenu
+                                    submenu = {
+                                        text = name,
+                                        tooltipTitle = name,
                                         tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc,
                                         tooltipOnButton = true,
                                         func = function ()
                                             menu.args[1] = setting.name
-                                            setting.info.set( menu.args, not setting.info.get( menu.args ) )
+                                            setting.info.set( menu.args, not setting.info.get( menu.args ) )                                            local nm = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
 
-                                            if Hekili.DB.profile.notifications.enabled then
-                                                Hekili:Notify( setting.info.name .. "：" .. ( setting.info.get( menu.args ) and "开" or "关" ) )
+                                            if Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.notifications and Hekili.DB.profile.notifications.enabled then
+                                                Hekili:Notify( nm .. ": " .. ( setting.info.get( menu.args ) and "开" or "关" ) )
                                             else
-                                                self:Print( setting.info.name .. "：" .. ( setting.info.get( menu.args ) and " |cFF00FF00启用|r" or " |cFFFF0000禁用|r" ) )
+                                                Hekili:Print( nm .. ": " .. ( setting.info.get( menu.args ) and " |cFF00FF00启用|r." or " |cFFFF0000禁用|r." ) )
                                             end
-                                        end,
-                                        checked = function ()
+
+                                            submenu.text = nm
+                                            submenu.tooltipTitle = nm
+                                            submenu.tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc
+                                        end,                                        checked = function ()
                                             menu.args[1] = setting.name
                                             return setting.info.get( menu.args )
                                         end,
-                                        hidden = function () return Hekili.State.spec.id ~= i end,
-                                    } )
+                                        hidden = function () return not Hekili.State.spec or Hekili.State.spec.id ~= i end,
+                                    }
+                                    insert( menuData, submenu )
 
                                 elseif setting.info.type == "select" then
-                                    local submenu = {
-                                        text = setting.info.name,
-                                        tooltipTitle = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name,
+                                    local name = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
+                                    local submenu
+                                    submenu = {
+                                        text = name,
+                                        tooltipTitle = name,
                                         tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc,
-                                        tooltipOnButton = true,
-                                        hasArrow = true,
-                                                                                menuList = {},
+                                        tooltipOnButton = true,                                        hasArrow = true,
+                                        menuList = {},
                                         notCheckable = true,
-                                        hidden = function () return Hekili.State.spec.id ~= i end,
+                                        hidden = function () return not Hekili.State.spec or Hekili.State.spec.id ~= i end,
                                     }
 
                                     local values = setting.info.values
                                     if type( values ) == "function" then values = values() end
 
                                     if values then
-                                        for k, v in orderedPairs( values ) do
-                                            insert( submenu.menuList, {
-                                                text = v,
-                                                func = function ()
-                                                    menu.args[1] = setting.name
-                                                    setting.info.set( menu.args, k )
+                                        if setting.info.sorting then
+                                            for _, k in orderedPairs( setting.info.sorting ) do
+                                                local v = values[ k ]
+                                                insert( submenu.menuList, {
+                                                    text = v,
+                                                    func = function ()
+                                                        menu.args[1] = setting.name
+                                                        setting.info.set( menu.args, k )
 
-                                                    for k, v in pairs( Hekili.DisplayPool ) do
-                                                        v:OnEvent( "HEKILI_MENU" )
-                                                    end
-                                                end,
-                                                checked = function ()
-                                                    menu.args[1] = setting.name
-                                                    return setting.info.get( menu.args ) == k
-                                                end,
-                                                hidden = function () return Hekili.State.spec.id ~= i end,
-                                            } )
+                                                        local nm = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
+                                                        submenu.text = nm
+                                                        submenu.tooltipTitle = nm
+                                                        submenu.tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc
+
+                                                        for k, v in pairs( Hekili.DisplayPool ) do
+                                                            v:OnEvent( "HEKILI_MENU" )
+                                                        end
+                                                    end,
+                                                    checked = function ()
+                                                        menu.args[1] = setting.name
+                                                        return setting.info.get( menu.args ) == k
+                                                    end,
+                                                    hidden = function () return Hekili.State.spec.id ~= i end,
+                                                } )
+                                            end
+                                        else
+                                            for k, v in orderedPairs( values ) do
+                                                insert( submenu.menuList, {
+                                                    text = v,
+                                                    func = function ()
+                                                        menu.args[1] = setting.name
+                                                        setting.info.set( menu.args, k )
+
+                                                        local nm = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
+                                                        submenu.text = nm
+                                                        submenu.tooltipTitle = nm
+                                                        submenu.tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc
+
+                                                        for k, v in pairs( Hekili.DisplayPool ) do
+                                                            v:OnEvent( "HEKILI_MENU" )
+                                                        end
+                                                    end,
+                                                    checked = function ()
+                                                        menu.args[1] = setting.name
+                                                        return setting.info.get( menu.args ) == k
+                                                    end,
+                                                    hidden = function () return Hekili.State.spec.id ~= i end,
+                                                } )
+                                            end
                                         end
                                     end
 
@@ -684,20 +827,17 @@ do
                                         tooltipTitle = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name,
                                         tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc,
                                         tooltipOnButton = true,
-                                        keepShownOnClick = true,
                                         notCheckable = true,
-                                        leftPadding = 26,
                                         hidden = function () return Hekili.State.spec.id ~= i end,
+                                        hasArrow = true,
+                                        menuList = {}
                                     }
 
-                                    insert( menuData, submenu )
-
-                                    submenu = {
+                                    local slider = {
                                         text = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name,
                                         tooltipTitle = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name,
                                         tooltipText = type( setting.info.desc ) == "function" and setting.info.desc() or setting.info.desc,
                                         tooltipOnButton = true,
-                                        keepShownOnClick = true,
                                         notCheckable = true,
                                         hidden = function () return Hekili.State.spec.id ~= i end,
                                     }
@@ -714,11 +854,25 @@ do
                                         return setting.info.set( menu.args, val )
                                     end )
 
-                                    cf.Slider:SetMinMaxValues( setting.info.softMin or setting.info.min or 0, setting.info.softMax or setting.info.max or 10 )
+                                    cf.Slider:SetMinMaxValues( setting.info.min or 0, setting.info.max or 100 )
                                     cf.Slider:SetValueStep( setting.info.step or 1 )
                                     cf.Slider:SetObeyStepOnDrag( true )
 
-                                    submenu.customFrame = cf
+                                    cf.Slider:SetScript( "OnEnter", function( self )
+                                        local tooltip = GetAppropriateTooltip()
+                                        tooltip:SetOwner( cf.Slider, "ANCHOR_RIGHT", 0, 2 )
+                                        GameTooltip_SetTitle( tooltip, slider.tooltipTitle )
+                                        GameTooltip_AddNormalLine( tooltip, slider.tooltipText, true )
+                                        tooltip:Show()
+                                    end )
+
+                                    cf.Slider:SetScript( "OnLeave", function( self )
+                                        GameTooltip:Hide()
+                                    end )
+
+                                    slider.customFrame = cf
+
+                                    insert( submenu.menuList, slider )
 
                                     --[[ local low, high, step = setting.info.min, setting.info.max, setting.info.step
                                     local fractional, factor = step < 1, 1 / step
@@ -742,11 +896,9 @@ do
                                             text = tostring( actual ),
                                             func = function ()
                                                 menu.args[1] = setting.name
-                                                setting.info.set( menu.args, actual )
+                                                setting.info.set( menu.args, actual )                                                local name = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
 
-                                                local name = type( setting.info.name ) == "function" and setting.info.name() or setting.info.name
-
-                                                if Hekili.DB.profile.notifications.enabled then
+                                                if Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.notifications and Hekili.DB.profile.notifications.enabled then
                                                     Hekili:Notify( name .. " set to |cFF00FF00" .. actual .. "|r." )
                                                 else
                                                     Hekili:Print( name .. " set to |cFF00FF00" .. actual .. "|r." )
@@ -764,14 +916,12 @@ do
                                 end
                             end
                         end
-                    end
+                    end                    end
                 end
                 specsParsed = true
             end
-        end
-
-        local use = list or menuData
-        local classic = Hekili.IsClassic()
+        end        local use = list or menuData
+        local classic = Hekili.IsMoP() -- Use IsMoP instead of IsClassic for MoP
 
         for i, data in ipairs( use ) do
             data.classicChecks = classic
@@ -836,7 +986,7 @@ do
     }
 
     local kbEvents = {
-        ACTIONBAR_SLOT_CHANGED = 1,
+        -- ACTIONBAR_SLOT_CHANGED = 1,
         ACTIONBAR_PAGE_CHANGED = 1,
         ACTIONBAR_UPDATE_STATE = 1,
         SPELLS_CHANGED = 1,
@@ -856,55 +1006,17 @@ do
         VEHICLE_UPDATE = 1,
     }
 
-    local pulseAuras = 0.1
-    local pulseDelay = 0.05
-    local pulseGlow = 0.25
-    local pulseTargets = 0.1
+    -- Opportunity for Performance Preference, maybe.
+    local pulseDisplay = 0.25
     local pulseRange = TOOLTIP_UPDATE_TIME
-    local pulseFlash = 0.5
 
-    local flashOffset = {
-        Primary = 0,
-        AOE = 0.25,
-        Interrupts = 0.125,
-        Defensives = 0.333,
-        Cooldowns = 0.416
-    }
-
-    local oocRefresh = 1
-    local icRefresh = {
-        Primary = 0.25,
-        AOE = 0.25,
-        Interrupts = 0.25,
-        Defensives = 0.5,
-        Cooldowns = 0.25
-    }
-
-    local LRC = LibStub("LibRangeCheck-2.0")
+    local LRC = LibStub( "LibRangeCheck-3.0", true ) -- MoP: Use silent loading to prevent errors
     local LSF = SpellFlashCore
     local catchFlash, lastFramesFlashed = nil, {}
 
     if LSF then
         hooksecurefunc( LSF, "FlashFrame", function( frame )
             local flash = frame and frame.SpellFlashCoreAddonFlashFrame
-
-            if flash and not flash.HekiliHooked then
-                flash.FlashTexture:SetTexture( Hekili.DB.profile.flashTexture or "Interface\\Cooldown\\star4" )
-
-                flash:HookScript( "OnUpdate", function( self )
-                    flash.FlashTexture:SetTexture( Hekili.DB.profile.flashTexture or "Interface\\Cooldown\\star4" )
-                    if Hekili.DB.profile.fixedSize then
-                        flash.FlashTexture:SetHeight( flash:GetHeight() * flash.FlashSize )
-                        flash.FlashTexture:SetWidth( flash:GetWidth() * flash.FlashSize )
-                    end
-
-                    if Hekili.DB.profile.fixedBrightness then
-                        flash.FlashTexture:SetAlpha( flash.FlashBrightness )
-                    end
-                end )
-
-                flash.HekiliHooked = true
-            end
 
             -- We need to know what flashed so we can force it to stop flashing when the recommendation changes.
             if catchFlash and flash then
@@ -914,16 +1026,18 @@ do
     end
 
     local LSR = LibStub("SpellRange-1.0")
-    local Glower = LibStub("LibCustomGlow-1.0")
-
-    local function CalculateAlpha( id )
+    local Glower = LibStub("LibCustomGlow-1.0")    local function CalculateAlpha( id )
         if IsInPetBattle() or Hekili.Barber or Hekili.ClientScene or UnitHasVehicleUI( "player" ) or HasVehicleActionBar() or HasOverrideActionBar() or UnitOnTaxi( "player" ) or not Hekili:IsDisplayActive( id ) then
+            return 0
+        end
+
+        if not Hekili.DB or not Hekili.DB.profile then
             return 0
         end
 
         local prof = Hekili.DB.profile
         local conf = prof.displays[ id ]
-        local spec = state.spec.id and prof.specs[ state.spec.id ]
+        local spec = state.spec and state.spec.id and prof.specs[ state.spec.id ]
         local aoe  = spec and spec.aoe or 3
 
         local _, zoneType = IsInInstance()
@@ -998,18 +1112,8 @@ do
         d:SetScale( UIParent:GetScale() ) ]]
         d:ClearAllPoints()
 
-        local frame
-
-        --[[ if conf.relativeTo == "CUSTOM" then
-            frame = _G[ conf.customFrame ]
-        elseif conf.relativeTo == "PERSONAL" then
-            frame = C_NamePlate.GetNamePlateForUnit( "player" )
-        end ]]
-
-        if not frame then frame = UIParent end
-
-        d:SetPoint( "CENTER", frame, "CENTER", conf.x or 0, conf.y or -225 )
-        d:SetParent( frame )
+        d:SetPoint( "CENTER", UIParent, "CENTER", conf.x or 0, conf.y or -225 )
+        d:SetParent( UIParent )
 
         d:SetFrameStrata( conf.frameStrata or "MEDIUM" )
         d:SetFrameLevel( conf.frameLevel or ( 10 * d.index ) )
@@ -1018,9 +1122,8 @@ do
             d:SetClampedToScreen( true )
             d:EnableMouse( false )
             d:SetMovable( true )
-        end
-
-        function d:UpdateKeybindings()
+        end        function d:UpdateKeybindings()
+            if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.displays then return end
             local conf = Hekili.DB.profile.displays[ self.id ]
 
             if conf.keybindings and conf.keybindings.enabled then
@@ -1050,8 +1153,18 @@ do
             self.threadLocked = locked
         end
 
-        function d:OnUpdate( elapsed )
-            if not self.Recommendations or not Hekili.PLAYER_ENTERING_WORLD then
+
+        local RomanNumerals = {
+            "I",
+            "II",
+            "III",
+            "IV"
+        }        function d:OnUpdate( elapsed )
+            if not self.Recommendations or not Hekili.PLAYER_ENTERING_WORLD or self:IsThreadLocked() then
+                return
+            end
+
+            if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.displays then
                 return
             end
 
@@ -1060,18 +1173,16 @@ do
             local profile = Hekili.DB.profile
             local conf = profile.displays[ self.id ]
 
+            self.timer = ( self.timer or 0 ) - elapsed
             self.alphaCheck = self.alphaCheck - elapsed
 
-            if self.alphaCheck <= 0 then
-                self.alphaCheck = 0.5
+            if self.alphaCheck then
                 self:UpdateAlpha()
             end
 
-            if not self.id == "Primary" and not ( self.Buttons[ 1 ] and self.Buttons[ 1 ].Action ) and not ( self.HasRecommendations or not self.NewRecommendations ) then
+            if self.id ~= "Primary" and not ( self.Buttons[ 1 ] and self.Buttons[ 1 ].Action ) and not ( self.HasRecommendations and not self.NewRecommendations ) then
                 return
             end
-
-            local postAlpha = debugprofilestop()
 
             if Hekili.Pause and not self.paused then
                 self.Buttons[ 1 ].Overlay:Show()
@@ -1081,12 +1192,22 @@ do
                 self.paused = false
             end
 
-            local now = GetTime()
+            local fullUpdate = self.NewRecommendations or self.timer < 0
+            if not fullUpdate then return end
 
-            self.recTimer = self.recTimer - elapsed
+            local madeUpdate = false
 
-            if not self:IsThreadLocked() and ( self.NewRecommendations or self.recTimer < 0 ) then
+            self.timer = pulseDisplay
+            self.NewRecommendations = nil
+
+            local now = GetTime()            if fullUpdate then
+                madeUpdate = true
+
                 local alpha = self.alpha
+                -- Ensure Hekili is properly initialized before calling methods
+                if not Hekili or not Hekili.GetActiveSpecOption or Hekili.PendingSpecializationChange then
+                    return
+                end
                 local options = Hekili:GetActiveSpecOption( "abilities" )
 
                 if self.HasRecommendations and self.RecommendationsStr and self.RecommendationsStr:len() == 0 then
@@ -1110,34 +1231,50 @@ do
                             if ( conf.flash.enabled and conf.flash.suppress ) then b:Hide()
                             else b:Show() end
 
-                            if i == 1 then
+                            --[[ if i == 1 then
                                 -- print( "Changing", GetTime() )
+                            end ]]
+
+                            local image -- texture to be shown on the button for the current action
+
+                            if ability.item then
+                                image = b.Recommendation.texture or ability.texture or select( 5, GetItemInfoInstant( ability.item ) )
+                            else
+                                local override = options and rawget( options, action )
+                                image = override and override.icon or b.Recommendation.texture or ability.texture or GetSpellTexture( ability.id )
                             end
 
-                            if action ~= b.lastAction or self.NewRecommendations or not b.Image then
-                                if ability.item then
-                                    b.Image = b.Recommendation.texture or ability.texture or select( 10, GetItemInfo( ability.item ) )
-                                else
-                                    local override = options and rawget( options, action )
-                                    b.Image = override and override.icon or b.Recommendation.texture or ability.texture or GetSpellTexture( ability.id )
-                                end
+                            if action ~= b.lastAction or image ~= b.lastImage or self.NewRecommendations or not b.Image then
+                                b.Image = image
                                 b.Texture:SetTexture( b.Image )
                                 b.Texture:SetTexCoord( unpack( b.texCoords ) )
                                 b.lastAction = action
+                                b.lastImage = image
                             end
 
                             b.Texture:Show()
 
                             if i == 1 then
-                                -- local ability = b.Ability
-                                local id = ability.item or ability.id
-                                local isItem = ability.item ~= nil
+                                if conf.glow.highlight then
+                                    local id = ability.item or ability.id
+                                    local isItem = ability.item ~= nil
 
-                                if id and ( isItem and IsCurrentItem( id ) or IsCurrentSpell( id ) ) and exact_time > GetTime() then
-                                    b.Highlight:Show()
-                                else
+                                    if id and ( isItem and IsCurrentItem( id ) or IsCurrentSpell( id ) ) and exact_time > GetTime() then
+                                        b.Highlight:Show()
+                                    else
+                                        b.Highlight:Hide()
+                                    end
+
+                                elseif b.Highlight:IsShown() then
                                     b.Highlight:Hide()
                                 end
+                            end
+
+
+                            if ability.empowered then
+                                b.EmpowerLevel:SetText( RomanNumerals[ b.Recommendation.empower_to or ability.empowerment_default or state.max_empower ] )
+                            else
+                                b.EmpowerLevel:SetText( nil )
                             end
 
                             if conf.indicators.enabled and indicator then
@@ -1152,7 +1289,7 @@ do
                                 b.Icon:Hide()
                             end
 
-                            if ( conf.captions.enabled or ability.caption ) and ( i == 1 or conf.captions.queued ) then
+                            if ( caption and conf.captions.enabled or ability.caption and not ability.empowered ) and ( i == 1 or conf.captions.queued ) then
                                 b.Caption:SetText( caption )
                             else
                                 b.Caption:SetText(nil)
@@ -1164,7 +1301,8 @@ do
                                 b.Keybinding:SetText(nil)
                             end
 
-                            if conf.glow.enabled and ( i == 1 or conf.glow.queued ) and IsSpellOverlayed( ability.id ) then
+							local overlayAPI = _G.C_SpellActivationOverlay
+							if conf.glow.enabled and ( i == 1 or conf.glow.queued ) and overlayAPI and overlayAPI.IsSpellOverlayed and overlayAPI.IsSpellOverlayed( ability.id ) then
                                 b.glowColor = b.glowColor or {}
 
                                 if conf.glow.coloring == "class" then
@@ -1203,64 +1341,56 @@ do
                         b.ExactTime = exact_time
                     end
 
-                    self.glowTimer = -1
-                    self.rangeTimer = -1
-                    self.delayTimer = -1
-
-                    self.recTimer = 1
-                    self.alphaCheck = 0.5
-
                     self:RefreshCooldowns( "RECS_UPDATED" )
                 end
             end
 
             local postRecs = debugprofilestop()
+ 
+if self.HasRecommendations then
+                if fullUpdate and conf.glow.enabled then
+                    madeUpdate = true
 
-            if self.HasRecommendations then
-                self.glowTimer = self.glowTimer - elapsed
+                    for i, b in ipairs( self.Buttons ) do
+                        if not b.Action then break end
 
-                if self.glowTimer < 0 or self.NewRecommendations then
-                    if conf.glow.enabled then
-                        for i, b in ipairs( self.Buttons ) do
-                            if not b.Action then break end
+                        local a = b.Ability
 
-                            local a = b.Ability
+                        if i == 1 or conf.glow.queued then
+								local overlayAPI = _G.C_SpellActivationOverlay
+								local glowing = a.id > 0 and overlayAPI and overlayAPI.IsSpellOverlayed and overlayAPI.IsSpellOverlayed( a.id )
 
-                            if i == 1 or conf.glow.queued then
-                                local glowing = a.id > 0 and IsSpellOverlayed( a.id )
+                            if glowing and not b.glowing then
+                                b.glowColor = b.glowColor or {}
 
-                                if glowing and not b.glowing then
-                                    b.glowColor = b.glowColor or {}
-
-                                    if conf.glow.coloring == "class" then
-                                        b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = RAID_CLASS_COLORS[ class.file ]:GetRGBA()
-                                    elseif conf.glow.coloring == "custom" then
-                                        b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = unpack(conf.glow.color)
-                                    else
-                                        b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = 0.95, 0.95, 0.32, 1
-                                    end
-
-                                    if conf.glow.mode == "default" then
-                                        Glower.ButtonGlow_Start( b, b.glowColor )
-                                        b.glowStop = Glower.ButtonGlow_Stop
-                                    elseif conf.glow.mode == "autocast" then
-                                        Glower.AutoCastGlow_Start( b, b.glowColor )
-                                        b.glowStop = Glower.AutoCastGlow_Stop
-                                    elseif conf.glow.mode == "pixel" then
-                                        Glower.PixelGlow_Start( b, b.glowColor )
-                                        b.glowStop = Glower.PixelGlow_Stop
-                                    end
-
-                                    b.glowing = true
-                                elseif not glowing and b.glowing then
-                                    b:glowStop()
-                                    b.glowing = false
+                                if conf.glow.coloring == "class" then
+                                    b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = RAID_CLASS_COLORS[ class.file ]:GetRGBA()
+                                elseif conf.glow.coloring == "custom" then
+                                    b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = unpack(conf.glow.color)
+                                else
+                                    b.glowColor[1], b.glowColor[2], b.glowColor[3], b.glowColor[4] = 0.95, 0.95, 0.32, 1
                                 end
-                            else
-                                if b.glowing then
-                                    b:glowStop()
-                                    b.glowing = false
+
+                                if conf.glow.mode == "default" then
+                                    Glower.ButtonGlow_Start( b, b.glowColor )
+                                    b.glowStop = Glower.ButtonGlow_Stop
+                                elseif conf.glow.mode == "autocast" then
+                                    Glower.AutoCastGlow_Start( b, b.glowColor )
+                                    b.glowStop = Glower.AutoCastGlow_Stop
+                                elseif conf.glow.mode == "pixel" then
+                                    Glower.PixelGlow_Start( b, b.glowColor )
+                                    b.glowStop = Glower.PixelGlow_Stop
                                 end
+
+                                b.glowing = true
+                            elseif not glowing and b.glowing then
+                                b:glowStop()
+                                b.glowing = false
+                            end
+                        else
+                            if b.glowing then
+                                b:glowStop()
+                                b.glowing = false
                             end
                         end
                     end
@@ -1268,112 +1398,31 @@ do
 
                 local postGlow = debugprofilestop()
 
-                self.rangeTimer = self.rangeTimer - elapsed
-
-                if self.rangeTimer < 0 or self.NewRecommendations then
-                    for i, b in ipairs( self.Buttons ) do
-                        local a = b.Ability
-
-                        if a and a.id then
-                            local outOfRange = false
-
-                            if conf.range.enabled then
-                                if conf.range.type == "melee" and UnitExists( "target" ) then
-                                    outOfRange = ( LRC:GetRange( "target" ) or 50 ) > 7
-                                elseif conf.range.type == "ability" and UnitExists( "target" ) and UnitCanAttack( "player", "target" ) then
-                                    if a.item then
-                                        outOfRange = IsItemInRange( a.itemCd or a.item, "target" ) == false
-                                    else
-                                        local name = a.rangeSpell or a.actualName or a.name
-
-                                        if name then
-                                            outOfRange = LSR.IsSpellInRange( a.rangeSpell or a.actualName or a.name, "target" ) == 0
-                                        end
-                                    end
-                                end
-                            end
-
-                            if outOfRange and not b.outOfRange then
-                                b.Texture:SetDesaturated(true)
-                                b.Texture:SetVertexColor(1.0, 0.0, 0.0, 1.0)
-                                b.outOfRange = true
-                            elseif b.outOfRange and not outOfRange then
-                                b.Texture:SetDesaturated(false)
-                                b.Texture:SetVertexColor(1.0, 1.0, 1.0, 1.0)
-                                b.outOfRange = false
-                            end
-
-                            if not b.outOfRange then
-                                local _, unusable
-
-                                if a.itemCd or a.item and not a.bagItem then
-                                    unusable = not IsUsableItem( a.itemCd or a.item )
-                                else
-                                    _, unusable = IsUsableSpell( a.actualName or a.name )
-                                end
-
-                                if i == 1 and conf.delays.fade then
-                                    local delay = b.ExactTime and ( b.ExactTime - now ) or 0
-                                    local moment = 0
-
-                                    local init, duration = 0, 0
-
-                                    if a.gcd ~= "off" then
-                                        start, duration = GetSpellCooldown( 61304 )
-                                        if start > 0 then moment = start + duration - now end
-                                    end
-
-                                    local rStart, rDuration
-                                    if a.item then
-                                        rStart, rDuration = _G.C_Container.GetItemCooldown( a.item )
-                                    else
-                                        rStart, rDuration = GetSpellCooldown( a.id )
-                                    end
-                                    if rStart > 0 then moment = max( moment, rStart + rDuration - now ) end
-
-                                    _, _, _, start, duration = UnitCastingInfo( "player" )
-                                    if start and start > 0 then moment = max( ( start / 1000 ) + ( duration / 1000 ) - now, moment ) end
-
-                                    if delay > moment + 0.05 then
-                                        unusable = true
-                                    end
-                                end
-
-                                if unusable and not b.unusable then
-                                    b.Texture:SetVertexColor(0.4, 0.4, 0.4, 1.0)
-                                    b.unusable = true
-                                elseif b.unusable and not unusable then
-                                    b.Texture:SetVertexColor(1.0, 1.0, 1.0, 1.0)
-                                    b.unusable = false
-                                end
-                            end
-                        end
-                    end
-
-                    self.rangeTimer = pulseRange
-                end
-
-                local postRange = debugprofilestop()
-
-                if conf.flash.enabled and LSF then
+                if self.flashReady and conf.flash.enabled and LSF and ( InCombatLockdown() or not conf.flash.combat ) then
                     self.flashTimer = self.flashTimer - elapsed
                     self.flashWarnings = self.flashWarnings or {}
+                    self.lastFlashFrames = self.lastFlashFrames or {}
 
                     local a = self.Buttons[ 1 ].Action
                     local changed = self.lastFlash ~= a
 
-                    if a and ( now > self.flashTimer ) and self.flashReady then
-                        if now % 1 < 0.5 then
-                            self.flashTimer = floor( now ) + 0.5 + flashOffset[ self.id ]
-                        else
-                            self.flashTimer = ceil( now ) + flashOffset[ self.id ]
+                    if a and ( fullUpdate or changed ) then
+                        madeUpdate = true
+
+                        if changed then
+                            for frame in pairs( self.lastFlashFrames ) do
+                                frame:Hide()
+                                frame.flashDuration = 0
+                                self.lastFlashFrames[ frame ] = nil
+                            end
                         end
+
+                        self.flashTimer = conf.flash.speed or 0.4
 
                         local ability = class.abilities[ a ]
 
                         self.flashColor = self.flashColor or {}
                         self.flashColor.r, self.flashColor.g, self.flashColor.b = unpack( conf.flash.color )
-                        self.lastFlashFrames = self.lastFlashFrames or {}
 
                         catchFlash = GetTime()
                         table.wipe( lastFramesFlashed )
@@ -1381,7 +1430,7 @@ do
                         if ability.item then
                             local iname = LSF.ItemName( ability.item )
                             if LSF.Flashable( iname ) then
-                                LSF.FlashItem( iname, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, conf.flash.texture )
+                                LSF.FlashItem( iname, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, profile.flashTexture, conf.flash.fixedSize, conf.flash.fixedBrightness )
                             elseif conf.flash.suppress and not self.flashWarnings[ iname ] then
                                 self.flashWarnings[ iname ] = true
                                 -- Hekili:Error( "|cffff0000WARNING|r - Could not flash recommended item '" .. iname .. "' (" .. self.id .. ")." )
@@ -1406,7 +1455,7 @@ do
                                 end
 
                                 if flashable then
-                                    LSF.FlashAction( aFlash, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, conf.flash.texture )
+                                    LSF.FlashAction( aFlash, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, profile.flashTexture, conf.flash.fixedSize, conf.flash.fixedBrightness )
                                 elseif conf.flash.suppress and not self.flashWarnings[ aFlash ] then
                                     self.flashWarnings[ aFlash ] = true
                                     -- Hekili:Error( "|cffff0000WARNING|r - Could not flash recommended action '" .. aFlash .. "' (" .. self.id .. ")." )
@@ -1422,7 +1471,7 @@ do
 
                                 if sname then
                                     if LSF.Flashable( sname ) then
-                                        LSF.FlashAction( sname, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, conf.flash.texture )
+                                        LSF.FlashAction( sname, self.flashColor, conf.flash.size, conf.flash.brightness, conf.flash.blink, nil, profile.flashTexture, conf.flash.fixedSize, conf.flash.fixedBrightness )
                                     elseif not self.flashWarnings[ sname ] then
                                         self.flashWarnings[ sname ] = true
                                         -- Hekili:Error( "|cffff0000WARNING|r - Could not flash recommended ability '" .. sname .. "' (" .. self.id .. ")." )
@@ -1432,41 +1481,27 @@ do
                         end
 
                         catchFlash = nil
-
-                        if changed then
-                            for i = #self.lastFlashFrames, 1, -1 do
-                                local frame = self.lastFlashFrames[ i ]
-
-                                if not lastFramesFlashed[ frame ] then
-                                    frame:Hide()
-                                    frame.flashDuration = 0
-
-                                    table.remove( self.lastFlashFrames, i )
-                                else
-                                    -- Mark with a zero so we don't add it again.
-                                    lastFramesFlashed[ frame ] = 0
-                                end
-                            end
-
-                            for frame, status in pairs( lastFramesFlashed ) do
-                                if status ~= 0 then
-                                    table.insert( self.lastFlashFrames, frame )
+                        for frame, status in pairs( lastFramesFlashed ) do
+                            if status ~= 0 then
+                                self.lastFlashFrames[ frame ] = 1
+                                if frame.texture ~= profile.flashTexture then
+                                    frame.FlashTexture:SetTexture( profile.flashTexture )
+                                    frame.texture = profile.flashTexture
                                 end
                             end
                         end
-
                         self.lastFlash = a
                     end
                 end
 
                 local postFlash = debugprofilestop()
 
-                self.targetTimer = self.targetTimer - elapsed
-
-                if self.targetTimer < 0 or self.NewRecommendations then
+                if fullUpdate then
                     local b = self.Buttons[ 1 ]
 
                     if conf.targets.enabled then
+                        madeUpdate = true
+
                         local tMin, tMax = 0, 0
                         local mode = profile.toggles.mode.value
                         local spec = state.spec.id and profile.specs[ state.spec.id ]
@@ -1495,44 +1530,43 @@ do
                             b.targetShown = false
                         end
                     elseif b.targetShown then
+                        madeUpdate = true
                         b.Targets:SetText(nil)
                     end
-
-                    self.targetTimer = pulseTargets
                 end
 
                 local postTargets = debugprofilestop()
 
-                local b = self.Buttons[ 1 ]
-
                 self.delayTimer = self.delayTimer - elapsed
 
-                if b.ExactTime and ( self.delayTimer < 0 or self.NewRecommendations ) then
+                if fullUpdate and self.Buttons[ 1 ].ExactTime then
+                    madeUpdate = true
+
+                    local b = self.Buttons[ 1 ]
                     local a = b.Ability
 
                     local delay = b.ExactTime - now
-                    local moment = 0
+                    local earliest_time = 0
 
                     if delay > 0 then
                         local start, duration = 0, 0
 
                         if a.gcd ~= "off" then
                             start, duration = GetSpellCooldown( 61304 )
-                            if start > 0 then moment = start + duration - now end
+                            if start > 0 then earliest_time = start + duration - now end
                         end
 
-                        _, _, _, start, duration = UnitCastingInfo( "player" )
-                        if start and start > 0 then moment = max( ( start / 1000 ) + ( duration / 1000 ) - now, moment ) end
-
-                        local rStart, rDuration = 0, 0
+                        local castStart, castDuration = select( 4, UnitCastingInfo( "player" ) )
+                        start, duration = castStart or 0, castDuration or 0
+                        if start and start > 0 then earliest_time = max( ( start / 1000 ) + ( duration / 1000 ) - now, earliest_time ) end                        local rStart, rDuration = 0, 0
                         if a.item then
-                            rStart, rDuration = _G.C_Container.GetItemCooldown( a.item )
+                            rStart, rDuration = GetItemCooldown( a.item )
                         else
                             if a.cooldown > 0 or a.spendType ~= "runes" then
                                 rStart, rDuration = GetSpellCooldown( a.id )
                             end
                         end
-                        if rStart > 0 then moment = max( moment, rStart + rDuration - now ) end
+                        if rStart > 0 then earliest_time = max( earliest_time, rStart + rDuration - now ) end
                     end
 
                     if conf.delays.type == "TEXT" then
@@ -1541,7 +1575,7 @@ do
                             self.delayIconShown = false
                         end
 
-                        if delay > moment + 0.05 then
+                        if delay > earliest_time + 0.05 then
                             b.DelayText:SetText( format( "%.1f", delay ) )
                             self.delayTextShown = true
                         else
@@ -1555,7 +1589,7 @@ do
                             self.delayTextShown = false
                         end
 
-                        if delay > moment + 0.05 then
+                        if delay > earliest_time + 0.05 then
                             b.DelayIcon:Show()
                             b.DelayIcon:SetAlpha( self.alpha )
 
@@ -1584,41 +1618,114 @@ do
                         end
                     end
 
-                    self.delayTimer = pulseDelay
+                    b.EarliestTime = earliest_time
                 end
 
-                self.NewRecommendations = false
+                self.rangeTimer = self.rangeTimer - elapsed
+                if fullUpdate or self.rangeTimer < 0 then
+                    madeUpdate = true
 
+                    for i, b in ipairs( self.Buttons ) do
+                        local a = b.Ability
+
+                        if a and a.id then
+                            local outOfRange = false
+                            local desaturated = false                            if conf.range.enabled and UnitCanAttack( "player", "target" ) then
+                                if conf.range.type == "melee" then
+                                    local range = 10
+                                    if LRC and LRC.GetRange then
+                                        range = LRC:GetRange( "target" ) or 10
+                                    end
+                                    outOfRange = range > 7
+                                elseif conf.range.type == "ability" then
+                                    local name = a.rangeSpell or a.itemSpellName or a.actualName or a.name
+                                    if name then outOfRange = LSR.IsSpellInRange( name, "target" ) == 0 end
+                                end
+                            end
+
+                            if outOfRange and not b.outOfRange then
+                                b.Texture:SetVertexColor(1.0, 0.0, 0.0, 1.0)
+                                b.outOfRange = true
+                                desaturated = true
+                            elseif b.outOfRange and not outOfRange then
+                                b.Texture:SetVertexColor(1.0, 1.0, 1.0, 1.0)
+                                b.outOfRange = false
+                                desaturated = false
+                            end
+
+                            if not b.outOfRange then
+                                local _, unusable
+
+                                if a.itemCd or a.item then
+                                    unusable = not IsUsableItem( a.itemCd or a.item )
+                                else
+                                    _, unusable = IsUsableSpell( a.actualName or a.name )
+                                end
+
+                                if i == 1 and ( conf.delays.fade or conf.delays.desaturate ) then
+                                    local delay = b.ExactTime and ( b.ExactTime - now ) or 0
+                                    local earliest_time = b.EarliestTime or delay
+                                    if delay > earliest_time + 0.05 then
+                                        if conf.delays.fade then unusable = true end
+                                        if conf.delays.desaturate then desaturated = true end
+                                    end
+                                end
+
+                                if unusable and not b.unusable then
+                                    b.Texture:SetVertexColor(0.4, 0.4, 0.4, 1.0)
+                                    b.unusable = true
+                                elseif b.unusable and not unusable then
+                                    b.Texture:SetVertexColor(1.0, 1.0, 1.0, 1.0)
+                                    b.unusable = false
+                                end
+                            end
+
+                            if desaturated and not b.desaturated then
+                                b.Texture:SetDesaturated(true)
+                                b.desaturated = true
+                            elseif b.desaturated and not desaturated then
+                                b.Texture:SetDesaturated(false)
+                                b.desaturated = false
+                            end
+                        end
+                    end
+
+                    self.rangeTimer = pulseRange
+                end
+
+                local postRange = debugprofilestop()
                 local finish = debugprofilestop()
 
-                if self.updateTime then
-                    local newTime = self.updateTime * self.updateCount + ( finish - init )
-                    self.updateCount = self.updateCount + 1
-                    self.updateTime = newTime / self.updateCount
+                if madeUpdate then
+                    if self.updateTime then
+                        local newTime = self.updateTime * self.updateCount + ( finish - init )
+                        self.updateCount = self.updateCount + 1
+                        self.updateTime = newTime / self.updateCount
 
-                    self.updateMax = max( self.updateMax, finish - init )
-                    self.postAlpha = max( self.postAlpha, postAlpha - init )
-                    self.postRecs = max( self.postRecs, postRecs - postAlpha )
-                    self.postGlow = max( self.postGlow, postGlow - postRecs )
-                    self.postRange = max( self.postRange, postRange - postGlow )
-                    self.postFlash = max( self.postFlash, postFlash - postRange )
-                    self.postTargets = max( self.postTargets, postTargets - postFlash )
-                    self.postDelay = max( self.postDelay, finish - postTargets )
-                else
-                    self.updateCount = 1
-                    self.updateTime = finish - init
-                    self.updateMax = finish - init
+                        self.updateMax = max( self.updateMax, finish - init )
+                        self.postRecs = max( self.postRecs, postRecs - init )
+                        self.postGlow = max( self.postGlow, postGlow - postRecs )
+                        self.postRange = max( self.postRange, postRange - postGlow )
+                        self.postFlash = max( self.postFlash, postFlash - postRange )
+                        self.postTargets = max( self.postTargets, postTargets - postFlash )
+                        self.postDelay = max( self.postDelay, finish - postTargets )
+                    else
+                        self.updateCount = 1
+                        self.updateTime = finish - init
+                        self.updateMax = finish - init
 
-                    self.postAlpha = postAlpha - init
-                    self.postRecs = postRecs - postAlpha
-                    self.postGlow = postGlow - postRecs
-                    self.postRange = postRange - postGlow
-                    self.postFlash = postFlash - postRange
-                    self.postTargets = postTargets - postFlash
-                    self.postDelay = finish - postTargets
+                        self.postRecs = postRecs - init
+                        self.postGlow = postGlow - postRecs
+                        self.postRange = postRange - postGlow
+                        self.postFlash = postFlash - postRange
+                        self.postTargets = postTargets - postFlash
+                        self.postDelay = finish - postTargets
+                    end
                 end
             end
         end
+
+        Hekili:ProfileCPU( "HekiliDisplay" .. id .. ":OnUpdate", d.OnUpdate )
 
         function d:UpdateAlpha()
             if not self.Active then
@@ -1644,11 +1751,11 @@ do
             end
 
             self.alpha = newAlpha
-        end
-
-        function d:RefreshCooldowns( event )
+        end        function d:RefreshCooldowns( event )
+            if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.displays then return end
+            
             local gStart = GetSpellCooldown( 61304 )
-            local cStart = ( select( 4, UnitCastingInfo( "player" ) ) or select( 4, UnitCastingInfo( "player" ) ) or 0 ) / 1000
+            local cStart = ( select( 4, UnitCastingInfo( "player" ) ) or select( 4, UnitChannelInfo( "player" ) ) or 0 ) / 1000
 
             local now = GetTime()
             local conf = Hekili.DB.profile.displays[ self.id ]
@@ -1662,43 +1769,39 @@ do
 
                     local start, duration, enabled, modRate = 0, 0, 1, 1
 
-                    if ability.item then
-                        start, duration, enabled, modRate = _G.C_Container.GetItemCooldown( ability.item )
-                    else
-                        start, duration, enabled, modRate = GetSpellCooldown( ability.id )
-                    end
-
-                    if i == 1 and conf.delays.extend and rec.delay and rec.delay > 0 and rec.exact_time > max( now, start + duration ) then
-                        start = ( start > 0 and start ) or ( cStart > 0 and cStart ) or ( gStart > 0 and gStart ) or max( state.gcd.lastStart, state.combat )
-                        duration = rec.exact_time - start
-                    end
-
-                    if enabled and enabled == 0 then
-                        cd:SetCooldown( 0, 0, 1 )
-                    elseif cd.lastStart ~= start or cd.lastDuration ~= duration then
-                        -- 新增参数校验，开始
-                        if type(start) == "number" and type(duration) == "number" then
-                            cd:SetCooldown( start, duration, modRate )
-                        else
-                            -- 强制设为无冷却状态
-                            cd:SetCooldown(0, 0)
-                            -- 可选：记录调试信息
-                            if Hekili.DB.profile.debug then
-                                Hekili:Debug("冷却参数错误 - 动作: %s, start=%s, duration=%s", ability.name, tostring(start), tostring(duration))
-                            end
+                    if ability then
+                        if ability.item then
+                            start, duration, enabled, modRate = GetItemCooldown( ability.item )
+                        elseif not ability.empowered then
+                            start, duration, enabled, modRate = GetSpellCooldown( ability.id )
                         end
-                        --新增参数校验，结束
+                    end
+
+                    if i == 1 and conf.delays.extend and rec.exact_time and start and duration and rec.exact_time > max( now, start + duration ) then
+                        start = ( start > 0 and start ) or ( cStart > 0 and cStart ) or ( gStart > 0 and gStart ) or max( state.gcd.lastStart, state.combat )
+                        duration = (rec.exact_time or 0) - start
+
+                    elseif enabled and enabled == 0 then
+                        start = 0
+                        duration = 0
+                        modRate = 1
+                    end
+
+                    if (cd.lastStart or 0) ~= start or (cd.lastDuration or 0) ~= duration then
+                        cd:SetCooldown( start, duration, modRate )
                         cd.lastStart = start
                         cd.lastDuration = duration
                     end
+
+                    -- MoP: Empowerment spells don't exist, so this block is disabled
                 end
             end
-        end
-
-        function d:OnEvent( event, ... )
+        end        function d:OnEvent( event, ... )
             if not self.Recommendations then
                 return
             end
+            
+            if not Hekili.DB or not Hekili.DB.profile or not Hekili.DB.profile.displays then return end
             local conf = Hekili.DB.profile.displays[ self.id ]
 
             local init = debugprofilestop()
@@ -1775,31 +1878,34 @@ do
 
                 self:UpdateAlpha()
 
-            end
-
-            if flashEvents[ event ] then
+            end            if flashEvents[ event ] then
                 self.flashReady = false
-                C_Timer.After( 3, function()
+                -- MoP compatibility: Use simple timer
+                C_Timer.After(3, function()
                     self.flashReady = true
-                end )
+                end)
             end
 
             if event == "CURRENT_SPELL_CAST_CHANGED" then
                 local b = self.Buttons[ 1 ]
 
-                local ability = b.Ability
-                local isItem, id = false, ability and ability.id
+                if conf.glow.highlight then
+                    local ability = b.Ability
+                    local isItem, id = false, ability and ability.id
 
-                if id and id < 0 then
-                    isItem = true
-                    id = ability.item
-                end
+                    if id and id < 0 then
+                        isItem = true
+                        id = ability.item
+                    end
 
-                local spellID = select( 9, UnitCastingInfo( "player" ) ) or select( 9, UnitChannelInfo( "player" ) )
+                    local spellID = select( 9, UnitCastingInfo( "player" ) ) or select( 9, UnitChannelInfo( "player" ) )
 
-                if id and ( isItem and IsCurrentItem( id ) or IsCurrentSpell( id ) ) then --  and b.ExactTime > GetTime() then
-                    b.Highlight:Show()
-                else
+                    if id and ( isItem and IsCurrentItem( id ) or IsCurrentSpell( id ) ) then --  and b.ExactTime > GetTime() then
+                        b.Highlight:Show()
+                    else
+                        b.Highlight:Hide()
+                    end
+                elseif b.Highlight:IsShown() then
                     b.Highlight:Hide()
                 end
             end
@@ -1822,6 +1928,8 @@ do
                 self.eventMaxType = event
             end
         end
+
+        Hekili:ProfileCPU( "HekiliDisplay" .. id .. ":OnEvent", d.OnEvent )
 
         function d:Activate()
             if not self.Active then
@@ -2032,7 +2140,7 @@ do
             d.Buttons[ i ] = self:CreateButton( id, i )
             d.Buttons[ i ]:Hide()
 
-            if conf.enabled and self:IsDisplayActive( id ) and i <= conf.numIcons then
+            if self:IsDisplayActive( id ) and i <= conf.numIcons then
                 if d.Recommendations[ i ] and d.Recommendations[ i ].actionName then
                     d.Buttons[ i ]:Show()
                 end
@@ -2047,34 +2155,12 @@ do
             local E = _G.ElvUI and ElvUI[1]
             E:UpdateCooldownOverride( 'global' )
             d.forceElvUpdate = nil
-        end
-
-        if d.flashReady == nil then
-            C_Timer.After( 3, function()
+        end        if d.flashReady == nil then
+            -- MoP compatibility: Use simple timer
+            C_Timer.After(3, function()
                 d.flashReady = true
             end )
         end
-
-        -- Performance Information
-        -- Time Spent
-        d.combatTime = {
-            fastest = 0,
-            slowest = 0,
-            average = 0,
-
-            samples = 0
-        }
-
-        -- Time Between Updates
-        d.combatUpdates = {
-            last = 0,
-
-            longest = 0,
-            shortest = 0,
-            average = 0,
-
-            samples = 0,
-        }
     end
 
 
@@ -2084,7 +2170,7 @@ do
 
         dPool[ id ] = dPool[ id ] or CreateFrame( "Frame", "HekiliDisplay" .. id, UIParent )
         local d = dPool[ id ]
-        self:ProfileFrame( "HekiliDisplay" .. id, d)
+        self:ProfileFrame( "HekiliDisplay" .. id, d )
 
         d.id = id
 
@@ -2145,15 +2231,17 @@ do
         for a in pairs( actsActive ) do
             actsActive[ a ] = nil
         end
-
-        local specEnabled = GetSpecialization()
-        specEnabled = specEnabled and GetSpecializationInfo( specEnabled )
-
-        if class.specs[ specEnabled ] then
-            specEnabled = specEnabled and rawget( profile.specs, specEnabled )
-            specEnabled = specEnabled and rawget( specEnabled, "enabled" ) or false
-        else
-            specEnabled = false
+        --EasyPlay：修正默认专精为第一专精
+        local currentSpec = GetSpecialization()
+        if UnitLevel("player") < 10 then
+            currentSpec = 1
+        end
+        local specID = currentSpec and GetSpecializationInfo( currentSpec )
+        
+        local specEnabled = false
+        if class.specs and class.specs[ specID ] then
+            local specConfig = specID and rawget( profile.specs, specID )
+            specEnabled = specConfig and rawget( specConfig, "enabled" ) or false
         end
 
         if profile.enabled and specEnabled then
@@ -2266,119 +2354,181 @@ do
     Hekili.Engine.refreshTimer = 1
     Hekili.Engine.eventsTriggered = {}
 
-    Hekili.Engine:SetScript( "OnUpdate", function( self, elapsed )
-        self.refreshTimer = self.refreshTimer + elapsed
+    local framesUsed = 0
+    local framesTimes = 0
 
-        if Hekili.DB.profile.enabled and not Hekili.Pause and not self.pendingSpecChange then
-            if self.activeThread and self.threadSpec and self.threadSpec ~= GetSpecializationInfo( GetSpecialization() ) then
-                Hekili:SpecializationChanged()
-                self.activeThread = nil
-                self.criticalUpdate = true
-                return
+    function Hekili.Engine:UpdatePerformance( wasted )
+        -- Only track in combat.
+        if not ( self.firstThreadCompleted and InCombatLockdown() ) then
+            self.activeThreadTime = 0
+            framesUsed = 0
+            framesTimes = 0
+            return
+        end
+
+        if self.firstThreadCompleted then
+            local now = debugprofilestop()
+            local timeSince = now - self.activeThreadStart
+
+            self.lastUpdate = now
+
+            if self.threadUpdates then
+                local updates = self.threadUpdates.updates
+                local total = updates + 1
+
+                if framesUsed > 0 then
+                    local frameCount = ( self.threadUpdates.framesWorked or 0 ) + framesUsed
+                    self.threadUpdates.meanFrameTime = ( self.threadUpdates.meanFrameTime * self.threadUpdates.framesWorked + framesTimes ) / frameCount
+                    self.threadUpdates.framesWorked  = frameCount
+                end
+
+                if wasted then
+                    -- Capture thrown away computation time due to forced resets.
+                    self.threadUpdates.meanWasted    = ( self.threadUpdates.meanWasted    * updates + self.activeThreadTime   ) / total
+                    self.threadUpdates.totalWasted   = ( self.threadUpdates.totalWasted   + self.activeThreadTime             )
+
+                    if self.activeThreadTime   > self.threadUpdates.peakWasted    then self.threadUpdates.peakWasted    = self.activeThreadTime end
+                else
+                    self.threadUpdates.meanClockTime = ( self.threadUpdates.meanClockTime * updates + timeSince               ) / total
+                    self.threadUpdates.meanWorkTime  = ( self.threadUpdates.meanWorkTime  * updates + self.activeThreadTime   ) / total
+                    self.threadUpdates.meanFrames    = ( self.threadUpdates.meanFrames    * updates + self.activeThreadFrames ) / total
+
+                    if timeSince               > self.threadUpdates.peakClockTime then self.threadUpdates.peakClockTime = timeSince               end
+                    if self.activeThreadTime   > self.threadUpdates.peakWorkTime  then self.threadUpdates.peakWorkTime  = self.activeThreadTime   end
+                    if self.activeThreadFrames > self.threadUpdates.peakFrames    then self.threadUpdates.peakFrames    = self.activeThreadFrames end
+
+                    self.threadUpdates.updates = total
+                    self.threadUpdates.updatesPerSec = 1000 * total / ( now - self.threadUpdates.firstUpdate )
+                end
+
+            else
+                self.threadUpdates = {
+                    meanClockTime  = timeSince,
+                    meanWorkTime   = self.activeThreadTime,
+                    meanFrames     = self.activeThreadFrames or 1,
+                    meanFrameTime  = framesTimes > 0 and framesTimes or ( 1000 / GetFramerate() ),
+                    meanWasted     = 0,
+
+                    firstUpdate    = now,
+                    updates        = 1,
+                    framesWorked   = framesUsed > 0 and framesUsed or 1,
+                    updatesPerSec  = 1000 / ( self.activeThreadTime > 0 and self.activeThreadTime or 1 ),
+
+                    peakClockTime  = timeSince,
+                    peakWorkTime   = self.activeThreadTime,
+                    peakFrames     = self.activeThreadFrames or 1,
+                    peakWasted     = 0,
+
+                    totalWasted    = 0
+                }
             end
+        end
 
-            self.refreshRate = self.refreshRate or 5
-            self.combatRate = self.combatRate or 0.25
+
+        self.activeThreadTime = 0
+    end
+    Hekili.Engine:SetScript( "OnUpdate", function( self, elapsed )
+        if not self.activeThread then
+            self.refreshTimer = self.refreshTimer + elapsed
+        end
+
+        -- Safety check: ensure DB is initialized before accessing
+        if Hekili.DB and Hekili.DB.profile and Hekili.DB.profile.enabled and not Hekili.Pause then
+            -- Apply performance preset if configured
+            local p = Hekili.DB.profile
+            p.performance = p.performance or {}
+            local mode = p.performance.mode or 2
+            local perf = performanceSettings[ mode ] or performanceSettings[2]
+            self.refreshRate = perf.refreshRate
+            self.combatRate  = perf.combatRate
 
             local thread = self.activeThread
 
             -- If there's no thread, then see if we have a reason to update.
-            if Hekili.freshFrame and not thread and self.refreshTimer > ( self.criticalUpdate and self.combatRate or self.refreshRate ) then
-                Hekili.freshFrame = nil
+            if ( not thread or coroutine.status( thread ) == "dead" ) and self.refreshTimer > ( self.criticalUpdate and self.combatRate or self.refreshRate ) then
+                --[[ if thread and coroutine.status( thread ) == "suspended" then
+                    -- We're going to break the thread and start over from the current display in progress.
+                    self:UpdatePerformance( true )
+                end ]]
 
-                self.threadSpec = GetSpecializationInfo( GetSpecialization() )
+                self.criticalUpdate = false
+                self.superUpdate = false
+                self.refreshTimer = 0
 
                 self.activeThread = coroutine.create( Hekili.Update )
-                self.activeThreadTime = 0
-                self.activeThreadFrames = 0
-                self.activeThreadStart = debugprofilestop()
 
-                if Hekili:GetActiveSpecOption( "throttleTime" ) then
-                    Hekili.maxFrameTime = Hekili:GetActiveSpecOption( "maxTime" )
+                self.activeThreadTime = 0
+                self.activeThreadStart = debugprofilestop()
+                self.activeThreadFrames = 0
+
+                if not self.firstThreadCompleted then
+                    Hekili.maxFrameTime = 16.67
                 else
-                    Hekili.maxFrameTime = 10 -- ms.
+                    local rate = GetFramerate()
+                    local spf = 1000 / ( rate > 0 and rate or 100 )
+                    -- Use perf ceiling to bound per-frame work budget.
+                    local ceiling = perf.frameCeiling or 15
+                    -- Use enhanced frame budget calculation with FPS smoothing
+                    local frameBudget = calculateFrameBudget()
+                    if HekiliEngine.threadUpdates then
+                        -- One min() with all candidates; guard against division by zero.
+                        local dyn = 1.1 * HekiliEngine.threadUpdates.meanWorkTime / max( 1, floor( HekiliEngine.threadUpdates.meanFrames or 1 ) )
+                        Hekili.maxFrameTime = min( ceiling, 16.667, spf, dyn )
+                    else
+                        Hekili.maxFrameTime = min( ceiling, 16.667, spf )
+                    end
                 end
 
-                -- Being greedy, let's take a maximum of half of a frame at a time (less if configured above).
-                Hekili.maxFrameTime = min( Hekili.maxFrameTime, 500 / GetFramerate() )
-
                 thread = self.activeThread
-
-                self.superUpdate = false
-                self.criticalUpdate = false
             end
 
             -- If there's a thread, process for up to user preferred limits.
             if thread and coroutine.status( thread ) == "suspended" then
+                framesUsed  = framesUsed  + 1
+                framesTimes = framesTimes + elapsed * 1000
+
                 self.activeThreadFrames = self.activeThreadFrames + 1
-                local start = debugprofilestop()
+                Hekili.activeFrameStart = debugprofilestop()
 
-                Hekili.frameStartTime = start
-
+                -- if HekiliEngine.threadUpdates then print( 1000 * elapsed, Hekili.maxFrameTime, HekiliEngine.threadUpdates.meanWorkTime, HekiliEngine.threadUpdates.meanFrames ) end
                 local ok, err = coroutine.resume( thread )
+
                 if not ok then
                     err = err .. "\n\n" .. debugstack( thread )
                     Hekili:Error( "Update: " .. err )
-                    pcall( error, err )
-                end
-                local now = debugprofilestop()
 
-                self.activeThreadTime = self.activeThreadTime + ( now - start )
-
-                if coroutine.status( thread ) == "dead" or err then
                     if Hekili.ActiveDebug then
-                        Hekili:Debug( "Recommendation thread terminated due to error: %s", err or "unknown" )
+                        Hekili:Debug( format( "Recommendation thread terminated due to error: %s", err and err:gsub( "%%", "%%%%" ) or "Unknown" ) )
                         Hekili:SaveDebugSnapshot( self.id )
                         Hekili.ActiveDebug = nil
                     end
 
+                    pcall( error, err )
+                end
+
+                self.activeThreadTime = self.activeThreadTime + debugprofilestop() - Hekili.activeFrameStart
+
+                if coroutine.status( thread ) == "dead" or err then
                     self.activeThread = nil
-                    self.refreshTimer = 0
 
-                    if Hekili:GetActiveSpecOption( "throttleRefresh" ) then
-                        self.refreshRate = Hekili:GetActiveSpecOption( "regularRefresh" )
-                        self.combatRate = Hekili:GetActiveSpecOption( "combatRefresh" )
-                    else
-                        self.refreshRate = 0.5
-                        self.combatRate = 0.1
-                    end
+                    -- Keep using the selected performance preset
+                    local p = Hekili.DB.profile
+                    p.performance = p.performance or {}
+                    local mode = p.performance.mode or 2
+                    local perf = performanceSettings[ mode ] or performanceSettings[2]
+                    self.refreshRate = perf.refreshRate
+                    self.combatRate  = perf.combatRate
 
-                    if self.firstThreadCompleted then
-                        local timeSince = now - self.activeThreadStart
-                        self.lastUpdate = now
-
-                        if self.threadUpdates then
-                            local updates = self.threadUpdates.updates
-                            local total = updates + 1
-
-                            self.threadUpdates.clockTime = ( self.threadUpdates.clockTime * updates + timeSince ) / total
-                            self.threadUpdates.workTime = ( self.threadUpdates.workTime * updates + self.activeThreadTime ) / total
-                            self.threadUpdates.frames = ( self.threadUpdates.frames * updates + self.activeThreadFrames ) / total
-
-                            if timeSince > self.threadUpdates.peakClock then self.threadUpdates.peakClock = timeSince end
-                            if self.activeThreadTime > self.threadUpdates.peakWork then self.threadUpdates.peakWork = self.activeThreadTime end
-                            if self.activeThreadFrames > self.threadUpdates.peakFrames then self.threadUpdates.peakFrames = self.activeThreadFrames end
-
-                            self.threadUpdates.updates = total
-                        else
-                            self.threadUpdates = {
-                                clockTime = timeSince,
-                                workTime = self.activeThreadTime,
-                                frames = self.activeThreadFrames or 1,
-                                updates = 1,
-
-                                peakClock = timeSince,
-                                peakWork = self.activeThreadTime,
-                                peakFrames = self.activeThreadFrames
-                            }
-                        end
-                    else
+                    if ok then
+                        if self.firstThreadCompleted and not self.DontProfile then self:UpdatePerformance() end
                         self.firstThreadCompleted = true
                     end
                 end
 
                 if ok and err == "AutoSnapshot" then
+                    self.DontProfile = true
                     Hekili:MakeSnapshot( true )
+                    self.DontProfile = false
                 end
             end
         end
@@ -2386,12 +2536,18 @@ do
     Hekili:ProfileFrame( "HekiliEngine", Hekili.Engine )
 
 
-    function Hekili:ForceUpdate( event, super )
-        self.freshFrame = false
+    function HekiliEngine:IsThreadActive()
+        return self.activeThread and coroutine.status( self.activeThread ) == "suspended"
+    end
 
+
+    function Hekili:ForceUpdate( event, super )
         self.Engine.criticalUpdate = true
-        if super then self.Engine.superUpdate = true end
-        if self.Engine.firstForce == 0 then self.Engine.firstForce = GetTime() end
+        if super then self.Engine.refreshTimer = self.Engine.refreshTimer + 0.1 end
+
+        if self.Engine.firstForce == 0 then
+            self.Engine.firstForce = GetTime()
+        end
 
         if event then
             self.Engine.eventsTriggered[ event ] = true
@@ -2476,16 +2632,19 @@ do
 
         -- Indicator Icons.
         b.Icon = b.Icon or b:CreateTexture( nil, "OVERLAY" )
-        b.Icon: SetSize( max( 10, b:GetWidth() / 3 ), max( 10, b:GetHeight() / 3 ) )
+        b.Icon:SetSize( conf.indicators.width or 20, conf.indicators.height or 20 )
 
-        if conf.keepAspectRatio and b.Icon:GetHeight() ~= b.Icon:GetWidth() then
-            local biggest = max( b.Icon:GetHeight(), b.Icon:GetWidth() )
-            local height = 0.5 * b.Icon:GetHeight() / biggest
-            local width = 0.5 * b.Icon:GetWidth() / biggest
+        local zoom = 1 - ( ( conf.indicators.zoom or 0) / 200 )
+
+        if conf.indicators.keepAspectRatio and conf.indicators.height ~= conf.indicators.width then
+            local biggest = max( conf.indicators.height or 20, conf.indicators.width or 20 )
+            local height = 0.5 * zoom * ( conf.indicators.height or 20 ) / biggest
+            local width = 0.5 * zoom * ( conf.indicators.width or 20 ) / biggest
 
             b.Icon:SetTexCoord( 0.5 - width, 0.5 + width, 0.5 - height, 0.5 + height )
         else
-            b.Icon:SetTexCoord( 0, 1, 0, 1 )
+            local half = 0.5 * zoom
+            b.Icon:SetTexCoord( 0.5 - half, 0.5 + half, 0.5 - half, 0.5 + half )
         end
 
         local iconAnchor = conf.indicators.anchor or "RIGHT"
@@ -2506,7 +2665,7 @@ do
         b.Caption:SetPoint( capAnchor, b, capAnchor, conf.captions.x or 0, conf.captions.y or 0 )
         b.Caption:SetHeight( b:GetHeight() / 2 )
         b.Caption:SetJustifyV( capAnchor:match("RIGHT") and "RIGHT" or ( capAnchor:match( "LEFT" ) and "LEFT" or "MIDDLE" ) )
-        b.Caption:SetJustifyH( conf.captions.align or "MIDDLE" )
+        b.Caption:SetJustifyH( conf.captions.align or "CENTER" )
         b.Caption:SetTextColor( unpack( conf.captions.color ) )
         b.Caption:SetWordWrap( false )
 
@@ -2536,15 +2695,25 @@ do
         b.Keybinding:SetText( nil )
         b.Keybinding:SetText( kbText )
 
-
         -- Cooldown Wheel
-        b.Cooldown = b.Cooldown or CreateFrame( "Cooldown", bName .. "_Cooldown", b, "CooldownFrameTemplate" )
+        if not b.Cooldown then
+            b.Cooldown = CreateFrame( "Cooldown", bName .. "_Cooldown", b, "CooldownFrameTemplate" )
+            if id == 1 then b.Cooldown:HookScript( "OnCooldownDone", function( self )
+                    -- MoP: Empowerment spells don't exist, so always hide empowerment glow
+                    if b.Empowerment then
+                        b.Empowerment:Hide()
+                    end
+                end )
+            end
+        end
         b.Cooldown:ClearAllPoints()
         b.Cooldown:SetAllPoints( b )
         b.Cooldown:SetFrameStrata( b:GetFrameStrata() )
         b.Cooldown:SetFrameLevel( b:GetFrameLevel() + 1 )
         b.Cooldown:SetDrawBling( false )
         b.Cooldown:SetDrawEdge( false )
+
+        b.Cooldown.noCooldownCount = conf.hideOmniCC
 
         if _G["ElvUI"] and not b.isRegisteredCooldown and ( ( id == 1 and conf.elvuiCooldown ) or ( id > 1 and conf.queue.elvuiCooldown ) ) then
             local E = unpack( ElvUI )
@@ -2686,10 +2855,21 @@ do
             b.DelayIcon:SetPoint( delayAnchor, b, delayAnchor, conf.delays.x or 0, conf.delays.y or 0 )
             b.DelayIcon:Hide()
 
+            -- Empowerment
+            b.Empowerment = b.Empowerment or b:CreateTexture( bName .. "_Empower", "OVERLAY" )
+            b.Empowerment:SetAtlas( "bags-glow-artifact" )
+            b.Empowerment:SetVertexColor( 1, 1, 1, 1 )
+
+            b.Empowerment:ClearAllPoints()
+            b.Empowerment:SetPoint( "TOPLEFT", b, "TOPLEFT", -1, 1 )
+            b.Empowerment:SetPoint( "BOTTOMRIGHT", b, "BOTTOMRIGHT", 1, -1 )
+            b.Empowerment:Hide()
+
             -- Overlay (for Pause)
             b.Overlay = b.Overlay or b:CreateTexture( nil, "OVERLAY" )
             b.Overlay:SetAllPoints( b )
-            b.Overlay:SetTexture( "Interface/AddOns/Hekili/Textures/Pause.blp" )
+            --b.Overlay:SetAtlas("creditsscreen-assets-buttons-pause")
+            b.Overlay:SetTexture("Interface\\AddOns\\Hekili\\Textures\\Pause.blp")
             b.Overlay:SetVertexColor( 1, 1, 1, 1 )
             -- b.Overlay:SetTexCoord( unpack( b.texCoords ) )
             b.Overlay:Hide()
@@ -2732,20 +2912,43 @@ do
             end
         end
 
+
+        -- Caption Text.
+        b.EmpowerLevel = b.EmpowerLevel or b:CreateFontString( bName .. "_EmpowerLevel", "OVERLAY" )
+
+        local empowerFont = conf.empowerment.font or conf.font
+        b.EmpowerLevel:SetFont( LSM:Fetch("font", empowerFont), conf.empowerment.fontSize or 12, conf.empowerment.fontStyle or "OUTLINE" )
+
+        local empAnchor = conf.empowerment.anchor or "CENTER"
+        b.EmpowerLevel:ClearAllPoints()
+        b.EmpowerLevel:SetPoint( empAnchor, b, empAnchor, conf.empowerment.x or 0, conf.empowerment.y or 0 )
+        -- b.EmpowerLevel:SetHeight( b:GetHeight() * 0.6 )
+        b.EmpowerLevel:SetJustifyV( empAnchor:match("RIGHT") and "MIDDLE" or ( empAnchor:match( "LEFT" ) and "MIDDLE" or "MIDDLE" ) )
+        b.EmpowerLevel:SetJustifyH( conf.empowerment.align or "CENTER" )
+        b.EmpowerLevel:SetTextColor( unpack( conf.empowerment.color ) )
+        b.EmpowerLevel:SetWordWrap( false )
+
+        local empText = b.EmpowerLevel:GetText()
+        b.EmpowerLevel:SetText( nil )
+        b.EmpowerLevel:SetText( empText )
+
+        if conf.empowerment.enabled then b.EmpowerLevel:Show()
+        else b.EmpowerLevel:Hide() end
+
         -- Mover Stuff.
-        b:SetScript("OnMouseDown", Button_OnMouseDown)
-        b:SetScript("OnMouseUp", Button_OnMouseUp)
+        b:SetScript( "OnMouseDown", Button_OnMouseDown )
+        b:SetScript( "OnMouseUp", Button_OnMouseUp )
 
         b:SetScript( "OnEnter", function( self )
             local H = Hekili
 
             --[[ if H.Config then
-                GameTooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
-                GameTooltip:SetBackdropColor( 0, 0, 0, 0.8 )
+                Tooltip:SetOwner( self, "ANCHOR_TOPRIGHT" )
+                Tooltip:SetBackdropColor( 0, 0, 0, 0.8 )
 
-                GameTooltip:SetText( "Hekili: " .. dispID  )
-                GameTooltip:AddLine( "Left-click and hold to move.", 1, 1, 1 )
-                GameTooltip:Show()
+                Tooltip:SetText( "Hekili: " .. dispID  )
+                Tooltip:AddLine( "长按左键拖拉即可移动。", 1, 1, 1 )
+                Tooltip:Show()
                 self:SetMovable( true )
 
             else ]]
@@ -2794,14 +2997,27 @@ function Hekili:BuildUI()
     Hekili:ProfileFrame( "KeyhandlerFrame", ns.UI.Keyhandler )
 
     local scaleFactor = self:GetScale()
-    local mouseInteract = self.Pause
-
-    -- Notification Panel
+    local mouseInteract = self.Pause    -- Notification Panel
     local notif = self.DB.profile.notifications
+
+    -- Safety check for notification settings
+    if not notif then
+        notif = { enabled = false, width = 200, height = 50, x = 0, y = 0, font = "Friz Quadrata TT", fontSize = 12, fontStyle = "OUTLINE" }
+        self.DB.profile.notifications = notif
+    end
 
     local f = ns.UI.Notification or CreateFrame( "Frame", "HekiliNotification", UIParent )
     Hekili:ProfileFrame( "HekiliNotification", f )
 
+    -- Safety check for notification dimensions
+    notif.width = notif.width or 200
+    notif.height = notif.height or 50
+    notif.x = notif.x or 0
+    notif.y = notif.y or 0
+    notif.font = notif.font or "Friz Quadrata TT"
+    notif.fontSize = notif.fontSize or 12
+    notif.fontStyle = notif.fontStyle or "OUTLINE"
+    
     f:SetSize( notif.width * scaleFactor, notif.height * scaleFactor )
     f:SetClampedToScreen( true )
     f:ClearAllPoints()
@@ -2820,16 +3036,10 @@ function Hekili:BuildUI()
     ns.UI.Notification = f
     -- End Notification Panel
 
-    -- Dropdown Menu.
-    ns.UI.Menu = ns.UI.Menu or CreateFrame("Frame", "HekiliMenu", UIParent, "UIDropDownMenuTemplate")
-    Hekili:ProfileFrame( "HekiliMenu", ns.UI.Menu )
-
     -- Displays
     for disp in pairs( self.DB.profile.displays ) do
         self:CreateDisplay( disp )
     end
-
-    self:UpdateDisplayVisibility()
 
     --if Hekili.Config then ns.StartConfiguration() end
     if MasqueGroup then
@@ -2887,7 +3097,7 @@ function ns.primeTooltipColors()
         T.GT,
         T.GTE )
 
-    Color( "|cffB2FF66", multiUnpack(ns.keys, ns.attr) )
+    Color( "|cFFB2FF66", multiUnpack(ns.keys, ns.attr) )
 
     Color( "|cffFFFF00", T.NUMBER )
     Color( "|cff888888", T.STRING, T.STRING_LONG )
@@ -2910,8 +3120,7 @@ function ns.primeTooltipColors()
         "coroutine",
         "math",
         "string",
-        "table"
-    )
+        "table" )
     Color( "|cffddaaff", -- Some of WoW's aliases for standard Lua functions
         -- math
         "abs",
@@ -3069,12 +3278,15 @@ end
 
 function Hekili:SaveCoordinates()
     for i in pairs(Hekili.DB.profile.displays) do
-        local _, _, rel, x, y = ns.UI.Displays[i]:GetPoint()
+        local display = ns.UI.Displays[i]
+        if display then
+            local rel, x, y = select( 3, display:GetPoint() )
 
-        self.DB.profile.displays[i].rel = "CENTER"
-        self.DB.profile.displays[i].x = x
-        self.DB.profile.displays[i].y = y
+            self.DB.profile.displays[i].rel = "CENTER"
+            self.DB.profile.displays[i].x = x
+            self.DB.profile.displays[i].y = y
+        end
     end
 
-    _, _, _, self.DB.profile.notifications.x, self.DB.profile.notifications.y = HekiliNotification:GetPoint()
+    self.DB.profile.notifications.x, self.DB.profile.notifications.y = select( 4, HekiliNotification:GetPoint() )
 end

@@ -1,0 +1,24 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+	<Frame name="MinArchHist"  inherits="MATBasic" frameStrata="LOW" enableMouse="true" clampedToScreen="true" movable="true" parent="UIParent">
+		<size x="300" y="310" />
+		<Anchors>
+			<Anchor point="CENTER" relativePoint="CENTER" relativeTo="UIParent" />
+		</Anchors>
+		<Frames>
+			<Frame name="$parentGrad" parentKey="grad">
+				<size x="376" y="40" />
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent" x="12" y="-10"/>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.bg = self:CreateTexture(nil, "BACKGROUND");
+						self.bg:SetAllPoints();
+					</OnLoad>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

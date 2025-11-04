@@ -1,11 +1,123 @@
 -- Events.lua
--- June 2014
+-- July 2024
 
 local addon, ns = ...
-local Hekili = _G[ addon ]
+local Hekili = _G[addon]
 
 local class = Hekili.Class
 local state = Hekili.State
+
+-- Performance optimization: debounce ForceUpdate calls
+local pendingUpdate
+local function RequestUpdate(reason)
+    if pendingUpdate then return end
+    pendingUpdate = true
+    C_Timer.After(0, function()
+        Hekili:ForceUpdate(reason, true)
+        pendingUpdate = nil
+    end)
+end
+
+-- Swing timer integration will be initialized after StartEventHandler is called
+local swingTimerInitialized = false
+local function InitializeSwingTimer()
+    if swingTimerInitialized then return end
+    
+    local SwingAPI = LibStub and LibStub:GetLibrary("LibClassicSwingTimerAPI", true)
+    if not SwingAPI then return end
+    
+    local function SyncSwingSpeeds(mhSpeed, ohSpeed)
+        local sw = state.swings
+        if not sw then return end
+
+        local changed
+
+        if mhSpeed and mhSpeed > 0 then
+            sw.mh_speed = mhSpeed
+            state.mainhand_speed = mhSpeed
+            if sw.mh_actual and sw.mh_actual > 0 then
+                sw.mh_projected = sw.mh_actual + mhSpeed
+                sw.mh_pseudo = sw.mh_actual
+                sw.mh_pseudo_speed = mhSpeed
+                state.nextMH = sw.mh_projected
+            end
+            changed = true
+        end
+
+        if ohSpeed and ohSpeed > 0 then
+            sw.oh_speed = ohSpeed
+            state.offhand_speed = ohSpeed
+            if sw.oh_actual and sw.oh_actual > 0 then
+                sw.oh_projected = sw.oh_actual + ohSpeed
+                sw.oh_pseudo = sw.oh_actual
+                sw.oh_pseudo_speed = ohSpeed
+                state.nextOH = sw.oh_projected
+            end
+            changed = true
+        end
+
+        if changed then
+            RequestUpdate("SWING_TIMER_SPEED")
+        end
+    end
+
+    SwingAPI:RegisterCallback("SWING_TIMER_READY", function(event, mhSpeed, ohSpeed)
+        SyncSwingSpeeds(mhSpeed, ohSpeed)
+    end)
+
+    SwingAPI:RegisterCallback("SWING_TIMER_SPEED", function(event, mhSpeed, ohSpeed)
+        SyncSwingSpeeds(mhSpeed, ohSpeed)
+    end)
+
+    SwingAPI:RegisterCallback("SWING_TIMER_MAINHAND", function(event, timestamp, speed)
+        local sw = state.swings
+        if not sw then return end
+
+        local now = timestamp or GetTime()
+        sw.mh_actual = now
+
+        if speed and speed > 0 then
+            sw.mh_speed = speed
+            state.mainhand_speed = speed
+        end
+
+        local mhSpeed = sw.mh_speed or speed or 0
+        if mhSpeed > 0 then
+            sw.mh_projected = now + mhSpeed
+            sw.mh_pseudo = now
+            sw.mh_pseudo_speed = mhSpeed
+            state.nextMH = sw.mh_projected
+        end
+
+        RequestUpdate("SWING_TIMER_MAINHAND")
+    end)
+
+    SwingAPI:RegisterCallback("SWING_TIMER_OFFHAND", function(event, timestamp, speed)
+        local sw = state.swings
+        if not sw then return end
+
+        local now = timestamp or GetTime()
+        sw.oh_actual = now
+
+        if speed and speed > 0 then
+            sw.oh_speed = speed
+            state.offhand_speed = speed
+        end
+
+        local ohSpeed = sw.oh_speed or speed or 0
+        if ohSpeed > 0 then
+            sw.oh_projected = now + ohSpeed
+            sw.oh_pseudo = now
+            sw.oh_pseudo_speed = ohSpeed
+            state.nextOH = sw.oh_projected
+        end
+
+        RequestUpdate("SWING_TIMER_OFFHAND")
+    end)
+    
+    swingTimerInitialized = true
+end
+
 local PTR = ns.PTR
 local TTD = ns.TTD
 
@@ -15,8 +127,304 @@ local abs = math.abs
 local lower = string.lower
 local insert, remove, sort, wipe = table.insert, table.remove, table.sort, table.wipe
 
+-- MoP API compatibility
 local CGetItemInfo = ns.CachedGetItemInfo
-local RC = LibStub( "LibRangeCheck-2.0" )
+-- Use a local wrapper to check if an itemID is equipped without deprecated APIs.
+local function IsEquippedItemLocal(itemID)
+    if type(itemID) ~= "number" then return false end
+    if C_Item and C_Item.IsEquippedItemByID then
+        local ok = C_Item.IsEquippedItemByID(itemID)
+        if ok ~= nil then return ok end
+    end
+    for slot = 1, 19 do
+        local id = GetInventoryItemID( "player", slot )
+        if id == itemID then return true end
+    end
+    return false
+end
+local GetDetailedItemLevelInfo = function(itemLink) 
+    local _, _, _, itemLevel = CGetItemInfo(itemLink)
+    return itemLevel or 0
+end
+
+-- MoP: Local talent detection function (not global override)
+local function HekiliGetTalentInfoByID(talentID, groupIndex)
+    -- If no talentID is provided, return early
+    if not talentID then
+        return nil, nil, nil, false, nil, nil, nil, nil, nil, false
+    end
+    
+    local enabled = false
+    local spellID = nil
+    
+    if type(talentID) == "table" and talentID[1] and talentID[2] and talentID[3] then
+        local tier, column, spellIdFromTable = talentID[1], talentID[2], talentID[3]
+        spellID = spellIdFromTable
+        
+        -- For MoP, we need to check which talent is actually selected in each tier
+        -- We'll use IsPlayerSpell but only allow ONE talent per tier to be enabled
+        local isKnown = IsPlayerSpell(spellID)
+        
+        -- If this talent is known, check if it's the ONLY one in this tier that's known
+        if isKnown then
+            enabled = true
+            -- Check other talents in the same tier to ensure only one is enabled
+            if class and class.talents then
+                for k, v in pairs(class.talents) do
+                    if type(v) == "table" and v[1] == tier and v[2] ~= column and v[3] then
+                        if IsPlayerSpell(v[3]) then
+                            -- Another talent in the same tier is also known, this shouldn't happen
+                            -- But we'll allow it for now and let the user decide
+                            enabled = true
+                        end
+                    end
+                end
+            end
+        end
+        
+        -- Return values: id, name, tier, enabled, available, spellID, icon, row, column, known
+        -- The key is that 'known' should be the same as 'enabled' for our logic
+        return nil, nil, tier, enabled, enabled, spellID, nil, tier, column, enabled
+    elseif talentID and type(talentID) == "number" and talentID > 0 then
+        spellID = talentID
+        enabled = IsPlayerSpell(spellID)
+        return nil, nil, nil, enabled, nil, spellID, nil, nil, nil, enabled
+    end
+    
+    return nil, nil, nil, false, nil, nil, nil, nil, nil, false
+end
+
+-- Store the function in Hekili namespace for internal use
+Hekili.GetTalentInfoByID = HekiliGetTalentInfoByID
+
+
+
+-- MoP: UnitGetTotalAbsorbs compatibility (didn't exist in MoP)
+local UnitGetTotalAbsorbs = UnitGetTotalAbsorbs or function(unit)
+    return 0  -- Absorbs didn't exist as a mechanic in MoP
+end
+
+-- MoP: SpellIsSelfBuff compatibility
+local SpellIsSelfBuff = SpellIsSelfBuff or function(spellID)
+    -- In MoP, this function doesn't exist
+    -- We'll assume false as a safe default for compatibility
+    return false
+end
+
+-- Ensure UnitBuff is locally referenced (prevents undefined-global linter warnings)
+local UnitBuff = rawget( _G, "UnitBuff" ) or function( ... )
+    return nil
+end
+
+-- MoP: GetSpecialization/GetSpecializationInfo compatibility
+local GetSpecialization = GetSpecialization or function()
+    -- Enhanced MoP Classic spec detection
+    local _, class = UnitClass("player")
+    
+    if class == "DRUID" then
+        -- Detect Druid specialization based on abilities and forms
+        if IsPlayerSpell(33876) or IsPlayerSpell(5221) then return 1 -- Feral (maps to 103)
+        elseif IsPlayerSpell(33878) or IsPlayerSpell(6807) then return 2 -- Guardian (maps to 104)  
+        elseif IsPlayerSpell(78674) or IsPlayerSpell(8921) then return 3 -- Balance (maps to 102)
+        elseif IsPlayerSpell(18562) or IsPlayerSpell(2908) then return 4 -- Restoration (maps to 105)
+        else return 1 end -- Default to Feral
+    end
+
+    local Hekili = _G["Hekili"]
+local state  = Hekili and Hekili.State
+
+-- Create a dedicated event frame for encounter tracking
+local bossEvtFrame = CreateFrame("Frame", "HekiliBossEvents")
+
+-- Register boss-relevant events
+bossEvtFrame:RegisterEvent("ENCOUNTER_START")
+bossEvtFrame:RegisterEvent("ENCOUNTER_END")
+bossEvtFrame:RegisterEvent("PLAYER_ENTERING_WORLD") -- for resets on zoning/reload
+
+-- Define what happens on those events
+bossEvtFrame:SetScript("OnEvent", function(self, event, ...)
+    if not state then return end
+
+    if event == "ENCOUNTER_START" then
+        local encounterID, encounterName, difficultyID, groupSize = ...
+        state.encounterID   = encounterID or 0
+        state.encounterName = encounterName
+        Hekili:ForceUpdate(event)
+
+    elseif event == "ENCOUNTER_END" then
+        local encounterID = ...
+        if state.encounterID == encounterID then
+            state.encounterID   = 0
+            state.encounterName = nil
+            Hekili:ForceUpdate(event)
+        end
+
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        state.encounterID   = 0
+        state.encounterName = nil
+        Hekili:ForceUpdate(event)
+    end
+end)
+    
+    -- For other classes, use talent group as fallback
+    local activeTalentGroup = GetActiveTalentGroup and GetActiveTalentGroup() or 1
+    return activeTalentGroup
+end
+
+local GetSpecializationInfo = GetSpecializationInfo or function(specIndex)
+    if not specIndex or specIndex == 0 then return nil end
+    
+    -- Fallback for MoP - try to determine spec based on known spells
+    local _, class = UnitClass("player")
+    local specID = 0
+    local specName = "Unknown"
+    
+    -- Simple spec detection based on key spells (this is very basic)
+    if class == "WARRIOR" then
+        if IsPlayerSpell(46924) then specID = 71; specName = "Arms"  -- Bladestorm
+        elseif IsPlayerSpell(23881) then specID = 72; specName = "Fury"  -- Bloodthirst  
+        elseif IsPlayerSpell(871) then specID = 73; specName = "Protection"  -- Shield Wall
+        else specID = 71; specName = "Arms" end
+    elseif class == "PALADIN" then
+        if IsPlayerSpell(31884) then specID = 70; specName = "Retribution"  -- Avenging Wrath
+        elseif IsPlayerSpell(31850) then specID = 66; specName = "Protection"  -- Ardent Defender
+        elseif IsPlayerSpell(20473) then specID = 65; specName = "Holy"  -- Holy Shock
+        else specID = 70; specName = "Retribution" end
+    elseif class == "HUNTER" then
+        if IsPlayerSpell(19574) then specID = 253; specName = "Beast Mastery"  -- Bestial Wrath
+        elseif IsPlayerSpell(19506) then specID = 254; specName = "Marksmanship"  -- Improved Tracking
+        elseif IsPlayerSpell(53301) then specID = 255; specName = "Survival"  -- Explosive Shot
+        else 
+            -- Fallback detection based on other abilities
+            if IsPlayerSpell(34026) then specID = 253; specName = "Beast Mastery"  -- Kill Command
+            elseif IsPlayerSpell(82928) then specID = 254; specName = "Marksmanship"  -- Aimed Shot
+            elseif IsPlayerSpell(3674) then specID = 255; specName = "Survival"  -- Black Arrow
+            else specID = 255; specName = "Survival" end -- Default to Survival
+        end
+    elseif class == "DRUID" then
+        -- Druid spec detection for MoP Classic - Better prioritization
+        -- Check for Restoration-specific spells FIRST (highest priority for healers)
+        if IsPlayerSpell(18562) then specID = 105; specName = "Restoration"  -- Swiftmend - Restoration specific
+        elseif IsPlayerSpell(33763) then specID = 105; specName = "Restoration"  -- Lifebloom - Restoration specific
+        
+        -- Check for Feral-specific spells (higher priority than shared spells)
+        elseif IsPlayerSpell(52610) then specID = 103; specName = "Feral"  -- Savage Roar - Feral specific  
+        elseif IsPlayerSpell(22568) then specID = 103; specName = "Feral"  -- Ferocious Bite - Feral specific
+        elseif IsPlayerSpell(33876) then specID = 103; specName = "Feral"  -- Mangle (Cat) - Feral specific
+        elseif IsPlayerSpell(5221) then specID = 103; specName = "Feral"  -- Shred - Core Feral ability
+        elseif IsPlayerSpell(1822) then specID = 103; specName = "Feral"  -- Rake - Core Feral ability
+        
+        -- Check for Guardian-specific spells
+        elseif IsPlayerSpell(33878) then specID = 104; specName = "Guardian"  -- Mangle (Bear) - Guardian specific
+        elseif IsPlayerSpell(6807) then specID = 104; specName = "Guardian"  -- Maul - Guardian specific
+        
+        -- Check for Balance-specific spells (lower priority since some are shared)
+        elseif IsPlayerSpell(78674) then specID = 102; specName = "Balance"  -- Starsurge - Balance specific
+        elseif IsPlayerSpell(8921) then specID = 102; specName = "Balance"  -- Moonfire - Available to all but assume Balance
+        
+        else 
+            -- Last resort fallback based on form or default to Feral
+            if GetShapeshiftForm and (GetShapeshiftForm() == 1 or IsPlayerSpell(768)) then -- Cat Form
+                specID = 103; specName = "Feral"
+            elseif GetShapeshiftForm and (GetShapeshiftForm() == 2 or IsPlayerSpell(5487)) then -- Bear Form  
+                specID = 104; specName = "Guardian"
+            else specID = 103; specName = "Feral" end -- Default to Feral
+        end
+    elseif class == "ROGUE" then
+        -- Rogue spec detection for MoP Classic - prioritize Combat over Assassination  
+        if IsPlayerSpell(13750) then specID = 260; specName = "Combat"  -- Adrenaline Rush - Combat specific
+        elseif IsPlayerSpell(13877) then specID = 260; specName = "Combat"  -- Blade Flurry - Combat specific
+        elseif IsPlayerSpell(84617) then specID = 260; specName = "Combat"  -- Revealing Strike - Combat specific
+        elseif IsPlayerSpell(51690) then specID = 260; specName = "Combat"  -- Killing Spree - Combat specific
+        
+        -- Check for Assassination-specific spells
+        elseif IsPlayerSpell(2823) then specID = 259; specName = "Assassination"  -- Deadly Poison - Assassination
+        elseif IsPlayerSpell(32645) then specID = 259; specName = "Assassination"  -- Envenom - Assassination specific
+        elseif IsPlayerSpell(79140) then specID = 259; specName = "Assassination"  -- Vendetta - Assassination specific
+        
+        -- Check for Subtlety-specific spells  
+        elseif IsPlayerSpell(36554) then specID = 261; specName = "Subtlety"  -- Shadowstep - Subtlety specific
+        elseif IsPlayerSpell(14183) then specID = 261; specName = "Subtlety"  -- Premeditation - Subtlety specific
+        elseif IsPlayerSpell(51713) then specID = 261; specName = "Subtlety"  -- Shadow Dance - Subtlety specific
+        
+        else specID = 260; specName = "Combat" end -- Default to Combat
+    -- Add more classes as needed
+    else
+        specID = 1
+        specName = "Unknown"
+    end
+    
+    return specID, specName, nil, nil, nil, class
+end
+
+-- Enhanced MoP Classic UnitBuff for better APL compatibility
+-- Iterate player buffs to find a matching aura by spellID (number) or name (string).
+local UA_GetPlayerAuraBySpellID = function(spellID)
+    if not spellID then return nil end
+
+    local i = 1
+    while true do
+        -- In MoP Classic, UnitBuff signature is UnitBuff(unit, index[, filter])
+        local name, icon, count, dispelType, duration, expirationTime, source, isStealable,
+              nameplateShowPersonal, foundSpellId = UnitBuff("player", i)
+
+        if not name then break end
+
+        local matches = false
+        if type(spellID) == "number" then
+            matches = (foundSpellId == spellID)
+        elseif type(spellID) == "string" then
+            -- Only match if the provided string is the actual aura name.
+            matches = (name == spellID)
+        end
+
+        if matches then
+            local auraData = {
+                name = name,
+                icon = icon,
+                applications = count or 1,
+                dispelType = dispelType,
+                duration = duration or 0,
+                expirationTime = expirationTime or 0,
+                sourceUnit = source,
+                isStealable = isStealable,
+                nameplateShowPersonal = nameplateShowPersonal,
+                spellId = foundSpellId,
+                isFromPlayerOrPlayerPet = (source == "player" or source == "pet")
+            }
+            
+            -- Enhanced aura data for APL compatibility
+            if Hekili.DB.profile.enhancedEvents then
+                auraData.remains = max(0, expirationTime - GetTime())
+                auraData.applied = expirationTime - duration
+                auraData.count = count or 1
+            end
+            
+            return auraData
+        end
+
+        i = i + 1
+    end
+
+    return nil
+end
+
+local IsUsableItem = ns.IsUsableItem
+local GetItemSpell = ns.GetItemSpell
+
+-- MoP API compatibility for spell cooldowns
+-- Avoid shadowing/global recursion: call the real API explicitly.
+local function GetSpellCooldownMoP(spellID)
+    local start, duration, enable, modRate = _G.GetSpellCooldown(spellID)
+    return start, duration, enable, modRate
+end
+
+local GetSpellInfo = ns.GetUnpackedSpellInfo
+
+local FindStringInInventoryItemTooltip = ns.FindStringInInventoryItemTooltip
+local ResetDisabledGearAndSpells = ns.ResetDisabledGearAndSpells
+
+local RC = LibStub( "LibRangeCheck-3.0", true ) -- MoP: Use silent loading to prevent errors
 
 -- Abandoning AceEvent in favor of darkend's solution from:
 -- http://andydote.co.uk/2014/11/23/good-design-in-warcraft-addons.html
@@ -31,8 +439,6 @@ local itemCallbacks = {}
 local spellCallbacks = {}
 local activeDisplays = {}
 
-local IsInJailersTower = _G.IsInJailersTower or function() return false end
-
 
 function Hekili:GetActiveDisplays()
     return activeDisplays
@@ -45,16 +451,6 @@ Hekili.IC = itemCallbacks
 
 local eventData = {}
 Hekili.EData = eventData
-
-local function SetZoneInfo()
-    local _, zone, _, difficultyName, maxPlayers = GetInstanceInfo()
-    state.instanceType = zone
-    state.instanceSize = maxPlayers
-    state.instanceDifficulty = (string.find(difficultyName, "Heroic") and "Heroic") or "Normal"
-    state.bg = zone == "pvp"
-    state.arena = zone == "arena"
-    state.torghast = not Hekili.IsWrath() and IsInJailersTower() or false
-end
 
 local function GenericOnEvent( self, event, ... )
     local eventHandlers = handlers[ event ]
@@ -72,6 +468,11 @@ local function GenericOnEvent( self, event, ... )
         eventData[ key ] = eventData[ key ] or {}
         eventData[ key ].max = max( eventData[ key ].max or 0, finish - start )
         eventData[ key ].total = ( eventData[ key ].total or 0 ) + ( finish - start )
+        
+        -- Enhanced event tracking for APL compatibility
+        if Hekili.DB.profile.enhancedEvents and eventData[ key ].total > 1000 then
+            Hekili:ForceUpdate( "EVENT_PERFORMANCE", true )
+        end
     end
 end
 
@@ -104,15 +505,24 @@ function ns.StartEventHandler()
     for unit, unitFrame in pairs( unitHandlers ) do
         unitFrame:SetScript( "OnEvent", UnitSpecificOnEvent )
     end
-
+    
+    -- Enhanced event handler with performance monitoring
     events:SetScript( "OnUpdate", function( self, elapsed )
-        Hekili.freshFrame = true
+        if Hekili.PendingSpecializationChange then
+            if Hekili.SpecializationChanged then
+                Hekili:SpecializationChanged()
+                Hekili.PendingSpecializationChange = false
+                -- Spec updates are expensive; exit and do other work in the next frame.
+                return
+            end
+        end
 
+        -- Enhanced frame update handling for APL compatibility
         if handlers.FRAME_UPDATE then
             for i, handler in pairs( handlers.FRAME_UPDATE ) do
                 local key = "FRAME_UPDATE_" .. i
                 local start = debugprofilestop()
-                handler( event, elapsed )
+                handler( "FRAME_UPDATE", elapsed )
                 local finish = debugprofilestop()
 
                 handlerCount[ key ] = ( handlerCount[ key ] or 0 ) + 1
@@ -120,11 +530,31 @@ function ns.StartEventHandler()
                 eventData[ key ] = eventData[ key ] or {}
                 eventData[ key ].max = max( eventData[ key ].max or 0, finish - start )
                 eventData[ key ].total = ( eventData[ key ].total or 0 ) + ( finish - start )
+                
+                -- Enhanced performance monitoring for APL compatibility
+                if Hekili.DB.profile.enhancedEvents and eventData[ key ].total > 5000 then
+                    Hekili:ForceUpdate( "FRAME_UPDATE_PERFORMANCE", true )
+                end
+            end
+        end
+        
+        -- Enhanced event performance monitoring
+        if Hekili.DB.profile.enhancedEvents then
+            local totalEventTime = 0
+            for _, data in pairs( eventData ) do
+                totalEventTime = totalEventTime + ( data.total or 0 )
+            end
+            
+            if totalEventTime > 10000 then
+                Hekili:ForceUpdate( "EVENT_PERFORMANCE_MONITOR", true )
             end
         end
     end )
 
     Hekili:RunSpellCallbacks()
+    
+    -- Initialize swing timer integration after event system is ready
+    InitializeSwingTimer()
 end
 
 
@@ -151,8 +581,17 @@ ns.RegisterEvent = function( event, handler )
     local key = event .. "_" .. #handlers[event]
     Hekili:ProfileCPU( key, handler )
 
-    local file, line = debugstack(2):match([[Hekili\(.-)"%]:(%d+): in main chunk]])
-    Hekili.EventSources[ key ] = ( file or "Unknown" ) .. ":" .. ( line or 0 )
+    local stack = debugstack(2)
+    local file, line = stack:match([[Hekili/(.-)"%]:(%d+)]])
+    Hekili.EventSources[ key ] = file and ( file .. ":" .. ( line or 0 ) ) or stack:match( "^(.*)\n" )
+    
+    -- Enhanced event registration for APL compatibility
+    if Hekili.DB.profile.enhancedEvents then
+        -- Track important events for APL compatibility
+        if event == "COMBAT_LOG_EVENT_UNFILTERED" or event == "UNIT_AURA" or event == "PLAYER_TARGET_CHANGED" then
+            Hekili:ForceUpdate( "EVENT_REGISTERED", true )
+        end
+    end
 end
 local RegisterEvent = ns.RegisterEvent
 
@@ -189,8 +628,9 @@ ns.RegisterUnitEvent = function( event, unit1, unit2, handler )
     unitFrame.events[ event ] = unitFrame.events[ event ] or {}
     insert( unitFrame.events[ event ], handler )
 
-    local file, line = debugstack(2):match([[Hekili\(.-)"%]:(%d+): in main chunk]])
-    Hekili.EventSources[ event .. "_" .. unit1 .. "_" .. #unitFrame.events[ event ] ] = ( file or "Unknown" ) .. ":" .. ( line or 0 )
+    local stack = debugstack(2)
+    local file, line = stack:match([[Hekili/(.-)"%]:(%d+)]])
+    Hekili.EventSources[ event .. "_" .. unit1 .. "_" .. #unitFrame.events[ event ] ] = file and ( file .. ":" .. ( line or 0 ) ) or stack:match( "^(.*)\n" )
 
     unitFrame:RegisterUnitEvent( event, unit1 )
     Hekili:ProfileCPU( event .. "_" .. unit1 .. "_" .. #unitFrame.events[ event ], handler )
@@ -208,7 +648,7 @@ ns.RegisterUnitEvent = function( event, unit1, unit2, handler )
         unitFrame.events[ event ] = unitFrame.events[ event ] or {}
         insert( unitFrame.events[ event ], handler )
 
-        Hekili.EventSources[ event .. "_" .. unit2 .. "_" .. #unitFrame.events[ event ] ] = ( file or "Unknown" ) .. ":" .. ( line or 0 )
+        Hekili.EventSources[ event .. "_" .. unit2 .. "_" .. #unitFrame.events[ event ] ] = file and ( file .. ":" .. ( line or 0 ) ) or stack:match( "^(.*)\n" )
 
         unitFrame:RegisterUnitEvent( event, unit2 )
         Hekili:ProfileCPU( event .. "_" .. unit2 .. "_" .. #unitFrame.events[ event ], handler )
@@ -242,177 +682,152 @@ end
 Hekili.FeignEvent = ns.FeignEvent
 
 
---[[ do
-    local updatedEquippedItem = false
-
-    local function CheckForEquipmentUpdates()
-        if updatedEquippedItem then
-            updatedEquippedItem = false
-            ns.updateGear()
-        end
-    end
-
-    RegisterEvent( "GET_ITEM_INFO_RECEIVED", function( event, itemID, success )
-        if success then
-            if state.set_bonus[ itemID ] > 0 and not updatedEquippedItem then
-                updatedEquippedItem = true
-                C_Timer.After( 0.5, CheckForEquipmentUpdates )
-            end
-        end
-    end )
-end ]]
-
-
 do
     local isUnregistered = false
     local next = _G.next
 
     local requeued = {}
 
-    local HandleSpellData = function( event, spellID, success )
-    local callbacks = spellCallbacks[ spellID ]
+    local function HandleSpellData( event, spellID, success )
+        local callbacks = spellCallbacks[ spellID ]
 
-    if callbacks then
-        for i = #callbacks, 1, -1 do
+        if callbacks then
+            for i = #callbacks, 1, -1 do
                 callbacks[i]( event, spellID, success )
                 remove( callbacks, i )
-        end
+            end
 
-        if #callbacks == 0 then
-            spellCallbacks[ spellID ] = nil
+            if #callbacks == 0 then
+                spellCallbacks[ spellID ] = nil
+            end
         end
-    end
 
         if spellCallbacks == nil or next( spellCallbacks ) == nil then
             UnregisterEvent( "SPELL_DATA_LOAD_RESULT", HandleSpellData )
-            -- print( "Unregistered HandleSpellData" )
             isUnregistered = true
         end
     end
 
-function Hekili:ContinueOnSpellLoad( spellID, func )
-        if C_Spell.IsSpellDataCached( spellID ) then
+    function Hekili:ContinueOnSpellLoad( spellID, func )
+        -- MoP: No spell data caching system, call immediately
         func( true )
         return
-        end
-
-    local callbacks = spellCallbacks[ spellID ] or {}
-    insert( callbacks, func )
-    spellCallbacks[ spellID ] = callbacks
-
-        if isUnregistered then
-            RegisterEvent( "SPELL_DATA_LOAD_RESULT", HandleSpellData )
-            isUnregistered = false
-        end
-
-    C_Spell.RequestLoadSpellData( spellID )
-end
-
-function Hekili:RunSpellCallbacks()
-    for spell, callbacks in pairs( spellCallbacks ) do
-        for i = #callbacks, 1, -1 do
-            if not callbacks[ i ]( true ) == false then remove( callbacks, i ) end
-        end
-
-        if #callbacks == 0 then
-            spellCallbacks[ spell ] = nil
-        end
     end
-end
-end
 
+    function Hekili:RunSpellCallbacks()
+        for spell, callbacks in pairs( spellCallbacks ) do
+            for i = #callbacks, 1, -1 do
+                if not callbacks[ i ]( true ) == false then remove( callbacks, i ) end
+            end
 
-
-RegisterEvent( "DISPLAY_SIZE_CHANGED", function () Hekili:BuildUI() end )
-
-
-do
-    local itemAuditComplete = false
-
-    local auditItemNames = function ()
-        local failure = false
-
-        for key, ability in pairs( class.abilities ) do
-            if ability.recheck_name then
-                local name, link = CGetItemInfo( ability.item )
-
-                if name then
-                    ability.name = name
-                    ability.texture = nil
-                    ability.link = link
-                    ability.elem.name = name
-                    ability.elem.texture = select( 10, CGetItemInfo( ability.item ) )
-
-                    class.abilities[ name ] = ability
-                    ability.recheck_name = nil
-                else
-                    failure = true
-                end
+            if #callbacks == 0 then
+                spellCallbacks[ spell ] = nil
             end
         end
-
-        if failure then
-            C_Timer.After( 1, ns.auditItemNames )
-        else
-            ns.ReadKeybindings()
-            ns.updateGear()
-            itemAuditComplete = true
-        end
     end
 end
+
+
+RegisterEvent( "DISPLAY_SIZE_CHANGED", function()
+    Hekili:BuildUI()
+end )
+
 
 
 RegisterEvent( "PLAYER_ENTERING_WORLD", function( event, login, reload )
-    if login or reload then
-        Hekili.PLAYER_ENTERING_WORLD = true
-        Hekili:SpecializationChanged()
-        Hekili:RestoreDefaults()
+    if not Hekili.PLAYER_ENTERING_WORLD and ( login or reload ) then        Hekili.PLAYER_ENTERING_WORLD = true
+        if Hekili.SpecializationChanged then
+            Hekili:SpecializationChanged()
+        end
+        if Hekili.RestoreDefaults then
+            Hekili:RestoreDefaults()
+        end
 
         ns.checkImports()
         ns.updateGear()
 
         if state.combat == 0 and InCombatLockdown() then
             state.combat = GetTime() - 0.01
-            Hekili:UpdateDisplayVisibility()
         end
 
-        Hekili:BuildUI()
-    end
+        local _, zone, _, _, _, _, _, instanceID = GetInstanceInfo()
+        state.bg = zone == "pvp"
+        state.arena = zone == "arena"
+        
+        state.instance_id = instanceID or -1
 
-    if IsInInstance() then
-        RequestRaidInfo()
-    else
-        SetZoneInfo()
+        Hekili:BuildUI()
     end
 end )
 
 
-RegisterEvent( "UPDATE_INSTANCE_INFO", function()
-    SetZoneInfo()
-end)
 
 
-do
-    if Hekili.IsWrath() then
+
+
+do    if Hekili.IsWrath() then
         RegisterEvent( "ACTIVE_TALENT_GROUP_CHANGED", function()
-            Hekili:SpecializationChanged()
-        end )
-    else
-        local lastChange = 0
-        RegisterUnitEvent( "PLAYER_SPECIALIZATION_CHANGED", "player", nil, function()
-            local now = GetTime()
-            if now - lastChange > 1 then
+            if Hekili.SpecializationChanged then
                 Hekili:SpecializationChanged()
-                lastChange = now
             end
         end )
+    else
+        local specializationEvents = {
+            ACTIVE_PLAYER_SPECIALIZATION_CHANGED = 1,
+            ACTIVE_TALENT_GROUP_CHANGED = 1,
+            CONFIRM_TALENT_WIPE = 1,
+            PLAYER_TALENT_UPDATE = 1,
+            SPEC_INVOLUNTARILY_CHANGED = 1,
+            TALENTS_INVOLUNTARILY_RESET = 1
+        }        local function CheckForTalentUpdate( event )
+            local specialization = GetSpecialization()
+            local specID = specialization and GetSpecializationInfo( specialization )
+            
+            -- MoP Classic: Use our enhanced spec detection if needed
+            if not specID then
+                specID = ns.getSpecializationID(specialization)
+            end
+
+            -- Don't trigger spec change if we already have a valid detection
+            -- or if our fallback would produce the same result
+            if specID and state.spec.id then
+                -- Try our enhanced detection to see what it would return
+                local enhancedSpecID = Hekili and Hekili.GetMoPSpecialization and Hekili:GetMoPSpecialization()
+                
+                -- Only trigger change if both basic detection and enhanced detection disagree with current state
+                if enhancedSpecID and enhancedSpecID ~= state.spec.id and specID ~= state.spec.id then
+                    Hekili.PendingSpecializationChange = true
+                elseif not enhancedSpecID and specID ~= state.spec.id then
+                    -- Fallback case if enhanced detection isn't available
+                    Hekili.PendingSpecializationChange = true
+                end
+            elseif specID and not state.spec.id then
+                -- No current spec, so trigger detection
+                Hekili.PendingSpecializationChange = true
+            end
+        end
+
+        RegisterEvent( "ACTIVE_PLAYER_SPECIALIZATION_CHANGED", CheckForTalentUpdate )
+
+        for event in pairs( specializationEvents ) do
+            RegisterEvent( event, CheckForTalentUpdate )
+        end
     end
 end
 
 
-RegisterEvent( "ZONE_CHANGED", function()
-    SetZoneInfo()
-end )
+do
+    local function UpdateZoneInfo()
+        local _, zone, _, _, _, _, _, instanceID = GetInstanceInfo()
+        state.bg = zone == "pvp"
+        state.arena = zone == "arena"
+        
+        state.instance_id = instanceID or -1
+    end
+
+    RegisterEvent( "ZONE_CHANGED", UpdateZoneInfo )
+    RegisterEvent( "ARENA_PREP_OPPONENT_SPECIALIZATIONS", UpdateZoneInfo )
+end
 
 
 -- Hide when going into the barbershop.
@@ -436,7 +851,8 @@ end )
 
 
 function ns.updateTalents()
-
+    if type(state.talent) ~= "table" then state.talent = {} end
+    if type(class.talents) ~= "table" then class.talents = {} end
     for k, _ in pairs( state.talent ) do
         state.talent[ k ].enabled = false
     end
@@ -444,14 +860,17 @@ function ns.updateTalents()
     -- local specGroup = GetSpecialization()
 
     for k, v in pairs( class.talents ) do
-        local _, name, _, enabled, _, sID, _, _, _, _, known = GetTalentInfoByID( v, 1 )
+        local enabled, name, sID, known
+        
+        -- Use our local talent detection function instead of global override
+        _, name, _, enabled, _, sID, _, _, _, _, known = HekiliGetTalentInfoByID( v, 1 )
 
         if not name then
             -- We probably used a spellID.
-            enabled = IsPlayerSpell( v )
+            if v and type(v) == "number" and v > 0 then
+                enabled = IsPlayerSpell( v )
+            end
         end
-
-        enabled = enabled or known
 
         if rawget( state.talent, k ) then
             state.talent[ k ].enabled = enabled
@@ -460,18 +879,25 @@ function ns.updateTalents()
         end
     end
 
+    if type(state.pvptalent) ~= "table" then state.pvptalent = {} end
+    if type(class.pvptalents) ~= "table" then class.pvptalents = {} end
     for k, _ in pairs( state.pvptalent ) do
         state.pvptalent[ k ]._enabled = false
     end
-
     for k, v in pairs( class.pvptalents ) do
-        local _, name, _, enabled, _, sID, _, _, _, known = GetPvpTalentInfoByID( v, 1 )
-
-        if not name then
+        -- MoP: GetPvpTalentInfoByID doesn't exist, use IsPlayerSpell fallback
+        local enabled = false
+        
+        if GetPvpTalentInfoByID then
+            local _, name, _, enabled, _, sID, _, _, _, known = GetPvpTalentInfoByID( v, 1 )
+            if not name then
+                enabled = IsPlayerSpell( v )
+            end
+            enabled = enabled or known
+        else
+            -- MoP: PvP talents don't exist, check if it's a known spell
             enabled = IsPlayerSpell( v )
         end
-
-        enabled = enabled or known
 
         if rawget( state.pvptalent, k ) then
             state.pvptalent[ k ]._enabled = enabled
@@ -482,6 +908,7 @@ function ns.updateTalents()
         end
     end
 
+    ResetDisabledGearAndSpells()
 end
 
 
@@ -501,172 +928,10 @@ RegisterEvent( "ENCOUNTER_END", function ()
 end )
 
 
-do
-    local loc = ItemLocation:CreateEmpty()
 
-    local GetAllTierInfoByItemID = C_AzeriteEmpoweredItem.GetAllTierInfoByItemID
-    local GetAllTierInfo = C_AzeriteEmpoweredItem.GetAllTierInfo
-    local GetPowerInfo = C_AzeriteEmpoweredItem.GetPowerInfo
-    local IsAzeriteEmpoweredItemByID = C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID
-    local IsPowerSelected = C_AzeriteEmpoweredItem.IsPowerSelected
-
-    local MAX_INV_SLOTS = 19
-
-    function ns.updatePowers()
-        local p = state.azerite
-
-        for k, v in pairs( p ) do
-            v.__rank = 0
-        end
-
-        if next( class.powers ) == nil then
-            C_Timer.After( 3, ns.updatePowers )
-            return
-        end
-
-        for slot = 1, MAX_INV_SLOTS do
-            local id = GetInventoryItemID( "player", slot )
-
-            if id and IsAzeriteEmpoweredItemByID( id ) then
-                loc:SetEquipmentSlot( slot )
-                local tiers = GetAllTierInfo( loc )
-
-                for tier, tierInfo in ipairs( tiers ) do
-                    for _, power in ipairs( tierInfo.azeritePowerIDs ) do
-                        local pInfo = GetPowerInfo( power )
-
-                        if IsPowerSelected( loc, power ) then
-                            local name = class.powers[ pInfo.spellID ]
-                            if not name then
-                                Hekili:Error( "Missing Azerite Power info for #" .. pInfo.spellID .. ": " .. GetSpellInfo( pInfo.spellID ) .. "." )
-                            else
-                                p[ name ] = rawget( p, name ) or { __rank = 0 }
-                                p[ name ].__rank = p[ name ].__rank + 1
-                            end
-                        end
-                    end
-                end
-            end
-        end
-
-        loc:Clear()
-    end
-
-    Hekili:ProfileCPU( "updatePowers", ns.updatePowers )
-
-
-    -- Essences
-    local AE = C_AzeriteEssence
-    local GetMilestoneEssence, GetEssenceInfo = AE.GetMilestoneEssence, AE.GetEssenceInfo
-    local milestones = { 115, 116, 117, 119 }
-
-    local essenceKeys = {
-        [2]  = "azeroths_undying_gift",
-        [3]  = "sphere_of_suppression",
-        [4]  = "worldvein_resonance",
-        [5]  = "essence_of_the_focusing_iris",
-        [6]  = "purification_protocol",
-        [7]  = "anima_of_life_and_death",
-        [12] = "the_crucible_of_flame",
-        [13] = "nullification_dynamo",
-        [14] = "condensed_lifeforce",
-        [15] = "ripple_in_space",
-        [16] = "unwavering_ward",
-        [17] = "everrising_tide",
-        [18] = "artifice_of_time",
-        [19] = "well_of_existence",
-        [20] = "lifebinders_invocation",
-        [21] = "vitality_conduit",
-        [22] = "vision_of_perfection",
-        [23] = "blood_of_the_enemy",
-        [24] = "spirit_of_preservation",
-        [25] = "aegis_of_the_deep",
-        [27] = "memory_of_lucid_dreams",
-        [28] = "the_unbound_force",
-        [32] = "conflict_and_strife",
-        [33] = "touch_of_the_everlasting",
-        [34] = "strength_of_the_warden",
-        [35] = "breath_of_the_dying",
-        [36] = "spark_of_inspiration",
-        [37] = "the_formless_void"
-    }
-
-    local essenceMajors = {
-        -- everrising_tide = "",
-        -- lifebinders_invocation = "",
-        -- touch_of_the_everlasting = "",
-        -- vision_of_perfection = "",
-        -- vitality_conduit = "",
-        -- well_of_existence = "",
-        -- conflict_and_strife = "",
-        aegis_of_the_deep = "aegis_of_the_deep",
-        anima_of_life_and_death = "anima_of_death",
-        artifice_of_time = "standstill",
-        azeroths_undying_gift = "azeroths_undying_gift",
-        blood_of_the_enemy = "blood_of_the_enemy",
-        breath_of_the_dying = "reaping_flames",
-        condensed_lifeforce = "guardian_of_azeroth",
-        essence_of_the_focusing_iris = "focused_azerite_beam",
-        memory_of_lucid_dreams = "memory_of_lucid_dreams",
-        nullification_dynamo = "empowered_null_barrier",
-        purification_protocol = "purifying_blast",
-        ripple_in_space = "ripple_in_space",
-        spark_of_inspiration = "moment_of_glory",
-        sphere_of_suppression = "suppressing_pulse",
-        spirit_of_preservation = "spirit_of_preservation",
-        strength_of_the_warden = "vigilant_protector",
-        the_crucible_of_flame = "concentrated_flame",
-        the_formless_void = "replica_of_knowledge",
-        the_unbound_force = "the_unbound_force",
-        unwavering_ward = "guardian_shell",
-        worldvein_resonance = "worldvein_resonance",
-    }
-
-    for _, key in pairs( essenceKeys ) do
-        state.essence[ key ] = { __rank = 0, __major = false }
-    end
-
-
-    function ns.updateEssences()
-        local e = state.bfa_essence
-
-        for k, v in pairs( e ) do
-            v.__rank = 0
-        end
-
-        class.active_essence = nil
-
-        if state.equipped[ 158075 ] then
-            for i, ms in ipairs( milestones ) do
-                local essence = GetMilestoneEssence( ms )
-
-                if essence then
-                    local info = GetEssenceInfo( essence )
-
-                    if info then
-                        local key = essenceKeys[ info.ID ]
-
-                        e[ key ].__rank = info.rank
-                        e[ key ].__minor = true
-
-                        if i == 1 then
-                            e[ key ].__major = true
-                            class.active_essence = essenceMajors[ key ]
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    ns.updateEssences()
-end
 
 
 do
-    local gearInitialized = false
-    local lastUpdate = 0
-
     local function itemSorter( a, b )
         local action1, action2 = class.abilities[ a.action ].cooldown, class.abilities[ b.action ].cooldown
         return action1 > action2
@@ -688,18 +953,14 @@ do
                     } )
                 end
             end
-        end
-
-        sort( itemList, itemSorter )
-
-        class.essence_unscripted = ( class.active_essence and not Hekili:IsEssenceScripted( class.active_essence ) ) or false
+        end        sort( itemList, itemSorter )
 
         Hekili:LoadItemScripts()
     end
 
     function Hekili:UpdateUseItems()
         if not Hekili.PLAYER_ENTERING_WORLD then
-            C_Timer.After( 1, buildUseItemsList )
+            Hekili:After( 1, buildUseItemsList )
             return
         end
 
@@ -715,80 +976,88 @@ do
             reset = r,
             update = u
         } )
+    end    local wasWearing = {}
+    -- MoP: Use legacy item slot constant
+    local maxItemSlot = Hekili.IsWrath() and INVSLOT_LAST_EQUIPPED or 19 -- INVSLOT_LAST_EQUIPPED = 19 in MoP
+
+    local timer
+
+    local function Update()
+        ns.updateGear()
     end
 
-    local wasWearing = {}
-    local updateIsQueued = false
-    local maxItemSlot = Hekili.IsWrath() and INVSLOT_LAST_EQUIPPED or Enum.ItemSlotFilterTypeMeta.MaxValue
-
-    function ns.updateGear()
-        if not Hekili.PLAYER_ENTERING_WORLD or GetTime() - lastUpdate < 1 then
-            if not updateIsQueued then
-                C_Timer.After( 1, ns.updateGear )
-                updateIsQueued = true
-            end
+    local function QueueUpdate()
+        if timer and not timer:IsCancelled() then timer:Cancel() end
+        timer = Hekili:After( 1, Update )
+    end    function ns.updateGear()
+        if not Hekili.PLAYER_ENTERING_WORLD then
+            QueueUpdate()
             return
+        end        -- Ensure critical state tables are initialized
+        if not state.swings then
+            state.swings = {
+                mh_actual = 0,
+                mh_speed = 2.6,
+                mh_projected = 2.6,
+                oh_actual = 0,
+                oh_speed = 2.6,
+                oh_projected = 3.9
+            }
         end
 
-        lastUpdate = GetTime()
-        updateIsQueued = false
+        if not state.equipped then state.equipped = {} end
+        if not state.trinket then state.trinket = {} end
+        if not state.trinket.main_hand then 
+            state.trinket.main_hand = {
+                slot = "main_hand",
+                __proc = false,
+                cooldown = nil
+            } 
+        end
+        if not state.trinket.t1 then 
+            state.trinket.t1 = {
+                slot = "t1",
+                __proc = false,
+                cooldown = nil
+            } 
+        end
+        if not state.trinket.t2 then 
+            state.trinket.t2 = {
+                slot = "t2",
+                __proc = false,
+                cooldown = nil
+            } 
+        end
 
-        wipe( state.set_bonus )
+        if type(state.set_bonus) ~= "table" then state.set_bonus = {} else wipe( state.set_bonus ) end
 
         for _, hook in ipairs( GearHooks ) do
             if hook.reset then hook.reset() end
         end
 
-        wipe( wasWearing )
+        if type(wasWearing) ~= "table" then wasWearing = {} else wipe( wasWearing ) end
 
-        for i, item in ipairs( state.items ) do
-            wasWearing[ i ] = item
+
+        if type(state.items) == "table" then
+            for i, item in ipairs( state.items ) do
+                wasWearing[ i ] = item
+            end
         end
 
-        wipe( state.items )
+        if type(state.items) ~= "table" then state.items = {} else wipe( state.items ) end
 
         for set, items in pairs( class.gear ) do
             state.set_bonus[ set ] = 0
             for item, _ in pairs( items ) do
-                if item > maxItemSlot and IsEquippedItem( item ) then
+                if type(item) == "number" and item > maxItemSlot and IsEquippedItemLocal( item ) then
                     state.set_bonus[ set ] = state.set_bonus[ set ] + 1
                 end
             end
         end
 
         for bonus, aura in pairs( class.setBonuses ) do
-            if GetPlayerAuraBySpellID( aura ) then
+            if UA_GetPlayerAuraBySpellID( aura ) then
                 state.set_bonus[ bonus ] = 1
-            end
-        end
-
-        -- Tinkers
-        -- We want to know:
-        -- 1. Who is writing all of these comments? I mean really, who writes comments anymore?
-        -- 2. Which slots have tinkers?
-        -- 3. Which tinker is it?
-        -- 4. ???
-        -- 5. Profit.
-        for i=0,19,1 do
-            local tinker = state.tinker[i]
-            if tinker ~= nil then
-                tinker.name = nil
-                tinker.spell = 0
-                tinker.item = nil
-                tinker.texture = 0
-
-                local tinkerItem = GetInventoryItemID( "player", tinker.slotId )
-                if tinkerItem then
-                    local isUsable = IsUsableItem( tinkerItem )
-                    if isUsable then
-                        local tinkerName, tinkerSpell = GetItemSpell( tinkerItem )
-                        local tinkerTexture = select( 10, GetItemInfo( tinkerItem ) )
-                        tinker.item = tinkerItem
-                        tinker.name = tinkerName
-                        tinker.spell = tinkerSpell
-                        tinker.texture = tinkerTexture
-                    end
-                end
             end
         end
 
@@ -797,11 +1066,15 @@ do
         -- 1. Which trinket?
         -- 2. Does it have a spell?  (GetItemSpell)
         -- 3. Does it have an on-use?  (IsItemUsable)
-        -- 4. ???
+    -- 4. ???
+    local T1 = GetInventoryItemID( "player", 13 )
 
-        local T1 = GetInventoryItemID( "player", 13 )
+        if not state.trinket then state.trinket = {} end
+        if not state.trinket.t1 then state.trinket.t1 = {} end
+        if not state.trinket.t2 then state.trinket.t2 = {} end
 
         state.trinket.t1.__id = 0
+        state.trinket.t1.ilvl = 0
         state.trinket.t1.__ability = "null_cooldown"
         state.trinket.t1.__usable = false
         state.trinket.t1.__has_use_buff = false
@@ -809,42 +1082,48 @@ do
 
         if T1 then
             state.trinket.t1.__id = T1
+            -- So this isn't *truly* accurate, but it's accurate relatively speaking.
+            state.trinket.t1.ilvl = GetDetailedItemLevelInfo( T1 )
 
             local isUsable = IsUsableItem( T1 )
             local name, spellID = GetItemSpell( T1 )
-            local tSpell = class.itemMap[ T1 ]
+            local tSpell = class.itemMap[ T1 ]            if tSpell then
+                class.abilities.trinket1 = class.abilities[ tSpell ]
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.trinket2 = class.abilities[ tSpell ]
+                end
 
-            if tSpell then
                 state.trinket.t1.__usable = isUsable
                 state.trinket.t1.__ability = tSpell
 
-                if spellID and SpellIsSelfBuff( spellID ) then
-                    state.trinket.t1.__has_use_buff = not ( class.auras[ spellID ] and class.auras[ spellID ].ignore_buff )
-                    state.trinket.t1.__use_buff_duration = ( class.auras[ spellID ] and class.auras[ spellID ].duration )
-                elseif class.abilities[ tSpell ].self_buff then
-                    state.trinket.t1.__has_use_buff = true
-                    state.trinket.t1.__use_buff_duration = class.auras[ class.abilities[ tSpell ].self_buff ].duration
+                local ability = class.abilities[ tSpell ]
+                local aura = ability and class.auras[ ability.self_buff or spellID ]                if spellID and SpellIsSelfBuff( spellID ) and aura then
+                    state.trinket.t1.__has_use_buff = not aura.ignore_buff and not ( ability and ability.proc and ( ability.proc == "damage" or ability.proc == "healing" or ability.proc == "mana" or ability.proc == "absorb" or ability.proc == "speed" ) )
+                    state.trinket.t1.__use_buff_duration = aura.duration > 0 and aura.duration or 0.01
+                elseif ability and ability.self_buff then
+                    state.trinket.t1.__has_use_buff = not aura.ignore_buff and not ( ability and ability.proc and ( ability.proc == "damage" or ability.proc == "healing" or ability.proc == "mana" or ability.proc == "absorb" or ability.proc == "speed" ) )
+                    state.trinket.t1.__use_buff_duration = aura and aura.duration > 0 and aura.duration or 0.01
+                end                if not isUsable then
+                    if state.cooldown then
+                        state.trinket.t1.cooldown = state.cooldown.null_cooldown
+                    end
+                else
+                    if state.cooldown then
+                        state.cooldown.trinket1 = ability and state.cooldown[ ability.key ] or state.cooldown.null_cooldown
+                        state.trinket.t1.cooldown = state.cooldown.trinket1
+                    end
+                end
+            else
+                class.abilities.trinket1 = class.abilities.actual_trinket1
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.trinket1 = class.abilities.actual_trinket1
+                end
+                if state.cooldown then
+                    state.trinket.t1.cooldown = state.cooldown.null_cooldown
                 end
             end
 
-            ns.Tooltip:SetOwner( UIParent )
-            ns.Tooltip:SetInventoryItem( "player", 13 )
-
-            local i = 0
-            while( true ) do
-                i = i + 1
-                local ttLine = _G[ "HekiliTooltipTextLeft" .. i ]
-
-                if not ttLine then break end
-
-                local line = ttLine:GetText()
-
-                if line and line:match( "^" .. ITEM_SPELL_TRIGGER_ONEQUIP ) then
-                    state.trinket.t1.__proc = true
-                end
-            end
-
-            ns.Tooltip:Hide()
+            state.trinket.t1.__proc = FindStringInInventoryItemTooltip( "^" .. ITEM_SPELL_TRIGGER_ONEQUIP, 13, true, true )
         end
 
         local T2 = GetInventoryItemID( "player", 14 )
@@ -854,53 +1133,107 @@ do
         state.trinket.t2.__usable = false
         state.trinket.t2.__has_use_buff = false
         state.trinket.t2.__use_buff_duration = nil
+        state.trinket.t2.ilvl = 0
 
         if T2 then
             state.trinket.t2.__id = T2
+             -- So this isn't *truly* accurate, but it's accurate relatively speaking.
+             state.trinket.t2.ilvl = GetDetailedItemLevelInfo( T2 )
 
             local isUsable = IsUsableItem( T2 )
             local name, spellID = GetItemSpell( T2 )
-            local tSpell = class.itemMap[ T2 ]
+            local tSpell = class.itemMap[ T2 ]            if tSpell then
+                class.abilities.trinket2 = class.abilities[ tSpell ]
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.trinket2 = class.abilities[ tSpell ]
+                end
 
-            if tSpell then
                 state.trinket.t2.__usable = isUsable
-                state.trinket.t2.__ability = tSpell
+                state.trinket.t2.__ability = tSpell                local ability = class.abilities[ tSpell ]
+                local aura = ability and class.auras[ ability.self_buff or spellID ]
 
-                if spellID and SpellIsSelfBuff( spellID ) then
-                    state.trinket.t2.__has_use_buff = not ( class.auras[ spellID ] and class.auras[ spellID ].ignore_buff )
-                    state.trinket.t2.__use_buff_duration = ( class.auras[ spellID ] and class.auras[ spellID ].duration )
-                elseif tSpell and class.abilities[ tSpell ].self_buff then
+                if spellID and SpellIsSelfBuff( spellID ) and aura then
+                    state.trinket.t2.__has_use_buff = not aura.ignore_buff and not ( ability and ability.proc and ( ability.proc == "damage" or ability.proc == "healing" or ability.proc == "mana" or ability.proc == "absorb" or ability.proc == "speed" ) )
+                    state.trinket.t2.__use_buff_duration = aura.duration > 0 and aura.duration or 0.01
+                elseif ability and ability.self_buff then
                     state.trinket.t2.__has_use_buff = true
-                    state.trinket.t2.__use_buff_duration = class.auras[ class.abilities[ tSpell ].self_buff ].duration
+                    state.trinket.t2.__use_buff_duration = aura and aura.duration > 0 and aura.duration or 0.01
+                end                if not isUsable then
+                    if state.cooldown then
+                        state.trinket.t2.cooldown = state.cooldown.null_cooldown
+                    end
+                else
+                    if state.cooldown then
+                        state.cooldown.trinket2 = ability and state.cooldown[ ability.key ] or state.cooldown.null_cooldown
+                        state.trinket.t2.cooldown = state.cooldown.trinket2
+                    end
+                end            else
+                class.abilities.trinket2 = class.abilities.actual_trinket2
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.trinket2 = class.abilities.actual_trinket2
                 end
-            end
-
-            ns.Tooltip:SetOwner( UIParent )
-            ns.Tooltip:SetInventoryItem( "player", 14 )
-
-            local i = 0
-            while( true ) do
-                i = i + 1
-                local ttLine = _G[ "HekiliTooltipTextLeft" .. i ]
-
-                if not ttLine then break end
-
-                local line = ttLine:GetText()
-
-                if line and line:match( "^" .. ITEM_SPELL_TRIGGER_ONEQUIP ) then
-                    state.trinket.t2.__proc = true
+                if state.cooldown then
+                    state.trinket.t2.cooldown = state.cooldown.null_cooldown
                 end
-            end
-
-            ns.Tooltip:Hide()
+            end            state.trinket.t2.__proc = FindStringInInventoryItemTooltip( "^" .. ITEM_SPELL_TRIGGER_ONEQUIP, 14, true, true )
         end
 
+        -- Initialize weapon slots if they don't exist
+        if not state.main_hand then state.main_hand = {} end
+        if not state.off_hand then state.off_hand = {} end
+        
         state.main_hand.size = 0
         state.off_hand.size = 0
-        state.off_hand.shield = false
+
+        local MH = GetInventoryItemID( "player", 16 )
+
+        class.abilities.main_hand = class.abilities.actual_main_hand
+
+        if MH then
+            local isUsable = IsUsableItem( MH )
+            local name, spellID = GetItemSpell( MH )
+            local tSpell = class.itemMap[ MH ]
+            local ability = class.abilities[ tSpell ]            if ability and tSpell then
+                class.abilities.main_hand = class.abilities[ tSpell ]
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.main_hand = class.abilities[ tSpell ]
+                end
+
+                local aura = ability and class.auras[ ability.self_buff or spellID ]
+
+                if spellID and SpellIsSelfBuff( spellID ) and aura then
+                    state.trinket.main_hand.__has_use_buff = not aura.ignore_buff and not ( ability and ability.proc and ( ability.proc == "damage" or ability.proc == "healing" or ability.proc == "mana" or ability.proc == "absorb" or ability.proc == "speed" ) )
+                    state.trinket.main_hand.__use_buff_duration = aura.duration > 0 and aura.duration or 0.01
+                elseif ability.self_buff then
+                    state.trinket.main_hand.__has_use_buff = true
+                    state.trinket.main_hand.__use_buff_duration = aura and aura.duration > 0 and aura.duration or 0.01
+                end
+
+                if not isUsable then
+                    state.trinket.main_hand.cooldown = state.cooldown.null_cooldown                else
+                    if state.cooldown and ability and ability.key then
+                        state.cooldown.main_hand = state.cooldown[ ability.key ]
+                        if state.trinket and state.trinket.main_hand then
+                            state.trinket.main_hand.cooldown = state.cooldown.main_hand
+                        end
+                    end
+                end
+            else
+                class.abilities.main_hand = class.abilities.actual_main_hand
+                if class.specs and class.specs[0] then
+                    class.specs[ 0 ].abilities.main_hand = class.abilities.actual_main_hand
+                end
+                if state.trinket and state.trinket.main_hand and state.cooldown then
+                    state.trinket.main_hand.cooldown = state.cooldown.null_cooldown
+                end            end
+
+            if state.trinket and state.trinket.main_hand then
+                state.trinket.main_hand.__proc = FindStringInInventoryItemTooltip( "^" .. ITEM_SPELL_TRIGGER_ONEQUIP, 16, true, true )
+            end
+        end
 
         for i = 1, 19 do
-            local item = GetInventoryItemID( 'player', i )
+            local item = GetInventoryItemID( "player", i )
 
             if item then
                 state.set_bonus[ item ] = 1
@@ -908,31 +1241,29 @@ do
                 if key then
                     key = formatKey( key )
                     state.set_bonus[ key ] = 1
-                    gearInitialized = true
                 end
 
                 if i == 16 then
                     if equipLoc == "INVTYPE_2HWEAPON" then
                         state.main_hand.size = 2
-                        state.set_bonus.mainhand_2h = 1
-                        state.set_bonus.mainhand = 1
                     elseif equipLoc == "INVTYPE_WEAPON" or equipLoc == "INVTYPE_WEAPONMAINHAND" then
                         state.main_hand.size = 1
-                        state.set_bonus.mainhand = 1
+                    elseif equipLoc == "INVTYPE_RANGED" or equipLoc == "INVTYPE_RANGEDRIGHT" then
+                        state.set_bonus.ranged = 1
                     end
                 elseif i == 17 then
                     if equipLoc == "INVTYPE_2HWEAPON" then
                         state.off_hand.size = 2
-                        state.set_bonus.titans_grip_offhand = 1
-                        state.set_bonus.offhand = 1
                     elseif equipLoc == "INVTYPE_WEAPON" or equipLoc == "INVTYPE_WEAPONOFFHAND" then
                         state.off_hand.size = 1
-                        state.set_bonus.offhand = 1
+                    elseif equipLoc == "INVTYPE_RANGED" or equipLoc == "INVTYPE_RANGEDRIGHT" then
+                        state.set_bonus.ranged = 1
                     elseif equipLoc == "INVTYPE_SHIELD" then
-                        state.off_hand.shield = true
                         state.set_bonus.shield = 1
                     end
                 end
+
+
 
                 -- Fire any/all GearHooks (may be expansion-driven).
                 for _, hook in ipairs( GearHooks ) do
@@ -942,16 +1273,36 @@ do
                 local usable = class.itemMap[ item ]
                 if usable then insert( state.items, usable ) end
             end
-        end
+        end        -- Improve Pocket-Sized Computronic Device.
+        -- MoP: This item doesn't exist in MoP, skip this section
+        --[[ 
+        if state.equipped.pocketsized_computation_device then
+            local tName = CGetItemInfo( 167555 )
+            -- MoP: C_Item.GetItemGem not available, skip gem detection
+            local redName, redLink = nil, nil
 
-        if state.set_bonus.mainhand + state.set_bonus.offhand > 1 then
-            state.set_bonus.dual_wield = 1
-        end
+            if redName and redLink then
+                local redID = tonumber( redLink:match("item:(%d+)") )
+                local action = class.itemMap[ redID ]
 
+                if action and class.abilities[ action ] and redID then
+                    state.set_bonus[ action ] = 1
+                    state.set_bonus[ redID ] = 1
+                    class.abilities.pocketsized_computation_device = class.abilities[ action ]
+                    class.abilities[ tName ] = class.abilities[ action ]
+                    insert( state.items, action )
+                end
+            else                if class.abilities.inactive_red_punchcard then
+                    class.abilities.pocketsized_computation_device = class.abilities.inactive_red_punchcard
+                    class.abilities[ tName ] = class.abilities.inactive_red_punchcard
+                end
+            end
+        end
+        --]]
+        
+        -- MoP: updatePowers is a retail-only function, not needed in MoP
+        -- ns.updatePowers()
         ns.updateTalents()
-
-        local lastEssence = class.active_essence
-        ns.updateEssences()
 
         local sameItems = #wasWearing == #state.items
 
@@ -965,28 +1316,11 @@ do
         end
 
         Hekili:UpdateUseItems()
-
         state.swings.mh_speed, state.swings.oh_speed = UnitAttackSpeed( "player" )
-
-        if not gearInitialized then
-            if not updateIsQueued then
-                C_Timer.After( 1, ns.updateGear )
-                updateIsQueued = true
-            end
-        else
-            ns.ReadKeybindings()
-        end
     end
+
+    RegisterEvent( "PLAYER_EQUIPMENT_CHANGED", QueueUpdate )
 end
-
-
-RegisterEvent( "PLAYER_EQUIPMENT_CHANGED", function()
-    ns.updateGear()
-end )
-
-RegisterUnitEvent( "UNIT_INVENTORY_CHANGED", "player", nil, function()
-    ns.updateGear()
-end )
 
 
 do
@@ -994,58 +1328,25 @@ do
 
     local function Update()
         ns.updateTalents()
-        Hekili:ForceUpdate( "TALENTS", true )
     end
 
     local function QueueUpdate()
         if timer and not timer:IsCancelled() then timer:Cancel() end
-        timer = C_Timer.NewTimer( 0.5, Update )
-    end
-
-    if Hekili.IsDragonflight() then
-        local talentEvents = {
-            "TRAIT_CONFIG_CREATED",
-            "ACTIVE_COMBAT_CONFIG_CHANGED",
-            -- "PLAYER_REGEN_ENABLED",
-            -- "PLAYER_REGEN_DISABLED",
-            "STARTER_BUILD_ACTIVATION_FAILED",
-            "TRAIT_CONFIG_DELETED",
-            "TRAIT_CONFIG_UPDATED",
-        }
-
-        for _, event in pairs( talentEvents ) do
-            RegisterEvent( event, QueueUpdate )
-        end
-    else
-        RegisterEvent( "PLAYER_TALENT_UPDATE", Update )
-    end
-end
-
-
--- Update Azerite Essence Data.
-do
-    local azeriteEvents = {
-        "AZERITE_ESSENCE_UPDATE",
-        "AZERITE_ESSENCE_MILESTONE_UNLOCKED",
-        "AZERITE_ESSENCE_FORGE_CLOSE",
-        "AZERITE_ESSENCE_CHANGED",
-        "AZERITE_ESSENCE_ACTIVATED",
-        "AZERITE_ESSENCE_ACTIVATION_FAILED"
+        timer = Hekili:After( 0.5, Update )
+    end    local talentEvents = {
+        -- MoP: Modern trait/combat config events don't exist, use classic events
+        "PLAYER_TALENT_UPDATE",
+        "PLAYER_ALIVE",
+        "PLAYER_UNGHOST"
     }
 
-    local function UpdateEssences()
-        local lastEssence = class.active_essence
-        ns.updateEssences()
-
-        if class.active_essence ~= lastEssence then
-            Hekili:UpdateUseItems()
-        end
+    for _, event in pairs( talentEvents ) do
+        RegisterEvent( event, QueueUpdate )
     end
-
-    --[[ for i, event in pairs( azeriteEvents ) do
-        RegisterEvent( event, UpdateEssences )
-    end ]]
 end
+
+
+
 
 
 local last_combat, combat_ended = 0, 0
@@ -1066,28 +1367,32 @@ RegisterEvent( "PLAYER_REGEN_DISABLED", function( event )
     end
 
     -- Hekili:ExpireTTDs( true )
-    Hekili:ForceUpdate( event, true ) -- Force update on entering combat since OOC refresh can be very slow (0.5s).
+    Hekili:ForceUpdate( event ) -- Force update on entering combat since OOC refresh can be very slow (0.5s).
 end )
 
 
 RegisterEvent( "PLAYER_REGEN_ENABLED", function ()
     last_combat = state.combat
-    combat_ended = GetTime()
+    combat_ended = GetTime()    state.combat = 0
 
-    state.combat = 0
+    if state.swings then
+        state.swings.mh_actual = 0
+        state.swings.oh_actual = 0
+    end
 
-    state.swings.mh_actual = 0
-    state.swings.oh_actual = 0
+    Hekili:After( 5, function ()
+        if not InCombatLockdown() then
+            ns.Audit( "combatExit" )
+        end
+    end )
 
-    -- C_Timer.After( 10, function () ns.Audit( "combatExit" ) end )
-    -- Hekili:ReleaseHolds( true )
-    Hekili:ExpireTTDs()
+    Hekili:ReleaseHolds( true )
     Hekili:UpdateDisplayVisibility()
 end )
 
 
 local dynamic_keys = setmetatable( {}, {
-    __index = function( t, k, v )
+    __index = function( t, k )
         local name = GetSpellInfo( k )
         local key = name and formatKey( name ) or k
         t[k] = key
@@ -1113,10 +1418,10 @@ function state:AddToHistory( spellID, destGUID )
     player.lastcast = key
     player.casttime = now
 
-    if ability and not ability.essence then
+    if ability then
         local history = self.prev.history
         insert( history, 1, key )
-        history[11] = nil
+        history[6] = nil
 
         if ability.gcd ~= "off" then
             history = self.prev_gcd.history
@@ -1128,7 +1433,7 @@ function state:AddToHistory( spellID, destGUID )
             player.lastoffgcdtime = now
         end
         insert( history, 1, key )
-        history[11] = nil
+        history[6] = nil
 
         ability.realCast = now
         ability.realUnit = destGUID
@@ -1147,18 +1452,47 @@ end
 RegisterEvent( "CVAR_UPDATE", UpdateSpellQueueWindow )
 RegisterEvent( "VARIABLES_LOADED", UpdateSpellQueueWindow )
 
-C_Timer.After( 60, UpdateSpellQueueWindow )
+Hekili:After( 60, UpdateSpellQueueWindow )
 
 
 do
-    local macroInfo = {}
+    local box, text
+    local info = {}
+
+    hooksecurefunc( "ChatEdit_SendText", function( b )
+        if box and box == b and text then
+            local action, target = SecureCmdOptionParse( text )
+            local ability = action and class.abilities[ action ]
+
+            if ability and ability.key then
+                local m = info[ ability.key ] or {}
+
+                m.target = UnitGUID( target or "target" )
+                m.time   = GetTime()
+
+                info[ ability.key ] = m
+            end
+
+            text = nil
+            return
+        end
+
+        if not box and b ~= DEFAULT_CHAT_FRAME.editBox then
+            box = b
+
+            box:HookScript( "OnTextSet", function( self )
+                local t = self:GetText()
+                if t and t ~= "" then text = t end
+            end )
+        end
+    end )
 
     function Hekili:GetMacroCastTarget( spell, castTime, source )
         local ability = class.abilities[ spell ]
         local buffer = 0.1 + SpellQueueWindow
 
         if ability and ability.key then
-            local m = macroInfo[ ability.key ]
+            local m = info[ ability.key ]
 
             if m and abs( castTime - m.time ) < buffer then
                 return m.target -- This is a GUID.
@@ -1169,79 +1503,81 @@ end
 
 
 local lowLevelWarned = false
+local noClassWarned = false
 
 -- Need to make caching system.
 RegisterUnitEvent( "UNIT_SPELLCAST_SUCCEEDED", "player", "target", function( event, unit, _, spellID )
-    if lowLevelWarned == false and UnitLevel( "player" ) < 50 then
-        Hekili:Notify( "Hekili基于最高等级设计,低于50级效果可能不尽人意。", 5 )
+    if not noClassWarned and not class.initialized then
+        Hekili:Notify( UnitClass( "player" ) .. " 尚未加载任何 Hekili 模块。\n请关注更新。", 5 )
+        noClassWarned = true
+    elseif not lowLevelWarned and UnitLevel( "player" ) < 70 then
+        Hekili:Notify( "Hekili插件在70级以下使用效果可能不如预期。", 5 )
         lowLevelWarned = true
     end
 
-    local ability = class.abilities[ spellID ]
+    if unit == "player" and class and class.abilities then
+        local ability = class.abilities[ spellID ]
 
-    if ability and state.holds[ ability.key ] then
-        Hekili:RemoveHold( ability.key, true )
+        if ability then
+            Hekili:ForceUpdate( event )
+            if state.holds[ ability.key ] then Hekili:RemoveHold( ability.key, true ) end
+        end
     end
 end )
 
 
 RegisterUnitEvent( "UNIT_SPELLCAST_START", "player", "target", function( event, unit, cast, spellID )
-    if unit == "player" then
+    if unit == "player" and class and class.abilities then
         local ability = class.abilities[ spellID ]
-
-        if ability and state.holds[ ability.key ] then
-            Hekili:RemoveHold( ability.key, true )
+        if ability then
+            Hekili:ForceUpdate( event )
+            if state.holds[ ability.key ] then Hekili:RemoveHold( ability.key, true ) end
         end
-    end
 
-    Hekili:ForceUpdate( event, true )
+        Hekili:ForceUpdate( event, true )
+    end
 end )
+
+
+-- Empowerment events removed (not available in MoP)
 
 
 RegisterUnitEvent( "UNIT_SPELLCAST_CHANNEL_START", "player", nil, function( event, unit, cast, spellID )
-    if unit == "player" then
+    if class and class.abilities then
         local ability = class.abilities[ spellID ]
 
         if ability then
-            if ability.special then
-
-            end
-
-            if state.holds[ ability.key ] then
-                Hekili:RemoveHold( ability.key, true )
-            end
+            Hekili:ForceUpdate( event )
+            if state.holds[ ability.key ] then Hekili:RemoveHold( ability.key, true ) end
         end
     end
-
-    Hekili:ForceUpdate( event, true )
 end )
 
 
-RegisterUnitEvent( "UNIT_SPELLCAST_CHANNEL_STOP", "player", "target", function( event, unit, cast, spellID )
-    if unit == "player" then
+RegisterUnitEvent( "UNIT_SPELLCAST_CHANNEL_STOP", "player", nil, function( event, unit, cast, spellID )
+    if class and class.abilities then
         local ability = class.abilities[ spellID ]
-
-        if ability and state.holds[ ability.key ] then
-            Hekili:RemoveHold( ability.key, true )
+        if ability then
+            Hekili:ForceUpdate( event )
+            if state.holds[ ability.key ] then Hekili:RemoveHold( ability.key, true ) end
         end
     end
-    Hekili:ForceUpdate( event, true )
 end )
 
 
-RegisterUnitEvent( "UNIT_SPELLCAST_STOP", "player", "target", function( event, unit, cast, spellID )
-    if unit == "player" then
+RegisterUnitEvent( "UNIT_SPELLCAST_STOP", "player", nil, function( event, unit, cast, spellID )
+    if class and class.abilities then
         local ability = class.abilities[ spellID ]
-
-        if ability and state.holds[ ability.key ] then
-            Hekili:RemoveHold( ability.key, true )
+        if ability then
+            Hekili:ForceUpdate( event )
+            if state.holds[ ability.key ] then Hekili:RemoveHold( ability.key, true ) end
         end
     end
-    Hekili:ForceUpdate( event, true )
 end )
 
 
 RegisterUnitEvent( "UNIT_SPELLCAST_DELAYED", "player", nil, function( event, unit, _, spellID )
+    if not class or not class.abilities then return end
     local ability = class.abilities[ spellID ]
 
     if ability then
@@ -1263,20 +1599,24 @@ RegisterUnitEvent( "UNIT_SPELLCAST_DELAYED", "player", nil, function( event, uni
                     travel = ability.flightTime
 
                 elseif target then
-                    local unit = Hekili:GetUnitByGUID( target ) or Hekili:GetNameplateUnitForGUID( target ) or "target"
-
-                    if unit then
-                        local _, maxR = RC:GetRange( unit )
-                        maxR = maxR or state.target.distance
+                    local u = Hekili:GetUnitByGUID( target ) or Hekili:GetNameplateUnitForGUID( target ) or "target"                    if u then
+                        local _, maxR
+                        if RC and RC.GetRange then
+                            _, maxR = RC:GetRange( u )
+                        end
+                        maxR = maxR or select( 6, GetSpellInfo( ability.id ) ) or 40
                         travel = maxR / ability.velocity
                     end
                 end
 
-                if not travel then travel = state.target.distance / ability.velocity end
+                if not travel then
+                    travel = ( select( 6, GetSpellInfo( ability.id ) ) or 40 ) / ability.velocity
+                end
 
                 state:QueueEvent( ability.impactSpell or ability.key, finish / 1000, 0.05 + travel, "PROJECTILE_IMPACT", target, true )
             end
         end
+
         Hekili:ForceUpdate( event )
     end
 end )
@@ -1284,7 +1624,7 @@ end )
 
 -- TODO:  This should be changed to stash this information and then commit it on next UNIT_SPELLCAST_START or UNIT_SPELLCAST_SUCCEEDED.
 RegisterEvent( "UNIT_SPELLCAST_SENT", function ( event, unit, target_name, castID, spellID )
-    if not UnitIsUnit( "player", unit ) then return end
+    Hekili:ForceUpdate( event )
 
     if target_name and UnitGUID( target_name ) then
         state.cast_target = UnitGUID( target_name )
@@ -1312,10 +1652,10 @@ RegisterEvent( "CURRENT_SPELL_CAST_CHANGED", function( event, cancelled )
 end ) ]]
 
 
--- Update due to player totems.
+--[[ Update due to player totems.
 RegisterEvent( "PLAYER_TOTEM_UPDATE", function( event )
     Hekili:ForceUpdate( event )
-end )
+end ) -- TODO:  Re-evaluate whether this is necessary to force a faster update. ]]
 
 
 local power_tick_data = {
@@ -1335,9 +1675,10 @@ local spell_names = setmetatable( {}, {
 } )
 
 
-local lastPowerUpdate = 0
+local lastPower = {}
 
 local function UNIT_POWER_FREQUENT( event, unit, power )
+
     if power == "FOCUS" and rawget( state, "focus" ) then
         local now = GetTime()
         local elapsed = now - ( state.focus.last_tick or 0 )
@@ -1361,22 +1702,39 @@ local function UNIT_POWER_FREQUENT( event, unit, power )
             power_tick_data.energy_ticks = power_tick_data.energy_ticks + 1
             state.energy.last_tick = now
         end
-
     end
-    Hekili:ForceUpdate( event, true )
-end
-Hekili:ProfileCPU( "UNIT_POWER_UPDATE", UNIT_POWER_FREQUENT )
 
-RegisterUnitEvent( "UNIT_POWER_UPDATE", "player", nil, UNIT_POWER_FREQUENT )
+    -- MoP: Use legacy power type constants
+    local powerType = tonumber(power) or 0
+    if power == "Mana" then powerType = 0
+    elseif power == "Rage" then powerType = 1
+    elseif power == "Focus" then powerType = 2
+    elseif power == "Energy" then powerType = 3
+    elseif power == "Chi" then powerType = 12 -- MoP introduced Chi
+    elseif power == "RunicPower" then powerType = 6
+    elseif power == "SoulShards" then powerType = 7
+    elseif power == "LunarPower" then powerType = 8
+    elseif power == "HolyPower" then powerType = 9
+    elseif power == "Maelstrom" then powerType = 11
+    end
+    
+    local newPower = UnitPower( "player", powerType )
+
+    if lastPower[ power ] and newPower < lastPower[ power ] then
+        Hekili:ForceUpdate( event, true )
+    end
+
+    lastPower[ power ] = newPower
+end
+Hekili:ProfileCPU( "UNIT_POWER_FREQUENT", UNIT_POWER_FREQUENT )
+
+RegisterUnitEvent( "UNIT_POWER_FREQUENT", "player", nil, UNIT_POWER_FREQUENT )
 
 
 local autoAuraKey = setmetatable( {}, {
     __index = function( t, k )
         local name = GetSpellInfo( k )
-
-        if not name then return end
-
-        local key = formatKey( name )
+        local key = name and formatKey( name ) or k
 
         if class.auras[ key ] then
             local i = 1
@@ -1393,10 +1751,16 @@ local autoAuraKey = setmetatable( {}, {
             end
         end
 
+        -- Enhanced aura registration for APL compatibility
         -- Store the aura and save the key if we can.
         if ns.addAura then
             ns.addAura( key, k, 'name', name )
             t[k] = key
+            
+            -- Enhanced aura tracking for important auras
+            if class.auras[ key ] and (class.auras[ key ].important or class.auras[ key ].tracking) then
+                Hekili:ForceUpdate( "AURA_REGISTERED", true )
+            end
         end
 
         return t[k]
@@ -1405,65 +1769,21 @@ local autoAuraKey = setmetatable( {}, {
 
 
 do
-    local ScrapeUnitAuras = Hekili.ScrapeUnitAuras
-    local StoreMatchingAuras = Hekili.StoreMatchingAuras
+    local playerInstances = {}
+    local targetInstances = {}    local instanceDB    -- MoP: C_UnitAuras doesn't exist, create fallbacks
+    local GetAuraDataByAuraInstanceID = function() return nil end
+    local ForEachAura = function() return nil end
 
-    RegisterUnitEvent( "UNIT_AURA", "player", "target", function( event, unit, full, data )
-        if full then
-            ScrapeUnitAuras( unit, false, event )
-            Hekili:ForceUpdate( event, true )
-            return
-        end
+    local function StoreInstanceInfo( aura )
+        local id = aura.spellId
+        local model = class.auras[ id ]
 
-        -- Already planning to update at next reset.
-        if state[ unit ].updated then return end
-
-        if unit == "player" then
-            state.player.updated = true
-            Hekili:ForceUpdate( event, true )
-            return
-        end
-
-        -- local harmful, helpful
-
-        if not data then
-            if unit == "target" then
-                state.target.updated = true
-                Hekili:ForceUpdate( event, true )
-            end
-            return
-        else
-            for _, info in ipairs( data ) do
-                if info.isFromPlayerOrPlayerPet then
-                    local id = info.spellId
-                    local aura = class.auras[ id ]
-
-                    if aura then
-                        state[ unit ].updated = true
-                        Hekili:ForceUpdate( event, true )
-                        return
-
-                        --[[
-                        if info.isHelpful then
-                            helpful = helpful or { count = 0 }
-                            helpful[ id ] = aura.key
-                            helpful.count = helpful.count + 1
-                        else
-                            harmful = harmful or { count = 0 }
-                            harmful[ id ] = aura.key
-                            harmful.count = harmful.count + 1
-                        end ]]
-                    end
-                end
-            end
-        end
-
-        --[[
-        if helpful then StoreMatchingAuras( unit, helpful, "HELPFUL", select( 2, UnitAuraSlots( unit, "HELPFUL" ) ) ) end
-        if harmful then StoreMatchingAuras( unit, harmful, "HARMFUL", select( 2, UnitAuraSlots( unit, "HARMFUL" ) ) ) end ]]
-    end )
-
-    RegisterEvent( "PLAYER_TARGET_CHANGED", function( event )
+        instanceDB[ aura.auraInstanceID ] = aura.isBossAura or aura.isStealable or model and ( model.shared or model.used and aura.isFromPlayerOrPlayerPet )
+    end    RegisterUnitEvent( "UNIT_AURA", "player", "target", function( event, unit )
+        -- Cataclysm-style UNIT_AURA handling - simple and direct
+        state[ unit ].updated = true
+        Hekili:ForceUpdate( event, true )
+    end )    RegisterEvent( "PLAYER_TARGET_CHANGED", function( event )
         state.target.updated = true
         Hekili:ForceUpdate( event, true )
     end )
@@ -1555,6 +1875,16 @@ local death_events = {
 
 local dmg_filtered = {
     [280705] = true, -- Laser Matrix.
+    [450412] = true, -- Sentinel.
+    [462952] = true, -- Squall Sailor's Citrine
+}
+
+-- Enhanced damage filtering for APL compatibility
+local enhanced_dmg_filtered = {
+    -- Add more filtered spells as needed for APL compatibility
+    [280705] = true, -- Laser Matrix.
+    [450412] = true, -- Sentinel.
+    [462952] = true, -- Squall Sailor's Citrine
 }
 
 
@@ -1581,12 +1911,15 @@ function Hekili:UpdateDamageDetectionForCLEU()
 end
 
 
+-- Enhanced combat log event handler for better APL compatibility
 -- Use dots/debuffs to count active targets.
 -- Track dot power (until 6.0) for snapshotting.
 -- Note that this was ported from an unreleased version of Hekili, and is currently only counting damaged enemies.
 local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, school, amount, interrupt, a, b, c, d, offhand, multistrike, ... )
     -- This is used by both RegisterCombatLogEvent( x ) and RegisterHook( "COMBAT_LOG_EVENT_UNFILTERED", x ).
-    ns.callHook( "COMBAT_LOG_EVENT_UNFILTERED", timestamp, subtype, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, school, amount, interrupt, a, b, c, d, offhand, multistrike, ... )
+    if ns.callHook then
+        ns.callHook( "COMBAT_LOG_EVENT_UNFILTERED", timestamp, subtype, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID, spellName, school, amount, interrupt, a, b, c, d, offhand, multistrike, ... )
+    end
 
     if death_events[ subtype ] then
         if ns.isTarget( destGUID ) then
@@ -1611,15 +1944,27 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
     local amSource  = ( sourceGUID == state.GUID )
     local petSource = ( UnitExists( "pet" ) and sourceGUID == UnitGUID( "pet" ) )
     local amTarget  = ( destGUID   == state.GUID )
+    local isSensePower = ( class.auras.sense_power_active and spellID == 361022 )
+
+    if not InCombatLockdown() and not ( amSource or petSource or amTarget ) then return end
 
     if subtype == 'SPELL_SUMMON' and amSource then
+        -- Guardian of Azeroth check.
+        -- ID is 152396.
+        local npcid = destGUID:match("(%d+)-%x-$")
+        npcid = npcid and tonumber( npcid )
+
+        if npcid == state.pet.guardian_of_azeroth.id then
+            state.pet.guardian_of_azeroth.summonTime = time
+        end
+
         ns.updateMinion( destGUID, time )
         return
     end
 
     local hostile = ( bit.band( destFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY ) == 0 ) and not IsActuallyFriend( destName )
 
-    if dmg_events[ subtype ] and amTarget then
+    if dmg_events[ subtype ] and not ( amSource or petSource ) and amTarget then
         local damage, damageType
 
         if subtype:sub( 1, 13 ) == "ENVIRONMENTAL" then
@@ -1664,11 +2009,9 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
         if damage and damage > 0 then
             ns.storeDamage( time, damage, bit.band( damageType, 0x1 ) == 1 )
         end
-    end
+    end    local minion = ns.isMinion( sourceGUID )
 
-    local minion = ns.isMinion( sourceGUID )
-
-    if not ( amSource or petSource ) and not ( state.role.tank and destGUID == state.GUID ) and ( not minion or not countPets ) then
+    if not ( amSource or petSource or isSensePower ) and not ( state.role and state.role.tank and destGUID == state.GUID ) and ( not minion or not countPets ) then
         return
     end
 
@@ -1691,32 +2034,34 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
                             local travel
 
                             if ability.flightTime then
-                                travel = ability.flightTime
-
-                            elseif destGUID then
+                                travel = ability.flightTime                            elseif destGUID then
                                 local unit = Hekili:GetUnitByGUID( destGUID ) or Hekili:GetNameplateUnitForGUID( destGUID ) or "target"
 
                                 if unit then
-                                    local _, maxR = RC:GetRange( unit )
-                                    maxR = maxR or state.target.distance
+                                    local _, maxR
+                                    if RC and RC.GetRange then
+                                        _, maxR = RC:GetRange( unit )
+                                    end
+                                    maxR = maxR or select( 6, GetSpellInfo( ability.id ) ) or 40
                                     travel = maxR / ability.velocity
                                 end
                             end
 
-                            if not travel then travel = state.target.distance / ability.velocity end
+                            if not travel then travel = ( select( 6, GetSpellInfo( ability.id ) ) or 40 ) / ability.velocity end
 
                             state:QueueEvent( ability.impactSpell or ability.key, finish / 1000, travel, "PROJECTILE_IMPACT", destGUID, true )
                         end
                     end
 
                 elseif subtype == "SPELL_CAST_FAILED" then
-                    state:RemoveSpellEvent( ability.key, true, "CAST_FINISH" ) -- remove next cast finish.
-                    if ability.isProjectile then state:RemoveSpellEvent( ability.key, true, "PROJECTILE_IMPACT", true ) end -- remove last impact.
-                    Hekili:ForceUpdate( "SPELL_CAST_FAILED", true )
+                    if state:RemoveSpellEvent( ability.key, true, "CAST_FINISH" ) then -- remove next cast finish.
+                        if ability.isProjectile then state:RemoveSpellEvent( ability.key, true, "PROJECTILE_IMPACT", true ) end -- remove last impact.
+                    end
+                    -- Hekili:ForceUpdate( "SPELL_CAST_FAILED" ) ]]
 
                 elseif subtype == "SPELL_AURA_REMOVED" and ability.channeled then
                     state:RemoveSpellEvents( ability.key, true ) -- remove ticks, finish, impacts.
-                    Hekili:ForceUpdate( "SPELL_AURA_REMOVED_CHANNEL", true )
+                    -- Hekili:ForceUpdate( "SPELL_AURA_REMOVED_CHANNEL" )
 
                 elseif subtype == "SPELL_CAST_SUCCESS" then
                     state:RemoveSpellEvent( ability.key, true, "CAST_FINISH" ) -- remove next cast finish.
@@ -1751,14 +2096,15 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
                         local travel
 
                         if ability.flightTime then
-                            travel = ability.flightTime
-
-                        elseif destGUID then
+                            travel = ability.flightTime                        elseif destGUID then
                             local unit = Hekili:GetUnitByGUID( destGUID ) or Hekili:GetNameplateUnitForGUID( destGUID ) or "target"
 
                             if unit then
-                                local _, maxR = RC:GetRange( unit )
-                                maxR = maxR or state.target.distance
+                                local _, maxR
+                                if RC and RC.GetRange then
+                                    _, maxR = RC:GetRange( unit )
+                                end
+                                maxR = maxR or select( 6, GetSpellInfo( ability.id ) ) or 40
                                 travel = maxR / ability.velocity
                             end
                         end
@@ -1773,15 +2119,12 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
                 elseif subtype == "SPELL_DAMAGE" then
                     -- Could be an impact.
                     if state:RemoveSpellEvent( ability.key, true, "PROJECTILE_IMPACT" ) then
-                        Hekili:ForceUpdate( "PROJECTILE_IMPACT" )
+                        RequestUpdate( "PROJECTILE_IMPACT" )
                     end
                 end
             end
 
-            if state.cooldown.global_cooldown.id then
-                state.gcd.lastStart = max( state.gcd.lastStart, ( GetSpellCooldown( state.cooldown.global_cooldown.id ) ) )
-            end
-
+            state.gcd.lastStart = max( state.gcd.lastStart, ( GetSpellCooldown( 61304 ) ) )
             -- if subtype ~= "SPELL_DAMAGE" then Hekili:ForceUpdate( subtype, true ) end
         end
     end
@@ -1807,7 +2150,7 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
         end
 
     -- Player/Minion Event
-    elseif ( amSource or petSource ) or ( countPets and minion ) or ( sourceGUID == destGUID and sourceGUID == UnitGUID( 'target' ) ) then
+    elseif ( amSource or petSource or isSensePower ) or ( countPets and minion ) or ( sourceGUID == destGUID and sourceGUID == UnitGUID( 'target' ) ) then
         --[[ if aura_events[ subtype ] then
             if subtype == "SPELL_CAST_SUCCESS" or state.GUID == destGUID then
                 if class.abilities[ spellID ] or class.auras[ spellID ] then
@@ -1823,14 +2166,26 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
         local aura = class.auras and class.auras[ spellID ]
 
         if aura then
+            -- Enhanced aura tracking for better APL compatibility
             if hostile and sourceGUID ~= destGUID and not aura.friendly then
                 -- Aura Tracking
                 if subtype == 'SPELL_AURA_APPLIED' or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
                     ns.trackDebuff( spellID, destGUID, time, true )
-                    if ( not minion or countPets ) and countDots then ns.updateTarget( destGUID, time, amSource ) end
+                    if ( not minion or countPets ) and countDots then ns.updateTarget( destGUID, time, amSource, spellID ) end
 
-                    if spellID == 48108 or spellID == 48107 then
-                        Hekili:ForceUpdate( "SPELL_AURA_SUPER", true )
+                    -- Enhanced tracking for important debuffs
+                    if aura.important or aura.tracking then
+                        RequestUpdate( "SPELL_AURA_APPLIED" )
+                        
+                        -- Enhanced aura tracking for APL compatibility
+                        if Hekili.DB.profile.enhancedEvents then
+                            Hekili:TrackImportantAura(spellID, aura.key, aura.important, aura.tracking)
+                            Hekili:UpdateAuraHistory(spellID, "APPLIED", {
+                                destGUID = destGUID,
+                                time = time,
+                                source = amSource
+                            })
+                        end
                     end
 
                 elseif subtype == 'SPELL_PERIODIC_DAMAGE' or subtype == 'SPELL_PERIODIC_MISSED' then
@@ -1838,20 +2193,73 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
                     if countDots and ( not minion or countPets ) then
                         ns.updateTarget( destGUID, time, amSource )
                     end
+                    
+                    -- Enhanced periodic tracking for APL compatibility
+                    if Hekili.DB.profile.enhancedEvents and (aura.important or aura.tracking) then
+                        Hekili:UpdateAuraHistory(spellID, "PERIODIC", {
+                            destGUID = destGUID,
+                            time = time,
+                            source = amSource,
+                            damage = (subtype == 'SPELL_PERIODIC_DAMAGE') and amount or 0
+                        })
+                    end
 
-                elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
+                elseif destGUID and (subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL') then
                     ns.trackDebuff( spellID, destGUID )
+                    
+                    -- Enhanced friendly aura removal tracking for APL compatibility
+                    if Hekili.DB.profile.enhancedEvents and (aura.important or aura.tracking) then
+                        Hekili:UpdateAuraHistory(spellID, "FRIENDLY_REMOVED", {
+                            destGUID = destGUID,
+                            time = time,
+                            source = amSource
+                        })
+                    end
+                    
+                    -- Enhanced removal tracking
+                    if aura.important or aura.tracking then
+                        RequestUpdate( "SPELL_AURA_REMOVED" )
+                        
+                        -- Enhanced aura tracking for APL compatibility
+                        if Hekili.DB.profile.enhancedEvents then
+                            Hekili:UpdateAuraHistory(spellID, "REMOVED", {
+                                destGUID = destGUID,
+                                time = time,
+                                source = amSource
+                            })
+                        end
+                    end
 
                 end
 
-            elseif ( amSource or petSource ) and aura.friendly then -- friendly effects
+            elseif ( amSource or petSource or isSensePower ) and aura.friendly then -- friendly effects
                 if subtype == 'SPELL_AURA_APPLIED'  or subtype == 'SPELL_AURA_REFRESH' or subtype == 'SPELL_AURA_APPLIED_DOSE' then
                     ns.trackDebuff( spellID, destGUID, time, true )
+                    
+                    -- Enhanced friendly aura tracking for APL compatibility
+                    if Hekili.DB.profile.enhancedEvents and (aura.important or aura.tracking) then
+                        Hekili:TrackImportantAura(spellID, aura.key, aura.important, aura.tracking)
+                        Hekili:UpdateAuraHistory(spellID, "FRIENDLY_APPLIED", {
+                            destGUID = destGUID,
+                            time = time,
+                            source = amSource
+                        })
+                    end
 
                 elseif subtype == 'SPELL_PERIODIC_HEAL' or subtype == 'SPELL_PERIODIC_MISSED' then
                     ns.trackDebuff( spellID, destGUID, time )
+                    
+                    -- Enhanced periodic heal tracking for APL compatibility
+                    if Hekili.DB.profile.enhancedEvents and (aura.important or aura.tracking) then
+                        Hekili:UpdateAuraHistory(spellID, "PERIODIC_HEAL", {
+                            destGUID = destGUID,
+                            time = time,
+                            source = amSource,
+                            healing = (subtype == 'SPELL_PERIODIC_HEAL') and amount or 0
+                        })
+                    end
 
-                elseif destGUID and subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL' then
+                elseif destGUID and (subtype == 'SPELL_AURA_REMOVED' or subtype == 'SPELL_AURA_BROKEN' or subtype == 'SPELL_AURA_BROKEN_SPELL') then
                     ns.trackDebuff( spellID, destGUID )
 
                 end
@@ -1860,22 +2268,63 @@ local function CLEU_HANDLER( event, timestamp, subtype, hideCaster, sourceGUID, 
 
         end
 
-        local action = class.abilities[ spellID ]
-
-        if hostile and ( countDots and dmg_events[ subtype ] or direct_dmg_events[ subtype ] ) and not dmg_filtered[ spellID ] then
+        if hostile and ( countDots and dmg_events[ subtype ] or direct_dmg_events[ subtype ] ) and not Hekili:IsEventFiltered( spellID, subtype ) then
+            -- Enhanced damage tracking for better APL compatibility
             -- Don't wipe overkill targets in rested areas (it is likely a dummy).
             -- Interrupt is actually overkill.
             if not IsResting() and ( ( ( subtype == "SPELL_DAMAGE" or subtype == "SPELL_PERIODIC_DAMAGE" ) and interrupt > 0 ) or ( subtype == "SWING_DAMAGE" and spellName > 0 ) ) and ns.isTarget( destGUID ) then
                 ns.eliminateUnit( destGUID, true )
-                Hekili:ForceUpdate( "SPELL_DAMAGE_OVERKILL" )
+                -- Enhanced overkill tracking
+                Hekili:ForceUpdate( "SPELL_DAMAGE_OVERKILL", true )
             elseif not ( subtype == "SPELL_MISSED" and amount == "IMMUNE" ) then
-                ns.updateTarget( destGUID, time, amSource )
+                ns.updateTarget( destGUID, time, amSource, spellID )
+                
+                -- Enhanced damage tracking for important abilities
+                if amSource and class.abilities[ spellID ] and class.abilities[ spellID ].important then
+                    Hekili:ForceUpdate( "SPELL_DAMAGE_IMPORTANT", true )
+                end
             end
         end
     end
 end
 Hekili:ProfileCPU( "CLEU_HANDLER", CLEU_HANDLER )
 RegisterEvent( "COMBAT_LOG_EVENT_UNFILTERED", function ( event ) CLEU_HANDLER( event, CombatLogGetCurrentEventInfo() ) end )
+
+-- Enhanced event system for better APL compatibility
+-- Initialize damage detection settings when addon loads
+RegisterEvent( "PLAYER_ENTERING_WORLD", function( event )
+    Hekili:UpdateDamageDetectionForCLEU()
+    
+    -- Enhanced initialization for APL compatibility
+    if Hekili.DB.profile.enhancedEvents then
+        Hekili:ForceUpdate( "PLAYER_ENTERING_WORLD", true )
+    end
+end )
+
+-- Update damage detection when spec changes
+RegisterEvent( "PLAYER_SPECIALIZATION_CHANGED", function( event, unit )
+    if unit == "player" then
+        Hekili:UpdateDamageDetectionForCLEU()
+        
+        -- Enhanced spec change handling for APL compatibility
+        if Hekili.DB.profile.enhancedEvents then
+            Hekili:ForceUpdate( "PLAYER_SPECIALIZATION_CHANGED", true )
+        end
+    end
+end )
+
+-- Enhanced combat state tracking for APL compatibility
+RegisterEvent( "PLAYER_REGEN_DISABLED", function( event )
+    if Hekili.DB.profile.enhancedEvents then
+        Hekili:ForceUpdate( "PLAYER_REGEN_DISABLED", true )
+    end
+end )
+
+RegisterEvent( "PLAYER_REGEN_ENABLED", function( event )
+    if Hekili.DB.profile.enhancedEvents then
+        Hekili:ForceUpdate( "PLAYER_REGEN_ENABLED", true )
+    end
+end )
 
 
 do
@@ -1894,26 +2343,16 @@ Hekili.KeybindInfo = keys
 local updatedKeys = {}
 
 local bindingSubs = {
-    { "CTRL%-", "C" },
-    { "ALT%-", "A" },
-    { "SHIFT%-", "S" },
-    { "STRG%-", "ST" },
-    { "%s+", "" },
-    { "NUMPAD", "N" },
-    { "PLUS", "+" },
-    { "MINUS", "-" },
-    { "MULTIPLY", "*" },
-    { "DIVIDE", "/" },
-    { "BUTTON", "M" },
-    { "MOUSEWHEELUP", "MwU" },
-    { "MOUSEWHEELDOWN", "MwD" },
-    { "MOUSEWHEEL", "Mw" },
-    { "DOWN", "Dn" },
-    { "UP", "Up" },
-    { "PAGE", "Pg" },
-    { "BACKSPACE", "BkSp" },
-    { "DECIMAL", "." },
-    { "CAPSLOCK", "CAPS" },
+    -- Keep substitutions minimal and readable to prevent keybind text overflow.
+    -- Modifiers -> lowercase with trailing hyphen.
+--    { "CTRL%-", "ctrl-" },
+--    { "ALT%-", "alt-" },
+--    { "SHIFT%-", "shift-" },
+    -- Mouse wheel directions -> concise lowercase.
+--    { "MOUSEWHEELUP", "mwup" },
+--    { "MOUSEWHEELDOWN", "mwdown" },
+    -- Generic mouse button -> short prefix (e.g., BUTTON4 -> m4).
+--    { "BUTTON", "m" },
 }
 
 local function improvedGetBindingText( binding )
@@ -1921,6 +2360,12 @@ local function improvedGetBindingText( binding )
 
     for i, rep in ipairs( bindingSubs ) do
         binding = binding:gsub( rep[1], rep[2] )
+    end
+
+    -- Ensure the label looks grammatical by capitalizing the leading character if it's alphabetic.
+    local first = binding:sub( 1, 1 )
+    if first:match( "%a" ) then
+        binding = first:upper() .. binding:sub( 2 )
     end
 
     return binding
@@ -1939,37 +2384,155 @@ local function StoreKeybindInfo( page, key, aType, id, console )
 
     local action, ability
 
-    if aType == "spell" then
-        ability = class.abilities[ id ]
-        action = ability and ability.key
-
-    elseif aType == "macro" then
-        local sID = GetMacroSpell( id ) or GetMacroItem( id )
-        ability = sID and class.abilities[ sID ]
-        action = ability and ability.key
-
-    elseif aType == "item" then
+    if aType == "item" then
         local item, link = CGetItemInfo( id )
         ability = item and ( class.abilities[ item ] or class.abilities[ link ] )
-        
-        if item and not ability then
-            -- Try checking for item spell.
-            local n, id = GetItemSpell( item )
-            ability = class.abilities[ id ]
-        end
-        
         action = ability and ability.key
 
         if not action then
             if itemToAbility[ id ] then
                 action = itemToAbility[ id ]
             else
-                for k, v in pairs( class.potions ) do
-                    if v.item == id then
-                        action = "potion"
+                -- Check for Synapse Springs (hands slot item)
+                local synapseIDs = {96228, 96229, 96230, 82174, 126734, 141330}
+                for _, synapseID in ipairs(synapseIDs) do
+                    if id == synapseID then
+                        action = "hands"
                         break
                     end
                 end
+                
+                -- Check for potions
+                if not action then
+                    for k, v in pairs( class.potions ) do
+                        if v.item == id then
+                            action = "potion"
+                            break
+                        end
+                    end
+                end
+            end
+        end
+    elseif aType == "macro" then
+        local GetMacroInfo = rawget( _G, "GetMacroInfo" )
+        if GetMacroInfo then
+            local _, _, body = GetMacroInfo( id )
+            if type( body ) == "string" then
+                local text = body:lower()
+
+                -- Equipment slots
+                if text:match( "/use%s*%b[]%s*10" ) or text:match( "/use%s+10" ) or 
+                   text:match( "/use%s*%b[]%s*hands" ) or text:match( "/use%s+hands" ) or
+                   text:match( "/use%s*%b[]%s*gloves" ) or text:match( "/use%s+gloves" ) then
+                    action = "hands"
+                elseif text:match( "/use%s*%b[]%s*13" ) or text:match( "/use%s+13" ) or
+                       text:match( "/use%s*%b[]%s*trinket1" ) or text:match( "/use%s+trinket1" ) then
+                    action = "trinket1"
+                elseif text:match( "/use%s*%b[]%s*14" ) or text:match( "/use%s+14" ) or
+                       text:match( "/use%s*%b[]%s*trinket2" ) or text:match( "/use%s+trinket2" ) then
+                    action = "trinket2"
+                end
+
+                -- Explicit item by ID in the macro text
+                if not action then
+                    local itemID = tonumber( text:match( "item:(%d+)" ) )
+                    if itemID then
+                        local item, link = CGetItemInfo( itemID )
+                        ability = item and ( class.abilities[ item ] or class.abilities[ link ] )
+                        action = ability and ability.key
+                        if not action then
+                            if itemToAbility[ itemID ] then
+                                action = itemToAbility[ itemID ]
+                            else
+                                for k, v in pairs( class.potions ) do
+                                    if v.item == itemID then
+                                        action = "potion"
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+
+                -- Explicit item by name (e.g., /use Virmen's Bite)
+                if not action then
+                    local useName = text:match( "/use%s+[^\n\r;]*" )
+                    if useName then
+                        useName = useName:gsub( "%b[]", "" ):gsub( "/use", "" ):gsub( "^%s+", "" ):gsub( "%s+$", "" )
+                        local item, link = CGetItemInfo( useName )
+                        if item or link then
+                            ability = item and ( class.abilities[ item ] or class.abilities[ link ] )
+                            action = ability and ability.key
+                            if not action then
+                                for k, v in pairs( class.potions ) do
+                                    if v.name == useName or v.link == link then
+                                        action = "potion"
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+
+                -- Spells cast via macro (/cast ...)
+                if not action then
+                    local castName = text:match( "/castsequence[^\n\r;]*;?%s*([^\n\r;]+)" ) or text:match( "/cast%s+([^\n\r;]+)" )
+                    if castName then
+                        castName = castName:gsub( "%b[]", "" ):gsub( "^%s+", "" ):gsub( "%s+$", "" )
+                        
+                        -- Check for specific spell names that have variants
+                        if castName:lower():match("shred!?") or castName:lower():match("shred") then
+                            action = "shred"
+                        elseif castName:lower():match("thrash") then
+                            action = "thrash"
+                        elseif castName:lower():match("explosive_trap") or castName:lower():match("explosive trap") then
+                            action = "explosive_trap"
+                        elseif castName:lower():match("freezing_trap") or castName:lower():match("freezing trap") then
+                            action = "freezing_trap"
+                        elseif castName:lower():match("ice_trap") or castName:lower():match("ice trap") then
+                            action = "ice_trap"
+                        elseif castName:lower():match("snake_trap") or castName:lower():match("snake trap") then
+                            action = "snake_trap"
+                        elseif castName:lower():match("immolation_trap") or castName:lower():match("immolation trap") then
+                            action = "immolation_trap"
+                        else
+                            local GetSpellInfo = rawget( _G, "GetSpellInfo" )
+                            if GetSpellInfo then
+                                local _, _, _, _, _, _, spellID = GetSpellInfo( castName )
+                                if spellID then
+                                    ability = class.abilities[ spellID ]
+                                    action = ability and ability.key
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    else
+        ability = class.abilities[ id ]
+        action = ability and ability.key
+        
+        -- Check for spell IDs with variants if not found above
+        if not action then
+            local spellIDs = {
+                -- Shred variants (normal and glyph-enhanced)
+                [5221] = "shred",              -- Shred (normal)
+                [114236] = "shred",            -- Shred! (glyph-enhanced)
+                -- Thrash variants (Bear and Cat forms)
+                [77758] = "thrash",            -- Thrash (Bear Form) - used by Guardian and Feral
+                [106830] = "thrash",           -- Thrash (Cat Form) - used by Feral
+                -- Trap spells
+                [13813] = "explosive_trap",    -- Explosive Trap
+                [1499] = "freezing_trap",      -- Freezing Trap  
+                [13809] = "ice_trap",          -- Ice Trap
+                [34600] = "snake_trap",         -- Snake Trap
+                [13795] = "immolation_trap"    -- Immolation Trap
+            }
+            if spellIDs[id] then
+                action = spellIDs[id]
             end
         end
     end
@@ -2025,7 +2588,6 @@ local function StoreKeybindInfo( page, key, aType, id, console )
 end
 
 
-
 local defaultBarMap = {
     WARRIOR = {
         { bonus = 1, bar = 7 },
@@ -2054,32 +2616,10 @@ local defaultBarMap = {
 }
 
 
-local ReadKeybindings
+local slotsUsed = {}
 
-do
-    local lastRefresh = 0
-    local queuedRefresh = false
-
-    local slotsUsed = {}
-
-    ReadKeybindings = function( event )
+local function ReadKeybindings( event )
         if not Hekili:IsValidSpec() then return end
-
-        local now = GetTime()
-
-        if now - lastRefresh < 0.25 then
-            if queuedRefresh then return end
-
-            queuedRefresh = true
-            C_Timer.After( 0.3 - ( now - lastRefresh ), ReadKeybindings )
-
-            return
-        end
-
-        lastRefresh = now
-        queuedRefresh = false
-
-        local done = false
 
         for k, v in pairs( keys ) do
             wipe( v.console )
@@ -2087,58 +2627,55 @@ do
             wipe( v.lower )
         end
 
-        -- Bartender4 support (Original from tanichan, rewritten for action bar paging by konstantinkoeppe).
+        -- Bartender4 support; if BT4 bindings are set, use them, otherwise fall back on default UI bindings below.
+        -- This will still get viewed as misleading...
         if _G["Bartender4"] then
-            for actionBarNumber = 1, 10 do
-                local bar = _G["BT4Bar" .. actionBarNumber]
-                for keyNumber = 1, 12 do
-                    local actionBarButtonId = (actionBarNumber - 1) * 12 + keyNumber
-                    local bindingKeyName = "ACTIONBUTTON" .. keyNumber
+            table.wipe( slotsUsed )
 
-                    -- If bar is disabled assume paging / stance switching on bar 1
-                    if actionBarNumber > 1 and bar and not bar.disabled then
-                        bindingKeyName = "CLICK BT4Button" .. actionBarButtonId .. ":LeftButton"
-                    end
+            for i = 1, 180 do
+                local keybind = "CLICK BT4Button" .. i .. ":Keybind"
+                local bar = ceil( i / 12 )
 
-                    StoreKeybindInfo( actionBarNumber, GetBindingKey( bindingKeyName ), GetActionInfo( actionBarButtonId ) )
+                if GetBindingKey( keybind ) then
+                    StoreKeybindInfo( bar, GetBindingKey( keybind ), GetActionInfo( i ) )
+                    slotsUsed[ i ] = true
                 end
             end
-
-            done = true
 
         -- Use ElvUI's actionbars only if they are actually enabled.
         elseif _G["ElvUI"] and _G[ "ElvUI_Bar1Button1" ] then
             table.wipe( slotsUsed )
 
-            for i = 1, 10 do
+            for i = 1, 15 do
                 for b = 1, 12 do
                     local btn = _G["ElvUI_Bar" .. i .. "Button" .. b]
 
-                    local binding = btn.bindstring or btn.keyBoundTarget or ( "CLICK " .. btn:GetName() .. ":LeftButton" )
+                    if btn then
+                        local binding = btn.bindstring or btn.keyBoundTarget or ( "CLICK " .. btn:GetName() .. ":LeftButton" )
 
-                    if i > 6 then
-                        -- Checking whether bar is active.
-                        local bar = _G["ElvUI_Bar" .. i]
+                        if i > 6 then
+                            -- Checking whether bar is active.
+                            local bar = _G["ElvUI_Bar" .. i]
 
-                        if not bar or not bar.db.enabled then
-                            binding = "ACTIONBUTTON" .. b
+                            if not bar or not bar.db.enabled then
+                                binding = "ACTIONBUTTON" .. b
+                            end
                         end
-                    end
 
-                    local action, aType = btn._state_action, "spell"
+                        local action, aType = btn._state_action, "spell"
 
-                    if action and type( action ) == "number" then
-                        slotsUsed[ action ] = true
+                        if action and type( action ) == "number" then
+                            slotsUsed[ action ] = true
 
-                        binding = GetBindingKey( binding )
-                        action, aType = GetActionInfo( action )
-                        if binding then StoreKeybindInfo( i, binding, action, aType ) end
+                            binding = GetBindingKey( binding )
+                            action, aType = GetActionInfo( action )
+                            if binding then StoreKeybindInfo( i, binding, action, aType ) end
+                        end
                     end
                 end
             end
         end
 
-        if not done then
             for i = 1, 12 do
                 if not slotsUsed[ i ] then
                     StoreKeybindInfo( 1, GetBindingKey( "ACTIONBUTTON" .. i ), GetActionInfo( i ) )
@@ -2175,15 +2712,33 @@ do
                 end
             end
 
-            for i = 72, 119 do
+            for i = 72, 143 do
                 if not slotsUsed[ i ] then
                     StoreKeybindInfo( 7 + floor( ( i - 72 ) / 12 ), GetBindingKey( "ACTIONBUTTON" .. 1 + ( i - 72 ) % 12 ), GetActionInfo( i + 1 ) )
                 end
             end
-        end
 
-        if _G.ConsolePort then
-            for i = 1, 120 do
+            for i = 145, 156 do
+                if not slotsUsed[ i ] then
+                    StoreKeybindInfo( 13, GetBindingKey( "MULTIACTIONBAR5BUTTON" .. i - 144 ), GetActionInfo( i ) )
+                end
+            end
+
+            for i = 157, 168 do
+                if not slotsUsed[ i ] then
+                    StoreKeybindInfo( 14, GetBindingKey( "MULTIACTIONBAR6BUTTON" .. i - 156 ), GetActionInfo( i ) )
+                end
+            end
+
+            for i = 169, 180 do
+                if not slotsUsed[ i ] then
+                    StoreKeybindInfo( 15, GetBindingKey( "MULTIACTIONBAR7BUTTON" .. i - 168 ), GetActionInfo( i ) )
+                end
+            end
+
+        local ConsolePort = rawget( _G, "ConsolePort" )
+        if ConsolePort then
+            for i = 1, 180 do
                 local action, id = GetActionInfo( i )
 
                 if action and id then
@@ -2231,7 +2786,6 @@ do
 
         -- This is also the right time to update pet-based target detection.
         Hekili:SetupPetBasedTargetDetection()
-    end
 end
 ns.ReadKeybindings = ReadKeybindings
 
@@ -2245,21 +2799,16 @@ local function ReadOneKeybinding( event, slot )
     local ability
     local completed = false
 
-    -- Bartender4 support (Original from tanichan, rewritten for action bar paging by konstantinkoeppe).
+    -- Bartender4 support; if BT4 bindings are set, use them, otherwise fall back on default UI bindings below.
+    -- This will still get viewed as misleading...
     if _G["Bartender4"] then
-        local bar = _G["BT4Bar" .. actionBarNumber]
-        local bindingKeyName = "ACTIONBUTTON" .. keyNumber
+        local keybind = "CLICK BT4Button" .. slot .. ":Keybind"
 
-        -- If bar is disabled assume paging / stance switching on bar 1
-        if actionBarNumber > 1 and bar and not bar.disabled then
-            bindingKeyName = "CLICK BT4Button" .. slot .. ":LeftButton"
+        if GetBindingKey( keybind ) then
+            StoreKeybindInfo( actionBarNumber, GetBindingKey( keybind ), GetActionInfo( slot ) )
+            completed = true
         end
 
-        ability = StoreKeybindInfo( actionBarNumber, GetBindingKey( bindingKeyName ), GetActionInfo( slot ) )
-
-        if ability then completed = true end
-
-        -- Use ElvUI's actionbars only if they are actually enabled.
     elseif _G["ElvUI"] and _G["ElvUI_Bar1Button1"] then
         local btn = _G[ "ElvUI_Bar" .. actionBarNumber .. "Button" .. keyNumber ]
 
@@ -2268,7 +2817,7 @@ local function ReadOneKeybinding( event, slot )
 
             if actionBarNumber > 6 then
                 -- Checking whether bar is active.
-                local bar = _G[ "ElvUI_Bar" .. slot ]
+                local bar = _G[ "ElvUI_Bar" .. actionBarNumber ]
 
                 if not bar or not bar.db.enabled then
                     binding = "ACTIONBUTTON" .. keyNumber
@@ -2283,11 +2832,10 @@ local function ReadOneKeybinding( event, slot )
                 if binding then StoreKeybindInfo( actionBarNumber, binding, action, aType ) end
             end
         end
-
     end
 
     if not completed then
-        if actionBarNumber == 1 or actionBarNumber == 2 or actionBarNumber > 6 then
+        if actionBarNumber == 1 or actionBarNumber == 2 or ( actionBarNumber > 6  and actionBarNumber < 13 ) then
             ability = StoreKeybindInfo( keyNumber, GetBindingKey( "ACTIONBUTTON" .. keyNumber ), GetActionInfo( slot ) )
 
         elseif actionBarNumber > 2 and actionBarNumber < 5 then
@@ -2299,10 +2847,20 @@ local function ReadOneKeybinding( event, slot )
         elseif actionBarNumber == 6 then
             ability = StoreKeybindInfo( actionBarNumber, GetBindingKey( "MULTIACTIONBAR1BUTTON" .. keyNumber ), GetActionInfo( slot ) )
 
+        elseif actionBarNumber == 13 then
+            ability = StoreKeybindInfo( actionBarNumber, GetBindingKey( "MULTIACTIONBAR5BUTTON" .. keyNumber ), GetActionInfo( slot ) )
+
+        elseif actionBarNumber == 14 then
+            ability = StoreKeybindInfo( actionBarNumber, GetBindingKey( "MULTIACTIONBAR6BUTTON" .. keyNumber ), GetActionInfo( slot ) )
+
+        elseif actionBarNumber == 15 then
+            ability = StoreKeybindInfo( actionBarNumber, GetBindingKey( "MULTIACTIONBAR7BUTTON" .. keyNumber ), GetActionInfo( slot ) )
+
         end
     end
 
-    if _G.ConsolePort then
+    local ConsolePort = rawget( _G, "ConsolePort" )
+    if ConsolePort then
         local action, id = GetActionInfo( slot )
 
         if action and id then
@@ -2315,86 +2873,48 @@ local function ReadOneKeybinding( event, slot )
         end
     end
 
-    ability = ability and class.abilities[ ability ]
-
-    if ability and ability.bind then
-        if type( ability.bind ) == 'table' then
-            for _, b in ipairs( ability.bind ) do
-                for page, value in pairs( v.lower ) do
-                    keys[ b ] = keys[ b ] or {
-                        lower = {},
-                        upper = {},
-                        console = {}
-                    }
-                    keys[ b ].lower[ page ] = value
-                    keys[ b ].upper[ page ] = v.upper[ page ]
-                    keys[ b ].console[ page ] = v.console[ page ]
-                end
-            end
-        else
-            for page, value in pairs( v.lower ) do
-                keys[ ability.bind ] = keys[ ability.bind ] or {
-                    lower = {},
-                    upper = {},
-                    console = {}
-                }
-                keys[ ability.bind ].lower[ page ] = value
-                keys[ ability.bind ].upper[ page ] = v.upper[ page ]
-                keys[ ability.bind ].console[ page ] = v.console[ page ]
-            end
-        end
-    end
 
     -- This is also the right time to update pet-based target detection.
     Hekili:SetupPetBasedTargetDetection()
 end
 
 
+local allTimer
+
 local function DelayedUpdateKeybindings( event )
-    C_Timer.After( 1, function() ReadKeybindings( event ) end )
+    if allTimer and not allTimer:IsCancelled() then allTimer:Cancel() end
+    allTimer = Hekili:After( 0.2, function()
+        ReadKeybindings( event )
+    end )
 end
 
-local function DelayedUpdateOneKeybinding( event, slot )
-    C_Timer.After( 0.05, function() ReadOneKeybinding( event, slot ) end )
-end
-
+--[[ local function DelayedUpdateOneKeybinding( event, slot )
+    if oneTimer and not oneTimer:IsCancelled() then oneTimer:Cancel() end
+    oneTimer = Hekili:After( 0.2, function() ReadOneKeybinding( event, slot ) end )
+end ]]
 
 RegisterEvent( "UPDATE_BINDINGS", DelayedUpdateKeybindings )
-RegisterEvent( "PLAYER_ENTERING_WORLD", function( event, login, reload )
-    if login or reload then DelayedUpdateKeybindings() end
-end )
+RegisterEvent( "SPELLS_CHANGED", DelayedUpdateKeybindings )
 RegisterEvent( "ACTIONBAR_SHOWGRID", DelayedUpdateKeybindings )
 RegisterEvent( "ACTIONBAR_HIDEGRID", DelayedUpdateKeybindings )
-RegisterEvent( "ACTIONBAR_PAGE_CHANGED", DelayedUpdateKeybindings )
-RegisterEvent( "BAG_UPDATE", DelayedUpdateKeybindings )
--- RegisterEvent( "ACTIONBAR_UPDATE_STATE", ReadKeybindings )
--- RegisterEvent( "SPELL_UPDATE_ICON", ReadKeybindings )
--- RegisterEvent( "SPELLS_CHANGED", ReadKeybindings )
--- RegisterEvent( "ACTIONBAR_SLOT_CHANGED", DelayedUpdateOneKeybinding )
+-- RegisterEvent( "ACTIONBAR_PAGE_CHANGED", DelayedUpdateKeybindings )
+-- RegisterEvent( "UPDATE_SHAPESHIFT_FORM", DelayedUpdateKeybindings )
 
 if Hekili.IsWrath() then
-    RegisterEvent( "ACTIVE_TALENT_GROUP_CHANGED", function( event )
-        DelayedUpdateKeybindings( event )
-    end )
-
-    ns.UpdateKeybindings = DelayedUpdateKeybindings
+    RegisterEvent( "ACTIVE_TALENT_GROUP_CHANGED", DelayedUpdateKeybindings )
 else
-    RegisterUnitEvent( "PLAYER_SPECIALIZATION_CHANGED", "player", nil, function( event )
-        DelayedUpdateKeybindings( event )
-    end )
+    RegisterEvent( "ACTIVE_PLAYER_SPECIALIZATION_CHANGED", DelayedUpdateKeybindings )
+    RegisterEvent( "TRAIT_CONFIG_UPDATED", DelayedUpdateKeybindings )
 end
 
-RegisterEvent( "UPDATE_SHAPESHIFT_FORM", function ( event )
-    DelayedUpdateKeybindings()
-    Hekili:ForceUpdate( event )
-end )
 
 
 if select( 2, UnitClass( "player" ) ) == "DRUID" then
-    local prowlOrder = { 8, 7, 2, 3, 4, 5, 6, 9, 10, 1 }
-    local catOrder = { 7, 8, 2, 3, 4, 5, 6, 9, 10, 1 }
-    local bearOrder = { 9, 2, 3, 4, 5, 6, 7, 8, 10, 1 }
-    local owlOrder = { 10, 2, 3, 4, 5, 6, 7, 8, 9, 1 }
+    local prowlOrder = { 8, 7, 1, 2, 3, 4, 5, 6, 10, 9, 13, 14, 15 }
+    local catOrder = { 7, 8, 1, 2, 3, 4, 5, 6, 10, 9, 13, 14, 15 }
+    local bearOrder = { 9, 1, 2, 3, 4, 5, 6, 7, 8, 10, 13, 14, 15, 1 }
+    local owlOrder = { 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 14, 15 }
+    local defaultOrder = { 1, 2, 3, 4, 5, 6, 10, 7, 8, 9, 13, 14, 15 }
 
     function Hekili:GetBindingForAction( key, display, i )
         if not key then return "" end
@@ -2421,35 +2941,28 @@ if select( 2, UnitClass( "player" ) ) == "DRUID" then
 
         if display then
             caps = not ( queued and display.keybindings.queuedLowercase or display.keybindings.lowercase )
-            console = ConsolePort ~= nil and display.keybindings.cPortOverride
+            console = ( rawget( _G, "ConsolePort" ) ~= nil ) and display.keybindings.cPortOverride
         end
 
         local db = console and keys[ key ].console or ( caps and keys[ key ].upper or keys[ key ].lower )
 
         local output, source
 
-        local order = ( state.prowling and prowlOrder ) or ( state.buff.cat_form.up and catOrder ) or ( state.buff.bear_form.up and bearOrder ) or ( state.buff.moonkin_form.up and owlOrder ) or nil
+        local order = defaultOrder
+        -- TODO: These checks should use actual aura data rather than potential stale/manipulated virtual state data.
+        if class.file == "DRUID" then
+            order = ( state.prowling and prowlOrder ) or ( state.buff.cat_form.up and catOrder ) or ( state.buff.bear_form.up and bearOrder ) or ( state.buff.moonkin_form.up and owlOrder ) or order
+        end
 
         if order then
-            for _, i in ipairs( order ) do
-                output = db[ i ]
+            for _, n in ipairs( order ) do
+                output = db[ n ]
 
                 if output then
-                    source = i
+                    source = n
                     break
                 end
             end
-
-        else
-            for i = 1, 10 do
-                output = db[ i ]
-
-                if output then
-                    source = i
-                    break
-                end
-            end
-
         end
 
         output = output or ""
@@ -2467,8 +2980,10 @@ if select( 2, UnitClass( "player" ) ) == "DRUID" then
 
         return output
     end
+
 elseif select( 2, UnitClass( "player" ) ) == "ROGUE" then
-    local stealthedOrder = { 7, 8, 1, 2, 3, 4, 5, 6, 9, 10 }
+    local stealthedOrder = { 7, 8, 1, 2, 3, 4, 5, 6, 9, 10, 13, 14, 15 }
+    local defaultOrder = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15 }
 
     function Hekili:GetBindingForAction( key, display, i )
         if not key then return "" end
@@ -2496,31 +3011,20 @@ elseif select( 2, UnitClass( "player" ) ) == "ROGUE" then
         local caps, console = true, false
         if display then
             caps = not ( queued and display.keybindings.queuedLowercase or display.keybindings.lowercase )
-            console = ConsolePort ~= nil and display.keybindings.cPortOverride
+            console = ( rawget( _G, "ConsolePort" ) ~= nil ) and display.keybindings.cPortOverride
         end
 
         local db = console and keys[ key ].console or ( caps and keys[ key ].upper or keys[ key ].lower )
 
         local output, source
+        local order = state.stealthed.all and stealthedOrder or defaultOrder
 
-        if state.stealthed.all then
-            for _, i in ipairs( stealthedOrder ) do
-                output = db[ i ]
+        for _, n in ipairs( order ) do
+            output = db[ n ]
 
-                if output then
-                    source = i
-                    break
-                end
-            end
-
-        else
-            for i = 1, 10 do
-                output = db[ i ]
-
-                if output then
-                    source = i
-                    break
-                end
+            if output then
+                source = n
+                break
             end
         end
 
@@ -2563,18 +3067,18 @@ else
         local caps, console = true, false
         if display then
             caps = not ( queued and display.keybindings.queuedLowercase or display.keybindings.lowercase )
-            console = ConsolePort ~= nil and display.keybindings.cPortOverride
+            console = ( rawget( _G, "ConsolePort" ) ~= nil ) and display.keybindings.cPortOverride
         end
 
         local db = console and keys[ key ].console or ( caps and keys[ key ].upper or keys[ key ].lower )
 
         local output, source
 
-        for i = 1, 10 do
-            output = db[ i ]
+        for _, n in ipairs( { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15 } ) do
+            output = db[ n ]
 
             if output then
-                source = i
+                source = n
                 break
             end
         end
@@ -2596,54 +3100,156 @@ else
     end
 end
 
-state.defile_target_is_me = false  --新增污染目标判断函数 by风雪 20250831
+-- Enhanced event performance monitoring for APL compatibility
+function Hekili:GetEventPerformanceStats()
+    if not Hekili.DB.profile.enhancedEvents then
+        return nil
+    end
+    
+    local stats = {
+        totalEvents = 0,
+        totalTime = 0,
+        maxEventTime = 0,
+        eventCounts = {},
+        performanceWarnings = {}
+    }
+    
+    for event, data in pairs( eventData ) do
+        stats.totalEvents = stats.totalEvents + ( handlerCount[ event ] or 0 )
+        stats.totalTime = stats.totalTime + ( data.total or 0 )
+        stats.maxEventTime = max( stats.maxEventTime, data.max or 0 )
+        
+        if data.total and data.total > 1000 then
+            stats.performanceWarnings[ event ] = data.total
+        end
+    end
+    
+    return stats
+end
 
--- 方案1：团队目标查找
-RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function()
-    local _, subevent, _, _, sourceName, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo()
-    if subevent ~= "SPELL_CAST_START" or sourceName ~= "巫妖王" or spellID ~= 72762 then return end --只处理巫妖王开始施法污染
-
-    C_Timer.After(0.2, function()
-        -- 遍历团队成员查找目标为巫妖王的单位
-        for i = 1, 25 do
-            -- 构建团队成员目标单位ID
-            local raidtarget = "raid"..i.."target"
-            -- 检查成员目标是否存在且是巫妖王
-            if UnitExists(raidtarget) and UnitName(raidtarget) == "巫妖王" then
-                local LichKingTarget = raidtarget.."target"  -- 巫妖王的目标
-                -- 检查巫妖王的目标是否是玩家自己
-                if UnitExists(LichKingTarget) then
-                    state.defile_target_is_me = (UnitName(LichKingTarget) == UnitName("player"))
-                    return -- 无论是否自己都终止循环
-                end
+-- Enhanced event debugging for APL compatibility
+function Hekili:DebugEventPerformance()
+    if not Hekili.DB.profile.enhancedEvents then
+        return
+    end
+    
+    local stats = self:GetEventPerformanceStats()
+    if stats then
+        print( "Hekili Event Performance:" )
+        print( "Total Events:", stats.totalEvents )
+        print( "Total Time:", string.format( "%.2fms", stats.totalTime ) )
+        print( "Max Event Time:", string.format( "%.2fms", stats.maxEventTime ) )
+        
+        if next( stats.performanceWarnings ) then
+            print( "Performance Warnings:" )
+            for event, time in pairs( stats.performanceWarnings ) do
+                print( "  ", event, string.format( "%.2fms", time ) )
             end
         end
-    end)
+    end
+end
 
-    C_Timer.After(3.0, function() state.defile_target_is_me = false end)
+-- Enhanced aura tracking system for APL compatibility
+local enhancedAuraTracker = {
+    importantAuras = {},
+    trackedAuras = {},
+    auraHistory = {},
+    maxHistorySize = 100
+}
 
-end)
+function Hekili:TrackImportantAura(spellID, key, important, tracking)
+    if not Hekili.DB.profile.enhancedEvents then
+        return
+    end
+    
+    enhancedAuraTracker.importantAuras[spellID] = {
+        key = key,
+        important = important,
+        tracking = tracking,
+        lastSeen = GetTime()
+    }
+end
 
---[[
--- 方案2：焦点目标查找，需设置巫妖王为焦点
+function Hekili:GetEnhancedAuraInfo(spellID)
+    if not Hekili.DB.profile.enhancedEvents then
+        return nil
+    end
+    
+    return enhancedAuraTracker.importantAuras[spellID]
+end
 
-RegisterUnitEvent( "UNIT_SPELLCAST_START", "focus", "target", function( event, unit, cast, spellID )
+function Hekili:UpdateAuraHistory(spellID, event, data)
+    if not Hekili.DB.profile.enhancedEvents then
+        return
+    end
+    
+    local now = GetTime()
+    local history = enhancedAuraTracker.auraHistory[spellID] or {}
+    
+    insert(history, {
+        time = now,
+        event = event,
+        data = data
+    })
+    
+    -- Keep only recent history
+    while #history > enhancedAuraTracker.maxHistorySize do
+        remove(history, 1)
+    end
+    
+    enhancedAuraTracker.auraHistory[spellID] = history
+end
 
-    if spellID ~= 72762 then return end -- 污染
+-- Enhanced combat log event filtering for APL compatibility
+function Hekili:IsEventFiltered(spellID, eventType)
+    if not Hekili.DB.profile.enhancedEvents then
+        return dmg_filtered[spellID] or false
+    end
+    
+    -- Use enhanced filtering when available
+    return enhanced_dmg_filtered[spellID] or dmg_filtered[spellID] or false
+end
 
-    C_Timer.After(0.2, function()
-        local playerName = UnitName("player") -- 角色
-        local targetName = UnitName("target") -- 目标
-        local focustargetName = UnitName("focustarget")    -- 焦点目标
-        local targettargetName = UnitName("targettarget")  -- 目标的目标
-        
-        if focustargetName == playerName or (targetName ~= playerName and targettargetName == playerName) then
-            state.defile_target_is_me = true
-            return
+-- Enhanced aura history retrieval for APL compatibility
+function Hekili:GetAuraHistory(spellID, eventType, timeWindow)
+    if not Hekili.DB.profile.enhancedEvents then
+        return nil
+    end
+    
+    local history = enhancedAuraTracker.auraHistory[spellID]
+    if not history then
+        return nil
+    end
+    
+    local now = GetTime()
+    local filteredHistory = {}
+    
+    for _, entry in ipairs(history) do
+        if (not timeWindow or (now - entry.time) <= timeWindow) and
+           (not eventType or entry.event == eventType) then
+            insert(filteredHistory, entry)
         end
-    end)
+    end
+    
+    return filteredHistory
+end
 
-    C_Timer.After(3.0, function() state.defile_target_is_me = false end)
-
-end)
-]]
+-- Enhanced aura tracking status for APL compatibility
+function Hekili:GetAuraTrackingStatus(spellID)
+    if not Hekili.DB.profile.enhancedEvents then
+        return nil
+    end
+    
+    local info = enhancedAuraTracker.importantAuras[spellID]
+    if not info then
+        return nil
+    end
+    
+    return {
+        key = info.key,
+        important = info.important,
+        tracking = info.tracking,
+        lastSeen = info.lastSeen,
+        timeSinceLastSeen = GetTime() - info.lastSeen
+    }
+end

@@ -1,5 +1,9 @@
----@type string, Private
-local addon, Private = ...
+if not WeakAuras.IsLibsOK() then return end
+
+---@type string
+local addon = ...
+---@class Private
+local Private = select(2, ...)
 
 ---@alias BuildType "dev" | "pr" | "alpha" | "beta" | "release"
 
@@ -161,3 +165,8 @@ Features:Register({
   id = "debug",
   autoEnable = {"dev"}
 })
+
+Private.DebugPrint = Features:Wrap("debug", function(...)
+  print("|cff00d3ffWeakAuras-Debug:|r ", ...)
+end)
+

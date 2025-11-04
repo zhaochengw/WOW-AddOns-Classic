@@ -48,6 +48,15 @@ elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
       { id = 61846 }, -- dragonhawk
     }
   };
+elseif WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+  FLO_ASPECT_SPELLS = {
+    ["HUNTER"] = {
+      { id = 13165 }, -- hawk
+      { id = 5118 }, -- cheetah
+      { id = 13159 }, -- pack
+      { id = 10926 }, -- Iron
+    }
+  };
 else
   -- unknown expansion
   FLO_ASPECT_SPELLS = {

@@ -1,0 +1,10 @@
+## Interface: 50405
+## Title: PetChecker
+## Author: Rooster_Roost
+## Version: 2.0.10.24.2025
+## Notes: Constant visual pet alerts + configuration panel for Hunters/Warlocks
+## SavedVariables: PetCheckerDB
+
+PetChecker.xml
+PetChecker.lua
+PetChecker_Config.lua

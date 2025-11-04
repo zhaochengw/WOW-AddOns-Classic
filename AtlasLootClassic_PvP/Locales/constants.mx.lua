@@ -7,6 +7,8 @@ if not AL then return end
 AL["|cff33ff99Rank:|r %s"] = "|cff33ff99Rango:|r %s"
 AL["Battlegrounds"] = "Campos de batalla"
 AL["Class Sets"] = "Conjuntos de Clase"
+--[[Translation missing --]]
+--[[ AL["Gladiator"] = "Gladiator"--]] 
 AL["Gladiator Mount"] = "Montura del gladiador"
 AL["Honor"] = "Honor"
 AL["Insignia"] = "Insignia"
@@ -17,3 +19,5 @@ AL["PvP Ranks"] = "Rangos de JcJ"
 AL["Ranged"] = "A distancia"
 AL["Season %s"] = "Temporada %s"
 AL["Two-Handed"] = "Dos manos"
+--[[Translation missing --]]
+--[[ AL["Unobtainable"] = "Unobtainable"--]] 

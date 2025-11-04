@@ -38,6 +38,77 @@ local titleTbl
 local maxhope
 local CreateAllItemInfoCache, CheckItemInfo, CheckSameItem, Sort
 
+local getFiterTbl
+do
+    if BG.IsVanilla_Sod then
+        getFiterTbl = {
+            { name = L["团本"], name2 = "raid", },
+            { name = L["牌子/货币"], name2 = "currency", },
+            { name = L["5人本"], name2 = "fb5", },
+            { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["世界掉落"], name2 = "world", },
+            { name = L["PVP"], name2 = "pvp", },
+        }
+    elseif BG.IsVanilla_60 then
+        getFiterTbl = {
+            { name = L["团本"], name2 = "raid", },
+            { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["世界掉落"], name2 = "world", },
+            { name = L["世界BOSS"], name2 = "worldboss", },
+            { name = L["PVP"], name2 = "pvp", },
+        }
+    elseif BG.IsWLK then
+        getFiterTbl = {
+            { name = L["团本：25人"], name2 = "raid25", },
+            { name = L["团本：10人"], name2 = "raid10", },
+            { name = L["团本：英雄难度"], name2 = "raidhero", },
+            { name = L["团本：普通难度"], name2 = "raidnormal", },
+            { name = L["5人本"], name2 = "fb5", },
+            { name = L["牌子/货币"], name2 = "currency", },
+            { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["PVP"], name2 = "pvp", },
+        }
+    elseif BG.IsCTM then
+        getFiterTbl = {
+            { name = L["团本：英雄难度"], name2 = "raidhero", },
+            { name = L["团本：普通难度"], name2 = "raidnormal", },
+            { name = L["5人本"], name2 = "fb5", },
+            { name = L["牌子/货币"], name2 = "currency", },
+            { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["世界掉落"], name2 = "world", },
+            -- { name = L["世界BOSS"], name2 = "worldboss", },
+            { name = L["PVP"], name2 = "pvp", },
+        }
+    elseif BG.IsMOP then
+        getFiterTbl = {
+            { name = L["团本：英雄难度"], name2 = "raidhero", },
+            { name = L["团本：普通难度"], name2 = "raidnormal", },
+            -- { name = L["5人本"], name2 = "fb5", },
+            { name = L["牌子/货币"], name2 = "currency", },
+            -- { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["世界掉落"], name2 = "world", },
+            { name = L["世界BOSS"], name2 = "worldboss", },
+            -- { name = L["PVP"], name2 = "pvp", },
+        }
+    elseif BG.IsRetail then
+        getFiterTbl = {
+            { name = L["团本：史诗难度"], name2 = "raidmyth", },
+            { name = L["团本：英雄难度"], name2 = "raidhero", },
+            { name = L["团本：普通难度"], name2 = "raidnormal", },
+            { name = L["5人本"], name2 = "fb5", },
+            { name = L["牌子/货币"], name2 = "currency", },
+            { name = L["声望"], name2 = "faction", },
+            { name = L["专业"], name2 = "profession", },
+            { name = L["世界掉落"], name2 = "world", },
+        }
+    end
+end
+
 -- 给获取途径排序
 local typeIDtbl = {
     "raid",
@@ -583,7 +654,7 @@ do
             elseif other == "考古" then
                 icon = AddTexture(441139, nil, ":100:100:8:92:8:92")
             end
-            local name = icon..TRADE_SKILLS .. ": " .. L[other]
+            local name = icon .. TRADE_SKILLS .. ": " .. L[other]
             local get = BG.STC_y2(name) .. AddPrice(itemID)
 
             tinsert(db_old, {
@@ -719,7 +790,7 @@ do
             if _type and _type ~= "" then
                 count = select(2, GetItemInfo(count)) or ""
             end
-            if icon=="" then
+            if icon == "" then
                 icon = select(5, GetItemInfoInstant(count))
                 get = format("|cff%s%s|r %s%s|r%s", color, _get, AddTexture(icon), count, AddPrice(itemID))
             else
@@ -770,7 +841,7 @@ do
             else
                 count = ""
             end
-            local get = BG.STC_y1(AddTexture(tex) .. name .. " " .. "|cff" .. color .. count .. RR) .. AddPrice(itemID) .. otherText .. phaseText
+            local get = "|cffEE82EE"..(AddTexture(tex) .. name .. " " .. "|cff" .. color .. count .. RR) .. AddPrice(itemID) .. otherText .. phaseText
 
             tinsert(db_old, {
                 itemID = itemID,
@@ -1028,7 +1099,7 @@ local function SetItemLib()
 
     for ii, vv in ipairs(db) do
         local lastButton
-        local setText=""
+        local setText = ""
         if vv.setID then
             setText = format(L["|c%s★|r"], select(4, GetItemQualityColor(vv.quality)))
         end
@@ -1971,76 +2042,11 @@ function BG.ItemLibUI()
             end)
             bt:SetScript("OnLeave", GameTooltip_Hide)
 
-            local tbl
-            if BG.IsVanilla_Sod then
-                tbl = {
-                    { name = L["团本"], name2 = "raid", },
-                    { name = L["牌子/货币"], name2 = "currency", },
-                    { name = L["5人本"], name2 = "fb5", },
-                    { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["世界掉落"], name2 = "world", },
-                    { name = L["PVP"], name2 = "pvp", },
-                }
-            elseif BG.IsVanilla_60 then
-                tbl = {
-                    { name = L["团本"], name2 = "raid", },
-                    { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["世界掉落"], name2 = "world", },
-                    { name = L["世界BOSS"], name2 = "worldboss", },
-                    { name = L["PVP"], name2 = "pvp", },
-                }
-            elseif BG.IsWLK then
-                tbl = {
-                    { name = L["团本：25人"], name2 = "raid25", },
-                    { name = L["团本：10人"], name2 = "raid10", },
-                    { name = L["团本：英雄难度"], name2 = "raidhero", },
-                    { name = L["团本：普通难度"], name2 = "raidnormal", },
-                    { name = L["5人本"], name2 = "fb5", },
-                    { name = L["牌子/货币"], name2 = "currency", },
-                    { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["PVP"], name2 = "pvp", },
-                }
-            elseif BG.IsCTM then
-                tbl = {
-                    { name = L["团本：英雄难度"], name2 = "raidhero", },
-                    { name = L["团本：普通难度"], name2 = "raidnormal", },
-                    { name = L["5人本"], name2 = "fb5", },
-                    { name = L["牌子/货币"], name2 = "currency", },
-                    { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["世界掉落"], name2 = "world", },
-                    { name = L["世界BOSS"], name2 = "worldboss", },
-                }
-            elseif BG.IsMOP then
-                tbl = {
-                    { name = L["团本：英雄难度"], name2 = "raidhero", },
-                    { name = L["团本：普通难度"], name2 = "raidnormal", },
-                    -- { name = L["5人本"], name2 = "fb5", },
-                    { name = L["牌子/货币"], name2 = "currency", },
-                    -- { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["世界掉落"], name2 = "world", },
-                    { name = L["世界BOSS"], name2 = "worldboss", },
-                }
-            elseif BG.IsRetail then
-                tbl = {
-                    { name = L["团本：史诗难度"], name2 = "raidmyth", },
-                    { name = L["团本：英雄难度"], name2 = "raidhero", },
-                    { name = L["团本：普通难度"], name2 = "raidnormal", },
-                    { name = L["5人本"], name2 = "fb5", },
-                    { name = L["牌子/货币"], name2 = "currency", },
-                    { name = L["声望"], name2 = "faction", },
-                    { name = L["专业"], name2 = "profession", },
-                    { name = L["世界掉落"], name2 = "world", },
-                }
-            end
+
 
             local function UpdateTex()
                 local hasFitlerGet
-                for kk, vv in pairs(tbl) do
+                for kk, vv in pairs(getFiterTbl) do
                     for k, v in pairs(BiaoGe.ItemLib.fitlerGet) do
                         if vv.name2 == k then
                             hasFitlerGet = true
@@ -2067,7 +2073,7 @@ function BG.ItemLibUI()
                 insets = { left = 3, right = 3, top = 3, bottom = 3 }
             })
             f:SetBackdropColor(0, 0, 0, 0.8)
-            f:SetSize(180, #tbl * 25 + 40)
+            f:SetSize(180, #getFiterTbl * 25 + 40)
             f:SetPoint("TOPLEFT", mainFrame.bg, "TOPRIGHT", 0, 1)
             f:EnableMouse(true)
             f:SetFrameLevel(110)
@@ -2093,7 +2099,7 @@ function BG.ItemLibUI()
             f.CloseButton:SetPoint("TOPRIGHT", f, "TOPRIGHT", BG.CloseButtonOffset, BG.CloseButtonOffset)
 
             local buttons = {}
-            for i, v in ipairs(tbl) do
+            for i, v in ipairs(getFiterTbl) do
                 local bt = CreateFrame("CheckButton", nil, f, "ChatConfigCheckButtonTemplate")
                 bt:SetSize(25, 25)
                 if i == 1 then

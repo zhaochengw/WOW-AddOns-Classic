@@ -25,11 +25,31 @@ local slots = {
 	"Shirt",
 }
 local booted = false
--- Make some blizz functions more local
+-- Make some blizz functions more local/compat
 local UnitIsPlayer = UnitIsPlayer
-local GetItemInfo = GetItemInfo
-local GetItemQualityColor = GetItemQualityColor
+local GetItemInfo = function(...)
+	if _G.GetItemInfo then
+		return _G.GetItemInfo(...)
+	elseif C_Item and C_Item.GetItemInfo then
+		return C_Item.GetItemInfo(...)
+	end
+end
+local GetItemQualityColor = function(...)
+	if _G.GetItemQualityColor then
+		return _G.GetItemQualityColor(...)
+	elseif C_Item and C_Item.GetItemQualityColor then
+		return C_Item.GetItemQualityColor(...)
+	end
+end
 local GetInventoryItemLink = GetInventoryItemLink
+local IsAddOnLoaded = function(...)
+	if _G.IsAddOnLoaded then
+		return _G.IsAddOnLoaded(...)
+	elseif C_AddOns and C_AddOns.IsAddOnLoaded then
+		return C_AddOns.IsAddOnLoaded(...)
+	end
+end
+
 local L = LibStub("AceLocale-3.0"):GetLocale("Fizzle")
 mod.modName = L["Inspect"]
 

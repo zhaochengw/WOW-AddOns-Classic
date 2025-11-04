@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.27) add-on for World of Warcraft UI
+    Decursive (v 2.7.30) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2025-10-22T11:11:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -340,6 +340,11 @@ function D:PLAYER_REGEN_DISABLED() -- {{{
     -- this is not reliable for testing unitframe modifications authorization,
     -- this event fires after the player enters in combat, only InCombatLockdown() may be used for critical checks
     self.Status.Combat = true;
+    if self.MFContainerHandle.isMoving then
+        self.MFContainer:StopMovingOrSizing();
+        self.MFContainerHandle.isMoving = false;
+        self.MicroUnitF.DraggingHandle = false;
+    end
 end --}}}
 
 --function D:PLAYER_REGEN_ENABLED() --{{{
@@ -1128,20 +1133,20 @@ do
         local playerLevel = UnitLevel("player");
 
         -- no talents before level 10
-        if playerLevel > 0 and playerLevel < 10 then
+        if playerLevel > 0 and (playerLevel < 10 or DC.CATACLYSM and playerLevel < 15) then
             return true;
         end
 
-        -- if we know that there are unspet talents, it means we can check for
+        -- if we know that there are unspent talents, it means we can check for
         -- them
-        --[[if _G.GetNumUnspentTalents and GetNumUnspentTalents() then
+        if not DC.WOWC and _G.GetNumUnspentTalents and GetNumUnspentTalents() then
             return true;
-        end]]
+        end
 
         if (DC.WOWC) then
             -- local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo
             -- On loading the 8th value (available) is nil
-            for talent=1, (GetNumTalentTabs and GetNumTalentTabs() or 3) do
+            for talent=1, (not DC.CATACLYSM and GetNumTalentTabs and GetNumTalentTabs() or 3) do
                 if (select(8, GetTalentInfo(talent, 1))) then
                     return true;
                 end
@@ -1193,6 +1198,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.27";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.30";
 
 -- The Great Below

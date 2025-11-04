@@ -6,8 +6,10 @@ local pairs = pairs
 local rawget = rawget
 local UnitClass = UnitClass
 local UnitExists = UnitExists
+local UnitIsUnit = UnitIsUnit
 local UnitIsFriend = UnitIsFriend
 local GetInstanceInfo = GetInstanceInfo
+local C_Timer_After = C_Timer.After
 local GetSpellCooldown = Grid2.API.GetSpellCooldown
 local UnitGroupRolesAssigned = Grid2.UnitGroupRolesAssigned
 local roster_types = Grid2.roster_types
@@ -151,11 +153,13 @@ end
 
 local FilterU_Register, FilterU_Unregister, FilterU_Enable, FilterU_Disable, FilterU_Refresh
 do
+	local coolExpireTimer
+
 	local function IsSpellInCooldown(spellID)
 		local start, duration = GetSpellCooldown(spellID)
 		if start~=0 then
 			local gcdStart, gcdDuration = GetSpellCooldown(61304)
-			return start ~= gcdStart or duration ~= gcdDuration
+			return start ~= gcdStart or duration ~= gcdDuration, start+duration
 		end
 		return false
 	end
@@ -188,12 +192,17 @@ do
 							if load.unitReaction.hostile then r = not r end
 						end
 						if not r then
-							if load.unitAlive~=nil then
-								r = not roster_deads[u] == not load.unitAlive
+							if load.unitPlayer~=nil then
+								r = load.unitPlayer ~= UnitIsUnit(u,'player')
 							end
 							if not r then
-								if load.cooldown then
-									r = cooldowns_mt[load.cooldown]
+								if load.unitAlive~=nil then
+									r = not roster_deads[u] == not load.unitAlive
+								end
+								if not r then
+									if load.cooldown then
+										r = cooldowns_mt[load.cooldown]
+									end
 								end
 							end
 						end
@@ -227,24 +236,33 @@ do
 		end
 	end
 
-	local function RefreshCooldownFilter()
+	local function RefreshCooldownFilter(_, eventSpellID)
+		coolExpireTimer = eventSpellID and coolExpireTimer or 2147483647
+		local newExpire = coolExpireTimer
 		for status, filtered in next, statuses.cooldown do
 			local load = status.dbx.load
 			local spellID = load.cooldown
-			local cool = IsSpellInCooldown(spellID)
-			if cool ~= rawget( cooldowns_mt, spellID ) then
-				cooldowns_mt[spellID] = cool
-				wipe(filtered).source = load
-				for unit in next, status.idx do
-					status:UpdateIndicators(unit)
+			if spellID==(eventSpellID or spellID) then
+				local cool, expire = IsSpellInCooldown(spellID)
+				if cool ~= rawget( cooldowns_mt, spellID ) then
+					cooldowns_mt[spellID] = cool
+					wipe(filtered).source = load
+					status:UpdateAllUnits()
+				end
+				if cool and expire<newExpire then
+					newExpire = coolExpireTimer
 				end
 			end
+		end
+		if newExpire<coolExpireTimer then
+			coolExpireTimer = newExpire
+			C_Timer_After( newExpire - GetTime() + 0.05, RefreshCooldownTimer)
 		end
 	end
 
 	-- public
 	function FilterU_Register(self, load)
-		if load.unitType or load.unitReaction or load.unitClass or load.unitRole or load.cooldown or load.unitAlive~=nil then
+		if load.unitType or load.unitReaction or load.unitClass or load.unitRole or load.cooldown or load.unitPlayer~=nil or load.unitAlive~=nil then
 			self.filtered = setmetatable({source = load}, filter_mt)
 		else
 			self.filtered = nil
@@ -261,7 +279,7 @@ do
 			RegisterMsgFilter( self, "unitFilter", "Grid_UnitUpdated", ClearUnitFilters,  filtered )
 			RegisterMsgFilter( self, "unitAlive", "Grid_UnitDeadUpdated", RefreshAliveFilter,  load.unitAlive~=nil and filtered )
 			RegisterMsgFilter( self, "unitRole", "Grid_PlayerRolesAssigned", RefreshRoleFilter, load.unitRole and filtered )
-			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_USABLE", RefreshCooldownFilter, load.cooldown and filtered )
+			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_COOLDOWN", RefreshCooldownFilter, load.cooldown and filtered )
 		end
 	end
 
@@ -271,7 +289,7 @@ do
 			RegisterMsgFilter( self, "unitFilter", "Grid_UnitUpdated" )
 			RegisterMsgFilter( self, "unitAlive", "Grid_UnitDeadUpdated" )
 			RegisterMsgFilter( self, "unitRole", "Grid_PlayerRolesAssigned" )
-			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_USABLE" )
+			RegisterEventFilter( self, "cooldown", "SPELL_UPDATE_COOLDOWN" )
 			wipe(filtered).source = load
 		end
 	end
