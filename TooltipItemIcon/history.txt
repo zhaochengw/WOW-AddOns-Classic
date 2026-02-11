@@ -1,5 +1,16 @@
 Version history:
 
+1.95
+- Fix for error in Merchant tooltips
+
+1.94
+- Add TOC 2.5.5
+- Workaround a secret error in inside mode
+
+1.93
+- Update TOC for 12.0.0, 5.5.3 and 1.15.8
+- Remove separate TOC files
+
 1.92
 - Update TOC for 11.0.2 and 1.15.3
 - Update to use C_Spell.GetSpellTexture when available (fix for missing GetSpellInfo)

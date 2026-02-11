@@ -16,20 +16,87 @@ local HopeMaxi = ns.HopeMaxi
 
 local pt = print
 BG.tongBaoSendCD = 0.3
-
 BG.TongBaoButtons = {}
+local step = 2
+local updateFrame = CreateFrame("Frame")
+updateFrame.errorCount = 0
+updateFrame:SetScript("OnEvent", function(self, event, msg)
+    if event == "CHAT_MSG_SYSTEM" and msg == ERR_CHAT_THROTTLED then
+        self.errorCount = self.errorCount + 1
+        if self.errorCount >= 5 then
+            self:SetScript("OnUpdate", nil)
+            self:UnregisterEvent("CHAT_MSG_SYSTEM")
+            BG.SendSystemMessage(L["|cffff0000由于服务器聊天限流，通报已被停止。"])
+            if self.callback then
+                self.callback()
+                self.callback = nil
+            end
+        end
+    end
+end)
 
-function BG.SendMsgToRaid(tbl, t)
-    local t = t or 0
-    for i, v in ipairs(tbl) do
-        BG.After(t, function()
-            for _, text in ipairs(tbl[i]) do
-                SendChatMessage(text, "RAID")
+function BG.SendMsgToRaid(tbl, dalay, callback)
+    if updateFrame.callback then
+        updateFrame.callback()
+        updateFrame.callback = nil
+    end
+    dalay = dalay or 0
+    local channel = BiaoGe.NotifyChannel
+    local db = {}
+    for _, texts in ipairs(tbl) do
+        for i = 1, #texts, step do
+            local one = {}
+            for ii = i, i + step - 1 do
+                if not texts[ii] then break end
+                tinsert(one, texts[ii])
+            end
+            tinsert(db, one)
+        end
+    end
+    BG.After(dalay, function()
+        local index = 1
+        updateFrame.t = BG.tongBaoSendCD
+        updateFrame.callback = callback
+        updateFrame:SetScript("OnUpdate", function(self, t)
+            if not db[index] then
+                self:SetScript("OnUpdate", nil)
+                if self.callback then
+                    self.callback()
+                    self.callback = nil
+                end
+                return
+            end
+            self.t = self.t + t
+            if self.t >= BG.tongBaoSendCD then
+                self.t = 0
+                for _, msg in ipairs(db[index]) do
+                    SendChatMessage(msg, channel)
+                end
+                index = index + 1
             end
         end)
-        t = t + BG.tongBaoSendCD
+        updateFrame.errorCount = 0
+        updateFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+    end)
+end
+
+function BG.IsErrorSendChannel()
+    local channel = BiaoGe.NotifyChannel
+    if channel == "RAID" and not IsInRaid(1) then
+        BG.SendSystemMessage(L["不在团队，无法通报。"])
+        BG.PlaySound(1)
+        return true
     end
-    return t
+    if channel == "GUILD" and not IsInGuild() then
+        BG.SendSystemMessage(L["没有公会，无法通报。"])
+        BG.PlaySound(1)
+        return true
+    end
+    if (channel == "SAY" or channel == "YELL") and not IsInInstance() then
+        BG.SendSystemMessage(L["该频道需在副本内才能通报。"])
+        BG.PlaySound(1)
+        return true
+    end
 end
 
 -- 总览和工资
@@ -426,47 +493,33 @@ end
 local function OnClick(self)
     local FB = BG.FB1
     BG.FrameHide(0)
-    if not IsInRaid(1) then
-        SendSystemMessage(L["不在团队，无法通报"])
-        BG.PlaySound(1)
+    if BG.IsErrorSendChannel() then return end
+    self:SetEnabled(false)
+    C_Timer.After(2, function()
+        self:SetEnabled(true)
+    end)
+
+    if IsAltKeyDown() then
+        -- 总览和工资
+        local _, tbl = ZongLan(true)
+        tinsert(tbl, 1, { L["———通报总览———"] })
+        BG.SendMsgToRaid(tbl)
+    elseif IsShiftKeyDown() then
+        -- 罚款
+        local _, tbl = FaKuan(true)
+        tinsert(tbl, 1, { L["———通报罚款———"] })
+        BG.SendMsgToRaid(tbl)
+    elseif IsControlKeyDown() then
+        -- 支出
+        local _, tbl = ZhiChu(true)
+        tinsert(tbl, 1, { L["———通报支出———"] })
+        BG.SendMsgToRaid(tbl)
     else
-        self:SetEnabled(false)
-        C_Timer.After(2, function()
-            self:SetEnabled(true)
-        end)
-
-        if IsAltKeyDown() then
-            local text = L["———通报总览———"]
-            SendChatMessage(text, "RAID")
-            -- 总览和工资
-            local _, tbl = ZongLan(true)
-            BG.SendMsgToRaid(tbl, BG.tongBaoSendCD)
-        elseif IsShiftKeyDown() then
-            local text = L["———通报罚款———"]
-            SendChatMessage(text, "RAID")
-            -- 罚款
-            local _, tbl = FaKuan(true)
-            BG.SendMsgToRaid(tbl, BG.tongBaoSendCD)
-        elseif IsControlKeyDown() then
-            local text = L["———通报支出———"]
-            SendChatMessage(text, "RAID")
-            -- 支出
-            local _, tbl = ZhiChu(true)
-            BG.SendMsgToRaid(tbl, BG.tongBaoSendCD)
-        else
-            if HasQianKuan() then
-                BG.PlaySound("qiankuan")
-            end
-
-            local text = L["———通报账单———"]
-            SendChatMessage(text, "RAID")
-
-            local text = format(L["表格：%s"], BG.FB1)
-            BG.After(BG.tongBaoSendCD, function()
-                SendChatMessage(text, "RAID")
-            end)
-
-            local FB = BG.FB1
+        if HasQianKuan() then
+            BG.PlaySound("qiankuan")
+        end
+        local channel = BiaoGe.NotifyChannel
+        if channel == "RAID" then
             BG.After(2, function()
                 for ii in ipairs(BiaoGe[FB].tradeTbl) do
                     local text = "DuiZhang-"
@@ -497,18 +550,14 @@ local function OnClick(self)
                     end
                 end
             end)
-
-            local _, tbl = CreateListTable(true)
-            local t = BG.SendMsgToRaid(tbl, BG.tongBaoSendCD + BG.tongBaoSendCD)
-
-            BG.After(t, function()
-                local text = L["—感谢使用BiaoGe插件—"]
-                SendChatMessage(text, "RAID")
-            end)
         end
-
-        BG.PlaySound(2)
+        local _, tbl = CreateListTable(true)
+        tinsert(tbl, 1, { format(L["表格：%s"], BG.FB1) })
+        tinsert(tbl, 1, { L["———通报账单———"] })
+        tinsert(tbl, { L["—感谢使用BiaoGe插件—"] })
+        BG.SendMsgToRaid(tbl)
     end
+    BG.PlaySound(2)
 end
 
 
@@ -519,11 +568,11 @@ function BG.ZhangDanUI(lastbt)
     if lastbt then
         bt:SetPoint("LEFT", lastbt, "RIGHT", bt.jiange, 0)
     else
-        if BG.IsWLK then
-            bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -360, 38)
-        else
-            bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -300, 38)
+        local x = -350
+        if BG.hasWCL then
+            x = x - 60
         end
+        bt:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", x, 38)
     end
     bt:SetText(L["账单"])
     BG.ButtonZhangDan = bt
@@ -552,7 +601,7 @@ function BG.ZhangDanUI(lastbt)
     end)
 
     local t = bt:CreateFontString()
-    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
     t:SetPoint("RIGHT", bt, "LEFT", -5, 0)
     t:SetTextColor(1, 0.82, 0)
     t:SetText(L["通报："])

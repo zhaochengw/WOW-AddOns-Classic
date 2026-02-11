@@ -1,0 +1,31 @@
+HunterTrapsBar – Changelog
+
+v2.2
+- Added a confirmation popup to "/htb panic" to prevent accidental full resets
+- "/htb panic" now performs a full factory reset:
+  - Resets position to the default location
+  - Resets scale to 1.0
+  - Clears all saved settings
+  - Reloads the UI
+- Introduced a shared default position constant to ensure consistent placement across:
+  - First install
+  - /htb reset
+  - /htb panic
+- Updated the default bar position to a lower, more ergonomic location
+- Bar background is now hunter-green with 50% alpha for improved visibility
+- "/htb noborder" now hides both the border and the background, restoring both when re-enabled
+- Addon now fully shuts down on non-Hunter characters:
+  - No bar created
+  - No slash commands registered
+  - No SavedVariables created
+
+v2.1
+- "/htb panic" now resets scale and position to default
+- Improved /htb help output with clearer descriptions for each command
+- Prevented the bar from appearing on non-Hunter characters
+
+v2.0
+- Ground-up rewrite of HunterTrapsBar
+- Modernized architecture with clean separation of core, UI, and data
+- Rebuilt bar creation, layout handling, and SavedVariables logic
+- Improved reliability on login, reload, and character switching

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20250929055241")
+mod:SetRevision("20260106233726")
 mod:SetCreatureID(104218)
 mod:SetEncounterID(1870)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -55,6 +55,15 @@ function mod:OnCombatStart(delay)
 	timerSurgeCD:Start(5-delay)
 	timerGaleCD:Start(10-delay)--10
 	timerMaelstromCD:Start(22-delay, 1)
+	--Not ideal to do every pull, but cleanest way to ensure it's done
+	local trashmod = DBM:GetModByName("CoSTrash")
+	if trashmod and trashmod.Options.SpyHelper then
+		trashmod:ResetGossipState()
+	end
+end
+
+--Midnight edition of combat start
+function mod:OnLimitedCombatStart()
 	--Not ideal to do every pull, but cleanest way to ensure it's done
 	local trashmod = DBM:GetModByName("CoSTrash")
 	if trashmod and trashmod.Options.SpyHelper then

@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 5.1.07 (29th October 2025)
+	-- 	Leatrix Maps 5.1.22 (8th February 2026)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList, LeaLockList = {}, {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "5.1.07"
+	LeaMapsLC["AddonVer"] = "5.1.22"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -3026,7 +3026,7 @@
 	function LeaMapsLC:MakeSL(frame, field, label, caption, low, high, step, x, y, form)
 
 		-- Create slider control
-		local Slider = CreateFrame("Slider", "LeaMapsGlobalSlider" .. field, frame, "UISliderTemplate")
+		local Slider = CreateFrame("Slider", nil, frame, "LeaMapsConfigurationPanelSliderTemplate") -- Old is UISliderTemplate
 		LeaMapsCB[field] = Slider
 		Slider:SetMinMaxValues(low, high)
 		Slider:SetValueStep(step)

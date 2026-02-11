@@ -123,8 +123,15 @@ GTFOLocal =
 	UI_BrannModeDescription = "This enables Brann Bronzebeard to yell at you.",
 	UI_AprilFoolsDay = "April Fools Day Joke",
 	UI_AprilFoolsDayDescription = "Uncheck this to permanently turn off the fun April Fools Day joke. :(\n\nIf you change your mind, you can type |cFFFFFFFF/GTFO Brann|r to bring him back.",
-	-- 5.17.
+	-- 5.17
 	UI_IgnoreTime = "Alert Delay Time",
 	UI_IgnoreTimeDescription = "The minimum amount of delay between alert sounds. Increase this if the sounds are too spammy.",
 	UI_IgnoreTime_Seconds = "seconds",
+	-- 6.0
+	Help_SettingsDuringCombat = "Cannot open GTFO settings during combat.",
+	UI_BrokenReason = "This functionality was disabled due to the new Blizzard addon restrictions introduced in Midnight (12.0)",
+	UI_BrokenPartialReason = "Some of this functionality was disabled due to the new Blizzard addon restrictions introduced in Midnight (12.0)",
+	UI_BrokenExplanation_Header = "Addon Restrictions",
+	UI_BrokenExplanation_Text = "Several GTFO features are currently locked.\n\nBlizzard introduced new addon restrictions in Midnight (12.0). Those restrictions prevent GTFO from detecting several categories of avoidable damage reliably, so those options have been disabled to avoid false or missing alerts.\n\nOnly features that still work within the new restrictions remain enabled.",
+	UI_LowDamage2 = "Low Damage sounds",
 }

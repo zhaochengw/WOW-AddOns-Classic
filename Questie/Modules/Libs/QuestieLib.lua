@@ -7,6 +7,8 @@ local QuestieLib = QuestieLoader:CreateModule("QuestieLib")
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 ---@type QuestiePlayer
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
+---@type QuestieEvent
+local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
@@ -34,14 +36,14 @@ local textWrapFrameObject = _G["QuestLogObjectivesText"] or _G["QuestInfoObjecti
     Green: 3 - GetQuestGreenRange() level below player (GetQuestGreenRange() changes on specific player levels)
     Gray: More than GetQuestGreenRange() below player
 --]]
-function QuestieLib:PrintDifficultyColor(level, text, isDailyQuest, isEventQuest, isPvPQuest)
+function QuestieLib:PrintDifficultyColor(level, text, isRepeatableQuest, isEventQuest, isPvPQuest)
     if isEventQuest == true then
         return "|cFF6ce314" .. text .. "|r" -- Lime
     end
     if isPvPQuest == true then
         return "|cFFE35639" .. text .. "|r" -- Maroon
     end
-    if isDailyQuest == true then
+    if isRepeatableQuest == true then
         return "|cFF21CCE7" .. text .. "|r" -- Blue
     end
 
@@ -147,43 +149,39 @@ function QuestieLib:GetColoredQuestName(questId, showLevel, showState)
         elseif isComplete == 1 then
             name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
 
-        -- Quests treated as complete - zero objectives or synthetic objectives
+            -- Quests treated as complete - zero objectives or synthetic objectives
         elseif isComplete == 0 and QuestieDB.GetQuest(questId).isComplete == true then
             name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
         end
     end
 
-    return QuestieLib:PrintDifficultyColor(level, name, QuestieDB.IsRepeatable(questId), QuestieDB.IsActiveEventQuest(questId), QuestieDB.IsPvPQuest(questId))
+    return QuestieLib:PrintDifficultyColor(level, name, QuestieDB.IsRepeatable(questId), QuestieEvent.IsEventQuest(questId), QuestieDB.IsPvPQuest(questId))
 end
 
+-- The order of these colors is important for the ColorWheel function.
+-- Taken from https://tailwindcolor.com/
+---@type Color[]
 local colors = {
-    { 0.3125,     0.44140625, 1 },          --Blizzard Polygon-blue --Alpha of 128
-    --{123,         146,        255},         --Blizzard Polygon-blue-2 --Alpha of 61
-    { 0.5,        0.46875,    0.84765625 }, --Medium Purple
-    { 0.58203125, 0.89453125, 0.0546875 },  --Inch Worm
-    { 0.45703125, 0.8515625,  0.78125 },    --Downy
-    { 1,          0.5625,     0.625 },      --Salmon Pink
-    --{149,         159,        112},         --Avocado, Bad? Fix it
-    { 0,          0.6484375,  0.59375 },    --Persian Green
-    { 0.70703125, 0.109375,   0.4765625 },  --Medium Violet Red     --ORG Dark Purple {119, 18,  79}
-    { 0.58203125, 0.2148375,  1 },          --Light Slate Blue
-    { 0.72265625, 0.3671875,  0 },          --Alloy Orange
-    { 0,          0.9765625,  0.546875 },   --Spring Green
-    { 0.8515625,  0.2148375,  0.57421875 }, --Deep Cerise
-    { 1,          0.65234375, 0 },          --Orange
-    { 0.8125,     0.7109375,  1 },          --Mauve
-    { 0,          0.25390625, 0.58984375 }, --Smalt
-    { 1,          0.25,       1 },          --Pink Flamingo
-    { 1,          1,          0 },          --Yellow
-    { 0.16015625, 0.65234375, 0 },          --Slimy Green
-    { 0,          0.66015625, 1 },          --Deep Sky Blue
-    { 0.87109375, 0.87109375, 0.56640625 }, --Primrose
-    { 0,          0.5859375,  0 },          --Vine Green --G67 default
-    { 0,          0.3,        1 },          --Navy Blue
-    { 0,          0.97265625, 0 },          --Lime
-    { 0,          1,          1 },          --Aqua
-    { 1,          0.1484375,  0 },          --Scarlet
+    -- Light (200)         Standard (500)         -- Family
+    {0.99, 0.73, 0.73},    {0.94, 0.19, 0.19},    -- Red
+    {0.99, 0.81, 0.59},    {0.98, 0.46, 0.05},    -- Orange
+    {0.99, 0.93, 0.54},    {0.92, 0.68, 0.05},    -- Yellow
+    {0.73, 0.96, 0.80},    {0.13, 0.77, 0.36},    -- Green
+    {0.75, 0.87, 0.99},    {0.23, 0.55, 0.94},    -- Blue
+    {0.78, 0.82, 0.99},    {0.39, 0.45, 0.94},    -- Indigo
+    {0.87, 0.82, 1.00},    {0.55, 0.35, 0.96},    -- Violet
+    {0.99, 0.76, 0.89},    {0.93, 0.16, 0.55},    -- Pink
 }
+
+-- Shuffle colors on startup (Fisher-Yates)
+local function shuffleTable(t)
+    for i = #t, 2, -1 do
+        local j = math_random(1, i)
+        t[i], t[j] = t[j], t[i]
+    end
+end
+
+shuffleTable(colors)
 
 local numColors = #colors
 local lastColor = math_random(numColors)
@@ -195,11 +193,6 @@ function QuestieLib:ColorWheel()
         lastColor = 1
     end
     return colors[lastColor]
-end
-
----@return Color
-function QuestieLib:GetRandomColor()
-    return colors[math_random(numColors)]
 end
 
 --- There are quests in TBC which have a quest level of -1. This indicates that the quest level is the
@@ -224,49 +217,56 @@ function QuestieLib.GetTbcLevel(questId, playerLevel)
     return questLevel, requiredLevel, QuestieDB.QueryQuestSingle(questId, "requiredMaxLevel");
 end
 
+---Returns the quest type suffix character (e.g., "+" for Elite, "D" for Dungeon)
+---@param questId QuestId
+---@return string suffix @The suffix character for the quest type
+function QuestieLib:GetQuestTypeSuffix(questId)
+    local questTagId, questTagName = QuestieDB.GetQuestTagInfo(questId)
+
+    if not questTagId or not questTagName then
+        return ""
+    end
+
+    local questTagIds = QuestieDB.questTagIds
+    local langCode = l10n:GetUILocale()
+    local isMultiByteLocale = langCode == "zhCN" or langCode == "zhTW" or langCode == "koKR" or langCode == "ruRU"
+
+    if questTagId == questTagIds.ELITE then
+        return "+"
+    elseif questTagId == questTagIds.PVP or questTagId == questTagIds.CLASS then
+        return ""
+    elseif questTagId == questTagIds.LEGENDARY then
+        return "++"
+    elseif isMultiByteLocale then
+        if questTagId == questTagIds.RAID or questTagId == questTagIds.RAID_10 or questTagId == questTagIds.RAID_25 then
+            return "R"
+        elseif questTagId == questTagIds.DUNGEON then
+            return "D"
+        elseif questTagId == questTagIds.HEROIC then
+            return "H"
+        elseif questTagId == questTagIds.SCENARIO then
+            return "S"
+        elseif questTagId == questTagIds.ACCOUNT then
+            return "A"
+        elseif questTagId == questTagIds.CELESTIAL then
+            return "C"
+        else
+            return ""
+        end
+    else
+        -- Fallback: use first character of quest tag name for unknown tags
+        -- This preserves backward compatibility with existing UI/tests
+        return stringSub(questTagName, 1, 1)
+    end
+end
+
 ---@param questId QuestId
 ---@param level Level @The quest level
 ---@return string levelString @String of format "[40+]"
 function QuestieLib:GetLevelString(questId, level)
-    local questTagId, questTagName = QuestieDB.GetQuestTagInfo(questId)
     local levelString = tostring(level)
-
-    if (not questTagId) or (not questTagName) then
-        return "[" .. levelString .. "] "
-    end
-
-    local questTagIds = QuestieDB.questTagIds
-
-    local char = stringSub(questTagName, 1, 1)
-    local langCode = l10n:GetUILocale()
-    -- the string.sub above doesn't work for multi byte characters
-    local isMultiByteLocale = langCode == "zhCN" or langCode == "zhTW" or langCode == "koKR" or langCode == "ruRU"
-
-    if questTagId == questTagIds.ELITE then
-        char = "+"
-    elseif questTagId == questTagIds.PVP or questTagId == questTagIds.CLASS then
-        char = ""
-    elseif questTagId == questTagIds.LEGENDARY then
-        char = "++"
-    elseif isMultiByteLocale then
-        if questTagId == questTagIds.RAID or questTagId == questTagIds.RAID_10 or questTagId == questTagIds.RAID_25 then
-            char = "R"
-        elseif questTagId == questTagIds.DUNGEON then
-            char = "D"
-        elseif questTagId == questTagIds.HEROIC then
-            char = "H"
-        elseif questTagId == questTagIds.SCENARIO then
-            char = "S"
-        elseif questTagId == questTagIds.ACCOUNT then
-            char = "A"
-        elseif questTagId == questTagIds.CELESTIAL then
-            char = "C"
-        else
-            char = ""
-        end
-    end
-
-    return "[" .. levelString .. char .. "] "
+    local suffix = QuestieLib:GetQuestTypeSuffix(questId)
+    return "[" .. levelString .. suffix .. "] "
 end
 
 function QuestieLib:GetRaceString(raceMask)
@@ -282,18 +282,18 @@ function QuestieLib:GetRaceString(raceMask)
         local raceString = ""
         local raceTable = QuestieLib:UnpackBinary(raceMask)
         local stringTable = {
-            l10n('Human'),
-            l10n('Orc'),
-            l10n('Dwarf'),
-            l10n('Nightelf'),
-            l10n('Undead'),
-            l10n('Tauren'),
-            l10n('Gnome'),
-            l10n('Troll'),
-            l10n('Goblin'),
-            l10n('Blood Elf'),
-            l10n('Draenei'),
-            l10n('Worgen'),
+            l10n("Human"),
+            l10n("Orc"),
+            l10n("Dwarf"),
+            l10n("Nightelf"),
+            l10n("Undead"),
+            l10n("Tauren"),
+            l10n("Gnome"),
+            l10n("Troll"),
+            l10n("Goblin"),
+            l10n("Blood Elf"),
+            l10n("Draenei"),
+            l10n("Worgen"),
         }
         local firstRun = true
         for k, v in pairs(raceTable) do
@@ -322,7 +322,7 @@ function QuestieLib:CacheItemNames(questId)
                         function()
                             local itemName = item:GetItemName()
                             if not QuestieDB.itemDataOverrides[objectiveDB.Id] then
-                                QuestieDB.itemDataOverrides[objectiveDB.Id] = { itemName, { questId }, {}, {} }
+                                QuestieDB.itemDataOverrides[objectiveDB.Id] = {itemName, {questId}, {}, {}}
                             else
                                 QuestieDB.itemDataOverrides[objectiveDB.Id][1] = itemName
                             end
@@ -398,18 +398,45 @@ function QuestieLib:SanitizePattern(pattern)
     return sanitize_cache[pattern]
 end
 
-function QuestieLib:SortQuestIDsByLevel(quests)
-    local sortedQuestsByLevel = {}
+local suffixPriority = {
+    [""] = 1, -- No suffix (normal quests) - should come first
+    ["+"] = 2, -- Elite
+    ["S"] = 3, -- Scenario
+    ["D"] = 4, -- Dungeon
+    ["H"] = 5, -- Heroic
+    ["R"] = 6, -- Raid
+    ["++"] = 7, -- Legendary
+    ["A"] = 8, -- Account
+    ["C"] = 9, -- Celestial
+}
 
-    local function compareTablesByIndex(a, b)
+local function compareQuestsByLevelAndType(a, b)
+    if a[1] ~= b[1] then
         return a[1] < b[1]
     end
 
-    for q in pairs(quests) do
-        local questLevel, _ = QuestieLib.GetTbcLevel(q);
-        tinsert(sortedQuestsByLevel, { questLevel or 0, q })
+    -- if levels are the same, compare by suffix priority
+    local suffixA = a[3] or ""
+    local suffixB = b[3] or ""
+    local priorityA = suffixPriority[suffixA] or 999
+    local priorityB = suffixPriority[suffixB] or 999
+
+    if priorityA ~= priorityB then
+        return priorityA < priorityB
     end
-    table.sort(sortedQuestsByLevel, compareTablesByIndex)
+
+    return a[2] < b[2]
+end
+
+function QuestieLib:SortQuestIDsByLevel(quests)
+    local sortedQuestsByLevel = {}
+
+    for q in pairs(quests) do
+        local questLevel, _ = QuestieLib.GetTbcLevel(q)
+        local suffix = QuestieLib:GetQuestTypeSuffix(q)
+        tinsert(sortedQuestsByLevel, {questLevel or 0, q, suffix})
+    end
+    table.sort(sortedQuestsByLevel, compareQuestsByLevelAndType)
 
     return sortedQuestsByLevel
 end
@@ -507,7 +534,7 @@ end
 
 ---@return table A table of the handed parameters plus the 'n' field with the size of the table
 function QuestieLib.tpack(...)
-    return { n = select("#", ...), ... }
+    return {n = select("#", ...), ...}
 end
 
 --- Wow's own unpack stops at first nil. this version is not speed optimized.
@@ -644,7 +671,7 @@ function QuestieLib:TextWrap(line, prefix, combineTrailing, desiredWidth)
         --Line was not wrapped, return the string as is.
         textWrapObjectiveFontString:Hide()
         useLine = prefix .. line
-        return { useLine }
+        return {useLine}
     end
 end
 
@@ -680,6 +707,26 @@ function QuestieLib.GetQuestIcon(quest)
         return Questie.ICON_TYPE_AVAILABLE_GRAY
     end
     return Questie.ICON_TYPE_AVAILABLE
+end
+
+--- Checks if a daily reset has occurred since the player's last login.
+---@return boolean True if a daily reset has occurred, false otherwise.
+function QuestieLib.DidDailyResetHappenSinceLastLogin()
+    local realmName = GetRealmName()
+    local lastKnownDailyReset = Questie.db.global.lastKnownDailyReset[realmName]
+
+    if (not lastKnownDailyReset) then
+        return true -- No previous login recorded, assume a reset has occurred
+    end
+
+    return GetServerTime() >= lastKnownDailyReset
+end
+
+--- Updates the last known daily reset time to the next reset time.
+function QuestieLib.UpdateLastKnownDailyReset()
+    local realmName = GetRealmName()
+
+    Questie.db.global.lastKnownDailyReset[realmName] = GetServerTime() + GetQuestResetTime()
 end
 
 return QuestieLib

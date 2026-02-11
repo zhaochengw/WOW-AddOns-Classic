@@ -239,8 +239,10 @@ function DBMExtraGlobal:rebuildSpecTable()
 			},
 			[255] = {	--Survival Hunter (Legion+)
 				["Dps"] = true,
-				["Melee"] = true,
-				["MeleeDps"] = true,
+				["Melee"] = private.isMop and false or true,
+				["MeleeDps"] = private.isMop and false or true,
+				["Ranged"] = private.isMop and true or false,
+				["RangedDps"] = private.isMop and true or false,
 				["Physical"] = true,
 				["HasInterrupt"] = true,
 				["MagicDispeller"] = true,
@@ -409,8 +411,10 @@ function DBMExtraGlobal:rebuildSpecTable()
 			},
 			[1480] = {	--Devourer Demon Hunter
 				["Dps"] = true,
-				["Melee"] = true,
+				["Melee"] = true,--Hybrid spec that is both
 				["MeleeDps"] = true,
+				["Ranged"] = true,--Hybrid spec that is both
+				["RangedDps"] = true,
 				["Physical"] = true,
 				["HasInterrupt"] = true,
 				["MagicDispeller"] = true,

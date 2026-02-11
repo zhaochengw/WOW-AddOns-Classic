@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2026-01-02T00:31:32Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -76,6 +76,7 @@ local UnitCanAttack     = _G.UnitCanAttack;
 local UnitClass         = _G.UnitClass;
 local UnitExists        = _G.UnitExists;
 local GetNetStats       = _G.GetNetStats;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 local _;
 
 -------------------------------------------------------------------------------
@@ -533,14 +534,15 @@ do
                 end
             end
 
+            local isSpellIDScret = not canaccessvalue(SpellID)
 
             -- test for a type
             if TypeName and TypeName ~= "" then
                 Type = DC.NameToTypes[TypeName];
-            elseif DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
+            elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
                 TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
                 Type = DC.NameToTypes[TypeName]
-            elseif self.Status.CuringSpells[DC.BLEED] then
+            elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
                 checkSpellIDForBleed();
                 if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
                     Type = DC.NameToTypes["Bleed"]
@@ -592,7 +594,7 @@ do
             i = i + 1;
 
             -- if a deadly debuff has been found, just forget everything...
-            if DC.IS_DEADLY_DEBUFF[SpellID] then
+            if not isSpellIDScret and DC.IS_DEADLY_DEBUFF[SpellID] then
                 StoredDebuffIndex = 1;
                 break;
             end
@@ -796,7 +798,7 @@ do
 
         --[==[@debug@
         --local start = debugprofilestop();
-        D:Debug("Scanning everybody...", self.Status.delayedDebuffReportDisabled, self.db.global.MFScanEverybodyReport)
+        --D:Debug("Scanning everybody...", self.Status.delayedDebuffReportDisabled, self.db.global.MFScanEverybodyReport)
         --@end-debug@]==]
 
         while UnitArray[i] do
@@ -886,18 +888,24 @@ do
     local G_UnitBuff = _G.UnitBuff; -- In 10.2.5 UnitBuff and acolytes were deprecated and are falling back to calling C_UnitAuras functions which create a new table each time and thus leak garbage each time they return debuff info... (if only we could provide those functions with a table to use...)
     local GetAuraDataBySpellName = C_UnitAuras and C_UnitAuras.GetAuraDataBySpellName or nil;
     local buffName;
+    local GetCVarBool = _G.GetCVarBool
 
+    local function auraAccessRestricted()
+        return DC.MN and (InCombatLockdown() or GetCVarBool("secretAurasForced"))
+    end
 
     local function UnitBuff(unit, BuffNameToCheck)
+
+        local restricted = auraAccessRestricted()
             --[==[@debug@
             --D:Debug("UnitBuff", unit, BuffNameToCheck)
             --@end-debug@]==]
-        if GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then
+        if not restricted and GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then --XXX MN
             --[==[@debug@
             D:Debug("used C_UnitAuras")
             --@end-debug@]==]
             return true
-        elseif not GetAuraDataBySpellName then
+        elseif not restricted and not GetAuraDataBySpellName then
             --[==[@debug@
             D:Debug("used old buff scan method")
             --@end-debug@]==]
@@ -951,6 +959,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.30";
+T._LoadedFiles["Decursive.lua"] = "2.7.34";
 
 -- Sin

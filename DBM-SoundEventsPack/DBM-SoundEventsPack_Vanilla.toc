@@ -1,4 +1,4 @@
-## Interface: 11507
+## Interface: 11508
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff308530Sound Events Pack|r
@@ -6,7 +6,7 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: MysticalOS, Pardua, Cigawoot
-## Version: 1.6.42
+## Version: 1.6.43
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-VictoryPack: 1
 ## X-DBM-VictoryPack-GlobalName: DBMVPSoundEventsPack

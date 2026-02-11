@@ -1,7 +1,7 @@
-## Interface: 30404
-## Title: ChatBar Classic for WotLK
-## Title-deDE: Chat-Leiste Classic
-## Title-ruRU: ChatBar Classic для WotLK Classic
+## Interface: 50503
+## Title: ChatBar Classic for Mists of Pandaria Classic
+## Title-deDE: Chat-Leiste Classic Mists of Pandaria Classic
+## Title-ruRU: ChatBar Classic для Mists of Pandaria Classic
 ## Notes: Button Bar for openning chat messages of each type.
 ## Notes-deDE: Button-Leiste zum Senden von Chatnachrichten jedes Typs.
 ## Notes-frFR: Barre de boutons pour ouvrir les message de discussions de chaque type.
@@ -11,7 +11,8 @@
 ## RequiredDeps:
 ## SavedVariablesPerCharacter: ChatBar_VerticalDisplay, ChatBar_AlternateOrientation, ChatBar_HideSpecialChannels, ChatBar_TextOnButtonDisplay, ChatBar_ButtonFlashing, ChatBar_BarBorder, ChatBar_ButtonText, ChatBar_StoredStickies, ChatBar_HiddenButtons, ChatBar_TextChannelNumbers, ChatBar_HideAllButtons, ChatBar_AltArt, ChatBar_ChannelBindings, ChatBar_ButtonScale, ChatBar_isLock
 ## Author: AnduinLothar, Foxylittlething, aNNiPAk, Yarko, dartraiden
-## Version: 3.3-WotLK
+## Version: 3.4-Pandaria
 ## X-Category: Chat
+## IconTexture: 2056011
 ## X-Website: https://www.curseforge.com/wow/addons/chatbar-classic
 ChatBar Classic.xml

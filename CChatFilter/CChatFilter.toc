@@ -1,8 +1,8 @@
-## Interface: 30404
-## Title: |r|cFF00FF00[聊天]|r CChatFilter |r|cFF0099FF[消息过滤]|r
-## Version: 3.1
+## Interface: 30800
+## Title: CChatFilter |cffd4af37谷|r|cffdbb850风|r|cffe2c069修|r|cffe9c882复|r|cfff0d09b版|r
+## Version: 3.3
 ## Notes: CChatFilter
-## Notes-zhCN: 怀旧服消息过滤插件，Esc-界面-插件中可进行详细设定。|n简介：|cffee5885露露緹婭@Bilibili|r
+## Notes-zhCN: 怀旧服消息过滤插件，Esc-界面-插件中可进行详细设定
 ## SavedVariables: BFWC_Filter_SavedConfigs_G
 ## SavedVariablesPerCharacter: BFWC_Filter_SavedConfigs
 ## X-Thanks: guoyongshi@gmail.com

@@ -1,14 +1,22 @@
 local mod	= DBM:NewMod("Tonks", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240315080105")
+mod:SetRevision("20260201224158")
+mod:SetZone(974)
 
-mod:RegisterEvents(
-	"SPELL_CAST_SUCCESS 102341",
-	"UNIT_SPELLCAST_SUCCEEDED player",
-	"UNIT_DIED",
-	"UNIT_EXITED_VEHICLE player"
-)
+if DBM:IsPostMidnight() then
+	mod:RegisterSafeEvents(
+		"UNIT_SPELLCAST_SUCCEEDED player",
+		"UNIT_EXITED_VEHICLE player"
+	)
+else
+	mod:RegisterEvents(
+		"SPELL_CAST_SUCCESS 102341",
+		"UNIT_SPELLCAST_SUCCEEDED player",
+		"UNIT_DIED",
+		"UNIT_EXITED_VEHICLE player"
+	)
+end
 mod.noStatistics = true
 
 local specWarnMarked			= mod:NewSpecialWarningRun(102341, nil, nil, 2, 4, 2)
@@ -23,6 +31,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
+	if self:issecretvalue(spellId) then return end
 	if spellId == 102178 then
 		timerGame:Start()
 	end

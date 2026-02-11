@@ -1,7 +1,7 @@
 # RightClickSelfCast
 
-## [v5.4](https://github.com/Xruptor/RightClickSelfCast/tree/v5.4) (2025-10-05)
-[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v5.3...v5.4) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
+## [v5.12](https://github.com/Xruptor/RightClickSelfCast/tree/v5.12) (2026-02-10)
+[Full Changelog](https://github.com/Xruptor/RightClickSelfCast/compare/v5.11...v5.12) [Previous Releases](https://github.com/Xruptor/RightClickSelfCast/releases)
 
-- Added support for Multibars  
-    * Added additional support for Multibars.  Special thanks to @Fafnyir for pointing this out.  (Fixes #7)  
+- TOC Update & Code Improvements  
+    * Updated TOC to latest patch 120001.  

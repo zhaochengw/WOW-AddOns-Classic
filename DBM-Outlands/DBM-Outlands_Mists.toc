@@ -1,6 +1,6 @@
-## Interface: 50501, 50502
+## Interface: 50502, 50503
 ## X-Min-Interface: 50500
-## Version: r11
+## Version: r13
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Bosses (BC)|r

@@ -1,7 +1,7 @@
-## Interface: 50502
+## Interface: 50503
 ## Title: Grid2
 ## Author: Pastamancer & Maia, Jerry, Toadkiller
-## Version: 2.9.12
+## Version: 2.9.19
 ## IconTexture: Interface/AddOns/Grid2/media/iconsmall.tga
 ## Notes: A modular, lightweight and screen-estate saving grid of party/raid unit frames
 ## Notes-esES: Marcos de unidades de raid compactos y ligeros.
@@ -94,3 +94,4 @@ modules\StatusUnitIndex.lua
 modules\StatusPhased.lua
 modules\StatusShields.lua
 modules\StatusHealAbsorbs.lua
+modules\StatusTortosCrystalShell.lua

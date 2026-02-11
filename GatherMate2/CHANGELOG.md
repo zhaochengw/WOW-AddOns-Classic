@@ -1,6 +1,7 @@
 # GatherMate2
 
-## [1.47.8.1-classic](https://github.com/Nevcairiel/GatherMate2/tree/1.47.8.1-classic) (2025-07-03)
-[Full Changelog](https://github.com/Nevcairiel/GatherMate2/compare/1.47.8-classic...1.47.8.1-classic) [Previous Releases](https://github.com/Nevcairiel/GatherMate2/releases)
+## [1.47.9-classic](https://github.com/Nevcairiel/GatherMate2/tree/1.47.9-classic) (2026-01-16)
+[Full Changelog](https://github.com/Nevcairiel/GatherMate2/compare/1.47.8.1-classic...1.47.9-classic) [Previous Releases](https://github.com/Nevcairiel/GatherMate2/releases)
 
-- Add Mists to the import expansion table  
+- Update TOC for BCC Anniversary  
+- Set Group/Texture in the TOC  

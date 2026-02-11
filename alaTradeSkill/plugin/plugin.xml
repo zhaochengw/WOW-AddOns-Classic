@@ -2,6 +2,9 @@
 ..\FrameXML\UI.xsd">
 
 	<script file = "AuctionBase.lua" />
+
+	<!-- 拍卖插件 开始 -->
+	<!-- 按名字顺序排列 -->
 	<script file = "!Pig.lua" />
 	<script file = "alaTrade.lua" />
 	<script file = "Auctionator.lua" />
@@ -11,8 +14,11 @@
 	<script file = "AuctionMaster.lua" />
 	<script file = "Auctipus.lua" />
 	<script file = "aux-addon.lua" />
+	<script file = "EasyAuction.lua" />
+	<script file = "GF_Auction.lua" />
 	<script file = "tdAuction.lua" />
 	<script file = "TradeSkillMaster.lua" />
+	<!-- 拍卖插件 结束 -->
 
 	<script file = "Source.lua" />
 	<script file = "MissingTradeSkillsList.lua" />

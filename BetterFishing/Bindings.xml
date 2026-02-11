@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="BETTERFISHINGKEY" category="Better Fishing">
+		BetterFishing_Run()
+	</Binding>
+</Bindings>

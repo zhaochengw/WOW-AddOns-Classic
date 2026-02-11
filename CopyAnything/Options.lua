@@ -8,6 +8,7 @@ local AceDBOptions = LibStub("AceDBOptions-3.0")
 local addon = namespace.addon
 local L = addon.L
 
+---@type AceConfig.OptionsTable
 local options = {
 	name = L.copyAnything,
 	type = "group",

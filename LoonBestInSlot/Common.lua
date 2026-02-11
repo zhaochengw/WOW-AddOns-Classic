@@ -1,4 +1,4 @@
-LBIS.ReCacheDate = time({year=2024, month=05, day=22, hour=00})
+LBIS.ReCacheDate = time({year=2025, month=11, day=20, hour=00})
 LBIS.SpellCache = {};
 
 function LBIS:PreCacheItems()
@@ -14,6 +14,7 @@ function LBIS:PreCacheItems()
 
     --If language is switched between logins, reset cache
     if (GetLocale() ~= LBISServerSettings.CurrentLocale) then
+        print("LBIS: Clearing Cache because of locale change");
         LBISServerSettings.CurrentLocale = GetLocale();
         LBISServerSettings.ItemCache = {};
         LBISServerSettings.LastCacheDate = time();
@@ -134,6 +135,7 @@ itemSlots["INVTYPE_BAG"] = LBIS.L["Bag"];
 itemSlots["INVTYPE_TABARD"] = LBIS.L["Tabard"];
 itemSlots["INVTYPE_ROBE"] = LBIS.L["Chest"];
 itemSlots["INVTYPE_WEAPONMAINHAND"] = LBIS.L["Main Hand"];
+itemSlots["INVTYPE_2HWEAPON"] = LBIS.L["Main Hand"];
 itemSlots["INVTYPE_WEAPONOFFHAND"] = LBIS.L["Off Hand"];
 itemSlots["INVTYPE_HOLDABLE"] = LBIS.L["Off Hand"];
 itemSlots["INVTYPE_AMMO"] = LBIS.L["Ammo"];

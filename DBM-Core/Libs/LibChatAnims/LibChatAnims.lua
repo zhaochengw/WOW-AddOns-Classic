@@ -1,5 +1,5 @@
 --@curseforge-project-slug: libchatanims@
-local MAJOR, MINOR = "LibChatAnims", 4 -- Bump minor on changes
+local MAJOR, MINOR = "LibChatAnims", 5 -- Bump minor on changes
 local LCA = LibStub:NewLibrary(MAJOR, MINOR)
 if not LCA then return end -- No upgrade needed
 
@@ -133,7 +133,12 @@ end
 --	button:Show()
 --end
 
+local issecretvalue = issecretvalue or function() return false end
 FCF_StartAlertFlash = function(chatFrame)
+	if issecretvalue(chatFrame) then
+		return
+	end
+
 	local chatTab = _G[chatFrame:GetName().."Tab"]
 
 	if chatFrame.minFrame then
@@ -203,6 +208,10 @@ FCF_StartAlertFlash = function(chatFrame)
 end
 
 FCF_StopAlertFlash = function(chatFrame)
+	if issecretvalue(chatFrame) then
+		return
+	end
+
 	local chatTab = _G[chatFrame:GetName().."Tab"]
 
 	if chatFrame.minFrame then

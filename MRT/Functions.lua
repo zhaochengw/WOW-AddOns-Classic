@@ -761,9 +761,8 @@ end
 function ExRT.F.IsPlayerRLorOfficer(unitName)
 	local shortName = ExRT.F.delUnitNameServer(unitName)
 	for i=1,GetNumGroupMembers() do
-		--if name and (name == unitName or ExRT.F.delUnitNameServer(name) == shortName) then
+		local name,rank = GetRaidRosterInfo(i)
 		if UnitIsUnit(unitName,"raid"..i) or UnitIsUnit(shortName,"raid"..i) then
-			local name,rank = GetRaidRosterInfo(i)
 			if rank > 0 then
 				return rank
 			else
@@ -778,10 +777,22 @@ function ExRT.F.IsPlayerRLorOfficer(unitName)
 	-- 2: rl
 end
 
+if ExRT.isMN then
+	function ExRT.F.IsPlayerRLorOfficer(unitName)
+		if UnitIsGroupLeader(unitName) then
+			return 2
+		elseif UnitIsGroupAssistant(unitName) then
+			return 1
+		else
+			return false
+		end
+	end
+end
+
 function ExRT.F.GetPlayerParty(unitName)
 	for i=1,GetNumGroupMembers() do
 		local name,_,subgroup = GetRaidRosterInfo(i)
-		if name and UnitIsUnit(name,unitName) then
+		if (not C_Secrets or not C_Secrets.ShouldUnitComparisonBeSecret(name,unitName)) and name and UnitIsUnit(name,unitName) then
 			return subgroup
 		end
 	end
@@ -791,12 +802,25 @@ end
 function ExRT.F.GetOwnPartyNum()
 	for i=1,GetNumGroupMembers() do
 		local name,_,subgroup = GetRaidRosterInfo(i)
-		if name and UnitIsUnit(name,'player') then
+		if (not C_Secrets or not C_Secrets.ShouldUnitComparisonBeSecret(name,'player')) and name and UnitIsUnit(name,'player') then
 			return subgroup
 		end
 	end
 	return 1
 end
+if ExRT.isMN then
+	function ExRT.F.GetOwnPartyNum()
+		local shortName = UnitName'player'
+		for i=1,GetNumGroupMembers() do
+			local name,_,subgroup = GetRaidRosterInfo(i)
+			if (not canaccessvalue or canaccessvalue(name)) and name and shortName == ExRT.F.delUnitNameServer(name) then
+				return subgroup
+			end
+		end
+		return 1
+	end
+end
+
 
 function ExRT.F.CreateAddonMsg(...)
 	local result = ""
@@ -954,7 +978,7 @@ function ExRT.F.IterateRoster(maxGroup,index)
 		end
 		local guid = UnitGUID(name or "raid"..index)
 		name = name or ""
-		return index, name, subgroup, fileName, guid, rank, level, online, isDead, combatRole
+		return index, name, subgroup, fileName, guid, rank, level, online, isDead, combatRole, "raid"..index
 	else
 		local name, rank, subgroup, level, class, fileName, online, isDead, combatRole, _
 
@@ -966,11 +990,7 @@ function ExRT.F.IterateRoster(maxGroup,index)
 		end
 
 		subgroup = 1
-		name, _ = UnitName(unit)
-		name = name or ""
-		if _ then
-			name = name .. "-" .. _
-		end
+		name = GetUnitName(unit, true) or ""
 		class, fileName = UnitClass(unit)
 
 		if UnitIsGroupLeader(unit) then
@@ -991,7 +1011,7 @@ function ExRT.F.IterateRoster(maxGroup,index)
 
 		combatRole = UnitGroupRolesAssigned(unit)
 
-		return index, name, subgroup, fileName, guid, rank, level, online, isDead, combatRole
+		return index, name, subgroup, fileName, guid, rank, level, online, isDead, combatRole, unit
 	end
 end
 

@@ -19,10 +19,10 @@ local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
 local QuestieQuestBlacklist = QuestieLoader:ImportModule("QuestieQuestBlacklist")
 ---@type IsleOfQuelDanas
 local IsleOfQuelDanas = QuestieLoader:ImportModule("IsleOfQuelDanas")
----@type DailyQuests
-local DailyQuests = QuestieLoader:ImportModule("DailyQuests")
 ---@type QuestieLib
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
+---@type Comms
+local Comms = QuestieLoader:ImportModule("Comms")
 
 local GetQuestGreenRange = GetQuestGreenRange
 local yield = coroutine.yield
@@ -36,18 +36,35 @@ local QUESTS_PER_YIELD = 24
 local timer
 
 -- Keep track of all available quests to unload undoable when abandoning a quest
+---@type table<QuestId, boolean>
 local availableQuests = {}
+AvailableQuests.__availableQuests = availableQuests
+
+---@type table<NpcId, table<QuestId, boolean>>
+local availableQuestsByNpc = {}
+AvailableQuests.__availableQuestsByNpc = availableQuestsByNpc
+
+--- Quests that were hidden after talking to an NPC
+---@type table<QuestId, boolean>
+local unavailableQuestsDeterminedByTalking
 
 local dungeons
 local playerFaction
 local QIsComplete, IsLevelRequirementsFulfilled, IsDoable = QuestieDB.IsComplete, AvailableQuests.IsLevelRequirementsFulfilled, QuestieDB.IsDoable
 
-local _CalculateAndDrawAvailableQuests, _DrawChildQuests, _AddStarter, _DrawAvailableQuest, _GetIconScaleForAvailable, _HasProperDistanceToAlreadyAddedSpawns
+local _CalculateAndDrawAvailableQuests, _DrawChildQuests, _AddStarter, _DrawAvailableQuest, _GetIconScaleForAvailable, _HasProperDistanceToAlreadyAddedSpawns, _MarkQuestAsUnavailableFromNPC
 
 function AvailableQuests.Initialize()
     Questie:Debug(Questie.DEBUG_DEVELOP, "AvailableQuests: Initialize")
     dungeons = ZoneDB:GetDungeons()
     playerFaction = UnitFactionGroup("player")
+
+    local realmName = GetRealmName()
+    if (not Questie.db.global.unavailableQuestsDeterminedByTalking[realmName]) or QuestieLib.DidDailyResetHappenSinceLastLogin() then
+        Questie.db.global.unavailableQuestsDeterminedByTalking[realmName] = {}
+    end
+    unavailableQuestsDeterminedByTalking = Questie.db.global.unavailableQuestsDeterminedByTalking[realmName]
+    AvailableQuests.__unavailableQuestsDeterminedByTalking = unavailableQuestsDeterminedByTalking
 end
 
 ---@param callback function | nil
@@ -83,9 +100,9 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
                 for _, npc in ipairs(item.npcDrops) do
                     local no = QuestieDB:GetNPC(npc)
                     if limit == 0 or added < limit then
-                        added = added + _AddStarter(no, quest, "im_"..npc, (limit == 0 and 0) or (limit - added))
+                        added = added + _AddStarter(no, quest, "im_" .. npc, (limit == 0 and 0) or (limit - added))
                     else
-                        QuestieTooltips:RegisterQuestStartTooltip(quest.Id, no.name, npc, "m_"..npc)
+                        QuestieTooltips:RegisterQuestStartTooltip(quest.Id, no.name, npc, "m_" .. npc, "itemFromMonster")
                     end
                 end
             end
@@ -93,9 +110,9 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
                 for _, obj in ipairs(item.objectDrops) do
                     local oo = QuestieDB:GetObject(obj)
                     if limit == 0 or added < limit then
-                        added = added + _AddStarter(oo, quest, "io_"..obj, (limit == 0 and 0) or (limit - added))
+                        added = added + _AddStarter(oo, quest, "io_" .. obj, (limit == 0 and 0) or (limit - added))
                     else
-                        QuestieTooltips:RegisterQuestStartTooltip(quest.Id, oo.name, obj, "o_"..obj)
+                        QuestieTooltips:RegisterQuestStartTooltip(quest.Id, oo.name, obj, "o_" .. obj, "itemFromObject")
                     end
                 end
             end
@@ -115,7 +132,7 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
             if limit == 0 or added < limit then
                 added = added + _AddStarter(obj, quest, "o_" .. obj.id, (limit == 0 and 0) or (limit - added))
             else
-                QuestieTooltips:RegisterQuestStartTooltip(quest.Id, obj.name, obj.id, "o_"..obj.id)
+                QuestieTooltips:RegisterQuestStartTooltip(quest.Id, obj.name, obj.id, "o_" .. obj.id, "Object")
             end
         end
     end
@@ -130,20 +147,226 @@ function AvailableQuests.DrawAvailableQuest(quest) -- prevent recursion
                 return
             end
 
+            if (not availableQuestsByNpc[npc.id]) then
+                availableQuestsByNpc[npc.id] = {}
+            end
+            availableQuestsByNpc[npc.id][quest.Id] = true
+
             if limit == 0 or added < limit then
                 added = added + _AddStarter(npc, quest, "m_" .. npc.id, (limit == 0 and 0) or (limit - added))
             else
-                QuestieTooltips:RegisterQuestStartTooltip(quest.Id, npc.name, npc.id, "m_"..npc.id)
+                QuestieTooltips:RegisterQuestStartTooltip(quest.Id, npc.name, npc.id, "m_" .. npc.id, "NPC")
             end
         end
     end
 end
 
-function AvailableQuests.UnloadUndoable()
-    for questId, _ in pairs(availableQuests) do
-        if (not QuestieDB.IsDoable(questId)) then
-            QuestieMap:UnloadQuestFrames(questId)
+---@param questId QuestId
+function AvailableQuests.RemoveQuest(questId)
+    availableQuests[questId] = nil
+    QuestieMap:UnloadQuestFrames(questId)
+    QuestieTooltips:RemoveQuest(questId)
+end
+
+---@param npcId NpcId @The ID of the NPC associated with the daily quests.
+---@param questIds QuestId[] @An array of quest IDs that need to be hidden.
+function AvailableQuests.RemoveQuestsForToday(npcId, questIds)
+    for _, questId in pairs(questIds) do
+        if availableQuestsByNpc[npcId] then
+            AvailableQuests.RemoveQuest(questId)
+            availableQuestsByNpc[npcId][questId] = nil
         end
+        unavailableQuestsDeterminedByTalking[questId] = true
+    end
+end
+
+---@type string|nil
+local lastNpcGuid
+
+--- Called on GOSSIP_SHOW to hide all quests that are not available from the NPC.
+function AvailableQuests.ValidateAvailableQuestsFromGossipShow()
+    local npcGuid = UnitGUID("target")
+    if (not npcGuid) then
+        return
+    end
+
+    local _, _, _, _, _, npcIDStr = strsplit("-", npcGuid)
+    if (not npcIDStr) then
+        return
+    end
+
+    ---@type NpcId
+    local npcId = tonumber(npcIDStr)
+    if lastNpcGuid == npcGuid then
+        return
+    end
+
+    lastNpcGuid = npcGuid
+
+    local availableQuestsInGossip = QuestieCompat.GetAvailableQuests()
+
+    -- validate no quest is incorrectly hidden
+    for _, gossipQuest in pairs(availableQuestsInGossip) do
+        local questId = gossipQuest.questID
+        if unavailableQuestsDeterminedByTalking[questId] then
+            unavailableQuestsDeterminedByTalking[questId] = nil
+            local quest = QuestieDB.GetQuest(questId)
+            if quest then
+                availableQuests[questId] = true
+                AvailableQuests.DrawAvailableQuest(quest)
+            end
+        end
+    end
+
+    -- Active quests are relevant, because the API can fire GOSSIP_SHOW before QUEST_ACCEPTED.
+    -- So we need to check active quests to not hide them incorrectly for the day.
+    local activeQuests = QuestieCompat.GetActiveQuests()
+    local unavailableQuestsToBroadcast = {}
+    for questId in pairs(availableQuestsByNpc[npcId] or {}) do
+        local isAvailableInGossip = false
+        for _, gossipQuest in pairs(availableQuestsInGossip) do
+            if gossipQuest.questID == questId then
+                isAvailableInGossip = true
+                break
+            end
+        end
+        for _, gossipQuest in pairs(activeQuests) do
+            if gossipQuest.questID == questId then
+                isAvailableInGossip = true
+                break
+            end
+        end
+
+        if (not isAvailableInGossip) and QuestieDB.IsDailyQuest(questId) then
+            AvailableQuests.RemoveQuest(questId)
+            _MarkQuestAsUnavailableFromNPC(questId, npcId)
+            table.insert(unavailableQuestsToBroadcast, questId)
+        end
+    end
+
+    if next(unavailableQuestsToBroadcast) then
+        Comms.BroadcastUnavailableDailyQuests(npcId, unavailableQuestsToBroadcast)
+    end
+end
+
+--- Called on QUEST_DETAIL to hide all quests that are not available from the NPC.
+--- This is relevant on NPCs which offer random quests each day and especially a different number of quests.
+function AvailableQuests.ValidateAvailableQuestsFromQuestDetail()
+    local npcGuid = UnitGUID("target")
+    if (not npcGuid) then
+        return
+    end
+
+    local _, _, _, _, _, npcIDStr = strsplit("-", npcGuid)
+    if (not npcIDStr) then
+        return
+    end
+
+    ---@type NpcId
+    local npcId = tonumber(npcIDStr)
+    if lastNpcGuid == npcGuid then
+        return
+    end
+
+    lastNpcGuid = npcGuid
+
+    -- Hide all quests but the current one
+    local availableQuestId = GetQuestID()
+    if availableQuestId == 0 then
+        -- GetQuestID returns 0 when the dialog is closed. Nothing left to do for us
+        return
+    end
+
+    -- validate quest is not incorrectly hidden
+    if unavailableQuestsDeterminedByTalking[availableQuestId] then
+        unavailableQuestsDeterminedByTalking[availableQuestId] = nil
+        local quest = QuestieDB.GetQuest(availableQuestId)
+        if quest then
+            availableQuests[availableQuestId] = true
+            AvailableQuests.DrawAvailableQuest(quest)
+        end
+    end
+
+    local unavailableQuestsToBroadcast = {}
+    for questId in pairs(availableQuestsByNpc[npcId] or {}) do
+        if questId ~= availableQuestId and QuestieDB.IsDailyQuest(questId) then
+            AvailableQuests.RemoveQuest(questId)
+            _MarkQuestAsUnavailableFromNPC(questId, npcId)
+            table.insert(unavailableQuestsToBroadcast, questId)
+        end
+    end
+
+    if next(unavailableQuestsToBroadcast) then
+        Comms.BroadcastUnavailableDailyQuests(npcId, unavailableQuestsToBroadcast)
+    end
+end
+
+--- Called on QUEST_GREETING to hide all quests that are not available from the NPC.
+--- This is relevant on NPCs which offer random quests each day and especially a different number of quests.
+function AvailableQuests.ValidateAvailableQuestsFromQuestGreeting()
+    local npcGuid = UnitGUID("target")
+    if (not npcGuid) then
+        return
+    end
+
+    local _, _, _, _, _, npcIDStr = strsplit("-", npcGuid)
+    if (not npcIDStr) then
+        return
+    end
+
+    ---@type NpcId
+    local npcId = tonumber(npcIDStr)
+    if lastNpcGuid == npcGuid then
+        return
+    end
+
+    lastNpcGuid = npcGuid
+
+    local availableQuestsInGreeting = {}
+    for i = 1, MAX_NUM_QUESTS do
+        local titleLine = _G["QuestTitleButton" .. i]
+        if (not titleLine) then
+            break
+        elseif titleLine:IsVisible() then
+            local title
+            local isActive = titleLine.isActive == 1
+            if isActive then
+                -- Active quests are relevant, because the API can fire QUEST_GREETING before QUEST_ACCEPTED.
+                -- So we need to check active quests to not hide them incorrectly for the day.
+                title = GetActiveTitle(titleLine:GetID())
+            else
+                title = GetAvailableTitle(titleLine:GetID())
+            end
+            local questId = QuestieDB.GetQuestIDFromName(title, npcGuid, (not isActive))
+            if questId and questId > 0 then
+                availableQuestsInGreeting[questId] = true
+            end
+        end
+    end
+
+    -- validate no quest is incorrectly hidden
+    for questId in pairs(availableQuestsInGreeting) do
+        if unavailableQuestsDeterminedByTalking[questId] then
+            unavailableQuestsDeterminedByTalking[questId] = nil
+            local quest = QuestieDB.GetQuest(questId)
+            if quest then
+                availableQuests[questId] = true
+                AvailableQuests.DrawAvailableQuest(quest)
+            end
+        end
+    end
+
+    local unavailableQuestsToBroadcast = {}
+    for questId in pairs(availableQuestsByNpc[npcId] or {}) do
+        if (not availableQuestsInGreeting[questId]) and QuestieDB.IsDailyQuest(questId) then
+            AvailableQuests.RemoveQuest(questId)
+            _MarkQuestAsUnavailableFromNPC(questId, npcId)
+            table.insert(unavailableQuestsToBroadcast, questId)
+        end
+    end
+
+    if next(unavailableQuestsToBroadcast) then
+        Comms.BroadcastUnavailableDailyQuests(npcId, unavailableQuestsToBroadcast)
     end
 end
 
@@ -187,11 +410,12 @@ _CalculateAndDrawAvailableQuests = function()
     -- We create a local function here to improve readability but use the localized variables above.
     -- The order of checks is important here to bring the speed to a max
     local function _CheckAvailability(questId)
-        if (autoBlacklist[questId] or       -- Don't show autoBlacklist quests marked as such by IsDoable
-            completedQuests[questId] or     -- Don't show completed quests
-            hiddenQuests[questId] or        -- Don't show blacklisted quests
-            hidden[questId]                 -- Don't show quests hidden by the player
-        ) then
+        if (autoBlacklist[questId] or -- Don't show autoBlacklist quests marked as such by IsDoable
+                completedQuests[questId] or -- Don't show completed quests
+                hiddenQuests[questId] or -- Don't show blacklisted quests
+                hidden[questId] or -- Don't show quests hidden by the player
+                unavailableQuestsDeterminedByTalking[questId] -- Don't show quests hidden after talking to an NPC
+            ) then
             availableQuests[questId] = nil
             return
         end
@@ -206,28 +430,27 @@ _CalculateAndDrawAvailableQuests = function()
         end
 
         if (
-            ((not showRepeatableQuests) and QuestieDB.IsRepeatable(questId)) or     -- Don't show repeatable quests if option is disabled
-            ((not showPvPQuests) and QuestieDB.IsPvPQuest(questId)) or              -- Don't show PvP quests if option is disabled
-            ((not showDungeonQuests) and QuestieDB.IsDungeonQuest(questId)) or      -- Don't show dungeon quests if option is disabled
-            ((not showRaidQuests) and QuestieDB.IsRaidQuest(questId)) or            -- Don't show raid quests if option is disabled
-            ((not showAQWarEffortQuests) and aqWarEffortQuests[questId]) or         -- Don't show AQ War Effort quests if the option disabled
-            (IsClassic and currentIsleOfQuelDanasQuests[questId]) or        -- Don't show Isle of Quel'Danas quests for Era/HC/SoX
-            (IsSoD and QuestieDB.IsRuneAndShouldBeHidden(questId))          -- Don't show SoD Rune quests with the option disabled
-        ) then
+                ((not showRepeatableQuests) and QuestieDB.IsRepeatable(questId)) or -- Don't show repeatable quests if option is disabled
+                ((not showPvPQuests) and QuestieDB.IsPvPQuest(questId)) or -- Don't show PvP quests if option is disabled
+                ((not showDungeonQuests) and QuestieDB.IsDungeonQuest(questId)) or -- Don't show dungeon quests if option is disabled
+                ((not showRaidQuests) and QuestieDB.IsRaidQuest(questId)) or -- Don't show raid quests if option is disabled
+                ((not showAQWarEffortQuests) and aqWarEffortQuests[questId]) or -- Don't show AQ War Effort quests if the option disabled
+                (IsClassic and currentIsleOfQuelDanasQuests[questId]) or -- Don't show Isle of Quel'Danas quests for Era/HC/SoX
+                (IsSoD and QuestieDB.IsRuneAndShouldBeHidden(questId)) -- Don't show SoD Rune quests with the option disabled
+            ) then
+            if availableQuests[questId] then
+                AvailableQuests.RemoveQuest(questId)
+            end
             availableQuests[questId] = nil
             return
         end
 
-        if (
-            (not IsLevelRequirementsFulfilled(questId, minLevel, maxLevel, playerLevel)) or
-            (not IsDoable(questId, debugEnabled))
-        ) then
+        if ((not IsLevelRequirementsFulfilled(questId, minLevel, maxLevel, playerLevel)) or (not IsDoable(questId, debugEnabled))) then
             --If the quests are not within level range we want to unload them
             --(This is for when people level up or change settings etc)
 
             if availableQuests[questId] then
-                QuestieMap:UnloadQuestFrames(questId)
-                QuestieTooltips:RemoveQuest(questId)
+                AvailableQuests.RemoveQuest(questId)
             end
             availableQuests[questId] = nil
             return
@@ -331,25 +554,27 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
     ---@type string|nil
     local starterType
 
-    if tooltipKey == "m_"..starter.id then
+    if tooltipKey == "m_" .. starter.id then
         -- filter hostile starters
         if playerFaction == "Alliance" and starter.friendlyToFaction == "H" then
             return 0
         elseif playerFaction == "Horde" and starter.friendlyToFaction == "A" then
             return 0
         end
-    elseif tooltipKey == "im_"..starter.id then
+    elseif tooltipKey == "im_" .. starter.id then
         -- We don't filter items by faction, because Questie can not differentiate neutral NPCs from friendly ones.
         -- overwrite tooltipKey, so stuff shows in monster tooltips
-        tooltipKey = "m_"..starter.id
+        tooltipKey = "m_" .. starter.id
         starterType = "itemFromMonster"
-    elseif tooltipKey == "io_"..starter.id then
+    elseif tooltipKey == "o_" .. starter.id then
+        starterType = "Object"
+    elseif tooltipKey == "io_" .. starter.id then
         -- overwrite tooltipKey, so stuff shows in object tooltips
-        tooltipKey = "o_"..starter.id
+        tooltipKey = "o_" .. starter.id
         starterType = "itemFromObject"
     end
 
-    QuestieTooltips:RegisterQuestStartTooltip(quest.Id, starter.name, starter.id, tooltipKey)
+    QuestieTooltips:RegisterQuestStartTooltip(quest.Id, starter.name, starter.id, tooltipKey, (starterType or "NPC"))
 
     local starterIcons = {}
     local starterLocs = {}
@@ -360,11 +585,11 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
             local coords
             for spawnIndex = 1, #spawns do
                 coords = spawns[spawnIndex]
-                if (#spawns == 1 or _HasProperDistanceToAlreadyAddedSpawns(coords, alreadyAddedSpawns)) and (limit == 0  or limit-added>0) then
+                if (#spawns == 1 or _HasProperDistanceToAlreadyAddedSpawns(coords, alreadyAddedSpawns)) and (limit == 0 or limit - added > 0) then
                     ---@type IconData
                     local data = {
                         Id = quest.Id,
-                        Icon =  QuestieLib.GetQuestIcon(quest),
+                        Icon = QuestieLib.GetQuestIcon(quest),
                         GetIconScale = _GetIconScaleForAvailable,
                         IconScale = _GetIconScaleForAvailable(),
                         Type = "available",
@@ -388,7 +613,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
                             -- This is only relevant for waypoint drawing
                             starterIcons[zone] = icon
                             if not starterLocs[zone] then
-                                starterLocs[zone] = { coords[1], coords[2] }
+                                starterLocs[zone] = {coords[1], coords[2]}
                             end
                         end
                         if icon then
@@ -409,7 +634,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
                     ---@type IconData
                     local data = {
                         Id = quest.Id,
-                        Icon =  QuestieLib.GetQuestIcon(quest),
+                        Icon = QuestieLib.GetQuestIcon(quest),
                         GetIconScale = _GetIconScaleForAvailable,
                         IconScale = _GetIconScaleForAvailable(),
                         Type = "available",
@@ -419,7 +644,7 @@ _AddStarter = function(starter, quest, tooltipKey, limit)
                         StarterType = starterType,
                     }
                     starterIcons[zone] = QuestieMap:DrawWorldIcon(data, zone, waypoints[1][1][1], waypoints[1][1][2])
-                    starterLocs[zone] = { waypoints[1][1][1], waypoints[1][1][2] }
+                    starterLocs[zone] = {waypoints[1][1][1], waypoints[1][1][2]}
                     added = added + 1
                 end
                 QuestieMap:DrawWaypoints(starterIcons[zone], waypoints, zone)
@@ -442,6 +667,13 @@ end
 
 _GetIconScaleForAvailable = function()
     return Questie.db.profile.availableScale or 1.3
+end
+
+---@param questId QuestId
+---@param npcId NpcId
+_MarkQuestAsUnavailableFromNPC = function(questId, npcId)
+    unavailableQuestsDeterminedByTalking[questId] = true
+    availableQuestsByNpc[npcId][questId] = nil
 end
 
 return AvailableQuests

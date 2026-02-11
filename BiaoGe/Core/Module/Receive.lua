@@ -12,16 +12,170 @@ local RGB = ns.RGB
 local GetClassRGB = ns.GetClassRGB
 local SetClassCFF = ns.SetClassCFF
 local Maxb = ns.Maxb
-local HopeMaxn = ns.HopeMaxn
-local HopeMaxb = ns.HopeMaxb
-local HopeMaxi = ns.HopeMaxi
+local AddTexture = ns.AddTexture
+local GetItemID = ns.GetItemID
 
 local pt = print
 
-local dangqianTbl = { "当前表格", "當前表格" }
-local historyTbl = { "历史表格", "歷史表格" }
+local dangqianTbl = { "当前表格", "當前表格", "Current table" }
+local historyTbl = { "历史表格", "歷史表格", "Historical table" }
 
 function BG.ReceiveUI()
+    ----------接收表格主界面----------
+    do
+        BG.ReceiveMainFrame = CreateFrame("Frame", "BG.ReceiveFrame", UIParent, "BackdropTemplate")
+        BG.ReceiveMainFrame:SetBackdrop({
+            bgFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+            edgeSize = 2
+        })
+        BG.ReceiveMainFrame:SetBackdropColor(0, 0, 0, 0.9)
+        BG.ReceiveMainFrame:SetPoint("CENTER")
+        BG.ReceiveMainFrame:SetFrameLevel(100)
+        BG.ReceiveMainFrame:SetMovable(true)
+        BG.ReceiveMainFrame:SetToplevel(true)
+        BG.ReceiveMainFrame:SetScript("OnMouseUp", function(self)
+            self:StopMovingOrSizing()
+        end)
+        BG.ReceiveMainFrame:SetScript("OnMouseDown", function(self)
+            BG.FrameHide(0)
+            self:StartMoving()
+        end)
+        BG.ReceiveMainFrame:SetScript("OnHide", function(self)
+            StaticPopup_Hide("BiaoGe_YingYongReceiveBiaoGe")
+        end)
+        -- BG.After(3, function()
+        --     for k, FB in pairs(BG.FBtable) do
+        --         BG.CreateFBUI(FB, "Receive")
+        --     end
+        --     local FB = "DS"
+        --     BG["ReceiveFrame" .. FB]:Show()
+        --     BG.ReceiveMainFrame:SetWidth(BG.FBWidth[FB])
+        --     BG.ReceiveMainFrame:SetHeight(BG.FBHeight[FB] - 20)
+        --     BG.ReceiveMainFrame:Show()
+        -- end)
+        tinsert(UISpecialFrames, "BG.ReceiveFrame") -- 按ESC可关闭插件
+
+        local _, class = UnitClass("player")
+        local r, g, b, cff = GetClassColor(class)
+        BG.ReceiveMainFrame:SetBackdropBorderColor(r, g, b)
+
+        BG.ReceiveMainFrame.CloseButton = CreateFrame("Button", nil, BG.ReceiveMainFrame, "UIPanelCloseButton")
+        BG.ReceiveMainFrame.CloseButton:SetPoint("TOPRIGHT", BG.ReceiveMainFrame, "TOPRIGHT", 0, 0)
+        BG.ReceiveMainFrame.CloseButton:SetSize(40, 40)
+
+        local TitleText = BG.ReceiveMainFrame:CreateFontString()
+        TitleText:SetPoint("TOP", BG.ReceiveMainFrame, "TOP", 0, -10)
+        TitleText:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+        BG.ReceiveMainFrameTitle = TitleText
+
+        local l = BG.ReceiveMainFrame:CreateLine()
+        l:SetColorTexture(r, g, b)
+        l:SetStartPoint("BOTTOMLEFT", TitleText, -20, -2)
+        l:SetEndPoint("BOTTOMRIGHT", TitleText, 20, -2)
+        l:SetThickness(1.5)
+
+        local bt = BG.CreateButton(BG.ReceiveMainFrame)
+        bt:SetSize(120, 25)
+        bt:SetPoint("BOTTOMRIGHT", BG.ReceiveMainFrame, "BOTTOM", -10, 20)
+        bt:SetText(L["使用该表格"])
+        bt:SetScript("OnClick", function(self)
+            BG.PlaySound(1)
+            if not StaticPopupDialogs["BiaoGe_YingYongReceiveBiaoGe"] then
+                StaticPopupDialogs["BiaoGe_YingYongReceiveBiaoGe"] = {
+                    text = L["确定使用该表格？\n你的当前表格将被其|cffff0000替换|r"],
+                    button1 = L["是"],
+                    button2 = L["否"],
+                    OnCancel = function()
+                    end,
+                    timeout = 0,
+                    whileDead = true,
+                    hideOnEscape = true,
+                    showAlert = true,
+                }
+            end
+            StaticPopupDialogs["BiaoGe_YingYongReceiveBiaoGe"].OnAccept = function()
+                local FB = BG.ReceiveBiaoGe.FB
+                BG.ClearBiaoGe("biaoge", FB)
+                BG.PairFBItem(function(item, buyer, money, b, i)
+                    item:SetText(BG.ReceiveBiaoGe["boss" .. b]["zhuangbei" .. i] or "")
+                    buyer:SetText(BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i] or "")
+                    buyer:SetCursorPosition(0)
+                    if BG.ReceiveBiaoGe["boss" .. b]["color" .. i] then
+                        buyer:SetTextColor(unpack(BG.ReceiveBiaoGe["boss" .. b]["color" .. i]))
+                    end
+                    money:SetText(BG.ReceiveBiaoGe["boss" .. b]["jine" .. i] or "")
+                    if BG.Frame[FB]["boss" .. b]["time"] then
+                        local t = BG.ReceiveBiaoGe["boss" .. b]["time"]
+                        if t then
+                            BG.Frame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. t)
+                            BiaoGe[FB]["boss" .. b]["time"] = t
+                        end
+                    end
+                end, nil, true, FB)
+                BG.ReceiveMainFrame:Hide()
+                BG.MainFrame:Show()
+                BG.ClickTabButton(BG.FBMainFrameTabNum)
+                BG.ClickFBbutton(FB)
+                BG.PlaySound(2)
+            end
+            StaticPopup_Show("BiaoGe_YingYongReceiveBiaoGe")
+        end)
+
+        local bt = BG.CreateButton(BG.ReceiveMainFrame)
+        bt:SetSize(120, 25)
+        bt:SetPoint("BOTTOMLEFT", BG.ReceiveMainFrame, "BOTTOM", 10, 20)
+        bt:SetText(L["保存至历史表格"])
+        bt:SetScript("OnClick", function(self)
+            local FB = BG.ReceiveBiaoGe.FB
+            local DT = BG.ReceiveBiaoGe.DT
+            local BiaoTi = BG.ReceiveBiaoGe.BiaoTi
+            for key, value in pairs(BiaoGe.History[FB]) do
+                if tonumber(DT) == key then
+                    BG.ReceiveMainFrametext:SetText(BG.STC_r1(L["该表格已在你历史表格里"]) .. AddTexture("interface/raidframe/readycheck-notready"))
+                    return
+                end
+            end
+
+            BiaoGe.History[FB][DT] = {}
+            for b = 1, Maxb[FB] + 2 do
+                BiaoGe.History[FB][DT]["boss" .. b] = {}
+                for i = 1, BG.GetMaxi(FB, b) do
+                    if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
+                        BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i] = BG.ReceiveBiaoGe["boss" .. b]
+                            ["zhuangbei" .. i]
+                        BiaoGe.History[FB][DT]["boss" .. b]["maijia" .. i] = BG.ReceiveBiaoGe["boss" .. b]["maijia" .. i]
+                        BiaoGe.History[FB][DT]["boss" .. b]["color" .. i] = { BG.ReceiveBiaoGe["boss" .. b]["color" .. i]
+                            [1], BG.ReceiveBiaoGe["boss" .. b]["color" .. i][2],
+                            BG.ReceiveBiaoGe["boss" .. b]["color" .. i][3] }
+                        BiaoGe.History[FB][DT]["boss" .. b]["jine" .. i] = BG.ReceiveBiaoGe["boss" .. b]["jine" .. i]
+                    end
+                end
+                if BG.Frame[FB]["boss" .. b]["time"] then
+                    BiaoGe.History[FB][DT]["boss" .. b]["time"] = BG.ReceiveBiaoGe["boss" .. b]["time"]
+                end
+            end
+            local d = { DT, BiaoTi }
+            table.insert(BiaoGe.HistoryList[FB], 1, d)
+            BG.UpdateHistoryButton()
+            BG.CreatHistoryListButton(FB)
+            BG.ReceiveMainFrametext:SetText(L["已保存至历史表格1"] .. AddTexture("interface/raidframe/readycheck-ready"))
+
+            BG.PlaySound(2)
+        end)
+
+        local text = BG.ReceiveMainFrame:CreateFontString()
+        text:SetPoint("LEFT", bt, "RIGHT", 10, 0)
+        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        text:SetTextColor(0, 1, 0)
+        BG.ReceiveMainFrametext = text
+
+        -- 二级
+        for i, FB in ipairs(BG.FBtable) do
+            BG["ReceiveFrame" .. FB] = CreateFrame("Frame", "BG.ReceiveFrame" .. FB, BG.ReceiveMainFrame)
+            BG["ReceiveFrame" .. FB]:Hide()
+        end
+    end
     ------------------把分享表格文字转换为链接------------------
     do
         local function ChangSendLink(self, event, msg, player, l, cs, t, flag, channelId, ...)
@@ -52,6 +206,7 @@ function BG.ReceiveUI()
         ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChangSendLink)
         ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChangSendLink)
 
+        local cd = {}
         hooksecurefunc("SetItemRef", function(link)
             local _, biaoge, text = strsplit(":", link, 3)
             if not (biaoge == "BiaoGe" and text) then return end
@@ -73,6 +228,7 @@ function BG.ReceiveUI()
                 end
                 BG.InsertLink(text)
             else
+                if BG.SetCD(cd, 5) then return end
                 BG.ReceiveMainFrame:Hide()
                 for b = 1, Maxb[FB] + 2 do
                     for i = 1, BG.GetMaxi(FB, b) do
@@ -101,13 +257,14 @@ function BG.ReceiveUI()
                     end
                 end
 
-                player = player .. "-" .. server
                 if not historyname then
                     historyname = ""
                 end
                 text = type .. "-" .. FB .. "-" .. historyname
 
-                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", player)
+                local fullName = player .. "-" .. server
+                ChatThrottleLib:SendAddonMessage("NORMAL", "BiaoGe", text, "WHISPER", fullName)
+                BG.SendSystemMessage(format(L["已向%s发送请求。"], SetClassCFF(fullName)))
             end
         end)
     end
@@ -135,7 +292,7 @@ function BG.ReceiveUI()
             if BG.FindTableString(type, dangqianTbl) then
                 local DT = tonumber(date("%y%m%d%H%M%S", GetServerTime()))
                 local DTcn = date(L["%m月%d日%H:%M:%S\n"], GetServerTime())
-                local biaoti = format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "localName"),
+                local biaoti = format(L["%s%s %s人 工资:%s"], DTcn, BG.GetFBinfo(FB, "shortName"),
                     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 4]:GetText(),
                     BG.Frame[FB]["boss" .. Maxb[FB] + 2]["jine" .. 5]:GetText())
                 BG.SendBiaoGe.DT = DT
@@ -279,6 +436,7 @@ function BG.ReceiveUI()
                 local type, neirong = strsplit(":", value, 2)
                 if type == "FB" then
                     BG.ReceiveBiaoGe.FB = neirong
+                    BG.SendSystemMessage(format(L["正在接收%s的表格数据。"], SetClassCFF(sender)))
                 end
                 if type == "DT" then
                     BG.ReceiveBiaoGe.DT = tonumber(neirong)
@@ -351,6 +509,7 @@ function BG.ReceiveUI()
 
                         BG.ReceiveMainFrameTitle:SetText(BiaoTi)
                         BG.ReceiveMainFrametext:SetText("")
+                        BG.SendSystemMessage(format(L["已成功接收%s的表格。"], SetClassCFF(sender)))
                     end
                 end
             end

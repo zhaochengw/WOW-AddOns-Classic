@@ -1,6 +1,7 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("AuctTombsTrash", "DBM-Party-BC", 8, 250)
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20260112042022")
 
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true

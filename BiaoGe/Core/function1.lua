@@ -212,9 +212,9 @@ local function SetClassCFF(name, player, type)
     end
     if class then
         local color = select(4, GetClassColor(class))
-        return "|c" .. color .. name .. "|r", color
+        return "|c" .. color .. name .. "|r"
     else
-        return name, ""
+        return name
     end
 end
 ns.SetClassCFF = SetClassCFF
@@ -231,26 +231,6 @@ function BG.ClearFocus()
     if BG.lastfocus then
         BG.lastfocus:ClearFocus()
     end
-end
-
-------------------事件监控------------------
-local events = {}
-local f = CreateFrame("Frame")
-f:SetScript("OnEvent", function(_, event, ...)
-    for _, func in ipairs(events[event]) do
-        if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-            func(f, event, CombatLogGetCurrentEventInfo())
-        else
-            func(f, event, ...)
-        end
-    end
-end)
-function BG.RegisterEvent(event, func)
-    if not events[event] then
-        events[event] = {}
-        f:RegisterEvent(event)
-    end
-    tinsert(events[event], func)
 end
 
 ------------------函数：隐藏窗口------------------   -- 0：隐藏焦点+全部框架，1：隐藏全部框架，2：隐藏除历史表格外的框架
@@ -526,8 +506,6 @@ end
 ----------高亮按钮----------
 function BG.SetTextHighlightTexture(bt)
     local tex = bt:CreateTexture()
-    -- tex:SetPoint("CENTER")
-    -- tex:SetSize(bt:GetWidth() + 15, bt:GetHeight() - 10)
     tex:SetPoint("TOPLEFT", bt, "TOPLEFT", -8, 0)
     tex:SetPoint("BOTTOMRIGHT", bt, "BOTTOMRIGHT", 8, 0)
     tex:SetTexture("Interface/PaperDollInfoFrame/UI-Character-Tab-Highlight")
@@ -564,7 +542,7 @@ function BG.SecondsToTime(second)
 
     local s = floor(second)
     if s then
-        return m .. L["秒"]
+        return s .. L["秒"]
     end
 end
 
@@ -599,21 +577,68 @@ function BG.SetBorderAlpha(self)
     self.Middle:SetAlpha(BG.otherEditAlpha)
 end
 
-function BG.FormatNumber(num)
-    local len = strlen(num)
-    if len <= 3 then
-        return num
-    else
-        local k = num:sub(-4, -4)
-        local w = num:sub(1, -5)
-        if w == "" then
-            w = 0
+function BG.FormatNumber(num, type)
+    if not tonumber(num) then return num end
+    num = tonumber(num)
+    type = type or 1
+    if ns.enUS then
+        if type == 1 then
+            if num >= 1000000 then
+                return format("%.1fm", floor(num / 1000000 * 10) / 10)
+            elseif num >= 1000 then
+                return format("%.1fk", floor(num / 1000 * 10) / 10)
+            else
+                return num
+            end
+        elseif type == 2 then -- 添加分隔符
+            local formatted = tostring(num)
+            formatted = formatted:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+            return formatted
+        elseif type == 3 then
+            if num >= 1000000 then
+                return format("%.1fm", floor(num / 1000000 * 10) / 10)
+            elseif num >= 10000 then
+                return format("%dk", floor(num / 1000 * 10) / 10)
+            elseif num >= 1000 then
+                return format("%.1fk", floor(num / 1000 * 10) / 10)
+            else
+                return num
+            end
         end
-        return w .. "." .. k .. L["万"]
+    else
+        if type == 1 then -- 省略百十个位
+            if num >= 10000 then
+                return format(L["%.1f万"], floor(num / 10000 * 10) / 10)
+            else
+                return num
+            end
+        elseif type == 2 then -- 输出所有小数点
+            if num >= 10000 then
+                local wanNum = num / 10000
+                if num % 10000 == 0 then
+                    return format("%d" .. L["万"], wanNum)
+                elseif num % 1000 == 0 then
+                    return format("%.1f" .. L["万"], wanNum)
+                elseif num % 100 == 0 then
+                    return format("%.2f" .. L["万"], wanNum)
+                elseif num % 10 == 0 then
+                    return format("%.3f" .. L["万"], wanNum)
+                else
+                    return format("%.4f" .. L["万"], wanNum)
+                end
+            else
+                return num
+            end
+        elseif type == 3 then -- 省略十个位
+            if num >= 10000 then
+                return format(L["%.1f万"], floor(num / 10000 * 10) / 10)
+            elseif num >= 1000 then
+                return format(L["%.1fk"], floor(num / 1000 * 10) / 10)
+            else
+                return num
+            end
+        end
     end
-    -- local formatted = tostring(num)
-    -- formatted = formatted:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,","")
-    -- return formatted
 end
 
 function BG.Copy(table)
@@ -632,51 +657,33 @@ function BG.Copy(table)
     end
 end
 
+local info = {
+    "Hope",
+    "FilterClassItemDB",
+    "filterClassNum",
+    "MeetingHorn",
+    "MeetingHornWhisper",
+    "FBCD",
+    "RaidCD",
+    "QuestCD",
+    "Money",
+    "MONEY",
+    "tradeSkillCooldown",
+    "PlayerItemsLevel",
+    "playerInfo",
+    "equip",
+    "bag",
+    "worldBossCD",
+    -- "",
+    -- "",
+    -- "",
+    -- "",
+}
 function BG.DeletePlayerData(realmID, player)
-    if BiaoGe.Hope and BiaoGe.Hope[realmID] then
-        BiaoGe.Hope[realmID][player] = nil
-    end
-    if BiaoGe.FilterClassItemDB and BiaoGe.FilterClassItemDB[realmID] then
-        BiaoGe.FilterClassItemDB[realmID][player] = nil
-    end
-    if BiaoGe.filterClassNum and BiaoGe.filterClassNum[realmID] then
-        BiaoGe.filterClassNum[realmID][player] = nil
-    end
-    if BiaoGe.MeetingHorn and BiaoGe.MeetingHorn[realmID] then
-        BiaoGe.MeetingHorn[realmID][player] = nil
-    end
-    if BiaoGe.MeetingHornWhisper and BiaoGe.MeetingHornWhisper[realmID] then
-        BiaoGe.MeetingHornWhisper[realmID][player] = nil
-    end
-    if BiaoGe.FBCD and BiaoGe.FBCD[realmID] then
-        BiaoGe.FBCD[realmID][player] = nil
-    end
-    if BiaoGe.RaidCD and BiaoGe.RaidCD[realmID] then
-        BiaoGe.RaidCD[realmID][player] = nil
-    end
-    if BiaoGe.QuestCD and BiaoGe.QuestCD[realmID] then
-        BiaoGe.QuestCD[realmID][player] = nil
-    end
-    if BiaoGe.Money and BiaoGe.Money[realmID] then
-        BiaoGe.Money[realmID][player] = nil
-    end
-    if BiaoGe.MONEY and BiaoGe.MONEY[realmID] then
-        BiaoGe.MONEY[realmID][player] = nil
-    end
-    if BiaoGe.tradeSkillCooldown and BiaoGe.tradeSkillCooldown[realmID] then
-        BiaoGe.tradeSkillCooldown[realmID][player] = nil
-    end
-    if BiaoGe.PlayerItemsLevel and BiaoGe.PlayerItemsLevel[realmID] then
-        BiaoGe.PlayerItemsLevel[realmID][player] = nil
-    end
-    if BiaoGe.playerInfo and BiaoGe.playerInfo[realmID] then
-        BiaoGe.playerInfo[realmID][player] = nil
-    end
-    if BiaoGe.equip and BiaoGe.equip[realmID] then
-        BiaoGe.equip[realmID][player] = nil
-    end
-    if BiaoGe.bag and BiaoGe.bag[realmID] then
-        BiaoGe.bag[realmID][player] = nil
+    for _, key in pairs(info) do
+        if BiaoGe[key] and BiaoGe[key][realmID] then
+            BiaoGe[key][realmID][player] = nil
+        end
     end
     if BiaoGeVIP and BiaoGeVIP.RoleOverviewSort and BiaoGeVIP.RoleOverviewSort[realmID] then
         for i, v in ipairs(BiaoGeVIP.RoleOverviewSort[realmID]) do
@@ -692,7 +699,11 @@ end
 function BG.GetFBinfo(FB, info)
     for i, v in ipairs(BG.FBtable2) do
         if FB == v.FB then
-            return v[info]
+            if v[info] then
+                return v[info]
+            elseif info == "shortName" then
+                return v.localName
+            end
         end
     end
 end
@@ -757,27 +768,115 @@ function BG.ClearCode(text)
     return text:gsub("|T.-|t", ""):gsub("|A.-|a", ""):gsub("|cff......", ""):gsub("|r", "")
 end
 
-local lastNum = 0
-function BG.canSend()
-    local n
-    local canSend = true
-    if IsInRaid(1) then
-        n = GetNumGroupMembers(1)
-        if lastNum >= n then
-            canSend = false
-        end
-    else
-        canSend = false
-        n = 0
-    end
-    lastNum = n
-    return canSend
-end
-
 function BG.ValueInTable(tbl, value)
     for k, v in pairs(tbl) do
         if v == value then
             return true
         end
     end
+end
+
+function BG.GetNpcID(guid)
+    if guid then
+        local npcType, _, _, _, _, npcID = strsplit("-", guid)
+        return tonumber(npcID) or 0, npcType
+    else
+        return "", ""
+    end
+end
+
+function BG.OnEnterDelay(self, func, delay, isHook)
+    delay = delay or .4
+    local script = isHook and self.HookScript or self.SetScript
+    script(self, "OnEnter", function(self)
+        self.isOnEnter = true
+        if func then
+            self.t = 0
+            self:SetScript("OnUpdate", function(self, t)
+                self.t = self.t + t
+                if self.t >= delay then
+                    self:SetScript("OnUpdate", nil)
+                    func(self)
+                end
+            end)
+        end
+    end)
+end
+
+function BG.OnLeaveDelay(self, func)
+    self:SetScript("OnLeave", function(self)
+        self.isOnEnter = false
+        self:SetScript("OnUpdate", nil)
+        GameTooltip:Hide()
+        if func then
+            func(self)
+        end
+    end)
+end
+
+function BG.IsMe(realmID, player)
+    return realmID == BG.realmID and player == BG.playerName
+end
+
+function BG.SetCD(self, time)
+    if self.cd then return true end
+    self.cd = true
+    BG.After(time, function()
+        self.cd = nil
+    end)
+end
+
+function BG.GetNextWeekTime() -- 距离下周四还有多少秒
+    local resetDay = 2
+    if BG.IsCN() then
+        resetDay = 4
+    end
+
+    local currentTimestamp = GetServerTime()
+    local currentWeekday = date("%w", currentTimestamp)
+    local daysToThursday = resetDay - currentWeekday
+    local nextThursdayTimestamp
+
+    local today = date("*t", currentTimestamp)
+    if daysToThursday == 0 and today.hour < 7 then
+        -- 如果时间小于当天凌晨7点
+        today.hour = 7
+        today.min = 0
+        today.sec = 0
+        nextThursdayTimestamp = time(today)
+    else
+        -- 如果已经是周四了，则日期+7
+        if daysToThursday <= 0 then
+            daysToThursday = daysToThursday + 7
+        end
+        nextThursdayTimestamp = currentTimestamp + daysToThursday * 86400
+
+        local nextThursdayDateTable = date("*t", nextThursdayTimestamp)
+        nextThursdayDateTable.hour = 7
+        nextThursdayDateTable.min = 0
+        nextThursdayDateTable.sec = 0
+        nextThursdayTimestamp = time(nextThursdayDateTable)
+    end
+    return nextThursdayTimestamp - currentTimestamp, nextThursdayTimestamp
+end
+
+function BG.GetNextDayTime() -- 距离明天7点还有多少秒
+    local currentTimestamp = GetServerTime()
+    local tomorrow7amTimestamp
+    local today = date("*t", currentTimestamp)
+    -- 如果时间小于当天凌晨7点
+    if today.hour < 7 then
+        today.hour = 7
+        today.min = 0
+        today.sec = 0
+        tomorrow7amTimestamp = time(today)
+    else
+        -- 获取明天凌晨7点的时间戳
+        local tomorrow = date("*t", currentTimestamp + 86400) -- 加上一天的秒数
+        tomorrow.hour = 7
+        tomorrow.min = 0
+        tomorrow.sec = 0
+        tomorrow7amTimestamp = time(tomorrow)
+    end
+    return tomorrow7amTimestamp - currentTimestamp, tomorrow7amTimestamp
 end

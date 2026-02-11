@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='Helpful.lua'/>
+	<Script file='PullTimer.lua'/>
+	<Script file='LFG.lua'/>
+	<Script file='ButtonTemplates.lua'/>
+	<Script file='Groups.lua'/>
+	<Script file='ClassPanelSettings.lua'/>
+	<Script file='MerfinConfigBridge.lua'/>
+	<Script file='DataTables.lua'/>
+	<Script file='MRTNotes.lua'/>
+	<Script file='RaidPack.lua'/>
+	<Script file='TitanReforgeWrath.lua'/>
+	<Script file='SpecHelper.lua'/>
+</Ui>

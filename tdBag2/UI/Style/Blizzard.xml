@@ -110,7 +110,6 @@
                     <Anchor point="TOPLEFT" x="60" y="-2"/>
                     <Anchor point="TOPRIGHT" x="-24" y="-2"/>
                 </Anchors>
-                <!-- <ButtonText parentKey="Text"/> -->
                 <NormalFont style="GameFontNormal"/>
                 <HighlightFont style="GameFontHighlight"/>
             </Button>
@@ -127,9 +126,7 @@
                 </HighlightTexture>
                 <Scripts>
                     <OnLoad>
-                        local parent = self:GetParent()
-                        local portrait = parent.portrait or (parent.PortraitContainer and parent.PortraitContainer.portrait)
-                        self.portrait = portrait
+                        self.portrait = self:GetParent().portrait
                     </OnLoad>
                 </Scripts>
             </Button>
@@ -139,12 +136,6 @@
                     <Anchor point="BOTTOMRIGHT" x="-6" y="4"/>
                 </Anchors>
             </Frame>
-            <!-- <Frame parentKey="Inset" useParentLevel="true" build="retail">
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="4" y="-60" />
-                    <Anchor point="BOTTOMRIGHT" x="-6" y="4" />
-                </Anchors>
-            </Frame> -->
             <Frame parentKey="Container">
                 <Size x="1" y="1"/>
                 <Anchors>
@@ -159,7 +150,12 @@
                 </Anchors>
             </EditBox>
         </Frames>
-        
+        <Scripts>
+            <OnLoad>
+                self.TitleContainer:Hide()
+                self.PortraitContainer:Hide()
+            </OnLoad>
+        </Scripts>
     </Frame>
 
     <Frame name="tdBag2FrameTemplate" inherits="tdBag2BaseFrameTemplate" virtual="true">

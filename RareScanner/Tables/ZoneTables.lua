@@ -7,7 +7,7 @@ local FOLDER_NAME, private = ...
 private.CONTINENT_ZONE_IDS = {
 	[13] = { zonefilter = true, npcfilter = true, id = 2, zones = {14,15,17,18,21,22,23,25,26,27,32,36,37,47,48,49,50,51,52,56,76,84,87,94,95,201,203,204,205,210,217,241,425,465,469} }; --Eastern Kingdoms
 	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,70,71,76,77,78,80,81,83,85,88,97,103,106,198,199,249,327,338} }; --Kalimdor
-	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126} }; --Northrend
+	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126,127} }; --Northrend
 	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554}, current = { "all" } }; --Pandaria
 	[1467] = { zonefilter = true, npcfilter = true, id = 3, zones = {100,102,104,105,107,108,109} }; --Outland
 	[948] = { zonefilter = true, npcfilter = true, id = 5, zones = {207} }; --The Maelstrom
@@ -97,15 +97,17 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[107] = { 112 }; --Nagrand
 	[95] = { 100 }; --Ghostlands
 	[94] = { 99 }; --Eversong woods
+	[114] = { 119 }; --Borean tundra
+	[115] = { 120 }; --Dragonblight
+	[116] = { 121 }; --Grizzly hills
+	[117] = { 122 }; --Howling fjord
+	[118] = { 123 }; --Icecrown
 	[119] = { 124 }; --Sholazar basin
 	[120] = { 125 }; --The storm peaks
-	[116] = { 121 }; --Grizzly hills
 	[121] = { 126 }; --Zul drak
-	[114] = { 119 }; --Borean tundra
-	[117] = { 122 }; --Howling fjord
-	[115] = { 120 }; --Dragonblight
-	--[118] = { 123 }; --Icecrown (uncomment once Shadowlands pre-patch is over)
-	[126] = { 131 }; --Dalaran
+	[125] = { 130 }; --Dalaran
+	[126] = { 131 }; --Dalaran (underbelly)
+	[127] = { 132 }; --Crystalsong Forest
 	[207] = { 212 }; --Deepholm
 	[198] = { 203,227 }; --Mount hyjal
 	[241] = { 338,252 }; --Twilight highlands
@@ -146,6 +148,17 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[274] = { 285 }; --Old hillsbrad foothills
 	[462] = { 474 }; --Camp Narache
 	[425] = { 437 }; --Northshire
+	[371] = { 383 }; --The jade forest (Pandaria)
+	[376] = { 388 }; --Valley of the Four Winds (Pandaria)
+	[379] = { 391 }; --Kun lai summit (Pandaria)
+	[388] = { 400 }; --Townlong steppes (Pandaria)
+	[390] = { 1972,402 }; --Vale of Eternal Blossoms (Pandaria)
+	[418] = { 430,499 }; --Krasarang Wilds (Pandaria)
+	[422] = { 434 }; --Dread Wastes (Pandaria)
+	[433] = { 445 }; --The Veiled Stair (Pandaria)
+	[507] = { 524 }; --Isle of Gigants (Pandaria)
+	[504] = { 521 }; --Isle of Thunder (Pandaria)
+	[554] = { 571 }; --Timeless Isle (Pandaria)
 }
 
 private.RESETABLE_KILLS_ZONE_IDS = {

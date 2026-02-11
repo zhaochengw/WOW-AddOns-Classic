@@ -31,7 +31,7 @@ local OwnerSelector = Addon:NewClass('UI.OwnerSelector', ns.UI.MenuButton)
 function OwnerSelector:Constructor(_, meta)
     ---@type FrameMeta
     self.meta = meta
-    self.portrait = self.portrait or self.texture or (self.PortraitContainer and self.PortraitContainer.portrait)
+    self.portrait = self.portrait or self.texture
     self:SetScript('OnClick', self.OnClick)
     self:SetScript('OnEnter', self.OnEnter)
     self:SetScript('OnLeave', self.OnLeave)

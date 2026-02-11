@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='font/font.lua'/>
+	<Script file='statusbar/statusbar.lua'/>
+	<Script file='sound/sound.lua'/>
+</Ui>

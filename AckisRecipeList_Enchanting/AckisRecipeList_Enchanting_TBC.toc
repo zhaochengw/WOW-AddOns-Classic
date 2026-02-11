@@ -1,0 +1,16 @@
+## Interface: 20505
+## Title: Ackis Recipe Classic: Enchanting
+## Notes: Enchanting data for Ackis Recipe List Classic.
+## Author: Videatur
+## Version: 10.1.0
+## X-Credits: Original authors: Ackis, Pompy, Ressy, Torhal.
+## Dependencies: AckisRecipeList
+## LoadOnDemand: 1
+
+Core.lua
+Filters.lua
+MobDrops.lua
+Quests.lua
+Trainers.lua
+Vendors.lua
+Recipes_Classic.lua

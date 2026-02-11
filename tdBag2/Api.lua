@@ -25,6 +25,7 @@ local PlaySound = PlaySound
 local Ambiguate = Ambiguate
 local GetInventorySlotInfo = GetInventorySlotInfo
 local GetGuildInfo = GetGuildInfo
+local GetNormalizedRealmName = GetNormalizedRealmName
 local GetRealmName = GetRealmName
 
 ---- UI
@@ -56,6 +57,7 @@ ns.FEATURE_GUILDBANK = BUILD >= 2
 ns.FEATURE_CURRENCY = BUILD >= 3
 ns.FEATURE_RUNE = BUILD == 1
 ns.FEATURE_RANGED_WEAPON = BUILD < 5
+ns.FEATURE_KEYRING = BUILD >= 2 and BUILD < 5
 
 ns.VERSION = tonumber((C.AddOns.GetAddOnMetadata('tdBag2', 'Version'):gsub('(%d+)%.?', function(x)
     return format('%02d', tonumber(x))
@@ -213,7 +215,7 @@ do
         touch(i + NUM_BAG_SLOTS, BAG_ID.BANK)
     end
 
-    if HasKey then
+    if ns.FEATURE_KEYRING then
         tinsert(BAGS[BAG_ID.BAG], KEYRING_CONTAINER)
     end
 
@@ -631,13 +633,25 @@ function ns.GetOwnerAddress(owner)
     return ns.REALM, owner or ns.PLAYER, owner == GLOBAL_SEARCH_OWNER
 end
 
+local function NormalizedRealmName(realm)
+    return realm:gsub('[%s-]+', '')
+end
+
+function ns.GetNormalizedRealmName()
+    local realm = GetNormalizedRealmName()
+    if not realm or realm == '' then
+        realm = NormalizedRealmName(GetRealmName())
+    end
+    return realm
+end
+
 function ns.GetCurrentGuildOwner()
     local name, _, _, realm = GetGuildInfo('player')
     if not name then
         return
     end
-    if not realm then
-        realm = GetRealmName()
+    if not realm or realm == '' then
+        realm = ns.GetNormalizedRealmName()
     end
     return format('@%s-%s', name, realm)
 end

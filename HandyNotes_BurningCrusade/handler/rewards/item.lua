@@ -96,6 +96,8 @@ end
 do
     local brokenItems = {
         -- itemid : {appearanceid, sourceid}
+        [253520] = {21670, 298859}, -- Enclave Aspirant's Hatchet
+        [153267] = {21670, 90806}, -- Enclave Aspirant's Hatchet
         [153268] = {25124, 90807}, -- Enclave Aspirant's Axe
         [153316] = {25123, 90885}, -- Praetor's Ornamental Edge
     }
@@ -126,6 +128,30 @@ do
             return C_TransmogCollection.PlayerHasTransmog(itemID)
         end
     end
+    local function CanTransmogItem(itemLink)
+        local itemID = C_Item.GetItemInfoInstant(itemLink)
+        if itemID then
+            if C_Transmog.CanTransmogItem then
+                local canBeChanged, noChangeReason, canBeSource, noSourceReason = C_Transmog.CanTransmogItem(itemID)
+                return canBeSource, noSourceReason
+            else
+                -- Midnight; it *seems* that anything which this function returns
+                -- data for is usable as a transmog source now. Checked on
+                -- Warglaive of Azzinoth (32837) which returns nil.
+                -- 2026/1/23: Apart from Legion artifacts, but they've always been
+                -- weird and might be bugged at the moment anyway.
+                if GetAppearanceAndSource(itemLink) then
+                    return true
+                end
+                -- sometimes this doesn't return info for valid items, but
+                -- anything you have the transmog for *must* be transmoggable...
+                if PlayerHasTransmogByItemInfo(itemLink) then
+                    return true
+                end
+            end
+        end
+        return nil, 'NO_ITEM'
+    end
 
     local canLearnCache = {}
     function ns.rewards.Item.CanLearnAppearance(itemLinkOrID)
@@ -136,7 +162,7 @@ do
             return canLearnCache[itemID]
         end
         -- First, is this a valid source at all?
-        local canBeChanged, noChangeReason, canBeSource, noSourceReason = C_Transmog.CanTransmogItem(itemID)
+        local canBeSource, noSourceReason = CanTransmogItem(itemID)
         if canBeSource == nil or noSourceReason == 'NO_ITEM' then
             -- data loading, don't cache this
             return
@@ -150,9 +176,14 @@ do
             canLearnCache[itemID] = false
             return false
         end
-        local hasData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)
-        if hasData then
-            canLearnCache[itemID] = canCollect
+        if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+            -- Retail made it so everything is learnable
+            canLearnCache[itemID] = true
+        else
+            local hasData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)
+            if hasData then
+                canLearnCache[itemID] = canCollect
+            end
         end
         return canLearnCache[itemID]
     end
@@ -381,4 +412,27 @@ end
 function ns.rewards.Recipe:Cache()
     self:super("Cache")
     C_Spell.RequestLoadSpellData(self.spellid)
+end
+
+ns.rewards.Decor = ns.rewards.Item:extends{classname="Decor"}
+function ns.rewards.Decor:Obtained(...)
+    if self:super("Obtained", ...) then
+        -- quests, etc
+        return true
+    end
+    if not C_HousingCatalog then return GetItemCount(self.id, true) > 0 end
+    local pattern = HOUSING_DECOR_OWNED_COUNT_FORMAT:gsub("([%(%)])", "%%%1"):gsub("%%d", "(%%d+)")
+    local info = C_TooltipInfo.GetItemByID(self.id)
+    if info then
+        for _, line in ipairs(info.lines) do
+            if line.type == Enum.TooltipDataLineType.None and line.leftText and string.match(line.leftText, pattern) then
+                return true
+            end
+        end
+        return false
+    end
+end
+function ns.rewards.Decor:Notable(...)
+    -- could only count xp-granting as notable? firstAcquisitionBonus on C_HousingCatalog.GetCatalogEntryInfoByItem
+    return ns.db.decor_notable and self:super("Notable", ...)
 end

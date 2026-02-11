@@ -14,6 +14,8 @@ ns.CLASSIC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 ns.CLASSICERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC -- forever vanilla
 ns.WARBANDS_AVAILABLE = LE_EXPANSION_LEVEL_CURRENT >= (LE_EXPANSION_WAR_WITHIN or math.huge)
 
+local issecretvalue = _G.issecretvalue or function() return false end
+
 local ATLAS_CHECK, ATLAS_CROSS = "common-icon-checkmark", "common-icon-redx"
 
 local COSMETIC_COLOR = CreateColor(1, 0.5, 1)
@@ -102,6 +104,8 @@ do
             upgrade = ns.rewards.Pet(item[1], type(item.pet) == "number" and item.pet)
         elseif item.set then
             upgrade = ns.rewards.Set(item[1], item.set)
+        elseif item.decor then
+            upgrade = ns.rewards.Decor(item[1])
         else
             upgrade = ns.rewards.Item(item[1])
         end
@@ -115,6 +119,9 @@ do
         end
         if item.covenant then
             table.insert(available, ns.conditions.Covenant(item.covenant))
+        end
+        if item.expansion then
+            table.insert(available, ns.conditions.Expansion(item.expansion))
         end
         if item.requires then
             if ns.IsObject(item.requires) then
@@ -139,17 +146,8 @@ do
         return loot
     end
 end
-function ns.RegisterPoints(zone, points, defaults)
-    if not ns.points[zone] then
-        ns.points[zone] = {}
-    end
-    if defaults then
-        local nodeType = ns.nodeMaker(defaults)
-        for coord, point in pairs(points) do
-            points[coord] = nodeType(point)
-        end
-    end
-    for coord, point in pairs(points) do
+do
+    local function registerPoint(zone, coord, point)
         upgradeloot(point.loot)
         if ns.DEBUG and ns.points[zone][coord] then
             print(myname, "point collision", zone, coord)
@@ -198,36 +196,27 @@ function ns.RegisterPoints(zone, points, defaults)
                     minimap=true, worldmap=nearby.worldmap, scale=0.95,
                     note=nearby.note or false,
                     loot=upgradeloot(nearby.loot), active=nearby.active,
-                    _coord=ncoord, _uiMapID=zone,
+                    related=nearby.related or false, nearby=nearby.nearby or false,
                 }, proxy_meta)
-                if nearby.color then
-                    npoint.texture = ns.atlas_texture(npoint.atlas, nearby.color)
-                end
-                ns.points[zone][ncoord] = npoint
+                registerPoint(zone, ncoord, npoint)
             end
         end
         if point.related then
             local relatedNode = ns.nodeMaker(setmetatable({
                 label=point.related.label or (point.npc and "Related to nearby NPC" or "Related to nearby treasure"),
                 atlas=point.related.atlas or "playerpartyblip", color=point.related.color, scale=point.related.scale,
-                texture=point.related.texture or false, minimap=point.related.minimap,
+                texture=point.related.texture or false, minimap=point.related.minimap, worldmap=point.related.worldmap,
                 note=point.related.note or false,
                 loot=upgradeloot(point.related.loot),
                 active=point.related.active, requires=point.related.requires, hide_before=point.related.hide_before,
+                related=point.related.related or false, nearby=point.related.nearby or false,
                 route=coord,
-                _uiMapID=zone,
             }, proxy_meta))
             for rcoord, related in pairs(point.related) do
-                if type(rcoord) == "number" then
-                    local rpoint = relatedNode(related)
-                    upgradeloot(rpoint.loot)
-                    rpoint._coord = rcoord
-                    if related.color then
-                        rpoint.texture = ns.atlas_texture(rpoint.atlas, related.color)
-                    end
+                if type(rcoord) == "number" then -- defaults are mixed in on this table...
                     if not point.routes then point.routes = {} end
                     table.insert(point.routes, {rcoord, coord, highlightOnly=true})
-                    ns.points[zone][rcoord] = rpoint
+                    registerPoint(zone, rcoord, relatedNode(related))
                 end
             end 
         end
@@ -301,6 +290,20 @@ function ns.RegisterPoints(zone, points, defaults)
                 end
                 ns.points[zone][acoord] = point
             end
+        end
+    end
+    function ns.RegisterPoints(zone, points, defaults)
+        if not ns.points[zone] then
+            ns.points[zone] = {}
+        end
+        if defaults then
+            local nodeType = ns.nodeMaker(defaults)
+            for coord, point in pairs(points) do
+                points[coord] = nodeType(point)
+            end
+        end
+        for coord, point in pairs(points) do
+            registerPoint(zone, coord, point)
         end
     end
 end
@@ -604,6 +607,10 @@ local function render_string(s, context)
             if name then
                 return name
             end
+        elseif variant == "expansion" then
+            if _G["EXPANSION_NAME"..id] then
+                return _G["EXPANSION_NAME"..id]
+            end
         end
         return fallback ~= "" and fallback or (variant .. ':' .. id)
     end)
@@ -661,7 +668,17 @@ local trimmed_icon = function(texture)
     return icon_cache[texture]
 end
 local atlas_texture = function(atlas, extra, left, right, top, bottom)
-    atlas = C_Texture.GetAtlasInfo(atlas)
+    atlasInfo = C_Texture.GetAtlasInfo(atlas)
+    if not atlasInfo then
+        if ns.DEBUG then
+            if not ns.DEBUG_missing_atlas_cache then ns.DEBUG_missing_atlas_cache = {} end
+            if not ns.DEBUG_missing_atlas_cache[atlas] then
+                print(("%s: missing atlas %s"):format(myname, atlas))
+                ns.DEBUG_missing_atlas_cache[atlas] = true
+            end
+        end
+        atlasInfo = C_Texture.GetAtlasInfo("QuestObjective") or C_Texture.GetAtlasInfo("VignetteLoot")
+    end
     if type(extra) == "number" then
         extra = {scale=extra}
     end
@@ -673,16 +690,16 @@ local atlas_texture = function(atlas, extra, left, right, top, bottom)
     end
     if left then
         -- An atlas is already cropped into a texture, so we need to treat something else as our 1
-        local horizontal = atlas.rightTexCoord - atlas.leftTexCoord
-        local vertical = atlas.bottomTexCoord - atlas.topTexCoord
-        atlas.rightTexCoord = atlas.leftTexCoord + (right * horizontal)
-        atlas.leftTexCoord = atlas.leftTexCoord + (left * horizontal)
-        atlas.bottomTexCoord = atlas.topTexCoord + (bottom * vertical)
-        atlas.topTexCoord = atlas.topTexCoord + (top * vertical)
+        local horizontal = atlasInfo.rightTexCoord - atlasInfo.leftTexCoord
+        local vertical = atlasInfo.bottomTexCoord - atlasInfo.topTexCoord
+        atlasInfo.rightTexCoord = atlasInfo.leftTexCoord + (right * horizontal)
+        atlasInfo.leftTexCoord = atlasInfo.leftTexCoord + (left * horizontal)
+        atlasInfo.bottomTexCoord = atlasInfo.topTexCoord + (bottom * vertical)
+        atlasInfo.topTexCoord = atlasInfo.topTexCoord + (top * vertical)
     end
     return ns.merge({
-        icon = atlas.file,
-        tCoordLeft = atlas.leftTexCoord, tCoordRight = atlas.rightTexCoord, tCoordTop = atlas.topTexCoord, tCoordBottom = atlas.bottomTexCoord,
+        icon = atlasInfo.file,
+        tCoordLeft = atlasInfo.leftTexCoord, tCoordRight = atlasInfo.rightTexCoord, tCoordTop = atlasInfo.topTexCoord, tCoordBottom = atlasInfo.bottomTexCoord,
     }, extra)
 end
 ns.atlas_texture = atlas_texture
@@ -1127,7 +1144,7 @@ local function handle_tooltip(tooltip, point, skip_label)
         tooltip:AddDoubleLine("Coord", point._coord)
     end
 
-    if (ns.db.tooltip_item or IsShiftKeyDown()) and (point.loot or point.npc or point.spell) then
+    if (ns.db.tooltip_item or IsShiftKeyDown()) and (point.loot or point.npc or point.spell) and not issecretvalue(tooltip:GetLeft()) then
         local comparison = _G[myname.."ComparisonTooltip"]
         if not comparison then
             comparison = CreateFrame("GameTooltip", myname.."ComparisonTooltip", UIParent, "ShoppingTooltipTemplate")
@@ -1230,12 +1247,16 @@ function HLHandler:OnEnter(uiMapID, coord)
         if point.route and ns.points[uiMapID][point.route] then
             point = ns.points[uiMapID][point.route]
         end
-        ns.RouteWorldMapDataProvider:HighlightRoute(point, uiMapID, coord)
+        if point._uiMapID == uiMapID then
+            -- Highlight the route only if it's on the original mapid for the point
+            ns.RouteWorldMapDataProvider:HighlightRoute(point, uiMapID, coord)
+        end
     end
     if ns.DecorationWorldMapDataProvider then
         ns.DecorationWorldMapDataProvider:OnMouseEnter(point, uiMapID, coord)
     end
     local tooltip = GameTooltip
+    tooltip:ClearAllPoints()
     if ns.db.tooltip_pointanchor or self:GetParent() == Minimap then
         if self:GetCenter() > UIParent:GetCenter() then -- compare X coordinate
             tooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -1392,7 +1413,9 @@ do
             rootDescription:CreateButton(COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, function() sendToChat(uiMapID, coord) end)
         end
         -- Hide menu item
-        rootDescription:CreateButton("Hide this point", function() hideNode(uiMapID, coord) end)
+        if not ns.hiddenConfig.unhide then
+            rootDescription:CreateButton("Hide this point", function() hideNode(uiMapID, coord) end)
+        end
         if point.achievement then
             rootDescription:CreateButton(render_string("Hide {achievement:" .. point.achievement .. "}", point), hideAchievement, point.achievement)
         end
@@ -1405,7 +1428,7 @@ do
             end
             if not ns.hiddenConfig.groupsHidden then
                 rootDescription:CreateButton(
-                    render_string(("Hide %s in all zones"):format(ns.groups[point.group] or point.group), point),
+                    render_string((ns.hiddenConfig.groupsHiddenByZone and "Hide all %s" or "Hide %s in all zones"):format(ns.groups[point.group] or point.group), point),
                     function() hideGroup(uiMapID, coord) end
                 )
             end
@@ -1548,6 +1571,7 @@ do
         HL:SendMessage("HandyNotes_NotifyUpdate", myname:gsub("HandyNotes_", ""))
     end
     function HL:RefreshOnEvent(event)
+        self:FillCaches()
         bucket:Show()
     end
     function HL:RefreshOnUnitEvent(requiredUnit, event, unit)
@@ -1569,6 +1593,9 @@ do
 end
 
 function HL:FillCaches()
+    if self.cachingStarted then return end
+    if not (ns.points[C_Map.GetBestMapForUnit("player") or -1] or ns.points[WorldMapFrame and WorldMapFrame.mapID or -1]) then return end
+    self.cachingStarted = true
     local CacheWalker = coroutine.wrap(function()
         local count = 0
         for uiMapID, coords in pairs(ns.points) do
@@ -1597,39 +1624,50 @@ function HL:FillCaches()
     end)
 end
 
-hooksecurefunc(AreaPOIPinMixin, "TryShowTooltip", function(self)
-    -- if not self.db.profile.show_on_world then return end
-    if not self.areaPoiID then return end
-    if not ns.POIsToPoints[self.areaPoiID] then return end
-    local point = ns.POIsToPoints[self.areaPoiID]
-    -- if not ns.should_show_point(point._coord, point, point._uiMapID, false) then return end
-    handle_tooltip(GameTooltip, point, true)
-end)
-hooksecurefunc(AreaPOIPinMixin, "OnMouseLeave", function(self)
-    if _G[myname.."ComparisonTooltip"] then _G[myname.."ComparisonTooltip"]:Hide() end
-end)
+do
+    -- This is a "only do this update once a tick" gate
+    local already
+    local gateFrame = CreateFrame("Frame")
+    gateFrame:SetScript("OnShow", function() already = true end)
+    gateFrame:SetScript("OnHide", function() already = false end)
+    gateFrame:SetScript("OnUpdate", function(self) self:Hide() end)
 
-hooksecurefunc(VignettePinMixin, "OnMouseEnter", function(self)
-    local vignetteInfo = self.vignetteInfo
-    if not (vignetteInfo.vignetteID and ns.VignetteIDsToPoints[vignetteInfo.vignetteID]) then return end
-    local point = ns.VignetteIDsToPoints[vignetteInfo.vignetteID]
-    -- if not ns.should_show_point(point._coord, point, point._uiMapID, false) then return end
-    handle_tooltip(GameTooltip, point, true)
-end)
-hooksecurefunc(VignettePinMixin, "OnMouseLeave", function(self)
-    if _G[myname.."ComparisonTooltip"] then _G[myname.."ComparisonTooltip"]:Hide() end
-end)
-
-if _G.TaskPOI_OnEnter then
-    hooksecurefunc("TaskPOI_OnEnter", function(self)
-        if not self.questID then return end
-        if not ns.WorldQuestsToPoints[self.questID] then return end
-        local point = ns.WorldQuestsToPoints[self.questID]
-        -- if not ns.should_show_point(point._coord, point, point._uiMapID, false) then return end
-        handle_tooltip(GameTooltip, point, false)
-    end)
-    hooksecurefunc("TaskPOI_OnLeave", function(self)
+    local handleWorldMapPin = function(pin)
+        if not pin then return end
+        if already then return end
+        gateFrame:Show()
+        local point
+        if pin.vignetteID then
+            point = ns.VignetteIDsToPoints[pin.vignetteID]
+        elseif pin.worldQuest and pin.questID then
+            point = ns.WorldQuestsToPoints[pin.questID]
+        elseif pin.poiInfo and pin.poiInfo.areaPoiID then
+            point = ns.POIsToPoints[pin.poiInfo.areaPoiID]
+        end
+        if point then
+            handle_tooltip(GameTooltip, point, true)
+        end
+    end
+    local hideComparison = function()
         -- 10.0.2 doesn't hide this by default any more
         if _G[myname.."ComparisonTooltip"] then _G[myname.."ComparisonTooltip"]:Hide() end
+        gateFrame:Hide()
+    end
+
+    hooksecurefunc(AreaPOIPinMixin, "TryShowTooltip", handleWorldMapPin)
+    hooksecurefunc(AreaPOIPinMixin, "OnMouseLeave", hideComparison)
+    hooksecurefunc(VignettePinBaseMixin or VignettePinMixin, "OnMouseEnter", handleWorldMapPin)
+    hooksecurefunc(VignettePinBaseMixin or VignettePinMixin, "OnMouseLeave", hideComparison)
+    if _G.TaskPOI_OnEnter then
+        hooksecurefunc("TaskPOI_OnEnter", handleWorldMapPin)
+        hooksecurefunc("TaskPOI_OnLeave", function(self) hideComparison() end)
+    end
+    EventRegistry:RegisterCallback("MapLegendPinOnEnter", function(self, pin)
+        -- This wants to catch pins like the vignettes on the Dragon Isles,
+        -- which appear for events but which aren't a VignettePinMixin.
+        -- Regular VignettePinMixin will also trigger this, depending on
+        -- client branch, but the gate frame will avoid issues.
+        handleWorldMapPin(pin)
     end)
+    EventRegistry:RegisterCallback("MapLegendPinOnLeave", hideComparison)
 end

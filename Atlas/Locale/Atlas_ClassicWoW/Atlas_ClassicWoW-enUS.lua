@@ -208,7 +208,7 @@ L["Ferra"] = "Ferra"
 L["Festival Lane Postbox"] = "Festival Lane Postbox"
 L["Fifth Mosh'aru Tablet"] = "Fifth Mosh'aru Tablet"
 L["Fineous Darkvire"] = "Fineous Darkvire"
-L["Finkle Einhorn"] = "Finkle Einhorn"
+L["Finkle Einhorn"] = "Pip Quickwit"
 L["Fire of Aku'mai"] = "Fire of Aku'mai"
 L["Firemaw"] = "Firemaw"
 L["Flamegor"] = "Flamegor"
@@ -216,8 +216,8 @@ L["Foreman Thistlenettle"] = "Foreman Thistlenettle"
 L["Four Horsemen Chest"] = "Four Horsemen Chest"
 L["Four Kaldorei Elites"] = "Four Kaldorei Elites"
 L["Franclorn Forgewright"] = "Franclorn Forgewright"
-L["Fras Siabi"] = "Fras Siabi"
-L["Fras Siabi's Postbox"] = "Fras Siabi's Postbox"
+L["Ezra Grimm"] = "Ezra Grimm"
+L["Ezra Grimm's Postbox"] = "Ezra Grimm's Postbox"
 L["Frostwyrm Lair"] = "Frostwyrm Lair"
 L["Furgus Warpwood"] = "Furgus Warpwood"
 L["Gahz'ranka"] = "Gahz'ranka"
@@ -368,7 +368,6 @@ L["Lorekeeper Polkelt"] = "Lorekeeper Polkelt"
 L["Lorgalis Manuscript"] = "Lorgalis Manuscript"
 L["Lorgus Jett"] = "Lorgus Jett"
 L["Lothos Riftwaker"] = "Lothos Riftwaker"
-L["Lower"] = " Lower"
 L["Lucifron"] = "Lucifron"
 L["Mad Magglish"] = "Mad Magglish"
 L["Maexxna"] = "Maexxna"
@@ -528,7 +527,7 @@ L["Shen'dralar Watcher"] = "Shen'dralar Watcher"
 L["Side"] = " Side"
 L["Sir Zeliek"] = "Sir Zeliek"
 L["Sixth Mosh'aru Tablet"] = "Sixth Mosh'aru Tablet"
-L["Skeletal Remains of Kariel Winthalus"] = "Skeletal Remains of Kariel Winthalus"
+L["Skeletal Remains of Telmius Dreamseeker"] = "Skeletal Remains of Telmius Dreamseeker"
 L["Skul"] = "Skul"
 L["Skum"] = "Skum"
 L["SM"] = "SM"
@@ -682,44 +681,6 @@ L["WC"] = "WC"         -- Wailing Caverns
 L["ZF"] = "ZF"         -- Zul'Farrak
 L["SM"] = "SM"
 L["VC"] = "VC"         -- Deadmines
-
---************************************************
--- Instance Entrance Maps
---************************************************
--- Blackrock Mountain (Entrance)
-L["Bodley"] = "Bodley"
-L["Orb of Command"] = "Orb of Command"
-L["Scarshield Quartermaster <Scarshield Legion>"] = "Scarshield Quartermaster <Scarshield Legion>"
-L["The Behemoth"] = "The Behemoth"
-L["Franclorn Forgewright"] = "Franclorn Forgewright"
-
---Dire Maul (Entrance)
-L["Dire Pool"] = "Dire Pool"
-L["Dire Maul Arena"] = "Dire Maul Arena"
-L["Elder Mistwalker"] = "Elder Mistwalker"
-
---Gnomeregan (Entrance)
-L["Torben Zapblast <Teleportation Specialist>"] = "Torben Zapblast <Teleportation Specialist>"
-L["Transpolyporter"] = "Transpolyporter"
-L["Sprok <Away Team>"] = "Sprok <Away Team>"
-L["Matrix Punchograph 3005-A"] = "Matrix Punchograph 3005-A"
-L["Namdo Bizzfizzle <Engineering Supplies>"] = "Namdo Bizzfizzle <Engineering Supplies>"
-L["Techbot"] = "Techbot"
-
---Maraudon (Entrance)
-L["The Nameless Prophet"] = "The Nameless Prophet"
-L["Cursed Centaur"] = "Cursed Centaur"
-L["Kherrah"] = "Kherrah"
-
-L["Kolk <The First Kahn>"] = "Kolk <The First Kahn>"
-L["Gelk <The Second Kahn>"] = "Gelk <The Second Kahn>"
-L["Magra <The Third Kahn>"] = "Magra <The Third Kahn>"
-L["Cavindra"] = "Cavindra"
-
---Sunken Temple (Entrance)
-L["Priestess Udum'bra"] = "Priestess Udum'bra"
-L["Gomora the Bloodletter"] = "Gomora the Bloodletter"
-L["Captain Wyrmak"] = "Captain Wyrmak"
 
 --************************************************
 -- Kalimdor Instances (Classic)
@@ -1120,7 +1081,7 @@ L["The Beast"] = "The Beast"
 L["General Drakkisath"] = "General Drakkisath"
 L["Father Flame"] = "Father Flame"
 L["Awbee"] = "Awbee"
-L["Finkle Einhorn"] = "Finkle Einhorn"
+L["Finkle Einhorn"] = "Pip Quickwit"
 L["Doomrigger's Clasp"] = "Doomrigger's Clasp"
 L["Drakkisath's Brand"] = "Drakkisath's Brand"
 L["Solakar Flamewreath"] = "Solakar Flamewreath"
@@ -1205,7 +1166,7 @@ L["Death Knight Darkreaver"] = "Death Knight Darkreaver"
 L["Kormok"] = "Kormok"
 
 --Stratholme - Crusader's Square
-L["Fras Siabi"] = "Fras Siabi"
+L["Ezra Grimm"] = "Ezra Grimm"
 L["Skul"] = "Skul"
 L["Hearthsinger Forresten"] = "Hearthsinger Forresten"
 L["The Unforgiven"] = "The Unforgiven"
@@ -1228,7 +1189,7 @@ L["Crusade Commander Eligor Dawnbringer <Brotherhood of the Light>"] = "Crusade 
 L["Master Craftsman Wilhelm <Brotherhood of the Light>"] = "Master Craftsman Wilhelm <Brotherhood of the Light>"
 L["Packmaster Stonebruiser <Brotherhood of the Light>"] = "Packmaster Stonebruiser <Brotherhood of the Light>"
 L["Stratholme Courier"] = "Stratholme Courier"
-L["Fras Siabi's Postbox"] = "Fras Siabi's Postbox"
+L["Ezra Grimm's Postbox"] = "Ezra Grimm's Postbox"
 L["King's Square Postbox"] = "King's Square Postbox"
 L["Festival Lane Postbox"] = "Festival Lane Postbox"
 L["Elder Farwhisper"] = "Elder Farwhisper"
@@ -1378,8 +1339,7 @@ L["Statue Activation Order"] = "Statue Activation Order"
 L["Lorgalis Manuscript"] = "Lorgalis Manuscript"
 L["Argent Guard Thaelrid"] = "Argent Guard Thaelrid"
 L["Fathom Core"] = "Fathom Core"
-L["J'eevee's Jar"] = "J'eevee's Jar"
-L["Skeletal Remains of Kariel Winthalus"] = "Skeletal Remains of Kariel Winthalus"
+L["Skeletal Remains of Telmius Dreamseeker"] = "Skeletal Remains of Telmius Dreamseeker"
 L["Veng (The Fifth Khan)"] = "Veng (The Fifth Khan)"
 L["Maraudos (The Fourth Khan)"] = "Maraudos (The Fourth Khan)"
 L["Belnistrasz"] = "Belnistrasz"

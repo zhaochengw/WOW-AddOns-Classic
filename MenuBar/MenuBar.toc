@@ -1,9 +1,0 @@
-## Interface: 30404
-## Title: |cffFF7F00|r|cffFF7F00微|r|cffFF7F00型|r|cffFF7F00系|r|cffFF7F00统|r|cffFF7F00菜|r|cffFF7F00单|r|cffFF7F00栏|r
-## Notes: 多功能微型系统菜单
-## Author: 蓝雨秋夜
-## SavedVariables: FuxBarDB
-## Version: 2.1.0
-FuxPanel.lua
-Settings.lua
-

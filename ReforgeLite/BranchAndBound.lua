@@ -4,7 +4,6 @@ local REFORGE_COEFF = addonTable.REFORGE_COEFF
 
 local ReforgeLite = addonTable.ReforgeLite
 local print = addonTable.print
-local GetItemStats = addonTable.GetItemStatsFromTooltip
 local ITEM_STATS, ITEM_STAT_COUNT = addonTable.itemStats, addonTable.itemStatCount
 
 local huge = math.huge
@@ -944,85 +943,33 @@ end
 --- Used for algorithm validation and performance analysis during development.
 --- @return nil Updates self.pdb.method with the better solution and prints comparison results
 function ReforgeLite:RunAlgorithmComparison()
-  print("=== Algorithm Comparison Starting ===")
-
-  -- Initialize conversions
   self:GetConversion()
 
-  -- Print stat weights for debugging
-  print("=== Stat Weights ===")
+  local _, specName = C_SpecializationInfo.GetSpecializationInfo(C_SpecializationInfo.GetSpecialization())
+  local _, ilvl = GetAverageItemLevel()
+  print(("=== %s %s - %s ilvl ==="):format(specName or "", addonTable.localeClass, ilvl))
+
+  local weightsStr = ""
   for i = 1, #self.pdb.weights do
     if self.pdb.weights[i] and self.pdb.weights[i] ~= 0 then
-      local statName = ITEM_STATS[i] and ITEM_STATS[i].name or ("stat" .. i)
-      print(("Stat %d (%s): %.1f"):format(i, statName, self.pdb.weights[i]))
+      local statName = ITEM_STATS[i] and ITEM_STATS[i].tip or ("s" .. i)
+      weightsStr = weightsStr .. (" %s:%.0f"):format(statName, self.pdb.weights[i])
     end
   end
+  print(("Weights:%s"):format(weightsStr))
 
-  -- Print caps configuration
-  print("=== Caps Configuration ===")
   for i = 1, 2 do
     local cap = self.pdb.caps[i]
-    if cap and cap.stat > 0 then
-      local statName = ITEM_STATS[cap.stat] and ITEM_STATS[cap.stat].name or ("stat" .. cap.stat)
-      print(("Cap %d: Stat %d (%s)"):format(i, cap.stat, statName))
-    else
-      print(("Cap %d: None"):format(i))
+    if cap and cap.stat > 0 and cap.points[1] then
+      local statName = ITEM_STATS[cap.stat] and ITEM_STATS[cap.stat].tip or ("s" .. cap.stat)
+      local methodNames = {"AtLeast", "AtMost", "Exactly", "NewValue"}
+      local pt = cap.points[1]
+      print(("Cap %d: %s %s %.0f"):format(i, statName, methodNames[pt.method] or pt.method, pt.value or 0))
     end
-  end
-
-  -- Print stat conversions
-  print("=== Stat Conversions ===")
-  local hasConversions = false
-  if self.conversion then
-    for srcStat, conversions in pairs(self.conversion) do
-      for dstStat, ratio in pairs(conversions) do
-        if ratio and ratio > 0 then
-          hasConversions = true
-          local srcName = ITEM_STATS[srcStat] and ITEM_STATS[srcStat].name or ("stat" .. srcStat)
-          local dstName = ITEM_STATS[dstStat] and ITEM_STATS[dstStat].name or ("stat" .. dstStat)
-          print(("Conversion: %d (%s) -> %d (%s) at ratio %.3f"):format(
-            srcStat, srcName, dstStat, dstName, ratio))
-        end
-      end
-    end
-  end
-  if not hasConversions then
-    print("No stat conversions configured")
-  end
-
-  -- Print item information
-  print("=== Item Information ===")
-  for i = 1, #self.itemData do
-    local itemInfo = self.itemData[i].itemInfo
-    local isLocked = self:IsItemLocked(i)
-
-    -- Get item stats
-    local stats = GetItemStats(itemInfo)
-    local statsStr = ""
-    for statIdx = 1, ITEM_STAT_COUNT do
-      local statValue = stats[ITEM_STATS[statIdx].name] or 0
-      if statValue > 0 then
-        statsStr = statsStr .. (" %s:%d"):format(ITEM_STATS[statIdx].tip, statValue)
-      end
-    end
-    if statsStr == "" then
-      statsStr = " (no stats)"
-    end
-
-    -- Get current reforge if locked
-    local reforgeStr = ""
-    if isLocked and itemInfo.reforge then
-      local src, dst = unpack(self.reforgeTable[itemInfo.reforge])
-      reforgeStr = (", reforge: %d->%d"):format(src, dst)
-    elseif isLocked then
-      reforgeStr = ", reforge: none"
-    end
-
-    print(("Item %d %s:%s, locked: %s%s"):format(i, _G[strupper(self.itemData[i].slot)], statsStr, isLocked and "yes" or "no", reforgeStr))
   end
 
   -- Store original method
-  local originalMethod = CopyTable(self.pdb.method)
+  local originalMethod = self.pdb.method and CopyTable(self.pdb.method) or nil
 
   -- Run DP algorithm
   print("Running Dynamic Programming...")
@@ -1034,7 +981,7 @@ function ReforgeLite:RunAlgorithmComparison()
   local dpConstraintsMet = self:CheckConstraintsSatisfied(dpMethod)
 
   -- Store DP choices for debugging
-  dpChoices = {}
+  dpChoices = wipe(dpChoices or {})
   local dpPathStr = ""
   for i = 1, #dpMethod.items do
     dpChoices[i] = {src = dpMethod.items[i].src, dst = dpMethod.items[i].dst}
@@ -1042,11 +989,12 @@ function ReforgeLite:RunAlgorithmComparison()
       dpPathStr = dpPathStr .. (" %d:%d->%d"):format(i, dpMethod.items[i].src, dpMethod.items[i].dst)
     end
   end
-  print(("DP: Found solution, score: %.1f, constraints: %s, path:%s"):format(
-    dpScore, dpConstraintsMet and "Pass" or "Fail", dpPathStr))
+
+  if self.db.debug then
+    print(("DP: Found solution, score: %.1f, constraints: %s, path:%s"):format(
+      dpScore, dpConstraintsMet and "Pass" or "Fail", dpPathStr))
 
   -- Check if smart options will be able to generate all DP choices
-  if self.db.debug then
     print("=== Smart Options Coverage ===")
     local data = self:InitReforgeClassic()
 
@@ -1074,7 +1022,7 @@ function ReforgeLite:RunAlgorithmComparison()
   end
 
   -- Reset to original
-  self.pdb.method = CopyTable(originalMethod)
+  self.pdb.method = originalMethod and CopyTable(originalMethod) or nil
 
   -- Run Branch and Bound
   print("Running Branch and Bound...")
@@ -1086,11 +1034,14 @@ function ReforgeLite:RunAlgorithmComparison()
   local bbConstraintsMet = self:CheckConstraintsSatisfied(bbMethod)
 
   -- Print comparison
+  local function fmtTime(ms)
+    return ms >= 1000 and ("%.2fs"):format(ms / 1000) or ("%.0fms"):format(ms)
+  end
   print("=== Results ===")
-  print(("DP: Score %.1f, Time %.3fms, Constraints %s"):format(
-    dpScore, dpTime, dpConstraintsMet and "Pass" or "Fail"))
-  print(("B&B: Score %.1f, Time %.3fms, Constraints %s"):format(
-    bbScore, bbTime, bbConstraintsMet and "Pass" or "Fail"))
+  print(("DP: Score %.1f, Time %s, Constraints %s"):format(
+    dpScore, fmtTime(dpTime), dpConstraintsMet and "Pass" or "Fail"))
+  print(("B&B: Score %.1f, Time %s, Constraints %s"):format(
+    bbScore, fmtTime(bbTime), bbConstraintsMet and "Pass" or "Fail"))
 
   -- Compare individual choices
   if self.db.debug then
@@ -1109,11 +1060,13 @@ function ReforgeLite:RunAlgorithmComparison()
   end
 
   -- Determine winner
-  local winner = "Tie"
+  local winner
   if dpConstraintsMet ~= bbConstraintsMet then
     winner = dpConstraintsMet and "DP (constraints)" or "B&B (constraints)"
-  elseif math.abs(dpScore - bbScore) > 0.1 then
+  elseif abs(dpScore - bbScore) > 0.1 then
     winner = dpScore > bbScore and "DP" or "B&B"
+  else
+    winner = dpTime < bbTime and "DP (faster)" or "B&B (faster)"
   end
   print("Winner: " .. winner)
 

@@ -1,6 +1,6 @@
 # BigDebuffs
 
-## [v55](https://github.com/jordonwow/bigdebuffs/tree/v55) (2025-08-20)
-[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v54...v55) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
+## [v57](https://github.com/jordonwow/bigdebuffs/tree/v57) (2026-01-28)
+[Full Changelog](https://github.com/jordonwow/bigdebuffs/compare/v56...v57) [Previous Releases](https://github.com/jordonwow/bigdebuffs/releases)
 
-- fix: add some missing MOP spells (#857)  
+- ToT Implementation. (#877)  

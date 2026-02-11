@@ -136,13 +136,14 @@ local function InviteList(list,noNewList)
 	end
 end
 local function CreateInviteList(text)
+	local list = {}
 	if not text then 
-		return {}
+		return list
 	end
-	local list = {strsplit("\n",text)}
-	for i=#list,1,-1 do
-		if string.trim(list[i]) == "" then
-			tremove(list,i)
+	for c in text:gmatch("[^\n;,\t ]+") do
+		c = c:trim()
+		if c ~= "" then
+			list[#list+1] = c
 		end
 	end
 	return list
@@ -799,7 +800,8 @@ local function AutoRaidSetup()
 					SetRaidDifficultyID(VMRT.InviteTool.RaidDiff)
 				end
 				if ExRT.isClassic and VMRT.InviteTool.LootMethodEnabled then
-					SetLootMethod(TransitionLootMethodFromOpt(VMRT.InviteTool.LootMethod),UnitName("player"),nil)
+					local name = UnitName("player")
+					SetLootMethod(TransitionLootMethodFromOpt(VMRT.InviteTool.LootMethod),name)
 					--SetLootThreshold(VMRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
 					ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
 				end
@@ -811,7 +813,8 @@ local function AutoRaidSetup()
 		if inRaid and not module.db.sessionInRaidLoot then
 			module.db.sessionInRaidLoot = true
 			if RaidLeader and ExRT.isClassic and VMRT.InviteTool.LootMethodEnabled then
-				SetLootMethod(TransitionLootMethodFromOpt(VMRT.InviteTool.LootMethod),UnitName("player"),nil)
+				local name = UnitName("player")
+				SetLootMethod(TransitionLootMethodFromOpt(VMRT.InviteTool.LootMethod),name)
 				ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
 			end
 		end

@@ -1,5 +1,5 @@
 --[[
-Copyright 2022-2025 João Cardoso
+Copyright 2022-2026 João Cardoso
 C_Everywhere is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this library give you permission to embed it
 with independent modules to produce an addon, regardless of the license terms of these
@@ -15,7 +15,7 @@ GNU General Public License for more details.
 This file is part of C_Everywhere.
 --]]
 
-local C = LibStub:NewLibrary('C_Everywhere', 13)
+local C = LibStub:NewLibrary('C_Everywhere', 17)
 if C then
 	wipe(C)
 else
@@ -41,8 +41,8 @@ setmetatable(C, {__index = function(C, space)
 end})
 
 -- specifics
-local function null(space, k)
-	space[k] = space.rawfind(k) or nop
+local function stub(space, k, func)
+	space[k] = space.rawfind(k) or func or nop
 end
 
 local function pack(space, k, args)
@@ -86,19 +86,26 @@ pack(C.CurrencyInfo, 'GetBackpackCurrencyInfo', 'name, quantity, iconFileID, cur
 pack(C.CurrencyInfo, 'GetBasicCurrencyInfo', 'name, description, icon, quality, displayAmount, actualAmount')
 pack(C.CurrencyInfo, 'GetCurrencyInfo', 'name, quantity, iconFileID, quantityEarnedThisWeek, maxWeeklyQuantity, maxQuantity, discovered, quality')
 pack(C.CurrencyInfo, 'GetCurrencyListInfo', 'name, isHeader, isHeaderExpanded, isTypeUnused, isShowInBackpack, quantity, iconFileID, maxQuantity, canEarnPerWeek, quantityEarnedThisWeek, discovered')
-null(C.CurrencyInfo, 'IsAccountTransferableCurrency')
-null(C.CurrencyInfo, 'IsAccountWideCurrency')
-null(C.QuestLog, 'IsQuestFlaggedCompletedOnAccount')
-pack(C.Spell, 'GetSpellInfo', 'name, rank, iconID, castTime, minRange, maxRange, spellID, originalIconID')
+stub(C.CurrencyInfo, 'IsAccountTransferableCurrency')
+stub(C.CurrencyInfo, 'IsAccountWideCurrency')
+stub(C.QuestLog, 'IsQuestFlaggedCompletedOnAccount')
+pack(C.Spell, 'GetSpellInfo', 'name, rank, iconID, castTime, minRange, maxRange, spellID, originalIconID') 
 
-C.QuestLog.IsComplete = C.QuestLog.IsComplete or function(id) return select(6, GetQuestLogTitle(GetQuestLogIndexByID(id))) == 1 end
-C.Bank.CanViewBank = C.Bank.CanViewBank or function(v) return v == 0 end
+stub(C.QuestLog, 'IsComplete', function(id) return select(6, GetQuestLogTitle(GetQuestLogIndexByID(id))) == 1 end)
+stub(C.Bank, 'PurchaseBankTab', PurchaseSlot)
+stub(C.Bank, 'CanUseBank', function(i) return i == 0 end)
+stub(C.Bank, 'CanViewBank', function(i) return i == 0 end)
+stub(C.Bank, 'FetchNextPurchasableBankTabData', function(i) return {tabCost = i == 0 and GetBankSlotCost() or C.Bank.FetchNextPurchasableBankTabCost(i)} end)
+stub(C.Texture, 'GetAtlasExists', C.Texture.GetAtlasInfo)
+
+C.Item.GetItemIconByID = GetItemIcon
 C.Item.IsDressableItemByID = IsDressableItem
 C.GossipInfo.SelectActiveQuest = SelectGossipActiveQuest
 C.GossipInfo.SelectAvailableQuest = SelectGossipAvailableQuest
 C.GossipInfo.GetNumAvailableQuests = GetNumGossipAvailableQuests
 C.GossipInfo.GetNumActiveQuests = GetNumGossipActiveQuests
 C.GossipInfo.GetText = GetGossipText
+C.QuestLog.GetTitleForQuestID = C.QuestLog.GetQuestInfo
 
 if not C_TooltipInfo then
 	local tip = C_EverywhereTip or CreateFrame('GameTooltip', 'C_EverywhereTip', UIParent, 'GameTooltipTemplate')

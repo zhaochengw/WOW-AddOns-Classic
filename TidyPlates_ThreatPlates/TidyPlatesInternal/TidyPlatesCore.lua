@@ -207,7 +207,10 @@ if Addon.IS_CLASSIC then
         endTime = (GetTime() + channel_cast_time) * 1000
         startTime = GetTime() * 1000
 
-        unit.ChannelEventSpellID = event_spellid
+        local plate = PlatesByUnit[unitid]
+        if plate then 
+          plate.TPFrame.unit.ChannelEventSpellID = event_spellid
+        end
 
         return name, name, texture, startTime, endTime, isTradeSkill, notInterruptible, event_spellid
       end
@@ -1309,7 +1312,7 @@ local function NamePlateDriverFrame_AcquireUnitFrame(_, plate)
   end
 end
 
-local function ARENA_OPPONENT_UPDATE(event, unitid, update_reason)
+function CoreEvents:ARENA_OPPONENT_UPDATE(unitid, update_reason)
   -- Event is only registered in solo shuffles, so no need to check here for that
   if update_reason == "seen" then
     local plate = PlatesByUnit[unitid]

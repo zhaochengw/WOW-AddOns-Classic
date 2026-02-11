@@ -7,20 +7,46 @@ function addon:IsRetail()
 	return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
---[[ namespace:IsClassicEra() ![](https://img.shields.io/badge/function-blue)
-Checks if the current client is running the "classic era" version (e.g. vanilla).
+--[[ namespace:IsVanilla() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client vanilla.
 --]]
-function addon:IsClassicEra()
+function addon:IsVanilla()
 	return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
+--[[ namespace:IsBurningCrusade() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is tbc.
+--]]
+function addon:IsBurningCrusade()
+	return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+end
+
+--[[ namespace:IsWrath() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is wrath.
+--]]
+function addon:IsWrath()
+	return WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+end
+
+--[[ namespace:IsCataclysm() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is cataclysm.
+--]]
+function addon:IsCataclysm()
+	return WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+end
+
+--[[ namespace:IsMists() ![](https://img.shields.io/badge/function-blue)
+Checks if the current client is mists.
+--]]
+function addon:IsMists()
+	return WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC
+end
+
 --[[ namespace:IsClassic() ![](https://img.shields.io/badge/function-blue)
-Checks if the current client is running the "classic" version.
+Alias for the latest classic version method from the above.
 --]]
 function addon:IsClassic()
-	-- instead of using the floating constant for classic we'll just NOR the other two,
-	-- as they are static
-	return not addon:IsRetail() and not addon:IsClassicEra()
+	return addon:IsMists()
 end
 
 local _, buildVersion, _, interfaceVersion = GetBuildInfo()

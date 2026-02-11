@@ -21,13 +21,13 @@ L:SetTimerLocalization({
 
 L:SetOptionLocalization({
 	AutoSpirit			= "Автоматически покидать тело",
-	HideBossEmoteFrame	= "Скрыть фрейм эмоций рейдового босса",
-	ShowBasesToWin		= "Показать базы, необходимые для победы",
-	TimerCap			= "Показать таймер захвата",
-	TimerFlag			= "Показать таймер возрождения флага",
-	TimerStart			= "Показать таймер до начала состязания",
-	TimerShadow			= "Показать таймер для Сумеречного зрения",
-	TimerWin			= "Показать таймер выигрыша",
+	HideBossEmoteFrame	= "Скрывать фрейм эмоций рейдового босса",
+	ShowBasesToWin		= "Показывать базы, необходимые для победы",
+	TimerCap			= "Отсчет времени до захвата",
+	TimerFlag			= "Отсчет времени до возрождения флага",
+	TimerStart			= "Отсчет времени до начала состязания",
+	TimerShadow			= "Отсчет времени до Сумеречного зрения",
+	TimerWin			= "Отсчет времени до выигрыша",
 	ShowRelativeGameTime	= "Заполнение таймера выигрыша относительно времени начала БГ (если отключено, полоса всегда выглядит заполненной)"
 })
 
@@ -89,7 +89,7 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	TimerSpawn	= "Показать таймер появления Азерита"
+	TimerSpawn	= "Отсчет времени до появления Азерита"
 })
 
 ----------------------
@@ -102,8 +102,8 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization({
-	AutoTurnIn	= "Автоматическая сдача заданий",
-	TimerBoss	= "Показать оставшийся таймер босса"
+	AutoTurnIn	= "Автоматически сдавать задания",
+	TimerBoss	= "Показывать оставшийся таймер босса"
 })
 
 L:SetMiscLocalization({
@@ -117,7 +117,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("z1191")
 
 L:SetOptionLocalization({
-	AutoTurnIn	= "Автоматическая сдача заданий"
+	AutoTurnIn	= "Автоматически сдавать задания"
 })
 
 ------------------------
@@ -136,8 +136,8 @@ L:SetTimerLocalization({
 
 L:SetOptionLocalization({
 	TimerSiegeEngine	= "Отсчет времени до создания Осадной машины",
-	WarnSiegeEngine		= "Предупреждение, когда создание Осадной машины завершено",
-	WarnSiegeEngineSoon	= "Предупреждение, когда создание Осадной машины почти завершено",
+	WarnSiegeEngine		= "Показывать предупреждение, когда создание Осадной машины завершено",
+	WarnSiegeEngineSoon	= "Показывать предупреждение, когда создание Осадной машины почти завершено",
 	ShowGatesHealth		= "Отображать здоровье поврежденых ворот (значение здоровья может быть некорректным после захода в уже начавшееся поле боя!)"
 })
 
@@ -160,13 +160,13 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("z727")
 
 L:SetTimerLocalization({
-	TimerRespawn	= "Восстановление вагонетки",
+	TimerRespawn	= "Восст. Вагонетки",
 	TimerCart		= "%s"
 })
 
 L:SetOptionLocalization({
 	TimerRespawn	= "Отсчет времени до восстановления вагонетки",
-	TimerCart		= "Таймер захвата повозки"
+	TimerCart		= "Отсчет времени до захвата повозки"
 })
 
 L:SetMiscLocalization({
@@ -181,7 +181,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("z998")
 
 L:SetOptionLocalization({
-	ShowOrbCarriers	= "Показать носителя сферы"
+	ShowOrbCarriers	= "Показывать тех, кто носит сферы"
 })
 
 L:SetMiscLocalization({
@@ -195,7 +195,7 @@ L:SetMiscLocalization({
 L = DBM:GetModLocalization("m1440")
 
 L:SetOptionLocalization({
-	EstimatedStartTimer = "Показывать таймер времени начала события",
+	EstimatedStartTimer = "Отсчет времени до начала события",
 	HealthFrame         = "Показывать инфофрейм со здоровьем босса. Это работает за счет синхронизации здоровья в Вашем рейде и через чат 'криков' с другими рейдами. Это означает, что данная функция работает только в том случае, если есть хотя бы несколько рейдов, распределенных по боссам с установленным DBM-PvP."
 })
 

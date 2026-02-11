@@ -1,0 +1,90 @@
+## Interface: 120000, 120001, 50503
+## Title: PetBattleTeams Reloaded by |cff00ff00Kallye|r
+## Title-frFR: PetBattleTeams Reloaded, par |cff00ff00Kallye|r
+## Title-deDE: PetBattleTeams Reloaded von |cff00ff00Kallye|r
+## Title-esES: PetBattleTeams Reloaded por |cff00ff00Kallye|r
+## Title-itIT: PetBattleTeams Reloaded di |cff00ff00Kallye|r
+## Title-koKR: PetBattleTeams Reloaded 제작: |cff00ff00Kallye|r
+## Title-zhCN: PetBattleTeams Reloaded 作者：|cff00ff00Kallye|r
+## Title-zhTW: PetBattleTeams Reloaded 作者：|cff00ff00Kallye|r
+## Version: 12.0.101
+## Author: |cff00ff00Kallye|r (EU-Elune)
+## Notes: Create teams of pets, switch between them easily, and enhance them with combat notes, PBS scripts, and automatic switching based on target.
+## Notes-frFR: Créez des équipes de mascottes, basculez facilement entre elles et améliorez-les avec des notes de combat, des scripts PBS et le changement automatique selon la cible.
+## Notes-ruRU: Создавайте команды питомцев, легко переключайтесь между ними и улучшайте их с помощью боевых заметок, скриптов PBS и автоматического переключения на основе цели.
+## Notes-deDE: Erstelle Haustier-Teams, wechsle einfach zwischen ihnen und erweitere sie mit Kampfnotizen, PBS-Skripten und automatischem Wechsel basierend auf dem Ziel.
+## Notes-esES: Crea equipos de mascotas, cambia fácilmente entre ellos y mejóralos con notas de combate, scripts PBS y cambio automático basado en el objetivo.
+## Notes-itIT: Crea squadre di mascotte, passa facilmente da una all'altra e migliorale con note di combattimento, script PBS e cambio automatico basato sul bersaglio.
+## Notes-koKR: 애완동물 팀을 생성하고 쉽게 전환하며 전투 메모, PBS 스크립트, 대상 기반 자동 전환으로 강화하세요.
+## Notes-ptBR: Crie equipes de mascotes, alterne entre elas facilmente, e aprimore-as com notas de combate, scripts PBS e troca automática baseada no alvo.
+## Notes-zhCN: 创建宠物队伍，轻松切换，并用战斗备注、PBS脚本以及基于目标的自动切换功能增强它们。
+## Notes-zhTW: 建立寵物隊伍，輕鬆切換，並用戰鬥備註、PBS腳本以及基於目標的自動切換功能強化它們。
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## X-Category: Pet Battles
+## X-Localizations: enUS, frFR, ruRU, deDE, esES, esMX, itIT, koKR, ptBR, zhCN, zhTW
+## SavedVariables: PetBattleTeamsDB, PetBattleTeamsSettings
+## IconTexture: Interface\Icons\INV_Pet_BabyMurlocs_Blue
+
+## Category-enUS: Pet Battles
+## Category-deDE: Haustierkämpfe
+## Category-esES: Duelos de mascotas
+## Category-esMX: Duelos de mascotas
+## Category-frFR: Combats de mascottes
+## Category-itIT: Mostra allenatori di mascotte
+## Category-koKR: 애완동물 대전
+## Category-ptBR: Batalhas de mascotes
+## Category-ruRU: Битвы питомцев
+## Category-zhCN: 宠物对战
+## Category-zhTW: 寵物對戰
+
+
+## X-Credits: Nullberri, 3.3.11 fixed by Marcio Wesley Borges (marciowb)
+## X-Category: Buffs & Debuffs
+## X-License: All Rights Reserved: You are free to fork and modify on Github, please ask about anything else.
+## X-Website: https://github.com/KaspOu/KPetBattle-Teams
+## X-Curse-Project-ID: 1031871
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceAddon-3.0\AceAddon-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+libs\AceDB-3.0\AceDB-3.0.xml
+libs\AceConsole-3.0\AceConsole-3.0.xml
+libs\LibPetBreedInfo-1.0\LibPetBreedInfo-1.0.lua
+libs\EmbedHandler-1.0\EmbedHandler-1.0.xml
+libs\LibPetJournal-2.0\LibPetJournal-2.0.lua
+libs\LibDropDownMenu\LibDropDownMenu.xml
+
+PetBattleTeams.lua
+i18n\Localization.en.lua
+i18n\Localization.fr.lua [AllowLoadTextLocale frFR]
+i18n\Localization.de.lua [AllowLoadTextLocale deDE]
+i18n\Localization.es.lua [AllowLoadTextLocale esES, esMX]
+i18n\Localization.it.lua [AllowLoadTextLocale itIT]
+i18n\Localization.ko.lua [AllowLoadTextLocale koKR]
+i18n\Localization.pt.lua [AllowLoadTextLocale ptBR]
+i18n\Localization.ru.lua [AllowLoadTextLocale ruRU]
+i18n\Localization.zh.lua [AllowLoadTextLocale zhCN, zhTW]
+
+modules\TeamManager.lua
+modules\TeamManagerUnitTests.lua
+modules\Tooltip.lua
+modules\Cursor.lua
+modules\GUI\GUI.lua
+modules\Config.lua
+
+classes\PetUnitFrame.lua
+classes\TeamFrame.lua
+
+modules\GUI\NoteEditor.lua
+modules\GUI\ScriptEditor.lua
+modules\GUI\LockTeamsButton.lua
+modules\GUI\AddTeamButton.lua
+modules\GUI\ReviveButton.lua
+modules\GUI\PetBandageButton.lua
+modules\GUI\ScrollFrame.lua
+modules\GUI\resizer.lua
+modules\GUI\MenuButton.lua
+modules\GUI\MainFrame.lua

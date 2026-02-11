@@ -2,8 +2,8 @@ local addonName, addon = ...
 local BuffTimers = LibStub("AceAddon-3.0"):GetAddon("BuffTimers")
 local L = LibStub("AceLocale-3.0"):GetLocale("BuffTimers")
 
-local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-addon.IsRetail = IsRetail
+local isNotClassic = WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_MISTS_CLASSIC
+addon.isNotClassic = isNotClassic
 
 local function GetMilliseconds(time)
     return floor((time % 60) % 1 * 10)
@@ -25,7 +25,6 @@ function BuffTimers:OnInitialize()
     -- Transfer from old config or use hardcoded default values
     local defaults = {
         profile = {
-            show_source = true,  -- 添加显示来源的默认值
             time_stamp = BuffTimersOptions["time_stamp"] or "m",
             seconds = BuffTimersOptions["seconds"] or false,
             seconds_threshold = BuffTimersOptions["seconds_threshold"] or 30,
@@ -37,35 +36,16 @@ function BuffTimers:OnInitialize()
             font = "Friz Quadrata TT",
             font_size = BuffTimersOptions["font_size"] or 14,
             font_outline = "",
-            show_na = true,  -- 新增N/A文本开关
         }
     }
 
     -- Initialize the addon
     self.db = LibStub("AceDB-3.0"):New("BuffTimersDB", defaults, true)
-    
-    -- 在这里添加钩子，确保能正确访问到 self
-    hooksecurefunc(GameTooltip, "SetUnitAura", function(tooltip, unit, index, filter)
-        if not self.db.profile.show_source then return end
-        
-        local name, _, _, _, _, _, caster = UnitAura(unit, index, filter)
-        if name and caster then
-            local casterName = UnitName(caster) or caster
-            if UnitIsPlayer(caster) then
-                local _, className = UnitClass(caster)
-                local classColor = RAID_CLASS_COLORS[className]
-                tooltip:AddLine(L["Source"]..": |c"..classColor.colorStr..casterName.."|r")
-            else
-                tooltip:AddLine(L["Source"]..": "..casterName, 1, 0.82, 0)
-            end
-            tooltip:Show()
-        end
-    end)
 end
 
 function BuffTimers:OnEnable()
     -- Hook the functions when addon is enabled
-    if IsRetail then
+    if isNotClassic then
         local frames = { BuffFrame, DebuffFrame }
         for i = 1, #frames do
             for _, button in ipairs(frames[i].auraFrames) do
@@ -215,127 +195,77 @@ function BuffTimers:FormatTime(time)
 end
 
 function BuffTimers:SetDurationColor(duration, time)
-    local profile = self.db.profile
-    
-    if profile.yellow_text then
-        -- 强制黄色文本
+    -- TBCC introduced a bug (?) where the timer starts ticking down in seconds at 90 seconds instead of 60 seconds
+    -- Which also means the time will be white from 90 seconds
+    -- This should force the text to be yellow until < 60 seconds
+    if time >= 60 then
         duration:SetTextColor(0.99999779462814, 0.81960606575012, 0, 1)
-    elseif profile.colored_text then
-        -- 根据时间变化颜色
-        if not time then
-            duration:SetTextColor(0.1, 1, 0.1, 1) -- N/A 状态也使用默认绿色
+    end
+
+    if self.db.profile.yellow_text then
+        duration:SetTextColor(0.99999779462814, 0.81960606575012, 0, 1)
+    elseif self.db.profile.colored_text then
+        if GetMinutes(time) >= 10 then
+            duration:SetTextColor(0.1, 1, 0.1, 1) -- Green
+        elseif GetMinutes(time) >= 1 then
+            duration:SetTextColor(0.99999779462814, 0.81960606575012, 0, 1) -- Yellow
         else
-            local minutes = GetMinutes(time)
-            if minutes >= 10 then
-                duration:SetTextColor(0.1, 1, 0.1, 1) -- 绿色
-            elseif minutes >= 1 then
-                duration:SetTextColor(0.99999779462814, 0.81960606575012, 0, 1) -- 黄色
-            else
-                duration:SetTextColor(1, 0.1, 0.1, 1) -- 红色
-            end
+            duration:SetTextColor(1, 0.1, 0.1, 1) -- Red
         end
-    else
-        -- 默认使用绿色
-        duration:SetTextColor(0.1, 1, 0.1, 1)
     end
 end
 
-function BuffTimers.OnAuraDurationUpdate(aura, time, source)
-    if not aura then return end
-    
-    local duration = IsRetail and aura.Duration or aura.duration
-    if not duration then return end
-
+function BuffTimers.OnAuraDurationUpdate(aura, time)
+    local duration = isNotClassic and aura.Duration or aura.duration
     local self = BuffTimers
-    local profile = self.db.profile
 
-    -- 应用自定义文本设置
-    if profile.customize_text then
-        -- 只有当实际设置了相关选项时才应用更改
-        if profile.vertical_position ~= -34 then
-            local verticalPosition = profile.vertical_position
-            if (IsRetail and verticalPosition == -40) then 
+    if time then
+        if self.db.profile.customize_text then
+            local verticalPosition = self.db.profile.vertical_position
+            -- Non-classic Era only: text cannot be displayed if verticalPosition is set to -40. don't know why
+            if (isNotClassic and verticalPosition == -40) then 
                 verticalPosition = -39.9
             end
+
             duration:SetPoint("BOTTOM", aura, "TOP", 0, verticalPosition)
+
+            local fontPath = BuffTimersLibSharedMedia:Fetch("font", self.db.profile.font)
+            duration:SetFont(fontPath, self.db.profile.font_size, self.db.profile.font_outline)
         end
 
-        -- 只有当实际设置了字体相关选项时才应用
-        local currentFont, currentSize, currentOutline = duration:GetFont()
-        if profile.font ~= "" then
-            currentFont = BuffTimersLibSharedMedia:Fetch("font", profile.font)
-        end
-        if profile.font_size > 0 then
-            currentSize = profile.font_size
-        end
-        if profile.font_outline ~= "" then
-            currentOutline = profile.font_outline
-        end
-        
-        duration:SetFont(currentFont, currentSize, currentOutline)
-    end
+        duration:SetText(self:FormatTime(time))
+        self:SetDurationColor(duration, time)
 
-    -- 设置文本和颜色
-    if time and time > 0 then
-        local timeText = self:FormatTime(time)
-        if profile.show_source and source then
-            local sourceName = UnitName(source) or source
-            duration:SetText(timeText .. " |cffffffff(" .. sourceName .. ")|r")
-        else
-            duration:SetText(timeText)
-        end
+        duration:Show()
     else
-        if self.db.profile.show_na then
-            if profile.show_source and source then
-                local sourceName = UnitName(source) or source
-                duration:SetText("N/A |cffffffff(" .. sourceName .. ")|r")
-            else
-                duration:SetText("N/A")
-            end
-        else
-            duration:SetText("")
-        end
+        duration:Hide()
     end
-    
-    self:SetDurationColor(duration, time)
-    duration:SetShown(duration:GetText() ~= "")
 end
 
 function BuffTimers.OnAuraUpdate(...)
-    if IsRetail then
+    if isNotClassic then
         local aura = ...
-        local expirationTime = aura.buttonInfo.expirationTime
-        local remaining = expirationTime > 0 and (expirationTime - GetTime()) or nil
-        -- 增加时间耗尽检查（剩余时间<=0时传nil）
-        BuffTimers.OnAuraDurationUpdate(aura, remaining and remaining > 0 and remaining or nil)
-    else
-        -- 经典版需要主动触发更新
-        local auraSlot, index, filter = ...
-        -- 修复经典版按钮索引问题
-        local buttonName = "BuffButton"..index  -- 根据实际按钮命名规则调整
-        local aura = _G[buttonName]
-        
-        if aura then
-            local name, _, _, _, _, expirationTime = UnitAura("player", index, filter)
-            local remaining = name and expirationTime > 0 and (expirationTime - GetTime()) or nil
-            BuffTimers.OnAuraDurationUpdate(aura, remaining)
-        end
-    end
-end
 
-function BuffTimers:RefreshAllAuras()
-    -- 经典版刷新逻辑
-    if not IsRetail then
-        for i = 1, BUFF_MAX_DISPLAY do
-            local button = _G["BuffButton"..i]
-            if button then
-                AuraButton_Update("player", i, "HELPFUL")
-            end
+        if aura.buttonInfo.expirationTime > 0 then
+            aura.Duration:Show()
+        else
+            aura.Duration:Hide()
         end
-        return
+    else
+        local auraSlot, index, filter = ...
+        local auraName = auraSlot .. index
+        local auraDuration = getglobal(auraName .. "Duration")
+
+        if not auraDuration then
+            return
+        end
+
+        local name, _, _, _, _, expirationTime = UnitAura("player", index, filter)
+
+        if name and expirationTime > 0 then
+            auraDuration:Show()
+        else
+            auraDuration:Hide()
+        end
     end
-    
-    -- 正式服刷新逻辑
-    BuffFrame:UpdateAllAuras()
-    DebuffFrame:UpdateAllAuras()
 end

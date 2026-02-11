@@ -4,7 +4,7 @@ local cataWowID = 14
 local mistsWowID = 19
 if wowID ~= 1 and wowID ~= cataWowID and wowID ~= mistsWowID then return end -- Retail, Cata, Mists
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 23)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 24)
 if not LS then return end -- No upgrade needed
 
 LS.callbackMapGroup = LS.callbackMapGroup or {}
@@ -62,6 +62,7 @@ local positionTable = wowID == cataWowID and {
 	-- Demon Hunter
 	[577] = "MELEE", -- Havoc (DPS)
 	[581] = "MELEE", -- Vengeance (Tank)
+	[1480] = "RANGED", -- Devourer (DPS)
 	-- Druid
 	[102] = "RANGED", -- Balance (DPS Owl)
 	[103] = "MELEE", -- Feral (DPS Cat)
@@ -158,6 +159,7 @@ local roleTable = wowID == cataWowID and {
 	-- Demon Hunter
 	[577] = "DAMAGER", -- Havoc (DPS)
 	[581] = "TANK", -- Vengeance (Tank)
+	[1480] = "DAMAGER", -- Devourer (DPS)
 	-- Druid
 	[102] = "DAMAGER", -- Balance (DPS Owl)
 	[103] = "DAMAGER", -- Feral (DPS Cat)
@@ -513,10 +515,11 @@ do
 	}
 	local tonumber, strmatch = tonumber, string.match
 	local Ambiguate = Ambiguate
+	local issecretvalue = issecretvalue or function() return false end
 	local C_ClassTalents_GetActiveConfigID = C_ClassTalents and C_ClassTalents.GetActiveConfigID
 	LS.frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
 		if event == "CHAT_MSG_ADDON" then
-			if prefix == "LibSpec" and approved[channel] then -- Only approved channels
+			if not issecretvalue(msg) and prefix == "LibSpec" and approved[channel] then -- Only approved channels
 				if msg == "R" then
 					if channel == "GUILD" then
 						PrepareForGuild()

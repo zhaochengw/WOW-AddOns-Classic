@@ -3,7 +3,7 @@
 -- @Link   : https://dengsir.github.io
 -- @Date   : 4/15/2024, 11:37:25 PM
 --
-local MAJOR, MINOR = 'tdOptions', 6
+local MAJOR, MINOR = 'tdOptions', 7
 ---@class tdOptions
 local Lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
@@ -32,7 +32,7 @@ local C_AddOns = _G.C_AddOns
 local STANDARD_TEXT_FONT = _G.STANDARD_TEXT_FONT
 
 local function UpdateAddon(name)
-    if select(5, GetAddOnInfo(name)) ~= 'MISSING' then
+    if select(5, C_AddOns.GetAddOnInfo(name)) ~= 'MISSING' then
         data[name] = {
             text = C_AddOns.GetAddOnMetadata(name, 'Title'),
             icon = C_AddOns.GetAddOnMetadata(name, 'IconTexture'),
@@ -209,7 +209,7 @@ do
     }
 
     local function OpenUrlDialog(url)
-        local Frame =  AceGUI:Create('Frame')
+        local Frame = AceGUI:Create('Frame')
 
         Frame:SetTitle(L['tdSupport'])
         Frame:SetStatusText(L['Use CTRL+C to copy link'])

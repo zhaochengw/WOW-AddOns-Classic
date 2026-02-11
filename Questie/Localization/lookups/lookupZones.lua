@@ -1766,6 +1766,23 @@ l10n.zoneLookup = {
     },
     [532]={
         [3457]="Karazhan",
+        [10102]="Karazhan",
+        [10103]="Karazhan",
+        [10104]="Karazhan",
+        [10105]="Karazhan",
+        [10106]="Karazhan",
+        [10107]="Karazhan",
+        [10108]="Karazhan",
+        [10109]="Karazhan",
+        [10110]="Karazhan",
+        [10111]="Karazhan",
+        [10112]="Karazhan",
+        [10113]="Karazhan",
+        [10114]="Karazhan",
+        [10115]="Karazhan",
+        [10116]="Karazhan",
+        [10117]="Karazhan",
+        [10118]="Karazhan",
     },
     [533]={
         [3456]="Naxxramas",
@@ -2891,8 +2908,8 @@ l10n.zoneCategoryLookup = {
         [-370] = "Brewfest",
         [-374] = "Noblegarden",
         [-375] = "Pilgrim's Bounty",
-        [-376] = "Love is in the Air", -- Category added in WotLK
-        [-391] = "Pandaren Brewmasters", -- Category added in MoP
+        [-376] = "Love is in the Air",
+        [-378] = "Children's Week",
         [-392] = "Scenario", -- Category added in MoP
         [-396] = "Landfall", -- Category added in MoP
         [-397] = "Pandaren Campaign", -- Category added in MoP
@@ -2903,11 +2920,8 @@ l10n.zoneCategoryLookup = {
         -- Below are dummy IDs to not interfere with other IDs
         -- These are needed because the events are listed as "seasonal" or "special",
         -- not with a separate ID
-        --[-400] = "Love is in the Air", -- Needed before WotLK
         [-400] = "Proving Grounds",
-        [-401] = "Children's Week",
         [-402] = "Harvest Festival",
-        [-403] = "Hallow's End",
         [-404] = "Winter Veil",
     },
     [13] = {
@@ -2927,6 +2941,7 @@ l10n.zoneCategoryLookup = {
         [6615] = "Domination Point",
         [6209] = "Greenstone Village",
         [6575] = "Lion's Landing",
+        [-391] = "Pandaren Brewmasters", -- Only one quest here and it's scenario type
         -- [6731] = "The Secrets of Ragefire",
         [6040] = "Theramore's Fall", -- H
         [6500] = "Theramore's Fall", -- A

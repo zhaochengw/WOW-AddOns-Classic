@@ -9,7 +9,7 @@ local min = _G.math.min
 local max = _G.math.max
 local ceil = _G.math.ceil
 
-local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
+local CastingBarFrame = _G.PlayerCastingBarFrame or _G.CastingBarFrame
 
 local nonLSMBorders = {
     ["Interface\\CastingBar\\UI-CastingBar-Border-Small"] = true,
@@ -53,16 +53,23 @@ function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
         castbar:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY - 4)
     else
         if parentFrame == _G.TargetFrame or parentFrame == _G.FocusFrame then
-            -- copy paste from wotlk wow ui source
             if parentFrame.haveToT then
                 if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21)
+                    if isClassicEra then
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -21)
+                    else
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 40, -21)
+                    end
                 else
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 end
             elseif parentFrame.haveElite then
                 if parentFrame.buffsOnTop or parentFrame.auraRows <= 1 then
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5)
+                    if isClassicEra then
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, -5)
+                    else
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 40, -5)
+                    end
                 else
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 end
@@ -70,7 +77,11 @@ function ClassicCastbars:SetTargetCastbarPosition(castbar, parentFrame)
                 if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
                     castbar:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
                 else
-                    castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7)
+                    if isClassicEra then
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 25, 7)
+                    else
+                        castbar:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 40, 7)
+                    end
                 end
             end
         else -- unknown parent frame
@@ -480,17 +491,23 @@ local function ColorPlayerCastbar()
         CastingBarFrame.iconWhenNoninterruptible = false
     end
 
-    CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
-    CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
-    CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
-    --if CastingBarFrame.isTesting then
+    if CastingBarFrame.SetStartCastColor then
+        CastingBarFrame:SetStartCastColor(unpack(db.statusColor))
+        CastingBarFrame:SetStartChannelColor(unpack(db.statusColorChannel))
+        CastingBarFrame:SetFailedCastColor(unpack(db.statusColorFailed))
+        CastingBarFrame:SetFinishedCastColor(unpack(db.statusColorSuccess))
+        CastingBarFrame:SetUseStartColorForFinished(false)
+        CastingBarFrame:SetUseStartColorForFlash(false)
+    else
+        CastingBarFrame_SetStartCastColor(CastingBarFrame, unpack(db.statusColor))
+        CastingBarFrame_SetStartChannelColor(CastingBarFrame, unpack(db.statusColorChannel))
+        CastingBarFrame_SetFailedCastColor(CastingBarFrame, unpack(db.statusColorFailed))
+        CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
+        CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
+        CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
+    end
+
     CastingBarFrame:SetStatusBarColor(unpack(db.statusColor))
-    --end
-
-    CastingBarFrame_SetFinishedCastColor(CastingBarFrame, unpack(db.statusColorSuccess))
-    CastingBarFrame_SetUseStartColorForFinished(CastingBarFrame, false)
-    CastingBarFrame_SetUseStartColorForFlash(CastingBarFrame, false)
-
     CastingBarFrame.Background = CastingBarFrame.Background or GetStatusBarBackgroundTexture(CastingBarFrame)
     CastingBarFrame.Background:SetColorTexture(unpack(db.statusBackgroundColor))
 end
@@ -619,7 +636,11 @@ function ClassicCastbars:SkinPlayerCastbar()
 
     if not isRetail then
         if not CastingBarFrame.CC_ColorIsHooked then
-            hooksecurefunc("CastingBarFrame_OnLoad", ColorPlayerCastbar)
+            if CastingBarFrame.OnLoad then
+                hooksecurefunc(CastingBarFrame, "OnLoad", ColorPlayerCastbar)
+            else
+                hooksecurefunc("CastingBarFrame_OnLoad", ColorPlayerCastbar)
+            end
             CastingBarFrame.CC_ColorIsHooked = true
         end
 

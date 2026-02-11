@@ -2,7 +2,7 @@
 -- ChatBar Classic.lua 
 --------------------------------------------------------------------------
 --[[
-ChatBar Classic for Wrath of the Lich King
+ChatBar Classic for Mists of Pandaria Classic
 
 Author: AnduinLothar - karlkfi@yahoo.com
 Graphics: Vynn, Zseton
@@ -11,6 +11,8 @@ Edited: Foxylittlething, aNNiPAk, Yarko
 -Button Bar for openning chat messages of each type.
 
 Change Log:
+v 3.4-Pandaria (Foxylittlething)
+- fixed compatibility for 5.5.3 version
 v 3.3-WotLK (Foxylittlething)
 - fixed 3.4.2 version compatibility
 - fixed russian localization

@@ -327,7 +327,7 @@ L["STRING_MINIMAP_TOOLTIP11"] = "|cFFCFCFCFclic gauche|r : efface tous les segme
 L["STRING_MINIMAP_TOOLTIP12"] = "|cFFCFCFCFclic gauche|r : afficher / masquer les fenêtres"
 L["STRING_MINIMAP_TOOLTIP2"] = "|cFFCFCFCFclic droit|r : menu rapide"
 L["STRING_MINIMAPMENU_CLOSEALL"] = "Tout fermer"
-L["STRING_MINIMAPMENU_HIDEICON"] = "Cacher l'icône de la minicarte"
+L["STRING_MINIMAPMENU_HIDEICON"] = "Cacher l'icône de la mini-carte"
 L["STRING_MINIMAPMENU_LOCK"] = "Verrouiller"
 L["STRING_MINIMAPMENU_NEWWINDOW"] = "Créer une nouvelle fenêtre"
 L["STRING_MINIMAPMENU_REOPENALL"] = "Tout rouvrir"
@@ -1268,6 +1268,26 @@ L["STRING_SEGMENTS_LIST_WASTED_TIME"] = "Hors combat"
 L["STRING_SHIELD_HEAL"] = "Empêché"
 L["STRING_SHIELD_OVERHEAL"] = "Perdu"
 L["STRING_SHORTCUT_RIGHTCLICK"] = "clic droit pour fermer"
+L["STRING_SIMPLE_TEXT_FORMAT"] = "Utiliser le format de texte simple"
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED"] = "Utiliser le texte aligné"
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED_DESC"] = "Le texte est aligné en colonnes, configurez l'espacement entre les colonnes."
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED_SPACE_BETWEEN"] = "Espace entre les colonnes"
+L["STRING_SIMPLE_TEXT_FORMAT_DESC"] = "Active l'utilisation des trois règles ci-dessous."
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE2"] = "Ne pas afficher le pourcentage"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE3"] = "Afficher uniquement le total"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE4"] = "Séparer avec | comme séparateur"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE5"] = "Séparer avec [crochets]"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE6"] = "Total (DPS) Pourcentage"
+L["STRING_SIMPLE_TEXT_FORMAT_TITLE"] = "Texte droit : Simple ou Aligné"
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE1"] = [=[Quand la ligne contient des informations
+sur le total et le pourcentage.
+|cFFAAAAAA%s ordre : total, pourcentage.]=]
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE2"] = [=[Quand la ligne contient des informations
+sur le total et par seconde.
+|cFFAAAAAA%s ordre : total, par seconde.]=]
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE3"] = [=[Quand la ligne contient des informations
+sur le total, par seconde et le pourcentage.
+|cFFAAAAAA%s ordre : total, par seconde, pourcentage.]=]
 L["STRING_SLASH_API_DESC"] = "ouvre le panneau de l'API pour construire des plugins, des affichages personnalisés, des auras, etc."
 L["STRING_SLASH_CAPTURE_DESC"] = "active ou désactive toutes les captures de données."
 L["STRING_SLASH_CAPTUREOFF"] = "toutes les captures ont été désactivées."
@@ -1320,6 +1340,7 @@ L["STRING_TOOOLD"] = "n'a pas pu être installé car votre version de Details! e
 L["STRING_TOP"] = "haut"
 L["STRING_TOP_TO_BOTTOM"] = "De haut en bas"
 L["STRING_TOTAL"] = "Total"
+L["STRING_TRAINING_DUMMY"] = "Mannequin d’entraînement"
 L["STRING_TRANSLATE_LANGUAGE"] = "Aidez-nous à traduire Details!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = "Vous avez fermé une fenêtre et vous pouvez la rouvrir à tout moment. Pour supprimer complètement une fenêtre, allez dans Options -> Fenêtre : Général -> Supprimer."
 L["STRING_TUTORIAL_OVERALL1"] = "Les données globales ne sont mises à jour que lorsque le combat est terminé. Si vous souhaitez des mises à jour régulières, faites un clic droit sur la barre de titre et sélectionnez 'Données globales dynamiques'."

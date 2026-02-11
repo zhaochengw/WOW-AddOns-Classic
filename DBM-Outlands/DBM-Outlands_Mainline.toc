@@ -1,6 +1,6 @@
-## Interface: 110205, 110207, 120000
+## Interface: 110207, 120000, 120001
 ## X-Min-Interface: 80000
-## Version: r11
+## Version: r13
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cff10ff10World Bosses (BC)|r

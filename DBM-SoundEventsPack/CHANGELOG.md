@@ -1,9 +1,13 @@
 # <DBM Media> Sound Events Pack
 
-## [1.6.42](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/tree/1.6.42) (2025-07-01)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/compare/1.6.41...1.6.42) [Previous Releases](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/releases)
+## [1.6.43](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/tree/1.6.43) (2025-12-15)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/compare/1.6.42...1.6.43) [Previous Releases](https://github.com/DeadlyBossMods/DBM-SoundEventsPack/releases)
 
-- Add mists support  
-- Add 11.2 TOC  
-- Fix outdated media pack tocs  
-- toc bumps for ptr  
+- Fix some missed tocs  
+- add 12.0.1 toc  
+- Cleanup 11.2.5 tocs  
+- apparently vanilla also had a patch this week. bump toc  
+- toc updates  
+- Update TOCs  
+- Toc bumps for current PTRs  
+- Remove 11.1.7 toc  

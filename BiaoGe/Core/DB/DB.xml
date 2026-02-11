@@ -10,6 +10,7 @@
     <Script file="Core\DB\DB_Loot_MOP.lua"/>
     <Script file="Core\DB\DB_Loot_CTM.lua"/>
     <Script file="Core\DB\DB_Loot_WLK.lua"/>
+    <Script file="Core\DB\DB_Loot_Titan.lua"/>
     <Script file="Core\DB\DB_Loot_Vanilla_Sod.lua"/>
     <Script file="Core\DB\DB_Loot_Vanilla_60.lua"/>
     <Script file="Core\DB\DB_CommerceAuthority_Vanilla.lua"/>

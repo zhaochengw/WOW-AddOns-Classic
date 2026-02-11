@@ -16,8 +16,8 @@ local dummySpellData = {
     castID = nil,
 }
 
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local CastingBarFrame = isRetail and _G.PlayerCastingBarFrame or _G.CastingBarFrame
+--local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local CastingBarFrame = _G.PlayerCastingBarFrame or _G.CastingBarFrame
 
 -- Note: don't add any major code reworks here, this codebase will soon be replaced with the player-castbar-v2 branch
 
@@ -53,6 +53,10 @@ local function OnDragStop(self)
     self:ClearAllPoints()
     self:SetParent(self.parent)
     self:SetPoint("CENTER", self.parent, x, y)
+
+    if unit == "player" then
+        ClassicCastbars:SkinPlayerCastbar() --Ensure the logic for CastingBarFrame.ignoreFramePositionManager runs
+    end
 end
 
 function TestMode:ToggleArenaContainer(showFlag)

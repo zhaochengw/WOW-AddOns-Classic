@@ -140,6 +140,9 @@ function Tooltip:SetCraftItem(tip, index, slot)
 end
 
 function Tooltip:SetAction(tip, action)
+    if not tip:GetItem() then
+        return
+    end
     local actionType, id = GetActionInfo(action)
     local link, _
     if actionType == 'item' then

@@ -1,4 +1,4 @@
-## Interface: 50500
+## Interface: 50502, 50503
 ## Category: DBM
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000PvP|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff0000PvP|r
@@ -34,7 +34,7 @@
 ## X-DBM-Mod-Sort: 254
 ## X-Curse-Project-ID: 61882
 ## X-Wago-ID: Xb6Xe0Kp
-## Version: r188
+## Version: r191
 
 localization.en.lua
 localization.br.lua

@@ -1,0 +1,12 @@
+## Interface: 40402
+## Title: Train All v1.4.2
+## Version: 1.4.2
+## Author: SDPhantom
+
+# LoadWith isn't working in Classic clients
+# LoadOnDemand: 1
+# LoadWith: Blizzard_TrainerUI
+
+## Notes: Enables a "Train All" button in the trainer window.
+
+TrainAll.lua

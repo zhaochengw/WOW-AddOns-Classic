@@ -16,7 +16,7 @@ local DT = __private.DT;
 	local format = string.format;
 
 	local GetAreaInfo = C_Map.GetAreaInfo;
-	local IsAddOnLoaded = IsAddOnLoaded;
+	local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded;
 
 	local _G = _G;
 -->

@@ -24,13 +24,15 @@ local DT = __private.DT;
 	local tremove = table.remove;
 	local tinsert = table.insert;
 
-	local IsAddOnLoaded = IsAddOnLoaded;
+	local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded;
 
 	local GetPlayerInfoByGUID = GetPlayerInfoByGUID;
 	local SlashCmdList = SlashCmdList;
 
 
-	local GetAddOnInfo = GetAddOnInfo;
+	local GetAddOnInfo = C_AddOns and C_AddOns.GetAddOnInfo or GetAddOnInfo;
+	local EnableAddOn = C_AddOns and C_AddOns.EnableAddOn or EnableAddOn;
+	local LoadAddOn = C_AddOns and C_AddOns.LoadAddOn or LoadAddOn;
 
 	local CreateFrame = CreateFrame;
 	local _G = _G;

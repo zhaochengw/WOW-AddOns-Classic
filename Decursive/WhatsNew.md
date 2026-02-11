@@ -1,5 +1,33 @@
-Decursive 2.7.30
+Decursive 2.7.34
 ================
+
+Decursive 2.7.34 (2026-01-19)
+-----------------------------
+
+- Compatible with BCC Anniversary
+
+- Make it so it doesn't crash in Midnight but it's mostly useless.
+
+CLEU being gone and APIs returning secret values, there is little hope but the
+MUFs and spell detection are still working so there might be a way to do
+something with the debuf types and the curve color secret related APIs to
+change the MUFs color depending on the type of debuf...
+
+
+Decursive 2.7.32 (2026-01-01)
+-----------------------------
+
+- TOC updates
+
+- Fix a reported Lua error in priority/skip list management
+
+
+Decursive 2.7.31 (2025-10-25)
+-----------------------------
+
+- Remove talent availability check entirely as Blizzard broke talents in a
+  Friday night WoW Classic patch (1.15.8.63829) and won't fix it until Monday.
+  This talent availability check is probably no longer necessary anyway.
 
 
 Decursive 2.7.30 (2025-10-22)
@@ -9,17 +37,10 @@ Decursive 2.7.30 (2025-10-22)
   GetNumUnspentTalents and GetNumTalentTabs API are unsupported in this version of World of Warcraft,
   but you know, the nil check worked just fine...).
 
-- Fix Decursive's MUFs not showing for players between level 10 and 15. That's
-  the positive consequence of the breakage above — 🎵always look on the bright side of life 🎵.
-
 - Do not attempt to move the MUFs when in combat and drop it where it is if the
   user happened to be in the process of moving it while entering combat...
 
 - ToC updates
-
-
-**New Way to support Decursive:** If you are an [ADA/Cardano](https://cardano.org) holder you can
-delegate your stake to my pool: [anfra.io](https://anfra.io)
 
 
 Decursive 2.7.29 (2025-07-21)

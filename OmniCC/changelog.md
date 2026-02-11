@@ -1,5 +1,9 @@
 # OmniCC Changelog
 
+## 11.2.8
+
+* Updated TOCs for 11.2.7, 5.5.3, 3.8.0, 2.5.2, and 1.5.8
+
 ## 11.2.7
 
 * Update TOCs for 11.2.5 and 5.5.1

@@ -1,0 +1,13 @@
+## Interface: 40400
+## Title: Global Ignore List (Classic)
+## Notes: Maintain ignore list across all characters, filter chat spam and more
+## Author: IceyPop
+## Version: 11.2.7.1
+## SavedVariables: GlobalIgnoreDB
+## SavedVariablesPerCharacter: GlobalIgnoreImported
+
+GIL_Localization.lua
+GIL_Globals.lua
+GIL_UI.lua
+GIL_BlizzardUI.lua
+GlobalIgnoreList.lua

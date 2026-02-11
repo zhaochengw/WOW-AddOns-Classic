@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(828, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(69712)
 mod:SetEncounterID(1573)
 mod:SetZone(1098)
@@ -14,6 +14,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 134366 133755 140741 140571",
 	"SPELL_AURA_APPLIED_DOSE 134366 140741",
 	"SPELL_AURA_REMOVED 134366 133755 140741 140571",
+	"SPELL_PERIODIC_DAMAGE 138319",
+	"SPELL_PERIODIC_MISSED 138319",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
 	"CHAT_MSG_MONSTER_EMOTE"
 )
@@ -24,30 +26,29 @@ local warnFlock				= mod:NewAnnounce("warnFlock", 3, 15746)--Some random egg ico
 local warnTalonRake			= mod:NewStackAnnounce(134366, 3, nil, "Tank|Healer")
 local warnPrimalNutriment	= mod:NewCountAnnounce(140741, 1)
 
-local specWarnQuills		= mod:NewSpecialWarningCount(134380, nil, nil, nil, 2)
-local specWarnFlock			= mod:NewSpecialWarning("specWarnFlock", false)--For those assigned in egg/bird killing group to enable on their own (and tank on heroic)
-local specWarnTalonRake		= mod:NewSpecialWarningStack(134366, nil, 2)--Might change to 2 if blizz fixes timing issues with it
-local specWarnTalonRakeOther= mod:NewSpecialWarningTaunt(134366)
-local specWarnDowndraft		= mod:NewSpecialWarningSpell(134370, nil, nil, nil, 2)
-local specWarnFeedYoung		= mod:NewSpecialWarningSpell(137528)
-local specWarnBigBird		= mod:NewSpecialWarning("specWarnBigBird", "Tank")
-local specWarnBigBirdSoon	= mod:NewSpecialWarning("specWarnBigBirdSoon", false)
-local specWarnFeedPool		= mod:NewSpecialWarningMove(138319, false)
+local specWarnQuills		= mod:NewSpecialWarningCount(134380, nil, nil, nil, 2, 2)
+local specWarnFlock			= mod:NewSpecialWarning("specWarnFlock", false, nil, nil, 1, 2)--For those assigned in egg/bird killing group to enable on their own (and tank on heroic)
+local specWarnTalonRake		= mod:NewSpecialWarningStack(134366, nil, 2, nil, nil, 1, 8)--Might change to 2 if blizz fixes timing issues with it
+local specWarnTalonRakeOther= mod:NewSpecialWarningTaunt(134366, nil, nil, nil, 1, 2)
+local specWarnDowndraft		= mod:NewSpecialWarningSpell(134370, nil, nil, nil, 2, 13)
+local specWarnFeedYoung		= mod:NewSpecialWarningDodge(137528, nil, nil, nil, 2, 2)
+local specWarnBigBird		= mod:NewSpecialWarning("specWarnBigBird", "Tank", nil, nil, 1, 2)
+local specWarnBigBirdSoon	= mod:NewSpecialWarning("specWarnBigBirdSoon", "Tank", nil, nil, 1, 2)
+local specWarnFeedPool		= mod:NewSpecialWarningGTFO(138319, false, nil, nil, 1, 8)
 
 --local timerCawsCD			= mod:NewCDTimer(15, 138923)--Variable beyond usefulness. anywhere from 18 second cd and 50.
-local timerQuills			= mod:NewBuffActiveTimer(10, 134380)
-local timerQuillsCD			= mod:NewCDCountTimer(62.5, 134380, nil, nil, nil, 2)--variable because he has two other channeled abilities with different cds, so this is cast every 62.5-67 seconds usually after channel of some other spell ends
+local timerQuills			= mod:NewBuffActiveTimer(10, 134380, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+local timerQuillsCD			= mod:NewCDCountTimer(62.5, 134380, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--variable because he has two other channeled abilities with different cds, so this is cast every 62.5-67 seconds usually after channel of some other spell ends
 local timerFlockCD	 		= mod:NewTimer(30, "timerFlockCD", 15746, nil, nil, 1)
 local timerFeedYoungCD	 	= mod:NewCDTimer(29.8, 137528, nil, nil, nil, 5)--30-40 seconds (always 30 unless delayed by other channeled spells)
-local timerTalonRakeCD		= mod:NewCDTimer(20, 134366, nil, "Tank|Healer", nil, 5)--20-30 second variation
+local timerTalonRakeCD		= mod:NewCDTimer(20, 134366, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--20-30 second variation
 local timerTalonRake		= mod:NewTargetTimer(60, 134366, nil, false, 2)
 local timerDowndraft		= mod:NewBuffActiveTimer(10, 134370)
 local timerDowndraftCD		= mod:NewCDTimer(97, 134370, nil, nil, nil, 2)
-local timerFlight			= mod:NewBuffFadesTimer(10, 133755)
+local timerFlight			= mod:NewBuffFadesTimer(10, 133755, nil, nil, nil, 5)
 local timerPrimalNutriment	= mod:NewBuffFadesTimer(30, 140741, nil, false, 2)
 local timerLessons			= mod:NewBuffFadesTimer(60, 140571, nil, false)
 
-mod:AddBoolOption("RangeFrame", "Ranged")
 mod:AddDropdownOption("ShowNestArrows", {"Never", "Northeast", "Southeast", "Southwest", "West", "Northwest", "Guardians"}, "Never", "misc")
 --Southwest is inconsistent between 10 and 25 because blizz activates lower SW on 10 man but does NOT activate upper SW (middle is activated in it's place)
 --As such, the options have to be coded special so that Southwest sends 10 man to upper middle and sends 25 to actual upper southwest (option text explains this difference)
@@ -67,21 +68,9 @@ function mod:OnCombatStart(delay)
 		timerQuillsCD:Start(42.5-delay, 1)
 	end
 	timerDowndraftCD:Start(91-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
-	if self.Options.SpecWarn138319move then--specWarnFeedPool is turned on, since it's off by default, no reasont to register high CPU events unless user turns it on
-		self:RegisterShortTermEvents(
-			"SPELL_PERIODIC_DAMAGE 138319",
-			"SPELL_PERIODIC_MISSED 138319"
-		)
-	end
 end
 
 function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 	self:UnregisterShortTermEvents()
 end
 
@@ -95,10 +84,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if amount >= 2 then
 				specWarnTalonRake:Show(amount)
+				specWarnTalonRake:Play("stackhigh")
 			end
 		else
 			if amount >= 1 and not DBM:UnitDebuff("player", args.spellName) and not UnitIsDeadOrGhost("player") then
 				specWarnTalonRakeOther:Show(args.destName)
+				specWarnTalonRakeOther:Play("tauntboss")
 			end
 		end
 	elseif spellId == 133755 and args:IsPlayer() then
@@ -125,9 +116,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 138319 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
-		specWarnFeedPool:Show()
+function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
+	if spellId == 138319 and destGUID == UnitGUID("player") and self:AntiSpam(3, 1) then
+		specWarnFeedPool:Show(spellName)
+		specWarnFeedPool:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
@@ -135,6 +127,7 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_SPELLCAST_CHANNEL_START(uId, _, spellId)
 	if spellId == 137528 then
 		specWarnFeedYoung:Show()
+		specWarnFeedYoung:Play("watchstep")
 		if self:IsDifficulty("normal10", "heroic10", "lfr25") then
 			timerFeedYoungCD:Start(40)
 		else
@@ -147,6 +140,7 @@ function mod:UNIT_SPELLCAST_START(uId, _, spellId)
 	if spellId == 134380 then
 		self.vb.quillsCount = self.vb.quillsCount + 1
 		specWarnQuills:Show(self.vb.quillsCount)
+		specWarnQuills:Play("watchstep")
 		timerQuills:Start()
 		if self:IsDifficulty("normal10", "heroic10", "lfr25") then
 			timerQuillsCD:Start(81, self.vb.quillsCount+1)--81 sec normal, sometimes 91s?
@@ -155,6 +149,7 @@ function mod:UNIT_SPELLCAST_START(uId, _, spellId)
 		end
 	elseif spellId == 134370 then
 		specWarnDowndraft:Show()
+		specWarnDowndraft:Play("pushbackincoming")
 		timerDowndraft:Start()
 		if self:IsHeroic() then
 			timerDowndraftCD:Start(93)
@@ -282,10 +277,15 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 			--TODO, add locations here, they are known, but I did enough work today
 			if flockCount == 1 or flockCount == 3 or flockCount == 7 or flockCount == 10 or flockCount == 12 then
 				specWarnBigBirdSoon:Schedule(30, nextDirection)
+				specWarnBigBirdSoon:Schedule(30, "bigmobsoon")
 			elseif flockCount == 2 or flockCount == 4 or flockCount == 8 or flockCount == 11 or flockCount == 13 then
 				specWarnBigBird:Show(currentDirection)
+				specWarnBigBird:Play("bigmob")
 			end
 		elseif self:IsDifficulty("heroic25") then
+			if flockCount == 1 or flockCount == 4 or flockCount == 7 or flockCount == 10 or flockCount == 13 or flockCount == 16 or flockCount == 19 then
+				specWarnBigBirdSoon:Schedule(20, "bigmobsoon")
+			end
 			if     flockCount ==  1 then specWarnBigBirdSoon:Schedule(20, L.Lower.." ("..L.SouthEast..")")
 			elseif flockCount ==  4 then specWarnBigBirdSoon:Schedule(20, L.Lower.." ("..L.NorthWest..")")
 			elseif flockCount ==  7 then specWarnBigBirdSoon:Schedule(20, L.Upper.." ("..L.NorthWest..")")
@@ -366,9 +366,11 @@ function mod:CHAT_MSG_MONSTER_EMOTE(msg, _, _, _, target)
 					specWarnFlock:Show(currentDirection, flockName, flockCountText.." ("..currentLocation..")")
 				end
 			end
+			specWarnFlock:Play("movetoegg")
 		else
 			warnFlock:Show(currentDirection, flockName, "("..flockCountText..")")
 			specWarnFlock:Show(currentDirection, flockName, "("..flockCountText..")")
+			specWarnFlock:Play("movetoegg")
 		end
 	end
 end

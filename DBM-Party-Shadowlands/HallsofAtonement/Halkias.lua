@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2406, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250906071620")
+mod:SetRevision("20260210012025")
 mod:SetCreatureID(165408)
 mod:SetEncounterID(2401)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -10,14 +10,43 @@ mod:SetZone(2287)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(322711, true, 2)--Refracted Sinlight
+mod:AddCustomAlertSoundOption(322936, true, 2)--Crumbling Slam
+mod:AddCustomAlertSoundOption(322943, false, 1)--Heave Debris
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(322711, true, 3, 0)
+mod:AddCustomTimerOptions(322936, true, 5, 0)
+mod:AddCustomTimerOptions(322943, true, 3, 0)
+mod:AddCustomTimerOptions(322977, true, 3, 0)--Sinlight Visions
+--Midnight private aura replacements
+mod:AddPrivateAuraSoundOption(323001, true, 323001, 1)--GTFO
+
+function mod:OnLimitedCombatStart()
+	self:DisableSpecialWarningSounds()
+	self:EnableAlertOptions(322711, 477, "watchstep", 2)
+	if self:IsTank() then
+		self:EnableAlertOptions(322936, 478, "moveboss", 2)
+	end
+	self:EnableAlertOptions(322943, 479, "watchstep", 2)
+
+	self:EnableTimelineOptions(322711, 477)
+	self:EnableTimelineOptions(322936, 478)
+	self:EnableTimelineOptions(322943, 479)
+	self:EnableTimelineOptions(322977, 480)
+
+	self:EnablePrivateAuraSound(323001, "watchfeet", 8)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 322936 322711",
 	"SPELL_CAST_SUCCESS 322943",
 	"SPELL_AURA_APPLIED 322977",
 	"SPELL_PERIODIC_DAMAGE 323001",
 	"SPELL_PERIODIC_MISSED 323001"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+--]]
 
 --TODO, Target scan Heave Debris? it's instant cast, maybe it has an emote?
 --Sinlight visions deleted?
@@ -28,6 +57,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 322977 and type = "applydebuff"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
+--[[
 local warnHeaveDebris				= mod:NewCountAnnounce(322943, 3)
 
 local specWarnCrumblingSlam			= mod:NewSpecialWarningMove(322936, "Tank", nil, nil, 1, 2)
@@ -100,11 +130,4 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
---[[
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257453  then
-
-	end
-end
 --]]

@@ -1,0 +1,16 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <script file = "Const.lua" />
+    <!-- <script file = "Shared.lua" /> -->
+    <!-- <script file = "Frame.lua" /> -->
+    <script file = "TreeFrame.lua" />
+    <script file = "SpecSpellFrame.lua" />
+    <!-- <script file = "SpellListFrame.lua" /> -->
+    <!-- <script file = "EquipmentContainer.lua" /> -->
+    <!-- <script file = "SubObjects.lua" /> -->
+    <script file = "TooltipFrame.lua" />
+    <script file = "Method.lua" />
+    <script file = "UI.lua" />
+</Ui>
+

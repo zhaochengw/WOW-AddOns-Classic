@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Tidy Bar
 --]]
 
@@ -16,6 +16,14 @@ local L = GetLocale() == "zhCN" and {
 	["Mouse over action buttons and press a key to bind it."] = "鼠标移动到动作条按钮上，按下按键进行绑定，按ESC退出。",
 	["Current Button: "] = "当前按钮：",
 	["None"] = "无",
+	["No binding"] = "未绑定",
+	["Current binding: "] = "当前绑定：",
+	["Binding set: "] = "绑定已设置：",
+	["replaced: "] = "替换：",
+	["Binding cleared!"] = "绑定已清除！",
+	["Clear Binding"] = "清除绑定",
+	["Exit"] = "退出",
+	["Keybinding Button"] = "按键绑定",
 } or GetLocale() == "zhTW" and {
 	["Hide main button art?"] = "隐藏主按鈕裝飾?",
 	["Hide experience & reputation bar?"] = "隐藏經驗和聲望條?",
@@ -29,6 +37,14 @@ local L = GetLocale() == "zhCN" and {
 	["Mouse over action buttons and press a key to bind it."] = "滑鼠移動到動作條按鈕上，按下按鍵進行綁定，按ESC退出。",
 	["Current Button: "] = "當前按鈕：",
 	["None"] = "無",
+	["No binding"] = "未綁定",
+	["Current binding: "] = "當前綁定：",
+	["Binding set: "] = "綁定已設置：",
+	["replaced: "] = "替換：",
+	["Binding cleared!"] = "綁定已清除！",
+	["Clear Binding"] = "清除綁定",
+	["Exit"] = "退出",
+	["Keybinding Button"] = "按鍵綁定",
 } or {
 	["Hide main button art?"] = "Hide main button art?",
 	["Hide experience & reputation bar?"] = "Hide experience & reputation bar?",
@@ -42,15 +58,34 @@ local L = GetLocale() == "zhCN" and {
 	["Mouse over action buttons and press a key to bind it."] = "Mouse over action buttons and press a key to bind it and pres ESC to quit.",
 	["Current Button: "] = "Current Button: ",
 	["None"] = "None",
+	["No binding"] = "No binding",
+	["Current binding: "] = "Current binding: ",
+	["Binding set: "] = "Binding set: ",
+	["replaced: "] = "replaced: ",
+	["Binding cleared!"] = "Binding cleared!",
+	["Clear Binding"] = "Clear Binding",
+	["Exit"] = "Exit",
+	["Keybinding Button"] = "Keybinding",
 }
 
+local playerKeyCache = nil
+local playerKeyCacheTime = 0
+
 local function GetPlayerKey()
+    local currentTime = GetTime()
+    if playerKeyCache and currentTime - playerKeyCacheTime < 60 then -- 缓存60秒
+        return playerKeyCache
+    end
+    
     local name, realm = UnitName("player")
     -- Handle cases where realm might be nil (connected realms or login screen)
     if not realm then
         realm = GetRealmName() or "UnknownRealm"
     end
-    return realm.."-"..name
+    
+    playerKeyCache = realm.."-"..name
+    playerKeyCacheTime = currentTime
+    return playerKeyCache
 end
 
 local MenuButtonFrames = {
@@ -80,7 +115,77 @@ local BagButtonFrameList = {
 	KeyRingButton,
 }
 
-local maxLevel = 85
+local CONFIG = {
+	MAX_LEVEL = 90,
+	BUTTON_SIZE = 36,
+	BUTTON_SPACING = 5,
+	LEFT_ACTIONBAR_START = 145,
+	RIGHT_ACTIONBAR_START = 157,
+	REFRESH_COOLDOWN = 0.1,
+	DELAY_TIME = 0.5
+}
+
+local function SafeErrorHandler(err)
+	local timestamp = date("%Y-%m-%d %H:%M:%S")
+	local errorMsg = string.format("[TidyBar Error] %s: %s", timestamp, tostring(err))
+	print(errorMsg)
+	if TidyBar and TidyBar.opts and TidyBar.opts.DebugMode then
+		print(debug.traceback())
+	end
+end
+
+local function SafeCall(func, context, ...)
+	if type(func) ~= "function" then
+		return nil
+	end
+	
+	local success, result = xpcall(function(...) 
+		return func(...) 
+	end, function(err)
+		local errorMsg = err
+		if context then
+			errorMsg = string.format("[%s] %s", tostring(context), errorMsg)
+		end
+		SafeErrorHandler(errorMsg)
+	end, ...)
+	
+	if not success then
+		return nil
+	end
+	return result
+end
+
+local function CreateActionButton(parent, buttonName, actionId)
+	local button = CreateFrame("CheckButton", buttonName, parent, 
+		"ActionBarButtonTemplate, SecureActionButtonTemplate")
+
+	button:SetPushedTexture("")
+	button:SetCheckedTexture("")
+	button:SetDisabledTexture("")
+
+	local bg = button:CreateTexture(nil, "BACKGROUND")
+	bg:SetAllPoints()
+	bg:SetColorTexture(0, 0, 0, 0.3)
+
+	button:SetID(actionId)
+	button.action = actionId
+	button:SetAttribute("type", "action")
+	button:SetAttribute("action", actionId)
+	button:SetWidth(CONFIG.BUTTON_SIZE)
+	button:SetHeight(CONFIG.BUTTON_SIZE)
+	button:SetAttribute("showgrid", 1)
+
+	button:RegisterForDrag("LeftButton")
+	button:SetScript("OnDragStart", function(self)
+		if not InCombatLockdown() then
+			PickupAction(self.action)
+		end
+	end)
+
+	return button
+end
+
+local maxLevel = CONFIG.MAX_LEVEL
 local playerLevel = UnitLevel("player")
 local ButtonGridIsShown = false
 local Corner_Artwork_Texture = "Interface\\Addons\\TidyBar\\CornerArt"
@@ -97,12 +202,8 @@ TidyBarLeftActionBar:SetFrameStrata("MEDIUM")
 TidyBarRightActionBar:SetFrameStrata("MEDIUM")
 TidyBarLeftActionBar:EnableMouse(true)
 TidyBarRightActionBar:EnableMouse(true)
-TidyBarLeftActionBar:SetWidth(144)  -- 36 * 4 for 3x4 layout
-TidyBarLeftActionBar:SetHeight(108) -- 36 * 3 for 3x4 layout
-TidyBarRightActionBar:SetWidth(144)
-TidyBarRightActionBar:SetHeight(108)
-local LEFT_ACTIONBAR_START = 145  -- 从61开始，对应第5动作条
-local RIGHT_ACTIONBAR_START = 157 -- 从73开始，对应第6动作条
+local LEFT_ACTIONBAR_START = CONFIG.LEFT_ACTIONBAR_START
+local RIGHT_ACTIONBAR_START = CONFIG.RIGHT_ACTIONBAR_START
 
 -- 设置 CornerMouseoverFrame 的基础属性
 CornerMouseoverFrame:SetFrameStrata("BACKGROUND")
@@ -229,7 +330,7 @@ local function ConfigureCornerBars()
 	end
 end
 
-hookRunCounter = 0
+TidyBar.hookRunCounter = 0
 function TidyBar:UpdateCornerFrameVisibility()
 	-- 移除现有的鼠标事件
 	for i, name in pairs(BagButtonFrameList) do UnhookCornerFrame(name) end
@@ -253,21 +354,54 @@ CornerMenuFrame.MicroButtons = CreateFrame("Frame", nil, CornerMenuFrame)
 -- Event Delay
 local DelayedEventWatcher = CreateFrame("Frame")
 local DelayedEvents = {}
-local function CheckDelayedEvent(self)
-	local pendingEvents, currentTime = 0, GetTime()
+local nextCheckTime = 0
+
+local function CheckDelayedEvent(self, elapsed)
+	local currentTime = GetTime()
+	if currentTime < nextCheckTime then
+		return
+	end
+	
+	local hasPending = false
+	local eventsToRemove = {}
+	local nextEventTime = nil
+	
+	-- 收集所有需要执行的事件和计算下一次检查时间
 	for functionToCall, timeToCall in pairs(DelayedEvents) do
 		if currentTime > timeToCall then
-			DelayedEvents[functionToCall] = nil
-			functionToCall()
+			table.insert(eventsToRemove, functionToCall)
+		else
+			hasPending = true
+			-- 更新下一次检查时间为最早的事件时间
+			if not nextEventTime or timeToCall < nextEventTime then
+				nextEventTime = timeToCall
+			end
 		end
 	end
-	-- Check afterward to prevent missing a recall
-	for functionToCall, timeToCall in pairs(DelayedEvents) do pendingEvents = pendingEvents + 1 end
-	if pendingEvents == 0 then DelayedEventWatcher:SetScript("OnUpdate", nil) end
+	
+	-- 执行所有需要执行的事件
+	for _, functionToCall in ipairs(eventsToRemove) do
+		DelayedEvents[functionToCall] = nil
+		SafeCall(functionToCall, "DelayedEvent")
+	end
+	
+	-- 设置下一次检查时间
+	if hasPending then
+		nextCheckTime = nextEventTime or currentTime + 0.05
+	else
+		nextCheckTime = 0
+		self:SetScript("OnUpdate", nil)
+	end
 end
+
 local function DelayEvent(functionToCall, timeToCall)
 	DelayedEvents[functionToCall] = timeToCall
-	DelayedEventWatcher:SetScript("OnUpdate", CheckDelayedEvent)
+	-- 如果当前没有检查器在运行，或者新事件的时间比下一次检查时间早，则启动或更新检查器
+	local currentTime = GetTime()
+	if not nextCheckTime or timeToCall < nextCheckTime then
+		nextCheckTime = currentTime + 0.01 -- 立即检查
+		DelayedEventWatcher:SetScript("OnUpdate", CheckDelayedEvent)
+	end
 end
 -- Event Delay
 
@@ -278,7 +412,7 @@ end
 
 local function RefreshMainActionBars()
 	local anchor = ActionButton1
-	local anchorOffset = 7
+	local anchorOffset = 8
 	local reputationBarOffset = 16
 	local initialOffset = 32
 	local indentOffset = 16
@@ -302,7 +436,7 @@ local function RefreshMainActionBars()
 	end
 
 	if MainMenuExpBar:IsShown() and ReputationWatchBar:IsShown() then
-		anchorOffset = 16 + 8
+		anchorOffset = 16 + 9
 	elseif MainMenuExpBar:IsShown() or ReputationWatchBar:IsShown() then
 		anchorOffset = 16
 	end
@@ -316,7 +450,7 @@ local function RefreshMainActionBars()
 		anchorOffset = 4
 	else
 		anchor = ActionButton1;
-		anchorOffset = 7 + reputationBarOffset
+		anchorOffset = 8 + reputationBarOffset
 	end
 
 	if MultiBarBottomRight:IsShown() then
@@ -380,44 +514,27 @@ local function RefreshCustomActionBars()
     local rows, cols
     if TidyBar.opts.CustomActionBarLayout == "3x4" then
         rows, cols = 3, 4
-    else
+    elseif TidyBar.opts.CustomActionBarLayout == "4x3" then
         rows, cols = 4, 3
+    elseif TidyBar.opts.CustomActionBarLayout == "2x6" then
+        rows, cols = 2, 6
+    elseif TidyBar.opts.CustomActionBarLayout == "6x2" then
+        rows, cols = 6, 2
+    elseif TidyBar.opts.CustomActionBarLayout == "1x12" then
+        rows, cols = 1, 12
+    else
+        rows, cols = 3, 4 -- 默认布局
     end
 
     -- 创建并设置左侧动作条按钮
     if not TidyBarLeftActionBar.buttons then
         TidyBarLeftActionBar.buttons = {}
         for i = 1, 12 do
-            local button = CreateFrame("CheckButton", "TidyBarLeftButton"..i, TidyBarLeftActionBar, 
-                "ActionBarButtonTemplate, SecureActionButtonTemplate")
-            TidyBarLeftActionBar.buttons[i] = button
-            
-            -- 保留默认边框纹理，只清除不必要的状态纹理
-            button:SetPushedTexture("")  -- 清除按下状态纹理
-            button:SetCheckedTexture("") -- 清除选中状态纹理
-            button:SetDisabledTexture("") -- 清除禁用状态纹理
-
-            -- 使用纹理而不是Backdrop来设置背景（性能更好）
-            local bg = button:CreateTexture(nil, "BACKGROUND")
-            bg:SetAllPoints()
-            bg:SetColorTexture(0, 0, 0, 0.3)
-            
-            -- 原有按钮设置保持不变
-            button:SetID(LEFT_ACTIONBAR_START + i - 1)
-            button.action = LEFT_ACTIONBAR_START + i - 1
-            button:SetAttribute("type", "action")
-            button:SetAttribute("action", LEFT_ACTIONBAR_START + i - 1)
-            button:SetWidth(36)
-            button:SetHeight(36)
-			button:SetAttribute("showgrid", 1)
-            
-            -- 显式注册拖拽事件
-            button:RegisterForDrag("LeftButton")
-            button:SetScript("OnDragStart", function(self)
-                if not InCombatLockdown() then
-                    PickupAction(self.action)
-                end
-            end)
+            TidyBarLeftActionBar.buttons[i] = CreateActionButton(
+                TidyBarLeftActionBar, 
+                "TidyBarLeftButton"..i, 
+                LEFT_ACTIONBAR_START + i - 1
+            )
         end
     end
 
@@ -425,38 +542,20 @@ local function RefreshCustomActionBars()
     if not TidyBarRightActionBar.buttons then
         TidyBarRightActionBar.buttons = {}
         for i = 1, 12 do
-            local button = CreateFrame("CheckButton", "TidyBarRightButton"..i, TidyBarRightActionBar,
-                "ActionBarButtonTemplate, SecureActionButtonTemplate")
-            TidyBarRightActionBar.buttons[i] = button
-            
-            -- 保留默认边框纹理，只清除不必要的状态纹理
-            button:SetPushedTexture("")  -- 清除按下状态纹理
-            button:SetCheckedTexture("") -- 清除选中状态纹理
-            button:SetDisabledTexture("") -- 清除禁用状态纹理
-
-            -- 使用纹理设置背景
-            local bg = button:CreateTexture(nil, "BACKGROUND")
-            bg:SetAllPoints()
-            bg:SetColorTexture(0, 0, 0, 0.3)
-            
-            -- 原有按钮设置保持不变
-            button:SetID(RIGHT_ACTIONBAR_START + i - 1)
-            button.action = RIGHT_ACTIONBAR_START + i - 1
-            button:SetAttribute("type", "action")
-            button:SetAttribute("action", RIGHT_ACTIONBAR_START + i - 1)
-            button:SetWidth(36)
-            button:SetHeight(36)
-			button:SetAttribute("showgrid", 1)
-            
-            -- 注册拖拽事件
-            button:RegisterForDrag("LeftButton")
-            button:SetScript("OnDragStart", function(self)
-                if not InCombatLockdown() then
-                    PickupAction(self.action)
-                end
-            end)
+            TidyBarRightActionBar.buttons[i] = CreateActionButton(
+                TidyBarRightActionBar, 
+                "TidyBarRightButton"..i, 
+                RIGHT_ACTIONBAR_START + i - 1
+            )
         end
     end
+
+    -- 根据布局设置动作条大小
+    local buttonWidth = CONFIG.BUTTON_SIZE + CONFIG.BUTTON_SPACING
+    TidyBarLeftActionBar:SetWidth(buttonWidth * cols)
+    TidyBarLeftActionBar:SetHeight(buttonWidth * rows)
+    TidyBarRightActionBar:SetWidth(buttonWidth * cols)
+    TidyBarRightActionBar:SetHeight(buttonWidth * rows)
 
     -- 设置左侧动作条位置
     TidyBarLeftActionBar:ClearAllPoints()
@@ -469,9 +568,6 @@ local function RefreshCustomActionBars()
     TidyBarRightActionBar:SetFrameStrata("MEDIUM")
 
     -- 更新按钮布局
-    local BUTTON_SIZE = 36
-    local BUTTON_SPACING = 5
-
     for i = 1, 12 do
         local leftButton = TidyBarLeftActionBar.buttons[i]
         local rightButton = TidyBarRightActionBar.buttons[i]
@@ -481,15 +577,15 @@ local function RefreshCustomActionBars()
         -- 左侧动作条按钮（向左生长）
         leftButton:ClearAllPoints()
         leftButton:SetPoint("BOTTOMRIGHT", TidyBarLeftActionBar, "BOTTOMRIGHT",
-            -(col * (BUTTON_SIZE + BUTTON_SPACING)),
-            row * (BUTTON_SIZE + BUTTON_SPACING))
+            -(col * (CONFIG.BUTTON_SIZE + CONFIG.BUTTON_SPACING)),
+            row * (CONFIG.BUTTON_SIZE + CONFIG.BUTTON_SPACING))
 		leftButton:Show()
 
         -- 右侧动作条按钮（向右生长）
         rightButton:ClearAllPoints()
         rightButton:SetPoint("BOTTOMLEFT", TidyBarRightActionBar, "BOTTOMLEFT",
-            col * (BUTTON_SIZE + BUTTON_SPACING),
-            row * (BUTTON_SIZE + BUTTON_SPACING))
+            col * (CONFIG.BUTTON_SIZE + CONFIG.BUTTON_SPACING),
+            row * (CONFIG.BUTTON_SIZE + CONFIG.BUTTON_SPACING))
 		rightButton:Show()
     end
 
@@ -520,7 +616,7 @@ function HideCornerMenuFrame()
 			if not MouseInCorner then
 				CornerMenuFrame:SetAlpha(0)
 			end
-		end, GetTime() + 0.5)
+		end, GetTime() + CONFIG.DELAY_TIME)
 	end
 end
 
@@ -579,39 +675,74 @@ local function RefreshExperienceBars()
 	ReputationWatchBar.StatusBar.WatchBarTexture3:SetPoint("LEFT", ReputationWatchBarTexture0, "RIGHT")
 end
 
-function RefreshPositions()
+local lastRefreshTime = 0
+local eventCooldowns = {}
+local MIN_EVENT_COOLDOWN = 0.1
+
+function RefreshPositions(event)
+	local currentTime = GetTime()
+	if event and eventCooldowns[event] and currentTime - eventCooldowns[event] < MIN_EVENT_COOLDOWN then
+		return
+	end
+	if currentTime - lastRefreshTime < CONFIG.REFRESH_COOLDOWN then
+		return
+	end
+	
+	lastRefreshTime = currentTime
+	if event then
+		eventCooldowns[event] = currentTime
+	end
+	
 	if InCombatLockdown() then
 		TidyBar.pendingUpdate = true
 		return
 	end
 
-	-- Change the size of the central button and status bars
-	MainMenuBar:SetWidth(512);
-	MainMenuExpBar:SetWidth(512);
-	ReputationWatchBar:SetWidth(512);
-	MainMenuBarMaxLevelBar:SetWidth(512);
-	ReputationWatchBar.StatusBar:SetWidth(512);
+	SafeCall(function()
+		-- Change the size of the central button and status bars
+		if MainMenuBar then MainMenuBar:SetWidth(512) end
+		if MainMenuExpBar then MainMenuExpBar:SetWidth(512) end
+		if ReputationWatchBar then ReputationWatchBar:SetWidth(512) end
+		if MainMenuBarMaxLevelBar then MainMenuBarMaxLevelBar:SetWidth(512) end
+		if ReputationWatchBar.StatusBar then ReputationWatchBar.StatusBar:SetWidth(512) end
 
-	-- Hide backgrounds
-	SlidingActionBarTexture0:Hide()
-	SlidingActionBarTexture0:SetAlpha(0)
-	SlidingActionBarTexture1:Hide()
-	SlidingActionBarTexture1:SetAlpha(0)
+		-- Hide backgrounds
+		if SlidingActionBarTexture0 then
+			SlidingActionBarTexture0:Hide()
+			SlidingActionBarTexture0:SetAlpha(0)
+		end
+		if SlidingActionBarTexture1 then
+			SlidingActionBarTexture1:Hide()
+			SlidingActionBarTexture1:SetAlpha(0)
+		end
 
-	StanceBarLeft:Hide()
-	StanceBarLeft:SetAlpha(0)
-	StanceBarMiddle:Hide()
-	StanceBarMiddle:SetAlpha(0)
-	StanceBarRight:Hide()
-	StanceBarRight:SetAlpha(0)
+		if StanceBarLeft then
+			StanceBarLeft:Hide()
+			StanceBarLeft:SetAlpha(0)
+		end
+		if StanceBarMiddle then
+			StanceBarMiddle:Hide()
+			StanceBarMiddle:SetAlpha(0)
+		end
+		if StanceBarRight then
+			StanceBarRight:Hide()
+			StanceBarRight:SetAlpha(0)
+		end
 
-	RefreshMainActionBars()
-	RefreshCustomActionBars()
-	ConfigureCornerBars()
-	RefreshExperienceBars()
+		SafeCall(RefreshMainActionBars, "RefreshMainActionBars")
+		SafeCall(RefreshCustomActionBars, "RefreshCustomActionBars")
+		SafeCall(ConfigureCornerBars, "ConfigureCornerBars")
+		SafeCall(RefreshExperienceBars, "RefreshExperienceBars")
+
+		-- Adjust ExtraActionBarFrame position to avoid being blocked by action bars
+		if ExtraActionBarFrame then
+			ExtraActionBarFrame:ClearAllPoints()
+			ExtraActionBarFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 320)
+		end
+	end, "RefreshPositions")
 end
 
-optionRunCount = 0
+TidyBar.optionRunCount = 0
 function ConfigureOptions()
     -- 确保TidyBarOptions和profiles表存在
     if not TidyBarOptions then
@@ -619,9 +750,9 @@ function ConfigureOptions()
     elseif not TidyBarOptions.profiles then
         TidyBarOptions.profiles = {}
     end
-    
+
     local playerKey = GetPlayerKey()
-    
+
     -- 确保当前角色的配置表存在
     if not TidyBarOptions.profiles[playerKey] then
         TidyBarOptions.profiles[playerKey] = {}
@@ -640,7 +771,7 @@ function ConfigureOptions()
 	-- 更新缩放值
 	TidyBarScale = TidyBar.opts.Scale or 1
 
-	if (optionRunCount < 1) then
+	if (TidyBar.optionRunCount < 1) then
 		-- Create options interface
 		TidyBar.panel = CreateFrame("Frame")
 		TidyBar.panel.name = "TidyBar"
@@ -706,8 +837,9 @@ function ConfigureOptions()
 		local function InitializeLayoutDropdown(self, level)
 			local info = UIDropDownMenu_CreateInfo()
 			info.func = function(self)
+				local playerKey = GetPlayerKey()
 				TidyBar.opts.CustomActionBarLayout = self.value
-				TidyBarOptions.CustomActionBarLayout = self.value
+				TidyBarOptions.profiles[playerKey].CustomActionBarLayout = self.value
 				UIDropDownMenu_SetText(layoutDropdown, self.value)
 				RefreshPositions()
 			end
@@ -720,6 +852,21 @@ function ConfigureOptions()
 			info.text = "4x3"
 			info.value = "4x3"
 			info.checked = TidyBar.opts.CustomActionBarLayout == "4x3"
+			UIDropDownMenu_AddButton(info)
+
+			info.text = "2x6"
+			info.value = "2x6"
+			info.checked = TidyBar.opts.CustomActionBarLayout == "2x6"
+			UIDropDownMenu_AddButton(info)
+
+			info.text = "6x2"
+			info.value = "6x2"
+			info.checked = TidyBar.opts.CustomActionBarLayout == "6x2"
+			UIDropDownMenu_AddButton(info)
+
+			info.text = "1x12"
+			info.value = "1x12"
+			info.checked = TidyBar.opts.CustomActionBarLayout == "1x12"
 			UIDropDownMenu_AddButton(info)
 		end
 
@@ -771,6 +918,36 @@ function ConfigureOptions()
 		cb_custom:HookScript("OnClick", UpdateCustomBarOptions)
 		UpdateCustomBarOptions()
 
+		-- 添加按键绑定按钮
+		local keybindingButton = CreateFrame("Button", nil, TidyBar.panel, "UIPanelButtonTemplate")
+		keybindingButton:SetWidth(150)
+		keybindingButton:SetHeight(25)
+		keybindingButton:SetPoint("TOPLEFT", layoutDropdown, "BOTTOMLEFT", 15, -15)
+		keybindingButton:SetText(L["Keybinding Button"])
+		keybindingButton:SetScript("OnClick", function()
+			EnableKeybinding()
+		end)
+
+		-- 添加配置导出按钮
+		local exportButton = CreateFrame("Button", nil, TidyBar.panel, "UIPanelButtonTemplate")
+		exportButton:SetWidth(150)
+		exportButton:SetHeight(25)
+		exportButton:SetPoint("TOPLEFT", keybindingButton, "BOTTOMLEFT", 0, -15)
+		exportButton:SetText("导出配置")
+		exportButton:SetScript("OnClick", function()
+			TidyBar:ExportConfig()
+		end)
+
+		-- 添加配置导入按钮
+		local importButton = CreateFrame("Button", nil, TidyBar.panel, "UIPanelButtonTemplate")
+		importButton:SetWidth(150)
+		importButton:SetHeight(25)
+		importButton:SetPoint("TOPLEFT", exportButton, "BOTTOMLEFT", 0, -15)
+		importButton:SetText("导入配置")
+		importButton:SetScript("OnClick", function()
+			TidyBar:ShowImportDialog()
+		end)
+
 		-- Interface options category
 		if Settings and Settings.RegisterCanvasLayoutCategory then
 			local category = Settings.RegisterCanvasLayoutCategory(TidyBar.panel, "TidyBar")
@@ -780,13 +957,13 @@ function ConfigureOptions()
 			InterfaceOptions_AddCategory(TidyBar.panel) -- 旧客户端兼容
 		end
 	end
-	optionRunCount = optionRunCount + 1
+	TidyBar.optionRunCount = TidyBar.optionRunCount + 1
 end
 
 function CreateCheckbox(savedvar, label, parent, update)
     local playerKey = GetPlayerKey()
     local cb = CreateFrame("CheckButton", "cb" .. savedvar, parent, "ChatConfigCheckButtonTemplate")
-    getglobal("cb" .. savedvar .. "Text"):SetText(label)
+    _G["cb" .. savedvar .. "Text"]:SetText(label)
     cb.key = savedvar
     cb:SetChecked(TidyBar.opts[savedvar])
     cb:SetScript("OnClick", function(self)
@@ -829,41 +1006,91 @@ function events:ACTIONBAR_SHOWGRID() ButtonGridIsShown = true; end
 
 function events:ACTIONBAR_HIDEGRID() ButtonGridIsShown = false; end
 
-function events:UNIT_EXITED_VEHICLE()
-	RefreshPositions(); DelayEvent(ConfigureCornerBars, GetTime() + 1)
+function events:UNIT_EXITED_VEHICLE(event)
+	RefreshPositions(event); DelayEvent(ConfigureCornerBars, GetTime() + 1)
 end -- Echos the event to verify positions
 
-function events:UNIT_ENTERED_VEHICLE()
-	RefreshPositions(); DelayEvent(ConfigureCornerBars, GetTime() + 1)
+function events:UNIT_ENTERED_VEHICLE(event)
+	RefreshPositions(event); DelayEvent(ConfigureCornerBars, GetTime() + 1)
 end -- Echos the event to verify positions
 
-events.PLAYER_ENTERING_WORLD = RefreshPositions
-events.UPDATE_INSTANCE_INFO = RefreshPositions
-events.PET_BAR_UPDATE = RefreshPositions
-events.UPDATE_BONUS_ACTIONBAR = RefreshPositions
-events.PLAYER_LEVEL_UP = RefreshPositions
-events.UPDATE_SHAPESHIFT_FORM = RefreshPositions
-events.QUEST_WATCH_UPDATE = RefreshPositions
-events.ACTIONBAR_SLOT_CHANGED = RefreshPositions
-events.LEARNED_SPELL_IN_TAB = RefreshPositions
-events.UPDATE_BINDINGS = RefreshPositions
-events.ADDON_LOADED = ConfigureOptions
-events.PLAYER_REGEN_ENABLED = function()
+events.PLAYER_ENTERING_WORLD = function(event)
+	RefreshPositions(event)
+end
+events.UPDATE_INSTANCE_INFO = function(event)
+	RefreshPositions(event)
+end
+events.PET_BAR_UPDATE = function(event)
+	RefreshPositions(event)
+end
+events.UPDATE_BONUS_ACTIONBAR = function(event)
+	RefreshPositions(event)
+end
+events.PLAYER_LEVEL_UP = function(event)
+	RefreshPositions(event)
+end
+events.UPDATE_SHAPESHIFT_FORM = function(event)
+	RefreshPositions(event)
+end
+events.QUEST_WATCH_UPDATE = function(event)
+	RefreshPositions(event)
+end
+events.ACTIONBAR_SLOT_CHANGED = function(event)
+	RefreshPositions(event)
+end
+events.LEARNED_SPELL_IN_TAB = function(event)
+	RefreshPositions(event)
+end
+events.UPDATE_BINDINGS = function(event)
+	RefreshPositions(event)
+end
+-- 检查插件冲突
+local function CheckForConflicts()
+	local conflictingAddons = {
+		"Bartender4",
+		"Dominos",
+		"ElvUI",
+		"LUI",
+		"TukUI",
+		"SUI",
+	}
+	
+	local conflicts = {}
+	for _, addon in ipairs(conflictingAddons) do
+		if IsAddOnLoaded(addon) then
+			table.insert(conflicts, addon)
+		end
+	end
+	
+	if #conflicts > 0 then
+		print("|cffff0000TidyBar: 检测到以下可能冲突的插件:|r")
+		for _, addon in ipairs(conflicts) do
+			print("|cffff0000- " .. addon .. "|r")
+		end
+		print("|cffff0000这些插件可能会影响TidyBar的功能，请考虑禁用其中一个。|r")
+	end
+end
+
+events.ADDON_LOADED = function(event)
+	ConfigureOptions()
+	CheckForConflicts()
+end
+events.PLAYER_REGEN_ENABLED = function(event)
 	if TidyBar.pendingUpdate then
-		RefreshPositions()
+		RefreshPositions(event)
 		TidyBar.pendingUpdate = false
 	end
 end
 
 local function EventHandler(frame, event)
 	if events[event] then
-		events[event]()
+		events[event](event)
 	end
 end
 
-events.CVAR_UPDATE = function(_, varname, value)
+events.CVAR_UPDATE = function(event, varname, value)
     if varname == "alwaysShowActionBars" then
-        RefreshPositions()
+        RefreshPositions(event)
     end
 end
 
@@ -884,6 +1111,13 @@ do
 	UIPARENT_MANAGED_FRAME_POSITIONS["ShapeshiftBarFrame"] = nil
 	UIPARENT_MANAGED_FRAME_POSITIONS["PossessBarFrame"] = nil
 	UIPARENT_MANAGED_FRAME_POSITIONS["MultiCastActionBarFrame"] = nil
+	UIPARENT_MANAGED_FRAME_POSITIONS["ExtraActionBarFrame"] = nil
+
+	-- Adjust ExtraActionBarFrame position immediately to avoid delayed positioning
+	if ExtraActionBarFrame then
+		ExtraActionBarFrame:ClearAllPoints()
+		ExtraActionBarFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 320)
+	end
 
 	-- Scaling
 	MainMenuBar:SetScale(TidyBarScale)
@@ -981,11 +1215,149 @@ SlashCmdList.TIDYBAR = function(msg, editBox)
 	Settings.OpenToCategory("TidyBar")
 end
 
+-- 导出配置
+function TidyBar:ExportConfig()
+	local playerKey = GetPlayerKey()
+	local config = TidyBarOptions.profiles[playerKey]
+	if not config then
+		print("|cffff0000TidyBar: 没有找到配置数据|r")
+		return
+	end
+	
+	-- 转换为JSON字符串
+	local json = "{"
+	local first = true
+	for k, v in pairs(config) do
+		if first then
+			first = false
+		else
+			json = json .. ","
+		end
+		
+		if type(v) == "string" then
+			json = json .. string.format('"%s":"%s"', k, v)
+		else
+			json = json .. string.format('"%s":%s', k, tostring(v))
+		end
+	end
+	json = json .. "}"
+	
+	-- 复制到剪贴板
+	if ChatEdit_GetActiveWindow() then
+		ChatEdit_GetActiveWindow():Insert(json)
+	else
+		print("|cffffff00TidyBar: 配置已导出，请按Ctrl+V粘贴到文本编辑器中保存|r")
+		print("|cffffff00" .. json .. "|r")
+	end
+end
+
+-- 导入配置对话框
+local ImportDialog = nil
+
+function TidyBar:ShowImportDialog()
+	if not ImportDialog then
+		ImportDialog = CreateFrame("Frame", "TidyBarImportDialog", UIParent, "BackdropTemplate")
+		ImportDialog:SetFrameStrata("DIALOG")
+		ImportDialog:SetWidth(450)
+		ImportDialog:SetHeight(200)
+		ImportDialog:SetPoint("CENTER")
+		
+		-- 创建背景
+		local bg = ImportDialog:CreateTexture(nil, "BACKGROUND")
+		bg:SetAllPoints()
+		bg:SetColorTexture(0, 0, 0, 0.8)
+		
+		-- 创建边框
+		local border = CreateFrame("Frame", nil, ImportDialog, "BackdropTemplate")
+		border:SetAllPoints()
+		border:SetBackdrop({
+			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+			edgeSize = 32,
+			insets = { left = 11, right = 12, top = 12, bottom = 11 },
+		})
+		
+		-- 创建标题
+		local title = ImportDialog:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+		title:SetPoint("TOP", 0, -20)
+		title:SetText("导入配置")
+		
+		-- 创建说明文本
+		local text = ImportDialog:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		text:SetPoint("TOP", title, "BOTTOM", 0, -10)
+		text:SetText("请粘贴配置字符串，然后点击导入按钮")
+		
+		-- 创建输入框
+		local editBox = CreateFrame("EditBox", nil, ImportDialog, "InputBoxTemplate")
+		editBox:SetWidth(400)
+		editBox:SetHeight(80)
+		editBox:SetPoint("TOP", text, "BOTTOM", 0, -10)
+		editBox:SetMultiLine(true)
+		editBox:SetMaxLetters(2000)
+		editBox:SetAutoFocus(false)
+		editBox:SetScript("OnEscapePressed", function() ImportDialog:Hide() end)
+		
+		-- 创建导入按钮
+		local importButton = CreateFrame("Button", nil, ImportDialog, "UIPanelButtonTemplate")
+		importButton:SetWidth(100)
+		importButton:SetHeight(25)
+		importButton:SetPoint("BOTTOM", -60, 20)
+		importButton:SetText("导入")
+		importButton:SetScript("OnClick", function()
+			local success = TidyBar:ImportConfig(editBox:GetText())
+			if success then
+				ImportDialog:Hide()
+				print("|cff00ff00TidyBar: 配置导入成功|r")
+			end
+		end)
+		
+		-- 创建取消按钮
+		local cancelButton = CreateFrame("Button", nil, ImportDialog, "UIPanelButtonTemplate")
+		cancelButton:SetWidth(100)
+		cancelButton:SetHeight(25)
+		cancelButton:SetPoint("BOTTOM", 60, 20)
+		cancelButton:SetText("取消")
+		cancelButton:SetScript("OnClick", function() ImportDialog:Hide() end)
+		
+		-- 添加到ESC键处理队列
+		tinsert(UISpecialFrames, "TidyBarImportDialog")
+	end
+	
+	ImportDialog:Show()
+end
+
+-- 导入配置
+function TidyBar:ImportConfig(jsonStr)
+	if not jsonStr or jsonStr == "" then
+		print("|cffff0000TidyBar: 配置字符串为空|r")
+		return false
+	end
+	
+	local success, config = pcall(function()
+		-- 简单的JSON解析
+		return loadstring("return " .. jsonStr)()
+	end)
+	
+	if not success or type(config) ~= "table" then
+		print("|cffff0000TidyBar: 配置字符串格式错误|r")
+		return false
+	end
+	
+	-- 导入配置
+	local playerKey = GetPlayerKey()
+	TidyBarOptions.profiles[playerKey] = config
+	
+	-- 重新加载配置
+	ConfigureOptions()
+	RefreshPositions()
+	
+	return true
+end
+
 -- 创建按键绑定提示框
 local KeybindingFrame = CreateFrame("Frame", "TidyBarKeybindingFrame", UIParent)
 KeybindingFrame:SetFrameStrata("DIALOG")
-KeybindingFrame:SetWidth(400)
-KeybindingFrame:SetHeight(100)
+KeybindingFrame:SetWidth(450)
+KeybindingFrame:SetHeight(150)
 KeybindingFrame:SetPoint("CENTER")
 KeybindingFrame:Hide()
 
@@ -1018,13 +1390,43 @@ local currentButton = KeybindingFrame:CreateFontString(nil, "OVERLAY", "GameFont
 currentButton:SetPoint("TOP", text, "BOTTOM", 0, -10)
 currentButton:SetText(L["Current Button: "] .. L["None"])
 
+-- 创建当前绑定文本
+local currentBinding = KeybindingFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+currentBinding:SetPoint("TOP", currentButton, "BOTTOM", 0, -10)
+currentBinding:SetText("")
+
 local currentBindingButton = nil
 
 local function DisableKeybinding()
 	KeybindingFrame:Hide()
 	KeybindingFrame:EnableKeyboard(false)
+	KeybindingFrame:EnableMouse(false)
 	KeybindingFrame:SetScript("OnKeyDown", nil)
+	KeybindingFrame:SetScript("OnMouseDown", nil)
 	currentBindingButton = nil
+end
+
+-- 按键绑定处理函数
+local function ProcessBinding(key)
+	if currentBindingButton then
+		local oldBinding = ""
+		for i = 1, GetNumBindings() do
+			local key1, key2 = GetBinding(i)
+			local bindingAction = GetBindingAction(key1)
+			if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
+				oldBinding = oldBinding .. key1 .. " "
+			end
+			if key2 then
+				bindingAction = GetBindingAction(key2)
+				if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
+					oldBinding = oldBinding .. key2 .. " "
+				end
+			end
+		end
+		SetBinding(key, "CLICK " .. currentBindingButton:GetName() .. ":LeftButton")
+		SaveBindings(GetCurrentBindingSet())
+		currentBinding:SetText(L["Binding set: "] .. key .. (oldBinding ~= "" and " (" .. L["replaced: "] .. oldBinding .. ")" or ""))
+	end
 end
 
 -- 按键绑定功能
@@ -1032,30 +1434,92 @@ local function EnableKeybinding()
 	KeybindingFrame:Show()
 	-- 启用全局按键捕获
 	KeybindingFrame:EnableKeyboard(true)
+	KeybindingFrame:EnableMouse(true)
 	KeybindingFrame:SetPropagateKeyboardInput(false)
 
-	-- 设置按键处理函数
+	-- 设置键盘按键处理函数
 	KeybindingFrame:SetScript("OnKeyDown", function(self, key)
 		if key == "ESCAPE" then
 			DisableKeybinding()
 			return
 		end
-		if currentBindingButton then
-			SetBinding(key, "CLICK " .. currentBindingButton:GetName() .. ":LeftButton")
-			SaveBindings(GetCurrentBindingSet())
-			DisableKeybinding()
+		ProcessBinding(key)
+	end)
+
+	-- 设置鼠标按键处理函数
+	KeybindingFrame:SetScript("OnMouseDown", function(self, button)
+		if button == "LeftButton" then
+			return
 		end
+		local mouseButton = "BUTTON" .. button
+		ProcessBinding(mouseButton)
 	end)
 
 	-- 添加到ESC键处理队列
 	tinsert(UISpecialFrames, "TidyBarKeybindingFrame")
 end
 
+-- 创建清除绑定按钮
+local clearButton = CreateFrame("Button", nil, KeybindingFrame, "UIPanelButtonTemplate")
+clearButton:SetWidth(120)
+clearButton:SetHeight(25)
+clearButton:SetPoint("BOTTOM", -70, 15)
+clearButton:SetText(L["Clear Binding"])
+clearButton:SetScript("OnClick", function()
+	if currentBindingButton then
+		local action = currentBindingButton.action
+		for i = 1, GetNumBindings() do
+			local key1, key2 = GetBinding(i)
+			local bindingAction = GetBindingAction(key1)
+			if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
+				SetBinding(key1)
+			end
+			if key2 then
+				bindingAction = GetBindingAction(key2)
+				if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
+					SetBinding(key2)
+				end
+			end
+		end
+		SaveBindings(GetCurrentBindingSet())
+		currentBinding:SetText(L["Binding cleared!"])
+	end
+end)
+
+-- 创建退出按钮
+local exitButton = CreateFrame("Button", nil, KeybindingFrame, "UIPanelButtonTemplate")
+exitButton:SetWidth(120)
+exitButton:SetHeight(25)
+exitButton:SetPoint("BOTTOM", 70, 15)
+exitButton:SetText(L["Exit"])
+exitButton:SetScript("OnClick", function()
+	DisableKeybinding()
+end)
+
 -- 添加鼠标悬停处理函数
 local function OnActionButtonEnter(self)
     if KeybindingFrame:IsShown() then
         currentBindingButton = self
         currentButton:SetText(L["Current Button: "] .. self:GetName())
+        local bindingText = ""
+        for i = 1, GetNumBindings() do
+            local key1, key2 = GetBinding(i)
+            local bindingAction = GetBindingAction(key1)
+            if bindingAction == "CLICK " .. self:GetName() .. ":LeftButton" then
+                bindingText = bindingText .. key1 .. " "
+            end
+            if key2 then
+                bindingAction = GetBindingAction(key2)
+                if bindingAction == "CLICK " .. self:GetName() .. ":LeftButton" then
+                    bindingText = bindingText .. key2 .. " "
+                end
+            end
+        end
+        if bindingText == "" then
+            currentBinding:SetText(L["No binding"])
+        else
+            currentBinding:SetText(L["Current binding: "] .. bindingText)
+        end
     end
 end
 
@@ -1063,6 +1527,7 @@ local function OnActionButtonLeave(self)
     if KeybindingFrame:IsShown() then
         currentBindingButton = nil
         currentButton:SetText(L["Current Button: "] .. L["None"])
+        currentBinding:SetText("")
     end
 end
 

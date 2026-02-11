@@ -1,10 +1,12 @@
-## Interface: 50501
+## Interface: 50503
 ## Title: Zomar's Hunter Traps Bar
-## Author: Zomar, Revised version of Xckbucl's Hunter Traps Bar ( which is based on BoboFloraline's FloAspectBar) for MoP Classic
-## Notes: Add a hunter traps bar
-## OptionalDeps: 
-## Dependencies:
-## SavedVariables: 
-## SavedVariablesPerCharacter: HUNTERTRAPSBAR_OPTIONS, HUNTERTRAPSBAR_OPTIONS2
-HTBLib.xml
-HunterTrapsBar.xml
+## Author: Zomar
+## Version: 2.1
+## Notes: Hunter Traps Bar – V2 Clean Rewrite (based on work by Xckbucl & BoboFloraline)
+## SavedVariables: HunterTrapsBarDB
+
+Core/Init.lua
+Core/Frame.lua
+Core/Commands.lua
+Data/Traps.lua
+UI/Buttons.lua

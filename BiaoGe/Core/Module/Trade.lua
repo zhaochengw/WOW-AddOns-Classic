@@ -141,6 +141,9 @@ BG.Init(function()
             if not BG.tradeSeeFrame.CheckButton:GetChecked() then
                 return returntext
             end
+            if BG.IsAutoCreateBill() then
+                return returntext
+            end
             local qiankuan = 0
             if BG.tradeQianKuanEdit and tonumber(BG.tradeQianKuanEdit:GetText()) then
                 qiankuan = qiankuan + tonumber(BG.tradeQianKuanEdit:GetText())
@@ -404,13 +407,6 @@ BG.Init(function()
                     self:SetEnabled(true)
                 end
             end)
-            edit:HookScript("OnEditFocusGained", function(self)
-                local f = BG.CreateNumFrame(TradeRecipientItem1ItemButton)
-                if f then
-                    f:ClearAllPoints()
-                    f:SetPoint("TOP", self.frame, "BOTTOM", 0, 0)
-                end
-            end)
             edit:HookScript("OnEditFocusLost", function(self, button)
                 if BG.FrameNumFrame then
                     BG.FrameNumFrame:Hide()
@@ -420,12 +416,14 @@ BG.Init(function()
 
             local text = edit:CreateFontString()
             text:SetPoint("RIGHT", edit, "LEFT", -8, 0)
-            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
             text:SetTextColor(RGB("FF0000"))
             text:SetText(L["欠款："])
+            text:SetWidth(80)
+            text:SetJustifyH("RIGHT")
 
             function BG.tradeQianKuanEdit:Update()
-                self.frame:SetShown(BiaoGe.options["autoTrade"] == 1 and IsInRaid(1))
+                self.frame:SetShown(BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) and not BG.IsAutoCreateBill())
                 self:SetText("")
             end
 
@@ -449,7 +447,7 @@ BG.Init(function()
             BG.tradeGoldTop = f
             local t = f:CreateFontString()
             t:SetPoint("CENTER")
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(RGB(BG.r1))
             t:SetText(L["金币已超上限！"])
             f:SetSize(t:GetStringWidth() + 10, t:GetHeight() + 5)
@@ -477,7 +475,7 @@ BG.Init(function()
             f:SetFrameStrata("HIGH")
             local t = f:CreateFontString()
             t:SetPoint("RIGHT", BG.tradeQianKuanEdit.frame, "LEFT", -20, 0)
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetTextColor(RGB(BG.r1))
             t:SetText(L["重复交易！"])
             f:Hide()
@@ -571,7 +569,7 @@ BG.Init(function()
                     local f = CreateFrame("Frame", nil, bt)
                     f:SetAllPoints()
                     local t = f:CreateFontString()
-                    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                     t:SetAllPoints()
                     t:SetTextColor(1, 0, 0)
                     t:SetText(L["交易中"])
@@ -722,7 +720,7 @@ BG.Init(function()
 
         local text = f:CreateFontString()
         text:SetPoint("TOP", f, "TOP", 0, -5)
-        text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
+        text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
         text:SetText(L["对方欠款记录"])
 
         local bt = BG.CreateButton(f)
@@ -740,7 +738,7 @@ BG.Init(function()
             f:SetSize(0, 20)
             f:SetPoint("BOTTOMLEFT", 33, 5)
             f.text = f:CreateFontString()
-            f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             f.text:SetPoint("LEFT")
             f.text:SetText(L["合计欠款："])
             f.text:SetJustifyH("LEFT")
@@ -751,7 +749,7 @@ BG.Init(function()
             f:SetSize(100, 20)
             f:SetPoint("LEFT", BG.tradeQianKuanListFrame.Text1, "RIGHT", 5, 0)
             f.text = f:CreateFontString()
-            f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             f.text:SetAllPoints()
             f.text:SetTextColor(1, 0, 0)
             f.text:SetJustifyH("LEFT")
@@ -853,7 +851,7 @@ BG.Init(function()
                                     f:SetSize(20, 20)
                                     f:SetPoint("LEFT", 0, 0)
                                     f.text = f:CreateFontString()
-                                    f.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                                    f.text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                                     f.text:SetAllPoints()
                                     f.text:SetTextColor(1, 0.82, 0)
                                     f.text:SetText((#buttons + 1))
@@ -890,7 +888,7 @@ BG.Init(function()
                                     f:SetSize(0, 20)
                                     f:SetPoint("LEFT", bts.icon, "RIGHT", bts.hasicon and 0 or -16, 0)
                                     f.text = f:CreateFontString()
-                                    f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                                    f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                                     f.text:SetAllPoints()
                                     f.text:SetText(zhuangbei:GetText())
                                     f.text:SetJustifyH("LEFT")
@@ -933,7 +931,7 @@ BG.Init(function()
                                     f:SetSize(80, 20)
                                     f:SetPoint("LEFT", bts.item, "RIGHT", 2, 0)
                                     f.text = f:CreateFontString()
-                                    f.text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                                    f.text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                                     f.text:SetAllPoints()
                                     f.text:SetText(BiaoGe[FB]["boss" .. b]["qiankuan" .. i])
                                     f.text:SetTextColor(1, 0, 0)
@@ -1099,13 +1097,13 @@ BG.Init(function()
 
             local text = f:CreateFontString()
             text:SetPoint("TOP", f, "TOP", 0, -7)
-            text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
             text:SetText(L["记账效果预览"])
 
             local text = f:CreateFontString()
             text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -30)
             text:SetWidth(f:GetWidth() - 10)
-            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             text:SetJustifyH("LEFT")
             BG.tradeSeeFrame.text = text
 
@@ -1136,7 +1134,7 @@ BG.Init(function()
 
             function BG.tradeSeeFrame.frame:Update()
                 self:Hide()
-                if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["tradePreview"] == 1 and IsInRaid(1) then
+                if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["tradePreview"] == 1 and IsInRaid(1) and not BG.IsAutoCreateBill() then
                     self:Show()
                     BG.tradeSeeFrame.fakuanButton:UpdateShow()
                     BG.tradeSeeFrame.text:SetText(BG.GetTradeSeeText())
@@ -1144,7 +1142,7 @@ BG.Init(function()
             end
 
             function BG.tradeSeeFrame.frame:SaveMoney()
-                if BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) then
+                if BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) and not BG.IsAutoCreateBill() then
                     local text = BG.GetTradeSeeText("saved")
                     -- 保存打包交易
                     if #BG.trade.many > 1 then
@@ -1169,9 +1167,11 @@ BG.Init(function()
         do
             local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
             bt:SetSize(25, 25)
+            bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetText(L["本次交易自动记账"])
-            bt:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.frame, "BOTTOMLEFT",
-                (BG.tradeSeeFrame.frame:GetWidth() - bt:GetWidth() - bt.Text:GetWidth()) * 0.5 - 5, 0)
+            bt.Text:SetWidth(min(BG.tradeSeeFrame.frame:GetWidth() - 35, bt.Text:GetStringWidth() + 20))
+            bt.Text:SetWordWrap(false)
+            bt:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.frame, "BOTTOMLEFT", 5, 0)
             bt:SetHitRectInsets(0, -bt.Text:GetWidth(), 0, 0)
             bt:SetChecked(true)
             BG.tradeSeeFrame.CheckButton = bt
@@ -1182,11 +1182,14 @@ BG.Init(function()
             end)
         end
 
-        -- 交易记录罚款
+        -- 本次交易记为罚款
         do
             local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
             bt:SetSize(25, 25)
+            bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetText(L["本次交易记为罚款"])
+            bt.Text:SetWidth(min(BG.tradeSeeFrame.frame:GetWidth() - 35, bt.Text:GetStringWidth() + 20))
+            bt.Text:SetWordWrap(false)
             bt:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.CheckButton, "TOPLEFT", 0, 0)
             bt:SetHitRectInsets(0, -bt.Text:GetWidth(), 0, 0)
             BG.tradeSeeFrame.fakuanButton = bt
@@ -1294,12 +1297,12 @@ BG.Init(function()
             tinsert(buttons, bt)
 
             bt.count = bt:CreateFontString()
-            bt.count:SetFont(STANDARD_TEXT_FONT, 11, "OUTLINE")
+            bt.count:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
             bt.count:SetPoint("BOTTOMRIGHT", -2, 1)
             bt.count:SetTextColor(1, 1, 1)
 
             bt.level = bt:CreateFontString()
-            bt.level:SetFont(STANDARD_TEXT_FONT, 12.5, "OUTLINE")
+            bt.level:SetFont(BIAOGE_TEXT_FONT, 12.5, "OUTLINE")
             bt.level:SetPoint("BOTTOM", 0, 1)
 
             bt:SetScript("OnEnter", function(self)
@@ -1355,10 +1358,12 @@ BG.Init(function()
                 bt:SetSize(15, 15)
                 tinsert(buttons, bt)
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name)
                 bt.Text:SetTextColor(1, .82, 0)
+                bt.Text:SetWidth(75)
+                bt.Text:SetJustifyH("LEFT")
                 bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
                 BG.tradelastAuctionFrame[numOptions[i].name2] = bt
                 function bt:OnClick()
@@ -1689,7 +1694,7 @@ BG.Init(function()
 
             local text = f:CreateFontString()
             text:SetPoint("TOP", 0, -5)
-            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             text:SetText(L["工资与补贴"])
 
             local bt = BG.CreateButton(f)
@@ -1800,7 +1805,7 @@ BG.Init(function()
                 nameFrame:SetSize(width * .40, f:GetHeight())
                 nameFrame:SetPoint("LEFT", 0, 0)
                 local t = nameFrame:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
                 t:SetAllPoints()
                 t:SetText(name)
                 if givedTbl[name] then
@@ -1831,7 +1836,7 @@ BG.Init(function()
                 moneyFrame:SetSize(width * .35, nameFrame:GetHeight())
                 moneyFrame:SetPoint("LEFT", nameFrame, "RIGHT", 2, 0)
                 local t = moneyFrame:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
                 t:SetAllPoints()
                 t:SetText(money)
                 if givedTbl[name] then
@@ -2002,17 +2007,21 @@ BG.Init(function()
                 mainFrame:Show()
                 if BG.ImML() then
                     mainFrame:ClearAllPoints()
-                    mainFrame:SetPoint("TOPLEFT", TradeFrame, "TOPRIGHT", 1, -20)
-                    local w1 = TradeFrame:GetTop()
+                    mainFrame:SetPoint("TOPLEFT", TradeFrame, "TOPRIGHT", 1, 1)
+                    local w1 = mainFrame:GetTop()
                     if w1 then
                         local w2 = BG.tradelastAuctionFrame.frame:GetTop()
-                        mainFrame:SetHeight(w1 - w2 - 20 - 2)
+                        mainFrame:SetHeight(w1 - w2 - 0 - 1)
                         frame:SetHeight(mainFrame:GetHeight() - 25)
                     end
                 else
                     if gzTbl and BG.IsMLByName(gzTbl.player) then
                         mainFrame:ClearAllPoints()
-                        mainFrame:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.frame, "TOPLEFT", 0, 1)
+                        if BG.IsAutoCreateBill() then
+                            mainFrame:SetPoint("TOPLEFT", TradeFrame, "TOPRIGHT", 1, 1)
+                        else
+                            mainFrame:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.frame, "TOPLEFT", 0, 1)
+                        end
                         mainFrame:SetHeight(100)
                         frame:SetHeight(mainFrame:GetHeight() - 25)
                     else
@@ -2049,7 +2058,7 @@ BG.Init(function()
                         CreateButton(L["单人工资"], gzTbl.money)
                         local parent = buttons[1]
                         local t = parent:CreateFontString()
-                        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                         t:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -5)
                         t:SetTextColor(.5, .5, .5)
                         t:SetWidth(parent:GetWidth() - 2)
@@ -2071,6 +2080,9 @@ BG.Init(function()
             local gz = msg:match("^人均工资：(%d+)")
             if not gz then
                 gz = msg:match("^人均薪水：(%d+)")
+            end
+            if not gz then
+                gz = msg:match("^Wages per capita:(%d+)")
             end
             if gz then
                 gzTbl = {
@@ -2125,7 +2137,7 @@ BG.Init(function()
         f:SetTimeVisible(BiaoGe.options[name] or BG.options[name .. "reset"]) -- 可见时间
         f:SetJustifyH("LEFT")                                                 -- 对齐格式
         f:SetSize(350, 150)                                                   -- 大小
-        f:SetFont(STANDARD_TEXT_FONT, BiaoGe.options["tradeFontSize"] or 20, "OUTLINE")
+        f:SetFont(BIAOGE_TEXT_FONT, BiaoGe.options["tradeFontSize"] or 20, "OUTLINE")
         f:SetFrameLevel(131)
         f:SetFrameStrata("FULLSCREEN_DIALOG")
         f:SetClampedToScreen(true)
@@ -2141,7 +2153,7 @@ BG.Init(function()
         BG.FrameTradeMsg = f
 
         f.name = f:CreateFontString()
-        f.name:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        f.name:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         f.name:SetTextColor(1, 1, 1, 1)
         f.name:SetText(L["交易通知"])
         f.name:SetPoint("TOP", 0, -5)
@@ -2189,26 +2201,26 @@ BG.Init(function()
             f:SetFrameStrata("HIGH")
             local text = f:CreateFontString()
             text:SetPoint("TOPRIGHT", TradeRecipientMoneyBg, "BOTTOMRIGHT", -5, 3)
-            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
             BG.trade.GiveMeMoneyText = text
 
             local f = CreateFrame("Frame", nil, TradeFrame)
             f:SetFrameStrata("HIGH")
             local text = f:CreateFontString()
             text:SetPoint("TOPLEFT", TradePlayerInputMoneyInsetBg, "BOTTOMLEFT", 0, 3)
-            text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
             BG.trade.GiveYouMoneyText = text
 
             for i = 1, 6 do
                 local text = _G["TradePlayerItem" .. i .. "ItemButton"]:CreateFontString()
                 text:SetPoint("BOTTOMLEFT", _G["TradePlayerItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
-                text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+                text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
                 text:Hide()
                 _G["TradePlayerItem" .. i .. "ItemButton"].moneyText = text
 
                 local text = _G["TradeRecipientItem" .. i .. "ItemButton"]:CreateFontString()
                 text:SetPoint("BOTTOMLEFT", _G["TradeRecipientItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
-                text:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+                text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
                 text:Hide()
                 _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText = text
             end
@@ -2469,6 +2481,7 @@ BG.Init(function()
             sumTargetMoney = 0
             sumPlayerMoney = 0
             ResetMoneyText()
+            if not IsInRaid(1) then return end
             if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
             if not BG.ImML() then return end
             local tradeName = BG.GN("NPC")
@@ -2537,6 +2550,7 @@ BG.Init(function()
         BG.RegisterEvent("TRADE_PLAYER_ITEM_CHANGED", function(self, ...)
             sumTargetMoney = 0
             ResetMoneyText()
+            if not IsInRaid(1) then return end
             if not BG.ImML() then return end
             local tradeName = BG.GN("NPC")
             if not (BG.auctionTrade[tradeName] and next(BG.auctionTrade[tradeName])) then return end
@@ -2575,6 +2589,7 @@ BG.Init(function()
         BG.RegisterEvent("TRADE_TARGET_ITEM_CHANGED", function(self, ...)
             sumPlayerMoney = 0
             ResetMoneyText()
+            if not IsInRaid(1) then return end
             if BG.ImML() then return end
             local tradeName = player
             if not (BG.auctionTrade[tradeName] and next(BG.auctionTrade[tradeName])) then return end
@@ -2611,6 +2626,7 @@ BG.Init(function()
         end)
 
         BG.RegisterEvent("TRADE_MONEY_CHANGED", function(self, ...)
+            if not IsInRaid(1) then return end
             if not BG.ImML() then return end
             if BG.trade.GiveMeMoneyText:IsVisible() then
                 UpdateGiveMeMoneyTextColor()
@@ -2620,6 +2636,7 @@ BG.Init(function()
         end)
 
         function BG.tradeAutoPickItem.TradeMyMoneyChange()
+            if not IsInRaid(1) then return end
             if not TradeFrame:IsVisible() then return end
             if BG.ImML() then return end
             if BG.trade.GiveYouMoneyText:IsVisible() then
@@ -2631,6 +2648,7 @@ BG.Init(function()
 
         -- 交易成功后，把拍卖记录设为已交易
         BG.RegisterEvent("UI_INFO_MESSAGE", function(self, event, _, text)
+            if not IsInRaid(1) then return end
             if text ~= ERR_TRADE_COMPLETE then return end
             local FB = BG.FB1
             if not BiaoGe[FB].auctionLog then return end

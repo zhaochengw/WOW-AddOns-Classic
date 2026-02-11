@@ -1,6 +1,6 @@
 local AddonName, AddonTable = ...
 local L = AddonTable.Localize
-local AddonTitle = select(2, GetAddOnInfo(AddonName))
+local AddonTitle = select(2, C_AddOns.GetAddOnInfo(AddonName))
 local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
 
 local XPTOptions = CreateFrame("Frame")
@@ -23,7 +23,7 @@ XPTIOFrame.name = "XP Bar Text"
 local lblTitle = XPTIOFrame:CreateFontString(nil, nil, "GameFontHighlight")
 lblTitle:SetFont("Fonts\\FRIZQT__.TTF", 12)
 lblTitle:SetPoint("TOPLEFT", XPTIOFrame, "TOPLEFT", 12, -12)
-lblTitle:SetText("XP Bar Text v" .. GetAddOnMetadata("XPBarText", "Version"))
+lblTitle:SetText("XP Bar Text v" .. C_AddOns.GetAddOnMetadata("XPBarText", "Version"))
 
 localizedClass, englishClass, classIndex = UnitClass("player")
 
@@ -90,6 +90,10 @@ chkAlwaysShowInfo:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	GameTooltip:AddLine(L["If unchecked, the information will only be visible when you move the cursor over the XP bar."], 1, 1, 1)
 	GameTooltip:Show()
+end)
+
+chkAlwaysShowInfo:SetScript("OnLeave", function(self)
+	GameTooltip:Hide()
 end)
 
 -- Number Formatting

@@ -1,0 +1,2 @@
+## Interface: 40000## Title: EmbedHandler-1.0## Notes: Easily embed methods from one object into another## Author: Jaliborc (João Cardoso)## X-Category: Library## X-Licence: GNU General Public License - Version 3
+## OptionalDeps: LibStubEmbedHandler-1.0.lua

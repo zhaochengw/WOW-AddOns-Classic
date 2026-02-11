@@ -1,8 +1,0 @@
-## Interface: 30405
-## Title: |cffffcc00[拾取美化]|r |cff00c0ffROLL框替换|r
-## Notes: 基于原版teksLoot修复，兼容国服/怀旧服。原作作者：Tekkub。本修复版仅作维护分享，如原作者有异议请联系下架。
-## Author: Tekkub, vggfac
-## Version: 1.0
-## SavedVariables: teksLootDB
-
-teksLoot.lua

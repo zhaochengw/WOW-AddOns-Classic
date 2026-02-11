@@ -1,0 +1,17 @@
+## Interface: 50503
+## Title: Ackis Recipe Classic: Inscription
+## Notes: Inscription data for Ackis Recipe List Classic.
+## Author: Videatur
+## Version: 10.1.0
+## X-Credits: Original authors: Ackis, Pompy, Ressy, Torhal.
+## Dependencies: AckisRecipeList
+## LoadOnDemand: 1
+
+Core.lua
+Filters.lua
+Discoveries.lua
+MobDrops.lua
+Quests.lua
+Trainers.lua
+Vendors.lua
+Recipes.lua

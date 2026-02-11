@@ -1,31 +1,58 @@
 local _, addonTable = ...
 local L = addonTable.L
 
-L["%s does not match your currently equipped %s. ReforgeLite only supports equipped items."] = "%s 与您当前装备的 %s 不匹配。ReforgeLite 仅支持装备物品。"
-L["^+(%d+) %s$"] = "^+(%d+) %s$"
+--[[Translation missing --]]
+--[[ L[ [=[|cffffffffPresets:|r Load pre-configured stat weights and caps for your spec. Click to select from class-specific presets, custom saved presets, or Pawn imports.
+
+|cffffffffImport:|r Use stat weights from WoWSims, Pawn, or QuestionablyEpic. WoWSims and QE can also import pre-calculated reforge plans.
+
+|cffffffffTarget Level:|r Select your raid difficulty to calculate stat caps at the appropriate level (PvP, Heroic Dungeon, or Raid).
+
+|cffffffffBuffs:|r Enable raid buffs you'll have active (Spell Haste, Melee Haste, Mastery) to account for their stat bonuses in cap calculations.
+
+|cffffffffStat Weights:|r Assign relative values to each stat. Higher weights mean the optimizer will prioritize that stat more when reforging. For example, if Hit has weight 60 and Crit has weight 20, the optimizer values Hit three times more than Crit.
+
+|cffffffffStat Caps:|r Set minimum or maximum values for specific stats. Use presets (Hit Cap, Expertise Cap, Haste Breakpoints) or enter custom values. The optimizer will respect these caps when calculating the optimal reforge plan.]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Accuracy"] = ""--]] 
 L["Active window color"] = "激活窗口的颜色"
 L["Add cap"] = "添加上限"
+--[[Translation missing --]]
+--[[ L["AoE"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Apply %s Output"] = ""--]] 
 L["At least"] = "至少"
 L["At most"] = "最多"
 --[[Translation missing --]]
---[[ L["Bearweave"] = ""--]] 
-L["Best Result"] = "最佳成果"
+--[[ L["Balanced"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Branch & Bound Mode"] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[Branch & Bound Mode uses an alternative optimization algorithm designed to speed up calculations when using stat caps.
+
+Performance depends on your cap configuration:
+• Multiple soft caps (low values): Nearly instant
+• Multiple hard caps (high values): May be slower than standard mode
+
+The algorithm guarantees the same optimal result - only the computation speed varies.
+
+Note: Only available when both stat caps are configured.]=] ] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Buffs"] = ""--]] 
 L["Cap value"] = "上限值"
-L["Click an item to lock it"] = "点击以锁定该物品"
+--[[Translation missing --]]
+--[[ L["Click to load preset"] = ""--]] 
 L["Compute"] = "计算"
-L["Crit block"] = "精确格挡"
+--[[Translation missing --]]
+--[[ L["Custom presets are shared across all characters of this class"] = ""--]] 
 L["Debug"] = "调试"
 --[[Translation missing --]]
---[[ L["Destination stat color"] = ""--]] 
+--[[ L["Defensive"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Delete preset '%s'?"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Enable spec profiles"] = ""--]] 
-L["Enter pawn string"] = "输入Pawn字符串"
 L["Enter the preset name"] = "输入预设名称"
-L["Enter WoWSims JSON"] = "输入 WoWSims JSON"
 --[[Translation missing --]]
 --[[ L["Enter WoWSims JSON or Pawn string"] = ""--]] 
 L["Exactly"] = "确切地"
@@ -33,44 +60,112 @@ L["Expertise hard cap"] = "精准硬上限"
 L["Expertise soft cap"] = "精准软上限"
 L["Export"] = "出口"
 --[[Translation missing --]]
---[[ L["Highlight reforged stats"] = ""--]] 
---[[Translation missing --]]
 --[[ L["Import"] = ""--]] 
 --[[Translation missing --]]
---[[ L["Import WoWSims/Pawn"] = ""--]] 
+--[[ L["Import WoWSims/Pawn/QE"] = ""--]] 
 L["Inactive window color"] = "未激活窗口的颜色"
 --[[Translation missing --]]
 --[[ L["Masterfrost"] = ""--]] 
 L["Melee DW hit cap"] = "双持近战命中上限"
-L["Melee hit cap"] = "近战命中上限"
 --[[Translation missing --]]
---[[ L["Monocat"] = ""--]] 
+--[[ L["Melee Haste"] = ""--]] 
+L["Melee hit cap"] = "近战命中上限"
 L["No reforge"] = "未能重铸"
+--[[Translation missing --]]
+--[[ L["Offensive"] = ""--]] 
 L["Open window when reforging"] = "重铸时打开窗口"
-L["Other/No flask"] = "其他/无合剂"
-L["Other/No food"] = "其他/无食物"
 L["Pause"] = "暂停"
+--[[Translation missing --]]
+--[[ L["Pawn successfully imported."] = ""--]] 
 L["Presets"] = "预设"
+--[[Translation missing --]]
+--[[ L["Prevent windows from going off screen"] = ""--]] 
 L["Reforging window must be open"] = "必须打开重铸窗口"
 L["Remove cap"] = "移除上限"
 L["Result"] = "成果"
-L["Score"] = "得分"
-L["Show reforged stats in item tooltips"] = "在鼠标提示中显示重铸后的属性"
-L["Slide to the left if the calculation slows your game too much."] = "如果计算导致你的游戏速度太慢，请向左滑动。"
 --[[Translation missing --]]
---[[ L["Source stat color"] = ""--]] 
+--[[ L["Run Algorithm Comparison"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Save current stat weights and caps as a custom preset"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Shift+Click to delete"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Show help buttons"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Show import button on Reforging window"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["Single Target"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["Spell Haste"] = ""--]] 
 L["Spell hit cap"] = "法术命中上限"
-L["Spirit to hit"] = "精神转命中"
-L["Stat Weights"] = "属性权重"
-L["Sum"] = "总计"
 --[[Translation missing --]]
---[[ L["Summarize reforged stats"] = ""--]] 
-L["Tanking model"] = "坦克模式"
+--[[ L[ [=[Stat caps allow you to set minimum or maximum values for specific stats when reforging.
+
+'At least' (minimum): The optimizer will try to reach this value before prioritizing other stats. For example, setting Hit to 'At least 2550' ensures you reach the 7.5% hit cap before investing in other stats.
+
+'At most' (maximum): The optimizer will never exceed this value. For example, setting Hit to 'At most 2550' prevents wasting stats beyond the hit cap, redirecting excess reforges to other stats.
+
+Use caps to ensure you meet important breakpoints while maximizing your overall stat weights.]=] ] = ""--]] 
+L["Stat Weights"] = "属性权重"
+--[[Translation missing --]]
+--[[ L["Summarize reforged stats on tooltip"] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[The Accuracy slider controls the size of the optimization search space.
+
+Lower accuracy = Faster computation but may miss the optimal solution
+Higher accuracy = Slower computation but more thorough search
+
+The optimizer explores possible reforge combinations within this accuracy range. If you're not getting expected results, increase the accuracy.]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[The Apply window shows the reforge plan generated by the optimizer.
+
+Each row shows an item and its recommended reforge (e.g., '192 Haste > Spirit' means reforge 192 Haste to Spirit).
+
+Check/uncheck items to select which reforges to apply.
+
+The total gold cost is displayed at the bottom.
+
+Click 'Reforge' to apply all selected changes at once by visiting the reforge NPCs.]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[The Item Table shows your currently equipped gear and their stats.
+
+Each row represents one equipped item. Only stats present on your gear are shown as columns.
+
+After computing, items being reforged show:
+• Red numbers: Stat being reduced
+• Green numbers: Stat being added
+
+Click an item icon to lock/unlock it. Locked items (shown with a lock icon) are ignored during optimization.]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[The Result table shows the stat changes from the optimized reforge.
+
+The left column shows your total stats after reforging.
+
+The right column shows how much each stat changed:
+- Green: Stat increased and improved your weighted score
+- Red: Stat decreased and lowered your weighted score
+- Grey: No meaningful change (either unchanged, or changed but weighted score stayed the same)
+
+Click 'Show' to see a detailed breakdown of which items to reforge.
+
+Click 'Reset' to clear the current reforge plan.]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L["This import is missing player equipment data! Please make sure 'Gear' is selected when exporting from WoWSims."] = ""--]] 
 --[[Translation missing --]]
 --[[ L["ticks"] = ""--]] 
-L["Weight after cap"] = "超过上限后权重"
 --[[Translation missing --]]
---[[ L["Window Settings"] = ""--]] 
+--[[ L[ [=[Weight after cap - The stat weight value to use once the cap is reached.
+
+This allows you to control whether the optimizer continues valuing this stat after hitting the cap.
+
+Set to 0 to stop reforging into this stat after the cap.
+Set to a positive value to continue prioritizing it (useful for soft caps).]=] ] = ""--]] 
+--[[Translation missing --]]
+--[[ L[ [=[Your Expertise rating is being converted to spell hit.
+
+In Mists of Pandaria, casters benefit from Expertise due to it automatically converting to Hit at a 1:1 ratio.
+
+The Hit value shown above includes this converted Expertise rating.
+
+Note: The character sheet is bugged and doesn't show Expertise converted to spell hit, but the conversion works correctly in combat.]=] ] = ""--]] 
 

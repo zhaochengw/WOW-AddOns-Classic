@@ -1,4 +1,4 @@
-## Interface: 20504
+## Interface: 20505
 ## X-Min-Interface-BCC: 20500
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r218
+## Version: r225
 
 localization.en.lua
 localization.de.lua

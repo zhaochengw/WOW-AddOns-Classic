@@ -1,10 +1,8 @@
 # Already Known?
 
-## [1.88](https://github.com/ahakola/AlreadyKnown/tree/1.88) (2025-11-03)
-[Full Changelog](https://github.com/ahakola/AlreadyKnown/compare/1.87...1.88) [Previous Releases](https://github.com/ahakola/AlreadyKnown/releases)
+## [1.94](https://github.com/ahakola/AlreadyKnown/tree/1.94) (2026-02-02)
+[Full Changelog](https://github.com/ahakola/AlreadyKnown/compare/1.93...1.94) [Previous Releases](https://github.com/ahakola/AlreadyKnown/releases)
 
-- .toc bump  
-- Split Retail and Classic/Era code to different files  
-    - Less fallback code for missing APIs  
-    - Error reports should be more clear on what version code errors are happening on  
-- Add .gitignore  
+- Fix CF issue #25  
+    - For some reason itemId isn't always available?  
+- Less debug info  

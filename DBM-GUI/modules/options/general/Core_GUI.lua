@@ -71,6 +71,15 @@ bmtestmode:SetScript("OnClick", function()
 	DBM:DemoMode()
 end)
 
+if DBM:IsPostMidnight() then
+	local showMidnightWizard = generaloptions:CreateButton(L.Button_ShowMidnightWizard, 120, 30)
+	showMidnightWizard.myheight = 0
+	showMidnightWizard:SetPoint("LEFT", bmtestmode, "RIGHT", 6, 0)
+	showMidnightWizard:SetScript("OnClick", function()
+		DBM.MidnightPopup:ShowMidnightPopup()
+	end)
+end
+
 local moveme = generaloptions:CreateButton(L.Button_MoveBars, 120, 30)
 moveme:SetPoint("TOPLEFT", bmtestmode, "BOTTOMLEFT", 0, -2)
 moveme:SetScript("OnClick", function()
@@ -186,9 +195,9 @@ optionsFrame:HookScript("OnSizeChanged", function(self)
 end)
 
 local UIGroupingOptions = coreoptions:CreateArea(L.UIGroupingOptions)
-UIGroupingOptions:CreateCheckButton(L.GroupOptionsExcludePrivateAura, true, nil, "GroupOptionsExcludePA")
-UIGroupingOptions:CreateCheckButton(L.AutoExpandSpellGroups, true, nil, "AutoExpandSpellGroups")
+UIGroupingOptions:CreateCheckButton(L.AutoExpandSpellGroups2, true, nil, "AutoExpandSpellGroups2")
 if not DBM:IsPostMidnight() then
+--	UIGroupingOptions:CreateCheckButton(L.GroupOptionsExcludePrivateAura, true, nil, "GroupOptionsExcludePA")
 	UIGroupingOptions:CreateCheckButton(L.GroupOptionsExcludeIcon, true, nil, "GroupOptionsExcludeIcon")
 	UIGroupingOptions:CreateCheckButton(L.ShowWAKeys, true, nil, "ShowWAKeys")
 end

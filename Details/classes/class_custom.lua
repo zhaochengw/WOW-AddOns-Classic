@@ -98,6 +98,8 @@
 	end
 
 	function classCustom:RefreshWindow(instanceObject, combatObject, force, export)
+		if not Details222.UpdateIsAllowed() then return end --temporary stop updates in th new dlc
+
 		--get the custom object
 		local customObject = instanceObject:GetCustomObject()
 
@@ -759,9 +761,10 @@
 				thisBar.icone_classe:SetTexture(self.icon)
 			else
 				if (instanceObject.row_info.use_spec_icons) then
-					if ((self.spec and self.spec ~= 0) or (self.my_actor.spec and self.my_actor.spec ~= 0)) then
+					local specId = (self.spec and self.spec ~= 0 and self.spec) or (self.my_actor.spec and self.my_actor.spec ~= 0 and self.my_actor.spec)
+					if (specId and _detalhes.class_specs_coords[specId]) then
 						thisBar.icone_classe:SetTexture(instanceObject.row_info.spec_file)
-						thisBar.icone_classe:SetTexCoord(unpack(Details.class_specs_coords[self.spec or self.my_actor.spec]))
+						thisBar.icone_classe:SetTexCoord(unpack(Details.class_specs_coords[specId]))
 					else
 						thisBar.icone_classe:SetTexture([[Interface\AddOns\Details\images\classes_small]])
 						thisBar.icone_classe:SetTexCoord(unpack(Details.class_coords[self.classe]))
@@ -1360,6 +1363,7 @@
 			desc = Loc ["STRING_CUSTOM_HEALTHSTONE_DEFAULT_DESC"],
 			source = false,
 			target = false,
+			apoc = true,
 			script = [[
 				local combatObject, instanceContainer, instanceObject = ...
 				local total, top, amount = 0, 0, 0

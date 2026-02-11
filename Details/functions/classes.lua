@@ -202,6 +202,9 @@ do
 	function Details:GetCLName(id)
 		local name, realm = UnitName(id)
 		if (name) then
+			if issecretvalue and issecretvalue(realm) then
+				--return GetUnitName(id, true)
+			end
 			if (realm and realm ~= "") then
 				name = name .. "-" .. realm
 			end
@@ -376,7 +379,7 @@ do
 	function Details:AddClassOrSpecIcon(thisString, class, spec, iconSize, useAlphaIcons)
 		iconSize = iconSize or 16
 
-		if (spec) then
+		if (spec and Details.class_specs_coords[spec]) then
 			local specString = ""
 			local L, R, T, B = unpack(Details.class_specs_coords[spec])
 			if (L) then

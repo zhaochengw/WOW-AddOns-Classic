@@ -26,7 +26,7 @@ local DT = {  }; __private.DT = DT;		--	data
 	local SendChatMessage = SendChatMessage;
 	local GetSpellInfo = GetSpellInfo;
 	local GetSpellCooldown = GetSpellCooldown;
-	local IsAddOnLoaded = IsAddOnLoaded;
+	local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded;
 	local CreateFrame = CreateFrame;
 	local GetTime = GetTime;
 	local _G = _G;
@@ -125,6 +125,7 @@ local DT = {  }; __private.DT = DT;		--	data
 	--]=]
 	CT.ISBCC = CT.TOCVERSION >= 20500 and CT.TOCVERSION < 30000;
 	CT.ISWLK = CT.TOCVERSION >= 30400 and CT.TOCVERSION < 40000;
+	CT.ISWLKTT = CT.TOCVERSION >= 30800 and CT.TOCVERSION < 40000;
 	CT.ISCATA = CT.TOCVERSION >= 40400 and CT.TOCVERSION < 50000;
 	CT.ISMOP = CT.TOCVERSION >= 50500 and CT.TOCVERSION < 90000;
 	CT.VGE2X = CT.ISBCC or CT.ISWLK or CT.ISCATA or CT.ISMOP;
@@ -506,6 +507,18 @@ MT.BuildEnv('Init');
 		else
 			return false, 0, 0, enabled, modRate, nil;
 		end
+	end
+	local function ExistAndVisible(obj)
+		return obj and obj:IsVisible();
+	end
+	function MT.IsOverridedByAuction()
+		if ExistAndVisible(AuctionHouseFrame) and ExistAndVisible(AuctionHouseFrame.SearchBar) and ExistAndVisible(AuctionHouseFrame.SearchBar.SearchBox) then
+			return true;
+		end
+		if ExistAndVisible(AuctionFrame) and ExistAndVisible(AuctionFrameBrowse) and ExistAndVisible(BrowseName) then
+			return true;
+		end
+		return false;
 	end
 
 -->

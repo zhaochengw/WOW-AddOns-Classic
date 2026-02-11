@@ -100,10 +100,12 @@ local createColorPicker; do -- I wish Settings.CreateColorPicker was a thing
 		self:SetSize(280, 26) -- templates have a size
 
 		-- creating widgets would be equal to :OnLoad()
-		self.Swatch = CreateFrame('Button', nil, self, 'ColorSwatchTemplate')
-		self.Swatch:SetSize(30, 30)
-		self.Swatch:SetPoint('LEFT', self, 'CENTER', -80, 0)
-		self.Swatch:SetScript('OnClick', onClick)
+		if not self.Swatch then
+			self.Swatch = CreateFrame('Button', nil, self, 'ColorSwatchTemplate')
+			self.Swatch:SetSize(30, 30)
+			self.Swatch:SetPoint('LEFT', self, 'CENTER', -80, 0)
+			self.Swatch:SetScript('OnClick', onClick)
+		end
 
 		-- setting up state would be equal to :Init()
 		local setting = initializer:GetSetting()

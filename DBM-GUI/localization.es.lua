@@ -7,7 +7,7 @@ L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Traducido por "
 L.TranslationBy 			= "Saispai, Woopy"
-L.Website					= "Visita nuestro canal de Discord (|cFF73C2FBhttps://discord.gg/deadlybossmods|r)"
+L.Website					= "Sigue a MysticalOS para noticias y actualizaciones |cFF73C2FBhttps://allmylinks.com/mysticalos|r"
 L.WebsiteButton				= "Página web"
 
 L.OTabBosses	= "Jefes"
@@ -90,6 +90,7 @@ L.Button_TestBars			= "Comprobar barras"
 L.Button_MoveBars			= "Mover barras"
 L.Button_ResetInfoRange		= "Restablecer posiciones predeterminadas"
 
+L.Button_ShowMidnightWizard = "Asistente de configuración de Midnight"
 L.ModelOptions				= "Opciones del visualizador de modelos 3D"
 L.EnableModels				= "Mostrar modelos 3D en opciones de jefe"
 L.ModelSoundOptions			= "Sonido"
@@ -105,7 +106,7 @@ L.Editbox_WindowHeight		= "Altura"
 L.UIGroupingOptions					= "Opciones de agrupación de IU (cambiarlas requiere recargar la IU)"
 L.GroupOptionsExcludeIcon			= "Excluir que las opciones 'Establecer icono activado' se agrupan por hechizo (en su lugar, se agruparán en su propia categoría 'Iconos')"
 L.GroupOptionsExcludePrivateAura	= "Excluir que las opciones de sonido 'Aura privada' se agrupan por hechizo (en su lugar, se agruparán en su propia categoría 'Auras privadas')"
-L.AutoExpandSpellGroups				= "Expandir opciones automáticamente que están agrupadas por hechizo"
+L.AutoExpandSpellGroups2				= "Expandir opciones automáticamente que están agrupadas por hechizo"
 L.ShowWAKeys						= "Mostrar las claves de WeakAuras junto a los nombres de los hechizos para ayudar a escribir WeakAuras usando los activadores de módulos de jefe"
 --L.ShowSpellDescWhenExpanded		= "Continuar mostrando la descripción del hechizo cuando se expanden los grupos."--Might not be used
 L.NoDescription						= "Esta facultad no tiene descripción."
@@ -116,15 +117,15 @@ L.CustomOptions						= "Esta categoría contiene opciones personalizadas para un
 -- Panel: Auto Logging
 L.Panel_AutoLogging			= "Registro automático"
 --Auto Logging: Logging toggles/types
-L.Area_AutoLogging			= "Opciones del registro automático"
+L.Area_AutoLogging			= "Opciones de registro automático"
 L.AutologBosses				= "Registrar encuentros automáticamente con el registro de combate de Blizzard"
 L.AdvancedAutologBosses		= "Registrar encuentros automáticamente con Transcriptor"
 --Auto Logging: Global filter Options
-L.Area_AutoLoggingFilters	= "Filtros del registro automático"
+L.Area_AutoLoggingFilters	= "Filtros de registro automático"
 L.RecordOnlyBosses			= "Registrar solo encuentros contra jefes"
 L.DoNotLogLFG				= "No registrar encuentros de buscar grupo"
 --
-L.Area_AutoLoggingContent			= "Contenido del registro automático"
+L.Area_AutoLoggingContent			= "Contenido de registro automático"
 L.LogCurrentMythicRaids				= "Bandas actuales Míticas"--Retail Only
 L.LogCurrentRaids					= "Bandas actuales"
 L.LogTWRaids						= "Bandas de Paseo en el tiempo o Tiempo de Cromi"--Retail Only
@@ -213,6 +214,7 @@ L.RaidWarnColor_1 			= "Color 1"
 L.RaidWarnColor_2 			= "Color 2"
 L.RaidWarnColor_3		 	= "Color 3"
 L.RaidWarnColor_4 			= "Color 4"
+L.RaidWarnColor				= "Color"
 L.InfoRaidWarning			= [[Puedes definir la posición y los colores del marco de avisos de banda.
 Este marco se usa para mensajes como "Jugador X afectado por Y".]]
 L.ColorResetted 			= "Se ha restablecido la configuración de colores de este campo."
@@ -257,6 +259,14 @@ L.AnnouncementMidnightNotice		= "Las opciones de este panel son para avisos que 
 L.SpecialWarnHeaderMedium			= "Anuncios para mecánicas que Blizzard clasifica como 'moderadas'"
 L.SpecialWarnHeaderCritical			= "Anuncios para mecánicas que Blizzard clasifica como 'críticas'"
 
+-- Panel: Private Auras Frame
+L.Panel_PrivateAuras				= "Auras privadas"
+L.Area_PrivateAuras					= "Opciones de aura privada"
+L.EnablePrivateAuraIcons			= "Mostrar iconos de aura privada en pantalla"
+L.EnablePrivateAuraText				= "Mostrar mensajes de texto de aura privada en pantalla"
+L.SetPAIconScale					= "Escala del icono: %0.1f"
+L.SetPATextScale					= "Escala del texto: %0.1f"
+
 -- Panel: Generalwarnings
 L.Tab_GeneralMessages 			= "Mensajes de chat"
 L.SelectChatFrameArea			= "Opciones de marco de chat"
@@ -278,10 +288,13 @@ L.ShowGuildMessages 		= "Mostrar mensajes de inicio de encuentro, victoria y der
 L.ShowGuildMessagesPlus		= "Mostrar mensajes de inicio de encuentro, victoria y derrota de Mítica+ para grupos de hermandad"
 
 L.Area_ChatAlerts			= "Opciones de alertas adicionales"
-L.RoleSpecAlert				= "Mostrar mensaje de alerta al unirte a una banda cuando tu especialización de botín no coincida con tu especialización actual"
-L.CheckGear					= "Mostrar mensaje de alerta al iniciar un encuentro cuando tu nivel de equipo sea como mínimo 40 niveles menor que el de tu inventario o no tengas equipada un arma principal"
-L.WorldBossAlert			= "Mostrar mensaje de alerta cuando un amigo o miembro de hermandad inicie un encuentro contra un jefe del mundo"
-L.WorldBuffAlert			= "Mostrar mensaje de alerta y temporizador cuando empiece un beneficio del mundo en tu reino"
+L.RoleSpecAlert				= "Mostrar alerta al unirte a una banda cuando tu especialización de botín no coincida con tu especialización actual"
+L.CheckGear					= "Mostrar alerta al iniciar un encuentro cuando tu nivel de equipo sea como mínimo 40 niveles menor que el de tu inventario o no tengas equipada un arma principal"
+L.WorldBossAlert			= "Mostrar alerta cuando un amigo o miembro de hermandad inicie un encuentro contra un jefe del mundo"
+L.WorldBuffAlert			= "Mostrar alerta y temporizador cuando empiece un beneficio del mundo en tu reino"
+L.RaidDiffChangedAlert		= "Mostrar alerta cuando la dificultad de la banda cambie"
+L.RaidDiffChangedRaidOnly	= "Mostrar alerta de cambio de dificultad solo cuando estés en un grupo de banda"
+L.DungeonDiffChangedAlert	= "Mostrar alerta cuando la dificultad de la mazmorra cambie"
 
 L.Area_BugAlerts			= "Opciones de alertas de informes de fallos"
 L.BadTimerAlert				= "Mostrar mensaje cuando DBM detecte un temporizador erróneo"
@@ -410,12 +423,15 @@ L.ZeroatWindowStartRestart 		= "El texto llega a cero al inicio de la ventana de
 L.ZeroatWindowStartNeg 			= "El texto llega a cero al inicio de la ventana de reutilización y luego se vuelve negativo" --Default
 L.BarIconLeft 					= "Icono izquierdo"
 L.BarIconRight 					= "Icono derecho"
+L.BarIconPosition               = "Posición del icono"
 L.ExpandUpwards					= "Expandir arriba"
 L.FillUpBars					= "Rellenar"
 L.ClickThrough					= "Desactivar clic en barras"
 L.Bar_Decimal					= "Mostrar decimales bajo: %d s"
 L.Bar_Alpha						= "Transparencia: %0.1f"
 L.Bar_EnlargeTime				= "Agrandar barras bajo: %d s"
+L.Bar_AppearTime				= "Ocultar barras encima: %d s"--Used for when hidden bars show on the small bar anchor
+L.Bar_HideLongBars				= "Ocultar barras hasta que estén por debajo del umbral"
 L.BarSpark						= "Destello de barras"
 L.BarFlash						= "Destellar barras a punto de expirar"
 L.BarSort						= "Ordenar por tiempo restante"
@@ -423,13 +439,18 @@ L.BarColorByType				= "Color por tipo"
 L.Highest						= "Alto hacia arriba"
 L.Lowest						= "Bajo hacia arriba"
 L.NoBarFade						= "Utilizar color inicial para barras pequeñas y final para grandes, sin cambios graduales"
-L.BarInlineIcons				= "Iconos en barras"
+L.BarInlineIcons				= "Mostrar iconos del diaro"
 L.DisableRightClickBar			= "Desactivar clic derecho para cancelar temporizadores"
 L.ShortTimerText				= "Texto de temporizador breve"
 L.KeepBar						= "Mantener hasta que se lance la facultad"
 L.KeepBar2						= "(siempre que el módulo lo permita)"
 L.FadeBar						= "Desteñir barras de facultades lejanas"
 L.BarSkin						= "Estilo de barra"
+L.InlineIconsDropdown			= "Estilo de icono del diario"
+L.SingleLargeIcon				= "Un solo icono grande"
+L.DoubleLargeIcons				= "Dos iconos grandes"
+L.DoubleInlineIcons				= "Todos los iconos grandes"
+L.StackedMiniIcons				= "Iconos pequeños apilados"
 
 -- Panel: Pull, Break, Combat
 L.Panel_PullBreakCombat		= "Inicio y descanso"
@@ -443,13 +464,17 @@ L.Area_BlizzFiltersSetup	= "Guía de filtros de Blizzard"
 -- Panel: DBM Features
 L.Panel_SpamFilter			= "Desactivar funciones de DBM"
 
+L.Area_Global_Toggles              = "Opciones globales de funciones"
+L.NoWarnings                       = "Desactivar los avisos de DBM"
+L.NoTimers                         = "Desactivar los temporizadores de DBM"
+
 L.Area_SpamFilter_SpecFeatures		= "Opciones de anuncios"
 L.SpamBlockNoShowAnnounce 			= "No mostrar texto ni reproducir sonido para NINGÚN anuncio general"
 L.SpamBlockNoSpecWarnText 			= "No mostrar texto de anuncios especiales"
 L.SpamBlockNoSpecWarnFlash			= "No mostrar destello de anuncios especiales"
 L.SpamBlockNoSpecWarnVibrate		= "No vibrar el controlador en un anuncio especial"
 L.SpamBlockNoSpecWarnSound			= "No reproducir sonidos de anuncios especiales"
-L.SpamBlockNoPrivateAuraSound		= "No registrar sonidos de auras privados"
+L.SpamBlockNoPrivateAuraSound		= "No registrar sonidos de auras privadas"
 
 L.Area_SpamFilter_Timers			= "Opciones de temporizadores"
 L.SpamBlockNoShowBossTimers			= "No mostrar temporizadores para jefes"
@@ -459,10 +484,10 @@ L.SpamBlockNoShowUTimers			= "No mostrar temporizadores enviados por el usuario"
 L.SpamBlockNoCountdowns				= "No reproducir sonidos de cuenta atrás"
 
 L.Area_SpamFilter_Nameplates	= "Opciones de placas de nombre"
-L.SpamBlockNoNameplate			= "No mostrar iconos de placas de nombre para mecánicas especiales de jefes (es decir, beneficios o perjuicios en enemigos)"
-L.SpamBlockNoNameplateCD		= "No mostrar iconos de placas de nombre para tiempos de reutilización de facultades"
-L.SpamBlockNoNameplateCasts 	= "No mostrar iconos de placas de nombre para temporizadores de lanzamiento de facultades"
-L.SpamBlockNoBossGUIDs			= "No mostrar iconos en placas de nombre para facultades con temporizadores"
+L.SpamBlockNoNameplate			= "No mostrar iconos para beneficios o perjuicios"
+L.SpamBlockNoNameplateCD		= "No mostrar iconos para tiempos de reutilización de facultades"
+L.SpamBlockNoNameplateCasts 	= "No mostrar iconos para temporizadores de lanzamiento de facultades"
+L.SpamBlockNoBossGUIDs			= "No mostrar iconos para facultades con temporizadores"
 L.AlwaysKeepNPs					= "Mantener visibles los iconos de temporizador caducados hasta que la facultad se lance de nuevo"
 
 L.Area_SpamFilter_Misc		= "Opciones varias"
@@ -571,8 +596,8 @@ L.ConfigAreaFooter					= "Las opciones en esta área solo anulan temporalmente l
 L.ConfigAreaFooter2					= "Se recomienda considerar todos los roles y no excluir los temporizadores/alertas que un tanque, etc. pueda necesitar."
 
 L.Area_receivingOptions				= "Opciones de recepción"--NYI
-L.NoAnnounceOverride				= "No acepta anuncios anulados por parte de los líderes de la banda."--NYI
-L.NoTimerOverridee					= "No acepta anulaciones del temporizador por parte de los líderes de la banda."--NYI
+L.NoAnnounceOverride				= "No aceptar anuncios anulados por parte de los líderes de la banda."--NYI
+L.NoTimerOverridee					= "No aceptar anulaciones del temporizador por parte de los líderes de la banda."--NYI
 L.ReplaceMyConfigOnOverride			= "AVISO: Reemplaza permanentemente mis configuraciones de modificación con líderes de banda, al anularlas"--NYI
 L.ReceivingFooter					= "Las anulaciones de opciones de iconos y burbujas de chat no se pueden desactivar ya que estas configuraciones afectan a otros jugadores a tu alrededor."--NYI
 L.ReceivingFooter2					= "Si activas estas opciones, es entre tú y líder de banda si tu configuración causa conflicto con su intención."--NYI
@@ -582,13 +607,14 @@ L.TabFooter							= "Todas las opciones en este panel solo funcionan si eres lí
 
 -- Panel: Privacy
 L.Tab_Privacy 				= "Controles de privacidad"
+L.Tab_PrivacyMidnight		= "Privacidad de comunicaciones"
 L.Area_WhisperMessages		= "Opciones de susurros"
-L.AutoRespond 				= "Responder automáticamente a susurros en encuentro"
-L.WhisperStats 				= "Incluir estadísticas de victoria y derrota en las respuestas automáticas a susurros"
-L.DisableStatusWhisper 		= "Desactivar susurros automáticos de encuentro para todos (requiere ser líder)"
+L.AutoRespond 				= "Responder automáticamente a susurros durante encuentros de jefe"
+L.WhisperStats 				= "Incluir estadísticas de victoria y derrota en las respuestas automáticas"
+L.DisableStatusWhisper 		= "Desactivar susurros automáticos para todos (requiere ser líder)"
 L.Area_SyncMessages			= "Opciones de sincronización de addons"
 L.DisableGuildStatus 		= "Desactivar mensajes de hermandad de encuentro para todos (requiere ser líder)"
-L.EnableWBSharing 			= "Compartir inicios y victorias de jefes del mundo con hermandad y amigos de Battle.net en tu mismo reino"
+L.EnableWBSharing 			= "Compartir inicios y victorias de jefes del mundo con la hermandad y amigos de Battle.net en tu mismo reino"
 
 -- Tab: Frames & Integrations
 L.TabCategory_Frames		= "Marcos e integración"
@@ -606,24 +632,24 @@ L.ThreatPlates_Config		= "Abrir configuración de Threat Plates"
 L.Area_NPStyle				= "Estilo (solo cuando DBM controla las placas de nombre)"
 L.NPAuraText				= "Mostrar texto del temporizador en los iconos de la placa de nombre"
 L.NPAuraSize				= "Tamaño del aura: %d"
-L.NPIcon_BarOffSetX 		= "Desplazamiento del icono X: %d"
-L.NPIcon_BarOffSetY 		= "Desplazamiento del icono Y: %d"
-L.NPIcon_GrowthDirection 	= "Dirección de crecimiento del icono"
+L.NPIcon_BarOffSetX 		= "Desplazamiento X: %d"
+L.NPIcon_BarOffSetY 		= "Desplazamiento Y: %d"
+L.NPIcon_GrowthDirection 	= "Dirección de crecimiento"
 L.NPIcon_Spacing		 	= "Espaciado del icono: %d"
 L.NPIcon_MaxTextLen		 	= "Longitud del texto máx.: %d"
-L.NPIconAnchorPoint			= "Punto de anclaje del icono"
+L.NPIconAnchorPoint			= "Punto de anclaje"
 L.NPDemo					= "Probar (Acercarse de placas de nombre)"
-L.FontTypeTimer				= "Seleccionar fuente del temporizador"
-L.FontTypeText				= "Seleccionar fuente de texto"
+L.FontTypeTimer				= "Fuente del temporizador"
+L.FontTypeText				= "Fuente de texto"
 
 L.Area_NPGlow				= "Resplandor (Nota: Solo configura el resplandor cuando DBM está gestionando las placas de nombre.)"
-L.NPIcon_GlowBehavior 		= "Comportamiento de resplandor del icono"
-L.NPIcon_CastGlowBehavior 	= "Comportamiento del resplandor del icono de lanzamiento"
+L.NPIcon_GlowBehavior 		= "Resplandor del icono"
+L.NPIcon_CastGlowBehavior 	= "Resplandor del icono de lanzamiento"
 L.NPIcon_GlowNone			= "Nunca resplandecer los iconos"
 L.NPIcon_GlowImportant		= "Resplandecer iconos importantes de reutilizaciones/lanzamientos a punto de expirar"
 L.NPIcon_GlowAll			= "Resplandecer todos los iconos de reutilizaciones/lanzamientos a punto de expirar"
-L.NPIcon_GlowTypeCD			= "Tipo de resplandor del icono de reutilización"
-L.NPIcon_GlowTypeCast		= "Tipo de resplandor del icono de lanzamiento"
+L.NPIcon_GlowTypeCD			= "Resplandor de reutilización"
+L.NPIcon_GlowTypeCast		= "Resplandor de lanzamiento"
 L.NPIcon_Pixel  			= "Píxel"
 L.NPIcon_Proc  				= "Prec"
 L.NPIcon_AutoCast         	= "Lanzamiento automático"

@@ -1,12 +1,15 @@
 local mod	= DBM:NewMod(1979, "DBM-Party-Legion", 13, 945)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240428124541")
+mod:SetRevision("20251117220446")
 mod:SetCreatureID(124871)
 mod:SetEncounterID(2065)
 mod:SetUsedIcons(1)
 
 mod:RegisterCombat("combat")
+
+--TODO, some actual custom sounds and timer disables when apis added
+if DBM:IsPostMidnight() then return end
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 246134 244579",

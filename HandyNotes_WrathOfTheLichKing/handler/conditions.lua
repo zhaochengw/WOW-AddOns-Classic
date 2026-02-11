@@ -70,7 +70,7 @@ end
 ns.conditions.AchievementIncomplete = Negated(ns.conditions.Achievement)
 
 ns.conditions.AuraActive = Condition:extends{classname = "AuraActive", type = "spell"}
-function ns.conditions.AuraActive:Matched() return GetPlayerAuraBySpellID(self.id) end
+function ns.conditions.AuraActive:Matched() return (not InCombatLockdown()) and GetPlayerAuraBySpellID(self.id) end
 
 ns.conditions.AuraInactive = Negated(ns.conditions.AuraActive)
 
@@ -360,6 +360,11 @@ do
         end
         return tonumber(id)
     end
+end
+
+ns.conditions.Expansion = Condition:extends{classname = "Expansion", type = "expansion"}
+function ns.conditions.Expansion:Matched()
+    return self.id <= LE_EXPANSION_LEVEL_CURRENT
 end
 
 -- Helpers:

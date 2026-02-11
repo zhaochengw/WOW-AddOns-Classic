@@ -208,6 +208,7 @@ local _G = _G
 	-- Construct your search patterns based on the existing global strings:
 	local S_ITEM_MIN_LEVEL = "^" .. gsub(ITEM_MIN_LEVEL, "%%d", "(%%d+)")
 	local S_ITEM_CLASSES_ALLOWED = "^" .. gsub(ITEM_CLASSES_ALLOWED, "%%s", "(%%a+)")
+	-- Removed on Feb 23, 2023
 
 	local scantip = CreateFrame("GameTooltip", "AKScanningTooltip", nil, "GameTooltipTemplate")
 	scantip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -309,17 +310,33 @@ local _G = _G
 			end
 		end
 
-		if C_PetJournal and itemLink:match("|H(.-):") == "battlepet" then -- Check if item is Caged Battlepet (dummy item 82800)
-			local _, battlepetId = strsplit(":", itemLink)
-			if C_PetJournal.GetNumCollectedInfo(battlepetId) > 0 then
-				Debug("%d - BattlePet: %s %d", itemId, battlepetId, C_PetJournal.GetNumCollectedInfo(battlepetId))
-				knownTable[itemLink] = true -- Mark as known for later use
-				return true -- Battlepet is collected
-			end
-			return false -- Battlepet is uncollected... or something went wrong
-		end
+		if C_PetJournal then
+			if itemLink:match("|H(.-):") == "battlepet" then -- Check if item is Caged Battlepet (dummy item 82800)
+				local _, battlepetId = strsplit(":", itemLink)
+				battlepetId = tonumber(battlepetId)
+				if battlepetId and C_PetJournal.GetNumCollectedInfo(battlepetId) > 0 then
+					Debug("%d - BattlePet: %s %d", itemId, battlepetId, C_PetJournal.GetNumCollectedInfo(battlepetId))
+					knownTable[itemLink] = true -- Mark as known for later use
+					return true -- Battlepet is collected
+				end
+				return false -- Battlepet is uncollected... or something went wrong
 
-		if classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
+			elseif classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then -- CompanionPet
+				-- Hoping this works in the TBC Classic Anniversary and fixes the CF issues #23 and #24
+				local _, numOwned = C_PetJournal.GetNumPets()
+				for i = 1, numOwned do
+					local _, _, owned, _, _, _, _, speciesName, icon, _, companionID = C_PetJournal.GetPetInfoByIndex(i)
+					if owned and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), speciesName)) then
+						Debug("%d - CompanionPet: (%d/%d) %s - CId: %d TId: %d", itemId, i, numOwned, speciesName, companionID, icon)
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- CompanionPet is collected
+					end
+				end
+				return false -- CompanionPet is uncollected... or something went wrong
+			end
+
+		elseif classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
+			-- CurseForge issues #23 & #24 reported by gogo1951, this doesn't work in the TBC Classic Anniversary
 			local numCompanions = GetNumCompanions("CRITTER")
 			for i = 1, numCompanions do
 				local creatureId, creatureName, creatureSpellId, icon, issummoned, mountType = GetCompanionInfo("CRITTER", i)
@@ -336,7 +353,23 @@ local _G = _G
 				]]--
 				--Bandaid solution that is less than ideal:
 				--DevTools_Dump({ strmatch((GetItemInfo(itemId)), creatureName) })
-				return (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName))
+				--return (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName))
+				if (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName)) then
+					knownTable[itemLink] = true -- Mark as known for later use
+					return true -- CompanionPet is collected
+				end
+			end
+		end
+
+		if C_MountJournal and classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.Mount then -- Mount
+			local numMounts = C_MountJournal.GetNumMounts()
+			for i = 1, numMounts do
+				local name, _, icon, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
+				if isCollected and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), name)) then
+					Debug("%d Mount: (%d/%d) %s - MId: %d TId: %d", itemId, i, numMounts, name, mountID, icon)
+					knownTable[itemLink] = true -- Mark as known for later use
+					return true -- Mount is collected
+				end
 			end
 		end
 
@@ -582,7 +615,7 @@ local _G = _G
 			local regions = { GameTooltip:GetRegions() }
 
 			-- https://warcraft.wiki.gg/wiki/ItemType
-			local _, _, _, _, _, _, _, _, _, _, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
+			local _, _, _, _, _, _, _, _, _, itemTexture, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
 			local itemClass, itemSubclass
 			for k, v in pairs(Enum.ItemClass) do
 				if v == classId then
@@ -630,6 +663,31 @@ local _G = _G
 				for j = 1, #regionTable do
 					line = line .. "\n" .. regionTable[j]
 				end
+
+				-- Check these item types for additional info
+				if C_PetJournal and classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
+					line = line .. "\n-----\nCompanionPet:"
+					local numPets, numOwned = C_PetJournal.GetNumPets()
+					for index = 1, numOwned do
+						local petID, speciesID, owned, customName, level, favorite, isRevoked, speciesName, icon, petType, companionID, tooltip, description, isWild, canBattle, isTradeable, isUnique, obtainable = C_PetJournal.GetPetInfoByIndex(index)
+						if owned and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), speciesName)) then
+							line = line .. "\n- Index: " .. index .. " / " .. numOwned .. "\n- Name: " .. speciesName .. "\n- companionID: " .. companionID .. "\n- Icon: " .. icon
+							break
+						end
+					end
+
+				elseif C_MountJournal and classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.Mount then
+					line = line .. "\n-----\nMount:"
+					local numMounts = C_MountJournal.GetNumMounts()
+					for index = 1, numMounts do
+						local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID, isSteadyFlight = C_MountJournal.GetDisplayedMountInfo(index)
+						if isCollected and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), name)) then
+							line = line .. "\n- Index: " .. index .. " / " .. numMounts .. "\n- Name: " .. name .. "\n- mountID: " .. mountID .. "\n- Icon: " .. icon
+							break
+						end
+					end
+				end
+
 				--Print(line)
 				local dialog = StaticPopup_Show("ALREADYKNOWN_DEBUG", tostring(itemLink)) -- Send to dialog for easy copy&paste for end user
 					if dialog then

@@ -1,7 +1,8 @@
 ## Interface: 40402
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 5.20.6
+## Version: 5.21.2
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-esMX: Opciones para WeakAuras

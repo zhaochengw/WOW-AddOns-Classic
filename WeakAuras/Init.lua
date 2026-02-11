@@ -381,8 +381,8 @@ WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.20.6"
-local buildTime = "20251022014709"
+local versionString = "5.21.2"
+local buildTime = "20260206190858"
 
 local flavorFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -410,7 +410,7 @@ WeakAuras.buildType = "pr"
 --@end-experimental@]=====]
 
 --[==[@debug@
-if versionStringFromToc == "5.20.6" then
+if versionStringFromToc == "5.21.2" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
   WeakAuras.buildType = "dev"
@@ -429,6 +429,15 @@ end
 -- save compatibility with old auras
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
+function WeakAuras.IsTBC()
+  return flavor == 2
+end
+
+---@return boolean result
+function WeakAuras.IsWrathClassic()
+  return flavor == 3
+end
+
 ---@return boolean result
 function WeakAuras.IsCataClassic()
   return flavor == 4
@@ -445,22 +454,83 @@ function WeakAuras.IsRetail()
 end
 
 ---@return boolean result
+function WeakAuras.IsTWW()
+  return WeakAuras.BuildInfo >= 110000
+end
+
+---@return boolean result
+function WeakAuras.IsMidnight()
+  return WeakAuras.BuildInfo >= 120000
+end
+
+---@return boolean result
+function WeakAuras.IsClassicOrTBC()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsTBC()
+end
+
+---@return boolean result
+function WeakAuras.IsClassicOrWrath()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsClassicOrTBCOrWrath()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsTBC() or WeakAuras.IsWrathClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsTBCOrWrath()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic()
+end
+
+---@return boolean result
 function WeakAuras.IsClassicOrCata()
   return WeakAuras.IsClassicEra() or WeakAuras.IsCataClassic()
 end
 
 ---@return boolean result
-function WeakAuras.IsClassicOrCataOrMists()
-  return WeakAuras.IsClassicOrCata() or WeakAuras.IsMists()
+function WeakAuras.IsClassicOrTBCOrWrathOrCata()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
 end
 
 ---@return boolean result
-function WeakAuras.IsCataOrMists()
-  return WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+function WeakAuras.IsClassicOrTBCOrWrathOrCataOrMists()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists()
 end
 
-function WeakAuras.IsCataOrMistsOrRetail()
-  return WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+---@return boolean result
+function WeakAuras.IsTBCOrWrathOrCata()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsWrathOrCata()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsWrathOrCataOrMists()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsWrathOrCataOrMistsOrRetail()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+end
+
+---@return boolean result
+function WeakAuras.IsTBCOrWrathOrCataOrMists()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsWrathOrMists()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsTBCOrWrathOrMists()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsMists()
 end
 
 ---@return boolean result
@@ -469,17 +539,33 @@ function WeakAuras.IsMistsOrRetail()
 end
 
 ---@return boolean result
-function WeakAuras.IsCataOrRetail()
-  return WeakAuras.IsCataClassic() or WeakAuras.IsRetail()
+function WeakAuras.IsWrathOrMistsOrRetail()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
 end
 
 ---@return boolean result
-function WeakAuras.IsTWW()
-  return WeakAuras.BuildInfo >= 110000
+function WeakAuras.IsTBCOrWrathOrMistsOrRetail()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
 end
 
-function WeakAuras.IsMidnight()
-  return WeakAuras.BuildInfo >= 120000
+---@return boolean result
+function WeakAuras.IsCataOrMists()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsCataOrMistsOrRetail()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+end
+
+---@return boolean result
+function WeakAuras.IsTBCOrWrathOrCataOrMistsOrRetail()
+  return WeakAuras.IsTBC() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+end
+
+---@return boolean result
+function WeakAuras.IsWrathOrRetail()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsRetail()
 end
 
 ---@param ... string
@@ -572,11 +658,19 @@ if not libsAreOk then
   end)
 end
 
-if WeakAuras.IsMidnight() then
+if WeakAuras.IsWrathClassic() then
+  C_Timer.After(1, function()
+    WeakAuras.prettyPrint("This version of WeakAuras is provided as is. We are unable to test it ourselves on CN Servers.")
+  end)
+elseif WeakAuras.IsMidnight() then
   C_Timer.After(1, function()
     WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard restricting addons. Read more at https://patreon.com/WeakAuras")
   end)
   libsAreOk = false
+elseif WeakAuras.IsTWW() then
+  C_Timer.After(1, function()
+    WeakAuras.prettyPrint("WeakAuras does not support Midnight due to Blizzard's new addon restrictions. Read more at https://patreon.com/WeakAuras")
+  end)
 end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile

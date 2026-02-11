@@ -26,7 +26,6 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("Atlas_WarlordsofDraenor", "deDE");
 if not L then return end
 
-
 L["BRF"] = "SFG"
 L["BSM"] = "BSM"
 L["EB"] = "IF"

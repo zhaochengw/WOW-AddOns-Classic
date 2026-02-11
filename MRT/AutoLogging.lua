@@ -18,6 +18,7 @@ module.db.mapsToLog_5ppl = {
 	[657] = true,	-- The Vortex Pinnacle
 	[643] = true,	-- Throne of the Tides
 	[670] = true,	-- Grim Batol
+	[658] = true,	-- Pit of Saron
 }
 
 module.db.mapsSoD = {	--Season of Discovery, Classic

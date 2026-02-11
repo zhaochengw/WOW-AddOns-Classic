@@ -59,4 +59,8 @@ end);
 --[[	ChatFrame Hooks	]]
 --------------------------
 for i=1,NUM_CHAT_WINDOWS do AddOn.Integration_DefaultUI_HookScrollingMessageFrame(_G["ChatFrame"..i]); end
-hooksecurefunc("ChatFrame_OnLoad",AddOn.Integration_DefaultUI_HookScrollingMessageFrame);
+if ChatFrameMixin and ChatFrameMixin.OnLoad then
+	hooksecurefunc(ChatFrameMixin,"OnLoad",AddOn.Integration_DefaultUI_HookScrollingMessageFrame);
+elseif ChatFrame_OnLoad then
+	hooksecurefunc("ChatFrame_OnLoad",AddOn.Integration_DefaultUI_HookScrollingMessageFrame);
+end

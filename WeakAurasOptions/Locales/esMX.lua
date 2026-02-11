@@ -795,6 +795,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=] ] = "Ocurrencia d
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = [=[La duración de la animación en segundos. La animación de finalización no comienza a reproducirse hasta que la visualización normalmente estaría oculta.
 ]=]
 	L["The group and all direct children will share the same base frame level."] = "El grupo y todos los hijos directos compartirán el mismo nivel de marco base."
+	L["The Multi Target mode is less reliable and not recommended."] = "El modo Multiobjetivo es menos fiable y no se recomienda."
+	L["The Multi Target mode requires a name or spell id filter"] = "El modo Multiobjetivo requiere un filtro por nombre o ID de hechizo"
 	L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."] = "El número de disparador es opcional. Cuando no se especifica un número de disparador, se usará el disparador seleccionado a través de información dinámica."
 	L["The type of trigger"] = "El tipo de activador"
 	L["The WeakAuras Options Addon version %s doesn't match the WeakAuras version %s. If you updated the addon while the game was running, try restarting World of Warcraft. Otherwise try reinstalling WeakAuras"] = "La versión del addon WeakAuras Options %s no coincide con la versión de WeakAuras %s. Si actualizaste el addon mientras el juego estaba en ejecución, intenta reiniciar World of Warcraft. De lo contrario, intenta reinstalar WeakAuras."
@@ -866,8 +868,8 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Url: %s"] = "URL: %s"
 	L["Use Display Info Id"] = "Utilizar ID de información de la visualización"
 	L["Use SetTransform"] = "Utilizar SetTransform"
-	L["Used in auras:"] = "Utilizado en auras:"
 	L["Used in Auras:"] = "Utilizado en auras:"
+	L["Used in auras:"] = "Utilizado en auras:"
 	L["Uses Texture Coordinates to rotate the texture."] = "Utiliza coordenadas de textura para rotar la textura."
 	L["Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."] = "Utiliza UnitIsVisible() para comprobar si el cliente del juego ha cargado un objeto para esta unidad. Esta distancia es de unos 100 metros. Esto se encuesta cada segundo."
 	L["Value"] = "Valor"
@@ -886,6 +888,8 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["We thank"] = "Agradecemos a"
 	L["WeakAuras %s on WoW %s"] = "WeakAuras %s en WoW %s"
 	L["WeakAuras recommends using spell ids instead of names. Spell ids are automatically localized."] = "WeakAuras recomienda usar IDs de hechizos en lugar de nombres. Los IDs de hechizos se localizan automáticamente."
+	L[ [=[WeakAuras will not support Midnight. On release of the prepatch, WeakAuras will be disabled.
+Read more on our Patreon page https://patreon.com/WeakAuras]=] ] = "WeakAuras no será compatible con Midnight. Con el lanzamiento del preparche, WeakAuras quedará desactivado. Lee más en nuestra página de Patreon https://patreon.com/WeakAuras"
 	L["What do you want to do?"] = "¿Qué es lo que quieres hacer?"
 	L["Whole Area"] = "Área completa"
 	L["wrapping"] = "envolviendo"

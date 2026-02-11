@@ -85,7 +85,9 @@ L.AFK_WARNING					= "你正在暫離並戰鬥中(血量還剩餘%d百分比)所�
 L.LOWHEALTH_WARNING				= "低血量 (%d 百分比剩餘血量)，發送聲音警報。您可以在“額外功能”中禁用此選項。"
 L.ENTERING_COMBAT				= "進入戰鬥"
 L.LEAVING_COMBAT				= "離開戰鬥"
-L.COMBAT_STARTED_AI_TIMER		= "我的CPU是一個神經網路處理器;一個學習中的電腦 (這場戰鬥將使用新的計時器AI功能生成近似值的計時條)"
+
+L.RAID_DIFFICULTY_CHANGED		= "團隊難度已設定為%s。"
+L.DUNGEON_DIFFICULTY_CHANGED	= "地下城難度已設定為%s。"
 
 L.PROFILE_NOT_FOUND				= "<"..L.DBM..">你目前的配置檔已經損毀。"..L.DBM.."會載入'Default'配置檔。"
 L.PROFILE_CREATED				= "配置檔'%s'已建立。"
@@ -188,7 +190,7 @@ L.YOUR_VERSION_OUTDATED			= "你的 Deadly Boss Mod 已經過期。請到Curse�
 L.VOICE_PACK_OUTDATED			= "你的"..L.DBM.."語音包可能缺少在這個版本的"..L.DBM.."需要的語音。部分警告音效已經被停用。請下載新版本的語音包或是聯絡語音包作者更新並加入缺少的語音。"
 L.VOICE_MISSING					= ""..L.DBM.."找不到你所選取的語音包。請確定你的語音包已正確的安裝與啟用。"
 L.VOICE_DISABLED				= "你的語音包已安裝但是尚未啟用。如果你想使用語音包，請確定語言包已在語音警告中被選取，或是刪除不使用的語音包去隱藏此訊息。"
-L.VOICE_COUNT_MISSING			= "所選取的語音/倒數語音包%d找不到倒數語音。設定已被重置回預設值：%s。"
+L.VOICE_COUNT_MISSING			= "所選取的語音/倒數語音包%d找不到倒數語音或是當前並不支援。 設定已被重置回預設值：%s。"
 L.BIG_WIGS						= "BigWigs"
 L.WEAKAURA_KEY					= " (|cff308530WA鍵:|r %s)"
 
@@ -458,7 +460,6 @@ L.AUTO_SPEC_WARN_OPTIONS.switchcount		= "特別提示：針對$spell:%s需要轉
 L.AUTO_SPEC_WARN_OPTIONS.gtfo 				= "特別提示：當地板出現危險的東西需要躲開時"
 L.AUTO_SPEC_WARN_OPTIONS.adds				= "特別提示：當小怪出現需要更換目標時"
 L.AUTO_SPEC_WARN_OPTIONS.addscount			= "特別提示：當小怪出現需要更換目標時 (包含計數)"
-
 L.AUTO_SPEC_WARN_OPTIONS.addscustom			= "特別提示：即將到來的小怪"
 L.AUTO_SPEC_WARN_OPTIONS.targetchange		= "特別提示：當需要更換主要目標時"
 
@@ -731,3 +732,11 @@ L.KEYSTONE_NAMES[503] = '回音' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = '破曉' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = '水閘' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = '秘境' -- Eco-Dome Al'dani
+
+-- Midnight jazz
+L.MN_TIMELINE_HEADER	= "您想使用暴雪時間線還是DBM計時條呢？"
+L.MN_BLIZZARD_TIMELINE	= "暴雪時間線"
+L.MN_DBM_TIMELINE		= "DBM計時條"
+L.MN_WARNIGS_HEADER		= "您想使用暴雪首領戰警告還是DBM首領戰警告呢？"
+L.MN_BLIZZARD_WARNINGS	= "暴雪的警告"
+L.MN_DBM_WARNINGS		= "DBM的警告"

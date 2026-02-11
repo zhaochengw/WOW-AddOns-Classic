@@ -8,7 +8,7 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v6.2.3"
+local VERSION = AppName .. "-v6.3.0"
 
 local rc = LibStub("LibRangeCheck-3.0")
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0", true)
@@ -230,22 +230,31 @@ end
 
 local function checkTarget(ud)
   local unit = ud.unit
-  if not UnitExists(unit) or UnitIsUnit(unit, "player") then
-    return nil
-  end
-  if UnitIsDeadOrGhost(unit) then
+  if not unit then return nil end
+
+  local success, result = pcall(function()
+    if not UnitExists(unit) or UnitIsUnit(unit, "player") then
+      return nil
+    end
+    if UnitIsDeadOrGhost(unit) then
+      ud.useSound = false
+      return not ud.db.enemyOnly
+    end
+    if UnitCanAttack("player", unit) then
+      ud.useSound = not mute
+      return true
+    elseif UnitCanAssist("player", unit) then
+      ud.useSound = not mute and not ud.db.warnEnemyOnly
+      return not ud.db.enemyOnly
+    end
     ud.useSound = false
     return not ud.db.enemyOnly
-  end
-  if UnitCanAttack("player", unit) then
-    ud.useSound = not mute
-    return true
-  elseif UnitCanAssist("player", unit) then
-    ud.useSound = not mute and not ud.db.warnEnemyOnly
-    return not ud.db.enemyOnly
+  end)
+
+  if success then
+    return result
   else
-    ud.useSound = false
-    return not ud.db.enemyOnly
+    return true
   end
 end
 

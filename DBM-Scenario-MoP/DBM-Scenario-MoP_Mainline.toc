@@ -1,4 +1,4 @@
-## Interface: 110205, 110207, 120000
+## Interface: 110207, 120000, 120001
 ## X-Min-Interface: 80000
 ## Category: DBM
 
@@ -34,7 +34,7 @@
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 85688
 ## X-WoWI-ID: 23199
-## Version: r183
+## Version: r185
 
 localization.en.lua
 localization.kr.lua

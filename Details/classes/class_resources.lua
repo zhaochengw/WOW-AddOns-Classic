@@ -270,6 +270,7 @@ end
 --refresh function
 
 function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, exportar)
+	if not Details222.UpdateIsAllowed() then return end --temporary stop updates in th new dlc
 
 	local showing = tabela_do_combate [class_type]
 
@@ -284,6 +285,10 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 	local conteudo = showing._ActorTable
 	local amount = #conteudo
 	local modo = instancia.modo
+
+	if detailsFramework.IsAddonApocalypseWow() then
+		instancia:CheckForSecretsAndAspects()
+	end
 
 	if (sub_atributo == 5) then
 		--showing resources
@@ -652,6 +657,8 @@ function atributo_energy:RefreshLine(instancia, barras_container, whichRowLine, 
 		print("DEBUG: problema com <instancia.esta_barra> "..whichRowLine.." "..lugar)
 		return
 	end
+
+	esta_barra.statusbar:SetMinMaxValues(0, 100)
 
 	local tabela_anterior = esta_barra.minha_tabela
 

@@ -855,6 +855,16 @@ local default_profile = {
 		},
 	},
 
+	righttext_simple_formatting = {
+		enabled = true,
+		format_tsp = "%s (%s, %s)",
+		format_ts = "%s (%s)",
+		format_tp = "%s (%s)",
+		use_alignment = false,
+		alignment_space = 60,
+		first_run = false,
+	},
+
 	death_log_colors = {
 		damage = "red",
 		heal = "green",
@@ -866,6 +876,9 @@ local default_profile = {
 
 	fade_speed = 0.15,
 	use_self_color = false,
+
+	damage_meter_type = 0,
+	damage_meter_position = {},
 
 	--minimap
 		minimap = {hide = false, radius = 160, minimapPos = 220, onclick_what_todo = 1, text_type = 1, text_format = 3},
@@ -1141,6 +1154,8 @@ local default_profile = {
 			tooltip_max_targets = 2,
 			tooltip_max_pets = 2,
 
+			grow_direction = "down",
+
 			--menus_bg_coords = {331/512, 63/512, 109/512, 143/512}, --with gradient on right side
 			menus_bg_coords = {0.309777336120606, 0.924000015258789, 0.213000011444092, 0.279000015258789},
 			menus_bg_color = {.8, .8, .8, 0.2},
@@ -1357,6 +1372,10 @@ local default_player_data = {
 
 	--death panel buttons
 		on_death_menu = false,
+	--damage meter sessions
+		damage_meter_sessions = {},
+	--misc data about a session
+		damage_meter_session_info = {},
 }
 
 Details.default_player_data = default_player_data
@@ -1569,12 +1588,14 @@ local default_global_data = {
 		show_totalhitdamage_on_overkill = false,
 
 	--switch tables
+		switch_missing_type = 0,
 		switchSaved = {slots = 4, table = {
 			{["atributo"] = 1, ["sub_atributo"] = 1}, --damage done
 			{["atributo"] = 2, ["sub_atributo"] = 1}, --healing done
 			{["atributo"] = 1, ["sub_atributo"] = 6}, --enemies
 			{["atributo"] = 4, ["sub_atributo"] = 5}, --deaths
 		}},
+		switch_post_apoc = false,
 		report_pos = {1, 1},
 
 	--tutorial

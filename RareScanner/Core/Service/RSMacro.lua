@@ -89,7 +89,13 @@ local function RefreshNpcIDs(mapID)
 end
 
 local function GetNotFilteredNpcName(npcID)
+	-- Filtered
 	if (RSConfigDB.IsNpcFiltered(npcID) or RSConfigDB.IsNpcFilteredOnlyAlerts(npcID)) then
+		return nil
+	end
+	
+	-- Part of a disabled event
+	if (RSNpcDB.IsDisabledEvent(npcID)) then
 		return nil
 	end
 	
@@ -129,6 +135,12 @@ function RSMacro.UpdateMacro()
 		return
 	end
 	
+	-- Avoid refreshing the macro if the macro UI is open
+	if (MacroFrame and MacroFrame:IsVisible()) then
+		RSLogger:PrintDebugMessage("No se refresca macro por tener la ventana de macro abierta")
+		return
+	end
+	
 	-- Regenerate just in case the player deleted it
 	if (not GetMacroInfo(RSConstants.RARESCANNER_MACRO_NAME)) then
 		if (RSMacro.IsAvailableMacroSlot()) then
@@ -165,13 +177,17 @@ function RSMacro.UpdateMacro()
 		if (playerx and playery) then
 			local distance = RSUtils.DistanceBetweenCoords(playerx, lastPlayerX, playery, lastPlayerY);
 			if (distance == 0 or distance < RSConstants.RARESCANNER_MACRO_UPDATE_NPCS_DISTANCE) then
-				--RSLogger:PrintDebugMessage(string.format("No se refresca macro pues el usuario se ha movido solo [%s]", distance))
+				RSLogger:PrintDebugMessage(string.format("No se refresca macro pues el usuario se ha movido solo [%s]", distance))
 				return
 			end
 		end
+	-- Don't update because the macro is empty
+	else
+		return
 	end
 	
 	-- Update target macro
+	macro = nil
 	if (RSUtils.GetTableLength(nearbyNpcIDs) > 0) then
 		macroTooLong = false
 		
@@ -209,7 +225,7 @@ function RSMacro.UpdateMacro()
 				for _, npcID in ipairs(nearbyNpcIDs) do
 					local npcName = GetNotFilteredNpcName(npcID)
 					if (npcName and IsNpcNearby(npcID, playerMapID, playerx, playery)) then
-						--RSLogger:PrintDebugMessage(string.format("Añadiendo a la macro [%s]", npcName))
+						RSLogger:PrintDebugMessage(string.format("Añadiendo a la macro [%s]", npcName))
 						if (macro) then
 			                macro = string.format('%s\n/targetexact %s', macro, npcName)
 			            else
@@ -219,18 +235,18 @@ function RSMacro.UpdateMacro()
 						-- If too long removes latest element and stops adding
 						if (#macro > 255) then
 			                macro = macro:gsub("\n[^\\n]*$", "")
-							--RSLogger:PrintDebugMessage(string.format("Macro demasiado larga, se recorta [%s]", macro))
+							RSLogger:PrintDebugMessage(string.format("Macro demasiado larga, se recorta [%s]", macro))
 			                break
 			            end
 			    	end
 				end
 			end
 		end
+	end
 		
-		-- Refresh macro
-		if (not InCombatLockdown()) then
-			--RSLogger:PrintDebugMessage(string.format("Macro actualizada [%s]", macro))
-			EditMacro(RSConstants.RARESCANNER_MACRO_NAME, RSConstants.RARESCANNER_MACRO_NAME, nil, macro)
-		end
+	-- Refresh macro
+	if (not InCombatLockdown()) then
+		RSLogger:PrintDebugMessage(string.format("Macro actualizada [%s]", macro or ""))
+		EditMacro(RSConstants.RARESCANNER_MACRO_NAME, RSConstants.RARESCANNER_MACRO_NAME, nil, macro or "")
 	end
 end

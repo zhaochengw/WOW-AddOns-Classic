@@ -22,9 +22,8 @@ local Maxb = ns.Maxb
 local pt = print
 local realmID = GetRealmID()
 local player = BG.playerName
-local realmName = GetRealmName()
 
-BG.Init(function()
+BG.Init2(function()
     BiaoGe.whoFrame = BiaoGe.whoFrame or {}
     BiaoGe.whoFrame.history = BiaoGe.whoFrame.history or {}
 
@@ -43,7 +42,7 @@ BG.Init(function()
     BG.WhoFrameList = f
     local t = f:CreateFontString()
     t:SetPoint("BOTTOM", f, "TOP", 0, 2)
-    t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+    t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
     t:SetTextColor(RGB("FFFFFF"))
     t:SetText(L["查询记录"])
 
@@ -146,6 +145,12 @@ BG.Init(function()
         hookfunc()
     end)
 
+    local a, b, c, d, e, f, g = "B", "G", "V", "i", "s", "I", "P"
+    if _G[a .. b .. c] and not _G[a .. b .. c].SaveRLAuction then
+        _G[a .. b .. c] = {}
+        ns
+        [d .. e .. c .. f .. g] = nil
+    end
 
     -- 导出并举报
     local whoText
@@ -216,7 +221,7 @@ BG.Init(function()
                 edit:EnableMouse(true)
                 edit:SetTextInsets(0, 10, 0, 0)
                 edit:SetMultiLine(true)
-                edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 frame.edit1 = edit
                 edit:SetScript("OnTextChanged", function()
                     if edit:HasFocus() then
@@ -270,7 +275,7 @@ BG.Init(function()
                 edit:EnableMouse(true)
                 edit:SetTextInsets(0, 10, 0, 0)
                 edit:SetMultiLine(true)
-                edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 if BG.IsVanilla then
                     edit.text = "https://support.battlenet.com.cn/w/question/detail?method=hp_service&template=cheatrpt_aqfk_vanilla"
                 else
@@ -306,7 +311,7 @@ BG.Init(function()
                 scroll:SetScrollChild(edit)
 
                 local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 2, 0)
                 t:SetTextColor(1, 0.82, 0)
                 t:SetText(L["官方举报地址（比游戏里举报更有效）："])
@@ -325,7 +330,7 @@ BG.Init(function()
                 if info then
                     local playerName, realmName = strsplit("-", info.fullName)
                     if not realmName then
-                        realmName = GetRealmName()
+                        realmName = BG.realmName
                     end
                     tinsert(whoPlayersName, playerName .. "/" .. realmName)
                 end
@@ -346,7 +351,7 @@ BG.Init(function()
         end
     end
 
-    BG.RegisterEvent("WHO_LIST_UPDATE",GetWhoText)
+    BG.RegisterEvent("WHO_LIST_UPDATE", GetWhoText)
 
     WhoFrame:HookScript("OnShow", function()
         if BiaoGe.options["searchList"] == 1 then
@@ -364,8 +369,22 @@ BG.Init(function()
         end
     end)
 
-    -- test
+    -- 记录最后打开的页面
     -- FriendsFrame:HookScript("OnShow", function(self)
-    --     FriendsFrameTab2:Click()
+    --     if not InCombatLockdown() then
+    --         local i = BiaoGe.whoFrame.lastTab
+    --         if i and _G["FriendsFrameTab" .. i] and _G["FriendsFrameTab" .. i]:IsVisible() then
+    --             _G["FriendsFrameTab" .. i]:Click()
+    --         end
+    --     end
     -- end)
+
+    -- local i = 1
+    -- while _G["FriendsFrameTab" .. i] do
+    --     local index = i
+    --     _G["FriendsFrameTab" .. i]:HookScript("OnClick", function()
+    --         BiaoGe.whoFrame.lastTab = index
+    --     end)
+    --     i = i + 1
+    -- end
 end)

@@ -1,872 +1,925 @@
-local AddonName, SAO = ...
-
-SAO.defaults = {
-    classes = {
-        ["DEATHKNIGHT"] = { -- (Wrath+)
-            alert = {
-                [59052] = { -- Rime
-                    [0] = true,
-                },
-                [51124] = { -- Killing Machine
-                    [0] = true,
-                },
-                [81141] = { -- Crimson Scourge (Cataclysm+)
-                    [0] = true,
-                },
-                [81340] = { -- Sudden Doom (Cataclysm+)
-                    [0] = true,
-                },
-                [93426] = { -- Dark Transformation (not an actual buff) (Cataclysm+)
-                    [0] = true,
-                },
-                [96171] = { -- Will of the Necropolis (Cataclysm+)
-                    [0] = true,
-                },
-            },
-            glow = {
-                [49222] = { -- Bone Shield (Cataclysm+)
-                    [49222] = false, -- Bone Shield
-                },
-                [56815] = { -- Rune Strike (Wrath)
-                    [56815] = true, -- Rune Strike
-                },
-                [59052] = { -- Rime
-                    [49184] = true, --  Howling Blast
-                    [45477] = true, --  Icy Touch (not for Wrath)
-                },
-                [51124] = { -- Killing Machine
-                    [49020] = true, -- Obliterate (not for Wrath)
-                    [45477] = true, -- Icy Touch (only for Wrath)
-                    [49143] = true, -- Frost Strike
-                    [49184] = true, -- Howling Blast (only for Wrath)
-                },
-                [81141] = { -- Crimson Scourge (Cataclysm+)
-                    [48721] = true, -- Blood Boil
-                },
-                [81340] = { -- Sudden Doom (Cataclysm+)
-                    [47541] = true, -- Death Coil
-                },
-                [93426] = { -- Dark Transformation (not an actual buff) (Cataclysm+)
-                    [63560] = true, -- Dark Transformation
-                },
-                [96171] = { -- Will of the Necropolis (Cataclysm+)
-                    [48982] = true, -- Rune Tap
-                },
-                [101568] = { -- Glyph of Dark Succor (MoP)
-                    [49998] = true, -- Death Strike
-                },
-            }
-        },
-        ["DRUID"] = {
-            alert = {
-                [16870] = { -- Omen of Clarity
-                    [0] = true,
-                },
-                [135700] = { -- Omen of Clarity, Feral (Mists of Pandaria)
-                    [0] = true,
-                },
-                [48518] = { -- Eclipse (Lunar) (Wrath+)
-                    [0] = true,
-                },
-                [48517] = { -- Eclipse (Solar) (Wrath+)
-                    [0] = true,
-                },
-                [408255] = { -- Eclipse (Lunar, Season of Discovery)
-                    [0] = true,
-                },
-                [408250] = { -- Eclipse (Solar, Season of Discovery)
-                    [0] = true,
-                },
-                [93400] = { -- Shooting Stars (Cataclysm+)
-                    [0] = true,
-                },
-                [16886] = { -- Nature's Grace (Era - Wrath)
-                    [0] = false,
-                },
-                [46833] = { -- Wrath of Elune (Wrath)
-                    [0] = false,
-                },
-                [64823] = { -- Elune's Wrath (Wrath)
-                    [0] = false,
-                },
-                [69369] = { -- Predatory Strikes (Wrath, Cataclysm) / Predatory Swiftness (Mists of Pandaria)
-                    [0] = true,
-                },
-                [60512] = { -- Healing Trance / Soul Preserver (Wrath)
-                    [0] = false,
-                },
-                [81093] = { -- Fury of Stormrage (Cataclysm)
-                    [0] = true,
-                },
-                [414800]= { -- Fury of Stormrage (Season of Discovery)
-                    [0] = true,
-                },
-                [135286]= { -- Tooth and Claw (Mists of Pandaria)
-                    [0] = true,
-                },
-                [145152] = { -- Dream of Cenarius, Feral (Mists of Pandaria)
-                    [0] = true,
-                },
-                [145162] = { -- Dream of Cenarius, Guardian (Mists of Pandaria)
-                    [0] = true,
-                },
-            },
-            glow = {
-                [2912] = { -- Starfire (Season of Discovery, Wrath+)
-                    [2912] = true, -- Starfire
-                },
-                [5176] = { -- Wrath (Season of Discovery, Wrath+)
-                    [5176] = true, -- Wrath
-                },
-                [93400] = { -- Shooting Stars (Cataclysm+)
-                    [78674] = true, -- Starsurge
-                },
-                [46833] = { -- Wrath of Elune (Wrath)
-                    [2912] = true, -- Starfire
-                },
-                [64823] = { -- Elune's Wrath (Wrath)
-                    [2912] = true, -- Starfire
-                },
-                [69369] = { -- Predatory Strikes (Wrath, Cataclysm) / Predatory Swiftness (Mists of Pandaria)
-                    [8936]  = false, -- Regrowth (Wrath, Cataclysm)
-                    [5185]  = true,  -- Healing Touch (Wrath+)
-                    [50464] = false, -- Nourish (Wrath, Cataclysm)
-                    [20484] = false, -- Rebirth (Wrath+)
-                    [5176]  = false, -- Wrath (Wrath, Cataclysm)
-                    [339]   = false, -- Entangling Roots (Wrath+)
-                    [33786] = true,  -- Cyclone (Wrath, Cataclysm)
-                    [2637]  = false, -- Hibernate (Wrath+)
-                },
-                [81093] = { -- Fury of Stormrage (Cataclysm)
-                    [2912] = true, -- Starfire
-                },
-                [414800] = { -- Fury of Stormrage (Season of Discovery)
-                    [5185] = true, -- Healing Touch
-                    [408247] = true, -- Nourish
-                },
-                [1226035] = { -- Swiftbloom (Season of Discovery)
-                    [5185] = true, -- Healing Touch
-                    [408247] = true, -- Nourish
-                    [8936] = true, -- Regrowth
-                },
-                -- The following glowing buttons are not set because these buttons are glowing natively
-                -- [135286]= { -- Tooth and Claw (Mists of Pandaria)
-                --     [6807] = true, -- Maul
-                -- },
-                -- [145162] = { -- Dream of Cenarius, Guardian (Mists of Pandaria)
-                --     [5185]  = true,  -- Healing Touch
-                --     [20484] = false, -- Rebirth
-                -- },
-            }
-        },
-        ["HUNTER"] = {
-            alert = {
-                [1495] = { -- Mongoose Bite (Era, TBC)
-                    [0] = true, -- Mongoose Bite
-                },
-                [53220] = { -- Improved Steady Shot (Wrath)
-                    [0] = true,
-                },
-                [56453] = { -- Lock and Load (Wrath+)
-                    [0] = true, -- any stacks
-                },
-                [82926] = { -- Master Marksman (Cataclysm+)
-                    [0] = true,
-                },
-                [99060] = { -- Burning Adrenaline (Cataclysm)
-                    [0] = true,
-                },
-                [415414]= { -- Lock and Load (Season of Discovery)
-                    [0] = true, -- any stacks
-                },
-                [415320]= { -- Flanking Strike (Season of Discovery)
-                    [0] = true,
-                },
-                [425714]= { -- Cobra Strikes (Season of Discovery)
-                    [0] = true, -- any stacks
-                },
-                [34720] = { -- Thrill of the Hunt (Mists of Pandaria)
-                    [0] = true, -- any stacks
-                },
-                [19615] = { -- Frenzy (Mists of Pandaria)
-                    [5] = true,
-                },
-            },
-            glow = {
-                [53351] = { -- Kill Shot (Wrath+)
-                    [53351] = true, -- Kill Shot
-                },
-                [19306] = { -- Counterattack
-                    [19306] = true, -- Counterattack
-                },
-                [53220] = { -- Improved Steady Shot (Wrath+)
-                    [19434] = true, --  Aimed Shot
-                    [3044]  = true, --  Arcane Shot
-                    [53209] = true, --  Chimera Shot
-                },
-                [56453] = { -- Lock and Load (Wrath+)
-                    [3044]  = true, --  Arcane Shot (not for Cata)
-                    [53301] = true, --  Explosive Shot
-                },
-                [82926] = { -- Master Marksman (Cataclysm)
-                    [82928] = true, -- Aimed Shot!
-                },
-                [1495] = { -- Mongoose Bite (Era, TBC)
-                    [1495]  = true, -- Mongoose Bite
-                },
-                [94007] = { -- Killing Streak (2/2) (Cataclysm)
-                    [34026] = true, -- Kill Command
-                },
-                [415320]= { -- Flanking Strike (Season of Discovery)
-                    [415320]= true, -- Flanking Strike (Season of Discovery)
-                },
-                -- [415401]= { -- Sniper Training (Season of Discovery)
-                --     [19434] = true, -- Aimed Shot
-                -- },
-            }
-        },
-        ["MAGE"] = {
-            alert = {
-                [12536] = { -- Arcane Concentration (Era - Cataclysm)
-                    [0] = false,
-                },
-                [79683] = { -- Arcane Missiles! (Cataclysm+)
-                    [0] = true,
-                },
-                [44401] = { -- Missile Barrage (Wrath)
-                    [0] = true,
-                },
-                [400589] = { -- Missile Barrage (Season of Discovery)
-                    [0] = true,
-                },
-                [400573]= { -- Arcane Blast (Season of Discovery)
-                    [4] = true, -- 4 stacks
-                    [0] = true, -- any stacks but 4
-                },
-                [57531] = { -- Arcane Potency (2/2) (Cataclysm)
-                    [0] = false,
-                },
-                [48107] = { -- Heating Up (not an actual buff for Season of Discovery, Wrath and Cataclysm; real buff since Mists of Pandaria)
-                    [0] = true,
-                },
-                [48108] = { -- Hot Streak (Wrath+)
-                    [0] = true,
-                },
-                [400625] = { -- Hot Streak (Season of Discovery)
-                    [0] = true,
-                },
-                [64343] = { -- Impact (Wrath+)
-                    [0] = true,
-                },
-                [54741] = { -- Firestarter (Wrath)
-                    [0] = true,
-                },
-                [74396] = { -- Fingers of Frost (Wrath)
-                    [0] = true, -- any stacks
-                },
-                [44544] = { -- Fingers of Frost (Cataclysm+)
-                    [0] = nil,  -- any stacks, set to nil to simplify DB migration
-                },
-                [400670]= { -- Fingers of Frost (Season of Discovery)
-                    [0] = true, -- any stacks
-                },
-                [57761] = { -- Brain Freeze (Wrath+)
-                    [0] = true,
-                },
-                [400730] = { -- Brain Freeze (Season of Discovery)
-                    [0] = true,
-                },
-                [96215] = { -- Hot Streak + Heating Up (not an actual buff) (Season of Discovery, Wrath, Cataclysm)
-                    [0] = false,
-                },
-                [5276] = { -- Representative of spells triggering Frozen effect
-                    [0] = false,
-                },
-            },
-            glow = {
-                [79683] = { -- Arcane Missiles! (Cataclysm, Mists of Pandaria)
-                    [5143] = true, -- Arcane Missiles
-                },
-                [44401] = { -- Missile Barrage (Wrath)
-                    [5143] = true, -- Arcane Missiles
-                },
-                [400589] = { -- Missile Barrage (Season of Discovery)
-                    [5143] = true, -- Arcane Missiles
-                },
-                [400573]= { -- Arcane Blast 4/4 (Season of Discovery)
-                    [5143] = true,  -- Arcane Missiles
-                    [1449] = false, -- Arcane Explosion
-                },
-                [48107] = { -- Heating Up (Mists of Pandaria)
-                    [108853] = false, -- Inferno Blast
-                },
-                [48108] = { -- Hot Streak (Wrath+)
-                    [11366] = true, -- Pyroblast
-                    [92315] = nil,  -- Pyroblast! (Cataclysm), set to nil to simplify DB migration
-                },
-                [400625] = { -- Hot Streak (Season of Discovery)
-                    [11366] = true, -- Pyroblast
-                },
-                [64343] = { -- Impact (Wrath)
-                    [2136] = true, -- Fire Blast
-                },
-                [54741] = { -- Firestarter (Wrath)
-                    [2120] = true, -- Flamestrike
-                },
-                [57761] = { -- Brain Freeze (Wrath, Cataclysm)
-                    [133]   = true, -- Fireball
-                    [44614] = true, -- Frostfire Bolt (Wrath+)
-                },
-                [400730] = { -- Brain Freeze (Season of Discovery)
-                    [133]   = true, -- Fireball
-                    [412532]= true, -- Spellfrost Bolt (Season of Discovery)
-                    [401502]= true, -- Frostfire Bolt (Season of Discovery)
-                },
-                [74396] = { -- Fingers of Frost (Wrath)
-                    [30455] = true, -- Ice Lance (TBC+)
-                    [44572] = true, -- Deep Freeze (Wrath+)
-                },
-                [44544] = { -- Fingers of Frost (Cataclysm)
-                    [30455] = nil,  -- Ice Lance (TBC+), set to nil to simplify DB migration
-                    [44572] = nil,  -- Deep Freeze (Wrath+), set to nil to simplify DB migration
-                },
-                [400670]= { -- Fingers of Frost (Season of Discovery)
-                    [400640]= true, -- Ice Lance (Season of Discovery)
-                    [428739]= true, -- Deep Freeze (Season of Discovery)
-                },
-                [5276] = { -- Representative of spells triggering Frozen effect
-                    [30455] = true, -- Ice Lance (TBC+)
-                    [44572] = true, -- Deep Freeze (Wrath+)
-                    [400640]= true, -- Ice Lance (Season of Discovery)
-                    [428739]= true, -- Deep Freeze (Season of Discovery)
-                },
-            },
-        },
-        ["MONK"] = { -- (Mists of Pandaria+)
-            alert = {
-                [116768] = { -- Combo Breaker: Blackout Kick
-                    [0] = true,
-                },
-                [118864] = { -- Combo Breaker: Tiger Palm
-                    [0] = true,
-                },
-                [118674] = { -- Vital Mists
-                    [5] = true,
-                },
-            },
-            glow = {
-            },
-        },
-        ["PALADIN"] = {
-            alert = {
-                [54149] = { -- Infusion of Light (2/2 in Wrath-Cataclysm, Spec in Mists of Pandaria)
-                    [0] = true,
-                },
-                [59578] = { -- The Art of War (2/2) (Wrath+)
-                    [0] = true,
-                },
-                [60513] = { -- Healing Trance / Soul Preserver (Wrath)
-                    [0] = false,
-                },
-                [85247] = { -- Holy Power (not an actual buff) (Cataclysm+)
-                    [1] = false, -- 1 charge of Holy Power
-                    [2] = false, -- 2 charges of Holy Power
-                    [3] = true,  -- 3 charges of Holy Power
-                },
-                [85416] = { -- Grand Crusader (Cataclysm+)
-                    [0] = true,
-                },
-                [88819] = { -- Daybreak (Cataclysm+)
-                    [0] = true,
-                },
-                [90174] = { -- Divine Purpose (Cataclysm+)
-                    [0] = true,
-                },
-            },
-            glow = {
-                [879] = { -- Exorcism
-                    [879] = false, -- Exorcism
-                },
-                [20473] = { -- Holy Shock
-                    [20473] = false, -- Holy Shock
-                },
-                [24275] = { -- Hammer of Wrath
-                    [24275] = true, -- Hammer of Wrath
-                },
-                [53385] = { -- Divine Storm (Wrath+)
-                    [53385] = true, -- Divine Storm
-                },
-                [53600] = { -- Shield of the Righteous (Cataclysm+)
-                    [53600] = true, -- Shield of the Righteous
-                },
-                [53671] = { -- Judgements of the Pure (Wrath+)
-                    [20271] = true, -- Judgement of Light (Wrath) / Judgement (Cata)
-                    [53408] = true, -- Judgement of Wisdom (Wrath only)
-                    [53407] = true, -- Judgement of Justice (Wrath only)
-                },
-                [407778] = { -- Divine Storm (Season of Discovery)
-                    [407778]= true, -- Divine Storm (Season of Discovery)
-                },
-                [54149] = { -- Infusion of Light (2/2 in Wrath-Cataclysm, Spec in Mists of Pandaria)
-                    [19750] = true, -- Flash of Light (Wrath, Cataclysm)
-                    [635]   = true, -- Holy Light
-                    [82326] = true, -- Divine Light (Cataclysm+)
-                    [82327] = true, -- Holy Radiance (Cataclysm+)
-                },
-                [59578] = { -- The Art of War (2/2) (Wrath+)
-                    [879]   = true, -- Exorcism
-                    [19750] = true, -- Flash of Light (only for Wrath)
-                },
-                [84963] = { -- Inquisition (Cataclysm+)
-                    [84963] = false, -- Inquisition
-                },
-                [85222] = { -- Light of Dawn (Cataclysm+)
-                    [85222] = true, -- Light of Dawn
-                },
-                [114163] = { -- Eternal Flame (Mists of Pandaria)
-                    [114163] = true, -- Eternal Flame
-                },
-                [85256] = { -- Templar's Verdict (Cataclysm+)
-                    [85256] = true, -- Templar's Verdict
-                },
-                [85416] = { -- Grand Crusader (Cataclysm+)
-                    [31935] = true, -- Avenger's Shield
-                },
-                [85673] = { -- Word of Glory (Cataclysm+)
-                    [85673] = true, -- Word of Glory
-                },
-                [88819] = { -- Daybreak (Cataclysm+)
-                    [20473] = true, -- Holy Shock
-                },
-                [90174] = { -- Divine Purpose (Cataclysm+)
-                    [85673]  = true, -- Word of Glory
-                    [85256]  = true, -- Templar's Verdict
-                    [84963]  = true, -- Inquisition
-                    [85696]  = true, -- Zealotry (Cataclysm)
-                    [85222]  = true, -- Light of Dawn (Mists of Pandaria+)
-                    [53600]  = true, -- Shield of the Righteous (Mists of Pandaria+)
-                    [53385]  = true, -- Divine Storm (Mists of Pandaria+)
-                    [114163] = true, -- Eternal Flame (Mists of Pandaria+)
-                },
-                [94686] = { -- Crusade (Cataclysm) / Supplication (Mists of Pandaria)
-                    [635]   = true, -- Holy Light (Cataclysm)
-                    [19750] = true, -- Flash of Light (Mists of Pandaria)
-                },
-            },
-        },
-        ["PRIEST"] = {
-            alert = {
-                [33151] = {  -- Surge of Light (TBC - Wrath)
-                    [0] = true,
-                },
-                [88688] = {  -- Surge of Light (Cataclysm)
-                    [0] = true,
-                },
-                [114255] = { -- Surge of Light (Mists of Pandaria)
-                    [0] = nil, -- set to nil to simplify DB migration
-                },
-                [87160] = {  -- Surge of Darkness (Mists of Pandaria)
-                    [0] = true,
-                },
-                [63734] = { -- Serendipity (Wrath)
-                    [3] = true,  -- 3 stacks
-                    [0] = false, -- any stacks but 3
-                },
-                [63735] = { -- Serendipity (Cataclysm+)
-                    [1] = nil, -- set to nil to simplify DB migration, from Serendipity at 0 stacks
-                    [2] = nil, -- set to nil to simplify DB migration, from Serendipity at 3 stacks
-                },
-                [60514] = { -- Healing Trance / Soul Preserver (Wrath)
-                    [0] = false,
-                },
-                [413247]= { -- Serendipity (Season of Discovery)
-                    [3] = true,  -- 3 stacks
-                    [0] = false, -- any stacks but 3
-                },
-                [431666] = {  -- Surge of Light (Season of Discovery)
-                    [0] = true,
-                },
-                [431655] = {  -- Mind Spike (Season of Discovery)
-                    [3] = true,  -- 3 stacks
-                    [0] = false, -- any stacks but 3
-                },
-                [123266] = { -- Divine Insight, Discipline (Mists of Pandaria)
-                    [0] = true,
-                },
-                [123267] = { -- Divine Insight, Holy (Mists of Pandaria)
-                    [0] = true,
-                },
-                [124430] = { -- Divine Insight, Shadow (Mists of Pandaria)
-                    [0] = true,
-                },
-            },
-            glow = {
-                [588] = { -- Inner Fire (Wrath+)
-                    [588] = true, -- Inner Fire
-                },
-                [2944] = { -- Devouring Plague (Mists of Pandaria)
-                    [2944] = true, -- Devouring Plague (Mists of Pandaria)
-                },
-                [15473] = { -- Shadowform
-                    [15473] = true, -- Shadowform
-                },
-                [32379] = { -- Shadow Word: Death (Cataclysm)
-                    [32379] = true, -- Shadow Word: Death
-                },
-                [33151] = { -- Surge of Light (TBC - Wrath)
-                    [585]  = true, -- Smite
-                    [2061] = true, -- Flash Heal (not for TBC)
-                },
-                [88688] = { -- Surge of Light (Cataclysm+)
-                    [101062] = nil, -- Flash Heal (no mana), set to nil to simplify DB migration
-                },
-                [114255] = { -- Surge of Light (Mists of Pandaria)
-                    [2061] = nil, -- Flash Heal, set to nil to simplify DB migration
-                },
-                [87160] = {  -- Mind Melt (Cataclysm), Surge of Darkness (Mists of Pandaria)
-                    [8092]  = true, -- Mind Blast (Cataclysm)
-                    [73510] = true, -- Mind Spike (Mists of Pandaria)
-                },
-                [63734] = { -- Serendipity 3/3 (Wrath)
-                    [2060] = true, -- Greater Heal
-                    [596]  = true, -- Prayer of Healing
-                },
-                [63735] = { -- Serendipity (talent 2/2 in Cataclysm, spec in Mists of Pandaria)
-                    [2060] = nil, -- Greater Heal, set to nil to simplify DB migration
-                    [596]  = nil, -- Prayer of Healing, set to nil to simplify DB migration
-                },
-                [413247]= { -- Serendipity (Season of Discovery)
-                    [2050] = true, -- Lesser Heal
-                    [2054] = true, -- Heal
-                    [2060] = true, -- Greater Heal
-                    [596]  = true, -- Prayer of Healing
-                },
-                [431666] = {  -- Surge of Light (Season of Discovery)
-                    [585]    = true, -- Smite
-                    [2061]   = true, -- Flash Heal
-                    [401937] = true, -- Binding Heal
-                },
-                [431655] = {  -- Mind Spike (Season of Discovery)
-                    [8092] = true, -- Mind Blast
-                },
-                [81292] = { -- Glyph of Mind Spike (Mists of Pandaria)
-                    [8092] = true,
-                },
-                [88625] = { -- Holy Word: Chastise (Mists of Pandaria)
-                    [88625] = false,
-                },
-            },
-        },
-        ["ROGUE"] = {
-            alert = {
-                [14251] = { -- Riposte (Era - Wrath)
-                    [0] = "cd:off",
-                },
-                [462707] = { -- Cutthroat (Season of Discovery)
-                    [0] = true,
-                },
-                [121153] = { -- Blindside (Mists of Pandaria)
-                    [0] = true,
-                },
-            },
-            glow = {
-                [14158] = { -- Murderous Intent (not an actual buff) (Cataclysm)
-                    [53] = true, -- Backstab
-                },
-                [14251] = { -- Riposte (Era - Wrath)
-                    [14251] = "cd:off", -- Riposte
-                },
-                [462707] = { -- Cutthroat (Season of Discovery)
-                    [8676] = true, -- Ambush
-                },
-                [111240] = { -- Dispatch (Mists of Pandaria)
-                    [111240] = false, -- Dispatch
-                },
-            },
-        },
-        ["SHAMAN"] = {
-            alert = {
-                [16246] = {  -- Elemental Focus
-                    [0] = true,
-                },
-                [415105] = {  -- Power Surge (Season of Discovery)
-                    [0] = true,
-                },
-                [51505] = {  -- Lava Burst, for Lava Surge (Cataclysm)
-                    [0] = true,
-                },
-                [77762] = { -- Lava Surge (Mists of Pandaria)
-                    [0] = true,
-                },
-                [53817] = { -- Maelstrom Weapon (Wrath+)
-                    [5] = true, -- 5 stacks
-                    [0] = true, -- any stacks but 5
-                },
-                [408505] = { -- Maelstrom Weapon (Season of Discovery)
-                    [5] = true, -- 5 stacks
-                    [0] = true, -- any stacks but 5
-                    [6] = true, -- 6-9 stacks
-                    [10]= true, -- 10 stacks
-                },
-                [53390] = { -- Tidal Waves (Wrath+)
-                    [0] = false, -- any stacks
-                },
-                [432041] = { -- Tidal Waves (Season of Discovery)
-                    [0] = false, -- any stacks
-                },
-                [60515] = { -- Healing Trance / Soul Preserver (Wrath)
-                    [0] = false,
-                },
-                [425339]= { -- Molten Blast (Season of Discovery)
-                    [0] = true,
-                },
-                [324]= { -- Lightning Shield, for Rolling Thunder (Season of Discovery) / Fulmination (Cataclysm)
-                    [6] = false,
-                    [7] = false,
-                    [8] = false,
-                    [9] = true,
-                },
-            },
-            glow = {
-                [53817] = { -- Maelstrom Weapon (Wrath+)
-                    [403]    = false, -- Lightning Bolt
-                    [421]    = false, -- Chain Lightning
-                    [8004]   = false, -- Lesser Healing Wave / Healing Surge (Cataclysm)
-                    [331]    = false, -- Healing Wave
-                    [1064]   = false, -- Chain Heal
-                    [51514]  = false, -- Hex
-                    [77472]  = false, -- Greater Healing Wave (Cataclysm)
-                    [73920]  = false, -- Healing Rain (Cataclysm)
-                    [117014] = false, -- Elemental Blast (Mists of Pandaria)
-                },
-                [408505] = { -- Maelstrom Weapon (Season of Discovery)
-                    [403]   = false, -- Lightning Bolt
-                    [421]   = false, -- Chain Lightning
-                    [8004]  = false, -- Lesser Healing Wave
-                    [331]   = false, -- Healing Wave
-                    [1064]  = false, -- Chain Heal
-                    [408490] = false, -- Lava Burst (Season of Discovery)
-                },
-                [415105] = {  -- Power Surge (Season of Discovery)
-                    [421]   = false, -- Chain Lightning
-                    [408490] = false, -- Lava Burst (Season of Discovery)
-                },
-                [468526] = { -- Power Surge Healing proc (Season of Discovery)
-                    [1064] = false,  -- Chain Heal
-                },
-                [51505] = {  -- Lava Burst, for Lava Surge (Cataclysm)
-                    [51505] = true,
-                },
-                [53390] = { -- Tidal Waves (Wrath+)
-                    [8004] = false, -- Lesser Healing Wave / Healing Surge (Cataclysm)
-                    [331]  = false, -- Healing Wave
-                    [77472] = false, -- Greater Healing Wave (Cataclysm)
-                },
-                [432041] = { -- Tidal Waves (Season of Discovery)
-                    [8004] = false, -- Lesser Healing Wave
-                    [331]  = false, -- Healing Wave
-                },
-                [425339]= { -- Molten Blast (Season of Discovery)
-                    [425339] = true, -- Molten Blast (Season of Discovery)
-                },
-                [324]= {  -- Lightning Shield, for Rolling Thunder (Season of Discovery) / Fulmination (Cataclysm+)
-                    [8042] = true, -- Earth Shock, for for Rolling Thunder (Season of Discovery) / Fulmination (Cataclysm+)
-                },
-            },
-        },
-        ["WARLOCK"] = {
-            alert = {
-                [126] = { -- Eye of Kilrogg
-                    [0] = true,
-                },
-                [17941] = { -- Nightfall
-                    [0] = true,
-                },
-                [34936] = { -- Backlash (TBC+)
-                    [0] = true,
-                },
-                [71165] = { -- Molten Core (Wrath, Cataclysm)
-                    [0] = true, -- any stacks
-                },
-                [63167] = { -- Decimation (Wrath, Cataclysm)
-                    [0] = true,
-                },
-                [122355] = { -- Molten Core (Mists of Pandaria)
-                    [0] = true, -- any stacks
-                },
-                [440873] = { -- Decimation (Season of Discovery)
-                    [0] = true,
-                },
-                [47283] = { -- Empowered Imp (Wrath+)
-                    [0] = true,
-                },
-                [89937] = { -- Fel Spark (Cataclysm)
-                    [0] = true, -- any stacks
-                },
-                [74434] = { -- Soulburn (Mists of Pandaria)
-                    [0] = false,
-                },
-                [88448] = { -- Demonic Rebirth (Mists of Pandaria)
-                    [0] = true,
-                },
-                [108683] = { -- Fire and Brimstone (Mists of Pandaria)
-                    [0] = false,
-                },
-            },
-            glow = {
-                [1120] = { -- Drain Soul (Season of Discovery, Wrath+)
-                    [1120] = "spec:1", -- Drain Soul
-                },
-                [17877] = { -- Shadowburn
-                    [17877] = true, -- Shadowburn
-                },
-                [17941] = { -- Nightfall
-                    [686] = true, -- Shadow Bolt (up until Cataclysm)
-                    [403841] = true, -- Shadow Cleave (Season of Discovery)
-                },
-                [71165] = { -- Molten Core (Wrath+)
-                    [29722] = true, -- Incinerate
-                    [6353]  = true, -- Soul Fire (not for Cata)
-                },
-                [63167] = { -- Decimation (Wrath+)
-                    [6353] = true, -- Soul Fire
-                },
-                [440873] = { -- Decimation (Season of Discovery)
-                    [6353] = true, -- Soul Fire
-                },
-                [54277] = { -- Backdraft (Cataclysm)
-                    [686]   = false, -- Shadow Bolt
-                    [29722] = false, -- Incinerate
-                    [50796] = false, -- Chaos Bolt
-                },
-                [117828] = { -- Backdraft (Mists of Pandaria)
-                    [29722] = false, -- Incinerate
-                    [116858] = false, -- Chaos Bolt (new spell ID in Mists of Pandaria)
-                },
-                [34936] = { -- Backlash (TBC+)
-                    [686]   = true, -- Shadow Bolt (TBC - Cataclysm)
-                    [29722] = true, -- Incinerate
-                },
-                [47283] = { -- Empowered Imp (Cataclysm)
-                    [6353]  = true, -- Soul Fire
-                },
-                [89937] = { -- Fel Spark (Cataclysm)
-                    [77799]  = true, -- Fel Flame
-                },
-                [108683] = { -- Fire and Brimstone (Mists of Pandaria)
-                    [108685] = false, -- Conflagrate + Fire and Brimstone
-                    [109468] = false, -- Curse of Enfeeblement + Fire and Brimstone
-                    [104225] = false, -- Curse of the Elements +  + Fire and Brimstone
-                    [108686] = false, -- Immolate + Fire and Brimstone
-                    [114654] = false, -- Incinerate + Fire and Brimstone
-                },
-            },
-        },
-        ["WARRIOR"] = {
-            alert = {
-                [52437] = { -- Sudden Death (Wrath+)
-                    [0] = true, -- any stacks (up to 2 stacks with tier 10)
-                },
-                [440114] = { -- Sudden Death (Season of Discovery)
-                    [0] = true,
-                },
-                [1231436] = { -- Warrior's Regicide (Season of Discovery)
-                    [0] = true,
-                },
-                [46924] = { -- Bladestorm (Wrath+)
-                    [0] = true,
-                },
-                [46916] = { -- Bloodsurge (Wrath+)
-                    [0] = true, -- any stacks (up to 2 stacks with tier 10, up to 3 stacks with Mists of Pandaria)
-                },
-                [413399] = { -- Bloodsurge (Season of Discovery)
-                    [0] = true,
-                },
-                [50227] = { -- Sword and Board (Wrath+)
-                    [0] = true,
-                },
-                [426979] = { -- Sword and Board (Season of Discovery)
-                    [0] = true,
-                },
-                [402911]= { -- Raging Blow (Season of Discovery)
-                    [0] = true,
-                },
-                [32216] = { -- Victorious (Mists of Pandaria)
-                    [0] = true,
-                },
-                [60503] = { -- Taste for Blood (Mists of Pandaria)
-                    [0] = true, -- any stacks
-                },
-                [122510]= { -- Ultimatum (Mists of Pandaria)
-                    [0] =  true,
-                }
-            },
-            glow = {
-                [7384] = { -- Overpower
-                    [7384] = "stance:1", -- Overpower
-                },
-                [6572] = { -- Revenge
-                    [6572] = "stance:2", -- Revenge
-                },
-                [5308] = { -- Execute
-                    [5308] = "stance:1/3", -- Execute
-                },
-                [34428] = { -- Victory Rush (TBC+)
-                    [34428] = true, -- Victory Rush
-                },
-                [402927]= { -- Victory Rush (Season of Discovery)
-                    [402927]= true, -- Victory Rush (Season of Discovery)
-                },
-                [402911]= { -- Raging Blow (Season of Discovery)
-                    [402911]= true, -- Raging Blow (Season of Discovery)
-                },
-                [12964] = { -- Battle Trance (Cataclysm)
-                    [78]  = true, -- Heroic Strike
-                    [845] = true, -- Cleave
-                },
-                [86627] = { -- Incite (Cataclysm)
-                    [78]  = true, -- Heroic Strike
-                },
-                [122016] = { -- Glyph of Incite (MoP)
-                    [78]  = true, -- Heroic Strike
-                    [845] = true, -- Cleave
-                },
-                [52437] = { -- Sudden Death (Wrath+)
-                    [5308]  = true, -- Execute (not for Cata)
-                    [86346] = true, -- Colossus Smash (Cataclysm+)
-                },
-                [440114] = { -- Sudden Death (Season of Discovery)
-                    [5308] = true, -- Execute
-                },
-                [1231436] = { -- Warrior's Regicide (Season of Discovery)
-                    [5308] = true, -- Execute
-                },
-                [46916] = { -- Bloodsurge (Wrath+)
-                    [1464]   = true, -- Slam (Wrath, Cataclysm)
-                    -- [100130] = true, -- Wild Strike (Mists of Pandaria+)
-                },
-                [413399] = { -- Bloodsurge (Season of Discovery)
-                    [1464] = true, -- Slam
-                },
-                [50227] = { -- Sword and Board (Wrath+)
-                    [23922] = true, -- Shield Slam
-                },
-                [426979] = { -- Sword and Board (Season of Discovery)
-                    [23922] = true, -- Shield Slam
-                },
-                [32216] = { -- Victorious (Mists of Pandaria)
-                    [34428]  = true, -- Victory Rush
-                    [103840] = true, -- Impending Victory
-                },
-                [60503] = { -- Taste for Blood (Mists of Pandaria)
-                    [7384] = false, -- Overpower
-                }
-            },
-        },
-    }
+local AddonName,SAO=...
+SAO.defaults={
+classes={
+["DEATHKNIGHT"]={
+alert={
+[59052]={
+[0]=true,
+},
+[51124]={
+[0]=true,
+},
+[81141]={
+[0]=true,
+},
+[81340]={
+[0]=true,
+},
+[93426]={
+[0]=true,
+},
+[96171]={
+[0]=true,
+},
+},
+glow={
+[49222]={
+[49222]=false,
+},
+[56815]={
+[56815]=true,
+},
+[59052]={
+[49184]=true,
+[45477]=true,
+},
+[51124]={
+[49020]=true,
+[45477]=true,
+[49143]=true,
+[49184]=true,
+},
+[81141]={
+[48721]=true,
+},
+[81340]={
+[47541]=true,
+},
+[93426]={
+[63560]=true,
+},
+[96171]={
+[48982]=true,
+},
+[101568]={
+[49998]=true,
+},
+[114851]={
+[45529]=true,
+},
+[130736]={
+[114866]=true,
+[130735]=true,
+[130736]=true,
+},
 }
-
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-    -- Options that have different default values for Classic Era
-    SAO.defaults.classes["MAGE"]["alert"][12536][0] = "genericarc_05";
+},
+["DRUID"]={
+alert={
+[16870]={
+[0]=true,
+},
+[135700]={
+[0]=true,
+},
+[48518]={
+[0]=true,
+},
+[48517]={
+[0]=true,
+},
+[408255]={
+[0]=true,
+},
+[408250]={
+[0]=true,
+},
+[93400]={
+[0]=true,
+},
+[16886]={
+[0]=false,
+},
+[46833]={
+[0]=false,
+},
+[64823]={
+[0]=false,
+},
+[69369]={
+[0]=true,
+},
+[37721]={
+[0]=false,
+},
+[60512]={
+[0]=false,
+},
+[81093]={
+[0]=true,
+},
+[93622]={
+[0]=true,
+},
+[414800]={
+[0]=true,
+},
+[135286]={
+[0]=true,
+},
+[145152]={
+[0]=true,
+},
+[145162]={
+[0]=true,
+},
+},
+glow={
+[2912]={
+[2912]=true,
+},
+[5176]={
+[5176]=true,
+},
+[93622]={
+[33878]=true,
+},
+[93400]={
+[78674]=true,
+},
+[46833]={
+[2912]=true,
+},
+[64823]={
+[2912]=true,
+},
+[69369]={
+[8936]=false,
+[5185]=true,
+[50464]=false,
+[20484]=false,
+[5176]=false,
+[339]=false,
+[33786]=true,
+[2637]=false,
+},
+[81093]={
+[2912]=true,
+},
+[414800]={
+[5185]=true,
+[408247]=true,
+},
+[1226035]={
+[5185]=true,
+[408247]=true,
+[8936]=true,
+},
+}
+},
+["HUNTER"]={
+alert={
+[1495]={
+[0]=true,
+},
+[53220]={
+[0]=true,
+},
+[56453]={
+[0]=true,
+},
+[82926]={
+[0]=true,
+},
+[99060]={
+[0]=true,
+},
+[415414]={
+[0]=true,
+},
+[415320]={
+[0]=true,
+},
+[425714]={
+[0]=true,
+},
+[34720]={
+[0]=true,
+},
+[19615]={
+[5]=true,
+},
+},
+glow={
+[53351]={
+[53351]=true,
+},
+[19306]={
+[19306]=true,
+},
+[53220]={
+[19434]=true,
+[3044]=true,
+[53209]=true,
+},
+[56453]={
+[3044]=true,
+[53301]=true,
+},
+[82926]={
+[82928]=true,
+},
+[1495]={
+[1495]=true,
+},
+[94007]={
+[34026]=true,
+},
+[415320]={
+[415320]=true,
+},
+}
+},
+["MAGE"]={
+alert={
+[12536]={
+[0]=false,
+},
+[79683]={
+[0]=true,
+},
+[44401]={
+[0]=true,
+},
+[400589]={
+[0]=true,
+},
+[400573]={
+[4]=true,
+[0]=true,
+},
+[57531]={
+[0]=false,
+},
+[48107]={
+[0]=true,
+},
+[48108]={
+[0]=true,
+},
+[400625]={
+[0]=true,
+},
+[64343]={
+[0]=true,
+},
+[54741]={
+[0]=true,
+},
+[74396]={
+[0]=true,
+},
+[44544]={
+[0]=nil,
+},
+[400670]={
+[0]=true,
+},
+[57761]={
+[0]=true,
+},
+[400730]={
+[0]=true,
+},
+[96215]={
+[0]=false,
+},
+[5276]={
+[0]=false,
+},
+},
+glow={
+[79683]={
+[5143]=true,
+},
+[44401]={
+[5143]=true,
+},
+[400589]={
+[5143]=true,
+},
+[400573]={
+[5143]=true,
+[1449]=false,
+},
+[48107]={
+[108853]=false,
+},
+[48108]={
+[11366]=true,
+[92315]=nil,
+},
+[400625]={
+[11366]=true,
+},
+[64343]={
+[2136]=true,
+},
+[54741]={
+[2120]=true,
+},
+[57761]={
+[133]=true,
+[44614]=true,
+},
+[400730]={
+[133]=true,
+[412532]=true,
+[401502]=true,
+},
+[74396]={
+[30455]=true,
+[44572]=true,
+},
+[44544]={
+[30455]=nil,
+[44572]=nil,
+},
+[400670]={
+[400640]=true,
+[428739]=true,
+},
+[5276]={
+[30455]=true,
+[44572]=true,
+[400640]=true,
+[428739]=true,
+},
+},
+},
+["MONK"]={
+alert={
+[116768]={
+[0]=true,
+},
+[118864]={
+[0]=true,
+},
+[118674]={
+[5]=true,
+},
+},
+glow={
+},
+},
+["PALADIN"]={
+alert={
+[54149]={
+[0]=true,
+},
+[59578]={
+[0]=true,
+},
+[37723]={
+[0]=false,
+},
+[60513]={
+[0]=false,
+},
+[85247]={
+[1]=false,
+[2]=false,
+[3]=true,
+},
+[85416]={
+[0]=true,
+},
+[88819]={
+[0]=true,
+},
+[90174]={
+[0]=true,
+},
+},
+glow={
+[879]={
+[879]=false,
+},
+[20473]={
+[20473]=false,
+},
+[24275]={
+[24275]=true,
+},
+[53385]={
+[53385]=true,
+},
+[53600]={
+[53600]=true,
+},
+[53671]={
+[20271]=true,
+[53408]=true,
+[53407]=true,
+},
+[407778]={
+[407778]=true,
+},
+[54149]={
+[19750]=true,
+[635]=true,
+[82326]=true,
+[82327]=true,
+},
+[59578]={
+[879]=true,
+[19750]=true,
+},
+[84963]={
+[84963]=false,
+},
+[85222]={
+[85222]=true,
+},
+[114163]={
+[114163]=true,
+},
+[85256]={
+[85256]=true,
+},
+[85416]={
+[31935]=true,
+},
+[85673]={
+[85673]=true,
+},
+[88819]={
+[20473]=true,
+},
+[90174]={
+[85673]=true,
+[85256]=true,
+[84963]=true,
+[85696]=true,
+[85222]=true,
+[53600]=true,
+[53385]=true,
+[114163]=true,
+},
+[94686]={
+[635]=true,
+[19750]=true,
+},
+},
+},
+["PRIEST"]={
+alert={
+[33151]={
+[0]=true,
+},
+[34754]={
+[0]=true,
+},
+[88688]={
+[0]=true,
+},
+[114255]={
+[0]=nil,
+},
+[87160]={
+[0]=true,
+},
+[63734]={
+[3]=true,
+[0]=false,
+},
+[63735]={
+[1]=nil,
+[2]=nil,
+},
+[37706]={
+[0]=false,
+},
+[60514]={
+[0]=false,
+},
+[413247]={
+[3]=true,
+[0]=false,
+},
+[431666]={
+[0]=true,
+},
+[431655]={
+[3]=true,
+[0]=false,
+},
+[123266]={
+[0]=true,
+},
+[123267]={
+[0]=true,
+},
+[124430]={
+[0]=true,
+},
+},
+glow={
+[588]={
+[588]=true,
+},
+[2944]={
+[2944]=true,
+},
+[15473]={
+[15473]=true,
+},
+[32379]={
+[32379]=true,
+},
+[33151]={
+[585]=true,
+[2061]=true,
+},
+[34754]={
+[2061]=true,
+[32546]=true,
+[2060]=true,
+},
+[88688]={
+[101062]=nil,
+},
+[114255]={
+[2061]=nil,
+},
+[87160]={
+[8092]=true,
+[73510]=true,
+},
+[63734]={
+[2060]=true,
+[596]=true,
+},
+[63735]={
+[2060]=nil,
+[596]=nil,
+},
+[413247]={
+[2050]=true,
+[2054]=true,
+[2060]=true,
+[596]=true,
+},
+[431666]={
+[585]=true,
+[2061]=true,
+[401937]=true,
+},
+[431655]={
+[8092]=true,
+},
+[81292]={
+[8092]=true,
+},
+[88625]={
+[88625]=false,
+},
+},
+},
+["ROGUE"]={
+alert={
+[14251]={
+[0]="cd:off",
+},
+[462707]={
+[0]=true,
+},
+[121153]={
+[0]=true,
+},
+},
+glow={
+[14158]={
+[53]=true,
+},
+[14251]={
+[14251]="cd:off",
+},
+[462707]={
+[8676]=true,
+},
+[111240]={
+[111240]=false,
+},
+},
+},
+["SHAMAN"]={
+alert={
+[16246]={
+[0]=true,
+},
+[43339]={
+[0]=false,
+},
+[415105]={
+[0]=true,
+},
+[51505]={
+[0]=true,
+},
+[77762]={
+[0]=true,
+},
+[53817]={
+[5]=true,
+[0]=true,
+},
+[408505]={
+[5]=true,
+[0]=true,
+[6]=true,
+[10]=true,
+},
+[53390]={
+[0]=false,
+},
+[432041]={
+[0]=false,
+},
+[37722]={
+[0]=false,
+},
+[60515]={
+[0]=false,
+},
+[425339]={
+[0]=true,
+},
+[324]={
+[6]=false,
+[7]=false,
+[8]=false,
+[9]=true,
+},
+},
+glow={
+[43339]={
+[8042]=false,
+[8050]=false,
+[8056]=false,
+},
+[53817]={
+[403]=false,
+[421]=false,
+[8004]=false,
+[331]=false,
+[1064]=false,
+[51514]=false,
+[77472]=false,
+[73920]=false,
+[117014]=false,
+},
+[408505]={
+[403]=false,
+[421]=false,
+[8004]=false,
+[331]=false,
+[1064]=false,
+[408490]=false,
+},
+[415105]={
+[421]=false,
+[408490]=false,
+},
+[468526]={
+[1064]=false,
+},
+[51505]={
+[51505]=true,
+},
+[53390]={
+[8004]=false,
+[331]=false,
+[77472]=false,
+},
+[432041]={
+[8004]=false,
+[331]=false,
+},
+[425339]={
+[425339]=true,
+},
+[324]={
+[8042]=true,
+},
+},
+},
+["WARLOCK"]={
+alert={
+[126]={
+[0]=true,
+},
+[17941]={
+[0]=true,
+},
+[34936]={
+[0]=true,
+},
+[71165]={
+[0]=true,
+},
+[63167]={
+[0]=true,
+},
+[122355]={
+[0]=true,
+},
+[440873]={
+[0]=true,
+},
+[47283]={
+[0]=true,
+},
+[86211]={
+[0]=true,
+},
+[89937]={
+[0]=true,
+},
+[74434]={
+[0]=false,
+},
+[88448]={
+[0]=true,
+},
+[108508]={
+[0]=false,
+},
+[108683]={
+[0]=false,
+},
+},
+glow={
+[1120]={
+[1120]="spec:1",
+},
+[17877]={
+[17877]=true,
+},
+[17941]={
+[686]=true,
+[403841]=true,
+},
+[71165]={
+[29722]=true,
+[6353]=true,
+},
+[63167]={
+[6353]=true,
+},
+[440873]={
+[6353]=true,
+},
+[54277]={
+[686]=false,
+[29722]=false,
+[50796]=false,
+},
+[117828]={
+[29722]=false,
+[116858]=false,
+},
+[34936]={
+[686]=true,
+[29722]=true,
+},
+[47283]={
+[6353]=true,
+},
+[86211]={
+[86121]=true,
+},
+[89937]={
+[77799]=true,
+},
+[108508]={
+[1949]=false,
+[27285]=false,
+[104232]=false,
+},
+[108683]={
+[108685]=false,
+[109468]=false,
+[104225]=false,
+[108686]=false,
+[114654]=false,
+},
+},
+},
+["WARRIOR"]={
+alert={
+[52437]={
+[0]=true,
+},
+[440114]={
+[0]=true,
+},
+[1231436]={
+[0]=true,
+},
+[46924]={
+[0]=true,
+},
+[46916]={
+[0]=true,
+},
+[413399]={
+[0]=true,
+},
+[50227]={
+[0]=true,
+},
+[426979]={
+[0]=true,
+},
+[402911]={
+[0]=true,
+},
+[32216]={
+[0]=true,
+},
+[60503]={
+[0]=true,
+},
+[122510]={
+[0]=true,
+}
+},
+glow={
+[7384]={
+[7384]="stance:1",
+},
+[6572]={
+[6572]="stance:2",
+},
+[5308]={
+[5308]="stance:1/3",
+},
+[34428]={
+[34428]=true,
+},
+[402927]={
+[402927]=true,
+},
+[402911]={
+[402911]=true,
+},
+[12964]={
+[78]=true,
+[845]=true,
+},
+[86627]={
+[78]=true,
+},
+[122016]={
+[78]=true,
+[845]=true,
+},
+[52437]={
+[5308]=true,
+[86346]=true,
+},
+[440114]={
+[5308]=true,
+},
+[1231436]={
+[5308]=true,
+},
+[46916]={
+[1464]=true,
+},
+[413399]={
+[1464]=true,
+},
+[50227]={
+[23922]=true,
+},
+[426979]={
+[23922]=true,
+},
+[32216]={
+[34428]=true,
+[103840]=true,
+},
+[60503]={
+[7384]=false,
+}
+},
+},
+},
+shared={
+alert={
+[92572]={
+[0]=true,
+},
+[110724]={
+[0]=true,
+},
+},
+glow={
+},
+},
+}
+if WOW_PROJECT_ID==WOW_PROJECT_CLASSIC then
+SAO.defaults.classes["MAGE"]["alert"][12536][0]="genericarc_05"
 end

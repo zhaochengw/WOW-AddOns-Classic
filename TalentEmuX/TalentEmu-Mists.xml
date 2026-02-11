@@ -1,0 +1,30 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+<!--
+    <Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
+    <Include file = "template.xml"/>
+-->
+    <include file = "libs\libs.xml" />
+
+    <script file = "Core\init.lua" />
+
+    <include file = "Locale\Locale.xml" />
+    <include file = "Data\Data.xml" />
+
+    <script file = "Core-Mists\data.lua" />
+    <script file = "Core\setting.lua" />
+    <script file = "Core-Mists\method.lua" />
+    <include file = "Core\UI\UI.xml" />
+    <include file = "Core-Mists\UI\UI.xml" />
+    <script file = "Core\inspect.lua" />
+    <script file = "Core\raidtool.lua" />
+    <script file = "Core\external.lua" />
+    <script file = "Core\comm.lua" />
+    <script file = "Core\tooltip.lua" />
+    <script file = "Core\misc.lua" />
+    <script file = "Core\fix.lua" />
+    <script file = "Core\dev.lua" />
+
+</Ui>
+

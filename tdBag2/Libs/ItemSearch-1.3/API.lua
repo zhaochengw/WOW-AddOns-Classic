@@ -1,5 +1,5 @@
 --[[
-Copyright 2013-2025 João Cardoso
+Copyright 2013-2026 João Cardoso
 ItemSearch is distributed under the terms of the GNU General Public License (Version 3).
 As a special exception, the copyright holders of this library give you permission to embed it
 with independent modules to produce an addon, regardless of the license terms of these
@@ -15,7 +15,7 @@ GNU General Public License for more details.
 This file is part of ItemSearch.
 --]]
 
-local Lib = LibStub:NewLibrary('ItemSearchModify-1.3', 10)
+local Lib = LibStub:NewLibrary('ItemSearch-1.3', 14)
 if Lib then
 	Lib.Unusable, Lib.Collected, Lib.Bangs = {}, {}, {}
 	Lib.Filters = nil
@@ -31,18 +31,19 @@ local L = {
     CLASS_REQUIREMENT = ITEM_CLASSES_ALLOWED:format('(.*)'),
     IN_SET = EQUIPMENT_SETS:format('(.*)'),
 }
-local LE_ITEM_BIND_ON_ACQUIRE = LE_ITEM_BIND_ON_ACQUIRE or Enum.ItemBind.OnAcquire
-local LE_ITEM_BIND_QUEST = LE_ITEM_BIND_QUEST or Enum.ItemBind.Quest
 
 
 --[[ General API ]]--
 
-function Lib:Matches(item, search)
-	if type(item) == 'table' then
-    	return Parser({location = item, link = C.Item.DoesItemExist(item) and C.Item.GetItemLink(item)}, search, self.Filters)
-	else
-		return Parser({link = item}, search, self.Filters)
+function Lib:Compile(search)
+	local compiled = Parser:Compile(search, self.Filters)
+	return function(item)
+		return compiled(Lib:Objectify(item))
 	end
+end
+
+function Lib:Matches(item, search)
+    return Parser(Lib:Objectify(item), search, self.Filters)
 end
 
 function Lib:IsUnusable(id)
@@ -54,7 +55,7 @@ function Lib:IsUnusable(id)
 			for i = #lines-1, 5, -1 do
 				local class = lines[i].leftText:match(L.CLASS_REQUIREMENT)
 				if class then
-					return not class:find(L.PLAYER_CLASS)
+					return not class:find(L.PLAYER_CLASS, 1, true)
 				end
 			end
 		end)() or false
@@ -69,7 +70,7 @@ function Lib:IsQuestItem(id)
 		Lib.Bangs[id] = (function()
 			local lines = C.TooltipInfo.GetItemByID(id).lines
 			for i = 2, min(4, #lines) do
-				if lines[i].leftText:find(ITEM_STARTS_QUEST) then
+				if lines[i].leftText:find(ITEM_STARTS_QUEST, 1, true) then
 					return true
 				end
 			end
@@ -83,10 +84,18 @@ function Lib:IsQuestItem(id)
 	end
 end
 
+function Lib:Objectify(item)
+	if type(item) == 'table' then
+		local link = C.Item.DoesItemExist(item) and C.Item.GetItemLink(item)
+    	return link and {location = item, link = link}
+	end
+	return item and {link = item}
+end
+
 
 --[[ Sets and Collections ]]--
 
-if LE_EXPANSION_LEVEL_CURRENT >= 2 then
+if LE_EXPANSION_LEVEL_CURRENT > 2 and LE_EXPANSION_LEVEL_CURRENT ~= 4 then
 	function Lib:IsUncollected(id, link)
 		if not Lib.Collected[id] and C.Item.IsDressableItemByID(id) and not C.TransmogCollection.PlayerHasTransmog(id) then
 			local data = C.TooltipInfo.GetHyperlink(link)
@@ -105,7 +114,7 @@ if C.AddOns.IsAddOnLoaded('ItemRack') then
 	function Lib:BelongsToSet(id, search)
 		if C.Item.IsEquippableItem(id) then
 			for name, set in pairs(ItemRackUser.Sets) do
-				if name:sub(1,1) ~= '' and (not search or Parser:Find(search, name)) then
+				if name:sub(1,1) ~= '' and (not search or Parser:FindOne(search, name)) then
 					for _, item in pairs(set.equip) do
 						if ItemRack.SameID(id, item) then
 							return true
@@ -116,12 +125,12 @@ if C.AddOns.IsAddOnLoaded('ItemRack') then
 		end
 	end
 
-elseif LE_EXPANSION_LEVEL_CURRENT >= 2 then
+elseif LE_EXPANSION_LEVEL_CURRENT > 2 then
 	function Lib:BelongsToSet(id, search)
 		if C.Item.IsEquippableItem(id) then
 			for i, setID in pairs(C.EquipmentSet.GetEquipmentSetIDs()) do
 				local name = C.EquipmentSet.GetEquipmentSetInfo(setID)
-				if not search or Parser:Find(search, name) then
+				if not search or Parser:FindOne(search, name) then
 					local items = C.EquipmentSet.GetItemIDs(setID)
 					for _, item in pairs(items) do
 						if id == item then

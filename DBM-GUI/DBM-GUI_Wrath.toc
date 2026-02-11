@@ -1,4 +1,4 @@
-## Interface: 30405
+## Interface: 30405, 38000
 ## Category: DBM
 ## Group: DBM-Core
 ## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Options GUI|r
@@ -28,7 +28,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 12.0.3
+## Version: 12.0.18
 ## X-Website: https://deadlybossmods.com
 
 Polyfills.xml
@@ -46,8 +46,7 @@ localization.br.lua
 
 DBM-GUI.lua
 DBM-GUI_TestUI.lua
-DBM-GUI_DropDown.xml
-DBM-GUI_DropDown.lua
+DBM-GUI_DropDownNEW.lua
 
 # Modules
 modules\MainFramePrototype.lua

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("z727", "DBM-PvP") -- Added in MoP
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240721033858")
+mod:SetRevision("20250926091510")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"LOADING_SCREEN_DISABLED",
@@ -216,7 +216,7 @@ do
 					cart.x		= newCart.x
 					cart.y		= newCart.y
 					cart.c		= newCart.c
-				elseif prune and (cart.spawn + times[cart.dir] - time < -1) then
+				elseif prune and (cart.dir == 0 or (cart.spawn + times[cart.dir] - time < -1)) then
 					carts[i] = nil
 				end
 			end

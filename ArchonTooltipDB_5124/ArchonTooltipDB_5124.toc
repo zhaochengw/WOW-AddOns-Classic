@@ -1,0 +1,15 @@
+﻿## Interface: 50500
+## Title: Archon Tooltip DB - 狮心
+## Author: Archon
+## Dependencies: ArchonTooltip
+## DefaultState: enabled
+## LoadOnDemand: 1
+## X-Database-Key: 5124
+## X-Database-Name: 狮心
+## X-Game-Version-ID: warcraft-classic
+## X-Updated-At: 2026-02-05T12:43:02.000Z
+## IconTexture: Interface/AddOns/ArchonTooltip/Media/logo-32-circle.tga
+## Category: Archon
+
+../ArchonTooltip/DB/db_1051_5124_5124_subscribers.lua
+../ArchonTooltip/DB/db_1051_5124_5124_weekly.lua

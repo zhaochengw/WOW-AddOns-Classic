@@ -31,10 +31,10 @@ local locales = {
     ["(%d+)金"] = { "(%d+)金", "(%d+)gold" },
     ["平均每人收入:"] = { "平均每人收入:", "Per Member credit:" },
     --金团表格
-    ["通报金团账单"] = { "—通报账单—", "—通报金团账单—", "—通報賬單—", "—通報金團帳單—", "—Announce Raid Ledger—" },
-    ["感谢使用金团表格"] = { "感谢使用BiaoGe插件", "感谢使用金团表格", "感謝使用BiaoGe插件", "感謝使用金團表格", "Thank you for using the Raid Table" },
-    ["打包交易"] = { "打包交易", "打包交易", },
-    ["表格：(.+)"] = { "表格：(.+)", },
+    ["通报金团账单"] = { "—通报账单—", "—通报金团账单—", "—通報賬單—", "—通報金團帳單—", "—Announce Raid Ledger—", "- Bulletin Bills -" },
+    ["感谢使用金团表格"] = { "感谢使用BiaoGe插件", "感谢使用金团表格", "感謝使用BiaoGe插件", "感謝使用金團表格", "-Thanks for using BiaoGe plugin-" },
+    ["打包交易"] = { "打包交易", "打包交易", "PackingDeal" },
+    ["表格：(.+)"] = { "表格：(.+)", "Table: (.+)" },
     --大脚金团助手
     ["事件：.-|c.-|Hitem.-|h|r"] = { "事件：.-|c.-|Hitem.-|h|r", },
     ["^收入为："] = { "^收入为：", "^收入為：", },
@@ -57,7 +57,7 @@ local function Default(player, time)
 end
 
 local function CheckTimeOut(time)
-    BG.After(20, function()
+    BG.After(50, function()
         if linshi_duizhang and linshi_duizhang.t then
             if time == linshi_duizhang.t then
                 BG.IsSavingLedger = nil
@@ -70,20 +70,16 @@ end
 
 local function Send(num, sumMoney, FB)
     local FBtext = ""
-    if FB then
-        for i, v in ipairs(BG.FBtable2) do
-            if FB == v.FB then
-                FBtext = L["，"] .. BG.STC_b1(v.localName)
-                break
-            end
-        end
+    local FBName = BG.GetFBinfo(FB, "shortName")
+    if FBName then
+        FBtext = L["，"] .. BG.STC_b1(FBName)
     end
-    local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGeDuiZhang:" .. num ..
-        "|h[" .. L["点击：对账"] .. "] " .. L["（"] .. "|cff00ff00" .. L["装备总收入"] .. sumMoney .. RR .. FBtext .. L["）"] .. "|h|r"
+    local link = format(L["|Hgarrmission:BiaoGeDuiZhang:%s|h[点击：对账]（|cff00ff00装备总收入%s|r%s）"],
+        num, sumMoney, FBtext)
     SendSystemMessage(link)
     BG.After(0.1, function()
-        local link = "|cffFFFF00|Hgarrmission:" .. format("BiaoGeDuiZhangCopy:%s:%s", num, FB) ..
-            "|h[" .. L["ALT+点击：复制账单|cff00FF00（仅对装备收入有效）|r"] .. "]|h|r"
+        local link = format(L["|Hgarrmission:BiaoGeDuiZhangCopy:%s:%s|h[ALT+点击：复制账单]（|cff00ff00仅对装备收入有效|r）"],
+            num, FB)
         SendSystemMessage(link)
     end)
 end
@@ -290,7 +286,7 @@ function BG.DuiZhangUI()
     BG.DuiZhangDropDown.DropDown = dropDown
     local text = dropDown:CreateFontString()
     text:SetPoint("RIGHT", dropDown, "LEFT", 10, 3)
-    text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+    text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
     text:SetTextColor(1, 1, 0)
     text:SetText(BG.STC_g1(L["对比的账单："]))
     BG.DuiZhangDropDown.BiaoTi = text
@@ -477,7 +473,7 @@ function BG.DuiZhangUI()
                 if v.class then
                     color = select(4, GetClassColor(v.class))
                 end
-                text = text .. "|c" .. color .. name.."|r\n"
+                text = text .. "|c" .. color .. name .. "|r\n"
             end
             BG.CreateExportFrame(L["导出名单"], text)
         end)
@@ -499,62 +495,66 @@ function BG.DuiZhangUI()
                 BG.DuiZhangMainFrame.raidMemberFrame = mainFrame
 
                 local t = mainFrame:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
-                t:SetPoint("BOTTOMLEFT",  15, 5)
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetPoint("BOTTOMLEFT", 15, 5)
                 t:SetTextColor(1, 0.82, 0)
-                t:SetText(AddTexture("LEFT").. L["导出名单"])
+                t:SetText(AddTexture("LEFT") .. L["导出名单"])
 
                 local function CreateRaidButton(i)
-                    local f = CreateFrame("Frame", nil, mainFrame, "BackdropTemplate")
-                    f:SetBackdrop({
+                    local bt = CreateFrame("Frame", nil, mainFrame, "BackdropTemplate")
+                    bt:SetBackdrop({
                         bgFile = "Interface/ChatFrame/ChatFrameBackground",
                         edgeFile = "Interface/ChatFrame/ChatFrameBackground",
                         edgeSize = 1,
                     })
-                    f:SetBackdropColor(0, 0, 0, .2)
-                    f:SetBackdropBorderColor(1, 1, 1, .2)
-                    f:SetSize(90, 20)
+                    bt:SetBackdropColor(0, 0, 0, .2)
+                    bt:SetBackdropBorderColor(1, 1, 1, .2)
+                    bt:SetSize(90, 20)
                     if i == 1 then
-                        f:SetPoint("TOPLEFT", 15, -25)
+                        bt:SetPoint("TOPLEFT", 15, -25)
 
-                        local text = f:CreateFontString()
-                        text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
-                        text:SetPoint("BOTTOM", f, "TOP", 0, 2)
+                        local text = bt:CreateFontString()
+                        text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                        text:SetPoint("BOTTOM", bt, "TOP", 0, 2)
                         text:SetText(1)
                         text:SetTextColor(.5, .5, .5)
                     elseif i == 21 then
-                        f:SetPoint("TOPLEFT", mainFrame.buttons[5], "BOTTOMLEFT", 0, -30)
+                        bt:SetPoint("TOPLEFT", mainFrame.buttons[5], "BOTTOMLEFT", 0, -30)
 
-                        local text = f:CreateFontString()
-                        text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
-                        text:SetPoint("BOTTOM", f, "TOP", 0, 2)
+                        local text = bt:CreateFontString()
+                        text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                        text:SetPoint("BOTTOM", bt, "TOP", 0, 2)
                         text:SetText((i - 1) / 5 + 1)
                         text:SetTextColor(.5, .5, .5)
                     elseif (i - 1) % 5 == 0 then
-                        f:SetPoint("TOPLEFT", mainFrame.buttons[i - 5], "TOPRIGHT", 5, 0)
+                        bt:SetPoint("TOPLEFT", mainFrame.buttons[i - 5], "TOPRIGHT", 5, 0)
 
-                        local text = f:CreateFontString()
-                        text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
-                        text:SetPoint("BOTTOM", f, "TOP", 0, 2)
+                        local text = bt:CreateFontString()
+                        text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
+                        text:SetPoint("BOTTOM", bt, "TOP", 0, 2)
                         text:SetText((i - 1) / 5 + 1)
                         text:SetTextColor(.5, .5, .5)
                     else
-                        f:SetPoint("TOPLEFT", mainFrame.buttons[i - 1], "BOTTOMLEFT", 0, -1)
+                        bt:SetPoint("TOPLEFT", mainFrame.buttons[i - 1], "BOTTOMLEFT", 0, -1)
                     end
-                    tinsert(mainFrame.buttons, f)
+                    tinsert(mainFrame.buttons, bt)
 
-                    local text = f:CreateFontString()
-                    text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                    local text = bt:CreateFontString()
+                    text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     text:SetPoint("LEFT", 2, 0)
-                    text:SetWidth(f:GetWidth() - 5)
+                    text:SetWidth(bt:GetWidth() - 5)
                     text:SetJustifyH("LEFT")
                     text:SetWordWrap(false)
-                    f.nameText = text
+                    bt.nameText = text
 
-                    local tex = f:CreateTexture()
-                    tex:SetPoint("CENTER", f, "TOPLEFT", 2, -2)
+                    local tex = bt:CreateTexture(nil, "OVERLAY")
+                    tex:SetPoint("CENTER", bt, "TOPLEFT", 2, -2)
                     tex:SetSize(10, 10)
-                    f.icon = tex
+                    bt.icon = tex
+
+                    local tex = bt:CreateTexture(nil, "OVERLAY")
+                    tex:SetSize(10, 10)
+                    bt.master = tex
                 end
 
                 for i = 1, 40 do
@@ -567,6 +567,7 @@ function BG.DuiZhangUI()
                 local bt = mainFrame.buttons[i]
                 bt.nameText:SetText("")
                 bt.icon:SetTexture(nil)
+                bt.master:SetTexture(nil)
             end
             local num = BG.lastduizhangNum
             if not (BiaoGe.duizhang[num] and BiaoGe.duizhang[num].member) then return end
@@ -589,6 +590,15 @@ function BG.DuiZhangUI()
                     bt.icon:SetTexture(132063)
                 elseif v.rank == 1 then
                     bt.icon:SetTexture("interface/groupframe/ui-group-assistanticon")
+                end
+                if v.isML then
+                    bt.master:SetTexture("Interface/GroupFrame/UI-Group-MasterLooter")
+                    bt.master:ClearAllPoints()
+                    if bt.icon:GetTexture() then
+                        bt.master:SetPoint("LEFT", bt.icon, "RIGHT", 0, 0)
+                    else
+                        bt.master:SetPoint("CENTER", bt, "TOPLEFT", 2, -2)
+                    end
                 end
             end
         end
@@ -617,7 +627,7 @@ function BG.DuiZhangUI()
         BG.HookScrollBarShowOrHide(scroll)
 
         local child = CreateFrame("EditBox", nil, f) -- 子框架
-        child:SetFontObject(GameFontNormalSmall2)
+        child:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
         child:SetWidth(scroll:GetWidth())
         child:SetAutoFocus(false)
         child:EnableMouse(false)
@@ -669,7 +679,7 @@ function BG.DuiZhangUI()
         end)
 
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("BOTTOM", f, "TOP", 0, 0)
         t:SetText(L["账单聊天记录"])
     end
@@ -682,7 +692,7 @@ local function CreateZhangDanTitle(num)
     if zhangdan.FB then
         for i, v in ipairs(BG.FBtable2) do
             if zhangdan.FB == v.FB then
-                FBtext = L["，"] .. BG.STC_b1(v.localName)
+                FBtext = L["，"] .. BG.STC_b1(v.shortName or v.localName)
                 break
             end
         end

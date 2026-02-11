@@ -1,28 +1,10 @@
-tag 999aca3ccbcdf79978fe4f11355ce33908f00c65 v2.3.2
-Author:	skyler-code <skylerh15@github.com>
-Date:	Fri Oct 31 19:24:26 2025 -0500
+tag 15931f9ac70d3482afbac806df48c3f2b2bc0437 v2.3.8a
+Author:	brues-code <5278969+brues-code@users.noreply.github.com>
+Date:	Tue Feb 3 14:00:31 2026 -0600
 
-commit 292b380660ba94703721cbeb333176f927ccb53f
-Author: skyler-code <skylerh15@github.com>
-Date:   Fri Oct 31 19:12:57 2025 -0500
+commit dc8ab6a1de6bd539a17fd5f96e3c35fd8a0feaa1
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Feb 3 13:55:31 2026 -0600
 
-    fix for Brazilian clients
-
-commit 5bf0953ebfe3b0148f906199b859f9c8ede4f02f
-Author: skyler-code <skylerh15@github.com>
-Date:   Fri Oct 31 13:04:28 2025 -0500
-
-    Leftover code was causing column expanding to break
-
-commit c8f394daf6e3409bb3963d04f5c8776adad81ff2
-Author: skyler-code <skylerh15@github.com>
-Date:   Fri Oct 31 01:27:25 2025 -0500
-
-    cleanup
-
-commit 52bc6aa86a5916cfa5893b53f6501458c5bbf9ba
-Author: skyler-code <skylerh15@github.com>
-Date:   Thu Oct 30 13:23:35 2025 -0500
-
-    utilize FormatLargeNumber
+    should be ClearEditFocus
 

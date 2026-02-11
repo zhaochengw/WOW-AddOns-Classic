@@ -1,4 +1,4 @@
-if not (BG.IsWLK or BG.IsMOP) then return end
+if not (BG.IsWLK_80 or BG.IsMOP) then return end
 if BG.IsBlackListPlayer then return end
 
 local AddonName, ns = ...
@@ -202,6 +202,22 @@ BG.Init(function()
                 6720,
                 6719,
                 6932, -- 成就龙
+                6823,
+                6674,
+                7056,
+                6687,
+                6686,
+                6455,
+                6937,
+                6936,
+                6553,
+                6683,
+                6518,
+                6922,
+                6717,
+                6824,
+                6933,
+                6825,
             },
             ["N_MSV"] = {
                 6689, -- 永春台
@@ -209,6 +225,40 @@ BG.Init(function()
                 6718,
                 6844, -- 魔古山
                 6458,
+            },
+            ["H_TOT"] = {
+                8068,
+                8067,
+                8066,
+                8065,
+                8064,
+                8063,
+                8062,
+                8061,
+                8060,
+                8059,
+                8058,
+                8057,
+                8056,
+                8124, -- 成就龙
+                8094,
+                8038,
+                8073,
+                8077,
+                8082,
+                8097,
+                8098,
+                8037,
+                8081,
+                8087,
+                8086,
+                8090,
+            },
+            ["N_TOT"] = {
+                8072,
+                8071,
+                8070,
+                8069,
             },
         }
         db_stats = {
@@ -265,7 +315,7 @@ BG.Init(function()
         BG.AchievementMainFrame.Frame1 = child
 
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
         t:SetPoint("RIGHT", f, "BOTTOMLEFT", -10, 0)
         t:SetTextColor(0, 1, 0)
         t:SetText(L["成\n就"])
@@ -307,7 +357,7 @@ BG.Init(function()
         BG.AchievementMainFrame.Frame3 = child
 
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
         t:SetPoint("RIGHT", f, "LEFT", -10, 0)
         t:SetTextColor(0, 1, 0)
         t:SetText(L["统\n计"])
@@ -391,7 +441,7 @@ BG.Init(function()
                 f:SetParent(BG.AchievementMainFrame.raidFrame)
 
                 local text = f:CreateFontString()
-                text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 text:SetPoint("BOTTOM", f, "TOP", 0, 2)
                 text:SetText(1)
                 text:SetTextColor(.5, .5, .5)
@@ -400,7 +450,7 @@ BG.Init(function()
                 f:SetParent(BG.AchievementMainFrame.raidFrame)
 
                 local text = f:CreateFontString()
-                text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 text:SetPoint("BOTTOM", f, "TOP", 0, 2)
                 text:SetText((i - 1) / 5 + 1)
                 text:SetTextColor(.5, .5, .5)
@@ -409,7 +459,7 @@ BG.Init(function()
                 f:SetParent(BG.AchievementMainFrame.raidFrame)
 
                 local text = f:CreateFontString()
-                text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 text:SetPoint("BOTTOM", f, "TOP", 0, 2)
                 text:SetText((i - 1) / 5 + 1)
                 text:SetTextColor(.5, .5, .5)
@@ -423,7 +473,7 @@ BG.Init(function()
             f:SetScript("OnLeave", OnLeave)
 
             local text = f:CreateFontString()
-            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             text:SetPoint("TOPLEFT", 2, -2)
             text:SetWidth(f:GetWidth() - 5)
             text:SetJustifyH("LEFT")
@@ -431,7 +481,7 @@ BG.Init(function()
             f.nameText = text
 
             local text = f:CreateFontString()
-            text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
             text:SetPoint("BOTTOMLEFT", 2, 2)
             text:SetWidth(f:GetWidth() - 5)
             text:SetJustifyH("LEFT")
@@ -682,7 +732,7 @@ BG.Init(function()
         end
 
         local text = f:CreateFontString()
-        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         text:SetPoint("TOPLEFT", icon_tex, "TOPRIGHT", 1, -1)
         text:SetText(name)
         text:SetTextColor(1, 1, 0)
@@ -691,7 +741,7 @@ BG.Init(function()
         end
 
         local text = f:CreateFontString()
-        text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+        text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
         text:SetPoint("BOTTOMLEFT", icon_tex, "BOTTOMRIGHT", 1, 1)
         if not isStats then
             if IsInRaid(1) then
@@ -778,7 +828,6 @@ BG.Init(function()
 
     local function GetRaidAchievement()
         wipe(raidAchievement_Total)
-
         if IsInRaid(1) then
             if not BG.AchievementUpdateFrame then
                 BG.AchievementUpdateFrame = CreateFrame("Frame")
@@ -870,7 +919,6 @@ BG.Init(function()
             tbl["stats" .. ID] = GetComparisonStatistic(ID)
         end
         if tbl["stats" .. 334] ~= "--" then
-            -- pt(tbl["stats" .. 334])
             raidAchievement_AllPlayer[name] = tbl
         end
     end)

@@ -111,13 +111,32 @@ function XiTimers:new(nroftimers, unclickable)
 	self.button:SetPoint("CENTER", UIParent, "CENTER")
 	self.button.timer = self
 	
-	--for rActionButtonStyler
 	self.button.action = 0
+    if self.button.UpdateArrowShown then self.button:UpdateArrowShown() end
     --self.button:SetCheckedTexture(nil)
-	self.button.SetCheckedTexture = function() end
-    self.button.SetChecked = function() end
-    self.button.GetChecked = function() return false end
-    self.button.SetDisabledCheckedTexture = function() end
+	--self.button.SetCheckedTexture = function() end
+    --self.button.SetChecked = function() end
+    --self.button.GetChecked = function() return false end
+    --self.button.SetDisabledCheckedTexture = function() end
+
+    --[[for _, texture in pairs({"SpellHighlightTexture", "PushedTexture", "NewActionTexture", "HighlightTexture"}) do
+        if self.button[texture] then
+            self.button[texture]:SetTexture(nil)
+            self.button[texture]:Hide()
+        end
+    end
+    if self.button.SpellHighlightAnim then
+        self.button.SpellHighlightAnim:Stop()
+    end]]
+
+    local regions = {self.button:GetRegions()}
+    for i, region in ipairs(regions) do
+        if not region:GetName() then
+           region:SetTexture(nil)
+           region:Hide()
+        end
+    end
+
     
 	self.button.unclickable = unclickable
 	self.button.element = XiTimers.nrOfTimers
@@ -149,7 +168,7 @@ function XiTimers:new(nroftimers, unclickable)
             flash.flashAnim:SetDuration(15)
             flash.flashAnim.flash = flash
             flash.flashAnim:SetScript("OnPlay", function(self) self.flash:Show() end)
-            flash.flashAnim:SetScript("OnUpdate", function(self) self.flash:SetAlpha(BuffFrame.BuffAlphaValue) end)
+            flash.flashAnim:SetScript("OnUpdate", function(self) self.flash:SetAlpha(BuffFrame.BuffAlphaValue or BuffFrame.AuraContainer:GetAuraWarningAlphaForDuration(0)) end)
 			flash.flashAnim:SetScript("OnStop", function(self) self.flash:SetAlpha(inActiveAlpha) end)
 			flash.flashAnim:SetScript("OnFinished", function(self) self.flash:SetAlpha(inActiveAlpha) end)
         end
@@ -157,6 +176,7 @@ function XiTimers:new(nroftimers, unclickable)
 	end
 
     local flash = self.button.Flash
+    flash:SetAllPoints(self.button)
     flash.animation = flash:CreateAnimationGroup()
     flash.animation:SetLooping("NONE")
     flash.flashAnim = flash.animation:CreateAnimation()
@@ -165,7 +185,7 @@ function XiTimers:new(nroftimers, unclickable)
     flash.flashAnim:SetScript("OnPlay", function(self) self.flash:Show() end)
     flash.flashAnim:SetScript("OnFinished", function(self) self.flash:Hide() end)
     flash.flashAnim:SetScript("OnStop", function(self) self.flash:Hide() end)
-    flash.flashAnim:SetScript("OnUpdate", function(self) self.flash:SetAlpha(BuffFrame.BuffAlphaValue) end)
+    flash.flashAnim:SetScript("OnUpdate", function(self) self.flash:SetAlpha(BuffFrame.BuffAlphaValue or BuffFrame.AuraContainer:GetAuraWarningAlphaForDuration(0)) end)
     
     
     self.timeColor = {r=1,g=1,b=1,a=1}
@@ -495,469 +515,487 @@ function XiTimers:UpdateButtonColor()
     end
 end
 
-function XiTimers:StartMoving()
-    if self.timer.locked then return end
-	if self.anchorframe and not self.timer.savePos then
-		self.anchorframe:StartMoving()
-	else
-		self:StartMoving() 
-	end
-end
+if ActionButton_ShowOverlayGlow then
+    function XiTimers:ShowOverlayGlow()
+        ActionButton_ShowOverlayGlow(self.button)
+    end
 
-function XiTimers:StopMoving()
-	if self.anchorframe and not self.timer.savePos then
-		self.anchorframe:StopMovingOrSizing()
-	else
-		self:StopMovingOrSizing()
-	end
-    if XiTimers.SaveFramePositions then XiTimers.SaveFramePositions() end
-    self.timer:SetTimerBarPos(self.timer.timerBarPos, true)
-end
+    function XiTimers:HideOverlayGlow()
+        ActionButton_HideOverlayGlow(self.button)
+    end
+elseif ActionButtonSpellAlertManager then
+    function XiTimers:ShowOverlayGlow()
+        ActionButtonSpellAlertManager:ShowAlert(self.button)
+    end
 
-function XiTimers:SetIconAlpha(icon, alpha)
-    if icon then
-        icon:SetAlpha(alpha)
+    function XiTimers:HideOverlayGlow()
+        ActionButtonSpellAlertManager:HideAlert(self.button)
     end
 end
 
-function XiTimers:SetAlpha(alpha)
-    self.button:SetAlpha(alpha)
-end
-
-function XiTimers:SetReverseAlpha(alpha)
-    self.reverseAlpha = alpha
-    if alpha then
-        for i=1, #self.timers do
-            self.button.icons[i]:SetAlpha(self.maxAlpha)
+    function XiTimers:StartMoving()
+        if self.timer.locked then return end
+        if self.anchorframe and not self.timer.savePos then
+            self.anchorframe:StartMoving()
+        else
+            self:StartMoving()
         end
     end
-end
 
-
-function XiTimers:HideTimerBar(nr)
-	self.timerBars[nr].background:Hide()
-    self.timerBars[nr].background:SetValue(0)
-    ---self.timerBars[nr].icon:Hide()
-    self.timerBars[nr]:Hide()
-end
-
-function XiTimers:ShowTimerBar(nr)
-    self.timerBars[nr]:Show()
-    self.timerBars[nr].background:Show()
-    self.timerBars[nr].background:SetValue(1)
-end
-
--- display functions
-
-function XiTimers:SetTimerBarPos(side, notReanchor)
-    if not side then return end
-	self.timerBarPos = side
-	
-	local TimerBars = self.timerBars
-	local nrOfTimers = self.nrOfTimers
-		
-	for i=1, nrOfTimers do
-		TimerBars[i]:ClearAllPoints()
-        TimerBars[i].icon:ClearAllPoints()
-	end
-    if side == "RIGHT" then
-        for i=2,nrOfTimers do
-            TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
+    function XiTimers:StopMoving()
+        if self.anchorframe and not self.timer.savePos then
+            self.anchorframe:StopMovingOrSizing()
+        else
+            self:StopMovingOrSizing()
         end
-    else
-        for i=2,nrOfTimers do
-            TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
+        if XiTimers.SaveFramePositions then XiTimers.SaveFramePositions() end
+        self.timer:SetTimerBarPos(self.timer.timerBarPos, true)
+    end
+
+    function XiTimers:SetIconAlpha(icon, alpha)
+        if icon then
+            icon:SetAlpha(alpha)
         end
     end
-    local activetimers = 1
-	if side == "LEFT" then
-        local lastactive = 1
-		for i=2,nrOfTimers do
-            TimerBars[i]:SetPoint("TOP", TimerBars[lastactive], "BOTTOM") -- set all, but only active ones will be seen so they can lay atop one another
-            if self.timers[i] > 0 then
-                lastactive = i
-                activetimers = activetimers + 1
+
+    function XiTimers:SetAlpha(alpha)
+        self.button:SetAlpha(alpha)
+    end
+
+    function XiTimers:SetReverseAlpha(alpha)
+        self.reverseAlpha = alpha
+        if alpha then
+            for i=1, #self.timers do
+                self.button.icons[i]:SetAlpha(self.maxAlpha)
             end
-		end 
-		TimerBars[1]:SetPoint("RIGHT", self.button, "LEFT", -self.timeSpacing, TimerBars[1]:GetHeight()*TimerBars[1]:GetEffectiveScale()/2*(activetimers-1))
-	elseif side == "RIGHT" then
-        local lastactive = 1
-		for i=2,nrOfTimers do
-            TimerBars[i]:SetPoint("TOP", TimerBars[lastactive], "BOTTOM")
-            if self.timers[i] > 0 then
-                lastactive = i
-                activetimers = activetimers + 1
-            end
-		end
-		TimerBars[1]:SetPoint("LEFT", self.button, "RIGHT", self.timeSpacing, TimerBars[1]:GetHeight()*TimerBars[1]:GetEffectiveScale()/2*(activetimers-1))
-	elseif side == "TOP" then
-        if TotemTimers.ActiveProfile.ShowCooldowns and self.nr < 5 and (TotemTimers.ActiveProfile.Arrange == "vertical" or TotemTimers.ActiveProfile.Arrange == "box") then
-            TimerBars[1]:SetPoint("BOTTOM", self.button, "TOP", 0, self.timeSpacing)
-            local active = 0
-            local firstactive = 0
-            for i = 2, nrOfTimers do
-                if self.timers[i] > 0 then
-                    active = active + 1
-                    if firstactive == 0 then firstactive = i end
-                end
-            end
-            if active > 0 then
-                local left = self.button:GetLeft() < WorldFrame:GetWidth()/2
-                if TotemTimers.ActiveProfile.Arrange == "box" and self.actnr then
-                    left = self.actnr == 2 or self.actnr == 4
-                end
-                for i=2, nrOfTimers do
-                    TimerBars[i].icon:ClearAllPoints()
-                    if left then
-                        TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
-                    else
-                        TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
-                    end
-                end
-                if left then
-                    TimerBars[firstactive]:SetPoint("LEFT", self.button, "RIGHT", 
-                        self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
-                else
-                    TimerBars[firstactive]:SetPoint("RIGHT", self.button, "LEFT",
-                        -self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
-                end
-                local last = firstactive
-                for i = firstactive+1, nrOfTimers do
-                    TimerBars[i]:SetPoint("TOP", TimerBars[last], "BOTTOM")
-                    if self.timers[i] > 0 then                        
-                        last = i
-                    end
-                end
-                for i = 2, firstactive-1 do
-                    TimerBars[i]:SetPoint("TOP", self.button, "BOTTOM")
-                end
+        end
+    end
+
+
+    function XiTimers:HideTimerBar(nr)
+        self.timerBars[nr].background:Hide()
+        self.timerBars[nr].background:SetValue(0)
+        ---self.timerBars[nr].icon:Hide()
+        self.timerBars[nr]:Hide()
+    end
+
+    function XiTimers:ShowTimerBar(nr)
+        self.timerBars[nr]:Show()
+        self.timerBars[nr].background:Show()
+        self.timerBars[nr].background:SetValue(1)
+    end
+
+    -- display functions
+
+    function XiTimers:SetTimerBarPos(side, notReanchor)
+        if not side then return end
+        self.timerBarPos = side
+
+        local TimerBars = self.timerBars
+        local nrOfTimers = self.nrOfTimers
+
+        for i=1, nrOfTimers do
+            TimerBars[i]:ClearAllPoints()
+            TimerBars[i].icon:ClearAllPoints()
+        end
+        if side == "RIGHT" then
+            for i=2,nrOfTimers do
+                TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
             end
         else
+            for i=2,nrOfTimers do
+                TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
+            end
+        end
+        local activetimers = 1
+        if side == "LEFT" then
             local lastactive = 1
-    		TimerBars[1]:SetPoint("BOTTOM", self.button, "TOP", 0, self.timeSpacing)
-    		for i=2, nrOfTimers do
-                TimerBars[i]:SetPoint("BOTTOM", TimerBars[lastactive], "TOP")
+            for i=2,nrOfTimers do
+                TimerBars[i]:SetPoint("TOP", TimerBars[lastactive], "BOTTOM") -- set all, but only active ones will be seen so they can lay atop one another
                 if self.timers[i] > 0 then
                     lastactive = i
-                end
-    		end
-        end
-	elseif side == "BOTTOM" then
-        if TotemTimers.ActiveProfile.ShowCooldowns and self.nr < 5 and (TotemTimers.ActiveProfile.Arrange == "vertical" or TotemTimers.ActiveProfile.Arrange == "box") then
-            TimerBars[1]:SetPoint("TOP", self.button, "BOTTOM", 0, -self.timeSpacing)
-            local active = 0
-            local firstactive = 0
-            for i = 2, nrOfTimers do
-                if self.timers[i] > 0 then
-                    active = active + 1
-                    if firstactive == 0 then firstactive = i end
+                    activetimers = activetimers + 1
                 end
             end
-            if active > 0 then
-                local left = self.button:GetLeft() < WorldFrame:GetWidth()/2
-                if TotemTimers.ActiveProfile.Arrange == "box" and self.actnr then
-                    left = self.actnr == 2 or self.actnr == 4
-                end
-                for i=2, nrOfTimers do
-                    TimerBars[i].icon:ClearAllPoints()
-                    if left then
-                        TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
-                    else
-                        TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
-                    end
-                end
-                if left then
-                    TimerBars[firstactive]:SetPoint("LEFT", self.button, "RIGHT", 
-                        self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
-                else
-                    TimerBars[firstactive]:SetPoint("RIGHT", self.button, "LEFT",
-                        -self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
-                end
-                local last = firstactive
-                for i = firstactive+1, nrOfTimers do
-                    TimerBars[i]:SetPoint("TOP", TimerBars[last], "BOTTOM")
-                    if self.timers[i] > 0 then
-                        last = i
-                    end
-                end
-                for i = 2, firstactive-1 do
-                    TimerBars[i]:SetPoint("TOP", self.button, "BOTTOM")
-                end
-             end
-        else
+            TimerBars[1]:SetPoint("RIGHT", self.button, "LEFT", -self.timeSpacing, TimerBars[1]:GetHeight()*TimerBars[1]:GetEffectiveScale()/2*(activetimers-1))
+        elseif side == "RIGHT" then
             local lastactive = 1
-    		TimerBars[1]:SetPoint("TOP", self.button, "BOTTOM", 0, -self.timeSpacing)
-    		for i=2, nrOfTimers do
+            for i=2,nrOfTimers do
                 TimerBars[i]:SetPoint("TOP", TimerBars[lastactive], "BOTTOM")
                 if self.timers[i] > 0 then
                     lastactive = i
+                    activetimers = activetimers + 1
                 end
-    		end
-        end
-	end
-	if not InCombatLockdown() and not notReanchor then self:Reanchor() end
-end
-
-function XiTimers:GetBorder(side)
-	local timerBarPos = self.timerBarPos
-	if side == "TOP" and timerBarPos == "TOP" or side == "BOTTOM" and timerBarPos == "BOTTOM" then
-        local height = self.timerBars[1]:GetHeight()*self.timerBars[1]:GetEffectiveScale()        
-        if self.nr > 5 or TotemTimers.ActiveProfile.Arrange == "horizontal" then
-            height = height * self.nrOfTimers
-        end
-		return (self.timerOnButton and not self.forceBar) and 0 or self.timeSpacing + height
-	elseif ((side == "LEFT" and timerBarPos == "LEFT" or side == "RIGHT" and timerBarPos == "RIGHT") and ((self.nrOfTimers>1 and TotemTimers.ActiveProfile.ShowCooldowns) or not self.timerOnButton or self.forceBar))
-        or (self.nr < 5 and TotemTimers.ActiveProfile.ShowCooldowns and TotemTimers.ActiveProfile.Arrange == "vertical" and self.nrOfTimers > 1 and 
-            ((side == "LEFT" and self.nrOfTimers > 1 and TotemTimersFrame:GetLeft() > WorldFrame:GetWidth()/2)
-            or (side == "RIGHT" and self.nrOfTimers > 1 and TotemTimersFrame:GetLeft() < WorldFrame:GetWidth()/2)))
-    then
-		return (self.timeSpacing + self.timerBars[1]:GetWidth()*self.timerBars[1]:GetEffectiveScale())
-	end
-	return 0
-end
-
-
-function XiTimers:SetWidth(width)
-	self.button:SetWidth(width)
-end
-
-function XiTimers:SetHeight(height)
-	self.button:SetHeight(height)
-end
-
-function XiTimers:SetFont(font)
-    for _,timerbar in pairs(self.timerBars) do
-        local _,height = timerbar.time:GetFont()
-        timerbar.time:SetFont(font, height)
-    end
-    local _,height = self.button.time:GetFont()
-    self.button.time:SetFont(font, height, "OUTLINE")
-end
-
-function XiTimers:SetTimeHeight(height)
-	for _,timerbar in pairs(self.timerBars) do
-		timerbar:SetHeight(height)
-		timerbar.background:SetHeight(height)
-        local font = timerbar.time:GetFont()
-		timerbar.time:SetFont(font, height)
-	end
-	self:Reanchor()
-end
-
-function XiTimers:SetTimeWidth(width)
-	for _,timerbar in pairs(self.timerBars) do
-		timerbar:SetWidth(width)
-		timerbar.background:SetWidth(width)
-		timerbar.time:SetWidth(width)
-	end
-	self:Reanchor()
-end
-
-function XiTimers:SetScale(scale)
-	self.button:SetScale(scale)
-	self:SetTimerBarPos(self.timerBarPos)
-	--self:Reanchor()
-end
-
-function XiTimers:SetBarTexture(texture)
-    for _,bar in pairs(self.timerBars) do
-        bar:SetStatusBarTexture(texture)
-        bar.background:SetStatusBarTexture(texture)
-    end
-end
-
-function XiTimers:SetBarColor(r,g,b,a)
-    if not a then a = 1 end
-    local backgroundAlpha = math.max(0, a - 0.6)
-    for _,bar in pairs(self.timerBars) do 
-		bar:SetStatusBarColor(r,g,b,a)
-        bar.background:SetStatusBarColor(r,g,b,backgroundAlpha)
-    end
-end
-
-
---allowed position combinations are: CENTER/CENTER, LEFT/RIGHT, RIGHT/LEFT, TOP/BOTTOM, BOTTOM/TOP
-
-local CounterPositions = {
-	CENTER = "CENTER",
-	LEFT = "RIGHT",
-	RIGHT = "LEFT",
-	TOP = "BOTTOM", 
-	BOTTOM = "TOP",
-    TOPLEFT = "BOTTOM",
-    TOPRIGHT = "BOTTOM",
-}
-
-local DirectionXMult = {
-	CENTER = 0,
-	LEFT = 1,
-	RIGHT = -1,
-	TOP = 0,
-	BOTTOM = 0,
-    TOPRIGHT = -1,
-    TOPLEFT = 1,
-    BOTTOMLEFT = 1,
-    BOTTOMRIGHT = -1,
-}
-
-local DirectionYMult = {
-	CENTER = 0,
-	LEFT = 0,
-	RIGHT = 0,
-	TOP = -1,
-	BOTTOM = -1,
-    TOPRIGHT = -1,
-    TOPLEFT = -1,
-    BOTTOMRIGHT = -1,
-    BOTTOMLEFT = 0.5,
-}
-
-
-function XiTimers:SetPoint(pos, relframe, relpos, halfspace)
-	local relborder = 0
-	if relframe.button then 
-		if not relpos then relborder = relframe:GetBorder(CounterPositions[pos])
-        else relborder = relframe:GetBorder(relpos) end
-		relframe = relframe.button
-	end
-	local borderx = self:GetBorder(pos)+relborder
-    local bordery = borderx
-    --hack for anchoring TOPRIGHT or TOPLEFT to BOTTOM, maybe change it account for all anchors someday if needed
-    if relpos == "BOTTOM" then borderx = 0 end
-	self.button:ClearAllPoints()
-    if not relpos then relpos = CounterPositions[pos] end
-    local spacingx = self.spacing
-    if halfspace then spacingx = spacingx / 2 end
-    local spacingy = self.spacing
-	self.button:SetPoint(pos, relframe, relpos, (spacingx+borderx)*DirectionXMult[pos], (spacingy+bordery)*DirectionYMult[pos])
-end
-
--- anchors this timer to another
-function XiTimers:Anchor(timer, point, relpoint, halfspace)
-	table.insert(self.anchors, {timer = timer, point = point, relpoint = relpoint, halfspace = halfspace})
-	table.insert(timer.anchorchilds, self)
-	self:SetPoint(point, timer, relpoint, halfspace) 
-end
-
--- updates the positions of all frames anchored to this timer
-function XiTimers:Reanchor()
-	for _, anchor in pairs(self.anchors) do
-		self:SetPoint(anchor.point, anchor.timer, anchor.relpoint, anchor.halfspace)
-	end
-	for _, anchorchild in pairs(self.anchorchilds) do
-		anchorchild:Reanchor()
-	end
-end
-
-function XiTimers:ClearAnchors()
-	self.anchors = {}
-	self.anchorchilds = {}
-end
-
-function XiTimers:SetSpacing(spacing)
-	self.spacing = spacing
-	self:Reanchor()
-end
-
-function XiTimers:SetTimeSpacing(spacing)
-	self.timeSpacing = spacing
-	self:SetTimerBarPos(self.timerBarPos)
-	--self:Reanchor()
-end
-
-
-function XiTimers:Show()
-    self.button:Show()
-    for i=1,self.nrOfTimers do
-        if self.timers[i] > 0 then
-            self:ShowTimerBar(i)
-        end
-    end
-end
-
-function XiTimers:Hide()
-    self.button:Hide()
-    for i=1,self.nrOfTimers do
-        if self.timers[i] > 0 then
-            self:HideTimerBar(i)
-        end
-    end
-end
-
-function XiTimers:HideNormalTexture()
-	--self.button.normalTexture:SetTexture(1,1,1,0)
-	self.button.normalTexture:SetTexture(nil)
-end
-
-
---Out-of-combat-Fader
-
-local oocframe = CreateFrame("Frame", "XiTimersOOCFaderFrame")
-oocframe:RegisterEvent("PLAYER_REGEN_ENABLED")
-oocframe:RegisterEvent("PLAYER_REGEN_DISABLED")
-
-function XiTimers.invokeOOCFader()
-    XiTimers.OOCFaderEvent(nil, (InCombatLockdown() and "PLAYER_REGEN_DISABLED") or "PLAYER_REGEN_ENABLED")
-end
-
-XiTimers.OOCFaderEvent = function(self, event, arg1, arg2)
-    if event == "PLAYER_REGEN_ENABLED" then
-        incombat = false
-        for _,timer in pairs(XiTimers.timers) do
-            if timer.active and timer.unclickable and timer.HideOOC then
-                timer:Hide()
             end
-            timer.button:SetAlpha(timer.OOCAlpha)
-            if timer.ChainOOCAlpha then timer.ChainOOCAlpha:SetAlpha(timer.OOCAlpha) end
-        end
-        if TotemTimers_MultiSpell then
-            TotemTimers_MultiSpell:SetAlpha(TotemTimers_MultiSpell.OOCAlpha or 1)
-        end
-    elseif event == "PLAYER_REGEN_DISABLED" then
-        incombat = true
-        for _,timer in pairs(XiTimers.timers) do
-            if timer.active and timer.unclickable and timer.HideOOC and not timer.ActiveWhileHidden and not timer.hideInactive then
-                timer:Show()
-            end
-            timer.button:SetAlpha(1)
-            if timer.ChainOOCAlpha then timer.ChainOOCAlpha:SetAlpha(1) end
-        end
-        if TotemTimers_MultiSpell then
-            TotemTimers_MultiSpell:SetAlpha(1)
-        end
-	end
-end
-oocframe:SetScript("OnEvent", XiTimers.OOCFaderEvent)
-
-local rangeManaFrame = CreateFrame("Frame")
-local lastRangeUpdate = 0
-local rangeManaCheckFrames = {}
-
-
-local function rangeManaUpdate(self, elapsed)
-	lastRangeUpdate = lastRangeUpdate + 1
-	if lastRangeUpdate > #rangeManaCheckFrames then lastRangeUpdate = 1 end
-	local timer = rangeManaCheckFrames[lastRangeUpdate]
-	if not timer then return end
-   --[[  if timer.rangeCheck then
-        --self.rangeCheckCount = self.rangeCheckCount + 1
-        --if self.rangeCheckCount > 8 then
-           -- self.rangeCheckCount = 0
-            timer.outofrange = IsSpellInRange(timer.rangeCheck, "target") == 0
-            if timer.outofrange then
-                timer.button.icons[1]:SetVertexColor(1,0,0)
+            TimerBars[1]:SetPoint("LEFT", self.button, "RIGHT", self.timeSpacing, TimerBars[1]:GetHeight()*TimerBars[1]:GetEffectiveScale()/2*(activetimers-1))
+        elseif side == "TOP" then
+            if TotemTimers.ActiveProfile.ShowCooldowns and self.nr < 5 and (TotemTimers.ActiveProfile.Arrange == "vertical" or TotemTimers.ActiveProfile.Arrange == "box") then
+                TimerBars[1]:SetPoint("BOTTOM", self.button, "TOP", 0, self.timeSpacing)
+                local active = 0
+                local firstactive = 0
+                for i = 2, nrOfTimers do
+                    if self.timers[i] > 0 then
+                        active = active + 1
+                        if firstactive == 0 then firstactive = i end
+                    end
+                end
+                if active > 0 then
+                    local left = self.button:GetLeft() < WorldFrame:GetWidth()/2
+                    if TotemTimers.ActiveProfile.Arrange == "box" and self.actnr then
+                        left = self.actnr == 2 or self.actnr == 4
+                    end
+                    for i=2, nrOfTimers do
+                        TimerBars[i].icon:ClearAllPoints()
+                        if left then
+                            TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
+                        else
+                            TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
+                        end
+                    end
+                    if left then
+                        TimerBars[firstactive]:SetPoint("LEFT", self.button, "RIGHT",
+                                self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
+                    else
+                        TimerBars[firstactive]:SetPoint("RIGHT", self.button, "LEFT",
+                                -self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
+                    end
+                    local last = firstactive
+                    for i = firstactive+1, nrOfTimers do
+                        TimerBars[i]:SetPoint("TOP", TimerBars[last], "BOTTOM")
+                        if self.timers[i] > 0 then
+                            last = i
+                        end
+                    end
+                    for i = 2, firstactive-1 do
+                        TimerBars[i]:SetPoint("TOP", self.button, "BOTTOM")
+                    end
+                end
             else
-                timer.button.icons[1]:SetVertexColor(1,1,1)
+                local lastactive = 1
+                TimerBars[1]:SetPoint("BOTTOM", self.button, "TOP", 0, self.timeSpacing)
+                for i=2, nrOfTimers do
+                    TimerBars[i]:SetPoint("BOTTOM", TimerBars[lastactive], "TOP")
+                    if self.timers[i] > 0 then
+                        lastactive = i
+                    end
+                end
             end
-       -- end
-    end ]]
-    
-    if timer.manaCheck then
-        --self.manaCheckCount = self.manaCheckCount + 1
-        --if self.manaCheckCount > 8 then
+        elseif side == "BOTTOM" then
+            if TotemTimers.ActiveProfile.ShowCooldowns and self.nr < 5 and (TotemTimers.ActiveProfile.Arrange == "vertical" or TotemTimers.ActiveProfile.Arrange == "box") then
+                TimerBars[1]:SetPoint("TOP", self.button, "BOTTOM", 0, -self.timeSpacing)
+                local active = 0
+                local firstactive = 0
+                for i = 2, nrOfTimers do
+                    if self.timers[i] > 0 then
+                        active = active + 1
+                        if firstactive == 0 then firstactive = i end
+                    end
+                end
+                if active > 0 then
+                    local left = self.button:GetLeft() < WorldFrame:GetWidth()/2
+                    if TotemTimers.ActiveProfile.Arrange == "box" and self.actnr then
+                        left = self.actnr == 2 or self.actnr == 4
+                    end
+                    for i=2, nrOfTimers do
+                        TimerBars[i].icon:ClearAllPoints()
+                        if left then
+                            TimerBars[i].icon:SetPoint("LEFT", TimerBars[i], "RIGHT", -4, 0)
+                        else
+                            TimerBars[i].icon:SetPoint("RIGHT", TimerBars[i], "LEFT", 4, 0)
+                        end
+                    end
+                    if left then
+                        TimerBars[firstactive]:SetPoint("LEFT", self.button, "RIGHT",
+                                self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
+                    else
+                        TimerBars[firstactive]:SetPoint("RIGHT", self.button, "LEFT",
+                                -self.timeSpacing, TimerBars[firstactive]:GetHeight()*TimerBars[firstactive]:GetEffectiveScale()/2*(active-1))
+                    end
+                    local last = firstactive
+                    for i = firstactive+1, nrOfTimers do
+                        TimerBars[i]:SetPoint("TOP", TimerBars[last], "BOTTOM")
+                        if self.timers[i] > 0 then
+                            last = i
+                        end
+                    end
+                    for i = 2, firstactive-1 do
+                        TimerBars[i]:SetPoint("TOP", self.button, "BOTTOM")
+                    end
+                end
+            else
+                local lastactive = 1
+                TimerBars[1]:SetPoint("TOP", self.button, "BOTTOM", 0, -self.timeSpacing)
+                for i=2, nrOfTimers do
+                    TimerBars[i]:SetPoint("TOP", TimerBars[lastactive], "BOTTOM")
+                    if self.timers[i] > 0 then
+                        lastactive = i
+                    end
+                end
+            end
+        end
+        if not InCombatLockdown() and not notReanchor then self:Reanchor() end
+    end
+
+    function XiTimers:GetBorder(side)
+        local timerBarPos = self.timerBarPos
+        if side == "TOP" and timerBarPos == "TOP" or side == "BOTTOM" and timerBarPos == "BOTTOM" then
+            local height = self.timerBars[1]:GetHeight()*self.timerBars[1]:GetEffectiveScale()
+            if self.nr > 5 or TotemTimers.ActiveProfile.Arrange == "horizontal" then
+                height = height * self.nrOfTimers
+            end
+            return (self.timerOnButton and not self.forceBar) and 0 or self.timeSpacing + height
+        elseif ((side == "LEFT" and timerBarPos == "LEFT" or side == "RIGHT" and timerBarPos == "RIGHT") and ((self.nrOfTimers>1 and TotemTimers.ActiveProfile.ShowCooldowns) or not self.timerOnButton or self.forceBar))
+                or (self.nr < 5 and TotemTimers.ActiveProfile.ShowCooldowns and TotemTimers.ActiveProfile.Arrange == "vertical" and self.nrOfTimers > 1 and
+                ((side == "LEFT" and self.nrOfTimers > 1 and TotemTimersFrame:GetLeft() > WorldFrame:GetWidth()/2)
+                        or (side == "RIGHT" and self.nrOfTimers > 1 and TotemTimersFrame:GetLeft() < WorldFrame:GetWidth()/2)))
+        then
+            return (self.timeSpacing + self.timerBars[1]:GetWidth()*self.timerBars[1]:GetEffectiveScale())
+        end
+        return 0
+    end
+
+
+    function XiTimers:SetWidth(width)
+        self.button:SetWidth(width)
+    end
+
+    function XiTimers:SetHeight(height)
+        self.button:SetHeight(height)
+    end
+
+    function XiTimers:SetFont(font)
+        for _,timerbar in pairs(self.timerBars) do
+            local _,height = timerbar.time:GetFont()
+            timerbar.time:SetFont(font, height)
+        end
+        local _,height = self.button.time:GetFont()
+        self.button.time:SetFont(font, height, "OUTLINE")
+    end
+
+    function XiTimers:SetTimeHeight(height)
+        for _,timerbar in pairs(self.timerBars) do
+            timerbar:SetHeight(height)
+            timerbar.background:SetHeight(height)
+            local font = timerbar.time:GetFont()
+            timerbar.time:SetFont(font, height)
+        end
+        self:Reanchor()
+    end
+
+    function XiTimers:SetTimeWidth(width)
+        for _,timerbar in pairs(self.timerBars) do
+            timerbar:SetWidth(width)
+            timerbar.background:SetWidth(width)
+            timerbar.time:SetWidth(width)
+        end
+        self:Reanchor()
+    end
+
+    function XiTimers:SetScale(scale)
+        self.button:SetScale(scale)
+        self:SetTimerBarPos(self.timerBarPos)
+        --self:Reanchor()
+    end
+
+    function XiTimers:SetBarTexture(texture)
+        for _,bar in pairs(self.timerBars) do
+            bar:SetStatusBarTexture(texture)
+            bar.background:SetStatusBarTexture(texture)
+        end
+    end
+
+    function XiTimers:SetBarColor(r,g,b,a)
+        if not a then a = 1 end
+        local backgroundAlpha = math.max(0, a - 0.6)
+        for _,bar in pairs(self.timerBars) do
+            bar:SetStatusBarColor(r,g,b,a)
+            bar.background:SetStatusBarColor(r,g,b,backgroundAlpha)
+        end
+    end
+
+
+    --allowed position combinations are: CENTER/CENTER, LEFT/RIGHT, RIGHT/LEFT, TOP/BOTTOM, BOTTOM/TOP
+
+    local CounterPositions = {
+        CENTER = "CENTER",
+        LEFT = "RIGHT",
+        RIGHT = "LEFT",
+        TOP = "BOTTOM",
+        BOTTOM = "TOP",
+        TOPLEFT = "BOTTOM",
+        TOPRIGHT = "BOTTOM",
+    }
+
+    local DirectionXMult = {
+        CENTER = 0,
+        LEFT = 1,
+        RIGHT = -1,
+        TOP = 0,
+        BOTTOM = 0,
+        TOPRIGHT = -1,
+        TOPLEFT = 1,
+        BOTTOMLEFT = 1,
+        BOTTOMRIGHT = -1,
+    }
+
+    local DirectionYMult = {
+        CENTER = 0,
+        LEFT = 0,
+        RIGHT = 0,
+        TOP = -1,
+        BOTTOM = -1,
+        TOPRIGHT = -1,
+        TOPLEFT = -1,
+        BOTTOMRIGHT = -1,
+        BOTTOMLEFT = 0.5,
+    }
+
+
+    function XiTimers:SetPoint(pos, relframe, relpos, halfspace)
+        local relborder = 0
+        if relframe.button then
+            if not relpos then relborder = relframe:GetBorder(CounterPositions[pos])
+            else relborder = relframe:GetBorder(relpos) end
+            relframe = relframe.button
+        end
+        local borderx = self:GetBorder(pos)+relborder
+        local bordery = borderx
+        --hack for anchoring TOPRIGHT or TOPLEFT to BOTTOM, maybe change it account for all anchors someday if needed
+        if relpos == "BOTTOM" then borderx = 0 end
+        self.button:ClearAllPoints()
+        if not relpos then relpos = CounterPositions[pos] end
+        local spacingx = self.spacing
+        if halfspace then spacingx = spacingx / 2 end
+        local spacingy = self.spacing
+        self.button:SetPoint(pos, relframe, relpos, (spacingx+borderx)*DirectionXMult[pos], (spacingy+bordery)*DirectionYMult[pos])
+    end
+
+    -- anchors this timer to another
+    function XiTimers:Anchor(timer, point, relpoint, halfspace)
+        table.insert(self.anchors, {timer = timer, point = point, relpoint = relpoint, halfspace = halfspace})
+        table.insert(timer.anchorchilds, self)
+        self:SetPoint(point, timer, relpoint, halfspace)
+    end
+
+    -- updates the positions of all frames anchored to this timer
+    function XiTimers:Reanchor()
+        for _, anchor in pairs(self.anchors) do
+            self:SetPoint(anchor.point, anchor.timer, anchor.relpoint, anchor.halfspace)
+        end
+        for _, anchorchild in pairs(self.anchorchilds) do
+            anchorchild:Reanchor()
+        end
+    end
+
+    function XiTimers:ClearAnchors()
+        self.anchors = {}
+        self.anchorchilds = {}
+    end
+
+    function XiTimers:SetSpacing(spacing)
+        self.spacing = spacing
+        self:Reanchor()
+    end
+
+    function XiTimers:SetTimeSpacing(spacing)
+        self.timeSpacing = spacing
+        self:SetTimerBarPos(self.timerBarPos)
+        --self:Reanchor()
+    end
+
+
+    function XiTimers:Show()
+        self.button:Show()
+        for i=1,self.nrOfTimers do
+            if self.timers[i] > 0 then
+                self:ShowTimerBar(i)
+            end
+        end
+    end
+
+    function XiTimers:Hide()
+        self.button:Hide()
+        for i=1,self.nrOfTimers do
+            if self.timers[i] > 0 then
+                self:HideTimerBar(i)
+            end
+        end
+    end
+
+    function XiTimers:HideNormalTexture()
+        --self.button.normalTexture:SetTexture(1,1,1,0)
+        self.button.normalTexture:SetTexture(nil)
+    end
+
+
+    --Out-of-combat-Fader
+
+    local oocframe = CreateFrame("Frame", "XiTimersOOCFaderFrame")
+    oocframe:RegisterEvent("PLAYER_REGEN_ENABLED")
+    oocframe:RegisterEvent("PLAYER_REGEN_DISABLED")
+
+    function XiTimers.invokeOOCFader()
+        XiTimers.OOCFaderEvent(nil, (InCombatLockdown() and "PLAYER_REGEN_DISABLED") or "PLAYER_REGEN_ENABLED")
+    end
+
+    XiTimers.OOCFaderEvent = function(self, event, arg1, arg2)
+        if event == "PLAYER_REGEN_ENABLED" then
+            incombat = false
+            for _,timer in pairs(XiTimers.timers) do
+                if timer.active and timer.unclickable and timer.HideOOC then
+                    timer:Hide()
+                end
+                timer.button:SetAlpha(timer.OOCAlpha)
+                if timer.ChainOOCAlpha then timer.ChainOOCAlpha:SetAlpha(timer.OOCAlpha) end
+            end
+            if TotemTimers_MultiSpell then
+                TotemTimers_MultiSpell:SetAlpha(TotemTimers_MultiSpell.OOCAlpha or 1)
+            end
+        elseif event == "PLAYER_REGEN_DISABLED" then
+            incombat = true
+            for _,timer in pairs(XiTimers.timers) do
+                if timer.active and timer.unclickable and timer.HideOOC and not timer.ActiveWhileHidden and not timer.hideInactive then
+                    timer:Show()
+                end
+                timer.button:SetAlpha(1)
+                if timer.ChainOOCAlpha then timer.ChainOOCAlpha:SetAlpha(1) end
+            end
+            if TotemTimers_MultiSpell then
+                TotemTimers_MultiSpell:SetAlpha(1)
+            end
+        end
+    end
+    oocframe:SetScript("OnEvent", XiTimers.OOCFaderEvent)
+
+    local rangeManaFrame = CreateFrame("Frame")
+    local lastRangeUpdate = 0
+    local rangeManaCheckFrames = {}
+
+
+    local function rangeManaUpdate(self, elapsed)
+        lastRangeUpdate = lastRangeUpdate + 1
+        if lastRangeUpdate > #rangeManaCheckFrames then lastRangeUpdate = 1 end
+        local timer = rangeManaCheckFrames[lastRangeUpdate]
+        if not timer then return end
+        --[[  if timer.rangeCheck then
+             --self.rangeCheckCount = self.rangeCheckCount + 1
+             --if self.rangeCheckCount > 8 then
+                -- self.rangeCheckCount = 0
+                 timer.outofrange = IsSpellInRange(timer.rangeCheck, "target") == 0
+                 if timer.outofrange then
+                     timer.button.icons[1]:SetVertexColor(1,0,0)
+                 else
+                     timer.button.icons[1]:SetVertexColor(1,1,1)
+                 end
+            -- end
+         end ]]
+
+        if timer.manaCheck then
+            --self.manaCheckCount = self.manaCheckCount + 1
+            --if self.manaCheckCount > 8 then
             --self.manaCheckCount = 0
             local _,nomana = IsUsableSpell(timer.manaCheck)
-			if nomana then
+            if nomana then
                 if timer.manaCheckMini then
                     timer.button.miniIcon:SetVertexColor(0.5,0.5,1)
                 else
@@ -967,116 +1005,116 @@ local function rangeManaUpdate(self, elapsed)
                 if timer.manaCheckMini then
                     timer.button.miniIcon:SetVertexColor(1,1,1)
                 else
-                  --[[ if timer.outofrange then
-                        timer.button.icons[1]:SetVertexColor(1,0,0)
-                    else ]]
-                        timer.button.icons[1]:SetVertexColor(1,1,1)
-                   -- end
+                    --[[ if timer.outofrange then
+                          timer.button.icons[1]:SetVertexColor(1,0,0)
+                      else ]]
+                    timer.button.icons[1]:SetVertexColor(1,1,1)
+                    -- end
                 end
             end
-        --end
-    end
-end
-
-rangeManaFrame:SetScript("OnUpdate", rangeManaUpdate)
-rangeManaFrame:Show()
-
-function XiTimers.AddRangeCheck(self)
-	local isIn = false
-	for i=1,#rangeManaCheckFrames do
-		if rangeManaCheckFrames[i] == self then isIn = true end
-	end
-	if not isIn then table.insert(rangeManaCheckFrames, self) end
-end
-
-function XiTimers.RemoveRangeCheck(self)
-	for i=1,#rangeManaCheckFrames do
-		if rangeManaCheckFrames[i] and rangeManaCheckFrames[i] == self then
-			table.remove(rangeManaCheckFrames,i)
-			i = i - 1
-		end
-	end
-end
-
-function XiTimers.HookTooltips(button)
-	button:HookScript("OnEnter", function(self)
-	    if not self:GetAttribute("tooltip") then return end
-	    if self.tooltip then self.tooltip:Show() end
-	end)
-    button:HookScript("OnLeave", function(self)
-        if self.tooltip then self.tooltip:Hide() end
-    end)
-end
-
-
-XiTimers.TimerEvent = function(self, event, ...)
-
-    local timer = self.timer
-    if timer.customOnEvent then
-        local abort = timer.customOnEvent(self, event, ...)
-        if abort then return end
-    end
-
-    local checkCooldown = false
-
-    if timer.buff and event == "UNIT_AURA" and ... == "player" then
-        local name, _, _, count, duration, expires
-        local buff = self.timer.buff
-
-        if type(buff) == "number" then
-            name, _, _, count, duration, expires = AuraUtil.FindAura(
-                    function(...) return select(13, ...) == buff end, "player", "HELPFUL")
-        else
-            name, _, _, count, duration, expires = AuraUtil.FindAuraByName(buff, "player", "HELPFUL")
-        end
-        if name and duration and expires then
-            timer.buffIsActive = true
-            timer.prohibitCooldown = true
-            timer.StopPulse = false
-            timer:StartBarTimer(expires - GetTime(), duration)
-            timer:Start(1, expires - GetTime(), duration)
-        elseif timer.buffIsActive then
-            timer.buffIsActive = false
-            timer.prohibitCooldown = false
-            timer:StopBarTimer()
-            timer:Stop(1)
-            checkCooldown = true
-            timer.StopPulse = timer.NoBuffStopPulse
+            --end
         end
     end
 
-    if timer.buffIsActive then return end
+    rangeManaFrame:SetScript("OnUpdate", rangeManaUpdate)
+    rangeManaFrame:Show()
 
-    if checkCooldown or  event == "SPELL_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_COOLDOWN" then
-        local start, duration, enable = GetSpellCooldown(timer.spell)
-        if (not start and not duration) then --or (duration <= 1.5 and not InCombatLockdown()) then
-            self.timer:Stop(1)
-        else
-            if duration <= 1.5 then
-                self.timer:Stop(1)
-            elseif duration > 1.5 then
-                self.timer:Start(1,start+duration-GetTime(),duration)
+    function XiTimers.AddRangeCheck(self)
+        local isIn = false
+        for i=1,#rangeManaCheckFrames do
+            if rangeManaCheckFrames[i] == self then isIn = true end
+        end
+        if not isIn then table.insert(rangeManaCheckFrames, self) end
+    end
+
+    function XiTimers.RemoveRangeCheck(self)
+        for i=1,#rangeManaCheckFrames do
+            if rangeManaCheckFrames[i] and rangeManaCheckFrames[i] == self then
+                table.remove(rangeManaCheckFrames,i)
+                i = i - 1
             end
-            CooldownFrame_Set(self.cooldown, start, duration, enable)
         end
-        --[[local start, duration, enable, charges, maxcharges
+    end
 
-        local gcdstart, gcdduration = GetSpellCooldown(61304)
-        start, duration, enable = GetSpellCooldown(timer.spell)
+    function XiTimers.HookTooltips(button)
+        button:HookScript("OnEnter", function(self)
+            if not self:GetAttribute("tooltip") then return end
+            if self.tooltip then self.tooltip:Show() end
+        end)
+        button:HookScript("OnLeave", function(self)
+            if self.tooltip then self.tooltip:Hide() end
+        end)
+    end
 
-        if (timer.running and timer.endTime and timer.endTime <= gcdstart + gcdduration) or
-                (gcdstart == start and gcdduration == duration) then
-            if timer.timers[1] > 0 then
+
+    XiTimers.TimerEvent = function(self, event, ...)
+
+        local timer = self.timer
+        if timer.customOnEvent then
+            local abort = timer.customOnEvent(self, event, ...)
+            if abort then return end
+        end
+
+        local checkCooldown = false
+
+        if timer.buff and event == "UNIT_AURA" and ... == "player" then
+            local name, _, _, count, duration, expires
+            local buff = self.timer.buff
+
+            if type(buff) == "number" then
+                name, _, _, count, duration, expires = AuraUtil.FindAura(
+                        function(...) return select(13, ...) == buff end, "player", "HELPFUL")
+            else
+                name, _, _, count, duration, expires = AuraUtil.FindAuraByName(buff, "player", "HELPFUL")
+            end
+            if name and duration and expires then
+                timer.buffIsActive = true
+                timer.prohibitCooldown = true
+                timer.StopPulse = false
+                timer:StartBarTimer(expires - GetTime(), duration)
+                timer:Start(1, expires - GetTime(), duration)
+            elseif timer.buffIsActive then
+                timer.buffIsActive = false
+                timer.prohibitCooldown = false
+                timer:StopBarTimer()
                 timer:Stop(1)
+                checkCooldown = true
+                timer.StopPulse = timer.NoBuffStopPulse
             end
-            self.cooldown:SetDrawSwipe(true)
-            self.cooldown:SetCooldown(gcdstart, gcdduration)
-        else
-            if duration == 0 and timer.timers[1] > 0 then
+        end
+
+        if timer.buffIsActive then return end
+
+        if checkCooldown or  event == "SPELL_UPDATE_COOLDOWN" or event == "ACTIONBAR_UPDATE_COOLDOWN" then
+            local start, duration, enable = GetSpellCooldown(timer.spell)
+            if (not start and not duration) then --or (duration <= 1.5 and not InCombatLockdown()) then
                 self.timer:Stop(1)
-            elseif duration > 0 then
-                self.timer:Start(1, start+duration-GetTime(), duration)
+            else
+                if duration <= 1.5 then
+                    self.timer:Stop(1)
+                elseif duration > 1.5 then
+                    self.timer:Start(1,start+duration-GetTime(),duration)
+                end
+                CooldownFrame_Set(self.cooldown, start, duration, enable)
             end
-        end]]
+            --[[local start, duration, enable, charges, maxcharges
+
+            local gcdstart, gcdduration = GetSpellCooldown(61304)
+            start, duration, enable = GetSpellCooldown(timer.spell)
+
+            if (timer.running and timer.endTime and timer.endTime <= gcdstart + gcdduration) or
+                    (gcdstart == start and gcdduration == duration) then
+                if timer.timers[1] > 0 then
+                    timer:Stop(1)
+                end
+                self.cooldown:SetDrawSwipe(true)
+                self.cooldown:SetCooldown(gcdstart, gcdduration)
+            else
+                if duration == 0 and timer.timers[1] > 0 then
+                    self.timer:Stop(1)
+                elseif duration > 0 then
+                    self.timer:Start(1, start+duration-GetTime(), duration)
+                end
+            end]]
+        end
     end
-end

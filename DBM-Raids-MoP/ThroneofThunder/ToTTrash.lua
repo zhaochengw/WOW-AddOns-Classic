@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ToTTrash", "DBM-Raids-MoP", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetModelID(47785)
 mod:SetZone(1098)
 
@@ -19,11 +19,11 @@ local warnSpiritFire			= mod:NewTargetAnnounce(139895, 3)--This is morchok entry
 local warnStormCloud			= mod:NewTargetAnnounce(139900, 4)
 local warnFixated				= mod:NewSpellAnnounce(140306, 3)
 
-local specWarnStormEnergy		= mod:NewSpecialWarningYou(139322)
-local specWarnShadowNova		= mod:NewSpecialWarningRun(139899, nil, nil, 2, 4)--This hurls you pretty damn far. If you aren't careful you're as good as gone.
-local specWarnStormCloud		= mod:NewSpecialWarningYou(139900)
-local specWarnSonicScreech		= mod:NewSpecialWarningInterrupt(136751)
-local specWarnConductiveShield	= mod:NewSpecialWarningTarget(140296)
+local specWarnStormEnergy		= mod:NewSpecialWarningMoveAway(139322, nil, nil, nil, 1, 2)
+local specWarnShadowNova		= mod:NewSpecialWarningRun(139899, nil, nil, 2, 4, 2)--This hurls you pretty damn far. If you aren't careful you're as good as gone.
+local specWarnStormCloud		= mod:NewSpecialWarningMoveAway(139900, nil, nil, nil, 1, 2)
+local specWarnSonicScreech		= mod:NewSpecialWarningInterrupt(136751, nil, nil, nil, 1, 2)
+local specWarnConductiveShield	= mod:NewSpecialWarningReflect(140296, nil, nil, nil, 1, 2)
 
 local timerSpiritfireCD			= mod:NewCDTimer(12, 139895, nil, nil, nil, 3)
 local timerShadowNovaCD			= mod:NewCDTimer(12, 139899, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
@@ -59,10 +59,12 @@ function mod:SPELL_CAST_START(args)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(3)
 		end
-	elseif spellId == 136751 and (args.sourceGUID == UnitGUID("target") or args.sourceGUID == UnitGUID("focus")) then
+	elseif spellId == 136751 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnSonicScreech:Show(args.sourceName)
+		specWarnSonicScreech:Play("kickcast")
 	elseif spellId == 139899 then
 		specWarnShadowNova:Show()
+		specWarnShadowNova:Play("justrun")
 		timerShadowNovaCD:Start()
 	end
 end
@@ -74,6 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnStormEnergy:CombinedShow(1.5, args.destName)
 		if args:IsPlayer() then
 			specWarnStormEnergy:Show()
+			specWarnStormEnergy:Play("scatter")
 		end
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
@@ -82,6 +85,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnStormCloud:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
 			specWarnStormCloud:Show()
+			specWarnStormCloud:Play("scatter")
 		end
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
@@ -91,6 +95,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerConductiveShieldCD:Start(20, args.destName, args.sourceGUID)
 		if self:AntiSpam(3, 2) then
 			specWarnConductiveShield:Show(args.destName)
+			specWarnConductiveShield:Play("stopattack")
 		end
 	end
 end

@@ -1,5 +1,14 @@
 # Changelog
 
+## 111
+- Midnight update
+
+## 110
+- TBC Era support
+
+## 109
+- Version update
+
 ## 108
 - Version update
 

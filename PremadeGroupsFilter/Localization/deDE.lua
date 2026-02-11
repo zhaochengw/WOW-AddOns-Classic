@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Premade Groups Filter
 -------------------------------------------------------------------------------
--- Copyright (C) 2025 Bernhard Saumweber
+-- Copyright (C) 2026 Bernhard Saumweber
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -156,3 +156,5 @@ L["settings.rioRatingColors.title"] = "Wertung in Raider.IO-Farben"
 L["settings.rioRatingColors.tooltip"] = "Benutzt das Raider.IO-Farbschema für Mythisch+ Wertungen, falls das Raider.IO-Addon geladen ist."
 L["settings.cancelOldestApp.title"] = "Älteste Anmeldung abbrechen"
 L["settings.cancelOldestApp.tooltip"] = "Wenn Ihr die maximale Anzahl an Gruppenanmeldungen laufen habt, klickt auf eine Gruppe, um Eure älteste Anfrage abzubrechen. Klickt dann erneut, um Euch zu bewerben."
+L["settings.compactListEntries.title"] = "Kompakte Listeneinträge"
+L["settings.compactListEntries.tooltip"] = "Blendet die Spielstil-Zeile aus, damit Einträge in der Gruppensuche weniger vertikalen Platz benötigen (wie vor dem Midnight-Prepatch)."

@@ -115,6 +115,22 @@ do
 	end
 end
 
+-- this is probably a horrible idea, but it actually works
+-- local function initTaintHack()
+-- 	WorldMapFrame.taintedByDashi = true
+
+-- 	local noop = function() end
+-- 	hooksecurefunc(WorldMapFrame, 'AcquirePin', function(self, pinTemplate)
+-- 		if not InCombatLockdown() then
+-- 			for pin in self:EnumeratePinsByTemplate(pinTemplate) do
+-- 				pin.CheckMouseButtonPassthrough = noop
+-- 				pin.UpdateMousePropagation = noop
+-- 				pin.SetPropagateMouseClicks = noop
+-- 			end
+-- 		end
+-- 	end)
+-- end
+
 do
 	local mixin = {}
 	function mixin:SetPinTemplate(templateName)
@@ -220,6 +236,10 @@ do
 		end
 		WorldMapFrame.pinPools[pinTemplate] = pinPool
 		WorldMapFrame:AddDataProvider(provider)
+
+		-- if not WorldMapFrame.taintedByDashi then
+		-- 	initTaintHack()
+		-- end
 
 		return provider
 	end

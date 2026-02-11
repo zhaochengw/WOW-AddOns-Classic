@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Premade Groups Filter
 -------------------------------------------------------------------------------
--- Copyright (C) 2025 Bernhard Saumweber
+-- Copyright (C) 2026 Bernhard Saumweber
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -156,3 +156,5 @@ L["settings.rioRatingColors.title"] = "Couleurs de Raider.IO"
 L["settings.rioRatingColors.tooltip"] = "Si l’addon Raider.IO est installé et chargé, PGF utilisera la palette de couleur définie par Raider.IO."
 L["settings.cancelOldestApp.title"] = "Annuler la plus ancienne candidature"
 L["settings.cancelOldestApp.tooltip"] = "Si vous avez atteint le nombre maximal de candidatures en attente, cliquez sur un groupe pour annuler la candidature la plus ancienne, puis cliquez à nouveau pour postuler."
+L["settings.compactListEntries.title"] = "Entrées de liste compactes"
+L["settings.compactListEntries.tooltip"] = "Masque le style de jeu afin que les entrées de la liste des groupes prennent moins d’espace vertical (comme avant la mise à jour de prélancement de Midnight)."

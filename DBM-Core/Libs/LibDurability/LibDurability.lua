@@ -1,5 +1,5 @@
 --@curseforge-project-slug: libdurability@
-local LD = LibStub:NewLibrary("LibDurability", 3)
+local LD = LibStub:NewLibrary("LibDurability", 4)
 if not LD then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -48,11 +48,12 @@ end
 LD.GetDurability = GetDurability
 
 C_ChatInfo.RegisterAddonMessagePrefix("LibDRBLT")
+local issecretvalue = issecretvalue or function() return false end
 frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
 	if event == "READY_CHECK" then
 		local percent, broken = GetDurability()
 		SendAddonMessage("LibDRBLT", format("%d,%d", percent, broken), IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
-	elseif prefix == "LibDRBLT" and throttleTable[channel] then
+	elseif not issecretvalue(msg) and prefix == "LibDRBLT" and throttleTable[channel] then
 		if msg == "R" then
 			local t = GetTime()
 			if t - throttleTable[channel] > 4 then

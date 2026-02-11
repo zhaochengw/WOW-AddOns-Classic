@@ -9,6 +9,16 @@ UnZip contents into the "Interface\AddOns" folder in your WoW installation direc
 
 ===============================================================================
 Versions:
+v3.8.2 (2026-02-01)
+	-Added a canaccessvalue() check to PlayerCache's chat event handler
+
+v3.8.1 (2026-02-01)
+	-Added a check for Midnight that skips processing "secret values"
+
+v3.8 (2026-01-12)
+	-Fixed Blizzard changes for Anniversary Edition TBC
+	-Added zhCN locale (Courtesy of Loukky)
+
 v3.7.2 (2025-07-23)
 	-Patched Blizzard's missing monk class atlas
 

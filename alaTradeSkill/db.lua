@@ -279,7 +279,7 @@ local function LF_RequestSpell()
 	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		if T_TradeSkill_Name[pid] == nil then
 			local sid = T_TradeSkill_ID[pid];
-			if sid ~= nil then
+			if sid ~= nil and T_SpellData[sid] == nil then
 				RequestLoadSpellData(sid);
 				T_Temp_SpellHash[sid] = true;
 				T_Temp_pid[sid] = pid;
@@ -293,7 +293,7 @@ local function LF_RequestSpell()
 	end
 	for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
 		local sid = T_TradeSkill_CheckID[pid];
-		if T_SpellData[sid] == nil then
+		if sid ~= nil and T_SpellData[sid] == nil then
 			RequestLoadSpellData(sid);
 			T_Temp_SpellHash[sid] = true;
 			T_Temp_pid[sid] = pid;
@@ -335,11 +335,37 @@ local LN_Limited_RequestSpell = 0;
 local function LF_PreloadSpell()
 	if LF_RequestSpell() then
 		F:UnregisterEvent("SPELL_DATA_LOAD_RESULT");
+		MT.Debug("LF_PreloadSpell#0 |cff00ff00OK|r");
 	else
 		LN_Limited_RequestSpell = LN_Limited_RequestSpell + 1;
 		if LN_Limited_RequestSpell >= 10 then
-			MT.Error("LF_PreloadSpell#0", LN_Limited_RequestSpell);
+			MT.Debug("LF_PreloadSpell#0", LN_Limited_RequestSpell);
 			F:UnregisterEvent("SPELL_DATA_LOAD_RESULT");
+			if VT.__is_dev then
+				for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+					if T_TradeSkill_Name[pid] == nil then
+						local sid = T_TradeSkill_ID[pid];
+						if sid ~= nil then
+							MT.Debug("LF_PreloadSpell#1", sid);
+						end
+					end
+				end
+				for pid = DataAgent.DBMINPID, DataAgent.DBMAXPID do
+					local sid = T_TradeSkill_CheckID[pid];
+					if T_SpellData[sid] == nil then
+						MT.Debug("LF_PreloadSpell#1", sid);
+					end
+				end
+				for sid, info in next, T_Recipe_Data do
+					if T_SpellData[sid] == nil then
+						MT.Debug("LF_PreloadSpell#1", sid);
+					end
+					local spec = info[index_spec];
+					if spec ~= nil and T_SpellData[spec] == nil then
+						MT.Debug("LF_PreloadSpell#1", spec);
+					end
+				end
+			end
 		else
 			F:RegisterEvent("SPELL_DATA_LOAD_RESULT");	--	Events registered before loading screen went out may not work well. So reg here everytime.
 			MT.After(2.0, LF_PreloadSpell);
@@ -455,6 +481,7 @@ function F.LEARNED_SPELL_IN_TAB(id, tab, isGuild)
 		MT.MarkSkillToUpdate(pid);
 	end
 end
+F.LEARNED_SPELL_IN_SKILL_LINE = F.LEARNED_SPELL_IN_TAB;
 function F.SPELLS_CHANGED()
 	for spec, pid in next, T_TradeSkill_Spec2Pid do
 		local val = IsSpellKnown(spec) and true or nil;
@@ -473,9 +500,7 @@ MT.AddCallback("USER_EVENT_DATA_LOADED", function()
 				T_TradeSkill_SameSkillName[n2] = n1;
 			end
 		end
-		if VT.__is_dev then
-			MT.Debug("Preload", _SPre, _IPre);
-		end
+		MT.Debug("Preload", _SPre, _IPre);
 	end
 end);
 
@@ -1670,7 +1695,9 @@ MT.RegisterOnInit('db', function(LoggedIn)
 	for spec, pid in next, T_TradeSkill_Spec2Pid do
 		T_IsSpecLearned[spec] = IsSpellKnown(spec) and true or nil;
 	end
-	F:RegisterEvent("LEARNED_SPELL_IN_TAB");
+	-- F:RegisterEvent("LEARNED_SPELL_IN_TAB");
+	pcall(F.RegisterEvent, F, "LEARNED_SPELL_IN_TAB");
+	pcall(F.RegisterEvent, F, "LEARNED_SPELL_IN_SKILL_LINE");
 	F:RegisterEvent("SPELLS_CHANGED");
 end);
 -->

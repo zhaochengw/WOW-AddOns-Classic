@@ -2,23 +2,6 @@
 
 -- 初始化 ExtraConfiguration
 ExtraConfiguration = ExtraConfiguration or {}
-------观察报错-------
-if not InspectTalentFrameSpentPoints 
-then InspectTalentFrameSpentPoints = CreateFrame("FRAME") end
-------观察报错-------
-
--- 临时修复暴雪团队框架报错 by BigFoot
-do
-    if not Blizzard_CompactRaidFrameManager_FilterOptions then
-        Blizzard_CompactRaidFrameManager_FilterOptions = {
-            [1] = true,
-            [2] = true,
-            [3] = true,
-            displayRoleDAMAGER = true;
-        }
-    end
-end
-
 
 local prefix = "%%d %%s ";
 if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
@@ -76,12 +59,6 @@ local function BlueShaman()
             RAID_CLASS_COLORS['SHAMAN']["b"] = 0.73;
             -- RAID_CLASS_COLORS['SHAMAN']["colorStr"] = "ffF58CBA";
         end
-    end
-end
-
-local function MaxCameraDistance()
-    if ExtraConfiguration["maxcamera"] == 1 then
-        C_CVar.SetCVar("cameraDistanceMaxZoomFactor", "3.5");
     end
 end
 
@@ -229,7 +206,15 @@ function Switch_OptionPanel_OnShow()
     Switch_AntiLogoutEnable:SetChecked(ExtraConfiguration["antilogout"]==1);
 end
 
---buff精确时间&来源
+-- 实现MaxCameraDistance函数，使用怀旧服兼容的方式设置最大镜头距离
+function MaxCameraDistance()
+    if ExtraConfiguration["maxcamera"] == 1 then
+        SetCVar("cameraDistanceMax", 50) -- 怀旧服最大镜头距离
+        SetCVar("cameraDistanceMaxFactor", 2.6)
+    end
+end
+
+-- buff精确时间&来源
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self, unit, index, filter)
     local name, _, _, _, duration, expirationTime, unitCaster = UnitAura(unit, index, filter)
     if not name then return end
@@ -250,208 +235,5 @@ hooksecurefunc(GameTooltip, "SetUnitAura", function(self, unit, index, filter)
     if unitCaster and UnitExists(unitCaster) then
         GameTooltip:AddLine(FROM..UnitName(unitCaster), 0.65, 0.85, 1, 1);
         GameTooltip:Show();
-    end
-end)
-
---插件列表鼠标滚动
---InterfaceOptionsFrameAddOns:SetScript("OnMouseWheel", function(self, delta)
---    if InterfaceOptionsFrameAddOnsListScrollBar:IsShown() then
---        local offset = math.ceil(InterfaceOptionsFrameAddOnsListScrollBar:GetValue() - delta*ADDON_BUTTON_HEIGHT*5 - 0.5);
---        if offset < 1 then offset = 1 end
---        AddonListScrollFrame_OnVerticalScroll(InterfaceOptionsFrameAddOnsList, offset);
---    end
---end)
-
--- --新职业颜色
--- if GetLocale() == "zhCN" then
---     LOCALIZED_CLASS_NAMES_MALE["DEATHKNIGHT"] = "死亡骑士"
---     LOCALIZED_CLASS_NAMES_MALE["DEMONHUNTER"] = "恶魔猎手"
---     LOCALIZED_CLASS_NAMES_MALE["MONK"] = "武僧"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEATHKNIGHT"] = "死亡骑士"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEMONHUNTER"] = "恶魔猎手"
---     LOCALIZED_CLASS_NAMES_FEMALE["MONK"] = "武僧"
--- elseif GetLocale() == "zhTW" then
---     LOCALIZED_CLASS_NAMES_MALE["DEATHKNIGHT"] = "死亡骑士"
---     LOCALIZED_CLASS_NAMES_MALE["DEMONHUNTER"] = "恶魔獵人"
---     LOCALIZED_CLASS_NAMES_MALE["MONK"] = "武僧"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEATHKNIGHT"] = "死亡骑士"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEMONHUNTER"] = "恶魔獵人"
---     LOCALIZED_CLASS_NAMES_FEMALE["MONK"] = "武僧"
--- else
---     LOCALIZED_CLASS_NAMES_MALE["DEATHKNIGHT"] = "Death Knight"
---     LOCALIZED_CLASS_NAMES_MALE["DEMONHUNTER"] = "Demon Hunter"
---     LOCALIZED_CLASS_NAMES_MALE["MONK"] = "Monk"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEATHKNIGHT"] = "Death Knight"
---     LOCALIZED_CLASS_NAMES_FEMALE["DEMONHUNTER"] = "Demon Hunter"
---     LOCALIZED_CLASS_NAMES_FEMALE["MONK"] = "Monk"
--- end
-
--- RAID_CLASS_COLORS["DEATHKNIGHT"] = CreateColor(0.77, 0.12, 0.23, 1);
--- RAID_CLASS_COLORS["DEATHKNIGHT"].colorStr = RAID_CLASS_COLORS["DEATHKNIGHT"]:GenerateHexColor()
--- RAID_CLASS_COLORS["DEMONHUNTER"] = CreateColor(0.64, 0.19, 0.79, 1);
--- RAID_CLASS_COLORS["DEMONHUNTER"].colorStr = RAID_CLASS_COLORS["DEMONHUNTER"]:GenerateHexColor()
--- RAID_CLASS_COLORS["MONK"] = CreateColor(0, 1, 0.59, 1);
--- RAID_CLASS_COLORS["MONK"].colorStr = RAID_CLASS_COLORS["MONK"]:GenerateHexColor()
-
-do
-    local function get_panel_name(panel)
-        local tp = type(panel)
-        local cat = INTERFACEOPTIONS_ADDONCATEGORIES
-        if tp == "string" then
-            for i = 1, #cat do
-                local p = cat[i]
-                if p.name == panel then
-                    if p.parent then
-                        return get_panel_name(p.parent)
-                    else
-                        return panel
-                    end
-                end
-            end
-        elseif tp == "table" then
-            for i = 1, #cat do
-                local p = cat[i]
-                if p == panel then
-                    if p.parent then
-                        return get_panel_name(p.parent)
-                    else
-                        return panel.name
-                    end
-                end
-            end
-        end
-    end
-
-    local function InterfaceOptionsFrame_OpenToCategory_Fix(panel)
-        if doNotRun or InCombatLockdown() then return end
-        local panelName = get_panel_name(panel)
-        if not panelName then return end -- if its not part of our list return early
-        local noncollapsedHeaders = {}
-        local shownpanels = 0
-        local mypanel
-        local t = {}
-        local cat = INTERFACEOPTIONS_ADDONCATEGORIES
-        for i = 1, #cat do
-            local panel = cat[i]
-            if not panel.parent or noncollapsedHeaders[panel.parent] then
-                if panel.name == panelName then
-                    panel.collapsed = true
-                    t.element = panel
-                    InterfaceOptionsListButton_ToggleSubCategories(t)
-                    noncollapsedHeaders[panel.name] = true
-                    mypanel = shownpanels + 1
-                end
-                if not panel.collapsed then
-                    noncollapsedHeaders[panel.name] = true
-                end
-                shownpanels = shownpanels + 1
-            end
-        end
-        local Smin, Smax = InterfaceOptionsFrameAddOnsListScrollBar:GetMinMaxValues()
-        if shownpanels > 15 and Smin < Smax then
-            local val = (Smax/(shownpanels-15))*(mypanel-2)
-            InterfaceOptionsFrameAddOnsListScrollBar:SetValue(val)
-        end
-        doNotRun = true
-        InterfaceOptionsFrame_OpenToCategory(panel)
-        doNotRun = false
-    end
-
-    hooksecurefunc("InterfaceOptionsFrame_OpenToCategory", InterfaceOptionsFrame_OpenToCategory_Fix)
-
-    local orig = AddonTooltip_Update
-    _G.AddonTooltip_Update = function(owner, ...) 
-        if AddonList and AddonList:IsMouseOver() then
-            local id = owner and owner.GetID and owner:GetID()
-            if id and id > 0 and id <= GetNumAddOns() then
-                orig(owner, ...) 
-                return
-            end
-        end
-        --print("ADDON LIST FIX ACTIVATED") 
-    end
-
-    local frame = CreateFrame("Frame")
-    frame:RegisterEvent("ADDON_LOADED")
-    frame:SetScript("OnEvent", function(self, event, name)
-        if name == "Blizzard_Collections" then
-            for i = 1, 3 do
-                local button = _G["PetJournalLoadoutPet"..i]
-                if button and button.dragButton then
-                    button.dragButton:RegisterForClicks("LeftButtonUp")
-                end
-            end
-            self:UnregisterAllEvents()
-        end
-    end)
-end
-
--- InspectFrame TalentButton for alaTalentEmu
-local function CreateInspectTalentButton()
-    if (not InspectTalentButton) then
-        InspectTalentButton = CreateFrame("Button", "InspectTalentButton", InspectFrame, "OptionsButtonTemplate");
-        InspectTalentButton:ClearAllPoints();
-        InspectTalentButton:SetPoint("TOPRIGHT", InspectFrame, "TOPRIGHT", -42, -42);
-        InspectTalentButton:SetWidth(55);
-        InspectTalentButton:SetHeight(25);
-        InspectTalentButton:SetText(TALENT);
-        InspectTalentButton:SetScript("OnClick", function()
-            local name, realm = UnitName("target");
-            if name and name ~= "" then
-                if not realm or realm == "" then realm = GetRealmName() end
-                __ala_meta__.emu.Emu_Query(name, realm);
-            end
-        end)
-    end
-end
-
-local tb = CreateFrame("Frame");
-tb:RegisterEvent("ADDON_LOADED")
-tb:SetScript("OnEvent", function(self, event, ...)
-    if event == "ADDON_LOADED" then
-        local addon = ...;
-        if addon == "Blizzard_InspectUI" then
-            if IsAddOnLoaded("alaTalentEmu") then
-                CreateInspectTalentButton();
-            end
-            tb:UnregisterEvent("ADDON_LOADED");
-        end
-    end
-end)
-
--- fix raidframe
-local fr = CreateFrame("Frame");
-function Fix_RaidFrame_OnClick()
-    if InCombatLockdown() then
-        fr:RegisterEvent("PLAYER_REGEN_ENABLED");
-        return;
-    end
-
-    if RaidFrame and type(RaidFrame) == "table" and type(RaidFrame.SetScript) == "function" then
-        local id;
-        for id = 1, 40 do
-            local button = _G["RaidGroupButton"..id];
-            if type(button) == "table" and button.unit then
-                button:SetAttribute("type1", "target")
-                button:WrapScript(button, "OnClick", [[
-                    if self:GetAttribute("unit") then
-                        control:ChildUpdate("update", self:GetAttribute("unit"))
-                    end
-                ]], "OnClick")
-            end
-        end
-    end
-end
-fr:RegisterEvent("ADDON_LOADED")
-fr:SetScript("OnEvent", function(self, event, ...)
-    if event == "ADDON_LOADED" then
-        local addon = ...;
-        if addon == "Blizzard_RaidUI" then
-            Fix_RaidFrame_OnClick();
-            fr:UnregisterEvent("ADDON_LOADED");
-        end
-    elseif event == "PLAYER_REGEN_ENABLED" then
-        Fix_RaidFrame_OnClick();
-        fr:UnregisterEvent("PLAYER_REGEN_ENABLED");
     end
 end)

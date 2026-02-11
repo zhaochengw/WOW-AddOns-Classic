@@ -321,6 +321,15 @@ local function GetBuffTriggerOptions(data, triggernum)
       end,
       desc = L["• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.\n• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.\n|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.\n• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.\n• |cffffff00Smart Group|r adjusts to your current group type, matching just the \"player\" when solo, \"party\" units (including \"player\") in a party or \"raid\" units in a raid.\n• |cffffff00Multi-target|r attempts to use the Combat Log events, rather than unitID, to track affected units.\n|cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.\n\n|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting."],
     },
+    multiWarning = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = L["The Multi Target mode is less reliable and not recommended."],
+      order = 10.15,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit == "multi")
+      end,
+    },
     useSpecificUnit = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -405,6 +414,16 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
           and CanHaveMatchCheck(trigger)
           and not trigger.use_debuffClass)
+      end
+    },
+    multiNoFilterWarning = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = L["The Multi Target mode requires a name or spell id filter"],
+      order = 11.9,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit == "multi"
+          and not trigger.useName and not trigger.useExactSpellId)
       end
     },
     useName = {
@@ -814,7 +833,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi")
-               or WeakAuras.IsClassicEra()
       end
     },
     fetchRaidMark = {
@@ -900,7 +918,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 67.1,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
-        or WeakAuras.IsClassicEra()
       end
     },
     group_role = {
@@ -910,7 +927,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       values = OptionsPrivate.Private.role_types,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useGroupRole)
-        or WeakAuras.IsClassicEra()
       end,
       order = 67.2
     },
@@ -921,7 +937,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole)
-        or WeakAuras.IsClassicEra()
       end
     },
     useRaidRole = {

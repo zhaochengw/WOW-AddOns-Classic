@@ -1,7 +1,9 @@
+--TODO, some actual custom sounds and timer disables when apis added
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20251117220446")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true

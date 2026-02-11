@@ -1,7 +1,8 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("TazaveshTrash", "DBM-Party-Shadowlands", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250928205209")
+mod:SetRevision("20260112042022")
 mod:SetZone(2441)
 mod:RegisterZoneCombat(2441)
 --mod:SetModelID(47785)

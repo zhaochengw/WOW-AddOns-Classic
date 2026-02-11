@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2509, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240605152414")
+mod:SetRevision("20251117220446")
 mod:SetCreatureID(194181)
 mod:SetEncounterID(2562)
 mod:SetHotfixNoticeRev(20221015000000)
@@ -10,6 +10,9 @@ mod:SetMinSyncRevision(20221015000000)
 mod.sendMainBossGUID = true
 
 mod:RegisterCombat("combat")
+
+--TODO, some actual custom sounds and timer disables when apis added
+if DBM:IsPostMidnight() then return end
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 388537 386173 385958",

@@ -106,7 +106,7 @@ BG.Init(function()
         end)
 
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("TOP", f, "TOP", 0, -5)
         t:SetText(L["装备过期剩余时间"])
     end
@@ -155,8 +155,9 @@ BG.Init(function()
                                 if m then
                                     time = time + m
                                 end
-
-                                tinsert(BG.itemGuoQiFrame.tbl, { time = time, link = link, itemID = itemID, b = b, i = i })
+                                if h or m then
+                                    tinsert(BG.itemGuoQiFrame.tbl, { time = time, link = link, itemID = itemID, b = b, i = i })
+                                end
                                 break
                             end
                         end
@@ -180,7 +181,7 @@ BG.Init(function()
             if ii > maxButton then
                 local lastbt = BG.itemGuoQiFrame.buttons[ii - 1]
                 local t = lastbt:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("TOPLEFT", lastbt, "BOTTOMLEFT", 0, 0)
                 t:SetJustifyH("LEFT")
                 t:SetTextColor(1, 0.82, 0)
@@ -246,7 +247,7 @@ BG.Init(function()
             icon:SetTexture(select(5, GetItemInfoInstant(link)))
 
             local t = f:CreateFontString()
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("LEFT", 18, 0)
             t:SetJustifyH("LEFT")
             t:SetText(link:gsub("%[", ""):gsub("%]", ""))
@@ -266,7 +267,7 @@ BG.Init(function()
             end
 
             local t = sb:CreateFontString()
-            t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
             t:SetPoint("LEFT", sb:GetWidth() * time / 120, 0)
             t:SetText(time .. "m")
             if time >= 30 then
@@ -277,7 +278,7 @@ BG.Init(function()
         end
         if #BG.itemGuoQiFrame.tbl == 0 then
             local t = BG.itemGuoQiFrame:CreateFontString()
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetPoint("TOP", f, "TOP", 0, -30)
             t:SetWidth(BG.itemGuoQiFrame:GetWidth() - 20)
             t:SetText(L["背包里没有可交易的装备。"])

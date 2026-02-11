@@ -815,6 +815,8 @@ every 3 events starting from 2nd and ending at 11th: 2-11/3]=] ] = [=[事件發�
 	L["The duration of the animation in seconds."] = "動畫的持續時間(秒)。"
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "動畫的持續時間 (秒)。直到提醒效果正常隱藏後，才會播放結束時的動畫。"
 	L["The group and all direct children will share the same base frame level."] = "此群組和所有直接的子項目將共用相同的基礎框架層級。"
+	L["The Multi Target mode is less reliable and not recommended."] = "多目標模式較不可靠，不建議使用。"
+	L["The Multi Target mode requires a name or spell id filter"] = "多目標模式需要名稱或法術ID過濾器"
 	L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."] = "觸發編號是可選的。當未指定觸發編號時，將使用透過動態資訊選擇的觸發。"
 	L["The type of trigger"] = "觸發類型"
 	L["The WeakAuras Options Addon version %s doesn't match the WeakAuras version %s. If you updated the addon while the game was running, try restarting World of Warcraft. Otherwise try reinstalling WeakAuras"] = "WeakAuras 選項插件版本 %s 與 WeakAuras 版本 %s 不符。如果您在遊戲運行時更新了插件，請嘗試重新啟動《魔獸世界》。否則嘗試重新安裝 WeakAuras"
@@ -886,8 +888,8 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["Url: %s"] = "網址：%s"
 	L["Use Display Info Id"] = "使用顯示資訊 ID"
 	L["Use SetTransform"] = "使用 SetTransform"
-	L["Used in auras:"] = "使用的提醒效果:"
 	L["Used in Auras:"] = "使用的提醒效果:"
+	L["Used in auras:"] = "使用的提醒效果:"
 	L["Uses Texture Coordinates to rotate the texture."] = "使用材質坐標來旋轉材質。"
 	L["Uses UnitIsVisible() to check if game client has loaded a object for this unit. This distance is around 100 yards. This is polled every second."] = "使用 UnitIsVisible() 來檢查遊戲是否已經載入該單位的物件，距離為 100碼，每秒都會檢查一次。"
 	L["Value"] = "數值"
@@ -906,6 +908,10 @@ Upgrade your version of WeakAuras or wait for next release before installing thi
 	L["We thank"] = "我們感謝"
 	L["WeakAuras %s on WoW %s"] = "WeakAuras %s 在 WoW %s"
 	L["WeakAuras recommends using spell ids instead of names. Spell ids are automatically localized."] = "WeakAuras 建議使用法術ID而不是名稱。法術ID會自動本地化。"
+	--[[Translation missing --]]
+	L[ [=[WeakAuras will not support Midnight. On release of the prepatch, WeakAuras will be disabled.
+Read more on our Patreon page https://patreon.com/WeakAuras]=] ] = [=[WeakAuras will not support Midnight. On release of the prepatch, WeakAuras will be disabled.
+Read more on our Patreon page https://patreon.com/WeakAuras]=]
 	L["What do you want to do?"] = "你想要怎麼做?"
 	L["Whole Area"] = "整個區域"
 	L["wrapping"] = "自動換行"

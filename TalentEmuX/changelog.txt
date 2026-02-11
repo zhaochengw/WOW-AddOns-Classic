@@ -1,0 +1,49 @@
+2026-01-16
+TBC update.
+
+2026-01-15
+WotLK Titan Mage talents update. thx to 俏俏 and his buddies.
+
+2026-01-10
+WotLK Titan Rogue & Hunter talents update.
+
+2025-12-18
+WotLK Titan Shaman talents update.
+
+2025-11-25
+Fix an error occured when saving talents.
+
+2025-11-16
+More accurate ItemLevel.
+Fix blizzard's inspectui (Titan)
+
+2025-11-07
+Add entry in menu of guild frame.
+Fix
+
+2025-11-05
+MOP Update. All features.
+
+2025-06-01
+Fix SettingUI error.
+
+2025-05-06
+Wont mark wand enchantable.
+
+2025-04-28
+Update lib.
+
+2025-04-22
+Update enchant data.
+Color meta gem.
+Color item set.
+
+2025-04-10
+Update toc for classic era.
+
+2025-04-08
+Recevie addon message via tdInspect channel.
+Update libs.
+
+2025-04-02
+Update scroll lib.

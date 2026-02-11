@@ -1,11 +1,19 @@
 # Minimal Archaeology
 ## Latest Version
 
+### 12.0.0
+
+- Updated for Mainline 12.0
+- **12.0.0.1** Improved performance
+- **12.0.1** Reduced memory footprint
+
 ### 11.2
 
 - Updated for Mainline 11.2
 - **11.2.2** Improve digsites window
 - **11.2.2** Fix alt+click "Hide all"
+- **11.2.3** Bump toc
+- **11.2.5** Lib update
 
 ### 11.1.0
 

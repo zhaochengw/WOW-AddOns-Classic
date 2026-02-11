@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Premade Groups Filter
 -------------------------------------------------------------------------------
--- Copyright (C) 2025 Bernhard Saumweber
+-- Copyright (C) 2026 Bernhard Saumweber
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -154,3 +154,5 @@ L["settings.rioRatingColors.title"] = "Punteggio nei colori di Raider.IO"
 L["settings.rioRatingColors.tooltip"] = "Usa lo schema colori di Raider.IO per le punteggi Mitiche+ se l'addon Raider.IO è caricato."
 L["settings.cancelOldestApp.title"] = "Annulla la candidatura più vecchia"
 L["settings.cancelOldestApp.tooltip"] = "Se hai il numero massimo di candidature in attesa, clicca su un gruppo per annullare prima la tua candidatura più vecchia. Poi clicca di nuovo per candidarti."
+L["settings.compactListEntries.title"] = "Voci elenco compatte"
+L["settings.compactListEntries.tooltip"] = "Nasconde lo stile di gioco così le voci nell’elenco dei gruppi occupano meno spazio in verticale (come prima dell’aggiornamento ai contenuti della pre-espansione di Midnight)."

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(825, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(67977)
 mod:SetEncounterID(1565)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3)
@@ -22,11 +22,11 @@ local warnBite						= mod:NewSpellAnnounce(135251, 3, nil, "Tank")
 local warnKickShell					= mod:NewAnnounce("warnKickShell", 2, 134031)
 local warnShellConcussion			= mod:NewTargetNoFilterAnnounce(136431, 1)
 
-local specWarnCallofTortos			= mod:NewSpecialWarningSpell(136294)
-local specWarnQuakeStomp			= mod:NewSpecialWarningCount(134920, nil, nil, nil, 2)
-local specWarnStoneBreath			= mod:NewSpecialWarningInterrupt(133939, nil, nil, 2, 3)
-local specWarnCrystalShell			= mod:NewSpecialWarning("specWarnCrystalShell", false)
-local specWarnSummonBats			= mod:NewSpecialWarningSwitch(-7140, "Tank")--Dps can turn it on too, but not on by default for dps cause quite frankly dps should NOT switch right away, tank needs to get aggro first and where they spawn is semi random.
+local specWarnCallofTortos			= mod:NewSpecialWarningSpell(136294, nil, nil, nil, 1, 2)
+local specWarnQuakeStomp			= mod:NewSpecialWarningCount(134920, nil, nil, nil, 2, 2)
+local specWarnStoneBreath			= mod:NewSpecialWarningInterrupt(133939, nil, nil, 2, 3, 2)
+local specWarnCrystalShell			= mod:NewSpecialWarning("specWarnCrystalShell", false, nil, nil, 1, 2)
+local specWarnSummonBats			= mod:NewSpecialWarningSwitch(-7140, "Tank", nil, nil, 1, 2)--Dps can turn it on too, but not on by default for dps cause quite frankly dps should NOT switch right away, tank needs to get aggro first and where they spawn is semi random.
 
 local timerBiteCD					= mod:NewCDTimer(6.9, 135251, nil, "Tank", nil, 5)
 local timerCallTortosCD				= mod:NewNextTimer(60.5, 136294, nil, nil, nil, 1)
@@ -44,17 +44,18 @@ mod:AddBoolOption("ClearIconOnTurtles", false)--Different option, because you ma
 mod:AddBoolOption("AnnounceCooldowns", "RaidCooldown")
 
 local shelldName, shellConcussion = DBM:GetSpellName(137633), DBM:GetSpellName(136431)
-local stompCount = 0
-local shellsRemaining = 0
-local lastConcussion = 0
 local kickedShells = {}
-local addsActivated = 0
+mod.vb.stompCount = 0
+mod.vb.shellsRemaining = 0
+mod.vb.lastConcussion = 0
+mod.vb.addsActivated = 0
 
 local function checkCrystalShell()
 	if not DBM:UnitDebuff("player", shelldName) and not UnitIsDeadOrGhost("player") then
 		local percent = (UnitHealth("player") / UnitHealthMax("player")) * 100
 		if percent > 90 then
 			specWarnCrystalShell:Show(shelldName)
+			specWarnCrystalShell:Play("findshield")
 		end
 		mod:Unschedule(checkCrystalShell)
 		mod:Schedule(3, checkCrystalShell)
@@ -62,10 +63,10 @@ local function checkCrystalShell()
 end
 
 function mod:OnCombatStart(delay)
-	stompCount = 0
-	shellsRemaining = 0
-	lastConcussion = 0
-	addsActivated = 0
+	self.vb.stompCount = 0
+	self.vb.shellsRemaining = 0
+	self.vb.lastConcussion = 0
+	self.vb.addsActivated = 0
 	table.wipe(kickedShells)
 	timerCallTortosCD:Start(20.4-delay)
 	timerStompCD:Start(27-delay, 1)
@@ -93,11 +94,13 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 133939 then
 		if not self:IsDifficulty("lfr25") then
 			specWarnStoneBreath:Show(args.sourceName)
+			specWarnStoneBreath:Play("interruptsoon")
 		end
 		timerBreathCD:Start()
 	elseif spellId == 136294 then
 		if self:AntiSpam(5, 4) then
 			specWarnCallofTortos:Show()
+			specWarnCallofTortos:Play("mobsoon")
 		end
 		if self:AntiSpam(59, 3) then -- On below 10%, he casts Call of Tortos always. This cast ignores cooldown, so filter below 10% cast.
 			timerCallTortosCD:Start()
@@ -106,12 +109,13 @@ function mod:SPELL_CAST_START(args)
 		warnBite:Show()
 		timerBiteCD:Start()
 	elseif spellId == 134920 then
-		stompCount = stompCount + 1
-		specWarnQuakeStomp:Show(stompCount)
+		self.vb.stompCount = self.vb.stompCount + 1
+		specWarnQuakeStomp:Show(self.vb.stompCount)
+		specWarnQuakeStomp:Play("aesoon")
 		timerStompActive:Start()
-		timerStompCD:Start(nil, stompCount+1)
+		timerStompCD:Start(nil, self.vb.stompCount+1)
 		if self.Options.AnnounceCooldowns then
-			DBM:PlayCountSound(stompCount)
+			DBM:PlayCountSound(self.vb.stompCount)
 		end
 	end
 end
@@ -119,8 +123,8 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 133971 then--Shell Block (turtles dying and becoming kickable)
-		shellsRemaining = shellsRemaining + 1
-		addsActivated = addsActivated - 1
+		self.vb.shellsRemaining = self.vb.shellsRemaining + 1
+		self.vb.addsActivated = self.vb.addsActivated - 1
 		if DBM:GetRaidRank() > 0 and self.Options.ClearIconOnTurtles then
 			for uId in DBM:GetGroupMembers() do
 				local unitid = uId.."target"
@@ -131,9 +135,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif spellId == 133974 then--Spinning Shell
-		addsActivated = addsActivated + 1
-		if self.Options.SetIconOnTurtles and addsActivated < 9 then
-			self:ScanForMobs(args.destGUID, 2, 9-addsActivated, 1, nil, 10)
+		self.vb.addsActivated = self.vb.addsActivated + 1
+		if self.Options.SetIconOnTurtles and self.vb.addsActivated < 9 then
+			self:ScanForMobs(args.destGUID, 2, 9-self.vb.addsActivated, 1, nil, 10)
 		end
 	end
 end
@@ -149,16 +153,16 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 134031 and not kickedShells[args.destGUID] then--Kick Shell
 		kickedShells[args.destGUID] = true
-		shellsRemaining = shellsRemaining - 1
-		warnKickShell:Show(args.spellName, args.sourceName, shellsRemaining)
+		self.vb.shellsRemaining = self.vb.shellsRemaining - 1
+		warnKickShell:Show(args.spellName, args.sourceName, self.vb.shellsRemaining)
 	end
 end
 
 --Does not show in combat log, so UNIT_AURA must be used instead
 function mod:UNIT_AURA(uId)
 	local _, _, _, _, _, expires = DBM:UnitDebuff(uId, shellConcussion)
-	if expires and lastConcussion ~= expires then
-		lastConcussion = expires
+	if expires and self.vb.lastConcussion ~= expires then
+		self.vb.lastConcussion = expires
 		timerShellConcussion:Start()
 		if self:AntiSpam(3, 2) then
 			warnShellConcussion:Show(L.name)
@@ -169,6 +173,7 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 136685 then --Don't filter main tank, bat tank often taunts boss just before bats for vengeance, otherwise we lose threat to dps. Then main tank taunts back after bats spawn and we go get them, fully vengeanced (if you try to pick up bats without vengeance you will not hold aggro for shit)
 		specWarnSummonBats:Show()
+		specWarnSummonBats:Play("mobsoon")
 		timerSummonBatsCD:Start()
 	end
 end

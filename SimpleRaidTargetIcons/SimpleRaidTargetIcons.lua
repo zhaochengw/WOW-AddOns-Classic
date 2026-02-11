@@ -34,6 +34,7 @@ local is_classic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local is_classic_bc = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local is_classic_wrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local is_classic_cata = (WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC)
+local is_classic_mop = (WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC)
 local SRTI_TITLE = addonName
 
 local SRTI_HEADER = SRTI_TITLE .. " " .. srti.version
@@ -155,7 +156,11 @@ elseif is_classic_bc or is_classic_wrath then
 	"PartyMemberFrame1",
 	"PartyMemberFrame2",
 	"PartyMemberFrame3",
-	"PartyMemberFrame4"}
+	"PartyMemberFrame4",
+	"PartyFrame.MemberFrame1",
+	"PartyFrame.MemberFrame2",
+	"PartyFrame.MemberFrame3",
+	"PartyFrame.MemberFrame4",}
 else
 	clickFrames = {
 	--"WorldFrame",
@@ -189,6 +194,23 @@ local function camelCase(word)
   return string.gsub(word,"(%a)([%w_']*)",function(head,tail)
     return string.format("%s%s",string.upper(head),string.lower(tail))
     end)
+end
+
+local function getFrame(frameName)
+	local object, name
+	if _G[frameName] then
+		object = _G[frameName]
+		name = frameName
+	end
+	local parentName, childName = frameName:match("([^%.]+)%.([^%.]+)")
+	if _G[parentName] and _G[parentName][childName] then
+		object = _G[parentName][childName]
+		name = object.GetName and object:GetName() or ""
+		if not name or name == "" then
+			name = tostring(object)
+		end
+	end
+	return object,name
 end
 
 function srti.PrintHelp()
@@ -610,7 +632,7 @@ function srti.UpdateSaved()
 end
 
 local thirdPartyUF
-if is_classic or is_classic_bc or is_classic_wrath or is_classic_cata then
+if is_classic or is_classic_bc or is_classic_wrath or is_classic_cata or is_classic_mop then
 	thirdPartyUF = {
 		["Blizzard_CompactRaidFrames"] = {},
 		["PitBull4"] = {"PitBull4_Frames_Target","PitBull4_Frames_Target's target"}, -- OK
@@ -627,7 +649,7 @@ if is_classic or is_classic_bc or is_classic_wrath or is_classic_cata then
 		["Tukui"] = {"TukuiTargetFrame"}, -- OK
 		["ZPerl"] = {"XPerl_Target"}, -- OK
 	}
-	if is_classic_wrath or is_classic_cata then
+	if is_classic_wrath or is_classic_cata or is_classic_mop then
 		table.insert(thirdPartyUF.PitBull4,"PitBull4_Frames_Focus")
 		table.insert(thirdPartyUF.PitBull4,"PitBull4_Frames_Focus Target")
 		if (MAX_BOSS_FRAMES) then
@@ -854,21 +876,27 @@ hooksecurefunc("SetRaidTarget",function(unit,index) srti.SetRaidTarget(index,uni
 
 do
 	for _,frameName in pairs(clickFrames) do
-		clickFrameScripts[frameName] = _G[frameName]:GetScript("OnMouseUp")
-		if not clickFrameScripts[frameName] and _G[frameName]:IsObjectType("Button") then
-			_G[frameName]:RegisterForClicks("AnyUp")
+		local frameObject, nameRef = getFrame(frameName)
+		if frameObject then
+			clickFrameScripts[nameRef] = frameObject:GetScript("OnMouseUp")
+			if not clickFrameScripts[nameRef] and frameObject:IsObjectType("Button") then
+				frameObject:RegisterForClicks("AnyUp")
+			end
+			frameObject:SetScript("OnMouseUp", function(self,arg1) srti.OnMouseUp(self,arg1) end)
 		end
-		_G[frameName]:SetScript("OnMouseUp", function(self,arg1) srti.OnMouseUp(self,arg1) end)
 	end
 end
 
 do
 	for _,frameName in pairs(clickFrames) do
-		clickFrameScripts[frameName] = _G[frameName]:GetScript("OnMouseDown")
-		if not clickFrameScripts[frameName] and _G[frameName]:IsObjectType("Button") then
-			_G[frameName]:RegisterForClicks("AnyDown")
+		if _G[frameName] then
+			local frameObject, nameRef = getFrame(frameName)
+			clickFrameScripts[nameRef] = frameObject:GetScript("OnMouseDown")
+			if not clickFrameScripts[nameRef] and frameObject:IsObjectType("Button") then
+				frameObject:RegisterForClicks("AnyDown")
+			end
+			frameObject:SetScript("OnMouseDown", function(self,arg1) srti.OnMouseDown(self,arg1) end)
 		end
-		_G[frameName]:SetScript("OnMouseDown", function(self,arg1) srti.OnMouseDown(self,arg1) end)
 	end
 end
 local WorldFrameOverlay = CreateFrame("Frame","SRTIWorldFrameOverlay")
@@ -975,6 +1003,9 @@ end
 
 function srti.OnMouseUp(frame, btn)
 	local frameName = frame.GetName and frame:GetName() or ""
+	if not frameName or frameName == "" then
+		frameName = tostring(frame)
+	end
 	if ( btn == "LeftButton" ) then
 		local curtime = GetTime()
 		local x, y = GetCursorPosition()
@@ -1001,6 +1032,9 @@ end
 
 function srti.OnMouseDown(frame, btn)
 	local frameName = frame.GetName and frame:GetName() or ""
+	if not frameName or frameName == "" then
+		frameName = tostring(frame)
+	end
 	if ( btn == "LeftButton" ) then
 		srti.mouseover = UnitIsUnit("target", "mouseover")
 	end

@@ -1,0 +1,322 @@
+local _, MerfinPlus = ...
+
+MerfinPlus.L = {}
+local L = MerfinPlus.L
+
+-- enUS
+L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+  "A reload of the interface is required for this change to take effect.\n\nReload now?"
+L["Author: "] = "Author: "
+L["Version:"] = "Version:"
+L["Media"] = "Media"
+L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+  "MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."
+L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+  "Change primary fonts and status bar textures used by Merfin features. A UI reload is required."
+L["Select font for element "] = "Select font for element "
+L["Select status bar texture for element "] = "Select status bar texture for element "
+L["Import WoWSim JSON"] = "Import WoWSim JSON"
+L["This character has no assigned profiles."] = "This character has no assigned profiles."
+L["Assigned profiles:"] = "Assigned profiles:"
+L["Assign to Current Character"] = "Assign to Current Character"
+L["Assigned "] = "Assigned "
+L["Rename (display only)"] = "Rename (display only)"
+L["Empty"] = "Empty"
+L["loading"] = "loading"
+L["Set itemID for "] = "Set itemID for "
+L["slot "] = "slot "
+L["Delete Profile"] = "Delete Profile"
+L["Delete this profile?"] = "Delete this profile?"
+L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+  "Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."
+L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+  "Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."
+L["Empty Profile"] = "Empty Profile"
+L["Class"] = "Class"
+L["Specialization"] = "Specialization"
+L["Profile: "] = "Profile: "
+L["Select a specialization."] = "Select a specialization."
+L["Import"] = "Import"
+L["Import successful."] = "Import successful."
+L["Ready."] = "Ready."
+L["Unknown / unsupported class in JSON."] = "Unknown / unsupported class in JSON."
+L["Invalid JSON."] = "Invalid JSON."
+L["No JSON provided."] = "No JSON provided."
+L["C_EncodingUtil not available in this WoW version."] = "C_EncodingUtil not available in this WoW version."
+L["Import Manager"] = "Import Manager"
+L["Profiles"] = "Profiles"
+L["Delete this item entry."] = "Delete this item entry."
+
+if (GAME_LOCALE or GetLocale()) == "deDE" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "Ein Neuladen der Benutzeroberfläche ist erforderlich, damit diese Änderung wirksam wird.\n\nJetzt neu laden?"
+  L["Author: "] = "Autor: "
+  L["Version:"] = "Version:"
+  L["Media"] = "Medien"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus stellt benutzerdefinierte Schriftarten, Texturen und Hilfsprogramme bereit, die WeakAuras und andere Merfin-UI-Komponenten erweitern oder unterstützen."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Ändere die primären Schriftarten und Statusleisten-Texturen der Merfin-Funktionen. Ein UI-Neuladen ist erforderlich."
+  L["Select font for element "] = "Schriftart auswählen für Element "
+  L["Select status bar texture for element "] = "Statusleisten-Textur auswählen für Element "
+  L["Import WoWSim JSON"] = "WoWSim JSON importieren"
+  L["This character has no assigned profiles."] = "Dieser Charakter hat keine zugewiesenen Profile."
+  L["Assigned profiles:"] = "Zugewiesene Profile:"
+  L["Assign to Current Character"] = "Dem aktuellen Charakter zuweisen"
+  L["Assigned "] = "Zugewiesen "
+  L["Rename (display only)"] = "Umbenennen (nur Anzeige)"
+  L["Empty"] = "Leer"
+  L["loading"] = "lädt"
+  L["Set itemID for "] = "ItemID setzen für "
+  L["slot "] = "Slot "
+  L["Delete Profile"] = "Profil löschen"
+  L["Delete this profile?"] = "Dieses Profil löschen?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "Erstelle ein leeres WoWSim-Profil.\nWähle eine Klasse, dann eine Spezialisierung und klicke auf Importieren."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "Füge unten einen WoWSim-JSON-Export ein.\nKlicke auf Akzeptieren, wähle eine Spezialisierung und klicke auf Importieren."
+  L["Empty Profile"] = "Leeres Profil"
+  L["Class"] = "Klasse"
+  L["Specialization"] = "Spezialisierung"
+  L["Profile: "] = "Profil: "
+  L["Select a specialization."] = "Wähle eine Spezialisierung."
+  L["Import"] = "Importieren"
+  L["Import successful."] = "Import erfolgreich."
+  L["Ready."] = "Bereit."
+  L["Unknown / unsupported class in JSON."] = "Unbekannte oder nicht unterstützte Klasse im JSON."
+  L["Invalid JSON."] = "Ungültiges JSON."
+  L["No JSON provided."] = "Kein JSON angegeben."
+  L["C_EncodingUtil not available in this WoW version."] = "C_EncodingUtil ist in dieser WoW-Version nicht verfügbar."
+  L["Import Manager"] = "Import-Manager"
+  L["Profiles"] = "Profile"
+  L["Delete this item entry."] = "Diesen Gegenstandseintrag löschen."
+elseif (GAME_LOCALE or GetLocale()) == "frFR" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "Un rechargement de l’interface est requis pour que ce changement prenne effet.\n\nRecharger maintenant ?"
+  L["Author: "] = "Auteur : "
+  L["Version:"] = "Version :"
+  L["Media"] = "Médias"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus fournit des polices, textures et utilitaires personnalisés pour améliorer ou compléter WeakAuras et d’autres composants de l’interface Merfin."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Modifier les polices principales et les textures de barres d’état utilisées par les fonctionnalités Merfin. Un rechargement de l’interface est requis."
+  L["Select font for element "] = "Sélectionner la police pour l’élément "
+  L["Select status bar texture for element "] = "Sélectionner la texture de barre d’état pour l’élément "
+  L["Import WoWSim JSON"] = "Importer le JSON WoWSim"
+  L["This character has no assigned profiles."] = "Ce personnage n’a aucun profil assigné."
+  L["Assigned profiles:"] = "Profils assignés :"
+  L["Assign to Current Character"] = "Assigner au personnage actuel"
+  L["Assigned "] = "Assigné "
+  L["Rename (display only)"] = "Renommer (affichage uniquement)"
+  L["Empty"] = "Vide"
+  L["loading"] = "chargement"
+  L["Set itemID for "] = "Définir l’ID d’objet pour "
+  L["slot "] = "emplacement "
+  L["Delete Profile"] = "Supprimer le profil"
+  L["Delete this profile?"] = "Supprimer ce profil ?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "Créer un profil WoWSim vide.\nSélectionnez une classe, puis une spécialisation et cliquez sur Importer."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "Collez ci-dessous une exportation JSON WoWSim.\nCliquez sur Accepter, sélectionnez une spécialisation, puis cliquez sur Importer."
+  L["Empty Profile"] = "Profil vide"
+  L["Class"] = "Classe"
+  L["Specialization"] = "Spécialisation"
+  L["Profile: "] = "Profil : "
+  L["Select a specialization."] = "Sélectionnez une spécialisation."
+  L["Import"] = "Importer"
+  L["Import successful."] = "Importation réussie."
+  L["Ready."] = "Prêt."
+  L["Unknown / unsupported class in JSON."] = "Classe inconnue ou non prise en charge dans le JSON."
+  L["Invalid JSON."] = "JSON invalide."
+  L["No JSON provided."] = "Aucun JSON fourni."
+  L["C_EncodingUtil not available in this WoW version."] =
+    "C_EncodingUtil n’est pas disponible dans cette version de WoW."
+  L["Import Manager"] = "Gestionnaire d’import"
+  L["Profiles"] = "Profils"
+  L["Delete this item entry."] = "Supprimer cette entrée d’objet."
+elseif (GAME_LOCALE or GetLocale()) == "ruRU" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "Для применения этого изменения требуется перезагрузка интерфейса.\n\nПерезагрузить сейчас?"
+  L["Author: "] = "Автор: "
+  L["Version:"] = "Версия:"
+  L["Media"] = "Медиа"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus предоставляет пользовательские шрифты, текстуры и утилиты для улучшения или поддержки WeakAuras и других компонентов интерфейса Merfin."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Измените основные шрифты и текстуры полос состояния, используемые функциями Merfin. Требуется перезагрузка интерфейса."
+  L["Select font for element "] = "Выберите шрифт для элемента "
+  L["Select status bar texture for element "] =
+    "Выберите текстуру полосы состояния для элемента "
+  L["Import WoWSim JSON"] = "Импорт JSON WoWSim"
+  L["This character has no assigned profiles."] =
+    "У этого персонажа нет назначенных профилей."
+  L["Assigned profiles:"] = "Назначенные профили:"
+  L["Assign to Current Character"] = "Назначить текущему персонажу"
+  L["Assigned "] = "Назначено "
+  L["Rename (display only)"] = "Переименовать (только отображение)"
+  L["Empty"] = "Пусто"
+  L["loading"] = "загрузка"
+  L["Set itemID for "] = "Установить ID предмета для "
+  L["slot "] = "слот "
+  L["Delete Profile"] = "Удалить профиль"
+  L["Delete this profile?"] = "Удалить этот профиль?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "Создать пустой профиль WoWSim.\nВыберите класс, затем специализацию и нажмите «Импорт»."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "Вставьте ниже экспорт JSON WoWSim.\nНажмите «Принять», выберите специализацию и нажмите «Импорт»."
+  L["Empty Profile"] = "Пустой профиль"
+  L["Class"] = "Класс"
+  L["Specialization"] = "Специализация"
+  L["Profile: "] = "Профиль: "
+  L["Select a specialization."] = "Выберите специализацию."
+  L["Import"] = "Импорт"
+  L["Import successful."] = "Импорт выполнен успешно."
+  L["Ready."] = "Готово."
+  L["Unknown / unsupported class in JSON."] =
+    "Неизвестный или неподдерживаемый класс в JSON."
+  L["Invalid JSON."] = "Неверный JSON."
+  L["No JSON provided."] = "JSON не указан."
+  L["C_EncodingUtil not available in this WoW version."] =
+    "C_EncodingUtil недоступен в этой версии WoW."
+  L["Import Manager"] = "Менеджер импорта"
+  L["Profiles"] = "Профили"
+  L["Delete this item entry."] = "Удалить эту запись предмета."
+elseif (GAME_LOCALE or GetLocale()) == "koKR" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "이 변경 사항을 적용하려면 인터페이스를 다시 불러와야 합니다.\n\n지금 다시 불러오시겠습니까?"
+  L["Author: "] = "제작자: "
+  L["Version:"] = "버전:"
+  L["Media"] = "미디어"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus는 WeakAuras 및 기타 Merfin UI 구성 요소를 향상하거나 지원하는 사용자 정의 글꼴, 텍스처 및 유틸리티를 제공합니다."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Merfin 기능에서 사용하는 기본 글꼴 및 상태 표시줄 텍스처를 변경합니다. UI 재시작이 필요합니다."
+  L["Select font for element "] = "요소의 글꼴 선택: "
+  L["Select status bar texture for element "] = "요소의 상태 표시줄 텍스처 선택: "
+  L["Import WoWSim JSON"] = "WoWSim JSON 가져오기"
+  L["This character has no assigned profiles."] = "이 캐릭터에는 할당된 프로필이 없습니다."
+  L["Assigned profiles:"] = "할당된 프로필:"
+  L["Assign to Current Character"] = "현재 캐릭터에 할당"
+  L["Assigned "] = "할당됨 "
+  L["Rename (display only)"] = "이름 변경 (표시 전용)"
+  L["Empty"] = "비어 있음"
+  L["loading"] = "불러오는 중"
+  L["Set itemID for "] = "아이템 ID 설정: "
+  L["slot "] = "슬롯 "
+  L["Delete Profile"] = "프로필 삭제"
+  L["Delete this profile?"] = "이 프로필을 삭제할까요?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "빈 WoWSim 프로필을 생성합니다.\n직업을 선택한 후 전문화를 선택하고 가져오기를 클릭하세요."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "아래에 WoWSim JSON 내보내기를 붙여넣으세요.\n수락을 클릭하고 전문화를 선택한 다음 가져오기를 클릭하세요."
+  L["Empty Profile"] = "빈 프로필"
+  L["Class"] = "직업"
+  L["Specialization"] = "전문화"
+  L["Profile: "] = "프로필: "
+  L["Select a specialization."] = "전문화를 선택하세요."
+  L["Import"] = "가져오기"
+  L["Import successful."] = "가져오기 성공."
+  L["Ready."] = "준비됨."
+  L["Unknown / unsupported class in JSON."] = "JSON에 알 수 없거나 지원되지 않는 직업이 있습니다."
+  L["Invalid JSON."] = "잘못된 JSON."
+  L["No JSON provided."] = "JSON이 제공되지 않았습니다."
+  L["C_EncodingUtil not available in this WoW version."] =
+    "이 WoW 버전에서는 C_EncodingUtil을 사용할 수 없습니다."
+  L["Import Manager"] = "가져오기 관리자"
+  L["Profiles"] = "프로필"
+  L["Delete this item entry."] = "이 아이템 항목을 삭제합니다."
+elseif (GAME_LOCALE or GetLocale()) == "zhTW" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "需要重新載入介面才能使此變更生效。\n\n現在重新載入？"
+  L["Author: "] = "作者："
+  L["Version:"] = "版本："
+  L["Media"] = "媒體"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus 提供自訂字型、材質與工具，用於強化或支援 WeakAuras 及其他 Merfin UI 元件。"
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "變更 Merfin 功能所使用的主要字型與狀態列材質。需要重新載入介面。"
+  L["Select font for element "] = "為元素選擇字型："
+  L["Select status bar texture for element "] = "為元素選擇狀態列材質："
+  L["Import WoWSim JSON"] = "匯入 WoWSim JSON"
+  L["This character has no assigned profiles."] = "此角色沒有任何已指派的設定檔。"
+  L["Assigned profiles:"] = "已指派的設定檔："
+  L["Assign to Current Character"] = "指派給目前角色"
+  L["Assigned "] = "已指派 "
+  L["Rename (display only)"] = "重新命名（僅顯示）"
+  L["Empty"] = "空"
+  L["loading"] = "載入中"
+  L["Set itemID for "] = "設定物品 ID："
+  L["slot "] = "插槽 "
+  L["Delete Profile"] = "刪除設定檔"
+  L["Delete this profile?"] = "刪除此設定檔？"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "建立空的 WoWSim 設定檔。\n選擇職業與專精，然後點擊匯入。"
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "在下方貼上 WoWSim JSON 匯出。\n點擊接受，選擇專精圖示，然後點擊匯入。"
+  L["Empty Profile"] = "空設定檔"
+  L["Class"] = "職業"
+  L["Specialization"] = "專精"
+  L["Profile: "] = "設定檔："
+  L["Select a specialization."] = "請選擇專精。"
+  L["Import"] = "匯入"
+  L["Import successful."] = "匯入成功。"
+  L["Ready."] = "就緒。"
+  L["Unknown / unsupported class in JSON."] = "JSON 中包含未知或不支援的職業。"
+  L["Invalid JSON."] = "無效的 JSON。"
+  L["No JSON provided."] = "未提供 JSON。"
+  L["C_EncodingUtil not available in this WoW version."] = "此 WoW 版本不支援 C_EncodingUtil。"
+  L["Import Manager"] = "匯入管理器"
+  L["Profiles"] = "設定檔"
+  L["Delete this item entry."] = "刪除此物品項目。"
+elseif (GAME_LOCALE or GetLocale()) == "zhCN" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "需要重新加载界面才能使此更改生效。\n\n现在重新加载？"
+  L["Author: "] = "作者："
+  L["Version:"] = "版本："
+  L["Media"] = "媒体"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus 提供自定义字体、材质和工具，用于增强或支持 WeakAuras 及其他 Merfin UI 组件。"
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "更改 Merfin 功能使用的主要字体和状态条材质。需要重新加载界面。"
+  L["Select font for element "] = "为元素选择字体："
+  L["Select status bar texture for element "] = "为元素选择状态条材质："
+  L["Import WoWSim JSON"] = "导入 WoWSim JSON"
+  L["This character has no assigned profiles."] = "该角色没有分配任何配置文件。"
+  L["Assigned profiles:"] = "已分配的配置文件："
+  L["Assign to Current Character"] = "分配给当前角色"
+  L["Assigned "] = "已分配 "
+  L["Rename (display only)"] = "重命名（仅显示）"
+  L["Empty"] = "空"
+  L["loading"] = "加载中"
+  L["Set itemID for "] = "设置物品 ID："
+  L["slot "] = "槽位 "
+  L["Delete Profile"] = "删除配置文件"
+  L["Delete this profile?"] = "删除此配置文件？"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "创建一个空的 WoWSim 配置文件。\n选择职业和专精，然后点击导入。"
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "在下方粘贴 WoWSim JSON 导出。\n点击接受，选择专精图标，然后点击导入。"
+  L["Empty Profile"] = "空配置文件"
+  L["Class"] = "职业"
+  L["Specialization"] = "专精"
+  L["Profile: "] = "配置文件："
+  L["Select a specialization."] = "请选择一个专精。"
+  L["Import"] = "导入"
+  L["Import successful."] = "导入成功。"
+  L["Ready."] = "就绪。"
+  L["Unknown / unsupported class in JSON."] = "JSON 中包含未知或不支持的职业。"
+  L["Invalid JSON."] = "无效的 JSON。"
+  L["No JSON provided."] = "未提供 JSON。"
+  L["C_EncodingUtil not available in this WoW version."] = "此 WoW 版本不支持 C_EncodingUtil。"
+  L["Import Manager"] = "导入管理器"
+  L["Profiles"] = "配置文件"
+  L["Delete this item entry."] = "删除此物品条目。"
+end
+
+-- Make missing translations available
+setmetatable(MerfinPlus.L, {
+  __index = function(self, key)
+    self[key] = (key or "")
+    return key
+  end,
+})

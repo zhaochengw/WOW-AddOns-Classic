@@ -406,34 +406,34 @@ L["Zungam"] = "Zungam"
 -- Zone Names, Acronyms, and Common Strings
 --************************************************
 --BC Acronyms
-L["AC"] = "AC";      -- Auchenai Crypts
-L["Arca"] = "Arca";  -- The Arcatraz
-L["Auch"] = "Auch";  -- Auchindoun
-L["BF"] = "BF";      -- The Blood Furnace
-L["BT"] = "BT";      -- Black Temple
-L["Bota"] = "Bota";  -- The Botanica
-L["CoT"] = "CoT";    -- Caverns of Time
-L["CoT1"] = "CoT1";  -- Old Hillsbrad Foothills
-L["CoT2"] = "CoT2";  -- The Black Morass
-L["CoT3"] = "CoT3";  -- Hyjal Summit
-L["CR"] = "CR";      -- Coilfang Reservoir
-L["GL"] = "GL";      -- Gruul's Lair
-L["HC"] = "HC";      -- Hellfire Citadel
-L["Kara"] = "Kara";  -- Karazhan
-L["MaT"] = "MT";     -- Magisters' Terrace
-L["Mag"] = "Mag";    -- Magtheridon's Lair
-L["Mech"] = "Mech";  -- The Mechanar
-L["MT"] = "MT";      -- Mana-Tombs
-L["Ramp"] = "Ramp";  -- Hellfire Ramparts
-L["SSC"] = "SSC";    -- Serpentshrine Cavern
-L["Seth"] = "Seth";  -- Sethekk Halls
-L["SH"] = "SH";      -- The Shattered Halls
-L["SL"] = "SL";      -- Shadow Labyrinth
-L["SP"] = "SP";      -- The Slave Pens
-L["SuP"] = "SP";     -- Sunwell Plateau
-L["SV"] = "SV";      -- The Steamvault
-L["TK"] = "TK";      -- Tempest Keep
-L["UB"] = "UB";      -- The Underbog
+L["AC"] = "AC";     -- Auchenai Crypts
+L["Arca"] = "Arca"; -- The Arcatraz
+L["Auch"] = "Auch"; -- Auchindoun
+L["BF"] = "BF";     -- The Blood Furnace
+L["BT"] = "BT";     -- Black Temple
+L["Bota"] = "Bota"; -- The Botanica
+L["CoT"] = "CoT";   -- Caverns of Time
+L["CoT1"] = "CoT1"; -- Old Hillsbrad Foothills
+L["CoT2"] = "CoT2"; -- The Black Morass
+L["CoT3"] = "CoT3"; -- Hyjal Summit
+L["CR"] = "CR";     -- Coilfang Reservoir
+L["GL"] = "GL";     -- Gruul's Lair
+L["HC"] = "HC";     -- Hellfire Citadel
+L["Kara"] = "Kara"; -- Karazhan
+L["MaT"] = "MT";    -- Magisters' Terrace
+L["Mag"] = "Mag";   -- Magtheridon's Lair
+L["Mech"] = "Mech"; -- The Mechanar
+L["MT"] = "MT";     -- Mana-Tombs
+L["Ramp"] = "Ramp"; -- Hellfire Ramparts
+L["SSC"] = "SSC";   -- Serpentshrine Cavern
+L["Seth"] = "Seth"; -- Sethekk Halls
+L["SH"] = "SH";     -- The Shattered Halls
+L["SL"] = "SL";     -- Shadow Labyrinth
+L["SP"] = "SP";     -- The Slave Pens
+L["SuP"] = "SP";    -- Sunwell Plateau
+L["SV"] = "SV";     -- The Steamvault
+L["TK"] = "TK";     -- Tempest Keep
+L["UB"] = "UB";     -- The Underbog
 
 --*******************
 -- Burning Crusade Instances

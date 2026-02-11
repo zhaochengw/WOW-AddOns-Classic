@@ -1,3 +1,23 @@
+== Version 2.6.57 (February 10th 2026) ==
+
+* Bumped Retail TOC to 120001.
+* Removed the ability to hide the rested XP ticker in TBC Anniversary Edition. I've been struggling to find a way to fix the issues with it, but my forum posts where I attempt to get help with the problem have gone unanswered for weeks, so I've been left with no other choice. If I am able to get a response or find a solution myself, this feature will be re-added in a later update.
+
+== Version 2.6.55 (January 20th 2026) ==
+
+* Added support for TBC Anniversary Edition.
+* Bumped Retail TOC to 120000.
+
+== Version 2.5.54 (December 10th 2025) ==
+
+* Bumped MoP Classic TOC to 50503.
+* Bumped Vanilla Classic TOC to 11508.
+
+== Version 2.5.52 (December 7th 2025) ==
+
+* Bumped Retail TOC to 110207.
+* Bumped MoP Classic TOC to 50502.
+
 == Version 2.5.50 (September 24th 2025) ==
 
 * Bumped Retail TOC to 110205.

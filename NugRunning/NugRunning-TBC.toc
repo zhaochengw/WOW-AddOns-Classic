@@ -1,10 +1,10 @@
-## Interface: 20504
+## Interface: 20505
 ## Title: NugRunning
 ## Notes: Spelltimers
 ## Author: d87
 ## SavedVariablesPerCharacter: NRunDB_Char
 ## SavedVariables: NRunDB_Global, NugRunningConfigCustom
-## Version: 11.0.7
+## Version: 11.0.8a
 
 ## X-WoWI-ID: 10440
 ## X-Curse-Project-ID: 27470

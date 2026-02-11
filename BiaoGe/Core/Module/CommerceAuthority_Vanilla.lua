@@ -30,7 +30,7 @@ local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
 
 local function GetPrice(itemID)
     itemID = tostring(itemID)
-    local realmName = GetRealmName()
+    local realmName = BG.realmName
     local faction = UnitFactionGroup("player")
     if AUCTIONATOR_PRICE_DATABASE and AUCTIONATOR_PRICE_DATABASE[realmName .. " " .. faction] and
         AUCTIONATOR_PRICE_DATABASE[realmName .. " " .. faction][itemID] then
@@ -246,3 +246,88 @@ do
         end
     end)
 end
+
+----------血月活动期间自动释放尸体和对话自动复活----------
+BG.Init2(function()
+    local tbl = {
+        121411, -- 血月活动
+    }
+    BG.RegisterEvent("GOSSIP_SHOW", function(self, event)
+        if BiaoGe.options["xueyueAuto"] ~= 1 then return end
+        local info = C_GossipInfo.GetOptions()
+        for i, v in pairs(info) do
+            for _, id in pairs(tbl) do
+                if v.gossipOptionID == id then
+                    C_GossipInfo.SelectOption(v.gossipOptionID)
+                end
+            end
+        end
+    end)
+
+    local bt = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
+    bt:SetSize(30, 30)
+    bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+    bt.Text:SetText(BG.BG .. L["荆棘谷血月活动期间自动释放尸体和对话自动复活"])
+    bt.Text:SetPoint("TOPLEFT", bt, "TOPRIGHT", 0, -5)
+    bt:SetHitRectInsets(0, 0, 0, 0)
+    bt.name = "xueyueAuto"
+    if BiaoGe.options["xueyueAuto"] == 1 then
+        bt:SetChecked(true)
+    else
+        bt:SetChecked(false)
+    end
+    bt:Hide()
+    bt:SetScript("OnShow", function(self)
+        if BiaoGe.options[self.name] == 1 then
+            self:SetChecked(true)
+        else
+            self:SetChecked(false)
+        end
+    end)
+    bt:SetScript("OnClick", function(self)
+        if self:GetChecked() then
+            BiaoGe.options[self.name] = 1
+        else
+            BiaoGe.options[self.name] = 0
+        end
+        BG.PlaySound(1)
+    end)
+
+    local wh = "DEATH"
+    hooksecurefunc("StaticPopup_Show", function(whick)
+        if whick == wh then
+            local yes
+            local i = 1
+            while UnitAura("player", i) do
+                local spellID = select(10, UnitAura("player", i))
+                if spellID == 436097 then
+                    yes = true
+                    break
+                end
+                i = i + 1
+            end
+            if not yes then return end
+            local _, dialog = StaticPopup_Visible(wh)
+            if dialog then
+                bt:ClearAllPoints()
+                bt:SetPoint("TOPLEFT", dialog, "BOTTOMLEFT", 0, 0)
+                bt.Text:SetWidth(StaticPopup1:GetWidth() - 50)
+                bt:Show()
+                if BiaoGe.options["xueyueAuto"] == 1 then
+                    if dialog.button1 then
+                        dialog.button1:Click()
+                    else
+                        dialog.visibleButtons[1]:Click()
+                    end
+                end
+            end
+        end
+    end)
+    hooksecurefunc("StaticPopup_Hide", function(whick)
+        if whick == wh then
+            if bt then
+                bt:Hide()
+            end
+        end
+    end)
+end)

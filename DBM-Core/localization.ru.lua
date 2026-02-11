@@ -70,10 +70,12 @@ L.SCENARIO_COMPLETE					= "%s завершён спустя %s!"
 L.SCENARIO_COMPLETE_I				= "%s завершён! Общее количество прохождений у Вас - %d."
 L.SCENARIO_COMPLETE_L				= "%s завершён спустя %s! Ваше последнее прохождение заняло %s, а лучшее - %s. Общее количество прохождений у Вас - %d."
 L.SCENARIO_COMPLETE_NR				= "%s завершён спустя %s! Это новый рекорд! Предыдущий рекорд - %s. Общее количество прохождений у Вас - %d."
-L.COMBAT_ENDED_AT					= "Бой против %s (%s) завершился спустя %s."
-L.COMBAT_ENDED_AT_LONG				= "Бой против %s (%s) завершился спустя %s. На этом уровне сложности Вы вайпнулись уже %d раз."
-L.GUILD_COMBAT_ENDED_AT				= "Группа гильдии %s вайпнулась на %s (%s) спустя %s."
-L.GUILD_COMBAT_ENDED				= "Группа гильдии %s вайпнулась на %s спустя %s."
+L.COMBAT_ENDED_AT					= "Бой против %s (%s) завершился спустя %s."--Здоровье (HP) включено
+L.COMBAT_ENDED						= "Бой против %s завершился спустя %s."--Нет здоровья (HP) (дополнение 'Полночь')
+L.COMBAT_ENDED_AT_LONG				= "Бой против %s (%s) завершился спустя %s. На этом уровне сложности Вы вайпнулись уже %d раз."--Здоровье (HP) включено
+L.COMBAT_ENDED_LONG					= "Бой против %s завершился спустя %s. На этом уровне сложности Вы вайпнулись уже %d раз."--Нет здоровья (HP) (дополнение 'Полночь')
+L.GUILD_COMBAT_ENDED_AT				= "Группа гильдии %s вайпнулась на %s (%s) спустя %s."--Здоровье (HP) включено
+L.GUILD_COMBAT_ENDED				= "Группа гильдии %s вайпнулась на %s спустя %s."--Нет здоровья (HP) (дополнение 'Полночь')
 L.SCENARIO_ENDED_AT					= "%s закончился спустя %s."
 L.SCENARIO_ENDED_AT_LONG			= "%s закончился спустя %s. На этом уровне сложности Вы не завершили сценарий уже %d раз."
 L.COMBAT_STATE_RECOVERED			= "%s был атакован %s назад, восстанавливаю таймеры..."
@@ -89,7 +91,8 @@ L.LOWHEALTH_WARNING					= "Низкое здоровье (осталось %d п
 L.ENTERING_COMBAT					= "Вступление в бой"
 L.LEAVING_COMBAT					= "Выход из боя"
 
-L.COMBAT_STARTED_AI_TIMER			= "Мой ЦП - это процессор нейронной сети, обучающий компьютер. (В этом бою будет использоваться функция таймера AI для генерации приблизительных значений таймера)"
+L.RAID_DIFFICULTY_CHANGED			= "Уровень сложности рейда установлен на %s."
+L.DUNGEON_DIFFICULTY_CHANGED		= "Уровень сложности подземелья установлен на %s."
 
 L.PROFILE_NOT_FOUND					= "<" .. L.DBM .. "> Ваш текущий профиль повреждён. " .. L.DBM .. " загрузит профиль 'По умолчанию'."
 L.PROFILE_CREATED					= "Профиль '%s' создан."
@@ -148,7 +151,7 @@ L.GENERIC_WARNING_OTHERS2			= "и %d других"
 L.GENERIC_WARNING_BERSERK			= "Берсерк через %s %s"
 L.GENERIC_TIMER_BERSERK				= "Берсерк"
 L.OPTION_TIMER_BERSERK				= "Отсчёт времени до $spell:26662"
-L.BAD								= "Плохой"
+L.BAD								= "Лужа"
 
 L.OPTION_CATEGORY_TIMERS			= "Индикаторы"
 --Sub cats for "announce" object
@@ -169,17 +172,17 @@ L.OPTION_CATEGORY_PAURAS			= "Приватные Ауры"
 L.AUTO_RESPONDED					= "Автоответ."
 L.STATUS_WHISPER					= "%s: %s, %d/%d человек живые"
 --Bosses
-L.AUTO_RESPOND_WHISPER				= "%s сейчас занят, в бою против %s (%s, %d/%d человек живые)"
-L.WHISPER_COMBAT_END_KILL			= "%s одержал победу над %s!"
-L.WHISPER_COMBAT_END_KILL_STATS		= "%s одержал победу над %s! Общее количество побед у них - %d."
-L.WHISPER_COMBAT_END_WIPE_AT		= "%s потерпел поражение от %s на %s"
-L.WHISPER_COMBAT_END_WIPE_STATS_AT	= "%s потерпел поражение от %s на %s. Общее количество вайпов на этой сложности у них - %d."
+L.AUTO_RESPOND_WHISPER				= "Персонаж %s сейчас находится в бою против %s (%s, %d/%d человек живые)"
+L.WHISPER_COMBAT_END_KILL			= "Персонаж %s одержал победу над %s!"
+L.WHISPER_COMBAT_END_KILL_STATS		= "Персонаж %s одержал победу над %s! Общее количество побед - %d."
+L.WHISPER_COMBAT_END_WIPE_AT		= "Персонаж %s потерпел поражение от %s на %s"
+L.WHISPER_COMBAT_END_WIPE_STATS_AT	= "Персонаж %s потерпел поражение от %s на %s. Общее количество вайпов на этой сложности - %d."
 --Scenarios (no percents. words like "fighting" or "wipe" changed to better fit scenarios)
-L.AUTO_RESPOND_WHISPER_SCENARIO		= "%s сейчас занят в %s (%d/%d человек живые)"
-L.WHISPER_SCENARIO_END_KILL			= "%s завершил %s!"
-L.WHISPER_SCENARIO_END_KILL_STATS	= "%s завершил %s! Общее количество побед у них - %d."
-L.WHISPER_SCENARIO_END_WIPE			= "%s не завершил %s"
-L.WHISPER_SCENARIO_END_WIPE_STATS	= "%s не завершил %s. Общее количество незавершённых на этой сложности у них - %d."
+L.AUTO_RESPOND_WHISPER_SCENARIO		= "Персонаж %s сейчас проходит сценарий %s (%d/%d человек живые)"
+L.WHISPER_SCENARIO_END_KILL			= "Персонаж %s завершил %s!"
+L.WHISPER_SCENARIO_END_KILL_STATS	= "Персонаж %s завершил %s! Общее количество побед - %d."
+L.WHISPER_SCENARIO_END_WIPE			= "Персонаж %s не завершил %s"
+L.WHISPER_SCENARIO_END_WIPE_STATS	= "Персонаж %s не завершил %s. Общее количество незавершённых этапов на этой сложности - %d."
 
 L.DUNGEONS							= "Подземелья: "--префикс для проверки версии подземелий
 L.VERSIONCHECK_HEADER				= "Boss Mod - Версии"
@@ -192,7 +195,7 @@ L.YOUR_VERSION_OUTDATED      		= "Ваша версия " .. L.DEADLY_BOSS_MODS 
 L.VOICE_PACK_OUTDATED				= "В Вашем голосовом пакете " .. L.DBM .. " отсутствуют звуки, поддерживаемые этой версией " .. L.DBM .. ". Фильтр звуков спецпредупреждений был отключён. Пожалуйста, скачайте обновлённую версию голосового пакета или свяжитесь с автором для обновления, которое содержит отсутствующие звуковые файлы."
 L.VOICE_MISSING						= "Выбранный Вами голосовой пакет " .. L.DBM .. " не найден. Если это ошибка, убедитесь, что Ваш голосовой пакет правильно установлен и включен в модификациях."
 L.VOICE_DISABLED					= "У Вас установлен по крайней мере один голосовой пакет " .. L.DBM .. ", но ни один не включён. Если Вы собираетесь использовать голосовой пакет, убедитесь, что он выбран в 'Spoken Alerts', иначе удалите неиспользуемые голосовые пакеты, чтобы скрыть это сообщение."
-L.VOICE_COUNT_MISSING				= "Голос отсчёта %d использует голосовой пакет, который не был найден. Он был сброшен на настройки по умолчанию: %s."
+L.VOICE_COUNT_MISSING				= "Голос отсчёта %d использует голосовой пакет, который не найден или в настоящее время не поддерживается. Он был сброшен на настройки по умолчанию: %s."
 L.BIG_WIGS							= "BigWigs"
 L.WEAKAURA_KEY						= " (|cff308530Ключ WA:|r %s)"
 
@@ -271,6 +274,7 @@ L.SLASHCMD_HELP							= {--AI translated (it's fine)
 	"/dbm unlock: Показывает перемещаемый таймер в строке состояния (псевдоним: move).",
 	"/dbm pull <sec>: Отправляет таймер атаки на <sec> секунд в рейд (требуются права лидера. псевдоним: pull).",
 	"/dbm break <min>: Отправляет таймер перерыва на <min> минут в рейд (требуются права лидера. псевдоним: break).",
+	"/dbm midwizard: Снова отображает мастер настройки 'Полночи' (только для актуальной версии).",
 	"/dbm timer: Запускает пользовательский таймер " .. L.DBM .. ", подробности в разделе '/dbm timer'.",
 	"/dbm key: Выполняет проверки ключей M+ и рейтинга для группы/гильдии, а также предоставляет быстрые телепорты к подземельям. (псевдоним: key, keys, keystone)",
 	"/dbm lag: Выполняет проверку задержки для всего рейда.",
@@ -631,6 +635,8 @@ L.AUTO_INFO_FRAME_OPTION_TEXT3		= "Показывать информационн
 L.AUTO_READY_CHECK_OPTION_TEXT		= "Воспроизводить звук проверки готовности, когда пуллят босса (даже если он не является целью)"
 L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "Показывать таймер для быстрой зачистки %s"
 L.AUTO_PRIVATEAURA_OPTION_TEXT		= "Воспроизводить звуковые оповещения DBM для приватных аур $spell:%s в этом бою."
+L.AUTO_CUSTOMTIMER_OPTION_TEXT		= "Показывать таймер для $spell:%s"
+L.AUTO_CUSTOMALERT_OPTION_TEXT		= "Установить звуковой сигнал, который будет воспроизводиться при применении заклинания $spell:%s"
 
 L.AUTO_GOSSIP_BUFFS						= "Автоматический выбор вариантов диалогов для NPC или профессий"
 L.AUTO_GOSSIP_PERFORM_ACTION			= "Автоматический выбор вариантов диалогов для выполнения действий (например, использование транспорта)"
@@ -749,3 +755,11 @@ L.KEYSTONE_NAMES[503] = 'АКГО' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = 'СР' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = 'ШЛЮЗ' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = 'ЗА' -- Eco-Dome Al'dani
+
+-- Midnight jazz
+L.MN_TIMELINE_HEADER	= "Вы хотите использовать временную шкалу Blizzard или полосы DBM?"
+L.MN_BLIZZARD_TIMELINE	= "Временная шкала Blizzard"
+L.MN_DBM_TIMELINE		= "Полосы DBM"
+L.MN_WARNIGS_HEADER		= "Вы хотите использовать боевые предупреждения Blizzard или боевые предупреждения DBM?"
+L.MN_BLIZZARD_WARNINGS	= "Предупреждения Blizzard"
+L.MN_DBM_WARNINGS		= "Предупреждения DBM"

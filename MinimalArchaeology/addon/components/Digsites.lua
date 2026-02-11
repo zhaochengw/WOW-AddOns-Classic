@@ -17,6 +17,9 @@ local MinArchTooltipIcon = _G["MinArchTooltipIcon"]
 local TaxiToggleFrame = nil -- created later
 local DigsitesScrollbar = nil -- created later
 local DigsitesScrollFrame = nil -- created later
+local SpamBlock = {} -- don't spam about unknown digsites, only once each
+local nearestDigsiteCache = nil;
+local activeDigsitesHash = "";
 
 MinArchScrollDS = {}
 MinArchDigsitesDB = {} -- old dig site info per character
@@ -380,10 +383,11 @@ function Digsites:Init()
 	Common:DisplayStatusMessage("Minimal Archaeology Digsites Initialized!");
 end
 
--- don't spam about unknown digsites, only once each
-local SpamBlock = {}
+
 
 function Digsites:UpdateActiveDigSites()
+	Common:DisplayStatusMessage('Digsites:UpdateActiveDigSites', MINARCH_MSG_DEBUG)
+
 	MinArch.RelevantRaces = {};
 	-- can't do anything until all races are known
 	if GetNumArchaeologyRaces() < ARCHAEOLOGY_NUM_RACES then
@@ -395,6 +399,7 @@ function Digsites:UpdateActiveDigSites()
 	end
 
 	local playerContID = Common:GetInternalContId();
+	local currentActiveDigsites = "";
 
 	for i = 1, ARCHAEOLOGY_NUM_CONTINENTS do
 		if MinArchDigsitesDB["continent"][i] == nil then
@@ -463,15 +468,39 @@ function Digsites:UpdateActiveDigSites()
 					MinArchDigsitesGlobalDB["continent"][i][name]["y"] = tostring(y*100);
 					MinArchDigsitesGlobalDB["continent"][i][name]["zone"] = digsiteZone.name or "";
 					MinArchDigsitesGlobalDB["continent"][i][name]["subzone"] = MinArchDigsitesGlobalDB["continent"][i][name]["subzone"] or "";
+
+					currentActiveDigsites = currentActiveDigsites .. name;
 				end
 			end
 		end
+	end
+
+	if (currentActiveDigsites ~= activeDigsitesHash) then
+		Common:DisplayStatusMessage("Active digsites changed, clearing cache", MINARCH_MSG_DEBUG);
+		activeDigsitesHash = currentActiveDigsites;
+		nearestDigsiteCache = nil;
 	end
 
 	Digsites:ShowRaceIconsOnMap();
 end
 
 ---@param ContID integer|nil
+local function DigsiteRow_OnMouseUp(self, button)
+	if (button == "LeftButton") then
+		Navigation:SetWayToDigsiteOnClick(self.name_text, self.digsite);
+	end
+end
+
+local function DigsiteRow_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
+	DigsiteTooltip(self, self.name_text, self.digsite, GameTooltip);
+end
+
+local function DigsiteRow_OnLeave()
+	MinArchTooltipIcon:Hide();
+	GameTooltip:Hide()
+end
+
 function Digsites:CreateDigSitesList(ContID)
 	if (not ContID or ContID < 1 or ContID > ARCHAEOLOGY_NUM_CONTINENTS ) then
 		ContID = Common:GetInternalContId();
@@ -609,19 +638,11 @@ function Digsites:CreateDigSitesList(ContID)
 		end
 		height = height + ROW_HEIGHT + PADDING
 
-		row:SetScript("OnMouseUp", function(self, button)
-			if (button == "LeftButton") then
-				Navigation:SetWayToDigsiteOnClick(name, digsite);
-			end
-		end)
-		row:SetScript("OnEnter", function(self)
-			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT");
-			DigsiteTooltip(self, name, digsite, GameTooltip);
-		end)
-		row:SetScript("OnLeave", function()
-			MinArchTooltipIcon:Hide();
-			GameTooltip:Hide()
-		end)
+		row.name_text = name;
+		row.digsite = digsite;
+		row:SetScript("OnMouseUp", DigsiteRow_OnMouseUp)
+		row:SetScript("OnEnter", DigsiteRow_OnEnter)
+		row:SetScript("OnLeave", DigsiteRow_OnLeave)
 
 		count = count + 1
 	end
@@ -759,99 +780,103 @@ function Digsites:GetNearestDigsite(ax, ay, sites, skipPathCalc)
 		return nil;
     end
 
-	local nDigsite, nDistance, nDetails, nPrio
+	local pX, pY, instance = HBD:GetPlayerWorldPosition()
 
-    local contID = Common:GetInternalContId();
+	if (nearestDigsiteCache ~= nil) then
+		local cachedName, cachedDistance, cachedDetails, cachedPrio, cachedPathDistance, cX, cY, cInstance = unpack(nearestDigsiteCache);
+		Common:DisplayStatusMessage("Cached instance: " .. cInstance .. ", instance: " .. instance, MINARCH_MSG_DEBUG);
+		if (cInstance == instance) then
+			local _, distanceMoved = HBD:GetWorldVector(instance, cX, cY, pX, pY);
+			Common:DisplayStatusMessage("Cached digsite: " .. cachedName .. ", distance moved: " .. distanceMoved, MINARCH_MSG_DEBUG);
+			if (distanceMoved < 150) then
+				Common:DisplayStatusMessage("Nearest digsite returned from cache", MINARCH_MSG_DEBUG);
+				return cachedName, cachedDistance, cachedDetails, cachedPrio, cachedPathDistance;
+			end
+		end
+	end
 
+	Common:DisplayStatusMessage("Nearest digsite cache invalidated", MINARCH_MSG_DEBUG);
+
+	local contID = Common:GetInternalContId();
 	local uiMapID = Common:GetUiMapIdByContId(contID);
 	if (contID == nil or uiMapID == nil) then
 		return nil;
 	end
 
-	local playerPos = C_Map.GetPlayerMapPosition(uiMapID, "player")
-	if (playerPos == nil) then
+	local sites = sites or C_ResearchInfo.GetDigSitesForMap(uiMapID)
+	if not sites or #sites == 0 then
 		return nil;
 	end
-	local sites = sites or C_ResearchInfo.GetDigSitesForMap(uiMapID)
 
 	local pX, pY, instance = HBD:GetPlayerWorldPosition()
 	if not ax or not ay then
-    	-- ax, ay = MinArch:ConvertMapPosToWorldPosIfNeeded(contID, uiMapID, playerPos)
-		-- ax, ay = HBD:GetWorldCoordinatesFromZone(playerPos.x, playerPos.y, uiMapID)
 		ax = pX
 		ay = pY
 	end
 
 	local digsites = {}
+	local digsitesDB = MinArchDigsitesDB["continent"][contID]
+	local digsitesGlobalDB = MinArchDigsitesGlobalDB["continent"][contID]
+	local racePrio = MinArch.db.profile.raceOptions.priority
+	local raceHide = MinArch.db.profile.raceOptions.hide
+	local ignoreHidden = MinArch.db.profile.TomTom.ignoreHidden
+
 	for key, digsite in pairs(sites) do
-        local name = tostring(digsite.name)
-		-- local digsitex, digsitey = MinArch:ConvertMapPosToWorldPosIfNeeded(contID, uiMapID, digsite.position)
+        local name = digsite.name
 		local dX, dY = HBD:GetWorldCoordinatesFromZone(digsite.position.x, digsite.position.y, uiMapID)
 
-        -- local xd = math.abs(ax - tonumber(digsitex))
-		-- local yd = math.abs(ay - tonumber(digsitey))
-		-- local d = math.sqrt((xd*xd)+(yd*yd))
 		local _, d = HBD:GetWorldVector(instance, ax, ay, dX, dY)
-		-- d = math.floor(d)
 
-        if (MinArchDigsitesDB["continent"][contID][name] and MinArchDigsitesDB["continent"][contID][name]["status"] == true) then
-			if (not MinArchDigsiteList[contID][name]) then
-				Common:DisplayStatusMessage("Missing race info for digsite: " .. name, MINARCH_MSG_DEBUG);
-			end
-
+        if (digsitesDB[name] and digsitesDB[name]["status"] == true) then
 			local currentRace = MinArchDigsiteList[contID][name] and MinArchDigsiteList[contID][name].race or nil;
-			local details = MinArchDigsitesGlobalDB["continent"][contID][name]
+			local details = digsitesGlobalDB[name]
 			details.ax = dX
 			details.ay = dY
-			-- details.ax = digsitex
-			-- details.ay = digsitey
 
 			local prio = 99
 			if currentRace then
-				prio = MinArch.db.profile.raceOptions.priority[currentRace]
+				prio = racePrio[currentRace] or 99
 				if not prio or prio == 0 then
 					prio = 99
 				end
-				if MinArch.db.profile.raceOptions.hide[currentRace] and MinArch.db.profile.TomTom.ignoreHidden then
+				if raceHide[currentRace] and ignoreHidden then
 					prio = 100
 				end
 			end
 
-			digsites[key] = {
+			table.insert(digsites, {
 				name = name,
 				distance = d,
 				position = digsite.position,
 				prio = prio,
 				details = details
-			}
+			})
 		end
 	end
 
 	-- IF path mode is enabled
 	if MinArch.db.profile.TomTom.optimizePath and not skipPathCalc then
-		-- print("------")
 		for key, digsite in pairs(digsites) do
 			digsite.pathDistance = digsite.distance
 			local tmp = {unpack(digsites)}
 			table.remove(tmp, key)
 			digsite.pathDistance = CalculateDigSitePathDistance(digsite.details.ax, digsite.details.ay, tmp, digsite.pathDistance)
-			tmp = nil
-			-- print(digsite.name, digsite.distance, digsite.pathDistance)
 		end
 	end
 
 	if #digsites > 0 then
 		table.sort(digsites, DigSiteSort)
 
-	    -- print("GetNearestDigsite", digsites[1].name, digsites[1].distance, digsites[1].prio)
-		return digsites[1].name, digsites[1].distance, digsites[1].details, digsites[1].prio, digsites[1].pathDistance
+		local first = digsites[1]
+		nearestDigsiteCache = {first.name, first.distance, first.details, first.prio, first.pathDistance, pX, pY, instance};
+		return first.name, first.distance, first.details, first.prio, first.pathDistance;
 	end
 
 	if MinArch.db.profile.TomTom.taxi.autoDisableArchMode then
 		MinArch.db.profile.TomTom.taxi.archMode = false
 	end
 
-	return nDigsite, nDistance, nDetails, nPrio;
+	return nil;
 end
 
 function Digsites:IsPlayerNearDigSite()
@@ -862,6 +887,8 @@ function Digsites:UpdateFlightMap()
 	if (IsInInstance()) then
 		return nil
     end
+
+	Common:DisplayStatusMessage('Digsites:UpdateFlightMap', MINARCH_MSG_DEBUG)
 
 	if not TaxiToggleFrame then
 		TaxiToggleFrame = CreateFrame("Button", "MinArchTaxiToggle", FlightMapFrame and FlightMapFrame.ScrollContainer or TaxiRouteMap);
@@ -1051,6 +1078,10 @@ function Digsites:ShowRaceIconsOnMap()
 			end
 		end
 	end
+end
+
+function Digsites:InvalidateNearestDigsiteCache()
+	nearestDigsiteCache = nil;
 end
 
 function Digsites:HideWindow()

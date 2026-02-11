@@ -36,9 +36,9 @@ function ContainerFrame:Constructor()
     self.SearchBox:HookScript('OnEditFocusGained', OnFocusChanged)
 end
 
-function ContainerFrame:Create(bagId)
-    return self:Bind(CreateFrame('Frame', nil, UIParent, self.TEMPLATE), bagId)
-end
+-- function ContainerFrame:Create(bagId)
+--     return self:Bind(CreateFrame('Frame', nil, UIParent, self.TEMPLATE), bagId)
+-- end
 
 function ContainerFrame:OnShow()
     SimpleFrame.OnShow(self)

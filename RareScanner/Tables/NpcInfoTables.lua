@@ -790,11 +790,8 @@ private.NPC_INFO = {
 	[5863] = { zoneID = 199, artID = { 204 }, x = 4424, y = 4207, overlay = { "4200-4260","4420-4200","4200-3780" }, displayID = 6100 }; --Geopriest Gukk'rok
 	[5864] = { zoneID = 199, artID = { 204 }, x = 3859, y = 3340, overlay = { "3860-3340" }, displayID = 6114 }; --Swinegart Spearhide
 	[49913] = { zoneID = 201, artID = { 206 }, x = 6160, y = 7540, overlay = { "5620-7780","5720-8020","5940-7520","6000-7680","6020-7040","6040-6920","6100-7500" }, displayID = 36660 }; --Lady La-La <Siren of the Deeps>
-	[51071] = { zoneID = {
-		[203] = { x = 6840, y = 7380, artID = { 208 }, overlay = { "6840-7380" } };
-		[205] = { x = 5520, y = 7380, artID = { 210 }, overlay = { "5520-7320" } };
-	}, friendly = { "A" }, displayID = 4693 }; --Captain Florence
-	[51079] = { zoneID = 203, artID = { 208 }, x = 6680, y = 6960, overlay = { "6680-6940" }, friendly = { "H" }, displayID = 30103, event = 6 }; --Captain Foulwind
+	[51071] = { zoneID = 205, artID = { 210 }, x = 5520, y = 7380, overlay = { "5520-7320" }, friendly = { "A" }, displayID = 4693 }; --Captain Florence
+	[51079] = { zoneID = 205, artID = { 210 }, x = 5313, y = 6773, overlay = { "5313-6773" }, friendly = { "H" }, displayID = 30103 }; --Captain Foulwind
 	[50005] = { zoneID = {
 		[204] = { x = 4220, y = 7600, artID = { 209 }, overlay = { "3940-7160","4040-7380","4100-7660","4180-7340","4220-7600" } };
 		[205] = { x = 6700, y = 4320, artID = { 210 }, overlay = { "3780-6680","3940-6880","3980-6640","4440-4940","4620-4860","5640-8200","5720-8080","5740-8360","5820-8160","6580-4320","6700-4320","3800-6820","4480-5080","4660-5000","6500-4200" } };
@@ -1000,8 +997,8 @@ private.NPC_INFO = {
 	[70003] = { zoneID = 504, artID = { 521 }, x = 5959, y = 3613, overlay = { "5940-3640","6340-4900" }, displayID = 47900, event = 5 }; --Molthor <The Gatekeeper>
 	[70530] = { zoneID = 504, artID = { 521 }, x = 3960, y = 8120, overlay = { "3940-8140" }, displayID = 48097, event = 5 }; --Ra'sha <Tender of Sacrifices>
 	[70001] = { zoneID = 505, artID = { 522 }, x = 4459, y = 4100, overlay = { "3480-2720","3520-2560","3800-2680","4220-3220","4260-3380","4280-2900","4440-3660","4460-4100" }, displayID = 47810, event = 2 }; --Backbreaker Uru
-	[69161] = { zoneID = 507, artID = { 524 }, x = 5002, y = 5832, overlay = { "4990-5400","5002-5832" }, displayID = 47257, questReset = true, questID = { 32519 }, event = 4 }; --null
-	[70096] = { zoneID = 507, artID = { 524 }, x = 7860, y = 8060, overlay = { "7640-8340","7740-8240","7760-8020","7800-8380","7820-8140" }, displayID = 47868, event = 4 }; --War-God Dokah <Ward of Beasts>
+	[69161] = { zoneID = 507, artID = { 524 }, x = 5002, y = 5832, overlay = { "4990-5400","5002-5832" }, displayID = 47257, questReset = true, questID = { 32519 }, event = 5 }; --null
+	[70096] = { zoneID = 507, artID = { 524 }, x = 7860, y = 8060, overlay = { "7640-8340","7740-8240","7760-8020","7800-8380","7820-8140" }, displayID = 47868, event = 5 }; --War-God Dokah <Ward of Beasts>
 	[70440] = { zoneID = 508, artID = { 525 }, x = 5951, y = 7952, overlay = { "5951-7952" }, displayID = 48053, event = 2 }; --Monara <The Last Queen>
 	[70276] = { zoneID = 509, artID = { 526 }, x = 2770, y = 1990, overlay = { "6053-1990" }, displayID = 47975, event = 2 }; --No'ku Stormsayer <Lord of Tempest>
 	[70430] = { zoneID = 510, artID = { 527 }, x = 6053, y = 6053, overlay = { "6053-6053" }, displayID = 34264, event = 2 }; --Rocky Horror

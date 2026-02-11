@@ -3,7 +3,7 @@ local L = AddonTable.Localize
 local AddonTitle = select(2, C_AddOns.GetAddOnInfo(AddonName))
 local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
 
-local TextOnXPBar = StatusTrackingBarManager:CreateFontString("StatusTrackingBarManager", "OVERLAY", "GameTooltipText")
+local TextOnXPBar = MainStatusTrackingBarContainer:CreateFontString("MainStatusTrackingBarContainer", "OVERLAY", "GameTooltipText")
 TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 14, "THINOUTLINE")
 TextOnXPBar:SetPoint("TOP", 0, 0)
 TextOnXPBar:SetTextColor(1,1,1,1)
@@ -171,4 +171,12 @@ function comma_val(n)
 	
 	local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
+end
+
+function UpdateXPTicker()
+	if XPTConfig.ShowXPTicker == "YES" then
+		ExhaustionTick:Show()
+	elseif XPTConfig.ShowXPTicker == "NO" then
+		ExhaustionTick:Hide()
+	end
 end

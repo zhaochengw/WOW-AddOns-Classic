@@ -1,5 +1,21 @@
 # tullaRange release notes
 
+## 11.2.3
+
+* Added support for Burning Crusade Classic Anniversary Edition
+* Updated TOCs for Midnight Beta and latest game versions.
+
+## 11.2.2
+
+* Simplified oom detection for spells
+
+## 11.2.1
+
+* Fixed an issue causing action button range updating to not work properly
+* Improved out of mana handling for pet actions
+* Fixed a long standing issue where the unusuable state had a lower precedence
+  than out of range
+
 ## 11.2.0
 
 * Update TOCs for 12.0.0 (Midnight), 11.2.7, 5.5.3, and 11.15.8

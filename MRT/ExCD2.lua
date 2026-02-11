@@ -1,6 +1,6 @@
 local GlobalAddonName, ExRT = ...
 
-local GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime, IsInJailersTower = GetTime, IsEncounterInProgress, RAID_CLASS_COLORS, GetInstanceInfo, ExRT.F.GetSpellCharges or GetSpellCharges, SecondsToTime, IsInJailersTower
+local GetTime, RAID_CLASS_COLORS, GetInstanceInfo, GetSpellCharges, SecondsToTime, IsInJailersTower = GetTime, RAID_CLASS_COLORS, GetInstanceInfo, ExRT.F.GetSpellCharges or GetSpellCharges, SecondsToTime, IsInJailersTower
 local string_gsub, wipe, tonumber, pairs, ipairs, string_trim, format, floor, ceil, abs, type, sort, select, Enum = string.gsub, table.wipe, tonumber, pairs, ipairs, string.trim, format, floor, ceil, abs, type, sort, select, Enum
 local UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason = UnitIsDeadOrGhost, UnitIsConnected, UnitName, UnitCreatureFamily, UnitIsDead, UnitIsGhost, UnitGUID, UnitInRange, UnitPhaseReason
 
@@ -18,6 +18,7 @@ local GetCVar = C_CVar and C_CVar.GetCVar or C_CVar
 local UnitGroupRolesAssigned = UnitGroupRolesAssigned or ExRT.NULLfunc
 local GetSpecializationInfo = C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo or GetSpecializationInfo
 local SendChatMessage = C_ChatInfo and C_ChatInfo.SendChatMessage or SendChatMessage
+local IsEncounterInProgress = C_InstanceEncounter and C_InstanceEncounter.IsEncounterInProgress or IsEncounterInProgress
 
 local GetSpellLevelLearned = C_Spell and C_Spell.GetSpellLevelLearned or GetSpellLevelLearned
 if ExRT.isClassic then
@@ -29,7 +30,7 @@ end
 
 local VMRT = nil
 
-local module = ExRT:New("ExCD2",ExRT.L.cd2)
+local module = ExRT:New("ExCD2",ExRT.L.cd2,ExRT.isMN and 2 or nil)
 local ELib,L = ExRT.lib,ExRT.L
 
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
@@ -4381,6 +4382,9 @@ do
 end
 
 function module:Enable()
+	if ExRT.isMN then
+		return
+	end
 	VMRT.ExCD2.enabled = true
 	module.frame.IsEnabled = true
 
@@ -4544,9 +4548,11 @@ function module.main:ADDON_LOADED()
 		module:RegisterEvents('PLAYER_ENTERING_WORLD')
 	end
 
-	for _ in pairs(module.db.spellCDSync) do
-		module:RegisterEvents('SPELL_UPDATE_COOLDOWN')
-		break
+	if not ExRT.isMN then
+		for _ in pairs(module.db.spellCDSync) do
+			module:RegisterEvents('SPELL_UPDATE_COOLDOWN')
+			break
+		end
 	end
 
 	module:RegisterSlash()

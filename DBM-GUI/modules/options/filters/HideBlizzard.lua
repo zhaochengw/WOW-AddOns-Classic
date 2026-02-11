@@ -1,3 +1,4 @@
+---@class DBMCoreNamespace
 local private = select(2, ...)
 
 local L = DBM_GUI_L
@@ -24,14 +25,51 @@ blockSoundArea:CreateCheckButton(L.DisableAmbiance, true, nil, "DisableAmbiance"
 blockSoundArea:CreateCheckButton(L.DisableMusic, true, nil, "DisableMusic")
 
 local hideBlizzArea = hideBlizzPanel:CreateArea(L.Area_HideBlizzard)
-hideBlizzArea:CreateCheckButton(L.HideBossEmoteFrame, true, nil, "HideBossEmoteFrame2")
+local hideBlizzRaidWarnings = hideBlizzArea:CreateCheckButton(L.HideBossEmoteFrame, true, nil, "HideBossEmoteFrame2")
+if DBM:IsPostMidnight() then
+	hideBlizzRaidWarnings:SetScript("OnClick", function()
+		DBM.Options.HideBossEmoteFrame2 = not DBM.Options.HideBossEmoteFrame2
+		if DBM.Options.HideBossEmoteFrame2 then
+			C_CVar.SetCVar("encounterWarningsEnabled", "0")
+		else
+			C_CVar.SetCVar("encounterWarningsEnabled", "1")
+		end
+	end)
+end
+
 if DBM:IsPostMidnight() then
 	local hideTLButton = hideBlizzArea:CreateCheckButton(L.HideBlizzardTimeline, true, nil, "HideBlizzardTimeline")
 	hideTLButton:SetScript("OnClick", function()
+		DBM.Options.HideBlizzardTimeline = not DBM.Options.HideBlizzardTimeline
 		if DBM.Options.HideBlizzardTimeline then
-			EncounterTimeline.TimelineView:SetScript("OnShow", function(self) self:Hide() end)
+			C_CVar.SetCVar("encounterTimelineEnabled", "0")
+			if EncounterTimeline.View then
+				--12.0.0
+				EncounterTimeline.View:Hide()
+			else
+				local viewType = C_EncounterTimeline.GetViewType()
+				--Viewtype can also be set to 0, which is "None" so if it's set to that we don't reshow it at all
+				if viewType == 1 then
+					EncounterTimeline.TrackView:Hide()
+				elseif viewType == 2 then
+					EncounterTimeline.TimerView:Hide()
+				end
+			end
 		else
-			EncounterTimeline.TimelineView:SetScript("OnShow", nil)
+			C_CVar.SetCVar("encounterTimelineEnabled", "1")
+			if EncounterTimeline.View then
+				--12.0.0
+				EncounterTimeline.View:Show()
+			else
+				--12.0.1
+				local viewType = C_EncounterTimeline.GetViewType()
+				--Viewtype can also be set to 0, which is "None" so if it's set to that we don't reshow it at all
+				if viewType == 1 then
+					EncounterTimeline.TrackView:Show()
+				elseif viewType == 2 then
+					EncounterTimeline.TimerView:Show()
+				end
+			end
 		end
 	end)
 end

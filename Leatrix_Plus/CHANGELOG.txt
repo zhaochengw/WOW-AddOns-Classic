@@ -1,4 +1,29 @@
-﻿5.1.07 - 26th October 2025
+﻿5.1.21 - 28th January 2026
+- For 'Enhance minimap' ('Interface'), the minimap button bag will no longer go off the screen if you have a massive number of minimap buttons.
+- For 'Show cooldowns' ('Interface'), increased the character limit for the spell ID editboxes.
+
+5.1.19 - 14th January 2026
+- For 'Automate gossip' ('Automation'), gossip from the mechanical engineering auctioneers in Vale of Eternal Blossoms will now be skipped. 
+
+5.1.17 - 31st December 2025
+- Happy New Year!
+
+5.1.16 - 24th December 2025
+- Merry Christmas!
+
+5.1.14 - 14th December 2025
+- Updated for Mists of Pandaria game patch 5.5.3.
+
+5.1.12 - 26th November 2025
+- Updated slider controls and scroll bars used throughout the addon.
+
+5.1.10 - 15th November 2025
+- For 'Party from friends' ('Automation'), fixed an issue which caused a Lua error after automatically accepting a party invite.
+
+5.1.08 - 5th November 2025
+- PTR (5.5.3): Updated for Mists of Pandaria game patch 5.5.3.
+
+5.1.07 - 26th October 2025
 - Updated for Mists of Pandaria game patch 5.5.2.
 - For 'Enhance tooltip' ('Interface'), world map tooltips (such as quest objectives) will now be scaled.
 - Updated deprecated functions.

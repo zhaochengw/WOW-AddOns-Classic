@@ -4,7 +4,7 @@
 -- Sink-2.0
 
 local SINK20 = "LibSink-2.0"
-local SINK20_MINOR = 110002
+local SINK20_MINOR = 120000
 
 local sink = LibStub:NewLibrary(SINK20, SINK20_MINOR)
 if not sink then return end
@@ -373,7 +373,11 @@ local function blizzard(addon, text, r, g, b, font, size, outline, sticky, _, ic
 	if icon then text = "\124T"..icon..":15:15:0:0:64:64:4:60:4:60\124t "..text end
 	local s = sink.storageForAddon[addon] and sink.storageForAddon[addon].sink20Sticky or sticky
 	if loadFCT then loadFCT() end
-	CombatText_AddMessage(text, CombatText_StandardScroll, r, g, b, s and "crit" or nil, false)
+	if CombatText_AddMessage then
+		CombatText_AddMessage(text, CombatText_StandardScroll, r, g, b, s and "crit" or nil, false)
+	else
+		CombatText:AddMessage(text, CombatTextUtil.StandardScroll, r, g, b, s and "crit" or nil, false)
+	end
 end
 
 sink.channelMapping = sink.channelMapping or {

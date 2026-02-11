@@ -1,4 +1,4 @@
-## Interface: 110205, 110200, 50501, 50500, 11507
+## Interface: 110207, 50503, 38000, 20505, 11508
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-esMX: Contador de tiempo de reutilización
@@ -18,7 +18,7 @@
 ## Category-ruRU: Бой
 ## Category-zhCN: 战斗
 ## Category-zhTW: 戰鬥
-## Version: 11.2.7
+## Version: 11.2.8
 ## SavedVariables: OmniCCDB, OmniCC4Config
 ## IconTexture: Interface/Icons/spell_nature_timestop
 embeds.xml

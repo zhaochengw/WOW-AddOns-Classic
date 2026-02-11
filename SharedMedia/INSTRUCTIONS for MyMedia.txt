@@ -7,7 +7,7 @@ overwritten when updating SharedMedia!
 
 WARNING: Some updaters seem to wipe your addon's folder before updating it.
          If you choose the manual method below, make sure to backup your MyMedia.lua
-		 
+
 CONTENTS:
 ---------
 	- Instructions on using MyMedia
@@ -33,7 +33,7 @@ Instructions on how to use MyMedia:
 
       2. run MyMedia.bat to create the folders
 
-      3. put your media files into the subfolders found at World of Warcraft\Interface\Addons\SharedMedia_MyMedia
+      3. put your media files into the subfolders found at World of Warcraft\_[...]_\Interface\Addons\SharedMedia_MyMedia
 
       4. run MyMedia.bat again to create the MyMedia.lua file, registering your files
 
@@ -49,7 +49,7 @@ Instructions on how to use MyMedia:
   ------------------
 
     1. Create a folder named SharedMedia_MyMedia inside your addons folder
-       (World of Warcraft\Interface\Addons\SharedMedia_MyMedia)
+       (World of Warcraft\_[...]_\Interface\Addons\SharedMedia_MyMedia)
 
     2. Create subfolders named background, border, font, sound and statusbar
 
@@ -96,7 +96,7 @@ How do I create my own textures?
 
 How can I create a custom border?
 	Border textures need to follow the same guidelines as those at the link above.
-	Additionally, borders need to follow this format: http://www.wowwiki.com/EdgeFiles
+	Additionally, borders need to follow this format: https://warcraft.wiki.gg/wiki/EdgeFiles
 
 Where can I find more fonts and sounds?
 	There are plenty of websites that offer free fonts and sound clips/effects
@@ -117,7 +117,7 @@ What can I use to view/edit a .lua file?
 
 
 ----------------------------------------------------------------------------
--- Copy this section of the file to a file called MyMedia.lua, and enter 
+-- Copy this section of the file to a file called MyMedia.lua, and enter
 -- your media's information below, using the examples shown above.
 ----------------------------------------------------------------------------
 

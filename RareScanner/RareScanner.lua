@@ -49,6 +49,7 @@ local RSTomtom = private.ImportLib("RareScannerTomtom")
 -- Main button
 local scanner_button = CreateFrame("Button", RSConstants.RS_BUTTON_NAME, UIParent, "SecureActionButtonTemplate, BackdropTemplate")
 scanner_button:Hide();
+scanner_button:SetClampedToScreen(true)
 scanner_button:SetIgnoreParentScale(true)
 scanner_button:SetFrameStrata("MEDIUM")
 scanner_button:SetFrameLevel(200)

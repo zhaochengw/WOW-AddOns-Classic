@@ -9,8 +9,8 @@ local LibBG = LibStub:GetLibrary("LibUIDropDownMenu-4.0") -- 调用库菜单UI
 ns.LibBG = LibBG
 
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGe") -- 注册插件通信频道
-C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeYY")
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeVIP")
+C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeWorldBoss")
 
 BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameTooltipTemplate")   -- 用于装备过滤功能
 BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate") -- 用于装备库
@@ -23,10 +23,9 @@ BINDING_HEADER_BIAOGE = "BiaoGe"
 BINDING_NAME_BIAOGE = L["打开/关闭表格"]
 BINDING_NAME_RoleOverview = L["打开/关闭角色总览"]
 
-
 local realmID = GetRealmID()
 local player = BG.playerName
-local realmName = GetRealmName()
+local realmName = BG.realmName
 local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata
 local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
 
@@ -60,6 +59,8 @@ do
     BG.zhuangbeiWidth2 = 235
     BG.maijiaWidth = 90
     BG.jineWidth = 90
+    BG.spFB = {}
+    BG.fakuanIsFirst = {}
     if BG.IsRetail then
         BG.CloseButtonOffset = 0
     else
@@ -105,7 +106,8 @@ do
     local mainFrameWidth2                      = 1685
     local Maxt, Maxb, Maxi, HopeMaxb, HopeMaxn = {}, {}, {}, {}, {}
     do
-        local function AddDB(FB, width, height, maxt, maxb, bossNumTbl, diffTbl, diffIDTbl, maxiTbl, zaxiangI)
+        local function AddDB(FB, width, height, maxt, maxb,
+                             bossNumTbl, diffTbl, diffIDTbl, maxiTbl, zaxiangI)
             BG.FBWidth[FB] = width
             BG.FBHeight[FB] = height
             Maxt[FB] = maxt
@@ -129,7 +131,7 @@ do
             }
             Maxi[FB] = maxiTbl
             -- 设置支出格子为x个
-            if FB == "ULD" or FB == "ICC" then
+            if FB == "ULD" or FB == "ICC" or FB == "Worldtitan" then
                 tinsert(Maxi[FB], 5)
             elseif FB == "MC" then
                 tinsert(Maxi[FB], 6)
@@ -140,6 +142,8 @@ do
             tinsert(Maxi[FB], 5)
             if zaxiangI then
                 BG.zaxiang[FB] = { i = zaxiangI }
+            elseif maxb - bossNumTbl[#bossNumTbl] == 1 then
+                BG.fakuanIsFirst[FB] = true
             end
         end
 
@@ -173,7 +177,7 @@ do
             AddDB("NAXX", mainFrameWidth2, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
         end
-        if BG.IsWLK then
+        if BG.IsWLK_80 then
             local difTbl1 = {
                 [3] = "N10",
                 [175] = "N10",
@@ -226,17 +230,27 @@ do
             AddDB("BWL", mainFrameWidth, 810, 3, 10, { 0, 5, 9 }, nil, difTbl3,
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
         end
+        if BG.IsTitan then
+            AddDB("MCtitan", mainFrameWidth, 870, 3, 12, { 0, 6, 11 }, nil, nil,
+                { 5, 5, 5, 5, 5, 6, 5, 5, 5, 6, 11, 20, })
+            AddDB("SSCtitan", mainFrameWidth, 870, 3, 12, { 0, 6, 11 }, nil, nil,
+                { 5, 5, 5, 5, 5, 6, 5, 5, 5, 7, 18, 11, }, 11)
+            AddDB("Worldtitan", mainFrameWidth, 930, 3, 10, { 0, 4, 8 }, nil, nil,
+                { 9, 9, 9, 9, 9, 9, 9, 9, 3, 4 })
+        end
         if BG.IsCTM then
             AddDB("BOT", mainFrameWidth2, 830, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 8, 24, 4, }, 12)
             AddDB("FL", mainFrameWidth, 830, 3, 9, { 0, 5, 8 }, { "N", "H" }, nil,
-                { 6, 6, 6, 6, 6, 6, 6, 19, 18, })
+                { 6, 6, 6, 6, 6, 8, 8, 15, 18, })
             AddDB("DS", mainFrameWidth, 830, 3, 10, { 0, 5, 9 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 13, 18, })
         end
-        if BG.IsMOP_TW then
+        if BG.IsMOP then
             AddDB("MSV", mainFrameWidth2, 960, 4, 18, { 0, 6, 12, 17 }, { "N", "H" }, nil,
                 { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 27, 10, }, 14)
+            AddDB("TOT", mainFrameWidth, 960, 3, 15, { 0, 6, 12, }, { "N", "H" }, nil,
+                { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 11, 6 })
         end
         if BG.IsRetail then
             local n = 8
@@ -248,12 +262,19 @@ do
     do
         local function AddDB(FB, instanceID, phase, maxplayers, lootQuality,
                              phaseTable, bossPositionTbl, shortName)
+            local localName = GetRealZoneText(instanceID)
+            if localName == "" then
+                localName = shortName or UNKNOWN
+            end
+            if instanceID == 548 then
+                localName = L["毒蛇神殿"]
+            end
             tinsert(BG.FBtable, FB)
             tinsert(BG.FBtable2,
                 {
                     FB = FB,
                     ID = instanceID,
-                    localName = GetRealZoneText(instanceID) or shortName or UNKNOWN,
+                    localName = localName,
                     phase = phase,
                     maxplayers = maxplayers,
                     shortName = shortName,
@@ -264,7 +285,7 @@ do
             BG.bossPositionStartEnd[instanceID] = bossPositionTbl or { 1, Maxb[FB] - 2 }
             BG.FBfromBossPosition[FB] = {}
             for i = 1, Maxb[FB] do
-                BG.FBfromBossPosition[FB][i] = { name = FB, localName = GetRealZoneText(instanceID) }
+                BG.FBfromBossPosition[FB][i] = { name = FB, localName = localName }
             end
             BG.instanceIDfromBossPosition[FB] = {}
             for i = 1, Maxb[FB] - 2 do
@@ -280,7 +301,8 @@ do
 
         if BG.IsVanilla_Sod then
             BG.FB1 = "MCsod"
-            BG.fullLevel = 25
+            BG.fullLevel = 60
+            BG.fullLevel_RoleOverview = 25
             BG.theEndBossID = { 672, 617, } -- MC BWL
             AddDB("BD", 48, "P1", 10, 3)
             AddDB("Gno", 90, "P2", 10, 3)
@@ -301,6 +323,7 @@ do
         if BG.IsVanilla_60 then
             BG.FB1 = "MC"
             BG.fullLevel = 60
+            BG.fullLevel_RoleOverview = 35
             BG.theEndBossID = { 672, 617, 793, 723, 717, 1114 } --MC BWL ZUG AQL TAQ NAXX
             AddDB("MC", 409, "P1-P2", 40, nil, nil, { 1, 10 })
             AddDB("BWL", 469, "P3", 40)
@@ -313,10 +336,13 @@ do
             BG.bossPositionStartEnd[249] = { 11, 11 }
             BG.FBfromBossPosition["MC"][11] = { name = "OL", localName = GetRealZoneText(249) }
             BG.instanceIDfromBossPosition["MC"][11] = 249
+
+            BG.spFB.NAXX = { 22726 }
         end
-        if BG.IsWLK then
+        if BG.IsWLK_80 then
             BG.FB1 = "NAXX"
-            BG.fullLevel = 70
+            BG.fullLevel = 80
+            BG.fullLevel_RoleOverview = 60
             BG.theEndBossID = { 1114, 756, 645, 856, }
 
             AddDB("NAXX", 533, "P1", nil, nil, nil, { 1, 15 })
@@ -344,6 +370,9 @@ do
             BG.FBfromBossPosition["ICC"][13] = { name = "RS", localName = GetRealZoneText(724) }
             BG.instanceIDfromBossPosition["ICC"][13] = 724
 
+            BG.spFB.ICC = { 50274 }
+            BG.spFB.ULD = { 45038 }
+
             -- TBC
             do
                 AddDB("BWL", 469, "", nil, nil, nil, nil, L["黑翼"])
@@ -361,9 +390,32 @@ do
                 end
             end
         end
+        if BG.IsTitan then
+            BG.FB1 = "MCtitan"
+            BG.fullLevel = 80
+            BG.fullLevel_RoleOverview = 60
+            BG.theEndBossID = { 672, 628, 733 } --MC 毒蛇 风暴
+            AddDB("MCtitan", 409, "P1", 25)
+            AddDB("SSCtitan", 548, "P2", 25, nil, nil, { 1, 6 }, L["毒蛇风暴"])
+            BG.FBIDtable[550] = "SSCtitan" -- 风暴要塞
+            BG.bossPositionStartEnd[550] = { 7, 10 }
+            for i = 7, 10 do
+                BG.FBfromBossPosition["SSCtitan"][i] = { name = "TK", localName = GetRealZoneText(550) }
+                BG.instanceIDfromBossPosition["SSCtitan"][i] = 550
+            end
+
+            AddDB("Worldtitan", -100, "", 40, nil, nil, nil, L["世界Boss"])
+            BG.worldBossNpcID = {
+                6109,  -- 蓝龙
+                12397, -- 卡扎克
+                17711, -- 末日行者
+                18728, -- 末日领主卡扎克
+            }
+        end
         if BG.IsCTM then
             BG.FB1 = "DS"
-            BG.fullLevel = 80
+            BG.fullLevel = 85
+            BG.fullLevel_RoleOverview = 70
             BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
             AddDB("BOT", 671, "P1", nil, nil, nil, { 1, 5 })    -- 暮光堡垒
             BG.FBIDtable[669] = "BOT"                           -- 黑翼血环
@@ -379,15 +431,21 @@ do
                 BG.instanceIDfromBossPosition["BOT"][i] = 754
             end
 
-            AddDB("FL", 720, "P2") -- 火焰之地
-            AddDB("DS", 967, "P3") -- 巨龙之魂
+            AddDB("FL", 720, "P3") -- 火焰之地
+            AddDB("DS", 967, "P4") -- 巨龙之魂
+
+            BG.spFB.DS = {
+                -- 10939 -- 测试
+                77952
+            }
         end
-        if BG.IsMOP_TW then
+        if BG.IsMOP then
             BG.FB1 = "MSV"
-            BG.fullLevel = 85
-            BG.theEndBossID = { 1407, 1501, 1431 } -- 魔古山 大女皇 惧之煞
-            BG.worldBossID = { 32098, 32099, 32518, 32519, 37464 } -- 炮舰 怒之煞 纳拉克 乌达斯塔 鲁赫马尔
-            AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["魔古山宝库"]) -- 魔古山
+            BG.fullLevel = 90
+            BG.fullLevel_RoleOverview = 80
+            BG.theEndBossID = { 1407, 1501, 1431, 1579 } -- 魔古山 大女皇 惧之煞 雷神
+            BG.worldBossID = { 32098, 32099, 32518, 32519, 37464 } -- 炮舰 怒之煞 暴风领主纳拉克 乌达斯塔 鲁赫马尔
+            AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["P1三本"]) -- 魔古山
             -- 恐惧之心
             BG.FBIDtable[1009] = "MSV"
             BG.bossPositionStartEnd[1009] = { 7, 12 }
@@ -402,17 +460,19 @@ do
                 BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
                 BG.instanceIDfromBossPosition["MSV"][i] = 996
             end
+            AddDB("TOT", 1098, "P3") -- 雷电王座
         end
         if BG.IsRetail then
             BG.FB1 = "NP"
             BG.fullLevel = 80
+            BG.fullLevel_RoleOverview = 80
             BG.theEndBossID = { 2922, }
             AddDB("NP", 2657, "P1", 20)
         end
     end
 
     local HopeMaxi
-    if BG.IsVanilla then
+    if BG.onlyOneHard then
         HopeMaxi = 5
     else
         HopeMaxi = 3
@@ -614,6 +674,9 @@ do
                 PVP_currency = {}, -- PVP货币
                 Profession = {},   -- 专业制造
                 Quest = {},        -- 任务
+                Shop = {},         -- 商店直接售卖
+
+                Holiday = {},      -- 节日
 
                 Sod_PVP = {},      -- 赛季服PVP活动
                 Sod_Currency = {},
@@ -623,64 +686,7 @@ do
         end
     end
 
-    -- 字体
-    do
-        local function CreateMyFont(color, size, H)
-            local cff
-            if color == "Blue" then
-                cff = "00BFFF"
-            elseif color == "Green" then
-                cff = "00FF00"
-            elseif color == "Green2" then
-                cff = "40c040"
-            elseif color == "Red" then
-                cff = "FF0000"
-            elseif color == "Fen" then
-                cff = "FF69B4"
-            elseif color == "Gold" then
-                cff = "FFD100"
-            elseif color == "Yellow" then
-                cff = "FFFF00"
-            elseif color == "White" then
-                cff = "FFFFFF"
-            elseif color == "Dis" then
-                cff = "808080"
-            end
-            BG["Font" .. color .. size] = CreateFont("BG.Font" .. color .. size)
-            BG["Font" .. color .. size]:SetTextColor(RGB(cff))
-            BG["Font" .. color .. size]:SetFont(STANDARD_TEXT_FONT, size, "OUTLINE")
-        end
-
-        CreateMyFont("Blue", 13)
-        CreateMyFont("Blue", 15)
-
-        CreateMyFont("Green", 13)
-        CreateMyFont("Green", 15)
-        CreateMyFont("Green", 25)
-
-        CreateMyFont("Green2", 15)
-
-        CreateMyFont("Gold", 13)
-        CreateMyFont("Gold", 15)
-
-        CreateMyFont("Yellow", 13)
-        CreateMyFont("Yellow", 15)
-
-        CreateMyFont("Red", 13)
-        CreateMyFont("Red", 15)
-
-        CreateMyFont("Fen", 15)
-
-        CreateMyFont("White", 13)
-        CreateMyFont("White", 15)
-        CreateMyFont("White", 18)
-        CreateMyFont("White", 25)
-
-        CreateMyFont("Dis", 13)
-        CreateMyFont("Dis", 15)
-    end
-
-    -- 函数：给文本上颜色
+    -- 颜色
     do
         BG.b1 = "00BFFF"
         function BG.STC_b1(text)
@@ -851,6 +857,15 @@ do
         end)
     end
 
+    BG.classColorNames = {}
+    for i = 1, GetNumClasses() do
+        local className, classFilename = GetClassInfo(i)
+        if className then
+            local color = select(4, GetClassColor(classFilename))
+            BG.classColorNames[className] = format("|c%s%s|r", color, className)
+        end
+    end
+
     hooksecurefunc(LibBG, "ToggleDropDownMenu", function(_, _, _, dropDown)
         for i = 1, L_UIDROPDOWNMENU_MAXBUTTONS do
             local button = _G["L_DropDownList1Button" .. i]
@@ -870,7 +885,6 @@ do
         end
     end)
 end
-
 
 -- 本地配置数据库
 BG.Init(function()
@@ -1019,11 +1033,16 @@ BG.Init(function()
         BiaoGe.playerInfo[realmID][player] = BiaoGe.playerInfo[realmID][player] or {}
         BiaoGe.playerInfo[realmID][player].class = select(2, UnitClass("player"))
         BiaoGe.playerInfo[realmID][player].raceID = select(3, UnitRace("player"))
-        BiaoGe.playerInfo[realmID][player].level = UnitLevel("player")
         BiaoGe.playerInfo[realmID][player].iLevel = select(2, GetAverageItemLevel()) or 0
 
-        BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, event, level)
+        local function UpdateLevel(level)
             BiaoGe.playerInfo[realmID][player].level = level
+            BG.isFullLevel = level >= BG.fullLevel
+        end
+        UpdateLevel(UnitLevel("player"))
+        BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, event, level)
+            UpdateLevel(level)
+            BG.UpdateMeetingHornLevelButton()
         end)
 
         -- 天赋
@@ -1165,59 +1184,204 @@ BG.Init(function()
     end
 
     -- 修正数据
-    do
-        if BG.IsVanilla_Sod then
-            local FB = "MCsod"
-            if BiaoGe[FB].boss18.zhuangbei1 then
-                BiaoGe[FB].boss12 = BG.Copy(BiaoGe[FB].boss15)
-                BiaoGe[FB].boss13 = BG.Copy(BiaoGe[FB].boss16)
-                BiaoGe[FB].boss14 = BG.Copy(BiaoGe[FB].boss17)
-                BiaoGe[FB].boss15 = BG.Copy(BiaoGe[FB].boss18)
-                BiaoGe[FB].boss16 = {}
-                BiaoGe[FB].boss17 = {}
-                BiaoGe[FB].boss18 = {}
+    if BG.IsVanilla_Sod then
+        local FB = "MCsod"
+        if BiaoGe[FB].boss18.zhuangbei1 then
+            BiaoGe[FB].boss12 = BG.Copy(BiaoGe[FB].boss15)
+            BiaoGe[FB].boss13 = BG.Copy(BiaoGe[FB].boss16)
+            BiaoGe[FB].boss14 = BG.Copy(BiaoGe[FB].boss17)
+            BiaoGe[FB].boss15 = BG.Copy(BiaoGe[FB].boss18)
+            BiaoGe[FB].boss16 = {}
+            BiaoGe[FB].boss17 = {}
+            BiaoGe[FB].boss18 = {}
 
-                for DT, v in pairs(BiaoGe.History[FB]) do
-                    if BiaoGe.History[FB][DT].boss18.zhuangbei1 then
-                        BiaoGe.History[FB][DT].boss12 = BG.Copy(BiaoGe.History[FB][DT].boss15)
-                        BiaoGe.History[FB][DT].boss13 = BG.Copy(BiaoGe.History[FB][DT].boss16)
-                        BiaoGe.History[FB][DT].boss14 = BG.Copy(BiaoGe.History[FB][DT].boss17)
-                        BiaoGe.History[FB][DT].boss15 = BG.Copy(BiaoGe.History[FB][DT].boss18)
-                        BiaoGe.History[FB][DT].boss16 = {}
-                        BiaoGe.History[FB][DT].boss17 = {}
-                        BiaoGe.History[FB][DT].boss18 = {}
-                    end
+            for DT, v in pairs(BiaoGe.History[FB]) do
+                if BiaoGe.History[FB][DT].boss18.zhuangbei1 then
+                    BiaoGe.History[FB][DT].boss12 = BG.Copy(BiaoGe.History[FB][DT].boss15)
+                    BiaoGe.History[FB][DT].boss13 = BG.Copy(BiaoGe.History[FB][DT].boss16)
+                    BiaoGe.History[FB][DT].boss14 = BG.Copy(BiaoGe.History[FB][DT].boss17)
+                    BiaoGe.History[FB][DT].boss15 = BG.Copy(BiaoGe.History[FB][DT].boss18)
+                    BiaoGe.History[FB][DT].boss16 = {}
+                    BiaoGe.History[FB][DT].boss17 = {}
+                    BiaoGe.History[FB][DT].boss18 = {}
                 end
             end
+        end
 
-            local FB = "BWLsod"
-            if BiaoGe[FB].boss12.zhuangbei1 then
-                BiaoGe[FB].boss8 = BG.Copy(BiaoGe[FB].boss9)
-                BiaoGe[FB].boss9 = BG.Copy(BiaoGe[FB].boss10)
-                BiaoGe[FB].boss10 = BG.Copy(BiaoGe[FB].boss11)
-                BiaoGe[FB].boss11 = BG.Copy(BiaoGe[FB].boss12)
-                BiaoGe[FB].boss12 = {}
+        local FB = "BWLsod"
+        if BiaoGe[FB].boss12.zhuangbei1 then
+            BiaoGe[FB].boss8 = BG.Copy(BiaoGe[FB].boss9)
+            BiaoGe[FB].boss9 = BG.Copy(BiaoGe[FB].boss10)
+            BiaoGe[FB].boss10 = BG.Copy(BiaoGe[FB].boss11)
+            BiaoGe[FB].boss11 = BG.Copy(BiaoGe[FB].boss12)
+            BiaoGe[FB].boss12 = {}
 
-                for DT, v in pairs(BiaoGe.History[FB]) do
-                    if BiaoGe.History[FB][DT].boss12.zhuangbei1 then
-                        BiaoGe.History[FB][DT].boss8 = BG.Copy(BiaoGe.History[FB][DT].boss9)
-                        BiaoGe.History[FB][DT].boss9 = BG.Copy(BiaoGe.History[FB][DT].boss10)
-                        BiaoGe.History[FB][DT].boss10 = BG.Copy(BiaoGe.History[FB][DT].boss11)
-                        BiaoGe.History[FB][DT].boss11 = BG.Copy(BiaoGe.History[FB][DT].boss12)
-                        BiaoGe.History[FB][DT].boss12 = {}
-                    end
+            for DT, v in pairs(BiaoGe.History[FB]) do
+                if BiaoGe.History[FB][DT].boss12.zhuangbei1 then
+                    BiaoGe.History[FB][DT].boss8 = BG.Copy(BiaoGe.History[FB][DT].boss9)
+                    BiaoGe.History[FB][DT].boss9 = BG.Copy(BiaoGe.History[FB][DT].boss10)
+                    BiaoGe.History[FB][DT].boss10 = BG.Copy(BiaoGe.History[FB][DT].boss11)
+                    BiaoGe.History[FB][DT].boss11 = BG.Copy(BiaoGe.History[FB][DT].boss12)
+                    BiaoGe.History[FB][DT].boss12 = {}
                 end
             end
         end
     end
+
+    -- 删除旧表格数据
+    do
+        if BG.IsMOP or BG.IsTitan then
+            for i, FB in ipairs({
+                "NAXX", "ULD", "TOC", "ICC",
+                "BOT", "FL", "DS",
+            }) do
+                BiaoGe[FB] = nil
+                BiaoGe.History[FB] = nil
+                BiaoGe.HistoryList[FB] = nil
+            end
+        end
+    end
+
+    -- 默认字体
+    do
+        local l = GetLocale()
+        local default, list
+        if (l == "koKR") then
+            default = "2002.TTF"
+        elseif (l == "zhCN") then
+            default = "ARKai_T.ttf"
+            list = {
+                "ARKai_T.ttf",
+                "ARKai_C.ttf",
+                "ARHei.ttf",
+                -- "ARIALN.ttf",
+                -- "FRIZQT__.ttf",
+            }
+        elseif (l == "zhTW") then
+            default = "blei00d.TTF"
+            list = {
+                "bLEI00D.ttf",
+                "bHEI00M.ttf",
+                "bHEI01B.ttf",
+                "bKAI00M.ttf",
+            }
+        elseif (l == "ruRU") then
+            default = "FRIZQT___CYR.TTF"
+        else
+            default = "FRIZQT__.TTF"
+            list = {
+                "FRIZQT__.TTF",
+                "2002.TTF",
+                "2002B.TTF",
+                "ARHei.TTF",
+                "ARKai_C.TTF",
+                "ARKai_T.TTF",
+                "ARIALN.TTF",
+                "K_Pagetext.TTF",
+                "MORPHEUS_CYR.TTF",
+                "NIM_____.ttf",
+                "SKURRI_CYR.TTF",
+            }
+        end
+        BiaoGe.font = BiaoGe.font or default
+
+        local t = UIParent:CreateFontString()
+        t:SetFont(format("Fonts\\%s", BiaoGe.font), 15, "OUTLINE")
+        t:Hide()
+        if not t:GetFont() then
+            BiaoGe.font = default
+        end
+        BIAOGE_TEXT_FONT = format("Fonts\\%s", BiaoGe.font)
+
+        if list then
+            for i = #list, 1, -1 do
+                local t = UIParent:CreateFontString()
+                t:SetFont(format("Fonts\\%s", list[i]), 15, "OUTLINE")
+                t:Hide()
+                if not t:GetFont() then
+                    tremove(list, i)
+                end
+            end
+        end
+        BG.fontList = list
+
+        local name = "editFontSize"
+        BiaoGe.options[name] = BiaoGe.options[name] or 14
+        function BiaoGe_InputBoxTemplate_OnLoad(self)
+            self:SetFont(BIAOGE_TEXT_FONT, BiaoGe.options[name], "OUTLINE")
+        end
+    end
+
+    -- 自定义字体
+    do
+        local function CreateMyFont(color, size, H)
+            local cff
+            if color == "Blue" then
+                cff = "00BFFF"
+            elseif color == "Green" then
+                cff = "00FF00"
+            elseif color == "Green2" then
+                cff = "40c040"
+            elseif color == "Red" then
+                cff = "FF0000"
+            elseif color == "Fen" then
+                cff = "FF69B4"
+            elseif color == "Gold" then
+                cff = "FFD100"
+            elseif color == "Yellow" then
+                cff = "FFFF00"
+            elseif color == "White" then
+                cff = "FFFFFF"
+            elseif color == "Dis" then
+                cff = "808080"
+            end
+            BG["Font" .. color .. size] = CreateFont("BG.Font" .. color .. size)
+            BG["Font" .. color .. size]:SetTextColor(RGB(cff))
+            BG["Font" .. color .. size]:SetFont(BIAOGE_TEXT_FONT, size, "OUTLINE")
+        end
+
+        CreateMyFont("Blue", 13)
+        CreateMyFont("Blue", 15)
+
+        CreateMyFont("Green", 13)
+        CreateMyFont("Green", 15)
+        CreateMyFont("Green", 25)
+
+        CreateMyFont("Green2", 15)
+
+        CreateMyFont("Gold", 13)
+        CreateMyFont("Gold", 15)
+
+        CreateMyFont("Yellow", 13)
+        CreateMyFont("Yellow", 15)
+
+        CreateMyFont("Red", 13)
+        CreateMyFont("Red", 15)
+
+        CreateMyFont("Fen", 15)
+
+        CreateMyFont("White", 13)
+        CreateMyFont("White", 14)
+        CreateMyFont("White", 15)
+        CreateMyFont("White", 18)
+        CreateMyFont("White", 25)
+
+        CreateMyFont("Dis", 13)
+        CreateMyFont("Dis", 15)
+    end
 end)
 
 BG.Init2(function()
-    if IsAddOnLoaded("BiaoGeVIP") then
-        BG.BiaoGeVIPVerNum = BGV.GetVerNum(GetAddOnMetadata("BiaoGeVIP", "Version"))
+    if BG.hasHolidayLoot then
+        C_Calendar.OpenCalendar()
     end
-    if BG.IsWLK then
-        if BG.BiaoGeVIPVerNum and BG.BiaoGeVIPVerNum >= 10120 then
+
+    if IsAddOnLoaded("BiaoGeVIP") and BGV and BGV.raidVersion
+        and BG.GetVerNum(GetAddOnMetadata("BiaoGeVIP", "Version")) >= 10300 then
+        ns.isVIP = true
+    end
+    if BG.IsWLK_80 then
+        if ns.isVIP then
             ns.canShowTBC = true
         end
         if BG.IsTBCFB(BG.FB1) and not ns.canShowTBC then

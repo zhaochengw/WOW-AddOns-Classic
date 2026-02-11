@@ -1,7 +1,7 @@
-## Interface: 50501
-## X-Max-Interface: 110205
+## Interface: 50503
+## X-Max-Interface: 120001
 ## X-Min-Interface: 11508
-## X-Incompatible-With: 30405, 30406, 30407, 40402, 40403, 40404, 40405
+## X-Mid-Interface: 50503
 
 ## Title: Decursive |cffff00ff -Ace3-|r
 ## Notes: Afflictions display and cleaning for solo, group and raid with advanced filtering and priority system.
@@ -20,7 +20,7 @@
 
 ## SavedVariables: DecursiveDB
 
-## Version: 2.7.30
+## Version: 2.7.34
 ## Author: John Wellesz
 
 ## X-License: GNU GPL V3
@@ -34,7 +34,7 @@
 
 ## X-Embeds: Ace3, LibQTip-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !BugGrabber, LibDualSpec-1.0
 
-## X-ReleaseDate: "2025-10-22T11:18:02Z"
+## X-ReleaseDate: "2026-01-19T00:28:40Z"
 ## X-Category: Combat
 ## X-Website: http://www.2072productions.com/to/decursive.php
 ## X-Credits: Sylvin (Full french translation), Peter Sun, Ananhaid (ZhTW and zhCN translation), Fenlis, Chkid (koKR translation), Hemathio, Swix, Athariel, StingerSoft (Russian Translation), Freydis88, Floyddotnet, Vilogity, Dessa, Farook (German translation)

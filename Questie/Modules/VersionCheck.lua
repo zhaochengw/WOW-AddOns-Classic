@@ -37,8 +37,12 @@ if Questie then
 end
 
 --Initialized below
----@class Questie : AceAddon, AceConsole-3.0, AceEvent-3.0, AceTimer-3.0, AceComm-3.0, AceBucket-3.0
-Questie = LibStub("AceAddon-3.0"):NewAddon("Questie", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0", "AceBucket-3.0")
+---@class Questie : AceAddon, AceConsole-3.0, AceEvent-3.0, AceTimer-3.0, AceComm-3.0, AceBucket-3.0, AceSerializer-3.0
+Questie = LibStub("AceAddon-3.0"):NewAddon("Questie", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0", "AceBucket-3.0", "AceSerializer-3.0")
+
+Questie.API = {
+    isReady = false,
+}
 
 -- preinit placeholder to stop tukui crashing from literally force-removing one of our features no matter what users select in the config ui
 Questie.db = {profile={minimap={hide=false}}}
@@ -70,7 +74,7 @@ Questie.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 ---@type boolean
 Questie.IsEra = Questie.IsClassic and (not C_Seasons.HasActiveSeason())
 
--- See https://wowpedia.fandom.com/wiki/API_C_Seasons.GetActiveSeason
+-- See https://warcraft.wiki.gg/wiki/API_C_Seasons.GetActiveSeason
 
 --- Addon is running on Classic "Vanilla" client and on Season of Mastery realm specifically
 ---@type boolean
@@ -82,11 +86,15 @@ Questie.IsSoD = Questie.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons
 
 --- Addon is running on Classic "Vanilla" client and on Classic Anniversary realm ( )
 ---@type boolean
-Questie.IsAnniversary = Questie.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() == 11) -- TODO: Use Enum or new API if there will be one
+Questie.IsAnniversaryEra = Questie.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh)
+
+--- Addon is running on Classic "Vanilla" client and on Classic Anniversary realm ( )
+---@type boolean
+Questie.IsAnniversaryTBC = Questie.IsTBC and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh)
 
 --- Addon is running on Classic "Vanilla" client and on Classic Anniversary Hardcore realm
 ---@type boolean
-Questie.IsAnniversaryHardcore = Questie.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() == 12) -- TODO: Use Enum or new API if there will be one
+Questie.IsAnniversaryHardcore = Questie.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() == Enum.SeasonID.FreshHardcore)
 
 --- Addon is running on a HardCore realm specifically
 ---@type boolean

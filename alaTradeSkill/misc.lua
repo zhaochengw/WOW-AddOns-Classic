@@ -13,6 +13,7 @@ StackSplitFrame:SetFrameStrata("TOOLTIP");
 
 if not _G.ALA_HOOK_ChatEdit_InsertLink then
 	local tremove = table.remove;
+	local ChatEdit_GetActiveWindow = ChatEdit_GetActiveWindow;
 	local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend;
 
 	local handlers_name = {  };
@@ -71,10 +72,29 @@ if not _G.ALA_HOOK_ChatEdit_InsertLink then
 			end
 		end
 	end
+	hooksecurefunc("ChatEdit_InsertLink", function(link, addon, ...)
+		if ChatEdit_GetActiveWindow() then
+			return false;
+		end
+		if MacroFrameText and MacroFrameText:HasFocus() then
+			return false;
+		end
+		if CommunitiesFrame and CommunitiesFrame.ChatEditBox:HasFocus() then
+			return false;
+		end
+		if addon == false or MT.IsOverridedByAuction() then
+			return false;
+		end
+		if _G.ALA_INSERT_LINK(link, addon, ...) then
+			return true;
+		end
+		return false;
+	end)
+	--[==[
 	local __ChatEdit_InsertLink = _G.ChatEdit_InsertLink;
 	function _G.ChatEdit_InsertLink(link, addon, ...)
 		if not link then return; end
-		if addon == false then
+		if addon == false or MT.IsOverridedByAuction() then
 			return __ChatEdit_InsertLink(link, addon, ...);
 		end
 		local editBox = ChatEdit_ChooseBoxForSend();
@@ -85,4 +105,5 @@ if not _G.ALA_HOOK_ChatEdit_InsertLink then
 		end
 		return __ChatEdit_InsertLink(link, addon, ...);
 	end
+	--]==]
 end

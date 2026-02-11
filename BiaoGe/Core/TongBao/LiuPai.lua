@@ -129,19 +129,15 @@ function BG.LiuPaiUI(lastbt)
 
     bt:SetScript("OnClick", function(self)
         BG.FrameHide(0)
-        if not IsInRaid(1) then
-            SendSystemMessage(L["不在团队，无法通报"])
-            BG.PlaySound(1)
-        else
-            self:SetEnabled(false) 
-            C_Timer.After(2, function()
-                bt:SetEnabled(true)
-            end)
-            local _, tbl = CreateListTable(true)
-            BG.SendMsgToRaid(tbl)
+        if BG.IsErrorSendChannel() then return end
+        self:SetEnabled(false)
+        C_Timer.After(2, function()
+            bt:SetEnabled(true)
+        end)
+        local _, tbl = CreateListTable(true)
+        BG.SendMsgToRaid(tbl)
 
-            BG.PlaySound(2)
-        end
+        BG.PlaySound(2)
     end)
 
     return bt

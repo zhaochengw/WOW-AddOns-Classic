@@ -27,7 +27,7 @@ local function GetDataFrame(anchor)
     displayFrame:SetCallback("OnEnterStatusBar", function(widget)
         if widget.statustext:IsTruncated() then
             GameTooltip:SetOwner(widget.statustext, "ANCHOR_LEFT")
-            GameTooltip:AddLine(widget.statustext:GetText(), nil, nil, nil, true)
+            GameTooltip:AddLine(widget.statustext:GetText())
             GameTooltip:Show()
         end
     end)
@@ -96,23 +96,6 @@ function ReforgeLite:ImportData(anchor)
         if validWoWSims then
             self:ApplyWoWSimsImport(wowsims, anchor ~= nil)
             widget.parent:Hide()
-            return
-        elseif type(wowsims) == "table" and wowsims.slot then
-            local function UpdateText(item)
-                if _G[FRAME_NAME] then
-                    _G[FRAME_NAME]:SetStatusText(L["%s does not match your currently equipped %s: %s. ReforgeLite only supports equipped items."]:format(
-                        item or self.itemSlots[wowsims.slot],
-                        _G[self.itemSlots[wowsims.slot]],
-                        self.itemData[wowsims.slot].itemInfo.link or EMPTY
-                    ))    
-                end
-            end
-            if wowsims.itemId then
-                local mismatchItem = Item:CreateFromItemID(wowsims.itemId)
-                mismatchItem:ContinueOnItemLoad(function() UpdateText(mismatchItem:GetItemLink()) end)
-            else
-                UpdateText()
-            end
             return
         end
         local validPawn, pawn = self:ValidatePawnString(userInput)

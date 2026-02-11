@@ -13,8 +13,9 @@ local function findChatFrameUnderCursor()
 	local f = EnumerateFrames()
 	while f do
 		if not f:IsProtected() and not f:IsForbidden() then
-			if f:GetName() and f:GetName():match("^ChatFrame") and f:IsMouseOver() and f:IsVisible() then
-				local id = f:GetName():match("ChatFrame(%d+)")
+			local name = f:GetName()
+			if name and type(name) == 'string' and name:match("^ChatFrame") and f:IsMouseOver() and f:IsVisible() then
+				local id = name:match("ChatFrame(%d+)")
 				id = tonumber(id)
 				if id and _G["ChatFrame" .. id] then
 					return "ChatFrame" .. id
@@ -99,6 +100,13 @@ else
 	generalExtraAlerts:CreateCheckButton(L.WorldBuffAlert, true, nil, "WorldBuffAlert")
 end
 generalExtraAlerts:CreateCheckButton(L.WorldBossAlert, true, nil, "WorldBossAlert")
+if isRetail then
+	generalExtraAlerts:CreateCheckButton(L.RaidDiffChangedAlert, true, nil, "RaidDifficultyChangedAlert")
+	generalExtraAlerts:CreateCheckButton(L.RaidDiffChangedRaidOnly, true, nil, "RaidDifficultyChangedAlertRaidOnly")
+	generalExtraAlerts:CreateCheckButton(L.DungeonDiffChangedAlert, true, nil, "DungeonDifficultyChangedAlert")
+end
 
-local generalBugsAlerts = generalWarningPanel:CreateArea(L.Area_BugAlerts)
-generalBugsAlerts:CreateCheckButton(L.BadTimerAlert, true, nil, "BadTimerAlert")
+if not DBM:IsPostMidnight() then
+	local generalBugsAlerts = generalWarningPanel:CreateArea(L.Area_BugAlerts)
+	generalBugsAlerts:CreateCheckButton(L.BadTimerAlert, true, nil, "BadTimerAlert")
+end

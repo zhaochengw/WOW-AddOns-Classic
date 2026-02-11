@@ -1,7 +1,8 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("EcoDomeAldaniTrash", "DBM-Party-WarWithin", 10)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20251001061425")
+mod:SetRevision("20260112042022")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true

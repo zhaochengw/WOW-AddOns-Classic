@@ -22,7 +22,7 @@ print( "|cFF1EFF00".."啊~")
 print( "|cFF666666".."啊~")
 5046匕首岭
  ]]
---[[ 
+--[[
 function BG.Expand(v)
     local switch = {
         ["r"] = function()
@@ -194,7 +194,15 @@ local function CreateListTable()
             for i, t in ipairs(tbl) do
                 if t:match("Warcraft Logs") and tbl[i + 1] then
                     local text = BG.ClearColorCode(tbl[i + 1])
-                    local FB, per = text:match("^.-%s(%a+%s-%a-)%s+(%d+%.-%d-)%s+")
+                    local FB, per
+                    if text:match("^%d") then
+                        FB = ""
+                        per = text:match("^(%d+%.-%d-)%s+")
+                    else
+                        -- FB, per = text:match("^(%D+)%s+(%d+%.-%d-)%s+")
+                        FB = ""
+                        per = text:match("%s+(%d+%.-%d-)%s+")
+                    end
                     if FB and per then
                         info = {
                             FB = FB,
@@ -243,55 +251,65 @@ function BG.WCLUI(lastbt)
             local tbl = CreateListTable()
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(L["———通报WCL———"])
-            for i, v in ipairs(tbl) do
-                GameTooltip:AddLine(format("%s. %s %s %s", i, SetClassCFF(v.name), v.info.FB, GetColor(v.info.per)))
+            if InCombatLockdown() then
+                GameTooltip:AddLine(L["战斗中不能查看WCL。"], 1, 0, 0)
+            else
+                GameTooltip:AddLine(L["———通报WCL———"])
+                if next(tbl) then
+                    for i, v in ipairs(tbl) do
+                        GameTooltip:AddLine(format("%s. %s %s %s", i, SetClassCFF(v.name), v.info.FB, GetColor(v.info.per)))
+                    end
+                else
+                    GameTooltip:AddLine(L["当前团队成员没有WCL分数。"], 1, 0, 0)
+                end
             end
+            GameTooltip:Show()
         else
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(L["错误"], 1, 0, 0, true)
-            GameTooltip:AddLine(L["你没有安装官方WCL插件。"], 1, .82, 0, true)
+            GameTooltip:AddLine(L["你没有安装官方WCL插件（安装入口在WCL客户端）。"], 1, .82, 0, true)
         end
         GameTooltip:Show()
     end)
     bt:SetScript("OnLeave", GameTooltip_Hide)
     bt:SetScript("OnClick", function(self)
+        if InCombatLockdown() then return end
         BG.FrameHide(0)
-        if not IsInRaid(1) then
-            SendSystemMessage(L["不在团队，无法通报"])
-            BG.PlaySound(1)
-        else
-            self:SetEnabled(false) 
-            C_Timer.After(2, function()
-                bt:SetEnabled(true)
-            end)
-            local tbl = CreateListTable()
-            if not next(tbl) then return end
-            yes = true
-            local t = 0
-            SendChatMessage(L["———通报wc1———"], "RAID")
-            t = t + BG.tongBaoSendCD
-            for i, v in ipairs(CreateListTable()) do
-                BG.After(t, function()
-                    SendChatMessage(format("%s. %s %s %s", i, v.name,
-                        v.info.FB, v.info.per), "RAID")
-                end)
-                t = t + BG.tongBaoSendCD
-            end
-            BG.After(t, function()
+        if BG.IsErrorSendChannel() then return end
+        self:SetEnabled(false)
+        C_Timer.After(2, function()
+            bt:SetEnabled(true)
+        end)
+        local tbl = CreateListTable()
+        if not next(tbl) then return end
+        yes = true
+        local t = 0
+        local tbl = {}
+        tinsert(tbl, { L["———通报wc1———"] })
+        t = t + BG.tongBaoSendCD
+        for i, v in ipairs(CreateListTable()) do
+            tinsert(tbl, { format("%s. %s %s %s", i, v.name,
+                v.info.FB, v.info.per) })
+        end
+        BG.SendMsgToRaid(tbl, nil, function()
+            BG.After(1, function()
                 yes = false
             end)
-            BG.PlaySound(2)
-        end
+        end)
+        BG.PlaySound(2)
     end)
-
     return bt
 end
 
 local function AddWCLColor(self, event, msg, player, l, cs, t, flag, channelId, ...)
     if not yes then return false end
-    local num, name, FB, per = strsplit(" ", msg)
+    local strs = { strsplit(" ", msg) }
+    local num, name, per = strs[1], strs[2], strs[#strs]
+    local FB = ""
+    for i = 3, #strs - 1 do
+        FB = FB .. strs[i]
+    end
     per = tonumber(per)
     if num and name and per then
         name = SetClassCFF(name)

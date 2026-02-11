@@ -1,0 +1,23 @@
+﻿## Author: Jordy141
+## Interface: 20504
+
+## Title: BuyEmAll Classic Rurutia fix
+## Notes: BuyEmAll Classic Rurutia fix
+
+## Title-zhCN: BuyEmAll |cffff559a露露修复版|r
+## Notes-zhCN: BuyEmAll Classic 批量购买插件。|n|nShift+右键批量购买物品。|n已修复牌子批量更换问题。|n|n代码修复：|cffee5885露露緹婭@Bilibili|r|n|n20250321
+
+## Title-zhTW: BuyEmAll |cffff559a露露修復版|r
+## Notes-zhTW: BuyEmAll Classic 批量購買插件。|n|nShift+右鍵批量購買物品。|n已修復牌子批量更換問題。|n|n代碼修復：|cffee5885露露緹婭@Bilibili|r|n|n20250321
+
+## Version: 1.1.1 Rurutia fix
+## SavedVariablesPerCharacter: BEAConfirmToggle
+## LoadManagers: AddonLoader
+## X-LoadOn-Merchant: true
+## X-LoadOn-Slash: /buyemall
+
+Localization.enUS.lua
+Localization.zhCN.lua
+Localization.zhTW.lua
+BuyEmAllClassic.lua
+BuyEmAllClassic.xml

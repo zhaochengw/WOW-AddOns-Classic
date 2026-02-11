@@ -37,7 +37,7 @@ local function LinkConverterCallback(link,type,id,text)
 end
 
 function AddOn.LinkConverter_ConvertLinks(str)
-	if type(str)~="string" then return str; end
+	if type(str)~="string" or (canaccessvalue and not canaccessvalue(str)) then return str; end
 
 	local fix; str,fix=str:gsub("(|H([^:|]+):([^|]-)|h(.-)|h)",LinkConverterCallback);
 	if fix>0 then

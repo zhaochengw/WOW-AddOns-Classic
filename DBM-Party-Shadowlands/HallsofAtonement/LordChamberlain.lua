@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2413, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250906011856")
+mod:SetRevision("20260210012025")
 mod:SetCreatureID(164218)
 mod:SetEncounterID(2381)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -10,14 +10,35 @@ mod:SetZone(2287)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(323142, true, 2)--Telekinetic Toss
+mod:AddCustomAlertSoundOption(323236, true, 2)--Unleashed Suffering
+mod:AddCustomAlertSoundOption(1236973, true, 2)--Erupting Torment
+mod:AddCustomAlertSoundOption(328791, true, 2)--Ritual of Woe
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(323142, true, 3, 0)
+mod:AddCustomTimerOptions(323236, true, 3, 0)
+mod:AddCustomTimerOptions(1236973, true, 3, 0)
+mod:AddCustomTimerOptions(328791, true, 5, 0)
+function mod:OnLimitedCombatStart()
+	self:DisableSpecialWarningSounds()
+	self:EnableAlertOptions(323142, 511, "farfromline", 2)
+	self:EnableAlertOptions(323236, 512, "frontal", 15)
+	self:EnableAlertOptions(1236973, 513, "justrun", 3)
+	self:EnableAlertOptions(328791, 514, "helpsoak", 7)
+
+	self:EnableTimelineOptions(323142, 511)
+	self:EnableTimelineOptions(323236, 512)
+	self:EnableTimelineOptions(1236973, 513)
+	self:EnableTimelineOptions(328791, 514)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 323393 323236 328791 327885 1236973 329104",
 	"SPELL_CAST_SUCCESS 329113 323142"--323437
---	"SPELL_AURA_APPLIED"--323437
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED",
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+--]]
 
 --[[
 (ability.id = 323393 or ability.id = 328791 or ability.id = 323236 or ability.id = 327885 or ability.id = 1236973 or ability.id = 329104) and type = "begincast"
@@ -25,15 +46,15 @@ mod:RegisterEventsInCombat(
  or ability.id = 323143 and type = "applybuff"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
---TODO, sigma only cast once entire fight?
+--[[
 local warnTelekineticToss			= mod:NewCountAnnounce(323142, 2)
---local warnStigmaofPride				= mod:NewTargetNoFilterAnnounce(323437, 4)
+--local warnStigmaofPride			= mod:NewTargetNoFilterAnnounce(323437, 4)
 
 local specWarnUnleashedSuffering	= mod:NewSpecialWarningDodgeCount(323236, nil, nil, nil, 2, 2)
 local specWarnTelekineticOnslaught	= mod:NewSpecialWarningDodge(329113, nil, nil, nil, 2, 2)
 local specWarnEruptingTorment		= mod:NewSpecialWarningRunCount(1236973, nil, nil, nil, 4, 2)--327885
 local specWarnRitualofWoe			= mod:NewSpecialWarningSoakCount(328791, nil, nil, nil, 1, 7)
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
 local timerTelekineticTossCD		= mod:NewVarCountTimer("v9.7-12.5", 323142, nil, nil, nil, 3)
 local timerUnleashedSufferingCD		= mod:NewVarCountTimer("v21.8-24.3", 323236, nil, nil, nil, 3)
@@ -102,30 +123,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.tossCount = self.vb.tossCount + 1
 		warnTelekineticToss:Show(self.vb.tossCount)
 		timerTelekineticTossCD:Start(nil, self.vb.tossCount+1)
-	end
-end
-
---[[
-function mod:SPELL_AURA_APPLIED(args)
-	local spellId = args.spellId
-	if spellId == 323437 then
-
-	end
-end
---]]
-
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 309991 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
-		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257453  then
-
 	end
 end
 --]]

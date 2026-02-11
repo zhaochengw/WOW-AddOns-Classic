@@ -126,21 +126,21 @@ private.CONTAINER_INFO = {
 	[65552] = { zoneID = 422, artID = { 434 }, x = 4200, y = 6220, overlay = { "4080-6340","4120-6460","4200-6220","4220-6380" }, reset = false, questID = { 31432 }, minieventID = 26 }; --Glinting Rapana Whelk
 	[213845] = { zoneID = 433, artID = { 445 }, x = 7492, y = 7647, overlay = { "7492-7647" }, reset = false, questID = { 31428 }, minieventID = 27 }; --The Hammer of Folly
 	[214325] = { zoneID = 433, artID = { 445 }, x = 5468, y = 7129, overlay = { "5468-7129" }, reset = false, questID = { 31867 }, minieventID = 27 }; --Forgotten Lockbox
-	[218427] = { zoneID = 504, artID = { 521 }, x = 3530, y = 7020, overlay = { "3530-7020" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 1, event= 4 }; --Coming of Age
-	[218428] = { zoneID = 504, artID = { 521 }, x = 6602, y = 4462, overlay = { "6602-4462" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 2, event= 4 }; --For Council and King
-	[218429] = { zoneID = 504, artID = { 521 }, x = 3630, y = 7035, overlay = { "3630-7035" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 3, event= 4 }; --Shadows of the Loa
-	[218430] = { zoneID = 504, artID = { 521 }, x = 5265, y = 4138, overlay = { "5265-4138" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 4, event= 4 }; --The Dark Prophet Zul
-	[218431] = { zoneID = 504, artID = { 521 }, x = 4018, y = 4075, overlay = { "4018-4075" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 1, event= 4 }; --Lei Shen
-	[218432] = { zoneID = 504, artID = { 521 }, x = 4707, y = 5991, overlay = { "4707-5991" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 2, event= 4 }; --The Sacred Mount
-	[218433] = { zoneID = 504, artID = { 521 }, x = 3489, y = 6559, overlay = { "3489-6559" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 3, event= 4 }; --Unity at a Price
-	[218434] = { zoneID = 504, artID = { 521 }, x = 6075, y = 6878, overlay = { "6075-6878" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 4, event= 4 }; --The Pandaren Problem
-	[218435] = { zoneID = 504, artID = { 521 }, x = 3583, y = 5471, overlay = { "3583-5471" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 1, event= 4 }; --Agents of Order
-	[218436] = { zoneID = 504, artID = { 521 }, x = 5929, y = 2626, overlay = { "5929-2626" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 2, event= 4 }; --Shadow, Storm, and Stone
-	[218437] = { zoneID = 504, artID = { 521 }, x = 4992, y = 2035, overlay = { "4992-2035" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 3, event= 4 }; --The Curse and the Silence
-	[218438] = { zoneID = 504, artID = { 521 }, x = 6253, y = 3772, overlay = { "6253-3772" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 4, event= 4 }; --Age of a Hundred Kings
-	[220832] = { zoneID = 554, artID = { 571 }, x = 4033, y = 9317, overlay = { "4033-9317" }, weeklyReset = true, questID = { 32957 }, event= 4 }; --Sunken Treasure
-	[220901] = { zoneID = 554, artID = { 571 }, x = 4965, y = 6940, overlay = { "4970-6950" }, weeklyReset = true, questID = { 32969 }, event= 4 }; --Gleaming Treasure Chest
-	[220902] = { zoneID = 554, artID = { 571 }, x = 5393, y = 4722, overlay = { "5380-4750" }, weeklyReset = true, questID = { 32968 }, event= 4 }; --Rope-Bound Treasure Chest
-	[220986] = { zoneID = 554, artID = { 571 }, x = 2280, y = 5895, overlay = { "2280-5895" }, weeklyReset = true, questID = { 32956 }, event= 4 }; --Blackguard's Jetsam
-	[221036] = { zoneID = 554, artID = { 571 }, x = 7060, y = 8092, overlay = { "7052-8093" }, weeklyReset = true, questID = { 32970 }, event= 4 }; --Gleaming Treasure Satchel
+	[218427] = { zoneID = 504, artID = { 521 }, x = 3530, y = 7020, overlay = { "3530-7020" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 1, event = 5 }; --Coming of Age
+	[218428] = { zoneID = 504, artID = { 521 }, x = 6602, y = 4462, overlay = { "6602-4462" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 2, event = 5 }; --For Council and King
+	[218429] = { zoneID = 504, artID = { 521 }, x = 3630, y = 7035, overlay = { "3630-7035" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 3, event = 5 }; --Shadows of the Loa
+	[218430] = { zoneID = 504, artID = { 521 }, x = 5265, y = 4138, overlay = { "5265-4138" }, reset = false, achievementID = { 8049 }, minieventID = 38, criteria = 4, event = 5 }; --The Dark Prophet Zul
+	[218431] = { zoneID = 504, artID = { 521 }, x = 4018, y = 4075, overlay = { "4018-4075" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 1, event = 5 }; --Lei Shen
+	[218432] = { zoneID = 504, artID = { 521 }, x = 4707, y = 5991, overlay = { "4707-5991" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 2, event = 5 }; --The Sacred Mount
+	[218433] = { zoneID = 504, artID = { 521 }, x = 3489, y = 6559, overlay = { "3489-6559" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 3, event = 5 }; --Unity at a Price
+	[218434] = { zoneID = 504, artID = { 521 }, x = 6075, y = 6878, overlay = { "6075-6878" }, reset = false, achievementID = { 8050 }, minieventID = 39, criteria = 4, event = 5 }; --The Pandaren Problem
+	[218435] = { zoneID = 504, artID = { 521 }, x = 3583, y = 5471, overlay = { "3583-5471" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 1, event = 5 }; --Agents of Order
+	[218436] = { zoneID = 504, artID = { 521 }, x = 5929, y = 2626, overlay = { "5929-2626" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 2, event = 5 }; --Shadow, Storm, and Stone
+	[218437] = { zoneID = 504, artID = { 521 }, x = 4992, y = 2035, overlay = { "4992-2035" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 3, event = 5 }; --The Curse and the Silence
+	[218438] = { zoneID = 504, artID = { 521 }, x = 6253, y = 3772, overlay = { "6253-3772" }, reset = false, achievementID = { 8051 }, minieventID = 40, criteria = 4, event = 5 }; --Age of a Hundred Kings
+	[220832] = { zoneID = 554, artID = { 571 }, x = 4033, y = 9317, overlay = { "4033-9317" }, weeklyReset = true, questID = { 32957 }, event = 4 }; --Sunken Treasure
+	[220901] = { zoneID = 554, artID = { 571 }, x = 4965, y = 6940, overlay = { "4970-6950" }, weeklyReset = true, questID = { 32969 }, event = 4 }; --Gleaming Treasure Chest
+	[220902] = { zoneID = 554, artID = { 571 }, x = 5393, y = 4722, overlay = { "5380-4750" }, weeklyReset = true, questID = { 32968 }, event = 4 }; --Rope-Bound Treasure Chest
+	[220986] = { zoneID = 554, artID = { 571 }, x = 2280, y = 5895, overlay = { "2280-5895" }, weeklyReset = true, questID = { 32956 }, event = 4 }; --Blackguard's Jetsam
+	[221036] = { zoneID = 554, artID = { 571 }, x = 7060, y = 8092, overlay = { "7052-8093" }, weeklyReset = true, questID = { 32970 }, event = 4 }; --Gleaming Treasure Satchel
 }

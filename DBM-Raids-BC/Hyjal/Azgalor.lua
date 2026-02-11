@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal25"
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20251223165349")
 mod:SetCreatureID(17842)
 mod:SetEncounterID(621, 2471)
 mod:SetModelID(18526)
@@ -21,8 +21,8 @@ mod:RegisterEventsInCombat(
 local warnSilence		= mod:NewSpellAnnounce(31344, 3)
 local warnDoom			= mod:NewTargetNoFilterAnnounce(31347, 4)
 
-local specWarnFire		= mod:NewSpecialWarningMove(31340)
-local specWarnDoom		= mod:NewSpecialWarningYou(31347)
+local specWarnFire		= mod:NewSpecialWarningMove(31340, nil, nil, nil, 1, 2)
+local specWarnDoom		= mod:NewSpecialWarningYou(31347, nil, nil, nil, 1, 2)
 local yellDoom			= mod:NewShortFadesYell(31347)
 
 local timerDoom			= mod:NewTargetTimer(20, 31347, nil, nil, nil, 3)

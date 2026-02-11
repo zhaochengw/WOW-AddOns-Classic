@@ -59,7 +59,7 @@ end
 --- Colorize a string with a color code
 ---@param str string @The string colorize
 --Name or string in the format "RRGGBB" i.e "FF0000" for red
----@param color "red"|"gray"|"purple"|"blue"|"lightBlue"|"reputationBlue"|"yellow"|"orange"|"green"|"white"|"gold"|string
+---@param color "red"|"gray"|"purple"|"blue"|"lightBlue"|"reputationBlue"|"repeatableBlue"|"yellow"|"orange"|"green"|"white"|"gold"|"lime"|"pvpRed"|string
 ---@return string
 function Questie:Colorize(str, color)
     if not color then color = "yellow" end
@@ -74,9 +74,11 @@ function Questie:Colorize(str, color)
     elseif color == "blue" then
         c = "|cFF0000FF";
     elseif color == "lightBlue" then
-        c = "|cB900FFFF";
+        c = "|cFF00BBFF";
     elseif color == "reputationBlue" then
         c = "|cFF8080ff";
+    elseif color == "repeatableBlue" then
+        c = "|cFF21CCE7";
     elseif color == "yellow" then
         c = "|cFFffff00";
     elseif color == "orange" then
@@ -86,7 +88,11 @@ function Questie:Colorize(str, color)
     elseif color == "white" then
         c = "|cFFffffff";
     elseif color == "gold" then
-        c = "|cFFffd100" -- this is the default game font
+        c = "|cFFffd100"; -- this is the default game color
+    elseif color == "lime" then
+        c = "|cFF6ce314"; -- holiday green
+    elseif color == "pvpRed" then
+        c = "|cFFE35639";
     end
 
     return c .. str .. "|r"
@@ -243,11 +249,11 @@ function Questie.SetIcons()
     Questie.usedIcons[Questie.ICON_TYPE_INCOMPLETE] = Questie.db.profile.ICON_INCOMPLETE or Questie.icons["incomplete"]
     Questie.usedIcons[Questie.ICON_TYPE_GLOW] = Questie.db.profile.ICON_GLOW or Questie.icons["glow"]
     Questie.usedIcons[Questie.ICON_TYPE_REPEATABLE] = Questie.db.profile.ICON_REPEATABLE or Questie.icons["repeatable"]
-    Questie.usedIcons[Questie.ICON_TYPE_REPEATABLE_COMPLETE] = Questie.db.profile.ICON_REPEATABLE_COMPLETE or Questie.icons["complete"]
+    Questie.usedIcons[Questie.ICON_TYPE_REPEATABLE_COMPLETE] = Questie.db.profile.ICON_REPEATABLE_COMPLETE or Questie.icons["repeatable_complete"]
     Questie.usedIcons[Questie.ICON_TYPE_EVENTQUEST] = Questie.db.profile.ICON_EVENTQUEST or Questie.icons["eventquest"]
-    Questie.usedIcons[Questie.ICON_TYPE_EVENTQUEST_COMPLETE] = Questie.db.profile.ICON_EVENTQUEST_COMPLETE or Questie.icons["complete"]
+    Questie.usedIcons[Questie.ICON_TYPE_EVENTQUEST_COMPLETE] = Questie.db.profile.ICON_EVENTQUEST_COMPLETE or Questie.icons["eventquest_complete"]
     Questie.usedIcons[Questie.ICON_TYPE_PVPQUEST] = Questie.db.profile.ICON_PVPQUEST or Questie.icons["pvpquest"]
-    Questie.usedIcons[Questie.ICON_TYPE_PVPQUEST_COMPLETE] = Questie.db.profile.ICON_PVPQUEST_COMPLETE or Questie.icons["complete"]
+    Questie.usedIcons[Questie.ICON_TYPE_PVPQUEST_COMPLETE] = Questie.db.profile.ICON_PVPQUEST_COMPLETE or Questie.icons["pvpquest_complete"]
     Questie.usedIcons[Questie.ICON_TYPE_INTERACT] = Questie.db.profile.ICON_INTERACT or Questie.icons["interact"]
     Questie.usedIcons[Questie.ICON_TYPE_SODRUNE] = Questie.icons["sod_rune"]
     Questie.usedIcons[Questie.ICON_TYPE_MOUNT_UP] = Questie.icons["mount_up"]

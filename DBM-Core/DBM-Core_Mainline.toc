@@ -1,4 +1,4 @@
-## Interface: 110205, 110207, 120000
+## Interface: 110207, 120000, 120001
 ## X-Min-Interface: 110200
 ## Category: DBM
 ## Group: DBM-Core
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 12.0.3
+## Version: 12.0.18
 ## X-Curse-Project-ID: 3358
 ## X-Wago-ID: qv633o6b
 ## X-Website: https://deadlybossmods.com
@@ -95,6 +95,7 @@ modules\gui\Keystones.lua
 modules\Commands.lua
 modules\Hyperlinks.lua
 modules\MinimapButton.lua
+modules\MidnightPopup.lua
 modules\Notes.lua
 modules\Sounds.lua
 modules\UpdateReminder.lua

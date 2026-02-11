@@ -158,6 +158,10 @@ local _G = _G
 	local S_ITEM_MIN_LEVEL = "^" .. gsub(ITEM_MIN_LEVEL, "%%d", "(%%d+)")
 	local S_ITEM_CLASSES_ALLOWED = "^" .. gsub(ITEM_CLASSES_ALLOWED, "%%s", "(%%a+)")
 
+	local S_HOUSING_DECOR_OWNED_COUNT_FORMAT = "^" .. gsub(HOUSING_DECOR_OWNED_COUNT_FORMAT, "(|cn[A-Z_]+:)|(|r)", "") -- Line has color coding in it
+	S_HOUSING_DECOR_OWNED_COUNT_FORMAT = S_HOUSING_DECOR_OWNED_COUNT_FORMAT:gsub("%((.+)%)", "%%(%1%%)") -- Escape parentheses
+	S_HOUSING_DECOR_OWNED_COUNT_FORMAT = S_HOUSING_DECOR_OWNED_COUNT_FORMAT:gsub("%%d", "(%%d+)") -- Get them digits
+
 	local function _checkTooltipLine(text, i, tooltipTable, itemId, itemLink)
 		local lines = #tooltipTable
 		local toyLine = tooltipTable[i + 2] and tooltipTable[i + 2].leftText
@@ -179,6 +183,14 @@ local _G = _G
 				Debug("%d - Cosmetic %d", itemId, i)
 				return true -- Item is known and collected
 			end
+		elseif strmatch(text, S_HOUSING_DECOR_OWNED_COUNT_FORMAT) then -- Check if item is Decor already known
+			-- This should never get hit, but leaving it as an fallback option if the primary detection breaks at some point
+			local owned, _, placed, storage = strmatch(text, S_HOUSING_DECOR_OWNED_COUNT_FORMAT)
+			owned = tonumber(owned) or 0
+			if owned > 0 then
+				Debug("%d - Decor %d (%d / %d / %d)", itemId, i, owned, placed, storage)
+				return true -- Item is known and collected
+			end
 
 		-- Debug
 		elseif isPTR then
@@ -187,6 +199,9 @@ local _G = _G
 				return true
 			elseif strmatch(text, "alcoholic beverage") then
 				Debug("PTR Debug match:", text)
+				return true
+			elseif strmatch(text, "Owned: ") then
+				Debug("PTR Debug match:", text, "->", strmatch(text, S_HOUSING_DECOR_OWNED_COUNT_FORMAT))
 				return true
 			end
 		end
@@ -242,14 +257,74 @@ local _G = _G
 			end
 		end
 
-		if C_PetJournal and itemLink:match("|H(.-):") == "battlepet" then -- Check if item is Caged Battlepet (dummy item 82800)
+		if itemLink:match("|H(.-):") == "battlepet" then -- Check if item is Caged Battlepet (dummy item 82800)
 			local _, battlepetId = strsplit(":", itemLink)
-			if C_PetJournal.GetNumCollectedInfo(battlepetId) > 0 then
+			battlepetId = tonumber(battlepetId)
+			if battlepetId and C_PetJournal.GetNumCollectedInfo(battlepetId) > 0 then
 				Debug("%d - BattlePet: %s %d", itemId, battlepetId, C_PetJournal.GetNumCollectedInfo(battlepetId))
 				knownTable[itemLink] = true -- Mark as known for later use
 				return true -- Battlepet is collected
 			end
 			return false -- Battlepet is uncollected... or something went wrong
+		end
+
+		if itemId and classId == Enum.ItemClass.Miscellaneous then
+			if subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then -- CompanionPet
+				local _, numOwned = C_PetJournal.GetNumPets()
+				for i = 1, numOwned do
+					local _, _, owned, _, _, _, _, speciesName, icon, _, companionID = C_PetJournal.GetPetInfoByIndex(i)
+					if owned and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), speciesName)) then
+						Debug("%d - CompanionPet: (%d/%d) %s - CId: %d TId: %d", itemId, i, numOwned, speciesName, companionID, icon)
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- CompanionPet is collected
+					end
+				end
+				return false -- CompanionPet is uncollected... or something went wrong
+
+			elseif subclassId == Enum.ItemMiscellaneousSubclass.Mount then -- Mount
+				local numMounts = C_MountJournal.GetNumMounts()
+				for i = 1, numMounts do
+					local name, _, icon, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
+					if isCollected and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), name)) then
+						Debug("%d Mount: (%d/%d) %s - MId: %d TId: %d", itemId, i, numMounts, name, mountID, icon)
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- Mount is collected
+					end
+				end
+				return false -- Mount is uncollected... or something went wrong
+			end
+
+		elseif classId == Enum.ItemClass.Housing and subclassId == Enum.ItemHousingSubclass.Decor then -- Decor
+			-- Reading the Tooltip for HOUSING_DECOR_OWNED_COUNT_FORMAT -line is an option if this fails!
+			local info = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true) -- itemInfo, tryGetOwnedInfo
+			if info and info.entryID then
+				local entrySubtype = info.entryID.entrySubtype
+				if entrySubtype == Enum.HousingCatalogEntrySubtype.OwnedUnmodifiedStack or entrySubtype == Enum.HousingCatalogEntrySubtype.OwnedModifiedStack then -- 3 or 2
+					Debug("%d - Housing/Decor: %d (%d)", itemId, entrySubtype, info.entryID.recordID)
+					knownTable[itemLink] = true -- Mark as known for later use
+					return true
+				end
+			end
+			return false -- Decor is uncollected... or something went wrong
+
+			--[[
+			UPDATE 20260130
+			CF user Daeveren had posted comment with this as a suggestion:
+
+			if C_HousingCatalog and C_HousingCatalog.GetCatalogEntryInfoByItem then
+				local decorInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
+				if decorInfo then
+					-- firstAcquisitionBonus == 0 means the XP bonus was claimed (item was collected at least once)
+					if decorInfo.firstAcquisitionBonus == 0 then
+						Debug("%d - HousingDecor: Collected (bonus claimed)", itemId)
+						knownTable[itemLink] = true
+						return true
+					end
+					knownTable[itemLink] = false
+					return false
+				end
+			end
+			]]--
 		end
 
 		local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
@@ -390,6 +465,7 @@ local _G = _G
 		return self[event] and self[event](self, event, ...)
 	end)
 	f:RegisterEvent("ADDON_LOADED")
+	f:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	local needHooking = {
 		Blizzard_AuctionHouseUI = true, -- 8.3 =>
@@ -414,6 +490,15 @@ local _G = _G
 		if not (needHooking["Blizzard_AuctionHouseUI"] or needHooking["Blizzard_GuildBankUI"]) then -- No need to listen to the event anymore
 			Debug("<- UnregisterEvent", event)
 			self:UnregisterEvent(event)
+		end
+	end
+
+	function f:PLAYER_ENTERING_WORLD(event, isInitialLogin, isReloadingUi)
+		if isInitialLogin or isReloadingUi then
+			Debug("===", event, isInitialLogin, isReloadingUi)
+			-- The collection status of Decor items is not immidiately available through the API. We have to either change the vendor page or try to pre-cache things.
+			-- This should cache Decor stuff, or at least HOUSING_STORAGE_UPDATED event is fired:
+			local searcher = C_HousingCatalog.CreateCatalogSearcher()
 		end
 	end
 
@@ -483,7 +568,7 @@ local _G = _G
 			local regions = { GameTooltip:GetRegions() }
 
 			-- https://warcraft.wiki.gg/wiki/ItemType
-			local _, _, _, _, _, _, _, _, _, _, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
+			local _, _, _, _, _, _, _, _, _, itemTexture, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
 			local itemClass, itemSubclass
 			for k, v in pairs(Enum.ItemClass) do
 				if v == classId then
@@ -531,6 +616,47 @@ local _G = _G
 				for j = 1, #regionTable do
 					line = line .. "\n" .. regionTable[j]
 				end
+
+				-- Check these item types for additional info
+				if classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
+					line = line .. "\n-----\nCompanionPet:"
+					local numPets, numOwned = C_PetJournal.GetNumPets()
+					for index = 1, numOwned do
+						local petID, speciesID, owned, customName, level, favorite, isRevoked, speciesName, icon, petType, companionID, tooltip, description, isWild, canBattle, isTradeable, isUnique, obtainable = C_PetJournal.GetPetInfoByIndex(index)
+						if owned and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), speciesName)) then
+							line = line .. "\n- Index: " .. index .. " / " .. numOwned .. "\n- Name: " .. speciesName .. "\n- companionID: " .. companionID .. "\n- Icon: " .. icon
+							break
+						end
+					end
+
+				elseif classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.Mount then
+					line = line .. "\n-----\nMount:"
+					local numMounts = C_MountJournal.GetNumMounts()
+					for index = 1, numMounts do
+						local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID, isSteadyFlight = C_MountJournal.GetDisplayedMountInfo(index)
+						if isCollected and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), name)) then
+							line = line .. "\n- Index: " .. index .. " / " .. numMounts .. "\n- Name: " .. name .. "\n- mountID: " .. mountID .. "\n- Icon: " .. icon
+							break
+						end
+					end
+
+				elseif classId == Enum.ItemClass.Housing and subclassId == Enum.ItemHousingSubclass.Decor then
+					line = line .. "\n-----\nDecor entryID:"
+					local info = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true) -- itemInfo, tryGetOwnedInfo
+					for entryKey, entryValue in pairs(info.entryID) do
+						if entryKey == "entrySubtype" then
+							for subType, numValue in pairs(Enum.HousingCatalogEntrySubtype) do
+								if entryValue == numValue then
+									line = line .. "\n- " .. entryKey .. ": " .. entryValue .. " (" .. subType .. ")"
+									break
+								end
+							end
+						else
+							line = line .. "\n- " .. entryKey .. ": " .. entryValue
+						end
+					end
+				end
+
 				if db.debug then
 					local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
 					line = line .. "\n" .. _debugTooltipData(tooltipData)

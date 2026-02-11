@@ -1,6 +1,6 @@
-## Interface: 50501
+## Interface: 50503
 ## Title: Premade Groups Filter
-## Version: 6.10.0
+## Version: 7.1.1
 ## IconTexture: 397907
 ## X-Flavor: Mists
 ## Notes: Allows filtering of premade groups using an UI or advanced filter expressions.
@@ -28,7 +28,6 @@ Localization\zhTW.lua
 Localization\ruRU.lua
 Localization\esES.lua
 Modules\Logger.lua
-Fixes\FixReportAdvertisement.lua
 UI\StaticPopup.xml
 UI\StaticPopup.lua
 Modules\Util.lua

@@ -2535,6 +2535,62 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.ENTRANCE] = { x = 0.5383, y = 0.4056 };
 		[RSConstants.FLAG] = { x = 0.4790, y = 0.2680, comment = AL["NOTE_250088_1"] };
 	}; --Small Treasure Chest
+	["276225882"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6213, y = 0.7230 };
+	}; --Student's Surprising Surplus
+	["276227882"] = {
+		[RSConstants.FLAG] = { x = 0.6718, y = 0.5824, comment = AL["NOTE_GOBLIN_GLIDER_KIT_1"] };
+	}; --Augari Secret Stash
+	["276224882"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5076, y = 0.3878 };
+	}; --Chest of Ill-Gotten Gains
+	["277327882"] = {
+		[RSConstants.PATH_START] = { x = 0.6491, y = 0.4154 };
+	}; --Augari-Runed Chest
+	["276228882"] = {
+		[RSConstants.PATH_START] = { x = 0.5704, y = 0.7500 };
+	}; --Desperate Eredar's Cache
+	["277342882"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4144, y = 0.6986 };
+	}; --Augari Goods
+	["276230882"] = {
+		[RSConstants.FLAG] = { x = 0.4514, y = 0.5293, comment = AL["NOTE_GOBLIN_GLIDER_KIT_1"] };
+	}; --Doomseeker's Treasure
+	["276229882"] = {
+		[RSConstants.FLAG] = { x = 0.3118, y = 0.4491, comment = AL["NOTE_GOBLIN_GLIDER_KIT_1"] };
+	}; --Shattered House Chest
+	["276226882"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3940, y = 0.5036 };
+	}; --Void-Tinged Chest
+	["276223882"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4341, y = 0.0449 };
+		[RSConstants.PATH_START] = { x = 0.5349, y = 0.1310 };
+	}; --Eredar Treasure Cache
+	["276491830"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4776, y = 0.5935 };
+	}; --Lost Krokul Chest
+	["276490830"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5068, y = 0.7533 };
+	}; --Krokul Emergency Cache
+	["277344830"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5643, y = 0.7416 };
+	}; --Precious Augari Keepsakes
+	["277343830"] = {
+		[RSConstants.ENTRANCE] = { x = 0.7408, y = 0.6983 };
+	}; --Long-Lost Augari Treasure
+	["276489830"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6416, y = 0.3911 };
+	}; --Legion Tower Chest
+	["277204885"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5916, y = 0.6177 };
+	}; --Forgotten Legion Supplies
+	["277206885"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5193, y = 0.2843 };
+	}; --Fel-Bound Chest
+	["277205885"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6526, y = 0.4052 };
+		[RSConstants.FLAG] = { x = 0.6469, y = 0.4103, comment = AL["NOTE_277205_1"] };
+	}; --Ancient Legion War Cache
 }
 
 ---============================================================================

@@ -1,6 +1,7 @@
 # Auctionator
 
-## [301](https://github.com/TheMouseNest/Auctionator/tree/301) (2025-11-01)
-[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/300...301) 
+## [316](https://github.com/TheMouseNest/Auctionator/tree/316) (2026-02-10)
+[Full Changelog](https://github.com/TheMouseNest/Auctionator/compare/315...316) 
 
-- LegacyAH: Bags: Attempt to fix incomplete charges detection  
+- Update toc for 12.0.1  
+- Added MoP gems estimates (#1770)  

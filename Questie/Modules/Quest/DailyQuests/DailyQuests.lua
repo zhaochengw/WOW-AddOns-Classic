@@ -8,8 +8,8 @@ local IsQuestFlaggedCompleted = IsQuestFlaggedCompleted or C_QuestLog.IsQuestFla
 local QuestieMap = QuestieLoader:ImportModule("QuestieMap");
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest");
----@type QuestieTooltips
-local QuestieTooltips = QuestieLoader:ImportModule("QuestieTooltips");
+---@type AvailableQuests
+local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests");
 ---@type QuestiePlayer
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer");
 
@@ -109,18 +109,11 @@ function _DailyQuests:HandleDailyQuests(possibleQuestIds, currentQuestId, type)
         else
             -- If the quest is not in the questlog remove all frames
             if (GetQuestLogIndexByID(questId) == 0) then
-                _DailyQuests:HideDailyQuest(questId);
+                AvailableQuests.RemoveQuest(questId)
             end
             Questie.db.char.hiddenDailies[type][questId] = true;
         end
     end
-end
-
----@param questId number
----@return nil
-function _DailyQuests:HideDailyQuest(questId)
-    QuestieMap:UnloadQuestFrames(questId);
-    QuestieTooltips:RemoveQuest(questId);
 end
 
 ---@param questId number
@@ -148,10 +141,10 @@ end
 ---@return boolean
 function DailyQuests:IsDailyQuest(questId)
     return nhcDailyIds[questId] ~= nil or
-            hcDailyIds[questId] ~= nil or
-            cookingDailyIds[questId] ~= nil or
-            fishingDailyIds[questId] ~= nil or
-            pvpDailyIds[questId] ~= nil;
+        hcDailyIds[questId] ~= nil or
+        cookingDailyIds[questId] ~= nil or
+        fishingDailyIds[questId] ~= nil or
+        pvpDailyIds[questId] ~= nil;
 end
 
 nhcDailyIds = {
@@ -210,27 +203,28 @@ pvpDailyIds = {
     [11342] = true,
 }
 
----@type table<QuestId, Hub>
+---@type table<QuestId, Hub[]>
 local hubQuestLookup = {}
 
 function DailyQuests.Initialize()
     for _, hub in pairs(DailyQuests.hubs) do
         for _, hubQuestId in pairs(hub.quests) do
-            hubQuestLookup[hubQuestId] = hub
+            if (not hubQuestLookup[hubQuestId]) then
+                hubQuestLookup[hubQuestId] = {}
+            end
+            table.insert(hubQuestLookup[hubQuestId], hub)
         end
     end
 end
 
----@param questId QuestId
+---@param hub Hub
 ---@param completedQuests table<QuestId, boolean> A table of completed quests
 ---@param questLog table<QuestId, Quest> A table of quests in the quest log
 ---@return boolean true if the quest should be hidden, false otherwise
-function DailyQuests.ShouldBeHidden(questId, completedQuests, questLog)
-    if (not hubQuestLookup[questId]) then
-        return false
+local function _ShouldBeHidden(hub, completedQuests, questLog)
+    if hub.IsActive and (not hub.IsActive(completedQuests, questLog)) then
+        return true
     end
-
-    local hub = hubQuestLookup[questId]
 
     local completedCount = 0
     for _, hubQuestId in pairs(hub.quests) do
@@ -252,8 +246,8 @@ function DailyQuests.ShouldBeHidden(questId, completedQuests, questLog)
         return true
     end
 
-    local singlePreQuestHubComplete = (not next(hub.preQuestHubs))
-    for hubId, _ in pairs(hub.preQuestHubs) do
+    local singlePreQuestHubComplete = (not next(hub.preQuestHubsSingle))
+    for hubId, _ in pairs(hub.preQuestHubsSingle) do
         local preHub = DailyQuests.hubs[hubId]
         local preHubCompletedCount = 0
         for _, preHubQuestId in pairs(preHub.quests) do
@@ -271,7 +265,47 @@ function DailyQuests.ShouldBeHidden(questId, completedQuests, questLog)
         return true
     end
 
+    local groupPreQuestHubComplete = true
+    for hubId, _ in pairs(hub.preQuestHubsGroup) do
+        local preHub = DailyQuests.hubs[hubId]
+        local preHubCompletedCount = 0
+        for _, preHubQuestId in pairs(preHub.quests) do
+            if completedQuests[preHubQuestId] then
+                preHubCompletedCount = preHubCompletedCount + 1
+            end
+        end
+
+        if preHubCompletedCount < preHub.limit then
+            groupPreQuestHubComplete = false
+            break
+        end
+    end
+
+    if (not groupPreQuestHubComplete) then
+        return true
+    end
+
     return false
+end
+
+---@param questId QuestId
+---@param completedQuests table<QuestId, boolean> A table of completed quests
+---@param questLog table<QuestId, Quest> A table of quests in the quest log
+---@return boolean true if the quest should be hidden, false otherwise
+function DailyQuests.ShouldBeHidden(questId, completedQuests, questLog)
+    if (not hubQuestLookup[questId]) then
+        return false
+    end
+
+    local hubs = hubQuestLookup[questId]
+    for _, hub in pairs(hubs) do
+        local shouldBeHidden = _ShouldBeHidden(hub, completedQuests, questLog)
+        if (not shouldBeHidden) then
+            return false
+        end
+    end
+
+    return true
 end
 
 return DailyQuests

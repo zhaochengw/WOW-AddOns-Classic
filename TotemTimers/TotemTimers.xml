@@ -78,7 +78,7 @@
     </Anchors>
   </Frame>
   
-    <CheckButton name="TTActionBarButtonTemplate" clampedToScreen="true" movable="true" enableMouse="true" virtual="true"
+    <Button name="TTActionBarButtonTemplate" clampedToScreen="true" movable="true" enableMouse="true" virtual="true"
     inherits="ActionButtonTemplate, SecureActionButtonTemplate, SecureHandlerEnterLeaveTemplate, SecureHandlerAttributeTemplate, SecureHandlerDragTemplate, SecureHandlerShowHideTemplate">
     <Size x="36" y="36"/>
     <Layers>
@@ -97,7 +97,7 @@
             <Texture name="$parentMiniIcon4"/>
         </Layer>
     </Layers>
-  </CheckButton>
+  </Button>
 
 </Ui>
 

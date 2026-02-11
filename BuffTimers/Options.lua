@@ -1,15 +1,15 @@
 local BuffTimers = LibStub("AceAddon-3.0"):GetAddon("BuffTimers")
 local module = BuffTimers:NewModule("Config")
-local L = LibStub("AceLocale-3.0"):GetLocale("BuffTimers", true)
+local L = LibStub("AceLocale-3.0"):GetLocale("BuffTimers")
 BuffTimersLibSharedMedia = LibStub("LibSharedMedia-3.0", true)
 local db
 
 function module:OnInitialize()
     db = BuffTimers.db
-    
+
     local options = {
         type = "group",
-        name = L["BuffTimers"],
+        name = "BuffTimers",
         args = {
             time = {
                 type = "group",
@@ -26,8 +26,8 @@ function module:OnInitialize()
                                 name = L["Time Stamp Format"],
                                 desc = L["Choose the format for displaying buff duration"],
                                 values = {
-                                    ["m"] = L["minutes (119m)"],
-                                    ["hm"] = L["h:mm (1:59h)"],
+                                    ["m"] = "minutes (119m)",
+                                    ["hm"] = "h:mm (1:59h)",
                                 },
                                 get = function() return db.profile.time_stamp end,
                                 set = function(_, value) db.profile.time_stamp = value end,
@@ -75,37 +75,14 @@ function module:OnInitialize()
             },
             textGroup = {
                 type = "group",
-                name = L["TEXT_SETTINGS"],
+                name = L["Text"],
                 order = 15,
                 args = {
                     colorGroup = {  
                         type = "group",
-                        name = L["COLOR_SETTINGS"],
+                        name = L["Color"],
                         inline = true,
                         args = {
-                            showSource = {
-                                type = "toggle",
-                                name = L["Show source"],
-                                desc = L["Show the source of buffs in tooltip"],
-                                get = function() return db.profile.show_source end,
-                                set = function(_, value) 
-                                    db.profile.show_source = value
-                                    BuffTimers:RefreshAllAuras()
-                                end,
-                                width = "full",
-                                order = 0,
-                            },
-                            showNA = {
-                                type = "toggle",
-                                name = L["ENABLE_NA_TEXT"],
-                                desc = L["ENABLE_NA_DESC"],
-                                get = function() return db.profile.show_na end,
-                                set = function(_, value) 
-                                    db.profile.show_na = value
-                                    BuffTimers:RefreshAllAuras()  -- 新增刷新逻辑
-                                end,
-                                order = 1,
-                            },
                             yellowText = {
                                 type = "toggle",
                                 name = L["Always yellow text color"],
@@ -136,19 +113,9 @@ function module:OnInitialize()
                                 name = L["Enable"],
                                 desc = L["Enable text customization"],
                                 get = function() return db.profile.customize_text end,
-                                set = function(_, value) 
-                                    db.profile.customize_text = value
-                                    -- 如果禁用自定义，重置所有自定义设置
-                                    if not value then
-                                        db.profile.font = ""
-                                        db.profile.font_size = 0
-                                        db.profile.font_outline = ""
-                                        db.profile.vertical_position = -34
-                                        BuffTimers:RefreshAllAuras()
-                                    end
-                                end,
+                                set = function(_, value) db.profile.customize_text = value end,
                                 width = "full",
-                                order = 1,
+                                order = 7,
                             },
                             verticalPosition = {
                                 type = "range",
@@ -198,10 +165,10 @@ function module:OnInitialize()
                                         name = L["Outline"],
                                         desc = L["Choose the outline for the timer text"],
                                         values = {
-                                            [""] = L["None"],             -- 原硬编码改为本地化键
-                                            ["OUTLINE"] = L["Outline"],   -- 原硬编码改为本地化键
-                                            ["THICK"] = L["Thick"],       -- 原硬编码改为本地化键
-                                            ["MONOCHROME"] = L["Monochrome"] -- 原硬编码改为本地化键
+                                            [""] = "None",
+                                            ["OUTLINE"] = "Outline",
+                                            ["THICK"] = "Thick",
+                                            ["MONOCHROME"] = "Monochrome",
                                         },
                                         get = function() return db.profile.font_outline end,
                                         set = function(_, value) db.profile.font_outline = value end,
@@ -231,6 +198,3 @@ SLASH_BUFFTIMERS1 = "/bufftimers"
 function SlashCmdList.BUFFTIMERS()
 	module:ShowConfig()
 end
-
--- 文件最后删除这行注释（不再需要）
--- 需要创建本地化文件 enUS.lua 和 zhCN.lua

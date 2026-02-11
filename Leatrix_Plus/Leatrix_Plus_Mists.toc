@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 
 ## Title: Leatrix Plus
 ## Title-zhCN: Leatrix Plus [|cffeda55f功能百宝箱|r]
@@ -16,7 +16,7 @@
 ## Notes-zhTW: curseforge.com/wow/addons/leatrix-plus
 ## Notes-zhCN: curseforge.com/wow/addons/leatrix-plus
 
-## Version: 5.1.07
+## Version: 5.1.22
 ## Author: Leatrix
 ## SavedVariables: LeaPlusDB
 ## LoadSavedVariablesFirst: true

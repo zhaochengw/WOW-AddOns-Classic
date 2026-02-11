@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 
 ## Title: Leatrix Maps
 
@@ -16,7 +16,7 @@
 ## Notes-zhTW: curseforge.com/wow/addons/leatrix-maps
 ## Notes-zhCN: curseforge.com/wow/addons/leatrix-maps
 
-## Version: 5.1.07
+## Version: 5.1.22
 ## Author: Leatrix
 ## SavedVariables: LeaMapsDB
 ## LoadSavedVariablesFirst: true

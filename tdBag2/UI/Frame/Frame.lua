@@ -27,11 +27,12 @@ local LibWindow = LibStub('LibWindow-1.1')
 ---@field manual boolean
 local Frame = ns.Addon:NewClass('UI.Frame', 'Frame')
 Frame.TEMPLATE = 'tdBag2BaseFrameTemplate'
+Frame.GenerateName = ns.NameGenerator('tdBag2Frame')
 
 function Frame:Constructor(_, meta)
     ---@type FrameMeta
     self.meta = meta
-    self.name = 'tdBag2Bag' .. self.meta.bagId
+    self.name = self:GetName()
 
     ns.UI.TitleFrame:Bind(self.TitleFrame, self.meta)
     self.meta.class.Container:Bind(self.Container, self.meta)
@@ -43,8 +44,9 @@ function Frame:Constructor(_, meta)
     self:UpdateSpecial()
 end
 
-function Frame:Create(bagId)
-    return self:Bind(CreateFrame('Frame', nil, UIParent, self.TEMPLATE), bagId)
+---@param meta FrameMeta
+function Frame:Create(meta)
+    return self:Bind(CreateFrame('Frame', self:GenerateName(), UIParent, self.TEMPLATE), meta)
 end
 
 function Frame:OnShow()
@@ -111,18 +113,14 @@ end
 
 function Frame:UpdateSpecial()
     if not self.meta.profile.managed then
-        if not _G[self.name] then
-            _G[self.name] = self
+        if not tIndexOf(UISpecialFrames, self.name) then
             tinsert(UISpecialFrames, self.name)
         end
 
         self:SetScript('OnSizeChanged', nil)
         self:UpdatePosition()
     else
-        if _G[self.name] then
-            _G[self.name] = nil
-            tDeleteItem(UISpecialFrames, self.name)
-        end
+        tDeleteItem(UISpecialFrames, self.name)
 
         self:SetScript('OnSizeChanged', self.OnSizeChanged)
         self:OnSizeChanged()

@@ -52,6 +52,28 @@ local Localization={
 		OptionsSetting_Integration_Format="Интеграция %1$s |cff%2$s(%3$s)|r";--	Receives title/name, color code, and load state
 		OptionsSetting_Integration_Loaded="Загружено";
 	};
+	zhCN={--	Translated by Loukky
+--		Options Panel
+		Options_ByAuthor_Format="由 %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="成就";
+		OptionsSetting_Links_BattlePet="战斗宠物";
+		OptionsSetting_Links_BattlePet_Ability="能力";
+		OptionsSetting_Links_CalendarEvent="日历事件";
+		OptionsSetting_Links_GarrisonFollower="要塞追随者";
+		OptionsSetting_Links_GarrisonFollower_Ability="能力";
+		OptionsSetting_Links_Item="物品";
+		OptionsSetting_Links_Player="玩家";
+		OptionsSetting_Links_Player_RaceGender="种族/性别";
+		OptionsSetting_Links_Player_Class="职业";
+		OptionsSetting_Links_Spell="技能";
+		OptionsSetting_Links_Tradeskill="商业技能";
+		OptionsSetting_Links_Transmog="幻化";
+
+		OptionsSetting_Integration_Format="%1$s 一体化 |cff%2$s(%3$s)|r";--	Receives title/name, color code, and load state
+		OptionsSetting_Integration_Loaded="已加载";
+	};
 };
 
 ----------------------------------

@@ -17,7 +17,7 @@ local HopeMaxi = ns.HopeMaxi
 local pt = print
 
 function BG.YongShiUI(lastbt)
-    local bt=BG.CreateButton(BG.ButtonZhangDan)
+    local bt = BG.CreateButton(BG.ButtonZhangDan)
     bt:SetSize(BG.ButtonZhangDan:GetWidth(), BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", BG.ButtonZhangDan.jiange, 0)
     bt:SetText(L["用时"])
@@ -60,34 +60,29 @@ function BG.YongShiUI(lastbt)
     end)
     bt:SetScript("OnClick", function(self)
         BG.FrameHide(0)
-        if not IsInRaid(1) then
-            SendSystemMessage(L["不在团队，无法通报"])
-            BG.PlaySound(1)
-        else
-            self:SetEnabled(false) 
-            C_Timer.After(2, function()
-                bt:SetEnabled(true)
-            end)
-            local FB = BG.FB1
-            SendChatMessage(L["———通报击杀用时———"], "RAID")
-            local yes
-            local t = BG.tongBaoSendCD
-            for b = 1, Maxb[FB] do
-                local time = BiaoGe[FB]["boss" .. b]["time"]
-                if time then
-                    BG.After(t, function()
-                        local bossname2 = BG.Boss[FB]["boss" .. b].name2
-                        SendChatMessage(b .. ". " .. bossname2 .. " " .. time, "RAID")
-                    end)
-                    t = t + BG.tongBaoSendCD
-                    yes = true
-                end
+        if BG.IsErrorSendChannel() then return end
+        self:SetEnabled(false)
+        C_Timer.After(2, function()
+            bt:SetEnabled(true)
+        end)
+        local FB = BG.FB1
+        local tbl = {}
+        tinsert(tbl, { L["———通报击杀用时———"] })
+        local yes
+        local t = BG.tongBaoSendCD
+        for b = 1, Maxb[FB] do
+            local time = BiaoGe[FB]["boss" .. b]["time"]
+            if time then
+                local bossname2 = BG.Boss[FB]["boss" .. b].name2
+                tinsert(tbl, { b .. ". " .. bossname2 .. " " .. time })
+                yes = true
             end
-            if not yes then
-                SendChatMessage(L["没有记录"], "RAID")
-            end
-            BG.PlaySound(2)
         end
+        if not yes then
+            tinsert(tbl, { L["没有记录"] })
+        end
+        BG.SendMsgToRaid(tbl)
+        BG.PlaySound(2)
     end)
 
     local timestart

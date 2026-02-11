@@ -40,6 +40,8 @@ AL["Capitals"] = "Capitales"
 --[[Translation missing --]]
 --[[ AL["Card Game Tabards"] = "Card Game Tabards"--]] 
 --[[Translation missing --]]
+--[[ AL["Carefully Wrapped Present"] = "Carefully Wrapped Present"--]] 
+--[[Translation missing --]]
 --[[ AL["Cata"] = "Cata"--]] 
 --[[Translation missing --]]
 --[[ AL["Cataclysm"] = "Cataclysm"--]] 
@@ -139,8 +141,6 @@ AL["One-Handed Weapons"] = "Armas de una mano"
 --[[ AL["Pengsong"] = "Pengsong"--]] 
 --[[Translation missing --]]
 --[[ AL["Pilgrim's Bounty"] = "Pilgrim's Bounty"--]] 
---[[Translation missing --]]
---[[ AL["Plankwalking Greaves"] = "Plankwalking Greaves"--]] 
 AL["Prince Skaldrenox"] = "Príncipe Skaldrenox"
 AL["Princess Tempestria"] = "Princesa Tempestria"
 --[[Translation missing --]]
@@ -148,6 +148,10 @@ AL["Princess Tempestria"] = "Princesa Tempestria"
 AL["Ranged Weapons"] = "Armas a distancia"
 AL["Rare Fish"] = "Pescados raros"
 AL["Rare Fish Rewards"] = "Recompensas raras de pesca"
+--[[Translation missing --]]
+--[[ AL["Rare Items"] = "Rare Items"--]] 
+--[[Translation missing --]]
+--[[ AL["Rare Mobs"] = "Rare Mobs"--]] 
 AL["Scarlet Monastery - Graveyard"] = "Monasterio Escarlata - Cementerio"
 --[[Translation missing --]]
 --[[ AL["Scotty"] = "Scotty"--]] 
@@ -170,6 +174,8 @@ AL["The Duke of Fathoms"] = "Duque de las Profundidades"
 AL["The Duke of Shards"] = "Duque de las Esquirlas"
 AL["The Duke of Zephyrs"] = "Duque de los Céfiros"
 AL["The Windreaver"] = "El Atracavientos"
+--[[Translation missing --]]
+--[[ AL["Ticking Present"] = "Ticking Present"--]] 
 AL["Tier Sets"] = "Conjuntos de Tier"
 --[[Translation missing --]]
 --[[ AL["Token"] = "Token"--]] 
@@ -181,6 +187,8 @@ AL["Unobtainable"] = "Inobtenible"
 AL["Wands"] = "Varitas"
 --[[Translation missing --]]
 --[[ AL["Wild Onyx Serpent"] = "Wild Onyx Serpent"--]] 
+--[[Translation missing --]]
+--[[ AL["Winter Veil Gift"] = "Winter Veil Gift"--]] 
 AL["World Epics"] = "Épicos del Mundo"
 AL["World Events"] = "Eventos del Mundo"
 --[[Translation missing --]]

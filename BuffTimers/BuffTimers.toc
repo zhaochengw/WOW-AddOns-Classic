@@ -1,14 +1,25 @@
-## Interface: 30404
+## Interface: 50503
 ## IconTexture: Interface\AddOns\BuffTimers\Media\icon
 ## Title: BuffTimers
 ## Author: mdhippie
-## Notes: v2.0.3 -- Buff time options
-## Version: v2.0.3
+## Notes: v2.0.13 -- Buff time options
+## Notes-ruRU: Отображает точную длительность действия баффов, с возможностью указания секунд и миллисекунд
+## Version: v2.0.13
 ## DefaultState: enabled
 ## SavedVariables: BuffTimersDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0
-## Category: Buffs & Debuffs
-## Category-ruRU: Баффы & Дебаффы
+
+## Category-enUS: Buffs & Debuffs
+## Category-deDE: Buffs & Debuffs
+## Category-esES: Beneficios y Perjuicios
+## Category-esMX: Beneficios y Perjuicios
+## Category-frFR: Améliorations et Affaiblissements
+## Category-itIT: Benefici e penalità
+## Category-koKR: 강화 및 약화 효과
+## Category-ptBR: Bônus e Penalidades
+## Category-ruRU: Баффы и дебаффы
+## Category-zhCN: 增益和减益
+## Category-zhTW: 增益與減益
 
 ## X-Category: Buffs & Debuffs
 ## X-Credits: mdhippie

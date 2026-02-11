@@ -198,8 +198,8 @@ else
     function TotemTimers.GetSpecialization()
         local pointsSpent = 0
         for i=1,3 do
-            local points = select((WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and 5 or 3, GetTalentTabInfo(i))
-            if points > pointsSpent then
+            local points = select(LE_EXPANSION_LEVEL_CURRENT < LE_EXPANSION_WRATH_OF_THE_LICH_KING and 5 or 3, GetTalentTabInfo(i))
+            if points and points > pointsSpent then
                 pointsSpent = points
                 TotemTimers.Specialization = i
             end

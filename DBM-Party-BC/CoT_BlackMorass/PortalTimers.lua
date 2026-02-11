@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.noStatistics = true
 
-mod:SetRevision("20240412191704")
+mod:SetRevision("20260112042022")
 
 mod:RegisterEvents(
 	"UPDATE_UI_WIDGET",
@@ -23,6 +23,7 @@ mod:AddBoolOption("ShowAllPortalTimers", false, "timer")
 
 local lastPortal = 0
 
+--TODO midnight, switch to ENCOUNTER_END
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 17879 or cid == 17880 then

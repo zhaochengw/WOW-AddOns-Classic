@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2387, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250824012350")
+mod:SetRevision("20260210012025")
 mod:SetCreatureID(164185)
 mod:SetEncounterID(2380)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -10,15 +10,36 @@ mod:SetZone(2287)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(326389, true, 2)--Blood Torrent
+mod:AddCustomAlertSoundOption(319733, true, 1)--Stone Call
+mod:AddCustomAlertSoundOption(319941, true, 2)--Stone Shattering Leap
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(326389, true, 2, 0)
+mod:AddCustomTimerOptions(319733, true, 1, 0)
+mod:AddCustomTimerOptions(328206, true, 3, 0)--Curse of Stone
+mod:AddCustomTimerOptions(319941, true, 3, 0)
+
+function mod:OnLimitedCombatStart()
+	self:DisableSpecialWarningSounds()
+	self:EnableAlertOptions(326389, 488, "aesoon", 2)
+	self:EnableAlertOptions(319733, 489, "mobsoon", 2)
+	self:EnableAlertOptions(319941, 496, "specialsoon", 2)
+
+	self:EnableTimelineOptions(326389, 488)
+	self:EnableTimelineOptions(319733, 489)
+	self:EnableTimelineOptions(328206, 490)
+	self:EnableTimelineOptions(319941, 496)
+end
+
+--[[
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 319733 319941",
 	"SPELL_CAST_SUCCESS 328206 326389",
 	"SPELL_AURA_APPLIED 319603 319724",
 	"SPELL_AURA_REMOVED 319724"
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED",
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
+--]]
 
 --TODO, verify Leap target scanning, if doesn't work, maybe hidden aura scan or RAID_WHISPER event
 --TODO, https://shadowlands.wowhead.com/spell=319611/turned-to-stone needed?
@@ -29,6 +50,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 328206 or ability.id = 326389) and type = "cast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
  --]]
+ --[[
 local warnStoneShatteringLeap		= mod:NewTargetNoFilterAnnounce(319941, 3)
 local warnStonesCall				= mod:NewCountAnnounce(319733, 2)
 
@@ -38,7 +60,7 @@ local specWarnBloodTorrent			= mod:NewSpecialWarningCount(326389, nil, nil, nil,
 local specWarnStoneShatteringLeap	= mod:NewSpecialWarningYou(319941, nil, 47482, nil, 1, 2)
 local yellStoneShatteringLeap		= mod:NewYell(319941, 47482)
 local yellStoneShatteringLeapFades	= mod:NewShortFadesYell(319941, 47482)
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
+--local specWarnGTFO				= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
 local timerStoneCallCD				= mod:NewVarCountTimer("v42.5-53", 319733, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerStoneShatteringLeapCD	= mod:NewVarCountTimer("v28.3-32.7", 319941, 47482, nil, nil, 3)--shortText "Leap"
@@ -133,21 +155,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.NPAuraOnStoneForm then
 			DBM.Nameplate:Hide(true, args.sourceGUID, spellId)
 		end
-	end
-end
-
---[[
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 309991 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
-		specWarnGTFO:Show(spellName)
-		specWarnGTFO:Play("watchfeet")
-	end
-end
-mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 257453  then
-
 	end
 end
 --]]

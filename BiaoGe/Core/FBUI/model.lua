@@ -166,7 +166,7 @@ local function CreateBossModel(FB, bossnum, point_x, point_y, NPCID, scale)
     return model
 end
 function BG.CreateBossModel()
-    if BG.IsVanilla_60 then
+    if BG.IsVanilla_60 and not BG.IsTBC then
         local model = CreateBossModel("MC", 10, 0, 30, 11502, 0.8)
         model:SetPosition(-30, 0, -7) -- Z,X,Y
         model:SetFacing(-0.3)         -- 左右
@@ -239,7 +239,7 @@ function BG.CreateBossModel()
         model:SetPitch(0.8)
         model:SetRoll(-0.5)
     end
-    if BG.IsWLK then
+    if BG.IsWLK_80 then
         local model = CreateBossModel("ICC", 12, 0, -70, 31301, 0.5)
         model:SetPosition(0, 0, 0) -- Z,X,Y
         model:SetFacing(0)         -- 左右
@@ -315,6 +315,24 @@ function BG.CreateBossModel()
         model:SetPitch(0)
         model:SetRoll(0)
     end
+    if BG.IsTitan then
+        local model = CreateBossModel("MCtitan", 10, 10, 100, 11502, 0.8)
+        model:SetPosition(-200, 0, -195) -- Z,X,Y
+        -- model:SetFacing(-0.3)         -- 左右
+        model:SetPitch(-0.5)             -- 上下
+        model:SetRoll(0)              -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("SSCtitan", 6, 10, 30, 21212, .9)
+        model:SetPosition(-2, 0, 1)
+        model:SetFacing(0)
+        model:SetPitch(0.53)
+        model:SetRoll(0)
+        local model = CreateBossModel("SSCtitan", 10, 5, 25, 19622, .9)
+        model:SetPosition(-2, 0, 1)
+        model:SetFacing(0)
+        model:SetPitch(0.53)
+        model:SetRoll(0)
+    end
     if BG.IsCTM then
         local model = CreateBossModel("BOT", 5, 40, 110, 45213, 0.7)
         model:SetPosition(-2, 0, 0) -- Z,X,Y
@@ -347,7 +365,7 @@ function BG.CreateBossModel()
         model:SetRoll(0)               -- 倾斜
         -- CreateAllTestButton(model)
     end
-    if BG.IsMOP_TW then
+    if BG.IsMOP then
         local model = CreateBossModel("MSV", 6, 0, 0, 60400, .55)
         model:SetPosition(-0, 0, 0)     -- Z,X,Y
         model:SetFacing(0)              -- 左右
@@ -365,6 +383,12 @@ function BG.CreateBossModel()
         model:SetFacing(math.rad(-10))     -- 左右
         model:SetPitch(0)                  -- 上下
         model:SetRoll(0)                   -- 倾斜
+        -- CreateAllTestButton(model)
+        local model = CreateBossModel("TOT", 12, -20, -50, 68397, .55)
+        model:SetPosition(-0, 0, 0) -- Z,X,Y
+        model:SetFacing(0)          -- 左右
+        model:SetPitch(0)           -- 上下
+        model:SetRoll(0)            -- 倾斜
         -- CreateAllTestButton(model)
     end
     if BG.IsRetail then

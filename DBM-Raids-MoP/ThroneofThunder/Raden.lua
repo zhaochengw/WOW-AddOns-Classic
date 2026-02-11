@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,heroic25"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(69473)--69888
 mod:SetEncounterID(1580, 1581)
 mod:SetUsedIcons(1)
@@ -34,21 +34,21 @@ local warnUnstableVita			= mod:NewTargetNoFilterAnnounce(138297, 4)
 local warnPhase2				= mod:NewPhaseAnnounce(2, 2)
 
 --Anima
-local specWarnMurderousStrike	= mod:NewSpecialWarningSpell(138333, "Tank", nil, nil, 3)
-local specWarnSanguineHorror	= mod:NewSpecialWarningSwitch(138338, "Ranged|Tank")
-local specWarnAninaSensitive	= mod:NewSpecialWarningYou(139318)
-local specWarnUnstableAnima		= mod:NewSpecialWarningYou(138288, nil, nil, nil, 3)
+local specWarnMurderousStrike	= mod:NewSpecialWarningDefensive(138333, "Tank", nil, nil, 3, 2)
+local specWarnSanguineHorror	= mod:NewSpecialWarningSwitch(138338, "Ranged|Tank", nil, nil, 1, 2)
+local specWarnAninaSensitive	= mod:NewSpecialWarningYou(139318, nil, nil, nil, 1, 2)
+local specWarnUnstableAnima		= mod:NewSpecialWarningYou(138288, nil, nil, nil, 3, 2)
 local yellUnstableAnima			= mod:NewYell(138288, nil, false)
 --Vita
-local specWarnFatalStrike		= mod:NewSpecialWarningSpell(138334, "Tank", nil, nil, 3)
+local specWarnFatalStrike		= mod:NewSpecialWarningDefensive(138334, "Tank", nil, nil, 3, 2)
 local specWarnCracklingStalker	= mod:NewSpecialWarningSwitchCount(138339, "-Healer")
-local specWarnVitaSensitive		= mod:NewSpecialWarningYou(138372)
-local specWarnUnstablVita		= mod:NewSpecialWarningYou(138297, nil, nil, nil, 3)
-local specWarnUnstablVitaJump	= mod:NewSpecialWarning("specWarnUnstablVitaJump", nil, nil, nil, 1)
+local specWarnVitaSensitive		= mod:NewSpecialWarningYou(138372, nil, nil, nil, 1, 2)
+local specWarnUnstablVita		= mod:NewSpecialWarningYou(138297, nil, nil, nil, 3, 17)
+local specWarnUnstablVitaJump	= mod:NewSpecialWarning("specWarnUnstablVitaJump", nil, nil, nil, 1, 17)
 local yellUnstableVita			= mod:NewYell(138297, nil, false)
 --General
-local specWarnCreation			= mod:NewSpecialWarningCount(138321, "-Healer")
-local specWarnCallEssence		= mod:NewSpecialWarningSpell(139040, "-Healer")
+local specWarnCreation			= mod:NewSpecialWarningCount(138321, "-Healer")--No idea what to do with voice pack support so none added
+local specWarnCallEssence		= mod:NewSpecialWarningSpell(139040, "-Healer")--No idea what to do with voice pack support so none added
 
 --Anima
 local timerMurderousStrikeCD	= mod:NewCDTimer(33, 138333, nil, "Tank", nil, 5, nil, nil, nil, 3, 4)--Gains 3 power per second roughly and uses special at 100 Poewr
@@ -64,39 +64,39 @@ local timerCallEssenceCD		= mod:NewNextTimer(15.5, 139040, nil, nil, nil, 1)
 
 mod:AddSetIconOption("SetIconsOnVita", 138297, false, 0, {1})
 
-local creationCount = 0
-local stalkerCount = 0
-local horrorCount = 0
-local lastStalker = 0
-local playerName = UnitName("player")
+mod.vb.creationCount = 0
+mod.vb.stalkerCount = 0
+mod.vb.horrorCount = 0
+mod.vb.lastStalker = 0
 local vitaName, animaName = DBM:GetSpellName(138332), DBM:GetSpellName(138331)
 
 function mod:OnCombatStart(delay)
-	creationCount = 0
-	stalkerCount = 0
-	horrorCount = 0
+	self.vb.creationCount = 0
+	self.vb.stalkerCount = 0
+	self.vb.horrorCount = 0
 	timerCreationCD:Start(11-delay, 1)
 end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 138338 then
-		horrorCount = horrorCount + 1
+		self.vb.horrorCount = self.vb.horrorCount + 1
 		if self.Options.SpecWarn138338switch then
 			specWarnSanguineHorror:Show()
+			specWarnSanguineHorror:Play("killbigmob")
 		else
-			warnSanguineHorror:Show(horrorCount)
+			warnSanguineHorror:Show(self.vb.horrorCount)
 		end
 --		timerSanguineHorrorCD:Start(nil, horrorCount+1)
 	elseif spellId == 138339 then
-		lastStalker = GetTime()
-		stalkerCount = stalkerCount + 1
-		specWarnCracklingStalker:Show(stalkerCount)
-		timerCracklingStalkerCD:Start(nil, stalkerCount+1)
+		self.vb.lastStalker = GetTime()
+		self.vb.stalkerCount = self.vb.stalkerCount + 1
+		specWarnCracklingStalker:Show(self.vb.stalkerCount)
+		timerCracklingStalkerCD:Start(nil, self.vb.stalkerCount+1)
 	elseif spellId == 138321 then
-		creationCount = creationCount + 1
-		specWarnCreation:Show(creationCount)
-		timerCreationCD:Start(nil, creationCount+1)
+		self.vb.creationCount = self.vb.creationCount + 1
+		specWarnCreation:Show(self.vb.creationCount)
+		timerCreationCD:Start(nil, self.vb.creationCount+1)
 	end
 end
 
@@ -114,7 +114,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 138331 then--Anima Phase
 		local radenPower = UnitPower("boss1")
 		radenPower = radenPower / 3
-		horrorCount = 0
+		self.vb.horrorCount = 0
 		timerFatalStrikeCD:Cancel()
 		timerCracklingStalkerCD:Cancel()
 		timerMurderousStrikeCD:Start(33-radenPower)
@@ -124,12 +124,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		local radenPower = UnitPower("boss1")
 		radenPower = radenPower / 10
 		local stalkerupdate = nil
-		if GetTime() - lastStalker < 32 then--Check if it's been at least 32 seconds since last stalker
-			stalkerupdate = 40 - (GetTime() - lastStalker)--if not, find out how much time is left on internal stalker cd (cause CD doesn't actually reset when you reset vita, it just extends to 8-9 seconds if less than 8-9 seconds remaining)
+		if GetTime() - self.vb.lastStalker < 32 then--Check if it's been at least 32 seconds since last stalker
+			stalkerupdate = 40 - (GetTime() - self.vb.lastStalker)--if not, find out how much time is left on internal stalker cd (cause CD doesn't actually reset when you reset vita, it just extends to 8-9 seconds if less than 8-9 seconds remaining)
 		else
 			stalkerupdate = 8
 		end
-		stalkerCount = 0
+		self.vb.stalkerCount = 0
 		warnVita:Show()
 		timerMurderousStrikeCD:Cancel()
 		timerSanguineHorrorCD:Cancel()
@@ -138,15 +138,18 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 139318 then--Anima Sensitivity
 		if args:IsPlayer() then
 			specWarnAninaSensitive:Show()
+			specWarnAninaSensitive:Play("stilldanger")
 		end
 	elseif spellId == 138372 then--Vita Sensitivity
 		if args:IsPlayer() then
 			specWarnVitaSensitive:Show()
+			specWarnVitaSensitive:Play("stilldanger")
 		end
 	elseif spellId == 138288 or spellId == 138295 then--Unstable Anima
 		warnUnstableAnima:Show(args.destName)
 		if args:IsPlayer() then
 			specWarnUnstableAnima:Show()
+			specWarnUnstableAnima:Play("gathershare")
 			yellUnstableAnima:Yell()
 			if spellId == 138295 then--10 seconds
 				timerAnimaExplosion:Start(10)
@@ -167,8 +170,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if spellId == 138297 then
 				specWarnUnstablVita:Show()
+				specWarnUnstablVita:Play("debuffyou")
 			else
 				specWarnUnstablVitaJump:Show()
+				specWarnUnstablVitaJump:Play("debuffyou")
 			end
 			yellUnstableVita:Yell()
 		end
@@ -210,8 +215,10 @@ function mod:UNIT_POWER_UPDATE(uId)
 	local power = UnitPower(uId)
 	if power >= 80 and DBM:UnitBuff(uId, vitaName) and self:AntiSpam(4, 1) then
 		specWarnFatalStrike:Show()
+		specWarnFatalStrike:Play("defensive")
 	elseif power >= 93 and DBM:UnitBuff(uId, animaName) and self:AntiSpam(10, 2) then
 		specWarnMurderousStrike:Show()
+		specWarnMurderousStrike:Play("defensive")
 	end
 end
 

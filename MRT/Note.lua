@@ -363,7 +363,8 @@ formats:
 
 local mynamelowered = MRT.SDB.charName:lower()
 local function GSUB_Time_hideOtherNames(name)
-	if name:gsub("|c........",""):gsub("|r",""):lower() ~= mynamelowered then
+	local namefound = name:gsub("|c........",""):gsub("|r",""):lower()
+	if namefound ~= mynamelowered and strsplit("@",namefound) ~= mynamelowered then
 		return ""
 	end
 end
@@ -537,8 +538,8 @@ end
 local GSUB_AutoColor_Data = {}
 local function GSUB_AutoColorCreate()
 	wipe(GSUB_AutoColor_Data)
-	for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole in MRT.F.IterateRoster, MRT.F.GetRaidDiffMaxGroup() do
-		if class and name then
+	for _, name, subgroup, class, guid, rank, level, online, isDead, combatRole, unitID in MRT.F.IterateRoster, MRT.F.GetRaidDiffMaxGroup() do
+		if (not canaccessvalue or canaccessvalue(name)) and class and name then
 			class = MRT.F.classColor(class)
 			GSUB_AutoColor_Data[ name ] = "|c"..class..name.."|r"
 			name = strsplit("-",name)
@@ -780,6 +781,7 @@ function module.options:Load()
 		tinsert(module.db.encountersList,MRT.F.table_find(module.db.encountersList,909,1) or #module.db.encountersList,{EXPANSION_NAME7..": "..DUNGEONS,-1012,-968,-1041,-1022,-1030,-1023,-1002,-1001,-1036,-1021})
 	else
 		module.db.encountersList = {}
+		tinsert(module.db.encountersList,MRT.F.table_copy2(MRT.F.table_find3(MRT.GDB.EncountersList,508,1)))
 		tinsert(module.db.encountersList,MRT.F.table_copy2(MRT.F.table_find3(MRT.GDB.EncountersList,456,1)))
 		tinsert(module.db.encountersList,MRT.F.table_copy2(MRT.F.table_find3(MRT.GDB.EncountersList,474,1)))
 		tinsert(module.db.encountersList,MRT.F.table_copy2(MRT.F.table_find3(MRT.GDB.EncountersList,471,1)))
@@ -2196,21 +2198,23 @@ function module.options:Load()
 		local rosterType = module.options.rosterType or 1
 		for i=1,8 do gruevent[i] = 0 end
 		if rosterType == 1 then
-			for _,name, subgroup, class, guid, rank, level, online, isDead, combatRole in MRT.F.IterateRoster do
-				gruevent[subgroup] = gruevent[subgroup] + 1
-		
-				local POS = gruevent[subgroup] + (subgroup - 1) * 5
-				local obj = module.options.raidnames[POS]
-		
-				if obj then
-					local cR,cG,cB = MRT.F.classColorNum(class)
-					name = MRT.F.delUnitNameServer(name)
-					local colorCode = MRT.F.classColor(class)
-					obj.iconText = "||c"..colorCode..name.."||r "
-					obj.iconTextShift = name
-					local roleicon = combatRole and roleToIcon[combatRole]
-					obj.html:SetText((roleicon or "")..name)
-					obj.html:SetTextColor(cR, cG, cB, 1)
+			for _,name, subgroup, class, guid, rank, level, online, isDead, combatRole, unitID in MRT.F.IterateRoster do
+				if not canaccessvalue or canaccessvalue(name) then
+					gruevent[subgroup] = gruevent[subgroup] + 1
+			
+					local POS = gruevent[subgroup] + (subgroup - 1) * 5
+					local obj = module.options.raidnames[POS]
+			
+					if obj then
+						local cR,cG,cB = MRT.F.classColorNum(class)
+						name = MRT.F.delUnitNameServer(name)
+						local colorCode = MRT.F.classColor(class)
+						obj.iconText = "||c"..colorCode..name.."||r "
+						obj.iconTextShift = name
+						local roleicon = combatRole and roleToIcon[combatRole]
+						obj.html:SetText((roleicon or "")..name)
+						obj.html:SetTextColor(cR, cG, cB, 1)
+					end
 				end
 			end
 			module.options.rosterPage:Hide()
@@ -3091,8 +3095,8 @@ function module.options:Load()
 
 	self.textHelpAdv = ELib:Text(self.advancedScroll.C,
 		"|cffffff00{time:|r|cff00ff001:06,p2|r|cffffff00}|r - "..L.NoteHelpAdv1..
-		"|n|cffffff00{time:|r|cff00ff000:30,SCC:17:2|r|cffffff00}|r - "..L.NoteHelpAdv2..
-		"|n   "..(HUD_EDIT_MODE_ENABLE_ADVANCED_OPTIONS or "Advanced Options")..": |cffffff00{time:|cff00ff00TIME|r,|cff00ff00SCC/SCS/SAA/SAR|r:|cff00ff00SPELL_ID|r:|cff00ff00SPELL_COUNT|r:|cff00ffffSOURCE_NAME|r:|cff00ffffPHASE|r}|r"..
+		(not MRT.isMN and "|n|cffffff00{time:|r|cff00ff000:30,SCC:17:2|r|cffffff00}|r - "..L.NoteHelpAdv2 or "")..
+		(not MRT.isMN and "|n   "..(HUD_EDIT_MODE_ENABLE_ADVANCED_OPTIONS or "Advanced Options")..": |cffffff00{time:|cff00ff00TIME|r,|cff00ff00SCC/SCS/SAA/SAR|r:|cff00ff00SPELL_ID|r:|cff00ff00SPELL_COUNT|r:|cff00ffffSOURCE_NAME|r:|cff00ffffPHASE|r}|r" or "")..
 		"|n|cffffff00{time:|r|cff00ff002:00,e,customevent|r|cffffff00}|r - "..L.NoteHelpAdv3..
 		"|n|cffffff00{time:|r|cff00ff003:40,glowall|r|cffffff00}|r - "..L.NoteHelpAdv6..
 		"|n|cffffff00{time:|r|cff00ff004:15,glow|r|cffffff00}|r - "..L.NoteHelpAdv7..

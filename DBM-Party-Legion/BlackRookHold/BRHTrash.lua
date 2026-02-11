@@ -1,7 +1,8 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("BRHTrash", "DBM-Party-Legion", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250929054054")
+mod:SetRevision("20251117220446")
 --mod:SetModelID(47785)
 mod:SetZone(1501)
 

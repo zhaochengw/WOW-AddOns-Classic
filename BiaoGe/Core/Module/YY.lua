@@ -16,14 +16,12 @@ local GetText_T = ns.GetText_T
 local AddTexture = ns.AddTexture
 local GetItemID = ns.GetItemID
 
-local RealmName = GetRealmName()
 local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
 
 local pt = print
 
-local YY = "BiaoGeYY"
 local Y = {}
-Y.lateTime = 0.5      -- 延迟发送评价的秒数
+Y.lateTime = .5       -- 延迟发送评价的秒数
 Y.maxHistory = 40     -- 最多保存多少个历史查询记录
 Y.maxSearchText = 300 -- 最多接受多少个评价详细
 Y.searchLastDay = 360 -- 接收最近多少天内的评价
@@ -88,7 +86,7 @@ BG.Init(function()
 
         -- 大标题：新增评价
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 新增评价 >"])
@@ -112,7 +110,7 @@ BG.Init(function()
                 f:SetPoint("TOPLEFT", 10, -15 - height * (i - 1))
                 f:SetSize(90, 20)
                 f.Text = f:CreateFontString()
-                f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 f.Text:SetTextColor(RGB(BG.y2))
                 f.Text:SetAllPoints()
                 f.Text:SetWordWrap(false)
@@ -133,7 +131,9 @@ BG.Init(function()
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.yy = edit
             n = n + 1
-            local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+            local t = edit:CreateFontString(nil, "ARTWORK")
+            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetTextColor(.5, .5, .5)
             t:SetPoint("LEFT", 3, 0)
             t:SetText(L["必填"])
             edit:HookScript("OnEditFocusGained", function(self)
@@ -190,7 +190,9 @@ BG.Init(function()
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.name = edit
             n = n + 1
-            local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+            local t = edit:CreateFontString(nil, "ARTWORK")
+            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            t:SetTextColor(.5, .5, .5)
             t:SetPoint("LEFT", 3, 0)
             t:SetText(L["选填（仅自己可见）"])
             t:SetJustifyH("LEFT")
@@ -245,7 +247,7 @@ BG.Init(function()
                 BG.YYMainFrame.new.pingjiaButtons[i] = bt
 
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetTextColor(RGB(BG.y2))
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name)
@@ -291,7 +293,7 @@ BG.Init(function()
             edit:SetTextInsets(0, 10, 0, 5)
             edit:SetMultiLine(true)
             edit:SetTextColor(1, 1, 0)
-            edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+            edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
             tinsert(Y.textcolor_table, edit)
             BG.YYMainFrame.new.edit = edit
             local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
@@ -304,9 +306,13 @@ BG.Init(function()
             scroll:SetScrollChild(edit)
             BG.YYMainFrame.new.scroll = scroll
 
-            local rightt = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+            local rightt = f:CreateFontString(nil, "ARTWORK")
+            rightt:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            rightt:SetTextColor(.5, .5, .5)
             rightt:SetPoint("BOTTOMRIGHT", -5, 5)
-            local leftt = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+            local leftt = f:CreateFontString(nil, "ARTWORK")
+            leftt:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+            leftt:SetTextColor(.5, .5, .5)
             leftt:SetPoint("TOPLEFT", 7, -5)
             leftt:SetText(L["选填"])
 
@@ -449,7 +455,7 @@ BG.Init(function()
 
         -- 大标题：我的评价
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 我的评价 >"])
@@ -491,7 +497,7 @@ BG.Init(function()
             end
             right = f
             f.Text = f:CreateFontString()
-            f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+            f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
             f.Text:SetWidth(f:GetWidth() - 3)
             f.Text:SetPoint("CENTER")
             f.Text:SetText(title_table[i].name)
@@ -658,7 +664,7 @@ BG.Init(function()
                     right = f
                     f.num = ii
                     f.Text = f:CreateFontString()
-                    f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                    f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     f.Text:SetWidth(f:GetWidth() - 3)
                     f.Text:SetPoint("CENTER")
 
@@ -710,7 +716,7 @@ BG.Init(function()
         -- 下方的提示文字
         local t = BG.YYMainFrame.my:CreateFontString()
         t:SetPoint("TOP", BG.YYMainFrame.my, "BOTTOM", 0, 0)
-        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE") -- 游戏主界面文字
+        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE") -- 游戏主界面文字
         t:SetText(BG.STC_w1(format(L["（%s修改评价，SHIFT+%s查询大众评价，ALT+%s删除评价）"], AddTexture("LEFT"), AddTexture("LEFT"), AddTexture("RIGHT"))))
     end
 
@@ -730,7 +736,7 @@ BG.Init(function()
 
         -- 大标题：查询评价
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetTextColor(RGB(BG.y2))
         t:SetPoint("BOTTOM", f, "TOP", 0, 2)
         t:SetText(L["< 查询大众评价 >"])
@@ -743,7 +749,7 @@ BG.Init(function()
             f:SetPoint("TOPLEFT", 0, -15)
             f:SetSize(50, 20)
             f.Text = f:CreateFontString()
-            f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             f.Text:SetTextColor(RGB(BG.y2))
             f.Text:SetAllPoints()
             f.Text:SetWordWrap(false)
@@ -818,9 +824,8 @@ BG.Init(function()
                 edit.Text:SetTextColor(RGB(BG.dis))
                 BG.OnUpdateTime(function(self, elapsed)
                     self.timeElapsed = self.timeElapsed + elapsed
-                    local time = format("%.1f", Y.lateTime + 0.7 - self.timeElapsed)
+                    local time = format("%.1f", Y.lateTime + (BG.IsTitan and 1 or 0.7) - self.timeElapsed)
                     bt:SetText(L["查询中 "] .. time)
-
                     if tonumber(time) <= 0 then
                         local sum = 0
                         for key, value in pairs(BG.YYMainFrame.searchText.sumpingjia) do
@@ -904,7 +909,6 @@ BG.Init(function()
                                 end
                             end)
                         end
-
 
                         BG.YYMainFrame.searchText = nil
 
@@ -1017,9 +1021,11 @@ BG.Init(function()
 
             local text = dropDown:CreateFontString()
             text:SetPoint("RIGHT", dropDown, "LEFT", 10, 3)
-            text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             text:SetTextColor(RGB(BG.y2))
             text:SetText(L["历史查询："])
+            text:SetJustifyH("RIGHT")
+            text:SetWidth(100)
             text:SetTextColor(1, 1, 1)
             BG.YYMainFrame.DropDownBiaoTi = text
 
@@ -1041,7 +1047,7 @@ BG.Init(function()
             BG.YYMainFrame.resultPingjia = f
 
             f.Text = f:CreateFontString()
-            f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             f.Text:SetTextColor(RGB(BG.y2))
             f.Text:SetPoint("LEFT", 50, 0)
             f.Text:SetText(L["筛选："])
@@ -1066,7 +1072,7 @@ BG.Init(function()
                 BG.YYMainFrame.resultPingjia.pingjiaButtons[i] = bt
 
                 bt.Text = bt:CreateFontString()
-                bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetTextColor(RGB(BG.y2))
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                 bt.Text:SetText(numOptions[i].name .. L[" (0个)"])
@@ -1125,7 +1131,7 @@ BG.Init(function()
                 end
                 right = f
                 f.Text = f:CreateFontString()
-                f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 f.Text:SetWidth(f:GetWidth() - 3)
                 f.Text:SetPoint("CENTER")
                 f.Text:SetText(title_table[i].name)
@@ -1196,7 +1202,7 @@ BG.Init(function()
                             right = f
                             f.num = ii
                             f.Text = f:CreateFontString()
-                            f.Text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                            f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                             f.Text:SetWidth(f:GetWidth() - 3)
                             f.Text:SetPoint("CENTER")
 
@@ -1255,7 +1261,7 @@ BG.Init(function()
 
         local t = f:CreateFontString()
         t:SetPoint("CENTER")
-        t:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
         t:SetText(format(L["你已共享|r |cff00FF00%s|r |cffffffff人次评价"], BiaoGe.YYdb.shareCount))
         f:SetWidth(t:GetStringWidth())
         f:SetHeight(t:GetStringHeight())
@@ -1757,6 +1763,7 @@ BG.Init(function()
                 f:SetFrameLevel(190)
                 f:EnableMouse(true)
                 f:SetMovable(true)
+                f:Hide()
                 BG.EndPJ.new = f
                 f:SetScript("OnMouseUp", function(self)
                     self:StopMovingOrSizing()
@@ -1801,16 +1808,17 @@ BG.Init(function()
                 f.texture = t
 
                 local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 t:SetText(L["< 快速评价 >"])
                 t:SetPoint("TOP", f.texture, 0, -12)
                 t:SetTextColor(1, 1, 1)
 
                 local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 t:SetText(L["恭喜你们击杀尾王！请给团长个评价吧！"])
                 t:SetPoint("TOP", BG.EndPJ.new, "TOP", 0, -30)
                 t:SetTextColor(1, 1, 1)
+                t:SetWidth(320)
 
                 local l = f:CreateLine()
                 l:SetColorTexture(RGB("808080", 1))
@@ -1837,7 +1845,7 @@ BG.Init(function()
                     f:SetPoint("TOPLEFT", 5, height_start - height * (i - 1))
                     f:SetSize(85, 20)
                     f.Text = f:CreateFontString()
-                    f.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                    f.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                     f.Text:SetAllPoints()
                     f.Text:SetWordWrap(false)
                     f.Text:SetText(text_table[i].name)
@@ -1857,7 +1865,9 @@ BG.Init(function()
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.yy = edit
                 n = n + 1
-                local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+                local t = edit:CreateFontString(nil, "ARTWORK")
+                t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                t:SetTextColor(.5, .5, .5)
                 t:SetPoint("LEFT", 3, 0)
                 t:SetText(L["必填"])
                 edit:SetScript("OnEditFocusGained", function(self)
@@ -1909,7 +1919,9 @@ BG.Init(function()
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.name = edit
                 n = n + 1
-                local t = edit:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+                local t = edit:CreateFontString(nil, "ARTWORK")
+                t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                t:SetTextColor(.5, .5, .5)
                 t:SetPoint("LEFT", 3, 0)
                 t:SetText(L["选填（仅自己可见）"])
                 t:SetJustifyH("LEFT")
@@ -1964,7 +1976,7 @@ BG.Init(function()
                     BG.EndPJ.new.pingjiaButtons[i] = bt
 
                     bt.Text = bt:CreateFontString()
-                    bt.Text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                    bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                     bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
                     bt.Text:SetText(numOptions[i].name)
                     bt.Text:SetTextColor(RGB(numOptions[i].color))
@@ -2009,7 +2021,7 @@ BG.Init(function()
                 edit:SetTextInsets(0, 10, 0, 5)
                 edit:SetMultiLine(true)
                 edit:SetTextColor(1, 1, 0)
-                edit:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+                edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                 tinsert(BG.EndPJ.textcolor_table, edit)
                 BG.EndPJ.new.edit = edit
                 local scroll = CreateFrame("ScrollFrame", nil, f, "UIPanelScrollFrameTemplate")
@@ -2022,7 +2034,9 @@ BG.Init(function()
                 scroll:SetScrollChild(edit)
                 n = n + 2
 
-                local leftt = f:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall2")
+                local leftt = f:CreateFontString(nil, "ARTWORK")
+                leftt:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                leftt:SetTextColor(.5, .5, .5)
                 leftt:SetPoint("TOPLEFT", 7, -5)
                 leftt:SetText(L["选填"])
 
@@ -2099,7 +2113,7 @@ BG.Init(function()
 
                 local function CreateButton(f, text)
                     local r, g, b = f.r, f.g, f.b
-                    local r, g, b = 1,1,1
+                    local r, g, b = 1, 1, 1
                     local bt = CreateFrame("Button", nil, f, "BackdropTemplate")
                     bt:SetBackdrop({
                         bgFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -2113,7 +2127,7 @@ BG.Init(function()
                     end
                     tinsert(f.buttons, bt)
                     local t = bt:CreateFontString()
-                    t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
                     t:SetPoint("CENTER")
                     t:SetTextColor(r, g, b)
                     t:SetText(text)
@@ -2219,7 +2233,7 @@ BG.Init(function()
             -- 底下文字
             do
                 local t = f:CreateFontString()
-                t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 t:SetPoint("TOP", f, "BOTTOM", 0, 0)
                 t:SetTextColor(1, 0, 0)
                 t:SetText(L["你已给该YY写过评价！"])
@@ -2256,13 +2270,13 @@ BG.Init(function()
     -- YY评价功能是否关闭
     do
         local t = BG.YYMainFrame:CreateFontString()
-        t:SetPoint("TOP", BG.MainFrame, "TOP", 0, -70)
-        t:SetFont(STANDARD_TEXT_FONT, 20, "OUTLINE")
-        t:SetTextColor(1, 1, 1)
-        t:SetText(L["该模块已关闭。右键底部标签页开启"])
+        t:SetPoint("TOP", BG.MainFrame, "TOP", 0, -50)
+        t:SetFont(BIAOGE_TEXT_FONT, 20, "OUTLINE")
+        t:SetTextColor(1, 0, 0)
+        t:SetText(L["该模块已被禁用"])
 
-        function BG.YYShowHide(show)
-            if show == 1 then
+        function BG.YYShowHide()
+            if BiaoGe.YYdb.share == 1 then
                 BG.YYMainFrame.new:Show()
                 BG.YYMainFrame.my:Show()
                 BG.YYMainFrame.search:Show()
@@ -2272,6 +2286,46 @@ BG.Init(function()
                 BG.YYMainFrame.my:Hide()
                 BG.YYMainFrame.search:Hide()
                 t:Show()
+            end
+            Y:UpdateCloseYYButton()
+        end
+
+        function Y:UpdateCloseYYButton()
+            local mainFrame = BG.YYMainFrame
+            if not Y.closeYYButton then
+                Y.closeYYButton = BG.CreateButton(mainFrame)
+                Y.closeYYButton:SetSize(150, 25)
+                Y.closeYYButton:SetPoint("RIGHT", mainFrame.backBiaoGeButton, "LEFT", -20, 0)
+            end
+            local show = BiaoGe.YYdb.share
+            if show == 1 then
+                Y.closeYYButton:SetText(L["禁用该模块"])
+                Y.closeYYButton:SetScript("OnClick", function(self)
+                    BiaoGe.YYdb.share = 0
+                    BG.YYShowHide()
+                    Y.Leave()
+                    BG.PlaySound(1)
+                end)
+            else
+                Y.closeYYButton:SetText(L["开启该模块"])
+                Y.closeYYButton:SetScript("OnClick", function(self)
+                    StaticPopupDialogs["BiaoGe_OpenYY"] = {
+                        text = L["开启该模块需要重载游戏。\n现在立刻重载吗？"],
+                        button1 = L["是"],
+                        button2 = L["否"],
+                        OnAccept = function()
+                            BiaoGe.YYdb.share = 1
+                            ReloadUI()
+                        end,
+                        OnCancel = function()
+                        end,
+                        timeout = 0,
+                        whileDead = true,
+                        hideOnEscape = true,
+                        showAlert = true,
+                    }
+                    StaticPopup_Show("BiaoGe_OpenYY")
+                end)
             end
         end
     end
@@ -2285,7 +2339,6 @@ BG.Init(function()
         end
     end)
 
-
     local CDing = {}
     local f = CreateFrame("Frame")
     f:RegisterEvent("CHAT_MSG_ADDON")
@@ -2295,24 +2348,21 @@ BG.Init(function()
         if event == "CHAT_MSG_ADDON" then
             if not BG.YYMainFrame.searchText then return end
             local prefix, msg, distType, sender = ...
-            local name, realmName = strsplit("-", sender)
-            if not realmName then realmName = GetRealmName() end
-            if prefix ~= YY then return end
-            if BG.blackListPlayer[realmName] and BG.blackListPlayer[realmName][name] then return end
+            sender = BG.GSN(sender)
+            if prefix ~= BG.YYName then return end
             if #BG.YYMainFrame.searchText.all >= Y.maxSearchText then return end -- 最多收集300个评价详细
-
             local date, pingjia, edit = strsplit(",", msg, 3)
             edit = edit:gsub(",$", "")
+            if edit and edit ~= "" and ns.isVIP then
+                edit = edit .. "(" .. AddTexture("VIP") .. sender .. ")"
+            end
             pingjia = tonumber(pingjia)
             BG.YYMainFrame.searchText.sumpingjia[pingjia] = BG.YYMainFrame.searchText.sumpingjia[pingjia] + 1
-            if BG.DeBug and BG.YYMainFrame.search.edit:GetText() == "34229022" and pingjia == 3 then
-                print(sender, date, edit)
-            end
             tinsert(BG.YYMainFrame.searchText.all, { date = date, pingjia = pingjia, edit = edit })
         elseif event == "CHAT_MSG_CHANNEL" then
             local text, sender, languageName, channelName, playerName2, specialFlags, zoneChannelID, channelIndex, channelBaseName,
             languageID, lineID, guid, bnSenderID, isMobile, isSubtitle, hideSenderInLetterbox, supressRaidIcons = ...
-            if channelBaseName ~= YY then return end
+            if channelBaseName ~= BG.YYName then return end
             sender = BG.GSN(sender)
             local yy, date = strmatch(text, "yy(%d+),(%d+)")
             if not yy or CDing[sender] then return end
@@ -2327,9 +2377,9 @@ BG.Init(function()
                             BG.YYMainFrame.shareCountFrame:SetWidth(BG.YYMainFrame.shareCountFrame.Text:GetStringWidth())
                             BG.YYMainFrame.shareCountFrame:SetHeight(BG.YYMainFrame.shareCountFrame.Text:GetStringHeight())
                         end
-                        C_ChatInfo.SendAddonMessage(YY, resendtext, "WHISPER", sender)
+                        C_ChatInfo.SendAddonMessage(BG.YYName, resendtext, "WHISPER", sender)
                         CDing[sender] = true
-                        BG.After(2, function() -- 间隔x秒发一次
+                        BG.After(5, function()
                             CDing[sender] = nil
                         end)
                     end)
@@ -2339,94 +2389,129 @@ BG.Init(function()
         end
     end)
 
-    local f = CreateFrame("Frame")
-    f:RegisterEvent("CHANNEL_UI_UPDATE")
-    f:SetScript("OnEvent", function(self, event)
+    local yyList = { "BiaoGeYY" }
+    for i = 2, 8 do
+        tinsert(yyList, "BiaoGeYY" .. i)
+    end
+    local yyIndex = 1
+    local yyCount = 0
+    BG.YYName = ""
+
+    function Y.GetYYName()
+        return yyList[yyIndex]
+    end
+
+    function Y.Leave()
+        for _, yy in ipairs(yyList) do
+            LeaveChannelByName(yy)
+        end
+    end
+
+    local function Default()
         local i = 1
         while _G["ChatFrame" .. i] do
-            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], YY)
             ChatFrame_RemoveChannel(_G["ChatFrame" .. i], "MeetingHorn")
+            for _, yy in ipairs(yyList) do
+                ChatFrame_RemoveChannel(_G["ChatFrame" .. i], yy)
+            end
             i = i + 1
         end
-
-        local channelID, channelName = GetChannelName(YY)
+        local channelID, channelName = GetChannelName(Y.GetYYName())
         if not channelName then
             BG.YYchannelID = nil
+            BG.YYName = ""
         else
             BG.YYchannelID = channelID
+            BG.YYName = channelName
+            C_ChatInfo.RegisterAddonMessagePrefix(BG.YYName)
         end
+    end
+
+    BG.RegisterEvent("CHANNEL_UI_UPDATE", function(self, event)
+        Default()
         if BiaoGe.YYdb.share ~= 1 then
-            LeaveChannelByName(YY)
+            Y.Leave()
         end
     end)
 
-
-    BG.RegisterEvent("CHAT_MSG_CHANNEL_NOTICE", function(self, event, text, playerName, _, _, _, _, _, _, channelBaseName)
-        if channelBaseName ~= YY then return end
-        if text == "YOU_LEFT" then
-            BiaoGe.YYdb.share = 0
-            BG.YYShowHide(BiaoGe.YYdb.share)
-            SendSystemMessage(BG.BG .. format(L["你已退出%s频道，YY评价模块自动关闭。"], YY))
+    BG.RegisterEvent("CHANNEL_PASSWORD_REQUEST", function(_, _, channel)
+        if BG.ValueInTable(yyList, channel) then
+            yyCount = 0
+            yyIndex = yyIndex + 1
+            StaticPopup_Hide("CHAT_CHANNEL_PASSWORD")
         end
     end)
 
     BG.Init2(function()
-        BG.YYShowHide(BiaoGe.YYdb.share)
-
-        local i = 1
-        while _G["ChatFrame" .. i] do
-            ChatFrame_RemoveChannel(_G["ChatFrame" .. i], YY)
-            i = i + 1
-        end
-
-        -- 禁止玩家点击频道
-        hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)
-            if not frame.checkBoxTable or not frame.checkBoxTable[1] or not frame.checkBoxTable[1].channelID then
-                return
+        Default()
+        Y.autoJoin = true
+        BG.YYShowHide()
+        LeaveChannelByName("BiaoGeYYY")
+        for i, yy in ipairs(yyList) do
+            local channelID, channelName = GetChannelName(yy)
+            if channelName then
+                yyIndex = i
+                Y.autoJoin = false
+                BG.YYchannelID = channelID
+                BG.YYName = channelName
+                C_ChatInfo.RegisterAddonMessagePrefix(channelName)
+                break
             end
-
-            local checkBoxName = frame:GetName() .. 'CheckBox'
-            for i, value in ipairs(frame.checkBoxTable) do
-                if value.channelName then
-                    local checkBox = _G[checkBoxName .. i .. 'Check'] or _G[frame:GetName() .. "Checkbox" .. i .. "Check"]
-                    if value.channelName == YY then
-                        if BG.IsNewUI then
-                            checkBox:Disable()
-                            checkBox.Text:SetTextColor(.5, .5, .5)
-                        else
-                            BlizzardOptionsPanel_CheckButton_Disable(checkBox)
-                        end
-                        BG.YYchannelID = i
-                    end
-                end
-            end
-        end)
-        hooksecurefunc(ChannelFrame.ChannelList, 'AddChannelButtonInternal', function(f, button, _, name, _, channelId)
-            if name == YY then
-                button:Disable()
-                local text = ('%s %s %s'):format(button:GetChannelNumberText(), button:GetChannelName(),
-                    button:GetMemberCountText())
-                button.Text:SetText(DISABLED_FONT_COLOR:WrapTextInColorCode(text))
-            end
-        end)
-
-        -- 初始化频道
-        local channelID, channelName = GetChannelName(YY)
-        if not channelName then
-            BG.YYchannelID = nil
-        else
-            BG.YYchannelID = channelID
         end
 
         local function JoinYY()
-            if not BG.YYchannelID and BiaoGe.YYdb.share == 1 then
+            if not BG.YYchannelID and BiaoGe.YYdb.share == 1 and Y.autoJoin then
                 local channels = { GetChannelList() }
+                local yy
                 if channels and #channels > 3 then
-                    JoinPermanentChannel(YY, nil, 1)
+                    yyCount = yyCount + 1
+                    if yyCount > 3 then
+                        yyCount = 0
+                        yyIndex = yyIndex + 1
+                    end
+                    yy = yyList[yyIndex]
+                    if yy then
+                        JoinTemporaryChannel(yy)
+                    else
+                        return
+                    end
                 end
                 BG.After(3, JoinYY)
             end
         end
         JoinYY()
+
+        -- 禁止玩家点击频道
+        do
+            hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)
+                if not frame.checkBoxTable or not frame.checkBoxTable[1] or not frame.checkBoxTable[1].channelID then
+                    return
+                end
+
+                local checkBoxName = frame:GetName() .. 'CheckBox'
+                for i, value in ipairs(frame.checkBoxTable) do
+                    if value.channelName then
+                        local checkBox = _G[checkBoxName .. i .. 'Check'] or _G[frame:GetName() .. "Checkbox" .. i .. "Check"]
+                        if BG.ValueInTable(yyList, value.channelName) then
+                            if BG.IsNewUI then
+                                checkBox:Disable()
+                                checkBox.Text:SetTextColor(.5, .5, .5)
+                            else
+                                BlizzardOptionsPanel_CheckButton_Disable(checkBox)
+                            end
+                            BG.YYchannelID = i
+                        end
+                    end
+                end
+            end)
+            hooksecurefunc(ChannelFrame.ChannelList, 'AddChannelButtonInternal', function(f, button, _, name, _, channelId)
+                if BG.ValueInTable(yyList, name) then
+                    button:Disable()
+                    local text = ('%s %s %s'):format(button:GetChannelNumberText(), button:GetChannelName(),
+                        button:GetMemberCountText())
+                    button.Text:SetText(DISABLED_FONT_COLOR:WrapTextInColorCode(text))
+                end
+            end)
+        end
     end)
 end)

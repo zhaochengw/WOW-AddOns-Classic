@@ -1,0 +1,15 @@
+## Interface: 40401
+## Title: UnitFramesPlus Options
+## Title-zhCN: 系统头像增强 设置
+## Author: Isler
+## LoadOnDemand: 1
+## RequiredDeps: UnitFramesPlus
+
+## Title-zhTW: |cff4DD2FF[頭像]|r 暴雪頭像 (增強功能)-設定選項
+## Notes-zhTW: UnitFramesPlus Options |n|n暴雪頭像增強插件的設定選項。|n|n|cffffd200使用方法: |r從Esc>介面>插件>頭像-增強，進行設定。
+## X-Category-zhTW: 介面
+## DefaultState: disabled
+
+## 设置
+Localization.lua
+Options.lua

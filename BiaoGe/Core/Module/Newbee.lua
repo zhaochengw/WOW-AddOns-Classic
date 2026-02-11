@@ -63,8 +63,6 @@ BG.Init(function()
                 local fullName, rank, subgroup, level, classlocalized, class, zone,
                 online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
                 if fullName then
-                    local name, realm = strsplit("-", fullName)
-                    if not realm then realm = GetRealmName() end
                     local unit = "raid" .. i
                     if rank == 2 then
                         BiaoGe.newbee_report.raidLeader.name = fullName

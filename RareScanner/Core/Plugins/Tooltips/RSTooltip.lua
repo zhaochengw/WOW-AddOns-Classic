@@ -231,9 +231,9 @@ local function AddLastTimeSeenTooltip(tooltip, pin, isLink)
 	
 	local line = tooltip:AddLine()
 	if (pin.POI.isDiscovered) then
-		tooltip:SetCell(line, 1, string.format(AL["MAP_TOOLTIP_SEEN"], RSUtils.TextColor(RSTimeUtils.TimeStampToClock(pin.POI.foundTime, true), "FF8000")), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, string.format(AL["MAP_TOOLTIP_SEEN"], RSUtils.TextColor(RSTimeUtils.TimeStampToClock(pin.POI.foundTime, true), "FF8000")), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	else
-		tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_NOT_FOUND"], "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(AL["MAP_TOOLTIP_NOT_FOUND"], "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	end
 end
 
@@ -297,7 +297,7 @@ local function AddNotesTooltip(tooltip, pin)
 	local note = RSNotes.GetNote(pin.POI.entityID, pin.POI.mapID, pin.POI.minieventID)
 	if (note) then
 		local line = tooltip:AddLine()
-		tooltip:SetCell(line, 1, RSUtils.TextColor(note, "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(note, "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	end
 end
 
@@ -432,7 +432,7 @@ local function AddStateTooltip(tooltip, pin)
 		
 		if (respawnTimer) then
 			local line = tooltip:AddLine()	
-			tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_RESPAWN"], respawnTimer), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+			tooltip:SetCell(line, 1, RSUtils.TextColor(string.format(AL["MAP_TOOLTIP_RESPAWN"], respawnTimer), "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		end
 	end
 end
@@ -458,7 +458,7 @@ local function AddGuideTooltip(tooltip, pin, addSeparator)
 		end
 		
 		local line = tooltip:AddLine()	
-		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:64:96|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_GUIDE"], "05DFDC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:64:96|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_GUIDE"], "05DFDC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		return true
 	end
 	
@@ -475,7 +475,7 @@ local function AddShareTooltip(tooltip, pin, addSeparator)
 	end
 	
 	local line = tooltip:AddLine()	
-	tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:32:64|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHARE"], "05DFDC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+	tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:32:64|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHARE"], "05DFDC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	return true
 end
 
@@ -499,7 +499,7 @@ local function AddOverlayTooltip(tooltip, pin, addSeparator)
 		end
 		
 		local line = tooltip:AddLine()	
-		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:96:128|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_OVERLAY"], "FFF5EE"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:96:128|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_SHOW_OVERLAY"], "FFF5EE"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		return true
 	end
 	
@@ -535,7 +535,7 @@ local function AddFilterStateTooltip(tooltip, pin, addSeparator)
 		end
 		
 		local line = tooltip:AddLine()
-		tooltip:SetCell(line, 1, "|A:perks-warning-small:16:16::::|a "..RSUtils.TextColor(filterText, "FFA500"), nil, "RIGHT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, "|A:perks-warning-small:16:16::::|a "..RSUtils.TextColor(filterText, "FFA500"), nil, "RIGHT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		return true
 	end
 	
@@ -552,7 +552,7 @@ local function AddFilterTooltip(tooltip, pin, addSeparator)
 	end
 	
 	local line = tooltip:AddLine()
-	tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:0:32|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_FILTER_ENTITY"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+	tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:0:32|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_FILTER_ENTITY"], "00FF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	return true
 end
 
@@ -573,9 +573,9 @@ local function AddWaypointsTooltip(tooltip, pin, onShift, addSeparator, isLink)
 	
 	local line = tooltip:AddLine()
 	if (onShift) then
-		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:32:64|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_ADD_WAYPOINT"], "FFFF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:32:64|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_ADD_WAYPOINT"], "FFFF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	else
-		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:64:96|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_ADD_WAYPOINT"], "FFFF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, "|TInterface\\AddOns\\RareScanner\\Media\\Textures\\tooltip_shortcuts:18:60:::256:256:0:96:64:96|t "..RSUtils.TextColor(AL["MAP_TOOLTIP_ADD_WAYPOINT"], "FFFF00"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	end
 	return true
 end
@@ -650,15 +650,15 @@ function RSTooltip.ShowSimpleTooltip(pin, parentTooltip)
 	-- NPC name
 	local line = tooltip:AddLine()
 	if (pin.POI.name) then
-		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	else
-		tooltip:SetCell(line, 1, RSUtils.TextColor(UKNOWNBEING, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(UKNOWNBEING, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	end
 
 	-- Debug
 	if (RSConstants.DEBUG_MODE) then
 		line = tooltip:AddLine()
-		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.entityID, "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.entityID, "FFFFCC"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		local hasQuestID = false
 		if (pin.POI.isNpc and RSNpcDB.GetNpcQuestIdFound(pin.POI.entityID) or (RSNpcDB.GetInternalNpcInfo(pin.POI.entityID) and RSNpcDB.GetInternalNpcInfo(pin.POI.entityID).questID)) then
 			hasQuestID = true
@@ -670,7 +670,7 @@ function RSTooltip.ShowSimpleTooltip(pin, parentTooltip)
 		
 		if (not hasQuestID) then
 			line = tooltip:AddLine()
-			tooltip:SetCell(line, 1, RSUtils.TextColor("No tiene QUESTID", "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+			tooltip:SetCell(line, 1, RSUtils.TextColor("No tiene QUESTID", "FF0000"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 		end
 	end
 	
@@ -717,7 +717,17 @@ function RSTooltip.ShowLinkTooltip(pin, chatFrame)
 	tooltip:SetScale(RSConfigDB.GetChatTooltipsScale())
 	tooltip:SetFrameLevel(10)
 	tooltip:ClearAllPoints()
+	tooltip:SetMovable(true)
+	tooltip:EnableMouse(true)
 	tooltip:SetClampedToScreen(true)
+	tooltip:RegisterForDrag("LeftButton")
+	tooltip:SetScript("OnDragStart", tooltip.StartMoving)
+	tooltip:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		RSGeneralDB.SetChatTooltipPositionCoordinates(self:GetLeft(), self:GetBottom())
+	end)
+	
+	--tooltip:SetClampedToScreen(true)
 	
 	if (not tooltip.closeButton) then
 		tooltip.closeButton = CreateFrame("Button", "LinkCloseButton", tooltip, "UIPanelCloseButton")
@@ -734,9 +744,9 @@ function RSTooltip.ShowLinkTooltip(pin, chatFrame)
 	-- Entity name
 	local line = tooltip:AddLine()
 	if (pin.POI.name) then
-		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	else
-		tooltip:SetCell(line, 1, RSUtils.TextColor(UKNOWNBEING, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MAX_WIDTH)
+		tooltip:SetCell(line, 1, RSUtils.TextColor(UKNOWNBEING, "3399FF"), nil, "LEFT", 10, nil, nil, nil, RSConstants.TOOLTIP_MAX_WIDTH, RSConstants.TOOLTIP_MIN_WIDTH)
 	end
 	
 	-- Last time seen
@@ -764,11 +774,13 @@ function RSTooltip.ShowLinkTooltip(pin, chatFrame)
 	AddFilterStateTooltip(tooltip, pin, true)
 	
 	-- Some chat addons replace the chatframe causing issues
-	local retOk = pcall(function() tooltip:SmartAnchorTo(chatFrame, true) end)
-	if (not retOk) then
-		tooltip:ClearAllPoints()
-    	tooltip:SetClampedToScreen(true)
+	local x, y = RSGeneralDB.GetChatTooltipPositionCoordinates()
+	tooltip:ClearAllPoints()
+	
+	if (not x or not y) then
     	tooltip:SetPoint("CENTER")
+	else
+    	tooltip:SetPoint("BOTTOMLEFT", x, y)
 	end
 	
 	tooltip:Show()

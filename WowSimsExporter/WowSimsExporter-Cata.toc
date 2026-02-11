@@ -1,0 +1,26 @@
+## Title: WowSimsExporter |cffff3a03Cataclysm|r |cff20FF9E谷|r|cff18FF9B风|r|cff10FF99修|r|cff08FF97复|r|cff00FF96版|r
+## Version: v3.1.5
+## Author: generalwrex(Natop), namreeb, coolmodi(FelixPflaum), riotdog
+## Interface: 40402
+## Notes: This is an exporter written to quickly export your character to https://wowsims.github.io/cata/ for simulations.
+## SavedVariables: WSEDB
+## OptionalDeps: Ace3
+## X-Curse-Project-ID: 590920
+## X-Wago-ID: as3Dfg57
+## X-WoWI-ID: 26823
+
+embeds.xml
+
+extras.lua
+locales/zhCN.lua
+Locale.lua
+Shared.lua
+Conditional_Cata.lua
+CataReforgeDetection.lua
+SavedDataManager.lua
+ExportStructures/ItemSpec.lua
+ExportStructures/EquipmentSpec.lua
+ExportStructures/Misc.lua
+ExportStructures/Character.lua
+UI.lua
+WowSimsExporter.lua

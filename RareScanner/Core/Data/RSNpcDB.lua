@@ -674,7 +674,7 @@ function RSNpcDB.GetAllNpcsLootFound()
 end
 
 function RSNpcDB.GetNpcLootFound(npcID)
-	if (npcID and private.dbglobal.rares_loot[containerID]) then
+	if (npcID and private.dbglobal.rares_loot[npcID]) then
 		return private.dbglobal.rares_loot[npcID]
 	end
 

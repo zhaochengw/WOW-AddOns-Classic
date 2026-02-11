@@ -24,97 +24,68 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("Atlas_Legion", "enUS", true, true);
 if not L then return end
 
--- Assault on VioletHold
-
--- Cathedral of Eternal Night
-L["Raga'yut"] = "Raga'yut"  -- 120715
-
--- Court of Stars
-L["Ly'leth Lunastre"] = "Ly'leth Lunastre";  -- 106468
-L["Arcanist Malrodi"] = "Arcanist Malrodi";  -- 108796
-L["Velimar"] = "Velimar";                    -- 108740
-
--- Black Rook Hold
-L["Dantalionax"] = "Dantalionax";                                            -- 99611
-L["Lady Velandras Ravencrest"] = "Lady Velandras Ravencrest";                -- 98538
-L["Ancient Widow"] = "Ancient Widow";                                        --98637
-L["Archmage Galeorn"] = "Archmage Galeorn";                                  -- 111068
-L["Kalyndras <Rook's Quartermaster>"] = "Kalyndras <Rook's Quartermaster>";  -- 112725
-L["Braxas the Fleshcarver"] = "Braxas the Fleshcarver";                      -- 111290
-L["Torn Page"] = "Torn Page"
+L["Ancient Widow"] = "Ancient Widow"
+L["Arcanist Malrodi"] = "Arcanist Malrodi"
+L["Archmage Galeorn"] = "Archmage Galeorn"
+L["Archmage Khadgar"] = "Archmage Khadgar"
+L["Archmage Leryda"] = "Archmage Leryda"
+L["Arthfael"] = "Arthfael"
+L["Barnes"] = "Barnes"
+L["Braxas the Fleshcarver"] = "Braxas the Fleshcarver"
+L["Charred Bone Fragment"] = "Charred Bone Fragment"
+L["Crate of Corks"] = "Crate of Corks"
+L["Dantalionax"] = "Dantalionax"
 L["Dog-Eared Page"] = "Dog-Eared Page"
-L["Worn-Edged Page"] = "Worn-Edged Page"
-L["Singed Page"] = "Singed Page"
-L["Ink-splattered Page"] = "Ink-splattered Page"
+L["Dread Captain Thedon"] = "Dread Captain Thedon"
+L["Drelanim Whisperwind"] = "Drelanim Whisperwind"
+L["Earlnoc the Beastbreaker"] = "Earlnoc the Beastbreaker"
+L["Echoing Horn of the Damned"] = "Echoing Horn of the Damned"
+L["Fel-Ravaged Tome"] = "Fel-Ravaged Tome"
+L["Fenryr's eastern spawn point"] = "Fenryr's eastern spawn point"
+L["Fenryr's western spawn point"] = "Fenryr's western spawn point"
+L["First Arcanist Thalyssra"] = "First Arcanist Thalyssra"
+L["Flightmaster Volnath"] = "Flightmaster Volnath"
+L["Gilded Guardian"] = "Gilded Guardian"
+L["Gom Crabbar"] = "Gom Crabbar"
+L["Grimoira"] = "Grimoira"
 L["Hastily-Scrawled Page"] = "Hastily-Scrawled Page"
-
--- Darkheart Thicket
-L["Rage Rot"] = "Rage Rot";  -- 101660
-L["Kudzilla"] = "Kudzilla";  -- 99362
-L["Mythana"] = "Mythana";    -- 101641
-
--- Eye of Azshara
-L["Crate of Corks"] = "Crate of Corks";              -- object=248930, Alchemy quest - Put a Cork in It (39331)
-L["Put a Cork in It"] = "Put a Cork in It";          -- quest=39331
-L["Shellmaw"] = "Shellmaw";                          -- 91788
-L["Gom Crabbar"] = "Gom Crabbar";                    -- 101411
-L["Jaggen-Ra"] = "Jaggen-Ra";                        -- 101467
-L["Dread Captain Thedon"] = "Dread Captain Thedon";  -- 108543
-
--- Halls of Valor
-L["Fenryr's western spawn point"] = "Fenryr's western spawn point";
-L["Fenryr's eastern spawn point"] = "Fenryr's eastern spawn point";
-L["King Tor"] = "King Tor";                                  -- 97084
-L["King Bjorn"] = "King Bjorn";                              -- 97081
-L["King Haldor"] = "King Haldor";                            -- 95843
-L["King Ranulf"] = "King Ranulf";                            -- 97083
-L["Volynd Stormbringer"] = "Volynd Stormbringer";            -- 106320
-L["Arthfael"] = "Arthfael";                                  -- 99802
-L["Earlnoc the Beastbreaker"] = "Earlnoc the Beastbreaker";  -- 96647
-
--- Neltharion's Lair
-L["Spiritwalker Ebonhorn"] = "Spiritwalker Ebonhorn";            -- 113526
-L["Mushroom Merchant"] = "Mushroom Merchant";                    -- 111746
-L["Understone Lasher"] = "Understone Lasher";                    -- 103597
-L["Ragoul"] = "Ragoul";                                          -- 103199
-L["Kraxa <Mother of Gnashers>"] = "Kraxa <Mother of Gnashers>";  -- 103271
-L["Ultanok"] = "Ultanok";                                        -- 103247
-
--- Maw of Souls
-L["Echoing Horn of the Damned"] = "Echoing Horn of the Damned";
-
--- Return to Karazhan
-L["Mage Darius"] = "Mage Darius";
-L["Charred Bone Fragment"] = "Charred Bone Fragment";
-L["Archmage Leryda"] = "Archmage Leryda";
-L["Lydia Accoste"] = "Lydia Accoste";
-L["Barnes"] = "Barnes";                            -- 114339
-L["Soul Fragment"] = "Soul Fragment";
-L["Koren"] = "Koren";                              -- 114815
-L["Medivh's Footlocker"] = "Medivh's Footlocker";  -- object: 266826
-L["Archmage Khadgar"] = "Archmage Khadgar";        -- 115497
-
--- The Arcway
-L["Portal to Shal'Aran"] = "Portal to Shal'Aran";
-L["The Rat King"] = "The Rat King";                -- 111057
-L["Sludge Face"] = "Sludge Face";                  -- 111021
-L["Suramar Leyline Map"] = "Suramar Leyline Map";  -- object: 251641
-
--- The Emerald Nightmare
-L["Nightmare Watcher"] = "Nightmare Watcher";
-L["Malfurion Stormrage"] = "Malfurion Stormrage";  -- 106482
-L["Teleport to Moonglade"] = "Teleport to Moonglade";
-
--- The Nighthold
-L["Teleport to Tichondrius / Grand Magistrix Elisande"] = "Teleport to Tichondrius / Grand Magistrix Elisande";
-L["First Arcanist Thalyssra"] = "First Arcanist Thalyssra";  -- 110791
-L["Gilded Guardian"] = "Gilded Guardian";                    -- 112712
-L["Flightmaster Volnath"] = "Flightmaster Volnath";          -- 116004
-
--- Trial of Valor
-
--- Vault of the Wardens
-L["Fel-Ravaged Tome"] = "Fel-Ravaged Tome";          -- object=258979
-L["Drelanim Whisperwind"] = "Drelanim Whisperwind";  -- 103860
-L["Grimoira"] = "Grimoira";                          -- 105824
-L["Requires Skaggldrynk"] = "Requires Skaggldrynk";
+L["Ink-splattered Page"] = "Ink-splattered Page"
+L["Jaggen-Ra"] = "Jaggen-Ra"
+L["Kalyndras <Rook's Quartermaster>"] = "Kalyndras <Rook's Quartermaster>"
+L["King Bjorn"] = "King Bjorn"
+L["King Haldor"] = "King Haldor"
+L["King Ranulf"] = "King Ranulf"
+L["King Tor"] = "King Tor"
+L["Koren"] = "Koren"
+L["Kraxa <Mother of Gnashers>"] = "Kraxa <Mother of Gnashers>"
+L["Kudzilla"] = "Kudzilla"
+L["Lady Velandras Ravencrest"] = "Lady Velandras Ravencrest"
+L["Lydia Accoste"] = "Lydia Accoste"
+L["Ly'leth Lunastre"] = "Ly'leth Lunastre"
+L["Mage Darius"] = "Mage Darius"
+L["Malfurion Stormrage"] = "Malfurion Stormrage"
+L["Medivh's Footlocker"] = "Medivh's Footlocker"
+L["Mushroom Merchant"] = "Mushroom Merchant"
+L["Mythana"] = "Mythana"
+L["Nightmare Watcher"] = "Nightmare Watcher"
+L["Portal to Shal'Aran"] = "Portal to Shal'Aran"
+L["Put a Cork in It"] = "Put a Cork in It"
+L["Raga'yut"] = "Raga'yut"
+L["Rage Rot"] = "Rage Rot"
+L["Ragoul"] = "Ragoul"
+L["Requires Skaggldrynk"] = "Requires Skaggldrynk"
+L["Shellmaw"] = "Shellmaw"
+L["Singed Page"] = "Singed Page"
+L["Sludge Face"] = "Sludge Face"
+L["Soul Fragment"] = "Soul Fragment"
+L["Spiritwalker Ebonhorn"] = "Spiritwalker Ebonhorn"
+L["Suramar Leyline Map"] = "Suramar Leyline Map"
+L["Teleport to Moonglade"] = "Teleport to Moonglade"
+L["Teleport to Tichondrius / Grand Magistrix Elisande"] = "Teleport to Tichondrius / Grand Magistrix Elisande"
+L["The Rat King"] = "The Rat King"
+L["Torn Page"] = "Torn Page"
+L["Ultanok"] = "Ultanok"
+L["Understone Lasher"] = "Understone Lasher"
+L["Velimar"] = "Velimar"
+L["Volynd Stormbringer"] = "Volynd Stormbringer"
+L["Worn-Edged Page"] = "Worn-Edged Page"

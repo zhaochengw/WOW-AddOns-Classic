@@ -1196,6 +1196,8 @@ function module.options:Load()
 
 		table.sort(nowDB,function(a,b) if a.class == b.class then return a[1] < b[1] else return a.class < b.class end end)
 
+		local isLemix = PlayerGetTimerunningSeasonID and PlayerGetTimerunningSeasonID() == 2
+
 		local scrollNow = ExRT.F.Round(module.options.ScrollBar:GetValue())
 		local counter = 0
 		for i=scrollNow,#nowDB do
@@ -1299,6 +1301,10 @@ function module.options:Load()
 					if module.db.page == 1 then
 						line.ilvl:SetText(ilvl_def)
 
+						if isLemix and data.lemix_vers then
+							line.ilvl:SetText(ilvl_def.."\nIP "..(data.lemix_vers or 0))
+						end
+
 						local items = data.items
 						local items_ilvl = data.items_ilvl
 						if items then
@@ -1343,6 +1349,10 @@ function module.options:Load()
 										(slotID == 10 and ((module:GetSpecMainStat(spec)=="str" and IS_SL) and not IS_DF)) or 
 										(slotID == 5 and IS_SL) or 
 										(slotID == 7 and IS_DF)
+
+									if isSlotForEnchant and isLemix then
+										isSlotForEnchant = false
+									end
 
 									if not ExRT.isClassic and (
 										(enchantID == 0 and isSlotForEnchant and module.db.colorizeNoEnch) or
@@ -1965,14 +1975,16 @@ function module.options:Load()
 										local main = line:GetTalentIcon(j)
 										local target = line:GetTalentIcon(tree.nodeIDToNum[ node.edges[k] ])
 	
-										if main.texture:IsDesaturated() or target.texture:IsDesaturated() then
-											l:SetDesaturated(true)
-										else
-											l:SetDesaturated(false)
+										if main and target then
+											if main.texture:IsDesaturated() or target.texture:IsDesaturated() then
+												l:SetDesaturated(true)
+											else
+												l:SetDesaturated(false)
+											end
+		
+											l:SetStartPoint("CENTER",main,0,-8)
+											l:SetEndPoint("CENTER",target,0,8)
 										end
-	
-										l:SetStartPoint("CENTER",main,0,-8)
-										l:SetEndPoint("CENTER",target,0,8)
 									end
 								end
 							end

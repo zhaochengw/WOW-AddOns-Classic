@@ -1,14 +1,14 @@
-## Interface: 50502, 11508, 110205, 110207
+## Interface: 11508, 20505, 50503, 38000, 110207, 120000
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli
-## Version: 108
+## Version: 111
 ## SavedVariables: SpeedyAutoLootDB
-## IconTexture: 4675637
+## IconTexture: Interface\AddOns\SpeedyAutoloot\looticon.blp
 ## OptionalDeps: ElvUI, ElvUI_Config
 
 # https://warcraft.wiki.gg/wiki/Addon_Categories
-## Category-enUS: Loot
+## Category: Loot
 ## Category-deDE: Beute
 ## Category-esES: Botín
 ## Category-esMX: Botín

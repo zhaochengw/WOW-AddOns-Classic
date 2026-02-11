@@ -1,0 +1,21 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+  <ScrollingMessageFrame name="ChattynatorHyperlinkHandler" inherits="ChatFrameTemplate" parent="UIParent" hyperlinksEnabled="true">
+    <Scripts>
+      <!-- Remove default handlers (except for hyperlinks) -->
+      <OnLoad>
+        self:Show()
+        self.editBox = ChatFrame1EditBox -- Ensure no errors when using IM chat style in Blizz settings
+        if FCF_SetFullScreenFrame then
+          hooksecurefunc("FCF_SetFullScreenFrame", function(parent)
+            self:SetParent(parent)
+          end)
+          hooksecurefunc("FCF_ClearFullScreenFrame", function()
+            self:SetParent(UIParent)
+          end)
+        end
+      </OnLoad>
+      <OnUpdate></OnUpdate>
+    </Scripts>
+  </ScrollingMessageFrame>
+</Ui>

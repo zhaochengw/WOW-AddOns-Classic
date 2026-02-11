@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(829, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(68905, 68904)--Lu'lin 68905, Suen 68904
 mod:SetEncounterID(1560)
 mod:SetBossHPInfoToHighest()
@@ -21,13 +21,12 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
 )
 
-local Lulin = select(2, EJ_GetCreatureInfo(1, 829))
-local Suen = select(2, EJ_GetCreatureInfo(2, 829))
+--local Lulin = select(2, EJ_GetCreatureInfo(1, 829))
+--local Suen = select(2, EJ_GetCreatureInfo(2, 829))
 
 --Darkness
 local warnNight							= mod:NewAnnounce("warnNight", 2, 108558)
 local warnCrashingStarSoon				= mod:NewSoonAnnounce(137129, 3)
-local warnBeastOfNightmares				= mod:NewTargetNoFilterAnnounce(137375, 3, nil, "Tank|Healer")
 --Light
 local warnDay							= mod:NewAnnounce("warnDay", 2, 122789)
 local warnLightOfDay					= mod:NewSpellAnnounce(137403, 2, nil, false)--Spammy, but leave it as an option at least
@@ -40,85 +39,61 @@ local warnSerpent						= mod:NewSpellAnnounce(138306)
 local warnOx							= mod:NewSpellAnnounce(138300)
 --Dusk
 local warnDusk							= mod:NewAnnounce("warnDusk", 2, "236760")--"achievement_zone_easternplaguelands" (best Dusk icon i could find)
-local warnTidalForce					= mod:NewCastAnnounce(137531, 3, 2)
 
 --Darkness
-local specWarnCosmicBarrage				= mod:NewSpecialWarningCount(136752, true, nil, nil, 2)--better as a cosmic barrage warning with cast bar being stars. Also good as count warning for cooldowns
-local specWarnTearsOfSun				= mod:NewSpecialWarningSpell(137404, nil, nil, nil, 2)
-local specWarnBeastOfNightmares			= mod:NewSpecialWarningTarget(137375, "Tank|Healer")
-local specWarnCorruptedHealing			= mod:NewSpecialWarningStack(137360, "Healer")
+local specWarnCosmicBarrage				= mod:NewSpecialWarningCount(136752, true, nil, nil, 2, 2)
+local specWarnTearsOfSun				= mod:NewSpecialWarningSpell(137404, nil, nil, nil, 2, 2)
+local specWarnBeastOfNightmares			= mod:NewSpecialWarningTarget(137375, "Tank|Healer", nil, nil, 1, 2)--Sound guess here too
+local specWarnCorruptedHealing			= mod:NewSpecialWarningStack(137360, "Healer", 1, nil, nil, 1, 6)
 --Light
-local specWarnFanOfFlames				= mod:NewSpecialWarningStack(137408, nil, 2)
-local specWarnFanOfFlamesOther			= mod:NewSpecialWarningTaunt(137408)
-local specWarnFlamesofPassionMove		= mod:NewSpecialWarningMove(137417)
-local specWarnIceComet					= mod:NewSpecialWarningSpell(137419, false)
-local specWarnNuclearInferno			= mod:NewSpecialWarningCount(137491, nil, nil, nil, 2)--Heroic
+local specWarnFanOfFlames				= mod:NewSpecialWarningStack(137408, nil, 2, nil, nil, 1, 2)
+local specWarnFanOfFlamesOther			= mod:NewSpecialWarningTaunt(137408, nil, nil, nil, 1, 2)
+local specWarnGTFO						= mod:NewSpecialWarningGTFO(137417, nil, nil, nil, 1, 8)
+local specWarnIceComet					= mod:NewSpecialWarningSpell(137419, false)--No idea what audio to give it so blank for now
+local specWarnNuclearInferno			= mod:NewSpecialWarningCount(137491, nil, nil, nil, 2, 2)--Heroic.
 --Dusk
-local specWarnTidalForce				= mod:NewSpecialWarningSpell(137531, nil, nil, nil, 2)--Maybe switch to a stop dps warning, or a switch to Suen?
+local specWarnTidalForce				= mod:NewSpecialWarningSpell(137531, nil, nil, nil, 2, 2)
 
 --Darkness
-local timerDayCD						= mod:NewTimer(183, "timerDayCD", 122789) -- timer is 183 or 190 (confirmed in 10 man. variable)
-local timerCrashingStar					= mod:NewNextTimer(4.5, 137129)
+local timerDayCD						= mod:NewTimer(183, "timerDayCD", 122789, nil, nil, 6) -- timer is 183 or 190 (confirmed in 10 man. variable)
+local timerCrashingStar					= mod:NewNextTimer(4.5, 137129, nil, nil, nil, 3)
 local timerCosmicBarrageCD				= mod:NewCDCountTimer(22, 136752)--VERY IMPORTANT on heroic, do not remove. many heroic strat ignore adds and group up BEFORE day phase starts so adds come to middle at phase start. Variation is unimportant, timer isn't to see when next cast is, it's to show safety window for when no cast will happen
-local timerTearsOfTheSunCD				= mod:NewCDTimer(41, 137404)
+local timerTearsOfTheSunCD				= mod:NewCDTimer(41, 137404, nil, nil, nil, 2)
 local timerTearsOfTheSun				= mod:NewBuffActiveTimer(10, 137404)
-local timerBeastOfNightmaresCD			= mod:NewCDTimer(51, 137375, nil, "Tank|Healer")
+local timerBeastOfNightmaresCD			= mod:NewCDTimer(51, 137375, nil, "Tank|Healer", nil, 1)
 --Light
-local timerDuskCD						= mod:NewTimer(360, "timerDuskCD", "236760")--it seems always 360s after combat entered. (day timer is variables, so not reliable to day phase)
+local timerDuskCD						= mod:NewTimer(360, "timerDuskCD", "236760", nil, nil, 6)--it seems always 360s after combat entered. (day timer is variables, so not reliable to day phase)
 local timerLightOfDayCD					= mod:NewCDTimer(6, 137403, nil, false)--Trackable in day phase using UNIT event since boss1 can be used in this phase. Might be useful for heroic to not run behind in shadows too early preparing for a special
-local timerFanOfFlamesCD				= mod:NewCDTimer(12, 137408, nil, "Tank|Healer")
+local timerFanOfFlamesCD				= mod:NewCDTimer(12, 137408, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFanOfFlames					= mod:NewTargetTimer(30, 137408, nil, "Tank")
 --local timerFlamesOfPassionCD			= mod:NewCDTimer(30, 137414)--Also very high variation. (31~65). Can be confuse, no use.
-local timerIceCometCD					= mod:NewCDTimer(20.5, 137419)--Every 20.5-25 seconds on normal. On 10 heroic, variables 20.5~41s. 25 heroic vary 20.5-27.
+local timerIceCometCD					= mod:NewCDTimer(20.5, 137419, nil, nil, nil, 3)--Every 20.5-25 seconds on normal. On 10 heroic, variables 20.5~41s. 25 heroic vary 20.5-27.
 local timerNuclearInferno				= mod:NewBuffActiveTimer(12, 137491)
-local timerNuclearInfernoCD				= mod:NewCDCountTimer(49.5, 137491)
+local timerNuclearInfernoCD				= mod:NewCDCountTimer(49.5, 137491, nil, nil, nil, 6)
 --Celestials Assist
 local timerTiger						= mod:NewBuffFadesTimer(20, 138855)
 local timerSerpent						= mod:NewBuffFadesTimer(30, 138306)
 local timerOx							= mod:NewBuffFadesTimer(30, 138300)
 --Dusk
 local timerTidalForce					= mod:NewBuffActiveTimer(18 ,137531)
-local timerTidalForceCD					= mod:NewCDTimer(71, 137531)
+local timerTidalForceCD					= mod:NewCDTimer(71, 137531, nil, nil, nil, 6)
 
 local berserkTimer						= mod:NewBerserkTimer(600)
 
-mod:AddBoolOption("RangeFrame")--For various abilities that target even melee. UPDATE, cosmic barrage (worst of the 3 abilities) no longer target melee. However, light of day and tears of teh sun still do. melee want to split into 2-3 groups (depending on how many) but no longer have to stupidly spread about all crazy and out of range of boss during cosmic barrage to avoid dying. On that note, MAYBE change this to ranged default instead of all.
-
-local phase3Started = false
-local invokeTiger, invokeCrane, invokeSerpent, invokeOx = DBM:GetSpellName(138264), DBM:GetSpellName(138189), DBM:GetSpellName(138267), DBM:GetSpellName(138254)
-local infernoCount = 0
-local cosmicCount = 0
-
-local function isRunner(unit)
-	if DBM:UnitDebuff(unit, invokeTiger, invokeCrane, invokeSerpent, invokeOx) then
-		return true
-	end
-	return false
-end
-
-local constellationRunner
-do
-	constellationRunner = function(uId)
-		return isRunner(uId)
-	end
-end
+mod.vb.phase3Started = false
+mod.vb.infernoCount = 0
+mod.vb.cosmicCount = 0
 
 function mod:OnCombatStart(delay)
-	phase3Started = false
-	infernoCount = 0
-	cosmicCount = 0
+	self.vb.phase3Started = false
+	self.vb.infernoCount = 0
+	self.vb.cosmicCount = 0
 	berserkTimer:Start(-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(8, not constellationRunner)
-	end
 end
 
 function mod:OnCombatEnd()
-	phase3Started = false
+	self.vb.phase3Started = false
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 function mod:SPELL_CAST_START(args)
@@ -136,13 +111,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:SendSync("CosmicBarrage")
 	elseif spellId == 137404 then
 		specWarnTearsOfSun:Show()
+		specWarnTearsOfSun:Play("aesoon")
 		timerTearsOfTheSun:Start()
 		if timerDayCD:GetTime() < 145 then
 			timerTearsOfTheSunCD:Start()
 		end
 	elseif spellId == 137375 then
-		warnBeastOfNightmares:Show(args.destName)
 		specWarnBeastOfNightmares:Show(args.destName)
+		specWarnBeastOfNightmares:Play("changemt")
 		if timerDayCD:GetTime() < 135 then
 			timerBeastOfNightmaresCD:Start()
 		end
@@ -154,20 +130,24 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if amount >= threatamount then
 				specWarnFanOfFlames:Show(amount)
+				specWarnFanOfFlames:Play("stackhigh")
 			else
 				warnFanOfFlames:Show(args.destName, amount)
 			end
 		else
 			if amount >= threatamount and not DBM:UnitDebuff("player", args.spellName) and not UnitIsDeadOrGhost("player") then
 				specWarnFanOfFlamesOther:Show(args.destName)
+				specWarnFanOfFlamesOther:Play("tauntboss")
 			else
 				warnFanOfFlames:Show(args.destName, amount)
 			end
 		end
 	elseif spellId == 137417 and args:IsPlayer() and self:AntiSpam(3, 4) then
-		specWarnFlamesofPassionMove:Show()
+		specWarnGTFO:Show(args.spellName)
+		specWarnGTFO:Play("watchfeet")
 	elseif spellId == 137360 and args:IsPlayer() then
 		specWarnCorruptedHealing:Show(args.amount or 1)
+		specWarnCorruptedHealing:Play("stackhigh")
 	elseif spellId == 138855 and self:AntiSpam(3, 5) then
 		warnTiger:Show()
 		timerTiger:Start()
@@ -230,18 +210,14 @@ function mod:UNIT_DIED(args)
 		warnDay:Show()
 		timerLightOfDayCD:Start()
 		timerFanOfFlamesCD:Start(13)
-		--She also does Flames of passion, but this is done 3 seconds after Lu'lin dies, is a 3 second timer worth it?
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
-		phase3Started = true
+		self.vb.phase3Started = true
 	elseif cid == 68904 then--Suen
 		--timerFlamesOfPassionCD:Cancel()
 		timerBeastOfNightmaresCD:Start(64)
 		timerNuclearInfernoCD:Cancel()
 		timerDuskCD:Cancel()
 		warnNight:Show()
-		phase3Started = true
+		self.vb.phase3Started = true
 	end
 end
 
@@ -287,10 +263,10 @@ function mod:OnSync(msg)
 		self:RegisterShortTermEvents(
 			"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
 		)
-	elseif msg == "Phase3Yell" and not phase3Started then -- Split from phase3 sync to prevent who running older version not to show bad timers.
-		phase3Started = true
-		cosmicCount = 0
-		infernoCount = 0
+	elseif msg == "Phase3Yell" and not self.vb.phase3Started then -- Split from phase3 sync to prevent who running older version not to show bad timers.
+		self.vb.phase3Started = true
+		self.vb.cosmicCount = 0
+		self.vb.infernoCount = 0
 		warnDusk:Show()
 		timerIceCometCD:Start(17)--This seems to reset, despite what last CD was (this can be a bad thing if it was do any second)
 		timerTidalForceCD:Start(26)
@@ -298,52 +274,54 @@ function mod:OnSync(msg)
 			timerNuclearInfernoCD:Cancel()
 			timerNuclearInfernoCD:Start(67, 1)
 		end
-		timerCosmicBarrageCD:Start(54, cosmicCount+1)--I want to analyze a few logs and readd this once I know for certain this IS the minimum time.
+		timerCosmicBarrageCD:Start(54, self.vb.cosmicCount+1)--I want to analyze a few logs and readd this once I know for certain this IS the minimum time.
 	elseif msg == "Phase3" and GetTime() - self.combatInfo.pull >= 5 then
 		self:UnregisterShortTermEvents()
 		timerFanOfFlamesCD:Cancel()--DO NOT CANCEL THIS ON YELL
-		if not phase3Started then
+		if not self.vb.phase3Started then
 			warnDusk:Show()
-			phase3Started = true
-			cosmicCount = 0
-			infernoCount = 0
+			self.vb.phase3Started = true
+			self.vb.cosmicCount = 0
+			self.vb.infernoCount = 0
 			timerIceCometCD:Start(11)--This seems to reset, despite what last CD was (this can be a bad thing if it was do any second)
 			timerTidalForceCD:Start(20)
 			if self:IsHeroic() then
 				timerNuclearInfernoCD:Cancel()
-				timerNuclearInfernoCD:Start(61, infernoCount+1)
+				timerNuclearInfernoCD:Start(61, self.vb.infernoCount+1)
 			end
-			timerCosmicBarrageCD:Start(48, cosmicCount+1)--I want to analyze a few logs and readd this once I know for certain this IS the minimum time.
+			timerCosmicBarrageCD:Start(48, self.vb.cosmicCount+1)--I want to analyze a few logs and readd this once I know for certain this IS the minimum time.
 		end
 	elseif msg == "Comet" then
 		warnIceComet:Show()
 		specWarnIceComet:Show()
-		if phase3Started then -- cd longer on phase 3.
+		if self.vb.phase3Started then -- cd longer on phase 3.
 			timerIceCometCD:Start(30.5)
 		else
 			timerIceCometCD:Start()
 		end
 	elseif msg == "TidalForce" then
-		warnTidalForce:Show()
 		specWarnTidalForce:Show()
+		specWarnTidalForce:Play("targetchange")
 		timerTidalForce:Start()
 		timerTidalForceCD:Start()
 	elseif msg == "CosmicBarrage" then
-		cosmicCount = cosmicCount + 1
+		self.vb.cosmicCount = self.vb.cosmicCount + 1
 		warnCrashingStarSoon:Show()
-		specWarnCosmicBarrage:Show(cosmicCount)
+		specWarnCosmicBarrage:Show(self.vb.cosmicCount)
+		specWarnCosmicBarrage:Play("aesoon")
 		timerCrashingStar:Start()
 		if timerDayCD:GetTime() < 165 then
-			timerCosmicBarrageCD:Start(nil, cosmicCount+1)
+			timerCosmicBarrageCD:Start(nil, self.vb.cosmicCount+1)
 		end
 	elseif msg == "Inferno" then
-		infernoCount = infernoCount + 1
-		specWarnNuclearInferno:Show(infernoCount)
+		self.vb.infernoCount = self.vb.infernoCount + 1
+		specWarnNuclearInferno:Show(self.vb.infernoCount)
+		specWarnNuclearInferno:Play("targetchange")
 		timerNuclearInferno:Start()
-		if phase3Started and self.vb.bossLeft == 2 then--Only uses longer Cd if both actually alive
-			timerNuclearInfernoCD:Start(73, infernoCount+1)
+		if self.vb.phase3Started and self.vb.bossLeft == 2 then--Only uses longer Cd if both actually alive
+			timerNuclearInfernoCD:Start(73, self.vb.infernoCount+1)
 		else
-			timerNuclearInfernoCD:Start(nil, infernoCount+1)
+			timerNuclearInfernoCD:Start(nil, self.vb.infernoCount+1)
 		end
 	end
 end

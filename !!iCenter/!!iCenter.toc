@@ -1,4 +1,4 @@
-## Interface: 30404
+## Interface: 50503
 ## Title: Isler's WoWUI
 ## Notes: The console of Isler's WoWUI, includes some useful addons.
 ## Title-zhCN: |cff7fff7fIsler's WoWUI|R
@@ -10,7 +10,7 @@
 ## Version: 1.13.4.1
 ## Website: http://wow.isler.me/
 ## SavedVariables: ACP_Data, ErrorMonsterDB, ExtraConfiguration, cfilter, cfilterall, cfilters, cfilterlist
-## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright
+## SavedVariablesPerCharacter: MBB_Exclude, MBB_Options, FeatureFrameMinimapButton_OffsetX, FeatureFrameMinimapButton_OffsetY, aienable, aikeyword, aichannel, aitextleft, aitextright, AutoInviteDB
 
 # Libs
 Libs\Ace3.xml
@@ -36,6 +36,9 @@ Autoload.lua
 AutoInvite.lua
 
 ChannelFilters.lua
+
+Custom.lua
+
 
 ACP\ACP.lua
 ACP\localization-enUS.lua

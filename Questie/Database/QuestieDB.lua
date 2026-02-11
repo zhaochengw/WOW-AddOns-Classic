@@ -28,6 +28,8 @@ local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
 local l10n = QuestieLoader:ImportModule("l10n")
 ---@type QuestLogCache
 local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+---@type DropDB
+local DropDB = QuestieLoader:ImportModule("DropDB")
 
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest")
@@ -331,7 +333,7 @@ function QuestieDB:GetItem(itemId)
 
     if rawdata[QuestieDB.itemKeys.npcDrops] then
         for _, npcId in pairs(rawdata[QuestieDB.itemKeys.npcDrops]) do
-            sources[#sources+1] = {
+            sources[#sources + 1] = {
                 Id = npcId,
                 Type = "monster",
             }
@@ -340,16 +342,21 @@ function QuestieDB:GetItem(itemId)
 
     if rawdata[QuestieDB.itemKeys.vendors] then
         for _, npcId in pairs(rawdata[QuestieDB.itemKeys.vendors]) do
-            sources[#sources+1] = {
-                Id = npcId,
-                Type = "monster",
-            }
+            local friendlyToFaction = QuestieDB.QueryNPCSingle(npcId, "friendlyToFaction")
+            local isFriendlyToPlayer = QuestieDB.IsFriendlyToPlayer(friendlyToFaction)
+            if isFriendlyToPlayer then
+                -- We don't want to show vendors from the opposite faction
+                sources[#sources + 1] = {
+                    Id = npcId,
+                    Type = "monster",
+                }
+            end
         end
     end
 
     if rawdata[QuestieDB.itemKeys.objectDrops] then
         for _, v in pairs(rawdata[QuestieDB.itemKeys.objectDrops]) do
-            sources[#sources+1] = {
+            sources[#sources + 1] = {
                 Id = v,
                 Type = "object",
             }
@@ -357,6 +364,17 @@ function QuestieDB:GetItem(itemId)
     end
 
     return item
+end
+
+---@param itemId ItemId
+---@param npcId NpcId
+---@return table<number, string>?
+function QuestieDB.GetItemDroprate(itemId, npcId)
+     if not DropDB or not DropDB.GetItemDroprate then
+         Questie:Debug(Questie.DEBUG_CRITICAL, "ItemDrops: DropDB not available")
+         return nil
+     end
+     return DropDB.GetItemDroprate(itemId, npcId)
 end
 
 ---@param questId number
@@ -500,7 +518,7 @@ function QuestieDB:IsExclusiveQuestInQuestLogOrComplete(exclusiveTo)
     end
 
     for _, exId in pairs(exclusiveTo) do
-        if Questie.db.char.complete[exId] then
+        if Questie.db.char.complete[exId] or QuestiePlayer.currentQuestlog[exId] then
             return true
         end
     end
@@ -697,7 +715,7 @@ function QuestieDB.IsDoable(questId, debugPrint)
 
     local requiredSpecialization = QuestieDB.QueryQuestSingle(questId, "requiredSpecialization")
     if (requiredSpecialization) and (requiredSpecialization > 0) then
-        local hasSpecialization = QuestieProfessions:HasSpecialization(requiredSpecialization)
+        local hasSpecialization = QuestieProfessions.HasSpecialization(requiredSpecialization)
         if (not hasSpecialization) then
             if debugPrint then Questie:Debug(Questie.DEBUG_SPAM, "[QuestieDB.IsDoable] Player does not meet profession specialization requirements for quest " .. questId) end
             return false
@@ -787,7 +805,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
 
     if completedQuests[questId] then
         if returnText and returnBrief then
-            return "Ineligible: Already complete"
+            return l10n("Ineligible")..l10n(": ")..l10n("Already complete")
         elseif returnText then
             return "Player has already completed quest " .. questId .. "!"
         end
@@ -796,7 +814,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if C_QuestLog.IsOnQuest(questId) == true then
         local msg = "Quest " .. questId .. " is active!"
         if returnText and returnBrief then
-            return "Eligible: Player is on quest"
+            return l10n("Eligible")..l10n(": ")..l10n("Player is on quest")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -806,7 +824,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if QuestieCorrectionshiddenQuests[questId] then
         local msg = "Quest " .. questId .. " is hidden automatically!"
         if returnText and returnBrief then
-            return "Unknown: Automatically blacklisted"
+            return l10n("Unknown")..l10n(": ")..l10n("Automatically blacklisted")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -815,16 +833,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if Questiedbcharhidden[questId] then
         local msg = "Quest " .. questId .. " is hidden manually!"
         if returnText and returnBrief then
-            return "Unknown: Manually blacklisted"
-        elseif returnText and not returnBrief then
-            return msg
-        end
-    end
-
-    if Questiedbcharhidden[questId] then
-        local msg = "Quest " .. questId .. " is hidden manually!"
-        if returnText and returnBrief then
-            return "Unknown: Manually blacklisted"
+            return l10n("Unknown")..l10n(": ")..l10n("Manually blacklisted")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -835,7 +844,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if QuestieDB.activeChildQuests[questId] then -- The parent quest is active, so this quest is doable
         local msg = "Quest " .. questId .. " is eligible because it's a child quest and the parent is active!"
         if returnText and returnBrief then
-            return "Eligible: Parent active"
+            return l10n("Eligible")..l10n(": ")..l10n("Parent active")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -845,7 +854,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if (requiredRaces and not checkRace[requiredRaces]) then
         local msg = "Race requirement not fulfilled for quest " .. questId
         if returnText and returnBrief then
-            return "Ineligible: Race requirement"
+            return l10n("Ineligible")..l10n(": ")..l10n("Race requirement")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -858,7 +867,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         if not isPreQuestSingleFulfilled then
             local msg = "Pre-quest requirement not fulfilled for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Incomplete pre-quest"
+                return l10n("Ineligible")..l10n(": ")..l10n("Incomplete pre-quest")
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -870,7 +879,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         QuestieDB.autoBlacklist[questId] = "class"
         local msg = "Class requirement not fulfilled for quest " .. questId
         if returnText and returnBrief then
-            return "Ineligible: Class requirement"
+            return l10n("Ineligible")..l10n(": ")..l10n("Class requirement")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -888,7 +897,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
 
             local msg = "Player does not meet reputation requirements for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Reputation requirement"
+                return l10n("Ineligible")..l10n(": ")..l10n("Reputation requirement")
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -906,7 +915,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
 
             local msg = "Player does not meet profession requirements for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Profession requirement"
+                return l10n("Ineligible")..l10n(": ")..l10n("Profession requirement")
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -923,7 +932,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
             if not isPreQuestGroupFulfilled then
                 local msg = "Group pre-quest requirement not fulfilled for quest " .. questId
                 if returnText and returnBrief then
-                    return "Ineligible: Incomplete pre-quest group"
+                    return l10n("Ineligible")..l10n(": ")..l10n("Incomplete pre-quest group")
                 elseif returnText and not returnBrief then
                     return msg
                 end
@@ -935,7 +944,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if parentQuest and parentQuest ~= 0 then
         local msg = "Quest " .. questId .. " has an inactive parent quest"
         if returnText and returnBrief then
-            return "Ineligible: Inactive parent"
+            return l10n("Ineligible")..l10n(": ")..l10n("Inactive parent")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -946,7 +955,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         if completedQuests[nextQuestInChain] or currentQuestlog[nextQuestInChain] then
             local msg = "Follow up quests already completed or in the quest log for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Later quest completed or active " .. nextQuestInChain
+                return l10n("Ineligible")..l10n(": ")..l10n("Later quest completed or active")..l10n(": ").. nextQuestInChain
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -961,14 +970,14 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
             if completedQuests[v] then
                 local msg = "Player has completed exclusive quest " .. v
                 if returnText and returnBrief then
-                    return "Ineligible: Exclusive quest completed"
+                    return l10n("Ineligible")..l10n(": ")..l10n("Exclusive quest completed")
                 elseif returnText and not returnBrief then
                     return msg
                 end
             elseif currentQuestlog[v] then
                 local msg = "Player has exclusive quest " .. v .. " in their quest log"
                 if returnText and returnBrief then
-                    return "Ineligible: Exclusive quest in quest log"
+                    return l10n("Ineligible")..l10n(": ")..l10n("Exclusive quest in quest log")
                 elseif returnText and not returnBrief then
                     return msg
                 end
@@ -979,7 +988,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if (not DailyQuests:IsActiveDailyQuest(questId)) then
         local msg = "Quest " .. questId .. " is a daily quest which isn't active today!"
         if returnText and returnBrief then
-            return "Ineligible: Inactive daily"
+            return l10n("Ineligible")..l10n(": ")..l10n("Inactive daily")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -987,11 +996,11 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
 
     local requiredSpecialization = QuestieDB.QueryQuestSingle(questId, "requiredSpecialization")
     if (requiredSpecialization) and (requiredSpecialization > 0) then
-        local hasSpecialization = QuestieProfessions:HasSpecialization(requiredSpecialization)
+        local hasSpecialization = QuestieProfessions.HasSpecialization(requiredSpecialization)
         if (not hasSpecialization) then
             local msg = "Player does not meet profession specialization requirements for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Profession specialization requirement"
+                return l10n("Ineligible")..l10n(": ")..l10n("Profession specialization requirement")
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -1005,14 +1014,14 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         if (requiredSpell > 0) and (not hasSpell) and (not hasProfSpell) then --if requiredSpell is positive, we make the quest ineligible if the player does NOT have the spell
             local msg = "Player does not meet learned spell requirements for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Spell not yet learned"
+                return l10n("Ineligible")..l10n(": ")..l10n("Spell not yet learned")
             elseif returnText and not returnBrief then
                 return msg
             end
         elseif (requiredSpell < 0) and (hasSpell or hasProfSpell) then --if requiredSpell is negative, we make the quest ineligible if the player DOES  have the spell
             local msg = "Player does not meet unlearned spell requirements for quest " .. questId
             if returnText and returnBrief then
-                return "Ineligible: Already learned spell"
+                return l10n("Ineligible")..l10n(": ")..l10n("Already learned spell")
             elseif returnText and not returnBrief then
                 return msg
             end
@@ -1023,7 +1032,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     if _QuestieDB:CheckAchievementRequirements(questId) == false then
         local msg = "Player does not meet achievement requirements for quest " .. questId
         if returnText and returnBrief then
-            return "Ineligible: Achievement requirement"
+            return l10n("Ineligible")..l10n(": ")..l10n("Achievement requirement")
         elseif returnText and not returnBrief then
             return msg
         end
@@ -1045,7 +1054,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         for _, breadcrumbId in ipairs(otherBreadcrumbs) do
             if breadcrumbId ~= questId and currentQuestlog[breadcrumbId] then
                 if returnText and returnBrief then
-                    return "Ineligible: Another breadcrumb is active: " .. breadcrumbId
+                    return l10n("Ineligible")..l10n(": ")..l10n("Another breadcrumb is active")..l10n(": ").. breadcrumbId
                 elseif returnText and not returnBrief then
                     return "Alternative breadcrumb quest " .. breadcrumbId .." in the quest log for quest " .. questId
                 end
@@ -1059,7 +1068,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         for _, breadcrumbId in ipairs(breadcrumbs) do
             if currentQuestlog[breadcrumbId] then
                 if returnText and returnBrief then
-                    return "Ineligible: A breadcrumb is active: " .. breadcrumbId
+                    return l10n("Ineligible")..l10n(": ")..l10n("A breadcrumb is active")..l10n(": ").. breadcrumbId
                 elseif returnText and not returnBrief then
                     return "A breadcrumb quest " .. breadcrumbId .." is in the quest log for quest " .. questId
                 end
@@ -1069,14 +1078,36 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
 
     if DailyQuests.ShouldBeHidden(questId, completedQuests, currentQuestlog) then
         if returnText and returnBrief then
-            return "Ineligible: Daily quest not active"
+            return l10n("Ineligible")..l10n(": ")..l10n("Daily quest not active")
         elseif returnText then
             return "Daily quest " .. questId .. " is not active"
         end
     end
 
+    local requiredMaxLevel = QuestieDB.QueryQuestSingle(questId, "requiredMaxLevel")
+    if (requiredMaxLevel and requiredMaxLevel ~= 0 and (UnitLevel("player") > requiredMaxLevel)) then
+        local msg = "Player level is too high for quest " .. questId
+        if returnText and returnBrief then
+            return l10n("Ineligible")..l10n(": ")..l10n("Level too high")
+        elseif returnText and not returnBrief then
+            return msg
+        end
+    end
+
+    -- only present in verbose.
+    -- IsDoable has its own logic that varies based on player settings for quest visibility
+    local requiredLevel = QuestieDB.QueryQuestSingle(questId, "requiredLevel")
+    if (requiredLevel and (UnitLevel("player") < requiredLevel)) then
+        local msg = "Player level is too low for quest " .. questId
+        if returnText and returnBrief then
+            return l10n("Ineligible")..l10n(": ")..l10n("Level too low")
+        elseif returnText and not returnBrief then
+            return msg
+        end
+    end
+
     if returnText then
-        return "Player is eligible for quest " .. questId .. "!"
+        return l10n("Eligible")
     else
         return ""
     end

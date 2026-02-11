@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Premade Groups Filter
 -------------------------------------------------------------------------------
--- Copyright (C) 2025 Bernhard Saumweber
+-- Copyright (C) 2026 Bernhard Saumweber
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -197,6 +197,7 @@ C.SETTINGS_DEFAULT = {
     dialogMovable = false,
     classNamesInTooltip = true,
     coloredGroupTexts = true,
+    compactListEntries = false,
     ratingInfo = true,
     specIcon = false,
     classCircle = false,
@@ -358,7 +359,6 @@ function PGF.OnAddonLoaded(name)
 end
 
 function PGF.OnPlayerLogin()
-    PGF.FixReportAdvertisement()
     PGF.PersistSignUpNote()
 end
 

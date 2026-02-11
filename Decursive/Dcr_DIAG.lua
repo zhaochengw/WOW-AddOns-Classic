@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2026-01-18T23:59:26Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.30";
+local VERSION = "2.7.34";
 
 if not T._LoadedFiles then
     T._LoadedFiles = {};
@@ -334,7 +334,7 @@ do
         local dbclud = T.Dcr.Status and T.Dcr.Status.delayedUnDebuffOccurences or -1
 
 
-        DebugHeader = ("%s\n2.7.30  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.7.34  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         #DebugTextTable / 2, -- DTl: %d
@@ -661,6 +661,8 @@ DC.WOWC = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE
 DC.WOTLK = WOW_PROJECT_WRATH_CLASSIC ~= nil and WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC -- https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 DC.CATACLYSM = WOW_PROJECT_CATACLYSM_CLASSIC ~= nil and WOW_PROJECT_ID >= WOW_PROJECT_CATACLYSM_CLASSIC
 DC.TWW = tocversion >= 110000
+DC.MN = tocversion >= 120000
+DC.BCC = tocversion >= 20505 and tocversion < 30000
 
 
 
@@ -1026,11 +1028,11 @@ do
             LibraryIssues = true;
         end
 
-        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 11503); -- once GetAddOnMetadata() was bugged and returned nil...
-        local DcrIncompatibleWith = GetAddOnMetadata("Decursive", "X-Incompatible-With");
+        local DcrMinTOC = tonumber(GetAddOnMetadata("Decursive", "X-Min-Interface") or 11508); -- once GetAddOnMetadata() was bugged and returned nil...
+        local DcrMinMidTOC = tonumber(GetAddOnMetadata("Decursive", "X-Mid-Interface") or 50503);
 
         -- test if Decursive is backward compatible with the client's version
-        if tocversion < DcrMinTOC or DcrIncompatibleWith and DcrIncompatibleWith:find(tocversion) then
+        if tocversion < DcrMinTOC or tocversion > 30000 and tocversion < DcrMinMidTOC then
             table.insert(Errors, ("Your World of Warcraft client version (%d) is too old to run this version of Decursive.\n"):format(tocversion));
             GenericErrorMessage2 = "You need to install an older version of Decursive.";
             FatalOccured = true;
@@ -1198,4 +1200,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.30";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.34";

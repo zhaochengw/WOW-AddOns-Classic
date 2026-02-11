@@ -22,7 +22,6 @@ local Maxb = ns.Maxb
 local pt = print
 local realmID = GetRealmID()
 local player = BG.playerName
-local realmName = GetRealmName()
 
 BG.Init(function()
     -- 创建买家
@@ -319,7 +318,7 @@ BG.Init(function()
         t:SetPoint("TOP", f, 0, 12)
         f.texture = t
         local t = f:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetText(L["< 快速记账 >"])
         t:SetPoint("TOP", f.texture, 0, -13)
         t:SetTextColor(RGB(BG.b1))
@@ -328,7 +327,7 @@ BG.Init(function()
     -- 装备
     do
         BG.ChatAccountingFrame.item = BG.ChatAccountingFrame:CreateFontString()
-        BG.ChatAccountingFrame.item:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        BG.ChatAccountingFrame.item:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         BG.ChatAccountingFrame.item:SetPoint("TOP", BG.ChatAccountingFrame, "TOP", 0, -35)
         BG.ChatAccountingFrame.item:SetTextColor(RGB("FFD100"))
 
@@ -388,7 +387,7 @@ BG.Init(function()
         end)
 
         local t = BG.ChatAccountingFrame.jineFrame:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("RIGHT", BG.ChatAccountingFrame.jineFrame, "LEFT", -10, 0)
         t:SetTextColor(RGB("FFD100"))
         t:SetText(L["金额："])
@@ -447,10 +446,12 @@ BG.Init(function()
         end)
 
         local t = BG.ChatAccountingFrame.qiankuanFrame:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         t:SetPoint("RIGHT", BG.ChatAccountingFrame.qiankuanFrame, "LEFT", -10, 0)
         t:SetTextColor(RGB("FFD100"))
         t:SetText(L["欠款："])
+        t:SetJustifyH("RIGHT")
+        t:SetWidth(70)
     end
 
     -- 确定/取消
@@ -500,7 +501,7 @@ BG.Init(function()
                         maijiaText,
                         jineText,
                         qiankuantext,
-                        BG.GetFBinfo(FB, "localName"),
+                        BG.GetFBinfo(FB, "shortName"),
                         "|cff" .. BG.Boss[FB]["boss" .. b]["color"] .. BG.Boss[FB]["boss" .. b]["name2"] .. RR)
                     BG.FrameTradeMsg:AddMessage(text)
                 end
@@ -554,13 +555,13 @@ BG.Init(function()
 
         local text = f:CreateFontString()
         text:SetPoint("TOP", f, "TOP", 0, -10)
-        text:SetFont(STANDARD_TEXT_FONT, 16, "OUTLINE")
+        text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
         text:SetText(L["记账效果预览"])
 
         local text = f:CreateFontString()
         text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -45)
         text:SetWidth(f:GetWidth() - 10)
-        text:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+        text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
         text:SetJustifyH("LEFT") -- 对齐格式
         BG.ChatAccountingFrame.seeText = text
     end

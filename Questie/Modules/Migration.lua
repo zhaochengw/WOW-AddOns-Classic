@@ -110,6 +110,54 @@ local migrationFunctions = {
         Questie.db.profile.globalTownsfolkScale = 0.6
         Questie.db.profile.globalMiniMapTownsfolkScale = 0.7
     end,
+    [16] = function()
+        if (not Questie.db.global.isleOfQuelDanasPhase) then
+            if Expansions.Current > Expansions.Tbc then
+                Questie.db.global.isleOfQuelDanasPhase = 9 -- Max phase for everything that comes after TBC
+            elseif Expansions.Current == Expansions.Tbc then
+                Questie.db.global.isleOfQuelDanasPhase = 1
+            end
+        end
+    end,
+    [17] = function()
+        Questie.db.global.unavailableQuestsDeterminedByTalking = {}
+        ---@type table<string, number>
+        Questie.db.global.lastKnownDailyReset = {}
+    end,
+    [18] = function()
+        Questie.db.profile.trackerDisableHoverFade = false
+    end,
+    [19] = function()
+        -- Only migrate if the user has a previous migration
+        local previousVersion = Questie.db.profile.migrationVersion or 0
+        if previousVersion == 0 then
+            return
+        end
+
+        -- Preserve previous dungeon hide preference for both new flags
+        local previousHideInDungeons = Questie.db.profile.hideTrackerInDungeons
+
+        Questie.db.profile.minimizeTrackerInCombat = false
+        Questie.db.profile.minimizeTrackerInDungeons = previousHideInDungeons
+        Questie.db.profile.hideTrackerInCombat = false
+        Questie.db.profile.hideTrackerInDungeons = false
+    end,
+    [20] = function()
+        Questie.db.profile.alwaysGlowMinimap = true
+    end,
+    [21] = function()
+        if Questie.IsTBC then
+            Questie.db.profile.showAQWarEffortQuests = false
+        end
+    end,
+    [22] = function()
+        local alpha = Questie.db.profile.trackerBackdropAlpha or 1
+        Questie.db.profile.trackerBackdropColor = {r = 0, g = 0, b = 0, a = alpha}
+        Questie.db.profile.trackerBackdropAlpha = nil
+    end,
+    [23] = function()
+        Questie.db.profile.enableTooltipDroprates = true
+    end,
 }
 
 function Migration:Migrate()

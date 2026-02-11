@@ -1,4 +1,3 @@
-# 12.6.2 (2025-10-22)
+# 12.6.6 (2026-02-10)
 
-* Fixed a bug that prevented turning the camera while the right mouse button was held down and the cursor was hovering over an aura with aura tooltips enabled [Comment #7764].
-* Fixed a Lua error that occurred when enabling bar mode for auras [GH-613].
+* Fixed a Lua error that occurred in WoW Classic in certain situations when units were channeling spells [Comment #7909].

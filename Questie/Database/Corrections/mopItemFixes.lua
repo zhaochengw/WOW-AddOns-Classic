@@ -8,6 +8,7 @@ function MopItemFixes.Load()
     local itemKeys = QuestieDB.itemKeys
     local itemClasses = QuestieDB.itemClasses
 
+    ---@format disable
     return {
         [10641] = { -- Moonpetal Lily
             [itemKeys.objectDrops] = {207346},
@@ -572,6 +573,10 @@ function MopItemFixes.Load()
         [80808] = { -- Battle Spear of the Thunder King
             [itemKeys.objectDrops] = {211395},
         },
+        [80809] = { -- Bag of Green Cabbage Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
         [80827] = { -- Confusing Treasure Map
             [itemKeys.npcDrops] = {60299,60357},
             [itemKeys.startQuest] = 30675;
@@ -776,11 +781,35 @@ function MopItemFixes.Load()
         [84779] = { -- Chunk of Solidified Amber
             [itemKeys.objectDrops] = {212902},
         },
+        [84782] = { -- Bag of Juicycrunch Carrot Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [84783] = { -- Bag of Scallion Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [85153] = { -- Bag of Mogu Pumpkin Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [85158] = { -- Bag of Red Blossom Leek Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
         [85159] = { -- Amber-Filled Jar
             [itemKeys.objectDrops] = {212923},
         },
         [85161] = { -- Soul-Gatherer's Beads
             [itemKeys.npcDrops] = {246246},
+        },
+        [85162] = { -- Bag of Pink Turnip Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [85163] = { -- Bag of White Turnip Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
         },
         [85204] = { -- Ancient Mogu Artifact
             [itemKeys.npcDrops] = {63273},
@@ -1066,6 +1095,18 @@ function MopItemFixes.Load()
             [itemKeys.startQuest] = 31938,
             [itemKeys.npcDrops] = {58706}, -- it's a vendor, but we are using npcDrops so it shows the quest in tooltips
         },
+        [89847] = { -- Bag of Witchberry Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [89848] = { -- Bag of Jade Squash Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
+        [89849] = { -- Bag of Striped Melon Seeds
+            [itemKeys.vendors] = {58718},
+            [itemKeys.class] = itemClasses.QUEST,
+        },
         [89903] = { -- Thousand-Year Water
             [itemKeys.objectDrops] = {440008},
         },
@@ -1121,11 +1162,26 @@ function MopItemFixes.Load()
         [92425] = { -- Ancient Korune Tablet
             [itemKeys.npcDrops] = {67833},
         },
+        [92441] = { -- The Codex of Xerrath
+            [itemKeys.startQuest] = 32295,
+        },
         [92474] = { -- Extra-Waxy Alliance Ears
             [itemKeys.npcDrops] = {67296,67297,67304,67317,67441},
         },
         [92493] = { -- Bilgewater Blasting Cap
             [itemKeys.npcDrops] = {67929},
+        },
+        [92494] = { -- Hellfire Fragment
+            [itemKeys.objectDrops] = {216327},
+        },
+        [92495] = { -- Netherstorm Fragment
+            [itemKeys.objectDrops] = {216328},
+        },
+        [92496] = { -- Blade's Edge Fragment
+            [itemKeys.objectDrops] = {216326},
+        },
+        [92497] = { -- Shadowmoon Fragment
+            [itemKeys.objectDrops] = {216325},
         },
         [92499] = { -- Sturdy Needle
             [itemKeys.npcDrops] = {68026,68027},
@@ -1198,6 +1254,46 @@ function MopItemFixes.Load()
         [93212] = { -- Spirit Essence of Varatus
             [itemKeys.npcDrops] = {68907},
         },
+        [93668] = { -- Saur Fetish
+            [itemKeys.npcDrops] = {69154,69155,69286},
+        },
+        [93731] = { -- Mogu Codex Fragment
+            [itemKeys.npcDrops] = {69435},
+        },
+        [93733] = { -- Mask of the Spirit-Caller
+            [itemKeys.npcDrops] = {69301},
+        },
+        [93734] = { -- Mask of the Dark Mystic
+            [itemKeys.npcDrops] = {69300},
+        },
+        [94197] = { -- The Zandalari Prophecy
+            [itemKeys.startQuest] = 32600,
+        },
+        [94198] = { -- Rumbles of Thunder
+            [itemKeys.startQuest] = 32601,
+        },
+        [94199] = { -- Gods and Monsters
+            [itemKeys.startQuest] = 32602,
+        },
+        [94221] = { -- Shan'ze Ritual Stone
+            [itemKeys.npcDrops] = {50358,69664,69996,69997,69998,69999,70000,70001,70002,70003,70530},
+            [itemKeys.objectDrops] = {218593},
+        },
+        [94594] = { -- Titan Runestone
+            [itemKeys.npcDrops] = {68036,69427,69017,68078,68904,68397,69473}, -- TODO: Add SOO Bosses, once that is live
+        },
+        [94605] = { -- Wild Pterrorwing Hatchling
+            [itemKeys.npcDrops] = {69428},
+        },
+        [94721] = { -- Strange Metal Ingot
+            [itemKeys.startQuest] = 32621,
+        },
+        [95372] = { -- Choker of Storms
+            [itemKeys.objectDrops] = {218853},
+        },
+        [95374] = { -- Hoard-Keeper's Key
+            [itemKeys.npcDrops] = {69274},
+        },
         [95383] = { -- Pristine Banner of the Mantid Empire
             [itemKeys.startQuest] = 32686,
         },
@@ -1222,8 +1318,44 @@ function MopItemFixes.Load()
         [95390] = { -- Pristine Kypari Sap Container
             [itemKeys.startQuest] = 32693,
         },
+        [95433] = { -- Tempered Lightning Lance
+            [itemKeys.npcDrops] = {69739},
+        },
+        [97978] = { -- Knockoff Grumplefloot
+            [itemKeys.startQuest] = 32836,
+        },
+        [97979] = { -- The Bear and the Lady Fair
+            [itemKeys.startQuest] = 32838,
+        },
+        [97980] = { -- Hozen-Fur Fuse
+            [itemKeys.startQuest] = 32840,
+        },
+        [97981] = { -- Impeccably Sharp Tooth
+            [itemKeys.startQuest] = 32842,
+        },
+        [97982] = { -- Vial of Reddish Ooze
+            [itemKeys.startQuest] = 32844,
+        },
+        [97983] = { -- Modified Chomping Apparatus
+            [itemKeys.startQuest] = 32846,
+        },
+        [97984] = { -- Frost-Tipped Eggshell
+            [itemKeys.startQuest] = 32848,
+        },
         [97985] = { -- Dusty Old Robot
             [itemKeys.startQuest] = 32850,
+        },
+        [97986] = { -- Digmaster's Earthblade
+            [itemKeys.startQuest] = 32852,
+        },
+        [97987] = { -- Well-Worn Blindfold
+            [itemKeys.startQuest] = 32854,
+        },
+        [97988] = { -- Paper-Covered Rock
+            [itemKeys.startQuest] = 32856,
+        },
+        [97990] = { -- Raptorhide Boxing Gloves
+            [itemKeys.startQuest] = 32858,
         },
         [105891] = { -- Moonfang's Pelt
             [itemKeys.startQuest] = 33354,

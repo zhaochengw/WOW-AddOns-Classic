@@ -1,0 +1,23 @@
+## Interface: 50503, 11508, 20505, 38000, 110207, 120000, 120001
+## Title: |cffEEE4AEBetter Fishing|r
+## Notes: |cff58C6FASingle Keybind/Double Click Fishing and Enhanced Sound while fishing|r|n|n|cffFFC700Slash command: /bf, /betterfishing|r
+## Author: Yuyuli
+## Version: 52
+## SavedVariables: BetterFishingDB
+## IconTexture: Interface\AddOns\BetterFishing\fishingicon.blp
+
+# https://warcraft.wiki.gg/wiki/Addon_Categories
+## Category: Professions
+## Category-deDE: Berufe
+## Category-esES: Profesiones
+## Category-esMX: Profesiones
+## Category-frFR: Métiers
+## Category-itIT: Professioni
+## Category-koKR: 전문 기술
+## Category-ptBR: Profissões
+## Category-ruRU: Профессии
+## Category-zhCN: 专业
+## Category-zhTW: 專業技能
+
+Settings.lua
+BetterFishing.lua

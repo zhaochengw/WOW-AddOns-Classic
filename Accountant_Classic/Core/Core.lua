@@ -51,7 +51,7 @@ local GetBackpackCurrencyInfo = GetBackpackCurrencyInfo or nil
 local GetCurrencyInfo = GetCurrencyInfo or nil
 
 -- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWCataC, WoWRetail
+local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWCataC, WoWMistsC, WoWRetail
 local wowversion  = select(4, GetBuildInfo())
 if wowversion < 20000 then
 	WoWClassicEra = true
@@ -59,8 +59,10 @@ elseif wowversion < 30000 then
 	WoWClassicTBC = true
 elseif wowversion < 40000 then 
 	WoWWOTLKC = true
-elseif wowversion < 60000 then
+elseif wowversion < 50000 then
 	WoWCataC = true
+elseif wowversion < 60000 then
+	WoWMistsC = true
 elseif wowversion > 90000 then
 	WoWRetail = true
 
@@ -152,8 +154,6 @@ local AC_FIRSTLOADED = false
 -- AC_LOG_PRIMED = false means baseline not initialized yet; the first safe path
 -- (PLAYER_MONEY or CHAT_MSG_MONEY) will initialize it. After priming, logging runs
 -- normally. We will also clear AC_FIRSTLOADED at that time to preserve intent.
--- Note: We use a persistent flag in options to ensure priming only happens once per character
--- Initialize to false first, then update after AccountantClassic_Profile is loaded
 local AC_LOG_PRIMED = false
 
 --
@@ -170,7 +170,7 @@ local function AccountantClassic_ShowPrimingAlert()
     -- One-time, noticeable chat message (yellow/orange) without using UIErrorsFrame.
     -- Rationale: keep it visible yet unobtrusive, and consistent across UIs where
     -- UIErrorsFrame may be hidden or styled away by other addons.
-    local msg = "|cffffd200Accountant Classic (Gold): Baseline primed. Subsequent money changes will be tracked.|r"
+    local msg = "|cffffd200Accountant Classic: Baseline primed. Subsequent money changes will be tracked.|r"
     ACC_Print(msg)
 end
 
@@ -189,7 +189,6 @@ local AccountantClassicDefaultOptions = {
 	totalcash = 0,
 	faction = AC_FACTION,
 	class = AC_CLASS,
-	primed = false,  -- Persistent flag to track if baseline priming has been done
 };
 
 local function TableIndex(t,val)
@@ -303,9 +302,6 @@ local function initOptions()
 	AccountantClassic_Profile = Accountant_ClassicSaveData[AC_SERVER][AC_PLAYER];
 
 	AccountantClassic_UpdateOptions(AccountantClassic_Profile["options"]);
-	
-	-- Initialize AC_LOG_PRIMED from persistent storage after profile is loaded
-	AC_LOG_PRIMED = AccountantClassic_Profile["options"].primed or false
 
 	AccountantClassic_InitZoneDB();
 end
@@ -350,9 +346,6 @@ function AccountantClassic_RegisterEvents(self)
             self:RegisterEvent( value );
         end
 	--self:RegisterForDrag("LeftButton");
-    -- Ensure early, reliable baseline priming after the player fully logs in
-    -- without depending on later money-change events.
-    self:RegisterEvent("PLAYER_LOGIN")
 end
 
 local function createACFrames()
@@ -550,14 +543,14 @@ local function setLabels()
 end
 
 local function settleTabText()
-	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC or WoWCataC) then
+	if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC or WoWCataC or WoWMistsC) then
 		local TabText = private.constants.tabText
 		for i = 1, AC_TABS do
 			local tab = _G["AccountantClassicFrameTab"..i]
 			tab:SetText(TabText[i])
 			
 			-- Special adjustment for Cataclysm version
-			if WoWCataC then
+			if (WoWCataC or WoWMistsC) then
 				-- Calculate width based on text length
 				local textWidth = tab.Text:GetStringWidth()
 				local minWidth = math.max(textWidth + 20, 60) -- Ensure minimum width of 60 pixels
@@ -888,7 +881,7 @@ local function AccountantClassic_LogsShifting()
 					end
 				end
 
-				Accountant_ClassicSaveData[serverkey][charkey]["options"]["date"] = tostring(cdate);
+				Accountant_ClassicSaveData[serverkey][charkey]["options"]["date"] = cdate;
 			end
 
 			-- Check to see if the week has rolled over
@@ -929,11 +922,11 @@ local function AccountantClassic_LogsShifting()
 					end
 				end
 
-				Accountant_ClassicSaveData[serverkey][charkey]["options"]["dateweek"] = tostring(addon:WeekStart());
+				Accountant_ClassicSaveData[serverkey][charkey]["options"]["dateweek"] = addon:WeekStart();
 			end
 
 			-- Check to see if the month has rolled over
-			if (Accountant_ClassicSaveData[serverkey][charkey]["options"]["month"] ~= tostring(cmonth)) then
+			if (Accountant_ClassicSaveData[serverkey][charkey]["options"]["month"] ~= cmonth) then
 				-- It's a new month! clear out the month tab
 				Accountant_ClassicSaveData[serverkey][charkey]["options"]["prvmonth"] = Accountant_ClassicSaveData[serverkey][charkey]["options"]["month"];
 				for mode, value in pairs(Accountant_ClassicSaveData[serverkey][charkey]["data"]) do
@@ -970,11 +963,11 @@ local function AccountantClassic_LogsShifting()
 					end
 				end
 
-				Accountant_ClassicSaveData[serverkey][charkey]["options"]["month"] = tostring(cmonth);
+				Accountant_ClassicSaveData[serverkey][charkey]["options"]["month"] = cmonth;
 			end
 
 			-- Check to see if the year has rolled over
-			if (Accountant_ClassicSaveData[serverkey][charkey]["options"]["curryear"] ~= tostring(cyear)) then
+			if (Accountant_ClassicSaveData[serverkey][charkey]["options"]["curryear"] ~= cyear) then
 				-- It's a new year! clear out the year tab
 				Accountant_ClassicSaveData[serverkey][charkey]["options"]["prvyear"] = Accountant_ClassicSaveData[serverkey][charkey]["options"]["curryear"];
 				for mode, value in pairs(Accountant_ClassicSaveData[serverkey][charkey]["data"]) do
@@ -1011,7 +1004,7 @@ local function AccountantClassic_LogsShifting()
 					end
 				end
 
-				Accountant_ClassicSaveData[serverkey][charkey]["options"]["curryear"] = tostring(cyear);
+				Accountant_ClassicSaveData[serverkey][charkey]["options"]["curryear"] = cyear;
 			end
 		end
 	end
@@ -1102,7 +1095,6 @@ local function updateLog()
         AC_LASTMONEY = GetMoney()
         AccountantClassic_Profile["options"].totalcash = AC_LASTMONEY
         AC_LOG_PRIMED = true
-        AccountantClassic_Profile["options"].primed = true  -- Persistent flag
         AC_FIRSTLOADED = false
         AccountantClassic_ShowPrimingAlert()
         return
@@ -1271,7 +1263,6 @@ local function AccountantClassic_OnShareMoney(arg1)
 		AC_LASTMONEY = GetMoney()
 		AccountantClassic_Profile["options"].totalcash = AC_LASTMONEY
 		AC_LOG_PRIMED = true
-		AccountantClassic_Profile["options"].primed = true  -- Persistent flag
 		AC_FIRSTLOADED = false
 		AccountantClassic_ShowPrimingAlert()
 		return
@@ -1531,9 +1522,9 @@ function AccountantClassic_OnEvent(self, event, ...)
 	elseif event == "AUCTION_HOUSE_SHOW" then
 		AC_LOGTYPE = "AH";
 	-- This event is supposed to be fired before PLAYER_MONEY.
-	    elseif event == "CHAT_MSG_MONEY" then
-        AccountantClassic_OnShareMoney(arg1);
-    elseif event == "PLAYER_MONEY" then
+	elseif event == "CHAT_MSG_MONEY" then
+		AccountantClassic_OnShareMoney(arg1);
+	elseif event == "PLAYER_MONEY" then
         -- If baseline has not been initialized yet, use the first PLAYER_MONEY
         -- event as a safe priming point. This sets AC_LASTMONEY to the current
         -- balance and prevents the initial balance from being counted as income.
@@ -1541,7 +1532,6 @@ function AccountantClassic_OnEvent(self, event, ...)
             AC_LASTMONEY = GetMoney()
             AccountantClassic_Profile["options"].totalcash = AC_LASTMONEY
             AC_LOG_PRIMED = true
-            AccountantClassic_Profile["options"].primed = true  -- Persistent flag
             AC_FIRSTLOADED = false
             AccountantClassic_ShowPrimingAlert()
             return
@@ -1550,35 +1540,7 @@ function AccountantClassic_OnEvent(self, event, ...)
             ACC_Print("Player money changed, starting to update money log ...")
         end
         updateLog();
-    elseif event == "PLAYER_LOGIN" then
-        -- Perform one-time baseline priming as early as possible in a stable state
-        -- (player fully logged in). This avoids swallowing the first real money
-        -- change of the session that could occur if priming happened later.
-        -- Only run if this character has not been primed before.
-        if not AC_LOG_PRIMED then
-            AC_LASTMONEY = GetMoney()
-            AccountantClassic_Profile["options"].totalcash = AC_LASTMONEY
-            AC_LOG_PRIMED = true
-            AccountantClassic_Profile["options"].primed = true  -- Persistent flag
-            AC_FIRSTLOADED = false
-            AccountantClassic_ShowPrimingAlert()
-        end
-    -- Currency tracking events
-    elseif event == "CURRENCY_DISPLAY_UPDATE" then
-        -- Avoid duplicate handling: CurrencyTracker.EventHandler registers its own frame
-        -- and receives CURRENCY_DISPLAY_UPDATE directly. Only forward as a fallback
-        -- if the module or its EventHandler is unavailable.
-		if not (CurrencyTracker and CurrencyTracker.EventHandler) then
-			if CurrencyTracker and CurrencyTracker.OnCurrencyDisplayUpdate then
-				CurrencyTracker:OnCurrencyDisplayUpdate(...)
-			end
-		end
-    elseif event == "BAG_UPDATE" then
-        -- Forward bag update events to CurrencyTracker for fallback currency detection
-        if CurrencyTracker and CurrencyTracker.OnBagUpdate then
-            CurrencyTracker:OnBagUpdate(arg1)
-        end
-    end
+	end
 
 	if AccountantClassic_Verbose and AC_LOGTYPE ~= oldType then ACC_Print("Accountant mode changed to '"..AC_LOGTYPE.."'"); end
 	
@@ -2238,14 +2200,6 @@ function addon:OnEnable()
 	self:Refresh()
 	-- Ensure LDB.text is always a string; provide empty-string fallback to satisfy lints
 	LDB.text = addon:ShowNetMoney(private.constants.ldbDisplayTypes[profile.ldbDisplayType]) or ""
-	
-	-- Initialize and enable CurrencyTracker module if available
-	if CurrencyTracker and CurrencyTracker.Initialize then
-		CurrencyTracker:Initialize()
-		if CurrencyTracker.Enable then
-			CurrencyTracker:Enable()
-		end
-	end
 end
 
 function addon:Toggle()

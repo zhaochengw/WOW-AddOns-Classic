@@ -19,7 +19,7 @@ local MAX_NUM_QUESTS = MAX_NUM_QUESTS
 local function determineAppropriateQuestIcon(questID, isActive)
     if questID == 0 then -- if we were fed a questID of 0, the ID bruteforce failed, abort
         if isActive == true then
-            return Questie.icons["complete"]
+            return Questie.icons["incomplete"]
         else
             return Questie.icons["available"]
         end
@@ -52,14 +52,15 @@ end
 
 -- 9.0.0 API GOSSIP
 local function updateGossipFrame()
+    Questie:Debug(Questie.DEBUG_DEVELOP, "Updating Gossip frame 9.0-")
     local numAvailable = GetNumGossipAvailableQuests()
     local numActive = GetNumGossipActiveQuests()
     local availQuests = QuestieCompat.GetAvailableQuests()
-    local activeQuests = {QuestieCompat.GetActiveQuests()}
+    local activeQuests = QuestieCompat.GetActiveQuests()
     local index = 0 -- this variable tracks the GossipTitleButton we should be targeting for icon changes
     local questGiver = UnitGUID("npc")
     if numAvailable > 0 then
-        for i=1, numAvailable do
+        for i = 1, numAvailable do
             index = index + 1
             local questId = availQuests[i].questID
             if questId == 0 then
@@ -74,12 +75,9 @@ local function updateGossipFrame()
         if numActive > 0 then index = index + 1 end
     end
     if numActive > 0 then
-        for i=1, numActive do
+        for i = 1, numActive do
             index = index + 1
-            -- GetGossipActiveQuests() returns 6 individual values per quest entry...
-            -- so we have to filter out to every 6th value, starting with 1, 7, 13, etc
-            local questIndex = (1 + ((i - 1) * 6))
-            local questTitle = activeQuests[questIndex]
+            local questTitle = activeQuests[i].title
             local questId = QuestieDB.GetQuestIDFromName(questTitle, questGiver, false)
             local gossipIcon = _G["GossipTitleButton" .. index .. "GossipIcon"]
             gossipIcon:SetTexture(determineAppropriateQuestIcon(questId, true))
@@ -89,6 +87,7 @@ end
 
 -- GREETING FRAMES (API independent)
 local function updateGreetingFrame()
+    Questie:Debug(Questie.DEBUG_DEVELOP, "Updating Greeting frame.")
     local titleLines = {}
     local questIconTextures = {}
     local questgiver = UnitGUID("npc")
@@ -126,6 +125,20 @@ local function updateGreetingFrame()
     end
 end
 
+-- This function is called for QUEST_LOG_UPDATE events.
+-- If that event fires, this function checks to see if a greeting dialog is currently open,
+-- and if so it runs our icon pass again. This is because the greeting dialog may open
+-- showing we've accepted a quest before Questie is even aware we're on it.
+-- This also fixes race conditions with server lag delaying events.
+function QuestgiverFrame.RecheckGreeting()
+    local activeTitle, _ = GetActiveTitle(1)
+    local availableTitle, _ = GetAvailableTitle(1)
+    if activeTitle or availableTitle then
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Greeting Panel Refreshing. Active: " .. tostring(activeTitle) .. " Available: " .. tostring(availableTitle))
+        QuestgiverFrame.GreetingMark()
+    end
+end
+
 function QuestgiverFrame.GossipMark()
     if Questie.db.profile.enableQuestFrameIcons == true then
         if GossipAvailableQuestButtonMixin then -- This call is added with Dragonflight (10.0.0) API, use if available
@@ -148,6 +161,7 @@ end
 if GossipAvailableQuestButtonMixin then
     local oldAvailableSetup = GossipAvailableQuestButtonMixin.Setup
     function GossipAvailableQuestButtonMixin:Setup(...)
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Updating GossipAvailableQuestButtonMixin frame 10.0+")
         oldAvailableSetup(self, ...)
         if (not Questie.started) then
             return
@@ -168,6 +182,7 @@ if GossipAvailableQuestButtonMixin then
 
     local oldActiveSetup = GossipActiveQuestButtonMixin.Setup
     function GossipActiveQuestButtonMixin:Setup(...)
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Updating GossipActiveQuestButtonMixin frame 10.0+")
         oldActiveSetup(self, ...)
         if (not Questie.started) then
             return

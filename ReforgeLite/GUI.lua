@@ -45,15 +45,9 @@ end
 ---Clears focus from all edit boxes
 ---@return nil
 function GUI:ClearEditFocus()
-  for _,v in ipairs(self.editBoxes) do
-    v:ClearFocus()
+  if self.focusedEditBox then
+    self.focusedEditBox:ClearFocus()
   end
-end
-
----Clears focus from all GUI elements
----@return nil
-function GUI:ClearFocus()
-  self:ClearEditFocus()
 end
 
 ---Locks all GUI widgets to prevent interaction during computation
@@ -214,10 +208,12 @@ function GUI:CreateEditBox (parent, width, height, default, setter, opts)
   box:SetText(default)
   box:SetScript("OnEnterPressed", box.ClearFocus)
   box:SetScript("OnEditFocusGained", function(frame)
+    self.focusedEditBox = frame
     frame.prevValue = tonumber(frame:GetText())
     frame:HighlightText()
   end)
   box:SetScript("OnEditFocusLost", function(frame)
+    self.focusedEditBox = nil
     local value = tonumber(frame:GetText())
     if not value then
       value = frame.prevValue or 0
@@ -342,7 +338,7 @@ function GUI:CreateDropdown (parent, values, options)
       frame.selectedName = nil
       frame.selectedID = nil
       frame.selectedValue = nil
-      frame.menuItemDisabled = nil
+      frame.menuItemEnabled = nil
       frame.menuItemHidden = nil
       frame.values = nil
       if frame.Text then
@@ -355,7 +351,7 @@ function GUI:CreateDropdown (parent, values, options)
 
   sel.values = values
   sel.setter = options.setter
-  sel.menuItemDisabled = options.menuItemDisabled
+  sel.menuItemEnabled = options.menuItemEnabled
   sel.menuItemHidden = options.menuItemHidden
 
   -- Setup menu with MenuUtil (always needs to be called, even for recycled dropdowns)
@@ -370,24 +366,23 @@ function GUI:CreateDropdown (parent, values, options)
       if dropdown.menuItemHidden and dropdown.menuItemHidden(item) then
         -- Skip
       else
-        local isSelected = function() return dropdown.value == item.value end
-        local setSelected = function()
+        local isSelected = function(i) return dropdown.value == i.value end
+        local setSelected = function(i)
           local oldValue = dropdown.value
-          dropdown.value = item.value
-          dropdown.selectedValue = item.value
+          dropdown.value = i.value
+          dropdown.selectedValue = i.value
           if dropdown.Text then
-            dropdown.Text:SetText(item.name)
+            dropdown.Text:SetText(i.name)
           end
           if dropdown.setter then
-            dropdown.setter(dropdown, item.value, oldValue)
+            dropdown.setter(dropdown, i.value, oldValue)
           end
         end
-
-        local button = rootDescription:CreateRadio(item.name, isSelected, setSelected, item.value)
-
-        -- Handle disabled items
-        if dropdown.menuItemDisabled and dropdown.menuItemDisabled(item.value) then
-          button:SetEnabled(false)
+        local button = rootDescription:CreateRadio(item.name, isSelected, setSelected, item)
+        if dropdown.menuItemEnabled then
+          button.IsEnabled = function(btn)
+            return dropdown.menuItemEnabled(btn.data.value)
+          end
         end
       end
     end
@@ -808,7 +803,7 @@ function GUI:CreateTable (rows, cols, firstRow, firstColumn, gridColor, parent)
     if n < 0 or n > self.cols then
       return
     end
-    if self.colWidth[n] and type(self.colWidth[n]) == "number" then
+    if type(self.colWidth[n]) == "number" then
       self.autoWidthColumns[n] = self.colWidth[n]
     else
       self.autoWidthColumns[n] = enabled
@@ -1071,7 +1066,7 @@ function GUI:CreateTable (rows, cols, firstRow, firstColumn, gridColor, parent)
           end
           local currentMax = maxWidths[colIndex] or 0
           if foundWidth > currentMax then
-            maxWidths[colIndex] = ceil(foundWidth) + 10
+            maxWidths[colIndex] = ceil(foundWidth) + 4
           end
         end
       end

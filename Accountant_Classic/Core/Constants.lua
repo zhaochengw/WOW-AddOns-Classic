@@ -9,7 +9,7 @@ local GetBuildInfo = _G.GetBuildInfo
 -- Libraries
 
 -- Determine WoW TOC Version
-local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWRetail
+local WoWClassicEra, WoWClassicTBC, WoWWOTLKC, WoWCataC, WoWMistsC, WoWRetail
 local wowversion  = select(4, GetBuildInfo())
 if wowversion < 20000 then
 	WoWClassicEra = true
@@ -17,10 +17,15 @@ elseif wowversion < 30000 then
 	WoWClassicTBC = true
 elseif wowversion < 40000 then 
 	WoWWOTLKC = true
+elseif wowversion < 50000 then
+	WoWCataC = true
+elseif wowversion < 60000 then
+	WoWMistsC = true
 elseif wowversion > 90000 then
 	WoWRetail = true
 else
-	-- n/a
+	-- For other versions (like 6.x.x, 7.x.x, 8.x.x), use classic events
+	WoWWOTLKC = true
 end
 
 -- ----------------------------------------------------------------------------
@@ -73,7 +78,7 @@ constants.defaults = {
 
 constants.logmodes = {"Session", "Day", "PrvDay", "Week", "PrvWeek", "Month", "PrvMonth", "Year", "PrvYear", "Total" }
 
-if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then 
+if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC or WoWCataC or WoWMistsC) then 
 	constants.events = {
 		-- Talent
 		"CONFIRM_TALENT_WIPE",
@@ -107,9 +112,6 @@ if (WoWClassicEra or WoWClassicTBC or WoWWOTLKC) then
 		-- Others
 		"CHAT_MSG_MONEY",
 		"PLAYER_MONEY",
-		-- Currency tracking
-		"CURRENCY_DISPLAY_UPDATE",
-		"BAG_UPDATE",
 	}
 	constants.logtypes = {
 		"TRAIN", "TAXI", "TRADE", "AH", "MERCH", "REPAIRS", "MAIL", "QUEST", "LOOT", "OTHER" 
@@ -189,9 +191,6 @@ else
 		-- Others
 		"CHAT_MSG_MONEY",
 		"PLAYER_MONEY",
-		-- Currency tracking
-		"CURRENCY_DISPLAY_UPDATE",
-		"BAG_UPDATE",
 	}
 	constants.logtypes = {
 	--	"VOID", 

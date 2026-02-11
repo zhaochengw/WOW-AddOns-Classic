@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2026-01-02T00:31:32Z
 
 --]]
 -------------------------------------------------------------------------------
@@ -103,6 +103,7 @@ local floor             = _G.math.floor;
 local str_upper         = _G.string.upper;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local t_wipe            = _G.table.wipe;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 
 -- defines what is printed when the object is read as a string
@@ -418,8 +419,10 @@ function LiveList:Update_Display() -- {{{
 
     -- Check the units in order of importance:
 
+    local targetGUID = D.Status.TargetExists and UnitGUID("target")
+
     -- First the Target
-    if D.Status.TargetExists and not D.Status.Unit_Array_GUIDToUnit[UnitGUID("target")] and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
+    if canaccessvalue(targetGUID) and targetGUID and not D.Status.Unit_Array_GUIDToUnit[targetGUID] and self:GetDebuff("target") then -- TargetExists implies that the unit is a friend
         Index = Index + 1;
         self:DisplayItem(Index, "target");
         --D:Debug("frenetic target update");
@@ -593,4 +596,4 @@ function LiveList:Onclick() -- {{{
     D:Println(L["HLP_LL_ONCLICK_TEXT"]);
 end -- }}}
 
-T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.30";
+T._LoadedFiles["Dcr_LiveList.lua"] = "2.7.34";

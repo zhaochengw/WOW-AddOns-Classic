@@ -5,6 +5,8 @@
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local addonName, Details222 = ...
 	local _
+	---@type detailsframework
+	local detailsFramework = DetailsFramework
 
 	local upper = string.upper --lua local
 	local ipairs = ipairs --lua local
@@ -74,7 +76,50 @@
 	---@field GetNumericalSystem fun(self:details):number
 	---@field SelectNumericalSystem fun(self:details, system:number)
 	---@field UpdateToKFunctions fun(self:details)
+	---@field ArePlayersInCombat fun(self:details):boolean
 
+
+	function Details:SimpleFormat(fontString2, fontString3, fontString4, total, perSecond, perCent, ruleToUse)
+		if Details.righttext_simple_formatting.enabled then
+			if (ruleToUse == 3) then
+				local string = Details.righttext_simple_formatting.format_tsp
+				fontString4:SetText(string.format(string, total, perSecond, perCent))
+
+			elseif (ruleToUse == 2) then
+				local string = Details.righttext_simple_formatting.format_ts
+				fontString4:SetText(string.format(string, total, perSecond))
+				return
+
+			elseif (ruleToUse == 1) then
+				local string = Details.righttext_simple_formatting.format_tp
+				fontString4:SetText(string.format(string, total, perCent))
+			else -- -1 default to just show total
+				fontString4:SetText(total)
+			end
+
+		elseif (Details.righttext_simple_formatting.use_alignment) then
+			if (ruleToUse == 3) then
+				fontString2:SetText(total)
+				fontString3:SetText(perSecond)
+				fontString4:SetText(perCent)
+
+			elseif (ruleToUse == 2) then
+				fontString2:SetText("")
+				fontString3:SetText(total)
+				fontString4:SetText(perSecond)
+
+			elseif (ruleToUse == 1) then
+				fontString2:SetText("")
+				fontString3:SetText(total)
+				fontString4:SetText(perCent)
+
+			else -- -1 default to just show total
+				fontString2:SetText("")
+				fontString3:SetText("")
+				fontString4:SetText(total)
+			end
+		end
+	end
 
 	local playerRealmName = GetRealmName()
 
@@ -266,6 +311,10 @@
 		frame.fading_out = nil
 		frame.fading_in = true
 
+		if Details.no_fade_animation then
+			totalTime = 0
+		end
+
 		Details.FadeHandler.frames[frame] = {
 			totalTime = totalTime or Details.fade_speed,
 			startAlpha = startAlpha or frame:GetAlpha(),
@@ -279,6 +328,10 @@
 	local startFadeOUTAnimation = function(frame, totalTime, startAlpha, endAlpha, callbackFunc)
 		frame.fading_in = nil
 		frame.fading_out = true
+
+		if Details.no_fade_animation then
+			totalTime = 0
+		end
 
 		Details.FadeHandler.frames[frame] = {
 			totalTime = totalTime or Details.fade_speed,
@@ -1289,27 +1342,31 @@ end
 --internal functions
 
 	function Details:HealthTick()
-		if (UnitExists("boss1") and IsInRaid() and IsInInstance()) then
-			local health = (UnitHealth ("boss1") or 0) / (UnitHealthMax ("boss1") or 0)
-			if (Details.boss1_health_percent) then
-				if (Details.boss1_health_percent < health) then
-					return
+		if not detailsFramework.IsAddonApocalypseWow() then
+			if (UnitExists("boss1") and IsInRaid() and IsInInstance()) then
+				local health = (UnitHealth ("boss1") or 0) / (UnitHealthMax ("boss1") or 0)
+				if (Details.boss1_health_percent) then
+					if (Details.boss1_health_percent < health) then
+						return
+					end
 				end
+				Details.boss1_health_percent = health
 			end
-			Details.boss1_health_percent = health
 		end
 	end
 
 	function Details:PlayerHealthTick()
-		for i = 1, #Details.cache_damage_group do
-			local actor = Details.cache_damage_group[i]
-			if (actor) then
-				local health = UnitHealth(actor.nome)
-				if (health) then
-					Details.HealthCache[actor.serial] = health
-					local healthmax = UnitHealthMax(actor.nome)
-					if (healthmax) then
-						Details.HealthMaxCache[actor.serial] = healthmax
+		if not detailsFramework.IsAddonApocalypseWow() then
+			for i = 1, #Details.cache_damage_group do
+				local actor = Details.cache_damage_group[i]
+				if (actor) then
+					local health = UnitHealth(actor.nome)
+					if (health) then
+						Details.HealthCache[actor.serial] = health
+						local healthmax = UnitHealthMax(actor.nome)
+						if (healthmax) then
+							Details.HealthMaxCache[actor.serial] = healthmax
+						end
 					end
 				end
 			end
@@ -1386,16 +1443,42 @@ end
 
 		--check if the player is a rogue and has the aura Vanish
 		if (Details.playerclass == "ROGUE") then
-			--if the player has vanish aura, skip this check
-			---@type aurainfo
-			local auraInfo = C_UnitAuras.GetPlayerAuraBySpellID(11327)
-			if (auraInfo) then
-				return true
+			if not DetailsFramework.IsAddonApocalypseWow() then
+				--if the player has vanish aura, skip this check
+				---@type aurainfo
+				local auraInfo = C_UnitAuras.GetPlayerAuraBySpellID(11327)
+				if (auraInfo) then
+					return true
+				end
 			end
 		end
 
 		Details:StopCombatTicker()
 		Details:SairDoCombate()
+		return false
+	end
+
+	function Details:ArePlayersInCombat()
+		if (UnitAffectingCombat("player")) then
+			return true
+
+		elseif (IsInRaid()) then
+			local unitIdCache = Details222.UnitIdCache.Raid
+			for i = 1, GetNumGroupMembers() do
+				if (UnitAffectingCombat(unitIdCache[i])) then
+					return true
+				end
+			end
+
+		elseif (IsInGroup()) then
+			local unitIdCache = Details222.UnitIdCache.Party
+			for i = 1, GetNumGroupMembers() do
+				if (UnitAffectingCombat(unitIdCache[i])) then
+					return true
+				end
+			end
+		end
+
 		return false
 	end
 

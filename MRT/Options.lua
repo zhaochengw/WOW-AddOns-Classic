@@ -117,18 +117,20 @@ function Options.modulesList:SetListValue(index)
 end
 
 
-function MRT.Options:Add(moduleName,frameName)
+function MRT.Options:Add(moduleName,frameName,isHidden)
 	local self = CreateFrame("Frame",OptionsFrameName..moduleName,Options)
 	self:SetSize(Options.Width-Options.ListWidth,Options.Height-16)
 	self:SetPoint("TOPLEFT",Options.ListWidth,-16)
 	self.moduleName = moduleName
 	
-	local pos = #Options.Frames + 1
-	Options.modulesList.L[pos] = frameName or moduleName
-	Options.Frames[pos] = self
-	
-	if Options:IsShown() then
-		Options.modulesList:Update()
+	if not isHidden then
+		local pos = #Options.Frames + 1
+		Options.modulesList.L[pos] = frameName or moduleName
+		Options.Frames[pos] = self
+		
+		if Options:IsShown() then
+			Options.modulesList:Update()
+		end
 	end
 	
 	self:Hide()

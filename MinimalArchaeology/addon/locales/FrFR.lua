@@ -56,12 +56,9 @@ L["HISTORY_SOLVE_CONFIRMATION_QUESTION"] = "Are you sure you want to solve this 
 L["HISTORY_SOLVE_CONFIRMATION_YES"] = "Yes"
 --[[Translation missing --]]
 L["HISTORY_TOOLTIP_PROGRESSINFO"] = "Artifact Progress Information"
---[[Translation missing --]]
 L["HISTORY_TOTAL"] = "Total"
---[[Translation missing --]]
-L["NAVIGATION_CLOSEST"] = "closest"
---[[Translation missing --]]
-L["NAVIGATION_FLIGHTMASTER"] = "Flight Master"
+L["NAVIGATION_CLOSEST"] = "plus proche"
+L["NAVIGATION_FLIGHTMASTER"] = "Maître de vol"
 --[[Translation missing --]]
 L["OPTIONS_AUTOHIDE_TITLE"] = "Auto-hide main window"
 --[[Translation missing --]]

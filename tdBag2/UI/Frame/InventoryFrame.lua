@@ -14,7 +14,7 @@ local ContainerFrame = ns.UI.ContainerFrame
 ---@class UI.InventoryFrame: UI.ContainerFrame
 local InventoryFrame = ns.Addon:NewClass('UI.InventoryFrame', ContainerFrame)
 
-if not ns.BUILD_MAINLINE then
+if ns.BUILD_MAINLINE then
     return
 end
 

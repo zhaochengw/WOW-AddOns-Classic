@@ -14,6 +14,9 @@ function QuestieWotlkObjectFixes:Load()
         [269] = { -- Guarded Thunder Ale Barrel
             [objectKeys.questStarts] = {403},
         },
+        [140911] = { -- Spool of Light Chartreuse Silk Thread
+            [objectKeys.spawns] = {[zoneIDs.STORMWIND_CITY] = {{50.58,60.14}}},
+        },
         [141980] = { -- Spectral Lockbox
             [objectKeys.questEnds] = {2701},
         },
@@ -542,6 +545,11 @@ function QuestieWotlkObjectFixes:Load()
             [objectKeys.questEnds] = {13501},
             [objectKeys.spawns] = {[zoneIDs.BOREAN_TUNDRA]={{49.77,10.61}}}, -- Bor'gorok Outpost
             [objectKeys.zoneID] = zoneIDs.BOREAN_TUNDRA,
+        },
+        [194092] = { -- Blackened Urn
+            [objectKeys.name] = "Blackened Urn",
+            [objectKeys.spawns] = {[zoneIDs.KARAZHAN]={{-1,-1}}},
+            [objectKeys.zoneID] = zoneIDs.KARAZHAN,
         },
         [194119] = { -- Candy Bucket
             [objectKeys.questStarts] = {13548},

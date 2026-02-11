@@ -22,7 +22,7 @@ local Maxb = ns.Maxb
 local pt = print
 local realmID = GetRealmID()
 local player = BG.playerName
-local realmName = GetRealmName()
+local realmName = BG.realmName
 
 --最后更新时间：25/6/23 10:25
 local AFDtbl_360 = {
@@ -613,10 +613,10 @@ BG.Init(function()
         bt:SetWidth(bt:GetFontString():GetStringWidth())
         BG.ButtonRoleOverview = bt
         lastBt = bt
-        bt:SetScript("OnEnter", function(self)
+        BG.OnEnterDelay(bt, function(self)
             BG.SetFBCD(self)
         end)
-        bt:SetScript("OnLeave", function(self)
+        BG.OnLeaveDelay(bt, function(self)
             if BG.FBCDFrame and not BG.FBCDFrame.click then
                 BG.FBCDFrame:Hide()
             end
@@ -627,7 +627,7 @@ BG.Init(function()
                     BG.SetFBCD(nil, nil, true)
                 end
             elseif button == "RightButton" then
-                ns.InterfaceOptionsFrame_OpenToCategory("|cff00BFFFBiaoGe|r")
+                ns.InterfaceOptionsFrame_OpenToCategory(BG.optionsName )
                 BG.MainFrame:Hide()
             end
             BG.PlaySound(1)
@@ -663,8 +663,8 @@ BG.Init(function()
                     if tbl[i]:find(realmName, 1, true) then
                         tbl[i] = BG.STC_g1(tbl[i])
                     end
-                    if not same[tbl[i] ] then
-                        same[tbl[i] ] = true
+                    if not same[tbl[i]] then
+                        same[tbl[i]] = true
                     else
                         remove[i] = true
                     end
@@ -678,7 +678,7 @@ BG.Init(function()
             end
 
             local t = self.child:CreateFontString()
-            t:SetFont(STANDARD_TEXT_FONT, 15, "OUTLINE")
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             t:SetText(text)
             t:SetWidth(f:GetWidth() - w * 3)
             if not next(self.texts) then
@@ -691,7 +691,7 @@ BG.Init(function()
             t:SetText(text)
             tinsert(self.texts, t)
         end
-        bt:SetScript("OnEnter", function(self)
+        BG.OnEnterDelay(bt, function(self)
             wipe(self.texts)
             local w, h = BG.MainFrame:GetWidth(), BG.MainFrame:GetHeight() - 50
             local f, child = BG.CreateScrollFrame(self, w, h)
@@ -711,8 +711,10 @@ BG.Init(function()
             AddText(self, AFDtbl_90, 1, .82, 0)
             AddText(self, AFDtbl_30, 1, .82, 0)
         end)
-        bt:SetScript("OnLeave", function(self)
-            self.frame:Hide()
+        BG.OnLeaveDelay(bt, function(self)
+            if self.frame then
+                self.frame:Hide()
+            end
             GameTooltip:Hide()
             BiaoGeTooltip2:Hide()
         end)
@@ -734,7 +736,7 @@ BG.Init(function()
         BG.ButtonDD = bt
         lastBt = bt
 
-        bt:SetScript("OnEnter", function(self)
+        BG.OnEnterDelay(bt, function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
@@ -744,7 +746,7 @@ BG.Init(function()
             GameTooltip:AddLine(L["（点击复制网址）"], 1, 0.82, 0, true)
             GameTooltip:Show()
         end)
-        bt:SetScript("OnLeave", GameTooltip_Hide)
+        BG.OnLeaveDelay(bt, GameTooltip_Hide)
         bt:SetScript("OnClick", function(self)
             BG.PlaySound(1)
             ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
@@ -769,7 +771,7 @@ BG.Init(function()
         BG.ButtonBOX = bt
         lastBt = bt
 
-        bt:SetScript("OnEnter", function(self)
+        BG.OnEnterDelay(bt, function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
@@ -778,7 +780,7 @@ BG.Init(function()
             GameTooltip:AddLine(L["（点击复制网址）"], 1, 0.82, 0, true)
             GameTooltip:Show()
         end)
-        bt:SetScript("OnLeave", GameTooltip_Hide)
+        BG.OnLeaveDelay(bt, GameTooltip_Hide)
         bt:SetScript("OnClick", function(self)
             BG.PlaySound(1)
             ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
@@ -805,12 +807,12 @@ BG.Init(function()
         BG.ButtonBug = bt
         lastBt = bt
 
-        bt:SetScript("OnEnter", function(self)
+        BG.OnEnterDelay(bt, function(self)
             GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(L["BiaoGe沟通交流群"], 1, 1, 1, true)
             GameTooltip:AddLine(L["Q群："] .. "322785325", 1, 0.82, 0, true)
-            GameTooltip:AddLine(L["密码：金团表格"], 1, 0.82, 0, true)
+            GameTooltip:AddLine(L["密码："] .. "金团表格", 1, 0.82, 0, true)
             GameTooltip:AddLine(L["（点击复制Q群）"], 1, 0.82, 0, true)
             GameTooltip:Show()
 
@@ -834,7 +836,7 @@ BG.Init(function()
                 BiaoGeTooltip2:Show()
             end
         end)
-        bt:SetScript("OnLeave", function(self)
+        BG.OnLeaveDelay(bt, function(self)
             GameTooltip:Hide()
             BiaoGeTooltip2:Hide()
         end)
@@ -848,7 +850,7 @@ BG.Init(function()
             BG.After(1, function()
                 if BugGrabberDB and BugGrabberDB.errors then
                     for i, e in next, BugGrabberDB.errors do
-                        if BugGrabberDB.session == e.session and type(e.message)=="string" and e.message:find("BiaoGe")
+                        if BugGrabberDB.session == e.session and type(e.message) == "string" and e.message:find("BiaoGe")
                             and not e.message:find("ADDON_ACTION_FORBIDDEN") and not e.message:find("ADDON_ACTION_BLOCKED") then
                             self.hasError = true
                             self.errors = {

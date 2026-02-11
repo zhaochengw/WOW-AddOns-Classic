@@ -8,13 +8,12 @@ local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
 local isBCC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
 local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
-local isCata = WOW_PROJECT_ID == (WOW_PROJECT_CATACLYSM_CLASSIC or 14)
 local playerFaction = GetPlayerFactionGroup("player")
 
 local DBM5Protocol = "1" -- DBM protocol version
 local DBM5Prefix = UnitName("player") .. "-" .. GetRealmName() .. "\t" .. DBM5Protocol .. "\t" -- Name-Realm\tProtocol version\t
 
-mod:SetRevision("20241128195800")
+mod:SetRevision("20260207030126")
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA",
@@ -246,6 +245,9 @@ do
 
 	---@param color ColorMixin
 	function healthTracker:TrackHealth(cid, name, color)
+		if isRetail then
+			return
+		end
 		if self.ticker:IsCancelled() then
 			error("tried to call TrackHealth on cancelled tracker")
 		end
@@ -281,9 +283,11 @@ do
 			hash = hash * 31 + playerName:byte(i, i)
 			hash = hash % 4294967311
 		end
-		mod:RegisterShortTermEvents("CHAT_MSG_ADDON")
-		RegisterAddonMessagePrefix("DBM-PvP")
-		RegisterAddonMessagePrefix("Capping") -- Listen to capping for extra data
+		if not isRetail then
+			mod:RegisterShortTermEvents("CHAT_MSG_ADDON")
+			RegisterAddonMessagePrefix("DBM-PvP")
+			RegisterAddonMessagePrefix("Capping") -- Listen to capping for extra data
+		end
 		---@class HealthTracker
 		local tracker = setmetatable({
 			syncChannels = syncChannels,
@@ -294,13 +298,18 @@ do
 		}, {__index = healthTracker})
 		-- This sends up to one sync message per channel per invocation, there seem to be heavy rate limits in place to ~10 messages/second (per channel?)
 		-- TODO: figure out what works
-		tracker.ticker = NewTicker(#syncChannels, function() tracker:scan() end)
-		trackers[#trackers + 1] = tracker
+		if not isRetail then
+			tracker.ticker = NewTicker(#syncChannels, function() tracker:scan() end)
+			trackers[#trackers + 1] = tracker
+		end
 		return tracker
 	end
 
 	--- Cancels health tracking, it cannot be re-started on this object.
 	function healthTracker:Cancel()
+		if isRetail then
+			return
+		end
 		self.ticker:Cancel()
 		for i, v in ipairs(trackers) do
 			if v == self then
@@ -634,10 +643,10 @@ do
 								capTimer:Start(capTime, infoName)
 							end
 							if isAllyCapping then
-								capTimer:SetColor({r=0, g=0, b=1}, infoName)
+								capTimer:SetColor({r=0, g=0, b=1}, nil, infoName)
 								capTimer:UpdateIcon("132486", infoName) -- Interface\\Icons\\INV_BannerPVP_02.blp
 							else
-								capTimer:SetColor({r=1, g=0, b=0}, infoName)
+								capTimer:SetColor({r=1, g=0, b=0}, nil, infoName)
 								capTimer:UpdateIcon("132485", infoName) -- Interface\\Icons\\INV_BannerPVP_01.blp
 							end
 						end
@@ -670,8 +679,10 @@ do
 				end
 			end
 			if widgetID == 1893 or widgetID == 1894 then -- Classic Arathi Basin
-				local totalScore = (isCata or isWrath) and 1600 or 2000
-				self:UpdateWinTimer(totalScore, tonumber(smatch(GetIconAndTextWidgetVisualizationInfo(1893).text, '(%d+)/' .. tostring(totalScore))), tonumber(smatch(GetIconAndTextWidgetVisualizationInfo(1894).text, '(%d+)/' .. tostring(totalScore))), allyBases, hordeBases)
+				local totalScore = tonumber(smatch(GetIconAndTextWidgetVisualizationInfo(1893).text, '%d+/(%d+)'))
+				local allianceScore = tonumber(smatch(GetIconAndTextWidgetVisualizationInfo(1893).text, '(%d+)/%d+'))
+				local hordeScore = tonumber(smatch(GetIconAndTextWidgetVisualizationInfo(1894).text, '(%d+)/%d'))
+				self:UpdateWinTimer(totalScore, allianceScore, hordeScore, allyBases, hordeBases)
 			end
 		elseif widgetID == 1683 then -- Temple Of Kotmogu
 			local widgetInfo = GetDoubleStateIconRowVisualizationInfo(1683)

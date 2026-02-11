@@ -66,7 +66,9 @@ end);
 
 do--	Chat Events
 	local function OnChatEvent(self,_,name,_,_,_,_,_,_,_,_,_,guid)
-		if (name or "")~="" and (guid or "")~="" then AddOn.PlayerCache_AddPlayer(name,guid); end
+		if not canaccessvalue or (canaccessvalue(name) and canaccessvalue(guid)) then
+			if (name or "")~="" and (guid or "")~="" then AddOn.PlayerCache_AddPlayer(name,guid); end
+		end
 	end
 
 --	CHAT_MSG_CHANNEL is registered by ChatFrame_OnLoad() and isn't included in the event tables

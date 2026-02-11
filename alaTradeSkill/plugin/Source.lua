@@ -18,7 +18,7 @@ local DT = __private.DT;
 	local GetMapInfo = C_Map.GetMapInfo;
 	local GetAreaInfo = C_Map.GetAreaInfo;
 	local GetFactionInfoByID = GetFactionInfoByID;
-	local IsAddOnLoaded = IsAddOnLoaded;
+	local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded;
 
 	local _G = _G;
 -->

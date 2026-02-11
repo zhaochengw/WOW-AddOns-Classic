@@ -1,9 +1,0 @@
-## Interface: 40402
-## Title:|cffff559a露|r|cfff049b9露|r|cffde49d6的|r|cffc349eb副|r|cffb153f0本|r|cff9967f5语|r|cff827bf7音|r|cff6a90f9·|r|cff54a4fb大|r|cff3abdfc地|r|cff27cefc的|r|cff14e0fd裂|r|cff03effe变|r
-## Title-zhCN:|cffff559a露|r|cfff049b9露|r|cffde49d6的|r|cffc349eb副|r|cffb153f0本|r|cff9967f5语|r|cff827bf7音|r|cff6a90f9·|r|cff54a4fb大|r|cff3abdfc地|r|cff27cefc的|r|cff14e0fd裂|r|cff03effe变|r
-## Title-zhTW:|cffff559a露|r|cfff049b9露|r|cffde49d6的|r|cffc349eb副|r|cffb153f0本|r|cff9967f5语|r|cff827bf7音|r|cff6a90f9·|r|cff54a4fb浩|r|cff3abdfc劫|r|cff27cefc與|r|cff14e0fd重|r|cff03effe生|r
-## DefaultState: enabled
-## Author:露露緹婭@Bilibili
-## Version: 1.2.7
-## Notes: 露露的副本语音包，此项为露露的语音WA正常工作所必须的语音文件。|n语音录制：|cffff559a露露緹婭@Bilibili|r，抖音：|cffff559a露露缇娅|r。
-## IconTexture: Interface\AddOns\Rurutia_Raids\Rurutia_Logo_64R.tga

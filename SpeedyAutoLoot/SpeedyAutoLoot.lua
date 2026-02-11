@@ -13,10 +13,10 @@ local internal = {
   isHidden = true,
   ElvUI = false,
   ShowElvUILootFrame = nop,
-  isClassicEra = LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_CLASSIC,
   isClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE),
+  isClassicEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC,
   audioChannel = "master",
-  Dragonflight = 9,
+  hasEditMode = LE_EXPANSION_LEVEL_CURRENT >= 9,
   slotsLooted = {},
   inventorySoundPlayed = false,
   lootTicker = nil,
@@ -243,7 +243,7 @@ function AutoLoot:AnchorLootFrame()
     local x, y = GetCursorPosition();
     f:ClearAllPoints();
 
-    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+    if internal.hasEditMode then
       x = x / (f:GetEffectiveScale()) - 30;
       y = math.max((y / f:GetEffectiveScale()) + 50, 350);
       f:SetPoint("TOPLEFT", nil, "BOTTOMLEFT", x, y);
@@ -255,7 +255,7 @@ function AutoLoot:AnchorLootFrame()
     end
     f:Raise();
   else
-    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+    if internal.hasEditMode then
       local scale = f:GetScale();
       f:SetPoint(f.systemInfo.anchorInfo.point, f.systemInfo.anchorInfo.relativeTo, f.systemInfo.anchorInfo.relativePoint, f.systemInfo.anchorInfo.offsetX / scale, f.systemInfo.anchorInfo.offsetY / scale);
     else
@@ -340,7 +340,7 @@ function AutoLoot:OnInit()
   self:RegisterEvent("UI_ERROR_MESSAGE", self.OnErrorMessage);
 
   if not internal.ElvUI and LootFrame:IsEventRegistered("LOOT_OPENED") then
-    if LE_EXPANSION_LEVEL_CURRENT >= internal.Dragonflight then
+    if internal.hasEditMode then
       hooksecurefunc(LootFrame, "UpdateShownState", function(self)
         if self.isInEditMode then
           self:SetParent(UIParent)

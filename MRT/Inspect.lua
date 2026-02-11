@@ -222,6 +222,11 @@ local function InspectNext()
 	if RaidInCombat() or (InspectFrame and InspectFrame:IsShown()) then
 		return
 	end
+	if C_Secrets and C_Secrets.ShouldUnitIdentityBeSecret('target') then
+		return
+	elseif canaccessvalue and not canaccessvalue(UnitName'target') then
+		return
+	end
 	local nowTime = GetTime()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
 		if name and UnitName(name) and (not ExRT.isClassic or (not InCombatLockdown() and CheckInteractDistance(name,1))) and CanInspect(name,false) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) then
@@ -777,7 +782,7 @@ function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 end
 
 function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,castGUID,spellID)
-	if unitID and (spellID == 384255 or spellID == 200749) and UnitName(unitID) then
+	if unitID and (not canaccessvalue or canaccessvalue(spellID)) and (spellID == 384255 or spellID == 200749) and UnitName(unitID) then
 		local name = UnitCombatlogname(unitID)
 
 		module:AddToQueue(name) 
@@ -882,7 +887,7 @@ do
 
 	local lastInspectTime = {}
 	function module.main:INSPECT_READY(arg)
-		if module.db.inspectCleared or RaidInCombat() then
+		if module.db.inspectCleared or RaidInCombat() or (canaccessvalue and not canaccessvalue(UnitName("target"))) or (C_Secrets and C_Secrets.ShouldUnitIdentityBeSecret("target")) then
 			return
 		end
 		ExRT.F.dprint('INSPECT_READY',arg)
@@ -1290,6 +1295,18 @@ do
 			end
 
 			InspectItems(name, inspectedName, module.db.inspectID, true)
+
+			if PlayerGetTimerunningSeasonID and PlayerGetTimerunningSeasonID() == 2 then
+				for i=1,255 do
+					local auraData = C_UnitAuras.GetAuraDataByIndex(inspectedName, i)
+					if not auraData then
+						break
+					elseif auraData.spellId == 1232454 then
+						data.lemix_vers = auraData.points and auraData.points[5] or 0
+						break
+					end
+				end
+			end
 
 			cooldownsModule:UpdateAllData() 	--------> ExCD2
 		end
@@ -1722,7 +1739,7 @@ function module.main:ENCOUNTER_END()
 end
 
 function module.main:ENCOUNTER_START()
-	if ExRT.isClassic then
+	if ExRT.isClassic or ExRT.isMN then
 		return
 	end
 	local str = ""

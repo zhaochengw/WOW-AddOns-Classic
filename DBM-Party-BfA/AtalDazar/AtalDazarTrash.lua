@@ -1,7 +1,8 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("AtalDazarTrash", "DBM-Party-BfA", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240808043723")
+mod:SetRevision("20260112042022")
 --mod:SetModelID(47785)
 mod:SetZone(1763)
 

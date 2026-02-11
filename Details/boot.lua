@@ -17,12 +17,12 @@
 		end
 		local addonName, Details222 = ...
 		local version, build, date, tvs = GetBuildInfo()
-		Details.build_counter = 13811
-		Details.alpha_build_counter = 13811 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 14502
+		Details.alpha_build_counter = 14502 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
-		Details.realversion = 166 --core version, this is used to check API version for scripts and plugins (see alias below)
+		Details.realversion = 168 --core version, this is used to check API version for scripts and plugins (see alias below)
 		Details.gametoc = tvs
 		Details.APIVersion = Details.realversion --core version
 		Details.version = Details.userversion .. " (core " .. Details.realversion .. ")" --simple stirng to show to players
@@ -40,11 +40,13 @@
 		Details.BFACORE = 131 --core version on BFA launch
 		Details.SHADOWLANDSCORE = 143 --core version on Shadowlands launch
 		Details.DRAGONFLIGHT = 147 --core version on Dragonflight launch
+		Details.TBCANNIVERSARY = 166
 		Details.V11CORE = 160 --core version on V11 launch
+		Details.V12CORE = 166 --core version on V12 launch
 
 		Details = Details
 
-		local gameVersionPrefix = "VPT" --v1, v5, v11
+		local gameVersionPrefix = "VCPM" --v1, v2 v5, v12
 
 		Details.gameVersionPrefix = gameVersionPrefix
 
@@ -67,6 +69,16 @@
 		end
 
 		Details.DefaultTooltipIconSize = 20
+		local isWowApocalypse = (tvs >= 120000)
+
+		function Details222.UpdateIsAllowed()
+			if (isWowApocalypse) then
+				if InCombatLockdown() then
+					return false
+				end
+			end
+			return true
+		end
 
 		--namespace for the player breakdown window
 		Details.PlayerBreakdown = {}
@@ -110,6 +122,15 @@
 			[114840] = true, --orgrimmar
 			[114832] = true, --stormwind
 			[153292] = true, --stormwind
+			[225982] = true, --dornogal
+			[225977] = true, --dornogal
+			[225983] = true, --dornogal
+			[225978] = true, --dornogal
+			[219250] = true, --dornogal
+			[225985] = true, --dornogal
+			[225976] = true, --dornogal
+			[225984] = true, --dornogal
+			
 		}
 
 		---@type details_storage_feature
@@ -172,6 +193,7 @@
 		Details222.BarIconSetList = {}
 		Details222.Instances = {}
 		Details222.Combat = {}
+		Details222.BParser = {}
 		Details222.MythicPlus = {
 			Charts = {},
 			Frames = {},
@@ -267,6 +289,9 @@
 		---@field CheckContextInterest function
 		---@field FinishContext function
 		---@field GetContext function
+
+		DAMAGE_METER_SESSIONPARAMETER_TYPE = "type"
+		DAMAGE_METER_SESSIONPARAMETER_ID = "id"
 
 		--tells what is the activity the player is doing
 		Details222.ContextManager = {
@@ -1447,11 +1472,11 @@ do
 		end
 
 	--print messages
-		function _detalhes:Msg(str, arg1, arg2, arg3, arg4)
+		function _detalhes:Msg(str, arg1, arg2, arg3, arg4, arg5)
 			if (self.__name) then
-				print("|cffffaeae" .. self.__name .. "|r |cffcc7c7c(plugin)|r: " .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
+				print("|cffffaeae" .. self.__name .. "|r |cffcc7c7c(plugin)|r: " .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "", arg5 or "")
 			else
-				print(Loc ["STRING_DETAILS1"] .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "")
+				print(Loc ["STRING_DETAILS1"] .. (str or ""), arg1 or "", arg2 or "", arg3 or "", arg4 or "", arg5 or "")
 			end
 		end
 
@@ -1474,7 +1499,7 @@ do
 			Details.Schedules.After(5, _detalhes.wipe_combat_after_failed_load)
 		end
 
-		Details.failed_to_load = C_Timer.NewTimer(1, function() Details.Schedules.NewTimer(20, _detalhes.WelcomeMsgLogon) end)
+		--Details.failed_to_load = C_Timer.NewTimer(1, function() Details.Schedules.NewTimer(20, _detalhes.WelcomeMsgLogon) end)
 
 	--key binds
 	--[=
@@ -1751,10 +1776,10 @@ function Details:DestroyActor(actorObject, actorContainer, combatObject, callSta
 
 	--remove the actor from the parser cache
 	local c1, c2, c3, c4 = Details222.Cache.GetParserCacheTables()
-	c1[actorObject.serial] = nil
-	c2[actorObject.serial] = nil
-	c3[actorObject.serial] = nil
-	c4[actorObject.serial] = nil
+	c1[actorObject.serial or "a"] = nil
+	c2[actorObject.serial or "a"] = nil
+	c3[actorObject.serial or "a"] = nil
+	c4[actorObject.serial or "a"] = nil
 
 	if (not actorObject.ownerName) then --not a pet
 		if (containerType == 1 or containerType == 2) then --damage|healing done

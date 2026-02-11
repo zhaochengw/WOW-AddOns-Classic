@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(832, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240622204220")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(68397)--Diffusion Chain Conduit 68696, Static Shock Conduit 68398, Bouncing Bolt conduit 68698, Overcharge conduit 68697
 mod:SetEncounterID(1579)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)--All icons can be used, because if a pillar is level 3, it puts out 4 debuffs on 25 man (if both are level 3, then you will have 8)
@@ -12,7 +12,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 135095 136850 136478 137045",
 	"SPELL_CAST_SUCCESS 135991 136543 108199 136295 135000 134912 135695",
-	"SPELL_AURA_APPLIED 135000 134912 135695 136295 135680 135681 139011 136914",
+	"SPELL_AURA_APPLIED 135000 134912 135695 136295 135680 139011 136914",--135681
 	"SPELL_AURA_APPLIED_DOSE 136914",
 	"SPELL_AURA_REMOVED 135680 135681 135682 135683 135695 136295",
 	"SPELL_PERIODIC_DAMAGE 135153 137176",
@@ -43,30 +43,29 @@ local warnViolentGaleWinds				= mod:NewSpellAnnounce(136889, 3)
 local warnHelmOfCommand					= mod:NewTargetNoFilterAnnounce(139011, 3)
 
 --Conduits (All phases)
-local specWarnStaticShock				= mod:NewSpecialWarningYou(135695)
-local yellStaticShock					= mod:NewYell(135695, L.StaticYell)
-local specWarnDiffusionChainSoon		= mod:NewSpecialWarningPreWarn(135991, nil, 4)
+local specWarnStaticShock				= mod:NewSpecialWarningMoveTo(135695, nil, nil, nil, 1, 2)
+local yellStaticShock					= mod:NewYell(135695, L.StaticYell, nil, nil, "YELL")
+local specWarnDiffusionChainSoon		= mod:NewSpecialWarningPreWarn(135991, nil, 4, nil, nil, 1, 2)
 local specWarnOvercharged				= mod:NewSpecialWarningYou(136295)
-local yellOvercharged					= mod:NewYell(136295)
-local specWarnBouncingBoltSoon			= mod:NewSpecialWarningPreWarn(136361, nil, 4)
-local specWarnBouncingBolt				= mod:NewSpecialWarningSpell(136361)
+local yellOvercharged					= mod:NewShortYell(136295)
+local specWarnBouncingBoltSoon			= mod:NewSpecialWarningPreWarn(136361, nil, 4, nil, nil, 1, 2)
+local specWarnBouncingBolt				= mod:NewSpecialWarningSpell(136361, nil, nil, nil, 2, 2)
 --Phase 1
-local specWarnDecapitate				= mod:NewSpecialWarningRun(134912, nil, nil, 2, 4)
-local specWarnDecapitateOther			= mod:NewSpecialWarningTaunt(134912)
-local specWarnThunderstruck				= mod:NewSpecialWarningCount(135095, nil, nil, nil, 2)
-local specWarnCrashingThunder			= mod:NewSpecialWarningMove(135150)
+local specWarnDecapitate				= mod:NewSpecialWarningRun(134912, nil, nil, 2, 4, 2)
+local specWarnDecapitateOther			= mod:NewSpecialWarningTaunt(134912, nil, nil, nil, 1, 2)
+local specWarnThunderstruck				= mod:NewSpecialWarningCount(135095, nil, nil, nil, 2, 2)
+local specWarnGTFO						= mod:NewSpecialWarningGTFO(135150, nil, nil, nil, 1, 8)
 local specWarnIntermissionSoon			= mod:NewSpecialWarning("specWarnIntermissionSoon")
 --Phase 2
-local specWarnFusionSlash				= mod:NewSpecialWarningSpell(136478, "Tank", nil, nil, 3)--Cast (394514 is debuff. We warn for cast though because it knocks you off platform if not careful)
-local specWarnLightningWhip				= mod:NewSpecialWarningCount(136850, nil, nil, nil, 2)
-local specWarnSummonBallLightning		= mod:NewSpecialWarningCount(136543)
-local specWarnOverloadedCircuits		= mod:NewSpecialWarningMove(137176)
-local specWarnGorefiendsGrasp			= mod:NewSpecialWarningCount(108199, false)--For heroic, gorefiends+stun timing is paramount to success
+local specWarnFusionSlash				= mod:NewSpecialWarningSpell(136478, "Tank", nil, nil, 3, 2)--Cast (394514 is debuff. We warn for cast though because it knocks you off platform if not careful)
+local specWarnLightningWhip				= mod:NewSpecialWarningCount(136850, nil, nil, nil, 2, 15)
+local specWarnSummonBallLightning		= mod:NewSpecialWarningCount(136543, nil, nil, nil, 2, 2)--Recored new audio one day
+local specWarnGorefiendsGrasp			= mod:NewSpecialWarningCount(108199, false, nil, nil, 1, 12)--For heroic, gorefiends+stun timing is paramount to success
 --Phase 3
-local specWarnElectricalShock			= mod:NewSpecialWarningStack(136914, nil, 12)
-local specWarnElectricalShockOther		= mod:NewSpecialWarningTaunt(136914)
+local specWarnElectricalShock			= mod:NewSpecialWarningStack(136914, nil, 12, nil, nil, 1, 6)
+local specWarnElectricalShockOther		= mod:NewSpecialWarningTaunt(136914, nil, nil, nil, 1, 2)
 --Herioc
-local specWarnHelmOfCommand				= mod:NewSpecialWarningYou(139011, nil, nil, nil, 3)
+local specWarnHelmOfCommand				= mod:NewSpecialWarningYou(139011, nil, nil, nil, 3, 13)
 
 --Conduits (All phases)
 local timerConduitCD					= mod:NewTimer(40, "timerConduitCD", 135695, nil, nil, 6)
@@ -94,7 +93,6 @@ local timerHelmOfCommand				= mod:NewCDTimer(14, 139011, nil, nil, nil, 3)
 
 local berserkTimer						= mod:NewBerserkTimer(900)--Confirmed in LFR, probably the same in all modes though?
 
-mod:AddRangeFrameOption("8/6", nil, true)
 mod:AddSetIconOption("SetIconOnOvercharge", 136295, true, 0, {1, 2, 3})
 mod:AddSetIconOption("SetIconOnStaticShock", 135695, true, 0, {6, 7, 8})
 mod:AddBoolOption("AGStartDP", true)
@@ -202,9 +200,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 	self:UnregisterShortTermEvents()
 end
 
@@ -213,6 +208,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 135095 then
 		self.vb.thunderCount = self.vb.thunderCount + 1
 		specWarnThunderstruck:Show(self.vb.thunderCount)
+		specWarnThunderstruck:Play("justrun")
 		timerThunderstruck:Start()
 		if self:GetStage(3, 1) then
 			timerThunderstruckCD:Start(nil, self.vb.thunderCount+1)
@@ -223,6 +219,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 136850 then
 		self.vb.whipCount = self.vb.whipCount + 1
 		specWarnLightningWhip:Show(self.vb.whipCount)
+		specWarnLightningWhip:Play("frontal")
 		timerLightningWhip:Start()
 		if self:GetStage(3, 1) then
 			timerLightningWhipCD:Start(nil, self.vb.whipCount+1)
@@ -233,10 +230,13 @@ function mod:SPELL_CAST_START(args)
 		timerFussionSlashCD:Start()
 		if self:IsDifficulty("lfr25") then return end
 		specWarnFusionSlash:Show()
+		specWarnFusionSlash:Play("carefly")
 	elseif spellId == 137045 then
 		self.vb.intermissionActive = true
 		specWarnDiffusionChainSoon:Cancel()
+		specWarnDiffusionChainSoon:CancelVoice()
 		specWarnBouncingBoltSoon:Cancel()
+		specWarnBouncingBoltSoon:CancelVoice()
 		timerThunderstruckCD:Cancel()
 		timerDecapitateCD:Cancel()
 		timerFussionSlashCD:Cancel()
@@ -252,9 +252,6 @@ function mod:SPELL_CAST_START(args)
 				timerDiffusionChainCD:Start(10)
 			else
 				timerDiffusionChainCD:Start(6)
-			end
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(8)
 			end
 		end
 		if not self.vb.southDestroyed or self:IsHeroic() then
@@ -293,11 +290,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if not self.vb.intermissionActive then
 			timerDiffusionChainCD:Start()
 			specWarnDiffusionChainSoon:Schedule(36)
+			specWarnDiffusionChainSoon:ScheduleVoice(36, "scatter")
 		end
 	elseif spellId == 136543 and self:AntiSpam(2, 1) then
 		self.vb.ballsCount = self.vb.ballsCount + 1
 		warnSummonBallLightning:Show(self.vb.ballsCount)
 		specWarnSummonBallLightning:Show(self.vb.ballsCount)
+		specWarnSummonBallLightning:Play("watchorb")--really bad but closest match
 		if self:GetStage(3, 1) then
 			timerSummonBallLightningCD:Start(nil, self.vb.ballsCount+1)
 		else
@@ -308,6 +307,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.goreCount = self.vb.goreCount + 1
 		warnGorefiendsGrasp:Show(self.vb.goreCount)
 		specWarnGorefiendsGrasp:Show(self.vb.goreCount)
+		specWarnGorefiendsGrasp:Play("pullin")
 	elseif spellId == 136295 then
 		timerOvercharge:Start()
 		if not self.vb.intermissionActive then
@@ -329,8 +329,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:IsDifficulty("lfr25") then return end
 		if args:IsPlayer() then
 			specWarnDecapitate:Show()
+			specWarnDecapitate:Play("runout")
 		else
 			specWarnDecapitateOther:Show(args.destName)
+			specWarnDecapitateOther:Play("tauntboss")
 		end
 	--Conduit activations
 	elseif spellId == 135695 then
@@ -342,7 +344,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(warnStaticShockTargets)
 		self:Schedule(0.3, warnStaticShockTargets)
 		if args:IsPlayer() then
-			specWarnStaticShock:Show()
+			specWarnStaticShock:Show(DBM_COMMON_L.ALLIES)
+			specWarnStaticShock:Play("gathershare")
 			if not self:IsDifficulty("lfr25") then
 				yellStaticShock:Schedule(7, playerName, 1)
 				yellStaticShock:Schedule(6, playerName, 2)
@@ -366,14 +369,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 135680 and args:GetDestCreatureID() == 68397 then--North (Static Shock)
 		--start timers here when we have em
-	elseif spellId == 135681 and args:GetDestCreatureID() == 68397 then--East (Diffusion Chain)
-		if self.Options.RangeFrame and self:IsRanged() then--Shouldn't target melee during a normal pillar, only during intermission when all melee are with ranged and out of melee range of boss
-			DBM.RangeCheck:Show(8)--Assume 8 since spell tooltip has no info
-		end
+--	elseif spellId == 135681 and args:GetDestCreatureID() == 68397 then--East (Diffusion Chain)
+
 	elseif spellId == 139011 then
 		helmOfCommandTarget[#helmOfCommandTarget + 1] = args.destName
 		if args:IsPlayer() then
 			specWarnHelmOfCommand:Show()
+			specWarnHelmOfCommand:Play("pushbackincoming")
 		end
 		self:Unschedule(warnHelmOfCommandTargets)
 		self:Schedule(0.3, warnHelmOfCommandTargets)
@@ -382,8 +384,10 @@ function mod:SPELL_AURA_APPLIED(args)
 		if amount >= 12 and self:AntiSpam(2.5, 6) then
 			if args:IsPlayer() then
 				specWarnElectricalShock:Show(args.amount)
+				specWarnElectricalShock:Play("stackhigh")
 			else
 				specWarnElectricalShockOther:Show(args.destName)
+				specWarnElectricalShockOther:Play("tauntboss")
 			end
 		end
 	end
@@ -398,18 +402,13 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 135681 and args:GetDestCreatureID() == 68397 and not self.vb.intermissionActive then--East (Diffusion Chain)
 		timerDiffusionChainCD:Cancel()
 		specWarnDiffusionChainSoon:Cancel()
-		if self.Options.RangeFrame and self:IsRanged() then--Shouldn't target melee during a normal pillar, only during intermission when all melee are with ranged and out of melee range of boss
-			if self:GetStage(1) then
-				DBM.RangeCheck:Hide()
-			else
-				DBM.RangeCheck:Show(6)--Switch back to Summon Lightning Orb spell range
-			end
-		end
+		specWarnDiffusionChainSoon:CancelVoice()
 	elseif spellId == 135682 and args:GetDestCreatureID() == 68397 and not self.vb.intermissionActive then--South (Overcharge)
 		timerOverchargeCD:Cancel()
 	elseif spellId == 135683 and args:GetDestCreatureID() == 68397 and not self.vb.intermissionActive then--West (Bouncing Bolt)
 		timerBouncingBoltCD:Cancel()
 		specWarnBouncingBoltSoon:Cancel()
+		specWarnBouncingBoltSoon:CancelVoice()
 	--Conduit deactivations
 	elseif spellId == 135695 and self.Options.SetIconOnStaticShock then
 		self:SetIcon(args.destName, 0)
@@ -420,7 +419,8 @@ end
 
 function mod:SPELL_DAMAGE(_, _, _, _, destGUID, destName, _, _, spellId, spellName)
 	if spellId == 135150 and destGUID == UnitGUID("player") and self:AntiSpam(1.5, 4) then
-		specWarnCrashingThunder:Show()
+		specWarnGTFO:Show(spellName)
+		specWarnGTFO:Play("watchfeet")
 	elseif spellId == 135991 and destName ~= self.vb.diffusionCastTarget then--Filter actual target, so we only announce SPREADS
 		diffusionTargets[#diffusionTargets + 1] = destName
 		self:Unschedule(warnDiffusionSpreadTargets)
@@ -431,23 +431,19 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, destName, _, _, spellId, spellNa
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
-function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 135153 and destGUID == UnitGUID("player") and self:AntiSpam(1.5, 4) and not self:IsTrivial() then
-		specWarnCrashingThunder:Show()
-	elseif spellId == 137176 and destGUID == UnitGUID("player") and self:AntiSpam(3, 5) and not self:IsTrivial() then
-		specWarnOverloadedCircuits:Show()
+function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
+	if (spellId == 135153 or spellId == 137176) and destGUID == UnitGUID("player") and self:AntiSpam(4, 5) and not self:IsTrivial() then
+		specWarnGTFO:Show(spellName)
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find("spell:137176") then--Overloaded Circuits (Intermission ending and next phase beginning)
 		self.vb.intermissionActive = false
 		self:SetStage(0)
 		self.vb.goreCount = 0
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 		--"<174.8 20:38:26> [CHAT_MSG_RAID_BOSS_EMOTE] CHAT_MSG_RAID_BOSS_EMOTE#|TInterface\\Icons\\spell_nature_unrelentingstorm.blp:20|t The |cFFFF0000|Hspell:135683|h[West Conduit]|h|r has burned out and caused |cFFFF0000|Hspell:137176|h[Overloaded Circuits]|h|r!#Bouncing Bolt Conduit
 		if msg:find("spell:135680") then--North (Static Shock)
 			self.vb.northDestroyed = true
@@ -464,9 +460,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 			timerSummonBallLightningCD:Start(15, 1)
 			timerLightningWhipCD:Start(30, 1)
 			timerFussionSlashCD:Start(44)
-			if self.Options.RangeFrame and self:IsRanged() then--Only ranged need it in phase 2 and 3
-				DBM.RangeCheck:Show(6)--Needed for phase 2 AND phase 3
-			end
 			if self:IsHeroic() then
 				--Basically a CD, may come later if delayed by other crap
 				--15-19 variation. but you need this timing to hit spell reflect at 15 (it lasts 5 seconds so covers the variation)
@@ -475,9 +468,6 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 				end
 				if self.vb.eastDestroyed then
 					timerDiffusionChainCD:Start(14)
-					if self.Options.RangeFrame and self:IsRanged() then
-						DBM.RangeCheck:Show(8)
-					end
 				end
 				if self.vb.southDestroyed then
 					timerOverchargeCD:Start(14)
@@ -530,9 +520,11 @@ end
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 136395 and self:AntiSpam(2, 3) then--Bouncing Bolt (During intermission phases, it fires randomly, use scheduler and filter this :\)
 		specWarnBouncingBolt:Show()
+		specWarnBouncingBolt:Play("helpsoak")
 		if not self.vb.intermissionActive then
 			timerBouncingBoltCD:Start(40)
 			specWarnBouncingBoltSoon:Schedule(36)
+			specWarnBouncingBoltSoon:ScheduleVoice(36, "specialsoon")
 		end
 	elseif spellId == 136869 and self:AntiSpam(2, 4) then--Violent Gale Winds
 		warnViolentGaleWinds:Show()

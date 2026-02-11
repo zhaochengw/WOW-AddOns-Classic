@@ -360,6 +360,10 @@ if Private.IsRetail then
 			unitToken = UnitTokenFromGUID(data.guid)
 		end
 
+		if unitToken and issecretvalue and issecretvalue(unitToken) then
+			return
+		end
+
 		if unitToken == nil or not UnitIsPlayer(unitToken) then
 			return
 		end
@@ -1334,6 +1338,10 @@ table.insert(Private.LoginFnQueue, function()
 				end
 
 				local unit = select(2, GameTooltip:GetUnit())
+
+				if issecretvalue and issecretvalue(unit) then
+					return
+				end
 
 				if unit then
 					if GameTooltip.RefreshData then

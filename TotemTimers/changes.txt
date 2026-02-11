@@ -1,3 +1,9 @@
+5.0.5
+    - Fixed red flash animation position
+    - Fixed totem menus
+    - Fixed button glows
+5.0.4
+    - Some fixes for TBC Anniversary
 5.0.3
     - Fix totem timers for WoW classic
 5.0.2

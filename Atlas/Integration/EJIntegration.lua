@@ -28,9 +28,9 @@
 -- Determine WoW TOC Version
 local WoWClassicEra, WoWClassic, WoWRetail
 local wowversion = select(4, GetBuildInfo())
-if wowversion < 20000 then
+if wowversion < 40000 then
 	WoWClassicEra = true
-elseif wowversion > 20000 and wowversion < 90000 then
+elseif wowversion > 40000 and wowversion < 90000 then
 	WoWClassic = true
 elseif wowversion > 90000 then
 	WoWRetail = true

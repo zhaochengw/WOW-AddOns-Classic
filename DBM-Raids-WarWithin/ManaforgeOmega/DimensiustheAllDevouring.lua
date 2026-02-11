@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2691, "DBM-Raids-WarWithin", 1, 1302)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250910053613")
+mod:SetRevision("20260206060629")
 mod:SetCreatureID(233824, 241517, 234478)--Yes, they're all used
 mod:SetEncounterID(3135)
 mod:SetBossHPInfoToHighest()--Boss Heals
@@ -12,66 +12,39 @@ mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
+--Midnight private aura replacements
+--TODO, add Null Binding? spam can't be controlled
+mod:AddPrivateAuraSoundOption(1228206, true, 1228206, 1)
+mod:AddPrivateAuraSoundOption(1243577, true, 1243577, 1)
+mod:AddPrivateAuraSoundOption(1232394, true, 1232394, 1)--P3 gravity Well
+mod:AddPrivateAuraSoundOption(1234243, true, 1234243, 1)
+mod:AddPrivateAuraSoundOption(1234244, true, 1234244, 1)--P2 Inverse gravity
+mod:AddPrivateAuraSoundOption(1249425, true, 1249425, 1)
+mod:AddPrivateAuraSoundOption(1237696, true, 1237696, 1)--GTFO
+
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 1230087 1248240 1229038 1230979 1238765 1237319 1237694 1249423 1239262 1237695 1233539 1234263 1232973 1234898 1251619",--1243690 1234044
-	"SPELL_CAST_SUCCESS 1231716 1246541",--1237690 1234242
-	"SPELL_AURA_APPLIED 1231005 1228206 1230168 1243699 1243577 1243609 1235114 1246930 1234243 1234244 1246145 1245292 1232394 1234266 1250055 1237102 1249425",
-	"SPELL_AURA_APPLIED_DOSE 1230168 1246145 1234266",
-	"SPELL_AURA_REMOVED 1229038 1243577 1243609 1234243 1234244 1233539 1249425",--1237690
-	"SPELL_PERIODIC_DAMAGE 1231002 1237696",
-	"SPELL_PERIODIC_MISSED 1231002 1237696",
-	"UNIT_DIED",
-	"CHAT_MSG_RAID_BOSS_EMOTE",
-	"UNIT_SPELLCAST_START boss1 boss2 boss3",
-	"UNIT_POWER_UPDATE boss1 boss2 boss3",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3",
-	"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
+	--For whatever reason ENCOUNTER_TIMELINE_EVENT_REMOVED is unrecognized by api LuaLS
+	---@diagnostic disable-next-line: dbm-event-checker
+	"ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED"
 )
 
---TODO, add antimatter to GTFO if you soak too long
---TODO, Stellar Core counter for intermission 1?
---TODO, does https://www.wowhead.com/ptr-2/spell=1239270/voidwarding activate sometimes or is it always active (thus not needing warning)?
---TODO, nullbinding nameplate timer and clarification on warning
---TODO, probably don't need to do anything with https://www.wowhead.com/ptr-2/spell=1233292/accretion-disk but noting just in case
---TODO, stuff with https://www.wowhead.com/ptr-2/spell=1234054/shadowquake ?
 --[[
 ability.id = 1234898 and type = "begincast" or ability.id = 1245292 and type = "applydebuff" or ability.id = 1237102 and type = "applybuff"
 --]]
 local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Stage One: Critical Mass
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(32292))
-local warnExcessMass								= mod:NewTargetNoFilterAnnounce(1228206, 1)
-local warnMortalFragility							= mod:NewYouAnnounce(1230168, 4)
-local warnDevourP1Over								= mod:NewEndAnnounce(1229038, 1)
-local warnSpatialFragment							= mod:NewTargetNoFilterAnnounce(1243699, 1)
-local warnAirbornRemoved							= mod:NewFadesAnnounce(1243609, 1)
-
 local specWarnMassiveSmash							= mod:NewSpecialWarningCount(1230087, nil, 212336, nil, 2, 2)
-local specWarnExcessMass							= mod:NewSpecialWarningYou(1228206, nil, nil, nil, 1, 2)
-local specWarnMortalFragility						= mod:NewSpecialWarningTaunt(1230168, nil, nil, nil, 1, 2)
-local specWarnDevourP1								= mod:NewSpecialWarningMoveTo(1229038, nil, nil, nil, 3, 2)
 local specWarnDarkMatter							= mod:NewSpecialWarningMoveAwayCount(1230979, nil, nil, nil, 1, 2)
 local specWarnShatteredSpace						= mod:NewSpecialWarningDodgeCount(1243690, nil, nil, nil, 2, 2)
-local specWarnReverseGravity						= mod:NewSpecialWarningMoveAwayCount(1243577, nil, nil, nil, 1, 2)
-local yellReverseGravity							= mod:NewShortYell(1243577)
-local yellReverseGravityFades						= mod:NewShortFadesYell(1243577)
-local specWarnAirborn								= mod:NewSpecialWarningYou(1243609, nil, nil, nil, 1, 2)
---local specWarnReverseGravityDispel				= mod:NewSpecialWarningDispel(1243577, nil, nil, nil, 1, 2)
-local specWarnGTFO									= mod:NewSpecialWarningGTFO(1231002, nil, nil, nil, 1, 8)
+local specWarnDevourP1								= mod:NewSpecialWarningCount(1229038, nil, nil, nil, 3, 2)
 
 local timerMassiveSmashCD							= mod:NewCDCountTimer(97.3, 1230087, 212336, nil, nil, 2)--Shortname "Smash"
-local timerInfinitePossibilities					= mod:NewCastNPTimer(8, 1248240, nil, nil, nil, 5)
+--local timerInfinitePossibilities					= mod:NewCastNPTimer(8, 1248240, nil, nil, nil, 5)
 local timerDevourP1CD								= mod:NewCDCountTimer(97.3, 1229038, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerDarkMatterCD								= mod:NewCDCountTimer(97.3, 1230979, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerShatteredSpaceCD							= mod:NewCDCountTimer(97.3, 1243690, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerReverseGravityCD							= mod:NewCDCountTimer(97.3, 1243577, nil, nil, nil, 3)
-
-mod:AddSetIconOption("SetIconOnLivingMass", -33474, false, 5, {6, 1, 2, 4, 7})
---mod:AddPrivateAuraSoundOption(433517, true, 433517, 1)
---Intermission: Event Horizon
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(32735))
-local warnSoaringReshii								= mod:NewYouAnnounce(1235114, 1, nil, nil, 140013)--Short Text "Flight"
-local warnStellarCore								= mod:NewYouAnnounce(1246930, 1)
 --Stage Two: The Dark Heart
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(32477))
 local warnCrushingGravityFaded						= mod:NewFadesAnnounce(1234243, 1)
@@ -89,15 +62,8 @@ local timerGammaBurstCD								= mod:NewCDCountTimer(35, 1237319, DBM_COMMON_L.P
 local timerGravitationalDistortionCD				= mod:NewCDCountTimer(97.3, 1234242, nil, nil, nil, 2, nil, DBM_COMMON_L.MYTHIC_ICON)
 --The Devoured Lords
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(32738))
---local warnEclipseCast								= mod:NewCastAnnounce(1237690, 1, 32)
---Artoshion & Pargoth
-local warnTouchofOblivion							= mod:NewStackAnnounce(1246145, 2, nil, "Tank|Healer")
-local warnMassDestruction							= mod:NewTargetAnnounce(1249423, 3)
 
 local specWarnMassEjection							= mod:NewSpecialWarningDodgeCount(1237694, nil, nil, nil, 2, 15)
-local specWarnMassDestruction						= mod:NewSpecialWarningYouCount(1249423, nil, nil, nil, 2, 17, 4)--Mythic version of above
-local yellMassDestruction							= mod:NewShortYell(1249423, DBM_COMMON_L.LINE)
-local yellMassDestructionFades						= mod:NewShortFadesYell(1249423)
 local specWarnConquerorsCross						= mod:NewSpecialWarningSwitchCount(1239262, "-Healer", nil, DBM_COMMON_L.ADDS, 1, 2)
 local specWarnStardustNova							= mod:NewSpecialWarningDodgeCount(1237695, nil, 142775, nil, 2, 2)
 local specWarnStarshardNova							= mod:NewSpecialWarningDodgeCount(1251619, nil, 142775, nil, 2, 2, 4)--Mythic version of above
@@ -108,23 +74,13 @@ local timerConquerorsCrossCD						= mod:NewCDCountTimer(35, 1239262, DBM_COMMON_
 local timerStardustNovaCD							= mod:NewCDCountTimer(35.2, 1237695, 142775, nil, nil, 3)--Shortname "Nova"
 local timerStarshardNovaCD							= mod:NewCDCountTimer(31.6, 1251619, 142775, nil, nil, 3)--Mythic version of above
 local timerEclipseCD								= mod:NewNextTimer(35.2, 1237690, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
-
---Adds they both summon
-local specWarnNullBinding							= mod:NewSpecialWarningYou(1246541, nil, nil, nil, 1, 2)
-
---local timerNullBindingCD							= mod:NewCDNPTimer(97.3, 1246541, nil, nil, nil, 2)
 --Stage Three: Singularity
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(32479))
-local warnDestabalized 								= mod:NewTargetNoFilterAnnounce(1245292, 1)
 local warnGravityWell								= mod:NewSpellAnnounce(1232394, 1)--Positive alert during devour
-local warnDevourP3Over								= mod:NewEndAnnounce(1233539, 1)
 
 local specWarnExtinguishTheStars					= mod:NewSpecialWarningDodgeCount(1231716, nil, 62134, nil, 2, 2)--shortname "Stars"
-local specWarnDevourP3								= mod:NewSpecialWarningMoveTo(1233539, nil, nil, nil, 3, 2)
 local specWarnDarkenedSky							= mod:NewSpecialWarningDodgeCount(1234044, nil, nil, DBM_COMMON_L.RINGS, 2, 2)
 local specWarnCosmicCollapse						= mod:NewSpecialWarningDefensive(1234263, nil, 298160, nil, 2, 2)
-local yellCosmicCollapse							= mod:NewShortYell(1234263, 298160)
-local specWarnCosmicFragility						= mod:NewSpecialWarningTaunt(1234266, nil, nil, nil, 2, 2)
 local specWarnSuperNova								= mod:NewSpecialWarningRunCount(1232973, nil, nil, nil, 4, 2)
 local specWarnVoidgrasp								= mod:NewSpecialWarningYouCount(1250055, nil, nil, nil, 1, 2)
 
@@ -135,13 +91,6 @@ local timerCosmicCollapseCD							= mod:NewCDCountTimer(97.3, 1234263, 298160, n
 local timerSuperNovaCD								= mod:NewCDCountTimer(97.3, 1232973, nil, nil, nil, 2)
 local timerVoidgraspCD								= mod:NewCDCountTimer(97.3, 1250055, nil, nil, nil, 3)
 
---BW Compatible Icon Marking
-local livingMassMarkerMapTable = {6, 1, 2, 4, 7}
-
-local collectiveGravityName = DBM:GetSpellName(1228207)
-local gravityWellName = DBM:GetSpellName(1232394)
-local devourCasting = false
-local activeBossGUIDS = {}
 --Stage 1
 mod.vb.massiveSmashCount = 0
 mod.vb.massSpawns = 0
@@ -163,6 +112,7 @@ mod.vb.cosmicCollapseCount = 0
 mod.vb.superNovaCount = 0
 mod.vb.voidgraspCount = 0
 
+--local eventCount = 0
 local savedDifficulty = "normal"
 local allTimers = {
 	["mythic"] = {
@@ -214,51 +164,58 @@ local allTimers = {
 	},
 }
 
---Works around annoying bug where sometimes rings cast and even emote are missing events (but still happen)
-local function checkForSkippedRings(self)
-	self.vb.darkenedSkyCount = self.vb.darkenedSkyCount + 1
-	local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.phase, 1234044, self.vb.darkenedSkyCount+1)
-	if timer then
-		timerDarkenedSkyCD:Start(timer-10, self.vb.darkenedSkyCount+1)
-		self:Unschedule(checkForSkippedRings)
-		self:Schedule(timer, checkForSkippedRings, self)
-	end
-end
-
-function mod:OnCombatStart(delay)
-	devourCasting = false
-	table.wipe(activeBossGUIDS)
+function mod:OnLimitedCombatStart(delay)
 	self:SetStage(1)
-	self.vb.massiveSmashCount = 0
-	self.vb.massSpawns = 0
-	self.vb.devourCount = 0
-	self.vb.darkMatterCount = 0
-	self.vb.shatteredSpaceCount = 0
-	self.vb.reverseGravityCount = 0
-	self.vb.extinctionCount = 0
-	self.vb.gammaBurstCount = 0
-	self.vb.massEjectionCount = 0
-	self.vb.conquerorsCrossCount = 0
-	self.vb.stardustCount = 0
-	self.vb.extinguishTheStarsCount = 0
-	self.vb.darkenedSkyCount = 0
-	self.vb.cosmicCollapseCount = 0
-	self.vb.superNovaCount = 0
-	self.vb.voidgraspCount = 0
-	--self:EnablePrivateAuraSound(433517, "runout", 2)
-	if self:IsMythic() then
-		savedDifficulty = "mythic"
-	elseif self:IsHeroic() then
-		savedDifficulty = "heroic"
-	else--Combine LFR and Normal
-		savedDifficulty = "other"
-	end
-	timerMassiveSmashCD:Start(allTimers[savedDifficulty][1][1230087][1]-delay, 1)
-	timerDevourP1CD:Start(allTimers[savedDifficulty][1][1229038][1]-delay, 1)
-	timerDarkMatterCD:Start(allTimers[savedDifficulty][1][1230979][1]-delay, 1)
-	timerShatteredSpaceCD:Start(allTimers[savedDifficulty][1][1243690][1]-delay, 1)
-	if not self:IsLFR() then
-		timerReverseGravityCD:Start(allTimers[savedDifficulty][1][1243577][1]-delay, 1)
+	self:EnablePrivateAuraSound(1228206, "targetyou", 2)
+	self:EnablePrivateAuraSound(1243577, "scatter", 2)
+	self:EnablePrivateAuraSound(1232394, "safenow", 2)
+	self:EnablePrivateAuraSound(1234243, "scatter", 2)
+	self:EnablePrivateAuraSound(1234244, "scatter", 2)
+	self:EnablePrivateAuraSound(1249425, "lineyou", 17)
+	self:EnablePrivateAuraSound(1237696, "watchfeet", 8)
+	if DBM.Options.DebugMode then
+		self:IgnoreBlizzardAPI()
+		--eventCount = 0
+		self.vb.massiveSmashCount = 0
+		self.vb.massSpawns = 0
+		self.vb.devourCount = 0
+		self.vb.darkMatterCount = 0
+		self.vb.shatteredSpaceCount = 0
+		self.vb.reverseGravityCount = 0
+		self.vb.extinctionCount = 0
+		self.vb.gammaBurstCount = 0
+		self.vb.massEjectionCount = 0
+		self.vb.conquerorsCrossCount = 0
+		self.vb.stardustCount = 0
+		self.vb.extinguishTheStarsCount = 0
+		self.vb.darkenedSkyCount = 0
+		self.vb.cosmicCollapseCount = 0
+		self.vb.superNovaCount = 0
+		self.vb.voidgraspCount = 0
+		if self:IsMythic() then
+			savedDifficulty = "mythic"
+		elseif self:IsHeroic() then
+			savedDifficulty = "heroic"
+		else--Combine LFR and Normal
+			savedDifficulty = "other"
+		end
+		--if DBM is in debug mode, we initialize experimental scheduled support
+		specWarnMassiveSmash:Loop(allTimers[savedDifficulty][1][1230087], 0)
+		specWarnMassiveSmash:LoopVoice(allTimers[savedDifficulty][1][1230087], 0, "carefly")
+		specWarnDevourP1:Loop(allTimers[savedDifficulty][1][1229038], 0)
+		specWarnDevourP1:LoopVoice(allTimers[savedDifficulty][1][1229038], 0, "gather")
+		specWarnDarkMatter:Loop(allTimers[savedDifficulty][1][1230979], 0)
+		specWarnDarkMatter:LoopVoice(allTimers[savedDifficulty][1][1230979], 0, "scatter")
+		specWarnShatteredSpace:Loop(allTimers[savedDifficulty][1][1243690], 0)
+		specWarnShatteredSpace:LoopVoice(allTimers[savedDifficulty][1][1243690], 0, "aesoon")
+		--Looped Timers
+		timerMassiveSmashCD:Loop(allTimers[savedDifficulty][1][1230087], 0, true)
+		timerDevourP1CD:Loop(allTimers[savedDifficulty][1][1229038], 0, true)
+		timerDarkMatterCD:Loop(allTimers[savedDifficulty][1][1230979], 0, true)
+		timerShatteredSpaceCD:Loop(allTimers[savedDifficulty][1][1243690], 0, true)
+		if not self:IsLFR() then
+			timerReverseGravityCD:Loop(allTimers[savedDifficulty][1][1243577], 0, true)
+		end
 	end
 end
 
@@ -272,21 +229,132 @@ function mod:OnTimerRecovery()
 	end
 end
 
-local function extraWarnDevour(self)
-	if not devourCasting then return end
-	if self:GetStage(1) then
-		if not DBM:UnitDebuff("player", 1228207) then
-			specWarnDevourP1:Show(collectiveGravityName)
-			specWarnDevourP1:Play("gather")
+do
+--	local function resetCount()
+--		eventCount = 0
+--	end
+	function mod:ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED(eventID)
+		local eventState = C_EncounterTimeline.GetEventState(eventID)
+		if eventState == 3 and self:AntiSpam(10, 1) and self:GetStage(4, 1) then--Blizzard is canceling bars. Phase change
+--		eventCount = eventCount + 1
+--		if eventCount == 5 then--Backup, if blizzard makes canceling bars secret we'll just count events instead
+			self:SetStage(0)
+			if self:GetStage(2) then--first platform
+				DBM:Debug("starting Platform 1")
+				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
+				warnPhase:Play("ptwo")
+				--Stop stage 1 timers and warning loops
+				if DBM.Options.DebugMode then
+					timerMassiveSmashCD:Cancel()
+					specWarnMassiveSmash:Cancel()
+					specWarnMassiveSmash:CancelVoice()
+					timerDevourP1CD:Cancel()
+					specWarnDevourP1:Cancel()
+					specWarnDevourP1:CancelVoice()
+					timerDarkMatterCD:Cancel()
+					specWarnDarkMatter:Cancel()
+					specWarnDarkMatter:CancelVoice()
+					timerShatteredSpaceCD:Cancel()
+					specWarnShatteredSpace:Cancel()
+					specWarnShatteredSpace:CancelVoice()
+					timerReverseGravityCD:Cancel()
+				end
+				--Start platform 1 stuff
+				self.vb.extinctionCount = 0
+				self.vb.gammaBurstCount = 0
+				self.vb.distortionCount = 0
+				self.vb.massEjectionCount = 0
+				self.vb.conquerorsCrossCount = 0
+				self.vb.stardustCount = 0
+				timerSoaringReshiiCD:Start(13.8)
+
+				--These still need adjustments
+				--if self:IsMythic() then
+				--	--Adds basically come immediately on mythic
+				--	--Could start a fake one sooner then update it at last second like BW does but I don't see point
+				--	--Since it's really just an estimated "engage" timer
+				--	timerConquerorsCrossCD:Start(2.1, 1)
+				--	timerExtinctionCD:Start(12.7, 1)
+				--	timerGammaBurstCD:Start(23.2, 1)
+				--	timerMassDestructionCD:Start(5.3, 1)
+				--	timerGravitationalDistortionCD:Start(14.9, 1)
+				--	timerEclipseCD:Start(60)
+				--else
+				--	timerConquerorsCrossCD:Start(6, 1)
+				--	timerMassEjectionCD:Start(13.1, 1)
+				--	timerExtinctionCD:Start(17.8, 1)
+				--	timerGammaBurstCD:Start(31.9, 1)
+				--	timerEclipseCD:Start(90)
+				--end
+			elseif self:GetStage(3) then--second platform
+				DBM:Debug("starting Platform 2")
+				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2.5))
+				warnPhase:Play("phasechange")
+				self.vb.extinctionCount = 0
+				self.vb.gammaBurstCount = 0
+				self.vb.distortionCount = 0
+				self.vb.massEjectionCount = 0
+				self.vb.conquerorsCrossCount = 0
+				self.vb.stardustCount = 0
+				if DBM.Options.DebugMode then
+					timerConquerorsCrossCD:Stop()
+					timerGammaBurstCD:Stop()
+					timerExtinctionCD:Stop()
+					timerMassEjectionCD:Stop()
+					timerMassDestructionCD:Stop()
+					timerEclipseCD:Stop()
+					timerGravitationalDistortionCD:Stop()
+				end
+				--timerSoaringReshiiCD:Start(13.8)
+				--if self:IsMythic() then
+				--	--Adds basically come immediately on mythic
+				--	--Could start a fake one sooner then update it at last second like BW does but I don't see point
+				--	--Since it's really just an estimated "engage" timer
+				--	timerConquerorsCrossCD:Start(1, 1)
+				--	timerExtinctionCD:Start(11.6, 1)
+				--	timerGammaBurstCD:Start(22.1, 1)
+				--	timerStarshardNovaCD:Start(4.2, 1)
+				--	timerGravitationalDistortionCD:Start(13.8, 1)
+				--	timerEclipseCD:Start(60)
+				--else
+				--	timerConquerorsCrossCD:Start(6, 1)
+				--	timerStardustNovaCD:Start(13, 1)
+				--	timerExtinctionCD:Start(17.8, 1)
+				--	timerGammaBurstCD:Start(31.9, 1)
+				--	timerEclipseCD:Start(90)
+				--end
+			else--Main Platform
+				DBM:Debug("starting final phase")
+				warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(3))
+				warnPhase:Play("pthree")
+				self.vb.devourCount = 0
+				self.vb.distortionCount = 0
+				--timerConquerorsCrossCD:Stop()
+				--timerGammaBurstCD:Stop()
+				--timerExtinctionCD:Stop()
+				--timerStardustNovaCD:Stop()
+				--timerStarshardNovaCD:Stop()
+				--timerEclipseCD:Stop()
+				--timerGravitationalDistortionCD:Stop()
+--
+				--timerExtinguishTheStarsCD:Start(16.5)
+				--timerDevourP3CD:Start(allTimers[savedDifficulty][3][1233539][1], 1)
+				--timerDarkenedSkyCD:Start(allTimers[savedDifficulty][3][1234044][1], 1)
+				--timerCosmicCollapseCD:Start(allTimers[savedDifficulty][3][1234263][1], 1)
+				--if not self:IsMythic() then
+				--	timerVoidgraspCD:Start(allTimers[savedDifficulty][3][1250055][1], 1)
+				--	timerSuperNovaCD:Start(allTimers[savedDifficulty][3][1232973][1], 1)
+				--else
+				--	timerGravitationalDistortionCD:Start(allTimers[savedDifficulty][3][1234242][1], 1)
+				--end
+			end
 		end
-	else--Stage 3
-		if not DBM:UnitDebuff("player", 1232394) then
-			specWarnDevourP3:Show(gravityWellName)
-			specWarnDevourP3:Play("findshelter")
-		end
+--		self:Unschedule(resetCount)
+--		self:Schedule(3, resetCount)
 	end
 end
 
+--[[
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 1230087 then
@@ -360,14 +428,6 @@ function mod:SPELL_CAST_START(args)
 			timerDevourP3CD:Start(timer, self.vb.devourCount+1)
 		end
 		self:Schedule(2.5, extraWarnDevour, self)
-	--elseif spellId == 1234044 then
-	--	self.vb.darkenedSkyCount = self.vb.darkenedSkyCount + 1
-	--	specWarnDarkenedSky:Show(self.vb.darkenedSkyCount)
-	--	specWarnDarkenedSky:Play("watchstep")
-	--	local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.phase, spellId, self.vb.darkenedSkyCount+1)
-	--	if timer then
-	--		timerDarkenedSkyCD:Start(timer, self.vb.darkenedSkyCount+1)
-	--	end
 	elseif spellId == 1234263 then
 		self.vb.cosmicCollapseCount = self.vb.cosmicCollapseCount + 1
 		if self:IsTanking("player", "boss1", nil, true) then
@@ -602,7 +662,7 @@ end
 --First cast is not in combat log (rest are)
 --First cast can also be missing emote too though so we also have to do backup scheduling
 --Because even emote doesn't COMPLETELY work around blizzard bug.
-function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg:find("spell:1234052") then
 		self.vb.darkenedSkyCount = self.vb.darkenedSkyCount + 1
 		specWarnDarkenedSky:Show(self.vb.darkenedSkyCount)
@@ -610,13 +670,11 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		local timer = self:GetFromTimersTable(allTimers, savedDifficulty, self.vb.phase, 1234044, self.vb.darkenedSkyCount+1)
 		if timer then
 			timerDarkenedSkyCD:Start(timer, self.vb.darkenedSkyCount+1)
-			self:Unschedule(checkForSkippedRings)
-			self:Schedule(timer+10, checkForSkippedRings, self)
 		end
 	end
 end
 
---"<43.79 11:27:27> [UNIT_SPELLCAST_START] Dimensius(62.0%-24.0%){Target:??} -Shattered Space- 3.25s [[boss1:Cast-3-4241-2810-1727-1243690-00681C5A7F:1243690]]",
+--"<43.79 11:27:27> [UNIT_SPELLCAST_START] Dimensius(62.0%-24.0%){Target:??} -Shattered Space- 3.25s boss1:Cast-3-4241-2810-1727-1243690-00681C5A7F:1243690",
 function mod:UNIT_SPELLCAST_START(_, _, spellId)
 	if spellId == 1243690 then
 		self.vb.shatteredSpaceCount = self.vb.shatteredSpaceCount + 1
@@ -707,3 +765,4 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 		end
 	end
 end
+--]]

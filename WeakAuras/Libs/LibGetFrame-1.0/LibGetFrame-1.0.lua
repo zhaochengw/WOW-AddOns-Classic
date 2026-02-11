@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 69
+local MINOR_VERSION = 70
 if not LibStub then
   error(MAJOR_VERSION .. " requires LibStub.")
 end
@@ -49,6 +49,9 @@ local defaultFramePriorities = {
   "^oUF_.-Party", -- generic oUF
   "^PitBull4_Groups_Party", -- pitbull4
   "^XPerl_party%d", -- xperl
+  "^DandersRaidFrame", -- Danders
+  "^DandersFrames_Party", -- Danders
+  "^DandersFrames_Player$", -- Danders (used for party frames)
   "^CompactRaid", -- blizz
   "^CompactParty", -- blizz
   "^PartyFrame",
@@ -132,6 +135,8 @@ local defaultPartyFrames = {
   "^oUF_.-Party",
   "^PitBull4_Groups_Party",
   "^XPerl_party%d",
+  "^DandersFrames_Player$",
+  "^DandersFrames_Party",
   "^PartyFrame",
   "^CompactParty",
 }
@@ -177,6 +182,7 @@ local defaultRaidFrames = {
   "^SUFHeaderraid",
   "^LUFHeaderraid",
   "^XPerl_Raid_Grp",
+  "^DandersRaidFrame",
   "^CompactRaid",
 }
 local getDefaultRaidFrames = function()
@@ -476,7 +482,17 @@ local function isFrameFiltered(name, ignoredFrames)
   return false
 end
 
+local function SecretCheck(value)
+  if issecretvalue and issecretvalue(value) then
+    return true
+  end
+  return false
+end
+
 local function GetUnitFrames(target, ignoredFrames)
+  if SecretCheck(target) then
+    return
+  end
   if not UnitExists(target) then
     if type(target) ~= "string" then
       return
@@ -494,7 +510,7 @@ local function GetUnitFrames(target, ignoredFrames)
   local frames
   for frame, frameName in pairs(FrameToFrameName.data) do
     local unit = SecureButton_GetUnit(frame)
-    if unit and UnitIsUnit(unit, target) and not isFrameFiltered(frameName, ignoredFrames) then
+    if (not SecretCheck(unit)) and unit and (not SecretCheck(UnitIsUnit(unit, target))) and UnitIsUnit(unit, target) and not isFrameFiltered(frameName, ignoredFrames) then
       frames = frames or {}
       frames[frame] = frameName
     end

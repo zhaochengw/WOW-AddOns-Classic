@@ -3,11 +3,14 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20240106080507")
+mod:SetRevision("20260125033236")
 mod:SetCreatureID(76143)
 mod:SetEncounterID(1700)
 
 mod:RegisterCombat("combat")
+
+--TODO, some actual custom sounds and timer disables when apis added
+if DBM:IsPostMidnight() then return end
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED 159382",
@@ -32,7 +35,7 @@ function mod:OnCombatStart(delay)
 --	if self:IsHard() then
 		--timerQuillsCD:Start(33-delay)--Needs review
 --	end
-	if skyTrashMod.Options.RangeFrame and skyTrashMod.vb.debuffCount ~= 0 then--In case of bug where range frame gets stuck open from trash pulls before this boss.
+	if skyTrashMod and skyTrashMod.Options.RangeFrame and skyTrashMod.vb.debuffCount ~= 0 then--In case of bug where range frame gets stuck open from trash pulls before this boss.
 		skyTrashMod.vb.debuffCount = 0--Fix variable
 		DBM.RangeCheck:Hide()--Close range frame.
 	end

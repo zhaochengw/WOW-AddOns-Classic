@@ -4730,7 +4730,7 @@ local function LF_HookFrame(addon, meta)
 	Frame.F_SetSelection = _G[Frame.T_FunctionName.F_SetSelection];
 
 	ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-		if Frame:IsVisible() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsVisible() and addon ~= __addon and not MT.IsOverridedByAuction() then
 			local name, _, _, _, _, _, _, _, loc = GetItemInfo(link);
 			if name ~= nil and name ~= "" then
 				local pid = Frame.flag or Frame.F_GetPID();
@@ -4754,7 +4754,7 @@ local function LF_HookFrame(addon, meta)
 		end
 	end);
 	ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-		if Frame:IsVisible() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsVisible() and addon ~= __addon and not MT.IsOverridedByAuction() then
 			if name ~= nil and name ~= "" then
 				Frame.SearchEditBox:SetText(name);
 				Frame.SearchEditBox:ClearFocus();
@@ -5932,7 +5932,7 @@ local function LF_CreateExplorerFrame()
 	end
 
 	ALA_HOOK_ChatEdit_InsertLink(function(link, addon)
-		if Frame:IsShown() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon and not MT.IsOverridedByAuction() then
 			local name = GetItemInfo(link);
 			if name and name ~= "" then
 				Frame.SearchEditBox:SetText(name);
@@ -5943,7 +5943,7 @@ local function LF_CreateExplorerFrame()
 		end
 	end);
 	ALA_HOOK_ChatEdit_InsertName(function(name, addon)
-		if Frame:IsShown() and addon ~= __addon and not (BrowseName ~= nil and BrowseName:IsVisible()) then
+		if Frame:IsShown() and addon ~= __addon and not MT.IsOverridedByAuction() then
 			if name and name ~= "" then
 				Frame.SearchEditBox:SetText(name);
 				Frame.SearchEditBox:ClearFocus();

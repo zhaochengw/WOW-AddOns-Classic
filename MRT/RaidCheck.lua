@@ -1,10 +1,11 @@
 local GlobalAddonName, ExRT = ...
 
-local IsEncounterInProgress, GetTime = IsEncounterInProgress, GetTime
+local GetTime = GetTime
 local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 local GetSpellInfo = ExRT.F.GetSpellInfo or GetSpellInfo
 local GetItemInfo, GetItemInfoInstant, GetItemCount  = C_Item and C_Item.GetItemInfo or GetItemInfo, C_Item and C_Item.GetItemInfoInstant or GetItemInfoInstant, C_Item and C_Item.GetItemCount or GetItemCount
 local SendChatMessage = C_ChatInfo and C_ChatInfo.SendChatMessage or SendChatMessage
+local IsEncounterInProgress = C_InstanceEncounter and C_InstanceEncounter.IsEncounterInProgress or IsEncounterInProgress
 
 local VMRT = nil
 
@@ -1777,6 +1778,7 @@ do
 end
 
 function module.main:ENCOUNTER_START()
+	if ExRT.isMN then return end
 	ExRT.F.ScheduleTimer(CheckPotionsOnPull,1.5)
 
 	table.wipe(module.db.hsList)
@@ -2697,6 +2699,10 @@ function module.frame:UpdateData(onlyLine)
 				for i=1,60 do
 					local auraData = C_UnitAuras.GetAuraDataByIndex(line.unit, i,"HELPFUL")
 					if not auraData then
+						break
+					elseif C_Secrets and C_Secrets.ShouldAurasBeSecret() then
+						break
+					elseif canaccessvalue and not canaccessvalue(auraData.spellId) then
 						break
 					elseif module.db.tableFood[auraData.spellId] then
 						local val = module.db.tableFood[auraData.spellId]
@@ -3808,6 +3814,15 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	local isElvUIFix
 
 	function module.consumables:Update()
+		if C_Secrets and C_Secrets.ShouldAurasBeSecret() then
+			return
+		elseif canaccessvalue then
+			local accessData = C_UnitAuras.GetAuraDataByIndex("player", 1, "HELPFUL")
+			if accessData and not canaccessvalue(accessData.icon) then
+				return
+			end
+		end
+
 		if (IsAddOnLoaded("ElvUI") or IsAddOnLoaded("ShestakUI")) and not isElvUIFix then
 			self:SetParent(ReadyCheckFrame)
 			self:ClearAllPoints()

@@ -50,6 +50,14 @@ function _QuestieDB.InitializeQuestTagInfoCorrections()
         [8406] = {41, l10n("PvP")},
         [8407] = {41, l10n("PvP")},
         [8408] = {41, l10n("PvP")},
+        [11335] = {41, l10n("PvP")},
+        [11336] = {41, l10n("PvP")},
+        [11337] = {41, l10n("PvP")},
+        [11338] = {41, l10n("PvP")},
+        [11339] = {41, l10n("PvP")},
+        [11340] = {41, l10n("PvP")},
+        [11341] = {41, l10n("PvP")},
+        [11342] = {41, l10n("PvP")},
         [12170] = {41, l10n("PvP")},
         [12244] = {41, l10n("PvP")},
         [12268] = {41, l10n("PvP")},
@@ -103,6 +111,7 @@ function _QuestieDB.InitializeQuestTagInfoCorrections()
         [29252] = {81, l10n("Dungeon")},
         [29760] = {41, l10n("PvP")},
         [29761] = {41, l10n("PvP")},
+        [64845] = {41, l10n("PvP")},
         [78680] = {1, l10n("Elite")},
         [78681] = {1, l10n("Elite")},
         [78684] = {1, l10n("Elite")},
@@ -407,5 +416,9 @@ function _QuestieDB.InitializeQuestTagInfoCorrections()
         [91717] = {294, l10n("Celestial")},
         [91718] = {294, l10n("Celestial")},
         [91786] = {294, l10n("Celestial")},
+
+        -- TBC Anniversary quests
+        [95455] = {41, l10n("PvP")},
+        [95457] = {41, l10n("PvP")},
     }
 end

@@ -1,0 +1,81 @@
+## Interface: 20505
+
+## Title: Atlas
+## Title-deDE: Atlas
+## Title-esES: Atlas
+## Title-esMX: Atlas
+## Title-frFR: Atlas
+## Title-itIT: Atlas
+## Title-koKR: Atlas
+## Title-ptBR: Atlas
+## Title-ruRU: Atlas
+## Title-zhCN: Atlas
+## Title-zhTW: Atlas
+
+## Notes: Instance Map Browser
+## Notes-deDE: Instanzkarten-Browser
+## Notes-esES: Navegador de mapas de estancias
+## Notes-esMX: Navegador de mapas de estancias
+## Notes-frFR: Navigateur de cartes d'instances
+## Notes-itIT: Instance Map Browser
+## Notes-koKR: 인스턴스 지도 탐색기
+## Notes-ptBR: Navegador de mapas de instâncias
+## Notes-ruRU: Обозреватель подземелий
+## Notes-zhCN: |cff00CC33副本地图浏览器|r
+## Notes-zhTW: Atlas 地圖集主程式
+
+## Category-enUS: Map
+## Category-deDE: Karte
+## Category-esES: Mapa
+## Category-esMX: Mapa
+## Category-frFR: Carte
+## Category-itIT: Mappa
+## Category-koKR: 지도
+## Category-ptBR: Mapa
+## Category-ruRU: Карта
+## Category-zhCN: 地图
+## Category-zhTW: 地圖
+
+## Author: nanderson11
+## Version: v3.14.1
+## Group: Atlas
+## X-Website: https://github.com/nanderson11/Atlas
+## X-Category: Map
+## X-License: GPLv2
+## X-Credits: Forked from Atlas
+## X-Localizations: enUS, deDE, esES, esMX, frFR, ruRU, zhTW, zhCN, ptBR, koKR
+## X-Curse-Project-ID: 1115649
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibBabble-Boss-3.0, LibBabble-SubZone-3.0, LibBabble-Faction-3.0, LibDBIcon-1.0
+## IconTexture: Interface\WorldMap\WorldMap-Icon
+## SavedVariables: AtlasDB
+
+Data\Constants.lua
+Data\AreaIDs_ClassicEra.lua
+Libs\Libs.xml
+Locale\Locales.xml
+
+Core\FontsTemplates.xml
+Core\Templates.lua
+Core\Templates.xml
+Core\IngameLocales.lua
+
+# Core
+Core\Mixins.lua
+Core\Atlas.lua
+Core\AtlasFrame.lua
+Core\Atlas.xml
+Core\Config.lua
+
+Data\Maps_Association.lua
+Data\DropDownConfig.lua
+
+# Integration functions
+Integration\EJIntegration.lua
+Integration\EJLoot.xml
+Integration\WorldMap.xml
+Integration\WorldMap.lua
+Integration\Achievements.lua
+Integration\AtlasLootIntegration.lua
+
+Data\Classic-ClassicEra.lua
+Data\BurningCrusade-ClassicEraTBC.lua

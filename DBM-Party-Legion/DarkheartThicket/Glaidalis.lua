@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20250929055241")
+mod:SetRevision("20260125033236")
 mod:SetCreatureID(96512)
 mod:SetEncounterID(1836)
 mod:SetUsedIcons(8, 7)
@@ -105,7 +105,9 @@ function mod:OnCombatEnd(wipe, secondRun)
 	end
 	if not wipe and not secondRun then
 		local DHTTrash = DBM:GetModByName("DHTTrash")
-		DHTTrash:ResetSecondBossRP()
+		if DHTTrash then
+			DHTTrash:ResetSecondBossRP()
+		end
 	end
 end
 

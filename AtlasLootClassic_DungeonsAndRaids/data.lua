@@ -960,12 +960,12 @@ data["ScarletMonastery"] = {
             DisplayIDs = {{22351}},
             ExtraList = true,
             [NORMAL_DIFF] = {
-                { 1, 88168 }, -- Seal of Ghoulish Glee
-                { 2, 88169 }, -- The Horseman's Ring
-                { 3, 88166 }, -- Wicked Witch's Signet
-                { 4, 88167 }, -- Band of the Petrified Pumpkin
-                { 5, 87569 }, -- The Horseman's Horrific Hood
-                { 6, 87570 }, -- The Horseman's Sinister Slicer
+                { 1, 263010 }, -- Seal of Ghoulish Glee
+                { 2, 263011 }, -- The Horseman's Ring
+                { 3, 263012 }, -- Wicked Witch's Signet
+                { 4, 263013 }, -- Band of the Petrified Pumpkin
+                { 5, 263014 }, -- The Horseman's Horrific Hood
+                { 6, 263018 }, -- The Horseman's Sinister Slicer
                 { 8, 33292 }, -- Hallowed Helm
                 { 10, 34068 }, -- Weighted Jack-o'-Lantern
                 { 12, 33277 }, -- Tome of Thomas Thomson
@@ -2731,14 +2731,14 @@ data["BlackrockDepths"] = {
             DisplayIDs = {{21824}},
             ExtraList = true,
             [NORMAL_DIFF] = {
-                { 1,  87576 }, -- Bitterest Balebrew Charm
-                { 2,  87575 }, -- Bubbliest Brightbrew Charm
-                { 3,  87574 }, -- Coren's Cold Chromium Coaster
-                { 4,  87572 }, -- Mithril Wristwatch
-                { 5,  87573 }, -- Thousand-Year Pickled Egg
-                { 6,  87571 }, -- Brawler's Statue
-                { 8,  107217 }, -- Direbrew's Bloodied Shanker
-                { 9,  107218 }, -- Tremendous Tankard O' Terror
+                { 1,  257873 }, -- Bitterest Balebrew Charm
+                { 2,  257877 }, -- Bubbliest Brightbrew Charm
+                { 3,  257880 }, -- Coren's Cold Chromium Coaster
+                { 4,  257884 }, -- Mithril Wristwatch
+                { 5,  257881 }, -- Thousand-Year Pickled Egg
+                { 6,  257885 }, -- Brawler's Statue
+                { 8,  257863 }, -- Direbrew's Bloodied Shanker
+                { 9,  257865 }, -- Tremendous Tankard O' Terror
                 { 16,  33977 }, -- Swift Brewfest Ram
                 { 17,  37828 }, -- Great Brewfest Kodo
                 { 19,  37863 }, -- Direbrew's Remote

@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- Premade Groups Filter
 -------------------------------------------------------------------------------
--- Copyright (C) 2025 Bernhard Saumweber
+-- Copyright (C) 2026 Bernhard Saumweber
 --
 -- This program is free software; you can redistribute it and/or modify
 -- it under the terms of the GNU General Public License as published by
@@ -154,3 +154,5 @@ L["settings.rioRatingColors.title"] = "Rating in Raider.IO Colors"
 L["settings.rioRatingColors.tooltip"] = "Use the Raider.IO rating color scheme for Mythic+ ratings if the Raider.IO addon is loaded."
 L["settings.cancelOldestApp.title"] = "Cancel Oldest Application"
 L["settings.cancelOldestApp.tooltip"] = "If you have the maximum number of pending applications, click on any group to cancel your oldest application first, then click again to apply."
+L["settings.compactListEntries.title"] = "Compact List Entries"
+L["settings.compactListEntries.tooltip"] = "Hides the playstyle line so items in the group list use less vertical space (as in versions before the Midnight prepatch)."

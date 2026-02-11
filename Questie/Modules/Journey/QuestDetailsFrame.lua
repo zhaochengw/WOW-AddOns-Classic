@@ -8,10 +8,29 @@ local _QuestieJourney = QuestieJourney.private
 local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+---@type QuestieReputation
+local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+---@type QuestieLib
+local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
+
+---@param questId QuestId
+---@return string|nil
+function _QuestieJourney:GetReputationRewardString(questId)
+    if not questId then
+        return nil
+    end
+
+    local reputationRewards = QuestieReputation.GetReputationReward(questId)
+    if not reputationRewards or not next(reputationRewards) then
+        return nil
+    end
+
+    return QuestieReputation.GetReputationRewardString(reputationRewards)
+end
 
 
 -- TODO remove again once the call in manageZoneTree was removed
@@ -35,18 +54,32 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
 
     -- Generic Quest Information
 
-    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Recommended Quest Level: '), 'yellow') .. quest.level, true)
+    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Recommended Quest Level") .. l10n(": "), 'yellow') .. quest.level, true)
     container:AddChild(levelLabel)
 
-    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Minimum Required Level for Quest: '), 'yellow') .. quest.requiredLevel, true)
+    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Minimum Required Level for Quest") .. l10n(": "), 'yellow') .. quest.requiredLevel, true)
     container:AddChild(minLevelLabel)
 
     local levelDiffString = _QuestieJourney:GetDifficultyString(quest.level, quest.requiredLevel)
     local levelDiffLabel = _QuestieJourney:CreateLabel(levelDiffString, true)
     container:AddChild(levelDiffLabel)
 
-    local questIdLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Quest ID: '), 'yellow') .. quest.Id, true)
+    local questIdLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Quest ID") .. l10n(": "), 'yellow') .. quest.Id, true)
     container:AddChild(questIdLabel)
+
+    local reputationRewardString = _QuestieJourney:GetReputationRewardString(quest.Id)
+    if reputationRewardString then
+        local labelText = Questie:Colorize(l10n("Reputation Reward") .. l10n(": "), 'yellow') .. Questie:Colorize(reputationRewardString, "reputationBlue")
+        local reputationRewardLabel = _QuestieJourney:CreateLabel(labelText, true)
+        container:AddChild(reputationRewardLabel)
+    end
+
+    local breadcrumbForQuestId = QuestieDB.QueryQuestSingle(quest.Id, "breadcrumbForQuestId")
+    if breadcrumbForQuestId and breadcrumbForQuestId ~= 0 then
+        local completedStatus = Questie.db.char.complete[quest.Id] and Questie:Colorize(YES, 'green') or Questie:Colorize(NO, 'red')
+        local completedLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Completed') .. l10n(": "), 'yellow') .. completedStatus, true)
+        container:AddChild(completedLabel)
+    end
 
     QuestieJourneyUtils:Spacer(container)
 
@@ -85,7 +118,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         if startindex == 0 then
             return
         end
-        
+
         local continent = QuestieJourneyUtils:GetZoneName(startindex)
 
         startNPCZoneLabel:SetText(l10n(continent))
@@ -102,7 +135,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         end
 
         local startNPCIdLabel = AceGUI:Create("Label")
-        startNPCIdLabel:SetText("NPC ID: ".. startNpc.id)
+        startNPCIdLabel:SetText(l10n("NPC ID").. l10n(": ") .. startNpc.id)
         startNPCIdLabel:SetFullWidth(true)
         startNPCGroup:AddChild(startNPCIdLabel)
 
@@ -172,7 +205,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
 
             local continent = QuestieJourneyUtils:GetZoneName(startindex)
 
-            startObjectZoneLabel:SetText(continent)
+            startObjectZoneLabel:SetText(l10n(continent))
             startObjectZoneLabel:SetFullWidth(true)
             startObjectGroup:AddChild(startObjectZoneLabel)
 
@@ -186,7 +219,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
             end
 
             local startObjectIdLabel = AceGUI:Create("Label")
-            startObjectIdLabel:SetText("Object ID: ".. startObj.id)
+            startObjectIdLabel:SetText(l10n("Object ID") .. l10n(": ") .. startObj.id)
             startObjectIdLabel:SetFullWidth(true)
             startObjectGroup:AddChild(startObjectIdLabel)
 
@@ -259,7 +292,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         end
 
         local continent = QuestieJourneyUtils:GetZoneName(endindex)
-        
+
         endNPCZoneLabel:SetText(l10n(continent))
         endNPCZoneLabel:SetFullWidth(true)
         endNPCGroup:AddChild(endNPCZoneLabel)
@@ -276,7 +309,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         end
 
         local endNPCIdLabel = AceGUI:Create("Label")
-        endNPCIdLabel:SetText("NPC ID: ".. endNPC.id)
+        endNPCIdLabel:SetText(l10n("NPC ID") .. l10n(": ") .. endNPC.id)
         endNPCIdLabel:SetFullWidth(true)
         endNPCGroup:AddChild(endNPCIdLabel)
 

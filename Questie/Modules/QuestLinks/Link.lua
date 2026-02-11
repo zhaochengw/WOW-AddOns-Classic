@@ -11,6 +11,8 @@ local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
 ---@type TrackerUtils
 local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
+---@type QuestieEvent
+local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 ---@type ZoneDB
@@ -80,7 +82,7 @@ function QuestieLink:GetQuestHyperLink(questId, senderGUID)
         senderGUID = UnitGUID("player")
     end
 
-    return "|Hquestie:"..questId..":"..senderGUID.."|h"..QuestieLib:PrintDifficultyColor(questLevel, "[", isRepeatable, QuestieDB.IsActiveEventQuest(questId), QuestieDB.IsPvPQuest(questId))..coloredQuestName..QuestieLib:PrintDifficultyColor(questLevel, "]", isRepeatable, QuestieDB.IsActiveEventQuest(questId), QuestieDB.IsPvPQuest(questId)).."|h"
+    return "|Hquestie:"..questId..":"..senderGUID.."|h"..QuestieLib:PrintDifficultyColor(questLevel, "[", isRepeatable, QuestieEvent.IsEventQuest(questId), QuestieDB.IsPvPQuest(questId))..coloredQuestName..QuestieLib:PrintDifficultyColor(questLevel, "]", isRepeatable, QuestieEvent.IsEventQuest(questId), QuestieDB.IsPvPQuest(questId)).."|h"
 end
 
 ---@param link string
@@ -126,10 +128,7 @@ end
 _AddQuestTitle = function(quest)
     local questLevel = QuestieLib:GetLevelString(quest.Id, quest.level)
 
-    local titleColor = "gold"
-    if quest.specialFlags == 1 then
-        titleColor = "lightBlue"
-    end
+    local titleColor = string.sub(QuestieLib:PrintDifficultyColor(quest.level, "", QuestieDB.IsRepeatable(quest.Id), QuestieEvent.IsEventQuest(quest.Id), QuestieDB.IsPvPQuest(quest.Id)),5,10)
 
     if Questie.db.profile.trackerShowQuestLevel and Questie.db.profile.enableTooltipsQuestID then
         _AddColoredTooltipLine(questLevel .. quest.name .. " (" .. quest.Id .. ")", titleColor)
@@ -202,10 +201,10 @@ end
 _AddDungeonInfo = function(quest)
     local zoneOrSort = quest.zoneOrSort
     if zoneOrSort and zoneOrSort > 0 then
-        local dungeonName = ZoneDB:GetDungeonName(zoneOrSort)
-        if dungeonName then
+        local localizedDungeonName = ZoneDB:GetLocalizedDungeonName(zoneOrSort)
+        if localizedDungeonName then
             _AddTooltipLine(" ")
-            _AddColoredTooltipLine(FormatLabelWithColon(l10n("Dungeon")) .. " " .. dungeonName, "gray")
+            _AddColoredTooltipLine(FormatLabelWithColon(l10n("Dungeon")) .. " " .. localizedDungeonName, "gray")
         end
     end
 end
@@ -291,7 +290,7 @@ _GetQuestStarter = function(quest)
             starterZoneName = TrackerUtils:GetZoneNameByID(quest.zoneOrSort)
         end
 
-        return starterName, starterZoneName
+        return starterName, l10n(starterZoneName)
     end
 
     return nil, nil
@@ -322,7 +321,7 @@ _GetQuestFinisher = function(quest)
         finisherZoneName = TrackerUtils:GetZoneNameByID(quest.zoneOrSort)
     end
 
-    return finisherName, finisherZoneName
+    return finisherName, l10n(finisherZoneName)
 end
 
 ---@param quest Quest
@@ -387,22 +386,46 @@ _AddPlayerQuestProgress = function(quest, starterName, starterZoneName, finisher
     end
 end
 
-hooksecurefunc("ChatFrame_OnHyperlinkShow", function(...)
-    local _, link, _, button = ...
+-- Compatibility: 2.5.5+ uses ChatFrameMixin:OnHyperlinkClick instead of ChatFrame_OnHyperlinkShow
+local function HandleHyperlinkClick(link, button)
     if (IsShiftKeyDown() and ChatEdit_GetActiveWindow() and button == "LeftButton") then
         local linkType, questId, _ = string.split(":", link)
         if linkType and linkType == "questie" and questId then
-            Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:OnHyperlinkShow] Relinking Quest Link to chat:", link)
+            Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieTooltips:OnHyperlinkClick] Relinking Quest Link to chat:", link)
             questId = tonumber(questId)
 
             local quest = QuestieDB.GetQuest(questId)
             if quest then
-                local msg = ChatFrame1EditBox:GetText()
-                if msg then
-                    ChatFrame1EditBox:SetText("")
-                    ChatEdit_InsertLink(string.gsub(msg, "%|Hquestie:" .. questId .. ":.*%|h", "%[%[" .. quest.level .. "%] " .. quest.name .. " %(" .. questId .. "%)%]"))
+                local activeWindow = ChatEdit_GetActiveWindow()
+                if activeWindow then
+                    local msg = activeWindow:GetText()
+                    if msg then
+                        activeWindow:SetText("")
+                        ChatEdit_InsertLink(string.gsub(msg, "%|Hquestie:" .. questId .. ":.*%|h", "%[%[" .. quest.level .. "%] " .. quest.name .. " %(" .. questId .. "%)%]"))
+                    end
                 end
             end
         end
     end
-end)
+end
+
+-- Try new API first (2.5.5+)
+if ChatFrameMixin and ChatFrameMixin.OnHyperlinkClick then
+    local function HookChatFrameHyperlink(chatFrame)
+        chatFrame:HookScript("OnHyperlinkClick", function(_, link, _, button)
+            HandleHyperlinkClick(link, button)
+        end)
+    end
+
+    for i = 1, (NUM_CHAT_WINDOWS or 10) do
+        local chatFrame = _G["ChatFrame" .. i]
+        if chatFrame then
+            HookChatFrameHyperlink(chatFrame)
+        end
+    end
+else
+    -- Fallback to old API (pre-2.5.5)
+    hooksecurefunc("ChatFrame_OnHyperlinkShow", function(_, link, _, button)
+        HandleHyperlinkClick(link, button)
+    end)
+end

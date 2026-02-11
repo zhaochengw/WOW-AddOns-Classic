@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-10-22T11:11:23Z
+    This file was last updated on 2026-01-02T00:31:32Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -90,6 +90,7 @@ local UnitName          = _G.UnitName;
 local UnitGUID          = _G.UnitGUID;
 local GetTime           = _G.GetTime;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- Blizzard event management
 function D.OnEvent(frame, event, ...)
@@ -244,9 +245,15 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
 
     -- we need to rescan if the focus is not in our group and it's nice or if we already have a focus unit registered
 
-    local FocusCurrent_ElligStatus = (
-        not self.Status.Unit_Array_GUIDToUnit[UnitGUID("focus")]    -- it's not already in the unit array
+    local focusGUID = UnitGUID("focus")
+
+    local FocusCurrent_ElligStatus;
+
+    if canaccessvalue(focusGUID) then
+        FocusCurrent_ElligStatus = (
+        not self.Status.Unit_Array_GUIDToUnit[focusGUID]    -- it's not already in the unit array
         ) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
+    end
 
 
     if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
@@ -522,10 +529,7 @@ do
         local unitguid = UnitGUID(UnitID);
 
         --[==[@debug@
-
-
-        D:Debug("UNIT_AURA", o_auraUpdateInfo, UnitID, GetTime() + (GetTime() % 1));
-
+        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@]==]
 
 
@@ -1124,39 +1128,12 @@ do
     local GetTalentInfo      = _G.GetTalentInfo;
 
     local function CheckTalentsAvaibility() -- {{{
-
-
         if not (UnitGUID("player")) then
+            D:Debug("Player GUID not available");
             return false;
         end
 
-        local playerLevel = UnitLevel("player");
-
-        -- no talents before level 10
-        if playerLevel > 0 and (playerLevel < 10 or DC.CATACLYSM and playerLevel < 15) then
-            return true;
-        end
-
-        -- if we know that there are unspent talents, it means we can check for
-        -- them
-        if not DC.WOWC and _G.GetNumUnspentTalents and GetNumUnspentTalents() then
-            return true;
-        end
-
-        if (DC.WOWC) then
-            -- local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo
-            -- On loading the 8th value (available) is nil
-            for talent=1, (not DC.CATACLYSM and GetNumTalentTabs and GetNumTalentTabs() or 3) do
-                if (select(8, GetTalentInfo(talent, 1))) then
-                    return true;
-                end
-            end
-        end
-
-        -- then, if none of the above succeeded, talents aren't ready to be
-        -- polled.
-        return false;
-
+        return true;
     end -- }}}
 
     --[=[@alpha@
@@ -1198,6 +1175,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.30";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.34";
 
 -- The Great Below

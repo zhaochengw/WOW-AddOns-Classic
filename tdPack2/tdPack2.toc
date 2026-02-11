@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 ## Title: |cff00fffftdPack2|r - Sort bags
 ## Title-zhCN: |cff00fffftdPack2|r - 整理背包
 ## Notes: Sort bags, allow custom sorting, support multiple bag plugins

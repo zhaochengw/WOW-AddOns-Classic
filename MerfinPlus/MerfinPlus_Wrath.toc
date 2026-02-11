@@ -1,0 +1,41 @@
+## Interface: 30405, 38000
+## Title: MerfinPlus
+## Author: Merfin
+## Version: 2.24
+## X-Website: discord.gg/merfin
+## X-Flavor: Wrath
+## Notes: Inserts Merfin media into LibSharedMedia's storage.
+## Notes-deDE: Fügt Merfin-Medien zur LibSharedMedia-Bibliothek hinzu.
+## Notes-frFR: Ajoute les médias Merfin au stockage de LibSharedMedia.
+## Notes-esES: Inserta los medios de Merfin en el almacenamiento de LibSharedMedia.
+## Notes-esMX: Inserta los medios de Merfin en el almacenamiento de LibSharedMedia.
+## Notes-itIT: Inserisce i media Merfin nella libreria LibSharedMedia.
+## Notes-ruRU: Добавляет медиафайлы Merfin в библиотеку LibSharedMedia.
+## Notes-koKR: Merfin 미디어를 LibSharedMedia 저장소에 추가합니다.
+## Notes-zhCN: 将 Merfin 媒体添加到 LibSharedMedia 库中。
+## Notes-zhTW: 將 Merfin 媒體加入 LibSharedMedia 資料庫。
+## IconTexture: Interface\AddOns\MerfinPlus\Media\icons\merfinui_logo_2
+## SavedVariables: MerfinPlusSaved
+## OptionalDeps: LibStub, LibSharedMedia-3.0
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## X-Curse-Project-ID: 918326
+## X-Wago-ID: bGoMEq60
+## AllowLoadGameType: wrath, titan
+
+libs\libs.xml
+Localizations\locales_addon.lua
+MerfinPlus.lua
+Options.lua
+Media\Media.xml
+WeakAuras_API\WeakAuras_API_TR.xml
+Localizations\localizations.xml
+
+Data\ItemDropData\Wrath_ItemDrop_Data_Faction.lua
+Data\ItemDropData\Wrath_ItemDrop_Data_LootSets.lua
+Data\ItemDropData\Wrath_ItemDrop_Data_Profession.lua
+Data\ItemDropData\Wrath_ItemDrop_Data_TierTokens.lua
+Data\ItemDropData\Wrath_ItemDrop_Data_Vendor.lua
+Data\ItemDropData\Wrath_ItemDrop_Core.lua
+
+Data\FoodAndDrinkData\Wrath_FoodAndDrinkData.lua

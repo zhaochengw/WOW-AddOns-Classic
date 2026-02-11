@@ -37,6 +37,7 @@ function QuestieTBCObjectFixes:Load()
             [objectKeys.zoneID] = zoneIDs.THE_SHATTERED_HALLS,
         },
         [181697] = {
+            [objectKeys.name] = "Pile of Leaves",
             [objectKeys.spawns] = {[zoneIDs.AZUREMYST_ISLE]={{33.7,74.4},{37,69.4},{37,69.5},{38,72},{38.2,69.4},{38.2,69.6},{38.8,74.4},{38.8,74.6},{39.9,69.5},{39.9,71.2},{39.9,71.5},{40,69.2},{41.3,67.1},{42.4,66.1},{42.4,68.8},{42.6,66},{42.6,68.9},{43.9,65.8},{44.4,69},{44.6,68.8},{44.8,70.4},{44.8,70.5},{46.3,66.3},{46.5,66.2},{48.3,64.9},{48.5,64.7},{49.3,61.9},{50.1,57.4},{50.1,57.5},{50.2,60.1},{50.3,63.3},{50.3,66.9},{50.4,63.5},{50.5,63.1},{51.1,64.7},{51.4,65.9},{51.5,66},{52.8,67},{54.4,64.4},{54.4,64.5},{54.5,64.4},{54.5,64.5},{55.4,62},{55.5,62.1},{55.7,63.9},{57,63.6}}},
         },
         [181746] = {
@@ -51,8 +52,18 @@ function QuestieTBCObjectFixes:Load()
             [objectKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE]={{41,30}}},
             [objectKeys.zoneID] = zoneIDs.BLOODMYST_ISLE,
         },
+        [181849] = { -- Ravager Cage
+            [objectKeys.name] = "Ravager Cage",
+            [objectKeys.spawns] = {[zoneIDs.AZUREMYST_ISLE]={{54.03,9.95}}},
+            [objectKeys.zoneID] = zoneIDs.AZUREMYST_ISLE,
+        },
         [181897] = {
             [objectKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE]={{68.3,21.7},{69.98,26.3},{70.6,16.5},{71.4,11.7},{71.4,28.2},{72.7,21.4},{74.7,16.3},{75,8.7},{75.4,19.1},{75.7,28.4},{75.54,13.85},{76,24.8},{76.8,21.4}}},
+        },
+        [181928] = {
+            [objectKeys.name] = "Princess Stillpine's Cage",
+            [objectKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE] = {{68.26,80.99}}},
+            [objectKeys.zoneID] = zoneIDs.BLOODMYST_ISLE,
         },
         [182116] = {
             [objectKeys.spawns] = {[zoneIDs.ZANGARMARSH]={{61.5,56.1},{62.4,53.0},{62.4,59.2},{62.5,53.0},{62.5,59.2},{62.9,45.5},{63.0,45.4},{64.1,51.2},{64.8,49.3},{64.8,49.5},{65.0,53.8},{65.4,50.6},{65.6,50.7},{65.8,47.5},{65.9,47.4},{66.0,62.2},{66.1,46.4},{66.4,52.1},{66.5,52.1},{66.6,47.9},{67.3,50.1},{67.3,54.7},{67.7,53.4},{68.0,48.3},{68.3,44.7},{68.3,53.7},{68.6,54.4},{68.6,54.5},{68.8,47.8},{70.2,47.9},{70.7,50.2},{71.0,53.9},{71.1,51.7},{71.2,47.2},{71.6,45.4},{71.6,45.5},{73.1,46.8}}},
@@ -890,6 +901,20 @@ function QuestieTBCObjectFixes:Load()
             [objectKeys.name] = "Blackhoof Cage",
             [objectKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH]={{40.7,11.9},{40.89,12.43},{40.63,11.5},{41.62,10.8},{41.93,13.22},{41.48,12.98},{42.39,11.76}}},
             [objectKeys.zoneID] = zoneIDs.DUSTWALLOW_MARSH,
+        },
+        [400021] = { -- Cenarion Thicket Moonwell
+            [objectKeys.name] = "Moonwell",
+            [objectKeys.questStarts] = {},
+            [objectKeys.questEnds] = {},
+            [objectKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{45.1, 23.6}}},
+            [objectKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
+        },
+        [400022] = { -- Evergrove Moonwell
+            [objectKeys.name] = "Moonwell",
+            [objectKeys.questStarts] = {},
+            [objectKeys.questEnds] = {},
+            [objectKeys.spawns] = {[zoneIDs.BLADES_EDGE_MOUNTAINS]={{62.0, 39.2}}},
+            [objectKeys.zoneID] = zoneIDs.BLADES_EDGE_MOUNTAINS,
         },
     }
 end

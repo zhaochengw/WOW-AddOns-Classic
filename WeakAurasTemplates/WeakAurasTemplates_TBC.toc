@@ -1,0 +1,21 @@
+## Interface: 20505
+## Title: WeakAuras Templates
+## Author: The WeakAuras Team
+## Version: 5.21.2
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
+## Notes: Templates for WeakAuras
+## Notes-esES: Plantillas para WeakAuras
+## Notes-esMX: Plantillas para WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+## AllowLoadGameType: tbc
+
+locales.xml
+
+TriggerTemplates.lua
+TriggerTemplatesDataTBC.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua

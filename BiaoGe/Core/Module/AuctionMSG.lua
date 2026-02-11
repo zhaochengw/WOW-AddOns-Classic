@@ -62,7 +62,7 @@ BG.Init(function()
         f:SetPoint("TOPLEFT", 7, -7)
         f:SetPoint("BOTTOMRIGHT", -7, 7)
         f:SetMaxLines(maxLine)
-        f:SetFontObject(GameFontNormalSmall2)
+        f:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
         f:SetJustifyH("LEFT")
         f:SetHyperlinksEnabled(true)
         BG.FrameAuctionMSG = f
@@ -580,7 +580,7 @@ BG.Init(function()
         end
 
         local t = BG.FrameAuctionMSG:CreateFontString()
-        t:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
+        t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
         t:SetPoint("TOPRIGHT", BG.FrameAuctionMSG, "BOTTOMRIGHT", 5, -7)
         t:SetTextColor(1, 0.82, 0)
         t:SetJustifyH("LEFT")

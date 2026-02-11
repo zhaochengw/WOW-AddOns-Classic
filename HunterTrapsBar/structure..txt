@@ -1,0 +1,18 @@
+HunterTrapsBar/
+├─ HunterTrapsBar.toc
+├─ Core/
+│  ├─ Init.lua            -- addon bootstrap & lifecycle
+│  ├─ Frame.lua           -- main bar frame creation
+│  ├─ Commands.lua        -- /htb slash commands
+│
+├─ UI/
+│  ├─ Buttons.lua         -- trap button creation
+│
+├─ Data/
+│  ├─ Traps.lua           -- trap spell definitions
+│
+├─ Saved/
+│  ├─ Defaults.lua        -- default DB values
+│
+│
+└─ README_V2.txt          -- rewrite documentation

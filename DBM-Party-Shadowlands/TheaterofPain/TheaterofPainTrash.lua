@@ -1,7 +1,8 @@
+if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("TheaterofPainTrash", "DBM-Party-Shadowlands", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250722005255")
+mod:SetRevision("20260112042022")
 mod:SetZone(2293)
 mod:RegisterZoneCombat(2293)
 --mod:SetModelID(47785)

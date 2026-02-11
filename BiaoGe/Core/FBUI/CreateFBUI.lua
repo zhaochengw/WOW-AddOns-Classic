@@ -64,8 +64,29 @@ end
 function BG.CreateFBUI(FB, type)
     if BG[FB..type.."IsRoadUI"] then return end
     BG[FB .. type .. "IsRoadUI"]=true
+
+    -- 正常格子
+    for t = 1, Maxt[FB] do
+        BG[type .. "TitleUI"](FB, t)
+        local _, bb = BossNum(FB, 0, t)
+        for b = 1, bb do
+            if BossNum(FB, b, t) > Maxb[FB] - 1 then
+                break
+            end
+            local ii = BG.GetMaxi(FB, BossNum(FB, b, t))
+            for i = 1, ii do
+                BG[type .. "ZhuangBeiUI"](FB, t, b, bb, i, ii)
+                BG[type .. "MaiJiaUI"](FB, t, b, bb, i, ii)
+                BG[type .. "JinEUI"](FB, t, b, bb, i, ii)
+                BG[type .. "DiSeUI"](FB, t, b, bb, i, ii)
+            end
+            BG["BossNameUI"](FB, t, b, bb, nil, ii, GetFrameName(type))
+            BG["JiShaUI"](FB, t, b, bb, nil, ii, GetFrameName(type))
+        end
+    end
+
+    -- 对账
     if type == "FB" then
-        -- 对账
         for t = 1, Maxt[FB] do
             local _, bb = BossNum(FB, 0, t)
             for b = 1, bb do
@@ -93,28 +114,9 @@ function BG.CreateFBUI(FB, type)
                         BG.DuiZhangDiSeUI(FB, t, b, bb, i, ii)
                     end
                 end
-                BG.DuiZhangBossNameUI(FB, t, b, bb, nil, ii)
+                BG.BossNameUI(FB, t, b, bb, nil, ii, "DuiZhangFrame")
+                -- BG.DuiZhangBossNameUI(FB, t, b, bb, nil, ii)
             end
-        end
-    end
-
-    -- 正常格子
-    for t = 1, Maxt[FB] do
-        BG[type .. "TitleUI"](FB, t)
-        local _, bb = BossNum(FB, 0, t)
-        for b = 1, bb do
-            if BossNum(FB, b, t) > Maxb[FB] - 1 then
-                break
-            end
-            local ii = BG.GetMaxi(FB, BossNum(FB, b, t))
-            for i = 1, ii do
-                BG[type .. "ZhuangBeiUI"](FB, t, b, bb, i, ii)
-                BG[type .. "MaiJiaUI"](FB, t, b, bb, i, ii)
-                BG[type .. "JinEUI"](FB, t, b, bb, i, ii)
-                BG[type .. "DiSeUI"](FB, t, b, bb, i, ii)
-            end
-            BG[type .. "BossNameUI"](FB, t, b, bb, nil, ii)
-            BG[type .. "JiShaUI"](FB, t, b, bb, nil, ii)
         end
     end
 
@@ -129,7 +131,7 @@ function BG.CreateFBUI(FB, type)
             BG[type .. "JinEUI"](FB, t, b, nil, i, ii)
             BG[type .. "DiSeUI"](FB, t, b, nil, i, ii)
         end
-        BG[type .. "BossNameUI"](FB, t, b, nil, nil, nil, GetFrameName(type))
+        BG["BossNameUI"](FB, t, b, nil, nil, nil, GetFrameName(type))
     end
 
     BG[type .. "ZhiChuZongLanGongZiUI"](FB)

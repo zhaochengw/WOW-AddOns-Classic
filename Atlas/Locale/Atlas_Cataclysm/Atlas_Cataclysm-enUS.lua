@@ -141,26 +141,26 @@ L["Zungam"] = "Zungam"
 -- Zone Names, Acronyms, and Common Strings
 --************************************************
 --Cataclysm Acronyms
-L["BH"] = "BH";            --Baradin Hold
-L["BoT"] = "BoT";          --Bastion of Twilight
-L["BRC"] = "BRC";          --Blackrock Caverns
-L["BWD"] = "BWD";          --Blackwing Descent
-L["CoT-DS"] = "CoT-DS";    --Caverns of Time: Dragon Soul
-L["CoT-ET"] = "CoT-ET";    --Caverns of Time: End Time
-L["CoT-HoT"] = "CoT-HoT";  --Caverns of Time: Hour of Twilight
-L["CoT-WoE"] = "CoT-WoE";  --Caverns of Time: Well of Eternity
-L["FL"] = "FL";            --Firelands
-L["GB"] = "GB";            --Grim Batol
-L["HoO"] = "HoO";          --Halls of Origination
-L["LCoT"] = "LCoT";        --Lost City of the Tol'vir
-L["SFK"] = "SFK";          -- Shadowfang Keep
-L["TSC"] = "TSC";          --The Stonecore
-L["TWT"] = "TWT";          --Throne of the Four Winds
-L["ToTT"] = "ToTT";        --Throne of the Tides
-L["VC"] = "VC";            -- The Deadmines
-L["VP"] = "VP";            --The Vortex Pinnacle
-L["ZA"] = "ZA";            -- Zul'Aman
-L["ZG"] = "ZG";            --Zul'Gurub
+L["BH"] = "BH";           --Baradin Hold
+L["BoT"] = "BoT";         --Bastion of Twilight
+L["BRC"] = "BRC";         --Blackrock Caverns
+L["BWD"] = "BWD";         --Blackwing Descent
+L["CoT-DS"] = "CoT-DS";   --Caverns of Time: Dragon Soul
+L["CoT-ET"] = "CoT-ET";   --Caverns of Time: End Time
+L["CoT-HoT"] = "CoT-HoT"; --Caverns of Time: Hour of Twilight
+L["CoT-WoE"] = "CoT-WoE"; --Caverns of Time: Well of Eternity
+L["FL"] = "FL";           --Firelands
+L["GB"] = "GB";           --Grim Batol
+L["HoO"] = "HoO";         --Halls of Origination
+L["LCoT"] = "LCoT";       --Lost City of the Tol'vir
+L["SFK"] = "SFK";         -- Shadowfang Keep
+L["TSC"] = "TSC";         --The Stonecore
+L["TWT"] = "TWT";         --Throne of the Four Winds
+L["ToTT"] = "ToTT";       --Throne of the Tides
+L["VC"] = "VC";           -- The Deadmines
+L["VP"] = "VP";           --The Vortex Pinnacle
+L["ZA"] = "ZA";           -- Zul'Aman
+L["ZG"] = "ZG";           --Zul'Gurub
 
 --*********************
 -- Cataclysm Instances
@@ -188,8 +188,8 @@ L["Thrall"] = "Thrall";
 --Caverns of Time: Well of Eternity
 
 --Firelands
-L["Lurah Wrathvine <Crystallized Firestone Collector>"] = "Lurah Wrathvine <Crystallized Firestone Collector>";    -- 54402
-L["Naresir Stormfury <Avengers of Hyjal Quartermaster>"] = "Naresir Stormfury <Avengers of Hyjal Quartermaster>";  -- 54401
+L["Lurah Wrathvine <Crystallized Firestone Collector>"] = "Lurah Wrathvine <Crystallized Firestone Collector>";   -- 54402
+L["Naresir Stormfury <Avengers of Hyjal Quartermaster>"] = "Naresir Stormfury <Avengers of Hyjal Quartermaster>"; -- 54401
 
 --Grim Batol
 L["Baleflame"] = "Baleflame";

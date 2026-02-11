@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2026-01-02T00:31:32Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1487,7 +1487,11 @@ do
 
                 if RangeStatus and self.UpdateCD < Status.UpdateCooldown then
                     if SpellID > 0 then
-                        CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                        if not DC.MN then
+                            CooldownFrame_Set (self.CooldownFrame, GetSpellCooldown(Status.CuringSpells[DebuffType]));
+                        else
+                            self.CooldownFrame:SetCooldownFromDurationObject(C_Spell.GetSpellCooldownDuration(Status.CuringSpells[DebuffType]));
+                        end
                     else
                         --D:Debug("SetColor(): setting interface cooldown for ", -1 * SpellID, "GetItemCooldown:",  GetItemCooldown(-1 * SpellID));
                         CooldownFrame_Set (self.CooldownFrame, GetItemCooldown(-1 * SpellID));
@@ -1871,6 +1875,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.30";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.34";
 
 -- Heresy

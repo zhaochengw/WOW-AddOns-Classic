@@ -35,11 +35,14 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<FontString inherits="ChatFontNormal"/>
+		<!-- <FontString inherits="ChatFontNormal"/> -->
 	</EditBox>
 
-	<EditBox name="BiaoGe_InputBoxTemplate" inherits="BiaoGe_InputBoxScriptTemplate, BiaoGe_InputBoxVisualTemplate" virtual="true"/>
-
+	<EditBox name="BiaoGe_InputBoxTemplate" inherits="BiaoGe_InputBoxScriptTemplate, BiaoGe_InputBoxVisualTemplate" virtual="true">
+		<Scripts>
+			<OnLoad function="BiaoGe_InputBoxTemplate_OnLoad"/>
+		</Scripts>
+	</EditBox>
 
 	<EditBox name="BiaoGe_InputBoxInstructionsTemplate" inherits="BiaoGe_InputBoxTemplate" virtual="true">
 		<!--KeyValues>
@@ -120,10 +123,3 @@
 		</Scripts>
 	</EditBox>
 </Ui>
-
-<!-- 
-common-search-border-left
-common-search-border-right
-common-search-border-middle
-<Texture parentKey="Left" atlas="common-gray-button-entrybox-left" useAtlasSize="false">
- -->

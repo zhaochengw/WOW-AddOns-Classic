@@ -19,6 +19,7 @@ local bossModPrototype = private:GetPrototype("DBMMod")
 local test = private:GetPrototype("DBMTest")
 
 local playerName = UnitName("player")
+local textureCode = " |T%s:12:12|t "
 
 ---@diagnostic disable: inject-field
 local frame = CreateFrame("Frame", "DBMSpecialWarning", UIParent)
@@ -92,30 +93,73 @@ function DBM:UpdateSpecialWarningOptions()
 	end
 end
 
-function DBM:AddSpecialWarning(text, force, specWarnObject)
+---@param text any
+---@param force boolean?
+---@param specWarnObject any
+---@param number number? Value for sound, colors, and vibration settings lookup
+---@param customIcon string|number? Custom Icon, Only used for secret textures so also used as a nil check
+---@param noSound boolean?
+function DBM:AddSpecialWarning(text, force, specWarnObject, number, customIcon, noSound)
+	--Now, check if all special warning filters are enabled to save cpu and abort immediately if true and it comes from RAID_WARNING API
+	if customIcon and self.Options.HideDBMWarnings or (self.Options.DontPlaySpecialWarningSound and self.Options.DontShowSpecialWarningFlash and self.Options.DontShowSpecialWarningText) then return end
 	local added = false
-	if not frame.font1ticker then
-		font1elapsed = 0
-		font1.lastUpdate = GetTime()
-		font1:SetText(text)
-		font1:Show()
-		added = true
-		frame.font1ticker = frame.font1ticker or C_Timer.NewTicker(0.05, fontHide1)
-	elseif not frame.font2ticker or force then
-		font2elapsed = 0
-		font2.lastUpdate = GetTime()
-		font2:SetText(text)
-		font2:Show()
-		added = true
-		frame.font2ticker = frame.font2ticker or C_Timer.NewTicker(0.05, fontHide2)
-	end
-	if not added then
-		local prevText1 = font2:GetText()
-		font1:SetText(prevText1)
-		font1elapsed = font2elapsed
-		self:AddSpecialWarning(text, true, specWarnObject)
+	local formatedText
+	if C_StringUtil and customIcon then
+		formatedText = C_StringUtil.WrapString(text, self.Options.SpecialWarningIcon and customIcon and textureCode:format(customIcon) or "", self.Options.SpecialWarningIcon and customIcon and textureCode:format(customIcon) or "")
 	else
-		test:Trace(specWarnObject and specWarnObject.mod or self, "ShowSpecialWarning", specWarnObject, text)
+		formatedText = text
+	end
+	if not self.Options.DontShowSpecialWarningText then
+		if not frame.font1ticker then
+			font1elapsed = 0
+			font1.lastUpdate = GetTime()
+			font1:SetText(formatedText)
+			font1:Show()
+			added = true
+			frame.font1ticker = frame.font1ticker or C_Timer.NewTicker(0.05, fontHide1)
+		elseif not frame.font2ticker or force then
+			font2elapsed = 0
+			font2.lastUpdate = GetTime()
+			font2:SetText(formatedText)
+			font2:Show()
+			added = true
+			frame.font2ticker = frame.font2ticker or C_Timer.NewTicker(0.05, fontHide2)
+		end
+		if not added then
+			if not customIcon then
+				--GetText can't be called on secrets, so if customIcon exists this code path is skipped
+				local prevText1 = font2:GetText()
+				font1:SetText(prevText1)
+				font1elapsed = font2elapsed
+				self:AddSpecialWarning(text, true, specWarnObject, number, customIcon, noSound)
+			end
+		else
+			test:Trace(specWarnObject and specWarnObject.mod or self, "ShowSpecialWarning", specWarnObject, text)
+		end
+	end
+	--DUPLICATE CODE
+	--This code is for special warnings that bypass normal "show" method of hard coded objects (such as midnight secrets)
+	if customIcon then
+		if number and not noSound and not self.Options.DontPlaySpecialWarningSound then
+			self:PlaySpecialWarningSound(number, force, true)
+		end
+		if number then
+			if self.Options["SpecialWarningFlash" .. number] and not self.Options.DontShowSpecialWarningFlash then
+				if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then return end--No flash if trivial
+				local flashColor = self.Options["SpecialWarningFlashCol" .. number]
+				local repeatCount = self.Options["SpecialWarningFlashCount" .. number] or 1
+				self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura" .. number], self.Options["SpecialWarningFlashAlph" .. number], repeatCount - 1)
+			end
+			if not self.Options.DontDoSpecialWarningVibrate and self.Options["SpecialWarningVibrate" .. number] then
+				self:VibrateController()
+			end
+		end
+		if self.Options.ShowSWarningsInChat then
+			local colorCode = ("|cff%.2x%.2x%.2x"):format(DBM.Options.SpecialWarningFontCol[1] * 255, DBM.Options.SpecialWarningFontCol[2] * 255, DBM.Options.SpecialWarningFontCol[3] * 255)
+			local combinedText = C_StringUtil.WrapString(formatedText, colorCode .. "[" .. L.MOVE_SPECIAL_WARNING_TEXT .. "] ", "|r")
+			self:AddMsg(combinedText)
+		end
+		--DUPLICATE CODE
 	end
 end
 
@@ -203,8 +247,6 @@ local function classColoringFunction(cap)
 	end
 	return cap
 end
-
-local textureCode = " |T%s:12:12|t "
 
 local specInstructionalRemapTable = {
 	["dispel"] = "target",
@@ -355,7 +397,7 @@ function specialWarningPrototype:Show(...)
 	--Check if option for this warning is even enabled
 	if (not self.option or self.mod.Options[self.option]) and not moving and frame then
 		--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
-		if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+		if DBM.Options.HideDBMWarnings or (DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText) then return end
 		--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 		if self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 and (self.mod:IsEasyDungeon() or DBM:IsTrivial()) then return end
 		--We also check if person has the role filter turned on (typical for highest end raiders who don't want as much handholding from DBM)
@@ -509,7 +551,7 @@ function specialWarningPrototype:CombinedShow(delay, ...)
 	--Check if option for this warning is even enabled
 	if self.option and not self.mod.Options[self.option] then return end
 	--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
-	if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+	if DBM.Options.HideDBMWarnings or (DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText) then return end
 	--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 	if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
 	local argTable = {...}
@@ -538,7 +580,7 @@ function specialWarningPrototype:PreciseShow(maxTotal, ...)
 	--Check if option for this warning is even enabled
 	if self.option and not self.mod.Options[self.option] then return end
 	--Now, check if all special warning filters are enabled to save cpu and abort immediately if true.
-	if DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText then return end
+	if DBM.Options.HideDBMWarnings or (DBM.Options.DontPlaySpecialWarningSound and DBM.Options.DontShowSpecialWarningFlash and DBM.Options.DontShowSpecialWarningText) then return end
 	--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 	if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
 	local argTable = {...}
@@ -588,6 +630,19 @@ end
 ---@param ... any
 function specialWarningPrototype:Countdown(time, numAnnounces, ...)
 	DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
+end
+
+---@param time number|table
+---@param count number
+function specialWarningPrototype:Loop(time, count)
+	DBMScheduler:ScheduleLoop(time, self.Show, self.mod, self, count)
+end
+
+---@param t number|table
+---@param count number
+---@param name VPSound?
+function specialWarningPrototype:LoopVoice(t, count, name)
+	DBMScheduler:ScheduleLoop(t, self.Play, self.mod, self, count, nil, name)
 end
 
 function specialWarningPrototype:Cancel(_, ...) -- t, ...
@@ -798,11 +853,11 @@ local function newSpecialWarning(self, announceType, spellId, stacks, optionDefa
 		if difficulty then
 			--1 LFR, 2 Normal, 3 Heroic, 4 Mythic
 			--Likely 1 and 2 will never be used, but being prototyped just in case
-			local path = private.isRetail and "EncounterJournal" or "AddOns\\DBM-Core\\textures"
+			local path = "AddOns\\DBM-Core\\textures"
 			if difficulty == 3 then
-				difficultyIcon = "|TInterface\\" .. path .. "\\UI-EJ-Icons.blp:18:18:0:0:255:66:102:118:7:27|t"
+				difficultyIcon = "|TInterface\\" .. path .. "\\uicombattimelinewarningicons.blp:18:18:0:0:512:256:367:399:1:33|t"
 			elseif difficulty == 4 then
-				difficultyIcon = "|TInterface\\" .. path .. "\\UI-EJ-Icons.blp:18:18:0:0:255:66:133:153:40:58|t"
+				difficultyIcon = "|TInterface\\" .. path .. "\\uicombattimelinewarningicons.blp:18:18:0:0:512:256:265:297:35:67|t"
 			end
 		end
 		obj.option = "SpecWarn" .. spellId .. announceType .. (optionVersion or "")
@@ -1150,14 +1205,19 @@ end
 
 ---@param soundId number|string
 ---@param force boolean?
-function DBM:PlaySpecialWarningSound(soundId, force)
+---@param fromBlizzAPI boolean?
+function DBM:PlaySpecialWarningSound(soundId, force, fromBlizzAPI)
+	if fromBlizzAPI and self.Options.DisableSWSound then return end
 	local sound
 	if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then
 		sound = self.Options.RaidWarningSound
 	else
 		sound = type(soundId) == "number" and self.Options["SpecialWarningSound" .. (soundId == 1 and "" or soundId)] or soundId or self.Options.SpecialWarningSound
 	end
-	self:PlaySoundFile(sound, nil, true)
+	--No throttle if not from blizzard API, but 1 second throttle for same sound file if from blizzAPI since blizzard can send duplicate spammy events
+	if not fromBlizzAPI or (fromBlizzAPI and self:AntiSpam(1, "PlaySpecialWarningSound", sound)) then
+		self:PlaySoundFile(sound, nil, true)
+	end
 end
 
 local function testWarningEnd()
@@ -1168,26 +1228,55 @@ end
 ---@param number number?
 ---@param noSound boolean?
 ---@param force boolean?
-function DBM:ShowTestSpecialWarning(text, number, noSound, force)
+function DBM:ShowTestSpecialWarning(text, number, noSound, force, customIcon)
 	if moving then
 		return
 	end
-	self:AddSpecialWarning(text or L.MOVE_SPECIAL_WARNING_TEXT)
+	self:AddSpecialWarning(text or L.MOVE_SPECIAL_WARNING_TEXT, force, nil, number, customIcon, noSound)
 	frame:SetFrameStrata("TOOLTIP")
 	self:Unschedule(testWarningEnd)
 	self:Schedule(self.Options.SpecialWarningDuration2 * 1.3, testWarningEnd)
-	if number and not noSound then
-		self:PlaySpecialWarningSound(number, force)
+end
+
+--{ Name = "text", Type = "cstring", Nilable = false, SecretValue = true },
+--{ Name = "casterGUID", Type = "WOWGUID", Nilable = false, SecretValue = true },
+--{ Name = "casterName", Type = "cstring", Nilable = false, SecretValue = true },
+--{ Name = "targetGUID", Type = "WOWGUID", Nilable = false, SecretValue = true },
+--{ Name = "targetName", Type = "cstring", Nilable = false, SecretValue = true },
+--{ Name = "iconFileID", Type = "number", Nilable = false, SecretValue = true },
+--{ Name = "tooltipSpellID", Type = "number", Nilable = false, SecretValue = true },
+--{ Name = "isDeadly", Type = "bool", Nilable = false, SecretValue = true },
+--{ Name = "duration", Type = "DurationSeconds", Nilable = false },
+--{ Name = "severity", Type = "EncounterEventSeverity", Nilable = false },
+--{ Name = "shouldPlaySound", Type = "bool", Nilable = false },
+--{ Name = "shouldShowChatMessage", Type = "bool", Nilable = false },
+--{ Name = "shouldShowWarning", Type = "bool", Nilable = false },
+function DBM:ENCOUNTER_WARNING(encounterWarningInfo)
+	if self.Options.IgnoreBlizzAPI then return end--Set by modules, not core options to filter blizz events for hard coded mods
+	if self.Options.HideDBMWarnings then return end
+	--Secrets
+	local text = encounterWarningInfo.text
+	local casterName = encounterWarningInfo.casterName
+	local targetName = encounterWarningInfo.targetName
+	local targetGUID = encounterWarningInfo.targetGUID
+	local formattedTargetName = targetName
+	if targetGUID then
+		local _, className = GetPlayerInfoByGUID(targetGUID)
+		if className then
+			local classColor = C_ClassColor.GetClassColor(className)
+			if classColor then
+			    formattedTargetName = classColor:WrapTextInColorCode(formattedTargetName);
+			end
+		end
 	end
-	if number then
-		if self.Options["SpecialWarningFlash" .. number] then
-			if not force and self:IsTrivial() and self.Options.DontPlayTrivialSpecialWarningSound then return end--No flash if trivial
-			local flashColor = self.Options["SpecialWarningFlashCol" .. number]
-			local repeatCount = self.Options["SpecialWarningFlashCount" .. number] or 1
-			self.Flash:Show(flashColor[1], flashColor[2], flashColor[3], self.Options["SpecialWarningFlashDura" .. number], self.Options["SpecialWarningFlashAlph" .. number], repeatCount - 1)
-		end
-		if not self.Options.DontDoSpecialWarningVibrate and self.Options["SpecialWarningVibrate" .. number] then
-			self:VibrateController()
-		end
+	local iconFileID = encounterWarningInfo.iconFileID
+	--Non secrets
+	local severity = encounterWarningInfo.severity--0 low, 1 medium, 2 critical
+	local formatedText = string.format(text, casterName, formattedTargetName)
+	if severity == 0 then
+		--Use normal warning for low severity, but we call it here to avoid duplicate event registration
+		self:AddWarning(formatedText, nil, nil, true, nil, nil, iconFileID)
+	else
+		self:AddSpecialWarning(formatedText, nil, nil, severity == 1 and 2 or 3, iconFileID)
 	end
 end

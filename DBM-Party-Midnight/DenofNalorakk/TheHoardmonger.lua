@@ -1,8 +1,8 @@
-local mod	= DBM:NewMod(2776, "DBM-Raids-Midnight", 5, 1311)
+local mod	= DBM:NewMod(2776, "DBM-Party-Midnight", 5, 1311)
 --local L		= mod:GetLocalizedStrings()--Nothing to localize for blank mods
 
-mod:SetRevision("20251026154839")
---mod:SetCreatureID()
+mod:SetRevision("20260201003541")
+mod:SetCreatureID(248710)
 mod:SetEncounterID(3207)
 --mod:SetHotfixNoticeRev(20250823000000)
 --mod:SetMinSyncRevision(20250823000000)
@@ -15,4 +15,8 @@ mod:RegisterCombat("combat")
 
 --)
 
---TODO. Not a damn thing
+mod:AddPrivateAuraSoundOption(1235405, false, 1235405, 1)
+
+function mod:OnLimitedCombatStart()
+	self:EnablePrivateAuraSound(1235405, "screwup", 18)
+end

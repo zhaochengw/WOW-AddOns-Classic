@@ -28,7 +28,7 @@ L.LOAD_MOD_TOC_MISMATCH		= "No se ha podido cargar el módulo de %s porque está
 L.LOAD_MOD_DISABLED			= "%s está instalado pero se encuentra desactivado. Este módulo no se cargará hasta que lo actives."
 L.LOAD_MOD_DISABLED_PLURAL	= "%s están instalados pero se encuentran desactivados. Estos módulos no se cargarán hasta que los actives."
 
-L.COPY_URL_DIALOG			= "Copiar vínculo"
+L.COPY_URL_DIALOG			= "Copiar enlace"
 L.COPY_WA_DIALOG			= "Copiar clave WA"
 
 --Post Patch 7.1
@@ -36,7 +36,7 @@ L.TEXT_ONLY_RANGE			= "El marco de distancia está limitado a texto únicamente 
 L.NO_RANGE					= "No se puede usar el radar de distancia en estancias. Se procederá a usar el marco de distancia por texto."
 L.NO_ARROW					= "No se puede usar la flecha en estancias."
 L.NO_HUD					= "No se puede usar el indicador en pantalla en estancias."
-L.NO_COMMS					= "La comunicación de addons no se puede usar durante encuentros o mazmorras M+ activas. Usa este comando nuevamente después de que termine el encuentro o la mazmorras."
+L.NO_COMMS					= "La comunicación de addons no se puede usar durante encuentros o mazmorras M+ activas. Usa este comando nuevamente después de que termine el encuentro o la mazmorra."
 
 L.DYNAMIC_DIFFICULTY_CLUMP	= L.DBM .. " ha desactivado el marco de distancia dinámico para este combate debido a la falta de información sobre las diferencias según el número de jugadores."
 L.DYNAMIC_ADD_COUNT			= L.DBM .. " ha desactivado los anuncios de esbirros para este combate debido a la falta de información sobre las diferencias según el número de jugadores."
@@ -56,7 +56,7 @@ L.GUILD_COMBAT_STARTED			= "El encuentro de %s has sido iniciado por el grupo de
 L.SCENARIO_STARTED				= "%s iniciado. ¡Buena suerte!"
 L.SCENARIO_STARTED_IN_PROGRESS	= "Te has unido a %s mientras estaba en curso. ¡Buena suerte!"
 L.BOSS_DOWN						= "¡%s ha sido derrotado en %s!"
-L.BOSS_DOWN_I					= "¡%s ha sido derrotado! Tienes %d victorias en total."
+L.BOSS_DOWN_I					= "¡%s ha sido derrotado! Tienes %d |4victoria:victorias; en total."
 L.BOSS_DOWN_L					= "¡%s ha sido derrotado en %s! Tu última victoria fue en %s, y tu récord actual es %s. Tienes %d victorias en total."
 L.BOSS_DOWN_NR					= "¡%s ha sido derrotado en %s! ¡Es un nuevo récord! (El anterior era %s). Tienes %d victorias en total."
 L.RAID_DOWN						= "¡%s ha sido completado en %s!"
@@ -65,13 +65,15 @@ L.RAID_DOWN_NR					= "¡%s ha sido completado en %s! ¡Es un nuevo récord! (El 
 L.GUILD_BOSS_DOWN				= "¡%s ha sido derrotado por el grupo de hermandad de %s en %s!"
 L.SCENARIO_COMPLETE				= "¡%s ha sido completado en %s!"
 L.SCENARIO_COMPLETE_I			= "¡%s ha sido completado! Lo has completado %d veces en total."
-L.SCENARIO_COMPLETE_L			= "¡%s ha sido completado en %s! La última vez tardaste %s y tu récord es %s. Lo has completado %d veces en total."
-L.SCENARIO_COMPLETE_NR			= "¡%s ha sido completado en %s! ¡Es un nuevo récord! (El anterior era %s). Lo has completado %d veces en total."
-L.COMBAT_ENDED_AT				= "El encuentro de %s (%s) ha terminado en %s."
-L.COMBAT_ENDED_AT_LONG			= "El encuentro de %s (%s) ha terminado en %s. Tienes %d derrotas en total en esta dificultad."
+L.SCENARIO_COMPLETE_L			= "¡%s ha sido completado en %s! La última vez tardaste %s y tu récord es %s. Lo has completado %d |4vez:veces; en total."
+L.SCENARIO_COMPLETE_NR			= "¡%s ha sido completado en %s! ¡Es un nuevo récord! (El anterior era %s). Lo has completado %d |4vez:veces; en total."
+L.COMBAT_ENDED_AT				= "El encuentro de %s (%s) ha terminado en %s." -- Health included
+L.COMBAT_ENDED					= "El encuentro de %s ha terminado en %s." --No health (post midnight)
+L.COMBAT_ENDED_AT_LONG			= "El encuentro de %s (%s) ha terminado en %s. Tienes %d |4derrota:derrotas; en total en esta dificultad." --Health Included
+L.COMBAT_ENDED_LONG    			= "El encuentro de %s ha terminado en %s. Tienes %d |4derrota:derrotas; en total en esta dificultad." --No health (post midnight)
 L.GUILD_COMBAT_ENDED_AT			= "El grupo de hermandad de %s ha sido derrotado en el encuentro de %s (%s) en %s."
 L.SCENARIO_ENDED_AT				= "%s ha terminado en %s."
-L.SCENARIO_ENDED_AT_LONG		= "%s ha terminado en %s. Lo has intentado %d veces sin éxito en esta dificultad."
+L.SCENARIO_ENDED_AT_LONG		= "%s ha terminado en %s. Lo has intentado %d |4vez:veces; sin éxito en esta dificultad."
 L.COMBAT_STATE_RECOVERED		= "El encuentro de %s inició hace %s. Recalibrando temporizadores..."
 L.TRANSCRIPTOR_LOG_START		= "Registro de Transcriptor iniciado."
 L.TRANSCRIPTOR_LOG_END			= "Registro de Transcriptor finalizado."
@@ -85,7 +87,8 @@ L.LOWHEALTH_WARNING			= "Salud baja (%d por ciento de salud restante), reproduci
 L.ENTERING_COMBAT			= "Entrando en combate"
 L.LEAVING_COMBAT			= "Saliendo del combate"
 
-L.COMBAT_STARTED_AI_TIMER	= "Mi unidad central es un procesador de red neuronal: una máquina capaz de aprender. (Este encuentro usará la IA de temporizadores para generar temporizadores aproximados.)"
+L.RAID_DIFFICULTY_CHANGED		= "La dificultad de la banda se ha establecido en %s."
+L.DUNGEON_DIFFICULTY_CHANGED	= "La dificultad de la mazmorra se ha establecido en %s."
 
 L.PROFILE_NOT_FOUND				= "<" .. L.DBM .. "> Tu perfil actual está corrupto. " .. L.DBM .. " cargará el perfil 'Predeterminado'."
 L.PROFILE_CREATED				= "Se ha creado el perfil '%s'."
@@ -136,15 +139,15 @@ L.TIMER_FORMAT				= "%d |4minuto:minutos; y %.2f |4segundo:segundos;"
 
 L.MIN						= "min"
 L.MIN_FMT					= "%d min"
-L.SEC						= "s"
-L.SEC_FMT					= "%s s"
+L.SEC						= "seg"
+L.SEC_FMT					= "%s seg"
 
 L.GENERIC_WARNING_OTHERS	= "y otro"
 L.GENERIC_WARNING_OTHERS2	= "y otros %d"
 L.GENERIC_WARNING_BERSERK	= "Rabia en %s %s"
 L.GENERIC_TIMER_BERSERK		= "Rabia"
 L.OPTION_TIMER_BERSERK		= "Mostrar tiempo restante para $spell:26662"
-L.BAD						= "Daño"
+L.BAD						= "Dañino"
 
 L.OPTION_CATEGORY_TIMERS			= "Barras"
 --Sub cats for "announce" object
@@ -188,7 +191,7 @@ L.YOUR_VERSION_OUTDATED		= "Tu versión de " .. L.DEADLY_BOSS_MODS .. " está de
 L.VOICE_PACK_OUTDATED		= "A este paquete de voces le faltan sonidos compatibles con esta versión de " .. L.DBM .. ". No se sustituirán los sonidos de anuncios especiales que no tengan un sustituto. Por favor, descarga una versión más reciente del paquete de voces o contacta con el autor para informarle sobre los archivos de sonido que faltan."
 L.VOICE_MISSING				= "Tenías seleccionado un paquete de voces que no se ha podido encontrar. Se ha restablecido tu selección a 'Ninguno'. Si crees que se trata de un error, asegúrate de que el paquete de voces esté instalado correctamente y activado en la lista de addons."
 L.VOICE_DISABLED			= "Tienes al menos un paquete de voces de " .. L.DBM .. " instalado, pero ninguno está activado. Si quieres usar un paquete de voces, asegúrate de que lo has asignado en 'Alertas de voz'. Desinstala los paquetes de voces que no estés utilizando para ocultar este mensaje."
-L.VOICE_COUNT_MISSING		= "La voz de cuenta atrás %d está asignada a un paquete de voces que no se ha podido encontrar. Se ha restablecido a la configuración predeterminada."
+L.VOICE_COUNT_MISSING		= "La voz de cuenta atrás %d está asignada a un paquete de voces que no se ha podido encontrar o que no es compatible actualmente. Se ha restablecido a la configuración predeterminada: %s."
 L.BIG_WIGS					= "BigWigs"
 L.WEAKAURA_KEY				= " (|cff308530Clave WA:|r %s)"
 
@@ -306,9 +309,9 @@ L.TIMER_BREAK				= "¡Toca descanso!"
 L.ANNOUNCE_BREAK_OVER		= "El descanso ha terminado."
 
 L.TIMER_PULL				= "Iniciando en"
-L.ANNOUNCE_PULL				= "Iniciando en %d seg. (enviado por %s)"
+L.ANNOUNCE_PULL				= "Iniciando en %d |4segundo:segundos; (Enviado por %s)"
 L.ANNOUNCE_PULL_NOW			= "¡Inicia ahora!"
-L.ANNOUNCE_PULL_TARGET		= "Iniciando a %s en %d seg. (enviado por %s)"
+L.ANNOUNCE_PULL_TARGET		= "Iniciando a %s en %d |4segundo:segundos; (Enviado por %s)"
 L.ANNOUNCE_PULL_NOW_TARGET	= "¡Iniciando a %s!"
 L.GEAR_WARNING				= "Aviso: Comprobación de equipo. Tu nivel de objeto equipado es %d menor que tu nivel de objeto de inventario."
 L.GEAR_WARNING_WEAPON		= "Aviso: Comprueba que tu arma esté equipada."
@@ -712,3 +715,11 @@ L.KEYSTONE_NAMES[503] = 'ARA' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = 'ALBA' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = 'OPER' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = 'ECO' -- Eco-Dome Al'dani
+
+-- Midnight
+L.MN_TIMELINE_HEADER   = "¿Quieres usar la línea temporal de Blizzard o las barras de DBM?"
+L.MN_BLIZZARD_TIMELINE = "Línea temporal de Blizzard"
+L.MN_DBM_TIMELINE      = "Barras de DBM"
+L.MN_WARNIGS_HEADER   = "¿Quieres usar los avisos de encuentro de Blizzard o los avisos de encuentro de DBM?"
+L.MN_BLIZZARD_WARNINGS= "Avisos de Blizzard"
+L.MN_DBM_WARNINGS     = "Avisos de DBM"

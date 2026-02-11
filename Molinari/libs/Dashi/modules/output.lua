@@ -8,7 +8,20 @@ function addon:Print(...)
 	local msg = ''
 	for index = 1, select('#', ...) do
 		local arg = select(index, ...)
-		msg = msg .. tostring(arg) .. ' '
+		-- add some colors
+		if arg == nil then
+			msg = msg .. '|cffbd0605nil|r '
+		elseif type(arg) == 'boolean' then
+			if not not arg then
+				msg = msg .. '|cff08bc06' .. tostring(arg) .. '|r' .. ' '
+			else
+				msg = msg .. '|cffff0000' .. tostring(arg) .. '|r' .. ' ' -- TODO: find a new color
+			end
+		elseif type(arg) == 'number' then
+			msg = msg .. '|cff53c9ff' .. tostring(arg) .. '|r' .. ' '
+		else
+			msg = msg .. tostring(arg) .. ' '
+		end
 	end
 
 	DEFAULT_CHAT_FRAME:AddMessage('|cff33ff99' .. addonName .. '|r: ' .. msg:trim())

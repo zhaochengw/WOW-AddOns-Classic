@@ -573,7 +573,10 @@ function ilvl_core:HasQueuedInspec(unitName)
 end
 
 local inspect_frame = CreateFrame("frame")
-inspect_frame:RegisterEvent("INSPECT_READY")
+
+if not detailsFramework.IsAddonApocalypseWow() then
+	inspect_frame:RegisterEvent("INSPECT_READY")
+end
 
 local two_hand = {
 	["INVTYPE_2HWEAPON"] = true,
@@ -745,6 +748,12 @@ Details.ilevel.CalcItemLevel = ilvl_core.CalcItemLevel
 
 inspect_frame:SetScript("OnEvent", function(self, event, ...)
 	local guid = select(1, ...)
+
+	if detailsFramework.IsAddonApocalypseWow() then
+		if issecretvalue(guid) then
+			return
+		end
+	end
 
 	if (inspecting [guid]) then
 		local unitid, cancel_tread = inspecting [guid] [1], inspecting [guid] [2]
@@ -1903,6 +1912,7 @@ function Details.GetPlayTimeOnClassString()
     return "|cffffff00Time played this class(" .. expansionName .. "): " .. days .. " " .. hours .. " " .. minutes
 end
 
+--[=[
 hooksecurefunc("ChatFrame_DisplayTimePlayed", function()
 	if (Details.played_class_time) then
 		C_Timer.After(0, function()
@@ -1923,6 +1933,7 @@ hooksecurefunc("ChatFrame_DisplayTimePlayed", function()
 		end)
 	end
 end)
+--]=]
 
 --game freeze prevention, there are people calling UpdateAddOnMemoryUsage() making the game client on the end user to freeze, this is bad, really bad.
 --Details! replace the function call with one that do the same thing, but warns the player if the function freezes the client too many times.

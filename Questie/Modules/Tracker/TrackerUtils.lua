@@ -342,7 +342,7 @@ function TrackerUtils:IsQuestItemUsable(itemId)
     return false
 end
 
----@param quest table Quest Table
+---@param quest Quest
 ---@return string|nil completionText Quest Completion text string or nil
 function TrackerUtils:GetCompletionText(quest)
     local completionText
@@ -353,8 +353,9 @@ function TrackerUtils:GetCompletionText(quest)
 
     if completionText then
         return completionText
-    else
-        return quest.Description[1]:gsub("%.", "")
+    elseif quest.Description and next(quest.Description) then
+        local descr = quest.Description[1]:gsub("%.", "")
+        return descr
     end
 end
 
@@ -388,8 +389,10 @@ function TrackerUtils:GetZoneNameByID(zoneId)
         return zoneCache[zoneId]
     end
 
-    if C_Map and C_Map.GetAreaInfo(zoneId) then
+    if C_Map.GetAreaInfo(zoneId) then
         zoneCache[zoneId] = C_Map.GetAreaInfo(zoneId)
+    elseif ZoneDB:GetLocalizedDungeonName(zoneId) then
+        zoneCache[zoneId] = ZoneDB:GetLocalizedDungeonName(zoneId)
     else
         zoneCache[zoneId] = GetZoneNameByIDFallback(zoneId)
     end

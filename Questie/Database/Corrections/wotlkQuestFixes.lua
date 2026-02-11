@@ -42,6 +42,7 @@ function QuestieWotlkQuestFixes:Load()
     local sortKeys = QuestieDB.sortKeys
     local profKeys = QuestieProfessions.professionKeys
     local specialFlags = QuestieDB.specialFlags
+    local questFlags = QuestieDB.questFlags
 
     return {
         [55] = {
@@ -154,20 +155,8 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
             [questKeys.zoneOrSort] = sortKeys.SPECIAL,
         },
-        [1678] = {
-            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-        },
-        [1679] = {
-            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-        },
-        [1680] = {
-            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-        },
-        [1681] = {
-            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
-        },
-        [1682] = {
-            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        [1681] = { -- Ironband's Compound
+            [questKeys.nextQuestInChain] = 1682,
         },
         [1687] = {
             [questKeys.questLevel] = -1,
@@ -177,8 +166,14 @@ function QuestieWotlkQuestFixes:Load()
         [1698] = {
             [questKeys.startedBy] = {{5479,7315}},
         },
+        [1712] = { -- Cyclonian
+            [questKeys.requiredSourceItems] = {4480,4479,4481},
+        },
         [1716] = {
             [questKeys.preQuestSingle] = {},
+        },
+        [1782] = { -- Furen's Armor
+            [questKeys.requiredClasses] = classIDs.WARRIOR,
         },
         [1795] = {
             [questKeys.requiredSourceItems] = {},
@@ -196,9 +191,6 @@ function QuestieWotlkQuestFixes:Load()
         },
         [2279] = {
             [questKeys.preQuestSingle] = {2278},
-        },
-        [2358] = {
-            [questKeys.startedBy] = {{7009}},
         },
         [2701] = {
             [questKeys.finishedBy] = {nil,{141980}},
@@ -248,7 +240,7 @@ function QuestieWotlkQuestFixes:Load()
         [4491] = {
             [questKeys.requiredSourceItems] = {},
         },
-        [4740] = {
+        [4740] = { -- WANTED: Murkdeep!
             [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
         },
         [4763] = {
@@ -463,9 +455,6 @@ function QuestieWotlkQuestFixes:Load()
         [8888] = {
             [questKeys.exclusiveTo] = {8889},
         },
-        [8892] = {
-            [questKeys.preQuestSingle] = {},
-        },
         [9078] = {
             [questKeys.requiredClasses] = classIDs.ROGUE,
         },
@@ -510,8 +499,8 @@ function QuestieWotlkQuestFixes:Load()
         [9247] = {
             [questKeys.finishedBy] = {{16281}},
         },
-        [9358] = {
-            [questKeys.exclusiveTo] = {9252},
+        [9358] = { -- Ranger Sareyn
+            [questKeys.nextQuestInChain] = 9252,
         },
         [9361] = {
             [questKeys.requiredSourceItems] = {23270},
@@ -519,9 +508,14 @@ function QuestieWotlkQuestFixes:Load()
         [9425] = {
             [questKeys.requiredRaces] = raceIDs.BLOOD_ELF,
         },
-        [9648] = {
-            [questKeys.name] = "Maatparm Mushroom Menagerie",
-            [questKeys.objectivesText] = {"Maatparm at Blood Watch wants 1 Aquatic Stinkhorn, 1 Blood Mushroom, 1 Ruinous Polyspore, and 1 Fel Cone Fungus."},
+        [9582] = { -- Strength of One
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [9644] = {
+            [questKeys.extraObjectives] = {{nil, Questie.ICON_TYPE_OBJECT, l10n("Summon Nightbane"), 0, {{"object", 194092}}}},
+        },
+        [9645] = {
+            [questKeys.triggerEnd] = {"Journal Entry Read", {[zoneIDs.KARAZHAN]={{-1,-1}}}},
         },
         [9681] = {
             [questKeys.startedBy] = {{17717,17718}},
@@ -7835,6 +7829,34 @@ function QuestieWotlkQuestFixes:Load()
             [questKeys.zoneOrSort] = 4395,
             [questKeys.questFlags] = 4232,
             [questKeys.specialFlags] = 1,
+            [questKeys.reputationReward] = {{factionIDs.KIRIN_TOR,75}},
+        },
+        [93975] = {
+            [questKeys.name] = "拉格纳罗斯必须死！", -- "Ragnaros Must Die!", only present on chinese servers
+            [questKeys.startedBy] = {},
+            [questKeys.finishedBy] = {},
+            [questKeys.requiredLevel] = 80,
+            [questKeys.questLevel] = 80,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.objectivesText] = {"团队消灭拉格纳罗斯。"}, -- "Kill Ragnaros.", only present on chinese servers
+            [questKeys.objectives] = {{{11502}}},
+            [questKeys.zoneOrSort] = zoneIDs.MOLTEN_CORE,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+            [questKeys.questFlags] = questFlags.WEEKLY,
+            [questKeys.reputationReward] = {{factionIDs.KIRIN_TOR,75}},
+        },
+        [94577] = {
+            [questKeys.name] = "凯尔萨斯必须死！", -- "Kael'thas Must Die!", only present on chinese servers
+            [questKeys.startedBy] = {},
+            [questKeys.finishedBy] = {},
+            [questKeys.requiredLevel] = 80,
+            [questKeys.questLevel] = 80,
+            [questKeys.requiredRaces] = raceIDs.NONE,
+            [questKeys.objectivesText] = {"消灭风暴要塞的凯尔萨斯逐日者。"}, -- "Kill Kael'thas Sunstrider in Tempest Keep." only present on chinese servers
+            [questKeys.objectives] = {{{19622}}},
+            [questKeys.zoneOrSort] = zoneIDs.TEMPEST_KEEP,
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+            [questKeys.questFlags] = questFlags.WEEKLY,
             [questKeys.reputationReward] = {{factionIDs.KIRIN_TOR,75}},
         },
     }

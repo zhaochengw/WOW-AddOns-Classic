@@ -1,4 +1,19 @@
-﻿5.1.07 - 27th October 2025
+﻿5.1.17 - 31st December 2025
+- Happy New Year!
+
+5.1.16 - 24th December 2025
+- Merry Christmas!
+
+5.1.14 - 14th December 2025
+- Updated for Mists of Pandaria game patch 5.5.3.
+
+5.1.12 - 26th November 2025
+- Updated slider controls used throughout the addon.
+
+5.1.08 - 5th November 2025
+- PTR (5.5.3): Updated for Mists of Pandaria game patch 5.5.3.
+
+5.1.07 - 27th October 2025
 - Updated for Mists of Pandaria game patch 5.5.2.
 - Updated map positioning code.
 
@@ -12,7 +27,7 @@
 - Added a new option called 'Use English language'.  If enabled, text used throughout the addon will be shown in English regardless of your game locale.
 
 5.0.08 - 10th September 2025
-- PTR (5.5.1) Updated for Mists of Pandaria game patch 5.5.1.
+- PTR (5.5.1): Updated for Mists of Pandaria game patch 5.5.1.
 
 5.0.03 - 5th August 2025
 - Fixed the location of Explorers' League Digsite flight point icon.

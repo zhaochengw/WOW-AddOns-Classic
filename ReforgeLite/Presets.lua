@@ -4,64 +4,70 @@ local L = addonTable.L
 local ReforgeLite = addonTable.ReforgeLite
 local GUI = addonTable.GUI
 
+local SPEC_IDS = addonTable.SPEC_IDS
+
 local StatHit = addonTable.statIds.HIT
 local StatCrit = addonTable.statIds.CRIT
 local StatHaste = addonTable.statIds.HASTE
 local StatExp = addonTable.statIds.EXP
 
 local SPELL_HASTE_BUFFS = {
-  24907,  -- Moonkin Aura
-  49868,  -- Mind Quickening
   51470,  -- Elemental Oath
   135678, -- Energizing Spores
+  49868,  -- Mind Quickening
+  24907,  -- Moonkin Aura
 }
 
 local MELEE_HASTE_BUFFS = {
-  55610,  -- Unholy Aura
   128432, -- Cackling Howl
   128433, -- Serpent's Swiftness
   113742, -- Swiftblade's Cunning
+  55610,  -- Unholy Aura
   30809,  -- Unleashed Rage
 }
 
 local MASTERY_BUFFS = {
-  93435,  -- Roar of Courage
-  128997, -- Spirit Beast Blessing
   19740,  -- Blessing of Might
   116956, -- Grace of Air
+  93435,  -- Roar of Courage
+  128997, -- Spirit Beast Blessing
 }
+
+local CRIT_BUFFS = {
+  1459,   -- Arcane Brilliance
+  24604,  -- Furious Howl
+  17007,  -- Leader of the Pack
+  116781, -- Legacy of the White Tiger
+  126309, -- Still Water
+  90309,  -- Terrifying Roar
+}
+
+local function CheckForPlayerAura(buffTable)
+  return ContainsIf(buffTable, C_UnitAuras.GetPlayerAuraBySpellID)
+end
 
 ---Checks if player has a spell haste buff active
 ---@return boolean hasSpellHaste True if any spell haste buff is active
 function ReforgeLite:PlayerHasSpellHasteBuff()
-  for _, v in ipairs(SPELL_HASTE_BUFFS) do
-    if C_UnitAuras.GetPlayerAuraBySpellID(v) then
-      return true
-    end
-  end
-  return false
+  return CheckForPlayerAura(SPELL_HASTE_BUFFS)
 end
 
 ---Checks if player has a melee haste buff active
 ---@return boolean hasMeleeHaste True if any melee haste buff is active
 function ReforgeLite:PlayerHasMeleeHasteBuff()
-  for _, v in ipairs(MELEE_HASTE_BUFFS) do
-    if C_UnitAuras.GetPlayerAuraBySpellID(v) then
-      return true
-    end
-  end
-  return false
+  return CheckForPlayerAura(MELEE_HASTE_BUFFS)
 end
 
 ---Checks if player has a mastery buff active
 ---@return boolean hasMastery True if any mastery buff is active
 function ReforgeLite:PlayerHasMasteryBuff()
-  for _, v in ipairs(MASTERY_BUFFS) do
-    if C_UnitAuras.GetPlayerAuraBySpellID(v) then
-      return true
-    end
-  end
-  return false
+  return CheckForPlayerAura(MASTERY_BUFFS)
+end
+
+---Checks if player has a crit buff active
+---@return boolean hasCrit True if any crit buff is active
+function ReforgeLite:PlayerHasCritBuff()
+  return CheckForPlayerAura(CRIT_BUFFS)
 end
 
 ---Gets the rating required per 1% of a stat at a given level
@@ -112,6 +118,10 @@ end
 ---@return number bonus Ranged haste multiplier from buffs
 function ReforgeLite:GetRangedHasteBonus()
   return self:GetNonSpellHasteBonus(GetRangedHaste, CR_HASTE_RANGED)
+end
+function ReforgeLite:GetMasteryBonus()
+  local mastery, bonusCoeff = GetMasteryEffect()
+  return mastery - GetCombatRatingBonus(CR_MASTERY) * bonusCoeff, bonusCoeff
 end
 ---Gets spell haste bonus multiplier from buffs
 ---@return number bonus Spell haste multiplier from buffs
@@ -181,7 +191,7 @@ addonTable.CreateIconMarkup = CreateIconMarkup
 
 local AtLeast = addonTable.StatCapMethods.AtLeast
 local AtMost = addonTable.StatCapMethods.AtMost
-local CAPS = EnumUtil.MakeEnum("ManualCap", "MeleeHitCap", "SpellHitCap", "MeleeDWHitCap", "ExpSoftCap", "ExpHardCap", "FirstHasteBreak", "SecondHasteBreak", "ThirdHasteBreak", "FourthHasteBreak", "FifthHasteBreak")
+local CAPS = EnumUtil.MakeEnum("ManualCap", "MeleeHitCap", "SpellHitCap", "MeleeDWHitCap", "ExpSoftCap", "ExpHardCap")
 
 ReforgeLite.capPresets = {
   {
@@ -231,20 +241,6 @@ ReforgeLite.capPresets = {
   },
 }
 
--- local function GetActiveItemSet()
---   local itemSets = {}
---   for _,v in ipairs({INVSLOT_HEAD,INVSLOT_SHOULDER,INVSLOT_CHEST,INVSLOT_LEGS,INVSLOT_HAND}) do
---     local item = Item:CreateFromEquipmentSlot(v)
---     if not item:IsItemEmpty() then
---       local itemSetId = select(16, C_Item.GetItemInfo(item:GetItemID()))
---       if itemSetId then
---         itemSets[itemSetId] = (itemSets[itemSetId] or 0) + 1
---       end
---     end
---   end
---   return itemSets
--- end
-
 local function GetSpellHasteRequired(percentNeeded)
   return function()
     local hasteMod = ReforgeLite:GetSpellHasteBonus()
@@ -252,98 +248,169 @@ local function GetSpellHasteRequired(percentNeeded)
   end
 end
 
-do
-  local nameFormat = "%s%s%% +%s %s "
-  local nameFormatWithTicks = nameFormat..L["ticks"]
-  if addonTable.playerClass == "DRUID" then
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FirstHasteBreak,
-      category = StatHaste,
-      name = ("%s%s %s%%"):format(CreateIconMarkup(236152), C_Spell.GetSpellName(79577), 24.22),
-      getter = GetSpellHasteRequired(24.215),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.SecondHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(CreateIconMarkup(136081)..CreateIconMarkup(136107), 12.52, 1, C_Spell.GetSpellName(774) .. " / " .. C_Spell.GetSpellName(740)),
-      getter = GetSpellHasteRequired(12.52),
-    })
-  elseif addonTable.playerClass == "PALADIN" then
-    local eternalFlame, eternalFlameMarkup = C_Spell.GetSpellName(114163), CreateIconMarkup(135433)
-    local sacredShield, sacredShieldMarkup = C_Spell.GetSpellName(20925), CreateIconMarkup(236249)
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FirstHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(eternalFlameMarkup, 8.25, 1, eternalFlame),
-      getter = GetSpellHasteRequired(8.245)
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.SecondHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(sacredShieldMarkup, 12.55, 1, sacredShield),
-      getter = GetSpellHasteRequired(12.55),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.ThirdHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(eternalFlameMarkup, 16.87, 2, eternalFlame),
-      getter = GetSpellHasteRequired(16.87),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FourthHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(eternalFlameMarkup, 25.57, 3, eternalFlame),
-      getter = GetSpellHasteRequired(25.57),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FifthHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(sacredShieldMarkup, 29.85, 2, sacredShield),
-      getter = GetSpellHasteRequired(29.85),
-    })
-  elseif addonTable.playerClass == "PRIEST" then
-    local renew, renewMarkup = C_Spell.GetSpellName(139), CreateIconMarkup(135953)
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FirstHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(renewMarkup, 12.51, 1, renew),
-      getter = GetSpellHasteRequired(12.51),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.SecondHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(renewMarkup, 37.52, 2, renew),
-      getter = GetSpellHasteRequired(37.52),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.ThirdHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(renewMarkup, 62.53, 3, renew),
-      getter = GetSpellHasteRequired(62.53),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FourthHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(renewMarkup, 87.44, 4, renew),
-      getter = GetSpellHasteRequired(87.44),
-    })
-  elseif addonTable.playerClass == "WARLOCK" then
-    local doom, doomMarkup = C_Spell.GetSpellName(603), CreateIconMarkup(136122)
-    local shadowflame, shadowflameMarkup = C_Spell.GetSpellName(47960), CreateIconMarkup(425954)
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.FirstHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(doomMarkup, 12.51, 1, doom),
-      getter = GetSpellHasteRequired(12.51),
-    })
-    tinsert(ReforgeLite.capPresets, {
-      value = CAPS.SecondHasteBreak,
-      category = StatHaste,
-      name = nameFormatWithTicks:format(shadowflameMarkup, 25, 2, shadowflame),
-      getter = GetSpellHasteRequired(25),
-    })
-  end
+local function AddHasteBreakpoint(name, getter, classID, specID)
+  if classID ~= addonTable.playerClass then return CAPS.ManualCap end
+  local newIndex = #ReforgeLite.capPresets + 1
+  tinsert(ReforgeLite.capPresets, {
+    category = StatHaste,
+    name = name,
+    getter = getter,
+    classID = classID,
+    specID = specID,
+    value = newIndex
+  })
+  return newIndex
 end
+
+local nameFormat = "%s%s%% +%s %s "
+local nameFormatWithTicks = nameFormat..L["ticks"]
+
+local HASTE_BREAKS = setmetatable({}, {
+  __index = function(t, k)
+    rawset(t,k, {})
+    return t[k]
+  end
+})
+
+HASTE_BREAKS.DRUID.WILD_MUSHROOM = AddHasteBreakpoint(
+  ("%s%s %s%%"):format(CreateIconMarkup(236152), C_Spell.GetSpellName(79577), 24.22),
+  GetSpellHasteRequired(24.215),
+  "DRUID",
+  SPEC_IDS.DRUID.balance
+)
+HASTE_BREAKS.DRUID.REJUV_LIFEBLOOM = AddHasteBreakpoint(
+  nameFormatWithTicks:format(CreateIconMarkup(136081)..CreateIconMarkup(136107), 12.52, 1, C_Spell.GetSpellName(774) .. " / " .. C_Spell.GetSpellName(740)),
+  GetSpellHasteRequired(12.52),
+  "DRUID",
+  SPEC_IDS.DRUID.restoration
+)
+
+local eternalFlame, eternalFlameMarkup = C_Spell.GetSpellName(114163), CreateIconMarkup(135433)
+local sacredShield, sacredShieldMarkup = C_Spell.GetSpellName(20925), CreateIconMarkup(236249)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(eternalFlameMarkup, 4.99, 1, eternalFlame),
+  GetSpellHasteRequired(4.986880),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(sacredShieldMarkup, 10.00, 1, sacredShield),
+  GetSpellHasteRequired(10.000919),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(eternalFlameMarkup, 15.01, 2, eternalFlame),
+  GetSpellHasteRequired(15.008630),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+HASTE_BREAKS.PALADIN.ETERNAL_FLAME_3 = AddHasteBreakpoint(
+  nameFormatWithTicks:format(eternalFlameMarkup, 25.03, 3, eternalFlame),
+  GetSpellHasteRequired(25.026052),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(sacredShieldMarkup, 30.00, 2, sacredShield),
+  GetSpellHasteRequired(29.996753),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(eternalFlameMarkup, 34.99, 4, eternalFlame),
+  GetSpellHasteRequired(34.983133),
+  "PALADIN",
+  SPEC_IDS.PALADIN.holy
+)
+
+local renew, renewMarkup = C_Spell.GetSpellName(139), CreateIconMarkup(135953)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(renewMarkup, 12.51, 1, renew),
+  GetSpellHasteRequired(12.51),
+  "PRIEST"
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(renewMarkup, 37.52, 2, renew),
+  GetSpellHasteRequired(37.52),
+  "PRIEST"
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(renewMarkup, 62.53, 3, renew),
+  GetSpellHasteRequired(62.53),
+  "PRIEST"
+)
+AddHasteBreakpoint(
+  nameFormatWithTicks:format(renewMarkup, 87.44, 4, renew),
+  GetSpellHasteRequired(87.44),
+  "PRIEST"
+)
+
+local doom, doomMarkup = C_Spell.GetSpellName(603), CreateIconMarkup(136122)
+AddHasteBreakpoint( -- Doom
+  nameFormatWithTicks:format(doomMarkup, 12.50, 1, doom),
+  GetSpellHasteRequired(12.498595),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.demonology
+)
+AddHasteBreakpoint( -- Doom
+  nameFormatWithTicks:format(doomMarkup, 24.92, 2, doom),
+  GetSpellHasteRequired(24.921939),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.demonology
+)
+AddHasteBreakpoint( -- Shadowflame
+  nameFormatWithTicks:format(CreateIconMarkup(425954), 37.50, 2, C_Spell.GetSpellName(47960)),
+  GetSpellHasteRequired(37.494845),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.demonology
+)
+local immolate, immolateMarkup = C_Spell.GetSpellName(348), CreateIconMarkup(135817)
+AddHasteBreakpoint( -- Immolate
+  nameFormatWithTicks:format(immolateMarkup, 9.99, 1, immolate),
+  GetSpellHasteRequired(9.990838),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.destruction
+)
+AddHasteBreakpoint( -- Immolate
+  nameFormatWithTicks:format(immolateMarkup, 30.01, 2, immolate),
+  GetSpellHasteRequired(30.010840),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.destruction
+)
+local unstableAffliction, unstableAfflictionMarkup = C_Spell.GetSpellName(30108), CreateIconMarkup(136228)
+AddHasteBreakpoint( -- Unstable Affliction
+  nameFormatWithTicks:format(unstableAfflictionMarkup, 21.40, 2, unstableAffliction),
+  GetSpellHasteRequired(21.396062),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.affliction
+)
+local agony, agonyMarkup = C_Spell.GetSpellName(980), CreateIconMarkup(136139)
+AddHasteBreakpoint( -- Agony
+  nameFormatWithTicks:format(agonyMarkup, 29.16, 4, agony),
+  GetSpellHasteRequired(29.157257),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.affliction
+)
+AddHasteBreakpoint( -- Unstable Affliction
+  nameFormatWithTicks:format(unstableAfflictionMarkup, 35.73, 3, unstableAffliction),
+  GetSpellHasteRequired(35.731261),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.affliction
+)
+AddHasteBreakpoint( -- Agony
+  nameFormatWithTicks:format(agonyMarkup, 37.51, 5, agony),
+  GetSpellHasteRequired(37.504306),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.affliction
+)
+AddHasteBreakpoint( -- Corruption
+  nameFormatWithTicks:format(CreateIconMarkup(136118), 38.94, 4, C_Spell.GetSpellName(172)),
+  GetSpellHasteRequired(38.937141),
+  "WARLOCK",
+  SPEC_IDS.WARLOCK.affliction
+)
+
 local HitCap = { stat = StatHit, points = { { method = AtLeast, preset = CAPS.MeleeHitCap } } }
 
 local HitCapSpell = { stat = StatHit, points = { { method = AtLeast, preset = CAPS.SpellHitCap } } }
@@ -388,29 +455,22 @@ local function HealerPreset(spirit, crit, haste, mastery)
   return Preset(spirit, 0, 0, 0, crit, haste, 0, mastery)
 end
 
-local specInfo = {}
+local specInfo
+local function UpdateSpecInfo(ids)
+  for _, id in pairs(ids) do
+    local _, tabName, _, icon = GetSpecializationInfoByID(id)
+    specInfo[id] = { name = tabName, icon = icon }
+  end
+end
 
 ---Initializes class-specific stat weight and cap presets
 ---Loads presets for all specs of the player's class (or all classes in debug mode)
 ---@return nil
 function ReforgeLite:InitClassPresets()
-  local specs = {
-    DEATHKNIGHT = { blood = 250, frost = 251, unholy = 252 },
-    DRUID = { balance = 102, feralcombat = 103, guardian = 104, restoration = 105 },
-    HUNTER = { beastmastery = 253, marksmanship = 254, survival = 255 },
-    MAGE = { arcane = 62, fire = 63, frost = 64 },
-    MONK = { brewmaster = 268, mistweaver = 270, windwalker = 269 },
-    PALADIN = { holy = 65, protection = 66, retribution = 70 },
-    PRIEST = { discipline = 256, holy = 257, shadow = 258 },
-    ROGUE = { assassination = 259, combat = 260, subtlety = 261 },
-    SHAMAN = { elemental = 262, enhancement = 263, restoration = 264 },
-    WARLOCK = { affliction = 265, demonology = 266, destruction = 267 },
-    WARRIOR = { arms = 71, fury = 72, protection = 73 }
-  }
 
   local presets = {
     ["DEATHKNIGHT"] = {
-      [specs.DEATHKNIGHT.blood] = {
+      [SPEC_IDS.DEATHKNIGHT.blood] = {
         [L["Defensive"]] = Preset(0, 140, 150, 100, 50, 75, 95, 200, AtMostMeleeCaps),
         [L["Balanced"]] = Preset(0, 140, 150, 200, 100, 125, 200, 25, MeleeCaps),
         [L["Offensive"]] = {
@@ -421,15 +481,15 @@ function ReforgeLite:InitClassPresets()
           },
         },
       },
-      [specs.DEATHKNIGHT.frost] = {
-        [C_Spell.GetSpellName(49020)] = Preset(0, 0, 0, 87, 44, 48, 87, 35, MeleeCaps, 135771), -- Obliterate
-        [L["Masterfrost"]] = Preset(0, 0, 0, 73, 36, 47, 73, 50, MeleeCaps, 135833),
+      [SPEC_IDS.DEATHKNIGHT.frost] = {
+        [C_Spell.GetSpellName(49020)] = Preset(0, 0, 0, 82, 44, 45, 82, 35, MeleeCaps, 135771), -- Obliterate
+        [L["Masterfrost"]] = Preset(0, 0, 0, 84, 36, 37, 83, 53, MeleeCaps, 135833),
       },
-      [specs.DEATHKNIGHT.unholy] = MeleePreset(73, 47, 43, 73, 40),
+      [SPEC_IDS.DEATHKNIGHT.unholy] = MeleePreset(73, 47, 43, 73, 40),
     },
     ["DRUID"] = {
-      [specs.DRUID.balance] = {
-        weights = {0, 0, 0, 127, 61, 63, 0, 38},
+      [SPEC_IDS.DRUID.balance] = {
+        weights = {0, 0, 0, 88, 54, 55, 0, 46},
         caps = {
           HitCapSpell,
           {
@@ -437,16 +497,16 @@ function ReforgeLite:InitClassPresets()
             points = {
               {
                 method = AtLeast,
-                preset = CAPS.FirstHasteBreak,
+                preset = HASTE_BREAKS.DRUID.WILD_MUSHROOM,
                 after = 46,
               }
             }
           }
         },
       },
-      [specs.DRUID.feralcombat] = Preset(0, 0, 0, 44, 49, 42, 44, 39, AtMostMeleeCaps),
-      [specs.DRUID.guardian] = TankPreset(0, 53, 0, 116, 105, 37, 116, 73),
-      [specs.DRUID.restoration] = {
+      [SPEC_IDS.DRUID.feralcombat] = Preset(0, 0, 0, 44, 49, 42, 44, 39, AtMostMeleeCaps),
+      [SPEC_IDS.DRUID.guardian] = TankPreset(0, 53, 0, 116, 105, 37, 116, 73),
+      [SPEC_IDS.DRUID.restoration] = {
         weights = {150, 0, 0, 0, 100, 200, 0, 150},
         caps = {
           {
@@ -454,7 +514,7 @@ function ReforgeLite:InitClassPresets()
             points = {
               {
                 method = AtLeast,
-                preset = CAPS.SecondHasteBreak,
+                preset = HASTE_BREAKS.DRUID.REJUV_LIFEBLOOM,
                 after = 50,
               }
             }
@@ -463,28 +523,28 @@ function ReforgeLite:InitClassPresets()
       },
     },
     ["HUNTER"] = {
-      [specs.HUNTER.beastmastery] = MeleePreset(63, 28, 27, 59, 25),
-      [specs.HUNTER.marksmanship] = MeleePreset(63, 40, 35, 59, 29),
-      [specs.HUNTER.survival] = MeleePreset(59, 29, 25, 57, 21),
+      [SPEC_IDS.HUNTER.beastmastery] = MeleePreset(30, 28, 29, 30, 25),
+      [SPEC_IDS.HUNTER.marksmanship] = MeleePreset(44, 43, 35, 44, 19),
+      [SPEC_IDS.HUNTER.survival] = MeleePreset(33, 32, 27, 33, 21),
     },
     ["MAGE"] = {
-      [specs.MAGE.arcane] = CasterPreset(145, 52, 60, 63),
-      [specs.MAGE.fire] = CasterPreset(121, 94, 95, 59),
-      [specs.MAGE.frost] = CasterPreset(115, 49, 51, 44),
+      [SPEC_IDS.MAGE.arcane] = CasterPreset(145, 59, 64, 70),
+      [SPEC_IDS.MAGE.fire] = CasterPreset(121, 94, 95, 59),
+      [SPEC_IDS.MAGE.frost] = CasterPreset(155, 54, 81, 52),
     },
     ["MONK"] = {
-      [specs.MONK.brewmaster] = {
+      [SPEC_IDS.MONK.brewmaster] = {
         [PET_DEFENSIVE] = TankPreset(0, 0, 0, 150, 50, 50, 130, 100),
         [PET_AGGRESSIVE] = TankPreset(0, 0, 0, 141, 46, 57, 99, 39),
       },
-      [specs.MONK.mistweaver] = HealerPreset(80, 200, 40, 30),
-      [specs.MONK.windwalker] = {
+      [SPEC_IDS.MONK.mistweaver] = HealerPreset(80, 200, 40, 30),
+      [SPEC_IDS.MONK.windwalker] = {
         [C_Spell.GetSpellName(114355)] = Preset(0, 0, 0, 141, 44, 49, 99, 39, MeleeCaps, 132147), -- Dual Wield
         [AUCTION_SUBCATEGORY_TWO_HANDED] = Preset(0, 0, 0, 141, 64, 63, 141, 62, MeleeCaps, 135145), -- Two-Handed
       },
     },
     ["PALADIN"] = {
-      [specs.PALADIN.holy] = {
+      [SPEC_IDS.PALADIN.holy] = {
         weights = {200, 0, 0, 0, 50, 125, 0, 100},
         caps = {
           {
@@ -492,70 +552,62 @@ function ReforgeLite:InitClassPresets()
             points = {
               {
                 method = AtLeast,
-                preset = CAPS.ThirdHasteBreak,
+                preset = HASTE_BREAKS.PALADIN.ETERNAL_FLAME_3,
                 after = 75,
               }
             }
           }
         },
       },
-      [specs.PALADIN.protection] = {
+      [SPEC_IDS.PALADIN.protection] = {
         [PET_DEFENSIVE] = TankPreset(0, 50, 50, 200, 25, 100, 200, 125),
         [PET_AGGRESSIVE] = TankPreset(0, 5, 5, 200, 75, 125, 200, 25),
       },
-      [specs.PALADIN.retribution] = MeleePreset(100, 50, 52, 87, 51),
+      [SPEC_IDS.PALADIN.retribution] = MeleePreset(100, 50, 52, 87, 51),
     },
     ["PRIEST"] = {
-      [specs.PRIEST.discipline] = HealerPreset(120, 120, 40, 80),
-      [specs.PRIEST.holy] = HealerPreset(150, 120, 40, 80),
-      [specs.PRIEST.shadow] = CasterPreset(85, 46, 59, 44),
+      [SPEC_IDS.PRIEST.discipline] = HealerPreset(120, 120, 40, 80),
+      [SPEC_IDS.PRIEST.holy] = HealerPreset(150, 120, 40, 80),
+      [SPEC_IDS.PRIEST.shadow] = CasterPreset(85, 46, 59, 44),
     },
     ["ROGUE"] = {
-      [specs.ROGUE.assassination] = MeleePreset(46, 37, 35, 42, 41),
-      [specs.ROGUE.combat] = MeleePreset(70, 29, 39, 56, 32),
-      [specs.ROGUE.subtlety] = MeleePreset(54, 31, 32, 35, 26),
+      [SPEC_IDS.ROGUE.assassination] = MeleePreset(46, 37, 35, 42, 41),
+      [SPEC_IDS.ROGUE.combat] = MeleePreset(70, 29, 39, 56, 32),
+      [SPEC_IDS.ROGUE.subtlety] = MeleePreset(54, 31, 32, 35, 26),
     },
     ["SHAMAN"] = {
-      [specs.SHAMAN.elemental] = {
+      [SPEC_IDS.SHAMAN.elemental] = {
         [L["Single Target"]] = Preset(0, 0, 0, 110, 37, 47, 0, 44, CasterCaps, 136048),
         [L["AoE"]] = Preset(0, 0, 0, 118, 71, 48, 0, 73, CasterCaps, 136015),
       },
-      [specs.SHAMAN.enhancement] = MeleePreset(97, 41, 42, 97, 46),
-      [specs.SHAMAN.restoration] = HealerPreset(120, 100, 150, 75),
+      [SPEC_IDS.SHAMAN.enhancement] = MeleePreset(97, 41, 42, 97, 46),
+      [SPEC_IDS.SHAMAN.restoration] = HealerPreset(120, 100, 150, 75),
     },
     ["WARLOCK"] = {
-      [specs.WARLOCK.affliction] = CasterPreset(90, 56, 80, 68),
-      [specs.WARLOCK.destruction] = CasterPreset(93, 55, 50, 61),
-      [specs.WARLOCK.demonology] = CasterPreset(400, 60, 66, 63),
+      [SPEC_IDS.WARLOCK.affliction] = CasterPreset(90, 56, 73, 68),
+      [SPEC_IDS.WARLOCK.destruction] = CasterPreset(93, 55, 50, 61),
+      [SPEC_IDS.WARLOCK.demonology] = CasterPreset(400, 60, 66, 63),
     },
     ["WARRIOR"] = {
-      [specs.WARRIOR.arms] = MeleePreset(188, 65, 30, 139, 49),
-      [specs.WARRIOR.fury] = {
+      [SPEC_IDS.WARRIOR.arms] = MeleePreset(188, 65, 30, 139, 49),
+      [SPEC_IDS.WARRIOR.fury] = {
         [C_Spell.GetSpellName(46917)] = Preset(0, 0, 0, 162, 107, 41, 142, 70, MeleeCaps, 236316), -- Titan's Grip
         [C_Spell.GetSpellName(81099)] = Preset(0, 0, 0, 137, 94, 41, 119, 59, MeleeCaps, 458974), -- Single-Minded Fury
       },
-      [specs.WARRIOR.protection] = TankPreset(0, 140, 150, 200, 25, 50, 200, 100),
+      [SPEC_IDS.WARRIOR.protection] = TankPreset(0, 140, 150, 200, 25, 50, 200, 100),
     },
   }
 
+  self.presets = wipe(self.presets or {})
+  specInfo = wipe(specInfo or {})
   if self.db.debug then
-    self.presets = presets
     for classFile, className in pairs(LOCALIZED_CLASS_NAMES_MALE) do
-      self.presets[className] = self.presets[classFile]
-      self.presets[classFile] = nil
+      self.presets[className] = presets[classFile]
     end
-    for _,ids in pairs(specs) do
-      for _, id in pairs(ids) do
-        local _, tabName, _, icon = GetSpecializationInfoByID(id)
-        specInfo[id] = { name = tabName, icon = icon }
-      end
-    end
+    TableUtil.Execute(SPEC_IDS, UpdateSpecInfo)
   else
     self.presets = presets[addonTable.playerClass]
-    for _, id in pairs(specs[addonTable.playerClass]) do
-      local _, tabName, _, icon = GetSpecializationInfoByID(id)
-      specInfo[id] = { name = tabName, icon = icon }
-    end
+    UpdateSpecInfo(SPEC_IDS[addonTable.playerClass])
   end
 end
 
@@ -649,16 +701,21 @@ function ReforgeLite:InitPresets()
 
     rootDescription:CreateDivider()
 
-    local function FormatWeightsTooltip(tooltip, element, weights, addBlank)
-      if not weights then return end
+    local function GetCapPresetName(presetValue)
+      local value = FindValueInTableIf(self.capPresets, function(preset) return preset.value == presetValue end) or {}
+      return value.name
+    end
+
+    local function FormatWeightsTooltip(tooltip, element, preset)
+      if not preset or not preset.weights then return end
       local statWeights = {}
-      for i, weight in ipairs(weights) do
+      for i, weight in ipairs(preset.weights) do
         if weight and weight > 0 then
           tinsert(statWeights, {stat = addonTable.itemStats[i].long, weight = weight, index = i})
         end
       end
-      if #statWeights > 0 then
-        local rightR, rightG, rightB = addonTable.COLORS.white:GetRGB()
+      local rightR, rightG, rightB = addonTable.COLORS.white:GetRGB()
+      if statWeights[1] then
         tooltip:AddLine(element.text, rightR, rightG, rightB)
         sort(statWeights, function(a, b)
           if a.weight == b.weight then
@@ -669,8 +726,28 @@ function ReforgeLite:InitPresets()
         for _, entry in ipairs(statWeights) do
           tooltip:AddDoubleLine(entry.stat, entry.weight, nil, nil, nil, rightR, rightG, rightB)
         end
-        if addBlank then
-          tooltip:AddLine(" ")
+      end
+      if preset.caps then
+        local methodNames = {
+          [addonTable.StatCapMethods.AtLeast] = L["At least"],
+          [addonTable.StatCapMethods.AtMost] = L["At most"],
+          [addonTable.StatCapMethods.Exactly] = L["Exactly"],
+        }
+        for i, cap in ipairs(preset.caps) do
+          if cap and cap.stat and cap.stat > 0 and cap.points and cap.points[1] then
+            local statName = addonTable.itemStats[cap.stat] and addonTable.itemStats[cap.stat].long or ""
+            local pt = cap.points[1]
+            local presetName = GetCapPresetName(pt.preset)
+            local methodName = methodNames[pt.method] or ""
+            local capText
+            if presetName and pt.preset ~= CAPS.ManualCap then
+              capText = ("%s %s"):format(methodName, presetName)
+            else
+              capText = ("%s %d"):format(methodName, pt.value or 0)
+            end
+            tooltip:AddLine(L["Cap %d - %s"]:format(i, statName))
+            tooltip:AddLine("  " .. capText, rightR, rightG, rightB)
+          end
         end
       end
     end
@@ -695,9 +772,9 @@ function ReforgeLite:InitPresets()
           end
         end)
         button:SetTooltip(function(tooltip, element)
-          FormatWeightsTooltip(tooltip, element, info.value.weights, true)
-          GameTooltip_AddNormalLine(tooltip, L["Click to load preset"])
-          GameTooltip_AddColoredLine(tooltip, L["Shift+Click to delete"], RED_FONT_COLOR)
+          FormatWeightsTooltip(tooltip, element, info.value)
+          tooltip:AddLine(" ")
+          GameTooltip_AddColoredLine(tooltip, L["Shift+Click to delete"], addonTable.COLORS.red)
         end)
       else
         local button = desc:CreateButton(info.text, function()
@@ -708,7 +785,7 @@ function ReforgeLite:InitPresets()
           self:SetStatWeights(info.value.weights, info.value.caps or {})
         end)
         button:SetTooltip(function(tooltip, element)
-          FormatWeightsTooltip(tooltip, element, info.value.weights)
+          FormatWeightsTooltip(tooltip, element, info.value)
         end)
       end
     end

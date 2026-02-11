@@ -62,7 +62,7 @@ RSConstants.EVENTS = {
 	[RSConstants.NPCS_ADDED_IN_5_1_0] = true;
 	[RSConstants.NPCS_ADDED_IN_5_1_1] = true;
 	[RSConstants.NPCS_ADDED_IN_5_2_0] = true;
-	[RSConstants.NPCS_ADDED_IN_5_2_1] = false;
+	[RSConstants.NPCS_ADDED_IN_5_2_1] = true;
 	[RSConstants.NPCS_ADDED_IN_5_3_0] = true;
 	[RSConstants.NPCS_ADDED_IN_5_4_0] = false;
 }
@@ -637,6 +637,7 @@ RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES = 8
 RSConstants.RAID_WARNING_SHOWING_TIME = 3
 RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP = 0.005
 RSConstants.TOOLTIP_MAX_WIDTH = 300
+RSConstants.TOOLTIP_MIN_WIDTH = 100
 
 ---============================================================================
 -- Auxiliar functions

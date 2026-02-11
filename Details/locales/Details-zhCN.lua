@@ -1422,6 +1422,23 @@ L["STRING_SEGMENTS_LIST_WASTED_TIME"] = "不在战斗中"
 L["STRING_SHIELD_HEAL"] = "盾治疗"
 L["STRING_SHIELD_OVERHEAL"] = "盾过量治疗"
 L["STRING_SHORTCUT_RIGHTCLICK"] = "右键点击关闭"
+L["STRING_SIMPLE_TEXT_FORMAT"] = "使用简单文本格式"
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED"] = "使用对齐文本"
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED_DESC"] = "文本按列对齐，设置列之间的间距。"
+L["STRING_SIMPLE_TEXT_FORMAT_ASLIGNED_SPACE_BETWEEN"] = "列间距"
+L["STRING_SIMPLE_TEXT_FORMAT_DESC"] = "启用下面三条规则。"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE2"] = "不显示百分比"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE3"] = "仅显示总计"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE4"] = "使用 | 作为分隔符"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE5"] = "使用 [方括号] 分隔"
+L["STRING_SIMPLE_TEXT_FORMAT_TEMPLATE6"] = "总计 (DPS) 百分比"
+L["STRING_SIMPLE_TEXT_FORMAT_TITLE"] = "右侧文本：简单或对齐"
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE1"] = [=[当该行包含总计和百分比信息时。
+|cFFAAAAAA%s 顺序：总计，百分比。]=]
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE2"] = [=[当该行包含总计和每秒信息时。
+|cFFAAAAAA%s 顺序：总计，每秒。]=]
+L["STRING_SIMPLE_TEXT_FORMAT_TYPE3"] = [=[当该行包含总计、每秒和百分比信息时。
+|cFFAAAAAA%s 顺序：总计，每秒，百分比。]=]
 L["STRING_SLASH_API_DESC"] = "打开API面板来创建插件，自定义显示和光环等内容。"
 L["STRING_SLASH_CAPTURE_DESC"] = "打开或关闭数据的全部捕获。"
 L["STRING_SLASH_CAPTUREOFF"] = "关闭所有数据采集。"
@@ -1474,6 +1491,7 @@ L["STRING_TOOOLD"] = "不能安装因为你的Details!版本过低。"
 L["STRING_TOP"] = "顶"
 L["STRING_TOP_TO_BOTTOM"] = "从高到低"
 L["STRING_TOTAL"] = "总"
+L["STRING_TRAINING_DUMMY"] = "训练假人"
 L["STRING_TRANSLATE_LANGUAGE"] = "帮助翻译Details!"
 L["STRING_TUTORIAL_FULLY_DELETE_WINDOW"] = "你关闭了一个窗口，你可以随时重新打开它。完全删除一个窗口请前往 选项 -> 窗口：一般设置 -> 删除。"
 L["STRING_TUTORIAL_OVERALL1"] = "在一般设置 > 战斗里调整总体数据设置。总体数据在离开战斗后才会更新，使用自订里的\"动态总体伤害\"可实时更新。"

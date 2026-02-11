@@ -22,8 +22,8 @@ local function CreateListTable(onClick, tbl1)
     local alltable = {}
     local newtable = {}
     local FB = BG.FB1
-for b = 1, Maxb[FB] do
- for i = 1, BG.GetMaxi(FB, b) do
+    for b = 1, Maxb[FB] do
+        for i = 1, BG.GetMaxi(FB, b) do
             local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]
             local jine = BG.Frame[FB]["boss" .. b]["jine" .. i]
             if maijia then
@@ -81,7 +81,7 @@ end
 
 
 function BG.XiaoFeiUI(lastbt)
-    local bt=BG.CreateButton(BG.ButtonZhangDan)
+    local bt = BG.CreateButton(BG.ButtonZhangDan)
     bt:SetSize(BG.ButtonZhangDan:GetWidth(), BG.ButtonZhangDan:GetHeight())
     bt:SetPoint("LEFT", lastbt, "RIGHT", BG.ButtonZhangDan.jiange, 0)
     bt:SetText(L["消费"])
@@ -107,20 +107,16 @@ function BG.XiaoFeiUI(lastbt)
     -- 点击通报消费排名
     bt:SetScript("OnClick", function(self)
         BG.FrameHide(0)
-        if not IsInRaid(1) then
-            SendSystemMessage(L["不在团队，无法通报"])
-            BG.PlaySound(1)
-        else
-            self:SetEnabled(false) 
-            C_Timer.After(2, function()
-                bt:SetEnabled(true)
-            end)
+        if BG.IsErrorSendChannel() then return end
+        self:SetEnabled(false)
+        C_Timer.After(2, function()
+            bt:SetEnabled(true)
+        end)
 
-            local _, tbl = CreateListTable(true)
-            BG.SendMsgToRaid(tbl)
+        local _, tbl = CreateListTable(true)
+        BG.SendMsgToRaid(tbl)
 
-            BG.PlaySound(2)
-        end
+        BG.PlaySound(2)
     end)
 
     return bt

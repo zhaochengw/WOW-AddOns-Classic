@@ -1,6 +1,6 @@
-﻿##Interface: 11507
+﻿##Interface: 11508
 ##Author: GeodesicDragon
-##Version: 2.5.50
+##Version: 2.6.57
 ##SavedVariables: XPTConfig
 ##Title: |cFFFF8000XP Bar Text|r
 ##Notes: Shows XP details on the XP bar.

@@ -1,4 +1,5 @@
-## Interface: 50502
+## Interface: 50503
+
 ## Title: Atlas
 ## Title-deDE: Atlas
 ## Title-esES: Atlas
@@ -10,19 +11,21 @@
 ## Title-ruRU: Atlas
 ## Title-zhCN: Atlas
 ## Title-zhTW: Atlas
+
 ## Notes: Instance Map Browser
 ## Notes-deDE: Instanzkarten-Browser
-## Notes-esES: Navegador de Mapas de Mazmorras
-## Notes-esMX: Navegador de Mapas de Mazmorras
+## Notes-esES: Navegador de mapas de estancias
+## Notes-esMX: Navegador de mapas de estancias
 ## Notes-frFR: Navigateur de cartes d'instances
 ## Notes-itIT: Instance Map Browser
 ## Notes-koKR: 인스턴스 지도 탐색기
-## Notes-ptBR: Buscador de Mapas de Instância
+## Notes-ptBR: Navegador de mapas de instâncias
 ## Notes-ruRU: Обозреватель подземелий
 ## Notes-zhCN: |cff00CC33副本地图浏览器|r
 ## Notes-zhTW: Atlas 地圖集主程式
+
 ## Author: nanderson11
-## Version: v3.12.4
+## Version: v3.14.1
 ## X-Website: https://github.com/nanderson11/Atlas
 ## X-Category: Map
 ## X-License: GPLv2

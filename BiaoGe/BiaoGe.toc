@@ -1,9 +1,66 @@
-## Interface: 11508, 30405, 40402, 50502
+## Interface: 11508, 20505, 30405, 38000 40402, 50502, 50503, 120000
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe或/GBG。角色总览命令：/BGR
+## IconTexture: Interface\AddOns\BiaoGe\Media\icon\icon.tga
 ## Author: 苍穹之霜
 ## LoadOnDemand: 0
 ## SavedVariables: BiaoGe
-## Version: 1.21.7
+## Version: 1.25.5
 
-BiaoGe.xml
+Locales\zhCN.lua
+Locales\zhTW.lua
+Locales\enUS.lua
+
+Templates.xml
+Libs\embeds.xml
+Core\DB\DB.xml
+Core\function1.lua
+Core\function2.lua
+Core\FBUI\FBUI.xml
+
+Core\Module\History.lua
+Core\Module\Receive.lua
+Core\Module\DuiZhang.lua
+Core\Module\RoleOverview_core.lua
+Core\Module\RoleOverview.lua
+Core\Module\FilterClassItem.lua
+
+Core\Handbook\Boss.lua
+Core\Handbook\ICC.lua
+
+Core\TongBao\ZhangDan.lua
+Core\TongBao\LiuPai.lua
+Core\TongBao\XiaoFei.lua
+Core\TongBao\QianKuan.lua
+Core\TongBao\WCL.lua
+Core\TongBao\YongShi.lua
+Core\TongBao\Channel.lua
+
+Core\BiaoGe.lua
+
+Core\Module\ClearBiaoGe.lua
+Core\Module\ItemLib.lua
+Core\Module\Loot.lua
+Core\Module\AuctionMSG.lua
+Core\Module\YY.lua
+Core\Module\Report.lua
+Core\Module\WhoHistory.lua
+Core\Module\MeetingHorn.lua
+Core\Module\AtlasLoot.lua
+Core\Module\InfoBarLeft.lua
+Core\Module\ad.lua
+Core\Module\AuctionWA.lua
+Core\Module\Auction.lua
+Core\Module\AuctionLog.lua
+Core\Module\Trade.lua
+Core\Module\ItemOutTime.lua
+Core\Module\Achievement.lua
+Core\Module\QuickAccounting.lua
+Core\Module\InfoBar.lua
+Core\Module\Newbee.lua
+Core\Module\CommerceAuthority_Vanilla.lua
+Core\Module\bagSync.lua
+Core\Module\WorldBossCD.lua
+
+Core\Module\minimap.lua
+Core\Options.lua

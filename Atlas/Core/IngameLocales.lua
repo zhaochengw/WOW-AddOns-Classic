@@ -24,14 +24,8 @@
 --]]
 
 Atlas_IngameLocales = {
-	-- ######################################################################
-	--- Items
-	-- ######################################################################
-	-- Keys
-	["Burial Trove Key"] = C_Item.GetItemInfo(95497),
+	-- TODO: This doesn't work on initial load unless the item is in your cache. They should be translated manually at some point.
 	["Dark Keeper Key"] = C_Item.GetItemInfo(11197),
-	["J'eevee's Jar"] = C_Item.GetItemInfo(18663),
-	["Key to the Palace of Lei Shen"] = C_Item.GetItemInfo(94222),
 	["Relic Coffer Key"] = C_Item.GetItemInfo(11078),
 	["The Eye of Haramad"] = C_Item.GetItemInfo(32092),
 }

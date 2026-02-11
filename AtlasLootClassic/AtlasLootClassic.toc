@@ -1,6 +1,6 @@
-## Interface: 50500
+## Interface: 50503
 ## Author: Snowflame0
-## Version: v5.0.4
+## Version: v5.2.1
 ## SavedVariables: AtlasLootClassicDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0, LibDataBroker-1.1
 ## DefaultState: Enabled

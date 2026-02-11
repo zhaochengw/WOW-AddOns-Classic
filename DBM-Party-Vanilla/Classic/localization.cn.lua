@@ -286,7 +286,7 @@ L:SetGeneralLocalization{
 	name 		= "烈焰卫士艾博希尔"
 }
 L:SetMiscLocalization{
-	Pull		= "%s 开始恢复实力!"
+	Pull		= "%s开始恢复力量！"
 }
 -----------------------------
 --  Solakar Flamewreath  --
@@ -322,7 +322,7 @@ L:SetGeneralLocalization{
 }
 
 L:SetMiscLocalization{
-	Pull1 = "很好……看起来好像这些爱管闲事的小人物来得正是时候。欢迎凡人！！", -- Yell when you jump into the arena
+	Pull1 = "很好……看起来好像这些爱管闲事的小人物来得正是时候。欢迎，凡人！！", -- Yell when you jump into the arena
 	Pull2 = "这不可能！！！雷德，解决掉这些家伙。" -- Yell when you defeat the last wave
 }
 
@@ -888,7 +888,7 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization("Mograine_and_Whitemane")
 
 L:SetGeneralLocalization{
-	name 		= "莫格莱尼 & 怀特迈恩"
+	name 		= "莫格莱尼和怀特迈恩"
 }
 
 -----------------------------
@@ -1536,7 +1536,7 @@ L:SetGeneralLocalization{
 L = DBM:GetModLocalization(487)
 
 L:SetGeneralLocalization{
-	name 		= "耐克鲁姆 & 暗影祭司塞瑟斯"
+	name 		= "耐克鲁姆和暗影祭司塞瑟斯"
 }
 
 -----------------------------
@@ -1696,4 +1696,3 @@ L:SetWarningLocalization{
 L:SetOptionLocalization{
 	WarnDoom = "Show announce to decurse $spell:1221577"
 }
-

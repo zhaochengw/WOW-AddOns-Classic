@@ -4,7 +4,7 @@ local AddonTitle = select(2, GetAddOnInfo(AddonName))
 local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
 
 local TextOnXPBar = MainMenuExpBar:CreateFontString("ExperienceLeft", "OVERLAY", "GameTooltipText")
-TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 12, "THINOUTLINE")
+TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 14, "THINOUTLINE")
 TextOnXPBar:SetPoint("CENTER", 0, 0)
 TextOnXPBar:SetTextColor(1,1,1,1)
 
@@ -98,13 +98,13 @@ restid, restname, mult = GetRestState()
 if playerLevel < 90 then
 	if restid == 2 then
 		if XPTConfig.ShowMoreInfo == "YES" then
-			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. restname .. ")")
+			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. restname .. ")")
 		elseif XPTConfig.ShowMoreInfo == "NO" then
 			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 		end
 	elseif restid == 1 then		
 		if XPTConfig.ShowMoreInfo == "YES" then
-			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. retVal .. " " .. restname .. " XP)")
+			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. retVal .. " " .. restname .. " XP)")
 		elseif XPTConfig.ShowMoreInfo == "NO" then
 			TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 		end			

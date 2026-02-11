@@ -8,6 +8,7 @@
 	<include file = "libs\libs.xml" />
 
 	<script file = "init.lua" />
+	<script file = "constants.lua" />
 
 	<include file = "Locale\Locale.xml" />
 	<include file = "Data\Data.xml" />

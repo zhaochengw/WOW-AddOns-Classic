@@ -71,6 +71,7 @@ local DefaultDB = {
     meleeHaste = true,
     spellHaste = true,
     mastery = false,
+    crit = false,
     weights = {0, 0, 0, 0, 0, 0, 0, 0},
     caps = {
       {
@@ -99,7 +100,7 @@ local DefaultDB = {
     methodOrigin = addonName,
     itemsLocked = {},
     categoryStates = {},
-    useBranchAndBound = false,
+    useBranchBound = true,
   },
   class = {
     customPresets = {}
@@ -365,7 +366,7 @@ function addonTable.GetItemStatsFromTooltip(itemInfo)
     return GetItemStats(itemInfo.link)
   end
 
-  local cached = tooltipStatsCache[itemInfo.itemId][itemInfo.ilvl]
+  local cached = tooltipStatsCache[itemInfo.itemGUID][itemInfo.ilvl]
   if cached then
     return CopyTable(cached)
   end
@@ -388,9 +389,7 @@ function addonTable.GetItemStatsFromTooltip(itemInfo)
     if region.GetText then
       local text = region:GetText()
       if text and text ~= "" then
-        local cleanText = text:gsub("%b()", ""):gsub("%b ()", "")
-        cleanText = cleanText:match("^(.-)%s*$")
-
+        local cleanText = strtrim((text:gsub("%b()", "")))
         for _, statInfo in ipairs(ITEM_STATS) do
           if not stats[statInfo.name] then
             local value
@@ -416,7 +415,7 @@ function addonTable.GetItemStatsFromTooltip(itemInfo)
     stats[destName] = nil
   end
 
-  tooltipStatsCache[itemInfo.itemId][itemInfo.ilvl] = stats
+  tooltipStatsCache[itemInfo.itemGUID][itemInfo.ilvl] = stats
   return CopyTable(stats)
 end
 
@@ -462,39 +461,15 @@ end
 
 addonTable.WoWSimsOriginTag = "WoWSims"
 
-local function IsItemSwapped(slot, wowsims)
-  local SWAPPABLE_SLOTS = {
-    [INVSLOT_FINGER1] = INVSLOT_FINGER2,
-    [INVSLOT_FINGER2] = INVSLOT_FINGER1,
-    [INVSLOT_TRINKET1] = INVSLOT_TRINKET2,
-    [INVSLOT_TRINKET2] = INVSLOT_TRINKET1
-  }
-  local oppositeSlotId = SWAPPABLE_SLOTS[GetInventorySlotInfo(ITEM_SLOTS[slot])]
-  if not oppositeSlotId then return end
-  local slotItemId = (wowsims.player.equipment.items[slot] or {}).id or 0
-  local oppositeSlotItemId = (wowsims.player.equipment.items[oppositeSlotId] or {}).id or 0
-  if C_Item.IsEquippedItem(slotItemId) and C_Item.IsEquippedItem(oppositeSlotItemId) then
-    return oppositeSlotId
-  end
-end
-
 function ReforgeLite:ValidateWoWSimsString(importStr)
   local success, wowsims = pcall(function () return C_EncodingUtil.DeserializeJSON(importStr) end)
   if not success or type(wowsims) ~= "table" then return false, wowsims end
   if not (wowsims.player or {}).equipment then
-    return false, L['This import is missing player equipment data! Please make sure "Gear" is selected when exporting from WoWSims.']
+    return false, L["This import is missing player equipment data! Please make sure 'Gear' is selected when exporting from WoWSims."]
   end
   local newItems = CopyTable((self.pdb.method or self:InitializeMethod()).items)
   for slot, item in ipairs(newItems) do
     local simItemInfo = wowsims.player.equipment.items[slot] or {}
-    if simItemInfo.id ~= self.itemData[slot].itemInfo.itemId then
-      local swappedSlotId = IsItemSwapped(slot, wowsims)
-      if swappedSlotId then
-        simItemInfo = wowsims.player.equipment.items[swappedSlotId]
-      else
-        return false, { itemId = simItemInfo.id, slot = slot }
-      end
-    end
     if simItemInfo.reforging then
       item.src, item.dst = unpack(self.reforgeTable[simItemInfo.reforging - REFORGE_TABLE_BASE])
     else
@@ -673,19 +648,17 @@ end
 
 local function FormatNumber(num)
   if num == 0 then return num end
-  return (num > 0 and "+" or "-") .. FormatLargeNumber(abs(num))
+  return (num > 0 and "+" or "-") .. BreakUpLargeNumbers(abs(num))
 end
 
-local function SetTextDelta (text, value, cur, override)
+local function GetTextDelta (value, cur, override)
   override = override or (value - cur)
-  if override == 0 then
-    text:SetTextColor(addonTable.COLORS.grey:GetRGB())
+  if override < 0 then
+    return addonTable.COLORS.red
   elseif override > 0 then
-    text:SetTextColor(addonTable.COLORS.green:GetRGB())
-  else
-    text:SetTextColor(addonTable.COLORS.red:GetRGB())
+    return addonTable.COLORS.green
   end
-  text:SetText(FormatNumber(value - cur))
+  return addonTable.COLORS.grey
 end
 
 ------------------------------------------------------------------------
@@ -918,15 +891,15 @@ end
 ---@return nil
 function ReforgeLite:CreateItemTable ()
   self.playerSpecTexture = self:CreateTexture (nil, "ARTWORK")
-  self.playerSpecTexture:SetPoint ("TOPLEFT", 10, -28)
-  self.playerSpecTexture:SetSize(18, 18)
+  self.playerSpecTexture:SetPoint ("TOPLEFT", 10, -26)
+  self.playerSpecTexture:SetSize(16, 16)
   self.playerSpecTexture:SetTexCoord(0.0825, 0.0825, 0.0825, 0.9175, 0.9175, 0.0825, 0.9175, 0.9175)
 
   self.playerTalents = {}
   for tier = 1, MAX_NUM_TALENT_TIERS do
     self.playerTalents[tier] = self:CreateTexture(nil, "ARTWORK")
-    self.playerTalents[tier]:SetPoint("TOPLEFT", self.playerTalents[tier-1] or self.playerSpecTexture, "TOPRIGHT", 4, 0)
-    self.playerTalents[tier]:SetSize(18, 18)
+    self.playerTalents[tier]:SetPoint("TOPLEFT", self.playerTalents[tier-1] or self.playerSpecTexture, "TOPRIGHT", 2, 0)
+    self.playerTalents[tier]:SetSize(16, 16)
     self.playerTalents[tier]:SetTexCoord(self.playerSpecTexture:GetTexCoord())
     self.playerTalents[tier]:SetScript("OnLeave", GameTooltip_Hide)
   end
@@ -934,7 +907,7 @@ function ReforgeLite:CreateItemTable ()
   self:UpdatePlayerSpecInfo()
 
   self.itemTable = GUI:CreateTable (ITEM_SLOT_COUNT + 1, ITEM_STAT_COUNT, ITEM_SIZE, ITEM_SIZE + 4, {0.5, 0.5, 0.5, 1}, self)
-  self.itemTable:SetPoint ("TOPLEFT", self.playerSpecTexture, "BOTTOMLEFT", 0, -6)
+  self.itemTable:SetPoint ("TOPLEFT", self.playerSpecTexture, "BOTTOMLEFT", 0, -4)
   self.itemTable:SetPoint ("BOTTOM", 0, 10)
   self.itemTable:SetWidth (400)
   for i = 1, ITEM_STAT_COUNT do
@@ -942,11 +915,14 @@ function ReforgeLite:CreateItemTable ()
     self.itemTable:EnableColumnAutoWidth(i)
   end
 
-  self.itemLevel = self:CreateFontString (nil, "OVERLAY", "GameFontNormal")
+  self.itemLevel = self:CreateFontString (nil, "OVERLAY", "GameFontWhite")
   self.itemLevel:SetPoint ("BOTTOMRIGHT", self.itemTable, "TOPRIGHT", 0, 8)
-  self.itemLevel:SetTextColor(addonTable.COLORS.gold:GetRGB())
   self:RegisterEvent("PLAYER_AVG_ITEM_LEVEL_UPDATE")
   self:PLAYER_AVG_ITEM_LEVEL_UPDATE()
+
+  self.itemLevelLabel = self:CreateFontString (nil, "OVERLAY", "GameFontNormal")
+  self.itemLevelLabel:SetPoint ("BOTTOMRIGHT", self.itemLevel, "BOTTOMLEFT", -2, 0)
+  self.itemLevelLabel:SetFormattedText(STAT_FORMAT, STAT_AVERAGE_ITEM_LEVEL)
 
   self.itemLockHelpButton = GUI:CreateHelpButton(self, L["The Item Table shows your currently equipped gear and their stats.\n\nEach row represents one equipped item. Only stats present on your gear are shown as columns.\n\nAfter computing, items being reforged show:\n• Red numbers: Stat being reduced\n• Green numbers: Stat being added\n\nClick an item icon to lock/unlock it. Locked items (shown with a lock icon) are ignored during optimization."], { scale = 0.5 })
 
@@ -1046,7 +1022,15 @@ function ReforgeLite:AddCapPoint (i, loading)
       self:RefreshMethodStats ()
     end,
     menuItemHidden = function(info)
-      return info.category and info.category ~= self.statCaps[i].stat.selectedValue
+      if info.category and info.category ~= self.statCaps[i].stat.selectedValue then
+        return true
+      end
+      if info.classID and info.classID ~= addonTable.playerClass then
+        return true
+      end
+      if info.specID and info.specID ~= self.specID then
+        return true
+      end
     end
   })
   local value = GUI:CreateEditBox (self.statCaps, 40, 30, 0, function (val)
@@ -1067,7 +1051,7 @@ function ReforgeLite:AddCapPoint (i, loading)
     local rating = pointValue / self:RatingPerPoint(cap.stat)
 
     local function formatWithBonus(val, bonus)
-      val = RoundToSignificantDigits(val, 1)
+      val = RoundToSignificantDigits(val, 2)
       if bonus > 0 then
         return ("%.2f%% + %s%% = %.2f%%"):format(val, bonus, val + bonus)
       else
@@ -1085,6 +1069,10 @@ function ReforgeLite:AddCapPoint (i, loading)
     elseif cap.stat == statIds.HASTE then
       local meleeHaste, rangedHaste, spellHaste = self:CalcHasteWithBonuses(rating)
       ratingText = ("%s: %.2f%%\n%s: %.2f%%\n%s: %.2f%%"):format(MELEE, meleeHaste, RANGED, rangedHaste, STAT_CATEGORY_SPELL, spellHaste)
+    elseif cap.stat == statIds.MASTERY then
+      local bonusMastery, bonusCoeff = self:GetMasteryBonus()
+      local masteryFromGear = RoundToSignificantDigits(rating * bonusCoeff, 2)
+      ratingText = formatWithBonus(bonusMastery, masteryFromGear)
     else
       ratingText = ("%.2f"):format(rating)
     end
@@ -1286,10 +1274,7 @@ function ReforgeLite:CreateOptionList ()
   self.presetsButton = GUI:CreateFilterDropdown(self.content, L["Presets"], {resizeToTextPadding = 35})
   self.statWeightsCategory:AddFrame(self.presetsButton)
   self:SetAnchor(self.presetsButton, "TOPLEFT", self.statWeightsCategory, "BOTTOMLEFT", 0, -5)
-
-  if self.presetMenuGenerator then
-    self.presetsButton:SetupMenu(self.presetMenuGenerator)
-  end
+  self.presetsButton:SetupMenu(self.presetMenuGenerator)
 
   self.pawnButton = GUI:CreatePanelButton (self.content, L["Import WoWSims/Pawn/QE"], function(btn) self:ImportData() end)
   self.statWeightsCategory:AddFrame (self.pawnButton)
@@ -1320,22 +1305,25 @@ function ReforgeLite:CreateOptionList ()
   self:SetAnchor(self.buffsContextMenu, "LEFT", self.targetLevel, "RIGHT", 10, 0)
 
   local buffsContextValues = {
-    spellHaste = { text = addonTable.CreateIconMarkup(136092) .. L["Spell Haste"], selected = self.PlayerHasSpellHasteBuff },
-    meleeHaste = { text = addonTable.CreateIconMarkup(133076) .. L["Melee Haste"], selected = self.PlayerHasMeleeHasteBuff },
-    mastery = { text = addonTable.CreateIconMarkup(136046) .. STAT_MASTERY, selected = self.PlayerHasMasteryBuff },
+    { key = 'spellHaste', text = addonTable.CreateIconMarkup(136092) .. L["5% Spell Haste"], selected = self.PlayerHasSpellHasteBuff },
+    { key = 'meleeHaste', text = addonTable.CreateIconMarkup(133076) .. L["10% Melee Haste"], selected = self.PlayerHasMeleeHasteBuff },
+    { key = 'mastery', text = ("%s+%s %s"):format(addonTable.CreateIconMarkup(136046), addonTable.MASTERY_BY_LEVEL[UnitLevel('player')], STAT_MASTERY), selected = self.PlayerHasMasteryBuff },
+    { key = 'crit', text = addonTable.CreateIconMarkup(136112) .. "5% " .. CRIT_ABBR, selected = self.PlayerHasCritBuff },
   }
+  local function SetSelected(box)
+    self.pdb[box.key] = not self.pdb[box.key]
+    self:QueueUpdate()
+  end
 
   self.buffsContextMenu:SetupMenu(function(dropdown, rootDescription)
-    local function IsSelected(value)
-        return self.pdb[value] or buffsContextValues[value].selected(self)
-    end
-    local function SetSelected(value)
-        self.pdb[value] = not self.pdb[value]
-        self:QueueUpdate()
-    end
-    for key, box in pairs(buffsContextValues) do
-        local checkbox = rootDescription:CreateCheckbox(box.text, IsSelected, SetSelected, key)
-        checkbox.IsEnabled = function(chkbox) return not buffsContextValues[chkbox.data].selected(self) end
+    for _, box in ipairs(buffsContextValues) do
+      local checkbox = rootDescription:CreateCheckbox(
+        box.text,
+        function(b) return self.pdb[b.key] or b.selected(self) end,
+        SetSelected,
+        box
+      )
+      checkbox.IsEnabled = function(chkbox) return not chkbox.data.selected(self) end
     end
   end)
 
@@ -1365,7 +1353,7 @@ function ReforgeLite:CreateOptionList ()
       caps[i].stat:SetEnabled(self.pdb.caps[i-1].stat ~= 0)
     end
     if self.fastModeButton then
-      self.fastModeButton:SetShown(self.pdb.caps[#self.pdb.caps].stat ~= 0)  
+      self.fastModeButton:SetShown(self.pdb.caps[#self.pdb.caps].stat ~= 0)
     end
   end
   for i = 1, 2 do
@@ -1387,8 +1375,9 @@ function ReforgeLite:CreateOptionList ()
         self.statCaps:ToggleStatDropdownToCorrectState()
       end,
       width = 125,
-      menuItemDisabled = function(val)
-        return val > 0 and self.statCaps[3-i] and self.statCaps[3-i].stat and self.statCaps[3-i].stat.value == val
+      menuItemEnabled = function(val)
+        local otherCap = self.statCaps[3-i]
+        return not (val > 0 and otherCap and otherCap.stat and otherCap.stat.value == val)
       end
     })
     self.statCaps[i].add = GUI:CreateImageButton (self.statCaps, 20, 20, "Interface\\Buttons\\UI-PlusButton-Up",
@@ -1678,15 +1667,14 @@ function ReforgeLite:UpdateMethodCategory()
     self.methodCategory:AddFrame (self.methodStats)
     self:SetAnchor (self.methodStats, "TOPLEFT", self.methodCategory, "BOTTOMLEFT", 0, -5)
     self.methodStats:SetRowHeight (ITEM_SIZE + 2)
-    self.methodStats:SetColumnWidth(60)
-    self.methodStats:EnableColumnAutoWidth(0)
+    self.methodStats:SetColumnWidth(46)
+    self.methodStats:EnableColumnAutoWidth(0, 1, 2)
 
     for i, v in ipairs (ITEM_STATS) do
       local cell = i - 1
       self.methodStats:SetCellText(cell, 0, v.long, "LEFT")
       self.methodStats:SetCellText(cell, 1, "0")
-      self.methodStats:SetCellText(cell, 2, "+0", nil, addonTable.COLORS.grey)
-      self.methodStats[i] = { delta = self.methodStats.cells[cell][2] }
+      self.methodStats:SetCellText(cell, 2, "0", nil, addonTable.COLORS.grey)
     end
 
     self.expertiseToHitHelpButton = GUI:CreateHelpButton(self.methodStats, L["Your Expertise rating is being converted to spell hit.\n\nIn Mists of Pandaria, casters benefit from Expertise due to it automatically converting to Hit at a 1:1 ratio.\n\nThe Hit value shown above includes this converted Expertise rating.\n\nNote: The character sheet is bugged and doesn't show Expertise converted to spell hit, but the conversion works correctly in combat."], { scale = 0.45 })
@@ -1714,24 +1702,32 @@ end
 function ReforgeLite:RefreshMethodStats()
   if self.pdb.method then
     self:UpdateMethodStats (self.pdb.method)
-  end
-  if self.pdb.method and self.methodStats then
-    local showSpirit = self.pdb.weights[statIds.SPIRIT] > 0 or self.currentSpecRole == "HEALER" or (self.conversion[statIds.SPIRIT] or {})[statIds.HIT]
-    local showSpellHitHelp = (self.conversion[statIds.EXP] or {})[statIds.HIT] and ITEM_STATS[statIds.EXP].mgetter(self.pdb.method) > 0
-    self.expertiseToHitHelpButton:SetShown(self.db.showHelp and showSpellHitHelp)
-    self.expertiseToHitHelpButton:SetEnabled(showSpellHitHelp)
-    for statId, v in ipairs (ITEM_STATS) do
-      local cell = statId - 1
-      local mvalue = v.mgetter (self.pdb.method)
-      self.methodStats:SetCellText(cell, 1, FormatLargeNumber(mvalue))
-      local override
-      mvalue = v.mgetter (self.pdb.method, true)
-      local value = v.getter ()
-      if self:GetStatScore (statId, mvalue) == self:GetStatScore (statId, value) then
-        override = 0
+    if self.methodStats then
+      local showSpirit = self.pdb.weights[statIds.SPIRIT] > 0 or self.currentSpecRole == "HEALER" or (self.conversion[statIds.SPIRIT] or {})[statIds.HIT]
+      local showSpellHitHelp = (self.conversion[statIds.EXP] or {})[statIds.HIT] and ITEM_STATS[statIds.EXP].mgetter(self.pdb.method) > 0
+      self.expertiseToHitHelpButton:SetShown(self.db.showHelp and showSpellHitHelp)
+      self.expertiseToHitHelpButton:SetEnabled(showSpellHitHelp)
+      local anyExpanded = false
+      for statId, v in ipairs(ITEM_STATS) do
+        local cell = statId - 1
+        local mvalue = v.mgetter (self.pdb.method)
+        self.methodStats:SetCellText(cell, 1, BreakUpLargeNumbers(mvalue))
+        local override
+        mvalue = v.mgetter (self.pdb.method, true)
+        local value = v.getter ()
+        if self:GetStatScore (statId, mvalue) == self:GetStatScore (statId, value) then
+          override = 0
+        end
+        self.methodStats:SetCellText(cell, 2, FormatNumber(mvalue - value), nil, GetTextDelta(mvalue, value, override))
+        local expanded = mvalue > 0 and (statId ~= statIds.SPIRIT or showSpirit)
+        self.methodStats:SetRowExpanded(cell, expanded)
+        anyExpanded = anyExpanded or expanded
       end
-      SetTextDelta (self.methodStats[statId].delta, mvalue, value, override)
-      self.methodStats:SetRowExpanded(cell, mvalue > 0 and (statId ~= statIds.SPIRIT or showSpirit))
+      if not anyExpanded then
+        for statId = 1, ITEM_STAT_COUNT do
+          self.methodStats:SetRowExpanded(statId - 1, statId ~= statIds.SPIRIT or showSpirit)
+        end
+      end
     end
   end
 end
@@ -1750,8 +1746,7 @@ function ReforgeLite:UpdateItems()
 
   for _, v in ipairs (self.itemData) do
     local item = self.playerData[v.slotId]
-    local stats = {}
-    local reforgeSrc, reforgeDst
+    local stats, reforgeSrc, reforgeDst
     if item:IsItemEmpty() then
       wipe(v.itemInfo)
       v.texture:SetTexture(v.slotTexture)
@@ -1766,9 +1761,10 @@ function ReforgeLite:UpdateItems()
         reforge = GetReforgeID(v.slotId),
         slotId = v.slotId,
       }
+      v.itemInfo.originalStats = GetItemStats(v.itemInfo)
       v.texture:SetTexture(item:GetItemIcon())
       v.quality:SetVertexColor(item:GetItemQualityColor().color:GetRGB())
-      stats = GetItemStats(v.itemInfo)
+      stats = CopyTable(v.itemInfo.originalStats)
       if v.itemInfo.reforge then
         local srcId, dstId = unpack(reforgeTable[v.itemInfo.reforge])
         reforgeSrc, reforgeDst = ITEM_STATS[srcId].name, ITEM_STATS[dstId].name
@@ -1780,18 +1776,16 @@ function ReforgeLite:UpdateItems()
     v.quality:SetShown(not item:IsItemEmpty())
     v.locked:SetShown(self.pdb.itemsLocked[v.itemInfo.itemGUID])
 
-    local statsOrig = GetItemStats(v.itemInfo)
-
     for j, s in ipairs (ITEM_STATS) do
-      local currentValue = stats[s.name]
-      local origValue = statsOrig[s.name]
+      local currentValue = (stats or {})[s.name]
+      local origValue = (v.itemInfo.originalStats or {})[s.name]
 
       if (origValue and origValue ~= 0) or (currentValue and currentValue ~= 0) then
         columnHasData[j] = true
       end
 
       if currentValue and currentValue ~= 0 then
-        v.stats[j]:SetText(FormatLargeNumber(currentValue))
+        v.stats[j]:SetText(BreakUpLargeNumbers(currentValue))
         if s.name == reforgeSrc then
           v.stats[j]:SetTextColor(v.stats[j].fontColors.red:GetRGB())
         elseif s.name == reforgeDst then
@@ -1809,7 +1803,7 @@ function ReforgeLite:UpdateItems()
   local hasNoData = next(columnHasData) == nil
 
   for i, v in ipairs (ITEM_STATS) do
-    self.statTotals[i]:SetText(FormatLargeNumber(v.getter()))
+    self.statTotals[i]:SetText(BreakUpLargeNumbers(v.getter()))
     if columnHasData[i] or hasNoData then
       self.itemTable:ExpandColumn(i)
     else
@@ -2051,7 +2045,7 @@ function ReforgeLite:CreateMethodWindow()
     frame:ClearAllPoints()
     frame:SetPoint("LEFT", ReforgingFrame, "RIGHT")
   end
-  
+
   if not self.db.showHelp then
     GUI:SetHelpButtonsShown(false)
   end
@@ -2097,7 +2091,7 @@ end
 function ReforgeLite:ShowMethodWindow(attachToReforge)
   self:CreateMethodWindow()
 
-  GUI:ClearFocus()
+  GUI:ClearEditFocus()
   if self.methodWindow:IsShown() then
     self:SetNewTopWindow(self.methodWindow)
   else
@@ -2359,7 +2353,8 @@ function ReforgeLite:PLAYER_ENTERING_WORLD()
 end
 
 function ReforgeLite:PLAYER_AVG_ITEM_LEVEL_UPDATE()
-  self.itemLevel:SetFormattedText(CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, select(2,GetAverageItemLevel()))
+  local _, ilvl = GetAverageItemLevel()
+  self.itemLevel:SetFormattedText("%d", ilvl)
 end
 
 function ReforgeLite:ADDON_LOADED (addon)

@@ -7,8 +7,8 @@ local L = DBM_GUI_L
 L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationByPrefix		= "Traduzido por "
-L.TranslationBy 			= "GlitterStorm @ Azralon" -- your name here, localizers!
-L.Website					= "Visite-nos no discord em |cFF73C2FBhttps://discord.gg/deadlybossmods|r"
+L.TranslationBy 			= "GlitterStorm @ Azralon"
+L.Website					= "Siga a MysticalOS para notícias e atualizações |cFF73C2FBhttps://allmylinks.com/mysticalos|r"
 L.WebsiteButton				= "Site"
 
 L.OTabBosses				= "Chefes"
@@ -90,6 +90,7 @@ L.Button_TestBars			= "Iniciar barras de teste"
 L.Button_MoveBars			= "Mover barras"
 L.Button_ResetInfoRange		= "Redefinir quadros de informações/distância"
 
+L.Button_ShowMidnightWizard = "Assistente de configuração de Midnight"
 L.ModelOptions				= "Opções do visualizador de modelos 3D"
 L.EnableModels				= "Ativar modelos 3D nas opções de chefe"
 L.ModelSoundOptions			= "Definir opção de som para o visualizador de modelos"
@@ -105,7 +106,7 @@ L.Editbox_WindowHeight		= "Altura da janela GUI"
 L.UIGroupingOptions					= "Opções de agrupamento de IU (alterá-las requer recarregamento da IU)"
 L.GroupOptionsExcludeIcon			= "Excluir as opções de 'Ativar ícone' de serem agrupadas por feitiço (elas serão agrupadas na categoria categoria de 'Ícones')"
 L.GroupOptionsExcludePrivateAura 	= "Excluir as opções de som 'Aura privada' de serem agrupadas por feitiço (elas serão agrupadas na categoria de 'Auras privadas')"
-L.AutoExpandSpellGroups				= "Expandir automaticamente as opções agrupadas por feitiço"
+L.AutoExpandSpellGroups2				= "Expandir automaticamente as opções agrupadas por feitiço"
 L.ShowWAKeys						= "Exibir as teclas WeakAuras ao lado dos nomes dos feitiços para ajudar a escrever WeakAuras usando os gatilhos do módulo de chefe"
 --L.ShowSpellDescWhenExpanded		= "Continuar mostrando a descrição do feitiço quando os grupos forem expandidos"--Might not be used
 L.NoDescription						= "Esta habilidade não tem descrição"
@@ -115,9 +116,9 @@ L.CustomOptions						= "Esta categoria contém opções personalizadas para uma 
 L.Panel_AutoLogging 				= "Registro automático"
 
 --Auto Logging: Logging toggles/types
-L.Area_AutoLogging					= "Alternâncias de registro automático"
-L.AutologBosses 					= "Registrar automaticamente o conteúdo selecionado usando o registro de combate de Blizzard"
-L.AdvancedAutologBosses 			= "Registrar automaticamente o conteúdo selecionado com o Transcriptor"
+L.Area_AutoLogging					= "Opções de registro automático"
+L.AutologBosses 					= "Registrar automaticamente os encontros com o registro de combate de Blizzard"
+L.AdvancedAutologBosses 			= "Registrar automaticamente os encontros com o Transcriptor"
 --Auto Logging: Global filter Options
 L.Area_AutoLoggingFilters 			= "Filtros de registro automático"
 L.RecordOnlyBosses 					= "Registrar apenas encontros contra chefes"
@@ -156,6 +157,7 @@ L.RaidWarnColor_1 			= "Cor 1"
 L.RaidWarnColor_2 			= "Cor 2"
 L.RaidWarnColor_3		 	= "Cor 3"
 L.RaidWarnColor_4 			= "Cor 4"
+L.RaidWarnColor				= "Cor"
 L.InfoRaidWarning			= [[Você pode especificar a cor e posição do quadro de anúncios de raide.
 Esse quadro é utilizado para mensagens como "Jogador X está sob efeito de Y".]]
 L.ColorResetted 			= "As opções de cor desse campo foram resetadas."
@@ -198,6 +200,14 @@ L.SpecialWarnHeader5 				= "Tipo 5: Definir opções para anúncios com notas co
 L.AnnouncementMidnightNotice		= "As opções neste painel são para avisos que a Blizzard classifica como 'menores'"
 L.SpecialWarnHeaderMedium			= "Anúncios para mecânicas que a Blizzard classifica como 'médias'"
 L.SpecialWarnHeaderCritical			= "Anúncios para mecânicas que a Blizzard classifica como 'críticas'"
+
+-- Panel: Private Auras Frame
+L.Panel_PrivateAuras				= "Auras privadas"
+L.Area_PrivateAuras					= "Opções de aura privada"
+L.EnablePrivateAuraIcons			= "Mostrar ícones de aura privada na tela"
+L.EnablePrivateAuraText				= "Mostrar mensagens de texto de aura privada na tela"
+L.SetPAIconScale					= "Escala do ícone: %0.1f"
+L.SetPATextScale					= "Escala do texto: %0.1f"
 
 -- Special Announce Dropdowns
 L.SAOne     				= "Som global 1 (pessoal)"
@@ -263,12 +273,15 @@ L.ZeroatWindowStartRestart 	= "O texto atinge zero no início da janela de recar
 L.ZeroatWindowStartNeg 		= "O texto atinge zero no início da janela de recarga e depois fica negativo"
 L.BarIconLeft 				= "Ícone da esq."
 L.BarIconRight 				= "Ícone da dir."
+L.BarIconPosition           = "Posição do ícone"
 L.ExpandUpwards				= "Expandir para cima"
 L.FillUpBars				= "Barras enchem"
 L.ClickThrough				= "Desativar eventos de mouse (permite clicar através das barras)"
-L.Bar_Decimal				= "Decimal exibe abaixo do tempo: %d"
+L.Bar_Decimal				= "Decimal exibe abaixo: %d s"
 L.Bar_Alpha					= "Transparência: %0.1f"
-L.Bar_EnlargeTime			= "Barra aumenta abaixo do tempo: %d"
+L.Bar_EnlargeTime			= "Barras aumentam abaixo: %d s"
+L.Bar_AppearTime			= "Barras ocultam acima: %d s" --Used for when hidden bars show on the small bar anchor
+L.Bar_HideLongBars			= "Ocultar barras até ficarem abaixo do limite"
 L.BarSpark					= "Barra faísca"
 L.BarFlash					= "Barra pisca quando estiver para expirar"
 L.BarSort					= "Selecionar pelo tempo restante"
@@ -276,13 +289,18 @@ L.BarColorByType 			= "Colorir por tipo"
 L.Highest 					= "Maior no topo"
 L.Lowest 					= "Menor no topo"
 L.NoBarFade 				= "Usar cores inicial/final como cores pequena/grande em vez de mudança gradual de cor"
-L.BarInlineIcons 			= "Exibir ícones inline"
+L.BarInlineIcons 			= "Exibir ícones do diário"
 L.DisableRightClickBar		= "Desativar clique direito para cancelar cronômetros"
 L.ShortTimerText 			= "Usar texto curto de cronômetro (quando disponível)"
 L.KeepBar 					= "Manter cronômetro ativo até o lançamento da habilidade"
 L.KeepBar2 					= "(quando suportado pelo mod)"
 L.FadeBar 					= "Desaparecer cronômetros para habilidades fora do alcance"
 L.BarSkin 					= "Estilo da barra"
+L.InlineIconsDropdown		= "Estilo de ícone do diário"
+L.SingleLargeIcon			= "Um único ícone grande"
+L.DoubleLargeIcons			= "Dois ícones grandes"
+L.DoubleInlineIcons			= "Todos os ícones grandes"
+L.StackedMiniIcons			= "Ícones pequenos empilhados"
 
 -- Panel: Pull, Break, Combat
 L.Panel_PullBreakCombat 	= "Puxada e pausa"
@@ -369,6 +387,10 @@ L.Area_BlizzFiltersSetup 	= "Guia de filtros Blizzard"
 -- Panel: Toggle DBM Features
 L.Panel_SpamFilter 			= "Desativar funcionalidades de DBM"
 
+L.Area_Global_Toggles           = "Opções globais de funcionalidades"
+L.NoWarnings                    = "Desativar os avisos do DBM"
+L.NoTimers                      = "Desativar os cronômetros do DBM"
+
 L.Area_SpamFilter_SpecFeatures 	= "Funcionalidades de anúncios"
 L.SpamBlockNoShowAnnounce 		= "Não exibir texto nem reproduzir som para QUALQUER anúncio geral"
 L.SpamBlockNoSpecWarnText 		= "Não exibir texto de anúncio especial"
@@ -385,10 +407,10 @@ L.SpamBlockNoShowUTimers 		= "Não exibir cronômetros enviados pelo usuário"
 L.SpamBlockNoCountdowns 		= "Não reproduzir sons de contagem regressiva"
 
 L.Area_SpamFilter_Nameplates 	= "Funcionalidades de placa de nome"
-L.SpamBlockNoNameplate 			= "Não exibir ícones de placa de nome apenas para mecânicas especiais de chefe"
-L.SpamBlockNoNameplateCD 		= "Não exibir ícones de cronômetro de recarga de placa de nome apenas para habilidades"
-L.SpamBlockNoNameplateCasts 	= "Não exibir ícones de cronômetro de lançamento de placa de nome apenas para habilidades"
-L.SpamBlockNoBossGUIDs 			= "Não exibir ícones de cronômetro de recarga de placa de nome para habilidades que também têm cronômetros"
+L.SpamBlockNoNameplate        	= "Não exibir ícones de bônus ou penalidades"
+L.SpamBlockNoNameplateCD     	= "Não exibir ícones de tempos de recarga de habilidades"
+L.SpamBlockNoNameplateCasts   	= "Não exibir ícones de temporizadores de lançamento de habilidades"
+L.SpamBlockNoBossGUIDs        	= "Não exibir ícones para habilidades com temporizadores"
 L.AlwaysKeepNPs 				= "Manter ícones de cronômetro de recarga de placa de nome expirados visíveis até que a habilidade seja re-lançada"
 
 L.Area_SpamFilter_Misc 			= "Funcionalidades diversas"
@@ -519,6 +541,7 @@ L.TabFooter = "Todas as opções neste painel só funcionam se você for o líde
 
 -- Panel: Privacy
 L.Tab_Privacy 				= "Controles de privacidade"
+L.Tab_PrivacyMidnight 		= "Privacidade das comunicações"
 L.Area_WhisperMessages 		= "Opções de mensagens de sussurro"
 L.AutoRespond 				= "Responder automaticamente a sussurros durante o combate"
 L.WhisperStats 				= "Incluir estatísticas de vitórias/derrotas nas respostas de sussurro"
@@ -570,10 +593,13 @@ L.NPIcon_Button 			= "Botão"
 L.Panel_ExtraFeatures		= "Funcionalidades extra"
 
 L.Area_ChatAlerts			= "Opções de alerta do bate-papo"
-L.RoleSpecAlert				= "Exibir mensagem de alerta quando sua especialização de saque não corresponder à sua especialização atual ao entrar na raide"
-L.CheckGear					= "Envia um mensagem de alerta quando o seu ilvl equipado for muito menor do que o ilvl nas bolsas (40+)"
-L.WorldBossAlert			= "Exibir mensagem de alerta quando um chefe mundial possivelmente for atacado no seu reino por membros da sua guilda ou amigos"
-L.WorldBuffAlert 			= "Exibir mensagem de alerta e cronômetro quando o RP de bônus mundial for iniciado no seu reino"
+L.RoleSpecAlert				= "Exibir alerta quando sua especialização de saque não corresponder à sua especialização atual ao entrar na raide"
+L.CheckGear					= "Exibir alerta quando o seu ilvl equipado for muito menor do que o ilvl nas bolsas (40+)"
+L.WorldBossAlert			= "Exibir alerta quando um chefe mundial possivelmente for atacado no seu reino por membros da sua guilda ou amigos"
+L.WorldBuffAlert 			= "Exibir alerta e cronômetro quando o RP de bônus mundial for iniciado no seu reino"
+L.RaidDiffChangedAlert		= "Exibir alerta quando a dificuldade da raide for alterada"
+L.RaidDiffChangedRaidOnly 	= "Exibir alerta de mudança de dificuldade apenas quando estiver em um grupo de raide"
+L.DungeonDiffChangedAlert	= "Exibir alerta quando a dificuldade da masmorra for alterada"
 
 L.Area_SoundAlerts			= "Opções de som de alerta"
 L.LFDEnhance				= "Reproduzir o som de TodosProntos para checagem de papéis e CB/LDG"

@@ -1,8 +1,27 @@
 # Changelog
 
+## Changed in v23
+
+* Bring in systems improvements from [my Midnight plugin](https://www.curseforge.com/wow/addons/handynotes-midnight-treasures)
+
+## Changed in v22
+
+* Updated for 12.0.0, 5.5.3
+* Bring in systems improvements from [my Midnight plugin](https://www.curseforge.com/wow/addons/handynotes-midnight-treasures)
+
+## Changed in v21
+
+* Updated for 11.2.7, 5.5.1
+* Bring in systems improvements from [my War Within plugin](https://www.curseforge.com/wow/addons/handynotes-war-within)
+
+## Changed in v20
+
+* Updated for 11.2.0, 3.4.5
+* Bring in systems improvements from [my War Within plugin](https://www.curseforge.com/wow/addons/handynotes-war-within)
+
 ## Changed in v19
 
-* Updated for 11.1.7
+* Updated for 11.1.7, 5.5.0, 3.4.4
 
 ## Changed in v18
 

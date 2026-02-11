@@ -1,6 +1,7 @@
-## Interface: 110107
+## Interface: 120000, 110207, 110205
 ## Title: Better|cff00c0ffBlizz|rQueue
 ## Author: Bodify
+## Version: 1.1.0
 ## Notes: Shows a timer for your PvP/PvE Queue Pop
 ## SavedVariables: BetterBlizzQueueDB
 ## IconAtlas: gmchat-icon-blizz

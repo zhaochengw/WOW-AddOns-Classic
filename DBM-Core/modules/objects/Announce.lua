@@ -49,8 +49,8 @@ font3u:Hide()
 
 local font1elapsed, font2elapsed, font3elapsed
 
-local function fontHide1()
-	local duration = DBM.Options.WarningDuration2
+local function fontHide1(overrideDuration)
+	local duration = overrideDuration or DBM.Options.WarningDuration2
 	if font1elapsed > duration * 1.3 then
 		font1u:Hide()
 		font1:Hide()
@@ -68,8 +68,8 @@ local function fontHide1()
 	end
 end
 
-local function fontHide2()
-	local duration = DBM.Options.WarningDuration2
+local function fontHide2(overrideDuration)
+	local duration = overrideDuration or DBM.Options.WarningDuration2
 	if font2elapsed > duration * 1.3 then
 		font2u:Hide()
 		font2:Hide()
@@ -87,7 +87,7 @@ local function fontHide2()
 	end
 end
 
-local function fontHide3()
+local function fontHide3(overrideDuration)
 	local duration = DBM.Options.WarningDuration2
 	if font3elapsed > duration * 1.3 then
 		font3u:Hide()
@@ -163,44 +163,74 @@ function DBM:UpdateWarningOptions()
 	end
 end
 
-function DBM:AddWarning(text, force, announceObject)
+local textureCode = " |T%s:12:12|t "
+local textureExp = " |T(%S+......%S+):12:12|t "--Fix texture file including blank not strips(example: Interface\\Icons\\Spell_Frost_Ring of Frost). But this have limitations. Since I'm poor at regular expressions, this is not good fix. Do you have another good regular expression, tandanu?
+
+---@param text any
+---@param force boolean?
+---@param announceObject any
+---@param useSound boolean?
+---@param prefix boolean?
+---@param overrideDuration number?
+---@param customIcon string|number? Custom Icon, usually a "secret" icon path or texture id
+function DBM:AddWarning(text, force, announceObject, useSound, prefix, overrideDuration, customIcon)
+	if self.Options.DontShowBossAnnounces or self.Options.HideDBMWarnings then return end
 	local added = false
+	if prefix then
+		text = ("|cffff7d0a<|r|cffffd200%s|r|cffff7d0a>|r %s"):format(tostring(L.DBM), tostring(text))
+	end
+	local formatedText
+	if C_StringUtil and customIcon then
+		formatedText = C_StringUtil.WrapString(text, self.Options.WarningIconLeft and customIcon and textureCode:format(customIcon) or "", self.Options.WarningIconRight and customIcon and textureCode:format(customIcon) or "")
+	else
+		formatedText = text
+	end
 	if not frame.font1ticker then
 		font1elapsed = 0
 		font1.lastUpdate = GetTime()
-		font1:SetText(text)
+		font1:SetText(formatedText)
 		font1:Show()
 		font1u:Show()
 		added = true
-		frame.font1ticker = frame.font1ticker or C_Timer.NewTicker(0.05, fontHide1)
+		frame.font1ticker = frame.font1ticker or C_Timer.NewTicker(0.05, function() fontHide1(overrideDuration) end)
 	elseif not frame.font2ticker then
 		font2elapsed = 0
 		font2.lastUpdate = GetTime()
-		font2:SetText(text)
+		font2:SetText(formatedText)
 		font2:Show()
 		font2u:Show()
 		added = true
-		frame.font2ticker = frame.font2ticker or C_Timer.NewTicker(0.05, fontHide2)
+		frame.font2ticker = frame.font2ticker or C_Timer.NewTicker(0.05, function() fontHide2(overrideDuration) end)
 	elseif not frame.font3ticker or force then
 		font3elapsed = 0
 		font3.lastUpdate = GetTime()
-		font3:SetText(text)
+		font3:SetText(formatedText)
 		font3:Show()
 		font3u:Show()
 		fontHide3()
 		added = true
-		frame.font3ticker = frame.font3ticker or C_Timer.NewTicker(0.05, fontHide3)
+		frame.font3ticker = frame.font3ticker or C_Timer.NewTicker(0.05, function() fontHide3(overrideDuration) end)
 	end
 	if not added then
-		local prevText1 = font2:GetText()
-		local prevText2 = font3:GetText()
-		font1:SetText(prevText1)
-		font1elapsed = font2elapsed
-		font2:SetText(prevText2)
-		font2elapsed = font3elapsed
-		self:AddWarning(text, true, announceObject)
+		if not customIcon then
+			--GetText can't be called on secrets, so if customIcon exists this code path is skipped
+			local prevText1 = font2:GetText()
+			local prevText2 = font3:GetText()
+			font1:SetText(prevText1)
+			font1elapsed = font2elapsed
+			font2:SetText(prevText2)
+			font2elapsed = font3elapsed
+			self:AddWarning(text, true, announceObject, useSound, prefix, overrideDuration, customIcon)
+		end
 	else
 		test:Trace(announceObject and announceObject.mod or self, "ShowAnnounce", announceObject, text)
+	end
+	if useSound then
+		self:PlaySoundFile(self.Options.RaidWarningSound, nil, true)
+	end
+	--Only manually chat frame here for secrets api
+	if self.Options.ShowWarningsInChat and customIcon then
+		self:AddMsg(formatedText, nil, nil, nil, nil, 2)
 	end
 end
 
@@ -264,9 +294,6 @@ do
 		end
 	end
 end
-
-local textureCode = " |T%s:12:12|t "
-local textureExp = " |T(%S+......%S+):12:12|t "--Fix texture file including blank not strips(example: Interface\\Icons\\Spell_Frost_Ring of Frost). But this have limitations. Since I'm poor at regular expressions, this is not good fix. Do you have another good regular expression, tandanu?
 
 
 -- TODO: is there a good reason that this is a weak table?
@@ -349,7 +376,7 @@ end
 -- TODO: this function is an abomination, it needs to be rewritten. Also: check if these work-arounds are still necessary
 function announcePrototype:Show(...) -- todo: reduce amount of unneeded strings
 	if not self.option or self.mod.Options[self.option] then
-		if DBM.Options.DontShowBossAnnounces then return end	-- don't show the announces if the spam filter option is set
+		if DBM.Options.DontShowBossAnnounces or DBM.Options.HideDBMWarnings then return end	-- don't show the announces if the spam filter option is set
 		if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter then return end--don't show announces that are generic target announces
 		local argTable = {...}
 		local colorCode = ("|cff%.2x%.2x%.2x"):format(self.color.r * 255, self.color.g * 255, self.color.b * 255)
@@ -450,7 +477,7 @@ end
 ---@param ... any
 function announcePrototype:CombinedShow(delay, ...)
 	if self.option and not self.mod.Options[self.option] then return end
-	if DBM.Options.DontShowBossAnnounces then return end	-- don't show the announces if the spam filter option is set
+	if DBM.Options.DontShowBossAnnounces or DBM.Options.HideDBMWarnings then return end	-- don't show the announces if the spam filter option is set
 	if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter then return end--don't show announces that are generic target announces
 	local argTable = {...}
 	for i = 1, #argTable do
@@ -476,7 +503,7 @@ end
 function announcePrototype:PreciseShow(maxTotal, ...)
 	test:Trace(self.mod, "CombinedWarningPreciseShow", self, maxTotal)
 	if self.option and not self.mod.Options[self.option] then return end
-	if DBM.Options.DontShowBossAnnounces then return end	-- don't show the announces if the spam filter option is set
+	if DBM.Options.DontShowBossAnnounces or DBM.Options.HideDBMWarnings then return end	-- don't show the announces if the spam filter option is set
 	if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter then return end--don't show announces that are generic target announces
 	local argTable = {...}
 	for i = 1, #argTable do
@@ -517,6 +544,12 @@ function announcePrototype:Countdown(time, numAnnounces, ...)
 	DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
 end
 
+---@param time number|table
+---@param count number
+function announcePrototype:Loop(time, count)
+	DBMScheduler:ScheduleLoop(time, self.Show, self.mod, self, count)
+end
+
 function announcePrototype:Cancel(...)
 	return DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
 end
@@ -525,6 +558,7 @@ end
 ---@param customPath? string|number
 function announcePrototype:Play(name, customPath)
 	local voice = DBM.Options.ChosenVoicePack2
+	if DBM.Options.HideDBMWarnings then return end
 	if private.voiceSessionDisabled or voice == "None" or not DBM.Options.VPReplacesAnnounce then return end
 	if DBM.Options.DontShowTargetAnnouncements and (self.announceType == "target" or self.announceType == "targetcount") and not self.noFilter then return end--don't show announces that are generic target announces
 	if (not DBM.Options.DontShowBossAnnounces and (not self.option or self.mod.Options[self.option])) and self.sound <= private.swFilterDisabled then

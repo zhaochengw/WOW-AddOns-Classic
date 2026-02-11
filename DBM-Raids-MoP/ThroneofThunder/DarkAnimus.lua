@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(824, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(69427)
 mod:SetEncounterID(1576)
 mod:SetUsedIcons(1)
@@ -30,18 +30,18 @@ local warnAnimaRing					= mod:NewTargetNoFilterAnnounce(136954, 3, nil, "Tank")
 local warnAnimaFont					= mod:NewTargetAnnounce(138691, 3)
 local warnEmpowerGolem				= mod:NewTargetNoFilterAnnounce(138780, 3)
 
-local specWarnCrimsonWakeYou		= mod:NewSpecialWarningRun(138480, nil, nil, nil, 4)--Kiter
-local specWarnCrimsonWake			= mod:NewSpecialWarningMove(138485)--Standing in stuff left behind by kiter
-local yellCrimsonWake				= mod:NewYell(138480)
-local specWarnMatterSwap			= mod:NewSpecialWarningYou(138609)
-local specWarnExplosiveSlam			= mod:NewSpecialWarningStack(138569, nil, 4)--Assumed value drycode, won't know until cd is observed
-local specWarnExplosiveSlamOther	= mod:NewSpecialWarningTarget(138569, "Tank")--Not black and white, so not using Taunt type warning
+local specWarnCrimsonWakeYou		= mod:NewSpecialWarningRun(138480, nil, nil, nil, 4, 2)--Kiter
+local specWarnCrimsonWake			= mod:NewSpecialWarningGTFO(138485, nil, nil, nil, 1, 8)--Standing in stuff left behind by kiter
+local yellCrimsonWake				= mod:NewShortYell(138480)
+local specWarnMatterSwap			= mod:NewSpecialWarningYou(138609, nil, nil, nil, 1, 5)
+local specWarnExplosiveSlam			= mod:NewSpecialWarningStack(138569, nil, 4, nil, nil, 1, 6)--Assumed value drycode, won't know until cd is observed
+local specWarnExplosiveSlamOther	= mod:NewSpecialWarningTarget(138569, "Tank", nil, nil, 1, 2)--Not black and white, so not using Taunt type warning
 --Boss
-local specWarnAnimaRing				= mod:NewSpecialWarningYou(136954)
-local specWarnAnimaRingOther		= mod:NewSpecialWarningTarget(136954, false)
+local specWarnAnimaRing				= mod:NewSpecialWarningYou(136954, nil, nil, nil, 1, 2)
+local specWarnAnimaRingOther		= mod:NewSpecialWarningTarget(136954, false, nil, nil, 1, 2)
 local yellAnimaRing					= mod:NewYell(136954)
-local specWarnAnimaFont				= mod:NewSpecialWarningYou(138691)
-local specWarnInterruptingJolt		= mod:NewSpecialWarningCount(138763, nil, nil, nil, 2)
+local specWarnAnimaFont				= mod:NewSpecialWarningYou(138691, nil, nil, nil, 1, 17)
+local specWarnInterruptingJolt		= mod:NewSpecialWarningCast(138763, "SpellCaster", nil, nil, 2, 2)
 
 local timerMatterSwap				= mod:NewTargetTimer(12, 138609)--If not dispelled, it ends after 12 seconds regardless
 local timerExplosiveSlam			= mod:NewTargetTimer(25, 138569, nil, "Tank|Healer")
@@ -57,8 +57,8 @@ local timerEmpowerGolemCD			= mod:NewCDTimer(15.7, 138780)
 local berserkTimer					= mod:NewBerserkTimer(600)
 
 local crimsonWake = DBM:GetSpellName(138485)--Debuff ID I believe, not cast one. Same spell name though
-local siphon = 0
-local jolt = 0
+mod.vb.siphon = 0
+mod.vb.jolt = 0
 
 mod:AddBoolOption("SetIconOnFont", true)
 
@@ -70,21 +70,24 @@ local function PowerDelay()
 end
 
 function mod:AnimaRingTarget(targetname)
-	warnAnimaRing:Show(targetname)
 	if targetname == UnitName("player") then
 		specWarnAnimaRing:Show()
+		specWarnAnimaRing:Play("watchorb")
 		yellAnimaRing:Yell()
-	else
+	elseif self.Options.SpecWarn136954target then
 		specWarnAnimaRingOther:Show(targetname)
+		specWarnAnimaRingOther:Play("watchorb")
+	else
+		warnAnimaRing:Show(targetname)
 	end
 end
 
 function mod:OnCombatStart(delay)
-	siphon = 0
-	jolt = 0
+	self.vb.siphon = 0
+	self.vb.jolt = 0
 	berserkTimer:Start(-delay)
 	self:RegisterShortTermEvents(
-		"INSTANCE_ENCOUNTER_ENGAGE_UNIT"--We register here to prevent detecting first heads on pull before variables reset from first engage fire. We'll catch them on delayed engages fired couple seconds later
+		"INSTANCE_ENCOUNTER_ENGAGE_UNIT"
 	)
 end
 
@@ -98,17 +101,18 @@ function mod:SPELL_CAST_START(args)
 		self:BossTargetScanner(69427, "AnimaRingTarget", 0.02, 12)
 		timerAnimaRingCD:Start()
 	elseif args:IsSpellID(138763, 139867, 139869) then--Normal version is 2.2 sec cast. Heroic is 1.4 second cast. LFR is 3.8 sec cast (thus why it has different spellid)
-		jolt = jolt + 1
-		specWarnInterruptingJolt:Show(jolt)
+		self.vb.jolt = self.vb.jolt + 1
+		specWarnInterruptingJolt:Show()
+		specWarnInterruptingJolt:Play("stopcast")
 		if self:IsDifficulty("lfr25") then
 			timerInterruptingJolt:Start(3.8)
 		else
 			timerInterruptingJolt:Start()
 		end
 		if self:IsHeroic() then
-			timerInterruptingJoltCD:Start(nil, jolt+1)
+			timerInterruptingJoltCD:Start(nil, self.vb.jolt+1)
 		else
-			timerInterruptingJoltCD:Start(23, jolt+1)
+			timerInterruptingJoltCD:Start(23, self.vb.jolt+1)
 		end
 	end
 end
@@ -116,8 +120,8 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 138644 and self:IsHeroic() then--Only start on heroic, on normal it's 6 second cd, not worth using timer there
-		siphon = siphon + 1
-		timerSiphonAnimaCD:Start(nil, siphon+1)
+		self.vb.siphon = self.vb.siphon + 1
+		timerSiphonAnimaCD:Start(nil, self.vb.siphon+1)
 		self:Schedule(2, PowerDelay)
 	end
 end
@@ -133,10 +137,12 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				if amount >= 4 then
 					specWarnExplosiveSlam:Show(amount)
+					specWarnExplosiveSlam:Play("stackhigh")
 				end
 			else
 				if amount >= 4 and not DBM:UnitDebuff("player", args.spellName) and not UnitIsDeadOrGhost("player") then
 					specWarnExplosiveSlamOther:Show(args.destName)
+					specWarnExplosiveSlamOther:Play("changemt")
 				end
 			end
 		end
@@ -145,6 +151,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerMatterSwap:Start(args.destName)
 		if args:IsPlayer() then
 			specWarnMatterSwap:Show()
+			specWarnMatterSwap:Play("teleyou")
 		end
 	elseif spellId == 138780 then
 		warnEmpowerGolem:Show(args.destName)
@@ -153,10 +160,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnActivation:Show()
 		timerAnimusActivation:Start()
 	elseif spellId == 138691 then
-		warnAnimaFont:Show(args.destName)
 		timerAnimaFontCD:Start()
 		if args:IsPlayer() then
 			specWarnAnimaFont:Show()
+			specWarnAnimaFont:Play("debuffyou")
+		else
+			warnAnimaFont:Show(args.destName)
 		end
 		if self.Options.SetIconOnFont then
 			self:SetIcon(args.destName, 1)--star
@@ -178,9 +187,10 @@ end
 
 function mod:SPELL_DAMAGE(sourceGUID, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if spellId == 138485 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
-		specWarnCrimsonWake:Show()
+		specWarnCrimsonWake:Show(spellName)
+		specWarnCrimsonWake:Play("watchfeet")
 	elseif spellId == 138618 then
-		if sourceGUID == destGUID then return end--Filter first event then grab both targets from second event, as seen from log example above
+		if sourceGUID == destGUID then return end--Filter first event then grab both targets from second event
 		warnMatterSwapped:Show(spellName, DBM:GetFullPlayerNameByGUID(sourceGUID), DBM:GetFullPlayerNameByGUID(destGUID))
 	end
 end
@@ -191,6 +201,8 @@ function mod:RAID_BOSS_WHISPER(msg, npc)
 	if npc == crimsonWake then--In case target scanning fails, personal warnings still always go off. Target scanning is just so everyone else in raid knows who it's on (since only target sees this emote)
 		if self:AntiSpam(3, 1) then--This actually doesn't spam, but we ues same antispam here so that the MOVE warning doesn't fire at same time unless you fail to move for 2 seconds
 			specWarnCrimsonWakeYou:Show()
+			specWarnCrimsonWakeYou:Play("justrun")
+			specWarnCrimsonWakeYou:ScheduleVoice(1.5, "keepmove")
 		end
 		if not self:IsDifficulty("lfr25") then
 			yellCrimsonWake:Yell()

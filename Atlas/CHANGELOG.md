@@ -1,5 +1,51 @@
 # Changelog
 
+## 3.14.1 - February 10, 2026
+### Changed
+- Retail: Updated TOC to 12.0.1
+- Updated translations
+
+## 3.14.0 - January 19, 2026
+### Added
+- Retail: Added support for Midnight (no new maps yet)
+### Changed
+- Updated libraries
+- Updated translations
+### Fixed
+- TBC: Fixed Hellfire Ramparts not using the Classic map
+- TBC: Fixed Caverns of Time (Entrance) not using the TBC map
+- Era: Fix level range of Maraudon
+
+## 3.13.0 - December 28, 2025
+### Added
+- Anniversary: Added support for TBC
+### Changed
+- Updated translations
+### Fixed
+- Classic Era: Fixed blank line in UBRS
+
+## 3.12.7 - December 20, 2025
+### Added
+- Retail: Added boss info for Postmaster Malown in Stratholme - Crusaders' Square
+### Changed
+- Updated translations
+### Fixed
+- Removed random item tooltip on Hearthsinger Forresten
+- Retail/MoP: Fixed locations of Timmy the Cruel and Hearthsinger Forresten
+
+## 3.12.6 - December 9, 2025
+### Changed
+- MoP: Updated TOC to 5.5.3
+- Updated translations
+
+## 3.12.5 - December 3, 2025
+### Added
+- Added new translations for some languages
+### Changed
+- Retail: Updated TOC to 11.2.7
+### Fixed
+- Classic Era: Updated some NPC names that had changed
+
 ## 3.12.4 - October 29, 2025
 ### Changed
 - MoP: Updated TOC to 5.5.2
@@ -680,7 +726,7 @@ v1.41.00 (Apr. 14, 2017)
 v1.40.06 (Apr. 13, 2017)
 ------------------------
 - Checking deprecated plugins now will recognize the alpha build's version
-  if specifed; or will ignore those set "v3.12.4" as the version
+  if specifed; or will ignore those set "v3.14.1" as the version
   number to be changed by CurseForge's auto-packaging.
 
 v1.40.05 (Apr. 13, 2017)

@@ -321,8 +321,385 @@ data["JusticePointsMoP"] = {
     }
 }
 
-data["CelestialVendorMoP"] = {
-    name = format(AL["'%s' Vendor"], format(EPIC_QUALITY, ALIL["Celestial"])),
+data["AugustStoneShardVendorMoP"] = {
+    name = format(AL["'%s' Vendor"], format(EPIC_QUALITY, ALIL["August Stone Shard"])),
+    ContentType = VENDOR_CONTENT,
+    TableType = NORMAL_ITTYPE,
+    gameVersion = AtlasLoot.MOP_VERSION_NUM,
+    items = {{
+        name = ALIL["Armor"] .. " - " .. ALIL["Cloth"],
+        [CELESTIAL_DIFF] = {
+            -- Head
+            { 1, 95655 }, -- Flamecaster's Burning Crown
+            { 2, 95771 }, -- Hood of the Crimson Wake
+            { 3, 95689 }, -- Stonegaze Hood
+            -- Shoulder
+            { 5, 95740 }, -- Chilblain Spaulders
+            { 6, 95636 }, -- Fissure-Split Shoulderwraps
+            { 7, 95707 }, -- Gleaming-Eye Shoulderpads
+            { 8, 95863 }, -- Lost Shoulders of Fire
+            { 9, 95865 }, -- Lost Shoulders of Fluidity
+            { 10, 95864 }, -- Lost Shoulders of Healing
+            -- Chest
+            { 16, 95719 }, -- Robe of Midnight Down
+            { 17, 95759 }, -- Robes of Mutagenic Blood
+            { 18, 95792 }, -- Robes of the Moon Lotus
+            { 19, 95637 }, -- Robes of Static Bursts
+            { 20, 95668 }, -- Zandalari Robes of the Final Rite
+            -- Wrist
+            { 22, 95688 }, -- Azure Shell Bracers
+            { 23, 95762 }, -- Bracers of Fragile Bone
+            { 24, 95708 }, -- Frostborn Wristwraps
+            { 25, 95656 }, -- Vaccinator's Armwraps
+            -- Hands
+            { 101, 95690 }, -- Crystal-Claw Gloves
+            { 102, 95813 }, -- Gloves of the Maimed Vizier
+            { 103, 95760 }, -- Helix-Breaker Gloves
+            { 104, 95634 }, -- Lightningweaver Gauntlets
+            { 105, 95738 }, -- Lifedrainer's Sordid Grip
+            -- Waist
+            { 107, 95961 }, -- Abandoned Zandalari Firecord
+            { 108, 95962 }, -- Abandoned Zandalari Shadowgirdle
+            { 109, 95718 }, -- Cord of Cacophonous Cawing
+            { 110, 95782 }, -- Quet'zal's Crackling Cord
+            -- Legs
+            { 116, 95635 }, -- Al'set's Tormented Leggings
+            { 117, 95812 }, -- Legwraps of Cardinality
+            { 118, 95761 }, -- Leggings of Ebon Veins
+            { 119, 95739 }, -- Leggings of Pulsing Blood
+            { 120, 95783 }, -- Saddle-Scarred Leggings
+            -- Feet
+            { 122, 95784 }, -- Dam'ren's Frozen Footguards
+            { 123, 95965 }, -- Home-Warding Slippers
+            { 124, 95667 }, -- Mar'li's Bloodstained Sandals
+            { 125, 95706 }, -- Sandals of Arcane Fury
+            { 126, 95963 }, -- Silentflame Sandals
+        },
+    },
+    {
+        name = ALIL["Armor"] .. " - " .. ALIL["Leather"],
+        [CELESTIAL_DIFF] = {
+            -- Head
+            { 1, 95713 }, -- Hood of Smoldering Flesh
+            { 2, 95626 }, -- Lightning-Eye Hood
+            -- Shoulder
+            { 4, 95868 }, -- Forgotten Mantle of the Moon
+            { 5, 95869 }, -- Forgotten Mantle of the Sun
+            { 6, 95700 }, -- Poisonblood Bladeshoulders
+            { 7, 95662 }, -- Spaulders of Dinomancy
+            -- Chest
+            { 9, 95804 }, -- Fusion Slasher Chestguard
+            { 10, 95694 }, -- Robes of Concussive Shocks
+            { 11, 95671 }, -- Robes of Treacherous Ground
+            { 12, 95679 }, -- Rockfall Ribwraps
+            -- Wrist
+            { 16, 95648 }, -- Bindings of Multiplicative Strikes
+            { 17, 95796 }, -- Bracers of the Midnight Comet
+            { 18, 95642 }, -- Infinitely Conducting Bracers
+            { 19, 95693 }, -- Vampire Bat-Hide Bracers
+            -- Hands
+            { 21, 95776 }, -- Anima-Ringed Fingers
+            { 22, 95749 }, -- Gloves of Cushioned Air
+            { 23, 95819 }, -- Grips of Slicing Electricity
+            { 24, 95680 }, -- Grips of Vampiric Cruelty
+            -- Waist
+            { 26, 95971 }, -- Abandoned Zandalari Moonstrap
+            { 27, 95970 }, -- Abandoned Zandalari Silentbelt
+            { 28, 95721 }, -- Featherflight Belt
+            { 29, 95797 }, -- Girdle of Night and Day
+            -- Legs
+            { 101, 95729 }, -- Crimson Bloom Legguards
+            { 102, 95764 }, -- Leggings of the Malformed Sapling
+            { 103, 95661 }, -- Roots of Rampaging Earth
+            { 104, 95775 }, -- Worldbinder Leggings
+            -- Feet
+            { 106, 95966 }, -- Deeproot Treads
+            { 107, 95744 }, -- Sandals of the Starving Eye
+            { 108, 95959 }, -- Spiderweb Tabi
+            { 109, 95787 }, -- Spurs of the Storm Cavalry
+        },
+    },
+    {
+        name = ALIL["Armor"] .. " - " .. ALIL["Mail"],
+        [CELESTIAL_DIFF] = {
+            -- Head
+            { 1, 95765 }, -- Clear-Mind Helm
+            { 2, 95672 }, -- Gaze of Gara'jal
+            -- Shoulder
+            { 4, 95628 }, -- Static-Shot Shoulderguards
+            { 5, 95695 }, -- Spaulders of Quaking Fear
+            { 6, 95870 }, -- Abandoned Spaulders of Arrowflight
+            { 7, 95871 }, -- Abandoned Spaulders of Renewal
+            -- Chest
+            { 9, 95731 }, -- Aberrant Chestguard of Torment
+            { 10, 95715 }, -- Chain of Consuming Magic
+            { 11, 95788 }, -- Ro'shak's Molten Chain
+            { 12, 95649 }, -- Sul'lithuz Sandmail
+            -- Wrist
+            { 16, 95673 }, -- Loa-Ridden Bracers
+            { 17, 95681 }, -- Beady-Eye Bracers
+            { 18, 95745 }, -- Vein-Cover Bracers
+            { 19, 95750 }, -- Bracers of Mutagenic Fervor
+            -- Hands
+            { 21, 95701 }, -- Grips of Cinderflesh
+            { 22, 95722 }, -- Grasp of the Ruthless Mother
+            { 23, 95751 }, -- Synapse-String Handguards
+            { 24, 95801 }, -- Fingers of the Night
+            -- Waist
+            { 26, 95714 }, -- Links of the Bifurcated Tongue
+            { 27, 95730 }, -- Links of the Disintegrator
+            { 28, 95972 }, -- Abandoned Zandalari Arrowlinks
+            { 29, 95973 }, -- Abandoned Zandalari Waterchain
+            -- Legs
+            { 101, 95627 }, -- Spearman's Jingling Leggings
+            { 102, 95663 }, -- Legguards of Scintillating Scales
+            { 103, 95805 }, -- Conduit-Breaker Chain Leggings
+            { 104, 95820 }, -- Leggings of the Violent Gale
+            -- Feet
+            { 106, 95643 }, -- Ghostbinder Greatboots
+            { 107, 95682 }, -- Quakestompers
+            { 108, 95960 }, -- Scalehide Spurs
+            { 109, 95967 }, -- Spiritbound Boots
+        },
+    },
+    {
+        name = ALIL["Armor"] .. " - " .. ALIL["Plate"],
+        [CELESTIAL_DIFF] = {
+            -- Head
+            { 1, 95723 }, -- Crown of Potentiated Birth
+            { 2, 95778 }, -- Crown of the Golden Golem
+            { 3, 95806 }, -- Doomed Crown of Lei Shen
+            { 4, 95652 }, -- Puncture-Proof Greathelm
+            -- Shoulder
+            { 6, 95754 }, -- Metabolically Boosted Shoulderplates
+            { 7, 95874 }, -- Reconstructed Bloody Shoulderplates
+            { 8, 95873 }, -- Reconstructed Furious Shoulderplates
+            { 9, 95872 }, -- Reconstructed Holy Shoulderplates
+            { 10, 95683 }, -- Shoulderguards of Centripetal Destruction
+            { 11, 95767 }, -- Spaulders of Primordial Growth
+            -- Chest
+            { 16, 95630 }, -- Chestplate of Violent Detonation
+            { 17, 95644 }, -- Ionized Yojamban Carapace
+            { 18, 95674 }, -- Overloaded Bladebreaker Cuirass
+            { 19, 95821 }, -- Lei Shen's Grounded Carapace
+            { 20, 95703 }, -- Rot-Proof Greatplate
+            { 21, 95724 }, -- Talonrender Chestplate
+            -- Wrist
+            { 23, 95664 }, -- Armplates of the Vanquished Abomination
+            { 24, 95766 }, -- Bonemender Bracers
+            { 25, 95631 }, -- Bracers of Constant Implosion
+            { 26, 95732 }, -- Caustic Spike Bracers
+            { 27, 95650 }, -- Frozen Warlord's Bracers
+            { 28, 95684 }, -- Shell-Coated Wristplates
+            -- Hands
+            { 101, 95735 }, -- Artery Rippers
+            { 102, 95725 }, -- Egg-Shard Grips
+            { 103, 95746 }, -- Iceshatter Gauntlets
+            { 104, 95752 }, -- Pathogenic Gauntlets
+            { 105, 95789 }, -- Rein-Binder's Fists
+            -- Waist
+            { 107, 95976 }, -- Abandoned Zandalari Bucklebreaker
+            { 108, 95975 }, -- Abandoned Zandalari Goreplate
+            { 109, 95974 }, -- Abandoned Zandalari Greatbelt
+            { 110, 95629 }, -- Cloudbreaker Greatbelt
+            { 111, 95702 }, -- Plated Toothbreaker Girdle
+            { 112, 95696 }, -- Refreshing Abalone Girdle
+            -- Legs
+            { 116, 95753 }, -- Black Blood Legplates
+            { 117, 95651 }, -- Bloodlord's Bloodsoaked Legplates
+            { 118, 95747 }, -- Legplates of Re-Emergence
+            { 119, 95733 }, -- Legplates of the Dark Parasite
+            { 120, 95807 }, -- Legplates of the Lightning Throne
+            { 121, 95808 }, -- Legplates of Whipping Ionization
+            { 122, 95777 }, -- Matter-Swapped Legplates
+            -- Feet
+            { 124, 95979 }, -- Columnbreaker Stompers
+            { 125, 95716 }, -- Ice-Scored Treads
+            { 126, 95978 }, -- Locksmasher Greaves
+            { 127, 95798 }, -- Tidal Force Treads
+            { 128, 95697 }, -- Tortos' Shellseizers
+            { 129, 95734 }, -- Treads of the Blind Eye
+            { 130, 95968 }, -- Vaultwalker Sabatons
+        },
+    },
+    {
+        name = ALIL["Cloak"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95687 }, -- Beakbreaker Greatcloak
+            { 2, 95773 }, -- Constantly Accelerating Cloak
+            { 3, 95741 }, -- Deadly Glare Cape
+            { 4, 95639 }, -- Drape of Booming Nights
+            { 5, 95653 }, -- Horn-Rimmed Doomcloak
+            { 6, 95755 }, -- Hydra-Scale Bloodcloak
+            { 7, 95717 }, -- Pinionfeather Greatcloak
+            { 8, 95691 }, -- Shimmershell Cape
+            { 9, 95736 }, -- Reinforced Mirror-Sheen Cloak
+            { 10, 95645 }, -- Wastewalker's Sandblasted Drape
+        },
+    },
+    {
+        name = ALIL["Weapon"],
+        [CELESTIAL_DIFF] = {
+            -- 1H Axe
+            { 1, 95666 }, -- Kura-Kura, Kazra'jin's Skullcleaver
+            { 2, 95686 }, -- Shellsplitter Greataxe
+            { 3, 95632 }, -- Worldbreaker's Stormscythe
+            -- 1H Mace
+            { 5, 95758 }, -- Acid-Spine Bonemace
+            { 6, 95770 }, -- Hand of the Dark Animus
+            { 7, 95867 }, -- Jerthud, Graceful Hand of the Savior
+            { 8, 95815 }, -- Torall, Rod of the Shattered Throne
+            { 9, 95861 }, -- Zeeg's Ancient Kegsmasher
+            -- 1H Sword
+            { 11, 95640 }, -- Soulblade of the Breaking Storm
+            { 12, 95790 }, -- Qon's Flaming Scimitar
+            { 13, 95876 }, -- Do-tharak, the Swordbreaker
+            -- 2H Axe
+            { 16, 95809 }, -- Uroe, Harbinger of Terror
+            -- 2H Mace
+            { 18, 95858 }, -- Invocation of the Dawn
+            -- 2H Sword
+            { 20, 95875 }, -- Greatsword of Frozen Hells
+            { 21, 95675 }, -- Zerat, Malakk's Soulburning Greatsword
+            -- Fist Weapon
+            { 23, 95670 }, -- Amun-Thoth, Sul's Spiritrending Talons
+            { 24, 97129 }, -- Tia-Tia, the Scything Star
+            { 25, 95791 }, -- Wu-Lai, Bladed Fan of the Empyreans
+            -- Polearm
+            { 27, 95877 }, -- Bo-Ris, Horror in the Night
+            { 28, 95803 }, -- Shan-Dun, Breaker of Hope
+            -- Dagger
+            { 101, 95774 }, -- Athame of the Sanguine Ritual
+            { 102, 95860 }, -- Fyn's Flickering Dagger
+            { 103, 95780 }, -- Iron Qon's Boot Knife
+            { 104, 95698 }, -- Megaera's Poisoned Fang
+            { 105, 95866 }, -- Nadagast's Exsanguinator
+            { 106, 95743 }, -- Ritual Dagger of the Mind's Eye
+            -- Crossbow
+            { 108, 95728 }, -- Durumu's Baleful Gaze
+            -- Bow
+            { 109, 95859 }, -- Miracoran, the Vehement Chord
+            { 110, 95678 }, -- Shattered Tortoiseshell Longbow
+            -- Gun
+            { 111, 95781 }, -- Voice of the Quilen
+            -- Wand
+            { 113, 95660 }, -- Venomlord's Totemic Wand
+            -- Staff
+            { 116, 95862 }, -- Darkwood Spiritstaff
+            { 117, 95657 }, -- Dinomancer's Spiritbinding Spire
+            { 118, 95720 }, -- Giorgio's Caduceus of Pure Moods
+            { 119, 95647 }, -- Jalak's Maelstrom Staff
+            { 120, 95795 }, -- Suen-Wo, Spire of the Falling Sun
+        }
+    },
+    {
+        name = ALIL["Off Hand"] .. "/" .. ALIL["Shield"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95710 }, -- Fetish of the Hydra
+            { 2, 95818 }, -- Lei Shen's Orb of Command
+            { 3, 95786 }, -- Orb of Arcing Lightning
+            { 16, 95768 }, -- Greatshield of the Gloaming
+            { 17, 95692 }, -- Tortos' Discarded Shell
+            { 18, 95794 }, -- Shield of Twinned Despair
+            { 19, 95810 }, -- Ultimate Protection of the Emperor
+            { 20, 95878 }, -- Visage of the Doomed
+        },
+    },
+    {
+        name = ALIL["Neck"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95685 }, -- Amulet of the Primal Turtle
+            { 2, 95705 }, -- Hydraskull Choker
+            { 3, 95658 }, -- Horridon's Tusk Fragment
+            { 4, 95709 }, -- Megaera's Shining Eye
+            { 5, 95800 }, -- Moonjade Necklace
+            { 6, 95958 }, -- Necklace of the Terra-Cotta Archer
+            { 7, 95964 }, -- Necklace of the Terra-Cotta Invoker
+            { 8, 95969 }, -- Necklace of the Terra-Cotta Mender
+            { 9, 95980 }, -- Necklace of the Terra-Cotta Protector
+            { 10, 95977 }, -- Necklace of the Terra-Cotta Vanquisher
+            { 11, 95793 }, -- Passionfire Choker
+            { 12, 95699 }, -- Quadra-Head Brooch
+            { 13, 95816 }, -- Soul Prism of Lei Shen
+            { 14, 95646 }, -- Talisman of Living Poison
+            { 15, 95676 }, -- Talisman of Angry Spirits
+        },
+    },
+    {
+        name = ALIL["Finger"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95756 }, -- Band of the Scaled Tyrant
+            { 2, 95742 }, -- Durumu's Captive Eyeball
+            { 3, 95737 }, -- Durumu's Severed Tentacle
+            { 4, 95769 }, -- Gore-Soaked Gear
+            { 5, 95638 }, -- Jin'rokh's Dreamshard
+            { 6, 95633 }, -- Jin'rokh's Soulcrystal
+            { 7, 95659 }, -- Petrified Eye of the Basilisk
+            { 8, 95785 }, -- Ro'shak's Remembrance
+            { 9, 95624 }, -- Sign of the Bloodied God
+            { 10, 95704 }, -- Spinescale Seal
+        },
+    },
+    {
+        name = ALIL["Trinket"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95665 }, -- Bad Juju
+            { 2, 95711 }, -- Breath of the Hydra
+            { 3, 95772 }, -- Cha-Ye's Essence of Brilliance
+            { 4, 95779 }, -- Delicate Vial of the Sanguinaire
+            { 5, 95726 }, -- Fabled Feather of Ji-Kun
+            { 6, 95677 }, -- Fortitude of the Zandalari
+            { 7, 95799 }, -- Gaze of the Twins
+            { 8, 95641 }, -- Horridon's Last Gasp
+            { 9, 95712 }, -- Inscribed Bag of Hydra-Spawn
+            { 10, 95727 }, -- Ji-Kun's Rising Winds
+            { 16, 95817 }, -- Lightning-Imbued Chalice
+            { 17, 95757 }, -- Primordius' Talisman of Rage
+            { 18, 95625 }, -- Renataki's Soul Charm
+            { 19, 95802 }, -- Rune of Re-Origination
+            { 20, 95811 }, -- Soul Barrier
+            { 21, 95654 }, -- Spark of Zandalar
+            { 22, 95763 }, -- Stolen Relic of Zuldazar
+            { 23, 95748 }, -- Talisman of Bloodlust
+            { 24, 95814 }, -- Unerring Vision of Lei Shen
+            { 25, 95669 }, -- Wushoolay's Final Choice
+        },
+    },
+    {
+        name = AL["Token"],
+        [CELESTIAL_DIFF] = {
+            { 1, 95880 }, -- Helm of the Crackling Conqueror
+            { 2, 95881 }, -- Helm of the Crackling Protector
+            { 3, 95879 }, -- Helm of the Crackling Vanquisher
+            { 5, 95956 }, -- Shoulders of the Crackling Conqueror
+            { 6, 95957 }, -- Shoulders of the Crackling Protector
+            { 7, 95955 }, -- Shoulders of the Crackling Vanquisher
+            { 9, 95823 }, -- Chest of the Crackling Conqueror
+            { 10, 95824 }, -- Chest of the Crackling Protector
+            { 11, 95822 }, -- Chest of the Crackling Vanquisher
+            { 16, 95856 }, -- Gauntlets of the Crackling Conqueror
+            { 17, 95857 }, -- Gauntlets of the Crackling Protector
+            { 18, 95855 }, -- Gauntlets of the Crackling Vanquisher
+            { 20, 95888 }, -- Leggings of the Crackling Conqueror
+            { 21, 95889 }, -- Leggings of the Crackling Protector
+            { 22, 95887 }, -- Leggings of the Crackling Vanquisher
+        },
+    },
+    {
+        name = AL["Misc"],
+        [CELESTIAL_DIFF] = {
+            { 1, 94593 }, -- Secrets of the Empire
+            { 2, 266272 }, -- Satchel of Stone Shards
+            { 3, 266273 }, -- Cache of Celestial Chance
+            { 4, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2, [PRICE_EXTRA_ITTYPE] = "AugustStoneShard:1" }, -- August Stone Fragment
+            { 5, 247796 }, -- Commendation of Service
+        },
+    },
+    }
+}
+
+data["AugustStoneFragmentVendorMoP"] = {
+    name = format(AL["'%s' Vendor"], format(EPIC_QUALITY, ALIL["August Stone Fragment"])),
     ContentType = VENDOR_CONTENT,
     TableType = NORMAL_ITTYPE,
     gameVersion = AtlasLoot.MOP_VERSION_NUM,
@@ -1450,22 +1827,22 @@ data["CompanionsMoP"] = {
             { 29, 86564 }, -- Grinder
             { 30, 94595 }, -- Spawn of G'nathus
             { 101, 103670 }, -- Lil' Bling
-            { 102, 101570 }, -- Moon Moon
             -- Phase 3
-            { 104, 97959 }, -- Living Fluid
-            { 105, 94125 }, -- Living Sandling
-            { 106, 94574 }, -- Pygmy Direhorn
-            { 107, 94152 }, -- Son of Animus
-            { 108, 97960 }, -- Viscous Horror
-            { 109, 94835 }, -- Ji-Kun Hatchling
-            { 110, 94124 }, -- Sunreaver Micro-Sentry
-            { 111, 97961 }, -- Filthling
-            { 112, 94573 }, -- Direhorn Runt
-            { 113, 95422 }, -- Zandalari Anklerender
-            { 114, 95423 }, -- Zandalari Footslasher
-            { 115, 94126 }, -- Zandalari Kneebiter
-            { 116, 95424 }, -- Zandalari Toenibbler
+            { 103, 97959 }, -- Living Fluid
+            { 104, 94125 }, -- Living Sandling
+            { 105, 94574 }, -- Pygmy Direhorn
+            { 106, 94152 }, -- Son of Animus
+            { 107, 97960 }, -- Viscous Horror
+            { 108, 94835 }, -- Ji-Kun Hatchling
+            { 109, 94124 }, -- Sunreaver Micro-Sentry
+            { 110, 97961 }, -- Filthling
+            { 111, 94573 }, -- Direhorn Runt
+            { 112, 95422 }, -- Zandalari Anklerender
+            { 113, 95423 }, -- Zandalari Footslasher
+            { 114, 94126 }, -- Zandalari Kneebiter
+            { 115, 95424 }, -- Zandalari Toenibbler
             -- Phase 5
+            { 117, 101570 }, -- Moon Moon
             { 118, 104158 }, -- Blackfuse Bombling
             { 119, 104162 }, -- Droplet of Y'Shaarj
             { 120, 104163 }, -- Gooey Sha-ling
@@ -1473,12 +1850,12 @@ data["CompanionsMoP"] = {
             { 122, 104156 }, -- Ashleaf Spriteling
             { 123, 104157 }, -- Azure Crane Chick
             { 124, 104202 }, -- Bonkers
-            { 124, 104160 }, -- Dandelion Frolicker
-            { 125, 104161 }, -- Death Adder Hatchling
-            { 126, 104291 }, -- Gu'chi Swarmling
-            { 127, 104169 }, -- Gulp Froglet
-            { 128, 104307 }, -- Jadefire Spirit
-            { 129, 104164 }, -- Jademist Dancer
+            { 125, 104160 }, -- Dandelion Frolicker
+            { 126, 104161 }, -- Death Adder Hatchling
+            { 127, 104291 }, -- Gu'chi Swarmling
+            { 128, 104169 }, -- Gulp Froglet
+            { 129, 104307 }, -- Jadefire Spirit
+            { 130, 104164 }, -- Jademist Dancer
             { 201, 104166 }, -- Ominous Flame
             { 202, 104159 }, -- Ruby Droplet
             { 203, 104167 }, -- Skunky Alemental
@@ -1494,7 +1871,7 @@ data["CompanionsMoP"] = {
             { 3,  88148 }, -- Jade Crane Chick
             { 4,  85447 }, -- Tiny Goldfish
             { 5,  95621 }, -- Warbot
-            -- Phase 2?
+            -- Phase 2
             { 7,  93025 }, -- Clock'em
             -- Phase 4
             { 9,  97821 }, -- Gahz'rooki
@@ -1540,16 +1917,15 @@ data["CompanionsMoP"] = {
             { 7,  94025 }, -- Red Panda
             -- Phase 3
             { 9, 94190 }, -- Spectral Porcupette
-            -- Phase 3?
-            { 11,  94208 }, -- Sunfur Panda
-            { 12,  94209 }, -- Snowy Panda
-            { 13, 94210 }, -- Mountain Panda
+            { 10,  94208 }, -- Sunfur Panda
+            { 11,  94209 }, -- Snowy Panda
+            { 12, 94210 }, -- Mountain Panda
             }
         },
         {
         name = ALIL["Fishing"],
         [NORMAL_DIFF] = {
-            -- Phase 3?
+            -- Phase 3
             { 1, 94932 }, -- Tiny Red Carp
             { 2, 94933 }, -- Tiny Blue Carp
             { 3, 94934 }, -- Tiny Green Carp
@@ -1565,7 +1941,7 @@ data["CompanionsMoP"] = {
             { 3,  82774 }, -- Jade Owl
             { 4,  82775 }, -- Sapphire Cub
             { 5,  87526 }, -- Mechanical Pandaren Dragonling
-            -- Phase 2?
+            -- Phase 2
             { 7,  90900 }, -- Imperial Moth
             { 8,  90902 }, -- Imperial Silkworm
             -- Phase 3? 5?
@@ -2014,14 +2390,14 @@ data["BrewfestMoP"] = {
         {
             name = C_Map_GetAreaInfo(1584) .. " - " .. AL["Coren Direbrew"],
             [NORMAL_DIFF] = {
-                { 1,  87576 }, -- Bitterest Balebrew Charm
-                { 2,  87575 }, -- Bubbliest Brightbrew Charm
-                { 3,  87574 }, -- Coren's Cold Chromium Coaster
-                { 4,  87572 }, -- Mithril Wristwatch
-                { 5,  87573 }, -- Thousand-Year Pickled Egg
-                { 6,  87571 }, -- Brawler's Statue
-                { 8,  107217 }, -- Direbrew's Bloodied Shanker
-                { 9,  107218 }, -- Tremendous Tankard O' Terror
+                { 1,  257873 }, -- Bitterest Balebrew Charm
+                { 2,  257877 }, -- Bubbliest Brightbrew Charm
+                { 3,  257880 }, -- Coren's Cold Chromium Coaster
+                { 4,  257884 }, -- Mithril Wristwatch
+                { 5,  257881 }, -- Thousand-Year Pickled Egg
+                { 6,  257885 }, -- Brawler's Statue
+                { 8,  257863 }, -- Direbrew's Bloodied Shanker
+                { 9,  257865 }, -- Tremendous Tankard O' Terror
                 {16, 33977}, -- Swift Brewfest Ram
                 {17, 37828}, -- Great Brewfest Kodo
                 {19, 37863}, -- Direbrew's Remote
@@ -2095,12 +2471,12 @@ data["HalloweenMoP"] = {
         { -- SMHeadlessHorseman
         name = C_Map_GetAreaInfo(796) .. " - " .. AL["Headless Horseman"],
         [NORMAL_DIFF] = {
-                { 1, 88168 }, -- Seal of Ghoulish Glee
-                { 2, 88169 }, -- The Horseman's Ring
-                { 3, 88166 }, -- Wicked Witch's Signet
-                { 4, 88167 }, -- Band of the Petrified Pumpkin
-                { 5, 87569 }, -- The Horseman's Horrific Hood
-                { 6, 87570 }, -- The Horseman's Sinister Slicer
+                { 1, 263010 }, -- Seal of Ghoulish Glee
+                { 2, 263011 }, -- The Horseman's Ring
+                { 3, 263012 }, -- Wicked Witch's Signet
+                { 4, 263013 }, -- Band of the Petrified Pumpkin
+                { 5, 263014 }, -- The Horseman's Horrific Hood
+                { 6, 263018 }, -- The Horseman's Sinister Slicer
                 { 8, 33292 }, -- Hallowed Helm
                 { 10, 34068 }, -- Weighted Jack-o'-Lantern
                 { 12, 33277 }, -- Tome of Thomas Thomson
@@ -2155,6 +2531,12 @@ data["WinterVeilMoP"] = {
             },
         },
         {
+            name = AL["Carefully Wrapped Present"],
+            [NORMAL_DIFF] = {
+                { 1, 21254 }, -- Winter Veil Cookie
+            },
+        },
+        {
             name = AL["Gaily Wrapped Present"],
             [NORMAL_DIFF] = {
                 { 1, 21301 }, -- Green Helper Box
@@ -2170,23 +2552,29 @@ data["WinterVeilMoP"] = {
             },
         },
         {
-            name = AL["Smokywood Pastures Special Gift"],
+            name = AL["Gently Shaken Gift"],
             [NORMAL_DIFF] = {
-                { 1,  17706 }, -- Plans: Edge of Winter
-                { 2,  17725 }, -- Formula: Enchant Weapon - Winter's Might
-                { 3,  17720 }, -- Schematic: Snowmaster 9000
-                { 4,  17722 }, -- Pattern: Gloves of the Greatfather
-                { 5,  17709 }, -- Recipe: Elixir of Frost Power
-                { 6,  17724 }, -- Pattern: Green Holiday Shirt
+                { 1, 21235 }, -- Winter Veil Roast
+                { 2, 21241 }, -- Winter Veil Eggnog
+            },
+        },
+        {
+            name = AL["Ticking Present"],
+            [NORMAL_DIFF] = {
+                { 1, 17706 }, -- Plans: Edge of Winter
+                { 2, 17725 }, -- Formula: Enchant Weapon - Winter's Might
+                { 3, 17720 }, -- Schematic: Snowmaster 9000
+                { 4, 17722 }, -- Pattern: Gloves of the Greatfather
+                { 5, 17709 }, -- Recipe: Elixir of Frost Power
+                { 6, 17724 }, -- Pattern: Green Holiday Shirt
                 { 16, 21325 }, -- Mechanical Greench
                 { 17, 21213 }, -- Preserved Holly
             },
         },
         {
-            name = AL["Gently Shaken Gift"],
+            name = AL["Winter Veil Gift"],
             [NORMAL_DIFF] = {
-                { 1, 21235 }, -- Winter Veil Roast
-                { 2, 21241 }, -- Winter Veil Eggnog
+                { 1, 104318 }, -- Crashin' Thrashin' Flyer Controller
             },
         },
         {
@@ -2201,36 +2589,49 @@ data["WinterVeilMoP"] = {
                 { 7,  17406 }, -- Holiday Cheesewheel
                 { 8,  17407 }, -- Graccu's Homemade Meat Pie
                 { 9,  17408 }, -- Spicy Beefstick
-                { 10, 34410 }, -- Honeyed Holiday Ham
-                { 11, 17404 }, -- Blended Bean Brew
-                { 12, 17405 }, -- Green Garden Tea
-                { 13, 34412 }, -- Sparkling Apple Cider
-                { 14, 17196 }, -- Holiday Spirits
-                { 15, 17403 }, -- Steamwheedle Fizzy Spirits
-                { 16, 17402 }, -- Greatfather's Winter Ale
-                { 17, 17194 }, -- Holiday Spices
-                { 18, 17303 }, -- Blue Ribboned Wrapping Paper
-                { 19, 17304 }, -- Green Ribboned Wrapping Paper
-                { 20, 17307 }, -- Purple Ribboned Wrapping Paper
+                { 10, 21215 }, -- Graccu's Mince Meat Fruitcake
+                { 11, 34410 }, -- Honeyed Holiday Ham
+                { 12, 17404 }, -- Blended Bean Brew
+                { 13, 17405 }, -- Green Garden Tea
+                { 14, 34412 }, -- Sparkling Apple Cider
+                { 15, 17196 }, -- Holiday Spirits
+                { 16, 17403 }, -- Steamwheedle Fizzy Spirits
+                { 17, 17402 }, -- Greatfather's Winter Ale
+                { 18, 17194 }, -- Holiday Spices
+                { 19, 17303 }, -- Blue Ribboned Wrapping Paper
+                { 20, 17304 }, -- Green Ribboned Wrapping Paper
+                { 21, 17307 }, -- Purple Ribboned Wrapping Paper
+                { 22, 70923 }, -- Gaudy Winter Veil Sweater
+            },
+        },
+        {
+            name = AL["Smokywood Pastures Special Gift"],
+            [NORMAL_DIFF] = {
+                { 1, 17706 }, -- Plans: Edge of Winter
+                { 2, 17725 }, -- Formula: Enchant Weapon - Winter's Might
+                { 3, 17720 }, -- Schematic: Snowmaster 9000
+                { 4, 17722 }, -- Pattern: Gloves of the Greatfather
+                { 5, 17709 }, -- Recipe: Elixir of Frost Power
+                { 6, 17724 }, -- Pattern: Green Holiday Shirt
             },
         },
         {
             name = AL["Stolen Present"],
             [NORMAL_DIFF] = {
-                { 1,  93625 }, -- Miniature Winter Veil Tree
+                { 1,  268556 }, -- Miniature Winter Veil Tree
                 { 3,  104317 }, -- Rotten Helper Box
                 { 4,  34425 }, -- Clockwork Rocket Bot
                 { 5,  54436 }, -- Blue Clockwork Rocket Bot
                 { 6,  73797 }, -- Lump of Coal
-                { 8,  104318 }, -- Crashin' Thrashin' Flyer Controller
-                { 9,  46709 }, -- MiniZep Controller
-                { 10,  44606 }, -- Toy Train Set
-                { 11,  90883 }, -- The Pigskin
-                { 12,  90888 }, -- Foot Ball
-                { 13,  37710 }, -- Crashin' Thrashin' Racer Controller
-                { 14, 54437 }, -- Tiny Green Ragdoll
-                { 15, 54438 }, -- Tiny Blue Ragdoll
-                { 17,  46725 }, -- Red Rider Air Rifle
+                { 8,  46709 }, -- MiniZep Controller
+                { 9,  44606 }, -- Toy Train Set
+                { 10,  90883 }, -- The Pigskin
+                { 11,  90888 }, -- Foot Ball
+                { 12,  37710 }, -- Crashin' Thrashin' Racer Controller
+                { 13, 54437 }, -- Tiny Green Ragdoll
+                { 14, 54438 }, -- Tiny Blue Ragdoll
+                { 16,  46725 }, -- Red Rider Air Rifle
+                { 17, 70923 }, -- Gaudy Winter Veil Sweater
                 { 18, 34498 }, -- Paper Zeppelin Kit
                 { 19, 44599 }, -- Zippy Copper Racer
                 { 20, 44601 }, -- Heavy Copper Racer

@@ -3,11 +3,14 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20260106233726")
 mod:SetCreatureID(76141)
 mod:SetEncounterID(1699)--Verify, name doesn't match
 
 mod:RegisterCombat("combat")
+
+--TODO, some actual custom sounds and timer disables when apis added
+if DBM:IsPostMidnight() then return end
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 154110 154113 154135",
@@ -25,15 +28,10 @@ local timerEnergozeCD	= mod:NewNextTimer(20, 154159, nil, nil, nil, 5)
 local timerBurstCD		= mod:NewCDCountTimer(23, 154135, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 
 mod.vb.burstCount = 0
-local skyTrashMod = DBM:GetModByName("SkyreachTrash")
 
 function mod:OnCombatStart(delay)
 	self.vb.burstCount = 0
 	timerBurstCD:Start(20-delay, 1)
-	if skyTrashMod.Options.RangeFrame and skyTrashMod.vb.debuffCount ~= 0 then--In case of bug where range frame gets stuck open from trash pulls before this boss.
-		skyTrashMod.vb.debuffCount = 0--Fix variable
-		DBM.RangeCheck:Hide()--Close range frame.
-	end
 end
 
 function mod:SPELL_CAST_START(args)

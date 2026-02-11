@@ -1,4 +1,4 @@
-if not BG.IsWLK then return end
+if not BG.IsWLK_80 then return end
 
 local _, ns = ...
 

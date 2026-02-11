@@ -14,6 +14,8 @@ function Details222.StartUp.StartMeUp()
 	end
 	Details.AndIWillNeverStop = true
 
+	Details.damage_meter_type = 0 --disable blizzard toggle
+
 	--note: this runs after profile loaded
 
 	--set default time for arena and bg to be the Details! load time in case the client loads mid event
@@ -149,7 +151,9 @@ function Details222.StartUp.StartMeUp()
 
 	--Details222.LoadCommentatorFunctions()
 
-	Details222.AuraScan.FindAndIgnoreWorldAuras()
+	if not detailsFramework.IsAddonApocalypseWow() then
+		Details222.AuraScan.FindAndIgnoreWorldAuras()
+	end
 
 	Details222.Notes.RegisterForOpenRaidNotes()
 
@@ -271,7 +275,8 @@ function Details222.StartUp.StartMeUp()
 		end
 
 		--after plugins are loaded and they have registered their icons, reorganize them after the start
-		Details.ToolBar:ReorganizeIcons()
+		local justRefreshIcons = true
+		Details.ToolBar:ReorganizeIcons(justRefreshIcons)
 
 		--refresh skin for other windows
 		if (lowerInstanceId) then
@@ -341,6 +346,10 @@ function Details222.StartUp.StartMeUp()
 
 	if (C_EventUtils.IsEventValid("SCENARIO_COMPLETED")) then
 		Details.listener:RegisterEvent("SCENARIO_COMPLETED")
+	end
+
+	if (detailsFramework.IsAddonApocalypseWow()) then
+		Details.listener:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
 	end
 
 	Details.listener:RegisterEvent("ENCOUNTER_START")
@@ -440,7 +449,6 @@ function Details222.StartUp.StartMeUp()
 			end
 		end
 	end
-
 	--check is this is the first run of this version
 	if (Details.is_version_first_run) then
 		if (Details.build_counter == 13096) then
@@ -451,6 +459,30 @@ function Details222.StartUp.StartMeUp()
 		if (lowerInstanceId) then
 			lowerInstanceId = Details:GetInstance(lowerInstanceId)
 			if (lowerInstanceId) then
+				if Details.build_counter >= 14356 then
+					if not Details.righttext_simple_formatting.first_run then
+						Details:Msg("The right text has been converted to a new formatting system. You can customize it in the options window -> Bar Texts.")
+						if lowerInstanceId.use_multi_fontstrings then
+							Details.righttext_simple_formatting.enabled = false
+							Details.righttext_simple_formatting.use_alignment = true
+						else
+							Details.righttext_simple_formatting.enabled = true
+							Details.righttext_simple_formatting.use_alignment = false
+
+							local bars_show_data = lowerInstanceId.row_info.textR_show_data
+							if (not bars_show_data [3]) then --no percent
+								local template = {"%s (%s)", "%s (%s)", "%s"}
+								local profileTable = Details.righttext_simple_formatting
+								profileTable.format_tsp = template[1]
+								profileTable.format_ts = template[2]
+								profileTable.format_tp = template[3]
+							end
+						end
+
+						Details.righttext_simple_formatting.first_run = true
+					end
+				end
+
 				--check if there's changes in the size of the news string
 				if (false and Details.last_changelog_size ~= #Loc["STRING_VERSION_LOG"]) then
 					Details.last_changelog_size = #Loc["STRING_VERSION_LOG"]
@@ -544,11 +576,13 @@ function Details222.StartUp.StartMeUp()
 	--store the names of all interrupt spells
 	---@type table<string, boolean>
 	Details.InterruptSpellNamesCache = {}
-	for spellId, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
-		if (spellData.type == 6) then
-			local spellInfo = C_Spell.GetSpellInfo(spellId)
-			if (spellInfo) then
-				Details.InterruptSpellNamesCache[spellInfo.name] = true
+	if LIB_OPEN_RAID_COOLDOWNS_INFO then
+		for spellId, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+			if (spellData.type == 6) then
+				local spellInfo = C_Spell.GetSpellInfo(spellId)
+				if (spellInfo) then
+					Details.InterruptSpellNamesCache[spellInfo.name] = true
+				end
 			end
 		end
 	end
@@ -565,20 +599,25 @@ function Details222.StartUp.StartMeUp()
 	---@type table<unitname, table<spellname, boolean>>
 	Details.CrowdControlSpellsByUnitCache = {}
 
-	for spellId, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
-		if (spellData.type == 8) then
-			local spellInfo = C_Spell.GetSpellInfo(spellId)
-			if (spellInfo) then
-				Details.CrowdControlSpellIdsCache[spellId] = spellInfo.name
-				Details.CrowdControlSpellNamesCache[spellInfo.name] = true
+	if LIB_OPEN_RAID_COOLDOWNS_INFO then
+		for spellId, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+			if (spellData.type == 8) then
+				local spellInfo = C_Spell.GetSpellInfo(spellId)
+				if (spellInfo) then
+					Details.CrowdControlSpellIdsCache[spellId] = spellInfo.name
+					Details.CrowdControlSpellNamesCache[spellInfo.name] = true
+				end
 			end
 		end
 	end
-	for spellId, spellData in pairs(LIB_OPEN_RAID_CROWDCONTROL) do
-		local spellInfo = C_Spell.GetSpellInfo(spellId)
-		if (spellInfo and not Details.CrowdControlSpellNamesCache[spellInfo.name]) then
-			Details.CrowdControlSpellIdsCache[spellId] = spellInfo.name
-			Details.CrowdControlSpellNamesCache[spellInfo.name] = true
+
+	if LIB_OPEN_RAID_CROWDCONTROL then
+		for spellId, spellData in pairs(LIB_OPEN_RAID_CROWDCONTROL) do
+			local spellInfo = C_Spell.GetSpellInfo(spellId)
+			if (spellInfo and not Details.CrowdControlSpellNamesCache[spellInfo.name]) then
+				Details.CrowdControlSpellIdsCache[spellId] = spellInfo.name
+				Details.CrowdControlSpellNamesCache[spellInfo.name] = true
+			end
 		end
 	end
 
@@ -773,6 +812,24 @@ function Details222.StartUp.StartMeUp()
 		end
 	end
 
+	if detailsFramework.IsAddonApocalypseWow() then
+		if not Details.switch_post_apoc then
+			Details.switch_post_apoc = true
+
+			Details.switch.slots = 6
+			Details.switch.table = {
+				{["atributo"] = 1, ["sub_atributo"] = 1}, --damage done
+				{["atributo"] = 2, ["sub_atributo"] = 1}, --healing done
+				{["atributo"] = 4, ["sub_atributo"] = 3}, --interrupts
+				{["atributo"] = 4, ["sub_atributo"] = 4}, --dispels
+				{["atributo"] = 1, ["sub_atributo"] = 3}, --damage taken
+				{["atributo"] = 2, ["sub_atributo"] = 3}, --overhealing
+			}
+
+			Details:Msg("Bookmarks has been reset.")
+		end
+	end
+
 	if (not DetailsFramework.IsTimewalkWoW()) then
 		Details.cached_specs[UnitGUID("player")] = GetSpecializationInfo(GetSpecialization() or 0)
 	end
@@ -878,6 +935,10 @@ function Details222.StartUp.StartMeUp()
 
 	if (DetailsFramework:IsNearlyEqual(Details.class_coords.ROGUE[4], 0.25)) then
 		DetailsFramework.table.copy(Details.class_coords, Details.default_profile.class_coords)
+	end
+
+	if detailsFramework.IsAddonApocalypseWow() then
+		Details222.BParser.UpdateDamageMeterSwap()
 	end
 
 	if (DetailsFramework.IsWarWow()) then

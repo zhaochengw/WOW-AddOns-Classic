@@ -35,14 +35,14 @@ function BG.ReceiveTitleUI(FB, t, b, bb, i, ii)
     else
         version:SetPoint("TOPLEFT", frameright, "TOPLEFT", 100, 0)
     end
-    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["  项目"])
     preWidget = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", 70, 0);
-    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["装备"])
     preWidget = version
@@ -50,14 +50,14 @@ function BG.ReceiveTitleUI(FB, t, b, bb, i, ii)
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.zhuangbeiWidth+5, 0);
-    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["买家"])
     preWidget = version
 
     local version = BG["ReceiveFrame" .. FB]:CreateFontString()
     version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.maijiaWidth+5, 0);
-    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
+    version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
     version:SetTextColor(RGB(BG.y2))
     version:SetText(L["金额"])
     preWidget = version
@@ -197,45 +197,6 @@ function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Hide()
         GameTooltip:Hide()
     end)
-end
-
-------------------BOSS名字------------------
-function BG.ReceiveBossNameUI(FB, t, b, bb, i, ii, frameName)
-    local fontsize = 14
-    local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-    if frameName and BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)] then
-        version:SetPoint("TOP", BG[frameName .. FB]["scrollFrame" .. BossNum(FB, b, t)].owner, "TOPLEFT", -40, -2)
-    else
-        version:SetPoint("TOP", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)].zhuangbei1, "TOPLEFT", -45, -2)
-    end
-    version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-    version:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
-    version:SetText(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].name)
-    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["name"] = version
-    if BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)] == BG.ReceiveFrame[FB]["boss" .. Maxb[FB] + 2] then
-        local version = BG["ReceiveFrame" .. FB]:CreateFontString()
-        version:SetPoint("BOTTOM", BG.ReceiveFrame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
-        version:SetFont(STANDARD_TEXT_FONT, fontsize, "OUTLINE")
-        version:SetTextColor(RGB("00BFFF"))
-        version:SetText(L["工\n资"])
-    end
-end
-
-------------------击杀用时------------------
-function BG.ReceiveJiShaUI(FB, t, b, bb, i, ii)
-    local text = BG["ReceiveFrame" .. FB]:CreateFontString()
-    local num
-    for i = 1, BG.GetMaxi(FB, BossNum(FB, b, t)) do
-        if not BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i + 1] then
-            num = i
-            break
-        end
-    end
-    text:SetPoint("TOPLEFT", BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. num], "BOTTOMLEFT", -0, -3)
-    text:SetFont(STANDARD_TEXT_FONT, 10, "OUTLINE,THICK")
-    text:SetTextColor(RGB(BG.Boss[FB]["boss" .. BossNum(FB, b, t)].color))
-    text:SetAlpha(0.8)
-    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["time"] = text
 end
 
 ------------------底色材质------------------

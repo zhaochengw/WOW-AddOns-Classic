@@ -12,16 +12,19 @@ ns.L = L
 local c1 = "|cff" .. "ffff66"
 ns.c1 = c1
 
-if (GetLocale() == "zhTW") then return end
+-- if true then return end
+
+local l = GetLocale()
+if (l == "zhTW" or l == "enUS") then return end
 
 do --简体说明书
     ns.instructionsText = {
-        "|cff00BFFF< 说明书 >（本插件支持MOP、CTM、WLK、60服，不再支持探索赛季）",
+        "|cff00BFFF< 说明书 >（本插件支持MOP、CTM、WLK、时光服、经典旧世）",
         " ",
         "|cffFFFFFF-打开命令：|r/BiaoGe或/GBG，或游戏设置里绑定按键。小地图图标： " .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t",
         "|cffFFFFFF-快捷操作：|r|A:NPE_RightClick:0:0|a输入框清除内容",
         "|cffFFFFFF-跳转光标：|r按Tab、方向键跳转光标，ALT/CTRL/SHIFT+方向键跳转至下个BOSS",
-        "|cffFFFFFF-添加装备：|r从装备下拉列表里选择；或者从背包把装备拖进表格",
+        -- "|cffFFFFFF-添加装备：|r从装备下拉列表里选择；或者从背包把装备拖进表格",
         "|cffFFFFFF-自动拍卖：|rALT+点击表格/背包/聊天框装备，打开拍卖面板（当你是团长或物品分配者时）",
         "|cffFFFFFF-关注装备：|rALT+点击装备，团长拍卖此装备时会提醒（当你是团员时）",
         "|cffFFFFFF-拍卖倒数：|r|A:NPE_RightClick:0:0|a聊天框装备开始拍卖自动倒数（当你是团长或物品分配者时）",
@@ -38,39 +41,43 @@ do --简体说明书
         -- [[]] ,
         -- [[]] ,
         -- " " ,
-        "|cff00FF00" ..[[11月4日更新v1.21.7]] ,
-        [[-<CTM>表格：巨龙之魂和火焰之地的杂项格子增加]] ,
-        [[-<CTM>角色总览：添加制造业日常、暗月奖券、珠宝新货币等]],
-        [[-<CTM>修复了巨龙之魂的橙片不会自动记录的问题]],
-        [[-<MOP>角色总览：添加暗月奖券]],
-        [[-现在拍卖出错时不再播放语音提醒]],
-        [[-修复了一键给全团发送拍卖WA失效的问题]],
-        " " ,
+        -- ●○
+        "|cff00FF00" .. [[2月9日更新v1.25.4]],
+        c1 .. [[增加功能：自动生成表格账单]],
+        c1 .. [[○ 当一个装备拍卖成功时，会根据拍卖记录，自动填写表格里该装备所对应的买家和金额]],
+        c1 .. [[○ 启用该功能时，交易记账会被自动禁用，以免记账冲突]],
+        c1 .. [[○ 该功能仅对普通团员生效。团长或物品分配者仍会使用更为可靠的交易记账]],
+        [[<时光服/MOP>角色总览：增加节日本]],
+        [[<时光服/MOP>装备库：增加情人节项链]],
+        [[<MOP>修复了通报WCL的一些问题]],
+        " ",
     }
     ns.updateText_before = {
-        "|cff00FF00" ..[[11月2日更新v1.21.5]] ,
-        [[-<CTM>AtlasLoot增强功能已支持国服大灾变]] ,
-        [[-修复了查询记录失效的问题]] ,
-        " " ,
-        "|cff00FF00" ..[[10月30日更新v1.21.4]] ,
-        [[-<MOP>修复了亚服错误地显示大灾变表格的问题]] ,
-        " " ,
-        "|cff00FF00" .. [[10月30日更新v1.21.3]],
-        [[-<CTM>支持国服大灾变版本]],
+        "|cff00FF00" .. [[2月1日更新v1.25.3]],
+        [[生成表格账单：如果一件装备的拍卖成功数大于该装备在表格的实际记录数时，]],
+        [[说明该装备可能存在重拍或错拍的问题，现在会有相应提示，便于更好地对账]],
+        [[<时光服>修复了装备库P2套装的一些问题]],
         " ",
-        "|cff00FF00" .. [[10月23日更新v1.21.1]],
-        [[-<60级>适配客户端1.15.8]],
+        "|cff00FF00" .. [[1月30日更新v1.25.2]],
+        [[<时光服>再次更新P2团本装备掉落]],
+        [[<时光服>修复了[一捆虚空尖刺]会自动记录进表格的问题]],
+        [[<时光服>修复了海度斯的装备错误记录到杂项的问题（应该）]],
         " ",
-        "|cff00FF00" ..[[10月7日更新v1.21.0]] ,
-        [[-<MOP>增加功能：牌子拾取增强（可在设置-其他功能里关闭）]] ,
-        [[(1)拾取牌子时，增加显示该牌子的现有数量]] ,
-        [[(2)拾取牌子时，如果已经达到该牌子的数量上限，播放语音提醒]],
-        [[(3)在部分物品的提示文本中，增加显示该牌子的数量。比如在正义奖章里，提示正义点数现有数量]],
-        " " ,
-        "|cff00FF00" ..[[10月4日更新v1.20.9]] ,
-        [[-<MOP>集结号-密语模板：成就ID改为P1副本对应的ID]] ,
-        [[-<MOP>装备过滤方案：元素萨的默认方案现在不再过滤精神属性]] ,
-        [[-<MOP>修复了装备过滤的设置面板打不开的问题]] ,
+        "|cff00FF00" .. [[1月30日更新v1.25.1]],
+        [[<时光服>更新P2团本装备掉落]],
+        [[<时光服>虚空漩涡现在会被记录到杂项]],
+        [[<时光服>现在会自动记录图纸到杂项]],
+        [[<时光服>修复了打完风暴再打毒蛇时，表格会被清空的问题]],
+        [[<时光服>修复了新世界BOSS的角色总览CD不显示的问题]],
+        " ",
+        "|cff00FF00" .. [[1月27日更新v1.24.9]],
+        [[<时光服>修复了由于服务器改名引发的各种BUG]],
+        [[设置：增加选项"输入框字号"]],
+        " ",
+        "|cff00FF00" .. [[1月23日更新v1.24.8]],
+        [[字体设置现在对表格的输入框也会生效]],
+        [[集结号密语模板：非满级角色显示会密语等级而非装等]],
+        [[修复了因BiaoGeYY频道满员导致不能使用YY评价的问题]],
     }
 
     ns.VIPinstructionsText = {
@@ -83,16 +90,18 @@ do --简体说明书
         "角色总览可以查看所有角色的装备",
         "角色总览可以自定义排序",
         "自动备份BiaoGe和BiaoGeVIP配置文件，在更新整合包后可以一键还原配置",
-        "历史表格汇总。可以查看每个玩家的消费情况，数据来自你所有账号的历史表格",
-        "批量邮寄工资，给全团或特定名单批量邮寄金币",
+        "历史表格汇总：查看每个玩家的消费情况，数据来自你所有账号的历史表格",
+        "批量邮寄工资：给全团或特定名单批量邮寄金币",
         "邮件记录/交易记录",
         "预设起拍价/一键开拍",
         "集结号一键开团/进组欢迎语",
-        "支出模版。直接套用你预设好的支出项和金额",
-        "查看YY评价者",
+        "支出模版：直接套用你预设好的支出项和金额",
+        "罚款增强：合并罚款（把相同玩家的多项罚款合并为一项）和清空全部罚款",
+        "查看YY评价者是谁",
         "自动拍卖的出价记录可以查看每一手记录",
         "团长自己买的装备可以自动记账",
-        "商品总览。跟商人对话时，会把商品按装备部位进行排列，并且可以按天赋过滤",
+        "商品总览：跟商人对话时，商品按装备部位进行排列，并且可以按天赋过滤",
+        "随机本记录：回看随机本的装备需求和roll点记录、聊天记录、踢人记录；\n一键填写踢人理由；5人本自动贪婪绿装",
     }
     for i, text in ipairs(tbl) do
         tinsert(ns.VIPinstructionsText, i .. ". " .. text)
@@ -114,16 +123,164 @@ end
 
 local L = {}
 do
-    L["巨龙"]=true
-    L["T13套"]=true
-    L["裂隙石"]=true
-    L["荣誉"]=true
-    L["牌子拾取增强"]=true
-    L["拾取牌子时，增加显示该牌子的现有数量。"]=true
-    L["拾取牌子时，如果已经达到该牌子的数量上限，播放语音提醒。"]=true
-    L["在部分物品的提示文本中，增加显示该牌子的数量。比如在熊猫人之怒的正义奖章里，提示正义点数现有数量。"]=true
-    L["英雄难度"]=true
-    L["普通难度"]=true
+    L["节日:"] = true
+    L["情人节"] = true
+    L["当一个装备拍卖成功时，会根据拍卖记录，自动填写表格里该装备所对应的买家和金额。"] = true
+    L["启用该功能时，交易记账会被自动禁用，以免记账冲突。"] = true
+    L["注意：如果你是团长或物品分配者，该功能不会生效。团长或物品分配者仍会使用更为可靠的交易记账。"] = true
+    L["节日本"] = true
+    L["万圣节"] = true
+    L["仲夏火焰节"] = true
+    L["美酒节"] = true
+    L["自动生成表格账单"] = true
+    L["以下装备可能存在重拍："] = true
+    L["%s%s：拍卖成功%s件，表格实际只有%s件"] = true
+    L["输入框字号"] = true
+    L["BiaoGe插件大量使用输入框，该选项可以修改其字体大小。"] = true
+    L["输入框字号（需重载）"] = true
+    L["清空表格时的金币："] = true
+    L["开启该模块需要重载游戏。\n现在立刻重载吗？"] = true
+    L["+职业"] = true
+    L["移动欠款者"] = true
+    L["把欠款者移到78队"] = true
+    L["插件加载错误。"] = true
+    L["你没有安装官方WCL插件（安装入口在WCL客户端）。"] = true
+    L["当前团队成员没有WCL分数。"] = true
+    L["战斗中不能查看WCL。"] = true
+    L["该功能仅修改买家和金额，如果表格里的装备栏是空的，则什么都不会发生。"] = true
+    L["金团竞价"] = true
+    L["Roll点"] = true
+    L["字体（需重载）"] = true
+    L["字体预览\n\nBiaoGe插件\n1234567890"] = true
+    L["|cff808080（带*的设置需要重载才能生效）|r"] = true
+    L["显示牌子总上限"] = true
+    L["像勇气点数、征服点数有总上限的牌子，在角色总览里会显示其总上限。"] = true
+    L["（需重载）"] = true
+    L["末日领主"] = true
+    L["（总上限%s/%s）"] = true
+    L["|Hgarrmission:BiaoGeDuiZhang:%s|h[点击：对账]（|cff00ff00装备总收入%s|r%s）"] = true
+    L["|Hgarrmission:BiaoGeDuiZhangCopy:%s:%s|h[ALT+点击：复制账单]（|cff00ff00仅对装备收入有效|r）"] = true
+    L["%s：%s已就绪！"] = true
+    L["珠宝研究"] = true
+    L["{rt1}Roll点开始{rt1} %s"] = true
+    L["不能同时发起多件装备Roll点。"] = true
+    L["开始Roll点"] = true
+    L["以下玩家无法分配装备：\n(已有CD或没进战斗)"] = true
+    L["——通报CD异常玩家——"] = true
+    L["无法分配装备(已有CD或没进战斗)："] = true
+    L["已拍已交易"] = true
+    L["欠款者移到78队"] = true
+    L["不在团队，该功能无法使用。"] = true
+    L["你不是团长或助理，该功能无法使用。"] = true
+    L["战斗中，该功能无法使用。"] = true
+    L["团队人数超过30人，该功能无法使用。"] = true
+    L["没有欠款。"] = true
+    L["欠款者超过10人，该功能无法使用。"] = true
+    L["队伍调整已完成。"] = true
+    L["收菜"] = true
+    L["选填（仅自己可见）"] = true
+    L["邪煞水晶"] = true
+    L["仅显示高于该等级的角色："] = true
+    L["仅显示高于该装等的角色："] = true
+    L["角色总览UI缩放"] = true
+    L["调整角色总览UI的大小。"] = true
+    L["自动拍卖UI缩放"] = true
+    L["表格UI缩放"] = true
+    L["专业CD"] = true
+    L["专业技能"] = true
+    L["未学"] = true
+    L["炼金转化"] = true
+    L["霹雳钢锭"] = true
+    L["智慧卷轴"] = true
+    L["神龙之心"] = true
+    L["华丽制皮"] = true
+    L["帝王丝绸"] = true
+    L["无CD"] = true
+    L["团员世界BossCD"] = true
+    L["该支出项含有百分比|cff00ff00（%s%%）|r，正在自动计算支出金额。"] = true
+    L["你可以通过删除支出项的百分比符号来取消自动计算，或者在表格设置里关闭该项功能。"] = true
+    L["拍卖WA版本："] = true
+    L["屏蔽发送受限的系统消息"] = true
+    L["自动屏蔽该系统消息\"可发送的信息数量受限，请稍候再发送下一条信息。\"。"] = true
+    L["|cffff0000由于服务器聊天限流，通报已被停止。"] = true
+    L["该频道需在副本内才能通报。"] = true
+    L["没有公会，无法通报。"] = true
+    L["不在团队，无法通报。"] = true
+    L["该模块已被禁用"] = true
+    L["禁用该模块"] = true
+    L["开启该模块"] = true
+    L["装备："] = true
+    L["买家："] = true
+    L["添加装备"] = true
+    L["删除记录"] = true
+    L["修改记录"] = true
+    L["取消选择"] = true
+    L["一键清空全部装备、买家、金额，同时还清空关注和欠款。如果有自动拍卖记录，则也会被清空。"] = true
+    L["表格：%s"] = true
+    L["密码："] = true
+    L["需全团安装拍卖WA，没安装的人将会看不到拍卖窗口。"] = true
+    L["交易增强"] = true
+    L["|cff808080（带*的设置为即时生效，否则需要重载才能生效）|r"] = true
+    L["鼠标提示对方的欠款和罚款"] = true
+    L["鼠标悬浮在一个玩家时，显示他的欠款和罚款。"] = true
+    L["原生功能"] = true
+    L["备注："] = true
+    L["|cffFFFFFFCTRL+滚轮：|r快速滚动"] = true
+    L["|cffFFFFFFSHIFT+滚轮：|r滚动到最前/最后"] = true
+    L["< 表格 >"] = true
+    L["已成功接收%s的表格。"] = true
+    L["毒蛇风暴"] = true
+    L["时光徽章历史价格"] = true
+    L["本次交易记为罚款"] = true
+    L["事由"] = true
+    L["罚款人"] = true
+    L["（本周%s/%s）"] = true
+    L["末日领主卡扎克"] = true
+    L["记录到表格"] = true
+    L["把全部掉落记录到BOSS对应的表格。"] = true
+    L["如果BOSS格子里已有旧记录，则会自动清空旧记录。"] = true
+    L["通报频道"] = true
+    L["设为成功拍卖"] = true
+    L["重新拍卖"] = true
+    L["清空全部"] = true
+    L["清空部分内容（自选）"] = true
+    L["清空表格（%s）"] = true
+    L["自动拍卖记录"] = true
+    L["全选"] = true
+    L["取消全选"] = true
+    L["确定清空表格"] = true
+    L["|cffff0000（订阅已过期或未开更新器）"] = true
+    L["|cffff0000（BiaoGeLib插件被禁用）"] = true
+    L["海达希亚"] = true
+    L["清空表格时自定义分钱人数"] = true
+    L["表格会按照你设定的人数修改分钱人数。"] = true
+    L["v3.2：支持英语本地化"] = true
+    L["T1套"] = true
+    L["快捷按钮"] = true
+    L["商人"] = true
+    L["末日行者"] = true
+    L["末日行者卡扎克"] = true
+    L["炼金"] = true
+    L["毒蛇神殿"] = true
+    L["风暴要塞"] = true
+    L["确定使用该表格？\n你的当前表格将被其|cffff0000替换|r"] = true
+    L["使用该表格"] = true
+    L["已向%s发送请求。"] = true
+    L["正在接收%s的表格数据。"] = true
+    L["已成功接收%s的表格数据。"] = true
+    L["双倍经验"] = true
+    L["满级"] = true
+    L["完成"] = true
+    L["巨龙"] = true
+    L["T13套"] = true
+    L["裂隙石"] = true
+    L["荣誉"] = true
+    L["牌子拾取增强"] = true
+    L["拾取牌子时，增加显示该牌子的现有数量。"] = true
+    L["拾取牌子时，如果已经达到该牌子的数量上限，播放语音提醒。"] = true
+    L["在部分物品的提示文本中，增加显示该牌子的数量。比如在熊猫人之怒的正义奖章里，提示正义点数现有数量。"] = true
+    L["英雄难度"] = true
+    L["普通难度"] = true
     L["确定清空<%s>的所有历史表格？"] = true
     L["清空历史表格"] = true
     L["魔古山"] = true
@@ -435,9 +592,7 @@ do
     L["炼金研究"] = true
     L["大雕文"] = true
     L["小雕文"] = true
-    L["铭文"] = true
     L["冰冻棱柱"] = true
-    L["珠宝加工"] = true
     L["泰坦精钢"] = true
     L["熔炉"] = true
     L["法纹布"] = true
@@ -591,7 +746,6 @@ do
     L["刷新数据"] = true
     L["正在刷新"] = true
     L["离线"] = true
-    L["关闭"] = true
     L["数字小键盘"] = true
     L["在可以输入数字的地方，自动显示一个数字小键盘。用鼠标就能完成数字的输入。"] = true
     L["指挥很好"] = true
@@ -748,8 +902,6 @@ do
     L["周常任务已记录，距离重置还剩%s。"] = true
     L["泰坦"] = true
     L["珠宝"] = true
-    L["烹饪"] = true
-    L["钓鱼"] = true
     L["多个获取途径"] = true
     L["英雄"] = true
     L["v1.5：拍卖价格为100~3000的加价幅度现在为100一次"] = true
@@ -908,7 +1060,6 @@ do
     L["金额："] = true
     L["欠款："] = true
     L["|cff00BFFF< 快速记账成功 >|r\n|cffFFFFFF装备：%s\n买家：%s\n金额：%s%s\nBOSS：%s"] = true
-    L["附魔"] = true
     L["(装等)"] = true
     L["（"] = true
     L["）"] = true
@@ -997,12 +1148,9 @@ do
     L["声望最高可提升至"] = true
     L["(贸易局)"] = true
     L["我"] = true
-    L["炼金术"] = true
     L["炼金转化"] = true
     L["裁缝洗布"] = true
-    L["裁缝"] = true
     L["制皮筛盐"] = true
-    L["制皮"] = true
     L["小时"] = true
     L["分钟"] = true
     L["秒"] = true
@@ -1023,9 +1171,6 @@ do
     L["金钱奖励"] = true
     L["|cff00BFFF由于该BOSS未有具体掉落列表，如果你想手动添加装备，可以使用以下方法：|r\n\n第一种：从背包把装备拖进表格\n\n第二种：先点击一个表格格子，然后SHIFT+点击聊天框/背包装备"] = true
     L["荆棘谷 血月活动"] = true
-    L["锻造"] = true
-    L["制皮"] = true
-    L["裁缝"] = true
     L["工程"] = true
     L["一键举报脚本"] = true
     L["本次一共举报|cff00BFFF%s|r个脚本。第一次举报的|cff00FF00%s|r个，曾举报的|cffFF0000%s|r个。"] = true
@@ -1089,7 +1234,7 @@ do
     L["|cff00BFFF<BiaoGe>|r 已自动取消%s的|cff00FF00心愿|r。"] = true
     L["全阶段"] = true
     L["工程"] = true
-    L["团本*"] = true
+    L["团本"] = true
     L["小团本%s"] = true
     L["你击中目标"] = true
     L["你造成爆击"] = true
@@ -1147,12 +1292,11 @@ do
     L["所有法术和魔法效果所造成的伤害和治疗效果"] = true
     L["法术和效果所造成的伤害"] = true
     L["法术所造成的治疗效果"] = true
-    L["赛季服*"] = true
+    L["赛季服"] = true
     L["副本: "] = true
     L["只能设置团本BOSS正常掉落的装备为心愿"] = true
     L["点击按钮后会把全部掉落分配给自己，只对精良/史诗装备生效，其他分类的物品不会生效。"] = true
     L["把全部掉落分配给自己，只对精良/史诗装备生效，其他类型的物品不会生效"] = true
-    L["<BiaoGe> 金团表格"] = true
     L["|cffFFFFFF左键：|r打开表格"] = true
     L["|cffFFFFFF右键：|r打开设置"] = true
     L["世界掉落"] = true
@@ -1197,7 +1341,7 @@ do
     L["队长分配模式时，在战利品界面增加一键分配按钮。"] = true
     L["点击按钮后会把全部掉落分配给自己，只对史诗装备或套装兑换物生效，其他分类的物品不会生效（例如橙片、任务物品等不会自动分配）。"] = true
     L["|cffffffff< 进本自动清空表格 >|r\n\n当你进入一个新CD团本时，表格会自动清空，原表格数据会保存至历史表格1"] = true
-    L["进本自动清空表格*"] = true
+    L["进本自动清空表格"] = true
     L["<BiaoGe> 已自动清空表格< %s >，分钱人数已改为%s人。原表格数据已保存至历史表格1。"] = true
     L["撤回清空"] = true
     L["<BiaoGe> 已撤回清空，还原了表格数据，并删除了历史表格1。"] = true
@@ -1303,13 +1447,13 @@ do
     L["装备库："] = true
     L["自动关注心愿装备：%s。团长拍卖此装备时会提醒"] = true
     L["|cffffffff< 背景材质透明度 >|r|cff808080（右键还原设置）|r\n\n1、调整背景材质透明度"] = true
-    L["背景材质透明度*"] = true
+    L["背景材质透明度"] = true
     L["岩石"] = true
     L["大理石"] = true
     L["黑夜"] = true
     L["皇帝的新衣"] = true
-    L["背景材质*"] = true
-    L["日常任务*"] = true
+    L["背景材质"] = true
+    L["日常任务"] = true
     L["更改至第几位"] = true
     L["修改名称/图标"] = true
     L["正在修改方案："] = true
@@ -1319,7 +1463,6 @@ do
     L["左键使用方案"] = true
     L["右键修改方案"] = true
     L["< 装备过滤 >"] = true
-    L["关闭"] = true
     L["选择方案："] = true
     L["新建过滤方案"] = true
     L["名称："] = true
@@ -1443,11 +1586,11 @@ do
     L["|cff808080（左键打开表格，右键打开设置）|r"] = true
     L["该攻略是按照25H去呈现，但由于暴雪数据库问题，部分技能链接里的描述文本并不符合25H的真实情况。请看技能的介绍文本"] = true
     L["|cffffffff< 角色5人本完成总览 >|r\n\n1、在队伍查找器旁边显示角色5人本完成总览"] = true
-    L["显示角色5人本完成总览*"] = true
+    L["显示角色5人本完成总览"] = true
     L["|cffffffff< 团本攻略字体大小 >|r|cff808080（右键还原设置）|r\n\n1、调整该字体的大小"] = true
     L["团本攻略字体大小"] = true
     L["|cffffffff< 密语模板 >|r\n\n1、预设成就、装等、自定义文本，当你点击集结号活动密语时会自动添加该内容\n2、按住SHIFT+点击密语时不会添加"] = true
-    L["密语模板*"] = true
+    L["密语模板"] = true
     L["< 历史搜索记录 >"] = true
     L["|cffFFFFFF左键：|r搜索该记录\n|cffFFFFFF右键：|r删除该记录"] = true
     L["把搜索文本添加至历史记录"] = true
@@ -1464,17 +1607,16 @@ do
     L["2、或你的经验、WCL分数等等"] = true
     L["其他功能"] = true
     L["|cffffffff< 按队伍人数排序 >|r\n\n1、集结号活动可以按队伍人数排序"] = true
-    L["按队伍人数排序*"] = true
+    L["按队伍人数排序"] = true
     L["|cffFFFFFF左键：|r搜索该记录\n|cffFFFFFF右键：|r删除该记录"] = true
     L["集结号"] = true
     L["|cffffffff< 历史搜索记录 >|r\n\n1、给集结号的搜索框增加一个历史搜索记录，提高你搜索的效率"] = true
-    L["历史搜索记录*"] = true
+    L["历史搜索记录"] = true
     L["|cffffffff< 不自动退出集结号频道 >|r\n\n1、这样你可以一直同步集结号的组队消息，让你随时打开集结号都能查看全部活动"] = true
-    L["不自动退出集结号频道*"] = true
+    L["不自动退出集结号频道"] = true
     L["|cffffffff< YY评价 >|cff808080（右键：开启/关闭该模块）|r|r\n\n1、你可以给YY频道做评价，帮助别人辨别该团好与坏\n2、你可以查询YY频道的大众评价\n3、聊天频道的YY号变为超链接，方便你复制该号码或查询大众评价\n4、替换集结号的评价框，击杀当前版本团本尾王后弹出\n"] = true
     L["模块开关"] = true
     L["开启"] = true
-    L["关闭"] = true
     L["该模块已关闭。右键底部标签页开启"] = true
     L["< 历史搜索记录 >"] = true
     L["把搜索文本添加至历史记录"] = true
@@ -1527,9 +1669,9 @@ do
     L["|cffffffff< 修改评价 >|r\n\n1、该YY号已有评价，去金团表格里修改评价"] = true
     L["退出"] = true
     L["|cffffffff< 装备记录通知字体大小 >|r|cff808080（右键还原设置）|r\n\n1、调整该字体的大小"] = true
-    L["装备记录通知字体大小*"] = true
+    L["装备记录通知字体大小"] = true
     L["|cffffffff< 交易通知字体大小 >|r|cff808080（右键还原设置）|r\n\n1、调整该字体的大小"] = true
-    L["交易通知字体大小*"] = true
+    L["交易通知字体大小"] = true
     L["|cffffffff< 当前表格 >|r\n\n1、表格的核心功能都在这里"] = true
     L["当前表格"] = true
     L["对账"] = true
@@ -1542,9 +1684,9 @@ do
     L["通报至团队通知频道"] = true
     L["通报至团队频道"] = true
     L["|cffffffff< 拍卖倒数时长 >|r|cff808080（右键还原设置）|r\n\n1、拍卖装备倒数多久，默认是8秒"] = true
-    L["拍卖倒数时长(秒)*"] = true
+    L["拍卖倒数时长(秒)"] = true
     L["|cffffffff< 拍卖倒数 >|r\n\n1、该功能只有团长或物品分配者可用\n2、ALT+点击当前表格、背包、聊天框的装备，自动开始拍卖倒数\n3、背包目前支持原生背包、NDUI背包、EUI背包、大脚背包\n"] = true
-    L["拍卖倒数*"] = true
+    L["拍卖倒数"] = true
     L["你已共享|r |cff00FF00%s|r |cffffffff人次评价"] = true
     L["{rt7}倒数暂停{rt7}"] = true
     L[" {rt1}拍卖倒数"] = true
@@ -1635,50 +1777,50 @@ do
     L["角色总览"] = true
     L["角色总览"] = true
     L["|cffffffff< UI缩放 >|r|cff808080（右键还原设置）|r\n\n1、调整表格UI的大小"] = true
-    L["UI缩放*"] = true
+    L["UI缩放"] = true
     L["|cffffffff< UI透明度 >|r|cff808080（右键还原设置）|r\n\n1、调整表格UI的透明度"] = true
-    L["UI透明度*"] = true
+    L["UI透明度"] = true
     L["|cffffffff< 自动记录装备 >|r\n\n1、在团本里拾取装备时，会自动记录进表格\n2、只会记录橙装、紫装、和蓝色的宝珠，不会记录图纸，小怪掉落会记录到杂项里\n"] = true
-    L["自动记录装备*"] = true
+    L["自动记录装备"] = true
     L["|cffffffff< 装备记录通知时长 >|r|cff808080（右键还原设置）|r\n\n1、自动记录装备后会在屏幕上方通知记录结果"] = true
     L["装备记录通知时长(秒)"] = true
     L["|cffffffff< 交易自动记账 >|r\n\n1、需要配合自动记录装备，因为如果表格里没有该交易的装备，则记账失败\n2、如果一次交易两件装备以上，则只会记第一件装备\n"] = true
-    L["交易自动记账*"] = true
+    L["交易自动记账"] = true
     L["|cffffffff< 交易通知时长 >|r|cff808080（右键还原设置）|r\n\n1、通知显示多久"] = true
     L["交易通知时长(秒)"] = true
     L["|cffffffff< 交易通知 >|r\n\n1、交易完成后会在屏幕中央通知本次记账结果\n"] = true
-    L["交易通知*"] = true
+    L["交易通知"] = true
     L["|cffffffff< 记账效果预览框 >|r\n\n1、交易的时候，可以预览这次的记账效果\n2、如果这次交易的装备不在表格，则可以选择强制记账"] = true
-    L["记账效果预览框*"] = true
+    L["记账效果预览框"] = true
     L["|cffffffff< 高亮拍卖装备 >|r\n\n1、当团长或物品分配者贴出装备开始拍卖时，会自动高亮表格里相应的装备"] = true
-    L["高亮拍卖装备*"] = true
+    L["高亮拍卖装备"] = true
     L["|cffffffff< 高亮拍卖装备时长 >|r|cff808080（右键还原设置）|r\n\n1、高亮拍卖装备多久"] = true
-    L["高亮拍卖装备时长(秒)*"] = true
+    L["高亮拍卖装备时长(秒)"] = true
     L["|cffffffff< 拍卖聊天记录框 >|r\n\n1、自动记录全团跟拍卖有关的聊天\n2、当你点击买家或金额时会显示拍卖聊天记录"] = true
-    L["拍卖聊天记录框*"] = true
+    L["拍卖聊天记录框"] = true
     L["|cffffffff< 金额自动加零 >|r\n\n1、输入金额和欠款时自动加两个0，减少记账操作，提高记账效率"] = true
-    L["金额自动加零*"] = true
+    L["金额自动加零"] = true
     L["|cffffffff< 对账单保存时长(小时) >|r|cff808080（右键还原设置）|r\n\n1、对账单保存多久后自动删除"] = true
     L["对账单保存时长(小时)"] = true
     L["|cffffffff< 进本提示清空表格 >|r\n\n1、每次进入副本都会提示清空表格"] = true
-    L["进本提示清空表格*"] = true
+    L["进本提示清空表格"] = true
     L["|cffffffff< 按键交互声音 >|r\n\n1、点击按钮时的声音"] = true
-    L["按键交互声音*"] = true
+    L["按键交互声音"] = true
     L["|cffffffff< 小地图图标 >|r\n\n1、显示小地图图标"] = true
-    L["小地图图标*"] = true
+    L["小地图图标"] = true
     L["人"] = true
     L["总览数据"] = true
-    L["巫妖王之怒*"] = true
-    L["燃烧的远征*"] = true
-    L["经典旧世*"] = true
-    L["货币*"] = true
+    L["巫妖王之怒"] = true
+    L["燃烧的远征"] = true
+    L["经典旧世"] = true
+    L["货币"] = true
     L["|cffffffff< 清空表格时根据副本难度设置分钱人数 >|r\n\n1、10人团本默认分钱人数为10人\n2、25人团本默认分钱人数为25人"] = true
-    L["清空表格时根据副本难度设置分钱人数*"] = true
+    L["清空表格时根据副本难度设置分钱人数"] = true
     L["|cffFFFFFF10人团本分钱人数：|r"] = true
     L["|cffFFFFFF25人团本分钱人数：|r"] = true
     L["快捷命令：/BGO"] = true
     L["|cffffffff< 清空表格时保留支出补贴名称 >|r\n\n1、只保留补贴名称（例如XX补贴），支出玩家和支出金额正常清空\n2、这样就不用每次都重复填写补贴名称\n3、只有补贴名称，但没有补贴金额的，在通报账单时不会被通报"] = true
-    L["清空表格时保留支出补贴名称*"] = true
+    L["清空表格时保留支出补贴名称"] = true
     L["< BiaoGe > 金 团 表 格"] = true
     L["<说明书与更新记录> "] = true
     L["保存至历史表格"] = true
@@ -1897,14 +2039,12 @@ do
     L["|cffffffff< 交易自动记账 >|r\n\n1、需要配合自动记录装备，因为\n    如果表格里没有该交易的装备，\n    则记账失败\n2、如果一次交易两件装备以上，\n    则只会记第一件装备，\n"] = true
     L["|cffffffff< 清空当前表格/心愿 >|r\n\n1、表格界面时一键清空装备、买家、金额，同时还清空关注和欠款\n2、心愿界面时一键清空全部心愿装备\n"] = true
     L["|cffffffff< 金额自动加零 >|r\n\n1、输入金额和欠款时自动加两个0\n    减少记账操作，提高记账效率\n"] = true
-    L["通报金团账单"] = true
     L["RaidLedger:.... 收入 ...."] = true
     L["事件：.-|c.-|Hitem.-|h|r"] = true
     L["(%d+)金"] = true
     L["收入为："] = true
     L["收入为：%d+。"] = true
     L["平均每人收入:"] = true
-    L["感谢使用金团表格"] = true
     L["，装备总收入"] = true
     L["-感谢使用大脚金团辅助工具-"] = true
     L["总收入"] = true
@@ -1941,84 +2081,119 @@ do
     L["交易通知"] = true
 end
 
+-- 专业技能
+do
+    L["锻造"] = true
+    L["工程学"] = true
+    L["炼金术"] = true
+    L["制皮"] = true
+    L["裁缝"] = true
+    L["附魔"] = true
+    L["采矿"] = true
+    L["草药学"] = true
+    L["剥皮"] = true
+    L["铭文"] = true
+    L["珠宝加工"] = true
+    L["考古学"] = true
+    L["钓鱼"] = true
+    L["烹饪"] = true
+    L["急救"] = true
+end
 
 -- BOSS名字
 do
-    L["你\n漏\n记\n的\n装\n备"] = true
-    L["总\n结"] = true
-    L["工\n资"] = true
+    L["你漏记的装备"] = true
+    L["总结"] = true
+
     L["杂\n\n项"] = true
     L["罚\n\n款"] = true
     L["支\n\n出"] = true
     L["总\n览"] = true
+    L["工\n资"] = true
 
     -- Retail
-    do --todo
-        L["噬\n灭\n者"] = true
-        L["血\n缚\n恐\n魔"] = true
-        L["苏\n雷\n吉\n队\n长"] = true
-        L["拉\n夏\n南"] = true
-        L["虫\n巢\n扭\n曲\n者"] = true
-        L["节\n点\n女\n亲\n王"] = true
-        L["流\n丝\n之\n庭"] = true
-        L["安\n苏\n雷\n克\n女\n王"] = true
+    do
+        L["噬灭者"] = true
+        L["血缚恐魔"] = true
+        L["苏雷吉队长"] = true
+        L["拉夏南"] = true
+        L["虫巢扭曲者"] = true
+        L["节点女亲王"] = true
+        L["流丝之庭"] = true
+        L["安苏雷克女王"] = true
     end
 
     -- MOP
     do
-        L["石\n头\n守\n卫"] = true
-        L["受\n诅\n者\n魔\n封"] = true
-        L["缚\n灵\n者\n戈\n拉\n亚"] = true
-        L["先\n王\n之\n魂"] = true
-        L["伊\n拉\n贡"] = true
-        L["皇\n帝\n的\n意\n志"] = true
-        L["皇\n家\n宰\n相"] = true
-        L["刀\n锋\n领\n主"] = true
-        L["加\n拉\n隆"] = true
-        L["风\n领\n主"] = true
-        L["琥\n珀\n塑\n形\n者"] = true
-        L["大\n女\n皇\n夏\n柯\n希\n尔"] = true
-        L["无\n尽\n守\n护\n者"] = true
-        L["烛\n龙"] = true
-        L["雷\n施"] = true
-        L["惧\n之\n煞"] = true
+        L["石头守卫"] = true
+        L["受诅者魔封"] = true
+        L["缚灵者戈拉亚"] = true
+        L["先王之魂"] = true
+        L["伊拉贡"] = true
+        L["皇帝的意志"] = true
+        L["皇家宰相"] = true
+        L["刀锋领主"] = true
+        L["加拉隆"] = true
+        L["风领主"] = true
+        L["琥珀塑形者"] = true
+        L["大女皇夏柯希尔"] = true
+        L["无尽守护者"] = true
+        L["烛龙"] = true
+        L["雷施"] = true
+        L["惧之煞"] = true
         L["怒之煞"] = true
         L["萨莱斯的兵团"] = true
         L["炮舰"] = true
+
+        L["击碎者金罗克"] = true
+        L["赫利东"] = true
+        L["长者议会"] = true
+        L["托多斯"] = true
+        L["墨格瑞拉"] = true
+        L["季鹍"] = true
+        L["遗忘者杜鲁姆"] = true
+        L["普利莫修斯"] = true
+        L["黑暗意志"] = true
+        L["铁穹"] = true
+        L["神女双天"] = true
+        L["雷神"] = true
+        L["莱登"] = true
+        L["暴风领主"] = true
+        L["乌达斯塔"] = true
     end
 
     -- CTM
     do
-        L["哈\n尔\n弗\n斯\n・\n碎\n龙\n者"] = true
-        L["瓦\n里\n昂\n娜\n和\n瑟\n纳\n利\n昂"] = true
-        L["升\n腾\n者\n议\n会"] = true
-        L["古\n加\n尔"] = true
-        L["希\n奈\n丝\n特\n拉"] = true
-        L["全\n能\n金\n刚\n防\n御\n系\n统"] = true
-        L["熔\n喉"] = true
-        L["艾\n卓\n曼\n德\n斯"] = true
-        L["奇\n美\n隆"] = true
-        L["马\n洛\n拉\n克"] = true
-        L["奈\n法\n利\n安\n的\n末\n日"] = true
-        L["风\n之\n议\n会"] = true
-        L["奥\n拉\n基\n尔"] = true
+        L["哈尔弗斯・碎龙者"] = true
+        L["瓦里昂娜和瑟纳利昂"] = true
+        L["升腾者议会"] = true
+        L["古加尔"] = true
+        L["希奈丝特拉"] = true
+        L["全能金刚防御系统"] = true
+        L["熔喉"] = true
+        L["艾卓曼德斯"] = true
+        L["奇美隆"] = true
+        L["马洛拉克"] = true
+        L["奈法利安的末日"] = true
+        L["风之议会"] = true
+        L["奥拉基尔"] = true
 
-        L["贝\n丝\n缇\n拉\n克"] = true
-        L["雷\n奥\n利\n斯\n领\n主"] = true
-        L["奥\n利\n瑟\n拉\n佐\n尔"] = true
-        L["沙\n恩\n诺\n克\n斯"] = true
-        L["贝\n尔\n洛\n克"] = true
-        L["管\n理\n者\n鹿\n盔"] = true
-        L["拉\n格\n纳\n罗\n斯"] = true
+        L["贝丝缇拉克"] = true
+        L["雷奥利斯领主"] = true
+        L["奥利瑟拉佐尔"] = true
+        L["沙恩诺克斯"] = true
+        L["贝尔洛克"] = true
+        L["管理者鹿盔"] = true
+        L["拉格纳罗斯"] = true
 
-        L["莫\n卓\n克"] = true
-        L["督\n军\n佐\n诺\n兹"] = true
-        L["不\n眠\n的\n约\n萨\n希"] = true
-        L["缚\n风\n者\n哈\n格\n拉"] = true
-        L["奥\n卓\n克\n希\n昂"] = true
-        L["战\n争\n大\n师\n黑\n角"] = true
-        L["死\n亡\n之\n翼\n的\n背\n脊"] = true
-        L["疯\n狂\n的\n死\n亡\n之\n翼"] = true
+        L["莫卓克"] = true
+        L["督军佐诺兹"] = true
+        L["不眠的约萨希"] = true
+        L["缚风者哈格拉"] = true
+        L["奥卓克希昂"] = true
+        L["战争大师黑角"] = true
+        L["死亡之翼的背脊"] = true
+        L["疯狂的死亡之翼"] = true
 
         L["克伯鲁斯"] = true
         L["岩皮"] = true
@@ -2066,60 +2241,60 @@ do
 
     -- WLK
     do
-        L["玛\n洛\n加\n尔"] = true
-        L["亡\n语\n者\n女\n士"] = true
-        L["炮\n舰\n战"] = true
-        L["萨\n鲁\n法\n尔"] = true
-        L["烂\n肠"] = true
-        L["腐\n面"] = true
-        L["普\n崔\n塞\n德\n教\n授"] = true
-        L["鲜\n血\n议\n会"] = true
-        L["鲜\n血\n女\n王"] = true
-        L["踏\n梦\n者"] = true
-        L["辛\n达\n苟\n萨"] = true
-        L["巫\n妖\n王"] = true
-        L["海\n里\n昂"] = true
+        L["玛洛加尔"] = true
+        L["亡语者女士"] = true
+        L["炮舰战"] = true
+        L["萨鲁法尔"] = true
+        L["烂肠"] = true
+        L["腐面"] = true
+        L["普崔塞德教授"] = true
+        L["鲜血议会"] = true
+        L["鲜血女王"] = true
+        L["踏梦者"] = true
+        L["辛达苟萨"] = true
+        L["巫妖王"] = true
+        L["海里昂"] = true
 
-        L["诺\n森\n德\n猛\n兽"] = true
-        L["加\n拉\n克\n苏\n斯"] = true
-        L["阵\n营\n冠\n军"] = true
-        L["瓦\n格\n里\n双\n子"] = true
-        L["阿\n努\n巴\n拉\n克"] = true
-        L["嘉\n奖\n宝\n箱"] = true
-        L["奥\n妮\n克\n希\n亚"] = true
+        L["诺森德猛兽"] = true
+        L["加拉克苏斯"] = true
+        L["阵营冠军"] = true
+        L["瓦格里双子"] = true
+        L["阿努巴拉克"] = true
+        L["嘉奖宝箱"] = true
+        L["奥妮克希亚"] = true
 
-        L["烈\n焰\n巨\n兽"] = true
-        L["锋\n鳞"] = true
-        L["掌\n炉\n者"] = true
-        L["拆\n解\n者"] = true
-        L["钢\n铁\n议\n会"] = true
-        L["科\n隆\n加\n恩"] = true
-        L["欧\n尔\n利\n亚"] = true
-        L["霍\n迪\n尔"] = true
-        L["托\n里\n姆"] = true
-        L["弗\n蕾\n亚"] = true
-        L["米\n米\n尔\n隆"] = true
-        L["维\n扎\n克\n斯\n将\n军"] = true
-        L["尤\n格\n萨\n隆"] = true
-        L["奥\n尔\n加\n隆"] = true
+        L["烈焰巨兽"] = true
+        L["锋鳞"] = true
+        L["掌炉者"] = true
+        L["拆解者"] = true
+        L["钢铁议会"] = true
+        L["科隆加恩"] = true
+        L["欧尔利亚"] = true
+        L["霍迪尔"] = true
+        L["托里姆"] = true
+        L["弗蕾亚"] = true
+        L["米米尔隆"] = true
+        L["维扎克斯将军"] = true
+        L["尤格萨隆"] = true
+        L["奥尔加隆"] = true
 
-        L["阿\n努\n布\n雷\n坎"] = true
-        L["黑\n女\n巫\n法\n琳\n娜"] = true
-        L["迈\n克\n斯\n纳"] = true
-        L["瘟\n疫\n使\n者\n诺\n斯"] = true
-        L["肮\n脏\n的\n希\n尔\n盖"] = true
-        L["洛\n欧\n塞\n布"] = true
-        L["教\n官"] = true
-        L["收\n割\n者\n戈\n提\n克"] = true
-        L["天\n启\n四\n骑\n士"] = true
-        L["帕\n奇\n维\n克"] = true
-        L["格\n罗\n布\n鲁\n斯"] = true
-        L["格\n拉\n斯"] = true
-        L["塔\n迪\n乌\n斯"] = true
-        L["萨\n菲\n隆"] = true
-        L["克\n尔\n苏\n加\n德"] = true
-        L["萨\n塔\n里\n奥"] = true
-        L["玛\n里\n苟\n斯"] = true
+        L["阿努布雷坎"] = true
+        L["黑女巫法琳娜"] = true
+        L["迈克斯纳"] = true
+        L["瘟疫使者诺斯"] = true
+        L["肮脏的希尔盖"] = true
+        L["洛欧塞布"] = true
+        L["教官"] = true
+        L["收割者戈提克"] = true
+        L["天启四骑士"] = true
+        L["帕奇维克"] = true
+        L["格罗布鲁斯"] = true
+        L["格拉斯"] = true
+        L["塔迪乌斯"] = true
+        L["萨菲隆"] = true
+        L["克尔苏加德"] = true
+        L["萨塔里奥"] = true
+        L["玛里苟斯"] = true
 
         L["纳多克斯长老"] = true
         L["塔达拉姆王子"] = true
@@ -2178,88 +2353,88 @@ do
 
     -- TBC
     do
-        L["卡\n雷\n苟\n斯"] = true
-        L["布\n鲁\n塔\n卢\n斯"] = true
-        L["菲\n米\n丝"] = true
-        L["艾\n瑞\n达\n双\n子"] = true
-        L["穆\n鲁"] = true
-        L["基\n尔\n加\n丹"] = true
-        L["纳\n因\n图\n斯"] = true
-        L["苏\n普\n雷\n姆\n斯"] = true
-        L["阿\n卡\n玛\n之\n影"] = true
-        L["塔\n隆\n・\n血\n魔"] = true
-        L["古\n尔\n图\n格\n・\n血\n沸"] = true
-        L["灵\n魂\n之\n匣\n"] = true
-        L["莎\n赫\n拉\n丝\n主\n母"] = true
-        L["伊\n利\n达\n雷\n议\n会"] = true
-        L["伊\n利\n丹\n・\n怒\n风"] = true
-        L["雷\n基\n・\n冬\n寒"] = true
-        L["安\n纳\n塞\n隆"] = true
-        L["卡\n兹\n洛\n加"] = true
-        L["阿\n兹\n加\n洛"] = true
-        L["阿\n克\n蒙\n德"] = true
-        L["海\n度\n斯"] = true
-        L["鱼\n斯\n拉"] = true
-        L["盲\n眼\n者"] = true
-        L["深\n水\n领\n主"] = true
-        L["踏\n潮\n者"] = true
-        L["瓦\n丝\n琪"] = true
+        L["卡雷苟斯"] = true
+        L["布鲁塔卢斯"] = true
+        L["菲米丝"] = true
+        L["艾瑞达双子"] = true
+        L["穆鲁"] = true
+        L["基尔加丹"] = true
+        L["纳因图斯"] = true
+        L["苏普雷姆斯"] = true
+        L["阿卡玛之影"] = true
+        L["塔隆・血魔"] = true
+        L["古尔图格・血沸"] = true
+        L["灵魂之匣"] = true
+        L["莎赫拉丝主母"] = true
+        L["伊利达雷议会"] = true
+        L["伊利丹・怒风"] = true
+        L["雷基・冬寒"] = true
+        L["安纳塞隆"] = true
+        L["卡兹洛加"] = true
+        L["阿兹加洛"] = true
+        L["阿克蒙德"] = true
+        L["海度斯"] = true
+        L["鱼斯拉"] = true
+        L["盲眼者"] = true
+        L["深水领主"] = true
+        L["踏潮者"] = true
+        L["瓦丝琪"] = true
         L["奥"] = true
-        L["空\n灵\n机\n甲"] = true
-        L["大\n星\n术\n师"] = true
-        L["凯\n尔\n萨\n斯"] = true
+        L["空灵机甲"] = true
+        L["大星术师"] = true
+        L["凯尔萨斯"] = true
     end
 
     -- 60
     do
-        L["鲁\n西\n弗\n隆"] = true
-        L["玛\n格\n曼\n达"] = true
-        L["基\n赫\n纳\n斯"] = true
-        L["加\n尔"] = true
-        L["沙\n斯\n拉\n尔"] = true
-        L["迦\n顿\n男\n爵"] = true
-        L["古\n雷\n曼\n格"] = true
-        L["萨\n弗\n隆\n先\n驱\n者"] = true
-        L["埃\n克\n索\n图\n斯"] = true
-        L["拉\n格\n纳\n罗\n斯"] = true
-        L["奥\n妮\n克\n希\n亚"] = true
+        L["鲁西弗隆"] = true
+        L["玛格曼达"] = true
+        L["基赫纳斯"] = true
+        L["加尔"] = true
+        L["沙斯拉尔"] = true
+        L["迦顿男爵"] = true
+        L["古雷曼格"] = true
+        L["萨弗隆先驱者"] = true
+        L["埃克索图斯"] = true
+        L["拉格纳罗斯"] = true
+        L["奥妮克希亚"] = true
 
-        L["狂\n野\n的\n拉\n佐\n格\n尔"] = true
-        L["堕\n落\n的\n瓦\n拉\n斯\n塔\n兹"] = true
-        L["勒\n什\n雷\n尔"] = true
-        L["费\n尔\n默"] = true
-        L["埃\n博\n诺\n克"] = true
-        L["弗\n莱\n格\n尔"] = true
-        L["克\n洛\n玛\n古\n斯"] = true
-        L["奈\n法\n利\n安"] = true
+        L["狂野的拉佐格尔"] = true
+        L["堕落的瓦拉斯塔兹"] = true
+        L["勒什雷尔"] = true
+        L["费尔默"] = true
+        L["埃博诺克"] = true
+        L["弗莱格尔"] = true
+        L["克洛玛古斯"] = true
+        L["奈法利安"] = true
 
-        L["耶\n克\n里\n克"] = true
-        L["温\n诺\n希\n斯"] = true
-        L["玛\n尔\n里"] = true
-        L["血\n领\n主\n曼\n多\n基\n尔"] = true
-        L["疯\n狂\n之\n缘"] = true
-        L["加\n兹\n兰\n卡"] = true
-        L["塞\n卡\n尔"] = true
-        L["娅\n尔\n罗"] = true
-        L["妖\n术\n师\n金\n度"] = true
-        L["哈\n卡"] = true
+        L["耶克里克"] = true
+        L["温诺希斯"] = true
+        L["玛尔里"] = true
+        L["血领主曼多基尔"] = true
+        L["疯狂之缘"] = true
+        L["加兹兰卡"] = true
+        L["塞卡尔"] = true
+        L["娅尔罗"] = true
+        L["妖术师金度"] = true
+        L["哈卡"] = true
 
-        L["库\n林\n纳\n克\n斯"] = true
-        L["拉\n贾\n克\n斯\n将\n军"] = true
-        L["莫\n阿\n姆"] = true
-        L["吞\n咽\n者\n布\n鲁"] = true
-        L["狩\n猎\n者\n阿\n亚\n米\n斯"] = true
-        L["无\n疤\n者\n奥\n斯\n里\n安"] = true
+        L["库林纳克斯"] = true
+        L["拉贾克斯将军"] = true
+        L["莫阿姆"] = true
+        L["吞咽者布鲁"] = true
+        L["狩猎者阿亚米斯"] = true
+        L["无疤者奥斯里安"] = true
 
-        L["预\n言\n者\n斯\n克\n拉\n姆"] = true
-        L["安\n其\n拉\n三\n宝"] = true
-        L["沙\n尔\n图\n拉"] = true
-        L["顽\n强\n的\n范\n克\n瑞\n斯"] = true
-        L["维\n希\n度\n斯"] = true
-        L["哈\n霍\n兰\n公\n主"] = true
-        L["双\n子\n皇\n帝"] = true
-        L["奥\n罗"] = true
-        L["克\n苏\n恩"] = true
+        L["预言者斯克拉姆"] = true
+        L["安其拉三宝"] = true
+        L["沙尔图拉"] = true
+        L["顽强的范克瑞斯"] = true
+        L["维希度斯"] = true
+        L["哈霍兰公主"] = true
+        L["双子皇帝"] = true
+        L["奥罗"] = true
+        L["克苏恩"] = true
 
         L["艾索雷葛斯"] = true
         L["卡扎克"] = true
@@ -2271,13 +2446,13 @@ do
 
     -- 60级赛季服
     do
-        L["阿\n奎\n尼\n斯\n男\n爵"] = true
-        L["加\n摩\n拉"] = true
-        L["萨\n利\n维\n丝"] = true
-        L["格\n里\n哈\n斯\n特"] = true
-        L["洛\n古\n斯\n・\n杰\n特"] = true
-        L["梦\n游\n者\n克\n尔\n里\n斯"] = true
-        L["阿\n库\n麦\n尔"] = true
+        L["阿奎尼斯男爵"] = true
+        L["加摩拉"] = true
+        L["萨利维丝"] = true
+        L["格里哈斯特"] = true
+        L["洛古斯・杰特"] = true
+        L["梦游者克尔里斯"] = true
+        L["阿库麦尔"] = true
 
         L["矿工约翰森"] = true
         L["斯尼德"] = true
@@ -2303,13 +2478,13 @@ do
         L["大法师阿鲁高"] = true
         L["布鲁高・铁拳"] = true
 
-        L["格\n鲁\n比\n斯"] = true
-        L["粘\n性\n辐\n射\n尘"] = true
-        L["电\n刑\n器\n6\n0\n0\n0\n型"] = true
-        L["群\n体\n打\n击\n者"] = true
-        L["黑\n铁\n大\n师"] = true
-        L["瑟\n玛\n普\n拉\n格"] = true
-        L["机\n械\n动\n物\n园"] = true
+        L["格鲁比斯"] = true
+        L["粘性辐射尘"] = true
+        L["电刑器6000型"] = true
+        L["群体打击者"] = true
+        L["黑铁大师"] = true
+        L["瑟玛普拉格"] = true
+        L["机械动物园"] = true
 
         L["亡语者贾格巴"] = true
         L["主宰拉姆塔斯"] = true
@@ -2342,37 +2517,37 @@ do
         L["艾隆纳亚"] = true
         L["石头看守者"] = true
 
-        L["阿\n塔\n拉\n利\n恩"] = true
-        L["腐\n溃\n烂\n泥"] = true
-        L["阿\n塔\n莱\n防\n御\n者"] = true
-        L["德\n姆\n塞\n卡\n尔"] = true
-        L["哈\n卡\n的\n化\n身"] = true
-        L["迦\n玛\n兰\n和\n奥\n戈\n姆"] = true
-        L["摩\n弗\n拉\n斯"] = true
-        L["哈\n扎\n斯"] = true
-        L["伊\n兰\n尼\n库\n斯"] = true
+        L["阿塔拉利恩"] = true
+        L["腐溃烂泥"] = true
+        L["阿塔莱防御者"] = true
+        L["德姆塞卡尔"] = true
+        L["哈卡的化身"] = true
+        L["迦玛兰和奥戈姆"] = true
+        L["摩弗拉斯"] = true
+        L["哈扎斯"] = true
+        L["伊兰尼库斯"] = true
 
-        L["烈\n焰\n卫\n士"] = true
-        L["索\n拉\n卡\n・\n火\n冠"] = true
-        L["杰\n德"] = true
-        L["古\n拉\n鲁\n克"] = true
-        L["雷\n德\n・\n黑\n手"] = true
-        L["比\n斯\n巨\n兽"] = true
-        L["达\n基\n萨\n斯\n将\n军"] = true
-        L["瓦\n塔\n拉\n克\n公\n爵"] = true
+        L["烈焰卫士"] = true
+        L["索拉卡・火冠"] = true
+        L["杰德"] = true
+        L["古拉鲁克"] = true
+        L["雷德・黑手"] = true
+        L["比斯巨兽"] = true
+        L["达基萨斯将军"] = true
+        L["瓦塔拉克公爵"] = true
 
-        L["熔\n火\n之\n心"] = true
-        L["艾\n索\n雷\n葛\n斯"] = true
-        L["卡\n扎\n克"] = true
+        L["熔火之心"] = true
+        L["艾索雷葛斯"] = true
+        L["卡扎克"] = true
 
-        L["拉\n佐\n格\n尔"] = true
-        L["瓦\n拉\n斯\n塔\n兹"] = true
-        L["双\n龙"] = true
-        L["桑\n德\n兰\n王\n子"] = true
-        L["莱\n索\n恩"] = true
-        L["艾\n莫\n莉\n丝"] = true
-        L["泰\n拉\n尔"] = true
-        L["伊\n森\n德\n雷"] = true
+        L["拉佐格尔"] = true
+        L["瓦拉斯塔兹"] = true
+        L["双龙"] = true
+        L["桑德兰王子"] = true
+        L["莱索恩"] = true
+        L["艾莫莉丝"] = true
+        L["泰拉尔"] = true
+        L["伊森德雷"] = true
 
         L["加加恩・火锤"] = true
         L["格瑞姆洛克"] = true

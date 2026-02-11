@@ -573,3 +573,18 @@ end
 function RSGeneralDB.GetCinematicPlaying()
 	return isCinematicPlaying
 end
+
+---============================================================================
+-- Chat tooltip position
+---============================================================================
+
+function RSGeneralDB.SetChatTooltipPositionCoordinates(x, y)
+	if (x and y) then
+		private.db.chattipXPos = x
+		private.db.chattipYPos = y
+	end
+end
+
+function RSGeneralDB.GetChatTooltipPositionCoordinates()
+	return private.db.chattipXPos, private.db.chattipYPos
+end

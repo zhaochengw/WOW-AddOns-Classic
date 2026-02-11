@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.30) add-on for World of Warcraft UI
+    Decursive (v 2.7.34) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2025-12-31T02:18:44Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -69,10 +69,9 @@ local function RegisterClassLocals_Once() -- {{{
     D:tcopy(localizedClasses, LocalizedClassList and LocalizedClassList(false) or FillLocalizedClassList({}, false));
 
 
-    -- D.LC = setmetatable((FillLocalizedClassList or LocalizedClassList)(false), {__index = function(t,k) return k end});
     D.LC = setmetatable(localizedClasses, {__index = function(t,k) return k end});
 
-    RegisterLocals_Once = nil;
+    RegisterClassLocals_Once = nil;
 end -- }}}
 
 T._CatchAllErrors = "RegisterClassLocals_Once";      RegisterClassLocals_Once();
@@ -1963,7 +1962,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.30", "John Wellesz", ("2025-10-22T11:18:02Z"):sub(1,10),
+                                    "2.7.34", "John Wellesz", ("2026-01-19T00:28:40Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -3772,6 +3771,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.30";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.34";
 
 -- Closer

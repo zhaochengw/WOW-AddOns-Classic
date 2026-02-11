@@ -1,10 +1,15 @@
 local AddonName, AddonTable = ...
 local L = AddonTable.Localize
-local AddonTitle = select(2, GetAddOnInfo(AddonName))
+local AddonTitle = select(2, C_AddOns.GetAddOnInfo(AddonName))
 local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
 
-local TextOnXPBar = MainMenuExpBar:CreateFontString("ExperienceLeft", "OVERLAY", "GameTooltipText")
-TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 12, "THINOUTLINE")
+local TextOnXPBar = MainStatusTrackingBarContainer:CreateFontString("ExperienceLeft", "OVERLAY", "GameTooltipText")
+TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 14, "THINOUTLINE")
+TextOnXPBar:SetPoint("CENTER", UIParent, 0, 0)
+TextOnXPBar:SetTextColor(1,1,1,1)
+
+local TextOnRepBar = SecondaryStatusTrackingBarContainer:CreateFontString("XPTReputation", "OVERLAY", "GameTooltipText")
+TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 14, "THINOUTLINE")
 TextOnXPBar:SetPoint("CENTER", 0, 0)
 TextOnXPBar:SetTextColor(1,1,1,1)
 
@@ -30,44 +35,40 @@ XPBarTextFrame:RegisterEvent("CINEMATIC_STOP")
 function XPBTeventHandler(self, event, arg1)
 
 if event == "ADDON_LOADED" and arg1 == "XPBarText" then
-	DEFAULT_CHAT_FRAME:AddMessage("|cFFFF8000[XP Bar Text]|r v" .. GetAddOnMetadata("XPBarText","Version") .. " - " .. L["use /xpt to access the configuration window."])
+	DEFAULT_CHAT_FRAME:AddMessage("|cFFFF8000[XP Bar Text]|r v" .. C_AddOns.GetAddOnMetadata("XPBarText","Version") .. " - " .. L["use /xpt to access the configuration window."])
 
 	if XPTConfig == nil then XPTConfig = {
 		["ShowMoreInfo"] = 'YES',
 		["ShowPetInfo"] = 'YES',
 		["AlwaysShowInfo"] = 'YES',
-		["FormatNumbers"] = 'NO',
-		["ShowXPTicker"] = 'NO'
+		["FormatNumbers"] = 'NO'
 		} 
 	end
 	if XPTConfig.ShowPetInfo == nil then XPTConfig.ShowPetInfo = 'YES' end
 	if XPTConfig.AlwaysShowInfo == nil then XPTConfig.AlwaysShowInfo = 'YES' end
 	if XPTConfig.FormatNumbers == nil then XPTConfig.FormatNumbers = 'NO' end
-	if XPTConfig.ShowXPTicker == nil then XPTConfig.ShowXPTicker = 'NO' end
 	
 	UpdateXPBarText()
-	UpdateXPTicker()
 elseif event == "PLAYER_XP_UPDATE" or event == "PLAYER_LEVEL_UP"  or event == "UPDATE_EXHAUSTION" or event == "UNIT_PET" and arg1 == "player" or event == "UNIT_PET_EXPERIENCE" or event == "ZONE_CHANGED" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_CONTROL_LOST" or event == "CINEMATIC_START" or event == "CINEMATIC_STOP" or event == "PLAYER_ENTERING_WORLD" then
 	UpdateXPBarText()
-	UpdateXPTicker()
 end
 
 end
 
 XPBarTextFrame:SetScript("OnEvent", XPBTeventHandler)
 
-MainMenuExpBar:HookScript("OnEnter", function(self)
-	if XPTConfig.AlwaysShowInfo == "YES" then
-		MainMenuBarExpText:Hide()
-		GameTooltip:Hide()
-	elseif XPTConfig.AlwaysShowInfo == "NO" then
-		MainMenuBarExpText:Hide()
-		GameTooltip:Hide()
-		TextOnXPBar:SetTextColor(1,1,1,1)
-	end
-end)
+--MainStatusTrackingBarContainer:HookScript("OnEnter", function(self)
+	--if XPTConfig.AlwaysShowInfo == "YES" then
+		--MainStatusTrackingBarContainer:Hide()
+		--GameTooltip:Hide()
+	--elseif XPTConfig.AlwaysShowInfo == "NO" then
+		--MainStatusTrackingBarContainer:Hide()
+		--GameTooltip:Hide()
+		--TextOnXPBar:SetTextColor(1,1,1,1)
+	--end
+--end)
 
-MainMenuExpBar:HookScript("OnLeave", function(self)
+MainStatusTrackingBarContainer:HookScript("OnLeave", function(self)
 	GameTooltip:Show()
 	
 	if XPTConfig.AlwaysShowInfo == "YES" then
@@ -104,13 +105,13 @@ if playerLevel < 60 then
 	if classIndex ~= 3 then
 		if restid == 2 then
 			if XPTConfig.ShowMoreInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. restname .. ")")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. restname .. ")")
 			elseif XPTConfig.ShowMoreInfo == "NO" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 			end
 		elseif restid == 1 then		
 			if XPTConfig.ShowMoreInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. retVal .. " " .. restname .. " XP)")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. retVal .. " " .. restname .. " XP)")
 			elseif XPTConfig.ShowMoreInfo == "NO" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 			end			
@@ -118,9 +119,9 @@ if playerLevel < 60 then
 	elseif classIndex == 3 and UnitExists("pet") == true then
 		if restid == 2 then
 			if XPTConfig.ShowMoreInfo == "YES" and XPTConfig.ShowPetInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. restname .. ") | " .. petName .. " (" .. LEVEL .. " " .. petLevel .. ") - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP (" .. petpercentage .. "%)")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. restname .. ") | " .. petName .. " (" .. LEVEL .. " " .. petLevel .. ") - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP (" .. petpercentage .. "%)")
 			elseif XPTConfig.ShowMoreInfo == "YES" and XPTConfig.ShowPetInfo == "NO" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. restname .. ")")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. restname .. ")")
 			elseif XPTConfig.ShowMoreInfo == "NO"  and XPTConfig.ShowPetInfo == "YES" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. " | " .. petName .. " - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP")
 			elseif XPTConfig.ShowMoreInfo == "NO"  and XPTConfig.ShowPetInfo == "NO" then
@@ -128,9 +129,9 @@ if playerLevel < 60 then
 			end
 		elseif restid == 1 then		
 			if XPTConfig.ShowMoreInfo == "YES" and XPTConfig.ShowPetInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. retVal .. " " .. restname .. " XP) | " .. petName .. " (" .. LEVEL .. " " .. petLevel .. ") - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP (" .. petpercentage .. "%)")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. retVal .. " " .. restname .. " XP) | " .. petName .. " (" .. LEVEL .. " " .. petLevel .. ") - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP (" .. petpercentage .. "%)")
 			elseif XPTConfig.ShowMoreInfo == "YES" and XPTConfig.ShowPetInfo == "NO" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. retVal .. " " .. restname .. " XP)")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. retVal .. " " .. restname .. " XP)")
 			elseif XPTConfig.ShowMoreInfo == "NO"  and XPTConfig.ShowPetInfo == "YES" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. " | " .. petName .. " - " .. currentplayerPetXP .. "/" .. nextlevelPetXP .. "XP")
 			elseif XPTConfig.ShowMoreInfo == "NO"  and XPTConfig.ShowPetInfo == "NO" then
@@ -140,13 +141,13 @@ if playerLevel < 60 then
 	elseif classIndex == 3 and UnitExists("pet") == false then
 		if restid == 2 then
 			if XPTConfig.ShowMoreInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. restname .. ")")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. restname .. ")")
 			elseif XPTConfig.ShowMoreInfo == "NO" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 			end
 		elseif restid == 1 then	
 			if XPTConfig.ShowMoreInfo == "YES" then
-				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. " " .. L["XP to next level"] .. " | (" .. retVal .. " " .. restname .. " XP)")
+				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP (" .. percentage .. "%) | " .. remainingXP .. "XP to next level | (" .. retVal .. " " .. restname .. " XP)")
 			elseif XPTConfig.ShowMoreInfo == "NO" then
 				TextOnXPBar:SetText(currentXP .. "/" .. levelupXP .. "XP")
 			end			
@@ -239,40 +240,32 @@ end
 
 -- REP BAR TEXT
 
-ReputationWatchBar:HookScript("OnShow", function(self)
+SecondaryStatusTrackingBarContainer:HookScript("OnShow", function(self)
 
 if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
+	TextOnRepBar:Show()
 elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
+	TextOnRepBar:Hide()
 end
 
 end)
 
-ReputationWatchBar:HookScript("OnEnter", function(self)
+SecondaryStatusTrackingBarContainer:HookScript("OnEnter", function(self)
 
 if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
+	TextOnRepBar:Show()
 elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
+	TextOnRepBar:Hide()
 end
 
 end)
 
-ReputationWatchBar:HookScript("OnLeave", function(self)
+SecondaryStatusTrackingBarContainer:HookScript("OnLeave", function(self)
 
 if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
+	TextOnRepBar:Show()
 elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
+	TextOnRepBar:Hide()
 end
 
 end)
-
-function UpdateXPTicker()
-	if XPTConfig.ShowXPTicker == "YES" then
-		ExhaustionTick:Show()
-	elseif XPTConfig.ShowXPTicker == "NO" then
-		ExhaustionTick:Hide()
-	end
-end

@@ -39,7 +39,7 @@ function TTActionBars:new(numbuttons, parent, secondanchor, directionanchor, bar
         b.name = b:CreateFontString()
         b.name:SetPoint("TOP", b, 0, -2)
         b.name:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
-                       
+
         b.icons = {b.icon, b.icon2}
         b.cooldown = _G["TT_ActionButton"..TTActionBars.numbars..i.."Cooldown"]
 		b.cooldown:SetSwipeColor(0, 0, 0)
@@ -49,6 +49,15 @@ function TTActionBars:new(numbuttons, parent, secondanchor, directionanchor, bar
 		b:ClearAllPoints()
 		b:SetWidth(36)
 		b:SetHeight(36)
+
+        if b.UpdateArrowShown then b:UpdateArrowShown() end
+        local regions = {b:GetRegions()}
+        for i, region in ipairs(regions) do
+            if not region:GetName() and region:GetObjectType() == "Texture" then
+                region:SetTexture(nil)
+                region:Hide()
+            end
+        end
 
         --b:SetNormalTexture(nil)
         _G[b:GetName().."NormalTexture"]:SetTexture(nil)
@@ -95,7 +104,7 @@ function TTActionBars:new(numbuttons, parent, secondanchor, directionanchor, bar
         b:SetAttribute("_onleave", [[ if not self:GetParent():IsUnderMouse(true) then self:GetParent():ChildUpdate("show", false) end]])
         b.OnShow = function(self) end -- override if button should do additional stuff on show
         
-		b:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp")
+		b:RegisterForClicks("AnyDown")
 		b:SetAttribute("*type1", "spell")
         b:SetAttribute("*type2", nil)
 

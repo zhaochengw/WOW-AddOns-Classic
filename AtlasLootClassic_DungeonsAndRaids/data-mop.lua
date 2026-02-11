@@ -486,7 +486,7 @@ data["StormstoutBrewery"] = {
                 { 3, 81134 },	-- Barreldodger Boots
                 { 4, 81133 },	-- Empty Fruit Barrel
                 { 5, 81061 },	-- Ook's Hozen Slicer
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6089" },
             },
@@ -512,7 +512,7 @@ data["StormstoutBrewery"] = {
                 { 3, 81077 },	-- Hopping Mad Leggings
                 { 4, 81065 },	-- Bubble-Breaker Bracers
                 { 5, 81076 },	-- Bottle of Potent Potables
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -543,26 +543,47 @@ data["StormstoutBrewery"] = {
                 { 18, "ac6456" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87545 },	-- Inelava, Spirit of Inebriation
-                { 2, 81059 },	-- Fermenting Belt
-                { 3, 81068 },	-- Fizzy Spaulders
-                { 4, 81081 },	-- Uncasked Chestguard
-                { 5, 81078 },	-- Sudsy Legplates
-                { 6, 81141 },	-- Alemental Seal
-                { 7, 81139 },	-- Lime-Rimmed Signet
-                { 8, 81138 },	-- Carbonic Carbuncle
-                { 9, 81062 },	-- Gao's Keg Tapper
-                { 10, 81140 },	-- Wort Sitrring Rod
-                { 11, 81066 },	-- Yan-Zhu's Pressure Valve
-                { 16, 86741 }, -- Dagger of the Seven Stars
-                { 17, 86776}, -- Amulet of the Hidden Kings
-                { 18, 86767 }, -- Circuit of the Frail Soul
-                { 19, 86865 }, -- Kri'tak, Imperial Scepter of the Swarm
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87209 }, -- Sigil of Wisdom
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60893" },
+                { 1, 95870}, -- Abandoned Spaulders of Arrowflight
+                { 2, 95871}, -- Abandoned Spaulders of Renewal
+                { 3, 95976}, -- Abandoned Zandalari Bucklebreaker
+                { 4, 95975}, -- Abandoned Zandalari Goreplate
+                { 5, 95648}, -- Bindings of Multiplicative Strikes
+                { 6, 95753}, -- Black Blood Legplates
+                { 7, 95728}, -- Durumu's Baleful Gaze
+                { 8, 95726}, -- Fabled Feather of Ji-Kun
+                { 9, 95869}, -- Forgotten Mantle of the Sun
+                { 10, 95672}, -- Gaze of Gara'jal
+                { 11, 95701}, -- Grips of Cinderflesh
+                { 12, 95755}, -- Hydra-Scale Bloodcloak
+                { 13, 95780}, -- Iron Qon's Boot Knife
+                { 14, 95647}, -- Jalak's Maelstrom Staff
+                { 15, 95727}, -- Ji-Kun's Rising Winds
+                { 16, 95821}, -- Legplates of the Lightning Throne
+                { 17, 95808}, -- Legplates of Whipping Ionization
+                { 18, 95673}, -- Loa-Ridden Bracers
+                { 19, 95754}, -- Metabolically Boosted Shoulderplates
+                { 20, 95977}, -- Necklace of the Terra-Cotta Vanquisher
+                { 21, 95674}, -- Overloaded Bladebreaker Cuirass
+                { 22, 95700}, -- Poisonblood Bladeshoulders
+                { 23, 95699}, -- Quadra-Head Brooch
+                { 24, 95782}, -- Quet'zal's Crackling Cord
+                { 25, 95646}, -- Talisman of Living Poison
+                { 26, 95809}, -- Uroe, Harbinger of Terror
+                { 27, 95781}, -- Voice of the Quilen
+                { 101, 87545 },	-- Inelava, Spirit of Inebriation
+                { 102, 81059 },	-- Fermenting Belt
+                { 103, 81068 },	-- Fizzy Spaulders
+                { 104, 81081 },	-- Uncasked Chestguard
+                { 105, 81078 },	-- Sudsy Legplates
+                { 106, 81141 },	-- Alemental Seal
+                { 107, 81139 },	-- Lime-Rimmed Signet
+                { 108, 81138 },	-- Carbonic Carbuncle
+                { 109, 81062 },	-- Gao's Keg Tapper
+                { 110, 81140 },	-- Wort Sitrring Rod
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60893" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -600,7 +621,7 @@ data["TempleOfTheJadeSerpent"] = {
                 { 3, 81075 },	-- Waterburst Helm
                 { 4, 81083 },	-- Riverbed Chestguard
                 { 5, 81124 },	-- Crystallized Droplet
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6460" },
             },
@@ -626,7 +647,7 @@ data["TempleOfTheJadeSerpent"] = {
                 { 3, 81060 },	-- Sunheart Waistband
                 { 4, 81073 },	-- Stonestep Boots
                 { 5, 81125 },	-- Windswept Pages
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -651,7 +672,7 @@ data["TempleOfTheJadeSerpent"] = {
                 { 3, 81070 },	-- Serpentstrike Shoulderpads
                 { 4, 81128 },	-- Signet of Dancing Jade
                 { 5, 81067 },	-- Firebelcher Hand Cannon
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -685,29 +706,51 @@ data["TempleOfTheJadeSerpent"] = {
                 { 21, "ac6671" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87544 },	-- Je'lyu, Spirit of the Serpent
-                { 2, 81129 },	-- Cloak of Failing Will
-                { 3, 81132 },	-- Paralyzing Gloves
-                { 4, 81071 },	-- Doubtridden Shoulderguards
-                { 5, 81082 },	-- Chestguard of Despair
-                { 6, 81069 },	-- Neverdare Shoulders
-                { 7, 81074 },	-- Hopecrusher Gauntlets
-                { 8, 81130 },	-- Binding of Broken Dreams
-                { 9, 81131 },	-- Mindbreaker Pendant
-                { 10, 81063 },	-- Dubious Handaxe
-                { 11, 81079 },	-- Staff of Trembling Will
-                { 16, 86762 }, -- Gara'kal Fist of the Spiritbinder
-                { 17, 86791 }, -- Bottle of Infinite Stars
-                { 18, 86759 }, -- Soulgrasp Choker
-                { 19, 86814 }, -- Fragment of Fear Made Flesh
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87209 }, -- Sigil of Wisdom
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60892" },
-                { 27, "ac6926" },
-                { 28, "ac6475" },
-                { 29, "ac6671" },
+                { 1, 95731 }, -- Aberrant Chestguard of Torment
+                { 2, 95758 }, -- Acid-Spine Bonemace
+                { 3, 95756 }, -- Band of the Scaled Tyrant
+                { 4, 95651 }, -- Bloodlord's Bloodsoaked Legplates
+                { 5, 95979 }, -- Columnbreaker Stompers
+                { 6, 95729 }, -- Crimson Bloom Legguards
+                { 7, 95784 }, -- Dam'ren's Frozen Footguards
+                { 8, 95677 }, -- Fortitude of the Zandalari
+                { 9, 95650 }, -- Frozen Warlord's Bracers
+                { 10, 95812 }, -- Legwraps of Cardinality
+                { 11, 95730 }, -- Links of the Disintegrator
+                { 12, 95978 }, -- Locksmasher Greaves
+                { 13, 95980 }, -- Necklace of the Terra-Cotta Protector
+                { 14, 95702 }, -- Plated Toothbreaker Girdle
+                { 15, 95757 }, -- Primordius' Talisman of Rage
+                { 16, 95872 }, -- Reconstructed Holy Shoulderplates
+                { 17, 95873 }, -- Reconstructed Furious Shoulderplates
+                { 18, 95874 }, -- Reconstructed Bloody Shoulderplates
+                { 19, 95785 }, -- Ro'shak's Remembrance
+                { 20, 95703 }, -- Rot-Proof Greatplate
+                { 21, 95783 }, -- Saddle-Scarred Leggings
+                { 22, 95811 }, -- Soul Barrier
+                { 23, 95704 }, -- Spinescale Seal
+                { 24, 95649 }, -- Sul'lithuz Sandmail
+                { 25, 95676 }, -- Talisman of Angry Spirits
+                { 26, 95810 }, -- Ultimate Protection of the Emperor
+                { 27, 95675 }, -- Zerat, Malakk's Soulburning Greatsword
+                { 101, 87544 },	-- Je'lyu, Spirit of the Serpent
+                { 102, 81129 },	-- Cloak of Failing Will
+                { 103, 81132 },	-- Paralyzing Gloves
+                { 104, 81071 },	-- Doubtridden Shoulderguards
+                { 105, 81082 },	-- Chestguard of Despair
+                { 106, 81069 },	-- Neverdare Shoulders
+                { 107, 81074 },	-- Hopecrusher Gauntlets
+                { 108, 81130 },	-- Binding of Broken Dreams
+                { 109, 81131 },	-- Mindbreaker Pendant
+                { 110, 81063 },	-- Dubious Handaxe
+                { 111, 81079 },	-- Staff of Trembling Will
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60892" },
+                { 122, "ac6926" },
+                { 123, "ac6475" },
+                { 124, "ac6671" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -744,7 +787,7 @@ data["ShadoPanMonastery"] = {
                 { 3, 81092 },	-- Leggings of the Charging Soul
                 { 4, 81086 },	-- Sparkbreath Girdle
                 { 5, 81180 },	-- Cloudstrike Pendant
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -770,7 +813,7 @@ data["ShadoPanMonastery"] = {
                 { 3, 81182, 20 },	-- Eye of the Tornado
                 { 4, 81181, 20 },	-- Heart of Fire
                 { 5, 81108, 20 },	-- Snowdrift's Bladed Staff
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6477" },
             },
@@ -798,7 +841,7 @@ data["ShadoPanMonastery"] = {
                 { 3, 81113 },	-- Spike-Soled Stompers
                 { 4, 81184 },	-- Necklace of Disorientation
                 { 5, 81089 },	-- Crescent of Ichor
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6926" },
                 { 20, "ac6472" },
@@ -832,27 +875,49 @@ data["ShadoPanMonastery"] = {
                 { 19, "ac6471" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87543 },	-- Ka'eng, Breath of the Shadow
-                { 2, 81188 },	-- Robes of Fevered Dreams
-                { 3, 81093 },	-- Darkbinder Leggings
-                { 4, 81099 },	-- Shadowspine Shoulderguards
-                { 5, 81114 },	-- Blastwalker Footguards
-                { 6, 81187 },	-- Hateshatter Chestplate
-                { 7, 81103 },	-- Mindbinder Plate Gloves
-                { 8, 81189 },	-- Ring of Malice
-                { 9, 81186 },	-- Seal of Hateful Meditation
-                { 10, 81107 },	-- Warmace of Taran Zhu
-                { 11, 81096 },	-- Shield of Blind Hate
-                { 16, 86777 }, -- Screaming Tiger, Qiang's Unbreakable Polearm
-                { 17, 86805 }, -- Qin-Xi's Polarizing Seal
-                { 18, 86739 }, -- Beads of the Mogu'shi
-                { 19, 86813 }, -- Vizier's Ruby Signet
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87208 }, -- Sigil of Power
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60895" },
-                { 27, "ac6471" },
+                { 1, 95971 },  -- Abandoned Zandalari Moonstrap
+                { 2, 95970 },  -- Abandoned Zandalari Silentbelt
+                { 3, 95776 },  -- Anima-Ringed Fingers
+                { 4, 95774 },  -- Athame of the Sanguine Ritual
+                { 5, 95639 },  -- Drape of Booming Nights
+                { 6, 95721 },  -- Featherflight Belt
+                { 7, 95720 },  -- Giorgio's Caduceus of Pure Moods
+                { 8, 95749 },  -- Gloves of Cushioned Air
+                { 9, 95722 },  -- Grasp of the Ruthless Mother
+                { 10, 95642 },  -- Infinitely Conducting Bracers
+                { 11, 95666 },  -- Kura-Kura, Kazra'jin's Skullcleaver
+                { 12, 95747 },  -- Legplates of Re-Emergence
+                { 13, 95863 },  -- Lost Shoulders of Fire
+                { 14, 95865 },  -- Lost Shoulders of Fluidity
+                { 15, 95864 },  -- Lost Shoulders of Healing
+                { 16, 95667 },  -- Mar'li's Bloodstained Sandals
+                { 17, 95800 },  -- Moonjade Necklace
+                { 18, 95969 },  -- Necklace of the Terra-Cotta Mender
+                { 19, 95694 },  -- Robes of Concussive Shocks
+                { 20, 95802 },  -- Rune of Re-Origination
+                { 21, 95803 },  -- Shan-Dun, Breaker of Hope
+                { 22, 95640 },  -- Soulblade of the Breaking Storm
+                { 23, 95695 },  -- Spaulders of Quaking Fear
+                { 24, 95748 },  -- Talisman of Bloodlust
+                { 25, 95693 },  -- Vampire Bat-Hide Bracers
+                { 26, 95775 },  -- Worldbinder Leggings
+                { 27, 95668 },  -- Zandalari Robes of the Final Rite
+                { 101, 87543 },	-- Ka'eng, Breath of the Shadow
+                { 102, 81188 },	-- Robes of Fevered Dreams
+                { 103, 81093 },	-- Darkbinder Leggings
+                { 104, 81099 },	-- Shadowspine Shoulderguards
+                { 105, 81114 },	-- Blastwalker Footguards
+                { 106, 81187 },	-- Hateshatter Chestplate
+                { 107, 81103 },	-- Mindbinder Plate Gloves
+                { 108, 81189 },	-- Ring of Malice
+                { 109, 81186 },	-- Seal of Hateful Meditation
+                { 110, 81107 },	-- Warmace of Taran Zhu
+                { 111, 81096 },	-- Shield of Blind Hate
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60895" },
+                { 122, "ac6471" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -891,7 +956,7 @@ data["MoguShanPalace"] = {
                 { 3, 81237 },	-- Crest of the Clan Lords
                 { 4, 81241 },	-- Meteoric Greathelm
                 { 5, 81239 },	-- Whirling Dervish Choker
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -919,7 +984,7 @@ data["MoguShanPalace"] = {
                 { 3, 81242 },	-- Glintrok Sollerets
                 { 4, 81243 },	-- Iron Protector Talisman
                 { 5, 81245 },	-- Claws of Gekkan
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6478" },
             },
@@ -956,27 +1021,49 @@ data["MoguShanPalace"] = {
                 { 19, "ac6736" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87542 },	-- Mogu'Dar, Blade of the Thousand Slaves
-                { 2, 81257 },	-- Regal Silk Shoulderpads
-                { 3, 81255 },	-- Soulbinder Treads
-                { 4, 81249 },	-- Boots of Plummeting Death
-                { 5, 81252 },	-- Groundshaker Bracers
-                { 6, 81256 },	-- Mind's Eye Breastplate
-                { 7, 81248 },	-- Axebreaker Gauntlets
-                { 8, 81254 },	-- Mindcapture Pendant
-                { 9, 81251 },	-- Blade Trap Signet
-                { 10, 81253 },	-- Firescribe Dagger
-                { 11, 81247 },	-- Ghostheart
-                { 16, 86789 },	-- Elegion, the Fanged Crescent
-                { 17, 86790 },	-- Vial of Dragon's Blood
-                { 18, 86748 },	-- Cape of Three Lanterns
-                { 19, 89952 }, -- Pheromone-Coated Choker
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87208 }, -- Sigil of Power
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60894" },
-                { 27, "ac6736" },
+                { 1, 95735 }, -- Artery Rippers
+                { 2, 95681 }, -- Beady-Eye Bracers
+                { 3, 95762 }, -- Bracers of Fragile Bone
+                { 4, 95629 }, -- Cloudbreaker Greatbelt
+                { 5, 95657 }, -- Dinomancer's Spiritbinding Spire
+                { 6, 95737 }, -- Durumu's Severed Tentacle
+                { 7, 95710 }, -- Fetish of the Hydra
+                { 8, 95655 }, -- Flamecaster's Burning Crown
+                { 9, 95708 }, -- Frostborn Wristwraps
+                { 10, 95764 }, -- Leggings of the Malformed Sapling
+                { 11, 95818 }, -- Lei Shen's Orb of Command
+                { 12, 95817 }, -- Lightning-Imbued Chalice
+                { 13, 95709 }, -- Megaera's Shining Eye
+                { 14, 95958 }, -- Necklace of the Terra-Cotta Archer
+                { 15, 95790 }, -- Qon's Flaming Scimitar
+                { 16, 95682 }, -- Quakestompers
+                { 17, 95789 }, -- Rein-Binder's Fists
+                { 18, 95736 }, -- Reinforced Mirror-Sheen Cloak
+                { 19, 95683 }, -- Shoulderguards of Centripetal Destruction
+                { 20, 95816 }, -- Soul Prism of Lei Shen
+                { 21, 95627 }, -- Spearman's Jingling Leggings
+                { 22, 95959 }, -- Spiderweb Tabi
+                { 23, 95628 }, -- Static-Shot Shoulderguards
+                { 24, 95763 }, -- Stolen Relic of Zuldazar
+                { 25, 95656 }, -- Vaccinator's Armwraps
+                { 26, 95878 }, -- Visage of the Doomed
+                { 27, 95791 }, -- Wu-Lai, Bladed Fan of the Empyreans
+                { 101, 87542 },	-- Mogu'Dar, Blade of the Thousand Slaves
+                { 102, 81257 },	-- Regal Silk Shoulderpads
+                { 103, 81255 },	-- Soulbinder Treads
+                { 104, 81249 },	-- Boots of Plummeting Death
+                { 105, 81252 },	-- Groundshaker Bracers
+                { 106, 81256 },	-- Mind's Eye Breastplate
+                { 107, 81248 },	-- Axebreaker Gauntlets
+                { 108, 81254 },	-- Mindcapture Pendant
+                { 109, 81251 },	-- Blade Trap Signet
+                { 110, 81253 },	-- Firescribe Dagger
+                { 111, 81247 },	-- Ghostheart
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60894" },
+                { 122, "ac6736" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -1014,7 +1101,7 @@ data["GateoftheSettingSun"] = {
                 { 3, 81190 },	-- Grenadier's Belt
                 { 4, 81095 },	-- Pendant of Precise Timing
                 { 5, 81191 },	-- Pulled Grenade Pin
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6479" }
             },
@@ -1040,7 +1127,7 @@ data["GateoftheSettingSun"] = {
                 { 3, 81085 },	-- Impaler's Girdle
                 { 4, 81098 },	-- Acid-Scarred Spaulders
                 { 5, 81192 },	-- Vision of the Predator
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -1065,7 +1152,7 @@ data["GateoftheSettingSun"] = {
                 { 3, 81230 },	-- Ri'mok's Shattered Scale
                 { 4, 81232 },	-- Viscous Ring
                 { 5, 81088 },	-- Mantid Trochanter
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -1096,27 +1183,49 @@ data["GateoftheSettingSun"] = {
                 { 19, "ac6945" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87546 },	-- Klatith, Fangs of the Swarm
-                { 2, 81234 },	-- Drape of the Screeching Swarm
-                { 3, 81235 },	-- Shoulders of Engulfing Winds
-                { 4, 81236 },	-- Frenzyswarm Bracers
-                { 5, 81091 },	-- Wall-Breaker Legguards
-                { 6, 81112 },	-- Treads of Fixation
-                { 7, 81109 },	-- Swarmbringer Chestguard
-                { 8, 81100 },	-- Hive Protector's Gauntlets
-                { 9, 81094 },	-- Carapace Breaker
-                { 10, 81233 },	-- Impervious Carapace
-                { 11, 81097 },	-- Shield of the Protectorate
-                { 16, 86799 },	-- Starshatter
-                { 17, 86764 },	-- Eye of the Ancient Spirit
-                { 18, 89971 },	-- Mindshard Drape
-                { 19, 86851 }, -- Painful Thorned Ring
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87208 }, -- Sigil of Power
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60896" },
-                { 27, "ac6945" },
+                { 1, 95877 }, -- Bo-Ris, Horror in the Night
+                { 2, 95732 }, -- Caustic Spike Bracers
+                { 3, 95876 }, -- Do-tharak, the Swordbreaker
+                { 4, 95707 }, -- Gleaming-Eye Shoulderpads
+                { 5, 95813 }, -- Gloves of the Maimed Vizier
+                { 6, 95875 }, -- Greatsword of Frozen Hells
+                { 7, 95680 }, -- Grips of Vampiric Cruelty
+                { 8, 95760 }, -- Helix-Breaker Gloves
+                { 9, 95653 }, -- Horn-Rimmed Doomcloak
+                { 10, 95705 }, -- Hydraskull Choker
+                { 11, 95761 }, -- Leggings of Ebon Veins
+                { 12, 95733 }, -- Legplates of the Dark Parasite
+                { 13, 95626 }, -- Lightning-Eye Hood
+                { 14, 95786 }, -- Orb of Arcing Lightning
+                { 15, 95652 }, -- Puncture-Proof Greathelm
+                { 16, 95625 }, -- Renataki's Soul Charm
+                { 17, 95788 }, -- Ro'shak's Molten Chain
+                { 18, 95759 }, -- Robes of Mutagenic Blood
+                { 19, 95679 }, -- Rockfall Ribwraps
+                { 20, 95706 }, -- Sandals of Arcane Fury
+                { 21, 95678 }, -- Shattered Tortoiseshell Longbow
+                { 22, 95624 }, -- Sign of the Bloodied God
+                { 23, 95654 }, -- Spark of Zandalar
+                { 24, 95787 }, -- Spurs of the Storm Cavalry
+                { 25, 95815 }, -- Torall, Rod of the Shattered Throne
+                { 26, 95734 }, -- Treads of the Blind Eye
+                { 27, 95814 }, -- Unerring Vision of Lei Shen
+                { 101, 87546 },	-- Klatith, Fangs of the Swarm
+                { 102, 81234 },	-- Drape of the Screeching Swarm
+                { 103, 81235 },	-- Shoulders of Engulfing Winds
+                { 104, 81236 },	-- Frenzyswarm Bracers
+                { 105, 81091 },	-- Wall-Breaker Legguards
+                { 106, 81112 },	-- Treads of Fixation
+                { 107, 81109 },	-- Swarmbringer Chestguard
+                { 108, 81100 },	-- Hive Protector's Gauntlets
+                { 109, 81094 },	-- Carapace Breaker
+                { 110, 81233 },	-- Impervious Carapace
+                { 111, 81097 },	-- Shield of the Protectorate
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60896" },
+                { 122, "ac6945" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -1155,7 +1264,7 @@ data["SiegeofNiuzaoTemple"] = {
                 { 3, 81270 },	-- Sap-Encrusted Legplates
                 { 4, 81271 },	-- Engraved Amber Pendant
                 { 5, 81263 },	-- Flashfrozen Resin Globule
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -1183,7 +1292,7 @@ data["SiegeofNiuzaoTemple"] = {
                 { 3, 81277 },	-- Archer's Precision Grips
                 { 4, 81274 },	-- Sightfinder Helm
                 { 5, 81273 },	-- Siege-Captain's Scimitar
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6688" },
             },
@@ -1212,7 +1321,7 @@ data["SiegeofNiuzaoTemple"] = {
                 { 3, 81280 },	-- Siegeworn Bracers
                 { 4, 81264 },	-- Vial of Ichorous Blood
                 { 5, 81279 },	-- Tempestuous Longbow
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6485" },
             },
@@ -1248,27 +1357,49 @@ data["SiegeofNiuzaoTemple"] = {
                 { 19, "ac6822" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87547 },
-                { 2, 81289 },	-- Breezeswept Hood
-                { 3, 81291 },	-- Whisperwind Spaulders
-                { 4, 81283 },	-- Windblast Helm
-                { 5, 81285 },	-- Galedodger Chestguard
-                { 6, 81290 },	-- Belt of Totemic Binding
-                { 7, 81292 },	-- Airbender Sandals
-                { 8, 81287 },	-- Spaulders of Immovable Stone
-                { 9, 81284 },	-- Anchoring Sabatons
-                { 10, 81286 },	-- Ner'onok's Razor Katar
-                { 11, 81288 },	-- Gustwalker Staff
-                { 16, 86806 }, -- Tihan, Scepter of the Sleeping Emperor
-                { 17, 89972 }, -- Band of Bursting Novas
-                { 18, 86783 }, -- Zian's Choker of Coalesced Shadows
-                { 19, 86830 }, -- Ring of the Shattered Shell
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87208 }, -- Sigil of Power
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60900" },
-                { 27, "ac6822" },
+                { 1, 95972 }, -- Abandoned Zandalari Arrowlinks
+                { 2, 95974 }, -- Abandoned Zandalari Greatbelt
+                { 3, 95973 }, -- Abandoned Zandalari Waterchain
+                { 4, 95670 }, -- Amun-Thoth, Sul's Spiritrending Talons
+                { 5, 95750 }, -- Bracers of Mutagenic Fervor
+                { 6, 95805 }, -- Conduit-Breaker Chain Leggings
+                { 7, 95723 }, -- Crown of Potentiated Birth
+                { 8, 95778 }, -- Crown of the Golden Golem
+                { 9, 95779 }, -- Delicate Vial of the Sanguinaire
+                { 10, 95806 }, -- Doomed Crown of Lei Shen
+                { 11, 95725 }, -- Egg-Shard Grips
+                { 12, 95868 }, -- Forgotten Mantle of the Moon
+                { 13, 95804 }, -- Fusion Slasher Chestguard
+                { 14, 95643 }, -- Ghostbinder Greatboots
+                { 15, 95644 }, -- Ionized Yojamban Carapace
+                { 16, 95867 }, -- Jerthud, Graceful Hand of the Savior
+                { 17, 95777 }, -- Matter-Swapped Legplates
+                { 18, 95698 }, -- Megaera's Poisoned Fang
+                { 19, 95866 }, -- Nadagast's Exsanguinator
+                { 20, 95752 }, -- Pathogenic Gauntlets
+                { 21, 95696 }, -- Refreshing Abalone Girdle
+                { 22, 95671 }, -- Robes of Treacherous Ground
+                { 23, 95751 }, -- Synapse-String Handguards
+                { 24, 95724 }, -- Talonrender Chestplate
+                { 25, 95697 }, -- Tortos' Shellseizers
+                { 26, 95645 }, -- Wastewalker's Sandblasted Drape
+                { 27, 95669 }, -- Wushoolay's Final Choice
+                { 101, 87547 }, -- Tolakesh, Horn of the Black Ox
+                { 102, 81289 },	-- Breezeswept Hood
+                { 103, 81291 },	-- Whisperwind Spaulders
+                { 104, 81283 },	-- Windblast Helm
+                { 105, 81285 },	-- Galedodger Chestguard
+                { 106, 81290 },	-- Belt of Totemic Binding
+                { 107, 81292 },	-- Airbender Sandals
+                { 108, 81287 },	-- Spaulders of Immovable Stone
+                { 109, 81284 },	-- Anchoring Sabatons
+                { 110, 81286 },	-- Ner'onok's Razor Katar
+                { 111, 81288 },	-- Gustwalker Staff
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60900" },
+                { 122, "ac6822" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -1303,7 +1434,7 @@ data["ScarletHallsMoP"] = {
                 { 3, 81694 },	-- Commanding Bracers
                 { 4, 81563 },	-- Beastbinder Ring
                 { 5, 81693 },	-- Houndmaster's Compound Crossbow
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6684" },
             },
@@ -1327,7 +1458,7 @@ data["ScarletHallsMoP"] = {
                 { 3, 81694 },	-- Commanding Bracers
                 { 4, 81563 },	-- Beastbinder Ring
                 { 5, 81693 },	-- Houndmaster's Compound Crossbow
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6684" },
             },
@@ -1353,28 +1484,50 @@ data["ScarletHallsMoP"] = {
                 { 18, "ac6760" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87550 },	-- Vithrak, Gaze of the Deadman
-                { 2, 82817 },	-- Robes of Koegler
-                { 3, 82818 },	-- Vellum-Ripper Gloves
-                { 4, 82815 },	-- Bindburner Belt
-                { 5, 82819 },	-- Bradbury's Entropic Legguards
-                { 6, 82812 },	-- Pyretic Legguards
-                { 7, 81564 },	-- Scorched Scarlet Key
-                { 8, 81565 },	-- Temperature-Sensing Necklace
-                { 9, 82816 },	-- Melted Hypnotic Blade
-                { 10, 82813 },	-- Koegler's Ritual Knife
-                { 11, 82814 },	-- Mograine's Immaculate Might
-                { 13, 87268, [ATLASLOOT_IT_FILTERIGNORE] = true }, -- Codex of the Crusade
-                { 15, 82470 }, -- Ancient Tome of Portal: Dalaran
-                { 16, 86778 }, -- Steelskin, Qiang's Impervious
-                { 17, 86753 }, -- Cloak of Peacock Feathers
-                { 18, 89967 }, -- Feng's Seal of Binding
-                { 19, 86858 }, -- Seal of the Profane
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87209 }, -- Sigil of Wisdom
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60897" },
+                { 1, 95961 }, --Abandoned Zandalari Firecord
+                { 2, 95962 }, --Abandoned Zandalari Shadowgirdle
+                { 3, 95685 }, --Amulet of the Primal Turtle
+                { 4, 95766 }, --Bonemender Bracers
+                { 5, 95631 }, --Bracers of Constant Implosion
+                { 6, 95711 }, --Breath of the Hydra
+                { 7, 95630 }, --Chestplate of Violent Detonation
+                { 8, 95740 }, --Chilblain Spaulders
+                { 9, 95765 }, --Clear-Mind Helm
+                { 10, 95819 }, -- Grips of Slicing Electricity
+                { 11, 95713 }, -- Hood of Smoldering Flesh
+                { 12, 95641 }, -- Horridon's Last Gasp
+                { 13, 95658 }, -- Horridon's Tusk Fragment
+                { 14, 95712 }, -- Inscribed Bag of Hydra-Spawn
+                { 15, 95739 }, -- Leggings of Pulsing Blood
+                { 16, 95820 }, -- Leggings of the Violent Gale
+                { 17, 95821 }, -- Lei Shen's Grounded Carapace
+                { 18, 95738 }, -- Lifedrainer's Sordid Grip
+                { 19, 95793 }, -- Passionfire Choker
+                { 20, 95659 }, -- Petrified Eye of the Basilisk
+                { 21, 95792 }, -- Robes of the Moon Lotus
+                { 22, 95960 }, -- Scalehide Spurs
+                { 23, 95684 }, -- Shell-Coated Wristplates
+                { 24, 95686 }, -- Shellsplitter Greataxe
+                { 25, 95794 }, -- Shield of Twinned Despair
+                { 26, 95767 }, -- Spaulders of Primordial Growth
+                { 27, 95632 }, -- Worldbreaker's Stormscythe
+                { 101, 87550 },	-- Vithrak, Gaze of the Deadman
+                { 102, 82817 },	-- Robes of Koegler
+                { 103, 82818 },	-- Vellum-Ripper Gloves
+                { 104, 82815 },	-- Bindburner Belt
+                { 105, 82819 },	-- Bradbury's Entropic Legguards
+                { 106, 82812 },	-- Pyretic Legguards
+                { 107, 81564 },	-- Scorched Scarlet Key
+                { 108, 81565 },	-- Temperature-Sensing Necklace
+                { 109, 82816 },	-- Melted Hypnotic Blade
+                { 110, 82813 },	-- Koegler's Ritual Knife
+                { 111, 82814 },	-- Mograine's Immaculate Might
+                { 113, 87268, [ATLASLOOT_IT_FILTERIGNORE] = true }, -- Codex of the Crusade
+                { 115, 82470 }, -- Ancient Tome of Portal: Dalaran
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60897" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -1409,7 +1562,7 @@ data["ScarletMonasteryMoP"] = {
                 { 3, 81570 },	-- Legguards of the Crimson Magus
                 { 4, 81572 },	-- Bracers of the Fallen Crusader
                 { 5, 81560 },	-- Signet of the Hidden Door
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6946" },
             },
@@ -1432,7 +1585,7 @@ data["ScarletMonasteryMoP"] = {
                 { 3, 81574 },	-- Helm of Rising Flame
                 { 4, 81561 },	-- Firefinger Ring
                 { 5, 81576 },	-- Firestorm Greatstaff
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6928" },
             },
@@ -1457,27 +1610,49 @@ data["ScarletMonasteryMoP"] = {
                 { 19, "ac6929" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 87551 },	-- Helios, Durand's Soul of Purity
-                { 2, 81692 },	-- Whitemane's Embroidered Chapeau
-                { 3, 81689 },	-- Leggings of Hallowed Fire
-                { 4, 81690 },	-- Incarnadine Scarlet Spaulders
-                { 5, 81688 },	-- Dashing Strike Treads
-                { 6, 81578 },	-- Crown of Holy Flame
-                { 7, 81687 },	-- Waistplate of Imminent Resurrection
-                { 8, 81562 },	-- Triune Signet
-                { 9, 81265 },	-- Flashing Steel Talisman
-                { 10, 81577 },	-- Lightbreaker Greatsword
-                { 11, 81691 },	-- Greatstaff of Righteousness
-                { 16, 86796 } ,	-- Torch of the Celestial Spark
-                { 17, 86792 },	-- Light of the Cosmos
-                { 18, 86754 }, -- Amulet of Seven Curses
-                { 19, 86820 }, -- Ring of the Bladed Tempest
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87208 }, -- Sigil of Power
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60898" },
-                { 27, "ac6929" },
+                { 1, 95635 }, -- Al'set's Tormented Leggings
+                { 2, 95688 }, -- Azure Shell Bracers
+                { 3, 95687 }, -- Beakbreaker Greatcloak
+                { 4, 95796 }, -- Bracers of the Midnight Comet
+                { 5, 95715 }, -- Chain of Consuming Magic
+                { 6, 95741 }, -- Deadly Glare Cape
+                { 7, 95742 }, -- Durumu's Captive Eyeball
+                { 8, 95860 }, -- Fyn's Flickering Dagger
+                { 9, 95797 }, -- Girdle of Night and Day
+                { 10, 95769 }, -- Gore-Soaked Gear
+                { 11, 95768 }, -- Greatshield of the Gloaming
+                { 12, 95770 }, -- Hand of the Dark Animus
+                { 13, 95965 }, -- Home-Warding Slippers
+                { 14, 95716 }, -- Ice-Scored Treads
+                { 15, 95858 }, -- Invocation of the Dawn
+                { 16, 95633 }, -- Jin'rokh's Soulcrystal
+                { 17, 95634 }, -- Lightningweaver Gauntlets
+                { 18, 95714 }, -- Links of the Bifurcated Tongue
+                { 19, 95859 }, -- Miracoran, the Vehement Chord
+                { 20, 95964 }, -- Necklace of the Terra-Cotta Invoker
+                { 21, 95743 }, -- Ritual Dagger of the Mind's Eye
+                { 22, 95661 }, -- Roots of Rampaging Earth
+                { 23, 95963 }, -- Silentflame Sandals
+                { 24, 95662 }, -- Spaulders of Dinomancy
+                { 25, 95689 }, -- Stonegaze Hood
+                { 26, 95795 }, -- Suen-Wo, Spire of the Falling Sun
+                { 27, 95660 }, -- Venomlord's Totemic Wand
+                { 101, 87551 },	-- Helios, Durand's Soul of Purity
+                { 102, 81692 },	-- Whitemane's Embroidered Chapeau
+                { 103, 81689 },	-- Leggings of Hallowed Fire
+                { 104, 81690 },	-- Incarnadine Scarlet Spaulders
+                { 105, 81688 },	-- Dashing Strike Treads
+                { 106, 81578 },	-- Crown of Holy Flame
+                { 107, 81687 },	-- Waistplate of Imminent Resurrection
+                { 108, 81562 },	-- Triune Signet
+                { 109, 81265 },	-- Flashing Steel Talisman
+                { 110, 81577 },	-- Lightbreaker Greatsword
+                { 111, 81691 },	-- Greatstaff of Righteousness
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60898" },
+                { 122, "ac6929" },
             },
         },
         -- {	--HallowsEndHeadlessHorseman
@@ -1516,7 +1691,7 @@ data["ScholomanceMoP"] = {
                 { 3, 82821 },	-- Breastplate of Wracking Souls
                 { 4, 81566 },	-- Anarchist's Pendant
                 { 5, 82822 },	-- Gravetouch Greatsword
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
             },
         },
@@ -1538,7 +1713,7 @@ data["ScholomanceMoP"] = {
                 { 3, 82851 },	-- Ghostwoven Legguards
                 { 4, 82852 },	-- Wraithplate Treads
                 { 5, 82847 },	-- Metanoia Shield
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6531" },
             },
@@ -1561,7 +1736,7 @@ data["ScholomanceMoP"] = {
                 { 3, 82828 },	-- Bone Golem Boots
                 { 4, 82824 },	-- Goresoaked Headreaper
                 { 5, 82826 },	-- Necromantic Wand
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6394" },
             },
@@ -1583,7 +1758,7 @@ data["ScholomanceMoP"] = {
                 { 3, 82828 },	-- Bone Golem Boots
                 { 4, 82824 },	-- Goresoaked Headreaper
                 { 5, 82826 },	-- Necromantic Wand
-                { 16, "c3350", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Fragment
+                { 16, "c3414", [ATLASLOOT_IT_AMOUNT1] = 2 }, -- August Stone Shard
                 { 17, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
                 { 19, "ac6394" },
             },
@@ -1606,25 +1781,47 @@ data["ScholomanceMoP"] = {
                 { 19, "ac6821" },
             },
             [CELESTIAL_DIFF] = {
-                { 1, 82859 }, -- Headmaster's Will
-                { 2, 82861 }, -- Incineration Belt
-                { 3, 82858 }, -- Tombstone Gauntlets
-                { 4, 82860 }, -- Gloves of Explosive Pain
-                { 5, 82862 }, -- Shoulderguards of Painful Lessons
-                { 6, 82857 }, -- Vigorsteel Spaulders
-                { 7, 81268 }, -- Lessons of the Darkmaster
-                { 8, 81266 }, -- Price of Progress
-                { 9, 81267 }, -- Searing Words
-                { 16, 86802 }, -- Lei Shen's Final Orders
-                { 17, 86782 }, -- Arrow Breaking Windcloak
-                { 18, 89968 }, -- Feng's Ring of Dreams
-                { 19, 86863 }, -- Scimitar of Seven Stars
-                { 20, "INV_Box_01", nil, AL["Tier Token iLvl483"], nil, "Tier14CelestialTierTokens" },
-                { 21, 87209 }, -- Sigil of Wisdom
-                { 23, "c3350", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Fragment
-                { 24, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
-                { 26, "ac60899" },
-                { 27, "ac6821" },
+                { 1, 95664 }, -- Armplates of the Vanquished Abomination
+                { 2, 95665 }, -- Bad Juju
+                { 3, 95772 }, -- Cha-Ye's Essence of Brilliance
+                { 4, 95773 }, -- Constantly Accelerating Cloak
+                { 5, 95718 }, -- Cord of Cacophonous Cawing
+                { 6, 95690 }, -- Crystal-Claw Gloves
+                { 7, 95862 }, -- Darkwood Spiritstaff
+                { 8, 95966 }, -- Deeproot Treads
+                { 9, 95801 }, -- Fingers of the Night
+                { 10, 95636 }, -- Fissure-Split Shoulderwraps
+                { 11, 95799 }, -- Gaze of the Twins
+                { 12, 95771 }, -- Hood of the Crimson Wake
+                { 13, 95746 }, -- Iceshatter Gauntlets
+                { 14, 95638 }, -- Jin'rokh's Dreamshard
+                { 15, 95663 }, -- Legguards of Scintillating Scales
+                { 16, 95717 }, -- Pinionfeather Greatcloak
+                { 17, 95719 }, -- Robe of Midnight Down
+                { 18, 95637 }, -- Robes of Static Bursts
+                { 19, 95744 }, -- Sandals of the Starving Eye
+                { 20, 95691 }, -- Shimmershell Cape
+                { 21, 95967 }, -- Spiritbound Boots
+                { 22, 97129 }, -- Tia-Tia, the Scything Star
+                { 23, 95798 }, -- Tidal Force Treads
+                { 24, 95692 }, -- Tortos' Discarded Shell
+                { 25, 95968 }, -- Vaultwalker Sabatons
+                { 26, 95745 }, -- Vein-Cover Bracers
+                { 27, 95861 }, -- Zeeg's Ancient Kegsmasher
+                { 101, 82859 }, -- Headmaster's Will
+                { 102, 82861 }, -- Incineration Belt
+                { 103, 82858 }, -- Tombstone Gauntlets
+                { 104, 82860 }, -- Gloves of Explosive Pain
+                { 105, 82862 }, -- Shoulderguards of Painful Lessons
+                { 106, 82857 }, -- Vigorsteel Spaulders
+                { 107, 81268 }, -- Lessons of the Darkmaster
+                { 108, 81266 }, -- Price of Progress
+                { 109, 81267 }, -- Searing Words
+                { 116, "INV_Box_01", nil, AL["Tier Token iLvl502"], nil, "Tier15CelestialTierTokens" },
+                { 118, "c3414", [ATLASLOOT_IT_AMOUNT1] = "2/5" }, -- August Stone Shard
+                { 119, "c395", [ATLASLOOT_IT_AMOUNT1] = 120 }, -- Justice Points
+                { 121, "ac60899" },
+                { 122, "ac6821" },
             },
         },
         MOP_DUNGEON_HERO_AC_TABLE,
@@ -3074,7 +3271,7 @@ data["TerraceofEndlessSpring"] = {
 data["ThroneofThunder"] = {
     EncounterJournalID = 362,
     InstanceID = 1098,
-    MapID = 6738,
+    MapID = 6622,
     ContentType = RAID_CONTENT,
     ContentPhaseMoP = 3,
     items = {
@@ -3155,7 +3352,8 @@ data["ThroneofThunder"] = {
                 { 23, 94740, 96019 },	-- Jalak's Maelstrom Staff
                 { 24, 94755, 96032 },	-- Venomlord's Totemic Wand
                 { 26, 93666, "mount" },	-- Spawn of Horridon
-                { 28, "ac8038" },
+                { 27, 94574, "pet1200" }, -- Pygmy Direhorn
+                { 29, "ac8038" },
             },
             [HEROIC_DIFF] = {
                 { 1, 96397, 96769 },	-- Horn-Rimmed Doomcloak
@@ -3180,8 +3378,9 @@ data["ThroneofThunder"] = {
                 { 23, 96391, 96763 },	-- Jalak's Maelstrom Staff
                 { 24, 96404, 96776 },	-- Venomlord's Totemic Wand
                 { 26, 93666, "mount" },	-- Spawn of Horridon
-                { 28, "ac8057" },
-                { 29, "ac8038" },
+                { 27, 94574, "pet1200" }, -- Pygmy Direhorn
+                { 29, "ac8057" },
+                { 30, "ac8038" },
             },
         },
         {	--ToTCouncil
@@ -3251,7 +3450,8 @@ data["ThroneofThunder"] = {
                 { 20, 94768, 96058 },	-- Shellsplitter Greataxe
                 { 21, 94769, 96050 },	-- Shattered Tortoiseshell Longbow
                 { 22, 94778, 96064 },	-- Tortos' Discarded Shell
-                { 24, "ac8077" },
+                { 24, 98132 },	-- Shado-Pan Geyser Gun
+                { 26, "ac8077" },
             },
             [HEROIC_DIFF] = {
                 { 1, 96431, 96803 },	-- Beakbreaker Greatcloak
@@ -3274,8 +3474,9 @@ data["ThroneofThunder"] = {
                 { 20, 96430, 96802 },	-- Shellsplitter Greataxe
                 { 21, 96422, 96794 },	-- Shattered Tortoiseshell Longbow
                 { 22, 96436, 96808 },	-- Tortos' Discarded Shell
-                { 24, "ac8059" },
-                { 25, "ac8077" },
+                { 24, 98132 },	-- Shado-Pan Geyser Gun
+                { 26, "ac8059" },
+                { 27, "ac8077" },
             },
         },
         {	--ToTMegaera
@@ -3446,8 +3647,9 @@ data["ThroneofThunder"] = {
                 { 19, 94522, 96120 },	-- Talisman of Bloodlust
                 { 21, 94937, 96130 },	-- Acid-Spine Bonemace
                 { 22, 94945, 96140 },	-- Greatshield of the Gloaming
-                { 24, 97960, "pet1244" },	-- Dark Quivering Blob
-                { 26, "ac8037" },
+                { 24, 97959, "pet1243" }, -- Living Fluid
+                { 25, 97960, "pet1244" },	-- Dark Quivering Blob
+                { 27, "ac8037" },
             },
             [HEROIC_DIFF] = {
                 { 1, 96499, 96871 },	-- Hydra-Scale Bloodcloak
@@ -3471,9 +3673,10 @@ data["ThroneofThunder"] = {
                 { 19, 96492, 96864 },	-- Talisman of Bloodlust
                 { 21, 96502, 96874 },	-- Acid-Spine Bonemace
                 { 22, 96512, 96884 },	-- Greatshield of the Gloaming
-                { 24, 97960, "pet1244" },	-- Dark Quivering Blob
-                { 26, "ac8063" },
-                { 27, "ac8037" },
+                { 24, 97959, "pet1243" }, -- Living Fluid
+                { 25, 97960, "pet1244" },	-- Dark Quivering Blob
+                { 27, "ac8063" },
+                { 28, "ac8037" },
             },
         },
         {	--ToTDarkAnimus
@@ -3782,7 +3985,8 @@ data["ThroneofThunder"] = {
                 { 22, 95204, 96341 },	-- Necklace of the Terra-Cotta Mender
                 { 23, 95206, 96352 },	-- Necklace of the Terra-Cotta Protector
                 { 24, 95205, 96349 },	-- Necklace of the Terra-Cotta Vanquisher
-                { 26, 94125 },	-- Living Sandling
+                { 26, 94125, "pet1177" },	-- Living Sandling
+                { 28, 98136 },	-- Gastropod Shell
             },
         },
         T15_SET,
@@ -3794,7 +3998,7 @@ data["SiegeofOrgrimmar"] = {
     EncounterJournalID = 369,
     InstanceID = 1136,
     ContentPhaseMoP = 5,
-    MapID = 6622,
+    MapID = 6738,
     ContentType = RAID_CONTENT,
     items = {
         {	--SoOImmerseus
@@ -3848,6 +4052,7 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104675 }, -- Purified Bindings of Immerseus
                 { 23, 104670 }, -- Encapsulated Essence of Immerseus
                 { 24, 104661 }, -- Trident of Corrupted Waters
+                { 26, "ac8536" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103769 }, -- Cloak of Misguided Power
@@ -3950,6 +4155,7 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104682 }, -- Death Lotus Crossbow
                 { 21, 104683 }, -- Softfoot's Last Resort
                 { 22, 104697 }, -- Purehearted Cricket Cage
+                { 24, "ac8528" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103799 }, -- Gloomwrap Greatcloak
@@ -4052,6 +4258,7 @@ data["SiegeofOrgrimmar"] = {
                 { 22, 104703 }, -- Norushen's Shortblade
                 { 23, 104713 }, -- Xifeng, Longblade of the Titanic Guardian
                 { 24, 104719 }, -- Norushen's Enigmatic Barrier
+                { 26, "ac8532" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103845 }, -- Drape of the Despairing Pit
@@ -4103,7 +4310,6 @@ data["SiegeofOrgrimmar"] = {
                 { 24, 104470 }, -- Norushen's Enigmatic Barrier
                 { 26, "ac8532" },
                 { 27, "ac8466" },
-
             },
         },
         {	--SoOShaofPride
@@ -4124,7 +4330,6 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104977 }, -- Gaze of Arrogance
                 { 21, 104981 }, -- Greatsword of Pride's Fall
                 { 22, 104983 }, -- Shield of Mockery
-                { 24, 104163 }, -- Gooey Sha-ling
             },
             [FLEX_DIFF] = {
                 { 1, 104729 }, -- Self-Reflecting Mask
@@ -4140,8 +4345,9 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104728 }, -- Gaze of Arrogance
                 { 21, 104732 }, -- Greatsword of Pride's Fall
                 { 22, 104734 }, -- Shield of Mockery
-                { 24, 104162 }, -- Droplet of Y'Shaarj
-                { 25, 104163 }, -- Gooey Sha-ling
+                { 24, 104162, "pet1331" }, -- Droplet of Y'Shaarj
+                { 25, 104163, "pet1332" }, -- Gooey Sha-ling
+                { 27, "ac8521" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103876 }, -- Self-Reflecting Mask
@@ -4157,7 +4363,8 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 103873 }, -- Gaze of Arrogance
                 { 21, 103869 }, -- Greatsword of Pride's Fall
                 { 22, 103870 }, -- Shield of Mockery
-                { 24, 104162 }, -- Droplet of Y'Shaarj
+                { 24, 104162, "pet1331" }, -- Droplet of Y'Shaarj
+                { 25, 104163, "pet1332" }, -- Gooey Sha-ling
                 { 27, "ac8521" },
             },
             [HEROIC_DIFF] = {
@@ -4174,11 +4381,10 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104479 }, -- Gaze of Arrogance
                 { 21, 104483 }, -- Greatsword of Pride's Fall
                 { 22, 104485 }, -- Shield of Mockery
-                { 24, 104162 }, -- Droplet of Y'Shaarj
+                { 24, 104162, "pet1331" }, -- Droplet of Y'Shaarj
+                { 25, 104163, "pet1332" }, -- Gooey Sha-ling
                 { 27, "ac8521" },
                 { 28, "ac8467" },
-
-
             },
         },
         {	--SoOGalakras
@@ -4232,6 +4438,7 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104744 }, -- Evil Eye of Galakras
                 { 23, 104735 }, -- Dagryn's Discarded Longbow
                 { 24, 104752 }, -- Drakebinder Greatstaff
+                { 26, "ac8530" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103900 }, -- Flameslinger's Fiery Cowl
@@ -4336,6 +4543,7 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104767 }, -- Juggernaut's Focusing Crystal
                 { 23, 104757 }, -- Seismic Bore
                 { 24, 104774 }, -- Juggernaut's Power Core
+                { 26, "ac8520" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103922 }, -- Shock Pulse Robes
@@ -4438,6 +4646,7 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104793 }, -- Kardris' Toxic Totem
                 { 22, 104788 }, -- Haromm's Frozen Crescent
                 { 23, 104794 }, -- Kardris' Scepter
+                { 25, "ac8453" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103934 }, -- Poisonmist Nightcloak
@@ -4462,7 +4671,6 @@ data["SiegeofOrgrimmar"] = {
                 { 22, 103926 }, -- Haromm's Frozen Crescent
                 { 23, 103936 }, -- Kardris' Scepter
                 { 25, "ac8453" },
-
             },
             [HEROIC_DIFF] = {
                 { 1, 104530 }, -- Poisonmist Nightcloak
@@ -4525,6 +4733,7 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104808 }, -- Gar'tok, Strength of the Faithful
                 { 22, 104800 }, -- Nazgrim's Gutripper
                 { 23, 104809 }, -- Bulwark of the Fallen General
+                { 25, "ac8448" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103808 }, -- Spaulders of Kor'kron Fealty
@@ -4613,6 +4822,7 @@ data["SiegeofOrgrimmar"] = {
                 { 23, 104812 }, -- Kor'kron Hand Cannon
                 { 24, 104820 }, -- Malkorok's Skullcleaver
                 { 25, 104828 }, -- Visage of the Monstrous
+                { 27, "ac8538" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103959 }, -- Black-Blooded Drape
@@ -4716,6 +4926,7 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104834 }, -- Enchanted Shao-Tien Saber
                 { 21, 104847 }, -- Immaculately Preserved Wand
                 { 22, 104843 }, -- Ancient Mogu Tower Shield
+                { 24, "ac8529" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103803 }, -- Mantid Vizier's Robes
@@ -4740,7 +4951,6 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 103964 }, -- Immaculately Preserved Wand
                 { 22, 103871 }, -- Ancient Mogu Tower Shield
                 { 24, "ac8529" },
-
             },
             [HEROIC_DIFF] = {
                 { 1, 104596 }, -- Mantid Vizier's Robes
@@ -4766,7 +4976,6 @@ data["SiegeofOrgrimmar"] = {
                 { 22, 104594 }, -- Ancient Mogu Tower Shield
                 { 24, "ac8529" },
                 { 25, "ac8478" },
-
             },
         },
         {	--SoOThok
@@ -4804,6 +5013,7 @@ data["SiegeofOrgrimmar"] = {
                 { 20, 104863 }, -- Britomart's Jagged Pike
                 { 21, 104854 }, -- Hvitserk's Formidable Shanker
                 { 22, 104858 }, -- Festering Primordial Globule
+                { 24, "ac8527" },
             },
             [NORMAL_DIFF] = {
                 { 1, 104308 }, -- Akolik's Acid-Soaked Robes
@@ -4839,7 +5049,6 @@ data["SiegeofOrgrimmar"] = {
                 { 22, 104609 }, -- Festering Primordial Globule
                 { 24, "ac8527" },
                 { 25, "ac8479" },
-
             },
         },
         {	--SoOBlackfuse
@@ -4861,7 +5070,6 @@ data["SiegeofOrgrimmar"] = {
                 { 18, 99668 }, -- Shoulders of the Cursed Vanquisher
                 { 20, 105116 }, -- Lever of the Megantholithic Apparatus
                 { 21, 105123 }, -- Siegecrafter's Forge Hammer
-                { 23, 104158 }, -- Blackfuse Bombling
             },
             [FLEX_DIFF] = {
                 { 1, 104866 }, -- Fusespark Gloves
@@ -4878,7 +5086,8 @@ data["SiegeofOrgrimmar"] = {
                 { 18, 99754 }, -- Shoulders of the Cursed Vanquisher
                 { 20, 104867 }, -- Lever of the Megantholithic Apparatus
                 { 21, 104874 }, -- Siegecrafter's Forge Hammer
-                { 23, 104158 }, -- Blackfuse Bombling
+                { 23, 104158, "pet1322" }, -- Blackfuse Bombling
+                { 25, "ac8543" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103970 }, -- Fusespark Gloves
@@ -4895,7 +5104,7 @@ data["SiegeofOrgrimmar"] = {
                 { 18, 99685 }, -- Shoulders of the Cursed Vanquisher
                 { 20, 103874 }, -- Lever of the Megantholithic Apparatus
                 { 21, 103969 }, -- Siegecrafter's Forge Hammer
-                { 23, 104158 }, -- Blackfuse Bombling
+                { 23, 104158, "pet1322" }, -- Blackfuse Bombling
                 { 25, "ac8543" },
             },
             [HEROIC_DIFF] = {
@@ -4913,7 +5122,7 @@ data["SiegeofOrgrimmar"] = {
                 { 18, 99717 }, -- Shoulders of the Cursed Vanquisher
                 { 20, 104618 }, -- Lever of the Megantholithic Apparatus
                 { 21, 104625 }, -- Siegecrafter's Forge Hammer
-                { 23, 104158 }, -- Blackfuse Bombling
+                { 23, 104158, "pet1322" }, -- Blackfuse Bombling
                 { 25, "ac8543" },
                 { 26, "ac8480" },
             },
@@ -4937,7 +5146,6 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 105135 }, -- Kil'ruk's Furious Blade
                 { 22, 105127 }, -- Korven's Crimson Crescent
                 { 23, 105129 }, -- Rik'kal's Bloody Scalpel
-                { 25, 104165 }, -- Kovok
             },
             [FLEX_DIFF] = {
                 { 1, 104879 }, -- Bracers of Sonic Projection
@@ -4954,7 +5162,8 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104886 }, -- Kil'ruk's Furious Blade
                 { 22, 104878 }, -- Korven's Crimson Crescent
                 { 23, 104880 }, -- Rik'kal's Bloody Scalpel
-                { 25, 104165 }, -- Kovok
+                { 25, 104165, "pet1334"  }, -- Kovok
+                { 27, "ac8531" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103810 }, -- Bracers of Sonic Projection
@@ -4971,9 +5180,8 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 103972 }, -- Kil'ruk's Furious Blade
                 { 22, 103971 }, -- Korven's Crimson Crescent
                 { 23, 103973 }, -- Rik'kal's Bloody Scalpel
-                { 25, 104165 }, -- Kovok
+                { 25, 104165, "pet1334"  }, -- Kovok
                 { 27, "ac8531" },
-
             },
             [HEROIC_DIFF] = {
                 { 1, 104630 }, -- Bracers of Sonic Projection
@@ -4990,7 +5198,7 @@ data["SiegeofOrgrimmar"] = {
                 { 21, 104637 }, -- Kil'ruk's Furious Blade
                 { 22, 104629 }, -- Korven's Crimson Crescent
                 { 23, 104631 }, -- Rik'kal's Bloody Scalpel
-                { 25, 104165 }, -- Kovok
+                { 25, 104165, "pet1334"  }, -- Kovok
                 { 27, "ac8531" },
                 { 28, "ac8481" },
             },
@@ -5050,8 +5258,18 @@ data["SiegeofOrgrimmar"] = {
                 { 24, 104887 }, -- Kor'kron Spire of Supremacy
                 { 25, 104897 }, -- Xal'atoh, Desecrated Image of Gorehowl
                 { 26, 104903 }, -- Revelations of Y'Shaarj
-                { 28, 105676, [ATLASLOOT_IT_FILTERIGNORE] = true },	-- Hellscream's Tome of Destruction
-                { 30, "ac8537" },
+                { 101, 105672 }, -- Hellscream's Cleaver
+                { 102, 105679 }, -- Hellscream's Decapitator
+                { 103, 105678 }, -- Hellscream's Doomblade
+                { 104, 105673 }, -- Hellscream's Pig Sticker
+                { 105, 105671 }, -- Hellscream's Razor
+                { 106, 105677 }, -- Hellscream's War Staff
+                { 107, 105670 }, -- Hellscream's Warbow
+                { 108, 105675 }, -- Hellscream's Warmace
+                { 109, 105674 }, -- Hellscream's Barrier
+                { 110, 105680 }, -- Hellscream's Shield Wall
+                { 111, 105676, [ATLASLOOT_IT_FILTERIGNORE] = true }, -- Hellscream's Tome of Destruction
+                { 116, "ac8537" },
             },
             [NORMAL_DIFF] = {
                 { 1, 103901 }, -- Ebon Ritual Hood
@@ -5090,7 +5308,8 @@ data["SiegeofOrgrimmar"] = {
                 { 109, 104409 }, -- Hellscream's Barrier
                 { 110, 104407 }, -- Hellscream's Shield Wall
                 { 111, 104408, [ATLASLOOT_IT_FILTERIGNORE] = true }, -- Hellscream's Tome of Destruction
-                { 116, [ATLASLOOT_IT_ALLIANCE] = "ac8679", [ATLASLOOT_IT_HORDE] = "ac8680" },
+                { 116, "ac8537" },
+                { 117, [ATLASLOOT_IT_ALLIANCE] = "ac8679", [ATLASLOOT_IT_HORDE] = "ac8680" },
             },
             [HEROIC_DIFF] = {
                 { 1, 104651 }, -- Ebon Ritual Hood
@@ -5130,8 +5349,9 @@ data["SiegeofOrgrimmar"] = {
                 { 109, 105687 }, -- Hellscream's Barrier
                 { 110, 105693 }, -- Hellscream's Shield Wall
                 { 111, 105689, [ATLASLOOT_IT_FILTERIGNORE] = true }, -- Hellscream's Tome of Destruction
-                { 116, [ATLASLOOT_IT_ALLIANCE] = "ac8679", [ATLASLOOT_IT_HORDE] = "ac8680" },
-                { 117, "ac8482" },
+                { 116, "ac8537" },
+                { 117, [ATLASLOOT_IT_ALLIANCE] = "ac8679", [ATLASLOOT_IT_HORDE] = "ac8680" },
+                { 118, "ac8482" },
             },
         },
         {	--SoOShared

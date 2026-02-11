@@ -4,20 +4,30 @@ local L = DBM_GUI_L
 --It's a one stop shop for disabling any DBM core feature
 local spamPanel = DBM_GUI.Cat_Filters:CreateNewPanel(L.Panel_SpamFilter, "option")
 
+local spamFeatureToggles = spamPanel:CreateArea(L.Area_Global_Toggles)
+spamFeatureToggles:CreateCheckButton(L.NoWarnings, true, nil, "HideDBMWarnings")
+spamFeatureToggles:CreateCheckButton(L.NoTimers, true, nil, "HideDBMBars")
+
 local spamSpecAnnounceFeat = spamPanel:CreateArea(L.Area_SpamFilter_SpecFeatures)
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoShowAnnounce, true, nil, "DontShowBossAnnounces")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnText, true, nil, "DontShowSpecialWarningText")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnFlash, true, nil, "DontShowSpecialWarningFlash")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnVibrate, true, nil, "DontDoSpecialWarningVibrate")
 spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnSound, true, nil, "DontPlaySpecialWarningSound")
-spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoPrivateAuraSound, true, nil, "DontPlayPrivateAuraSound")
+if not DBM:IsPostMidnight() then
+	spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoPrivateAuraSound, true, nil, "DontPlayPrivateAuraSound")
+--else
+	--TODO, midnights version of sound registration
+end
 
 local spamTimers = spamPanel:CreateArea(L.Area_SpamFilter_Timers)
 spamTimers:CreateCheckButton(L.SpamBlockNoShowBossTimers, true, nil, "DontShowBossTimers")
-spamTimers:CreateCheckButton(L.SpamBlockNoShowTrashTimers, true, nil, "DontShowTrashTimers")
 spamTimers:CreateCheckButton(L.SpamBlockNoShowEventTimers, true, nil, "DontShowEventTimers")
 spamTimers:CreateCheckButton(L.SpamBlockNoShowUTimers, true, nil, "DontShowUserTimers")
-spamTimers:CreateCheckButton(L.SpamBlockNoCountdowns, true, nil, "DontPlayCountdowns")
+if not DBM:IsPostMidnight() then
+	spamTimers:CreateCheckButton(L.SpamBlockNoShowTrashTimers, true, nil, "DontShowTrashTimers")
+	spamTimers:CreateCheckButton(L.SpamBlockNoCountdowns, true, nil, "DontPlayCountdowns")
+end
 
 if not DBM:IsPostMidnight() then
 	local spamNameplates = spamPanel:CreateArea(L.Area_SpamFilter_Nameplates)

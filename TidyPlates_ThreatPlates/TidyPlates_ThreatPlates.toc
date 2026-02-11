@@ -1,7 +1,7 @@
-## Interface: 50501
+## Interface: 50502
 
 ## Title: Threat Plates
-## Version: 12.6.2
+## Version: 12.6.6
 ## Notes: Threat-reactive nameplates.
 ## Notes-deDE: Bedrohungsreaktive Namensplaketten.
 ## Notes-esES: Placas Identificativas de Amenaza

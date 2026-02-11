@@ -1,5 +1,5 @@
 --@curseforge-project-slug: liblatency@
-local LL = LibStub:NewLibrary("LibLatency", 3)
+local LL = LibStub:NewLibrary("LibLatency", 4)
 if not LL then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -29,11 +29,12 @@ local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local pName = UnitNameUnmodified("player")
 
 C_ChatInfo.RegisterAddonMessagePrefix("LibLTNC")
+local issecretvalue = issecretvalue or function() return false end
 frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
 	if event == "READY_CHECK" then
 		local _, _, latencyHome, latencyWorld = GetNetStats()
 		SendAddonMessage("LibLTNC", format("%d,%d", latencyHome or 0, latencyWorld or 0), IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
-	elseif prefix == "LibLTNC" and throttleTable[channel] then
+	elseif not issecretvalue(msg) and prefix == "LibLTNC" and throttleTable[channel] then
 		if msg == "R" then
 			local t = GetTime()
 			if t - throttleTable[channel] > 4 then

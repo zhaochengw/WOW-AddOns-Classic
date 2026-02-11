@@ -140,34 +140,34 @@ L["Watcher Silthik"] = "Watcher Silthik"
 -- Zone Names, Acronyms, and Common Strings
 --************************************************
 --WotLK Acronyms
-L["AK, Kahet"] = "AK, Kahet";    -- Ahn'kahet
-L["AN, Nerub"] = "AN, Nerub";    -- Azjol-Nerub
-L["Champ"] = "Champ";            -- Trial of the Champion
-L["CoT-Strat"] = "CoT-Strat";    -- Culling of Stratholme
-L["Crus"] = "Crus";              -- Trial of the Crusader
-L["DTK"] = "DTK";                -- Drak'Tharon Keep
-L["FoS"] = "FoS";                -- The Forge of Souls
-L["FH1"] = "FH1";                -- The Forge of Souls
-L["Gun"] = "Gun";                -- Gundrak
-L["HoL"] = "HoL";                -- Halls of Lightning
-L["HoR"] = "HoR";                -- Halls of Reflection
-L["FH3"] = "FH3";                -- Halls of Reflection
-L["HoS"] = "HoS";                -- Halls of Stone
-L["IC"] = "IC";                  -- Icecrown Citadel
-L["Nax"] = "Nax";                -- Naxxramas
-L["Nex, Nexus"] = "Nex, Nexus";  -- The Nexus
-L["Ocu"] = "Ocu";                -- The Oculus
-L["Ony"] = "Ony";                -- Onyxia's Lair
-L["OS"] = "OS";                  -- The Obsidian Sanctum
-L["PoS"] = "PoS";                -- Pit of Saron
-L["FH2"] = "FH2";                -- Pit of Saron
-L["RS"] = "RS";                  -- The Ruby Sanctum
-L["TEoE"] = "TEoE";              -- The Eye of Eternity
-L["UK, Keep"] = "UK, Keep";      -- Utgarde Keep
-L["Uldu"] = "Uldu";              -- Ulduar
-L["UP, Pinn"] = "UP, Pinn";      -- Utgarde Pinnacle
-L["VH"] = "VH";                  -- The Violet Hold
-L["VoA"] = "VoA";                -- Vault of Archavon
+L["AK, Kahet"] = "AK, Kahet";   -- Ahn'kahet
+L["AN, Nerub"] = "AN, Nerub";   -- Azjol-Nerub
+L["Champ"] = "Champ";           -- Trial of the Champion
+L["CoT-Strat"] = "CoT-Strat";   -- Culling of Stratholme
+L["Crus"] = "Crus";             -- Trial of the Crusader
+L["DTK"] = "DTK";               -- Drak'Tharon Keep
+L["FoS"] = "FoS";               -- The Forge of Souls
+L["FH1"] = "FH1";               -- The Forge of Souls
+L["Gun"] = "Gun";               -- Gundrak
+L["HoL"] = "HoL";               -- Halls of Lightning
+L["HoR"] = "HoR";               -- Halls of Reflection
+L["FH3"] = "FH3";               -- Halls of Reflection
+L["HoS"] = "HoS";               -- Halls of Stone
+L["IC"] = "IC";                 -- Icecrown Citadel
+L["Nax"] = "Nax";               -- Naxxramas
+L["Nex, Nexus"] = "Nex, Nexus"; -- The Nexus
+L["Ocu"] = "Ocu";               -- The Oculus
+L["Ony"] = "Ony";               -- Onyxia's Lair
+L["OS"] = "OS";                 -- The Obsidian Sanctum
+L["PoS"] = "PoS";               -- Pit of Saron
+L["FH2"] = "FH2";               -- Pit of Saron
+L["RS"] = "RS";                 -- The Ruby Sanctum
+L["TEoE"] = "TEoE";             -- The Eye of Eternity
+L["UK, Keep"] = "UK, Keep";     -- Utgarde Keep
+L["Uldu"] = "Uldu";             -- Ulduar
+L["UP, Pinn"] = "UP, Pinn";     -- Utgarde Pinnacle
+L["VH"] = "VH";                 -- The Violet Hold
+L["VoA"] = "VoA";               -- Vault of Archavon
 
 --Zones not included in LibBabble-Zone
 L["Crusaders' Coliseum"] = "Crusaders' Coliseum";
@@ -229,9 +229,9 @@ L["Upper Spire"] = "Upper Spire";
 L["Sindragosa's Lair"] = "Sindragosa's Lair";
 L["Stinky"] = "Stinky";
 L["Precious"] = "Precious";
-L["Rimefang"] = "Rimefang";            -- NPC: 37533
-L["Spinestalker"] = "Spinestalker";    -- NPC: 37534
-L["Sister Svalna"] = "Sister Svalna";  -- NPC: 37126
+L["Rimefang"] = "Rimefang";           -- NPC: 37533
+L["Spinestalker"] = "Spinestalker";   -- NPC: 37534
+L["Sister Svalna"] = "Sister Svalna"; -- NPC: 37126
 
 --Naxxramas
 L["Mr. Bigglesworth"] = "Mr. Bigglesworth";

@@ -266,6 +266,8 @@ AL["Thrallmar"] = "Thrallmar"
 AL["Tier %s Sets"] = "Conjuntos de Tier %s"
 --[[Translation missing --]]
 --[[ AL["Tier Token iLvl483"] = "Tier Token iLvl483"--]] 
+--[[Translation missing --]]
+--[[ AL["Tier Token iLvl502"] = "Tier Token iLvl502"--]] 
 AL["Toggle AtlasLoot"] = "Alternar AtlasLoot"
 AL["Token for..."] = "Token para..."
 AL["Tranquillien"] = "Tranquillien"

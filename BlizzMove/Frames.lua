@@ -7,10 +7,18 @@ BlizzMoveAPI:RegisterFrames({
     {
         MinVersion = 0,
     },
+    ["ArenaFrame"] =
+    {
+        MinVersion = 20505,
+        MaxVersion = 30000,
+    },
     ["ArenaRegistrarFrame"] =
     {
-        MinVersion = 40000, -- Added when?
-        MaxVersion = 60000, -- Removed when?
+        VersionRanges =
+        {
+            { Min = 20505, Max = 30000 }, -- exists, but does it do anything?
+            { Min = 40000, Max = 60000 }, -- Added when? Removed when?
+        },
     },
     ["BankFrame"] =
     {
@@ -89,6 +97,7 @@ BlizzMoveAPI:RegisterFrames({
                 VersionRanges =
                 {
                     { Min = 11404, Max = 20000 }, -- exists, but does nothing
+                    { Min = 20505, Max = 30000 }, -- exists, but does nothing
                     { Min = 30000 },
                 },
                 SubFrames =
@@ -150,6 +159,12 @@ BlizzMoveAPI:RegisterFrames({
             ["DressUpFrame.OutfitDetailsPanel"] =
             {
                 MinVersion = 90105,
+                MaxVersion = 120000, -- renamed to CustomSetDetailsPanel
+                Detachable = true,
+            },
+            ["DressUpFrame.CustomSetDetailsPanel"] =
+            {
+                MinVersion = 120000, -- renamed from OutfitDetailsPanel
                 Detachable = true,
             },
         },
@@ -174,7 +189,8 @@ BlizzMoveAPI:RegisterFrames({
                         VersionRanges =
                         {
                             { Min = 0, Max = 11506 },
-                            { Min = 20000, Max = 40402 },
+                            { Min = 20000, Max = 20505 },
+                            { Min = 30000, Max = 40402 },
                         },
                     },
                 },
@@ -218,7 +234,7 @@ BlizzMoveAPI:RegisterFrames({
                         VersionRanges =
                         {
                             { Min = 11405, Max = 20000 },
-                            { Min = 30000 },
+                            { Min = 20505 },
                         },
                         Detachable = true,
                     },
@@ -241,7 +257,11 @@ BlizzMoveAPI:RegisterFrames({
         {
             ["GameMenuFrame.Header"] =
             {
-                MinVersion = 110000,
+                VersionRanges =
+                {
+                    { Min = 20505, Max = 30000 },
+                    { Min = 110000 },
+                },
             },
         },
     },
@@ -378,8 +398,11 @@ BlizzMoveAPI:RegisterFrames({
     },
     ["PVPBannerFrame"] =
     {
-        MinVersion = 40000, -- Added when?
-        MaxVersion = 60000, -- Removed when?
+        VersionRanges =
+        {
+            { Min = 20505, Max = 30000 }, -- exists, but does it do anything?
+            { Min = 40000, Max = 60000 }, -- Added when? Removed when?
+        },
     },
     ["PVPFrame"] =
     {
@@ -461,6 +484,7 @@ BlizzMoveAPI:RegisterFrames({
         VersionRanges =
         {
             { Min = 11404, Max = 20000 }, -- Backported in Classic 1.14.4
+            { Min = 20505, Max = 30000 }, -- Backported in TBC 2.5.5
             { Min = 30402, Max = 40000 }, -- Backported in Wrath 3.4.2
             { Min = 40400, Max = 50000 },
             { Min = 50500, Max = 60000 },
@@ -551,6 +575,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11404, Max = 20000 }, -- Backported in a broken state in Classic 1.14.4
+                { Min = 20505, Max = 30000 }, -- Backported in a broken state in TBC 2.5.5
                 { Min = 30000 },
             },
             SubFrames =
@@ -631,6 +656,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
         {
             VersionRanges =
             {
+                { Min = 20505, Max = 30000 }, -- Backported in a broken state
                 { Min = 40402, Max = 50000 },
                 { Min = 50500, Max = 60000 },
                 { Min = 80300 },
@@ -700,7 +726,11 @@ BlizzMoveAPI:RegisterAddOnFrames({
     {
         ["BlackMarketFrame"] =
         {
-            MinVersion = 50000,
+            VersionRanges =
+            {
+                { Min = 20505, Max = 30000 }, -- Backported in a broken state
+                { Min = 50000 },
+            },
         },
     },
     ["Blizzard_Calendar"] =
@@ -710,6 +740,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11404, Max = 20000 }, -- exists, in a partially broken state
+                { Min = 20505, Max = 30000 }, -- exists, in a partially broken state
                 { Min = 30000 },
             },
             SubFrames =
@@ -820,6 +851,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
         ["WardrobeFrame"] =
         {
             MinVersion = 40000,
+            MaxVersion = 120000, -- Renamed to WardrobeCollectionFrame, but no longer acts as standalone frame
         },
     },
     ["Blizzard_Communities"] =
@@ -829,6 +861,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -848,6 +881,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
                     VersionRanges =
                     {
                         { Min = 11503, Max = 20000 },
+                        { Min = 20505, Max = 30000 },
                         { Min = 40000 },
                     },
                 },
@@ -859,6 +893,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -867,6 +902,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -875,6 +911,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -883,6 +920,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -1173,6 +1211,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11405, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40402, Max = 50000 }, -- exists, but is unused
                 { Min = 50500, Max = 60000 }, -- exists, but is unused
             },
@@ -1192,6 +1231,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11404, Max = 20000 },
+                { Min = 20505, Max = 30000 },
                 { Min = 40000 },
             },
         },
@@ -1209,6 +1249,109 @@ BlizzMoveAPI:RegisterAddOnFrames({
         {
             MinVersion = 60000, -- Moved from FrameXML when?
             MaxVersion = 110000, -- Removed when?
+        },
+    },
+    ["Blizzard_HouseList"] =
+    {
+        ["HouseListFrame"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingBulletinBoard"] =
+    {
+        ["HousingBulletinBoardFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingInviteResidentFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["NeighborhoodChangeNameDialog"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingCharter"] =
+    {
+        ["HousingCharterRequestSignatureDialog"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingCornerstone"] =
+    {
+        ["HousingCornerstoneFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingCornerstoneHouseInfoFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingCornerstonePurchaseFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingCornerstoneVisitorFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["ImportHouseConfirmationDialog"] =
+        {
+            MinVersion = 110207,
+        },
+        ["MoveHouseConfirmationDialog"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingCreateNeighborhood"] =
+    {
+        ["HousingCreateCharterNeighborhoodConfirmationFrame"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingCreateNeighborhoodCharterFrame"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingDashboard"] =
+    {
+        ["HousingDashboardFrame"] =
+        {
+            MinVersion = 110207,
+            SubFrames =
+            {
+                ["HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame"] = {},
+            }
+        },
+    },
+    ["Blizzard_HousingHouseFinder"] =
+    {
+        ["HouseFinderFrame"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingHouseSettings"] =
+    {
+        ["AbandonHouseConfirmationDialog"] =
+        {
+            MinVersion = 110207,
+        },
+        ["HousingHouseSettingsFrame"] =
+        {
+            MinVersion = 110207,
+        },
+    },
+    ["Blizzard_HousingModelPreview"] =
+    {
+        ["HousingModelPreviewFrame"] =
+        {
+            MinVersion = 110207,
         },
     },
     ["Blizzard_InspectUI"] =
@@ -1313,7 +1456,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11404, Max = 11503 }, -- Backported in a broken state
-                { Min = 20504, Max = 40000 }, -- Moved from FrameXML; moved to Blizzard_GroupFinder_VanillaStyle
+                { Min = 20504, Max = 20505 }, -- Moved from FrameXML; moved to Blizzard_GroupFinder_VanillaStyle
             },
         },
     },
@@ -1337,6 +1480,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
         ["MajorFactionRenownFrame"] =
         {
             MinVersion = 100000,
+            MaxVersion = 120000,
         },
     },
     ["Blizzard_MatchCelebrationPartyPoseUI"] =
@@ -1365,6 +1509,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
         ["PlayerChoiceFrame"] =
         {
             MinVersion = 100000, -- Moved from Blizzard_PlayerChoiceUI
+            ForceUseSecureMoveHandle = true,
         },
     },
     ["Blizzard_PlayerChoiceUI"] =
@@ -1450,6 +1595,7 @@ BlizzMoveAPI:RegisterAddOnFrames({
             VersionRanges =
             {
                 { Min = 11503, Max = 20000 }, -- Backported in a broken state
+                { Min = 20505, Max = 30000 }, -- Backported in a broken state
                 { Min = 40000, Max = 70300 }, -- Removed when?
             },
             SubFrames =
@@ -1574,6 +1720,13 @@ BlizzMoveAPI:RegisterAddOnFrames({
         ["ClassTrainerFrame"] =
         {
             MinVersion = 0,
+        },
+    },
+    ["Blizzard_Transmog"] =
+    {
+        ["TransmogFrame"] =
+        {
+            MinVersion = 110207,
         },
     },
     ["Blizzard_UIWidgets"] =

@@ -9,6 +9,8 @@ local Expansions = QuestieLoader:ImportModule("Expansions")
 
 ---@type QuestEventHandler
 local QuestEventHandler = QuestieLoader:ImportModule("QuestEventHandler")
+---@type QuestieAPI
+local QuestieAPI = QuestieLoader:ImportModule("QuestieAPI")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 ---@type ZoneDB
@@ -57,6 +59,8 @@ local Hooks = QuestieLoader:ImportModule("Hooks")
 local QuestieValidateGameCache = QuestieLoader:ImportModule("QuestieValidateGameCache")
 ---@type MinimapIcon
 local MinimapIcon = QuestieLoader:ImportModule("MinimapIcon")
+---@type Comms
+local Comms = QuestieLoader:ImportModule("Comms")
 ---@type QuestieComms
 local QuestieComms = QuestieLoader:ImportModule("QuestieComms");
 ---@type QuestieOptions
@@ -75,6 +79,8 @@ local ChallengeModeTimer = QuestieLoader:ImportModule("ChallengeModeTimer")
 local QuestieCombatQueue = QuestieLoader:ImportModule("QuestieCombatQueue")
 ---@type QuestieSlash
 local QuestieSlash = QuestieLoader:ImportModule("QuestieSlash")
+---@type QuestieEvent
+local QuestieEvent = QuestieLoader:ImportModule("QuestieEvent")
 ---@type QuestXP
 local QuestXP = QuestieLoader:ImportModule("QuestXP")
 ---@type Tutorial
@@ -93,6 +99,12 @@ local SeasonOfDiscovery = QuestieLoader:ImportModule("SeasonOfDiscovery")
 local WatchFrameHook = QuestieLoader:ImportModule("WatchFrameHook")
 ---@type QuestLogCache
 local QuestLogCache = QuestieLoader:ImportModule("QuestLogCache")
+---@type ContentPhases
+local ContentPhases = QuestieLoader:ImportModule("ContentPhases")
+---@type DropDB
+local DropDB = QuestieLoader:ImportModule("DropDB")
+---@type QuestieAnnounce
+local QuestieAnnounce = QuestieLoader:ImportModule("QuestieAnnounce")
 
 local coYield = coroutine.yield
 
@@ -172,7 +184,8 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
 
     -- Check if the DB needs to be recompiled
     if (not dbIsCompiled) or (QuestieLib:GetAddonVersionString() ~= dbCompiledOnVersion) or (l10n:GetUILocale() ~= dbCompiledLang) or (Questie.db.global.dbCompiledExpansion ~= WOW_PROJECT_ID) then
-        print("\124cFFAAEEFF" .. l10n("Questie DB has updated!") .. "\124r\124cFFFF6F22 " .. l10n("Data is being processed, this may take a few moments and cause some lag..."))
+        print("\124cFFAAEEFF" ..
+            l10n("Questie DB has updated!") .. "\124r\124cFFFF6F22 " .. l10n("Data is being processed, this may take a few moments and cause some lag..."))
         loadFullDatabase()
         QuestieDBCompiler:Compile()
         dbCompiled = true
@@ -189,6 +202,8 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
         coYield()
         Townsfolk:BuildCharacterTownsfolk()
     end
+
+    QuestieEvent.Initialize()
 
     coYield()
     QuestieDB:Initialize()
@@ -238,11 +253,16 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     Questie:Debug(Questie.DEBUG_INFO, "[QuestieInit:Stage3] Stage 3 start.")
 
     QuestieTooltips:Initialize()
+    DropDB:Initialize()
     TrackerQuestTimers:Initialize()
     if Expansions.Current >= Expansions.MoP then
         ChallengeModeTimer.Initialize()
     end
+
+    Comms.Initialize()
     QuestieComms:Initialize()
+
+    QuestieAnnounce:InitializeLogoFilter()
 
     coYield()
 
@@ -280,7 +300,6 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     QuestieCombatQueue.Initialize()
 
     -- Initialize the tracker
-    coYield()
     QuestieTracker.Initialize()
     Hooks:HookQuestLogTitle()
     coYield()
@@ -292,14 +311,16 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
         Questie.db.profile.aqWarningPrintDate = dateToday
         C_Timer.After(2, function()
             print("|cffff0000-----------------------------|r")
-            Questie:Print("|cffff0000" .. l10n("The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the Icons settings of Questie!") .. "|r");
+            Questie:Print("|cffff0000" ..
+                l10n("The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the Icons settings of Questie!") .. "|r");
             print("|cffff0000-----------------------------|r")
         end)
     end
 
-    if Questie.IsTBC and (not Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled) then
+    if Questie.IsTBC and ContentPhases.activePhases.TBC == 5 and (not Questie.db.profile.isIsleOfQuelDanasPhaseReminderDisabled) then
         C_Timer.After(2, function()
-            Questie:Print(l10n("Current active phase of Isle of Quel'Danas is '%s'. Check the General settings to change the phase or disable this message.", IsleOfQuelDanas.localizedPhaseNames[Questie.db.global.isleOfQuelDanasPhase]))
+            Questie:Print(l10n("Current active phase of Isle of Quel'Danas is '%s'. Check the General settings to change the phase or disable this message.",
+                IsleOfQuelDanas.localizedPhaseNames[Questie.db.global.isleOfQuelDanasPhase]))
         end)
     end
 
@@ -315,6 +336,9 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     end
 
     Questie.started = true
+
+    -- We only update this if Questie fully loads to make sure we don't update it on crashes/fast reloads
+    QuestieLib.UpdateLastKnownDailyReset()
 
     -- register events that rely on questie being initialized
     EventHandler:RegisterLateEvents()
@@ -332,6 +356,10 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
 
     -- We do this last because it will run for a while and we don't want to block the rest of the init
     AvailableQuests.CalculateAndDrawAll()
+
+    -- Let other addons know that Questie is ready
+    Questie.API.isReady = true
+    QuestieAPI.PropagateOnReady()
 
     Questie:Debug(Questie.DEBUG_CRITICAL, "[QuestieInit:Stage3] Questie init done.")
 end
@@ -351,7 +379,7 @@ function QuestieInit:LoadDatabase(key)
         end
         QuestieDB[key] = func
         coYield()
-        QuestieDB[key] = QuestieDB[key]()           -- execute the function (returns the table)
+        QuestieDB[key] = QuestieDB[key]() -- execute the function (returns the table)
     else
         Questie:Debug(Questie.DEBUG_DEVELOP, "Database is missing, this is likely do to era vs tbc: ", key)
     end
@@ -382,7 +410,7 @@ function QuestieInit.OnAddonLoaded()
 
         IsleOfQuelDanas.Initialize() -- This has to happen before option init
         QuestieOptions.Initialize()
-    end, 0,"Error during AddonLoaded initialization!")
+    end, 0, "Error during AddonLoaded initialization!")
 
     MinimapIcon:Init()
 
@@ -423,7 +451,6 @@ function QuestieInit:Init()
         end
     end
 end
-
 
 --- We really want to wait for the cache to be filled before we continue.
 --- Other addons (e.g. ATT) can interfere with the cache and we need to make sure it's correct.

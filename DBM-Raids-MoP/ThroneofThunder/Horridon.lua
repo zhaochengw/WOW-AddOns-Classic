@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(819, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260126031700")
 mod:SetCreatureID(68476)
 mod:SetEncounterID(1575)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 1)
@@ -35,49 +35,44 @@ local warnBestialCry			= mod:NewStackAnnounce(136817, 3)
 local warnRampage				= mod:NewTargetNoFilterAnnounce(136821, 4, nil, "Tank|Healer")
 local warnDireFixate			= mod:NewTargetAnnounce(140946, 4)
 
-local specWarnCharge			= mod:NewSpecialWarningYou(136769)--Maybe add a near warning later. person does have 3.4 seconds to react though and just move out of group.
-local yellCharge				= mod:NewYell(136769)
-local specWarnDoubleSwipe		= mod:NewSpecialWarningSpell(136741, nil, nil, nil, 2)
-local specWarnPuncture			= mod:NewSpecialWarningStack(136767, nil, 9)--9 seems like a good number, we'll start with that. Timing wise the swap typically comes when switching gates though.
-local specWarnPunctureOther		= mod:NewSpecialWarningTaunt(136767)
-local specWarnSandTrap			= mod:NewSpecialWarningMove(136723)
-local specWarnDino				= mod:NewSpecialWarningSwitch("ej7086", "-Healer")
-local specWarnMending			= mod:NewSpecialWarningInterrupt(136797, "-Healer")--High priority interrupt. All dps needs warning because boss heals 1% per second it's not interrupted.
-local specWarnOrbofControl		= mod:NewSpecialWarning("specWarnOrbofControl", false)--Usually an assigned role for 1-2 people. Do not want someone assigned to interrupts for example hear this and think it's interrupt time. This should be turned on by orb person
-local specWarnVenomBolt			= mod:NewSpecialWarningInterrupt(136587)--Can be on for all since it only triggers off target/focus
-local specWarnChainLightning	= mod:NewSpecialWarningInterrupt(136480)--Can be on for all since it only triggers off target/focus
-local specWarnFireball			= mod:NewSpecialWarningInterrupt(136465)--Can be on for all since it only triggers off target/focus
-local specWarnLivingPoison		= mod:NewSpecialWarningMove(136646)
-local specWarnFrozenBolt		= mod:NewSpecialWarningMove(136573)--Debuff used by Frozen Orbs
-local specWarnLightningNova		= mod:NewSpecialWarningMove(136490)--Mainly for LFR or normal. On heroic you're going to die.
-local specWarnHex				= mod:NewSpecialWarningYou(136512)
-local specWarnJalak				= mod:NewSpecialWarningSwitch("ej7087", "Tank")--To pick him up (and maybe dps to switch, depending on strat)
-local specWarnDireCall			= mod:NewSpecialWarningCount(137458, nil, nil, nil, 2)--Heroic
-local specWarnDireFixate		= mod:NewSpecialWarningRun(140946, nil, nil, nil, 4)--Heroic
+local specWarnCharge			= mod:NewSpecialWarningYou(136769, nil, nil, nil, 1, 2)--Maybe add a near warning later. person does have 3.4 seconds to react though and just move out of group.
+local yellCharge				= mod:NewShortYell(136769)
+local specWarnDoubleSwipe		= mod:NewSpecialWarningDodge(136741, nil, nil, nil, 2, 2)
+local specWarnPuncture			= mod:NewSpecialWarningStack(136767, nil, 9, nil, nil, 1, 6)--9 seems like a good number, we'll start with that. Timing wise the swap typically comes when switching gates though.
+local specWarnPunctureOther		= mod:NewSpecialWarningTaunt(136767, nil, nil, nil, 1, 2)
+local specWarnGTFO				= mod:NewSpecialWarningGTFO(136723, nil, nil, nil, 1, 8)
+local specWarnDino				= mod:NewSpecialWarningSwitch(-7086, "-Healer", nil, nil, 1, 2)
+local specWarnMending			= mod:NewSpecialWarningInterrupt(136797, "-Healer", nil, nil, 1, 2)--High priority interrupt. All dps needs warning because boss heals 1% per second it's not interrupted.
+local specWarnOrbofControl		= mod:NewSpecialWarning("specWarnOrbofControl", false, nil, nil, 1, 17)--Usually an assigned role for 1-2 people. Do not want someone assigned to interrupts for example hear this and think it's interrupt time. This should be turned on by orb person
+local specWarnVenomBolt			= mod:NewSpecialWarningInterrupt(136587, nil, nil, nil, 1, 2)--Can be on for all since it only triggers off target/focus
+local specWarnChainLightning	= mod:NewSpecialWarningInterrupt(136480, nil, nil, nil, 1, 2)--Can be on for all since it only triggers off target/focus
+local specWarnFireball			= mod:NewSpecialWarningInterrupt(136465, nil, nil, nil, 1, 2)--Can be on for all since it only triggers off target/focus
+local specWarnHex				= mod:NewSpecialWarningYou(136512, nil, nil, nil, 1, 17)
+local specWarnJalak				= mod:NewSpecialWarningSwitch(-7087, "Tank", nil, nil, 1, 2)--To pick him up (and maybe dps to switch, depending on strat)
+local specWarnDireCall			= mod:NewSpecialWarningCount(137458, nil, nil, nil, 2, 2, 3)--Heroic
+local specWarnDireFixate		= mod:NewSpecialWarningRun(140946, nil, nil, nil, 4, 2, 3)--Heroic
 
 local timerDoor					= mod:NewTimer(113.5, "timerDoor", 2457, nil, nil, 6)
 local timerAdds					= mod:NewTimer(18.91, "timerAdds", 43712, nil, nil, 1)
-local timerDinoCD				= mod:NewNextTimer(18.9, "ej7086", nil, nil, nil, 1, 137237)
+local timerDinoCD				= mod:NewNextTimer(18.9, -7086, nil, nil, nil, 1, 137237)
 local timerCharge				= mod:NewCastTimer(3.4, 136769)
 local timerChargeCD				= mod:NewCDTimer(50, 136769, nil, nil, nil, 3)--50-60 second depending on i he's casting other stuff or stunned
 local timerDoubleSwipeCD		= mod:NewCDTimer(16.5, 136741)--16.5 second cd unless delayed by a charge triggered double swipe, then it's extended by failsafe code
 local timerPuncture				= mod:NewTargetTimer(90, 136767, nil, false, 2)
 local timerPunctureCD			= mod:NewCDTimer(10.5, 136767, nil, "Tank|Healer", nil, 5)
-local timerJalakCD				= mod:NewNextTimer(10, "ej7087", nil, nil, nil, 1, 2457)--Maybe it's time for a better worded spawn timer than "Next mobname". Maybe NewSpawnTimer with "mobname activates" or something.
+local timerJalakCD				= mod:NewNextTimer(10, -7087, nil, nil, nil, 1, 2457)--Maybe it's time for a better worded spawn timer than "Next mobname". Maybe NewSpawnTimer with "mobname activates" or something.
 local timerBestialCryCD			= mod:NewNextCountTimer(10, 136817, nil, nil, nil, 2)
 local timerDireCallCD			= mod:NewCDCountTimer(60.4, 137458, nil, nil, nil, 2)--Heroic (every 60.4-70 seconds)
 
 local berserkTimer				= mod:NewBerserkTimer(720)
 
-mod:AddBoolOption("RangeFrame")
-mod:AddBoolOption("SetIconOnCharge")
-mod:AddBoolOption("SetIconOnAdds", false) -- use custom string.
-mod.findFastestComputer = {"SetIconOnAdds"} -- for set icon stuff.
+mod:AddSetIconOption("SetIconOnCharge", 136769, true, 0, {1})
+mod:AddSetIconOption("SetIconOnAdds", nil, true, 5, {8, 7, 6, 5, 4, 3})
 
-local doorNumber = 0
-local direNumber = 0
-local shamandead = 0
-local jalakEngaged = false
+--local shamandead = 0
+mod.vb.doorNumber = 0
+mod.vb.direNumber = 0
+mod.vb.jalakEngaged = false
 local Farraki	= DBM:EJ_GetSectionInfo(7098)
 local Gurubashi	= DBM:EJ_GetSectionInfo(7100)
 local Drakkari	= DBM:EJ_GetSectionInfo(7103)
@@ -92,10 +87,10 @@ local balcMobs = {
 }
 
 function mod:OnCombatStart(delay)
-	doorNumber = 0
-	direNumber = 0
-	shamandead = 0
-	jalakEngaged = false
+--	shamandead = 0
+	self.vb.doorNumber = 0
+	self.vb.direNumber = 0
+	self.vb.jalakEngaged = false
 	timerPunctureCD:Start(10-delay)
 	timerDoubleSwipeCD:Start(16-delay)--16-17 second variation
 	timerDoor:Start(16.5-delay)
@@ -111,9 +106,6 @@ end
 
 function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 --[[
@@ -130,20 +122,24 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 136741 and self:AntiSpam(3, 5) then--Regular double swipe
 		specWarnDoubleSwipe:Show()
+		specWarnDoubleSwipe:Play("watchstep")
 		--The only flaw is charge is sometimes delayed by unexpected events like using an orb, we may fail to start timer once in a while when it DOES come before a charge.
 		if timerChargeCD:GetTime() < 32 then--Check if charge is less than 18 seconds away, if it is, double swipe is going to be delayed by quite a bit and we'll trigger timer after charge
 			timerDoubleSwipeCD:Start()
 		end
 	elseif spellId == 136770 and self:AntiSpam(3, 5) then--Double swipe that follows a charge (136769)
 		specWarnDoubleSwipe:Show()
+		specWarnDoubleSwipe:Play("watchstep")
 		timerDoubleSwipeCD:Start(6.2)--Hard coded failsafe. 136741 version is always 11 seconds after 136770 version (was 10.6)
 	elseif spellId == 137458 then
-		direNumber = direNumber + 1
-		specWarnDireCall:Show(direNumber)
-		timerDireCallCD:Start(nil, direNumber+1)--CD still reset when he breaks a door?
+		self.vb.direNumber = self.vb.direNumber + 1
+		specWarnDireCall:Show(self.vb.direNumber)
+		specWarnDireCall:Play("aesoon")
+		timerDireCallCD:Start(nil, self.vb.direNumber+1)--CD still reset when he breaks a door?
 	elseif spellId == 136587 then
 		if args.sourceGUID == UnitGUID("target") or args.sourceGUID == UnitGUID("focus") then
 			specWarnVenomBolt:Show(args.sourceName)
+			specWarnVenomBolt:Play("kickcast")
 		end
 	end
 end
@@ -152,6 +148,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 136797 then
 		specWarnMending:Show(args.sourceName)
+		specWarnMending:Play("kickcast")
 	end
 end
 
@@ -166,10 +163,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			if amount >= threatamount then
 				specWarnPuncture:Show(amount)
+				specWarnPuncture:Play("stackhigh")
 			end
 		else
 			if amount >= threatamount and not DBM:UnitDebuff("player", args.spellName) and not UnitIsDeadOrGhost("player") then--Other tank has at least one stack and you have none
 				specWarnPunctureOther:Show(args.destName)--So nudge you to taunt it off other tank already.
+				specWarnPunctureOther:Play("tauntboss")
 			end
 		end
 	--"<317.2 15:12:36> [CLEU] SPELL_AURA_APPLIED_DOSE#false#0xF1310B7C0000383C#Horridon#68168#0#0xF1310B7C0000383C#Horridon#68168#0#137240#Cracked Shell#1#BUFF#4", -- [21950]
@@ -184,6 +183,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 137237 then
 		if self.Options.specWarnOrbofControl then
 			specWarnOrbofControl:Show()
+			specWarnOrbofControl:Play("useitem")
 		else
 			warnOrbofControl:Show()
 		end
@@ -192,18 +192,22 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 136480 then
 		if args.sourceGUID == UnitGUID("target") or args.sourceGUID == UnitGUID("focus") then
 			specWarnChainLightning:Show(args.sourceName)
+			specWarnChainLightning:Play("kickcast")
 		end
 	elseif spellId == 136465 then
 		if args.sourceGUID == UnitGUID("target") or args.sourceGUID == UnitGUID("focus") then
 			specWarnFireball:Show(args.sourceName)
+			specWarnFireball:Play("kickcast")
 		end
 	elseif spellId == 140946 then
 		warnDireFixate:CombinedShow(1.0, args.destName)
 		if args:IsPlayer() then
 			specWarnDireFixate:Show()
+			specWarnDireFixate:Play("justrun")
 		end
 	elseif spellId == 136512 and args:IsPlayer() then
 		specWarnHex:Show()
+		specWarnHex:Play("debuffyou")
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -215,15 +219,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
-	if spellId == 136723 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
-		specWarnSandTrap:Show()
-	elseif spellId == 136646 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
-		specWarnLivingPoison:Show()
-	elseif spellId == 136573 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
-		specWarnFrozenBolt:Show()
-	elseif spellId == 136490 and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
-		specWarnLightningNova:Show()
+function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
+	if (spellId == 136723 or spellId == 136646 or spellId == 136573 or spellId == 136490) and destGUID == UnitGUID("player") and self:AntiSpam(3, 2) then
+		specWarnGTFO:Show(spellName)
+		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
@@ -232,10 +231,11 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 --"<372.2 21:39:53> [RAID_BOSS_EMOTE] RAID_BOSS_EMOTE#Amani forces pour from the Amani Tribal Door!#War-God Jalak#0#false", -- [77469]
 --"<515.3 21:42:16> [INSTANCE_ENCOUNTER_ENGAGE_UNIT] Fake Args:#1#1#Horridon#0xF1310B7C0000467C#elite#522686397#1#1#War-God Jalak
 function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT(event)
-	if UnitExists("boss2") and self:GetCIDFromGUID(UnitGUID("boss2")) == 69374 and not jalakEngaged then--Jalak is jumping down
-		jalakEngaged = true--Set this so we know not to concern with 4th door anymore (plus so we don't fire extra warnings when we wipe and ENGAGE fires more)
+	if UnitExists("boss2") and self:GetCIDFromGUID(UnitGUID("boss2")) == 69374 and not self.vb.jalakEngaged then--Jalak is jumping down
+		self.vb.jalakEngaged = true--Set this so we know not to concern with 4th door anymore (plus so we don't fire extra warnings when we wipe and ENGAGE fires more)
 		timerJalakCD:Cancel()
 		specWarnJalak:Show()
+		specWarnJalak:Play("bigmob")
 		timerBestialCryCD:Start(5, 1)
 		self:UnregisterShortTermEvents()--TODO, maybe add unit health checks to warn dog is close to 40% if we aren't done with doors yet. If it's added, we can unregister health here as well
 	end
@@ -258,13 +258,10 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 69374 then
 		timerBestialCryCD:Cancel()
-	elseif cid == 69176 then--shaman
-		shamandead = shamandead + 1
-		if shamandead == 3 then
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
-		end
+--	elseif cid == 69176 then--shaman
+--		shamandead = shamandead + 1
+--		if shamandead == 3 then
+--		end
 	end
 end
 
@@ -273,12 +270,14 @@ function mod:OnSync(msg, targetname)
 		local target = DBM:GetUnitFullName(targetname)
 		if target then
 			timerDoubleSwipeCD:Cancel()
-			warnCharge:Show(target)
 			timerCharge:Start()
 			timerChargeCD:Start()
 			if target == UnitName("player") then
 				specWarnCharge:Show()
+				specWarnCharge:Play("chargemove")
 				yellCharge:Yell()
+			else
+				warnCharge:Show(target)
 			end
 			if UnitExists(target) and self.Options.SetIconOnCharge then
 				self:SetIcon(target, 1, 5)--star
@@ -289,36 +288,34 @@ function mod:OnSync(msg, targetname)
 	--Halfway through it (literlaly exact center) Dinomancers spawn at 56.75
 	--Then, before the dinomancer, lesser adds spawn twice splitting that timer into 3rds
 	--So it goes, door, 18.91 seconds later, 1 add jumps down. 18.91 seconds later, next 2 drop down. 18.91 seconds later, dinomancer drops down, then 56.75 seconds later, next door starts.
-		doorNumber = doorNumber + 1
+		self.vb.doorNumber = self.vb.doorNumber + 1
 		timerDinoCD:Schedule(37.8)
 		specWarnDino:Schedule(56.75)
+		specWarnDino:ScheduleVoice(56.75, "killmob")
 		if self.Options.SetIconOnAdds then
 			self:ScanForMobs(69221, 0, 7, 6, balcMobs, 64)
 		end
-		if doorNumber == 1 then
+		if self.vb.doorNumber == 1 then
 			timerAdds:Start(18.9, Farraki)
 			warnAdds:Schedule(18.9, Farraki)
 			self:Schedule(18.9, addsDelay, Farraki)
-		elseif doorNumber == 2 then
+		elseif self.vb.doorNumber == 2 then
 			timerAdds:Start(18.9, Gurubashi)
 			warnAdds:Schedule(18.9, Gurubashi)
 			self:Schedule(18.9, addsDelay, Gurubashi)
-		elseif doorNumber == 3 then
+		elseif self.vb.doorNumber == 3 then
 			timerAdds:Start(18.91, Drakkari)
 			warnAdds:Schedule(18.9, Drakkari)
 			self:Schedule(18.9, addsDelay, Drakkari)
-		elseif doorNumber == 4 then
+		elseif self.vb.doorNumber == 4 then
 			timerAdds:Start(18.9, Amani)
 			warnAdds:Schedule(18.9, Amani)
 			self:Schedule(18.9, addsDelay, Amani)
-			if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
-				DBM.RangeCheck:Show(5)
-			end
 		end
-		if doorNumber < 4 then
+		if self.vb.doorNumber < 4 then
 			timerDoor:Start()
 		else
-			if not jalakEngaged then
+			if not self.vb.jalakEngaged then
 				timerJalakCD:Start(143)
 			end
 		end

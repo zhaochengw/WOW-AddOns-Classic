@@ -14,6 +14,11 @@ local VERSIONINFO = GetAddOnMetadata("TooltipItemIcon", "X-Release") or "Alpha"
 local NEWTOOLTIPS = (C_TooltipInfo and TooltipUtil and TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall) and true or false
 
 --------------------------------------------------------------------------------
+-- SPECIAL HANDLING: SECRETS
+--------------------------------------------------------------------------------
+local issecretvalue = issecretvalue or function() end -- where 'issecretvalue' is not defined use the empty function (always returns nil) instead
+
+--------------------------------------------------------------------------------
 -- VARIABLES
 --------------------------------------------------------------------------------
 
@@ -55,6 +60,15 @@ elseif GetSpellInfo then
 	GetSpellTexture = function(...)
 		local _, _, texture = GetSpellInfo(...)
 		return texture
+	end
+end
+local GetMerchantItemInfo = GetMerchantItemInfo
+if C_MerchantFrame and C_MerchantFrame.GetItemInfo then -- ### hyrid
+	GetMerchantItemInfo = function(index)
+		local info = C_MerchantFrame.GetItemInfo(index)
+		if info then
+			return info.name, info.texture, info.price, info.stackCount, info.numAvailable, info.isPurchasable, info.isUsable, info.hasExtendedCost, info.currencyID
+		end
 	end
 end
 
@@ -379,14 +393,17 @@ DisplayIconTable.inside = function(data, iconpath)
 	data.needspadding = true -- always use padding for ItemRefTooltip and similar tooltips
 
 	-- show the icon
-	icon:SetFormattedText("%s |T%s:%d|t", oldtext, iconpath, texticonsize)
+	icon:SetFormattedText("%s  |T%s:%d|t", oldtext, iconpath, texticonsize)
 	icon:Show()
 
 	-- adjust height of title if icon size is large - this controls height of whole top line
-	local cheight, iheight = control:GetHeight(), icon:GetHeight() * .8 -- adjustment factor found by trial and error
-	if cheight < iheight then
-		control:SetHeight(iheight)
-		data.insideresetheight = cheight
+	local cheight, iheight = control:GetHeight(), icon:GetHeight()
+	if not (issecretvalue(cheight) or issecretvalue(iheight)) then -- don't try to work with secret values
+		iheight =  iheight * .8 -- adjustment factor found by trial and error
+		if cheight < iheight then
+			control:SetHeight(iheight)
+			data.insideresetheight = cheight
+		end
 	end
 
 	data.parent:Show() -- required to reformat layout correctly
