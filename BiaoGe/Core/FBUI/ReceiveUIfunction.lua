@@ -188,7 +188,8 @@ function BG.ReceiveJinEUI(FB, t, b, bb, i, ii)
     BG.SetBorderAlpha(bt)
     preWidget = bt
     BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = bt
-
+    BG.ReceiveFrame[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i] = 
+    BG.CreateQiankuanButton(bt, "receive")
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         BG.ReceiveFrameDs[FB .. 1]["boss" .. BossNum(FB, b, t)]["ds" .. i]:Show()

@@ -225,6 +225,37 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.SUNSTRIDER_ISLE] = {{62.26,42.31}}},
             [npcKeys.zoneID] = zoneIDs.SUNSTRIDER_ISLE,
         },
+        [15891] = { -- Lunar Festival Herald
+            [npcKeys.spawns] = {
+                [zoneIDs.ORGRIMMAR] = {{49.88,81.2}},
+                [zoneIDs.UNDERCITY] = {{66.74,43.39}},
+                [zoneIDs.THUNDER_BLUFF] = {{38.37,63.42}},
+                -- [zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {}, not showing them here as they don't start quests here
+            },
+        },
+        [15892] = { -- Lunar Festival Emissary
+            [npcKeys.spawns] = {
+                [zoneIDs.STORMWIND_CITY] = {{61.73,75.73}},
+                [zoneIDs.IRONFORGE] = {{30.92,61.59}},
+                [zoneIDs.DARNASSUS] = {{45.16,52.24}},
+                -- [zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {}, not showing them here as they don't start quests here
+            },
+        },
+        [15895] = { -- Lunar Festival Harbinger
+            [npcKeys.spawns] = {
+                [zoneIDs.DARNASSUS] = {{38.59,30.28}},
+                [zoneIDs.UNDERCITY] = {{65.62,36.0}},
+                [zoneIDs.ORGRIMMAR] = {{52.39,58.49}},
+                [zoneIDs.THUNDER_BLUFF] = {{71.12,28.2}},
+                [zoneIDs.IRONFORGE] = {{28.85,16.23}},
+                [zoneIDs.ELWYNN_FOREST] = {{34.24,50.56}},
+                [zoneIDs.THE_EXODAR] = {{74.02,57.47}},
+                [zoneIDs.SILVERMOON_CITY] = {{73.1,82.6}},
+                [zoneIDs.SHATTRATH_CITY] = {{53.29,33.1},{48.14,36.87}},
+                [zoneIDs.DALARAN] = {{47.65,43.76}},
+                [zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{85.29,64.88},{62.92,19.27}},
+            },
+        },
         [16802] = { -- Lor'themar Theron
             [npcKeys.spawns] = {
                 [zoneIDs.SILVERMOON_CITY] = {
@@ -501,6 +532,9 @@ function MopNpcFixes.Load()
         [47250] = { -- Carvo Blastbolt
             [npcKeys.spawns] = {[zoneIDs.NEW_TINKERTOWN_OLD] = {{50.95,31.94}}},
             [npcKeys.zoneID] = zoneIDs.NEW_TINKERTOWN_OLD,
+        },
+        [47897] = { -- Lunar Festival Vendor
+            [npcKeys.spawns] = {[zoneIDs.ORGRIMMAR] = {{53.1,56.13}}},
         },
         [49480] = { -- Tarindrella
             [npcKeys.spawns] = {[zoneIDs.SHADOWTHREAD_CAVE] = {{45.32,91.08}}},
@@ -3619,7 +3653,7 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.SHRINE_OF_TWO_MOONS_TOP_FLOOR,
             [npcKeys.friendlyToFaction] = "H", -- let's just show these for Horde only and viceversa
         },
-        [64045] = { -- Warpweaver Ramahesh
+        [64045] = { -- Thaumaturge Faraket
             [npcKeys.spawns] = {[zoneIDs.SHRINE_OF_SEVEN_STARS_TOP_FLOOR] = {{53.06,89.16}}},
             [npcKeys.zoneID] = zoneIDs.SHRINE_OF_SEVEN_STARS_TOP_FLOOR,
             [npcKeys.friendlyToFaction] = "A", -- let's just show these for Alliance only and viceversa
@@ -3656,6 +3690,10 @@ function MopNpcFixes.Load()
         },
         [64097] = { -- Bero
             [npcKeys.npcFlags] = npcFlags.VENDOR + npcFlags.REPAIR,
+        },
+        [64101] = { -- Taijing the Cyclone
+            [npcKeys.spawns] = {[zoneIDs.SHRINE_OF_SEVEN_STARS] = {{44.92,41.34}}},
+            [npcKeys.zoneID] = zoneIDs.SHRINE_OF_SEVEN_STARS,
         },
         [64183] = { -- Enormous Stone Quilen
             [npcKeys.name] = "Enormous Stone Quilen",
@@ -4609,10 +4647,12 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
         },
         [67660] = { -- Archmage Aethas Sunreaver
+            [npcKeys.spawns] = {
                 [zoneIDs.ISLE_OF_THUNDER] = {
                     {33,52.8,phases.IOT_HORDE_BOAT}, -- needs better coords
                     {46.87,66.91,phases.IOT_HORDE_DAWNSEEKER_PROMONTORY},
                 },
+            },
             [npcKeys.zoneID] = zoneIDs.ISLE_OF_THUNDER,
         },
         [67662] = { -- High Arcanist Savor
@@ -5467,7 +5507,6 @@ function MopNpcFixes.Load()
             [npcKeys.maxLevel] = 25,
             [npcKeys.zoneID] = zoneIDs.DREAD_WASTES,
             [npcKeys.spawns] = {[zoneIDs.DREAD_WASTES] = {{26.18,50.3}}},
-            [npcKeys.friendlyToFaction] = nil,
             [npcKeys.questStarts] = nil,
             [npcKeys.questEnds] = nil,
         },
@@ -5477,7 +5516,6 @@ function MopNpcFixes.Load()
             [npcKeys.maxLevel] = 25,
             [npcKeys.zoneID] = zoneIDs.VALLEY_OF_THE_FOUR_WINDS,
             [npcKeys.spawns] = {[zoneIDs.VALLEY_OF_THE_FOUR_WINDS] = {{40.53,43.66}}},
-            [npcKeys.friendlyToFaction] = nil,
             [npcKeys.questStarts] = nil,
             [npcKeys.questEnds] = nil,
         },
@@ -5487,7 +5525,6 @@ function MopNpcFixes.Load()
             [npcKeys.maxLevel] = 25,
             [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
             [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{67.87,84.69}}},
-            [npcKeys.friendlyToFaction] = nil,
             [npcKeys.questStarts] = nil,
             [npcKeys.questEnds] = nil,
         },
@@ -5497,7 +5534,6 @@ function MopNpcFixes.Load()
             [npcKeys.maxLevel] = 25,
             [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
             [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{57.04,29.12}}},
-            [npcKeys.friendlyToFaction] = nil,
             [npcKeys.questStarts] = nil,
             [npcKeys.questEnds] = nil,
         },
@@ -5935,17 +5971,21 @@ function MopNpcFixes.Load()
             [npcKeys.zoneID] = zoneIDs.ISLE_OF_THUNDER,
         },
         [69425] = { -- Sunwalker Dezco
+            [npcKeys.spawns] = {
                 [zoneIDs.ISLE_OF_THUNDER] = {
                     {33,52.8,phases.IOT_HORDE_BOAT}, -- needs better coords
                     {46.72,66.75,phases.IOT_HORDE_DAWNSEEKER_PROMONTORY},
                 },
+            },
             [npcKeys.zoneID] = zoneIDs.ISLE_OF_THUNDER,
         },
         [69433] = { -- Magistrix Saia
+            [npcKeys.spawns] = {
                 [zoneIDs.ISLE_OF_THUNDER] = {
                     {33,52.8,phases.IOT_HORDE_BOAT}, -- needs better coords
                     {46.92,66.89,phases.IOT_HORDE_DAWNSEEKER_PROMONTORY},
                 },
+            },
             [npcKeys.zoneID] = zoneIDs.ISLE_OF_THUNDER,
         },
         [69617] = { -- Lor'themar Theron
@@ -6188,8 +6228,9 @@ function MopNpcFixes.Load()
         [70059] = { -- Stunted Direhorn
             [npcKeys.zoneID] = zoneIDs.ISLE_OF_GIANTS,
             [npcKeys.spawns] = {
-                [zoneIDs.ISLE_OF_GIANTS] = {{67,75.2},{69.6,71.4},{69.8,71.6}}},
+                [zoneIDs.ISLE_OF_GIANTS] = {{67,75.2},{69.6,71.4},{69.8,71.6}},
                 [zoneIDs.ISLE_OF_THUNDER] = {{50.4,42.8},{50.8,43.4},{51,43.6}},
+            },
         },
         [70100] = { -- Wrathion
             [npcKeys.name] = "Wrathion",
@@ -6371,6 +6412,9 @@ function MopNpcFixes.Load()
             [npcKeys.spawns] = {[zoneIDs.ISLE_OF_THUNDER] = {{51.72,46.53}}},
             [npcKeys.npcFlags] = npcFlags.REPAIR,
         },
+        [70544] = { -- Hekima the Wise
+            [npcKeys.spawns] = {[zoneIDs.BLOOD_IN_THE_SNOW_SCENARIO] = {{47.9,48.4}}},
+        },
         [70551] = { -- Scout Captain Elsia
             [npcKeys.name] = "Scout Captain Elsia",
             [npcKeys.minLevel] = 90,
@@ -6408,58 +6452,299 @@ function MopNpcFixes.Load()
             [npcKeys.friendlyToFaction] = "AH",
             [npcKeys.npcFlags] = npcFlags.INNKEEPER,
         },
+        [70751] = { -- Card Trader Ami
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{60.42,77.44},{-1,-1}}},
+        },
+        [70752] = { -- Card Trader Leila
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{52.33,25.3},{-1,-1}}},
+        },
+        [70921] = { -- Wrathion
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{51.41,55.58}}},
+        },
+        [70978] = { -- Vol'jin
+            [npcKeys.minLevel] = 93,
+            [npcKeys.maxLevel] = 93,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{49.69,40.07}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+            [npcKeys.friendlyToFaction] = "AH",
+            [npcKeys.questStarts] = {32811},
+            [npcKeys.questEnds] = {32811,32871},
+        },
         [70980] = { -- Seer Hao Pham Roo
             [npcKeys.name] = "Seer Hao Pham Roo",
-            [npcKeys.minLevel] = 35,
-            [npcKeys.maxLevel] = 35,
-            [npcKeys.zoneID] = 5841,
-            [npcKeys.spawns] = {
-                [5841] = {{43.6,51}},
-            },
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{44.97,47.84,phases.SEER_HAO_DOWN},{43.76,51.11,phases.SEER_HAO_UP}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
             [npcKeys.friendlyToFaction] = "AH",
             [npcKeys.questStarts] = {32816},
-            [npcKeys.questEnds] = {32816},
+            [npcKeys.questEnds] = {32815,32816},
+        },
+        [70981] = { -- Rope Anchor
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{44.86,49.12}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [70986] = { -- Kor'kron Lieutenant
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [70998] = { -- Kor'kron Assassin
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [70999] = { -- Kor'kron Marauder
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71000] = { -- Mercenary Engineer
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71001] = { -- Mercenary Shredder
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71002] = { -- Kor'kron Incinerator
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71005] = { -- Kor'kron Demolisher
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.THE_BARRENS] = {{53.97,34.25}}}, -- there are more, but here's one!
+            [npcKeys.zoneID] = zoneIDs.THE_BARRENS,
+        },
+        [71006] = { -- Kor'kron Overseer
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71007] = { -- Kor'kron Immolator
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71008] = { -- Kor'kron Paratrooper
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71009] = { -- Kor'kron Flameworg
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71010] = { -- Kor'kron Outrider
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71011] = { -- Kor'kron Battlewolf
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+        },
+        [71012] = { -- Kor'kron Butcher
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
         },
         [71027] = { -- Amber Kearnen
             [npcKeys.name] = "Amber Kearnen",
-            [npcKeys.minLevel] = 0,
-            [npcKeys.maxLevel] = 0,
-            [npcKeys.zoneID] = 0,
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{54.41,9.8}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
             [npcKeys.friendlyToFaction] = "A",
+        },
+        [71029] = { -- Yu'lon Challenge Gong
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.THE_JADE_FOREST] = {{59.11,59.02}}},
+            [npcKeys.zoneID] = zoneIDs.THE_JADE_FOREST,
+        },
+        [71057] = { -- Sully "The Pickle" McLeary
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{52.65,47.89}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71058] = { -- Cloaking Chicken
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{54.36,9.76}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
         },
         [71095] = { -- Reflection of Lei Shi
             [npcKeys.spawns] = {[zoneIDs.TERRACE_OF_ENDLESS_SPRING] = {{39.04,48.71},{58.88,48.71},{-1,-1}}},
             [npcKeys.zoneID] = zoneIDs.TERRACE_OF_ENDLESS_SPRING,
         },
+        [71108] = { -- Wrathion
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{68.84,44.55}}},
+        },
+        [71109] = { -- Xuen Challenge Gong
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{68.54,42.97}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [71131] = { -- High Overseer Bloodmane
+            [npcKeys.minLevel] = 92,
+            [npcKeys.maxLevel] = 92,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{54.07,42.48}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71139] = { -- Wrathion
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{41.21,60.11}}},
+        },
         [71143] = { -- Windfeather Chick
             [npcKeys.zoneID] = zoneIDs.TIMELESS_ISLE,
             [npcKeys.spawns] = {[zoneIDs.TIMELESS_ISLE] = {{26.4,52.4},{26.6,52.2},{28.4,50.4},{29.4,52.4},{29.4,52.6},{29.4,60.4},{29.4,67.2},{29.6,52.4},{29.6,52.6},{29.6,60.4},{29.6,67.2},{29.8,34.8},{29.8,60.6},{30,34.2},{30.4,39.2},{30.4,66.2},{30.6,38.8},{30.6,41.4},{30.6,41.6},{30.6,62.2},{31.2,50},{31.4,49},{31.4,64.8},{31.4,78.4},{31.4,78.8},{31.6,50.2},{31.6,51.2},{31.6,60},{31.6,64.8},{31.6,78.8},{31.6,79.8},{32,52},{32,61.4},{32.4,52.8},{32.4,70.6},{32.6,52.4},{32.6,52.8},{32.8,69.2},{33,65.8},{33.2,51.4},{33.2,80.2},{33.6,51.8},{33.6,66.4},{33.6,66.6},{33.6,79.6},{34,81.4},{34,81.6},{34.8,82.2},{35.4,38.2},{35.4,38.8},{35.8,38.2},{35.8,38.8},{35.8,82.6},{36,82.2},{36.4,81},{36.6,83.4},{37.4,38.8},{37.6,39},{39,38},{39,41.2},{39.2,44.8},{39.4,44},{39.6,41.6},{40,41},{40.4,81.4},{40.6,80},{40.8,81.2},{41.2,69.4},{41.2,69.6},{41.6,81.2},{41.8,80.2},{42.2,69.8},{42.4,44.8},{42.4,65.4},{42.4,68.6},{42.6,44.4},{42.6,44.8},{42.6,67.2},{43,68},{43,68.6},{43,69.6},{43.2,66.2},{43.6,67.4},{44.2,61.4},{44.2,61.6},{44.4,55.4},{44.4,55.6},{44.4,65.4},{44.6,54.8},{44.8,53.4},{44.8,53.6},{44.8,62.2},{44.8,62.6},{45,56.2},{45.2,52.4},{45.2,56.8}}},
         },
+        [71146] = { -- Niuzao Challenge Gong
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.TOWNLONG_STEPPES] = {{41.34,59.17}}},
+            [npcKeys.zoneID] = zoneIDs.TOWNLONG_STEPPES,
+        },
+        [71147] = { -- Vol'jin
+            [npcKeys.minLevel] = 93,
+            [npcKeys.maxLevel] = 93,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{49.69,40.07}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+            [npcKeys.friendlyToFaction] = "AH",
+        },
         [71148] = { -- Vol'jin
             [npcKeys.name] = "Vol'jin",
-            [npcKeys.minLevel] = 0,
-            [npcKeys.maxLevel] = 0,
-            [npcKeys.zoneID] = 0,
+            [npcKeys.minLevel] = 93,
+            [npcKeys.maxLevel] = 93,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{56.39,73.4}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
             [npcKeys.friendlyToFaction] = "H",
+        },
+        [71162] = { -- Rope Anchor
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{44,47.86}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [71165] = { -- Wrathion
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{40.42,57.44}}},
+        },
+        [71170] = { -- Chi-Ji Challenge Gong
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{40.02,53.61}}},
+            [npcKeys.zoneID] = zoneIDs.KRASARANG_WILDS,
+        },
+        [71171] = { -- Rope Anchor
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{43.33,49.55}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [71194] = { -- Rope Anchor
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{42.47,50.59}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [71196] = { -- Rope Anchor
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.KUN_LAI_SUMMIT] = {{43.29,51.87}}},
+            [npcKeys.zoneID] = zoneIDs.KUN_LAI_SUMMIT,
+        },
+        [71263] = { -- Darkspear Captive
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{53.09,43.59}}}, -- has more spawns
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71271] = { -- Kor'kron Command Posts
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{51.21,10.71}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71273] = { -- Operation: Darkspear Destruction
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{55.45,11.45}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71274] = { -- Kor'kron Supply Lines
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{49.86,15.5}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71292] = { -- Augur Narali
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{51.41,41.34}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71293] = { -- Deadeye Kail
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{51.93,43.54}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71320] = { -- Zen'tabra
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{51.79,39.3}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+            [npcKeys.friendlyToFaction] = "AH",
         },
         [71333] = { -- Ki'ta Arrowtusk
             [npcKeys.name] = "Ki'ta Arrowtusk",
-            [npcKeys.minLevel] = 0,
-            [npcKeys.maxLevel] = 0,
-            [npcKeys.zoneID] = 14,
-            [npcKeys.spawns] = {
-                [14] = {{49.8,40},{55,73.2}},
-            },
-            [npcKeys.friendlyToFaction] = "H",
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{49.8,40.1,phases.KITA_RAZOR_HILL},{55.03,73.29,phases.KITA_SENJIN_VILLAGE}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+            [npcKeys.friendlyToFaction] = "AH",
+            [npcKeys.questStarts] = {32872},
+            [npcKeys.questEnds] = {32872},
+        },
+        [71355] = { -- Zen'tabra
+            [npcKeys.name] = "Ki'ta Arrowtusk",
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{52.59,13.72}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71389] = { -- Project C4T Controller
+            [npcKeys.minLevel] = 1,
+            [npcKeys.maxLevel] = 1,
+            [npcKeys.spawns] = {[zoneIDs.DUROTAR] = {{54.35,9.89}}},
+            [npcKeys.zoneID] = zoneIDs.DUROTAR,
+        },
+        [71424] = { -- Wrathion
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.THE_VEILED_STAIR] = {{73.25,79.67}}},
         },
         [71426] = { -- Wrathion
             [npcKeys.name] = "Wrathion",
-            [npcKeys.minLevel] = 0,
-            [npcKeys.maxLevel] = 0,
-            [npcKeys.zoneID] = 6006,
-            [npcKeys.spawns] = {
-                [6006] = {{73.2,79.4}},
-            },
+            [npcKeys.minLevel] = 90,
+            [npcKeys.maxLevel] = 90,
+            [npcKeys.rank] = 1,
+            [npcKeys.spawns] = {[zoneIDs.THE_VEILED_STAIR] = {{75.3,76.27}}},
+            [npcKeys.zoneID] = zoneIDs.THE_VEILED_STAIR,
             [npcKeys.friendlyToFaction] = "AH",
         },
         [71920] = { -- Cursed Hozen Swabby
@@ -6861,6 +7146,17 @@ function MopNpcFixes:LoadFactionFixes()
     local zoneIDs = ZoneDB.zoneIDs
 
     local npcFixesHorde = {
+        [15898] = { -- Lunar Festival Vendor
+            [npcKeys.spawns] = {
+                [zoneIDs.THUNDER_BLUFF] = {{70.56,27.83}},
+                [zoneIDs.UNDERCITY] = {{66.45,36.02}},
+                [zoneIDs.MOONGLADE] = {{36.58,58.1},{36.3,58.53}},
+                [zoneIDs.SHATTRATH_CITY] = {{52.63,33.25},{48.64,36.29}},
+                [zoneIDs.SILVERMOON_CITY] = {{73.41,82.17}},
+                [zoneIDs.DALARAN] = {{47.93,43.32}},
+                [zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{63.34,19.37}},
+            },
+        },
         [59151] = { -- Zhu's Watch Courier
             [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{62.56, 25.46}}},
         },
@@ -6875,9 +7171,63 @@ function MopNpcFixes:LoadFactionFixes()
         [70297] = { -- Taoshi
             [npcKeys.spawns] = {[zoneIDs.ISLE_OF_THUNDER] = {{32.8, 32.6}}},
         },
+        [70616] = { -- Mingus Diggs
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70647] = { -- Dippy
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70648] = { -- Doopy
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70666] = { -- Ty'thar
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70677] = { -- Master Boom Boom
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70678] = { -- Grandpa Grumplefloot
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70736] = { -- Splat
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70737] = { -- Splat
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70740] = { -- Blingtron 3000
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70748] = { -- Argh
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70749] = { -- Ro-Shambo
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [70794] = { -- Blind Hero
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [71081] = { -- Mecha-Bruce
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
+        [71085] = { -- Razorgrin
+            [npcKeys.spawns] = {[zoneIDs.BRAWLGAR_ARENA] = {{51.7,49.8},{-1,-1}}},
+        },
     }
 
     local npcFixesAlliance = {
+        [15898] = { -- Lunar Festival Vendor
+            [npcKeys.spawns] = {
+                [zoneIDs.ELWYNN_FOREST] = {{34.81,50.33}},
+                [zoneIDs.IRONFORGE] = {{29.92,14.21}},
+                [zoneIDs.DARNASSUS] = {{39.93,30.82}},
+                [zoneIDs.MOONGLADE] = {{36.58,58.1},{36.3,58.53}},
+                [zoneIDs.SHATTRATH_CITY] = {{52.63,33.25},{48.64,36.29}},
+                [zoneIDs.THE_EXODAR] = {{74.02,58.23}},
+                [zoneIDs.DALARAN] = {{47.93,43.32}},
+                [zoneIDs.VALE_OF_ETERNAL_BLOSSOMS] = {{84.91,65.09}},
+            },
+        },
         [59151] = { -- Zhu's Watch Courier
             [npcKeys.spawns] = {[zoneIDs.KRASARANG_WILDS] = {{66.2, 30.8}}},
         },
@@ -6891,6 +7241,48 @@ function MopNpcFixes:LoadFactionFixes()
         },
         [70297] = { -- Taoshi
             [npcKeys.spawns] = {[zoneIDs.ISLE_OF_THUNDER] = {{63.2, 73.8}}},
+        },
+        [70616] = { -- Mingus Diggs
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70647] = { -- Dippy
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70648] = { -- Doopy
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70666] = { -- Ty'thar
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70677] = { -- Master Boom Boom
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70678] = { -- Grandpa Grumplefloot
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70736] = { -- Splat
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70737] = { -- Splat
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70740] = { -- Blingtron 3000
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70748] = { -- Argh
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70749] = { -- Ro-Shambo
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [70794] = { -- Blind Hero
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [71081] = { -- Mecha-Bruce
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
+        },
+        [71085] = { -- Razorgrin
+            [npcKeys.spawns] = {[zoneIDs.BIZMOS_BRAWLPUB] = {{50.7,57.2},{-1,-1}}},
         },
     }
 

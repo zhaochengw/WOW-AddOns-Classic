@@ -169,14 +169,7 @@ function addon:CreateColor(r, g, b, a)
 		b = b / 255
 	end
 
-	local color = CreateColor(r, g, b, a)
-	if not addon:HasVersion(120000) then -- TODO: remove in Midnight
-		-- oUF compat
-		color[1] = r
-		color[2] = g
-		color[3] = b
-	end
-	return color
+	return CreateColor(r, g, b, a)
 end
 
 do
@@ -189,4 +182,22 @@ do
 	function addon:FormatTime(timeInSeconds)
 		return timeFormatter:Format(tonumber(timeInSeconds))
 	end
+end
+
+--[[ namespace:SafeSetTrue(_object, key_) ![](https://img.shields.io/badge/function-blue)
+Safely set `object`'s `key` to `true` without tainting it.
+
+Note: This is incredibly hacky and might be fixed.
+--]]
+function addon:SafeSetTrue(object, key)
+	TextureLoadingGroupMixin.AddTexture({textures = object}, key)
+end
+
+--[[ namespace:SafeSetNil(_object, key_) ![](https://img.shields.io/badge/function-blue)
+Safely set `object`'s `key` to `nil` without tainting it.
+
+Note: This is incredibly hacky and might be fixed.
+--]]
+function addon:SafeSetNil(object, key)
+	TextureLoadingGroupMixin.RemoveTexture({textures = object}, key)
 end

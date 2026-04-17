@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2449, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260120055647")
+mod:SetRevision("20260322094133")
 mod:SetCreatureID(175546)
 mod:SetEncounterID(2419)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -9,14 +9,27 @@ mod:SetZone(2441)
 
 mod:RegisterCombat("combat")
 
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(350134, true, 2)--Infinite Breath
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(350134, true, 5, 0)--Infinite Breath
+mod:AddCustomTimerOptions(347371, true, 3, 0)--Grapeshot
+mod:AddCustomTimerOptions(1240097, true, 4, 0)--Time Bomb
+mod:AddCustomTimerOptions(352345, true, 3, 0)--Anchor Shot
 --Midnight private aura replacements
 --No private aura for https://www.wowhead.com/beta/spell=350134/infinite-breath yet. Check it if dungeon returns
-mod:AddPrivateAuraSoundOption(1240097, true, 1240097, 1)
-mod:AddPrivateAuraSoundOption(358947, true, 358947, 1)--GTFO
+mod:AddPrivateAuraSoundOption(1240097, true, 1240097, 1, 1, "debuffyou", 17)--Time Bomb
+mod:AddPrivateAuraSoundOption(352345, true, 352345, 1, 1, "targetyou", 2)--Anchor Shot
+mod:AddPrivateAuraSoundOption(358947, true, 358947, 1, 2, "watchfeet", 8)--GTFO
 
 function mod:OnLimitedCombatStart()
-	self:EnablePrivateAuraSound(1240097, "debuffyou", 17)
-	self:EnablePrivateAuraSound(358947, "watchfeet", 8)
+	self:EnableAlertOptions(350134, 591, "breathsoon", 2)
+
+	self:EnableTimelineOptions(350134, 591)
+	self:EnableTimelineOptions(347371, 592)
+	self:EnableTimelineOptions(1240097, 593)
+	self:EnableTimelineOptions(352345, 594)
+
 end
 
 --[[

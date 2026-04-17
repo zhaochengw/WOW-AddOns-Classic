@@ -31,20 +31,35 @@ end
 -- 获取可用日期
 function Addon:GetAvailableDate(IsFirst)
     AvailableDate = {}
-    if #TradeLog > 0 and TradeLog[#TradeLog].Date then
+    local filterName = Addon.Config.OnlyThisCharacter and Addon.Config.SelectName or nil
+    
+    if #TradeLog > 0 then
+        local lastValidYear, lastValidMonth, lastValidDay
         for i = 1, #TradeLog do
-            local year, month, day = ParseDate(TradeLog[i].Date)
-            if not AvailableDate[year] then
-                AvailableDate[year] = {}
+            local entry = TradeLog[i]
+            -- 檢查是否符合過濾條件
+            if not filterName or entry.PlayerName == filterName then
+                local year, month, day = ParseDate(entry.Date)
+                if year and month and day then
+                    if not AvailableDate[year] then
+                        AvailableDate[year] = {}
+                    end
+                    if not AvailableDate[year][month] then
+                        AvailableDate[year][month] = {}
+                    end
+                    AvailableDate[year][month][day] = true
+                    lastValidYear, lastValidMonth, lastValidDay = year, month, day
+                end
             end
-            if not AvailableDate[year][month] then
-                AvailableDate[year][month] ={}
+        end
+        
+        if IsFirst then
+            if lastValidYear then
+                Addon.SetYear, Addon.SetMonth, Addon.SetDay = lastValidYear, lastValidMonth, lastValidDay
+            else
+                Addon.SetYear, Addon.SetMonth, Addon.SetDay = ParseDate(date("%Y-%m-%d"))
             end
-            AvailableDate[year][month][day] = true
-       end
-       if IsFirst then
-            Addon.SetYear, Addon.SetMonth, Addon.SetDay = ParseDate(TradeLog[#TradeLog].Date)
-       end
+        end
     else
         if IsFirst then
             Addon.SetYear, Addon.SetMonth, Addon.SetDay = ParseDate(date("%Y-%m-%d"))
@@ -145,32 +160,27 @@ function Calendar:Initialize()
         t:SetText(L["Year"])
         t:SetPoint("LEFT", d, "LEFT", -25, 2)
 
-        local value = {}
-        local text = {}
-        local index = 1
-
-        for k in pairs(AvailableDate) do
-            table.insert(value, index)
-            table.insert(text, k)
-            index = index + 1
-        end
-
         UIDropDownMenu_Initialize(d, function(self)
+            local years = {}
+            for k in pairs(AvailableDate) do
+                table.insert(years, k)
+            end
+            table.sort(years, function(a, b) return tonumber(a) > tonumber(b) end) -- 降序排列年份
+
             local info = UIDropDownMenu_CreateInfo()
-            d.text = text
-            for i = 1, #text do
-                info.text = text[i]
-                info.value = value[i]
+            for i = 1, #years do
+                info.text = years[i]
+                info.value = years[i]
                 info.func = function(v)
-                    Addon.SetYear = text[v.value]
-                    UIDropDownMenu_SetText(d, text[v.value])
+                    Addon.SetYear = v.value
+                    UIDropDownMenu_SetText(d, v.value)
                     CloseDropDownMenus()
+                    Addon:RefreshCalendar()
                 end
-                info.arg1, info.arg2 = d, value[i]
+                info.checked = (Addon.SetYear == years[i])
                 UIDropDownMenu_AddButton(info)
             end
         end)
-        d.SetValue = function(v) Addon.SetYear = text[v] end
         d:SetScript("OnShow", function(self)
             UIDropDownMenu_SetText(self, Addon.SetYear)
         end)

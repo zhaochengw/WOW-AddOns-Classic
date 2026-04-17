@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["zhCN.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "zhCN");
 
 if not L then
-    T._LoadedFiles["zhCN.lua"] = "2.7.34";
+    T._LoadedFiles["zhCN.lua"] = "2.8.0-RC3";
     return;
 end;
 
@@ -145,6 +145,7 @@ L["DISABLEWARNING"] = [=[Decursive 已被禁用！
 L["DISEASE"] = "疾病"
 L["DONOT_BL_PRIO"] = "不将优先列表中的玩家加入黑名单"
 L["DONT_SHOOT_THE_MESSENGER"] = "Decursive 只是报告这些问题。所以，不要斩杀信使并解决实际问题。"
+L["ER_VERSION_NOTICE"] = "这是 Decursive 的早期版本。尽管您正在使用的版本被标记为正式发布版，但它可能仍然还不够完善，包括大量bug和Lua错误。我使用这个流程来获得更多反馈，因为使用alpha/beta版本的人还不够多。此消息每个版本只显示一次。"
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000未能施放于|r %s
 |cFF00AAAA%s|r]=]
 L["FOCUSUNIT"] = "焦点单位"
@@ -529,4 +530,4 @@ L["UNSTABLERELEASE"] = "不稳定版本"
 
 
 
-T._LoadedFiles["zhCN.lua"] = "2.7.34";
+T._LoadedFiles["zhCN.lua"] = "2.8.0-RC3";

@@ -14,11 +14,20 @@ function QuestieTBCItemFixes:Load()
         [5445] = {
             [itemKeys.npcDrops] = {3943},
         },
+        [5060] = {
+            [itemKeys.vendors] = {1325,1326,1457,2622,3090,3135,3334,3490,3542,3551,3561,3969,4585,5139,5169,6779,7166,10364,12096,12097,15175,16268,16683,16829,18006,18019,20121},
+        },
+        [5359] = { -- Lorgalis Manuscript
+            [itemKeys.npcDrops] = {},
+        },
         [5959] = {
             [itemKeys.npcDrops] = {4376,4378,4379,4380},
         },
         [6083] = {
             [itemKeys.npcDrops] = {},
+        },
+        [7923] = { -- Defias Tower Key
+            [itemKeys.npcDrops] = {7051},
         },
         [8073] = {
             [itemKeys.npcDrops] = {},
@@ -68,6 +77,9 @@ function QuestieTBCItemFixes:Load()
         [23670] = {
             [itemKeys.objectDrops] = {181632},
         },
+        [23686] = { -- Lacy Handkerchief
+            [itemKeys.npcDrops] = {17210},
+        },
         [23750] = {
             [itemKeys.objectDrops] = {107047},
         },
@@ -83,11 +95,11 @@ function QuestieTBCItemFixes:Load()
         [23818] = {
             [itemKeys.class] = 12,
         },
+        [23837] = { -- Weathered Treasure Map
+            [itemKeys.npcDrops] = {17421},
+        },
         [23848] = {
             [itemKeys.npcDrops] = {3546},
-        },
-        [23849] = {
-            [itemKeys.npcDrops] = {17190,17191,17192},
         },
         [23878] = {
             [itemKeys.objectDrops] = {181779},
@@ -109,6 +121,9 @@ function QuestieTBCItemFixes:Load()
         },
         [24099] = {
             [itemKeys.class] = 12,
+        },
+        [24132] = {
+            [itemKeys.objectDrops] = {410001},
         },
         [24156] = {
             [itemKeys.npcDrops] = {17544},
@@ -526,10 +541,10 @@ function QuestieTBCItemFixes:LoadFactionFixes()
         [25912] = { -- Salvaged Metal
             [itemKeys.objectDrops] = {182937, 182938},
         },
-        [30712] = {
+        [30712] = { -- The Doctor's Key
             [itemKeys.npcDrops] = {21779},
         },
-        [30713] = {
+        [30713] = { -- The Art of Fel Reaver Maintenance
             [itemKeys.objectDrops] = {185233},
         },
     }
@@ -541,10 +556,10 @@ function QuestieTBCItemFixes:LoadFactionFixes()
         [25912] = { -- Salvaged Metal
             [itemKeys.objectDrops] = {182798, 182797},
         },
-        [30712] = {
+        [30712] = { -- The Doctor's Key
             [itemKeys.npcDrops] = {21778},
         },
-        [30713] = {
+        [30713] = { -- The Art of Fel Reaver Maintenance
             [itemKeys.objectDrops] = {184947},
         },
     }

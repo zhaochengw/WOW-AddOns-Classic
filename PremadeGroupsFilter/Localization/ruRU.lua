@@ -32,6 +32,7 @@ L["error.semantic.protected"] = "|cffff0000Семантическая ошибк
 L["message.settingsupgraded"] = "Premade Groups Filter: Настройки перенесены в версию %s"
 L["message.sortingoverwritten"] = "Premade Groups Filter: Порядок сортировки групп по умолчанию был изменен аддоном %s."
 L["message.sortingrestored"] = "Premade Groups Filter: Порядок сортировки групп по умолчанию был восстановлен аддоном %s."
+L["message.taint"] = "Premade Groups Filter: Ограничения аддонов сейчас активны. Поиск групп был изменён, что может вызвать ошибки Lua. Рекомендуется выполнить /reload для устранения проблемы."
 
 L["dialog.settings"] = GAMEMENU_OPTIONS
 L["dialog.reset"] = "Сброс"
@@ -158,3 +159,8 @@ L["settings.cancelOldestApp.title"] = "Отмена старой заявки в
 L["settings.cancelOldestApp.tooltip"] = "Если у Вас максимальное количество ожидающих заявок, нажмите на любую группу, чтобы сначала отменить самую старую заявку. Затем нажмите снова, чтобы подать заявку в группу."
 L["settings.compactListEntries.title"] = "Компактные элементы списка"
 L["settings.compactListEntries.tooltip"] = "Скрывает строку стиля игры, чтобы элементы в списке групп занимали меньше места по высоте (как в версиях до предварительного обновления 'Полночи')."
+L["settings.info.reload"] = "* Изменение этих параметров автоматически перезагрузит интерфейс после закрытия настроек."
+L["settings.warning.taint"] = "Эта опция может вызывать ошибки Lua в ограниченных ситуациях, например в рейдах или в бою."
+
+L["dialog.restriction.text"] = "Ограничения аддона активны. Фильтрация может вызвать ошибки Lua."
+L["dialog.restriction.ok"] = "Всё равно фильтровать"

@@ -386,6 +386,7 @@ L["The Crone"] = "Ведьма"
 L["The Curator"] = "Смотритель"
 --[[Translation missing --]]
 --[[ L["The Eredar Twins"] = ""--]]
+L["The Eye of Haramad"] = "Око Харамада"
 L["The Illidari Council"] = "Совет иллидари"
 L["The Lurker Below"] = "Скрытень из глубин"
 L["The Maker"] = "Мастер"

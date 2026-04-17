@@ -765,6 +765,12 @@ L["STRING_OPTIONS_PERFORMANCECAPTURES_DESC"] = "Queste opzioni sono responsabili
 L["STRING_OPTIONS_PERFORMANCEPROFILES_ANCHOR"] = "Profili Prestazioni:"
 L["STRING_OPTIONS_PICONS_DIRECTION"] = "Plugin ancorati a destra"
 L["STRING_OPTIONS_PICONS_DIRECTION_DESC"] = "Quando è selezionato, i pulsanti del plugin vengono visualizzati sul lato destro dei pulsanti del menu."
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME"] = "Player Name"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"] = "Length Auto"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_WIDTH"] = "Length"
 L["STRING_OPTIONS_PLUGINS"] = "Plugin"
 L["STRING_OPTIONS_PLUGINS_AUTHOR"] = "Autore"
 L["STRING_OPTIONS_PLUGINS_NAME"] = "Nome"

@@ -78,13 +78,13 @@ end
 
 L = AL:NewLocale(AppName, "ruRU")
 if L then
-L["|cffeda55fControl + Left Click|r to lock frames"] = "|cffeda55f[Control + Щелчок левой кнопкой]|r закрепляет фреймы"
-L["|cffeda55fDrag|r to move the frame"] = "|cffeda55f[Двигайте]|r для перемещения окна"
-L["|cffeda55fLeft Click|r to lock/unlock frames"] = "|cffeda55f[Щелчок левой кнопкой]|r закрепляет/освобождает фреймы"
-L["|cffeda55fRight Click|r to open the configuration window"] = "|cffeda55f[Щелчок правой кнопкой]|r открывает окно настроек"
-L["|cffeda55fShift + Left Click|r to toggle sound"] = "|cffeda55fShift + Щелчок левой кнопкой|r — переключить звук"
+L["|cffeda55fControl + Left Click|r to lock frames"] = "|cffeda55fCtrl + ЛКМ|r: закрепить фреймы"
+L["|cffeda55fDrag|r to move the frame"] = "|cffeda55fПеретащите|r, чтобы переместить фрейм"
+L["|cffeda55fLeft Click|r to lock/unlock frames"] = "|cffeda55fЛКМ|r: закрепить/разблокировать фреймы"
+L["|cffeda55fRight Click|r to open the configuration window"] = "|cffeda55fПКМ|r: открыть настройки"
+L["|cffeda55fShift + Left Click|r to toggle sound"] = "|cffeda55fShift + ЛКМ|r: вкл/выкл звук"
 L["focus"] = "Фокус"
-L["mouseover"] = "Наведение курсора"
+L["mouseover"] = "Наведение"
 L["pet"] = "Питомец"
 L["playertarget"] = "Цель"
 

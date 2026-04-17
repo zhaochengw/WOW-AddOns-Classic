@@ -8,7 +8,7 @@ local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
 local __ala_meta__ = _G.__ala_meta__;
 
-if __ala_meta__.BUILD == "RETAIL" then
+if __ala_meta__.BUILD == "RETAIL" or __ala_meta__.BUILD == "PANDARIA" or __ala_meta__.BUILD == "DRAENOR" or __ala_meta__.BUILD == "LEGION" then
 	return;
 end
 
@@ -48,9 +48,7 @@ end
 	local UnitInBattleground = UnitInBattleground;
 	local GetNumTalentGroups = GetNumTalentGroups or function() return 1; end
 	local GetActiveTalentGroup = GetActiveTalentGroup or function() return 1; end
-	local GetNumTalentTabs = GetNumSpecializations or GetNumTalentTabs;
-	local GetNumTalents = GetNumTalents;
-	local GetTalentInfo = GetSpecializationInfo or GetTalentInfo;
+	local GetNumTalentTabs, GetNumTalents, GetTalentInfo = GetNumTalentTabs, GetNumTalents, GetTalentInfo;
 	local GetNumGlyphSockets, GetGlyphSocketInfo = GetNumGlyphSockets, GetGlyphSocketInfo;
 	local GetInventoryItemLink = GetInventoryItemLink;
 	local GetItemInfo = GetItemInfo;
@@ -68,38 +66,7 @@ end
 	local function __table_sub(T, index, index2)
 		return T[index];
 	end;
-
 -->			constant
-
-	
--- 使用专精系统API替代旧的天赋API
-local function Script_GetNumTalentTabs()
-	-- 如果GetNumSpecializations可用，优先使用专精系统
-	if GetNumSpecializations ~= nil then
-		return GetNumSpecializations();
-	end
-	-- 否则回退到旧的天赋系统
-	return GetNumTalentTabs and GetNumTalentTabs() or 0;
-end
-local function Script_GetNumTalents(tab)
-	return GetNumTalents and GetNumTalents(tab) or 0;
-end
-local function Script_GetTalentInfo(tab, index)
-	-- 如果专精系统可用，使用专精API
-	if GetSpecializationInfo ~= nil and tab ~= nil then
-		return GetSpecializationInfo(tab);
-	end
-	-- 否则使用旧的天赋API
-	return GetTalentInfo and GetTalentInfo(tab, index) or nil;
-end
-local function Script_GetActiveTalentGroup()
-	-- 如果专精系统可用，使用专精API
-	if GetSpecialization ~= nil then
-		return GetSpecialization() or 1;
-	end
-	-- 否则使用旧的天赋组API
-	return GetActiveTalentGroup and GetActiveTalentGroup() or 1;
-end
 	--
 	local BIG_NUMBER = 4294967295;
 	local TOC_VERSION = __ala_meta__.TOC_VERSION;
@@ -428,8 +395,11 @@ end
 	--
 	local _TalentMap = {  };
 	local function _GenerateTalentMap(class, inspect)
-		if not inspect and class ~= SELFCLASS then
-			__emulib.Debug("_GenerateTalentMap", "not inspect and class ~= SELFCLASS", class, inspect, SELFCLASS);
+		if inspect then
+			return nil;
+		end
+		if class ~= SELFCLASS then
+			__emulib.Debug("_GenerateTalentMap", "class ~= SELFCLASS", class, inspect, SELFCLASS);
 			return nil;
 		end
 		local Map = _TalentMap[class];
@@ -439,9 +409,9 @@ end
 		end
 		local PMap = Map.PMap;
 		local MaxTier = -1;
-		local NumSpecs = GetNumTalentTabs(inspect);
+		local NumSpecs = GetNumTalentTabs();
 		for SpecIndex = 1, NumSpecs do
-			local NumTalents = GetNumTalents(SpecIndex, inspect);
+			local NumTalents = GetNumTalents(SpecIndex);
 			if NumTalents == nil then
 				__emulib.Debug("_GenerateTalentMap", "NumTalents == nil", class, inspect, SpecIndex);
 				return nil;
@@ -449,7 +419,7 @@ end
 			local PM = {  };
 			PMap[SpecIndex] = PM;
 			for TalentIndex = 1, NumTalents do
-				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(SpecIndex, TalentIndex, inspect);
+				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(SpecIndex, TalentIndex);
 				if maxRank == nil then
 					__emulib.Debug("_GenerateTalentMap", "maxRank == nil", class, inspect, SpecIndex, TalentIndex, name, tier, column, rank, maxRank);
 					return nil;
@@ -489,14 +459,14 @@ end
 			--	WTF FUCK BLZZ. MAGE Tab1 799 Arcane 实际21个天赋，API获取22个，第22个为nil
 			if PM["NIL"] ~= nil then
 				local R = PM["NIL"];
-					for col = 1, 4 do
-						local TalentIndex = R[col];
-						if TalentIndex ~= nil then
-							TalentSeq = TalentSeq + 1;
-							VM[TalentSeq] = TalentIndex;
-							RM[TalentIndex] = TalentSeq;
-						end
+				for col = 1, 4 do
+					local TalentIndex = R[col];
+					if TalentIndex ~= nil then
+						TalentSeq = TalentSeq + 1;
+						VM[TalentSeq] = TalentIndex;
+						RM[TalentIndex] = TalentSeq;
 					end
+				end
 			end
 		end
 		Map.initialized = true;
@@ -518,6 +488,9 @@ end
 	end
 	--	return 			UPPER_CLASS, data, level
 	function __emulib.GetTalentData(class, inspect, group)
+		if inspect then
+			return nil, 0;
+		end
 		local Map = __emulib.GetTalentMap(class);
 		if Map == nil then
 			__emulib.Debug("GetTalentData", "Map == nil", class);
@@ -526,7 +499,7 @@ end
 		local VMap = Map.VMap;
 		local data = "";
 		local len = 0;
-		local NumSpecs = GetNumTalentTabs(inspect);
+		local NumSpecs = GetNumTalentTabs();
 		if NumSpecs == nil then
 			__emulib.Debug("GetTalentData", "NumSpecs == nil", inspect, class);
 			return nil, 0;
@@ -536,7 +509,7 @@ end
 			if VM == nil then
 				return nil, 0;
 			end
-			local NumTalents = GetNumTalents(SpecIndex, inspect);
+			local NumTalents = GetNumTalents(SpecIndex);
 			if NumTalents == nil then
 				__emulib.Debug("GetTalentData", "NumTalents == nil", NumSpecs, inspect, class);
 				return nil, 0;
@@ -548,7 +521,7 @@ end
 					__emulib.Debug("GetTalentData", "TalentIndex == nil", SpecIndex, TalentSeq, TalentIndex, NumSpecs, inspect, class);
 					return nil, 0;
 				end
-				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(SpecIndex, TalentIndex, inspect, false, group or 1);
+				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfo(SpecIndex, TalentIndex, false, group or 1);
 				if rank == nil then
 					__emulib.Debug("GetTalentData", "rank == nil", SpecIndex, TalentSeq, TalentIndex, NumSpecs, inspect, class);
 					return nil, 0;

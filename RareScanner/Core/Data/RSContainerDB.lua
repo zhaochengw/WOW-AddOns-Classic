@@ -74,30 +74,7 @@ function RSContainerDB.GetAllInternalContainerInfo()
 end
 
 function RSContainerDB.GetContainerIDsByMapID(mapID)
-	local containerIDs = {}
-	for containerID, containerInfo in pairs(RSContainerDB.GetAllInternalContainerInfo()) do
-		if (RSContainerDB.IsInternalContainerMultiZone(containerID)) then
-			-- First check if there is a matching mapID in the database
-			for internalMapID, _ in pairs (containerInfo.zoneID) do
-				if (internalMapID == mapID) then
-					tinsert(containerIDs,containerID)
-				end
-			end
-			
-			-- Then check if there is a matching subMapID in the database
-			for internalMapID, _ in pairs (containerInfo.zoneID) do
-				if (RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
-					tinsert(containerIDs,containerID)
-				end
-			end
-		elseif (RSContainerDB.IsInternalContainerMonoZone(containerID)) then
-			if (containerInfo.zoneID == mapID or (containerInfo.noVignette and containerInfo.zoneID == 0)) then
-				tinsert(containerIDs,containerID)
-			end
-		end
-	end
-	
-	return containerIDs
+	return RSMapDB.GetEntitiesByMapID(mapID, RSConstants.MAP_ENTITY_CONTAINER, true)
 end
 
 function RSContainerDB.GetInternalContainerInfo(containerID)
@@ -388,10 +365,10 @@ function RSContainerDB.GetContainerName(containerID)
 end
 
 function RSContainerDB.GetActiveContainerIDsWithNamesByMapID(mapID)
-	local containerIDs =  RSContainerDB.GetContainerIDsByMapID(mapID)
+	local containerIDs = RSContainerDB.GetContainerIDsByMapID(mapID)
 	local containerIDsWithNames = nil
 	
-	if (RSUtils.GetTableLength(containerIDs)) then
+	if (RSUtils.GetTableLength(containerIDs) > 0) then
 		containerIDsWithNames = {}
 		for _, containerID in ipairs(containerIDs) do
 			local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)

@@ -5,8 +5,7 @@ local VMRT = nil
 local module = ExRT:New("AutoLogging",ExRT.L.Logging)
 local ELib,L = ExRT.lib,ExRT.L
 
-module.db.minRaidMapID = 2522
---module.db.minPartyMapID = 1754
+module.db.minRaidMapID = 2657
 module.db.minPartyMapID = 959	--Since stupid overuse old content for m+
 
 module.db.mapsToLog = {}
@@ -38,7 +37,7 @@ function module.options:Load()
 		end
 	end)
 		
-	self.shtml1 = ELib:Text(self," -"..L.S_ZoneT34.."\n -"..L.S_ZoneT33.."\n -"..L.S_ZoneT32.."\n -"..L.S_ZoneT31.."\n -"..L.S_ZoneT30.."\n -"..L.S_ZoneT29VotI,12):Size(620,0):Point("TOP",0,-65):Top()
+	self.shtml1 = ELib:Text(self," -"..L.S_ZoneT35KD.."\n -"..L.S_ZoneT35D.."\n -"..L.S_ZoneT35A,12):Size(620,0):Point("TOP",0,-65):Top()
 
 	self.shtml2 = ELib:Text(self,L.LoggingHelp1,12):Size(650,0):Point("TOP",self.shtml1,"BOTTOM",0,-15):Top()
 	

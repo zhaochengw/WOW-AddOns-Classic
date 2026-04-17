@@ -16,7 +16,16 @@
     <Include file="libs\AceConfig-3.0\AceConfig-3.0.xml"/>
     <Include file="libs\AceTimer-3.0\AceTimer-3.0.xml"/>
 
+    <!-- HereBeDragons - Map coordinate library -->
+    <Script file="libs\HereBeDragons\HereBeDragons-2.0.lua"/>
+    <Script file="libs\HereBeDragons\HereBeDragons-Migrate.lua"/>
+    <Script file="libs\HereBeDragons\HereBeDragons-Pins-2.0.lua"/>
+
     <!-- Other Libraries -->
     <Include file="libs\LibSharedMedia-3.0\lib.xml"/>
     <Include file="libs\LibDialog-1.0\lib.xml"/>
+
+    <!-- LibDBIcon-1.0 (minimap button) - requires LibDataBroker -->
+    <Script file="libs\LibDBIcon-1.0\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+    <Script file="libs\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
 </Ui>

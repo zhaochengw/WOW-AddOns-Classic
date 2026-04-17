@@ -1,0 +1,7 @@
+## Interface: 50500
+## Title: Friends Class Colors (MoP Classic)
+## Notes: Colorizes names in the Friends list by class (WoW friends and the character in parentheses for BNet friends).
+## Author: mnimar
+## Version: 1.0.1
+
+FriendsClassColors.lua

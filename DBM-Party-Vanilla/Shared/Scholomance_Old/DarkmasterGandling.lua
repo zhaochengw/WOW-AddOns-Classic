@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("DarkmasterGandling", "DBM-Party-Vanilla", DBM:IsPostCata() and 16 or 13)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240316010232")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(1853)
 mod:SetEncounterID(mod:IsClassic() and 2801 or 463)
 mod:SetZone(289)

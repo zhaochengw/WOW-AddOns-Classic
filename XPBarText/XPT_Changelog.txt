@@ -1,3 +1,49 @@
+== Version 2.6.77 (March 16th 2026) ==
+
+* Bumped Retail TOC to 120005.
+* Fixed pet information not showing properly in TBC Anniversary.
+
+== Version 2.6.75 (March 14th 2026) ==
+
+* Fixed 'attempt to index field 'ExhaustionTick' (a nil value)' error in Retail.
+* Fixed being unable to interact with the main action bar in Vanilla Classic.
+
+== Version 2.6.73 (March 12th 2026) ==
+
+* Fixed reputation bar text showing on world map in Vanilla Classic.
+
+Please note that I am aware of the issue in which Vanilla Classic players cannot click abilities on their action bar while the addon is enabled. I am currently trying to get help with fixing the issue, as I cannot see why it is happening in the first place, given that my code doesn't touch the action bars. Further reports of this issue on CurseForge or my Discord will be deleted.
+
+== Version 2.6.72 (February 24th 2026) ==
+
+* Fixed reputation bar text not showing in TBC Anniversary. (1)
+* Fixed reputation bar text not showing in MoP Classic.
+* Fixed reputation bar text not showing in Vanilla Classic.
+* Fixed reputation bar text not showing in Retail. (1)
+* Fixed XP bar not being hidden when reaching max level in TBC Anniversary.
+* Fixed 'attempt to index global 'MainStatusTrackingBarContainer' (a nil value)' error in MoP Classic.
+* Fixed in-game XP bar text showing over addon text whenever you opened the character frame in MoP Classic.
+* Fixed in-game XP bar text showing over addon text whenever you opened the character frame in Retail.
+
+1. Please note that when you first log in, you will need to hover your mouse over the bar to get the text to show, but it should remain there for as long as you are on that character. Also, thanks to HKRob from the CurseForge Authors Discord for their help (again).
+
+== Version 2.6.64 (February 22nd 2026) ==
+
+* Fixed 'attempt to index global 'MainMenuExpBar' (a nil value)' error in TBC Anniversary.
+
+== Version 2.6.63 (February 22nd 2026) ==
+
+* Fixed 'XPBarText/XPBarText.lua:6: attempt to index global 'MainStatusTrackingBarContainer' (a nil value)' error in MoP Classic.
+* Fixed 'XPBarText/XPBarText.lua:6: attempt to index global 'MainStatusTrackingBarContainer' (a nil value)' error in Vanilla Classic.
+* Fixed text not showing on XP bar properly in MoP Classic.
+* Fixed text not showing on XP bar properly in Vanilla Classic.
+
+== Version 2.6.59 (February 14th 2026) ==
+
+* Re-added the ability to show or hide the rested XP ticker in TBC Anniversary Edition.
+	* Thanks to HKRob from the CurseForge Authors Discord for their help.
+* Fixed text not showing properly for characters over Level 60 in TBC Anniversary Edition.
+
 == Version 2.6.57 (February 10th 2026) ==
 
 * Bumped Retail TOC to 120001.

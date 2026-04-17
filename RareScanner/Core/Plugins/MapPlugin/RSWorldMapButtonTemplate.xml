@@ -41,7 +41,7 @@
 			<OnMouseDown method="OnMouseDown" />
 			<OnMouseUp method="OnMouseUp" />
 			<OnEnter method="OnEnter" />
-			<OnLeave function="GameTooltip_Hide" />
+			<OnLeave method="OnLeave" />
 		</Scripts>
 	</DropdownButton>
 

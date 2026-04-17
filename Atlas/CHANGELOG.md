@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.15.2 - April 3, 2026
+### Added
+- TBC: Added Atlas LFG button to TBC instances (thanks m0ezes)
+- TBC/Era: Added ability for the Atlas LFG button to go to multiple instances (ex. heroic instances or Stratholme)
+### Fixed
+- Fixed some text not always getting translated (thanks m0ezes)
+- TBC: Fixed Atlas LFG button not resetting the filter when starting a new search
+
+## 3.15.1 - March 24, 2026
+### Fixed
+- TBC: Fixed Atlas LFG button not correctly filtering LFG
+- TBC: Fixed error when sorting instances by type
+
+## 3.15.0 - March 2, 2026
+### Added
+- Retail: Added Midnight maps
+### Changed
+- Updated translations
+### Fixed
+- Retail/MoP: Fixed problems when opening the Encounter Journal
+
+## 3.14.2 - February 16, 2026
+### Fixed
+- TBC: Removed The Culling of Stratholme map
+
 ## 3.14.1 - February 10, 2026
 ### Changed
 - Retail: Updated TOC to 12.0.1
@@ -726,7 +751,7 @@ v1.41.00 (Apr. 14, 2017)
 v1.40.06 (Apr. 13, 2017)
 ------------------------
 - Checking deprecated plugins now will recognize the alpha build's version
-  if specifed; or will ignore those set "v3.14.1" as the version
+  if specifed; or will ignore those set "v3.15.2" as the version
   number to be changed by CurseForge's auto-packaging.
 
 v1.40.05 (Apr. 13, 2017)

@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal25"
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(24882)
 mod:SetEncounterID(725, 2489)
 mod:DisableESCombatDetection()--ES fires for the RP event that has nothing to do with engaging boss
@@ -40,7 +41,6 @@ local timerBurnCD		= mod:NewCDTimer(20, 46394, nil, nil, nil, 3)
 local berserkTimer		= mod:NewBerserkTimer(360)
 
 mod:AddSetIconOption("BurnIcon", 46394, true, 0, {1, 2, 3, 4, 5, 6, 7, 8})
-mod:AddRangeFrameOption(46394, 4)
 
 mod.vb.burnIcon = 8
 local debuffName = DBM:GetSpellName(46394)
@@ -59,11 +59,6 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 45150 then
@@ -110,13 +105,6 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnBurn:Play("targetyou")
 			end
 			yellBurnFades:Countdown(60)
-		end
-		if self.Options.RangeFrame then
-			if DBM:UnitDebuff("player", args.spellName) then--You have debuff, show everyone
-				DBM.RangeCheck:Show(4, nil)
-			else--You do not have debuff, only show players who do
-				DBM.RangeCheck:Show(4, DebuffFilter)
-			end
 		end
 	elseif args.spellId == 45185 then
 		warnStomp:Show(args.destName)

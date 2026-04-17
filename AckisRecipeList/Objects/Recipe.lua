@@ -1,26 +1,32 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Recipe Object
+    
+    Represents a craftable recipe with:
+    - Acquisition sources (vendors, trainers, mobs, quests, etc.)
+    - Filter flags for display logic
+    - Skill levels and quality information
+    - State tracking (known, visible, ignored)
+    
+    Copyright (c) 2009 - 2012 Ackis <John Pasula>
+    All rights reserved by the original author Ackis.
 ]]
 
------------------------------------------------------------------------
--- Upvalued Lua API.
------------------------------------------------------------------------
-
--- Functions
+-- ============================================================================
+-- Upvalued Lua API
+-- ============================================================================
 local ipairs = _G.ipairs
 local pairs = _G.pairs
 local select = _G.select
-local tonumber, tostring = _G.tonumber, _G.tostring
+local tonumber = _G.tonumber
+local tostring = _G.tostring
 local type = _G.type
 
--- Libraries
 local bit = _G.bit
 local table = _G.table
 
------------------------------------------------------------------------
--- AddOn namespace.
------------------------------------------------------------------------
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
 
 local LibStub = _G.LibStub
@@ -31,21 +37,26 @@ local AcquireTypes = private.AcquireTypes
 
 private.recipe_list = {}
 
------------------------------------------------------------------------
--- Local constants.
------------------------------------------------------------------------
+-- ============================================================================
+-- Recipe Object
+-- ============================================================================
 local Recipe = {}
 local recipeMetatable = {
 	__index = Recipe
 }
 
--- Defined at the bottom of the file.
+-- Defined at the bottom of the file
 local BLACKLISTED_RECIPE_IDS
 local REUSED_RECIPE_IDS
 
------------------------------------------------------------------------
--- Helpers.
------------------------------------------------------------------------
+-- ============================================================================
+-- Helper Functions
+-- ============================================================================
+
+--- Assign a recipe to a location by localized name
+--- @param recipe table The recipe object
+--- @param localizedLocationName string The zone name
+--- @param affiliation string|nil Optional faction affiliation
 local AddRecipeToLocation
 do
 	local InvalidLocationRegistry = {}
@@ -67,6 +78,14 @@ do
 	end
 end
 
+-- ============================================================================
+-- Recipe Registration
+-- ============================================================================
+
+--- Register a new recipe from a profession module
+--- @param module table The profession module
+--- @param recipeData table The recipe data table
+--- @return table|nil recipe The created recipe or nil if blacklisted/duplicate
 function addon:AddRecipe(module, recipeData)
 	local spellID = recipeData._spellID
 
@@ -97,37 +116,38 @@ function addon:AddRecipe(module, recipeData)
 	return recipe
 end
 
--- ----------------------------------------------------------------------------
--- Recipe methods.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Recipe Methods - Basic Getters
+-- ============================================================================
+
 function Recipe:AcquirePairs()
-    return pairs(self._acquireTypeData)
+	return pairs(self._acquireTypeData)
 end
 
 function Recipe:AcquireDataOfType(acquireType)
-    return self._acquireTypeData[acquireType]
+	return self._acquireTypeData[acquireType]
 end
 
 function Recipe:GetOrCreateAcquireDataOfType(acquireType, ...)
-    local sourceData = self._acquireTypeData[acquireType]
-    if not sourceData then
-        self._acquireTypeData[acquireType] = {}
-        sourceData = self._acquireTypeData[acquireType]
-    end
+	local sourceData = self._acquireTypeData[acquireType]
+	if not sourceData then
+		self._acquireTypeData[acquireType] = {}
+		sourceData = self._acquireTypeData[acquireType]
+	end
 
-    return acquireType:GetOrCreateRecipeData(sourceData, ...)
+	return acquireType:GetOrCreateRecipeData(sourceData, ...)
 end
 
 function Recipe:ExpansionID()
-    return self._expansionID
+	return self._expansionID
 end
 
 function Recipe:LocalizedName()
-    return self._localizedName
+	return self._localizedName
 end
 
 function Recipe:SetLocalizedName(localizedName)
-    self._localizedName = localizedName
+	self._localizedName = localizedName
 end
 
 function Recipe:QualityID()
@@ -194,8 +214,12 @@ function Recipe:Specialty()
 	return self.specialty
 end
 
--- Used to set the faction for recipes which only can be learned by one faction (e.g. BoP recipes, etc.)
--- These recipes will never be able to be learned so we do not want to load them.
+-- ============================================================================
+-- Faction Restrictions
+-- ============================================================================
+
+--- Set required faction for recipe (used for faction-specific recipes)
+--- @param faction_name string "Alliance" or "Horde"
 function Recipe:SetRequiredFaction(faction_name)
 	self.required_faction = faction_name
 
@@ -220,16 +244,18 @@ function Recipe:RequiredFaction()
 	return self.required_faction
 end
 
--- ----------------------------------------------------------------------------
--- Recipe state flags.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Recipe State Flags
+-- Bitflags for known, visible, ignored, etc.
+-- ============================================================================
+
 do
 	local RECIPE_STATE_FLAGS = {
 		KNOWN = 0x00000001,
 		RELEVANT = 0x00000002,
 		VISIBLE = 0x00000004,
 		LINKED = 0x00000008,
-        IGNORED = 0x00000010,
+		IGNORED = 0x00000010,
 	}
 
 	function Recipe:HasState(state_name)
@@ -402,6 +428,11 @@ end
 function Recipe:RemoveFilters(...)
 	SetFilterState(self, false, ...)
 end
+
+-- ============================================================================
+-- Acquisition Data Methods
+-- Add acquisition sources to recipes
+-- ============================================================================
 
 function Recipe:AddAcquireData(acquireType, typeLabel, ...)
 	local acquireData = self:GetOrCreateAcquireDataOfType(acquireType)
@@ -591,16 +622,59 @@ do
 	local player_filters
 	local obtain_filters
 
+	local filterVersion = 0
+	local lastFilterHash = 0
+	local currentSkillLevel = 0
+	local currentSpecialty = nil
+
+	private.IncrementFilterVersion = function()
+		filterVersion = filterVersion + 1
+	end
+
+	private.GetFilterVersion = function()
+		return filterVersion
+	end
+
+	local function ComputeFilterHash()
+		local hash = 0
+		if filter_db then
+			local general = filter_db.general
+			if general then
+				hash = hash + (general.faction and 1 or 0)
+				hash = hash + (general.skill and 2 or 0)
+				hash = hash + (general.specialty and 4 or 0)
+			end
+			local quality = filter_db.quality
+			if quality then
+				hash = hash + (quality.common and 8 or 0)
+				hash = hash + (quality.uncommon and 16 or 0)
+				hash = hash + (quality.rare and 32 or 0)
+				hash = hash + (quality.epic and 64 or 0)
+			end
+		end
+		return hash
+	end
+
 	local function InitializeFilters()
 		filter_db = addon.db.profile.filters
 		player_filters = filter_db.player
 		obtain_filters = filter_db.obtain
 
+		local newHash = ComputeFilterHash()
+		local newSkillLevel = private.current_profession_scanlevel or 0
+		local newSpecialty = private.current_profession_specialty
+
+		if newHash ~= lastFilterHash or newSkillLevel ~= currentSkillLevel or newSpecialty ~= currentSpecialty then
+			filterVersion = filterVersion + 1
+			lastFilterHash = newHash
+			currentSkillLevel = newSkillLevel
+			currentSpecialty = newSpecialty
+		end
+
 		-- HARD_FILTERS and SOFT_FILTERS are used to determine if a recipe should be shown based on the value of the key compared to the value
 		-- of its saved_var.
 		private.HARD_FILTERS = {
-			-- ---------------------------------------------------------------------------------------------
-			-- Player Type flags.
+			-- ---------------------------------------------------------------------------------------------			-- Player Type flags.
 			-- ---------------------------------------------------------------------------------------------
 			melee	= { flagName = "DPS",		field = "common1",	sv_root = player_filters },
 			tank	= { flagName = "TANK",		field = "common1",	sv_root = player_filters },
@@ -613,7 +687,7 @@ do
 			discovery	= { flagName = "DISC",		field = "common1",	sv_root = obtain_filters },
 			instance	= { flagName = "INSTANCE",	field = "common1",	sv_root = obtain_filters },
 			mobdrop		= { flagName = "MOB_DROP",	field = "common1",	sv_root = obtain_filters },
-			pvp		= { flagName = "PVP",		field = "common1",	sv_root = obtain_filters },
+			pvp		    = { flagName = "PVP",		field = "common1",	sv_root = obtain_filters },
 			quest		= { flagName = "QUEST",		field = "common1",	sv_root = obtain_filters },
 			raid		= { flagName = "RAID",		field = "common1",	sv_root = obtain_filters },
 			retired		= { flagName = "RETIRED",	field = "common1",	sv_root = obtain_filters },
@@ -683,6 +757,18 @@ do
 			InitializeFilters()
 		end
 
+		local cachedVersion = self._canDisplayVersion
+		if cachedVersion and cachedVersion == filterVersion then
+			return self._canDisplayResult
+		end
+
+		local result = self:ComputeCanDisplay()
+		self._canDisplayVersion = filterVersion
+		self._canDisplayResult = result
+		return result
+	end
+
+	function Recipe:ComputeCanDisplay()
 		-- Workaround: hide recipes with unknown/empty names (UI-only; no data deletion)
 		local name = self:LocalizedName()
 		if not name or name == "" then
@@ -693,8 +779,8 @@ do
 			return false
 		end
 
-
-		if addon.db.profile.exclusionlist[self:SpellID()] and not addon.db.profile.ignoreexclusionlist then
+		local profile = addon.db.profile
+		if profile.exclusionlist[self:SpellID()] and not profile.ignoreexclusionlist then
 			return false
 		end
 		local general_filters = filter_db.general
@@ -853,27 +939,25 @@ end
 
 
 --- Public API function for retrieving specific information about a recipe.
--- @name AckisRecipeList:GetRecipeData
--- @usage AckisRecipeList:GetRecipeData(28972, "profession")
--- @param spell_id The [[http://www.wowpedia.org/SpellLink|Spell ID]] of the recipe being queried.
--- @param data Which member of the recipe table is being queried.
--- @return Variable, depending upon which member of the recipe table is queried.
+--- @param spell_id number The Spell ID of the recipe
+--- @param data string The member name to query
+--- @return any The requested data or nil
 function addon:GetRecipeData(spell_id, data)
 	local recipe = private.recipe_list[spell_id]
 	return recipe and recipe[data] or nil
 end
 
--- List of recipe IDs which never made it into the game, or are only learned temporarily for a quest, then unlearned,
--- so should never be automatically added via a profession scan.
+-- ============================================================================
+-- Blacklisted Recipe IDs
+-- Recipes that never made it into the game, or are temporary quest spells
+-- ============================================================================
 BLACKLISTED_RECIPE_IDS = {
-	-- ------------------------------------------------------------------------------------
-	-----ALCHEMY
-	-- ------------------------------------------------------------------------------------
+	-- ALCHEMY
 	[17579] = true, 	[54020] = true,		[156567] = true, 	[156588] = true,
 	[156589] = true, 	[156590] = true, 	[156592] = true, 	[156593] = true,
 	[168042] = true,
 
-	-- Shadowlands
+	-- Shadowlands Alchemy
 	[338190] = true,	[338191] = true,	[338192] = true,	[338194] = true,
 	[338195] = true,	[338196] = true,	[338198] = true,	[338199] = true,
 	[338200] = true,	[338202] = true,	[338203] = true,	[338204] = true,
@@ -1021,9 +1105,10 @@ BLACKLISTED_RECIPE_IDS = {
 	[338277] = true,	[338278] = true,	[338279] = true,	[338280] = true,
 }
 
-
--- List of recipe IDs which Blizzard decided to use for multiple professions starting in Shadowlands
+-- ============================================================================
+-- Reused Recipe IDs
+-- Spell IDs used by multiple professions (Shadowlands+)
+-- ============================================================================
 REUSED_RECIPE_IDS = {
-
 
 }

@@ -382,6 +382,35 @@ local trinketData = {
     },
   },
   {
+    name = "Blade of Wizardry",
+    items = {
+      31336,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          38317,
+        },
+        icd = 50,
+      },
+    },
+  },
+  {
+    name = "Lionheart Champion",
+    items = {
+      28429,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          34513,
+        },
+      },
+    },
+  },
+  {
     name = "Bladefist's Breadth",
     items = {
       28041,
@@ -1769,36 +1798,9 @@ local trinketData = {
       },
     },
   },
-  {
+  --[[{
     name = "No Proc Effect Trinkets",
     items = {
-      10725,
-      23835,
-      23836,
-      25786,
-      28234,
-      28235,
-      28236,
-      28237,
-      28238,
-      28239,
-      28240,
-      28241,
-      28242,
-      28243,
-      29181,
-      30343,
-      30344,
-      30345,
-      30346,
-      30348,
-      30349,
-      30350,
-      30351,
-      31858,
-      31859,
-      37864,
-      37865,
     },
     effects = {
       {
@@ -1806,6 +1808,104 @@ local trinketData = {
         noCooldown = true,
         spells = {
           99999,
+        },
+      },
+    },
+  },]]
+  {
+    name = "Gnomish Battle Chicken",
+    items = {
+      10725,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          23133,
+        },
+      },
+    },
+  },
+  {
+    name = "Gnomish Poultryizer",
+    items = {
+      23835,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          30507,
+        },
+      },
+    },
+  },
+  {
+    name = "Goblin Rocket Launcher",
+    items = {
+      23836,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          46567,
+        },
+      },
+    },
+  },
+  {
+    name = "Hypnotist's Watch",
+    items = {
+      25786,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          32599,
+        },
+      },
+    },
+  },
+  {
+    name = "Timelapse Shard",
+    items = {
+      29181,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          35352,
+        },
+      },
+    },
+  },
+  {
+    name = "Darkmoon Card: Vengeance",
+    items = {
+      31858,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          39444,
+        },
+      },
+    },
+  },
+  {
+    name = "Darkmoon Card: Madness",
+    items = {
+      31859,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          39446,
         },
       },
     },
@@ -1882,6 +1982,72 @@ local trinketData = {
         type = "proc",
         spells = {
           33759,
+        },
+      },
+    },
+  },
+  {
+    name = "PvP Trinket",
+    items = {
+      33046,
+      37864,
+      37865,
+      18864,
+      18863,
+      18854,
+      18856,
+      18857,
+      18858,
+      18859,
+      18862,
+      209618,
+      29593,
+      209611,
+      209612,
+      209613,
+      209614,
+      209615,
+      209616,
+      209617,
+      18845,
+      29592,
+      18853,
+      18852,
+      18851,
+      18850,
+      18849,
+      18846,
+      18834,
+      209626,
+      209619,
+      209620,
+      209621,
+      209622,
+      209623,
+      209624,
+      209625,
+      28235,
+      28234,
+      28236,
+      28237,
+      30351,
+      30350,
+      30349,
+      30348,
+      28238,
+      28240,
+      30346,
+      30345,
+      30344,
+      28243,
+      28242,
+      30343,
+    },
+    effects = {
+      {
+        type = "proc",
+        spells = {
+          42292,
         },
       },
     },

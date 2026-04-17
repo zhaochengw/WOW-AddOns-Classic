@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(814, "DBM-Pandaria", nil, 322)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240522031155")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(69099)
 mod:SetEncounterID(1571)
 mod:SetReCombatTime(20, 10)
@@ -25,28 +26,18 @@ local timerStormcloudCD			= mod:NewCDTimer(21.5, 136340, nil, nil, nil, 3)
 local timerLightningTetherCD	= mod:NewCDTimer(26.7, 136339, nil, nil, nil, 3)--Needs more data, they may have tweaked it some.
 local timerArcNovaCD			= mod:NewCDTimer(35.5, 136338, nil, nil, nil, 2)
 
-mod:AddRangeFrameOption(10, 136340)
 mod:AddReadyCheckOption(32518, false)
 
 local stormcloudTargets = {}
 local tetherTargets = {}
 local cloudDebuff = DBM:GetSpellName(136340)
 
-local debuffFilter
-do
-	debuffFilter = function(uId)
-		return DBM:UnitDebuff(uId, cloudDebuff)
-	end
-end
-
 local function warnStormcloudTargets()
 	warnStormcloud:Show(table.concat(stormcloudTargets, "<, >"))
 	table.wipe(stormcloudTargets)
 	if mod.Options.RangeFrame then
 		if DBM:UnitDebuff("player", cloudDebuff) then--You have debuff, show everyone
-			DBM.RangeCheck:Show(10, nil)
 		else--You do not have debuff, only show players who do
-			DBM.RangeCheck:Show(10, debuffFilter)
 		end
 	end
 end
@@ -70,9 +61,6 @@ end
 function mod:OnCombatEnd()
 	table.wipe(stormcloudTargets)
 	table.wipe(tetherTargets)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 function mod:SPELL_CAST_START(args)

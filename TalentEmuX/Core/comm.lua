@@ -87,7 +87,7 @@ MT.BuildEnv('COMM');
 			elseif realm == nil or realm == "" then
 				realm = CT.SELFREALM;
 			end
-			if realm ~= CT.SELFREALM then
+			if realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 				name = name .. "-" .. realm;
 			end
 			VT.QuerySent[name] = auto_popup and Tick or VT.QuerySent[name] or nil;
@@ -513,19 +513,19 @@ MT.BuildEnv('COMM');
 
 	local __SendChatMessage = nil;
 	local function Hooked_SendChatMessage(text, ...)
-		__SendChatMessage(SendFilter(text, ...), ...);
+		return __SendChatMessage(SendFilter(text, ...), ...);
 	end
 	local __C_ChatInfo_SendChatMessage = nil;
 	local function Hooked_C_ChatInfo_SendChatMessage(text, ...)
-		__C_ChatInfo_SendChatMessage(SendFilter(text, ...), ...);
+		return __C_ChatInfo_SendChatMessage(SendFilter(text, ...), ...);
 	end
 	local __BNSendWhisper = nil;
 	local function Hooked_BNSendWhisper(presenceID, text, ...)
-		__BNSendWhisper(presenceID, SendFilter(text, ...), ...);
+		return __BNSendWhisper(presenceID, SendFilter(text, ...), ...);
 	end
 	local __BNSendConversationMessage = nil;
 	local function Hooked_BNSendConversationMessage(target, text, ...)
-		__BNSendConversationMessage(target, SendFilter(text, ...), ...);
+		return __BNSendConversationMessage(target, SendFilter(text, ...), ...);
 	end
 
 	MT.RegisterOnInit('COMM', function(LoggedIn)

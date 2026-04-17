@@ -25,7 +25,7 @@
 ## Notes-zhTW: Atlas 地圖集主程式
 
 ## Author: nanderson11
-## Version: v3.14.1
+## Version: v3.15.2
 ## X-Website: https://github.com/nanderson11/Atlas
 ## X-Category: Map
 ## X-License: GPLv2

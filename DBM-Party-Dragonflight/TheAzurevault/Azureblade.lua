@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(2505, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231029212301")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(186739)
 mod:SetEncounterID(2585)
 mod:SetHotfixNoticeRev(20230103000000)

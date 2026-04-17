@@ -755,6 +755,7 @@ end
 function module.main:PLAYER_SPECIALIZATION_CHANGED(arg)
 	if arg and UnitName(arg) then
 		local name = UnitCombatlogname(arg)
+		if not name then return end
 		module.db.inspectDB[name] = nil
 
 		--------> ExCD2
@@ -784,6 +785,7 @@ end
 function module.main:UNIT_SPELLCAST_SUCCEEDED(unitID,castGUID,spellID)
 	if unitID and (not canaccessvalue or canaccessvalue(spellID)) and (spellID == 384255 or spellID == 200749) and UnitName(unitID) then
 		local name = UnitCombatlogname(unitID)
+		if not name then return end
 
 		module:AddToQueue(name) 
 
@@ -898,8 +900,11 @@ do
 		if lastInspectTime[arg] and (currTime - lastInspectTime[arg]) < 0.2 then
 			return
 		end
-		lastInspectTime[arg] = currTime
 		local _,_,_,race,_,name,realm = GetPlayerInfoByGUID(arg)
+		if (canaccessvalue and not canaccessvalue(name)) then
+			return
+		end
+		lastInspectTime[arg] = currTime
 		if name then
 			if realm and realm ~= "" then name = name.."-"..realm end
 			local inspectedName = name
@@ -943,7 +948,8 @@ do
 			data.level = UnitLevel(inspectedName)
 			data.race = race
 			data.time = time()
-			data.GUID = UnitGUID(inspectedName)
+			--data.GUID = UnitGUID(inspectedName)
+			data.GUID = arg
 			data.lastUpdate = currTime
 			data.lastUpdateTime = time()
 

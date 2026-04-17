@@ -2,7 +2,8 @@ if DBM:GetTOC() < 110005 then return end
 local mod	= DBM:NewMod(2633, "DBM-Party-Vanilla", 10, 236)--236 Main Gate, 1292 Service Entrance
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103114940")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(11143)--Double check
 mod:SetEncounterID(1885)
 mod:SetZone(329)

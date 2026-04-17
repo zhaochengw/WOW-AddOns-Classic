@@ -33,5 +33,7 @@ Mouse Focus - Copy text from the mouse focus frame. Only works on frames that ar
 --[[Translation missing --]]
 --[[ L["show"] = "Show"--]] 
 --[[Translation missing --]]
+--[[ L["tooltip"] = "Mouse Tooltip"--]] 
+--[[Translation missing --]]
 --[[ L["tooManyFontStrings"] = "More than %d FontStrings were found. The copy was cancelled to prevent the game from freezing for an excessive amount of time."--]] 
 

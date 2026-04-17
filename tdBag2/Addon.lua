@@ -411,7 +411,29 @@ function Addon:IsFrameShown(bagId)
     return frame and frame:IsShown()
 end
 
+function Addon:TryOpenEquipByInspect(owner)
+    if not self.db.profile.frames[BAG_ID.EQUIP].tdInspect then
+        return
+    end
+    local tdInspect = LibStub('AceAddon-3.0'):GetAddon('tdInspect', true)
+    if not tdInspect then
+        return
+    end
+    local Inspect = tdInspect:GetModule('Inspect')
+    if not Inspect then
+        return
+    end
+    if not owner then
+        owner = ns.PLAYER
+    end
+    Inspect:Query(nil, owner, nil, true)
+    return true
+end
+
 function Addon:ToggleOwnerFrame(bagId, owner)
+    if bagId == BAG_ID.EQUIP and self:TryOpenEquipByInspect(owner) then
+        return
+    end
     local frame = self:GetFrame(bagId) or self:CreateFrame(bagId)
     if not frame:IsShown() or frame.meta.owner ~= owner then
         self:ShowFrame(bagId, true)

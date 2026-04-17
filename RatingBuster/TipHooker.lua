@@ -3,9 +3,13 @@
 local handler
 local enabled = false
 
+local runningHandler = {}
+
 local RunHandler = function(tooltip)
-	if enabled then
+	if enabled and not runningHandler[tooltip] then
+		runningHandler[tooltip] = true
 		handler(tooltip)
+		runningHandler[tooltip] = nil
 	end
 end
 
@@ -25,6 +29,7 @@ end
 local directUpdateTypes = {
 	["GameTooltip"] = true,
 	["CheckButton"] = true,
+	["Button"] = true,
 }
 
 local function HandleTooltipSetItem(tooltip)
@@ -82,6 +87,17 @@ local function InitializeHook()
 				tooltip:HookScript("OnHide", function(self)
 					tooltipNeedsRepaint[self] = nil
 				end)
+			end
+
+			for i = 1, 30 do
+				local fontString = _G[tooltipName .. "TextLeft" .. i]
+				if not fontString then
+					local leftName = tooltipName .. "TextLeft" .. i
+					local rightName = tooltipName .. "TextRight" .. i
+					local left = tooltip:CreateFontString(leftName, "ARTWORK", "GameTooltipText")
+					local right = tooltip:CreateFontString(rightName, "ARTWORK", "GameTooltipText")
+					tooltip:AddFontStrings(left, right)
+				end
 			end
 		end
 	end

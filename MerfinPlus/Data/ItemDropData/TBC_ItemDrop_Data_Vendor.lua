@@ -586,6 +586,7 @@ do
     [32451] = "arena:1030",
     [28377] = "arena:2445",
     [28379] = "arena:2445",
+    [28411] = "pvpWarsong:10:arena:9785",
     [28996] = "pvpWarsong:10:arena:9785",
     [28381] = "pvpWarsong:10:arena:9785",
     [28383] = "pvpEye:10:arena:14815",

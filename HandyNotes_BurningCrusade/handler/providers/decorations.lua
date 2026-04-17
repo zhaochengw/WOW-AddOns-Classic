@@ -87,7 +87,8 @@ end
 
 function DecorationPinMixin:OnLoad()
     -- This is below normal handynotes pins, which is kind of the whole point
-    self:UseFrameLevelType(ns.CLASSIC and "PIN_FRAME_LEVEL_MAP_LINK" or "PIN_FRAME_LEVEL_EVENT_OVERLAY")
+    -- Handynotes is at PIN_FRAME_LEVEL_AREA_POI
+    self:UseFrameLevelType(ns.CLASSIC and "PIN_FRAME_LEVEL_GOSSIP" or "PIN_FRAME_LEVEL_EVENT_OVERLAY")
     self:SetScalingLimits(1, 1.0, 1.2)
 
     self:SetMouseMotionEnabled(true)

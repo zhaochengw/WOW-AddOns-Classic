@@ -5,7 +5,8 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,duos"
 end
 
-mod:SetRevision("20250609053724")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(43778)
 mod:SetEncounterID(1063, 2975, 2980)
 mod:SetUsedIcons(8)

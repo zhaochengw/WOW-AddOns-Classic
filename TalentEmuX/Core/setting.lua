@@ -24,6 +24,10 @@ local DT = __private.DT;
 		resizable_border = false,
 		singleFrame = true,
 		style = 1,
+		frame_background_style = 2,
+		frame_background_alpha = 1,
+		tree_background_style = 1,
+		tree_background_alpha = 0.8,
 		talents_in_tip = true,
 		talents_in_tip_icon = true,
 		itemlevel_in_tip = true,
@@ -54,28 +58,10 @@ MT.BuildEnv('SETTING');
 				return CT.DefaultSetting[key];
 			end
 			local GetConfig = function(module, key)
-				return VT.SET[key];
+				return MT.GetConfig(key);
 			end
 			local SetConfig = function(module, key, val, loading)
-				VT.SET[key] = val;
-				if key == "minimap" then
-					MT.CALLBACK["minimap"](val);
-				elseif key == "singleFrame" then
-					if val then
-						local last = Frame or MT.UI.GetLastFrame();
-						MT.UI.ReleaseAllFramesButOne(last and last.id or nil);
-					end
-				elseif key == "style" then
-					if val == 1 then
-						for i = 1, VT.Frames.used do
-							MT.UI.FrameSetStyle(VT.Frames[i], 1);
-						end
-					else
-						for i = 1, VT.Frames.used do
-							MT.UI.FrameSetStyle(VT.Frames[i], 2);
-						end
-					end
-				end
+				return MT.SetConfig(key, val);
 			end
 			local LookupText = function(type, module, key, extra)
 				if key == "style" then
@@ -85,6 +71,22 @@ MT.BuildEnv('SETTING');
 						return l10n.Setting_TripleTrees;
 					elseif extra == 2 then
 						return l10n.Setting_SingleTree;
+					end
+				elseif key == "frame_background_style" then
+					if extra == nil then
+						return l10n.Setting_FrameBackgroundStyle;
+					elseif extra == 1 then
+						return l10n.Setting_FrameBackgroundTexture;
+					elseif extra == 2 then
+						return l10n.Setting_FrameBackgroundSolid;
+					end
+				elseif key == "tree_background_style" then
+					if extra == nil then
+						return l10n.Setting_TreeBackgroundStyle;
+					elseif extra == 1 then
+						return l10n.Setting_TreeBackgroundTexture;
+					elseif extra == 2 then
+						return l10n.Setting_TreeBackgroundSolid;
 					end
 				end
 				return "|cffff0000" .. (key or "@key") .. "-" .. (extra or "@extra") .. "|r";
@@ -97,6 +99,10 @@ MT.BuildEnv('SETTING');
 				{ "module", "resizable_border", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_ResizableBorder, },
 				{ "module", "singleFrame", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_SingleFrame, },
 				{ "module", "style", 'radio', { 1, 2, }, nil, nil, nil, },
+				{ "module", "frame_background_style", 'radio', { 1, 2, }, nil, nil, nil, },
+				{ "module", "frame_background_alpha", 'number', { 0.0, 1.0, 0.05, }, nil, 2, nil, nil, l10n.Setting_FrameBackgroundAlpha, },
+				{ "module", "tree_background_style", 'radio', { 1, 2, }, nil, nil, nil, },
+				{ "module", "tree_background_alpha", 'number', { 0.0, 1.0, 0.05, }, nil, 2, nil, nil, l10n.Setting_TreeBackgroundAlpha, },
 				{ "module", "talents_in_tip", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_TalentsInTip, },
 				{ "module", "talents_in_tip_icon", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_TalentsInTipIcon, },
 				{ "module", "itemlevel_in_tip", 'boolean', nil, nil, nil, nil, nil, l10n.Setting_ItemLevelInTip, },

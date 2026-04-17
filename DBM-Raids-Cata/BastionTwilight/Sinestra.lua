@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,heroic25"
 
-mod:SetRevision("20241103125714")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(45213)
 mod:SetEncounterID(1082, 1083)--Muiti encounter id. need to verify.
 mod:SetUsedIcons(1, 2)

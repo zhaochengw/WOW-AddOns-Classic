@@ -501,7 +501,7 @@ end
 
 --格式化数值显示
 function UnitFramesPlus_GetValueFix(valueCurr, valueMax, valueunit, unittype)
-    local valueCurrfix, valueMaxfix, valueLossfix, unitbig, unitsmall;
+    local valueCurrfix, valueMaxfix, valueLossfix, unitbig, unitsmall, unitsuper;
     local valueLoss = valueMax - valueCurr;
     if valueunit == 0 then
         valueCurrfix = valueCurr;
@@ -541,7 +541,7 @@ function UnitFramesPlus_GetValueFix(valueCurr, valueMax, valueunit, unittype)
             valueLossfix = (floor(valueLoss/100000000000)/10)..unitsuper;
         elseif valueLoss >= 100000000 then
             valueLossfix = (floor(valueLoss/10000000)/10)..unitbig;
-        elseif valueMax >= 10000 then
+        elseif valueLoss >= 10000 then
             valueLossfix = (floor(valueLoss/1000)/10)..unitsmall;
         else
             valueLossfix = valueLoss;
@@ -574,7 +574,7 @@ function UnitFramesPlus_GetValueFix(valueCurr, valueMax, valueunit, unittype)
             valueLossfix = (floor(valueLoss/100000000)/10)..unitsuper;
         elseif valueLoss >= 1000000 then
             valueLossfix = (floor(valueLoss/100000)/10)..unitbig;
-        elseif valueMax >= 1000 then
+        elseif valueLoss >= 1000 then
             valueLossfix = (floor(valueLoss/100)/10)..unitsmall;
         else
             valueLossfix = valueLoss;

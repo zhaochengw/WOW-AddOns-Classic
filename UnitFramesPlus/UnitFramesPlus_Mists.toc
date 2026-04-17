@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 ## Title: UnitFramesPlus
 ## Notes: Enhanced Unit Frames
 ## Title-zhCN: 系统头像增强

@@ -18,9 +18,9 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 
 local tomtom_waypoint
 
-function RSTomtom.AddWorldMapTomtomWaypoint(mapID, x, y, name)
+local function AddTomtomWaypoint(mapID, x, y, name)
 	if (TomTom and mapID and x and y and name) then
-		RSTomtom.RemoveCurrentTomtomWaypoint()
+		RSTomtom.RemoveCurrentWaypoints()
 		
 		local fixedX = RSUtils.FixCoord(x)
 		local fixedY = RSUtils.FixCoord(y)
@@ -28,43 +28,48 @@ function RSTomtom.AddWorldMapTomtomWaypoint(mapID, x, y, name)
 			tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), fixedX, fixedY, {
 				title = name,
 				persistent = false,
-				minimap = false,
-				world = false,
+				minimap = RSConfigDB.IsShowingTomtomMinimapIcon(),
+				world = RSConfigDB.IsShowingTomtomWorldmapIcon(),
 				cleardistance = 25
 			})
 		end
 	end
 end
 
-function RSTomtom.AddTomtomWaypoint(mapID, x, y, name)
-	if (TomTom and mapID and mapID ~= "" and x and y and name) then
-		RSTomtom.RemoveCurrentTomtomWaypoint()
-		
-		local fixedX = RSUtils.FixCoord(x)
-		local fixedY = RSUtils.FixCoord(y)
-		if (fixedX and fixedY) then
-			tomtom_waypoint = TomTom:AddWaypoint(tonumber(mapID), fixedX, fixedY, {
-				title = name,
-				persistent = false,
-				minimap = false,
-				world = false,
-				cleardistance = 25
-			})
-		end
-	end
-end
-
-function RSTomtom.AddTomtomAutomaticWaypoint(mapID, x, y, name, manuallyFired)
-	-- If not automatic waypoints
-	if (not manuallyFired and not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
+function RSTomtom.AddChatWaypoint(mapID, x, y, name)
+	if (not RSConfigDB.IsAddingchatTomtomWaypoints()) then
 		return
 	end
-
-	-- Adds the waypoint
-	RSTomtom.AddTomtomWaypoint(mapID, x, y, name)
+	
+	AddTomtomWaypoint(mapID, x, y, name)
 end
 
-function RSTomtom.RemoveCurrentTomtomWaypoint()
+function RSTomtom.AddWorldMapWaypoint(mapID, x, y, name)
+	if (not RSConfigDB.IsAddingWorldMapTomtomWaypoints()) then
+		return
+	end
+	
+	AddTomtomWaypoint(mapID, x, y, name)
+end
+
+function RSTomtom.AddAutomaticWaypoint(mapID, x, y, name)
+	if (not RSConfigDB.IsTomtomSupportEnabled() or not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
+		return
+	end
+	
+	AddTomtomWaypoint(mapID, x, y, name)
+end
+
+function RSTomtom.AddWaypoint(mapID, x, y, name)
+	-- Ingame waypoints
+	if (not RSConfigDB.IsTomtomSupportEnabled()) then
+		return
+	end
+	
+	AddTomtomWaypoint(mapID, x, y, name)
+end
+
+function RSTomtom.RemoveCurrentWaypoints()
 	if (TomTom and tomtom_waypoint) then
 		TomTom:RemoveWaypoint(tomtom_waypoint)
 		tomtom_waypoint = nil

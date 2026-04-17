@@ -333,7 +333,7 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 		end
 		
 		-- Refresh minimap
-		if (not loadingAddon) then
+		if (not loadingAddon and x and y) then
 			RSMinimap.HideIcon(containerID, x, y)
 		end
 		

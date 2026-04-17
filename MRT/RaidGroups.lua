@@ -201,7 +201,7 @@ function module.options:Load()
 		else
 			for i=1,GetNumGroupMembers() do
 				local name = GetRaidRosterInfo(i)
-				if not inList[name] then
+				if name and not inList[name] then
 					if not name:find("%-") or not inList[strsplit("-",name)] then
 						notInList[#notInList+1] = name
 					end

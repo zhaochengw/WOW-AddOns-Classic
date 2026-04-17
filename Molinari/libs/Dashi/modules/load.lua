@@ -1,10 +1,10 @@
 local _, addon = ...
 
 --[[ namespace:IsAddOnEnabled(addonName) ![](https://img.shields.io/badge/function-blue)
-Checks whether the addon exists and is enabled.
+Checks whether the addon exists, is loadable, and is enabled.
 --]]
 function addon:IsAddOnEnabled(name)
-	return C_AddOns.GetAddOnEnableState(name, UnitName('player')) > 0
+	return C_AddOns.GetAddOnEnableState(name, UnitName('player')) > 0 and (C_AddOns.IsAddOnLoadable(name))
 end
 
 

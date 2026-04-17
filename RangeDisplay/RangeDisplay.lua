@@ -8,7 +8,7 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v6.3.0"
+local VERSION = AppName .. "-v6.3.2"
 
 local rc = LibStub("LibRangeCheck-3.0")
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0", true)
@@ -25,8 +25,6 @@ local mute = nil
 
 local _G = _G
 local LoadAddOn = _G.LoadAddOn or C_AddOns.LoadAddOn
-local IsClassicVanilla = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
-local IsClassicBC = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
 local IsClassicWrath = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC)
 local IsMainline = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 local UnitExists = _G.UnitExists
@@ -422,7 +420,14 @@ local function createOverlay(ud)
 end
 
 local function update(ud)
-  local minRange, maxRange = rc:GetRange(ud.unit, ud.db.checkVisible)
+  local success, minRange, maxRange = pcall(function()
+    local unit = ud.unit
+    return rc:GetRange(unit, ud.db.checkVisible)
+  end)
+  if not success then
+    minRange = nil
+    maxRange = nil
+  end
   if minRange == ud.lastMinRange and maxRange == ud.lastMaxRange then return end
   ud.lastMinRange, ud.lastMaxRange = minRange, maxRange
   local fmt = ""

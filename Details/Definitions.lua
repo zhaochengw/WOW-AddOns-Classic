@@ -317,6 +317,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field GetOverallCombat fun(self: details) : combat return the overall combat
 ---@field SetCurrentCombat fun(self: details, combatObject: combat) set the current active combat
 ---@field GetCurrentCombat fun(self: details) : combat return the current active combat
+---@field GetTwinCombat fun(self: details, twinIdentifier:number) : combat?
 ---@field ResetSegmentData fun(self: details) reset all segments inclusing overall data
 ---@field ResetSegmentOverallData fun(self: details) reset only the overall data
 ---@field UpdateBreakdownPlayerList fun(self: details) update the player list in the breakdown window
@@ -327,7 +328,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field GetRoleIcon fun(self: details, role: role) : string, number, number, number, number return the path to a texture file and the texture coordinates for the given role
 ---@field GetSpecIcon fun(self: details, spec: number, useAlpha: boolean) : string, number, number, number, number return the path to a texture file and the texture coordinates for the given spec
 ---@field GetActiveWindowFromBreakdownWindow fun(self: details) : instance return the window (instance) that requested to open the player breakdown window
----@field OpenBreakdownWindow fun(self: details, instanceObject: instance, actorObject: actor, bFromAttributeChange: boolean?, bIsRefresh: boolean?, bIsShiftKeyDown: boolean?, bIsControlKeyDown: boolean?)
+---@field OpenBreakdownWindow fun(self: details, instanceObject: instance, actorObject: actor, bFromAttributeChange: boolean?, bIsRefresh: boolean?, bIsShiftKeyDown: boolean?, bIsControlKeyDown: boolean?, bIgnoreOverrides:boolean?, mainAttributeOverride:number?, subAttributeOverride:number?)
 ---@field GetActorObjectFromBreakdownWindow fun(self: details) : actor return the actor object that is currently shown in the breakdown window
 ---@field GetDisplayTypeFromBreakdownWindow fun(self: details) : number, number return the attribute and subattribute display type of the breakdown window
 ---@field GetCombatFromBreakdownWindow fun(self: details) : combat return the combat beaing used in the breakdown window
@@ -418,6 +419,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field bloodlust_overall number[]? exists only in segments that received a merge, uses time()
 ---@field compressed_charts table store chart data
 ---@field combatSessionId string
+---@field twinIdentifier number
 ---@field 
 ---@field __call table
 ---@field __index table
@@ -458,6 +460,7 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field PhaseData table
 ---@field player_last_events table<string, table[]> record the latest events of each player, latter used to build the death log
 ---@field
+---@field GetTwinCombat fun(self: combat, twinIdentifier:number) : combat?
 ---@field GetPlayerDeaths fun(self: combat, actorName: string) : table[] return a table with subtable containing the death information of the specified actor
 ---@field GetCrowdControlSpells fun(self: combat, actorName: string) : table<spellid, number> return the amount of casts of crowd control spell by an actor
 ---@field GetCCCastAmount fun(self: combat, actorName: string) : number returns the number of crowd control casts made by the specified actor
@@ -714,7 +717,24 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field show_interrupt_casts boolean
 ---@field baseframe frame
 ---@field use_multi_fontstrings boolean
+---@field sessionId number the sessionId to use with C_DamageMeter API
+---@field sessionType number the sessionType to use with C_DamageMeter API
+---@field _postponing_switch boolean?
+---@field last_interaction number?
+---@field auto_current boolean?
+---@field tempId number
+---@field apocalypseSourceType number
+---@field overallByUser boolean
+---@field sessionType_user number
+---@field sessionId_user number
+---@field segmento_user number
+---@field lastEventTime number
 ---@field
+---@field GetApocalypseSourceType fun(instance: instance) : number
+---@field SetApocalypseSourceType fun(instance: instance, sourceType: number)
+---@field SwapToUserSegment_Apocalypse fun(instance: instance)
+---@field IsShowingDeathLog fun(instance: instance) : boolean
+---@field GetCombatTime fun(instance: instance) : number get the combat time of the currently showing combat segment
 ---@field CheckForSecretsAndAspects fun(self: instance)
 ---@field GetActorBySubDisplayAndRank fun(self: instance, displayid: attributeid, subDisplay: attributeid, rank: number) : actor
 ---@field GetSize fun(instance: instance) : width, height
@@ -728,11 +748,14 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field IsLowerInstance fun(instance: instance) : boolean
 ---@field IsEnabled fun(instance: instance) : boolean
 ---@field GetId fun(instance: instance) : instanceid
----@field SetSegmentId fun(instance: instance, segment: segmentid) set the segmentId for the instance and nothing else, use 'SetSegment' for a full update
+---@field SetSegmentId fun(instance: instance, segment: segmentid, bByUser: boolean?) set the segmentId for the instance and nothing else, use 'SetSegment' for a full update
 ---@field GetSegmentId fun(instance: instance) : segmentid
 ---@field RefreshCombat fun(instance: instance)
 ---@field Freeze fun(instance: instance)
 ---@field UnFreeze fun(instance: instance)
+---@field DoAutomation fun(instance: instance, event:string)
+---@field GetAttributeType fun(instance: instance) : number
+---@field GetSources fun(instance: instance) : damagemeter_combat_source[]
 ---@field SetSegment fun(instance: instance, segment: segmentid, force: boolean|nil)
 ---@field SetDisplay fun(instance: instance, segmentId: segmentid?, attributeId: attributeid?, subAttributeId: attributeid?, modeId: modeid?, quickMode:boolean?)
 ---@field GetDisplay fun(instance: instance) : attributeid, attributeid
@@ -740,6 +763,28 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field ResetWindow fun(instance: instance, resetType: number|nil, segmentId: segmentid|nil)
 ---@field RefreshData fun(instance: instance, force: boolean|nil)
 ---@field RefreshWindow fun(instance: instance, force: boolean|nil)
+---@field GetNewSegmentId fun(instance: instance) : number
+---@field SetNewSegmentId fun(instance: instance, sessionId: number, bForceRefresh: boolean?, bByUser: boolean?)
+---@field GetSegmentType fun(instance: instance) : number
+---@field SetSegmentType fun(instance: instance, sessionType: number, bForceRefresh: boolean?, bByUser: boolean?)
+---@field GetSegmentObject fun(instance: instance) : damagemeter_combat_session
+---@field GetSourceActorFromName fun(instance: instance, name: string) : actor
+
+---@class sessioncache : table
+---@field startTime number
+---@field endTime number?
+---@field startUnixTime number
+---@field endUnixTime number?
+---@field startDate string
+---@field endDate string?
+---@field sessionId number
+---@field added boolean?
+---@field detailsId string?
+---@field sessionName string?
+---@field encounterId number?
+---@field encounterName string?
+---@field encounterData encounterdata?
+---@field alreadyAdded boolean
 
 ---@class trinketdata : table
 ---@field itemName string
@@ -1075,6 +1120,14 @@ DETAILS_SEGMENTTYPE_TRAININGDUMMY = true
 ---@field ContextManager contextmanager
 ---@field AllInOneWindow details_allinonewindow
 ---@field BParser bparser
+---@field Apocalypse addon_apocalypse
+
+---@class addon_apocalypse:table
+---@field TypeDetails number
+---@field TypeGame number
+---@field segmentType number
+---@field GetType fun() : number
+---@field SetType fun(newType: number)
 
 ---@class profile_breakdown_settings : table
 ---@field font_size number

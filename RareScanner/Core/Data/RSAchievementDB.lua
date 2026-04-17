@@ -53,10 +53,13 @@ local function IsAchievementCompleted(achievementID, entityID, questIDs, criteri
 		return false
 	end
 	
-	-- If its a container check the questID because some container achievements dont have criteria and this is the only way we can control if its completed
-	if (not cachedCompletedAchievement[achievementID] and isContainer and questIDs) then
+	-- Check if the assetID is the questID instead of the entityID
+	if (not cachedCompletedAchievement[achievementID] and questIDs) then
 		for _, questID in ipairs(questIDs) do
-			if (not C_QuestLog.IsQuestFlaggedCompletedOnAccount(questID)) then
+			if (cachedAchievements[achievementID][questID]) then
+				return false
+			-- Check the if the quest is completed because some container achievements dont have criteria and this is the only way we can control if its completed
+			elseif (isContainer and not C_QuestLog.IsQuestFlaggedCompletedOnAccount(questID)) then
 				return false
 			end
 		end
@@ -97,7 +100,6 @@ function RSAchievementDB.GetNotCompletedAchievementIDsByMap(entityID, mapID, ach
 		
 		if (parentMapID and private.ACHIEVEMENT_ZONE_IDS[parentMapID]) then
 			local notCompletedAchievementIDs = { }
-			
 			for _, achievementID in ipairs(private.ACHIEVEMENT_ZONE_IDS[parentMapID]) do
 				if (RSUtils.Contains(achievementIDs, achievementID) and not IsAchievementCompleted(achievementID, entityID, questIDs, criteriaIndex, isContainer)) then
 					tinsert(notCompletedAchievementIDs, achievementID);

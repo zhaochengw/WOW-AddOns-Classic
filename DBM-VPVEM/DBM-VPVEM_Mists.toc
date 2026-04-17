@@ -9,12 +9,12 @@
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Iceoven
-## Version: e89c0c3
+## Version: 169caaa
 ## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: VEM English Female
 ## X-DBM-Voice-Name-ruRU: VEM Английский женский
 ## X-DBM-Voice-Name-koKR: VEM 영어 여성
 ## X-DBM-Voice-ShortName: VEM
-## X-DBM-Voice-Version: 18
+## X-DBM-Voice-Version: 19
 ## X-DBM-Voice-HasCount: 1

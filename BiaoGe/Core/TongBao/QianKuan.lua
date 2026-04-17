@@ -149,7 +149,11 @@ BG.Init(function()
         return UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")
     end
     local function CanMove()
-        return IsLeader() and not InCombatLockdown()
+        if IsLeader() and not InCombatLockdown() then
+            return true
+        else
+            bt:SetEnabled(true)
+        end
     end
     local function GetSupgroupEmpty()
         local tbl = {}
@@ -167,6 +171,7 @@ BG.Init(function()
         if team <= 1 then
             BG.SendSystemMessage(L["队伍调整已完成。"])
             bt:SetEnabled(true)
+            PlaySoundFile("Interface\\AddOns\\BiaoGe\\Media\\sound\\other\\done.mp3", "Master")
             return
         end
         local needMoveIDs = {}

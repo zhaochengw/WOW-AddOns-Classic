@@ -1,34 +1,35 @@
 if BG.IsBlackListPlayer then return end
 local AddonName, ns = ...
 
-local LibBG = ns.LibBG
-local L = ns.L
+local LibBG         = ns.LibBG
+local L             = ns.L
 
-local RR = ns.RR
-local NN = ns.NN
-local RN = ns.RN
-local Size = ns.Size
-local RGB = ns.RGB
-local RGB_16 = ns.RGB_16
-local GetClassRGB = ns.GetClassRGB
-local SetClassCFF = ns.SetClassCFF
-local GetText_T = ns.GetText_T
-local AddTexture = ns.AddTexture
-local GetItemID = ns.GetItemID
+local RR            = ns.RR
+local NN            = ns.NN
+local RN            = ns.RN
+local Size          = ns.Size
+local RGB           = ns.RGB
+local RGB_16        = ns.RGB_16
+local GetClassRGB   = ns.GetClassRGB
+local SetClassCFF   = ns.SetClassCFF
+local GetText_T     = ns.GetText_T
+local AddTexture    = ns.AddTexture
+local GetItemID     = ns.GetItemID
 
-local Maxb = ns.Maxb
-local HopeMaxn = ns.HopeMaxn
-local HopeMaxb = ns.HopeMaxb
-local HopeMaxi = ns.HopeMaxi
+local Maxb          = ns.Maxb
+local HopeMaxn      = ns.HopeMaxn
+local HopeMaxb      = ns.HopeMaxb
+local HopeMaxi      = ns.HopeMaxi
 
-local pt = print
-local RealmId = GetRealmID()
-local player = BG.playerName
+local pt            = print
+local RealmId       = GetRealmID()
+local player        = BG.playerName
 local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
+local LoadAddOn     = LoadAddOn or C_AddOns.LoadAddOn
 
 BG.Init(function()
     BiaoGe.Auction = BiaoGe.Auction or {}
-    if BG.IsVanilla then
+    if BG.verLess2 then
         BiaoGe.Auction.money = BiaoGe.Auction.money or 1
         BiaoGe.Auction.fastMoney = BiaoGe.Auction.fastMoney or { 100, 300, 500, 1000, 2000 }
     elseif BG.IsTitan then
@@ -145,6 +146,7 @@ BG.Init(function()
         for i, v in ipairs(raid) do
             local name = v.name
             local Ver = self.table[name]
+            local r, g, b = 1, 1, 1
             if not Ver then
                 if v.online then
                     Ver = L["无"]
@@ -157,6 +159,13 @@ BG.Init(function()
                     elseif sending[name] then
                         Ver = L["正在接收拍卖WA"]
                     end
+                end
+            elseif not self.isAuciton then
+                if BG.GetVerNum(BG.ver) > BG.GetVerNum(Ver) then
+                    r = .6
+                    g, b = r, r
+                elseif BG.GetVerNum(BG.ver) < BG.GetVerNum(Ver) then
+                    r, g, b = 0, 1, 0
                 end
             end
             local vip = self.table2[name] and AddTexture("VIP") or ""
@@ -171,7 +180,7 @@ BG.Init(function()
                 role = role .. AddTexture("interface/groupframe/ui-group-masterlooter", y)
             end
             local c1, c2, c3 = GetClassRGB(name)
-            GameTooltip:AddDoubleLine(name .. role .. vip, Ver, c1, c2, c3, 1, 1, 1)
+            GameTooltip:AddDoubleLine(name .. role .. vip, Ver, c1, c2, c3, r, g, b)
             if Ver == L["无"] or Ver == L["未知"] then
                 local alpha = 0.4
                 if _G["GameTooltipTextLeft" .. (i + line)] then
@@ -351,16 +360,19 @@ BG.Init(function()
                 local _duration = tonumber(BiaoGe.Auction.duration)
                 local duration = _duration and _duration > 0 and _duration
                 if not (money and duration) then return end
-                local t = 0
+                local delay = 0
                 for i, v in ipairs(self.items) do
                     local itemID = v.id
                     local link = v.link
-                    BG.After(t, function()
+                    BG.After(delay, function()
                         local text = "StartAuction," .. GetTime() .. "," .. itemID .. "," ..
                             money .. "," .. duration .. ",," .. mod .. "," .. link
                         C_ChatInfo.SendAddonMessage("BiaoGeAuction", text, "RAID")
                     end)
-                    t = t + 0.8
+                    delay = delay + 1
+                end
+                if self.callback then
+                    self.callback()
                 end
             end
             self:GetParent():Hide()
@@ -446,7 +458,7 @@ BG.Init(function()
             end
         end
 
-        function BG.StartAuction(link, bt, isNotAuctioned, notAlt, isRightButton, noSound)
+        function BG.StartAuction(link, bt, isNotAuctioned, notAlt, isRightButton, noSound, callback)
             if BiaoGe.options["autoAuctionStart"] ~= 1 and not notAlt then return end
             if not link then return end
             if not BG.IsML then return end
@@ -720,11 +732,12 @@ BG.Init(function()
                 bt:SetSize(width + 19, 25)
                 bt.items = items
                 bt.noSound = noSound
+                bt.callback = callback
                 mainFrame.bt = bt
                 bt:SetScript("OnClick", Start_OnClick)
                 bt:SetScript("OnEnter", Start_OnEnter)
                 bt:SetScript("OnLeave", GameTooltip_Hide)
-                if BiaoGe.Auction.mod ~= "roll" and isRightButton and BiaoGeVIP and BiaoGeVIP.auction then
+                if BiaoGe.Auction.mod ~= "roll" and isRightButton and ns.isVIP and BiaoGeVIP and BiaoGeVIP.auction then
                     local _duration = tonumber(BiaoGe.Auction.duration)
                     local duration = _duration and _duration > 0 and _duration
                     if duration then
@@ -1018,91 +1031,91 @@ BG.Init(function()
             end
         end)
     end
+
     -- 移除屏蔽
-    local function CheckIgnore()
-        if BiaoGe.options.ignore ~= 1 then return end
-        for i = 1, C_FriendList.GetNumIgnores() do
-            local ignoreName = C_FriendList.GetIgnoreName(i)
-            for i, v in ipairs(BG.raidRosterInfo) do
-                if v.name == ignoreName then
+    local CheckIgnore
+    do
+        function CheckIgnore()
+            if BiaoGe.options.ignore ~= 1 then return end
+            for i = 1, C_FriendList.GetNumIgnores() do
+                local ignoreName = C_FriendList.GetIgnoreName(i)
+                if UnitInRaid(ignoreName) then
                     C_FriendList.DelIgnore(ignoreName)
                     BG.SendSystemMessage((format(L["已把%s从屏蔽名单中移除，防止你看不到对方的拍卖聊天信息。"], SetClassCFF(ignoreName))))
-                    break
                 end
             end
         end
+
+        local str = ERR_IGNORE_ADDED_S:gsub("%%s", "(.+)")
+        BG.RegisterEvent("CHAT_MSG_SYSTEM", function(self, event, msg)
+            if BiaoGe.options.ignore ~= 1 then return end
+            local ignoreName = msg:match(str)
+            if ignoreName and UnitInRaid(ignoreName) then
+                C_FriendList.DelIgnore(ignoreName)
+                BG.After(0, function()
+                    BG.SendSystemMessage((format(L["已把%s从屏蔽名单中移除，防止你看不到对方的拍卖聊天信息。"], SetClassCFF(ignoreName))))
+                end)
+            end
+        end)
     end
+
     -- 删除aaa插件
     if IsAddOnLoaded("aaa") then
         BG.After(10, function()
             BG.SendSystemMessage(L["请你删除aaa插件，该插件会破坏系统的通讯功能，导致其他插件功能失效。"])
         end)
     end
+
     -- 给拍卖WA设置关注和心愿
     function BG.HookCreateAuction(f)
-        -- 关注
-        if not f.itemFrame2.guanzhu then
-            local t = f.itemFrame2:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
-            t:SetPoint("LEFT", f.itemFrame2.itemTypeText, "RIGHT", 2, 0)
-            t:SetText(L["<关注>"])
-            t:SetTextColor(RGB(BG.b1))
-            f.itemFrame2.guanzhu = t
+        local leiting
+        for _, FB in ipairs(BG.GetAllFB()) do
+            if BG.GetLeiTingItem(f.itemID, FB) ~= f.itemID then
+                leiting = BG.GetLeiTingItem(f.itemID, FB)
+                break
+            end
         end
-        f.itemFrame2.guanzhu:Hide()
+        local itemID = leiting or f.itemID
+        -- 关注
+        local hasGZ, hasHope
         for _, FB in ipairs(BG.GetAllFB()) do
             for b = 1, Maxb[FB] do
                 for i = 1, BG.GetMaxi(FB, b) do
                     local zb = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]
-                    if zb and f.itemID == GetItemID(zb:GetText()) and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
-                        f.itemFrame2.guanzhu:Show()
-                        BG.After(0.5, function()
-                            f.autoFrame:Show()
-                        end)
+                    if zb and itemID == GetItemID(zb:GetText()) and BiaoGe[FB]["boss" .. b]["guanzhu" .. i] then
+                        local itemType = f.itemFrame.itemTypeText
+                        itemType:SetText((itemType:GetText() or "") .. BG.STC_b1(L["<关注>"]))
+                        hasGZ = true
                         break
                     end
                 end
-                if f.itemFrame2.guanzhu:IsVisible() then break end
+                if hasGZ then break end
             end
-            if f.itemFrame2.guanzhu:IsVisible() then break end
+            if hasGZ then break end
         end
         -- 心愿
-        if not f.itemFrame2.hope then
-            local t = f.itemFrame2:CreateFontString()
-            t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
-            t:SetPoint("LEFT", f.itemFrame2.guanzhu, "RIGHT", 2, 0)
-            t:SetText(L["<心愿>"])
-            t:SetTextColor(0, 1, 0)
-            f.itemFrame2.hope = t
-        end
-        f.itemFrame2.hope:Hide()
         for _, FB in ipairs(BG.GetAllFB()) do
             for n = 1, HopeMaxn[FB] do
                 for b = 1, HopeMaxb[FB] do
                     for i = 1, HopeMaxi do
                         local zb = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
-                        if zb and f.itemID == GetItemID(zb:GetText()) then
-                            local hope = f.itemFrame2.hope
-                            hope:ClearAllPoints()
-                            if f.itemFrame2.guanzhu:IsVisible() then
-                                hope:SetPoint("LEFT", f.itemFrame2.guanzhu, "RIGHT", 2, 0)
-                            else
-                                hope:SetPoint("LEFT", f.itemFrame2.itemTypeText, "RIGHT", 2, 0)
-                            end
-                            hope:Show()
-                            BG.After(0.5, function()
-                                f.autoFrame:Show()
-                            end)
+                        if zb and itemID == GetItemID(zb:GetText()) then
+                            local itemType = f.itemFrame.itemTypeText
+                            itemType:SetText((itemType:GetText() or "") .. (hasGZ and " " or "") .. BG.STC_g1(L["<心愿>"]))
+                            hasHope = true
                             break
                         end
                     end
-                    if f.itemFrame2.hope:IsVisible() then break end
+                    if hasHope then break end
                 end
-                if f.itemFrame2.hope:IsVisible() then break end
+                if hasHope then break end
             end
-            if f.itemFrame2.hope:IsVisible() then break end
+            if hasHope then break end
         end
-        if f.itemFrame2.guanzhu:IsVisible() or f.itemFrame2.hope:IsVisible() then
+        if hasGZ or hasHope then
+            BG.After(0.5, function()
+                f.autoFrame:Show()
+            end)
             if not f.highlight then
                 local function Create()
                     local f1, f2
@@ -1131,7 +1144,7 @@ BG.Init(function()
             local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(f.itemID)
             if BG.FilterAll(f.itemID, typeID, EquipLoc, subclassID) then
                 f.filter = true
-                if not (f.player and f.player == BG.GN()) then
+                if not (f.player and f.player == BG.playerName) then
                     f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
                     f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_filter))
                     f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
@@ -1150,8 +1163,18 @@ BG.Init(function()
         CheckIgnore()
     end
 
+    -- 被顶价语音提醒
+    local tipTime = 10
+    function BG.PlayTopPriceSound(f, player)
+        if BiaoGe.options.auctionTopPrice == 1 and f.remaining and f.player then
+            if f.remaining <= tipTime and f.player == BG.playerName and player ~= BG.playerName then
+                BG.PlaySound("auctionTopPrice")
+            end
+        end
+    end
+
     -- 拍卖欢呼语
-    do
+    if not BG.IsTitan then
         local tbl = {
             [[<%s>这波操作，直接把竞拍场变成了 "金币战场"，敌方全员溃败！]],
             [[天呐！<%s>的金币像 "冰霜新星"一样冻住了所有竞争者！太强了！]],
@@ -1258,6 +1281,8 @@ BG.Init(function()
 
         if BG.IsVanilla then
             BG.autoAuctionHappySay_minMoney = 20000
+        elseif BG.IsTBC then
+            BG.autoAuctionHappySay_minMoney = 50000
         elseif BG.IsWLK_80 then
             BG.autoAuctionHappySay_minMoney = 100000
         elseif BG.IsTitan then

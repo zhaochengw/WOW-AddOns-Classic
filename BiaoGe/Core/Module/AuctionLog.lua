@@ -19,7 +19,7 @@ local GetItemID = ns.GetItemID
 local Maxb = ns.Maxb
 
 local pt = print
-local RealmId = GetRealmID()
+local RealmID = GetRealmID()
 local player = BG.playerName
 
 BG.Init(function()
@@ -191,31 +191,30 @@ BG.Init(function()
         do
             local buttons = {}
             local numOptions = {
-                { name = L["全部"], },
-                { name = L["成功"], },
-                { name = L["流拍"], },
-                { name = L["未拍"], },
+                { name = L["全部"], id = 1, row = 1, width = 0, },
+                { name = L["未拍"], id = 4, row = 1, width = 52, },
+                { name = L["我买的"], id = 6, row = 1, width = 104, },
+                { name = L["流拍"], id = 3, row = 2, width = 0, },
+                { name = L["成功"], id = 2, row = 2, width = 52, },
+                { name = L["成功(未交易)"], id = 5, row = 2, width = 104, },
             }
             local buttonGroup = CreateFrame("Frame", nil, f)
-            buttonGroup:SetPoint("TOPLEFT", 7, -40)
+            buttonGroup:SetPoint("TOPLEFT", 7, -38)
             buttonGroup:SetSize(1, 1)
             for i = 1, #numOptions do
+                local v = numOptions[i]
                 local bt = CreateFrame("CheckButton", nil, buttonGroup, "UIRadioButtonTemplate")
-                if i == 4 then
-                    bt:SetPoint("LEFT", (i - 1) * 50 + 10, 0)
-                else
-                    bt:SetPoint("LEFT", (i - 1) * 50, 0)
-                end
+                bt:SetPoint("LEFT", v.width, -(v.row - 1) * 20)
                 bt:SetSize(15, 15)
                 tinsert(buttons, bt)
                 bt.Text = bt:CreateFontString()
                 bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                 bt.Text:SetPoint("LEFT", bt, "RIGHT", 0, 0)
-                bt.Text:SetText(numOptions[i].name)
+                bt.Text:SetText(v.name)
                 bt.Text:SetTextColor(1, .82, 0)
                 bt:SetHitRectInsets(0, -bt.Text:GetWidth(), -5, -5)
 
-                if i == BiaoGe.options.auctionLogChoose then
+                if v.id == BiaoGe.options.auctionLogChoose then
                     bt:SetChecked(true)
                     bt.Text:SetTextColor(0, 1, 0)
                 end
@@ -230,7 +229,7 @@ BG.Init(function()
                     end
                     self:SetChecked(true)
                     self.Text:SetTextColor(0, 1, 0)
-                    BiaoGe.options.auctionLogChoose = i
+                    BiaoGe.options.auctionLogChoose = v.id
                     BG.auctionLogFrame.changeFrame:Hide()
                     BG.UpdateAuctionLogFrame()
                     LibBG:CloseDropDownMenus()
@@ -240,13 +239,13 @@ BG.Init(function()
             local l = buttons[1]:CreateLine()
             l:SetColorTexture(RGB("808080", 1))
             l:SetStartPoint("BOTTOMLEFT", 0, -2)
-            l:SetEndPoint("BOTTOMLEFT", 145, -2)
+            l:SetEndPoint("BOTTOMLEFT", 165, -2)
             l:SetThickness(1)
 
             local l = buttons[4]:CreateLine()
             l:SetColorTexture(RGB("808080", 1))
             l:SetStartPoint("BOTTOMLEFT", 0, -2)
-            l:SetEndPoint("BOTTOMLEFT", 45, -2)
+            l:SetEndPoint("BOTTOMLEFT", 205, -2)
             l:SetThickness(1)
         end
 
@@ -259,7 +258,7 @@ BG.Init(function()
             })
             frame:SetBackdropBorderColor(.5, .5, .5, .5)
             frame:SetBackdropColor(0, 0, 0, 0.8)
-            frame:SetPoint("TOPLEFT", 5, -55)
+            frame:SetPoint("TOPLEFT", 5, -73)
             frame:SetPoint("BOTTOMRIGHT", -5, 115)
             frame:EnableMouse(true)
 
@@ -376,7 +375,10 @@ BG.Init(function()
                 BG.lastfocus = self
             end)
         end
+    end
 
+    -- 生成账单
+    do
         -- 生成账单
         do
             local function CheckErrorItem()
@@ -408,9 +410,21 @@ BG.Init(function()
                     end
                 end
             end
+
+            local function HasQK()
+                local has
+                BG.PairFBItem(function(item, buyer, money, b, i)
+                    if BiaoGe[BG.FB1]["boss" .. b]["qiankuan" .. i] then
+                        has = true
+                        return true
+                    end
+                end)
+                return has
+            end
+
             local bt = BG.CreateButton(BG.auctionLogFrame)
             bt:SetSize(110, 25)
-            bt:SetPoint("BOTTOMLEFT", BG.auctionLogFrame, 5, 10)
+            bt:SetPoint("BOTTOMLEFT", BG.auctionLogFrame, 5, 5)
             bt:SetText(L["生成表格账单"])
             BG.auctionLogFrame.ButtonCreateLedger = bt
             bt:SetScript("OnEnter", function(self)
@@ -433,8 +447,30 @@ BG.Init(function()
             end)
             bt:SetScript("OnLeave", GameTooltip_Hide)
             bt:SetScript("OnClick", function(self)
-                BG.PlaySound(2)
-                BG.CreateBillByAuctionLog()
+                if HasQK() then
+                    local name = "BiaoGe_CreateBillByAuctionLog"
+                    if not StaticPopupDialogs[name] then
+                        StaticPopupDialogs[name] = {
+                            text = L["你的当前表格含有|cffff0000欠款|r，生成表格账单可能会导致欠款金额与欠款人对应不上。\n\n确定继续生成表格账单吗？"],
+                            button1 = L["是"],
+                            button2 = L["否"],
+                            OnCancel = function()
+                            end,
+                            timeout = 0,
+                            whileDead = true,
+                            hideOnEscape = true,
+                            showAlert = true,
+                        }
+                    end
+                    StaticPopupDialogs[name].OnAccept = function()
+                        BG.PlaySound(2)
+                        BG.CreateBillByAuctionLog()
+                    end
+                    StaticPopup_Show(name)
+                else
+                    BG.PlaySound(2)
+                    BG.CreateBillByAuctionLog()
+                end
             end)
 
             function BG.CreateBillByAuctionLog()
@@ -458,7 +494,8 @@ BG.Init(function()
                 end
                 BiaoGe[FB].tradeTbl = {}
 
-                for _, v in ipairs(BiaoGe[FB].auctionLog) do
+                for index = #BiaoGe[FB].auctionLog, 1, -1 do
+                    local v = BiaoGe[FB].auctionLog[index]
                     if v.type == 1 then
                         local itemID = GetItemID(v.zhuangbei)
                         for b = 1, Maxb[FB] - 1 do
@@ -491,6 +528,10 @@ BG.Init(function()
                         end
                     end
                 end
+
+                if BGV and BGV.SetBiaoGeCPMoney then
+                    BGV.SetBiaoGeCPMoney()
+                end
             end
 
             function BG.IsAutoCreateBill()
@@ -502,7 +543,7 @@ BG.Init(function()
         do
             local bt = BG.CreateButton(BG.auctionLogFrame)
             bt:SetSize(95, 25)
-            bt:SetPoint("BOTTOMRIGHT", BG.auctionLogFrame, -5, 10)
+            bt:SetPoint("BOTTOMRIGHT", BG.auctionLogFrame, -5, 5)
             bt:SetText(L["生成对账单"])
             BG.auctionLogFrame.ButtonCreateDuiZhang = bt
             bt:SetScript("OnEnter", function(self)
@@ -941,6 +982,20 @@ BG.Init(function()
     BG.auctionLogFrame.choosed = {}
     local lastChoose
 
+    local function DeleteLiuPaiAuctionLog() -- 在流拍列表重拍一个装备时，该装备的流拍记录会被删除
+        local link = BG.auctionLogFrame.needDeleteLink
+        local FB = BG.FB1
+        if link and BiaoGe[FB].auctionLog then
+            for i, v in ipairs(BiaoGe[FB].auctionLog) do
+                if v.type == 2 and v.zhuangbei == link then
+                    tremove(BiaoGe[FB].auctionLog, i)
+                    BG.UpdateAuctionLogFrame(true, true)
+                    return
+                end
+            end
+        end
+    end
+
     local function UpdateButtonStartAuction()
         local bt = BG.auctionLogFrame.ButtonStartAuction
         if BiaoGe.options.auctionLogChoose ~= 4 then
@@ -1213,7 +1268,8 @@ BG.Init(function()
                         disabled = not BG.IsML,
                         notCheckable = true,
                         func = function()
-                            BG.StartAuction(link, f, true, true)
+                            BG.auctionLogFrame.needDeleteLink = link
+                            BG.StartAuction(link, f, true, true, nil, nil, DeleteLiuPaiAuctionLog)
                         end
                     }
                 )
@@ -1230,7 +1286,6 @@ BG.Init(function()
     end
     -- 列表内容
     local function CreateButton(i, v, isHistory, num)
-        local FB = BG.FB1
         local bts = {}
         local width = child:GetWidth()
         local link = v.zhuangbei
@@ -1299,7 +1354,12 @@ BG.Init(function()
                         CancelChoose(bt)
                     end
                     if IsAltKeyDown() then
-                        BG.StartAuction(link, f, true, nil, button == "RightButton")
+                        if v.type == 2 or v.type == 3 then
+                            if v.type == 2 then
+                                BG.auctionLogFrame.needDeleteLink = link
+                            end
+                            BG.StartAuction(link, f, true, nil, button == "RightButton", nil, v.type == 2 and DeleteLiuPaiAuctionLog)
+                        end
                     else
                         local menu = CreateMenu(f, i, v, notAuctioned, link, icon, isHistory)
                         if menu then
@@ -1386,7 +1446,8 @@ BG.Init(function()
                             BG.PlaySound(1)
                             BG.InsertLink(link)
                         elseif v.type == 2 and IsAltKeyDown() then
-                            BG.StartAuction(link, f, true, nil)
+                            BG.auctionLogFrame.needDeleteLink = link
+                            BG.StartAuction(link, f, true, nil, nil, nil, DeleteLiuPaiAuctionLog)
                         end
                     end
                 end
@@ -1425,7 +1486,7 @@ BG.Init(function()
             local tex = f:CreateTexture(nil, "BACKGROUND")
             tex:SetAllPoints()
             tex:SetTexture(icon)
-            tex:SetTexCoord(.04, .96, .04, .96)
+            tex:SetTexCoord(unpack(BG.iconTexCoord))
             bts.icon = tex
             f.level = f:CreateFontString()
             f.level:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
@@ -1461,7 +1522,12 @@ BG.Init(function()
             text.LiuPaiText = BG.STC_r1(L["<流拍>"])
             text.auctionText = BG.STC_y1(L["<正在拍卖>"])
             if v.type == 1 then
-                text:SetText(BG.FormatNumber(v.jine, 2) .. "|c" .. select(4, GetClassColor(v.class)) .. " " .. v.maijia .. "" .. RR)
+                local color = "FFFFFF"
+                if v.color then
+                    local r, g, b = unpack(v.color)
+                    color = RGB_16(nil, r, g, b)
+                end
+                text:SetText(format("%s |cff%s%s|r", BG.FormatNumber(v.jine, 2), color, v.maijia))
             elseif notAuctioned then
                 text:SetText(text.notAuctionedText)
             else
@@ -1507,170 +1573,185 @@ BG.Init(function()
         child:SetHeight(scroll:GetHeight())
     end
 
+    local playerInfo = BiaoGe.playerInfo[RealmID]
+    local function IsMyPlayer(player)
+        return playerInfo[player]
+    end
+
     function BG.UpdateAuctionLogFrame(notSetDown, notSetUp)
-        if not BG.auctionLogFrame:IsVisible() then return end
-        UpdateFrameSize()
-        for i, v in ipairs(BG.auctionLogFrame.buttons) do
-            v.frame:Hide()
-        end
-        wipe(BG.auctionLogFrame.buttons)
-        BG.auctionLogFrame.notText:Hide()
-        if not notSetUp then
-            wipe(BG.auctionLogFrame.choosed)
-            lastChoose = nil
-        end
-        UpdateButtonStartAuction()
-
-        local FB = BG.FB1
-        local sum = 0
-        local tbl
-        local isHistory
-        local notCache = 0
-        if BG.History.chooseNum then
-            isHistory = true
-        end
-        if isHistory then
-            local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
-            tbl = BiaoGe.History[FB][DT].auctionLog
-        elseif BG.HistoryMainFrame:IsVisible() then
-            isHistory = true
-        else
-            tbl = BiaoGe[FB].auctionLog
-        end
-        if not tbl or #tbl == 0 then
-            BG.auctionLogFrame.ButtonCreateLedger:Disable()
-            BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
-            if BiaoGe.options.auctionLogChoose ~= 4 then
-                BG.auctionLogFrame.notText:Show()
+        if BG.auctionLogFrame:IsVisible() then
+            UpdateFrameSize()
+            for i, v in ipairs(BG.auctionLogFrame.buttons) do
+                v.frame:Hide()
+                v.frame:SetParent(nil)
             end
-        else
-            BG.auctionLogFrame.ButtonCreateLedger:Enable()
-            BG.auctionLogFrame.ButtonCreateDuiZhang:Enable()
-        end
-        if isHistory then
-            BG.auctionLogFrame.ButtonCreateLedger:Disable()
-            BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
-            BG.auctionLogFrame.ButtonAdd:Disable()
-            BG.auctionLogFrame.title:SetText(L["历史自动拍卖记录"])
-            BG.auctionLogFrame.title:SetTextColor(RGB(BG.b1))
-        else
-            BG.auctionLogFrame.ButtonAdd:Enable()
-            BG.auctionLogFrame.title:SetText(L["自动拍卖记录"])
-            BG.auctionLogFrame.title:SetTextColor(1, 1, 1)
-        end
-        if tbl then
-            local num = 0
-            for i, v in ipairs(tbl) do
-                if (BiaoGe.options.auctionLogChoose == 1 or
-                        (v.type == 1 and BiaoGe.options.auctionLogChoose == 2)
-                        or (v.type == 2 and BiaoGe.options.auctionLogChoose == 3))
-                    and SearchText(v)
-                then
-                    num = num + 1
-                    CreateButton(i, v, isHistory, num)
-                end
-                sum = sum + (tonumber(v.jine) or 0)
+            wipe(BG.auctionLogFrame.buttons)
+            BG.auctionLogFrame.notText:Hide()
+            if not notSetUp then
+                wipe(BG.auctionLogFrame.choosed)
+                lastChoose = nil
             end
-        end
+            UpdateButtonStartAuction()
 
-        if BiaoGe.options.auctionLogChoose == 4 then
-            local newTbl = {}
-            for b = 1, Maxb[FB] do
-                for i = 1, BG.GetMaxi(FB, b) do
-                    if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
-                        local zb
-                        if isHistory then
-                            if BG.History.chooseNum then
-                                local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
-                                zb = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
-                            end
-                        else
-                            zb = BiaoGe[FB]["boss" .. b]["zhuangbei" .. i]
-                        end
-                        if GetItemID(zb) then
-                            tinsert(newTbl, zb)
-                        end
-                    end
+            local FB = BG.FB1
+            local sum = 0
+            local tbl
+            local isHistory
+            local notCache = 0
+            if BG.History.chooseNum then
+                isHistory = true
+            end
+            if isHistory then
+                local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
+                tbl = BiaoGe.History[FB][DT].auctionLog
+            elseif BG.HistoryMainFrame:IsVisible() then
+                isHistory = true
+            else
+                tbl = BiaoGe[FB].auctionLog
+            end
+            if not tbl or #tbl == 0 then
+                BG.auctionLogFrame.ButtonCreateLedger:Disable()
+                BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
+                if BiaoGe.options.auctionLogChoose ~= 4 then
+                    BG.auctionLogFrame.notText:Show()
                 end
+            else
+                BG.auctionLogFrame.ButtonCreateLedger:Enable()
+                BG.auctionLogFrame.ButtonCreateDuiZhang:Enable()
+            end
+            if isHistory then
+                BG.auctionLogFrame.ButtonCreateLedger:Disable()
+                BG.auctionLogFrame.ButtonCreateDuiZhang:Disable()
+                BG.auctionLogFrame.ButtonAdd:Disable()
+                BG.auctionLogFrame.title:SetText(L["历史自动拍卖记录"])
+                BG.auctionLogFrame.title:SetTextColor(RGB(BG.b1))
+            else
+                BG.auctionLogFrame.ButtonAdd:Enable()
+                BG.auctionLogFrame.title:SetText(L["自动拍卖记录"])
+                BG.auctionLogFrame.title:SetTextColor(1, 1, 1)
             end
             if tbl then
-                local copyTbl = BG.Copy(tbl)
-                for i = #newTbl, 1, -1 do
-                    for _i = #copyTbl, 1, -1 do
-                        if GetItemID(newTbl[i]) == GetItemID(copyTbl[_i].zhuangbei) then
-                            tremove(newTbl, i)
-                            tremove(copyTbl, _i)
-                            break
+                local num = 0
+                for i, v in ipairs(tbl) do
+                    -- type 1：成功 2：流拍
+                    if (
+                            BiaoGe.options.auctionLogChoose == 1 or
+                            (BiaoGe.options.auctionLogChoose == 2 and v.type == 1)
+                            or (BiaoGe.options.auctionLogChoose == 3 and v.type == 2)
+                            or (BiaoGe.options.auctionLogChoose == 5 and not v.trade and v.type == 1)
+                            or (BiaoGe.options.auctionLogChoose == 6 and v.type == 1 and IsMyPlayer(v.maijia))
+                        )
+                        and SearchText(v)
+                    then
+                        num = num + 1
+                        CreateButton(i, v, isHistory, num)
+                    end
+                    sum = sum + (tonumber(v.jine) or 0)
+                end
+            end
+
+            if BiaoGe.options.auctionLogChoose == 4 then
+                local newTbl = {}
+                for b = 1, Maxb[FB] do
+                    for i = 1, BG.GetMaxi(FB, b) do
+                        if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
+                            local zb
+                            if isHistory then
+                                if BG.History.chooseNum then
+                                    local DT = BiaoGe.HistoryList[FB][BG.History.chooseNum][1]
+                                    zb = BiaoGe.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
+                                end
+                            else
+                                zb = BiaoGe[FB]["boss" .. b]["zhuangbei" .. i]
+                            end
+                            if GetItemID(zb) then
+                                tinsert(newTbl, zb)
+                            end
                         end
                     end
                 end
-            end
-            for i, zhuangbei in ipairs(newTbl) do
-                local item = Item:CreateFromItemID(GetItemID(zhuangbei))
-                if not GetItemInfo(zhuangbei) then
-                    notCache = 0.5
-                end
-                item:ContinueOnItemLoad(function()
-                    local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
-                    _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
-                    newTbl[i] = {
-                        type = 3,
-                        zhuangbei = zhuangbei,
-                        itemlevel = level,
-                        quality = quality,
-                        bindType = bindType,
-                    }
-                end)
-            end
-
-            local function Create()
-                for i, bt in ipairs(BG.auctionLogFrame.buttons) do
-                    bt.frame:Hide()
-                end
-                wipe(BG.auctionLogFrame.buttons)
-
-                for i, v in ipairs(newTbl) do
-                    if SearchText(v) then
-                        CreateButton(i, v, isHistory, i)
+                if tbl then
+                    local copyTbl = BG.Copy(tbl)
+                    for i = #newTbl, 1, -1 do
+                        for _i = #copyTbl, 1, -1 do
+                            if GetItemID(newTbl[i]) == GetItemID(copyTbl[_i].zhuangbei) then
+                                tremove(newTbl, i)
+                                tremove(copyTbl, _i)
+                                break
+                            end
+                        end
                     end
                 end
-                BG.UpdateAuctioning()
+                for i, zhuangbei in ipairs(newTbl) do
+                    local item = Item:CreateFromItemID(GetItemID(zhuangbei))
+                    if not GetItemInfo(zhuangbei) then
+                        notCache = 0.5
+                    end
+                    item:ContinueOnItemLoad(function()
+                        local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
+                        _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
+                        newTbl[i] = {
+                            type = 3,
+                            zhuangbei = zhuangbei,
+                            itemlevel = level,
+                            quality = quality,
+                            bindType = bindType,
+                        }
+                    end)
+                end
 
-                for i, v in ipairs(BG.auctionLogFrame.choosed) do
-                    local itemID = v.id
+                local function Create()
                     for i, bt in ipairs(BG.auctionLogFrame.buttons) do
-                        if bt.itemID == itemID then
-                            bt.ischoose = true
-                            bt.tex:Show()
-                            bt.tex:SetColorTexture(1, 1, 0, .5)
-                            break
+                        bt.frame:Hide()
+                    end
+                    wipe(BG.auctionLogFrame.buttons)
+
+                    for i, v in ipairs(newTbl) do
+                        if SearchText(v) then
+                            CreateButton(i, v, isHistory, i)
+                        end
+                    end
+                    BG.UpdateAuctioning()
+
+                    for i, v in ipairs(BG.auctionLogFrame.choosed) do
+                        local itemID = v.id
+                        for i, bt in ipairs(BG.auctionLogFrame.buttons) do
+                            if bt.itemID == itemID then
+                                bt.ischoose = true
+                                bt.tex:Show()
+                                bt.tex:SetColorTexture(1, 1, 0, .5)
+                                break
+                            end
                         end
                     end
                 end
-            end
-            if notCache == 0 then
-                Create()
-            else
-                BG.After(notCache, function()
+                if notCache == 0 then
                     Create()
+                else
+                    BG.After(notCache, function()
+                        Create()
+                    end)
+                end
+            end
+
+            BG.auctionLogFrame.sumText:SetText(L["合计收入："] .. BG.FormatNumber(sum, 2))
+
+            if BiaoGe.options.auctionLogChoose == 4 then
+                if not notSetUp then
+                    BG.After(notCache + 0.05, function()
+                        local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
+                        frame.scroll.ScrollBar:SetValue(min)
+                    end)
+                end
+            elseif not notSetDown then
+                BG.After(0, function()
+                    local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
+                    frame.scroll.ScrollBar:SetValue(max)
                 end)
             end
         end
-
-        BG.auctionLogFrame.sumText:SetText(L["合计收入："] .. BG.FormatNumber(sum, 2))
-
-        if BiaoGe.options.auctionLogChoose == 4 then
-            if not notSetUp then
-                BG.After(notCache + 0.05, function()
-                    local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
-                    frame.scroll.ScrollBar:SetValue(min)
-                end)
-            end
-        elseif not notSetDown then
-            BG.After(0, function()
-                local min, max = frame.scroll.ScrollBar:GetMinMaxValues()
-                frame.scroll.ScrollBar:SetValue(max)
-            end)
+        if BG.UpdateLootAuctionLogFrame then
+            BG.UpdateLootAuctionLogFrame()
         end
     end
 
@@ -1725,7 +1806,7 @@ BG.Init(function()
                 item:ContinueOnItemLoad(function()
                     local name, link, quality, level, _, _, _, _, EquipLoc, Texture,
                     _, typeID, subclassID, bindType = GetItemInfo(zhuangbei)
-                    local FB = BG.FB1
+                    local FB = BG.FB2 or BG.FB1
                     local log
                     if BG.sendMoneyLog and BG.sendMoneyLog[itemID] and next(BG.sendMoneyLog[itemID]) then
                         log = {}
@@ -1757,7 +1838,7 @@ BG.Init(function()
                     end
                     local a = {
                         type = 1,
-                        time = time,
+                        time = time(),
                         zhuangbei = zhuangbei,
                         maijia = maijia,
                         jine = jine,
@@ -1803,7 +1884,7 @@ BG.Init(function()
                     local FB = BG.FB1
                     local a = {
                         type = 2,
-                        time = time,
+                        time = time(),
                         zhuangbei = zhuangbei,
                         itemlevel = level,
                         quality = quality,
@@ -1932,7 +2013,7 @@ BG.Init(function()
                         first = nil
                         GameTooltip:AddLine(" ")
                     end
-                    local text = v.jine .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
+                    local text = BG.FormatNumber(v.jine, 2) .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
                     GameTooltip:AddDoubleLine(L["已拍已交易"], text, 0, 1, 0)
                     GameTooltip:Show()
                 end
@@ -1943,7 +2024,7 @@ BG.Init(function()
                         first = nil
                         GameTooltip:AddLine(" ")
                     end
-                    local text = v.jine .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
+                    local text = BG.FormatNumber(v.jine, 2) .. "(|c" .. select(4, GetClassColor(v.class)) .. v.maijia .. "|r)"
                     GameTooltip:AddDoubleLine(L["已拍未交易"], text, 1, 0, 0)
                     GameTooltip:Show()
                 end

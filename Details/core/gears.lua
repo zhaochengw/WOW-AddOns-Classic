@@ -145,15 +145,19 @@ function Details:ResetSpecCache(forced)
 		Details:Destroy(Details.cached_specs)
 
 		if (Details.track_specs) then
-			local playerSpec = DetailsFramework.GetSpecialization()
-			if (type(playerSpec) == "number") then
-				local specId = DetailsFramework.GetSpecializationInfo(playerSpec)
-				if (type(specId) == "number") then
-					local playerGuid = UnitGUID(Details.playername)
-					if (playerGuid) then
-						Details.cached_specs[playerGuid] = specId
-					end
-				end
+            if (DetailsFramework.IsTBCWow()) then
+                Details.GetOldSchoolTalentInformation()
+            else
+                local playerSpec = DetailsFramework.GetSpecialization()
+                if (type(playerSpec) == "number") then
+                    local specId = DetailsFramework.GetSpecializationInfo(playerSpec)
+                    if (type(specId) == "number") then
+                        local playerGuid = UnitGUID(Details.playername)
+                        if (playerGuid) then
+                            Details.cached_specs[playerGuid] = specId
+                        end
+                    end
+                end
 			end
 		end
 
@@ -946,6 +950,12 @@ function ilvl_core:Loop()
 		return
 	end
 
+	if detailsFramework.IsAddonApocalypseWow() then
+		if issecretvalue(guid) then
+			return
+		end
+	end
+
 	--if already inspecting or the actor is in the list of trusted actors
 	if (inspecting [guid] or Details.trusted_characters [guid]) then
 		return
@@ -1206,7 +1216,7 @@ Details.specToRole = {
 }
 
 --oldschool talent tree
-if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsCataWow()) then
+if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsCataWow() or DetailsFramework.IsClassicWow() or DetailsFramework.IsTBCWow()) then
 	local talentWatchClassic = CreateFrame("frame")
 	talentWatchClassic:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	talentWatchClassic:RegisterEvent("SPELLS_CHANGED")

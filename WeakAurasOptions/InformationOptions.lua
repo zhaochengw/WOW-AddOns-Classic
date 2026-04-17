@@ -124,6 +124,7 @@ function OptionsPrivate.GetInformationOptions(data)
             end
             for child in OptionsPrivate.Private.TraverseAll(auraData) do
               child.ignoreWagoUpdate = ignoreUpdate
+              WeakAuras.Add(child)
               OptionsPrivate.ClearOptions(child.id)
             end
             WeakAuras.ClearAndUpdateOptions(data.id)
@@ -208,6 +209,9 @@ function OptionsPrivate.GetInformationOptions(data)
     forceEvents = {
       name = L["Custom Trigger: Send fake events instead of STATUS event"]
     },
+    showNilIsFalse = {
+      name = L["Hide auras on setting show to nil in custom triggers"]
+    },
     groupOffset = {
       name = L["Offset by 1px"],
       onParent = true,
@@ -218,6 +222,7 @@ function OptionsPrivate.GetInformationOptions(data)
   --- @type table<string, boolean>
   local same = {
     ignoreOptionsEventErrors = true,
+    showNilIsFalse = true,
     forceEvents = true,
     groupOffset = true
   }

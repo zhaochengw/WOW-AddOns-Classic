@@ -125,15 +125,15 @@ local AcquireTooltip = _G.CreateFrame("GameTooltip", "AckisRecipeList_AcquireToo
 
 function private.InitializeListFrame()
 	local MainPanel	= addon.Frame
-	local ListFrame = _G.CreateFrame("Frame", nil, MainPanel, BackdropTemplateMixin and "BackdropTemplate")
+	local ListFrame = private.CreateFrameWithBackdrop("Frame", nil, MainPanel)
 	ListFrame:SetSize(LISTFRAME_WIDTH, 335)
 	ListFrame:SetPoint("TOPLEFT", MainPanel, "TOPLEFT", 22, -75)
-	ListFrame:SetBackdrop({
+	local listBackdrop = {
 		bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
 		tile = true,
 		tileSize = 16,
-	})
-	ListFrame:SetBackdropColor(1, 1, 1)
+	}
+	private.BackdropUtil.SafeSetBackdrop(ListFrame, listBackdrop, {1, 1, 1, 1})
 	ListFrame:EnableMouse(true)
 	ListFrame:EnableMouseWheel(true)
 	ListFrame:SetScript("OnHide", function(self)
@@ -141,7 +141,18 @@ function private.InitializeListFrame()
 			acquire_tip:Hide()
 		end
 		SpellTooltip:Hide()
+		_G.GameTooltip:Hide()
 		self.selected_entry = nil
+
+		if self.entries then
+			for i = 1, #self.entries do
+				local entry = self.entries[i]
+				if entry and entry.children then
+					private.ReleaseTable(entry.children)
+					entry.children = nil
+				end
+			end
+		end
 	end)
 	MainPanel.list_frame = ListFrame
 	private.list_frame = ListFrame
@@ -590,17 +601,21 @@ function private.InitializeListFrame()
 
 	function ListFrame:Update(expand_mode, refresh)
         if refresh then
-            local newEntries = {}
-            for index = 1, #self.entries do
-                local entry = self.entries[index]
+            local writeIndex = 1
+            for readIndex = 1, #self.entries do
+                local entry = self.entries[readIndex]
                 if entry._discard then
                     private.ReleaseTable(entry)
                 else
-                    newEntries[#newEntries + 1] = entry
+                    if writeIndex ~= readIndex then
+                        self.entries[writeIndex] = entry
+                    end
+                    writeIndex = writeIndex + 1
                 end
             end
-
-            self.entries = newEntries
+            for i = writeIndex, #self.entries do
+                self.entries[i] = nil
+            end
         else
             self:Initialize(expand_mode)
         end

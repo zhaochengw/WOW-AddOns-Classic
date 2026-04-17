@@ -9,12 +9,18 @@ local CT = __private.CT;
 local VT = __private.VT;
 local DT = __private.DT;
 
+
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
+	local tonumber = tonumber;
+	local _G = _G;
+
+-->
+
 
 -->		****
 MT.BuildEnv("GF_Auction");
 -->		****
+
 
 local mod = {  };
 
@@ -40,13 +46,13 @@ end
 function mod.F_QueryNameByID(id)
 	id = tonumber(id);
 	if not id or id <= 0 then return nil; end
-	local name = GetItemInfo(id);
+	local name = mod.F_QueryNameByID(id);
 	return name;
 end
 function mod.F_QueryQualityByID(id)
 	id = tonumber(id);
 	if not id or id <= 0 then return nil; end
-	local _, _, quality = GetItemInfo(id);
+	local _, _, quality = mod.F_QueryNameByID(id);
 	return quality;
 end
 

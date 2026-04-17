@@ -50,7 +50,7 @@ local baseLocale = {
     ["Reset UI"] = "UI 초기화",
     ["Resets the UI to its default settings. There is no confirmation for this action."] = "UI를 기본 설정으로 초기화합니다. 이 작업에 대한 확인은 없습니다.",
 
-    ["Team: "] = "팀: ",
+    ["Team: "] = "팀: |cff00ffff",
     ["Team Options"] = "팀 옵션",
     ["Lock Team"] = "팀 잠금",
     ["Rename Team"] = "팀 이름 변경",

@@ -7,7 +7,8 @@ else
 	mod.statTypes = "normal25"
 end
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(22887)
 mod:SetEncounterID(601, 2473)
 mod:SetModelID(21174)
@@ -34,15 +35,11 @@ local berserkTimer		= mod:NewBerserkTimer(480)
 
 mod:AddSetIconOption("SpineIcon", 39837)
 mod:AddInfoFrameOption(39878, true)
-mod:AddRangeFrameOption("8")
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerShield:Start(55.5-delay)
 	warnShieldSoon:Schedule(50-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(8)
-	end
 	if self.Options.InfoFrame and not self:IsTrivial() then
 		DBM.InfoFrame:SetHeader(L.HealthInfo)
 		DBM.InfoFrame:Show(5, "health", 1800)
@@ -50,9 +47,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end

@@ -281,7 +281,7 @@ do
         end
     end
     GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-        if BiaoGe.options["mouseFK"] ~= 1 or InCombatLockdown() then return end
+        if BiaoGe.options["mouseFK"] ~= 1 then return end
         local unit = "mouseover"
         if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
         if CD then return end
@@ -291,7 +291,7 @@ do
     end)
 
     hooksecurefunc(GameTooltip, "SetUnit", function(self, unit)
-        if BiaoGe.options["mouseFK"] ~= 1 or InCombatLockdown() then return end
+        if BiaoGe.options["mouseFK"] ~= 1 then return end
         if not (UnitIsPlayer(unit) and UnitIsSameServer(unit)) then return end
         if CD then return end
         CD = true
@@ -1257,7 +1257,7 @@ function BG.BossNameUI(FB, t, b, bb, i, ii, frameName)
     f.text:SetTextColor(RGB(BG.Boss[FB]["boss" .. boss].color))
     if frameName == "DuiZhangFrame" then
         if boss == Maxb[FB] then
-            f.text:SetText(BG.STC_r1(BG.FormatBossName(L["你漏记的装备"])))
+            f.text:SetText(BG.STC_r1(BG.FormatBossName(L["我漏记的装备"])))
         elseif boss == Maxb[FB] + 1 then
             f.text:SetText(BG.STC_g1(BG.FormatBossName(L["总结"])))
         else
@@ -1305,38 +1305,12 @@ function BG.BossNameUI(FB, t, b, bb, i, ii, frameName)
 
     if not ns.enUS and BG[frameName][FB]["boss" .. boss] == BG[frameName][FB]["boss" .. Maxb[FB] + 2] then
         local f = CreateFrame("Frame", nil, BG[frameName .. FB])
-        f:SetPoint("BOTTOM", BG.Frame[FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
+        f:SetPoint("BOTTOM", BG[frameName][FB]["boss" .. Maxb[FB] + 2].zhuangbei5, "BOTTOMLEFT", -45, 7)
         f.text = f:CreateFontString()
         f.text:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
         f.text:SetTextColor(RGB("00BFFF"))
         f.text:SetText(L["工\n资"])
         BG.SetBossNamePoint(FB, boss, f)
-    end
-end
-
-------------------击杀用时------------------
-function BG.JiShaUI(FB, t, b, bb, i, ii, frameName)
-    local boss = BossNum(FB, b, t)
-    if boss > Maxb[FB] - 2 then return end
-    local text = BG[frameName .. FB]:CreateFontString()
-    local num
-    for i = 1, BG.GetMaxi(FB, boss) do
-        if not BG[frameName][FB]["boss" .. boss]["zhuangbei" .. i + 1] then
-            num = i
-            break
-        end
-    end
-    text:SetPoint("TOPLEFT", BG[frameName][FB]["boss" .. boss]["zhuangbei" .. num], "BOTTOMLEFT", -0, -3)
-    text:SetFont(BIAOGE_TEXT_FONT, 10, "OUTLINE,THICK")
-    text:SetTextColor(RGB(BG.Boss[FB]["boss" .. boss].color))
-    BG[frameName][FB]["boss" .. boss]["time"] = text
-    if frameName == "Frame" then
-        text:SetAlpha(0)
-        if BiaoGe[FB]["boss" .. boss]["time"] then
-            text:SetText(L["击杀用时"] .. " " .. BiaoGe[FB]["boss" .. boss]["time"])
-        end
-    else
-        text:SetAlpha(0.8)
     end
 end
 

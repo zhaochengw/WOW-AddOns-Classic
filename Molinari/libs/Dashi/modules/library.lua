@@ -93,6 +93,15 @@ do
 		return tbl
 	end
 
+	function tableMethods:removeValue(value)
+		for index = #self, 1, -1 do
+			if self[index] == value then
+				table.remove(self, index)
+				break
+			end
+		end
+	end
+
 	-- remove obsolete and deprecated methods present in the table library
 	-- https://warcraft.wiki.gg/wiki/Lua_functions#Deprecated_functions
 	tableMethods.foreach = nil

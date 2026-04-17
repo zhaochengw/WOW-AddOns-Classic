@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(1904, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240426175442")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(119542)--119883 Fel Portal Guardian 118834
 mod:SetEncounterID(2053)
 --mod:SetHotfixNoticeRev(15186)

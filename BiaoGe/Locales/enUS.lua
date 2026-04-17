@@ -14,7 +14,6 @@ do --英语说明书
         "|cffFFFFFF-Open command: |r/BiaoGe or /GBG, or bind keys in game settings. Minimap icon: " .. "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\icon:0|t",
         "|cffFFFFFF-Quick operation: |r|A:NPE_RightClick:0:0|a input box clears content",
         "|cffFFFFFF-jump cursor:|r Press Tab and arrow keys to jump to the cursor, ALT/CTRL/SHIFT+arrow keys to jump to the next BOSS",
-        -- "|cffFFFFFF-Add equipment:|rSelect from the equipment drop-down list; or drag equipment from your backpack into the table",
         "|cffFFFFFF-Automatic auction: |rALT+click the table/backpack/chat box equipment to open the auction panel (when you are the group leader or item distributor)",
         "|cffFFFFFF-Follow the equipment:|rALT+click the equipment. The team leader will be reminded when the equipment is auctioned (when you are a team member)",
         "|cffFFFFFF-Auction countdown: |r|A:NPE_RightClick:0:0|a chat box equipment starts auction and counts down automatically (when you are the group leader or item distributor)",
@@ -26,37 +25,66 @@ do --英语说明书
         " ",
     }
     ns.updateText_now = {
-        "|cff00FF00" .. [[Updated on February 9th v1.25.4]],
-        c1 .. [[Added function: automatically generate form bill]],
-        c1 .. [[○ When an equipment is successfully auctioned, the buyer and amount corresponding to the equipment in the table will be automatically filled in based on the auction records]],
-        c1 .. [[○ When this function is enabled, transaction accounting will be automatically disabled to avoid accounting conflicts]],
-        c1 .. [[○ This function is only effective for ordinary members. The group leader or item distributor will still use more reliable transaction accounting]],
-        [[<Time Server/MOP>Character Overview: Add Festival]],
-        [[<Time Server/MOP>Equipment Library: Added Valentine's Day Necklace]],
-        [[<MOP>Fixed some issues with reporting WCL]],
-        " ",
+
     }
     ns.updateText_before = {
-        "|cff00FF00" .. [[Updated on February 1st v1.25.3]],
-        [[-Generate table bill: If the number of successful auctions of a piece of equipment is greater than the actual number of records of the equipment in the table,]],
-        [[Indicates that the equipment may have problems with re-shooting or wrong shooting. There will now be corresponding prompts to facilitate better reconciliation]],
-        [[-<Time Server>Fixed some problems with the P2 suit in the equipment library]],
-        " ",
-        "|cff00FF00" .. [[Updated v1.25.2 on January 30]],
-        [[-<Time Server>Update P2 raid equipment drops again]],
-        [[-<Time Server>Fixed the issue where [a bundle of void spikes] would be automatically recorded into the table]],
-        [[-<Time Server>Fixed the issue where Hados’ equipment was incorrectly recorded in miscellaneous items (should be)]],
-        " ",
-        "|cff00FF00" .. [[Updated v1.25.1 on January 30]],
-        [[-<Time Server>Update P2 raid equipment drops]],
-        [[-<Time Server>Void Vortex will now be recorded in Miscellaneous]],
-        [[-<Time Server> will now automatically record drawings to Miscellaneous]],
-        [[-<Time Server>Fixed the problem that the table would be cleared when fighting the Storm and then the Viper]],
-        [[-<Time Server>Fixed the problem that the character overview CD of the New World BOSS is not displayed]],
+
     }
 end
 
 do
+    L["不能设置为心愿，因为该装备未知由哪个物品兑换"] = "Cannot set as wish, unknown which item this gear is exchanged for"
+    L["已向%s发送请求%s。"] = "Sent request %s to %s."
+    L["（需要对方在副本外才能发送表格）"] = "(Recipient must be outside the instance to send the table)"
+    L["|cffff0000由于服务器限流，在副本里无法发送表格，请你出本后再尝试。"] = "|cffff0000Cannot send table inside instance due to server rate limiting, please try again after leaving"
+    L["我买的"] = "I bought"
+    L["已拍"] = "Bid"
+    L["成功(未交易)"] = "Suc(NotTraded)"
+    L["团长需使用BiaoGeAI插件才能发送站位图。"] = "The raid leader must use the BiaoGeAI AddOn to send position maps."
+    L["你的当前表格含有|cffff0000欠款|r，生成表格账单可能会导致欠款金额与欠款人对应不上。\n\n确定继续生成表格账单吗？"] = "Your current table contains |cffff0000outstanding debt|r. Generating the table bill may cause the debt amount to not match the debtor.\n\nAre you sure you want to continue generating the table bill?"
+    L["随机本金币惩罚"] = "Random Principal Gold Penalty"
+    L["金币惩罚"] = "Gold Penalty"
+    L["站位图UI缩放"] = "Position Map UI Scale"
+    L["调整站位图UI的大小。"] = "Adjust the size of the Position Map UI."
+    L["图标缩放"] = "Icon Scale"
+    L["调整图标的大小。"] = "Adjust the size of the icons."
+    L["站位图"] = "Position Map"
+    L["缺少站位图数据，无法显示。"] = "Missing Position Map data, cannot display."
+    L["显示团长上次发送的站位图。"] = "Show the last Position Map sent by the raid leader."
+    L["快捷命令：/bgmap 或 /aimap"] = "Shortcut Commands: /bgmap or /aimap"
+    L["关闭拍卖记录"] = "Turn Off Auction Records"
+    L["显示拍卖记录"] = "Show Auction Records"
+    L["小心偷家语音提醒"] = "Voice Alert: Watch for Sniping"
+    L["没有使用自动出价时，如果拍卖剩余时间低于10秒时被顶价，语音提醒你\"小心偷家\"。"] = "When auto-bidding is not enabled, if your bid is outbid with less than 10 seconds remaining in the auction, a voice alert will say \"Watch for Sniping\"."
+    L["按下 Ctrl+X 复制文本"] = "Press Ctrl+X to copy text"
+    L["把链接发到聊天框"] = "Send link to chat box"
+    L["把链接私发给团长"] = "Send link privately to raid leader"
+    L["备注"] = "Remarks"
+    L["备注："] = "Remarks:"
+    L["需要登录该角色所在的账号才能修改备注。"] = "You need to log in to the account of this character to modify the remarks."
+    L["修改备注"] = "Modify Remarks"
+    L["文本使用职业颜色："] = "Text uses class colors:"
+    L["使用方法：/BGR，把角色总览面板固定，然后鼠标点击角色对应的备注栏即可修改备注。"] = "Usage: /BGR, pin the character overview panel, then click the remarks column corresponding to the character with the mouse to modify the remarks."
+    L["升级道具"] = "Upgrade Item"
+    L["正义奖章"] = "Justice Badge"
+    L["请给团长个评价吧！"] = "Please rate the raid leader!"
+    L["交易中:"] = "Trading:"
+    L["交易后台提醒"] = "Trading Background Alert"
+    L["交易时，如果魔兽世界在后台运行，任务栏图标会闪烁提醒。"] = "During trading, if World of Warcraft is running in the background, the taskbar icon will flash to alert you."
+    L["鼠标提示装备的历史价格区间"] = "Tooltip for Equipment Historical Price Range"
+    L["鼠标悬浮在一个装备时，显示其历史价格区间，数据来自你的历史表格。"] = "When hovering the mouse over an equipment item, its historical price range (data from your history table) will be displayed."
+    L["BiaoGe历史价格"] = "BiaoGe Historical Price"
+    L["读取中"] = "Loading"
+    L["%s-%s"] = "%s-%s"
+    L["（占比%s%%）"] = "(Percentage: %s%%)"
+    L["请求CD中..."] = "Requesting CD..."
+    L["正在给%s发送表格，字符串长度%s。"] = "Sending table to %s, string length %s."
+    L["|cff00ff00已成功接收%s的表格。"] = "|cff00ff00Successfully received table from %s."
+    L["已有橙武"] = "Has Legendary Weapon"
+    L["|cffff0000（该链接为旧版本表格，已失效）"] = "|cffff0000(This link is for an outdated table and is no longer valid)"
+    L["自动弹出复制应付金额窗口"] = "Auto-pop up Copy Payable Amount Window"
+    L["交易时，无需点击按钮，复制应付金额的窗口会自动弹出。"] = "During trading, the window for copying the payable amount will pop up automatically without clicking a button."
+    L["P1三本"] = "P1"
     L["节日:"] = "Holiday:"
     L["情人节"] = "Valentine's Day"
     L["当一个装备拍卖成功时，会根据拍卖记录，自动填写表格里该装备所对应的买家和金额。"] = "When a piece of equipment is auctioned successfully, the corresponding buyer and amount for that equipment in the table will be automatically filled in based on auction records."
@@ -411,7 +439,6 @@ do
     L["（WA面板正在初始化：%s/%s）"] = "(WA panel is initializing: %s/%s)"
     L["（WA面板已初始化，可以发送了）"] = "(WA panel initialized and ready to send!)"
     L["SHIFT+点击：把WA字符串通过密语发送给没有的团员。"] = "SHIFT+click: send the WA string via cryptic message to a corp member who doesn't have it."
-    L["太阳井"] = "Sunwell"
     L["错误"] = "Error"
     L["装等-名字"] = "Attire-Name"
     L["职业-名字"] = "Occupation-Name"
@@ -484,23 +511,6 @@ do
     L["角色总览的默认显示："] = "The default display for the Character overview:"
     L["未知服务器"] = "Unknown Server"
     L["|cff808080（CTRL+左键固定显示，长按SHIFT显示全服务器角色%s）|r"] = "|cff808080 (CTRL+Left click to fix display, long press SHIFT to display all server Character %s)|r"
-    L["太阳井"] = "Sunwell"
-    L["黑庙"] = "Black Temple"
-    L["海山"] = "Sea Mountain"
-    L["风暴"] = "Storm"
-    L["毒蛇"] = "Venomstrike"
-    L["格鲁尔"] = "Gruul"
-    L["玛胖"] = "Mafia"
-    L["祖阿曼"] = "Zul'Aman"
-    L["卡拉赞"] = "Karazhan"
-    L["平台"] = "Platform"
-    L["塞泰克"] = "Setec"
-    L["安其拉"] = "Angela"
-    L["废墟"] = "Ruins"
-    L["黑翼"] = "Blackwing"
-    L["熔火"] = "Molten Fire"
-    L["祖格"] = "Zug"
-    L["纳克萨玛斯"] = "Naxxramas"
     L["熔火之心"] = "Molten Core"
     L["|cff808080（右键打开设置，CTRL+左键固定显示%s）|r"] = "|cff808080 (right click to open settings, CTRL+left click to fix display %s)|r"
     L["|cff808080（左键打开表格，右键打开设置，CTRL+左键固定显示%s）|r"] = "|cff808080 (left click to open table, right click to open settings, CTRL+left click to fix display %s)|r"
@@ -1990,6 +2000,35 @@ do
     L["交易通知"] = "Transaction Notification"
 end
 
+-- 副本简称
+do
+    L["纳克萨玛斯"] = "NAXX"
+    L["永恒"] = "EOE"
+    L["黑曜石"] = "OS"
+    L["太阳井"] = "SW"
+    L["黑庙"] = "BT"
+    L["海山"] = "HS"
+    L["风暴"] = "TK"
+    L["毒蛇"] = "SSC"
+    L["格鲁尔"] = "GL"
+    L["玛胖"] = "ML"
+    L["祖阿曼"] = "ZA"
+    L["卡拉赞"] = "KZ"
+    L["平台"] = "PT"
+    L["塞泰克"] = "STK"
+    L["安其拉"] = "TAQ"
+    L["废墟"] = "AQL"
+    L["黑翼"] = "BWL"
+    L["熔火"] = "MC"
+    L["祖格"] = "ZUG"
+
+    L["宝库"] = "VOA"
+    L["末日行者"] = "Doomwalker"
+    L["末日领主"] = "DoomLord"
+    L["蓝龙"] = "BlueDragon"
+    L["卡扎克"] = "Kazzak"
+end
+
 -- 专业技能
 do
     L["锻造"] = "Blacksmithing"
@@ -2011,7 +2050,7 @@ end
 
 -- BOSS名字
 do
-    L["你漏记的装备"] = "missed"
+    L["我漏记的装备"] = "missed"
     L["总结"] = "Summaries"
 
     L["杂\n\n项"] = "Miscellaneous"
@@ -2138,6 +2177,11 @@ do
 
     -- WLK
     do
+        L["法琳娜"] = "Faerlina"
+        L["戈提克"] = "Gothik"
+        L["诺斯"] = "Noth"
+        L["希尔盖"] = "Heigan"
+
         L["玛洛加尔"] = "Marrowgar"
         L["亡语者女士"] = "Lady Deathwhisper"
         L["炮舰战"] = "Ship's Cannon"
@@ -2279,6 +2323,20 @@ do
         L["空灵机甲"] = "Void Reaver"
         L["大星术师"] = "High Astromancer"
         L["凯尔萨斯"] = "Kael'thas"
+        L["猎手阿图门"] = "Attumen the Huntsman"
+        L["莫罗斯"] = "Moroes"
+        L["贞节圣女"] = "Maiden of Virtue"
+        L["歌剧院"] = "Opera Hall"
+        L["馆长"] = "The Curator"
+        L["邪蹄"] = "Illhoof"
+        L["埃兰之影"] = "Shade of Aran"
+        L["虚空幽龙"] = "Nightbane"
+        L["国际象棋"] = "Chess Event"
+        L["玛克扎尔王子"] = "Prince Malchezaar"
+        L["夜之魇"] = "Nightbane"
+        L["莫加尔大王"] = "Gruul the King"
+        L["屠龙者格鲁尔"] = "Gruul the Dragonkiller"
+        L["玛瑟里顿"] = "Magtheridon"
     end
 
     -- 60
@@ -2314,6 +2372,7 @@ do
         L["娅尔罗"] = "Arlokk"
         L["妖术师金度"] = "Jin'do the Hexxer"
         L["哈卡"] = "Hakkar"
+        L["血领主"] = "Bloodlord Mandokir"
 
         L["库林纳克斯"] = "Kurinnaxx"
         L["拉贾克斯将军"] = "General Rajaxx"

@@ -27,7 +27,7 @@
 	SettingUI:AddSetting(category, meta, indent, col, icon)
 --]]--
 
-local __version = 250425.0;
+local __version = 260325.0;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -136,6 +136,16 @@ local TWidgetMethod = {  };
 		Check:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 0.5);
 		Check:GetCheckedTexture():SetVertexColor(0.0, 0.5, 1.0, 0.75);
 	end
+	function TWidgetMethod.SetRadioCheckButtonTexture(Check)
+		Check:SetNormalTexture(TEXTURE_PATH .. [[CheckButtonCircleBorder]]);
+		Check:SetPushedTexture(TEXTURE_PATH .. [[CheckButtonCircleCenter]]);
+		Check:SetHighlightTexture(TEXTURE_PATH .. [[CheckButtonCircleBorder]]);
+		Check:SetCheckedTexture(TEXTURE_PATH .. [[CheckButtonCircleCenter]]);
+		Check:GetNormalTexture():SetVertexColor(1.0, 1.0, 1.0, 0.5);
+		Check:GetPushedTexture():SetVertexColor(1.0, 1.0, 1.0, 0.25);
+		Check:GetHighlightTexture():SetVertexColor(1.0, 1.0, 1.0, 0.5);
+		Check:GetCheckedTexture():SetVertexColor(0.0, 0.5, 1.0, 0.75);
+	end
 -->	AddSetting	<--
 	local round_func_table = setmetatable({  }, {
 		__index = function(t, key)
@@ -231,7 +241,9 @@ local TWidgetMethod = {  };
 		SettingUI.CategoryParent:SetWidth(4 + 76 * #_CategoryList);
 		SettingUI:SetWidth(min(max(SettingUI:GetWidth(), SettingUI._MinW, 4 + 76 * #_CategoryList), 1024));
 		--
-		Panel.pos = { 0, 0, 0, 0, 0, 0, 0, 0, };
+		Panel.pos = {  };
+		Panel.Anchor = {  };
+		Panel.maxcol = 0;
 		--
 		if SettingUI.SelectedTab == nil then
 			TWidgetMethod.Tab_OnClick(Tab);
@@ -275,11 +287,13 @@ local TWidgetMethod = {  };
 				local key = self.key;
 				local orig = self.get and self.get() or SettingUI.GetConfig(module, key);
 				ColorPickerFrame.func = nil;
+				ColorPickerFrame.swatchFunc = nil;
 				ColorPickerFrame.cancelFunc = nil;
 				ColorPickerFrame:SetColorRGB(unpack(orig));
 				ColorPickerFrame.func = function()
 					SettingUI:SetConfigInner(module, key, { ColorPickerFrame:GetColorRGB() }, false);
 				end
+				ColorPickerFrame.swatchFunc = ColorPickerFrame.func;
 				ColorPickerFrame.cancelFunc = function()
 					SettingUI:SetConfigInner(module, key, orig, false);
 				end
@@ -367,10 +381,26 @@ local TWidgetMethod = {  };
 		local LookupText = SettingUI.LookupText;
 		local _SettingNodes = SettingUI._SettingNodes;
 		_SettingNodes[module] = _SettingNodes[module] or {  };
-		local Anchor = nil;
+		if col > Panel.maxcol then
+			Panel.maxcol = col;
+		end
+		local Anchor = Panel.Anchor[col];
+		if Anchor == nil then
+			Anchor = CreateFrame('FRAME', nil, Panel);
+			Anchor:SetSize(1, 1);
+			Panel.Anchor[col] = Anchor;
+			local p = 0;
+			for i = 1, Panel.maxcol do
+				if Panel.Anchor[i] then
+					Panel.Anchor[i]:SetPoint("TOPLEFT", Panel, "TOPLEFT", 32 + p * SettingUIColWidth, -22);
+					p = p + 1;
+				end
+			end
+		end
 		Panel.pos[col] = Panel.pos[col] or 0;
+		local Head = nil;
 		if Type == 'button' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -395,11 +425,10 @@ local TWidgetMethod = {  };
 			function Button:SetVal(val)
 			end
 			_SettingNodes[module][key] = Button;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + 1;
-			Anchor = Head;
 		elseif Type == 'number' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -412,7 +441,7 @@ local TWidgetMethod = {  };
 			Slider:SetHeight(15);
 			Slider:SetOrientation("HORIZONTAL");
 			Slider:SetMinMaxValues(extra[1], extra[2]);
-			Slider:SetValueStep(extra[3]);
+			Slider:SetValueStep(extra[3] or 1);
 			Slider:SetObeyStepOnDrag(true);
 			Slider:SetPoint("LEFT", Head, "CENTER", 16, -SettingUILineHeight * 0.75);
 			Slider:SetThumbTexture([[Interface\Buttons\UI-ScrollBar-Knob]]);
@@ -471,11 +500,11 @@ local TWidgetMethod = {  };
 				self.Head:SetPoint(...);
 			end
 			_SettingNodes[module][key] = Slider;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + 2;
-			Anchor = Head;
 		elseif Type == 'boolean' then
 			local Check = CreateFrame('CHECKBUTTON', nil, Panel);
+			Head = Check;
 			Check:SetSize(16, 16);
 			Check:SetHitRectInsets(0, 0, 0, 0);
 			Check:Show();
@@ -494,11 +523,10 @@ local TWidgetMethod = {  };
 			Label:SetText(label or LookupText('node', module, key) or key);
 			Label:SetPoint("LEFT", Check, "CENTER", 16, 0);
 			_SettingNodes[module][key] = Check;
-			Check:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Check:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + 1;
-			Anchor = Check;
 		elseif Type == 'editor' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -523,11 +551,10 @@ local TWidgetMethod = {  };
 			end
 			Button.__indirect = true;
 			_SettingNodes[module][key] = Button;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + 1;
-			Anchor = Head;
 		elseif Type == 'color' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -551,11 +578,10 @@ local TWidgetMethod = {  };
 			end
 			Button.__indirect = true;
 			_SettingNodes[module][key] = Button;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + 1;
-			Anchor = Head;
 		elseif Type == 'list' or Type == 'input-list' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -676,11 +702,10 @@ local TWidgetMethod = {  };
 				self.Head:SetPoint(...);
 			end
 			_SettingNodes[module][key] = Drop;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + (Type == 'input-list' and 3 or 2);
-			Anchor = Head;
 		elseif Type == 'radio' then
-			local Head = Panel:CreateTexture(nil, "ARTWORK");
+			Head = Panel:CreateTexture(nil, "ARTWORK");
 			Head:SetSize(16, 10);
 			Head:SetTexture(TEXTURE_PATH .. [[ArrowRight]]);
 			Head:SetVertexColor(0.5, 0.75, 1.0, 0.5);
@@ -697,11 +722,11 @@ local TWidgetMethod = {  };
 					y = y + 1;
 				end
 				local Check = CreateFrame('CHECKBUTTON', nil, Panel);
-				Check:SetSize(16, 16);
-				Check:SetPoint("TOPLEFT", Head, "CENTER", 18 + x * 80, -SettingUILineHeight * (y - 0.5));
+				Check:SetSize(12, 12);
+				Check:SetPoint("CENTER", Head, "CENTER", 18 + x * 80, -SettingUILineHeight * y);
 				Check:SetHitRectInsets(0, 0, 0, 0);
 				Check:Show();
-				TWidgetMethod.SetCheckButtonTexture(Check);
+				TWidgetMethod.SetRadioCheckButtonTexture(Check);
 				Check.__SettingUI = SettingUI;
 				Check.Head = Head;
 				Check.module = module;
@@ -730,9 +755,8 @@ local TWidgetMethod = {  };
 			end
 			list.__indirect = false;
 			_SettingNodes[module][key] = list;
-			Head:SetPoint("CENTER", Panel, "TOPLEFT", 32 + indent * SettingUILineHeight + (col - 1) * SettingUIColWidth, -22 - Panel.pos[col] * SettingUILineHeight);
+			Head:SetPoint("CENTER", Anchor, "TOPLEFT", indent * SettingUILineHeight, -Panel.pos[col] * SettingUILineHeight);
 			Panel.pos[col] = Panel.pos[col] + y + 1;
-			Anchor = Head;
 		else
 			return;
 		end
@@ -741,7 +765,7 @@ local TWidgetMethod = {  };
 		if icon ~= nil then
 			local i = Panel:CreateTexture(nil, "ARTWORK");
 			i:SetSize(20, 20);
-			i:SetPoint("RIGHT", Anchor, "CENTER", -12, 0);
+			i:SetPoint("RIGHT", Head, "CENTER", -12, 0);
 			if type(icon) == 'table' then
 				if icon[1] ~= nil then
 					i:SetTexture(icon[1]);
@@ -766,7 +790,7 @@ local TWidgetMethod = {  };
 			local val = 0;
 			for index = 1, 8 do
 				local v = pos[index];
-				if v > val then
+				if v and v > val then
 					val = v;
 				end
 			end

@@ -1,4 +1,4 @@
-## Interface: 50502
+## Interface: 50503
 ## Title: Accountant Classic
 ## Title-deDE: Accountant Classic
 ## Title-esES: Título

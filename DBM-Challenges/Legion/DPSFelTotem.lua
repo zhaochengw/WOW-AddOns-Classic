@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20250703201323")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(117230, 117484)--Tugar, Jormog
 mod:SetBossHPInfoToHighest()
 mod.soloChallenge = true

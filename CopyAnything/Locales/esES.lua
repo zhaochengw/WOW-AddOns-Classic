@@ -21,5 +21,7 @@ L["searchTypeDescExtended"] = [=[FontStrings (Valor por Defecto) - Busca FontStr
 Cercos Matrizes - Busca cercos más altos debajo del cursor, y copia todo el texto de sus hijos.
 Foco de Ratón - Copia texto del cerco del foco del ratón. Solo trabaja en cercos que están registrado por eventos del ratón.]=]
 L["show"] = "Mostra"
+--[[Translation missing --]]
+--[[ L["tooltip"] = "Mouse Tooltip"--]] 
 L["tooManyFontStrings"] = "Más que %d FontStrings estuvieron encontrado. La copia estuvo cancelado para prevenir el juego de colgarse por demasiado tiempo."
 

@@ -15,7 +15,6 @@ if IsTestBuild() or IsBetaBuild() then
 	mod:AddCustomTimerOptions(1280946, true, 3, 1)
 
 	function mod:OnLimitedCombatStart()
-		self:DisableSpecialWarningSounds()--Prevents special warning sounds playing from the ENCOUNTER_WARNING api
 		self:EnableTimelineOptions(1280946, 421)
 		self:EnableTimelineOptions(1280958, 422)
 		self:EnableTimelineOptions(1280960, 423)
@@ -29,7 +28,7 @@ if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("MotherloadTrash", "DBM-Party-BfA", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260209235007")
+mod:SetRevision("20260401091148")
 mod:SetZone(1594)
 mod:RegisterZoneCombat(1594)
 --mod:SetModelID(47785)

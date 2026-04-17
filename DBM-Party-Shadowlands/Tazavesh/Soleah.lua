@@ -1,13 +1,45 @@
 local mod	= DBM:NewMod(2455, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260120055647")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(177269)
 mod:SetEncounterID(2442)
 mod:SetHotfixNoticeRev(20220405000000)
 mod:SetZone(2441)
 
 mod:RegisterCombat("combat")
+
+--TODO, add 351057/599 if it has a blizzard bar
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(350796, true, 2)--Hyperlight Spark
+mod:AddCustomAlertSoundOption(351124, "Dps", 1)--Summon Ass
+mod:AddCustomAlertSoundOption(353632, false, 1)--Collapsing Star
+mod:AddCustomAlertSoundOption(351064, true, 2)--Power Overwhelming
+mod:AddCustomAlertSoundOption(351096, true, 2)--Energy Fragmentation
+mod:AddCustomAlertSoundOption(351646, true, 2)--Hyperlight Nova
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(350796, true, 5, 0)
+mod:AddCustomTimerOptions(351124, true, 1, 0)
+mod:AddCustomTimerOptions(353632, true, 5, 0)
+mod:AddCustomTimerOptions(351064, true, 6, 0)
+mod:AddCustomTimerOptions(351096, true, 3, 0)
+mod:AddCustomTimerOptions(351646, true, 3, 0)
+
+function mod:OnLimitedCombatStart()
+	self:EnableAlertOptions(350796, 595, "specialsoon", 2)
+	self:EnableAlertOptions(351124, 596, "mobsoon", 2)
+	self:EnableAlertOptions(353632, 597, "helpsoak", 1)
+	self:EnableAlertOptions(351064, 598, "specialsoon", 2)
+	self:EnableAlertOptions(351096, 600, "watchwave", 2)
+	self:EnableAlertOptions(351646, 601, "watchstep", 2)
+
+	self:EnableTimelineOptions(350796, 595)
+	self:EnableTimelineOptions(351124, 596)
+	self:EnableTimelineOptions(353632, 597)
+	self:EnableTimelineOptions(351064, 598)
+	self:EnableTimelineOptions(351096, 600)
+	self:EnableTimelineOptions(351646, 601)
+end
 
 --[[
 mod:RegisterEventsInCombat(

@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20251002044812")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71152, 71153, 71154, 71155, 71156, 71157, 71158, 71160, 71161)
 mod:SetEncounterID(1593)
 mod:DisableESCombatDetection()
@@ -18,7 +19,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS 142528 142232",
 	"SPELL_AURA_APPLIED 143339 142532 142533 142534 142671 142564 143939 143974 143701 143759 143337 143358 142948",
 	"SPELL_AURA_APPLIED_DOSE 143339",
-	"SPELL_AURA_REMOVED 142564 143939 143974 143700 142948 143339 142671 143542",
+	"SPELL_AURA_REMOVED 142564 143939 143974 142948 143339 142671",
 	"SPELL_PERIODIC_DAMAGE 143735",
 	"SPELL_PERIODIC_MISSED 143735",
 	"CHAT_MSG_RAID_BOSS_EMOTE",
@@ -103,7 +104,6 @@ local specWarnInsaneCalculationFire	= mod:NewSpecialWarningSpell(142416, nil, ni
 local specWarnFlashCast				= mod:NewSpecialWarningSpell(143701, nil, nil, nil, 2)--I realize two abilities on same boss both using same sound is less than ideal, but user can change it now, and 1 or 3 feel appropriate for both of these
 local specWarnFlash					= mod:NewSpecialWarningYou("ej8058")--Flash is name of his charge ability
 local specWarnFlashNear				= mod:NewSpecialWarningClose("ej8058")
-local specWarnWhirlingNear			= mod:NewSpecialWarningClose(143701)--Whirling is name of debuff applied if you get hit by flash (avoidable) No special warning needed for on YOU, but special warning needed if near you to avoid damage
 local yellFlash						= mod:NewYell("ej8058")
 local yellWhirling					= mod:NewYell(143701, nil, false)
 local specWarnHurlAmber				= mod:NewSpecialWarningSpell(143759, nil, nil, nil, 2)--I realize two abilities on same boss both using same sound is less than ideal, but user can change it now, and 1 or 3 feel appropriate for both of these
@@ -155,7 +155,6 @@ local timerRapidFireCD				= mod:NewCDTimer(47, 143243, nil, nil, nil, 2, nil, DB
 
 local berserkTimer					= mod:NewBerserkTimer(720)
 
-mod:AddRangeFrameOption("6/5/3")
 mod:AddSetIconOption("SetIconOnAim", 142948, false)
 mod:AddSetIconOption("SetIconOnMesmerize", 142671, false)
 
@@ -228,18 +227,6 @@ local function warnActivatedTargets(self, vulnerable)
 		end
 	end
 	table.wipe(activatedTargets)
-end
-
-local function showRangeFrame()--Only called by mutate
-	DBM.RangeCheck:Show(3)
-	mod.vb.mutateActive = true
-end
-
-local function hideRangeFrame()--Only called by flash
-	mod.vb.flashActive = false
-	if not mod.vb.aimActive and not mod.vb.mutateActive then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 local function CheckBosses(self)
@@ -462,9 +449,6 @@ end
 
 function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 --"<13.6 19:16:29> [UNIT_SPELLCAST_SUCCEEDED] Iyyokuk the Lucid [[boss2:Jump to Center::0:143545]]", -- [95]
@@ -553,10 +537,6 @@ function mod:SPELL_CAST_START(args)
 		lastWhirl = nil
 		expectedWhirlCount = self:IsMythic() and 5 or 4
 		self:StartRepeatedScan(args.sourceGUID, "FlashScan", 0.03, true)
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(6)--Range assumed, spell tooltips not informative enough
-			self:Schedule(5, hideRangeFrame)
-		end
 	elseif spellId == 143280 then
 		specWarnBloodletting:Show()
 		timerBloodlettingCD:Start()
@@ -656,14 +636,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 143701 then
 		if args:IsPlayer() then
 			timerWhirling:Start()
-		else
-			local uId = DBM:GetRaidUnitId(args.destName)
-			if uId then
-				local inRange = DBM.RangeCheck:GetDistance("player", uId)
-				if inRange and inRange < 6 then
-					specWarnWhirlingNear:Show(args.destName)
-				end
-			end
+			yellWhirling:Yell()
 		end
 	elseif spellId == 143759 then
 		specWarnHurlAmber:Show()
@@ -672,13 +645,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:AntiSpam(2, 3) then
 			self.vb.mutateCount = self.vb.mutateCount + 1
 			timerMutateCD:Start(nil, self.vb.mutateCount+1)
-			if self.Options.RangeFrame then
-				self.vb.mutateActive = false
-				if not self.vb.aimActive and not self.vb.flashActive then
-					DBM.RangeCheck:Hide()--Hide it if aim isn't active, otherwise, delay hide call until hide is called by SPELL_AURA_REMOVED for aim
-				end
-				self:Schedule(26.5, showRangeFrame)--Show about 5 seconds before mutate cast
-			end
 		end
 		warnMutate:CombinedShow(0.5, self.vb.mutateCount, args.destName)
 		if args:IsPlayer() then
@@ -706,13 +672,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			specWarnAimOther:Show(args.destName)
 		end
-		if self.Options.RangeFrame then
---			if self:IsDifficulty("normal25", "heroic25") then
-				DBM.RangeCheck:Show(3)--Have to assume 3 for all now, because all group sizes will now either be 30, or 20. Until we know for sure
---			else
---				DBM.RangeCheck:Show(5)
---			end
-		end
 		if self.Options.SetIconOnAim then
 			self:SetIcon(args.destName, 3)
 		end
@@ -728,15 +687,8 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerGouge:Cancel(args.destName)
 	elseif spellId == 143974 then
 		timerShieldBash:Cancel(args.destName)
-	elseif spellId == 143700 and self.Options.RangeFrame and not self.vb.mutateActive and not self.vb.aimActive and not self.vb.flashActive then
-		DBM.RangeCheck:Hide()
 	elseif spellId == 142948 then
 		self.vb.aimActive = false
-		if self.Options.RangeFrame then
-			if not self.vb.mutateActive and not self.vb.flashActive then--Don't call hide because frame is needed by mutate and will be hiden after that.
-				DBM.RangeCheck:Hide()
-			end
-		end
 		if self.Options.SetIconOnAim then
 			self:SetIcon(args.destName, 0)
 		end
@@ -777,7 +729,6 @@ function mod:UNIT_DIED(args)
 	elseif cid == 71158 then--Rik'kal the Dissector
 		timerMutateCD:Cancel()
 		timerInjectionCD:Cancel()
-		self:Unschedule(showRangeFrame)
 	elseif cid == 71153 then--Hisek the Swarmkeeper
 		timerAimCD:Cancel()
 		timerRapidFireCD:Cancel()

@@ -43,6 +43,7 @@ local options = {
 								fontStrings = L.fontStrings,
 								parentFrames = L.parentFrames,
 								mouseFocus = L.mouseFocus,
+								tooltip = L.tooltip,
 							},
 						},
 					}

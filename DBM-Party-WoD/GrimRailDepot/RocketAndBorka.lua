@@ -4,7 +4,8 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20231226123717")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(77803, 77816)
 mod:SetEncounterID(1715)
 mod:SetBossHPInfoToHighest()

@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,timewalker"
 
-mod:SetRevision("20241102154000")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(49045)
 mod:SetModelID(37339)--Needs hardcode because he's not in EJ as a separate boss even though he is.
 mod:SetZone(755)

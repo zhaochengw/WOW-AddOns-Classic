@@ -24,25 +24,29 @@ local UnitName = UnitName
 local UnitGUID = UnitGUID
 local GetNumGroupMembers = GetNumGroupMembers
 local GetRealZoneText = GetRealZoneText
-local GetTradePlayerItemInfo = GetTradePlayerItemInfo
-local GetTradeTargetItemInfo = GetTradeTargetItemInfo
-local GetTradePlayerItemLink = GetTradePlayerItemLink
-local GetTradeTargetItemLink = GetTradeTargetItemLink
-local GetPlayerTradeMoney = GetPlayerTradeMoney
-local GetTargetTradeMoney = GetTargetTradeMoney
-local GetSendMailItem = GetSendMailItem
-local GetSendMailItemLink = GetSendMailItemLink
-local GetSendMailMoney = GetSendMailMoney
-local GetInboxHeaderInfo = GetInboxHeaderInfo
-local GetInboxItem = GetInboxItem
-local GetInboxItemLink = GetInboxItemLink
-local IsGuildMember = IsGuildMember
-local IsFriend = C_FriendList.IsFriend
+
+-- 兼容性 API 包裝
+local GetTradePlayerItemInfo = GetTradePlayerItemInfo or (C_TradeCard and C_TradeCard.GetTradePlayerItemInfo) or (C_Trade and C_Trade.GetTradePlayerItemInfo)
+local GetTradeTargetItemInfo = GetTradeTargetItemInfo or (C_TradeCard and C_TradeCard.GetTradeTargetItemInfo) or (C_Trade and C_Trade.GetTradeTargetItemInfo)
+local GetTradePlayerItemLink = GetTradePlayerItemLink or (C_TradeCard and C_TradeCard.GetTradePlayerItemLink) or (C_Trade and C_Trade.GetTradePlayerItemLink)
+local GetTradeTargetItemLink = GetTradeTargetItemLink or (C_TradeCard and C_TradeCard.GetTradeTargetItemLink) or (C_Trade and C_Trade.GetTradeTargetItemLink)
+local GetPlayerTradeMoney = GetPlayerTradeMoney or (C_TradeCard and C_TradeCard.GetPlayerTradeMoney) or (C_Trade and C_Trade.GetPlayerTradeMoney)
+local GetTargetTradeMoney = GetTargetTradeMoney or (C_TradeCard and C_TradeCard.GetTargetTradeMoney) or (C_Trade and C_Trade.GetTargetTradeMoney)
+
+local GetSendMailItem = GetSendMailItem or (C_Mail and C_Mail.GetSendMailItem)
+local GetSendMailItemLink = GetSendMailItemLink or (C_Mail and C_Mail.GetSendMailItemLink)
+local GetSendMailMoney = GetSendMailMoney or (C_Mail and C_Mail.GetSendMailMoney)
+local GetInboxHeaderInfo = GetInboxHeaderInfo or (C_Mail and C_Mail.GetInboxHeaderInfo)
+local GetInboxItem = GetInboxItem or (C_Mail and C_Mail.GetInboxItem)
+local GetInboxItemLink = GetInboxItemLink or (C_Mail and C_Mail.GetInboxItemLink)
+
+local IsGuildMember = IsGuildMember or (C_GuildInfo and C_GuildInfo.IsGuildMember)
+local IsFriend = (C_FriendList and C_FriendList.IsFriend) or IsFriend
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
 local IsInInstance = IsInInstance
 local IsInGuild = IsInGuild
-local CloseTrade = CloseTrade
+local CloseTrade = CloseTrade or (C_TradeCard and C_TradeCard.CloseTrade) or (C_Trade and C_Trade.CloseTrade)
 local GetRealmName = GetRealmName
 local pairs = pairs
 local print = print
@@ -91,30 +95,27 @@ function Addon:GetTableSize(SourceTable)
 end
 --比較時間
 function Addon:CompareTime(TimeStr, Seconds)
-	local H1, M1, S1 = strsplit(":", date("%H:%M:%S"))
-	local H2, M2, S2 = strsplit(":", TimeStr)
-	H1 = tonumber(H1) and tonumber(H1) or nil
-	H2 = tonumber(H2) and tonumber(H2) or nil
-	M1 = tonumber(M1) and tonumber(M1) or nil
-	M2 = tonumber(M2) and tonumber(M2) or nil
-	S1 = tonumber(S1) and tonumber(S1) or nil
-	S2 = tonumber(S2) and tonumber(S2) or nil
-	if H1 and H2 and M1 and M2 and S1 and S2 then
-		local Elapsed = (H1 - H2) * 3600 + (M1 - M2) * 60 + S1 - S2
-		if Elapsed > Seconds or Elapsed < 0 then
-			return true
-		end
-	end
-	return false
+	if not TimeStr then return true end
+	local H, M, S = strsplit(":", TimeStr)
+	H, M, S = tonumber(H), tonumber(M), tonumber(S)
+	if not (H and M and S) then return true end
+	
+	local lastTime = time({year=date("%Y"), month=date("%m"), day=date("%d"), hour=H, min=M, sec=S})
+	return (time() - lastTime) > Seconds
 end
 --交易相關
 --新建交易
 function Addon:NewTrade()
+	local PlayerName = UnitName("player")
+	local RealmName = GetRealmName()
+	local TargetName, TargetRealm = UnitName("npc")
+	TargetRealm = TargetRealm or RealmName
+
 	local TempTrade = {
 		["Date"] = date("%Y-%m-%d"),
 		["Time"] = date("%H:%M:%S"),
-		["PlayerName"] = (UnitName("player")) .. "-" .. GetRealmName(),
-		["TargetName"] = (UnitName("npc")) .. "-" .. (select(2, UnitName("npc")) or GetRealmName()),
+		["PlayerName"] = PlayerName .. "-" .. RealmName,
+		["TargetName"] = (TargetName or L["MAILLOGGER_TEXT_UNKNOWN"]) .. "-" .. TargetRealm,
 		["Location"] = GetRealZoneText(),
 		["ReceiveItems"] = {},
 		["GiveItems"] = {},
@@ -309,105 +310,125 @@ function Addon:PrintTradeLog(ListMode, AltName, SelectedDate)
 	Output.background:Show()
 	Output.export:GetParent():Show()
 	Output.export:Enable()
+	
 	-- 没有记录
-	if #TradeLog == 0 then
+	if not TradeLog or #TradeLog == 0 then
 		Output.export:SetText(L["<|cFFBA55D3MailLogger|r>There are no logs available."])
 		return
 	end
-	-- 清理不合法TradeLog
-	if #TradeLog > 0 then
-		for i = #TradeLog, 1, -1 do
-			if not TradeLog[i].Date or not TradeLog[i].Time or not TradeLog[i].TargetName or not TradeLog[i].Result or TradeLog[i].GiveMoney == 0 and TradeLog[i].ReceiveMoney == 0 and not (next(TradeLog[i].GiveItems)) and not (next(TradeLog[i].ReceiveItems)) then
-				t_remove(TradeLog, i)
-			end
-		end
-	end
-	-- 寻找起始点
+
+	-- 寻找起始点 (限制输出最近的 512 條記錄)
 	local StartPoint, Count = 1, 0
-	if AltName then
-		for i = #TradeLog, 1, -1 do
-			if TradeLog[i].PlayerName == AltName then
-				Count = Count + 1
-			end
-			if Count > 512 then
-				StartPoint = i
-				break
+	for i = #TradeLog, 1, -1 do
+		local entry = TradeLog[i]
+		local match = false
+		
+		if AltName then
+			if entry.PlayerName == AltName then match = true end
+		elseif SelectedDate then
+			if entry.Date == SelectedDate then match = true end
+		else
+			if ListMode == "ALL" or 
+			   (ListMode == "TRADE" and entry.Result == "completed") or 
+			   (ListMode == "MAIL" and (entry.Result == "sent" or entry.Result == "received")) or 
+			   (ListMode == "SMAIL" and entry.Result == "sent") or 
+			   (ListMode == "RMAIL" and entry.Result == "received") then
+				match = true
 			end
 		end
-	elseif not SelectedDate then
-		for i = #TradeLog, 1, -1 do
-			if ListMode == "ALL" or ListMode == "TRADE" and TradeLog[i].Result == "completed" or ListMode == "MAIL" and (TradeLog[i].Result == "sent" or TradeLog[i].Result == "received") or ListMode == "SMAIL" and TradeLog[i].Result == "sent" or ListMode == "RMAIL" and TradeLog[i].Result == "received" then
-				Count = Count + 1
-			end
+		
+		if match then
+			Count = Count + 1
 			if Count > 512 then
-				StartPoint = i
+				StartPoint = i + 1
 				break
 			end
 		end
 	end
+	
 	-- 輸出字符串
-	local msg = ""
-	-- 限制输出Log数量，避免资源耗尽
+	local buffer = {}
 	for i = StartPoint, #TradeLog do
-		if (not AltName and TradeLog[i].Date == SelectedDate) or (TradeLog[i].PlayerName == AltName and not SelectedDate) or (not AltName and not SelectedDate) or (TradeLog[i].PlayerName == AltName and TradeLog[i].Date == SelectedDate) then
-			if TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") then
-				msg = msg .. string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r trades with |cFF00FF00%s|r at |cFF00FF00%s|r"], TradeLog[i].Date, TradeLog[i].Time, TradeLog[i].PlayerName, TradeLog[i].TargetName, TradeLog[i].Location) .. "\n"
-			elseif TradeLog[i].Result == "sent" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "SMAIL") then
-				msg = msg .. string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r sent a mail to |cFF00FF00%s|r"], TradeLog[i].Date, TradeLog[i].Time, TradeLog[i].PlayerName, TradeLog[i].TargetName) .. "\n"
-			elseif TradeLog[i].Result == "received" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "RMAIL") then
-				msg = msg .. string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r received item(s) from |cFF00FF00%s|r"], TradeLog[i].Date, TradeLog[i].Time, TradeLog[i].PlayerName, TradeLog[i].TargetName) .. "\n"
+		local entry = TradeLog[i]
+		local match = false
+		
+		if AltName then
+			if entry.PlayerName == AltName and (not SelectedDate or entry.Date == SelectedDate) then match = true end
+		elseif SelectedDate then
+			if entry.Date == SelectedDate then match = true end
+		else
+			match = true
+		end
+		
+		if match then
+			if entry.Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") then
+				t_insert(buffer, string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r trades with |cFF00FF00%s|r at |cFF00FF00%s|r"], entry.Date, entry.Time, entry.PlayerName, entry.TargetName, entry.Location))
+				t_insert(buffer, "\n")
+			elseif entry.Result == "sent" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "SMAIL") then
+				t_insert(buffer, string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r sent a mail to |cFF00FF00%s|r"], entry.Date, entry.Time, entry.PlayerName, entry.TargetName))
+				t_insert(buffer, "\n")
+			elseif entry.Result == "received" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "RMAIL") then
+				t_insert(buffer, string.format(L["[|cFFFFFF00%s %s|r]\n    |cFF00FF00%s|r received item(s) from |cFF00FF00%s|r"], entry.Date, entry.Time, entry.PlayerName, entry.TargetName))
+				t_insert(buffer, "\n")
+			else
+				match = false -- Not a match for current ListMode
 			end
-			if (TradeLog[i].ReceiveMoney > 0 or TradeLog[i].GiveMoney > 0) and ((TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE")) or (TradeLog[i].Result == "sent" or TradeLog[i].Result == "received") and (ListMode == "ALL" or ListMode == "MAIL") or TradeLog[i].Result == "sent" and ListMode == "SMAIL" or TradeLog[i].Result == "received" and ListMode == "RMAIL") then
-				if TradeLog[i].ReceiveMoney > 0 then
-					msg = msg .. "    " .. L["|cFFDAA520Receive|r "] .. GetColorMoneyString(TradeLog[i].ReceiveMoney) .. "\n"
+			
+			if match then
+				-- Money
+				if entry.ReceiveMoney > 0 then
+					t_insert(buffer, "    " .. L["|cFFDAA520Receive|r "] .. GetColorMoneyString(entry.ReceiveMoney) .. "\n")
 				end
-				if TradeLog[i].GiveMoney > 0 then
-					msg = msg .. "    " .. L["|cFFFF4500Give|r "] .. GetColorMoneyString(TradeLog[i].GiveMoney) .. "\n"
+				if entry.GiveMoney > 0 then
+					t_insert(buffer, "    " .. L["|cFFFF4500Give|r "] .. GetColorMoneyString(entry.GiveMoney) .. "\n")
 				end
-			end
-			if TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") and next(TradeLog[i].GiveItems) and TradeLog[i].GiveItems[7] then
-				msg = msg .. "    " .. L["|cFFDAA520Receive Enchantment|r: "] .. "\n    [|cFFBA55D3" .. TradeLog[i].GiveItems[7].Enchantment .. "|r] -> " .. TradeLog[i].GiveItems[7].ItemLink .. "\n"
-			end
-			if TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") and next(TradeLog[i].ReceiveItems) and TradeLog[i].ReceiveItems[7] then
-				msg = msg .. "    " .. L["|cFFFF4500Provide Enchantment|r: "] .. "\n    [|cFFBA55D3" .. TradeLog[i].ReceiveItems[7].Enchantment .. "|r] -> " .. TradeLog[i].ReceiveItems[7].ItemLink .. "\n"
-			end
-			if TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") and next(TradeLog[i].ReceiveItems) and not TradeLog[i].ReceiveItems[7] then
-				msg = msg .. "    " .. L["|cFFDAA520Receive Item(s)|r: "] .. "\n"
-				local j = 1
-				for k, v in pairs(TradeLog[i].ReceiveItems) do
-					if k ~= 7 then
-						msg = msg .. "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n"
-						j = j + 1
+				
+				-- Enchantments (Trade only)
+				if entry.Result == "completed" then
+					if entry.GiveItems[7] then
+						t_insert(buffer, "    " .. L["|cFFDAA520Receive Enchantment|r: "] .. "\n    [|cFFBA55D3" .. entry.GiveItems[7].Enchantment .. "|r] -> " .. entry.GiveItems[7].ItemLink .. "\n")
+					end
+					if entry.ReceiveItems[7] then
+						t_insert(buffer, "    " .. L["|cFFFF4500Provide Enchantment|r: "] .. "\n    [|cFFBA55D3" .. entry.ReceiveItems[7].Enchantment .. "|r] -> " .. entry.ReceiveItems[7].ItemLink .. "\n")
 					end
 				end
-			elseif TradeLog[i].Result == "received" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "RMAIL") and (next(TradeLog[i].ReceiveItems)) then
-				msg = msg .. "    " .. L["|cFFDAA520Receive Item(s)|r: "] .. "\n"
-				local j = 1
-				for k, v in pairs(TradeLog[i].ReceiveItems) do
-					msg = msg .. "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n"
-					j = j + 1
-				end
-			end
-			if TradeLog[i].Result == "completed" and (ListMode == "ALL" or ListMode == "TRADE") and (next(TradeLog[i].GiveItems)) and not TradeLog[i].GiveItems[7] then
-				msg = msg .. "    " .. L["|cFFFF4500Give Item(s)|r: "] .. "\n"
-				local j = 1
-				for k, v in pairs(TradeLog[i].GiveItems) do
-					if k ~= 7 then
-						msg = msg .. "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n"
-						j = j + 1
+				
+				-- Items Receive
+				if (entry.Result == "completed" or entry.Result == "received") and next(entry.ReceiveItems) then
+					local hasItems = false
+					for k in pairs(entry.ReceiveItems) do if k ~= 7 then hasItems = true break end end
+					if hasItems then
+						t_insert(buffer, "    " .. L["|cFFDAA520Receive Item(s)|r: "] .. "\n")
+						local j = 1
+						for k, v in pairs(entry.ReceiveItems) do
+							if k ~= 7 then
+								t_insert(buffer, "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n")
+								j = j + 1
+							end
+						end
 					end
 				end
-			elseif TradeLog[i].Result == "sent" and (ListMode == "ALL" or ListMode == "MAIL" or ListMode == "SMAIL") and (next(TradeLog[i].GiveItems)) then
-				msg = msg .. "    " .. L["|cFFFF4500Give Item(s)|r: "] .. "\n"
-				local j = 1
-				for k, v in pairs(TradeLog[i].GiveItems) do
-					msg = msg .. "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n"
-					j = j + 1
+				
+				-- Items Give
+				if (entry.Result == "completed" or entry.Result == "sent") and next(entry.GiveItems) then
+					local hasItems = false
+					for k in pairs(entry.GiveItems) do if k ~= 7 then hasItems = true break end end
+					if hasItems then
+						t_insert(buffer, "    " .. L["|cFFFF4500Give Item(s)|r: "] .. "\n")
+						local j = 1
+						for k, v in pairs(entry.GiveItems) do
+							if k ~= 7 then
+								t_insert(buffer, "    [" .. j .. "] " .. v.ItemLink .. " (" .. v.Number .. ")" .. "\n")
+								j = j + 1
+							end
+						end
+					end
 				end
 			end
 		end
 	end
-	Output.export:SetText(msg)
+	
+	Output.export:SetText(table.concat(buffer))
 	Output.export:Disable()
 end
 --保存变量
@@ -462,76 +483,79 @@ Frame:SetScript(
 	end
 )
 
+-- 清理日誌
+function Addon:CleanupLogs()
+	-- 清理過期或無效 TradeLog
+	if not TradeLog or #TradeLog == 0 then return end
+	
+	local todayTime = time()
+	local maxAge = (tonumber(Config.LogDays) or 90) * 24 * 3600
+	
+	for i = #TradeLog, 1, -1 do
+		local entry = TradeLog[i]
+		local remove = false
+		
+		-- 檢查是否無效
+		if not entry.Date or not entry.Time or not entry.TargetName or not entry.Result or 
+		   (entry.GiveMoney == 0 and entry.ReceiveMoney == 0 and not next(entry.GiveItems) and not next(entry.ReceiveItems)) then
+			remove = true
+		elseif not Config.LogEverything then
+			-- 檢查是否過期
+			local y, m, d = strsplit("-", entry.Date)
+			y, m, d = tonumber(y), tonumber(m), tonumber(d)
+			if y and m and d then
+				local logTime = time({year=y, month=m, day=d, hour=0, min=0, sec=0})
+				if (todayTime - logTime) > maxAge then
+					remove = true
+				end
+			else
+				remove = true
+			end
+		end
+		
+		if remove then
+			t_remove(TradeLog, i)
+		end
+	end
+end
+
 --插件装载
 function Frame:ADDON_LOADED(Name)
 	if Name ~= AddonName then
 		return
 	end
 	self:UnregisterEvent("ADDON_LOADED") --完成加载后反注册事件
-	do
-		local VerNumString = string.gsub(Addon.Version, "%.", "")
-		Addon.VerNum = tonumber(VerNumString)
-	end
-	-- 两种情况，如果没有MailLoggerDB或者MailLoggerDB中某个表不存在，则创建该表，但不用新表覆盖（读取Core中的默认值）
-	-- 如果MailLoggerDB及MailLoggerDB中的某个表存在，则用MailLoggerDB中的子表覆盖，避免删不掉现象
-	if not MailLoggerDB then
-		MailLoggerDB = {}
-	end
-	if not MailLoggerDB.Config then
-		MailLoggerDB.Config = {}
-	end
-	if not MailLoggerDB.TradeLog then
-		MailLoggerDB.TradeLog = {}
-	end
-	if not MailLoggerDB.IgnoreItems then
-		MailLoggerDB.IgnoreItems = {}
-	end
+	
+	Addon.VerNum = tonumber((string.gsub(Addon.Version, "%.", ""))) or 0
+	
+	-- 初始化數據庫
+	MailLoggerDB = MailLoggerDB or {}
+	MailLoggerDB.Config = MailLoggerDB.Config or {}
+	MailLoggerDB.TradeLog = MailLoggerDB.TradeLog or {}
+	MailLoggerDB.IgnoreItems = MailLoggerDB.IgnoreItems or {}
+	
 	-- 用MailLoggerDB更新config和SpellList表，以及TradeLog表
 	Addon:UpdateTable(Config, MailLoggerDB.Config)
 	Addon:UpdateTable(TradeLog, MailLoggerDB.TradeLog)
 	Addon:UpdateTable(IgnoreItems, MailLoggerDB.IgnoreItems)
-	-- 清理过期TradeLog
-	if not Config.LogEverything then
-		local Today = {}
-		Today.year, Today.month, Today.day = strsplit("-", date("%Y-%m-%d"))
-		local LogDay = {}
-		if #TradeLog > 0 then
-			for i = #TradeLog, 1, -1 do
-				if TradeLog[i].Date then
-					LogDay.year, LogDay.month, LogDay.day = strsplit("-", TradeLog[i].Date)
-				else
-					t_remove(TradeLog, i)
-				end
-				if (time(Today) - time(LogDay)) / (3600 * 24) > Config.LogDays then
-					t_remove(TradeLog, i)
-				end
-			end
-		end
-	end
-	if not Config.AltList[(UnitName("player")).."-"..GetRealmName()] then -- 添加名字到列表以便筛选
-		Addon.Config.AltList[(UnitName("player")).."-"..GetRealmName()] = true
+	
+	-- 清理過期日誌
+	Addon:CleanupLogs()
+	
+	local playerFullName = (UnitName("player")) .. "-" .. GetRealmName()
+	if not Config.AltList[playerFullName] then -- 添加名字到列表以便筛选
+		Config.AltList[playerFullName] = true
 		if not Config.SelectName then
-			Addon.Config.SelectName = (UnitName("player")) .. "-" ..GetRealmName()
+			Config.SelectName = playerFullName
 		end
 	end
-	-- 初始化Output和SetWindow和Calendar
+	
+	-- 初始化界面
     SetWindow:Initialize()
 	Output:Initialize()
 	Calendar:Initialize()
 
 	print(string.format(L["|cFFBA55D3MailLogger|r v%s|cFFB0C4DE has been loaded.|r"], Addon.Version))
-
-	--[[ 数据格式修复(为不带-的数据添加-)
-	if #TradeLog >= 1 then
-		for i = 1, #TradeLog do
-			if not string.find(TradeLog[i].PlayerName, "%-") then
-				TradeLog[i].PlayerName = TradeLog[i].PlayerName .. "-" .. GetRealmName()
-			end
-			if not string.find(TradeLog[i].TargetName, "%-") then
-				TradeLog[i].TargetName = TradeLog[i].TargetName .. "-" .. GetRealmName()
-			end
-		end
-	end]]
 end
 
 -- 进入世界
@@ -614,7 +638,6 @@ function Frame:TRADE_SHOW()
 		return
 	end
 	Current = Addon:NewTrade()
-	t_insert(TradeLog, Addon:NewTrade())
 end
 -- 交易物品信息更新
 function Frame:TRADE_PLAYER_ITEM_CHANGED(Slot)
@@ -668,43 +691,58 @@ do -- Hook SendMail，获取Recipient
 	end
 	hooksecurefunc("SendMail", GetRecipient)
 end
+-- 合併物品列表 (輔助方法)
+function Addon:MergeItemList(ItemList)
+	if not ItemList or #ItemList < 2 then return end
+	local itemMap = {}
+	local newList = {}
+	for i = 1, #ItemList do
+		local item = ItemList[i]
+		if item then
+			local key = item.ItemLink or item.Name
+			if itemMap[key] then
+				itemMap[key].Number = itemMap[key].Number + item.Number
+			else
+				itemMap[key] = item
+				t_insert(newList, item)
+			end
+		end
+	end
+	-- 用新列表替換舊列表內容
+	for i = #ItemList, 1, -1 do t_remove(ItemList, i) end
+	for i = 1, #newList do t_insert(ItemList, newList[i]) end
+end
+
 local function RecordMailItemInfo(Index, ItemSlot) -- 公共方法，獲取郵件物品信息并記錄
 	local _, _, Sender, _, _, CODAmount = GetInboxHeaderInfo(Index)
 	local ItemName, _, _, Quantity = GetInboxItem(Index, ItemSlot)
 	local ItemLink = GetInboxItemLink(Index, ItemSlot)
 
-	if not TradeLog[#TradeLog] or TradeLog[#TradeLog].Result ~= "received" or (TradeLog[#TradeLog].TargetName and TradeLog[#TradeLog].TargetName ~= Sender) or Addon:CompareTime(TradeLog[#TradeLog].Time, 5) then
-		if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" and #TradeLog[#TradeLog].ReceiveItems >= 2 then
-			for i = #TradeLog[#TradeLog].ReceiveItems, 2, -1 do
-				for j = 1, i-1 do
-					if TradeLog[#TradeLog].ReceiveItems[i] and TradeLog[#TradeLog].ReceiveItems[j] and TradeLog[#TradeLog].ReceiveItems[i].Name == TradeLog[#TradeLog].ReceiveItems[j].Name and TradeLog[#TradeLog].ReceiveItems[i].ItemLink == TradeLog[#TradeLog].ReceiveItems[j].ItemLink then
-						TradeLog[#TradeLog].ReceiveItems[j].Number = TradeLog[#TradeLog].ReceiveItems[i].Number + TradeLog[#TradeLog].ReceiveItems[j].Number
-						TradeLog[#TradeLog].ReceiveItems[i] = nil
-						break
-					end
-				end
-			end
+	if not TradeLog[#TradeLog] or TradeLog[#TradeLog].Result ~= "received" or (TradeLog[#TradeLog].TargetName and TradeLog[#TradeLog].TargetName ~= Sender .. "-" .. GetRealmName()) or Addon:CompareTime(TradeLog[#TradeLog].Time, 5) then
+		if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" then
+			Addon:MergeItemList(TradeLog[#TradeLog].ReceiveItems)
 		end
 		t_insert(TradeLog, Addon:NewMail())
 	end
-	if not TradeLog[#TradeLog].TargetName or not TradeLog[#TradeLog].Result then
-		TradeLog[#TradeLog]["TargetName"] = Sender .. "-" .. GetRealmName()
-		TradeLog[#TradeLog]["Reason"] = Index
-		TradeLog[#TradeLog]["Result"] = "received"
-		TradeLog[#TradeLog]["Location"] = GetRealZoneText()
+	
+	local entry = TradeLog[#TradeLog]
+	if not entry.TargetName or not entry.Result then
+		entry["TargetName"] = Sender .. "-" .. GetRealmName()
+		entry["Reason"] = Index
+		entry["Result"] = "received"
+		entry["Location"] = GetRealZoneText()
 	end
-	do
-		local TempItem = {
-			["Name"] = ItemName,
-			["Number"] = Quantity,
-			["Enchantment"] = nil,
-			["ItemLink"] = ItemLink,
-		}
-		t_insert(TradeLog[#TradeLog].ReceiveItems, TempItem)
-	end
-	TradeLog[#TradeLog]["GiveMoney"] = TradeLog[#TradeLog]["GiveMoney"] + CODAmount
-	TradeLog[#TradeLog]["Date"] = date("%Y-%m-%d")
-	TradeLog[#TradeLog]["Time"] = date("%H:%M:%S")
+	
+	t_insert(entry.ReceiveItems, {
+		["Name"] = ItemName,
+		["Number"] = Quantity,
+		["Enchantment"] = nil,
+		["ItemLink"] = ItemLink,
+	})
+	
+	entry["GiveMoney"] = entry["GiveMoney"] + CODAmount
+	entry["Date"] = date("%Y-%m-%d")
+	entry["Time"] = date("%H:%M:%S")
 end
 do -- Hook TakeIndexItem，获取邮件取出的邮件及物品信息
 	local function GetItemFromMail(MailIndex, ItemIndex)
@@ -763,28 +801,29 @@ function Frame:MAIL_SEND_INFO_UPDATE()
 		return
 	end
 	-- 如果CurrentMail为空则需要先创建一个NewMail結構
-	if not Current then
+	if not Current or not next(Current) then
 		Current = Addon:NewMail()
 	end
+	
+	-- 重置物品列表
+	Current.GiveItems = {}
+	
+	local itemMap = {}
 	for i = 1, 12 do
 		local ItemName, _, _, Quantity = GetSendMailItem(i)
 		if ItemName then
-			Current.GiveItems[i] = {
-				["Name"] = ItemName,
-				["Number"] = Quantity,
-				["Enchantment"] = nil,
-				["ItemLink"] = GetSendMailItemLink(i),
-			}
-		else
-			Current.GiveItems[i] = nil
-		end
-	end
-	for i = 12, 2, -1 do
-		for j = 1, i-1 do
-			if Current.GiveItems[i] and Current.GiveItems[j] and Current.GiveItems[i].Name == Current.GiveItems[j].Name and Current.GiveItems[i].ItemLink == Current.GiveItems[j].ItemLink then
-				Current.GiveItems[j].Number = Current.GiveItems[i].Number + Current.GiveItems[j].Number
-				Current.GiveItems[i] = nil
-				break
+			local ItemLink = GetSendMailItemLink(i)
+			local key = ItemLink or ItemName
+			if itemMap[key] then
+				itemMap[key].Number = itemMap[key].Number + Quantity
+			else
+				itemMap[key] = {
+					["Name"] = ItemName,
+					["Number"] = Quantity,
+					["Enchantment"] = nil,
+					["ItemLink"] = ItemLink,
+				}
+				t_insert(Current.GiveItems, itemMap[key])
 			end
 		end
 	end
@@ -796,16 +835,8 @@ function Frame:MAIL_CLOSED()
 	end
 	Current = {}
 	MailBoxOpened = false
-	if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" and #TradeLog[#TradeLog].ReceiveItems >= 2 then
-		for i = #TradeLog[#TradeLog].ReceiveItems, 2, -1 do
-			for j = 1, i-1 do
-				if TradeLog[#TradeLog].ReceiveItems[i] and TradeLog[#TradeLog].ReceiveItems[j] and TradeLog[#TradeLog].ReceiveItems[i].Name == TradeLog[#TradeLog].ReceiveItems[j].Name and TradeLog[#TradeLog].ReceiveItems[i].ItemLink == TradeLog[#TradeLog].ReceiveItems[j].ItemLink then
-					TradeLog[#TradeLog].ReceiveItems[j].Number = TradeLog[#TradeLog].ReceiveItems[i].Number + TradeLog[#TradeLog].ReceiveItems[j].Number
-					TradeLog[#TradeLog].ReceiveItems[i] = nil
-					break
-				end
-			end
-		end
+	if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" then
+		Addon:MergeItemList(TradeLog[#TradeLog].ReceiveItems)
 	end
 end
 -- 交易失败通报
@@ -865,16 +896,8 @@ function Frame:UI_INFO_MESSAGE(...)
 				Current["GiveMoney"] = Money
 			end
 			if Current.GiveMoney > 0 or (next(Current.GiveItems)) then
-				if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" and #TradeLog[#TradeLog].ReceiveItems >= 2 then
-					for i = #TradeLog[#TradeLog].ReceiveItems, 2, -1 do
-						for j = 1, i-1 do
-							if TradeLog[#TradeLog].ReceiveItems[i] and TradeLog[#TradeLog].ReceiveItems[j] and TradeLog[#TradeLog].ReceiveItems[i].Name == TradeLog[#TradeLog].ReceiveItems[j].Name and TradeLog[#TradeLog].ReceiveItems[i].ItemLink == TradeLog[#TradeLog].ReceiveItems[j].ItemLink then
-								TradeLog[#TradeLog].ReceiveItems[j].Number = TradeLog[#TradeLog].ReceiveItems[i].Number + TradeLog[#TradeLog].ReceiveItems[j].Number
-								TradeLog[#TradeLog].ReceiveItems[i] = nil
-								break
-							end
-						end
-					end
+				if #TradeLog > 0 and TradeLog[#TradeLog] and TradeLog[#TradeLog].Result == "received" then
+					Addon:MergeItemList(TradeLog[#TradeLog].ReceiveItems)
 				end
 				Current["Result"] = "sent"
 				Current["Date"] = date("%Y-%m-%d")

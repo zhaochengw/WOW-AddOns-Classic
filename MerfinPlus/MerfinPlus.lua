@@ -1,6 +1,8 @@
 local _, MerfinPlus = ...
 MerfinPlus = LibStub("AceAddon-3.0"):NewAddon(MerfinPlus, "MerfinPlus", "AceEvent-3.0")
 
+MerfinPlus.BuildInfo = select(4, GetBuildInfo())
+
 function MerfinPlus:OnInitialize()
   self.db = LibStub("AceDB-3.0"):New("MerfinPlusSaved", MerfinPlus.defaults, true)
   self:RegisterCustomFonts()
@@ -9,11 +11,16 @@ function MerfinPlus:OnInitialize()
   self:RegisterFonts()
   self:RegisterBars()
   self:SetupOptions()
+  if self.InitializeWoWSimDefaults then
+    self:InitializeWoWSimDefaults()
+  end
 end
 
 function MerfinPlus:OnEnable()
-  MerfinPlus:PullTimerEnable()
-  MerfinPlus:LFGEnable()
+  if MerfinPlus.BuildInfo < 120000 then
+    MerfinPlus:PullTimerEnable()
+    MerfinPlus:LFGEnable()
+  end
 end
 
 function MerfinPlus:GetDB()
@@ -22,9 +29,6 @@ function MerfinPlus:GetDB()
   end
   return self.db.profile
 end
-
--- To identify the Toc version
-MerfinPlus.BuildInfo = select(4, GetBuildInfo())
 
 Merfin = Merfin or {}
 

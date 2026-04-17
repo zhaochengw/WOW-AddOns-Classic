@@ -1,8 +1,8 @@
-## Interface: 110207, 50503, 120000
+## Interface: 120001, 110207, 50503, 120000
 ## Title: Pet Battle Scripts
 ## Notes: Battle Pet Combat Scripting
 ## Author: axc450
-## Version: v1.12
+## Version: v1.13
 ## OptionalDeps: Ace3, Rematch, ElvUI
 ## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
 ## SavedVariablesPerCharacter: TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE

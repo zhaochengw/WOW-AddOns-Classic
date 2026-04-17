@@ -52,7 +52,7 @@ local baseLocale = {
     ["Reset UI"] = "重置用户界面",
     ["Resets the UI to its default settings. There is no confirmation for this action."] = "将用户界面重置为默认设置。此操作没有确认。",
 
-    ["Team: "] = "队伍：",
+    ["Team: "] = "队伍：|cff00ffff",
     ["Team Options"] = "队伍选项",
     ["Lock Team"] = "锁定队伍",
     ["Rename Team"] = "重命名队伍",

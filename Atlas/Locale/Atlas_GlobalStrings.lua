@@ -48,6 +48,7 @@ local icon_E7 = "Interface\\ICONS\\ability_racial_cityofgold"              -- Bf
 local icon_E8 = "Interface\\ICONS\\achievement_mythicdungeons_shadowlands" -- Shadowlands
 local icon_E9 = "Interface\\ICONS\\flightstone-dragonflight"               -- Dragonflight
 local icon_E10 = "Interface\\ICONS\\ui_delves"                             -- TWW
+local icon_E11 = "Interface\\ICONS\\inv_cosmicvoid_groundstate"            -- Midnight
 
 -- Continent Icons
 local icon_EasternKingdom = "Interface\\ICONS\\Achievement_Zone_EasternKingdoms_01" -- Eastern Kingdom
@@ -64,6 +65,7 @@ local icon_Zandalar = "Interface\\ICONS\\spell_arcane_portalzandalar"           
 local icon_Shadowlands = "Interface\\ICONS\\spell_arcane_teleportoribos"            -- Shadowlands
 local icon_DragonIsles = "Interface\\ICONS\\spell_arcane_teleportvaldrakken"        -- Dragon Isles
 local icon_KhazAlgar = "Interface\\ICONS\\inv_spell_arcane_telepotdornogal"         -- Khaz Algar
+local icon_QuelThalas = "Interface\\ICONS\\inv_12_mage_teleport"                    -- Quel'Thalas
 
 --[[
 ************************************************************************************************
@@ -140,6 +142,7 @@ else
 	ATLAS_DDL_CONTINENT_SHADOWLANDS = format("|T%s:0:0|t %s", icon_Shadowlands, L["ATLAS_DDL_CONTINENT_SHADOWLANDS"])
 	ATLAS_DDL_CONTINENT_DRAGONISLES = format("|T%s:0:0|t %s", icon_DragonIsles, L["ATLAS_DDL_CONTINENT_DRAGONISLES"])
 	ATLAS_DDL_CONTINENT_KHAZALGAR = format("|T%s:0:0|t %s", icon_KhazAlgar, L["ATLAS_DDL_CONTINENT_KHAZALGAR"])
+	ATLAS_DDL_CONTINENT_QUELTHALAS = format("|T%s:0:0|t %s", icon_QuelThalas, L["ATLAS_DDL_CONTINENT_QUELTHALAS"])
 end
 -- Level
 ATLAS_DDL_LEVEL            = L["ATLAS_DDL_LEVEL"]
@@ -170,6 +173,7 @@ ATLAS_DDL_LEVEL_45TO50     = L["ATLAS_DDL_LEVEL_45TO50"]
 ATLAS_DDL_LEVEL_45TO60     = L["ATLAS_DDL_LEVEL_45TO60"]
 ATLAS_DDL_LEVEL_50TO60     = L["ATLAS_DDL_LEVEL_50TO60"]
 ATLAS_DDL_LEVEL_60PLUS     = L["ATLAS_DDL_LEVEL_60PLUS"]
+ATLAS_DDL_LEVEL_80TO90     = L["ATLAS_DDL_LEVEL_80TO90"]
 
 ATLAS_DDL_PARTYSIZE        = L["ATLAS_DDL_PARTYSIZE"]
 ATLAS_DDL_PARTYSIZE_5      = L["ATLAS_DDL_PARTYSIZE_5"]
@@ -195,6 +199,7 @@ else
 	ATLAS_DDL_EXPANSION_SHADOWLANDS  = format("|T%s:0:0|t %s", icon_E8, L["ATLAS_DDL_EXPANSION_SHADOWLANDS"])
 	ATLAS_DDL_EXPANSION_DRAGONFLIGHT = format("|T%s:0:0|t %s", icon_E9, L["ATLAS_DDL_EXPANSION_DRAGONFLIGHT"])
 	ATLAS_DDL_EXPANSION_TWW          = format("|T%s:0:0|t %s", icon_E10, L["ATLAS_DDL_EXPANSION_TWW"])
+	ATLAS_DDL_EXPANSION_MIDNIGHT     = format("|T%s:0:0|t %s", icon_E11, L["ATLAS_DDL_EXPANSION_MIDNIGHT"])
 end
 ATLAS_DDL_TYPE               = L["ATLAS_DDL_TYPE"]
 ATLAS_DDL_TYPE_INSTANCE      = L["ATLAS_DDL_TYPE_INSTANCE"]

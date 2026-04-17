@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20250929055241")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(95885)
 mod:SetEncounterID(1815)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START

@@ -10,7 +10,6 @@ local DT = __private.DT;
 
 
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
 	local _G = _G;
 -->
 

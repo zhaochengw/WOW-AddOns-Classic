@@ -141,6 +141,27 @@ function addon:GetMouseFocusText()
 end
 
 --------------------------------------------------------------------------------
+-- Search tooltip
+--
+
+---@return string?
+function addon:GetTooltipText()
+	-- attempt to copy any visible GameTooltip-derived frame
+	for frame in self:IterateFrames() do
+		if frame.GetObjectType and frame:GetObjectType() == "GameTooltip" and frame:IsShown() then
+			local text = self:GetSpecificFrameText(frame)
+			if text then
+				return text
+			end
+		end
+	end
+	-- fall back to global GameTooltip if iterate missed it
+	if GameTooltip and GameTooltip:IsShown() then
+		return self:GetSpecificFrameText(GameTooltip)
+	end
+end
+
+--------------------------------------------------------------------------------
 -- Specific frame
 --
 

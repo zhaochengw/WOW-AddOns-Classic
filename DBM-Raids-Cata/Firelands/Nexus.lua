@@ -7,7 +7,8 @@ else
 	mod.statTypes = "normal,normal25"
 end
 
-mod:SetRevision("20240315100444")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(53472)
 mod:SetModelID(32230)
 mod:SetZone(951)--Scoped to Nexus only

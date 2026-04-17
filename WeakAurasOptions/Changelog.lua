@@ -10,18 +10,33 @@ local AddonName = ...
 ---@class OptionsPrivate
 local OptionsPrivate = select(2, ...)
 OptionsPrivate.changelog = {
-  versionString = '5.21.2',
-  dateString = '2026-01-30',
-  fullChangeLogUrl = 'https://github.com/WeakAuras/WeakAuras2/compare/5.21.1...5.21.2',
+  versionString = '5.21.5',
+  dateString = '2026-04-13',
+  fullChangeLogUrl = 'https://github.com/WeakAuras/WeakAuras2/compare/5.21.4...5.21.5',
   highlightText = [==[
-- Add Titan encounter info]==],  commitText = [==[InfusOnWoW (2):
+More Updates for Titan and Regression Fixes]==],  commitText = [==[InfusOnWoW (2):
+
+- Update Discord List
+- Update WeakAurasModelPaths from wago.tools
+
+NoM0Re (7):
+
+- Titan: Enable Proc Glow
+- Titan: disable AssistedCombat in GenericTrigger
+- BossMods: fix clone state cleanup typo
+- Titan: disable AssistedCombat and fix item set description
+- Fix: Replace deprecated GetCurrencyInfo with C_CurrencyInfo API
+- Titan: TOC Bump
+- Remove redundant CheckItemSlotCooldowns call
+
+Stanzilla (1):
 
 - Update WeakAurasModelPaths from wago.tools
-- Remove retail .toc files and disabled model path update for retail
 
-NoM0Re (1):
+dependabot[bot] (2):
 
-- Titan: add next phase encounter list
+- Bump cbrgm/mastodon-github-action from 2.1.26 to 2.1.27
+- Bump exercism/pr-commenter-action from 1.5.1 to 1.5.2
 
 ]==]
 }

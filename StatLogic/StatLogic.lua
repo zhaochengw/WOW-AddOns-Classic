@@ -72,7 +72,6 @@ local GetShapeshiftFormInfo = GetShapeshiftFormInfo
 local GetActiveTalentGroup = GetActiveTalentGroup or C_SpecializationInfo.GetActiveSpecGroup
 local GetPrimaryTalentTree = GetPrimaryTalentTree or C_SpecializationInfo.GetSpecialization
 local GetSpecializationInfo = GetSpecializationInfo or C_SpecializationInfo.GetSpecializationInfo
-addon.tocversion = select(4, GetBuildInfo())
 
 ---------------
 -- Lua Tools --
@@ -230,8 +229,11 @@ setmetatable(cache, {__mode = "kv"}) -- weak table to enable garbage collection
 -- Set Debugging --
 -------------------
 local DEBUG = false
-function StatLogic:ClearCache()
+function StatLogic:ToggleDebugging()
 	DEBUG = not DEBUG
+end
+
+function StatLogic:ClearCache()
 	wipe(cache)
 end
 
@@ -265,15 +267,6 @@ end
 ----------------
 -- Stat Tools --
 ----------------
-StatLogic.GenericStatMap = {
-	[StatLogic.Stats.AllStats] = {
-		StatLogic.Stats.Strength,
-		StatLogic.Stats.Agility,
-		StatLogic.Stats.Stamina,
-		StatLogic.Stats.Intellect,
-		StatLogic.Stats.Spirit,
-	}
-}
 
 ---@class StatModInfo
 -- 0: inter-mod operations are done with addition,
@@ -323,11 +316,43 @@ StatLogic.StatModInfo = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
+	["ADD_AGI_MOD_HIGHEST_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_AGI_MOD_HIGHEST_STR_AGI"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_AGI_MOD_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
 	["ADD_AP_MOD_FERAL_ATTACK_POWER"] = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
 	["ADD_AP_MOD_GENERIC_ATTACK_POWER"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_CRIT_RATING_MOD_HIGHEST_SECONDARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_HASTE_RATING_MOD_HIGHEST_SECONDARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_INT_MOD_HIGHEST_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_INT_MOD_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_MASTERY_RATING_MOD_HIGHEST_SECONDARY"] = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
@@ -352,6 +377,22 @@ StatLogic.StatModInfo = {
 		finalAdjust = 0,
 	},
 	["ADD_RANGED_HASTE_RATING_MOD_HASTE_RATING"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_SPI_MOD_HIGHEST_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_STR_MOD_HIGHEST_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_STR_MOD_PRIMARY"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_STR_MOD_HIGHEST_STR_AGI"] = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
@@ -423,6 +464,10 @@ StatLogic.StatModInfo = {
 
 -- StatMods used by RatingBuster to dynamically add options for stat breakdowns
 local addedInfoMods = {
+	{
+		add = "AGI",
+		mod = "ALL_STATS",
+	},
 	{
 		add = "AGI",
 		mod = "INT",
@@ -570,6 +615,10 @@ local addedInfoMods = {
 	{
 		add = "HIT_RATING",
 		mod = "SPI",
+	},
+	{
+		add = "INT",
+		mod = "ALL_STATS",
 	},
 	{
 		add = "MANA",
@@ -750,6 +799,18 @@ local addedInfoMods = {
 	{
 		add = "SPELL_POWER",
 		mod = "INT",
+	},
+	{
+		add = "SPI",
+		mod = "ALL_STATS",
+	},
+	{
+		add = "STA",
+		mod = "ALL_STATS",
+	},
+	{
+		add = "STR",
+		mod = "ALL_STATS",
 	},
 	{
 		add = "STR",
@@ -944,18 +1005,33 @@ end
 ---@type { [Enum.ItemWeaponSubclass]: { [Stat]: true} }
 addon.WeaponSubclassStats = {}
 
-function addon.GenerateWeaponSubclassStats()
+local function SetupWeaponSubclassStats(statMod, case)
+	if case.weaponSubclass then
+		for weaponSubclass in pairs(case.weaponSubclass) do
+			if not addon.WeaponSubclassStats[weaponSubclass] then
+				addon.WeaponSubclassStats[weaponSubclass] = {}
+			end
+			addon.WeaponSubclassStats[weaponSubclass][statMod] = true
+		end
+	end
+end
+
+---@type { [Stat]: { [number]: Stat, highest?: Stat } }
+local StatPools = {}
+
+local function SetupStatPools(case)
+	if case.highest then
+		StatPools[case.pool] = StatPools[case.pool] or {}
+		StatPools[case.pool][#StatPools[case.pool] + 1] = case.highest
+	end
+end
+
+function addon.SetupStatModData()
 	for _, modList in pairs(StatLogic.StatModTable) do
-		for stat, cases in pairs(modList) do
+		for statMod, cases in pairs(modList) do
 			for _, case in ipairs(cases) do
-				if case.weaponSubclass then
-					for weaponSubclass in pairs(case.weaponSubclass) do
-						if not addon.WeaponSubclassStats[weaponSubclass] then
-							addon.WeaponSubclassStats[weaponSubclass] = {}
-						end
-						addon.WeaponSubclassStats[weaponSubclass][stat] = true
-					end
-				end
+				SetupWeaponSubclassStats(statMod, case)
+				SetupStatPools(case)
 			end
 		end
 	end
@@ -1127,6 +1203,27 @@ addon.StatModValidators = {
 			["GLYPH_REMOVED"] = true,
 		}
 	},
+	highest = {
+		validate = function (case)
+			local statPool = StatPools[case.pool]
+			if not statPool.highest then
+				local highestStat
+				local highestValue = 0
+				for _, stat in ipairs(statPool) do
+					local statValue = stat:Get()
+					if statValue > highestValue then
+						highestStat = stat
+						highestValue = statValue
+					end
+				end
+				statPool.highest = highestStat
+			end
+			return case.highest == statPool.highest
+		end,
+		events = {
+			["UNIT_STATS"] = "player",
+		},
+	},
 	itemClass = {
 		validate = function(case, _, statModContext)
 			local itemClass = statModContext and statModContext.itemClass
@@ -1267,6 +1364,7 @@ local StatModCache = setmetatable({}, {
 })
 addon.StatModCacheInvalidators = {}
 local WeaponSubclassInvalidators = {}
+local StatPoolInvalidators = {}
 
 function StatLogic:InvalidateEvent(event, unit)
 	local key = event
@@ -1285,6 +1383,11 @@ function StatLogic:InvalidateEvent(event, unit)
 		wipe(cache)
 		if RatingBuster then
 			RatingBuster:ClearCache()
+		end
+	end
+	if StatPoolInvalidators[key] then
+		for _, statPool in pairs(StatPools) do
+			statPool.highest = nil
 		end
 	end
 end
@@ -1327,6 +1430,9 @@ local function ValidateStatMod(statModName, case, statModContext)
 					table.insert(addon.StatModCacheInvalidators[key], statModName)
 					if case.weaponSubclass then
 						WeaponSubclassInvalidators[key] = true
+					end
+					if case.highest then
+						StatPoolInvalidators[key] = true
 					end
 				end
 			end
@@ -1755,9 +1861,47 @@ function StatLogic:RemoveEnchant(link)
 	return link:gsub("(item:%d+):%d+","%1:0")
 end
 
-function StatLogic:RemoveGem(link)
-	return link:gsub("(item:%d+:%d*):%d*:%d*:%d*:%d*","%1:0:0:0:0")
+---@enum SocketColor
+StatLogic.SocketColor = {
+	Meta      = 0x01,
+	Red       = 0x02,
+	Yellow    = 0x04,
+	Blue      = 0x08,
+	Cogwheel  = 0x20,
+	Prismatic = 0x0E,
+}
+
+local ItemGemSubclassCogwheel = 10
+---@diagnostic disable: undefined-field
+local GemSubclassColors = {
+	[Enum.ItemGemSubclass.Red]    = StatLogic.SocketColor.Red,
+	[Enum.ItemGemSubclass.Blue]   = StatLogic.SocketColor.Blue,
+	[Enum.ItemGemSubclass.Yellow] = StatLogic.SocketColor.Yellow,
+	[Enum.ItemGemSubclass.Purple] = bit.band(StatLogic.SocketColor.Red, StatLogic.SocketColor.Blue),
+	[Enum.ItemGemSubclass.Green]  = bit.band(StatLogic.SocketColor.Yellow, StatLogic.SocketColor.Blue),
+	[Enum.ItemGemSubclass.Orange] = bit.band(StatLogic.SocketColor.Red, StatLogic.SocketColor.Yellow),
+	[Enum.ItemGemSubclass.Meta]   = StatLogic.SocketColor.Meta,
+	[ItemGemSubclassCogwheel]     = StatLogic.SocketColor.Cogwheel,
+}
+---@diagnostic enable: undefined-field
+
+---@param gemID number
+local function GetGemColor(gemID)
+	if gemID then
+		local subclassID = select(7, C_Item.GetItemInfoInstant(gemID))
+		return GemSubclassColors[subclassID] or 0
+	end
+	return 0
 end
+
+local EmptySocketColors = {
+	[EMPTY_SOCKET_META]      = StatLogic.SocketColor.Meta,
+	[EMPTY_SOCKET_RED]       = StatLogic.SocketColor.Red,
+	[EMPTY_SOCKET_YELLOW]    = StatLogic.SocketColor.Yellow,
+	[EMPTY_SOCKET_BLUE]      = StatLogic.SocketColor.Blue,
+	[EMPTY_SOCKET_COGWHEEL]  = StatLogic.SocketColor.Cogwheel,
+	[EMPTY_SOCKET_PRISMATIC] = StatLogic.SocketColor.Prismatic,
+}
 
 do
 	local extraSocketInvTypes = {
@@ -1773,98 +1917,39 @@ do
 		end
 	})
 
-	function StatLogic:RemoveExtraSockets(link)
-		-- Only check belt, bracer and gloves
-		local itemEquipLoc = select(4, C_Item.GetItemInfoInstant(link))
-		if not extraSocketInvTypes[itemEquipLoc] then return link end
-
+	---@param link string itemLink
+	---@param gemInfo GemInfo
+	---@return string strippedLink
+	---@return number[] gems
+	function StatLogic:RemoveGems(link, gemInfo)
 		-- Count item's actual sockets
 		wipe(statTable)
 		GetItemStats(link, statTable)
 		local numSockets = statTable["EMPTY_SOCKET_RED"] + statTable["EMPTY_SOCKET_YELLOW"] + statTable["EMPTY_SOCKET_BLUE"] + statTable["EMPTY_SOCKET_PRISMATIC"]
+		local inventoryType = select(4, C_Item.GetItemInfoInstant(link))
 
-		-- Remove any gemID beyond numSockets
+		---@type number[]
+		local realGems = {}
+
 		local i = 0
-		return (link:gsub(":[^:]*", function(match)
+		local strippedLink = link:gsub(":([^:]*)", function(match)
 			i = i + 1
 			if i > 2 + numSockets then
+				-- Remove extra sockets from belt, bracer and gloves, unless disabled in options
+				return (extraSocketInvTypes[inventoryType] and gemInfo.sumIgnoreExtraSockets or gemInfo.sumIgnoreGems) and ":" or ":" .. match
+			elseif i > 2 then
+				realGems[i - 2] = tonumber(match) or 0
 				return ":"
 			else
-				return match
+				return ":" .. match
 			end
-		end, 6))
-	end
-
-	local EmptySocketLookup = {
-		[EMPTY_SOCKET_RED] = 0,
-		[EMPTY_SOCKET_YELLOW] = 0,
-		[EMPTY_SOCKET_BLUE] = 0,
-		[EMPTY_SOCKET_META] = 0,
-		[EMPTY_SOCKET_PRISMATIC] = 0,
-	}
-
-	-- Returns a modified link with all empty sockets replaced with the specified gems,
-	-- sockets already gemmed will remain.
-	---@param link string itemLink
-	---@param red? string|number gemID to replace a red socket
-	---@param yellow? string|number gemID to replace a yellow socket
-	---@param blue? string|number gemID to replace a blue socket
-	---@param meta? string|number gemID to replace a meta socket
-	---@param prismatic? string|number gemID to replace a prismatic socket
-	---@return string link Modified item link
-	function StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta, prismatic)
-		-- Check item
-		if (type(link) ~= "string") then
-			return link
-		end
-
-		wipe(statTable)
-		GetItemStats(link, statTable)
-		local numSockets = statTable["EMPTY_SOCKET_META"] + statTable["EMPTY_SOCKET_RED"] + statTable["EMPTY_SOCKET_YELLOW"] + statTable["EMPTY_SOCKET_BLUE"] + statTable["EMPTY_SOCKET_PRISMATIC"]
-		if numSockets == 0 then return link end
-
-		-- Check gemID
-		red = red and tonumber(red) or 0
-		yellow = yellow and tonumber(yellow) or 0
-		blue = blue and tonumber(blue) or 0
-		meta = meta and tonumber(meta) or 0
-		prismatic = prismatic and tonumber(prismatic) or 0
-		if red == 0 and yellow == 0 and blue == 0 and meta == 0 and prismatic == 0 then return link end -- nothing to modify
-
-		-- Fill EmptySocketLookup
-		EmptySocketLookup[EMPTY_SOCKET_RED] = red
-		EmptySocketLookup[EMPTY_SOCKET_YELLOW] = yellow
-		EmptySocketLookup[EMPTY_SOCKET_BLUE] = blue
-		EmptySocketLookup[EMPTY_SOCKET_META] = meta
-		EmptySocketLookup[EMPTY_SOCKET_PRISMATIC] = prismatic
-
-		-- Since this is passed to gsub, the first entry is
-		-- the capture group containing the item and enchant IDs
-		local gemIDs = { "%1" }
-
-		tip:ClearLines()
-		tip:SetHyperlink(link)
-		for i = 2, tip:NumLines() do
-			local text = tip.sides.left[i]:GetText()
-			local gemID = EmptySocketLookup[text]
-			gemIDs[#gemIDs+1] = gemID
-		end
-
-		if #gemIDs == 1 then
-			-- No sockets found
-			return link
-		else
-			-- Pad up to 4 empty gems so we create a valid item link
-			for i = #gemIDs + 1, 5 do
-				gemIDs[i] = ""
-			end
-			local repl = table.concat(gemIDs, ":")
-			-- Since we only match 0 or empty, this will not replace anything
-			-- if the item link contains *any* real gems
-			return (link:gsub("(item:%d+:%d*):0?:0?:0?:0?", repl))
-		end
+		end, 6)
+		return strippedLink, realGems
 	end
 end
+
+local gemTooltip = CreateFrame("GameTooltip", "StatLogicGemTooltip", nil, "GameTooltipTemplate") --[[@as GameTooltip]]
+gemTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
 
 ---@param item string|number itemLink or itemID of a gem
 ---@return number? gemID
@@ -1888,15 +1973,15 @@ function StatLogic:GetGemID(item)
 	if not name then
 		if tonumber(itemID) then
 			-- Query server for item
-			tip:SetHyperlink("item:"..itemID);
+			gemTooltip:SetHyperlink("item:"..itemID);
 		end
 		return
 	end
 	itemID = link:match("item:(%d+)")
 
-	if not C_Item.GetItemInfo(6948) then -- Hearthstone
+	if not C_Item.GetItemInfo(6948) then
 		-- Query server for Hearthstone
-		tip:SetHyperlink("item:"..itemID);
+		gemTooltip:SetHyperlink("item:"..itemID);
 		return
 	end
 
@@ -1905,9 +1990,9 @@ function StatLogic:GetGemID(item)
 	local itemLink = gemScanLink:format(itemID)
 	local _, gem1Link = C_Item.GetItemGem(itemLink, 1)
 	if gem1Link then
-		tip:ClearLines() -- this is required or SetX won't work the second time its called
-		tip:SetHyperlink(itemLink);
-		return itemID, StatLogicTooltipTextLeft4:GetText()
+		gemTooltip:ClearLines()
+		gemTooltip:SetHyperlink(itemLink);
+		return itemID, StatLogicGemTooltipTextLeft4:GetText()
 	end
 end
 
@@ -1947,17 +2032,6 @@ do
 	end
 end
 
-local function ConvertGenericStats(table)
-	for generic, ratings in pairs(StatLogic.GenericStatMap) do
-		if table[generic] then
-			for _, rating in ipairs(ratings) do
-				table[rating] = table[rating] + table[generic]
-			end
-			table[generic] = nil
-		end
-	end
-end
-
 function StatLogic:GetItemTooltipNumLines(link)
 	tip:ClearLines()
 	tip:SetHyperlink(link)
@@ -1976,6 +2050,8 @@ do
 
 	---@class StatGroupValues
 	---@field ignoreSum boolean
+	---@field isSocketBonus boolean?
+	---@field socketColor SocketColor?
 	---@field [number] { statGroup: StatGroup, value: number, position: number? }
 
 	---@param statGroups StatGroupValues
@@ -2064,17 +2140,22 @@ do
 			text = text:gsub("|r", "")
 		end
 		local rawText = text
+		statGroups.socketColor = EmptySocketColors[text]
 
 		-----------------------
 		-- Whole Text Lookup --
 		-----------------------
 		-- Strings without numbers; mainly used for enchants or easy exclusions
 		if not found then
-			-- Limit to one line
-			text = text:gsub("\n.*", "")
-			-- Strip leading "Equip: ", "Socket Bonus: ", trailing ".", and lowercase
+			-- Strip leading "Equip: ", trailing ".", and lowercase
 			text, length = trimPrefixes(text, addon.TrimmedPrefixes)
 			offset = offset + length
+			-- Strip leading "Socket Bonus: "
+			text, length = trimPrefixes(text, addon.SocketBonusPrefixes)
+			offset = offset + length
+			if length > 0 then
+				statGroups.isSocketBonus = true
+			end
 			text = text:trim()
 			text = text:gsub("%.$", "")
 			text = text:utf8lower()
@@ -2098,6 +2179,7 @@ do
 		-------------------------
 		-- Substitution Lookup --
 		-------------------------
+		local statText = ""
 		if not found then
 			text, length = trimPrefixes(text, addon.IgnoreSum)
 			offset = offset + length
@@ -2110,7 +2192,8 @@ do
 
 			-- Replace numbers with %s
 			local valuePositions = {}
-			local statText, count = text:gsub(numberPattern, function(match, position)
+			local count = 0
+			statText, count = text:gsub(numberPattern, function(match, position)
 				match = match:gsub(large_sep, ""):gsub(dec_sep, ".")
 				local value = tonumber(match)
 				if value then
@@ -2180,6 +2263,7 @@ do
 			-- it might be a missing stat we want to add.
 			if not found then
 				log(rawText, "Fail", "Missed")
+				log(statText, "Fail", "Missed")
 			end
 		end
 
@@ -2194,8 +2278,9 @@ do
 	---@param item? string itemLink of target item
 	---@param oldStatTable? StatTable The sum of stat values are writen to this table if provided
 	---@param statModContext? StatModContext
+	---@param gemInfo? GemInfo
 	---@return StatTable? sum
-	function StatLogic:GetSum(item, oldStatTable, statModContext)
+	function StatLogic:GetSum(item, oldStatTable, statModContext, gemInfo)
 		-- Check item
 		if type(item) ~= "string" then
 			return
@@ -2210,8 +2295,14 @@ do
 		statTable = oldStatTable or newPooledTable()
 		setmetatable(statTable, statTableMetatable)
 
-		tip:ClearLines() -- this is required or SetX won't work the second time its called
-		tip:SetHyperlink(link)
+		gemInfo = gemInfo or {}
+		gemInfo.auto = gemInfo.auto or {}
+
+		local strippedLink, realGems = StatLogic:RemoveGems(link, gemInfo)
+		gemInfo.real = realGems
+
+		tip:ClearLines()
+		tip:SetHyperlink(strippedLink)
 
 		local numLines = tip:NumLines()
 
@@ -2243,13 +2334,49 @@ do
 		end
 
 		log(link)
+
+		local numSockets = 0
+		local socketColors = {}
 		for i = 2, tip:NumLines() do
 			for _, side in pairs(tip.sides) do
 				local fontString = side[i]
 				local text = fontString:GetText()
 				local color = CreateColor(fontString:GetTextColor())
 				local statGroupValues = StatLogic:GetStatGroupValues(text, link, color)
-				if not statGroupValues.ignoreSum then
+
+				if statGroupValues.socketColor then
+					numSockets = numSockets + 1
+					socketColors[numSockets] = statGroupValues.socketColor
+
+					local gemID = gemInfo.real[numSockets]
+					if gemID and gemID > 0 then
+						_, text = StatLogic:GetGemID(gemID)
+					else
+						local autoGem = gemInfo.auto[statGroupValues.socketColor]
+						text = autoGem and autoGem.gemText or nil
+					end
+					if text then
+						statGroupValues = StatLogic:GetStatGroupValues(text, link, color)
+						statGroupValues.ignoreSum = gemInfo.sumIgnoreGems
+					end
+				elseif statGroupValues.isSocketBonus then
+					for j, socketColor in ipairs(socketColors) do
+						local gemID = gemInfo.real[j]
+						if (not gemID or gemID == 0) then
+							local autoGem = gemInfo.auto[socketColor]
+							gemID = autoGem and autoGem.gemID or nil
+						end
+
+						if gemID then
+							local gemColor = GetGemColor(gemID)
+							if bit.band(gemColor, socketColor) == 0 then
+								statGroupValues.ignoreSum = true
+							end
+						end
+					end
+				end
+
+				if not statGroupValues.ignoreSum  then
 					for _, statGroupValue in ipairs(statGroupValues) do
 						local statGroup = statGroupValue.statGroup
 						if type(statGroup) == "table" then
@@ -2266,9 +2393,6 @@ do
 				end
 			end
 		end
-
-		-- Tooltip scanning done, do post processing
-		ConvertGenericStats(statTable)
 
 		cache[link] = copy(statTable)
 		return statTable
@@ -2358,17 +2482,11 @@ end
 -- the identification string is made up of links concatenated together, can be used for cache indexing
 ---@param item string|GameTooltip itemLink or tooltip of target item
 ---@param ignoreEnchant? boolean
----@param ignoreGems? boolean
----@param ignoreExtraSockets? boolean
----@param red? string|number gemID to replace a red socket
----@param yellow? string|number gemID to replace a yellow socket
----@param blue? string|number gemID to replace a blue socket
----@param meta? string|number gemID to replace a meta socket
 ---@return string? id A unique identification string of the diff calculation
 ---@return string? link Link of main item
 ---@return string? linkDiff1 Link of compare item 1
 ---@return string? linkDiff2 Link of compare item 2
-function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGems, ignoreExtraSockets, red, yellow, blue, meta)
+function StatLogic:GetDiffID(item, ignoreEnchant)
 	local name, inventoryType, link, linkDiff1, linkDiff2, _
 	-- Check item
 	if (type(item) == "string") or (type(item) == "number") then
@@ -2431,30 +2549,6 @@ function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGems, ignoreExtraSockets
 		end
 	end
 
-	-- Ignore Extra Sockets (unneccessary work if we're removing all gems afterwards)
-	if ignoreExtraSockets and not ignoreGems then
-		link = self:RemoveExtraSockets(link)
-		linkDiff1 = self:RemoveExtraSockets(linkDiff1)
-		if linkDiff2 then
-			linkDiff2 = self:RemoveExtraSockets(linkDiff2)
-		end
-	end
-
-	-- Ignore Gems
-	if ignoreGems then
-		link = self:RemoveGem(link)
-		linkDiff1 = self:RemoveGem(linkDiff1)
-		if linkDiff2 then
-			linkDiff2 = self:RemoveGem(linkDiff2)
-		end
-	else
-		link = self:BuildGemmedTooltip(link, red, yellow, blue, meta)
-		linkDiff1 = self:BuildGemmedTooltip(linkDiff1, red, yellow, blue, meta)
-		if linkDiff2 then
-			linkDiff2 = self:BuildGemmedTooltip(linkDiff2, red, yellow, blue, meta)
-		end
-	end
-
 	-- Build ID string
 	local id = link..linkDiff1
 	if linkDiff2 then
@@ -2464,27 +2558,18 @@ function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGems, ignoreExtraSockets
 	return id, link, linkDiff1, linkDiff2
 end
 
--- Calculates the stat diffrence from the specified item and your currently equipped items.
+-- Calculates the stat difference from the specified item and your currently equipped items.
 ---@param item string|GameTooltip itemLink or tooltip of target item
----@param diff1? StatTable Stat difference of item and equipped item 1 are writen to this table if provided
----@param diff2? StatTable Stat difference of item and equipped item 2 are writen to this table if provided
 ---@param ignoreEnchant? boolean
----@param ignoreGems? boolean
----@param ignoreExtraSockets? boolean
----@param red? string|number gemID to replace a red socket
----@param yellow? string|number gemID to replace a yellow socket
----@param blue? string|number gemID to replace a blue socket
----@param meta? string|number gemID to replace a meta socket
+---@param gemInfo GemInfo
 ---@return StatTable? diff1
 ---@return StatTable? diff2
-function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignoreExtraSockets, red, yellow, blue, meta)
+function StatLogic:GetDiff(item, ignoreEnchant, gemInfo)
 	-- Get DiffID
-	local id, link, linkDiff1, linkDiff2 = self:GetDiffID(item, ignoreEnchant, ignoreGems, ignoreExtraSockets, red, yellow, blue, meta)
+	local id, link, linkDiff1, linkDiff2 = self:GetDiffID(item, ignoreEnchant)
 	if not id then return end
 
-	-- Clear Tables
-	clearTable(diff1)
-	clearTable(diff2)
+	local diff1, diff2
 
 	-- Get diff data from cache if available
 	if cache[id..1] then
@@ -2496,7 +2581,7 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignore
 	end
 
 	-- Get item sum, results are written into diff1 table
-	local itemSum = self:GetSum(link)
+	local itemSum = self:GetSum(link, nil, nil, gemInfo)
 	if not itemSum then return end
 	local inventoryType = itemSum.inventoryType
 
@@ -2506,13 +2591,13 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignore
 		if linkDiff1 == "NOITEM" then
 			equippedSum1 = newStatTable()
 		else
-			equippedSum1 = self:GetSum(linkDiff1)
+			equippedSum1 = self:GetSum(linkDiff1, nil, nil, gemInfo)
 		end
 		-- Get off hand item sum
 		if linkDiff2 == "NOITEM" then
 			equippedSum2 = newStatTable()
 		else
-			equippedSum2 = self:GetSum(linkDiff2)
+			equippedSum2 = self:GetSum(linkDiff2, nil, nil, gemInfo)
 		end
 		-- Calculate diff
 		diff1 = copyTable(diff1, itemSum) - equippedSum1 - equippedSum2
@@ -2525,7 +2610,7 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignore
 		if linkDiff1 == "NOITEM" then
 			equippedSum = newStatTable()
 		else
-			equippedSum = self:GetSum(linkDiff1)
+			equippedSum = self:GetSum(linkDiff1, nil, nil, gemInfo)
 		end
 		-- Calculate item 1 diff
 		diff1 = copyTable(diff1, itemSum) - equippedSum
@@ -2538,7 +2623,7 @@ function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGems, ignore
 			if linkDiff2 == "NOITEM" then
 				equippedSum = newStatTable()
 			else
-				equippedSum = self:GetSum(linkDiff2)
+				equippedSum = self:GetSum(linkDiff2, nil, nil, gemInfo)
 			end
 			-- Calculate item 2 diff
 			diff2 = copyTable(diff2, itemSum) - equippedSum

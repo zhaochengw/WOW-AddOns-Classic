@@ -1,39 +1,49 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Scanner
+    Recipe scanning and datamining functionality
+    
+    Provides:
+    - Profession recipe scanning via tooltip parsing
+    - Trainer data scanning for recipe discovery
+    - Coroutine-based scanning with progress display
+    - Datamining tools for recipe database building
 ]]
 
--- ----------------------------------------------------------------------------
--- Upvalued Lua API.
--- ----------------------------------------------------------------------------
--- Functions
+-- ============================================================================
+-- Upvalued Lua API
+-- ============================================================================
 local ipairs, pairs = _G.ipairs, _G.pairs
+local pcall = _G.pcall
 local tonumber, tostring = _G.tonumber, _G.tostring
 local type = _G.type
+local select = _G.select
 
--- Libraries
 local coroutine = _G.coroutine
 local math = _G.math
 local table = _G.table
+local string = _G.string
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
+
+local LibStub = _G.LibStub
+local HBD = LibStub("HereBeDragons-2.0")
 
 local LibStub = _G.LibStub
 
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 
--- ----------------------------------------------------------------------------
+-- ============================================================================
 -- Constants
--- ----------------------------------------------------------------------------
+-- ============================================================================
 local NO_ROLE_FLAG -- Populated at the end of the file.
 
--- ----------------------------------------------------------------------------
--- Functions/methods
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Recipe Loading
+-- ============================================================================
 function private.LoadAllRecipes()
 	local recipe_list = private.recipe_list
 
@@ -132,19 +142,21 @@ do
 		end
 		ARLDatamineTT:Hide()
 
-		-- Dump out trainer info
-		local mapID = _G.C_Map.GetBestMapForUnit("player")
---		_G.WorldMapFrame:SetMapID(mapID)
-
+	-- Dump out trainer info
+		local mapID, trainer_x, trainer_y = HBD:GetPlayerZone()
+		
 		local trainerID = private.MobGUIDToIDNum(_G.UnitGUID("target"))
 		local trainerName = _G.UnitName("target")
 		local trainer_entry = private.AcquireTypes.Trainer:GetEntity(trainerID)
-		local trainerzone = _G.C_Map.GetMapInfo(mapID).name
+		local trainerzone = mapID and HBD:GetLocalizedMap(mapID) or UNKNOWN
 
-		local trainer_x, trainer_y = _G.C_Map.GetPlayerMapPosition(mapID, "player"):GetXY()
-
-		trainer_x = ("%.2f"):format(trainer_x * 100)
-		trainer_y = ("%.2f"):format(trainer_y * 100)
+		if trainer_x and trainer_y then
+			trainer_x = ("%.2f"):format(trainer_x * 100)
+			trainer_y = ("%.2f"):format(trainer_y * 100)
+		else
+			trainer_x = "0"
+			trainer_y = "0"
+		end
 
 		local output = private.TextDump
 		output:Clear()
@@ -290,7 +302,11 @@ do
 
 	local function ProgressBar()
 		if not progressBar then
-			progressBar = _G.CreateFrame("Frame", "ARL_DatamineProgressBar", _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
+			if _G.BackdropTemplateMixin then
+				progressBar = _G.CreateFrame("Frame", "ARL_DatamineProgressBar", _G.UIParent, "BackdropTemplate")
+			else
+				progressBar = _G.CreateFrame("Frame", "ARL_DatamineProgressBar", _G.UIParent)
+			end
 			progressBar:SetSize(450, 30)
 			progressBar:SetPoint("CENTER", 0, -250)
 			progressBar:SetFrameStrata("DIALOG")
@@ -298,7 +314,7 @@ do
 			progressBar:EnableMouse()
 			progressBar:SetMovable(true)
 
-			progressBar:SetBackdrop({
+			local backdropInfo = {
 				bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
 				edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
 				tile = true,
@@ -310,8 +326,8 @@ do
 					top = 4,
 					bottom = 4
 				}
-			})
-			progressBar:SetBackdropColor(0, 0, 0, 1)
+			}
+			private.BackdropUtil.SafeSetBackdrop(progressBar, backdropInfo, {0, 0, 0, 1})
 
 			progressBar.fg = progressBar:CreateTexture()
 			progressBar.fg:SetPoint("LEFT", progressBar, "LEFT", 5, 0)
@@ -373,23 +389,77 @@ do
 		return progressBar
 	end
 
-	local ScannerUpdateFrame = _G.CreateFrame("Frame", nil, copyFrame, BackdropTemplateMixin and "BackdropTemplate")
+	-- ============================================================================
+	-- COROUTINE-BASED SCANNING
+	-- Uses coroutines to yield per-recipe, preventing UI freeze during
+	-- long scans. OnUpdate driver resumes the coroutine each frame.
+	-- ============================================================================
 
+	local ScannerUpdateFrame = _G.CreateFrame("Frame", nil, copyFrame)
+
+	--- Safely resume a coroutine, catching any errors
+	--- @param co thread The coroutine to resume
+	--- @param ... any Arguments to pass to the coroutine
+	--- @return boolean success True if resume succeeded
+	--- @return string|nil error Error message if failed
+	local function ResumeCoroutine(co, ...)
+		local ok, err = pcall(coroutine.resume, co, ...)
+		if not ok then
+			return false, err
+		end
+		return true
+	end
+
+	--- Get a human-readable status for a failed coroutine
+	--- @param co thread The coroutine to check
+	--- @return string Status description
+	local function GetCoroutineStatus(co)
+		if coroutine.status(co) == "dead" then
+			return "coroutine died unexpectedly"
+		end
+		return "unknown error"
+	end
+
+	--- Clean up scanner state after completion or error
 	function ScannerUpdateFrame:Cleanup()
 		self:SetScript("OnUpdate", nil)
 		self.isRunning = nil
 		self.profession = nil
-		self.scanner = nil
+		if self.scanner then
+			self.scanner = nil
+		end
+		-- NOTE: Hide UI elements to reset visual state
+		if progressBar then
+			progressBar:Hide()
+		end
+		if ARLDatamineTT then
+			ARLDatamineTT:Hide()
+		end
 	end
 
-	function ScannerUpdateFrame:OnUpdate(elapsed)
-		local isFinished = coroutine.resume(self.scanner)
+	--- Handle coroutine errors gracefully
+	--- @param err string The error message
+	function ScannerUpdateFrame:OnError(err)
+		addon:Debug("Scanner coroutine error: %s", tostring(err))
+		self:Cleanup()
+	end
 
-		if isFinished then
-			if coroutine.status(self.scanner) == "dead" then
-				self:Cleanup()
-			end
-		else
+	--- OnUpdate driver that resumes the coroutine each frame
+	--- Each resume processes one recipe, then yields back
+	function ScannerUpdateFrame:OnUpdate(elapsed)
+		if not self.scanner then
+			self:Cleanup()
+			return
+		end
+
+		local ok, err = ResumeCoroutine(self.scanner)
+
+		if not ok then
+			self:OnError(err or GetCoroutineStatus(self.scanner))
+			return
+		end
+
+		if coroutine.status(self.scanner) == "dead" then
 			self:Cleanup()
 		end
 	end
@@ -414,10 +484,21 @@ do
 	-- Scans the items in the specified profession
 	-- ----------------------------------------------------------------------------
 	local function CoroutineProfessionScan(localizedProfessionName)
+		if not localizedProfessionName then
+			addon:Debug("CoroutineProfessionScan: No profession name provided")
+			return
+		end
+
+		local profession = private.Professions[localizedProfessionName]
+		if not profession or not profession.Recipes then
+			addon:Debug("CoroutineProfessionScan: Profession '%s' not found or has no recipes", tostring(localizedProfessionName))
+			return
+		end
+
 		ScannerUpdateFrame.profession = localizedProfessionName
 		table.wipe(intermediary_recipe_list)
 
-		for recipeSpellID, recipe in pairs(private.Professions[localizedProfessionName].Recipes) do
+		for recipeSpellID, recipe in pairs(profession.Recipes) do
 			intermediary_recipe_list[recipeSpellID] = recipe
 		end
 
@@ -427,6 +508,11 @@ do
 		SortRecipesByID()
 
 		local num_recipes = #addon.sorted_recipes
+		if num_recipes == 0 then
+			addon:Debug("CoroutineProfessionScan: No recipes to scan")
+			return
+		end
+
 		local progress_bar = ProgressBar()
 		progress_bar:Show()
 
@@ -446,14 +532,28 @@ do
 
 	local function ProfessionScan(profession_name)
 		if ScannerUpdateFrame.isRunning then
+			addon:Debug("ProfessionScan: Scanner already running")
 			return
 		end
-		ScannerUpdateFrame.scanner = coroutine.create(CoroutineProfessionScan)
+
+		if not profession_name then
+			addon:Debug("ProfessionScan: No profession name provided")
+			return
+		end
+
+		local ok, co = pcall(coroutine.create, CoroutineProfessionScan)
+		if not ok then
+			addon:Debug("ProfessionScan: Failed to create coroutine - %s", tostring(co))
+			return
+		end
+
+		ScannerUpdateFrame.scanner = co
 		ScannerUpdateFrame:SetScript("OnUpdate", ScannerUpdateFrame.OnUpdate)
 		ScannerUpdateFrame.isRunning = true
 
-		local status = coroutine.resume(ScannerUpdateFrame.scanner, profession_name)
-		if not status then
+		local success, err = ResumeCoroutine(ScannerUpdateFrame.scanner, profession_name)
+		if not success then
+			addon:Debug("ProfessionScan: Failed to start coroutine - %s", tostring(err))
 			ScannerUpdateFrame:Cleanup()
 		end
 	end
@@ -575,19 +675,19 @@ do
 			end
 		end
 
-		local vendor = vendorAcquireType:GetEntity(vendorID)
+	local vendor = vendorAcquireType:GetEntity(vendorID)
 
-		local mapID = _G.C_Map.GetBestMapForUnit("player")
---		_G.WorldMapFrame:SetMapID(mapID) -- Make sure were are looking at the right zone
-
-		local vendorZone = _G.C_Map.GetMapInfo(mapID).name
+		local mapID, vendorcoords_x, vendorcoords_y = HBD:GetPlayerZone()
+		local vendorZone = mapID and HBD:GetLocalizedMap(mapID) or UNKNOWN
 
 		if mapID == 582 or mapID == 590 then
 			return
-		else
-			local vendorcoords_x, vendorcoords_y = _G.C_Map.GetPlayerMapPosition(mapID, "player"):GetXY()
+		elseif vendorcoords_x and vendorcoords_y then
 			vendorX = ("%.2f"):format(vendorcoords_x * 100)
 			vendorY = ("%.2f"):format(vendorcoords_y * 100)
+		else
+			vendorX = "0"
+			vendorY = "0"
 		end
 
 

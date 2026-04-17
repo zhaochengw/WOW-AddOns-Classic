@@ -5,7 +5,8 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,duos"
 end
 
-mod:SetRevision("20250609055706")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(46963)
 mod:SetEncounterID(1073)
 mod:SetZone(33, 2849)--SFK, Duos

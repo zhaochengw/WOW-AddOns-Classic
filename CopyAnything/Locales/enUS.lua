@@ -17,6 +17,7 @@ L["searchTypeDescExtended"] = [=[Font Strings (default) - Search for individual 
 Parent Frames - Search for top level frames under the cursor, and copy all text from their children.
 Mouse Focus - Copy text from the mouse focus frame. Only works on frames that are registered for mouse events.]=]
 L["show"] = "Show"
+L["tooltip"] = "Mouse Tooltip"
 L["tooManyFontStrings"] = "More than %d FontStrings were found. The copy was cancelled to prevent the game from freezing for an excessive amount of time."
 
 

@@ -1,31 +1,41 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Profession Object
+    
+    Provides profession tracking and identification:
+    - Profession spell IDs for all crafting professions
+    - Localized name mappings for client language support
+    - Expansion-specific spell tracking (Outland, Northrend, etc.)
+    - Module registration for profession databases
+    
+    Copyright (c) 2009 - 2012 Ackis <John Pasula>
+    All rights reserved by the original author Ackis.
 ]]
 
-
-
+-- ============================================================================
+-- Upvalued Lua API
+-- ============================================================================
 local pairs = _G.pairs
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 
--- ----------------------------------------------------------------------------
--- Profession data.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Profession Spell IDs
+-- Base spell IDs for each profession (used for identification)
+-- ============================================================================
 local PROFESSION_SPELL_IDS = {
 	ALCHEMY = 2259,
-	ARCHAEOLOGY = 78670, -- Only used for AcquireType.TradeSkill
+	ARCHAEOLOGY = 78670,
 	BLACKSMITHING = 2018,
 	COOKING = 2550,
 	ENCHANTING = 7411,
 	ENGINEERING = 4036,
-	FISHING = 7731, -- Only used for AcquireType.TradeSkill
+	FISHING = 7731,
 	INSCRIPTION = 45357,
 	JEWELCRAFTING = 25229,
 	LEATHERWORKING = 2108,
@@ -36,6 +46,10 @@ local PROFESSION_SPELL_IDS = {
 private.PROFESSION_SPELL_IDS = PROFESSION_SPELL_IDS
 private.constants.PROFESSION_SPELL_IDS = PROFESSION_SPELL_IDS
 
+-- ============================================================================
+-- Localized Name Tables
+-- Built from spell info for client language support
+-- ============================================================================
 local LOCALIZED_PROFESSION_NAMES = {}
 private.LOCALIZED_PROFESSION_NAMES = LOCALIZED_PROFESSION_NAMES
 
@@ -54,6 +68,10 @@ for label, spellID in pairs(PROFESSION_SPELL_IDS) do
 	end
 end
 
+-- ============================================================================
+-- Expansion Spell Mappings
+-- Maps expansion-specific spell names to profession names
+-- ============================================================================
 local LOCALIZED_SPELL_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING = {}
 
 local function MapSpellToProfession(spellID, label)
@@ -64,17 +82,17 @@ local function MapSpellToProfession(spellID, label)
 	end
 end
 
--- Alchemy
-MapSpellToProfession(264213, 'ALCHEMY') -- Outland Alchemy
-MapSpellToProfession(264220, 'ALCHEMY') -- Northrend Alchemy
-MapSpellToProfession(264243, 'ALCHEMY') -- Cataclysm Alchemy
-MapSpellToProfession(264245, 'ALCHEMY') -- Pandaria Alchemy
-MapSpellToProfession(264247, 'ALCHEMY') -- Draenor Alchemy
-MapSpellToProfession(264250, 'ALCHEMY') -- Legion Alchemy
-MapSpellToProfession(264255, 'ALCHEMY') -- Kul Tiran Alchemy
-MapSpellToProfession(265787, 'ALCHEMY') -- Zandalari Alchemy
+-- Alchemy expansions
+MapSpellToProfession(264213, 'ALCHEMY') -- Outland
+MapSpellToProfession(264220, 'ALCHEMY') -- Northrend
+MapSpellToProfession(264243, 'ALCHEMY') -- Cataclysm
+MapSpellToProfession(264245, 'ALCHEMY') -- Pandaria
+MapSpellToProfession(264247, 'ALCHEMY') -- Draenor
+MapSpellToProfession(264250, 'ALCHEMY') -- Legion
+MapSpellToProfession(264255, 'ALCHEMY') -- Kul Tiran
+MapSpellToProfession(265787, 'ALCHEMY') -- Zandalari
 
--- Blacksmithing
+-- Blacksmithing expansions
 MapSpellToProfession(264436, 'BLACKSMITHING') -- Outland
 MapSpellToProfession(264438, 'BLACKSMITHING') -- Northrend
 MapSpellToProfession(264440, 'BLACKSMITHING') -- Cataclysm
@@ -84,14 +102,13 @@ MapSpellToProfession(264446, 'BLACKSMITHING') -- Legion
 MapSpellToProfession(264448, 'BLACKSMITHING') -- Kul Tiran
 MapSpellToProfession(265803, 'BLACKSMITHING') -- Zandalari
 
--- Cooking (Way of ...)
+-- Cooking (Way of ... + expansions)
 MapSpellToProfession(124694, 'COOKING') -- Way of the Grill
 MapSpellToProfession(125584, 'COOKING') -- Way of the Wok
 MapSpellToProfession(125586, 'COOKING') -- Way of the Pot
 MapSpellToProfession(125587, 'COOKING') -- Way of the Steamer
 MapSpellToProfession(125588, 'COOKING') -- Way of the Oven
 MapSpellToProfession(125589, 'COOKING') -- Way of the Brew
--- Cooking (expansion tracks)
 MapSpellToProfession(264634, 'COOKING') -- Outland
 MapSpellToProfession(264636, 'COOKING') -- Northrend
 MapSpellToProfession(264638, 'COOKING') -- Cataclysm
@@ -101,7 +118,7 @@ MapSpellToProfession(264644, 'COOKING') -- Legion
 MapSpellToProfession(264647, 'COOKING') -- Kul Tiran
 MapSpellToProfession(265817, 'COOKING') -- Zandalari
 
--- Enchanting
+-- Enchanting expansions
 MapSpellToProfession(264460, 'ENCHANTING') -- Outland
 MapSpellToProfession(264462, 'ENCHANTING') -- Northrend
 MapSpellToProfession(264464, 'ENCHANTING') -- Cataclysm
@@ -111,7 +128,7 @@ MapSpellToProfession(264471, 'ENCHANTING') -- Legion
 MapSpellToProfession(264473, 'ENCHANTING') -- Kul Tiran
 MapSpellToProfession(265805, 'ENCHANTING') -- Zandalari
 
--- Engineering
+-- Engineering expansions
 MapSpellToProfession(264479, 'ENGINEERING') -- Outland
 MapSpellToProfession(264481, 'ENGINEERING') -- Northrend
 MapSpellToProfession(264483, 'ENGINEERING') -- Cataclysm
@@ -121,7 +138,7 @@ MapSpellToProfession(264490, 'ENGINEERING') -- Legion
 MapSpellToProfession(264492, 'ENGINEERING') -- Kul Tiran
 MapSpellToProfession(265807, 'ENGINEERING') -- Zandalari
 
--- Inscription
+-- Inscription expansions
 MapSpellToProfession(264496, 'INSCRIPTION') -- Outland
 MapSpellToProfession(264498, 'INSCRIPTION') -- Northrend
 MapSpellToProfession(264500, 'INSCRIPTION') -- Cataclysm
@@ -131,7 +148,7 @@ MapSpellToProfession(264506, 'INSCRIPTION') -- Legion
 MapSpellToProfession(264508, 'INSCRIPTION') -- Kul Tiran
 MapSpellToProfession(265809, 'INSCRIPTION') -- Zandalari
 
--- Jewelcrafting
+-- Jewelcrafting expansions
 MapSpellToProfession(264534, 'JEWELCRAFTING') -- Outland
 MapSpellToProfession(264537, 'JEWELCRAFTING') -- Northrend
 MapSpellToProfession(264539, 'JEWELCRAFTING') -- Cataclysm
@@ -141,7 +158,7 @@ MapSpellToProfession(264546, 'JEWELCRAFTING') -- Legion
 MapSpellToProfession(264548, 'JEWELCRAFTING') -- Kul Tiran
 MapSpellToProfession(265811, 'JEWELCRAFTING') -- Zandalari
 
--- Leatherworking
+-- Leatherworking expansions
 MapSpellToProfession(264579, 'LEATHERWORKING') -- Outland
 MapSpellToProfession(264581, 'LEATHERWORKING') -- Northrend
 MapSpellToProfession(264583, 'LEATHERWORKING') -- Cataclysm
@@ -151,7 +168,7 @@ MapSpellToProfession(264590, 'LEATHERWORKING') -- Legion
 MapSpellToProfession(264592, 'LEATHERWORKING') -- Kul Tiran
 MapSpellToProfession(265813, 'LEATHERWORKING') -- Zandalari
 
--- Tailoring
+-- Tailoring expansions
 MapSpellToProfession(264618, 'TAILORING') -- Outland
 MapSpellToProfession(264620, 'TAILORING') -- Northrend
 MapSpellToProfession(264622, 'TAILORING') -- Cataclysm
@@ -163,34 +180,43 @@ MapSpellToProfession(265815, 'TAILORING') -- Zandalari
 
 private.LOCALIZED_SPELL_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING = LOCALIZED_SPELL_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING
 
+-- Add base profession names to mapping
 for name, localized_name in pairs(LOCALIZED_PROFESSION_NAMES) do
 	LOCALIZED_SPELL_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING[localized_name] = localized_name
 end
 
+-- ============================================================================
+-- Ordered Profession List
+-- Used for UI display order
+-- ============================================================================
 local ORDERED_LOCALIZED_PROFESSION_NAMES = {
-	LOCALIZED_PROFESSION_NAMES.ALCHEMY, -- 1
-	LOCALIZED_PROFESSION_NAMES.BLACKSMITHING, -- 2
-	LOCALIZED_PROFESSION_NAMES.COOKING, -- 3
-	LOCALIZED_PROFESSION_NAMES.ENCHANTING, -- 4
-	LOCALIZED_PROFESSION_NAMES.ENGINEERING, -- 5
-	LOCALIZED_PROFESSION_NAMES.INSCRIPTION, -- 7
-	LOCALIZED_PROFESSION_NAMES.JEWELCRAFTING, -- 8
-	LOCALIZED_PROFESSION_NAMES.LEATHERWORKING, -- 9
-	LOCALIZED_PROFESSION_NAMES.MINING, -- 10
-	LOCALIZED_PROFESSION_NAMES.TAILORING, -- 11
+	LOCALIZED_PROFESSION_NAMES.ALCHEMY,
+	LOCALIZED_PROFESSION_NAMES.BLACKSMITHING,
+	LOCALIZED_PROFESSION_NAMES.COOKING,
+	LOCALIZED_PROFESSION_NAMES.ENCHANTING,
+	LOCALIZED_PROFESSION_NAMES.ENGINEERING,
+	LOCALIZED_PROFESSION_NAMES.INSCRIPTION,
+	LOCALIZED_PROFESSION_NAMES.JEWELCRAFTING,
+	LOCALIZED_PROFESSION_NAMES.LEATHERWORKING,
+	LOCALIZED_PROFESSION_NAMES.MINING,
+	LOCALIZED_PROFESSION_NAMES.TAILORING,
 }
 
 private.ORDERED_LOCALIZED_PROFESSION_NAMES = ORDERED_LOCALIZED_PROFESSION_NAMES
 
--- Required for loading profession modules.
--- Build mapping only for professions that exist on this client (avoid nil keys on Classic Era)
+-- ============================================================================
+-- Module Name Mappings
+-- Links localized names to module names for database loading
+-- ============================================================================
 local LOCALIZED_PROFESSION_NAME_TO_MODULE_NAME_MAPPING = {}
+
 local function AddProfMap(label, moduleName)
 	local name = LOCALIZED_PROFESSION_NAMES[label]
 	if name then
 		LOCALIZED_PROFESSION_NAME_TO_MODULE_NAME_MAPPING[name] = moduleName
 	end
 end
+
 AddProfMap('ALCHEMY', 'Alchemy')
 AddProfMap('BLACKSMITHING', 'Blacksmithing')
 AddProfMap('COOKING', 'Cooking')
@@ -222,23 +248,28 @@ end
 
 private.MODULE_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING = MODULE_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING
 
+-- ============================================================================
+-- Waypoint Icons
+-- Icons for minimap/worldmap pins per profession
+-- ============================================================================
 local ICON_TEXTURE_FORMAT = [[Interface\ICONS\%s]]
 local WAYPOINT_ICON_TEXTURES = {
-	[[Trade_Alchemy]], -- 01 (Alchemy)
-	[[Trade_BlackSmithing]], -- 02 (Blacksmithing)
-	[[INV_Misc_Food_15]], -- 03 (Cooking)
-	[[Trade_Engraving]], -- 04 (Enchanting)
-	[[Trade_Engineering]], -- 05 (Engineering)
-	[[INV_Inscription_Tradeskill01]], -- 07 (Inscription)
-	[[INV_Misc_Gem_01]], -- 08 (Jewelcrafting)
-	[[Trade_LeatherWorking]], -- 09 (Leatherworking)
-	[[Spell_Fire_FlameBlades]], -- 10 (Smelting)
-	[[Trade_Tailoring]], -- 11 (Tailoring)
+	[[Trade_Alchemy]],
+	[[Trade_BlackSmithing]],
+	[[INV_Misc_Food_15]],
+	[[Trade_Engraving]],
+	[[Trade_Engineering]],
+	[[INV_Inscription_Tradeskill01]],
+	[[INV_Misc_Gem_01]],
+	[[Trade_LeatherWorking]],
+	[[Spell_Fire_FlameBlades]],
+	[[Trade_Tailoring]],
 }
 
--- ----------------------------------------------------------------------------
--- Objects.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Profession Object
+-- Represents a crafting profession with recipes
+-- ============================================================================
 local Profession = {}
 local ProfessionMetatable = {
 	__index = Profession,
@@ -246,9 +277,10 @@ local ProfessionMetatable = {
 
 private.Professions = {}
 
--- ----------------------------------------------------------------------------
--- Profession Methods.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Profession Methods
+-- ============================================================================
+
 function Profession:ActivationSpellName()
 	return self._activationSpellName
 end
@@ -275,41 +307,47 @@ function Profession:WaypointIconTexture()
 	return ICON_TEXTURE_FORMAT:format(icon)
 end
 
--- ----------------------------------------------------------------------------
--- Instantiation.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Profession Instantiation
+-- ============================================================================
+
+--- Create a Profession object from a module
+--- @param module table The profession module
 function addon.CreateProfessionFromModule(module)
 	local moduleName = module:GetName()
 
 	local localizedProfessionName = MODULE_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING[moduleName]
-	if localizedProfessionName then
-		local profession = _G.setmetatable({
-			_id = LOCALIZED_PROFESSION_NAME_TO_ID_MAPPING[localizedProfessionName],
-			_localizedName = localizedProfessionName,
-			_name = moduleName,
-			_module = module,
-			_recipeCount = 0,
-			_activationSpellName = module.ActivationSpellID and _G.GetSpellInfo(module.ActivationSpellID) or localizedProfessionName,
-			Recipes = module.Recipes,
-		}, ProfessionMetatable)
+	if not localizedProfessionName then
+		return
+	end
 
-		private.Professions[moduleName] = profession
-		private.Professions[localizedProfessionName] = profession
-		module.Profession = profession
+	local profession = _G.setmetatable({
+		_id = LOCALIZED_PROFESSION_NAME_TO_ID_MAPPING[localizedProfessionName],
+		_localizedName = localizedProfessionName,
+		_name = moduleName,
+		_module = module,
+		_recipeCount = 0,
+		_activationSpellName = module.ActivationSpellID and _G.GetSpellInfo(module.ActivationSpellID) or localizedProfessionName,
+		Recipes = module.Recipes,
+	}, ProfessionMetatable)
 
-		local defaults = {
-			profile = {
-				filters = {
-					item = {} -- Populated below.
-				}
+	private.Professions[moduleName] = profession
+	private.Professions[localizedProfessionName] = profession
+	module.Profession = profession
+
+	-- Register default filter settings
+	local defaults = {
+		profile = {
+			filters = {
+				item = {}
 			}
 		}
+	}
 
-		for filter_name in pairs(module.ITEM_FILTER_TYPES) do
-			defaults.profile.filters.item[filter_name:lower()] = true
-			addon.constants.ITEM_FILTER_TYPES[filter_name] = true
-		end
-
-		module.db = addon.db:RegisterNamespace(module.ModuleName, defaults)
+	for filter_name in pairs(module.ITEM_FILTER_TYPES) do
+		defaults.profile.filters.item[filter_name:lower()] = true
+		addon.constants.ITEM_FILTER_TYPES[filter_name] = true
 	end
+
+	module.db = addon.db:RegisterNamespace(module.ModuleName, defaults)
 end

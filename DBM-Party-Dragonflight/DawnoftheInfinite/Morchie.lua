@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge"--No Follower dungeon
 
-mod:SetRevision("20250307060117")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(198999)
 mod:SetEncounterID(2671)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)

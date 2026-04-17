@@ -7,8 +7,9 @@ local ADDON_NAME, private = ...
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 
 -- RareScanner other addons integration services
-local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 local RSButtonHandler = private.ImportLib("RareScannerButtonHandler")
+local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 -- Navigation cache
 local navigationCache = {}
@@ -22,26 +23,26 @@ end
 
 function RSNavigationMixin:OnNextEnter()
 	self.ShowAnim:Play();
-	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-	GameTooltip:SetText(AL["NAVIGATION_SHOW_NEXT"])
-	GameTooltip:Show()
+	RSTooltip.Tooltip:SetOwner(self, "ANCHOR_CURSOR")
+	RSTooltip.Tooltip:SetText(AL["NAVIGATION_SHOW_NEXT"])
+	RSTooltip.Tooltip:Show()
 end
 
 function RSNavigationMixin:OnNextLeave()
 	self.ShowAnim:Stop();
-	GameTooltip:Hide()
+	RSTooltip.Tooltip:Hide()
 end
 
 function RSNavigationMixin:OnPreviousEnter()
 	self.ShowAnim:Play();
-	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-	GameTooltip:SetText(AL["NAVIGATION_SHOW_PREVIOUS"])
-	GameTooltip:Show()
+	RSTooltip.Tooltip:SetOwner(self, "ANCHOR_CURSOR")
+	RSTooltip.Tooltip:SetText(AL["NAVIGATION_SHOW_PREVIOUS"])
+	RSTooltip.Tooltip:Show()
 end
 
 function RSNavigationMixin:OnPreviousLeave()
 	self.ShowAnim:Stop();
-	GameTooltip:Hide()
+	RSTooltip.Tooltip:Hide()
 end
 
 function RSNavigationMixin:EnableNextButton()
@@ -83,10 +84,10 @@ function RSNavigationMixin:AddNext(mapID, x, y, name, atlasName, objectGUID)
 		currentIndex = table.getn(navigationCache)
 
 		-- Refresh waypoint
-		RSTomtom.AddTomtomAutomaticWaypoint(mapID, x, y, name)
+		RSWaypoints.AddAutomaticWaypoint(mapID, x, y, name)
 	-- If the navigation cache only contains one item, adds waypoint
 	elseif (table.getn(navigationCache) == 1) then
-		RSTomtom.AddTomtomAutomaticWaypoint(mapID, x, y, name)
+		RSWaypoints.AddAutomaticWaypoint(mapID, x, y, name)
 	end
 end
 
@@ -114,7 +115,7 @@ function RSNavigationMixin:Navigate()
 	RSButtonHandler.AddAlert(self:GetParent(), vignetteInfo, true)
 
 	-- Adds waypoint
-	RSTomtom.AddTomtomAutomaticWaypoint(vignetteInfo.mapID, vignetteInfo.x, vignetteInfo.y, vignetteInfo.name)
+	RSWaypoints.AddAutomaticWaypoint(vignetteInfo.mapID, vignetteInfo.x, vignetteInfo.y, vignetteInfo.name)
 end
 
 function RSNavigationMixin:Reset()

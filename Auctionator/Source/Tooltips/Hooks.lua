@@ -48,7 +48,9 @@ TooltipHandlers["SetInventoryItem"] = function(tip, unit, slot)
   local itemLink = GetInventoryItemLink(unit, slot)
   local itemCount = GetInventoryItemCount(unit, slot)
 
-  Auctionator.Tooltip.ShowTipWithPricing(tip, itemLink, itemCount ~= 0 and itemCount or 1)
+  if itemLink then
+    Auctionator.Tooltip.ShowTipWithPricing(tip, itemLink, itemCount ~= 0 and itemCount or 1)
+  end
 end
 
 -- This is called when mousing over an item in your guild bank
@@ -283,7 +285,12 @@ if GameTooltip.SetItemKey then
       if C_Item.GetItemInfoInstant(itemLink) ~= itemID then
         itemLink = select(2, C_Item.GetItemInfo(itemID))
       end
-      Auctionator.Tooltip.ShowTipWithPricing(tip, itemLink, 1)
+      Auctionator.Tooltip.ShowTipWithPricingDBKey(
+        tip,
+        Auctionator.Utilities.DBKeyFromBrowseResult({itemKey = {itemID = itemID, itemLevel = itemLevel, itemSuffix = itemSuffix, battlePetSpeciesID = 0}}),
+        itemLink,
+        1
+      )
     end
   end
 end

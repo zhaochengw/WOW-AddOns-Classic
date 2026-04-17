@@ -13,6 +13,7 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 -- RareScanner services
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSProvider = private.ImportLib("RareScannerProvider")
+local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 RSSearchMixin = { };
 
@@ -57,14 +58,14 @@ function RSSearchBoxMixin:OnEnterPressed()
 end
 
 function RSSearchBoxMixin:OnMouseEnter()
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip_SetTitle(GameTooltip, AL["MAP_SEARCHER_TOOLTIP_TITLE"]);
-	GameTooltip_AddNormalLine(GameTooltip, AL["MAP_SEARCHER_TOOLTIP_DESC"]);
-	GameTooltip:Show();
+	RSTooltip.Tooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip_SetTitle(RSTooltip.Tooltip, AL["MAP_SEARCHER_TOOLTIP_TITLE"]);
+	GameTooltip_AddNormalLine(RSTooltip.Tooltip, AL["MAP_SEARCHER_TOOLTIP_DESC"]);
+	RSTooltip.Tooltip:Show();
 end
 
 function RSSearchBoxMixin:OnMouseLeave()
-	GameTooltip:Hide();
+	RSTooltip.Tooltip:Hide();
 end
 
 function RSSearchBoxMixin:OnMouseDown()

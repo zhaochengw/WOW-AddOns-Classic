@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(682, "DBM-Raids-MoP", 5, 317)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240603220759")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(60143)
 mod:SetEncounterID(1434)
 mod:SetUsedIcons(1, 2, 3, 4)

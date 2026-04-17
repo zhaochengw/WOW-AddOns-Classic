@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("JulakDoom", "DBM-Cataclysm")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240428104752")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(50089)
 mod:SetModelID(24301)
 mod:SetUsedIcons(8, 7)

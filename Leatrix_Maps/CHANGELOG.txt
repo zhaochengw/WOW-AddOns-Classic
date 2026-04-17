@@ -1,4 +1,10 @@
-﻿5.1.17 - 31st December 2025
+﻿5.1.31 - 8th April 2026
+- Fixed a situational issue which may have caused the map to be positioned off-screen.
+
+5.1.26 - 4th March 2026
+- Updated LibDBIcon library.
+
+5.1.17 - 31st December 2025
 - Happy New Year!
 
 5.1.16 - 24th December 2025

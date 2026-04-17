@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ local UnitIsPlayer      = _G.UnitIsPlayer;
 local GetRaidRosterInfo = _G.GetRaidRosterInfo;
 local IsShiftKeyDown    = _G.IsShiftKeyDown;
 local IsControlKeyDown  = _G.IsControlKeyDown;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- Dcr_ListFrameTemplate specific internal functions {{{
 function D.ListFrameTemplate_OnLoad(frame)
@@ -320,7 +321,7 @@ local function AddElementToList(element, checkIfExist, list, listGUIDtoName, lis
                 GUIDorNum = element;
             else
                 GUIDorNum = isNotPlayerCase and UnitGUID(element) or element;
-                if not GUIDorNum then
+                if not GUIDorNum or not canaccessvalue(GUIDorNum) then
                     return false;
                 end
             end
@@ -530,4 +531,4 @@ function D:PopulateButtonPress(frame) --{{{
 
 end --}}}
 
-T._LoadedFiles["Dcr_lists.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_lists.lua"] = "2.8.0-RC3";

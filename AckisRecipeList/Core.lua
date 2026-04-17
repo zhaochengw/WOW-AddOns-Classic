@@ -1,50 +1,86 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Core
+    Main addon initialization, event handling, and scanning logic
+
+    Provides:
+    - AceAddon lifecycle management (OnInitialize, OnEnable, OnDisable)
+    - Trade skill scanning and recipe detection
+    - Event registration with conditional UI events
+    - GameTooltip hooks for NPC recipe information
+    - Database and saved variable handling
 ]]
 
--- ----------------------------------------------------------------------------
--- Localized Lua globals.
--- ----------------------------------------------------------------------------
--- Functions
+-- ============================================================================
+-- Upvalued Lua API
+-- ============================================================================
 local pairs, ipairs = _G.pairs, _G.ipairs
 local select = _G.select
 local tonumber, tostring = _G.tonumber, _G.tostring
 local type = _G.type
 
--- Libraries
 local bit = _G.bit
 local string = _G.string
 local table = _G.table
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
-
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
 
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):NewAddon(private.addon_name, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
 addon.constants = private.constants
 addon.constants.addon_name = private.addon_name
-addon.Name = FOLDER_NAME -- For cases when ARL needs to act as one of its modules.
--- Friendly display name for UI/popup titles
+addon.Name = FOLDER_NAME
 private.addon_display_name = "Ackis Recipe List Classic"
--- Ensure AceConsole's Print prefix uses the friendly display name
 addon.name = private.addon_display_name or private.addon_name
-
 
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local Dialog = LibStub("LibDialog-1.0")
+local ldb = LibStub("LibDataBroker-1.1")
+local ldbi = LibStub("LibDBIcon-1.0")
 
-local wow_version, wow_build_num, wow_date, wow_ui_version = _G.GetBuildInfo()
+local dataBroker = ldb:NewDataObject("AckisRecipeList", {
+    type = "launcher",
+    label = "Ackis Recipe List",
+    icon = [[Interface\Icons\INV_Misc_Book_11]],
+    tocname = "AckisRecipeList",
+})
+
+function dataBroker.OnClick(_, button)
+    if button == "LeftButton" then
+        if addon.Frame and addon.Frame:IsVisible() then
+            addon.Frame:Hide()
+        else
+            if private.InitializeFrame then private.InitializeFrame() end
+            if addon.EnsureProfessionOpenAndScan then
+                addon:EnsureProfessionOpenAndScan()
+            else
+                addon:Scan(false, false)
+            end
+        end
+    elseif button == "RightButton" then
+        local ACD = LibStub and LibStub("AceConfigDialog-3.0", true)
+        if ACD and ACD.Open then
+            ACD:Open(private.addon_name)
+            if ACD.SelectGroup then ACD:SelectGroup(private.addon_name, "general") end
+        end
+    end
+end
+
+function dataBroker.OnTooltipShow(tt)
+    tt:AddLine(private.addon_display_name or private.addon_name)
+    tt:AddLine("Left-click: Toggle GUI", 0.2, 1, 0.2)
+    tt:AddLine("Right-click: Options", 0.2, 1, 0.2)
+end
+
+local wow_version, wow_build_num, wow_date, wow_ui_version = private.GetBuildInfo()
 private.wow_version = wow_version
 private.wow_build_num = wow_build_num
 private.wow_ui_version = wow_ui_version
 
-
--- Ensure Blizzard dialog globals exist for LibDialog on MoP Classic.
--- Some client variants may not initialize StaticPopup_DisplayedFrames early; make it a table so length ops work.
+-- NOTE: Ensure Blizzard dialog globals exist for LibDialog
+-- Some client variants may not initialize StaticPopup_DisplayedFrames early
 if type(_G.StaticPopup_DisplayedFrames) ~= "table" then
     _G.StaticPopup_DisplayedFrames = {}
 end
@@ -97,7 +133,6 @@ end
 local SUPPORTED_MODULE_VERSION = 4
 
 -- ----------------------------------------------------------------------------
--- TradeSkill API compatibility (MoP Classic / pre-Legion)
 -- Provides a minimal C_TradeSkillUI facade using legacy APIs when needed.
 -- ----------------------------------------------------------------------------
 do
@@ -111,11 +146,12 @@ do
     -- and sometimes (professionID=nil, parentSkillLineID=nil, professionRank, _, _, _, localizedProfessionName).
     -- To satisfy both call patterns, return (nil, name, rank, nil, nil, nil, name).
     -- IMPORTANT: Always wrap/replace, even if it exists, to add Craft API support
+
     local originalGetTradeSkillLine = CT.GetTradeSkillLine
     function CT.GetTradeSkillLine()
         local debugEnabled = false -- Set to true for troubleshooting
 
-        -- PRIORITY 1: If CraftFrame is visible, use Craft API (Enchanting on Classic Era)
+        --  If CraftFrame is visible, use Craft API
         if _G.CraftFrame and _G.CraftFrame:IsVisible() and _G.GetCraftName then
             local name, rank = _G.GetCraftName()
             if debugEnabled then
@@ -192,67 +228,16 @@ do
     end
 
     if not CT.GetAllRecipeIDs then
+        local cachedRecipeIDs = {}
+
         function CT.GetAllRecipeIDs()
-            local ids = {}
-            local getNum = _G.GetNumTradeSkills
-            local getInfo = _G.GetTradeSkillInfo
-            local getLink = _G.GetTradeSkillRecipeLink
-            local getSel = _G.GetTradeSkillSelectionIndex
-            local selectSkill = _G.SelectTradeSkill
-            local getSpellLink = _G.GetSpellLink
-            local expandSubClass = _G.ExpandTradeSkillSubClass
+            table.wipe(cachedRecipeIDs)
 
-            -- Helper: expand all headers so recipe rows are selectable on Classic/Era
-            local function ExpandAllTradeSkillHeaders()
-                if not (getNum and getInfo and expandSubClass) then return end
-                local n = getNum()
-                local i = 1
-                while i <= n do
-                    local _, skillType, _, isExpanded = getInfo(i)
-                    if skillType == "header" and not isExpanded then
-                        expandSubClass(i)
-                        n = getNum()
-                    end
-                    i = i + 1
-                end
-            end
+            -- Ccheck which frame is visible to determine which API to use
+            local useCraftAPI = _G.CraftFrame and _G.CraftFrame:IsVisible() and _G.GetNumCrafts
 
-            if getNum and getInfo and getLink then
-                local n = getNum()
-                local prevSelection = getSel and getSel() or nil
-                ExpandAllTradeSkillHeaders()
-                n = getNum()
-                for i = 1, n do
-                    local _, skillType = getInfo(i)
-                    if skillType ~= "header" and skillType ~= "subheader" then
-                        local link = getLink(i)
-                        if not link and selectSkill then
-                            -- On Classic/Era, some clients only return a link for the selected row
-                            selectSkill(i)
-                            link = getLink(i)
-                        end
-                        local spellID = ParseSpellIDFromLink(link)
-                        -- Last resort: try to get the spell link from the currently selected spell
-                        if not spellID and getSel and getSel() == i and getSpellLink and _G.GetTradeSkillInfo then
-                            local skillName = select(1, getInfo(i))
-                            if skillName then
-                                local sLink = getSpellLink(skillName)
-                                spellID = ParseSpellIDFromLink(sLink)
-                            end
-                        end
-                        if spellID then
-                            ids[#ids + 1] = spellID
-                        end
-                    end
-                end
-                -- Restore previous selection if changed
-                if prevSelection and selectSkill then
-                    selectSkill(prevSelection)
-                end
-            end
-
-            -- Fallback for professions using the legacy Craft API (e.g., Enchanting on some Classic clients)
-            if #ids == 0 and _G.GetNumCrafts and _G.GetCraftInfo and _G.GetCraftRecipeLink then
+            if useCraftAPI then
+                -- Use Craft API (Enchanting on Classic/TBC)
                 local cNum = _G.GetNumCrafts()
                 local expandCraft = _G.ExpandCraftSkillLine
                 -- Expand craft headers
@@ -273,23 +258,87 @@ do
                         local link = _G.GetCraftRecipeLink(i)
                         local spellID = ParseSpellIDFromLink(link)
                         if spellID then
-                            ids[#ids + 1] = spellID
+                            cachedRecipeIDs[#cachedRecipeIDs + 1] = spellID
                         end
                     end
                 end
+            else
+                -- Use TradeSkill API
+                local getNum = _G.GetNumTradeSkills
+                local getInfo = _G.GetTradeSkillInfo
+                local getLink = _G.GetTradeSkillRecipeLink
+                local getSel = _G.GetTradeSkillSelectionIndex
+                local selectSkill = _G.SelectTradeSkill
+                local getSpellLink = _G.GetSpellLink
+                local expandSubClass = _G.ExpandTradeSkillSubClass
+
+                local function ExpandAllTradeSkillHeaders()
+                    if not (getNum and getInfo and expandSubClass) then return end
+                    local n = getNum()
+                    local i = 1
+                    while i <= n do
+                        local _, skillType, _, isExpanded = getInfo(i)
+                        if skillType == "header" and not isExpanded then
+                            expandSubClass(i)
+                            n = getNum()
+                        end
+                        i = i + 1
+                    end
+                end
+
+                if getNum and getInfo and getLink then
+                    local n = getNum()
+                    local prevSelection = getSel and getSel() or nil
+                    ExpandAllTradeSkillHeaders()
+                    n = getNum()
+                    for i = 1, n do
+                        local _, skillType = getInfo(i)
+                        if skillType ~= "header" and skillType ~= "subheader" then
+                            local link = getLink(i)
+                            if not link and selectSkill then
+                                -- On Classic/Era, some clients only return a link for the selected row
+                                selectSkill(i)
+                                link = getLink(i)
+                            end
+                            local spellID = ParseSpellIDFromLink(link)
+                            -- Last resort: try to get the spell link from the currently selected spell
+                            if not spellID and getSel and getSel() == i and getSpellLink and _G.GetTradeSkillInfo then
+                                local skillName = select(1, getInfo(i))
+                                if skillName then
+                                    local sLink = getSpellLink(skillName)
+                                    spellID = ParseSpellIDFromLink(sLink)
+                                end
+                            end
+                            if spellID then
+                                cachedRecipeIDs[#cachedRecipeIDs + 1] = spellID
+                            end
+                        end
+                    end
+                    -- Restore previous selection if changed
+                    if prevSelection and selectSkill then
+                        selectSkill(prevSelection)
+                    end
+                end
             end
-            return ids
+            return cachedRecipeIDs
         end
     end
 
     if not CT.GetRecipeInfo then
         function CT.GetRecipeInfo(recipeID)
-            -- Legacy UI only shows known recipes, so treat returned IDs as learned
             local name = _G.GetSpellInfo and _G.GetSpellInfo(recipeID)
+            local isLearned = false
+            if name and _G.GetSpellInfo(recipeID) then
+                if _G.IsPlayerSpell and _G.IsPlayerSpell(recipeID) then
+                    isLearned = true
+                elseif _G.IsSpellKnown and _G.IsSpellKnown(recipeID, false) then
+                    isLearned = true
+                end
+            end
             return {
                 recipeID = recipeID,
                 name = name or tostring(recipeID),
-                learned = true,
+                learned = isLearned,
                 previousRecipeID = nil,
                 nextRecipeID = nil,
             }
@@ -298,14 +347,13 @@ do
 
     if not CT.GetTradeSkillTexture then
         function CT.GetTradeSkillTexture()
-            -- Return ARL's profession icon when possible
             if private and private.CurrentProfession and private.CurrentProfession.WaypointIconTexture then
                 local ok, tex = pcall(private.CurrentProfession.WaypointIconTexture, private.CurrentProfession)
                 if ok and tex then
                     return tex
                 end
             end
-            -- Fallback to a generic book icon
+            -- Fallback
             return [[Interface\Icons\INV_Misc_Book_11]]
         end
     end
@@ -399,6 +447,9 @@ Dialog:Register("ARL_MissingProfessionModuleDialog", {
 -- ----------------------------------------------------------------------------
 local AllSpecialtiesTable = {}
 local SpecialtyTable
+
+-- Cached tables for performance (avoid allocations in hot paths)
+local candidateSpellNames = {}
 
 -- Global Frame Variables
 addon.optionsFrame = {}
@@ -500,10 +551,10 @@ function addon:OnInitialize()
             scantrainers = false,
             scanvendors = false,
             autoloaddb = false,
-            maptrainer = false,
+            maptrainer = true,
             mapvendor = true,
-            mapmob = true,
-            mapquest = true,
+            mapmob = false,
+            mapquest = false,
 
             -- ----------------------------------------------------------------------------
             -- Retain SV key if present but unused
@@ -662,155 +713,153 @@ function addon:OnInitialize()
         end
     end
 
-    -- Minimap button: native implementation (no external libs)
-    if not self.minimapButton then
-        local btn = _G.CreateFrame("Button", "ARL_MinimapButton", _G.Minimap)
-        btn:SetSize(31, 31)
-        btn:SetFrameStrata("MEDIUM")
-        btn:SetFrameLevel((_G.Minimap and _G.Minimap:GetFrameLevel() or 0) + 8)
-        btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-
-        -- Border overlay (matches Blizzard tracking button style)
-        local border = btn:CreateTexture(nil, "OVERLAY")
-        border:SetTexture([[Interface\Minimap\MiniMap-TrackingBorder]])
-        border:SetSize(54, 54)
-        border:SetPoint("TOPLEFT", btn, "TOPLEFT")
-
-        -- Icon cropped to fit round mask and centered
-        local icon = btn:CreateTexture(nil, "BACKGROUND")
-        icon:SetTexture([[Interface\Icons\INV_Misc_Book_11]])
-        icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-        icon:SetSize(20, 20)
-        icon:SetPoint("CENTER", btn, "CENTER", 0, 0)
-
-        -- Hover highlight
-        local highlight = btn:CreateTexture(nil, "HIGHLIGHT")
-        highlight:SetTexture([[Interface\Minimap\UI-Minimap-ZoomButton-Highlight]])
-        highlight:SetBlendMode("ADD")
-        highlight:SetAllPoints(btn)
-
-        btn:SetPoint("TOPLEFT", _G.Minimap, "TOPLEFT", 5, -5)
-        btn:SetScript("OnClick", function(_, mouseButton)
-            if mouseButton == "LeftButton" then
-                if addon.Frame and addon.Frame:IsVisible() then
-                    addon.Frame:Hide()
-                else
-                    if private.InitializeFrame then private.InitializeFrame() end
-                    if addon.EnsureProfessionOpenAndScan then
-                        addon:EnsureProfessionOpenAndScan()
-                    else
-                        addon:Scan(false,
-                            false)
-                    end
-                end
-            elseif mouseButton == "RightButton" then
-                local ACD = LibStub and LibStub("AceConfigDialog-3.0", true)
-                if ACD and ACD.Open then
-                    ACD:Open(private.addon_name)
-                    if ACD.SelectGroup then ACD:SelectGroup(private.addon_name, "general") end
-                else
-                    OpenOptions(addon.optionsFrame)
-                end
-            end
-        end)
-        btn:SetScript("OnEnter", function(self)
-            local tt = _G.GameTooltip
-            _G.GameTooltip_SetDefaultAnchor(tt, self)
-            tt:SetText(private.addon_display_name or private.addon_name)
-            tt:AddLine("Left-click: Toggle GUI")
-            tt:AddLine("Right-click: Options")
-            tt:Show()
-        end)
-        btn:SetScript("OnLeave", _G.GameTooltip_Hide)
-
-        self.minimapButton = btn
-    end
-    local hide = self.db.profile.minimapIcon and self.db.profile.minimapIcon.hide
-    if hide then
-        self.minimapButton:Hide()
-    else
-        self.minimapButton:Show()
-    end
+    -- LibDBIcon minimap button setup
+    ldbi:Register("AckisRecipeList", dataBroker, self.db.profile.minimapIcon)
 
     private.db = self.db
 
-    local version = _G.C_AddOns.GetAddOnMetadata("AckisRecipeList", "Version")
+    local version = private.GetAddOnMetadata("AckisRecipeList", "Version")
     self.version = version
     self:SetupOptions()
 
     -- ----------------------------------------------------------------------------
-    -- Hook GameTooltip so we can show information on mobs that drop/sell/train
+    -- Hook GameTooltip to show recipe information on mobs that drop/sell/train
     -- ----------------------------------------------------------------------------
-    -- TODO: Rewrite this.
-    _G.GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+    local npcRecipeCache = {}
+    local lastCacheTime = 0
+    local CACHE_DURATION = 30
+
+    local function GetNPCRecipeList(npcID)
+        local now = _G.GetTime()
+        local cached = npcRecipeCache[npcID]
+        if cached and (now - cached.time) < CACHE_DURATION then
+            return cached.recipes
+        end
+        return nil
+    end
+
+    local function CacheNPCRecipes(npcID, unit)
+        if not unit or not unit.item_list then
+            return nil
+        end
+        local recipes = {}
+        local count = 0
+        for spell_id in pairs(unit.item_list) do
+            local recipe = private.recipe_list[spell_id]
+            if recipe then
+                count = count + 1
+                recipes[count] = recipe
+            end
+        end
+        npcRecipeCache[npcID] = {
+            recipes = recipes,
+            time = _G.GetTime()
+        }
+        return recipes
+    end
+
+    local function AddRecipeLine(tooltip, recipe)
+        local qualityID = recipe:QualityID()
+        local hex = "ffffffff"
+        if _G.GetItemQualityColor then
+            local ok, r, g, b, h = pcall(_G.GetItemQualityColor, qualityID)
+            if ok and h then
+                hex = h
+            end
+        end
+
+        local professionName = recipe.Profession and recipe.Profession:LocalizedName() or UNKNOWN
+        local recipeName = recipe:LocalizedName() or UNKNOWN
+        local skillLevel = recipe.skill_level or 0
+
+        tooltip:AddLine(("%s: |c%s%s|r (%d)"):format(professionName, hex, recipeName, skillLevel))
+    end
+
+    _G.GameTooltip:HookScript("OnTooltipSetUnit", function(tooltip)
         if not addon.db.profile.recipes_in_tooltips then
             return
         end
-        local _, tooltip_unit = self:GetUnit()
 
-        if not tooltip_unit or not _G.UnitGUID(tooltip_unit) then
+        local _, tooltipUnit = tooltip:GetUnit()
+        if not tooltipUnit then
             return
         end
-        local id_num = private.MobGUIDToIDNum(_G.UnitGUID(tooltip_unit))
-        local unit = private.AcquireTypes.MobDrop:GetEntity(id_num) or private.AcquireTypes.Vendor:GetEntity(id_num) or
-            private.AcquireTypes.Trainer:GetEntity(id_num) or private.AcquireTypes.Mixed:GetEntity(id_num)
 
-        if not unit or not unit.item_list then
+        local guid = _G.UnitGUID(tooltipUnit)
+        if not guid then
             return
         end
-        local player = private.Player
-        local count = 0
 
-        for spell_id in pairs(unit.item_list) do
-            local recipe = private.recipe_list[spell_id]
+        local npcID = private.MobGUIDToIDNum(guid)
+        if not npcID then
+            return
+        end
 
-            if player.scanned_professions[recipe.Profession:LocalizedName()] then
-                local skill_level = player.professions[recipe.Profession:LocalizedName()]
-                local has_level = skill_level and
-                    (type(skill_level) == "boolean" and true or skill_level >= recipe.skill_level)
+        local recipes = GetNPCRecipeList(npcID)
+        if not recipes then
+            local unit = private.AcquireTypes.MobDrop:GetEntity(npcID)
+                or private.AcquireTypes.Vendor:GetEntity(npcID)
+                or private.AcquireTypes.Trainer:GetEntity(npcID)
+                or private.AcquireTypes.Mixed:GetEntity(npcID)
 
-                if (_G.IsShiftKeyDown() or (not recipe:HasState("KNOWN") and has_level)) and player:HasRecipeFaction(recipe) then
-                    local _, _, _, hex = _G.GetItemQualityColor(recipe:QualityID())
-
-                    self:AddLine(("%s: |c%s%s|r (%d)"):format(recipe.Profession:LocalizedName(), hex,
-                        recipe:LocalizedName(), recipe.skill_level))
-                    count = count + 1
-                end
+            if not unit then
+                npcRecipeCache[npcID] = { recipes = {}, time = _G.GetTime() }
+                return
             end
 
-            if count >= addon.db.profile.max_recipes_in_tooltips then
-                break
+            recipes = CacheNPCRecipes(npcID, unit)
+            if not recipes or #recipes == 0 then
+                return
+            end
+        end
+
+        if #recipes == 0 then
+            return
+        end
+
+        local player = private.Player
+        local maxRecipes = addon.db.profile.max_recipes_in_tooltips or 10
+        local showAll = _G.IsShiftKeyDown()
+        local addedCount = 0
+
+        for i = 1, #recipes do
+            local recipe = recipes[i]
+            local professionName = recipe.Profession and recipe.Profession:LocalizedName()
+
+            if professionName and player.scanned_professions[professionName] then
+                local skillLevel = player.professions[professionName]
+                local hasLevel = skillLevel and (type(skillLevel) == "boolean" or skillLevel >= (recipe.skill_level or 0))
+
+                local isKnown = recipe.HasState and recipe:HasState("KNOWN")
+                local hasFaction = player.HasRecipeFaction and player:HasRecipeFaction(recipe)
+
+                if (showAll or (not isKnown and hasLevel)) and hasFaction then
+                    AddRecipeLine(tooltip, recipe)
+                    addedCount = addedCount + 1
+
+                    if addedCount >= maxRecipes then
+                        break
+                    end
+                end
             end
         end
     end)
 end
 
 function addon:UpdateMinimapIcon()
-    local hide = self.db and self.db.profile and self.db.profile.minimapIcon and self.db.profile.minimapIcon.hide
-    if self.minimapButton then
-        if hide then self.minimapButton:Hide() else self.minimapButton:Show() end
-    end
+    ldbi:Refresh("AckisRecipeList", self.db and self.db.profile and self.db.profile.minimapIcon)
 end
 
 -- Function run when the addon is enabled.  Registers events and pre-loads certain variables.
 function addon:OnEnable()
     self.AcquireTypes = private.AcquireTypes
 
+    -- Base events - always needed
     self:RegisterEvent("TRADE_SKILL_SHOW")
     self:RegisterEvent("TRADE_SKILL_CLOSE")
-    self:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
-
-    -- Craft API events (used by Enchanting on Classic Era/Anniversary)
     self:RegisterEvent("CRAFT_SHOW")
     self:RegisterEvent("CRAFT_CLOSE")
     self:RegisterEvent("CRAFT_UPDATE")
-
-    -- Also listen for learn/update events so newly learned recipes reflect in the UI without manual scans
-    -- Availability varies by client; AceEvent safely ignores unknown events
-    -- self:RegisterEvent("LEARNED_SPELL_IN_TAB") -- Classic/Era/Wrath DEPRECATED
-    self:RegisterEvent("NEW_RECIPE_LEARNED") -- MoP+ (where available)
-    self:RegisterEvent("TRADE_SKILL_UPDATE") -- Older update event
-    self:RegisterEvent("CHAT_MSG_SYSTEM")    -- Fallback: parse learn messages (debounced)
 
     if addon.db.profile.scantrainers then
         self:RegisterEvent("TRAINER_SHOW")
@@ -819,6 +868,7 @@ function addon:OnEnable()
     if addon.db.profile.scanvendors then
         self:RegisterEvent("MERCHANT_SHOW")
     end
+
     private.Player:Initialize()
 
     -- ----------------------------------------------------------------------------
@@ -826,8 +876,8 @@ function addon:OnEnable()
     -- ----------------------------------------------------------------------------
     do
         local EngineeringSpec = {
-            [_G.C_Spell.GetSpellInfo(20219)] = 20219, -- Gnomish
-            [_G.C_Spell.GetSpellInfo(20222)] = 20222, -- Goblin
+            [private.GetSpellName(20219)] = 20219, -- Gnomish
+            [private.GetSpellName(20222)] = 20222, -- Goblin
         }
 
         SpecialtyTable = {
@@ -837,8 +887,45 @@ function addon:OnEnable()
         for i in pairs(EngineeringSpec) do
             AllSpecialtiesTable[i] = true
         end
-    end -- do
+    end
 end
+
+-- ============================================================================
+-- CONDITIONAL UI EVENTS
+-- Events registered only when the main panel is visible.
+-- This reduces event dispatch overhead when the UI is hidden.
+-- Called from Panel.lua OnShow/OnHide handlers.
+-- ============================================================================
+
+local uiEventsRegistered = false
+
+--- Register UI events when the main panel is shown
+--- @return void
+function private.RegisterUIEvents()
+    if uiEventsRegistered then return end
+    uiEventsRegistered = true
+
+    addon:RegisterEvent("TRADE_SKILL_LIST_UPDATE")
+    addon:RegisterEvent("NEW_RECIPE_LEARNED")
+    addon:RegisterEvent("TRADE_SKILL_UPDATE")
+    addon:RegisterEvent("CHAT_MSG_SYSTEM")
+end
+
+--- Unregister UI events when the main panel is hidden
+--- @return void
+function private.UnregisterUIEvents()
+    if not uiEventsRegistered then return end
+    uiEventsRegistered = false
+
+    addon:UnregisterEvent("TRADE_SKILL_LIST_UPDATE")
+    addon:UnregisterEvent("NEW_RECIPE_LEARNED")
+    addon:UnregisterEvent("TRADE_SKILL_UPDATE")
+    addon:UnregisterEvent("CHAT_MSG_SYSTEM")
+end
+
+-- ============================================================================
+-- ADDON LIFECYCLE
+-- ============================================================================
 
 function addon:OnDisable()
     if addon.Frame then
@@ -846,9 +933,9 @@ function addon:OnDisable()
     end
 end
 
--- ----------------------------------------------------------------------------
--- Event handling functions
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- EVENT HANDLERS
+-- ============================================================================
 function addon:TRAINER_SHOW()
     self:ScanTrainerData(true)
 end
@@ -883,77 +970,134 @@ local TRADESKILL_ADDON_INITS = {
     end,
 }
 
--- Helper: detect if the current tradeskill is First Aid (locale-agnostic)
+-- ============================================================================
+-- PROFESSION HELPERS
+-- ============================================================================
+
+--- First Aid spell ID (used for locale-agnostic detection)
+local FIRST_AID_SPELL_ID = 3273
+
+--- Cached First Aid spell name (populated on first use)
+local firstAidSpellName = nil
+
+--- Check if a profession name is First Aid
+--- First Aid has no recipes to scan, so the Scan button should be hidden.
+--- @param name string The profession name to check
+--- @return boolean True if the profession is First Aid
 local function IsFirstAidProfessionName(name)
-    if not name or name == _G.UNKNOWN then return false end
-    -- Prefer localized string if available
-    if L and L["First Aid"] and name == L["First Aid"] then return true end
-    -- Fallback: compare with spell name of First Aid base skill (spellID 3273)
-    local firstAidSpellName = _G.GetSpellInfo and _G.GetSpellInfo(3273)
-    if firstAidSpellName and name == firstAidSpellName then return true end
-    return false
+    if not name or name == _G.UNKNOWN then
+        return false
+    end
+
+    -- Check against localized string from addon locale
+    if L["First Aid"] and name == L["First Aid"] then
+        return true
+    end
+
+    -- Fallback: check against spell name (works for all locales)
+    if not firstAidSpellName then
+        firstAidSpellName = _G.GetSpellInfo and _G.GetSpellInfo(FIRST_AID_SPELL_ID)
+    end
+
+    return firstAidSpellName and name == firstAidSpellName
 end
+
+-- ============================================================================
+-- SCAN BUTTON MANAGEMENT
+-- The Scan button attaches to various TradeSkill frame variants.
+-- Hidden for First Aid (no recipes to scan).
+-- ============================================================================
 
 function addon:TRADE_SKILL_SHOW()
     local scanButton = self.scan_button
 
+    -- Get current profession
+    local _, localizedProfessionName = _G.C_TradeSkillUI.GetTradeSkillLine()
+
+    -- Hide scan button for First Aid (no recipes to discover)
+    if IsFirstAidProfessionName(localizedProfessionName) then
+        if scanButton then
+            scanButton:Hide()
+        end
+        return
+    end
+
+    -- Create scan button on first use
     if not scanButton then
-        scanButton = _G.CreateFrame("Button", nil, _G.TradeSkillFrame or _G.UIParent, "UIPanelButtonTemplate")
-        scanButton:SetHeight(20)
-        scanButton:RegisterForClicks("LeftButtonUp")
-        scanButton:SetText(L["Scan"])
-
-        scanButton:SetScript("OnClick", function(self, mouseButton, isDown)
-            local isShiftKeyDown = _G.IsShiftKeyDown()
-            local isAltKeyDown = _G.IsAltKeyDown()
-            local isControlKeyDown = _G.IsControlKeyDown()
-
-            if isAltKeyDown and not isControlKeyDown then
-                addon:ClearWaypoints()
-            elseif not isAltKeyDown and not isControlKeyDown then
-                -- Click (with or without Shift): if no profession is open, open one and scan; otherwise scan immediately.
-                local _, localizedProfessionName = _G.C_TradeSkillUI.GetTradeSkillLine()
-                if not localizedProfessionName or localizedProfessionName == _G.UNKNOWN then
-                    if private.InitializeFrame then private.InitializeFrame() end
-                    addon:EnsureProfessionOpenAndScan()
-                else
-                    addon:Scan(false, false)
-                    addon:AddWaypoint()
-                end
-            end
-        end)
-
-        scanButton:SetScript("OnEnter", function(self)
-            local tooltip = _G.GameTooltip
-
-            _G.GameTooltip_SetDefaultAnchor(tooltip, self)
-            tooltip:SetText(L["SCAN_RECIPES_DESC"])
-            tooltip:Show()
-        end)
-
-        scanButton:SetScript("OnLeave", _G.GameTooltip_Hide)
-
+        scanButton = self:CreateScanButton()
         self.scan_button = scanButton
     end
 
-    -- If the opened profession is First Aid, hide the Scan button and exit early
-    do
-        local _, localizedProfessionName = _G.C_TradeSkillUI.GetTradeSkillLine()
-        if IsFirstAidProfessionName(localizedProfessionName) then
-            scanButton:Hide()
-            return
-        end
-    end
+    -- Position the scan button based on available TradeSkill addon frames
+    self:PositionScanButton(scanButton)
 
-    -- Grab the first lucky TradeSkill AddOn that exists and hand the scan button to it.
+    -- Show button only if we have a valid profession
+    if localizedProfessionName and localizedProfessionName ~= _G.UNKNOWN then
+        scanButton:Show()
+    else
+        scanButton:Hide()
+    end
+end
+
+--- Create the Scan button with click handlers and tooltips
+--- @return Frame The created scan button
+function addon:CreateScanButton()
+    local scanButton = _G.CreateFrame("Button", nil, _G.TradeSkillFrame or _G.UIParent, "UIPanelButtonTemplate")
+    scanButton:SetHeight(20)
+    scanButton:RegisterForClicks("LeftButtonUp")
+    scanButton:SetText(L["Scan"])
+
+    scanButton:SetScript("OnClick", function(self, mouseButton, isDown)
+        local isShiftKeyDown = _G.IsShiftKeyDown()
+        local isAltKeyDown = _G.IsAltKeyDown()
+        local isControlKeyDown = _G.IsControlKeyDown()
+
+        if isAltKeyDown and not isControlKeyDown then
+            -- Alt+Click: Clear all waypoints
+            addon:ClearWaypoints()
+        elseif not isAltKeyDown and not isControlKeyDown then
+            -- Click: Scan recipes (open profession if needed)
+            local _, localizedProfessionName = _G.C_TradeSkillUI.GetTradeSkillLine()
+            if not localizedProfessionName or localizedProfessionName == _G.UNKNOWN then
+                if private.InitializeFrame then private.InitializeFrame() end
+                addon:EnsureProfessionOpenAndScan()
+            else
+                addon:Scan(false, false)
+                if addon.db.profile.autoscanmap then
+                    addon:AutoScanZoneWaypoints()
+                else
+                    addon:AddWaypoint()
+                end
+            end
+        end
+    end)
+
+    scanButton:SetScript("OnEnter", function(self)
+        local tooltip = _G.GameTooltip
+        _G.GameTooltip_SetDefaultAnchor(tooltip, self)
+        tooltip:SetText(L["SCAN_RECIPES_DESC"])
+        tooltip:Show()
+    end)
+
+    scanButton:SetScript("OnLeave", _G.GameTooltip_Hide)
+
+    return scanButton
+end
+
+--- Position the scan button based on available TradeSkill frames
+--- Handles various TradeSkill addon frames (TSM, GnomeWorks, Skillet, etc.)
+--- @param scanButton Frame The scan button to position
+function addon:PositionScanButton(scanButton)
+    -- Try to attach to a known TradeSkill addon frame first
     for entity, initFunction in pairs(TRADESKILL_ADDON_INITS) do
         if _G[entity] then
             scanButton:ClearAllPoints()
             initFunction(scanButton)
-            break
+            return
         end
     end
 
+    -- Default: attach to Blizzard TradeSkillFrame
     scanButton:Enable()
 
     if _G.TradeSkillFrame and scanButton:GetParent() ~= _G.TradeSkillFrame then
@@ -973,7 +1117,6 @@ function addon:TRADE_SKILL_SHOW()
             if details and details.ExitButton then
                 scanButton:SetPoint("TOP", details.ExitButton, "BOTTOM", 0, -5)
             else
-                -- Fallback for legacy UI: anchor near bottom-right of the frame
                 scanButton:SetPoint("BOTTOMRIGHT", _G.TradeSkillFrame, "BOTTOMRIGHT", -38, 10)
             end
         elseif scanButtonLocation == "BL" then
@@ -981,19 +1124,11 @@ function addon:TRADE_SKILL_SHOW()
             if details and details.CreateAllButton then
                 scanButton:SetPoint("TOP", details.CreateAllButton, "BOTTOM", 0, -5)
             else
-                -- Fallback for legacy UI: anchor near bottom-left of the frame
                 scanButton:SetPoint("BOTTOMLEFT", _G.TradeSkillFrame, "BOTTOMLEFT", 15, 10)
             end
         end
 
         scanButton:SetWidth(scanButton:GetTextWidth() + 10)
-    end
-
-    local _, localizedProfessionName = _G.C_TradeSkillUI.GetTradeSkillLine()
-    if localizedProfessionName and localizedProfessionName ~= _G.UNKNOWN then
-        scanButton:Show()
-    else
-        scanButton:Hide()
     end
 end
 
@@ -1027,7 +1162,11 @@ function addon:CRAFT_SHOW()
                     addon:EnsureProfessionOpenAndScan()
                 else
                     addon:Scan(false, false)
-                    addon:AddWaypoint()
+                    if addon.db.profile.autoscanmap then
+                        addon:AutoScanZoneWaypoints()
+                    else
+                        addon:AddWaypoint()
+                    end
                 end
             end
         end)
@@ -1092,7 +1231,7 @@ end
 
 do
     local last_update = 0
-    local updater = _G.CreateFrame("Frame", nil, _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
+    local updater = _G.CreateFrame("Frame")
     updater:Hide()
 
     updater:SetScript("OnUpdate", function(self, elapsed)
@@ -1205,14 +1344,14 @@ do
         if not professionModule then
             local foundModule
             local moduleFolderName = FOLDER_NAME .. "_" .. (professionModuleName or "")
-            local _, _, _, _, reason = _G.C_AddOns.GetAddOnInfo(moduleFolderName)
+            local _, _, _, _, reason = private.GetAddOnInfo(moduleFolderName)
 
             if reason == "DISABLED" then
                 if not suppressDialogs then
                     Dialog:Spawn("ARL_ModuleErrorDialog", professionModuleName)
                 end
                 return false
-            elseif not _G.C_AddOns.LoadAddOn(moduleFolderName) then
+            elseif not private.LoadAddOn(moduleFolderName) then
                 -- Fallback: create a minimal stub module so the UI can operate with empty data
                 local label = private.LOCALIZED_PROFESSION_NAME_TO_LABEL[localizedProfessionName]
                 local activationSpellID = label and addon.constants.PROFESSION_SPELL_IDS[label]
@@ -1244,7 +1383,7 @@ do
                 if not addon._warnedNoModules then
                     local hasAnyModule = false
                     for modName in pairs(private.MODULE_NAME_TO_LOCALIZED_PROFESSION_NAME_MAPPING or {}) do
-                        local _, _, _, _, r = _G.C_AddOns.GetAddOnInfo(FOLDER_NAME .. "_" .. modName)
+                        local _, _, _, _, r = private.GetAddOnInfo(FOLDER_NAME .. "_" .. modName)
                         if r ~= "MISSING" then
                             hasAnyModule = true
                             break
@@ -1260,6 +1399,16 @@ do
                 return true
             end
 
+            -- LoadOnDemand module was successfully loaded - retrieve and enable it
+            professionModule = self:GetModule(professionModuleName, true)
+            if professionModule then
+                -- Enable the module if not already enabled to trigger OnEnable
+                -- This ensures CreateProfessionFromModule is called
+                local isEnabled = professionModule:IsEnabled()
+                if not isEnabled then
+                    professionModule:Enable()
+                end
+            end
             return true
         elseif professionModule.Version and professionModule.Version ~= SUPPORTED_MODULE_VERSION then
             if not suppressDialogs then
@@ -1421,8 +1570,8 @@ function addon:EnsureProfessionOpenAndScan()
     -- Find a known profession and open it; try all known candidates (skip First Aid)
     local player = private.Player
     player:UpdateProfessions()
-    -- Build candidate list of spell names to try
-    local candidateSpellNames = {}
+    -- Build candidate list of spell names to try (reusing cached table)
+    table.wipe(candidateSpellNames)
     local candidateCount = 0
     local function ResolveActivationSpellForName(name)
         if not name or IsFirstAidProfessionName(name) then return nil end

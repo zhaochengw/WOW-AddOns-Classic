@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(37813)
 mod:SetEncounterID(not mod:IsPostCata() and 848 or 1096)
 mod:SetModelID(30790)
@@ -44,7 +45,6 @@ local timerCallBloodBeast	= mod:NewNextTimer(40, 72173, nil, nil, nil, 1, nil, D
 
 local enrageTimer			= mod:NewBerserkTimer(480)
 
-mod:AddRangeFrameOption(12, 72378, "Ranged")
 mod:AddSetIconOption("BeastIcons", 72173, true, 5, {8, 7, 6, 5, 4})
 mod:AddSetIconOption("BoilingBloodIcons", 72385, false, 0, {1, 2, 3})
 
@@ -77,16 +77,8 @@ function mod:OnCombatStart(delay)
 	self.vb.boilingBloodIcon = 1
 	self.vb.beastIcon = 8
 	self.vb.Mark = 0
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(12)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 72378 then

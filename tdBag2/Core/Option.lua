@@ -356,6 +356,9 @@ function Addon:SetupOptionFrame()
                     managed = toggle(L['Blizzard Panel']),
                     iconCharacter = toggle(L['Show Character Portrait']),
                 }),
+                other = inline(OTHER, {
+                    tdInspect = fullToggle(L['Use tdInspect replace this frame (if installed)']), --
+                }),
             }),
             [ns.BAG_ID.SEARCH] = baseFrame(ns.BAG_ID.SEARCH, L['Global search'], {
                 desc = desc(format(L.DESC_FRAMES, L['Global search'])),

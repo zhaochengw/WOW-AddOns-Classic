@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic"
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 --mod:SetCreatureID(99200)
 mod:SetEncounterID(1851)
 
@@ -26,16 +27,12 @@ mod:RegisterEventsInCombat(
 
 --local timerCurtainOfFlameCD			= mod:NewNextTimer(20, 153396, nil, nil, nil, 3)
 
---mod:AddRangeFrameOption(5, 153396)
-
 function mod:OnCombatStart(delay)
 
 end
 
 function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
+
 end
 
 function mod:SPELL_CAST_SUCCESS(args)

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(858, "DBM-Pandaria", nil, 322, 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240522024721")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71955)
 mod:SetReCombatTime(20)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
@@ -24,23 +25,14 @@ local specWarnGTFO				= mod:NewSpecialWarningGTFO(144538, nil, nil, nil, 1, 8)
 local timerJadefireBreathCD		= mod:NewCDTimer(17.3, 144530, nil, "Tank", nil, 5)
 local timerJadefireWallCD		= mod:NewNextTimer(60, 144533, nil, nil, nil, 3)
 
-mod:AddRangeFrameOption(11, 144532)
 mod:AddReadyCheckOption(33117, false, 90)
 
 function mod:OnCombatStart(delay, yellTriggered)
 	if yellTriggered then--We know for sure this is an actual pull and not diving into in progress
 		timerJadefireBreathCD:Start(6-delay)
 	end
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(11)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

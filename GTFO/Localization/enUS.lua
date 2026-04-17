@@ -107,14 +107,14 @@ GTFOLocal =
 	UI_CustomSounds_Set = "Custom sound for |cFFFFFFFF%s|r alert set.",
 	UI_CustomSounds_Removed = "Custom sound for |cFFFFFFFF%s|r alert is now set to default.",
 	-- 5.3
-	Help_IgnoreSpell = "Add/remove spells to your custom ignore list (Advanced)";
-	UI_NotSupported_Classic = "This feature is not supported in WoW Classic.";
-	UI_IgnoreSpell_Help = "To add/remove a spell to your custom ignore list, type: |cFFFFFFFF/GTFO Ignore 12345|r where |cFF44FFFF12345|r is the spell ID # you wish to ignore.";
-	UI_IgnoreSpell_None = "You are currently not ignoring any spells.";
-	UI_IgnoreSpell_List = "You are currently ignoring the following spells:";
-	UI_IgnoreSpell_InvalidSpellId = "The spell ID |cFF44FFFF%s|r is invalid.";
-	UI_IgnoreSpell_Add = "You are now ignoring Spell #%s: %s";
-	UI_IgnoreSpell_Remove = "You are no longer ignoring Spell #%s: %s";
+	Help_IgnoreSpell = "Add/remove spells to your custom ignore list (Advanced)",
+	UI_NotSupported_Classic = "This feature is not supported in WoW Classic.",
+	UI_IgnoreSpell_Help = "To add/remove a spell to your custom ignore list, type: |cFFFFFFFF/GTFO Ignore 12345|r where |cFF44FFFF12345|r is the spell ID # you wish to ignore.",
+	UI_IgnoreSpell_None = "You are currently not ignoring any spells.",
+	UI_IgnoreSpell_List = "You are currently ignoring the following spells:",
+	UI_IgnoreSpell_InvalidSpellId = "The spell ID |cFF44FFFF%s|r is invalid.",
+	UI_IgnoreSpell_Add = "You are now ignoring Spell #%s: %s",
+	UI_IgnoreSpell_Remove = "You are no longer ignoring Spell #%s: %s",
 	-- 5.16
 	BrannMode_On = "Brann only alerts on",
 	BrannMode_OnWithDefault = "Brann & standard alerts",
@@ -134,4 +134,11 @@ GTFOLocal =
 	UI_BrokenExplanation_Header = "Addon Restrictions",
 	UI_BrokenExplanation_Text = "Several GTFO features are currently locked.\n\nBlizzard introduced new addon restrictions in Midnight (12.0). Those restrictions prevent GTFO from detecting several categories of avoidable damage reliably, so those options have been disabled to avoid false or missing alerts.\n\nOnly features that still work within the new restrictions remain enabled.",
 	UI_LowDamage2 = "Low Damage sounds",
+	-- 6.3
+	UI_AFKAlert_Classic = "Alert if attacked while AFK",
+	UI_AFKAlertDescription_Classic = "While you are flagged AFK, GTFO will play an alert whenever you take damage.",
+	UI_AFKAlert_Retail = "Alert if combat starts while AFK",
+	UI_AFKAlertDescription_Retail = "While you are flagged AFK, GTFO will attempt to play an alert one time when combat starts (may not work in Blizzard-restricted situations such as Mythic+).",
+	-- 6.4
+	Help_EncounterRegistrationBlocked = "Encounter alerts may not work this pull due to combat lockdown.",
 }

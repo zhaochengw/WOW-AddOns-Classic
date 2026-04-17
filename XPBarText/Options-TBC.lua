@@ -135,12 +135,42 @@ chkNumberFormatting:SetScript("OnLeave", function(self)
 	GameTooltip:Hide()
 end)
 
+-- Toggle Rested XP Ticker
+
+local chkToggleRestedTicker = CreateFrame("CheckButton", nil, XPTIOFrame, "OptionsBaseCheckButtonTemplate")
+chkToggleRestedTicker:SetPoint("TOPLEFT", chkNumberFormatting, "BOTTOMLEFT", 0, -16)
+
+chkToggleRestedTicker:SetScript("OnUpdate", function(frame)
+	if XPTConfig.ShowXPTicker == "YES" then
+		chkToggleRestedTicker:SetChecked(true)
+	elseif XPTConfig.ShowXPTicker == "NO" then
+		chkToggleRestedTicker:SetChecked(false)
+	end
+end)
+
+chkToggleRestedTicker:SetScript("OnClick", function(frame)
+	local tick = frame:GetChecked()
+
+	if tick == false then
+		XPTConfig.ShowXPTicker = 'NO'
+	elseif tick == true then
+		XPTConfig.ShowXPTicker = 'YES'
+	end
+	
+	UpdateXPBarText()
+	UpdateXPTicker()
+end)
+
+local chkToggleRestedTickerText = XPTIOFrame:CreateFontString(nil, nil, "GameFontHighlight")
+chkToggleRestedTickerText:SetPoint("LEFT", chkToggleRestedTicker, "RIGHT", 0, 1)
+chkToggleRestedTickerText:SetText(L["Show Rested XP Ticker"])
+
 if classIndex == 3 then
 
 -- Toggle Pet Information (Hunters only)
 
 local chkShowPetInfo = CreateFrame("CheckButton", nil, XPTIOFrame, "OptionsBaseCheckButtonTemplate")
-chkShowPetInfo:SetPoint("TOPLEFT", chkNumberFormatting, "BOTTOMLEFT", 0, -16)
+chkShowPetInfo:SetPoint("TOPLEFT", chkToggleRestedTicker, "BOTTOMLEFT", 0, -16)
 
 chkShowPetInfo:SetScript("OnUpdate", function(frame)
 	if XPTConfig.ShowPetInfo == "YES" then

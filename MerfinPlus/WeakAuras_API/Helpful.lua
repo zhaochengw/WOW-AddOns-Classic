@@ -80,3 +80,210 @@ Merfin.GetNPCIDFromGUID = function(GUID)
   end
   return 0
 end
+
+Merfin = Merfin or {}
+
+Merfin._spellCache = Merfin._spellCache or {
+  ready = false,
+  byName = {},
+  manaCostBySpellID = {},
+}
+
+local function ParseRank(subText)
+  if type(subText) ~= "string" then
+    return 0
+  end
+  local r = subText:match("(%d+)")
+  return r and (tonumber(r) or 0) or 0
+end
+
+Merfin.RebuildSpellCache = function()
+  local cache = Merfin._spellCache
+  cache.byName = {}
+  cache.manaCostBySpellID = {}
+
+  local numTabs = GetNumSpellTabs() or 0
+  for tab = 1, numTabs do
+    local _, _, offset, numSpells = GetSpellTabInfo(tab)
+    offset = offset or 0
+    numSpells = numSpells or 0
+
+    for i = 1, numSpells do
+      local index = offset + i
+      local spellType = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
+      if spellType == "SPELL" then
+        local name, subText = GetSpellBookItemName(index, BOOKTYPE_SPELL)
+        if name then
+          local id = select(2, GetSpellBookItemInfo(index, BOOKTYPE_SPELL))
+          local rank = ParseRank(subText)
+
+          local prev = cache.byName[name]
+          if not prev or rank > prev.rank then
+            cache.byName[name] = { id = id, rank = rank }
+          end
+        end
+      end
+    end
+  end
+
+  for _, v in pairs(cache.byName) do
+    local spellID = v.id
+    local costs = GetSpellPowerCost(spellID)
+    local manaCost = nil
+
+    if type(costs) == "table" then
+      for _, costInfo in ipairs(costs) do
+        if costInfo and costInfo.type == Enum.PowerType.Mana then
+          manaCost = costInfo.cost or 0
+          break
+        end
+      end
+    end
+
+    if manaCost ~= nil then
+      cache.manaCostBySpellID[spellID] = manaCost
+    end
+  end
+
+  cache.ready = true
+end
+
+Merfin.GetHighestRankSpellID = function(spellID)
+  local name = GetSpellInfo(spellID)
+  if not name then
+    return nil
+  end
+
+  local cache = Merfin._spellCache
+  if not cache.ready then
+    Merfin.RebuildSpellCache()
+  end
+
+  local entry = cache.byName[name]
+  return (entry and entry.id) or spellID
+end
+
+Merfin.HasEnoughManaForSpell = function(spellID)
+  if not spellID then
+    return false
+  end
+
+  local cache = Merfin._spellCache
+  local manaCost = cache.manaCostBySpellID[spellID]
+
+  if manaCost == nil then
+    local costs = GetSpellPowerCost(spellID)
+    if type(costs) == "table" then
+      for _, costInfo in ipairs(costs) do
+        if costInfo and costInfo.type == Enum.PowerType.Mana then
+          manaCost = costInfo.cost or 0
+          break
+        end
+      end
+    end
+    if manaCost ~= nil then
+      cache.manaCostBySpellID[spellID] = manaCost
+    end
+  end
+
+  if manaCost == nil then
+    return true
+  end
+
+  local currentMana = UnitPower("player", Enum.PowerType.Mana)
+  return currentMana >= manaCost
+end
+
+Merfin.InsufficientResources = function(spellID)
+  local maxRankID = Merfin.GetHighestRankSpellID(spellID)
+  return not (maxRankID and Merfin.HasEnoughManaForSpell(maxRankID))
+end
+
+do
+  local f = CreateFrame("Frame")
+  f:RegisterEvent("PLAYER_LOGIN")
+  f:RegisterEvent("SPELLS_CHANGED")
+  f:RegisterEvent("PLAYER_TALENT_UPDATE")
+  f:SetScript("OnEvent", function()
+    Merfin.RebuildSpellCache()
+  end)
+end
+
+Merfin.IsMacroSameByName = function(macroName, macroBody)
+  if type(macroName) ~= "string" or macroName == "" then
+    return false
+  end
+  if type(macroBody) ~= "string" then
+    return false
+  end
+
+  local numGlobal, numChar = GetNumMacros()
+  local maxGlobal = MAX_ACCOUNT_MACROS or 120
+
+  local function CheckRange(fromIndex, toIndex)
+    for i = fromIndex, toIndex do
+      local name, _, body = GetMacroInfo(i)
+      if name == macroName then
+        return body == macroBody
+      end
+    end
+    return false
+  end
+
+  local charFrom = maxGlobal + 1
+  local charTo = maxGlobal + (numChar or 0)
+
+  if (numChar or 0) > 0 and CheckRange(charFrom, charTo) then
+    return true
+  end
+
+  if (numGlobal or 0) > 0 and CheckRange(1, numGlobal) then
+    return true
+  end
+
+  return false
+end
+
+Merfin.UpdateMacroByName = function(macroName, macroBody)
+  if type(macroName) ~= "string" or macroName == "" then
+    return false
+  end
+  if type(macroBody) ~= "string" then
+    return false
+  end
+  if InCombatLockdown() then
+    return false
+  end
+
+  -- If macro already has the same body, do nothing
+  if Merfin.IsMacroSameByName(macroName, macroBody) then
+    return true
+  end
+
+  local numGlobal, numChar = GetNumMacros()
+  local maxGlobal = MAX_ACCOUNT_MACROS or 120
+
+  local function TryRange(fromIndex, toIndex)
+    for i = fromIndex, toIndex do
+      local name = GetMacroInfo(i)
+      if name == macroName then
+        EditMacro(i, nil, nil, macroBody)
+        return true
+      end
+    end
+    return false
+  end
+
+  local charFrom = maxGlobal + 1
+  local charTo = maxGlobal + (numChar or 0)
+
+  if (numChar or 0) > 0 and TryRange(charFrom, charTo) then
+    return true
+  end
+
+  if (numGlobal or 0) > 0 and TryRange(1, numGlobal) then
+    return true
+  end
+
+  return false
+end

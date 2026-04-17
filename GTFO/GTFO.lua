@@ -27,15 +27,16 @@ GTFO = {
 		IgnoreSpellList = { };
 		BrannMode = 0;
 		IgnoreTimeAmount = .2;
+		AFKAlertMode = nil;
 	};
-	Version = "6.1"; -- Version number (text format)
+	Version = "6.4.1"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 60100; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 60000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
-	BurningCrusadeVersionNumber = 60000; -- Numeric version number for checking out-of-date clients (TBC classic)
-	WrathVersionNumber = 60000; -- Numeric version number for checking out-of-date clients (Wrath classic)
-	CataclysmVersionNumber = 60000; -- Numeric version number for checking out-of-date clients (Cata classic)
-	MistsVersionNumber = 60000; -- Numeric version number for checking out-of-date clients (MoP classic)
+	RetailVersionNumber = 60401; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 60300; -- Numeric version number for checking out-of-date clients (Vanilla classic)
+	BurningCrusadeVersionNumber = 60300; -- Numeric version number for checking out-of-date clients (TBC classic)
+	WrathVersionNumber = 60300; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	CataclysmVersionNumber = 60300; -- Numeric version number for checking out-of-date clients (Cata classic)
+	MistsVersionNumber = 60300; -- Numeric version number for checking out-of-date clients (MoP classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -74,6 +75,8 @@ GTFO = {
 	VariableStore = { -- Variable storage for special circumstances
 		StackCounter = 0;
 		DisableGTFO = nil;
+		PlayerAFK = nil;
+		AFKCombatAlerted = nil;
 	};
 	BetaMode = nil; -- WoW Beta/PTR client detection
 	DragonflightMode = nil; -- WoW Dragonflight UI client detection
@@ -213,6 +216,7 @@ function GTFO_ScanGroupGUID()
 end
 
 function GTFO_Command(arg1)
+	arg1 = tostring(arg1 or "");
 	local Command = string.upper(arg1);
 	local DescriptionOffset = string.find(arg1,"%s",1);
 	local Description = nil;

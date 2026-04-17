@@ -1193,7 +1193,7 @@ end
 RSExplorerDetailMap = { };
 
 function RSExplorerDetailMap:OnLoad()
-	self.detailTilePool = CreateTexturePool(self, "BACKGROUND", -7);
+	self.detailTilePool = CreateTexturePool(self, "BACKGROUND", -7, "MapCanvasDetailTileTemplate");
 	self.overlayTexturePool = CreateTexturePool(self, "ARTWORK", 0);
 	self.textureLoadGroup = CreateFromMixins(TextureLoadingGroupMixin);
 	self.defailedTextureLoadGroup = CreateFromMixins(TextureLoadingGroupMixin);

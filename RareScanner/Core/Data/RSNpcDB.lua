@@ -342,52 +342,59 @@ function RSNpcDB.GetAllInternalNpcInfo()
 	return private.NPC_INFO
 end
 
-function RSNpcDB.GetNpcIDsByMapID(mapID, onlyCustom, onlyWithoutVignette)
+local function GetCustomNpcIDsByMapID(mapID)
 	local npcIDs = {}
-	for npcID, npcInfo in pairs((onlyCustom and RSNpcDB.GetAllCustomNpcInfo() or RSNpcDB.GetAllInternalNpcInfo())) do
+	for npcID, npcInfo in pairs(RSNpcDB.GetAllCustomNpcInfo()) do
 		if (RSNpcDB.IsInternalNpcMultiZone(npcID)) then
 			-- First check if there is a matching mapID in the database
 			for internalMapID, _ in pairs (npcInfo.zoneID) do
 				if (internalMapID == mapID) then
-					if (not onlyWithoutVignette) then
-						tinsert(npcIDs,npcID)
-					elseif (npcInfo.noVignette == nil or npcInfo.noVignette) then
-						tinsert(npcIDs,npcID)
-					end
+					tinsert(npcIDs,npcID)
 				end
 			end
 			
 			-- Then check if there is a matching subMapID in the database
 			for internalMapID, _ in pairs (npcInfo.zoneID) do
 				if (RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
-					if (not onlyWithoutVignette) then
-						tinsert(npcIDs,npcID)
-					elseif (npcInfo.noVignette == nil or npcInfo.noVignette) then
-						tinsert(npcIDs,npcID)
-					end
+					tinsert(npcIDs,npcID)
 				end
 			end
 		elseif (RSNpcDB.IsInternalNpcMonoZone(npcID)) then
 			if (npcInfo.zoneID == mapID) then
-				if (not onlyWithoutVignette) then
-					tinsert(npcIDs,npcID)
-				elseif (npcInfo.noVignette == nil or npcInfo.noVignette) then
-					tinsert(npcIDs,npcID)
-				end
+				tinsert(npcIDs,npcID)
 			end
 			
 			-- Then check if there is a matching subMapID in the database
 			if (RSMapDB.IsMapInParentMap(mapID, npcInfo.zoneID)) then
-				if (not onlyWithoutVignette) then
-					tinsert(npcIDs,npcID)
-				elseif (npcInfo.noVignette == nil or npcInfo.noVignette) then
-					tinsert(npcIDs,npcID)
-				end
+				tinsert(npcIDs,npcID)
 			end
 		end
 	end
 	
 	return npcIDs
+end
+
+function RSNpcDB.GetNpcIDsByMapID(mapID, onlyCustom, onlyWithoutVignette)	
+	-- Custom NPCs
+	local customNpcIDs = GetCustomNpcIDsByMapID(mapID)
+	if (onlyCustom) then
+		return customNpcIDs
+	end
+	
+	-- Internal NPCs
+	local internalNpcIDs = RSMapDB.GetEntitiesByMapID(mapID, RSConstants.MAP_ENTITY_NPC, true) or {}
+	if (not onlyWithoutVignette) then
+		return RSUtils.JoinTables(customNpcIDs, internalNpcIDs)
+	end
+	
+	-- Every custom NPCs has noVignette = true, so we add the internal NPCs to that list
+	for _, npcID in ipairs(internalNpcIDs) do
+		if (onlyWithoutVignette and RSNpcDB.GetInternalNpcInfo(npcID).noVignette) then
+			tinsert(customNpcIDs, npcID)
+		end
+	end
+	
+	return customNpcIDs
 end
 
 function RSNpcDB.GetInternalNpcInfo(npcID)
@@ -793,10 +800,10 @@ function RSNpcDB.GetNpcName(npcID, refresh)
 end
 
 function RSNpcDB.GetActiveNpcIDsWithNamesByMapID(mapID)
-	local npcIDs =  RSNpcDB.GetNpcIDsByMapID(mapID)
+	local npcIDs = RSNpcDB.GetNpcIDsByMapID(mapID)
 	local npcIDsWithNames = nil
 	
-	if (RSUtils.GetTableLength(npcIDs)) then
+	if (RSUtils.GetTableLength(npcIDs) > 0) then
 		npcIDsWithNames = {}
 		for _, npcID in ipairs(npcIDs) do
 			local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)

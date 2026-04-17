@@ -23,21 +23,6 @@
 
 --]]
 
-Atlas_IngameLocales = {
-	-- TODO: This doesn't work on initial load unless the item is in your cache. They should be translated manually at some point.
-	["Dark Keeper Key"] = C_Item.GetItemInfo(11197),
-	["Relic Coffer Key"] = C_Item.GetItemInfo(11078),
-	["The Eye of Haramad"] = C_Item.GetItemInfo(32092),
-}
-
-do
-	setmetatable(Atlas_IngameLocales, {
-		__index = function(tab, key)
-			return rawget(tab, key) or key
-		end
-	})
-end
-
 function Atlas_GetClassName(class)
 	if (not LOCALIZED_CLASS_NAMES_MALE[class]) then
 		return nil;

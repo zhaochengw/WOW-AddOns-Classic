@@ -5,7 +5,8 @@ if DBM:IsRetail() then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 end
 
-mod:SetRevision("20250915043254")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(59184)--59220 seem to be her mirror images
 mod:SetEncounterID(1427)
 mod:SetZone(1007)

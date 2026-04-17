@@ -5,7 +5,8 @@ if DBM:IsRetail() then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 end
 
-mod:SetRevision("20250915043254")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(61442, 61444, 61445)--61442 (Kuai the Brute), 61444 (Ming the Cunning), 61445 (Haiyan the Unstoppable)
 mod:SetEncounterID(1442)
 

@@ -1,7 +1,10 @@
 local mod	= DBM:NewMod(198, "DBM-Raids-Cata", 2, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241115112135")
+mod.statTypes = "normal,heroic,timewalker"
+
+mod:SetRevision("20260322214627")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(52409)
 mod:SetEncounterID(1203)
 mod:SetHotfixNoticeRev(20200918000000)--2020, 09, 18
@@ -60,7 +63,6 @@ local warnEmpoweredSulf		= mod:NewAnnounce("warnEmpoweredSulf", 4, 100604)--Hero
 local warnDreadFlame		= mod:NewSpellAnnounce(100675, 3, nil, false)--Heroic phase 4 ability
 
 local specWarnMagmaTrap		= mod:NewSpecialWarningMove(98164, nil, nil, nil, 1, 2)
-local specWarnMagmaTrapNear	= mod:NewSpecialWarningClose(98164, nil, nil, nil, 1, 2)
 local yellMagmaTrap			= mod:NewYell(98164)--May Return false tank yells
 local specWarnBurningWound	= mod:NewSpecialWarningStack(99399, nil, 4, nil, nil, 1, 6)
 local specWarnSplittingBlow	= mod:NewSpecialWarningSpell(98951, nil, nil, nil, 1, 2)
@@ -69,7 +71,6 @@ local yellBlazingHeat		= mod:NewYell(100460)
 local specWarnMoltenSeed	= mod:NewSpecialWarningDodge(98495, nil, nil, nil, 2, 2)
 local specWarnEngulfing		= mod:NewSpecialWarningMove(99171, nil, nil, nil, 1, 2)
 local specWarnMeteor		= mod:NewSpecialWarningMove(99268, nil, nil, nil, 1, 2)--Spawning on you
-local specWarnMeteorNear	= mod:NewSpecialWarningClose(99268, nil, nil, nil, 1, 2)--Spawning near you
 local yellMeteor			= mod:NewYell(99268)
 local specWarnFixate		= mod:NewSpecialWarningRun(99849, nil, nil, nil, 4, 2)--Chasing you after it spawned
 local yellFixate			= mod:NewYell(99849)
@@ -213,16 +214,7 @@ function mod:MagmaTrapTarget(targetname)
 		specWarnMagmaTrap:Play("runaway")
 		yellMagmaTrap:Yell()
 	else
-		local uId = DBM:GetRaidUnitId(targetname)
-		if uId then
-			local inRange = DBM.RangeCheck:GetDistance("player", uId)
-			if inRange and inRange < 6 then
-				specWarnMagmaTrapNear:Show(targetname)
-				specWarnMagmaTrapNear:Play("runaway")
-			else
-				warnMagmaTrap:Show(targetname)
-			end
-		end
+		warnMagmaTrap:Show(targetname)
 	end
 end
 
@@ -232,16 +224,7 @@ function mod:LivingMeteorTarget(targetname)
 		specWarnMeteor:Play("targetyou")
 		yellMeteor:Yell()
 	else
-		local uId = DBM:GetRaidUnitId(targetname)
-		if uId then
-			local inRange = DBM.RangeCheck:GetDistance("player", uId)
-			if inRange and inRange < 12 then
-				specWarnMeteorNear:Show(targetname)
-				specWarnMeteorNear:Play("runaway")
-			else
-				warnLivingMeteor:Show(targetname)
-			end
-		end
+		warnLivingMeteor:Show(targetname)
 	end
 end
 

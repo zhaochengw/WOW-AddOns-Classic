@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Akmahat", "DBM-Cataclysm")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240105052742")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(50063)
 mod:SetModelID(34573)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors

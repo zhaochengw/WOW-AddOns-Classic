@@ -96,6 +96,8 @@ local DT = {  }; __private.DT = DT;		--	data
 	CT.LOCALE = GetLocale();
 	CT.BNTAG = select(2, BNGetInfo());
 	CT.SELFREALM = GetRealmName();
+	CT.SELFREALMSTRIP = gsub(CT.SELFREALM, " %- ", "");
+	CT.SELFREALMSHORT = gsub(CT.SELFREALM, " %- .+", "");
 	CT.SELFGUID = UnitGUID('player');
 	CT.SELFLCLASS, CT.SELFCLASS, CT.SELFCLASSINDEX = UnitClass('player');
 	CT.SELFNAME = UnitName('player');
@@ -171,11 +173,12 @@ local DT = {  }; __private.DT = DT;		--	data
 		end
 	end
 	local GetTalentTabInfo = _G.GetTalentTabInfo;
-	if CT.TOCVERSION >= 20000 and CT.TOCVERSION < 40000 then
-		_comptb.GetTreeNumPoints = function(index) return select(3, GetTalentTabInfo(index)) or 0 end
-	else
-		_comptb.GetTreeNumPoints = function(index) return select(5, GetTalentTabInfo(index)) or 0 end
-	end
+	-- if CT.TOCVERSION >= 20000 and CT.TOCVERSION < 40000 then
+		-- _comptb.GetTreeNumPoints = function(index) return select(3, GetTalentTabInfo(index)) or 0 end
+	-- else
+		-- _comptb.GetTreeNumPoints = function(index) return select(5, GetTalentTabInfo(index)) or 0 end
+	-- end
+	_comptb.GetTreeNumPoints = function(index) return select(5, GetTalentTabInfo(index)) or 0 end
 	if _G.GetSpellLink then
 		local GetSpellLink = _G.GetSpellLink;
 		_comptb._GetSpellLink = function(id, name)

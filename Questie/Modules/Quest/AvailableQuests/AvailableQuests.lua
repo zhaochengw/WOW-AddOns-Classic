@@ -237,7 +237,7 @@ function AvailableQuests.ValidateAvailableQuestsFromGossipShow()
             end
         end
 
-        if (not isAvailableInGossip) and QuestieDB.IsDailyQuest(questId) then
+        if (not isAvailableInGossip) and (QuestieDB.IsDailyQuest(questId) or QuestieDB.IsWeeklyQuest(questId)) then
             AvailableQuests.RemoveQuest(questId)
             _MarkQuestAsUnavailableFromNPC(questId, npcId)
             table.insert(unavailableQuestsToBroadcast, questId)
@@ -289,7 +289,7 @@ function AvailableQuests.ValidateAvailableQuestsFromQuestDetail()
 
     local unavailableQuestsToBroadcast = {}
     for questId in pairs(availableQuestsByNpc[npcId] or {}) do
-        if questId ~= availableQuestId and QuestieDB.IsDailyQuest(questId) then
+        if questId ~= availableQuestId and (QuestieDB.IsDailyQuest(questId) or QuestieDB.IsWeeklyQuest(questId)) then
             AvailableQuests.RemoveQuest(questId)
             _MarkQuestAsUnavailableFromNPC(questId, npcId)
             table.insert(unavailableQuestsToBroadcast, questId)
@@ -358,7 +358,7 @@ function AvailableQuests.ValidateAvailableQuestsFromQuestGreeting()
 
     local unavailableQuestsToBroadcast = {}
     for questId in pairs(availableQuestsByNpc[npcId] or {}) do
-        if (not availableQuestsInGreeting[questId]) and QuestieDB.IsDailyQuest(questId) then
+        if (not availableQuestsInGreeting[questId]) and (QuestieDB.IsDailyQuest(questId) or QuestieDB.IsWeeklyQuest(questId)) then
             AvailableQuests.RemoveQuest(questId)
             _MarkQuestAsUnavailableFromNPC(questId, npcId)
             table.insert(unavailableQuestsToBroadcast, questId)
@@ -482,6 +482,8 @@ _CalculateAndDrawAvailableQuests = function()
 end
 
 --- Mark all child quests as active when the parent quest is in the quest log
+--- Reused this logic in QuestsByZone.lua/QuestsByFaction.lua -- TO DO: copy logic to QBF
+--- if this is modified, also make sure the changes are reflected in the other file
 ---@param questId number
 ---@param currentQuestlog table<number, boolean>
 ---@param completedQuests table<number, boolean>
@@ -492,7 +494,8 @@ _DrawChildQuests = function(questId, currentQuestlog, completedQuests, hiddenQue
     end
 
     for _, childQuestId in pairs(childQuests) do
-        if (not completedQuests[childQuestId]) and (not currentQuestlog[childQuestId]) and (not hiddenQuests[childQuestId]) then
+        local requiredRaces = QuestieDB.QueryQuestSingle(childQuestId, "requiredRaces")
+        if (not completedQuests[childQuestId]) and (not currentQuestlog[childQuestId]) and (not hiddenQuests[childQuestId]) and (QuestiePlayer.HasRequiredRace(requiredRaces)) then
             local childQuestExclusiveTo = QuestieDB.QueryQuestSingle(childQuestId, "exclusiveTo")
             local blockedByExclusiveTo = false
             for _, exclusiveToQuestId in pairs(childQuestExclusiveTo or {}) do

@@ -20,6 +20,7 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 --]]
+
 local L = LibStub("AceLocale-3.0"):NewLocale("Atlas_Legion", "zhCN");
 if not L then return end
 

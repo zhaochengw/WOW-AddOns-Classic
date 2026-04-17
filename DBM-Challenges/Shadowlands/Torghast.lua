@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("d1963", "DBM-Challenges", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250703201323")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 
 mod:RegisterCombat("scenario", 2162)--1911-1912 are outdoor areas
 mod.noStatistics = true

@@ -88,7 +88,9 @@ local function StripDifficultyIfNotUsed(s)
 end
 
 local function GetBossDiffLabel(state, bossKey, diff)
-  if diff == "" then diff = nil end
+  if diff == "" then
+    diff = nil
+  end
 
   local st = state[bossKey]
   if not st then
@@ -129,23 +131,23 @@ local function FormatSourcesGrouped(sources, maxEntries)
       local diff = s.difficulty
       local bossKey = inst .. "||" .. boss
 
-    local st = state[bossKey]
-    if not st then
-      st = { hasNil = false, hasN = false, hasH = false, other = false }
-      state[bossKey] = st
-    end
-
-    if not diff then
-      st.hasNil = true
-    else
-      if diff == "N" or diff == "NM" or diff == "Normal" then
-        st.hasN = true
-      elseif diff == "H" or diff == "HC" or diff == "Heroic" then
-        st.hasH = true
-      else
-        st.other = true
+      local st = state[bossKey]
+      if not st then
+        st = { hasNil = false, hasN = false, hasH = false, other = false }
+        state[bossKey] = st
       end
-    end
+
+      if not diff then
+        st.hasNil = true
+      else
+        if diff == "N" or diff == "NM" or diff == "Normal" then
+          st.hasN = true
+        elseif diff == "H" or diff == "HC" or diff == "Heroic" then
+          st.hasH = true
+        else
+          st.other = true
+        end
+      end
     end
   end
 
@@ -211,8 +213,12 @@ local function FormatSourcesGrouped(sources, maxEntries)
       local take = #bosses
       if maxEntries then
         local remaining = maxEntries - usedPairs
-        if remaining <= 0 then break end
-        if take > remaining then take = remaining end
+        if remaining <= 0 then
+          break
+        end
+        if take > remaining then
+          take = remaining
+        end
       end
 
       local bossText
@@ -230,7 +236,9 @@ local function FormatSourcesGrouped(sources, maxEntries)
       parts[#parts + 1] = string.format("%s: %s", instOut, bossText)
 
       usedPairs = usedPairs + take
-      if maxEntries and usedPairs >= maxEntries then break end
+      if maxEntries and usedPairs >= maxEntries then
+        break
+      end
     end
   end
 

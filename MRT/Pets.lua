@@ -1,5 +1,9 @@
 local GlobalAddonName, ExRT = ...
 
+if ExRT.isMN then
+	return
+end
+
 local UnitGUID, UnitCombatlogname = UnitGUID, ExRT.F.UnitCombatlogname
 
 local module = ExRT:New("Pets",nil,true)

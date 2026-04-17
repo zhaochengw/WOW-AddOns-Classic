@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2451, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260210082755")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(175806)
 mod:SetEncounterID(2437)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -15,8 +15,8 @@ mod:RegisterSafeEvents(
 
 --Custom Sounds on cast/cooldown expiring
 mod:AddCustomAlertSoundOption(347481, true, 2)--Shurl
-mod:AddCustomAlertSoundOption(347150, "HasInterrupt", 5)--Triple Technique
-mod:AddCustomAlertSoundOption(357188, "HasInterrupt", 5)--Double Technique
+mod:AddCustomAlertSoundOption(347150, "HasInterrupt", 1)--Triple Technique
+mod:AddCustomAlertSoundOption(357188, "HasInterrupt", 1)--Double Technique
 --Custom timer colors, countdowns, and disables
 mod:AddCustomTimerOptions(347481, true, 2, 0)--Shurl
 mod:AddCustomTimerOptions(1248209, true, 5, 0)--Phase Slash
@@ -24,7 +24,6 @@ mod:AddCustomTimerOptions(347150, true, 4, 0)--Triple Technique
 mod:AddCustomTimerOptions(357188, true, 4, 0)--Double Technique
 
 function mod:OnLimitedCombatStart()
-	self:DisableSpecialWarningSounds()
 	self:EnableAlertOptions(347481, 582, "specialsoon", 2)
 	self:EnableAlertOptions(347150, 584, "kickcast", 2)
 	self:EnableAlertOptions(357188, 585, "kickcast", 2)

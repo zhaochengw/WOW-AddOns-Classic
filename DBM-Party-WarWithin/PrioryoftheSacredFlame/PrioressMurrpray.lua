@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2573, "DBM-Party-WarWithin", 2, 1267)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260120020530")
+mod:SetRevision("20260322092648")
 mod:SetCreatureID(207940)
 mod:SetEncounterID(2848)
 mod:SetHotfixNoticeRev(20240608000000)
@@ -12,12 +12,32 @@ mod.sendMainBossGUID = true
 
 mod:RegisterCombat("combat")
 
+--NOTE: Holy Smite not worth adding with it's short cooldown. Spammy
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(444608, true, 2)
+mod:AddCustomAlertSoundOption(428169, true, 2)
+mod:AddCustomAlertSoundOption(451605, true, 2)
+mod:AddCustomAlertSoundOption(444546, true, 2)
+--Custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(444608, true, 2, 0)
+mod:AddCustomTimerOptions(428169, true, 2, 0)
+mod:AddCustomTimerOptions(451605, true, 3, 0)
+mod:AddCustomTimerOptions(444546, true, 3, 0)
 --Midnight private aura replacements
 --Could not find a private aura for Purifying Light
-mod:AddPrivateAuraSoundOption(425556, true, 425556, 1)--GTFO
+mod:AddPrivateAuraSoundOption(425556, true, 425556, 1, 2, "watchfeet", 8)--GTFO
 
 function mod:OnLimitedCombatStart()
-	self:EnablePrivateAuraSound(425556, "watchfeet", 8)
+	self:EnableAlertOptions(444608, 534, "aesoon", 2)
+	self:EnableAlertOptions(428169, 535, "turnaway", 2)
+	self:EnableAlertOptions(451605, 536, "watchstep", 2)
+	self:EnableAlertOptions(444546, 537, "watchstep", 2)--Generic but we can't get actual beam target
+
+	self:EnableTimelineOptions(444608, 534)
+	self:EnableTimelineOptions(428169, 535)
+	self:EnableTimelineOptions(451605, 536)
+	self:EnableTimelineOptions(444546, 537)
+
 end
 
 --[[

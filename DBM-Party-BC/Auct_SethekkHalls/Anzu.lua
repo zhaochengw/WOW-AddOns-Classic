@@ -3,10 +3,12 @@ local L = mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic"
 
-mod:SetRevision("20231014053250")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 
 mod:SetCreatureID(23035)
 mod:SetEncounterID(1904)
+mod:SetZone(556)
 
 if not mod:IsRetail() then
 	mod:SetModelID(21492)

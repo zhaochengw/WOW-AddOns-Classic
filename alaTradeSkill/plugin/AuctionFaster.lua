@@ -10,7 +10,6 @@ local DT = __private.DT;
 
 
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
 -->
 
 
@@ -37,7 +36,7 @@ function mod.F_QueryPriceByID(id, num)
 			return;
 		end
 	end
-	local name = GetItemInfo(id);
+	local name = mod.F_QueryNameByID(id);
 	if name ~= nil then
 		local cacheItem = GetItemFromCache(nil, id, name, true);
 		if cacheItem ~= nil then

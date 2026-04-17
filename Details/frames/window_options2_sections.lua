@@ -29,6 +29,7 @@ end
 
 
 local Details = _G.Details
+---@type detailsframework
 local DF = _G.DetailsFramework
 local detailsFramework = DF
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
@@ -486,6 +487,7 @@ do
                 name = "Use Dynamic Overall Damage",
                 desc = "When showing Damage Done Overall, swap to Dynamic Overall Damage on entering combat.",
                 boxfirst = true,
+                hidden = detailsFramework:IsAddonApocalypseWow(),
             },
 
             {type = "blank"},
@@ -2018,6 +2020,39 @@ do
             },
 
             {type = "blank"}, --22
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_PLAYERNAME"] end, text_template = subSectionTitleTextTemplate,
+            hidden = not detailsFramework.IsAddonApocalypseWow()},
+
+            {--automatic player name length
+                type = "toggle",
+                get = function() return currentInstance.row_info.playername_size_auto end,
+                set = function(self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "row_info", "playername_size_auto", value)
+                    afterUpdate()
+                    Details:RefreshMainWindow(-1, true)
+                end,
+                name = Loc ["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"],
+                desc = Loc ["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"],
+                hidden = not detailsFramework.IsAddonApocalypseWow(),
+            },
+
+            {--player name length
+                type = "range",
+                get = function() return currentInstance.row_info.playername_size end,
+                set = function(self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "row_info", "playername_size", value)
+                    afterUpdate()
+                    Details:RefreshMainWindow(-1, true)
+                end,
+                min = 50,
+                max = 130,
+                step = 1,
+                name = Loc ["STRING_OPTIONS_PLAYERNAME_WIDTH"],
+                desc = Loc ["STRING_OPTIONS_PLAYERNAME_WIDTH"],
+                hidden = not detailsFramework.IsAddonApocalypseWow(),
+            },
+
+            {type = "blank", hidden = detailsFramework.IsAddonApocalypseWow()},
 
             {--show total --23
                 type = "toggle",
@@ -3198,6 +3233,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_DISABLE_LOCK_RESIZE"],
                 desc = Loc ["STRING_OPTIONS_DISABLE_LOCK_RESIZE_DESC"],
+                hidden = true,
             },
 
             {--disable stretch button
@@ -4819,6 +4855,87 @@ do
                 desc = Loc ["STRING_OPTIONS_TOOLTIPS_OFFSETY_DESC"],
             },
 
+            {type = "blank"},
+            {type = "label", get = function() return "Midnight Tooltip Settings" end, text_template = subSectionTitleTextTemplate, hidden = not detailsFramework:IsAddonApocalypseWow()},
+
+            {--show header
+                type = "toggle",
+                get = function() return Details.tooltip.show_header end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.show_header = value
+                    afterUpdate()
+                end,
+                name = "Show Header",
+                desc = "Show header line in the tooltip",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+            },
+
+            {--show dps column
+                type = "toggle",
+                get = function() return Details.tooltip.show_dps_column end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.show_dps_column = value
+                    afterUpdate()
+                end,
+                name = "Show DPS Column",
+                desc = "Show DPS/HPS column in the tooltip",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+            },
+
+            {--show percent column
+                type = "toggle",
+                get = function() return Details.tooltip.show_percent_column end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.show_percent_column = value
+                    afterUpdate()
+                end,
+                name = "Show Percent Column",
+                desc = "Show percentage column in the tooltip",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+            },
+
+            {--show help
+                type = "toggle",
+                get = function() return Details.tooltip.show_help end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.show_help = value
+                    if value then
+                        Details.tooltip.show_help_count = 0
+                    end
+                    afterUpdate()
+                end,
+                name = "Show Help Text",
+                desc = "Show help text at the bottom of the tooltip",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+            },
+
+            {--apocalypse width use line
+                type = "toggle",
+                get = function() return Details.tooltip.apocalypse_width_useline end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.apocalypse_width_useline = value
+                    afterUpdate()
+                end,
+                name = "Match Line Width",
+                desc = "Make the tooltip width match the instance line width",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+            },
+
+            {--apocalypse width
+                type = "range",
+                get = function() return Details.tooltip.apocalypse_width or 300 end,
+                set = function(self, fixedparam, value)
+                    Details.tooltip.apocalypse_width = value
+                    afterUpdate()
+                end,
+                min = 230,
+                max = 370,
+                step = 1,
+                name = "Tooltip Width",
+                desc = "Set the width of the midnight tooltip",
+                hidden = not detailsFramework:IsAddonApocalypseWow(),
+                disableif = function() return Details.tooltip.apocalypse_width_useline and true end,
+            },
 
         }
 
@@ -5632,8 +5749,6 @@ do
                 name = Details:AddRoleIcon("", "TANK", 18),
             },
 
-            {type = "blank"},
-
             {--switch after a wipe
                 type = "select",
                 get = function()
@@ -5729,6 +5844,20 @@ do
                 desc = Loc ["STRING_OPTIONS_MENU_ALPHALEAVE_DESC"],
             },
 
+            {type = "blank"},
+            {type = "label", get = function() return "Mythic Plus" end, text_template = subSectionTitleTextTemplate},
+
+            {--auto swap to overall after mythic plus
+                type = "toggle",
+                get = function() return currentInstance.automation.overall_mythic_plus end,
+                set = function(self, fixedparam, value)
+                    currentInstance.automation.overall_mythic_plus = value
+                    afterUpdate()
+                end,
+                name = "Overall After Mythic+",
+                desc = "Change to overall data when the mythic plus dungeon is completed.", --localize-me
+                hidden = not detailsFramework.IsAddonApocalypseWow(),
+            },
         }
 
         sectionFrame.sectionOptions = sectionOptions

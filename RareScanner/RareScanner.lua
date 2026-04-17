@@ -42,9 +42,7 @@ local RSEventHandler = private.ImportLib("RareScannerEventHandler")
 local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 local RSCommandLine = private.ImportLib("RareScannerCommandLine")
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
-
--- RareScanner other addons integration services
-local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 
 -- Main button
 local scanner_button = CreateFrame("Button", RSConstants.RS_BUTTON_NAME, UIParent, "SecureActionButtonTemplate, BackdropTemplate")
@@ -80,9 +78,7 @@ scanner_button:SetScript("PostClick", function(self, button)
 	end
 	
 	-- Add waypoints
-	if (RSConfigDB.IsTomtomSupportEnabled() and not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
-		RSTomtom.AddTomtomWaypoint(self.mapID, self.x, self.y, self.name)
-	end
+	RSWaypoints.AddWaypoint(self.mapID, self.x, self.y, self.name)
 end)
 scanner_button.closebutton = function(self)
 	if (not InCombatLockdown()) then
@@ -99,13 +95,15 @@ scanner_button:SetClampedToScreen(true)
 scanner_button:RegisterForDrag("LeftButton")
 
 scanner_button:SetScript("OnDragStart", function(self)
-	if (not RSConfigDB.IsLockingPosition()) then
+	if (not RSConfigDB.IsLockingPosition() and not InCombatLockdown()) then
 		self:StartMoving()
 	end
 end)
 scanner_button:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	RSGeneralDB.SetButtonPositionCoordinates(self:GetLeft(), self:GetBottom())
+	if (not InCombatLockdown()) then
+		self:StopMovingOrSizing()
+		RSGeneralDB.SetButtonPositionCoordinates(self:GetLeft(), self:GetBottom())
+	end
 end)
 scanner_button:SetScript("OnEnter", function(self)
 	self:SetBackdropBorderColor(0.9, 0.9, 0.9)
@@ -165,7 +163,7 @@ scanner_button.CloseButton = CreateFrame("Button", "CloseButton", scanner_button
 scanner_button.CloseButton:SetPoint("BOTTOMRIGHT", 0, 1)
 scanner_button.CloseButton:SetSize(22, 22)
 scanner_button.CloseButton:HookScript("OnClick", function(self)
-	RSTomtom.RemoveCurrentTomtomWaypoint();
+	RSWaypoints.RemoveCurrentWaypoints()
 end)
 
 -- Filtering buttons
@@ -481,7 +479,6 @@ end
 -- Hide action
 function scanner_button:HideButton()
 	if (not InCombatLockdown()) then
-		GameTooltip:Hide()
 		scanner_button.ModelView:ClearModel()
 		scanner_button.ModelView:Hide()
 		scanner_button:Hide()
@@ -633,9 +630,6 @@ function RareScanner:OnInitialize()
 	-- Initialize setup panels
 	self:SetupOptions()
 
-	-- Initialize not discovered lists
-	RSMap.InitializeNotDiscoveredLists()
-
 	-- Setup our map provider
 	local provider = CreateFromMixins(RareScannerDataProviderMixin)
 	WorldMapFrame:AddDataProvider(provider);
@@ -654,9 +648,6 @@ function RareScanner:OnInitialize()
 
 	-- Load completed quests
 	RSQuestTracker.CacheAllCompletedQuestIDs()
-
-	-- Initialize special events
-	self:InitializeSpecialEvents()
 	
 	-- Hook hyperlink
 	RSHyperlinks.HookHyperLinks()
@@ -670,10 +661,6 @@ function RareScanner:OnInitialize()
 	RSCommandLine.Initialize(self)
 
 	RSLogger:PrintDebugMessage("Cargado")
-end
-
-function RareScanner:InitializeSpecialEvents()
-	RareScanner:ShadowlandsPrePatch_Initialize()
 end
 
 local function RefreshDatabaseData(previousDbVersion)
@@ -906,6 +893,9 @@ local function RefreshDatabaseData(previousDbVersion)
 		RSMinimap.RefreshAllData(true)
 	end)
 	
+	-- Clear already found entities not in the database that maybe now are included
+	RSGeneralDB.RefreshAlreadyFoundEntitiesNoDB()
+	
 	-- Clear previous overlay if active when closed the game
 	RSGeneralDB.RemoveAllOverlayActive()
 end
@@ -1053,6 +1043,11 @@ function RareScanner:InitializeDataBase()
 	if (currentDbVersion) then
 		version = currentDbVersion.version
 		databaseUpdated = currentDbVersion.version == RSConstants.CURRENT_DB_VERSION
+	
+		-- Refresh list while working on the addon
+		if (RSConstants.DEBUG_MODE) then
+			RSGeneralDB.RefreshAlreadyFoundEntitiesNoDB()
+		end
 	end
 	if (not databaseUpdated) then
 		UpdateRareNamesDB(version); -- Internally calls to RefreshDatabaseData once its done

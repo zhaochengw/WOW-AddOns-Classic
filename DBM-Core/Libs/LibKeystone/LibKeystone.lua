@@ -1,7 +1,7 @@
 --@curseforge-project-slug: libkeystone@
 if WOW_PROJECT_ID ~= 1 then return end -- Retail
 
-local LKS = LibStub:NewLibrary("LibKeystone", 7)
+local LKS = LibStub:NewLibrary("LibKeystone", 10)
 if not LKS then return end -- No upgrade needed
 
 LKS.callbackMap = LKS.callbackMap or {}
@@ -103,7 +103,7 @@ end
 
 local SendAddonMessage, CTimerNewTimer = C_ChatInfo.SendAddonMessage, C_Timer.NewTimer
 local GetTime = GetTime
-local next = next
+local next, securecallfunction = next, securecallfunction
 local throttleTime = 3 -- Seconds
 do
 	local throttleTable = {
@@ -125,7 +125,7 @@ do
 			if IsInGroup() then
 				local keyLevel, keyChallengeMapID, playerRating = GetInfo()
 				local result = SendAddonMessage("LibKS", format("%d,%d,%d", keyLevel, keyChallengeMapID, playerRating), "PARTY")
-				if result == 9 then
+				if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 					timerTable.PARTY = CTimerNewTimer(throttleTime, SendToParty)
 				end
 			end
@@ -141,7 +141,7 @@ do
 					keyLevel, keyChallengeMapID = -1, -1
 				end
 				local result = SendAddonMessage("LibKS", format("%d,%d,%d", keyLevel, keyChallengeMapID, playerRating), "GUILD")
-				if result == 9 then
+				if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 					timerTable.GUILD = CTimerNewTimer(throttleTime, SendToGuild)
 				end
 			end
@@ -162,7 +162,7 @@ do
 				throttleTable.PARTY = t
 				functionTable.PARTY()
 			elseif not timerTable.PARTY then
-				timerTable.PARTY = CTimerNewTimer(throttleTime, functionTable.PARTY)
+				timerTable.PARTY = CTimerNewTimer((throttleTime+0.1)-(t-throttleTable.PARTY), functionTable.PARTY)
 			end
 		end
 	end
@@ -176,7 +176,7 @@ do
 						throttleTable[channel] = t
 						functionTable[channel]()
 					elseif not timerTable[channel] then
-						timerTable[channel] = CTimerNewTimer(throttleTime, functionTable[channel])
+						timerTable[channel] = CTimerNewTimer((throttleTime+0.1)-(t-throttleTable[channel]), functionTable[channel])
 					end
 					return
 				end
@@ -188,7 +188,7 @@ do
 					local playerRating = tonumber(playerRatingStr)
 					if keyLevel and keyChallengeMapID and playerRating then
 						for _,func in next, callbackMap do
-							func(keyLevel, keyChallengeMapID, playerRating, Ambiguate(sender, "none"), channel)
+							securecallfunction(func, keyLevel, keyChallengeMapID, playerRating, Ambiguate(sender, "none"), channel)
 						end
 					end
 				end
@@ -231,7 +231,7 @@ do
 				keyLevel, keyChallengeMapID = -1, -1
 			end
 			for _,func in next, callbackMap do
-				func(keyLevel, keyChallengeMapID, playerRating, pName, channel) -- This allows us to show our own stats when not grouped
+				securecallfunction(func, keyLevel, keyChallengeMapID, playerRating, pName, channel) -- This allows us to show our own stats when not grouped
 			end
 			if statusCheckTable[channel]() then
 				local t = GetTime()

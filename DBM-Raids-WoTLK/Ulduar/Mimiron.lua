@@ -5,7 +5,8 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal,timewalker"
 end
 
-mod:SetRevision("20250408170354")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(33432)
 if mod:IsPostCata() then
 	mod:SetEncounterID(1138)
@@ -30,7 +31,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 63631 64529 62997 64570 64623",
 	"SPELL_CAST_SUCCESS 63027 63414",
 	"SPELL_AURA_APPLIED 63666 65026 64529 62997",
-	"SPELL_AURA_REMOVED 63666 65026 64529 62997",
+	"SPELL_AURA_REMOVED 63666 65026",
 	"SPELL_SUMMON 63811",
 	"UNIT_SPELLCAST_CHANNEL_STOP",
 	"UNIT_SPELLCAST_SUCCEEDED",--BOSS ids still left out because classic is still using it for rocket strike
@@ -70,7 +71,6 @@ local timerBombExplosion			= mod:NewCastTimer(15, 65333, nil, nil, nil, 3)
 
 mod:AddSetIconOption("SetIconOnNapalm", 63666, false, 0, {1, 2, 3, 4, 5, 6, 7})
 mod:AddSetIconOption("SetIconOnPlasmaBlast", 64529, false, 0, {8})
-mod:AddRangeFrameOption("6")
 
 mod:GroupSpells(63274, 63414)--Spinning Up and P3Wx2
 
@@ -108,18 +108,10 @@ function mod:OnCombatStart(delay)
 	table.wipe(napalmShellTargets)
 	timerPlasmaBlastCD:Start(16.8-delay)
 	timerShockBlastCD:Start(20.7-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(6)
-	end
 	self:SetWipeTime(15)
 	self:Schedule(15, unfuckWipeTimer, self)
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 63631 then
@@ -290,9 +282,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 --			end
 			timerRocketStrikeCD:Start(62)
 			timerNextP3Wx2LaserBarrage:Start(75)
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
 		elseif self:GetStage(3) then
 			timerP3Wx2LaserBarrageCast:Stop()
 			timerNextP3Wx2LaserBarrage:Stop()
@@ -343,9 +332,6 @@ function mod:OnSync(event, args)
 --		end
 		timerRocketStrikeCD:Start(57.7)
 		timerNextP3Wx2LaserBarrage:Start(70.9)
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 	elseif event == "Phase3" and self:GetStage(2) then
 		self:SetStage(3)
 		timerP3Wx2LaserBarrageCast:Stop()

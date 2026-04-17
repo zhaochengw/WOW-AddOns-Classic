@@ -41,12 +41,7 @@ local classToLetter = {
 
 local SaveRaidRoster,SaveCurrentRaidRoster
 
-local C_Calendar_GetDate
-if ExRT.isClassic then
-	C_Calendar_GetDate = C_DateAndTime.GetTodaysDate
-else
-	C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime
-end
+local C_Calendar_GetDate = C_DateAndTime.GetCurrentCalendarTime or C_DateAndTime.GetTodaysDate
 
 function module.options:Load()
 	local UpdatePersonalData,UpdateData

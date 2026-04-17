@@ -2,7 +2,8 @@ if DBM:IsPostMidnight() then return end
 local mod	= DBM:NewMod("DeOtherSideTrash", "DBM-Party-Shadowlands", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260112042022")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetZone(2291)
 --mod:SetModelID(47785)
 

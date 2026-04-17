@@ -123,7 +123,7 @@ MT.BuildEnv('TOOLTIP');
 		local _, unit = Tooltip:GetUnit();
 		if unit ~= nil then
 			local name, realm = UnitName(unit);
-			if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+			if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 				name = name .. "-" .. realm;
 			end
 			if name == _name then
@@ -156,7 +156,7 @@ MT.BuildEnv('TOOLTIP');
 				AddReservedLines(Tooltip);
 				--
 				local name, realm = UnitName(unit);
-				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 					name = name .. "-" .. realm;
 				end
 				local _, tal, gly, inv = MT.CacheEmulateComm(name, realm, false, VT.SET.talents_in_tip, VT.SET.itemlevel_in_tip, VT.SET.itemlevel_in_tip);
@@ -184,7 +184,7 @@ MT.BuildEnv('TOOLTIP');
 				AddReservedLines(Tooltip);
 				--
 				local name, realm = UnitName(unit);
-				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 					name = name .. "-" .. realm;
 				end
 				local _, tal, gly, inv = MT.CacheEmulateComm(name, realm, false, VT.SET.talents_in_tip, VT.SET.itemlevel_in_tip, VT.SET.itemlevel_in_tip);
@@ -249,7 +249,7 @@ MT.BuildEnv('TOOLTIP');
 				local _, unit = UpdateFrame.Tooltip:GetUnit();
 				if unit ~= nil and UnitIsPlayer(unit) and UnitIsConnected(unit) then
 					local name, realm = UnitName(unit);
-					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 						name = name .. "-" .. realm;
 					end
 					if name == UpdateFrame.name and realm == UpdateFrame.realm then

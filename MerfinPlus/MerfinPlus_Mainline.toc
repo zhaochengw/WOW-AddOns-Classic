@@ -1,7 +1,7 @@
-## Interface: 110207, 120000, 120001
+## Interface: 110207, 120000, 120001, 120005
 ## Title: MerfinPlus
 ## Author: Merfin
-## Version: 2.24
+## Version: 2.37
 ## X-Website: discord.gg/merfin
 ## X-Flavor: Mainline
 ## Notes: Inserts Merfin media into LibSharedMedia's storage.
@@ -24,8 +24,8 @@
 
 libs\libs.xml
 Localizations\locales_addon.lua
-#MerfinPlus.lua
-#Options.lua
+MerfinPlus.lua
+Options.lua
 Media\Media.xml
 #WeakAuras_API\WeakAuras_API.xml
 Localizations\localizations.xml

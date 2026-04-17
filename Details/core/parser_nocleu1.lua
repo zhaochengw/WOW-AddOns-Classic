@@ -17,6 +17,8 @@ local L = {}
 local debugMode = false
 local debugTime = GetTime()
 local debugTexts = {}
+local cantStartUpdater = nil
+local updaterTicker
 
 local printDebug = function(...)
     if debugMode then
@@ -42,7 +44,7 @@ local combatEndTime = 0 --GetTime()
 local storedSessionIds = {}
 --store information about a stored session
 ---@type table<number, sessioncache>
-local sessionCache
+local segmentInfoCache
 
 local arenaSessionIdStart = 0
 local battlegroundSessionIdStart = 0
@@ -78,6 +80,7 @@ local latestEncounterSessionId = 0
 ---@field difficultyName string?
 
 Details.PvPPlayers = {}
+local id = "ID"
 
 ---@class sessionmythicplus : table
 ---@field startTime number
@@ -108,10 +111,12 @@ local mythicPlusInfo = {
 local currentZoneType = "none"
 
 ---@class bparser : table
+---@field lastEventTime number
+---@field guidCache table
 ---@field InSecretLockdown fun():boolean
 ---@field ShowTooltip fun(instance:instance, instanceLine:detailsline)
 ---@field IsDamageMeterSwapped fun():boolean
----@field GetDamageMeterTypeFromDisplay fun(mainDisplay:number, subDisplay:number):number
+---@field GetAttributeTypeFromDisplay fun(mainDisplay:number, subDisplay:number):number
 ---@field ToggleDamageMeterSwap fun() : boolean return value is true if swapped, false if not swapped
 ---@field UpdateDamageMeterSwap fun()
 ---@field ChangeSegment fun(blzWindow:blzwindow, sessionType:damagemeter_session_type|nil, sessionId:number|nil)
@@ -120,10 +125,12 @@ local currentZoneType = "none"
 ---@field UpdateDamageMeterAppearance fun(blzWindow:blzwindow)
 ---@field UpdateAllDamageMeterWindowsAppearance fun()
 ---@field SetSessionCache fun(t:table)
+---@field IsClean fun():boolean
 ---@field WipeStoredSessionIds fun()
 ---@field IsServerSideSessionOpen fun(sessionId:number?):boolean if the sessionId is nil, checks the current session
 ---@field WaitServerDropCombat fun(callback:function)
 ---@field ResetServerDM fun()
+---@field GetSpells fun(sessionType:number, sessionID:number, damageMeterType:number, sourceGUID:string, isPlayer:boolean):damagemeter_unit_spells
 
 local debugFrame = CreateFrame("frame", "DetailsParserDebugFrame2", UIParent)
 
@@ -150,14 +157,9 @@ end
 
 ---@type bparser
 local bParser = Details222.BParser
+bParser.lastEventTime = 0
 
---tooltip settings
-local tooltipAmountOfLines = 20
-local tooltipLineHeight = 20
-local tooltipFontStringPadding = 6 --space between each font string horizontally
-local tooltipPadding = 1 --space between each line
-local cantStartUpdater = false
-local updaterTicker = nil
+local segmentbyType = "Type"
 
 function bParser.InSecretLockdown()
     return bRegenIsDisabled
@@ -173,66 +175,156 @@ function bParser.GetPlayerTargetGUID()
     return targetGUID
 end
 
-local isSessionIdStored = function(sessionId)
-    return storedSessionIds[sessionId] == true
+local isSessionIdStored = function(segmentId)
+    return storedSessionIds[segmentId] == true
 end
-local storeSessionId = function(sessionId)
-    storedSessionIds[sessionId] = true
+local storeSessionId = function(segmentId)
+    storedSessionIds[segmentId] = true
 end
-local wipeStoredSessionIds = function()
+local wipeStoredSegmentsDataIds = function()
     if storedSessionIds then
         table.wipe(storedSessionIds)
     end
-    if sessionCache then
-        table.wipe(sessionCache)
+    if segmentInfoCache then
+        table.wipe(segmentInfoCache)
     end
 end
-bParser.WipeStoredSessionIds = wipeStoredSessionIds
+bParser.WipeStoredSessionIds = wipeStoredSegmentsDataIds
 
-local getSessionCombatTime = function(sessionId)
-    local session = sessionCache[sessionId]
-    if session then
-        local startTime = session.startTime
-        local endTime = session.endTime or GetTime()
+local getSegmentCombatTime = function(segmentId)
+    local segmentCache = segmentInfoCache[segmentId]
+    if segmentCache then
+        local startTime = segmentCache.startTime
+        local endTime = segmentCache.endTime or GetTime()
         return endTime - startTime
     end
     return 0
 end
-local removeFromSessionCache = function(sessionId)
-    sessionCache[sessionId] = nil
+local removeSegmentInfoFromCache = function(segmentId)
+    segmentInfoCache[segmentId] = nil
 end
 
-local getSessionStartAndEndTime = function(sessionId)
-    local info = sessionCache[sessionId]
-    if info then
-        return info.startTime, info.endTime
+local getSessionStartAndEndTime = function(segmentId)
+    local segmentCache = segmentInfoCache[segmentId]
+    if segmentCache then
+        return segmentCache.startTime, segmentCache.endTime
     end
     return 0, 0
 end
 
-local getAmountOfSessions = function()
-    return #C_DamageMeter.GetAvailableCombatSessions()
+local getAmountOfSegments = function()
+    return Details222.B.GetAmountOfSegments()
 end
 
-local getCurrentSessionId = function()
+local getCurrentCombatIdentifier = function()
     ---@type damagemeter_availablecombat_session[]
-    local sessions = C_DamageMeter.GetAvailableCombatSessions()
-    if #sessions > 0 then
-        return sessions[#sessions].sessionID
+    local allSegments = Details222.B.GetAllSegments()
+    if #allSegments > 0 then
+        return allSegments[#allSegments].sessionID
     end
     return 0
 end
 
-local getDetailsSegmentIdFromSession = function(sessionId)
+local getDetailsSegmentIdFromSegment = function(sessionId)
     ---@type damagemeter_availablecombat_session[]
-    local sessions = C_DamageMeter.GetAvailableCombatSessions()
-    for i = 1, #sessions do
-        if sessions[i].sessionID == sessionId then
-           local thisSessionName = sessions[i].name
-           local thisSessionId = sessions[i].sessionID
+    local allSegments = Details222.B.GetAllSegments()
+    for i = 1, #allSegments do
+        if allSegments[i].sessionID == sessionId then
+           local thisSessionName = allSegments[i].name
+           local thisSessionId = allSegments[i].sessionID
            return thisSessionName .. thisSessionId
         end
     end
+end
+
+local language = GetLocale()
+local useAsianAbbreviations = language == "zhCN" or language == "zhTW" or language == "koKR"
+
+local SECOND_NUMBER_CAP_NO_SPACE = "億"
+local FIRST_NUMBER_CAP_NO_SPACE = "萬"
+
+if detailsFramework.IsAddonApocalypseWow() then
+    local abbreviateOptionsDamage =
+    {
+        {
+            breakpoint = 1000000000,
+            abbreviation = useAsianAbbreviations and "THIRD_NUMBER_CAP_NO_SPACE" or "B",
+            significandDivisor = 10000000,
+            fractionDivisor = 100,
+            abbreviationIsGlobal = useAsianAbbreviations
+        },
+        {
+            breakpoint = 1000000,
+            abbreviation = useAsianAbbreviations and "SECOND_NUMBER_CAP_NO_SPACE" or "M",
+            significandDivisor = 10000,
+            fractionDivisor = 100,
+            abbreviationIsGlobal = useAsianAbbreviations
+        },
+        {
+            breakpoint = 10000,
+            abbreviation = useAsianAbbreviations and "FIRST_NUMBER_CAP_NO_SPACE" or "K",
+            significandDivisor = 1000,
+            fractionDivisor = 1,
+            abbreviationIsGlobal = useAsianAbbreviations,
+        },
+        {
+            breakpoint = 1000,
+            abbreviation = useAsianAbbreviations and "FIRST_NUMBER_CAP_NO_SPACE" or "K",
+            significandDivisor = 100,
+            fractionDivisor = 10,
+            abbreviationIsGlobal = useAsianAbbreviations,
+        },
+        {
+            breakpoint = 1,
+            abbreviation = "",
+            significandDivisor = 1,
+            fractionDivisor = 1,
+            abbreviationIsGlobal = false
+        },
+    }
+
+    local abbreviateOptionsDPS =
+    {
+        {
+            breakpoint = 1000000000,
+            abbreviation = useAsianAbbreviations and "THIRD_NUMBER_CAP_NO_SPACE" or "B",
+            significandDivisor = 10000000,
+            fractionDivisor = 100,
+            abbreviationIsGlobal = useAsianAbbreviations
+        },
+        {
+            breakpoint = 1000000,
+            abbreviation = useAsianAbbreviations and "SECOND_NUMBER_CAP_NO_SPACE" or "M",
+            significandDivisor = 10000,
+            fractionDivisor = 100,
+            abbreviationIsGlobal = useAsianAbbreviations
+        },
+        {
+            breakpoint = 1000,
+            abbreviation = useAsianAbbreviations and "FIRST_NUMBER_CAP_NO_SPACE" or "K",
+            significandDivisor = 100,
+            fractionDivisor = 10,
+            abbreviationIsGlobal = useAsianAbbreviations,
+        },
+        {
+            breakpoint = 1,
+            abbreviation = "",
+            significandDivisor = 1,
+            fractionDivisor = 1,
+            abbreviationIsGlobal = false
+        },
+    }
+
+    local abbreviateSettingsDamage
+    local abbreviateSettingsDPS
+
+    abbreviateSettingsDamage = CreateAbbreviateConfig(abbreviateOptionsDamage)
+    abbreviateSettingsDamage = {config = abbreviateSettingsDamage}
+    Details.abbreviateOptionsDamage = abbreviateSettingsDamage
+
+    abbreviateSettingsDPS = CreateAbbreviateConfig(abbreviateOptionsDPS)
+    abbreviateSettingsDPS = {config = abbreviateSettingsDPS}
+    Details.abbreviateOptionsDPS = abbreviateSettingsDPS
 end
 
 --debug function
@@ -247,50 +339,35 @@ end
 
 local doesSessionExists = function(sessionId)
     ---@type damagemeter_availablecombat_session[]
-    local sessions = C_DamageMeter.GetAvailableCombatSessions()
-    for i = 1, #sessions do
-        if sessions[i].sessionID == sessionId then
+    local allSegments = Details222.B.GetAllSegments()
+    for i = 1, #allSegments do
+        if allSegments[i].sessionID == sessionId then
             return true
         end
     end
     return false
 end
 
----@class sessioncache : table
----@field startTime number
----@field endTime number?
----@field startUnixTime number
----@field endUnixTime number?
----@field startDate string
----@field endDate string?
----@field sessionId number
----@field added boolean?
----@field detailsId string?
----@field sessionName string?
----@field encounterId number?
----@field encounterName string?
----@field encounterData encounterdata?
-
-local getSession = function(sessionId)
-    return sessionCache[sessionId]
+local getSegmentInfoFromCache = function(sessionId)
+    return segmentInfoCache[sessionId]
 end
 
-local createAndAddSession = function(sessionId)
-    local session = getSession(sessionId)
-    if not session then
+local createAndAddSession = function(segmentId)
+    local thisCachedSegment = getSegmentInfoFromCache(segmentId)
+    if not thisCachedSegment then
         ---@type sessioncache
-        local newSession = {
+        local newCache = {
             startTime = GetTime(),
             startUnixTime = time(),
             startDate = date("%H:%M:%S"),
-            sessionId = sessionId,
+            sessionId = segmentId,
             added = false,
-            detailsId = getDetailsSegmentIdFromSession(sessionId),
+            detailsId = getDetailsSegmentIdFromSegment(segmentId),
         }
-        sessionCache[sessionId] = newSession
-        return newSession
+        segmentInfoCache[segmentId] = newCache
+        return newCache
     else
-        return session
+        return thisCachedSegment
         --[[
         local timeNow = time()
         if session.startUnixTime+15 < timeNow then
@@ -306,13 +383,14 @@ local createAndAddSession = function(sessionId)
 end
 
 local getSessions = function()
-    return sessionCache
+    return segmentInfoCache
 end
 
 local StopUpdaterAndClearWindow
 
 ---@type table<number, guid>
 local guidCache = {}
+bParser.guidCache = guidCache
 
 ---@class details222
 ---@field DLC12_Combat_Data table
@@ -410,7 +488,7 @@ local prototype = {
 local buildPlayerData = function(data, sessionID)
     for damageMeterType = 0, 7 do
         ---@type damagemeter_combat_session
-        local session = C_DamageMeter.GetCombatSessionFromID(sessionID, damageMeterType)
+        local session = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, sessionID, damageMeterType)
         local players = session.combatSources
 
         for i = 1, #players do
@@ -428,29 +506,29 @@ local buildPlayerData = function(data, sessionID)
             thisData.class = source.classFilename
             thisData.isPlayer = source.isLocalPlayer
 
-                if (damageMeterType == Enum.DamageMeterType.DamageDone) then
-                thisData.damage = source.totalAmount
-                thisData.dps = source.amountPerSecond
+                if (damageMeterType == 0) then
+                thisData.damage = source.total
+                thisData.dps = source.perSecond
 
-            elseif (damageMeterType == Enum.DamageMeterType.HealingDone) then
-                thisData.healing = source.totalAmount
-                thisData.hps = source.amountPerSecond
+            elseif (damageMeterType == 2) then
+                thisData.healing = source.total
+                thisData.hps = source.perSecond
 
-            elseif (damageMeterType == Enum.DamageMeterType.Absorbs) then
-                thisData.absorbs = source.totalAmount
-                thisData.aps = source.amountPerSecond
+            elseif (damageMeterType == 3) then
+                thisData.absorbs = source.total4
+                thisData.aps = source.perSecond
 
-            elseif (damageMeterType == Enum.DamageMeterType.Interrupts) then
-                thisData.interrupts = source.totalAmount
-                thisData.ips = source.amountPerSecond
+            elseif (damageMeterType == 4) then
+                thisData.interrupts = source.total
+                thisData.ips = source.perSecond
 
-            elseif (damageMeterType == Enum.DamageMeterType.Dispels) then
-                thisData.dispels = source.totalAmount
-                thisData.dips = source.amountPerSecond
+            elseif (damageMeterType == 5) then
+                thisData.dispels = source.total
+                thisData.dips = source.perSecond
 
-            elseif (damageMeterType == Enum.DamageMeterType.DamageTaken) then
-                thisData.damageTaken = source.totalAmount
-                thisData.dtps = source.amountPerSecond
+            elseif (damageMeterType == 6) then
+                thisData.damageTaken = source.total
+                thisData.dtps = source.perSecond
             end
         end
     end
@@ -466,15 +544,25 @@ end
 ---@param sessionID damagemeter_session_type|segmentid
 ---@param damageMeterType damagemeter_type
 ---@param sourceGUID guid
+---@param isPlayer boolean
 ---@return damagemeter_unit_spells sourceSpells
-local getSourceSpells = function(sessionType, sessionID, damageMeterType, sourceGUID)
-    if (sessionType == DAMAGE_METER_SESSIONPARAMETER_TYPE) then
-        return C_DamageMeter.GetCombatSessionSourceFromType(sessionID, damageMeterType, sourceGUID)
-    elseif (sessionType == DAMAGE_METER_SESSIONPARAMETER_ID) then
-        return C_DamageMeter.GetCombatSessionSourceFromID(sessionID, damageMeterType, sourceGUID)
+local getSpells = function(sessionType, sessionID, damageMeterType, sourceGUID, isPlayer)
+    if (sessionType <= 1) then
+        if isPlayer then
+            return Details222.B.GetSpells(DETAILS_SEGMENTTYPE_TYPE, sessionType, damageMeterType, UnitGUID("player"))
+        else
+            return Details222.B.GetSpells(DETAILS_SEGMENTTYPE_TYPE, sessionType, damageMeterType, sourceGUID)
+        end
+    else
+        if isPlayer then
+            return Details222.B.GetSpells(DETAILS_SEGMENTTYPE_ID, sessionID, damageMeterType, UnitGUID("player"))
+        else
+            return Details222.B.GetSpells(DETAILS_SEGMENTTYPE_ID, sessionID, damageMeterType, sourceGUID)
+        end
     end
     return {maxAmount = 0, combatSpells = {}}
 end
+bParser.GetSpells = getSpells
 
 ---@param instance instance
 local doTrick = function(instance) --~trick
@@ -492,6 +580,10 @@ local doTrick = function(instance) --~trick
 end
 
 local doUpdate = function()
+    if Details:IsUsingBlizzardAPI() then
+        return
+    end
+
     Details.no_fade_animation = true
     Details:InstanceCallDetailsFunc(Details.UpdateCombatObjectInUse)
     Details:RefreshMainWindow(-1, true)
@@ -509,20 +601,32 @@ end
 ---@param sessionId number
 ---@return boolean hasSources
 ---@return number amountOfSources
-local hasSources = function(sessionId)
-    ---@type damagemeter_combat_session
-    local blzDamageContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageDone)
-    if #blzDamageContainer.combatSources > 0 then
-        return true, #blzDamageContainer.combatSources
+local hasAnyActor = function(sessionId)
+    do
+        local thisSegment = Details222.B.GetSegment(id, sessionId, 0)
+        local listOfActors, actorAmount = Details:GetActorsFromSegment(thisSegment)
+        if actorAmount > 0 then
+            return true, actorAmount
+        end
     end
 
-    ---@type damagemeter_combat_session
-    local blzHealContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.HealingDone)
-    if #blzHealContainer.combatSources > 0 then
-        return true, #blzHealContainer.combatSources
+    do
+        local thisSegment = Details222.B.GetSegment(id, sessionId, 2)
+        local listOfActors, actorAmount = Details:GetActorsFromSegment(thisSegment)
+        if actorAmount > 0 then
+            return true, actorAmount
+        end
     end
 
     return false, 0
+end
+
+function bParser.IsClean()
+    local segment = Details222.B.GetSegment(segmentbyType, 1, 0)
+    if segment and segment.combatSources then
+        return #segment.combatSources < 1
+    end
+    return false
 end
 
 local doesSessionHasSources = function(session)
@@ -531,10 +635,10 @@ end
 
 local containerIsOpen = function(sessionId, combatType)
     ---@type damagemeter_combat_session
-    local damageMeterContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, combatType)
-    local actorList = damageMeterContainer.combatSources
-    if #actorList > 0 then
-        for i = 1, #actorList do
+    local segment = Details222.B.GetSegment(id, sessionId, combatType)
+    local actorList, actorAmount = Details:GetActorsFromSegment(segment)
+    if actorAmount > 0 then
+        for i = 1, actorAmount do
             ---@type damagemeter_combat_source
             local source = actorList[i]
             local sourceName = source.name
@@ -549,21 +653,34 @@ local containerIsOpen = function(sessionId, combatType)
     end
 end
 
+local getcache = function(s)
+    wipe(guidCache)
+    local cache, result = {}, {}
+    for i = 1, #s do
+        local thisId = s[i].specIconID
+        if thisId then
+            result[thisId] = (not cache[thisId] and true) or false
+            cache[thisId] = true
+        end
+    end
+    return result
+end
+
 ---@return boolean
 ---@return string|nil nameField
 ---@return string|nil guidField
 ---@return string|nil amountDoneField
 ---@return string|nil classField
-local isServerSideSessionOpen = function(sessionId)
-    if sessionId then
+local isServerSideSessionOpen = function(segmentId)
+    if segmentId then
         for combatType = 0, CONST_MAX_DAMAGEMETER_TYPES do
-            local isSecret, nameSecret, guidSecret, amountDoneSecret, classSecret = containerIsOpen(sessionId, combatType)
+            local isSecret, nameSecret, guidSecret, amountDoneSecret, classSecret = containerIsOpen(segmentId, combatType)
             if isSecret then
                 return true, nameSecret, guidSecret, amountDoneSecret, classSecret
             end
         end
     else
-        local currentSessionId = getCurrentSessionId()
+        local currentSessionId = getCurrentCombatIdentifier()
         for thisSession = currentSessionId, currentSessionId-2, -1 do
             if thisSession > 0 then
                 for combatType = 0, CONST_MAX_DAMAGEMETER_TYPES do
@@ -639,263 +756,248 @@ local startWaitSecretDropTimer = function(sessionId)
     end)
 end
 
-
-
 ---@param parameterType any
 ---@param session sessioncache
 ---@param bIsUpdate boolean|nil
 local addSegment = function(parameterType, session, bIsUpdate, detailsId)
-    local sessionId = session.sessionId
-    if not sessionId then
+    local identifier = session.sessionId
+    if not identifier then
         dumpt(session)
     end
 
     ---@type combat
     local currentCombat
+    local segments = Details222.B.GetAllCombatTypes(DETAILS_SEGMENTTYPE_ID, identifier)
+    local damageContainer, healingContainer, utilityContainer
 
-    -------DAMAGE DONE
-    ---@type damagemeter_combat_session
-    local blzDamageContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageDone)
-    local damageActorList = blzDamageContainer.combatSources
-
-    if not bIsUpdate then
-        Details222.StartCombat()
-        currentCombat = Details:GetCurrentCombat()
-    else
-        ---@diagnostic disable-next-line: cast-local-type
-        currentCombat = Details:GetCombatWithSessionId(detailsId)
-        if currentCombat then
-            currentCombat.totals[1] = 0
-            currentCombat.totals[2] = 0
-            currentCombat.totals_grupo[1] = 0
-            currentCombat.totals_grupo[2] = 0
-            currentCombat.totals[4].interrupt = 0
-            currentCombat.totals_grupo[4].interrupt = 0
-            currentCombat.totals[4].dispell = 0
-            currentCombat.totals_grupo[4].dispell = 0
-        else
+    do
+        local damageActorList = Details222.B.GetSegmentInfo(segments[1])
+        if not bIsUpdate then
             Details222.StartCombat()
             currentCombat = Details:GetCurrentCombat()
-            bIsUpdate = false
+        else
+            ---@diagnostic disable-next-line: cast-local-type
+            currentCombat = Details:GetCombatWithSessionId(detailsId)
+            if currentCombat then
+                currentCombat.totals[1] = 0
+                currentCombat.totals[2] = 0
+                currentCombat.totals_grupo[1] = 0
+                currentCombat.totals_grupo[2] = 0
+                currentCombat.totals[4].interrupt = 0
+                currentCombat.totals_grupo[4].interrupt = 0
+                currentCombat.totals[4].dispell = 0
+                currentCombat.totals_grupo[4].dispell = 0
+            else
+                Details222.StartCombat()
+                currentCombat = Details:GetCurrentCombat()
+                bIsUpdate = false
+            end
+        end
+
+        damageContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+        healingContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_HEAL)
+        utilityContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_MISC)
+
+        local order = Details:GetOrderNumber()
+        local canAddToCache = getcache(damageActorList)
+        for i = 1, #damageActorList do
+            local thisActor = damageActorList[i]
+            local actorName = thisActor.name
+            local actorSerial = thisActor.sourceGUID
+            local totalAmount = thisActor.totalAmount
+            local class = thisActor.classFilename
+            local icon = thisActor.specIconID
+
+            local actor = damageContainer:GetOrCreateActor(actorSerial, actorName, 0x512, true)
+            actor.nome = actorName
+            actor.total = totalAmount
+            actor.classe = class
+            actor.last_dps = thisActor.amountPerSecond
+            actor.specIcon = icon
+            actor.serial = actorSerial
+            actor.grupo = true
+            if (icon and canAddToCache[icon]) then
+                guidCache[icon]= actorSerial
+            end
+
+            currentCombat.totals[1] = currentCombat.totals[1] + totalAmount
+            currentCombat.totals_grupo[1] = currentCombat.totals_grupo[1] + totalAmount
+
+            --spells
+            local spells = getSpells(parameterType, identifier, Enum.DamageMeterType.DamageDone, thisActor.sourceGUID)
+            for j = 1, #spells.combatSpells do
+                local thisSpell = spells.combatSpells[j]
+                local bCanCreateSpellIfMissing = true
+                local spellTable = actor.spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_DAMAGE")
+                spellTable.total = thisSpell.totalAmount
+                spellTable.id = thisSpell.spellID
+                spellTable.counter = 1
+                --thisSpell.creatureName
+                --thisSpell.combatSpellDetails
+            end
         end
     end
 
-    local damageContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
-    local healingContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_HEAL)
-    local utilityContainer = currentCombat:GetContainer(DETAILS_ATTRIBUTE_MISC)
-
-    --pull deathlog data and parse it
-
-    local order = Details:GetOrderNumber()
-
-    for i = 1, #damageActorList do
-        ---@type damagemeter_combat_source
-        local source = damageActorList[i]
-
-        local sourceName = source.name
-        local sourceGUID = source.sourceGUID
-
-        if issecretvalue(sourceName) then
-            local stateCombat = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Combat)
-            local stateEncounter = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Encounter)
-            local stateChallengeMode = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.ChallengeMode)
-            local pvp = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.PvPMatch)
-            local map = C_RestrictedActions.GetAddOnRestrictionState(Enum.AddOnRestrictionType.Map)
-
-            Details:Msg("(2) Value is secret and an error will occur, Restrictions in place:", stateCombat, stateEncounter, stateChallengeMode, pvp, map)
-        end
-
-        ---@type actordamage
-        local actor = damageContainer:GetOrCreateActor(sourceGUID, sourceName, 0x512, true)
-
-        actor.nome = sourceName
-        actor.total = source.totalAmount
-        actor.classe = source.classFilename
-        actor.last_dps = source.amountPerSecond
-        actor.specIcon = source.specIconID
-        actor.serial = sourceGUID
-        actor.grupo = true
-
-        if source.specIconID and not guidCache[source.specIconID] then
-            guidCache[source.specIconID] = sourceGUID
-        end
-
-        currentCombat.totals[1] = currentCombat.totals[1] + source.totalAmount
-        currentCombat.totals_grupo[1] = currentCombat.totals_grupo[1] + source.totalAmount
-
-        --spells
-        local spells = getSourceSpells(parameterType, sessionId, Enum.DamageMeterType.DamageDone, source.sourceGUID)
-        for j = 1, #spells.combatSpells do
-            local thisSpell = spells.combatSpells[j]
-            local bCanCreateSpellIfMissing = true
-            local spellTable = actor.spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_DAMAGE")
-            spellTable.total = thisSpell.totalAmount
-            spellTable.id = thisSpell.spellID
-            spellTable.counter = order
-            --thisSpell.creatureName
-            --thisSpell.combatSpellDetails
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[8])
+        for i = 1, #actorList do
+            local thisActor = actorList[i]
+            local actor = damageContainer:GetOrCreateActor(thisActor.sourceGUID, thisActor.name, 0x512, true)
+            actor.nome = thisActor.name
+            actor.damage_taken = thisActor.totalAmount
+            actor.damage_taken_ps = thisActor.amountPerSecond
+            actor.classe = thisActor.classFilename
+            actor.last_dps = actor.last_dps
+            actor.specIcon = thisActor.specIconID
+            actor.serial = thisActor.sourceGUID
+            actor.grupo = true
         end
     end
 
-    -------DAMAGE TAKEN
-    ---@type damagemeter_combat_session
-    local blzDamageTakenContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageTaken)
-    local damageTakenActorList = blzDamageTakenContainer.combatSources
-    for i = 1, #damageTakenActorList do
-        ---@type damagemeter_combat_source
-        local source = damageTakenActorList[i]
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[3])
+        for i = 1, #actorList do
+            local thisActor = actorList[i]
+            local actor = healingContainer:GetOrCreateActor(thisActor.sourceGUID, thisActor.name, 0x512, true)
+            actor.nome = thisActor.name
+            actor.total = thisActor.totalAmount
+            actor.classe = thisActor.classFilename
+            actor.last_hps = thisActor.amountPerSecond
+            actor.specIcon = thisActor.specIconID
+            actor.serial = thisActor.sourceGUID
+            actor.grupo = true
 
-        ---@type actordamage
-        local actor = damageContainer:GetOrCreateActor(source.sourceGUID, source.name, 0x512, true)
+            currentCombat.totals[2] = currentCombat.totals[2] + thisActor.totalAmount
+            currentCombat.totals_grupo[2] = currentCombat.totals_grupo[2] + thisActor.totalAmount
 
-        actor.nome = source.name
-        actor.damage_taken = source.totalAmount
-        actor.damage_taken_ps = source.amountPerSecond
-        actor.classe = source.classFilename
-        actor.last_dps = actor.last_dps
-        actor.specIcon = source.specIconID
-        actor.serial = source.sourceGUID
-        actor.grupo = true
-    end
-
-    -------HEALING DONE
-    ---@type damagemeter_combat_session
-    local blzHealingContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.HealingDone)
-    local healingActorList = blzHealingContainer.combatSources
-    for i = 1, #healingActorList do
-        ---@type damagemeter_combat_source
-        local source = healingActorList[i]
-
-        ---@type actorheal
-        local actor = healingContainer:GetOrCreateActor(source.sourceGUID, source.name, 0x512, true)
-
-        actor.nome = source.name
-        actor.total = source.totalAmount
-        actor.classe = source.classFilename
-        actor.last_hps = source.amountPerSecond
-        actor.specIcon = source.specIconID
-        actor.serial = source.sourceGUID
-        actor.grupo = true
-
-        currentCombat.totals[2] = currentCombat.totals[2] + source.totalAmount
-        currentCombat.totals_grupo[2] = currentCombat.totals_grupo[2] + source.totalAmount
-
-        --spells
-        local spells = getSourceSpells(parameterType, sessionId, Enum.DamageMeterType.HealingDone, source.sourceGUID)
-        for j = 1, #spells.combatSpells do
-            local thisSpell = spells.combatSpells[j]
-            local bCanCreateSpellIfMissing = true
-            local spellTable = actor.spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_HEAL")
-            spellTable.total = thisSpell.totalAmount
-            spellTable.id = thisSpell.spellID
-            --thisSpell.creatureName
-            --thisSpell.combatSpellDetails
-            spellTable.counter = order
+            --spells
+            local spells = getSpells(parameterType, identifier, Enum.DamageMeterType.HealingDone, thisActor.sourceGUID)
+            for j = 1, #spells.combatSpells do
+                local thisSpell = spells.combatSpells[j]
+                local bCanCreateSpellIfMissing = true
+                local spellTable = actor.spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_HEAL")
+                spellTable.total = thisSpell.totalAmount
+                spellTable.id = thisSpell.spellID
+                --thisSpell.creatureName
+                --thisSpell.combatSpellDetails
+                spellTable.counter = 1
+            end
         end
     end
 
-    -------HEALING ABSORBS
-    ---@type damagemeter_combat_session
-    local blzHealingAbsorbsContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.Absorbs)
-    local healingAbsorbsActorList = blzHealingAbsorbsContainer.combatSources
-    for i = 1, #healingAbsorbsActorList do
-        ---@type damagemeter_combat_source
-        local source = healingAbsorbsActorList[i]
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[5])
+        for i = 1, #actorList do
+            ---@type damagemeter_combat_source
+            local thisActor = actorList[i]
 
-        ---@type actorheal
-        local actor = healingContainer:GetOrCreateActor(source.sourceGUID, source.name, 0x512, true)
+            ---@type actorheal
+            local actor = healingContainer:GetOrCreateActor(thisActor.sourceGUID, thisActor.name, 0x512, true)
 
-        actor.nome = source.name
-        actor.totalabsorb = source.totalAmount
-        actor.totalabsorb_ps = source.amountPerSecond
-        actor.classe = source.classFilename
-        actor.last_hps = actor.last_hps
-        actor.specIcon = source.specIconID
-        actor.serial = source.sourceGUID
-        actor.grupo = true
-    end
-
-    -------INTERRUPTS
-    ---@type damagemeter_combat_session
-    local blzInterruptsContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.Interrupts)
-    local interruptsActorList = blzInterruptsContainer.combatSources
-    for i = 1, #interruptsActorList do
-        ---@type damagemeter_combat_source
-        local source = interruptsActorList[i]
-
-        ---@type actorutility
-        local actor = utilityContainer:GetOrCreateActor(source.sourceGUID, source.name, 0x512, true)
-
-        actor.interrupt_cast_overlap = 0
-        actor.interrupt_targets = {}
-        actor.interrupt_spells = spellContainerClass:CreateSpellContainer(containerUtilityType)
-        actor.interrompeu_oque = {}
-
-        actor.nome = source.name
-        actor.interrupt = source.totalAmount + Details:GetOrderNumber()
-        actor.classe = source.classFilename
-        actor.specIcon = source.specIconID
-        actor.serial = source.sourceGUID
-        actor.grupo = true
-
-        currentCombat.totals[4].interrupt = currentCombat.totals[4].interrupt + 1
-        currentCombat.totals_grupo[4].interrupt = currentCombat.totals_grupo[4].interrupt + 1
-
-        --spells
-        local spells = getSourceSpells(parameterType, sessionId, Enum.DamageMeterType.Interrupts, source.sourceGUID)
-        for j = 1, #spells.combatSpells do
-            local thisSpell = spells.combatSpells[j]
-            local bCanCreateSpellIfMissing = true
-            local spellTable = actor.interrupt_spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_INTERRUPT")
-            spellTable.total = thisSpell.totalAmount
-            spellTable.id = thisSpell.spellID
-            --thisSpell.creatureName
-            --thisSpell.combatSpellDetails
-            spellTable.counter = order
+            actor.nome = thisActor.name
+            actor.totalabsorb = thisActor.totalAmount
+            actor.totalabsorb_ps = thisActor.amountPerSecond
+            actor.classe = thisActor.classFilename
+            actor.last_hps = actor.last_hps
+            actor.specIcon = thisActor.specIconID
+            actor.serial = thisActor.sourceGUID
+            actor.grupo = true
         end
     end
 
-    -------DISPELS
-    ---@type damagemeter_combat_session
-    local blzDispelsContainer = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.Dispels)
-    local dispelsActorList = blzDispelsContainer.combatSources
-    for i = 1, #dispelsActorList do
-        ---@type damagemeter_combat_source
-        local source = dispelsActorList[i]
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[6])
+        for i = 1, #actorList do
+            ---@type damagemeter_combat_source
+            local thisActor = actorList[i]
 
-        ---@type actorutility
-        local actor = utilityContainer:GetOrCreateActor(source.sourceGUID, source.name, 0x512, true)
-        actor.dispell_targets = {}
-        actor.dispell_spells = spellContainerClass:CreateSpellContainer(containerUtilityType)
-        actor.dispell_oque = {}
+            ---@type actorutility
+            local actor = utilityContainer:GetOrCreateActor(thisActor.sourceGUID, thisActor.name, 0x512, true)
 
-        actor.nome = source.name
-        actor.dispell = source.totalAmount + Details:GetOrderNumber()
-        actor.classe = source.classFilename
-        actor.specIcon = source.specIconID
-        actor.serial = source.sourceGUID
-        actor.grupo = true
+            actor.interrupt_cast_overlap = 0
+            actor.interrupt_targets = {}
+            actor.interrupt_spells = spellContainerClass:CreateSpellContainer(containerUtilityType)
+            actor.interrompeu_oque = {}
 
-        currentCombat.totals[4].dispell = currentCombat.totals[4].dispell + 1
-        currentCombat.totals_grupo[4].dispell = currentCombat.totals_grupo[4].dispell + 1
+            actor.nome = thisActor.name
+            actor.interrupt = thisActor.totalAmount + Details:GetOrderNumber()
+            actor.classe = thisActor.classFilename
+            actor.specIcon = thisActor.specIconID
+            actor.serial = thisActor.sourceGUID
+            actor.grupo = true
 
-        --spells
-        local spells = getSourceSpells(parameterType, Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.Dispels, source.sourceGUID)
-        for j = 1, #spells.combatSpells do
-            local thisSpell = spells.combatSpells[j]
-            local bCanCreateSpellIfMissing = true
-            local spellTable = actor.dispell_spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_DISPEL")
-            spellTable.total = thisSpell.totalAmount
-            spellTable.id = thisSpell.spellID
-            --thisSpell.creatureName
-            --thisSpell.combatSpellDetails
-            spellTable.counter = order
+            currentCombat.totals[4].interrupt = currentCombat.totals[4].interrupt + 1
+            currentCombat.totals_grupo[4].interrupt = currentCombat.totals_grupo[4].interrupt + 1
+
+            --spells
+            local spells = getSpells(parameterType, identifier, Enum.DamageMeterType.Interrupts, thisActor.sourceGUID)
+            for j = 1, #spells.combatSpells do
+                local thisSpell = spells.combatSpells[j]
+                local bCanCreateSpellIfMissing = true
+                local spellTable = actor.interrupt_spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_INTERRUPT")
+                spellTable.total = thisSpell.totalAmount
+                spellTable.id = thisSpell.spellID
+                --thisSpell.creatureName
+                --thisSpell.combatSpellDetails
+                spellTable.counter = 1
+            end
+        end
+    end
+
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[6])
+        for i = 1, #actorList do
+            ---@type damagemeter_combat_source
+            local thisActor = actorList[i]
+
+            ---@type actorutility
+            local actor = utilityContainer:GetOrCreateActor(thisActor.sourceGUID, thisActor.name, 0x512, true)
+            actor.dispell_targets = {}
+            actor.dispell_spells = spellContainerClass:CreateSpellContainer(containerUtilityType)
+            actor.dispell_oque = {}
+
+            actor.nome = thisActor.name
+            actor.dispell = thisActor.totalAmount + Details:GetOrderNumber()
+            actor.classe = thisActor.classFilename
+            actor.specIcon = thisActor.specIconID
+            actor.serial = thisActor.sourceGUID
+            actor.grupo = true
+
+            currentCombat.totals[4].dispell = currentCombat.totals[4].dispell + 1
+            currentCombat.totals_grupo[4].dispell = currentCombat.totals_grupo[4].dispell + 1
+
+            --spells
+            local spells = getSpells(parameterType, Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.Dispels, thisActor.sourceGUID)
+            for j = 1, #spells.combatSpells do
+                local thisSpell = spells.combatSpells[j]
+                local bCanCreateSpellIfMissing = true
+                local spellTable = actor.dispell_spells:GetOrCreateSpell(thisSpell.spellID, bCanCreateSpellIfMissing, "SPELL_DISPEL")
+                spellTable.total = thisSpell.totalAmount
+                spellTable.id = thisSpell.spellID
+                --thisSpell.creatureName
+                --thisSpell.combatSpellDetails
+                spellTable.counter = 1
+            end
+        end
+    end
+
+    do
+        local actorList = Details222.B.GetSegmentInfo(segments[10])
+        for i = 1, #actorList do
+            ---@type damagemeter_combat_source
+            local thisActor = actorList[i]
+            local hasDeathRecap, events, maxHealth, link = Details222.Recap.GetRecapInfo(thisActor.deathRecapID)
+            if hasDeathRecap then
+                local deathLog = Details:CreateDeathLogTable(thisActor.name, thisActor.classFilename, thisActor.specIconID, events, maxHealth)
+                table.insert(currentCombat.last_events_tables, #currentCombat.last_events_tables+1, deathLog)
+            end
         end
     end
 
     currentCombat:SetDate(session.startDate, session.endDate)
     currentCombat:SetStartTime(session.startTime)
     currentCombat:SetEndTime(session.endTime)
+    currentCombat.twinIdentifier = identifier
     currentCombat.combatSessionId = detailsId
 
     local encounterInfo = Details.encounter_table
@@ -923,12 +1025,13 @@ local addSegment = function(parameterType, session, bIsUpdate, detailsId)
 
     if not bIsUpdate then
         if not bCombatEnded then
+            currentCombat:SetEndTime(GetTime())
             Details:SairDoCombate()
         end
-        storeSessionId(sessionId)
-        debugTexts[#debugTexts+1] = {left = "Segment Added:", right = sessionId, time = GetTime(), date = date("%H:%M:%S")}
+        storeSessionId(identifier)
+        debugTexts[#debugTexts+1] = {left = "Segment Added:", right = identifier, time = GetTime(), date = date("%H:%M:%S")}
     else
-        debugTexts[#debugTexts+1] = {left = "Segment Updated:", right = sessionId, time = GetTime(), date = date("%H:%M:%S")}
+        debugTexts[#debugTexts+1] = {left = "Segment Updated:", right = identifier, time = GetTime(), date = date("%H:%M:%S")}
     end
 
     --encounterData
@@ -963,67 +1066,65 @@ local addSegment = function(parameterType, session, bIsUpdate, detailsId)
         end
     end
 
-    removeSessionFromWaitList(sessionId)
+    removeSessionFromWaitList(identifier)
 
     return true
 end
 
-local parseSegments2 = function()
+local parseSegmentsAndUpdate = function()
     debugTexts[#debugTexts+1] = {left = "|cFF00FF00Parse Segments!:", right = GetTime(), time = GetTime(), date = date("%H:%M:%S")}
 
     local parameterType = DAMAGE_METER_SESSIONPARAMETER_ID
 
-    local amountOfSessions = getAmountOfSessions()
-    if amountOfSessions == 0 then
+    --first check if there is any segment to add
+    local amountOfSegments = getAmountOfSegments()
+    if amountOfSegments == 0 then
         StopUpdaterAndClearWindow()
         return
     end
 
-    local sessions = {}
-    for sessionId = 1, amountOfSessions do
-        local sessionInfo = getSession(sessionId)
-        if sessionInfo and not sessionInfo.added then
-            local sessionExists = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageDone)
-            if sessionExists then
-                local hasAtLeastOneSource = hasSources(sessionId)
-                if hasAtLeastOneSource then
-                    --for some reason sessionInfo was nil
-                    table.insert(sessions, {sessionId = sessionId, session = sessionInfo, detailsId = getDetailsSegmentIdFromSession(sessionId)})
+    local duplicatedSegments = {}
+    for segmentId = 1, amountOfSegments do
+        local segment = Details222.B.GetSegment("ID", segmentId, 0)
+        duplicatedSegments[segmentId] = {value = segment}
+        if segmentInfo and segmentInfo.alreadyAdded then
+            table.insert(duplicatedSegments, segmentId)
+        end
+    end
+
+    --iterate to know if there is any segment to add and to not add duplicated segments from blizzard
+
+    local segments = {}
+    for segmentId = 1, amountOfSegments do
+        local segmentInfo = getSegmentInfoFromCache(segmentId)
+        --make sure to not add a duplicated segment from blizzard
+        if segmentInfo and not segmentInfo.added then
+            local doesExists = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, segmentId, 0)
+            if doesExists then
+                local hasActors = hasAnyActor(segmentId)
+                if hasActors then
+                    --for some reason segmentInfo was nil
+                    table.insert(segments, {segmentId = segmentId, session = segmentInfo, detailsId = getDetailsSegmentIdFromSegment(segmentId)})
                 end
             end
         else
-            debugTexts[#debugTexts+1] = {left = "|cFFFF8888No Session Info in Cache:", right = sessionId, time = GetTime(), date = date("%H:%M:%S")}
-        end
-    end
-
-    --[=[
-    local currentSessionId = getCurrentSessionId()
-    local sessions = {}
-    for thisSessionId, session in pairs(sessionCache) do
-        local thisSession = C_DamageMeter.GetCombatSessionFromID(thisSessionId, Enum.DamageMeterType.DamageDone)
-        if thisSession then
-            local hasAtLeastOneSource = hasSources(thisSessionId)
-            if hasAtLeastOneSource then
-                local hasSecret = isServerSideSessionOpen(thisSessionId)
-                if not hasSecret then
-                    table.insert(sessions, {sessionId = thisSessionId, session = session, detailsId = getDetailsSegmentIdFromSession(thisSessionId)})
-                else
-                    startWaitSecretDropTimer(thisSessionId)
-                end
+            if segmentInfo.alreadyAdded then
+                debugTexts[#debugTexts+1] = {left = "|cFFDD0000Duplicated sessions found in blizzard damage meter.", right = segmentId, time = GetTime(), date = date("%H:%M:%S")}
+            else
+                debugTexts[#debugTexts+1] = {left = "|cFFFF8888No Session Info in Cache:", right = segmentId, time = GetTime(), date = date("%H:%M:%S")}
             end
         end
     end
-    --]=]
 
-    table.sort(sessions, function(a, b)
-        return a.sessionId < b.sessionId
+    table.sort(segments, function(a, b)
+        return a.segmentId < b.segmentId
     end)
 
     local needUpdate = false
 
-    for i = 1, #sessions do
-        local sessionInfo = sessions[i].session
-        local thisSessionId = sessions[i].sessionId
+    for i = 1, #segments do
+        local sessionInfo = segments[i].session
+        local thisSessionId = segments[i].segmentId
         if not sessionInfo.added then
             if (addSegment(parameterType, sessionInfo, false)) then
                 needUpdate = true
@@ -1043,19 +1144,19 @@ local parseSegments2 = function()
     end
 
     local hasSessionInCache = false
-    for thisSessionId, session in pairs(sessionCache) do
+    for thisSessionId, session in pairs(segmentInfoCache) do
         if not session.added then
             debugTexts[#debugTexts+1] = {left = "|cFFFFFFFFHas Session in cache:", right = thisSessionId, time = GetTime(), date = date("%H:%M:%S")}
             hasSessionInCache = true
             break
         else
-            removeFromSessionCache(thisSessionId)
+            removeSegmentInfoFromCache(thisSessionId)
         end
     end
 
     --if not hasSessionInCache then
         Details222.BParser.ResetServerDM()
-        wipeStoredSessionIds()
+        wipeStoredSegmentsDataIds()
     --end
 
     C_Timer.After(2, function()
@@ -1082,10 +1183,10 @@ local parseSegments = function() --~parser
         --print("(debug-note)|cFFFFDD00 parseSegments() player is dead or ghost.|r")
     end
 
-    local parameterType = DAMAGE_METER_SESSIONPARAMETER_ID
+    local parameterType = 2
 
     ---@type damagemeter_availablecombat_session[]
-    local allSessions = C_DamageMeter.GetAvailableCombatSessions()
+    local allSessions = Details222.B.GetAllSegments()
 
     local amountOfSessions = #allSessions
     if amountOfSessions == 0 then
@@ -1100,10 +1201,10 @@ local parseSegments = function() --~parser
         local availableSessions = allSessions[i]
         local sessionId = availableSessions.sessionID
         local sessionName = availableSessions.name
-        local sessionInfo = getSession(sessionId)
+        local sessionInfo = getSegmentInfoFromCache(sessionId)
         if sessionInfo and not sessionInfo.added then
             sessionInfo.sessionName = sessionName
-            sessionInfo.detailsId = getDetailsSegmentIdFromSession(sessionId)
+            sessionInfo.detailsId = getDetailsSegmentIdFromSegment(sessionId)
 
             if not sessionInfo.endTime then
                 sessionInfo.endTime = GetTime()
@@ -1112,7 +1213,7 @@ local parseSegments = function() --~parser
                 debugTexts[#debugTexts+1] = {left = "Previous session was open", right = "closed", time = GetTime(), date = date("%H:%M:%S")}
             end
 
-            local hasAtLeastOneSource, amountOfSources = hasSources(sessionId)
+            local hasAtLeastOneSource, amountOfSources = hasAnyActor(sessionId)
             if hasAtLeastOneSource then
                 local numGroupMembers = GetNumGroupMembers()
                 local canAdd = true
@@ -1122,7 +1223,7 @@ local parseSegments = function() --~parser
                     end
                 end
                 if canAdd then
-                    local detailsId = getDetailsSegmentIdFromSession(sessionId)
+                    local detailsId = getDetailsSegmentIdFromSegment(sessionId)
                     if not Details:HasCombatWithSessionId(detailsId) then
                         table.insert(sessions, {sessionId = sessionId, sessionInfo = sessionInfo, detailsId = detailsId, startUnixTime = sessionInfo.startUnixTime})
                     else
@@ -1144,7 +1245,7 @@ local parseSegments = function() --~parser
                     local firstPlayer = combat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)._ActorTable[1]
                     if firstPlayer then
                         --get combat from blz
-                        local blzCombat = C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageDone)
+                        local blzCombat = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, sessionId, Enum.DamageMeterType.DamageDone)
                         if blzCombat then
                             local blzFirstPlayer = blzCombat.combatSources[1]
                             if blzFirstPlayer then
@@ -1222,7 +1323,7 @@ local parseSegments1 = function(sessionId)
 
     --add a specific session, this is used when a session is waiting for secrets to drop
     if sessionId then
-        local session = sessionCache[sessionId]
+        local session = segmentInfoCache[sessionId]
         if not session.added then
             if (addSegment(parameterType, session, false)) then
                 needUpdate = true
@@ -1232,23 +1333,23 @@ local parseSegments1 = function(sessionId)
                 debugTexts[#debugTexts+1] = {left = "|cFFFF8888Segment Already Added:", right = sessionId, time = GetTime(), date = date("%H:%M:%S")}
             end
         else
-            if C_DamageMeter.GetCombatSessionFromID(sessionId, Enum.DamageMeterType.DamageDone) then
+            if Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, sessionId, Enum.DamageMeterType.DamageDone) then
                 if Details:GetCombatWithSessionId(sessionId) then
                     addSegment(parameterType, session, true)
                 end
             end
         end
     else
-        local currentSessionId = getCurrentSessionId()
+        local currentSessionId = getCurrentCombatIdentifier()
         local sessions = {}
-        for thisSessionId, session in pairs(sessionCache) do
-            local thisSession = C_DamageMeter.GetCombatSessionFromID(thisSessionId, Enum.DamageMeterType.DamageDone)
+        for thisSessionId, session in pairs(segmentInfoCache) do
+            local thisSession = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, thisSessionId, Enum.DamageMeterType.DamageDone)
             if thisSession then
-                local hasAtLeastOneSource = hasSources(thisSessionId)
+                local hasAtLeastOneSource = hasAnyActor(thisSessionId)
                 if hasAtLeastOneSource then
                     local hasSecret = isServerSideSessionOpen(thisSessionId)
                     if not hasSecret then
-                        table.insert(sessions, {sessionId = thisSessionId, session = session, detailsId = getDetailsSegmentIdFromSession(thisSessionId)})
+                        table.insert(sessions, {sessionId = thisSessionId, session = session, detailsId = getDetailsSegmentIdFromSegment(thisSessionId)})
                     else
                         startWaitSecretDropTimer(thisSessionId)
                     end
@@ -1273,7 +1374,7 @@ local parseSegments1 = function(sessionId)
                 end
             else
                 if currentSessionId-2 <= thisSessionId then
-                    if C_DamageMeter.GetCombatSessionFromID(thisSessionId, Enum.DamageMeterType.DamageDone) then
+                    if Details222.B.GetSegment(DETAILS_SEGMENTTYPE_ID, thisSessionId, Enum.DamageMeterType.DamageDone) then
                         if Details:GetCombatWithSessionId(thisSessionId) then
                             addSegment(parameterType, session, true)
                         end
@@ -1290,12 +1391,12 @@ local parseSegments1 = function(sessionId)
     end
 
     local hasSessionInCache = false
-    for thisSessionId, session in pairs(sessionCache) do
+    for thisSessionId, session in pairs(segmentInfoCache) do
         if not session.added then
             hasSessionInCache = true
             break
         else
-            removeFromSessionCache(thisSessionId)
+            removeSegmentInfoFromCache(thisSessionId)
         end
     end
 
@@ -1329,384 +1430,7 @@ end
 
 L.ParseSegments = parseSegments
 
----@class detailstooltip : button
----@field maxAmount number
----@field ScrollBox df_scrollbox
----@field SetMaxAmount fun(self:detailstooltip, maxAmount:number)
 
-
-local getTooltipFrame = function() --~tooltip
-    ---@type detailstooltip
-    local tooltip = _G["DetailsDLC12TooltipFrame"]
-    if tooltip then
-        return tooltip
-    end
-
-    tooltip = CreateFrame("frame", "DetailsDLC12TooltipFrame", UIParent)
-    tooltip:Hide()
-
-    tooltip.Background = tooltip:CreateTexture("$parentBackground", "background", nil, -4)
-    tooltip.Background:SetColorTexture(.8, .8, .8, 1)
-    tooltip.Background:SetAllPoints()
-
-    tooltip.Background2 = tooltip:CreateTexture("$parentBackground2", "background", nil, -5)
-    tooltip.Background2:SetColorTexture(0, 0, 0, 0.7)
-    tooltip.Background2:SetAllPoints()
-
-
-    function tooltip:SetMaxAmount(maxAmount)
-        self.maxAmount = maxAmount
-    end
-
-    tooltip:SetHeight(50)
-
-    --refresh the scroll box lines
-    ---@param self df_scrollbox
-    ---@param data table an indexed table with subtables holding the data necessary to refresh each line
-    ---@param offset number used to know which line to start showing
-    ---@param totalLines number of lines shown in the scroll box
-    local refresFunc = function(self, data, offset, totalLines)
-        for i = 1, totalLines do
-            local index = i + offset
-            local thisData = data[index]
-            if (thisData) then
-                local line = self:GetLine(i)
-                ---@cast line detailstooltipline
-                --update the line with the data
-                line.SpellName:SetText(thisData.name)
-                line.SpellIcon:SetTexture(thisData.icon)
-                line.StatusBar:SetMinMaxValues(0, tooltip.maxAmount)
-                line.StatusBar:SetValue(thisData.amount)
-
-                --clear font strings
-                for j = 1, 6 do
-                    local fontString = line.dataFontStrings[j]
-                    fontString:SetText("")
-                end
-
-                for j = 1, #thisData.texts do
-                    local fontString = line.dataFontStrings[j]
-                    fontString:SetText(AbbreviateNumbers(thisData.texts[j]))
-                end
-
-                line:Show()
-            end
-        end
-    end
-
-    ---@class detailstooltipline : button
-    ---@field StatusBar statusbar
-    ---@field SpellIcon texture
-    ---@field SpellName fontstring
-    ---@field Background texture
-    ---@field dataFontStrings fontstring[]
-
-    ---this function creates a new line for the scroll box
-    ---@param self df_scrollbox
-    ---@param index number line index
-    ---@return detailstooltipline
-    local createLineFunc = function(self, index)
-        --create a new line
-        ---@type detailstooltipline
-        local line = CreateFrame("button", "$parentLine" .. index, self)
-
-        local yPosition = (tooltipLineHeight + tooltipPadding) * (index - 1) * -1
-        yPosition = yPosition - 3
-
-        line:SetPoint("topleft", self, "topleft", 2, yPosition)
-        line:SetPoint("topright", self, "topright", -2, yPosition)
-        line:SetHeight(tooltipLineHeight)
-
-        local statusBar = CreateFrame("statusbar", "$parentStatusBar", line)
-        statusBar:SetAllPoints()
-        statusBar:SetStatusBarTexture([[Interface\AddOns\Details\images\bar_background_dark_withline]])
-
-        local background = statusBar:CreateTexture("$parentBackground", "background")
-        background:SetAllPoints()
-        background:SetColorTexture(.5, .5, .5, 1)
-
-        local spellIcon = statusBar:CreateTexture("$parentIcon", "overlay")
-        spellIcon:SetPoint("left", statusBar, "left", 1, 0)
-        spellIcon:SetSize(tooltipLineHeight, tooltipLineHeight)
-        spellIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-
-        --setup the line creating frames, texts and other widgets, they are refreshed in the refresFunc
-        local spellName = statusBar:CreateFontString("$parentSpellName", "overlay", "GameFontNormal")
-        spellName:SetPoint("left", spellIcon, "right", 2, 0)
-
-        line.dataFontStrings = {}
-
-        for i = 1, 6 do
-            local dataFontString = statusBar:CreateFontString("$parentDataFontString" .. i, "overlay", "GameFontNormal")
-
-            if i == 1 then
-                dataFontString:SetPoint("right", statusBar, "right", -2, 0)
-            else
-                dataFontString:SetPoint("right", line.dataFontStrings[i - 1], "left", -tooltipFontStringPadding, 0)
-            end
-
-            line.dataFontStrings[i] = dataFontString
-        end
-
-        line.StatusBar = statusBar
-        line.SpellIcon = spellIcon
-        line.SpellName = spellName
-        line.Background = background
-
-        return line
-    end
-
-    local dataPlaceholder = {}
-
-    local scrollBox = detailsFramework:CreateScrollBox(tooltip, "$parentScrollbox", refresFunc, dataPlaceholder, 1, 1, tooltipAmountOfLines, tooltipLineHeight)
-    --used 1 for width and height because we will set the size using anchors
-    scrollBox:SetPoint("topleft", tooltip, "topleft", 0, 0)
-    scrollBox:SetPoint("bottomright", tooltip, "bottomright", 0, 0)
-    --appearance
-    detailsFramework:ReskinSlider(scrollBox)
-
-    tooltip.ScrollBox = scrollBox
-
-    --manually create the lines when the createLineFunc is not provided
-    for i = 1, tooltipAmountOfLines do
-        scrollBox:CreateLine(createLineFunc)
-    end
-
-    --call a refresh in the scrollBox
-    scrollBox:Refresh()
-
-    local defaultColor = {r=0.5, g=0.5, b=0.5, a=1}
-
-    ---@param self df_scrollbox
-    ---@param data addonapoc_tooltipdata
-    function scrollBox:RefreshMe(data)
-        --refresh the line appearance
-        local classColor = RAID_CLASS_COLORS[data.class] or defaultColor
-        local r, g, b, a = unpack(Details.tooltip.bar_color)
-        local rBG, gBG, bBG, aBG = unpack(Details.tooltip.background)
-
-        local allTooltipLines = self:GetLines()
-        for i = 1, #allTooltipLines do
-            local line = allTooltipLines[i]
-            line.Background:SetColorTexture(0, 0, 0, 0.5) --class color
-
-            --right texts
-            for j = 1, #line.dataFontStrings do
-                local fontString = line.dataFontStrings[j]
-                fontString:SetTextColor(unpack(Details.tooltip.fontcolor_right)) --
-                detailsFramework:SetFontSize(fontString, Details.tooltip.fontsize) --
-                detailsFramework:SetFontFace(fontString, Details.tooltip.fontface) --
-                detailsFramework:SetFontOutline(fontString, Details.tooltip.fontshadow  and "OUTLINE") --
-            end
-
-            local fontString = line.SpellName
-            fontString:SetTextColor(unpack(Details.tooltip.fontcolor)) --
-            detailsFramework:SetFontSize(fontString, Details.tooltip.fontsize) --
-            detailsFramework:SetFontFace(fontString, Details.tooltip.fontface) --
-            detailsFramework:SetFontOutline(fontString, Details.tooltip.fontshadow  and "OUTLINE")
-
-            line.Background:SetVertexColor(classColor.r, classColor.g, classColor.b, aBG)
-            line.StatusBar:GetStatusBarTexture():SetVertexColor(r, g, b, a)
-        end
-
-        tooltip.Background:SetVertexColor(classColor.r, classColor.g, classColor.b, 1)
-
-        self:SetData(data)
-        self:Refresh()
-
-        self.ScrollBar:Hide()
-    end
-
-    return tooltip
-end
-
----@return detailstooltip
-function Details:GetTooltip()
-    return getTooltipFrame()
-end
-
-
---~tooltip
----@param instanceLine detailsline
-function bParser.ShowTooltip(instance, instanceLine)
-    ---@type attributeid, attributeid
-    local mainDisplay, subDisplay = instance:GetDisplay()
-
-    --fragile: Handle with care!
-    local sourceGUID = instanceLine.secret_SourceGUID
-    local actorName = instanceLine.secret_SourceName
-
-    ---@type damagemeter_type
-    local damageMeterType = bParser.GetDamageMeterTypeFromDisplay(mainDisplay, subDisplay)
-    --local sourceSpells = getSourceSpells(DAMAGE_METER_SESSIONPARAMETER_TYPE, Enum.DamageMeterSessionType.Current, damageMeterType, sourceGUID)
-
-    local blzDamageContainer = C_DamageMeter.GetCombatSessionFromType(Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.DamageDone)
-    local firstCombatant = blzDamageContainer.combatSources[1]
-    --local sourceSpells = C_DamageMeter.GetCombatSessionSourceFromType(Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.DamageDone, firstCombatant.sourceGUID)
-    local sourceSpells = C_DamageMeter.GetCombatSessionSourceFromType(Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.DamageDone, UnitGUID("player"))
-
-    local maxAmount = sourceSpells.maxAmount
-
-    for i = 1, #sourceSpells.combatSpells do
-        local spellDetails = sourceSpells.combatSpells[i]
-        local spellID = spellDetails.spellID
-        local spellAmount = spellDetails.totalAmount
-        --local spellPercent = (spellAmount / maxAmount) * 100 --nop
-
-        local spellInfo = C_Spell.GetSpellInfo(spellID)
-        GameCooltip:AddLine(spellInfo.name, spellAmount)
-
-        local iconSize = Details.DefaultTooltipIconSize
-        local icon_border = Details.tooltip.icon_border_texcoord
-
-        GameCooltip:SetOption("FixedWidth", 200)
-
-        GameCooltip:AddIcon(spellInfo.iconID, nil, nil, iconSize, iconSize, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
-        Details:AddTooltipBackgroundStatusbar_Secret(spellAmount, maxAmount)
-    end
-end
-
-function bParser.HideTooltip_Hook(instanceLine, mouse)
-    if not detailsFramework.IsAddonApocalypseWow() then
-        return
-    end
-
-    local tooltip = Details:GetTooltip()
-    tooltip:Hide()
-end
-
---~tooltip
----@param instanceLine detailsline
-function bParser.ShowTooltip_Hook(instanceLine, mouse)
-    if not detailsFramework.IsAddonApocalypseWow() then
-        return
-    end
-
-    --[=[
-        local blizWindowSrcl = DamageMeterSessionWindow1.ScrollBox
-        local window1Src = DamageMeterSessionWindow1.SourceWindow
-
-        local children = {DamageMeterSessionWindow1.ScrollBox.ScrollTarget:GetChildren()}
-
-        local lineIndex = instanceLine.lineIndex
-
-        local blzLine = children[lineIndex]
-        blzLine:Click()
-        --DamageMeterSessionWindow1:ShowSourceWindow(instanceLine.sourceData)
-    --]=]
-
-    if not bParser.InSecretLockdown() then
-        return
-    end
-
-    local tooltip = Details:GetTooltip()
-    tooltip:ClearAllPoints()
-    tooltip:SetPoint("bottomleft", instanceLine, "topleft", 0, 3)
-    tooltip:SetPoint("bottomright", instanceLine, "topright", 0, 3)
-
-    ---@type attributeid, attributeid
-    --local mainDisplay, subDisplay = instance:GetDisplay()
-
-    --fragile: Handle with care!
-    --local sourceGUID = instanceLine.secret_SourceGUID
-    --local actorName = instanceLine.secret_SourceName
-
-    ---@type damagemeter_type
-    --local damageMeterType = bParser.GetDamageMeterTypeFromDisplay(mainDisplay, subDisplay)
-    --local sourceSpells = getSourceSpells(DAMAGE_METER_SESSIONPARAMETER_TYPE, Enum.DamageMeterSessionType.Current, damageMeterType, sourceGUID)
-
-    --local blzDamageContainer = C_DamageMeter.GetCombatSessionFromType(Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.DamageDone)
-    --local firstCombatant = blzDamageContainer.combatSources[1]
-    --local sourceSpells = C_DamageMeter.GetCombatSessionSourceFromType(Enum.DamageMeterSessionType.Current, Enum.DamageMeterType.DamageDone, UnitGUID("player"))
-
-    local sourceSpells
-
-    local sessionType = instanceLine.sessionType
-    local sessionNumber = instanceLine.sessionNumber
-    local sessionTypeParam = instanceLine.sessionTypeParam
-    local damageMeterType = instanceLine.damageMeterType
-    local guid = guidCache[instanceLine.blzSpecIcon]
-
-    if sessionType == DAMAGE_METER_SESSIONPARAMETER_ID then
-        --local sourceSpells = C_DamageMeter.GetCombatSessionSourceFromID(sessionNumber, Enum.DamageMeterType.DamageDone, UnitGUID("player")) --waiting blizzard fix this
-        sourceSpells = C_DamageMeter.GetCombatSessionSourceFromID(sessionNumber, damageMeterType, guid or UnitGUID("player"))
-
-    elseif (sessionType == DAMAGE_METER_SESSIONPARAMETER_TYPE) then
-        --local sourceSpells = C_DamageMeter.GetCombatSessionSourceFromID(sessionTypeParam, Enum.DamageMeterType.DamageDone, actorGUID) --waiting blizzard fix this
-        sourceSpells = C_DamageMeter.GetCombatSessionSourceFromType(sessionTypeParam, damageMeterType, guid or UnitGUID("player"))
-    end
-
-    ---@type addonapoc_tooltipdata[]
-    local tooltipData = {}
-
-    if not sourceSpells then
-        ---@type addonapoc_tooltipdata
-        local data = {
-            name = "No Spells Found",
-            icon = "",
-            texts = {""},
-            amount = 0,
-        }
-
-        tooltipData[#tooltipData + 1] = data
-        return
-    end
-
-    local spellAmount = #sourceSpells.combatSpells
-
-    local maxAmount = sourceSpells.maxAmount
-
-    tooltip:SetMaxAmount(maxAmount)
-    tooltip:SetHeight(spellAmount * (tooltipLineHeight+1) + 4)
-
-
-
-    for i = 1, spellAmount do
-        local spellDetails = sourceSpells.combatSpells[i]
-        local spellID = spellDetails.spellID
-        local spellAmount = spellDetails.totalAmount
-        --local spellPercent = (spellAmount / maxAmount) * 100 --nop
-
-        local spellInfo = C_Spell.GetSpellInfo(spellID)
-        if not spellInfo then
-            ---@diagnostic disable-next-line: missing-fields
-            spellInfo = {
-                name = "Unknown Spell",
-                iconID = 136243, --question mark
-            }
-        end
-
-        ---@class addonapoc_tooltipdata
-        ---@field name string
-        ---@field icon number
-        ---@field texts number[]
-        ---@field amount number
-
-        ---@type addonapoc_tooltipdata
-        local data = {
-            name = spellInfo.name,
-            icon = spellInfo.iconID,
-            texts = {spellAmount},
-            amount = spellAmount,
-        }
-
-        tooltipData[#tooltipData + 1] = data
-
-        --GameCooltip:AddLine(spellInfo.name, spellAmount)
-
-        --local iconSize = Details.DefaultTooltipIconSize
-        --local icon_border = Details.tooltip.icon_border_texcoord
-
-        --GameCooltip:AddIcon(spellInfo.iconID, nil, nil, iconSize, iconSize, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
-        --Details:AddTooltipBackgroundStatusbar_Secret(spellAmount, maxAmount)
-    end
-
-    tooltipData.class = instanceLine.sourceData.classFilename
-    tooltipData.specIcon = instanceLine.sourceData.specIconID
-
-    tooltip.ScrollBox:RefreshMe(tooltipData)
-    tooltip:Show()
-end
 
 local combatAcknowledgeListener = Details:CreateEventListener()
 combatAcknowledgeListener.InCombat = false
@@ -1718,10 +1442,15 @@ combatAcknowledgeListener.ParserFrame:SetScript("OnEvent", function(self, event,
     --when this event happen, update details! windows (or not)
 end)
 
+function bParser.IsNotADude(s)
+    return s.classFilename == "" and s.classification ~= "" and true
+end
+
 ---@class details
 ---@field GetFormattedTimeForTitleBar fun(self:instance):string return a formatted string containing the elapsed time of the combat shown in the instance
 ---@field InstanceCall fun(self:details, function:fun(instance:instance), ...:any?)
 ---@field GetAllLines fun(self:details):frame[]
+---@field IsUsingBlizzardAPI fun(self:details, instance:instance?):boolean
 
 ---hide all lines in the instance and clearup the secret strings
 local clearLineSecrets = function(instance)
@@ -1736,94 +1465,6 @@ local clearLineSecrets = function(instance)
     end
 end
 
-local abbreviateOptionsDamage =
-{
-    {
-        breakpoint = 1000000000,
-        abbreviation = "THIRD_NUMBER_CAP_NO_SPACE",
-        significandDivisor = 10000000,
-        fractionDivisor = 100,
-        --abbreviationIsGlobal = false
-    },
-    {
-        breakpoint = 1000000,
-        --abbreviation = "SECOND_NUMBER_CAP_NO_SPACE",
-        abbreviation = "M",
-        significandDivisor = 10000,
-        fractionDivisor = 100,
-        abbreviationIsGlobal = false
-    },
-    {
-        breakpoint = 10000,
-        --abbreviation = "FIRST_NUMBER_CAP_NO_SPACE",
-        abbreviation = "K",
-        significandDivisor = 1000,
-        fractionDivisor = 1,
-        abbreviationIsGlobal = false,
-    },
-    {
-        breakpoint = 1000,
-        --abbreviation = "FIRST_NUMBER_CAP_NO_SPACE",
-        abbreviation = "K",
-        significandDivisor = 100,
-        fractionDivisor = 10,
-        abbreviationIsGlobal = false,
-    },
-    {
-        breakpoint = 1,
-        abbreviation = "",
-        significandDivisor = 1,
-        fractionDivisor = 1,
-        abbreviationIsGlobal = false
-    },
-}
-
-local abbreviateOptionsDPS =
-{
-    {
-        breakpoint = 1000000000,
-        abbreviation = "THIRD_NUMBER_CAP_NO_SPACE",
-        significandDivisor = 10000000,
-        fractionDivisor = 100,
-        abbreviationIsGlobal = false
-    },
-    {
-        breakpoint = 1000000,
-        --abbreviation = "SECOND_NUMBER_CAP_NO_SPACE",
-        abbreviation = "M",
-        significandDivisor = 10000,
-        fractionDivisor = 100,
-        abbreviationIsGlobal = false
-    },
-    {
-        breakpoint = 1000,
-        --abbreviation = "FIRST_NUMBER_CAP_NO_SPACE",
-        abbreviation = "K",
-        significandDivisor = 100,
-        fractionDivisor = 10,
-        abbreviationIsGlobal = false,
-    },
-    {
-        breakpoint = 1,
-        abbreviation = "",
-        significandDivisor = 1,
-        fractionDivisor = 1,
-        abbreviationIsGlobal = false
-    },
-}
-
-local abbreviateSettingsDamage
-local abbreviateSettingsDPS
-
-if CreateAbbreviateConfig then
-    abbreviateSettingsDamage = CreateAbbreviateConfig(abbreviateOptionsDamage)
-    abbreviateSettingsDamage = {config = abbreviateSettingsDamage}
-    Details.abbreviateOptionsDamage = abbreviateSettingsDamage
-
-    abbreviateSettingsDPS = CreateAbbreviateConfig(abbreviateOptionsDPS)
-    abbreviateSettingsDPS = {config = abbreviateSettingsDPS}
-    Details.abbreviateOptionsDPS = abbreviateSettingsDPS
-end
 
 local tt = GetTime()
 local createFakeSources = function()
@@ -1847,16 +1488,16 @@ end
 ---update the window in real time
 ---@param instance instance
 local updateWindow = function(instance) --~update
+    if Details:IsUsingBlizzardAPI() then
+        return
+    end
+
+    do return end
     ---@type attributeid, attributeid
     local mainDisplay, subDisplay = instance:GetDisplay()
 
-    --which data the line will show (total, dps, percent)
-    local barsShowData = instance.row_info.textR_show_data
-	local barsBrackets = instance:GetBarBracket()
-	local barsSeparator = instance:GetBarSeparator()
-
     ---@type damagemeter_type
-    local damageMeterType = bParser.GetDamageMeterTypeFromDisplay(mainDisplay, subDisplay)
+    local damageMeterType = bParser.GetAttributeTypeFromDisplay(mainDisplay, subDisplay)
 
     ---@type detailsline[]
     local allInstanceLines = instance.barras --instance:GetAllLines()
@@ -1880,22 +1521,19 @@ local updateWindow = function(instance) --~update
         ---@type damagemeter_combat_session
         local session
 
-        local sessionType, sessionNumber, sessionTypeParam
-        --/dump C_DamageMeter.GetCombatSessionFromType(1, 0)
+        local sessionType, sessionId
 
         if segmentId == -1 then
-            session = C_DamageMeter.GetCombatSessionFromType(Enum.DamageMeterSessionType.Overall, damageMeterType)
-            sessionType = DAMAGE_METER_SESSIONPARAMETER_TYPE
-            sessionTypeParam = Enum.DamageMeterSessionType.Overall
+            session = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_TYPE, Enum.DamageMeterSessionType.Overall, damageMeterType)
+            sessionType = Enum.DamageMeterSessionType.Overall
 
         elseif segmentId == 0 then
-            session = C_DamageMeter.GetCombatSessionFromType(Enum.DamageMeterSessionType.Current, damageMeterType)
+            session = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_TYPE, Enum.DamageMeterSessionType.Current, damageMeterType)
 
             --if #session.combatSources == 0 then
 
             --else
-                sessionType = DAMAGE_METER_SESSIONPARAMETER_TYPE
-                sessionTypeParam = Enum.DamageMeterSessionType.Current
+                sessionType = Enum.DamageMeterSessionType.Current
             --end
 
         else
@@ -1912,26 +1550,25 @@ local updateWindow = function(instance) --~update
             end
 
             ---@type damagemeter_availablecombat_session[]
-            local sessions = C_DamageMeter.GetAvailableCombatSessions()
+            local sessions = Details222.B.GetAllSegments()
             ---@type number
             local sessionIndex = #sessions - (segmentId - 1)
             ---@type damagemeter_availablecombat_session
             session = sessions[sessionIndex]
-            sessionType = DAMAGE_METER_SESSIONPARAMETER_ID
-            sessionNumber = sessionIndex
+            sessionType = Enum.DamageMeterSessionType.Expired
+            sessionId = sessionIndex
         end
 
-        local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
-        local textureFile = SharedMedia:Fetch("statusbar", instance.row_info.texture)
-        local textureFile2 = SharedMedia:Fetch("statusbar", instance.row_info.texture_background)
-        local overlayTexture = SharedMedia:Fetch("statusbar", instance.row_info.overlay_texture)
-        local overlayColor = instance.row_info.overlay_color
-
         if (session) then
+            if Details:IsUsingBlizzardAPI() then
+                local sessionTime = session.durationSeconds
+                Details:RefreshWindowAddOnApocalypse(instance, session, sessionTime)
+                return
+            end
+
             ---@type damagemeter_combat_source[]
             local combatSources = session.combatSources
             if not combatSources then
-
                 return
             end
 
@@ -1941,7 +1578,7 @@ local updateWindow = function(instance) --~update
             local amountOfSources = #combatSources
             local topValue = session.maxAmount
             local segmentName = session.name
-            local sessionId = session.sessionID
+            --local sessionId = session.sessionID
 
             for i = 1, amountOfSources do
                 ---@type detailsline
@@ -1951,13 +1588,6 @@ local updateWindow = function(instance) --~update
                     local source = combatSources[i]
                     local updateStatusbarColor = true
 
-                    instanceLine.lineIndex = i
-                    instanceLine.sourceData = source
-                    instanceLine.sessionType = sessionType
-                    instanceLine.sessionNumber = sessionNumber
-                    instanceLine.sessionTypeParam = sessionTypeParam
-                    instanceLine.damageMeterType = damageMeterType
-
                     local actorName = source.name --secret
                     local actorGUID = source.sourceGUID --secret
                     local value = source.totalAmount --secret
@@ -1966,6 +1596,11 @@ local updateWindow = function(instance) --~update
                     local specIcon = source.specIconID
                     local isPlayer = source.isLocalPlayer
 
+                    instanceLine.lineIndex = i
+                    instanceLine.sourceData = source
+                    instanceLine.sessionType = sessionType
+                    instanceLine.sessionId = sessionId
+                    instanceLine.damageMeterType = damageMeterType
                     instanceLine.blzSpecIcon = source.specIconID
                     instanceLine.secret_SourceGUID = actorGUID
                     instanceLine.secret_SourceName = actorName
@@ -1991,7 +1626,7 @@ local updateWindow = function(instance) --~update
 
                     local perCent = nil
                     local ruleToUse = 2 --total dps
-                    Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(value, abbreviateSettingsDamage), AbbreviateNumbers(totalAmountPerSecond, abbreviateSettingsDPS), perCent, ruleToUse)
+                    Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(value, Details.abbreviateOptionsDamage), AbbreviateNumbers(totalAmountPerSecond, Details.abbreviateOptionsDPS), perCent, ruleToUse)
 
                     instanceLine.statusbar:SetMinMaxValues(0, topValue, Enum.StatusBarInterpolation.ExponentialEaseOut)
                     instanceLine.statusbar:SetValue(value, Enum.StatusBarInterpolation.ExponentialEaseOut)
@@ -2062,6 +1697,17 @@ local showFontStringsForPrivateText = function(instance)
     end
 end
 
+local formatTime = function(elapsedTime)
+    if not elapsedTime then
+        return ""
+    end
+
+    local minutes = math.floor(elapsedTime / 60)
+    local seconds = math.floor(elapsedTime % 60)
+    local timeString = string.format("%02d:%02d", minutes, seconds)
+    return timeString
+end
+
 ---@param self instance
 function Details:GetFormattedTimeForTitleBar()
     local combat = self:GetCombat()
@@ -2070,12 +1716,12 @@ function Details:GetFormattedTimeForTitleBar()
     if not detailsFramework.IsAddonApocalypseWow() then
         elapsedTime = combat:GetCombatTime()
     else
-        local currentSessionId = getCurrentSessionId()
+        local currentSessionId = getCurrentCombatIdentifier()
         local segmentId = self:GetSegmentId()
 
         if segmentId == DETAILS_SEGMENTID_OVERALL then
             if bRegenIsDisabled then
-                local thisSessionTime = getSessionCombatTime(currentSessionId)
+                local thisSessionTime = getSegmentCombatTime(currentSessionId)
                 elapsedTime = combat:GetCombatTime() + thisSessionTime
             else
                 elapsedTime = combat:GetCombatTime()
@@ -2083,7 +1729,7 @@ function Details:GetFormattedTimeForTitleBar()
 
         elseif segmentId == DETAILS_SEGMENTID_CURRENT then
             if bRegenIsDisabled then
-                elapsedTime = getSessionCombatTime(currentSessionId)
+                elapsedTime = getSegmentCombatTime(currentSessionId)
             else
                 elapsedTime = combat:GetCombatTime()
             end
@@ -2093,28 +1739,103 @@ function Details:GetFormattedTimeForTitleBar()
     end
 
     if elapsedTime > 0 then
-        local minutes = math.floor(elapsedTime / 60)
-        local seconds = math.floor(elapsedTime % 60)
-        local timeString = string.format("%02d:%02d", minutes, seconds)
-        return timeString
+        return formatTime(elapsedTime)
     end
 
     return "00:00"
 end
 
-local timerUpdateInterval = 1 --time in seconds
-local timerUpdateObject = nil
-local updateTime = function(timerObject)
-    local instance = timerObject.instance
+local setTitleText = function(instance, timeString)
     if instance.attribute_text.show_timer then
-        local timeString = instance:GetFormattedTimeForTitleBar()
-        if instance:GetSegmentId() ~= DETAILS_SEGMENTID_OVERALL then
-            local attributeText = instance:GetInstanceAttributeText() --this return 'damage done'
-            timeString = timeString .. " " .. attributeText
-            instance:SetTitleBarText(timeString)
+        local attributeText = instance:GetInstanceAttributeText() --this return the title, like 'damage done'
+        if instance:GetSegmentType() == 0 then
+            attributeText = _G["DAMAGE_METER_OVERALL_SESSION"] .. " " .. attributeText
+        end
+        timeString = format("%s %s", timeString, attributeText)
+        instance:SetTitleBarText(timeString)
+    end
+end
+
+local timerUpdateInterval = 1 --time in seconds
+local timerUpdateObject = nil --the C_Timer.NewTicker object that will update the time in the window every X seconds
+local updateTime = function(timerObject) --~update ~time
+    local elapsedTime = 0
+    ---@type instance
+    local instance = timerObject.instance
+    if Details:IsUsingBlizzardAPI() then
+        if Details222.IsPTR1205() then
+
+        else
+            local segmentType = instance:GetSegmentType()
+            if segmentType >= 1 then
+                local allSegments = Details222.B.GetAllSegments()
+                if segmentType == 1 then
+                    elapsedTime = allSegments[#allSegments] and allSegments[#allSegments].durationSeconds
+                else
+                    local segmentId = instance:GetNewSegmentId()
+                    for i = 1, #allSegments do
+                        local thisSegment = allSegments[i]
+                        if thisSegment.sessionID == segmentId then
+                            elapsedTime = thisSegment.durationSeconds
+                            break
+                        end
+                    end
+                end
+            else
+                elapsedTime = C_DamageMeter.GetSessionDurationSeconds(0)
+            end
+        end
+    else
+        local combat = instance:GetCombat()
+        elapsedTime = combat:GetCombatTime()
+    end
+
+    if issecretvalue(elapsedTime) then
+        setTitleText(instance, elapsedTime)
+    else
+        if elapsedTime == nil then
+            if instance:GetSegmentType() == 1 then
+                local combat = Details222.B.GetSegment(DETAILS_SEGMENTTYPE_TYPE, 1, 0)
+                if combat then
+                    elapsedTime = combat.durationSeconds
+                    if elapsedTime then
+                        if issecretvalue(elapsedTime) then
+                            setTitleText(instance, elapsedTime)
+                            return
+                        end
+                    end
+                end
+            end
+        end
+
+        if elapsedTime == nil then
+            elapsedTime = 1
+        end
+
+        if (elapsedTime > 1800 and instance:GetSegmentType() > 0) then
+            local detailsCombat = Details:GetTwinCombat(instance:GetNewSegmentId())
+            if detailsCombat then
+                elapsedTime = detailsCombat:GetCombatTime()
+            end
+        end
+        local timeFormatted = formatTime(elapsedTime)
+        setTitleText(instance, timeFormatted)
+    end
+end
+
+local updateTimeOnEvent = function(eventName, instance)
+    if detailsFramework.IsAddonApocalypseWow() then
+        local lowerInstanceId = Details:GetLowerInstanceNumber()
+        if lowerInstanceId then
+            if instance:GetId() == lowerInstanceId then
+                updateTime({instance=instance})
+            end
         end
     end
 end
+local changeSegmentListener = Details:CreateEventListener()
+changeSegmentListener:RegisterEvent("DETAILS_INSTANCE_CHANGESESSION", updateTimeOnEvent)
+changeSegmentListener:RegisterEvent("DETAILS_INSTANCE_OPEN", updateTimeOnEvent)
 
 --this function update the time in settings shown in the window
 local startElapsedTimeUpdate = function()
@@ -2244,14 +1965,15 @@ end
 local sessionIdFromDMCSU = 0
 local sessionIdFromDMCSU_Time = 0
 
-parserFrame:SetScript("OnEvent", function(self, event, ...)
+parserFrame:SetScript("OnEvent", function(self, event, ...) --~event
     if (event == "DAMAGE_METER_COMBAT_SESSION_UPDATED") then
         local damageMeterType, sessionId = ...
         if sessionId ~= 0 and damageMeterType == Enum.DamageMeterType.DamageDone then
-            sessionIdFromDMCSU = sessionId
-            sessionIdFromDMCSU_Time = GetTime()
+            --sessionIdFromDMCSU = sessionId
+            --sessionIdFromDMCSU_Time = GetTime()
+            bParser.lastEventTime = GetTime()
             if not latestSessionOpened or sessionId > latestSessionOpened then
-                local existingSession = getSession(sessionId)
+                local existingSession = getSegmentInfoFromCache(sessionId)
                 if not existingSession then
                     local sessionCreated = createAndAddSession(sessionId)
                     if sessionCreated then
@@ -2260,7 +1982,7 @@ parserFrame:SetScript("OnEvent", function(self, event, ...)
                     end
 
                     local previousSessionId = sessionId - 1
-                    local previousSession = getSession(previousSessionId)
+                    local previousSession = getSegmentInfoFromCache(previousSessionId)
                     if previousSession then
                         if not previousSession.endTime then
                             previousSession.endTime = GetTime()
@@ -2279,9 +2001,27 @@ parserFrame:SetScript("OnEvent", function(self, event, ...)
                 end
 
             elseif (latestSessionOpened and sessionId <= latestSessionOpened) then
+                bParser.lastEventTime = GetTime()
                 --if is the same session, verify if session was already added
-                local thisSession = getSession(sessionId)
-                local nextSession = getSession(sessionId+1)
+                local thisSession = getSegmentInfoFromCache(sessionId)
+
+                if not thisSession then
+                    local identifier = getCurrentCombatIdentifier()
+                    if identifier == 1 then
+                        if getAmountOfSegments() == 1 then
+                            wipeStoredSegmentsDataIds()
+                            local sessionCreated = createAndAddSession(sessionId)
+                            if sessionCreated then
+                                debugTexts[#debugTexts+1] = {left = "SESSION_UPDATED (WeirdID)", right = sessionId, time = GetTime(), date = date("%H:%M:%S")}
+                                latestSessionOpened = sessionId
+                                startUpdater()
+                            end
+                        end
+                    end
+                    return
+                end
+
+                local nextSession = getSegmentInfoFromCache(sessionId+1)
                 if (thisSession.added and not nextSession) then
                     thisSession.added = false
                     thisSession.endTime = nil
@@ -2298,7 +2038,7 @@ parserFrame:SetScript("OnEvent", function(self, event, ...)
         end
 
     elseif (event == "DAMAGE_METER_CURRENT_SESSION_UPDATED") then
-        local sessionId = getCurrentSessionId()
+        local sessionId = getCurrentCombatIdentifier()
         local sessionCreated = createAndAddSession(sessionId)
 
         latestSessionOpened = sessionId
@@ -2320,7 +2060,7 @@ parserFrame:SetScript("OnEvent", function(self, event, ...)
         end
 
         local previousSessionId = sessionId - 1
-        local previousSession = getSession(previousSessionId)
+        local previousSession = getSegmentInfoFromCache(previousSessionId)
         if previousSession then
             if not previousSession.endTime then
                 previousSession.endTime = GetTime()
@@ -2342,9 +2082,9 @@ end
 
 --called on DAMAGE_METER_RESET and DETAILS_DATA_RESET
 local onDataReset = function()
-    wipeStoredSessionIds()
+    wipeStoredSegmentsDataIds()
     if Details:ArePlayersInCombat() then
-        local sessionId = getCurrentSessionId()
+        local sessionId = getCurrentCombatIdentifier()
         if sessionId > 0 then
             createAndAddSession(sessionId)
         end
@@ -2361,6 +2101,44 @@ local updateAllRestrictionFlags = function()
             end
         end
     end)
+end
+
+local refreshWindowAfterSecretDrop = function()
+    Details:InstanceCall(Details222.BParser.UpdateAppocalypse, true)
+end
+
+local detailsListener = Details:CreateEventListener()
+
+local onEvent = function(event, instance, ...)
+    if event == "DETAILS_DATA_RESET" then
+        if detailsFramework.IsAddonApocalypseWow() then
+            onDataReset()
+        end
+    end
+end
+
+detailsListener:RegisterEvent("DETAILS_DATA_RESET", onEvent)
+
+function bParser.SetSessionCache(t)
+    if not detailsFramework.IsAddonApocalypseWow() then
+        return
+    end
+
+    segmentInfoCache = t
+
+    local availableCombatSessions = Details222.B.GetAllSegments()
+
+    local latestSession = availableCombatSessions[#availableCombatSessions]
+    if latestSession then
+        local latestSessionId = latestSession.sessionID
+        for sessionId in pairs(segmentInfoCache) do
+            if sessionId > latestSessionId then
+                segmentInfoCache[sessionId] = nil
+            end
+        end
+    else
+        wipeStoredSegmentsDataIds()
+    end
 end
 
 combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
@@ -2389,7 +2167,7 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
             local baseFrame = instance.baseframe
             if baseFrame and baseFrame:IsShown() then
                 baseFrame.button_stretch:Click()
-                C_Timer.After(5, function()
+                C_Timer.After(1, function()
                     --note: revisit this code, why not just calling the functions the stretch button calls.
                     baseFrame.button_stretch:GetScript("OnMouseDown")(baseFrame.button_stretch, "LeftButton")
                     baseFrame.button_stretch:GetScript("OnMouseUp")(baseFrame.button_stretch, "LeftButton")
@@ -2424,7 +2202,7 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
         mythicPlusInfo.startTime = GetTime()
         mythicPlusInfo.startUnixTime = time()
         mythicPlusInfo.startDate = date("%H:%M:%S")
-        mythicPlusInfo.sessionId = getCurrentSessionId()
+        mythicPlusInfo.sessionId = getCurrentCombatIdentifier()
         mythicPlusInfo.level = C_ChallengeMode.GetActiveKeystoneInfo()
         mythicPlusInfo.mapId = C_ChallengeMode.GetActiveChallengeMapID()
         mythicPlusInfo.isActive = true
@@ -2473,13 +2251,18 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
         local _, newInstanceType = GetInstanceInfo()
 
         if currentZoneType ~= "arena" and newInstanceType == "arena" then --joined arena
-            arenaSessionIdStart = getCurrentSessionId()
+            arenaSessionIdStart = getCurrentCombatIdentifier()
             onEnterPvpArea()
 
         elseif currentZoneType == "arena" and newInstanceType ~= "arena" then --left arena
             C_Timer.After(2, function()
                 onPvpMatch = false
             end)
+
+        elseif (currentZoneType == "boss") then
+            if not InCombatLockdown() then
+                parseSegmentsAndUpdate()
+            end
 
         elseif currentZoneType ~= "pvp" and newInstanceType == "pvp" then --joined battleground
             onEnterPvpArea()
@@ -2518,6 +2301,10 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
 
         local _, instanceType = GetInstanceInfo()
 
+        if Details:IsUsingBlizzardAPI() then
+            bParser.WaitServerDropCombat(refreshWindowAfterSecretDrop)
+        end
+
         if isInEncounter() then
             return
         end
@@ -2551,8 +2338,8 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
             return
         end
 
-        local sessionId = getCurrentSessionId()
-        local session = getSession(sessionId)
+        local sessionId = getCurrentCombatIdentifier()
+        local session = getSegmentInfoFromCache(sessionId)
 
         if session then
             session.endTime = GetTime()
@@ -2573,7 +2360,11 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
         if isServerSideSessionOpen() then
             bParser.WaitServerDropCombat(parseSegments)
         else
-            parseSegments()
+            if session and session.alreadyAdded then
+                parseSegmentsAndUpdate()
+            else
+                parseSegments()
+            end
         end
 
         local now = GetTime()
@@ -2582,8 +2373,10 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
             end
         end
 
-    elseif (ev == "PLAYER_REGEN_DISABLED") then --entered in combat
+    elseif (ev == "PLAYER_REGEN_DISABLED") then --entered in combat ~regen
         --print("(debug-event) PLAYER_REGEN_DISABLED", GetTime())
+        Details:StopTestBarUpdate()
+        Details:InstanceCallMethod("ResetTempSegment")
 
         debugTexts[#debugTexts+1] = {left = "PLAYER_REGEN_DISABLED", right = "true", time = GetTime(), date = date("%H:%M:%S")}
 
@@ -2593,6 +2386,10 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
 
         if not isUpdaterRunning() then
             startUpdater()
+        end
+
+        if Details:IsUsingBlizzardAPI() then
+            Details:CheckSwitchToCurrent()
         end
 
         targetGUID = nil
@@ -2626,8 +2423,8 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
 
         C_Timer.After(1, function()
             if InCombatLockdown() then
-                local sessionId = getCurrentSessionId()
-                local session = getSession(sessionId)
+                local sessionId = getCurrentCombatIdentifier()
+                local session = getSegmentInfoFromCache(sessionId)
 
                 if session then
                     thisEncounterData.sessionId = sessionId
@@ -2636,7 +2433,7 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
                     session.encounterId = encounterId
                     session.encounterName = encounterName
                 else
-                    print("|cFFFF2222Error: Encounter started but no session found!", sessionId)
+                    --print("|cFFFF2222Error: Encounter started but no segment found!", sessionId)
                 end
             end
         end)
@@ -2654,7 +2451,15 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
             bParser.WaitServerDropCombat(parseSegments)
         end
 
-        local session = getSession(latestEncounterSessionId)
+        if Details:IsUsingBlizzardAPI() then
+            C_Timer.After(2, function()
+                if not InCombatLockdown() then
+                    Details:InstanceCall(Details.ShowLastBoss)
+                end
+            end)
+        end
+
+        local session = getSegmentInfoFromCache(latestEncounterSessionId)
         latestEncounterSessionId = 0
 
         if session and session.encounterData then
@@ -2668,42 +2473,10 @@ combatEventFrame:SetScript("OnEvent", function(mySelf, ev, ...)
             end
         else
             if session and not session.encounterData then
-                print("|cFFFF1111ENCOUNTER_END without session.encounterData.")
+                --print("|cFFFF1111ENCOUNTER_END without session.encounterData.")
             end
         end
     end
 end)
 
-local detailsListener = Details:CreateEventListener()
 
-local onEvent = function(event, instance, ...)
-    if event == "DETAILS_DATA_RESET" then
-        if detailsFramework.IsAddonApocalypseWow() then
-            onDataReset()
-        end
-    end
-end
-
-detailsListener:RegisterEvent("DETAILS_DATA_RESET", onEvent)
-
-function bParser.SetSessionCache(t)
-    if not detailsFramework.IsAddonApocalypseWow() then
-        return
-    end
-
-    sessionCache = t
-
-    local availableCombatSessions = C_DamageMeter.GetAvailableCombatSessions()
-
-    local latestSession = availableCombatSessions[#availableCombatSessions]
-    if latestSession then
-        local latestSessionId = latestSession.sessionID
-        for sessionId in pairs(sessionCache) do
-            if sessionId > latestSessionId then
-                sessionCache[sessionId] = nil
-            end
-        end
-    else
-        wipeStoredSessionIds()
-    end
-end

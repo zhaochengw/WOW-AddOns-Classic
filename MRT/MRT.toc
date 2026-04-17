@@ -1,22 +1,22 @@
-## Interface: 11508, 40402, 120000, 120001, 50503, 20505, 38000
+## Interface: 11508, 40402, 120001, 120005, 50503, 20505, 38000, 38001
 ## Title: Method Raid Tools
 ## Author: ykiigor
 ## Notes: Method Raid Tools
 ## SavedVariables: VMRT
-## Version: 5251
+## Version: 5285
 ## AddonCompartmentFunc: MRT_MinimapClickFunction
 ## IconTexture: Interface\AddOns\MRT\media\MiniMap.tga
 core.lua
 Functions.lua
 embeds.xml
 ExLib.lua
-localization\localization.ru.lua
+localization\localization.ru.lua [AllowLoadTextLocale ruRU]
 localization\localization.en.lua
-localization\localization.de.lua
-localization\localization.cn.lua
-localization\localization.tw.lua
-localization\localization.kr.lua
-localization\localization.it.lua
+localization\localization.de.lua [AllowLoadTextLocale deDE]
+localization\localization.cn.lua [AllowLoadTextLocale zhCN]
+localization\localization.tw.lua [AllowLoadTextLocale zhTW]
+localization\localization.kr.lua [AllowLoadTextLocale koKR]
+localization\localization.it.lua [AllowLoadTextLocale itIT]
 localization\localization.lua
 Data.lua
 BlizzFix.lua
@@ -26,25 +26,25 @@ ExCD2.lua
 Inspect.lua
 VisNote.lua
 Reminder.lua
-BossWatcher.lua
+BossWatcher.lua [AllowLoadGameType classic]
 InspectViewer.lua
 RaidCheck.lua
 InviteTool.lua
 RaidGroups.lua
 MarksBar.lua
 Marks.lua
-MarksSimple.lua
-Interrupts.lua
+MarksSimple.lua [AllowLoadGameType classic]
+Interrupts.lua [AllowLoadGameType classic]
 BattleRes.lua
 Timers.lua
 RaidAttendance.lua
 Encounter.lua
 LootHistory.lua
-WhoPulled.lua
+WhoPulled.lua [AllowLoadGameType classic]
 Pets.lua
 AutoLogging.lua
 LootLink.lua
-WAChecker.lua
+WAChecker.lua [AllowLoadGameType classic]
 Bindings.lua
 Blank.lua
 Profiles.lua

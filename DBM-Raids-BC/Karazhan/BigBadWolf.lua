@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("BigBadWolf", "DBM-Raids-BC", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(17521)
 --mod:SetEncounterID(655)--used by all 3 of them, so not usuable
 mod:SetModelID(17053)

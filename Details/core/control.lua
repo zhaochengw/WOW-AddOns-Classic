@@ -445,7 +445,9 @@
 
 		--if the window is showing current segment, switch it for the new combat
 		--also if the window has auto current, jump to current segment
-		Details:InstanceCallDetailsFunc(Details.TrocaSegmentoAtual, Details.tabela_vigente.is_boss and true)
+		if not Details:IsUsingBlizzardAPI() then
+			Details:InstanceCallDetailsFunc(Details.TrocaSegmentoAtual, Details.tabela_vigente.is_boss and true)
+		end
 
 		--clear hosts and make the cloud capture stuff
 		Details.host_of = nil
@@ -929,6 +931,29 @@
 
 		--issue: invalidCombat will be just floating around in memory if not destroyed
 	end --end of leaving combat function
+
+	if detailsFramework.IsAddonApocalypseWow() then
+		local getSegment = C_DamageMeter.GetCombatSessionFromType
+		local serverInCombat = false
+		C_Timer.NewTicker(0, function()
+			local thisSegment = getSegment(1, 6)
+			if thisSegment then
+				if issecretvalue(thisSegment.totalAmount) then
+					if not serverInCombat then
+						Details:SendEvent("SERVER_COMBAT_STARTED")
+					end
+					serverInCombat = true
+					Details222.Apocalypse.ServerInCombat = true
+				else
+					if serverInCombat then
+						Details:SendEvent("SERVER_COMBAT_ENDED")
+					end
+					serverInCombat = false
+					Details222.Apocalypse.ServerInCombat = false
+				end
+			end
+		end)
+	end
 
 	--~arena
 	---@class arena_ally : table
@@ -1734,11 +1759,10 @@
 		Details:HideBarsNotInUse(instancia, showing)
 	end
 
-	function Details:HideBarsNotInUse(instance, showing)
+	function Details:HideBarsNotInUse(instance, showing, speed)
 		if (instance.v_barras) then
-			--print("mostrando", instancia.rows_showing, instancia.rows_created)
 			for barra_numero = instance.rows_showing+1, instance.rows_created do
-				Details.FadeHandler.Fader(instance.barras[barra_numero], "in")
+				Details.FadeHandler.Fader(instance.barras[barra_numero], "in", speed)
 			end
 			instance.v_barras = false
 

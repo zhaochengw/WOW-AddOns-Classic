@@ -53,6 +53,7 @@ private.RegisterAcquireType({
 
 				local entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 				entry:SetNPCID(vendor_id)
+				entry:SetLocation(rep_vendor.Location)
 				entry:SetText("%s%s %s",
 					self.EntryPadding,
 					hide_type and "" or private.SetTextColor(self:ColorData().hex, REPUTATION_VENDOR_LABEL) .. ":",
@@ -62,6 +63,7 @@ private.RegisterAcquireType({
 
 				entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 				entry:SetNPCID(vendor_id)
+				entry:SetLocation(rep_vendor.Location)
 				entry:SetText(self.EntryPadding:rep(2) .. self.__faction_labels[reputation_level] .. self.ColorNameByFaction(rep_vendor.name, rep_vendor.faction))
 
 				entry_index = private.list_frame:InsertEntry(entry, entry_index, true)
@@ -78,6 +80,7 @@ private.RegisterAcquireType({
 
 				entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 				entry:SetNPCID(vendor_id)
+				entry:SetLocation(rep_vendor.Location)
 				local locName = (rep_vendor.Location and rep_vendor.Location.LocalizedName and rep_vendor.Location:LocalizedName()) or "Unknown"
 				entry:SetText("%s%s %s",
 					self.EntryPadding:rep(3),

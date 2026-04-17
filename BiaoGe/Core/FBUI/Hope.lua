@@ -39,9 +39,9 @@ function BG.HopeUI(FB)
             local version = BG["HopeFrame" .. FB]:CreateFontString()
             if n == 1 then
                 version:SetPoint("TOPLEFT", BG.MainFrame, "TOPLEFT", 10, -60)
-            elseif n == 2 or n == 4 then
+            elseif n == 3 or n == 4 then
                 version:SetPoint("TOPLEFT", frameright, "TOPRIGHT", titlewidth2, 0)
-            elseif n == 3 then
+            elseif n == 2 then
                 version:SetPoint("TOPRIGHT", framedownH, "TOPLEFT", -titlewidth2, -30)
             end
             version:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
@@ -104,7 +104,7 @@ function BG.HopeUI(FB)
                     bt:SetSize(btwidth, 20)
                     bt:SetFrameLevel(110)
                     if i == 1 then
-                        bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -4)
+                        bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
                     else
                         bt:SetPoint("TOPLEFT", framedown, "TOPLEFT", (btwidth + 26) * (i - 1), 0)
                     end
@@ -486,7 +486,7 @@ function BG.HopeUI(FB)
                         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
                         GameTooltip:ClearLines()
                         GameTooltip:AddLine(format(L["当前团队还有 %s 人也许愿该装备！"], self.text:GetText()), 1, 0, 0, true)
-                        GameTooltip:AddLine(AddTexture("RIGHT")..L["取消提示"], 1, 0.82, 0, true)
+                        GameTooltip:AddLine(AddTexture("RIGHT") .. L["取消提示"], 1, 0.82, 0, true)
                         GameTooltip:Show()
                     end)
                     f:SetScript("OnLeave", function(self)
@@ -731,7 +731,7 @@ function BG.HopeUI(FB)
                     end
                 end
 
-                self:SetEnabled(false) 
+                self:SetEnabled(false)
                 C_Timer.After(2, function()
                     bt:SetEnabled(true)
                 end)
@@ -1193,3 +1193,133 @@ function BG.HopeDaoChuUI()
     end
 end
 
+local function GetBossNum(itemID, FB)
+    FB = FB or BG.FB1
+    local diffs = BG.difficultyTable[FB]
+    if not diffs then error(L["表格ID错误"]) end
+    for hardIndex, hard in ipairs(diffs) do
+        if BG.Loot[FB][hard] then
+            local b = 1
+            while BG.Loot[FB][hard]["boss" .. b] do
+                for _, _itemID in ipairs(BG.Loot[FB][hard]["boss" .. b]) do
+                    if _itemID == itemID then
+                        return hardIndex, b
+                    end
+                end
+                b = b + 1
+            end
+        end
+    end
+end
+
+-- 参数1（必选）：link。类型：string
+-- 参数2（可选）：表格ID。不传参数则对当前表格添加心愿。类型：string
+-- 返回：true或false，true代表心愿设置成功了。类型：boolean
+function BG.SetHope(link, FB, isBiaoGe)
+    if type(link) ~= "string" then error(L["物品链接类型错误，需要string类型。"]) end
+    local itemID = GetItemID(link)
+    if not itemID then error(L["物品链接错误，没有读取到物品ID。"]) end
+
+    FB = FB or BG.FB1
+    local n, b = GetBossNum(itemID, FB)
+    if not n then
+        if isBiaoGe then
+            UIErrorsFrame:AddMessage(L["不能设置为心愿，因为该装备未知由哪个物品兑换"], 1, 0, 0)
+            return false
+        else
+            error(L["该物品链接没有匹配到正确的BOSS序号。"])
+        end
+    end
+
+    for i = 1, HopeMaxi do
+        local hope = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+        if hope and hope:GetText() == "" then
+            hope:SetText(link)
+            BiaoGe.Hope[RealmID][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = link
+            if BG.ItemLibMainFrame:IsVisible() then
+                BG.UpdateItemLib_LeftHope_All()
+                BG.UpdateItemLib_RightHope_All()
+            end
+            BG.SetBiaoGeGuanZhu(itemID)
+            return true
+        end
+    end
+    if isBiaoGe then
+        UIErrorsFrame:AddMessage(L["不能设置为心愿，因为该BOSS的心愿格子已满"], 1, 0, 0)
+    end
+    return false
+end
+
+-- 参数1（必选）：link或itemID。类型：string或number
+-- 参数2（可选）：表格ID。不传参数则历遍全部表格的心愿进行匹配删除。类型：string
+-- 返回：没有返回值
+function BG.DeleteHope(LINKorID, FB)
+    local itemID
+    if type(LINKorID) == "number" then
+        itemID = LINKorID
+    elseif type(LINKorID) == "string" then
+        itemID = GetItemID(LINKorID)
+    end
+    if not itemID then error(L["物品链接错误，没有读取到物品ID。"]) end
+
+    local FBs
+    if FB then
+        FBs = BG.phaseFBtable[FB]
+    else
+        FBs = BG.FBtable
+    end
+    if not FBs then error(L["表格ID错误"]) end
+
+    for _, FB in pairs(FBs) do
+        for n = 1, HopeMaxn[FB] do
+            for b = 1, HopeMaxb[FB] do
+                for i = 1, HopeMaxi do
+                    local hope = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+                    if hope then
+                        if itemID == GetItemID(hope:GetText()) then
+                            hope:SetText("")
+                            BiaoGe.Hope[RealmID][player][FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i] = nil
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- 参数1（必选）：link或itemID。类型：string或number
+-- 参数2（可选）：表格ID。不传参数则历遍全部表格的心愿进行匹配删除。类型：string
+-- 返回：true或false，true代表是心愿。类型：boolean
+function BG.IsHope(LINKorID, FB)
+    local itemID
+    if type(LINKorID) == "number" then
+        itemID = LINKorID
+    elseif type(LINKorID) == "string" then
+        itemID = GetItemID(LINKorID)
+    end
+    if not itemID then error(L["物品链接错误，没有读取到物品ID。"]) end
+
+    local FBs
+    if FB then
+        FBs = BG.phaseFBtable[FB]
+    else
+        FBs = BG.FBtable
+    end
+    if not FBs then error(L["表格ID错误"]) end
+
+    for _, FB in pairs(FBs) do
+        for n = 1, HopeMaxn[FB] do
+            for b = 1, HopeMaxb[FB] do
+                for i = 1, HopeMaxi do
+                    local hope = BG.HopeFrame[FB]["nandu" .. n]["boss" .. b]["zhuangbei" .. i]
+                    if hope then
+                        if itemID == GetItemID(hope:GetText()) then
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return false
+end

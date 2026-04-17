@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("ToTTrash", "DBM-Raids-MoP", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260126031700")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetModelID(47785)
 mod:SetZone(1098)
 
@@ -31,12 +32,6 @@ local timerFixatedCD			= mod:NewNextTimer(15, 140306, nil, nil, nil, 3)
 local timerConductiveShield		= mod:NewTargetTimer(10, 140296)
 local timerConductiveShieldCD	= mod:NewCDSourceTimer(20, 140296, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)--On 25 man, it always 20, But 10 man, it variables.
 
-mod:AddBoolOption("RangeFrame")
-
-local function hideRangeFrame()
-	DBM.RangeCheck:Hide()
-end
-
 local function SpiritFireTarget(sGUID)
 	local targetname = nil
 	for uId in DBM:GetGroupMembers() do
@@ -56,9 +51,6 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 139895 then
 		self:Schedule(0.2, SpiritFireTarget, args.sourceGUID)
 		timerSpiritfireCD:Start()
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(3)
-		end
 	elseif spellId == 136751 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnSonicScreech:Show(args.sourceName)
 		specWarnSonicScreech:Play("kickcast")
@@ -78,17 +70,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnStormEnergy:Show()
 			specWarnStormEnergy:Play("scatter")
 		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10)
-		end
 	elseif spellId == 139900 then
 		warnStormCloud:CombinedShow(0.5, args.destName)
 		if args:IsPlayer() then
 			specWarnStormCloud:Show()
 			specWarnStormCloud:Play("scatter")
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10)
 		end
 	elseif spellId == 140296 then
 		timerConductiveShield:Start(nil, args.destName)
@@ -105,19 +91,8 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 70308 then--Soul-Fed Construct
 		timerSpiritfireCD:Cancel()
-		if self.Options.RangeFrame then
-			self:Schedule(3, hideRangeFrame)
-		end
 	elseif cid == 70440 then--Monara
 		timerShadowNovaCD:Cancel()
-	elseif cid == 70236 then--Zandalari Storm-Caller
-		if self.Options.RangeFrame then
-			self:Schedule(3, hideRangeFrame)
-		end
-	elseif cid == 70445 then--Stormbringer Draz'kil
-		if self.Options.RangeFrame then
-			self:Schedule(3, hideRangeFrame)
-		end
 	elseif cid == 69834 or cid == 69821 then
 		timerConductiveShield:Cancel(args.destName)
 		timerConductiveShieldCD:Cancel(args.destName, args.destGUID)

@@ -144,7 +144,7 @@ function Details:RefreshScrollBar(x) --x = amount of bars being refreshed
 			local nao_mostradas = self.rows_showing - self.rows_fit_in_window
 			local slider_height = nao_mostradas * self.row_height
 			self.scroll.scrollMax = slider_height
-			self.scroll:SetMinMaxValues(0, slider_height)
+			self.scroll:SetMinMaxValues(0, max(slider_height, 0))
 
 		else	--diminuiu a quantidade, acontece depois de uma coleta de lixo
 			self.rows_showing = x
@@ -1027,6 +1027,9 @@ local BGFrame_scripts_onmousedown = function(self, button)
 		end
 
 	elseif (button == "RightButton") then
+		if not Details.__initialized then
+			return
+		end
 		if (self.is_toolbar and not Details.disable_alldisplays_window) then
 			self._instance:ShowAllSwitch()
 		else
@@ -1871,6 +1874,10 @@ local barra_backdrop_onleave = {
 
 --@self: instance line (row)
 local lineScript_Onenter = function(self)
+	if self._instance.line_no_tooltip then
+		return
+	end
+
 	self.mouse_over = true
 	OnEnterMainWindow(self._instance, self)
 
@@ -1921,6 +1928,10 @@ local lineScript_Onenter = function(self)
 end
 
 local lineScript_Onleave = function(self)
+	if self._instance.line_no_tooltip then
+		return
+	end
+
 	self.mouse_over = false
 	OnLeaveMainWindow(self._instance, self)
 
@@ -1950,10 +1961,22 @@ local lineScript_Onmousedown = function(self, button)
 		return
 	end
 
-	if detailsFramework.IsAddonApocalypseWow() then
+	if (button == "RightButton") then
+		if not Details.__initialized then
+			return
+		end
+		return Details.switch:ShowMe(self._instance)
+
+	elseif (button == "LeftButton") then
+
+	end
+
+	local isAddonApocalypseWow = detailsFramework.IsAddonApocalypseWow()
+
+	if isAddonApocalypseWow then
 		if Details222.BParser.InSecretLockdown() then
 			if button == "LeftButton" then
-				return
+				--return
 			end
 		end
 	end
@@ -1964,14 +1987,9 @@ local lineScript_Onmousedown = function(self, button)
 		Details.left_anti_truncate:Hide()
 	end
 
-	if (button == "RightButton") then
-		return Details.switch:ShowMe(self._instance)
-
-	elseif (button == "LeftButton") then
-
+	if not isAddonApocalypseWow then
+		self._instance:HandleTextsOnMouseClick (self, "down")
 	end
-
-	self._instance:HandleTextsOnMouseClick (self, "down")
 
 	self.mouse_down = GetTime()
 	self.button = button
@@ -1985,6 +2003,7 @@ local lineScript_Onmousedown = function(self, button)
 	end
 end
 
+---@param self detailsline (row)
 local lineScript_Onmouseup = function(self, button)
 	local bIsShiftDown = _IsShiftKeyDown()
 	local bIsControlDown = _IsControlKeyDown()
@@ -2007,44 +2026,65 @@ local lineScript_Onmouseup = function(self, button)
 	x = floor(x)
 	y = floor(y)
 
-	if detailsFramework.IsAddonApocalypseWow() then
-		if Details222.BParser.InSecretLockdown() then
-			return
-		end
-	end
-
 	if (self.mouse_down and (self.mouse_down+0.4 > GetTime() and (x == self.x and y == self.y)) or (x == self.x and y == self.y)) then
 		if (self.button == "LeftButton" or self.button == "MiddleButton") then
             --Temporary disabling of Resource breakdowns since not implemented
-			if (instanceObject.atributo == 5 or instanceObject.atributo == 3 or bIsShiftDown) then
-				--report
-				if (instanceObject.atributo == 5 and bIsShiftDown) then
-					local custom = instanceObject:GetCustomObject()
-					if (custom and custom.on_shift_click) then
-						local func = loadstring(custom.on_shift_click)
-						if (func) then
-							local successful, errortext = pcall(func, self, self.minha_tabela, instanceObject)
-							if (not successful) then
-								Details:Msg("error occurred custom script shift+click:", errortext)
+			if not detailsFramework.IsAddonApocalypseWow() then
+				if (instanceObject.atributo == 5 or instanceObject.atributo == 3 or bIsShiftDown) then
+					--report
+					if (instanceObject.atributo == 5 and bIsShiftDown) then
+						local custom = instanceObject:GetCustomObject()
+						if (custom and custom.on_shift_click) then
+							local func = loadstring(custom.on_shift_click)
+							if (func) then
+								local successful, errortext = pcall(func, self, self.minha_tabela, instanceObject)
+								if (not successful) then
+									Details:Msg("error occurred custom script shift+click:", errortext)
+								end
+								return
 							end
-							return
 						end
 					end
-				end
 
-				--if there's a function to overwrite the default behavior
-				if (Details.row_singleclick_overwrite[instanceObject.atributo] and type(Details.row_singleclick_overwrite[instanceObject.atributo][instanceObject.sub_atributo]) == "function") then
-					return Details.row_singleclick_overwrite[instanceObject.atributo][instanceObject.sub_atributo](_, self.minha_tabela, instanceObject, bIsShiftDown, bIsControlDown)
-				end
+					--if there's a function to overwrite the default behavior
+					if (Details.row_singleclick_overwrite[instanceObject.atributo] and type(Details.row_singleclick_overwrite[instanceObject.atributo][instanceObject.sub_atributo]) == "function") then
+						return Details.row_singleclick_overwrite[instanceObject.atributo][instanceObject.sub_atributo](_, self.minha_tabela, instanceObject, bIsShiftDown, bIsControlDown)
+					end
 
-				return Details:ReportSingleLine(instanceObject, self)
+					return Details:ReportSingleLine(instanceObject, self)
+				end
 			end
 
-			if (not self.minha_tabela) then
-				return Details:Msg("this bar is waiting update.")
+			if (instanceObject:GetApocalypseSourceType() == Details222.Apocalypse.TypeGame) then
+				if Details:IsUsingBlizzardAPI(instanceObject) then
+					local instanceLine = self
+
+					if instanceLine.isTotalBar then
+						return
+					end
+
+					local newSegmentId = instanceObject:GetNewSegmentId()
+					local segmentType = instanceObject:GetSegmentType()
+					local damageMeterType = Details222.BParser.GetAttributeTypeFromDisplay(instanceLine.mainDisplay, instanceLine.subDisplay)
+
+					if instanceObject:IsShowingDeathLog() then
+						Details.ShowDeathTooltip2(instanceObject, self)
+						return
+					end
+
+					--open apocalypse breakdown at window index 1
+					local windowIndex = 1
+					Details.OpenApocalypseBreakdown(windowIndex, instanceObject, segmentType, newSegmentId, damageMeterType, instanceLine.sourceData)
+					return
+				else
+					return Details:Msg("this bar is waiting update.")
+				end
+
+				return
 			end
 
-			Details:OpenBreakdownWindow(instanceObject, self.minha_tabela, nil, nil, bIsShiftDown, bIsControlDown)
+			--details data
+			Details:OpenBreakdownWindow(instanceObject, self.minha_tabela, nil, nil, bIsShiftDown, bIsControlDown, nil, nil, nil, self)
 		end
 	end
 end
@@ -2121,7 +2161,19 @@ end
 -- ~talent ~icon
 --code for when hovering over the class/spec icon in the player bar
 local iconFrame_OnEnter = function(self)
-	local actor = self.row.minha_tabela
+	---@type detailsline
+	local instanceLine = self.row
+	local actor = instanceLine.minha_tabela
+
+	if not actor then
+		if instanceLine.sourceData and not Details222.Apocalypse.IsServerInCombat() then
+			local instance = Details:GetInstance(instanceLine.instance_id)
+			local settingsTable = Details:MakeSettingsForAdapter(instance, instanceLine.sourceData.name)
+			local adapter = Details:MakeActorAdapter(settingsTable)
+			actor = adapter
+		end
+	end
+
 	if (actor) then
 		if (actor.frags) then
 
@@ -2259,7 +2311,7 @@ local iconFrame_OnEnter = function(self)
 				end
 			end
 
-			local actorName = actor:GetName()
+			local actorName = actor.nome
 			local RaiderIO = _G.RaiderIO
 
 			local lineHeight = 21
@@ -2958,31 +3010,34 @@ function DetailsKeyBindScrollDown() --[[GLOBAL]]
 	end
 end
 
-local function iterate_scroll_scripts(backgrounddisplay, backgroundframe, baseframe, scrollbar, instancia)
+local function iterate_scroll_scripts(backgrounddisplay, backgroundframe, baseframe, scrollbar, instance)
+	---@cast instance instance
 	baseframe:SetScript("OnMouseWheel", function(self, delta)
 		if (delta > 0) then --rolou pra cima
-			local A = instancia.barraS[1]
+			local A = instance.barraS[1]
 			if (A) then
 				if (A > 1) then
-					scrollbar:SetValue(scrollbar:GetValue() - instancia.row_height * Details.scroll_speed)
+					scrollbar:SetValue(scrollbar:GetValue() - instance.row_height * Details.scroll_speed)
 				else
 					scrollbar:SetValue(0)
 					scrollbar.ultimo = 0
 					baseframe.button_up:Disable()
 				end
+				instance.lastEventTime = 0
 			end
 
 		elseif (delta < 0) then --rolou pra baixo
-			local B = instancia.barraS[2]
+			local B = instance.barraS[2]
 			if (B) then
-				if (B < (instancia.rows_showing or 0)) then
-					scrollbar:SetValue(scrollbar:GetValue() + instancia.row_height * Details.scroll_speed)
+				if (B < (instance.rows_showing or 0)) then
+					scrollbar:SetValue(scrollbar:GetValue() + instance.row_height * Details.scroll_speed)
 				else
 					local _, maxValue = scrollbar:GetMinMaxValues()
 					scrollbar:SetValue(maxValue)
 					scrollbar.ultimo = maxValue
 					baseframe.button_down:Disable()
 				end
+				instance.lastEventTime = 0
 			end
 		end
 	end)
@@ -2997,23 +3052,23 @@ local function iterate_scroll_scripts(backgrounddisplay, backgroundframe, basefr
 		--shortcut
 		local minValue, maxValue = scrollbar:GetMinMaxValues()
 		if (minValue == currentScrollValue) then
-			instancia.barraS[1] = 1
-			instancia.barraS[2] = instancia.rows_fit_in_window
-			instancia:RefreshMainWindow(instancia, true)
+			instance.barraS[1] = 1
+			instance.barraS[2] = instance.rows_fit_in_window
+			instance:RefreshMainWindow(instance, true)
 			self.ultimo = currentScrollValue
 			baseframe.button_up:Disable()
 			return
 
 		elseif (maxValue == currentScrollValue) then
-			local min = (instancia.rows_showing or 0) -instancia.rows_fit_in_window
+			local min = (instance.rows_showing or 0) -instance.rows_fit_in_window
 			min = min+1
 			if (min < 1) then
 				min = 1
 			end
 
-			instancia.barraS[1] = min
-			instancia.barraS[2] = (instancia.rows_showing or 0)
-			instancia:RefreshMainWindow(instancia, true)
+			instance.barraS[1] = min
+			instance.barraS[2] = (instance.rows_showing or 0)
+			instance:RefreshMainWindow(instance, true)
 			self.ultimo = currentScrollValue
 			baseframe.button_down:Disable()
 			return
@@ -3028,42 +3083,42 @@ local function iterate_scroll_scripts(backgrounddisplay, backgroundframe, basefr
 		end
 
 		if (currentScrollValue > ultimo) then --scroll down
-			local B = instancia.barraS[2]
-			if (B < (instancia.rows_showing or 0)) then --se o valor maximo n�o for o m�ximo de barras a serem mostradas
+			local B = instance.barraS[2]
+			if (B < (instance.rows_showing or 0)) then --se o valor maximo n�o for o m�ximo de barras a serem mostradas
 				if (true) then --testing by pass row check - test completed, it is working!
 					local diff = currentScrollValue - ultimo --pega a diferen�a de H
-					diff = diff / instancia.row_height --calcula quantas barras ele pulou
+					diff = diff / instance.row_height --calcula quantas barras ele pulou
 					diff = ceil(diff) --arredonda para cima
 
-					if (instancia.barraS[2]+diff > (instancia.rows_showing or 0) and ultimo > 0) then
-						instancia.barraS[1] = (instancia.rows_showing or 0) - (instancia.rows_fit_in_window-1)
-						instancia.barraS[2] = (instancia.rows_showing or 0)
+					if (instance.barraS[2]+diff > (instance.rows_showing or 0) and ultimo > 0) then
+						instance.barraS[1] = (instance.rows_showing or 0) - (instance.rows_fit_in_window-1)
+						instance.barraS[2] = (instance.rows_showing or 0)
 					else
-						instancia.barraS[2] = instancia.barraS[2]+diff
-						instancia.barraS[1] = instancia.barraS[1]+diff
+						instance.barraS[2] = instance.barraS[2]+diff
+						instance.barraS[1] = instance.barraS[1]+diff
 					end
-					instancia:RefreshMainWindow(instancia, true)
+					instance:RefreshMainWindow(instance, true)
 				end
 			end
 
 		else --scroll up
-			local A = instancia.barraS[1]
+			local A = instance.barraS[1]
 			if (A > 1) then
 				if (true) then --testing by pass row check
 					--calcula quantas barras passou - test completed, it is working!
 					local diff = ultimo - currentScrollValue
-					diff = diff / instancia.row_height
+					diff = diff / instance.row_height
 					diff = ceil(diff)
 
-					if (instancia.barraS[1]-diff < 1) then
-						instancia.barraS[2] = instancia.rows_fit_in_window
-						instancia.barraS[1] = 1
+					if (instance.barraS[1]-diff < 1) then
+						instance.barraS[2] = instance.rows_fit_in_window
+						instance.barraS[1] = 1
 					else
-						instancia.barraS[2] = instancia.barraS[2]-diff
-						instancia.barraS[1] = instancia.barraS[1]-diff
+						instance.barraS[2] = instance.barraS[2]-diff
+						instance.barraS[1] = instance.barraS[1]-diff
 					end
 
-					instancia:RefreshMainWindow(instancia, true)
+					instance:RefreshMainWindow(instance, true)
 				end
 			end
 		end
@@ -3711,35 +3766,19 @@ function gump:CriaJanelaPrincipal(ID, instancia, criando)
 	instancia.freeze_texto:SetPoint("left", instancia.freeze_icon, "right", -18, 0)
 	instancia.freeze_texto:SetTextColor(1, 1, 1)
 	instancia.freeze_texto:Hide()
-
 	--details version
-		instancia._version = baseframe:CreateFontString(nil, "overlay", "GameFontHighlightSmall")
-		instancia._version:SetTextColor(1, 1, 1)
-		instancia._version:SetText("this is a alpha version of Details\nyou can help us sending bug reports\nuse the blue button.") --deprecated
-		instancia._version:Hide()
-		if (not Details222.PrivateInstanceText) then
-			local f = CreateFrame("frame")
-			Details222.PrivateInstanceText = f:CreateFontString(nil, "overlay", "GameFontNormal")
-			Details222.PrivateInstanceText:SetFont("Interface\\AddOns\\Details\\Fonts\\Accidental Presidency.ttf", 10, "NONE")
-			Details222.PrivateInstanceText:SetTextColor(1, 1, 1, 0.5)
-			Details222.PrivateInstanceText:SetText("")
-			--Details222.PrivateInstanceText:SetText(authorInfo.Support..("/"..authorInfo.Name..""):gsub("^%s$", ""))
-			Details222.PrivateInstanceText:SetPoint("bottomleft", baseframe, "bottomleft", 2, 2)
-			Details222.PrivateInstanceText:Hide()hooksecurefunc(commentador, "FollowUnit", function()
-				C_Timer.After(180, function()Details222.PrivateInstanceText:Show()end)
-			end)hooksecurefunc(commentador, "FollowPlayer", function()
-				C_Timer.After(180, function()Details222.PrivateInstanceText:Show()end)
-			end)
-		end
+	instancia._version = baseframe:CreateFontString(nil, "overlay", "GameFontHighlightSmall")
+	instancia._version:SetTextColor(1, 1, 1)
+	instancia._version:SetText("this is a alpha version of Details\nyou can help us sending bug reports\nuse the blue button.") --deprecated
+	instancia._version:Hide()
 
 	--wallpaper
 	baseframe.wallpaper = baseframe:CreateTexture(nil, "overlay")
 	baseframe.wallpaper:Hide()
-
 	--alert frame
 	baseframe.alert = CreateAlertFrame(baseframe, instancia)
 
--- resizers & lock button ~lock ------------------------------------------------------------------------------------------------------------------------------------------------------------
+	-- resizers & lock button ~lock ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	--right resizer
 		baseframe.resize_direita = CreateFrame("button", "Details_Resize_Direita"..ID, baseframe)
@@ -4095,6 +4134,10 @@ local windowLineMixin = {
 		return self.instance_id
 	end,
 
+	GetInstance = function(self)
+		return Details:GetInstance(self:GetInstanceId())
+	end,
+
 	GetLineId = function(self)
 		return self.row_id
 	end,
@@ -4137,7 +4180,7 @@ function gump:NewRow(instancia, index)
 	return gump:CreateNewLine(instancia, index)
 end
 
---search key: ~row ~barra  ~newbar ~createbar ~createrow
+--search key: ~row ~barra  ~newbar ~createbar ~createrow ~bar ~line
 function gump:CreateNewLine(instance, index)
 	--instance = window object, index = row number
 	local baseframe = instance.baseframe
@@ -4236,16 +4279,25 @@ function gump:CreateNewLine(instance, index)
 	---@field instance_id number
 	---@field animacao_fim number
 	---@field animacao_fim2 number
+	---@field blzSpecIcon number
 	---@field isInstanceLine boolean
 	---@field maxindex_size number
 	---@field sourceData damagemeter_combat_source
 	---@field sourceSpells damagemeter_unit_spells
-	---@field sessionType string
-	---@field sessionNumber number
-	---@field sessionTypeParam number
+	---@field sessionType number
+	---@field sessionId number
+	---@field isPlayer boolean?
+	---@field isTotalBar boolean?
+	---@field mainDisplay number
+	---@field subDisplay number
+	---@field actorName string can be secret while in combat
+	---@field actorGUID string can be secret while in combat
+	---@field classFilename string
+	---@field deathTime number
 	---@field damageMeterType number
 	---@field lineIndex number
 	---@field statusbar statusbar
+	---@field deathRecapId number
 	---@field extraStatusbar statusbar
 	---@field textura texture statusbar texture
 	---@field lineBorder frame border frame
@@ -4270,6 +4322,7 @@ function gump:CreateNewLine(instance, index)
 	---@field SetLineTexture fun(self: detailsline, texture: string, coords: number[], vertexColor: string)
 	---@field SetLineIconTexture fun(self: detailsline, texture: string, coords: number[], vertexColor: string)
 	---@field GetActor fun(self: detailsline): table
+	---@field GetInstance fun(self: detailsline): instance
 	---@field GetInstanceId fun(self: detailsline): number
 	---@field GetLineId fun(self: detailsline): number
 	---@field GetClassIcon fun(self: detailsline): texture
@@ -5299,6 +5352,10 @@ function Details:InstanceRefreshRows(instance)
 			row.modelbox_low:Hide()
 		end
 
+		if detailsFramework.IsAddonApocalypseWow() then
+			local forceUpdate = true
+			Details222.Apocalypse.UpdatePlayerNameLength(self, row, forceUpdate)
+		end
 	end
 
 	self:SetBarGrowDirection()
@@ -5565,10 +5622,15 @@ function Details:SetWindowAlphaForCombat(enteringInCombat, trueHide, alphaAmount
 	else
 		self.baseframe:Show()
 		self.baseframe:SetAlpha(maxAlpha)
+		self.rowframe:Show()
+		self.rowframe:SetAlpha(maxAlpha)
 
 		self:InstanceAlpha(min(amount, self.color[4]))
-		Details.FadeHandler.Fader(self.rowframe, "ALPHAANIM", parseRowFrameAlpha(rowsamount))
-		Details.FadeHandler.Fader(self.baseframe, "ALPHAANIM", rowsamount)
+		--this function is passing the same value as the current alpha in the row, so the fader does not pass the alpha > currentValue and hide the bar
+		if not Details:IsUsingBlizzardAPI() then
+			Details.FadeHandler.Fader(self.rowframe, "ALPHAANIM", parseRowFrameAlpha(rowsamount))
+			Details.FadeHandler.Fader(self.baseframe, "ALPHAANIM", rowsamount)
+		end
 	end
 
 	if (self.show_statusbar) then
@@ -6643,11 +6705,13 @@ local iconLoreCoords = {30/512, 355/512, 45/512, 290/512}
 --overlay color for the encounter journal "icon lore" image of the instance
 local wallpaperColor = {1, 1, 1, 0.5}
 
--- search key: ~segments
+-- search key: ~segments ~segment
 local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
+	---@type instance
+	local instance = allInOneWindowFrame or parameters_table[1]
+
 	local gameCooltip = GameCooltip
 
-	local instance = allInOneWindowFrame or parameters_table[1]
 	parameters_table[2] = parameters_table[2] or 0
 	parameters_table[2] = parameters_table[2] + deltaTime
 
@@ -6659,6 +6723,15 @@ local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
 	if (parameters_table[2] > 0.15) then
 		self:SetScript("OnUpdate", nil)
 
+		if false and detailsFramework.IsAddonApocalypseWow() then
+			local frame = Details222.SegmentSelectionMidnight.Show(instance)
+			frame:ClearAllPoints()
+			frame:SetPoint("bottom", self, "top", 0, 5)
+			local x, y = detailsFramework:ClampToScreen(frame)
+			frame:SetPoint("bottom", self, "top", x, y)
+			return
+		end
+
 		gameCooltip:Reset()
 		gameCooltip:SetType("menu")
 		gameCooltip:SetFixedParameter(instance)
@@ -6669,30 +6742,59 @@ local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
 
 		Details:AddRoundedCornerToTooltip()
 
-		if Details222.BParser.IsDamageMeterSwapped() then
+		if detailsFramework.IsAddonApocalypseWow() then -- and Details:IsUsingBlizzardAPI()
+			local bForceRefresh = true
+			local afterSetSession = function()
+				instance:RefreshWindow(bForceRefresh)
+			end
+
+			local bByUser = true
+
 			local selectExpired = function(_, _, sessionId)
-				Details222.BParser.ChangeSegment(instance.blzWindow, nil, sessionId)
+				instance:SetNewSegmentId(sessionId)
+				instance:SetSegmentType(2, bForceRefresh, bByUser)
+				afterSetSession()
 			end
 			local selectCurrent = function()
-				Details222.BParser.ChangeSegment(instance.blzWindow, Enum.DamageMeterSessionType.Current)
+				--instance:SetNewSegmentId(1)
+				instance:SetSegmentType(1, bForceRefresh, bByUser)
+				afterSetSession()
 			end
 			local selectOverall = function()
-				Details222.BParser.ChangeSegment(instance.blzWindow, Enum.DamageMeterSessionType.Overall)
+				--instance:SetNewSegmentId(1)
+				instance:SetSegmentType(0, bForceRefresh, bByUser)
+				afterSetSession()
 			end
 
 			local amountLinesAdded = 0
 
-			---@type damagemeter_combat_session[]
-			local blzSegments = C_DamageMeter.GetAvailableCombatSessions()
+			---@type damagemeter_availablecombat_session[]
+			local blzSegments = Details222.B.GetAllSegments()
 			for i, combatSession in ipairs(blzSegments) do
+				local sessionId = combatSession.sessionID
 				local sessionName = combatSession.name
 				if not combatSession.name or combatSession.name == "" then
-					sessionName = DAMAGE_METER_COMBAT_NUMBER:format(combatSession.sessionID)
+					sessionName = DAMAGE_METER_COMBAT_NUMBER:format(sessionId)
 				end
 
-				gameCooltip:AddLine(sessionName, _, 1, "white")
-				gameCooltip:AddMenu(1, selectExpired, combatSession.sessionID)
-				gameCooltip:AddIcon(Details:GetTextureAtlas("segment-icon-current"), "main", "left")
+				local icon, combatTime
+				local combatObject = Details:GetTwinCombat(sessionId)
+				if combatObject then
+					combatTime = combatObject:GetCombatTime()
+					local segmentIcon, zoneIcon = combatObject:GetCombatIcon()
+					if segmentIcon then
+						icon = segmentIcon
+					end
+				end
+
+				local tm = combatSession.durationSeconds or combatTime
+				if tm and tm > 600 and combatTime then
+					tm = combatTime
+				end
+
+				gameCooltip:AddLine(sessionName, tm and detailsFramework:IntegerToTimer(tm) or "nil", 1, "white")
+				gameCooltip:AddMenu(1, selectExpired, sessionId)
+				gameCooltip:AddIcon(icon or Details:GetTextureAtlas("segment-icon-current"), "main", "left")
 
 				amountLinesAdded = amountLinesAdded + 1
 			end
@@ -6708,14 +6810,12 @@ local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
 			gameCooltip:AddMenu(1, selectOverall, -1)
 			gameCooltip:AddIcon(Details:GetTextureAtlas("segment-icon-current"), "main", "left")
 
-			---@type blzwindow
-			local blzWindow = instance.blzWindow
-			local sessionId = blzWindow.sessionID
-			local sessionType = blzWindow.sessionType
+			local sessionId = instance:GetNewSegmentId()
+			local sessionType = instance:GetSegmentType()
 
-			if sessionType == Enum.DamageMeterSessionType.Current then
+			if sessionType == 1 then
 				gameCooltip:SetLastSelected("main", amountLinesAdded + 1)
-			elseif sessionType == Enum.DamageMeterSessionType.Overall then
+			elseif sessionType == 0 then
 				gameCooltip:SetLastSelected("main", amountLinesAdded + 2)
 			else
 				for i, combatSession in ipairs(blzSegments) do
@@ -6725,8 +6825,6 @@ local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
 					end
 				end
 			end
-
-
 		else
 			local menuIndex = 0
 			Details.segments_amount = floor(Details.segments_amount)
@@ -7116,289 +7214,287 @@ local buildSegmentTooltip = function(self, deltaTime, allInOneWindowFrame)
 
 			---------------------------------------------------------------------------------------------------------------------------------------------------
 			--> current combat
-				local thisCombat = Details:GetCurrentCombat()
-				local dateStart, dateEnd = thisCombat:GetDate()
-				local bSegmentInfoAdded
+			local thisCombat = Details:GetCurrentCombat()
+			local dateStart, dateEnd = thisCombat:GetDate()
+			local bSegmentInfoAdded
 
-				local enemy = thisCombat.is_boss and thisCombat.is_boss.name or thisCombat.enemy or "--x--x--"
-				local file, coords
+			local enemy = thisCombat.is_boss and thisCombat.is_boss.name or thisCombat.enemy or "--x--x--"
+			local file, coords
 
-				--add the new line
-				gameCooltip:AddLine(segmentos.current_standard, _, 1, "white")
-				gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, 0)
-				gameCooltip:AddIcon(Details:GetTextureAtlas("segment-icon-current"), "main", "left")
+			--add the new line
+			gameCooltip:AddLine(segmentos.current_standard, _, 1, "white")
+			gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, 0)
+			gameCooltip:AddIcon(Details:GetTextureAtlas("segment-icon-current"), "main", "left")
 
-				--current segment is a dungeon mythic+?
-				if (thisCombat.is_mythic_dungeon_segment) then
-					local mythicDungeonInfo = thisCombat:GetMythicDungeonInfo()
+			--current segment is a dungeon mythic+?
+			if (thisCombat.is_mythic_dungeon_segment) then
+				local mythicDungeonInfo = thisCombat:GetMythicDungeonInfo()
 
-					if (mythicDungeonInfo) then
-						--is a boss, trash overall or run overall segment
-						local bossInfo = thisCombat.is_boss
-						local isMythicOverallSegment, segmentID, mythicLevel, EJID, mapID, zoneName, encounterID, encounterName, startedAt, endedAt, runID = Details:UnpackMythicDungeonInfo(mythicDungeonInfo)
-						local combatElapsedTime = thisCombat:GetCombatTime()
-						local combatName = thisCombat:GetCombatName()
+				if (mythicDungeonInfo) then
+					--is a boss, trash overall or run overall segment
+					local bossInfo = thisCombat.is_boss
+					local isMythicOverallSegment, segmentID, mythicLevel, EJID, mapID, zoneName, encounterID, encounterName, startedAt, endedAt, runID = Details:UnpackMythicDungeonInfo(mythicDungeonInfo)
+					local combatElapsedTime = thisCombat:GetCombatTime()
+					local combatName = thisCombat:GetCombatName()
 
-						--is mythic overall
-						if (isMythicOverallSegment) then
-							--mostrar o tempo da dungeon
-							local totalTime = combatElapsedTime
-							--CoolTip:AddLine(zoneName .. " +" .. mythicLevel .. " (overall)", _detalhes.gump:IntegerToTimer(totalTime), 1, dungeon_color)
-							--CoolTip:AddLine(zoneName .. " +" .. mythicLevel .. " (overall)", _detalhes.gump:IntegerToTimer(endedAt - startedAt), 1, dungeon_color)
-							--CoolTip:AddIcon([[Interface\AddOns\Details\images\icons]], "main", "left", 14, 10, 479/512, 510/512, 24/512, 51/512)
-							gameCooltip:AddLine(zoneName .. " +" .. mythicLevel .. " (" .. Loc["STRING_SEGMENTS_LIST_OVERALL"] .. ")", nil, 2, "white", "white")
+					--is mythic overall
+					if (isMythicOverallSegment) then
+						--mostrar o tempo da dungeon
+						local totalTime = combatElapsedTime
+						--CoolTip:AddLine(zoneName .. " +" .. mythicLevel .. " (overall)", _detalhes.gump:IntegerToTimer(totalTime), 1, dungeon_color)
+						--CoolTip:AddLine(zoneName .. " +" .. mythicLevel .. " (overall)", _detalhes.gump:IntegerToTimer(endedAt - startedAt), 1, dungeon_color)
+						--CoolTip:AddIcon([[Interface\AddOns\Details\images\icons]], "main", "left", 14, 10, 479/512, 510/512, 24/512, 51/512)
+						gameCooltip:AddLine(zoneName .. " +" .. mythicLevel .. " (" .. Loc["STRING_SEGMENTS_LIST_OVERALL"] .. ")", nil, 2, "white", "white")
 
-						else
-							if (segmentID == "trashoverall") then
-								--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", _detalhes.gump:IntegerToTimer(combat_time), 1, dungeon_color, "gray")
-								--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", _detalhes.gump:IntegerToTimer(endedAt - startedAt), 1, dungeon_color, "gray")
-								gameCooltip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", nil, 2, "white", "white")
-							else
-								--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_BOSS"] .. ")", _detalhes.gump:IntegerToTimer(combat_time), 1, dungeon_color, "gray")
-								gameCooltip:AddLine(combatName, nil, 2, "white", "white")
-							end
-							--CoolTip:AddIcon([[Interface\AddOns\Details\images\icons]], "main", "left", 14, 10, 479/512, 510/512, 24/512, 51/512)
-						end
-
-						local portrait = (thisCombat.is_boss and thisCombat.is_boss.bossimage) or Details:GetBossPortrait(nil, nil, encounterName, EJID)
-						if (portrait) then
-							gameCooltip:AddIcon(portrait, 2, "top", 128, 64, 0, 1, 0, 0.96)
-						end
-
-						local backgroundImage = Details:GetRaidIcon (mapID, EJID, "party")
-						if (backgroundImage and bCanUseBackgroundImage) then
-							gameCooltip:SetWallpaper (2, backgroundImage, {0.070, 0.695, 0.087, 0.566}, {1, 1, 1, 0.5}, true) -- party_wallpaper_tex -- {0.09, 0.698125, .17, 0.833984375}
-						end
-
-						--sub menu
-						local decorrido = thisCombat:GetCombatTime()
-						local minutos, segundos = floor(decorrido/60), floor(decorrido%60)
-						--CoolTip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
-
+					else
 						if (segmentID == "trashoverall") then
-							local totalRealTime = endedAt - startedAt
-							local wasted = totalRealTime - decorrido
-
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TIMEINCOMBAT"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
-
-							--wasted time
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_WASTED_TIME"] .. ":", "|cFFFF3300" .. detailsFramework:IntegerToTimer(wasted) .. " (" .. floor(wasted / totalRealTime * 100) .. "%)|r", 2, "white", "white")
-							gameCooltip:AddStatusBar (100, 2, 0, 0, 0, 0.35, false, false, statusBarTexture)
-
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TOTALTIME"] .. ":", detailsFramework:IntegerToTimer(endedAt - startedAt) .. " [|cFFFF3300" .. detailsFramework:IntegerToTimer(totalRealTime - decorrido) .. "|r]", 2, "white", "white")
-
-						elseif (isMythicOverallSegment) then
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TIMEINCOMBAT"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
-							local totalRealTime = endedAt - startedAt
-							local wasted = totalRealTime - decorrido
-
-
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TOTALTIME"] .. ":", detailsFramework:IntegerToTimer(totalRealTime), 2, "white", "white")
-
-							--wasted time
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_WASTED_TIME"] .. ":", "|cFFFF3300" .. detailsFramework:IntegerToTimer(wasted) .. " (" .. floor(wasted / totalRealTime * 100) .. "%)|r", 2, "white", "white")
-							gameCooltip:AddStatusBar (100, 2, 0, 0, 0, 0.35, false, false, statusBarTexture)
-
+							--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", _detalhes.gump:IntegerToTimer(combat_time), 1, dungeon_color, "gray")
+							--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", _detalhes.gump:IntegerToTimer(endedAt - startedAt), 1, dungeon_color, "gray")
+							gameCooltip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_TRASH"] .. ")", nil, 2, "white", "white")
 						else
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
+							--CoolTip:AddLine(encounterName .. " (" .. Loc["STRING_SEGMENTS_LIST_BOSS"] .. ")", _detalhes.gump:IntegerToTimer(combat_time), 1, dungeon_color, "gray")
+							gameCooltip:AddLine(combatName, nil, 2, "white", "white")
 						end
-
-						if (thisCombat.is_boss) then
-							gameCooltip:AddLine("", "", 2, "white", "white")
-						end
-
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", thisCombat:GetDate(), 2, "white", "white")
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
-
-					else
-						--the combat has mythic dungeon tag but doesn't have a mythic dungeon table information
-						--so this is a trash cleanup segment
-
-						--submenu
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_TRASH"], nil, 2, "white", "white")
-						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":",  detailsFramework:IntegerToTimer(thisCombat:GetCombatTime()), 2, "white", "white")
-						gameCooltip:AddLine("", "", 2, "white", "white")
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", thisCombat:GetDate(), 2, "white", "white")
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
-
-						if (mythicDungeonInfo) then
-							local backgroundImage = Details:GetRaidIcon(mythicDungeonInfo.MapID, mythicDungeonInfo.EJID, "party")
-							if (backgroundImage and bCanUseBackgroundImage) then
-								gameCooltip:SetWallpaper(2, backgroundImage, {0.070, 0.695, 0.087, 0.566}, {1, 1, 1, 0.5}, true)
-							end
-						end
+						--CoolTip:AddIcon([[Interface\AddOns\Details\images\icons]], "main", "left", 14, 10, 479/512, 510/512, 24/512, 51/512)
 					end
 
-					bSegmentInfoAdded = true
-
-				elseif (thisCombat.is_boss and thisCombat.is_boss.name) then
-					local portrait = Details:GetBossPortrait(thisCombat.is_boss.mapid, thisCombat.is_boss.index) or thisCombat.is_boss.bossimage
+					local portrait = (thisCombat.is_boss and thisCombat.is_boss.bossimage) or Details:GetBossPortrait(nil, nil, encounterName, EJID)
 					if (portrait) then
-						gameCooltip:AddIcon(portrait, 2, "top", 128, 64)
+						gameCooltip:AddIcon(portrait, 2, "top", 128, 64, 0, 1, 0, 0.96)
+					end
+
+					local backgroundImage = Details:GetRaidIcon (mapID, EJID, "party")
+					if (backgroundImage and bCanUseBackgroundImage) then
+						gameCooltip:SetWallpaper (2, backgroundImage, {0.070, 0.695, 0.087, 0.566}, {1, 1, 1, 0.5}, true) -- party_wallpaper_tex -- {0.09, 0.698125, .17, 0.833984375}
+					end
+
+					--sub menu
+					local decorrido = thisCombat:GetCombatTime()
+					local minutos, segundos = floor(decorrido/60), floor(decorrido%60)
+					--CoolTip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
+
+					if (segmentID == "trashoverall") then
+						local totalRealTime = endedAt - startedAt
+						local wasted = totalRealTime - decorrido
+
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TIMEINCOMBAT"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
+
+						--wasted time
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_WASTED_TIME"] .. ":", "|cFFFF3300" .. detailsFramework:IntegerToTimer(wasted) .. " (" .. floor(wasted / totalRealTime * 100) .. "%)|r", 2, "white", "white")
+						gameCooltip:AddStatusBar (100, 2, 0, 0, 0, 0.35, false, false, statusBarTexture)
+
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TOTALTIME"] .. ":", detailsFramework:IntegerToTimer(endedAt - startedAt) .. " [|cFFFF3300" .. detailsFramework:IntegerToTimer(totalRealTime - decorrido) .. "|r]", 2, "white", "white")
+
+					elseif (isMythicOverallSegment) then
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TIMEINCOMBAT"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
+						local totalRealTime = endedAt - startedAt
+						local wasted = totalRealTime - decorrido
+
+
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_TOTALTIME"] .. ":", detailsFramework:IntegerToTimer(totalRealTime), 2, "white", "white")
+
+						--wasted time
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_WASTED_TIME"] .. ":", "|cFFFF3300" .. detailsFramework:IntegerToTimer(wasted) .. " (" .. floor(wasted / totalRealTime * 100) .. "%)|r", 2, "white", "white")
+						gameCooltip:AddStatusBar (100, 2, 0, 0, 0, 0.35, false, false, statusBarTexture)
+
 					else
-						local encounter_name = thisCombat.is_boss.encounter
-						local instanceID = thisCombat.is_boss.ej_instance_id
-						instanceID = tonumber(instanceID)
-						if (encounter_name and instanceID and instanceID ~= 0) then
-							local index, name, description, encounterID, rootSectionID, link = Details:GetEncounterInfoFromEncounterName (instanceID, encounter_name)
-							if (index and name and encounterID) then
-								local id, name, description, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (index, encounterID)
-								if (iconImage) then
-									gameCooltip:AddIcon(iconImage, 2, "top", 128, 64)
-								end
-							end
-						end
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":",  detailsFramework:IntegerToTimer(decorrido), 2, "white", "white")
 					end
 
-					if (Details.tooltip.submenu_wallpaper) then
-						local background = Details:GetRaidIcon (thisCombat.is_boss.mapid)
-						if (background and bCanUseBackgroundImage) then
-							gameCooltip:SetWallpaper (2, background, nil, segments_wallpaper_color, true)
-						else
-							local ej_id = thisCombat.is_boss.ej_instance_id
-							if (ej_id and ej_id ~= 0) then
-								local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ej_id)
-								if (name and bCanUseBackgroundImage) then
-									if (thisCombat.instance_type == "party") then
-										gameCooltip:SetWallpaper (2, bgImage, party_wallpaper_tex, party_wallpaper_color, true)
-									else
-										gameCooltip:SetWallpaper (2, loreImage, raid_wallpaper_tex, party_wallpaper_color, true)
-									end
-								end
-							end
-						end
+					if (thisCombat.is_boss) then
+						gameCooltip:AddLine("", "", 2, "white", "white")
 					end
 
-				elseif (thisCombat.is_pvp) then
-					enemy = thisCombat.is_pvp.name
-					file, coords = Details:GetBattlegroundInfo(thisCombat.is_pvp.mapid)
-
-				elseif (thisCombat.is_arena) then
-					enemy = thisCombat.is_arena.name
-					file, coords = Details:GetArenaInfo(thisCombat.is_arena.mapid)
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", thisCombat:GetDate(), 2, "white", "white")
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
 
 				else
-					if (Details.tooltip.submenu_wallpaper and bCanUseBackgroundImage) then
-						gameCooltip:SetWallpaper(2, [[Interface\ACHIEVEMENTFRAME\UI-Achievement-StatsBackground]], segments_common_tex, {1, 1, 1, 0.5}, true)
-					end
-				end
+					--the combat has mythic dungeon tag but doesn't have a mythic dungeon table information
+					--so this is a trash cleanup segment
 
-				if (Details.tooltip.submenu_wallpaper and bCanUseBackgroundImage) then
-					if (file) then
-						gameCooltip:SetWallpaper(2, "Interface\\Glues\\LOADINGSCREENS\\" .. file, coords, empty_segment_color, true)
-					end
-				end
+					--submenu
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_TRASH"], nil, 2, "white", "white")
+					gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":",  detailsFramework:IntegerToTimer(thisCombat:GetCombatTime()), 2, "white", "white")
+					gameCooltip:AddLine("", "", 2, "white", "white")
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", thisCombat:GetDate(), 2, "white", "white")
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
 
-				if (not bSegmentInfoAdded) then
-					if (thisCombat.combat_type == DETAILS_SEGMENTTYPE_DUNGEON_OVERALL) then
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", thisCombat:GetCombatName(), 2, "white", "white")
-					else
-						gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", enemy, 2, "white", "white")
-					end
-
-					if (not thisCombat:GetEndTime()) then
-						if (Details.in_combat) then
-							local decorrido = thisCombat:GetCombatTime()
-							local minutos, segundos = floor(decorrido/60), floor(decorrido%60)
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
-						else
-							gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", "--x--x--", 2, "white", "white")
+					if (mythicDungeonInfo) then
+						local backgroundImage = Details:GetRaidIcon(mythicDungeonInfo.MapID, mythicDungeonInfo.EJID, "party")
+						if (backgroundImage and bCanUseBackgroundImage) then
+							gameCooltip:SetWallpaper(2, backgroundImage, {0.070, 0.695, 0.087, 0.566}, {1, 1, 1, 0.5}, true)
 						end
+					end
+				end
+
+				bSegmentInfoAdded = true
+
+			elseif (thisCombat.is_boss and thisCombat.is_boss.name) then
+				local portrait = Details:GetBossPortrait(thisCombat.is_boss.mapid, thisCombat.is_boss.index) or thisCombat.is_boss.bossimage
+				if (portrait) then
+					gameCooltip:AddIcon(portrait, 2, "top", 128, 64)
+				else
+					local encounter_name = thisCombat.is_boss.encounter
+					local instanceID = thisCombat.is_boss.ej_instance_id
+					instanceID = tonumber(instanceID)
+					if (encounter_name and instanceID and instanceID ~= 0) then
+						local index, name, description, encounterID, rootSectionID, link = Details:GetEncounterInfoFromEncounterName (instanceID, encounter_name)
+						if (index and name and encounterID) then
+							local id, name, description, displayInfo, iconImage = DetailsFramework.EncounterJournal.EJ_GetCreatureInfo (index, encounterID)
+							if (iconImage) then
+								gameCooltip:AddIcon(iconImage, 2, "top", 128, 64)
+							end
+						end
+					end
+				end
+
+				if (Details.tooltip.submenu_wallpaper) then
+					local background = Details:GetRaidIcon (thisCombat.is_boss.mapid)
+					if (background and bCanUseBackgroundImage) then
+						gameCooltip:SetWallpaper (2, background, nil, segments_wallpaper_color, true)
 					else
+						local ej_id = thisCombat.is_boss.ej_instance_id
+						if (ej_id and ej_id ~= 0) then
+							local name, description, bgImage, buttonImage, loreImage, dungeonAreaMapID, link = DetailsFramework.EncounterJournal.EJ_GetInstanceInfo (ej_id)
+							if (name and bCanUseBackgroundImage) then
+								if (thisCombat.instance_type == "party") then
+									gameCooltip:SetWallpaper (2, bgImage, party_wallpaper_tex, party_wallpaper_color, true)
+								else
+									gameCooltip:SetWallpaper (2, loreImage, raid_wallpaper_tex, party_wallpaper_color, true)
+								end
+							end
+						end
+					end
+				end
+
+			elseif (thisCombat.is_pvp) then
+				enemy = thisCombat.is_pvp.name
+				file, coords = Details:GetBattlegroundInfo(thisCombat.is_pvp.mapid)
+
+			elseif (thisCombat.is_arena) then
+				enemy = thisCombat.is_arena.name
+				file, coords = Details:GetArenaInfo(thisCombat.is_arena.mapid)
+
+			else
+				if (Details.tooltip.submenu_wallpaper and bCanUseBackgroundImage) then
+					gameCooltip:SetWallpaper(2, [[Interface\ACHIEVEMENTFRAME\UI-Achievement-StatsBackground]], segments_common_tex, {1, 1, 1, 0.5}, true)
+				end
+			end
+
+			if (Details.tooltip.submenu_wallpaper and bCanUseBackgroundImage) then
+				if (file) then
+					gameCooltip:SetWallpaper(2, "Interface\\Glues\\LOADINGSCREENS\\" .. file, coords, empty_segment_color, true)
+				end
+			end
+
+			if (not bSegmentInfoAdded) then
+				if (thisCombat.combat_type == DETAILS_SEGMENTTYPE_DUNGEON_OVERALL) then
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", thisCombat:GetCombatName(), 2, "white", "white")
+				else
+					gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", enemy, 2, "white", "white")
+				end
+
+				if (not thisCombat:GetEndTime()) then
+					if (Details.in_combat) then
 						local decorrido = thisCombat:GetCombatTime()
 						local minutos, segundos = floor(decorrido/60), floor(decorrido%60)
 						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
-					end
-
-					gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", dateStart, 2, "white", "white")
-					gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
-				end
-
-				--fill � a quantidade de menu que esta sendo mostrada
-				if (instance.segmento == 0) then
-					if (fill - 2 == menuIndex) then
-						gameCooltip:SetLastSelected ("main", fill + 0)
-					elseif (fill - 1 == menuIndex) then
-						gameCooltip:SetLastSelected ("main", fill + 1)
 					else
-						gameCooltip:SetLastSelected ("main", fill + 2)
+						gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", "--x--x--", 2, "white", "white")
 					end
-
-					menuIndex = nil
+				else
+					local decorrido = thisCombat:GetCombatTime()
+					local minutos, segundos = floor(decorrido/60), floor(decorrido%60)
+					gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
 				end
+
+				gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", dateStart, 2, "white", "white")
+				gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd or "in progress", 2, "white", "white")
+			end
+
+			--fill � a quantidade de menu que esta sendo mostrada
+			if (instance.segmento == 0) then
+				if (fill - 2 == menuIndex) then
+					gameCooltip:SetLastSelected ("main", fill + 0)
+				elseif (fill - 1 == menuIndex) then
+					gameCooltip:SetLastSelected ("main", fill + 1)
+				else
+					gameCooltip:SetLastSelected ("main", fill + 2)
+				end
+
+				menuIndex = nil
+			end
 
 			--> overall
-				---@type combat
-				local overallCombat = Details:GetOverallCombat()
+			---@type combat
+			local overallCombat = Details:GetOverallCombat()
 
-				--CoolTip:AddLine(segmentos.overall_standard, _, 1, "white") Loc["STRING_REPORT_LAST"] .. " " .. fight_amount .. " " .. Loc["STRING_REPORT_FIGHTS"]
-				gameCooltip:AddLine(overallCombat:GetCombatName(), _, 1, "white")
-				gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, -1)
-				gameCooltip:AddIcon(overallCombat:GetCombatIcon(), "main", "left")
+			--CoolTip:AddLine(segmentos.overall_standard, _, 1, "white") Loc["STRING_REPORT_LAST"] .. " " .. fight_amount .. " " .. Loc["STRING_REPORT_FIGHTS"]
+			gameCooltip:AddLine(overallCombat:GetCombatName(), _, 1, "white")
+			gameCooltip:AddMenu(1, instance.SetSegmentFromCooltip, -1)
+			gameCooltip:AddIcon(overallCombat:GetCombatIcon(), "main", "left")
 
-				local dateStart, dateEnd = overallCombat:GetDate()
+			local dateStart, dateEnd = overallCombat:GetDate()
 
-				local enemyName = overallCombat.overall_enemy_name
+			local enemyName = overallCombat.overall_enemy_name
 
-				gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", enemyName, 2, "white", "white")
+			gameCooltip:AddLine(Loc["STRING_SEGMENT_ENEMY"] .. ":", enemyName, 2, "white", "white")
 
-				local combat_time = overallCombat:GetCombatTime()
-				local minutos, segundos = floor(combat_time / 60), floor(combat_time % 60)
+			local combat_time = overallCombat:GetCombatTime()
+			local minutos, segundos = floor(combat_time / 60), floor(combat_time % 60)
 
-				gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
-				gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", overallCombat:GetDate(), 2, "white", "white")
-				gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd, 2, "white", "white")
+			gameCooltip:AddLine(Loc["STRING_SEGMENTS_LIST_COMBATTIME"] .. ":", minutos.."m "..segundos.."s", 2, "white", "white")
+			gameCooltip:AddLine(Loc["STRING_SEGMENT_START"] .. ":", overallCombat:GetDate(), 2, "white", "white")
+			gameCooltip:AddLine(Loc["STRING_SEGMENT_END"] .. ":", dateEnd, 2, "white", "white")
 
-				-- combats added
-				local combats_added = overallCombat.segments_added or Details.empty_table
-				gameCooltip:AddLine(Loc["STRING_SEGMENTS"] .. ":", #combats_added, 2, "white", "white")
+			-- combats added
+			local combats_added = overallCombat.segments_added or Details.empty_table
+			gameCooltip:AddLine(Loc["STRING_SEGMENTS"] .. ":", #combats_added, 2, "white", "white")
 
-				if (#combats_added > 0) then
-					gameCooltip:AddLine("", "", 2, "white", "white")
+			if (#combats_added > 0) then
+				gameCooltip:AddLine("", "", 2, "white", "white")
+			end
+
+			for i, segment in ipairs(combats_added) do
+				local minutos, segundos = floor(segment.elapsed/60), floor(segment.elapsed%60)
+
+				local name = segment.name
+				if (name:len() > 20) then
+					name = string.sub (name, 1, #name - (#name - 20))
 				end
 
-				for i, segment in ipairs(combats_added) do
-					local minutos, segundos = floor(segment.elapsed/60), floor(segment.elapsed%60)
+				gameCooltip:AddLine("" .. name, minutos.."m "..segundos.."s", 2, "white", "white")
 
-					local name = segment.name
-					if (name:len() > 20) then
-						name = string.sub (name, 1, #name - (#name - 20))
-					end
+				local segmentType = segment.type
+				if (segmentType == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH) then
+					gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-mythicplus"], 2, 1, 12, 8,  nil, nil,  nil, nil, nil, nil, true)
 
-					gameCooltip:AddLine("" .. name, minutos.."m "..segundos.."s", 2, "white", "white")
+				elseif (segmentType == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS) then
+					gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-skull"], 2, 1, 12, 12, nil, nil,  nil, nil, party_line_color)
 
-					local segmentType = segment.type
-					if (segmentType == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_TRASH) then
-						gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-mythicplus"], 2, 1, 12, 8,  nil, nil,  nil, nil, nil, nil, true)
+				elseif (segmentType == DETAILS_SEGMENTTYPE_RAID_TRASH or segmentType == DETAILS_SEGMENTTYPE_DUNGEON_TRASH) then
+					gameCooltip:AddIcon(Details.TextureAtlas["broom-icon"], 2, 1, 10, 8)
 
-					elseif (segmentType == DETAILS_SEGMENTTYPE_MYTHICDUNGEON_BOSS) then
-						gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-skull"], 2, 1, 12, 12, nil, nil,  nil, nil, party_line_color)
-
-					elseif (segmentType == DETAILS_SEGMENTTYPE_RAID_TRASH or segmentType == DETAILS_SEGMENTTYPE_DUNGEON_TRASH) then
-						gameCooltip:AddIcon(Details.TextureAtlas["broom-icon"], 2, 1, 10, 8)
-
-					elseif (segmentType == DETAILS_SEGMENTTYPE_RAID_BOSS) then
-						gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-skull"], 2, 1, 12, 12)
-					end
-
-					--CoolTip:AddStatusBar (100, 2, 0, 0, 0, 0.2, false, false, statusBarTexture)
+				elseif (segmentType == DETAILS_SEGMENTTYPE_RAID_BOSS) then
+					gameCooltip:AddIcon(Details.TextureAtlas["segment-icon-skull"], 2, 1, 12, 12)
 				end
 
-				--fill � a quantidade de menu que esta sendo mostrada
-				if (instance.segmento == -1) then
-					if (fill - 2 == menuIndex) then
-						gameCooltip:SetLastSelected ("main", fill + 1)
-					elseif (fill - 1 == menuIndex) then
-						gameCooltip:SetLastSelected ("main", fill + 2)
-					else
-						gameCooltip:SetLastSelected ("main", fill + 3)
-					end
-					menuIndex = nil
+				--CoolTip:AddStatusBar (100, 2, 0, 0, 0, 0.2, false, false, statusBarTexture)
+			end
+
+			--fill � a quantidade de menu que esta sendo mostrada
+			if (instance.segmento == -1) then
+				if (fill - 2 == menuIndex) then
+					gameCooltip:SetLastSelected ("main", fill + 1)
+				elseif (fill - 1 == menuIndex) then
+					gameCooltip:SetLastSelected ("main", fill + 2)
+				else
+					gameCooltip:SetLastSelected ("main", fill + 3)
 				end
-
-			---------------------------------------------
-
+				menuIndex = nil
+			end
 		end
+		---------------------------------------------
 
 		if (not allInOneWindowFrame) then
 			show_anti_overlap (instance, self, "top")
@@ -8163,7 +8259,8 @@ function Details:AdjustAlphaByContext(interacting)
 	end
 
 	--mythic+
-	if (self.hide_on_context[8].enabled) then
+	if (self.hide_on_context[8].enabled) then --DetailsRowFrame1 visibility is false, DetailsRowFrame1 is the parent of lines
+		--if ((_G.DetailsMythicPlusFrame and _G.DetailsMythicPlusFrame.IsDoingMythicDungeon) or select(4, GetInstanceInfo()) == "Follower") then
 		if (_G.DetailsMythicPlusFrame and _G.DetailsMythicPlusFrame.IsDoingMythicDungeon) then
 			--player is inside a dungeon mythic+
 			if (not self.hide_on_context[8].inverse) then

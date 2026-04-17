@@ -203,6 +203,7 @@ L.DBMLDB						= "WARNUNG: DBM-LDB ist nun DBM-Core integriert. Obwohl es keine s
 L.DBMLOOTREMINDER				= "WARNUNG: 3rd party mod DBM-LootReminder ist installiert. Dieses Addon ist nicht mehr Kompatibel mit dem Retail WoW Client und führt dazu das " .. L.DBM .. " nicht mehr funktioniert und keine Pull-Timer mehr senden kann. Komplette Entfernung des Addons wird empfohlen."
 L.UPDATE_REQUIRES_RELAUNCH		= "WARNUNG: Dieses Update von "..L.DBM.." arbeitet erst nach einem vollständigem Neustart des Spielclients korrekt. Das Update enthält neue Dateien oder Änderungen an .toc-Dateien, die nicht mit \"/reload\" geladen werden können. Die Funktionsfähigkeit von DBM kann beeinträchtigt sein und es können Fehler auftreten, bis du den Spielclient neu startest."
 L.OUT_OF_DATE_NAG				= "Deine Version von "..L.DEADLY_BOSS_MODS.." ist veraltet. Du solltest eine Aktualisierung für diesen Kampf durchführen, da du sonst wichtige Warnungen oder Timer verpassen könntest oder automatische \"Schreie\" fehlen, die der Rest deines Schlachtzuges von dir erwartet."
+L.HARDCODED_FALLBACK				= L.DBM .. " hat in einem fest kodierten Bossmod ein unerwartetes Ergebnis erkannt. " .. L.DBM .. " greift für diese Begegnung auf Blizzard-Timer und -Warnungen zurück."
 --L.PLATER_NP_AURAS_MSG			= L.DBM .. " includes an advanced feature to show enemy cooldown timers using icons on nameplates. This is on by default for most users, but for Plater users it is off by default in Plater options unless you enable it. To get the most out of DBM (and Plater) it's recommended you enable this feature in Plater under 'Buff Special' section. If you don't want to see this message again, you can also just entirely disable 'Cooldown icons on nameplates' option in DBM global disable or nameplate options panels"
 
 L.MOVABLE_BAR					= "Zieh mich!"
@@ -261,6 +262,7 @@ L.SLASHCMD_HELP				= {
 	"/dbm key: Führt M+ Schlüsselstein- und Bewertungsprüfungen für Gruppe/Gilde durch und bietet Abkürzungen zu Dungeon-Transporten an. (alias: key, keys, keystone)",--AI translated (check me)
 	"/dbm lag: Prüft die Latenz im gesamten Schlachtzug.",
 	"/dbm durability: Prüft die Haltbarkeit im gesamten Schlachtzug.",
+	"/dbm brez: Zeigt den Timer-Rahmen für die Kampfauferstehung zur Positionierung an.",--AI translated (check me)
 	"/dbm help2: Zeigt zusätzliche Slash-Kommandos an."--AI translated (check me)
 }
 L.SLASHCMD_HELP2				= {
@@ -460,15 +462,15 @@ L.AUTO_TIMER_TEXTS.active		= "%s endet"--Buff/Debuff/event on boss
 L.AUTO_TIMER_TEXTS.fades		= "%s schwindet"--Buff/Debuff on players
 L.AUTO_TIMER_TEXTS.ai			= "%s KI"
 
-L.AUTO_TIMER_TEXTS.cd			= "%s CD"
-L.AUTO_TIMER_TEXTS.cdcount		= "%s (%%s) CD"
-L.AUTO_TIMER_TEXTS.cdsource		= "%s CD: >%%s<"
-L.AUTO_TIMER_TEXTS.cdspecial	= "Spezial CD"
+L.AUTO_TIMER_TEXTS.cd			= "%s"
+L.AUTO_TIMER_TEXTS.cdcount		= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.cdsource		= "%s: >%%s<"
+L.AUTO_TIMER_TEXTS.cdspecial	= "Spezial"
 
-L.AUTO_TIMER_TEXTS.next			= "Nächster %s"
-L.AUTO_TIMER_TEXTS.nextcount	= "Nächster %s (%%s)"
-L.AUTO_TIMER_TEXTS.nextsource	= "Nächster %s: %%s"
-L.AUTO_TIMER_TEXTS.nextspecial	= "Nächste Spezial"
+L.AUTO_TIMER_TEXTS.next			= "%s"
+L.AUTO_TIMER_TEXTS.nextcount	= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.nextsource	= "%s: %%s"
+L.AUTO_TIMER_TEXTS.nextspecial	= "Spezial"
 
 L.AUTO_TIMER_TEXTS.achievement	= "%s"
 L.AUTO_TIMER_TEXTS.stage		= "Nächste Phase"
@@ -577,7 +579,7 @@ L.AUTO_INFO_FRAME_OPTION_TEXT	= "Zeige Infofenster für $spell:%s"
 L.AUTO_INFO_FRAME_OPTION_TEXT2	= "Zeige Infofenster für Kampfübersicht"
 L.AUTO_INFO_FRAME_OPTION_TEXT3	= "Zeige Infofenster für $spell:%s (falls der Schwellwert von %%s übertroffen ist)"
 L.AUTO_READY_CHECK_OPTION_TEXT	= "Spiele \"Bereitschaftscheck\"-Sound, wenn der Boss angegriffen wird (auch wenn er nicht als Ziel gesetzt ist)"
-L.AUTO_SPEEDCLEAR_OPTION_TEXT	= "Zeige Timer für den schnellsten Clear von %s"
+L.AUTO_SPEEDCLEAR_OPTION_TEXT	= "Zeige Timer für den schnellsten Clear dieser Zone"
 --L.AUTO_PRIVATEAURA_OPTION_TEXT= "Play DBM sound alerts for $spell:%s private auras on this fight."
 
 -- New special warnings
@@ -616,11 +618,13 @@ L.ARROW_ERROR_USAGE	= {
 
 L.SPEED_KILL_TIMER_TEXT	= "Rekordzeit"
 L.SPEED_CLEAR_TIMER_TEXT	= "Abschlussbestzeit"
-L.COMBAT_RES_TIMER_TEXT	= "Kampfbelebung +"
 L.TIMER_RESPAWN		= "%s Wiedererscheinen"
 
 L.LAG_HEADER					= L.DBM.." - Latenzergebnisse"
 L.DUR_HEADER					= L.DBM.." - Haltbarkeitergebnisse"
+L.GEAR_HEADER					= L.DBM.. " - Ausrüstungsprüfung"
+L.GEAR_MISSING_GEMS			= "Fehlende Edelsteine"
+L.GEAR_MISSING_ENCHANTS		= "Fehlende Verzauberungen"
 --L.KEYSTONES_HEADER					= L.DBM.. " - Keystones"
 
 --L.OVERRIDE_ACTIVATED					= "Configuration overrides have been activated for this encounter by RL"

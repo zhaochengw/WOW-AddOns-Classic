@@ -1,9 +1,7 @@
 # Premade Groups Filter
 
-## [7.1.1](https://github.com/0xbs/premade-groups-filter/tree/7.1.1) (2026-01-28)
-[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/7.1.0...7.1.1) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
+## [7.3.6](https://github.com/0xbs/premade-groups-filter/tree/7.3.6) (2026-04-10)
+[Full Changelog](https://github.com/0xbs/premade-groups-filter/compare/7.3.5...7.3.6) [Previous Releases](https://github.com/0xbs/premade-groups-filter/releases)
 
-- Merge pull request #361 from Hollicsh/master  
-    Update ruRU.lua  
-- Update ruRU.lua  
-    Micro update RU locale  
+- Revert implementation of persistSignUpNote feature, potentially causing more taints  
+- Update AGENTS.md  

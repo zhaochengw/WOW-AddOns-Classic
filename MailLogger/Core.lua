@@ -2,8 +2,9 @@
 local AddonName, Addon = ...
 local L = Addon.L
 
-Addon.Version = C_AddOns.GetAddOnMetadata(AddonName, "Version")
-Addon.VerNum = 0
+-- 獲取版本號 (兼容各個版本)
+Addon.Version = (C_AddOns and C_AddOns.GetAddOnMetadata(AddonName, "Version")) or GetAddOnMetadata(AddonName, "Version") or "2.1.3"
+Addon.VerNum = tonumber((string.gsub(Addon.Version, "%.", ""))) or 0
 
 Addon.TradeLog = {} -- 交易记录
 

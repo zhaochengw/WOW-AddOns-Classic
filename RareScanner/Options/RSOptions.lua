@@ -57,7 +57,10 @@ function RareScanner:SetupOptions()
 	RSAC:RegisterOptionsTable("RareScanner Profiles", RareScanner:GetOptionsTable())
 
 	local RSACD = LibStub("AceConfigDialog-3.0")
-	RSACD:AddToBlizOptions("RareScanner General", _G.GENERAL_LABEL, "RareScanner")
+	
+	local ref, categoryID = RSACD:AddToBlizOptions("RareScanner General", _G.GENERAL_LABEL, "RareScanner")
+	RareScanner.categoryID = categoryID
+	
 	RSACD:AddToBlizOptions("RareScanner Sound", AL["SOUND"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Display", AL["DISPLAY"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Custom NPCs", AL["CUSTOM_NPCS"], "RareScanner")

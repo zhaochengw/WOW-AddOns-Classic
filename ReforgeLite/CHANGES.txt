@@ -1,10 +1,28 @@
-tag 15931f9ac70d3482afbac806df48c3f2b2bc0437 v2.3.8a
+tag bebf42de8af0136ddd1179cced08b78de1628def v2.3.9
 Author:	brues-code <5278969+brues-code@users.noreply.github.com>
-Date:	Tue Feb 3 14:00:31 2026 -0600
+Date:	Fri Feb 20 12:18:46 2026 -0600
 
-commit dc8ab6a1de6bd539a17fd5f96e3c35fd8a0feaa1
+commit 298ba30a2528e089fb37100672f4ba555e273e72
 Author: brues-code <5278969+brues-code@users.noreply.github.com>
-Date:   Tue Feb 3 13:55:31 2026 -0600
+Date:   Fri Feb 20 12:15:21 2026 -0600
 
-    should be ClearEditFocus
+    tooltip scan: verify that stats actually exist on item
+
+commit fdee8ad403bff0725474b7d88ea1bee136f797a1
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 20 11:46:34 2026 -0600
+
+    Workaround for https://github.com/ClassicWoWCommunity/mop-classic-bugs/issues/2642
+
+commit 10b79ba6a2e5bb01fada86aaf61dcfffcfcf2aa7
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 20 11:24:26 2026 -0600
+
+    tooltip scan cleanup
+
+commit cd8cca128e8fadc255b0d72787689dc94abaf987
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Thu Feb 19 19:47:52 2026 -0600
+
+    item stat detection issue
 

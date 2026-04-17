@@ -78,7 +78,7 @@ if (not select(2, C_AddOns.GetAddOnInfo("!!!163ui!!!")) or not C_AddOns.IsAddOnL
 		end
 	end
 	local _T_CoreFrameSample = {  };
-	local _T_CoreFrameMetaTable = {  };
+	local _T_CoreFrameMetaTableHash = {  };
 	for _, _Type in next, _LT_AllFrameTypes do
 		local _success, _Frame = pcall(CreateFrame, _Type);
 		if _success then
@@ -90,12 +90,12 @@ if (not select(2, C_AddOns.GetAddOnInfo("!!!163ui!!!")) or not C_AddOns.IsAddOnL
 				_MetaTable = _MetaTable.__index;
 				if _MetaTable ~= nil and type(_MetaTable) == 'table' then
 					_T_CoreFrameSample[_Type] = _Frame;
-					_T_CoreFrameMetaTable[_MetaTable] = true;
+					_T_CoreFrameMetaTableHash[_MetaTable] = true;
 				end
 			end
 		end
 	end
-	for _meta, _ in next, _T_CoreFrameMetaTable do
+	for _meta, _ in next, _T_CoreFrameMetaTableHash do
 		for _name, _func in next, BackdropTemplateMixin do
 			_meta[_name] = _meta[_name] or _func;
 		end

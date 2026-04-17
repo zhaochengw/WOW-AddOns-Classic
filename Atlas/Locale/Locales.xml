@@ -92,4 +92,6 @@
 	<Script file="Atlas_Dragonflight\Atlas_Dragonflight-enUS.lua"/>
 
 	<Script file="Atlas_TheWarWithin\Atlas_TheWarWithin-enUS.lua"/>
+
+	<Script file="Atlas_Midnight\Atlas_Midnight-enUS.lua"/>
 </Ui>

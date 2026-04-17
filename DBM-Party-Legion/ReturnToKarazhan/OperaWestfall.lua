@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20240412075414")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(114261, 114260, 999999)--Remove 9s if phase 1 and 2 don't fire UNIT_DIED events
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END

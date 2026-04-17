@@ -5,7 +5,8 @@ if not mod:IsClassic() then--on classic, it's normal10,normal25, defined in toc,
 	mod.statTypes = "normal"
 end
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(32871)
 if mod:IsPostCata() then--Assumed fixed in classic
 	mod:SetEncounterID(1130)

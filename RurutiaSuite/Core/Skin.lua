@@ -9,6 +9,7 @@
 -- ========================================
 
 local addonName, ns = ...
+local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 
 -- ========================================
 -- 冲突检测：如果用户加载了 NDui 或 ElvUI，停用皮肤引擎
@@ -16,11 +17,8 @@ local addonName, ns = ...
 
 if IsAddOnLoaded("NDui") or IsAddOnLoaded("ElvUI") then
     -- 用户已使用综合插件，交给它们处理美化
-    DEFAULT_CHAT_FRAME:AddMessage("|cffff0000[RS Skin] 检测到 NDui/ElvUI，皮肤引擎已停用|r")
     return
 end
-
-DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[RS Skin] 皮肤引擎已加载|r")
 
 -- ========================================
 -- 获取 RurutiaSuite 插件对象（从命名空间）
@@ -602,7 +600,5 @@ end
 -- ========================================
 -- 皮肤引擎初始化完成
 -- ========================================
-
-DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00[RS Skin] 皮肤引擎已启用|r - 黑色半透明扁平风格")
 
 

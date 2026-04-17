@@ -1,11 +1,11 @@
-## Interface: 11508, 20505, 30405, 38000 40402, 50502, 50503, 120000
+## Interface: 11508, 20505, 30405, 38001 40402, 50503, 120000
 ## Title: <BiaoGe> |cff00BFFF金团表格|r
 ## Notes: 插件命令：/BiaoGe或/GBG。角色总览命令：/BGR
 ## IconTexture: Interface\AddOns\BiaoGe\Media\icon\icon.tga
 ## Author: 苍穹之霜
 ## LoadOnDemand: 0
 ## SavedVariables: BiaoGe
-## Version: 1.25.5
+## Version: 1.27.2
 
 Locales\zhCN.lua
 Locales\zhTW.lua
@@ -33,7 +33,6 @@ Core\TongBao\LiuPai.lua
 Core\TongBao\XiaoFei.lua
 Core\TongBao\QianKuan.lua
 Core\TongBao\WCL.lua
-Core\TongBao\YongShi.lua
 Core\TongBao\Channel.lua
 
 Core\BiaoGe.lua
@@ -57,10 +56,10 @@ Core\Module\ItemOutTime.lua
 Core\Module\Achievement.lua
 Core\Module\QuickAccounting.lua
 Core\Module\InfoBar.lua
-Core\Module\Newbee.lua
 Core\Module\CommerceAuthority_Vanilla.lua
 Core\Module\bagSync.lua
 Core\Module\WorldBossCD.lua
+Core\Module\Map.lua
 
 Core\Module\minimap.lua
 Core\Options.lua

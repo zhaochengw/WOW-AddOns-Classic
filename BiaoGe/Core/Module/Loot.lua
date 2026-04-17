@@ -28,6 +28,8 @@ local player = BG.playerName
 local saveZaXiangNum = 0
 local saveZaXiangTbl = {}
 
+local r, g, b = GetClassRGB(nil, "player")
+
 BG.Init(function()
     -- 拾取事件通报到屏幕中上
     local name = "lootTime"
@@ -228,7 +230,7 @@ BG.Init(function()
                 end
             end
         elseif event == "ENCOUNTER_END" then
-            if success == 1 or bossID == 623 then
+            if success == 1 then
                 if IsBWLsod_boss5orboss6(bossID) then
                     numb = IsBWLsod_boss5orboss6(bossID)
                     lasttime = GetTime()
@@ -251,15 +253,14 @@ BG.Init(function()
             end
         end
     end)
-    local f = CreateFrame("Frame")
-    f:RegisterEvent("PLAYER_REGEN_DISABLED") -- 进入战斗
-    f:SetScript("OnEvent", function(self, event, ID)
+    -- 击杀BOSS x秒后进入下一次战斗，就变回杂项
+    BG.RegisterEvent("PLAYER_REGEN_DISABLED", function(self, event)
         local FB = BG.FB2
         if not FB then return end
         if start then return end
         _time = GetTime()
         if numb ~= Maxb[FB] - 1 then
-            if _time - lasttime >= 45 then -- 击杀BOSS x秒后进入下一次战斗，就变回杂项
+            if _time - lasttime >= 45 then
                 numb = Maxb[FB] - 1
             end
         end
@@ -303,8 +304,6 @@ BG.Init(function()
                 if Hope then
                     BiaoGe[FB]["boss" .. numb]["guanzhu" .. i] = true
                     BG.Frame[FB]["boss" .. numb]["guanzhu" .. i]:Show()
-                    BG.FrameLootMsg:AddMessage(BG.STC_g2(format(L["自动关注心愿装备：%s。团长拍卖此装备时会提醒"],
-                        (AddTexture(Texture) .. link))))
                 end
                 if count == 1 then
                     zb:SetText(link)
@@ -333,10 +332,6 @@ BG.Init(function()
                 end
                 return
             elseif zb and not zbNext then
-                if Hope then
-                    BG.FrameLootMsg:AddMessage(format("|cffDC143C" .. L["自动关注心愿装备失败：%s%s"],
-                        RR, ((AddTexture(Texture) .. link))))
-                end
                 local inSertItem = ""
                 if numb ~= Maxb[FB] - 1 then
                     local has
@@ -435,8 +430,8 @@ BG.Init(function()
     BG.AddLootItem_stackCount = AddLootItem_stackCount
     BG.AddLootItem = AddLootItem
 
-    function BG.ItemIsHope(FB, link, Texture, level)
-        local itemID = GetItemID(link)
+    function BG.ItemIsHope(FB, link, Texture, level, itemID)
+        itemID = itemID or GetItemID(link)
         for n = 1, HopeMaxn[FB] do
             for b = 1, HopeMaxb[FB] do
                 for i = 1, HopeMaxi do
@@ -498,13 +493,15 @@ BG.Init(function()
         if buy and not lootplayer then return end   -- 你是否刚购买了物品
         if quest and not lootplayer then return end -- 是否获得了任务物品
         if not link then return end
-        if not lootplayer then lootplayer = BG.GN() end
+        if not lootplayer then lootplayer = BG.playerName end
         if not count then count = 1 end
 
         local name, _, quality, level, _, _, _, stackCount, _, Texture, _, typeID, subclassID, bindType = GetItemInfo(link)
+        if bindType == 4 then return end -- 属于任务物品的不记录
         local itemID = GetItemInfoInstant(link)
-        if bindType == 4 then return end          -- 属于任务物品的不记录
-
+        if stackCount == 1 and BG.ValueInTable(BG.Loot.stackItems, itemID) then
+            stackCount = 10
+        end
         for _, id in ipairs(BG.Loot.blacklist) do -- 过滤黑名单物品
             if itemID == id then
                 return
@@ -519,7 +516,7 @@ BG.Init(function()
                     break
                 end
             end
-            if BG.IsVanilla then
+            if BG.verLess2 then
                 if typeID == 9 and quality >= 3 then -- 60服蓝色图纸
                     Iswhitelist = true
                 end
@@ -542,6 +539,7 @@ BG.Init(function()
 
         -- 更新装备库已掉落显示
         if BG.ItemLibMainFrame:IsVisible() then
+            local itemID = BG.GetLeiTingItem(itemID, FB)
             -- 装备库
             local count = BG.ItemLibMainFrame.buttoncount
             if count then
@@ -565,7 +563,7 @@ BG.Init(function()
             end
         end
         -- 心愿装备
-        local isHope = BG.ItemIsHope(FB, link, Texture, level)
+        local isHope = BG.ItemIsHope(FB, link, Texture, level, BG.GetLeiTingItem(itemID, FB))
         -- 可堆叠物品记录到杂项
         if stackCount ~= 1 then
             AddLootItem_stackCount(FB, nil, link, Texture, level, isHope, count, typeID, lootplayer)
@@ -653,7 +651,7 @@ BG.Init2(function()
     if BG.IsRetail then return end
 
     local blackList = {
-        52019,
+        52019, -- 小宝的丝带
     }
 
     local cpPlayer, cpItemID, GetInfo, testItem
@@ -661,13 +659,11 @@ BG.Init2(function()
     local function IsTrueLoot(quality, bindType, itemStackCount, typeID, itemLink)
         local itemID = GetItemID(itemLink)
         if itemID then
-            if itemID == cpItemID then
-                return
+            if itemID == cpItemID and cpPlayer then
+                return false
             end
-            for i, _itemID in ipairs(blackList) do
-                if itemID == _itemID then
-                    return
-                end
+            if BG.ValueInTable(blackList, itemID) then
+                return
             end
         end
 
@@ -753,6 +749,7 @@ BG.Init2(function()
         BG.autoLootButton:SetPoint("BOTTOM", parent, "TOP", 0, 0)
         BG.autoLootButton:SetText(L["一键分配"])
         BG.autoLootButton:SetSize(BG.autoLootButton:GetFontString():GetWidth() + 10, 25)
+        BG.autoLootButton:SetFrameLevel(parent:GetFrameLevel() + 10)
         BG.autoLootButton:Hide()
         BG.autoLootButton = BG.autoLootButton
         BG.autoLootButton:SetScript("OnEnter", OnEnter)
@@ -805,7 +802,7 @@ BG.Init2(function()
         if not IsMasterLooter() then return end
         for li = 1, GetNumLootItems() do
             for ci = 1, GetNumGroupMembers() do
-                if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == BG.GN() then
+                if LootSlotHasItem(li) and GetMasterLootCandidate(li, ci) == BG.playerName then
                     local itemLink = GetLootSlotLink(li)
                     if itemLink then
                         local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
@@ -1064,62 +1061,97 @@ BG.Init2(function()
     -- 时光服世界BOSS
     if BG.IsTitan then
         local FB = "Worldtitan"
-        local bt = BG.CreateButton(parent)
-        bt:SetPoint("BOTTOM", parent, "TOP", 0, 0)
-        bt:SetText(L["记录到表格"])
-        bt:SetSize(bt:GetFontString():GetWidth() + 10, 25)
-        bt:Hide()
-        bt.isSave = {}
-        BG.saveLootButton = bt
-        bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
-            GameTooltip:AddLine(L["把全部掉落记录到BOSS对应的表格。"], 1, 0.82, 0, true)
-            GameTooltip:AddLine(" ", 1, 0.82, 0, true)
-            GameTooltip:AddLine(L["如果BOSS格子里已有旧记录，则会自动清空旧记录。"], 1, 0.82, 0, true)
-            GameTooltip:Show()
-        end)
-        bt:SetScript("OnLeave", function(self)
-            self.isOnter = false
-            GameTooltip:Hide()
-        end)
-        bt:SetScript("OnClick", function(self)
-            BG.PlaySound(1)
-            local numb = self.bossIndex
-            BG.ClearBiaoGeByIndex(FB, numb)
-            for li = 1, GetNumLootItems() do
-                if LootSlotHasItem(li) then
-                    local count = select(3, GetLootSlotInfo(li)) or 1
-                    local itemLink = GetLootSlotLink(li)
-                    if itemLink then
-                        local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
-                        _, typeID, _, bindType = GetItemInfo(itemLink)
-                        local isHope = BG.ItemIsHope(FB, link, Texture, level)
-                        BG.AddLootItem(FB, numb, link, Texture, level, isHope, count, typeID)
-                    end
-                end
-            end
-            BG.ClickTabButton(BG.FBMainFrameTabNum)
-            BG.ClickFBbutton(FB)
-        end)
+        BG.saveWorldBossLoot = {}
+        BG.saveWorldBossLoot.isSave = {}
 
-        function BG.saveLootButton:AutoSave()
-            local guid = UnitGUID("target")
-            if not self.isSave[guid] then
-                self.isSave[guid] = true
-                self:Click()
+        -- 记录到表格
+        do
+            local bt = BG.CreateButton(parent)
+            bt:SetPoint("TOPLEFT", parent, "TOP", 0, 25)
+            bt:SetPoint("BOTTOMRIGHT", parent, "TOPRIGHT", 0, 0)
+            bt:SetText(L["记录到表格"])
+            bt:SetSize(bt:GetFontString():GetWidth() + 10, 25)
+            bt:Hide()
+            BG.saveLootButton = bt
+            bt:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+                GameTooltip:AddLine(L["把全部掉落记录到BOSS对应的表格。"], 1, 0.82, 0, true)
+                GameTooltip:AddLine(" ", 1, 0.82, 0, true)
+                GameTooltip:AddLine(L["如果BOSS格子里已有旧记录，则会自动清空旧记录。"], 1, 0.82, 0, true)
+                GameTooltip:Show()
+            end)
+            bt:SetScript("OnLeave", function(self)
+                self.isOnter = false
+                GameTooltip:Hide()
+            end)
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                wipe(BG.saveWorldBossLoot.isSave)
+                BG.saveWorldBossLoot:AutoSave()
+            end)
+
+            function BG.saveWorldBossLoot:AutoSave()
+                local guid = UnitGUID("target")
+                if not self.isSave[guid] then
+                    self.isSave[guid] = true
+                    local numb = self.bossIndex
+                    BG.ClearBiaoGeByIndex(FB, numb)
+                    for li = 1, GetNumLootItems() do
+                        if LootSlotHasItem(li) then
+                            local count = select(3, GetLootSlotInfo(li)) or 1
+                            local itemLink = GetLootSlotLink(li)
+                            if itemLink then
+                                local name, link, quality, level, _, _, _, itemStackCount, _, Texture,
+                                _, typeID, _, bindType = GetItemInfo(itemLink)
+                                local isHope = BG.ItemIsHope(FB, link, Texture, level)
+                                BG.AddLootItem(FB, numb, link, Texture, level, isHope, count, typeID)
+                            end
+                        end
+                    end
+                    BG.ClickTabButton(BG.FBMainFrameTabNum)
+                    BG.ClickFBbutton(FB)
+                end
             end
         end
 
-        local isSend = {}
-        function BG.badManLootFrameUpdate()
+        function BG.saveWorldBossLoot:OnShow()
             if BG.badManLootFrame then
                 BG.badManLootFrame:Hide()
             end
+            if BG.saveLootButton then
+                BG.saveLootButton:Hide()
+            end
+            if BG.LootAuctionLogButton then
+                BG.LootAuctionLogButton:Hide()
+            end
+            -- BG.saveLootButton:Show() -- debug
+            -- BG.LootAuctionLogButton:Show() -- debug
+            local guid = UnitGUID("target")
+            if not IsInInstance() and guid then
+                local npcID = BG.GetNpcID(guid)
+                for index, _npcID in ipairs(BG.worldBossNpcID) do
+                    if npcID == _npcID then
+                        BG.saveWorldBossLoot.bossIndex = index
+                        BG.saveWorldBossLoot:AutoSave()
+                        BG.saveLootButton:Show()
+                        BG.LootAuctionLogButton:Show()
+                        BG.LootAuctionLogFrame:SetShown(BiaoGe.options.showLootAuctionLogFrame == 1)
+                        BG.badManLootFrameUpdate()
+                        break
+                    end
+                end
+            end
+        end
+
+        -- 通报CD成员
+        local isSend = {}
+        function BG.badManLootFrameUpdate()
             if IsMasterLooter() then
                 local list = {}
                 local quality = GetLootThreshold()
+                local point = BG.GetRaidPoint()
                 for li = 1, GetNumLootItems() do
                     if LootSlotHasItem(li) then
                         local lootIcon, lootName, lootQuantity, currencyID, lootQuality = GetLootSlotInfo(li)
@@ -1130,7 +1162,7 @@ BG.Init2(function()
                                     local name = GetUnitName(unit, true)
                                     if name and not list[name] then
                                         local colorName = SetClassCFF(name, unit)
-                                        list[name] = colorName
+                                        list[name] = { colorName = colorName, point = point[name] }
                                     end
                                 end
                             end
@@ -1138,7 +1170,7 @@ BG.Init2(function()
                     end
                 end
                 if next(list) then
-                    local f = CreateFrame("Frame", nil, BG.saveLootButton)
+                    local f = CreateFrame("Frame", nil, parent)
                     f:SetSize(1, 1)
                     f:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, 0)
                     local t = f:CreateFontString()
@@ -1150,21 +1182,258 @@ BG.Init2(function()
                     BG.badManLootFrame = f
                     local count = 0
                     local sendTbl = {}
-                    for name, colorName in pairs(list) do
+                    for name, v in pairs(list) do
+                        local colorName = v.colorName
+                        local point = v.point
+                        local pointStr = point and L["（%s）"]:format(point) or ""
                         count = count + 1
                         local t = f:CreateFontString()
                         t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
                         t:SetPoint("TOPLEFT", 0, -count * 20 - 15)
-                        t:SetText(count .. L["、"] .. colorName)
-                        tinsert(sendTbl, { count .. L["、"] .. name })
+                        t:SetText(count .. L["、"] .. colorName .. pointStr)
+                        tinsert(sendTbl, { count .. L["、"] .. name .. pointStr })
                     end
                     local guid = UnitGUID("target")
-                    if not isSend[guid] then
+                    if guid and not isSend[guid] then
                         isSend[guid] = true
                         tinsert(sendTbl, 1, { L["——通报CD异常玩家——"] })
                         tinsert(sendTbl, 2, { L["无法分配装备(已有CD或没进战斗)："] })
                         BG.SendMsgToRaid(sendTbl)
                     end
+                end
+            end
+        end
+
+        -- 拍卖记录
+        do
+            BiaoGe.options.showLootAuctionLogFrame = BiaoGe.options.showLootAuctionLogFrame or 1
+
+            BG.LootAuctionLogButton = BG.CreateButton(parent)
+            do
+                BG.LootAuctionLogButton:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 25)
+                BG.LootAuctionLogButton:SetPoint("BOTTOMRIGHT", parent, "TOP", 0, 0)
+                BG.LootAuctionLogButton:Hide()
+                BG.LootAuctionLogButton:SetScript("OnClick", function(self)
+                    BG.PlaySound(1)
+                    BG.LootAuctionLogFrame:SetShown(not BG.LootAuctionLogFrame:IsVisible())
+                end)
+                BG.LootAuctionLogButton:SetScript("OnShow", function(self)
+                    BG.LootAuctionLogButton:UpdateText()
+                end)
+
+                function BG.LootAuctionLogButton:UpdateText()
+                    self:SetText(BG.LootAuctionLogFrame:IsVisible() and L["关闭拍卖记录"] or L["显示拍卖记录"])
+                end
+            end
+
+            BG.LootAuctionLogFrame = CreateFrame("Frame", nil, BG.LootAuctionLogButton, "BackdropTemplate")
+            do
+                BG.LootAuctionLogFrame:SetBackdrop({
+                    bgFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeSize = 1
+                })
+                BG.LootAuctionLogFrame:SetBackdropColor(0, 0, 0, 0.9)
+                BG.LootAuctionLogFrame:SetBackdropBorderColor(r, g, b)
+                BG.LootAuctionLogFrame:SetSize(220, 400)
+                BG.LootAuctionLogFrame:SetPoint("TOPRIGHT", parent, "TOPLEFT", -2, 0)
+                BG.LootAuctionLogFrame:EnableMouse(true)
+                BG.LootAuctionLogFrame:SetScale(1)
+                BG.LootAuctionLogFrame.buttons = {}
+                BG.LootAuctionLogFrame:SetShown(BiaoGe.options.showLootAuctionLogFrame == 1)
+                BG.LootAuctionLogFrame:SetScript("OnShow", function(self)
+                    BG.LootAuctionLogButton:UpdateText()
+                    BiaoGe.options.showLootAuctionLogFrame = BG.LootAuctionLogFrame:IsShown() and 1 or 0
+                    if self.cd then return end
+                    self.cd = true
+                    BG.After(0, function()
+                        self.cd = nil
+                    end)
+                    BG.UpdateLootAuctionLogFrame()
+                end)
+                BG.LootAuctionLogFrame:SetScript("OnHide", function(self)
+                    BG.LootAuctionLogButton:UpdateText()
+                    BiaoGe.options.showLootAuctionLogFrame = BG.LootAuctionLogFrame:IsShown() and 1 or 0
+                end)
+
+                local t = BG.LootAuctionLogFrame:CreateFontString()
+                t:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+                t:SetPoint("TOP", BG.LootAuctionLogFrame, "TOP", 0, -5)
+                t:SetText(L["拍卖记录"])
+            end
+
+            -- 滚动框
+            do
+                local frame = CreateFrame("Frame", nil, BG.LootAuctionLogFrame, "BackdropTemplate")
+                frame:SetBackdrop({
+                    edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                    edgeSize = 1,
+                })
+                frame:SetBackdropBorderColor(.5, .5, .5, .5)
+                frame:SetBackdropColor(0, 0, 0, 0.8)
+                frame:SetPoint("TOPLEFT", 5, -25)
+                frame:SetPoint("BOTTOMRIGHT", -5, 5)
+                frame:EnableMouse(true)
+                BG.LootAuctionLogFrame.frame = frame
+
+                local scroll = CreateFrame("ScrollFrame", nil, frame, "UIPanelScrollFrameTemplate")
+                scroll:SetPoint("TOPLEFT", 5, -5)
+                scroll:SetPoint("BOTTOMRIGHT", -26, 5)
+                scroll.ScrollBar.scrollStep = BG.scrollStep
+                frame.scroll = scroll
+                BG.CreateSrollBarBackdrop(scroll.ScrollBar)
+                BG.HookScrollBarShowOrHide(scroll)
+                BG.LootAuctionLogFrame.scroll = scroll
+
+                local child = CreateFrame("Frame", nil, scroll)
+                child:SetAllPoints()
+                child:SetWidth(scroll:GetWidth())
+                child:SetHeight(scroll:GetHeight())
+                scroll:SetScrollChild(child)
+                BG.LootAuctionLogFrame.child = child
+
+                local t = child:CreateFontString()
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetPoint("TOP", 0, 0)
+                t:SetTextColor(1, 0, 0)
+                t:SetText(L["没有自动拍卖记录。"])
+                t:SetWidth(scroll:GetWidth())
+                t:Hide()
+                BG.LootAuctionLogFrame.notText = t
+            end
+
+            -- 列表内容
+            local buttons = BG.LootAuctionLogFrame.buttons
+            local function CreateButton(index, v)
+                local bts = {}
+                local width = BG.LootAuctionLogFrame.child:GetWidth()
+                local link = v.zhuangbei
+                local itemID = GetItemID(link)
+                local icon, typeID = select(5, GetItemInfoInstant(link))
+                local r, g, b = GetItemQualityColor(v.quality)
+                bts.link = link
+                bts.itemID = itemID
+                bts.num = index
+                -- 主框架
+                do
+                    local f = CreateFrame("Frame", nil, BG.LootAuctionLogFrame.child, "BackdropTemplate")
+                    f:SetSize(width, 32)
+                    if not next(buttons) then
+                        f:SetPoint("TOPLEFT")
+                    else
+                        f:SetPoint("TOPLEFT", buttons[#buttons].frame, "BOTTOMLEFT", 0, 0)
+                    end
+                    f.link = link
+                    bts.frame = f
+                    f:SetScript("OnEnter", function(self)
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+                        GameTooltip:ClearLines()
+                        local itemID = GetItemInfoInstant(link)
+                        if itemID then
+                            GameTooltip:SetHyperlink(BG.SetSpecIDToLink(link))
+                        end
+                        bts.ds:Show()
+                    end)
+                    f:SetScript("OnLeave", function(self)
+                        GameTooltip:Hide()
+                        bts.ds:Hide()
+                    end)
+
+                    local tex = bts.frame:CreateTexture(nil, "BACKGROUND")
+                    tex:SetAllPoints()
+                    if index % 2 == 0 then
+                        tex:SetColorTexture(.5, .5, .5, .15)
+                    else
+                        tex:SetColorTexture(0, 0, 0, .25)
+                    end
+                    bts.tex = tex
+
+                    local tex = bts.frame:CreateTexture()
+                    tex:SetAllPoints()
+                    tex:SetColorTexture(.5, .5, .5, .5)
+                    tex:Hide()
+                    bts.ds = tex
+
+                    tinsert(buttons, bts)
+                end
+                -- 图标和装等
+                do
+                    local f = CreateFrame("Frame", nil, bts.frame, "BackdropTemplate")
+                    f:SetBackdrop({
+                        edgeFile = "Interface/ChatFrame/ChatFrameBackground",
+                        edgeSize = 1,
+                    })
+                    f:SetBackdropBorderColor(r, g, b)
+                    f:SetSize(bts.frame:GetHeight() - 2, bts.frame:GetHeight() - 2)
+                    f:SetPoint("LEFT")
+                    bts.iconFrame = f
+                    local tex = f:CreateTexture(nil, "BACKGROUND")
+                    tex:SetAllPoints()
+                    tex:SetTexture(icon)
+                    tex:SetTexCoord(unpack(BG.iconTexCoord))
+                    bts.icon = tex
+                    f.level = f:CreateFontString()
+                    f.level:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
+                    f.level:SetPoint("BOTTOM", bts.icon, 0, 1)
+                    f.level:SetText((typeID == 2 or typeID == 4) and v.itemlevel or nil)
+                    f.level:SetTextColor(r, g, b)
+                    if v.bindType == 2 then
+                        local text = bts.iconFrame:CreateFontString()
+                        text:SetFont(BIAOGE_TEXT_FONT, 10, "OUTLINE")
+                        text:SetPoint("TOP", bts.iconFrame, 0, -1)
+                        text:SetText(L["装绑"])
+                        text:SetTextColor(0, 1, 0)
+                    end
+                end
+                -- 装备
+                do
+                    local text = bts.frame:CreateFontString()
+                    text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                    text:SetWidth(width - bts.icon:GetWidth())
+                    text:SetPoint("TOPLEFT", bts.icon, "TOPRIGHT", 1, 0)
+                    text:SetText(link:gsub("%[", ""):gsub("%]", ""))
+                    text:SetJustifyH("LEFT")
+                    text:SetWordWrap(false)
+                    bts.item = text
+                end
+                -- 买家和金额
+                do
+                    local text = bts.frame:CreateFontString()
+                    text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                    text:SetPoint("BOTTOMLEFT", bts.icon, "BOTTOMRIGHT", 1, 0)
+                    text:SetWidth(width - bts.icon:GetWidth())
+                    text.LiuPaiText = BG.STC_r1(L["<流拍>"])
+                    if v.type == 1 then
+                        local color = "FFFFFF"
+                        if v.color then
+                            local r, g, b = unpack(v.color)
+                            color = ns.RGB_16(nil, r, g, b)
+                        end
+                        text:SetText(format("%s |cff%s%s|r", BG.FormatNumber(v.jine, 2), color, v.maijia))
+                    else
+                        text:SetText(text.LiuPaiText)
+                    end
+                    text:SetJustifyH("LEFT")
+                    text:SetWordWrap(false)
+                    bts.money = text
+                end
+            end
+
+            function BG.UpdateLootAuctionLogFrame()
+                if not BG.LootAuctionLogFrame:IsVisible() then return end
+                for i, v in ipairs(BG.LootAuctionLogFrame.buttons) do
+                    v.frame:Hide()
+                end
+                wipe(BG.LootAuctionLogFrame.buttons)
+                BG.LootAuctionLogFrame.notText:Show()
+                local tbl = BiaoGe[FB].auctionLog
+                if tbl then
+                    for index, v in ipairs(tbl) do
+                        CreateButton(index, v)
+                    end
+                end
+                if tbl and next(tbl) then
+                    BG.LootAuctionLogFrame.notText:Hide()
                 end
             end
         end
@@ -1215,9 +1484,6 @@ BG.Init2(function()
         local function OnShow()
             BG.autoLootButton.isOnter = false
             BG.autoLootButton:Hide()
-            if BG.saveLootButton then
-                BG.saveLootButton:Hide()
-            end
             if BiaoGe.options["allLootToMe"] == 1 and IsMasterLooter() and IsInInstance() then
                 BG.autoLootButton:Show()
                 BG.autoLootButton.SPbutton:Update()
@@ -1229,18 +1495,8 @@ BG.Init2(function()
                     end)
                 end
             end
-            if BG.saveLootButton and not IsInInstance() then
-                local guid = UnitGUID("target")
-                local npcID = BG.GetNpcID(guid)
-                for index, _npcID in ipairs(BG.worldBossNpcID) do
-                    if npcID == _npcID then
-                        BG.saveLootButton.bossIndex = index
-                        BG.saveLootButton:Show()
-                        BG.saveLootButton:AutoSave()
-                        BG.badManLootFrameUpdate()
-                        break
-                    end
-                end
+            if BG.saveWorldBossLoot then
+                BG.saveWorldBossLoot:OnShow()
             end
             BG.After(.2, function()
                 HookClick()
@@ -1263,23 +1519,24 @@ BG.Init2(function()
         end)
     end
 
-    do
-
-    end
-
     -- 橙片
     do
         BG.autoLoot = {}
+        BG.autoLoot.info = {}
         if BG.IsVanilla_60 then
             BG.autoLoot.info = {
                 NAXX = { { itemID = 22726, quest = 9250, maxCount = 40 } },
             }
-        else
+        elseif BG.IsWLK then
             BG.autoLoot.info = {
                 ICC = {
                     { itemID = 50274, quest = 24548, maxCount = 50, diff = { 4, 6, 176, 194 } }, -- 25人橙斧
                     { itemID = 45038, quest = 13622, maxCount = 30, diff = { 3, 5, 175, 193 } }, -- 10人橙锤
                 },
+                NAXXtitan = { { itemID = 22726, quest = 9250, maxCount = 40 } },
+            }
+        elseif BG.IsCTM then
+            BG.autoLoot.info = {
                 DS = {
                     { itemID = 77952, quest = 30116 },
                 },
@@ -1288,22 +1545,23 @@ BG.Init2(function()
 
         function GetInfo()
             if BG.DeBug then
-                return { itemID = testItem, quest = 13622, maxCount = 30, diff = { 3, 5, 175, 193 } }
+                -- return { itemID = testItem, quest = 13622, maxCount = 30, diff = { 3, 5, 175, 193 } }
+                return { itemID = testItem, quest = 13622, maxCount = 40 }
             end
             local info = BG.FB2 and BG.autoLoot.info[BG.FB2]
             if info then
                 local _info
                 local diff = GetRaidDifficultyID()
-                for i, v in ipairs(info) do
-                    if v.diff then
-                        for _, _diff in ipairs(v.diff) do
+                for _, items in ipairs(info) do
+                    if items.diff then
+                        for _, _diff in ipairs(items.diff) do
                             if diff == _diff then
-                                _info = v
+                                _info = items
                                 break
                             end
                         end
                     else
-                        _info = v
+                        _info = items
                         break
                     end
                 end
@@ -1358,8 +1616,8 @@ BG.Init2(function()
                 if link then
                     local itemID = GetItemID(link)
                     if itemID == info.itemID then
-                        lootplayer = _lootplayer or BG.GN()
-                        if lootplayer == BG.GN() then
+                        lootplayer = _lootplayer or BG.playerName
+                        if lootplayer == BG.playerName then
                             BG.After(1, function()
                                 local count = GetItemCount(info.itemID, true)
                                 local msg = format("AutoLoot,%s,%s,print", info.itemID, count)
@@ -1386,11 +1644,11 @@ BG.Init2(function()
                     BG.autoLootButton.SPbutton:Update()
                 end
                 -- 如果是刚刚拾取橙片的玩家发过来的插件消息
-                if canprint == "print" and sender == lootplayer then
-                    if itemID ~= 77952 then
-                        BG.SendSystemMessage(format(L["%s当前橙片数量：%s"], SetClassCFF(lootplayer), count))
-                    end
-                end
+                -- if canprint == "print" and sender == lootplayer then
+                --     if itemID ~= 77952 and not (BG.IsTitan and itemID == 22726) then
+                --         BG.SendSystemMessage(format(L["%s当前橙片数量：%s"], SetClassCFF(lootplayer), count))
+                --     end
+                -- end
             end
         end)
 
@@ -1402,5 +1660,8 @@ BG.Init2(function()
                 end
             end)
         end)
+
+        -- BG.DeBug = true
+        -- testItem = 5071
     end
 end)

@@ -18,7 +18,6 @@ local BossNum = ns.BossNum
 local pt = print
 
 function BG.NotifyChannelUI(lastbt)
-    -- BiaoGe.NotifyChannel = "RAID"
     BiaoGe.NotifyChannel = BiaoGe.NotifyChannel or "RAID"
     if not _G[BiaoGe.NotifyChannel] then
         BiaoGe.NotifyChannel = "RAID"

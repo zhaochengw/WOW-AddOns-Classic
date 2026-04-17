@@ -32,9 +32,13 @@ BG.Init2(function()
     BiaoGe.MeetingHornWhisper = BiaoGe.MeetingHornWhisper or {}
     BiaoGe.MeetingHornWhisper[RealmID] = BiaoGe.MeetingHornWhisper[RealmID] or {}
     BiaoGe.MeetingHornWhisper[RealmID][player] = BiaoGe.MeetingHornWhisper[RealmID][player] or {}
+    for _, key in pairs({ "AchievementChoose", "iLevelChoose", "otherChoose1", "otherChoose2" }) do
+        BiaoGe.MeetingHornWhisper[RealmID][player][key] = BiaoGe.MeetingHornWhisper[RealmID][player][key] or 1
+    end
 
     local addonName = "MeetingHorn"
     if not IsAddOnLoaded(addonName) then return end
+
     local MeetingHorn = LibStub("AceAddon-3.0"):GetAddon(addonName)
     local LFG = MeetingHorn:GetModule('LFG', 'AceEvent-3.0', 'AceTimer-3.0', 'AceComm-3.0', 'LibCommSocket-3.0')
     local Activity = MeetingHorn:GetClass('Activity')
@@ -342,7 +346,7 @@ BG.Init2(function()
                         end
                     end
                 elseif self.sortId == 1 then -- 按副本排序
-                    if not BG.IsVanilla then
+                    if not BG.verLess2 then
                         local acl, bcl = a:GetCertificationLevel(), b:GetCertificationLevel()
                         if acl or bcl then
                             if acl and bcl then
@@ -410,14 +414,6 @@ BG.Init2(function()
         do
             local bt = CreateFrame("Button", nil, Browser, "UIPanelButtonTemplate")
             bt:SetSize(120, 22)
-            if BG.IsVanilla_60 then
-                bt:SetPoint("RIGHT", Browser.ApplyLeaderBtn, "LEFT", 0, 0)
-            elseif ver >= 200 then
-                bt:SetPoint("RIGHT", Browser.ApplyLeaderBtn, "LEFT", 0, 0)
-            else
-                -- bt:SetPoint("RIGHT", Browser.RechargeBtn, "LEFT", -10, 0)
-                bt:SetPoint("BOTTOMRIGHT", MeetingHorn.MainPanel, "BOTTOMRIGHT", -4, 4)
-            end
             bt:SetText(L["密语模板"])
             bt:SetFrameLevel(10)
             BG.MeetingHorn.WhisperButton = bt
@@ -436,6 +432,20 @@ BG.Init2(function()
                 B.Reskin(bt)
             end
 
+            function bt:UpdatePoint()
+                bt:ClearAllPoints()
+                if BG.IsVanilla_60 then
+                    bt:SetPoint("RIGHT", Browser.ApplyLeaderBtn, "LEFT", 0, 0)
+                elseif ver >= 200 then
+                    bt:SetPoint("RIGHT", MeetingHornHeroicZoneButton or Browser.ApplyLeaderBtn, "LEFT", 0, 0)
+                else
+                    bt:SetPoint("BOTTOMRIGHT", MeetingHorn.MainPanel, "BOTTOMRIGHT", -4, 4)
+                end
+            end
+
+            bt:SetScript("OnShow", function(self)
+                BG.After(0.2, bt.UpdatePoint)
+            end)
             bt:SetScript("OnClick", function(self)
                 if BG.MeetingHorn.WhisperFrame:IsVisible() then
                     BG.MeetingHorn.WhisperFrame:Hide()
@@ -459,7 +469,7 @@ BG.Init2(function()
             f:SetBackdropColor(0, 0, 0, 0.8)
             f:SetBackdropBorderColor(0, 0, 0, 0.8)
             f.width = 200
-            if BG.IsVanilla then
+            if BG.verLess2 then
                 f.height = 160
             else
                 f.height = 224
@@ -502,7 +512,7 @@ BG.Init2(function()
                 GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
                 GameTooltip:ClearLines()
                 GameTooltip:AddLine(L["密语模板"], 1, 1, 1)
-                if BG.IsVanilla then
+                if BG.verLess2 then
                     GameTooltip:AddLine(L["预设装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"], 1, 0.82, 0, true)
                 else
                     GameTooltip:AddLine(L["预设成就、装等、自定义文本，当你点击集结号活动密语时会自动添加该内容。"], 1, 0.82, 0, true)
@@ -545,9 +555,7 @@ BG.Init2(function()
             edit:SetPoint("LEFT", t, "RIGHT", 5, 0)
             edit:SetAutoFocus(false)
             edit:SetNumeric(true)
-            if BiaoGe.MeetingHornWhisper[RealmID][player].AchievementID then
-                edit:SetText(BiaoGe.MeetingHornWhisper[RealmID][player].AchievementID)
-            end
+            edit:SetText(BiaoGe.MeetingHornWhisper[RealmID][player].AchievementID or "")
             AchievementEdit = edit
             edit:HookScript("OnEditFocusGained", function(self, enter)
                 lastfocus = edit
@@ -594,23 +602,14 @@ BG.Init2(function()
             bt:SetSize(25, 25)
             bt:SetPoint("TOPLEFT", AchievementTitleID, "BOTTOMLEFT", 0, -5)
             bt:SetHitRectInsets(0, -BG.MeetingHorn.WhisperFrame.width + 50, 0, 0)
-            bt:SetChecked(true)
-            if BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose == 1 then
-                bt:SetChecked(true)
-            elseif BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose == 0 then
-                bt:SetChecked(false)
-            end
+            bt:SetChecked(BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose == 1)
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetTextColor(.5, .5, .5)
             bt.Text:SetWidth(BG.MeetingHorn.WhisperFrame.width - 50)
             bt.Text:SetWordWrap(false)
             AchievementCheckButton = bt
             bt:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose = 1
-                else
-                    BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose = 0
-                end
+                BiaoGe.MeetingHornWhisper[RealmID][player].AchievementChoose = self:GetChecked() and 1 or 0
                 BG.PlaySound(1)
             end)
             bt:SetScript("OnEnter", function(self)
@@ -642,7 +641,7 @@ BG.Init2(function()
         local iLevelTitle, iLevelCheckButton
         do
             local t = f:CreateFontString()
-            if BG.IsVanilla then
+            if BG.verLess2 then
                 t:SetPoint("TOPLEFT", 15, -30)
             else
                 t:SetPoint("TOPLEFT", AchievementCheckButton, "BOTTOMLEFT", 0, -5)
@@ -663,7 +662,6 @@ BG.Init2(function()
             bt:SetSize(25, 25)
             bt:SetPoint("TOPLEFT", iLevelTitle, "BOTTOMLEFT", 0, -5)
             bt:SetHitRectInsets(0, -40, 0, 0)
-            bt:SetChecked(true)
             bt:SetChecked(BiaoGe.MeetingHornWhisper[RealmID][player].iLevelChoose == 1)
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetWidth(BG.MeetingHorn.WhisperFrame.width - 50)
@@ -671,11 +669,7 @@ BG.Init2(function()
             iLevelCheckButton = bt
             BG.MeetingHorn.iLevelCheckButton = bt
             bt:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    BiaoGe.MeetingHornWhisper[RealmID][player].iLevelChoose = 1
-                else
-                    BiaoGe.MeetingHornWhisper[RealmID][player].iLevelChoose = 0
-                end
+                BiaoGe.MeetingHornWhisper[RealmID][player].iLevelChoose = self:GetChecked() and 1 or 0
                 BG.PlaySound(1)
             end)
         end
@@ -693,17 +687,6 @@ BG.Init2(function()
 
         -- 自定义文本
         local otherTitle, otherCheckButton1, otherEdit1, otherCheckButton2, otherEdit2
-        do
-            -- 继承旧版数据
-            if BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose then
-                BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 = BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose
-                BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose = nil
-            end
-            if BiaoGe.MeetingHornWhisper[RealmID][player].otherText then
-                BiaoGe.MeetingHornWhisper[RealmID][player].otherText1 = BiaoGe.MeetingHornWhisper[RealmID][player].otherText
-                BiaoGe.MeetingHornWhisper[RealmID][player].otherText = nil
-            end
-        end
         do
             local t = f:CreateFontString()
             t:SetPoint("TOPLEFT", iLevelCheckButton, "BOTTOMLEFT", 0, -5)
@@ -723,21 +706,12 @@ BG.Init2(function()
             bt:SetSize(25, 25)
             bt:SetPoint("TOPLEFT", otherTitle, "BOTTOMLEFT", 0, -5)
             bt:SetHitRectInsets(0, 0, 0, 0)
-            bt:SetChecked(true)
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-            if BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 == 1 then
-                bt:SetChecked(true)
-            elseif BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 == 0 then
-                bt:SetChecked(false)
-            end
+            bt:SetChecked(BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 == 1)
             otherCheckButton1 = bt
             BG.MeetingHorn.otherCheckButton2 = bt
             bt:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 = 1
-                else
-                    BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 = 0
-                end
+                BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose1 = self:GetChecked() and 1 or 0
                 BG.PlaySound(1)
             end)
 
@@ -788,22 +762,13 @@ BG.Init2(function()
             bt:SetSize(25, 25)
             bt:SetPoint("TOPLEFT", otherCheckButton1, "BOTTOMLEFT", 0, 2)
             bt:SetHitRectInsets(0, 0, 0, 0)
-            bt:SetChecked(true)
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-            if BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 == 1 then
-                bt:SetChecked(true)
-            elseif BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 == 0 then
-                bt:SetChecked(false)
-            end
+            bt:SetChecked(BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 == 1)
             otherCheckButton2 = bt
             BG.MeetingHorn.otherCheckButton2 = bt
 
             bt:SetScript("OnClick", function(self)
-                if self:GetChecked() then
-                    BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 = 1
-                else
-                    BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 = 0
-                end
+                BiaoGe.MeetingHornWhisper[RealmID][player].otherChoose2 = self:GetChecked() and 1 or 0
                 BG.PlaySound(1)
             end)
 
@@ -863,11 +828,12 @@ BG.Init2(function()
             end
             if BiaoGe.options["MeetingHorn_whisper"] == 1 then
                 local iLevel
-                if BG.IsVanilla then
+                if BG.verLess2 then
                     iLevel = iLevelCheckButton.Text:GetText() .. (BG.isFullLevel and L["装等"] or "")
                 else
                     iLevel = iLevelCheckButton.Text:GetText()
                 end
+                iLevel = iLevel or ""
 
                 if onlylevel then
                     text = text .. iLevel .. otherEdit1:GetText() .. " "
@@ -971,7 +937,7 @@ BG.Init2(function()
 
         -- 输入框右键菜单
         local edit = ChatEdit_ChooseBoxForSend()
-        if edit and edit.GetObjectType and edit:GetObjectType() == "EditBox" and edit:HasScript("OnMouseUp") then
+        if not IsAddOnLoaded("Glass") and edit and edit.GetObjectType and edit:GetObjectType() == "EditBox" and edit:HasScript("OnMouseUp") then
             local dropDown = LibBG:Create_UIDropDownMenu(nil, edit)
             edit:HookScript("OnMouseUp", function(self, button)
                 if BiaoGe.options["MeetingHorn_whisper"] ~= 1 then return end

@@ -1,0 +1,22 @@
+## Interface: 120001, 120000, 50503, 11508
+## IconTexture: Interface\Addons\BagBrother\Art\Bagnon-Plugin.tga
+
+## Plain Title: Bagnon BoE
+## Title: Bagnon |cff20ff20BoE|r
+## Notes: |cff666666By Lars Norberg|r |n|n|cffffffffA simple Bagnon plugin that |ndisplays the label BoE on items.|r|n|n|cff4488ffPayPal|r|cffffffff:|r |n|cffffffffwww.paypal.me/GoldpawsStuff|r|n|n|cff4488ffPatreon|r|cffffffff:|r |n|cffffffffwww.patreon.com/GoldpawsStuff|r
+## Version: 2.0.89-Release
+## Author: Lars Norberg
+
+## X-Category: Inventory
+## X-Curse-Project-ID: 277041
+## X-Wago-ID: q96de4KO
+## X-License: Custom
+
+## OptionalDeps: TaintLess, Bagnon, Bagnonium
+## RequiredDeps: BagBrother
+## SavedVariables: BagnonBoE_DB
+
+embeds.xml
+dispatcher.lua
+defaults.lua
+main.lua

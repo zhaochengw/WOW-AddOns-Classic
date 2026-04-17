@@ -74,30 +74,7 @@ function RSEventDB.GetAllInternalEventInfo()
 end
 
 function RSEventDB.GetEventIDsByMapID(mapID)
-	local eventIDs = {}
-	for eventID, eventInfo in pairs(RSEventDB.GetAllInternalEventInfo()) do
-		if (RSEventDB.IsInternalEventMultiZone(eventID)) then
-			-- First check if there is a matching mapID in the database
-			for internalMapID, _ in pairs (eventInfo.zoneID) do
-				if (internalMapID == mapID) then
-					tinsert(eventIDs,eventID)
-				end
-			end
-			
-			-- Then check if there is a matching subMapID in the database
-			for internalMapID, _ in pairs (eventInfo.zoneID) do
-				if (RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
-					tinsert(eventIDs,eventID)
-				end
-			end
-		elseif (RSEventDB.IsInternalEventMonoZone(eventID)) then
-			if (eventInfo.zoneID == mapID or (eventInfo.noVignette and eventInfo.zoneID == 0)) then
-				tinsert(eventIDs,eventID)
-			end
-		end
-	end
-	
-	return eventIDs
+	return RSMapDB.GetEntitiesByMapID(mapID, RSConstants.MAP_ENTITY_EVENT, true)
 end
 
 function RSEventDB.GetInternalEventInfo(eventID)
@@ -279,10 +256,10 @@ function RSEventDB.GetEventName(eventID)
 end
 
 function RSEventDB.GetActiveEventIDsWithNamesByMapID(mapID)
-	local eventIDs =  RSEventDB.GetEventIDsByMapID(mapID)
+	local eventIDs = RSEventDB.GetEventIDsByMapID(mapID)
 	local eventIDsWithNames = nil
 	
-	if (RSUtils.GetTableLength(eventIDs)) then
+	if (RSUtils.GetTableLength(eventIDs) > 0) then
 		eventIDsWithNames = {}
 		for _, eventID in ipairs(eventIDs) do
 			local eventInfo = RSEventDB.GetInternalEventInfo(eventID)

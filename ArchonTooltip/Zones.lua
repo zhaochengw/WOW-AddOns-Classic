@@ -100,27 +100,15 @@ Private.Zones[1052] = {
     difficultyIconMap = nil,
 }
 
-Private.Zones[1036] = {
-    id = 1036,
-    name = "Naxxramas",
+Private.Zones[1048] = {
+    id = 1048,
+    name = "Gruul / Magtheridon",
     hasMultipleDifficulties = false,
     hasMultipleSizes = false,
     encounters = {
-        { id = 251118, },
-        { id = 251111, },
-        { id = 251108, },
-        { id = 251120, },
-        { id = 251117, },
-        { id = 251112, },
-        { id = 251115, },
-        { id = 251107, },
-        { id = 251110, },
-        { id = 251116, },
-        { id = 251113, },
-        { id = 251109, },
-        { id = 251121, },
-        { id = 251119, },
-        { id = 251114, },
+        { id = 50649, },
+        { id = 50650, },
+        { id = 50651, },
     },
     difficultyIconMap = nil,
 }

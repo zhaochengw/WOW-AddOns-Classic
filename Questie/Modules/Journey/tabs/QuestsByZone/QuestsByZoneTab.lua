@@ -12,6 +12,8 @@ local QuestiePlayer = QuestieLoader:ImportModule("QuestiePlayer")
 local QuestieProfessions = QuestieLoader:ImportModule("QuestieProfessions")
 ---@type QuestieDB
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
+---@type ZoneDB
+local ZoneDB = QuestieLoader:ImportModule("ZoneDB")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
@@ -32,7 +34,7 @@ function _QuestieJourney.questsByZone:DrawTab(container)
     treegroup = AceGUI:Create("SimpleGroup")
 
     local header = AceGUI:Create("Heading")
-    header:SetText(l10n('Select Continent and Zone'))
+    header:SetText(l10n('Select Category'))
     header:SetFullWidth(true)
     container:AddChild(header)
 
@@ -47,7 +49,7 @@ function _QuestieJourney.questsByZone:DrawTab(container)
     QuestieJourneyUtils:Spacer(container)
 
     header = AceGUI:Create("Heading")
-    header:SetText(l10n('Zone Quests'))
+    header:SetText(l10n('Quests'))
     header:SetFullWidth(true)
     container:AddChild(header)
 
@@ -121,7 +123,7 @@ end
 
 _CreateZoneDropdown = function()
     local dropdown = AceGUI:Create("Dropdown")
-
+    dropdown:SetWidth(205)
     local currentZoneId = QuestiePlayer:GetCurrentZoneId()
     if _QuestieJourney.lastZoneSelection[2] then
         currentZoneId = _QuestieJourney.lastZoneSelection[2]
@@ -133,6 +135,10 @@ _CreateZoneDropdown = function()
         local sortedZones = QuestieJourneyUtils:GetSortedZoneKeys(zones)
         dropdown:SetList(zones, sortedZones)
     elseif currentZoneId and zones then
+        -- Replace fake IDs with manual corrections
+        local subZoneToParentZoneOverride = loadstring(ZoneDB.private.subZoneToParentZoneOverride)()
+        currentZoneId = subZoneToParentZoneOverride[currentZoneId] or currentZoneId
+
         local sortedZones = QuestieJourneyUtils:GetSortedZoneKeys(zones)
         dropdown:SetList(zones, sortedZones)
         dropdown:SetValue(currentZoneId)
@@ -211,6 +217,38 @@ _HandleContinentSelection = function(key, _)
         local zoneTree = _QuestieJourney.questsByZone:CollectZoneQuests(classKey)
         _QuestieJourney.questsByZone:ManageTree(treegroup, zoneTree)
         zoneDropdown.frame:Hide()
+    elseif (key.value == QuestieJourney.questCategoryKeys.DUNGEONS) then
+        local text = l10n('Select Dungeon')
+        local dungeonZones = QuestieJourney.zones[QuestieJourney.questCategoryKeys.DUNGEONS] or {}
+        local sortedDungeons = QuestieJourneyUtils:GetSortedZoneKeys(dungeonZones)
+        zoneDropdown:SetList(dungeonZones, sortedDungeons)
+        zoneDropdown:SetDisabled(false)
+        zoneDropdown:SetText(text)
+        zoneDropdown.frame:Show()
+    elseif (key.value == QuestieJourney.questCategoryKeys.BATTLEGROUNDS) then
+        local text = l10n('Select Battleground')
+        local bgZones = QuestieJourney.zones[QuestieJourney.questCategoryKeys.BATTLEGROUNDS] or {}
+        local sortedBGs = QuestieJourneyUtils:GetSortedZoneKeys(bgZones)
+        zoneDropdown:SetList(bgZones, sortedBGs)
+        zoneDropdown:SetDisabled(false)
+        zoneDropdown:SetText(text)
+        zoneDropdown.frame:Show()
+    elseif (key.value == QuestieJourney.questCategoryKeys.EVENTS) then
+        local text = l10n('Select Event')
+        local eventZones = QuestieJourney.zones[QuestieJourney.questCategoryKeys.EVENTS] or {}
+        local sortedEvents = QuestieJourneyUtils:GetSortedZoneKeys(eventZones)
+        zoneDropdown:SetList(eventZones, sortedEvents)
+        zoneDropdown:SetDisabled(false)
+        zoneDropdown:SetText(text)
+        zoneDropdown.frame:Show()
+    elseif (key.value == QuestieJourney.questCategoryKeys.SCENARIOS) then
+        local text = l10n('Select Scenario')
+        local scenarioZones = QuestieJourney.zones[QuestieJourney.questCategoryKeys.SCENARIOS] or {}
+        local sortedScenarios = QuestieJourneyUtils:GetSortedZoneKeys(scenarioZones)
+        zoneDropdown:SetList(scenarioZones, sortedScenarios)
+        zoneDropdown:SetDisabled(false)
+        zoneDropdown:SetText(text)
+        zoneDropdown.frame:Show()
     elseif (key.value == QuestieJourney.questCategoryKeys.PROFESSIONS) then
         local professionList = QuestieJourney.zones[key.value]
         local playerProfessions = QuestieProfessions:GetPlayerProfessionNames()

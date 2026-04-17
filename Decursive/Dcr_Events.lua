@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-01-02T00:31:32Z
+    This file was last updated on 2026-02-27T16:45:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -253,12 +253,14 @@ function D:PLAYER_FOCUS_CHANGED () -- {{{
         FocusCurrent_ElligStatus = (
         not self.Status.Unit_Array_GUIDToUnit[focusGUID]    -- it's not already in the unit array
         ) and ( UnitExists("focus") and (not UnitCanAttack("focus", "player") or UnitIsFriend("focus", "player"))) -- and it is (or used to) be nice
+    else
+        D:Debug("focus GUID is not accessible")
     end
 
 
     if not FocusCurrent_ElligStatus then FocusCurrent_ElligStatus = false; end -- avoid the difference between nil and false...
 
-    if FocusCurrent_ElligStatus~=FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
+    if FocusCurrent_ElligStatus ~= FocusPrevious_ElligStatus or self.Status.Unit_Array_UnitToGUID["focus"] then
         self:GroupChanged ("FOCUS changed");
         self:Debug("Groups set to invalid due to focus update", FocusPrevious_ElligStatus, FocusCurrent_ElligStatus);
 
@@ -371,6 +373,57 @@ do
         end
     end
 end--}}}
+
+
+do
+    local currentState = {}
+    if DC.MN then
+
+        -- Observation on 2026-02-22: S_Active is never fired, only S_Activating is.
+        -- The current state can be queried with GetAddOnRestrictionState which
+        -- will return active iff event dispatch has completed moreover, setting
+        -- any of the "*Forced" cvar does not trigger this event nor update the queried state.
+        -- This event is also fired at login with the correct state (like the regen disabled event)
+        local S_Inactive =      Enum.AddOnRestrictionState.Inactive
+        local S_Activating =    Enum.AddOnRestrictionState.Activating
+        local S_Active =        Enum.AddOnRestrictionState.Active
+
+        local r_toString =  D:tReverse(Enum.AddOnRestrictionType)
+        local s_toString =  D:tReverse(Enum.AddOnRestrictionState)
+
+        for fieldName, fieldValue in pairs(Enum.AddOnRestrictionType) do
+            currentState[fieldValue] = C_RestrictedActions.GetAddOnRestrictionState(fieldValue)
+            D:Debug(("AddonRestriction %s (%d): %s"):format(fieldName, fieldValue, s_toString[currentState[fieldValue]]))
+        end
+
+        function D:currentRestrictionsStr()
+            local str = ""
+            for t, s in pairs(currentState) do
+                if s ~= S_Inactive then
+                    str = ("%s%s%s:%d"):format(str, str ~= "" and "," or "", r_toString[t]:sub(1,2), s)
+                end
+            end
+
+            return str
+        end
+
+        function D:ADDON_RESTRICTION_STATE_CHANGED(event, restrictionType, restrictionState)
+            D:Debug("ARSC: ", event, r_toString[restrictionType], s_toString[restrictionState])
+
+            currentState[restrictionType] = restrictionState
+        end
+    else
+        function D:currentRestrictionsStr()
+            return "N/A"
+        end;
+        --D:ADDON_RESTRICTION_STATE_CHANGED does not exist before MN
+    end
+
+    function D:GetRestrictionStates()
+        return currentState
+    end;
+end
+
 -- }}}
 
 -- This let us park command we can't execute while in combat to execute them later {{{
@@ -410,24 +463,17 @@ end
 
 
 function D:PLAYER_TARGET_CHANGED()
-
-
     if not D.DcrFullyInitialized then
         D:Debug("|cFFFF0000D:PLAYER_TARGET_CHANGED aborted, init uncomplete!|r");
         return;
     end
 
     if UnitExists("target") and not UnitCanAttack("player", "target") then
-
         D.Status.TargetExists = true;
 
         self.LiveList:DelayedGetDebuff("target");
 
-
-        if self:CheckUnitStealth("target") then
-            self.Stealthed_Units["target"] = true;
-        end
-
+        self.Stealthed_Units["target"] = self:CheckUnitStealth("target")
     else
         D.Status.TargetExists = false;
         self.Stealthed_Units["target"] = false;
@@ -513,8 +559,22 @@ do
     local GetTime       = _G.GetTime;
     -- This event manager is only here to catch events when the GUID unit array is not reliable.
     -- For everything else the combat log event manager does the job since it's a lot more resource friendly. (UNIT_AURA fires way too often and provides no data)
-    function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
+    --
 
+    function D:checkForDebuff(UnitID, secretedName)
+        --[==[@debug@
+        if self.debug then self:Debug("(UA) Debuff, UnitId: ", UnitID, secretedName); end
+        --@end-debug@]==]
+
+        if self.profile.ShowDebuffsFrame then
+            self.MicroUnitF:UpdateMUFUnit(UnitID);
+        elseif not self.profile.HideLiveList then
+            if self.debug then self:Debug("(LiveList) Registering delayed GetDebuff for ", destName); end
+            self.LiveList:DelayedGetDebuff(UnitID);
+        end
+    end
+
+    function D:UNIT_AURA(selfevent, UnitID, o_auraUpdateInfo)
 
         if not D.DcrFullyInitialized then
             D:Debug("|cFFFF0000D:UNIT_AURA aborted, init uncomplete!|r");
@@ -522,22 +582,64 @@ do
         end
 
         if not self.Status.Unit_Array_UnitToGUID[UnitID] then
-            -- self:Debug(UnitID, " |cFFFF7711is not in raid|r");
             return;
         end
 
-        local unitguid = UnitGUID(UnitID);
 
         --[==[@debug@
-        D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, UnitID, GetTime() + (GetTime() % 1));
+        --D:lazy_debug("UNIT_AURA", function() return D:tAsString(o_auraUpdateInfo) end, "UnitID:", UnitID, GetTime() + (GetTime() % 1));
         --@end-debug@]==]
 
+
+        if DC.MN then -- classic versioins still use CLEU and although they support UNIT_AURA as well CLEU provides more features
+            if o_auraUpdateInfo.removedAuraInstanceIDs then
+                self:checkForDebuff(UnitID)
+
+                for _, id in pairs(o_auraUpdateInfo.removedAuraInstanceIDs) do
+                    if self.Stealthed_Units[UnitID] and self.Stealthed_Units[UnitID] == id then
+                        self:Debug("STEALTH LOST: ", UnitID)
+                        self.Stealthed_Units[UnitID] = false
+                    end
+                end
+            end
+
+            if o_auraUpdateInfo.updatedAuraInstanceIDs and self.Status.CenterTextDisplay == "3_STACKS" then
+                self:checkForDebuff(UnitID)
+            end
+
+            if o_auraUpdateInfo.addedAuras then
+                for _, aura in pairs(o_auraUpdateInfo.addedAuras) do
+
+                    local secretedName = canaccessvalue(aura.name) and aura.name or "*secret*"
+
+                    if UnitID then -- (this test is enough, if the unit is known we definetely need to scan it, whatever is its status...) {{{3
+
+                        if  canaccessvalue(aura.isHelpful) and aura.isHelpful and self.profile.Show_Stealthed_Status then
+
+                            if DC.IS_STEALTH_BUFF[secretedName] then
+                                self.Stealthed_Units[UnitID] = aura.auraInstanceID;
+                                self.MicroUnitF:UpdateMUFUnit(UnitID);
+                            end
+                        else
+                            self:checkForDebuff(UnitID)
+                            break;
+                        end
+                    end
+                end
+            end
+        end -- }}}
+
+
+        local unitguid = UnitGUID(UnitID);
+
+        if not canaccessvalue(unitguid) then
+            return
+        end
 
         -- Here we test if the GUID->Unit array is ok if it isn't we need to scan the unit for debuffs
         -- We also scan the unit if it's charmed. The combatLog event manager tends to not detect those properly, the charm effect is a bitch to manage.
         if unitguid ~= self.Status.Unit_Array_UnitToGUID[UnitID] or UnitID ~= self.Status.Unit_Array_GUIDToUnit[unitguid] or UnitIsCharmed(UnitID) then
 
-            local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
 
             -- if we updated the unit array but we are here then rebuild the unit array.
             if self.Status.GroupUpdatedOn >= self.Status.GroupUpdateEvent then
@@ -545,6 +647,7 @@ do
                 D:GroupChanged("UNIT_AURA-|cFFFF0000bad group detection|r");
 
                 --[=[
+                local unitToguid = self.Status.Unit_Array_UnitToGUID[UnitID];
                 self:AddDebugText("AURA event received and Unit_Array_UnitToGUID ~= UnitGUID() and groups up to date, SG:", self.Status.Unit_Array_UnitToGUID[UnitID],
                 "FG:", unitguid,
                 "Unit ID:|cFFFF0000", UnitID,
@@ -735,6 +838,7 @@ do -- Combat log event handling {{{1
                         self.LiveList:DelayedGetDebuff(UnitID);
                     end
 
+                    -- Note: UnitID is valid in that context and has been checked earlier
                     if event == "UNIT_DIED" then
                         self.Stealthed_Units[UnitID] = false;
                     end
@@ -1175,6 +1279,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_Events.lua"] = "2.8.0-RC3";
 
 -- The Great Below

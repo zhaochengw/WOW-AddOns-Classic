@@ -494,6 +494,7 @@ L["The Codex of Blood"] = "Codex de sang"
 --[[ L["The Curator"] = ""--]]
 --[[Translation missing --]]
 --[[ L["The Eredar Twins"] = ""--]]
+L["The Eye of Haramad"] = "L'Oeil d'Haramad"
 --[[Translation missing --]]
 --[[ L["The Illidari Council"] = ""--]]
 --[[Translation missing --]]

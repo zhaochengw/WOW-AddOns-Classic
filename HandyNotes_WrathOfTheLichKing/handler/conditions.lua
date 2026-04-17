@@ -2,6 +2,9 @@ local myname, ns = ...
 local Class = ns.Class
 
 local GetPlayerAuraBySpellID = C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID or _G.GetPlayerAuraBySpellID
+local issecretvalue = _G.issecretvalue or function() return false end
+local issecrettable = _G.issecrettable or function() return false end
+local InChatMessagingLockdown = _G.C_ChatInfo and C_ChatInfo.InChatMessagingLockdown or function() return false end
 
 ns.conditions = {}
 -- _G.COND = ns.conditions
@@ -70,7 +73,13 @@ end
 ns.conditions.AchievementIncomplete = Negated(ns.conditions.Achievement)
 
 ns.conditions.AuraActive = Condition:extends{classname = "AuraActive", type = "spell"}
-function ns.conditions.AuraActive:Matched() return (not InCombatLockdown()) and GetPlayerAuraBySpellID(self.id) end
+function ns.conditions.AuraActive:Matched()
+    local aura = GetPlayerAuraBySpellID(self.id)
+    if issecretvalue(aura) then
+        return
+    end
+    return aura
+end
 
 ns.conditions.AuraInactive = Negated(ns.conditions.AuraActive)
 
@@ -179,6 +188,8 @@ function ns.conditions.MajorFaction:Matched()
     end
 end
 
+ns.conditions.NotMajorFaction = Negated(ns.conditions.MajorFaction)
+
 ns.conditions.GarrisonTalent = RankedCondition:extends{classname = "GarrisonTalent", type = 'garrisontalent'}
 function ns.conditions.GarrisonTalent:Matched()
     local info = C_Garrison.GetTalentInfo(self.id)
@@ -279,6 +290,8 @@ function ns.conditions.CalendarEvent:Matched()
     end
 end
 function ns.conditions.CalendarEvent:getEvent()
+    -- C_Calendar.GetDayEvent returns secrets when in chat messaging lockdown
+    if InChatMessagingLockdown() then return end
     local offset, day = self:getOffsets()
     for i=1, C_Calendar.GetNumDayEvents(offset, day) do
         local event = C_Calendar.GetDayEvent(offset, day, i)
@@ -306,6 +319,8 @@ end
 
 ns.conditions.CalendarEventStartTexture = ns.conditions.CalendarEvent:extends{classname = "CalendarEventStartTexture", type = 'calendareventtexture'}
 function ns.conditions.CalendarEventStartTexture:getEvent()
+    -- C_Calendar.GetDayEvent returns secrets when in chat messaging lockdown
+    if InChatMessagingLockdown() then return end
     local offset, day = self:getOffsets()
     for i=1, C_Calendar.GetNumDayEvents(offset, day) do
         local event = C_Calendar.GetDayEvent(offset, day, i)

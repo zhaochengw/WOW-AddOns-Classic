@@ -15,6 +15,15 @@ ns.CLASSICERA = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC -- forever vanilla
 ns.WARBANDS_AVAILABLE = LE_EXPANSION_LEVEL_CURRENT >= (LE_EXPANSION_WAR_WITHIN or math.huge)
 
 local issecretvalue = _G.issecretvalue or function() return false end
+local issecretframe = function(frame, aspect)
+    if frame.IsAnchoringSecret then
+        if aspect then
+            return frame:HasSecretAspect(aspect)
+        end
+        return frame:IsAnchoringSecret()
+    end
+    return false
+end
 
 local ATLAS_CHECK, ATLAS_CROSS = "common-icon-checkmark", "common-icon-redx"
 
@@ -149,6 +158,7 @@ end
 do
     local function registerPoint(zone, coord, point)
         upgradeloot(point.loot)
+        upgradeloot(point.loot_shared)
         if ns.DEBUG and ns.points[zone][coord] then
             print(myname, "point collision", zone, coord)
         end
@@ -459,7 +469,7 @@ local function render_string(s, context)
     return s:gsub("{([^:}]+):([^:}]+):?([^}]*)}", function(variant, id, fallback)
         local mainid, subid = id:match("(%d+)%.(%d+)")
         mainid, subid = mainid and tonumber(mainid), subid and tonumber(subid)
-        id = mainid or tonumber(id)
+        id = mainid or (id:match('^%d+$') and tonumber(id) or id)
         -- TODO: multiple variants?
         local mainvariant, subvariant = variant:match("(%l+)%.(%l+)")
         if subvariant then
@@ -486,7 +496,7 @@ local function render_string(s, context)
                 return quick_texture_markup(icon) .. " " .. name
             end
         elseif variant == "quest" or variant == "worldquest" or variant == "questname" then
-            local name = C_QuestLog.GetTitleForQuestID(id)
+            local name = (C_QuestLog.GetTitleForQuestID or C_QuestLog.GetQuestInfo)(id)
             if not (name and name ~= "") then
                 -- we bypass the normal fallback mechanism because we want the quest completion status
                 name = fallback ~= "" and fallback or (variant .. ':' .. id)
@@ -596,7 +606,7 @@ local function render_string(s, context)
                 -- there's also info.parentProfessionName for the general case ("Dragon Isles Inscription" vs "Inscription")
                 return info.professionName
             end
-        elseif variant == "zone" then
+        elseif variant == "zone" or variant == "map" then
             local info = C_Map.GetMapInfo(id)
             if info and info.name then
                 return info.name
@@ -611,6 +621,15 @@ local function render_string(s, context)
             if _G["EXPANSION_NAME"..id] then
                 return _G["EXPANSION_NAME"..id]
             end
+        elseif variant == "gc" and fallback then
+            if _G[strupper(id).."_FONT_COLOR"] then
+                return "|cn" .. strupper(id).."_FONT_COLOR:" .. fallback .. "|r"
+            end
+        elseif variant == "a" then
+            if id == "*" then
+                id = "PlayerPartyBlip"
+            end
+            return CreateAtlasMarkup(id)
         end
         return fallback ~= "" and fallback or (variant .. ':' .. id)
     end)
@@ -625,7 +644,10 @@ local function cache_string(s, context)
         elseif variant == "spell" then
             C_Spell.RequestLoadSpellData(id)
         elseif variant == "quest" or variant == "worldquest" or variant == "questname" then
-            C_QuestLog.RequestLoadQuestByID(id)
+            if C_QuestLog.RequestLoadQuestByID then
+                -- Not present in classic
+                C_QuestLog.RequestLoadQuestByID(id)
+            end
         elseif variant == "npc" then
             mob_name(id)
         end
@@ -930,6 +952,7 @@ local get_point_info = function(point, isMinimap)
             cache_string(point.label, point)
             cache_string(point.note, point)
             cache_loot(point.loot, point)
+            cache_loot(point.loot_shared, point)
         end
         return label, icon, category, point.quest, point.faction, point.scale, point.alpha or 1
     end
@@ -1036,7 +1059,7 @@ local function handle_tooltip(tooltip, point, skip_label)
     end
     -- major:
     if not skip_label and point.label ~= false then
-        tooltip:AddLine(work_out_label(point))
+        GameTooltip_SetTitle(tooltip, work_out_label(point))
     end
     if point.OnTooltipShow then
         point:OnTooltipShow(tooltip)
@@ -1081,6 +1104,13 @@ local function handle_tooltip(tooltip, point, skip_label)
         end
         if hidden then
             tooltip:AddLine("Items for other characters hidden", 0, 1, 1)
+        end
+    end
+    if ns.db.tooltip_sharedloot and point.loot_shared and #point.loot_shared > 0 then
+        -- This is loot flagged as being from a shared pool
+        tooltip:AddLine("Shared Loot", 1, 1, 1, false)
+        for _, item in ipairs(point.loot_shared) do
+            tooltip_loot(tooltip, item, true)
         end
     end
     if point.covenant then
@@ -1128,11 +1158,11 @@ local function handle_tooltip(tooltip, point, skip_label)
     end
 
     if point.quest then
-        local isAvailable = not ns.allQuestsComplete(point.quest)
-        local r, g, b = (isAvailable and GREEN_FONT_COLOR or RED_FONT_COLOR):GetRGB()
+        local isComplete = ns.allQuestsComplete(point.quest)
+        local r, g, b = (isComplete and GREEN_FONT_COLOR or RED_FONT_COLOR):GetRGB()
         tooltip:AddDoubleLine(
-            " ",
-            isAvailable and AVAILABLE or GOAL_COMPLETED,
+            QUESTS_LABEL,
+            isComplete and GOAL_COMPLETE or INCOMPLETE,
             1, 1, 1, r, g, b, true
         )
         if ns.db.tooltip_questid then
@@ -1144,7 +1174,7 @@ local function handle_tooltip(tooltip, point, skip_label)
         tooltip:AddDoubleLine("Coord", point._coord)
     end
 
-    if (ns.db.tooltip_item or IsShiftKeyDown()) and (point.loot or point.npc or point.spell) and not issecretvalue(tooltip:GetLeft()) then
+    if (ns.db.tooltip_item or IsShiftKeyDown()) and (point.loot or point.npc or point.spell) and not issecretframe(tooltip) then
         local comparison = _G[myname.."ComparisonTooltip"]
         if not comparison then
             comparison = CreateFrame("GameTooltip", myname.."ComparisonTooltip", UIParent, "ShoppingTooltipTemplate")
@@ -1179,8 +1209,8 @@ local function handle_tooltip(tooltip, point, skip_label)
                 end
             end
 
-            comparison:SetOwner(tooltip, "ANCHOR_NONE")
             comparison:ClearAllPoints()
+            comparison:SetOwner(tooltip, "ANCHOR_NONE")
 
             if ( side and side == "left" ) then
                 comparison:SetPoint("TOPRIGHT", tooltip, "TOPLEFT", 0, -10)
@@ -1538,6 +1568,7 @@ function HL:OnInitialize()
         self:RegisterEvent("GARRISON_FOLLOWER_ADDED", "RefreshOnEvent")
         self:RegisterEvent("UNIT_ENTERING_VEHICLE", "RefreshOnUnitEvent", "player")
         self:RegisterEvent("UNIT_EXITED_VEHICLE", "RefreshOnUnitEvent", "player")
+        self:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED", "RefreshIfUnrestricted")
     end
     -- This is sometimes spammy, but is the only thing that tends to get us casts:
     self:RegisterEvent("CRITERIA_UPDATE", "RefreshOnEvent")
@@ -1576,6 +1607,16 @@ do
     end
     function HL:RefreshOnUnitEvent(requiredUnit, event, unit)
         if unit == requiredUnit then
+            bucket:Show()
+        end
+    end
+    function HL:RefreshIfUnrestricted(event, restrictionType, restrictionState)
+        if restrictionState == Enum.AddOnRestrictionState.Activating then
+            -- "a restriction is about to become active, but won't be enforced
+            --  until event dispatch has completed" -- so getting valid data
+            --  right away seems good.
+            self:Refresh()
+        elseif restrictionState ~= Enum.AddOnRestrictionState.Inactive then
             bucket:Show()
         end
     end

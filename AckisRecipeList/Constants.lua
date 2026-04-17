@@ -1,24 +1,145 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Constants
+    Global constants, filters, and API compatibility wrappers
+    
+    Provides:
+    - API compatibility wrappers (C_AddOns, C_CVar, C_Spell fallbacks)
+    - Profession constants and localized names
+    - Filter definitions and quality colors
+    - Expansion and category mappings
+    
+    NOTE: This file must be loaded first as other files depend on
+    the API compatibility wrappers defined here.
 ]]
 
--- ----------------------------------------------------------------------------
+-- ============================================================================
 -- Upvalued Lua API
--- ----------------------------------------------------------------------------
+-- ============================================================================
 local pairs = _G.pairs
+local ipairs = _G.ipairs
+local pcall = _G.pcall
 local string = _G.string
 local table = _G.table
 local tostring = _G.tostring
+local tonumber = _G.tonumber
 local select = _G.select
+local type = _G.type
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
 private.addon_name = "Ackis Recipe List"
--- Visual rebrand only: display name shown in UI/panels/tooltips
 private.addon_display_name = "Ackis Recipe List Classic"
+
+-- ============================================================================
+-- API COMPATIBILITY WRAPPERS
+-- These provide forward-compatible APIs that work on all WoW clients.
+-- Modern clients use C_* APIs, classic clients fall back to global functions.
+-- ============================================================================
+
+--- Get addon metadata (version, author, etc.)
+--- @param addonName string The addon name
+--- @param field string The metadata field to retrieve
+--- @return string|nil The metadata value
+function private.GetAddOnMetadata(addonName, field)
+    if _G.C_AddOns and _G.C_AddOns.GetAddOnMetadata then
+        return _G.C_AddOns.GetAddOnMetadata(addonName, field)
+    end
+    return _G.GetAddOnMetadata(addonName, field)
+end
+
+--- Get information about an addon
+--- @param addonNameOrIndex string|number The addon name or index
+--- @return string name, string title, string notes, boolean loadable, string reason, string security, number|nil newVersion
+function private.GetAddOnInfo(addonNameOrIndex)
+    if _G.C_AddOns and _G.C_AddOns.GetAddOnInfo then
+        local name, title, notes, loadable, reason, security, newVersion = _G.C_AddOns.GetAddOnInfo(addonNameOrIndex)
+        return name, title, notes, loadable, reason, security, newVersion
+    end
+    local name, title, notes, loadable, reason, security = _G.GetAddOnInfo(addonNameOrIndex)
+    return name, title, notes, loadable, reason, security, nil
+end
+
+--- Load an addon by name or index
+--- @param addonNameOrIndex string|number The addon name or index
+--- @return boolean success
+function private.LoadAddOn(addonNameOrIndex)
+    if _G.C_AddOns and _G.C_AddOns.LoadAddOn then
+        return _G.C_AddOns.LoadAddOn(addonNameOrIndex)
+    end
+    return _G.LoadAddOn(addonNameOrIndex)
+end
+
+--- Check if an addon is loaded
+--- @param addonNameOrIndex string|number The addon name or index
+--- @return boolean loaded
+function private.IsAddOnLoaded(addonNameOrIndex)
+    if _G.C_AddOns and _G.C_AddOns.IsAddOnLoaded then
+        return _G.C_AddOns.IsAddOnLoaded(addonNameOrIndex)
+    end
+    return _G.IsAddOnLoaded(addonNameOrIndex)
+end
+
+--- Get a console variable value
+--- @param name string The CVar name
+--- @return string|nil value
+function private.GetCVar(name)
+    if _G.C_CVar and _G.C_CVar.GetCVar then
+        return _G.C_CVar.GetCVar(name)
+    end
+    return _G.GetCVar(name)
+end
+
+--- Set a console variable value
+--- @param name string The CVar name
+--- @param value string|number|boolean The value to set
+--- @return boolean success
+function private.SetCVar(name, value)
+    if _G.C_CVar and _G.C_CVar.SetCVar then
+        local ok = pcall(_G.C_CVar.SetCVar, name, tostring(value))
+        return ok
+    end
+    local ok = pcall(_G.SetCVar, name, tostring(value))
+    return ok
+end
+
+--- Check if the player is in combat lockdown
+--- @return boolean inCombat
+function private.InCombatLockdown()
+    return _G.InCombatLockdown and _G.InCombatLockdown() or false
+end
+
+--- Get the game client build information
+--- @return string version, string build, string date, number uiVersion
+function private.GetBuildInfo()
+    local version, build, date, uiVersion = _G.GetBuildInfo()
+    return version or "0.0.0", build or "0", date or "", uiVersion or 0
+end
+
+--- Get spell information (works with C_Spell or legacy API)
+--- @param spellId number The spell ID
+--- @return string|nil name, string|nil rank, number|nil icon, number|nil castTime, number|nil minRange, number|nil maxRange, number|nil spellId
+function private.GetSpellInfo(spellId)
+    if _G.C_Spell and _G.C_Spell.GetSpellInfo then
+        local info = _G.C_Spell.GetSpellInfo(spellId)
+        if info then
+            return info.name, nil, info.iconID, info.castTime, info.minRange, info.maxRange, info.spellID
+        end
+    end
+    return _G.GetSpellInfo(spellId)
+end
+
+--- Get the name of a spell by ID
+--- @param spellId number The spell ID
+--- @return string|nil name
+function private.GetSpellName(spellId)
+    if _G.C_Spell and _G.C_Spell.GetSpellName then
+        return _G.C_Spell.GetSpellName(spellId)
+    end
+    local name = _G.GetSpellInfo(spellId)
+    return name
+end
 
 local LibStub = _G.LibStub
 

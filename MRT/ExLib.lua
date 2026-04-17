@@ -2672,7 +2672,7 @@ do
 		template = template == 0 and "ExRTTabButtonTransparentTemplate" or template or "ExRTTabButtonTemplate"
 
 		local self = CreateFrame("Frame",nil,parent, BackdropTemplateMixin and "BackdropTemplate")
-		self:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }})
+		--self:SetBackdrop({bgFile = "Interface/DialogFrame/UI-DialogBox-Background", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",tile = true, tileSize = 16, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 }})
 		self:SetBackdropColor(0,0,0,0.5)
 
 		self.resizeFunc = TabFrame_ResizeTab
@@ -2761,7 +2761,7 @@ do
 	end
 	local function Widget_Outline(self,disable)
 		local filename,fontSize = self:GetFont()
-		self:SetFont(filename,fontSize,(not disable) and "OUTLINE")
+		self:SetFont(filename,fontSize,(not disable) and "OUTLINE" or "")
 		return self
 	end
 	local function Widget_FontSize(self,size)

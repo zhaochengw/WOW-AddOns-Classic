@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then
-    T._LoadedFiles["frFR.lua"] = "2.7.34";
+    T._LoadedFiles["frFR.lua"] = "2.8.0-RC3";
     return;
 end
 
@@ -147,6 +147,12 @@ Pour le réactiver, tapper |cFFFFAA44/DCR ENABLE|r]=]
 L["DISEASE"] = "Maladie"
 L["DONOT_BL_PRIO"] = "Ne pas *blacklister* les gens prioritaires"
 L["DONT_SHOOT_THE_MESSENGER"] = "Decursive ne fait que rapporter le problème. Alors, ne tirez pas sur le messager et adressez le vrai problème."
+L["ER_VERSION_NOTICE"] = [=[Il s'agit d'une version préliminaire de Decursive.
+
+Bien que la version que vous utilisez soit étiquetée comme une version finale, elle peut encore présenter des imperfections, des bogues et des erreurs Lua.
+J'utilise ce processus afin d'obtenir davantage de commentaires, car trop peu de personnes utilisent les versions alpha/bêta.
+
+Ce message ne s'affichera qu'une seule fois par version.]=]
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r sur %s |cFFAA0000échoué !|r
 |cFF00AAAA%s|r]=]
 L["FOCUSUNIT"] = "Focalise l'unité"
@@ -539,4 +545,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.7.34";
+T._LoadedFiles["frFR.lua"] = "2.8.0-RC3";

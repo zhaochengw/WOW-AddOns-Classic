@@ -37,7 +37,7 @@ BG.Init2(function()
     f:SetBackdropBorderColor(0, 0, 0, 1)
     f:SetPoint("BOTTOMLEFT", WhoFrameEditBoxInset or WhoFrameEditBox, "BOTTOMRIGHT",
         WhoFrameEditBoxInset and 5 or 15, 0)
-    f:SetSize(100, FriendsFrame:GetHeight() - 80)
+    f:SetSize(100, FriendsFrame:GetHeight() - 50)
     f:Hide()
     BG.WhoFrameList = f
     local t = f:CreateFontString()
@@ -147,7 +147,7 @@ BG.Init2(function()
 
     local a, b, c, d, e, f, g = "B", "G", "V", "i", "s", "I", "P"
     if _G[a .. b .. c] and not _G[a .. b .. c].SaveRLAuction then
-        _G[a .. b .. c] = {}
+        wipe( _G[a .. b .. c])
         ns
         [d .. e .. c .. f .. g] = nil
     end
@@ -252,7 +252,6 @@ BG.Init2(function()
                 scroll:SetScrollChild(edit)
                 frame.scroll = scroll
             end
-
             -- 官网
             do
                 local f = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -276,11 +275,7 @@ BG.Init2(function()
                 edit:SetTextInsets(0, 10, 0, 0)
                 edit:SetMultiLine(true)
                 edit:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
-                if BG.IsVanilla then
-                    edit.text = "https://support.battlenet.com.cn/w/question/detail?method=hp_service&template=cheatrpt_aqfk_vanilla"
-                else
-                    edit.text = "https://support.battlenet.com.cn/w/question/detail?method=hp_service&template=cheatrpt_aqfk"
-                end
+                edit.text = "https://support.battlenet.com.cn/w/question/detail?method=hp_service&template=cheatrpt_aqfk"
                 frame.edit2 = edit
                 edit:SetScript("OnTextChanged", function()
                     if edit:HasFocus() then

@@ -38,7 +38,7 @@ MT.BuildEnv('INSPECT');
 				local unit = UnitList[i];
 				if GUID == UnitGUID(unit) then
 					local name, realm = UnitName(unit);
-					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 						name = name .. "-" .. realm;
 					end
 					info = { unit, name, UnitClassBase(unit), UnitLevel(unit), };
@@ -108,7 +108,7 @@ MT.BuildEnv('INSPECT');
 			local GUID = UnitGUID(unit);
 			if GUID ~= nil then
 				local name, realm = UnitName(unit);
-				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+				if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 					name = name .. "-" .. realm;
 				end
 				_InspectInfo[GUID] = { unit, name, UnitClassBase(unit), UnitLevel(unit), };

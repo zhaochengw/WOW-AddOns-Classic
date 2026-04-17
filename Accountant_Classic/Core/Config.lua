@@ -397,10 +397,16 @@ local function getOptions()
 end
 
 
-function addon:OpenOptions() 
+function addon:OpenOptions()
 	-- open the profiles tab before, so the menu expands
-	Settings.OpenToCategory(addon.LocName)
-	Settings.OpenToCategory(addon.optionsFrames.General)
+	-- MOP 5.5.3 fallback: use old InterfaceOptionsFrame API
+	if InterfaceOptionsFrame_OpenToCategory then
+		InterfaceOptionsFrame_OpenToCategory(addon.LocName)
+		InterfaceOptionsFrame_OpenToCategory(addon.optionsFrames.General)
+	elseif Settings and Settings.OpenToCategory then
+		Settings.OpenToCategory(addon.LocName)
+		Settings.OpenToCategory(addon.optionsFrames.General)
+	end
 end
 
 local function giveProfiles()

@@ -49,7 +49,7 @@ local baseLocale = {
     ["Reset UI"] = "Redefinir Interface",
     ["Resets the UI to its default settings. There is no confirmation for this action."] = "Redefine a interface para suas configura\195\167\195\170es padr\195\163o. N\195\163o h\195\161 confirma\195\167\195\163o para esta a\195\167\195\163o.",
 
-    ["Team: "] = "Equipe: ",
+    ["Team: "] = "Equipe: |cff00ffff",
     ["Team Options"] = "Op\195\167\195\170es da Equipe",
     ["Lock Team"] = "Bloquear Equipe",
     ["Rename Team"] = "Renomear Equipe",

@@ -7,7 +7,8 @@ else
 	mod.statTypes = "heroic"
 end
 
-mod:SetRevision("20230311193122")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(30258)
 mod:SetEncounterID(1989)
 

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("RomuloAndJulianne", "DBM-Raids-BC", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(17534, 17533, 99999)--99999 bogus creature id to keep mod from pre mature combat end.
 --mod:SetEncounterID(655, 2447)--used by all 3 of them, so not usuable
 mod:SetModelID(17068)

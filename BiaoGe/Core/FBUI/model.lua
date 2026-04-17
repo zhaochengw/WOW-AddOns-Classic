@@ -239,6 +239,24 @@ function BG.CreateBossModel()
         model:SetPitch(0.8)
         model:SetRoll(-0.5)
     end
+    if BG.IsTBC then
+        local model = CreateBossModel("KZ", 10, 0, -10, 15690, 0.5)
+        model:SetPosition(-0, 0, 0)
+        model:SetFacing(-0.3)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        local model = CreateBossModel("GL", 2, -0, 130, 19044, 0.45)
+        model:SetPosition(-1, 0, -0.3)
+        model:SetFacing(-0.3)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        local model = CreateBossModel("GL", 3, -0, 20, 17257, 0.6)
+        model:SetPosition(-1, 0, -0.3)
+        model:SetFacing(-0.3)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
+    end
     if BG.IsWLK_80 then
         local model = CreateBossModel("ICC", 12, 0, -70, 31301, 0.5)
         model:SetPosition(0, 0, 0) -- Z,X,Y
@@ -320,7 +338,7 @@ function BG.CreateBossModel()
         model:SetPosition(-200, 0, -195) -- Z,X,Y
         -- model:SetFacing(-0.3)         -- 左右
         model:SetPitch(-0.5)             -- 上下
-        model:SetRoll(0)              -- 倾斜
+        model:SetRoll(0)                 -- 倾斜
         -- CreateAllTestButton(model)
         local model = CreateBossModel("SSCtitan", 6, 10, 30, 21212, .9)
         model:SetPosition(-2, 0, 1)
@@ -332,6 +350,22 @@ function BG.CreateBossModel()
         model:SetFacing(0)
         model:SetPitch(0.53)
         model:SetRoll(0)
+        local model = CreateBossModel("NAXXtitan", 15, 0, -170, 15990, 1.7)
+        model:SetPosition(-16, 0, 9.5)
+        model:SetFacing(-0)
+        model:SetPitch(0.3)
+        model:SetRoll(0)
+        local model = CreateBossModel("TOCtitan", 10, -45, 40, 14834, 1.2)
+        model:SetPosition(15, -2.5, -1)
+        model:SetFacing(-0.5)
+        model:SetPitch(0.1)
+        model:SetRoll(0)
+        local model = CreateBossModel("TOCtitan", 15, 10, -30, 34564, 0.6)
+        model:SetPosition(-4, 0, 0)
+        model:SetFacing(0)
+        model:SetPitch(0)
+        model:SetRoll(0)
+        -- CreateAllTestButton(model)
     end
     if BG.IsCTM then
         local model = CreateBossModel("BOT", 5, 40, 110, 45213, 0.7)
@@ -367,22 +401,22 @@ function BG.CreateBossModel()
     end
     if BG.IsMOP then
         local model = CreateBossModel("MSV", 6, 0, 0, 60400, .55)
-        model:SetPosition(-0, 0, 0)     -- Z,X,Y
-        model:SetFacing(0)              -- 左右
-        model:SetPitch(0)               -- 上下
-        model:SetRoll(0)                -- 倾斜
+        model:SetPosition(-0, 0, 0) -- Z,X,Y
+        model:SetFacing(0)          -- 左右
+        model:SetPitch(0)           -- 上下
+        model:SetRoll(0)            -- 倾斜
         -- CreateAllTestButton(model)
         local model = CreateBossModel("MSV", 12, 10, 20, 62837, .75)
-        model:SetPosition(-1, 0, 0)        -- Z,X,Y
-        model:SetFacing(math.rad(-10))     -- 左右
-        model:SetPitch(0)                  -- 上下
-        model:SetRoll(0)                   -- 倾斜
+        model:SetPosition(-1, 0, 0)    -- Z,X,Y
+        model:SetFacing(math.rad(-10)) -- 左右
+        model:SetPitch(0)              -- 上下
+        model:SetRoll(0)               -- 倾斜
         -- CreateAllTestButton(model)
         local model = CreateBossModel("MSV", 16, 20, 60, 60999, .7)
-        model:SetPosition(-1, 0, 0)        -- Z,X,Y
-        model:SetFacing(math.rad(-10))     -- 左右
-        model:SetPitch(0)                  -- 上下
-        model:SetRoll(0)                   -- 倾斜
+        model:SetPosition(-1, 0, 0)    -- Z,X,Y
+        model:SetFacing(math.rad(-10)) -- 左右
+        model:SetPitch(0)              -- 上下
+        model:SetRoll(0)               -- 倾斜
         -- CreateAllTestButton(model)
         local model = CreateBossModel("TOT", 12, -20, -50, 68397, .55)
         model:SetPosition(-0, 0, 0) -- Z,X,Y

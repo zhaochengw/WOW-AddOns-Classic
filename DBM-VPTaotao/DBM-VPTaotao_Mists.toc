@@ -1,4 +1,4 @@
-﻿## Interface: 50500，50502, 50503
+﻿## Interface: 50502, 50503
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff69ccf0Voicepack Taotao|r
@@ -15,6 +15,6 @@
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: Taotao(普通话女)
 ## X-DBM-Voice-ShortName: Taotao
-## X-DBM-Voice-Version: 18
+## X-DBM-Voice-Version: 19
 ## X-DBM-Voice-HasCount: 1
 

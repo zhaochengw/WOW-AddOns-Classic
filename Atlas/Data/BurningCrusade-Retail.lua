@@ -30,7 +30,6 @@ local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
 local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas")
-local ALIL = Atlas_IngameLocales
 local Atlas = LibStub("AceAddon-3.0"):GetAddon("Atlas")
 local addon = Atlas:NewModule(private.module_name)
 
@@ -111,7 +110,7 @@ db.AtlasMaps = {
 		JournalInstanceID = 250,
 		Module = "Atlas_BurningCrusade",
 		{ ORNG..REPUTATION..ALC["Colon"]..BF["The Consortium"] },
-		{ ORNG..L["Key"]..ALC["Colon"]..ALIL["The Eye of Haramad"]..ALC["L-Parenthesis"]..ALC["Exalted"]..ALC["Comma"]..Atlas_GetBossName("Yor")..ALC["R-Parenthesis"] },
+		{ ORNG..ALC["Key"]..ALC["Colon"]..L["The Eye of Haramad"]..ALC["L-Parenthesis"]..ALC["Exalted"]..ALC["Comma"]..Atlas_GetBossName("Yor")..ALC["R-Parenthesis"] },
 		{ BLUE.." A) "..ALC["Entrance"],                                                                                                                               10001 },
 		{ GREN..INDENT..L["Artificer Morphalius"] },
 		{ GREN..INDENT..L["Mamdy the \"Ologist\""] },

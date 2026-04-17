@@ -31,7 +31,7 @@ function private.InitializeFrame()
 	-- ----------------------------------------------------------------------------
 	-- Create the MainPanel and set its values
 	-- ----------------------------------------------------------------------------
-	local MainPanel = _G.CreateFrame("Frame", "ARL_MainPanel", _G.UIParent, BackdropTemplateMixin and "BackdropTemplate")
+	local MainPanel = private.CreateFrameWithBackdrop("Frame", "ARL_MainPanel", _G.UIParent)
 
 	-- The panel width changes when contracting and expanding - store it for later use.
 	MainPanel.normal_width = 384
@@ -91,6 +91,8 @@ function private.InitializeFrame()
 	-- ----------------------------------------------------------------------------
 	MainPanel:SetScript("OnHide", function(self)
 		private.DismissDialogs()
+		private.CleanupPanel()
+		private.UnregisterUIEvents()
 	end)
 
 	MainPanel:SetScript("OnMouseDown", MainPanel.StartMoving)
@@ -236,7 +238,10 @@ function private.InitializeFrame()
 			self:SetScale(addon.db.profile.frameopts.uiscale)
 		end
 
-		MainPanel:SetScript("OnShow", Reset_Position)
+		MainPanel:SetScript("OnShow", function(self)
+			Reset_Position(self)
+			private.RegisterUIEvents()
+		end)
 	end	-- do-block
 
 	do
@@ -442,8 +447,8 @@ function private.InitializeFrame()
 				local cVarSfx
 				local isPanelShown = (addon.scan_button and addon.scan_button.GetParent and addon.scan_button:GetParent():IsVisible()) or false
                 if not isPanelShown then
-                    cVarSfx = tonumber(_G.GetCVar("Sound_EnableSFX"))
-                    _G.SetCVar("Sound_EnableSFX", 0)
+                    cVarSfx = private.GetCVar("Sound_EnableSFX")
+                    private.SetCVar("Sound_EnableSFX", "0")
                 end
 
 				local activationSpellName = availableProfessions[currentProfessionIndex]:ActivationSpellName()
@@ -453,7 +458,7 @@ function private.InitializeFrame()
 
                 if not isPanelShown then
                     _G.CloseTradeSkill()
-                    _G.SetCVar("Sound_EnableSFX", cVarSfx)
+                    private.SetCVar("Sound_EnableSFX", cVarSfx or "1")
 				end
             end
 		end)
@@ -480,6 +485,40 @@ function private.InitializeFrame()
 	-- ----------------------------------------------------------------------------
 	local SearchRecipes
 	do
+		local recipeNameIndex = {}
+		local indexProfession = nil
+		local indexValid = false
+
+		local function BuildSearchIndex()
+			local profession = private.CurrentProfession
+			if not profession or not profession.Recipes then
+				return
+			end
+
+			if indexProfession == profession and indexValid then
+				return
+			end
+
+			table.wipe(recipeNameIndex)
+			indexProfession = profession
+
+			for spellID, recipe in pairs(profession.Recipes) do
+				local name = recipe:LocalizedName()
+				if name and name ~= "" then
+					local lowerName = name:lower()
+					if not recipeNameIndex[lowerName] then
+						recipeNameIndex[lowerName] = {}
+					end
+					recipeNameIndex[lowerName][spellID] = true
+				end
+			end
+			indexValid = true
+		end
+
+		private.InvalidateSearchIndex = function()
+			indexValid = false
+		end
+
 		local recipe_fields = {
 			"_localizedName",
 			"skill_level",
@@ -602,14 +641,35 @@ function private.InitializeFrame()
 				return
 			end
 			searchPattern = searchPattern:lower()
+			BuildSearchIndex()
 
-			for _, recipe in pairs(private.CurrentProfession.Recipes) do
+			local profession = private.CurrentProfession
+			if not profession or not profession.Recipes then
+				return
+			end
+
+			local foundByName = false
+			for lowerName, spellIDs in pairs(recipeNameIndex) do
+				if lowerName:find(searchPattern) then
+					foundByName = true
+					break
+				end
+			end
+
+			for _, recipe in pairs(profession.Recipes) do
 				recipe:RemoveState("RELEVANT")
 
-				for search_index = 1, #SEARCH_FUNCTIONS do
-					if SEARCH_FUNCTIONS[search_index](recipe, searchPattern) then
+				if foundByName then
+					local name = recipe:LocalizedName()
+					if name and name:lower():find(searchPattern) then
 						recipe:AddState("RELEVANT")
-						break
+					end
+				else
+					for search_index = 2, #SEARCH_FUNCTIONS do
+						if SEARCH_FUNCTIONS[search_index](recipe, searchPattern) then
+							recipe:AddState("RELEVANT")
+							break
+						end
 					end
 				end
 			end
@@ -1049,15 +1109,16 @@ function private.InitializeFrame()
 	-- Create MainPanel.progress_bar and set its scripts
 	-- ----------------------------------------------------------------------------
 	do
-		local progress_bar = _G.CreateFrame("StatusBar", nil, MainPanel, BackdropTemplateMixin and "BackdropTemplate")
+		local progress_bar = private.CreateFrameWithBackdrop("StatusBar", nil, MainPanel)
 		progress_bar:SetWidth(216)
 		progress_bar:SetHeight(18)
 		progress_bar:SetPoint("BOTTOMLEFT", MainPanel, 17, 80)
-		progress_bar:SetBackdrop({
-						 bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
-						 tile = true,
-						 tileSize = 16,
-					 })
+		local progressBackdrop = {
+			bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
+			tile = true,
+			tileSize = 16,
+		}
+		private.BackdropUtil.SafeSetBackdrop(progress_bar, progressBackdrop)
 
 		progress_bar:SetStatusBarTexture([[Interface\TARGETINGFRAME\UI-StatusBar]])
 		progress_bar:SetOrientation("HORIZONTAL")
@@ -1105,4 +1166,37 @@ function private.InitializeFrame()
 	private.InitializeTabs()
 
 	private.InitializeFrame = nil
+end
+
+-- ----------------------------------------------------------------------------
+-- Panel cleanup - called when MainPanel is hidden
+-- ----------------------------------------------------------------------------
+function private.CleanupPanel()
+	local searchBox = addon.Frame and addon.Frame.search_editbox
+	if searchBox then
+		searchBox:ClearFocus()
+	end
+
+	if private.InvalidateSearchIndex then
+		private.InvalidateSearchIndex()
+	end
+
+	_G.GameTooltip:Hide()
+
+	local listFrame = private.list_frame
+	if listFrame then
+		if listFrame.entries then
+			for i = 1, #listFrame.entries do
+				local entry = listFrame.entries[i]
+				if entry then
+					if entry.children then
+						private.ReleaseTable(entry.children)
+						entry.children = nil
+					end
+					entry._discard = true
+				end
+			end
+		end
+		listFrame.selected_entry = nil
+	end
 end

@@ -50,7 +50,7 @@ local CLASS_MISSING_APPEARNACES = {
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Shield }
 	};
 	[2] = { --Paladin
-		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Fishingpole },
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Fishingpole },
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate, Enum.ItemArmorSubclass.Shield }
 	};
 	[3] = { --Hunter
@@ -62,11 +62,11 @@ local CLASS_MISSING_APPEARNACES = {
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Leather }
 	};
 	[5] = { --Priest
-		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth }
 	};
 	[6] = { --DeathKnight
-		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Fishingpole },
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Axe1H, Enum.ItemWeaponSubclass.Axe2H, Enum.ItemWeaponSubclass.Mace1H, Enum.ItemWeaponSubclass.Mace2H, Enum.ItemWeaponSubclass.Polearm, Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Sword2H, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Fishingpole },
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Plate }
 	};
 	[7] = { --Shaman
@@ -74,11 +74,11 @@ local CLASS_MISSING_APPEARNACES = {
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Mail, Enum.ItemArmorSubclass.Shield }
 	};
 	[8] = { --Mage
-		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth }
 	};
 	[9] = { --Warlock
-		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Unarmed, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
+		[Enum.ItemClass.Weapon] = { Enum.ItemWeaponSubclass.Sword1H, Enum.ItemWeaponSubclass.Staff, Enum.ItemWeaponSubclass.Generic, Enum.ItemWeaponSubclass.Dagger, Enum.ItemWeaponSubclass.Wand, Enum.ItemWeaponSubclass.Fishingpole },
 		[Enum.ItemClass.Armor] = { Enum.ItemArmorSubclass.Cloth }
 	};
 	[10] = { --Monk
@@ -810,7 +810,7 @@ local function UpdateNotCollectedAppearanceItemIDs(routines, routineTextOutput)
 									
 									if (not collected) then
 										for k = 1, #sources do
-											if ((sources[k].sourceType == 1 or sources[k].sourceType == 4)) and PlayerCanUseItem(sources[k].itemID) then --Boss Drop/World drop and only usable
+											if ((sources[k].sourceType == 1 or sources[k].sourceType == 4 or sources[k].sourceType == 3)) and PlayerCanUseItem(sources[k].itemID) then --Boss Drop/World drop and only usable
 												if (not GetAppearanceItemIDs(sources[k].visualID) or not RSUtils.Contains(GetAppearanceItemIDs(sources[k].visualID), sources[k].itemID)) then
 													AddAppearanceItemID(sources[k].visualID, sources[k].itemID)
 												end
@@ -1399,7 +1399,7 @@ function RSCollectionsDB.ApplyFilters(filters, callback)
 					removeFilter = true
 				end
 				if (not removeFilter and filters[RSConstants.EXPLORER_FILTER_ACHIEVEMENT_CRITERIA] and npcInfo.achievementID) then			
-					if (RSAchievementDB.IsNotCompletedAchievementCriteria(npcID, npcInfo.achievementID, npcInfo.criteria)) then
+					if (RSAchievementDB.IsNotCompletedAchievementCriteria(npcID, npcInfo.achievementID, npcInfo.questID, npcInfo.criteria)) then
 						removeFilter = true
 					end
 				end
@@ -1461,7 +1461,7 @@ function RSCollectionsDB.ApplyFilters(filters, callback)
 							end
 						end
 					else
-						if (RSAchievementDB.IsNotCompletedAchievementCriteria(containerID, containerInfo.achievementID, containerInfo.criteria, true)) then
+						if (RSAchievementDB.IsNotCompletedAchievementCriteria(containerID, containerInfo.achievementID, containerInfo.questID, containerInfo.criteria, true)) then
 							removeFilter = true
 						end
 					end

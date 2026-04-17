@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71865)
 mod:SetEncounterID(1623)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -200,18 +201,12 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
---[[	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end--]]
 	hideInfoFrame(self)
 	self:UnregisterShortTermEvents()
 end
 
 --[[
 local function hideRangeDelay()
-	if mod.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end--]]
 
 function mod:SPELL_CAST_START(args)

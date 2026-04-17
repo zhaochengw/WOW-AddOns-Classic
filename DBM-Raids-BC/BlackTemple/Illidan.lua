@@ -7,7 +7,8 @@ else
 	mod.statTypes = "normal25"
 end
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(22917)
 mod:SetEncounterID(609, 2481)
 mod:SetModelID(21135)
@@ -72,7 +73,6 @@ local timerPhase4			= mod:NewStageTimer(30)
 local timerCombatStart		= mod:NewCombatTimer(36)
 local berserkTimer			= mod:NewBerserkTimer(1500)
 
-mod:AddRangeFrameOption(6, 40932)--Spell is 5 yards, but give it 6 or good measure since 5 yard check is probably least precise one since nerfs.
 mod:AddSetIconOption("ParasiteIcon", 41917)
 
 mod.vb.flamesDown = 0
@@ -108,9 +108,6 @@ end
 
 function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -218,9 +215,6 @@ function mod:UNIT_DIED(args)
 		self.vb.flamesDown = self.vb.flamesDown + 1
 		if self.vb.flamesDown >= 2 then
 			self.vb.phase = 3
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(6)
-			end
 			timerNextBarrage:Cancel()
 			warnPhase3:Show()
 			timerNextDemon:Start(76)

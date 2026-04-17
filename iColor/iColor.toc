@@ -1,8 +1,0 @@
-## Interface: 30405
-## Title:|cffffcc00[界面增强]|r |cff00c0ff好友列表染色|r
-## Notes: 系统界面信息按职业染色
-
-## Author: nj55top @ 2019-08-31
-## Fixed & Maintained by: vggfac @ 2025-07-11
-
-iColor.lua

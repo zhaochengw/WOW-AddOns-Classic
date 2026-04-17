@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(34796, 35144, 34799, 34797)
 --mod:SetEncounterID(not mod:IsPostCata() and 629 or 1088)--Buggy, never enable this
 mod:SetMinSyncRevision(104)
@@ -76,7 +77,6 @@ local timerBurningBiteCD	= mod:NewCDTimer(15, 66879, nil, "Melee", nil, 3)
 mod:AddSetIconOption("SetIconOnChargeTarget", 52311, true, 0, {8})
 mod:AddSetIconOption("SetIconOnBileTarget", 66869, false, 0, {1, 2, 3, 4, 5, 6, 7, 8})
 mod:AddBoolOption("ClearIconsOnIceHowl", false)
-mod:AddRangeFrameOption("10")
 
 mod:GroupSpells(66902, 66869)--Burning Spray with Burning Bile
 mod:GroupSpells(66901, 66823)--Paralytic Spray with Toxic Bile
@@ -104,11 +104,6 @@ function mod:OnCombatStart(delay)
 	timerRisingAnger:Start(25-delay)
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 --These remain methods since they can't reverse schedule each other as local functions
 function mod:WormsEmerge()
@@ -282,9 +277,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:ScheduleMethod(17, "WormsEmerge")
 		timerCombatStart:Start(15)
 		self:SetStage(2)
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10)
-		end
 	elseif msg == L.Phase3 or msg:find(L.Phase3) then
 		self:SetStage(3)
 		if self:IsDifficulty("heroic10", "heroic25") then
@@ -294,9 +286,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerNextCrash:Start(45)
 		timerNextBoss:Cancel()
 		timerSubmerge:Cancel()
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 	end
 end
 

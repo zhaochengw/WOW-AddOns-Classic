@@ -104,7 +104,7 @@ function QuestieLib:GetRGBForObjective(objective)
     end
 
     if not objective.Collected or type(objective.Collected) ~= "number" then
-        return FloatRGBToHex(0.8, 0.8, 0.8)
+        return FloatRGBToHex(0.937, 0.937, 0.937)
     end
 
     local float = objective.Collected / objective.Needed
@@ -114,15 +114,14 @@ function QuestieLib:GetRGBForObjective(objective)
         return "|cFFEEEEEE"
     elseif trackerColor == "whiteAndGreen" then
         -- White and Green
-        return objective.Collected == objective.Needed and RGBToHex(76, 255, 76) or FloatRGBToHex(0.8, 0.8, 0.8)
+        return objective.Collected == objective.Needed and RGBToHex(40, 255, 40) or FloatRGBToHex(0.937, 0.937, 0.937)
     elseif trackerColor == "whiteToGreen" then
         -- White to Green
-        return FloatRGBToHex(0.8 - float / 2, 0.8 + float / 3, 0.8 - float / 2)
+        return FloatRGBToHex(0.937 - float / 1.282, 0.937 + float / 15.873, 0.937 - float / 1.282)
     else
         -- Red to Green
-        if float < .50 then return FloatRGBToHex(1, 0 + float / .5, 0) end
-        if float == .50 then return FloatRGBToHex(1, 1, 0) end
-        if float > .50 then return FloatRGBToHex(1 - float / 2, 1, 0) end
+        if float <= .50 then return FloatRGBToHex(1, 0 + float * 2, 0) end
+        if float > .50 then return FloatRGBToHex(1.843 - float / 0.593, 1, (float * 2 - 1) * 0.157) end
     end
 end
 
@@ -138,20 +137,20 @@ function QuestieLib:GetColoredQuestName(questId, showLevel, showState)
     end
 
     if Questie.db.profile.enableTooltipsQuestID then
-        name = name .. " (" .. questId .. ")"
+        name = name .. " " .. l10n("(") .. questId .. l10n(")")
     end
 
     if showState then
         local isComplete = QuestieDB.IsComplete(questId)
 
         if isComplete == -1 then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Failed") .. ")", "red")
+            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Failed") .. l10n(")"), "red")
         elseif isComplete == 1 then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
+            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
 
             -- Quests treated as complete - zero objectives or synthetic objectives
         elseif isComplete == 0 and QuestieDB.GetQuest(questId).isComplete == true then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
+            name = name .. " " .. Questie:Colorize(l10n("(") .. l10n("Complete") .. l10n(")"), "green")
         end
     end
 
@@ -233,7 +232,7 @@ function QuestieLib:GetQuestTypeSuffix(questId)
 
     if questTagId == questTagIds.ELITE then
         return "+"
-    elseif questTagId == questTagIds.PVP or questTagId == questTagIds.CLASS then
+    elseif questTagId == questTagIds.PVP or questTagId == questTagIds.CLASS or questTagId == questTagIds.ESCORT then
         return ""
     elseif questTagId == questTagIds.LEGENDARY then
         return "++"
@@ -250,6 +249,8 @@ function QuestieLib:GetQuestTypeSuffix(questId)
             return "A"
         elseif questTagId == questTagIds.CELESTIAL then
             return "C"
+        elseif questTagId == questTagIds.WORLD_EVENT then
+            return "W"
         else
             return ""
         end
@@ -275,25 +276,32 @@ function QuestieLib:GetRaceString(raceMask)
     end
 
     if raceMask == QuestieDB.raceKeys.ALL_ALLIANCE then
-        return l10n("Alliance")
+        return "|cFF1E90FF" .. l10n("Alliance") .. "|r"
     elseif raceMask == QuestieDB.raceKeys.ALL_HORDE then
-        return l10n("Horde")
+        return "|cFFDA4450" .. l10n("Horde") .. "|r"
     else
         local raceString = ""
         local raceTable = QuestieLib:UnpackBinary(raceMask)
+        local langCode = l10n:GetUILocale()
+        local spaceString = ((langCode == "zhCN" or langCode == "zhTW") and "") or " " -- no spaces for chinese strings
         local stringTable = {
-            l10n("Human"),
-            l10n("Orc"),
-            l10n("Dwarf"),
-            l10n("Nightelf"),
-            l10n("Undead"),
-            l10n("Tauren"),
-            l10n("Gnome"),
-            l10n("Troll"),
-            l10n("Goblin"),
-            l10n("Blood Elf"),
-            l10n("Draenei"),
-            l10n("Worgen"),
+            l10n("Human"),                                          -- 1
+            l10n("Orc"),                                            -- 2
+            l10n("Dwarf"),                                          -- 4
+            l10n("Night Elf"),                                      -- 8
+            l10n("Undead"),                                         -- 16
+            l10n("Tauren"),                                         -- 32
+            l10n("Gnome"),                                          -- 64
+            l10n("Troll"),                                          -- 128
+            l10n("Goblin"),                                         -- 256
+            l10n("Blood Elf"),                                      -- 512
+            l10n("Draenei"),                                        -- 1024
+            nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,                -- 2^11 -> 2^20
+            l10n("Worgen"),                                         -- 2097152
+            nil,                                                    -- 2^22
+            l10n("Pandaren"),                                       -- 8388608
+            l10n("Pandaren") .. spaceString .. l10n("Alliance"),    -- 16777216
+            l10n("Pandaren") .. spaceString .. l10n("Horde"),       -- 33554432
         }
         local firstRun = true
         for k, v in pairs(raceTable) do
@@ -307,6 +315,54 @@ function QuestieLib:GetRaceString(raceMask)
             end
         end
         return raceString
+    end
+end
+
+function QuestieLib:GetClassString(classMask)
+    if not classMask or classMask == QuestieDB.classKeys.NONE or classMask == QuestieDB.classKeys.ALL_CLASSES then
+        return ""
+    else
+        local classString = ""
+        local classTable = QuestieLib:UnpackBinary(classMask)
+        local classColors = {
+            -- Class colors taken from RAID_CLASS_COLORS["WARRIOR"] etc
+            WARRIOR      = "|c" .. RAID_CLASS_COLORS["WARRIOR"].colorStr,
+            PALADIN      = "|c" .. RAID_CLASS_COLORS["PALADIN"].colorStr,
+            HUNTER       = "|c" .. RAID_CLASS_COLORS["HUNTER"].colorStr,
+            ROGUE        = "|c" .. RAID_CLASS_COLORS["ROGUE"].colorStr,
+            PRIEST       = "|c" .. RAID_CLASS_COLORS["PRIEST"].colorStr,
+            DEATH_KNIGHT = "|c" .. RAID_CLASS_COLORS["DEATHKNIGHT"].colorStr,
+            SHAMAN       = "|c" .. RAID_CLASS_COLORS["SHAMAN"].colorStr,
+            MAGE         = "|c" .. RAID_CLASS_COLORS["MAGE"].colorStr,
+            WARLOCK      = "|c" .. RAID_CLASS_COLORS["WARLOCK"].colorStr,
+            MONK         = "|c" .. RAID_CLASS_COLORS["MONK"].colorStr,
+            DRUID        = "|c" .. RAID_CLASS_COLORS["DRUID"].colorStr,
+        }
+        local stringTable = {
+            classColors.WARRIOR .. l10n("Warrior") .. "|r",                 -- 1
+            classColors.PALADIN .. l10n("Paladin") .. "|r",                 -- 2
+            classColors.HUNTER .. l10n("Hunter") .. "|r",                   -- 4
+            classColors.ROGUE .. l10n("Rogue") .. "|r",                     -- 8
+            classColors.PRIEST .. l10n("Priest") .. "|r",                   -- 16
+            classColors.DEATH_KNIGHT .. l10n("Death Knight") .. "|r",       -- 32
+            classColors.SHAMAN .. l10n("Shaman") .. "|r",                   -- 64
+            classColors.MAGE .. l10n("Mage") .. "|r",                       -- 128
+            classColors.WARLOCK .. l10n("Warlock") .. "|r",                 -- 256
+            classColors.MONK .. l10n("Monk") .. "|r",                       -- 512
+            classColors.DRUID .. l10n("Druid") .. "|r",                     -- 1024
+        }
+        local firstRun = true
+        for k, v in pairs(classTable) do
+            if v then
+                if firstRun then
+                    firstRun = false
+                else
+                    classString = classString .. ", "
+                end
+                classString = classString .. stringTable[k]
+            end
+        end
+        return classString
     end
 end
 
@@ -443,7 +499,7 @@ end
 
 function QuestieLib:UnpackBinary(val)
     local ret = {}
-    for q = 0, 16 do
+    for q = 0, 25 do
         if bit.band(bit.rshift(val, q), 1) == 1 then
             tinsert(ret, true)
         else
@@ -647,7 +703,7 @@ function QuestieLib:TextWrap(line, prefix, combineTrailing, desiredWidth)
             --This combines a trailing word to the previous line if it is the only word of the line
             --We check lastSpaceIndex here because the logic will be faulty (chinese client)
             if (row == numberOfRows - 1 and combineTrailing and lastSpaceIndex) then
-                --Get the last line, in it's full
+                --Get the last line, in its full
                 local lastLine = string.sub(useLine, endIndex - 2, strlen(useLine))
 
                 --Does the line not contain any space we combine it into the previous line
@@ -727,6 +783,33 @@ function QuestieLib.UpdateLastKnownDailyReset()
     local realmName = GetRealmName()
 
     Questie.db.global.lastKnownDailyReset[realmName] = GetServerTime() + GetQuestResetTime()
+end
+
+---@param timeStamp number
+---@return string|osdate formattedDate The date formatted based on the player's locale
+function QuestieLib.FormatDate(timeStamp)
+    local langCode = l10n:GetUILocale()
+
+    local weekDay = CALENDAR_WEEKDAY_NAMES[tonumber(date("%w", timeStamp)) + 1]
+    local monthName = CALENDAR_FULLDATE_MONTH_NAMES[tonumber(date("%m", timeStamp))]
+
+    if langCode == "deDE" then
+        return date(weekDay .. ", %d. " .. monthName .. " %Y um %H:%M", timeStamp)
+    elseif langCode == "esES" or langCode == "esMX" then
+        return date(weekDay .. ", %d de " .. monthName .. " de %Y a las %H:%M", timeStamp)
+    elseif langCode == "frFR" then
+        return date(weekDay .. " %d " .. monthName .. " %Y à %H:%M", timeStamp)
+    elseif langCode == "koKR" then
+        return date("%Y년 " .. monthName .. " %d일" .. " " .. weekDay .." %H:%M", timeStamp)
+    elseif langCode == "ptBR" then
+        return date(weekDay .. ", %d de " .. monthName .. " de %Y às %H:%M", timeStamp)
+    elseif langCode == "ruRU" then
+        return date(weekDay .. ", %d " .. monthName .. " %Y, %H:%M", timeStamp)
+    elseif langCode == "zhCN" or langCode == "zhTW" then
+        return date("%Y年" .. monthName .. "%d日 " .. weekDay .. " %H:%M", timeStamp)
+    end
+
+    return date(weekDay .. ", " .. monthName .. " %d, %Y at %H:%M", timeStamp)
 end
 
 return QuestieLib

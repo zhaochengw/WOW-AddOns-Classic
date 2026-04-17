@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<!--@non-debug@-->
+	<Include file="Libs\TaintLess\TaintLess.xml"/>
+	<!--@end-non-debug@-->
+
+</Ui>

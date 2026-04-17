@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25,lfr"
 
-mod:SetRevision("20250208214513")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(55308)
 mod:SetEncounterID(1294)
 mod:SetZone(967)
@@ -70,8 +71,6 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd()
-end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId

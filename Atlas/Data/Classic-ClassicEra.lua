@@ -30,7 +30,6 @@ local BZ = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
 local BF = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local ALC = LibStub("AceLocale-3.0"):GetLocale("Atlas")
-local ALIL = Atlas_IngameLocales
 local Atlas = LibStub("AceAddon-3.0"):GetAddon("Atlas")
 local addon = Atlas:NewModule(private.module_name)
 
@@ -107,6 +106,8 @@ db.AtlasMaps = {
 		JournalInstanceID = 228,
 		ActivityID = { 2, 811 },
 		Module = "Atlas_ClassicWoW",
+		{ ORNG..ALC["Key"]..ALC["Colon"]..L["Relic Coffer Key"] },
+		{ ORNG..ALC["Key"]..ALC["Colon"]..L["Dark Keeper Key"] },
 		{ BLUE.." A) "..ALC["Entrance"],                                                                                                                   10001 },
 		{ WHIT.." 1) "..Atlas_GetBossName("Lord Roccor", 370)..ALC["L-Parenthesis"]..ALC["Wanders"]..ALC["R-Parenthesis"],                                 370 },
 		{ WHIT.." 2) "..Atlas_GetBossName("Kharan Mighthammer") },
@@ -487,7 +488,7 @@ db.AtlasMaps = {
 		DungeonID = 39,
 		LevelRange = "56-60",
 		PlayerLimit = { 5 },
-		-- ActivityID = { 2, 803 }, -- skip for now because there's both live and UD options
+		ActivityID = { 2, 816, 1603 },
 		Module = "Atlas_ClassicWoW",
 		{ ORNG.." "..ALC["Key"]..ALC["Colon"]..L["Various Postbox Keys"]..ALC["L-Parenthesis"]..Atlas_GetBossName("Postmaster Malown")..ALC["R-Parenthesis"] },
 		{ BLUE.." A) "..ALC["Entrance"]..ALC["L-Parenthesis"]..ALC["Front"]..ALC["R-Parenthesis"] },
@@ -953,9 +954,9 @@ db.AtlasMaps = {
 		{ BLUE.." B) "..BZ["Maraudon"]..ALC["L-Parenthesis"]..ALC["Purple"]..ALC["R-Parenthesis"],                             10002 },
 		{ BLUE.." C) "..BZ["Maraudon"]..ALC["L-Parenthesis"]..ALC["Orange"]..ALC["R-Parenthesis"],                             10003 },
 		{ BLUE.." D) "..BZ["Maraudon"]..ALC["L-Parenthesis"]..ALC["Portal"]..ALC["Comma"]..ALC["Lower"]..ALC["R-Parenthesis"], 10004 },
-		{ WHIT.." 1) "..Atlas_GetBossName("Kolk <The First Kahn>") },
-		{ WHIT.." 2) "..Atlas_GetBossName("Gelk <The Second Kahn>") },
-		{ WHIT.." 3) "..Atlas_GetBossName("Magra <The Third Kahn>") },
+		{ WHIT.." 1) "..Atlas_GetBossName("Kolk <The First Khan>") },
+		{ WHIT.." 2) "..Atlas_GetBossName("Gelk <The Second Khan>") },
+		{ WHIT.." 3) "..Atlas_GetBossName("Magra <The Third Khan>") },
 		{ WHIT.." 4) "..Atlas_GetBossName("Cavindra") },
 	},
 	CL_Maraudon = {
@@ -973,10 +974,10 @@ db.AtlasMaps = {
 		{ BLUE.." A) "..ALC["Entrance"]..ALC["L-Parenthesis"]..ALC["Orange"]..ALC["R-Parenthesis"],                                                        10001 },
 		{ BLUE.." B) "..ALC["Entrance"]..ALC["L-Parenthesis"]..ALC["Purple"]..ALC["R-Parenthesis"],                                                        10002 },
 		{ BLUE.." C) "..ALC["Entrance"]..ALC["L-Parenthesis"]..ALC["Portal"]..ALC["R-Parenthesis"],                                                        10003 },
-		{ WHIT.." 1) "..L["Veng (The Fifth Khan)"] },
+		{ WHIT.." 1) "..L["Veng <The Fifth Khan>"]..ALC["L-Parenthesis"]..ALC["Wanders"]..ALC["R-Parenthesis"] },
 		{ WHIT.." 2) "..Atlas_GetBossName("Noxxion", 423),                                                                                                 423 },
 		{ WHIT.." 3) "..Atlas_GetBossName("Razorlash", 424),                                                                                               424 },
-		{ WHIT.." 4) "..L["Maraudos (The Fourth Khan)"] },
+		{ WHIT.." 4) "..L["Maraudos <The Fourth Khan>"]..ALC["L-Parenthesis"]..ALC["Wanders"]..ALC["R-Parenthesis"] },
 		{ WHIT.." 5) "..Atlas_GetBossName("Lord Vyletongue", 427),                                                                                         427 },
 		{ WHIT.." 6) "..Atlas_GetBossName("Meshlok the Harvester")..ALC["L-Parenthesis"]..ALC["Rare"]..ALC["Comma"]..ALC["Wanders"]..ALC["R-Parenthesis"], 10004 },
 		{ WHIT.." 7) "..Atlas_GetBossName("Celebras the Cursed", 428),                                                                                     428 },

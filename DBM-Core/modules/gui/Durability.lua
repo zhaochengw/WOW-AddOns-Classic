@@ -49,16 +49,16 @@ CreateFrame("Button", nil, frame, "UIPanelCloseButtonDefaultAnchors")
 
 local scroll = CreateFrame("ScrollFrame", nil, frame, "ScrollFrameTemplate")
 scroll:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -30)
-scroll:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -24, 5)
+scroll:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -24, 30)
 
 local child = CreateFrame("Frame", nil, scroll)
 scroll:SetScrollChild(child)
 child:SetSize(scroll:GetWidth(), scroll:GetHeight())
 child:SetPoint("LEFT")
 
-local refresh = CreateFrame("Button", nil, child)
+local refresh = CreateFrame("Button", nil, frame)
 refresh:SetSize(20, 20)
-refresh:SetPoint("BOTTOMLEFT", child)
+refresh:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 8, 6)
 refresh:SetText("REFRESH")
 refresh:Show()
 refresh:SetNormalTexture("Interface\\Buttons\\UI-RefreshButton")
@@ -106,7 +106,7 @@ titlePlayer.Keep = true
 titlePlayer:SetFontObject(GameFontNormalLarge)
 titlePlayer:SetText(PLAYER)
 titlePlayer:SetPoint("TOPLEFT", child, 7, 0)
-titlePlayer:SetWidth(200)
+titlePlayer:SetWidth(120)
 
 local titlePercent = GetTextFrame()
 titlePercent.Keep = true
@@ -125,7 +125,7 @@ titlePercent:SetWidth(percentWidth)
 titleBroken:SetWidth(brokenWidth)
 
 -- Update main frame width
-child:SetWidth(200 + percentWidth + brokenWidth + 8)
+child:SetWidth(120 + percentWidth + brokenWidth + 8)
 frame:SetWidth(child:GetWidth() + 32)
 
 local function SortDurability(v1, v2)
@@ -142,8 +142,9 @@ local function Update()
 	WipeTextFrames()
 
 	for i, v in ipairs(sortDur) do
-		local name = v.name
-		local playerColor = RAID_CLASS_COLORS[DBM:GetRaidClass(name)]
+		local fullName = v.name
+		local name = DBM:GetShortServerName(fullName) or fullName
+		local playerColor = RAID_CLASS_COLORS[DBM:GetRaidClass(fullName)]
 		if playerColor then
 			name = ("|r|cff%.2x%.2x%.2x%s|r|cff%.2x%.2x%.2x"):format(playerColor.r * 255, playerColor.g * 255, playerColor.b * 255, name, 0.41 * 255, 0.8 * 255, 0.94 * 255)
 		end
@@ -153,7 +154,7 @@ local function Update()
 
 		textPlayer:SetText(name)
 		textPlayer:SetPoint("TOP", titlePlayer, "BOTTOM", 0, offset)
-		textPlayer:SetWidth(200)
+		textPlayer:SetWidth(120)
 
 		textPercent:SetText(v.durpercent or '?')
 		textPercent:SetPoint("TOP", titlePercent, "BOTTOM", 0, offset)
@@ -164,7 +165,9 @@ local function Update()
 		textBroken:SetWidth(brokenWidth)
 	end
 
-	child:SetHeight(mmax(300, 50 + #sortDur * 14))
+	local scrollHeight = scroll:GetHeight()
+	child:SetHeight(mmax(scrollHeight, 50 + #sortDur * 14))
+	scroll:UpdateScrollChildRect()
 end
 
 LibDurability:Register("DBM", function(percent, broken, sender)
@@ -183,6 +186,9 @@ end)
 function Durability:Show()
 	if DBM.Keystones then
 		DBM.Keystones:Hide()
+	end
+	if DBM.GearCheck then
+		DBM.GearCheck:Hide()
 	end
 	DBM.Latency:Hide()
 	LibDurability:RequestDurability()

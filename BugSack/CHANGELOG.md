@@ -1,10 +1,6 @@
 # BugSack
 
-## [v11.2.9](https://github.com/funkydude/BugSack/tree/v11.2.9) (2026-01-13)
-[Full Changelog](https://github.com/funkydude/BugSack/compare/v11.2.8...v11.2.9) [Previous Releases](https://github.com/funkydude/BugSack/releases)
+## [v12.0.8](https://github.com/funkydude/BugSack/tree/v12.0.8) (2026-04-10)
+[Full Changelog](https://github.com/funkydude/BugSack/compare/v12.0.7...v12.0.8) [Previous Releases](https://github.com/funkydude/BugSack/releases)
 
-- Add untranslated Korean entry  
-- Add categories to TOC (#146)  
-- Update koKR (#145)  
-- Make retail only customizations only load on retail and not where `C_EditMode` exists, which now exists on TBC  
 - Bump toc  

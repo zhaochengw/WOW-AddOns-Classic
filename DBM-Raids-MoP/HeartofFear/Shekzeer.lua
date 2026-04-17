@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(743, "DBM-Raids-MoP", 4, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(62837)--62847 Dissonance Field, 63591 Kor'thik Reaver, 63589 Set'thik Windblade
 mod:SetEncounterID(1501)
 mod:SetUsedIcons(1, 2)
@@ -10,7 +11,7 @@ mod:SetZone(1009)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 123707 123788 124748 125822 125390 124862 124097 124007 123845 124077",
+	"SPELL_AURA_APPLIED 123707 123788 124748 125822 125390 124862 124097 123845 124077",
 	"SPELL_AURA_APPLIED_DOSE 123707 124748",
 	"SPELL_AURA_REMOVED 123788 124097 123845",
 	"SPELL_CAST_SUCCESS 123735 125826 124845 125451 123255",
@@ -101,9 +102,6 @@ function mod:OnCombatStart(delay)
 	table.wipe(warnedLowHP)
 	table.wipe(visonsTargets)
 	table.wipe(resinTargets)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(5)
-	end
 	self:RegisterShortTermEvents(
 		"UNIT_HEALTH_UNFILTERED"
 	)
@@ -113,9 +111,6 @@ function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
-	end
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
 	end
 end
 
@@ -229,9 +224,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 125451 and not phase3Started then
 		phase3Started = true
 		self:UnregisterShortTermEvents()
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 		timerPhase2:Cancel()
 		timerCryOfTerrorCD:Cancel()
 		timerDissonanceFieldCD:Cancel()
@@ -273,9 +265,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if (msg == L.YellPhase3 or msg:find(L.YellPhase3)) and not phase3Started then
 		phase3Started = true
 		self:UnregisterShortTermEvents()
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 		timerPhase2:Cancel()
 		timerCryOfTerrorCD:Cancel()
 		timerDissonanceFieldCD:Cancel()
@@ -301,9 +290,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			DBM.InfoFrame:SetHeader(L.PlayerDebuffs)
 			DBM.InfoFrame:Show(10, "playerbaddebuff", fixateDebuff)
 		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 	elseif spellId == 125304 then
 		fieldCount = 0
 		timerPhase1:Cancel()--If you kill everything it should end early.
@@ -312,9 +298,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerPhase2:Start()--Assumed same as pull
 		if self.Options.InfoFrame then--Will do this more accurately when i have an accurate count of mobs for all difficulties and then i can hide it when mobcount reaches 0
 			DBM.InfoFrame:Hide()
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(5)
 		end
 		self:RegisterShortTermEvents(
 			"UNIT_HEALTH_UNFILTERED"

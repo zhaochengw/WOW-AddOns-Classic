@@ -49,8 +49,10 @@ local function InitResetRecentlySeenTimer()
 			else
 				for xy, info in pairs (entityInfo) do
 					local RESET_TIMER = RSConstants.RECENTLY_SEEN_RESET_TIMER
+					local isInInstance, _ = IsInInstance()
+					
 					-- In instances keep showing the icons longer
-					if (IsInInstance()) then
+					if (isInInstance) then
 						RESET_TIMER = RSConstants.RECENTLY_SEEN_INSTANCE_RESET_TIMER
 					end
 					
@@ -170,6 +172,13 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 	end
 	
 	local min = math.min(unpack(distances))
+	
+	-- Avoid hiding incorrect icons
+	if (min >= 0.001) then
+		RSLogger:PrintDebugMessage(string.format("RemoveRecentlySeen[distancia=%s] (No devuelve contenedor por no haberse encontrado uno lo suficientemente cerca)", min))
+		return nil
+	end
+	
 	for xy, distance in pairs (xyDistances) do
 		if (distance == min) then
 			local x, y = strsplit("_", xy)

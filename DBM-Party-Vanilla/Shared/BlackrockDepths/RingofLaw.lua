@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(372, "DBM-Party-Vanilla", 2, 228)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103114940")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(9028, 9031, 9029, 9030, 9032, 9027)--Register combat with any of the 6
 mod:SetEncounterID(230)
 mod:SetBossHPInfoToHighest()

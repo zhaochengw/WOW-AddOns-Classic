@@ -30,6 +30,94 @@ local Localization={
 		OptionsSetting_Integration_Format="%1$s Integration |cff%2$s(%3$s)|r";--	Receives title/name, color code, and load state
 		OptionsSetting_Integration_Loaded="Loaded";
 	};
+	esES={--	Translated by Anon12018248
+--		Options Panel
+		Options_ByAuthor_Format="por %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="Logros";
+		OptionsSetting_Links_BattlePet="Mascotas de duelo";
+		OptionsSetting_Links_BattlePet_Ability="Habilidades";
+		OptionsSetting_Links_CalendarEvent="Eventos del calendario";
+		OptionsSetting_Links_GarrisonFollower="Seguidores de la ciudadela";
+		OptionsSetting_Links_GarrisonFollower_Ability="Habilidades";
+		OptionsSetting_Links_Item="Objetos";
+		OptionsSetting_Links_Player="Jugadores";
+		OptionsSetting_Links_Player_RaceGender="Raza/Género";
+		OptionsSetting_Links_Player_Class="Clase";
+		OptionsSetting_Links_Spell="Hechizos";
+		OptionsSetting_Links_Tradeskill="Profesiones";
+		OptionsSetting_Links_Transmog="Transfiguración";
+
+		OptionsSetting_Integration_Format="Integración de %1$s |cff%2$s(%3$s)|r";
+		OptionsSetting_Integration_Loaded="Cargado";
+	};
+	esMX={--	Translated by Anon12018248
+--		Options Panel
+		Options_ByAuthor_Format="por %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="Logros";
+		OptionsSetting_Links_BattlePet="Mascotas de duelo";
+		OptionsSetting_Links_BattlePet_Ability="Habilidades";
+		OptionsSetting_Links_CalendarEvent="Eventos del calendario";
+		OptionsSetting_Links_GarrisonFollower="Seguidores de la fortaleza";
+		OptionsSetting_Links_GarrisonFollower_Ability="Habilidades";
+		OptionsSetting_Links_Item="Objetos";
+		OptionsSetting_Links_Player="Jugadores";
+		OptionsSetting_Links_Player_RaceGender="Raza/Género";
+		OptionsSetting_Links_Player_Class="Clase";
+		OptionsSetting_Links_Spell="Hechizos";
+		OptionsSetting_Links_Tradeskill="Profesiones";
+		OptionsSetting_Links_Transmog="Transfiguración";
+
+		OptionsSetting_Integration_Format="Integración de %1$s |cff%2$s(%3$s)|r";
+		OptionsSetting_Integration_Loaded="Cargado";
+	};
+	frFR={--	Translated by Anon12018248
+--		Options Panel
+		Options_ByAuthor_Format="par %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="Hauts faits";
+		OptionsSetting_Links_BattlePet="Mascottes de combat";
+		OptionsSetting_Links_BattlePet_Ability="Capacités";
+		OptionsSetting_Links_CalendarEvent="Événements du calendrier";
+		OptionsSetting_Links_GarrisonFollower="Suivants de fief";
+		OptionsSetting_Links_GarrisonFollower_Ability="Capacités";
+		OptionsSetting_Links_Item="Objets";
+		OptionsSetting_Links_Player="Joueurs";
+		OptionsSetting_Links_Player_RaceGender="Race/Genre";
+		OptionsSetting_Links_Player_Class="Classe";
+		OptionsSetting_Links_Spell="Sorts";
+		OptionsSetting_Links_Tradeskill="Métiers";
+		OptionsSetting_Links_Transmog="Transmogrification";
+
+		OptionsSetting_Integration_Format="Intégration de %1$s |cff%2$s(%3$s)|r";
+		OptionsSetting_Integration_Loaded="Chargé";
+	};
+	ptBR={--	Translated by Anon12018248
+--		Options Panel
+		Options_ByAuthor_Format="por %s";
+
+--		Options Panel (Settings)
+		OptionsSetting_Links_Achievement="Conquistas";
+		OptionsSetting_Links_BattlePet="Mascotes de batalha";
+		OptionsSetting_Links_BattlePet_Ability="Habilidades";
+		OptionsSetting_Links_CalendarEvent="Eventos do calendário";
+		OptionsSetting_Links_GarrisonFollower="Seguidores da guarnição";
+		OptionsSetting_Links_GarrisonFollower_Ability="Habilidades";
+		OptionsSetting_Links_Item="Itens";
+		OptionsSetting_Links_Player="Jogadores";
+		OptionsSetting_Links_Player_RaceGender="Raça/Gênero";
+		OptionsSetting_Links_Player_Class="Classe";
+		OptionsSetting_Links_Spell="Feitiços";
+		OptionsSetting_Links_Tradeskill="Profissões";
+		OptionsSetting_Links_Transmog="Transmogrificação";
+
+		OptionsSetting_Integration_Format="Integração de %1$s |cff%2$s(%3$s)|r";
+		OptionsSetting_Integration_Loaded="Carregado";
+	};
 	ruRU={--	Translated by ZamestoTV
 --		Options Panel
 		Options_ByAuthor_Format="от %s";

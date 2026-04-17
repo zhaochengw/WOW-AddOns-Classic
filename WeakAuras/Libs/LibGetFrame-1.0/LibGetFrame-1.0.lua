@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 70
+local MINOR_VERSION = 74
 if not LibStub then
   error(MAJOR_VERSION .. " requires LibStub.")
 end
@@ -41,6 +41,11 @@ local defaultFramePriorities = {
   "^AshToAshUnit%d+Unit%d+", -- AshToAsh
   "^Cell", -- Cell
   "^XPerl_Raid_Grp", -- xperl
+  "^DandersRaidGroup%dHeader$", -- Danders
+  "^DandersRaidGroup%dHeaderUnitButton%d+$", -- Danders
+  "^DandersFlatRaidHeader$", -- Danders (alternative style name)
+  "^DandersFlatRaidHeaderUnitButton%d+$", -- Danders (alternative style name)
+  "^DandersRaidFrame", -- Danders
   -- party frames
   "^AleaUI_GroupHeader", -- Alea
   "^SUFHeaderparty", --suf
@@ -49,7 +54,8 @@ local defaultFramePriorities = {
   "^oUF_.-Party", -- generic oUF
   "^PitBull4_Groups_Party", -- pitbull4
   "^XPerl_party%d", -- xperl
-  "^DandersRaidFrame", -- Danders
+  "^DandersPartyHeader$", -- Danders
+  "^DandersPartyHeaderUnitButton%d$", -- Danders
   "^DandersFrames_Party", -- Danders
   "^DandersFrames_Player$", -- Danders (used for party frames)
   "^CompactRaid", -- blizz
@@ -135,8 +141,10 @@ local defaultPartyFrames = {
   "^oUF_.-Party",
   "^PitBull4_Groups_Party",
   "^XPerl_party%d",
-  "^DandersFrames_Player$",
-  "^DandersFrames_Party",
+  "^DandersPartyHeader",
+  "^DandersPartyHeaderUnitButton%d$",
+  "^DandersFrames_Player$", -- depricated?
+  "^DandersFrames_Party", -- depricated?
   "^PartyFrame",
   "^CompactParty",
 }
@@ -182,7 +190,11 @@ local defaultRaidFrames = {
   "^SUFHeaderraid",
   "^LUFHeaderraid",
   "^XPerl_Raid_Grp",
-  "^DandersRaidFrame",
+  "^DandersRaidGroup%dHeader$", -- New Danders format
+  "^DandersRaidGroup%dHeaderUnitButton%d+$", -- New Danders format
+  "^DandersFlatRaidHeader$", -- alternative style name
+  "^DandersFlatRaidHeaderUnitButton%d+$", -- alternative style name
+  "^DandersRaidFrame", -- depricated
   "^CompactRaid",
 }
 local getDefaultRaidFrames = function()
@@ -604,6 +616,7 @@ local function Init(noDelay)
   GetFramesCacheListener:RegisterEvent("UNIT_PET")
   GetFramesCacheListener:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
   GetFramesCacheListener:SetScript("OnEvent", function(self, event, unit, ...)
+    if SecretCheck(unit) then return end
     fixGetUnitFrameIntegrity()
     if event == "GROUP_ROSTER_UPDATE" then
       wipe(unitPetState)
@@ -612,6 +625,7 @@ local function Init(noDelay)
       end
     end
     if event == "UNIT_PET" then
+      if SecretCheck(UnitIsUnit("player", unit)) then return end
       if not (UnitIsUnit("player", unit) or UnitInParty(unit) or UnitInRaid(unit)) then
         return
       end

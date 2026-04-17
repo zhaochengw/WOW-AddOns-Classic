@@ -1,5 +1,5 @@
 ﻿----------------------------------------------------------------------
--- 	Leatrix Plus 5.1.22 (8th February 2026)
+-- 	Leatrix Plus 5.1.32 (15th April 2026)
 ----------------------------------------------------------------------
 
 --	01:Functions 02:Locks   03:Restart 40:Player   45:Rest
@@ -19,7 +19,7 @@
 	local void
 
 	-- Version
-	LeaPlusLC["AddonVer"] = "5.1.22"
+	LeaPlusLC["AddonVer"] = "5.1.32"
 
 	-- Get locale table
 	local void, Leatrix_Plus = ...
@@ -913,7 +913,7 @@
 				if (not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and strlower(strtrim(arg1)) == strlower(LeaPlusLC["InvKey"]) then
 					if not LeaPlusLC:IsInLFGQueue() then
 						if event == "CHAT_MSG_WHISPER" then
-							local void, void, void, void, viod, void, void, void, void, guid = ...
+							local void, void, void, void, void, void, void, void, void, guid = ...
 							if LeaPlusLC:FriendCheck(arg2, guid) or LeaPlusLC["InviteFriendsOnly"] == "Off" then
 								-- If whisper name is same realm, remove realm name
 								local theWhisperName, theWhisperRealm = strsplit("-", arg2, 2)
@@ -4032,7 +4032,6 @@
 			easyDelFrame:SetScript("OnEvent", function()
 				if StaticPopup1EditBox:IsShown() then
 					-- Item requires player to type delete so hide editbox and show link
-					StaticPopup1:SetHeight(StaticPopup1:GetHeight() - 10)
 					StaticPopup1EditBox:Hide()
 					StaticPopup1Button1:Enable()
 					local link = select(3, GetCursorInfo())
@@ -4042,9 +4041,9 @@
 						if linkType == "battlepet" then
 							local speciesID, level, breedQuality = strsplit(":", linkOptions)
 							local qualityColor = BAG_ITEM_QUALITY_COLORS[tonumber(breedQuality)]
-							link = qualityColor:WrapTextInColorCode(name .. " |n" .. L["Level"] .. " " .. level .. L["Battle Pet"])
+							link = ConvertRGBtoColorString(qualityColor) .. name .. " (" .. L["Level"] .. " " .. level .. ")"
 						end
-						StaticPopup1Text:SetText(gsub(StaticPopup1Text:GetText(), gsub(TypeDeleteLine, "@", ""), "") .. "|n" .. link)
+						StaticPopup1Text:SetText(gsub(StaticPopup1Text:GetText(), gsub(TypeDeleteLine, "@", ""), "") .. link)
 					end
 				else
 					-- Item does not require player to type delete so just show item link
@@ -4058,9 +4057,9 @@
 						if linkType == "battlepet" then
 							local speciesID, level, breedQuality = strsplit(":", linkOptions)
 							local qualityColor = BAG_ITEM_QUALITY_COLORS[tonumber(breedQuality)]
-							link = qualityColor:WrapTextInColorCode(name .. " |n" .. L["Level"] .. " " .. level .. L["Battle Pet"])
+							link = ConvertRGBtoColorString(qualityColor) .. name .. " (" .. L["Level"] .. " " .. level .. ")"
 						end
-						StaticPopup1Text:SetText(gsub(StaticPopup1Text:GetText(), gsub(TypeDeleteLine, "@", ""), "") .. "|n|n" .. link)
+						StaticPopup1Text:SetText(gsub(StaticPopup1Text:GetText(), gsub(TypeDeleteLine, "@", ""), "") .. "|n|n" .. link .. "|n|n")
 					end
 				end
 			end)
@@ -4904,7 +4903,7 @@
 			-- Add excluded button
 			local MiniExcludedButton = LeaPlusLC:CreateButton("MiniExcludedButton", SideMinimap, "Buttons", "TOPLEFT", 16, -72, 0, 25, true, "Click to toggle the addon buttons editor.")
 			LeaPlusCB["MiniExcludedButton"]:ClearAllPoints()
-			LeaPlusCB["MiniExcludedButton"]:SetPoint("LEFT", SideMinimap.h, "RIGHT", 10, 0)
+			LeaPlusCB["MiniExcludedButton"]:SetPoint("LEFT", SideMinimap.r, "RIGHT", 10, 0)
 
 			-- Set exclude button visibility
 			local function SetExcludeButtonsFunc()
@@ -4940,24 +4939,28 @@
 
 				-- Create configuration panel
 				local ExcludedButtonsPanel = LeaPlusLC:CreatePanel("Enhance minimap", "ExcludedButtonsPanel")
-
-				local titleTX = LeaPlusLC:MakeTx(ExcludedButtonsPanel, "Buttons for the addons listed below will remain visible.", 16, -72)
-				titleTX:SetWidth(534)
-				titleTX:SetWordWrap(false)
-				titleTX:SetJustifyH("LEFT")
+				local boxWidth = 272
 
 				-- Add second excluded button
 				local MiniExcludedButton2 = LeaPlusLC:CreateButton("MiniExcludedButton2", ExcludedButtonsPanel, "Buttons", "TOPLEFT", 16, -72, 0, 25, true, "Click to toggle the addon buttons editor.")
 				LeaPlusCB["MiniExcludedButton2"]:ClearAllPoints()
-				LeaPlusCB["MiniExcludedButton2"]:SetPoint("LEFT", ExcludedButtonsPanel.h, "RIGHT", 10, 0)
+				LeaPlusCB["MiniExcludedButton2"]:SetPoint("LEFT", ExcludedButtonsPanel.r, "RIGHT", 10, 0)
 				LeaPlusCB["MiniExcludedButton2"]:SetScript("OnClick", function()
 					ExcludedButtonsPanel:Hide(); SideMinimap:Show()
 					return
 				end)
 
 				-- Add large editbox
+				local titleTX = LeaPlusLC:MakeTx(ExcludedButtonsPanel, "Editor", 16, -72)
+				titleTX:SetWidth(boxWidth - 14) -- 534
+				titleTX:SetWordWrap(false)
+				titleTX:SetJustifyH("LEFT")
+
+				-- Add help button
+				LeaPlusLC:CreateHelpButton("MinimapButtonsAvailableHelpButton", ExcludedButtonsPanel, titleTX, "If you use the 'Hide addon buttons' or 'Minimap button bag' settings but you want some addon buttons to remain visible around the minimap, enter the button names into the editbox below separated by commas.|n|nChanges will require a UI reload to take effect.")
+
 				local eb = CreateFrame("Frame", nil, ExcludedButtonsPanel, "BackdropTemplate")
-				eb:SetSize(548, LeaPlusLC.MainPanelHeight - 180)
+				eb:SetSize(boxWidth, LeaPlusLC.MainPanelHeight - 180) -- 548
 				eb:SetPoint("TOPLEFT", 10, -92)
 				eb:SetBackdrop({
 					bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -4977,7 +4980,7 @@
 				eb.scroll.CharCount:Hide()
 
 				eb.Text = eb.scroll.EditBox
-				eb.Text:SetWidth(494)
+				eb.Text:SetWidth(boxWidth - 54) -- 494
 				eb.Text:SetHeight(230)
 				eb.Text:SetPoint("TOPLEFT", eb.scroll)
 				eb.Text:SetPoint("BOTTOMRIGHT", eb.scroll, -12, 0)
@@ -5013,8 +5016,77 @@
 				eb.Text:SetText(LeaPlusLC["MiniExcludeList"])
 				SaveString()
 
-				-- Help button tooltip
-				ExcludedButtonsPanel.h.tiptext = L["If you use the 'Hide addon buttons' or 'Minimap button bag' settings but you want some addon buttons to remain visible around the minimap, enter the addon names into the editbox separated by a comma.|n|nThe editbox tooltip shows the addon names that you can enter.  The names must match exactly with the names shown in the editbox tooltip though case does not matter.|n|nChanges to the list will require a UI reload to take effect."]
+				-- Add large editbox for available addons
+				local titleAbTX = LeaPlusLC:MakeTx(ExcludedButtonsPanel, "Available button names", boxWidth + 20, -72)
+				titleAbTX:SetWidth(boxWidth - 14)
+				titleAbTX:SetWordWrap(false)
+				titleAbTX:SetJustifyH("LEFT")
+
+				-- Add help button
+				LeaPlusLC:CreateHelpButton("MinimapButtonsAvailableHelpButton", ExcludedButtonsPanel, titleAbTX, "This is a list of available addon button names.  You can use this list to copy and paste button names that you want into the editor.|n|nThis listing is automatically generated and cannot be edited.")
+
+				local ab = CreateFrame("Frame", nil, ExcludedButtonsPanel, "BackdropTemplate")
+				ab:SetSize(boxWidth, LeaPlusLC.MainPanelHeight - 180) -- 548
+				ab:SetPoint("TOPLEFT", 286, -92)
+				ab:SetBackdrop({
+					bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+					edgeFile = "Interface\\PVPFrame\\UI-Character-PVP-Highlight",
+					edgeSize = 16,
+					insets = { left = 8, right = 6, top = 8, bottom = 8 },
+				})
+				ab:SetBackdropBorderColor(1.0, 0.85, 0.0, 0.5)
+				ab:SetBackdropColor(0, 0, 0, 0.5)
+
+				ab.scroll = CreateFrame("ScrollFrame", nil, ab, "LeaPlusEnhanceMinimapExcludeButtonsScrollFrameTemplate")
+				ab.scroll:SetPoint("TOPLEFT", ab, 12, -10)
+				ab.scroll:SetPoint("BOTTOMRIGHT", ab, -30, 10)
+				ab.scroll:SetPanExtent(16)
+
+				-- Create character count
+				ab.scroll.CharCount = ab.scroll:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+				ab.scroll.CharCount:Hide()
+
+				ab.Text = ab.scroll.EditBox
+				ab.Text:SetWidth(boxWidth - 54) -- 494
+				ab.Text:SetHeight(230)
+				ab.Text:SetPoint("TOPLEFT", ab.scroll)
+				ab.Text:SetPoint("BOTTOMRIGHT", ab.scroll, -12, 0)
+				ab.Text:SetMaxLetters(1200)
+				ab.Text:SetFontObject(GameFontNormalLarge)
+				ab.Text:SetAutoFocus(false)
+				ab.scroll:SetScrollChild(ab.Text)
+
+				-- Set focus on the editbox text when clicking the editbox
+				ab:SetScript("OnMouseDown", function()
+					ab.Text:SetFocus()
+					ab.Text:SetCursorPosition(ab.Text:GetMaxLetters())
+				end)
+
+				-- Function to make string with list of buttons
+				local function MakeAddonString()
+					local msg = ""
+					local numAddons = C_AddOns.GetNumAddOns()
+					local buttons = LibDBIconStub:GetButtonList()
+					table.sort(buttons)
+					for i = 1, #buttons do
+						local button = LibDBIconStub:GetMinimapButton(buttons[i])
+						local buttonName = buttons[i]
+						msg = msg .. buttonName .. ",|n|n"
+					end
+					if msg ~= "" then
+					else
+						msg = L["No supported addons."]
+					end
+					ab.Text:SetText(msg)
+				end
+
+				ab.Text:HookScript("OnShow", MakeAddonString)
+				ab.Text:HookScript("OnTextChanged", function(self, userInput)
+					if userInput then MakeAddonString() end
+				end)
+
+				-- Hide help button
+				ExcludedButtonsPanel.h:Hide()
 
 				-- Back button handler
 				ExcludedButtonsPanel.b:SetScript("OnClick", function()
@@ -5046,35 +5118,6 @@
 						LeaPlusGlobalPanel_SideMinimap:Hide()
 					end
 				end)
-
-				-- Function to make tooltip string with list of addons
-				local function MakeAddonString()
-					local msg = ""
-					local numAddons = C_AddOns.GetNumAddOns()
-					for i = 1, numAddons do
-						if C_AddOns.IsAddOnLoaded(i) then
-							local name = C_AddOns.GetAddOnInfo(i)
-							if name and _G["LibDBIcon10_" .. name] then -- Only list LibDBIcon buttons
-								msg = msg .. name .. ", "
-							end
-						end
-					end
-					if msg ~= "" then
-						msg = L["Supported Addons"] .. "|n|n" .. msg:sub(1, (strlen(msg) - 2)) .. "."
-					else
-						msg = L["No supported addons."]
-					end
-					eb.tiptext = msg
-					eb.Text.tiptext = msg
-				end
-
-				-- Show the help button tooltip for the editbox too
-				eb:SetScript("OnEnter", MakeAddonString)
-				eb:HookScript("OnEnter", LeaPlusLC.TipSee)
-				eb:SetScript("OnLeave", GameTooltip_Hide)
-				eb.Text:SetScript("OnEnter", MakeAddonString)
-				eb.Text:HookScript("OnEnter", LeaPlusLC.ShowDropTip)
-				eb.Text:SetScript("OnLeave", GameTooltip_Hide)
 
 			end
 
@@ -6016,8 +6059,8 @@
 			-- Buttons
 			----------------------------------------------------------------------
 
-			-- Help button tooltip
-			SideMinimap.h.tiptext = L["To move the minimap, hold down the alt key and drag it.|n|nIf you toggle an addon minimap button, you may need to reload your UI for the change to take effect.  This only affects a few addons that use custom buttons.|n|nThis panel will close automatically if you enter combat."]
+			-- Hide help button
+			SideMinimap.h:Hide()
 
 			-- Back button handler
 			SideMinimap.b:SetScript("OnClick", function()
@@ -10370,9 +10413,8 @@
 				-- Create new bottom button under tab
 				_G[chtfrm .. "Tab"].newglow = _G[chtfrm .. "Tab"]:CreateTexture(nil, "BACKGROUND")
 				_G[chtfrm .. "Tab"].newglow:ClearAllPoints()
-				_G[chtfrm .. "Tab"].newglow:SetPoint("BOTTOMLEFT", _G[chtfrm .. "Tab"], "BOTTOMLEFT", 0, 0)
+				_G[chtfrm .. "Tab"].newglow:SetAllPoints()
 				_G[chtfrm .. "Tab"].newglow:SetTexture("Interface\\ChatFrame\\ChatFrameTab-NewMessage")
-				_G[chtfrm .. "Tab"].newglow:SetWidth(_G[chtfrm .. "Tab"]:GetWidth())
 				_G[chtfrm .. "Tab"].newglow:SetVertexColor(0.6, 0.6, 1, 0.7)
 				_G[chtfrm .. "Tab"].newglow:SetBlendMode("ADD")
 				_G[chtfrm .. "Tab"].newglow:Hide()
@@ -10386,11 +10428,6 @@
 					_G[chtfrm .. "Tab"].newglow:Hide()
 				end)
 
-				-- Match new bottom button size to tab
-				_G[chtfrm .. "Tab"]:HookScript("OnSizeChanged", function()
-					_G[chtfrm .. "Tab"].newglow:SetWidth(_G[chtfrm .. "Tab"]:GetWidth())
-				end)
-
 			end
 
 			-- Hide chat menu buttons
@@ -10400,8 +10437,8 @@
 			-- Set options for normal and existing chat frames
 			for i = 1, 50 do
 				if _G["ChatFrame" .. i] then
-					AddMouseScroll("ChatFrame" .. i);
-					HideButtons("ChatFrame" .. i);
+					AddMouseScroll("ChatFrame" .. i)
+					HideButtons("ChatFrame" .. i)
 					HighlightTabs("ChatFrame" .. i)
 				end
 			end
@@ -10410,14 +10447,30 @@
 			hooksecurefunc("FCF_OpenTemporaryWindow", function(chatType)
 				local cf = FCF_GetCurrentChatFrame():GetName() or nil
 				if cf then
+
 					-- Set options for temporary frame
 					AddMouseScroll(cf)
 					HideButtons(cf)
 					HighlightTabs(cf)
-					-- Resize flashing alert to match tab width
-					_G[cf .. "Tab"]:SetScript("OnSizeChanged", function()
-						_G[cf .. "ButtonFrameBottomButton"]:SetWidth(_G[cf .. "Tab"]:GetWidth()-10)
+
+					-- Create new bottom button under tab
+					_G[cf .. "Tab"].newglow = _G[cf .. "Tab"]:CreateTexture(nil, "BACKGROUND")
+					_G[cf .. "Tab"].newglow:ClearAllPoints()
+					_G[cf .. "Tab"].newglow:SetAllPoints()
+					_G[cf .. "Tab"].newglow:SetTexture("Interface\\ChatFrame\\ChatFrameTab-NewMessage")
+					_G[cf .. "Tab"].newglow:SetVertexColor(0.6, 0.6, 1, 1)
+					_G[cf .. "Tab"].newglow:SetBlendMode("ADD")
+					_G[cf .. "Tab"].newglow:Hide()
+
+					-- Show new bottom button when old one glows
+					_G[cf].ScrollToBottomButton.Flash:HookScript("OnShow", function(self,arg1)
+						_G[cf .. "Tab"].newglow:Show()
 					end)
+
+					_G[cf].ScrollToBottomButton.Flash:HookScript("OnHide", function(self,arg1)
+						_G[cf .. "Tab"].newglow:Hide()
+					end)
+
 				end
 			end)
 
@@ -11327,9 +11380,6 @@
 				-- Nameplate tooltip
 				if NamePlateTooltip then NamePlateTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"]) end
 
-				-- Game settings panel tooltip
-				if SettingsTooltip then SettingsTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"]) end
-
 				-- World map tooltip
 				if WorldMapTooltip then WorldMapTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"]) end
 
@@ -11394,6 +11444,15 @@
 				LeaPlusCB["LeaPlusTipSize"]:HookScript("OnValueChanged", SetEncounterJournalTipScale)
 				SetEncounterJournalTipScale()
 
+			end)
+
+			----------------------------------------------------------------------
+			-- Blizzard Settings tooltip
+			----------------------------------------------------------------------
+
+			-- Set tooltip scale when tooltip is shown
+			SettingsTooltip:HookScript("OnShow", function()
+				SettingsTooltip:SetScale(LeaPlusLC["LeaPlusTipSize"] * UIParent:GetScale())
 			end)
 
 			---------------------------------------------------------------------------------------------------------
@@ -14462,15 +14521,17 @@
 				return
 			elseif str == "tooltip" then
 				-- Print tooltip frame name
-				local enumf = EnumerateFrames()
-				while enumf do
-					if (enumf:GetObjectType() == "GameTooltip" or strfind((enumf:GetName() or ""):lower(),"tip")) and enumf:IsVisible() and enumf:GetPoint() then
-						print(enumf:GetName())
+				pcall(function()
+					local enumf = EnumerateFrames()
+					while enumf do
+						if (enumf:GetObjectType() == "GameTooltip" or strfind((enumf:GetName() or ""):lower(),"tip")) and enumf:IsVisible() and enumf:GetPoint() then
+							print(enumf:GetName())
+						end
+						enumf = EnumerateFrames(enumf)
 					end
-					enumf = EnumerateFrames(enumf)
-				end
-				collectgarbage()
-				return
+					collectgarbage()
+					return
+				end)
 			elseif str == "rsnd" then
 				-- Restart sound system
 				if LeaPlusCB["StopMusicBtn"] then LeaPlusCB["StopMusicBtn"]:Click() end

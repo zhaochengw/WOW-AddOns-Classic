@@ -1,4 +1,15 @@
-﻿5.1.21 - 28th January 2026
+﻿5.1.30 - 1st April 2026
+- For 'Hide chat buttons' ('Chat'), updated chat tab glow.
+- For 'Enhance minimap' ('Interface'), the buttons editor will now show a full list of button names that you can use and you can now copy and paste names from the list into the buttons editor.
+
+5.1.26 - 4th March 2026
+- For 'Easy item destroy' ('System'), fixed an issue with buttons showing outside the delete confirmation window.  Fixed an issue which caused a Lua error when deleting battle pets.
+- Updated LibChatAnims and LibDBIcon libraries.
+
+5.1.24 - 18th February 2026
+- For 'Enhance tooltip' ('Interface'), fixed an issue which caused the game settings tooltips to be scaled incorrectly.
+
+5.1.21 - 28th January 2026
 - For 'Enhance minimap' ('Interface'), the minimap button bag will no longer go off the screen if you have a massive number of minimap buttons.
 - For 'Show cooldowns' ('Interface'), increased the character limit for the spell ID editboxes.
 

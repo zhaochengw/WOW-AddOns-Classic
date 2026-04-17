@@ -1,8 +1,8 @@
-## Interface: 120001, 120000, 110207, 50503, 30405, 20505
+## Interface: 120001, 50503, 30405, 20505
 ## Title: HandyNotes: Burning Crusade
 ## Notes: Where are the interesting things in Outland?
 ## Author: Kemayo
-## Version: v17
+## Version: v18
 ## DefaultState: enabled
 ## X-Category: Map
 ## X-eMail: kemayo @ gmail DOT com

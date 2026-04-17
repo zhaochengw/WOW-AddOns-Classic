@@ -220,8 +220,10 @@ L.DBMLOOTREMINDER						= "WARNING: 3rd party mod DBM-LootReminder is installed. 
 L.UPDATE_REQUIRES_RELAUNCH				= "WARNING: This " .. L.DBM .. " update will not work correctly if you don't fully restart your game client. This update contains new files or .toc file changes that cannot be loaded via ReloadUI. You may encounter broken functionality or errors if you continue without a client restart."
 L.OUT_OF_DATE_NAG						= "Your version of " .. L.DBM.. " is out-of-date and this specific fight mod has newer features or bug fixes. It is recommended you update for this fight to improve your experience."
 L.PLATER_NP_AURAS_MSG					= L.DBM .. " includes an advanced feature to show enemy cooldown timers using icons on nameplates. This is on by default for most users, but for Plater users it is off by default in Plater options unless you enable it. To get the most out of DBM (and Plater) it's recommended you enable this feature in Plater under 'Buff Special' section. If you don't want to see this message again, you can also just entirely disable 'Cooldown icons on nameplates' option in DBM global disable or nameplate options panels"
+L.HARDCODED_FALLBACK					= L.DBM .. " has detected an unexpected result in this hardcoded boss mod. " .. L.DBM .. " will fall back to Blizzard timers and warnings for this encounter."
 
 L.MOVABLE_BAR							= "Drag me!"
+L.MOVABLE_FRAMES						= "Frames Dragable"
 
 L.PIZZA_SYNC_INFO						= "|Hplayer:%1$s|h[%1$s]|h sent you a " .. L.DBM .. " timer: '%2$s'\n|Hgarrmission:DBM:cancel:%2$s:nil|h|cff3588ff[Cancel this timer]|r|h  |Hgarrmission:DBM:ignore:%2$s:%1$s|h|cff3588ff[Ignore timers from %1$s]|r|h"
 --L.PIZZA_SYNC_INFO						= "|Hplayer:%1$s|h[%1$s]|h sent you a " .. L.DBM .. " timer"
@@ -280,6 +282,7 @@ L.SLASHCMD_HELP							= {
 	"/dbm key: Performs M+ keystone and rating checks on party/guild and shortcuts to dungeon teleports. (alias: key, keys, keystone)",
 	"/dbm lag: Performs a raid-wide latency check.",
 	"/dbm durability: Performs a raid-wide durability check.",
+	"/dbm brez: Shows the battle resurrection timer frame for positioning.",
 	"/dbm help2: Shows additional slash commands"
 }
 --Less used slash commands
@@ -331,6 +334,7 @@ L.AUTO_ANNOUNCE_TEXTS = {
 	target								= "%s on >%%s<",
 	targetsource						= ">%%s< cast %s on >%%s<",
 	targetcount							= "%s (%%s) on >%%s<",
+	blizztarget							= "%s (%%s) on %%s",--Blizz target has class color preformated, so >< not needed
 	spell								= "%s", -- OPTIONAL
 	spellsource							= ">%%s< cast %s",
 	incoming							= "%s incoming debuff",
@@ -359,6 +363,7 @@ L.AUTO_ANNOUNCE_OPTIONS = {
 	targetNF							= "Announce $spell:%s targets (ignores global target filter)",
 	targetsource						= "Announce $spell:%s targets (with source)",
 	targetcount							= "Announce $spell:%s targets (with count)",
+	blizztarget							= "Announce $spell:%s targets (with count)",
 	spell								= "Announce when $spell:%s has been cast",
 	spellsource							= "Announce when $spell:%s has been cast (with source)",
 	incoming							= "Announce when $spell:%s has incoming debuffs",
@@ -648,8 +653,11 @@ L.AUTO_INFO_FRAME_OPTION_TEXT			= "Show info frame for $spell:%s"
 L.AUTO_INFO_FRAME_OPTION_TEXT2			= "Show info frame for encounter overview"
 L.AUTO_INFO_FRAME_OPTION_TEXT3			= "Show info frame for $spell:%s (when threshold of %%s is met)"
 L.AUTO_READY_CHECK_OPTION_TEXT			= "Play ready check sound when boss is pulled (even if it's not targeted)"
-L.AUTO_SPEEDCLEAR_OPTION_TEXT			= "Show timer for fastest clear of %s"
-L.AUTO_PRIVATEAURA_OPTION_TEXT			= "Play DBM sound alerts for $spell:%s private auras on this fight."
+L.AUTO_SPEEDCLEAR_OPTION_TEXT			= "Show timer for fastest clear of this zone"
+L.AUTO_PRIVATEAURA_OPTION_TEXT			= "Play DBM private auras sound alerts for $spell:%s on this fight."--Generic (most common)
+L.AUTO_PRIVATEAURA_OPTION_TARGET_TEXT	= "Play DBM private auras sound alerts for when you are targeted by $spell:%s."
+L.AUTO_PRIVATEAURA_OPTION_GTFO_TEXT		= "Play DBM private auras sound alerts for when you need to move away from $spell:%s."
+L.AUTO_PRIVATEAURA_OPTION_POST_TEXT		= "Play DBM private auras sound alerts for lingering effects of $spell:%s."
 L.AUTO_CUSTOMTIMER_OPTION_TEXT			= "Show timer for $spell:%s"--Used for Midnight timeline timers (ie we have no context of what type of timer it is, just a generic timer)
 L.AUTO_CUSTOMALERT_OPTION_TEXT			= "Set alert sound for when $spell:%s is about to be cast"--Used for Midnight custom alerts (ie we have no context of what type of alert it is, just a generic alert)
 
@@ -662,6 +670,9 @@ L.MOVE_WARNING_BAR						= "Announce movable"
 L.MOVE_WARNING_MESSAGE					= "Thanks for using " .. L.DEADLY_BOSS_MODS
 L.MOVE_SPECIAL_WARNING_BAR				= "Special warning movable"
 L.MOVE_SPECIAL_WARNING_TEXT				= "Special Warning"
+
+L.MOVE_PRIVATE_AURA_TEXT				= "<secret value> targets you with the spell <secret value>"
+L.MOVE_PRIVATE_AURA_DISABLED			= "Preview is disabled because Private Aura Frames are globally disabled in options."
 
 L.HUD_INVALID_TYPE						= "Invalid HUD type defined"
 L.HUD_INVALID_TARGET					= "No valid target given for HUD"
@@ -693,12 +704,15 @@ L.ARROW_ERROR_USAGE						= {
 
 L.SPEED_KILL_TIMER_TEXT					= "Record Victory"
 L.SPEED_CLEAR_TIMER_TEXT				= "Best Clear"
-L.COMBAT_RES_TIMER_TEXT					= "Next CR Charge"
 L.TIMER_RESPAWN							= "%s Respawn"
 
 L.LAG_HEADER							= L.DBM.. " - Latency Results"
 L.DUR_HEADER							= L.DBM.. " - Durability Results"
 L.KEYSTONES_HEADER						= L.DBM.. " - Keystones"
+L.GEAR_HEADER							= L.DBM.. " - Gear Check Results"
+L.GEAR_MISSING_GEMS						= "Missing Gems"
+L.GEAR_MISSING_ENCHANTS					= "Missing Enchants"
+L.BREZ_HEADER							= "Battle Res"
 
 L.OVERRIDE_ACTIVATED					= "Configuration overrides have been activated for this encounter by RL"
 
@@ -764,7 +778,7 @@ L.KEYSTONE_NAMES = {
 	[227] = 'LKARA', -- Return to Karazhan: Lower
 	[233] = 'COEN', -- Cathedral of Eternal Night
 	[234] = 'UKARA', -- Return to Karazhan: Upper
-	[239] = 'SOTT', -- Seat of the Triumvirate
+	[239] = 'SEAT', -- Seat of the Triumvirate
 
 	[378] = 'HOA', -- Halls of Atonement
 	[391] = 'STREET', -- Tazavesh: Streets of Wonder
@@ -773,7 +787,16 @@ L.KEYSTONE_NAMES = {
 	[503] = 'ARAK', -- Ara-Kara, City of Echoes
 	[505] = 'DAWN', -- The Dawnbreaker
 	[525] = 'FLOOD', -- Operation Floodgate
-	[542] = 'DOME' -- Eco-Dome Al'dani
+	[542] = 'DOME', -- Eco-Dome Al'dani
+
+	[161] = 'SKY', -- Skyreach
+	[402] = 'AA', -- Algeth'ar Academy
+	[556] = 'POS', -- Pit of Saron
+	[557] = 'WRS', -- Windrunner Spire
+	[558] = 'MT', -- Magister's Terrace
+	[559] = 'NPX', -- Nexus-Point Xenas
+	[560] = 'MC', -- Maisara Caverns
+	[583] = 'SEAT', -- Seat of the Triumvirate
 }
 
 -- Midnight jazz

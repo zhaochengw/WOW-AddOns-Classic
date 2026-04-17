@@ -662,8 +662,8 @@ function TeamManager:SortTeamsByName()
 			end
 		end)
 
-        -- Then rebuilt teams
-		self.teams = {}
+        -- Then rebuilt teams - IMPORTANT: preserve self.db.global.teams ref (Clear existing table)
+		wipe(self.teams)
 		for _, wrapper in ipairs(indexedTeams) do
 			table.insert(self.teams, wrapper.team)
 		end
@@ -672,7 +672,7 @@ function TeamManager:SortTeamsByName()
 		if self:GetNumTeams() > 0 and (self:GetSelected() <= 0 or self:GetSelected() > self:GetNumTeams()) then
 			self:SetSelected(1)
 		end
-        self.callbacks:Fire("TEAM_UPDATED",teamIndex)
+        self.callbacks:Fire("TEAM_UPDATED")
 	end
 end
 
@@ -851,6 +851,11 @@ function TeamManager:OnInitialize()
         for j=1,PETS_PER_TEAM do
             self.teams[i].enabled[j] = true
         end
+    end
+
+    -- Apply sorting if enabled (must be done after teams are initialized)
+    if self:GetSortTeams() then
+        self:SortTeamsByName()
     end
 
     hooksecurefunc(C_PetJournal, "SetPetLoadOutInfo", TeamManager.UpdateCurrentTeam)

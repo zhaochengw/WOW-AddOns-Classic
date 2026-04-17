@@ -147,7 +147,7 @@ MT.BuildEnv('UI-Frame');
 			Frame:SetMinResize(CT.TUISTYLE.FrameXSizeMin_Style1, CT.TUISTYLE.FrameYSizeMin_Style1);
 		end
 		Frame:SetFrameStrata("HIGH");
-		VT.__dep.uireimp._SetSimpleBackdrop(Frame, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 1.0);
+		-- VT.__dep.uireimp._SetSimpleBackdrop(Frame, 0, 1, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 1.0);
 
 		if VT.SET.style == 1 then
 			Frame:SetSize(CT.TUISTYLE.FrameXSizeDefault_Style1, CT.TUISTYLE.FrameYSizeDefault_Style1);
@@ -156,7 +156,7 @@ MT.BuildEnv('UI-Frame');
 		end
 
 		local Background = Frame:CreateTexture(nil, "BORDER");
-		Background:SetAlpha(0.6);
+		Background:SetAlpha(VT.SET.frame_background_alpha);
 		Background:SetPoint("BOTTOMLEFT");
 		Background:SetPoint("TOPRIGHT");
 		Frame.Background = Background;

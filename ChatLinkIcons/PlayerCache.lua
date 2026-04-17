@@ -7,6 +7,7 @@
 local AddOn=select(2,...);
 AddOn.PlayerCache_OnPlayerAdded=AddOn.Callbacks_New();
 
+local ServerTag;
 local PlayerCache={};
 
 local GuildRoster=GuildRoster or C_GuildInfo.GuildRoster;--	Blizzard removed the legacy location of this function in 9.0 while C_GuildInfo isn't available in Classic

@@ -1,7 +1,7 @@
 ## Interface: 40400
 ## Title: |cff880303[163UI]|r Info
 ## Notes: 163UI_Info - Player data collector (Cataclysm Classic)
-## Version: r20260204172105
+## Version: r20260414164119
 ## Author: NetEase Inc.
 ## IconTexture: Interface\AddOns\!!!163UI!!!\Media\Textures\UI2-logo
 ## SavedVariables: MythicArchiveDB, DDPFGlobal

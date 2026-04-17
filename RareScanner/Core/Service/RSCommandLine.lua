@@ -18,13 +18,11 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSLogger = private.ImportLib("RareScannerLogger")
 
 -- RareScanner services
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 local RSCustomNpcs = private.ImportLib("RareScannerCustomNpcs")
 local RSProvider = private.ImportLib("RareScannerProvider")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
-
--- RareScanner other addons integration services
-local RSTomtom = private.ImportLib("RareScannerTomtom")
 
 ---============================================================================
 -- Command line options
@@ -32,6 +30,20 @@ local RSTomtom = private.ImportLib("RareScannerTomtom")
 
 local RARESCANNER_CMD = "rarescanner"
 local RARESCANNERS_CMD = "rs"
+
+function RSCommandLine.PrintHelp()
+	print("|cFFFBFF00"..AL["CMD_HELP1"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_OPEN_EXPLORER.." |cFF00FFFB"..AL["CMD_HELP12"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
+	print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_IMPORT.." |cFFFFFFFBstring".." |cFF00FFFB"..AL["CMD_HELP13"])
+end
 
 function RSCommandLine.SlashCommand(command, ...)
 	local refreshMap = false
@@ -69,9 +81,7 @@ function RSCommandLine.SlashCommand(command, ...)
 		RSCommandLine.CmdToggleTreasuresAlerts()
 	elseif (RSUtils.Contains(command, RSConstants.CMD_TOMTOM_WAYPOINT)) then
 		local _, mapID, x, y, name = strsplit(";", command)
-		if (RSConfigDB.IsTomtomSupportEnabled() and not RSConfigDB.IsAddingTomtomWaypointsAutomatically()) then
-			RSTomtom.AddTomtomWaypoint(mapID, x, y, name)
-		end
+		RSWaypoints.AddAutomaticWaypoint(mapID, x, y, name)
 	elseif (RSUtils.Contains(command, RSConstants.CMD_RECENTLY_SEEN)) then
 		local _, entityID, mapID, x, y = strsplit(";", command)
 		RSRecentlySeenTracker.AddPendingAnimation(tonumber(entityID), mapID, x, y, true)
@@ -95,17 +105,7 @@ function RSCommandLine.SlashCommand(command, ...)
 			end)
 		end
 	else
-		print("|cFFFBFF00"..AL["CMD_HELP1"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_OPEN_EXPLORER.." |cFF00FFFB"..AL["CMD_HELP12"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_TOGGLE_RARES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP9"])
-		print("|cFFFBFF00   /"..RARESCANNERS_CMD.." "..RSConstants.CMD_IMPORT.." |cFFFFFFFBstring".." |cFF00FFFB"..AL["CMD_HELP13"])
+		RSCommandLine.PrintHelp()
 	end
 	
 	if (refreshMap) then

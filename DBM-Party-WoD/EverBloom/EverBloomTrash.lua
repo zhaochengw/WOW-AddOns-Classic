@@ -3,7 +3,8 @@ if (DBM:GetTOC() < 100200) then return end--DO NOT DELETE DO NOT DELETE DO NOT D
 local mod	= DBM:NewMod("EverBloomTrash", "DBM-Party-WoD", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20251117220446")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 --mod:SetModelID(47785)
 mod:SetZone(1279)
 

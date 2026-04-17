@@ -9,6 +9,6 @@
 	<Script file='DataTables.lua'/>
 	<Script file='MRTNotes.lua'/>
 	<Script file='RaidPack.lua'/>
-	<Script file='TitanReforgeWrath.lua'/>
-	<Script file='SpecHelper.lua'/>
+	<Script file='SpecHelper.lua'/>\
+  <Script file='TBC.lua'/>
 </Ui>

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(729, "DBM-Raids-MoP", 3, 320)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250906051052")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(62983)--62995 Animated Protector
 mod:SetEncounterID(1506)
 mod:SetZone(996)
@@ -73,9 +74,6 @@ end
 
 function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -165,9 +163,6 @@ function mod:SPELL_CAST_START(args)
 		self:RegisterShortTermEvents(
 			"INSTANCE_ENCOUNTER_ENGAGE_UNIT"--We register on hide, because it also fires just before hide, every time and don't want to trigger "hide over" at same time as hide.
 		)
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(3)--Show everyone during hide
-		end
 	elseif spellId == 123705 then
 		self:ScaryFogRepeat()
 	end

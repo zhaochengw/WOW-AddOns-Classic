@@ -220,6 +220,7 @@ L.DBMLOOTREMINDER					= "警告: 第三方插件DBM-LootReminder已安装。该�
 L.UPDATE_REQUIRES_RELAUNCH		= "警告: 如果你不完全重启游戏，" .. L.DBM .. "可能会工作不正常。此次更新包含了新的文件，或者toc文件的改变，这是重载界面无法加载的。不重启游戏可能导致作战模块功能错误。"
 L.OUT_OF_DATE_NAG				= "你的" .. L.DBM .. "版本已经过期，新版本针对特定的首领战斗增加新的功能和错误的修复。建议您进行更新来改善您的游戏体验。"
 L.PLATER_NP_AURAS_MSG					= L.DBM .. "现在提供可以在敌人姓名版提供技能冷却的高级功能。对于大部分用户来说，本功能默认开启，但 Plater 用户需要在 Plater “Buff选项” 中手动开启。如果你不想见到本消息，你也可以在DBM设置界面的“姓名版全局开启与过滤选项”中关掉它"
+L.HARDCODED_FALLBACK				= L.DBM .. "检测到硬编码模组出现异常结果。" .. L.DBM .. "将在这场战斗中回退为暴雪计时器和警报。"
 
 L.MOVABLE_BAR				= "拖动我！"
 
@@ -280,6 +281,7 @@ L.SLASHCMD_HELP				= {
 	"/dbm key: 执行大秘钥石和评级检查，适用于队伍/公会，并提供副本传送的快捷方式。 (也可使用: key, keys, keystone)",
 	"/dbm lag: 检测全团网络延时",
 	"/dbm durability: 检测全团装备耐久度",
+	"/dbm brez: 显示战复计时器框架以供定位。",
 	"/dbm help2: 显示额外的/命令"
 }
 L.SLASHCMD_HELP2				= {
@@ -476,30 +478,30 @@ L.AUTO_SPEC_WARN_OPTIONS.targetchange	= "特殊警报：需要立刻切换目标
 L.AUTO_TIMER_TEXTS.target				= "%s: >%%s<"
 L.AUTO_TIMER_TEXTS.targetcount 			= "%s: >%%s< (%%s)"
 L.AUTO_TIMER_TEXTS.cast					= "%s"
-L.AUTO_TIMER_TEXTS.castcount				= "%s (%%s)"
-L.AUTO_TIMER_TEXTS.castsource			= "%s: %%s"
+L.AUTO_TIMER_TEXTS.castcount			= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.castsource			= "%s：%%s"
 L.AUTO_TIMER_TEXTS.active				= "%s结束"--Buff/Debuff/event on boss
-L.AUTO_TIMER_TEXTS.fades					= "%s消失"--Buff/Debuff on players
+L.AUTO_TIMER_TEXTS.fades				= "%s消失"--Buff/Debuff on players
 L.AUTO_TIMER_TEXTS.ai					= "%s AI"
 
-L.AUTO_TIMER_TEXTS.cd					= "%s冷却"
-L.AUTO_TIMER_TEXTS.cdcount				= "%s冷却（%%s）"
-L.AUTO_TIMER_TEXTS.cdsource				= "%s冷却: >%%s<"
-L.AUTO_TIMER_TEXTS.cdspecial				= "特殊技能冷却"
+L.AUTO_TIMER_TEXTS.cd					= "%s"
+L.AUTO_TIMER_TEXTS.cdcount				= "%s（%%s）"
+L.AUTO_TIMER_TEXTS.cdsource				= "%s：>%%s<"
+L.AUTO_TIMER_TEXTS.cdspecial			= "特殊技能冷却"
 
-L.AUTO_TIMER_TEXTS.next 					= "下一次%s"
-L.AUTO_TIMER_TEXTS.nextcount				= "下一次%s（%%s）"
-L.AUTO_TIMER_TEXTS.nextsource			= "下一次%s: >%%s<"
+L.AUTO_TIMER_TEXTS.next 				= "%s"
+L.AUTO_TIMER_TEXTS.nextcount			= "%s（%%s）"
+L.AUTO_TIMER_TEXTS.nextsource			= "%s：>%%s<"
 L.AUTO_TIMER_TEXTS.nextspecial			= "下一次特殊技能"
 
 L.AUTO_TIMER_TEXTS.achievement 			= "%s"
-L.AUTO_TIMER_TEXTS.stage					= "阶段"
-L.AUTO_TIMER_TEXTS.stagecount				= "阶段 %%s"
-L.AUTO_TIMER_TEXTS.stagecountcycle			= "阶段 %%s (%%s)"--Example: Stage 2 (3) for a fight that alternates stage 1 and stage 2, but also tracks total cycles
-L.AUTO_TIMER_TEXTS.stagecontext				= "%s"
-L.AUTO_TIMER_TEXTS.stagecontextcount		= "%s (%%s)"
-L.AUTO_TIMER_TEXTS.intermission				= "转阶段"
-L.AUTO_TIMER_TEXTS.intermissioncount		= "转阶段 %%s"
+L.AUTO_TIMER_TEXTS.stage				= "阶段"
+L.AUTO_TIMER_TEXTS.stagecount			= "阶段 %%s"
+L.AUTO_TIMER_TEXTS.stagecountcycle		= "阶段 %%s (%%s)"--Example: Stage 2 (3) for a fight that alternates stage 1 and stage 2, but also tracks total cycles
+L.AUTO_TIMER_TEXTS.stagecontext			= "%s"
+L.AUTO_TIMER_TEXTS.stagecontextcount	= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.intermission			= "转阶段"
+L.AUTO_TIMER_TEXTS.intermissioncount	= "转阶段 %%s"
 L.AUTO_TIMER_TEXTS.adds					= "下一波小怪"
 L.AUTO_TIMER_TEXTS.addscustom			= "小怪 (%%s)"
 L.AUTO_TIMER_TEXTS.roleplay				= GUILD_INTEREST_RP or "剧情"
@@ -602,7 +604,7 @@ L.AUTO_INFO_FRAME_OPTION_TEXT		= "信息框：$spell:%s"
 L.AUTO_INFO_FRAME_OPTION_TEXT2		= "信息框：战斗总览"
 L.AUTO_INFO_FRAME_OPTION_TEXT3		= "信息框：$spell:%s （当%%s阈值达到时）"
 L.AUTO_READY_CHECK_OPTION_TEXT		= "当首领开打时播放准备检查的音效（即使没有选定目标）"
-L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "为%s显示快速消除计数器"
+L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "显示该区域的最快通关计时器"
 L.AUTO_PRIVATEAURA_OPTION_TEXT		= "在这场战斗中，为DBM的私人光环$spell:%s播放音效"
 L.AUTO_GOSSIP_BUFFS					= "自动选择NPC对话来开启专业增益"
 L.AUTO_GOSSIP_PERFORM_ACTION		= "自动选择NPC对话来执行动作（例如传送）"
@@ -644,11 +646,13 @@ L.ARROW_ERROR_USAGE	= {
 
 L.SPEED_KILL_TIMER_TEXT	= "击杀记录"
 L.SPEED_CLEAR_TIMER_TEXT	= "最速清除"
-L.COMBAT_RES_TIMER_TEXT	= "下一次可用战复"
 L.TIMER_RESPAWN		= "%s 刷新"
 
 L.LAG_HEADER					= L.DBM .. " - 延时检测"
 L.DUR_HEADER					= L.DBM .. "- 装备耐久度检测结果"
+L.GEAR_HEADER					= L.DBM .. " - 装备检测结果"
+L.GEAR_MISSING_GEMS			= "缺失宝石"
+L.GEAR_MISSING_ENCHANTS		= "缺失附魔"
 --L.KEYSTONES_HEADER					= L.DBM.. " - Keystones"
 
 L.OVERRIDE_ACTIVATED			= "本次战斗的配置已经被队长的配置覆盖"
@@ -713,8 +717,6 @@ L.KEYSTONE_NAMES[227] = '卡下' -- Return to Karazhan: Lower
 L.KEYSTONE_NAMES[233] = '教堂' -- Cathedral of Eternal Night
 L.KEYSTONE_NAMES[234] = '卡上' -- Return to Karazhan: Upper
 L.KEYSTONE_NAMES[239] = '执政' -- Seat of the Triumvirate
-
--- S3大秘
 L.KEYSTONE_NAMES[378] = '赎罪' -- Halls of Atonement
 L.KEYSTONE_NAMES[391] = '天街' -- Tazavesh: Streets of Wonder
 L.KEYSTONE_NAMES[392] = '宏图' -- Tazavesh: So'leah's Gambit
@@ -723,6 +725,14 @@ L.KEYSTONE_NAMES[503] = '回响' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = '破晨' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = '水闸' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = '生态' -- Eco-Dome Al'dani
+L.KEYSTONE_NAMES[161] = '通天' -- Skyreach
+L.KEYSTONE_NAMES[402] = '学院' -- Algeth'ar Academy
+L.KEYSTONE_NAMES[556] = '萨隆' -- Pit of Saron
+L.KEYSTONE_NAMES[557] = '风行' -- Windrunner Spire
+L.KEYSTONE_NAMES[558] = '魔导' -- Magister's Terrace
+L.KEYSTONE_NAMES[559] = '节点' -- Nexus-Point Xenas
+L.KEYSTONE_NAMES[560] = '迈萨拉' -- Maisara Caverns
+L.KEYSTONE_NAMES[583] = '执政' -- Seat of the Triumvirate
 
 -- Midnight jazz
 L.MN_TIMELINE_HEADER	= "你想使用游戏自带的计时条还是DBM的计时条？"

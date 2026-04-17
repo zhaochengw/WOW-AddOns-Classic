@@ -6,15 +6,31 @@ local __addon, __private = ...;
 local MT = __private.MT;
 local CT = __private.CT;
 local VT = __private.VT;
+local DT = __private.DT;
 
-local mod = {};
+
+-->		upvalue
+    local type = type;
+    local ipairs = ipairs;
+    local _G = _G;
+
+-->
+
+
+-->		****
+MT.BuildEnv("EasyAuction");
+-->		****
+
+
+local mod = {  };
 
 -- 按 id 查询，自动拼 name:itemid
 function mod.F_QueryPriceByID(id, num)
     if mod.dbver == 1 then
         if not id then return nil end
-        local name = GetItemInfo(id)
+        local name = mod.F_QueryNameByID(id)
         if not name then return nil end
+        local EasyAuctionDB = _G.EasyAuctionDB;
         local history = EasyAuctionDB and EasyAuctionDB.PriceHistory and EasyAuctionDB.PriceHistory[name]
         if not history or #history == 0 then return nil end
         local min = nil
@@ -30,9 +46,10 @@ function mod.F_QueryPriceByID(id, num)
         end
     else
         if not id then return nil end
-        local name = GetItemInfo(id)
+        local name = mod.F_QueryNameByID(id)
         if not name then return nil end
         local key = name .. ":" .. id
+        local EasyAuctionDB = _G.EasyAuctionDB;
         local history = EasyAuctionDB and EasyAuctionDB.PriceHistory and EasyAuctionDB.PriceHistory[key]
         if not history or #history == 0 then return nil end
         local min = nil

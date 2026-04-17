@@ -81,7 +81,6 @@ function BG.CreateFBUI(FB, type)
                 BG[type .. "DiSeUI"](FB, t, b, bb, i, ii)
             end
             BG["BossNameUI"](FB, t, b, bb, nil, ii, GetFrameName(type))
-            BG["JiShaUI"](FB, t, b, bb, nil, ii, GetFrameName(type))
         end
     end
 

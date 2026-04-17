@@ -31,7 +31,8 @@ ns.defaults = {
         icon_alpha = 1.0,
         icon_item = false,
         tooltip_charloot = true,
-        tooltip_pointanchor = false,
+        tooltip_sharedloot = true,
+        tooltip_pointanchor = true,
         tooltip_item = true,
         tooltip_questid = false,
         groupsHidden = {},
@@ -250,6 +251,12 @@ ns.options = {
                             type = "toggle",
                             name = "Loot for this character only",
                             desc = "Only show loot that should drop for the current character",
+                            order = 12,
+                        },
+                        tooltip_sharedloot = {
+                            type = "toggle",
+                            name = "Shared loot",
+                            desc = "Some rares have a common pool of drops that're shared between them",
                             order = 12,
                         },
                         tooltip_pointanchor = {
@@ -642,7 +649,14 @@ local checkArt = testMaker(function(artid, uiMapID) return artid == C_Map.GetMap
 local function showOnMapType(point, uiMapID, isMinimap)
     -- nil means to respect the preferences, but points can override
     if isMinimap then
-        if point.minimap ~= nil then return point.minimap end
+        if point.minimap ~= nil then
+            if type(point.minimap) == "boolean" then
+                return point.minimap
+            elseif type(point.minimap) == "function" then
+                return point.minimap(point, uiMapID)
+            end
+            return ns.conditions.check(point.minimap)
+        end
         if ns.map_spellids[uiMapID] then
             if ns.map_spellids[uiMapID] == true or GetPlayerAuraBySpellID(ns.map_spellids[uiMapID]) then
                 return false

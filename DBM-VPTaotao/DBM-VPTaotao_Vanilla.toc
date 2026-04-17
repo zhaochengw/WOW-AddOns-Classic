@@ -16,5 +16,5 @@
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: Taotao(普通话女)
 ## X-DBM-Voice-ShortName: Taotao
-## X-DBM-Voice-Version: 18
+## X-DBM-Voice-Version: 19
 ## X-DBM-Voice-HasCount: 1

@@ -274,6 +274,14 @@ function RSConfigDB.SetDisplayingModel(value)
 	private.db.display.displayMiniature = value
 end
 
+function RSConfigDB.IsAutohidingInIntances()
+	return private.db.general.autoHideButtonInstances
+end
+
+function RSConfigDB.SetAutohidingInIntances(value)
+	private.db.general.autoHideButtonInstances = value
+end
+
 ---============================================================================
 -- Scanner filters database
 ---============================================================================
@@ -1464,6 +1472,22 @@ end
 
 function RSConfigDB.SetAddingTomtomWaypointsAutomatically(value)
 	private.db.general.autoTomtomWaypoints = TomTom and value
+end
+
+function RSConfigDB.IsShowingTomtomMinimapIcon()
+	return TomTom and private.db.general.showTomtomMinimapIcon
+end
+
+function RSConfigDB.SetShowingTomtomMinimapIcon(value)
+	private.db.general.showTomtomMinimapIcon = TomTom and value
+end
+
+function RSConfigDB.IsShowingTomtomWorldmapIcon()
+	return TomTom and private.db.general.showTomtomWorldmapIcon
+end
+
+function RSConfigDB.SetShowingTomtomWorldmapIcon(value)
+	private.db.general.showTomtomWorldmapIcon = TomTom and value
 end
 
 ---============================================================================

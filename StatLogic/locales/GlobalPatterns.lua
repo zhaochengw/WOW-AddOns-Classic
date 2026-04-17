@@ -23,6 +23,12 @@ local statPatternMeta = {
 	end
 }
 
+local lowerMeta = {
+	__newindex = function(t, k, v)
+		rawset(t, k:utf8lower(), v)
+	end,
+}
+
 -----------------------
 -- Whole Text Lookup --
 -----------------------
@@ -128,14 +134,22 @@ addon.TrimmedPrefixes = {}
 
 local trimmedPrefixes = {
 	ITEM_SPELL_TRIGGER_ONEQUIP,
-	ITEM_SOCKET_BONUS:format("")
 }
 
 setPrefixPatterns(trimmedPrefixes, addon.TrimmedPrefixes)
 
+---@type table<string, true>
+addon.SocketBonusPrefixes = {}
+
+local socketBonusPrefixes = {
+	ITEM_SOCKET_BONUS:format("")
+}
+
+setPrefixPatterns(socketBonusPrefixes, addon.SocketBonusPrefixes)
+
 -- Patterns that should be matched for breakdowns, but ignord for summaries
 ---@type table<string, true>
-addon.IgnoreSum = setmetatable({}, statPatternMeta)
+addon.IgnoreSum = setmetatable({}, lowerMeta)
 
 local ignoreSumPrefixes = {
 	ITEM_SPELL_TRIGGER_ONUSE, -- "Use:"
@@ -167,7 +181,7 @@ local short = {
 	[ITEM_MOD_AGILITY_SHORT] = { {StatLogic.Stats.Agility} },
 	[ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT] = { {StatLogic.Stats.ArmorPenetrationRating} },
 	[ITEM_MOD_ATTACK_POWER_SHORT] = { {StatLogic.Stats.GenericAttackPower} },
-	[ITEM_MOD_BLOCK_RATING_SHORT] = { {StatLogic.Stats.BlockRating} },
+	[ITEM_MOD_BLOCK_RATING_SHORT] = addon.tocversion >= 40000 and { {StatLogic.Stats.BlockRating} } or nil,
 	[ITEM_MOD_BLOCK_VALUE_SHORT] = { {StatLogic.Stats.BlockValue} },
 	[ITEM_MOD_CRIT_MELEE_RATING_SHORT] = { {StatLogic.Stats.MeleeCritRating} },
 	[ITEM_MOD_CRIT_RANGED_RATING_SHORT] = { {StatLogic.Stats.RangedCritRating} },
@@ -211,7 +225,7 @@ local short = {
 }
 
 for pattern, stat in pairs(short) do
-	L["%s " .. pattern] = stat
+	L["%s " .. pattern:trim():gsub("%.$", "")] = stat
 	L[pattern .. " %s"] = stat
 end
 
@@ -339,6 +353,6 @@ end
 ---------------------
 -- Iterates all patterns, matching the whole string. Expensive so try not to use.
 -- Used to reduce noise while debugging missing patterns
-addon.PreScanPatterns = setmetatable({}, statPatternMeta)
+addon.PreScanPatterns = setmetatable({}, lowerMeta)
 local itemSetNamePattern = ITEM_SET_NAME:gsub("%%%d?%$?s", ".+"):gsub("%%%d?%$?d", "%%d+"):gsub("[()]", "%%%1")
 addon.PreScanPatterns[itemSetNamePattern] = false

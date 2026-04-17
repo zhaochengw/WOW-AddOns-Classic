@@ -493,6 +493,7 @@ L["The Codex of Blood"] = "Kodex des Blutes"
 --[[ L["The Curator"] = ""--]]
 --[[Translation missing --]]
 --[[ L["The Eredar Twins"] = ""--]]
+L["The Eye of Haramad"] = "Das Auge des Haramad"
 --[[Translation missing --]]
 --[[ L["The Illidari Council"] = ""--]]
 --[[Translation missing --]]

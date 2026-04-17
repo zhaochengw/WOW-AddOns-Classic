@@ -143,20 +143,24 @@ function Player:HasRecipeFaction(recipe)
 end
 
 do
-	local known = {}
-
 	-- Sets the player's professions. Used when the AddOn initializes and when a profession has been learned or unlearned.
 	-- Also removes saved profession links if the profession is no longer known.
 	function Player:UpdateProfessions()
 		table.wipe(self.professions)
 
-		known.prof1, known.prof2, known.archaeology, known.fishing, known.cooking = _G.GetProfessions()
+		for skillIndex = 1, GetNumSkillLines() do
+			local skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier,
+			skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
+			skillDescription = GetSkillLineInfo(skillIndex)
 
-		for profession, index in pairs(known) do
-			local name, icon, rank, maxrank, numspells, spelloffset, skillline = _G.GetProfessionInfo(index)
-
-			self.professions[name] = rank
+			local skillNameLower = string.lower(skillName)
+			if skillName and not isHeader then
+				if isAbandonable or skillNameLower == "cooking" or skillNameLower == "first aid" or skillNameLower == "fishing" then
+					self.professions[skillName] = skillRank
+				end
+			end
 		end
+
 		addon.db.global.tradeskill[private.REALM_NAME] = addon.db.global.tradeskill[private.REALM_NAME] or {}
 		addon.db.global.tradeskill[private.REALM_NAME][private.PLAYER_NAME] = addon.db.global.tradeskill[private.REALM_NAME][private.PLAYER_NAME] or {}
 

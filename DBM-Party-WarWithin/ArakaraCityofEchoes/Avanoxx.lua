@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2583, "DBM-Party-WarWithin", 6, 1271)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260120020530")
+mod:SetRevision("20260322094133")
 mod:SetCreatureID(213179)
 mod:SetEncounterID(2926)
 --mod:SetUsedIcons(1, 2, 3, 4)
@@ -13,12 +13,29 @@ mod.sendMainBossGUID = true
 
 mod:RegisterCombat("combat")
 
-mod:AddPrivateAuraSoundOption(439070, true, 439070, 1)
-mod:AddPrivateAuraSoundOption(434830, true, 434830, 1)--GTFO
+--Custom Sounds on cast/cooldown expiring
+mod:AddCustomAlertSoundOption(438471, true, 1)--Voracious Bite
+mod:AddCustomAlertSoundOption(438476, true, 1)--Alerting Shrill
+mod:AddCustomAlertSoundOption(438473, true, 1)--Gossamer Onslaught
+--custom timer colors, countdowns, and disables
+mod:AddCustomTimerOptions(438471, nil, 5, 0)--Voracious Bite
+mod:AddCustomTimerOptions(438476, nil, 1, 0)--Alerting Shrill
+mod:AddCustomTimerOptions(438473, nil, 2, 0)--Gossamer Onslaught
+--Midnight private aura replacements
+mod:AddPrivateAuraSoundOption(439070, true, 439070, 1, 1, "justrun", 2)
+mod:AddPrivateAuraSoundOption(434830, true, 434830, 1, 2, "watchfeet", 8)--GTFO
 
 function mod:OnLimitedCombatStart()
-	self:EnablePrivateAuraSound(439070, "justrun", 2)
-	self:EnablePrivateAuraSound(434830, "watchfeet", 8)
+	if self:IsTank() then
+		self:EnableAlertOptions(438471, 539, "defensive", 2)
+	end
+	self:EnableAlertOptions(438476, 540, "mobsoon", 2)
+	self:EnableAlertOptions(438473, 541, "watchstep", 2)
+
+	self:EnableTimelineOptions(438471, 539)
+	self:EnableTimelineOptions(438476, 540)
+	self:EnableTimelineOptions(438473, 541)
+
 end
 
 --[[

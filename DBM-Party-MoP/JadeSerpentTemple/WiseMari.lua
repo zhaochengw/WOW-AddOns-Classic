@@ -5,7 +5,8 @@ if DBM:IsRetail() then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 end
 
-mod:SetRevision("20250915043254")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(56448)
 mod:SetEncounterID(1418)
 mod:SetUsedIcons(8)

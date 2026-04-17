@@ -33,6 +33,7 @@ private.RegisterAcquireType({
 		local mob = self:GetEntity(identifier) or {}
 		local entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 		entry:SetNPCID(identifier)
+		entry:SetLocation(mob.Location)
 		entry:SetText("%s%s %s",
 			self.EntryPadding,
 			hide_type and "" or private.SetTextColor(self:ColorData().hex, self:Name()) .. ":",
@@ -53,6 +54,7 @@ private.RegisterAcquireType({
 
 		entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 		entry:SetNPCID(identifier)
+		entry:SetLocation(mob.Location)
 		local locName = (mob.Location and mob.Location:LocalizedName()) or UNKNOWN
 		entry:SetText("%s%s %s",
 			self.EntryPadding:rep(2),

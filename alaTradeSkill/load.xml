@@ -5,24 +5,24 @@
 	<Include file = "..\..\sharedxml\hybridscrollframe.xml"/>
 	<Include file = "template.xml"/>
 -->
-	<include file = "libs\libs.xml" />
+	<include file = "Libs\Libs.xml" />
 
-	<script file = "init.lua" />
-	<script file = "constants.lua" />
+	<script file = "Core\init.lua" />
+	<script file = "Core\constants.lua" />
 
 	<include file = "Locale\Locale.xml" />
 	<include file = "Data\Data.xml" />
 	<include file = "Source\Source.xml" />
 
-	<script file = "db.lua" />
-	<script file = "ui.lua" />
-	<script file = "tooltip.lua" />
-	<script file = "cooldown.lua" />
-	<script file = "communication.lua" />
-	<script file = "misc.lua" />
-	<script file = "setting.lua" />
+	<script file = "Core\db.lua" />
+	<script file = "Core\ui.lua" />
+	<script file = "Core\tooltip.lua" />
+	<script file = "Core\cooldown.lua" />
+	<script file = "Core\communication.lua" />
+	<script file = "Core\misc.lua" />
+	<script file = "Core\setting.lua" />
 
-	<include file = "plugin\plugin.xml" />
+	<include file = "Plugin\Plugin.xml" />
 	<!-- <include file = "hook\hook.xml" /> -->
 	<!-- <include file = "Bindings.xml" /> -->
 

@@ -28,7 +28,7 @@ local stringsub = string.sub
 
 local AceGUI = LibStub("AceGUI-3.0");
 
-local _HandleOnGroupSelected
+local _HandleTreeItemClick
 local lastOpenSearch = "quest"
 local _selected = 0
 
@@ -71,7 +71,7 @@ local function AddLinkedParagraph(frame, linkType, lookupObject, header, query)
                 text = QuestieLib:GetColoredQuestName(id,  true, true)
             elseif linkType == 'npc' then
                 local lvl = query(id, 'maxLevel')
-                text = QuestieLib:PrintDifficultyColor(lvl, '['..lvl..'] '..name..' ('..id..')')
+                text = '['..lvl..'] '..name..' ('..id..')'
             else
                 text = name.." ("..id..")"
             end
@@ -92,6 +92,7 @@ local function CreateShowHideButton(id)
     -- Initialise button
     local button = AceGUI:Create("Button")
     button.id = id
+    button.idsToShow = nil
     if (not QuestieMap.manualFrames["any"]) or (not QuestieMap.manualFrames["any"][id]) then
         button:SetText(l10n("Show on Map"))
         button:SetCallback("OnClick", function(self) self:ShowOnMap(self) end)
@@ -168,8 +169,8 @@ local function recurseTable(theTable, theKeys)
 end
 
 function QuestieSearchResults:QuestDetailsFrame(details, id)
-    local ret = QuestieDB.QueryQuest(id, {"name", "requiredLevel", "requiredRaces", "objectivesText", "startedBy", "finishedBy", "preQuestGroup", "preQuestSingle"}) or {}
-    local name, requiredLevel, requiredRaces, objectivesText, startedBy, finishedBy, preQuestGroup, preQuestSingle = ret[1], ret[2], ret[3], ret[4], ret[5], ret[6], ret[7], ret[8]
+    local ret = QuestieDB.QueryQuest(id, {"name", "requiredLevel", "requiredRaces", "requiredClasses", "objectivesText", "startedBy", "finishedBy", "preQuestGroup", "preQuestSingle"}) or {}
+    local name, requiredLevel, requiredRaces, requiredClasses, objectivesText, startedBy, finishedBy, preQuestGroup, preQuestSingle = ret[1], ret[2], ret[3], ret[4], ret[5], ret[6], ret[7], ret[8], ret[9]
 
     local questLevel, _ = QuestieLib.GetTbcLevel(id);
 
@@ -223,7 +224,7 @@ function QuestieSearchResults:QuestDetailsFrame(details, id)
         end
         GameTooltip:SetOwner(_G["QuestieJourneyFrame"].frame:GetParent(), "ANCHOR_CURSOR");
         GameTooltip:AddLine(l10n("Quest is hidden"))
-        GameTooltip:AddLine(l10n("\nWhen selected, hides the quest from the map, even if it is active.\n\nHiding a quest is also possible by Shift-clicking it on the map."), 1, 1, 1, true);
+        GameTooltip:AddLine(l10n("\nIf checked, hides the quest from the map, even if it is active.\n\nHiding a quest is also possible by Shift-clicking it on the map."), 1, 1, 1, true);
         GameTooltip:SetFrameStrata("TOOLTIP");
         GameTooltip:Show();
     end)
@@ -244,6 +245,10 @@ function QuestieSearchResults:QuestDetailsFrame(details, id)
     local reqRaces = QuestieLib:GetRaceString(requiredRaces)
     if (reqRaces ~= "") then
         QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Required Race")) .. l10n(": ") .. reqRaces)
+    end
+    local reqClasses = QuestieLib:GetClassString(requiredClasses)
+    if (reqClasses ~= "") then
+        QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Required Class")) .. l10n(": ") .. reqClasses)
     end
     QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Doable")) .. l10n(": ") .. tostring(QuestieDB.IsDoableVerbose(id, false, true, true)))
 
@@ -338,12 +343,12 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
 
     -- Also Starts
     if spawnObject.questStarts then
-        AddLinkedParagraph(f, "quest", spawnObject.questStarts, l10n("Starts the following quests:"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(f, "quest", spawnObject.questStarts, l10n("Starts the following quests"), QuestieDB.QueryQuestSingle)
     end
 
     -- Also ends
     if spawnObject.questEnds then
-        AddLinkedParagraph(f, "quest", spawnObject.questEnds, l10n("Ends the following quests:"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(f, "quest", spawnObject.questEnds, l10n("Ends the following quests"), QuestieDB.QueryQuestSingle)
     end
 
     local spawnZone = AceGUI:Create("Label");
@@ -371,7 +376,7 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
 
             if (startx ~= -1 or starty ~= -1) then
                 local spawnLoc = AceGUI:Create("Label");
-                spawnLoc:SetText("X: ".. startx .." || Y: ".. starty);
+                spawnLoc:SetText("X" .. l10n(": ") .. string.format("%.2f",startx) .." || Y" .. l10n(": ") .. string.format("%.2f",starty));
                 spawnLoc:SetFullWidth(true);
                 f:AddChild(spawnLoc);
             end
@@ -627,7 +632,7 @@ function QuestieSearchResults:DrawResultTab(container, resultType)
     resultTree:SetFullHeight(true);
     resultTree.treeframe:SetWidth(415);
     resultTree:SetTree(results);
-    resultTree:SetCallback("OnGroupSelected", _HandleOnGroupSelected)
+    resultTree:SetCallback("OnClick", _HandleTreeItemClick)
 
     resultFrame:AddChild(resultTree)
     container:AddChild(resultFrame);
@@ -637,9 +642,11 @@ function QuestieSearchResults:DrawResultTab(container, resultType)
     end
 end
 
-_HandleOnGroupSelected = function (resultType)
+_HandleTreeItemClick = function(group, ...)
+    local treePath = {...}
+
     -- This is either the questId, npcId, objectId or itemId
-    local selectedId = tonumber(resultType.localstatus.selected)
+    local selectedId = tonumber(treePath[2])
     if IsShiftKeyDown() and lastOpenSearch == "quest" then
         local questName = QuestieDB.QueryQuestSingle(selectedId, "name")
         local questLevel, _ = QuestieLib.GetTbcLevel(selectedId);
@@ -652,7 +659,7 @@ _HandleOnGroupSelected = function (resultType)
     end
 
     -- get master frame and create scroll frame inside
-    local master = resultType.frame.obj;
+    local master = group.frame.obj;
     master:ReleaseChildren();
     master:SetLayout("Fill");
     master:SetFullWidth(true);

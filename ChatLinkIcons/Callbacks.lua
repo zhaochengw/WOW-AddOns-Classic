@@ -8,6 +8,8 @@ local AddOn=select(2,...);
 
 local CallbackMeta={__index={}};
 
+CallbackMeta.__index.IsRegistered=tContains;
+
 function CallbackMeta.__index:Register(func)
 	if not tContains(self,func) then table.insert(self,func); end
 end

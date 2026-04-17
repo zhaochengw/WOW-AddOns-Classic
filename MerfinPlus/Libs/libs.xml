@@ -27,4 +27,6 @@
     <!-- Optional library -->
     <Script file="LibSharedMedia-3.0\LibSharedMedia-3.0.lua"/>
 
+    <!-- Version Check library -->
+    <Include file="LibVersionCheck-1.0\LibVersionCheck-1.0.xml"/>
 </Ui>

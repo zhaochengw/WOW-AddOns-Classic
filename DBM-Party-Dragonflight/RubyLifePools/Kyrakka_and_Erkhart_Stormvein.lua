@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240507051050")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(190484, 190485)
 mod:SetEncounterID(2623)
 mod:SetBossHPInfoToHighest()

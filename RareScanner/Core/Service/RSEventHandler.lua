@@ -87,7 +87,8 @@ end
 ---============================================================================
 
 local function OnNamePlateUnitAdded(rareScannerButton, namePlateID)
-	if (namePlateID and not UnitIsUnit("player", namePlateID)) then
+	local unitIsPlayer = UnitIsUnit("player", namePlateID)
+	if (namePlateID and not unitIsPlayer) then
 		HandleEntityWithoutVignette(rareScannerButton, namePlateID, RSConstants.TRACKING_SYSTEM.NAMEPLATE_MOUSEOVER)
 	end
 end
@@ -98,7 +99,9 @@ end
 ---============================================================================
 
 local function OnUpdateMouseoverUnit(rareScannerButton)
-	if (not UnitIsUnit("player", "mouseover") and not UnitIsDead("mouseover")) then
+	local unitIsPlayer = UnitIsUnit("player", "mouseover")
+	local unitIsDead = UnitIsDead("mouseover")
+	if (not unitIsPlayer and not unitIsDead) then
 		HandleEntityWithoutVignette(rareScannerButton, "mouseover", RSConstants.TRACKING_SYSTEM.NAMEPLATE_MOUSEOVER)
 	end
 end
@@ -152,17 +155,22 @@ end
 ---============================================================================
 
 local function OnPlayerTargetChanged(rareScannerButton)
-	if (UnitExists("target") and not UnitIsUnit("player", "target") and not UnitIsDead("target")) then
+	local unitExists = UnitExists("target")
+	local unitIsPlayer = UnitIsUnit("player", "target")
+	local unitIsDead = UnitIsDead("target")
+	if (unitExists and not unitIsPlayer and not unitIsDead) then
 		HandleEntityWithoutVignette(rareScannerButton, "target", RSConstants.TRACKING_SYSTEM.UNIT_TARGET)
 		
 		-- Update coordinates if the NPC doesnt have a vignette
 		local targetUid = UnitGUID("target")
-		local _, _, _, _, _, npcID = strsplit("-", targetUid)
-		local npcInfo = RSNpcDB.GetInternalNpcInfo(tonumber(npcID))
-		local playerMapID = C_Map.GetBestMapForUnit("player")
+		if (not InCombatLockdown()) then
+			local _, _, _, _, _, npcID = strsplit("-", targetUid)
+			local npcInfo = RSNpcDB.GetInternalNpcInfo(tonumber(npcID))
+			local playerMapID = C_Map.GetBestMapForUnit("player")
 		
-		if (npcInfo and (RSMapDB.IsZoneWithoutVignette(playerMapID) or npcInfo.noVignette) and not InCombatLockdown() and CheckInteractDistance("unit", 4)) then
-			RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(tonumber(npcID))
+			if (npcInfo and (RSMapDB.IsZoneWithoutVignette(playerMapID) or npcInfo.noVignette) and CheckInteractDistance("unit", 4)) then
+				RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(tonumber(npcID))
+			end
 		end
 	end
 end
@@ -400,41 +408,44 @@ local function OnTransmogCollectionUpdated()
 end
 
 local function OnAchievementCriteriaEarned(achievementID)
-	local refresh = false;
-	for i=1, GetAchievementNumCriteria(achievementID) do
-		local _, _, completed = GetAchievementCriteriaInfo(achievementID, i)
-	   	if (completed) then
-	   		-- If container/NPC
-	   		if (private.ACHIEVEMENT_TARGET_IDS[achievementID]) then
-				for _, entityID in ipairs(private.ACHIEVEMENT_TARGET_IDS[achievementID]) do
-					local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
-					if (containerInfo) then
-						if (containerInfo.criteria == i and not RSContainerDB.IsContainerOpened(entityID)) then
-							RSLogger:PrintDebugMessage(string.format("Contenedor con criteria [%s][%s]. Completado.", achievementID, entityID))
-							RSContainerDB.SetContainerOpened(entityID)
-							RSMinimap.RefreshEntityState(entityID)
-							refresh = true
-						end
-					else
-						local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
-						if (npcInfo) then
-							if (npcInfo.criteria == i and not RSNpcDB.IsNpcKilled(entityID)) then
-								RSLogger:PrintDebugMessage(string.format("NPC con criteria [%s][%s]. Completado.", achievementID, entityID))
-								RSNpcDB.SetNpcKilled(entityID)
+	-- It doesn't update inmediately
+	C_Timer.After(0.2, function() 
+		local refresh = false;
+		for i=1, GetAchievementNumCriteria(achievementID) do
+			local _, _, completed = GetAchievementCriteriaInfo(achievementID, i)
+		   	if (completed) then
+		   		-- If container/NPC
+		   		if (private.ACHIEVEMENT_TARGET_IDS[achievementID]) then
+					for _, entityID in ipairs(private.ACHIEVEMENT_TARGET_IDS[achievementID]) do
+						local containerInfo = RSContainerDB.GetInternalContainerInfo(entityID)
+						if (containerInfo) then
+							if (containerInfo.criteria == i and not RSContainerDB.IsContainerOpened(entityID)) then
+								RSLogger:PrintDebugMessage(string.format("Contenedor con criteria [%s][%s]. Completado.", achievementID, entityID))
+								RSContainerDB.SetContainerOpened(entityID)
 								RSMinimap.RefreshEntityState(entityID)
 								refresh = true
+							end
+						else
+						local npcInfo = RSNpcDB.GetInternalNpcInfo(entityID)
+						if (npcInfo) then
+								if (npcInfo.criteria == i and not RSNpcDB.IsNpcKilled(entityID)) then
+									RSLogger:PrintDebugMessage(string.format("NPC con criteria [%s][%s]. Completado.", achievementID, entityID))
+									RSNpcDB.SetNpcKilled(entityID)
+									RSMinimap.RefreshEntityState(entityID)
+									refresh = true
+								end
 							end
 						end
 					end
 				end
 			end
 		end
-	end
 	
-	-- Update achievements cache
-	if (refresh) then
-		RSAchievementDB.RefreshAchievementCache(achievementID)
-	end
+		-- Update achievements cache
+		if (refresh) then
+			RSAchievementDB.RefreshAchievementCache(achievementID)
+		end
+	end)
 end
 
 ---============================================================================
@@ -528,6 +539,22 @@ local function OnItemTextClose()
 end
 
 ---============================================================================
+-- Event: PLAYER_ENTERING_WORLD
+-- Fired when a changing a zone
+---============================================================================
+
+local function OnPlayerEnteringWorld(rareScannerButton)
+	if (not RSConfigDB.IsAutohidingInIntances()) then
+		return
+	end
+	
+	local isInInstance, instanceType = IsInInstance()
+	if (isInInstance) then
+		rareScannerButton:HideButton()
+	end
+end
+
+---============================================================================
 -- Event handler
 ---============================================================================
 
@@ -575,6 +602,8 @@ local function HandleEvent(rareScannerButton, event, ...)
 		OnPetBattleClose(...)
 	elseif (event == "ITEM_TEXT_CLOSED") then
 		OnItemTextClose(...)
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		OnPlayerEnteringWorld(rareScannerButton)
 	end
 end
 
@@ -600,6 +629,7 @@ function RSEventHandler.RegisterEvents(rareScannerButton, addon)
 	rareScannerButton:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	rareScannerButton:RegisterEvent("PET_BATTLE_CLOSE")
 	rareScannerButton:RegisterEvent("ITEM_TEXT_CLOSED")
+	rareScannerButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	-- Captures all events
 	rareScannerButton:SetScript("OnEvent", function(self, event, ...)

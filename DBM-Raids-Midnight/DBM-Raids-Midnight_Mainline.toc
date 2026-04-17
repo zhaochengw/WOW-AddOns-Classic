@@ -1,6 +1,6 @@
-## Interface: 120000
+## Interface: 120001, 120005
 ## X-Min-Interface: 120000
-## Version: 12.0.18
+## Version: 12.0.38
 ## Category: DBM
 
 ## Title:|cffffe00a<|r|cffff7d0aDBM Mod|r|cffffe00a>|r |cffff6010Raids (Midnight)|r
@@ -31,7 +31,9 @@
 ## X-Curse-Project-ID: 3358
 ## X-Wago-ID: qv633o6b
 
-# localization.en.lua
+localization.en.lua
+localization.kr.lua
+localization.ru.lua
 
 VoidSpire\ImperatorAverzian.lua
 VoidSpire\Vorasius.lua

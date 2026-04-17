@@ -161,7 +161,7 @@ BG.Init(function()
     end
     ------------------装备词缀------------------
     do
-        if BG.IsVanilla then
+        if BG.verLess2 then
             BG.FilterClassItemDB.ShuXing = {
                 -- { name = "力量", value = ITEM_MOD_STRENGTH }, --%c%s 力量
                 { name = "力量", value = "%+%C-" .. ITEM_MOD_STRENGTH_SHORT, name2 = ITEM_MOD_STRENGTH_SHORT },
@@ -562,7 +562,7 @@ BG.Init(function()
                 { name = "19", value = L["魔杖"] },
                 { name = "16", value = L["投掷武器"] },
             }
-            if BG.IsVanilla then
+            if BG.verLess2 then
                 BG.FilterClassItem_Default.Weapon = {
                     ["WARRIOR" .. "1"] = { G["双手斧"], G["双手锤"], G["长柄武器"], G["双手剑"], G["法杖"], G["魔杖"] }, -- FZ
                     ["WARRIOR" .. "2"] = { G["魔杖"] }, -- KBZ
@@ -690,7 +690,7 @@ BG.Init(function()
             ["图腾"] = "9",
             ["魔印"] = "10",
         }
-        if BG.IsVanilla then
+        if BG.verLess2 then
             BG.FilterClassItemDB.Armor = {
                 { name = "1", value = L["布甲"], onenter = L["全部布甲会被过滤（披风除外，否则本来合适你的披风也可能会被过滤）"] },
                 { name = "2", value = L["皮甲"] },
@@ -935,7 +935,7 @@ BG.Init(function()
     ------------------坦克特殊过滤------------------
     do
         local type = "Tank"
-        if not BG.IsVanilla then
+        if not BG.verLess2 then
             BG.FilterClassItemDB[type] = {
                 { name = "过滤坦克", value = L["过滤没有坦克属性的装备"], },
             }

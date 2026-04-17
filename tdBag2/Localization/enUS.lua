@@ -135,6 +135,7 @@ L["Top"] = true
 L["Total"] = true
 L["Trade Containers Location"] = true
 L["Trading Items"] = true
+L["Use tdInspect replace this frame (if installed)"] = true
 L["Visiting a Vendor"] = true
 L["Visiting the Auction House"] = true
 L["Visiting the Bank"] = true
@@ -302,6 +303,7 @@ L['Break height'] = true
 L['By bag'] = true
 L['By type'] = true
 L.None = true
+L['Use tdInspect replace this frame (if installed)'] = true
 -- @locale-fill@
 -- @end-import@
 --@end-debug@]]

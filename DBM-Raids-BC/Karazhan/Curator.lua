@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Curator", "DBM-Raids-BC", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(15691)
 mod:SetEncounterID(656, 2448)
 mod:SetModelID(16958)
@@ -27,7 +28,6 @@ local timerEvo			= mod:NewBuffActiveTimer(20, 30254, nil, nil, nil, 6)
 
 local berserkTimer		= mod:NewBerserkTimer(720)
 
-mod:AddRangeFrameOption("10", nil, true)
 
 local addGUIDS = {}
 
@@ -35,16 +35,8 @@ function mod:OnCombatStart(delay)
 	table.wipe(addGUIDS)
 	berserkTimer:Start(-delay)
 --	timerNextEvo:Start(109-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 30254 then

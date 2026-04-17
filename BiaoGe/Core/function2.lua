@@ -29,6 +29,8 @@ local player = BG.playerName
 do
     local alpha1 = 0.4
     local alpha2 = 1
+    local ITEM_SOCKET_BONUS = ITEM_SOCKET_BONUS:gsub("%%s", "(.+)")                     -- 镶孔奖励：%s
+    local ITEM_MOD_FERAL_ATTACK_POWER = ITEM_MOD_FERAL_ATTACK_POWER:gsub("%%s", "(.+)") -- 在猎豹、熊等等攻击强度提高%s点
 
     function BG.Tooltip_SetItemByID(itemID)
         BiaoGeTooltip:SetOwner(UIParent, "ANCHOR_NONE")
@@ -44,8 +46,9 @@ do
             local text = _G["BiaoGeTooltipTextLeft" .. ii]:GetText()
             if text and text ~= "" then
                 text = text:gsub("每5秒恢复%d+点法力值", "每5秒回复%d+点法力值")
-                if (not text:find(WARDROBE_SETS)) and
-                    (not text:find(ITEM_MOD_FERAL_ATTACK_POWER:gsub("%%s", "(.+)"))) -- 小德的武器词缀：在猎豹、熊等等攻击强度提高%s点
+                if not text:find(WARDROBE_SETS) and
+                    not text:find(ITEM_SOCKET_BONUS) and
+                    not text:find(ITEM_MOD_FERAL_ATTACK_POWER)
                 then
                     tinsert(tbl, text)
                 end
@@ -277,7 +280,7 @@ do
         if BGA.Frames then
             for _, f in ipairs(BGA.Frames) do
                 f.filter = nil
-                if f.player and f.player == BG.GN() then
+                if f.player and f.player == BG.playerName then
                     f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_IsMe))
                     f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_IsMe))
                     f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor_IsMe))
@@ -298,7 +301,7 @@ do
                     local name, link, quality, level, _, _, _, _, EquipLoc, Texture, _, typeID, subclassID, bindType = GetItemInfo(f.itemID)
                     if BG.FilterAll(f.itemID, typeID, EquipLoc, subclassID) then
                         f.filter = true
-                        if not (f.player and f.player == BG.GN()) then
+                        if not (f.player and f.player == BG.playerName) then
                             f:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
                             f:SetBackdropBorderColor(unpack(BGA.aura_env.backdropBorderColor_filter))
                             f.autoFrame:SetBackdropColor(unpack(BGA.aura_env.backdropColor_filter))
@@ -520,7 +523,6 @@ do
         f:SetBackdropColor(0, 0, 0, 0.9)
         f:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -9, 2)
         f:EnableMouse(true)
-        f:SetClampedToScreen(true)
         BG.FrameZhuangbeiList = f
         if not loots or #loots == 0 then
             f:SetWidth(300)
@@ -601,7 +603,7 @@ do
                     end)
 
                     bt:SetScript("OnEnter", function(self)
-                        if bt.itemID then
+                        if self.link then
                             if BG.ButtonIsInRight(self) then
                                 GameTooltip:SetOwner(self, "ANCHOR_LEFT", 0, 0)
                             else
@@ -888,10 +890,10 @@ function BG.CreateQiankuanButton(bt, _type)
         GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 0)
         GameTooltip:ClearLines()
         if _type == "biaoge" then
-            GameTooltip:AddLine(L["欠款："] .. BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i], 1, 0, 0)
+            GameTooltip:AddLine(L["欠款："] .. BiaoGe[FB]["boss" .. bossnum]["qiankuan" .. i], 1, 0, 0)
             GameTooltip:AddLine(AddTexture("RIGHT") .. L["清除欠款"], 1, 0.82, 0)
-        elseif _type == "history" then
-            GameTooltip:AddLine(L["欠款："] .. f.qiankuan, 1, 0, 0)
+        else
+            GameTooltip:AddLine(L["欠款："] .. self.qiankuan, 1, 0, 0)
         end
         GameTooltip:Show()
     end)
@@ -901,7 +903,7 @@ function BG.CreateQiankuanButton(bt, _type)
         if _type == "biaoge" then
             if enter == "RightButton" then
                 BG.FrameHide(0)
-                BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i] = nil
+                BiaoGe[FB]["boss" .. bossnum]["qiankuan" .. i] = nil
                 self:Hide()
             end
         end
@@ -927,7 +929,6 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
     f:SetBackdropColor(0, 0, 0, 0.8)
     f:SetPoint("TOPLEFT", maijia, "BOTTOMLEFT", -9, 2)
     f:EnableMouse(true)
-    f:SetClampedToScreen(true)
     BG.FrameMaijiaList = f
 
     -- 下拉列表
@@ -952,9 +953,9 @@ function BG.SetListmaijia(maijia, clearFocus, filter, isAuctionLogFrame)
                 bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
             end
             if not filter and not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
-                bt:SetText(BG.GN())
+                bt:SetText(BG.playerName)
                 bt:SetCursorPosition(0)
-                bt:SetTextColor(GetClassRGB(BG.GN()))
+                bt:SetTextColor(GetClassRGB(BG.playerName))
                 bt.hasName = true
                 for k, v in pairs(BG.playerClass) do
                     bt[k] = select(v.select, v.func("player"))
@@ -1205,7 +1206,6 @@ do
         f:SetBackdropColor(0, 0, 0, 0.8)
         f:SetPoint("TOPLEFT", jine, "BOTTOMLEFT", -9, 2)
         f:EnableMouse(true)
-        f:SetClampedToScreen(true)
         f:SetHyperlinksEnabled(true)
         BG.FrameJineList = f
         f:SetScript("OnHyperlinkEnter", function(self, link, text, button)
@@ -1917,21 +1917,56 @@ function BG.GoToItemLib(button)
 end
 
 ------------------获取Auction插件里某个物品的历史价格------------------
+local function GetRealmFactionKey()
+    local realm = GetRealmName() or "Unknown"
+    local _, faction = UnitFactionGroup("player")
+    faction = faction or "Neutral"
+    return realm .. "-" .. faction
+end
 function BG.GetAuctionPrice(itemID, mod)
-    itemID = tostring(itemID)
+    local m
     if Auctionator and Auctionator.Database and Auctionator.Database.GetPrice then
-        -- local m = Auctionator.Database:GetFirstPrice({ itemID })
-        local m = Auctionator.Database:GetPrice(itemID)
-        if m and type(m) == "number" then
-            if mod == "notsilver" then
-                m = m - (m % 10000)
-            elseif mod == "notcopper" then
-                m = m - (m % 100)
+        itemID = tostring(itemID)
+        m = Auctionator.Database:GetPrice(itemID)
+    end
+    if (not m or m == "") and BG.IsTitan and type(EasyAuction_ItemID_Index) == "table" then
+        local EasyAuctionDB = EasyAuctionDB2 and EasyAuctionDB2[GetRealmFactionKey()]
+        if EasyAuctionDB then
+            itemID = tonumber(itemID)
+            local idHistories = EasyAuction_ItemID_Index[itemID]
+            if idHistories then
+                local last = idHistories[#idHistories]
+                if type(last) == "table" and last.minUnit then
+                    m = last.minUnit
+                end
+                for i, entry in ipairs(idHistories) do
+                    local history = EasyAuctionDB.PriceHistory and EasyAuctionDB.PriceHistory[entry.key]
+                    if type(history) == "table" and #history > 0 then
+                        local latestTime = nil
+                        for _, v in ipairs(history) do
+                            if v.unit and v.t then
+                                if not latestTime then
+                                    latestTime = v.t
+                                    m = v.unit
+                                end
+                                if v.t > latestTime then
+                                    latestTime = v.t
+                                    m = v.unit
+                                end
+                            end
+                        end
+                    end
+                end
             end
-            return GetMoneyString(m, true), m
-        else
-            return ""
         end
+    end
+    if m and type(m) == "number" then
+        if mod == "notsilver" then
+            m = m - (m % 10000)
+        elseif mod == "notcopper" then
+            m = m - (m % 100)
+        end
+        return GetMoneyString(m, true), m
     else
         return ""
     end
@@ -2098,17 +2133,69 @@ function BG.InsertLink(text, isZhuangbeiList)
     if BG.auctionLogFrame_InsertLink(text) then
         return
     end
-    if AuctionatorShoppingFrame and AuctionatorShoppingFrame:IsVisible() then
-        ChatEdit_InsertLink(text)
-        return
-    elseif AuctionFrameBrowse and AuctionFrameBrowse:IsVisible() then
+
+    if (AuctionatorShoppingFrame and AuctionatorShoppingFrame:IsVisible())
+        or (AuctionHouseFrame and AuctionHouseFrame.SearchBar and AuctionHouseFrame.SearchBar:IsVisible())
+    then
         ChatEdit_InsertLink(text)
         return
     end
+
+    if AuctionFrameBrowse and AuctionFrameBrowse:IsVisible() then
+        if BG.IsTitan then
+            BG.EditCopyLink(text)
+        else
+            ChatEdit_InsertLink(text)
+        end
+        return
+    end
+
     if not GetCurrentKeyBoardFocus() or isZhuangbeiList then
         ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
     end
     ChatEdit_InsertLink(text)
+end
+
+function BG.EditCopyLink(link)
+    if not StaticPopupDialogs["BiaoGe_Copy_Link"] then
+        StaticPopupDialogs["BiaoGe_Copy_Link"] = {
+            text = L["按下 Ctrl+X 复制文本"],
+            button1 = OKAY,
+            hasEditBox = 1,
+            editBoxWidth = 200,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            OnShow = function(self, text)
+                local edit = self.EditBox or self.editBox
+                edit:SetScript("OnEditFocusLost", function()
+                    self:Hide()
+                end)
+                edit:SetFocus()
+                edit:SetText(text)
+                edit:HighlightText()
+            end,
+            OnHide = function(self)
+                ChatEdit_FocusActiveWindow()
+                local edit = self.EditBox or self.editBox
+                edit:SetText("")
+            end,
+            EditBoxOnTextChanged = function(self)
+                if self:GetText() == "" then
+                    self:GetParent():Hide()
+                end
+            end,
+            EditBoxOnEscapePressed = function(self)
+                self:GetParent():Hide()
+            end,
+        }
+    end
+    if link then
+        local text = link:match("%[(.-)%]") or link
+        if text then
+            StaticPopup_Show("BiaoGe_Copy_Link", nil, nil, text)
+        end
+    end
 end
 
 function BG.FindDropdownItem(dropdown, text)
@@ -2122,18 +2209,14 @@ function BG.FindDropdownItem(dropdown, text)
 end
 
 local r, g, b = GetClassColor(select(2, UnitClass("player")))
+local blackup = CreateColor(.3, .3, .3, .7)
+local blackdown = CreateColor(0, 0, 0, .7)
+local classColorup = CreateColor(r, g, b, .7)
+local classColordown = CreateColor(r, g, b, .1)
+local disColorup = CreateColor(.5, .5, .5, .7)
+local disColordown = CreateColor(0, 0, 0, .3)
+local borderAlpha = 1
 function BG.CreateButton(parent)
-    local blackup = CreateColor(.3, .3, .3, .7)
-    local blackdown = CreateColor(0, 0, 0, .7)
-
-    local classColorup = CreateColor(r, g, b, .7)
-    local classColordown = CreateColor(r, g, b, .1)
-
-    local disColorup = CreateColor(.5, .5, .5, .7)
-    local disColordown = CreateColor(0, 0, 0, .3)
-
-    local borderAlpha = 1
-
     local bt = CreateFrame("Button", nil, parent, "BackdropTemplate")
     bt:SetBackdrop({
         edgeFile = "Interface/ChatFrame/ChatFrameBackground",
@@ -2442,7 +2525,7 @@ function BG.ChatEditSetText(text)
 end
 
 function BG.IsBigFB(FB)
-    return BG.IsMOP or BG.IsCTM or BG.IsTitan
+    return BG.IsMOP or BG.IsCTM or BG.IsTitan or FB == "NAXX"
     -- return FB == "BOT" or FB == "FL" or FB == "DS" or FB == "MSV" or FB == "TOT"
 end
 
@@ -2484,4 +2567,9 @@ function BG.GetBossIndexByBossID(bossID, FB)
             end
         end
     end
+end
+
+function BG.GetLeiTingItem(itemID, FB)
+    FB = FB or BG.FB1
+    return BG.Loot.LeiTing and BG.Loot.LeiTing[FB] and BG.Loot.LeiTing[FB][itemID] or itemID
 end

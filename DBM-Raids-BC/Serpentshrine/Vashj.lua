@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal25"
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(21212)
 mod:SetEncounterID(628, 2463)
 mod:SetModelID(20748)
@@ -46,7 +47,6 @@ local timerStrider		= mod:NewTimer(63, "TimerStrider", 475, nil, nil, 1)
 local timerNaga			= mod:NewTimer(47.5, "TimerNaga", 2120, nil, nil, 1)
 --local timerMC			= mod:NewCDTimer(21, 38511, nil, nil, nil, 3)--21-27
 
-mod:AddRangeFrameOption(10, 38280)
 mod:AddSetIconOption("ChargeIcon", 38280, false, 0, {1})
 --mod:AddSetIconOption("MCIcon", 38511, false, false, {2, 3})
 
@@ -81,11 +81,6 @@ function mod:OnCombatStart(delay)
 	--self.vb.mcIcon = 2
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 38280 then
@@ -94,9 +89,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnCharge:Show()
 			specWarnCharge:Play("runout")
 			yellCharge:Yell()
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10)
-			end
 		else
 			warnCharge:Show(args.destName)
 		end
@@ -120,11 +112,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerCharge:Stop(args.destName)
 		if self.Options.ChargeIcon then
 			self:SetIcon(args.destName, 0)
-		end
-		if args:IsPlayer() then
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
 		end
 	elseif args.spellId == 38132 then
 		if self.Options.LootIcon then

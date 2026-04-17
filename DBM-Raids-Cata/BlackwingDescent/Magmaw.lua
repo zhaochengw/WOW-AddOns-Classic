@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(170, "DBM-Raids-Cata", 5, 73)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241115112135")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(41570)
 mod:SetEncounterID(1024) --no ES fires this boss.
 mod:SetZone(669)

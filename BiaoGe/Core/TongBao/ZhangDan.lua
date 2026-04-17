@@ -114,15 +114,23 @@ local function ZongLan(onClick, tbl1, tbl2)
     table.insert(tbl2, { text })
 
     local b = Maxb[FB] + 2
+    local sum
     for i = 1, 3, 1 do
         if BG.Frame[FB]["boss" .. b]["zhuangbei" .. i] then
             local text
+            local item = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText()
+            local money = BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()
+            local moneyNum = tonumber(money) or 0
+            local perText = ""
+            if i == 1 then
+                sum = moneyNum
+            elseif i == 2 and sum and sum ~= 0 then
+                perText = L["（占比%s%%）"]:format(format("%.0f", moneyNum / sum * 100))
+            end
             if onClick then
-                text = BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. L["："] ..
-                    BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText()
+                text = item .. L["："] .. money .. perText
             else
-                text = "|cffEE82EE" .. BG.Frame[FB]["boss" .. b]["zhuangbei" .. i]:GetText() .. L["："] ..
-                    BG.Frame[FB]["boss" .. b]["jine" .. i]:GetText() .. RN
+                text = "|cffEE82EE" .. item .. L["："] .. money .. perText .. RN
             end
             table.insert(tbl1, text)
             table.insert(tbl2, { text })
@@ -161,7 +169,6 @@ local function ZongLan(onClick, tbl1, tbl2)
     end
     table.insert(tbl1, text)
     table.insert(tbl2, { text })
-
 
     local text
     if onClick then
@@ -560,7 +567,6 @@ local function OnClick(self)
     BG.PlaySound(2)
 end
 
-
 function BG.ZhangDanUI(lastbt)
     local bt = BG.CreateButton(BG.FBMainFrame)
     bt:SetSize(60, 25)
@@ -568,7 +574,7 @@ function BG.ZhangDanUI(lastbt)
     if lastbt then
         bt:SetPoint("LEFT", lastbt, "RIGHT", bt.jiange, 0)
     else
-        local x = -350
+        local x = -290
         if BG.hasWCL then
             x = x - 60
         end
@@ -608,3 +614,39 @@ function BG.ZhangDanUI(lastbt)
 
     return bt
 end
+
+-- 聊天框显示支出占比
+local sumMoney
+local f = CreateFrame("Frame")
+f:RegisterEvent("CHAT_MSG_RAID_LEADER")
+f:RegisterEvent("CHAT_MSG_RAID")
+f:SetScript("OnEvent", function(self, event, msg, sender, ...)
+    local sum = tonumber(msg:match("^" .. L["总收入"] .. L["："] .. "(%d+)$"))
+    if sum and sum ~= 0 then
+        sumMoney = sum
+        BG.After(1, function()
+            sumMoney = nil
+        end)
+    end
+end)
+
+local function FormatExpenses(self, event, msg, ...)
+    if sumMoney then
+        local expenseMoney = tonumber(msg:match("^" .. L["总支出"] .. L["："] .. "(%d+)$"))
+        if expenseMoney then
+            local newMsg = msg .. L["（占比%s%%）"]:format(format("%.0f", expenseMoney / sumMoney * 100))
+            return false, newMsg, ...
+        end
+    end
+    -- local man = tonumber(msg:match("^" .. L["分钱人数"] .. L["："] .. "(%d+)"))
+    -- if man then
+    --     local nowMan = GetNumGroupMembers()
+    --     if man > nowMan then
+    --         local color = "ff0000" or "ffffff"
+    --         msg = msg:gsub("(%d+)", "|cff" .. color .. "%1")
+    --         return false, msg, ...
+    --     end
+    -- end
+end
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", FormatExpenses)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", FormatExpenses)

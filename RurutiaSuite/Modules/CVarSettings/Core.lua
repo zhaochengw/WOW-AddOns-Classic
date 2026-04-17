@@ -66,8 +66,6 @@ function CVarSettings:OnInitialize()
     
     -- 注册配置界面（延迟加载）
     self:RegisterOptions()
-    
-    self:PrintDebug("模块初始化完成")
 end
 
 function CVarSettings:OnEnable()
@@ -82,15 +80,11 @@ function CVarSettings:OnEnable()
             self:ApplyCurrentSettings()
         end
     end
-    
-    self:PrintDebug("模块已启用")
 end
 
 function CVarSettings:OnDisable()
     -- 清理事件注册
     self:UnregisterAllEvents()
-    
-    self:PrintDebug("模块已禁用")
 end
 
 -- ============================================================
@@ -154,9 +148,6 @@ function CVarSettings:ApplySettings(settings)
                     if pcall(GetCVar, cvar) then
                         SetCVar(cvar, tostring(newValue))
                         appliedCount = appliedCount + 1
-                        self:PrintDebug("应用 %s = %s (原值: %s)", cvar, newValue, currentValue)
-                    else
-                        self:PrintDebug("跳过未知CVAR: %s", cvar)
                     end
                 end
             end
@@ -184,8 +175,7 @@ function CVarSettings:ApplyCurrentSettings()
     if applied > 0 and self.db.profile.notifyOnApply then
         self:Print("已应用 %d 项CVAR设置", applied)
     end
-    
-    self:PrintDebug("配置应用完成，共 %d 项", applied)
+
     return applied
 end
 
@@ -205,8 +195,6 @@ function CVarSettings:PLAYER_ENTERING_WORLD()
     
     -- 注销事件，避免重复执行
     self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    
-    self:PrintDebug("登录事件处理完成，事件监听器已注销")
 end
 
 -- ============================================================
@@ -231,8 +219,6 @@ function CVarSettings:SetCustomSetting(cvar, value)
     if pcall(GetCVar, cvar) then
         SetCVar(cvar, tostring(value))
     end
-    
-    self:PrintDebug("自定义设置 %s = %s", cvar, value)
 end
 
 -- 获取自定义设置
@@ -742,13 +728,6 @@ end
 -- ============================================================
 -- 工具函数
 -- ============================================================
-
--- 调试输出
-function CVarSettings:PrintDebug(msg, ...)
-    if RS.db and RS.db.profile and RS.db.profile.debugMode then
-        self:Print("[DEBUG] " .. msg, ...)
-    end
-end
 
 -- 用户通知
 function CVarSettings:Print(msg, ...)

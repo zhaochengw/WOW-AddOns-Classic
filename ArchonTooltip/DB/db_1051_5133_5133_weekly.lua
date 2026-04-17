@@ -188,4 +188,65 @@ local function parse(decoder, content, lookup, formatVersion) -- luacheck: ignor
 
 	return result
 end
- local lookup = {}; local provider = {region='CN',realm='安娜丝塔丽',name='5133',type='weekly',zone=1051,date='2026-02-05',data={},}; provider.parse = parse;if ArchonTooltip.AddProviderV2 then ArchonTooltip.AddProviderV2(lookup, provider) end
+--- the utf8 global is not available, so we polyfill utf8.offset so we can correctly find prefixes of utf8 strings
+---@param str string
+---@param index number
+---@return number|nil
+local function Utf8Offset(str, index)
+	local len = #str
+
+	if index <= 0 or index > len then
+		return nil -- Out of bounds
+	end
+
+	-- Move forward to the nth character
+	local count = 0
+	for i = 1, len do
+		local byte = string.byte(str, i)
+		local isContinuationByte = byte >= 128 and byte < 192
+		if not isContinuationByte then
+			count = count + 1
+			if count == index then
+				return i
+			end
+		end
+	end
+
+	return nil -- If the nth character is not found
+end
+
+---@param table table<string, string> raw data table with character name prefixes as keys
+---@param length number the number of complete characters to include in the prefix
+---@return fun(characterName: string):string|nil getChunk function to retrieve a character chunk by prefix using a complete character name
+local function getChunkLookup(table, length)
+	return function(characterName)
+		local startOfNextCharacter = Utf8Offset(characterName, length + 1)
+
+		local prefix
+		if startOfNextCharacter == nil then
+			prefix = characterName
+		else
+			prefix = string.sub(characterName, 1, startOfNextCharacter - 1)
+		end
+
+		return table[prefix]
+	end
+end
+
+local lookup = {'Unknown-Unknown',}
+local provider = {region='CN',realm='安娜丝塔丽',name='5133',type='weekly',zone=1051,date='2026-04-16',data={C='Centaur:BAAAGwQDGQoKCAAAAA==.',['八']='八二年熊猫:BAAAGwQDGQQKBAAAAA==.八二年爱丽丝:BAAAGwQDGQQKBAABGwQDGQoKCAABAAAAAA==.八二年老狼:BAAAGwQDGQQKBAAAAA==.八二年西兰花:BAAAGwQDGQQKBAAAAA==.八二年鸽子猪:BAAAGwQDGQoKCAAAAA==.',['喵']='喵小骑:BAAAGwQDGQQKCAAAAA==.',['我']='我是专业嘀:BAAAGwQDGQQKBAAAAA==.我是专业得:BAAAGwQDGQoKCAAAAA==.',['控']='控球后卫:BAAAGwQDGQoKCAAAAA==.',['朵']='朵拉的时光机:BAAAGwQDGQQKCAAAAA==.朵拉的莳光機:BAAAGwQDGQoKBAAAAA==.',['格']='格林德沃的猫:BAAAGwQDGQQKBAAAAA==.',['毛']='毛毛哟:BAAAGwQDGQQKBAAAAA==.',['牛']='牛牛怪:BAAAGwQDGQQKBAAAAA==.牛腩炖柿子:BAAAGwQDGQoKBAAAAA==.',['玄']='玄天魂:BAAAGwQDGQoKBAAAAA==.',['笑']='笑靥如尘:BAAAGwQDGQQKBAAAAA==.',['萌']='萌萌小喵:BAAAGwQDGQQKBAABGwQDGQQKCAABAAAAAA==.',['虚']='虚拟歌姬:BAAAGwQDGQQKBAABGwQDGQoKCAABAAAAAA==.',['邓']='邓布利多的熊:BAAAGwQDGQoKCAAAAA==.',['酱']='酱酱喵:BAAAGwQDGQQKBAAAAA==.酱酱战:BAAAGwQDGQQKBAAAAA==.',['里']='里卡多:BAAAGwQDGQQKBAAAAA==.',['钱']='钱满满:BAAAGwQDGQQKBAAAAA==.',['鸡']='鸡汤豆腐串:BAAAGwQDGQQKBAABGwQDGQoKBAABAAAAAA==.',['黎']='黎明圣光:BAAAGwQDGQQKCAAAAA==.',['龍']='龍行一游侠:BAAAGwQDGQoKBAAAAA==.',},}
+provider.parse = parse
+
+local rawData = provider.data
+provider.data = {}
+provider.getChunk = getChunkLookup(rawData, 1)
+
+setmetatable(provider.data, {
+	__index = function(table, key)
+		provider.getChunk(key)
+	end,
+})
+
+if _G["ArchonTooltip"] and ArchonTooltip.AddProviderV2 then
+	ArchonTooltip.AddProviderV2(lookup, provider)
+end

@@ -4,19 +4,14 @@ local queue = {}
 local function iterate()
 	for _, info in next, queue do
 		if info.callback then
-			local successful, ret = pcall(info.callback, unpack(info.args))
-			if not successful then
-				error(ret)
-			end
-		elseif info.object then
-			local successful, ret = pcall(info.object[info.method], info.object, unpack(info.args))
-			if not successful then
-				error(ret)
-			end
+			info.callback(unpack(info.args))
+		elseif info.object and info.args then
+			info.object[info.method](info.object, unpack(info.args))
 		end
 	end
 
 	table.wipe(queue)
+
 	return true -- unregister event
 end
 
@@ -51,10 +46,7 @@ function addon:Defer(callback, ...)
 			args = {...},
 		})
 	else
-		local successful, ret = pcall(callback, ...)
-		if not successful then
-			error(ret)
-		end
+		callback(...)
 	end
 end
 
@@ -74,9 +66,6 @@ function addon:DeferMethod(object, method, ...)
 			args = {...},
 		})
 	else
-		local successful, ret = pcall(object[method], object, ...)
-		if not successful then
-			error(ret)
-		end
+		object[method](object, ...)
 	end
 end

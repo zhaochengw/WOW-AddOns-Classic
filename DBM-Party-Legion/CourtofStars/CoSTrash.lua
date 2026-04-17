@@ -2,7 +2,8 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260112042022")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 mod:SetMinSyncRevision(20221228000000)

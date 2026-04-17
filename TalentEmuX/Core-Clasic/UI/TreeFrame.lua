@@ -189,7 +189,7 @@ MT.BuildEnv('UI-TreeFrame');
 
 			local Background = TreeFrame:CreateTexture(nil, "BORDER");
 			Background:SetAllPoints();
-			Background:SetAlpha(0.6);
+			Background:SetAlpha(VT.SET.tree_background_alpha);
 			local ratio = CT.TUISTYLE.TreeFrameXSizeSingle / CT.TUISTYLE.TreeFrameYSize;
 			if ratio > 1.0 then
 				Background:SetTexCoord(0.0, 1.0, (1.0 - ratio) * 0.5, (1.0 + ratio) * 0.5);

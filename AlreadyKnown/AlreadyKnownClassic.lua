@@ -322,53 +322,62 @@ local _G = _G
 				return false -- Battlepet is uncollected... or something went wrong
 
 			elseif classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then -- CompanionPet
-				-- Hoping this works in the TBC Classic Anniversary and fixes the CF issues #23 and #24
-				local _, numOwned = C_PetJournal.GetNumPets()
-				for i = 1, numOwned do
-					local _, _, owned, _, _, _, _, speciesName, icon, _, companionID = C_PetJournal.GetPetInfoByIndex(i)
-					if owned and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), speciesName)) then
-						Debug("%d - CompanionPet: (%d/%d) %s - CId: %d TId: %d", itemId, i, numOwned, speciesName, companionID, icon)
-						knownTable[itemLink] = true -- Mark as known for later use
-						return true -- CompanionPet is collected
+				local itemName = C_Item.GetItemInfo(itemId)
+				if itemName then
+					-- Hoping this works in the TBC Classic Anniversary and fixes the CF issues #23 and #24
+					local _, numOwned = C_PetJournal.GetNumPets()
+					for i = 1, numOwned do
+						local _, _, owned, _, _, _, _, speciesName, icon, _, companionID = C_PetJournal.GetPetInfoByIndex(i)
+						if owned and (itemIcon == icon and strmatch(itemName, speciesName)) then
+							Debug("%d - CompanionPet: (%d/%d) %s - CId: %d TId: %d", itemId, i, numOwned, speciesName, companionID, icon)
+							knownTable[itemLink] = true -- Mark as known for later use
+							return true -- CompanionPet is collected
+						end
 					end
+					return false -- CompanionPet is uncollected... or something went wrong
 				end
-				return false -- CompanionPet is uncollected... or something went wrong
 			end
 
 		elseif classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.CompanionPet then
 			-- CurseForge issues #23 & #24 reported by gogo1951, this doesn't work in the TBC Classic Anniversary
 			local numCompanions = GetNumCompanions("CRITTER")
-			for i = 1, numCompanions do
-				local creatureId, creatureName, creatureSpellId, icon, issummoned, mountType = GetCompanionInfo("CRITTER", i)
-				Debug("C: (%d/%d) Id: %d -> %s - CId: %d (%s), SId: %d (%s), TId: %d (%s)", i, numCompanions, itemId, creatureName, creatureId, tostring(itemId == creatureId), creatureSpellId, tostring(itemId == creatureSpellId), icon, tostring(itemIcon == icon))
-				--[[
-					Pet's name and the item's name might not match
-						[Yellow Moth Egg] vs [Yellow Moth]
-					Same icon can be used for multiple different pets and items
-						[Blue Moth Egg], [White Moth Egg], [Yellow Moth Egg] and [Yellow Moth] all use textureId 236193
-					Pet's creatureId doesn't have link to itemId or itemLink
-						[Yellow Moth Egg] itemId 29903 vs [Yellow Moth] creatureId 21008
-					Pet's creatureSpellId doesn't have anything useful from GetSpellInfo
-						[Yellow Moth] creatureSpellId 35910
-				]]--
-				--Bandaid solution that is less than ideal:
-				--DevTools_Dump({ strmatch((GetItemInfo(itemId)), creatureName) })
-				--return (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName))
-				if (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName)) then
-					knownTable[itemLink] = true -- Mark as known for later use
-					return true -- CompanionPet is collected
+			local itemName = C_Item.GetItemInfo(itemId)
+			if itemName then
+				for i = 1, numCompanions do
+					local creatureId, creatureName, creatureSpellId, icon, issummoned, mountType = GetCompanionInfo("CRITTER", i)
+					Debug("C: (%d/%d) Id: %d -> %s - CId: %d (%s), SId: %d (%s), TId: %d (%s)", i, numCompanions, itemId, creatureName, creatureId, tostring(itemId == creatureId), creatureSpellId, tostring(itemId == creatureSpellId), icon, tostring(itemIcon == icon))
+					--[[
+						Pet's name and the item's name might not match
+							[Yellow Moth Egg] vs [Yellow Moth]
+						Same icon can be used for multiple different pets and items
+							[Blue Moth Egg], [White Moth Egg], [Yellow Moth Egg] and [Yellow Moth] all use textureId 236193
+						Pet's creatureId doesn't have link to itemId or itemLink
+							[Yellow Moth Egg] itemId 29903 vs [Yellow Moth] creatureId 21008
+						Pet's creatureSpellId doesn't have anything useful from GetSpellInfo
+							[Yellow Moth] creatureSpellId 35910
+					]]--
+					--Bandaid solution that is less than ideal:
+					--DevTools_Dump({ strmatch((GetItemInfo(itemId)), creatureName) })
+					--return (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), creatureName))
+					if (itemIcon == icon and strmatch(itemName, creatureName)) then
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- CompanionPet is collected
+					end
 				end
 			end
 		end
 
 		if C_MountJournal and classId == Enum.ItemClass.Miscellaneous and subclassId == Enum.ItemMiscellaneousSubclass.Mount then -- Mount
 			local numMounts = C_MountJournal.GetNumMounts()
-			for i = 1, numMounts do
-				local name, _, icon, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
-				if isCollected and (itemIcon == icon and strmatch((C_Item.GetItemInfo(itemId)), name)) then
-					Debug("%d Mount: (%d/%d) %s - MId: %d TId: %d", itemId, i, numMounts, name, mountID, icon)
-					knownTable[itemLink] = true -- Mark as known for later use
-					return true -- Mount is collected
+			local itemName = C_Item.GetItemInfo(itemId)
+			if itemName then
+				for i = 1, numMounts do
+					local creatureName, _, icon, _, _, _, _, _, _, _, isCollected, mountID = C_MountJournal.GetDisplayedMountInfo(i)
+					if isCollected and (itemIcon == icon and strmatch(itemName, creatureName)) then
+						Debug("%d Mount: (%d/%d) %s - MId: %d TId: %d", itemId, i, numMounts, creatureName, mountID, icon)
+						knownTable[itemLink] = true -- Mark as known for later use
+						return true -- Mount is collected
+					end
 				end
 			end
 		end
@@ -615,7 +624,7 @@ local _G = _G
 			local regions = { GameTooltip:GetRegions() }
 
 			-- https://warcraft.wiki.gg/wiki/ItemType
-			local _, _, _, _, _, _, _, _, _, itemTexture, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
+			local itemName, _, _, _, _, _, _, _, _, itemTexture, _, classId, subclassId = C_Item.GetItemInfo(itemLink)
 			local itemClass, itemSubclass
 			for k, v in pairs(Enum.ItemClass) do
 				if v == classId then
@@ -670,7 +679,7 @@ local _G = _G
 					local numPets, numOwned = C_PetJournal.GetNumPets()
 					for index = 1, numOwned do
 						local petID, speciesID, owned, customName, level, favorite, isRevoked, speciesName, icon, petType, companionID, tooltip, description, isWild, canBattle, isTradeable, isUnique, obtainable = C_PetJournal.GetPetInfoByIndex(index)
-						if owned and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), speciesName)) then
+						if owned and (itemTexture == icon and strmatch(itemName, speciesName)) then
 							line = line .. "\n- Index: " .. index .. " / " .. numOwned .. "\n- Name: " .. speciesName .. "\n- companionID: " .. companionID .. "\n- Icon: " .. icon
 							break
 						end
@@ -680,9 +689,9 @@ local _G = _G
 					line = line .. "\n-----\nMount:"
 					local numMounts = C_MountJournal.GetNumMounts()
 					for index = 1, numMounts do
-						local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID, isSteadyFlight = C_MountJournal.GetDisplayedMountInfo(index)
-						if isCollected and (itemTexture == icon and strmatch((C_Item.GetItemInfo(itemLink)), name)) then
-							line = line .. "\n- Index: " .. index .. " / " .. numMounts .. "\n- Name: " .. name .. "\n- mountID: " .. mountID .. "\n- Icon: " .. icon
+						local creatureName, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, mountID, isSteadyFlight = C_MountJournal.GetDisplayedMountInfo(index)
+						if isCollected and (itemTexture == icon and strmatch(itemName, creatureName)) then
+							line = line .. "\n- Index: " .. index .. " / " .. numMounts .. "\n- Name: " .. creatureName .. "\n- mountID: " .. mountID .. "\n- Icon: " .. icon
 							break
 						end
 					end

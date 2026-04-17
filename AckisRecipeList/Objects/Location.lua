@@ -1,24 +1,36 @@
 --[[
-Copyright (c) 2009 - 2012 Ackis <John Pasula>
-All rights reserved by the original author Ackis.
+    Ackis Recipe List - Location Object
+    
+    Provides zone/location tracking for recipe sources:
+    - Zone map ID constants for all WoW zones
+    - Location object with parent/child relationships
+    - HereBeDragons integration for map ID resolution
+    - Instance entrance coordinates for waypoint navigation
+    
+    Copyright (c) 2009 - 2012 Ackis <John Pasula>
+    All rights reserved by the original author Ackis.
 ]]
 
-
-
+-- ============================================================================
+-- Upvalued Lua API
+-- ============================================================================
 local string = _G.string
-
 local pairs = _G.pairs
+local ipairs = _G.ipairs
 local tonumber = _G.tonumber
 local type = _G.type
 
--- ----------------------------------------------------------------------------
--- AddOn namespace.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- AddOn Namespace
+-- ============================================================================
 local FOLDER_NAME, private = ...
 
--- ----------------------------------------------------------------------------
--- Location data.
--- ----------------------------------------------------------------------------
+local LibStub = _G.LibStub
+local HBD = LibStub("HereBeDragons-2.0")
+
+-- ============================================================================
+-- Zone Map ID Constants
+-- ============================================================================
 local ZONE_MAP_IDS = {
 
 	-------------------------------------------------------------------------------
@@ -323,49 +335,48 @@ local ZONE_MAP_IDS = {
 	SEPULCHER_OF_THE_FIRST_ONES = 2047,
 }
 
--- Hard code this because I so don't want to change up the coding that much
+-- ============================================================================
+-- Continent Data
+-- Sequential continent IDs mapped to map IDs and names
+-- Format: mapID, "Name" pairs for iteration
+-- Note: Cosmic (946) and Azeroth (947) excluded to prevent UI display issues
+-- ============================================================================
 local mapContinentData = {
-	12,
-	"Kalimdor",
-	13,
-	"Eastern Kingdoms",
-	101,
-	"Outland",
-	113,
-	"Northrend",
-	424,
-	"Pandaria",
-	572,
-	"Draenor",
-	619,
-	"Broken Isles",
-	875,
-	"Zandalar",
-	876,
-	"Kul Tiras",
-	905,
-	"Argus",
---	946,
---	"Cosmic",
---	947,  -- Must not be included, or the headings in Location tab only show Azeroth, Outland & Draenor, since everything else is a child of Azeroth
---	"Azeroth",
-	948,
-	"The Maelstrom",
-	1550,
-	"The Shadowlands",
+	12, "Kalimdor",
+	13, "Eastern Kingdoms",
+	101, "Outland",
+	113, "Northrend",
+	424, "Pandaria",
+	572, "Draenor",
+	619, "Broken Isles",
+	875, "Zandalar",
+	876, "Kul Tiras",
+	905, "Argus",
+	948, "The Maelstrom",
+	1550, "The Shadowlands",
 }
 
+-- ============================================================================
+-- Local Variables
+-- ============================================================================
 local ZONE_NAMES = {}
 local ZONE_PARENTS = {}
 local PARENS_TEMPLATE = _G.PARENS_TEMPLATE or "(%s)"
 local UNKNOWN = _G.UNKNOWN or "Unknown"
 
--- Derive a human-friendly zone name from a ZONE_MAP_IDS label
+-- ============================================================================
+-- Helper Functions
+-- ============================================================================
+
+--- Convert a zone label to human-readable name
+--- "SHADOWMOON_VALLEY_OUTLAND" -> "Shadowmoon Valley (Outland)"
+--- @param label string The zone label from ZONE_MAP_IDS
+--- @return string pretty The formatted zone name
 local function PrettyNameFromLabel(label)
 	if not label or type(label) ~= "string" then
 		return UNKNOWN
 	end
-	-- Common suffix -> continent pretty text
+
 	local suffixToContinent = {
 		_OUTLAND = "Outland",
 		_DRAENOR = "Draenor",
@@ -387,13 +398,11 @@ local function PrettyNameFromLabel(label)
 	local baseLabel = label
 	if continentSuffix then
 		baseLabel = label:sub(1, #label - #continentSuffix)
-		-- Trim trailing underscore if present
 		if baseLabel:sub(-1) == "_" then
 			baseLabel = baseLabel:sub(1, #baseLabel - 1)
 		end
 	end
 
-	-- Words to keep lowercase (except when first word)
 	local smallWords = {
 		of = true, the = true, ["and"] = true, ["in"] = true, on = true,
 		at = true, to = true, ["for"] = true, ["with"] = true, ["by"] = true, from = true,
@@ -418,13 +427,21 @@ local function PrettyNameFromLabel(label)
 	return pretty
 end
 
+--- Get localized map name safely via HereBeDragons
+--- @param mapID number The map ID to look up
+--- @return string name The localized name or UNKNOWN
 local function SafeMapName(mapID)
-	if not mapID or not _G.C_Map or not _G.C_Map.GetMapInfo then
+	if not mapID then
 		return UNKNOWN
 	end
-	local info = _G.C_Map.GetMapInfo(mapID)
-	return (info and info.name) or UNKNOWN
+	local name = HBD:GetLocalizedMap(mapID)
+	return name or UNKNOWN
 end
+
+-- ============================================================================
+-- Zone Name Initialization
+-- Build ZONE_NAMES lookup table from ZONE_MAP_IDS using HBD for localization
+-- ============================================================================
 
 for zoneLabel, mapID in pairs(ZONE_MAP_IDS) do
 	if type(mapID) == "table" then
@@ -440,7 +457,7 @@ for zoneLabel, mapID in pairs(ZONE_MAP_IDS) do
 	end
 end
 
--- Continent name fallbacks for cases where C_Map returns no name on MoP Classic
+-- Fallback names for continents/capitals when HBD returns no data
 do
 	local CONTINENT_FALLBACK_NAMES = {
 		KALIMDOR = "Kalimdor",
@@ -457,8 +474,7 @@ do
 		end
 	end
 
-	-- Key capitals frequently missing names on MoP Classic builds; ensure stable fallbacks
-    local CAPITAL_FALLBACK_NAMES = {
+	local CAPITAL_FALLBACK_NAMES = {
 		UNDERCITY = "Undercity",
 		STORMWIND_CITY = "Stormwind City",
 		ORGRIMMAR = "Orgrimmar",
@@ -481,7 +497,7 @@ end
 private.ZONE_NAMES = ZONE_NAMES
 private.constants.ZONE_NAMES = ZONE_NAMES
 
--- Ensure disambiguated zone names always have stable non-Unknown values even if C_Map fails
+-- Disambiguated zones with multiple versions (e.g., Shadowmoon Valley Outland vs Draenor)
 local specialLabels = {
 	"SHADOWMOON_VALLEY_OUTLAND",
 	"SHADOWMOON_VALLEY_DRAENOR",
@@ -497,6 +513,7 @@ for i = 1, #specialLabels do
 	end
 end
 
+-- Reverse lookup tables
 local ZONE_LABELS_FROM_NAME = {}
 private.ZONE_LABELS_FROM_NAME = ZONE_LABELS_FROM_NAME
 
@@ -515,8 +532,11 @@ for label, name in pairs(ZONE_NAMES) do
 	end
 end
 
--- These map IDs aren't tied to a continent, for whatever reason, so need to be added as special cases.
--- Instanced dungeons typically need to be added here.
+-- ============================================================================
+-- Cosmic Map IDs
+-- Zones with parent=0 in HBD data that need explicit parent mapping
+-- Required for proper waypoint placement and location hierarchy
+-- ============================================================================
 local COSMIC_MAP_IDS = {
 	TELDRASSIL = 57,
 	DARNASSUS = 89,
@@ -568,6 +588,7 @@ local COSMIC_MAP_IDS = {
 	STORMHEIM = 634,
 }
 
+-- Parent zone mapping for cosmic maps
 local COSMIC_MAP_LOCATION_PARENT_MAPPING = {
 	TELDRASSIL = ZONE_NAMES.KALIMDOR,
 	DARNASSUS = ZONE_NAMES.KALIMDOR,
@@ -622,12 +643,15 @@ local COSMIC_MAP_LOCATION_PARENT_MAPPING = {
 	SANCTUM_OF_DOMINATION = ZONE_NAMES.THE_SHADOWLANDS,
 	KRASARANG_WILDS = ZONE_NAMES.PANDARIA,
 	STORMHEIM = ZONE_NAMES.BROKEN_ISLES,
-	VALE_OF_ETERNAL_BLOSSOMS = ZONE_NAMES.PANDARIA,  -- It gets confused with multiple states
-	ULDUM = ZONE_NAMES.KALIMDOR, -- It gets confused with multiple states
+	VALE_OF_ETERNAL_BLOSSOMS = ZONE_NAMES.PANDARIA,
+	ULDUM = ZONE_NAMES.KALIMDOR,
 }
 
-
--- Coordinates are relative to the instance's parent location.
+-- ============================================================================
+-- Instance Entrance Coordinates
+-- Format: "x:y" relative to parent zone (0-100 scale)
+-- Used for waypoint placement at dungeon/raid entrances
+-- ============================================================================
 local INSTANCE_ENTRANCE_COORDINATES = {
 	AHNKAHET_THE_OLD_KINGDOM = "28.49:51.73",
 	AHNQIRAJ_THE_FALLEN_KINGDOM = "23.2:86.1",
@@ -680,14 +704,17 @@ local INSTANCE_ENTRANCE_COORDINATES = {
 	UTGARDE_PINNACLE = "57.26:46.67"
 }
 
--- ----------------------------------------------------------------------------
--- Objects.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Location Object
+-- Represents a zone/location with parent/child relationships
+-- ============================================================================
+
 local Location = {}
 local LocationMetatable = {
 	__index = Location,
 }
 
+-- Storage tables
 local Locations = {}
 private.Locations = Locations
 
@@ -700,9 +727,10 @@ private.LocationsByMapID = LocationsByMapID
 local ContinentLocationByID = {}
 private.ContinentLocationByID = ContinentLocationByID
 
--- ----------------------------------------------------------------------------
--- Location Methods.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Location Methods
+-- ============================================================================
+
 function Location:AssignRecipe(recipe, affiliation)
 	self._recipes[recipe] = affiliation
 end
@@ -717,7 +745,6 @@ function Location:EntranceCoordinates()
 		local x, y = (":"):split(coordinates)
 		return tonumber(x), tonumber(y)
 	end
-
 	return 0, 0
 end
 
@@ -745,6 +772,38 @@ function Location:MapID()
 	return self._mapID
 end
 
+--- Get a validated map ID, falling back to HBD lookup if stored ID is invalid
+--- @return number|nil mapID A valid map ID or nil if not found
+function Location:GetValidMapID()
+	local mapID = self._mapID
+
+	if mapID and mapID > 0 then
+		local name = HBD:GetLocalizedMap(mapID)
+		if name then
+			return mapID
+		end
+	end
+
+	if self._localizedName then
+		local searchName = self._localizedName:lower()
+		local allMapIDs = HBD:GetAllMapIDs()
+
+		for _, id in ipairs(allMapIDs) do
+			local mapName = HBD:GetLocalizedMap(id)
+			if mapName and mapName:lower() == searchName then
+				return id
+			end
+		end
+	end
+
+	local parent = self:Parent()
+	if parent then
+		return parent:GetValidMapID()
+	end
+
+	return nil
+end
+
 function Location:Name()
 	return self._name
 end
@@ -757,73 +816,109 @@ function Location:RecipePairs()
 	return pairs(self._recipes)
 end
 
--- ----------------------------------------------------------------------------
--- Instantiation.
--- ----------------------------------------------------------------------------
+-- ============================================================================
+-- Location Instantiation
+-- ============================================================================
+
+--- Create a Location object from mapID
+--- @param continentID number The sequential continent ID
+--- @param mapID number The map ID
+--- @param parentLocation table|nil Optional parent Location
+--- @return table|nil location The created Location or nil
 local function AddLocation(continentID, mapID, parentLocation)
 	local zoneLabel = ZONE_LABELS_FROM_MAP_ID[mapID]
-	if zoneLabel then
-		-- Allows TitleCase lookups. For example - "private.Locations.ShadowmoonValleyDraenor"
-		local zoneName = zoneLabel:lower():gsub("^%l", string.upper):gsub("_%l", string.upper):gsub("_", "")
-		local localizedName = ZONE_NAMES[zoneLabel]
-		if not localizedName or localizedName == UNKNOWN then
-			localizedName = PrettyNameFromLabel(zoneLabel)
-			ZONE_NAMES[zoneLabel] = localizedName
-		end
-
-		local location = _G.setmetatable({
-			_continentID = continentID,
-			_entranceCoordinates = INSTANCE_ENTRANCE_COORDINATES[zoneLabel],
-			_label = zoneLabel,
-			_localizedName = localizedName,
-			_mapID = mapID,
-			_name = zoneName,
-			_parent = parentLocation,
-			_recipes = {},
-		}, LocationMetatable)
-
-		Locations[zoneName] = location
-		LocationsByLocalizedName[localizedName] = location
-		LocationsByMapID[mapID] = location
-
-		if parentLocation then
-			parentLocation._childLocations = parentLocation._childLocations or {}
-			parentLocation._childLocations[zoneName] = location
-
-			parentLocation._childLocationsByLocalizedName = parentLocation._childLocationsByLocalizedName or {}
-			parentLocation._childLocationsByLocalizedName[localizedName] = location
-		end
-
-		return location
-		-- Uncomment for debugging purposes when adding new map IDs
-		              else
---		                private.Debug("No entry in ZONE_LABELS_FROM_MAP_ID for mapID %s (%s)", mapID or "nil", _G.C_Map.GetMapInfo(mapID).name)
+	if not zoneLabel then
+		return nil
 	end
+
+	-- Generate TitleCase key for lookup: "SHADOWMOON_VALLEY_DRAENOR" -> "ShadowmoonValleyDraenor"
+	local zoneName = zoneLabel:lower():gsub("^%l", string.upper):gsub("_%l", string.upper):gsub("_", "")
+	local localizedName = ZONE_NAMES[zoneLabel]
+	if not localizedName or localizedName == UNKNOWN then
+		localizedName = PrettyNameFromLabel(zoneLabel)
+		ZONE_NAMES[zoneLabel] = localizedName
+	end
+
+	local location = _G.setmetatable({
+		_continentID = continentID,
+		_entranceCoordinates = INSTANCE_ENTRANCE_COORDINATES[zoneLabel],
+		_label = zoneLabel,
+		_localizedName = localizedName,
+		_mapID = mapID,
+		_name = zoneName,
+		_parent = parentLocation,
+		_recipes = {},
+	}, LocationMetatable)
+
+	Locations[zoneName] = location
+	LocationsByLocalizedName[localizedName] = location
+	LocationsByMapID[mapID] = location
+
+	if parentLocation then
+		parentLocation._childLocations = parentLocation._childLocations or {}
+		parentLocation._childLocations[zoneName] = location
+
+		parentLocation._childLocationsByLocalizedName = parentLocation._childLocationsByLocalizedName or {}
+		parentLocation._childLocationsByLocalizedName[localizedName] = location
+	end
+
+	return location
 end
 
--- Fallback: ensure a minimal Location exists for a given localized name when C_Map lookups/children are unavailable (e.g., Classic Era load order)
+-- ============================================================================
+-- Fallback Location Creation
+-- Creates a minimal Location object when a zone name is referenced but not found
+-- in the pre-built Locations tables. Uses HereBeDragons to resolve mapID.
+-- ============================================================================
+
+--- Convert a localized zone name to a Location key
+--- "Stormwind City" -> "StormwindCity"
+--- @param name string The localized zone name
+--- @return string key The generated key
 local function KeyFromLocalized(name)
-	if not name or type(name) ~= "string" then return "Unknown" end
-	-- TitleCase alphanumeric tokens concatenated (e.g., "Stormwind City" -> "StormwindCity")
+	if not name or type(name) ~= "string" then
+		return "Unknown"
+	end
 	local key = name:gsub("[^%w]+", " ")
 	local buff = {}
 	for word in key:gmatch("%S+") do
-		buff[#buff+1] = word:sub(1,1):upper() .. word:sub(2):lower()
+		buff[#buff + 1] = word:sub(1, 1):upper() .. word:sub(2):lower()
 	end
 	return table.concat(buff, "")
 end
 
+--- Ensure a Location exists for the given localized name
+--- Called when recipe modules reference zones not in ZONE_MAP_IDS
+--- Uses HereBeDragons database to resolve mapID for waypoint support
+--- @param localizedName string The localized zone name
+--- @return table location The existing or newly created Location
 function private.EnsureLocationByLocalizedName(localizedName)
 	if LocationsByLocalizedName[localizedName] then
 		return LocationsByLocalizedName[localizedName]
 	end
+
 	local key = KeyFromLocalized(localizedName)
+
+	-- Try to resolve mapID via HereBeDragons database
+	local resolvedMapID
+	local searchName = localizedName and localizedName:lower()
+	if searchName then
+		local allMapIDs = HBD:GetAllMapIDs()
+		for _, mapID in ipairs(allMapIDs) do
+			local mapName = HBD:GetLocalizedMap(mapID)
+			if mapName and mapName:lower() == searchName then
+				resolvedMapID = mapID
+				break
+			end
+		end
+	end
+
 	local location = _G.setmetatable({
 		_continentID = 0,
 		_entranceCoordinates = nil,
 		_label = nil,
 		_localizedName = localizedName or UNKNOWN,
-		_mapID = -1,
+		_mapID = resolvedMapID or -1,
 		_name = key,
 		_parent = nil,
 		_recipes = {},
@@ -834,22 +929,35 @@ function private.EnsureLocationByLocalizedName(localizedName)
 	return location
 end
 
+--- Recursively add child zones using HBD parent relationships
+--- @param parentLocation table The parent Location to process
 local function AddSubzoneLocations(parentLocation)
-	if not parentLocation or not _G.C_Map or not _G.C_Map.GetMapChildrenInfo then
+	if not parentLocation then
 		return
 	end
-	local zoneData =  _G.C_Map.GetMapChildrenInfo(parentLocation._mapID)
-	if not zoneData then
+	local parentMapID = parentLocation._mapID
+	if not parentMapID then
 		return
 	end
-	for zoneDataIndex = 1, #zoneData do
-		local zone = AddLocation(parentLocation._continentID, zoneData[zoneDataIndex].mapID, parentLocation)
-		if zone then
-			AddSubzoneLocations(zone)
+	local allMapIDs = HBD:GetAllMapIDs()
+	local mapData = HBD.mapData
+	for _, mapID in ipairs(allMapIDs) do
+		local data = mapData[mapID]
+		if data and data.parent == parentMapID then
+			local zone = AddLocation(parentLocation._continentID, mapID, parentLocation)
+			if zone then
+				AddSubzoneLocations(zone)
+			end
 		end
 	end
 end
 
+-- ============================================================================
+-- Initialize Location Database
+-- Build all Location objects from continent and cosmic map data
+-- ============================================================================
+
+-- Create continent locations and recursively add child zones
 for dataIndex = 1, #mapContinentData do
 	if dataIndex % 2 == 0 then
 		local continentID = dataIndex / 2
@@ -859,29 +967,22 @@ for dataIndex = 1, #mapContinentData do
 		if continent then
 			ContinentLocationByID[continentID] = continent
 			AddSubzoneLocations(continent)
-
-			if _G.C_Map and _G.C_Map.GetMapChildrenInfo then
-				local zoneData =  _G.C_Map.GetMapChildrenInfo(continentMapID)
-				if zoneData then
-					for zoneDataIndex = 1, #zoneData do
-						local zone = AddLocation(continentID, zoneData[zoneDataIndex].mapID, continent)
-						if zone then
-							AddSubzoneLocations(zone)
-						end
-					end
-				end
-			end
 		end
 	end
 end
 
+-- Create cosmic map for zones without continent parent
 local cosmicMap = AddLocation(946, 946)
 if cosmicMap then
 	ContinentLocationByID[946] = cosmicMap
 end
 
+-- Add cosmic zones with explicit parent mapping
 for label, mapID in pairs(COSMIC_MAP_IDS) do
 	local parentLocation = LocationsByLocalizedName[COSMIC_MAP_LOCATION_PARENT_MAPPING[label]] or cosmicMap
 	local continentID = (parentLocation and parentLocation._continentID) or 946
 	AddLocation(continentID, mapID, parentLocation)
 end
+
+-- Export ZONE_MAP_IDS for waypoint lookup
+private.ZONE_MAP_IDS = ZONE_MAP_IDS

@@ -4,6 +4,9 @@ local CL = {}
 DBM_COMMON_L = CL
 
 --General
+CL.ALPHABETICAL                     = "Alphabetical"
+CL.DURATION                         = "Duration"
+CL.SORTING                          = "Sorting"
 CL.NONE								= "None"
 CL.RANDOM							= "Random"
 CL.UNKNOWN							= "Unknown"--UNKNOWN which is "Unknown" (does u vs U matter?)
@@ -83,9 +86,12 @@ CL.GROUPSOAK						= "Soak"
 CL.GROUPSOAKS						= "Soaks"
 CL.HEALABSORB						= "Heal Absorb"
 CL.HEALABSORBS						= "Heal Absorbs"
+CL.INTERRUPT						= "Interrupt"
+CL.INTERRUPTS						= "Interrupts"
 CL.DODGES							= "Dodges"
 CL.POOL								= "Pool"
 CL.POOLS							= "Pools"
+CL.DEBUFF							= "Debuff"
 CL.DEBUFFS							= "Debuffs"
 CL.DISPELS							= "Dispels"
 CL.PUSHBACK							= "Pushback"

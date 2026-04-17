@@ -1,4 +1,6 @@
 local addonName, ns = ...
+local IsAddOnLoaded    = C_AddOns and C_AddOns.IsAddOnLoaded    or IsAddOnLoaded
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local RS = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceConsole-3.0", "AceEvent-3.0")
 ns.RS = RS
 _G.RurutiaSuite = RS
@@ -80,7 +82,7 @@ function RS:OnInitialize()
         end
         icon:Show(addonName)
     end
-    
+
     -- 获取版本号
     local version = GetAddOnMetadata(addonName, "Version") or "Unknown"
     self:Print("已加载 v" .. version)

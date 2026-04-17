@@ -97,7 +97,7 @@ end
 -- Function to transform a timeStamp into a formatted time
 ---============================================================================
 
-function RSTimeUtils.TimeStampToClock(seconds, countUp)
+function RSTimeUtils.TimeStampToClock(seconds, countUp, noDays)
 	if (not seconds) then
 		return AL["UNKNOWN"]
 	elseif (countUp) then
@@ -109,8 +109,12 @@ function RSTimeUtils.TimeStampToClock(seconds, countUp)
 	else
 		local minutes = math.floor(seconds / 60);
 		local hours = math.floor(minutes / 60);
-		local days = math.floor(hours / 24);
-		return days.." "..AL["MAP_TOOLTIP_DAYS"].." "..string.format("%02.f", hours%24)..":"..string.format("%02.f", minutes%60)..":"..string.format("%02.f", seconds%60)
+		if (noDays) then
+			return string.format("%02.f", hours%24)..":"..string.format("%02.f", minutes%60)..":"..string.format("%02.f", seconds%60)
+		else
+			local days = math.floor(hours / 24);
+			return days.." "..AL["MAP_TOOLTIP_DAYS"].." "..string.format("%02.f", hours%24)..":"..string.format("%02.f", minutes%60)..":"..string.format("%02.f", seconds%60)
+		end
 	end
 end
 

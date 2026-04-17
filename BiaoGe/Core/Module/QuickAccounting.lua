@@ -54,9 +54,9 @@ BG.Init(function()
                     bt:SetPoint("TOPLEFT", framedown, "BOTTOMLEFT", 0, -2)
                 end
                 if not IsInRaid(1) and t == 1 and i == 1 then -- 单人时
-                    bt:SetText(BG.GN())
+                    bt:SetText(BG.playerName)
                     bt:SetCursorPosition(0)
-                    bt:SetTextColor(GetClassRGB(BG.GN()))
+                    bt:SetTextColor(GetClassRGB(BG.playerName))
                     bt.hasName = true
                     for k, v in pairs(BG.playerClass) do
                         bt[k] = select(v.select, v.func("player"))

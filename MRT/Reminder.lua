@@ -21,7 +21,7 @@ local GetSpecialization = GetSpecialization or C_SpecializationInfo and C_Specia
 local IsEncounterInProgress = C_InstanceEncounter and C_InstanceEncounter.IsEncounterInProgress or IsEncounterInProgress
 
 local senderVersion = 4
-local addonVersion = 70
+local addonVersion = 71
 
 local options = module.options
 
@@ -3480,7 +3480,7 @@ function options:Load()
 		local subMenu = {}
 		local res
 
-		if not ExRT.isMN then
+		do
 			for _, h_key in pairs({"history","historySession"}) do
 				local sepAdded
 				for i=1,#module.db[h_key] do
@@ -3575,7 +3575,7 @@ function options:Load()
 				for i=1,#module.db.historyTL do
 					local data = module.db.historyTL[i]
 					local bossID = data.bossID or 0
-					local text = ExRT.L.bossName[bossID]..(data.len and format(" %d:%02d",data.len/60,data.len%60) or "")
+					local text = ExRT.L:bossName2(bossID)..(data.len and format(" %d:%02d",data.len/60,data.len%60) or "")
 					local boss_list = {
 						text = text,
 						arg1 = bossID,
@@ -3700,7 +3700,7 @@ function options:Load()
 							if ExRT.GDB.encounterIDtoEJ[bossID] and EJ_GetCreatureInfo then
 								bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 							end
-							local bossName = ExRT.L.bossName[bossID]
+							local bossName = ExRT.L:bossName2(bossID)
 		
 							local toadd2 = ExRT.F.table_find3(toadd,bossID,"arg3")
 							if not toadd2 then
@@ -3825,13 +3825,14 @@ function options:Load()
 
 			local boss_list = {
 				arg1 = bossID,
-				arg2 = ExRT.L.bossName[bossID],
-				text = ExRT.L.bossName[bossID],
+				arg2 = ExRT.L:bossName2(bossID),
+				text = ExRT.L:bossName2(bossID),
 				func = self.SetValue,
 				prio = bossID,
 				icon = bossImg,
 				iconsize = 32,
 			}
+
 			if isZone then
 				boss_list.arg1 = -bossID
 				boss_list.arg3 = 4
@@ -3888,13 +3889,13 @@ function options:Load()
 			end
 	
 			if module.db.lastEncounterID == bossID then
-	 			res = function() self:SetValue(bossID,ExRT.L.bossName[bossID]) end
+	 			res = function() self:SetValue(bossID,ExRT.L:bossName2(bossID)) end
 			elseif not module.db.lastEncounterID and VMRT.Reminder2.TLBoss and (VMRT.Reminder2.TLBoss == bossID or (type(VMRT.Reminder2.TLBoss == "number") and floor(VMRT.Reminder2.TLBoss) == bossID)) then
 				if VMRT.Reminder2.TLBoss % 1 ~= 0 then
 					local n = floor( (VMRT.Reminder2.TLBoss % 1) * 100 + 0.5 )
-					res = function() self:SetValue(bossID,ExRT.L.bossName[bossID],3,{id = VMRT.Reminder2.TLBoss, tl = bossData.m and (bossData[n] or bossData[1]) or bossData}) end
+					res = function() self:SetValue(bossID,ExRT.L:bossName2(bossID),3,{id = VMRT.Reminder2.TLBoss, tl = bossData.m and (bossData[n] or bossData[1]) or bossData}) end
 				else
-					res = function() self:SetValue(bossID,ExRT.L.bossName[bossID]) end
+					res = function() self:SetValue(bossID,ExRT.L:bossName2(bossID)) end
 				end
 			end
 		end
@@ -3915,13 +3916,13 @@ function options:Load()
 		end)
 		self.List[#self.List+1] = {
 			text = L.ReminderCustom.." encounter ID",
-			func = function() ELib:DropDownClose() ExRT.F.ShowInput(L.ReminderEncounterID,function(_,id) id=tonumber(id) if not id then return end self:SetValue(id,L.bossName[id]) end,nil,true) end,
+			func = function() ELib:DropDownClose() ExRT.F.ShowInput(L.ReminderEncounterID,function(_,id) id=tonumber(id) if not id then return end self:SetValue(id,L:bossName2(id)) end,nil,true) end,
 			prio = -990000,
 		}
 		local customSubMenu = {}
 		if VMRT.Reminder2.CustomTLData then
 			for bossID,data in pairs(VMRT.Reminder2.CustomTLData) do
-				local name = bossID < 0 and options:GetZoneName(-bossID) or ExRT.L.bossName[bossID]
+				local name = bossID < 0 and options:GetZoneName(-bossID) or ExRT.L:bossName2(bossID)
 				customSubMenu[#customSubMenu+1] = {
 					text = name .. " ".. module:FormatTime(data.d and data.d[2] or 0),
 					arg1 = bossID,
@@ -4828,7 +4829,7 @@ function options:Load()
 			bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[encounterID]))
 		end
 
-		button.text:SetText(ExRT.L.bossName[encounterID])
+		button.text:SetText(ExRT.L:bossName2(encounterID))
 
 		button.bg:SetTexture(bossImg)
 		button.click = clickFunc
@@ -4896,7 +4897,7 @@ function options:Load()
 				data.specialTarget = nil
 			end
 			removeTrigger2 = false
-		elseif data.tmp_tl_cd then
+		elseif data.tmp_tl_cd and not ExRT.isMN then
 			if options:AddSpellCDCheckTrigger(data) then
 				removeTrigger2 = false
 			end
@@ -5191,7 +5192,7 @@ function options:Load()
 		options.quickSetupFrame.msgEdit:UpdateColorBorder()
 		ELib:DropDownClose()
 	end
-	self.quickSetupFrame.cooldownCheck = ELib:Check(self.quickSetupFrame,""):Tooltip(L.ReminderHideMsgCheck):Point("LEFT",self.quickSetupFrame.spellDD,"RIGHT",5,0):OnClick(function(self)
+	self.quickSetupFrame.cooldownCheck = ELib:Check(self.quickSetupFrame,""):Tooltip(L.ReminderHideMsgCheck):Point("LEFT",self.quickSetupFrame.spellDD,"RIGHT",5,0):Shown(not ExRT.isMN):OnClick(function(self)
 		if self:GetChecked() then
 			options.quickSetupFrame.data.tmp_tl_cd = true
 		else
@@ -6375,7 +6376,7 @@ function options:Load()
 				if type(spell) == "number" and self:IsPassFilterSpellType(spell_times,spell) then
 					spells_sorted[#spells_sorted+1] = {
 						id = spell, 
-						name = GetSpellName(spell) or "spell"..spell,
+						name = spell_times.name or GetSpellName(spell) or "spell"..spell,
 						isOff = self.spell_status[spell],
 						prio = self.spell_status[spell] and 0 or 1,
 						first = type(spell_times[1])=="table" and spell_times[1][1] or spell_times[1] or 0,
@@ -6387,6 +6388,23 @@ function options:Load()
 					if t > max_delay then
 						max_delay = t
 					end
+				end
+			end
+			if timeLineData.secrets then
+				for i=1,#timeLineData.secrets do
+					local secret = timeLineData.secrets[i]
+					spells_sorted[#spells_sorted+1] = {
+						id = -100000 - i, 
+						id_secret = secret[3],
+						name = "Secret",
+						name_secret = secret[2],
+						isOff = false,
+						prio = 1,
+						first = secret[1],
+						times = {secret[1]},
+						isCompare = true,
+						isSecret = true,
+					}
 				end
 			end
 			local cmpTimeLineData = self:GetCompareTimeLineData()
@@ -6509,8 +6527,8 @@ function options:Load()
 					t.l:Hide()
 				end
 				local name = GetSpellName(spell)
-				local texture = GetSpellTexture(spell)
-				line.header.name:SetText(spell_data.name or name or "spell"..spell)
+				local texture = GetSpellTexture(spell_data.isSecret and spell_data.id_secret or spell)
+				line.header.name:SetText(spell_data.isSecret and spell_data.name_secret or spell_data.name or name or "spell"..spell)
 				line.header.icon:SetTexture(texture)
 				if isOff then
 					line.header.isOff = true
@@ -6561,7 +6579,7 @@ function options:Load()
 					elseif pn == 0 then
 						text = ""
 					elseif pn and type(pn)=="number" and pn < 0 and pn > -10000 then
-						text = L.bossName[ -pn ]
+						text = L:bossName2( -pn )
 					end
 					pcursor.text:SetText(text)
 					pcursor:Show()
@@ -6752,7 +6770,7 @@ function options:Load()
 					bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 				end
 				raidSubMenu[#raidSubMenu+1] = {
-					text = L.bossName[ bossID ],
+					text = L:bossName2( bossID ),
 					arg1 = bossID,
 					func = bossList_SetValue,
 					icon = bossImg,
@@ -6773,7 +6791,7 @@ function options:Load()
 					bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 				end
 				dungSubMenu[#dungSubMenu+1] = {
-					text = L.bossName[ bossID ],
+					text = L:bossName2( bossID ),
 					arg1 = bossID,
 					func = bossList_SetValue,
 					icon = bossImg,
@@ -6790,7 +6808,7 @@ function options:Load()
 			bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 		end
 
-		local name = L.bossName[ bossID ] or ("boss id"..bossID)
+		local name = L:bossName2( bossID ) or ("boss id"..bossID)
 
 		if bossID < 0 then
 			name = GetRealZoneText(zoneID) or VMRT.Reminder2.zoneNames[-bossID] or "Zone ID "..(-bossID)
@@ -8126,7 +8144,7 @@ function options:Load()
 
 	options.assign.Util_HeaderOnClick = function(self,button)
 		local x,y = ExRT.F.GetCursorPos(self)
-		local iconPos = self.icon:GetLeft() - self:GetLeft()
+		local iconPos = self.icon.IsAnchoringSecret and self.icon:IsAnchoringSecret() and 40 or self.icon:GetLeft() - self:GetLeft()
 		if x < iconPos then
 			ExRT.F.ShowInput("Add custom line at +X seconds",function(timestamp,t) 
 				t = module:ConvertMinuteStrToNum(t)
@@ -10910,7 +10928,7 @@ function options:Load()
 
 							spells_sorted[#spells_sorted+1] = {
 								id = spell, 
-								name = (GetSpellName(spell) or "spell"..spell),
+								name = spell_times.name or GetSpellName(spell) or "spell"..spell,
 								isOff = self.spell_status[spell],
 								prio = self.spell_status[spell] and 0 or 1,
 								time = t,
@@ -10920,6 +10938,33 @@ function options:Load()
 								cuid = #spells_sorted+1,
 							}
 						end
+					end
+				end
+			end
+
+			if timeLineData.secrets then
+				for i=1,#timeLineData.secrets do
+					local secret = timeLineData.secrets[i]
+
+					local t = secret[1]
+
+					if not self:IsRemovedByTimeAdjust(t) then
+						t = self:GetTimeAdjust(t)
+						local pname,ptime,pcount,pnum = self:GetPhaseFromTime(t)
+
+						spells_sorted[#spells_sorted+1] = {
+							id = -100000 - i, 
+							id_secret = secret[3],
+							name = "Secret",
+							name_secret = secret[2],
+							isOff = false,
+							prio = 1,
+							time = t,
+							main = {secret[1]},
+							phase = pname,
+							cuid = #spells_sorted+1,
+							isSecret = true,
+						}
 					end
 				end
 			end
@@ -11017,8 +11062,8 @@ function options:Load()
 				end
 			else
 				local name = GetSpellName(spell)
-				local texture = GetSpellTexture(spell)
-				spell_data.line_name = (name or "spell"..spell).." ("..spell_data.counter..")"
+				local texture = GetSpellTexture(spell_data.isSecret and spell_data.id_secret or spell)
+				spell_data.line_name = spell_data.isSecret and spell_data.name_secret or ((name or "spell"..spell).." ("..spell_data.counter..")")
 				spell_data.line_icon = texture
 				spell_data.line_time = module:FormatTime(spell_data.time)
 				spell_data.line_trigger = true
@@ -11027,7 +11072,7 @@ function options:Load()
 			if spell_data.phase and spell_data.phase ~= 0 then
 				if type(spell_data.phase)=="number" and spell_data.phase < 0 and spell_data.phase > -10000 then
 					spell_data.line_trigger_text = "E"
-					spell_data.line_trigger_text2 = ExRT.F.utf8sub(ExRT.L.bossName[-spell_data.phase] or "",1,5)
+					spell_data.line_trigger_text2 = ExRT.F.utf8sub(ExRT.L:bossName2(-spell_data.phase) or "",1,5)
 				else
 					spell_data.line_trigger_text = "P"
 					spell_data.line_trigger_text2 = spell_data.phase
@@ -11882,7 +11927,7 @@ function options:Load()
 								break
 							end
 						end
-						local encounterName = ExRT.L.bossName[bossID]
+						local encounterName = ExRT.L:bossName2(bossID)
 						if encounterName == "" then
 							encounterName = nil
 						end
@@ -13556,7 +13601,7 @@ function options:Load()
 		local function bossList_SetValue(_,encounterID)
 			if encounterID and encounterID ~= 0 and ExRT.F.table_find(List,encounterID,"arg1") then
 				self.setupFrame.bossCustom:Shown(false):Point("TOPLEFT",self.setupFrame.bossList,"TOPLEFT",0,0)
-				self.setupFrame.bossList:SetText(L.bossName[ encounterID ])
+				self.setupFrame.bossList:SetText(L:bossName2( encounterID ))
 			elseif not encounterID then
 				self.setupFrame.bossCustom:Shown(false):Point("TOPLEFT",self.setupFrame.bossList,"TOPLEFT",0,0)
 				self.setupFrame.bossList:SetText("-")
@@ -13595,7 +13640,7 @@ function options:Load()
 					bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 				end
 				List[#List+1] = {
-					text = L.bossName[ bossID ],
+					text = L:bossName2( bossID ),
 					arg1 = bossID,
 					func = bossList_SetValue,
 					icon = bossImg,
@@ -13616,7 +13661,7 @@ function options:Load()
 					bossImg = select(5, EJ_GetCreatureInfo(1, ExRT.GDB.encounterIDtoEJ[bossID]))
 				end
 				dungSubMenu[#dungSubMenu+1] = {
-					text = L.bossName[ bossID ],
+					text = L:bossName2( bossID ),
 					arg1 = bossID,
 					func = bossList_SetValue,
 					icon = bossImg,
@@ -13640,7 +13685,7 @@ function options:Load()
 		if isUser then
 			options.setupFrame.data.bossID = tonumber(self:GetText())
 		end
-		self:ExtraText(L.bossName[options.setupFrame.data.bossID or 0] or "")
+		self:ExtraText(L:bossName2(options.setupFrame.data.bossID or 0) or "")
 		if isUser then
 			options.setupFrame.tab.tabs[3].button.alert:Update()
 		end
@@ -17415,7 +17460,7 @@ end
 function module:Enable()
 	module.IsEnabled = true
 
-	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET')
+	module:RegisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET','ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED')
 
 	module:RegisterBigWigsCallback("BigWigs_OnBossEngage")
 	module:RegisterDBMCallback("DBM_Pull")
@@ -17441,7 +17486,7 @@ end
 function module:Disable()
 	module.IsEnabled = false
 
-	module:UnregisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET')
+	module:UnregisterEvents('ENCOUNTER_START','ENCOUNTER_END','ZONE_CHANGED_NEW_AREA','CHALLENGE_MODE_START','CHALLENGE_MODE_COMPLETED','CHALLENGE_MODE_RESET','ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED')
 
 	module:UnregisterTimer()
 	module:UnloadAll()
@@ -17449,6 +17494,7 @@ function module:Disable()
 	module:UnregisterBigWigsCallback("BigWigs_OnBossEngage")
 	module:UnregisterDBMCallback("DBM_Pull")
 end
+
 
 function module:timer(elapsed)
 	local triggers = module.db.eventsToTriggers.PLAYERS_IN_RANGE
@@ -18687,6 +18733,7 @@ function module.main.COMBAT_LOG_EVENT_UNFILTERED(timestamp,event,hideCaster,sour
 	end
 end
 
+
 function module:TriggerHPLookup(unit,triggers,hp,hpValue)
 	local guid = UnitGUID(unit)
 	local name = UnitName(unit)
@@ -19102,11 +19149,11 @@ function module:TriggerBWMessage(key, text)
 	end
 end
 
-local function TriggerBWTimer_DelayActive(trigger, triggerData, expirationTime, key, text)
+local function TriggerBWTimer_DelayActive(trigger, triggerData, expirationTime, key, text, counter)
 	module:AddTriggerCounter(trigger)
-	if not trigger.Dcounter or module:CheckNumber(trigger.Dcounter,trigger.count) then
+	if not trigger.Dcounter or module:CheckNumber(trigger.Dcounter,counter or trigger.count) then
 		local vars = {
-			counter = trigger.count,
+			counter = counter or trigger.count,
 			spellID = key,
 			spellName = text,
 			timeLeft = expirationTime,
@@ -19116,37 +19163,52 @@ local function TriggerBWTimer_DelayActive(trigger, triggerData, expirationTime, 
 	end
 end
 
-function module:TriggerBWTimer(key, text, duration)
-	local triggers = module.db.eventsToTriggers.BW_TIMER
-	for i=1,#triggers do
-		local trigger = triggers[i]
-		local triggerData = trigger._trigger
-		if 
-			key == -1 or
-			(
-			 triggerData.bwtimeleft and 
-			 (duration == 0 or duration >= triggerData.bwtimeleft) and
-			 (
-		 	  (triggerData.pattFind or triggerData.spellID) and
-			  (not triggerData.pattFind or module:FindInString(text,triggerData.pattFind)) and
-			  (not triggerData.spellID or key == triggerData.spellID)
-			 )
-			)
-		then
-			if duration == 0 then
-				for i=1,#trigger.delays2 do
-					trigger.delays2[i]:Cancel()
+do
+
+	local countString = "%((%d%d?)%)"
+	if ExRT.locale == "zhCN" or ExRT.locale == "zhTW" then
+		countString = "（(%d%d?)）"
+	end
+
+	function module:TriggerBWTimer(key, text, duration)
+		local triggers = module.db.eventsToTriggers.BW_TIMER
+		for i=1,#triggers do
+			local trigger = triggers[i]
+			local triggerData = trigger._trigger
+			if 
+				key == -1 or
+				(
+				 triggerData.bwtimeleft and 
+				 (duration == 0 or duration >= triggerData.bwtimeleft) and
+				 (
+			 	  (triggerData.pattFind or triggerData.spellID) and
+				  (not triggerData.pattFind or module:FindInString(text,triggerData.pattFind)) and
+				  (not triggerData.spellID or key == triggerData.spellID)
+				 )
+				)
+			then
+				if duration == 0 then
+					for i=#trigger.delays2,1,-1 do
+						local td = trigger.delays2[i]
+						if not text or (text == td.barUniqName) then
+							td:Cancel()
+							tremove(trigger.delays2, i)
+						end
+					end
+					--wipe(trigger.delays2)
+				else
+					local counter = tonumber( type(text)=="string" and text:match(countString) or "",nil )
+					local t = ScheduleTimer(TriggerBWTimer_DelayActive, max(duration - triggerData.bwtimeleft, 0.01), trigger, triggerData, GetTime() + duration, key, text, counter)
+					if text then
+						t.barUniqName = text
+					end
+					module.db.timers[#module.db.timers+1] = t
+					trigger.delays2[#trigger.delays2+1] = t
 				end
-				wipe(trigger.delays2)
-			else
-				local t = ScheduleTimer(TriggerBWTimer_DelayActive, max(duration - triggerData.bwtimeleft, 0.01), trigger, triggerData, GetTime() + duration, key, text)
-				module.db.timers[#module.db.timers+1] = t
-				trigger.delays2[#trigger.delays2+1] = t
 			end
 		end
 	end
 end
-
 
 do
 	local registeredBigWigsEvents = {}
@@ -19162,6 +19224,9 @@ do
 			return
 		end
 		if module.db.encounterBossmod and module.db.encounterBossmod ~= "BW" and event ~= "BigWigs_OnBossEngage" and DBM then
+			return
+		end
+		if issecretvalue and (issecretvalue(select(2,...) or 0) or issecretvalue(select(3,...) or 0)) then
 			return
 		end
 		if (event == "BigWigs_Message") then
@@ -19211,6 +19276,19 @@ do
 			if not module.db.encounterID then
 				timers_on_pull[#timers_on_pull+1] = {event, ...}
 			end
+		elseif (event == "BigWigs_Timer") then
+			local bwModule, key, duration, maxTime, text, counter, icon, _, isBarEnabled = ...
+
+			if not isBarEnabled then
+				BigWigsTextToKeys[text] = key
+				if module.db.eventsToTriggers.BW_TIMER then
+					module:TriggerBWTimer(key, text, duration)
+				end
+			end
+
+			if not module.db.encounterID then
+				timers_on_pull[#timers_on_pull+1] = {event, ...}
+			end
 		elseif (event == "BigWigs_ResumeBar") then
 			local bwModule, text = ...
 
@@ -19239,6 +19317,7 @@ do
 			end
 		elseif event == "BigWigs_OnBossEngage" then
 			module:RegisterBigWigsCallback("BigWigs_StartBar")
+			module:RegisterBigWigsCallback("BigWigs_Timer")
 
 			module.db.encounterBossmod = "BW"
 			wipe(timers_on_pull)
@@ -19288,6 +19367,9 @@ do
 			return
 		end
 		if module.db.encounterBossmod and module.db.encounterBossmod ~= "DBM" and BigWigsLoader then
+			return
+		end
+		if issecretvalue and (issecretvalue(select(1,...) or 0) or issecretvalue(select(2,...) or 0) or issecretvalue(select(3,...) or 0)) then
 			return
 		end
 		if (event == "DBM_Announce") then
@@ -21522,6 +21604,20 @@ function module:TTSPrerecorded(spellID)
 	return TTSSpellsList[spellID] or TTSSpellsList[tostring(spellID)]
 end
 
+function module.main:ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED(eventID)
+	if not IsHistoryEnabled then return end
+
+	local state = C_EncounterTimeline.GetEventState(eventID)
+	if state == Enum.EncounterTimelineEventState.Finished then
+		local info = C_EncounterTimeline.GetEventInfo(eventID)
+		if info then
+			module:AddHistoryRecord(-5,info.spellName,info.spellID,info.iconFileID)
+			--module:AddHistoryRecord(-5,secretwrap(info.spellName),secretwrap(info.spellID),secretwrap(info.iconFileID))
+			
+		end
+	end
+end
+
 function module.main:CHALLENGE_MODE_START()
 	module:StopLiveForce()
 
@@ -21675,8 +21771,15 @@ function module:SaveHistorySegment(ignoreFightLen, difficultyID, isKill)
 		if #module.db.historyNow > 1 and (ignoreFightLen or ((module.db.historyNow[#module.db.historyNow][1] - module.db.historyNow[1][1]) >= 30)) then
 			enoughLength = true
 		end
+		local isAnySecret
+		for i=1,#module.db.historyNow do
+			if module.db.historyNow[i][2] == -5 then
+				isAnySecret = true
+				break
+			end
+		end
 		if enoughLength then
-			if not VMRT.Reminder2.HistoryMPlusSessionEnabled and module.db.historyNow[1][2] == 22 then
+			if (not VMRT.Reminder2.HistoryMPlusSessionEnabled and module.db.historyNow[1][2] == 22) or isAnySecret then
 				tinsert(module.db.historySession,1,module.db.historyNow)
 			else
 				tinsert(module.db.history,1,module.db.historyNow)
@@ -21691,13 +21794,13 @@ function module:SaveHistorySegment(ignoreFightLen, difficultyID, isKill)
 			module.db.historySession[i] = nil
 		end
 
-		if enoughLength and tosend and VMRT.Reminder2.HistorySync and IsInRaid() then
+		if enoughLength and not isAnySecret and tosend and VMRT.Reminder2.HistorySync and IsInRaid() then
 			C_Timer.After(2,function()
 				module:SendLastHistory(tosend)
 			end)
 		end
 
-		if enoughLength and tosend and module:SaveHistorySegmentIsMatchDiff(difficultyID) then
+		if enoughLength and not isAnySecret and tosend and module:SaveHistorySegmentIsMatchDiff(difficultyID) then
 			C_Timer.After(2,function()
 				module:SaveLastHistory(tosend, difficultyID, isKill)
 			end)
@@ -21873,6 +21976,13 @@ function module:CreateCustomTimelineFromHistory(fight)
 			if not data.p then data.p = {n={}} end
 			data.p[ #data.p+1 ] = hline[1] - start
 			data.p.n[ #data.p ] = 0
+		elseif hline[2] == -5 then
+			data.secrets = data.secrets or {}
+			data.secrets[#data.secrets+1] = {
+				hline[1]-start,
+				hline[3],
+				hline[4]
+			}
 		end
 	end
 	--for i=1,#var.spell do add(var.spell[i][12],1,var.spell[i][1] - start) end
@@ -23034,7 +23144,7 @@ do
 
 					if isStringImport and name then
 						local instanceName = GetInstanceName(new.bossID)
-						print("Imported ",name,"("..(new.bossID and ExRT.GDB.encounterIDtoEJ[new.bossID] and L.bossName[new.bossID] or zoneID and zoneID ~= "" and "Zone "..zoneID or "none")..(instanceName and " <"..instanceName..">" or "")..")")
+						print("Imported ",name,"("..(new.bossID and ExRT.GDB.encounterIDtoEJ[new.bossID] and L:bossName2(new.bossID) or zoneID and zoneID ~= "" and "Zone "..zoneID or "none")..(instanceName and " <"..instanceName..">" or "")..")")
 					end
 					rc = rc + 1
 				else
@@ -23067,7 +23177,18 @@ do
 		local t = {}
 		for _, h_key in pairs({"history","historySession"}) do	
 			for i=1,#module.db[h_key] do
-				t[#t+1] = module.db[h_key][i]
+
+				local isAnySecret
+				for j=1,#module.db[h_key][i] do
+					if module.db[h_key][i][j][2] == -5 then
+						isAnySecret = true
+						break
+					end
+				end
+
+				if not isAnySecret then
+					t[#t+1] = module.db[h_key][i]
+				end
 			end
 		end
 		if minimized then
@@ -23901,12 +24022,13 @@ function module:Test_BW(phase)
 		LibDBIcon10_BigWigs:GetScript("OnClick")(LibDBIcon10_BigWigs,"RightButton")--sorry
 		BigWigsOptions:Close()
 	end
-	BigWigsLoader:LoadZone(2810)
+	BigWigsLoader:LoadZone(2913)
 
-	local bossID = boss == 2 and 2902 or 3132
-	local bossName = boss == 2 and "Ulgrax the Devourer" or "Forgeweaver Araz"
+	local bossID = 3183
+	local bossName = "Midnight Falls"
 
 	local mod = BigWigs:GetBossModule(bossName)
+	local CL = BigWigsAPI:GetLocale("BigWigs: Common")
 	mod.Mythic = function() return true end
 
 	if phase == -1 then
@@ -23933,6 +24055,21 @@ function module:Test_BW(phase)
 	elseif phase == 3 then
 		mod:SpikeStormRemoved({amount = 0, spellId = 451277, spellName = GetSpellName(451277), time = GetTime()})
 		return
+	else
+		C_Timer.After(3,function() 
+			mod:Bar(1279420, 5, CL.count:format(mod:GetName(1279420), 1))
+			C_Timer.After(4.9,function() 
+				mod:StopBar(CL.count:format(mod:GetName(1279420), 1)) 
+				mod:StopBar(CL.count:format(mod:GetName(1279420), 2)) 
+				mod:Bar(1279420, 5, CL.count:format(mod:GetName(1279420), 2))
+			end)
+		end)
+		C_Timer.After(6,function() 
+			mod:Bar(1279420, 5, CL.count:format(mod:GetName(1279420), 2))
+			C_Timer.After(4.9,function() 
+				mod:Bar(1279420, 5, CL.count:format(mod:GetName(1279420), 1))
+			end)
+		end)
 	end
 
 	mod:Enable()
@@ -23945,6 +24082,7 @@ function module:Test_BW(phase)
 	module:BigWigsRecallEncounterStartEvents()
 end
 --/run GMRT.A.Reminder2:Test_BW()
+
 
 function module:Test_DBM(phase,boss)
 	local mod

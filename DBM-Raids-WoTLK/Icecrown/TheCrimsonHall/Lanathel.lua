@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(37955)
 mod:SetEncounterID(not mod:IsPostCata() and 853 or 1103)
 mod:SetModelID(31165)
@@ -54,7 +55,6 @@ local berserkTimer					= mod:NewBerserkTimer(320)
 mod:AddSetIconOption("BloodMirrorIcon", 71510, false, 0, {7})--red x for blood link
 mod:AddSetIconOption("SwarmingShadowsIcon2", 71266, false, 0, {4})
 mod:AddSetIconOption("SetIconOnDarkFallen2", 71340, false, 0, {1, 2, 3})
-mod:AddRangeFrameOption(8, 71446)
 
 local pactTargets = {}
 mod.vb.pactIcons = 1
@@ -73,9 +73,6 @@ function mod:OnCombatStart(delay)
 	timerNextSwarmingShadows:Start(-delay)
 	table.wipe(pactTargets)
 	self.vb.pactIcons = 1
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(8)
-	end
 	if self:IsDifficulty("normal10", "heroic10") then
 		timerNextInciteTerror:Start(124-delay)
 	else
@@ -83,11 +80,6 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 71340 then		--Pact of the Darkfallen

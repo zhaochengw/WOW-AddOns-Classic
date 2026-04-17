@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-01-02T00:31:32Z
+    This file was last updated on 2026-02-27T16:45:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -349,7 +349,9 @@ do
    local DebuffHistHashTable = {};
 
    function D:Debuff_History_Add( DebuffName, DebuffType, spellID)
-
+       if not canaccessvalue(DebuffName) then  -- do not store secret value
+          return;
+       end
        if not DebuffHistHashTable[DebuffName] then
 
            -- reset iterator if out of boundaries
@@ -405,8 +407,10 @@ do
     local D                 = D;
     local C_UnitAuras       = _G.C_UnitAuras
 
+    local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
+
     local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
-        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i);
+        local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
 
         if not auraData then
 			return nil;
@@ -421,7 +425,8 @@ do
 		nil,
 		nil,
 		nil,
-		auraData.spellId;
+		auraData.spellId,
+        DC.MN and auraData.auraInstanceID or nil;
     end
 
     local UnitIsCharmed     = _G.UnitIsCharmed;
@@ -437,7 +442,7 @@ do
     };
 
     -- This local function only sets interesting values of UnitDebuff()
-    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID;
+    local Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, SpellID, secretMode, auraInstanceID;
     local function GetUnitDebuff  (Unit, i) --{{{
 
         if D.LiveList.TestItemDisplayed and UnitExists(Unit) then -- and not UnTrustedUnitIDs[Unit] then
@@ -450,7 +455,9 @@ do
             end
         end
 
-        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID = UnitDebuff (Unit, i);
+        Name, Texture, Applications, TypeName, Duration, ExpirationTime, _, _, _, SpellID, auraInstanceID = UnitDebuff (Unit, i);
+
+        secretMode = not canaccessvalue(TypeName)
 
         if Name then
             return true;
@@ -493,7 +500,6 @@ do
     -- This function does more than just reporting Debuffs. it also detects charmed units
 
     function D:GetUnitDebuffAll (Unit) --{{{
-
         -- create a Debuff table for this unit if there is not already one
         if not DebuffUnitCache[Unit] then
             DebuffUnitCache[Unit] = {};
@@ -536,20 +542,41 @@ do
 
             local isSpellIDScret = not canaccessvalue(SpellID)
 
+            --[==[@debug@
+            if isSpellIDScret then
+                D:Debug("spell ids are secret, aura id: ", auraInstanceID)
+            end
+
+            if secretMode then
+                D:Debug("Debuff type is secret")
+            end
+            --@end-debug@]==]
+
+            local s_color = DC.MN and auraInstanceID and C_UnitAuras.GetAuraDispelTypeColor(Unit, auraInstanceID, D.Status.dsCurve)
+
             -- test for a type
-            if TypeName and TypeName ~= "" then
-                Type = DC.NameToTypes[TypeName];
-            elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
-                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
-                Type = DC.NameToTypes[TypeName]
-            elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
-                checkSpellIDForBleed();
-                if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
-                    Type = DC.NameToTypes["Bleed"]
-                    TypeName = DC.TypeNames[DC.BLEED];
+            if not secretMode then
+                if TypeName and TypeName ~= "" then
+                    Type = DC.NameToTypes[TypeName];
+                elseif not isSpellIDScret and DC.IS_OMNI_DEBUFF[SpellID] then -- it's a special debuff for which any dispel will work
+                    TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                    Type = DC.NameToTypes[TypeName]
+                elseif not isSpellIDScret and self.Status.CuringSpells[DC.BLEED] then
+                    checkSpellIDForBleed();
+                    if D.Status.t_CheckBleedDebuffsActiveIDs[SpellID] then
+                        Type = DC.NameToTypes["Bleed"]
+                        TypeName = DC.TypeNames[DC.BLEED];
+                    else
+                        Type = false;
+                    end
                 else
                     Type = false;
                 end
+            elseif s_color then --
+                -- just affect the first spell we know, it is mormally used to detect the range or button miss clicks
+                -- but in MN it's no longer possible so just default to the first spell as it's better than nothing...
+                TypeName = DC.TypeNames[self.Status.ReversedCureOrder[1]];
+                Type = DC.NameToTypes[TypeName]
             else
                 Type = false;
             end
@@ -585,6 +612,9 @@ do
                 ThisUnitDebuffs[StoredDebuffIndex].Type           = Type;
                 ThisUnitDebuffs[StoredDebuffIndex].Name           = Name;
                 ThisUnitDebuffs[StoredDebuffIndex].SpellID        = SpellID;
+                ThisUnitDebuffs[StoredDebuffIndex].auraInstanceID = auraInstanceID;
+                ThisUnitDebuffs[StoredDebuffIndex].secretMode     = secretMode;
+                ThisUnitDebuffs[StoredDebuffIndex].s_color        = s_color;
                 ThisUnitDebuffs[StoredDebuffIndex].index          = i;
 
                 -- we can't use i, else we wouldn't have contiguous indexes in the table
@@ -626,7 +656,9 @@ do
     local _;
     local CureOrder;
     local sorting = function (a, b)
-        return CureOrder[a.Type] * 10000 - a.Applications < CureOrder[b.Type] * 10000 - b.Applications;
+        local aApps = canaccessvalue(a.Applications) and a.Applications or 0
+        local bApps = canaccessvalue(b.Applications) and b.Applications or 0
+        return CureOrder[a.Type] * 10000 - aApps < CureOrder[b.Type] * 10000 - bApps
     end
 
     local NotRaidOrParty = {
@@ -689,28 +721,35 @@ do
 
             continue_ = true;
 
+            if not Debuff.Type then
+                continue_ = false;
+                break
+            end
+
+            local nameAccessible = canaccessvalue(Debuff.Name)
+
             -- test if we have to ignore this debuff  {{{ --
 
             if UnitFilteringTest(Unit, self.Status.UnitFilteringTypes[Debuff.Type]) then
                 continue_ = false; -- == skip this debuff
             end
 
-            if self.profile.DebuffsToIgnore[Debuff.Name] then -- XXX not sure it has any actual use nowadays (2013-06-18)
+            if nameAccessible and self.profile.DebuffsToIgnore[Debuff.Name] then
                 -- these are the BAD ones... the ones that make the target immune... abort this unit
                 --D:Debug("UnitCurableDebuffs(): %s is ignored", Debuff.Name);
                 break; -- exit here
             end
 
-            if self.profile.BuffDebuff[Debuff.Name] then
+            if nameAccessible and self.profile.BuffDebuff[Debuff.Name] then
                 -- these are just ones you don't care about (sleepless deam etc...)
                 continue_ = false; -- == skip this debuff
                 --D:Debug("UnitCurableDebuffs(): %s is not a real debuff", Debuff.Name);
             end
 
-            if self.Status.Combat or self.profile.DebuffAlwaysSkipList[Debuff.Name] then
+            if self.Status.Combat or nameAccessible and self.profile.DebuffAlwaysSkipList[Debuff.Name] then
                 local _, EnUClass = UnitClass(Unit);
                 if self.profile.skipByClass[EnUClass] then
-                    if self.profile.skipByClass[EnUClass][Debuff.Name] then
+                    if  nameAccessible and self.profile.skipByClass[EnUClass][Debuff.Name] then
                         -- these are just ones you don't care about by class while in combat
 
                         -- This lead to a problem because once the fight is finished there are no event to trigger
@@ -900,11 +939,13 @@ do
             --[==[@debug@
             --D:Debug("UnitBuff", unit, BuffNameToCheck)
             --@end-debug@]==]
-        if not restricted and GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then --XXX MN
+        if not restricted and GetAuraDataBySpellName and GetAuraDataBySpellName(unit, BuffNameToCheck) then
             --[==[@debug@
             D:Debug("used C_UnitAuras")
             --@end-debug@]==]
-            return true
+
+            -- return the aura instance id instead of true so that we can check when it's removed
+            return GetAuraDataBySpellName(unit, BuffNameToCheck).auraInstanceID
         elseif not restricted and not GetAuraDataBySpellName then
             --[==[@debug@
             D:Debug("used old buff scan method")
@@ -913,10 +954,10 @@ do
             for i = 1, 40 do
                 buffName = G_UnitBuff(unit, i)
                 if not buffName then
-                    return
+                    return false
                 else
                     if BuffNameToCheck == buffName then
-                        return G_UnitBuff(unit, i)
+                        return (G_UnitBuff(unit, i)) and true or false
                     end
                 end
             end
@@ -930,14 +971,12 @@ do
 
         if type(BuffNamesToCheck) == "string" then
 
-            return (UnitBuff(unit, BuffNamesToCheck)) and true or false;
+            return UnitBuff(unit, BuffNamesToCheck)
 
         else
             for buff in pairs(BuffNamesToCheck) do
 
-                if UnitBuff(unit, buff) then
-                    return true;
-                end
+                return UnitBuff(unit, buff)
 
             end
         end
@@ -949,16 +988,12 @@ end
 
 
 function D:CheckUnitStealth(unit)
-    if self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF) then
-        --      self:Debug("Sealth found !");
-        return true;
-    end
-    return false;
+    return self:CheckUnitForBuffs(unit, DC.IS_STEALTH_BUFF)
 end
 -- }}}
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.7.34";
+T._LoadedFiles["Decursive.lua"] = "2.8.0-RC3";
 
 -- Sin

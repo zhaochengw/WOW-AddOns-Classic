@@ -354,7 +354,7 @@ function TrackerUtils:GetCompletionText(quest)
     if completionText then
         return completionText
     elseif quest.Description and next(quest.Description) then
-        local descr = quest.Description[1]:gsub("%.", "")
+        local descr = quest.Description[1]
         return descr
     end
 end
@@ -408,7 +408,7 @@ function TrackerUtils:GetCategoryNameByID(catId)
     end
 
     if type(catId) == "number" and catId < 0 and type(l10n.questCategoryLookup[catId]) == "string" then
-        zoneCache[catId] = l10n.questCategoryLookup[catId]
+        zoneCache[catId] = l10n(l10n.questCategoryLookup[catId])
         return zoneCache[catId]
     end
 

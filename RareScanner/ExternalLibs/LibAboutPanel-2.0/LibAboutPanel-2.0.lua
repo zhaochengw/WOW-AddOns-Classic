@@ -495,10 +495,12 @@ function AboutPanel:CreateAboutPanel(addon, parent)
 		frame.OnDefault = frame.default;
 		frame.OnRefresh = frame.refresh;
 		
-		local category, layout = Settings.RegisterCanvasLayoutCategory(frame, frame.name, frame.name);
-		category.ID = frame.name;
-		Settings.RegisterAddOnCategory(category);
-		
+		local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+		local BlizOptionsIDMap = AceConfigDialog.BlizOptionsIDMap			
+		local category = Settings.RegisterCanvasLayoutCategory(frame, frame.name)
+		BlizOptionsIDMap[frame.name] = category.ID
+				
+		Settings.RegisterAddOnCategory(category);		
 		AboutPanel.aboutFrame[addon] = frame
 	end
 

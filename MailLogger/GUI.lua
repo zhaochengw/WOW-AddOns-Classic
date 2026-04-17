@@ -126,8 +126,12 @@ function Output:Initialize()
                     Addon.Config.SelectName = text[v.value]
                     UIDropDownMenu_SetText(d, text[v.value])
                     CloseDropDownMenus()
-                    Addon.SetWindow.dropdownlist:Hide()
-                    Addon.SetWindow.dropdownlist:Show()
+                    -- 切換角色後，若正處於過濾狀態，則刷新日曆
+                    if Addon.Config.OnlyThisCharacter then
+                        Addon:GetAvailableDate(false)
+                        Addon:RefreshCalendar()
+                        Addon:PrintTradeLog(Addon.Config.Mode, Addon.Config.SelectName)
+                    end
                 end
                 info.arg1, info.arg2 = d, value[i]
                 UIDropDownMenu_AddButton(info)
@@ -161,6 +165,9 @@ function Output:Initialize()
                 sift:SetText(L["Sift"])
                 Addon:PrintTradeLog(Config.Mode, nil)
             end
+            -- 點擊篩選/取消篩選時，更新日曆可用日期並刷新顯示
+            Addon:GetAvailableDate(false)
+            Addon:RefreshCalendar()
         end)
 
         self.dropdowntitle = t

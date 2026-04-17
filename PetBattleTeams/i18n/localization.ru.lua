@@ -52,7 +52,7 @@ local baseLocale = {
     ["Reset UI"] = "Сбросить интерфейс",
     ["Resets the UI to its default settings. There is no confirmation for this action."] = "Сбрасывает интерфейс на стандартные настройки. Для этого действия нет подтверждения.",
 
-    ["Team: "] = "Команда: ",
+    ["Team: "] = "Команда: |cff00ffff",
     ["Team Options"] = "Настройки команды",
     ["Lock Team"] = "Заблокировать команду",
     ["Rename Team"] = "Переименовать команду",

@@ -93,6 +93,8 @@ BG.Init(function()
                             BG.maijiaButton:SetCursorPosition(0)
                         end
                     end
+                elseif button == "RightButton" then
+                    FriendsFrame_ShowDropdown(name, 1, nil, "RAID", nil)
                 end
             elseif (strsub(link, 1, 4) == "item") then
                 local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)

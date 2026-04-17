@@ -4674,6 +4674,7 @@ do
 	function module.main:SPELL_UPDATE_COOLDOWN()
 		for _,spellID in pairs(module.db.spellCDSync) do
 			local start, duration = GetSpellCooldown(spellID)
+			if issecretvalue and issecretvalue(start) then return end
 			if (start ~= prevStart[spellID] or duration ~= prevDur[spellID]) and (duration == 0 or duration > 2) then
 				prevStart[spellID] = start
 				prevDur[spellID] = duration

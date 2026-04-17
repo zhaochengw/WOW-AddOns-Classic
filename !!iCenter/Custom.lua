@@ -1,18 +1,3 @@
----  头像框体位置
-hooksecurefunc("UIParent_UpdateTopFramePositions", function()
-	if PlayerFrame and not PlayerFrame:IsUserPlaced() and not PlayerFrame_IsAnimatedOut(PlayerFrame) then
-		PlayerFrame:ClearAllPoints();
-		PlayerFrame:SetPoint("CENTER", UIParent,-350,-100)
-		PlayerFrame:SetUserPlaced(true)
-	end
-	if TargetFrame and not TargetFrame:IsUserPlaced() then
-		TargetFrame:ClearAllPoints();
-		TargetFrame:SetPoint("CENTER", UIParent,350,-100)
-		TargetFrame:SetUserPlaced(true)
-	end
-end)
----  头像框体位置
-
 ---  黑色泥土检测功能
 local BlackDirtDetector = CreateFrame("Frame", nil, UIParent)
 BlackDirtDetector:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
@@ -33,9 +18,24 @@ end
 
 -- 开始周期性检测
 function BlackDirtDetector:StartDetection()
-    self.detectionTimer = self.detectionTimer or C_Timer.NewTicker(0.1, function() 
-        self:DetectBlackDirt() 
-    end)
+    if self.detectionTimer then return end
+    if C_Timer and C_Timer.NewTicker then
+        self.detectionTimer = C_Timer.NewTicker(0.1, function()
+            self:DetectBlackDirt()
+        end)
+    else
+        -- Fallback for MOP 5.5.3 classic: use frame OnUpdate
+        local f = CreateFrame("Frame")
+        f.elapsed = 0
+        f:SetScript("OnUpdate", function(_, elapsed)
+            f.elapsed = f.elapsed + elapsed
+            if f.elapsed >= 0.1 then
+                f.elapsed = 0
+                BlackDirtDetector:DetectBlackDirt()
+            end
+        end)
+        self.detectionTimer = f
+    end
 end
 
 -- 检测黑色泥土
@@ -98,11 +98,27 @@ function BlackDirtDetector:ShowRedBeam()
     beam.extended:Show()
     
     -- 3秒后隐藏光柱
-    C_Timer.After(3, function() 
-        beam:Hide()
-        beam.extended:Hide()
-        table.insert(redBeamPool, beam) -- 放回池中
-    end)
+    if C_Timer and C_Timer.After then
+        C_Timer.After(3, function()
+            beam:Hide()
+            beam.extended:Hide()
+            table.insert(redBeamPool, beam) -- 放回池中
+        end)
+    else
+        -- Fallback for MOP 5.5.3 classic
+        local hideFrame = CreateFrame("Frame")
+        hideFrame.elapsed = 0
+        hideFrame.beam = beam
+        hideFrame:SetScript("OnUpdate", function(self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            if self.elapsed >= 3 then
+                self.beam:Hide()
+                self.beam.extended:Hide()
+                table.insert(redBeamPool, self.beam)
+                self:SetScript("OnUpdate", nil)
+            end
+        end)
+    end
 end
 
 -- 导出检测器（可选）

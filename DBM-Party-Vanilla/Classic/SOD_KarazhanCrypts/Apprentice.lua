@@ -2,7 +2,8 @@ if not DBM:IsSeasonal("SeasonOfDiscovery") then return end
 local mod	= DBM:NewMod("Apprentice", "DBM-Party-Vanilla", 22)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250208200909")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetEncounterID(3170, 3171, 3172)
 --mod:SetCreatureID()
 mod:SetZone(2875)

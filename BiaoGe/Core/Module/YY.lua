@@ -1479,7 +1479,7 @@ BG.Init(function()
                         local date = v.date
                         date       = strsub(date, 1, 2) .. "/" .. strsub(date, 3, 4) .. "/" .. strsub(date, 5, 6)
                         tinsert(mypingjia, { name = L["日期："], name2 = date })
-                        tinsert(mypingjia, { name = L["频道名称："], name2 = v.name })
+                        tinsert(mypingjia, { name = L["备注"], name2 = v.name })
                         tinsert(mypingjia, { name = L["评价："], name2 = Y.Pingjia(v.pingjia) })
                         tinsert(mypingjia, { name = L["理由："], name2 = v.edit })
                         break
@@ -1697,7 +1697,7 @@ BG.Init(function()
     do
         BG.EndPJ = {}
 
-        local function GetLeaderYY()
+        function BG.GetLeaderYY()
             -- 是否有团长发的YY
             for yy, v in pairs(BiaoGe.YYdb.LeaderYY) do
                 for _, vv in ipairs(BG.raidRosterInfo) do
@@ -1737,10 +1737,20 @@ BG.Init(function()
             end
         end
 
-        local function IsTheEndBoss(bossId)
-            for i, _bossId in ipairs(BG.theEndBossID) do
-                if _bossId == bossId then
-                    return true
+        local showed
+        function BG.ShowYYPJ(sender)
+            if not showed and BiaoGe.YYdb.share == 1 and not BG.IsML and BG.IsMLByName(sender) then
+                local yy = BG.GetLeaderYY()
+                if yy then
+                    for k, vv in pairs(BiaoGe.YYdb.all) do
+                        if tonumber(yy) == tonumber(vv.yy) then
+                            return
+                        end
+                    end
+                    showed = true
+                    BG.After(1, function()
+                        BG.EndPJ.new:Show()
+                    end)
                 end
             end
         end
@@ -1787,7 +1797,7 @@ BG.Init(function()
                     end
 
                     -- 历遍团长YY记录
-                    BG.EndPJ.new.yy:SetText(GetLeaderYY())
+                    BG.EndPJ.new.yy:SetText(BG.GetLeaderYY())
 
                     BG.ClearFocus()
                     BG.PlaySound(2)
@@ -1815,15 +1825,15 @@ BG.Init(function()
 
                 local t = f:CreateFontString()
                 t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-                t:SetText(L["恭喜你们击杀尾王！请给团长个评价吧！"])
+                t:SetText(L["请给团长个评价吧！"])
                 t:SetPoint("TOP", BG.EndPJ.new, "TOP", 0, -30)
                 t:SetTextColor(1, 1, 1)
-                t:SetWidth(320)
+                t:SetWidth(300)
 
                 local l = f:CreateLine()
                 l:SetColorTexture(RGB("808080", 1))
-                l:SetStartPoint("BOTTOMLEFT", t, -5, -2)
-                l:SetEndPoint("BOTTOMRIGHT", t, 5, -2)
+                l:SetStartPoint("BOTTOMLEFT", t, 0, -2)
+                l:SetEndPoint("BOTTOMRIGHT", t, 0, -2)
                 l:SetThickness(1)
             end
 
@@ -2241,30 +2251,6 @@ BG.Init(function()
                 BG.EndPJ.new.havedYY = t
             end
         end
-
-        BG.RegisterEvent("ENCOUNTER_END", function(self, _, bossID, _, _, _, success)
-            if not IsTheEndBoss(bossID) or success ~= 1 or BiaoGe.YYdb.share ~= 1 or BG.IsLeader then
-                return
-            end
-            local yy = GetLeaderYY()
-            if not yy then
-                BG.After(5, function()
-                    SendSystemMessage(BG.BG .. L["恭喜你们击杀尾王！由于没有记录到团长YY，快速评价框不会弹出。"])
-                end)
-                return
-            end
-            for k, vv in pairs(BiaoGe.YYdb.all) do
-                if tonumber(yy) == tonumber(vv.yy) then
-                    BG.After(5, function()
-                        SendSystemMessage(BG.BG .. format(L["恭喜你们击杀尾王！YY%s你曾评价为：|cff%s>>%s<<。|r"], yy, Y.PingjiaColor(vv.pingjia), Y.Pingjia(vv.pingjia)))
-                    end)
-                    return
-                end
-            end
-            BG.After(10, function()
-                BG.EndPJ.new:Show()
-            end)
-        end)
     end
 
     -- YY评价功能是否关闭
@@ -2371,7 +2357,7 @@ BG.Init(function()
                     local resendtext = v.date .. "," .. v.pingjia .. "," .. v.edit .. ","
                     local randomtime = random(1, Y.lateTime * 10) * 0.1
                     C_Timer.After(randomtime, function()
-                        if sender ~= BG.GN() then
+                        if sender ~= BG.playerName then
                             BiaoGe.YYdb.shareCount = BiaoGe.YYdb.shareCount + 1
                             BG.YYMainFrame.shareCountFrame.Text:SetText(format(L["你已共享|r |cff00FF00%s|r |cffffffff人次评价"], BiaoGe.YYdb.shareCount))
                             BG.YYMainFrame.shareCountFrame:SetWidth(BG.YYMainFrame.shareCountFrame.Text:GetStringWidth())

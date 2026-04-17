@@ -53,5 +53,9 @@ function PGF.CompactListEntries_UpdateListEntry(self)
     self:SetHeight(desiredHeight())
 end
 
-hooksecurefunc("LFGListSearchEntry_Update", PGF.CompactListEntries_UpdateListEntry)
-PVEFrame:HookScript("OnShow", function () PGF.CompactListEntries_UpdateListScrollBox() end)
+function PGF.InitCompactListEntries()
+    if not PremadeGroupsFilterSettings.compactListEntries then return end
+
+    hooksecurefunc("LFGListSearchEntry_Update", PGF.CompactListEntries_UpdateListEntry)
+    PVEFrame:HookScript("OnShow", function () PGF.CompactListEntries_UpdateListScrollBox() end)
+end

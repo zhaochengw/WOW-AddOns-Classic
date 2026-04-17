@@ -27,7 +27,7 @@ local GetDisplayedAllyFrames = GetDisplayedAllyFrames;
 local GetTime = GetTime;
 local GetCVar = GetCVar;
 local SetCVar = SetCVar;
-local IsAddOnLoaded = IsAddOnLoaded;
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded;
 local IsShiftKeyDown = IsShiftKeyDown;
 local InCombatLockdown = InCombatLockdown;
 local RegisterUnitWatch = RegisterUnitWatch;
@@ -1525,6 +1525,8 @@ local updateneeded = 0;
 function UnitFramesPlus_CombatCheck()
     if InCombatLockdown() then return true end
 
+    if UnitAffectingCombat("player") then return true end
+
     local id;
     for id = 1, MAX_PARTY_MEMBERS, 1 do
         if ( UnitExists("party"..id) ) then
@@ -1565,6 +1567,13 @@ function UnitFramesPlus_CompactRaidFrameManager_UpdateShown(self)
         CompactRaidFrameManager_UpdateOptionsFlowContainer(self);
         CompactRaidFrameManager_UpdateContainerVisibility();
     else
+        -- MOP 5.5.3: combat, defer to after combat ends to avoid ADDON_ACTION_BLOCKED
+        local func = {};
+        func.name = "UnitFramesPlus_CompactRaidFrameManager_UpdateShown_"..tostring(self);
+        func.callback = function()
+            UnitFramesPlus_CompactRaidFrameManager_UpdateShown(self);
+        end;
+        UnitFramesPlus_WaitforCall(func);
         updateneeded = 1;
     end
 end

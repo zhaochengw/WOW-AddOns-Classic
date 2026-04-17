@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Malacrass", "DBM-Raids-BC", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(24239)
 mod:SetEncounterID(1193, 2486)
 mod:SetZone(568)
@@ -30,7 +31,7 @@ local specWarnHolyLight		= mod:NewSpecialWarningInterrupt(43451, "HasInterrupt",
 local specWarnFlashHeal		= mod:NewSpecialWarningInterrupt(43431, "HasInterrupt", nil, nil, 1, 2)
 local specWarnLifebloom		= mod:NewSpecialWarningDispel(43421, "MagicDispeller", nil, nil, 1, 2)
 local specWarnTotem			= mod:NewSpecialWarningSwitch(43436, "Dps", nil, nil, 1, 2)
-local specWarnGTFO			= mod:NewSpecialWarningGTFO(43429, nil, nil, nil, 8, 2)
+local specWarnGTFO			= mod:NewSpecialWarningGTFO(43429, nil, nil, nil, 1, 8)
 
 local timerSiphon			= mod:NewTargetTimer(30, 43501, nil, nil, nil, 6)
 local timerBoltCD			= mod:NewCDTimer(41, 43383, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)

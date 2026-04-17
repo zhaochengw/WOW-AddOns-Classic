@@ -342,25 +342,48 @@ function addon:SearchAndRefresh(text)
 	Atlas_ScrollBar_Update()
 end
 
+local function startLFGSearch(categoryID, activityID)
+	-- Open LFG to the group browser
+	ShowLFGParentFrame(2);
+
+	if (select(4, GetBuildInfo()) < 20000) then
+		-- Set Category
+		UIDropDownMenu_SetSelectedValue(LFGBrowseFrame.CategoryDropDown, categoryID);
+		UIDropDownMenu_Initialize(LFGBrowseFrame.CategoryDropDown, LFGBrowseCategoryDropDown_Initialize);
+
+		-- Set Activity
+		LFGBrowseActivityDropDown_ValueReset(LFGBrowseFrame.ActivityDropDown);
+		UIDropDownMenu_ClearAll(LFGBrowseFrame.ActivityDropDown);
+		UIDropDownMenu_Initialize(LFGBrowseFrame.ActivityDropDown, LFGBrowseActivityDropDown_Initialize);
+		LFGBrowseActivityDropDown_ValueSetSelected(LFGBrowseFrame.ActivityDropDown, activityID, true);
+	else
+		-- Set Category
+		LFGBrowseFrame.CategoryDropdown:SetValue(categoryID);
+
+		-- Set Activity
+		LFGBrowseFrame.ActivityDropdown:Reset()
+		LFGBrowseFrame.ActivityDropdown:ValueSetSelected(activityID, true);
+	end
+
+	-- Start search
+	LFGBrowse_DoSearch();
+end
+
 function addon:SearchLFG()
 	-- LFG tool isn't available until level 10
 	if (UnitLevel("player") < 10) then return end
 
-	-- Open LFG to the group browser
-	ShowLFGParentFrame(2);
-
-	-- Set Category
-	UIDropDownMenu_SetSelectedValue(LFGBrowseFrame.CategoryDropDown, AtlasFrameLFGButton.ActivityID[1]);
-	UIDropDownMenu_Initialize(LFGBrowseFrame.CategoryDropDown, LFGBrowseCategoryDropDown_Initialize);
-
-	-- Set Activity
-	LFGBrowseActivityDropDown_ValueReset(LFGBrowseFrame.ActivityDropDown);
-	UIDropDownMenu_ClearAll(LFGBrowseFrame.ActivityDropDown);
-	UIDropDownMenu_Initialize(LFGBrowseFrame.ActivityDropDown, LFGBrowseActivityDropDown_Initialize);
-	LFGBrowseActivityDropDown_ValueSetSelected(LFGBrowseFrame.ActivityDropDown, AtlasFrameLFGButton.ActivityID[2], true);
-
-	-- Start search
-	LFGBrowse_DoSearch();
+	if #AtlasFrameLFGButton.ActivityID > 2 then
+		MenuUtil.CreateContextMenu(AtlasFrameLFGButton, function(owner, rootDescription)
+			for i = 2, #AtlasFrameLFGButton.ActivityID do
+				rootDescription:CreateButton(C_LFGList.GetActivityFullName(AtlasFrameLFGButton.ActivityID[i]), function(activityID)
+					startLFGSearch(AtlasFrameLFGButton.ActivityID[1], activityID)
+				end, AtlasFrameLFGButton.ActivityID[i])
+			end
+		end)
+	else
+		startLFGSearch(AtlasFrameLFGButton.ActivityID[1], AtlasFrameLFGButton.ActivityID[2])
+	end
 end
 
 function addon:SearchLFG_Enter(button)

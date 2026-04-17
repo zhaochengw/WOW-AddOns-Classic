@@ -133,6 +133,7 @@ QuestieCorrections.killCreditObjectiveFirst[32648] = true
 QuestieCorrections.killCreditObjectiveFirst[32650] = true
 QuestieCorrections.killCreditObjectiveFirst[32657] = true
 QuestieCorrections.killCreditObjectiveFirst[32659] = true
+QuestieCorrections.itemObjectiveFirst[32809] = true
 QuestieCorrections.killCreditObjectiveFirst[32943] = true
 QuestieCorrections.killCreditObjectiveFirst[32945] = true
 
@@ -275,6 +276,21 @@ function MopQuestFixes.Load()
         [9676] = { -- Paladin Training
             [questKeys.requiredLevel] = 2,
         },
+        [9753] = { -- What We Know...
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [9756] = { -- What We Don't Know...
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [9759] = { -- Ending Their World
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [9760] = { -- Vindicator's Rest
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
+        [9761] = { -- Clearing the Way
+            [questKeys.requiredRaces] = raceIDs.ALL_ALLIANCE,
+        },
         [10068] = { -- Frost Nova
             [questKeys.requiredLevel] = 2,
             [questKeys.objectives] = {{{44937}},nil,nil,nil,nil,{{122}}},
@@ -305,9 +321,6 @@ function MopQuestFixes.Load()
         },
         [10277] = { -- The Caverns of Time
             [questKeys.triggerEnd] = {"Caverns of Time Explained", {[zoneIDs.CAVERNS_OF_TIME]={{44.31,38.73}}}},
-        },
-        [12515] = { -- Nice Hat...
-            [questKeys.requiredRaces] = raceIDs.ORC + raceIDs.NIGHT_ELF + raceIDs.DRAENEI + raceIDs.TROLL + raceIDs.TAUREN + raceIDs.UNDEAD + raceIDs.BLOOD_ELF + raceIDs.GOBLIN + raceIDs.WORGEN + raceIDs.PANDAREN,
         },
         [13408] = { -- Hellfire Fortifications
             [questKeys.requiredClasses] = 2015, -- all classes except DK
@@ -9728,11 +9741,148 @@ function MopQuestFixes.Load()
             [questKeys.questFlags] = questFlags.DAILY,
         },
         [32805] = { -- Celestial Blessings
-            [questKeys.objectives] = {{{61093,nil,Questie.ICON_TYPE_TALK},{59653,nil,Questie.ICON_TYPE_TALK},{64528,nil,Questie.ICON_TYPE_TALK},{71954,nil,Questie.ICON_TYPE_TALK}},nil,nil,nil,{{{61093,59653,64528,71954},61093,nil,Questie.ICON_TYPE_TALK}}},
+            -- TODO: turn gongs into extraobjectives, figure out ids for NPCs you need to kill in each challenge
+            [questKeys.startedBy] = {{69782}},
+            [questKeys.finishedBy] = {{71424}},
+            [questKeys.preQuestSingle] = {32598},
+            [questKeys.objectives] = {{{70921,nil,Questie.ICON_TYPE_TALK},{71165,nil,Questie.ICON_TYPE_TALK},{71108,nil,Questie.ICON_TYPE_TALK},{71139,nil,Questie.ICON_TYPE_TALK}},nil,nil,nil,{{{71029,71170,71109,71146},71029,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [32806] = { -- The King and the Council
+            [questKeys.preQuestSingle] = {},
+            [questKeys.breadcrumbs] = {32892},
+        },
+        [32808] = { -- A Little Field Work
+            [questKeys.startedBy] = {{61962}},
+            [questKeys.preQuestSingle] = {32807},
+            [questKeys.objectives] = {{{71336,nil,Questie.ICON_TYPE_TALK},{71058,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [32809] = { -- Gathering Intelligence
+            [questKeys.startedBy] = {{71027}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Use the controller"),0,{{"monster",71389}}}},
+            [questKeys.objectives] = {{{71355,nil,Questie.ICON_TYPE_TALK}},nil,{{98004},{98003},{98002}}},
+        },
+        [32810] = { -- The Darkspear Rebellion
+            [questKeys.startedBy] = {{71027}},
+            [questKeys.objectives] = {{{71320,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [32811] = { -- Battlefield: Barrens
+            [questKeys.startedBy] = {{70978}},
+            [questKeys.preQuestSingle] = {32871},
+            [questKeys.objectivesText] = {"Collect 15 Kor'kron Lumber, 15 Kor'kron Oil, 15 Kor'kron Meat, and 15 Kor'kron Stone."},
+        },
+        [32812] = { -- The Darkspear Rebellion
+            [questKeys.startedBy] = {{61962}},
+            [questKeys.preQuestSingle] = {32807},
+        },
+        [32813] = { -- Battle of Sen'jin Village
+            [questKeys.startedBy] = {{71148}},
+            [questKeys.objectives] = {{{70986},{71043}},nil,nil,nil,{{{70986,71008,71028,71113,71114,71202,71288,71346,70968},70968}}},
+        },
+        [32814] = { -- Battle of Razor Hill
+            [questKeys.startedBy] = {{71148}},
+            [questKeys.objectives] = {{{71131},{71292},{71293}},nil,nil,nil,{{{3169,3706,71263},71263,nil,Questie.ICON_TYPE_EVENT}}},
+            [questKeys.extraObjectives] = {{nil,Questie.ICON_TYPE_INTERACT,l10n("Open the cage"),0,{{"object",220092}}}},
+        },
+        [32815] = { -- The Old Seer
+            [questKeys.startedBy] = {{61962}},
+        },
+        [32816] = { -- Path of the Last Emperor
+            [questKeys.preQuestSingle] = {32815},
+            [questKeys.objectives] = {{{70981,nil,Questie.ICON_TYPE_OBJECT},{71162,nil,Questie.ICON_TYPE_OBJECT},{71171,nil,Questie.ICON_TYPE_OBJECT},{71194,nil,Questie.ICON_TYPE_OBJECT},{71196,nil,Questie.ICON_TYPE_OBJECT}}},
+        },
+        [32819] = { -- Battlefield: Barrens
+            [questKeys.startedBy] = {{71148}},
+            [questKeys.objectivesText] = {"Collect 15 Kor'kron Lumber, 15 Kor'kron Oil, 15 Kor'kron Meat, and 15 Kor'kron Stone."},
+        },
+        [32836] = { -- A Knockoff Grumplefloot
+            [questKeys.objectives] = {nil,nil,{{97978}}},
+        },
+        [32837] = { -- Grandpa Grumplefloot
+            [questKeys.objectives] = {{{70678}}},
+        },
+        [32838] = { -- A Tale of Romance and Chivalry
+            [questKeys.objectives] = {nil,nil,{{97979}}},
+        },
+        [32839] = { -- The Bear and the Lady Fair
+            [questKeys.objectives] = {{{70748}}},
+        },
+        [32840] = { -- Boom Boom's Fuse
+            [questKeys.objectives] = {nil,nil,{{97980}}},
+        },
+        [32841] = { -- Master Boom Boom
+            [questKeys.objectives] = {{{70677}}},
+        },
+        [32842] = { -- Teeth Like Swords
+            [questKeys.objectives] = {nil,nil,{{97981}}},
+        },
+        [32843] = { -- Razorgrin
+            [questKeys.objectives] = {{{71085}}},
+        },
+        [32844] = { -- Secret of the Ooze
+            [questKeys.objectives] = {nil,nil,{{97982}}},
+        },
+        [32845] = { -- Splat
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{70736,70737},70736}}}, -- not sure which one it is, so i put both
+        },
+        [32846] = { -- Modified Chomping Apparatus
+            [questKeys.objectives] = {nil,nil,{{97983}}},
+        },
+        [32847] = { -- Mecha-Bruce
+            [questKeys.objectives] = {{{71081}}},
+        },
+        [32848] = { -- Frost-Tipped Eggshell
+            [questKeys.objectives] = {nil,nil,{{97984}}},
+        },
+        [32849] = { -- Dippy and Doopy
+            [questKeys.objectives] = {nil,nil,nil,nil,{{{70647,70648},70647}}},
+        },
+        [32850] = { -- Frost-Tipped Eggshell
+            [questKeys.objectives] = {nil,nil,{{97985}}},
+        },
+        [32851] = { -- Blingtron 3000
+            [questKeys.objectives] = {{{70740}}},
+        },
+        [32852] = { -- The Digmaster's Earthblade
+            [questKeys.objectives] = {nil,nil,{{97986}}},
+        },
+        [32853] = { -- Mingus Diggs
+            [questKeys.objectives] = {{{70616}}},
+        },
+        [32854] = { -- Well-Worn Blindfold
+            [questKeys.objectives] = {nil,nil,{{97987}}},
+        },
+        [32855] = { -- The Blind Hero
+            [questKeys.objectives] = {{{70794}}},
+        },
+        [32856] = { -- Paper-Covered Rock
+            [questKeys.objectives] = {nil,nil,{{97988}}},
+        },
+        [32857] = { -- Ro-Shambo
+            [questKeys.objectives] = {{{70749}}},
+        },
+        [32858] = { -- Raptorhide Boxing Gloves
+            [questKeys.objectives] = {nil,nil,{{97990}}},
+        },
+        [32859] = { -- Ty'thar
+            [questKeys.objectives] = {{{70666}}},
+        },
+        [32861] = { -- Cloak of Virtue
+            [questKeys.startedBy] = {{69782,71424}},
+            [questKeys.preQuestSingle] = {32805},
+            [questKeys.objectives] = {{{71424,nil,Questie.ICON_TYPE_EVENT},{71426,nil,Questie.ICON_TYPE_TALK}}},
+        },
+        [32862] = { -- Battlefield: Barrens
+            [questKeys.startedBy] = {{71333}},
+            [questKeys.preQuestSingle] = {32814},
+            [questKeys.breadcrumbs] = {32896},
+            [questKeys.objectivesText] = {"Collect 150 Kor'kron Lumber, 150 Kor'kron Oil, 150 Kor'kron Meat, and 150 Kor'kron Stone."},
         },
         [32863] = { -- What We've Been Training For
             [questKeys.requiredSpell] = 119467,
             [questKeys.objectives] = {{{110001}}},
+        },
+        [32867] = { -- Vol'jin of the Darkspear
+            [questKeys.startedBy] = {{71333}},
         },
         [32868] = { -- Beasts of Fable Book II
             [questKeys.requiredSpell] = 119467,
@@ -9741,6 +9891,33 @@ function MopQuestFixes.Load()
         [32869] = { -- Beasts of Fable Book III
             [questKeys.requiredSpell] = 119467,
             [questKeys.objectives] = {{{68558,nil,Questie.ICON_TYPE_PET_BATTLE},{68559,nil,Questie.ICON_TYPE_PET_BATTLE},{68562,nil,Questie.ICON_TYPE_PET_BATTLE}}},
+        },
+        [32870] = { -- Preparing to Strike
+            [questKeys.startedBy] = {{71426}},
+            [questKeys.preQuestSingle] = {32861},
+            [questKeys.objectives] = {{{69782,nil,Questie.ICON_TYPE_EVENT}}},
+        },
+        [32871] = { -- Vol'jin of the Darkspear
+            [questKeys.startedBy] = {{71320}},
+        },
+        [32872] = { -- Battlefield: Barrens
+            [questKeys.startedBy] = {{71333}},
+            [questKeys.preQuestSingle] = {32811},
+            [questKeys.breadcrumbs] = {32895},
+            [questKeys.objectivesText] = {"Collect 150 Kor'kron Lumber, 150 Kor'kron Oil, 150 Kor'kron Meat, and 150 Kor'kron Stone."},
+        },
+        [32892] = { -- War is Coming
+            [questKeys.breadcrumbForQuestId] = 32806,
+        },
+        [32895] = { -- The Road to War
+            [questKeys.startedBy] = {{71336}},
+            [questKeys.preQuestSingle] = {32811},
+            [questKeys.breadcrumbForQuestId] = 32872,
+        },
+        [32896] = { -- The Road to War
+            [questKeys.startedBy] = {{71483}},
+            [questKeys.preQuestSingle] = {32814},
+            [questKeys.breadcrumbForQuestId] = 32862,
         },
         [32942] = { -- Work Order: Sunreaver Onslaught I
             [questKeys.preQuestGroup] = {32680,32682},
@@ -9765,6 +9942,23 @@ function MopQuestFixes.Load()
         [32945] = { -- Work Order: Kirin Tor Offensive II
             [questKeys.questFlags] = questFlags.DAILY,
             [questKeys.objectives] = {nil,nil,{{74841}},nil,{{{63154,63156,63158},63154,nil,Questie.ICON_TYPE_INTERACT}}},
+        },
+        [33098] = { -- Secrets of the Timeless Isle
+            [questKeys.objectivesText] = {"Collect 5000 Timeless Coins from creatures and events on the Timeless Isle."},
+        },
+        [33133] = { -- Warforged Seals
+            [questKeys.objectives] = {nil,{{440004}}},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+            [questKeys.objectivesText] = {"Collect 50 Lesser Charms of Good Fortune."},
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
+        },
+        [33134] = { -- Warforged Seals
+            [questKeys.objectives] = {nil,{{440004}}},
+            [questKeys.specialFlags] = specialFlags.REPEATABLE,
+            [questKeys.objectivesText] = {"Collect 50 Lesser Charms of Good Fortune."},
+            [questKeys.requiredLevel] = 90,
+            [questKeys.questLevel] = 90,
         },
         [33136] = { -- The Rainy Day is Here
             [questKeys.preQuestSingle] = {33137},
@@ -10167,6 +10361,90 @@ function MopQuestFixes:LoadFactionFixes()
             [questKeys.startedBy] = {{64582}},
             [questKeys.finishedBy] = {{64582}},
         },
+        [32836] = { -- A Knockoff Grumplefloot
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32837] = { -- Grandpa Grumplefloot
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32838] = { -- A Tale of Romance and Chivalry
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32839] = { -- The Bear and the Lady Fair
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32840] = { -- Boom Boom's Fuse
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32841] = { -- Master Boom Boom
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32842] = { -- Teeth Like Swords
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32843] = { -- Razorgrin
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32844] = { -- Secret of the Ooze
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32845] = { -- Splat
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32846] = { -- Modified Chomping Apparatus
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32847] = { -- Mecha-Bruce
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32848] = { -- Frost-Tipped Eggshell
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32849] = { -- Dippy and Doopy
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32850] = { -- Last Year's Model
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32851] = { -- Blingtron 3000
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32852] = { -- The Digmaster's Earthblade
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32853] = { -- Mingus Diggs
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32854] = { -- Well-Worn Blindfold
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32855] = { -- The Blind Hero
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32856] = { -- Paper-Covered Rock
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32857] = { -- Ro-Shambo
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32858] = { -- Raptorhide Boxing Gloves
+            [questKeys.finishedBy] = {{70751}},
+        },
+        [32859] = { -- Ty'thar
+            [questKeys.startedBy] = {{70751}},
+            [questKeys.finishedBy] = {{70751}},
+        },
         [32863] = { -- What We've Been Training For
             [questKeys.startedBy] = {{63626,64582}},
             [questKeys.finishedBy] = {{63626,64582}},
@@ -10205,6 +10483,90 @@ function MopQuestFixes:LoadFactionFixes()
         [32604] = { -- Beasts of Fable Book I
             [questKeys.startedBy] = {{64572}},
             [questKeys.finishedBy] = {{64572}},
+        },
+        [32836] = { -- A Knockoff Grumplefloot
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32837] = { -- Grandpa Grumplefloot
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32838] = { -- A Tale of Romance and Chivalry
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32839] = { -- The Bear and the Lady Fair
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32840] = { -- Boom Boom's Fuse
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32841] = { -- Master Boom Boom
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32842] = { -- Teeth Like Swords
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32843] = { -- Razorgrin
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32844] = { -- Secret of the Ooze
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32845] = { -- Splat
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32846] = { -- Modified Chomping Apparatus
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32847] = { -- Mecha-Bruce
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32848] = { -- Frost-Tipped Eggshell
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32849] = { -- Dippy and Doopy
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32850] = { -- Last Year's Model
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32851] = { -- Blingtron 3000
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32852] = { -- The Digmaster's Earthblade
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32853] = { -- Mingus Diggs
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32854] = { -- Well-Worn Blindfold
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32855] = { -- The Blind Hero
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32856] = { -- Paper-Covered Rock
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32857] = { -- Ro-Shambo
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32858] = { -- Raptorhide Boxing Gloves
+            [questKeys.finishedBy] = {{70752}},
+        },
+        [32859] = { -- Ty'thar
+            [questKeys.startedBy] = {{70752}},
+            [questKeys.finishedBy] = {{70752}},
         },
         [32863] = { -- What We've Been Training For
             [questKeys.startedBy] = {{63596,64572}},

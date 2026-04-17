@@ -70,11 +70,14 @@ local function tooltipHook(tooltip, item)
 		if not IsPlayerSpell(spellID) then
 			tooltipHelp(ERR_USE_LOCKED_WITH_SPELL_S:format(C_Spell.GetSpellName(spellID)), ERR_COLOR)
 			return
-		elseif numItemsRequired and C_Item.GetStackCount(item:GetItemLocation()) < numItemsRequired then
-			tooltipHelp(SPELL_FAILED_NEED_MORE_ITEMS:format(numItemsRequired, C_Item.GetItemNameByID(itemID)), ERR_COLOR)
-			return
 		else
-			return Molinari:ApplySpell(item, spellID, color)
+			local itemLocation = item:GetItemLocation()
+			if numItemsRequired and itemLocation and C_Item.GetStackCount(itemLocation) < numItemsRequired then
+				tooltipHelp(SPELL_FAILED_NEED_MORE_ITEMS:format(numItemsRequired, C_Item.GetItemNameByID(itemID)), ERR_COLOR)
+				return
+			else
+				return Molinari:ApplySpell(item, spellID, color)
+			end
 		end
 	end
 
@@ -235,6 +238,10 @@ end
 
 -- force-update tooltip whenever a modifier changes, as the state driver doesn't handle OnEnter
 function addon:MODIFIER_STATE_CHANGED()
+	if InCombatLockdown() then
+		return
+	end
+
 	if Molinari:IsShown() then
 		tooltipShow(Molinari)
 
@@ -253,21 +260,27 @@ function addon:MODIFIER_STATE_CHANGED()
 		end
 
 		local owner = GameTooltip:GetOwner()
-		if owner and not owner:IsAnchoringRestricted() and owner:IsMouseOver() then
-			if owner.GetSlotAndBagID then
-				local slotIndex, bagID = owner:GetSlotAndBagID()
-				if slotIndex and bagID then
-					local item = Item:CreateFromBagAndSlot(bagID, slotIndex)
-					if item then
-						tooltipHook(GameTooltip, item)
-						return
-					end
-				end
+		if owner then
+			if owner:IsAnchoringRestricted() or (owner.IsAnchoringSecret and owner:IsAnchoringSecret()) then
+				return
 			end
 
-			local _, itemLink = GameTooltip:GetItem()
-			if itemLink then
-				tooltipHook(GameTooltip, Item:CreateFromItemLink(itemLink))
+			if owner:IsMouseOver() then
+				if owner.GetSlotAndBagID then
+					local slotIndex, bagID = owner:GetSlotAndBagID()
+					if slotIndex and bagID then
+						local item = Item:CreateFromBagAndSlot(bagID, slotIndex)
+						if item then
+							tooltipHook(GameTooltip, item)
+							return
+						end
+					end
+				end
+
+				local _, itemLink = GameTooltip:GetItem()
+				if itemLink then
+					tooltipHook(GameTooltip, Item:CreateFromItemLink(itemLink))
+				end
 			end
 		end
 	end

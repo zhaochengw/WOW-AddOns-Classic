@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71454)
 mod:SetEncounterID(1595)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -53,7 +54,6 @@ local timerFatalStrike					= mod:NewTargetTimer(30, 142990, nil, "Tank", nil, 5,
 
 local berserkTimer						= mod:NewBerserkTimer(360)
 
-mod:AddRangeFrameOption("8/5")--Various things
 mod:AddSetIconOption("SetIconOnDisplacedEnergy", 142913, false)
 mod:AddSetIconOption("SetIconOnAdds", "ej7952", false, 5)
 
@@ -68,13 +68,6 @@ mod.vb.arcingSmashCount = 0
 mod.vb.seismicSlamCount = 0
 mod.vb.displacedCast = false
 mod.vb.rageActive = false
-
-local debuffFilter
-do
-	debuffFilter = function(uId)
-		return DBM:UnitDebuff(uId, displacedEnergyDebuff)
-	end
-end
 
 function mod:OnCombatStart(delay)
 	playerDebuffs = 0
@@ -91,19 +84,8 @@ function mod:OnCombatStart(delay)
 	else
 		berserkTimer:Start(-delay)
 	end
-	if self.Options.RangeFrame and self:IsRanged() then
-		DBM.RangeCheck:Show(5)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-	if self.Options.BloodrageArrow then
-		DBM.Arrow:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
@@ -123,9 +105,6 @@ function mod:SPELL_CAST_START(args)
 			timerArcingSmashCD:Start(14, 1)
 			timerBreathofYShaarjCD:Start(70, 2)
 		else--Breath 2
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
 		end
 	elseif spellId == 143199 then
 		self.vb.breathCast = 0
@@ -136,9 +115,6 @@ function mod:SPELL_CAST_START(args)
 		timerSeismicSlamCD:Start(7.5, 1)
 		timerArcingSmashCD:Start(14, 1)
 		timerBreathofYShaarjCD:Start(70, 1)
-		if self.Options.RangeFrame and self:IsRanged() then
-			DBM.RangeCheck:Show(5)
-		end
 	end
 end
 
@@ -172,13 +148,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnDisplacedEnergy and args:IsDestTypePlayer() then--Filter further on icons because we don't want to set icons on grounding totems
 			self:SetSortedIcon("roster", 0.5, args.destName, 1)
 		end
-		if self.Options.RangeFrame then
-			if DBM:UnitDebuff("player", displacedEnergyDebuff) then--You have debuff, show everyone
-				DBM.RangeCheck:Show(8, nil)
-			else--You do not have debuff, only show players who do
-				DBM.RangeCheck:Show(8, debuffFilter)
-			end
-		end
 	elseif spellId == 142990 then
 		local amount = args.amount or 1
 		if amount % 3 == 0 then
@@ -203,12 +172,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 142913 then
 		playerDebuffs = playerDebuffs - 1
-		if args:IsPlayer() and self.Options.RangeFrame and playerDebuffs >= 1 then
-			DBM.RangeCheck:Show(10, debuffFilter)--Change to debuff filter based check since theirs is gone but there are still others in raid.
-		end
-		if self.Options.RangeFrame and playerDebuffs == 0 and self.vb.rageActive then--All of them are gone. We do it this way since some may cloak/bubble/iceblock early and we don't want to just cancel range finder if 1 of 3 end early.
-			DBM.RangeCheck:Hide()
-		end
 		if self.Options.SetIconOnDisplacedEnergy then
 			self:SetIcon(args.destName, 0)
 		end

@@ -4,7 +4,7 @@ local cataWowID = 14
 local mistsWowID = 19
 if wowID ~= 1 and wowID ~= cataWowID and wowID ~= mistsWowID then return end -- Retail, Cata, Mists
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 24)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 25)
 if not LS then return end -- No upgrade needed
 
 LS.callbackMapGroup = LS.callbackMapGroup or {}
@@ -405,29 +405,37 @@ do
 	do
 		local timerInstance = nil
 		local function SendToInstance()
-			timerInstance = nil
+			if timerInstance then
+				timerInstance:Cancel()
+				timerInstance = nil
+			end
 			if IsInGroup(2) then
 				if currentRole then -- Cataclysm Feral Druids
 					local result = SendAddonMessage("LibSpec", format("%d,,%s", currentSpecId, currentRole), "INSTANCE_CHAT")
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						timerInstance = CTimerNewTimer(throttleTimer, SendToInstance)
 					end
 				else
 					local result = SendAddonMessage("LibSpec", format("%d,%s", currentSpecId, currentTalentString or ""), "INSTANCE_CHAT")
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						timerInstance = CTimerNewTimer(throttleTimer, SendToInstance)
 					end
 				end
 			end
 		end
+		local prev = 0
 		function PrepareForInstance()
 			local specId, role, _, talentString = GetInfo()
 			if specId then
 				currentSpecId = specId
 				currentTalentString = talentString
 				currentRole = specId == 750 and role or nil -- Cataclysm Feral Druids
-				if not timerInstance then
-					timerInstance = CTimerNewTimer(throttleTimer, SendToInstance)
+				local t = GetTime()
+				if t-prev > throttleTimer then
+					prev = t
+					SendToInstance()
+				elseif not timerInstance then
+					timerInstance = CTimerNewTimer((throttleTimer+0.1)-(t-prev), SendToInstance)
 				end
 			end
 		end
@@ -437,29 +445,37 @@ do
 	do
 		local timerGroup = nil
 		local function SendToGroup()
-			timerGroup = nil
+			if timerGroup then
+				timerGroup:Cancel()
+				timerGroup = nil
+			end
 			if IsInGroup(1) then
 				if currentRole then -- Cataclysm Feral Druids
 					local result = SendAddonMessage("LibSpec", format("%d,,%s", currentSpecId, currentRole), "RAID") -- RAID auto downgrades to PARTY as needed
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						timerGroup = CTimerNewTimer(throttleTimer, SendToGroup)
 					end
 				else
 					local result = SendAddonMessage("LibSpec", format("%d,%s", currentSpecId, currentTalentString or ""), "RAID") -- RAID auto downgrades to PARTY as needed
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						timerGroup = CTimerNewTimer(throttleTimer, SendToGroup)
 					end
 				end
 			end
 		end
+		local prev = 0
 		function PrepareForGroup()
 			local specId, role, _, talentString = GetInfo()
 			if specId then
 				currentSpecId = specId
 				currentTalentString = talentString
 				currentRole = specId == 750 and role or nil -- Cataclysm Feral Druids
-				if not timerGroup then
-					timerGroup = CTimerNewTimer(throttleTimer, SendToGroup)
+				local t = GetTime()
+				if t-prev > throttleTimer then
+					prev = t
+					SendToGroup()
+				elseif not timerGroup then
+					timerGroup = CTimerNewTimer((throttleTimer+0.1)-(t-prev), SendToGroup)
 				end
 			end
 		end
@@ -468,7 +484,6 @@ do
 	local PrepareForGuild
 	do
 		local guildTimer = nil
-		local prev = 0
 		local function SendToGuild()
 			if guildTimer then
 				guildTimer:Cancel()
@@ -477,31 +492,30 @@ do
 			if IsInGuild() then
 				if currentRole then -- Cataclysm Feral Druids
 					local result = SendAddonMessage("LibSpec", format("%d,,%s", currentSpecId, currentRole), "GUILD")
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						guildTimer = CTimerNewTimer(throttleTimer, SendToGuild)
 					end
 				else
 					local result = SendAddonMessage("LibSpec", format("%d,%s", currentSpecId, currentTalentString or ""), "GUILD")
-					if result == 9 then
+					if result == 3 or result == 8 or result == 9 then -- AddonMessageThrottle, ChannelThrottle, GeneralError
 						guildTimer = CTimerNewTimer(throttleTimer, SendToGuild)
 					end
 				end
 			end
 		end
+		local prev = 0
 		function PrepareForGuild()
 			local specId, role, _, talentString = GetInfo()
 			if specId then
 				currentSpecId = specId
 				currentTalentString = talentString
 				currentRole = specId == 750 and role or nil -- Cataclysm Feral Druids
-				if not guildTimer then
-					local t = GetTime()
-					if t-prev > throttleTimer then
-						prev = t
-						SendToGuild()
-					else
-						guildTimer = CTimerNewTimer(throttleTimer-(t-prev), SendToGuild)
-					end
+				local t = GetTime()
+				if t-prev > throttleTimer then
+					prev = t
+					SendToGuild()
+				elseif not guildTimer then
+					guildTimer = CTimerNewTimer((throttleTimer+0.1)-(t-prev), SendToGuild)
 				end
 			end
 		end

@@ -64,6 +64,7 @@ else
 		Atlas_Shadowlands        = "AtlasLoot_Shadowlands",
 		Atlas_Dragonflight       = "AtlasLoot_Dragonflight",
 		Atlas_TheWarWithin       = "AtlasLoot_TheWarWithin",
+		Atlas_Midnight           = "AtlasLoot_Midnight",
 	}
 end
 

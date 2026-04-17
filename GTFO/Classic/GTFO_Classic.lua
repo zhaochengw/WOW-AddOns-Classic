@@ -32,6 +32,7 @@ function GTFO_OnEvent(self, event, ...)
 			SoundChannel = GTFOData.SoundChannel or GTFO.DefaultSettings.SoundChannel;
 			BrannMode = GTFOData.BrannMode;
 			IgnoreTimeAmount = GTFOData.IgnoreTimeAmount;
+			AFKAlertMode = GTFOData.AFKAlertMode;
 			IgnoreOptions = { };
 			SoundOverrides = { "", "", "", "" };
 			IgnoreSpellList = { };
@@ -176,6 +177,17 @@ function GTFO_OnEvent(self, event, ...)
 		
 		local SpellType = tostring(eventType);
 		local vehicle = nil;
+		local damage = nil;
+
+		if (SpellType == "ENVIRONMENTAL_DAMAGE") then
+			damage = tonumber(misc2) or 0;
+		elseif (SpellType == "SWING_DAMAGE") then
+			damage = tonumber(misc1) or 0;
+		elseif (string.find(SpellType, "_DAMAGE", 1, true)) then
+			damage = tonumber(misc4) or 0;
+		end
+
+		GTFO.HandleAFKAlert(SpellType, destGUID, damage);
 
 		if (GTFO.VariableStore.DisableGTFO) then
 			if GTFO_FindEvent("ReshapeLife") then
@@ -635,6 +647,29 @@ function GTFO_OnEvent(self, event, ...)
 	end
 end
 
+function GTFO.IsPlayerAFK()
+	return UnitIsAFK("player") == true;
+end
+
+function GTFO.HandleAFKAlert(eventType, destGUID, damage)
+	if not (GTFO.Settings.Active and GTFO.Settings.AFKAlertMode) then
+		return;
+	end
+	if (destGUID ~= UnitGUID("player")) then
+		return;
+	end
+	if ((damage or 0) <= 0) then
+		return;
+	end
+	if not (GTFO.IsPlayerAFK()) then
+		return;
+	end
+	if not (eventType == "ENVIRONMENTAL_DAMAGE" or eventType == "SWING_DAMAGE" or string.find(eventType or "", "_DAMAGE", 1, true)) then
+		return;
+	end
+	GTFO_PlaySound(1);
+end
+
 function GTFO_OnLoad()
 	GTFOFrame:RegisterEvent("VARIABLES_LOADED");
 	GTFOFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
@@ -825,11 +860,11 @@ function GTFO_RenderOptions()
 		VibrationButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
 
 		local IgnoreTimeText = ConfigurationPanel:CreateFontString("GTFO_IgnoreTimeText","ARTWORK","GameFontNormal");
-		IgnoreTimeText:SetPoint("TOPLEFT", 170, -460);
+		IgnoreTimeText:SetPoint("TOPLEFT", 170, -420);
 		IgnoreTimeText:SetText("");
 
 		local IgnoreTimeSlider = CreateFrame("Slider", "GTFO_IgnoreTimeSlider", ConfigurationPanel, "OptionsSliderTemplate");
-		IgnoreTimeSlider:SetPoint("TOPLEFT", 12, -460);
+		IgnoreTimeSlider:SetPoint("TOPLEFT", 12, -420);
 		IgnoreTimeSlider:SetScript("OnValueChanged",GTFO_Option_SetIgnoreTime);
 		IgnoreTimeSlider:SetMinMaxValues(0,5);
 		IgnoreTimeSlider:SetValueStep(0.1);
@@ -849,6 +884,13 @@ function GTFO_RenderOptions()
 			getglobal(GTFO_IgnoreTimeSlider:GetName().."Low"):SetText(" ");
 		end
 		IgnoreTimeText:SetText((GTFO.Settings.IgnoreTimeAmount or GTFO.DefaultSettings.IgnoreTimeAmount).." "..(GTFOLocal.UI_IgnoreTime_Seconds or ""));
+
+		local AFKAlertButton = CreateFrame("CheckButton", "GTFO_AFKAlertButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		AFKAlertButton:SetPoint("TOPLEFT", 10, -450)
+		AFKAlertButton.tooltip = GTFOLocal.UI_AFKAlertDescription_Classic;
+		getglobal(AFKAlertButton:GetName().."Text"):SetText(GTFOLocal.UI_AFKAlert_Classic);
+		AFKAlertButton.optionKey = "AFKAlert";
+		AFKAlertButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
 
 		-- Special Alerts frame
 		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
@@ -1047,6 +1089,13 @@ function GTFO_RenderOptions()
 		VibrationButton.optionKey = "Vibration";
 		VibrationButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
 
+		local AFKAlertButton = CreateFrame("CheckButton", "GTFO_AFKAlertButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		AFKAlertButton:SetPoint("TOPLEFT", 10, -410)
+		AFKAlertButton.tooltip = GTFOLocal.UI_AFKAlertDescription_Classic;
+		getglobal(AFKAlertButton:GetName().."Text"):SetText(GTFOLocal.UI_AFKAlert_Classic);
+		AFKAlertButton.optionKey = "AFKAlert";
+		AFKAlertButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
 		-- Special Alerts frame
 		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
 		IgnoreOptionsPanel.name = GTFOLocal.UI_SpecialAlerts;
@@ -1121,6 +1170,8 @@ function GTFO.ToggleCheckboxOption(self)
 		GTFO.Settings.TrivialMode = checked;
 	elseif (optionKey == "Vibration") then
 		GTFO.Settings.EnableVibration = checked;
+	elseif (optionKey == "AFKAlert") then
+		GTFO.Settings.AFKAlertMode = checked;
 	end
 	
 	for key, option in pairs(GTFO.IgnoreSpellCategory) do
@@ -1235,6 +1286,7 @@ function GTFO_SaveSettings()
 	GTFOData.SoundChannel = GTFO.Settings.SoundChannel;
 	GTFOData.BrannMode = GTFO.Settings.BrannMode;
 	GTFOData.IgnoreTimeAmount = GTFO.Settings.IgnoreTimeAmount;
+	GTFOData.AFKAlertMode = GTFO.Settings.AFKAlertMode;
 	GTFOData.IgnoreOptions = { };
 	if (GTFO.Settings.IgnoreOptions) then
 		for key, option in pairs(GTFO.Settings.IgnoreOptions) do
@@ -1286,6 +1338,7 @@ function GTFO_SaveSettings()
 		getglobal("GTFO_UnmuteButton"):SetChecked(GTFO.Settings.UnmuteMode);
 		getglobal("GTFO_TrivialButton"):SetChecked(GTFO.Settings.TrivialMode);
 		getglobal("GTFO_VibrationButton"):SetChecked(GTFO.Settings.EnableVibration);
+		getglobal("GTFO_AFKAlertButton"):SetChecked(GTFO.Settings.AFKAlertMode);
 
 		for key, option in pairs(GTFO.IgnoreSpellCategory) do
 			getglobal("GTFO_IgnoreAlertButton_"..key):SetChecked(not GTFO.Settings.IgnoreOptions[key]);
@@ -1326,6 +1379,7 @@ function GTFO_SetDefaults()
 	GTFO.Settings.IgnoreSpellList = GTFO.DefaultSettings.IgnoreSpellList;
 	GTFO.Settings.BrannMode = GTFO.DefaultSettings.BrannMode;
 	GTFO.Settings.IgnoreTimeAmount = GTFO.DefaultSettings.IgnoreTimeAmount;
+	GTFO.Settings.AFKAlertMode = GTFO.DefaultSettings.AFKAlertMode;
 	GTFO_SaveSettings();
 end
 

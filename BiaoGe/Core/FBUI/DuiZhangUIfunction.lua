@@ -61,6 +61,20 @@ local function ShowTardeHighLightItem_OtherJine(self)
     end
 end
 
+local function ShowSameItem(self)
+    if self.sameItem then
+        local FB = BG.FB1
+        for i, v in ipairs(self.sameItem) do
+            local b = v.b
+            local i = v.i
+            local f = BG.CreateHighlightFrame(self, nil, { 0, 1, 0, 0.5 }, 4)
+            f:ClearAllPoints()
+            f:SetPoint("TOPLEFT", BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i], "TOPLEFT", -2, 0)
+            f:SetPoint("BOTTOMRIGHT", BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i], "BOTTOMRIGHT", 0, 0)
+        end
+    end
+end
+
 ------------------标题------------------
 function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
     local fontsize = 15
@@ -85,7 +99,7 @@ function BG.DuiZhangBiaoTiUI(FB, t, b, bb, i, ii)
         p.preWidget0 = version
 
         local version = BG["DuiZhangFrame" .. FB]:CreateFontString()
-        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.zhuangbeiWidth+5, 0);
+        version:SetPoint("TOPLEFT", preWidget, "TOPLEFT", BG.zhuangbeiWidth + 5, 0);
         version:SetFont(BIAOGE_TEXT_FONT, fontsize, "OUTLINE")
         version:SetTextColor(RGB(BG.y2))
         version:SetText(L["我的金额"])
@@ -285,7 +299,8 @@ function BG.DuiZhangMyJinEUI(FB, t, b, bb, i, ii)
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
-        ShowTardeHighLightItem_MyJine(self)
+        ShowSameItem(self)
+        -- ShowTardeHighLightItem_MyJine(self)
         local maijia = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetText()
         if maijia ~= "" and self:GetText() ~= "" then
             local r, g, b = BG.Frame[FB]["boss" .. b]["maijia" .. i]:GetTextColor()
@@ -373,7 +388,8 @@ function BG.DuiZhangOtherJinEUI(FB, t, b, bb, i, ii)
     -- 鼠标悬停在装备时
     bt:SetScript("OnEnter", function(self)
         BG.DuiZhangFrameDs[FB .. 1]["boss" .. b]["ds" .. i]:Show()
-        ShowTardeHighLightItem_OtherJine(self)
+        ShowSameItem(self)
+        -- ShowTardeHighLightItem_OtherJine(self)
         local maijia = BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i]
         local color = BG.DuiZhangFrame[FB]["boss" .. b]["color" .. i]
         if maijia and color and self:GetText() ~= "" then

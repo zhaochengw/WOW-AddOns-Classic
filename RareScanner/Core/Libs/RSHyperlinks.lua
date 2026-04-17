@@ -29,7 +29,7 @@ local RSEventPOI = private.ImportLib("RareScannerEventPOI")
 local RSTooltip = private.ImportLib("RareScannerTooltip")
 local RSProvider = private.ImportLib("RareScannerProvider")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
-local RSTomtom = private.ImportLib("RareScannerTomtom")
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 
 -- Types
 local NPC_TYPE = "1";
@@ -150,9 +150,7 @@ function RSHyperlinks.HookHyperLinks()
 			elseif (button == "RightButton") then
 				-- Add waypoint
 				if (not IsShiftKeyDown()) then
-					if (RSConfigDB.IsAddingchatTomtomWaypoints()) then
-						RSTomtom.AddWorldMapTomtomWaypoint(mapIDs, x, y, name)
-					end
+					RSWaypoints.AddChatMapWaypoint(mapIDs, x, y, name)
 				-- Add waypoint and share in chat
 				elseif (IsShiftKeyDown()) then
 					local guid = UnitGUID("target")
@@ -172,10 +170,10 @@ function RSHyperlinks.HookHyperLinks()
 					
 					-- Notification with health
 					if (npcID and npcID == entityID and unitHealth and unitHealhMax and unitHealhMax > 0) then
-						SendChatMessage(format(AL["CHAT_NOTIFICATION_HEALTH_RARE"], name, string.format("%.2f", unitHealth/unitHealhMax*100), C_Map.GetUserWaypointHyperlink()), "CHANNEL", nil, generalID)
+						SendChatMessage(format(AL["CHAT_NOTIFICATION_HEALTH_RARE"], name, string.format("%.2f", unitHealth/unitHealhMax*100), string.format("(x = %s, y = %s)", string.format("%.2f",x), string.format("%.2f",y))), "CHANNEL", nil, generalID)
 					-- Notification without health
 					else
-						SendChatMessage(format(AL["CHAT_NOTIFICATION_RARE"], name, C_Map.GetUserWaypointHyperlink()), "CHANNEL", nil, generalID)
+						SendChatMessage(format(AL["CHAT_NOTIFICATION_RARE"], name, string.format("(x = %s, y = %s)", string.format("%.2f",x), string.format("%.2f",y))), "CHANNEL", nil, generalID)
 					end
 				end
 			end

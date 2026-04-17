@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,normal25,heroic,heroic25"
 
-mod:SetRevision("20250720212401")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(36626)
 mod:SetEncounterID(not mod:IsPostCata() and 849 or 1097)
 mod:SetModelID(31006)
@@ -48,7 +49,6 @@ local timerGooCD			= mod:NewCDTimer(10, 72297, nil, nil, nil, 3)
 
 local berserkTimer			= mod:NewBerserkTimer(300)
 
-mod:AddRangeFrameOption(10, 69240, "Ranged")
 mod:AddSetIconOption("SetIconOnGasSpore", 69279, true, 7, {1, 2, 3})
 
 local gasSporeTargets = {}
@@ -74,19 +74,11 @@ function mod:OnCombatStart(delay)
 	table.wipe(gasSporeTargets)
 	table.wipe(vileGasTargets)
 	self.vb.gasSporeCast = 0
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerGooCD:Start(15-delay)
 	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 69195 then	-- Pungent Blight

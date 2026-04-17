@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20250626050841")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(136160)
 mod:SetEncounterID(2143)
 mod:SetZone(1762)
@@ -88,9 +89,7 @@ end
 
 function mod:OnCombatEnd()
 	table.wipe(seenMobs)
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
+
 end
 
 function mod:SPELL_CAST_START(args)

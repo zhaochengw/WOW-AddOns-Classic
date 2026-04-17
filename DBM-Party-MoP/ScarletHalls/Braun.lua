@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(660, "DBM-Party-MoP", 8, 311)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20231024034207")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(59303)
 mod:SetEncounterID(1422)
 mod:SetZone(1001)

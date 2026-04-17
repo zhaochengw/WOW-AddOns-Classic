@@ -10,4 +10,5 @@
 	<Script file="Mounts.lua"/>
 	<Script file="Pets.lua"/>
 	<Script file="MissingSources.lua"/>
+	<Script file="MapEntitiesTables.lua"/>
 </Ui>

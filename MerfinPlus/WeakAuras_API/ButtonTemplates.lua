@@ -31,8 +31,8 @@ Merfin.SetButtonTemplate = function(aura_env, buttonName, type, context, context
   end
 
   aura_env.button:SetAllPoints()
-  if expansion == 2 then
-    aura_env.button:RegisterForClicks("AnyUp", "AnyDown") -- TBC is special
+  if expansion == 2 or expansion == 3 then
+    aura_env.button:RegisterForClicks("AnyUp", "AnyDown") -- TBC and WotLK are special
   else
     aura_env.button:RegisterForClicks("AnyUp")
   end

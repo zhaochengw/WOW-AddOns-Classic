@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(816, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260126031700")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(69078, 69132, 69134, 69131)--69078 Sul the Sandcrawler, 69132 High Prestess Mar'li, 69131 Frost King Malakk, 69134 Kazra'jin --Adds: 69548 Shadowed Loa Spirit,
 mod:SetEncounterID(1570)
 mod:SetUsedIcons(7, 6)
@@ -29,7 +30,7 @@ local Kazrajin = DBM:EJ_GetSectionInfo(7048)
 --All
 local warnPossessed					= mod:NewStackAnnounce(136442, 2, nil, nil, "warnPossessed")
 
-local specWarnPossessed				= mod:NewSpecialWarning("specWarnPossessed", nil, nil, 1, 2)
+local specWarnPossessed				= mod:NewSpecialWarning("specWarnPossessed", nil, nil, nil, 1, 2)
 local specWarnDarkPower				= mod:NewSpecialWarningCount(136507, nil, nil, nil, 2, 2)
 local specWarnSoulFragment			= mod:NewSpecialWarningYou(137641, nil, nil, nil, 1, 17)
 

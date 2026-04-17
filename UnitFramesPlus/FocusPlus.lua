@@ -16,7 +16,7 @@ local function UnitFramesPlus_FocusShiftDrag()
         end
     end)
 
-    FocusFrame:SetClampedToScreen(1);
+    FocusFrame:SetClampedToScreen(true);
 end
 
 --头像缩放
@@ -146,6 +146,7 @@ function UnitFramesPlus_FocusMPValueDisplayUpdate()
     local MaxMP = UnitPowerMax("focus");
     local CurMPfix, MaxMPfix, LossMPfix = UnitFramesPlus_GetValueFix(CurMP, MaxMP, UnitFramesPlusDB["focus"]["hpmpunit"], UnitFramesPlusDB["focus"]["unittype"]);
     local PctText = "";
+    local FocusExtMPText = "";
     local powerType = UnitPowerType("focus");
 
     if powerType == 0 then
@@ -572,19 +573,14 @@ local modifierButtons = {"alt", "shift", "ctrl"};
 local modifier = "alt";--默认快捷键
 local mouseButton = "1";--默认按键：1-左键, 2-右键, 3-中键, 4/5-鼠标快捷键
 local actionType = "focus";--默认动作：focus, target
-local _G = _G;
-
-local CreateFrame_Hook = function(type, name, parent, template)
-    if name and template == "SecureUnitButtonTemplate" then
-        _G[name]:SetAttribute(modifier.."-type"..mouseButton, actionType);
-    end
-end
 
 local frametarget = CreateFrame("CheckButton", "ActionButtonTarget", UIParent, "SecureActionButtonTemplate");
 frametarget:SetAttribute("type1", "macro");
 frametarget:SetAttribute("macrotext", "/target mouseover");
 
-hooksecurefunc("CreateFrame", CreateFrame_Hook)
+-- 注意：原 hooksecurefunc("CreateFrame", ...) 全局钩子已移除。
+-- 该钩子会拦截所有插件的 CreateFrame 调用，存在 taint 风险和兼容性问题。
+-- 快速焦点功能已通过下方的 duf 列表直接对各框体调用 SetAttribute 实现，无需全局钩子。
 local framefocus = CreateFrame("CheckButton", "ActionButton", UIParent, "SecureActionButtonTemplate");
 framefocus:SetAttribute("type1", "macro");
 framefocus:SetAttribute("macrotext", "/focus mouseover");

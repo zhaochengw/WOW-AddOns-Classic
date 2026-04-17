@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(456, "DBM-Party-Vanilla", DBM:IsPostCata() and 10 or 16, 236)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103114940")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(DBM:IsRetail() and 45412 or 10440)--10440 Baron Rivendare, 45412 Lord Aurius Rivendare, 11197/mindless-skeleton
 mod:SetEncounterID(484)
 mod:SetZone(329)

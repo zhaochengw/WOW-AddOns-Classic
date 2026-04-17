@@ -4,6 +4,9 @@ if not DBM_COMMON_L then DBM_COMMON_L = {} end
 local CL = DBM_COMMON_L
 
 --General
+CL.ALPHABETICAL				= "이름"
+CL.DURATION				= "지속시간"
+CL.SORTING				= "정렬"
 CL.NONE						= "없음"
 CL.RANDOM					= "무작위"
 CL.UNKNOWN					= "알 수 없음"--UNKNOWN which is "Unknown" (does u vs U matter?)
@@ -83,9 +86,12 @@ CL.GROUPSOAK						= "같이 맞기"
 CL.GROUPSOAKS						= "같이 맞기"
 CL.HEALABSORB						= "치유 흡수"
 CL.HEALABSORBS						= "치유 흡수"
+CL.INTERRUPT						= "차단"
+CL.INTERRUPTS						= "차단"
 CL.DODGES							= "피하기"
 CL.POOL								= "바닥"
 CL.POOLS							= "바닥"
+CL.DEBUFF							= "디버프"
 CL.DEBUFFS							= "디버프"
 CL.DISPELS							= "해제"
 CL.PUSHBACK							= "밀어내기"

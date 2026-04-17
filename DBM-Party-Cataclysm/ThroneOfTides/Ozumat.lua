@@ -2,7 +2,8 @@ local mod	= DBM:NewMod(104, "DBM-Party-Cataclysm", 9, 65)
 local L		= mod:GetLocalizedStrings()
 local wowToc = DBM:GetTOC()
 
-mod:SetRevision("20241102154000")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 if (wowToc >= 100200) then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 	mod.upgradedMPlus = true

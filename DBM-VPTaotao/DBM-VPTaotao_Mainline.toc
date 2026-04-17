@@ -1,20 +1,18 @@
-﻿## Interface: 110200，110205，110207，120000
+﻿## Interface: 120001，120005
 ## Category: DBM
-
-## Version: v11.0.7
 ## Title:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff69ccf0Voicepack Taotao|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff69ccf0Taotao语音包|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM Media|r|cffffe00a>|r |cff69ccf0Taotao语音包|r
 ## DefaultState: enabled
 ## RequiredDeps: DBM-Core
 ## Author: Taotao
-
-## IconTexture: Interface\AddOns\DBM-VPTaotao\Icons\taotao
+## Version: 20060315
+## IconTexture: Interface\AddOns\DBM-Core\textures\dbm_airhorn
 ## Notes: https://www.curseforge.com/wow/addons/lunataotao
-
 ## X-DBM-Voice: 1
 ## X-DBM-Voice-Name: Taotao(普通话女)
 ## X-DBM-Voice-ShortName: Taotao
-## X-DBM-Voice-Version: 18
+## X-DBM-Voice-Version: 19
 ## X-DBM-Voice-HasCount: 1
+## X-DBM-Voice-MidnightCompat: 1
 

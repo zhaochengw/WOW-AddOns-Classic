@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2436, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260210082755")
+mod:SetRevision("20260322094133")
 mod:SetCreatureID(175646)
 mod:SetEncounterID(2424)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -20,10 +20,9 @@ mod:AddCustomTimerOptions(346286, true, 5, 0)
 mod:AddCustomTimerOptions(346947, true, 5, 0)
 --Midnight private aura replacements
 --There are two other PAs but they are not useful since they are not player actionable PAs
-mod:AddPrivateAuraSoundOption(346962, true, 346962, 1)
+mod:AddPrivateAuraSoundOption(346962, true, 346962, 1, 1, "gathershare", 2)
 
 function mod:OnLimitedCombatStart()
-	self:DisableSpecialWarningSounds()
 	self:EnableAlertOptions(346742, 574, "aesoon", 2)
 	self:EnableAlertOptions(346286, 576, "catchballs", 12)
 	self:EnableAlertOptions(346947, 577, "specialsoon", 1)
@@ -33,7 +32,6 @@ function mod:OnLimitedCombatStart()
 	self:EnableTimelineOptions(346286, 576)
 	self:EnableTimelineOptions(346947, 577)
 
-	self:EnablePrivateAuraSound(346962, "gathershare", 2)
 end
 
 --[[

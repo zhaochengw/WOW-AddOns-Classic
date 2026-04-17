@@ -8,7 +8,8 @@ if (wowToc >= 100200) then
 	mod.upgradedMPlus = true
 end
 
-mod:SetRevision("20260125033236")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(82682)
 mod:SetEncounterID(1751)
 mod:SetHotfixNoticeRev(20231020000000)

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(2590, "DBM-Party-WarWithin", 4, 1269)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20250413070423")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(213217, 213216)--Brokk, Dorlita
 mod:SetEncounterID(2888)
 mod:SetBossHPInfoToHighest()

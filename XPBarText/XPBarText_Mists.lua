@@ -5,7 +5,7 @@ local PlainAddonTitle = AddonTitle:gsub("|c........", ""):gsub("|r", "")
 
 local TextOnXPBar = MainMenuExpBar:CreateFontString("ExperienceLeft", "OVERLAY", "GameTooltipText")
 TextOnXPBar:SetFont("Fonts\\ARIALN.TTF", 14, "THINOUTLINE")
-TextOnXPBar:SetPoint("CENTER", 0, 0)
+TextOnXPBar:SetPoint("TOP", 0, 0)
 TextOnXPBar:SetTextColor(1,1,1,1)
 
 local XPBarTextFrame = CreateFrame("Frame")
@@ -35,10 +35,10 @@ if event == "ADDON_LOADED" and arg1 == "XPBarText" then
 	if XPTConfig == nil then XPTConfig = {
 		["ShowMoreInfo"] = 'YES',
 		["ShowPetInfo"] = 'YES',
-		["AlwaysShowInfo"] = 'YES',
+		["AlwaysShowInfo)"] = 'YES',
 		["FormatNumbers"] = 'NO',
 		["ShowXPTicker"] = 'NO'
-		} 
+		}
 	end
 	if XPTConfig.ShowPetInfo == nil then XPTConfig.ShowPetInfo = 'YES' end
 	if XPTConfig.AlwaysShowInfo == nil then XPTConfig.AlwaysShowInfo = 'YES' end
@@ -47,9 +47,13 @@ if event == "ADDON_LOADED" and arg1 == "XPBarText" then
 	
 	UpdateXPBarText()
 	UpdateXPTicker()
+	
+	MainMenuBarExpText:Hide()
 elseif event == "PLAYER_XP_UPDATE" or event == "PLAYER_LEVEL_UP"  or event == "UPDATE_EXHAUSTION" or event == "UNIT_PET" and arg1 == "player" or event == "UNIT_PET_EXPERIENCE" or event == "ZONE_CHANGED" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_CONTROL_LOST" or event == "CINEMATIC_START" or event == "CINEMATIC_STOP" or event == "PLAYER_ENTERING_WORLD" then
 	UpdateXPBarText()
 	UpdateXPTicker()
+	
+	MainMenuBarExpText:Hide()
 end
 
 end
@@ -199,33 +203,41 @@ end
 
 ReputationWatchBar:HookScript("OnShow", function(self)
 
-if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
-elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
-end
+	MainMenuBarExpText:Hide()
+
+	if XPTConfig.AlwaysShowInfo == "YES" then
+		ReputationWatchBar.OverlayFrame.Text:Show()
+	elseif XPTConfig.AlwaysShowInfo == "NO" then
+		ReputationWatchBar.OverlayFrame.Text:Hide()
+	end
 
 end)
 
 ReputationWatchBar:HookScript("OnEnter", function(self)
 
-if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
-elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
-end
+	MainMenuBarExpText:Hide()
+
+	if XPTConfig.AlwaysShowInfo == "YES" then
+		ReputationWatchBar.OverlayFrame.Text:Show()
+	elseif XPTConfig.AlwaysShowInfo == "NO" then
+		ReputationWatchBar.OverlayFrame.Text:Hide()
+	end
 
 end)
 
 ReputationWatchBar:HookScript("OnLeave", function(self)
 
-if XPTConfig.AlwaysShowInfo == "YES" then
-	ReputationWatchBar.OverlayFrame.Text:Show()
-elseif XPTConfig.AlwaysShowInfo == "NO" then
-	ReputationWatchBar.OverlayFrame.Text:Hide()
-end
+	MainMenuBarExpText:Hide()
+
+	if XPTConfig.AlwaysShowInfo == "YES" then
+		ReputationWatchBar.OverlayFrame.Text:Show()
+	elseif XPTConfig.AlwaysShowInfo == "NO" then
+		ReputationWatchBar.OverlayFrame.Text:Hide()
+	end
 
 end)
+
+-- SHOW/HIDE RESTED XP TICKER
 
 function UpdateXPTicker()
 	if XPTConfig.ShowXPTicker == "YES" then
@@ -234,3 +246,9 @@ function UpdateXPTicker()
 		ExhaustionTick:Hide()
 	end
 end
+
+-- HIDE IN-GAME XP BAR TEXT WHEN VIEWING CHARACTER WINDOW
+
+CharacterFrame:HookScript("OnShow", function(self)
+	MainMenuBarExpText:Hide()
+end)

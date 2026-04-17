@@ -1,10 +1,10 @@
-## Interface: 50503
+## Interface: 11508, 20505, 50503
 ## Title: Ackis Recipe List Classic
-## Version: 10.1.3
+## Version: 10.2.0
 ## Author: Videatur
 ## SavedVariables: ARLDB2
 ## DefaultState: Enabled
-## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDialog-1.0, TomTom
+## OptionalDeps: LibSharedMedia-3.0, HereBeDragons, TomTom
 ## X-Localizations: enUS, frFR, zhCN, deDE, itIT, esES, ruRU, ptBR
 ## X-Credits: Original authors: Ackis, Torhal, Ressy; Zhinjio, FGWarmonger, Kagaro, Speeddymon, Xinhuan, Aesir, BWMerlin, everyone who translated stuff and more!
 

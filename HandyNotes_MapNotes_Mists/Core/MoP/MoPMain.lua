@@ -671,8 +671,9 @@ do
         return state, nil, icon, scale, alpha
       end
 
-      if (ns.ContinentIDs and mapInfo.mapType == 2 and value.showOnContinent) then
-        return state, nil, icon, db.continentScale, db.continentAlpha
+      if (mapInfo.mapType == 2 and value.showOnContinent) then if not (ns.dbChar.ContinentDeletedIcons[t.uiMapId] and ns.dbChar.ContinentDeletedIcons[t.uiMapId][state]) then
+          return state, nil, icon, db.continentScale, db.continentAlpha
+        end
       end
 
 			state, value = next(data, state)
@@ -835,9 +836,13 @@ ns.questID = nodes[uiMapId][coord].questID
 
 local mapInfo = C_Map.GetMapInfo(uiMapId)
 local GetCurrentMapID = WorldMapFrame:GetMapID()
-local CapitalIDs = GetCurrentMapID == 1454 or GetCurrentMapID == 1456 or GetCurrentMapID == 1458 or GetCurrentMapID == 1954 
-                   or GetCurrentMapID == 1947 or GetCurrentMapID == 1457 or GetCurrentMapID == 1453 or GetCurrentMapID == 1455
-                   or GetCurrentMapID == 1955 or GetCurrentMapID == 86 or GetCurrentMapID == 125 or GetCurrentMapID == 126
+local CapitalIDs = GetCurrentMapID == 84 or GetCurrentMapID == 87 or GetCurrentMapID == 89 or GetCurrentMapID == 103 or GetCurrentMapID == 85 or GetCurrentMapID == 90 
+                      or GetCurrentMapID == 86 or GetCurrentMapID == 88 or GetCurrentMapID == 110 or GetCurrentMapID == 111 or GetCurrentMapID == 125 or GetCurrentMapID == 126 
+                      or GetCurrentMapID == 391 or GetCurrentMapID == 392 or GetCurrentMapID == 393 or GetCurrentMapID == 394 or GetCurrentMapID == 407 or GetCurrentMapID == 503 
+                      or GetCurrentMapID == 582 or GetCurrentMapID == 590 or GetCurrentMapID == 622 or GetCurrentMapID == 624 or GetCurrentMapID == 626 or GetCurrentMapID == 627 
+                      or GetCurrentMapID == 628 or GetCurrentMapID == 629 or GetCurrentMapID == 1161 or GetCurrentMapID == 1163 or GetCurrentMapID == 1164 or GetCurrentMapID == 1165 
+                      or GetCurrentMapID == 1670 or GetCurrentMapID == 1671 or GetCurrentMapID == 1672 or GetCurrentMapID == 1673 or GetCurrentMapID == 2112 or GetCurrentMapID == 2339
+                      or GetCurrentMapID == 499 or GetCurrentMapID == 500 or GetCurrentMapID == 2266
 
   StaticPopupDialogs["Delete_Icon?"] = {
     text = TextIconMNL4:GetIconString() .. " " .. ns.COLORED_ADDON_NAME .. ": " .. L["Delete this icon"] .. " ? " .. TextIconMNL4:GetIconString(),
@@ -889,8 +894,10 @@ local CapitalIDs = GetCurrentMapID == 1454 or GetCurrentMapID == 1456 or GetCurr
       return
   end
 
-  if (button == "LeftButton") and IsAltKeyDown() then
-    StaticPopup_Show ("Delete_Icon?")
+  if (button == "RightButton") and IsAltKeyDown() then
+    if ns.Addon.db.profile.DeleteIcons then
+      StaticPopup_Show("Delete_Icon?")
+    end
   end
 
   if (button == "LeftButton" and mnID and mnID2 or mnID3 and not IsShiftKeyDown() and not IsAltKeyDown()) then

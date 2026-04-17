@@ -1,7 +1,7 @@
-## Interface: 120000
+## Interface: 120001
 ## IconTexture: Interface\Buttons\UI-LinkProfession-Up
-## Title: ChatLinkIcons v3.8.2
-## Version: 3.8.2
+## Title: ChatLinkIcons v3.9.2
+## Version: 3.9.2
 ## Author: SDPhantom
 
 ## OptionalDeps: Pawn, WIM
@@ -28,6 +28,7 @@ LinkProcessors\Tradeskill.lua
 LinkProcessors\Transmog.lua
 
 Integration\Tools.lua
+Integration\GlobalAPI.lua
 Integration\DefaultUI.lua
 Integration\Pawn.lua
 Integration\WIM.lua

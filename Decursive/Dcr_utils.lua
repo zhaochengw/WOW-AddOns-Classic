@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-01-02T00:31:32Z
+    This file was last updated on 2026-02-24T22:12:13Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -83,7 +83,6 @@ local UnitName          = _G.UnitName;
 local UnitIsPlayer      = _G.UnitIsPlayer;
 local string            = _G.string;
 local tonumber          = _G.tonumber;
-local UnitGUID          = _G.UnitGUID;
 local band              = _G.bit.band;
 local GetTime           = _G.GetTime;
 local IsSpellInRange    = _G.C_Spell and _G.C_Spell.IsSpellInRange or _G.IsSpellInRange;
@@ -94,6 +93,8 @@ local GetSpellName      = _G.C_Spell and _G.C_Spell.GetSpellName or function (sp
 local GetSpellId        = _G.C_Spell and _G.C_Spell.GetSpellInfo and function(spellName) local info = GetSpellInfo(spellName); return info and info.spellID end or function(spellName) return (select(7, GetSpellInfo(spellName))) end
 local GetItemInfo       = _G.C_Item and _G.C_Item.GetItemInfo or _G.GetItemInfo;
 local pcall             = _G.pcall;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
+local CreateColor       = _G.CreateColor
 
 -- replacement for the default function as it is bugged in WoW5 (it returns nil for some spells such as resto shamans' 'Purify Spirit')
 D.IsSpellInRange = function (spellName, unit)
@@ -103,12 +104,13 @@ D.IsSpellInRange = function (spellName, unit)
         return range;
     else
         --[==[@debug@
-        D:Debug('IsSpellInRange() returned nil for', spellName, unit);
+        --D:Debug('IsSpellInRange() returned nil for', spellName, unit);
         --@end-debug@]==]
         if unit == 'player' or unit == 'pet' then
             return 1;
         else
-            return (UnitInRange(unit)) and 1 or 0;
+            local uir = UnitInRange(unit)
+            return canaccessvalue(uir) and uir and 1 or 0;
         end
     end
 
@@ -139,7 +141,7 @@ end
 function D:PetUnitName (Unit, Check) -- {{{
     local Name = (self:UnitName(Unit));
 
-    if not Name or Name == DC.UNKNOWN  then
+    if not Name or canaccessvalue(Name) and Name == DC.UNKNOWN  then
         Name = DC.UNKNOWN .. "-" .. Unit;
         D:Debug("PetUnitName(): Name of %s is unknown", Unit);
     end
@@ -306,23 +308,36 @@ function D:tMap(t, f)
     return mapped_t;
 end
 
-function D:tAsString(t, indent) -- debugging function
-    if type(t) ~= 'table' then
-        return tostring(t)
+do
+
+    -- use provided f if not secret or use whenSecret instead
+    function asStringWith(v, f, whenSecret)
+        if not canaccessvalue or canaccessvalue(v) then
+            return f(v)
+        else
+            return whenSecret
+        end
     end
 
-    if indent == nil then
-        indent = "  ";
-    end
+    function D:tAsString(t, indent) -- debugging function
+        if type(t) ~= 'table' then
+            return tostring(t)
+        end
 
-    local s = "\n" .. indent .. "{" .. "\n"
-    for k,v in pairs(t) do
-        s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(
-         canaccessvalue and canaccessvalue(k) and "secret K" or tostring(k),
-         canaccessvalue and canaccessvalue(v) and "secret V" or self:tAsString(v, indent .. "  ")
-        )
+        if indent == nil then
+            indent = "  ";
+        end
+
+        local s = "\n" .. indent .. "{" .. "\n"
+
+        for k,v in pairs(t) do
+            s = s .. indent .. indent .. ("[%s] = [%s],\n"):format(
+            asStringWith(k, tostring, "secret K"),
+            asStringWith(v, function(x) return self:tAsString(x, indent .. "  ")  end, "secret V")
+            )
+        end
+        return s .. indent .. "}"
     end
-    return s .. indent .. "}"
 end
 
 function D:tcheckforval(tab, val) -- {{{
@@ -523,6 +538,10 @@ end --}}}
 
 function D:NumToHexColor(ColorTable)
         return str_format("%02x%02x%02x%02x", ColorTable[4] * 255, ColorTable[1] * 255, ColorTable[2] * 255, ColorTable[3] * 255)
+end
+
+function D:NumToColorMixin(colorTable)
+    return CreateColor(unpack(colorTable))
 end
 
 function D:HexColorToNum(hexColor)
@@ -1093,4 +1112,4 @@ do
         return nocase:trim();
     end
 end
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_utils.lua"] = "2.8.0-RC3";

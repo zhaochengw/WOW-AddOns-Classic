@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20251006073307")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 
 mod:RegisterCombat("scenario", 2213, 2827)
 mod:RegisterZoneCombat(2827)

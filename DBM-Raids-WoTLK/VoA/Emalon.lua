@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Emalon", "DBM-Raids-WoTLK", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103133102")
+mod:SetRevision("20260315035355")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(33993)
 mod:SetEncounterID(not mod:IsPostCata() and 774 or 1127)
 mod:SetModelID(27108)
@@ -29,23 +30,14 @@ local timerMobOvercharge	= mod:NewTimer(20, "timerMobOvercharge", 64217, nil, ni
 
 local timerEmalonEnrage		= mod:NewTimer(360, "EmalonEnrage", 26662)
 
-mod:AddRangeFrameOption(10, 64213)
 mod:AddSetIconOption("SetIconOnOvercharge", 64218, true, 5, {8})
 
 function mod:OnCombatStart(delay)
 	timerOvercharge:Start(-delay)
 	timerNovaCD:Start(20-delay)
 	timerEmalonEnrage:Start(-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 64216 or args.spellId == 65279 then

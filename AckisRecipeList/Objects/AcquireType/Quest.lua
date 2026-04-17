@@ -37,6 +37,7 @@ private.RegisterAcquireType({
 		end
 
 		local entry = private.CreateListEntry(entry_type, parent_entry, recipe)
+		entry:SetLocation(quest.Location)
 		entry:SetText("%s%s %s",
 			self.EntryPadding,
 			hide_type and "" or private.SetTextColor(self:ColorData().hex, self:Name()) .. ":",
@@ -55,6 +56,7 @@ private.RegisterAcquireType({
 		end
 
 		local listEntry = private.CreateListEntry(entry_type, parent_entry, recipe)
+		listEntry:SetLocation(quest.Location)
 		local locName = (quest.Location and quest.Location:LocalizedName()) or UNKNOWN
 		listEntry:SetText("%s%s %s",
 			self.EntryPadding:rep(2),

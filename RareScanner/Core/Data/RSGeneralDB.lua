@@ -8,6 +8,7 @@ local RSGeneralDB = private.NewLib("RareScannerGeneralDB")
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
+local RSEventDB = private.ImportLib("RareScannerEventDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner libraries
@@ -37,6 +38,49 @@ function RSGeneralDB.GetAlreadyFoundEntities()
 	return private.dbglobal.rares_found
 end
 
+function RSGeneralDB.GetAlreadyFoundEntitiesNoDB()
+	return private.dbglobal.entities_nodb
+end
+
+function RSGeneralDB.RefreshAlreadyFoundEntitiesNoDB()
+	local entities_nodb = private.dbglobal.entities_nodb
+	if (not entities_nodb) then
+		return
+	end
+		
+	for mapID, mapInfo in pairs (entities_nodb) do
+		for artID, entitiesIDs in pairs (mapInfo) do
+			local numEntities = #entitiesIDs
+			
+			for i = numEntities, 1, -1 do
+				local entityID = entitiesIDs[i]
+				if (RSNpcDB.GetInternalNpcInfo(entityID) or RSContainerDB.GetInternalContainerInfo(entityID) or RSEventDB.GetInternalEventInfo(entityID)) then
+		            table.remove(entitiesIDs, i)
+		        -- Check if pre-events
+		        else
+		       		local npcID = RSNpcDB.GetFinalNpcID(entityID)
+		       		if (npcID and RSNpcDB.GetInternalNpcInfo(npcID)) then
+		       			table.remove(entitiesIDs, i)
+		       		end
+		       		
+		       		local containerID = RSContainerDB.GetFinalContainerID(entityID)
+		       		if (containerID and RSContainerDB.GetInternalContainerInfo(containerID)) then
+		       			table.remove(entitiesIDs, i)
+		       		end
+		       	end
+			end
+			
+			if (next(entitiesIDs) == nil) then
+		        mapInfo[artID] = nil
+		    end
+		end
+			
+		if (next(mapInfo) == nil) then
+	        entities_nodb[mapID] = nil
+	    end
+	end
+end
+
 function RSGeneralDB.GetAlreadyFoundEntity(entityID)
 	if (entityID) then
 		return private.dbglobal.rares_found[entityID]
@@ -46,8 +90,8 @@ function RSGeneralDB.GetAlreadyFoundEntity(entityID)
 end
 
 function RSGeneralDB.IsAlreadyFoundEntityInZone(entityID, mapID)
-	if (entityID and mapID and private.dbglobal.rares_found[entityID]) then
-		local entityInfo = RSGeneralDB.GetAlreadyFoundEntity(entityID)
+	local entityInfo = RSGeneralDB.GetAlreadyFoundEntity(entityID)
+	if (entityID and mapID and entityInfo) then
 		if (entityInfo.mapID == mapID and (not entityInfo.artID or RSUtils.Contains(entityInfo.artID, C_Map.GetMapArtID(mapID)))) then
 			return true
 		end
@@ -135,6 +179,24 @@ local function PrintAlreadyFoundTable(raresFound)
 	return ""
 end
 
+local function AddAlreadyFoundEntityNoDB(mapID, artID, entityID)
+	if (not RSNpcDB.GetInternalNpcInfo(entityID) and not RSContainerDB.GetInternalContainerInfo(entityID) and not RSEventDB.GetInternalEventInfo(entityID)) then
+		if (not private.dbglobal.entities_nodb) then
+			private.dbglobal.entities_nodb = {}
+		end
+		
+		if (not private.dbglobal.entities_nodb[mapID]) then
+			private.dbglobal.entities_nodb[mapID] = {}
+		end
+		
+		if (not private.dbglobal.entities_nodb[mapID][artID]) then
+			private.dbglobal.entities_nodb[mapID][artID] = {}
+		end
+		
+		tinsert(private.dbglobal.entities_nodb[mapID][artID], entityID)
+	end
+end
+
 function RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasName)
 	if (entityID and private.dbglobal.rares_found[entityID] and mapID and x and y and artID) then
 		-- If the map is the same, check if different artID
@@ -161,6 +223,30 @@ function RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID, atla
 		end
 
 		RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntity[%s]: %s", entityID, PrintAlreadyFoundTable(RSGeneralDB.GetAlreadyFoundEntity(entityID))))
+		
+		-- If not in the database add to a temp table
+		AddAlreadyFoundEntityNoDB(mapID, artID, entityID)
+		
+		-- If multispawn record coordinates for debugging purposes
+		if (RSConstants.DEBUG_MODE and RSContainerDB.IsMultiZoneSpawn(entityID)) then
+			if (not private.dbglobal.multitiple_spawns) then
+				private.dbglobal.multitiple_spawns = {}
+			end
+			
+			if (not private.dbglobal.multitiple_spawns[entityID]) then
+				private.dbglobal.multitiple_spawns[entityID] = {}
+			end
+			
+			if (not private.dbglobal.multitiple_spawns[entityID][mapID]) then
+				private.dbglobal.multitiple_spawns[entityID][mapID] = {}
+			end
+			
+			local coords = string.sub(RSUtils.Lpad(string.sub(x,3), 4, '0'), 1, 4).."-"..string.sub(RSUtils.Lpad(string.sub(y,3), 4, '0'), 1, 4)
+			if (not RSUtils.Contains(private.dbglobal.multitiple_spawns[entityID][mapID], coords)) then
+				tinsert(private.dbglobal.multitiple_spawns[entityID][mapID], coords)
+				RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntity Nuevas coordendas[%s]: %s", entityID, coords))
+			end
+		end
 	end
 end
 
@@ -179,6 +265,10 @@ function RSGeneralDB.AddAlreadyFoundEntity(entityID, mapID, x, y, artID, atlasNa
 		private.dbglobal.rares_found[entityID].foundTime = time();
 
 		RSLogger:PrintDebugMessage(string.format("AddAlreadyFoundEntity[%s]: %s", entityID, PrintAlreadyFoundTable(RSGeneralDB.GetAlreadyFoundEntity(entityID))))
+				
+		-- If not in the database add to a temp table
+		AddAlreadyFoundEntityNoDB(mapID, artID, entityID)
+		
 		return RSGeneralDB.GetAlreadyFoundEntity(entityID)
 	end
 

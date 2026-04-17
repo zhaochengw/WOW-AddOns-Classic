@@ -22,7 +22,7 @@ local DT = __private.DT;
 	local IsInGroup = IsInGroup;
 	local IsInRaid = IsInRaid;
 	local NotifyInspect = NotifyInspect;
-	local GuildRoster = GuildRoster;
+	local GuildRoster = C_GuildInfo.GuildRoster;
 	local GetNumGuildMembers = GetNumGuildMembers;
 	local GetGuildRosterInfo = GetGuildRosterInfo;
 	local GetItemInfoInstant = GetItemInfoInstant;
@@ -179,7 +179,7 @@ MT.BuildEnv('RAIDTOOL');
 							end
 						else
 							if slot == 17 and EquData[16] then
-								local _, _, _, _, loc = GetItemInfoInstant(EquData[16]);
+								local _, _, _, loc = GetItemInfoInstant(EquData[16]);
 								if loc == "INVTYPE_2HWEAPON" then
 									GameTooltip:AddLine(l10n.SLOT[slot] .. " -");
 								else
@@ -487,7 +487,7 @@ MT.BuildEnv('RAIDTOOL');
 				local unit = TRaidUnit[i];
 				if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
 					local name, realm = UnitName(unit);
-					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 						name = name .. "-" .. realm;
 					end
 					local level = UnitLevel(unit);
@@ -511,7 +511,7 @@ MT.BuildEnv('RAIDTOOL');
 				local unit = TPartyUnit[i];
 				if UnitExists(unit) and unit ~= 'player' then
 					local name, realm = UnitName(unit);
-					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM then
+					if realm ~= nil and realm ~= "" and realm ~= CT.SELFREALM and realm ~= CT.SELFREALMSTRIP and realm ~= CT.SELFREALMSHORT then
 						name = name .. "-" .. realm;
 					end
 					local level = UnitLevel(unit);

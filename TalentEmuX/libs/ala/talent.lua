@@ -1100,27 +1100,29 @@ end
 		else
 			local code1, data1, lenc1, lend1 = __emulib.EncodeTalentBlock(__emulib.GetTalentData(__classList[classIndex], true, 1, unit));
 			local code2, data2, lenc2, lend2 = __emulib.EncodeTalentBlock(__emulib.GetTalentData(__classList[classIndex], true, 2, unit));
-			-- if __base64[classIndex] == nil then
-			-- 	print("classIndex =", classIndex, __base64[classIndex]);
-			-- end
-			-- if __base64[LvLow] == nil then
-			-- 	print("LvLow =", LvLow, __base64[LvLow], level);
-			-- end
-			-- if __base64[LvHigh] == nil then
-			-- 	print("LvHigh =", LvHigh, __base64[LvHigh], level);
-			-- end
-			-- if __base64[numGroup] == nil then
-			-- 	print("numGroup =", numGroup, __base64[numGroup]);
-			-- end
-			-- if __base64[activeGroup] == nil then
-			-- 	print("activeGroup =", activeGroup, __base64[activeGroup]);
-			-- end
-			-- if __base64[lenc1 or 0] == nil then
-			-- 	print("lenc1 =", lenc1, code1);
-			-- end
-			-- if __base64[lenc2 or 0] == nil then
-			-- 	print("lenc2 =", lenc2, code2);
-			-- end
+			--[==[
+			if __base64[classIndex] == nil then
+				__emulib.Debug("classIndex =", classIndex, __base64[classIndex]);
+			end
+			if __base64[LvLow] == nil then
+				__emulib.Debug("LvLow =", LvLow, __base64[LvLow], level);
+			end
+			if __base64[LvHigh] == nil then
+				__emulib.Debug("LvHigh =", LvHigh, __base64[LvHigh], level);
+			end
+			if __base64[numGroup] == nil then
+				__emulib.Debug("numGroup =", numGroup, __base64[numGroup]);
+			end
+			if __base64[activeGroup] == nil then
+				__emulib.Debug("activeGroup =", activeGroup, __base64[activeGroup]);
+			end
+			if __base64[lenc1 or 0] == nil then
+				__emulib.Debug("lenc1 =", lenc1, code1);
+			end
+			if __base64[lenc2 or 0] == nil then
+				__emulib.Debug("lenc2 =", lenc2, code2);
+			end
+			--]==]
 			return
 					COMM_TALENT_PREFIX ..
 					__base64[classIndex] ..

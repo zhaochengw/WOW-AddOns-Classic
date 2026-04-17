@@ -896,7 +896,7 @@ BG.Init(function()
         local GetComparisonStatistic = GetComparisonStatistic
         local tbl = {}
         local num = 1
-        if name == BG.GN() then
+        if name == BG.playerName then
             GetAchievementComparisonInfo = GetAchievementInfo
             GetComparisonStatistic = GetStatistic
             num = 4

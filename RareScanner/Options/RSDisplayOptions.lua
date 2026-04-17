@@ -70,7 +70,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					end,
 					validate = function(_, value)
 						if (value) then
-							local bindingAction = GetBindingByKey(value);
+							local bindingAction = C_KeyBindings.GetBindingByKey(value);
 							if (bindingAction) then
 								if (not RSUtils.Contains(bindingAction, RSConstants.RS_BUTTON_NAME)) then
 									return string.format(AL["KEYBINDING_ERROR"], bindingAction)
@@ -105,7 +105,7 @@ function RSDisplayOptions.GetDisplayOptions()
 					end,
 					validate = function(_, value)
 						if (value) then
-							local bindingAction = GetBindingByKey(value);
+							local bindingAction = C_KeyBindings.GetBindingByKey(value);
 							if (bindingAction) then
 								if (not RSUtils.Contains(bindingAction, RSConstants.RS_BUTTON_NAME)) then
 									return string.format(AL["KEYBINDING_ERROR"], bindingAction)

@@ -1,29 +1,15 @@
 ## Interface: 50503
 
 ## Title: Leatrix Maps
-
-
-
 ## Notes: curseforge.com/wow/addons/leatrix-maps
-## Notes-deDE: curseforge.com/wow/addons/leatrix-maps
-## Notes-frFR: curseforge.com/wow/addons/leatrix-maps
-## Notes-esES: curseforge.com/wow/addons/leatrix-maps
-## Notes-esMX: curseforge.com/wow/addons/leatrix-maps
-## Notes-ptBR: curseforge.com/wow/addons/leatrix-maps
-## Notes-itIT: curseforge.com/wow/addons/leatrix-maps
-## Notes-ruRU: curseforge.com/wow/addons/leatrix-maps
-## Notes-koKR: curseforge.com/wow/addons/leatrix-maps
-## Notes-zhTW: curseforge.com/wow/addons/leatrix-maps
-## Notes-zhCN: curseforge.com/wow/addons/leatrix-maps
 
-## Version: 5.1.22
+## Version: 5.1.32
 ## Author: Leatrix
 ## SavedVariables: LeaMapsDB
 ## LoadSavedVariablesFirst: true
+## X-Curse-Project-ID: 298842
 
 ## OptionalDeps: Leatrix_enUS, ElvUI
-
-## X-Curse-Project-ID: 298842
 
 Leatrix_Maps_Library.lua
 Leatrix_Maps_Locale.lua

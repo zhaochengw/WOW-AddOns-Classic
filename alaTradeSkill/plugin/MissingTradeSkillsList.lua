@@ -26,7 +26,7 @@ local DT = __private.DT;
 -->
 MT.BuildEnv("MissingTradeSkillsList");
 -->		predef
-	local index_validated = 1;
+	local index_expansion = 1;
 	local index_phase = 2;
 	local index_pid = 3;
 	local index_sid = 4;

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2387, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260210012025")
+mod:SetRevision("20260221022657")
 mod:SetCreatureID(164185)
 mod:SetEncounterID(2380)
 mod:SetHotfixNoticeRev(20250808000000)
@@ -21,7 +21,6 @@ mod:AddCustomTimerOptions(328206, true, 3, 0)--Curse of Stone
 mod:AddCustomTimerOptions(319941, true, 3, 0)
 
 function mod:OnLimitedCombatStart()
-	self:DisableSpecialWarningSounds()
 	self:EnableAlertOptions(326389, 488, "aesoon", 2)
 	self:EnableAlertOptions(319733, 489, "mobsoon", 2)
 	self:EnableAlertOptions(319941, 496, "specialsoon", 2)

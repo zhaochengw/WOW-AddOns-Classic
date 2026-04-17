@@ -14,18 +14,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RatingBuster")
 local S = setmetatable(addon.S, { __index = L })
 ---@cast L RatingBusterLocale
 
---------------------
--- AceAddon Setup --
---------------------
----@class RatingBuster: AceAddon, AceConsole-3.0, AceEvent-3.0, AceBucket-3.0
-RatingBuster = LibStub("AceAddon-3.0"):NewAddon("RatingBuster", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
-RatingBuster.title = "Rating Buster"
---@non-debug@
-RatingBuster.version = "2.0.10"
---@end-non-debug@
---[==[@debug@
-RatingBuster.version = "(development)"
---@end-debug@]==]
 local addonNameWithVersion = ("%s %s"):format(addonName, RatingBuster.version)
 
 -----------
@@ -88,6 +76,17 @@ local function getGem(info)
 	return db.profile[info[#info]].gemLink
 end
 
+---@class AutoGem
+---@field gemID number
+---@field gemText string
+---@field gemLink string
+
+---@class GemInfo
+---@field auto { [SocketColor]: AutoGem }
+---@field real? number[]
+---@field sumIgnoreGems boolean
+---@field sumIgnoreExtraSockets boolean
+
 local function setGem(info, value)
 	if value == "" then
 		wipe(db.profile[info[#info]])
@@ -104,13 +103,10 @@ local function setGem(info, value)
 		if gemText:sub(1, 10):find("|c%x%x%x%x%x%x%x%x") then
 			gemText = gemText:sub(11)
 		end
-		local name, link = C_Item.GetItemInfo(value)
-		local itemID = link:match("item:(%d+)")
+		local _, link = C_Item.GetItemInfo(value)
 		db.profile[info[#info]] = {
 			gemText = gemText,
-			itemID = itemID,
 			gemID = gemID,
-			gemName = name,
 			gemLink = link,
 		}
 		RatingBuster:ClearCache()
@@ -167,7 +163,7 @@ local options = {
 			desc = "Toggle debugging",
 			func = function()
 				RatingBuster:ClearCache()
-				StatLogic:ClearCache()
+				StatLogic:ToggleDebugging()
 			end,
 			dialogHidden = true,
 		},
@@ -274,12 +270,21 @@ local options = {
 					args = {},
 					hidden = true,
 				},
+				all_stats = {
+					type = 'group',
+					name = L[StatLogic.Stats.AllStats],
+					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.AllStats]),
+					width = "full",
+					order = 8,
+					args = {},
+					hidden = true,
+				},
 				hit = {
 					type = 'group',
 					name = L[StatLogic.Stats.HitRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.HitRating]),
 					width = "full",
-					order = 8,
+					order = 9,
 					args = {},
 					hidden = true,
 				},
@@ -288,7 +293,7 @@ local options = {
 					name = L[StatLogic.Stats.CritRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.CritRating]),
 					width = "full",
-					order = 9,
+					order = 10,
 					args = {},
 					hidden = true,
 				},
@@ -297,7 +302,7 @@ local options = {
 					name = L[StatLogic.Stats.HasteRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.HasteRating]),
 					width = "full",
-					order = 10,
+					order = 11,
 					args = {},
 					hidden = true,
 				},
@@ -305,7 +310,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.MasteryRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.MasteryRating]),
-					order = 11,
+					order = 12,
 					args = {},
 					hidden = true,
 				},
@@ -314,7 +319,7 @@ local options = {
 					name = L[StatLogic.Stats.Health],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.Health]),
 					width = "full",
-					order = 12,
+					order = 13,
 					args = {},
 					hidden = true,
 				},
@@ -323,7 +328,7 @@ local options = {
 					name = L[StatLogic.Stats.ManaRegen],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.ManaRegen]),
 					width = "full",
-					order = 13,
+					order = 14,
 					args = {},
 					hidden = true,
 				},
@@ -331,7 +336,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.AttackPower],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.AttackPower]),
-					order = 14,
+					order = 15,
 					args = {},
 					hidden = true,
 				},
@@ -339,7 +344,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.WeaponSkill],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.WeaponSkill]),
-					order = 15,
+					order = 16,
 					hidden = true,
 					--[[
 					hidden = function()
@@ -359,7 +364,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.ExpertiseRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.ExpertiseRating]),
-					order = 16,
+					order = 17,
 					hidden = true,
 					args = {},
 				},
@@ -367,7 +372,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.SpellPower],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.SpellPower]),
-					order = 17,
+					order = 18,
 					args = {},
 					hidden = true,
 				},
@@ -375,7 +380,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.SpellDamage],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.SpellDamage]),
-					order = 18,
+					order = 19,
 					args = {},
 					hidden = true,
 				},
@@ -384,7 +389,7 @@ local options = {
 					name = L[StatLogic.Stats.SpellCrit],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.SpellCrit]),
 					width = "full",
-					order = 19,
+					order = 20,
 					args = {},
 					hidden = true,
 				},
@@ -392,7 +397,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.Armor],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.Armor]),
-					order = 20,
+					order = 21,
 					args = {},
 					hidden = true,
 				},
@@ -400,7 +405,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.Defense],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.Defense]),
-					order = 21,
+					order = 22,
 					hidden = true,
 					args = {},
 				},
@@ -408,7 +413,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.ResilienceRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.ResilienceRating]),
-					order = 22,
+					order = 23,
 					args = {},
 					hidden = true,
 				},
@@ -416,7 +421,7 @@ local options = {
 					type = 'group',
 					name = L[StatLogic.Stats.PvpPowerRating],
 					desc = L["Changes the display of %s"]:format(L[StatLogic.Stats.PvpPowerRating]),
-					order = 23,
+					order = 24,
 					args = {},
 					hidden = true,
 				},
@@ -557,28 +562,17 @@ local options = {
 					get = getGlobalOption,
 					set = setGlobalOption,
 					args = {
-						sumIgnoreUnused = {
-							type = 'toggle',
-							name = L["Ignore unused item types"],
-							desc = L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"],
-						},
-						sumIgnoreNonPrimaryStat = {
-							type = 'toggle',
-							name = L["Ignore non-primary stat"],
-							desc = L["Show stat summary only for items with your specialization's primary stat"],
-							hidden = function()
-								return addon.tocversion < 40000
-							end,
-						},
 						sumIgnoreEquipped = {
 							type = 'toggle',
 							name = L["Ignore equipped items"],
 							desc = L["Hide stat summary for equipped items"],
+							order = 1,
 						},
 						sumIgnoreEnchant = {
 							type = 'toggle',
 							name = L["Ignore enchants"],
 							desc = L["Ignore enchants on items when calculating the stat summary"],
+							order = 2,
 						},
 						sumIgnoreGems = {
 							type = 'toggle',
@@ -587,15 +581,35 @@ local options = {
 							hidden = function()
 								return addon.tocversion < 20000
 							end,
+							order = 3,
 						},
 						sumIgnoreExtraSockets = {
 							type = 'toggle',
 							name = L["Ignore extra sockets"],
 							desc = L["Ignore sockets from professions or consumable items when calculating the stat summary"],
 							hidden = function()
-								return addon.tocversion < 20000
+								return addon.tocversion < 30000
 							end,
-						}
+							disabled = function()
+								return db.global.sumIgnoreGems
+							end,
+							order = 4,
+						},
+						sumIgnoreUnused = {
+							type = 'toggle',
+							name = L["Ignore unused item types"],
+							desc = L["Show stat summary only for highest level armor type and items you can use with uncommon quality and up"],
+							order = 5,
+						},
+						sumIgnoreNonPrimaryStat = {
+							type = 'toggle',
+							name = L["Ignore non-primary stat"],
+							desc = L["Show stat summary only for items with your specialization's primary stat"],
+							hidden = function()
+								return addon.tocversion < 40000
+							end,
+							order = 6,
+						},
 					},
 				},
 				basic = {
@@ -973,7 +987,7 @@ local options = {
 						sumAvoidance = {
 							type = 'toggle',
 							name = L["Sum %s"]:format(L[StatLogic.Stats.Avoidance]),
-							desc = L["Avoidance <- Dodge, Parry, MobMiss, Block(Optional)"],
+							desc = L["Avoidance <- Dodge, Parry, Miss, Block (Optional)"],
 							order = 1,
 						},
 						sumAvoidWithBlock = {
@@ -1257,6 +1271,12 @@ local defaults = {
 		sumAvoidWithBlock = false,
 
 		-- Base stat conversions
+		showStrFromAllStats = false,
+		showAgiFromAllStats = false,
+		showStaFromAllStats = false,
+		showIntFromAllStats = false,
+		showSpiFromAllStats = false,
+
 		showBlockValueFromStr = false,
 
 		showRAPFromAgi = false,
@@ -1365,30 +1385,35 @@ local defaults = {
 		sumAvoidance = false,
 		sumMasteryEffect = true,
 		-- Gems
+		---@type AutoGem
 		sumGemRed = {
-			itemID = nil,
 			gemID = nil,
 			gemText = nil,
+			gemLink = nil,
 		};
+		---@type AutoGem
 		sumGemYellow = {
-			itemID = nil,
 			gemID = nil,
 			gemText = nil,
+			gemLink = nil,
 		};
+		---@type AutoGem
 		sumGemBlue = {
-			itemID = nil,
 			gemID = nil,
 			gemText = nil,
+			gemLink = nil,
 		};
+		---@type AutoGem
 		sumGemMeta = {
-			itemID = nil,
 			gemID = nil,
 			gemText = nil,
+			gemLink = nil,
 		};
+		---@type AutoGem
 		sumGemPrismatic = {
-			itemID = nil,
 			gemID = nil,
 			gemText = nil,
+			gemLink = nil,
 		};
 	},
 }
@@ -1811,7 +1836,7 @@ do
 								icon = [[Interface/ICONS/Spell_DeathKnight_FrozenRuneWeapon]]
 							end
 							if name and icon then
-								local source = "|T"..icon..":20|t"..name
+								local source = "|T"..icon..":20|t "..name
 								sources[source] = true
 							end
 						end
@@ -1994,6 +2019,7 @@ PLAYER_LOGIN - Most information about the game world should now be available to 
 -- OnInitialize(name) called at ADDON_LOADED
 function RatingBuster:ClearCache()
 	wipe(cache)
+	StatLogic:ClearCache()
 end
 
 function RatingBuster:OnInitialize()
@@ -2203,11 +2229,7 @@ function RatingBuster.ProcessTooltip(tooltip)
 	---------------------
 	-- Get equipped item avoidances
 	if db.profile.enableAvoidanceDiminishingReturns then
-		local red = db.profile.sumGemRed.gemID
-		local yellow = db.profile.sumGemYellow.gemID
-		local blue = db.profile.sumGemBlue.gemID
-		local meta = db.profile.sumGemMeta.gemID
-		local _, _, difflink1 = StatLogic:GetDiffID(tooltip, db.global.sumIgnoreEnchant, db.global.sumIgnoreGems, db.global.sumIgnoreExtraSockets, red, yellow, blue, meta)
+		local _, _, difflink1 = StatLogic:GetDiffID(tooltip, db.global.sumIgnoreEnchant)
 		StatLogic:GetSum(difflink1, equippedSum, statModContext)
 		equippedSum[StatLogic.Stats.Strength] = equippedSum[StatLogic.Stats.Strength] * statModContext("MOD_STR")
 		equippedSum[StatLogic.Stats.Agility] = equippedSum[StatLogic.Stats.Agility] * statModContext("MOD_AGI")
@@ -2233,9 +2255,12 @@ function RatingBuster.ProcessTooltip(tooltip)
 		processedMiss = 0
 		processedResilience = 0
 	end
-	-- Loop through tooltip lines starting at line 2
+
+	-- Process breakdowns from line 2 through 5 lines past the end of the
+	-- "clean" tooltip, to avoid interfering with text from other tooltip addons
+	local numLines = StatLogic:GetItemTooltipNumLines(link)
 	local tipTextLeft = tooltip:GetName().."TextLeft"
-	for i = 2, tooltip:NumLines() do
+	for i = 2, numLines + 5 do
 		local fontString = _G[tipTextLeft..i]
 		local text = fontString:GetText()
 		if text then
@@ -2433,12 +2458,7 @@ end
 ---@param show boolean
 function RatingBuster:ProcessStat(stat, value, breakdownStats, link, color, statModContext, isParentModified, isBaseStat, show)
 	if value == 0 then return end
-	if StatLogic.GenericStatMap[stat] then
-		local statList = StatLogic.GenericStatMap[stat]
-		for _, convertedStatID in ipairs(statList) do
-			RatingBuster:ProcessStat(convertedStatID, value, breakdownStats, link, color, statModContext, true, false, true)
-		end
-	elseif stat == StatLogic.Stats.HitRating then
+	if stat == StatLogic.Stats.HitRating then
 		local meleeHitRating = value * statModContext("ADD_MELEE_HIT_RATING_MOD_HIT_RATING")
 		self:ProcessStat(StatLogic.Stats.MeleeHitRating, meleeHitRating, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showMeleeHitFromHitRating)
 
@@ -2460,6 +2480,15 @@ function RatingBuster:ProcessStat(stat, value, breakdownStats, link, color, stat
 
 		local spellHasteRating = value * statModContext("ADD_SPELL_HASTE_RATING_MOD_HASTE_RATING")
 		self:ProcessStat(StatLogic.Stats.SpellHasteRating, spellHasteRating, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showSpellHasteFromHasteRating)
+	elseif stat == StatLogic.Stats.HighestSecondary then
+		local critRating = value * statModContext("ADD_CRIT_RATING_MOD_HIGHEST_SECONDARY")
+		self:ProcessStat(StatLogic.Stats.CritRating, critRating, breakdownStats, link, color, statModContext, false, false, true)
+
+		local hasteRating = value * statModContext("ADD_HASTE_RATING_MOD_HIGHEST_SECONDARY")
+		self:ProcessStat(StatLogic.Stats.HasteRating, hasteRating, breakdownStats, link, color, statModContext, false, false, true)
+
+		local masteryRating = value * statModContext("ADD_MASTERY_RATING_MOD_HIGHEST_SECONDARY")
+		self:ProcessStat(StatLogic.Stats.MasteryRating, masteryRating, breakdownStats, link, color, statModContext, false, false, true)
 	elseif StatLogic.RatingBase[stat] and db.profile.showRatings then
 		--------------------
 		-- Combat Ratings --
@@ -2490,17 +2519,17 @@ function RatingBuster:ProcessStat(stat, value, breakdownStats, link, color, stat
 			if not isParentModified then
 				effect = effect * statModContext("MOD_CRIT_RATING")
 			end
-			self:ProcessStat(StatLogic.Stats.MeleeCrit, effect, breakdownStats, link, color, statModContext, true, false, db.profile.showMeleeCritFromCritRating)
+			self:ProcessStat(StatLogic.Stats.MeleeCrit, effect, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showMeleeCritFromCritRating)
 		elseif stat == StatLogic.Stats.RangedCritRating then
 			if not isParentModified then
 				effect = effect * statModContext("MOD_CRIT_RATING")
 			end
-			self:ProcessStat(StatLogic.Stats.RangedCrit, effect, breakdownStats, link, color, statModContext, true, false, db.profile.showRangedCritFromCritRating)
+			self:ProcessStat(StatLogic.Stats.RangedCrit, effect, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showRangedCritFromCritRating)
 		elseif stat == StatLogic.Stats.SpellCritRating then
 			if not isParentModified then
 				effect = effect * statModContext("MOD_CRIT_RATING")
 			end
-			self:ProcessStat(StatLogic.Stats.SpellCrit, effect, breakdownStats, link, color, statModContext, true, false, db.profile.showSpellCritFromCritRating)
+			self:ProcessStat(StatLogic.Stats.SpellCrit, effect, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showSpellCritFromCritRating)
 		elseif stat == StatLogic.Stats.MeleeHasteRating then
 			if not isParentModified then
 				effect = effect * statModContext("MOD_HASTE_RATING")
@@ -2532,6 +2561,48 @@ function RatingBuster:ProcessStat(stat, value, breakdownStats, link, color, stat
 		elseif stat == StatLogic.Stats.PvpPowerRating then
 			self:ProcessStat(StatLogic.Stats.PvpPower, effect, breakdownStats, link, color, statModContext, true, isBaseStat, db.profile.showPvpPowerFromPvpPowerRating)
 		end
+	elseif stat == StatLogic.Stats.AllStats then
+		local strength = value * statModContext("ADD_STR_MOD_ALL_STATS")
+		self:ProcessStat(StatLogic.Stats.Strength, strength, breakdownStats, link, color, statModContext, true, false, db.profile.showStrFromAllStats)
+
+		local agility = value * statModContext("ADD_AGI_MOD_ALL_STATS")
+		self:ProcessStat(StatLogic.Stats.Agility, agility, breakdownStats, link, color, statModContext, true, false, db.profile.showAgiFromAllStats)
+
+		local stamina = value * statModContext("ADD_STA_MOD_ALL_STATS")
+		self:ProcessStat(StatLogic.Stats.Stamina, stamina, breakdownStats, link, color, statModContext, true, false, db.profile.showStaFromAllStats)
+
+		local intellect = value * statModContext("ADD_INT_MOD_ALL_STATS")
+		self:ProcessStat(StatLogic.Stats.Intellect, intellect, breakdownStats, link, color, statModContext, true, false, db.profile.showIntFromAllStats)
+
+		local spirit = value * statModContext("ADD_SPI_MOD_ALL_STATS")
+		self:ProcessStat(StatLogic.Stats.Spirit, spirit, breakdownStats, link, color, statModContext, true, false, db.profile.showSpiFromAllStats)
+	elseif stat == StatLogic.Stats.Primary then
+		local strength = value * statModContext("ADD_STR_MOD_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Strength, strength, breakdownStats, link, color, statModContext, false, false, true)
+
+		local agility = value * statModContext("ADD_AGI_MOD_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Agility, agility, breakdownStats, link, color, statModContext, false, false, true)
+
+		local intellect = value * statModContext("ADD_INT_MOD_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Intellect, intellect, breakdownStats, link, color, statModContext, false, false, true)
+	elseif stat == StatLogic.Stats.HighestPrimary then
+		local strength = value * statModContext("ADD_STR_MOD_HIGHEST_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Strength, strength, breakdownStats, link, color, statModContext, false, false, true)
+
+		local agility = value * statModContext("ADD_AGI_MOD_HIGHEST_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Agility, agility, breakdownStats, link, color, statModContext, false, false, true)
+
+		local intellect = value * statModContext("ADD_INT_MOD_HIGHEST_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Intellect, intellect, breakdownStats, link, color, statModContext, false, false, true)
+
+		local spirit = value * statModContext("ADD_SPI_MOD_HIGHEST_PRIMARY")
+		self:ProcessStat(StatLogic.Stats.Spirit, spirit, breakdownStats, link, color, statModContext, false, false, true)
+	elseif stat == StatLogic.Stats.HighestStrengthAgility then
+		local strength = value * statModContext("ADD_STR_MOD_HIGHEST_STR_AGI")
+		self:ProcessStat(StatLogic.Stats.Strength, strength, breakdownStats, link, color, statModContext, false, false, true)
+
+		local agility = value * statModContext("ADD_AGI_MOD_HIGHEST_STR_AGI")
+		self:ProcessStat(StatLogic.Stats.Agility, agility, breakdownStats, link, color, statModContext, false, false, true)
 	elseif stat == StatLogic.Stats.Strength and db.profile.showStats then
 		local mod = statModContext("MOD_STR")
 		value = value * mod
@@ -2928,10 +2999,10 @@ function RatingBuster:ProcessStat(stat, value, breakdownStats, link, color, stat
 			breakdownStats[stat] = breakdownStats[stat] + value
 		end
 
-		local dodgeReduction = value * -statModContext("ADD_DODGE_REDUCTION_MOD_EXPERTISE")
+		local dodgeReduction = value * statModContext("ADD_DODGE_REDUCTION_MOD_EXPERTISE")
 		self:ProcessStat(StatLogic.Stats.DodgeReduction, dodgeReduction, breakdownStats, link, color, statModContext, true, false, db.profile.showDodgeReductionFromExpertise)
 
-		local parryReduction = value * -statModContext("ADD_PARRY_REDUCTION_MOD_EXPERTISE")
+		local parryReduction = value * statModContext("ADD_PARRY_REDUCTION_MOD_EXPERTISE")
 		self:ProcessStat(StatLogic.Stats.ParryReduction, parryReduction, breakdownStats, link, color, statModContext, true, false, db.profile.showParryReductionFromExpertise)
 
 		local spellHit = value * statModContext("ADD_SPELL_HIT_MOD_EXPERTISE")
@@ -3252,6 +3323,10 @@ local summaryCalcData = {
 		func = function(sum, statModContext)
 			return statModContext("MOD_STR") * (
 				sum[StatLogic.Stats.Strength]
+				+ sum[StatLogic.Stats.AllStats] * statModContext("ADD_STR_MOD_ALL_STATS")
+				+ sum[StatLogic.Stats.Primary] * statModContext("ADD_STR_MOD_PRIMARY")
+				+ sum[StatLogic.Stats.HighestPrimary] * statModContext("ADD_STR_MOD_HIGHEST_PRIMARY")
+				+ sum[StatLogic.Stats.HighestStrengthAgility] * statModContext("ADD_STR_MOD_HIGHEST_STR_AGI")
 				+ summaryFunc[StatLogic.Stats.Defense](sum, statModContext) * statModContext("ADD_STR_MOD_DEFENSE")
 			)
 		end,
@@ -3263,6 +3338,10 @@ local summaryCalcData = {
 		func = function(sum, statModContext)
 			return statModContext("MOD_AGI") * (
 				sum[StatLogic.Stats.Agility]
+				+ sum[StatLogic.Stats.AllStats] * statModContext("ADD_AGI_MOD_ALL_STATS")
+				+ sum[StatLogic.Stats.Primary] * statModContext("ADD_AGI_MOD_PRIMARY")
+				+ sum[StatLogic.Stats.HighestPrimary] * statModContext("ADD_AGI_MOD_HIGHEST_PRIMARY")
+				+ sum[StatLogic.Stats.HighestStrengthAgility] * statModContext("ADD_AGI_MOD_HIGHEST_STR_AGI")
 				+ summaryFunc[StatLogic.Stats.Intellect](sum, statModContext) * statModContext("ADD_AGI_MOD_INT")
 			)
 		end,
@@ -3272,7 +3351,10 @@ local summaryCalcData = {
 		option = "sumSta",
 		stat = StatLogic.Stats.Stamina,
 		func = function(sum, statModContext)
-			return statModContext("MOD_STA") * sum[StatLogic.Stats.Stamina]
+			return statModContext("MOD_STA") * (
+				sum[StatLogic.Stats.Stamina]
+				+ sum[StatLogic.Stats.AllStats] * statModContext("ADD_STA_MOD_ALL_STATS")
+			)
 		end,
 	},
 	-- Intellect - INT
@@ -3280,7 +3362,12 @@ local summaryCalcData = {
 		option = "sumInt",
 		stat = StatLogic.Stats.Intellect,
 		func = function(sum, statModContext)
-			return statModContext("MOD_INT") * sum[StatLogic.Stats.Intellect]
+			return statModContext("MOD_INT") * (
+				sum[StatLogic.Stats.Intellect]
+				+ sum[StatLogic.Stats.AllStats] * statModContext("ADD_INT_MOD_ALL_STATS")
+				+ sum[StatLogic.Stats.Primary] * statModContext("ADD_INT_MOD_PRIMARY")
+				+ sum[StatLogic.Stats.HighestPrimary] * statModContext("ADD_INT_MOD_HIGHEST_PRIMARY")
+			)
 		end,
 	},
 	-- Spirit - SPI
@@ -3288,13 +3375,20 @@ local summaryCalcData = {
 		option = "sumSpi",
 		stat = StatLogic.Stats.Spirit,
 		func = function(sum, statModContext)
-			return statModContext("MOD_SPI") * sum[StatLogic.Stats.Spirit]
+			return statModContext("MOD_SPI") * (
+				sum[StatLogic.Stats.Spirit]
+				+ sum[StatLogic.Stats.AllStats] * statModContext("ADD_SPI_MOD_ALL_STATS")
+				+ sum[StatLogic.Stats.HighestPrimary] * statModContext("ADD_SPI_MOD_HIGHEST_PRIMARY")
+			)
 		end,
 	},
 	{
 		stat = StatLogic.Stats.MasteryRating,
 		func = function(sum, statModContext)
-			return statModContext("MOD_MASTERY_RATING") * sum[StatLogic.Stats.MasteryRating]
+			return statModContext("MOD_MASTERY_RATING") * (
+				sum[StatLogic.Stats.MasteryRating]
+				+ sum[StatLogic.Stats.HighestSecondary] * statModContext("ADD_MASTERY_RATING_MOD_HIGHEST_SECONDARY")
+			)
 		end,
 	},
 	{
@@ -3434,7 +3528,7 @@ local summaryCalcData = {
 		stat = StatLogic.Stats.HitRating,
 		func = function(sum, statModContext)
 			return sum[StatLogic.Stats.HitRating]
-				+ sum[StatLogic.Stats.Spirit] * statModContext("ADD_HIT_RATING_MOD_SPI")
+				+ summaryFunc[StatLogic.Stats.Spirit](sum, statModContext) * statModContext("ADD_HIT_RATING_MOD_SPI")
 		end,
 	},
 	-- Hit Chance - MELEE_HIT_RATING, WEAPON_SKILL
@@ -3480,6 +3574,7 @@ local summaryCalcData = {
 				sum[StatLogic.Stats.CritRating]
 				+ summaryFunc[StatLogic.Stats.DodgeRating](sum, statModContext) * statModContext("ADD_CRIT_RATING_MOD_DODGE_RATING")
 				+ summaryFunc[StatLogic.Stats.ParryRating](sum, statModContext) * statModContext("ADD_CRIT_RATING_MOD_PARRY_RATING")
+				+ sum[StatLogic.Stats.HighestSecondary] * statModContext("ADD_CRIT_RATING_MOD_HIGHEST_SECONDARY")
 			)
 		end,
 	},
@@ -3524,7 +3619,10 @@ local summaryCalcData = {
 	{
 		stat = StatLogic.Stats.HasteRating,
 		func = function (sum, statModContext)
-			return statModContext("MOD_HASTE_RATING") * sum[StatLogic.Stats.HasteRating]
+			return statModContext("MOD_HASTE_RATING") * (
+				sum[StatLogic.Stats.HasteRating]
+				+ sum[StatLogic.Stats.HighestSecondary] * statModContext("ADD_HASTE_RATING_MOD_HIGHEST_SECONDARY")
+			)
 		end,
 	},
 	-- Haste - MELEE_HASTE_RATING
@@ -3724,7 +3822,7 @@ local summaryCalcData = {
 		func = function(sum, statModContext)
 			return statModContext("MOD_SPELL_DMG") * (
 				sum[StatLogic.Stats.NatureDamage]
-				+ sum[StatLogic.Stats.Agility] * statModContext("ADD_NATURE_DAMAGE_MOD_AGI")
+				+ summaryFunc[StatLogic.Stats.Agility](sum, statModContext) * statModContext("ADD_NATURE_DAMAGE_MOD_AGI")
 			) + summaryFunc[StatLogic.Stats.SpellDamage](sum, statModContext)
 		 end,
 	},
@@ -4275,23 +4373,22 @@ function RatingBuster:StatSummary(tooltip, link, statModContext)
 		end
 	end
 
-	-- Ignore enchants and gems on items when calculating the stat summary
-	local red = db.profile.sumGemRed.gemID
-	local yellow = db.profile.sumGemYellow.gemID
-	local blue = db.profile.sumGemBlue.gemID
-	local meta = db.profile.sumGemMeta.gemID
-	local prismatic = db.profile.sumGemPrismatic.gemID
+	---@type GemInfo
+	local gems = {
+		sumIgnoreGems = db.global.sumIgnoreGems,
+		sumIgnoreExtraSockets = db.global.sumIgnoreExtraSockets,
+		auto = {
+			[StatLogic.SocketColor.Red] = db.profile.sumGemRed,
+			[StatLogic.SocketColor.Yellow] = db.profile.sumGemYellow,
+			[StatLogic.SocketColor.Blue] = db.profile.sumGemBlue,
+			[StatLogic.SocketColor.Meta] = db.profile.sumGemMeta,
+			[StatLogic.SocketColor.Prismatic] = db.profile.sumGemPrismatic,
+		},
+	}
 
+	-- Ignore enchants and gems on items when calculating the stat summary
 	if db.global.sumIgnoreEnchant then
 		link = StatLogic:RemoveEnchant(link)
-	end
-	if db.global.sumIgnoreExtraSockets then
-		link = StatLogic:RemoveExtraSockets(link)
-	end
-	if db.global.sumIgnoreGems then
-		link = StatLogic:RemoveGem(link)
-	else
-		link = StatLogic:BuildGemmedTooltip(link, red, yellow, blue, meta, prismatic)
 	end
 
 	-- Diff Display Style
@@ -4309,7 +4406,7 @@ function RatingBuster:StatSummary(tooltip, link, statModContext)
 			mainTooltip = owner
 		end
 		-- Detemine tooltip level
-		local _, mainlink, difflink1, difflink2 = StatLogic:GetDiffID(mainTooltip, db.global.sumIgnoreEnchant, db.global.sumIgnoreGems, db.global.sumIgnoreExtraSockets, red, yellow, blue, meta)
+		local _, mainlink, difflink1, difflink2 = StatLogic:GetDiffID(mainTooltip, db.global.sumIgnoreEnchant)
 		if link == mainlink then
 			tooltipLevel = 0
 		elseif link == difflink1 then
@@ -4324,7 +4421,7 @@ function RatingBuster:StatSummary(tooltip, link, statModContext)
 			id = "sum"..link
 		end
 	else
-		id = StatLogic:GetDiffID(link, db.global.sumIgnoreEnchant, db.global.sumIgnoreGems, db.global.sumIgnoreExtraSockets, red, yellow, blue, meta)
+		id = StatLogic:GetDiffID(link, db.global.sumIgnoreEnchant)
 	end
 	if not id then return end
 
@@ -4342,7 +4439,7 @@ function RatingBuster:StatSummary(tooltip, link, statModContext)
 	-------------------------
 	-- Build Summary Table --
 	local statData = {}
-	statData.sum = StatLogic:GetSum(link, nil, statModContext)
+	statData.sum = StatLogic:GetSum(link, nil, statModContext, gems)
 	if not statData.sum then return end
 	if not db.global.calcSum then
 		statData.sum = nil
@@ -4362,10 +4459,10 @@ function RatingBuster:StatSummary(tooltip, link, statModContext)
 	if db.global.calcDiff then
 		if db.global.sumDiffStyle == "comp" then
 			if tooltipLevel > 0 then
-				statData.diff1 = select(tooltipLevel, StatLogic:GetDiff(mainTooltip, nil, nil, db.global.sumIgnoreEnchant, db.global.sumIgnoreGems, db.global.sumIgnoreExtraSockets, red, yellow, blue, meta))
+				statData.diff1 = select(tooltipLevel, StatLogic:GetDiff(mainTooltip, db.global.sumIgnoreEnchant, gems))
 			end
 		else
-			statData.diff1, statData.diff2 = StatLogic:GetDiff(link, nil, nil, db.global.sumIgnoreEnchant, db.global.sumIgnoreGems, db.global.sumIgnoreExtraSockets, red, yellow, blue, meta)
+			statData.diff1, statData.diff2 = StatLogic:GetDiff(link, db.global.sumIgnoreEnchant, gems)
 		end
 	end
 

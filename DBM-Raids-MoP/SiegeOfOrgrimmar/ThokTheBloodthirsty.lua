@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71529)
 mod:SetEncounterID(1599)
 mod:SetUsedIcons(8)
@@ -284,9 +285,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerDeafeningScreechCD:Start(nil, 1)
 			specWarnDeafeningScreech:Schedule(11.5)
 		end
---		if self.Options.RangeFrame and self:IsMythic() then
---			DBM.RangeCheck:Show(10, nil, nil, 11)--Need to find out number
---		end
 	elseif spellId == 143445 then
 		timerFixate:Cancel(args.destName)
 		if self.Options.FixateIcon then
@@ -330,9 +328,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerDeafeningScreechCD:Cancel()
 		specWarnDeafeningScreech:Cancel()
 		specWarnBloodFrenzy:Show()
---		if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
---			DBM.RangeCheck:Hide()
---		end
 	--He retains/casts "blood" abilities through Blood frenzy, and only stops them when he changes to different Pustles
 	--This is why we cancel Blood cds above
 	elseif spellId == 143971 then

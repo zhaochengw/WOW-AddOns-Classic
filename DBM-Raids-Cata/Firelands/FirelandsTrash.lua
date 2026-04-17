@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("FirelandsTrash", "DBM-Raids-Cata", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240315100444")
+mod:SetRevision("20260315035342")
+mod:DisableHardcodedOptions()
 mod:SetModelID(38765)
 mod:SetZone(720)--Scoped to firelands only
 mod.isTrashMod = true

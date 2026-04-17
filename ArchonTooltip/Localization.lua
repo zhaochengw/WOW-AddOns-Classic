@@ -67,7 +67,6 @@ elseif Private.IsMists then
     L["Encounter-51560"] = [[Twin Empyreans]]
     L["Encounter-51579"] = [[Lei Shen]]
     L["Encounter-51580"] = [[Ra-den]]
-elseif Private.IsMists then
     L["addon.parse-gate-description"] = "Parses shown after 10H kills"
     L["Encounter-51507"] = [[Imperial Vizier Zor'lok]]
     L["Encounter-51504"] = [[Blade Lord Ta'yak]]
@@ -103,21 +102,9 @@ elseif C_Seasons.GetActiveSeason() == 109 then
     L["Encounter-50733"] = [[Kael'thas Sunstrider]]
 elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
     L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-    L["Encounter-251118"] = [[Patchwerk]]
-    L["Encounter-251111"] = [[Grobbulus]]
-    L["Encounter-251108"] = [[Gluth]]
-    L["Encounter-251120"] = [[Thaddius]]
-    L["Encounter-251117"] = [[Noth the Plaguebringer]]
-    L["Encounter-251112"] = [[Heigan the Unclean]]
-    L["Encounter-251115"] = [[Loatheb]]
-    L["Encounter-251107"] = [[Anub'Rekhan]]
-    L["Encounter-251110"] = [[Grand Widow Faerlina]]
-    L["Encounter-251116"] = [[Maexxna]]
-    L["Encounter-251113"] = [[Instructor Razuvious]]
-    L["Encounter-251109"] = [[Gothik the Harvester]]
-    L["Encounter-251121"] = [[The Four Horsemen]]
-    L["Encounter-251119"] = [[Sapphiron]]
-    L["Encounter-251114"] = [[Kel'Thuzad]]
+    L["Encounter-50649"] = [[High King Maulgar]]
+    L["Encounter-50650"] = [[Gruul the Dragonkiller]]
+    L["Encounter-50651"] = [[Magtheridon]]
 end
 
 local locale = GAME_LOCALE or GetLocale()
@@ -187,7 +174,6 @@ if locale == "deDE" then
         L["Encounter-51560"] = [[Zwillingsempyreanerinnen]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra-den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
         L["Encounter-51507"] = [[Kaiserlicher Wesir Zor'lok]]
         L["Encounter-51504"] = [[Klingenfürst Ta'yak]]
@@ -223,21 +209,9 @@ if locale == "deDE" then
         L["Encounter-50733"] = [[Kael'thas Sonnenwanderer]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-        L["Encounter-251118"] = [[Flickwerk]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth der Seuchenfürst]]
-        L["Encounter-251112"] = [[Heigan der Unreine]]
-        L["Encounter-251115"] = [[Loatheb]]
-        L["Encounter-251107"] = [[Anub'Rekhan]]
-        L["Encounter-251110"] = [[Großwitwe Faerlina]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Instrukteur Razuvious]]
-        L["Encounter-251109"] = [[Gothik der Ernter]]
-        L["Encounter-251121"] = [[Die Vier Reiter]]
-        L["Encounter-251119"] = [[Saphiron]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[Hochkönig Maulgar]]
+        L["Encounter-50650"] = [[Gruul der Drachenschlächter]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 elseif locale == "esES" or locale == "esMX" then
     L["Difficulty-1"] = "L"
@@ -305,7 +279,6 @@ elseif locale == "esES" or locale == "esMX" then
         L["Encounter-51560"] = [[Empíreas Gemelas]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra Den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses mostrados tras 10H muertes"
         L["Encounter-51507"] = [[Visir imperial Zor'lok]]
         L["Encounter-51504"] = [[Señor de las espadas Ta'yak]]
@@ -341,21 +314,9 @@ elseif locale == "esES" or locale == "esMX" then
         L["Encounter-50733"] = [[Kael'thas Caminante del Sol]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses mostrados tras 10H muertes"
-        L["Encounter-251118"] = [[Remendejo]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth el Pesteador]]
-        L["Encounter-251112"] = [[Heigan el Impuro]]
-        L["Encounter-251115"] = [[Loatheb]]
-        L["Encounter-251107"] = [[Anub'Rekhan]]
-        L["Encounter-251110"] = [[Gran Viuda Faerlina]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Instructor Razuvious]]
-        L["Encounter-251109"] = [[Gothik el Cosechador]]
-        L["Encounter-251121"] = [[Los Cuatro Jinetes]]
-        L["Encounter-251119"] = [[Sapphiron]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[Su majestad Maulgar]]
+        L["Encounter-50650"] = [[Gruul el Asesino de Dragones]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 elseif locale == "frFR" then
     L["Difficulty-1"] = "L"
@@ -422,7 +383,6 @@ elseif locale == "frFR" then
         L["Encounter-51560"] = [[Jumelles empyréennes]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra Den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
         L["Encounter-51507"] = [[Vizir impérial Zor’lok]]
         L["Encounter-51504"] = [[Seigneur des lames Ta’yak]]
@@ -458,21 +418,9 @@ elseif locale == "frFR" then
         L["Encounter-50733"] = [[Kael’thas Haut-Soleil]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-        L["Encounter-251118"] = [[Le Recousu]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth le Porte-Peste]]
-        L["Encounter-251112"] = [[Heigan l'Impur]]
-        L["Encounter-251115"] = [[Horreb]]
-        L["Encounter-251107"] = [[Anub'Rekhan]]
-        L["Encounter-251110"] = [[Grande veuve Faerlina]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Instructeur Razuvious]]
-        L["Encounter-251109"] = [[Gothik le Moissonneur]]
-        L["Encounter-251121"] = [[Les quatre cavaliers]]
-        L["Encounter-251119"] = [[Saphiron]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[Haut Roi Maulgar]]
+        L["Encounter-50650"] = [[Gruul le Tue-Dragon]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 elseif locale == "itIT" then
     L["Difficulty-1"] = "L"
@@ -539,7 +487,6 @@ elseif locale == "itIT" then
         L["Encounter-51560"] = [[Empiree Gemelle]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra-Den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
         L["Encounter-51507"] = [[Visir Imperiale Zor'lok]]
         L["Encounter-51504"] = [[Signore delle Lame Ta'yak]]
@@ -575,21 +522,9 @@ elseif locale == "itIT" then
         L["Encounter-50733"] = [[Kael'thas Solealto]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-        L["Encounter-251118"] = [[Pezzacarne]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth l'Araldo della Piaga]]
-        L["Encounter-251112"] = [[Heigan l'Impuro]]
-        L["Encounter-251115"] = [[Loatheb]]
-        L["Encounter-251107"] = [[Anub'rekhan]]
-        L["Encounter-251110"] = [[Faerlina la Vedova Nera]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Istruttore Razuvious]]
-        L["Encounter-251109"] = [[Gothik il Falciatore]]
-        L["Encounter-251121"] = [[Cavalieri dell'Apocalisse]]
-        L["Encounter-251119"] = [[Zaffirion]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[Gran Sovrano Maulgar]]
+        L["Encounter-50650"] = [[Gruul l'Ammazzadraghi]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 elseif locale == "koKO" then
     L["Difficulty-1"] = "L"
@@ -656,7 +591,6 @@ elseif locale == "koKO" then
         L["Encounter-51560"] = [[쌍둥이 왕비]]
         L["Encounter-51579"] = [[레이 션]]
         L["Encounter-51580"] = [[라덴]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
         L["Encounter-51507"] = [[황실 장로 조르로크]]
         L["Encounter-51504"] = [[칼날군주 타야크]]
@@ -692,21 +626,9 @@ elseif locale == "koKO" then
         L["Encounter-50733"] = [[캘타스 선스트라이더]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-        L["Encounter-251118"] = [[패치워크]]
-        L["Encounter-251111"] = [[그라불루스]]
-        L["Encounter-251108"] = [[글루스]]
-        L["Encounter-251120"] = [[타디우스]]
-        L["Encounter-251117"] = [[역병술사 노스]]
-        L["Encounter-251112"] = [[부정의 헤이건]]
-        L["Encounter-251115"] = [[로데브]]
-        L["Encounter-251107"] = [[아눕레칸]]
-        L["Encounter-251110"] = [[귀부인 팰리나]]
-        L["Encounter-251116"] = [[맥스나]]
-        L["Encounter-251113"] = [[훈련교관 라주비어스]]
-        L["Encounter-251109"] = [[영혼 착취자 고딕]]
-        L["Encounter-251121"] = [[4인 기사단]]
-        L["Encounter-251119"] = [[사피론]]
-        L["Encounter-251114"] = [[켈투자드]]
+        L["Encounter-50649"] = [[왕중왕 마울가르]]
+        L["Encounter-50650"] = [[용 학살자 그룰]]
+        L["Encounter-50651"] = [[마그테리돈]]
     end
 elseif locale == "ptBR" then
     L["Difficulty-1"] = "L"
@@ -773,7 +695,6 @@ elseif locale == "ptBR" then
         L["Encounter-51560"] = [[Empíreas Gêmeas]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra-den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Análises apresentadas após: mortes por limiar "
         L["Encounter-51507"] = [[Vizir Imperial Zor'lok]]
         L["Encounter-51504"] = [[Senhor das Lâminas Ta'yak]]
@@ -809,21 +730,9 @@ elseif locale == "ptBR" then
         L["Encounter-50733"] = [[Kael'thas Andassol]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Análises apresentadas após: mortes por limiar "
-        L["Encounter-251118"] = [[Retalhoso]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth, o Pestífero]]
-        L["Encounter-251112"] = [[Heigan, o Sujo]]
-        L["Encounter-251115"] = [[Repugnaz]]
-        L["Encounter-251107"] = [[Anub'Rekhan]]
-        L["Encounter-251110"] = [[Grã-viúva Faerlina]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Instrutor Razúvio]]
-        L["Encounter-251109"] = [[Gothik, o Ceifador]]
-        L["Encounter-251121"] = [[Os Quatro Cavaleiros]]
-        L["Encounter-251119"] = [[Sapphiron]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[Alto-rei Maulgar]]
+        L["Encounter-50650"] = [[Gruul, o Matador de Dragões]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 elseif locale == "ruRU" then
     L["Difficulty-1"] = "ПР"
@@ -890,7 +799,6 @@ elseif locale == "ruRU" then
         L["Encounter-51560"] = [[Небесные сестры]]
         L["Encounter-51579"] = [[Лэй Шэнь]]
         L["Encounter-51580"] = [[Ра-ден]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
         L["Encounter-51507"] = [[Императорский визирь Зор'лок]]
         L["Encounter-51504"] = [[Повелитель клинков Та'як]]
@@ -926,21 +834,9 @@ elseif locale == "ruRU" then
         L["Encounter-50733"] = [[Кель'тас Солнечный Скиталец]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "Parses shown after 10H kills"
-        L["Encounter-251118"] = [[Лоскутик]]
-        L["Encounter-251111"] = [[Гроббулус]]
-        L["Encounter-251108"] = [[Глут]]
-        L["Encounter-251120"] = [[Таддиус]]
-        L["Encounter-251117"] = [[Нот Чумной]]
-        L["Encounter-251112"] = [[Хейган Нечестивый]]
-        L["Encounter-251115"] = [[Лотхиб]]
-        L["Encounter-251107"] = [[Ануб'Рекан]]
-        L["Encounter-251110"] = [[Великая вдова Фарлина]]
-        L["Encounter-251116"] = [[Мексна]]
-        L["Encounter-251113"] = [[Инструктор Разувий]]
-        L["Encounter-251109"] = [[Готик Жнец]]
-        L["Encounter-251121"] = [[Четыре всадника]]
-        L["Encounter-251119"] = [[Сапфирон]]
-        L["Encounter-251114"] = [[Кел'Тузад]]
+        L["Encounter-50649"] = [[Король Молгар]]
+        L["Encounter-50650"] = [[Груул Драконобой]]
+        L["Encounter-50651"] = [[Магтеридон]]
     end
 elseif locale == "zhCN" then
     L["Difficulty-1"] = "随机"
@@ -977,7 +873,7 @@ elseif locale == "zhCN" then
     L["MenuIntegrationDescription"] = [[是否扩展菜单以添加复制角色信息链接的选项。]]
     L["SettingsLookupUsage"] = [[用法: /%s 查找 <名字> <服务器>]]
     L["SettingsLookupNoData"] = [[没有找到数据]]
-    L["SettingsLookupDataFor"] = [[%s for %s - %s]]
+    L["SettingsLookupDataFor"] = [[%s 的 %s - %s]]
     L["SettingsAvailableCommands"] = [[可用命令：]]
     L["SettingsOpenSettingsLabel"] = [[打开设置]]
     L["SettingsLookupLabel"] = [[按角色名和服务器查找资料]]
@@ -1007,7 +903,6 @@ elseif locale == "zhCN" then
         L["Encounter-51560"] = [[神女双天]]
         L["Encounter-51579"] = [[雷神]]
         L["Encounter-51580"] = [[莱登]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "分数在 10H 击杀后显示"
         L["Encounter-51507"] = [[皇家宰相佐尔洛克]]
         L["Encounter-51504"] = [[刀锋领主塔亚克]]
@@ -1043,21 +938,9 @@ elseif locale == "zhCN" then
         L["Encounter-50733"] = [[凯尔萨斯·逐日者]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "分数在 10H 击杀后显示"
-        L["Encounter-251118"] = [[帕奇维克]]
-        L["Encounter-251111"] = [[格罗布鲁斯]]
-        L["Encounter-251108"] = [[格拉斯]]
-        L["Encounter-251120"] = [[塔迪乌斯]]
-        L["Encounter-251117"] = [[药剂师诺斯]]
-        L["Encounter-251112"] = [[肮脏的希尔盖]]
-        L["Encounter-251115"] = [[洛欧塞布]]
-        L["Encounter-251107"] = [[阿努布雷坎]]
-        L["Encounter-251110"] = [[黑女巫法琳娜]]
-        L["Encounter-251116"] = [[迈克斯纳]]
-        L["Encounter-251113"] = [[教官拉苏维奥斯]]
-        L["Encounter-251109"] = [[收割者戈提克]]
-        L["Encounter-251121"] = [[天启四骑士]]
-        L["Encounter-251119"] = [[萨菲隆]]
-        L["Encounter-251114"] = [[克尔苏加德]]
+        L["Encounter-50649"] = [[莫加尔大王]]
+        L["Encounter-50650"] = [[屠龙者格鲁尔]]
+        L["Encounter-50651"] = [[玛瑟里顿]]
     end
 elseif locale == "zhTW" then
     L["Difficulty-1"] = "隨團"
@@ -1124,7 +1007,6 @@ elseif locale == "zhTW" then
         L["Encounter-51560"] = [[Twin Empyreans]]
         L["Encounter-51579"] = [[Lei Shen]]
         L["Encounter-51580"] = [[Ra-den]]
-    elseif Private.IsMists then
         L["addon.parse-gate-description"] = "擊殺數達 後顯示解析數據"
         L["Encounter-51507"] = [[Imperial Vizier Zor'lok]]
         L["Encounter-51504"] = [[Blade Lord Ta'yak]]
@@ -1160,20 +1042,8 @@ elseif locale == "zhTW" then
         L["Encounter-50733"] = [[Kael'thas Sunstrider]]
     elseif Private.IsClassicEra and (C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh or C_Seasons.GetActiveSeason() == 125) then
         L["addon.parse-gate-description"] = "擊殺數達 後顯示解析數據"
-        L["Encounter-251118"] = [[Patchwerk]]
-        L["Encounter-251111"] = [[Grobbulus]]
-        L["Encounter-251108"] = [[Gluth]]
-        L["Encounter-251120"] = [[Thaddius]]
-        L["Encounter-251117"] = [[Noth the Plaguebringer]]
-        L["Encounter-251112"] = [[Heigan the Unclean]]
-        L["Encounter-251115"] = [[Loatheb]]
-        L["Encounter-251107"] = [[Anub'Rekhan]]
-        L["Encounter-251110"] = [[Grand Widow Faerlina]]
-        L["Encounter-251116"] = [[Maexxna]]
-        L["Encounter-251113"] = [[Instructor Razuvious]]
-        L["Encounter-251109"] = [[Gothik the Harvester]]
-        L["Encounter-251121"] = [[The Four Horsemen]]
-        L["Encounter-251119"] = [[Sapphiron]]
-        L["Encounter-251114"] = [[Kel'Thuzad]]
+        L["Encounter-50649"] = [[High King Maulgar]]
+        L["Encounter-50650"] = [[Gruul the Dragonkiller]]
+        L["Encounter-50651"] = [[Magtheridon]]
     end
 end

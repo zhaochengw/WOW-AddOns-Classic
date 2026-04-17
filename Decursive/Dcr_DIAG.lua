@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-01-18T23:59:26Z
+    This file was last updated on 2026-03-15T23:46:08Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ local DebugTextTable    = T._DebugTextTable;
 local Reported          = {};
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.7.34";
+local VERSION = "2.8.0-RC3";
 
 if not T._LoadedFiles then
     T._LoadedFiles = {};
@@ -137,8 +137,8 @@ T._LoadOrderedFiles = { -- {{{
     "Dcr_preload.lua",
     "embeds.xml",
 
-    "Dcr_DIAG.xml",
     "Dcr_DIAG.lua",
+    "Dcr_DIAG.xml",
 
     "load.xml",
 
@@ -228,11 +228,12 @@ function T._AddDebugText(a1, ...) -- {{{
     local zone = GetRealZoneText() or "none";
 
     if not Reported[text] then
-        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
+        table.insert (DebugTextTable,  ("\n\n|cffff0000*****************|r\n\n%.4f (tr:'%s' ca:'%s' icl:'%s' rs:'%s' h%d_w%d-%dfps-%s): %s -|count: "):format(
         NiceTime(), -- %.4f
         tostring(T._DebugTimerRefName), -- tr:'%s'
         tostring(T._CatchAllErrors), -- ca:'%s'
         tostring(InCombatLockdown()), -- icl:'%s'
+        T.Dcr and T.Dcr.currentRestrictionsStr and T.Dcr:currentRestrictionsStr() or "!",
         select(3, GetNetStats()), -- h%d
         select(4, GetNetStats()), -- w%d
         GetFramerate(), -- %dfps
@@ -334,7 +335,7 @@ do
         local dbclud = T.Dcr.Status and T.Dcr.Status.delayedUnDebuffOccurences or -1
 
 
-        DebugHeader = ("%s\n2.7.34  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
+        DebugHeader = ("%s\n2.8.0-RC3  %s(%s)  CT: %0.4f D: %s %s %s DTl: %d DE: %d nDrE: %d Embeded: %s W: %d (LA: %d TAMU: %d) TA: %d NDRTA: %d BUIE: %d dbc: [d:%d-%d, u:%d-%d] TI: [dc:%d, lc:%d, y:%d, LEBY:%d, LB:%d, TTE:%u] (%s, %s, %s, %s)"):format(instructionsHeader, -- "%s\n
         tostring(DC.MyClass), tostring(UnitLevel("player") or "??"), NiceTime(), date(), GetLocale(), -- %s(%s)  CT: %0.4f D: %s %s
         BugGrabber and "BG" .. (T.BugGrabber and "e" or "") or "NBG", -- %s
         #DebugTextTable / 2, -- DTl: %d
@@ -535,7 +536,15 @@ local function continueErrorReporting (lowerCaseErrorMsg)
     end
 end
 
-function T._onError(event, errorObject)
+function T._onError(event, fromBG)
+
+    local errorObject = type(fromBG) == "string" and BugGrabber:GetErrorByID(fromBG) or fromBG;
+
+    if not errorObject.message then
+        _Debug("bad error object", event, "eo=", T.Dcr:tAsString(errorObject), type(errorObject))
+        return
+    end
+
     local errorm = errorObject.message;
     local mine = false;
     local taintingAccusation = false;
@@ -626,7 +635,7 @@ function T._onError(event, errorObject)
             _G.DEBUGLOCALS_LEVEL = _G.DEBUGLOCALS_LEVEL + 9
         end
 
-        -- forward the error to the original error handler
+        -- forward the error to the original error handler (there is no _G.HandleLuaError anymore)
         if _G.HandleLuaError or T._OriginalDebugHandler then
             local errorm = errorObject.message;
 
@@ -785,27 +794,26 @@ end
 
 function T._RegisterBugGrabberCallBacks()
 
-    if not BugGrabber.RegisterCallback then
+    if not BugGrabber or not EventRegistry then
         return;
     end
 
-    local ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
-
-    if ok then
-        T._BugGrabberEmbeded = true;
+    if not BugGrabber.RegisterCallback then
+        EventRegistry:RegisterCallback("BugGrabber.BugGrabbed", T._onError)
+        -- necessary to hide the message printed by buggrabber
+		EventRegistry:TriggerEvent("BugGrabber.DisplayRegistered")
+        --[==[@debug@
+        print("dcr: new BG registered")
+        --@end-debug@]==]
     else
-        T._BugGrabberEmbeded = false;
-        AddDebugText("pcall hook 1: "..errorm, BugGrabber);
+        -- there is no way to know which version of Buggraber the user might have so stay compatible with older versions
+        pcall (BugGrabber.RegisterCallback, T, "BugGrabber_BugGrabbed", T._onError)
+        --[==[@debug@
+        print("dcr: old BG registered")
+        --@end-debug@]==]
     end
 
-    ok, errorm  = pcall (BugGrabber.RegisterCallback, T, "BugGrabber_CapturePaused", T._TooManyErrors)
-    if ok then
-        T._BugGrabberThrottleAlert = true;
-    else
-        AddDebugText("pcall hook 2: "..errorm);
-    end
-
-    return T._BugGrabberEmbeded;
+    return true
 end
 
 function T._HookErrorHandler()
@@ -1104,9 +1112,6 @@ do
         -- if the diagnostic was requested by the user, we also test AceEvent functionalities among a few other things {{{ -
         if force and FromCommand and T._DiagStatus == 0 then
 
-            if not _G.HandleLuaError then
-                AddDebugText("|cFFFF0000WARNING Blizzard default error handler is no longer available...|r");
-            end
 
             if not _G.GetCallstackHeight or not _G.GetErrorCallstackHeight then
                 AddDebugText("|cFFFF0000WARNING Blizzard GetErrorCallstackHeight or GetErrorCallstackHeight not available...|r");
@@ -1200,4 +1205,4 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_DIAG.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_DIAG.lua"] = "2.8.0-RC3";

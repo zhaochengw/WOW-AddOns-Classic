@@ -13,6 +13,7 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 -- RareScanner service libraries
 local RSUtils = private.ImportLib("RareScannerUtils")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
+local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 RSGuideMixin = CreateFromMixins(MapCanvasPinMixin);
 
@@ -42,23 +43,23 @@ function RSGuideMixin:OnMouseEnter()
 	end
 	
 	if (self.POI.tooltip) then
-		GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+		RSTooltip.Tooltip:SetOwner(self, "ANCHOR_CURSOR")
 
 		if (self.POI.tooltip.title) then
-			GameTooltip_SetTitle(GameTooltip, self.POI.tooltip.title);
+			GameTooltip_SetTitle(RSTooltip.Tooltip, self.POI.tooltip.title);
 		end
 
 		if (self.POI.tooltip.comment) then
-			GameTooltip_AddNormalLine(GameTooltip, self.POI.tooltip.comment);
+			GameTooltip_AddNormalLine(RSTooltip.Tooltip, self.POI.tooltip.comment);
 		end
 
-		GameTooltip:Show()
+		RSTooltip.Tooltip:Show()
 	end
 end
 
 function RSGuideMixin:OnMouseLeave()
 	if (self.POI.tooltip) then
-		GameTooltip:Hide()
+		RSTooltip.Tooltip:Hide()
 	end
 	if (self.pin and self.pin.ShowPingAnim and self.pin.ShowPingAnim:IsPlaying()) then
 		self.pin.ShowPingAnim:Stop();

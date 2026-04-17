@@ -979,6 +979,46 @@ private.NPC_GUIDE = {
 	["100495650"] = {
 		[RSConstants.ENTRANCE] = { x = 0.5514, y = 0.4427 };
 	}; --Devouring Darkness
+	["2569242405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3951, y = 0.6462 };
+	}; --Aeonelle Blackstar
+	["2508412395"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4847, y = 0.8797 };
+	}; --Bad Zed
+	["2420352437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3948, y = 0.1990 };
+	}; --The Devouring Invader
+	["2420322413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4646, y = 0.5200 };
+	}; --Oophaga <The Egg Eater>
+	["2503212413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2739, y = 0.7142 };
+	}; --Pterrock
+	["2567702405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3561, y = 0.4927 };
+	}; --Bilemaw the Gluttonous <Apex Predator>
+	["2569232405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4717, y = 0.7979 };
+	}; --Bane of the Vilebloods
+	["2414432405"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.3567, y = 0.8108 };
+		[RSConstants.ENTRANCE..2] = { x = 0.3758, y = 0.8458 };
+	}; --Tremora <Escaped Specimen>
+	["2420862413"] = {
+		[RSConstants.FLAG] = { x = 0.6615, y = 0.2549, comment = AL["NOTE_242086_1"] };
+	}; --Aln'sharan <Herald of the Goddess>
+	["142452"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4456, y = 0.2505 };
+	}; --Master Digger
+	["1443257"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5468, y = 0.4541 };
+	}; --Threggil
+	["5073781"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6974, y = 0.1641 };
+	}; --Acroniss
+	["70003504"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6292, y = 0.4115 };
+	}; --Molthor <The Gatekeeper>
 }
 
 ---============================================================================
@@ -1414,7 +1454,7 @@ private.CONTAINER_GUIDE = {
 	["3697571970"] = {
 		[RSConstants.STEP1] = { x = 0.594, y = 0.769, comment = AL["NOTE_369757_1"] };
 		[RSConstants.STEP2] = { x = 0.5848, y = 0.7283, comment = AL["NOTE_369757_2"] };
-	}; --
+	}; --Submerged Chest
 	["220986554"] = {
 		[RSConstants.ENTRANCE] = { x = 0.172, y = 0.573 }; 
 	}; --Blackguard's Jetsam
@@ -2591,6 +2631,379 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.ENTRANCE] = { x = 0.6526, y = 0.4052 };
 		[RSConstants.FLAG] = { x = 0.6469, y = 0.4103, comment = AL["NOTE_277205_1"] };
 	}; --Ancient Legion War Cache
+	["5551782432"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3835, y = 0.3194 };
+	}; --Artisan's Cache
+	["6138872393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3776, y = 0.7844 };
+	}; --Unfinished Sheet Music
+	["6132422395"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5200, y = 0.4525 };
+	}; --Antique Nobleman's Signet Ring
+	["5873072395"] = {
+		[RSConstants.FLAG] = { x = 0.4083, y = 0.6048, comment = AL["NOTE_587307_1"] };
+	}; --Stone Vat
+	["5079662395"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3580, y = 0.7255 };
+	}; --Profane Research
+	["6132522395"] = {
+		[RSConstants.FLAG..1] = { x = 0.4025, y = 0.7582, comment = AL["NOTE_613252_1"] };
+		[RSConstants.FLAG..2] = { x = 0.3847, y = 0.7346, comment = AL["NOTE_613252_2"] };
+		[RSConstants.FLAG..3] = { x = 0.3763, y = 0.7481, comment = AL["NOTE_613252_3"] };
+	}; --Triple-Locked Safebox
+	["5259552393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4830, y = 0.6175 };
+	}; --Sin'dorei Master's Forgemace
+	["5259612393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2591, y = 0.6060 };
+	}; --Deconstructed Forge Techniques
+	["6203252437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3759, y = 0.2633 };
+	}; --Tablet of the Witherbark
+	["5390502437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4224, y = 0.4758 };
+	}; --Burrow Bounty
+	["5390472437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4404, y = 0.4332 };
+	}; --Abandoned Ritual Skull
+	["5390492437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2116, y = 0.6713 };
+	}; --Bait and Tackle
+	["5390512437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5232, y = 0.6565 };
+	}; --Mrruk's Mangy Trove
+	["5390462437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4697, y = 0.8238 };
+		[RSConstants.FLAG..1] = { x = 0.5478, y = 0.2240, comment = AL["NOTE_539046_1"] };
+		[RSConstants.FLAG..2] = { x = 0.3455, y = 0.3346, comment = AL["NOTE_539046_2"] };
+		[RSConstants.FLAG..3] = { x = 0.5158, y = 0.8492, comment = AL["NOTE_539046_3"] };
+		[RSConstants.FLAG..4] = { x = 0.3269, y = 0.8350, comment = AL["NOTE_539046_4"] };
+	}; --Honored Warrior's Cache
+	["6203142437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5275, y = 0.8159 };
+	}; --Tablet of Akil'zon
+	["6172372437"] = {
+		[RSConstants.FLAG..1] = { x = 0.2395, y = 0.7895, comment = AL["NOTE_617237_1"], questID = 93917 };
+		[RSConstants.FLAG..2] = { x = 0.2609, y = 0.8074, comment = AL["NOTE_617237_1"], questID = 93916 };
+		[RSConstants.FLAG..3] = { x = 0.2609, y = 0.7401, comment = AL["NOTE_617237_1"], questID = 93919 };
+		[RSConstants.FLAG..4] = { x = 0.2402, y = 0.7566, comment = AL["NOTE_617237_1"], questID = 93918 };
+	}; --Sealed Twilight's Blade Bounty
+	["6203242437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3159, y = 0.8386 };
+	}; --Tablet of Nalorakk
+	["6133922413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2753, y = 0.6797 };
+		[RSConstants.STEP1] = { x = 0.2708, y = 0.6773, comment = AL["NOTE_613392_1"] };
+		[RSConstants.STEP2] = { x = 0.2665, y = 0.6803, comment = AL["NOTE_613392_2"] };
+		[RSConstants.STEP3] = { x = 0.2653, y = 0.6792, comment = AL["NOTE_613392_3"] };
+	}; --Sealed Gourd
+	["6174322395"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4332, y = 0.6933 };
+	}; --Forgotten Ink and Quill
+	["6178812393"] = {
+		[RSConstants.FLAG] = { x = 0.2483, y = 0.6941, comment = AL["NOTE_617881_1"], questID = 94626 };
+	}; --ookery Cache
+	["6138292413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4780, y = 0.4699 };
+	}; --A Frayed Scroll
+	["5711412413"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.5193, y = 0.4932 };
+		[RSConstants.ENTRANCE..2] = { x = 0.5429, y = 0.5289 };
+		[RSConstants.ENTRANCE..3] = { x = 0.5203, y = 0.5639 };
+	}; --Glowing Moth
+	["5728192405"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.2556, y = 0.6696 };
+		[RSConstants.ENTRANCE..2] = { x = 0.2587, y = 0.6770 };
+		[RSConstants.ENTRANCE..3] = { x = 0.2622, y = 0.6694 };
+		[RSConstants.STEP1] = { x = 0.2574, y = 0.6749, comment = AL["NOTE_572819_1"] };
+		[RSConstants.STEP2] = { x = 0.2597, y = 0.6867, comment = AL["NOTE_572819_2"] };
+	}; --Void-Shielded Tomb
+	["6133172405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3809, y = 0.6868 };
+	}; --Half-Digested Viscera
+	["5546782405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3951, y = 0.6462 };
+	}; --Lost Shadowstep Supplies
+	["5552502405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4791, y = 0.7880 };
+	}; --Forgotten Researcher's Cache
+	["6051692405"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4886, y = 0.7835 };
+	}; --Final Clutch of Predaxas
+	["6185422405"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.6369, y = 0.7886 };
+		[RSConstants.ENTRANCE..2] = { x = 0.6312, y = 0.7818 };
+		[RSConstants.ENTRANCE..3] = { x = 0.6309, y = 0.7911 };
+	}; --Void Armor
+	["6128912405"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.6390, y = 0.7516 };
+		[RSConstants.ENTRANCE..2] = { x = 0.6374, y = 0.7576 };
+		[RSConstants.ENTRANCE..3] = { x = 0.6408, y = 0.7623 };
+	}; --Bloody Sack
+	["6171632405"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.5411, y = 0.4394 };
+		[RSConstants.ENTRANCE..2] = { x = 0.5322, y = 0.4416 };
+		[RSConstants.ENTRANCE..3] = { x = 0.5265, y = 0.4367 };
+		[RSConstants.STEP1] = { x = 0.5350, y = 0.4324, comment = AL["NOTE_617163_1"], questID = 93812 };
+		[RSConstants.STEP2] = { x = 0.5294, y = 0.4333, comment = AL["NOTE_617163_1"], questID = 93813 };
+		[RSConstants.STEP3] = { x = 0.5354, y = 0.4388, comment = AL["NOTE_617163_1"], questID = 93814 };
+		[RSConstants.STEP4] = { x = 0.5320, y = 0.4273, comment = AL["NOTE_617163_1"], questID = 93815 };
+	}; --Malignant Chest
+	["6171632444"] = {
+		[RSConstants.STEP4] = { x = 0.5715, y = 0.8696, comment = AL["NOTE_617163_1"], questID = 93815 };
+	}; --Malignant Chest
+	["5791232413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Words of Obayo: The Flame
+	["5791302413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6154, y = 0.3840 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Words of Obayo: The Rift
+	["5791312413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6154, y = 0.3840 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Words of Obayo: The Silence
+	["5314802395"] = {
+		[RSConstants.FLAG] = { x = 0.4268, y = 0.4731, comment = AL["NOTE_LORD_SHALTERIL"] };
+	}; --Dead Drop
+	["5314782395"] = {
+		[RSConstants.FLAG] = { x = 0.4268, y = 0.4731, comment = AL["NOTE_LORD_SHALTERIL"] };
+	}; --Misplaced Tome
+	["5314772395"] = {
+		[RSConstants.FLAG] = { x = 0.4268, y = 0.4731, comment = AL["NOTE_LORD_SHALTERIL"] };
+	}; --Coalesced Light
+	["5314792395"] = {
+		[RSConstants.FLAG] = { x = 0.4268, y = 0.4731, comment = AL["NOTE_LORD_SHALTERIL"] };
+	}; --Ranger's Cache
+	["5792422413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Tending the Lands: The Conflict
+	["5792432413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Tending the Lands: The Plan
+	["5792442413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6154, y = 0.3840 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Tending the Lands: The Cycle
+	["6206882393"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.3756, y = 0.5333 };
+		[RSConstants.FLAG..1] = { x = 0.4074, y = 0.8845, comment = AL["NOTE_620688_1"] };
+		[RSConstants.ENTRANCE..2] = { x = 0.4002, y = 0.8760 };
+		[RSConstants.FLAG..2] = { x = 0.3328, y = 0.9017, comment = AL["NOTE_620688_2"] };
+		[RSConstants.ENTRANCE..3] = { x = 0.3338, y = 0.8860 };
+		[RSConstants.FLAG..3] = { x = 0.3981, y = 0.8047, comment = AL["NOTE_620688_3"] };
+		[RSConstants.ENTRANCE..4] = { x = 0.3879, y = 0.8026 };
+	}; --Incomplete Book of Sonnets
+	["5792362413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Echoes of Our Past: Fading History
+	["5792372413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6034, y = 0.1900 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Echoes of Our Past: Alndust
+	["5792382413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6034, y = 0.1900 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Echoes of Our Past: Dangerous Memories
+	["5792392413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Seeker's Trail: Call of Aln'hara
+	["5792402413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Seeker's Trail: Seeking Peace
+	["5792412413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5495, y = 0.6668 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Seeker's Trail: Unending Mission
+	["5712652413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6030, y = 0.4615 };
+	}; --Glowing Moth
+	["5711662413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.7278, y = 0.5771 };
+	}; --Glowing Moth
+	["5711642413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6036, y = 0.1905 };
+	}; --Glowing Moth
+	["5711792413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5076, y = 0.2094 };
+	}; --Glowing Moth
+	["5712712413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3616, y = 0.7400 };
+	}; --Glowing Moth
+	["5712812413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6831, y = 0.2110 };
+	}; --Glowing Moth
+	["5712742413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6315, y = 0.5795 };
+	}; --Glowing Moth
+	["5712732413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4224, y = 0.6733 };
+	}; --Glowing Moth
+	["5259132444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3099, y = 0.6856 };
+	}; --Miner's Guid to Voidstorm
+	["5259572444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3099, y = 0.6856 };
+	}; --Voidstorm Defense Spear
+	["6180162444"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.5226, y = 0.3108 };
+		[RSConstants.ENTRANCE..2] = { x = 0.5505, y = 0.3110 };
+	}; --Stellar Stash
+	["5711692413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6154, y = 0.3840 };
+	}; --Glowing Moth
+	["5711682413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5495, y = 0.6668 };
+	}; --Glowing Moth
+	["5711722413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6154, y = 0.3840 };
+	}; --Glowing Moth
+	["5791802413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4311, y = 0.3735 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Ways of the Roots: Serving
+	["5791822413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4311, y = 0.3735 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Ways of the Roots: Serving
+	["5791832413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4311, y = 0.3735 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Ways of the Roots: Serving
+	["5792012413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Awe'ohna's Path: Questions
+	["5792022413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.7274, y = 0.5774 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Awe'ohna's Path: Answers
+	["5792032413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.7274, y = 0.5774 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Awe'ohna's Path: The Cradle
+	["6182772510"] = {
+		[RSConstants.PATH_START] = { x = 0.6857, y = 0.5471 };
+	}; --Sturdy Chest
+	["6182782505"] = {
+		[RSConstants.PATH_START] = { x = 0.5459, y = 0.2737 };
+	}; --Sturdy Chest
+	["6182852547"] = {
+		[RSConstants.PATH_START] = { x = 0.7862, y = 0.4571 };
+	}; --Sturdy Chest
+	["5792332413"] = {
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Laments of Wey'nan: Finding Hope
+	["5792342413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4311, y = 0.3735 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Laments of Wey'nan: Hunting Purpose
+	["5792352413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4311, y = 0.3735 };
+		[RSConstants.FLAG] = { x = 0.5418, y = 0.5313, comment = AL["NOTE_ZUR_ASHAR_KASSAMEH"] };
+	}; --Laments of Wey'nan: There Must Be More
+	["6159632413"] = {
+		[RSConstants.FLAG] = { x = 0.4131, y = 0.6800, comment = AL["NOTE_615963_1"] };
+	}; --Sporespawned Cache
+	["5259112444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5450, y = 0.5116 };
+	}; --Lost Voidstorm Satchel
+	["5259302395"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.4019, y = 0.6095 };
+		[RSConstants.ENTRANCE..2] = { x = 0.4035, y = 0.6152 };
+	}; --Songwriter's Quill
+	["5259362437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4053, y = 0.4994 };
+	}; --Leather-Bound Techniques
+	["5259672413"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.3496, y = 0.2402 };
+		[RSConstants.ENTRANCE..2] = { x = 0.3553, y = 0.2519 };
+		[RSConstants.ENTRANCE..3] = { x = 0.3468, y = 0.2593 };
+	}; --Vial of Rootlands Oddities
+	["5259372444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6103, y = 0.8367 };
+	}; --Void-Touched Quill
+	["5259452393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5064, y = 0.7461 };
+	}; --One Engineer's Junk
+	["5259412444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5450, y = 0.5116 };
+	}; --Ethereal Stormwrench
+	["5259292393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5072, y = 0.5783 };
+	}; --Sin'dorei Masterwork Chisel
+	["5259262395"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5679, y = 0.4128 };
+	}; --Poorly Rounded Vial
+	["5259282444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3099, y = 0.6856 };
+	}; --Speculative Voidstorm Crystal
+	["5258912437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3348, y = 0.7881 };
+	}; --Amani Skinning Knife
+	["5259212437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3348, y = 0.7881 };
+	}; --Amani Leatherworker's Tool
+	["5259192437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3159, y = 0.8386 };
+	}; --Prestigiously Racked Hide
+	["5258952413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6990, y = 0.5036 };
+	}; --Primal Hide
+	["5259172444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5450, y = 0.5116 };
+	}; --Patterns: Beyond the Void
+	["5259032444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4626, y = 0.3501 };
+	}; --Sin'dorei Outfitter's Ruler
+	["5259042393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3605, y = 0.6291 };
+	}; --A Really Nice Curtain
+	["5258992393"] = {
+		[RSConstants.ENTRANCE] = { x = 0.3208, y = 0.6834 };
+	}; --Particularly Enchanting Tablecloth
+	["5258982437"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4053, y = 0.4994 };
+	}; --Artisan's Cover Comb
+	["5259052413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.7023, y = 0.5090 };
+	}; --A Child's Stuffy
+	["5259002444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6103, y = 0.8367 };
+	}; --Satin Throw Pillow
+	["5259012444"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6103, y = 0.8367 };
+	}; --Book of Sin'dorei Stitches
+	["5713112413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5036, y = 0.7996 };
+	}; --Glowing Moth
+	["5712982413"] = {
+		[RSConstants.ENTRANCE..1] = { x = 0.5193, y = 0.4932 };
+		[RSConstants.ENTRANCE..2] = { x = 0.5429, y = 0.5289 };
+		[RSConstants.ENTRANCE..3] = { x = 0.5203, y = 0.5639 };
+	}; --Glowing Moth
+	["5713032413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.5581, y = 0.2613 };
+	}; --Glowing Moth
+	["5713282413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2739, y = 0.7142 };
+	}; --Glowing Moth
+	["5713212413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.4914, y = 0.7110 };
+	}; --Glowing Moth
+	["5712942413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.2997, y = 0.6574 };
+	}; --Glowing Moth
+	["5712912413"] = {
+		[RSConstants.ENTRANCE] = { x = 0.6990, y = 0.5036 };
+	}; --Glowing Moth
+	["5910542413"] = {
+		[RSConstants.STEP1] = { x = 0.5108, y = 0.5048, comment = AL["NOTE_591054_1"], questID = 93130 };
+		[RSConstants.STEP2] = { x = 0.5114, y = 0.4751, comment = AL["NOTE_591054_2"], questID = 93130 };
+		[RSConstants.STEP3] = { x = 0.4511, y = 0.5412, comment = AL["NOTE_591054_3"], questID = 93145 };
+		[RSConstants.STEP4] = { x = 0.4717, y = 0.5314, comment = AL["NOTE_591054_4"], questID = 93145 };
+		[RSConstants.STEP5] = { x = 0.5135, y = 0.5599, comment = AL["NOTE_591054_5"], questID = 93146 };
+		[RSConstants.STEP6] = { x = 0.5115, y = 0.5856, comment = AL["NOTE_591054_6"], questID = 93146 };
+	}; --Gift of the Cycle
 }
 
 ---============================================================================

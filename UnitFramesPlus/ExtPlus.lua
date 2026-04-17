@@ -6,32 +6,32 @@ local select = select;
 local UnitClass = UnitClass;
 local UnitIsVisible = UnitIsVisible;
 local IsInInstance = IsInInstance;
-local GetSpellInfo = GetSpellInfo;
 local IsSpellInRange = IsSpellInRange;
+local type = type;
 
 --治疗职业距离检测
 local function UnitFramesPlus_RangeCheckInit()
     local class = select(2, UnitClass("player"));
-    local spellname = "";
+    local spellid = 0;
     local enable = 0;
     if class == "SHAMAN" then
         enable = 1;
-        spellname = GetSpellInfo(331);--治疗波331,1+，治疗之涌8004,7+
+        spellid = 331;--治疗波331,1+，治疗之涌8004,7+
     elseif class == "DRUID" then
         enable = 1;
-        spellname = GetSpellInfo(5185);--治疗之触5185,1+，回春术774,10+
+        spellid = 5185;--治疗之触5185,1+，回春术774,10+
     elseif class == "PALADIN" then
         enable = 1;
-        spellname = GetSpellInfo(635);--圣光术635,1+，圣光闪现19750,8+
+        spellid = 635;--圣光术635,1+，圣光闪现19750,8+
     elseif class == "PRIEST" then
         enable = 1;
-        spellname = GetSpellInfo(2061);--次级治疗术2052,1+，快速治疗2061,10+
+        spellid = 2061;--次级治疗术2052,1+，快速治疗2061,10+
     -- elseif class == "MONK" then
     --     enable = 1;
-    --     spellname = GetSpellInfo(116670);--活血术,8+
+    --     spellid = 116670;--活血术,8+
     end
     UnitFramesPlusVar["rangecheck"]["enable"] = enable;
-    UnitFramesPlusVar["rangecheck"]["spellname"] = spellname;
+    UnitFramesPlusVar["rangecheck"]["spellid"] = spellid;
 end
 
 local rcframes = {
@@ -52,7 +52,8 @@ function UnitFramesPlus_RangeCheck()
                 if self.timer >= 0.2 then
                     for i, frame in pairs(rcframes) do
                         if frame:IsShown() and frame.unit then
-                            local inRange = IsSpellInRange(UnitFramesPlusVar["rangecheck"]["spellname"], frame.unit);
+                            local spellid = UnitFramesPlusVar["rangecheck"]["spellid"];
+                            local inRange = spellid and spellid > 0 and IsSpellInRange(spellid, frame.unit);
                             local _, instanceType = IsInInstance();
                             if (inRange == 0 or not UnitIsVisible(frame.unit)) and not (instanceType == "none" and UnitFramesPlusDB["extra"]["instanceonly"] == 1) then
                                 frame:SetAlpha(0.5);

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(744, "DBM-Raids-MoP", 4, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(62543)
 mod:SetEncounterID(1504)
 mod:SetZone(1009)
@@ -63,16 +64,8 @@ function mod:OnCombatStart(delay)
 	if self:IsHeroic() then
 		timerBladeTempestCD:Start(-delay)
 	end
-	if self.Options.RangeFrame and not self:IsDifficulty("lfr25") then
-		DBM.RangeCheck:Show(10)
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -155,9 +148,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 123814 and self:AntiSpam(2, 2) then--Do not add other spellids here either. 123814 is only cast once, it starts the channel. everything else is cast every 1-2 seconds as periodic triggers.
 		phase2 = true
 		intensifyCD = 10
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 		timerTempestSlashCD:Cancel()
 		timerOverwhelmingAssaultCD:Cancel()
 		timerWindStepCD:Cancel()

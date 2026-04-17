@@ -10,7 +10,6 @@ local DT = __private.DT;
 
 
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
 -->
 
 
@@ -34,7 +33,7 @@ function mod.F_QueryPriceByID(id, num)
 			return;
 		end
 	end
-	local _, link = GetItemInfo(id);
+	local _, link = mod.F_QueryNameByID(id);
 	if link ~= nil then
 		local _, _, bid, ap = GetInfo(link)
 		if ap ~= nil and ap > 0 then

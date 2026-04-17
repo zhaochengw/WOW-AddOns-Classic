@@ -1,19 +1,34 @@
-# [5.21.2](https://github.com/WeakAuras/WeakAuras2/tree/5.21.2) (2026-01-30)
+# [5.21.5](https://github.com/WeakAuras/WeakAuras2/tree/5.21.5) (2026-04-13)
 
-[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.21.1...5.21.2)
+[Full Changelog](https://github.com/WeakAuras/WeakAuras2/compare/5.21.4...5.21.5)
 
 ## Highlights
 
-- Add Titan encounter info
+More Updates for Titan and Regression Fixes
 
 ## Commits
 
 InfusOnWoW (2):
 
+- Update Discord List
 - Update WeakAurasModelPaths from wago.tools
-- Remove retail .toc files and disabled model path update for retail
 
-NoM0Re (1):
+NoM0Re (7):
 
-- Titan: add next phase encounter list
+- Titan: Enable Proc Glow
+- Titan: disable AssistedCombat in GenericTrigger
+- BossMods: fix clone state cleanup typo
+- Titan: disable AssistedCombat and fix item set description
+- Fix: Replace deprecated GetCurrencyInfo with C_CurrencyInfo API
+- Titan: TOC Bump
+- Remove redundant CheckItemSlotCooldowns call
+
+Stanzilla (1):
+
+- Update WeakAurasModelPaths from wago.tools
+
+dependabot[bot] (2):
+
+- Bump cbrgm/mastodon-github-action from 2.1.26 to 2.1.27
+- Bump exercism/pr-commenter-action from 1.5.1 to 1.5.2
 

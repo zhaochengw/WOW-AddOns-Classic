@@ -128,6 +128,7 @@ Syntax:
 		DungeonHeoricID = LFGDungeon ID for Heroic mode,
 		DungeonMythicID = LFGDungeon ID for Mythic mode,
 		WorldMapID = uiMapID,
+		ActivityID = { GroupFinderCategoryID, ID, ID (Heroic) },  -- use https://wago.tools/db2/GroupFinderActivity
 		DungeonLevel = level number of the dungeon map series,
 		Module = "map module name",
 		PrevMap = "previous map name",

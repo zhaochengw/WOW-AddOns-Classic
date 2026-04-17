@@ -69,8 +69,11 @@ L.SCENARIO_COMPLETE_I			= "%s完成! 你總共完成了%d次。"
 L.SCENARIO_COMPLETE_L			= "%s完成!本次用了%s，上次用了%s，最快紀錄為%s。你總共完成了%d次。"
 L.SCENARIO_COMPLETE_NR			= "%s完成!用了%s! 這是一個新記錄! (舊紀錄為%s) 你總共完成了%d次。"
 L.COMBAT_ENDED_AT				= "%s(%s)的戰鬥經過%s結束。"
+L.COMBAT_ENDED					= "%s的戰鬥經過%s結束。"--No health (post midnight)
 L.COMBAT_ENDED_AT_LONG			= "%s(%s)的戰鬥經過%s結束。你在這個難度總共滅團了%d次。"
-L.GUILD_COMBAT_ENDED_AT			= "%s的公會團隊在%s (%s)的戰鬥滅團，經過%s."
+L.COMBAT_ENDED_LONG				= "%s的戰鬥經過%s結束。你在這個難度總共滅團了%d次。"--No health (post midnight)
+L.GUILD_COMBAT_ENDED_AT			= "%s的公會團隊在%s (%s)的戰鬥滅團，經過%s。"
+L.GUILD_COMBAT_ENDED			= "%s的公會團隊在%s的戰鬥滅團，經過%s。"--No health (post midnight)
 L.SCENARIO_ENDED_AT				= "%s結束!用了%s!"
 L.SCENARIO_ENDED_AT_LONG		= "%s結束!本次用了%s，你已有共%d次未完成的嘗試在這個難度裡。"
 L.COMBAT_STATE_RECOVERED		= "%s的戰鬥在%s前開始，恢復計時器中..."
@@ -214,8 +217,10 @@ L.DBMLOOTREMINDER					= "警告：已安裝第三方模組 DBM-LootReminder。 �
 L.UPDATE_REQUIRES_RELAUNCH			= "警告: 如果你沒有重啟你的遊戲，這次"..L.DBM.."更新可能無法正確運作。這次更新包含了新的檔案或是.toc檔更新而不能使用ReloadUI載入。如果沒有將遊戲完全重啟可能會導致錯誤或功能不完整。"
 L.OUT_OF_DATE_NAG					= "你的"..L.DEADLY_BOSS_MODS.."版本已經過期，新版本針對特定的首領戰鬥增加新的功能和錯誤的修復。建議您進行更新來改善您的遊戲體驗。"
 L.PLATER_NP_AURAS_MSG				= L.DBM .. "包含一個進階功能，用於使用名條上的圖示顯示敵人冷卻時間。 對於大多數用戶而言，預設情況下是這樣的，但是對於Plater用戶而言，除非您啟用它，否則預設情況下它會在Plater選項中關閉。 為了充分利用DBM（和Plater），建議您在“ Buff Special”部分的Plater中啟用此功能。 如果您不想再次看到此訊息，也可以在DBM全局禁用或名條選項面板中的“名條上的冷卻圖標”選項中禁用。"
+L.HARDCODED_FALLBACK				= L.DBM .. "偵測到硬編碼模組有非預期結果。" .. L.DBM .. "將在此戰鬥中改用暴雪的計時器與警告。"
 
 L.MOVABLE_BAR					= "拖動我!"
+L.MOVABLE_FRAMES				= "框架可拖動"
 
 L.PIZZA_SYNC_INFO				= "|Hplayer:%1$s|h[%1$s]|h 向你發送了" .. L.DBM .. "的倒數計時: '%2$s'\n|Hgarrmission:DBM:cancel:%2$s:nil|h|cff3588ff[取消此倒數計時]|r|h  |Hgarrmission:DBM:ignore:%2$s:%1$s|h|cff3588ff[忽略來自 %1$s 的倒數計時]|r|h"
 --L.PIZZA_SYNC_INFO				= "|Hplayer:%1$s|h[%1$s]|h向你發送了一個倒數計時"
@@ -273,6 +278,7 @@ L.SLASHCMD_HELP							= {--AI translated (check me)
 	"/dbm key: 在隊伍/公會上執行 M+ 鑰匙和評分檢查，並快捷方式到地下城傳送。 （別名：key，keys，keystone）",
 	"/dbm lag: 執行全團延遲檢查。",
 	"/dbm durability: 執行全團耐久度檢查。",
+	"/dbm brez: 顯示戰鬥復活計時器框架以供定位。",--AI translated (check me)
 	"/dbm help2: 顯示其他斜線命令"
 }
 --較少使用的斜線命令
@@ -609,8 +615,12 @@ L.AUTO_INFO_FRAME_OPTION_TEXT			= "為$spell:%s顯示訊息框架"
 L.AUTO_INFO_FRAME_OPTION_TEXT2			= "為戰鬥概覽顯示訊息框架"
 L.AUTO_INFO_FRAME_OPTION_TEXT3			= "為$spell:%s顯示訊息框架(當達到%%s的閥值時)"
 L.AUTO_READY_CHECK_OPTION_TEXT			= "當首領開打時撥放準備檢查的音效(即使沒有選定目標)"
-L.AUTO_SPEEDCLEAR_OPTION_TEXT			= "顯示 %s 的最快清除計時器"
+L.AUTO_SPEEDCLEAR_OPTION_TEXT			= "顯示此區域的最快清除計時器"
 L.AUTO_PRIVATEAURA_OPTION_TEXT			= "為這場戰鬥的私人光環$spell:%s播放DBM音效警告。"
+L.AUTO_PRIVATEAURA_OPTION_TARGET_TEXT	= "當您成為$spell:%s的目標時，播放DBM的私人光環音效警報。"
+L.AUTO_PRIVATEAURA_OPTION_GTFO_TEXT		= "當您需要遠離$spell:%s時，播放DBM的私人光環音效警報。"
+L.AUTO_CUSTOMTIMER_OPTION_TEXT			= "顯示$spell:%s的計時器"--Used for Midnight timeline timers (ie we have no context of what type of timer it is, just a generic timer)
+L.AUTO_CUSTOMALERT_OPTION_TEXT			= "設定$spell:%s即將施放時的警報音效"--Used for Midnight custom alerts (ie we have no context of what type of alert it is, just a generic alert)
 
 L.AUTO_GOSSIP_BUFFS						= "自動選擇npc的對話選項或專業增益"
 L.AUTO_GOSSIP_PERFORM_ACTION			= "自動選擇對話選項來執行動作 (例如使用傳送功能)"
@@ -621,6 +631,9 @@ L.MOVE_WARNING_BAR			= "可移動提示"
 L.MOVE_WARNING_MESSAGE		= "感謝您使用"..L.DEADLY_BOSS_MODS..""
 L.MOVE_SPECIAL_WARNING_BAR	= "可拖動的特別警告"
 L.MOVE_SPECIAL_WARNING_TEXT	= "特別警告"
+
+L.MOVE_PRIVATE_AURA_TEXT				= "<secret value> 瞄準你使用法術 <secret value>"
+L.MOVE_PRIVATE_AURA_DISABLED			= "預覽被禁用，因為私有光環框架在選項中全域禁用。"
 
 L.HUD_INVALID_TYPE			= "無效的HUD類型定義"
 L.HUD_INVALID_TARGET		= "無有效的HUD目標"
@@ -652,12 +665,14 @@ L.ARROW_ERROR_USAGE	= {
 
 L.SPEED_KILL_TIMER_TEXT			= "勝利紀錄"
 L.SPEED_CLEAR_TIMER_TEXT		= "最佳紀錄"
-L.COMBAT_RES_TIMER_TEXT			= "下一個戰復充能"
 L.TIMER_RESPAWN					= "%s 重生"
 
 L.LAG_HEADER					= ""..L.DBM.." - 網路延遲結果"
 L.DUR_HEADER					= ""..L.DBM.." - 裝備耐久度結果"
 L.KEYSTONES_HEADER				= L.DBM.. " - 鑰石"
+L.GEAR_HEADER					= L.DBM.. " - 裝備檢查結果"
+L.GEAR_MISSING_GEMS			= "缺少寶石"
+L.GEAR_MISSING_ENCHANTS		= "缺少附魔"
 
 L.OVERRIDE_ACTIVATED			= "領隊已啟用此首領的配置覆蓋"
 
@@ -723,7 +738,6 @@ L.KEYSTONE_NAMES[227] = '卡拉贊下' -- Return to Karazhan: Lower
 L.KEYSTONE_NAMES[233] = '永夜' -- Cathedral of Eternal Night
 L.KEYSTONE_NAMES[234] = '卡拉贊上' -- Return to Karazhan: Upper
 L.KEYSTONE_NAMES[239] = '議會' -- Seat of the Triumvirate
-
 L.KEYSTONE_NAMES[378] = '贖罪' -- Halls of Atonement
 L.KEYSTONE_NAMES[391] = '街道' -- Tazavesh: Streets of Wonder
 L.KEYSTONE_NAMES[392] = '險招' -- Tazavesh: So'leah's Gambit
@@ -732,6 +746,14 @@ L.KEYSTONE_NAMES[503] = '回音' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = '破曉' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = '水閘' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = '秘境' -- Eco-Dome Al'dani
+L.KEYSTONE_NAMES[161] = '擎天峰' -- Skyreach
+L.KEYSTONE_NAMES[402] = '學院' -- Algeth'ar Academy
+L.KEYSTONE_NAMES[556] = '薩倫' -- Pit of Saron
+L.KEYSTONE_NAMES[557] = '風行塔' -- Windrunner Spire
+L.KEYSTONE_NAMES[558] = '博學' -- Magister's Terrace
+L.KEYSTONE_NAMES[559] = '奧核點' -- Nexus-Point Xenas
+L.KEYSTONE_NAMES[560] = '梅薩拉' -- Maisara Caverns
+L.KEYSTONE_NAMES[583] = '三傑' -- Seat of the Triumvirate
 
 -- Midnight jazz
 L.MN_TIMELINE_HEADER	= "您想使用暴雪時間線還是DBM計時條呢？"

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("ShaofAngerEvent", "DBM-WorldEvents", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240906071531")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(226646)
 --mod:SetModelID(21435)
 

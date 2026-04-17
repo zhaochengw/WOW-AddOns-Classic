@@ -2,7 +2,11 @@
 	by ALA
 --]]--
 
-local __version = 250401.0;
+if select(4, GetBuildInfo()) >= 120000 then
+	return;
+end
+
+local __version = 250401.2;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -73,6 +77,10 @@ elseif ISCLASSIC then
 	};
 else
 	DEVELOPER = {
+		--
+		["Player-6379-009490AD"] = "T",	--	"时光I.MAGE"
+		["Player-6379-009490B7"] = "T",	--	"时光I.WARRIOR"
+		["Player-6379-00CC07FB"] = "T",	--	"时光I.SHAMAN"
 		--	BCC
 		["Player-4497-0388473F"] = "B",	--	"碧玉矿洞.ALEX.WARRIOR"
 		["Player-4497-039DF9BC"] = "B",	--	"碧玉矿洞.ALEX.PRIEST"
@@ -128,9 +136,10 @@ else
 	};
 end
 local TITLELIST = {
-	B = --[[IsAddOnLoaded("!!!163UI!!!") and "网易有爱开发者" or ]]"夜空中最亮的星",
-	G = --[[IsAddOnLoaded("!!!163UI!!!") and "网易有爱开发者" or ]]"宇宙无敌兔姐姐",
-	D = "网易有爱开发者",
+	T = [[艾泽拉斯第一帅]],
+	B = --[[IsAddOnLoaded("!!!163UI!!!") and "网易有爱开发者" or ]][[夜空中最亮的星]],
+	G = --[[IsAddOnLoaded("!!!163UI!!!") and "网易有爱开发者" or ]][[宇宙无敌兔姐姐]],
+	D = [[网易有爱开发者]],
 };
 if ISCLASSIC then
 	local FILELIST = {

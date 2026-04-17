@@ -40,6 +40,13 @@ function Frame:Constructor(_, meta)
     self:SetScript('OnShow', self.OnShow)
     self:SetScript('OnHide', self.OnHide)
 
+    local Close = self.CloseButton or self.Close
+    if Close then
+        Close:SetScript('OnClick', function()
+            ns.Addon:HideFrame(self.meta.bagId, true)
+        end)
+    end
+
     self:UpdateManaged()
     self:UpdateSpecial()
 end

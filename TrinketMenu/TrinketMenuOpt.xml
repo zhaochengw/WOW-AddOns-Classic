@@ -48,7 +48,7 @@
 		</Scripts>
 	</CheckButton>
 	<!-- Minimap button -->
-	<Button name = "TrinketMenu_IconFrame" frameStrata = "LOW" parent = "Minimap" enableMouse = "true" movable = "true" toplevel = "true" hidden = "false">
+	<Button name = "TrinketMenu_IconFrame" frameStrata = "MEDIUM" parent = "Minimap" enableMouse = "true" movable = "true" toplevel = "true" hidden = "false">
 		<Size>
 			<AbsDimension x = "32" y = "32"/>
 		</Size>
@@ -61,7 +61,7 @@
 				self:RegisterForDrag("LeftButton")
 			</OnLoad>
 			<OnEnter>
-				TrinketMenu.OnTooltip(self,"TrinketMenu饰品管理",(TrinketMenuOptions.DisableToggle == "ON") and "点击: 显示/隐藏设置\n拖动：移动图标" or "左键: 显示/隐藏插件\n右键: 显示/隐藏菜单\n拖动: 移动小地图按钮")
+				TrinketMenu.OnTooltip(self, "TrinketMenu", (TrinketMenuOptions.DisableToggle == "ON") and "Click: toggle options\nDrag: move icon" or "Left click: toggle trinkets\nRight click: toggle options\nDrag: move icon")
 			</OnEnter>
 			<OnLeave>
 				GameTooltip:Hide()
@@ -83,7 +83,7 @@
 		<HighlightTexture alphaMode = "ADD" file = "Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 	</Button>
 	<Frame name = "TrinketMenu_OptFrame" parent = "UIParent" movable = "true" toplevel = "true" clampedToScreen = "true" hidden = "true" inherits = "TrinketMenuBackdropTemplate">
-		<Size x = "300" y = "336"/>
+		<Size x = "300" y = "356"/>
 		<Anchors>
 			<Anchor point = "CENTER"/>
 		</Anchors>
@@ -158,7 +158,7 @@
 					<TexCoords left = ".875" right = "1" top = ".125" bottom = ".25"/>
 				</PushedTexture>
 			</Button>
-			<Button name = "TrinketMenu_Tab1" inherits = "TrinketMenu_TabTemplate" text = "设置" id = "1">
+			<Button name = "TrinketMenu_Tab1" inherits = "TrinketMenu_TabTemplate" text = "Options" id = "1">
 				<Anchors>
 					<Anchor point = "TOPRIGHT">
 						<Offset>
@@ -260,11 +260,29 @@
 							</Anchor>
 						</Anchors>
 					</CheckButton>
-					<CheckButton name = "TrinketMenu_OptShowTooltips" inherits = "TrinketMenu_CheckButtonTemplate">
+					<CheckButton name = "TrinketMenu_OptCooldownCountBlizzard" inherits = "TrinketMenu_CheckButtonTemplate">
 						<Anchors>
 							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptLargeCooldown" relativePoint = "BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x = "-16" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptCooldownCountOmniCC" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptCooldownCountBlizzard" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
+					<CheckButton name = "TrinketMenu_OptShowTooltips" inherits = "TrinketMenu_CheckButtonTemplate">
+						<Anchors>
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptCooldownCountOmniCC" relativePoint = "BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x = "0" y = "4"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -305,7 +323,7 @@
 							</Anchor>
 						</Anchors>
 					</CheckButton>
-					<CheckButton name = "TrinketMenu_OptRedRange" inherits = "TrinketMenu_CheckButtonTemplate">
+					<!--<CheckButton name = "TrinketMenu_OptRedRange" inherits = "TrinketMenu_CheckButtonTemplate">
 						<Anchors>
 							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptStopOnSwap" relativePoint = "BOTTOMLEFT">
 								<Offset>
@@ -313,10 +331,10 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</CheckButton>
+					</CheckButton>-->
 					<CheckButton name = "TrinketMenu_OptHidePetBattle" inherits = "TrinketMenu_CheckButtonTemplate">
 						<Anchors>
-							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptRedRange" relativePoint = "BOTTOMLEFT">
+							<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptStopOnSwap" relativePoint = "BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x = "0" y = "4"/>
 								</Offset>
@@ -415,7 +433,7 @@
 						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
-								<FontString name = "TrinketMenu_OptColumnsSliderText" inherits = "GameFontHighlightSmall" text = "5 个饰品">
+								<FontString name = "TrinketMenu_OptColumnsSliderText" inherits = "GameFontHighlightSmall" text = "5 trinkets">
 									<Anchors>
 										<Anchor point = "LEFT" relativeTo = "TrinketMenu_OptSetColumnsText" relativePoint = "RIGHT">
 											<Offset>
@@ -464,7 +482,7 @@
 						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
-								<FontString name = "TrinketMenu_OptMainScaleSliderText" inherits = "GameFontHighlightSmall" text = "插件缩放: 1.0">
+								<FontString name = "TrinketMenu_OptMainScaleSliderText" inherits = "GameFontHighlightSmall" text = "Main Scale: 1.0">
 									<Anchors>
 										<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptSetColumnsText" relativePoint = "BOTTOMLEFT">
 											<Offset>
@@ -513,7 +531,7 @@
 						</KeyValues>
 						<Layers>
 							<Layer level = "ARTWORK">
-								<FontString name = "TrinketMenu_OptMenuScaleSliderText" inherits = "GameFontHighlightSmall" text = "菜单缩放: 1.0">
+								<FontString name = "TrinketMenu_OptMenuScaleSliderText" inherits = "GameFontHighlightSmall" text = "Menu Scale: 1.0">
 									<Anchors>
 										<Anchor point = "TOPLEFT" relativeTo = "TrinketMenu_OptMainScaleSliderText" relativePoint = "BOTTOMLEFT">
 											<Offset>

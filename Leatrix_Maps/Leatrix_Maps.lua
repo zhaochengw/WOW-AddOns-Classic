@@ -1,6 +1,6 @@
 ﻿
 	----------------------------------------------------------------------
-	-- 	Leatrix Maps 5.1.22 (8th February 2026)
+	-- 	Leatrix Maps 5.1.32 (15th April 2026)
 	----------------------------------------------------------------------
 
 	-- 10:Func, 20:Comm, 30:Evnt, 40:Panl
@@ -12,7 +12,7 @@
 	local LeaMapsLC, LeaMapsCB, LeaDropList, LeaConfigList, LeaLockList = {}, {}, {}, {}, {}
 
 	-- Version
-	LeaMapsLC["AddonVer"] = "5.1.22"
+	LeaMapsLC["AddonVer"] = "5.1.32"
 
 	-- Get locale table
 	local void, Leatrix_Maps = ...
@@ -1728,20 +1728,54 @@
 				end
 			end)
 
-			-- Set position on startup
-			WorldMapFrame:HookScript("OnShow", function()
-				if not LeaMapsLC.MapLoadPositioned then
-					WorldMapScreenAnchor:ClearAllPoints()
-					WorldMapScreenAnchor:SetPoint(LeaMapsLC["MapPosA"], nil, LeaMapsLC["MapPosR"], LeaMapsLC["MapPosX"], LeaMapsLC["MapPosY"])
-					LeaMapsLC.MapLoadPositioned = true
-				end
-			end)
+			-- Set map position on startup
+			WorldMapScreenAnchor:ClearAllPoints()
+			WorldMapScreenAnchor:SetPoint(LeaMapsLC["MapPosA"], nil, LeaMapsLC["MapPosR"], LeaMapsLC["MapPosX"], LeaMapsLC["MapPosY"])
 
-			-- Fix for Demodal clamping the map frame to the screen
-			EventUtil.ContinueOnAddOnLoaded("Demodal",function()
-				if WorldMapFrame:IsClampedToScreen() then
-					WorldMapFrame:SetClampedToScreen(false)
+			-- Set map screen clamp
+			WorldMapFrame:SetClampedToScreen(true)
+			WorldMapFrame:SetClampRectInsets(800, -800, -600, 600)
+
+			-- Reset map position if it's significantly off the screen on startup
+			local function IsOffScreenWithInsets(frame)
+				local x, y, w, h = frame:GetRect()
+				if not x then return false end
+				local lI, rI, tI, bI = frame:GetHitRectInsets()
+				lI, rI, tI, bI = lI or 0, rI or 0, tI or 0, bI or 0
+
+				local left   = x + lI
+				local bottom = y + bI
+				local right  = x + w - rI
+				local top    = y + h - tI
+
+				local scale = frame:GetEffectiveScale()
+				local screenLeft, screenBottom = 0, 0
+				local screenRight = GetScreenWidth() / scale * UIParent:GetScale()
+				local screenTop   = GetScreenHeight() / scale * UIParent:GetScale()
+
+				local offLeft   = math.max(0, screenLeft - left)
+				local offRight  = math.max(0, right - screenRight)
+				local offBottom = math.max(0, screenBottom - bottom)
+				local offTop    = math.max(0, top - screenTop)
+
+				if offLeft >= 800 or offRight >= 400 or offBottom >= 300 or offTop >= 500 then
+					return true
 				end
+			end
+
+			-- Not used as map is clamped to screen
+			-- if IsOffScreenWithInsets(WorldMapFrame) then
+			-- 	LeaMapsLC["MapPosA"], LeaMapsLC["MapPosR"], LeaMapsLC["MapPosX"], LeaMapsLC["MapPosY"] = "TOPLEFT", "TOPLEFT", 0, 0
+			-- 	WorldMapScreenAnchor:ClearAllPoints()
+			-- 	WorldMapScreenAnchor:SetPoint(LeaMapsLC["MapPosA"], nil, LeaMapsLC["MapPosR"], LeaMapsLC["MapPosX"], LeaMapsLC["MapPosY"])
+			-- end
+
+		else
+
+			-- Fix for Demodal if default map frame is on
+			EventUtil.ContinueOnAddOnLoaded("Demodal",function()
+				WorldMapFrame:SetClampedToScreen(true)
+				WorldMapFrame:SetClampRectInsets(500, -500, -400, 400)
 			end)
 
 		end

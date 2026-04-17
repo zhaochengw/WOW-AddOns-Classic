@@ -47,6 +47,7 @@
 	<Include file="Service\RSRespawnTracker.lua"/>
 	<Include file="Service\RSLoot.lua"/>
 	<Include file="Service\RSLootTooltip.lua"/>
+	<Include file="Service\RSWaypoints.lua"/>
 	<Include file="Service\RSAudioAlerts.lua"/>
 	<Include file="Service\RSButtonHandler.lua"/>
 	<Include file="Service\RSMacro.lua"/>

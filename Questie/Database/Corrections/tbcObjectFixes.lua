@@ -17,8 +17,25 @@ function QuestieTBCObjectFixes:Load()
         [1739] = { -- Syndicate Documents
             [objectKeys.questStarts] = {},
         },
+        [5619] = { -- Flawed Power Stone
+            [objectKeys.questStarts] = {926},
+            [objectKeys.questEnds] = {926},
+        },
+        [5621] = { -- Flawed Power Stones
+            [objectKeys.questStarts] = {926},
+            [objectKeys.questEnds] = {926},
+        },
+        [21015] = { -- Hoofprints
+            [objectKeys.questStarts] = {},
+        },
+        [21016] = { -- Hoofprints
+            [objectKeys.questStarts] = {},
+        },
         [142122] = {
             [objectKeys.questStarts] = {2781,2875},
+        },
+        [156561] = { -- Wanted Poster
+            [objectKeys.questStarts] = {176},
         },
         [177281] = {
             [objectKeys.spawns] = {[zoneIDs.ZANGARMARSH]={{80.32,65.06}}},
@@ -160,9 +177,6 @@ function QuestieTBCObjectFixes:Load()
         [186189] = {
             [objectKeys.name] = "Alcohol-Free Brewfest Sampler",
         },
-        [186273] = {
-            [objectKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH]={{61.7,18.2}}},
-        },
         [186420] = { -- Syndicate Documents
             [objectKeys.questStarts] = {510,511},
         },
@@ -177,6 +191,9 @@ function QuestieTBCObjectFixes:Load()
         },
         [187078] = {
             [objectKeys.spawns] = {[zoneIDs.ISLE_OF_QUEL_DANAS]={{46.5,35.5},{48.63,35.37},{48.89,39.15},{49.14,29.53},{50.32,38.27},{50.34,42.36},{53.77,36.21},}},
+        },
+        [187273] = { -- Suspicious Hoofprint
+            [objectKeys.questStarts] = {1268,1284},
         },
         [187260] = {
             [objectKeys.spawns] = {[zoneIDs.FELWOOD]={{34.82,52.95}}}, -- TBC only Mailbox
@@ -796,14 +813,18 @@ function QuestieTBCObjectFixes:Load()
             [objectKeys.zoneID] = zoneIDs.SHADOWMOON_VALLEY,
             [objectKeys.questStarts] = {12409},
             [objectKeys.questEnds] = {12409},
-
+        },
+        [190483] = { -- Document Chest
+            [objectKeys.name] = "Document Chest",
+        },
+        [190484] = { -- Document Chest
+            [objectKeys.name] = "Document Chest",
         },
 
         -- Below are fake objects
         -- For TBC fixes 410001-419999
         [410001] = {
             [objectKeys.name] = "Mailbox",
-            [objectKeys.questStarts] = {9672},
             [objectKeys.spawns] = {[zoneIDs.BLOODMYST_ISLE]={{55.2,59.2}}},
             [objectKeys.zoneID] = zoneIDs.BLOODMYST_ISLE,
         },
@@ -902,19 +923,26 @@ function QuestieTBCObjectFixes:Load()
             [objectKeys.spawns] = {[zoneIDs.DUSTWALLOW_MARSH]={{40.7,11.9},{40.89,12.43},{40.63,11.5},{41.62,10.8},{41.93,13.22},{41.48,12.98},{42.39,11.76}}},
             [objectKeys.zoneID] = zoneIDs.DUSTWALLOW_MARSH,
         },
-        [400021] = { -- Cenarion Thicket Moonwell
+        [410021] = { -- Cenarion Thicket Moonwell
             [objectKeys.name] = "Moonwell",
             [objectKeys.questStarts] = {},
             [objectKeys.questEnds] = {},
             [objectKeys.spawns] = {[zoneIDs.TEROKKAR_FOREST]={{45.1, 23.6}}},
             [objectKeys.zoneID] = zoneIDs.TEROKKAR_FOREST,
         },
-        [400022] = { -- Evergrove Moonwell
+        [410022] = { -- Evergrove Moonwell
             [objectKeys.name] = "Moonwell",
             [objectKeys.questStarts] = {},
             [objectKeys.questEnds] = {},
             [objectKeys.spawns] = {[zoneIDs.BLADES_EDGE_MOUNTAINS]={{62.0, 39.2}}},
             [objectKeys.zoneID] = zoneIDs.BLADES_EDGE_MOUNTAINS,
+        },
+        [410023] = { -- Ghostlands Moonwell
+            [objectKeys.name] = "Moonwell",
+            [objectKeys.questStarts] = {},
+            [objectKeys.questEnds] = {},
+            [objectKeys.spawns] = {[zoneIDs.GHOSTLANDS]={{13.17,26.59}}},
+            [objectKeys.zoneID] = zoneIDs.GHOSTLANDS,
         },
     }
 end

@@ -275,6 +275,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Trading Items"] = "Trading Items"--]] 
 --[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
+--[[Translation missing --]]
 --[[ L["Visiting a Vendor"] = "Visiting a Vendor"--]] 
 --[[Translation missing --]]
 --[[ L["Visiting the Auction House"] = "Visiting the Auction House"--]] 
@@ -554,6 +556,8 @@ L = L or {}
 --[[ L["Trade Containers Location"] = "Trade Containers Location"--]] 
 --[[Translation missing --]]
 --[[ L["Trading Items"] = "Trading Items"--]] 
+--[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
 --[[Translation missing --]]
 --[[ L["Visiting a Vendor"] = "Visiting a Vendor"--]] 
 --[[Translation missing --]]
@@ -835,6 +839,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Trading Items"] = "Trading Items"--]] 
 --[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
+--[[Translation missing --]]
 --[[ L["Visiting a Vendor"] = "Visiting a Vendor"--]] 
 --[[Translation missing --]]
 --[[ L["Visiting the Auction House"] = "Visiting the Auction House"--]] 
@@ -1115,6 +1121,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Trading Items"] = "Trading Items"--]] 
 --[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
+--[[Translation missing --]]
 --[[ L["Visiting a Vendor"] = "Visiting a Vendor"--]] 
 --[[Translation missing --]]
 --[[ L["Visiting the Auction House"] = "Visiting the Auction House"--]] 
@@ -1289,6 +1297,8 @@ L["Top"] = "상단"
 L["Total"] = "총"
 L["Trade Containers Location"] = "거래 물품 위치"
 L["Trading Items"] = "아이템 거래 시"
+--[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
 L["Visiting a Vendor"] = "상점 방문 시"
 L["Visiting the Auction House"] = "경매장 방문 시"
 L["Visiting the Bank"] = "은행 방문 시"
@@ -1565,6 +1575,8 @@ L = L or {}
 --[[Translation missing --]]
 --[[ L["Trading Items"] = "Trading Items"--]] 
 --[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
+--[[Translation missing --]]
 --[[ L["Visiting a Vendor"] = "Visiting a Vendor"--]] 
 --[[Translation missing --]]
 --[[ L["Visiting the Auction House"] = "Visiting the Auction House"--]] 
@@ -1778,6 +1790,8 @@ L["Top"] = "Верх"
 L["Total"] = "Весь"
 L["Trade Containers Location"] = "Расположение торговых контейнеров"
 L["Trading Items"] = "Торговые пункты"
+--[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
 L["Visiting a Vendor"] = "Посещение торговца"
 L["Visiting the Auction House"] = "Посещение аукциона"
 L["Visiting the Bank"] = "Посещение банка"
@@ -1949,6 +1963,8 @@ L["Top"] = "頂部"
 L["Total"] = "總共"
 L["Trade Containers Location"] = "特殊容器位置"
 L["Trading Items"] = "交易時"
+--[[Translation missing --]]
+--[[ L["Use tdInspect replace this frame (if installed)"] = "Use tdInspect replace this frame (if installed)"--]] 
 L["Visiting a Vendor"] = "打開商人時"
 L["Visiting the Auction House"] = "打開拍賣行時"
 L["Visiting the Bank"] = "打開銀行時"

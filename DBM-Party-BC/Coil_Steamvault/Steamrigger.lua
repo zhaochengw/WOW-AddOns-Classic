@@ -5,10 +5,11 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,duos"
 end
 
-mod:SetRevision("20250609053724")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(17796)
 mod:SetEncounterID(1943)
-mod:SetZone(261, 2849)--Steamvault, Duos
+mod:SetZone(545, 2849)--Steamvault, Duos
 
 if not mod:IsRetail() then
 	mod:SetModelID(18638)

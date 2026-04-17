@@ -1,4 +1,4 @@
-﻿## Interface: 50500
+## Interface: 50500
 ## Title: Archon Tooltip DB - 安娜丝塔丽
 ## Author: Archon
 ## Dependencies: ArchonTooltip
@@ -7,7 +7,7 @@
 ## X-Database-Key: 5133
 ## X-Database-Name: 安娜丝塔丽
 ## X-Game-Version-ID: warcraft-classic
-## X-Updated-At: 2026-02-05T12:35:34.000Z
+## X-Updated-At: 2026-04-16T13:17:14.000Z
 ## IconTexture: Interface/AddOns/ArchonTooltip/Media/logo-32-circle.tga
 ## Category: Archon
 

@@ -11,7 +11,7 @@ local minimapIconLocales = {
         ["koKR"] = "메뉴 표시",
         ["ptBR"] = "Mostrar menu",
         ["ruRU"] = "Открыть меню",
-        ["zhCN"] = "打开主菜单",
+        ["zhCN"] = "切换主菜单",
         ["zhTW"] = "顯示/隱藏選單",
     },
     ["Toggle My Journey"] = {
@@ -23,7 +23,7 @@ local minimapIconLocales = {
         ["koKR"] = "나의 여정 창 열기",
         ["ptBR"] = "Mostrar minha jornada",
         ["ruRU"] = "Открыть 'Путешествие'",
-        ["zhCN"] = "打开我的日志",
+        ["zhCN"] = "显示/隐藏我的旅程",
         ["zhTW"] = "顯示/隱藏我的冒險日記",
     },
     ["Hide Minimap Button"] = {
@@ -59,7 +59,7 @@ local minimapIconLocales = {
         ["koKR"] = "수행 가능한 퀘스트",
         ["ptBR"] = "Missões disponiveis",
         ["ruRU"] = "Доступные задания",
-        ["zhCN"] = "可用任务",
+        ["zhCN"] = "可接的任务",
         ["zhTW"] = "可接的任務",
     },
     ["Trivial Quest"] = {
@@ -83,8 +83,8 @@ local minimapIconLocales = {
         ["koKR"] = "전투 종료 후 퀘스티가 열립니다",
         ["ptBR"] = "Questie será aberta após o término do combate.",
         ["ruRU"] = "Questie откроется по завершении боя.",
-        ["zhCN"] = "Questie 会在战斗结束后打开。",
-        ["zhTW"] = "Questie 會在戰鬥結束後開啟。",
+        ["zhCN"] = "Questie 会在战斗结束后打开",
+        ["zhTW"] = "Questie 會在戰鬥結束後開啟",
     },
 }
 

@@ -11,7 +11,15 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				if self.TogglePopup then
+					self.TogglePopup = function() end
+				end
 			</OnLoad>
+			<OnShow>
+				if self.Arrow then
+					self.Arrow:SetShown(false)
+				end
+			</OnShow>
 			<PostClick>
 				TrinketMenu.MainTrinket_OnClick(self, button, down)
 			</PostClick>
@@ -31,6 +39,9 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				if self.TogglePopup then
+					self.TogglePopup = function() end
+				end
 				if self.cooldown then
 					self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 				end
@@ -38,6 +49,11 @@
 					self.icon:SetAllPoints()
 				end
 			</OnLoad>
+			<OnShow>
+				if self.Arrow then
+					self.Arrow:SetShown(false)
+				end
+			</OnShow>
 			<PostClick>
 				TrinketMenu.MenuTrinket_OnClick(self, button, down)
 			</PostClick>
@@ -216,7 +232,7 @@
 		</Scripts>
 	</Frame>
 	<!-- MenuFrame: Bagged Trinkets -->
-	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "HIGH" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits = "TrinketMenuBackdropTemplate">
+	<Frame name = "TrinketMenu_MenuFrame" toplevel = "true" frameStrata = "MEDIUM" enableMouse = "true" movable = "true" parent = "UIParent" hidden = "true" clampedToScreen = "true" inherits = "TrinketMenuBackdropTemplate">
 		<Size>
 			<AbsDimension x = "52" y = "92" />
 		</Size>

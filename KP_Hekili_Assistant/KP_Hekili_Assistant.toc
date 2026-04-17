@@ -1,0 +1,10 @@
+## Interface: 38001,30401,50400
+## Title: |cFF00ff00[快跑兄弟]|r KP_Hekili_Assistant
+## Notes: 全职业Hekili输出助手v3.8.1（快跑兄弟的交流频道-网易DD：294166）
+## Author: 快跑兄弟
+## Version: 3.8.3
+## SavedVariables: KP_Hekili_Assistant_DB
+## IconTexture: Interface\AddOns\KP_Hekili_Assistant\Icons\H.tga
+
+KP_ActionList.lua
+KP_Hekili_Assistant.lua

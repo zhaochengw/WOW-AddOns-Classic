@@ -1,5 +1,21 @@
+2026-03-27
+ColorPicker related setting update.
+
+2026-03-25
+Libs update
+
+2026-03-07
+Update LibDBIcon.
+Add expansion data.
+UI optimization.
+Optimize the performance of ProfitFrame.
+[TBC] Truesilver(10098)'s color is [230, 235, 242, 250] now.	thx to B_E_L_D_E_N@Curseforge
+
+2026-03-01
+[TBC] enchanting fix.
+
 2026-01-16
-TBC update.
+[TBC] update.
 
 2026-01-11
 EasyAuction module update
@@ -14,10 +30,10 @@ GF_Auction support
 EasyAuction support
 
 2025-12-01
-fix an auctionhouse issue in wotlk-titan
+[WLK] Fix an auctionhouse issue.
 
 2025-11-25
-no longer search by shift-clik when auctionhouse opened.
+No longer search by shift-clik when auctionhouse opened.
 
 2025-11-01
 Delete a wrong skill id.
@@ -32,16 +48,16 @@ Fix an issue occured in some language.
 Change the default phase to 4 in wotlk.
 
 2025-08-04
-Update MOP Data. (horrible huge work)
-Thanks to Hubbotu's ruRU translations.
+[MOP] Update Data. (horrible huge work)
+Update ruRU translations.  Thanks to Hubbotu
 Todo:
-    varify the skill list.
-    cooking way.
-    quest info.
-    skills taught by world object or any other thing.
+    Varify the skill list.
+    Cooking way.
+    Quest info.
+    Skills taught by world object or any other thing.
 
 2025-07-01
-Support MOP UI. (data to do)
+[MOP] UI Compatible. (data to do)
 
 2025-06-01
 Update TOC. (nothing actually)
@@ -57,7 +73,7 @@ QueueFrame is always on the top.
 Fix an issue that caused the remaining number of queued item not update.
 
 2025-04-10
-Update toc for classic era.
+[Vanilla] Update toc.
 
 2025-04-08
 Update libs.
@@ -68,4 +84,4 @@ Delete duplicated rank info.
 Update scroll lib.
 Try to fix leatherwork ui in Korean client.
 Correct some translations.
-Add changelog file
+Add changelog file.

@@ -10,8 +10,8 @@ local DT = __private.DT;
 
 
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
 	local _G = _G;
+
 -->
 
 
@@ -33,7 +33,7 @@ MT.RegsiterAuctionModOnLoad("!Pig", function()
 		end
 	end
 	mod.F_QueryPriceByID = function(id, num)
-		local name = GetItemInfo(id);
+		local name = mod.F_QueryNameByID(id);
 		if name then
 			return mod.F_QueryPriceByName(name, num);
 		end

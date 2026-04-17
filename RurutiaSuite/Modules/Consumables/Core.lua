@@ -106,7 +106,6 @@ end
 function Module:OnEnable()
     self:RegisterEvent("PLAYER_REGEN_ENABLED", "UpdateBar")
     self:RegisterEvent("SPELLS_CHANGED", "UpdateBar")
-    self:RegisterEvent("LEARNED_SPELL_IN_TAB", "UpdateBar")
 
     local _, class = UnitClass("player")
     if class == "MAGE" or self.previewEnabled then
@@ -277,7 +276,7 @@ function Module:CreateBar()
     for i = 1, maxButtons do
         local btn = CreateFrame("Button", "RurutiaMageBarBtn"..i, f, "SecureActionButtonTemplate, BackdropTemplate")
         btn:SetSize(size, size)
-        btn:RegisterForClicks("AnyUp")
+        btn:RegisterForClicks("AnyDown", "AnyUp")
         btn:Hide()
 
         btn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8" })

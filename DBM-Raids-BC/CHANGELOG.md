@@ -1,8 +1,10 @@
 # DBM - The Burning Crusade mods
 
-## [r13](https://github.com/DeadlyBossMods/DBM-BurningCrusade/tree/r13) (2025-12-23)
-[Full Changelog](https://github.com/DeadlyBossMods/DBM-BurningCrusade/compare/r12...r13) [Previous Releases](https://github.com/DeadlyBossMods/DBM-BurningCrusade/releases)
+## [r15](https://github.com/DeadlyBossMods/DBM-BurningCrusade/tree/r15) (2026-03-15)
+[Full Changelog](https://github.com/DeadlyBossMods/DBM-BurningCrusade/compare/r14...r15) [Previous Releases](https://github.com/DeadlyBossMods/DBM-BurningCrusade/releases)
 
-- Fix and close https://github.com/DeadlyBossMods/DBM-BurningCrusade/issues/5  
-- add 12.0.1 toc  
-- Cleanup 11.2.5 tocs  
+- Prevent loading of options on 55 boss mods on retail (they'll still load and record stats). This is the number of dungeon, delve, and scenario bosses that blizzard doesn't support with boss mod api  
+- more cleanup  
+- Remove deprecated functions: (rangeframe, hud, arrow)  
+    due to buggy diffs, some regressions may be possible since it's harder to verify nothing was accidentally removed  
+- modernize CI  

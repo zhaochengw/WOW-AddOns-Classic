@@ -1,20 +1,30 @@
-﻿TrinketMenu 5.0.2
+﻿TrinketMenu 12.0.5
 
-This is a mod to make swapping trinkets easier.  It will display your two equipped trinkets in a bar.  Mouseover on either trinket will display a menu of up to 30 trinkets in your bags to swap.
+This is a mod to make swapping trinkets easier. It will display your two equipped trinkets in a bar. Mouseover on either trinket will display a menu of up to 30 trinkets in your bags to swap.
 
-__ New in 5.0.3 __
+__ What's New in 11.1.9 (Anniversary/BCC 2.5.5) __
+Updated by: Icewitts (Spineshatter EU)
+- Fixed C_Item.IsEquippableItem() error that occurred when using trinkets
+- Added PreClick handlers to prevent secure action button validation errors
+- Keybinds now work properly with the fix
+- Maintained full compatibility with Retail, Classic, and Anniversary editions
+
+__ Previous Updates __
+11.1.8 (Resike)
+- UI improvements and optimizations
+
+5.0.3
 - Changed file coding to UTF-8.
 
-__ New in 5.0.2 __
+5.0.2
 - Fixed an itemID bug.
 
-__ New in 5.0.1 __
+5.0.1
 - Updated for 5.3.
 
-__ New in 5.0.0 __
+5.0.0
 - Updated for 5.2.
-- Minor fixes.
-- Code Cleanup.
+- Minor fixes and code cleanup.
 - Moved textures to "Textures" folder.
 - Added notification support for MSBT, Parrot, xCT, xCT+.
 

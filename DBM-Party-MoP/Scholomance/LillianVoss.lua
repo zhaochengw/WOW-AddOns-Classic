@@ -5,7 +5,8 @@ if DBM:IsRetail() then
 	mod.statTypes = "normal,heroic,challenge,timewalker"
 end
 
-mod:SetRevision("20250915043254")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(58722)--58722 is Body, 58791 is soul. Body is engaged first
 mod:SetEncounterID(1429)
 mod:SetReCombatTime(180, 15)

@@ -15,6 +15,7 @@ local RSMinimap = private.ImportLib("RareScannerMinimap")
 
 -- RareScanner general libraries
 local RSUtils = private.ImportLib("RareScannerUtils")
+local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 RSOverlayMixin = CreateFromMixins(MapCanvasPinMixin);
 
@@ -39,14 +40,14 @@ function RSOverlayMixin:OnMouseEnter()
 		self.pin.ShowPingAnim:Play();
 	end
 
-	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+	RSTooltip.Tooltip:SetOwner(self, "ANCHOR_CURSOR")
 	
 	if (self.pin.POI) then
-		GameTooltip:SetText(self.pin.POI.name)
+		RSTooltip.Tooltip:SetText(self.pin.POI.name)
 	else
-		GameTooltip:SetText(self.pin.name)
+		RSTooltip.Tooltip:SetText(self.pin.name)
 	end
-	GameTooltip:Show()
+	RSTooltip.Tooltip:Show()
 end
 
 function RSOverlayMixin:OnMouseLeave()
@@ -54,7 +55,7 @@ function RSOverlayMixin:OnMouseLeave()
 		self.pin.ShowPingAnim:Stop();
 	end
 
-	GameTooltip:Hide()
+	RSTooltip.Tooltip:Hide()
 end
 
 function RSOverlayMixin:OnMouseDown(button)

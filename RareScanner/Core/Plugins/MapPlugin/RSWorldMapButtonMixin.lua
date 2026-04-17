@@ -22,6 +22,7 @@ local RSMapDB =  private.ImportLib("RareScannerMapDB")
 -- RareScanner service libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSProvider = private.ImportLib("RareScannerProvider")
+local RSTooltip = private.ImportLib("RareScannerTooltip")
 
 -- Locales
 local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
@@ -55,9 +56,13 @@ function RSWorldMapButtonMixin:OnMouseUp()
 end
 
 function RSWorldMapButtonMixin:OnEnter()
-    GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-    GameTooltip_SetTitle(GameTooltip, "RareScanner")
-    GameTooltip:Show()
+    RSTooltip.Tooltip:SetOwner(self, 'ANCHOR_RIGHT')
+    GameTooltip_SetTitle(RSTooltip.Tooltip, "RareScanner")
+    RSTooltip.Tooltip:Show()
+end
+
+function RSWorldMapButtonMixin:OnLeave()
+    RSTooltip.Tooltip:Hide()
 end
 
 function RSWorldMapButtonMixin:Refresh()

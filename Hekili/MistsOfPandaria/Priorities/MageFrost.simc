@@ -1,0 +1,56 @@
+# Mage: Frost - Updated from WoWSims export (Jan 2026)
+
+## Precombat
+actions.precombat+=/arcane_brilliance,if=!buff.arcane_brilliance.up
+actions.precombat+=/frost_armor,if=!buff.frost_armor.up
+actions.precombat+=/summon_water_elemental,if=!pet.water_elemental.active,precombat_time=15
+actions.precombat+=/mirror_image,precombat_time=6.5
+actions.precombat+=/evocation,precombat_time=5
+actions.precombat+=/rune_of_power,if=talent.rune_of_power.enabled,precombat_time=3.5
+actions.precombat+=/potion,name=jade_serpent,precombat_time=2
+actions.precombat+=/frostbolt,precombat_time=2
+
+## Single Target / Cleave
+# Auto-trigger on-use effects
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+
+# Evocation: maintain Invocation/Invoker's Energy or recover mana
+actions+=/evocation,if=buff.invokers_energy.remains<=cast_time
+actions+=/evocation,if=mana.current<=45000
+
+# Rune of Power upkeep
+actions+=/rune_of_power,if=talent.rune_of_power.enabled&(!buff.rune_of_power.up|buff.rune_of_power.remains<=cast_time)
+
+# Pre-burst potion aligned to Alter Time + double FoF + Brain Freeze
+actions+=/potion,name=jade_serpent,if=cooldown.alter_time.ready&buff.fingers_of_frost.stack=2&buff.brain_freeze.up
+
+# Major cooldown cadence around Alter Time
+actions+=/icy_veins,if=cooldown.alter_time.ready|cooldown.alter_time.remains>=75
+actions+=/synapse_springs,if=cooldown.alter_time.ready|cooldown.alter_time.remains>=50
+actions+=/alter_time,if=buff.fingers_of_frost.stack=2&(buff.icy_veins.up|buff.blood_fury.up|buff.berserking.up|buff.potion.up|buff.synapse_springs.up|buff.bloodlust.up)&(buff.bloodlust.up|debuff.sated.remains>=180)
+
+# Proc spending
+actions+=/ice_lance,if=buff.fingers_of_frost.stack=2
+actions+=/frostfire_bolt,if=buff.brain_freeze.up&cooldown.alter_time.remains>=10
+
+# DoT maintenance / multi-dot
+actions+=/living_bomb,cycle_targets=1,max_cycle_targets=3,if=talent.living_bomb.enabled&target.time_to_die>=dot.living_bomb.tick_time*3&!dot.living_bomb.ticking
+actions+=/nether_tempest,cycle_targets=1,max_cycle_targets=5,if=talent.nether_tempest.enabled&!dot.nether_tempest.ticking
+actions+=/frost_bomb,if=talent.frost_bomb.enabled&!debuff.frost_bomb.up
+
+# Cooldown damage and fillers
+actions+=/frozen_orb
+actions+=/frostfire_bolt,if=buff.brain_freeze.up&cooldown.alter_time.remains>=10
+actions+=/ice_lance,if=buff.fingers_of_frost.up&cooldown.alter_time.remains>=10
+actions+=/frostbolt
+
+## AoE Priority (3+ targets)
+actions.aoe+=/frozen_orb
+actions.aoe+=/icy_veins
+actions.aoe+=/blizzard
+actions.aoe+=/cone_of_cold,if=active_enemies>=5
+actions.aoe+=/arcane_explosion,if=active_enemies>=5
+actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
+actions.aoe+=/frostfire_bolt,if=buff.brain_freeze.react
+actions.aoe+=/frostbolt

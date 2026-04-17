@@ -4,6 +4,9 @@ if not DBM_COMMON_L then DBM_COMMON_L = {} end
 local CL = DBM_COMMON_L
 
 --General
+CL.ALPHABETICAL             = "Alfabético"
+CL.DURATION                 = "Duración"
+CL.SORTING                  = "Ordenación"
 CL.NONE						= "Ninguno"
 CL.RANDOM					= "Aleatorio"
 CL.UNKNOWN					= "Desconocido"--UNKNOWN which is "Unknown" (does u vs U matter?)
@@ -82,9 +85,12 @@ CL.GROUPSOAK				= "Absorción"
 CL.GROUPSOAKS				= "Absorciones"
 CL.HEALABSORB				= "Absorción de sanación"
 CL.HEALABSORBS				= "Absorciones de sanación"
+CL.INTERRUPT                = "Interrupción"
+CL.INTERRUPTS               = "Interrupciones"
 CL.DODGES					= "Esquivas"
 CL.POOL						= "Charco"
 CL.POOLS					= "Charcos"
+CL.DEBUFF					= "Perjuicio"
 CL.DEBUFFS					= "Perjuicios"
 CL.DISPELS					= "Disipaciones"
 CL.PUSHBACK					= "Empujón"

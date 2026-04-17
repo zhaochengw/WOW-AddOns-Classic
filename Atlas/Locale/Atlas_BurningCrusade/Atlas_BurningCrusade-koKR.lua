@@ -568,6 +568,7 @@ L["Overwatch Mark 0 <Protector>"] = "망꾼 0호 <경호원>"
 --[[ L["The Curator"] = ""--]]
 --[[Translation missing --]]
 --[[ L["The Eredar Twins"] = ""--]]
+L["The Eye of Haramad"] = "하라매드의 눈"
 --[[Translation missing --]]
 --[[ L["The Illidari Council"] = ""--]]
 --[[Translation missing --]]

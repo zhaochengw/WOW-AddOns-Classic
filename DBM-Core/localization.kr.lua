@@ -190,7 +190,7 @@ L.YOUR_VERSION_OUTDATED      = "사용중인 " .. L.DEADLY_BOSS_MODS .. " 버전
 L.VOICE_PACK_OUTDATED		= "선택한 " .. L.DBM .. " 음성팩에 일부 음성이 들어있지 않습니다. 몇가지 경고 음성이 기본 효과음으로 재생됩니다. 최신 음성팩을 다운로드 받거나 제작자에게 연락하여 누락된 음성 파일을 추가해서 업데이트 할 것을 요청하시기 바랍니다"
 L.VOICE_MISSING				= "선택한 " .. L.DBM .. " 음성팩을 찾을 수 없습니다. 오류일 경우 음성팩이 제대로 설치되어 있고 애드온 목록에서 활성화되어 있는지 확인해 보시기 바랍니다."
 L.VOICE_DISABLED				= "현재 " .. L.DBM .. " 음성팩이 한 개 이상 설치되어 있지만 사용하고 있는게 없습니다. 음성팩을 사용하려면 '음성 경고' 항목에서 음성팩이 지정되어 있는지 확인하세요. 음성팩을 사용할 의사가 없으면 음성팩을 삭제하시면 이 메시지는 더이상 출력되지 않습니다"
-L.VOICE_COUNT_MISSING		= "초읽기 음성중 %d초로 설정된 음성/초읽기 팩을 찾을 수 없습니다. 기본 설정으로 초기화 되었습니다: %s"
+L.VOICE_COUNT_MISSING		= "%d순위 초읽기 음성으로 사용할 음성/초읽기 팩을 찾지 못했거나 현재 지원하지 않고 있습니다. 기본 설정으로 초기화 되었습니다: %s"
 L.WEAKAURA_KEY							= " (|cff308530WA 키:|r %s)"
 
 L.UPDATEREMINDER_HEADER			= "사용중인 " .. L.DEADLY_BOSS_MODS .. " 버전의 사용 기한이 지났습니다.\n%s (%s) 버전을 Curse, Wago, WoWI, GitHub 릴리즈 페이지를 통해 다운로드 할 수 있습니다"
@@ -213,8 +213,10 @@ L.DBMLOOTREMINDER				= "경고: 써드파티 모드인 DBM-LootReminder가 설�
 L.UPDATE_REQUIRES_RELAUNCH		= "경고: 지금 업데이트한 " .. L.DBM .. "은 게임 클라이언트를 완전히 재시작하기 전까진 정상 작동하지 않습니다. 이 업데이트엔 새 파일이 포함되어 있거나 UI 재시작으로는 로딩할 수 없는 .toc 파일의 변경 사항이 있습니다. 클라이언트 재시작 없이 사용할 경우 오류가 발생하거나 작동하지 않을 수 있습니다."
 L.OUT_OF_DATE_NAG				= "현재 사용중인 " .. L.DBM .. " 버전이 오래되었습니다. 이 전투에 대응하는 모듈은 새로운 기능을 탑재했거나 버그가 수정된 상태입니다. 향상된 레이드 경험을 누리고 싶다면 업데이트를 권장합니다."
 L.PLATER_NP_AURAS_MSG					= L.DBM .. "엔 이름표에 적들의 쿨타임 타이머를 아이콘으로 표시해주는 진보된 기능이 있습니다. 대부분의 사용자에게 기본적으로 활성화되어 있으나, Plater 사용자는 옵션에서 활성화하기 전까지는 기본적으로 작동하지 않습니다. DBM (Plater 조합)을 최대한 활용하려면 Plater 내 'Buff Special' 설정에서 이 기능을 활성화 하는걸 권장합니다. 이 메시지를 다시 보고싶지 않다면 DBM 기능 켜고 끄기 또는 이름표 설정 메뉴에 '이름표에 쿨타임 아이콘' 설정을 비활성화하세요"
+L.HARDCODED_FALLBACK				= L.DBM .. "가 이 하드코딩된 보스 모드에서 예상치 못한 결과를 감지했습니다. 이번 보스전에 " .. L.DBM .. "는 블리자드 기본 타이머와 경고로 대체됩니다."
 
 L.MOVABLE_BAR				= "드래그 하세요!"
+L.MOVABLE_FRAMES				= "프레임을 드래그 할 수 있습니다"
 
 L.PIZZA_SYNC_INFO					= "|Hplayer:%1$s|h[%1$s]|h님이 당신에게 " .. L.DBM .. " 타이머를 전송했습니다: '%2$s'\n|Hgarrmission:DBM:cancel:%2$s:nil|h|cff3588ff[타이머 취소]|r|h  |Hgarrmission:DBM:ignore:%2$s:%1$s|h|cff3588ff[%1$s의 타이머 무시]|r|h"
 L.PIZZA_CONFIRM_IGNORE			= "정말 %s의 " .. L.DBM .. " 타이머를 차단하시겠습니까? 이 공격대에 있는 동안에만 적용됩니다."
@@ -271,6 +273,7 @@ L.SLASHCMD_HELP							= {--AI translated (check me)
 	"/dbm key: 파티/길드의 신화+ 쐐기돌 및 평점 확인과 던전 순간이동 스킬 모음을 사용합니다. (별칭: key, keys, keystone)",
 	"/dbm lag: 공격대 전체의 지연 시간을 확인합니다.",
 	"/dbm durability: 공격대 전체의 내구도를 확인합니다.",
+	"/dbm brez: 전투 부활 타이머 창을 표시해서 위치를 조정합니다.",
 	"/dbm help2: 추가 슬래시 명령어를 표시합니다"
 }
 --덜 사용되는 슬래시 명령어
@@ -321,6 +324,7 @@ L.AUTO_ANNOUNCE_TEXTS.you			= "당신에게 %s"
 L.AUTO_ANNOUNCE_TEXTS.target			= "%s: >%%s<"
 L.AUTO_ANNOUNCE_TEXTS.targetsource	= ">%%s< %s 시전: >%%s<"
 L.AUTO_ANNOUNCE_TEXTS.targetcount	= "%s (%%s): >%%s<"
+L.AUTO_ANNOUNCE_TEXTS.blizztarget	= "%s (%%s): %%s"
 L.AUTO_ANNOUNCE_TEXTS.spellsource	= ">%%s< %s 시전"
 L.AUTO_ANNOUNCE_TEXTS.incoming		= "%s 디버프 걸림"
 L.AUTO_ANNOUNCE_TEXTS.incomingcount	= "%s 디버프 걸림 (%%s)"
@@ -345,6 +349,7 @@ L.AUTO_ANNOUNCE_OPTIONS.target		= "$spell:%s 대상 알림"
 L.AUTO_ANNOUNCE_OPTIONS.targetNF		= "$spell:%s 대상 알림 (전역 대상 필터 무시)"
 L.AUTO_ANNOUNCE_OPTIONS.targetsource	= "$spell:%s 대상 알림 (시전자 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.targetcount	= "$spell:%s 대상 알림 (횟수 포함)"
+L.AUTO_ANNOUNCE_OPTIONS.blizztarget		= "$spell:%s 대상 알림 (횟수 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.spell		= "$spell:%s 시전 완료 알림"
 L.AUTO_ANNOUNCE_OPTIONS.spellsource		= "$spell:%s 시전 완료 알림 (시전자 포함)"
 L.AUTO_ANNOUNCE_OPTIONS.incoming	= "$spell:%s 주문이 디버프를 걸 때 알림"
@@ -354,10 +359,7 @@ L.AUTO_ANNOUNCE_OPTIONS.endtarget	= "$spell:%s 지속 시간 종료시 알림 (�
 L.AUTO_ANNOUNCE_OPTIONS.fades		= "$spell:%s|1이;가; 사라졌을 때 알림"
 L.AUTO_ANNOUNCE_OPTIONS.addsleft		= "$spell:%s의 남은 수 알림"
 L.AUTO_ANNOUNCE_OPTIONS.cast			= "$spell:%s 시전 시작 알림"
-L.AUTO_ANNOUNCE_OPTIONS.soon		= prewarnOption
-L.AUTO_ANNOUNCE_OPTIONS.sooncount	= prewarnOption
 L.AUTO_ANNOUNCE_OPTIONS.countdown	= "$spell:%s의 초읽기 사전 경고 보기"
-L.AUTO_ANNOUNCE_OPTIONS.prewarn 		= prewarnOption
 L.AUTO_ANNOUNCE_OPTIONS.bait		= "$spell:%s 사전 경고 보기 (위치 유도)"
 L.AUTO_ANNOUNCE_OPTIONS.stage		= "%s단계 알림"
 L.AUTO_ANNOUNCE_OPTIONS.stagechange	= "단계 전환 알림"
@@ -470,14 +472,14 @@ L.AUTO_TIMER_TEXTS.active				= "%s 종료"--Buff/Debuff/event on boss
 L.AUTO_TIMER_TEXTS.fades				= "%s 사라짐"--Buff/Debuff on players
 L.AUTO_TIMER_TEXTS.ai					= "%s AI 예상"
 
-L.AUTO_TIMER_TEXTS.cd					= "%s 쿨타임"
-L.AUTO_TIMER_TEXTS.cdcount				= "%s (%%s) 쿨타임"
-L.AUTO_TIMER_TEXTS.cdsource				= "%s 쿨타임: >%%s<"
+L.AUTO_TIMER_TEXTS.cd					= "%s"
+L.AUTO_TIMER_TEXTS.cdcount				= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.cdsource				= "%s: >%%s<"
 L.AUTO_TIMER_TEXTS.cdspecial			= "특수 스킬"
 
-L.AUTO_TIMER_TEXTS.next					= "다음 %s"
-L.AUTO_TIMER_TEXTS.nextcount			= "다음 %s (%%s)"
-L.AUTO_TIMER_TEXTS.nextsource			= "다음 %s: %%s"
+L.AUTO_TIMER_TEXTS.next					= "%s"
+L.AUTO_TIMER_TEXTS.nextcount			= "%s (%%s)"
+L.AUTO_TIMER_TEXTS.nextsource			= "%s: %%s"
 L.AUTO_TIMER_TEXTS.nextspecial			= "특수 스킬"
 
 L.AUTO_TIMER_TEXTS.varspecial			= "특수 스킬"--Now same as next, as the ~ was moved to timer number
@@ -591,8 +593,11 @@ L.AUTO_INFO_FRAME_OPTION_TEXT		= "$spell:%s|1을;를; 정보 창에 표시"
 L.AUTO_INFO_FRAME_OPTION_TEXT2		= "전투 전반에 관한 사항을 정보 창에 표시"
 L.AUTO_INFO_FRAME_OPTION_TEXT3		= "$spell:%s|1을;를; 정보 창에 표시 (%%s의 제한 수치 이상인 경우)"
 L.AUTO_READY_CHECK_OPTION_TEXT		= "보스가 풀링되면 전투 준비 효과음 듣기 (보스를 대상으로 잡지 않아도 재생)"
-L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "%s의 완료 신기록 타이머 표시"
-L.AUTO_PRIVATEAURA_OPTION_TEXT		= "이 전투에서 비공개 오라 $spell:%s에 DBM 경고 효과음을 재생합니다."
+L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "이 지역의 완료 신기록 타이머 표시"
+L.AUTO_PRIVATEAURA_OPTION_TEXT		= "이 전투에서 비공개 오라 $spell:%s에 DBM 경고 효과음을 재생합니다."--Generic (most common)
+L.AUTO_PRIVATEAURA_OPTION_TARGET_TEXT	= "나에게 $spell:%s|1이;가; 시전될 때 DBM 비공개 오라 경고 효과음을 재생합니다."
+L.AUTO_PRIVATEAURA_OPTION_GTFO_TEXT		= "$spell:%s1으로;로;부터 도망가야 할 때 DBM 비공개 오라 경고 효과음을 재생합니다."
+L.AUTO_PRIVATEAURA_OPTION_POST_TEXT		= "$spell:%s의 효과가 지속되는 동안 DBM 비공개 오라 경고 효과음을 재생합니다."
 L.AUTO_CUSTOMTIMER_OPTION_TEXT			= "$spell:%s 타이머 보기"--Used for Midnight timeline timers (ie we have no context of what type of timer it is, just a generic timer)
 L.AUTO_CUSTOMALERT_OPTION_TEXT			= "$spell:%s|1이;가; 시전되려 할 때 경고 효과음 설정"--Used for Midnight custom alerts (ie we have no context of what type of alert it is, just a generic alert)
 
@@ -605,6 +610,9 @@ L.MOVE_WARNING_BAR				= "알림 이동"
 L.MOVE_WARNING_MESSAGE			= L.DEADLY_BOSS_MODS .. "를 이용해 주셔셔 감사합니다."
 L.MOVE_SPECIAL_WARNING_BAR		= "특수 알림 이동"
 L.MOVE_SPECIAL_WARNING_TEXT		= "특수 알림"
+
+L.MOVE_PRIVATE_AURA_TEXT				= "<secret value>가 당신에게 <secret value> 주문을 시전합니다"
+L.MOVE_PRIVATE_AURA_DISABLED			= "미리보기는 설정에서 비공개 오라 프레임이 비활성화되서 사용할 수 없습니다."
 
 L.HUD_INVALID_TYPE			= "올바르지 않은 HUD 형식이 정의되었습니다"
 L.HUD_INVALID_TARGET			= "HUD에 올바른 대상이 주어지지 않았습니다"
@@ -636,12 +644,15 @@ L.ARROW_ERROR_USAGE	= {
 
 L.SPEED_KILL_TIMER_TEXT	= "최고 승리 기록"
 L.SPEED_CLEAR_TIMER_TEXT	= "최고 완료 기록"
-L.COMBAT_RES_TIMER_TEXT	= "다음 전투 부활 충전"
 L.TIMER_RESPAWN		= "%s 재생성"
 
 L.LAG_HEADER					= L.DBM .. " - 지연시간 확인 결과"
 L.DUR_HEADER					= L.DBM .. " - 내구도 검사 결과"
 L.KEYSTONES_HEADER						= L.DBM.. " - 쐐기돌"
+L.GEAR_HEADER					= L.DBM .. " - 장비 검사 결과"
+L.GEAR_MISSING_GEMS			= "보석 없음"
+L.GEAR_MISSING_ENCHANTS		= "마부 없음"
+L.BREZ_HEADER							= "전투 부활"
 
 L.OVERRIDE_ACTIVATED					= "이 전투에서 공대장에 의해 설정 강제 적용이 활성화되었습니다"
 
@@ -713,6 +724,15 @@ L.KEYSTONE_NAMES[503] = '아라카라' -- Ara-Kara, City of Echoes
 L.KEYSTONE_NAMES[505] = '새인호' -- The Dawnbreaker
 L.KEYSTONE_NAMES[525] = '수문' -- Operation Floodgate
 L.KEYSTONE_NAMES[542] = '알다니' -- Eco-Dome Al'dani
+
+L.KEYSTONE_NAMES[161] = '하늘탑' -- Skyreach
+L.KEYSTONE_NAMES[402] = '대학' -- Algeth'ar Academy
+L.KEYSTONE_NAMES[556] = '사론' -- Pit of Saron
+L.KEYSTONE_NAMES[557] = '첨탑' -- Windrunner Spire
+L.KEYSTONE_NAMES[558] = '마정' -- Magister's Terrace (new)
+L.KEYSTONE_NAMES[559] = '제나스' -- Nexus-Point Xenas
+L.KEYSTONE_NAMES[560] = '동굴' -- Miasara Caverns
+L.KEYSTONE_NAMES[583] = '삼두정' -- Hell (IE Seat of the Triumvirate)
 
 -- Midnight jazz
 L.MN_TIMELINE_HEADER	= "Blizzard 타임라인과 DBM 타이머 바 중에 어느 것을 사용할까요?"

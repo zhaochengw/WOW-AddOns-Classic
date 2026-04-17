@@ -116,6 +116,7 @@ function QuestieOptionsDefaults:Load()
             trackerFontOutline = "None",
             trackerBackdropColor = {r = 0, g = 0, b = 0, a = 1},
             trackerHeightRatio = 0.50,
+            trackerWidthRatio = 0.20,
 
             lowLevelStyle = 1, -- Questie.LOWLEVEL_NONE
             manualLevelOffset = 7,
@@ -188,6 +189,7 @@ function QuestieOptionsDefaults:Load()
                 ["Auctioneer"] = false,
                 ["Meeting Stones"] = true,
                 ["Reagents"] = false,
+                ["Poisons"] = false,
                 ["Transmogrifier"] = false,
                 ["Arcane Reforger"] = false,
                 ["Barber"] = false,

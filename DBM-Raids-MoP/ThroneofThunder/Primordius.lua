@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(820, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260126031700")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(69017)--69070 Viscous Horror, 69069 good ooze, 70579 bad ooze (patched out of game, :\)
 mod:SetEncounterID(1574)
 mod:SetUsedIcons(8, 7, 6, 5)--Although if you have 4 viscous horrors up, you are probably doing fight wrong.
@@ -55,14 +56,16 @@ local usedMarks, bigOozeGUIDS = {}, {}
 mod.vb.metabolicBoost = false
 mod.vb.bigOozeCount = 0
 
-local function BigOoze()
-	mod.vb.bigOozeCount = mod.vb.bigOozeCount + 1
-	specWarnViscousHorror:Show(mod.vb.bigOozeCount)
+---@param self DBMMod
+local function BigOoze(self)
+	self.vb.bigOozeCount = self.vb.bigOozeCount + 1
+	specWarnViscousHorror:Show(self.vb.bigOozeCount)
 	specWarnViscousHorror:Play("bigmob")
-	timerViscousHorrorCD:Start(30, mod.vb.bigOozeCount+1)
-	mod:Schedule(30, BigOoze)
+	timerViscousHorrorCD:Start(30, self.vb.bigOozeCount+1)
+	self:Schedule(30, BigOoze, self)
 	--This is a means to try and do it without using lots of cpu on an already cpu bad fight. If it's not fast enough or doesn't work well (ie people with assist aren't doing this fast enough). may still have to scan all targets
-	if DBM:GetRaidRank() > 0 and mod.Options.SetIconOnBigOoze then--Only register event if option is turned on, otherwise no waste cpu
+	if DBM:GetRaidRank() > 0 and self.Options.SetIconOnBigOoze then--Only register event if option is turned on, otherwise no waste cpu
+		--LuaLS has difficulty recognizing self is mod even with param above with the custom registers
 		mod:RegisterShortTermEvents(
 			"PLAYER_TARGET_CHANGED",
 			"UPDATE_MOUSEOVER_UNIT"
@@ -121,7 +124,7 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	if self:IsHeroic() then
 		timerViscousHorrorCD:Start(11.5-delay, 1)
-		self:Schedule(11.5, BigOoze)
+		self:Schedule(11.5, BigOoze, self)
 	end
 end
 

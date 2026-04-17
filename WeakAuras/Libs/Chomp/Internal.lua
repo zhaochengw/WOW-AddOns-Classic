@@ -14,7 +14,7 @@
 	CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ]]
 
-local VERSION = 32
+local VERSION = 34
 
 if IsLoggedIn() then
 	error(("Chomp Message Library (embedded: %s) cannot be loaded after login."):format((...)))
@@ -411,7 +411,7 @@ function Internal:GetBattleNetAccountID(targetName)
 		return nil  -- Player isn't connected to Battle.net.
 	elseif not self.bnetGameAccounts then
 		return nil  -- We have no game accounts to search.
-	elseif UnitGUID(Ambiguate(targetName, "none")) then
+	elseif UnitExists(Ambiguate(targetName, "none")) then
 		return nil  -- We think the player is in our group.
 	end
 

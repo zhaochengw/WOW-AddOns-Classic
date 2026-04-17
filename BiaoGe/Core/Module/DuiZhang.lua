@@ -97,35 +97,34 @@ local function SaveRaidMember()
     end
 end
 
-
 -- 自动记录别人账单
 local f = CreateFrame("Frame")
 f:RegisterEvent("CHAT_MSG_RAID_WARNING")
 f:RegisterEvent("CHAT_MSG_RAID_LEADER")
 f:RegisterEvent("CHAT_MSG_RAID")
-f:SetScript("OnEvent", function(self, event, msg, playerName, ...)
+f:SetScript("OnEvent", function(self, event, msg, sender, ...)
     local IsRaidLedger = BG.FindTableString(msg, locales["RaidLedger:.... 收入 ...."])
     local IsBiaoGe = BG.FindTableString(msg, locales["通报金团账单"])
     local IsBigFoot = BG.FindTableString(msg, locales["事件：.-|c.-|Hitem.-|h|r"])
     local _time = GetServerTime()
-    playerName = BG.GSN(playerName)
+    sender = BG.GSN(sender)
     -- 判断是否一个账单
     if IsRaidLedger then -- 金团账本
-        linshi_duizhang = Default(playerName, _time)
+        linshi_duizhang = Default(sender, _time)
         linshi_duizhang.yes = 1
         linshi_duizhang.addons = "raidledger"
         tinsert(linshi_duizhang.msgTbl, msg)
         CheckTimeOut(_time)
         return
     elseif IsBiaoGe then -- 金团表格
-        linshi_duizhang = Default(playerName, _time)
+        linshi_duizhang = Default(sender, _time)
         linshi_duizhang.yes = 2
         linshi_duizhang.addons = "biaoge"
         tinsert(linshi_duizhang.msgTbl, msg)
         CheckTimeOut(_time)
         return
     elseif not bigfootyes and IsBigFoot then -- 大脚
-        linshi_duizhang = Default(playerName, _time)
+        linshi_duizhang = Default(sender, _time)
         linshi_duizhang.addons = "bigfoot"
         bigfoot = {}
         bigfootyes = true
@@ -138,18 +137,18 @@ f:SetScript("OnEvent", function(self, event, msg, playerName, ...)
     if not linshi_duizhang then return end
 
     -- 保存聊天记录
-    if (linshi_duizhang.yes or bigfootyes) and playerName == linshi_duizhang.player then
+    if (linshi_duizhang.yes or bigfootyes) and sender == linshi_duizhang.player then
         tinsert(linshi_duizhang.msgTbl, msg)
     end
 
     -- 识别表格
     local FB = BG.MatchTableString(msg, locales["表格：(.+)"])
-    if linshi_duizhang.yes and playerName == linshi_duizhang.player and FB then
+    if linshi_duizhang.yes and sender == linshi_duizhang.player and FB then
         linshi_duizhang.FB = FB
     end
 
     -- 如果已经是账单了，则开始保存每个装备的价格
-    if linshi_duizhang.yes and playerName == linshi_duizhang.player and strfind(msg, h_item) then
+    if linshi_duizhang.yes and sender == linshi_duizhang.player and strfind(msg, h_item) then
         local item = strmatch(msg, h_item)
         local jine
 
@@ -198,16 +197,16 @@ f:SetScript("OnEvent", function(self, event, msg, playerName, ...)
             tinsert(linshi_duizhang.zhangdan, a)
         end
         return
-    elseif bigfootyes and playerName == linshi_duizhang.player and (BG.FindTableString(msg, locales["事件：.-|c.-|Hitem.-|h|r"]) or BG.FindTableString(msg, locales["^收入为："])) then -- 大脚
+    elseif bigfootyes and sender == linshi_duizhang.player and (BG.FindTableString(msg, locales["事件：.-|c.-|Hitem.-|h|r"]) or BG.FindTableString(msg, locales["^收入为："])) then -- 大脚
         tinsert(bigfoot, msg)
         return
     end
 
     -- 保存完整账单至数据库
     local yes
-    if linshi_duizhang.yes and playerName == linshi_duizhang.player and (BG.FindTableString(msg, locales["平均每人收入:"]) or BG.FindTableString(msg, locales["感谢使用金团表格"])) then
+    if linshi_duizhang.yes and sender == linshi_duizhang.player and (BG.FindTableString(msg, locales["平均每人收入:"]) or BG.FindTableString(msg, locales["感谢使用金团表格"])) then
         yes = true
-    elseif bigfootyes and playerName == linshi_duizhang.player and BG.FindTableString(msg, locales["-感谢使用大脚金团辅助工具-"]) then -- 大脚
+    elseif bigfootyes and sender == linshi_duizhang.player and BG.FindTableString(msg, locales["-感谢使用大脚金团辅助工具-"]) then -- 大脚
         for i, value in ipairs(bigfoot) do
             if strfind(bigfoot[i], h_item) then
                 if bigfoot[i + 1] and BG.FindTableString(bigfoot[i + 1], locales["^收入为：%d+。"]) then
@@ -246,6 +245,7 @@ f:SetScript("OnEvent", function(self, event, msg, playerName, ...)
             BG.After(0.1, function()
                 Send(#BiaoGe.duizhang, sumMoney, FB)
             end)
+            BG.ShowYYPJ(sender)
         end
         return
     end
@@ -655,7 +655,11 @@ function BG.DuiZhangUI()
         child:SetScript("OnHyperlinkClick", function(self, link, text, button)
             if (strsub(link, 1, 6) == "player") then
                 local _, name, lineID, chatType = strsplit(":", link)
-                ChatFrame_SendTell(name, ChatFrame1)
+                if button == "LeftButton" then
+                    ChatFrame_SendTell(name, ChatFrame1)
+                elseif button == "RightButton" then
+                    FriendsFrame_ShowDropdown(name, 1, nil, "RAID", nil)
+                end
             elseif (strsub(link, 1, 4) == "item") then
                 local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(link)
                 if IsShiftKeyDown() then
@@ -888,6 +892,7 @@ function BG.DuiZhangSet(num)
 
     -- 设置打钩/叉叉材质
     BG.After(0, function()
+        local errorItems = {}
         for b = 1, Maxb[FB] + 1 do
             for i = 1, BG.GetMaxi(FB, b) do
                 local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
@@ -909,6 +914,18 @@ function BG.DuiZhangSet(num)
                     elseif (tonumber(mj) or tonumber(oj)) and tonumber(mj) ~= tonumber(oj) then
                         tx:SetTexture("interface/raidframe/readycheck-notready")
                         BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]:Show()
+                        if b <= Maxb[FB] - 1 then
+                            local itemID = GetItemID(zhuangbei:GetText())
+                            if itemID then
+                                tinsert(errorItems, {
+                                    itemID = itemID,
+                                    b = b,
+                                    i = i,
+                                    my = tonumber(mj) or 0,
+                                    other = tonumber(oj) or 0,
+                                })
+                            end
+                        end
                     else
                         tx:SetTexture(nil)
                         BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]:Hide()
@@ -916,9 +933,34 @@ function BG.DuiZhangSet(num)
                 end
             end
         end
+        if next(errorItems) then
+            local sameItem = {}
+            for i, v in ipairs(errorItems) do
+                sameItem[v.itemID] = sameItem[v.itemID] or { gz = {}, my = 0, other = 0, }
+                tinsert(sameItem[v.itemID].gz, { b = v.b, i = v.i })
+                sameItem[v.itemID].my = sameItem[v.itemID].my + v.my
+                sameItem[v.itemID].other = sameItem[v.itemID].other + v.other
+            end
+            for itemID, v in pairs(sameItem) do
+                if v.my == v.other then
+                    for _, vv in ipairs(v.gz) do
+                        local b = vv.b
+                        local i = vv.i
+                        local tx = BG.DuiZhangFrame[FB]["boss" .. b]["yes" .. i]
+                        tx:SetTexture("interface/raidframe/readycheck-ready")
+                        BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]:Hide()
+
+                        BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i].sameItem = v.gz
+                        BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i].sameItem = v.gz
+                        BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i].sameItem = v.gz
+                    end
+                end
+            end
+        end
+
 
         -- 打包交易的进行合并对账
-        if BiaoGe.duizhang[num].tradeTbl then
+        --[[         if BiaoGe.duizhang[num].tradeTbl then
             BG.After(0, function()
                 for b = 1, Maxb[FB] do
                     for i = 1, BG.GetMaxi(FB, b) do
@@ -946,7 +988,7 @@ function BG.DuiZhangSet(num)
                     end
                 end
             end)
-        end
+        end ]]
     end)
 end
 
@@ -956,12 +998,16 @@ function BG.DuiZhang0()
     for b = 1, Maxb[FB] + 1 do
         for i = 1, BG.GetMaxi(FB, b) do
             local zhuangbei = BG.DuiZhangFrame[FB]["boss" .. b]["zhuangbei" .. i]
+            local myjine = BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]
             local otherjine = BG.DuiZhangFrame[FB]["boss" .. b]["otherjine" .. i]
             local tx = BG.DuiZhangFrame[FB]["boss" .. b]["yes" .. i]
             local ds = BG.DuiZhangFrameDs[FB .. 3]["boss" .. b]["ds" .. i]
             if zhuangbei then
                 otherjine:SetText("")
                 otherjine.tradeTbl = nil
+                zhuangbei.sameItem = nil
+                myjine.sameItem = nil
+                otherjine.sameItem = nil
                 BG.DuiZhangFrame[FB]["boss" .. b]["maijia" .. i] = nil
                 for k, v in pairs(BG.playerClass) do
                     BG.DuiZhangFrame[FB]["boss" .. b][k .. i] = nil

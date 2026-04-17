@@ -119,18 +119,8 @@ BG.Init(function()
         maxButton = GetMaxButton()
     end
 
-    function BG.UpdateItemGuoQiFrame()
-        if not BG.itemGuoQiFrame:IsVisible() then return end
-        UpdateFrameSize()
+    local function UpdateTime()
         wipe(BG.itemGuoQiFrame.tbl)
-        for i, v in ipairs(BG.itemGuoQiFrame.buttons) do
-            v:Hide()
-        end
-        wipe(BG.itemGuoQiFrame.buttons)
-        if notItem then
-            notItem:Hide()
-        end
-
         for b = 0, NUM_BAG_SLOTS do
             for i = 1, C_Container.GetContainerNumSlots(b) do
                 local link = C_Container.GetContainerItemLink(b, i)
@@ -166,17 +156,29 @@ BG.Init(function()
                 end
             end
         end
-        -- test
+        sort(BG.itemGuoQiFrame.tbl, function(a, b)
+            return a.time < b.time
+        end)
+        -- debug
         -- BG.itemGuoQiFrame.tbl = {
         --     { time = 120, link = "|cffa335ee|Hitem:45485::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45485, b = 0, i = 1 },
         --     { time = 90, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
         --     { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
         --     { time = 28, link = "|cffa335ee|Hitem:45289::::::::80:::::::::|h[生命火花面甲]|h|r", itemID = 45289, b = 0, i = 1 },
         -- }
-        sort(BG.itemGuoQiFrame.tbl, function(a, b)
-            return a.time < b.time
-        end)
+    end
 
+    function BG.UpdateItemGuoQiFrame()
+        UpdateTime()
+        if not BG.itemGuoQiFrame:IsVisible() then return end
+        UpdateFrameSize()
+        for i, v in ipairs(BG.itemGuoQiFrame.buttons) do
+            v:Hide()
+        end
+        wipe(BG.itemGuoQiFrame.buttons)
+        if notItem then
+            notItem:Hide()
+        end
         for ii, vv in ipairs(BG.itemGuoQiFrame.tbl) do
             if ii > maxButton then
                 local lastbt = BG.itemGuoQiFrame.buttons[ii - 1]
@@ -291,11 +293,10 @@ BG.Init(function()
         if BG.itemGuoQiFrame:IsVisible() or (BiaoGe.options.guoqiRemind == 1 and BG.IsML) then
             BG.UpdateItemGuoQiFrame()
         end
-
         if BiaoGe.options.guoqiRemind == 1 and BG.IsML then
             for i, v in ipairs(BG.itemGuoQiFrame.tbl) do
                 if v.time < BiaoGe.options.guoqiRemindMinTime then
-                    if GetServerTime() - BiaoGe.lastGuoQiTime >= 300 then
+                    if GetServerTime() - BiaoGe.lastGuoQiTime >= 60 * 5 then
                         BiaoGe.lastGuoQiTime = GetServerTime()
                         local link = "|cffFFFF00|Hgarrmission:" .. "BiaoGeGuoQi:" .. L["详细"] ..
                             "|h[" .. L["详细"] .. "]|h|r"

@@ -27,27 +27,6 @@ local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker"
 
 
 ---============================================================================
--- Not discovered entities
---- In order to avoid long process time, it caches this list on load
----============================================================================
-
-local notDiscoveredContainerIDs = {}
-
-function RSContainerPOI.InitializeNotDiscoveredContainers()
-	for containerID, _ in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
-		if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
-			notDiscoveredContainerIDs[containerID] = true
-		end
-	end
-end
-
-local function RemoveNotDiscoveredContainer(containerID)
-	if (containerID) then
-		notDiscoveredContainerIDs[containerID] = nil
-	end
-end
-
----============================================================================
 -- Container Map POIs
 ---- Manage adding Container icons to the world map and minimap
 ---============================================================================
@@ -190,85 +169,29 @@ local function IsContainerPOIFiltered(containerID, mapID, containerInfo, onWorld
 	return false
 end
 
-function RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, onWorldMap, onMinimap)
-	-- Skip if not showing container icons
-	if (not RSConfigDB.IsShowingContainers()) then
-		return
-	end
-	
-	-- Skip if not showing not discovered icons
-	if (not RSConfigDB.IsShowingNotDiscoveredContainers()) then
-		return
-	end
-
-	local POIs = {}
-	for containerID, _ in pairs(notDiscoveredContainerIDs) do
-		local filtered = false
-		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-
-		-- Skip if it was discovered in this session
-		if (not filtered and RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
-			RemoveNotDiscoveredContainer(containerID)
-			RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor N/D [%s]: Ya no es 'no descubierto'.", containerID))
-			filtered = true
-		end
-
-		-- Skip if the entity belong to a different mapID/artID that the one displaying
-		if (not filtered and not RSContainerDB.IsInternalContainerInMap(containerID, mapID)) then
-			RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor N/D [%s]: En distinta zona (no descubierto).", containerID))
-			filtered = true
-		end
-
-		-- Skip if common filters
-		if (not filtered and not IsContainerPOIFiltered(containerID, mapID, containerInfo, onWorldMap, onMinimap)) then
-			tinsert(POIs, RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo))
-		end
-	end
-
-	return POIs
-end
-
-function RSContainerPOI.GetMapAlreadyFoundContainerPOI(containerID, alreadyFoundInfo, mapID, onWorldMap, onMinimap)
+function RSContainerPOI.GetMapContainerPOI(containerID, mapID, onWorldMap, onMinimap, recentlySeenInfo)
 	-- Skip if not showing container icons
 	if (not RSConfigDB.IsShowingContainers()) then
 		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Iconos de contenedores deshabilitado.", containerID))
 		return
 	end
+	
+	local alreadyFoundInfo = recentlySeenInfo or RSGeneralDB.GetAlreadyFoundEntity(containerID)
 
-	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
-	local containerOpened = RSContainerDB.IsContainerOpened(containerID)
+	-- Skip if not showing not discovered icons
+	if (not RSConfigDB.IsShowingNotDiscoveredContainers() and not alreadyFoundInfo) then
+		return
+	end
 
 	-- Skip if the entity has been seen before the max amount of time that the player want to see the icon on the map
-	-- This filter doesnt apply to opened entities or worldmap containers
-	if (not containerOpened and (containerInfo and not containerInfo.worldmap) and RSConfigDB.IsMaxSeenTimeContainerFilterEnabled() and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenContainerTimeFilter())) then
+	-- This filter doesnt apply to opened entities
+	if (RSConfigDB.IsMaxSeenTimeContainerFilterEnabled() and not RSContainerDB.IsContainerOpened(containerID) and alreadyFoundInfo and time() - alreadyFoundInfo.foundTime > RSTimeUtils.MinutesToSeconds(RSConfigDB.GetMaxSeenContainerTimeFilter())) then
 		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Visto hace demasiado tiempo.", containerID))
 		return
 	end
-
-	-- Skip if the entity belongs to a different map that the one displaying
-	-- First checks with the already found information
-	local correctMap = false
-	if (RSGeneralDB.IsAlreadyFoundEntityInZone(containerID, mapID)) then
-		correctMap = true
-	end
-
-	-- Then checks with the internal found information just in case its a multizone
-	-- Its possible that the player is opening a map where this container can show up, but the last time seen was in a different map
-	if (not correctMap and (not containerInfo or not RSContainerDB.IsInternalContainerInMap(containerID, mapID))) then
-		RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltando Contenedor [%s]: En distinta zona.", containerID))
-		return
-	end
-
+	
 	-- Skip if common filters
-	local zoneQuestID
-	local prof
-	local minieventID
-	if (containerInfo) then
-		zoneQuestID = containerInfo.zoneQuestId
-		prof = containerInfo.prof
-		minieventID = containerInfo.minieventID
-	end
-
+	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
 	if (not IsContainerPOIFiltered(containerID, mapID, containerInfo, onWorldMap, onMinimap)) then
 		return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 	end

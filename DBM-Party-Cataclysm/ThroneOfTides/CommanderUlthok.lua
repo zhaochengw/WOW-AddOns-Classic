@@ -10,7 +10,8 @@ else
 	mod.statTypes = "normal,heroic"
 end
 
-mod:SetRevision("20241102154000")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(40765)
 mod:SetEncounterID(1044)
 mod:SetZone(643)

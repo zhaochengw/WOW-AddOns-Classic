@@ -7,7 +7,7 @@
 ## Title-koKR: PetBattleTeams Reloaded 제작: |cff00ff00Kallye|r
 ## Title-zhCN: PetBattleTeams Reloaded 作者：|cff00ff00Kallye|r
 ## Title-zhTW: PetBattleTeams Reloaded 作者：|cff00ff00Kallye|r
-## Version: 12.0.101
+## Version: 12.0.102
 ## Author: |cff00ff00Kallye|r (EU-Elune)
 ## Notes: Create teams of pets, switch between them easily, and enhance them with combat notes, PBS scripts, and automatic switching based on target.
 ## Notes-frFR: Créez des équipes de mascottes, basculez facilement entre elles et améliorez-les avec des notes de combat, des scripts PBS et le changement automatique selon la cible.

@@ -43,6 +43,8 @@ do
 				text = self:GetMouseoverFramesText()
 			elseif searchType == "mouseFocus" then
 				text = self:GetMouseFocusText()
+			elseif searchType == "tooltip" then
+				text = self:GetTooltipText()
 			else
 				self:Print(L.invalidSearchType:format(searchType))
 				return

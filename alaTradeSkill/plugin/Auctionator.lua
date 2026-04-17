@@ -10,7 +10,6 @@ local DT = __private.DT;
 
 
 -->		upvalue
-	local GetItemInfo = GetItemInfo;
 -->
 
 
@@ -52,7 +51,7 @@ function mod.F_QueryPriceByID(id, num)
 			local Get = Atr_GetAuctionPrice;
 			if Get ~= nil then
 				GetPrice = function(id)
-					local name = GetItemInfo(id);
+					local name = mod.F_QueryNameByID(id);
 					if name ~= nil then
 						return Get(name);
 					end
@@ -87,7 +86,7 @@ MT.RegsiterAuctionModOnLoad("Auctionator", function()
 			local Get = Atr_GetAuctionPrice;
 			if Get ~= nil then
 				GetPrice = function(id)
-					local name = GetItemInfo(id);
+					local name = mod.F_QueryNameByID(id);
 					if name ~= nil then
 						return Get(name);
 					end

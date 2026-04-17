@@ -72,11 +72,6 @@ function BG.ClearBiaoGeUI()
                     BG.DuiZhangFrame[FB]["boss" .. b]["myjine" .. i]:SetText("")
                 end
             end
-            if BG.Frame[FB]["boss" .. b]["time"] then
-                BG.Frame[FB]["boss" .. b]["time"]:SetText("")
-            end
-            BiaoGe[FB]["boss" .. b]["time"] = nil
-            BiaoGe[FB]["boss" .. b]["difficultyID"] = nil
         end
     end
 
@@ -87,16 +82,16 @@ function BG.ClearBiaoGeUI()
                 BG.ClearBiaoGeByIndex(FB, b)
             end
             BiaoGe[FB].tradeTbl = {}
-            BiaoGe[FB].lockoutIDtbl = nil
             BiaoGe[FB].raidRoster = nil
             BiaoGe[FB].auctionLog = nil
             BG.UpdateAuctionLogFrame()
-            BG.UpdateLockoutIDText()
             BG.auctionLogFrame.changeFrame:Hide()
 
             local num -- 分钱人数
             if BG.IsVanilla then
                 num = BG.GetFBinfo(FB, "maxplayers") or 40
+            elseif BG.IsTBC then
+                num = BG.GetFBinfo(FB, "maxplayers") or 25
             elseif BG.IsTitan then
                 if BiaoGe.options["QingKongPeople"] == 1
                     and tonumber(BiaoGe.options["MaxPlayers_Titan"])
@@ -154,8 +149,8 @@ function BG.ClearBiaoGeUI()
     -- 清空按钮
     do
         local bt = BG.CreateButton(BG.FBMainFrame)
-        bt:SetSize(120, BG.ButtonZhangDan:GetHeight())
-        bt:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 30, select(5, BG.ButtonZhangDan:GetPoint()))
+        bt:SetSize(120, 25)
+        bt:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 30, 38)
         bt:SetText(L["清空表格"])
         bt:RegisterForClicks("AnyUp")
         BG.ButtonQingKong = bt
@@ -236,10 +231,9 @@ function BG.ClearBiaoGeUI()
                 BG.SendSystemMessage(L["提醒团长：如果你没有物品分配权，将会导致交易的相关功能失效。"])
             end
         end
-        BG.RegisterEvent("RAID_INSTANCE_WELCOME", function(self, event, ...)
-            if BiaoGe.options["autoQingKong"] ~= 1 then return end
-            RequestRaidInfo()
 
+        local needCheck
+        local function CheckCD()
             BG.After(3, function()
                 local _, _, _, _, maxPlayers, _, _, instanceID = GetInstanceInfo()
                 local FB = BG.FBIDtable[instanceID]
@@ -279,6 +273,17 @@ function BG.ClearBiaoGeUI()
                     end
                 end
             end)
+        end
+        BG.RegisterEvent("RAID_INSTANCE_WELCOME", function(self, event, ...)
+            if BiaoGe.options["autoQingKong"] ~= 1 then return end
+            needCheck = true
+            RequestRaidInfo()
+        end)
+        BG.RegisterEvent("UPDATE_INSTANCE_INFO", function()
+            if needCheck then
+                needCheck = nil
+                CheckCD()
+            end
         end)
 
         local clicked = {}
@@ -509,8 +514,8 @@ function BG.ClearBiaoGeUI()
     -- 清空心愿
     do
         local bt = BG.CreateButton(BG.HopeMainFrame)
-        bt:SetSize(120, BG.ButtonZhangDan:GetHeight())
-        bt:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 30, select(5, BG.ButtonZhangDan:GetPoint()))
+        bt:SetSize(120, 25)
+        bt:SetPoint("BOTTOMLEFT", BG.MainFrame, "BOTTOMLEFT", 30, 38)
         bt:SetText(L["清空心愿"])
         BG.ButtonHopeQingKong = bt
         -- 按钮触发

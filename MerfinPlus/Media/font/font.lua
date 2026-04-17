@@ -35,6 +35,8 @@ function MerfinPlus:RegisterFonts()
   RegisterFont("HOOGE", "HOOGE.TTF", WEST + RU + ZHCN + ZHTW)
   RegisterFont("SFUIDisplayCondensed-Bold", "SFUIDisplayCondensed-Bold.otf", WEST + RU)
   RegisterFont("SFUIDisplayCondensed-Semibold", "SFUIDisplayCondensed-Semibold.otf", WEST + RU)
+  RegisterFont("PT Sans Narrow", "PTSansNarrow.ttf", WEST + RU)
+  RegisterFont("PT Sans Narrow Bold", "PTSansNarrow-Bold.ttf", WEST + RU)
 
   -- Chinese-capable
   --if L == 'zhTW' or L == 'zhCN' then

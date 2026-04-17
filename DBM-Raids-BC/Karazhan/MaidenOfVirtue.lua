@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Maiden", "DBM-Raids-BC", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(16457)
 mod:SetEncounterID(654, 2446)
 mod:SetModelID(16198)
@@ -18,34 +19,24 @@ mod:RegisterEventsInCombat(
 --TODO, rependance timer is consistent but there is an unknown trigger that happens once per kill where the timer resets?
 --Maybe reaching a health threshold resets the CD?
 --ability.id = 29511 and type = "begincast"
-local warningRepentance		= mod:NewSpellAnnounce(29511, 4)
 local warningHolyFire		= mod:NewTargetNoFilterAnnounce(29522, 2)
 
---local specWarnHolyFire		= mod:NewSpecialWarningMoveAway(29522, nil, nil, nil, 1, 2)
+local specWarnRepentance	= mod:NewSpecialWarningMoveTo(29522, nil, nil, nil, 1, 15)
 
-local timerRepentance		= mod:NewBuffActiveTimer(12.6, 29511, nil, nil, nil, 2)
-local timerRepentanceCD		= mod:NewCDTimer(29.1, 29511, nil, nil, nil, 6)--30.3-49
+local timerRepentanceCD		= mod:NewVarTimer("v28-64.7", 29511, nil, nil, nil, 6)
 local timerHolyFire			= mod:NewTargetTimer(12, 29522, nil, nil, nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)
 
-mod:AddRangeFrameOption(10, 29522)
+local holyGround = DBM:GetSpellName(29512)
 
 function mod:OnCombatStart(delay)
-	timerRepentanceCD:Start(28-delay)--28-35
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
-end
-
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
+	timerRepentanceCD:Start()
+	DBM:AddMsg("Repentance has a 28-64.7 second variance. Timer has been updated to reflect this.")
 end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 29511 then
-		warningRepentance:Show()
-		timerRepentance:Start()
+		specWarnRepentance:Show(holyGround)
+		specWarnRepentance:Play("movetopool")
 		timerRepentanceCD:Start()
 	end
 end

@@ -9,20 +9,21 @@ local CT = __private.CT;
 local VT = __private.VT;
 local DT = __private.DT;
 
+local DataAgent = DT.DataAgent;
+
 -->		upvalue
 	local next = next;
 	local strmatch = string.match;
 	local RequestLoadItemDataByID = RequestLoadItemDataByID or C_Item.RequestLoadItemDataByID;
-	local GetItemInfo = GetItemInfo;
 	local CreateFrame = CreateFrame;
 
 -->
 	local DataAgent = DT.DataAgent;
 	local l10n = CT.l10n;
 
--->
+-->		****
 MT.BuildEnv("AuctionBase");
--->
+-->		****
 local F = CreateFrame('FRAME');
 
 local AuctionBase = {  };
@@ -30,7 +31,7 @@ local AuctionBase = {  };
 local T_MaterialVendorPrice = DataAgent.T_MaterialVendorPrice;
 local T_MaterialVendorPriceByName = {  };
 local function LF_CacheItem(id)
-	local name = GetItemInfo(id);
+	local name = DataAgent.item_name(id);
 	if name ~= nil then
 		T_MaterialVendorPriceByName[name] = T_MaterialVendorPrice[id];
 		return true;
@@ -90,12 +91,8 @@ function AuctionBase.F_QueryVendorPriceByName(name, num)
 	end
 end
 
-function AuctionBase.F_QueryNameByID(id)
-	return nil;
-end
-function AuctionBase.F_QueryQualityByID(id)
-	return nil;
-end
+AuctionBase.F_QueryNameByID = DataAgent.item_name;
+AuctionBase.F_QueryQualityByID = DataAgent.item_rarity;
 
 local T_AuctionList = {  };
 local T_AuctionDrop = {

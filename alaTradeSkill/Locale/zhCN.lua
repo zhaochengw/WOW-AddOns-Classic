@@ -40,6 +40,7 @@ l10n["showItemInsteadOfSpellTip"] = "鼠标提示显示物品而不是技能";
 l10n["showRankTip"] = "显示难度等级";
 --
 l10n["PROFIT_SHOW_COST_ONLY"] = "只显示成本";
+l10n["PROFIT_SHOW_CUR_EXPAC_ONLY"] = "仅当前版本";
 --
 l10n["LABEL_GET_FROM"] = "|cffff7f00来源: |r";
 l10n["quest"] = "任务";

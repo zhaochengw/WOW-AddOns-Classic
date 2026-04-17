@@ -304,7 +304,7 @@ L["STRING_LEFT"] = "izquierda"
 L["STRING_LEFT_CLICK_SHARE"] = "Haz clic para enviar un informe."
 L["STRING_LEFT_TO_RIGHT"] = "De izquierda a derecha"
 L["STRING_LIKES_YOU_GAVE"] = "\"Me gusta\" que diste"
-L["STRING_LOCK_DESC"] = "Bloquear o desbloquear la ventana"
+L["STRING_LOCK_DESC"] = "Bloquea o desbloquea la ventana"
 L["STRING_LOCK_WINDOW"] = "Bloquear"
 L["STRING_MASTERY"] = "Maestría"
 L["STRING_MAXIMUM"] = "Máximo"
@@ -763,6 +763,12 @@ L["STRING_OPTIONS_PERFORMANCECAPTURES_DESC"] = "Estos opciones configurar cómo 
 L["STRING_OPTIONS_PERFORMANCEPROFILES_ANCHOR"] = "Perfiles de rendimiento:"
 L["STRING_OPTIONS_PICONS_DIRECTION"] = "Alineación de iconos de plugins"
 L["STRING_OPTIONS_PICONS_DIRECTION_DESC"] = "Cuando está marcado, los botones del plugin se muestran en el lado derecho de los botones del menú."
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME"] = "Player Name"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"] = "Length Auto"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_WIDTH"] = "Length"
 L["STRING_OPTIONS_PLUGINS"] = "Plugins"
 L["STRING_OPTIONS_PLUGINS_AUTHOR"] = "Autor"
 L["STRING_OPTIONS_PLUGINS_NAME"] = "Nombre"

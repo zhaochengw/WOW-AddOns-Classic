@@ -2,7 +2,7 @@
 	by ALA
 --]]--
 
-local __version = 240911.0;
+local __version = 240911.1;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -37,6 +37,7 @@ local __serializer = __ala_meta__.__serializer;
 	local strlen, strsub, strmatch, gsub = string.len, string.sub, string.match, string.gsub;
 	local concat = table.concat;
 	local ceil = math.ceil;
+	local issecretvalue = issecretvalue or function() return false; end
 	local _ = nil;
 	local RegisterAddonMessagePrefix = C_ChatInfo ~= nil and C_ChatInfo.RegisterAddonMessagePrefix or RegisterAddonMessagePrefix;
 	local IsAddonMessagePrefixRegistered = C_ChatInfo ~= nil and C_ChatInfo.IsAddonMessagePrefixRegistered or IsAddonMessagePrefixRegistered;
@@ -88,6 +89,9 @@ local __serializer = __ala_meta__.__serializer;
 	local C_String = ERR_CHAT_PLAYER_NOT_FOUND_S;
 	local C_Pattern = gsub(C_String, "%%s", "(.+)");
 	local function F_Filter(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, line, arg12, arg13, arg14, ...)
+		if issecretvalue(arg1) then
+			return;
+		end
 		if C_String ~= ERR_CHAT_PLAYER_NOT_FOUND_S then
 			C_String = ERR_CHAT_PLAYER_NOT_FOUND_S;
 			C_Pattern = gsub(C_String, "%%s", "(.+)");

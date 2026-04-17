@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-12-31T02:18:44Z
+    This file was last updated on 2026-02-24T01:12:48Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -1496,7 +1496,7 @@ local function GetStaticOptions ()
                                 name = L["OPT_MFREFRESHRATE"],
                                 desc = L["OPT_MFREFRESHRATE_DESC"],
                                 min = 0.017,
-                                max = 0.2,
+                                max = 1,
                                 step = 0.01,
                                 order = 2600,
                             },
@@ -1800,7 +1800,11 @@ local function GetStaticOptions ()
 
                                   SpellCuredTypes = table.concat (SpellCuredTypes, " - ");
 
-                                  SpellAssignmentsTexts[Prio + 1] = str_format("\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"):format( L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.MouseButtonsReadable[MouseButtons[Prio]]), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
+                                  SpellAssignmentsTexts[Prio + 1] = str_format(
+                                  "\n    %s -> %s%s", D:ColorText(("%s - %s - (%s)"
+                                  ):format(
+                                  L["OPT_CURE_PRIORITY_NUM"]:format(Prio), SpellCuredTypes, DC.MouseButtonsReadable[MouseButtons[Prio]]
+                                  ), D:NumToHexColor(D.profile.MF_colors[Prio])), Spell, (D.Status.FoundSpells[Spell] and D.Status.FoundSpells[Spell][5]) and "|cFFFF0000*|r" or "");
                               end
                               return table.concat(SpellAssignmentsTexts, "\n");
                         end,
@@ -1962,7 +1966,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.34", "John Wellesz", ("2026-01-19T00:28:40Z"):sub(1,10),
+                                    "2.8.0-RC3", "John Wellesz", ("2026-03-15T23:46:08Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -2281,6 +2285,11 @@ function D:SetCureOrder (ToChange)
     -- create / update the ReversedCureOrder table (prio => type, ..., )
     D.Status.ReversedCureOrder = D:tReverse(newCureOrder);
 
+    --[==[@debug@
+    D:Debug("SetCureOrder(): ReversedCureOrder table:", D:tAsString(D.Status.ReversedCureOrder));
+    --@end-debug@]==]
+
+
     -- Create spell priority table
     D.Status.CuringSpellsPrio = {};
 
@@ -2298,6 +2307,48 @@ function D:SetCureOrder (ToChange)
             CuringSpellsPrio[ CuringSpells[DebuffType] ] = affected;
             affected = affected + 1;
         end
+    end
+
+    --[==[@debug@
+    D:Debug("SetCureOrder(): updated CuringSpells table:", D:tAsString(CuringSpells));
+    --@end-debug@]==]
+
+
+    if DC.MN then
+        -- we need to set the color of the new MN curve thingy:
+        -- one color per spell, so we need to create a table type -> color
+        local mfc = D.profile.MF_colors
+        local dsc = D.Status.dsCurve
+        local dtToBT = DC.DTtoBT
+
+        local typeToColor = {}
+        for Spell, Prio in pairs(D.Status.CuringSpellsPrio) do -- for each configured spell
+            for typeprio, afflictionType in ipairs(D.Status.ReversedCureOrder) do
+                if D.Status.CuringSpells[afflictionType] == Spell then -- handling an affliction type
+                    typeToColor[afflictionType] = D:NumToColorMixin(mfc[Prio]) -- register the type to color mapping
+                end
+            end
+        end
+
+        --[==[@debug@
+        --D:Debug("SetCureOrder(): typeToColor table:", D:tAsString(typeToColor));
+        --@end-debug@]==]
+
+
+        -- update our curve
+        dsc:ClearPoints()
+        dsc:AddPoint(0, D:NumToColorMixin(mfc[DC.NORMAL]))
+        for affType, cm in pairs(typeToColor) do
+            --[==[@debug@
+            D:Debug("Adding point: ", affType, dtToBT[affType], cm)
+            --@end-debug@]==]
+            dsc:AddPoint(dtToBT[affType], cm)
+        end
+
+        --[==[@debug@
+        --D:Debug("SetCureOrder(): dsCurve points:", dsc:GetPoints());
+        --@end-debug@]==]
+
     end
 
     -- Set the spells shortcut (former decurse key)
@@ -3771,6 +3822,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_opt.lua"] = "2.8.0-RC3";
 
 -- Closer

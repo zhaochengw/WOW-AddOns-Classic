@@ -1,5 +1,5 @@
 ## Interface: 50503
-## Version: 1.1.3
+## Version: 1.1.4
 ## Title: HandyNotes: |cffff0000Map|r|cff00ccffNotes|r MoP
 ## Notes: Displays instance entrances, ships and zeppelin icons
 ## Notes-esES: Muestra entradas de instancia, barcos e íconos de Zeppelin

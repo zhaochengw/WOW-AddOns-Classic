@@ -1,7 +1,7 @@
 ## Interface: 11507
 ## Title: Archon Tooltip
 ## Author: Archon
-## Version: 8.20.17
+## Version: 9.0.34
 ## DefaultState: enabled
 ## SavedVariables: ArchonTooltipSaved
 ## IconTexture: Interface/AddOns/ArchonTooltip/Media/logo-32-circle.tga

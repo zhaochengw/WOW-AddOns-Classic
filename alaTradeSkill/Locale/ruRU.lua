@@ -40,6 +40,7 @@ l10n["showItemInsteadOfSpellTip"] = "Показывать предмет в по
 l10n["showRankTip"] = "Показывать цветной ранг сложности";
 --
 l10n["PROFIT_SHOW_COST_ONLY"] = "Показывать только стоимость";
+l10n["PROFIT_SHOW_CUR_EXPAC_ONLY"] = "Только текущее дополнение";
 --
 l10n["LABEL_GET_FROM"] = "|cffff7f00Получено из: |r";
 l10n["quest"] = "Задание";

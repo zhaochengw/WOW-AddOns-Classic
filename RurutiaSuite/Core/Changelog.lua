@@ -39,11 +39,25 @@ end
 local CHANGELOG = {
 -- @StartChangelogData
     ["latest"] = {
-        version = "2.6.5",
-        date = "2026-01-07",
+        version = "2.6.7",
+        date = "2026-04-12",
         content = function()
             local classColor = GetClassColor()
             local text = [[
+%sv2.6.7|r
+%s[法师动作条]|r
+• 修复勾选按下施法后无法点击传送门按钮的问题。
+
+
+%sv2.6.6|r
+%s[问题修复]|r
+• 服务器兼容：修复时光服 3.80.1 版本更新后，打开主界面和加载皮肤引擎时报错的问题。
+• 消耗品模块：修复登录时控制台偶发警告。
+
+%s[体验优化]|r
+• 启动提示：消除登录时聊天框中出现的 [RS Skin] 相关信息和其他调试，避免误以为是报错。
+
+
 %sv2.6.5|r
 %s[法师动作条]|r
 • 新增法术：新增托尔巴拉德传送/传送门（MOP）。
@@ -204,7 +218,7 @@ function RS:ShowChangelogWindow()
         width = winCfg.width,
         height = winCfg.height,
         resizable = winCfg.resizable,
-        onClose = function(widget)
+        onClose = function()
             self.db.global.lastSeenVersion = currentVersion
         end
     })
@@ -280,8 +294,7 @@ function RS:ShowChangelogWindow()
 
         -- [Fix] 如果当前版本比日志版本新，插入提示
         if currentVersion ~= entry.version then
-            local classColor = RS:GetThemeColorCode(true)
-            local warning = string.format("%sv%s|r\n待补充。\n\n", classColor, currentVersion)
+            local warning = string.format("%sv%s|r\n待补充。\n\n", RS:GetThemeColorCode(true), currentVersion)
             body = warning .. body
         end
 
@@ -336,8 +349,6 @@ function RS:ShowChangelogWindow()
         onClick = function()
             if RS.ShowMainFrame then
                 RS:ShowMainFrame()
-            else
-                RS:Print("功能未实现: ShowMainFrame")
             end
         end,
         parent = btnContainer
@@ -360,7 +371,7 @@ end
 -- 手动显示更新日志
 -- ========================================
 
-function RS:ShowChangelog(version)
+function RS:ShowChangelog()
     -- version 参数不再使用，但为了兼容性保留接口
     self:ShowChangelogWindow()
 end

@@ -51,7 +51,7 @@ local baseLocale = {
     ["Reset UI"] = "Reset UI",
     ["Resets the UI to its default settings. There is no confirmation for this action."] = "Resets the UI to its default settings. There is no confirmation for this action.",
 
-    ["Team: "] = "Team: ",
+    ["Team: "] = "Team: |cff00ffff",
     ["Team Options"] = "Team Options",
     ["Lock Team"] = "Lock Team",
     ["Rename Team"] = "Rename Team",

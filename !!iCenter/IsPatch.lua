@@ -31,14 +31,17 @@ local function AntiAFKLogout()
     end
 end
 
+local GetCVarCompat = C_CVar and C_CVar.GetCVar or GetCVar
+local SetCVarCompat = C_CVar and C_CVar.SetCVar or SetCVar
+
 local function AntiCrab()
     if ExtraConfiguration["anticrab"] == 1 then
-        if C_CVar.GetCVar("overrideArchive") ~= "0" then  -- 使用C_CVar获取CVar
-            C_CVar.SetCVar("overrideArchive", "0");
+        if GetCVarCompat("overrideArchive") ~= "0" then
+            SetCVarCompat("overrideArchive", "0");
         end
     else
-        if C_CVar.GetCVar("overrideArchive") ~= "1" then  -- 使用C_CVar获取CVar
-            C_CVar.SetCVar("overrideArchive", "1");
+        if GetCVarCompat("overrideArchive") ~= "1" then
+            SetCVarCompat("overrideArchive", "1");
         end
     end
 end

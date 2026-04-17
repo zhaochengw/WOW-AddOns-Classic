@@ -1,7 +1,10 @@
 local mod	= DBM:NewMod(193, "DBM-Raids-Cata", 2, 78)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103125714")
+mod.statTypes = "normal,heroic,timewalker"
+
+mod:SetRevision("20260322214627")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(52558)--or does 53772 die instead?didn't actually varify this fires right unit_died event yet so we'll see tonight
 mod:SetEncounterID(1204)
 mod:SetZone(720)

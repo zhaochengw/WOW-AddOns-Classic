@@ -41,6 +41,7 @@ private.RegisterAcquireType({
 		local quantity = vendor.item_list[recipe:SpellID()]
 		local entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 		entry:SetNPCID(identifier)
+		entry:SetLocation(vendor.Location)
 		entry:SetText("%s%s %s%s",
 			self.EntryPadding,
 			hide_type and "" or private.SetTextColor(self:ColorData().hex, self:Name()) .. ":",
@@ -61,6 +62,7 @@ private.RegisterAcquireType({
 
 		entry = private.CreateListEntry(entry_type, parent_entry, recipe)
 		entry:SetNPCID(identifier)
+		entry:SetLocation(vendor.Location)
 		local locName = (vendor.Location and vendor.Location.LocalizedName and vendor.Location:LocalizedName()) or "Unknown"
 		entry:SetText("%s%s %s",
 			self.EntryPadding:rep(2),

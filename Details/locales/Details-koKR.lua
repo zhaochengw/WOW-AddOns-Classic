@@ -309,10 +309,7 @@ L["STRING_KEYBIND_WINDOW_REPORT_HEADER"] = "데이터 보고하기"
 L["STRING_KEYSTONE_ADD_TO_FRIENDS_TOOLTIP"] = "캐릭터를 친구 목록에 추가 (배틀넷 친구 요청 아님)"
 L["STRING_KEYSTONE_CLICK_TO_VIEW_SCOREBOARD"] = "점수판을 보려면 클릭하세요."
 L["STRING_KEYSTONE_DND_TOOLTIP"] = "당신의 쐐기돌은 길드나 친구들에게 전송되지 않습니다. 그룹에 있는 동안에만 전송됩니다."
---[[Translation missing --]]
-L["STRING_KEYSTONE_LIFETIME_LIKES_YOU_GAVE"] = [=[Life-time likes you gave for this player through the 'GG' button in the |cFFFFFF00Details! Damage Meter Mythic+|r addon.
-
-View run breakdown by selecting a Mythic+ run you did with this player.]=]
+L["STRING_KEYSTONE_LIFETIME_LIKES_YOU_GAVE"] = "이 플레이어에게 제공한 좋아요는 |cFFFFFF00Details! Damage Meter Mythic+|r 애드온의 'GG' 버튼을 통해 확인할 수 있습니다. 이 플레이어와 함께 한 Mythic+ 실행을 선택하여 실행 내역을 확인하세요."
 L["STRING_KEYSTONE_NO_MYTHICPLUS_ADDON"] = "신화+ 애드온이 없습니다."
 L["STRING_KEYSTONE_REQUEST_FROM_GUILD"] = "길드의 요청"
 L["STRING_KILLED"] = "죽임"
@@ -922,6 +919,12 @@ L["STRING_OPTIONS_PERFORMANCECAPTURES_DESC"] = "전투 데이터 수집과 분�
 L["STRING_OPTIONS_PERFORMANCEPROFILES_ANCHOR"] = "성능 프로필:"
 L["STRING_OPTIONS_PICONS_DIRECTION"] = "오른쪽에 플러그인 붙이기"
 L["STRING_OPTIONS_PICONS_DIRECTION_DESC"] = "체크하면 메뉴 버튼의 오른쪽에 플러그인 버튼이 표시됩니다."
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME"] = "Player Name"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"] = "Length Auto"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_WIDTH"] = "Length"
 L["STRING_OPTIONS_PLUGINS"] = "플러그인"
 L["STRING_OPTIONS_PLUGINS_AUTHOR"] = "제작자"
 L["STRING_OPTIONS_PLUGINS_NAME"] = "이름"

@@ -212,6 +212,7 @@ GameCooltipFrame2 = {}
 ---@field IsMidnightWow fun():boolean
 ---@field IsNotMidnightWow fun():boolean
 ---@field IsWarWowOrBelow fun():boolean
+---@field IsValidWidgetForBuildMenu fun(self:table, widgetType:string) : boolean check if a widget type is valid to be added in the build menu.
 ---@field IsAddonApocalypseWow fun():boolean
 ---@field CreateHealthBar fun(self:table, parent:frame, name:string, settingsOverride:table) : df_healthbar
 ---@field CreateCastBar fun(self:table, parent:frame, name:string, settingsOverride:table) : df_castbar
@@ -410,12 +411,15 @@ GameCooltipFrame2 = {}
 ---@field GetRoleTCoordsAndTexture fun(self:table, roleID:number) : number, number, number, number, string
 ---@field AddColorToText fun(self:table, text:string, color:any) : string wrap text with a color
 ---@field AddClassColorToText fun(self:table, text:string, className:class|number) : string wrap text with a class color
----@field MakeDraggable fun(self:table, frame:frame) : nil
+---@field MakeDraggable fun(self:table, frame:frame, profileTable:table?) profile table is a table to save the position
 ---@field GetClassTCoordsAndTexture fun(self:table, class:string|number) : number, number, number, number, string return the class icon texture coordinates and texture file path
 ---@field GetClassColorByClassId fun(self:table, classId:number) : number, number, number return the class color by classId
 ---@field MakeStringFromSpellId fun(self:table, spellId:any) : string return a string with the spell icon and name using escape codes
 ---@field AddClassIconToText fun(self:table, text:string, playerName:string, englishClassName:string, useSpec:boolean?, iconSize:number?) : string wrap 'text' with the class icon of 'playerName' using |T|t scape codes
 ---@field RemoveRealNameFromName fun(self:table, name:string) : string remove the realm name from a name string
+---@field GetSpecInfoFromSpecId fun(self:table, specId:number) : specinfo
+---@field GetSpecInfoFromSpecIcon fun(self:table, specIcon:string) : specinfo
+---@field GetSpecIdFromSpecIcon fun(self:table, specIcon:number) : number?
 
 
 --[=[

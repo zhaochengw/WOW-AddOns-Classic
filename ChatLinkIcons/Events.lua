@@ -25,5 +25,6 @@ function AddOn.Events_RegisterEvent(event,func)
 end
 
 function AddOn.Events_UnregisterEvent(owner,event)
+--	Owner is an arbitrary value created by CallbackRegistry passed to the callback as Self
 	EventRegistry:UnregisterFrameEventAndCallback(event,owner);
 end

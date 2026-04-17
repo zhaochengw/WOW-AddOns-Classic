@@ -4,8 +4,11 @@ if not DBM_COMMON_L then DBM_COMMON_L = {} end
 local CL = DBM_COMMON_L
 
 --General
+CL.ALPHABETICAL				= "В алфавитном порядке"
+CL.DURATION					= "Продолжительность"
+CL.SORTING					= "Сортировка"
 CL.NONE						= "Нет"
-CL.RANDOM		  			= "Случайно"
+CL.RANDOM					= "Случайно"
 CL.UNKNOWN					= "неизвестно"
 CL.NEXT						= "След. %s"
 CL.COOLDOWN					= "Восст. %s"
@@ -83,9 +86,12 @@ CL.GROUPSOAK				= "Поглощение"
 CL.GROUPSOAKS				= "Поглощения"
 CL.HEALABSORB				= "Поглощение исцеления"--По идее так будет правильно. Но если вдруг окажется, что не подходит по смыслу, то дайте знать
 CL.HEALABSORBS				= "Поглощение исцеления"--По идее так будет правильно. Но если вдруг окажется, что не подходит по смыслу, то дайте знать
+CL.INTERRUPT				= "Прерывание"
+CL.INTERRUPTS				= "Прерывания"
 CL.DODGES					= "Уклонения"
 CL.POOL						= "Лужа"
 CL.POOLS					= "Лужи"
+CL.DEBUFF					= "Дебафф"
 CL.DEBUFFS					= "Дебаффы"
 CL.DISPELS					= "Рассеивания"
 CL.PUSHBACK					= "Отталкивание"

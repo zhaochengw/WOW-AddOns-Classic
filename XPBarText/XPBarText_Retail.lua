@@ -40,10 +40,12 @@ if event == "ADDON_LOADED" and arg1 == "XPBarText" then
 	if XPTConfig.FormatNumbers == nil then XPTConfig.FormatNumbers = 'NO' end
 	
 	UpdateXPBarText()
+	UpdateRepBar()
 	
 	C_CVar.SetCVar("XpBarText", 0)
 elseif event == "PLAYER_XP_UPDATE" or event == "PLAYER_LEVEL_UP"  or event == "UPDATE_EXHAUSTION" or event == "ZONE_CHANGED" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_CONTROL_LOST" or event == "CINEMATIC_START" or event == "CINEMATIC_STOP" or event == "PLAYER_ENTERING_WORLD" then
 	UpdateXPBarText()
+	UpdateRepBar()
 end
 
 end
@@ -69,7 +71,7 @@ local retVal = GetPlayerXPExhaustion()
 
 restid, restname, mult = GetRestState()
 
-if playerLevel < 80 then
+if playerLevel < 90 then
 	if restid == 2 then
 		if XPTConfig.ShowMoreInfo == "YES" then
 			if XPTConfig.FormatNumbers == "YES" then
@@ -99,7 +101,7 @@ if playerLevel < 80 then
 			end
 		end			
 	end
-elseif playerLevel == 80 then
+elseif playerLevel == 90 then
 	TextOnXPBar:SetTextColor(1,1,1,0)
 end
 
@@ -173,10 +175,107 @@ function comma_val(n)
 	return left..(num:reverse():gsub('(%d%d%d)','%1,'):reverse())..right
 end
 
+-- REP BAR TEXT
+
+SecondaryStatusTrackingBarContainer:HookScript("OnShow", function(self)
+
+for _, bar in pairs(SecondaryStatusTrackingBarContainer.bars) do
+    if bar.OverlayFrame then
+        local repbar = bar.OverlayFrame
+		
+		if XPTConfig.AlwaysShowInfo == "YES" then
+			repbar.Text:Show()
+		elseif XPTConfig.AlwaysShowInfo == "NO" then
+			repbar.Text:Hide()
+		end
+    end
+end
+
+end)
+
+SecondaryStatusTrackingBarContainer:HookScript("OnEnter", function(self)
+
+for _, bar in pairs(SecondaryStatusTrackingBarContainer.bars) do
+    if bar.OverlayFrame then
+        local repbar = bar.OverlayFrame
+		
+		if XPTConfig.AlwaysShowInfo == "YES" then
+			repbar.Text:Show()
+		elseif XPTConfig.AlwaysShowInfo == "NO" then
+			repbar.Text:Hide()
+		end
+    end
+end
+
+end)
+
+SecondaryStatusTrackingBarContainer:HookScript("OnLeave", function(self)
+
+for _, bar in pairs(SecondaryStatusTrackingBarContainer.bars) do
+    if bar.OverlayFrame then
+        local repbar = bar.OverlayFrame
+		
+		if XPTConfig.AlwaysShowInfo == "YES" then
+			repbar.Text:Show()
+		elseif XPTConfig.AlwaysShowInfo == "NO" then
+			repbar.Text:Hide()
+		end
+    end
+end
+
+end)
+
+-- SHOW/HIDE RESTED XP TICKER
+
 function UpdateXPTicker()
-	if XPTConfig.ShowXPTicker == "YES" then
-		ExhaustionTick:Show()
-	elseif XPTConfig.ShowXPTicker == "NO" then
-		ExhaustionTick:Hide()
+	for _, bar in pairs(MainStatusTrackingBarContainer.bars) do
+		if bar.ExhaustionTick then 
+			local tick = bar.ExhaustionTick
+			hooksecurefunc(tick, "UpdateTickPosition", function()
+				if XPTConfig.ShowXPTicker == "YES" then
+					tick:Show()
+				elseif XPTConfig.ShowXPTicker == "NO" then
+					tick:Hide()
+				end
+			end)
+			if XPTConfig.ShowXPTicker == "YES" then
+			tick:Show()
+			elseif XPTConfig.ShowXPTicker == "NO" then
+			tick:Hide()
+			end
+		end
 	end
+end
+
+-- HIDE IN-GAME XP BAR TEXT WHEN VIEWING CHARACTER WINDOW
+
+CharacterFrame:HookScript("OnShow", function(self)
+
+	for _, bar in pairs(MainStatusTrackingBarContainer.bars) do
+		if bar.OverlayFrame then
+			local repbar = bar.OverlayFrame
+			repbar.Text:Hide()
+		end
+	end
+
+end)
+
+-- UPDATE REP BAR
+
+function UpdateRepBar()
+
+	if SecondaryStatusTrackingBarContainer:IsVisible() == true then
+		for _, bar in pairs(SecondaryStatusTrackingBarContainer.bars) do
+			if bar.OverlayFrame then
+				local repbar = bar.OverlayFrame
+				
+				if XPTConfig.AlwaysShowInfo == "YES" then
+					repbar.Text:Show()
+				elseif XPTConfig.AlwaysShowInfo == "NO" then
+					repbar.Text:Hide()
+				end
+			end
+		end
+	end
+
 end

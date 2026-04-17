@@ -7,7 +7,7 @@ local Private = select(2, ...)
 ---@alias key string | integer
 ---@alias states table<key, state>
 
----@type fun(state: state)
+----@type fun(state: state)
 local function fixMissingFields(state)
   if type(state) ~= "table" then return end
   -- set show
@@ -16,13 +16,13 @@ local function fixMissingFields(state)
   end
 end
 
+
 ---@type fun(states: states, key: key): boolean
 local remove = function(states, key)
   local changed = false
   local state = states[key]
   if state then
-    state.show = false
-    state.changed = true
+    states[key] = nil
     states:SetChanged(true)
     changed = true
   end
@@ -32,9 +32,8 @@ end
 ---@type fun(states: states): boolean
 local removeAll = function(states)
   local changed = false
-  for _, state in pairs(states) do
-    state.show = false
-    state.changed = true
+  for cloneId, state in pairs(states) do
+    states[cloneId] = nil
     changed = true
   end
   if changed then
@@ -87,7 +86,6 @@ local replaceOrUpdate = function(states, key, newState, replace)
   local changed = false
   local state = states[key]
   if state then
-    fixMissingFields(newState)
     changed = recurseReplaceOrUpdate(state, newState, true, replace)
     if changed then
       state.changed = true
@@ -102,7 +100,6 @@ local create = function(states, key, newState)
   states[key] = newState
   states[key].changed = true
   states:SetChanged(true)
-  fixMissingFields(states[key])
   return true
 end
 
@@ -161,3 +158,30 @@ Private.allstatesMetatable = {
     SetChanged = setChanged,
   }
 }
+
+local function addFixMissingFields(func)
+  return function(states, key, ...)
+    local changed = func(states, key, ...)
+    fixMissingFields(states[key])
+    return changed
+  end
+end
+
+Private.allstatesMetatableLegacy = {
+  __index = {
+    Update = addFixMissingFields(createOrUpdate),
+    Replace = addFixMissingFields(createOrReplace),
+    Remove = remove,
+    RemoveAll = removeAll,
+    Get = get,
+    IsChanged = isChanged,
+    SetChanged = setChanged,
+  }
+}
+
+Private.GetNewAllStates = function(data)
+  if data.information.showNilIsFalse then
+    return setmetatable({}, Private.allstatesMetatableLegacy)
+  end
+  return setmetatable({}, Private.allstatesMetatable)
+end

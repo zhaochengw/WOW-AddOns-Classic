@@ -16,6 +16,7 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSEventDB = private.ImportLib("RareScannerEventDB")
 local RSGuideDB = private.ImportLib("RareScannerGuideDB")
+local RSMapDB = private.ImportLib("RareScannerMapDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -27,10 +28,8 @@ local RSNotificationTracker = private.ImportLib("RareScannerNotificationTracker"
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSEventHandler = private.ImportLib("RareScannerEventHandler")
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
+local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 local RSAudioAlerts = private.ImportLib("RareScannerAudioAlerts")
-
--- RareScanner other addons integration services
-local RSTomtom = private.ImportLib("RareScannerTomtom")
 
 -- Timers
 local BUTTON_TIMER
@@ -340,7 +339,7 @@ local function ShowAlert(button, vignetteInfo, isNavigating)
 			-- disable button alert for containers
 			if (not RSConfigDB.IsButtonDisplayingForContainers()) then
 				RSRecentlySeenTracker.AddRecentlySeen(entityID, vignetteInfo.atlasName, false)
-				RSTomtom.AddTomtomAutomaticWaypoint(mapID, vignettePosition.x, vignettePosition.y, vignetteInfo.name)
+				RSWaypoints.AddAutomaticWaypoint(mapID, vignettePosition.x, vignettePosition.y, vignetteInfo.name)
 	
 				if (RSNotificationTracker.IsAlreadyNotificated(vignetteInfo.id, false, entityID)) then
 					RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", entityID))
@@ -358,7 +357,7 @@ local function ShowAlert(button, vignetteInfo, isNavigating)
 				end
 			end
 		-- extra checkings for events
-		elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName)) then
+		elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName)) then			
 			-- check just in case its an NPC
 			if (not RSNpcDB.GetInternalNpcInfo(entityID)) then
 				RSEventDB.SetEventName(entityID, vignetteInfo.name)
@@ -449,7 +448,7 @@ local function ShowAlert(button, vignetteInfo, isNavigating)
 
 	-- If navigation disabled, control Tomtom waypoint externally
 	if (not RSConfigDB.IsButtonDisplaying() or not RSConfigDB.IsDisplayingNavigationArrows()) then
-		RSTomtom.AddTomtomAutomaticWaypoint(mapID, vignettePosition.x, vignettePosition.y, vignetteInfo.name)
+		RSWaypoints.AddAutomaticWaypoint(mapID, vignettePosition.x, vignettePosition.y, vignetteInfo.name)
 	end
 
 	-- Add recently seen
@@ -518,7 +517,9 @@ function RSButtonHandler.AddAlert(button, vignetteInfo, isNavigating)
 		return
 	end
 	
-	--RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s][%s]", vignetteInfo.atlasName, vignetteInfo.objectGUID))
+	if (RSConstants.DEBUG_MODE and RSConstants.DEBUG_ATLAS_VIGNETTE) then
+		RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s][%s]", vignetteInfo.atlasName, vignetteInfo.objectGUID))
+	end
 	
 	-- Fix vignette INFO for those vignettes with errors
 	local entityID, vignetteInfo = FixVignetteInfo(vignetteInfo)
@@ -533,19 +534,18 @@ function RSButtonHandler.AddAlert(button, vignetteInfo, isNavigating)
 			trackingSystem = RSConstants.TRACKING_SYSTEM.VIGNETTE
 		end
 		if (preFoundAlerts[entityID]) then
-				--RSLogger:PrintDebugMessage(string.format("prefound existente para [%s] con sistema [%s] y nuevamente con sistema [%s] .", entityID, preFoundAlerts[entityID].trackingSystem, trackingSystem))
+			--RSLogger:PrintDebugMessage(string.format("prefound existente para [%s] con sistema [%s] y nuevamente con sistema [%s] .", entityID, preFoundAlerts[entityID].trackingSystem, trackingSystem))
 			if (preFoundAlerts[entityID].trackingSystem ~= trackingSystem) then
-				--RSLogger:PrintDebugMessage(string.format("Ignorada alerta de [%s] por haberse detectado con otro sistema en menos de 5 segundos.", entityID))
+				--RSLogger:PrintDebugMessageEntityID(entityID, string.format("Ignorada alerta de [%s] por haberse detectado con otro sistema en menos de 5 segundos.", entityID))
 				return
 			end
 		else
 			preFoundAlerts[entityID] = { trackingSystem = trackingSystem, expireTime = time() + RSConstants.PREFOUND_TIMER }
 		end
 	end
-	
 	-- Apply filters
 	local mapID = RSGeneralDB.GetBestMapForUnit(entityID, vignetteInfo.atlasName)
-	local isInstance, _ = IsInInstance()
+	local isInInstance, _ = IsInInstance()
 	
 	-- Check it it is an entity that use a vignette but it isn't a rare, event or treasure
 	if (RSUtils.Contains(RSConstants.IGNORED_VIGNETTES, entityID)) then
@@ -568,7 +568,7 @@ function RSButtonHandler.AddAlert(button, vignetteInfo, isNavigating)
 		--RSLogger:PrintDebugMessageEntityID(entityID, string.format("La entidad [%s] se ignora por estar reproduciendose un video", entityID))
 		return
 	-- disable ALL alerts in instances
-	elseif (isInstance == true and not isNavigating and not RSConfigDB.IsScanningInInstances()) then
+	elseif (isInInstance == true and not isNavigating and not RSConfigDB.IsScanningInInstances()) then
 		--RSLogger:PrintDebugMessageEntityID(entityID, string.format("La entidad [%s] se ignora por estar en una instancia", entityID))
 		return
 	-- disable alerts while flying

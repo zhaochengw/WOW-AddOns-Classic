@@ -224,7 +224,7 @@ do
 		if ExRT.isMN then
 			frame.but:RegisterForClicks("AnyDown", "AnyUp")
 			frame.but:SetAttribute("type", "macro")
-			frame.but:SetAttribute("macrotext1", format(SLASH_TARGET_MARKER1.." %d", 0).."\n"..format(SLASH_TARGET_MARKER1.." %d", i))
+			frame.but:SetAttribute("macrotext1", format(SLASH_TARGET_MARKER1.." !%d", i))
 			frame.but:SetAttribute("macrotext2", format(SLASH_TARGET_MARKER1.." %d", 0))
 		else
 			frame.but:RegisterForClicks("RightButtonDown","LeftButtonDown")
@@ -304,9 +304,10 @@ if ExRT.isMN then
 	mainFrame.start:SetAttribute("type", "macro")
 	local macrotext = ""
 	for i=1,9 do
-		macrotext = macrotext .. format(SLASH_TARGET_MARKER1.." %d", i < 9 and i or 0) .. (i < 9 and "\n" or "")
+	--	macrotext = macrotext .. format(SLASH_TARGET_MARKER1.." %d", i < 9 and i or 0) .. (i < 9 and "\n" or "")
 	end
-	mainFrame.start:SetAttribute("macrotext", macrotext)
+	mainFrame.start:SetAttribute("macrotext", format(SLASH_TARGET_MARKER1.." %d", 0))
+	--mainFrame.start:SetAttribute("macrotext", macrotext)
 else
 	mainFrame.start:SetScript("OnClick", function(self)    
 		module.db.clearnum = GetTime()
@@ -401,7 +402,7 @@ do
 		
 		if i < MAX_WM_BUTTONS then
 			frame:RegisterForClicks("AnyDown", "AnyUp")
-			if true then
+			if ExRT.isMN then
 				frame:SetAttribute("type", "worldmarker")
 				frame:SetAttribute("marker", tostring(i))
 				frame:SetAttribute("action1", "set")
@@ -417,9 +418,15 @@ do
 			end
 			frame:SetScript('OnEvent', MainFrameWMOnEvent)
 		else
-			frame:SetScript("OnClick",  function()
-				ClearRaidMarker()
-			end)
+			if ExRT.isMN then
+				frame:RegisterForClicks("AnyDown", "AnyUp")
+				frame:SetAttribute("type", "macro")
+				frame:SetAttribute("macrotext", format("%s %s", SLASH_CLEAR_WORLD_MARKER1 or "/cwm",ALL or "All"))
+			else
+				frame:SetScript("OnClick",  function()
+					ClearRaidMarker()
+				end)
+			end
 		end
 	
 		frame.t = frame:CreateTexture(nil, "BACKGROUND")
@@ -477,7 +484,7 @@ for i=1,MAX_WM_BUTTONS do
 
 	if i < MAX_WM_BUTTONS then
 		frame:RegisterForClicks("AnyDown", "AnyUp")
-		if true then
+		if ExRT.isMN then
 			frame:SetAttribute("type", "worldmarker")
 			frame:SetAttribute("marker", tostring(i))
 			frame:SetAttribute("action1", "set")
@@ -493,9 +500,15 @@ for i=1,MAX_WM_BUTTONS do
 		end
 		frame:SetScript('OnEvent', MainFrameWMOnEvent)
 	else
-		frame:SetScript("OnClick", function()
-			ClearRaidMarker()
-		end)
+		if ExRT.isMN then
+			frame:RegisterForClicks("AnyDown", "AnyUp")
+			frame:SetAttribute("type", "macro")
+			frame:SetAttribute("macrotext", format("%s %s", SLASH_CLEAR_WORLD_MARKER1 or "/cwm",ALL or "All"))
+		else
+			frame:SetScript("OnClick", function()
+				ClearRaidMarker()
+			end)
+		end
 	end
 end
 
@@ -514,6 +527,10 @@ mainFrame.readyCheck:SetScript("OnLeave", function(self)
 	self:SetBackdropBorderColor(0.4,0.4,0.4,1)
 end)
 mainFrame.readyCheck:SetScript("OnClick", function(self)    
+	if ExRT.isMN and C_ChatInfo.InChatMessagingLockdown() then
+		print("Not possible to do ready check during combat.")
+		return
+	end
 	DoReadyCheck()
 end)
 

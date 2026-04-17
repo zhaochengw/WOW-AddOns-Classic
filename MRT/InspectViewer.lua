@@ -57,64 +57,64 @@ module.db.specHasOffhand = {
 }
 
 module.db.socketsBonusIDs = {
-	[3]=true,	[497]=true,	[523]=true,	[563]=true,	[564]=true,
-	[565]=true,	[572]=true,	[608]=true,	[715]=true,	[716]=true,
-	[717]=true,	[718]=true,	[719]=true,	[721]=true,	[722]=true,
-	[723]=true,	[724]=true,	[725]=true,	[726]=true,	[727]=true,
-	[728]=true,	[729]=true,	[730]=true,	[731]=true,	[732]=true,
-	[733]=true,	[734]=true,	[735]=true,	[736]=true,	[737]=true,
-	[738]=true,	[739]=true,	[740]=true,	[741]=true,	[742]=true,
-	[743]=true,	[744]=true,	[745]=true,	[746]=true,	[747]=true,
-	[748]=true,	[749]=true,	[750]=true,	[751]=true,	[752]=true,
-	[1808]=true,	[3475]=true,	[3522]=true,	[4231]=true,	[4802]=true,
-	[6514]=true,	[6672]=true,	[6935]=true,	[7576]=true,	[7580]=true,
-	[7935]=true,	[7947]=true,	[8289]=true,	[8780]=true,	[8781]=true,
-	[8782]=true,	[8810]=true,	[9413]=true,	[9436]=true,	[9438]=true,
-	[9516]=true,	[10397]=true,	[10531]=true,	[10589]=true,	[10596]=true,
-	[10601]=true,	[10608]=true,	[10615]=true,	[10622]=true,	[10629]=true,
-	[10636]=true,	[10643]=true,	[10650]=true,	[10657]=true,	[10659]=true,
-	[10666]=true,	[10674]=true,	[10681]=true,	[10688]=true,	[10695]=true,
-	[10702]=true,	[10709]=true,	[10716]=true,	[10733]=true,	[10734]=true,
-	[10735]=true,	[10736]=true,	[10737]=true,	[10738]=true,	[10739]=true,
-	[10740]=true,	[10741]=true,	[10742]=true,	[10743]=true,	[10776]=true,
-	[10775]=true,	[10774]=true,	[10773]=true,	[10772]=true,	[10771]=true,
-	[10770]=true,	[10769]=true,	[10768]=true,	[10767]=true,	[10766]=true,
-	[10719]=true,	[10712]=true,	[10705]=true,	[10698]=true,	[10691]=true,
-	[10684]=true,	[10677]=true,	[10670]=true,	[10663]=true,	[10658]=true,
-	[10651]=true,	[10644]=true,	[10637]=true,	[10630]=true,	[10623]=true,
-	[10616]=true,	[10609]=true,	[10602]=true,	[10597]=true,	[10591]=true,
-	[10599]=true,	[10606]=true,	[10613]=true,	[10620]=true,	[10627]=true,
-	[10634]=true,	[10641]=true,	[10648]=true,	[10655]=true,	[10662]=true,
-	[10669]=true,	[10676]=true,	[10683]=true,	[10690]=true,	[10697]=true,
-	[10704]=true,	[10711]=true,	[10718]=true,	[10755]=true,	[10756]=true,
-	[10757]=true,	[10758]=true,	[10759]=true,	[10760]=true,	[10761]=true,
-	[10762]=true,	[10763]=true,	[10764]=true,	[10765]=true,	[10593]=true,
-	[10603]=true,	[10610]=true,	[10617]=true,	[10624]=true,	[10631]=true,
-	[10638]=true,	[10645]=true,	[10652]=true,	[10661]=true,	[10668]=true,
-	[10675]=true,	[10682]=true,	[10689]=true,	[10696]=true,	[10703]=true,
-	[10710]=true,	[10717]=true,	[10744]=true,	[10745]=true,	[10746]=true,
-	[10747]=true,	[10748]=true,	[10749]=true,	[10750]=true,	[10751]=true,
-	[10752]=true,	[10753]=true,	[10754]=true,	[10835]=true,	[10836]=true,
-	[10838]=true,	[10878]=true,	[10879]=true,	[10880]=true,	[10891]=true,
-	[10892]=true,	[10893]=true,	[10894]=true,	[10895]=true,	[10896]=true,
-	[10897]=true,	[10898]=true,	[10899]=true,	[10900]=true,	[10901]=true,
-	[10902]=true,	[10903]=true,	[10904]=true,	[10905]=true,	[10906]=true,
-	[10907]=true,	[10908]=true,	[10909]=true,	[10910]=true,	[10911]=true,
-	[10912]=true,	[10913]=true,	[10914]=true,	[10915]=true,	[10916]=true,
-	[10917]=true,	[10918]=true,	[10919]=true,	[10920]=true,	[10921]=true,
-	[10922]=true,	[10923]=true,	[10924]=true,	[10925]=true,	[10926]=true,
-	[10927]=true,	[10928]=true,	[10929]=true,	[10930]=true,	[10931]=true,
-	[10932]=true,	[10933]=true,	[10934]=true,	[10935]=true,	[10936]=true,
-	[10937]=true,	[10938]=true,	[10939]=true,	[10940]=true,	[10941]=true,
-	[10942]=true,	[10943]=true,	[10944]=true,	[10945]=true,	[10946]=true,
-	[10947]=true,	[10948]=true,	[11145]=true,	[11146]=true,	[11147]=true,
-	[11148]=true,	[11149]=true,	[11150]=true,	[11151]=true,	[11152]=true,
-	[11153]=true,	[11154]=true,	[11165]=true,	[11166]=true,	[11167]=true,
-	[11168]=true,	[11169]=true,	[11170]=true,	[11171]=true,	[11172]=true,
-	[11173]=true,	[11174]=true,	[11180]=true,	[11181]=true,	[11182]=true,
-	[11183]=true,	[11184]=true,	[11185]=true,	[11186]=true,	[11187]=true,
-	[11188]=true,	[11189]=true,	[11307]=true,	[12055]=true,	[12056]=true,
-	[12365]=true,	[12922]=true,
+	[523]=true,	[563]=true,	[564]=true,	[565]=true,	[572]=true,
+	[608]=true,	[715]=true,	[716]=true,	[717]=true,	[718]=true,
+	[719]=true,	[721]=true,	[722]=true,	[723]=true,	[724]=true,
+	[725]=true,	[726]=true,	[727]=true,	[728]=true,	[729]=true,
+	[730]=true,	[731]=true,	[732]=true,	[733]=true,	[734]=true,
+	[735]=true,	[736]=true,	[737]=true,	[738]=true,	[739]=true,
+	[740]=true,	[741]=true,	[742]=true,	[743]=true,	[744]=true,
+	[745]=true,	[746]=true,	[747]=true,	[748]=true,	[749]=true,
+	[750]=true,	[751]=true,	[752]=true,	[1808]=true,	[3475]=true,
+	[3522]=true,	[4231]=true,	[4802]=true,	[6514]=true,	[6672]=true,
+	[6935]=true,	[7576]=true,	[7580]=true,	[7935]=true,	[7947]=true,
+	[8289]=true,	[8780]=true,	[8781]=true,	[8782]=true,	[8810]=true,
+	[9413]=true,	[9436]=true,	[9438]=true,	[9516]=true,	[10397]=true,
+	[10531]=true,	[10589]=true,	[10596]=true,	[10601]=true,	[10608]=true,
+	[10615]=true,	[10622]=true,	[10629]=true,	[10636]=true,	[10643]=true,
+	[10650]=true,	[10657]=true,	[10659]=true,	[10666]=true,	[10674]=true,
+	[10681]=true,	[10688]=true,	[10695]=true,	[10702]=true,	[10709]=true,
+	[10716]=true,	[10733]=true,	[10734]=true,	[10735]=true,	[10736]=true,
+	[10737]=true,	[10738]=true,	[10739]=true,	[10740]=true,	[10741]=true,
+	[10742]=true,	[10743]=true,	[10776]=true,	[10775]=true,	[10774]=true,
+	[10773]=true,	[10772]=true,	[10771]=true,	[10770]=true,	[10769]=true,
+	[10768]=true,	[10767]=true,	[10766]=true,	[10719]=true,	[10712]=true,
+	[10705]=true,	[10698]=true,	[10691]=true,	[10684]=true,	[10677]=true,
+	[10670]=true,	[10663]=true,	[10658]=true,	[10651]=true,	[10644]=true,
+	[10637]=true,	[10630]=true,	[10623]=true,	[10616]=true,	[10609]=true,
+	[10602]=true,	[10597]=true,	[10591]=true,	[10599]=true,	[10606]=true,
+	[10613]=true,	[10620]=true,	[10627]=true,	[10634]=true,	[10641]=true,
+	[10648]=true,	[10655]=true,	[10662]=true,	[10669]=true,	[10676]=true,
+	[10683]=true,	[10690]=true,	[10697]=true,	[10704]=true,	[10711]=true,
+	[10718]=true,	[10755]=true,	[10756]=true,	[10757]=true,	[10758]=true,
+	[10759]=true,	[10760]=true,	[10761]=true,	[10762]=true,	[10763]=true,
+	[10764]=true,	[10765]=true,	[10593]=true,	[10603]=true,	[10610]=true,
+	[10617]=true,	[10624]=true,	[10631]=true,	[10638]=true,	[10645]=true,
+	[10652]=true,	[10661]=true,	[10668]=true,	[10675]=true,	[10682]=true,
+	[10689]=true,	[10696]=true,	[10703]=true,	[10710]=true,	[10717]=true,
+	[10744]=true,	[10745]=true,	[10746]=true,	[10747]=true,	[10748]=true,
+	[10749]=true,	[10750]=true,	[10751]=true,	[10752]=true,	[10753]=true,
+	[10754]=true,	[10835]=true,	[10836]=true,	[10838]=true,	[10878]=true,
+	[10879]=true,	[10880]=true,	[10891]=true,	[10892]=true,	[10893]=true,
+	[10894]=true,	[10895]=true,	[10896]=true,	[10897]=true,	[10898]=true,
+	[10899]=true,	[10900]=true,	[10901]=true,	[10902]=true,	[10903]=true,
+	[10904]=true,	[10905]=true,	[10906]=true,	[10907]=true,	[10908]=true,
+	[10909]=true,	[10910]=true,	[10911]=true,	[10912]=true,	[10913]=true,
+	[10914]=true,	[10915]=true,	[10916]=true,	[10917]=true,	[10918]=true,
+	[10919]=true,	[10920]=true,	[10921]=true,	[10922]=true,	[10923]=true,
+	[10924]=true,	[10925]=true,	[10926]=true,	[10927]=true,	[10928]=true,
+	[10929]=true,	[10930]=true,	[10931]=true,	[10932]=true,	[10933]=true,
+	[10934]=true,	[10935]=true,	[10936]=true,	[10937]=true,	[10938]=true,
+	[10939]=true,	[10940]=true,	[10941]=true,	[10942]=true,	[10943]=true,
+	[10944]=true,	[10945]=true,	[10946]=true,	[10947]=true,	[10948]=true,
+	[11145]=true,	[11146]=true,	[11147]=true,	[11148]=true,	[11149]=true,
+	[11150]=true,	[11151]=true,	[11152]=true,	[11153]=true,	[11154]=true,
+	[11165]=true,	[11166]=true,	[11167]=true,	[11168]=true,	[11169]=true,
+	[11170]=true,	[11171]=true,	[11172]=true,	[11173]=true,	[11174]=true,
+	[11180]=true,	[11181]=true,	[11182]=true,	[11183]=true,	[11184]=true,
+	[11185]=true,	[11186]=true,	[11187]=true,	[11188]=true,	[11189]=true,
+	[11307]=true,	[12055]=true,	[12056]=true,	[12234]=true,	[12365]=true,
+	[12666]=true,	[12922]=true,	[13534]=true,	[13576]=true,	[13668]=true,
 }
 
 local IS_LOW = UnitLevel'player' < 50
@@ -122,13 +122,62 @@ local IS_BFA = UnitLevel'player' < 60
 local IS_SL = UnitLevel'player' >= 60
 local IS_DF = UnitLevel'player' >= 70 and not ExRT.isClassic
 local IS_TWW = UnitLevel'player' >= 71 and not ExRT.isClassic
+local IS_MN = UnitLevel'player' >= 81 and not ExRT.isClassic
 
 module.db.topEnchGemsCheap = {
-[7380]=true,[7381]=true,[7382]=true,[7329]=true,[7330]=true,[7331]=true,[7335]=true,[7335]=true,[7336]=true,[7336]=true,[7337]=true,[7337]=true,[7386]=true,[7387]=true,[7388]=true,[7341]=true,[7342]=true,[7343]=true,[7392]=true,[7393]=true,[7394]=true,[7394]=true,[7347]=true,[7348]=true,[7349]=true,
+[8160]=true,[8161]=true,[7596]=true,[7597]=true,[7598]=true,[7936]=true,[7529]=true,[7937]=true,[7530]=true,[7531]=true,[7934]=true,[7935]=true,[7532]=true,[7533]=true,[7534]=true,[7938]=true,[7939]=true,[7535]=true,[7536]=true,[7537]=true,[8162]=true,[8163]=true,[7593]=true,[7594]=true,[7595]=true,[8158]=true,[8159]=true,[7599]=true,[7600]=true,[7601]=true,[7652]=true,[7653]=true,[7654]=true,[7493]=true,[7494]=true,[7495]=true,[7540]=true,[7538]=true,[7539]=true,[8614]=true,[8615]=true,[8608]=true,[8609]=true,[7500]=true,[7501]=true,[7502]=true,[8053]=true,[8054]=true,[7496]=true,[7497]=true,[7498]=true,[7909]=true,[7910]=true,[7546]=true,[7547]=true,[7548]=true,[7906]=true,[7905]=true,[7543]=true,[7544]=true,[7545]=true,[8055]=true,[8056]=true,[8612]=true,[8613]=true,[8051]=true,[8052]=true,[8610]=true,[8611]=true,[7907]=true,[7908]=true,[7549]=true,[7550]=true,[7551]=true,
 [217115]=true,[217114]=true,[217113]=true,
 }
 
-module.db.topEnchGems = IS_TWW and {
+module.db.topEnchGems = IS_MN and {
+	[3368]="DKWeapon:knight",
+	[3370]="DKWeapon:frost",
+	[3847]="DKWeapon:2h",
+
+	[240855]=2,	[240856]=3,	[240857]=2,	[240858]=3,	[240859]=2,
+	[240860]=3,	[240861]=2,	[240862]=3,	[240863]=2,	[240864]=3,
+	[240865]=2,	[240866]=3,	[240867]=2,	[240868]=3,	[240869]=2,
+	[240870]=3,	[240871]=2,	[240872]=3,	[240873]=2,	[240874]=3,
+	[240875]=2,	[240876]=3,	[240877]=2,	[240878]=3,	[240879]=2,
+	[240880]=3,	[240881]=2,	[240882]=3,	[240883]=2,	[240884]=3,
+	[240885]=2,	[240886]=3,	[240887]=2,	[240888]=3,	[240889]=2,
+	[240890]=3,	[240891]=2,	[240892]=3,	[240893]=2,	[240894]=3,
+	[240895]=2,	[240896]=3,	[240897]=2,	[240898]=3,	[240899]=2,
+	[240900]=3,	[240901]=2,	[240902]=3,	[240903]=2,	[240904]=3,
+	[240905]=2,	[240906]=3,	[240907]=2,	[240908]=3,	[240909]=2,
+	[240910]=3,	[240911]=2,	[240912]=3,	[240913]=2,	[240914]=3,
+	[240915]=2,	[240916]=3,	[240917]=2,	[240918]=3,	[240966]=2,
+	[240967]=3,	[240968]=2,	[240969]=3,	[240970]=2,	[240971]=3,
+	[240982]=2,	[240983]=3,
+
+	[7948]=2,	[7949]=3,	[7956]=2,	[7957]=3,	[7958]=2,
+	[7959]=3,	[7960]=2,	[7961]=3,	[7962]=2,	[7963]=3,
+	[7964]=2,	[7965]=3,	[7966]=2,	[7967]=3,	[7968]=2,
+	[7969]=3,	[7970]=2,	[7971]=3,	[7972]=2,	[7973]=3,
+	[7974]=2,	[7975]=3,	[7976]=2,	[7977]=3,	[7978]=2,
+	[7979]=3,	[7980]=2,	[7981]=3,	[7982]=2,	[7983]=3,
+	[7984]=2,	[7985]=3,	[7986]=2,	[7987]=3,	[7988]=2,
+	[7989]=3,	[7990]=2,	[7991]=3,	[7992]=2,	[7993]=3,
+	[7994]=2,	[7995]=3,	[7996]=2,	[7997]=3,	[7998]=2,
+	[7999]=3,	[8000]=2,	[8001]=3,	[8002]=2,	[8003]=3,
+	[8004]=2,	[8005]=3,	[8006]=2,	[8007]=3,	[8008]=2,
+	[8009]=3,	[8010]=2,	[8011]=3,	[8012]=2,	[8013]=3,
+	[8014]=2,	[8015]=3,	[8016]=2,	[8017]=3,	[8018]=2,
+	[8019]=3,	[8020]=2,	[8021]=3,	[8022]=2,	[8023]=3,
+	[8024]=2,	[8025]=3,	[8026]=2,	[8027]=3,	[8028]=2,
+	[8029]=3,	[8030]=2,	[8031]=3,	[8032]=2,	[8033]=3,
+	[8034]=2,	[8035]=3,	[8036]=2,	[8037]=3,	[8038]=2,
+	[8039]=3,	[8040]=2,	[8041]=3,	[8042]=2,	[8043]=3,
+	[8044]=2,	[8045]=3,	[8046]=2,	[8047]=3,
+
+	[7905]=2,	[7906]=1,	[7907]=1,
+	[7908]=2,	[7909]=1,	[7910]=2,	[7934]=1,	[7935]=2,
+	[7936]=1,	[7937]=2,	[7938]=1,	[7939]=2,	[8051]=1,
+	[8052]=2,	[8053]=1,	[8054]=2,	[8055]=1,	[8056]=2,
+	[8158]=1,	[8159]=2,	[8160]=1,	[8161]=2,	[8162]=1,
+	[8163]=2,	[8608]=1,	[8609]=2,	[8610]=1,	[8611]=2,
+	[8612]=1,	[8613]=2,	[8614]=1,	[8615]=2,
+} or IS_TWW and {
 	[3368]="DKWeapon:knight",
 	[3370]="DKWeapon:frost",
 	[3847]="DKWeapon:2h",
@@ -345,7 +394,10 @@ module.db.topEnchGems = IS_TWW and {
 
 
 module.db.achievementsList = {
-	{	--MF
+	{	--MN T1
+		L.S_ZoneT35KD..","..L.S_ZoneT35A..","..L.S_ZoneT35D,
+		61635,61636,61637,61366,61372,61373,61374,61375,61376,61377,61487,61489,61367,61378,61379,
+	},{	--MF
 		L.S_ZoneT34,
 		41601,41602,41603,41598,41604,41605,41606,41607,41608,41609,41610,41611,41624,41625,
 	},{	--LoD
@@ -441,7 +493,9 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--MF
+	{	--MN T1
+		0,0,0,0,{61276,61277,61278,61279},{61280,61281,61282,61283},{61284,61285,61286,61287},{61288,61289,61290,61291},{61292,61293,61294,61295},{61296,61297,61298,61299},0,{61474,61475,61476,61477},0,{61300,61301,61302,61303},{61304,61305,61306,61307},
+	},{	--MF
 		0,0,0,0,{41633,41634,41635,41636},{41637,41638,41639,41640},{41641,41642,41643,41644},{41645,41646,41647,41648},{41649,41650,41651,41652},{41653,41654,41655,41656},{41657,41658,41659,41660},{41661,41662,41663,41664},
 	},{	--LoD
 		0,0,0,0,0,{41299,41300,41301,41302},{41303,41304,41305,41306},{41307,41308,41309,41310},{41311,41312,41313,41314},{41315,41316,41317,41318},{41319,41320,41321,41322},{41323,41324,41325,41326},{41327,41328,41329,41330},
@@ -791,8 +845,12 @@ function module.options:Load()
 		colorizeLowIlvl685 = 482
 	end
 	if IS_TWW then
-		colorizeLowIlvl630 = 680
-		colorizeLowIlvl685 = 710
+		colorizeLowIlvl630 = 120
+		colorizeLowIlvl685 = 150
+	end
+	if IS_MN then
+		colorizeLowIlvl630 = 259
+		colorizeLowIlvl685 = 272
 	end
 
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,8):Point(50,0):Size(50)
@@ -800,6 +858,7 @@ function module.options:Load()
 
 	local enchRankSubMenu
 
+	--[=[
 	enchRankSubMenu = {
 		{text = L.RaidCheckMinRank, isTitle = true},
 		{text = "|A:Professions-ChatIcon-Quality-Tier1:20:20|a 1 ("..L.InspectViewerCheap..")", radio = true, arg1 = 1, checkState = (module.db.minEnchRank or 3) == 1 and module.db.checkCheap, func = function(self,checked)
@@ -857,6 +916,46 @@ function module.options:Load()
 			ELib.ScrollDropDown.UpdateChecks()
 		end},
 	}
+	]=]
+	enchRankSubMenu = {
+		{text = L.RaidCheckMinRank, isTitle = true},
+		{text = "|A:Professions-ChatIcon-Quality-12-Tier1:20:20|a 1 ("..L.InspectViewerCheap..")", radio = true, arg1 = 2, checkState = (module.db.minEnchRank or 3) == 2 and module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = 2
+			module.db.checkCheap = true
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 2 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-12-Tier2:20:20|a 2 ("..L.InspectViewerCheap..")", radio = true, arg1 = 3, checkState = (module.db.minEnchRank or 3) == 3 and module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = nil
+			module.db.checkCheap = true
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 3 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-12-Tier1:20:20|a 1", radio = true, arg1 = 5, checkState = (module.db.minEnchRank or 3) == 2 and not module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = 2
+			module.db.checkCheap = false
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 5 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+		{text = "|A:Professions-ChatIcon-Quality-12-Tier2:20:20|a 2", radio = true, arg1 = 6, checkState = (module.db.minEnchRank or 3) == 3 and not module.db.checkCheap, func = function(self,checked)
+			module.db.minEnchRank = nil
+			module.db.checkCheap = false
+			VMRT.InspectViewer.TopEnchGemsMinRank = module.db.minEnchRank
+			VMRT.InspectViewer.TopEnchGemsCheckCheap = module.db.checkCheap
+			module.options.ReloadPage()
+			for k,v in pairs(enchRankSubMenu) do if v.radio then v.checkState = v.arg1 == 6 end end
+			ELib.ScrollDropDown.UpdateChecks()
+		end},
+	}
 
 	self.chkItemsTrackDropDown.List = {
 		{text = L.InspectViewerColorizeNoEnch,checkable = true,checkState = module.db.colorizeNoEnch, checkFunc = function(self,checked) 
@@ -892,7 +991,7 @@ function module.options:Load()
 		{
 			text = "",
 			isTitle = true,	
-			slider = {min = 600, max = 850, val = module.db.colorizeLowIlvlCustomN, func = function(self,val)
+			slider = {min = 150, max = 500, val = module.db.colorizeLowIlvlCustomN, func = function(self,val)
 				val = floor(val + .5)
 				module.db.colorizeLowIlvlCustomN = val
 				VMRT.InspectViewer.ColorizeLowIlvlCustomN = val
@@ -1337,18 +1436,19 @@ function module.options:Load()
 									icon.text:SetText("|c"..(itemColor or "ffffffff")..(itemLevel or ""))
 
 									local isSlotForEnchant = 
-										(slotID == 2 and IS_LOW) or 
-										(slotID == 15 and IS_LOW) or 
-										slotID == 11 or 
-										slotID == 12 or 
-										(slotID == 16) or 
-										(slotID == 17 and module.db.specHasOffhand[spec or 0]) or 
-										(slotID == 15 and IS_SL) or 
-										(slotID == 8 and (IS_DF or (module:GetSpecMainStat(spec)=="agi" and IS_SL))) or 
-										(slotID == 9 and (IS_DF or (module:GetSpecMainStat(spec)=="int" and IS_SL))) or 
-										(slotID == 10 and ((module:GetSpecMainStat(spec)=="str" and IS_SL) and not IS_DF)) or 
-										(slotID == 5 and IS_SL) or 
-										(slotID == 7 and IS_DF)
+										(slotID == 2 and IS_LOW) or 	--INVSLOT_NECK
+										slotID == 11 or 		--INVSLOT_FINGER1
+										slotID == 12 or 		--INVSLOT_FINGER2
+										(slotID == 16) or 		--INVSLOT_MAINHAND
+										(slotID == 17 and module.db.specHasOffhand[spec or 0]) or 	--INVSLOT_OFFHAND
+										(slotID == 15 and IS_SL and not IS_MN) or 	--INVSLOT_BACK
+										(slotID == 8 and (IS_DF or (module:GetSpecMainStat(spec)=="agi" and IS_SL))) or 	--INVSLOT_FEET
+										(slotID == 9 and (IS_DF or (module:GetSpecMainStat(spec)=="int" and IS_SL)) and not IS_MN) or 	--INVSLOT_WRIST
+										(slotID == 10 and ((module:GetSpecMainStat(spec)=="str" and IS_SL) and not IS_DF)) or 	--INVSLOT_HAND
+										(slotID == 5 and IS_SL) or 	--INVSLOT_CHEST
+										(slotID == 7 and IS_DF)	or	--INVSLOT_LEGS
+										(slotID == 3 and IS_MN)	or	--INVSLOT_SHOULDER
+										(slotID == 1 and IS_MN)		--INVSLOT_HEAD
 
 									if isSlotForEnchant and isLemix then
 										isSlotForEnchant = false

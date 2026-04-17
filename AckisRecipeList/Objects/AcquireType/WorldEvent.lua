@@ -21,11 +21,13 @@ private.RegisterAcquireType({
 	-- ----------------------------------------------------------------------------
 	_func_expand_list_entry = function(self, entry_index, entry_type, parent_entry, identifier, info, recipe, hide_location, hide_type)
 		local color_hex = self:ColorData().hex
+		local entity = self:GetEntity(identifier)
 		local entry = private.CreateListEntry(entry_type, parent_entry, recipe)
+		entry:SetLocation(entity.Location)
 		entry:SetText("%s%s %s",
 			self.EntryPadding,
 			hide_type and "" or private.SetTextColor(color_hex, self:Name()) .. ":",
-			private.SetTextColor(color_hex, self:GetEntity(identifier).name))
+			private.SetTextColor(color_hex, entity.name))
 
 		return private.list_frame:InsertEntry(entry, entry_index, true)
 	end,

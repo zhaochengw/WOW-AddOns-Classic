@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(73720, 71512)
 mod:SetEncounterID(1594)
 mod:DisableESCombatDetection()
@@ -90,7 +91,6 @@ local berserkTimer				= mod:NewTimer(480, DBM_CORE_L.GENERIC_TIMER_BERSERK, 2813
 local berserkWarning1			= mod:NewAnnounce(DBM_CORE_L.GENERIC_WARNING_BERSERK, 1, nil, "warning_berserk", false)
 local berserkWarning2			= mod:NewAnnounce(DBM_CORE_L.GENERIC_WARNING_BERSERK, 4, nil, "warning_berserk", false)
 
-mod:AddRangeFrameOption(10, 145987)
 mod:AddInfoFrameOption(-8350)--Eh, "overview" works.
 
 --Upvales, don't need variables
@@ -98,12 +98,6 @@ local select, tonumber, UnitPosition = select, tonumber, UnitPosition
 --Not important, don't need to recover
 local worldTimer = 0
 local maxTimer = 0
-
-local function hideRangeFrame()
-	if mod.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:OnCombatStart(delay)
 	worldTimer = 0
@@ -122,9 +116,6 @@ end
 
 function mod:OnCombatEnd()
 	self:UnregisterShortTermEvents()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
@@ -266,10 +257,6 @@ function mod:RAID_BOSS_WHISPER(msg)
 	if msg:find("spell:146364") then
 		specWarnSetToBlowYou:Show()
 		specWarnSetToBlowYou:Play("bombyou")
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10)--Range assumed, spell tooltips not informative enough
-			self:Schedule(32, hideRangeFrame)
-		end
 	end
 end
 

@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(826, "DBM-Pandaria", nil, 322)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20240420125841")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(69161)
 mod:SetEncounterID(1587)
 mod:SetReCombatTime(20, 10)
@@ -30,7 +31,6 @@ local timerCrushCD				= mod:NewCDTimer(26, 137504, nil, "Tank", nil, 5, nil, DBM
 local timerPiercingRoarCD		= mod:NewCDTimer(25, 137457)--25-60sec variation (i'm going to guess like all the rest of the variations, the timers are all types of fucked up when the boss is running around untanked, which delays casts of crush and frill blast, but makes him cast spitfire twice as often)
 local timerFrillBlastCD			= mod:NewCDTimer(25, 137505, nil, nil, nil, 5)--25-30sec variation
 
-mod:AddRangeFrameOption(10, 137511)
 mod:AddReadyCheckOption(32519, false)
 
 function mod:OnCombatStart(delay, yellTriggered)
@@ -39,16 +39,8 @@ function mod:OnCombatStart(delay, yellTriggered)
 		timerPiercingRoarCD:Start(15-delay)
 		timerFrillBlastCD:Start(30-delay)
 	end
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)--range is guessed. spell tooltip and EJ do not save what range is right now.
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

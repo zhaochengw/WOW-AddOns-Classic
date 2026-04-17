@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Jergosh", "DBM-Party-Vanilla", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103114940")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(11518)
 --mod:SetEncounterID(1444)
 mod:SetZone(389)

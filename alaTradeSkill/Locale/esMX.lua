@@ -40,6 +40,7 @@ l10n["showItemInsteadOfSpellTip"] = "Show item in tip instead of spell";
 l10n["showRankTip"] = "Show colored difficulty rank";
 --
 l10n["PROFIT_SHOW_COST_ONLY"] = "Show cost only";
+l10n["PROFIT_SHOW_CUR_EXPAC_ONLY"] = "Current Expac Only";
 --
 l10n["LABEL_GET_FROM"] = "|cffff7f00Get from: |r";
 l10n["quest"] = "Quest";

@@ -64,13 +64,14 @@ local function InitializeLogSystem()
 end
 
 addon.TargetMapIds = {
-    [2773] = true,
-    [2649] = true,
-    [2662] = true,
-    [2660] = true,
-    [2830] = true,
-    [2287] = true,
-    [2441] = true,
+    [658] = true,
+    [1209] = true,
+    [1753] = true,
+    [2526] = true,
+    [2805] = true,
+    [2811] = true,
+    [2874] = true,
+    [2915] = true,
 }
 
 local function RegisterSlashCommands()
@@ -176,9 +177,9 @@ function MythicDetector:SetupNativeEvents()
         if event == "CHALLENGE_MODE_START" then
             MythicDetector:OnNativeChallengeStart(...)
         elseif event == "CHALLENGE_MODE_COMPLETED" then
-            private.log("CHALLENGE_MODE_COMPLETED Event")
+            MythicDetector:OnNativeChallengeCompleted(...)
         elseif event == "CHALLENGE_MODE_RESET" then
-            private.log("CHALLENGE_MODE_RESET Event")
+            MythicDetector:OnNativeChallengeReset()
         end
     end)
 end
@@ -206,7 +207,7 @@ function MythicDetector:OnNativeChallengeStart(mapChallengeModeID)
         return
     end
 
-    private.log("CHALLENGE_MODE_START, starting 10 seconds timer.")
+    private.log("CHALLENGE_MODE_START, starting 12 seconds timer.")
     C_Timer.After(12, function()
         if self.isInChallenge then
             private.log("Challenge already started by another detector, skipping")
@@ -233,6 +234,25 @@ function MythicDetector:OnNativeChallengeStart(mapChallengeModeID)
     end)
 end
 
+function MythicDetector:OnNativeChallengeCompleted(mapChallengeModeID, elapsed, keystone)
+    private.log("Native Challenge Completed Event:", mapChallengeModeID, elapsed)
+
+    local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
+    if difficultyID == 8 then
+        private.log("Confirmed Mythic+ completion (difficultyID=8), proceeding with dungeon end")
+        self:TriggerMythicEnd()
+    else
+        private.log("Not a Mythic+ completion (difficultyID=" .. tostring(difficultyID) .. "), ignoring event")
+    end
+end
+
+function MythicDetector:OnNativeChallengeReset()
+    private.log("Native Challenge Reset Event")
+    if self.isInChallenge then
+        self:TriggerMythicEnd()
+    end
+end
+
 function MythicDetector:TriggerMythicStart(mapID)
     private.log("Mythic Dungeon Started (Independent Detection):", mapID)
 
@@ -253,105 +273,6 @@ end
 
 function addon.OnMythicDungeonStart(mapID)
     private.log("OnMythicDungeonStart:", mapID, "auto_combat_log:", MythicArchiveDB and MythicArchiveDB.auto_combat_log or "nil")
-
-    local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
-
-    if instanceID and addon.TargetMapIds[instanceID] then
-        C_Timer.After(2, function()
-            local cmLevel = 0
-            if C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo then
-                local level = C_ChallengeMode.GetActiveKeystoneInfo()
-                cmLevel = level or 0
-            end
-
-            local dungeonName = "Unknown Dungeon"
-            if C_ChallengeMode and C_ChallengeMode.GetMapUIInfo and mapID then
-                local dName = C_ChallengeMode.GetMapUIInfo(mapID)
-                if dName then
-                    dungeonName = dName
-                end
-            end
-
-            local finalMapID = instanceID
-            if instanceID == 2441 then
-                if mapID == 391 then
-                    finalMapID = "2441_2031"
-                elseif mapID == 392 then
-                    finalMapID = "2441_2032"
-                else
-                    if dungeonName == "塔扎维什：琳彩天街" or dungeonName == "Tazavesh: Streets of Wonder" then
-                        finalMapID = "2441_2031"
-                    elseif dungeonName == "塔扎维什：索·莉亚的宏图" or dungeonName == "Tazavesh: So'leah's Gambit" then
-                        finalMapID = "2441_2032"
-                    end
-                end
-            else
-                finalMapID = instanceID
-            end
-
-            local teamInfo = {}
-            local units = {"player", "party1", "party2", "party3", "party4"}
-
-            for _, unit in ipairs(units) do
-                if UnitExists(unit) then
-                    local name, server = UnitName(unit)
-                    if name and name ~= "" and name ~= "Unknown" then
-                        if not server or server == "" then
-                            server = GetRealmName()
-                        end
-
-                        local _, classFileName, uintId = UnitClass(unit)
-                        local specID = 0
-
-                        if unit == "player" then
-                            local currentSpec = GetSpecialization()
-                            if currentSpec then
-                                local id = GetSpecializationInfo(currentSpec)
-                                specID = id or 0
-                            end
-                        else
-                            specID = GetInspectSpecialization(unit) or 0
-                        end
-
-                        local role = UnitGroupRolesAssigned(unit)
-                        if role == "NONE" and specID and specID > 0 then
-                            role = GetSpecializationRoleByID(specID)
-                        end
-
-                        local ilevel = 0
-                        if unit == "player" then
-                            local _, avg = GetAverageItemLevel()
-                            ilevel = math.floor(avg)
-                        end
-
-                        table.insert(teamInfo, {
-                            name = name,
-                            server = server,
-                            class = classFileName,
-                            spec = specID,
-                            role = role,
-                            ilevel = ilevel,
-                            isSelf = (unit == "player"),
-                            classId = uintId,
-                        })
-                    end
-                end
-            end
-
-            local mythicTeamInfo = {
-                dungeonStartTime = time(),
-                dungeonLv = cmLevel,
-                dungeonName = dungeonName,
-                teamInfo = teamInfo,
-                mapId = finalMapID
-            }
-
-            if ns and ns.PixelComm then
-                ns.PixelComm:sendCommand('mythicTeamInfo', mythicTeamInfo)
-                private.log("Sent mythicTeamInfo for map " .. instanceID)
-            end
-        end)
-    end
 end
 
 function addon.OnMythicDungeonEnd(mapID)
@@ -367,7 +288,7 @@ function addon.InitializeMythicPlus()
 
     InitializeLogSystem()
 
-    if MythicArchiveDB.auto_combat_log == nil then
+    if MythicArchiveDB and MythicArchiveDB.auto_combat_log == nil then
         MythicArchiveDB.auto_combat_log = false
     end
 

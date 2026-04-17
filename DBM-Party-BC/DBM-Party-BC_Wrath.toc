@@ -1,4 +1,4 @@
-## Interface: 30405, 38000
+## Interface: 30405, 38001
 ## X-Min-Interface-Wrath: 30400
 ## Category: DBM
 
@@ -32,9 +32,8 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 1
 ## X-Curse-Project-ID: 314994
-## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r225
+## Version: r245
 
 localization.en.lua
 localization.de.lua

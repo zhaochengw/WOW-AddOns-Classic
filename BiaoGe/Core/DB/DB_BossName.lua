@@ -211,13 +211,13 @@ do
     if BG.IsVanilla then
         local boss = {
             { name = L["阿努布雷坎"], color = "7B68EE", },
-            { name = L["黑女巫法琳娜"], color = "7B68EE", },
+            { name = L["法琳娜"], color = "7B68EE", },
             { name = L["迈克斯纳"], color = "7B68EE", },
-            { name = L["瘟疫使者诺斯"], color = "9932CC", },
-            { name = L["肮脏的希尔盖"], color = "9932CC", },
+            { name = L["诺斯"], color = "9932CC", },
+            { name = L["希尔盖"], color = "9932CC", },
             { name = L["洛欧塞布"], color = "9932CC", },
             { name = L["教官"], color = "FF69B4", },
-            { name = L["收割者戈提克"], color = "FF69B4", },
+            { name = L["戈提克"], color = "FF69B4", },
             { name = L["天启四骑士"], color = "FF69B4", },
             { name = L["帕奇维克"], color = "FFD100", },
             { name = L["格罗布鲁斯"], color = "FFD100", },
@@ -234,14 +234,55 @@ end
 -- TBC
 do
     local boss = {
-        { name = L["卡雷苟斯"], color = "87CEFA" },
-        { name = L["布鲁塔卢斯"], color = "CC6600" },
-        { name = L["菲米丝"], color = "D3D3D3" },
-        { name = L["艾瑞达双子"], color = "FF69B4" },
-        { name = L["穆鲁"], color = "7B68EE" },
-        { name = L["基尔加丹"], color = "FF3300" },
+        { name = L["猎手阿图门"], color = "32CD32" },
+        { name = L["莫罗斯"], color = "87CEFA" },
+        { name = L["贞节圣女"], color = "FFFF00" },
+        { name = L["歌剧院"], color = "9932CC" },
+        { name = L["馆长"], color = "00BFFF" },
+        { name = L["邪蹄"], color = "CC6600" },
+        { name = L["埃兰之影"], color = "FF7F50" },
+        { name = L["虚空幽龙"], color = "D3D3D3" },
+        { name = L["国际象棋"], color = "7B68EE" },
+        { name = L["玛克扎尔王子"], color = "FF3300" },
+        { name = L["夜之魇"], color = "FF3300" },
     }
-    local FB = "SW"
+    local FB = "KZ"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["莫加尔大王"], color = "CC6600" },
+        { name = L["屠龙者格鲁尔"], color = "CC6600" },
+        { name = L["玛瑟里顿"], color = "32CD32" },
+    }
+    local FB = "GL"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["海度斯"], color = "32CD32" },
+        { name = L["鱼斯拉"], color = "87CEFA" },
+        { name = L["盲眼者"], color = "D3D3D3" },
+        { name = L["深水领主"], color = "9932CC" },
+        { name = L["踏潮者"], color = "CC6600" },
+        { name = L["瓦丝琪"], color = "00BFFF" },
+        { name = L["奥"], color = "FF7F50" },
+        { name = L["空灵机甲"], color = "FFFF00" },
+        { name = L["大星术师"], color = "7B68EE" },
+        { name = L["凯尔萨斯"], color = "FF3300" },
+    }
+    local FB = "SSC"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["雷基・冬寒"], color = "87CEFA" },
+        { name = L["安纳塞隆"], color = "CD5C5C" },
+        { name = L["卡兹洛加"], color = "FFD700" },
+        { name = L["阿兹加洛"], color = "CC6600" },
+        { name = L["阿克蒙德"], color = "FF3300" },
+    }
+    local FB = "HS"
     Addother(boss)
     AddDB(FB, boss)
 
@@ -261,29 +302,14 @@ do
     AddDB(FB, boss)
 
     local boss = {
-        { name = L["雷基・冬寒"], color = "87CEFA" },
-        { name = L["安纳塞隆"], color = "CD5C5C" },
-        { name = L["卡兹洛加"], color = "FFD700" },
-        { name = L["阿兹加洛"], color = "CC6600" },
-        { name = L["阿克蒙德"], color = "FF3300" },
+        { name = L["卡雷苟斯"], color = "87CEFA" },
+        { name = L["布鲁塔卢斯"], color = "CC6600" },
+        { name = L["菲米丝"], color = "D3D3D3" },
+        { name = L["艾瑞达双子"], color = "FF69B4" },
+        { name = L["穆鲁"], color = "7B68EE" },
+        { name = L["基尔加丹"], color = "FF3300" },
     }
-    local FB = "HS"
-    Addother(boss)
-    AddDB(FB, boss)
-
-    local boss = {
-        { name = L["海度斯"], color = "32CD32" },
-        { name = L["鱼斯拉"], color = "87CEFA" },
-        { name = L["盲眼者"], color = "D3D3D3" },
-        { name = L["深水领主"], color = "9932CC" },
-        { name = L["踏潮者"], color = "CC6600" },
-        { name = L["瓦丝琪"], color = "00BFFF" },
-        { name = L["奥"], color = "FF7F50" },
-        { name = L["空灵机甲"], color = "FFFF00" },
-        { name = L["大星术师"], color = "7B68EE" },
-        { name = L["凯尔萨斯"], color = "FF3300" },
-    }
-    local FB = "SSC"
+    local FB = "SW"
     Addother(boss)
     AddDB(FB, boss)
 end
@@ -414,6 +440,49 @@ do
     local FB = "SSCtitan"
     Addother(boss)
     AddDB(FB, boss)
+
+    local boss = {
+        { name = L["阿努布雷坎"], color = "7B68EE", },
+        { name = L["法琳娜"], color = "7B68EE", },
+        { name = L["迈克斯纳"], color = "7B68EE", },
+        { name = L["帕奇维克"], color = "FFD100", },
+        { name = L["格罗布鲁斯"], color = "FFD100", },
+        { name = L["格拉斯"], color = "FFD100", },
+        { name = L["塔迪乌斯"], color = "FFD100", },
+        { name = L["教官"], color = "FF69B4", },
+        { name = L["戈提克"], color = "FF69B4", },
+        { name = L["天启四骑士"], color = "FF69B4", },
+        { name = L["诺斯"], color = "9932CC", },
+        { name = L["希尔盖"], color = "9932CC", },
+        { name = L["洛欧塞布"], color = "9932CC", },
+        { name = L["萨菲隆"], color = "90EE90", },
+        { name = L["克尔苏加德"], color = "90EE90", },
+        { name = L["萨塔里奥"], color = "CC6600", },
+        { name = L["玛里苟斯"], color = "87CEFA", },
+    }
+    local FB = "NAXXtitan"
+    Addother(boss)
+    AddDB(FB, boss)
+
+    local boss = {
+        { name = L["耶克里克"], color = "98FB98" },
+        { name = L["温诺希斯"], color = "98FB98" },
+        { name = L["玛尔里"], color = "EE82EE" },
+        { name = L["血领主"], color = "EE82EE" },
+        { name = L["疯狂之缘"], color = "00BFFF" },
+        { name = L["加兹兰卡"], color = "00BFFF" },
+        { name = L["塞卡尔"], color = "00FF00" },
+        { name = L["娅尔罗"], color = "00FF00" },
+        { name = L["妖术师金度"], color = "FFFF00" },
+        { name = L["哈卡"], color = "FF4500" },
+        { name = L["诺森德猛兽"], color = "32CD32" },
+        { name = L["加拉克苏斯"], color = "CD5C5C" },
+        { name = L["阵营冠军"], color = "FFD700" },
+        { name = L["瓦格里双子"], color = "7B68EE" },
+        { name = L["阿努巴拉克"], color = "00BFFF" },
+    }
+    Addother(boss)
+    AddDB("TOCtitan", boss)
 end
 
 -- CTM

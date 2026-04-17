@@ -1922,7 +1922,10 @@ function AccountantClassicTab_OnClick(self)
 	LibDD:CloseDropDownMenus()
 	PanelTemplates_SetTab(AccountantClassicFrame, self:GetID());
 	AC_CURRTAB = self:GetID();
-	PlaySound(841);
+	-- MOP 5.5.3 compatible sound play
+	if PlaySound then
+		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 841)
+	end
 	AccountantClassic_OnShow();
 end
 ]]
@@ -2279,7 +2282,10 @@ function AccountantClassicTabButtonMixin:OnClick()
 	LibDD:CloseDropDownMenus()
 	PanelTemplates_SetTab(AccountantClassicFrame, id)
 	AC_CURRTAB = id
-	PlaySound(841)
+	-- MOP 5.5.3 compatible sound play
+	if PlaySound then
+		PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 841)
+	end
 	AccountantClassic_OnShow()
 end
 

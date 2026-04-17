@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2025-03-17T00:52:31Z
+    This file was last updated on 2026-02-26T01:29:57Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -94,6 +94,7 @@ local MAX_RAID_MEMBERS      = _G.MAX_RAID_MEMBERS;
 local setmetatable          = _G.setmetatable;
 local rawget                = _G.rawget;
 local GetTime               = _G.GetTime;
+local canaccessvalue        = _G.canaccessvalue or function(_) return true; end
 -------------------------------------------------------------------------------
 
 -- GROUP STATUS UPDATE, these functions update the UNIT table to scan
@@ -249,8 +250,21 @@ do
     local UnitToGUID_mt = { __index = function(self, unit)
         local GUID = _UnitGUID(unit) or false;
 
-        self[unit] = GUID;
-        GUIDToUnit[GUID] = unit;
+        local guidAccessible = canaccessvalue(GUID)
+
+        --[=[@alpha@
+        --if not guidAccessible then
+            -- fails on high restrictions (secretMapRestrictionsForced while dueling but not in real combat in a real dungeon during an encounter...)
+            -- setting this debug report generation so we can test if this can really happen in normal game conditions
+          --  D:AddDebugText("could not access guid for unit:" .. unit)
+          -- ok it does happen in normal game conditions:
+          --          4225.1120 (tr:'Dcr_Delayed_MFsDisplay_Update' ca:'false' icl:'false' rs:'Ma:1' h28_w29-43fps-Manaforge Oméga): could not access guid for unit:raid1
+        --end
+        --@end-alpha@]=]
+
+		-- this GUID cache was there to map CLEU to unit ids... so it's not really useful in Midnight (I need to check this though)
+        self[unit] = guidAccessible and GUID or unit;
+        GUIDToUnit[self[unit]] = unit;
 
         return self[unit];
     end };
@@ -452,7 +466,7 @@ do
         t_insert(SortingTable, unit);
 
         UnitInfo[unit] = {
-            ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit))];
+            ["class"]  = DC.ClassUNameToNum[select(2, _UnitClass(unit)) or DC.CLASS_WARRIOR]; -- issue #46: sometimes nil is returned on pets right after joining a group
             ["GUID"]   = GUID;
             ["group"]  = group;
             ["RaidID"] = id;
@@ -677,7 +691,11 @@ do
         D:Debug("Source priority list:", #self.profile.PriorityList, D:tAsString(self.profile.PriorityList));
         for i, unit in ipairs(Status.Unit_Array) do
             unit = Status.Unit_Array[i];
-            D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
+            if DC.ClassNumToUName[UnitInfo[unit].class] then
+                D:Debug(D:ColorTextNA(unit, D:GetClassHexColor(DC.ClassNumToUName[UnitInfo[unit].class])), DC.ClassNumToUName[UnitInfo[unit].class], UnitInfo[unit].group and "g"..UnitInfo[unit].group or nil, "i"..UnitInfo[unit].RaidID, UnitInfo[unit].role);
+            else
+                self:AddDebugText("issue #46 debug:", unit, UnitInfo[unit].class, "_UC: ",  select(2, _UnitClass(unit)));
+            end
         end
         --@end-debug@]==]
     end
@@ -686,7 +704,7 @@ end
 
 
 -------------------------------------------------------------------------------
-T._LoadedFiles["Dcr_Raid.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_Raid.lua"] = "2.8.0-RC3";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

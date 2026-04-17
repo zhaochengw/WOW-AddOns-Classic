@@ -15,7 +15,7 @@ MT.BuildEnv("alaTrade");
 
 
 MT.RegsiterAuctionModOnLoad("alaTrade", function()
-	local merc = VT.__super.merc;
+	local merc = VT.__dep.merc;
 	if merc ~= nil then
 		local mod = {  };
 		mod.F_QueryPriceByName = merc.F_QueryPriceByName or merc.query_ah_price_by_name;

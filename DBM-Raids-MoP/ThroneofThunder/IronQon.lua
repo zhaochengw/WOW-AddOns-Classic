@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(817, "DBM-Raids-MoP", 2, 362)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260126031700")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(68078, 68079, 68080, 68081)--Ro'shak 68079, Quet'zal 68080, Dam'ren 68081, Iron Qon 68078
 mod:SetEncounterID(1559)
 mod:SetMainBossID(68078)
@@ -104,9 +105,7 @@ local function notEligable(unit)
 	--However, if he targets a monk that IS in melee, he switches to a different target (again, i've seen him target our mistweaver in melee range, then instantly switched to ANOTHER target because the mistweaver was in melee).
 	--We assume any monk within 15 yards of tank is in melee range, may be wrong once in a blue moon.
 	--Should fairly accurately allow the mod to announce spears on monks outside melee range while ignoring monk targets in melee range
-	if (select(2, UnitClass(unit)) == "MONK") and (DBM.RangeCheck:GetDistance(unit, "boss2target") <= 15) then
-		return true
-	end
+	--Unfortunately distance checks no longer possible so above monk logic is now not possible
 	return false
 end
 

@@ -12,22 +12,23 @@ C_ChatInfo.RegisterAddonMessagePrefix("BiaoGe") -- 注册插件通信频道
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeVIP")
 C_ChatInfo.RegisterAddonMessagePrefix("BiaoGeWorldBoss")
 
-BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameTooltipTemplate")   -- 用于装备过滤功能
-BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate") -- 用于装备库
+BiaoGeTooltip = CreateFrame("GameTooltip", "BiaoGeTooltip", UIParent, "GameTooltipTemplate")              -- 用于装备过滤功能
+BiaoGeTooltip2 = CreateFrame("GameTooltip", "BiaoGeTooltip2", UIParent, "GameTooltipTemplate")            -- 用于装备库
 BiaoGeTooltip2:SetClampedToScreen(false)
-BiaoGeTooltip3 = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
-BiaoGeTooltip4 = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParent, "GameTooltipTemplate") -- 用于装等获取
+BiaoGeTooltip3            = CreateFrame("GameTooltip", "BiaoGeTooltip3", UIParent, "GameTooltipTemplate") -- 用于装备过期提醒
+BiaoGeTooltip4            = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParent, "GameTooltipTemplate") -- 用于装等获取
 
 -- 游戏按键设置
-BINDING_HEADER_BIAOGE = "BiaoGe"
-BINDING_NAME_BIAOGE = L["打开/关闭表格"]
+BINDING_HEADER_BIAOGE     = "BiaoGe"
+BINDING_NAME_BIAOGE       = L["打开/关闭表格"]
 BINDING_NAME_RoleOverview = L["打开/关闭角色总览"]
 
-local realmID = GetRealmID()
-local player = BG.playerName
-local realmName = BG.realmName
-local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata
-local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
+local realmID             = GetRealmID()
+local player              = BG.playerName
+local realmName           = BG.realmName
+local GetAddOnMetadata    = GetAddOnMetadata or C_AddOns.GetAddOnMetadata
+local IsAddOnLoaded       = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
+local LoadAddOn           = LoadAddOn or C_AddOns.LoadAddOn
 
 -- 全局变量
 do
@@ -40,7 +41,6 @@ do
     BG.phaseFBtable = {}
     BG.bossPositionStartEnd = {}
     BG.FBfromBossPosition = {}
-    BG.instanceIDfromBossPosition = {}
     BG.Movetable = {}
     BG.options = {}
     BG.itemCaches = {}
@@ -53,7 +53,7 @@ do
     BG.ver = "v" .. GetAddOnMetadata(AddonName, "Version")
     BG.BG = "|cff00BFFF<BiaoGe>|r "
     BG.rareIcon = "|A:nameplates-icon-elite-silver:0:0|a"
-    BG.iconTexCoord = { .06, .94, .06, .94 }
+    BG.iconTexCoord = { .07, .93, .07, .93 }
     BG.zaxiang = {} -- 杂项如果太多，则需要换列
     BG.zhuangbeiWidth = 140
     BG.zhuangbeiWidth2 = 235
@@ -68,7 +68,7 @@ do
     end
 
     BG.blackListPlayer = {}
-    if not BG.IsVanilla then
+    if not BG.verLess2 then
         BG.blackListPlayer = {
             ["匕首岭"] = {
                 ["曰日曰日曰"] = true,
@@ -91,7 +91,7 @@ do
         }
     end
 
-    if BG.blackListPlayer[realmName] and BG.blackListPlayer[realmName][BG.GN()] then
+    if BG.blackListPlayer[realmName] and BG.blackListPlayer[realmName][BG.playerName] then
         BG.IsBlackListPlayer = true
     end
 end
@@ -105,6 +105,7 @@ do
     local mainFrameWidth                       = 1275
     local mainFrameWidth2                      = 1685
     local Maxt, Maxb, Maxi, HopeMaxb, HopeMaxn = {}, {}, {}, {}, {}
+    -- 表格大小、排列方式、BOSS格子数
     do
         local function AddDB(FB, width, height, maxt, maxb,
                              bossNumTbl, diffTbl, diffIDTbl, maxiTbl, zaxiangI)
@@ -174,8 +175,14 @@ do
                 { 5, 5, 5, 5, 5, 5, 28, 5, }, 23)
             AddDB("TAQ", mainFrameWidth, 810, 3, 11, { 0, 6, 10 }, nil, nil,
                 { 4, 4, 4, 4, 4, 4, 4, 4, 6, 19, 5, }, 13)
-            AddDB("NAXX", mainFrameWidth2, 810, 4, 17, { 0, 6, 12, 16 }, nil, nil,
-                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 12, 12, })
+            AddDB("NAXX", mainFrameWidth, 900, 3, 17, { 0, 8, 15 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 12, 9, })
+        end
+        if BG.IsTBC then
+            AddDB("KZ", mainFrameWidth, 810, 3, 13, { 0, 6, 12 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 10, 5, }, 5)
+            AddDB("GL", mainFrameWidth, 810, 2, 5, { 0, 4, }, nil, nil,
+                { 6, 6, 8, 6, 13 })
         end
         if BG.IsWLK_80 then
             local difTbl1 = {
@@ -231,12 +238,16 @@ do
                 { 5, 5, 5, 5, 5, 5, 5, 6, 9, 12, })
         end
         if BG.IsTitan then
+            AddDB("Worldtitan", mainFrameWidth, 930, 3, 10, { 0, 4, 8 }, nil, nil,
+                { 9, 9, 9, 9, 9, 9, 9, 9, 3, 4 })
             AddDB("MCtitan", mainFrameWidth, 870, 3, 12, { 0, 6, 11 }, nil, nil,
                 { 5, 5, 5, 5, 5, 6, 5, 5, 5, 6, 11, 20, })
             AddDB("SSCtitan", mainFrameWidth, 870, 3, 12, { 0, 6, 11 }, nil, nil,
                 { 5, 5, 5, 5, 5, 6, 5, 5, 5, 7, 18, 11, }, 11)
-            AddDB("Worldtitan", mainFrameWidth, 930, 3, 10, { 0, 4, 8 }, nil, nil,
-                { 9, 9, 9, 9, 9, 9, 9, 9, 3, 4 })
+            AddDB("NAXXtitan", mainFrameWidth2, 870, 4, 19, { 0, 6, 12, 16 }, nil, nil,
+                { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 8, 12, 6, 7, 5, })
+            AddDB("TOCtitan", mainFrameWidth, 900, 3, 17, { 0, 8, 14 }, nil, nil,
+                { 4, 4, 4, 4, 4, 4, 4, 4, 5, 8, 5, 5, 5, 5, 6, 9, 5, })
         end
         if BG.IsCTM then
             AddDB("BOT", mainFrameWidth2, 830, 4, 15, { 0, 5, 10, 14 }, { "N", "H" }, nil,
@@ -259,6 +270,7 @@ do
         end
     end
 
+    -- 表格基础信息
     do
         local function AddDB(FB, instanceID, phase, maxplayers, lootQuality,
                              phaseTable, bossPositionTbl, shortName)
@@ -287,23 +299,17 @@ do
             for i = 1, Maxb[FB] do
                 BG.FBfromBossPosition[FB][i] = { name = FB, localName = localName }
             end
-            BG.instanceIDfromBossPosition[FB] = {}
-            for i = 1, Maxb[FB] - 2 do
-                BG.instanceIDfromBossPosition[FB][i] = instanceID
-            end
         end
         local function AddOneBoss(FB, instanceID, bossNum, name)
             BG.FBIDtable[instanceID] = FB
             BG.bossPositionStartEnd[instanceID] = { bossNum, bossNum }
             BG.FBfromBossPosition[FB][bossNum] = { name = name, localName = GetRealZoneText(instanceID) }
-            BG.instanceIDfromBossPosition[FB][bossNum] = instanceID
         end
 
         if BG.IsVanilla_Sod then
             BG.FB1 = "MCsod"
             BG.fullLevel = 60
             BG.fullLevel_RoleOverview = 25
-            BG.theEndBossID = { 672, 617, } -- MC BWL
             AddDB("BD", 48, "P1", 10, 3)
             AddDB("Gno", 90, "P2", 10, 3)
             AddDB("Temple", 109, "P3", 20, 3)
@@ -324,7 +330,6 @@ do
             BG.FB1 = "MC"
             BG.fullLevel = 60
             BG.fullLevel_RoleOverview = 35
-            BG.theEndBossID = { 672, 617, 793, 723, 717, 1114 } --MC BWL ZUG AQL TAQ NAXX
             AddDB("MC", 409, "P1-P2", 40, nil, nil, { 1, 10 })
             AddDB("BWL", 469, "P3", 40)
             AddDB("ZUG", 309, "P4", 20, 3)
@@ -335,15 +340,25 @@ do
             BG.FBIDtable[249] = "MC" -- 奥妮克希亚的巢穴
             BG.bossPositionStartEnd[249] = { 11, 11 }
             BG.FBfromBossPosition["MC"][11] = { name = "OL", localName = GetRealZoneText(249) }
-            BG.instanceIDfromBossPosition["MC"][11] = 249
 
             BG.spFB.NAXX = { 22726 }
+        end
+        if BG.IsTBC then
+            BG.FB1 = "KZ"
+            BG.fullLevel = 70
+            BG.fullLevel_RoleOverview = 35
+            AddDB("KZ", 532, "P1", 10, nil, { "KZ", "GL" })
+            local P2FB = "SSCtitan"
+            local TKmapID = 550
+            AddDB("GL", 565, "P1", 25, nil, { "KZ", "GL" })
+            BG.FBIDtable[544] = "GL" -- 玛瑟里顿
+            BG.bossPositionStartEnd[544] = { 3, 3 }
+            BG.FBfromBossPosition["GL"][3] = { name = "ML", localName = GetRealZoneText(544) }
         end
         if BG.IsWLK_80 then
             BG.FB1 = "NAXX"
             BG.fullLevel = 80
             BG.fullLevel_RoleOverview = 60
-            BG.theEndBossID = { 1114, 756, 645, 856, }
 
             AddDB("NAXX", 533, "P1", nil, nil, nil, { 1, 15 })
             AddDB("ULD", 603, "P2")
@@ -353,22 +368,18 @@ do
             BG.FBIDtable[615] = "NAXX" -- 黑曜石圣殿
             BG.bossPositionStartEnd[615] = { 16, 16 }
             BG.FBfromBossPosition["NAXX"][16] = { name = "OS", localName = GetRealZoneText(615) }
-            BG.instanceIDfromBossPosition["NAXX"][16] = 615
 
             BG.FBIDtable[616] = "NAXX" -- 永恒之眼
             BG.bossPositionStartEnd[616] = { 17, 17 }
             BG.FBfromBossPosition["NAXX"][17] = { name = "EOE", localName = GetRealZoneText(616) }
-            BG.instanceIDfromBossPosition["NAXX"][17] = 616
 
             BG.FBIDtable[249] = "TOC" -- 奥妮克希亚的巢穴
             BG.bossPositionStartEnd[249] = { 7, 7 }
             BG.FBfromBossPosition["TOC"][7] = { name = "OL", localName = GetRealZoneText(249) }
-            BG.instanceIDfromBossPosition["TOC"][7] = 249
 
             BG.FBIDtable[724] = "ICC" -- 红玉圣殿
             BG.bossPositionStartEnd[724] = { 13, 13 }
             BG.FBfromBossPosition["ICC"][13] = { name = "RS", localName = GetRealZoneText(724) }
-            BG.instanceIDfromBossPosition["ICC"][13] = 724
 
             BG.spFB.ICC = { 50274 }
             BG.spFB.ULD = { 45038 }
@@ -386,7 +397,6 @@ do
                 BG.bossPositionStartEnd[550] = { 7, 10 }
                 for i = 7, 10 do
                     BG.FBfromBossPosition["SSC"][i] = { name = "TK", localName = GetRealZoneText(550) }
-                    BG.instanceIDfromBossPosition["SSC"][i] = 550
                 end
             end
         end
@@ -394,15 +404,6 @@ do
             BG.FB1 = "MCtitan"
             BG.fullLevel = 80
             BG.fullLevel_RoleOverview = 60
-            BG.theEndBossID = { 672, 628, 733 } --MC 毒蛇 风暴
-            AddDB("MCtitan", 409, "P1", 25)
-            AddDB("SSCtitan", 548, "P2", 25, nil, nil, { 1, 6 }, L["毒蛇风暴"])
-            BG.FBIDtable[550] = "SSCtitan" -- 风暴要塞
-            BG.bossPositionStartEnd[550] = { 7, 10 }
-            for i = 7, 10 do
-                BG.FBfromBossPosition["SSCtitan"][i] = { name = "TK", localName = GetRealZoneText(550) }
-                BG.instanceIDfromBossPosition["SSCtitan"][i] = 550
-            end
 
             AddDB("Worldtitan", -100, "", 40, nil, nil, nil, L["世界Boss"])
             BG.worldBossNpcID = {
@@ -411,24 +412,53 @@ do
                 17711, -- 末日行者
                 18728, -- 末日领主卡扎克
             }
+
+            AddDB("MCtitan", 409, "P1", 25)
+            local FB = "SSCtitan"
+            local TKmapID = 550
+            AddDB(FB, 548, "P2", 25, nil, nil, { 1, 6 }, L["毒蛇风暴"])
+            BG.FBIDtable[TKmapID] = FB -- 风暴要塞
+            BG.bossPositionStartEnd[TKmapID] = { 7, 10 }
+            for i = 7, 10 do
+                BG.FBfromBossPosition[FB][i] = { name = "TK", localName = GetRealZoneText(TKmapID) }
+            end
+
+            local FB = "NAXXtitan"
+            local OSmapID = 615
+            local EOEmapID = 616
+            AddDB(FB, 533, "P3", nil, nil, nil, { 1, 15 })
+            BG.FBIDtable[OSmapID] = FB -- 黑曜石圣殿
+            BG.bossPositionStartEnd[OSmapID] = { 16, 16 }
+            BG.FBfromBossPosition[FB][16] = { name = "OS", localName = GetRealZoneText(OSmapID) }
+            BG.FBIDtable[EOEmapID] = FB -- 永恒之眼
+            BG.bossPositionStartEnd[EOEmapID] = { 17, 17 }
+            BG.FBfromBossPosition[FB][17] = { name = "EOE", localName = GetRealZoneText(EOEmapID) }
+
+            BG.spFB.NAXXtitan = { 22726 }
+
+            local FB = "TOCtitan"
+            local TOCmapID = 649
+            AddDB(FB, 309, "P4", 25, nil, nil, { 1, 10 }, L["P4双本"])
+            BG.FBIDtable[TOCmapID] = FB -- 十字军
+            BG.bossPositionStartEnd[TOCmapID] = { 11, 15 }
+            for i = 11, 15 do
+                BG.FBfromBossPosition[FB][i] = { name = "TOC", localName = GetRealZoneText(TOCmapID) }
+            end
         end
         if BG.IsCTM then
             BG.FB1 = "DS"
             BG.fullLevel = 85
             BG.fullLevel_RoleOverview = 70
-            BG.theEndBossID = { 1082, 1026, 1034, 1203, 1299, } -- BOT BWD TOF FL DS
-            AddDB("BOT", 671, "P1", nil, nil, nil, { 1, 5 })    -- 暮光堡垒
-            BG.FBIDtable[669] = "BOT"                           -- 黑翼血环
+            AddDB("BOT", 671, "P1", nil, nil, nil, { 1, 5 }) -- 暮光堡垒
+            BG.FBIDtable[669] = "BOT"                        -- 黑翼血环
             BG.bossPositionStartEnd[669] = { 6, 11 }
             for i = 6, 11 do
                 BG.FBfromBossPosition["BOT"][i] = { name = "BWD", localName = GetRealZoneText(669) }
-                BG.instanceIDfromBossPosition["BOT"][i] = 669
             end
             BG.FBIDtable[754] = "BOT" -- 风神王座
             BG.bossPositionStartEnd[754] = { 12, 13 }
             for i = 12, 13 do
                 BG.FBfromBossPosition["BOT"][i] = { name = "TOF", localName = GetRealZoneText(754) }
-                BG.instanceIDfromBossPosition["BOT"][i] = 754
             end
 
             AddDB("FL", 720, "P3") -- 火焰之地
@@ -443,7 +473,6 @@ do
             BG.FB1 = "MSV"
             BG.fullLevel = 90
             BG.fullLevel_RoleOverview = 80
-            BG.theEndBossID = { 1407, 1501, 1431, 1579 } -- 魔古山 大女皇 惧之煞 雷神
             BG.worldBossID = { 32098, 32099, 32518, 32519, 37464 } -- 炮舰 怒之煞 暴风领主纳拉克 乌达斯塔 鲁赫马尔
             AddDB("MSV", 1008, "P1", nil, nil, nil, { 1, 6 }, L["P1三本"]) -- 魔古山
             -- 恐惧之心
@@ -451,14 +480,12 @@ do
             BG.bossPositionStartEnd[1009] = { 7, 12 }
             for i = 7, 12 do
                 BG.FBfromBossPosition["MSV"][i] = { name = "HOF", localName = GetRealZoneText(1009) }
-                BG.instanceIDfromBossPosition["MSV"][i] = 1009
             end
             -- 永春台
             BG.FBIDtable[996] = "MSV"
             BG.bossPositionStartEnd[996] = { 13, 16 }
             for i = 13, 16 do
                 BG.FBfromBossPosition["MSV"][i] = { name = "TES", localName = GetRealZoneText(996) }
-                BG.instanceIDfromBossPosition["MSV"][i] = 996
             end
             AddDB("TOT", 1098, "P3") -- 雷电王座
         end
@@ -466,16 +493,105 @@ do
             BG.FB1 = "NP"
             BG.fullLevel = 80
             BG.fullLevel_RoleOverview = 80
-            BG.theEndBossID = { 2922, }
             AddDB("NP", 2657, "P1", 20)
         end
     end
 
+    -- 装备库获取来源过滤
+    do
+        if BG.IsVanilla_Sod then
+            BG.itemLibGetFiter = {
+                { name = L["团本"], name2 = "raid", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                { name = L["5人本"], name2 = "fb5", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["世界掉落"], name2 = "world", },
+                { name = L["PVP"], name2 = "pvp", },
+            }
+        elseif BG.IsVanilla_60 then
+            BG.itemLibGetFiter = {
+                { name = L["团本"], name2 = "raid", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["世界掉落"], name2 = "world", },
+                { name = L["世界BOSS"], name2 = "worldboss", },
+                { name = L["PVP"], name2 = "pvp", },
+            }
+        elseif BG.IsTBC then
+            BG.itemLibGetFiter = {
+                { name = L["团本"], name2 = "raid", },
+                -- { name = L["声望"], name2 = "faction", },
+                -- { name = L["专业"], name2 = "profession", },
+                -- { name = L["世界掉落"], name2 = "world", },
+                -- { name = L["世界BOSS"], name2 = "worldboss", },
+            }
+        elseif BG.IsWLK_80 then
+            BG.itemLibGetFiter = {
+                { name = L["团本：25人"], name2 = "raid25", },
+                { name = L["团本：10人"], name2 = "raid10", },
+                { name = L["团本：英雄难度"], name2 = "raidhero", },
+                { name = L["团本：普通难度"], name2 = "raidnormal", },
+                { name = L["5人本"], name2 = "fb5", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["PVP"], name2 = "pvp", },
+            }
+        elseif BG.IsTitan then
+            BG.itemLibGetFiter = {
+                { name = L["团本"], name2 = "raid", },
+                { name = L["世界BOSS"], name2 = "worldboss", },
+                { name = L["5人本"], name2 = "fb5", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                -- { name = L["PVP"], name2 = "pvp", },
+                { name = L["世界掉落"], name2 = "world", },
+            }
+        elseif BG.IsCTM then
+            BG.itemLibGetFiter = {
+                { name = L["团本：英雄难度"], name2 = "raidhero", },
+                { name = L["团本：普通难度"], name2 = "raidnormal", },
+                { name = L["5人本"], name2 = "fb5", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["世界掉落"], name2 = "world", },
+                -- { name = L["世界BOSS"], name2 = "worldboss", },
+                { name = L["PVP"], name2 = "pvp", },
+            }
+        elseif BG.IsMOP then
+            BG.itemLibGetFiter = {
+                { name = L["团本：英雄难度"], name2 = "raidhero", },
+                { name = L["团本：普通难度"], name2 = "raidnormal", },
+                -- { name = L["5人本"], name2 = "fb5", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                -- { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["世界掉落"], name2 = "world", },
+                { name = L["世界BOSS"], name2 = "worldboss", },
+                -- { name = L["PVP"], name2 = "pvp", },
+            }
+        elseif BG.IsRetail then
+            BG.itemLibGetFiter = {
+                { name = L["团本：史诗难度"], name2 = "raidmyth", },
+                { name = L["团本：英雄难度"], name2 = "raidhero", },
+                { name = L["团本：普通难度"], name2 = "raidnormal", },
+                { name = L["5人本"], name2 = "fb5", },
+                { name = L["牌子/货币"], name2 = "currency", },
+                { name = L["声望"], name2 = "faction", },
+                { name = L["专业"], name2 = "profession", },
+                { name = L["世界掉落"], name2 = "world", },
+            }
+        end
+    end
+
     local HopeMaxi
-    if BG.onlyOneHard then
-        HopeMaxi = 5
-    else
+    if BG.IsWLK_80 then
         HopeMaxi = 3
+    else
+        HopeMaxi = 5
     end
     do
         ns.Maxt     = Maxt
@@ -812,6 +928,7 @@ do
             { ID = "fakuanFull", name = "罚款格子满了" },
             { ID = "auctionError", name = "拍卖出错了" },
             { ID = "currencyfull", name = "牌子满了" },
+            { ID = "auctionTopPrice", name = "小心偷家" },
         }
         --[[
 /run BG.PlaySound("paimai")
@@ -834,7 +951,7 @@ do
                     local soundID = v.ID
                     local soundName = v.name
                     if isBiaoGe then
-                        BG["sound_" .. soundID .. author] = Interface .. author .. "\\" .. soundName
+                        BG["sound_" .. soundID .. author] = Interface .. author .. "\\" .. soundID
                     else
                         BG["sound_" .. soundID .. author] = format("Interface\\AddOns\\%s\\sound\\%s", addonName, soundName)
                     end
@@ -952,7 +1069,7 @@ BG.Init(function()
         end
     end
 
-    if not BG.IsVanilla then
+    if not BG.verLess2 then
         if not BiaoGe.BossFrame then
             BiaoGe.BossFrame = {}
         end
@@ -1042,7 +1159,9 @@ BG.Init(function()
         UpdateLevel(UnitLevel("player"))
         BG.RegisterEvent("PLAYER_LEVEL_UP", function(self, event, level)
             UpdateLevel(level)
-            BG.UpdateMeetingHornLevelButton()
+            if BG.UpdateMeetingHornLevelButton then
+                BG.UpdateMeetingHornLevelButton()
+            end
         end)
 
         -- 天赋
@@ -1373,7 +1492,10 @@ end)
 
 BG.Init2(function()
     if BG.hasHolidayLoot then
-        C_Calendar.OpenCalendar()
+        BG.After(1, function()
+            ToggleCalendar()
+            Calendar_Hide()
+        end)
     end
 
     if IsAddOnLoaded("BiaoGeVIP") and BGV and BGV.raidVersion
@@ -1392,5 +1514,17 @@ BG.Init2(function()
             BG.TabButtonsFB_TBC:SetParent(nil)
             BG.TabButtonsFB_TBC = nil
         end
+    end
+    if type(BGV) == "table" and
+        not BGV["qGCbmiUZxPvgziowMAxPvslL(62DLnGHSA2D6DN2jA2zgMzwzjh4kJInidbSr8LX412ChrhqGCbmiUZxaSHuaacUsQ6Q7xDP6"]
+    then
+        wipe(BGV)
+        ns.isVIP = nil
+    end
+    if type(BGAI) == "table" and
+        not BGAI["PvUZxaSHuaacUsQ6QbS2r822LX4ChrhqGCbmiUZxaSHuUsQ6Q7xDP619dhVRTR7huLUR96UNz210z2DwjJjPQtvzPzM1V3RF"]
+    then
+        wipe(BGAI)
+        ns.isVIP = nil
     end
 end)

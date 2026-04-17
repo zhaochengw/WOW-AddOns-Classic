@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(683, "DBM-Raids-MoP", 3, 320)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(60585, 60586, 60583)--60583 Protector Kaolan, 60585 Elder Regail, 60586 Elder Asani
 mod:SetEncounterID(1409)
 mod:SetUsedIcons(5, 4, 3, 2, 1)
@@ -47,7 +48,6 @@ local timerLightningPrisonCD		= mod:NewCDTimer(22.3, 111850, nil, nil, nil, 3)
 local timerLightningStormCD			= mod:NewCDTimer(42, 118077, nil, nil, nil, 2)--Shorter Cd in phase 3 32 seconds.
 local timerLightningStorm			= mod:NewBuffActiveTimer(14, 118077, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
-mod:AddRangeFrameOption(8, 111850)--For Lightning Prison
 mod:AddSetIconOption("SetIconOnPrison", 111850, true, 0, {1, 2, 3, 4, 5})--For Lightning Prison (icons don't go out until it's DISPELLABLE, not when targetting is up).
 --Protector Kaolan
 mod:AddTimerLine(Kaolan)
@@ -77,28 +77,11 @@ local prisonTargets = {}
 local myGroup = nil
 local notARaid = false
 
-local DebuffFilter
-do
-	DebuffFilter = function(uId)
-		return DBM:UnitDebuff(uId, prisonDebuff)
-	end
-end
-
 local function resetPrisonStatus(self)
 	self.vb.prisonCount = 0
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
 end
 
 local function warnPrisonTargets(self)
-	if self.Options.RangeFrame then
-		if DBM:UnitDebuff("player", prisonDebuff) then--You have debuff, show everyone
-			DBM.RangeCheck:Show(8, nil)
-		else--You do not have debuff, only show players who do
-			DBM.RangeCheck:Show(8, DebuffFilter)
-		end
-	end
 	warnLightningPrison:Show(table.concat(prisonTargets, "<, >"))
 	timerLightningPrisonCD:Start()
 	table.wipe(prisonTargets)
@@ -140,11 +123,6 @@ function mod:OnCombatStart(delay)
 	findGroupNumber()
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -211,9 +189,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		self.vb.totalTouchOfSha = self.vb.totalTouchOfSha - 1
 	elseif spellId == 117436 then
 		self.vb.prisonCount = self.vb.prisonCount - 1
-		if self.vb.prisonCount == 0 and self.Options.RangeFrame then
-			DBM.RangeCheck:Hide()
-		end
 		if self.Options.SetIconOnPrison then
 			self:SetIcon(args.destName, 0)
 		end
@@ -271,9 +246,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if args:GetSrcCreatureID() == 60585 then--Elder Regail
 			timerLightningPrisonCD:Cancel()
 			timerLightningStormCD:Cancel()
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Hide()
-			end
 		elseif args:GetSrcCreatureID() == 60586 then--Elder Asani
 			timerCleansingWatersCD:Cancel()
 			timerCorruptingWatersCD:Cancel()

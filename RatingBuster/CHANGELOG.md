@@ -1,6 +1,7 @@
 # RatingBuster
 
-## [2.0.10](https://github.com/raethkcj/RatingBuster/tree/2.0.10) (2026-01-21)
-[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/2.0.9...2.0.10) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
+## [2.5.2](https://github.com/raethkcj/RatingBuster/tree/2.5.2) (2026-04-04)
+[Full Changelog](https://github.com/raethkcj/RatingBuster/compare/2.5.1...2.5.2) [Previous Releases](https://github.com/raethkcj/RatingBuster/releases)
 
-- Remove duplicate melee crit from rating (Fixes #228)  
+- Fix TBC enUS resilience breakdown placement  
+- Fix berserker stance requirement for TBC imp. berserker stance (Fixes #252)  

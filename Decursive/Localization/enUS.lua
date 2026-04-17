@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY.
 
-    This file was last updated on 2025-03-16T19:58:01Z
+    This file was last updated on 2026-02-27T17:29:23Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -147,6 +147,12 @@ To enable it again, type |cFFFFAA44/DCR ENABLE|r]=]
 L["DISEASE"] = "Disease"
 L["DONOT_BL_PRIO"] = "Don't blacklist priority list names"
 L["DONT_SHOOT_THE_MESSENGER"] = "Decursive is merely reporting the issue. So, don't shoot the messenger and address the actual problem."
+L["ER_VERSION_NOTICE"] = [=[This is an early release of Decursive.
+
+Although the version you are using is tagged as a release it might still be rough on the edges, with bugs and Lua errors.
+I use this process to have more feedback as there are not enough people using alpha/beta release types.
+
+This message will be displayed only once per version.]=]
 L["FAILEDCAST"] = [=[|cFF22FFFF%s %s|r |cFFAA0000failed on|r %s
 |cFF00AAAA%s|r]=]
 L["FOCUSUNIT"] = "Focus Unit"
@@ -549,4 +555,4 @@ L["UNSTABLERELEASE"] = "Unstable release"
 
 
 
-T._LoadedFiles["enUS.lua"] = "2.7.34";
+T._LoadedFiles["enUS.lua"] = "2.8.0-RC3";

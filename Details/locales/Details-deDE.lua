@@ -916,6 +916,12 @@ L["STRING_OPTIONS_PERFORMANCECAPTURES_DESC"] = "Diese Optionen sind verantwortli
 L["STRING_OPTIONS_PERFORMANCEPROFILES_ANCHOR"] = "Leistungsprofile:"
 L["STRING_OPTIONS_PICONS_DIRECTION"] = "Zusatzmodule rechts anordnen"
 L["STRING_OPTIONS_PICONS_DIRECTION_DESC"] = "Aktiviert: Zusatzmodulschaltflächen werden rechts von den Menüschaltflächen angezeigt."
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME"] = "Player Name"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_AUTO_WIDTH"] = "Length Auto"
+--[[Translation missing --]]
+L["STRING_OPTIONS_PLAYERNAME_WIDTH"] = "Length"
 L["STRING_OPTIONS_PLUGINS"] = "Zusatzmodule"
 L["STRING_OPTIONS_PLUGINS_AUTHOR"] = "Autor"
 L["STRING_OPTIONS_PLUGINS_NAME"] = "Name"

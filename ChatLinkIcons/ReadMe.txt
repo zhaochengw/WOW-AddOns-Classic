@@ -7,8 +7,31 @@ https://www.curseforge.com/members/sdphantomgamer/projects
 All Rights Reserved - Use at your own risk
 UnZip contents into the "Interface\AddOns" folder in your WoW installation directory
 
+
+
+-= API Functions =-
+ConvertedString = ChatLinkIcons.ConvertLinks(RawString)
+	Adds icons to links contained in a string.
+
+ChatLinkIcons.RegisterForLinkUpates(CallbackFunc)
+ChatLinkIcons.UnregisterForLinkUpates(CallbackFunc)
+	Registers/Unregisters a callback function that is called when previously-converted links are to be updated.
+	Multiple unique callbacks may be registered. Duplicate registrations silently fail.
+	Errors in callback functions still show, but return execution back to ChatLinkIcons.
+	Callback functions are not passed any arguments at this time.
+
 ===============================================================================
 Versions:
+v3.9.2 (2026-04-11)
+	-Added esES, esMX, frFR, and ptBR locales (Courtesy of Anon12018248)
+
+v3.9.1 (2026-03-23)
+	-Fixed a syntax error in the callback system
+
+v3.9 (2026-03-20)
+	-Added a global API for other addons to use
+	-Patched a global leak in the PlayerCache module
+
 v3.8.2 (2026-02-01)
 	-Added a canaccessvalue() check to PlayerCache's chat event handler
 

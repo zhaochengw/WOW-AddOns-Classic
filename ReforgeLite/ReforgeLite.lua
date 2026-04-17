@@ -376,31 +376,21 @@ function addonTable.GetItemStatsFromTooltip(itemInfo)
     local srcId, dstId = unpack(reforgeTable[itemInfo.reforge])
     srcName, destName = ITEM_STATS[srcId].name, ITEM_STATS[dstId].name
   end
+  local baseItemStats = GetItemStats(itemInfo.link)
 
   local stats = {}
   scanTooltip:SetOwner(UIParent, "ANCHOR_NONE")
   scanTooltip:SetInventoryItem("player", itemInfo.slotId)
-  local foundStats = 0
 
   for _, region in ipairs({scanTooltip:GetRegions()}) do
-    if foundStats == (itemInfo.reforge ~= nil and 3 or 2) then
-      break
-    end
     if region.GetText then
       local text = region:GetText()
       if text and text ~= "" then
         local cleanText = strtrim((text:gsub("%b()", "")))
         for _, statInfo in ipairs(ITEM_STATS) do
-          if not stats[statInfo.name] then
-            local value
-            for _, pattern in ipairs(statInfo:getTooltipPatterns()) do
-              value = cleanText:match(pattern)
-              if value then
-                break
-              end
-            end
+          if not stats[statInfo.name] and (baseItemStats[statInfo.name] or statInfo.name == destName) then
+            local value = TableUtil.ExecuteUntil(statInfo:getTooltipPatterns(), function(pattern) return cleanText:match(pattern) end)
             if value then
-              foundStats = foundStats + 1
               stats[statInfo.name] = tonumber((value:gsub("[^%d]", "")))
               break
             end
@@ -411,7 +401,9 @@ function addonTable.GetItemStatsFromTooltip(itemInfo)
   end
 
   if stats[srcName] and stats[destName] then
-    stats[srcName] = stats[srcName] + stats[destName]
+    if floor(stats[srcName] * addonTable.REFORGE_COEFF) ~= stats[destName] then
+      stats[srcName] = stats[srcName] + stats[destName]
+    end
     stats[destName] = nil
   end
 

@@ -37,7 +37,7 @@
 ## Category-zhTW: 地圖
 
 ## Author: nanderson11
-## Version: v3.14.1
+## Version: v3.15.2
 ## Group: Atlas
 ## X-Website: https://github.com/nanderson11/Atlas
 ## X-Category: Map
@@ -88,3 +88,4 @@ Data\BattleforAzeroth-Retail.lua
 Data\Shadowlands-Retail.lua
 Data\Dragonflight-Retail.lua
 Data\TheWarWithin-Retail.lua
+Data\Midnight-Retail.lua

@@ -82,7 +82,7 @@ function BG.HistoryUI()
         text:SetPoint("TOP", BG.History.List, "BOTTOM", 0, 0)
         text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
         text:SetText(BG.STC_w1(format(L["（ALT+%s改名，ALT+%s删除表格）"], AddTexture("LEFT"), AddTexture("RIGHT"))))
-    
+
         local bt = BG.CreateButton(BG.History.List)
         bt:SetSize(110, 25)
         bt:SetPoint("BOTTOMLEFT", BG.History.List, "BOTTOMRIGHT", 0, 5)
@@ -144,7 +144,8 @@ function BG.HistoryUI()
         BG.Init2(function()
             if BGV then
                 bt:SetScript("OnEnter", function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+                    GameTooltip:SetOwner(self, "ANCHOR_NONE")
+                    GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
                     GameTooltip:ClearLines()
                     GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
                     GameTooltip:AddLine(AddTexture("LEFT") .. L["打开历史表格"], 1, 0.82, 0, true)
@@ -164,7 +165,7 @@ function BG.HistoryUI()
             local serverTime = BiaoGe[FB].raidRoster and BiaoGe[FB].raidRoster.time or GetServerTime()
             local DT = tonumber(date("%y%m%d%H%M%S", serverTime))
             if BiaoGe.History[FB][DT] then
-                serverTime =  GetServerTime()
+                serverTime = GetServerTime()
                 DT = tonumber(date("%y%m%d%H%M%S", serverTime))
             end
             local DTcn = date(L["%m月%d日%H:%M:%S\n"], serverTime)
@@ -205,8 +206,6 @@ function BG.HistoryUI()
                         end
                     end
                 end
-                BiaoGe.History[FB][DT]["boss" .. b]["time"] = BiaoGe[FB]["boss" .. b]["time"]
-                BiaoGe.History[FB][DT]["boss" .. b]["difficultyID"] = BiaoGe[FB]["boss" .. b]["difficultyID"]
             end
             for i, v in ipairs(BiaoGe[FB].tradeTbl) do
                 BiaoGe.History[FB][DT].tradeTbl[i] = BG.Copy(v)
@@ -215,12 +214,6 @@ function BG.HistoryUI()
                 BiaoGe.History[FB][DT].raidRoster = {}
                 for k, v in pairs(BiaoGe[FB].raidRoster) do
                     BiaoGe.History[FB][DT].raidRoster[k] = BG.Copy(v)
-                end
-            end
-            if BiaoGe[FB].lockoutIDtbl then
-                BiaoGe.History[FB][DT].lockoutIDtbl = {}
-                for k, v in pairs(BiaoGe[FB].lockoutIDtbl) do
-                    BiaoGe.History[FB][DT].lockoutIDtbl[k] = BG.Copy(v)
                 end
             end
             if BiaoGe[FB].auctionLog then
@@ -249,7 +242,8 @@ function BG.HistoryUI()
         BG.History.SaveButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把当前表格保存至历史表格。"], 1, 0.82, 0, true)
@@ -278,13 +272,20 @@ function BG.HistoryUI()
         bt:SetHighlightFontObject(BG.FontWhite15)
         bt:SetText(L["分享表格"])
         bt:SetSize(bt:GetFontString():GetWidth(), 20)
+        bt:RegisterForClicks("AnyUp")
         BG.SetTextHighlightTexture(bt)
         BG.History.SendButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
+            if IsInRaid(1) then
+                GameTooltip:AddLine(AddTexture("LEFT") .. L["把链接发到聊天框"], 1, 0.82, 0, true)
+                GameTooltip:AddLine(AddTexture("RIGHT") .. L["把链接私发给团长"], 1, 0.82, 0, true)
+                GameTooltip:AddLine(" ", 1, 0.82, 0, true)
+            end
             GameTooltip:AddLine(L["把当前表格发给别人，类似发WA那样。"], 1, 0.82, 0, true)
             GameTooltip:Show()
         end)
@@ -295,7 +296,7 @@ function BG.HistoryUI()
         local updateFrame = CreateFrame("Frame")
         updateFrame.timeElapsed = 0
         BG.canSendBiaoGe = false
-        bt:SetScript("OnClick", function(self)
+        bt:SetScript("OnClick", function(self, button)
             BG.canSendBiaoGe = true
             updateFrame.timeElapsed = 0
             updateFrame:SetScript("OnUpdate", function(self, elapsed)
@@ -306,23 +307,17 @@ function BG.HistoryUI()
                     updateFrame:SetScript("OnUpdate", nil)
                 end
             end)
-
             BG.FrameHide(2)
-
-            local text = ""
-            local player, server = UnitFullName("player")
-            local playerFullName = player .. "-" .. server
-            text = "[BiaoGe:" .. playerFullName .. "-"
-            if not BG.History.EscButton:IsVisible() then
-                text = text .. L["当前表格-"] .. BG.FB1 .. "]" -- [BiaoGe:风行-阿拉希盆地-当前表格-ULD]
-            else
-                local t = BiaoGe.HistoryList[BG.FB1][BG.History.chooseNum][2]
-                t = string.gsub(t, "\n", "")
-                text = text .. L["历史表格-"] .. BG.FB1 .. "-" .. t .. "]" -- [BiaoGe:风行-阿拉希盆地-历史表格-ULD-04月20日18:20:23 奥杜尔 25人 工资:15000]
+            local msg = BG.GetSendBiaoGeMsg()
+            if button == "LeftButton" then
+                ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
+                ChatEdit_InsertLink(msg)
+            elseif button == "RightButton" and IsInRaid(1) then
+                local leader = BG.masterLooter or BG.raidLeader
+                if leader then
+                    SendChatMessage(msg, "WHISPER", nil, leader)
+                end
             end
-            ChatEdit_ActivateChat(ChatEdit_ChooseBoxForSend())
-            ChatEdit_InsertLink(text)
-
             BG.PlaySound(1)
         end)
     end
@@ -340,7 +335,8 @@ function BG.HistoryUI()
         BG.History.DaoChuButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把表格导出为文本。"], 1, 0.82, 0, true)
@@ -429,15 +425,6 @@ function BG.HistoryUI()
                                 BiaoGe[FB]["boss" .. b]["loot" .. i] = nil
                             end
                         end
-                        if BG.Frame[FB]["boss" .. b]["time"] then
-                            if BiaoGe.History[FB][DT]["boss" .. b]["time"] then
-                                BG.Frame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BiaoGe.History[FB][DT]["boss" .. b]["time"])
-                            else
-                                BG.Frame[FB]["boss" .. b]["time"]:SetText("")
-                            end
-                            BiaoGe[FB]["boss" .. b]["time"] = BiaoGe.History[FB][DT]["boss" .. b]["time"]
-                        end
-                        BiaoGe[FB]["boss" .. b]["difficultyID"] = BiaoGe.History[FB][DT]["boss" .. b]["difficultyID"]
                     end
                     BiaoGe[FB].tradeTbl = {}
                     if type(BiaoGe.History[FB][DT].tradeTbl) == "table" then
@@ -451,12 +438,6 @@ function BG.HistoryUI()
                             BiaoGe[FB].raidRoster[k] = BG.Copy(v)
                         end
                     end
-                    if type(BiaoGe.History[FB][DT].lockoutIDtbl) == "table" then
-                        BiaoGe[FB].lockoutIDtbl = {}
-                        for k, v in pairs(BiaoGe.History[FB][DT].lockoutIDtbl) do
-                            BiaoGe[FB].lockoutIDtbl[k] = BG.Copy(v)
-                        end
-                    end
                     if type(BiaoGe.History[FB][DT].auctionLog) == "table" then
                         BiaoGe[FB].auctionLog = {}
                         for k, v in pairs(BiaoGe.History[FB][DT].auctionLog) do
@@ -468,7 +449,6 @@ function BG.HistoryUI()
             end
             if BiaoGe.lastFrame == "FB" then
                 BG.FBMainFrame:Show()
-                BG.UpdateLockoutIDText()
             end
             BG.UpdateAuctionLogFrame()
         end
@@ -484,7 +464,8 @@ function BG.HistoryUI()
         BG.History.YongButton = bt
 
         bt:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_NONE")
+            GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self:GetText(), 1, 1, 1, true)
             GameTooltip:AddLine(L["把该历史表格复制粘贴到当前表格，这样你可以编辑内容。"], 1, 0.82, 0, true)
@@ -538,7 +519,6 @@ function BG.HistoryUI()
         BG.SetTextHighlightTexture(bt)
         BG.History.EscButton = bt
         bt:SetScript("OnClick", BG.EscHistoryFrame)
-
     end
     ------------------改名------------------
     do
@@ -626,21 +606,6 @@ function BG.HistoryUI()
             BG.PlaySound(1)
         end)
     end
-
-    -- 删除历史表格里的loot记录
-    BG.Once("history", 250312, function()
-        for _, FB in ipairs(BG.FBtable) do
-            for DT, v in pairs(BiaoGe.History[FB]) do
-                local b = 1
-                while BiaoGe.History[FB][DT]["boss" .. b] do
-                    for i = 1, BG.GetMaxi(FB, b) do
-                        BiaoGe.History[FB][DT]["boss" .. b]["loot" .. i] = nil
-                    end
-                    b = b + 1
-                end
-            end
-        end
-    end)
 end
 
 ------------------下拉框架的内容------------------
@@ -709,13 +674,8 @@ do
                                     BG.HistoryFrame[FB]["boss" .. b]["qiankuan" .. i]:Hide()
                                 end
                             end
-                            if BG.HistoryFrame[FB]["boss" .. b]["time"] then
-                                BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText("")
-                            end
                         end
-                        BG.History.Title:SetText(L["<历史表格>"].." ")
-                        BG.TextLockoutID:SetText(L["团本锁定ID："] .. L["无"])
-                        BG.TextLockoutID:SetTextColor(0.5, 0.5, 0.5)
+                        BG.History.Title:SetText(L["<历史表格>"] .. " ")
                         return
                     else -- 改名
                         BG.PlaySound(1)
@@ -769,13 +729,6 @@ do
                                 end
                             end
                         end
-                        if BG.HistoryFrame[FB]["boss" .. b]["time"] then
-                            if BiaoGe.History[FB][DT]["boss" .. b]["time"] then
-                                BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText(L["击杀用时"] .. " " .. BiaoGe.History[FB][DT]["boss" .. b]["time"])
-                            else
-                                BG.HistoryFrame[FB]["boss" .. b]["time"]:SetText("")
-                            end
-                        end
                     end
                 end
                 BG.HistoryMainFrame:Show()
@@ -784,7 +737,6 @@ do
                 BG.History.Title:SetText(L["<历史表格>"] .. " " .. i)
                 BG.History.chooseNum = i
 
-                BG.UpdateLockoutIDText(DT)
                 BG.UpdateAuctionLogFrame(BiaoGe.History[FB][DT].auctionLog)
             end)
         end
@@ -810,55 +762,14 @@ end
 do
     local HEIGHT = 14
     local HEIGHT2 = 5
-
+    local lastCallback
+    BG.HistoryMoneyCache = {}
     BG.HistoryMoneyUpdateFrame = CreateFrame("Frame", nil, BG.MainFrame)
 
-    function BG.SetHistoryMoney(itemID, nowMoney, nowPlayer, nowR, nowG, nowB)
-        if not BG.MainFrame:IsVisible() then return end
-        local FB = BG.FB1
-        if not BG.HistoryMoneyFrame then
-            local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
-            f:SetSize(300, 0)
-            f:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -3, 40)
-            f:SetFrameLevel(118)
-            f:Hide()
-            f.buttons = {}
-            BG.HistoryMoneyFrame = f
-            f:SetScript("OnHide", function(self)
-                BG.HistoryMoneyUpdateFrame:SetScript("OnUpdate", nil)
-            end)
-
-            f.bg = f:CreateTexture()
-            f.bg:SetSize(f:GetWidth(), 0)
-            f.bg:SetPoint("TOP")
-            f.bg:SetTexture("Interface\\Buttons\\WHITE8x8")
-            f.bg:SetGradient("VERTICAL", CreateColor(0, 0, 0, 0), CreateColor(0, 0, 0, 1))
-
-            --标题（装备）
-            local t = BG.HistoryMoneyFrame:CreateFontString()
-            t:SetPoint("TOP", BG.HistoryMoneyFrame, "TOP", 3, -10)
-            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-            BG.HistoryMoneyFrame.title = t
-        end
-
+    local function GetHistoryMoney(itemID, FB, callback)
         local updateFrame = BG.HistoryMoneyUpdateFrame
         updateFrame:SetScript("OnUpdate", nil)
-
-        BG.HistoryMoneyFrame:Hide()
-        for k, bt in pairs(BG.HistoryMoneyFrame.buttons) do
-            bt:Hide()
-            BG.HistoryMoneyFrame.buttons[k] = nil
-        end
-
-        local itemStackCount = select(8, GetItemInfo(itemID))
-        if not itemStackCount or itemStackCount > 1 then return end
-
-        local maxCount
-        if nowMoney then
-            maxCount = 14
-        else
-            maxCount = 15
-        end
+        FB = FB or BG.FB1
         local tbl = {}
         local db = BiaoGe
         local startI = 1
@@ -877,7 +788,6 @@ do
                 local b = 1
                 while db.History[FB][DT]["boss" .. b] do
                     for i = 1, BG.GetMaxi(FB, b) do
-                        if #tbl >= maxCount then break end
                         local zhuangbei = db.History[FB][DT]["boss" .. b]["zhuangbei" .. i]
                         local _itemID = GetItemID(zhuangbei)
                         if zhuangbei and _itemID then
@@ -903,108 +813,11 @@ do
         updateFrame:SetScript("OnUpdate", function(self, elapsed)
             if allEnd then
                 self:SetScript("OnUpdate", nil)
-                if #tbl == 0 then
-                    return
+                BG.HistoryMoneyCache[itemID] = tbl
+                callback(tbl)
+                if lastCallback and lastCallback ~= callback then
+                    lastCallback(tbl)
                 end
-
-                sort(tbl, function(a, b)
-                    return a.DT > b.DT
-                end)
-
-                local _tbl = {}
-                for i, v in ipairs(tbl) do
-                    if i > maxCount then break end
-                    tinsert(_tbl, v)
-                end
-
-                if nowMoney then
-                    if not tonumber(nowMoney) or tonumber(nowMoney) == 0 then
-                        nowMoney = 0
-                    end
-                    local a = {
-                        DT = 0,
-                        item = "",
-                        player = nowPlayer,
-                        color = { nowR, nowG, nowB },
-                        money = tonumber(nowMoney)
-                    }
-                    table.insert(_tbl, 1, a)
-                end
-                local maxJine -- 找到表格里最大的金额
-                for i = 1, #_tbl do
-                    if maxJine == nil then
-                        maxJine = _tbl[i].money
-                    end
-                    if maxJine < _tbl[i].money then
-                        maxJine = _tbl[i].money
-                    end
-                end
-                local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(itemID)
-                if not link then return end
-                BG.HistoryMoneyFrame.title:SetText(format(L["历史价格：%s%s(%s)"], (AddTexture(Texture) .. link), "|cff" .. "9370DB", level or ""))
-
-                local down
-                -- local color = {"00FFFF","00FFCC","00FF99","00FF66","00FF33","00FF00","00FF33","00FF66","00FF99","00FFCC"}   -- 绿色渐变
-                -- local color = {"6600FF","3300FF","6633FF","3300CC","0033CC","3366FF","0033FF","0066FF","0099FF","00CCFF"}   -- 蓝色渐变
-                local color = { (nowMoney and "00BFFF" or "33FFCC"), "00FFCC", "00FF99", "00FF66", "00FF33", "33FF66", "00CC33", "33CC00", "66FF33", "33FF00", "66FF00", "99FF00", "CCFF00", "CCFF33", "99CC00" } -- 蓝绿渐变
-                for i = 1, #_tbl do
-                    local v = _tbl[i]
-                    local f = CreateFrame("Frame", nil, BG.HistoryMoneyFrame, "BackdropTemplate")
-                    f:SetBackdrop({
-                        bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-                    })
-                    f:SetBackdropColor(RGB(color[i], 1))
-                    if i == 1 then
-                        f:SetPoint("TOPRIGHT", BG.HistoryMoneyFrame, "TOPRIGHT", -80, -40)
-                    else
-                        f:SetPoint("TOPRIGHT", down, "BOTTOMRIGHT", 0, -HEIGHT2)
-                    end
-                    local widthPercent = v.money / maxJine
-                    local width
-                    if widthPercent == 0 then
-                        width = 1
-                    else
-                        width = (BG.HistoryMoneyFrame:GetWidth() - 220) * widthPercent + 60
-                    end
-                    f:SetSize(width, HEIGHT)
-                    down = f
-                    tinsert(BG.HistoryMoneyFrame.buttons, f)
-
-                    local t = f:CreateFontString() -- 日期
-                    t:SetPoint("LEFT", f, "RIGHT", 3, 0)
-                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
-                    t:SetTextColor(RGB(color[i]))
-                    if nowMoney and i == 1 then
-                        t:SetText(L["当前"])
-                    else
-                        local a = strsub(v.DT, 3, 4)
-                        if a:sub(1, 1) == "0" then
-                            a = a:sub(2, 2)
-                        end
-                        local b = strsub(v.DT, 5, 6)
-                        if b:sub(1, 1) == "0" then
-                            b = b:sub(2, 2)
-                        end
-                        t:SetText(a .. L["月"] .. b .. L["日"])
-                    end
-
-                    local t = f:CreateFontString() -- 金额
-                    t:SetPoint("RIGHT", f, "LEFT", -3, 0)
-                    t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
-                    t:SetTextColor(RGB(color[i]))
-                    t:SetText(v.money .. (v.isAccounts and "*" or ""))
-
-                    local t = f:CreateFontString(nil, "OVERLAY") -- 买家
-                    t:SetPoint("RIGHT")
-                    t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
-                    t:SetTextColor(unpack(v.color))
-                    t:SetText(v.player)
-                end
-
-                local height = #_tbl * (HEIGHT + HEIGHT2) + 65
-                BG.HistoryMoneyFrame:SetHeight(height)
-                BG.HistoryMoneyFrame.bg:SetHeight(height + 50)
-                BG.HistoryMoneyFrame:Show()
                 return
             end
 
@@ -1035,10 +848,255 @@ do
         end)
     end
 
+    function BG.SetHistoryMoney(itemID, nowMoney, nowPlayer, nowR, nowG, nowB)
+        if not BG.MainFrame:IsVisible() then return end
+        if not itemID then return end
+        local FB = BG.FB1
+        if not BG.HistoryMoneyFrame then
+            local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
+            f:SetSize(300, 0)
+            f:SetPoint("BOTTOMRIGHT", BG.MainFrame, "BOTTOMRIGHT", -3, 40)
+            f:SetFrameLevel(118)
+            f:Hide()
+            f.buttons = {}
+            BG.HistoryMoneyFrame = f
+            f:SetScript("OnHide", function(self)
+                BG.HistoryMoneyUpdateFrame:SetScript("OnUpdate", nil)
+            end)
+
+            f.bg = f:CreateTexture()
+            f.bg:SetSize(f:GetWidth(), 0)
+            f.bg:SetPoint("TOP")
+            f.bg:SetTexture("Interface\\Buttons\\WHITE8x8")
+            f.bg:SetGradient("VERTICAL", CreateColor(0, 0, 0, 0), CreateColor(0, 0, 0, 1))
+
+            --标题（装备）
+            local t = BG.HistoryMoneyFrame:CreateFontString()
+            t:SetPoint("TOP", BG.HistoryMoneyFrame, "TOP", 3, -10)
+            t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            BG.HistoryMoneyFrame.title = t
+        end
+
+        BG.HistoryMoneyFrame:Hide()
+        for k, bt in pairs(BG.HistoryMoneyFrame.buttons) do
+            bt:Hide()
+            BG.HistoryMoneyFrame.buttons[k] = nil
+        end
+
+        local itemStackCount = select(8, GetItemInfo(itemID))
+        if not itemStackCount or itemStackCount > 1 then return end
+
+        local maxCount
+        if nowMoney then
+            maxCount = 14
+        else
+            maxCount = 15
+        end
+
+        GetHistoryMoney(itemID, FB, function(tbl)
+            if #tbl == 0 then
+                return
+            end
+
+            sort(tbl, function(a, b)
+                return a.DT > b.DT
+            end)
+
+            local _tbl = {}
+            for i, v in ipairs(tbl) do
+                if i > maxCount then break end
+                tinsert(_tbl, v)
+            end
+
+            if nowMoney then
+                if not tonumber(nowMoney) or tonumber(nowMoney) == 0 then
+                    nowMoney = 0
+                end
+                local a = {
+                    DT = 0,
+                    item = "",
+                    player = nowPlayer,
+                    color = { nowR, nowG, nowB },
+                    money = tonumber(nowMoney)
+                }
+                table.insert(_tbl, 1, a)
+            end
+            local maxJine -- 找到表格里最大的金额
+            for i = 1, #_tbl do
+                if maxJine == nil then
+                    maxJine = _tbl[i].money
+                end
+                if maxJine < _tbl[i].money then
+                    maxJine = _tbl[i].money
+                end
+            end
+            local name, link, quality, level, _, _, _, _, _, Texture, _, typeID = GetItemInfo(itemID)
+            if not link then return end
+            BG.HistoryMoneyFrame.title:SetText(format(L["历史价格：%s%s(%s)"], (AddTexture(Texture) .. link), "|cff" .. "9370DB", level or ""))
+
+            local down
+            -- local color = {"00FFFF","00FFCC","00FF99","00FF66","00FF33","00FF00","00FF33","00FF66","00FF99","00FFCC"}   -- 绿色渐变
+            -- local color = {"6600FF","3300FF","6633FF","3300CC","0033CC","3366FF","0033FF","0066FF","0099FF","00CCFF"}   -- 蓝色渐变
+            local color = { (nowMoney and "00BFFF" or "33FFCC"), "00FFCC", "00FF99", "00FF66", "00FF33", "33FF66", "00CC33", "33CC00", "66FF33", "33FF00", "66FF00", "99FF00", "CCFF00", "CCFF33", "99CC00" } -- 蓝绿渐变
+            for i = 1, #_tbl do
+                local v = _tbl[i]
+                local f = CreateFrame("Frame", nil, BG.HistoryMoneyFrame, "BackdropTemplate")
+                f:SetBackdrop({
+                    bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                })
+                f:SetBackdropColor(RGB(color[i], 1))
+                if i == 1 then
+                    f:SetPoint("TOPRIGHT", BG.HistoryMoneyFrame, "TOPRIGHT", -80, -40)
+                else
+                    f:SetPoint("TOPRIGHT", down, "BOTTOMRIGHT", 0, -HEIGHT2)
+                end
+                local widthPercent = v.money / maxJine
+                local width
+                if widthPercent == 0 then
+                    width = 1
+                else
+                    width = (BG.HistoryMoneyFrame:GetWidth() - 220) * widthPercent + 60
+                end
+                f:SetSize(width, HEIGHT)
+                down = f
+                tinsert(BG.HistoryMoneyFrame.buttons, f)
+
+                local t = f:CreateFontString() -- 日期
+                t:SetPoint("LEFT", f, "RIGHT", 3, 0)
+                t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                t:SetTextColor(RGB(color[i]))
+                if nowMoney and i == 1 then
+                    t:SetText(L["当前"])
+                else
+                    local a = strsub(v.DT, 3, 4)
+                    if a:sub(1, 1) == "0" then
+                        a = a:sub(2, 2)
+                    end
+                    local b = strsub(v.DT, 5, 6)
+                    if b:sub(1, 1) == "0" then
+                        b = b:sub(2, 2)
+                    end
+                    t:SetText(a .. L["月"] .. b .. L["日"])
+                end
+
+                local t = f:CreateFontString() -- 金额
+                t:SetPoint("RIGHT", f, "LEFT", -3, 0)
+                t:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
+                t:SetTextColor(RGB(color[i]))
+                t:SetText(BG.FormatNumber(v.money, 2) .. (v.isAccounts and "*" or ""))
+
+                local t = f:CreateFontString(nil, "OVERLAY") -- 买家
+                t:SetPoint("RIGHT")
+                t:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                t:SetTextColor(unpack(v.color))
+                t:SetText(v.player)
+            end
+
+            local height = #_tbl * (HEIGHT + HEIGHT2) + 65
+            BG.HistoryMoneyFrame:SetHeight(height)
+            BG.HistoryMoneyFrame.bg:SetHeight(height + 50)
+            BG.HistoryMoneyFrame:Show()
+        end)
+    end
+
     function BG.HideHistoryMoney()
         BG.HistoryMoneyUpdateFrame:SetScript("OnUpdate", nil)
         if BG.HistoryMoneyFrame then
             BG.HistoryMoneyFrame:Hide()
         end
     end
+
+    -- 鼠标提示装备的历史价格区间
+    local function callback(itemID, maxJine, minJine, tooltip)
+        lastCallback = nil
+        local name, link = tooltip:GetItem()
+        if not link then return end
+        local _itemID = GetItemID(link)
+        if _itemID ~= itemID then return end
+        for i = 1, tooltip:NumLines() do
+            local leftt = _G[tooltip:GetName() .. "TextLeft" .. i]
+            local rightt = _G[tooltip:GetName() .. "TextRight" .. i]
+            if leftt then
+                local lefttext = leftt:GetText()
+                local righttext = rightt:GetText()
+                if lefttext == (L["BiaoGe历史价格"]) and righttext == L["读取中"] then
+                    if minJine and maxJine then
+                        local text
+                        if minJine == maxJine then
+                            text = minJine
+                        else
+                            text = L["%s-%s"]:format(minJine, maxJine)
+                        end
+                        rightt:SetText(text .. " " .. AddTexture(237618))
+                        tooltip:Show()
+                    else
+                        rightt:SetText(L["无"])
+                    end
+                    return
+                end
+            end
+        end
+    end
+    local function GetMaxMinMoney(tbl)
+        local maxJine, minJine
+        if next(tbl) then
+            for i = 1, #tbl do
+                if not maxJine then
+                    maxJine = tbl[i].money
+                end
+                if not minJine then
+                    minJine = tbl[i].money
+                end
+                if maxJine < tbl[i].money then
+                    maxJine = tbl[i].money
+                end
+                if minJine > tbl[i].money then
+                    minJine = tbl[i].money
+                end
+            end
+        end
+        return maxJine, minJine
+    end
+    local function SetTooltipText(itemID, tooltip)
+        if BG.HistoryMoneyCache[itemID] then
+            local maxJine, minJine = GetMaxMinMoney(BG.HistoryMoneyCache[itemID])
+            maxJine = BG.FormatNumber(maxJine, 2)
+            minJine = BG.FormatNumber(minJine, 2)
+            local text = ""
+            local moneyText
+            if minJine and maxJine then
+                if minJine == maxJine then
+                    text = minJine
+                else
+                    text = L["%s-%s"]:format(minJine, maxJine)
+                end
+                moneyText = text .. " " .. AddTexture(237618)
+            else
+                moneyText = L["无"]
+            end
+            tooltip:AddDoubleLine(L["BiaoGe历史价格"], moneyText, 1, 0.82, 0, 1, 1, 1)
+        else
+            tooltip:AddDoubleLine(L["BiaoGe历史价格"], L["读取中"], 1, 0.82, 0, 1, 1, 1)
+            lastCallback = function(tbl)
+                local maxJine, minJine = GetMaxMinMoney(tbl)
+                maxJine = BG.FormatNumber(maxJine, 2)
+                minJine = BG.FormatNumber(minJine, 2)
+                callback(itemID, maxJine, minJine, tooltip)
+            end
+            GetHistoryMoney(itemID, nil, lastCallback)
+        end
+        tooltip:Show()
+    end
+
+    local function AddInfo(self)
+        if BiaoGe.options["mouseHistoryMoney"] == 1 and IsInRaid(1) then
+            local name, link = self:GetItem()
+            if not link then return end
+            local itemID = GetItemID(link)
+            if not itemID then return end
+            SetTooltipText(itemID, self)
+        end
+    end
+
+    GameTooltip:HookScript("OnTooltipSetItem", AddInfo)
 end

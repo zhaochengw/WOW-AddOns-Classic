@@ -674,8 +674,8 @@ local info = {
     "equip",
     "bag",
     "worldBossCD",
-    -- "",
-    -- "",
+    "roleOverviewNote",
+    "buffCD",
     -- "",
     -- "",
 }
@@ -755,10 +755,6 @@ function BG.IsSameItem(link1, link2)
         return GetItemID(link1) == GetItemID(link2)
     end
 end
-
--- function BG.()
-
--- end
 
 function BG.ClearColorCode(text)
     return text:gsub("|c........", ""):gsub("|r", "")
@@ -879,4 +875,22 @@ function BG.GetNextDayTime() -- 距离明天7点还有多少秒
         tomorrow7amTimestamp = time(tomorrow)
     end
     return tomorrow7amTimestamp - currentTimestamp, tomorrow7amTimestamp
+end
+
+function BG.Split(delimiter, str)
+    local result = {}
+    local delimiterLen = string.len(delimiter)
+    local startPos = 1     -- 每次切割的起始位置
+    while true do
+        local findPos = string.find(str, delimiter, startPos, true)     -- true表示纯文本匹配（不转义）
+        if not findPos then
+            local part = string.sub(str, startPos)
+            table.insert(result, part)
+            break
+        end
+        local part = string.sub(str, startPos, findPos - 1)
+        table.insert(result, part)
+        startPos = findPos + delimiterLen
+    end
+    return unpack(result)
 end

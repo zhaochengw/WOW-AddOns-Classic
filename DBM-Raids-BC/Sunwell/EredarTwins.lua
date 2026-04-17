@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal25"
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(25165, 25166)
 mod:SetEncounterID(727, 2491)
 mod:SetModelID(23334)
@@ -44,22 +45,13 @@ local timerNova				= mod:NewCastTimer(3.5, 45329, nil, false, 2)
 
 local berserkTimer			= mod:NewBerserkTimer(360)
 
-mod:AddRangeFrameOption(10, 45333)
 mod:AddSetIconOption("ConflagIcon", 45333, false, 0, {8})
 mod:AddSetIconOption("NovaIcon", 45329, false, 0, {7})
 
 function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show()
-	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	if args.spellId == 45248 then

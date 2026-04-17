@@ -31,7 +31,7 @@ end
 
 local unitEventValidator = CreateFrame('Frame')
 local function IsUnitEventValid(event, unit)
-	-- C_EventUntils.IsEventValid doesn't cover unit events, so we'll have to do this the old fashioned way
+	-- C_EventUtils.IsEventValid doesn't cover unit events, so we'll have to do this the old fashioned way
 	local isValid = pcall(unitEventValidator.RegisterUnitEvent, unitEventValidator, event, unit)
 	if isValid then
 		unitEventValidator:UnregisterEvent(event)
@@ -263,74 +263,6 @@ function eventMixin:TriggerUnitEvent(event, unit, ...)
 				-- callbacks can unregister themselves by returning positively
 				eventMixin.UnregisterUnitEvent(data.owner, event, unit, data.callback)
 			end
-		end
-	end
-end
-
-if not addon:HasVersion(120000) then -- TODO: remove in Midnight
-	-- special handling for combat events
-	local combatEventCallbacks = {}
-	--[[ namespace.eventMixin:RegisterCombatEvent(_subEvent_, _callback_) ![](https://img.shields.io/badge/function-blue)
-	Registers a [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) with the `callback` function.  
-	If the callback returns positive it will be unregistered.
-	--]]
-	function eventMixin:RegisterCombatEvent(event, callback) -- DEPRECATED
-		assert(type(event) == 'string', 'arg1 must be a string')
-		assert(type(callback) == 'function', 'arg2 must be a function')
-
-		if not combatEventCallbacks[event] then
-			combatEventCallbacks[event] = {}
-		end
-
-		table.insert(combatEventCallbacks[event], {
-			callback = callback,
-			owner = self,
-		})
-
-		if not self:IsEventRegistered('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent) then
-			self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', self.TriggerCombatEvent)
-		end
-	end
-
-	--[[ namespace.eventMixin:UnregisterCombatEvent(_subEvent_, _callback_) ![](https://img.shields.io/badge/function-blue)
-	Unregisters a [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) from the `callback` function.
-	--]]
-	function eventMixin:UnregisterCombatEvent(event, callback) -- DEPRECATED
-		assert(type(event) == 'string', 'arg1 must be a string')
-		assert(type(callback) == 'function', 'arg2 must be a function')
-
-		if combatEventCallbacks[event] then
-			for index, data in next, combatEventCallbacks[event] do
-				if data.owner == self and data.callback == callback then
-					combatEventCallbacks[event][index] = nil
-					break
-				end
-			end
-		end
-	end
-
-	do
-		local function internalTrigger(_, event, _, ...)
-			if combatEventCallbacks[event] then
-				for _, data in next, combatEventCallbacks[event] do
-					local successful, ret = pcall(data.callback, data.owner, ...)
-					if not successful then
-						error(ret)
-					elseif ret then
-						eventMixin.UnregisterCombatEvent(data.owner, event, data.callback)
-					end
-				end
-			end
-		end
-
-		--[[ namespace.eventMixin:TriggerCombatEvent(_subEvent_) ![](https://img.shields.io/badge/function-blue)
-		Manually trigger the [combat `subEvent`](https://warcraft.wiki.gg/wiki/COMBAT_LOG_EVENT) on all registered callbacks.  
-		If the callback returns positive it will be unregistered.
-
-		* Note: this is pretty useless on it's own, and should only ever be triggered by the event system.
-		--]]
-		function eventMixin:TriggerCombatEvent() -- DEPRECATED
-			internalTrigger(CombatLogGetCurrentEventInfo())
 		end
 	end
 end

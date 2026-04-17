@@ -1,4 +1,4 @@
-## Interface: 30405, 38000
+## Interface: 30405, 38001
 ## Category: DBM
 ## Group: DBM-Core
 ## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0Status Bar Timers|r
@@ -22,7 +22,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 12.0.18
+## Version: 12.0.38
 ## X-Website: https://deadlybossmods.com
 
 DBT.lua

@@ -231,8 +231,19 @@ function RSGeneralOptions.GetGeneralOptions()
 					end,
 					width = "full",
 				},
-				showMaker = {
+				autoHideButtonInstances = {
 					order = 11,
+					name = AL["AUTOHIDE_BUTTON_INSTANCES"],
+					desc = AL["AUTOHIDE_BUTTON_INSTANCES_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsAutohidingInIntances() end,
+					set = function(_, value)
+						RSConfigDB.SetAutohidingInIntances(value)
+					end,
+					width = "full",
+				},
+				showMaker = {
+					order = 12,
 					name = AL["ENABLE_MARKER"],
 					desc = AL["ENABLE_MARKER_DESC"],
 					type = "toggle",
@@ -243,7 +254,7 @@ function RSGeneralOptions.GetGeneralOptions()
 					width = "full",
 				},
 				marker = {
-					order = 12,
+					order = 13,
 					type = "select",
 					dialogControl = 'RS_Markers',
 					name = AL["MARKER"],
@@ -257,12 +268,12 @@ function RSGeneralOptions.GetGeneralOptions()
 					disabled = function() return not RSConfigDB.IsDisplayingMarkerOnTarget() end,
 				},
 				separatorTomtomWaypoints = {
-					order = 13,
+					order = 14,
 					type = "header",
 					name = AL["TOMTOM_WAYPOINTS"],
 				},
 				enableTomtomSupport = {
-					order = 14,
+					order = 15,
 					name = AL["ENABLE_TOMTOM_SUPPORT"],
 					desc = AL["ENABLE_TOMTOM_SUPPORT_DESC"],
 					type = "toggle",
@@ -277,7 +288,7 @@ function RSGeneralOptions.GetGeneralOptions()
 					disabled = function() return not TomTom end,
 				},
 				autoTomtomWaypoints = {
-					order = 15,
+					order = 16,
 					name = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS"],
 					desc = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS_DESC"],
 					type = "toggle",
@@ -287,6 +298,30 @@ function RSGeneralOptions.GetGeneralOptions()
 					end,
 					width = "full",
 					disabled = function() return not RSConfigDB.IsTomtomSupportEnabled() end,
+				},
+				showTomtomMinimapIcon = {
+					order = 17,
+					name = AL["SHOW_TOMTOM_MINIMAP_ICON"],
+					desc = AL["SHOW_TOMTOM_MINIMAP_ICON_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsShowingTomtomMinimapIcon() end,
+					set = function(_, value)
+						RSConfigDB.SetShowingTomtomMinimapIcon(value)
+					end,
+					width = "full",
+					disabled = function() return not TomTom end,
+				},
+				showTomtomWorldmapIcon = {
+					order = 18,
+					name = AL["SHOW_TOMTOM_WORLDMAP_ICON"],
+					desc = AL["SHOW_TOMTOM_WORLDMAP_ICON_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsShowingTomtomWorldmapIcon() end,
+					set = function(_, value)
+						RSConfigDB.SetShowingTomtomWorldmapIcon(value)
+					end,
+					width = "full",
+					disabled = function() return not TomTom end,
 				}
 			},
 		}

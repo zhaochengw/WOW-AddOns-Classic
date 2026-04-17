@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("TheAzurevaultTrash", "DBM-Party-Dragonflight", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260112042022")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 --mod:SetModelID(47785)
 mod:SetZone(2515)
 

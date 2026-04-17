@@ -2,15 +2,17 @@
 	by ALA
 --]]--
 --[[
-	Scroll = __ala_meta__.__scrolllib.CreateScrollFrame(Parent, width, height, ButtonHeight, Creator(Parent: ScrollFrame.ScrollChild, index, ButtonHeight), Settor(Button, data_index))
+	Scroll = __ala_meta__.__scrolllib.CreateScrollFrame(Parent, width, height, LineHeight, Creator(Parent: ScrollFrame.ScrollChild, index, LineHeight), Settor(Line, data_index))
 	Scroll:SetNumValue(num)
-	Scroll:HandleButtonByDataIndex(index, func, ...)			func(Button, ...)
-	Scroll:HandleButtonByRawIndex(index, func, ...)				func(Button, ...)
-	Scroll:CallButtonFuncByRawIndex(index, FuncName, ...)		Button:func(...)
-	Scroll:CallButtonFuncByDataIndex(index, FuncName, ...)		Button:func(...)
-	Button:GetDataIndex()
+	Scroll:HandleLineByDataIndex(index, func, ...)			func(Line, ...)
+	Scroll:HandleLineByRawIndex(index, func, ...)				func(Line, ...)
+	Scroll:CallLineFuncByRawIndex(index, FuncName, ...)		Line:func(...)
+	Scroll:CallLineFuncByDataIndex(index, FuncName, ...)		Line:func(...)
+	Scroll:UpdateLines();
+	Line:GetDataIndex()
+	Line:ScopedUpdate()
 ]]
-local __version = 250405;
+local __version = 260325;
 
 local _G = _G;
 _G.__ala_meta__ = _G.__ala_meta__ or {  };
@@ -51,7 +53,7 @@ local uireimp = __ala_meta__.uireimp;
 	local TEXTURE_DOWN = TEXTURE_PATH .. "ArrowDown";
 
 -->
-	function __scrolllib.CreateScrollFrame(Parent, FrameWidth, FrameHeight, ButtonHeight, Creator, Settor)
+	function __scrolllib.CreateScrollFrame(Parent, FrameWidth, FrameHeight, LineHeight, Creator, Settor)
 		local ScrollFrame = CreateFrame('SCROLLFRAME', nil, Parent);
 		local ScrollChild = CreateFrame('FRAME', nil, ScrollFrame);
 		local ScrollBar = CreateFrame('SLIDER', nil, ScrollFrame);
@@ -133,7 +135,7 @@ local uireimp = __ala_meta__.uireimp;
 		ScrollFrame:SetVerticalScroll(0);
 		ScrollFrame:SetScrollChild(ScrollChild);
 		ScrollFrame:SetScript("OnMouseWheel", function(self, delta, stepSize)
-			stepSize = stepSize or ButtonHeight;
+			stepSize = stepSize or LineHeight;
 			local minVal, maxVal = ScrollBar:GetMinMaxValues();
 			local val = ScrollBar:GetValue() - delta * stepSize;
 			if val > maxVal then
@@ -157,10 +159,10 @@ local uireimp = __ala_meta__.uireimp;
 			end
 		end
 		function ScrollFrame:SetButtonHeight(height)
-			if ButtonHeight == height then
+			if LineHeight == height then
 				return;
 			end
-			ButtonHeight = height;
+			LineHeight = height;
 			self:OnSizeChanged();
 		end
 		--[=[ScrollFrame._SetSize = ScrollFrame.SetSize;
@@ -189,19 +191,23 @@ local uireimp = __ala_meta__.uireimp;
 		end);
 		ScrollFrame:SetScript("OnShow", function(self)
 			self:Update();
-			ScrollBar:UpdateButtonState();
+			ScrollBar:UpdateLineState();
 		end);
-		function ScrollFrame:UpdateButtons()
+		function ScrollFrame:UpdateLines()
 			if self:IsVisible() then
 				for i = 1, NumShown do
-					-- Settor(TblButtons[i], i + IndexOffset);
-					After(0.0, TblButtons[i].ScopedUpdate);
+					if i + IndexOffset <= NumValues then
+						-- Settor(TblButtons[i], i + IndexOffset);
+						After(0.0, TblButtons[i].ScopedUpdate);
+					else
+						TblButtons[i]:Hide();
+					end
 				end
 			end
 		end
 		function ScrollFrame:Update()
 			if self:IsVisible() then
-				MaxValue = NumValues * ButtonHeight - FrameHeight;
+				MaxValue = NumValues * LineHeight - self:GetHeight();
 				if MaxValue < 0 then
 					MaxValue = 0;
 				end
@@ -219,45 +225,45 @@ local uireimp = __ala_meta__.uireimp;
 					ScrollChild:SetWidth(self:GetWidth() - BarWidth - 2);
 					ScrollBar:UpdateThumbHeight();
 				end
-				self:UpdateButtons();
+				self:UpdateLines();
 			end
 		end
 		function ScrollFrame:SetNumValue(num)
 			if num >= 0 and NumValues ~= num then
 				NumValues = num;
 				self:Update();
-				ScrollBar:UpdateButtonState();
+				ScrollBar:UpdateLineState();
 				return true;
 			end
 		end
-		function ScrollFrame:HandleButtonByDataIndex(index, func, ...)
-			return self:HandleButtonByRawIndex(index - IndexOffset, func, ...);
+		function ScrollFrame:HandleLineByDataIndex(index, func, ...)
+			return self:HandleLineByRawIndex(index - IndexOffset, func, ...);
 		end
-		function ScrollFrame:HandleButtonByRawIndex(index, func, ...)
+		function ScrollFrame:HandleLineByRawIndex(index, func, ...)
 			if index >= 1 and index <= #TblButtons then
 				return func(TblButtons[index], ...);
 			else
-				-- _error_("HandleButtonByRawIndex", index);
+				-- _error_("HandleLineByRawIndex", index);
 				return nil;
 			end
 		end
-		function ScrollFrame:CallButtonFuncByRawIndex(index, func, ...)
+		function ScrollFrame:CallLineFuncByRawIndex(index, func, ...)
 			if index >= 1 and index <= #TblButtons then
 				func = TblButtons[index][func];
 				if func then
 					return func(TblButtons[index], ...);
 				else
-					_error_("CallButtonFuncByRawIndex", index);
+					_error_("CallLineFuncByRawIndex", index);
 					return nil;
 				end
 			else
-				-- _error_("CallButtonFuncByRawIndex", index);
+				-- _error_("CallLineFuncByRawIndex", index);
 				return nil;
 			end
 			return nil;
 		end
-		function ScrollFrame:CallButtonFuncByDataIndex(index, func, ...)
-			return self:CallButtonFuncByRawIndex(index - IndexOffset, func, ...);
+		function ScrollFrame:CallLineFuncByDataIndex(index, func, ...)
+			return self:CallLineFuncByRawIndex(index - IndexOffset, func, ...);
 		end
 		function ScrollFrame:SetBarWidth(width)
 			BarWidth = width;
@@ -270,7 +276,7 @@ local uireimp = __ala_meta__.uireimp;
 			return self.id + IndexOffset;
 		end
 		function ScrollChild:CreateScrollChildButtons()
-			local num = ceil(self:GetHeight() / ButtonHeight) + 1;
+			local num = ceil(self:GetHeight() / LineHeight) + 1;
 			if num == NumShown then
 				return;
 			end
@@ -281,20 +287,20 @@ local uireimp = __ala_meta__.uireimp;
 			else
 				if num > NumButtons then
 					for i = NumButtons + 1, num do
-						local Button = Creator(self, i, ButtonHeight);
-						Button.id = i;
-						TblButtons[i] = Button;
+						local Line = Creator(self, i, LineHeight);
+						Line.id = i;
+						TblButtons[i] = Line;
 						if i == 1 then
-							Button:SetPoint("TOPLEFT");
-							Button:SetPoint("TOPRIGHT");
+							Line:SetPoint("TOPLEFT");
+							Line:SetPoint("TOPRIGHT");
 						else
-							Button:SetPoint("TOPLEFT", TblButtons[i - 1], "BOTTOMLEFT", 0, 0);
-							Button:SetPoint("TOPRIGHT", TblButtons[i - 1], "BOTTOMRIGHT", 0, 0);
+							Line:SetPoint("TOPLEFT", TblButtons[i - 1], "BOTTOMLEFT", 0, 0);
+							Line:SetPoint("TOPRIGHT", TblButtons[i - 1], "BOTTOMRIGHT", 0, 0);
 						end
 						TblButtons[i]:Show();
-						Button.GetDataIndex = GetDataIndex;
-						Button.ScopedUpdate = function()
-							return Settor(Button, i + IndexOffset);
+						Line.GetDataIndex = GetDataIndex;
+						Line.ScopedUpdate = function()
+							return Settor(Line, i + IndexOffset);
 						end
 						NumButtons = i;
 					end
@@ -307,20 +313,20 @@ local uireimp = __ala_meta__.uireimp;
 			-- ScrollBar:SetStepsPerPage(NumShown - 2);
 		end
 
-		ScrollBar:SetValueStep(ButtonHeight);
+		ScrollBar:SetValueStep(LineHeight);
 		ScrollBar:SetMinMaxValues(0, 0);
 		ScrollBar:SetValue(0);
 		ScrollBar:SetScript("OnValueChanged", function(self, value)
 			value = value or self:GetValue();
-			local index = value / ButtonHeight;
-			local ofs = (index % 1.0) * ButtonHeight;
+			local index = value / LineHeight;
+			local ofs = (index % 1.0) * LineHeight;
 			ScrollFrame:SetVerticalScroll(ofs);
 			IndexOffset = index - index % 1.0;
-			ScrollFrame:UpdateButtons();
-			ScrollBar:UpdateButtonState();
+			ScrollFrame:UpdateLines();
+			ScrollBar:UpdateLineState();
 		end);
 		function ScrollBar:UpdateThumbHeight()
-			local Total = NumValues * ButtonHeight;
+			local Total = NumValues * LineHeight;
 			local Height = self:GetHeight();
 			local ThumbHeight = Height * FrameHeight / Total;
 			if ThumbHeight < BarWidth then
@@ -331,7 +337,7 @@ local uireimp = __ala_meta__.uireimp;
 			end
 			Thumb:SetHeight(ThumbHeight);
 		end
-		function ScrollBar:UpdateButtonState()
+		function ScrollBar:UpdateLineState()
 			local value = self:GetValue();
 			local minVal, maxVal = self:GetMinMaxValues();
 			if minVal >= value then

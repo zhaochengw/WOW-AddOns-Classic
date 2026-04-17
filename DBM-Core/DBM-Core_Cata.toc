@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 12.0.18
+## Version: 12.0.38
 ## X-Curse-Project-ID: 3358
 ## X-Wago-ID: qv633o6b
 ## X-Website: https://deadlybossmods.com
@@ -100,14 +100,16 @@ modules\AnnoyingPopup.lua
 modules\ZoneCombatScanner.lua
 
 modules\objects\Difficulties.lua
+modules\objects\AddonComms.lua
 modules\objects\BossMod.lua
+modules\objects\BossModOptions.lua
 modules\objects\BossModEventDispatcher.lua
 modules\objects\Localization.lua
 modules\objects\VoicePacks.lua
 modules\objects\Timer.lua
+modules\objects\UserTimers.lua
 modules\objects\EnrageTimer.lua
 modules\objects\Announce.lua
 modules\objects\SpecialWarning.lua
 modules\objects\Yell.lua
 modules\objects\Sorting.lua
-modules\objects\Tooltip.lua

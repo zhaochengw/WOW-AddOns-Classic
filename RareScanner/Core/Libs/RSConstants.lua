@@ -13,6 +13,7 @@ local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
 ---============================================================================
 
 RSConstants.DEBUG_MODE = false
+RSConstants.DEBUG_ATLAS_VIGNETTE = false
 
 -- Use this constant to logger information about an specific entity while
 -- displaying on the map. This is handy to find bugs in the POI filters
@@ -28,7 +29,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 7
-RSConstants.CURRENT_LOOT_DB_VERSION = 4
+RSConstants.CURRENT_LOOT_DB_VERSION = 5
 
 ---============================================================================
 -- Current maps (newer)
@@ -90,7 +91,7 @@ RSConstants.PANDARIA_GODS_MONSTERS_MINIEVENT = 40
 -- Minievents that will have an option to filter/unfilter the icons from the worldmap
 RSConstants.MINIEVENTS_WORLDMAP_FILTERS = {
 	[RSConstants.PANDARIA_IS_ANOTHER_MANS_TREASURE_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 422, 418, 376, 388 }, atlas = "Auctioneer", text = AL["MAP_MENU_SHOW_IS_ANOTHER_MANS_TREASURE_CONTAINERS"] };
-	[RSConstants.PANDARIA_RICHES_OF_PANDARIA_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 418, 376, 388 }, atlas = "Banker", text = AL["MAP_MENU_SHOW_RICHES_OF_PANDARIA_CONTAINERS"] };
+	[RSConstants.PANDARIA_RICHES_OF_PANDARIA_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 418, 376, 388, 433 }, atlas = "Banker", text = AL["MAP_MENU_SHOW_RICHES_OF_PANDARIA_CONTAINERS"] };
 	[RSConstants.PANDARIA_HOZEN_IN_THE_MIST_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 418, 376 }, atlas = "Vehicle-TempleofKotmogu-CyanBall", text = AL["MAP_MENU_SHOW_HOZEN_IN_THE_MIST_CONTAINERS"] };
 	[RSConstants.PANDARIA_WHAT_WORTH_FIGHITING_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 390, 418, 376 }, atlas = "Vehicle-TempleofKotmogu-GreenBall", text = AL["MAP_MENU_SHOW_WHAT_WORTH_FIGHITING_CONTAINERS"] };
 	[RSConstants.PANDARIA_LEGEND_BREWFATHERS_MINIEVENT] = { active = true, containers = true, mapIDs = { 371, 379, 418 }, atlas = "Class", text = AL["MAP_MENU_SHOW_LEGEND_BREWFATHERS_CONTAINERS"] };
@@ -142,6 +143,14 @@ RSConstants.ITEM_TYPE = {
 }
 
 ---============================================================================
+-- Types of entity by map (used in MapEntitiesTables)
+---============================================================================
+
+RSConstants.MAP_ENTITY_NPC = 1
+RSConstants.MAP_ENTITY_CONTAINER = 2
+RSConstants.MAP_ENTITY_EVENT = 3
+
+---============================================================================
 -- Types of entity filters
 ---============================================================================
 
@@ -185,11 +194,14 @@ RSConstants.PROFILE_DEFAULTS = {
 			scanOnPetBattle = true,
 			scanWorldmapVignette = true,
 			scanWithMacro = false,
+			autoHideButtonInstances = false,
 			ignoreCompletedEntities = true,
 			showMaker = true,
 			marker = 8,
 			enableTomtomSupport = false,
-			autoTomtomWaypoints = false
+			autoTomtomWaypoints = false,
+			showTomtomMinimapIcon = false,
+			showTomtomWorldmapIcon = false
 		},
 		sound = {
 			soundDisabled = false,
@@ -469,6 +481,12 @@ RSConstants.DEFAULT_GROUP = 0
 ---============================================================================
 
 RSConstants.TSM_SOURCES = { "DBMinBuyout", "DBMarket", "DBRegionMarketAvg" }
+
+---============================================================================
+-- Tooltips
+---============================================================================
+
+RSConstants.TOOLTIPS_SCALE = 0.65
 
 ---============================================================================
 -- Eternal states

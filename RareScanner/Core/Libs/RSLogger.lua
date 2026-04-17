@@ -44,6 +44,7 @@ function RSLogger:CreateChatFrame(name)
 			self.RARESCANNER_CHAT_FRAME = FCF_OpenNewWindow(name)
 			ChatFrame_RemoveAllMessageGroups(self.RARESCANNER_CHAT_FRAME)
 			ChatFrame_RemoveAllChannels(self.RARESCANNER_CHAT_FRAME)
+			
 			if (ChatFrame1) then
 				FCF_SelectDockFrame(ChatFrame1)
 			end

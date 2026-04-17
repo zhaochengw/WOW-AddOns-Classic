@@ -232,10 +232,3 @@ function xptconfig()
 		print("Category not found")
 	end
 end
-
---InterfaceOptions_AddCategory(XPTIOFrame);
-
---function xptconfig()
-	--InterfaceOptionsFrame_OpenToCategory("XP Bar Text")
-	--InterfaceOptionsFrame_OpenToCategory("XP Bar Text")
---end

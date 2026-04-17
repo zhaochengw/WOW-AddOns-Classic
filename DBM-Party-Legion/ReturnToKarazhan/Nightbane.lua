@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "mythic,challenge"
 
-mod:SetRevision("20240428124541")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(114895)
 mod:SetEncounterID(2031)
 mod:SetUsedIcons(1)

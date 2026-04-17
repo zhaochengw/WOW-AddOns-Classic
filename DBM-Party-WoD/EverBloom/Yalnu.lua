@@ -9,7 +9,8 @@ if (wowToc >= 100200) then
 	mod.sendMainBossGUID = true
 end
 
-mod:SetRevision("20240206052332")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(83846)
 mod:SetEncounterID(1756)
 mod:SetHotfixNoticeRev(20231021000000)

@@ -25,7 +25,7 @@ function plugin:OnClick(button) --function plugin.OnClick(self, button)
         if SettingsPanel:IsVisible() then
             HideUIPanel(SettingsPanel)
         else
-            ns.InterfaceOptionsFrame_OpenToCategory(BG.optionsName )
+            ns.InterfaceOptionsFrame_OpenToCategory(BG.optionsName)
             BG.MainFrame:Hide()
         end
     elseif button == "MiddleButton" then

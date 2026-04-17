@@ -30,7 +30,6 @@ local BZ                   = Atlas_GetLocaleLibBabble("LibBabble-SubZone-3.0")
 local BF                   = Atlas_GetLocaleLibBabble("LibBabble-Faction-3.0")
 local L                    = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
 local ALC                  = LibStub("AceLocale-3.0"):GetLocale("Atlas")
-local ALIL                 = Atlas_IngameLocales
 local Atlas                = LibStub("AceAddon-3.0"):GetAddon("Atlas")
 local addon                = Atlas:NewModule(private.module_name)
 
@@ -90,8 +89,8 @@ db.AtlasMaps = {
 		WorldMapID = 242,
 		JournalInstanceID = 228,
 		Module = "Atlas_ClassicWoW",
-		{ ORNG..ALC["Key"]..ALC["Colon"]..ALIL["Relic Coffer Key"] },
-		{ ORNG..ALC["Key"]..ALC["Colon"]..ALIL["Dark Keeper Key"] },
+		{ ORNG..ALC["Key"]..ALC["Colon"]..L["Relic Coffer Key"] },
+		{ ORNG..ALC["Key"]..ALC["Colon"]..L["Dark Keeper Key"] },
 		{ BLUE.." A) "..ALC["Entrance"],                                                                                                                   10001 },
 		{ BLUE.." B-D) "..ALC["Connection"],                                                                                                               10002 },
 		{ BLUE.." E) "..BZ["The Molten Core"],                                                                                                             10003 },
@@ -141,18 +140,18 @@ db.AtlasMaps = {
 		{ GREN..INDENT..L["Maxwort Uberglint"] },
 		{ GREN..INDENT..L["Tinkee Steamboil"] },
 		{ GREN..INDENT..L["Yuka Screwspigot <Engineering Supplies>"] },
-		{ GREN..INDENT..L["Abandonded Mole Machine"] },
+		{ GREN..INDENT..L["Abandoned Mole Machine"] },
 		{ GREN.." 2') "..L["Kevin Dawson <Morgan's Militia>"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"],                               10006 },
 		{ GREN..INDENT..L["Lexlort <Kargath Expeditionary Force>"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] },
 		{ GREN.." 3') "..L["Prospector Seymour <Morgan's Militia>"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"],                         10007 },
 		{ GREN..INDENT..L["Razal'blade <Kargath Expeditionary Force>"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] },
-		{ GREN.." 4') "..L["Abandonded Mole Machine"],                                                                                                     10008 },
+		{ GREN.." 4') "..L["Abandoned Mole Machine"],                                                                                                      10008 },
 		{ GREN.." 5') "..L["The Shadowforge Lock"],                                                                                                        10009 },
 		{ GREN.." 6') "..ALC["Blacksmithing Plans"],                                                                                                       10010 },
 		{ GREN.." 7') "..L["Mayara Brightwing <Morgan's Militia>"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"],                          10011 },
 		{ GREN..INDENT..L["Hierophant Theodora Mulvadania <Kargath Expeditionary Force>"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] },
 		{ GREN.." 8') "..L["Lokhtos Darkbargainer <The Thorium Brotherhood>"],                                                                             10012 },
-		{ GREN.." 9') "..L["Abandonded Mole Machine"],                                                                                                     10013 },
+		{ GREN.." 9') "..L["Abandoned Mole Machine"],                                                                                                      10013 },
 		{ GREN.."10') "..L["Mountaineer Orfus <Morgan's Militia>"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"],                          10014 },
 		{ GREN..INDENT..L["Thunderheart <Kargath Expeditionary Force>"]..ALC["L-Parenthesis"]..FACTION_HORDE..ALC["R-Parenthesis"] },
 		{ GREN.."11') "..L["Marshal Maxwell <Morgan's Militia>"]..ALC["L-Parenthesis"]..FACTION_ALLIANCE..ALC["R-Parenthesis"],                            10015 },

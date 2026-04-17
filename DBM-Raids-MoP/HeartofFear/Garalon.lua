@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod(713, "DBM-Raids-MoP", 4, 330)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(63191)--Also has CID 62164. He has 2 CIDs for a single target, wtf? It seems 63191 is one players attack though so i'll try just it.
 mod:SetEncounterID(1463)
 mod:SetUsedIcons(2)
@@ -37,7 +38,6 @@ local specwarnUnder				= mod:NewSpecialWarning("specwarnUnder")
 local specwarnPheromonesTarget	= mod:NewSpecialWarningTarget(122835, false)
 local specwarnPheromonesYou		= mod:NewSpecialWarningYou(122835)
 local yellPheromones			= mod:NewYell(122835)
-local specwarnPheromonesNear	= mod:NewSpecialWarningClose(122835)
 local specwarnCrush				= mod:NewSpecialWarningSpell(122774, true, nil, nil, 2)--Maybe set to true later, not sure. Some strats on normal involve purposely having tanks rapidly pass debuff and create lots of stomps
 local specwarnLeg				= mod:NewSpecialWarningSwitch("ej6270", "Melee")--If no legs are up (ie all dead), when one respawns, this special warning can be used to alert of a respawned leg and to switch back.
 local specwarnPheromoneTrail	= mod:NewSpecialWarningMove(123120)--Because this starts doing damage BEFORE the visual is there.
@@ -89,13 +89,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellPheromones:Yell()
 		else
 			specwarnPheromonesTarget:Show(args.destName)
-			local uId = DBM:GetRaidUnitId(args.destName)
-			if uId then
-				local inRange = DBM.RangeCheck:GetDistance("player", uId)
-				if inRange and inRange < 9 then
-					specwarnPheromonesNear:Show(args.destName)
-				end
-			end
 		end
 		if self.Options.PheromonesIcon then
 			self:SetIcon(args.destName, 2)

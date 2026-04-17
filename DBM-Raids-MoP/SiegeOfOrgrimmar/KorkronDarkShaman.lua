@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71859, 71858)--haromm, Kardris
 mod:SetEncounterID(1606)
 mod:SetUsedIcons(5, 4, 3, 2, 1)
@@ -71,7 +72,6 @@ local timerIronPrisonSelf			= mod:NewBuffFadesTimer(60, 144330)
 
 local berserkCD						= mod:NewCDTimer(540, 26662)
 
-mod:AddRangeFrameOption(4, 143990)--This is more or less for foul geyser and foul stream splash damage
 mod:AddSetIconOption("SetIconOnToxicMists", 144089, false)
 mod:AddSetIconOption("SetIconOnFoulStream", 144090, false)
 
@@ -90,12 +90,6 @@ local function clearCheckTankDistanceThrottle(spellId)
 	end
 end
 
-local function hideRangeDelay()
-	if mod.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
-
 function mod:FoulStreamTarget(targetname, uId)
 	if not targetname then return end
 	if self:IsTanking(uId) then--Never target tanks, so if target is tank, that means scanning failed.
@@ -108,10 +102,6 @@ function mod:FoulStreamTarget(targetname, uId)
 			specWarnFoulStreamYou:Show()
 			specWarnFoulStreamYou:Play("targetyou")
 			yellFoulStream:Yell()
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(4)
-				self:Schedule(4, hideRangeDelay)
-			end
 		else
 			specWarnFoulStream:Show()
 			specWarnFoulStream:Play("watchstep")
@@ -138,11 +128,6 @@ function mod:OnCombatStart(delay)
 	berserkCD:Start()
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId

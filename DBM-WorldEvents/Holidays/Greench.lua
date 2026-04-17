@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Greench", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260210012025")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 local isRetail = DBM:IsRetail()
 if isRetail then
 	mod:SetCreatureID(228745)

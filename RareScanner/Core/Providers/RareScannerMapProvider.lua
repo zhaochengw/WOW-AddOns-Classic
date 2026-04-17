@@ -25,7 +25,6 @@ local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSMap = private.ImportLib("RareScannerMap")
 local RSTooltip = private.ImportLib("RareScannerTooltip")
 local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
-local RSTomtom = private.ImportLib("RareScannerTomtom")
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 
 RareScannerDataProviderMixin = CreateFromMixins(MapCanvasDataProviderMixin);

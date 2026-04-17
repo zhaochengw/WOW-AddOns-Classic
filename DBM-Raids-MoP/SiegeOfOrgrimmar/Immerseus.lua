@@ -3,7 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,lfr"
 
-mod:SetRevision("20241103134004")
+mod:SetRevision("20260315035327")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(71543)
 mod:SetEncounterID(1602)
 mod:SetReCombatTime(45)--Lets just assume he has same bug as tsulong in advance and avoid problems

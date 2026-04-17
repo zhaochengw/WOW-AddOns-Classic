@@ -53,93 +53,6 @@ local createCanvas; do
 	end
 end
 
-local createColorPicker; do -- I wish Settings.CreateColorPicker was a thing
-	local colorPickerMixin = {}
-	function colorPickerMixin:OnSettingValueChanged(setting, value)
-		local r, g, b, a = addon:CreateColor(value):GetRGBA()
-		self.Swatch:SetColorRGB(r, g, b)
-
-		-- modify colorInfo for next run
-		self.colorInfo.r = r
-		self.colorInfo.g = g
-		self.colorInfo.b = b
-		self.colorInfo.a = a
-	end
-
-	local function onClick(self)
-		local parent = self:GetParent()
-		local info = parent.colorInfo
-		if info.hasOpacity then
-			parent.oldValue = CreateColor(info.r, info.g, info.b, info.a):GenerateHexColor()
-		else
-			parent.oldValue = CreateColor(info.r, info.g, info.b):GenerateHexColorNoAlpha()
-		end
-
-		ColorPickerFrame:SetupColorPickerAndShow(info)
-	end
-
-	local function onColorChanged(self, setting)
-		local r, g, b = ColorPickerFrame:GetColorRGB()
-		if self.colorInfo.hasOpacity then
-			local a = ColorPickerFrame:GetColorAlpha()
-			setting:SetValue(CreateColor(r, g, b, a):GenerateHexColor())
-		else
-			setting:SetValue(CreateColor(r, g, b):GenerateHexColorNoAlpha())
-		end
-	end
-
-	local function onColorCancel(self, setting)
-		setting:SetValue(self.oldValue)
-	end
-
-	local function initFrame(initializer, self)
-		SettingsListElementMixin.OnLoad(self)
-		SettingsListElementMixin.Init(self, initializer)
-		Mixin(self, colorPickerMixin)
-
-		self:SetSize(280, 26) -- templates have a size
-
-		-- creating widgets would be equal to :OnLoad()
-		if not self.Swatch then
-			self.Swatch = CreateFrame('Button', nil, self, 'ColorSwatchTemplate')
-			self.Swatch:SetSize(30, 30)
-			self.Swatch:SetPoint('LEFT', self, 'CENTER', -80, 0)
-			self.Swatch:SetScript('OnClick', onClick)
-		end
-
-		-- setting up state would be equal to :Init()
-		local setting = initializer:GetSetting()
-		local value = setting:GetValue()
-		local r, g, b, a = addon:CreateColor(value):GetRGBA()
-
-		self.colorInfo = {
-			swatchFunc = GenerateClosure(onColorChanged, self, setting),
-			opacityFunc = GenerateClosure(onColorChanged, self, setting),
-			cancelFunc = GenerateClosure(onColorCancel, self, setting),
-			r = r,
-			g = g,
-			b = b,
-			opacity = a,
-			hasOpacity = #value == 8
-		}
-
-		self.Swatch:SetColorRGB(r, g, b)
-
-		-- set up callbacks, see SettingsControlMixin.Init as an example
-		-- this is used to change common values, and is triggered by setting:SetValue(), thus also from defaults
-		self.cbrHandles:SetOnValueChangedCallback(setting:GetVariable(), self.OnSettingValueChanged, self)
-	end
-
-	function createColorPicker(category, setting, options, tooltip)
-		local data = Settings.CreateSettingInitializerData(setting, options, tooltip)
-		local init = Settings.CreateElementInitializer('SettingsListElementTemplate', data)
-		init.InitFrame = initFrame
-		init:AddSearchTags(setting:GetName())
-		SettingsPanel:GetLayout(category):AddInitializer(init)
-		return init
-	end
-end
-
 local function formatCustom(fmt, value)
 	return fmt:format(value)
 end
@@ -191,8 +104,8 @@ local function registerSetting(category, savedvariable, info)
 		end
 
 		initializer = Settings.CreateDropdown(category, setting, options, info.tooltip)
-	elseif info.type == 'color' or info.type == 'colorpicker' then -- TODO: remove in 12.x, compat
-		initializer = createColorPicker(category, setting, nil, info.tooltip)
+	elseif info.type == 'color' then
+		initializer = Settings.CreateColorSwatch(category, setting, info.tooltip)
 	else
 		error('type is invalid') -- TODO: make this prettier
 		return
@@ -376,7 +289,7 @@ namespace:RegisterSettings('MyAddOnDB', {
         type = 'color',
         title = 'My Color',
         tooltip = 'Longer description of the color in a tooltip',
-        default = 'ff00ff', -- either "RRGGBB" or "AARRGGBB" format, the latter enables opacity
+        default = 'ffff00ff', -- "AARRGGBB" format
     }
 })
 ```
@@ -447,7 +360,11 @@ Opens the settings panel for this addon.
 --]]
 function addon:OpenSettings()
 	assert(not not settingsCategoryID, 'must register settings first')
-	Settings.OpenToCategory(settingsCategoryID)
+	if InCombatLockdown() then
+		addon:Print("Can't open settings this way in combat")
+	else
+		C_SettingsUtil.OpenSettingsPanel(settingsCategoryID)
+	end
 end
 
 --[[ namespace:RegisterSettingsSlash(_..._) ![](https://img.shields.io/badge/function-blue)
@@ -584,13 +501,14 @@ do
 
 	local function menuTooltip(button, element)
 		-- copied logic from MENU_WORLD_MAP_TRACKING filters
-		GameTooltip:ClearAllPoints()
-		GameTooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
-		GameTooltip:SetOwner(button, 'ANCHOR_PRESERVE')
-		GameTooltip:ClearLines()
-		GameTooltip:AddLine(element.text, 1, 1, 1)
-		GameTooltip:AddLine(element.tooltip, nil, nil, nil, true)
-		GameTooltip:Show()
+		local tooltip = addon:GetTooltip()
+		tooltip:ClearAllPoints()
+		tooltip:SetPoint('RIGHT', button, 'LEFT', -3, 0)
+		tooltip:SetOwner(button, 'ANCHOR_PRESERVE')
+		tooltip:ClearLines()
+		tooltip:AddLine(element.text, 1, 1, 1)
+		tooltip:AddLine(element.tooltip, nil, nil, nil, true)
+		tooltip:Show()
 	end
 
 	local function registerMapSettings(savedvariable, settings)
@@ -668,7 +586,7 @@ do
 				if element and setting.tooltip then
 					element.tooltip = setting.tooltip
 					element:SetOnEnter(menuTooltip)
-					element:SetOnLeave(GameTooltip_Hide)
+					element:SetOnLeave(addon.HideTooltip)
 				end
 			end
 		end)

@@ -1,0 +1,64 @@
+# Death Knight: Blood (MoP) - Shiego Logic (Aggressive Mitigation)
+
+## Precombat
+actions.precombat+=/blood_presence,if=!buff.blood_presence.up
+actions.precombat+=/bone_shield,if=buff.bone_shield.down
+actions.precombat+=/horn_of_winter,if=buff.horn_of_winter.down
+actions.precombat+=/potion
+
+## Core Flow
+actions+=/mind_freeze,if=target.debuff.casting.react
+actions+=/call_action_list,name=defensives
+actions+=/call_action_list,name=cooldowns
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/run_action_list,name=single_target
+
+## Defensives (Prioritet #1 - Överlevnad)
+# Shiego Logic: Proactive mitigation engine.
+# - Panic: force DS if HP < settings.shiego_panic_health_pct.
+# - Proactive: bank shields if predicted mitigation >= settings.shiego_ds_mitigation_threshold.
+actions.defensives+=/death_strike,if=death_strike_runes_available&(shiego_ds_panic|shiego_ds_proactive)
+actions.defensives+=/death_siphon,if=talent.death_siphon.enabled&shiego_panic
+
+# "Bank" Runes logic: Don't cap runes, convert them to Shields via DS
+actions.defensives+=/death_strike,if=shiego_bank_full
+
+## Cooldowns (Shiego Timeline)
+# DRW: Use aggressively for Parry & Threat (essentially on CD unless boss is immune)
+actions.cooldowns+=/dancing_rune_weapon,if=active_enemies>=1&!settings.save_drw_for_boss_phase&incoming_damage_5s>health.max*0.15
+actions.cooldowns+=/bone_shield,if=buff.bone_shield.down
+actions.cooldowns+=/use_items
+
+# The "Combo": Try to stack Rune Tap with Vampiric Blood if available
+actions.cooldowns+=/vampiric_blood,if=health.pct<50
+actions.cooldowns+=/rune_tap,if=vamp_tap_window
+actions.cooldowns+=/rune_tap,if=health.pct<40
+
+# Panic Buttons
+actions.cooldowns+=/icebound_fortitude,if=health.pct<30
+actions.cooldowns+=/empower_rune_weapon,if=health.pct<20&blood<1&frost<1&unholy<1
+actions.cooldowns+=/antimagic_shell,if=incoming_damage_5s>health.max*0.20
+
+## AoE Rotation (3+ Targets - Shiego loves Blood Boil)
+actions.aoe+=/outbreak,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.aoe+=/blood_boil,if=shiego_free_proc
+actions.aoe+=/death_and_decay,if=shiego_free_proc
+# Prioritize spreading diseases
+actions.aoe+=/blood_boil,if=dot.blood_plague.ticking&!dot.blood_plague.ticking_on_all
+actions.aoe+=/death_and_decay,if=!ticking
+actions.aoe+=/blood_boil
+# Dump RP to fish for Runic Corruption
+actions.aoe+=/rune_strike,if=shiego_should_dump_rp
+
+## Single Target / Cleave (1-2 Targets)
+actions.single_target+=/outbreak,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.single_target+=/soul_reaper,if=target.health.pct<35
+# Shiego Logic: Use Blood Boil over Heart Strike if Crimson Scourge is up (Free Dmg)
+actions.single_target+=/blood_boil,if=buff.crimson_scourge.up
+actions.single_target+=/death_and_decay,if=buff.crimson_scourge.up
+
+# Standard Rotation
+actions.single_target+=/death_strike,if=buff.scent_of_blood.stack>=3
+actions.single_target+=/heart_strike,if=blood>=1
+actions.single_target+=/rune_strike,if=shiego_should_dump_rp
+actions.single_target+=/horn_of_winter

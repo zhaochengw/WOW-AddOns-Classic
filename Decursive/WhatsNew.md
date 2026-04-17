@@ -1,5 +1,75 @@
-Decursive 2.7.34
-================
+Decursive 2.8.0-RC3
+===================
+
+
+Decursive 2.8.0-RC3 (2026-03-16)
+--------------------------------
+
+Fix compatibility with new BugGrabber, fixing error at login.
+
+
+Decursive 2.8.0-RC2 (2026-03-08)
+--------------------------------
+
+Decursive is now Compatible with Midnight but some features are either gone or severely impaired:
+
+Some features will be missing depending on the dynamic add-on restrictions
+being applied, notably the affliction type priority order which is no longer
+applicable when auras are hidden. In that case Decursive will always assume
+that the detected aura is your first aura type. The result is that:
+
+ - The spell cooldown used on the MUFs will be the one from your first debuff
+   type (so it might be wrong if you have several dispelling abilities).
+
+ - Wrong mouse button click detection will not work (no alert will be given).
+
+ - Range detection might not work or be wrong (you can set the most appropriate
+   spell as your first priority to control that).
+
+
+Broken features in Midgnight:
+  - Debuff timers on MUFs (remaining and elapsed). Decursive will default to
+    the number of stacks instead. You can still mouse over the live-list to see
+    the debuff timers.
+
+  - Line-of-sight failed cast detection and the resulting unit black-listing. (Decursive
+    was using the combat log to do that)
+
+  - Bleed debuff detection (aura's spell ids are no longer accessible)
+
+  - Debuff filtering (may work in the open world while outside of combat...)
+
+  - Stealth detection and reporting while in combat.
+
+  - Decursive can now only be triggered by debuffs that WoW APIs tells you
+    can dispel so it's uncertain if items can still be used reliably...
+
+  - Specific buff/debuff detection such as "Unstable Affliction" are no longer possible.
+
+
+Please note that this is an early release and that there still might be issues.
+
+I'd like to give my warm thanks to Bozoweed for their help in making this release possible.
+
+
+Decursive 2.7.36 (2026-01-25)
+-----------------------------
+
+- Fix TOC for midnight pre-patch
+
+- Fix reported Lua error when debuffs are secret (note that Decursive is
+  currently useless in this situation—see the note about midnight below...
+
+
+**MIDNIGHT NOTE**:
+
+ CLEU being gone and APIs returning secret values, there is little hope but the
+ MUFs and spell detection are still working so there might be a way to do
+ something with the debuf types and the curve color secret related APIs to
+ change the MUFs color depending on the type of debuf...
+
+ For now Decursive will just do nothing if the APIs are in secret mode.
+
 
 Decursive 2.7.34 (2026-01-19)
 -----------------------------
@@ -7,11 +77,6 @@ Decursive 2.7.34 (2026-01-19)
 - Compatible with BCC Anniversary
 
 - Make it so it doesn't crash in Midnight but it's mostly useless.
-
-CLEU being gone and APIs returning secret values, there is little hope but the
-MUFs and spell detection are still working so there might be a way to do
-something with the debuf types and the curve color secret related APIs to
-change the MUFs color depending on the type of debuf...
 
 
 Decursive 2.7.32 (2026-01-01)

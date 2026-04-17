@@ -18,6 +18,7 @@ local FOLDER_NAME, private = ...
 local LibStub = _G.LibStub
 local addon = LibStub("AceAddon-3.0"):GetAddon(private.addon_name)
 local L = LibStub("AceLocale-3.0"):GetLocale(private.addon_name)
+local HBD = LibStub("HereBeDragons-2.0")
 
 -- ----------------------------------------------------------------------------
 -- Constants.
@@ -522,18 +523,10 @@ local function InitializeLocationTab()
 					insert_index = MainPanel.list_frame:InsertEntry(listEntry, insert_index)
 				end
 
-				local listEntry = CreateListEntry("header")
+			local listEntry = CreateListEntry("header")
                 listEntry:SetLocation(location)
-			local currentMapID
-			if _G.C_Map and _G.C_Map.GetBestMapForUnit then
-				currentMapID = _G.C_Map.GetBestMapForUnit("player")
-			end
---			_G.WorldMapFrame:SetMapID(currentMapID)
-			local PlayerZone
-			if currentMapID and _G.C_Map and _G.C_Map.GetMapInfo then
-				local info = _G.C_Map.GetMapInfo(currentMapID)
-				PlayerZone = info and info.name
-			end
+			local currentMapID = HBD:GetPlayerZone()
+			local PlayerZone = currentMapID and HBD:GetLocalizedMap(currentMapID)
 
 				if localizedLocationName == _G.GetRealZoneText() then
 					listEntry:Emphasize(true)

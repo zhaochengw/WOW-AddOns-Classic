@@ -128,9 +128,8 @@ function addon:AdventureJournalButton_OnClick(frame)
 	if (not EncounterJournal or not EncounterJournal:IsShown()) then
 		ToggleEncounterJournal()
 	end
-	-- EncounterJournal_ListInstances();
-	NavBar_Reset(EncounterJournal.navBar)
-	EncounterJournal_DisplayInstance(instanceID)
+
+	EncounterJournal_OpenJournal(nil, instanceID)
 
 	Atlas_Toggle()
 end
@@ -174,10 +173,8 @@ function addon:AdventureJournal_EncounterButton_OnClick(instanceID, encounterID,
 	if (not EncounterJournal or not EncounterJournal:IsShown()) then
 		ToggleEncounterJournal()
 	end
-	-- EncounterJournal_ListInstances();
-	NavBar_Reset(EncounterJournal.navBar)
-	EncounterJournal_DisplayInstance(instanceID)
-	EncounterJournal_DisplayEncounter(encounterID)
+
+	EncounterJournal_OpenJournal(nil, instanceID, encounterID)
 
 	if (not keepAtlas) then
 		Atlas_Toggle()

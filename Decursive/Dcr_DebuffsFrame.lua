@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
     but WITHOUT ANY WARRANTY.
 
 
-    This file was last updated on 2026-01-02T00:31:32Z
+    This file was last updated on 2026-03-08T18:57:26Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -85,6 +85,7 @@ local UnitIsUnit        = _G.UnitIsUnit;
 local InCombatLockdown  = _G.InCombatLockdown;
 local GetRaidTargetIndex= _G.GetRaidTargetIndex;
 local CreateFrame       = _G.CreateFrame;
+local canaccessvalue    = _G.canaccessvalue or function(_) return true; end
 
 -- NS def
 D.MicroUnitF = {};
@@ -296,20 +297,21 @@ do
     end
 
 
-    function MicroUnitF:GetHelperAnchor (atBottom)
+    function MicroUnitF:GetHelperAnchor (atBottom, withScale)
+        local scale = withScale and self.Frame:GetEffectiveScale() / UIParent:GetEffectiveScale() or 1
 
         if atBottom then
             -- set Anchor table
             self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and 1 or self:GetFarthestVerticalMUF());
             Anchor[3] = Anchor[3] - (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
 
-            return "TOPLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+            return "TOPLEFT", self.Frame, Anchor[2], Anchor[3] * scale, "BOTTOMLEFT";
         else
             -- set Anchor table
             self:GetMUFAnchor(D.profile.DebuffsFrameGrowToTop and self:GetFarthestVerticalMUF() or 1);
             Anchor[3] = Anchor[3] + (D.profile.DebuffsFrameYSpacing + DC.MFSIZE);
 
-            return "BOTTOMLEFT", self.Frame, Anchor[2], Anchor[3], "BOTTOMLEFT";
+            return "BOTTOMLEFT", self.Frame, Anchor[2], Anchor[3] * scale, "BOTTOMLEFT";
         end
 
     end
@@ -743,11 +745,55 @@ do
     local ttHelpLines = {}; -- help tooltip text
     local TooltipUpdate = 0; -- help tooltip change update check
 
-    T._CatchAllErrors = 'LibQTip';
-    local LibQTip = LibStub('LibQTip-1.0');
-    T._CatchAllErrors = false;
+    local tip = CreateFrame("GameTooltip", "DcrSecretTooltip", UIParent, "SharedTooltipTemplate")
 
-    local MUFtoolTip = nil;
+    local function ShowMUFToolTip(unit, status, debuffs)
+        tip:ClearLines()
+        tip:SetOwner(D.MFContainer, "ANCHOR_NONE")
+
+        local index = GetRaidTargetIndex(unit)
+
+        local icon = index and string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t ", index) or ""
+
+        local coloredUnitName = D:ColorTextNA((D:PetUnitName(unit, true)), ((UnitClass(unit)) and DC.HexClassColor[ (select(2, UnitClass(unit))) ] or "AAAAAA"))
+        .. "  |cFF3F3F3F(".. unit .. ")|r"
+
+        local playerLine = string.format("%s %s", icon or "", coloredUnitName)
+
+        tip:AddLine(playerLine) -- raidIcon - class-colored name
+        tip:AddLine(status) -- MUF Status
+
+        -- add one line per debuff with the debuff name and it's application count if > 1
+        if debuffs[1] then
+            for _, Debuff in ipairs(debuffs) do
+                local s_color = Debuff.s_color
+
+                local colored = s_color and
+                    s_color:WrapTextInColorCode(Debuff.Name)
+                    or
+                    D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type])
+
+                local appCount = s_color and Debuff.auraInstanceID and
+                    C_StringUtil.WrapString(C_UnitAuras.GetAuraApplicationDisplayCount(unit, Debuff.auraInstanceID, 1), " (x", ")")
+                    or
+                    (Debuff.Applications > 0 and (" (x%s)"):format(Debuff.Applications) or "")
+
+                tip:AddLine(colored .. appCount)
+            end
+        end
+
+        -- Display the tooltip
+        tip:ClearAllPoints()
+        tip:SetClampedToScreen(true)
+        tip:SetPoint(MicroUnitF:GetHelperAnchor(false, true))
+        tip:Show()
+
+        -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
+        if tip:GetTop() and floor(tip:GetTop() + 40) >= floor(UIParent:GetTop()) then -- if at top (the default game tooltip has a kind of padding...)
+            tip:ClearAllPoints();
+            tip:SetPoint(MicroUnitF:GetHelperAnchor(true, true));
+        end
+    end
 
     -- This function is responsible for showing the tooltip when the mouse pointer is over a MUF
     -- it also handles Unstable Affliction detection and warning.
@@ -760,16 +806,13 @@ do
         local Unit = MF.CurrUnit; -- shortcut
         local TooltipText = "";
 
-
-        local GUIDwasFixed = false;
         local unitguid = UnitGUID(Unit);
 
-        if unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid] then
+        if canaccessvalue(unitguid) and (unitguid ~= D.Status.Unit_Array_UnitToGUID[Unit] or Unit ~= D.Status.Unit_Array_GUIDToUnit[unitguid]) then
 
             if unitguid then
                 D.Status.Unit_Array_UnitToGUID[Unit] = unitguid;
                 D.Status.Unit_Array_GUIDToUnit[unitguid] = Unit;
-                GUIDwasFixed = true;
             end
 
         end
@@ -785,43 +828,21 @@ do
         if MF.Debuffs[1] then
             for i, Debuff in ipairs(MF.Debuffs) do
                 if Debuff.Type then
-                    -- Create a warning if an Unstable Affliction like spell is detected XXX will be integrated along with the filtering system comming 'soon'(tm)
-                    if DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
-                    -- if Debuff.Name == DC.DS["Unstable Affliction"] or Debuff.Name == DC.DS["Vampiric Touch"] then
+                    -- Create a warning if an Unstable Affliction like spell is detected
+                    if canaccessvalue(Debuff.Name) and DC.IS_HARMFULL_DEBUFF[Debuff.Name] then
                         D:Println("|cFFFF0000 ==> %s !!|r (%s)", Debuff.Name, D:MakePlayerName((D:PetUnitName(      Unit, true    ))));
                         D:SafePlaySoundFile(DC.DeadlyDebuffAlert);
                     end
                 end
             end
-
-            -- TODO: scan here for fluidity buff/debuff and alert
-            -- http://www.wowhead.com/search?q=Ionization#npc-abilities
-            -- http://www.wowhead.com/search?q=+Fluidity#spells
         end
 
         if D.profile.AfflictionTooltips then
-            MUFtoolTip = LibQTip:Acquire("DecursiveMUFToolTip", 1, "LEFT");
-            MUFtoolTip:SetAutoHideDelay(.3, frame, function() MUFtoolTip = nil end)
-            MUFtoolTip:Clear()
+            -- set UnitStatus text
+            local StatusText = "";
 
             -- removes the CHARMED_STATUS bit from Status, we don't need it
             Status = bit.band(MF.UnitStatus,  bit.bnot(CHARMED_STATUS));
-
-            -- First, write the name of the unit in its class color
-            if UnitExists(MF.CurrUnit) then
-            MUFtoolTip:AddLine(
-                ((DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)]) and (DC.RAID_ICON_LIST[GetRaidTargetIndex(Unit)] .. "0:0:0:0|t ") or "")
-                -- Colored unit name
-                .. D:ColorTextNA((D:PetUnitName(Unit, true)), ((UnitClass(Unit)) and DC.HexClassColor[ (select(2, UnitClass(Unit))) ] or "AAAAAA"))
-                .. "  |cFF3F3F3F(".. Unit .. ")|r"
-                );
-            else
-                MUFtoolTip:AddLine(MF.CurrUnit);
-            end
-
-
-            -- set UnitStatus text
-            local StatusText = "";
 
             -- set the status text, just translate the bitfield to readable text
             if Status == NORMAL then
@@ -838,36 +859,17 @@ do
 
             elseif MF.Debuffs[1] and (Status == AFFLICTED or Status == AFFLICTED_NIR) then
                 local DebuffType = MF.Debuffs[1].Type;
-                StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA( L[DC.TypeNames[DebuffType]:upper()], D.profile.TypeColors[DebuffType]) );
+                if not MF.Debuffs[1].secretMode then
+                    StatusText = L["AFFLICTEDBY"]:format(D:ColorTextNA(L[DC.TypeNames[DebuffType]:upper()], D.profile.TypeColors[DebuffType]) );
+                else
+                    StatusText = L["AFFLICTEDBY"]:format(MF.Debuffs[1].s_color:WrapTextInColorCode(MF.Debuffs[1].TypeName))
+                end
 
             elseif Status == STEALTHED then
                 StatusText = L["STEALTHED"];
             end
 
-            -- Unit Status
-            MUFtoolTip:AddLine(StatusText);
-
-            -- list the debuff(s) names
-            if MF.Debuffs[1] then
-                for i, Debuff in ipairs(MF.Debuffs) do
-                    if Debuff.Type then
-                        local DebuffApps = Debuff.Applications;
-                        MUFtoolTip:AddLine(D:ColorTextNA(Debuff.Name, D.profile.TypeColors[Debuff.Type]) .. (DebuffApps > 0 and (" (%d)"):format(DebuffApps) or ""));
-                    end
-                end
-            end
-
-            -- Display the tooltip
-            MUFtoolTip:ClearAllPoints();
-            MUFtoolTip:SetClampedToScreen(true)
-            MUFtoolTip:SetPoint(self:GetHelperAnchor());
-            MUFtoolTip:Show();
-
-            -- if the tooltip is at the top of the screen it means it's overlaping the MUF, let's move the tooltip beneath the first MUF.
-            if floor(MUFtoolTip:GetTop() + 0.5) >= floor(UIParent:GetTop() + 0.5) then -- if at top -- XXX attempt to perform arithmetic on a nil value, reported on 2018-08-16 and 2020-01-29
-                MUFtoolTip:ClearAllPoints();
-                MUFtoolTip:SetPoint(self:GetHelperAnchor(true));
-            end
+            ShowMUFToolTip(Unit, StatusText, MF.Debuffs)
         end
 
         -- show a help text in the Game default tooltip
@@ -896,6 +898,9 @@ do
 
     function MicroUnitF:OnLeave(frame) -- {{{
         D.Status.MouseOveringMUF = false;
+
+        tip:ClearLines()
+        tip:Hide()
     end -- }}}
 
     local keyTemplate = "|cFF11FF11%s|r-|cFF11FF11%s|r";
@@ -907,10 +912,8 @@ do
 
     function D.MicroUnitF:OnCornerEnter(frame)
 
-        if MUFtoolTip then
-            MUFtoolTip:Release();
-            MUFtoolTip = nil;
-        end
+        tip:ClearLines()
+        tip:Hide()
 
         if not keyHelp then
             keyHelp = {
@@ -975,7 +978,8 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
 
         D:Println(L["HLP_NOTHINGTOCURE"]);
 
-    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1]) then
+        -- detect wrong button click and prepare for not-in-line-of-sight casting failures in coordination with CLEU (unavailable in MN)
+    elseif (frame.Object.UnitStatus == AFFLICTED and frame.Object.Debuffs[1] and not frame.Object.Debuffs[1].secretMode) then
         local NeededPrio = D:GiveSpellPrioNum(frame.Object.Debuffs[1].Type);
         local Unit = frame.Object.CurrUnit; -- shortcut
 
@@ -1008,7 +1012,7 @@ function MicroUnitF.OnPreClick(frame, Button) -- {{{
                 D:AddDebugText("Button wrong click info bug: NeededPrio:", NeededPrio, "Unit:", Unit, "RequestedPrio:", RequestedPrio, "Button clicked:", Button, "MF_colors:", unpack(MF_colors), "Debuff Type:", frame.Object.Debuffs[1].Type);
                 --@end-debug@]==]
             end
-        elseif RequestedPrio and D.Status.HasSpell then
+        elseif RequestedPrio and D.Status.HasSpell then -- useless block in Midnight as there is no CLEU anymore to detect cast failures.
             D.Status.ClickCastingWIP = true;
             D:Debug("ClickCastingWIP")
             D.Status.ClickedMF = frame.Object; -- used to update the MUF on cast success and failure to know which unit is being cured
@@ -1125,11 +1129,13 @@ function MicroUnitF.prototype:init(Container, Unit, FrameNum, ID) -- {{{
     self.CenterFontString:SetPoint("BOTTOM",self.Frame ,"BOTTOM",0,1)
     self.CenterFontString:SetTextColor(unpack(MF_colors["COLORCHRONOS"]));
 
-    -- raid target icon
-    self.RaidIconTexture = self.Frame:CreateTexture(nil, "OVERLAY", nil, 5);
-    self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",0,8)
-    self.RaidIconTexture:SetHeight(13 - petminus);
-    self.RaidIconTexture:SetWidth(13 - petminus);
+    -- raid target icon, it's a FontString in which we use the |t texture formater as it's
+    -- the only way to set a secret texture (formating a secret string as a texture path is rejected...)
+    self.RaidIconTexture = self.Frame:CreateFontString(nil, "OVERLAY", "DcrMicroUnitRaidIconFont");
+    self.RaidIconTexture:SetPoint("CENTER",self.Frame ,"CENTER",3,9)
+    -- setting an explicit size to the fontString makes it glitch when it's scaled down...
+    --self.RaidIconTexture:SetHeight(16 - petminus);
+    --self.RaidIconTexture:SetWidth(16 - petminus);
 
 
     -- a reference to this object
@@ -1199,7 +1205,7 @@ end
 
 
 function MicroUnitF.prototype:UpdateWithCS(o_auraUpdateInfo)
-    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now
+    self:Update(false, false, true, o_auraUpdateInfo); -- o_auraUpdateInfo is not used for now XXX
 end
 
 function MicroUnitF.prototype:UpdateSkippingSetBuf()
@@ -1411,7 +1417,10 @@ do
         Unit = self.CurrUnit;
         PreviousStatus = self.UnitStatus;
 
+        local debuff_1 = self.Debuffs[1]
 
+
+        -- D:Debug("in set color", Unit, Status.CenterTextDisplay) TODO: -- optimize when this function is called, with UNIT_AURA, we no longer need to call it several times/s...
 
         -- if unit not available, if a unit cease to exist (this happen often for pets)
         if not UnitExists(Unit) then
@@ -1438,7 +1447,7 @@ do
 
         else
             -- If the Unit is visible
-            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not self.Debuffs[1] then
+            if profile.Show_Stealthed_Status and D.Stealthed_Units[Unit] and not debuff_1 then
                 if PreviousStatus ~= STEALTHED then
                     self.Color = MF_colors[STEALTHED];
                     self.UnitStatus = STEALTHED;
@@ -1462,8 +1471,8 @@ do
                 end
 
                 -- if the unit has some debuffs we can handle
-            elseif self.Debuffs[1] then
-                DebuffType = self.Debuffs[1].Type;
+            elseif debuff_1 then
+                DebuffType = debuff_1.Type;
 
                 self.Color = MF_colors[self.Debuff1Prio]; -- so people can play with the color settings (don't put it after the if).
                 if self.PrevDebuff1Prio ~= self.Debuff1Prio then
@@ -1476,7 +1485,7 @@ do
                 -- Some time can elaps between the instant the debuff is detected and the instant it is shown.
                 -- Between those instants, a reconfiguration can happen (pet dies or some spells become unavailable)
                 -- So we test before calling this api that we can still cure this debuff type
-                if Status.CuringSpells[DebuffType] then
+                if Status.CuringSpells[DebuffType] then -- so this will fail on MN as we cannot know the type and thus the spell except for the charm type but this will work for classes that have only one dubuff cleansing ability
                     SpellID = Status.FoundSpells[Status.CuringSpells[DebuffType]][2];
                     RangeStatus = SpellID > 0 and IsSpellInRange(Status.CuringSpells[DebuffType], Unit) or D:isItemUsable(-1 * SpellID) and IsItemInRange(-1 * SpellID, Unit);
                 else
@@ -1500,49 +1509,63 @@ do
                 end
 
                 -- update the CenterText
+
+                local centerAccess = canaccessvalue(self.CenterText)
+
                 --if profile.DebuffsFrameChrono and self.Debuffs[1].ExpirationTime then
                 if profile.CenterTextDisplay ~= '4_NONE' then
 
-                    self.PrevCenterText = self.CenterText;
+                    if centerAccess then
+                        self.PrevCenterText = self.CenterText;
+                    end
 
-                    if Status.CenterTextDisplay ~= '3_STACKS' and self.Debuffs[1].ExpirationTime then
+                    if Status.CenterTextDisplay ~= '3_STACKS' and debuff_1.ExpirationTime and canaccessvalue(debuff_1.ExpirationTime) then
 
                         if Status.CenterTextDisplay == '2_TELAPSED' then
-                            --self.CenterText = floor(Time - self.CenterText);
-                            self.CenterText = floor(self.Debuffs[1].Duration - (self.Debuffs[1].ExpirationTime - Time));
+                            self.CenterText = floor(debuff_1.Duration - (debuff_1.ExpirationTime - Time));
 
                             if self.CenterText ~= self.PrevCenterText then -- do not unecessarily compute the final displayed string
                                 --D:Debug('center text update');
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and self.CenterText or (floor(self.CenterText / 60) .. "\'") ));
                             end
-                        elseif self.Debuffs[1].ExpirationTime > 0 then
+                        elseif debuff_1.ExpirationTime > 0 then
 
-                            self.CenterText = floor(self.Debuffs[1].ExpirationTime - Time);
+                            self.CenterText = floor(debuff_1.ExpirationTime - Time);
 
                             if self.CenterText ~= self.PrevCenterText then
                                 self.CenterFontString:SetText( ((self.CenterText < 60) and (self.CenterText + 1) or (floor(self.CenterText / 60 + 1) .. "\'") ));
                             end
                         elseif self.PrevCenterText then
                             self.CenterText = false;
-                            self.CenterFontString:SetText(" ");
+                            self.CenterFontString:SetText("");
                         end
 
-                    else
+                    elseif debuff_1.Applications then
 
-                        self.CenterText = self.Debuffs[1].Applications;
+                        self.CenterText = debuff_1.Applications;
+                        local appAccess = canaccessvalue(self.CenterText)
 
-                        if self.CenterText ~= self.PrevCenterText then
-                            self.CenterFontString:SetText(self.CenterText > 0 and self.CenterText or '');
+                        local appCount = debuff_1.s_color and debuff_1.auraInstanceID and
+                            C_UnitAuras.GetAuraApplicationDisplayCount(Unit, debuff_1.auraInstanceID, 1)
+                            or
+                            (appAccess and self.CenterText > 0 and self.CenterText or "")
+
+
+                        if not appAccess or self.CenterText ~= self.PrevCenterText then
+                            self.CenterFontString:SetText(appCount);
                         end
 
                     end
 
                 end
 
-                self.RaidTargetIcon = GetRaidTargetIndex(Unit);
-                if self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
-                    self.RaidIconTexture:SetTexture(self.RaidTargetIcon and DC.RAID_ICON_TEXTURE_LIST[self.RaidTargetIcon] or nil);
-                    self.PrevRaidTargetIndex = self.RaidTargetIcon;
+                local index = GetRaidTargetIndex(Unit)
+                self.RaidTargetIcon = index
+
+                if not canaccessvalue(index) or self.PrevRaidTargetIndex ~= self.RaidTargetIcon then
+                    local icon = index and string.format("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:11:11|t ", index) or ""
+                    self.RaidIconTexture:SetText(icon);
+                    self.PrevRaidTargetIndex = index;
                 end
 
 
@@ -1565,7 +1588,7 @@ do
                 end
 
                 if self.RaidTargetIcon then
-                    self.RaidIconTexture:SetTexture(nil);
+                    self.RaidIconTexture:SetText("");
                     self.RaidTargetIcon = false;
                     self.PrevRaidTargetIndex = false;
                 end
@@ -1644,7 +1667,12 @@ do
             D:Debug('Setting MUF texture color...');
             --@end-debug@]==]
             -- Set the main texture
-            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha); -- XXX reported to cause rare "script ran too long" errors" on 2016-09-25 and 2016-12-30
+            self.Texture:SetColorTexture(self.Color[1], self.Color[2], self.Color[3], Alpha);
+
+            if DC.MN and debuff_1 and debuff_1.secretMode and debuff_1.s_color then
+                local color = debuff_1.s_color
+                self.Texture:SetColorTexture(color.r, color.g, color.b, Alpha);
+            end
             --self.Texture:SetAlpha(Alpha);
             --[==[@debug@
             D:Debug('Setting MUF texture color... done');
@@ -1875,6 +1903,6 @@ local MF_Textures = { -- unused
 
 -- }}}
 
-T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.7.34";
+T._LoadedFiles["Dcr_DebuffsFrame.lua"] = "2.8.0-RC3";
 
 -- Heresy

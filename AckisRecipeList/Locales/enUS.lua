@@ -151,6 +151,7 @@ L["AUTOLOAD_DB_DESC"] = "Automatically loads all of the ARL recipe databases whe
 L["AUTOSCAN_TRAINERS_DESC"] = "Turns on scanning at trainers to compare skill levels, and recipe acquire methods."
 L["AUTOSCAN_VENDORS_DESC"] = "Turns on scanning at vendors to compare skill levels, and recipe acquire methods."
 L["AUTOSCANMAP_DESC"] = "Auto show all waypoints when doing a recipe scan."
+L["Auto-scanned %d waypoints for %s"] = true
 L["Avarius"] = true
 L["Awan Iceborn"] = true
 L["Awilo Lon'gomba"] = true

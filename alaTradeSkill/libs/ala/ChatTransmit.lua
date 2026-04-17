@@ -2,6 +2,10 @@
 	by ALA
 --]=]
 
+if select(4, GetBuildInfo()) >= 120000 then
+	return;
+end
+
 local __version = 240823.0;
 
 local _G = _G;

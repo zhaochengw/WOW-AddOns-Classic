@@ -3,7 +3,8 @@ local mod	= DBM:NewMod("Athanos", "DBM-Challenges", 1)
 
 mod.statTypes = "normal,heroic,mythic,challenge"
 
-mod:SetRevision("20250703201323")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(171873)--Guessed
 mod.soloChallenge = true
 

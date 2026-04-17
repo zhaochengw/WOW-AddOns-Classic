@@ -1,7 +1,8 @@
 local mod	= DBM:NewMod("Oz", "DBM-Raids-BC", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20241103131702")
+mod:SetRevision("20260315035408")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(18168)
 --mod:SetEncounterID(655, 2447)--used by all 3 of them, so not usuable
 mod:SetModelID(17550)
@@ -33,7 +34,6 @@ local timerStrawman	= mod:NewTimer(21, "DBM_OZ_WARN_STRAWMAN", "133136", nil, fa
 local timerTinhead	= mod:NewTimer(29, "DBM_OZ_WARN_TINHEAD", "133070", nil, false, 1)
 --local timerTito		= mod:NewTimer(47.5, "DBM_OZ_WARN_TITO", "I132266", nil, false, 1)
 
-mod:AddRangeFrameOption(10, 32337, true)
 mod:AddBoolOption("AnnounceBosses", true, "announce")
 mod:AddBoolOption("ShowBossTimers", true, "timer")
 
@@ -46,11 +46,6 @@ function mod:OnCombatStart(delay)
 	end
 end
 
-function mod:OnCombatEnd()
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Hide()
-	end
-end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 31046 then
@@ -91,9 +86,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.DBM_OZ_YELL_CRONE then
 		if self.Options.AnnounceBosses then
 			WarnCrone:Show()
-		end
-		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(10)
 		end
 	end
 end

@@ -34,8 +34,46 @@ local actionbarEvents = {
 }
 
 SafeRegisterEvent(addon, "PLAYER_LOGIN")
+SafeRegisterEvent(addon, "PLAYER_REGEN_ENABLED")
 for _, event in ipairs(actionbarEvents) do
     SafeRegisterEvent(addon, event)
+end
+
+-------------------------------------------------------
+-- Button Queue System for Combat Safety
+-------------------------------------------------------
+local queuedButtons = {} -- Queue of buttons that need unit2 set to "player"
+
+local function QueueButtonForSelfCast(button)
+    if not button or not button.GetName then return end
+    local buttonName = button:GetName()
+    if buttonName and not queuedButtons[buttonName] then
+        queuedButtons[buttonName] = true
+    end
+end
+
+local function ProcessButtonQueue()
+    if InCombatLockdown() or UnitAffectingCombat("player") then
+        return false
+    end
+
+    for buttonName, _ in pairs(queuedButtons) do
+        local button = _G[buttonName]
+        if button and button.GetAttribute and button.SetAttribute then
+            local success, _ = pcall(function()
+                if button:GetAttribute("type") == "action" and button:GetAttribute("unit2") ~= "player" then
+                    button:SetAttribute("unit2", "player")
+                end
+            end)
+            -- Remove from queue regardless of success/failure to avoid infinite loop
+            queuedButtons[buttonName] = nil
+        else
+            -- Button no longer valid, remove from queue
+            queuedButtons[buttonName] = nil
+        end
+    end
+
+    return true
 end
 
 -------------------------------------------------------
@@ -99,7 +137,16 @@ local function ApplySelfCast(button)
     if not button or not button.GetAttribute or not button.SetAttribute then return end
     if button:GetAttribute("type") ~= "action" then return end
 
-    -- Apply only if needed (safe in combat at click-time)
+    -- Cannot call SetAttribute during combat due to taint protection
+    if InCombatLockdown() then
+        -- Queue the button to be processed when it's safe
+        if button:GetAttribute("unit2") ~= "player" then
+            QueueButtonForSelfCast(button)
+        end
+        return
+    end
+
+    -- Apply only if needed
     if button:GetAttribute("unit2") ~= "player" then
         button:SetAttribute("unit2", "player")
     end
@@ -121,6 +168,7 @@ end
 addon:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_LOGIN" then
         EnsureBlizzardFallback(self)
+        ProcessButtonQueue()
         local ver = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version") or "1.0"
         DEFAULT_CHAT_FRAME:AddMessage(
             string.format("|cFF99CC33%s|r [v|cFF20ff20%s|r] loaded", ADDON_NAME, ver)
@@ -129,7 +177,8 @@ addon:SetScript("OnEvent", function(self, event)
     end
     if event == "PLAYER_REGEN_ENABLED" then
         EnsureBlizzardFallback(self)
-        if fallbackApplied then
+        ProcessButtonQueue()
+        if fallbackApplied and next(queuedButtons) == nil then
             self:UnregisterEvent("PLAYER_REGEN_ENABLED")
         end
         return

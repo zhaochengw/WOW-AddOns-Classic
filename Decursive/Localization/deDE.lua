@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.34) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["deDE.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "deDE");
 
 if not L then
-    T._LoadedFiles["deDE.lua"] = "2.7.34";
+    T._LoadedFiles["deDE.lua"] = "2.8.0-RC3";
     return;
 end;
 
@@ -215,7 +215,7 @@ L["OPT_AMOUNT_AFFLIC_DESC"] = "Definiert die maximale Anzahl der anzuzeigenden V
 L["OPT_ANCHOR_DESC"] = "Zeigt Anker des Rahmens der allgemeinen Mitteilungen an"
 L["OPT_AUTOHIDEMFS"] = "MUFs verbergen, wenn: "
 L["OPT_AUTOHIDEMFS_DESC"] = "Wähle, wann das MUF-Fenster automatisch verborgen werden soll."
-L["OPT_BLACKLENTGH_DESC"] = "Definiert, wie lange jemand auf der schwarzen Liste verbleibt."
+L["OPT_BLACKLENTGH_DESC"] = "Definiert, wie lange jemand auf der schwarzen Liste verbleibt. Setzte auf 0 um die schwarze Liste komplett auszuschalten"
 L["OPT_BORDERTRANSP"] = "Transparenz der Umrandung"
 L["OPT_BORDERTRANSP_DESC"] = "Transparenz der Umrandung einstellen"
 L["OPT_CENTERTEXT_DISABLED"] = "Deaktiviert"
@@ -430,4 +430,4 @@ L["UNSTABLERELEASE"] = "Instabile Veröffentlichung"
 
 
 
-T._LoadedFiles["deDE.lua"] = "2.7.34";
+T._LoadedFiles["deDE.lua"] = "2.8.0-RC3";

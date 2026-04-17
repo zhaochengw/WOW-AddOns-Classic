@@ -1,4 +1,4 @@
-## Interface: 110207, 120000, 120001
+## Interface: 120001, 120005
 ## X-Min-Interface: 80000
 ## Category: DBM
 
@@ -33,9 +33,8 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 0
 ## X-Curse-Project-ID: 314994
-## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r225
+## Version: r245
 
 locale.generated.lua
 

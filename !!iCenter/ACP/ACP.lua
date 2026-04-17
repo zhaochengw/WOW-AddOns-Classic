@@ -22,6 +22,7 @@ local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
 local isBCC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
 local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
 local isCata = WOW_PROJECT_ID == (WOW_PROJECT_CATACLYSM_CLASSIC or 14)
+local isMists = WOW_PROJECT_ID == (WOW_PROJECT_MISTS_CLASSIC or 18)
 
 local GetAddOnMetadata_Orig = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 

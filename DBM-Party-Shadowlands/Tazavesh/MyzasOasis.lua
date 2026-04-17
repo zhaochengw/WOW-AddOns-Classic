@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2452, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260210082755")
+mod:SetRevision("20260322094133")
 mod:SetCreatureID(176564)
 mod:SetEncounterID(2440)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -19,11 +19,10 @@ mod:AddCustomTimerOptions(350919, true, 3, 0)
 mod:AddCustomTimerOptions(350922, true, 4, 0)
 mod:AddCustomTimerOptions(353835, true, 3, 0)--Suppression Spark
 --Midnight private aura replacements
-mod:AddPrivateAuraSoundOption(353835, true, 353835, 1)
-mod:AddPrivateAuraSoundOption(355439, true, 355439, 1)
+mod:AddPrivateAuraSoundOption(353835, true, 353835, 1, 1, "debuffyou", 17)
+mod:AddPrivateAuraSoundOption(355439, true, 355439, 1, 1, "range5", 2)
 
 function mod:OnLimitedCombatStart()
-	self:DisableSpecialWarningSounds()
 	if self:IsTank() then
 		self:EnableAlertOptions(359028, 578, "defensive", 2)
 	end
@@ -35,8 +34,6 @@ function mod:OnLimitedCombatStart()
 	self:EnableTimelineOptions(350922, 580)
 	self:EnableTimelineOptions(353835, 581)
 
-	self:EnablePrivateAuraSound(353835, "debuffyou", 17)
-	self:EnablePrivateAuraSound(355439, "range5", 2)
 end
 
 --[[

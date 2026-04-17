@@ -6,7 +6,7 @@ local DBM_GUI = DBM_GUI
 
 DBM_GUI.CAT_TOOLS = DBM_GUI:CreateNewPanel("TOOLS", "tools")
 
-DBM_GUI.tabs[6].buttons[1].hidden = true -- Hide the category
+DBM_GUI.tabs[DBM_GUI.Enums.Tabs.TOOLS].buttons[1].hidden = true -- Hide the category
 
 local area		= DBM_GUI.CAT_TOOLS:CreateArea(L.OTabTools)
 
@@ -26,11 +26,82 @@ end)
 --TODO, when buffs is added, anchor keystones to buffs instead of durability.
 --we'll want it to be last button so it's easier to hide on classic
 if DBM:IsRetail() then
+	local gear = area:CreateButton(L.Tools_GearCheck, 120, 30)
+	gear.myheight = 0
+	gear:SetPoint("LEFT", durability, "RIGHT", 10, 0)
+	gear:SetScript("OnClick", function()
+		DBM.GearCheck:Show()
+	end)
+
 	local keystone = area:CreateButton(L.Tools_KeystoneCheck, 120, 30)
 	keystone.myheight = 0
-	keystone:SetPoint("LEFT", durability, "RIGHT", 10, 0)
+	keystone:SetPoint("LEFT", gear, "RIGHT", 10, 0)
 	keystone:SetScript("OnClick", function()
 		DBM.Keystones:Show()
+	end)
+
+	local area1b = DBM_GUI.CAT_TOOLS:CreateArea(L.Tools_BrezArea)
+
+	local showBrezFrame = area1b:CreateCheckButton(L.Tools_ShowBrezFrame, true, nil, "ShowBrezFrame")
+
+	if showBrezFrame then
+		showBrezFrame:HookScript("OnClick", function()
+			if DBM.BattleRezTimer then
+				DBM.BattleRezTimer:CheckSupported()
+			end
+		end)
+	end
+
+	local BrezFonts = DBM_GUI:MixinSharedMedia3("font", {
+		{
+			text	= DEFAULT,
+			value	= "standardFont"
+		},
+		{
+			text	= "Arial",
+			value	= "Fonts\\ARIALN.TTF"
+		},
+		{
+			text	= "Skurri",
+			value	= "Fonts\\SKURRI_CYR.ttf"
+		},
+		{
+			text	= "Morpheus",
+			value	= "Fonts\\MORPHEUS_CYR.ttf"
+		}
+	})
+
+	local BrezFontDropDown = area1b:CreateDropdown(L.FontType, BrezFonts, "DBM", "BrezFont", function(value)
+		DBM.Options.BrezFont = value
+		if DBM.BattleRezTimer then
+			DBM.BattleRezTimer:UpdateStyle()
+		end
+	end)
+	local isNewDropdown = BrezFontDropDown.mytype == "dropdown2"
+	BrezFontDropDown:SetPoint("TOPLEFT", showBrezFrame, "TOPLEFT", isNewDropdown and 20 or 0, -40)
+	BrezFontDropDown.myheight = isNewDropdown and 25 or 20
+
+	local fontSizeSlider = area1b:CreateSlider(L.FontSize, 8, 40, 1, 180)
+	fontSizeSlider:SetPoint("TOPLEFT", BrezFontDropDown, "TOPRIGHT", 50, 0)
+	fontSizeSlider:SetValue(DBM.Options.BrezFontSize or 18)
+	fontSizeSlider.myheight = 0
+	fontSizeSlider:HookScript("OnValueChanged", function(self)
+		DBM.Options.BrezFontSize = self:GetValue()
+		if DBM.BattleRezTimer then
+			DBM.BattleRezTimer:UpdateStyle()
+		end
+	end)
+
+	local movemebutton = area1b:CreateButton(L.MoveMe, 100, 16)
+	movemebutton:SetPoint("TOPRIGHT", area1b.frame, "TOPRIGHT", -2, -4)
+	movemebutton:SetNormalFontObject(GameFontNormalSmall)
+	movemebutton:SetHighlightFontObject(GameFontNormalSmall)
+	movemebutton:SetScript("OnClick", function()
+		if DBM.BattleRezTimer:IsShown() then
+			DBM.BattleRezTimer:Hide()
+		else
+			DBM.BattleRezTimer:Show()
+		end
 	end)
 end
 

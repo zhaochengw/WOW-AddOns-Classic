@@ -438,6 +438,7 @@ ns.PROFILE = {
                 managed = true,
                 scale = 1,
                 iconCharacter = true,
+                tdInspect = true,
             },
 
             [BAG_ID.SEARCH] = {

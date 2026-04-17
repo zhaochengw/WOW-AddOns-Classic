@@ -16,31 +16,35 @@ local RSConstants = private.ImportLib("RareScannerConstants")
 -- Auxiliar functions
 ---============================================================================
 
-local function BelongsToZone(entityID, mapID, zoneIds, infoAlreadyFound, alreadyChecked)
-	if (not entityID or not mapID or not zoneIds) then
+local function BelongsToMap(entityID, mapID, mapIDs, infoAlreadyFound, alreadyChecked)
+	if (not entityID or not mapID or mapID == 0 or not mapIDs) then
 		return false
 	end
 
-	-- Tries to find in main zone
-	local zone = zoneIds[mapID]
+	-- Check if the zone matches
+	local map = mapIDs[mapID]
 
-	-- Tries to find in sub zone
-	if (not zone) then
-		for mainZoneID, subZonesIDs in pairs (private.SUBZONES_IDS) do
-			if (RSUtils.Contains(subZonesIDs, mapID)) then
-				zone = zoneIds[mainZoneID]
+	-- Search by parent map
+	if (not map) then
+		local mapInfo = C_Map.GetMapInfo(mapID)
+		while (mapInfo and mapInfo.parentMapID > 0 and mapInfo.parentMapID ~= RSConstants.AZEROTH and mapInfo.parentMapID ~= RSConstants.COSMIC) do
+			map = mapIDs[mapInfo.parentMapID]
+			if (map) then
 				break
+			else
+				mapInfo = C_Map.GetMapInfo(mapInfo.parentMapID)
 			end
 		end
 	end
-
-	if (zone) then
-		if (RSUtils.Contains(zone, RSConstants.ALL_ZONES) or RSUtils.Contains(zone, C_Map.GetMapArtID(mapID))) then
+	
+	if (map) then
+		if (RSUtils.Contains(map, RSConstants.ALL_ZONES) or RSUtils.Contains(map, C_Map.GetMapArtID(mapID))) then
 			return true
 		end
+	-- Search by the alreadyFound mapID
 	elseif (not alreadyChecked) then
 		if (infoAlreadyFound) then
-			return BelongsToZone(entityID, infoAlreadyFound.mapID, zoneIds, infoAlreadyFound, true)
+			return BelongsToMap(entityID, infoAlreadyFound.mapID, mapIDs, infoAlreadyFound, true)
 		end
 	end
 
@@ -106,6 +110,27 @@ function RSMapDB.GetActiveMapIDsWithNamesByMapID(mapID)
 end
 
 local cachedContinentMapIDs = {}
+
+local function GetContinentOfMapDB(mapID)
+	for continentID, info in pairs(RSMapDB.GetContinents()) do
+		if (RSUtils.Contains(info.zones, mapID)) then
+			if (info.zonefilter and info.npcfilter) then
+				cachedContinentMapIDs[mapID] = continentID
+				return continentID
+			else
+				break
+			end
+		else
+			for parentMapID, childMapIDs in pairs(private.SUBZONES_IDS) do
+				if (RSUtils.Contains(childMapIDs, mapID) and RSUtils.Contains(info.zones, parentMapID)) then
+					cachedContinentMapIDs[mapID] = continentID
+					return continentID
+				end
+			end
+		end
+	end
+end
+
 function RSMapDB.GetContinentOfMap(mapID)
 	if (mapID) then
 		-- Check first cached list
@@ -113,23 +138,21 @@ function RSMapDB.GetContinentOfMap(mapID)
 			return cachedContinentMapIDs[mapID]
 		end
 		
-		-- Otherwise load
-		for continentID, info in pairs(RSMapDB.GetContinents()) do
-			if (RSUtils.Contains(info.zones, mapID)) then
-				if (info.zonefilter and info.npcfilter) then
-					cachedContinentMapIDs[mapID] = continentID
-					return continentID
-				else
-					break
+		local mapInfo = C_Map.GetMapInfo(mapID)
+		if (mapInfo) then
+			-- If not dungeon or orphan
+			if (mapInfo.mapType ~= Enum.UIMapType.Dungeon and mapInfo.mapType ~= Enum.UIMapType.Orphan) then
+				while (mapInfo.parentMapID > 0 and mapInfo.parentMapID ~= RSConstants.AZEROTH and mapInfo.parentMapID ~= RSConstants.COSMIC) do
+					mapInfo = C_Map.GetMapInfo(mapInfo.parentMapID)
 				end
-			else
-				for parentMapID, childMapIDs in pairs(private.SUBZONES_IDS) do
-					if (RSUtils.Contains(childMapIDs, mapID) and RSUtils.Contains(info.zones, parentMapID)) then
-						cachedContinentMapIDs[mapID] = continentID
-						return continentID
-					end
-				end
+				cachedContinentMapIDs[mapID] = mapInfo.mapID
+				return mapInfo.mapID
 			end
+		end
+		
+		-- If not found, or dungeon or orphan, use internal database
+		if (not cachedContinentMapIDs[mapID]) then
+			return GetContinentOfMapDB(mapID)
 		end
 	end
 	
@@ -210,7 +233,7 @@ function RSMapDB.GetPermanentKillZoneArtID(mapID)
 end
 
 function RSMapDB.IsEntityInPermanentZone(entityID, mapID, infoAlreadyFound, alreadyChecked)
-	return BelongsToZone(entityID, mapID, RSMapDB.GetPermanentKillZoneIDs(), infoAlreadyFound, alreadyChecked)
+	return BelongsToMap(entityID, mapID, RSMapDB.GetPermanentKillZoneIDs(), infoAlreadyFound, alreadyChecked)
 end
 
 ---============================================================================
@@ -230,7 +253,7 @@ function RSMapDB.GetReseteableKillZoneArtID(mapID)
 end
 
 function RSMapDB.IsEntityInReseteableZone(entityID, mapID, infoAlreadyFound, alreadyChecked)
-	return BelongsToZone(entityID, mapID, RSMapDB.GetReseteableKillZoneIDs(), infoAlreadyFound, alreadyChecked)
+	return BelongsToMap(entityID, mapID, RSMapDB.GetReseteableKillZoneIDs(), infoAlreadyFound, alreadyChecked)
 end
 
 function RSMapDB.IsReseteableKillMapID(mapID, artID)
@@ -295,4 +318,36 @@ function RSMapDB.GetMapName(mapID)
 	return AL["ZONES_CONTINENT_LIST"][mapID]
 end
 
+---============================================================================
+-- Map / entities
+---============================================================================
 
+local function GetEntitiesByMapID(mapID, entityType)
+	if (private.MAP_ENTITIES[mapID] and private.MAP_ENTITIES[mapID][C_Map.GetMapArtID(mapID)]) then
+		return private.MAP_ENTITIES[mapID][C_Map.GetMapArtID(mapID)][entityType]
+	end
+	
+	return nil
+end
+
+function RSMapDB.GetEntitiesByMapID(mapID, entityType, includeChildMaps)
+	local entitiesInMap = GetEntitiesByMapID(mapID, entityType) or {}
+	
+	if (includeChildMaps) then
+		local subzones = private.SUBZONES_IDS[mapID]
+		if (subzones) then
+			for _, submapID in pairs(subzones) do
+				local entitiesInSubMap = GetEntitiesByMapID(submapID, entityType)
+				if (entitiesInSubMap) then
+					entitiesInMap = RSUtils.JoinTables(entitiesInMap, entitiesInSubMap)
+				end
+			end
+		end
+	end
+	
+	if (RSUtils.GetTableLength(entitiesInMap) > 0) then
+		return entitiesInMap
+	end
+	
+	return nil
+end

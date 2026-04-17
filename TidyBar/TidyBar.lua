@@ -55,7 +55,7 @@ local L = GetLocale() == "zhCN" and {
 	["Custom Action Bar Layout"] = "Custom Action Bar Layout",
 	["Custom Action Bar Scale:"] = "Custom Action Bar Scale:",
 	["Keybinding Mode"] = "Keybinding Mode",
-	["Mouse over action buttons and press a key to bind it."] = "Mouse over action buttons and press a key to bind it and pres ESC to quit.",
+	["Mouse over action buttons and press a key to bind it."] = "Mouse over action buttons and press a key to bind it and press ESC to quit.",
 	["Current Button: "] = "Current Button: ",
 	["None"] = "None",
 	["No binding"] = "No binding",
@@ -185,8 +185,41 @@ local function CreateActionButton(parent, buttonName, actionId)
 	return button
 end
 
-local maxLevel = CONFIG.MAX_LEVEL
-local playerLevel = UnitLevel("player")
+local function SetupActionBarStateDriver(bar, pageConditions)
+	if not bar then return end
+	
+	-- RegisterStateDriver 负责：根据条件（如 [vehicleui]）自动切换 page 属性
+	RegisterStateDriver(bar, 'page', pageConditions)
+	-- SetAttribute 设置默认页码（非载具状态下使用的页面）
+	-- 不得传入条件字符串，必须是数字
+	local defaultPage = 1
+	bar:SetAttribute('page', defaultPage)
+	-- haschild 确保子按钮能正确继承状态变化
+	bar:SetAttribute('haschild', true)
+end
+
+local function SetupButtonStates(button, index, actionId)
+	-- 默认页面（page 1-11）：使用自定义动作条的实际 actionId
+	for page = 1, 11 do
+		button:SetState(page, 'action', actionId)
+	end
+	-- Override 页面（page 12）：映射到主动作条对应位置，由系统OverrideActionBar接管技能
+	-- 当 Blizzard 覆盖动作条时，自定义按钮必须同样映射，否则按键仍触发原始技能
+	button:SetState(12, 'action', index)
+	-- 载具UI页面（page 13）：映射到主动作条对应位置，触发载具技能
+	-- 原生UI进入载具时，主动作条按钮自动变成载具技能
+	-- 自定义按钮必须同样映射，否则按键仍触发原始技能
+	local vehicleBarIndex = GetVehicleBarIndex and GetVehicleBarIndex() or 13
+	button:SetState(vehicleBarIndex, 'action', index)
+	-- Possess 页面（page 14）：映射到主动作条对应位置，触发控制技能
+	-- 原生UI possess 时也需要正确映射
+	button:SetState(14, 'action', index)
+	-- 页面 15-18 保持为空（预防性设置）
+	for page = 15, 18 do
+		button:SetState(page, 'empty')
+	end
+end
+
 local ButtonGridIsShown = false
 local Corner_Artwork_Texture = "Interface\\Addons\\TidyBar\\CornerArt"
 local Empty_Art = "Interface\\Addons\\TidyBar\\Empty"
@@ -195,9 +228,11 @@ local MouseInSidebar, MouseInCorner = false
 local TidyBar = CreateFrame("Frame", "TidyBar", WorldFrame)
 local CornerMenuFrame = CreateFrame("Frame", "TidyBar_CornerMenuFrame", UIParent)
 local CornerMouseoverFrame = CreateFrame("Frame", "TidyBar_CornerBarMouseoverFrame", UIParent)
+
 -- 创建自定义动作条
-local TidyBarLeftActionBar = CreateFrame("Frame", "TidyBar_LeftActionBar", UIParent, "BackdropTemplate")
-local TidyBarRightActionBar = CreateFrame("Frame", "TidyBar_RightActionBar", UIParent, "BackdropTemplate")
+-- MOP 5.5.3: 正确模板名是 SecureHandlerBaseTemplate，且无 BackdropTemplate
+local TidyBarLeftActionBar = CreateFrame("Frame", "TidyBar_LeftActionBar", UIParent, "SecureHandlerBaseTemplate")
+local TidyBarRightActionBar = CreateFrame("Frame", "TidyBar_RightActionBar", UIParent, "SecureHandlerBaseTemplate")
 TidyBarLeftActionBar:SetFrameStrata("MEDIUM")
 TidyBarRightActionBar:SetFrameStrata("MEDIUM")
 TidyBarLeftActionBar:EnableMouse(true)
@@ -269,18 +304,24 @@ function TidyBar:HideExperienceBar()
 end
 
 function TidyBar:ShowExperienceBar()
-	MainMenuExpBar:Show()
-	local watchedFaction, _ = GetWatchedFactionInfo();
-	if (watchedFaction == nil) then
-		ReputationWatchBar:Hide()
-		ReputationWatchBar:SetHeight(.001)
+	local currentLevel = UnitLevel("player")
+	local currentMaxLevel = CONFIG.MAX_LEVEL
+	
+	if currentLevel >= currentMaxLevel then
+		MainMenuExpBar:Hide()
+		MainMenuExpBar:SetHeight(0.001)
 	else
-		ReputationWatchBar:Show()
-		ReputationWatchBar:SetHeight(11)
+		MainMenuExpBar:Show()
+		MainMenuExpBar:SetHeight(11)
 	end
 
-	if (playerLevel == maxLevel) then
-		MainMenuExpBar:Hide()
+	local watchedFaction = GetWatchedFactionInfo()
+	if watchedFaction then
+		ReputationWatchBar:Show()
+		ReputationWatchBar:SetHeight(11)
+	else
+		ReputationWatchBar:Hide()
+		ReputationWatchBar:SetHeight(0.001)
 	end
 end
 
@@ -418,7 +459,6 @@ local function RefreshMainActionBars()
 	local indentOffset = 16
 
 	MainMenuExpBar:SetWidth(500)
-	MainMenuExpBar:SetHeight(11)
 	ExhaustionLevelFillBar:SetWidth(500)
 	ExhaustionLevelFillBar:SetHeight(11)
 	ReputationWatchBar.StatusBar:SetWidth(500)
@@ -435,10 +475,17 @@ local function RefreshMainActionBars()
 		TidyBar:ShowMainButtonArt()
 	end
 
-	if MainMenuExpBar:IsShown() and ReputationWatchBar:IsShown() then
+	-- 正确判断经验条是否实际占用空间：不仅要看IsShown，还要看高度是否>1
+	-- MOP 满级后expBar被Hide()但是IsShown可能缓存true，导致偏移计算错误
+	local expBarShown = MainMenuExpBar:IsShown() and MainMenuExpBar:GetHeight() > 1
+	local repBarShown = ReputationWatchBar:IsShown() and ReputationWatchBar:GetHeight() > 1
+	
+	if expBarShown and repBarShown then
 		anchorOffset = 16 + 9
-	elseif MainMenuExpBar:IsShown() or ReputationWatchBar:IsShown() then
+	elseif expBarShown or repBarShown then
 		anchorOffset = 16
+	else
+		anchorOffset = 8
 	end
 
 	reputationBarOffset = anchorOffset
@@ -488,15 +535,9 @@ local function RefreshMainActionBars()
 		anchor = MultiCastActionBarFrame;
 		anchorOffset = 4
 	end
-
-	-- Vehicle Leave Button
-	if MainMenuBarVehicleLeaveButton:IsShown() then
-		MainMenuBarVehicleLeaveButton:ClearAllPoints();
-		MainMenuBarVehicleLeaveButton:SetPoint("BOTTOMLEFT", anchor, "TOPLEFT", 0, anchorOffset);
-		anchor = MainMenuBarVehicleLeaveButton
-		anchorOffset = 4
-	end
 end
+
+local stateDriversRegistered = false
 
 local function RefreshCustomActionBars()
 	if InCombatLockdown() then
@@ -535,6 +576,7 @@ local function RefreshCustomActionBars()
                 "TidyBarLeftButton"..i, 
                 LEFT_ACTIONBAR_START + i - 1
             )
+            SetupButtonStates(TidyBarLeftActionBar.buttons[i], i, LEFT_ACTIONBAR_START + i - 1)
         end
     end
 
@@ -547,6 +589,7 @@ local function RefreshCustomActionBars()
                 "TidyBarRightButton"..i, 
                 RIGHT_ACTIONBAR_START + i - 1
             )
+            SetupButtonStates(TidyBarRightActionBar.buttons[i], i, RIGHT_ACTIONBAR_START + i - 1)
         end
     end
 
@@ -597,6 +640,26 @@ local function RefreshCustomActionBars()
     TidyBarLeftActionBar:SetAlpha(MainMenuBar:GetAlpha())
     TidyBarRightActionBar:SetAlpha(MainMenuBar:GetAlpha())
 
+    -- 设置状态驱动，支持载具/override/possess 页面切换（仅注册一次）
+    if not stateDriversRegistered then
+        local vehicleBarIndex = GetVehicleBarIndex and GetVehicleBarIndex() or 13
+        -- 条件格式: [条件] 页码; 默认页码
+        -- MOP:
+        --  [overridebar] -> page 12 (OverrideActionBar)
+        --  [vehicleui] -> page vehicleBarIndex (usually 13) (VehicleUI)
+        --  [possessbar] -> page 14 (PossessBar)
+        --  otherwise -> page 1 (normal action bar)
+        local pageConditions = string.format(
+            "[overridebar] 12; [possessbar] 14; [vehicleui] %d; %d",
+            vehicleBarIndex,
+            1
+        )
+    
+        SetupActionBarStateDriver(TidyBarLeftActionBar, pageConditions)
+        SetupActionBarStateDriver(TidyBarRightActionBar, pageConditions)
+        stateDriversRegistered = true
+    end
+
     -- 显示动作条
     TidyBarLeftActionBar:Show()
     TidyBarRightActionBar:Show()
@@ -620,14 +683,33 @@ function HideCornerMenuFrame()
 	end
 end
 
+-- 钩子计数器：跟踪每个frame上HookScript被调用的次数
+-- 解决反复 hook/unhook 导致钩子丢失的问题
+local hookCounts = setmetatable({}, { __index = function() return 0 end })
+
 function HookCornerFrame(frameTarget)
-	frameTarget:HookScript("OnEnter", ShowCornerMenuFrame)
-	frameTarget:HookScript("OnLeave", HideCornerMenuFrame)
+    if not frameTarget then return end
+    local count = hookCounts[frameTarget]
+    -- 只在首次或被完全清理后才注册新钩子
+    if count == 0 then
+        frameTarget:HookScript("OnEnter", ShowCornerMenuFrame)
+        frameTarget:HookScript("OnLeave", HideCornerMenuFrame)
+    end
+    hookCounts[frameTarget] = count + 1
 end
 
 function UnhookCornerFrame(frameTarget)
-	frameTarget:SetScript("OnEnter", nil)
-	frameTarget:SetScript("OnLeave", nil)
+    if not frameTarget then return end
+    local count = hookCounts[frameTarget]
+    if count <= 1 then
+        -- 彻底清理
+        frameTarget:SetScript("OnEnter", nil)
+        frameTarget:SetScript("OnLeave", nil)
+        hookCounts[frameTarget] = 0
+    else
+        -- 还有其他引用，仅减少计数
+        hookCounts[frameTarget] = count - 1
+    end
 end
 
 local function RefreshExperienceBars()
@@ -772,9 +854,10 @@ function ConfigureOptions()
 	TidyBarScale = TidyBar.opts.Scale or 1
 
 	if (TidyBar.optionRunCount < 1) then
-		-- Create options interface
-		TidyBar.panel = CreateFrame("Frame")
+		-- Create options interface - 参照 !!iCenter/AutoInvite.lua 兼容 MOP 5.5.3
+		TidyBar.panel = CreateFrame("Frame", "TidyBarPanel", InterfaceOptionsFramePanelContainer)
 		TidyBar.panel.name = "TidyBar"
+		TidyBar.panel:Hide()
 
 		local cb_art = CreateCheckbox("HideMainButtonArt", L["Hide main button art?"], TidyBar.panel, RefreshPositions)
 		cb_art:SetPoint("TOPLEFT", 20, -20)
@@ -822,8 +905,9 @@ function ConfigureOptions()
 		-- 添加自定义动作条复选框
 		local cb_custom = CreateCheckbox("CustomActionBars", L["Custom Action Bars"], TidyBar.panel, function()
 			if TidyBar.opts.CustomActionBars then
+				local playerKey = GetPlayerKey()
 				TidyBar.opts.HideMainButtonArt = true
-				TidyBarOptions.HideMainButtonArt = true
+				TidyBarOptions.profiles[playerKey].HideMainButtonArt = true
 				cb_art:SetChecked(true)
 			end
 			RefreshPositions()
@@ -925,7 +1009,7 @@ function ConfigureOptions()
 		keybindingButton:SetPoint("TOPLEFT", layoutDropdown, "BOTTOMLEFT", 15, -15)
 		keybindingButton:SetText(L["Keybinding Button"])
 		keybindingButton:SetScript("OnClick", function()
-			EnableKeybinding()
+			TidyBar:EnableKeybinding()
 		end)
 
 		-- 添加配置导出按钮
@@ -948,13 +1032,12 @@ function ConfigureOptions()
 			TidyBar:ShowImportDialog()
 		end)
 
-		-- Interface options category
-		if Settings and Settings.RegisterCanvasLayoutCategory then
-			local category = Settings.RegisterCanvasLayoutCategory(TidyBar.panel, "TidyBar")
-			category.ID = "TidyBar"
-			Settings.RegisterAddOnCategory(category)
-		else
-			InterfaceOptions_AddCategory(TidyBar.panel) -- 旧客户端兼容
+		-- 注册到设置界面 - 匹配 AutoInvite 模式
+		if _G.InterfaceOptions_AddCategory then
+			InterfaceOptions_AddCategory(TidyBar.panel)
+		elseif _G.Settings and _G.Settings.RegisterCanvasLayoutCategory then
+			local category = _G.Settings.RegisterCanvasLayoutCategory(TidyBar.panel, TidyBar.panel.name)
+			_G.Settings.RegisterAddOnCategory(category)
 		end
 	end
 	TidyBar.optionRunCount = TidyBar.optionRunCount + 1
@@ -1007,12 +1090,15 @@ function events:ACTIONBAR_SHOWGRID() ButtonGridIsShown = true; end
 function events:ACTIONBAR_HIDEGRID() ButtonGridIsShown = false; end
 
 function events:UNIT_EXITED_VEHICLE(event)
-	RefreshPositions(event); DelayEvent(ConfigureCornerBars, GetTime() + 1)
-end -- Echos the event to verify positions
+	DelayEvent(RefreshPositions, GetTime() + 0.5)
+	DelayEvent(ConfigureCornerBars, GetTime() + 1)
+end
 
 function events:UNIT_ENTERED_VEHICLE(event)
-	RefreshPositions(event); DelayEvent(ConfigureCornerBars, GetTime() + 1)
-end -- Echos the event to verify positions
+	-- 进入载具时不刷新位置（安全框架限制下无法修改属性）
+	-- 仅在离开载具时刷新
+	DelayEvent(ConfigureCornerBars, GetTime() + 1)
+end
 
 events.PLAYER_ENTERING_WORLD = function(event)
 	RefreshPositions(event)
@@ -1029,9 +1115,7 @@ end
 events.PLAYER_LEVEL_UP = function(event)
 	RefreshPositions(event)
 end
-events.UPDATE_SHAPESHIFT_FORM = function(event)
-	RefreshPositions(event)
-end
+
 events.QUEST_WATCH_UPDATE = function(event)
 	RefreshPositions(event)
 end
@@ -1071,7 +1155,8 @@ local function CheckForConflicts()
 	end
 end
 
-events.ADDON_LOADED = function(event)
+events.ADDON_LOADED = function(event, addonName)
+	if addonName ~= "TidyBar" then return end
 	ConfigureOptions()
 	CheckForConflicts()
 end
@@ -1212,7 +1297,16 @@ TidyBar:Show()
 
 SLASH_TIDYBAR1 = '/tidybar'
 SlashCmdList.TIDYBAR = function(msg, editBox)
-	Settings.OpenToCategory("TidyBar")
+	-- lazy init: 如果面板还没创建，先创建
+	if not TidyBar.panel then
+		ConfigureOptions()
+	end
+	-- 匹配 AutoInvite 模式：优先新 API
+	if _G.Settings and _G.Settings.OpenToCategory then
+		_G.Settings.OpenToCategory(TidyBar.panel.name)
+	elseif _G.InterfaceOptionsFrame_OpenToCategory then
+		InterfaceOptionsFrame_OpenToCategory(TidyBar.panel)
+	end
 end
 
 -- 导出配置
@@ -1256,7 +1350,7 @@ local ImportDialog = nil
 
 function TidyBar:ShowImportDialog()
 	if not ImportDialog then
-		ImportDialog = CreateFrame("Frame", "TidyBarImportDialog", UIParent, "BackdropTemplate")
+		ImportDialog = CreateFrame("Frame", "TidyBarImportDialog", UIParent)
 		ImportDialog:SetFrameStrata("DIALOG")
 		ImportDialog:SetWidth(450)
 		ImportDialog:SetHeight(200)
@@ -1268,13 +1362,16 @@ function TidyBar:ShowImportDialog()
 		bg:SetColorTexture(0, 0, 0, 0.8)
 		
 		-- 创建边框
-		local border = CreateFrame("Frame", nil, ImportDialog, "BackdropTemplate")
+		local border = CreateFrame("Frame", nil, ImportDialog)
 		border:SetAllPoints()
-		border:SetBackdrop({
-			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-			edgeSize = 32,
-			insets = { left = 11, right = 12, top = 12, bottom = 11 },
-		})
+		-- MOP 5.5.3: SetBackdrop is a method only available with proper template
+		if border.SetBackdrop then
+			border:SetBackdrop({
+				edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+				edgeSize = 32,
+				insets = { left = 11, right = 12, top = 12, bottom = 11 },
+			})
+		end
 		
 		-- 创建标题
 		local title = ImportDialog:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -1346,8 +1443,21 @@ function TidyBar:ImportConfig(jsonStr)
 	local playerKey = GetPlayerKey()
 	TidyBarOptions.profiles[playerKey] = config
 	
-	-- 重新加载配置
+	-- 如果布局发生变化，需要重建自定义动作条按钮
+	local oldLayout = TidyBar.opts.CustomActionBarLayout
 	ConfigureOptions()
+	if oldLayout ~= TidyBar.opts.CustomActionBarLayout then
+		-- 清理旧按钮状态，让 RefreshCustomActionBars 重新创建
+		if TidyBarLeftActionBar then
+			TidyBarLeftActionBar.buttons = nil
+		end
+		if TidyBarRightActionBar then
+			TidyBarRightActionBar.buttons = nil
+		end
+		-- 重置状态驱动器注册标记
+		stateDriversRegistered = false
+	end
+	
 	RefreshPositions()
 	
 	return true
@@ -1367,13 +1477,16 @@ bg:SetAllPoints()
 bg:SetColorTexture(0, 0, 0, 0.4)
 
 -- 创建边框
-local border = CreateFrame("Frame", nil, KeybindingFrame, "BackdropTemplate")
+local border = CreateFrame("Frame", nil, KeybindingFrame)
 border:SetAllPoints()
-border:SetBackdrop({
-	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-	edgeSize = 32,
-	insets = { left = 11, right = 12, top = 12, bottom = 11 },
-})
+-- MOP 5.5.3: SetBackdrop is a method only available with proper template
+if border.SetBackdrop then
+	border:SetBackdrop({
+		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+		edgeSize = 32,
+		insets = { left = 11, right = 12, top = 12, bottom = 11 },
+	})
+end
 
 -- 创建标题文本
 local title = KeybindingFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -1397,7 +1510,7 @@ currentBinding:SetText("")
 
 local currentBindingButton = nil
 
-local function DisableKeybinding()
+function TidyBar:DisableKeybinding()
 	KeybindingFrame:Hide()
 	KeybindingFrame:EnableKeyboard(false)
 	KeybindingFrame:EnableMouse(false)
@@ -1430,7 +1543,7 @@ local function ProcessBinding(key)
 end
 
 -- 按键绑定功能
-local function EnableKeybinding()
+function TidyBar:EnableKeybinding()
 	KeybindingFrame:Show()
 	-- 启用全局按键捕获
 	KeybindingFrame:EnableKeyboard(true)
@@ -1440,7 +1553,7 @@ local function EnableKeybinding()
 	-- 设置键盘按键处理函数
 	KeybindingFrame:SetScript("OnKeyDown", function(self, key)
 		if key == "ESCAPE" then
-			DisableKeybinding()
+			TidyBar:DisableKeybinding()
 			return
 		end
 		ProcessBinding(key)
@@ -1455,8 +1568,11 @@ local function EnableKeybinding()
 		ProcessBinding(mouseButton)
 	end)
 
-	-- 添加到ESC键处理队列
-	tinsert(UISpecialFrames, "TidyBarKeybindingFrame")
+	-- 添加到ESC键处理队列（仅插入一次）
+	if not TidyBar.keybindingFrameRegistered then
+		tinsert(UISpecialFrames, "TidyBarKeybindingFrame")
+		TidyBar.keybindingFrameRegistered = true
+	end
 end
 
 -- 创建清除绑定按钮
@@ -1493,7 +1609,7 @@ exitButton:SetHeight(25)
 exitButton:SetPoint("BOTTOM", 70, 15)
 exitButton:SetText(L["Exit"])
 exitButton:SetScript("OnClick", function()
-	DisableKeybinding()
+	TidyBar:DisableKeybinding()
 end)
 
 -- 添加鼠标悬停处理函数
@@ -1535,9 +1651,9 @@ end
 SLASH_KEYBIND1 = '/kb'
 SlashCmdList.KEYBIND = function(msg, editBox)
 	if KeybindingFrame:IsShown() then
-		DisableKeybinding()
+		TidyBar:DisableKeybinding()
 	else
-		EnableKeybinding()
+		TidyBar:EnableKeybinding()
 		-- 为所有动作条按钮添加鼠标悬停事件
 		for i = 1, 12 do
 			-- 主动作条

@@ -5,7 +5,8 @@ if mod:IsRetail() then
 	mod.statTypes = "normal,heroic,duos"
 end
 
-mod:SetRevision("20250609053724")
+mod:SetRevision("20260315034941")
+mod:DisableHardcodedOptions()
 mod:SetCreatureID(26532)
 mod:SetEncounterID(2003)
 mod:SetZone(279, 2849)--Culling of Stratholm, Duos

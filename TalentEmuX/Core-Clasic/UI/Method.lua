@@ -196,7 +196,11 @@ MT.BuildEnv('UI-Method');
 					TreeButton:SetPushedTexture(CT.TTEXTURESET.UNK);
 					TreeButton:SetHighlightTexture(CT.TTEXTURESET.UNK);
 				end
-				TreeFrame.Background:SetTexture(DT.SpecBackground[SpecID]);
+				if VT.SET.tree_background_style == 1 then
+					TreeFrame.Background:SetTexture(DT.SpecBackground[SpecID]);
+				else
+					TreeFrame.Background:SetColorTexture(0.0, 0.0, 0.0, 1.0);
+				end
 				TreeFrame.TreeLabel:SetText(l10n.SPEC[SpecID]);
 				-- TreeFrame.TreeLabelBackground:SetTexture(SpecTexture);
 				SetPortraitToTexture(TreeFrame.TreeLabelBackground, SpecTexture)
@@ -247,7 +251,11 @@ MT.BuildEnv('UI-Method');
 			local color = CT.RAID_CLASS_COLORS[class];
 			Frame.objects.Name:SetTextColor(color.r, color.g, color.b, 1.0);
 			Frame.objects.Label:SetTextColor(color.r, color.g, color.b, 1.0);
-			Frame.Background:SetTexture(DT.ClassBackground[class][random(1, #DT.ClassBackground[class])]);
+			if VT.SET.frame_background_style == 1 then
+				Frame.Background:SetTexture(DT.ClassBackground[class][random(1, #DT.ClassBackground[class])]);
+			else
+				Frame.Background:SetColorTexture(0.0, 0.0, 0.0, 1.0);
+			end
 
 			Frame.class = class;
 			Frame.ClassTDB = ClassTDB;
@@ -1781,5 +1789,70 @@ MT.BuildEnv('UI-Method');
 			--	end
 		end
 	end
+
+	function MT.CALLBACK.singleFrame(val)
+		if val then
+			local last = MT.UI.GetLastFrame();
+			MT.UI.ReleaseAllFramesButOne(last and last.id or nil);
+		end
+	end
+	function MT.CALLBACK.style(val)
+		if val == 1 then
+			for i = 1, VT.Frames.used do
+				MT.UI.FrameSetStyle(VT.Frames[i], 1);
+			end
+		else
+			for i = 1, VT.Frames.used do
+				MT.UI.FrameSetStyle(VT.Frames[i], 2);
+			end
+		end
+	end
+	local function SetFrameBGStyle(Frame, val)
+		if val == 1 then
+			if Frame:IsShown() and Frame.class then
+				local cand = DT.ClassBackground[Frame.class];
+				Frame.Background:SetTexture(cand[random(1, #cand)]);
+			end
+		else
+			Frame.Background:SetColorTexture(0.0, 0.0, 0.0, 1.0);
+		end
+	end
+	function MT.CALLBACK.frame_background_style(val)
+		MT.UI.IteratorFrames(SetFrameBGStyle, val);
+	end
+	local function SetFrameBGAlpha(Frame, val)
+		Frame.Background:SetAlpha(val);
+	end
+	function MT.CALLBACK.frame_background_alpha(val)
+		MT.UI.IteratorFrames(SetFrameBGAlpha, val);
+	end
+	local function SetTreeBGStyle(Frame, val)
+		local TreeFrames = Frame.TreeFrames;
+		if val == 1 then
+			if Frame:IsShown() and Frame.class then
+				local SpecList = DT.ClassSpec[Frame.class];
+				for i = 1, #TreeFrames do
+					TreeFrames[i].Background:SetTexture(DT.SpecBackground[SpecList[i]]);
+				end
+			end
+		else
+			for i = 1, #TreeFrames do
+				TreeFrames[i].Background:SetColorTexture(0.0, 0.0, 0.0, 1.0);
+			end
+		end
+	end
+	function MT.CALLBACK.tree_background_style(val)
+		MT.UI.IteratorFrames(SetTreeBGStyle, val);
+	end
+	local function SetTreeBGAlpha(Frame, val)
+		local TreeFrames = Frame.TreeFrames;
+		for i = 1, #TreeFrames do
+			TreeFrames[i].Background:SetAlpha(val);
+		end
+	end
+	function MT.CALLBACK.tree_background_alpha(val)
+		MT.UI.IteratorFrames(SetTreeBGAlpha, val);
+	end
+
 
 -->
