@@ -569,7 +569,7 @@ local bbFoundExactDPPath = false
 --- @param sortedSlots table Array of slot numbers in processing order
 --- @return nil Updates global bbBestSolution with the best solution found
 function ReforgeLite:BranchAndBoundSearch(position, currentStats, currentPath, data, suffixBounds, allItemOptions, sortedSlots)
-  self:RunYieldCheck(100000) -- Cheap operation
+  self:RunYieldCheck() -- Cheap operation
   bbNodesExplored = bbNodesExplored + 1
 
   -- Base case: all items processed
@@ -646,7 +646,7 @@ function ReforgeLite:BranchAndBoundSearch(position, currentStats, currentPath, d
     return
   end
 
-  self:RunYieldCheck(100000) -- Expensive operation coming
+  self:RunYieldCheck() -- Expensive operation coming
 
   -- Use pre-computed reforge options for current item
   local slot = sortedSlots[position]

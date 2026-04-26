@@ -1279,4 +1279,53 @@ BG.Init2(function()
             LFG.SQDU = BG.MeetingHorn.SQDU_newFuc
         end
     end
+
+    -- 简化活动列表
+    if BiaoGe.options["MeetingHorn_ActivityList"] == 1 then
+        local Browser = MeetingHorn.MainPanel.Browser
+        local CommentWidth = 420
+
+        local function Set()
+            for i, v in pairs(Browser.ActivityList._buttons) do
+                v.Icon:Hide()
+                v.Name:ClearAllPoints()
+                v.Name:SetPoint("LEFT", 10, 0)
+                v.Name:SetWidth(135)
+
+                v.Mode:Hide()
+                v.Members:ClearAllPoints()
+                v.Members:SetPoint("LEFT", 150, 0)
+                v.Members:SetWidth(70)
+                local mText = v.Members:GetText()
+                if mText then
+                    v.Members:SetText(mText:gsub("|T.-|t", ""))
+                end
+
+                v.QRIcon:Hide()
+                v.Leader:ClearAllPoints()
+                v.Leader:SetPoint("LEFT", v.Members, "RIGHT", 10, 0)
+
+                v.Comment:SetWidth(CommentWidth)
+
+                v.Instance:ClearAllPoints()
+                v.Instance:SetPoint("RIGHT", v.Name, "RIGHT", 5, 0)
+            end
+        end
+        hooksecurefunc(Browser.ActivityList, "update", Set)
+
+        Browser.Header7:Hide()
+
+        Browser.Header1:ClearAllPoints()
+        Browser.Header1:SetPoint("BOTTOMLEFT", Browser.VoiceActivity, "TOPLEFT", 2, 5)
+
+        Browser.Header2:Hide()
+        Browser.Header3:ClearAllPoints()
+        Browser.Header3:SetPoint("LEFT", Browser.Header1, "RIGHT", 0, 0)
+
+        Browser.Header5:SetWidth(CommentWidth)
+
+        Browser.Header8:Hide()
+        Browser.Header4:ClearAllPoints()
+        Browser.Header4:SetPoint("LEFT", Browser.Header3, "RIGHT", 0, 0)
+    end
 end)

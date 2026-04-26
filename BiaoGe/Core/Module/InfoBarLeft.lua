@@ -30,6 +30,12 @@ BG.Init(function()
         BiaoGe.marketPrice = BiaoGe.marketPrice or {}
         local saveCD = 60 * 60 * 3
         local saveMaxCount = 20
+        local outTime = 90 * 86400
+        for i = #BiaoGe.marketPrice, 1, -1 do
+            if GetServerTime() - BiaoGe.marketPrice[i].time > outTime then
+                tremove(BiaoGe.marketPrice, i)
+            end
+        end
 
         local function CreateHistoryFrame(self)
             if not self.currentPrice then return end
@@ -82,7 +88,7 @@ BG.Init(function()
                 bar:SetBackdrop({
                     bgFile = "Interface/ChatFrame/ChatFrameBackground",
                 })
-                bar:SetBackdropColor(1, 1, 0,.8)
+                bar:SetBackdropColor(1, 1, 0, .8)
                 bar:SetPoint("LEFT", title, "RIGHT", 5, 0)
                 local widthPercent = v.price / _max
                 if widthPercent ~= 1 then
@@ -145,7 +151,7 @@ BG.Init(function()
         bt.text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
         bt.text:SetPoint("LEFT")
         bt.text:SetTextColor(1, 1, 1)
-        BG.OnEnterDelay(bt, CreateHistoryFrame,0)
+        BG.OnEnterDelay(bt, CreateHistoryFrame, 0)
         BG.OnLeaveDelay(bt, function(self)
             if self.frame then
                 self.frame:Hide()
@@ -251,7 +257,7 @@ BG.Init(function()
         bt:GetFontString():SetPoint("LEFT")
         bt:SetWidth(bt:GetFontString():GetWidth() + 10)
         bt.channel = World
-        BG.OnEnterDelay(bt, OnEnter,0)
+        BG.OnEnterDelay(bt, OnEnter, 0)
         BG.OnLeaveDelay(bt, OnLeave)
         bt:SetScript("OnClick", function(self)
             BG.GetChannelMemberCount(self.channel)

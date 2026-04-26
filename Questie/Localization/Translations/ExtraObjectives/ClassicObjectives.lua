@@ -696,7 +696,7 @@ local classicObjectiveLocales = {
         ["ptBR"] = "Derrote Lunagarra",
         ["ruRU"] = "Одолейте Лунокогтя",
         ["zhCN"] = "击败月爪枭兽",
-        ["zhTW"] = false,
+        ["zhTW"] = "擊敗月爪梟獸",
     },
     ["Slay slimes until they leave behind a Rusty Chest"] = {
         ["enUS"] = true,
@@ -708,7 +708,7 @@ local classicObjectiveLocales = {
         ["ptBR"] = "Mate Viscos até que deixem um Baú Enferrujado",
         ["ruRU"] = "Убивайте гниющую слизь до тех пор, пока они не оставят после себя ржавый сундук",
         ["zhCN"] = "击杀泥浆怪，直到它们留下一个生锈的箱子",
-        ["zhTW"] = false,
+        ["zhTW"] = "擊殺史萊姆，直到牠們掉落生鏽的箱子",
     },
     ["Talk to Estelle Gendry"] = {
         ["enUS"] = true,
@@ -720,7 +720,7 @@ local classicObjectiveLocales = {
         ["ptBR"] = "Converse com Estela Galina",
         ["ruRU"] = "Поговорите с Эстеллой Джендри",
         ["zhCN"] = "与艾斯特蕾·根德瑞交谈",
-        ["zhTW"] = false,
+        ["zhTW"] = "與艾斯特蕾·根德瑞交談",
     },
     ["Open the chest"] = {
         ["enUS"] = true,
@@ -732,7 +732,7 @@ local classicObjectiveLocales = {
         ["ptBR"] = "Abra o baú",
         ["ruRU"] = "Откройте сундук",
         ["zhCN"] = "打开箱子",
-        ["zhTW"] = false,
+        ["zhTW"] = "打開箱子",
     },
     ["Use the E.C.A.C. to weaken it"] = {
         ["enUS"] = true,
@@ -744,7 +744,7 @@ local classicObjectiveLocales = {
         ["ptBR"] = "Use o B.E.C.A. para enfraquecê-lo",
         ["ruRU"] = "Используйте ХОЧУ для ослабления",
         ["zhCN"] = "使用大饼干来削弱它",
-        ["zhTW"] = false,
+        ["zhTW"] = "使用大餅乾來削弱它",
     },
     ["Summon the Voidwalker"] = {
         ["enUS"] = true,
@@ -793,6 +793,30 @@ local classicObjectiveLocales = {
         ["ruRU"] = "Призыв охотника Скверны",
         ["zhCN"] = "召唤地狱猎犬",
         ["zhTW"] = "召喚地獄獵犬",
+    },
+    ["Imprison the Doomguard Commander"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Sperrt den Kommandanten der Verdammniswache ein",
+        ["esES"] = "Aprisiona al Comandante guardia apocalíptico",
+        ["esMX"] = "Aprisiona al Comandante guardia apocalíptico",
+        ["frFR"] = "Emprisonne le Commandant de la Garde funeste",
+        ["koKR"] = "파멸의수호대 사령관을 가두세요",
+        ["ptBR"] = "Aprisione o Comandante Demonarca",
+        ["ruRU"] = "Заключите Стражник ужаса: Командир",
+        ["zhCN"] = "囚禁末日守卫指挥官",
+        ["zhTW"] = "囚禁末日守衛指揮官",
+    },
+    ["Open the box"] = {
+        ["enUS"] = true,
+        ["deDE"] = "Öffne die Kiste",
+        ["esES"] = "Abre la caja",
+        ["esMX"] = "Abre la caja",
+        ["frFR"] = "Ouvre la boîte",
+        ["koKR"] = "상자를 여세요",
+        ["ptBR"] = "Abra a caixa",
+        ["ruRU"] = "Откройте коробку",
+        ["zhCN"] = "打开箱子",
+        ["zhTW"] = "打開箱子",
     },
 }
 

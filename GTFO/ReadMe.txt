@@ -2392,3 +2392,9 @@ Change Log:
 6.4.1
 * Fixed Midnight spells for The Voidspire
 * Fixed Midnight spells for March on Quel'Danas
+
+6.5
+* Re-enabled the Drowning special alert option for Retail
+* Updated Retail TOC to 12.0.5
+* Updated Wrath Classic TOC to 3.4.5/3.80.1
+* Added Wrath spells for Pit of Saron

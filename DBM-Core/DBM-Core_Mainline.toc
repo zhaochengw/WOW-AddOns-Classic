@@ -1,4 +1,4 @@
-## Interface: 120001, 120005
+## Interface: 120005
 ## X-Min-Interface: 110200
 ## Category: DBM
 ## Group: DBM-Core
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 12.0.38
+## Version: 12.0.42
 ## X-Curse-Project-ID: 3358
 ## X-Wago-ID: qv633o6b
 ## X-Website: https://deadlybossmods.com

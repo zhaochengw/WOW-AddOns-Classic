@@ -916,8 +916,4 @@ function ReforgeLite:InitPresets()
 
     AddMenuItems(rootDescription, menuList)
   end
-
-  --[===[@debug@
-  addonTable.callbacks:RegisterCallback("ToggleDebug", function() self:InitDynamicPresets() end)
-  --@end-debug@]===]
 end

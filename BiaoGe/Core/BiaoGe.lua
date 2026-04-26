@@ -2317,7 +2317,7 @@ BG.Init2(function()
         ns.InterfaceOptionsFrame_OpenToCategory(BG.optionsName)
         BG.MainFrame:Hide()
     end
-    SLASH_BIAOGEOPTIONS1 = "/bgr"
+    SLASH_BIAOGEOPTIONS1 = "/bgo"
 
     -- 角色总览
     SlashCmdList["BiaoGeRoleOverview"] = function()

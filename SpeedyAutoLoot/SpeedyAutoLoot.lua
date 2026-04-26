@@ -1,6 +1,6 @@
 
 local addonName = ...; ---@type string addonName
-local AutoLoot = select(2, ...); ---@class AutoLoot namespace
+local AutoLoot = select(2, ...); ---@class (partial) AutoLoot namespace
 
 local Config = {};
 local internal = {
@@ -393,14 +393,16 @@ function AutoLoot:Help(msg)
   local _, _, cmd, args = string.find(msg, "%s?(%w+)%s?(.*)");
   if not cmd or cmd == "" or cmd == "help" then
     AddMessage(fName.."   |cff58C6FA/sal    /speedyautoloot    /speedyloot|r");
-    AddMessage("  |cff58C6FA/sal auto              -|r  |cffEEE4AEEnable Auto Looting for all characters|r");
-    AddMessage("  |cff58C6FA/sal fish              -|r  |cffEEE4AEDisable Fishing reel in sound|r");
-    AddMessage("  |cff58C6FA/sal sound            -|r  |cffEEE4AEPlay a Sound when Inventory is full while looting|r");
+    AddMessage("  |cff58C6FA/sal auto            -|r  |cffEEE4AEEnable Auto Looting for all characters|r");
+    AddMessage("  |cff58C6FA/sal fish            -|r  |cffEEE4AEDisable Fishing reel in sound|r");
+    AddMessage("  |cff58C6FA/sal sound           -|r  |cffEEE4AEPlay a Sound when Inventory is full while looting|r");
+    AddMessage("  |cff58C6FA/sal anchor             -|r  |cffEEE4AEToggle the Loot Display anchor|r");
+    AddMessage("  |cff58C6FA/sal display            -|r  |cffEEE4AEEnable/Disable the Loot Display|r");
     if internal.isClassic then
-      AddMessage("  |cff58C6FA/sal set (SoundID) -|r  |cffEEE4AESet a Sound (SoundID), Default:  /sal set 139|r");
-      AddMessage("  |cff58C6FA/sal bop         |cffEEE4AEAuto Confirm Bind on Pickups when solo|r");
+        AddMessage("  |cff58C6FA/sal set (SoundID) -|r  |cffEEE4AESet a Sound (SoundID), Default:  /sal set 139|r");
+        AddMessage("  |cff58C6FA/sal bop         |cffEEE4AEAuto Confirm Bind on Pickups when solo|r");
     else
-      AddMessage("  |cff58C6FA/sal set (SoundID) -|r  |cffEEE4AESet a Sound (SoundID), Default:  /sal set 44321|r");
+        AddMessage("  |cff58C6FA/sal set (SoundID) -|r  |cffEEE4AESet a Sound (SoundID), Default:  /sal set 44321|r");
     end
   elseif cmd == "fish" then
     if not Config.global.fishingSoundDisabled then
@@ -439,6 +441,15 @@ function AutoLoot:Help(msg)
       PlaySound(SoundID, internal.audioChannel);
       AddMessage(fName.."Set Sound|r |cff37DB33"..SoundID.."|r");
     end
+  elseif cmd == "anchor" then
+    if InCombatLockdown() then
+        AddMessage(fName.."|cffFF0000Cannot move Loot Display in combat.");
+    else
+        AutoLoot:ToggleLootDisplay();
+    end
+  elseif cmd == "display" then
+      Config.global.lootDisplayEnabled = not Config.global.lootDisplayEnabled;
+      AddMessage(fName..(Config.global.lootDisplayEnabled and "|cff37DB33Loot Display Enabled." or "|cffB6B6B6Loot Display Disabled."));
   elseif internal.isClassic and cmd == "bop" then
     if Config.global.autoConfirm then
       AddMessage(fName.."|cffB6B6B6Automatically confirm loot when solo disabled.");

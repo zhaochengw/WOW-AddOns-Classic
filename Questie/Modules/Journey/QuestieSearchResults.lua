@@ -19,6 +19,8 @@ local QuestieCorrections = QuestieLoader:ImportModule("QuestieCorrections")
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 ---@type QuestieLink
 local QuestieLink = QuestieLoader:ImportModule("QuestieLink")
+---@type TrackerUtils
+local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
@@ -28,7 +30,7 @@ local stringsub = string.sub
 
 local AceGUI = LibStub("AceGUI-3.0");
 
-local _HandleTreeItemClick
+local _HandleTreeItemClick, _FindFirstSpawn
 local lastOpenSearch = "quest"
 local _selected = 0
 
@@ -36,33 +38,22 @@ local BY_NAME = 1
 local BY_ID = 2
 
 
-local function AddParagraph(frame, lookupObject, secondKey, header, query)
-    if lookupObject[secondKey] then
-        QuestieJourneyUtils:AddLine(frame,  Questie:Colorize(header))
-        for _,id in pairs(lookupObject[secondKey]) do
-            local name = query(id, "name")
-            if name then
-                QuestieJourneyUtils:AddLine(frame, name.." ("..id..")")
-            end
-        end
-    end
-end
-
 ---Takes a frame and adds a paragraph with a header text and a list of links to other search results
 ---@param frame AceGUIWidget The frame to work on
 ---@param linkType string The type of result to link to (npc|object|quest|item)
----@param lookupObject table Table of IDs (npc|object|quest|item)
+---@param lookup table Table of IDs (npc|object|quest|item)
 ---@param header string The text header to show above the links
 ---@param query function The function used to get link name from
-local function AddLinkedParagraph(frame, linkType, lookupObject, header, query)
-    if lookupObject and #lookupObject > 0 then
+---@param boolean addTomTomButton Whether to add a button for setting a TomTom target for the first spawn of each linked result, if available
+local function AddLinkedParagraph(frame, linkType, lookup, header, query, addTomTomButton)
+    if lookup and #lookup > 0 then
         local group = AceGUI:Create("InlineGroup");
         group:SetFullWidth(true);
         group:SetLayout("flow");
         group:SetTitle(header);
         frame:AddChild(group);
 
-        for _,id in pairs(lookupObject) do
+        for _,id in pairs(lookup) do
             id = abs(id)
             local link = AceGUI:Create("InteractiveLabel")
             local name = query(id, "name")
@@ -83,6 +74,27 @@ local function AddLinkedParagraph(frame, linkType, lookupObject, header, query)
             link:SetCallback("OnEnter", QuestieJourneyUtils.ShowJourneyTooltip)
             link:SetCallback("OnLeave", QuestieJourneyUtils.HideJourneyTooltip)
             group:AddChild(link);
+        end
+
+        if addTomTomButton and TomTom and TomTom.AddWaypoint then
+            for _, id in pairs(lookup) do
+                id = abs(id)
+                local spawns = query(id, "spawns")
+                if spawns then
+                    local zone, x, y = _FindFirstSpawn(spawns)
+                    if zone then
+                        local name = query(id, "name")
+                        QuestieJourneyUtils:Spacer(group)
+                        local button = AceGUI:Create("Button")
+                        button:SetText(l10n("Set |cFF54e33bTomTom|r Target"))
+                        button:SetCallback("OnClick", function()
+                            TrackerUtils:SetTomTomTarget(name, zone, x, y)
+                        end)
+                        group:AddChild(button)
+                        break
+                    end
+                end
+            end
         end
     end
 end
@@ -132,6 +144,24 @@ local function CreateShowHideButton(id)
         self:SetCallback("OnClick", function() self:RemoveFromMap(self) end)
     end
     return button
+end
+
+--- Finds the first valid spawn location from a spawns table
+---@param spawns table<AreaId, CoordPair[]>
+---@return AreaId|nil zone
+---@return number|nil x
+---@return number|nil y
+_FindFirstSpawn = function(spawns)
+    for zoneId, coords in pairs(spawns) do
+        if coords and coords[1] then
+            local x = coords[1][1]
+            local y = coords[1][2]
+            if x and y and (x ~= -1 or y ~= -1) then
+                return zoneId, x, y
+            end
+        end
+    end
+    return nil, nil, nil
 end
 
 local function rec(theTable, ret, indent)
@@ -264,26 +294,27 @@ function QuestieSearchResults:QuestDetailsFrame(details, id)
     if startedBy then
         -- quest starters
         QuestieJourneyUtils:AddLine(details, "")
-        AddLinkedParagraph(details, "npc", startedBy[1], l10n("NPCs starting this quest"), QuestieDB.QueryNPCSingle)
-        AddLinkedParagraph(details, "object", startedBy[2], l10n("Objects starting this quest"), QuestieDB.QueryObjectSingle)
+        AddLinkedParagraph(details, "npc", startedBy[1], l10n("NPCs starting this quest"), QuestieDB.QueryNPCSingle, true)
+        AddLinkedParagraph(details, "object", startedBy[2], l10n("Objects starting this quest"), QuestieDB.QueryObjectSingle, true)
         -- TODO change to linked paragraph once item details page exists
-        AddLinkedParagraph(details, "item", startedBy[3], l10n("Items starting this quest"), QuestieDB.QueryItemSingle)
+        AddLinkedParagraph(details, "item", startedBy[3], l10n("Items starting this quest"), QuestieDB.QueryItemSingle, false)
     end
+
     if finishedBy then
         -- quest finishers
         QuestieJourneyUtils:AddLine(details, "")
-        AddLinkedParagraph(details, "npc", finishedBy[1], l10n("NPCs finishing this quest"), QuestieDB.QueryNPCSingle)
-        AddLinkedParagraph(details, "object", finishedBy[2], l10n("Objects finishing this quest"), QuestieDB.QueryObjectSingle)
+        AddLinkedParagraph(details, "npc", finishedBy[1], l10n("NPCs finishing this quest"), QuestieDB.QueryNPCSingle, true)
+        AddLinkedParagraph(details, "object", finishedBy[2], l10n("Objects finishing this quest"), QuestieDB.QueryObjectSingle, true)
     end
 
     -- pre quests
     if preQuestGroup then
         QuestieJourneyUtils:AddLine(details, "")
-        AddLinkedParagraph(details, "quest", preQuestGroup, l10n("Requires all of these quests to be finished"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(details, "quest", preQuestGroup, l10n("Requires all of these quests to be finished"), QuestieDB.QueryQuestSingle, false)
     end
     if preQuestSingle then
         QuestieJourneyUtils:AddLine(details, "")
-        AddLinkedParagraph(details, "quest", preQuestSingle, l10n("Requires one of these quests to be finished"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(details, "quest", preQuestSingle, l10n("Requires one of these quests to be finished"), QuestieDB.QueryQuestSingle, false)
     end
     QuestieJourneyUtils:AddLine(details, "")
 
@@ -343,15 +374,17 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
 
     -- Also Starts
     if spawnObject.questStarts then
-        AddLinkedParagraph(f, "quest", spawnObject.questStarts, l10n("Starts the following quests"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(f, "quest", spawnObject.questStarts, l10n("Starts the following quests"), QuestieDB.QueryQuestSingle, false)
     end
 
     -- Also ends
     if spawnObject.questEnds then
-        AddLinkedParagraph(f, "quest", spawnObject.questEnds, l10n("Ends the following quests"), QuestieDB.QueryQuestSingle)
+        AddLinkedParagraph(f, "quest", spawnObject.questEnds, l10n("Ends the following quests"), QuestieDB.QueryQuestSingle, false)
     end
 
-    local spawnZone = AceGUI:Create("Label");
+    local spawnZone = AceGUI:Create("Label")
+    spawnZone:SetFontObject(GameFontNormal)
+    spawnZone:SetFullWidth(true)
     local spawns = spawnObject.spawns
 
     if spawns then
@@ -364,10 +397,22 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
             end
         end
 
+        if TomTom and TomTom.AddWaypoint and spawns[startindex] and spawns[startindex][1] then
+            local tx = spawns[startindex][1][1]
+            local ty = spawns[startindex][1][2]
+            if tx ~= -1 or ty ~= -1 then
+                local tomTomButton = AceGUI:Create("Button")
+                tomTomButton:SetText(l10n("Set |cFF54e33bTomTom|r Target"))
+                tomTomButton:SetCallback("OnClick", function()
+                    TrackerUtils:SetTomTomTarget(spawnObject.name, startindex, tx, ty)
+                end)
+                f:AddChild(tomTomButton)
+            end
+        end
+
         local zoneName = QuestieJourneyUtils:GetZoneName(startindex)
 
         spawnZone:SetText(l10n(zoneName));
-        spawnZone:SetFullWidth(true);
         f:AddChild(spawnZone);
 
         if spawns[startindex] and spawns[startindex][1] then
@@ -377,13 +422,13 @@ function QuestieSearchResults:SpawnDetailsFrame(f, spawn, spawnType)
             if (startx ~= -1 or starty ~= -1) then
                 local spawnLoc = AceGUI:Create("Label");
                 spawnLoc:SetText("X" .. l10n(": ") .. string.format("%.2f",startx) .." || Y" .. l10n(": ") .. string.format("%.2f",starty));
+                spawnLoc:SetFontObject(GameFontNormal)
                 spawnLoc:SetFullWidth(true);
                 f:AddChild(spawnLoc);
             end
         end
     else
         spawnZone:SetText(l10n("No spawn data available."))
-        spawnZone:SetFullWidth(true);
         f:AddChild(spawnZone);
     end
 
@@ -506,7 +551,7 @@ function QuestieSearchResults:ItemsFrameAfterTicker(f, itemId)
             showHideButton.idsToShow = npcIdsWithSpawns
             f:AddChild(showHideButton)
         end
-        AddLinkedParagraph(f, "npc", npcIdsWithSpawns, "", QuestieDB.QueryNPCSingle)
+        AddLinkedParagraph(f, "npc", npcIdsWithSpawns, "", QuestieDB.QueryNPCSingle, false)
     end
 
     local objectSpawnsHeading = AceGUI:Create("Heading")
@@ -537,7 +582,7 @@ function QuestieSearchResults:ItemsFrameAfterTicker(f, itemId)
             showHideButton.idsToShow = objectIdsWithSpawns
             f:AddChild(showHideButton)
         end
-        AddLinkedParagraph(f, "object", objectIdsWithSpawns, "", QuestieDB.QueryObjectSingle)
+        AddLinkedParagraph(f, "object", objectIdsWithSpawns, "", QuestieDB.QueryObjectSingle, false)
     end
 
     local vendorSpawnsHeading = AceGUI:Create("Heading")

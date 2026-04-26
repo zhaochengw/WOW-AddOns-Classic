@@ -1,5 +1,5 @@
 
-local dversion = 707
+local dversion = 720
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -1422,6 +1422,23 @@ function DF:RemoveRealName(name)
 	return name:gsub(("%-.*"), "")
 end
 
+---set the font face, size and flags of a font
+---@param fontString fontstring
+---@param fontface string?
+---@param size number?
+---@param flags string?
+function DF:SetFont(fontString, fontface, size, flags)
+	if fontface then
+		DF:SetFontFace(fontString, fontface)
+	end
+	if size then
+		DF:SetFontSize(fontString, size)
+	end
+	if flags then
+		DF:SetFontOutline(fontString, flags)
+	end
+end
+
 ---get the UIObject of type 'FontString' named fontString and set the font size to the maximum value of the arguments
 ---@param self table
 ---@param fontString fontstring
@@ -1450,8 +1467,8 @@ function DF:SetFontFace(fontString, fontface)
 		fontface = _G[fontface]:GetFont()
 	end
 
-	local _, size, flags = fontString:GetFont()
-	return fontString:SetFont(fontface, size, flags)
+	local origFont, size, flags = fontString:GetFont()
+	local ok = pcall(fontString.SetFont, fontString, fontface, size, flags) -- silently fail this one
 end
 
 local dummyFontString = UIParent:CreateFontString(nil, "background", "GameFontNormal")
@@ -1524,6 +1541,22 @@ function DF:SetFontRotation(fontString, degrees) --deprecated, use fontString:Se
 		fontString.__rotationAnimation:Play()
 		fontString.__rotationAnimation:Pause()
 	end
+end
+
+function DF:RemoveColorCodes(text)
+    --remove color code: |cFFFFFFFF
+    text = string.gsub(text, "%|c%w+", "")
+    --remove the end code: |r
+    text = string.gsub(text, "%|r", "")
+    return text
+end
+
+--function to remove |T...|t style codes from text
+--removes portions starting with |T and ending with |t, including both delimiters
+function DF:RemoveTextureCodes(text)
+	--remove |T...|t style codes
+	text = string.gsub(text, "%|T.-%|t", "")
+	return text
 end
 
 ---receives a string and a color and return the string wrapped with the color using |c and |r scape codes
@@ -1755,18 +1788,27 @@ function DF:GetFontFace(fontString)
 end
 
 local ValidOutlines = {
-	["NONE"] = true,
+	[""] = true,
+	["SLUG"] = true,
+	["OUTLINE, SLUG"] = true, -- compatibility for existing slug values
+	["SLUG,OUTLINE"] = true, -- order does not matter here
+	["OUTLINE,SLUG"] = true,
 	["MONOCHROME"] = true,
 	["OUTLINE"] = true,
 	["THICKOUTLINE"] = true,
 	["OUTLINEMONOCHROME"] = true,
 	["THICKOUTLINEMONOCHROME"] = true,
+	["MONOCHROME, OUTLINE"] = true, -- backwards compatibility
+	["MONOCHROME, THICKOUTLINE"] = true
 }
 
 --outline flags are used with the function SetFont on fontstrings, signiture: fontString:SetFont(fontFile, size, outlineFlags) -> outlineFlags are usually just called 'flags', 'size' can also be found named as 'height'.
 --in the first index of the sub table there is the value to be used on SetFont, in the second index there is a user friendly name
 DF.FontOutlineFlags = {
 	{"", "None"},
+	{"NONE", "None"}, -- backwards compatibility
+	{"SLUG", "Slug"},
+	{"SLUG,OUTLINE", "Outline Slug"},
 	{"MONOCHROME", "Monochrome"},
 	{"OUTLINE", "Outline"},
 	{"THICKOUTLINE", "Thick Outline"},
@@ -1802,7 +1844,11 @@ function DF:SetFontOutline(fontString, outline)
         end
     end
 
-    outline = (not outline or outline == "NONE") and "" or outline
+	outline = (not outline or outline == "NONE") and "" or outline
+
+	if not ValidOutlines[outline] then
+		outline = ""
+	end
 
     fontString:SetFont(font, fontSize, outline)
 end
@@ -5669,7 +5715,7 @@ local specInformation = {
 	[64] = {specId = 64, name = "Frost", specIcon = 135846, role = "DAMAGER", classId = 8, className = "MAGE", specIndex = 2, flags = 0x3, primaryStatPriority = 0},
 	[65] = {specId = 65, name = "Holy", specIcon = 135920, role = "HEALER", classId = 2, className = "PALADIN", specIndex = 0, flags = 0x5, primaryStatPriority = 1},
 	[66] = {specId = 66, name = "Protection", specIcon = 236264, role = "TANK", classId = 2, className = "PALADIN", specIndex = 1, flags = 0x4, primaryStatPriority = 0},
-	[68] = {specId = 68, name = "Retribution", specIcon = 135873, role = "DAMAGER", classId = 2, className = "PALADIN", specIndex = 2, flags = 0x4, primaryStatPriority = 0},
+	[70] = {specId = 70, name = "Retribution", specIcon = 135873, role = "DAMAGER", classId = 2, className = "PALADIN", specIndex = 2, flags = 0x4, primaryStatPriority = 0},
 	[71] = {specId = 71, name = "Arms", specIcon = 132355, role = "DAMAGER", classId = 1, className = "WARRIOR", specIndex = 0, flags = 0x4, primaryStatPriority = 0},
 	[72] = {specId = 72, name = "Fury", specIcon = 132347, role = "DAMAGER", classId = 1, className = "WARRIOR", specIndex = 1, flags = 0x4, primaryStatPriority = 0},
 	[73] = {specId = 73, name = "Protection", specIcon = 132341, role = "TANK", classId = 1, className = "WARRIOR", specIndex = 2, flags = 0x4, primaryStatPriority = 0},
@@ -5724,6 +5770,11 @@ local specInformation = {
 	[1478] = {specId = 1478, name = "Adventurer", specIcon = 2055034, role = "DAMAGER", classId = 14, className = "ROGUE", specIndex = 4, flags = 0x2, primaryStatPriority = 4},
 }
 
+local specIconToSpecInformation = {
+	[7455385] = specInformation[1480], --Devourer
+	[7455386] = specInformation[1480], --Devourer
+}
+
 --make a table where the key is the specIcon and the value is the table from specInformation
 local specIconToInfo = {}
 for specId, info in pairs(specInformation) do
@@ -5744,8 +5795,16 @@ end
 function DF:GetSpecInfoFromSpecId(specId)
 	return specInformation[specId]
 end
+
 --~spec
 function DF:GetSpecInfoFromSpecIcon(specIcon)
+	local specInfo = specIconToInfo[specIcon]
+	if (not specInfo) then
+		specInfo = specIconToSpecInformation[specIcon]
+		if specInfo then
+			return specInfo
+		end
+	end
 	return specIconToInfo[specIcon]
 end
 
@@ -6081,7 +6140,7 @@ do
             --need to create the new object
             local newObject = self.newObjectFunc(self, unpack(self.payload))
             if (newObject) then
-				self.objectsCreated = self.objectsCreated + 0
+				self.objectsCreated = self.objectsCreated + 1
 				table.insert(self.inUse, newObject)
 				if (self.onAcquire) then
 					DF:QuickDispatch(self.onAcquire, newObject)

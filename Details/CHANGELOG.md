@@ -1,20 +1,16 @@
 # Details! Damage Meter
 
-## [Details.20260411.14930.171](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20260411.14930.171) (2026-04-11)
-[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20260408.14900.171...Details.20260411.14930.171) 
+## [Details.20260424.15009.171](https://github.com/Tercioo/Details-Damage-Meter/tree/Details.20260424.15009.171) (2026-04-24)
+[Full Changelog](https://github.com/Tercioo/Details-Damage-Meter/compare/Details.20260422.15002.171...Details.20260424.15009.171) 
 
-- Version Up - Change log in the description  
-    - Fix error when hovering over a spec icon while in a boss fight.  
-    - Fix Potion Usage display showing secret errors.  
-    - Fix Left Text padding which wasn't working in retail.  
-    - Patch 12.0.5 preparations.  
-    - Add Wago API.  
-- Wago API  
-- Wago API  
-- Wago API  
-- Fix player name Y offset  
-- Fix tooltip icon and potion usage secret while in combat  
-- PTR 12.0.5 fix  
-- Bug fix  
-- Boot.lua update  
-- PTR 12.0.5, use Ambiguate for player name.  
+- But fixes for 12.0.5  
+- Fix deathlog getting a smaller tooltip when pressing shift.  
+- Fix statusbar mini-display for encounter elapsed time.  
+- Fixed HPS number below 1000  
+- Fix Streamer plugin  
+- Add demon hunter devastation icon, fix specIds on framework level.  
+- Framework Update  
+- Fix alpha spec icons.  
+- [AI] Refactor Details:BaseFrameSnap()  
+    Root cause of the original bug: The three-loop approach (direct neighbors → retrograde chain → forward chain) had no mechanism to prevent a frame from being anchored twice. For example, with windows A←B←C, when C called BaseFrameSnap: the first loop anchored B to C, then the retrograde loop tried to anchor A to B using B.snap — but B may already have A in its snap table pointing back toward C. This created the circular dependency.  
+- Cooltip errors fix  

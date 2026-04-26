@@ -17,12 +17,12 @@
 		end
 		local addonName, Details222 = ...
 		local version, build, date, tvs = GetBuildInfo()
-		Details.build_counter = 14930
-		Details.alpha_build_counter = 14930 --if this is higher than the regular counter, use it instead
+		Details.build_counter = 15009
+		Details.alpha_build_counter = 15009 --if this is higher than the regular counter, use it instead
 		Details.dont_open_news = true
 		Details.game_version = version
 		Details.userversion = version .. " " .. Details.build_counter
-		Details.realversion = 171 --core version, this is used to check API version for scripts and plugins (see alias below)
+		Details.realversion = 172 --core version, this is used to check API version for scripts and plugins (see alias below)
 		Details.gametoc = tvs
 		Details.APIVersion = Details.realversion --core version
 		Details.version = Details.userversion .. " (core " .. Details.realversion .. ")" --simple stirng to show to players
@@ -2178,11 +2178,19 @@ function DetailsAPI:GetCurrentProfileKey()
 end
 
 function DetailsAPI:OpenConfig()
-    Details.OpenOptionsWindow()
+    Details_OpenDefaultOptionsWindow()
 end
 
 function DetailsAPI:CloseConfig()
     if (DetailsPluginContainerWindow and DetailsPluginContainerWindow:IsShown()) then
         DetailsPluginContainerWindow:Hide()
     end
+end
+
+---return a ready only table with which profile is assigned to other characters of the account.
+---@param self details
+---@return table<charname, profilekey> --a table in the format [charName] = profileKey
+function DetailsAPI:GetProfileAssignments()
+	local result = DetailsFramework.table.copy({}, _detalhes_global.__char_profiles)
+	return result
 end

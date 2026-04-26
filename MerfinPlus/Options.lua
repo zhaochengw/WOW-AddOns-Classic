@@ -68,6 +68,9 @@ MerfinPlus.defaults = {
     bar2 = "MerfinMain",
     bar3 = "MerfinMainDark",
 
+    useClientLocale = true,
+    raidLocale = GAME_LOCALE or GetLocale(),
+
     simImports = {},
   },
   global = {
@@ -2585,6 +2588,76 @@ function MerfinPlus:SetupOptions()
     }
   end
 
+  -- ==== RaidPack Locale ====
+  local raidPack = {
+    type = "group",
+    name = L["Raid Pack"],
+    childGroups = "tab",
+    args = {
+      localeSettings = {
+        type = "group",
+        name = L["Locale Settings"],
+        order = 1,
+        get = function(info)
+          return MerfinPlus.db.profile[info[#info]]
+        end,
+        set = function(info, value)
+          MerfinPlus.db.profile[info[#info]] = value
+        end,
+        args = {
+          header = {
+            type = "header",
+            name = L["Locale Settings"],
+            order = 0,
+          },
+          useClientLocale = {
+            type = "toggle",
+            name = L["Use Client Locale"],
+            order = 1,
+          },
+          raidLocale = {
+            type = "select",
+            name = L["Set Locale"],
+            order = 2,
+            values = {
+              enUS = "enUS",
+              deDE = "deDE",
+              frFR = "frFR",
+              esES = "esES",
+              esMX = "esMX",
+              itIT = "itIT",
+              ptBR = "ptBR",
+              ruRU = "ruRU",
+              koKR = "koKR",
+              zhCN = "zhCN",
+              zhTW = "zhTW",
+            },
+            set = function(info, value)
+              MerfinPlus.db.profile[info[#info]] = value
+              ConfirmReload()
+            end,
+            disabled = function()
+              return MerfinPlus.db.profile.useClientLocale
+            end,
+          },
+          description = {
+            type = "description",
+            name = L["Sets the localization for Merfin Raid Packs, overriding the client locale."],
+            order = 3,
+            width = "full",
+            fontSize = "medium",
+          },
+        },
+      },
+    },
+  }
+
+  local currentLocale = GAME_LOCALE or GetLocale()
+  Merfin.GetRaidPackLocale = function()
+    local db = MerfinPlus.db.profile
+    return db.useClientLocale and currentLocale or db.raidLocale
+  end
+
   -- ==== WoW Sim Importer ====
   local WOWSIM_INDEX_TO_SLOT = {
     [1] = 1, -- Head
@@ -3635,6 +3708,11 @@ function MerfinPlus:SetupOptions()
     AceConfigDialog:AddToBlizOptions("MerfinPlus_WoWSim", "WoW Sim", "MerfinPlus v" .. version)
   end
 
+  if IsTBC() then
+    AceConfigRegistry:RegisterOptionsTable("MerfinPlus_RaidPack", raidPack)
+    AceConfigDialog:AddToBlizOptions("MerfinPlus_RaidPack", "Raid Pack", "MerfinPlus v" .. version)
+  end
+
   AceConfigRegistry:RegisterOptionsTable("MerfinPlus_Profiles", profilesOptions)
   AceConfigDialog:AddToBlizOptions("MerfinPlus_Profiles", "Profiles", "MerfinPlus v" .. version)
 
@@ -3660,6 +3738,13 @@ function MerfinPlus:SetupOptions()
     standaloneOptions.args.wowSim = (function()
       wowSimOptions.order = 30
       return wowSimOptions
+    end)()
+  end
+
+  if IsTBC() then
+    standaloneOptions.args.raidPack = (function()
+      raidPack.order = 40
+      return raidPack
     end)()
   end
 

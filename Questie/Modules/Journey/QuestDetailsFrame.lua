@@ -10,12 +10,33 @@ local QuestieJourneyUtils = QuestieLoader:ImportModule("QuestieJourneyUtils")
 local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 ---@type QuestieReputation
 local QuestieReputation = QuestieLoader:ImportModule("QuestieReputation")
+---@type TrackerUtils
+local TrackerUtils = QuestieLoader:ImportModule("TrackerUtils")
 ---@type QuestieLib
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib")
 ---@type l10n
 local l10n = QuestieLoader:ImportModule("l10n")
 
 local AceGUI = LibStub("AceGUI-3.0")
+
+---Creates a TomTom waypoint button if TomTom is available and coordinates are valid, otherwise returns nil.
+---@param name string
+---@param zone AreaId
+---@param x number
+---@param y number
+---@return AceGUIWidget|nil
+local function CreateTomTomButton(name, zone, x, y)
+    if (not (TomTom and TomTom.AddWaypoint)) or (x == -1 and y == -1) then
+        return nil
+    end
+
+    local tomTomButton = AceGUI:Create("Button")
+    tomTomButton:SetText(l10n("Set |cFF54e33bTomTom|r Target"))
+    tomTomButton:SetCallback("OnClick", function()
+        TrackerUtils:SetTomTomTarget(name, zone, x, y)
+    end)
+    return tomTomButton
+end
 
 ---@param questId QuestId
 ---@return string|nil
@@ -54,18 +75,20 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
 
     -- Generic Quest Information
 
-    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Recommended Quest Level") .. l10n(": "), 'yellow') .. quest.level, true)
-    container:AddChild(levelLabel)
-
-    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Minimum Required Level for Quest") .. l10n(": "), 'yellow') .. quest.requiredLevel, true)
-    container:AddChild(minLevelLabel)
-
-    local levelDiffString = _QuestieJourney:GetDifficultyString(quest.level, quest.requiredLevel)
-    local levelDiffLabel = _QuestieJourney:CreateLabel(levelDiffString, true)
-    container:AddChild(levelDiffLabel)
-
     local questIdLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Quest ID") .. l10n(": "), 'yellow') .. quest.Id, true)
     container:AddChild(questIdLabel)
+
+    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Quest Level") .. l10n(": "), 'yellow') .. quest.level, true)
+    container:AddChild(levelLabel)
+
+    -- We need to query this so we don't get wrong results for -1 type quests
+    local requiredLevel = QuestieDB.QueryQuestSingle(quest.Id, "requiredLevel")
+    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n("Required Level") .. l10n(": "), 'yellow') .. requiredLevel, true)
+    container:AddChild(minLevelLabel)
+
+    local levelDiffString = _QuestieJourney:GetDifficultyString(quest.level, requiredLevel)
+    local levelDiffLabel = _QuestieJourney:CreateLabel(levelDiffString, true)
+    container:AddChild(levelDiffLabel)
 
     local reputationRewardString = _QuestieJourney:GetReputationRewardString(quest.Id)
     if reputationRewardString then
@@ -112,6 +135,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         startNPCNameLabel:SetColor(255, 165, 0)
         startNPCGroup:AddChild(startNPCNameLabel)
 
+        local startNPCIdLabel = AceGUI:Create("Label")
+        startNPCIdLabel:SetText(l10n("NPC ID").. l10n(": ") .. startNpc.id)
+        startNPCIdLabel:SetFullWidth(true)
+        startNPCGroup:AddChild(startNPCIdLabel)
+
         local startNPCZoneLabel = AceGUI:Create("Label")
         local startindex = 0
         if (not startNpc.spawns) then
@@ -140,10 +168,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
             startNPCGroup:AddChild(startNPCLocLabel)
         end
 
-        local startNPCIdLabel = AceGUI:Create("Label")
-        startNPCIdLabel:SetText(l10n("NPC ID").. l10n(": ") .. startNpc.id)
-        startNPCIdLabel:SetFullWidth(true)
-        startNPCGroup:AddChild(startNPCIdLabel)
+        local tomTomButton = CreateTomTomButton(startNpc.name, startindex, startx, starty)
+        if tomTomButton then
+            QuestieJourneyUtils:Spacer(startNPCGroup)
+            startNPCGroup:AddChild(tomTomButton)
+        end
 
         QuestieJourneyUtils:Spacer(startNPCGroup)
 
@@ -190,6 +219,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
             startObjectNameLabel:SetFullWidth(true)
             startObjectGroup:AddChild(startObjectNameLabel)
 
+            local startObjectIdLabel = AceGUI:Create("Label")
+            startObjectIdLabel:SetText(l10n("Object ID") .. l10n(": ") .. startObj.id)
+            startObjectIdLabel:SetFullWidth(true)
+            startObjectGroup:AddChild(startObjectIdLabel)
+
             local startObjectZoneLabel = AceGUI:Create("Label")
             local startindex = 0
             for i in pairs(startObj.spawns) do
@@ -211,10 +245,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
                 startObjectGroup:AddChild(startObjectLocLabel)
             end
 
-            local startObjectIdLabel = AceGUI:Create("Label")
-            startObjectIdLabel:SetText(l10n("Object ID") .. l10n(": ") .. startObj.id)
-            startObjectIdLabel:SetFullWidth(true)
-            startObjectGroup:AddChild(startObjectIdLabel)
+            local tomTomButton = CreateTomTomButton(startObj.name, startindex, startx, starty)
+            if tomTomButton then
+                QuestieJourneyUtils:Spacer(startObjectGroup)
+                startObjectGroup:AddChild(tomTomButton)
+            end
 
             QuestieJourneyUtils:Spacer(startObjectGroup)
 
@@ -275,7 +310,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
     -- TODO: There can be multiple finishers
     if quest.Finisher.NPC then
         local endNPCGroup = AceGUI:Create("InlineGroup")
-        endNPCGroup:SetLayout("Flow")
+        endNPCGroup:SetLayout("List")
         endNPCGroup:SetTitle(l10n('Quest Turn-in NPC Information'))
         endNPCGroup:SetFullWidth(true)
         container:AddChild(endNPCGroup)
@@ -289,6 +324,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         endNPCNameLabel:SetColor(255, 165, 0)
         endNPCNameLabel:SetFullWidth(true)
         endNPCGroup:AddChild(endNPCNameLabel)
+
+        local endNPCIdLabel = AceGUI:Create("Label")
+        endNPCIdLabel:SetText(l10n("NPC ID") .. l10n(": ") .. endNPC.id)
+        endNPCIdLabel:SetFullWidth(true)
+        endNPCGroup:AddChild(endNPCIdLabel)
 
         local endNPCZoneLabel = AceGUI:Create("Label")
         local endindex = 0
@@ -314,12 +354,13 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
                 endNPCLocLabel:SetFullWidth(true)
                 endNPCGroup:AddChild(endNPCLocLabel)
             end
-        end
 
-        local endNPCIdLabel = AceGUI:Create("Label")
-        endNPCIdLabel:SetText(l10n("NPC ID") .. l10n(": ") .. endNPC.id)
-        endNPCIdLabel:SetFullWidth(true)
-        endNPCGroup:AddChild(endNPCIdLabel)
+            local tomTomButton = CreateTomTomButton(endNPC.name, endindex, endx, endy)
+            if tomTomButton then
+                QuestieJourneyUtils:Spacer(endNPCGroup)
+                endNPCGroup:AddChild(tomTomButton)
+            end
+        end
 
         QuestieJourneyUtils:Spacer(endNPCGroup)
 
@@ -350,7 +391,7 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
     -- TODO: There can be multiple finishers
     if quest.Finisher.GameObject then
         local endObjectGroup = AceGUI:Create("InlineGroup")
-        endObjectGroup:SetLayout("Flow")
+        endObjectGroup:SetLayout("List")
         endObjectGroup:SetTitle(l10n('Quest Turn-in Object Information'))
         endObjectGroup:SetFullWidth(true)
         container:AddChild(endObjectGroup)
@@ -364,6 +405,11 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
         endObjectNameLabel:SetColor(255, 165, 0)
         endObjectNameLabel:SetFullWidth(true)
         endObjectGroup:AddChild(endObjectNameLabel)
+
+        local endObjectIdLabel = AceGUI:Create("Label")
+        endObjectIdLabel:SetText(l10n("Object ID") .. l10n(": ") .. endObject.id)
+        endObjectIdLabel:SetFullWidth(true)
+        endObjectGroup:AddChild(endObjectIdLabel)
 
         local endObjectZoneLabel = AceGUI:Create("Label")
         local endindex = 0
@@ -389,12 +435,13 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
                 endObjectLocLabel:SetFullWidth(true)
                 endObjectGroup:AddChild(endObjectLocLabel)
             end
-        end
 
-        local endObjectIdLabel = AceGUI:Create("Label")
-        endObjectIdLabel:SetText(l10n("Object ID") .. l10n(": ") .. endObject.id)
-        endObjectIdLabel:SetFullWidth(true)
-        endObjectGroup:AddChild(endObjectIdLabel)
+            local tomTomButton = CreateTomTomButton(endObject.name, endindex, endx, endy)
+            if tomTomButton then
+                QuestieJourneyUtils:Spacer(endObjectGroup)
+                endObjectGroup:AddChild(tomTomButton)
+            end
+        end
 
         QuestieJourneyUtils:Spacer(endObjectGroup)
 

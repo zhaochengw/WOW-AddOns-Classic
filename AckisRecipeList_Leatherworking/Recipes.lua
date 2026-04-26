@@ -3159,6 +3159,15 @@ function module:InitializeRecipes()
 	recipe:AddFilters(F.ALLIANCE, F.HORDE, F.RAID, F.HEALER, F.CASTER)
 	recipe:AddWorldDrop(Z.SUNWELL_PLATEAU)
 
+	-- Netherscale Ammo Pouch -- 44768
+	recipe = AddRecipe(44768, V.TBC, Q.COMMON)
+	recipe:SetSkillLevels(350, 350, 360, 370, 380)
+	recipe:SetRecipeItem(34201, "BIND_ON_PICKUP")
+	recipe:SetCraftedItem(34106, "BIND_ON_EQUIP")
+	recipe:SetItemFilterType("LEATHERWORKING_BAG")
+	recipe:AddRepVendor(FAC.HONOR_HOLD, REP.REVERED, 17657)
+	recipe:AddRepVendor(FAC.THRALLMAR, REP.REVERED, 17585)
+
 	-------------------------------------------------------------------------------
 	-- Wrath of the Lich King.
 	-------------------------------------------------------------------------------

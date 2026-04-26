@@ -1000,6 +1000,9 @@ function QuestieItemFixes:Load()
         [13172] = { -- Grimm's Premium Tobacco
             [itemKeys.name] = "Grimm's Premium Tobacco",
         },
+        [13250] = { -- Head of Balnazzar
+            [itemKeys.npcDrops] = {10812},
+        },
         [13422] = { -- Stonescale Eel
             [itemKeys.objectDrops] = {},
         },
@@ -1236,8 +1239,8 @@ function QuestieItemFixes:Load()
             [itemKeys.name] = "Nostro's Compendium of Dragon Slaying",
             [itemKeys.startQuest] = 7507,
         },
-        [18605] = { -- Imprisoned Doomguard (#7583)
-            [itemKeys.npcDrops] = {12396},
+        [18513] = { -- A Dull and Flat Elven Blade
+            [itemKeys.startQuest] = 7508,
         },
         [18642] = { -- Jaina's Autograph
             [itemKeys.npcDrops] = {4968},

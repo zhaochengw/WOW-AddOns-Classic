@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC5) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-02-27T16:45:58Z
+    This file was last updated on 2026-04-06T21:41:33Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -409,7 +409,7 @@ do
 
     local filter = DC.MN and "RAID_PLAYER_DISPELLABLE" or nil
 
-    local UnitDebuff        = _G.UnitDebuff or function (unitToken, i)
+    local UnitDebuff        = (not DC.MN and _G.UnitDebuff) or function (unitToken, i)
         local auraData = C_UnitAuras.GetDebuffDataByIndex(unitToken, i, filter);
 
         if not auraData then
@@ -428,6 +428,8 @@ do
 		auraData.spellId,
         DC.MN and auraData.auraInstanceID or nil;
     end
+
+    D.UnitDebuff = UnitDebuff -- it's reused in dcr_events
 
     local UnitIsCharmed     = _G.UnitIsCharmed;
     local UnitCanAttack     = _G.UnitCanAttack;
@@ -994,6 +996,6 @@ end
 
 
 
-T._LoadedFiles["Decursive.lua"] = "2.8.0-RC3";
+T._LoadedFiles["Decursive.lua"] = "2.8.0-RC5";
 
 -- Sin

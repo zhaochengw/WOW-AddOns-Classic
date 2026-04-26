@@ -1,12 +1,24 @@
-## Interface: 50503
+## Interface: 50503, 50504
 ## Author: d07.RiV (Iroared) (Continued by Brues)
 ## Title: ReforgeLite Classic
 ## Notes: Calculates optimal reforging for given weights/caps.
-## Version: v2.3.9
+## Version: v2.3.10
 ## SavedVariables: ReforgeLiteDB
 ## OptionalDeps: Ace3, LibStub, Pawn
 ## X-Website: https://github.com/brues-code/ReforgeLite/issues
 ## X-Curse-Project-ID: 1004227
+## Category: Equipment
+## Category-deDE: Ausrüstung
+## Category-esES: Equipo
+## Category-esMX: Equipo
+## Category-frFR: Équipement
+## Category-itIT: Equipaggiamento
+## Category-koKR: 장비
+## Category-ptBR: Equipamento
+## Category-ruRU: Экипировка
+## Category-zhCN: 装备
+## Category-zhTW: 裝備
+## IconTexture: 459028
 
 #@no-lib-strip@
 embeds.xml

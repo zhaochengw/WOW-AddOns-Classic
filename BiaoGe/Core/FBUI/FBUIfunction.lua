@@ -765,6 +765,22 @@ function BG.FBZhuangBeiUI(FB, t, b, bb, i, ii, scrollFrame)
 end
 
 ------------------买家------------------
+local buyerMixin = {}
+function buyerMixin:Clear()
+    local FB = self.FB
+    local b = self.bossnum
+    local i = self.i
+    local type = self.type
+    BiaoGe[FB]["boss" .. b][type .. i] = nil
+    for k, v in pairs(BG.playerClass) do
+        BiaoGe[FB]["boss" .. b][k .. i] = nil
+    end
+    if self:GetText() ~= "" then
+        self:SetText("")
+    end
+    self:SetTextColor(1, 1, 1)
+end
+
 function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
     local bt = CreateFrame("EditBox", nil, BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i],
         "BiaoGe_InputBoxTemplate")
@@ -778,6 +794,7 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
     bt.b = b
     bt.i = i
     bt.type = "maijia"
+    BG.SetMixin(bt, buyerMixin)
     local color = BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["color" .. i]
     if color then
         if not (color[1] == 1 and color[2] == 1 and color[3] == 1) then
@@ -975,6 +992,24 @@ function BG.FBMaiJiaUI(FB, t, b, bb, i, ii)
 end
 
 ------------------金额------------------
+local moneyMixin = {}
+function moneyMixin:Clear()
+    local FB = self.FB
+    local b = self.bossnum
+    local i = self.i
+    local type = self.type
+    BiaoGe[FB]["boss" .. b][type .. i] = nil
+    if self:GetText() ~= "" then
+        self:SetText("")
+    end
+end
+function moneyMixin:ClearQK()
+    local FB = self.FB
+    local b = self.bossnum
+    local i = self.i
+    BiaoGe[FB]["boss" .. b]["qiankuan" .. i] = nil
+    self.QKButton:Hide()
+end
 function BG.FBJinEUI(FB, t, b, bb, i, ii)
     local bt = CreateFrame("EditBox", nil, BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["zhuangbei" .. i],
         "BiaoGe_InputBoxTemplate")
@@ -989,6 +1024,7 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     bt.b = b
     bt.i = i
     bt.type = "jine"
+    BG.SetMixin(bt, moneyMixin)
     if BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] then
         if BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] ~= "" then
             bt:SetText(BiaoGe[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i])
@@ -999,7 +1035,9 @@ function BG.FBJinEUI(FB, t, b, bb, i, ii)
     preWidget = bt
     BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["jine" .. i] = bt
     -- 创建欠款按钮
-    BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i] = BG.CreateQiankuanButton(bt, "biaoge")
+    local QKButton = BG.CreateQiankuanButton(bt, "biaoge")
+    BG.Frame[FB]["boss" .. BossNum(FB, b, t)]["qiankuan" .. i] = QKButton
+    bt.QKButton = QKButton
 
     -- 当内容改变时
     bt:SetScript("OnTextChanged", function(self)

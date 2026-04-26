@@ -28,6 +28,7 @@ BG.Init(function()
     BiaoGe.options.autoCreateBill = BiaoGe.options.autoCreateBill or 1
     BiaoGe.auctionTrade = nil
     BG.auctionTrade = {}
+    local GetErrorItem
 
     BG.Once("showAuctionLogFrame", 260209, function()
         BiaoGe.options.showAuctionLogFrame = 1
@@ -190,13 +191,15 @@ BG.Init(function()
         -- 筛选显示
         do
             local buttons = {}
+            local w = 48
             local numOptions = {
                 { name = L["全部"], id = 1, row = 1, width = 0, },
-                { name = L["未拍"], id = 4, row = 1, width = 52, },
-                { name = L["我买的"], id = 6, row = 1, width = 104, },
+                { name = L["未拍"], id = 4, row = 1, width = w, },
+                { name = L["重拍"], id = 7, row = 1, width = w * 2, },
+                { name = L["我买的"], id = 6, row = 1, width = w * 3, },
                 { name = L["流拍"], id = 3, row = 2, width = 0, },
-                { name = L["成功"], id = 2, row = 2, width = 52, },
-                { name = L["成功(未交易)"], id = 5, row = 2, width = 104, },
+                { name = L["成功"], id = 2, row = 2, width = w, },
+                { name = L["成功(未交易)"], id = 5, row = 2, width = w * 2, },
             }
             local buttonGroup = CreateFrame("Frame", nil, f)
             buttonGroup:SetPoint("TOPLEFT", 7, -38)
@@ -239,13 +242,13 @@ BG.Init(function()
             local l = buttons[1]:CreateLine()
             l:SetColorTexture(RGB("808080", 1))
             l:SetStartPoint("BOTTOMLEFT", 0, -2)
-            l:SetEndPoint("BOTTOMLEFT", 165, -2)
+            l:SetEndPoint("BOTTOMLEFT", 205, -2)
             l:SetThickness(1)
 
-            local l = buttons[4]:CreateLine()
+            local l = buttons[5]:CreateLine()
             l:SetColorTexture(RGB("808080", 1))
             l:SetStartPoint("BOTTOMLEFT", 0, -2)
-            l:SetEndPoint("BOTTOMLEFT", 205, -2)
+            l:SetEndPoint("BOTTOMLEFT", 195, -2)
             l:SetThickness(1)
         end
 
@@ -379,19 +382,38 @@ BG.Init(function()
 
     -- 生成账单
     do
-        -- 生成账单
+        -- 生成表格账单
         do
-            local function CheckErrorItem()
+            function GetErrorItem(logCountOver1)
                 local FB = BG.FB1
                 local items = {}
-                for _, v in ipairs(BiaoGe[FB].auctionLog) do
+                for index, v in ipairs(BiaoGe[FB].auctionLog) do
                     if v.type == 1 then
                         local itemID = GetItemID(v.zhuangbei)
-                        items[itemID] = items[itemID] or { link = v.zhuangbei, logCount = 0 }
+                        if not items[itemID] then
+                            items[itemID] = {}
+                            items[itemID].info = {}
+                            items[itemID].indexs = {}
+                            items[itemID].link = v.zhuangbei
+                            items[itemID].logCount = 0
+                        end
+                        tinsert(items[itemID].info, v)
+                        tinsert(items[itemID].indexs, index)
                         items[itemID].logCount = items[itemID].logCount + 1
                     end
                 end
                 if next(items) then
+                    if logCountOver1 then
+                        local ids = {}
+                        for itemID, v in pairs(items) do
+                            tinsert(ids, itemID)
+                        end
+                        for _, itemID in ipairs(ids) do
+                            if items[itemID].logCount <= 1 then
+                                items[itemID] = nil
+                            end
+                        end
+                    end
                     BG.PairFBItem(function(zhuangbei)
                         local itemID = GetItemID(zhuangbei:GetText())
                         if itemID and items[itemID] then
@@ -402,7 +424,9 @@ BG.Init(function()
                     local tbl = {}
                     for itemID, v in pairs(items) do
                         if not v.bgCount or v.bgCount < v.logCount then
-                            tinsert(tbl, { itemID = itemID, link = v.link, bgCount = v.bgCount or 0, logCount = v.logCount })
+                            v.itemID = itemID
+                            v.bgCount = v.bgCount or 0
+                            tinsert(tbl, v)
                         end
                     end
                     if next(tbl) then
@@ -434,7 +458,7 @@ BG.Init(function()
                 GameTooltip:AddLine(L["根据自动拍卖记录，直接覆盖表格里每件装备所对应的买家和金额。"], 1, 0.82, 0, true)
                 GameTooltip:AddLine(" ")
                 GameTooltip:AddLine(L["该功能仅修改买家和金额，如果表格里的装备栏是空的，则什么都不会发生。"], 1, 0.82, 0, true)
-                local errorTbl = CheckErrorItem()
+                local errorTbl = GetErrorItem()
                 if errorTbl then
                     GameTooltip:AddLine(" ", 1, 0, 0, true)
                     GameTooltip:AddLine(L["以下装备可能存在重拍："], 1, 0, 0, true)
@@ -1013,7 +1037,7 @@ BG.Init(function()
         end
     end
     -- 右键菜单
-    local function CreateMenu(f, i, v, notAuctioned, link, icon, isHistory)
+    local function CreateMenu(f, index, v, notAuctioned, link, icon, isHistory)
         local FB = BG.FB1
         local menu
         local function GetLogTooltipText()
@@ -1149,7 +1173,7 @@ BG.Init(function()
                         BG.auctionLogFrame.changeFrame.type = "change"
                         BG.auctionLogFrame.changeFrame.typeText = arg1
                         BG.auctionLogFrame.changeFrame.info = {}
-                        BG.auctionLogFrame.changeFrame.info.num = i
+                        BG.auctionLogFrame.changeFrame.info.num = index
                         for k in pairs(BG.playerClass) do
                             BG.auctionLogFrame.changeFrame.info[k] = v[k]
                         end
@@ -1171,7 +1195,7 @@ BG.Init(function()
                     notCheckable = true,
                     func = function()
                         BG.auctionLogFrame.changeFrame:Hide()
-                        tremove(BiaoGe[FB].auctionLog, i)
+                        tremove(BiaoGe[FB].auctionLog, index)
                         BG.UpdateAuctionLogFrame(true, true)
                     end
                 },
@@ -1285,7 +1309,7 @@ BG.Init(function()
         return menu
     end
     -- 列表内容
-    local function CreateButton(i, v, isHistory, num)
+    local function CreateButton(index, v, isHistory, num)
         local bts = {}
         local width = child:GetWidth()
         local link = v.zhuangbei
@@ -1361,7 +1385,7 @@ BG.Init(function()
                             BG.StartAuction(link, f, true, nil, button == "RightButton", nil, v.type == 2 and DeleteLiuPaiAuctionLog)
                         end
                     else
-                        local menu = CreateMenu(f, i, v, notAuctioned, link, icon, isHistory)
+                        local menu = CreateMenu(f, index, v, notAuctioned, link, icon, isHistory)
                         if menu then
                             LibBG:EasyMenu(menu, dropDown, "cursor", 10, 10, "MENU", 2)
                             BG.PlaySound(1)
@@ -1397,7 +1421,7 @@ BG.Init(function()
                                 BG.InsertLink(link)
                             elseif lastChoose then
                                 for _i, bt in ipairs(BG.auctionLogFrame.buttons) do
-                                    if _i ~= i then
+                                    if _i ~= index then
                                         CancelChoose(bt)
                                     end
                                 end
@@ -1419,7 +1443,7 @@ BG.Init(function()
                             BG.PlaySound(1)
 
                             for _i, bt in ipairs(BG.auctionLogFrame.buttons) do
-                                if _i ~= i then
+                                if _i ~= index then
                                     CancelChoose(bt)
                                 end
                             end
@@ -1635,8 +1659,8 @@ BG.Init(function()
                 for i, v in ipairs(tbl) do
                     -- type 1：成功 2：流拍
                     if (
-                            BiaoGe.options.auctionLogChoose == 1 or
-                            (BiaoGe.options.auctionLogChoose == 2 and v.type == 1)
+                            BiaoGe.options.auctionLogChoose == 1
+                            or (BiaoGe.options.auctionLogChoose == 2 and v.type == 1)
                             or (BiaoGe.options.auctionLogChoose == 3 and v.type == 2)
                             or (BiaoGe.options.auctionLogChoose == 5 and not v.trade and v.type == 1)
                             or (BiaoGe.options.auctionLogChoose == 6 and v.type == 1 and IsMyPlayer(v.maijia))
@@ -1647,6 +1671,18 @@ BG.Init(function()
                         CreateButton(i, v, isHistory, num)
                     end
                     sum = sum + (tonumber(v.jine) or 0)
+                end
+                if BiaoGe.options.auctionLogChoose == 7 then
+                    local errorTbl = GetErrorItem(true)
+                    if errorTbl then
+                        for _, vv in ipairs(errorTbl) do
+                            for i, v in ipairs(vv.info) do
+                                num = num + 1
+                                local index = vv.indexs[i]
+                                CreateButton(index, v, isHistory, num)
+                            end
+                        end
+                    end
                 end
             end
 
@@ -1783,7 +1819,7 @@ BG.Init(function()
                 end
             end
         end
-        function BG.auctionLogFrame.GetTargetTradeTbl(tradeName)
+        function BG.GetTargetAuctionTradeItems(tradeName)
             local FB = BG.FB1
             BG.auctionTrade[tradeName] = {}
             for _, v in ipairs(BiaoGe[FB].auctionLog or {}) do
@@ -1856,7 +1892,7 @@ BG.Init(function()
 
                     local tradeName = BG.GN("NPC")
                     if BG.tradelastAuctionFrame.frame:IsVisible() and tradeName and maijia == tradeName then
-                        BG.auctionLogFrame.GetTargetTradeTbl(maijia)
+                        BG.GetTargetAuctionTradeItems(maijia)
                         if BG.ImML() then
                             BG.tradelastAuctionFrame.UpdateChooseType()
                             BG.tradelastAuctionFrame.UpdateAutoButtons()

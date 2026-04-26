@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2512, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260414072136")
+mod:SetRevision("20260417003105")
 mod:SetCreatureID(186951)
 mod:SetEncounterID(2563)
 mod:SetHotfixNoticeRev(20230103000000)
@@ -39,14 +39,14 @@ if DBM:IsPostMidnight() then
 	--Midnight private aura replacements
 --	mod:AddPrivateAuraSoundOption(433740, true, 433740, 1)
 
-	local specWarnGerminate				= mod:NewSpecialWarningCount(388796, nil, nil, nil, 2, 2)
-	local specWarnBurstForth			= mod:NewSpecialWarningCount(388923, nil, nil, nil, 2, 2)
-	local specWarnBranchOut				= mod:NewSpecialWarningCount(388623, nil, nil, nil, 1, 2)
+	local specWarnGerminate				= mod:NewSpecialWarningCount(388796, nil, nil, DBM_COMMON_L.SWIRLS, 2, 2)
+	local specWarnBurstForth			= mod:NewSpecialWarningCount(388923, nil, nil, DBM_COMMON_L.ADDS, 2, 2)
+	local specWarnBranchOut				= mod:NewSpecialWarningCount(388623, nil, nil, DBM_COMMON_L.BIG_ADD, 1, 2)
 	local specWarnBarkbreaker			= mod:NewSpecialWarningCount(388544, nil, "Tank|Healer", nil, 1, 2)
 
-	local timerGerminateCD				= mod:NewCDCountTimer(20.5, 388796, nil, nil, nil, 3)
-	local timerBurstForthCD				= mod:NewCDCountTimer(20.5, 388923, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)
-	local timerBranchOutCD				= mod:NewCDCountTimer(20.5, 388623, nil, nil, nil, 1)
+	local timerGerminateCD				= mod:NewCDCountTimer(20.5, 388796, DBM_COMMON_L.SWIRLS.." (%s)", nil, nil, 3)
+	local timerBurstForthCD				= mod:NewCDCountTimer(20.5, 388923, DBM_COMMON_L.ADDS.." (%s)", nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)
+	local timerBranchOutCD				= mod:NewCDCountTimer(20.5, 388623, DBM_COMMON_L.BIG_ADD.." (%s)", nil, nil, 1)
 	local timerBarkbreakerCD			= mod:NewCDCountTimer(20.5, 388544, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 	mod.vb.germinateCount = 0
@@ -77,7 +77,7 @@ if DBM:IsPostMidnight() then
 		self.vb.branchOutCount = 1
 		self.vb.barkCount = 1
 		badStateDetected = false
-		if self:IsMythicPlus() and DBM.Options.HardcodedTimer and not badStateDetected then
+		if DBM.Options.HardcodedTimer and not badStateDetected then
 			self:IgnoreBlizzardAPI()
 			self:RegisterShortTermEvents(
 				"ENCOUNTER_TIMELINE_EVENT_ADDED",

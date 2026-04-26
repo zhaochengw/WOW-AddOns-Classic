@@ -3088,12 +3088,14 @@ l10n.zoneCategoryLookup = {
         [-399] = "Brawler's Guild", -- Category added in MoP
         [-641] = "Nightmare Incursions", -- Category added in SoD P3
         [-644] = "Blackrock Eruption", -- Category added in SoD P4
+        [-662] = "Titan-Reforged Realm", -- Chinese region
         -- Below are dummy IDs to not interfere with other IDs
         -- These are needed because the events are listed as "seasonal" or "special",
         -- not with a separate ID
         [-400] = "Proving Grounds",
         [-402] = "Harvest Festival",
         [-404] = "Winter Veil",
+        [-1000] = "Special", -- for actual "Special" quests that are not part of events
     },
     [13] = {
         [-394] = "Battle Pets",

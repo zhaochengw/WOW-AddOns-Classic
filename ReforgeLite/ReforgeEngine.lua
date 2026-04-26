@@ -410,96 +410,162 @@ function ReforgeLite:InitReforgeClassic()
 end
 
 function ReforgeLite:ComputeReforgeCore(reforgeOptions)
-  local char, floor = string.char, floor
-  local scores, codes = {0}, {""}
-  for i, opt in ipairs(reforgeOptions) do
-    local newscores, newcodes = {}, {}
+  local floor = floor
+  local TABLE_SIZE = self.TABLE_SIZE
+  -- scores[k]     = non-cap score for state k
+  -- d1a[k], d2a[k] = exact (non-modular) accumulated cap deltas for state k
+  -- allChoices[i][k] = option index j chosen for item i to reach state k
+  -- allPrev[i][k]    = predecessor state before item i that led to state k
+  local scores = {[0] = 0}
+  local d1a    = {[0] = 0}
+  local d2a    = {[0] = 0}
+  local allChoices, allPrev = {}, {}
+  local debug = self.db.debug
+  local profItems  -- per-item timing array, only allocated in debug mode
+  if debug then profItems = {} end
+
+  for i = 1, #reforgeOptions do
+    local opt = reforgeOptions[i]
+    local optLen = #opt
+    local newscores, newd1a, newd2a = {}, {}, {}
+    local choices, prevs = {}, {}
+    allChoices[i] = choices
+    allPrev[i]    = prevs
+
+    local stateCount = 0
+    local itemStart
+    if debug then
+      stateCount = 0
+      for _ in pairs(scores) do stateCount = stateCount + 1 end
+      itemStart = debugprofilestop()
+    end
+
     for k, score in pairs(scores) do
-      self:RunYieldCheck(50000)
-      local s1, s2 = k % self.TABLE_SIZE, floor(k / self.TABLE_SIZE)
-      for j = 1, #opt do
-        local nscore = score + opt[j].score
-        local nk = s1 + opt[j].d1 + (s2 + opt[j].d2) * self.TABLE_SIZE
+      if i > 9 then
+        self:RunYieldCheck()
+      end
+      local s1   = k % TABLE_SIZE
+      local s2   = floor(k / TABLE_SIZE)
+      local kd1  = d1a[k]
+      local kd2  = d2a[k]
+      for j = 1, optLen do
+        local o      = opt[j]
+        local nscore = score + o.score
+        local nk     = s1 + o.d1 + (s2 + o.d2) * TABLE_SIZE
         if not newscores[nk] or nscore > newscores[nk] then
           newscores[nk] = nscore
-          newcodes[nk] = codes[k] .. char(j)
+          newd1a[nk]    = kd1 + o.d1
+          newd2a[nk]    = kd2 + o.d2
+          choices[nk]   = j
+          prevs[nk]     = k
         end
       end
     end
-    scores, codes = newscores, newcodes
+    scores, d1a, d2a = newscores, newd1a, newd2a
+
+    if debug then
+      local elapsed = debugprofilestop() - itemStart
+      local newCount = 0
+      for _ in pairs(scores) do newCount = newCount + 1 end
+      profItems[i] = { states = stateCount, opts = optLen, ms = elapsed, outStates = newCount }
+    end
   end
-  return scores, codes
+
+  if debug then
+    for i, p in ipairs(profItems) do
+      print(("RFL Core item %d: %d states x %d opts → %d states  %.1fms"):format(i, p.states, p.opts, p.outStates, p.ms))
+    end
+  end
+
+  return scores, d1a, d2a, allChoices, allPrev
 end
 
-function ReforgeLite:ChooseReforgeClassic (data, reforgeOptions, scores, codes)
-  local bestCode = {nil, nil, nil, nil}
+function ReforgeLite:ChooseReforgeClassic(data, scores, d1a, d2a)
+  local bestKey   = {nil, nil, nil, nil}
   local bestScore = {0, 0, 0, 0}
+  local cap1      = data.caps[1]
+  local cap2      = data.caps[2]
+  local init1     = cap1.init
+  local init2     = cap2.init
+
   for k, score in pairs(scores) do
-    self:RunYieldCheck(100000)
-    local s1 = data.caps[1].init
-    local s2 = data.caps[2].init
-    local code = codes[k]
-    for i = 1, #code do
-      local b = code:byte (i)
-      s1 = s1 + reforgeOptions[i][b].d1
-      s2 = s2 + reforgeOptions[i][b].d2
-    end
+    self:RunYieldCheck()
     local a1, a2 = true, true
-    if data.caps[1].stat > 0 then
-      a1 = a1 and self:CapAllows (data.caps[1], s1)
-      score = score + self:GetCapScore (data.caps[1], s1)
+    if cap1.stat > 0 then
+      local s1 = init1 + d1a[k]
+      a1    = self:CapAllows(cap1, s1)
+      score = score + self:GetCapScore(cap1, s1)
     end
-    if data.caps[2].stat > 0 then
-      a2 = a2 and self:CapAllows (data.caps[2], s2)
-      score = score + self:GetCapScore (data.caps[2], s2)
+    if cap2.stat > 0 then
+      local s2 = init2 + d2a[k]
+      a2    = self:CapAllows(cap2, s2)
+      score = score + self:GetCapScore(cap2, s2)
     end
     local allow = a1 and (a2 and 1 or 2) or (a2 and 3 or 4)
-    if not bestCode[allow] or score > bestScore[allow] then
-      bestCode[allow] = code
+    if not bestKey[allow] or score > bestScore[allow] then
+      bestKey[allow]   = k
       bestScore[allow] = score
     end
   end
-  return bestCode[1] or bestCode[2] or bestCode[3] or bestCode[4]
-end
 
-local chooseLoops = 0
+  return bestKey[1] or bestKey[2] or bestKey[3] or bestKey[4]
+end
 
 ---Main entry point for Classic (DP) reforge algorithm
 ---Initializes data, generates reforge options, computes optimal solution
 ---@return nil
 function ReforgeLite:ComputeReforgeClassic()
   self.TABLE_SIZE = floor(10000 * (self.db.accuracy / addonTable.MAX_SPEED))
+  local debug = self.db.debug
+  local t0, t1, t2, t3, t4
+  if debug then
+    t0 = debugprofilestop()
+    print(("RFL Classic start  TABLE_SIZE=%d"):format(self.TABLE_SIZE))
+  end
+
   local data = self:InitReforgeClassic()
+  if debug then t1 = debugprofilestop() end
+
   local reforgeOptions = {}
   for i = 1, #self.itemData do
     reforgeOptions[i] = self:GetItemReforgeOptions(data.method.items[i], data, i)
   end
+  if debug then t2 = debugprofilestop() end
 
-  chooseLoops = 0
+  local scores, d1a, d2a, allChoices, allPrev = self:ComputeReforgeCore(reforgeOptions)
+  if debug then t3 = debugprofilestop() end
 
-  local scores, codes = self:ComputeReforgeCore(reforgeOptions)
+  local bestK = self:ChooseReforgeClassic(data, scores, d1a, d2a)
+  if debug then t4 = debugprofilestop() end
 
-  chooseLoops = 0
-
-  local code = self:ChooseReforgeClassic(data, reforgeOptions, scores, codes)
-
-  for i = 1, #data.method.items do
-    local opt = reforgeOptions[i][code:byte(i)]
+  -- Backtrack through allPrev to reconstruct the chosen reforge for each item
+  local k = bestK
+  for i = #data.method.items, 1, -1 do
+    local opt = reforgeOptions[i][allChoices[i][k]]
+    local dst = opt.dst
     if data.conv[statIds.SPIRIT] and data.conv[statIds.SPIRIT][statIds.HIT] == 1 then
-      if opt.dst == statIds.HIT and data.method.items[i].stats[statIds.SPIRIT] == 0 then
-        opt.dst = statIds.SPIRIT
+      if dst == statIds.HIT and data.method.items[i].stats[statIds.SPIRIT] == 0 then
+        dst = statIds.SPIRIT
       end
     end
     data.method.items[i].src = opt.src
-    data.method.items[i].dst = opt.dst
+    data.method.items[i].dst = dst
+    k = allPrev[i][k]
   end
+
   addonTable.methodDebug = { data = CopyTable(data) }
-  self:FinalizeReforge (data)
+  self:FinalizeReforge(data)
   addonTable.methodDebug.method = CopyTable(data.method)
   if data.method then
     self.pdb.method = data.method
     self.pdb.methodOrigin = addonName
-    self:UpdateMethodCategory ()
+    self:UpdateMethodCategory()
+  end
+
+  if debug then
+    local t5 = debugprofilestop()
+    print(("RFL Phase  Init=%.1fms  Options=%.1fms  Core=%.1fms  Choose=%.1fms  Finalize=%.1fms  Total=%.1fms"):format(
+      t1-t0, t2-t1, t3-t2, t4-t3, t5-t4, t5-t0))
   end
 end
 
@@ -517,11 +583,20 @@ end
 local NORMAL_STATUS_CODES = { suspended = true, running = true }
 local routine
 
+local YIELD_BUDGET_MS = 20  -- max ms of Lua execution per frame before yielding
+local frameStartTime = 0
+
+-- OnUpdate frame used to resume the coroutine. Each OnUpdate fires as a fresh C->Lua call,
+-- which resets WoW's per-execution script time counter — unlike RunNextFrame which may not.
+-- Created lazily so it only exists while the addon is actively computing.
+local scheduleFrame
+
 ---Resumes the compute coroutine from a yield
 ---Handles errors and completes computation when coroutine finishes
 ---@return nil
 function ReforgeLite:ResumeCompute()
   if not routine then return end
+  frameStartTime = debugprofilestop()
   local success, err = coroutine.resume(routine)
   if not success then
     print("Coroutine error - " .. tostring(err))
@@ -531,27 +606,29 @@ function ReforgeLite:ResumeCompute()
   end
 end
 
----Schedules compute resume on next frame
+---Schedules compute resume on next frame via OnUpdate (fresh C->Lua call per frame)
 ---@return nil
 function ReforgeLite:ResumeComputeNextFrame()
-  RunNextFrame(function() self:ResumeCompute() end)
+  if not scheduleFrame then
+    scheduleFrame = CreateFrame("Frame")
+    scheduleFrame:SetScript("OnUpdate", function(frame)
+      frame:Hide()
+      ReforgeLite:ResumeCompute()
+    end)
+  end
+  scheduleFrame:Show()
 end
 
 ---Checks if coroutine should yield to prevent freezing
----Yields every maxLoops iterations or when paused
----@param maxLoops number Number of iterations before yielding
+---Uses a cheap counter gate so debugprofilestop() is only called every YIELD_CHECK_INTERVAL iterations
 ---@return nil
-function ReforgeLite:RunYieldCheck(maxLoops)
+function ReforgeLite:RunYieldCheck()
   if addonTable.pauseRoutine then
-    chooseLoops = 0
     coroutine.yield()
   else
-    if chooseLoops >= maxLoops then
-      chooseLoops = 0
+    if debugprofilestop() - frameStartTime >= YIELD_BUDGET_MS then
       self:ResumeComputeNextFrame()
       coroutine.yield()
-    else
-      chooseLoops = chooseLoops + 1
     end
   end
 end
@@ -588,6 +665,7 @@ end
 ---@return nil
 function ReforgeLite:EndCompute()
   addonTable.callbacks:TriggerEvent("OnCalculateFinish")
+  if scheduleFrame then scheduleFrame:Hide() end
   routine = nil
   collectgarbage('collect')
 end

@@ -1,7 +1,7 @@
 ## Interface: 30405, 38001
 ## Title: MerfinPlus
 ## Author: Merfin
-## Version: 2.37
+## Version: 2.38
 ## X-Website: discord.gg/merfin
 ## X-Flavor: Wrath
 ## Notes: Inserts Merfin media into LibSharedMedia's storage.

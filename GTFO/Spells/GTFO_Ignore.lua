@@ -12,6 +12,13 @@ GTFO.IgnoreSpellCategory["Fatigue"] = {
 	override = true
 }
 
+GTFO.IgnoreSpellCategory["Drowning"] = {
+	spellID = 9451, -- Not really the spell, but a good placeholder
+	desc = "Drowning",
+	tooltip = "Alert when your BREATH timer runs out",
+	override = true
+}
+
 GTFO.IgnoreSpellCategory["Lava"] = {
 	spellID = 16455, -- Not really the spell, but a good placeholder
 	desc = "Lava Pools & Campfires",

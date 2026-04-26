@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2514, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260414072136")
+mod:SetRevision("20260417004753")
 mod:SetCreatureID(190609)
 mod:SetEncounterID(2565)
 mod:SetHotfixNoticeRev(20221015000000)
@@ -20,14 +20,15 @@ if DBM:IsPostMidnight() then
 	mod:AddPrivateAuraSoundOption(389007, true, 389007, 1, 1, "watchfeet", 8)--GTFO
 	mod:AddPrivateAuraSoundOption(389011, true, 389011, 1, 1, "debuffyou", 17)--Overwhelming Power (off by default since we can't warn all stacks, just initial)
 
+	local warnEnergyBomb					= mod:NewCountAnnounce(374341, 3)--Blizzard alert will handle personal bomb alert
+
 	local specWarnAstralBlast				= mod:NewSpecialWarningCount(1282251, nil, nil, nil, 1, 2)
-	local specWarnEnergyBomb				= mod:NewSpecialWarningCount(374341, nil, nil, nil, 2, 2)
-	local specWarnPowerVacuum				= mod:NewSpecialWarningCount(388820, nil, nil, nil, 2, 2)
+	local specWarnPowerVacuum				= mod:NewSpecialWarningCount(388820, nil, 56689, nil, 2, 2)
 
 	local timerArcaneBarrageCD				= mod:NewCDCountTimer(20.5, 373325, nil, nil, nil, 3)
 	local timerAstralBlastCD				= mod:NewCDCountTimer(20.5, 1282251, nil, nil, nil, 5)
 	local timerEnergyBombCD					= mod:NewCDCountTimer(20.5, 374341, nil, nil, nil, 3)
-	local timerPowerVacuumCD				= mod:NewCDCountTimer(20.5, 388820, nil, nil, nil, 2)
+	local timerPowerVacuumCD				= mod:NewCDCountTimer(20.5, 388820, 56689, nil, nil, 2)--Shortname "Grip"
 
 	mod.vb.barrageCount = 0
 	mod.vb.blastCount = 0
@@ -36,12 +37,15 @@ if DBM:IsPostMidnight() then
 
 	local badStateDetected = false
 
+	local function functionSetAllowedWarning(self)
+		DBM.Options.BlizzAPIAllowOnce = true
+	end
+
 	---@param self DBMMod
 	local function setFallback(self)
 		if self:IsTank() then
 			specWarnAstralBlast:SetAlert(294, "defensive", 2)
 		end
-		specWarnEnergyBomb:SetAlert(295, "scattersoon", 2)
 		specWarnPowerVacuum:SetAlert(296, "runout", 2)
 		timerArcaneBarrageCD:SetTimeline(293)
 		timerAstralBlastCD:SetTimeline(294)
@@ -57,7 +61,7 @@ if DBM:IsPostMidnight() then
 		self.vb.vacuumCount = 1
 		badStateDetected = false
 		self:EnableAlertOptions(374341, 295, "bombyou", 12, 2, 0)
-		if self:IsMythicPlus() and DBM.Options.HardcodedTimer and not badStateDetected then
+		if DBM.Options.HardcodedTimer and not badStateDetected then
 			self:IgnoreBlizzardAPI()
 			self:RegisterShortTermEvents(
 				"ENCOUNTER_TIMELINE_EVENT_ADDED",
@@ -94,6 +98,7 @@ if DBM:IsPostMidnight() then
 				timerAstralBlastCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "blast", "blastCount"))
 			elseif timer == 14 then--Energy Bomb
 				timerEnergyBombCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "bomb", "bombCount"))
+				self:Schedule(timerExact-1.5, functionSetAllowedWarning, self)
 			elseif timer == 28 then--Power Vacuum
 				timerPowerVacuumCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "vacuum", "vacuumCount"))
 			else
@@ -131,8 +136,7 @@ if DBM:IsPostMidnight() then
 							specWarnAstralBlast:Play("defensive")
 						end
 					elseif eventType == "bomb" then
-						specWarnEnergyBomb:Show(eventCount)
-						specWarnEnergyBomb:Play("scattersoon")
+						warnEnergyBomb:Show(eventCount)
 					elseif eventType == "vacuum" then
 						specWarnPowerVacuum:Show(eventCount)
 						specWarnPowerVacuum:Play("runout")

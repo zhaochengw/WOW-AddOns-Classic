@@ -129,7 +129,7 @@ function GTFO_OnEvent(self, event, ...)
 		return;
 	end
 	if (event == "MIRROR_TIMER_START") then
-		-- Fatigue bar warning
+		-- Mirror timer warning
 		local sType, iValue, iMaxValue, iScale, bPaused, sLabel = ...;
 		if (sType == "EXHAUSTION" and iScale < 0) then
 			if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Fatigue"]) then
@@ -138,6 +138,44 @@ function GTFO_OnEvent(self, event, ...)
 				return;
 			end
 			GTFO_PlaySound(1);
+		elseif (sType == "BREATH") then
+			GTFO.VariableStore.BreathTimerActive = true;
+			GTFO.VariableStore.BreathTimerAlerted = nil;
+			if (GTFO.VariableStore.BreathTimerTicker) then
+				GTFO.VariableStore.BreathTimerTicker:Cancel();
+				GTFO.VariableStore.BreathTimerTicker = nil;
+			end
+			GTFO.VariableStore.BreathTimerTicker = C_Timer.NewTicker(0.2, function()
+				if (not GTFO.VariableStore.BreathTimerActive or GTFO.VariableStore.BreathTimerAlerted) then
+					if (GTFO.VariableStore.BreathTimerTicker) then
+						GTFO.VariableStore.BreathTimerTicker:Cancel();
+						GTFO.VariableStore.BreathTimerTicker = nil;
+					end
+					return;
+				end
+				local breathValue = GetMirrorTimerProgress("BREATH");
+				if (breathValue and breathValue <= 0) then
+					if (GTFO.Settings.IgnoreOptions and GTFO.Settings.IgnoreOptions["Drowning"]) then
+						-- Drowning being ignored
+						GTFO.VariableStore.BreathTimerAlerted = true;
+						return;
+					end
+					GTFO.VariableStore.BreathTimerAlerted = true;
+					GTFO_PlaySound(1);
+				end
+			end);
+		end
+		return;
+	end
+	if (event == "MIRROR_TIMER_STOP") then
+		local sType = ...;
+		if (sType == "BREATH") then
+			GTFO.VariableStore.BreathTimerActive = nil;
+			GTFO.VariableStore.BreathTimerAlerted = nil;
+			if (GTFO.VariableStore.BreathTimerTicker) then
+				GTFO.VariableStore.BreathTimerTicker:Cancel();
+				GTFO.VariableStore.BreathTimerTicker = nil;
+			end
 		end
 		return;
 	end
@@ -414,6 +452,7 @@ function GTFO_OnLoad()
 	GTFOFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 	GTFOFrame:RegisterEvent("CHAT_MSG_ADDON");
 	GTFOFrame:RegisterEvent("MIRROR_TIMER_START");
+	GTFOFrame:RegisterEvent("MIRROR_TIMER_STOP");
 	GTFOFrame:RegisterEvent("ENCOUNTER_START");
 	GTFOFrame:RegisterEvent("ENCOUNTER_END");
 	GTFOFrame:RegisterEvent("PLAYER_ENTERING_WORLD");

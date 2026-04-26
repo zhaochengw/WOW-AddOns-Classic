@@ -37,7 +37,9 @@ BG.trade.playeritems = {}
 
 BG.TradeMyMoneyChange = {}
 
+local T = {}
 local goldTex = "|A:auctionhouse-icon-coin-gold:0:0|a"
+
 BG.Init(function()
     -- 交易自动记录买家和金额
     do
@@ -66,13 +68,21 @@ BG.Init(function()
             for i = 1, 6 do
                 local targetitem = GetTradeTargetItemLink(i)
                 local name, texture, quantity, quality, isUsable, enchant = GetTradeTargetItemInfo(i)
+                -- if name then
+                --     pt(i, targetitem, name, quantity, quality)
+                -- end
                 if targetitem and quality >= BG.tradeQuality then
                     table.insert(BG.trade.targetitems, { link = targetitem, count = quantity })
                     BG.tradeQianKuanListFrame.hasItem = true
                 end
+            end
 
+            for i = 1, 6 do
                 local playeritem = GetTradePlayerItemLink(i)
                 local name, texture, quantity, quality, isUsable, enchant = GetTradePlayerItemInfo(i)
+                -- if name then
+                --     pt(i, playeritem, name, quantity, quality)
+                -- end
                 if playeritem and quality >= BG.tradeQuality then
                     table.insert(BG.trade.playeritems, { link = playeritem, count = quantity })
                     BG.tradeQianKuanListFrame.hasItem = true
@@ -153,6 +163,13 @@ BG.Init(function()
             if qiankuan ~= 0 then
                 qiankuantext = format("|cffFF0000" .. L["（欠款%d）"] .. RR, qiankuan)
             end
+            -- 双方都给出装备
+            if targetitems[1] and playeritems[1] and targetmoney == 0 and playermoney == 0 then --双方都有装备，但没金额，这种是交易失败
+                returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["双方都给了装备，但没金额"] .. NN .. L["我不知道谁才是买家"] .. NN .. NN .. L["如果有金额我就能识别了"])
+                BG.tradeSeeFrame.frame:SetFalseColor()
+                return returntext
+            end
+            -- 记为罚款
             if BG.tradeSeeFrame.fakuanButton.isChoose and (targetmoney ~= 0 or playermoney ~= 0) then
                 local Player, Money
                 if targetmoney ~= 0 then
@@ -198,10 +215,52 @@ BG.Init(function()
                 end
                 return returntext
             end
-            -- 双方都给出装备
-            if targetitems[1] and playeritems[1] and targetmoney == 0 and playermoney == 0 then --双方都有装备，但没金额，这种是交易失败
-                returntext = ("|cffDC143C" .. L["< 交易记账失败 >"] .. RN .. L["双方都给了装备，但没金额"] .. NN .. L["我不知道谁才是买家"] .. NN .. NN .. L["如果有金额我就能识别了"])
-                BG.tradeSeeFrame.frame:SetFalseColor()
+            -- 记为退货
+            if BG.tradeSeeFrame.refundButton.isChoose and (next(BG.trade.targetitems) or next(BG.trade.playeritems)) then
+                local Player, items
+                if next(BG.trade.targetitems) then
+                    Player = target
+                    items = BG.trade.targetitems
+                elseif next(BG.trade.playeritems) then
+                    Player = player
+                    items = BG.trade.playeritems
+                end
+                if #items > 1 then
+                    returntext = L["|cffDC143C< 退货失败 >|r\n只能对1件装备进行退货处理"]
+                    BG.tradeSeeFrame.frame:SetFalseColor()
+                    return returntext
+                end
+                local targetItem = items[1]
+                local itemID = GetItemID(targetItem.link)
+                local hasItem
+                BG.PairFBItem(function(item, buyer, money, b, i)
+                    local _item = item:GetText()
+                    local _buyer = buyer:GetText()
+                    local _money = money:GetText()
+                    if itemID == GetItemID(_item) and Player == _buyer then
+                        local QKmoney = tonumber(BiaoGe[FB]["boss" .. b]["qiankuan" .. i]) or 0
+                        local __money = _money - QKmoney
+                        local QKText = ""
+                        if QKmoney > 0 then
+                            QKText = L["（|cffFFD700%s|r-|cffff0000%s|r）"]:format(_money, QKmoney)
+                        end
+                        returntext = L["|cff00BFFF< 退货成功 >|r\n装备：%s\n退货人：%s\n应退金额：|cffFFD700%s|rg%s\nBoss：|cff%s%s"]:format(
+                            _item, SetClassCFF(_buyer), __money, QKText, BG.Boss[FB]["boss" .. b]["color"], BG.Boss[FB]["boss" .. b]["name2"])
+                        hasItem = true
+                        if saved then
+                            buyer:Clear()
+                            money:Clear()
+                            money:ClearQK()
+                        end
+                        return true
+                    end
+                end)
+                if not hasItem then
+                    returntext = L["|cffDC143C< 退货失败 >|r\n表格里没找到此件装备"]
+                    BG.tradeSeeFrame.frame:SetFalseColor()
+                else
+                    BG.tradeSeeFrame.frame:SetGreenColor()
+                end
                 return returntext
             end
 
@@ -1108,14 +1167,14 @@ BG.Init(function()
             BG.tradeSeeFrame.frame = f
 
             local text = f:CreateFontString()
-            text:SetPoint("TOP", f, "TOP", 0, -7)
-            text:SetFont(BIAOGE_TEXT_FONT, 16, "OUTLINE")
+            text:SetPoint("TOP", f, "TOP", 0, -5)
+            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             text:SetText(L["记账效果预览"])
 
             local text = f:CreateFontString()
-            text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -30)
+            text:SetPoint("TOPLEFT", f, "TOPLEFT", 8, -25)
             text:SetWidth(f:GetWidth() - 10)
-            text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            text:SetFont(BIAOGE_TEXT_FONT, 14, "OUTLINE")
             text:SetJustifyH("LEFT")
             BG.tradeSeeFrame.text = text
 
@@ -1142,6 +1201,7 @@ BG.Init(function()
                     BG.tradeSeeFrame.text:SetText("")
                 end
                 BG.tradeSeeFrame.fakuanButton:Reset()
+                BG.tradeSeeFrame.refundButton:Reset()
             end
 
             function BG.tradeSeeFrame.frame:Update()
@@ -1149,6 +1209,7 @@ BG.Init(function()
                 if BiaoGe.options["autoTrade"] == 1 and BiaoGe.options["tradePreview"] == 1 and IsInRaid(1) and not BG.IsAutoCreateBill() then
                     self:Show()
                     BG.tradeSeeFrame.fakuanButton:UpdateShow()
+                    BG.tradeSeeFrame.refundButton:UpdateShow()
                     BG.tradeSeeFrame.text:SetText(BG.GetTradeSeeText())
                 end
             end
@@ -1185,7 +1246,7 @@ BG.Init(function()
         -- 本次交易自动记账
         do
             local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
-            bt:SetSize(25, 25)
+            bt:SetSize(20, 20)
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetText(L["本次交易自动记账"])
             bt.Text:SetWidth(min(BG.tradeSeeFrame.frame:GetWidth() - 35, bt.Text:GetStringWidth() + 20))
@@ -1197,6 +1258,7 @@ BG.Init(function()
             bt:SetScript("OnClick", function(self)
                 BG.PlaySound(1)
                 BG.tradeSeeFrame.fakuanButton:UpdateShow()
+                BG.tradeSeeFrame.refundButton:UpdateShow()
                 BG.tradeSeeFrame.frame:Update()
             end)
         end
@@ -1204,7 +1266,7 @@ BG.Init(function()
         -- 本次交易记为罚款
         do
             local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
-            bt:SetSize(25, 25)
+            bt:SetSize(BG.tradeSeeFrame.CheckButton:GetSize())
             bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
             bt.Text:SetText(L["本次交易记为罚款"])
             bt.Text:SetWidth(min(BG.tradeSeeFrame.frame:GetWidth() - 35, bt.Text:GetStringWidth() + 20))
@@ -1234,6 +1296,43 @@ BG.Init(function()
                 self.isChoose = false
                 self:SetChecked(false)
                 self:Show()
+            end
+        end
+
+        -- 本次交易记为退货
+        do
+            local bt = CreateFrame("CheckButton", nil, BG.tradeSeeFrame.frame, "ChatConfigCheckButtonTemplate")
+            bt:SetSize(BG.tradeSeeFrame.CheckButton:GetSize())
+            bt.Text:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+            bt.Text:SetText(L["本次交易为退货"])
+            bt.Text:SetWidth(min(BG.tradeSeeFrame.frame:GetWidth() - 35, bt.Text:GetStringWidth() + 20))
+            bt.Text:SetWordWrap(false)
+            bt:SetPoint("BOTTOMLEFT", BG.tradeSeeFrame.CheckButton, "TOPLEFT", 0, 0)
+            bt:SetHitRectInsets(0, -bt.Text:GetWidth(), 0, 0)
+            BG.tradeSeeFrame.refundButton = bt
+            bt:SetScript("OnClick", function(self)
+                BG.PlaySound(1)
+                self.isChoose = self:GetChecked()
+                BG.tradeSeeFrame.frame:Update()
+            end)
+
+            function BG.tradeSeeFrame.refundButton:UpdateShow()
+                self:Show()
+                self.isChoose = self:GetChecked()
+                if not (BG.tradeSeeFrame.CheckButton:GetChecked()
+                        and (next(BG.trade.targetitems) or next(BG.trade.playeritems))
+                        and not (next(BG.trade.targetitems) and next(BG.trade.playeritems))) then
+                    self:Hide()
+                    self:SetChecked(false)
+                    self.isChoose = false
+                    return
+                end
+            end
+
+            function BG.tradeSeeFrame.refundButton:Reset()
+                self.isChoose = false
+                self:SetChecked(false)
+                self:Hide()
             end
         end
     end
@@ -1349,7 +1448,7 @@ BG.Init(function()
                 if self.b and self.i and not self.isLocked then
                     ClearCursor()
                     for i = 1, 6 do
-                        if not GetTradePlayerItemLink(i) then
+                        if not GetTradePlayerItemInfo(i) then
                             C_Container.PickupContainerItem(self.b, self.i)
                             _G["TradePlayerItem" .. i .. "ItemButton"]:Click()
                             ClearCursor()
@@ -2093,8 +2192,8 @@ BG.Init(function()
         end)
 
         -- 记录已经交易成功的补贴
-        BG.RegisterEvent("UI_INFO_MESSAGE", function(self, event, _, text)
-            if text == ERR_TRADE_COMPLETE and BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) and lastClick then
+        function T.SaveTradeFastGiveMoney()
+            if BiaoGe.options["autoTrade"] == 1 and IsInRaid(1) and lastClick then
                 if lastClick.money == BG.trade.playermoney then
                     local name = lastClick.name
                     givedTbl[name] = { time = time() }
@@ -2108,7 +2207,7 @@ BG.Init(function()
                     end)
                 end
             end
-        end)
+        end
     end
 
     -- 交易通知框架
@@ -2196,17 +2295,23 @@ BG.Init(function()
             BG.trade.GiveYouMoneyText = text
 
             for i = 1, 6 do
-                local text = _G["TradePlayerItem" .. i .. "ItemButton"]:CreateFontString()
-                text:SetPoint("BOTTOMLEFT", _G["TradePlayerItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
+                local itemButton = _G["TradePlayerItem" .. i .. "ItemButton"]
+                local text = itemButton:CreateFontString()
+                text:SetPoint("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 8, -2)
                 text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                text:SetJustifyH("LEFT")
+                text:SetWidth(_G["TradePlayerItem" .. i .. "Name"]:GetWidth())
                 text:Hide()
-                _G["TradePlayerItem" .. i .. "ItemButton"].moneyText = text
+                itemButton.moneyText = text
 
-                local text = _G["TradeRecipientItem" .. i .. "ItemButton"]:CreateFontString()
-                text:SetPoint("BOTTOMLEFT", _G["TradeRecipientItem" .. i .. "ItemButton"], "BOTTOMRIGHT", 8, -2)
+                local itemButton = _G["TradeRecipientItem" .. i .. "ItemButton"]
+                local text = itemButton:CreateFontString()
+                text:SetPoint("BOTTOMLEFT", itemButton, "BOTTOMRIGHT", 8, -2)
                 text:SetFont(BIAOGE_TEXT_FONT, 12, "OUTLINE")
+                text:SetJustifyH("LEFT")
+                text:SetWidth(_G["TradeRecipientItem" .. i .. "Name"]:GetWidth())
                 text:Hide()
-                _G["TradeRecipientItem" .. i .. "ItemButton"].moneyText = text
+                itemButton.moneyText = text
             end
         end
 
@@ -2447,7 +2552,7 @@ BG.Init(function()
                 end
             end
         end
-        local function ResetMoneyText()
+        function BG.ResetAuctionTradeMoneyText()
             BG.tradeCopyMoneyButton:Hide()
             BG.trade.GiveMeMoneyText:Hide()
             BG.trade.GiveYouMoneyText:Hide()
@@ -2459,17 +2564,23 @@ BG.Init(function()
             end
         end
 
+        local function CheckItemIsNotAutoAuction()
+            for _, v in ipairs({ { fuc = GetTradePlayerItemInfo, btName = "TradePlayerItem" },
+                { fuc = GetTradeTargetItemInfo, btName = "TradeRecipientItem" }, }) do
+                for i = 1, 6 do
+                    if v.fuc(i) then
+                        local bt = _G[v.btName .. i .. "ItemButton"]
+                        if not bt.moneyText:IsVisible() then
+                            bt.moneyText:Show()
+                            bt.moneyText:SetText(L["|cffff0000错误：不要把该装备放在一起交易"])
+                        end
+                    end
+                end
+            end
+        end
+
         -- 团长自动摆放装备
-        function BG.tradeAutoPickItem:Start()
-            BG.auctionLogFrame.GetTargetTradeTbl(BG.ImML() and BG.GN("NPC") or player)
-            sumTargetMoney = 0
-            sumPlayerMoney = 0
-            ResetMoneyText()
-            if not IsInRaid(1) then return end
-            if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
-            if not BG.ImML() then return end
-            local tradeName = BG.GN("NPC")
-            if not (BG.auctionTrade[tradeName] and next(BG.auctionTrade[tradeName])) then return end
+        local function StartGiveItem(tradeName)
             ClearCursor()
             local bagTbl = {}
             local tradeTbl = {}
@@ -2506,7 +2617,7 @@ BG.Init(function()
                                     if notBound then
                                         for ii = 1, 6 do
                                             if not tradeTbl[ii] then
-                                                if not GetTradePlayerItemLink(ii) then
+                                                if not GetTradePlayerItemInfo(ii) then
                                                     C_Container.PickupContainerItem(b, i)
                                                     _G["TradePlayerItem" .. ii .. "ItemButton"]:Click()
                                                     ClearCursor()
@@ -2529,11 +2640,35 @@ BG.Init(function()
             end
             GiveItem(1)
         end
+        local function IsNoItem()
+            for ii = 1, 6 do
+                if GetTradePlayerItemInfo(ii) then
+                    return false
+                end
+            end
+            return true
+        end
+        function BG.tradeAutoPickItem:Start()
+            sumTargetMoney = 0
+            sumPlayerMoney = 0
+            BG.ResetAuctionTradeMoneyText()
+            if not IsInRaid(1) then return end
+            if BiaoGe.options["autoAuctionPut"] ~= 1 then return end
+            if not BG.ImML() then return end
+            local tradeName = BG.GN("NPC")
+            if not (BG.auctionTrade[tradeName] and next(BG.auctionTrade[tradeName])) then return end
+            StartGiveItem(tradeName)
+            BG.After(0.3, function()
+                if TradeFrame:IsVisible() and BG.GN("NPC") == tradeName and IsNoItem() then
+                    StartGiveItem(tradeName)
+                end
+            end)
+        end
 
         -- 团长
         BG.RegisterEvent("TRADE_PLAYER_ITEM_CHANGED", function(self, ...)
             sumTargetMoney = 0
-            ResetMoneyText()
+            BG.ResetAuctionTradeMoneyText()
             if not IsInRaid(1) then return end
             if not BG.ImML() then return end
             local tradeName = BG.GN("NPC")
@@ -2564,6 +2699,7 @@ BG.Init(function()
                     BG.trade.GiveMeMoneyText:Show()
                     BG.trade.GiveMeMoneyText:SetText(L["合计应收："] .. GetMoneyString(tonumber(sumTargetMoney .. "0000")))
                     UpdateGiveMeMoneyTextColor()
+                    CheckItemIsNotAutoAuction()
                 end
             end
             UpdateTargetQianKuan()
@@ -2572,7 +2708,7 @@ BG.Init(function()
         -- 团员
         BG.RegisterEvent("TRADE_TARGET_ITEM_CHANGED", function(self, ...)
             sumPlayerMoney = 0
-            ResetMoneyText()
+            BG.ResetAuctionTradeMoneyText()
             if not IsInRaid(1) then return end
             if BG.ImML() then return end
             local tradeName = player
@@ -2608,6 +2744,7 @@ BG.Init(function()
                     BG.trade.GiveYouMoneyText:Show()
                     BG.trade.GiveYouMoneyText:SetText(L["合计应付："] .. GetMoneyString(tonumber(sumPlayerMoney .. "0000")))
                     UpdateGiveYouMoneyTextColor()
+                    CheckItemIsNotAutoAuction()
                 end
             end
             UpdateMyQianKuan()
@@ -2635,30 +2772,29 @@ BG.Init(function()
         end
 
         -- 交易成功后，把拍卖记录设为已交易
-        BG.RegisterEvent("UI_INFO_MESSAGE", function(self, event, _, text)
-            if not IsInRaid(1) then return end
-            if text ~= ERR_TRADE_COMPLETE then return end
-            local FB = BG.FB1
-            if not BiaoGe[FB].auctionLog then return end
-            local tradeName, tradeTbl
-            if BG.ImML() then
-                tradeName = BG.trade.target
-                tradeTbl = BG.trade.playeritems
-            else
-                tradeName = BG.trade.player
-                tradeTbl = BG.trade.targetitems
-            end
-            for _, vv in ipairs(tradeTbl) do
-                for _, v in ipairs(BiaoGe[FB].auctionLog) do
-                    if v.type == 1 and not v.trade and v.maijia == tradeName and
-                        GetItemID(v.zhuangbei) == GetItemID(vv.link) then
-                        v.trade = true
-                        break
+        function T.SetItemTradeState()
+            local FB = BG.FB2 or BG.FB1
+            if IsInRaid(1) and BiaoGe[FB].auctionLog then
+                local tradeName, tradeTbl
+                if BG.ImML() then
+                    tradeName = BG.trade.target
+                    tradeTbl = BG.trade.playeritems
+                else
+                    tradeName = BG.trade.player
+                    tradeTbl = BG.trade.targetitems
+                end
+                for _, vv in ipairs(tradeTbl) do
+                    for _, v in ipairs(BiaoGe[FB].auctionLog) do
+                        if v.type == 1 and not v.trade and v.maijia == tradeName and
+                            GetItemID(v.zhuangbei) == GetItemID(vv.link) then
+                            v.trade = true
+                            break
+                        end
                     end
                 end
+                BG.UpdateAuctionLogFrame(true, true)
             end
-            BG.UpdateAuctionLogFrame(true, true)
-        end)
+        end
     end
 
     -- 复制应付金额
@@ -2732,9 +2868,7 @@ BG.Init(function()
         end
 
         hooksecurefunc(C_TradeInfo, "SetTradeMoney", function(money)
-            BG.After(0, function()
-                BG.TradeUpdate()
-            end)
+            BG.After(0, BG.TradeUpdate)
         end)
 
         local f = CreateFrame("Frame")
@@ -2742,7 +2876,7 @@ BG.Init(function()
         f:RegisterEvent("TRADE_TARGET_ITEM_CHANGED")
         f:RegisterEvent("TRADE_MONEY_CHANGED")
         f:SetScript("OnEvent", function(...)
-            BG.TradeUpdate()
+            BG.After(0, BG.TradeUpdate)
         end)
     end
 
@@ -2751,6 +2885,8 @@ BG.Init(function()
         if BiaoGe.options.autoTrade == 1 and BiaoGe.options.tradeFlashClientIcon == 1 then
             FlashClientIcon()
         end
+        BG.GetTargetAuctionTradeItems(BG.ImML() and BG.GN("NPC") or player)
+        BG.ResetAuctionTradeMoneyText()
         BG.ResetTradeInfo()
         BG.tradeQianKuanEdit:Update()
         BG.tradeGoldTop:Update()
@@ -2765,10 +2901,15 @@ BG.Init(function()
 
         BG.tradeAutoPickItem:Start()
     end)
+
+    -- 交易完成
     BG.RegisterEvent("UI_INFO_MESSAGE", function(self, event, _, text)
         if text == ERR_TRADE_COMPLETE then
             BG.tradeSameMoney:SaveTradeMoney()
             BG.tradeSeeFrame.frame:SaveMoney()
+
+            T.SetItemTradeState()
+            T.SaveTradeFastGiveMoney()
         end
     end)
 end)

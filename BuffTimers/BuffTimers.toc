@@ -2,9 +2,9 @@
 ## IconTexture: Interface\AddOns\BuffTimers\Media\icon
 ## Title: BuffTimers
 ## Author: mdhippie
-## Notes: v2.0.13 -- Buff time options
+## Notes: v2.0.15 -- Buff time options
 ## Notes-ruRU: Отображает точную длительность действия баффов, с возможностью указания секунд и миллисекунд
-## Version: v2.0.13
+## Version: v2.0.15
 ## DefaultState: enabled
 ## SavedVariables: BuffTimersDB
 ## OptionalDeps: Ace3, LibSharedMedia-3.0

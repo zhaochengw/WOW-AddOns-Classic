@@ -24,7 +24,7 @@ local Y = {}
 Y.lateTime = .5       -- 延迟发送评价的秒数
 Y.maxHistory = 40     -- 最多保存多少个历史查询记录
 Y.maxSearchText = 300 -- 最多接受多少个评价详细
-Y.searchLastDay = 360 -- 接收最近多少天内的评价
+Y.searchLastDay = 365 -- 接收最近多少天内的评价
 Y.searchCD = 10
 
 local blackList = {
@@ -646,12 +646,17 @@ BG.Init(function()
             -- 先隐藏之前的列表内容
             for i, v in pairs(BG.YYMainFrame.my.all.button) do
                 v:Hide()
+                v:SetParent(nil)
             end
             BG.YYMainFrame.my.all.button = {}
             local n = 1
             -- 再开始创建新的内容
+            local current_time = GetServerTime()                             -- 获取当前时间戳
+            local previous_time = current_time - (Y.searchLastDay * 86400)   -- 计算XX天前的时间戳
+            local previous_date = tonumber(date("%y%m%d", previous_time))    -- 格式化为日期字符串
             for ii, _ in ipairs(BiaoGe.YYdb.all) do
                 local right
+                local isOutTime = previous_date > BiaoGe.YYdb.all[ii].date
                 for i, _ in ipairs(title_table) do
                     local f = CreateFrame("Frame", nil, right or BG.YYMainFrame.my.all)
                     f:SetSize(title_table[i].width, 20)
@@ -667,13 +672,15 @@ BG.Init(function()
                     f.Text:SetFont(BIAOGE_TEXT_FONT, 13, "OUTLINE")
                     f.Text:SetWidth(f:GetWidth() - 3)
                     f.Text:SetPoint("CENTER")
+                    if isOutTime then
+                        f.Text:SetTextColor(.5, .5, .5)
+                    end
 
-                    local date    = BiaoGe.YYdb.all[ii].date
+                    local date = BiaoGe.YYdb.all[ii].date
                     date          = strsub(date, 1, 2) .. "/" .. strsub(date, 3, 4) .. "/" .. strsub(date, 5, 6)
                     local i_table = { ii, date, BiaoGe.YYdb.all[ii].yy, BiaoGe.YYdb.all[ii].name, Y.Pingjia(BiaoGe.YYdb.all[ii].pingjia),
                         BiaoGe.YYdb.all[ii].edit }
                     f.Text:SetText(i_table[i])
-                    -- f.Text:SetTextColor(RGB(PingjiaColor(BiaoGe.YYdb.all[ii].pingjia)))
                     f.Text:SetWordWrap(false)
                     if f.Text:GetStringWidth() + 3 > f:GetWidth() then
                         f.onenter = i_table[i]

@@ -5,7 +5,7 @@
 ## Author: 苍穹之霜
 ## LoadOnDemand: 0
 ## SavedVariables: BiaoGe
-## Version: 1.27.2
+## Version: 1.27.3
 
 Locales\zhCN.lua
 Locales\zhTW.lua

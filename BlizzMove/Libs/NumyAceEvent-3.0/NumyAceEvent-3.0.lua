@@ -46,7 +46,7 @@ Ace3 copyright notice:
 -- @name AceEvent-3.0
 local CallbackHandler = LibStub("CallbackHandler-1.0")
 
-local MAJOR, MINOR = "NumyAceEvent-3.0", 1
+local MAJOR, MINOR = "NumyAceEvent-3.0", 2
 --- @class NumyAceEvent-3.0: AceEvent-3.0
 local AceEvent = LibStub:NewLibrary(MAJOR, MINOR)
 
@@ -150,14 +150,6 @@ function AceEvent:Embed(target)
         instance.frame:UnregisterEvent(eventname)
     end
 
-    -- APIs and registry for IPC messages, using CallbackHandler lib
-    if not instance.messages then
-        instance.messages = CallbackHandler:New(instance,
-            "RegisterMessage", "UnregisterMessage", "UnregisterAllMessages"
-        )
-        instance.SendMessage = instance.messages.Fire
-    end
-
     -- Script to fire blizzard events into the event listeners
     local events = instance.events
     instance.frame:SetScript("OnEvent", function(this, event, ...)
@@ -165,7 +157,7 @@ function AceEvent:Embed(target)
     end)
 
     for k, v in pairs(mixins) do
-        target[v] = instance[v]
+        target[v] = instance[v] or self[v]
     end
     self.embeds[target] = instance
     return target

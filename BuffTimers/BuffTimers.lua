@@ -64,11 +64,6 @@ function BuffTimers:OnEnable()
 end
 
 function BuffTimers:FormatTime(time)
-    -- IF YOU ARE READING THIS YOU ARE PROBABLY A NERD AS WELL
-    -- IF YOU KNOW A BETTER WAY TO WRITE THIS CODE PLEASE DM ME
-    -- This all is a mess because of the different options in which to display the timestamp
-    -- I really tried my best ok
-
     local timeStamp = self.db.profile.time_stamp
     local isSecondsOption = self.db.profile.seconds
     local isMillisecondsOption = self.db.profile.milliseconds
@@ -220,23 +215,28 @@ function BuffTimers.OnAuraDurationUpdate(aura, time)
     local self = BuffTimers
 
     if time then
-        if self.db.profile.customize_text then
-            local verticalPosition = self.db.profile.vertical_position
-            -- Non-classic Era only: text cannot be displayed if verticalPosition is set to -40. don't know why
-            if (isNotClassic and verticalPosition == -40) then 
-                verticalPosition = -39.9
+        local ok, result = pcall(function()
+            return self:FormatTime(time)
+        end)
+
+        if ok and result then
+            if self.db.profile.customize_text then
+                local verticalPosition = self.db.profile.vertical_position
+
+                if (isNotClassic and verticalPosition == -40) then
+                    verticalPosition = -39.9
+                end
+
+                duration:SetPoint("BOTTOM", aura, "TOP", 0, verticalPosition)
+
+                local fontPath = BuffTimersLibSharedMedia:Fetch("font", self.db.profile.font)
+                duration:SetFont(fontPath, self.db.profile.font_size, self.db.profile.font_outline)
             end
 
-            duration:SetPoint("BOTTOM", aura, "TOP", 0, verticalPosition)
-
-            local fontPath = BuffTimersLibSharedMedia:Fetch("font", self.db.profile.font)
-            duration:SetFont(fontPath, self.db.profile.font_size, self.db.profile.font_outline)
+            duration:SetText(result)
+            self:SetDurationColor(duration, time)
+            duration:Show()
         end
-
-        duration:SetText(self:FormatTime(time))
-        self:SetDurationColor(duration, time)
-
-        duration:Show()
     else
         duration:Hide()
     end
@@ -245,12 +245,33 @@ end
 function BuffTimers.OnAuraUpdate(...)
     if isNotClassic then
         local aura = ...
+        if not aura then return end
 
-        if aura.buttonInfo.expirationTime > 0 then
-            aura.Duration:Show()
-        else
-            aura.Duration:Hide()
+        local info = aura.buttonInfo
+        if not info then return end
+
+        local auraIndex = info.index
+        local auraType = info.auraType
+        local auraInstanceID = info.auraInstanceID
+
+        if not auraIndex then
+            -- Temporary weapon enchants can have duration updates without a normal aura index.
+            return
         end
+
+        C_Timer.After(0, function()
+            local auraData = auraInstanceID and
+                C_UnitAuras.GetAuraDataByAuraInstanceID("player", auraInstanceID) or nil
+
+            local now = GetTime()
+            local hasTimer = auraData and auraData.expirationTime and auraData.expirationTime > now
+
+            if hasTimer then
+                aura.Duration:Show()
+            else
+                aura.Duration:Hide()
+            end
+        end)
     else
         local auraSlot, index, filter = ...
         local auraName = auraSlot .. index

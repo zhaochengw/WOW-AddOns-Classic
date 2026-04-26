@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2509, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260414072136")
+mod:SetRevision("20260417003105")
 mod:SetCreatureID(194181)
 mod:SetEncounterID(2562)
 mod:SetHotfixNoticeRev(20221015000000)
@@ -17,15 +17,15 @@ if DBM:IsPostMidnight() then
 	--Midnight private aura replacements
 --	mod:AddPrivateAuraSoundOption(386181, true, 386181, 1)
 
-	local specWarnArcaneOrbs			= mod:NewSpecialWarningCount(385974, nil, nil, nil, 2, 2)
-	local specWarnManaBombs				= mod:NewSpecialWarningCount(386173, nil, nil, nil, 2, 2)
+	local specWarnArcaneOrbs			= mod:NewSpecialWarningCount(385974, nil, nil, DBM_COMMON_L.ORBS, 2, 2)
+	local specWarnManaBombs				= mod:NewSpecialWarningCount(386173, nil, nil, DBM_COMMON_L.POOL, 2, 2)
 	local specWarnArcaneExpulsion		= mod:NewSpecialWarningCount(385958, nil, "Tank|Healer", nil, 1, 2)
-	local specWarnArcaneFissure			= mod:NewSpecialWarningCount(388537, nil, nil, nil, 2, 2)
+	local specWarnArcaneFissure			= mod:NewSpecialWarningCount(388537, nil, nil, DBM_COMMON_L.AOEDAMAGE, 2, 2)
 
-	local timerArcaneOrbsCD				= mod:NewCDCountTimer(20.5, 385974, nil, nil, nil, 5)
-	local timerManaBombsCD				= mod:NewCDCountTimer(20.5, 386173, nil, nil, nil, 3)
+	local timerArcaneOrbsCD				= mod:NewCDCountTimer(20.5, 385974, DBM_COMMON_L.ORBS.." (%s)", nil, nil, 5)
+	local timerManaBombsCD				= mod:NewCDCountTimer(20.5, 386173, DBM_COMMON_L.POOLS.." (%s)", nil, nil, 3)
 	local timerArcaneExpulsionCD		= mod:NewCDCountTimer(20.5, 385958, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-	local timerArcaneFissureCD			= mod:NewCDCountTimer(20.5, 388537, nil, nil, nil, 2)
+	local timerArcaneFissureCD			= mod:NewCDCountTimer(20.5, 388537, DBM_COMMON_L.AOEDAMAGE.." (%s)", nil, nil, 2)
 
 	mod.vb.orbCount = 0
 	mod.vb.bombCount = 0
@@ -57,7 +57,7 @@ if DBM:IsPostMidnight() then
 		self.vb.fissureCount = 1
 		badStateDetected = false
 		eighteenCount = 1
-		if self:IsMythicPlus() and DBM.Options.HardcodedTimer and not badStateDetected then
+		if DBM.Options.HardcodedTimer and not badStateDetected then
 			self:IgnoreBlizzardAPI()
 			self:RegisterShortTermEvents(
 				"ENCOUNTER_TIMELINE_EVENT_ADDED",

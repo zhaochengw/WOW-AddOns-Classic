@@ -756,7 +756,7 @@ BG.Init(function()
     end ]]
 
     -- 新手盒子
-    do
+--[[     do
         local bt = CreateFrame("Button", nil, BG.MainFrame)
         bt:SetSize(20, hight)
         if lastBt then
@@ -787,7 +787,7 @@ BG.Init(function()
             ChatEdit_ChooseBoxForSend():SetText("https://www.wclbox.com/")
             ChatEdit_ChooseBoxForSend():HighlightText()
         end)
-    end
+    end ]]
 
     -- 提交BUG
     do
@@ -800,7 +800,7 @@ BG.Init(function()
         end
         bt:SetNormalFontObject(BG.FontYellow13)
         bt:SetHighlightFontObject(BG.FontWhite13)
-        bt.title = AddTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\icon") .. L["交流群"]
+        bt.title = AddTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\icon") .. L["QQ群"]
         bt.title2 = AddTexture("Interface\\AddOns\\BiaoGe\\Media\\icon\\icon") .. L["有报错！"]
         bt:SetText(bt.title)
         bt:SetWidth(bt:GetFontString():GetStringWidth())

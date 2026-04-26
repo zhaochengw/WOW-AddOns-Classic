@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2736, "DBM-Raids-Midnight", 3, 1307)
 --local L		= mod:GetLocalizedStrings()--Nothing to localize for blank mods
 
-mod:SetRevision("20260407042048")
+mod:SetRevision("20260423035249")
 mod:SetCreatureID(240432)
 mod:SetEncounterID(3179)
 --mod:SetHotfixNoticeRev(20250823000000)
@@ -52,18 +52,21 @@ local function resetCounts(self)
 end
 
 ---@param self DBMMod
-local function setFallback(self)
+	---@param dontSetAlerts boolean? Called when user has disabled DBM bars and is only using timeline, therefore we must still enable SetTimeline calls even in hardcodes
+local function setFallback(self, dontSetAlerts)
 	--Blizz API fallbacks
-	specWarnVoidConvergence:SetAlert(139, "targetchange", 2, 3)
+	if not dontSetAlerts then
+		specWarnVoidConvergence:SetAlert(139, "targetchange", 2, 3)
+		specWarnFracturedProjection:SetAlert(141, "crowdcontrol", 2, 3)
+		specWarnShatteringTwilight:SetAlert(142, "watchstep", 2, 3)--Alert for rest of raid
+		specWarnTwilightObscurity:SetAlert(143, "aesoon", 2, 2)
+		specWarnEntropicUnraveling:SetAlert(148, "dpshard", 2, 2, 0)
+	end
 	timerVoidConvergenceCD:SetTimeline(139)
 	timerDespoticCommandCD:SetTimeline(140)
-	specWarnFracturedProjection:SetAlert(141, "crowdcontrol", 2, 3)
 	timerFracturedProjectionCD:SetTimeline(141)
-	specWarnShatteringTwilight:SetAlert(142, "watchstep", 2, 3)--Alert for rest of raid
 	timerShatteringTwilightCD:SetTimeline(142)
-	specWarnTwilightObscurity:SetAlert(143, "aesoon", 2, 2)
 	timerTwilightObscurityCD:SetTimeline(143)
-	specWarnEntropicUnraveling:SetAlert(148, "dpshard", 2, 2, 0)
 	timerEntropicUnravelingCD:SetTimeline(148)
 	timerBerserkCD:SetTimeline(633)
 end
@@ -80,6 +83,9 @@ function mod:OnLimitedCombatStart()
 			"ENCOUNTER_TIMELINE_EVENT_ADDED",
 			"ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED"
 		)
+		if DBM.Options.HideDBMBars then
+			setFallback(self, true)
+		end
 	else
 		setFallback(self)
 	end

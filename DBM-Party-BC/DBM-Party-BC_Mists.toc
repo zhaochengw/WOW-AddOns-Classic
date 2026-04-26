@@ -1,4 +1,4 @@
-## Interface: 50502, 50503
+## Interface: 50503, 50504
 ## X-Min-Interface-Mists: 50500
 ## Category: DBM
 
@@ -33,7 +33,7 @@
 ## X-DBM-Mod-MinExpansion: 1
 ## X-Curse-Project-ID: 314994
 ## X-Wago-ID: xZKxZENk
-## Version: r245
+## Version: r246
 
 localization.en.lua
 localization.de.lua

@@ -442,6 +442,8 @@ end
 			total_extra = 0,
 			--totalabsorbed: amount of damage done absorbed by shields
 			totalabsorbed = alphabetical,
+			--avoidable damage taken
+			avoidable_damage_taken = alphabetical,
 			--total_without_pet: amount of damage done without pet damage
 			total_without_pet = alphabetical,
 			--custom: used by custom scripts, works more like a cache
@@ -452,6 +454,7 @@ end
 			--damage_from: table with actor names as keys and boolean true as value
 			damage_from = {},
 			avoidable_damage = {},
+			damage_from_players = {},
 
 			--dps_started: is false until this actor does damage
 			dps_started = false,
@@ -483,7 +486,8 @@ end
 			--targets: table where key is the target name(actor name) and the value is the amount of damage done to that target
 			targets = {},
 			--spells: spell container
-			spells = spellContainerClass:NovoContainer(container_damage)
+			spells = spellContainerClass:NovoContainer(container_damage),
+			avoidable_damage_spells = spellContainerClass:NovoContainer(container_damage),
 		}
 
 		setmetatable(newDamageActor, damageClass)
@@ -2282,6 +2286,9 @@ function damageClass:RefreshWindow(instance, combatObject, bForceUpdate, bExport
 
 			elseif(subAttribute == 8) then --BY SPELL
 				keyName = "damage_taken_by_spells"
+
+			elseif(subAttribute == 9) then --avoidable damage taken
+				keyName = "avoidable_damage_taken"
 			end
 		else
 			keyName = bExportData.key
@@ -2319,6 +2326,9 @@ function damageClass:RefreshWindow(instance, combatObject, bForceUpdate, bExport
 
 		elseif(subAttribute == 8) then --BY SPELL
 			keyName = "damage_taken_by_spells"
+
+		elseif(subAttribute == 9) then --avoidable damage taken
+			keyName = "avoidable_damage_taken"
 		end
 	end
 
@@ -3345,12 +3355,16 @@ function Details:UpdateBarApocalypseWow(instanceLine, source, instance, topValue
 			actorName = source.name
 			if not issecretvalue(actorName) then
 				actorName = detailsFramework:RemoveRealmName(actorName)
+			else
+				if Details222.IsTOCBiggerOrEqualTo(120005) then
+					actorName = Ambiguate(source.name, "short")
+				end
 			end
 		end
 	else
 		if specIcon then
 			if Details222.IsTOCBiggerOrEqualTo(120005) then
-				actorName = Ambiguate(source.name, "none")
+				actorName = Ambiguate(source.name, "short")
 			else
 				actorName = UnitName(actorName)
 				if actorName == nil then
@@ -3436,7 +3450,7 @@ function Details:UpdateBarApocalypseWow(instanceLine, source, instance, topValue
 	elseif mainDisplay == DETAILS_ATTRIBUTE_HEAL then
 		if (subDisplay == DETAILS_SUBATTRIBUTE_HEALDONE or subDisplay == DETAILS_SUBATTRIBUTE_OVERHEAL) then
 			local ruleToUse = 2 --total hps
-			Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(source.totalAmount, Details.abbreviateOptionsHealing), AbbreviateNumbers(source.amountPerSecond, Details.abbreviateOptionsHPS), nil, ruleToUse)
+			Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(source.totalAmount, Details.abbreviateOptionsHealing), AbbreviateNumbers(source.amountPerSecond, Details.abbreviateOptionsDPS), nil, ruleToUse)
 			--percentNumber = math.floor((healingTotal/instanceObject.top) * 100)
 		elseif (subDisplay == DETAILS_SUBATTRIBUTE_HPS) then
 			local ruleToUse = -1 --only show total
@@ -3445,7 +3459,7 @@ function Details:UpdateBarApocalypseWow(instanceLine, source, instance, topValue
 
 		elseif (attributeId == DETAILS_SUBATTRIBUTE_HEALPOTION) then
 			local ruleToUse = 3 --total hps percent
-			Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(source.totalAmount, Details.abbreviateOptionsHealing), AbbreviateNumbers(source.amountPerSecond, Details.abbreviateOptionsHPS), source.percent, ruleToUse)
+			Details:SimpleFormat(instanceLine.lineText2, instanceLine.lineText3, instanceLine.lineText4, AbbreviateNumbers(source.totalAmount, Details.abbreviateOptionsHealing), AbbreviateNumbers(source.amountPerSecond, Details.abbreviateOptionsDPS), source.percent, ruleToUse)
 		end
 
 	elseif mainDisplay == DETAILS_ATTRIBUTE_ENERGY then
@@ -4245,11 +4259,28 @@ function Details:SetClassIcon(texture, instance, class) --[[exported]] --~icons
 			if (self.thisSpecIcon) then
 				local specInfo = detailsFramework:GetSpecInfoFromSpecIcon(self.thisSpecIcon)
 				local specId = specInfo and specInfo.specId
+
+				if (specId and not Details.class_specs_coords[specId]) then
+					if (self.thisSpecIcon == 461112) then --bm hunter
+						specId = 253
+					elseif (self.thisSpecIcon == 608953) then --windwalker monk
+						specId = 269
+					elseif (self.thisSpecIcon == 135846) then --frost mage
+						specId = 64
+					elseif (self.thisSpecIcon == 136145) then --affliction warlock
+						specId = 265
+					end
+				end
+
+				--print(specId, specInfo, self.thisSpecIcon)
+
 				if (specId and Details.class_specs_coords[specId]) then
+					--print(1)
 					texture:SetTexture(instance.row_info.spec_file)
 					texture:SetTexCoord(unpack(Details.class_specs_coords[specId]))
 					texture:SetVertexColor(1, 1, 1)
 				else
+					--print(2)
 					texture:SetTexture(self.thisSpecIcon)
 					texture:SetTexCoord(.1, .9, .1, .9)
 					texture:SetVertexColor(1, 1, 1)
@@ -7756,6 +7787,7 @@ damageClass.__add = function(tabela1, tabela2)
 
 	--total de dano
 		tabela1.total = tabela1.total + tabela2.total
+		tabela1.avoidable_damage_taken = tabela1.avoidable_damage_taken + tabela2.avoidable_damage_taken
 		tabela1.totalabsorbed = tabela1.totalabsorbed + tabela2.totalabsorbed
 	--total de dano sem o pet
 		tabela1.total_without_pet = tabela1.total_without_pet + tabela2.total_without_pet
@@ -7763,6 +7795,28 @@ damageClass.__add = function(tabela1, tabela2)
 		tabela1.damage_taken = tabela1.damage_taken + tabela2.damage_taken
 	--total do friendly fire causado
 		tabela1.friendlyfire_total = tabela1.friendlyfire_total + tabela2.friendlyfire_total
+
+	--damage_from_players
+		if tabela1.damage_from_players then
+			if tabela2.damage_from_players then
+				for index, damageByPlayerTable in ipairs(tabela2.damage_from_players) do
+					---@cast damageByPlayerTable damage_from_player
+					--find the player in tabela1.damage_from_players
+					local found = false
+					for i = 1, #tabela1.damage_from_players do
+						if tabela1.damage_from_players[i].name == damageByPlayerTable.name then
+							tabela1.damage_from_players[i].amount = tabela1.damage_from_players[i].amount + damageByPlayerTable.amount
+							found = true
+							break
+						end
+					end
+
+					if not found then
+						tabela1.damage_from_players[#tabela1.damage_from_players + 1] = detailsFramework.table.copy({}, damageByPlayerTable)
+					end
+				end
+			end
+		end
 
 	--soma o damage_from
 		for nome, _ in pairs(tabela2.damage_from) do
@@ -7865,6 +7919,7 @@ damageClass.__sub = function(tabela1, tabela2)
 
 	--total de dano
 		tabela1.total = tabela1.total - tabela2.total
+		tabela1.avoidable_damage_taken = tabela1.avoidable_damage_taken - tabela2.avoidable_damage_taken
 		tabela1.totalabsorbed = tabela1.totalabsorbed - tabela2.totalabsorbed
 
 	--total de dano sem o pet
@@ -7873,6 +7928,24 @@ damageClass.__sub = function(tabela1, tabela2)
 		tabela1.damage_taken = tabela1.damage_taken - tabela2.damage_taken
 	--total do friendly fire causado
 		tabela1.friendlyfire_total = tabela1.friendlyfire_total - tabela2.friendlyfire_total
+
+	--damage_from_players
+		if tabela1.damage_from_players then
+			if tabela2.damage_from_players then
+				for index, damageByPlayerTable in ipairs(tabela2.damage_from_players) do
+					---@cast damageByPlayerTable damage_from_player
+					--find the player in tabela1.damage_from_players
+					local found = false
+					for i = 1, #tabela1.damage_from_players do
+						if tabela1.damage_from_players[i].name == damageByPlayerTable.name then
+							tabela1.damage_from_players[i].amount = tabela1.damage_from_players[i].amount - damageByPlayerTable.amount
+							found = true
+							break
+						end
+					end
+				end
+			end
+		end
 
 	--reduz os containers de alvos
 		for target_name, amount in pairs(tabela2.targets) do
@@ -7959,6 +8032,7 @@ function Details.refresh:r_atributo_damage(actorObject)
 
 	--restore metatable for the spell container
 	Details.refresh:r_container_habilidades(actorObject.spells)
+	Details.refresh:r_container_habilidades(actorObject.avoidable_damage_spells)
 	if (actorObject.augmentedSpellsContainer) then
 		Details.refresh:r_container_habilidades(actorObject.augmentedSpellsContainer)
 	end
@@ -7970,6 +8044,7 @@ function Details.clear:c_atributo_damage(este_jogador)
 	este_jogador.minha_barra = nil
 
 	Details.clear:c_container_habilidades(este_jogador.spells)
+	Details.clear:c_container_habilidades(este_jogador.avoidable_damage_spells)
 end
 
 

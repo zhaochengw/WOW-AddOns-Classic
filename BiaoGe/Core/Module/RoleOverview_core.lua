@@ -33,38 +33,44 @@ local r, g, b = GetClassRGB(nil, "player")
 
 -- 检查子账号名称
 local function CheckSameName(frame, realmID, player)
-    -- if BiaoGeAccounts and BiaoGeAccounts.accountName and BGV and BGV.ShowEquipFrame then
-    --     BG.After(0, function()
-    --         local tbl = {}
-    --         for accountName in pairs(BiaoGeAccounts.accountName) do
-    --             for _realmID in pairs(BiaoGeAccounts.accountName[accountName]) do
-    --                 if realmID == _realmID then
-    --                     for _player in pairs(BiaoGeAccounts.accountName[accountName][realmID]) do
-    --                         if player == _player then
-    --                             tinsert(tbl, accountName)
-    --                         end
-    --                     end
-    --                 end
-    --             end
-    --         end
-    --         if #tbl > 1 then
-    --             local t = frame:CreateFontString()
-    --             t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-    --             t:SetPoint("RIGHT", frame, "LEFT", -15, 0)
-    --             t:SetTextColor(1, 0, 0)
-    --             t:SetText(L["角色重复"])
+    if BiaoGeAccounts and BiaoGeAccounts.accountName and BGV and BGV.ShowEquipFrame then
+        BG.After(0, function()
+            local tbl = {}
+            for accountName in pairs(BiaoGeAccounts.accountName) do
+                for _realmID in pairs(BiaoGeAccounts.accountName[accountName]) do
+                    if realmID == _realmID then
+                        for _player in pairs(BiaoGeAccounts.accountName[accountName][realmID]) do
+                            if player == _player then
+                                tinsert(tbl, accountName)
+                            end
+                        end
+                    end
+                end
+            end
+            if #tbl > 1 then
+                local str = ""
+                for i, accountName in ipairs(tbl) do
+                    str = str .. accountName .. (i ~= #tbl and L["，"] or "")
+                end
 
-    --             if not BG.FBCDFrame.errText then
-    --                 local t = frame:CreateFontString()
-    --                 t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
-    --                 t:SetPoint("BOTTOM", BG.FBCDFrame, "TOP", 0, 0)
-    --                 t:SetTextColor(1, 0, 0)
-    --                 t:SetText(L["你部分角色存在重复（同一个角色存在于多个子账号）。请你登录曾经复制过配置的账号，在表格设置-角色配置里面删掉重复角色。"])
-    --                 t:SetWidth(BG.FBCDFrame:GetWidth())
-    --             end
-    --         end
-    --     end)
-    -- end
+                local t = frame:CreateFontString()
+                t:SetFont(BIAOGE_TEXT_FONT, 11, "OUTLINE")
+                t:SetPoint("RIGHT", frame, "LEFT", -15, 0)
+                t:SetTextColor(1, 0, 0)
+                t:SetText(str)
+            end
+        end)
+    end
+end
+local function CheckBiaoGeAccounts(frame)
+    local type = select(5, C_AddOns.GetAddOnInfo("BiaoGeAccounts"))
+    if type ~= "MISSING" and not C_AddOns.IsAddOnLoaded("BiaoGeAccounts") then
+        local t = frame:CreateFontString()
+        t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+        t:SetPoint("BOTTOM", frame, "TOP", -0, 0)
+        t:SetTextColor(1, 0, 0)
+        t:SetText(L["BiaoGeAccounts插件被你禁用了，导致无法显示全战网角色"])
+    end
 end
 
 local function SetFactionText(f, FBCDchoice_table, text_table, info, ii, height, n)
@@ -388,6 +394,9 @@ function BG.SetFBCD(self, position, click, refresh)
 
             f.CloseButton = CreateFrame("Button", nil, f, "UIPanelCloseButton")
             f.CloseButton:SetPoint("TOPRIGHT", f, "TOPRIGHT", BG.CloseButtonOffset, BG.CloseButtonOffset)
+            f.CloseButton:SetScript("OnClick", function(self)
+                f:Hide()
+            end)
 
             local bt = CreateFrame("Button", nil, f)
             bt:SetSize(18, 18)
@@ -427,6 +436,7 @@ function BG.SetFBCD(self, position, click, refresh)
             end
         end
     end
+    CheckBiaoGeAccounts(f)
 
     --------- 角色团本完成总览 ---------
     -- 大标题
@@ -769,7 +779,7 @@ function BG.SetFBCD(self, position, click, refresh)
 
             local _r, _g, _b, h
             if newTbl[index + 1] and newTbl[index + 1].realmID ~= v.realmID then
-                _r, _g, _b, h = 1, 1, 1, 1
+                _r, _g, _b, h = 1, 1, 1, 1.5
             else
                 _r, _g, _b, h = .5, .5, .5, 1
             end
@@ -1149,7 +1159,7 @@ function BG.SetFBCD(self, position, click, refresh)
 
             local _r, _g, _b, h
             if newTbl[index + 1] and newTbl[index + 1].realmID ~= v.realmID then
-                _r, _g, _b, h = 1, 1, 1, 1
+                _r, _g, _b, h = 1, 1, 1, 1.5
             else
                 _r, _g, _b, h = .5, .5, .5, 1
             end

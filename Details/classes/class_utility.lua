@@ -446,6 +446,10 @@ function Details:ToolTipDead(instance, deathTable, barFrame)
 			gameCooltip:SetHost(DetailsTooltipAnchor, myPoint, anchorPoint, xOffset, yOffset)
 		end
 
+		--tooltip width
+		local tooltipWidth = Details.death_tooltip_width
+		gameCooltip:SetOption("FixedWidth",(type(tooltipWidth) == "number" and tooltipWidth) or 300)
+
 		gameCooltip:ShowCooltip()
 	end
 end
@@ -700,7 +704,7 @@ function atributo_misc:UpdateDeathRow(deathTable, whichRowLine, rankPosition, in
 	end
 
 	local bUseCustomLeftText = instanceObject.row_info.textL_enable_custom_text
-
+	--attempt to index field '_NameIndexTable' (a nil value)
 	local actorObject = instanceObject:GetCombat():GetContainer(DETAILS_ATTRIBUTE_MISC):GetActor(playerName)
 	if (actorObject) then
 		actorObject:SetBarLeftText(thisRow, instanceObject, false, false, false, bUseCustomLeftText)

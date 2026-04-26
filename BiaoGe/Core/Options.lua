@@ -410,6 +410,51 @@ BG.Init(function()
                 return l
             end
         end
+        -- 快捷键
+        do
+            function O.CreateBindKey(parent, x, y, wdith, bindKey, name)
+                local bt = BG.CreateButton(parent)
+                bt:SetSize(wdith or 150, 25)
+                bt:SetPoint("TOPLEFT", x, y)
+                bt.bindKey = bindKey
+                bt:SetScript("OnClick", function(self)
+                    local category
+                    for i, v in pairs(SettingsPanel:GetAllCategories()) do
+                        if v.name == SETTINGS_KEYBINDINGS_LABEL then
+                            category = v
+                            break
+                        end
+                    end
+                    if category then
+                        SettingsPanel:SelectCategory(category)
+                        SettingsPanel.Container.SettingsList.ScrollBox:ScrollToEnd()
+                        for _, f in pairs({ SettingsPanel.Container.SettingsList.ScrollBox.ScrollTarget:GetChildren() }) do
+                            if f.Button and f.Button.Text and f.Button.Text:GetText() == AddonName then
+                                local initializer = f:GetElementData()
+                                local data = initializer.data
+                                data.expanded = nil;
+                                f.Button:Click()
+                            end
+                        end
+                        BG.After(0, function()
+                            SettingsPanel.Container.SettingsList.ScrollBox:ScrollToEnd()
+                        end)
+                    end
+                end)
+                bt:SetScript("OnShow", function(self)
+                    local key1, key2 = GetBindingKey(self.bindKey)
+                    if key1 or key2 then
+                        bt:SetText(key1 or key2)
+                    else
+                        bt:SetText(L["无"])
+                    end
+                end)
+                local t = bt:CreateFontString()
+                t:SetFont(BIAOGE_TEXT_FONT, 15, "OUTLINE")
+                t:SetPoint("BOTTOM", bt, "TOP", 0, 5)
+                t:SetText(name)
+            end
+        end
     end
 
     local function SetParent(self, key)
@@ -657,6 +702,10 @@ BG.Init(function()
         O.CreateLine(biaoge, height - h)
 
         h = h + 40
+        -- 快捷键
+        do
+            O.CreateBindKey(biaoge, 15, -h, nil, "BIAOGE", L["表格快捷键"])
+        end
         -- 输入框字号
         do
             local name = "editFontSize"
@@ -2265,16 +2314,16 @@ BG.Init(function()
             end)
         end
         h = h + 30
-        -- 交易时自动确认交易
+        -- 自动点击交易按钮
         do
             local name = "autoAuctionSureClick"
             BG.options[name .. "reset"] = 0
             BiaoGe.options[name] = BiaoGe.options[name] or BG.options[name .. "reset"]
             local ontext = {
-                L["交易时自动确认交易"],
+                L["自动点击交易按钮"],
                 L["当交易金额等于应收/应付金额时，自动点击交易按钮。但屏幕中间的二次确认框还是需要你手动确认。"],
             }
-            local f = O.CreateCheckButton(name, L["交易时自动确认交易"], autoAuction, 40, height - h, ontext, true)
+            local f = O.CreateCheckButton(name, L["自动点击交易按钮"], autoAuction, 40, height - h, ontext, true)
             BG.options["button" .. name] = f
             SetParent(f, "autoAuctionMoney")
         end
@@ -2450,11 +2499,16 @@ BG.Init(function()
         end
         h = h + 50
 
+        -- 快捷键
+        do
+            O.CreateBindKey(roleOverview, 220, -28, nil, "RoleOverview", L["角色总览快捷键"])
+        end
+
         -- 删除角色
         do
             local bt = BG.CreateButton(roleOverview)
             bt:SetSize(80, 25)
-            bt:SetPoint("TOPRIGHT", BG.optionsBackground:GetWidth() - 45, -5)
+            bt:SetPoint("TOPRIGHT", BG.optionsBackground:GetWidth() - 45, -28)
             bt:SetText(L["删除角色"])
             deleteButton = bt
             bt:SetScript("OnClick", function(self)
@@ -3879,6 +3933,16 @@ BG.Init(function()
                     end
                 })
             end
+            -- 简化活动列表
+            tinsert(tbl, {
+                name = "MeetingHorn_ActivityList",
+                name2 = L["简化活动列表"] .. L["（需重载）"],
+                reset = 0,
+                ontext = {
+                    L["简化活动列表"],
+                    L["删除活动列表的星团长标记、活动模式、进语音这些无用信息，使得活动说明的显示空间更大。"],
+                },
+            })
 
             for i, v in ipairs(tbl) do
                 if not v.notdefault then
@@ -3918,22 +3982,20 @@ BG.Init(function()
 
             -- 集结号设置
             local buttons = {}
+            local width = 160
             for i, v in ipairs(tbl) do
                 local f = O.CreateCheckButton(v.name, v.name2, others, 15, height - h, v.ontext, true)
+                f.Text:SetWidth(width)
                 Update_OnShow(f, v.name)
                 if v.onClick then
                     f:HookScript("OnClick", v.onClick)
                 end
                 if i == 6 then
                     f:ClearAllPoints()
-                    f:SetPoint("LEFT", buttons[1], "RIGHT", 190, 0)
-                    f.Text:SetWidth(140)
+                    f:SetPoint("LEFT", buttons[1], "RIGHT", width + 10, 0)
                 elseif i > 6 then
                     f:ClearAllPoints()
                     f:SetPoint("TOPLEFT", buttons[i - 1], "TOPLEFT", 0, -h_jiange)
-                    f.Text:SetWidth(140)
-                else
-                    f.Text:SetWidth(180)
                 end
                 f.Text:SetWordWrap(false)
                 tinsert(buttons, f)
@@ -4391,7 +4453,7 @@ BG.Init(function()
     end
 end)
 
-BG.RegisterEvent("PLAYER_LOGIN", function(self, event, addonName)
+BG.Init2(function()
     local name = "miniMap"
     local icon = LibStub("LibDBIcon-1.0", true)
     if icon then

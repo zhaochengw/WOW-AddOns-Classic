@@ -124,9 +124,7 @@ local function AddTexture(Texture, y, coord, width)
     elseif Texture == "QUEST" then -- 黄色感叹号
         tex = "Interface\\GossipFrame\\AvailableQuestIcon"
     elseif Texture == "VIP" then
-        return "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\VIP:0:0:0:0:100:100:10:90:10:90|t"
-    elseif Texture == "VIP2" then
-        return "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\VIP2:0:0:0:0:100:100:10:90:10:90|t"
+        return GetLocale() == "enUS" and "" or "|TInterface\\AddOns\\BiaoGe\\Media\\icon\\VIP:0:0:0:0:100:100:10:90:10:90|t"
     elseif Texture == "BOX" then
         tex = "Interface\\AddOns\\BiaoGe\\Media\\icon\\BOX"
     elseif Texture == "DD" then
@@ -893,4 +891,16 @@ function BG.Split(delimiter, str)
         startPos = findPos + delimiterLen
     end
     return unpack(result)
+end
+
+function BG.SetMixin(f, mixin)
+    if type(f) == "table" then
+        for k, v in pairs(mixin) do
+            if f.HasScript and f:HasScript(k) then
+                f:SetScript(k, v)
+            else
+                f[k] = v
+            end
+        end
+    end
 end

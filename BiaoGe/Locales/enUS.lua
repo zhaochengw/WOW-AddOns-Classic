@@ -33,6 +33,21 @@ do --英语说明书
 end
 
 do
+    L["打开角色总览"] = "Open Character Overview"
+    L["重拍"] = "Re"
+    L["表格快捷键"] = "Table Hotkey"
+    L["角色总览快捷键"] = "Character Overview Hotkey"
+    L["本次交易记为退货"] = "Mark This Trade as Return"
+    L["（|cffFFD700%s|r-|cffff0000%s|r）"] = "（|cffFFD700%s|r-|cffff0000%s|r）"
+    L["|cff00BFFF< 退货成功 >|r\n装备：%s\n退货人：%s\n应退金额：|cffFFD700%s|rg%s\nBoss：|cff%s%s"] = "|cff00BFFF< Return Successful >|r\nItem: %s\nReturner: %s\nRefund Amount: |cffFFD700%s|rg%s\nBoss: |cff%s%s"
+    L["|cffDC143C< 退货失败 >|r\n表格里没找到此件装备"] = "|cffDC143C< Return Failed >|r\nItem not found in table"
+    L["|cffDC143C< 退货失败 >|r\n只能对1件装备进行退货处理"] = "|cffDC143C< Return Failed >|r\nOnly one item can be returned at a time"
+    L["|cffff0000错误：不要把该装备放在一起交易"] = "|cffff0000Error: Do not trade this item together with others"
+    L["BiaoGeAccounts插件被你禁用了，导致无法显示全战网角色"] = "BiaoGeAccounts addon is disabled, unable to display all Battle.net characters"
+    L["自动点击交易按钮"] = "Auto Click Trade Button"
+    L["简化活动列表"] = "Simplify Activity List"
+    L["删除活动列表的星团长标记、活动模式、进语音这些无用信息，使得活动说明的显示空间更大。"] = "Remove useless info like star leader mark, activity mode, voice join from activity list to give more space for activity description."
+    L["QQ群"] = "QQ Group"
     L["不能设置为心愿，因为该装备未知由哪个物品兑换"] = "Cannot set as wish, unknown which item this gear is exchanged for"
     L["已向%s发送请求%s。"] = "Sent request %s to %s."
     L["（需要对方在副本外才能发送表格）"] = "(Recipient must be outside the instance to send the table)"
@@ -1641,7 +1656,7 @@ do
     L["|cffffffff< 保存评价 >|r\n\n1、必填项填完才能保存\n2、同一个YY只能写一次评价，但你可以修改之前的评价"] = "|cffffffff< Save Evaluation >|r\n\n1, mandatory items to be filled out to save\n2, the same YY can only write an evaluation once, but you can modify the previous evaluation"
     L["退出修改"] = "Exit Modify"
     L["该YY已有评价，需要修改吗？"] = "This YY already has a rating, do you need to modify it?"
-    L["< 我的评价 >"] = "< My Evaluation"
+    L["< 我的评价 >"] = "< My Evaluation >"
     L["序号"] = "Serial Number"
     L["日期"] = "Date"
     L["YY"] = "YY"
@@ -2027,6 +2042,8 @@ do
     L["末日领主"] = "DoomLord"
     L["蓝龙"] = "BlueDragon"
     L["卡扎克"] = "Kazzak"
+
+    L["雷电"] = "Thunder"
 end
 
 -- 专业技能

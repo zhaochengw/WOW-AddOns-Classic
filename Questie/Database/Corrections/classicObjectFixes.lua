@@ -242,6 +242,9 @@ function QuestieObjectFixes:Load()
                 [zoneIDs.TIRISFAL_GLADES]={{82.8,72.7},{83,71.4},{83,71.5}},
             },
         },
+        [176248] = { -- Premium Grimm Tobacco
+            [objectKeys.name] = "Premium Grimm Tobacco",
+        },
         [176344] = { -- Document Chest
             [objectKeys.spawns] = {[zoneIDs.THOUSAND_NEEDLES] = {{31.79,32.58}}},
         },
@@ -290,12 +293,42 @@ function QuestieObjectFixes:Load()
         [178907] = {
             [objectKeys.name] = "Maraudon Orange Crystal Pool", -- Desolace for quest 7041
         },
-        [179544] = {
+        [179485] = { -- Broken Trap
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}}},
+        },
+        [179499] = { -- Ogre Tannin Basket
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}}},
+        },
+        [179517] = { -- Treasure of the Shen'dralar
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}},[zoneIDs.DIRE_MAUL_PRISON_OF_IMMOLTHAR] = {{-1,-1}}},
+        },
+        [179544] = { -- Skeletal Remains of Telmius Dreamseeker
             [objectKeys.name] = "Skeletal Remains of Telmius Dreamseeker",
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}},[zoneIDs.DIRE_MAUL_PRISON_OF_IMMOLTHAR] = {{-1,-1}}},
+        },
+        [179545] = { -- The Prince's Chest
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}},[zoneIDs.DIRE_MAUL_PRISON_OF_IMMOLTHAR] = {{-1,-1}}},
         },
         [179547] = { -- A Dusty Tome
-            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL]={{-1,-1}}},
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}},[zoneIDs.DIRE_MAUL_PRISON_OF_IMMOLTHAR] = {{-1,-1}}},
             [objectKeys.zoneID] = zoneIDs.DIRE_MAUL,
+        },
+        [179548] = { -- A Dusty Tome
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_GORDOK_COMMONS] = {{-1,-1}},[zoneIDs.DIRE_MAUL_PRISON_OF_IMMOLTHAR] = {{-1,-1}}},
+        },
+        [179553] = { -- Core Fragment
+            [objectKeys.spawns] = {[zoneIDs.BLACKROCK_DEPTHS] = {{-1,-1}}},
+        },
+        [179559] = { -- Felvine Shard
+            [objectKeys.spawns] = {[zoneIDs.DIRE_MAUL_THE_SHRINE_OF_ELDRETHARR] = {{-1,-1}}},
+        },
+        [179562] = { -- Ancient Heated Blade
+            [objectKeys.spawns] = {[zoneIDs.ONYXIAS_LAIR] = {{-1,-1}}},
+            [objectKeys.zoneID] = zoneIDs.ONYXIAS_LAIR,
+        },
+        [179644] = { -- Imprisoned Doomguard
+            [objectKeys.spawns] = {[zoneIDs.BLASTED_LANDS] = {{37.95,69.18},{44.27,75.29},{34.55,63.73},{45.08,73.43},{40.09,63.33},{42.87,74.12},{41.75,78.48},{34.93,63.73},{39.96,78.68},{40.13,66.54},{44.86,73.24},{44.77,72.97},{43.12,77.19},{59.44,55.4},{56.97,55.22}}},
+            [objectKeys.zoneID] = zoneIDs.BLASTED_LANDS,
         },
         [179703] = { -- Cache of the Firelord
             [objectKeys.questStarts] = {7632},

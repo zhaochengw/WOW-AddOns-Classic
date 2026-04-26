@@ -1,28 +1,106 @@
-tag bebf42de8af0136ddd1179cced08b78de1628def v2.3.9
+tag b834dc1237dc58bc6c412033a38877e8c69b7a75 v2.3.10
 Author:	brues-code <5278969+brues-code@users.noreply.github.com>
-Date:	Fri Feb 20 12:18:46 2026 -0600
+Date:	Thu Apr 23 18:32:15 2026 -0500
 
-commit 298ba30a2528e089fb37100672f4ba555e273e72
+commit 9bc3bd45fa1fbf7d04d0cb294171382b0a0e1575
 Author: brues-code <5278969+brues-code@users.noreply.github.com>
-Date:   Fri Feb 20 12:15:21 2026 -0600
+Date:   Tue Apr 21 15:36:30 2026 -0500
 
-    tooltip scan: verify that stats actually exist on item
+    YIELD_BUDGET_MS = 20
 
-commit fdee8ad403bff0725474b7d88ea1bee136f797a1
+commit 81bf3a81be3eec1d8d00a4079ee1ce17741bba15
 Author: brues-code <5278969+brues-code@users.noreply.github.com>
-Date:   Fri Feb 20 11:46:34 2026 -0600
+Date:   Tue Apr 21 14:54:43 2026 -0500
 
-    Workaround for https://github.com/ClassicWoWCommunity/mop-classic-bugs/issues/2642
+    Better yielding to prevent execution limit errors
 
-commit 10b79ba6a2e5bb01fada86aaf61dcfffcfcf2aa7
+commit 28c99ffadb0b028173c172b76ea84239733154f7
 Author: brues-code <5278969+brues-code@users.noreply.github.com>
-Date:   Fri Feb 20 11:24:26 2026 -0600
+Date:   Tue Apr 21 12:09:42 2026 -0500
 
-    tooltip scan cleanup
+    use texture id instead of path
 
-commit cd8cca128e8fadc255b0d72787689dc94abaf987
+commit aea49bdc71213d1af79b958a3d758eaaddb42041
 Author: brues-code <5278969+brues-code@users.noreply.github.com>
-Date:   Thu Feb 19 19:47:52 2026 -0600
+Date:   Tue Apr 21 12:09:31 2026 -0500
 
-    item stat detection issue
+    Show IconTexture in Addon List
+
+commit 888db5227d90c3f8b42d18df1b6f2f318107b96c
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:53:14 2026 -0500
+
+    Added to Equipment category for new Addon List
+
+commit 141f54830dfd4a1d078aa735ad1ebe13acfc0d98
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:45:55 2026 -0500
+
+    prevent infinite recursion
+
+commit 826f7b0baa1eaec4b3043ee4cd7c99f3808dcff6
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:08:11 2026 -0500
+
+    small cleanup
+
+commit 5cbee8d251b23b7d0ace98396f7402fa3efa0da0
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:06:27 2026 -0500
+
+    Add 5.5.4 toc
+
+commit c77f0cf354bfb37c4797db524e631a1dc412f185
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:04:34 2026 -0500
+
+    Clear scanTooltip by using SetOwner
+
+commit a10cfc2a830aa2118bef6a3aa5b2490c81303f63
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Tue Apr 21 11:03:51 2026 -0500
+
+    GetRGBA
+
+commit 484d689316d8aca959a69caa736e5fa5a18e0c9d
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Mon Mar 23 00:11:16 2026 -0500
+
+    only set owner once
+
+commit 7154c3c6aaa37cb35ba49ec0853a09c9a8e11eab
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Mon Mar 23 00:00:38 2026 -0500
+
+    small cleanup that helps me debug easier
+
+commit 456e1c0ce53cd02cb0d50354367b0a91b502de33
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 27 22:35:21 2026 -0600
+
+    moved some debug code
+
+commit e9fe0afabbea5a8ff8b787b3053558f0eef96b8f
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Mon Feb 23 23:29:46 2026 -0600
+
+    versionInfo cleanup
+
+commit d4da29d517183af49abf1210e5a32c728e49f92a
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 20 15:22:58 2026 -0600
+
+    minor cleanup
+
+commit c4290b5e837594bf31ec470acd8a88a2d77203ec
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 20 12:39:22 2026 -0600
+
+    use GameFontHighlight for white text
+
+commit ff30c95de784ba1309361e8a1a62fb569e10413e
+Author: brues-code <5278969+brues-code@users.noreply.github.com>
+Date:   Fri Feb 20 12:31:26 2026 -0600
+
+    Show addon version on titlebar
 

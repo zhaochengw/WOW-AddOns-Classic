@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC5) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ T._LoadedFiles["frFR.lua"] = false;
 local L = LibStub("AceLocale-3.0"):NewLocale("Decursive", "frFR");
 
 if not L then
-    T._LoadedFiles["frFR.lua"] = "2.8.0-RC3";
+    T._LoadedFiles["frFR.lua"] = "2.8.0-RC5";
     return;
 end
 
@@ -545,4 +545,4 @@ L["UNSTABLERELEASE"] = "Version instable"
 
 
 
-T._LoadedFiles["frFR.lua"] = "2.8.0-RC3";
+T._LoadedFiles["frFR.lua"] = "2.8.0-RC5";

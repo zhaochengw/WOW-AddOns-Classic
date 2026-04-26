@@ -8935,9 +8935,15 @@ function MopQuestFixes.Load()
             [questKeys.objectives] = {{{68463,nil,Questie.ICON_TYPE_PET_BATTLE}}},
         },
         [32435] = { -- Second Place
+            [questKeys.startedBy] = {{15077}},
+            [questKeys.requiredLevel] = 1,
+            [questKeys.requiredSkill] = {},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [32436] = { -- Third Place
+            [questKeys.startedBy] = {{15077}},
+            [questKeys.requiredLevel] = 1,
+            [questKeys.requiredSkill] = {},
             [questKeys.specialFlags] = specialFlags.REPEATABLE,
         },
         [32439] = { -- Flowing Pandaren Spirit

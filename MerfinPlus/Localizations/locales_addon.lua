@@ -46,7 +46,12 @@ L["C_EncodingUtil not available in this WoW version."] = "C_EncodingUtil not ava
 L["Import Manager"] = "Import Manager"
 L["Profiles"] = "Profiles"
 L["Delete this item entry."] = "Delete this item entry."
-
+L["Raid Pack"] = "Raid Pack"
+L["Locale Settings"] = "Locale Settings"
+L["Use Client Locale"] = "Use Client Locale"
+L["Set Locale"] = "Set Locale"
+L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+  "Sets the localization for Merfin Raid Packs, overriding the client locale."
 if (GAME_LOCALE or GetLocale()) == "deDE" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "Ein Neuladen der Benutzeroberfläche ist erforderlich, damit diese Änderung wirksam wird.\n\nJetzt neu laden?"
@@ -90,6 +95,12 @@ if (GAME_LOCALE or GetLocale()) == "deDE" then
   L["Import Manager"] = "Import-Manager"
   L["Profiles"] = "Profile"
   L["Delete this item entry."] = "Diesen Gegenstandseintrag löschen."
+  L["Raid Pack"] = "Raid-Paket"
+  L["Locale Settings"] = "Spracheinstellungen"
+  L["Use Client Locale"] = "Client-Sprache verwenden"
+  L["Set Locale"] = "Sprache festlegen"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Legt die Sprache für Merfin-Raid-Pakete fest und überschreibt dabei die Client-Sprache."
 elseif (GAME_LOCALE or GetLocale()) == "frFR" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "Un rechargement de l’interface est requis pour que ce changement prenne effet.\n\nRecharger maintenant ?"
@@ -134,6 +145,111 @@ elseif (GAME_LOCALE or GetLocale()) == "frFR" then
   L["Import Manager"] = "Gestionnaire d’import"
   L["Profiles"] = "Profils"
   L["Delete this item entry."] = "Supprimer cette entrée d’objet."
+  L["Raid Pack"] = "Pack de raid"
+  L["Locale Settings"] = "Paramètres de langue"
+  L["Use Client Locale"] = "Utiliser la langue du client"
+  L["Set Locale"] = "Définir la langue"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Définit la langue des packs de raid Merfin et remplace la langue du client."
+elseif (GAME_LOCALE or GetLocale()) == "esES" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "Se requiere recargar la interfaz para que este cambio tenga efecto.\n\n¿Recargar ahora?"
+  L["Author: "] = "Autor: "
+  L["Version:"] = "Versión:"
+  L["Media"] = "Medios"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus proporciona fuentes, texturas y utilidades personalizadas que mejoran o apoyan WeakAuras y otros componentes de la interfaz de Merfin."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Cambia las fuentes principales y las texturas de barras de estado usadas por las funciones de Merfin. Se requiere recargar la interfaz."
+  L["Select font for element "] = "Seleccionar fuente para el elemento "
+  L["Select status bar texture for element "] = "Seleccionar textura de barra de estado para el elemento "
+  L["Import WoWSim JSON"] = "Importar JSON de WoWSim"
+  L["This character has no assigned profiles."] = "Este personaje no tiene perfiles asignados."
+  L["Assigned profiles:"] = "Perfiles asignados:"
+  L["Assign to Current Character"] = "Asignar al personaje actual"
+  L["Assigned "] = "Asignado "
+  L["Rename (display only)"] = "Renombrar (solo visual)"
+  L["Empty"] = "Vacío"
+  L["loading"] = "cargando"
+  L["Set itemID for "] = "Establecer itemID para "
+  L["slot "] = "ranura "
+  L["Delete Profile"] = "Eliminar perfil"
+  L["Delete this profile?"] = "¿Eliminar este perfil?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "Crear un perfil vacío de WoWSim.\nSelecciona una clase, elige una especialización y luego haz clic en Importar."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "Pega un JSON exportado de WoWSim abajo.\nHaz clic en Aceptar, selecciona un icono de especialización y luego haz clic en Importar."
+  L["Empty Profile"] = "Perfil vacío"
+  L["Class"] = "Clase"
+  L["Specialization"] = "Especialización"
+  L["Profile: "] = "Perfil: "
+  L["Select a specialization."] = "Selecciona una especialización."
+  L["Import"] = "Importar"
+  L["Import successful."] = "Importación completada."
+  L["Ready."] = "Listo."
+  L["Unknown / unsupported class in JSON."] = "Clase desconocida o no compatible en el JSON."
+  L["Invalid JSON."] = "JSON inválido."
+  L["No JSON provided."] = "No se proporcionó JSON."
+  L["C_EncodingUtil not available in this WoW version."] = "C_EncodingUtil no está disponible en esta versión de WoW."
+  L["Import Manager"] = "Gestor de importación"
+  L["Profiles"] = "Perfiles"
+  L["Delete this item entry."] = "Eliminar esta entrada de objeto."
+  L["Raid Pack"] = "Paquete de banda"
+  L["Locale Settings"] = "Configuración de idioma"
+  L["Use Client Locale"] = "Usar idioma del cliente"
+  L["Set Locale"] = "Establecer idioma"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Establece el idioma de los paquetes de banda de Merfin y reemplaza el idioma del cliente."
+  -- esMX
+elseif (GAME_LOCALE or GetLocale()) == "esMX" then
+  L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
+    "Se requiere recargar la interfaz para que este cambio tenga efecto.\n\n¿Recargar ahora?"
+  L["Author: "] = "Autor: "
+  L["Version:"] = "Versión:"
+  L["Media"] = "Medios"
+  L["MerfinPlus provides custom fonts, textures, and utilities that enhance or support WeakAuras and other Merfin UI components."] =
+    "MerfinPlus proporciona fuentes, texturas y utilidades personalizadas que mejoran o apoyan WeakAuras y otros componentes de la interfaz de Merfin."
+  L["Change primary fonts and status bar textures used by Merfin features. A UI reload is required."] =
+    "Cambia las fuentes principales y las texturas de barras de estado usadas por las funciones de Merfin. Se requiere recargar la interfaz."
+  L["Select font for element "] = "Seleccionar fuente para el elemento "
+  L["Select status bar texture for element "] = "Seleccionar textura de barra de estado para el elemento "
+  L["Import WoWSim JSON"] = "Importar JSON de WoWSim"
+  L["This character has no assigned profiles."] = "Este personaje no tiene perfiles asignados."
+  L["Assigned profiles:"] = "Perfiles asignados:"
+  L["Assign to Current Character"] = "Asignar al personaje actual"
+  L["Assigned "] = "Asignado "
+  L["Rename (display only)"] = "Renombrar (solo visual)"
+  L["Empty"] = "Vacío"
+  L["loading"] = "cargando"
+  L["Set itemID for "] = "Establecer itemID para "
+  L["slot "] = "ranura "
+  L["Delete Profile"] = "Eliminar perfil"
+  L["Delete this profile?"] = "¿Eliminar este perfil?"
+  L["Create an empty WoWSim profile.\nSelect a class, choose a specialization, then click Import."] =
+    "Crear un perfil vacío de WoWSim.\nSelecciona una clase, elige una especialización y luego haz clic en Importar."
+  L["Paste a WoWSim JSON export below.\nClick Accept, select a specialization icon, then click Import."] =
+    "Pega un JSON exportado de WoWSim abajo.\nHaz clic en Aceptar, selecciona un icono de especialización y luego haz clic en Importar."
+  L["Empty Profile"] = "Perfil vacío"
+  L["Class"] = "Clase"
+  L["Specialization"] = "Especialización"
+  L["Profile: "] = "Perfil: "
+  L["Select a specialization."] = "Selecciona una especialización."
+  L["Import"] = "Importar"
+  L["Import successful."] = "Importación completada."
+  L["Ready."] = "Listo."
+  L["Unknown / unsupported class in JSON."] = "Clase desconocida o no compatible en el JSON."
+  L["Invalid JSON."] = "JSON inválido."
+  L["No JSON provided."] = "No se proporcionó JSON."
+  L["C_EncodingUtil not available in this WoW version."] = "C_EncodingUtil no está disponible en esta versión de WoW."
+  L["Import Manager"] = "Administrador de importaciones"
+  L["Profiles"] = "Perfiles"
+  L["Delete this item entry."] = "Eliminar esta entrada de objeto."
+  L["Raid Pack"] = "Paquete de banda"
+  L["Locale Settings"] = "Configuración de idioma"
+  L["Use Client Locale"] = "Usar idioma del cliente"
+  L["Set Locale"] = "Establecer idioma"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Establece el idioma de los paquetes de banda de Merfin y reemplaza el idioma del cliente."
 elseif (GAME_LOCALE or GetLocale()) == "ruRU" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "Для применения этого изменения требуется перезагрузка интерфейса.\n\nПерезагрузить сейчас?"
@@ -181,6 +297,12 @@ elseif (GAME_LOCALE or GetLocale()) == "ruRU" then
   L["Import Manager"] = "Менеджер импорта"
   L["Profiles"] = "Профили"
   L["Delete this item entry."] = "Удалить эту запись предмета."
+  L["Raid Pack"] = "Рейд-пак"
+  L["Locale Settings"] = "Настройки языка"
+  L["Use Client Locale"] = "Использовать язык клиента"
+  L["Set Locale"] = "Выбрать язык"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Устанавливает язык для рейд-паков Merfin, переопределяя язык клиента."
 elseif (GAME_LOCALE or GetLocale()) == "koKR" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "이 변경 사항을 적용하려면 인터페이스를 다시 불러와야 합니다.\n\n지금 다시 불러오시겠습니까?"
@@ -225,6 +347,12 @@ elseif (GAME_LOCALE or GetLocale()) == "koKR" then
   L["Import Manager"] = "가져오기 관리자"
   L["Profiles"] = "프로필"
   L["Delete this item entry."] = "이 아이템 항목을 삭제합니다."
+  L["Raid Pack"] = "레이드 팩"
+  L["Locale Settings"] = "언어 설정"
+  L["Use Client Locale"] = "클라이언트 언어 사용"
+  L["Set Locale"] = "언어 설정"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "Merfin 레이드 팩의 언어를 설정하며 클라이언트 언어를 덮어씁니다."
 elseif (GAME_LOCALE or GetLocale()) == "zhTW" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "需要重新載入介面才能使此變更生效。\n\n現在重新載入？"
@@ -268,6 +396,12 @@ elseif (GAME_LOCALE or GetLocale()) == "zhTW" then
   L["Import Manager"] = "匯入管理器"
   L["Profiles"] = "設定檔"
   L["Delete this item entry."] = "刪除此物品項目。"
+  L["Raid Pack"] = "團隊包"
+  L["Locale Settings"] = "語言設定"
+  L["Use Client Locale"] = "使用客戶端語言"
+  L["Set Locale"] = "設定語言"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "設定 Merfin 團隊包的語言，並覆蓋客戶端語言。"
 elseif (GAME_LOCALE or GetLocale()) == "zhCN" then
   L["A reload of the interface is required for this change to take effect.\n\nReload now?"] =
     "需要重新加载界面才能使此更改生效。\n\n现在重新加载？"
@@ -311,6 +445,12 @@ elseif (GAME_LOCALE or GetLocale()) == "zhCN" then
   L["Import Manager"] = "导入管理器"
   L["Profiles"] = "配置文件"
   L["Delete this item entry."] = "删除此物品条目。"
+  L["Raid Pack"] = "团队包"
+  L["Locale Settings"] = "语言设置"
+  L["Use Client Locale"] = "使用客户端语言"
+  L["Set Locale"] = "设置语言"
+  L["Sets the localization for Merfin Raid Packs, overriding the client locale."] =
+    "设置 Merfin 团队包的语言，并覆盖客户端语言。"
 end
 
 -- Make missing translations available

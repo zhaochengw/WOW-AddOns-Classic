@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2739, "DBM-Raids-Midnight", 1, 1308)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20260410090604")
+mod:SetRevision("20260423035249")
 --mod:SetCreatureID()--No Data Yet, has 4 CIDs
 mod:SetEncounterID(3182)
 --mod:SetHotfixNoticeRev(20250823000000)
@@ -66,29 +66,33 @@ local lastEmbersEventID = 0
 local heroicSequenceSlot = 0
 
 ---@param self DBMMod
-local function setFallback(self)
+---@param dontSetAlerts boolean? Called when user has disabled DBM bars and is ONLY using timeline, therefor we must enable SetTimeline calls even in hardcodes
+local function setFallback(self, dontSetAlerts)
 	--Blizz API fallbacks
-	specWarnEmbersofBeloren:SetAlert(128, "mobsoon", 2, 3)
-	timerEmbersofBelorenCD:SetTimeline(128)
-	specWarnRadiantEchoes:SetAlert(130, "orbsincoming", 19, 3)
-	timerRadiantEchoesCD:SetTimeline(130)
-	if self:IsTank() or self:IsHealer() then
-		specWarnGuardiansEdict:SetAlert(134, "tankcombo", 19, 3)
+	if not dontSetAlerts then
+		specWarnEmbersofBeloren:SetAlert(128, "mobsoon", 2, 3)
+		specWarnRadiantEchoes:SetAlert(130, "orbsincoming", 19, 3)
+		if self:IsTank() or self:IsHealer() then
+			specWarnGuardiansEdict:SetAlert(134, "tankcombo", 19, 3)
+		end
+		specWarnVoidlightConvergence:SetAlert(218, "colorchange", 19, 3)
+		specWarnDeathDrop:SetAlert(272, "justrun", 2, 3)
+		specWarnIncubationofFlames:SetAlert(273, "watchstep", 2, 3)
+		specWarnLightFeather:SetAlert(482, "lightyou", 19, 3, 0)
+		specWarnVoidFeather:SetAlert(483, "voidyou", 19, 3, 0)
+		specWarnLightDiver:SetAlert(494, "lightsoak", 19, 3, 0)
+		specWarnVoidDiver:SetAlert(495, "voidsoak", 19, 3, 0)
+		specWarnRebirth:SetAlert(497, "dpshard", 16, 3, 0)
 	end
+
+	timerEmbersofBelorenCD:SetTimeline(128)
+	timerRadiantEchoesCD:SetTimeline(130)
 	timerGuardiansEdictCD:SetTimeline(134)
 	timerEternalBurnsCD:SetTimeline(138)
 	timerInfusedQuillsCD:SetTimeline(161)
-	specWarnVoidlightConvergence:SetAlert(218, "colorchange", 19, 3)
 	timerVoidlightConvergenceCD:SetTimeline(218)
-	specWarnDeathDrop:SetAlert(272, "justrun", 2, 3)
 	timerDeathDropCD:SetTimeline(272)
-	specWarnIncubationofFlames:SetAlert(273, "watchstep", 2, 3)
 	timerIncubationofFlamesCD:SetTimeline(273)
-	specWarnLightFeather:SetAlert(482, "lightyou", 19, 3, 0)
-	specWarnVoidFeather:SetAlert(483, "voidyou", 19, 3, 0)
-	specWarnLightDiver:SetAlert(494, "lightsoak", 19, 3, 0)
-	specWarnVoidDiver:SetAlert(495, "voidsoak", 19, 3, 0)
-	specWarnRebirth:SetAlert(497, "dpshard", 16, 3, 0)
 	timerRebirthCD:SetTimeline(497)
 	timerBerserkCD:SetTimeline(500)
 end
@@ -113,6 +117,10 @@ function mod:OnLimitedCombatStart(delay)
 			"ENCOUNTER_TIMELINE_EVENT_ADDED",
 			"ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED"
 		)
+		--SetTimeline events since user has disabled DBM Bars (so they can still get countdowns in blizzard timeline API instead)
+		if DBM.Options.HideDBMBars then
+			setFallback(self, true)
+		end
 	else
 		setFallback(self)
 	end

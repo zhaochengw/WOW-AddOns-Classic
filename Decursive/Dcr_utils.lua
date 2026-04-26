@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.8.0-RC3) add-on for World of Warcraft UI
+    Decursive (v 2.8.0-RC5) add-on for World of Warcraft UI
     Copyright (C) 2006-2025 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2026-02-24T22:12:13Z
+    This file was last updated on 2026-03-21T23:26:01Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -156,7 +156,7 @@ end -- }}}
 
 function D:UnitName(Unit)
     local name, server = UnitName(Unit);
-        if ( server and server ~= "" ) then
+        if ( server and canaccessvalue(server) and server ~= "" ) then
             return name.."-"..server;
         else
             return name;
@@ -1112,4 +1112,4 @@ do
         return nocase:trim();
     end
 end
-T._LoadedFiles["Dcr_utils.lua"] = "2.8.0-RC3";
+T._LoadedFiles["Dcr_utils.lua"] = "2.8.0-RC5";

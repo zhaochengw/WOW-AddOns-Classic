@@ -1,7 +1,7 @@
 ## Interface: 11508
 ## Title: MerfinPlus
 ## Author: Merfin
-## Version: 2.37
+## Version: 2.38
 ## X-Website: discord.gg/merfin
 ## X-Flavor: Vanilla
 ## Notes: Inserts Merfin media into LibSharedMedia's storage.

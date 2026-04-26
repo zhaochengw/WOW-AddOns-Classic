@@ -1,4 +1,6 @@
-### Changes in 120000.143-Release:
+### Changes in 120000.144-Release:
 
-- Fixed: More taints
+- Changed: Update wrath data
+- Changed: Update retail data
+- Changed: Update Interface version
 

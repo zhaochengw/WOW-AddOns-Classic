@@ -456,6 +456,12 @@ GTFO.SpellID["70436"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["1264299"] = {
+	--desc = "Blight (Ick)";
+	sound = 1;
+	instance = 658;
+};
+
 GTFO.SpellID["69238"] = {
 	--desc = "Icy Blast (Scourgelord Tyrannus - Normal)";
 	sound = 1;

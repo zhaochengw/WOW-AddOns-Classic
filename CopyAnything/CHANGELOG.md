@@ -1,6 +1,7 @@
 # Copy Anything
 
-## [v1.1.44](https://github.com/Oppzippy/CopyAnything/tree/v1.1.44) (2026-03-04)
-[Full Changelog](https://github.com/Oppzippy/CopyAnything/compare/v1.1.43...v1.1.44) [Previous Releases](https://github.com/Oppzippy/CopyAnything/releases)
+## [v1.1.45](https://github.com/Oppzippy/CopyAnything/tree/v1.1.45) (2026-04-22)
+[Full Changelog](https://github.com/Oppzippy/CopyAnything/compare/v1.1.44...v1.1.45) [Previous Releases](https://github.com/Oppzippy/CopyAnything/releases)
 
-- feat: add copy mouse tooltip options (#37)  
+- Update Interface version (#38)  
+    Co-authored-by: Oppzippy <Oppzippy@users.noreply.github.com>  

@@ -1,5 +1,12 @@
 # Changelog
 
+## 113
+- Version update for 12.0.5 and 5.5.4
+
+## 112
+- Added a new option (off by default) /sal display and /sal anchor to toggle the visiblty of the new Loot log that shows a nice interface when you loot items, to easily see if you looted or not rather than looking at chat
+Currently there are no extra options for this display.
+
 ## 111
 - Midnight update
 

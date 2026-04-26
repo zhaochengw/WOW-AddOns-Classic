@@ -187,34 +187,33 @@ end
 
 local function SetupActionBarStateDriver(bar, pageConditions)
 	if not bar then return end
-	
-	-- RegisterStateDriver 负责：根据条件（如 [vehicleui]）自动切换 page 属性
-	RegisterStateDriver(bar, 'page', pageConditions)
-	-- SetAttribute 设置默认页码（非载具状态下使用的页面）
-	-- 不得传入条件字符串，必须是数字
-	local defaultPage = 1
-	bar:SetAttribute('page', defaultPage)
-	-- haschild 确保子按钮能正确继承状态变化
+
+	bar:SetAttribute('_onstate-page', [[
+		self:SetAttribute('state', newstate)
+		control:ChildUpdate('state', newstate)
+	]])
+	bar:SetAttribute('page', 1)
+	bar:SetAttribute('state', 1)
 	bar:SetAttribute('haschild', true)
+	RegisterStateDriver(bar, 'page', pageConditions)
+end
+
+local TIDYBAR_VEHICLE_ACTION_PAGE = GetVehicleBarIndex and GetVehicleBarIndex() or 12
+local TIDYBAR_OVERRIDE_ACTION_PAGE = GetOverrideBarIndex and GetOverrideBarIndex() or 14
+
+local function GetPagedActionSlot(page, index)
+	return ((page - 1) * (NUM_ACTIONBAR_BUTTONS or 12)) + index
 end
 
 local function SetupButtonStates(button, index, actionId)
-	-- 默认页面（page 1-11）：使用自定义动作条的实际 actionId
 	for page = 1, 11 do
 		button:SetState(page, 'action', actionId)
 	end
-	-- Override 页面（page 12）：映射到主动作条对应位置，由系统OverrideActionBar接管技能
-	-- 当 Blizzard 覆盖动作条时，自定义按钮必须同样映射，否则按键仍触发原始技能
-	button:SetState(12, 'action', index)
-	-- 载具UI页面（page 13）：映射到主动作条对应位置，触发载具技能
-	-- 原生UI进入载具时，主动作条按钮自动变成载具技能
-	-- 自定义按钮必须同样映射，否则按键仍触发原始技能
-	local vehicleBarIndex = GetVehicleBarIndex and GetVehicleBarIndex() or 13
-	button:SetState(vehicleBarIndex, 'action', index)
-	-- Possess 页面（page 14）：映射到主动作条对应位置，触发控制技能
-	-- 原生UI possess 时也需要正确映射
-	button:SetState(14, 'action', index)
-	-- 页面 15-18 保持为空（预防性设置）
+
+	-- Special bars use hidden backing action slots, not the visible 1-12 slots.
+	button:SetState(TIDYBAR_VEHICLE_ACTION_PAGE, 'action', GetPagedActionSlot(TIDYBAR_VEHICLE_ACTION_PAGE, index))
+	button:SetState(TIDYBAR_OVERRIDE_ACTION_PAGE, 'action', GetPagedActionSlot(TIDYBAR_OVERRIDE_ACTION_PAGE, index))
+
 	for page = 15, 18 do
 		button:SetState(page, 'empty')
 	end
@@ -230,9 +229,9 @@ local CornerMenuFrame = CreateFrame("Frame", "TidyBar_CornerMenuFrame", UIParent
 local CornerMouseoverFrame = CreateFrame("Frame", "TidyBar_CornerBarMouseoverFrame", UIParent)
 
 -- 创建自定义动作条
--- MOP 5.5.3: 正确模板名是 SecureHandlerBaseTemplate，且无 BackdropTemplate
-local TidyBarLeftActionBar = CreateFrame("Frame", "TidyBar_LeftActionBar", UIParent, "SecureHandlerBaseTemplate")
-local TidyBarRightActionBar = CreateFrame("Frame", "TidyBar_RightActionBar", UIParent, "SecureHandlerBaseTemplate")
+-- MOP 5.5.3: use SecureHandlerStateTemplate for RegisterStateDriver page changes.
+local TidyBarLeftActionBar = CreateFrame("Frame", "TidyBar_LeftActionBar", UIParent, "SecureHandlerStateTemplate")
+local TidyBarRightActionBar = CreateFrame("Frame", "TidyBar_RightActionBar", UIParent, "SecureHandlerStateTemplate")
 TidyBarLeftActionBar:SetFrameStrata("MEDIUM")
 TidyBarRightActionBar:SetFrameStrata("MEDIUM")
 TidyBarLeftActionBar:EnableMouse(true)
@@ -439,7 +438,7 @@ local function DelayEvent(functionToCall, timeToCall)
 	DelayedEvents[functionToCall] = timeToCall
 	-- 如果当前没有检查器在运行，或者新事件的时间比下一次检查时间早，则启动或更新检查器
 	local currentTime = GetTime()
-	if not nextCheckTime or timeToCall < nextCheckTime then
+	if nextCheckTime == 0 or timeToCall < nextCheckTime then
 		nextCheckTime = currentTime + 0.01 -- 立即检查
 		DelayedEventWatcher:SetScript("OnUpdate", CheckDelayedEvent)
 	end
@@ -642,15 +641,16 @@ local function RefreshCustomActionBars()
 
     -- 设置状态驱动，支持载具/override/possess 页面切换（仅注册一次）
     if not stateDriversRegistered then
-        local vehicleBarIndex = GetVehicleBarIndex and GetVehicleBarIndex() or 13
+        local vehicleBarIndex = TIDYBAR_VEHICLE_ACTION_PAGE
+        local overrideBarIndex = TIDYBAR_OVERRIDE_ACTION_PAGE
+        -- MOP 5.5.3 fallback pages: vehicle/possess = 12, override = 14.
         -- 条件格式: [条件] 页码; 默认页码
-        -- MOP:
-        --  [overridebar] -> page 12 (OverrideActionBar)
-        --  [vehicleui] -> page vehicleBarIndex (usually 13) (VehicleUI)
-        --  [possessbar] -> page 14 (PossessBar)
-        --  otherwise -> page 1 (normal action bar)
+        --  [overridebar] -> overrideBarIndex
+        --  [vehicleui] or [possessbar] -> vehicleBarIndex
+        --  otherwise -> page 1
         local pageConditions = string.format(
-            "[overridebar] 12; [possessbar] 14; [vehicleui] %d; %d",
+            "[overridebar] %d; [vehicleui][possessbar] %d; %d",
+            overrideBarIndex,
             vehicleBarIndex,
             1
         )
@@ -1032,12 +1032,11 @@ function ConfigureOptions()
 			TidyBar:ShowImportDialog()
 		end)
 
-		-- 注册到设置界面 - 匹配 AutoInvite 模式
-		if _G.InterfaceOptions_AddCategory then
+		if InterfaceOptions_AddCategory then
 			InterfaceOptions_AddCategory(TidyBar.panel)
-		elseif _G.Settings and _G.Settings.RegisterCanvasLayoutCategory then
-			local category = _G.Settings.RegisterCanvasLayoutCategory(TidyBar.panel, TidyBar.panel.name)
-			_G.Settings.RegisterAddOnCategory(category)
+		elseif Settings and Settings.RegisterCanvasLayoutCategory then
+			local category = Settings.RegisterCanvasLayoutCategory(TidyBar.panel, TidyBar.panel.name)
+			Settings.RegisterAddOnCategory(category)
 		end
 	end
 	TidyBar.optionRunCount = TidyBar.optionRunCount + 1
@@ -1301,10 +1300,9 @@ SlashCmdList.TIDYBAR = function(msg, editBox)
 	if not TidyBar.panel then
 		ConfigureOptions()
 	end
-	-- 匹配 AutoInvite 模式：优先新 API
-	if _G.Settings and _G.Settings.OpenToCategory then
-		_G.Settings.OpenToCategory(TidyBar.panel.name)
-	elseif _G.InterfaceOptionsFrame_OpenToCategory then
+	if Settings and Settings.OpenToCategory then
+		Settings.OpenToCategory(TidyBar.panel.name)
+	elseif InterfaceOptionsFrame_OpenToCategory then
 		InterfaceOptionsFrame_OpenToCategory(TidyBar.panel)
 	end
 end
@@ -1510,6 +1508,94 @@ currentBinding:SetText("")
 
 local currentBindingButton = nil
 
+local STANDARD_ACTION_BUTTON_BINDINGS = {
+	ActionButton = "ACTIONBUTTON",
+	MultiBarBottomLeftButton = "MULTIACTIONBAR1BUTTON",
+	MultiBarBottomRightButton = "MULTIACTIONBAR2BUTTON",
+	MultiBarRightButton = "MULTIACTIONBAR3BUTTON",
+	MultiBarLeftButton = "MULTIACTIONBAR4BUTTON",
+}
+
+local function GetStandardBindingActionFromName(buttonName)
+	if not buttonName then return nil end
+
+	for buttonPrefix, bindingPrefix in pairs(STANDARD_ACTION_BUTTON_BINDINGS) do
+		local index = buttonName:match("^" .. buttonPrefix .. "(%d+)$")
+		if index then
+			return bindingPrefix .. index
+		end
+	end
+end
+
+local function GetClickBindingAction(button)
+	local buttonName = button and button:GetName()
+	if not buttonName then return nil end
+	return "CLICK " .. buttonName .. ":LeftButton"
+end
+
+local function GetPreferredBindingAction(button)
+	local buttonName = button and button:GetName()
+	return GetStandardBindingActionFromName(buttonName) or GetClickBindingAction(button)
+end
+
+local function AddBindingKeysForAction(action, keys, seen)
+	if not action or not GetBindingKey then return end
+
+	local actionKeys = { GetBindingKey(action) }
+	for _, key in ipairs(actionKeys) do
+		if key and not seen[key] then
+			table.insert(keys, key)
+			seen[key] = true
+		end
+	end
+end
+
+local function GetBindingKeysForButton(button)
+	local keys, seen = {}, {}
+	local preferredAction = GetPreferredBindingAction(button)
+	local clickAction = GetClickBindingAction(button)
+
+	AddBindingKeysForAction(preferredAction, keys, seen)
+	if clickAction ~= preferredAction then
+		AddBindingKeysForAction(clickAction, keys, seen)
+	end
+
+	return keys
+end
+
+local function GetBindingTextForButton(button)
+	local keys = GetBindingKeysForButton(button)
+	return table.concat(keys, " ")
+end
+
+local function NormalizeLegacyActionButtonBindings()
+	if InCombatLockdown and InCombatLockdown() then
+		DelayEvent(NormalizeLegacyActionButtonBindings, GetTime() + 1)
+		return
+	end
+
+	local changed = false
+	for buttonPrefix, bindingPrefix in pairs(STANDARD_ACTION_BUTTON_BINDINGS) do
+		for i = 1, 12 do
+			local oldAction = "CLICK " .. buttonPrefix .. i .. ":LeftButton"
+			local newAction = bindingPrefix .. i
+			local keys = { GetBindingKey(oldAction) }
+
+			for _, key in ipairs(keys) do
+				if key and GetBindingAction(key) == oldAction then
+					SetBinding(key, newAction)
+					changed = true
+				end
+			end
+		end
+	end
+
+	if changed then
+		SaveBindings(GetCurrentBindingSet())
+		print("|cff33ff99TidyBar:|r 已修复旧版动作条按键绑定，载具动作条会跟随数字键。")
+	end
+end
+
 function TidyBar:DisableKeybinding()
 	KeybindingFrame:Hide()
 	KeybindingFrame:EnableKeyboard(false)
@@ -1522,21 +1608,8 @@ end
 -- 按键绑定处理函数
 local function ProcessBinding(key)
 	if currentBindingButton then
-		local oldBinding = ""
-		for i = 1, GetNumBindings() do
-			local key1, key2 = GetBinding(i)
-			local bindingAction = GetBindingAction(key1)
-			if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
-				oldBinding = oldBinding .. key1 .. " "
-			end
-			if key2 then
-				bindingAction = GetBindingAction(key2)
-				if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
-					oldBinding = oldBinding .. key2 .. " "
-				end
-			end
-		end
-		SetBinding(key, "CLICK " .. currentBindingButton:GetName() .. ":LeftButton")
+		local oldBinding = GetBindingTextForButton(currentBindingButton)
+		SetBinding(key, GetPreferredBindingAction(currentBindingButton))
 		SaveBindings(GetCurrentBindingSet())
 		currentBinding:SetText(L["Binding set: "] .. key .. (oldBinding ~= "" and " (" .. L["replaced: "] .. oldBinding .. ")" or ""))
 	end
@@ -1583,19 +1656,8 @@ clearButton:SetPoint("BOTTOM", -70, 15)
 clearButton:SetText(L["Clear Binding"])
 clearButton:SetScript("OnClick", function()
 	if currentBindingButton then
-		local action = currentBindingButton.action
-		for i = 1, GetNumBindings() do
-			local key1, key2 = GetBinding(i)
-			local bindingAction = GetBindingAction(key1)
-			if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
-				SetBinding(key1)
-			end
-			if key2 then
-				bindingAction = GetBindingAction(key2)
-				if bindingAction == "CLICK " .. currentBindingButton:GetName() .. ":LeftButton" then
-					SetBinding(key2)
-				end
-			end
+		for _, key in ipairs(GetBindingKeysForButton(currentBindingButton)) do
+			SetBinding(key)
 		end
 		SaveBindings(GetCurrentBindingSet())
 		currentBinding:SetText(L["Binding cleared!"])
@@ -1617,20 +1679,7 @@ local function OnActionButtonEnter(self)
     if KeybindingFrame:IsShown() then
         currentBindingButton = self
         currentButton:SetText(L["Current Button: "] .. self:GetName())
-        local bindingText = ""
-        for i = 1, GetNumBindings() do
-            local key1, key2 = GetBinding(i)
-            local bindingAction = GetBindingAction(key1)
-            if bindingAction == "CLICK " .. self:GetName() .. ":LeftButton" then
-                bindingText = bindingText .. key1 .. " "
-            end
-            if key2 then
-                bindingAction = GetBindingAction(key2)
-                if bindingAction == "CLICK " .. self:GetName() .. ":LeftButton" then
-                    bindingText = bindingText .. key2 .. " "
-                end
-            end
-        end
+        local bindingText = GetBindingTextForButton(self)
         if bindingText == "" then
             currentBinding:SetText(L["No binding"])
         else
@@ -1681,6 +1730,8 @@ SlashCmdList.KEYBIND = function(msg, editBox)
 		end
 	end
 end
+
+DelayEvent(NormalizeLegacyActionButtonBindings, GetTime() + 1)
 
 function TidyBar:OnDisable()
     for eventname in pairs(events) do

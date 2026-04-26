@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2795, "DBM-Raids-Midnight", 2, 1314)
 --local L		= mod:GetLocalizedStrings()--Nothing to localize for blank mods
 
-mod:SetRevision("20260407042048")
+mod:SetRevision("20260423035249")
 mod:SetCreatureID(256116)
 mod:SetEncounterID(3306)
 --mod:SetHotfixNoticeRev(20250823000000)
@@ -71,28 +71,31 @@ local timer73Count = 0
 local timer75Count = 0
 
 ---@param self DBMMod
-local function setFallback(self)
+	---@param dontSetAlerts boolean? Called when user has disabled DBM bars and is only using timeline, therefore we must still enable SetTimeline calls even in hardcodes
+local function setFallback(self, dontSetAlerts)
 	--Blizz API fallbacks
-	specWarnRavenousDive:SetAlert(48, "phasechange", 2, 3, 0)
+	if not dontSetAlerts then
+		specWarnRavenousDive:SetAlert(48, "phasechange", 2, 3, 0)
+		specWarnRiftEmergence:SetAlert(49, "mobsoon", 2, 2)
+		specWarnCausticPhlegm:SetAlert(50, "aesoon", 2, 2)
+		specWarnRendingTear:SetAlert(51, "frontal", 15, 2)
+		specWarnCorruptedDevastation:SetAlert({53,458}, "breathsoon", 2, 2, 0)
+		specWarnFearsomecry:SetAlert(117, "kickcast", 1, 2, 0)--Needs vetting, it's an add ability but has event Id, so it might fire an ECOUNTER_WARNING based on blizz set conditionals
+		specWarnDiscordantRoar:SetAlert(118, "aesoon", 2, 2, 0)--^
+		specWarnAlndustUpheaval:SetAlert({149,431}, "soakincoming", 19, 2)--Can't count casts with blizz API, but hardcode will be able to use group1 and group 2 soak sounds
+		specWarnConsume:SetAlert(307, "aesoon", 2, 3)
+		specWarnCannibalized:SetAlert(555, "stilldanger", 1, 2, 0)
+	end
 	timerRavenousDiveCD:SetTimeline(48)
-	specWarnRiftEmergence:SetAlert(49, "mobsoon", 2, 2)
 	timerRiftEmergenceCD:SetTimeline(49)
-	specWarnCausticPhlegm:SetAlert(50, "aesoon", 2, 2)
 	timerCausticPhlegmCD:SetTimeline(50)
-	specWarnRendingTear:SetAlert(51, "frontal", 15, 2)
 	timerRendingTearCD:SetTimeline(51)
-	specWarnCorruptedDevastation:SetAlert({53,458}, "breathsoon", 2, 2, 0)
 	timerCorruptedDevastationCD:SetTimeline({53,458})
-	specWarnFearsomecry:SetAlert(117, "kickcast", 1, 2, 0)--Needs vetting, it's an add ability but has event Id, so it might fire an ECOUNTER_WARNING based on blizz set conditionals
-	specWarnDiscordantRoar:SetAlert(118, "aesoon", 2, 2, 0)--^
 	timerConsumingMiasmaCD:SetTimeline(119)
-	specWarnAlndustUpheaval:SetAlert({149,431}, "soakincoming", 19, 2)--Can't count casts with blizz API, but hardcode will be able to use group1 and group 2 soak sounds
 	timerAlndustUpheavalCD:SetTimeline({149,431})
 	timerBerserkCD:SetTimeline(170)
 	timerRiftMadnessCD:SetTimeline(217)
-	specWarnConsume:SetAlert(307, "aesoon", 2, 3)
 	timerConsumeCD:SetTimeline(307)
-	specWarnCannibalized:SetAlert(555, "stilldanger", 1, 2, 0)
 	timerStage2CD:SetTimeline(353)
 end
 
@@ -124,6 +127,9 @@ function mod:OnLimitedCombatStart()
 			"ENCOUNTER_TIMELINE_EVENT_STATE_CHANGED",
 			"ENCOUNTER_WARNING"
 		)
+		if DBM.Options.HideDBMBars then
+			setFallback(self, true)
+		end
 	else
 		setFallback(self)
 	end
@@ -227,7 +233,7 @@ do
 		elseif timer == 8 then--Corrupted Devastation opener before mixed 12s
 			timerCorruptedDevastationCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "devastation", "devastationCount"))
 			next12IsDevastation = true
-		elseif timer == 12 or timer == 2 then--Can be Corrupted Devastation or Caustic Phlegm
+		elseif timer == 12 then--Can be Corrupted Devastation or Caustic Phlegm
 			if next12IsDevastation then
 				timerCorruptedDevastationCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "devastation", "devastationCount"))
 				next12IsDevastation = false
@@ -235,6 +241,9 @@ do
 				timerCausticPhlegmCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "phlegm", "phlegmCount"))
 				next12IsDevastation = true
 			end
+		elseif timer == 2 then
+			timerCorruptedDevastationCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "devastation", "devastationCount"))
+			next12IsDevastation = false
 		elseif timer == 30 or timer == 1 then--Ravenous Dive
 			--30 is max time, but when all adds die, 30 is canceled and replaced with 1 second timer
 			startDiveTimer(self, timer, timerExact, eventID)
@@ -308,6 +317,9 @@ do
 				timerCausticPhlegmCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "phlegm", "phlegmCount"))
 				next12IsDevastation = true
 			end
+		elseif timer == 2 then
+			timerCorruptedDevastationCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "devastation", "devastationCount"))
+			next12IsDevastation = false
 		elseif timer == 30 or timer == 1 then--Ravenous Dive (30s max, 1s early-kill replacement when adds die early)
 			startDiveTimer(self, timer, timerExact, eventID)
 		elseif timer == 10 then--Stage Two (phase 2 transition marker)
@@ -380,6 +392,9 @@ do
 				timerCausticPhlegmCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "phlegm", "phlegmCount"))
 				next12IsDevastation = true
 			end
+		elseif timer == 2 then
+			timerCorruptedDevastationCD:TLStart(timerExact, eventID, self:TLCountStart(eventID, "devastation", "devastationCount"))
+			next12IsDevastation = false
 		elseif timer == 20 or timer == 1 then--Ravenous Dive (20s base on Mythic, 1s when adds die early)
 			startDiveTimer(self, timer, timerExact, eventID)
 		else--Reached end of chain without finding a valid timer

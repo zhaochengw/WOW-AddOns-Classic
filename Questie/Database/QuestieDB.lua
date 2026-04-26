@@ -900,6 +900,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     local completedQuests = Questie.db.char.complete
     local currentQuestlog = QuestiePlayer.currentQuestlog
     local DoableStates = QuestieDB.DoableStates
+    local HIDE_ON_MAP = QuestieQuestBlacklist.HIDE_ON_MAP
 
     -- Completed quests
     if completedQuests[questId] then
@@ -921,7 +922,7 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
     end
 
     -- Automatically blacklisted quests by Questie. These are localized in the init function
-    if QuestieCorrectionshiddenQuests[questId] then
+    if QuestieCorrectionshiddenQuests[questId] and QuestieCorrectionshiddenQuests[questId] ~= HIDE_ON_MAP then
         local msg = "Quest " .. questId .. " is hidden automatically"
         local msgevent = "Quest " .. questId .. " is unavailable because the world event is inactive"
         if QuestieEvent.IsEventQuest(questId) and not QuestieEvent.IsEventActiveForQuest(questId) then
@@ -1004,6 +1005,62 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
         end
     end
 
+    -- Check profession requirements
+    local requiredSkill = QuestieDB.QueryQuestSingle(questId, "requiredSkill")
+    local requiredRanks = QuestieDB.QueryQuestSingle(questId, "requiredRanks")
+    -- Until then these two should be mutually exclusive
+    -- TODO: if we find a quest that has both requiredSkill and requiredRanks we need to be able to return correct message
+    if (requiredSkill) then
+        local hasProfession, hasSkillLevel = QuestieProfessions:HasProfessionAndSkillLevel(requiredSkill)
+        if not hasProfession then
+            local msg = "Profession missing for quest " .. questId
+            if returnText and returnBrief then
+                return l10n("Unavailable")..l10n(": ")..l10n("Profession missing"), true, DoableStates.PROFESSION_MISSING
+            elseif returnText and not returnBrief then
+                return msg, true, DoableStates.PROFESSION_MISSING
+            end
+        elseif not hasSkillLevel then
+            local msg = "Player does not have required profession skill for quest " .. questId
+            if returnText and returnBrief then
+                return l10n("Unavailable")..l10n(": ")..l10n("Profession skill"), true, DoableStates.PROFESSION_SKILL
+            elseif returnText and not returnBrief then
+                return msg, true, DoableStates.PROFESSION_SKILL
+            end
+        end
+    end
+    if (requiredRanks) then
+        local hasProfession, hasRankLevel = QuestieProfessions:HasProfessionAndRankLevel(requiredRanks)
+        if not hasProfession then
+            local msg = "Profession missing for quest " .. questId
+            if returnText and returnBrief then
+                return l10n("Unavailable")..l10n(": ")..l10n("Profession missing"), true, DoableStates.PROFESSION_MISSING
+            elseif returnText and not returnBrief then
+                return msg, true, DoableStates.PROFESSION_MISSING
+            end
+        elseif not hasRankLevel then
+            local msg = "Player does not have required profession rank for quest " .. questId
+            if returnText and returnBrief then
+                return l10n("Unavailable")..l10n(": ")..l10n("Profession rank"), true, DoableStates.PROFESSION_RANK
+            elseif returnText and not returnBrief then
+                return msg, true, DoableStates.PROFESSION_RANK
+            end
+        end
+    end
+
+    -- Check profession specialization requirements
+    local requiredSpecialization = QuestieDB.QueryQuestSingle(questId, "requiredSpecialization")
+    if (requiredSpecialization) and (requiredSpecialization > 0) then
+        local hasSpecialization = QuestieProfessions.HasSpecialization(requiredSpecialization)
+        if (not hasSpecialization) then
+            local msg = "Player does not meet profession specialization requirements for quest " .. questId
+            if returnText and returnBrief then
+                return l10n("Unavailable")..l10n(": ")..l10n("Profession specialization requirement"), true, DoableStates.PROFESSION_SPECIALIZATION
+            elseif returnText and not returnBrief then
+                return msg, true, DoableStates.PROFESSION_SPECIALIZATION
+            end
+        end
+    end
+
     -- Check if the character is higher than the quest allows
     local requiredMaxLevel = QuestieDB.QueryQuestSingle(questId, "requiredMaxLevel")
     if (requiredMaxLevel and requiredMaxLevel ~= 0 and (UnitLevel("player") > requiredMaxLevel)) then
@@ -1050,48 +1107,6 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
                 return l10n("Unavailable")..l10n(": ")..l10n("Reputation too high"), true, DoableStates.EXCEED_REPUTATION
             elseif returnText and not returnBrief then
                 return msg, true, DoableStates.EXCEED_REPUTATION
-            end
-        end
-    end
-
-    -- Check profession requirements
-    local requiredSkill = QuestieDB.QueryQuestSingle(questId, "requiredSkill")
-    local requiredRanks = QuestieDB.QueryQuestSingle(questId, "requiredRanks")
-    -- Until then these two should be mutually exclusive
-    -- TODO: if we find a quest that has both requiredSkill and requiredRanks we need to be able to return correct message
-    if (requiredSkill) then
-        local hasProfession, hasSkillLevel = QuestieProfessions:HasProfessionAndSkillLevel(requiredSkill)
-        if not hasProfession then
-            local msg = "Profession missing for quest " .. questId
-            if returnText and returnBrief then
-                return l10n("Unavailable")..l10n(": ")..l10n("Profession missing"), true, DoableStates.PROFESSION_MISSING
-            elseif returnText and not returnBrief then
-                return msg, true, DoableStates.PROFESSION_MISSING
-            end
-        elseif not hasSkillLevel then
-            local msg = "Player does not have required profession skill for quest " .. questId
-            if returnText and returnBrief then
-                return l10n("Unavailable")..l10n(": ")..l10n("Profession skill"), true, DoableStates.PROFESSION_SKILL
-            elseif returnText and not returnBrief then
-                return msg, true, DoableStates.PROFESSION_SKILL
-            end
-        end
-    end
-    if (requiredRanks) then
-        local hasProfession, hasRankLevel = QuestieProfessions:HasProfessionAndRankLevel(requiredRanks)
-        if not hasProfession then
-            local msg = "Profession missing for quest " .. questId
-            if returnText and returnBrief then
-                return l10n("Unavailable")..l10n(": ")..l10n("Profession missing"), true, DoableStates.PROFESSION_MISSING
-            elseif returnText and not returnBrief then
-                return msg, true, DoableStates.PROFESSION_MISSING
-            end
-        elseif not hasRankLevel then
-            local msg = "Player does not have required profession rank for quest " .. questId
-            if returnText and returnBrief then
-                return l10n("Unavailable")..l10n(": ")..l10n("Profession rank"), true, DoableStates.PROFESSION_RANK
-            elseif returnText and not returnBrief then
-                return msg, true, DoableStates.PROFESSION_RANK
             end
         end
     end
@@ -1146,20 +1161,6 @@ function QuestieDB.IsDoableVerbose(questId, debugPrint, returnText, returnBrief)
                 return l10n("Unavailable")..l10n(": ")..l10n("Later quest completed or active"), true, DoableStates.NEXTQUESTINCHAIN_ACTIVE_OR_COMPLETED
             elseif returnText and not returnBrief then
                 return msg, true, DoableStates.NEXTQUESTINCHAIN_ACTIVE_OR_COMPLETED
-            end
-        end
-    end
-
-    -- Check profession specialization requirements
-    local requiredSpecialization = QuestieDB.QueryQuestSingle(questId, "requiredSpecialization")
-    if (requiredSpecialization) and (requiredSpecialization > 0) then
-        local hasSpecialization = QuestieProfessions.HasSpecialization(requiredSpecialization)
-        if (not hasSpecialization) then
-            local msg = "Player does not meet profession specialization requirements for quest " .. questId
-            if returnText and returnBrief then
-                return l10n("Unavailable")..l10n(": ")..l10n("Profession specialization requirement"), true, DoableStates.PROFESSION_SPECIALIZATION
-            elseif returnText and not returnBrief then
-                return msg, true, DoableStates.PROFESSION_SPECIALIZATION
             end
         end
     end

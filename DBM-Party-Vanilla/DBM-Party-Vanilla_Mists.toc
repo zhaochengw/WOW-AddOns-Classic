@@ -1,4 +1,4 @@
-## Interface: 50502, 50503
+## Interface: 50503, 50504
 ## X-Min-Interface-Mists: 50500
 ## Category: DBM
 
@@ -33,7 +33,7 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-DBM-Mod-MinExpansion: 0
 ## X-Curse-Project-ID: 314994
-## Version: r245
+## Version: r246
 
 locale.generated.lua
 

@@ -22,6 +22,10 @@ BiaoGeTooltip4            = CreateFrame("GameTooltip", "BiaoGeTooltip4", UIParen
 BINDING_HEADER_BIAOGE     = "BiaoGe"
 BINDING_NAME_BIAOGE       = L["打开/关闭表格"]
 BINDING_NAME_RoleOverview = L["打开/关闭角色总览"]
+--[[ 
+/dump GetBindingKey("BINDING_NAME_BIAOGE")
+ GetBinding("MOVEFORWARD")
+]]
 
 local realmID             = GetRealmID()
 local player              = BG.playerName

@@ -1,11 +1,11 @@
-## Interface: 120000, 120001
+## Interface: 120005
 ## Title: Details! Damage Meter
 ## Notes: Essential tool to impress that chick in your raid.
 ## Notes-ruRU: Анализирует сражение в реальном времени, предоставляя игрокам чистые визуальные данные
 ## SavedVariables: _detalhes_global, __details_backup, __details_debug
 ## SavedVariablesPerCharacter: _detalhes_database
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibWindow-1.1, LibDBIcon-1.0, NickTag-1.0, LibDataBroker-1.1, LibGraph-2.0
-## Version: #Details.20260411.14930.171
+## Version: #Details.20260424.15009.171
 ## IconTexture: Interface\AddOns\Details\images\minimap
 ## AddonCompartmentFunc: Details_OpenDefaultOptionsWindow
 
@@ -111,7 +111,9 @@ frames\window_breakdown_midnight\section_targets.lua
 frames\window_breakdown_midnight\section_compare.lua
 frames\window_breakdown_midnight\options.lua
 
-frames\window_segmentselection_midnight.lua
+frames\segments\window_segmentselection.lua
+frames\segments\segments_dataprovider.lua
+frames\segments\segments_functions.lua
 
 frames\window_breakdown\window_playerbreakdown.lua
 frames\window_breakdown\window_playerbreakdown_list.lua
@@ -205,6 +207,7 @@ core\gears.lua
 core\windows.lua
 core\meta.lua
 core\network.lua
+core\inspect.lua
 
 core\parser.lua
 

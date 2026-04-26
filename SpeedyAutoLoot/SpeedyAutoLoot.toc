@@ -1,10 +1,10 @@
-## Interface: 11508, 20505, 50503, 38000, 110207, 120000
+## Interface: 11508, 20505, 50503, 50504, 38000, 120001, 120005
 ## Title: |cffEEE4AESpeedy AutoLoot|r
 ## Notes: |cff58C6FALoot at ludicrous speed!|r|n|n|cffFFC700Slash command: /sal, /speedyautoloot|r
 ## Author: Yuyuli
-## Version: 111
+## Version: 113
 ## SavedVariables: SpeedyAutoLootDB
-## IconTexture: Interface\AddOns\SpeedyAutoloot\looticon.blp
+## IconTexture: Interface\AddOns\SpeedyAutoloot\Art\looticon.blp
 ## OptionalDeps: ElvUI, ElvUI_Config
 
 # https://warcraft.wiki.gg/wiki/Addon_Categories
@@ -21,3 +21,4 @@
 ## Category-zhTW: 戰利品
 
 SpeedyAutoLoot.lua
+LootDisplay.lua

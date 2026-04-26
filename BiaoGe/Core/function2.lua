@@ -510,6 +510,7 @@ do
         if not diffName then diffName = "N" end
         local loots = BG.Loot[FB][diffName] and BG.Loot[FB][diffName]["boss" .. bossnum]
         if bossnum > Maxb[FB] - 1 then return end
+        local isHope = self.hopenandu
 
         -- 背景框
         local f = CreateFrame("Frame", nil, BG.MainFrame, "BackdropTemplate")
@@ -655,6 +656,9 @@ do
                             else
                                 self.owner:SetText(self.link)
                                 self.owner:ClearFocus()
+                                if isHope then
+                                    BG.SetBiaoGeGuanZhu(itemID)
+                                end
                                 BG.FrameZhuangbeiList:Hide()
                             end
                         else
